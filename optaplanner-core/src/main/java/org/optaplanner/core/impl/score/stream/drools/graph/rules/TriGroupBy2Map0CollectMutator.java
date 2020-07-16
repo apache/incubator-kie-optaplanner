@@ -32,13 +32,13 @@ final class TriGroupBy2Map0CollectMutator<A, B, C, NewA, NewB>
     }
 
     @Override
-    public AbstractRuleBuilder apply(AbstractRuleBuilder ruleBuilder) {
-        AbstractRuleBuilder newRuleBuilder = super.apply(ruleBuilder);
+    public AbstractRuleAssembler apply(AbstractRuleAssembler ruleAssembler) {
+        AbstractRuleAssembler newRuleAssembler = super.apply(ruleAssembler);
         // Downgrade the tri-stream to a bi-stream by ignoring the dummy no-op collector variable.
-        List<Variable> allVariablesButLast = newRuleBuilder.getVariables()
-                .subList(0, newRuleBuilder.getVariables().size() - 1);
-        return new BiRuleBuilder(newRuleBuilder::generateNextId, newRuleBuilder.getExpectedGroupByCount(),
-                newRuleBuilder.getFinishedExpressions(), allVariablesButLast, newRuleBuilder.getPrimaryPatterns(),
+        List<Variable> allVariablesButLast = newRuleAssembler.getVariables()
+                .subList(0, newRuleAssembler.getVariables().size() - 1);
+        return new BiRuleAssembler(newRuleAssembler::generateNextId, newRuleAssembler.getExpectedGroupByCount(),
+                newRuleAssembler.getFinishedExpressions(), allVariablesButLast, newRuleAssembler.getPrimaryPatterns(),
                 emptyMap());
     }
 }

@@ -42,22 +42,22 @@ final class BiExistenceMutator<A, B, C> implements Mutator {
                 .toArray(AbstractTriJoiner[]::new);
     }
 
-    private AbstractRuleBuilder applyJoiners(AbstractRuleBuilder ruleBuilder, AbstractTriJoiner<A, B, C> joiner,
+    private AbstractRuleAssembler applyJoiners(AbstractRuleAssembler ruleAssembler, AbstractTriJoiner<A, B, C> joiner,
             TriPredicate<A, B, C> predicate) {
         if (joiner == null) {
-            return applyFilters(ruleBuilder, predicate);
+            return applyFilters(ruleAssembler, predicate);
         }
         // There is no gamma index in Drools, therefore we replace joining with a filter.
         TriPredicate<A, B, C> joinFilter = joiner::matches;
         TriPredicate<A, B, C> result = predicate == null ? joinFilter : joinFilter.and(predicate);
         // And finally we add the filter to the C pattern.
-        return applyFilters(ruleBuilder, result);
+        return applyFilters(ruleAssembler, result);
     }
 
-    private AbstractRuleBuilder applyFilters(AbstractRuleBuilder ruleBuilder, TriPredicate<A, B, C> predicate) {
-        Variable<C> toExist = PatternDSL.declarationOf(otherFactType, ruleBuilder.generateNextId("biToExist"));
+    private AbstractRuleAssembler applyFilters(AbstractRuleAssembler ruleAssembler, TriPredicate<A, B, C> predicate) {
+        Variable<C> toExist = PatternDSL.declarationOf(otherFactType, ruleAssembler.generateNextId("biToExist"));
         PatternDSL.PatternDef<C> existencePattern = PatternDSL.pattern(toExist);
-        Variable[] variables = ruleBuilder.getVariables().toArray(new Variable[0]);
+        Variable[] variables = ruleAssembler.getVariables().toArray(new Variable[0]);
         PatternDSL.PatternDef<C> possiblyFilteredExistencePattern = predicate == null ? existencePattern
                 : existencePattern.expr("Filter using " + predicate, variables[0], variables[1],
                         (c, a, b) -> predicate.test((A) a, (B) b, c));
@@ -65,15 +65,15 @@ final class BiExistenceMutator<A, B, C> implements Mutator {
         if (!shouldExist) {
             existenceExpression = PatternDSL.not(possiblyFilteredExistencePattern);
         }
-        int lastPatternId = ruleBuilder.getPrimaryPatterns().size() - 1;
-        ruleBuilder.getDependentExpressionMap()
+        int lastPatternId = ruleAssembler.getPrimaryPatterns().size() - 1;
+        ruleAssembler.getDependentExpressionMap()
                 .computeIfAbsent(lastPatternId, key -> new ArrayList<>(1))
                 .add(existenceExpression);
-        return ruleBuilder;
+        return ruleAssembler;
     }
 
     @Override
-    public AbstractRuleBuilder apply(AbstractRuleBuilder ruleBuilder) {
+    public AbstractRuleAssembler apply(AbstractRuleAssembler ruleAssembler) {
         int indexOfFirstFilter = -1;
         // Prepare the joiner and filter that will be used in the pattern
         AbstractTriJoiner<A, B, C> finalJoiner = null;
@@ -99,7 +99,7 @@ final class BiExistenceMutator<A, B, C> implements Mutator {
                 finalFilter = finalFilter == null ? joiner.getFilter() : finalFilter.and(joiner.getFilter());
             }
         }
-        return applyJoiners(ruleBuilder, finalJoiner, finalFilter);
+        return applyJoiners(ruleAssembler, finalJoiner, finalFilter);
     }
 
 }

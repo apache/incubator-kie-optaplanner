@@ -41,28 +41,28 @@ import org.optaplanner.core.impl.score.stream.drools.graph.nodes.AbstractConstra
 import org.optaplanner.core.impl.score.stream.drools.graph.nodes.AbstractConstraintModelJoiningNode;
 import org.optaplanner.core.impl.score.stream.drools.graph.nodes.ConstraintGraphNode;
 
-final class UniRuleBuilder extends AbstractRuleBuilder {
+final class UniRuleAssembler extends AbstractRuleAssembler {
 
     private Predicate filterToApplyToLastPrimaryPattern = null;
 
-    public UniRuleBuilder(ConstraintGraphNode previousNode, int expectedGroupByCount) {
+    public UniRuleAssembler(ConstraintGraphNode previousNode, int expectedGroupByCount) {
         super(previousNode, expectedGroupByCount);
     }
 
-    public UniRuleBuilder(UnaryOperator<String> idSupplier, int expectedGroupByCount,
+    public UniRuleAssembler(UnaryOperator<String> idSupplier, int expectedGroupByCount,
             List<ViewItem> finishedExpressions, List<Variable> variables, List<PatternDef> primaryPatterns,
             Map<Integer, List<ViewItem>> dependentExpressionMap) {
         super(idSupplier, expectedGroupByCount, finishedExpressions, variables, primaryPatterns, dependentExpressionMap);
     }
 
     @Override
-    public AbstractRuleBuilder join(AbstractRuleBuilder rightSubTreeBuilder, ConstraintGraphNode joinNode) {
+    protected AbstractRuleAssembler join(AbstractRuleAssembler ruleAssembler, ConstraintGraphNode joinNode) {
         return new BiJoinMutator<>((AbstractConstraintModelJoiningNode) joinNode)
-                .apply(this, rightSubTreeBuilder);
+                .apply(this, ruleAssembler);
     }
 
     @Override
-    protected AbstractRuleBuilder andThenFilter(ConstraintGraphNode filterNode) {
+    protected AbstractRuleAssembler andThenFilter(ConstraintGraphNode filterNode) {
         Supplier<Predicate> predicateSupplier = (Supplier<Predicate>) filterNode;
         if (filterToApplyToLastPrimaryPattern == null) {
             filterToApplyToLastPrimaryPattern = predicateSupplier.get();
@@ -73,12 +73,12 @@ final class UniRuleBuilder extends AbstractRuleBuilder {
     }
 
     @Override
-    protected AbstractRuleBuilder andThenExists(AbstractConstraintModelJoiningNode joiningNode, boolean shouldExist) {
+    protected AbstractRuleAssembler andThenExists(AbstractConstraintModelJoiningNode joiningNode, boolean shouldExist) {
         return new UniExistenceMutator(joiningNode, shouldExist).apply(this);
     }
 
     @Override
-    protected AbstractRuleBuilder andThenGroupBy(AbstractConstraintModelGroupingNode groupingNode) {
+    protected AbstractRuleAssembler andThenGroupBy(AbstractConstraintModelGroupingNode groupingNode) {
         List<Function> mappings = groupingNode.getMappings();
         int mappingCount = mappings.size();
         List<UniConstraintCollector> collectors = groupingNode.getCollectors();

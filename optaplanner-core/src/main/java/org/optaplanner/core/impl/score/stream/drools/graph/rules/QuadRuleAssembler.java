@@ -41,23 +41,23 @@ import org.optaplanner.core.impl.score.stream.drools.graph.nodes.AbstractConstra
 import org.optaplanner.core.impl.score.stream.drools.graph.nodes.AbstractConstraintModelJoiningNode;
 import org.optaplanner.core.impl.score.stream.drools.graph.nodes.ConstraintGraphNode;
 
-final class QuadRuleBuilder extends AbstractRuleBuilder {
+final class QuadRuleAssembler extends AbstractRuleAssembler {
 
     private QuadPredicate filterToApplyToLastPrimaryPattern = null;
 
-    public QuadRuleBuilder(UnaryOperator<String> idSupplier, int expectedGroupByCount,
+    public QuadRuleAssembler(UnaryOperator<String> idSupplier, int expectedGroupByCount,
             List<ViewItem> finishedExpressions, List<Variable> variables, List<PatternDef> primaryPatterns,
             Map<Integer, List<ViewItem>> dependentExpressionMap) {
         super(idSupplier, expectedGroupByCount, finishedExpressions, variables, primaryPatterns, dependentExpressionMap);
     }
 
     @Override
-    public AbstractRuleBuilder join(AbstractRuleBuilder rightSubTreeBuilder, ConstraintGraphNode joinNode) {
+    protected AbstractRuleAssembler join(AbstractRuleAssembler ruleAssembler, ConstraintGraphNode joinNode) {
         throw new UnsupportedOperationException("Penta streams are not supported.");
     }
 
     @Override
-    protected AbstractRuleBuilder andThenFilter(ConstraintGraphNode filterNode) {
+    protected AbstractRuleAssembler andThenFilter(ConstraintGraphNode filterNode) {
         Supplier<QuadPredicate> predicateSupplier = (Supplier<QuadPredicate>) filterNode;
         if (filterToApplyToLastPrimaryPattern == null) {
             filterToApplyToLastPrimaryPattern = predicateSupplier.get();
@@ -68,12 +68,12 @@ final class QuadRuleBuilder extends AbstractRuleBuilder {
     }
 
     @Override
-    protected AbstractRuleBuilder andThenExists(AbstractConstraintModelJoiningNode joiningNode, boolean shouldExist) {
+    protected AbstractRuleAssembler andThenExists(AbstractConstraintModelJoiningNode joiningNode, boolean shouldExist) {
         return new QuadExistenceMutator(joiningNode, shouldExist).apply(this);
     }
 
     @Override
-    protected AbstractRuleBuilder andThenGroupBy(AbstractConstraintModelGroupingNode groupingNode) {
+    protected AbstractRuleAssembler andThenGroupBy(AbstractConstraintModelGroupingNode groupingNode) {
         List<QuadFunction> mappings = groupingNode.getMappings();
         int mappingCount = mappings.size();
         List<QuadConstraintCollector> collectors = groupingNode.getCollectors();

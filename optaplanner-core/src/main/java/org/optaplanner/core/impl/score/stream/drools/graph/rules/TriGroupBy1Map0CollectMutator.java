@@ -30,13 +30,13 @@ final class TriGroupBy1Map0CollectMutator<A, B, C, NewA> extends TriGroupBy1Map1
     }
 
     @Override
-    public AbstractRuleBuilder apply(AbstractRuleBuilder ruleBuilder) {
-        AbstractRuleBuilder newRuleBuilder = super.apply(ruleBuilder);
+    public AbstractRuleAssembler apply(AbstractRuleAssembler ruleAssembler) {
+        AbstractRuleAssembler newRuleAssembler = super.apply(ruleAssembler);
         // Downgrade the bi-stream to a uni-stream by ignoring the dummy no-op collector variable.
-        List<Variable> allVariablesButLast = newRuleBuilder.getVariables()
-                .subList(0, newRuleBuilder.getVariables().size() - 1);
-        return new UniRuleBuilder(newRuleBuilder::generateNextId, newRuleBuilder.getExpectedGroupByCount(),
-                newRuleBuilder.getFinishedExpressions(), allVariablesButLast, newRuleBuilder.getPrimaryPatterns(),
+        List<Variable> allVariablesButLast = newRuleAssembler.getVariables()
+                .subList(0, newRuleAssembler.getVariables().size() - 1);
+        return new UniRuleAssembler(newRuleAssembler::generateNextId, newRuleAssembler.getExpectedGroupByCount(),
+                newRuleAssembler.getFinishedExpressions(), allVariablesButLast, newRuleAssembler.getPrimaryPatterns(),
                 emptyMap());
     }
 }

@@ -28,8 +28,8 @@ final class BiGroupBy0Map1CollectMutator<A, B, NewA> extends AbstractBiGroupByMu
     }
 
     @Override
-    public AbstractRuleBuilder apply(AbstractRuleBuilder ruleBuilder) {
+    public AbstractRuleAssembler apply(AbstractRuleAssembler ruleAssembler) {
         DroolsBiAccumulateFunction<A, B, ?, NewA> bridge = new DroolsBiAccumulateFunction<>(collector);
-        return collect(ruleBuilder, bridge);
+        return collect(ruleAssembler, bridge);
     }
 }

@@ -38,10 +38,10 @@ final class QuadGroupBy2Map2CollectMutator<A, B, C, D, NewA, NewB, NewC, NewD>
     }
 
     @Override
-    public AbstractRuleBuilder apply(AbstractRuleBuilder ruleBuilder) {
-        return groupBiWithCollectBi(ruleBuilder, () -> new DroolsQuadGroupByAccumulator<>(groupKeyMappingA,
-                groupKeyMappingB, collectorC, collectorD, ruleBuilder.getVariables().get(0),
-                ruleBuilder.getVariables().get(1), ruleBuilder.getVariables().get(2),
-                ruleBuilder.getVariables().get(3)));
+    public AbstractRuleAssembler apply(AbstractRuleAssembler ruleAssembler) {
+        return groupBiWithCollectBi(ruleAssembler, () -> new DroolsQuadGroupByAccumulator<>(groupKeyMappingA,
+                groupKeyMappingB, collectorC, collectorD, ruleAssembler.getVariables().get(0),
+                ruleAssembler.getVariables().get(1), ruleAssembler.getVariables().get(2),
+                ruleAssembler.getVariables().get(3)));
     }
 }

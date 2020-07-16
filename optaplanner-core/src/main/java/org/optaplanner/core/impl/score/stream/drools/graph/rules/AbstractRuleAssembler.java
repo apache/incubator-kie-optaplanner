@@ -49,9 +49,8 @@ import org.optaplanner.core.impl.score.stream.drools.graph.nodes.ConstraintGraph
 import org.optaplanner.core.impl.score.stream.drools.graph.nodes.ConstraintGraphNodeType;
 import org.optaplanner.core.impl.score.stream.drools.graph.nodes.FromNode;
 
-public abstract class AbstractRuleBuilder {
+abstract class AbstractRuleAssembler implements RuleAssembler {
 
-    public static final String VARIABLE_TYPE_RULE_METADATA_KEY = "constraintStreamVariableTypes";
     private final UnaryOperator<String> idSupplier;
     private final int expectedGroupByCount;
     private final List<Variable> variables;
@@ -59,14 +58,14 @@ public abstract class AbstractRuleBuilder {
     private final List<PatternDef> primaryPatterns;
     private final Map<Integer, List<ViewItem>> dependentExpressionMap;
 
-    protected AbstractRuleBuilder(ConstraintGraphNode fromNode, int expectedGroupByCount) {
+    protected AbstractRuleAssembler(ConstraintGraphNode fromNode, int expectedGroupByCount) {
         this(prefix -> prefix + ((FromNode) fromNode).getGraph().getNextId(), expectedGroupByCount, emptyList(),
                 emptyList(), emptyList(), emptyMap());
         variables.add(PatternDSL.declarationOf(((FromNode) fromNode).getFactType(), generateNextId("var")));
         primaryPatterns.add(PatternDSL.pattern(variables.get(0)));
     }
 
-    protected AbstractRuleBuilder(UnaryOperator<String> idSupplier, int expectedGroupByCount,
+    protected AbstractRuleAssembler(UnaryOperator<String> idSupplier, int expectedGroupByCount,
             List<ViewItem> finishedExpressions, List<Variable> variables, List<PatternDef> primaryPatterns,
             Map<Integer, List<ViewItem>> dependentExpressionMap) {
         this.idSupplier = idSupplier;
@@ -75,10 +74,6 @@ public abstract class AbstractRuleBuilder {
         this.variables = new ArrayList<>(variables);
         this.primaryPatterns = new ArrayList<>(primaryPatterns);
         this.dependentExpressionMap = new HashMap<>(dependentExpressionMap);
-    }
-
-    public static AbstractRuleBuilder from(ConstraintGraphNode node, int expectedGroupByCount) {
-        return new UniRuleBuilder(node, expectedGroupByCount);
     }
 
     protected static void impactScore(Drools drools, AbstractScoreHolder scoreHolder) {
@@ -131,7 +126,8 @@ public abstract class AbstractRuleBuilder {
         return finishedExpressions;
     }
 
-    public final AbstractRuleBuilder andThen(ConstraintGraphNode node) {
+    @Override
+    public final AbstractRuleAssembler andThen(ConstraintGraphNode node) {
         switch (node.getType()) {
             case FILTER:
                 return andThenFilter(node);
@@ -150,21 +146,26 @@ public abstract class AbstractRuleBuilder {
         }
     }
 
-    public abstract AbstractRuleBuilder join(AbstractRuleBuilder rightSubTreeBuilder, ConstraintGraphNode joinNode);
+    @Override
+    public final RuleAssembler join(RuleAssembler ruleAssembler, ConstraintGraphNode joinNode) {
+        return join((AbstractRuleAssembler) ruleAssembler, joinNode);
+    }
 
-    protected abstract AbstractRuleBuilder andThenFilter(ConstraintGraphNode filterNode);
+    protected abstract AbstractRuleAssembler join(AbstractRuleAssembler ruleAssembler, ConstraintGraphNode joinNode);
 
-    protected abstract AbstractRuleBuilder andThenExists(AbstractConstraintModelJoiningNode joiningNode,
+    protected abstract AbstractRuleAssembler andThenFilter(ConstraintGraphNode filterNode);
+
+    protected abstract AbstractRuleAssembler andThenExists(AbstractConstraintModelJoiningNode joiningNode,
             boolean shouldExist);
 
-    protected abstract AbstractRuleBuilder andThenGroupBy(AbstractConstraintModelGroupingNode groupingNode);
+    protected abstract AbstractRuleAssembler andThenGroupBy(AbstractConstraintModelGroupingNode groupingNode);
 
     protected abstract ConsequenceBuilder.ValidBuilder buildConsequence(DroolsConstraint constraint,
             Global<? extends AbstractScoreHolder<?>> scoreHolderGlobal, Variable... variables);
 
     protected abstract void applyFilterToLastPrimaryPattern(Variable... variables);
 
-    public List<Rule> build(Global<? extends AbstractScoreHolder<?>> scoreHolderGlobal, DroolsConstraint constraint) {
+    public List<Rule> assemble(Global<? extends AbstractScoreHolder<?>> scoreHolderGlobal, DroolsConstraint constraint) {
         Variable[] variableArray = variables.toArray(new Variable[0]);
         applyFilterToLastPrimaryPattern(variableArray);
         List<RuleItemBuilder> ruleItemBuilderList = new ArrayList<>(0);

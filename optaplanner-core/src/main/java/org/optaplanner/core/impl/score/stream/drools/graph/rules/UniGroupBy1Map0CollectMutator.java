@@ -31,10 +31,10 @@ final class UniGroupBy1Map0CollectMutator<A, NewA> extends AbstractUniGroupByMut
     }
 
     @Override
-    public AbstractRuleBuilder apply(AbstractRuleBuilder ruleBuilder) {
+    public AbstractRuleAssembler apply(AbstractRuleAssembler ruleAssembler) {
         BiFunction<PatternDSL.PatternDef, Variable<NewA>, PatternDSL.PatternDef> binder =
                 (pattern, tuple) -> pattern.bind(tuple, a -> groupKeyMapping.apply((A) a));
-        return universalGroup(ruleBuilder, binder,
-                (var, pattern, accumulate) -> regroup(ruleBuilder, var, pattern, accumulate));
+        return universalGroup(ruleAssembler, binder,
+                (var, pattern, accumulate) -> regroup(ruleAssembler, var, pattern, accumulate));
     }
 }

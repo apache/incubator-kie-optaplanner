@@ -21,7 +21,7 @@ import java.util.function.UnaryOperator;
 import org.drools.model.Index;
 import org.optaplanner.core.impl.score.stream.common.JoinerType;
 
-interface Mutator extends UnaryOperator<AbstractRuleBuilder> {
+interface Mutator extends UnaryOperator<AbstractRuleAssembler> {
 
     static Index.ConstraintType getConstraintType(JoinerType type) {
         switch (type) {

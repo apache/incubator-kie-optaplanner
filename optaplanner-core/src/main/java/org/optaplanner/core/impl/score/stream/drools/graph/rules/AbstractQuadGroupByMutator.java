@@ -24,10 +24,10 @@ import org.optaplanner.core.impl.score.stream.drools.common.QuadTuple;
 abstract class AbstractQuadGroupByMutator<A, B, C, D> extends AbstractGroupByMutator {
 
     @Override
-    protected <InTuple> PatternDef bindTupleVariableOnFirstGrouping(AbstractRuleBuilder ruleBuilder, PatternDef pattern,
+    protected <InTuple> PatternDef bindTupleVariableOnFirstGrouping(AbstractRuleAssembler ruleAssembler, PatternDef pattern,
             Variable<InTuple> inTupleVariable) {
-        return pattern.bind(inTupleVariable, ruleBuilder.getVariables().get(0), ruleBuilder.getVariables().get(1),
-                ruleBuilder.getVariables().get(2), (d, a, b, c) -> new QuadTuple<>(a, b, c, d));
+        return pattern.bind(inTupleVariable, ruleAssembler.getVariables().get(0), ruleAssembler.getVariables().get(1),
+                ruleAssembler.getVariables().get(2), (d, a, b, c) -> new QuadTuple<>(a, b, c, d));
     }
 
 }

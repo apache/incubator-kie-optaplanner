@@ -47,49 +47,50 @@ import org.optaplanner.core.impl.score.stream.drools.common.TriTuple;
 
 abstract class AbstractGroupByMutator implements Mutator {
 
-    protected abstract <InTuple> PatternDef bindTupleVariableOnFirstGrouping(AbstractRuleBuilder ruleBuilder,
+    protected abstract <InTuple> PatternDef bindTupleVariableOnFirstGrouping(AbstractRuleAssembler ruleAssembler,
             PatternDef pattern, Variable<InTuple> tupleVariable);
 
-    protected ViewItem<?> getInnerAccumulatePattern(AbstractRuleBuilder ruleBuilder) {
+    protected ViewItem<?> getInnerAccumulatePattern(AbstractRuleAssembler ruleAssembler) {
         List<ViewItem> allPatterns = new ArrayList<>();
-        for (int i = 0; i < ruleBuilder.getPrimaryPatterns().size(); i++) {
-            allPatterns.add(ruleBuilder.getPrimaryPatterns().get(i));
-            allPatterns.addAll(ruleBuilder.getDependentExpressionMap().getOrDefault(i, Collections.emptyList()));
+        for (int i = 0; i < ruleAssembler.getPrimaryPatterns().size(); i++) {
+            allPatterns.add(ruleAssembler.getPrimaryPatterns().get(i));
+            allPatterns.addAll(ruleAssembler.getDependentExpressionMap().getOrDefault(i, Collections.emptyList()));
         }
         ViewItem[] items = allPatterns.toArray(new ViewItem[0]);
         return PatternDSL.and(items[0], copyOfRange(items, 1, items.length));
     }
 
-    protected <NewA, InTuple, OutTuple> AbstractRuleBuilder collect(AbstractRuleBuilder ruleBuilder,
+    protected <NewA, InTuple, OutTuple> AbstractRuleAssembler collect(AbstractRuleAssembler ruleAssembler,
             DroolsAbstractAccumulateFunction<?, InTuple, OutTuple> accumulateFunctionBridge) {
-        ruleBuilder.applyFilterToLastPrimaryPattern(ruleBuilder.getVariables().toArray(new Variable[0]));
-        PatternDef mainAccumulatePattern = ruleBuilder.getPrimaryPatterns().get(ruleBuilder.getPrimaryPatterns().size() - 1);
+        ruleAssembler.applyFilterToLastPrimaryPattern(ruleAssembler.getVariables().toArray(new Variable[0]));
+        PatternDef mainAccumulatePattern =
+                ruleAssembler.getPrimaryPatterns().get(ruleAssembler.getPrimaryPatterns().size() - 1);
         boolean isRegrouping = FactTuple.class.isAssignableFrom(mainAccumulatePattern.getFirstVariable().getType());
         Variable<InTuple> tupleVariable = isRegrouping ? mainAccumulatePattern.getFirstVariable()
-                : Util.createVariable(ruleBuilder.generateNextId("tuple"));
+                : Util.createVariable(ruleAssembler.generateNextId("tuple"));
         if (!isRegrouping) {
-            bindTupleVariableOnFirstGrouping(ruleBuilder, mainAccumulatePattern, tupleVariable);
+            bindTupleVariableOnFirstGrouping(ruleAssembler, mainAccumulatePattern, tupleVariable);
         }
-        ViewItem<?> innerAccumulatePattern = getInnerAccumulatePattern(ruleBuilder);
-        Variable<NewA> outputVariable = Util.createVariable(ruleBuilder.generateNextId("collected"));
+        ViewItem<?> innerAccumulatePattern = getInnerAccumulatePattern(ruleAssembler);
+        Variable<NewA> outputVariable = Util.createVariable(ruleAssembler.generateNextId("collected"));
         ViewItem<?> outerAccumulatePattern = DSL.accumulate(innerAccumulatePattern,
                 accFunction(() -> accumulateFunctionBridge, tupleVariable).as(outputVariable));
-        return recollect(ruleBuilder, outputVariable, outerAccumulatePattern);
+        return recollect(ruleAssembler, outputVariable, outerAccumulatePattern);
     }
 
-    protected <InTuple> AbstractRuleBuilder groupWithCollect(AbstractRuleBuilder ruleBuilder,
+    protected <InTuple> AbstractRuleAssembler groupWithCollect(AbstractRuleAssembler ruleAssembler,
             Supplier<? extends DroolsAbstractGroupByAccumulator<InTuple>> invokerSupplier) {
-        return universalGroupWithCollect(ruleBuilder, invokerSupplier,
-                (var, pattern, accumulate) -> regroupBi(ruleBuilder, (Variable) var, pattern, accumulate));
+        return universalGroupWithCollect(ruleAssembler, invokerSupplier,
+                (var, pattern, accumulate) -> regroupBi(ruleAssembler, (Variable) var, pattern, accumulate));
     }
 
-    private <InTuple> AbstractRuleBuilder universalGroupWithCollect(AbstractRuleBuilder ruleBuilder,
+    private <InTuple> AbstractRuleAssembler universalGroupWithCollect(AbstractRuleAssembler ruleAssembler,
             Supplier<? extends DroolsAbstractGroupByAccumulator<InTuple>> invokerSupplier, Transformer<InTuple> mutator) {
-        ruleBuilder.applyFilterToLastPrimaryPattern(ruleBuilder.getVariables().toArray(new Variable[0]));
-        ViewItem<?> innerAccumulatePattern = getInnerAccumulatePattern(ruleBuilder);
+        ruleAssembler.applyFilterToLastPrimaryPattern(ruleAssembler.getVariables().toArray(new Variable[0]));
+        ViewItem<?> innerAccumulatePattern = getInnerAccumulatePattern(ruleAssembler);
         Variable<Collection<InTuple>> tupleCollection =
                 (Variable<Collection<InTuple>>) Util.createVariable(Collection.class,
-                        ruleBuilder.generateNextId("tupleCollection"));
+                        ruleAssembler.generateNextId("tupleCollection"));
         PatternDef<Collection<InTuple>> pattern = pattern(tupleCollection)
                 .expr("Non-empty", collection -> !collection.isEmpty(),
                         alphaIndexedBy(Integer.class, Index.ConstraintType.GREATER_THAN, -1, Collection::size, 0));
@@ -97,111 +98,111 @@ abstract class AbstractGroupByMutator implements Mutator {
         return mutator.apply(tupleCollection, pattern, accumulate);
     }
 
-    protected <InTuple> AbstractRuleBuilder groupBiWithCollect(AbstractRuleBuilder ruleBuilder,
+    protected <InTuple> AbstractRuleAssembler groupBiWithCollect(AbstractRuleAssembler ruleAssembler,
             Supplier<? extends DroolsAbstractGroupByAccumulator<InTuple>> invokerSupplier) {
-        return universalGroupWithCollect(ruleBuilder, invokerSupplier,
-                (var, pattern, accumulate) -> regroupBiToTri(ruleBuilder, (Variable) var, pattern, accumulate));
+        return universalGroupWithCollect(ruleAssembler, invokerSupplier,
+                (var, pattern, accumulate) -> regroupBiToTri(ruleAssembler, (Variable) var, pattern, accumulate));
     }
 
-    protected <InTuple> AbstractRuleBuilder groupBiWithCollectBi(AbstractRuleBuilder ruleBuilder,
+    protected <InTuple> AbstractRuleAssembler groupBiWithCollectBi(AbstractRuleAssembler ruleAssembler,
             Supplier<? extends DroolsAbstractGroupByAccumulator<InTuple>> invokerSupplier) {
-        return universalGroupWithCollect(ruleBuilder, invokerSupplier,
-                (var, pattern, accumulate) -> regroupBiToQuad(ruleBuilder, (Variable) var, pattern, accumulate));
+        return universalGroupWithCollect(ruleAssembler, invokerSupplier,
+                (var, pattern, accumulate) -> regroupBiToQuad(ruleAssembler, (Variable) var, pattern, accumulate));
     }
 
-    protected <NewA> AbstractRuleBuilder recollect(AbstractRuleBuilder ruleBuilder, Variable<NewA> newA,
+    protected <NewA> AbstractRuleAssembler recollect(AbstractRuleAssembler ruleAssembler, Variable<NewA> newA,
             ViewItem accumulatePattern) {
-        List<ViewItem> newFinishedExpressions = new ArrayList<>(ruleBuilder.getFinishedExpressions());
+        List<ViewItem> newFinishedExpressions = new ArrayList<>(ruleAssembler.getFinishedExpressions());
         newFinishedExpressions.add(accumulatePattern); // The last pattern is added here.
         PatternDef<NewA> newPrimaryPattern = PatternDSL.pattern(newA);
-        return new UniRuleBuilder(ruleBuilder::generateNextId, ruleBuilder.getExpectedGroupByCount(),
+        return new UniRuleAssembler(ruleAssembler::generateNextId, ruleAssembler.getExpectedGroupByCount(),
                 newFinishedExpressions, singletonList(newA), singletonList(newPrimaryPattern), emptyMap());
     }
 
-    public <NewA> AbstractRuleBuilder regroup(AbstractRuleBuilder ruleBuilder, Variable<Collection<NewA>> newASource,
+    public <NewA> AbstractRuleAssembler regroup(AbstractRuleAssembler ruleAssembler, Variable<Collection<NewA>> newASource,
             ViewItem collectPattern, ViewItem accumulatePattern) {
-        ruleBuilder.applyFilterToLastPrimaryPattern(ruleBuilder.getVariables().toArray(new Variable[0]));
-        List<ViewItem> newFinishedExpressions = new ArrayList<>(ruleBuilder.getFinishedExpressions());
+        ruleAssembler.applyFilterToLastPrimaryPattern(ruleAssembler.getVariables().toArray(new Variable[0]));
+        List<ViewItem> newFinishedExpressions = new ArrayList<>(ruleAssembler.getFinishedExpressions());
         newFinishedExpressions.add(accumulatePattern);
         newFinishedExpressions.add(collectPattern);
         Variable<NewA> newA =
-                (Variable<NewA>) Util.createVariable(ruleBuilder.generateNextId("uniGrouped"), DSL.from(newASource));
+                (Variable<NewA>) Util.createVariable(ruleAssembler.generateNextId("uniGrouped"), DSL.from(newASource));
         PatternDef<NewA> newPrimaryPattern = PatternDSL.pattern(newA);
-        return new UniRuleBuilder(ruleBuilder::generateNextId, ruleBuilder.getExpectedGroupByCount(),
+        return new UniRuleAssembler(ruleAssembler::generateNextId, ruleAssembler.getExpectedGroupByCount(),
                 newFinishedExpressions, singletonList(newA), singletonList(newPrimaryPattern), emptyMap());
     }
 
-    public <NewA, NewB> AbstractRuleBuilder regroupBi(AbstractRuleBuilder ruleBuilder,
+    public <NewA, NewB> AbstractRuleAssembler regroupBi(AbstractRuleAssembler ruleAssembler,
             Variable<Collection<BiTuple<NewA, NewB>>> newSource, ViewItem collectPattern, ViewItem accumulatePattern) {
-        ruleBuilder.applyFilterToLastPrimaryPattern(ruleBuilder.getVariables().toArray(new Variable[0]));
+        ruleAssembler.applyFilterToLastPrimaryPattern(ruleAssembler.getVariables().toArray(new Variable[0]));
         Variable<BiTuple<NewA, NewB>> newTuple =
                 (Variable<BiTuple<NewA, NewB>>) Util.createVariable(BiTuple.class,
-                        ruleBuilder.generateNextId("biGrouped"), PatternDSL.from(newSource));
-        List<ViewItem> newFinishedExpressions = new ArrayList<>(ruleBuilder.getFinishedExpressions());
+                        ruleAssembler.generateNextId("biGrouped"), PatternDSL.from(newSource));
+        List<ViewItem> newFinishedExpressions = new ArrayList<>(ruleAssembler.getFinishedExpressions());
         newFinishedExpressions.add(accumulatePattern);
         newFinishedExpressions.add(collectPattern);
-        Variable<NewA> newA = Util.createVariable(ruleBuilder.generateNextId("newA"));
-        Variable<NewB> newB = Util.createVariable(ruleBuilder.generateNextId("newB"));
+        Variable<NewA> newA = Util.createVariable(ruleAssembler.generateNextId("newA"));
+        Variable<NewB> newB = Util.createVariable(ruleAssembler.generateNextId("newB"));
         List<Variable> newVariables = Arrays.asList(newA, newB);
         PatternDef<BiTuple<NewA, NewB>> newPrimaryPattern = pattern(newTuple)
                 .bind(newTuple, tuple -> tuple)
                 .bind(newA, tuple -> tuple.a)
                 .bind(newB, tuple -> tuple.b);
-        return new BiRuleBuilder(ruleBuilder::generateNextId, ruleBuilder.getExpectedGroupByCount(),
+        return new BiRuleAssembler(ruleAssembler::generateNextId, ruleAssembler.getExpectedGroupByCount(),
                 newFinishedExpressions, newVariables, singletonList(newPrimaryPattern), emptyMap());
     }
 
-    public <NewA, NewB, NewC> AbstractRuleBuilder regroupBiToTri(AbstractRuleBuilder ruleBuilder,
+    public <NewA, NewB, NewC> AbstractRuleAssembler regroupBiToTri(AbstractRuleAssembler ruleAssembler,
             Variable<Set<TriTuple<NewA, NewB, NewC>>> newSource, ViewItem collectPattern,
             ViewItem accumulatePattern) {
-        ruleBuilder.applyFilterToLastPrimaryPattern(ruleBuilder.getVariables().toArray(new Variable[0]));
-        List<ViewItem> newFinishedExpressions = new ArrayList<>(ruleBuilder.getFinishedExpressions());
+        ruleAssembler.applyFilterToLastPrimaryPattern(ruleAssembler.getVariables().toArray(new Variable[0]));
+        List<ViewItem> newFinishedExpressions = new ArrayList<>(ruleAssembler.getFinishedExpressions());
         newFinishedExpressions.add(accumulatePattern);
         newFinishedExpressions.add(collectPattern);
-        Variable<NewA> newA = Util.createVariable(ruleBuilder.generateNextId("newA"));
-        Variable<NewB> newB = Util.createVariable(ruleBuilder.generateNextId("newB"));
-        Variable<NewC> newC = Util.createVariable(ruleBuilder.generateNextId("newC"));
+        Variable<NewA> newA = Util.createVariable(ruleAssembler.generateNextId("newA"));
+        Variable<NewB> newB = Util.createVariable(ruleAssembler.generateNextId("newB"));
+        Variable<NewC> newC = Util.createVariable(ruleAssembler.generateNextId("newC"));
         List<Variable> newVariables = Arrays.asList(newA, newB, newC);
         Variable<TriTuple<NewA, NewB, NewC>> newTuple =
                 (Variable<TriTuple<NewA, NewB, NewC>>) Util.createVariable(TriTuple.class,
-                        ruleBuilder.generateNextId("triGrouped"), PatternDSL.from(newSource));
+                        ruleAssembler.generateNextId("triGrouped"), PatternDSL.from(newSource));
         PatternDef<TriTuple<NewA, NewB, NewC>> newPrimaryPattern = PatternDSL.pattern(newTuple)
                 .bind(newTuple, tuple -> tuple)
                 .bind(newA, tuple -> tuple.a)
                 .bind(newB, tuple -> tuple.b)
                 .bind(newC, tuple -> tuple.c);
-        return new TriRuleBuilder(ruleBuilder::generateNextId, ruleBuilder.getExpectedGroupByCount(),
+        return new TriRuleAssembler(ruleAssembler::generateNextId, ruleAssembler.getExpectedGroupByCount(),
                 newFinishedExpressions, newVariables, singletonList(newPrimaryPattern), emptyMap());
     }
 
-    public <NewA, NewB, NewC, NewD> AbstractRuleBuilder regroupBiToQuad(AbstractRuleBuilder ruleBuilder,
+    public <NewA, NewB, NewC, NewD> AbstractRuleAssembler regroupBiToQuad(AbstractRuleAssembler ruleAssembler,
             Variable<Set<QuadTuple<NewA, NewB, NewC, NewD>>> newSource, ViewItem collectPattern,
             ViewItem accumulatePattern) {
-        ruleBuilder.applyFilterToLastPrimaryPattern(ruleBuilder.getVariables().toArray(new Variable[0]));
-        List<ViewItem> newFinishedExpressions = new ArrayList<>(ruleBuilder.getFinishedExpressions());
+        ruleAssembler.applyFilterToLastPrimaryPattern(ruleAssembler.getVariables().toArray(new Variable[0]));
+        List<ViewItem> newFinishedExpressions = new ArrayList<>(ruleAssembler.getFinishedExpressions());
         newFinishedExpressions.add(accumulatePattern);
         newFinishedExpressions.add(collectPattern);
-        Variable<NewA> newA = Util.createVariable(ruleBuilder.generateNextId("newA"));
-        Variable<NewB> newB = Util.createVariable(ruleBuilder.generateNextId("newB"));
-        Variable<NewC> newC = Util.createVariable(ruleBuilder.generateNextId("newC"));
-        Variable<NewD> newD = Util.createVariable(ruleBuilder.generateNextId("newD"));
+        Variable<NewA> newA = Util.createVariable(ruleAssembler.generateNextId("newA"));
+        Variable<NewB> newB = Util.createVariable(ruleAssembler.generateNextId("newB"));
+        Variable<NewC> newC = Util.createVariable(ruleAssembler.generateNextId("newC"));
+        Variable<NewD> newD = Util.createVariable(ruleAssembler.generateNextId("newD"));
         List<Variable> newVariables = Arrays.asList(newA, newB, newC, newD);
         Variable<QuadTuple<NewA, NewB, NewC, NewD>> newTuple =
                 (Variable<QuadTuple<NewA, NewB, NewC, NewD>>) Util.createVariable(QuadTuple.class,
-                        ruleBuilder.generateNextId("quadGrouped"), PatternDSL.from(newSource));
+                        ruleAssembler.generateNextId("quadGrouped"), PatternDSL.from(newSource));
         PatternDef<QuadTuple<NewA, NewB, NewC, NewD>> newPrimaryPattern = PatternDSL.pattern(newTuple)
                 .bind(newTuple, tuple -> tuple)
                 .bind(newA, tuple -> tuple.a)
                 .bind(newB, tuple -> tuple.b)
                 .bind(newC, tuple -> tuple.c)
                 .bind(newD, tuple -> tuple.d);
-        return new QuadRuleBuilder(ruleBuilder::generateNextId, ruleBuilder.getExpectedGroupByCount(),
+        return new QuadRuleAssembler(ruleAssembler::generateNextId, ruleAssembler.getExpectedGroupByCount(),
                 newFinishedExpressions, newVariables, singletonList(newPrimaryPattern), emptyMap());
     }
 
     @FunctionalInterface
     protected interface Transformer<InTuple> extends
-            TriFunction<Variable<Collection<InTuple>>, PatternDef<Collection<InTuple>>, ViewItem<?>, AbstractRuleBuilder> {
+            TriFunction<Variable<Collection<InTuple>>, PatternDef<Collection<InTuple>>, ViewItem<?>, AbstractRuleAssembler> {
 
     }
 }

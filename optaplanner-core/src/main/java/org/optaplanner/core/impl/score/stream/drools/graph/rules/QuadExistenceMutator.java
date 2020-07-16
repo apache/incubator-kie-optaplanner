@@ -43,22 +43,22 @@ final class QuadExistenceMutator<A, B, C, D, E> implements Mutator {
                 .toArray(AbstractPentaJoiner[]::new);
     }
 
-    private AbstractRuleBuilder applyJoiners(AbstractRuleBuilder ruleBuilder, AbstractPentaJoiner<A, B, C, D, E> joiner,
+    private AbstractRuleAssembler applyJoiners(AbstractRuleAssembler ruleAssembler, AbstractPentaJoiner<A, B, C, D, E> joiner,
             PentaPredicate<A, B, C, D, E> predicate) {
         if (joiner == null) {
-            return applyFilters(ruleBuilder, predicate);
+            return applyFilters(ruleAssembler, predicate);
         }
         // There is no epsilon index in Drools, therefore we replace joining with a filter.
         PentaPredicate<A, B, C, D, E> joinFilter = joiner::matches;
         PentaPredicate<A, B, C, D, E> result = predicate == null ? joinFilter : joinFilter.and(predicate);
         // And finally we add the filter to the E pattern,
-        return applyFilters(ruleBuilder, result);
+        return applyFilters(ruleAssembler, result);
     }
 
-    private AbstractRuleBuilder applyFilters(AbstractRuleBuilder ruleBuilder, PentaPredicate<A, B, C, D, E> predicate) {
-        Variable<E> toExist = PatternDSL.declarationOf(otherFactType, ruleBuilder.generateNextId("quadToExist"));
+    private AbstractRuleAssembler applyFilters(AbstractRuleAssembler ruleAssembler, PentaPredicate<A, B, C, D, E> predicate) {
+        Variable<E> toExist = PatternDSL.declarationOf(otherFactType, ruleAssembler.generateNextId("quadToExist"));
         PatternDSL.PatternDef<E> existencePattern = PatternDSL.pattern(toExist);
-        Variable[] variables = ruleBuilder.getVariables().toArray(new Variable[0]);
+        Variable[] variables = ruleAssembler.getVariables().toArray(new Variable[0]);
         PatternDSL.PatternDef<E> possiblyFilteredExistencePattern = predicate == null ? existencePattern
                 : existencePattern.expr("Filter using " + predicate, variables[0], variables[1], variables[2],
                         variables[3], (e, a, b, c, d) -> predicate.test((A) a, (B) b, (C) c, (D) d, e));
@@ -66,15 +66,15 @@ final class QuadExistenceMutator<A, B, C, D, E> implements Mutator {
         if (!shouldExist) {
             existenceExpression = PatternDSL.not(possiblyFilteredExistencePattern);
         }
-        int lastPatternId = ruleBuilder.getPrimaryPatterns().size() - 1;
-        ruleBuilder.getDependentExpressionMap()
+        int lastPatternId = ruleAssembler.getPrimaryPatterns().size() - 1;
+        ruleAssembler.getDependentExpressionMap()
                 .computeIfAbsent(lastPatternId, key -> new ArrayList<>(1))
                 .add(existenceExpression);
-        return ruleBuilder;
+        return ruleAssembler;
     }
 
     @Override
-    public AbstractRuleBuilder apply(AbstractRuleBuilder ruleBuilder) {
+    public AbstractRuleAssembler apply(AbstractRuleAssembler ruleAssembler) {
         int indexOfFirstFilter = -1;
         // Prepare the joiner and filter that will be used in the pattern
         AbstractPentaJoiner<A, B, C, D, E> finalJoiner = null;
@@ -100,7 +100,7 @@ final class QuadExistenceMutator<A, B, C, D, E> implements Mutator {
                 finalFilter = finalFilter == null ? joiner.getFilter() : finalFilter.and(joiner.getFilter());
             }
         }
-        return applyJoiners(ruleBuilder, finalJoiner, finalFilter);
+        return applyJoiners(ruleAssembler, finalJoiner, finalFilter);
     }
 
 }

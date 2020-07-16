@@ -28,8 +28,8 @@ final class UniGroupBy0Map1CollectMutator<A, NewA> extends AbstractUniGroupByMut
     }
 
     @Override
-    public AbstractRuleBuilder apply(AbstractRuleBuilder ruleBuilder) {
+    public AbstractRuleAssembler apply(AbstractRuleAssembler ruleAssembler) {
         DroolsUniAccumulateFunction<A, ?, NewA> bridge = new DroolsUniAccumulateFunction<>(collector);
-        return collect(ruleBuilder, bridge);
+        return collect(ruleAssembler, bridge);
     }
 }

@@ -33,8 +33,8 @@ final class UniGroupBy1Map1CollectMutator<A, NewA, NewB> extends AbstractUniGrou
     }
 
     @Override
-    public AbstractRuleBuilder apply(AbstractRuleBuilder ruleBuilder) {
-        return groupWithCollect(ruleBuilder, () -> new DroolsUniToBiGroupByAccumulator<>(groupKeyMappingA, collectorB,
-                ruleBuilder.getVariables().get(0)));
+    public AbstractRuleAssembler apply(AbstractRuleAssembler ruleAssembler) {
+        return groupWithCollect(ruleAssembler, () -> new DroolsUniToBiGroupByAccumulator<>(groupKeyMappingA, collectorB,
+                ruleAssembler.getVariables().get(0)));
     }
 }

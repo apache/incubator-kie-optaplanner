@@ -28,8 +28,8 @@ class TriGroupBy0Map1CollectMutator<A, B, C, NewA> extends AbstractTriGroupByMut
     }
 
     @Override
-    public AbstractRuleBuilder apply(AbstractRuleBuilder ruleBuilder) {
+    public AbstractRuleAssembler apply(AbstractRuleAssembler ruleAssembler) {
         DroolsTriAccumulateFunction<A, B, C, ?, NewA> bridge = new DroolsTriAccumulateFunction<>(collector);
-        return collect(ruleBuilder, bridge);
+        return collect(ruleAssembler, bridge);
     }
 }

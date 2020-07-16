@@ -24,9 +24,9 @@ import org.optaplanner.core.impl.score.stream.drools.common.TriTuple;
 abstract class AbstractTriGroupByMutator<A, B, C> extends AbstractGroupByMutator {
 
     @Override
-    protected <InTuple> PatternDef bindTupleVariableOnFirstGrouping(AbstractRuleBuilder ruleBuilder, PatternDef pattern,
+    protected <InTuple> PatternDef bindTupleVariableOnFirstGrouping(AbstractRuleAssembler ruleAssembler, PatternDef pattern,
             Variable<InTuple> inTupleVariable) {
-        return pattern.bind(inTupleVariable, ruleBuilder.getVariables().get(0), ruleBuilder.getVariables().get(1),
+        return pattern.bind(inTupleVariable, ruleAssembler.getVariables().get(0), ruleAssembler.getVariables().get(1),
                 (c, a, b) -> new TriTuple<>((A) a, (B) b, (C) c));
     }
 

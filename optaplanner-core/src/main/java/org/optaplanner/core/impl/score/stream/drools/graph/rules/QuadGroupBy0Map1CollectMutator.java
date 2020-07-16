@@ -28,8 +28,8 @@ final class QuadGroupBy0Map1CollectMutator<A, B, C, D, NewA> extends AbstractQua
     }
 
     @Override
-    public AbstractRuleBuilder apply(AbstractRuleBuilder ruleBuilder) {
+    public AbstractRuleAssembler apply(AbstractRuleAssembler ruleAssembler) {
         DroolsQuadAccumulateFunction<A, B, C, D, ?, NewA> bridge = new DroolsQuadAccumulateFunction<>(collector);
-        return collect(ruleBuilder, bridge);
+        return collect(ruleAssembler, bridge);
     }
 }

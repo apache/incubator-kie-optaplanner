@@ -32,9 +32,9 @@ class TriGroupBy1Map1CollectMutator<A, B, C, NewA, NewB> extends AbstractTriGrou
     }
 
     @Override
-    public AbstractRuleBuilder apply(AbstractRuleBuilder ruleBuilder) {
-        return groupWithCollect(ruleBuilder, () -> new DroolsTriToBiGroupByAccumulator<>(groupKeyMappingA, collectorB,
-                ruleBuilder.getVariables().get(0), ruleBuilder.getVariables().get(1),
-                ruleBuilder.getVariables().get(2)));
+    public AbstractRuleAssembler apply(AbstractRuleAssembler ruleAssembler) {
+        return groupWithCollect(ruleAssembler, () -> new DroolsTriToBiGroupByAccumulator<>(groupKeyMappingA, collectorB,
+                ruleAssembler.getVariables().get(0), ruleAssembler.getVariables().get(1),
+                ruleAssembler.getVariables().get(2)));
     }
 }

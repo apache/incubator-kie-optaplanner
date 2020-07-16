@@ -42,11 +42,11 @@ final class BiJoinMutator<A, B> implements JoinMutator {
     }
 
     @Override
-    public AbstractRuleBuilder apply(AbstractRuleBuilder leftRuleBuilder, AbstractRuleBuilder rightRuleBuilder) {
+    public AbstractRuleAssembler apply(AbstractRuleAssembler leftRuleAssembler, AbstractRuleAssembler rightRuleAssembler) {
         JoinerType[] joinerTypes = biJoiner.getJoinerTypes();
         // We rebuild the A pattern, binding variables for left parts of the joins.
-        PatternDef aJoiner = leftRuleBuilder.getPrimaryPatterns()
-                .get(leftRuleBuilder.getPrimaryPatterns().size() - 1);
+        PatternDef aJoiner = leftRuleAssembler.getPrimaryPatterns()
+                .get(leftRuleAssembler.getPrimaryPatterns().size() - 1);
         Variable[] joinVars = new Variable[joinerTypes.length];
         for (int mappingIndex = 0; mappingIndex < joinerTypes.length; mappingIndex++) {
             // For each mapping, bind one join variable.
@@ -56,8 +56,8 @@ final class BiJoinMutator<A, B> implements JoinMutator {
             aJoiner.bind(joinVar, a -> leftMapping.apply((A) a));
             joinVars[currentMappingIndex] = joinVar;
         }
-        PatternDef bJoiner = rightRuleBuilder.getPrimaryPatterns()
-                .get(rightRuleBuilder.getPrimaryPatterns().size() - 1);
+        PatternDef bJoiner = rightRuleAssembler.getPrimaryPatterns()
+                .get(rightRuleAssembler.getPrimaryPatterns().size() - 1);
         for (int mappingIndex = 0; mappingIndex < joinerTypes.length; mappingIndex++) {
             // For each mapping, bind a join variable from A to B and index the binding.
             JoinerType joinerType = joinerTypes[mappingIndex];
@@ -72,15 +72,16 @@ final class BiJoinMutator<A, B> implements JoinMutator {
             bJoiner.expr("Join using joiner #" + mappingIndex + " in " + biJoiner,
                     joinVars[mappingIndex], predicate, index);
         }
-        return merge(leftRuleBuilder, rightRuleBuilder);
+        return merge(leftRuleAssembler, rightRuleAssembler);
     }
 
     @Override
-    public AbstractRuleBuilder newRuleBuilder(AbstractRuleBuilder leftRuleBuilder, AbstractRuleBuilder rightRuleBuilder,
+    public AbstractRuleAssembler newRuleAssembler(AbstractRuleAssembler leftRuleAssembler,
+            AbstractRuleAssembler rightRuleAssembler,
             List<ViewItem> finishedExpressions, List<Variable> variables, List<PatternDef> primaryPatterns,
             Map<Integer, List<ViewItem>> dependentExpressionMap) {
-        return new BiRuleBuilder(leftRuleBuilder::generateNextId,
-                Math.max(leftRuleBuilder.getExpectedGroupByCount(), rightRuleBuilder.getExpectedGroupByCount()),
+        return new BiRuleAssembler(leftRuleAssembler::generateNextId,
+                Math.max(leftRuleAssembler.getExpectedGroupByCount(), rightRuleAssembler.getExpectedGroupByCount()),
                 finishedExpressions, variables, primaryPatterns, dependentExpressionMap);
     }
 

@@ -442,8 +442,8 @@ public final class ConstraintGraph {
             DroolsConstraint constraint) {
         ConstraintTree constraintTree = getSubtree(constraint.getConsequence());
         return constraintTree.getNestedNodes()
-                .getBuilder()
-                .build(scoreHolderGlobal, constraint);
+                .getRuleAssembler()
+                .assemble(scoreHolderGlobal, constraint);
     }
 
 }

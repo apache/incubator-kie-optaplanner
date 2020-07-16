@@ -48,14 +48,14 @@ final class UniExistenceMutator<A, B> implements Mutator {
                 .toArray(AbstractBiJoiner[]::new);
     }
 
-    private AbstractRuleBuilder applyJoiners(AbstractRuleBuilder ruleBuilder, AbstractBiJoiner<A, B> joiner,
+    private AbstractRuleAssembler applyJoiners(AbstractRuleAssembler ruleAssembler, AbstractBiJoiner<A, B> joiner,
             BiPredicate<A, B> predicate) {
         PatternDSL.PatternDef<A> primaryPattern =
-                ruleBuilder.getPrimaryPatterns().get(ruleBuilder.getPrimaryPatterns().size() - 1);
-        Variable<B> toExist = PatternDSL.declarationOf(otherFactType, ruleBuilder.generateNextId("toExist"));
+                ruleAssembler.getPrimaryPatterns().get(ruleAssembler.getPrimaryPatterns().size() - 1);
+        Variable<B> toExist = PatternDSL.declarationOf(otherFactType, ruleAssembler.generateNextId("toExist"));
         PatternDSL.PatternDef<B> existencePattern = PatternDSL.pattern(toExist);
         if (joiner == null) {
-            return applyFilters(ruleBuilder, existencePattern, predicate);
+            return applyFilters(ruleAssembler, existencePattern, predicate);
         }
         JoinerType[] joinerTypes = joiner.getJoinerTypes();
         // We rebuild the A pattern, binding variables for left parts of the joins.
@@ -84,12 +84,12 @@ final class UniExistenceMutator<A, B> implements Mutator {
                     joinVars[currentMappingIndex], joinPredicate, index);
         }
         // And finally we add the filter to the B pattern
-        return applyFilters(ruleBuilder, existencePattern, predicate);
+        return applyFilters(ruleAssembler, existencePattern, predicate);
     }
 
-    private AbstractRuleBuilder applyFilters(AbstractRuleBuilder ruleBuilder, PatternDSL.PatternDef<B> existencePattern,
+    private AbstractRuleAssembler applyFilters(AbstractRuleAssembler ruleAssembler, PatternDSL.PatternDef<B> existencePattern,
             BiPredicate<A, B> biPredicate) {
-        Variable[] variables = ruleBuilder.getVariables().toArray(new Variable[0]);
+        Variable[] variables = ruleAssembler.getVariables().toArray(new Variable[0]);
         PatternDSL.PatternDef<B> possiblyFilteredExistencePattern = biPredicate == null ? existencePattern
                 : existencePattern.expr("Filter using " + biPredicate, variables[0],
                         (b, a) -> biPredicate.test((A) a, b));
@@ -97,15 +97,15 @@ final class UniExistenceMutator<A, B> implements Mutator {
         if (!shouldExist) {
             existenceExpression = PatternDSL.not(possiblyFilteredExistencePattern);
         }
-        int lastPatternId = ruleBuilder.getPrimaryPatterns().size() - 1;
-        ruleBuilder.getDependentExpressionMap()
+        int lastPatternId = ruleAssembler.getPrimaryPatterns().size() - 1;
+        ruleAssembler.getDependentExpressionMap()
                 .computeIfAbsent(lastPatternId, key -> new ArrayList<>(1))
                 .add(existenceExpression);
-        return ruleBuilder;
+        return ruleAssembler;
     }
 
     @Override
-    public AbstractRuleBuilder apply(AbstractRuleBuilder ruleBuilder) {
+    public AbstractRuleAssembler apply(AbstractRuleAssembler ruleAssembler) {
         int indexOfFirstFilter = -1;
         // Prepare the joiner and filter that will be used in the pattern.
         AbstractBiJoiner<A, B> finalJoiner = null;
@@ -131,7 +131,7 @@ final class UniExistenceMutator<A, B> implements Mutator {
                 finalFilter = finalFilter == null ? biJoiner.getFilter() : finalFilter.and(biJoiner.getFilter());
             }
         }
-        return applyJoiners(ruleBuilder, finalJoiner, finalFilter);
+        return applyJoiners(ruleAssembler, finalJoiner, finalFilter);
     }
 
 }

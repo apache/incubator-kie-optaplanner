@@ -34,9 +34,9 @@ class QuadGroupBy2Map1CollectMutator<A, B, C, D, NewA, NewB, NewC> extends Abstr
     }
 
     @Override
-    public AbstractRuleBuilder apply(AbstractRuleBuilder ruleBuilder) {
-        return groupBiWithCollect(ruleBuilder, () -> new DroolsQuadToTriGroupByAccumulator<>(groupKeyMappingA,
-                groupKeyMappingB, collectorC, ruleBuilder.getVariables().get(0), ruleBuilder.getVariables().get(1),
-                ruleBuilder.getVariables().get(2), ruleBuilder.getVariables().get(3)));
+    public AbstractRuleAssembler apply(AbstractRuleAssembler ruleAssembler) {
+        return groupBiWithCollect(ruleAssembler, () -> new DroolsQuadToTriGroupByAccumulator<>(groupKeyMappingA,
+                groupKeyMappingB, collectorC, ruleAssembler.getVariables().get(0), ruleAssembler.getVariables().get(1),
+                ruleAssembler.getVariables().get(2), ruleAssembler.getVariables().get(3)));
     }
 }

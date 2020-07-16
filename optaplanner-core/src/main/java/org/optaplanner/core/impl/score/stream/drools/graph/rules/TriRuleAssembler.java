@@ -19,11 +19,7 @@ package org.optaplanner.core.impl.score.stream.drools.graph.rules;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
-import java.util.function.BiFunction;
-import java.util.function.BiPredicate;
 import java.util.function.Supplier;
-import java.util.function.ToIntBiFunction;
-import java.util.function.ToLongBiFunction;
 import java.util.function.UnaryOperator;
 
 import org.drools.model.DSL;
@@ -33,7 +29,11 @@ import org.drools.model.PatternDSL.PatternDef;
 import org.drools.model.Variable;
 import org.drools.model.consequences.ConsequenceBuilder;
 import org.drools.model.view.ViewItem;
-import org.optaplanner.core.api.score.stream.bi.BiConstraintCollector;
+import org.optaplanner.core.api.function.ToIntTriFunction;
+import org.optaplanner.core.api.function.ToLongTriFunction;
+import org.optaplanner.core.api.function.TriFunction;
+import org.optaplanner.core.api.function.TriPredicate;
+import org.optaplanner.core.api.score.stream.tri.TriConstraintCollector;
 import org.optaplanner.core.impl.score.holder.AbstractScoreHolder;
 import org.optaplanner.core.impl.score.stream.drools.DroolsConstraint;
 import org.optaplanner.core.impl.score.stream.drools.graph.consequences.ConstraintConsequence;
@@ -41,25 +41,25 @@ import org.optaplanner.core.impl.score.stream.drools.graph.nodes.AbstractConstra
 import org.optaplanner.core.impl.score.stream.drools.graph.nodes.AbstractConstraintModelJoiningNode;
 import org.optaplanner.core.impl.score.stream.drools.graph.nodes.ConstraintGraphNode;
 
-final class BiRuleBuilder extends AbstractRuleBuilder {
+final class TriRuleAssembler extends AbstractRuleAssembler {
 
-    private BiPredicate filterToApplyToLastPrimaryPattern = null;
+    private TriPredicate filterToApplyToLastPrimaryPattern = null;
 
-    public BiRuleBuilder(UnaryOperator<String> idSupplier, int expectedGroupByCount,
+    public TriRuleAssembler(UnaryOperator<String> idSupplier, int expectedGroupByCount,
             List<ViewItem> finishedExpressions, List<Variable> variables, List<PatternDef> primaryPatterns,
             Map<Integer, List<ViewItem>> dependentExpressionMap) {
         super(idSupplier, expectedGroupByCount, finishedExpressions, variables, primaryPatterns, dependentExpressionMap);
     }
 
     @Override
-    public AbstractRuleBuilder join(AbstractRuleBuilder rightSubTreeBuilder, ConstraintGraphNode joinNode) {
-        return new TriJoinMutator<>((AbstractConstraintModelJoiningNode) joinNode)
-                .apply(this, rightSubTreeBuilder);
+    protected AbstractRuleAssembler join(AbstractRuleAssembler ruleAssembler, ConstraintGraphNode joinNode) {
+        return new QuadJoinMutator<>((AbstractConstraintModelJoiningNode) joinNode)
+                .apply(this, ruleAssembler);
     }
 
     @Override
-    protected AbstractRuleBuilder andThenFilter(ConstraintGraphNode filterNode) {
-        Supplier<BiPredicate> predicateSupplier = (Supplier<BiPredicate>) filterNode;
+    protected AbstractRuleAssembler andThenFilter(ConstraintGraphNode filterNode) {
+        Supplier<TriPredicate> predicateSupplier = (Supplier<TriPredicate>) filterNode;
         if (filterToApplyToLastPrimaryPattern == null) {
             filterToApplyToLastPrimaryPattern = predicateSupplier.get();
         } else {
@@ -69,39 +69,39 @@ final class BiRuleBuilder extends AbstractRuleBuilder {
     }
 
     @Override
-    protected AbstractRuleBuilder andThenExists(AbstractConstraintModelJoiningNode joiningNode, boolean shouldExist) {
-        return new BiExistenceMutator(joiningNode, shouldExist).apply(this);
+    protected AbstractRuleAssembler andThenExists(AbstractConstraintModelJoiningNode joiningNode, boolean shouldExist) {
+        return new TriExistenceMutator(joiningNode, shouldExist).apply(this);
     }
 
     @Override
-    protected AbstractRuleBuilder andThenGroupBy(AbstractConstraintModelGroupingNode groupingNode) {
-        List<BiFunction> mappings = groupingNode.getMappings();
+    protected AbstractRuleAssembler andThenGroupBy(AbstractConstraintModelGroupingNode groupingNode) {
+        List<TriFunction> mappings = groupingNode.getMappings();
         int mappingCount = mappings.size();
-        List<BiConstraintCollector> collectors = groupingNode.getCollectors();
+        List<TriConstraintCollector> collectors = groupingNode.getCollectors();
         int collectorCount = collectors.size();
         switch (groupingNode.getType()) {
             case GROUPBY_MAPPING_ONLY:
                 switch (mappingCount) {
                     case 1:
-                        return new BiGroupBy1Map0CollectMutator<>(mappings.get(0)).apply(this);
+                        return new TriGroupBy1Map0CollectMutator<>(mappings.get(0)).apply(this);
                     case 2:
-                        return new BiGroupBy2Map0CollectMutator<>(mappings.get(0), mappings.get(1)).apply(this);
+                        return new TriGroupBy2Map0CollectMutator<>(mappings.get(0), mappings.get(1)).apply(this);
                     default:
                         throw new IllegalStateException("Invalid number of mappings: " + mappingCount);
                 }
             case GROUPBY_COLLECTING_ONLY:
                 if (collectorCount == 1) {
-                    return new BiGroupBy0Map1CollectMutator<>(collectors.get(0)).apply(this);
+                    return new TriGroupBy0Map1CollectMutator<>(collectors.get(0)).apply(this);
                 }
                 throw new IllegalStateException("Invalid number of collectors: " + collectorCount);
             case GROUPBY_MAPPING_AND_COLLECTING:
                 if (mappingCount == 1 && collectorCount == 1) {
-                    return new BiGroupBy1Map1CollectMutator<>(mappings.get(0), collectors.get(0)).apply(this);
+                    return new TriGroupBy1Map1CollectMutator<>(mappings.get(0), collectors.get(0)).apply(this);
                 } else if (mappingCount == 2 && collectorCount == 1) {
-                    return new BiGroupBy2Map1CollectMutator<>(mappings.get(0), mappings.get(1), collectors.get(0))
+                    return new TriGroupBy2Map1CollectMutator<>(mappings.get(0), mappings.get(1), collectors.get(0))
                             .apply(this);
                 } else if (mappingCount == 2 && collectorCount == 2) {
-                    return new BiGroupBy2Map2CollectMutator<>(mappings.get(0), mappings.get(1), collectors.get(0),
+                    return new TriGroupBy2Map2CollectMutator<>(mappings.get(0), mappings.get(1), collectors.get(0),
                             collectors.get(1)).apply(this);
                 } else {
                     throw new IllegalStateException(
@@ -118,23 +118,23 @@ final class BiRuleBuilder extends AbstractRuleBuilder {
         ConstraintConsequence consequence = constraint.getConsequence();
         switch (consequence.getMatchWeightType()) {
             case INTEGER:
-                ToIntBiFunction intMatchWeighter = ((Supplier<ToIntBiFunction>) consequence).get();
-                return DSL.on(scoreHolderGlobal, variables[0], variables[1])
-                        .execute((drools, scoreHolder, a, b) -> impactScore(constraint, (Drools) drools,
-                                (AbstractScoreHolder) scoreHolder, intMatchWeighter.applyAsInt(a, b)));
+                ToIntTriFunction intMatchWeighter = ((Supplier<ToIntTriFunction>) consequence).get();
+                return DSL.on(scoreHolderGlobal, variables[0], variables[1], variables[2])
+                        .execute((drools, scoreHolder, a, b, c) -> impactScore(constraint, (Drools) drools,
+                                (AbstractScoreHolder) scoreHolder, intMatchWeighter.applyAsInt(a, b, c)));
             case LONG:
-                ToLongBiFunction longMatchWeighter = ((Supplier<ToLongBiFunction>) consequence).get();
-                return DSL.on(scoreHolderGlobal, variables[0], variables[1])
-                        .execute((drools, scoreHolder, a, b) -> impactScore(constraint, (Drools) drools,
-                                (AbstractScoreHolder) scoreHolder, longMatchWeighter.applyAsLong(a, b)));
+                ToLongTriFunction longMatchWeighter = ((Supplier<ToLongTriFunction>) consequence).get();
+                return DSL.on(scoreHolderGlobal, variables[0], variables[1], variables[2])
+                        .execute((drools, scoreHolder, a, b, c) -> impactScore(constraint, (Drools) drools,
+                                (AbstractScoreHolder) scoreHolder, longMatchWeighter.applyAsLong(a, b, c)));
             case BIG_DECIMAL:
-                BiFunction bigDecimalMatchWeighter = ((Supplier<BiFunction>) consequence).get();
-                return DSL.on(scoreHolderGlobal, variables[0], variables[1])
-                        .execute((drools, scoreHolder, a, b) -> impactScore(constraint, (Drools) drools,
-                                (AbstractScoreHolder) scoreHolder, (BigDecimal) bigDecimalMatchWeighter.apply(a, b)));
+                TriFunction bigDecimalMatchWeighter = ((Supplier<TriFunction>) consequence).get();
+                return DSL.on(scoreHolderGlobal, variables[0], variables[1], variables[2])
+                        .execute((drools, scoreHolder, a, b, c) -> impactScore(constraint, (Drools) drools,
+                                (AbstractScoreHolder) scoreHolder, (BigDecimal) bigDecimalMatchWeighter.apply(a, b, c)));
             case DEFAULT:
-                return DSL.on(scoreHolderGlobal, variables[0], variables[1])
-                        .execute((drools, scoreHolder, a, b) -> impactScore((Drools) drools,
+                return DSL.on(scoreHolderGlobal, variables[0], variables[1], variables[2])
+                        .execute((drools, scoreHolder, a, b, c) -> impactScore((Drools) drools,
                                 (AbstractScoreHolder) scoreHolder));
             default:
                 throw new UnsupportedOperationException();
@@ -146,10 +146,10 @@ final class BiRuleBuilder extends AbstractRuleBuilder {
         if (filterToApplyToLastPrimaryPattern == null) {
             return;
         }
-        BiPredicate predicate = filterToApplyToLastPrimaryPattern;
+        TriPredicate predicate = filterToApplyToLastPrimaryPattern;
         getPrimaryPatterns().get(getPrimaryPatterns().size() - 1)
-                .expr("Filter using " + predicate, variables[0], variables[1],
-                        (fact, a, b) -> predicate.test(a, b));
+                .expr("Filter using " + predicate, variables[0], variables[1], variables[2],
+                        (fact, a, b, c) -> predicate.test(a, b, c));
         filterToApplyToLastPrimaryPattern = null;
     }
 

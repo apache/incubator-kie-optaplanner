@@ -34,21 +34,21 @@ import org.drools.model.view.ViewItem;
 abstract class AbstractUniGroupByMutator<A> extends AbstractGroupByMutator {
 
     @Override
-    protected <InTuple> PatternDef bindTupleVariableOnFirstGrouping(AbstractRuleBuilder ruleBuilder, PatternDef pattern,
+    protected <InTuple> PatternDef bindTupleVariableOnFirstGrouping(AbstractRuleAssembler ruleAssembler, PatternDef pattern,
             Variable<InTuple> inTupleVariable) {
         return pattern.bind(inTupleVariable, a -> a);
     }
 
-    protected <InTuple> AbstractRuleBuilder universalGroup(AbstractRuleBuilder ruleBuilder,
+    protected <InTuple> AbstractRuleAssembler universalGroup(AbstractRuleAssembler ruleAssembler,
             BiFunction<PatternDef, Variable<InTuple>, PatternDef> bindFunction, Transformer<InTuple> mutator) {
-        Variable<InTuple> mappedVariable = Util.createVariable(ruleBuilder.generateNextId("biMapped"));
-        int patternId = ruleBuilder.getPrimaryPatterns().size() - 1;
+        Variable<InTuple> mappedVariable = Util.createVariable(ruleAssembler.generateNextId("biMapped"));
+        int patternId = ruleAssembler.getPrimaryPatterns().size() - 1;
         // TODO evaluate need for bindFunction
-        bindFunction.apply(ruleBuilder.getPrimaryPatterns().get(patternId), mappedVariable);
-        ViewItem<?> innerAccumulatePattern = getInnerAccumulatePattern(ruleBuilder);
+        bindFunction.apply(ruleAssembler.getPrimaryPatterns().get(patternId), mappedVariable);
+        ViewItem<?> innerAccumulatePattern = getInnerAccumulatePattern(ruleAssembler);
         Variable<Collection<InTuple>> tupleCollection =
                 (Variable<Collection<InTuple>>) Util.createVariable(Collection.class,
-                        ruleBuilder.generateNextId("tupleCollection"));
+                        ruleAssembler.generateNextId("tupleCollection"));
         PatternDSL.PatternDef<Collection<InTuple>> pattern = pattern(tupleCollection)
                 .expr("Non-empty", collection -> !collection.isEmpty(),
                         alphaIndexedBy(Integer.class, Index.ConstraintType.GREATER_THAN, -1, Collection::size, 0));

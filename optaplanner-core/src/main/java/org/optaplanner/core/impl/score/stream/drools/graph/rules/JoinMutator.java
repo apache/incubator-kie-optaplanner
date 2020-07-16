@@ -26,29 +26,29 @@ import org.drools.model.PatternDSL.PatternDef;
 import org.drools.model.Variable;
 import org.drools.model.view.ViewItem;
 
-interface JoinMutator extends BinaryOperator<AbstractRuleBuilder> {
+interface JoinMutator extends BinaryOperator<AbstractRuleAssembler> {
 
-    default AbstractRuleBuilder merge(AbstractRuleBuilder leftRuleBuilder, AbstractRuleBuilder rightRuleBuilder) {
-        leftRuleBuilder.applyFilterToLastPrimaryPattern(leftRuleBuilder.getVariables().toArray(new Variable[0]));
-        rightRuleBuilder.applyFilterToLastPrimaryPattern(rightRuleBuilder.getVariables().toArray(new Variable[0]));
-        List<ViewItem> newFinishedExpressions = new ArrayList<>(leftRuleBuilder.getFinishedExpressions());
-        newFinishedExpressions.addAll(rightRuleBuilder.getFinishedExpressions());
-        List<Variable> newVariables = new ArrayList<>(leftRuleBuilder.getVariables());
-        newVariables.addAll(rightRuleBuilder.getVariables());
-        List<PatternDef> newPrimaryPatterns = new ArrayList<>(leftRuleBuilder.getPrimaryPatterns());
-        Map<Integer, List<ViewItem>> newDependentExpressionMap = new HashMap<>(leftRuleBuilder.getDependentExpressionMap());
+    default AbstractRuleAssembler merge(AbstractRuleAssembler leftRuleAssembler, AbstractRuleAssembler rightRuleAssembler) {
+        leftRuleAssembler.applyFilterToLastPrimaryPattern(leftRuleAssembler.getVariables().toArray(new Variable[0]));
+        rightRuleAssembler.applyFilterToLastPrimaryPattern(rightRuleAssembler.getVariables().toArray(new Variable[0]));
+        List<ViewItem> newFinishedExpressions = new ArrayList<>(leftRuleAssembler.getFinishedExpressions());
+        newFinishedExpressions.addAll(rightRuleAssembler.getFinishedExpressions());
+        List<Variable> newVariables = new ArrayList<>(leftRuleAssembler.getVariables());
+        newVariables.addAll(rightRuleAssembler.getVariables());
+        List<PatternDef> newPrimaryPatterns = new ArrayList<>(leftRuleAssembler.getPrimaryPatterns());
+        Map<Integer, List<ViewItem>> newDependentExpressionMap = new HashMap<>(leftRuleAssembler.getDependentExpressionMap());
         int startingPatternId = newPrimaryPatterns.size();
-        for (int i = 0; i < rightRuleBuilder.getPrimaryPatterns().size(); i++) {
-            newPrimaryPatterns.add(rightRuleBuilder.getPrimaryPatterns().get(i));
+        for (int i = 0; i < rightRuleAssembler.getPrimaryPatterns().size(); i++) {
+            newPrimaryPatterns.add(rightRuleAssembler.getPrimaryPatterns().get(i));
             int newPatternId = startingPatternId + i;
             newDependentExpressionMap
-                    .put(newPatternId, rightRuleBuilder.getDependentExpressionMap().getOrDefault(i, new ArrayList<>(0)));
+                    .put(newPatternId, rightRuleAssembler.getDependentExpressionMap().getOrDefault(i, new ArrayList<>(0)));
         }
-        return newRuleBuilder(leftRuleBuilder, rightRuleBuilder, newFinishedExpressions, newVariables,
+        return newRuleAssembler(leftRuleAssembler, rightRuleAssembler, newFinishedExpressions, newVariables,
                 newPrimaryPatterns, newDependentExpressionMap);
     }
 
-    AbstractRuleBuilder newRuleBuilder(AbstractRuleBuilder leftRuleBuilder, AbstractRuleBuilder rightRuleBuilder,
+    AbstractRuleAssembler newRuleAssembler(AbstractRuleAssembler leftRuleAssembler, AbstractRuleAssembler rightRuleAssembler,
             List<ViewItem> finishedExpressions, List<Variable> variables, List<PatternDef> primaryPatterns,
             Map<Integer, List<ViewItem>> dependentExpressionMap);
 

@@ -34,20 +34,21 @@ class TriJoinMutator<A, B, C> implements JoinMutator {
     }
 
     @Override
-    public AbstractRuleBuilder apply(AbstractRuleBuilder leftRuleBuilder, AbstractRuleBuilder rightRuleBuilder) {
-        rightRuleBuilder.getPrimaryPatterns().get(rightRuleBuilder.getPrimaryPatterns().size() - 1)
-                .expr("Filter using " + joiner, leftRuleBuilder.getVariables().get(0),
-                        leftRuleBuilder.getVariables().get(1), rightRuleBuilder.getVariables().get(0),
+    public AbstractRuleAssembler apply(AbstractRuleAssembler leftRuleAssembler, AbstractRuleAssembler rightRuleAssembler) {
+        rightRuleAssembler.getPrimaryPatterns().get(rightRuleAssembler.getPrimaryPatterns().size() - 1)
+                .expr("Filter using " + joiner, leftRuleAssembler.getVariables().get(0),
+                        leftRuleAssembler.getVariables().get(1), rightRuleAssembler.getVariables().get(0),
                         (fact, a, b, c) -> joiner.matches((A) a, (B) b, (C) c));
-        return merge(leftRuleBuilder, rightRuleBuilder);
+        return merge(leftRuleAssembler, rightRuleAssembler);
     }
 
     @Override
-    public AbstractRuleBuilder newRuleBuilder(AbstractRuleBuilder leftRuleBuilder, AbstractRuleBuilder rightRuleBuilder,
+    public AbstractRuleAssembler newRuleAssembler(AbstractRuleAssembler leftRuleAssembler,
+            AbstractRuleAssembler rightRuleAssembler,
             List<ViewItem> finishedExpressions, List<Variable> variables, List<PatternDef> primaryPatterns,
             Map<Integer, List<ViewItem>> dependentExpressionMap) {
-        return new TriRuleBuilder(leftRuleBuilder::generateNextId,
-                Math.max(leftRuleBuilder.getExpectedGroupByCount(), rightRuleBuilder.getExpectedGroupByCount()),
+        return new TriRuleAssembler(leftRuleAssembler::generateNextId,
+                Math.max(leftRuleAssembler.getExpectedGroupByCount(), rightRuleAssembler.getExpectedGroupByCount()),
                 finishedExpressions, variables, primaryPatterns, dependentExpressionMap);
     }
 

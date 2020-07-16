@@ -37,9 +37,9 @@ final class TriGroupBy2Map2CollectMutator<A, B, C, NewA, NewB, NewC, NewD> exten
     }
 
     @Override
-    public AbstractRuleBuilder apply(AbstractRuleBuilder ruleBuilder) {
-        return groupBiWithCollectBi(ruleBuilder, () -> new DroolsTriToQuadGroupByAccumulator<>(groupKeyMappingA,
-                groupKeyMappingB, collectorC, collectorD, ruleBuilder.getVariables().get(0),
-                ruleBuilder.getVariables().get(1), ruleBuilder.getVariables().get(2)));
+    public AbstractRuleAssembler apply(AbstractRuleAssembler ruleAssembler) {
+        return groupBiWithCollectBi(ruleAssembler, () -> new DroolsTriToQuadGroupByAccumulator<>(groupKeyMappingA,
+                groupKeyMappingB, collectorC, collectorD, ruleAssembler.getVariables().get(0),
+                ruleAssembler.getVariables().get(1), ruleAssembler.getVariables().get(2)));
     }
 }

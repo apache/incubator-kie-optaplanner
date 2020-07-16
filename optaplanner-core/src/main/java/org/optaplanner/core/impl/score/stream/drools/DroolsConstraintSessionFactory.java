@@ -44,7 +44,7 @@ import org.optaplanner.core.impl.score.holder.AbstractScoreHolder;
 import org.optaplanner.core.impl.score.stream.ConstraintSession;
 import org.optaplanner.core.impl.score.stream.common.AbstractConstraintSessionFactory;
 import org.optaplanner.core.impl.score.stream.drools.common.FactTuple;
-import org.optaplanner.core.impl.score.stream.drools.graph.rules.AbstractRuleBuilder;
+import org.optaplanner.core.impl.score.stream.drools.graph.rules.RuleAssembler;
 
 public class DroolsConstraintSessionFactory<Solution_> extends AbstractConstraintSessionFactory<Solution_> {
 
@@ -75,7 +75,7 @@ public class DroolsConstraintSessionFactory<Solution_> extends AbstractConstrain
         this.compiledRuleToExpectedTypesMap = compiledRuleToConstraintMap.keySet().stream()
                 .collect(Collectors.toMap(Function.identity(), rule -> {
                     String commaSeparatedFqnList = (String) rule.getMetaData().getOrDefault(
-                            AbstractRuleBuilder.VARIABLE_TYPE_RULE_METADATA_KEY, "");
+                            RuleAssembler.VARIABLE_TYPE_RULE_METADATA_KEY, "");
                     return Arrays.stream(commaSeparatedFqnList.split("\\Q,\\E"))
                             .map(className -> {
                                 try {
@@ -102,7 +102,7 @@ public class DroolsConstraintSessionFactory<Solution_> extends AbstractConstrain
      *
      * @param justificationList unordered list of justifications coming from the score director
      * @param expectedCount how many justifications are expected to be returned (1 for uni stream, 2 for bi stream, ...)
-     * @param expectedTypes as defined by {@link AbstractRuleBuilder#getExpectedJustificationTypes()}.
+     * @param expectedTypes as defined by {@link AbstractRuleAssembler#getExpectedJustificationTypes()}.
      * @return never null
      */
     private static List<Object> matchJustificationsToOutput(List<Object> justificationList, int expectedCount,

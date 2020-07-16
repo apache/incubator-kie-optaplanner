@@ -34,14 +34,14 @@ final class UniGroupBy2Map0CollectMutator<A, NewA, NewB> extends AbstractUniGrou
     }
 
     @Override
-    public AbstractRuleBuilder apply(AbstractRuleBuilder ruleBuilder) {
+    public AbstractRuleAssembler apply(AbstractRuleAssembler ruleAssembler) {
         BiFunction<PatternDef, Variable<BiTuple<NewA, NewB>>, PatternDef> binder =
                 (pattern, tuple) -> pattern.bind(tuple, a -> {
                     final NewA newA = groupKeyMappingA.apply((A) a);
                     final NewB newB = groupKeyMappingB.apply((A) a);
                     return new BiTuple<>(newA, newB);
                 });
-        return universalGroup(ruleBuilder, binder,
-                (var, pattern, accumulate) -> regroup(ruleBuilder, var, pattern, accumulate));
+        return universalGroup(ruleAssembler, binder,
+                (var, pattern, accumulate) -> regroup(ruleAssembler, var, pattern, accumulate));
     }
 }
