@@ -18,8 +18,8 @@ package org.optaplanner.core.impl.score.stream.drools.uni;
 
 import org.optaplanner.core.api.score.stream.bi.BiJoiner;
 import org.optaplanner.core.impl.score.stream.drools.DroolsConstraintFactory;
-import org.optaplanner.core.impl.score.stream.drools.graph.nodes.UniConstraintGraphChildNode;
-import org.optaplanner.core.impl.score.stream.drools.graph.nodes.UniConstraintGraphNode;
+import org.optaplanner.core.impl.score.stream.drools.common.nodes.UniConstraintGraphChildNode;
+import org.optaplanner.core.impl.score.stream.drools.common.nodes.UniConstraintGraphNode;
 
 public final class DroolsExistsUniConstraintStream<Solution_, A> extends DroolsAbstractUniConstraintStream<Solution_, A> {
 

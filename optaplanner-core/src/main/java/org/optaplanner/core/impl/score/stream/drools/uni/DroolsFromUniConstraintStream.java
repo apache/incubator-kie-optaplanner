@@ -19,7 +19,7 @@ package org.optaplanner.core.impl.score.stream.drools.uni;
 import static java.util.Objects.requireNonNull;
 
 import org.optaplanner.core.impl.score.stream.drools.DroolsConstraintFactory;
-import org.optaplanner.core.impl.score.stream.drools.graph.nodes.UniConstraintGraphNode;
+import org.optaplanner.core.impl.score.stream.drools.common.nodes.UniConstraintGraphNode;
 
 public final class DroolsFromUniConstraintStream<Solution_, A> extends DroolsAbstractUniConstraintStream<Solution_, A> {
 

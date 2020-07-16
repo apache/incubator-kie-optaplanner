@@ -37,8 +37,8 @@ import org.optaplanner.core.impl.score.stream.drools.bi.DroolsAbstractBiConstrai
 import org.optaplanner.core.impl.score.stream.drools.bi.DroolsGroupingBiConstraintStream;
 import org.optaplanner.core.impl.score.stream.drools.bi.DroolsJoinBiConstraintStream;
 import org.optaplanner.core.impl.score.stream.drools.common.DroolsAbstractConstraintStream;
-import org.optaplanner.core.impl.score.stream.drools.graph.consequences.ConstraintConsequence;
-import org.optaplanner.core.impl.score.stream.drools.graph.nodes.UniConstraintGraphNode;
+import org.optaplanner.core.impl.score.stream.drools.common.consequences.ConstraintConsequence;
+import org.optaplanner.core.impl.score.stream.drools.common.nodes.UniConstraintGraphNode;
 import org.optaplanner.core.impl.score.stream.drools.quad.DroolsGroupingQuadConstraintStream;
 import org.optaplanner.core.impl.score.stream.drools.tri.DroolsGroupingTriConstraintStream;
 import org.optaplanner.core.impl.score.stream.uni.InnerUniConstraintStream;

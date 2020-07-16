@@ -18,7 +18,7 @@ package org.optaplanner.core.impl.score.stream.drools.quad;
 
 import org.optaplanner.core.api.score.stream.quad.QuadJoiner;
 import org.optaplanner.core.impl.score.stream.drools.DroolsConstraintFactory;
-import org.optaplanner.core.impl.score.stream.drools.graph.nodes.QuadConstraintGraphNode;
+import org.optaplanner.core.impl.score.stream.drools.common.nodes.QuadConstraintGraphNode;
 import org.optaplanner.core.impl.score.stream.drools.tri.DroolsAbstractTriConstraintStream;
 import org.optaplanner.core.impl.score.stream.drools.uni.DroolsAbstractUniConstraintStream;
 

@@ -21,7 +21,7 @@ import java.util.function.Function;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.impl.score.stream.common.AbstractConstraint;
 import org.optaplanner.core.impl.score.stream.common.ScoreImpactType;
-import org.optaplanner.core.impl.score.stream.drools.graph.consequences.ConstraintConsequence;
+import org.optaplanner.core.impl.score.stream.drools.common.consequences.ConstraintConsequence;
 
 public class DroolsConstraint<Solution_> extends AbstractConstraint<Solution_, DroolsConstraintFactory<Solution_>> {
 

@@ -18,7 +18,7 @@ package org.optaplanner.core.impl.score.stream.drools.quad;
 
 import org.optaplanner.core.api.score.stream.penta.PentaJoiner;
 import org.optaplanner.core.impl.score.stream.drools.DroolsConstraintFactory;
-import org.optaplanner.core.impl.score.stream.drools.graph.nodes.QuadConstraintGraphNode;
+import org.optaplanner.core.impl.score.stream.drools.common.nodes.QuadConstraintGraphNode;
 
 public final class DroolsExistsQuadConstraintStream<Solution_, A, B, C, D>
         extends DroolsAbstractQuadConstraintStream<Solution_, A, B, C, D> {

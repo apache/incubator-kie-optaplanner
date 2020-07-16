@@ -44,7 +44,7 @@ import org.optaplanner.core.impl.score.holder.AbstractScoreHolder;
 import org.optaplanner.core.impl.score.stream.ConstraintSession;
 import org.optaplanner.core.impl.score.stream.common.AbstractConstraintSessionFactory;
 import org.optaplanner.core.impl.score.stream.drools.common.FactTuple;
-import org.optaplanner.core.impl.score.stream.drools.graph.rules.RuleAssembler;
+import org.optaplanner.core.impl.score.stream.drools.common.rules.RuleAssembler;
 
 public class DroolsConstraintSessionFactory<Solution_> extends AbstractConstraintSessionFactory<Solution_> {
 

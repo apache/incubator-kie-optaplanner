@@ -27,8 +27,8 @@ import org.optaplanner.core.api.score.stream.tri.TriConstraintCollector;
 import org.optaplanner.core.api.score.stream.uni.UniConstraintCollector;
 import org.optaplanner.core.impl.score.stream.drools.DroolsConstraintFactory;
 import org.optaplanner.core.impl.score.stream.drools.bi.DroolsAbstractBiConstraintStream;
-import org.optaplanner.core.impl.score.stream.drools.graph.nodes.UniConstraintGraphChildNode;
-import org.optaplanner.core.impl.score.stream.drools.graph.nodes.UniConstraintGraphNode;
+import org.optaplanner.core.impl.score.stream.drools.common.nodes.UniConstraintGraphChildNode;
+import org.optaplanner.core.impl.score.stream.drools.common.nodes.UniConstraintGraphNode;
 import org.optaplanner.core.impl.score.stream.drools.quad.DroolsAbstractQuadConstraintStream;
 import org.optaplanner.core.impl.score.stream.drools.tri.DroolsAbstractTriConstraintStream;
 

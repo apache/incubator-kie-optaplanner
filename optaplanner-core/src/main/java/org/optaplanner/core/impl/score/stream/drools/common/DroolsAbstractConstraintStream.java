@@ -28,7 +28,7 @@ import org.optaplanner.core.impl.score.stream.common.AbstractConstraintStream;
 import org.optaplanner.core.impl.score.stream.common.ScoreImpactType;
 import org.optaplanner.core.impl.score.stream.drools.DroolsConstraint;
 import org.optaplanner.core.impl.score.stream.drools.DroolsConstraintFactory;
-import org.optaplanner.core.impl.score.stream.drools.graph.consequences.ConstraintConsequence;
+import org.optaplanner.core.impl.score.stream.drools.common.consequences.ConstraintConsequence;
 
 public abstract class DroolsAbstractConstraintStream<Solution_> extends AbstractConstraintStream<Solution_> {
 

@@ -35,7 +35,7 @@ import org.optaplanner.core.impl.score.director.drools.DroolsScoreDirector;
 import org.optaplanner.core.impl.score.holder.AbstractScoreHolder;
 import org.optaplanner.core.impl.score.stream.ConstraintSessionFactory;
 import org.optaplanner.core.impl.score.stream.InnerConstraintFactory;
-import org.optaplanner.core.impl.score.stream.drools.graph.ConstraintGraph;
+import org.optaplanner.core.impl.score.stream.drools.common.ConstraintGraph;
 import org.optaplanner.core.impl.score.stream.drools.uni.DroolsFromUniConstraintStream;
 
 public final class DroolsConstraintFactory<Solution_> implements InnerConstraintFactory<Solution_> {

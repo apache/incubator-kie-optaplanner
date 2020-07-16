@@ -19,8 +19,8 @@ package org.optaplanner.core.impl.score.stream.drools.uni;
 import java.util.function.Predicate;
 
 import org.optaplanner.core.impl.score.stream.drools.DroolsConstraintFactory;
-import org.optaplanner.core.impl.score.stream.drools.graph.nodes.UniConstraintGraphChildNode;
-import org.optaplanner.core.impl.score.stream.drools.graph.nodes.UniConstraintGraphNode;
+import org.optaplanner.core.impl.score.stream.drools.common.nodes.UniConstraintGraphChildNode;
+import org.optaplanner.core.impl.score.stream.drools.common.nodes.UniConstraintGraphNode;
 
 public final class DroolsFilterUniConstraintStream<Solution_, A> extends DroolsAbstractUniConstraintStream<Solution_, A> {
 

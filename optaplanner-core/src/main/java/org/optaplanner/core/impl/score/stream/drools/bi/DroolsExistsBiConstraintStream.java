@@ -18,7 +18,7 @@ package org.optaplanner.core.impl.score.stream.drools.bi;
 
 import org.optaplanner.core.api.score.stream.tri.TriJoiner;
 import org.optaplanner.core.impl.score.stream.drools.DroolsConstraintFactory;
-import org.optaplanner.core.impl.score.stream.drools.graph.nodes.BiConstraintGraphNode;
+import org.optaplanner.core.impl.score.stream.drools.common.nodes.BiConstraintGraphNode;
 
 public final class DroolsExistsBiConstraintStream<Solution_, A, B>
         extends DroolsAbstractBiConstraintStream<Solution_, A, B> {

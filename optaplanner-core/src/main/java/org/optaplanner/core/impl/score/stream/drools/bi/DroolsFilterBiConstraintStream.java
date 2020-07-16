@@ -19,7 +19,7 @@ package org.optaplanner.core.impl.score.stream.drools.bi;
 import java.util.function.BiPredicate;
 
 import org.optaplanner.core.impl.score.stream.drools.DroolsConstraintFactory;
-import org.optaplanner.core.impl.score.stream.drools.graph.nodes.BiConstraintGraphNode;
+import org.optaplanner.core.impl.score.stream.drools.common.nodes.BiConstraintGraphNode;
 
 public class DroolsFilterBiConstraintStream<Solution_, A, B> extends DroolsAbstractBiConstraintStream<Solution_, A, B> {
 

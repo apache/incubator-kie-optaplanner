@@ -18,7 +18,7 @@ package org.optaplanner.core.impl.score.stream.drools.tri;
 
 import org.optaplanner.core.api.score.stream.quad.QuadJoiner;
 import org.optaplanner.core.impl.score.stream.drools.DroolsConstraintFactory;
-import org.optaplanner.core.impl.score.stream.drools.graph.nodes.TriConstraintGraphNode;
+import org.optaplanner.core.impl.score.stream.drools.common.nodes.TriConstraintGraphNode;
 
 public final class DroolsExistsTriConstraintStream<Solution_, A, B, C>
         extends DroolsAbstractTriConstraintStream<Solution_, A, B, C> {
