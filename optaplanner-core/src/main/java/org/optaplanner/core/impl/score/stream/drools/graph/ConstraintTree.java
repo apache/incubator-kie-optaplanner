@@ -28,15 +28,10 @@ import org.optaplanner.core.impl.score.stream.drools.graph.nodes.ConstraintGraph
 
 public final class ConstraintTree<Node_ extends ConstraintGraphNode, Consequence_ extends ConstraintConsequence<Node_>> {
 
-    private final ConstraintGraph graph;
-    private final Consequence_ consequence;
-    private final List<ConstraintGraphNode> orderedNodeList;
     private final ConstraintSubTree nestedNodes;
 
-    ConstraintTree(ConstraintGraph graph, Consequence_ consequence) {
-        this.graph = graph;
-        this.consequence = consequence;
-        this.orderedNodeList = orderNodes(consequence);
+    ConstraintTree(Consequence_ consequence) {
+        List<ConstraintGraphNode> orderedNodeList = orderNodes(consequence);
         this.nestedNodes = assembleSubTree(orderedNodeList);
         ConstraintGraphNode firstNode = orderedNodeList.get(0);
         if (firstNode.getType() != ConstraintGraphNodeType.FROM) {
@@ -82,10 +77,6 @@ public final class ConstraintTree<Node_ extends ConstraintGraphNode, Consequence
         // Reverse order. (Start with left-most From node.)
         Collections.reverse(nodeList);
         return Collections.unmodifiableList(nodeList);
-    }
-
-    public List<ConstraintGraphNode> getOrderedNodeList() {
-        return orderedNodeList;
     }
 
     public ConstraintSubTree getNestedNodes() {

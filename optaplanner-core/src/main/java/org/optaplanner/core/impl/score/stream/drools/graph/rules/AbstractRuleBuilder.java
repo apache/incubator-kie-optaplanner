@@ -111,23 +111,23 @@ public abstract class AbstractRuleBuilder {
         return idSupplier.apply(prefix);
     }
 
-    public int getExpectedGroupByCount() {
+    int getExpectedGroupByCount() {
         return expectedGroupByCount;
     }
 
-    public List<Variable> getVariables() {
+    List<Variable> getVariables() {
         return variables;
     }
 
-    public List<PatternDef> getPrimaryPatterns() {
+    List<PatternDef> getPrimaryPatterns() {
         return primaryPatterns;
     }
 
-    public Map<Integer, List<ViewItem>> getDependentExpressionMap() {
+    Map<Integer, List<ViewItem>> getDependentExpressionMap() {
         return dependentExpressionMap;
     }
 
-    public List<ViewItem> getFinishedExpressions() {
+    List<ViewItem> getFinishedExpressions() {
         return finishedExpressions;
     }
 

@@ -23,7 +23,7 @@ import java.util.List;
 import org.drools.model.Variable;
 import org.optaplanner.core.api.function.TriFunction;
 
-class TriGroupBy2Map0CollectMutator<A, B, C, NewA, NewB>
+final class TriGroupBy2Map0CollectMutator<A, B, C, NewA, NewB>
         extends TriGroupBy2Map1CollectMutator<A, B, C, NewA, NewB, Void> {
 
     public TriGroupBy2Map0CollectMutator(TriFunction<A, B, C, NewA> groupKeyMappingA,

@@ -23,7 +23,7 @@ import java.util.function.BiFunction;
 
 import org.drools.model.Variable;
 
-class BiGroupBy2Map0CollectMutator<A, B, NewA, NewB>
+final class BiGroupBy2Map0CollectMutator<A, B, NewA, NewB>
         extends BiGroupBy2Map1CollectMutator<A, B, NewA, NewB, Void> {
 
     public BiGroupBy2Map0CollectMutator(BiFunction<A, B, NewA> groupKeyMappingA,

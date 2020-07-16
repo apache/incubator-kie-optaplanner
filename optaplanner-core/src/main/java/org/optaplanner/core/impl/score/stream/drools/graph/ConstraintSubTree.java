@@ -63,22 +63,6 @@ public final class ConstraintSubTree {
         }
     }
 
-    public int getFinalCardinality() {
-        return nodes.get(nodes.size() - 1).getCardinality();
-    }
-
-    public int getMaximumCardinality() {
-        int currentMax = nodes.stream()
-                .mapToInt(ConstraintGraphNode::getCardinality)
-                .max()
-                .orElse(1);
-        if (isJoin) {
-            currentMax = Math.max(leftSubTree.getMaximumCardinality(), currentMax);
-            currentMax = Math.max(rightSubTree.getMaximumCardinality(), currentMax);
-        }
-        return currentMax;
-    }
-
     public int getGroupByCount() {
         long groupByCount = nodes.stream()
                 .filter(n -> n.getType() == GROUPBY_COLLECTING_ONLY || n.getType() == GROUPBY_MAPPING_ONLY ||

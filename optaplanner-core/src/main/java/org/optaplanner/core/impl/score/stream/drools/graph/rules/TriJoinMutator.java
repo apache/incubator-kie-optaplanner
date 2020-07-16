@@ -25,7 +25,7 @@ import org.drools.model.view.ViewItem;
 import org.optaplanner.core.impl.score.stream.drools.graph.nodes.AbstractConstraintModelJoiningNode;
 import org.optaplanner.core.impl.score.stream.tri.AbstractTriJoiner;
 
-public class TriJoinMutator<A, B, C> implements JoinMutator {
+class TriJoinMutator<A, B, C> implements JoinMutator {
 
     private final AbstractTriJoiner<A, B, C> joiner;
 

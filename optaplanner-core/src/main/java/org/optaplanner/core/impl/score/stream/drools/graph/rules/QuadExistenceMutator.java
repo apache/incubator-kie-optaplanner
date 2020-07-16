@@ -29,7 +29,7 @@ import org.optaplanner.core.impl.score.stream.penta.FilteringPentaJoiner;
 import org.optaplanner.core.impl.score.stream.penta.NonePentaJoiner;
 import org.optaplanner.core.impl.score.stream.tri.NoneTriJoiner;
 
-public class QuadExistenceMutator<A, B, C, D, E> implements Mutator {
+final class QuadExistenceMutator<A, B, C, D, E> implements Mutator {
 
     private final boolean shouldExist;
     private final Class<E> otherFactType;

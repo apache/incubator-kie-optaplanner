@@ -35,11 +35,9 @@ import org.optaplanner.core.impl.score.stream.drools.graph.nodes.AbstractConstra
 
 final class BiJoinMutator<A, B> implements JoinMutator {
 
-    private final Class<B> otherFactType;
     private final AbstractBiJoiner<A, B> biJoiner;
 
     public BiJoinMutator(AbstractConstraintModelJoiningNode<B, AbstractBiJoiner<A, B>> node) {
-        this.otherFactType = node.getOtherFactType();
         this.biJoiner = node.get().get(0);
     }
 

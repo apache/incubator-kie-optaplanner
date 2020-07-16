@@ -406,7 +406,7 @@ public final class ConstraintGraph {
         if (!consequenceSet.contains(consequence)) {
             throw new IllegalStateException("Requested subtree for a non-existent consequence (" + consequence + ").");
         }
-        return new ConstraintTree<>(this, consequence);
+        return new ConstraintTree<>(consequence);
     }
 
     public Set<ConstraintConsequence> getConsequences() {

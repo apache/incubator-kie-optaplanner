@@ -34,7 +34,7 @@ import org.optaplanner.core.impl.score.stream.bi.NoneBiJoiner;
 import org.optaplanner.core.impl.score.stream.common.JoinerType;
 import org.optaplanner.core.impl.score.stream.drools.graph.nodes.AbstractConstraintModelJoiningNode;
 
-public class UniExistenceMutator<A, B> implements Mutator {
+final class UniExistenceMutator<A, B> implements Mutator {
 
     private final boolean shouldExist;
     private final Class<B> otherFactType;

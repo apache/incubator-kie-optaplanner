@@ -41,7 +41,7 @@ import org.optaplanner.core.impl.score.stream.drools.graph.nodes.AbstractConstra
 import org.optaplanner.core.impl.score.stream.drools.graph.nodes.AbstractConstraintModelJoiningNode;
 import org.optaplanner.core.impl.score.stream.drools.graph.nodes.ConstraintGraphNode;
 
-public final class UniRuleBuilder extends AbstractRuleBuilder {
+final class UniRuleBuilder extends AbstractRuleBuilder {
 
     private Predicate filterToApplyToLastPrimaryPattern = null;
 

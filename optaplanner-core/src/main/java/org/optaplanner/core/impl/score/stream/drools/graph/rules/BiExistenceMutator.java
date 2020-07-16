@@ -28,7 +28,7 @@ import org.optaplanner.core.impl.score.stream.tri.AbstractTriJoiner;
 import org.optaplanner.core.impl.score.stream.tri.FilteringTriJoiner;
 import org.optaplanner.core.impl.score.stream.tri.NoneTriJoiner;
 
-public class BiExistenceMutator<A, B, C> implements Mutator {
+final class BiExistenceMutator<A, B, C> implements Mutator {
 
     private final boolean shouldExist;
     private final Class<C> otherFactType;

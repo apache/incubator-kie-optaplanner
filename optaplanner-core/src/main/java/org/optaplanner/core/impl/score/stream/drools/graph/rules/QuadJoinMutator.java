@@ -25,7 +25,7 @@ import org.drools.model.view.ViewItem;
 import org.optaplanner.core.impl.score.stream.drools.graph.nodes.AbstractConstraintModelJoiningNode;
 import org.optaplanner.core.impl.score.stream.quad.AbstractQuadJoiner;
 
-public class QuadJoinMutator<A, B, C, D> implements JoinMutator {
+final class QuadJoinMutator<A, B, C, D> implements JoinMutator {
 
     private final AbstractQuadJoiner<A, B, C, D> joiner;
 

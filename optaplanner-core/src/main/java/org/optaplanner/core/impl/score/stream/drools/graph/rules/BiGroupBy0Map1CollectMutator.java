@@ -19,7 +19,7 @@ package org.optaplanner.core.impl.score.stream.drools.graph.rules;
 import org.optaplanner.core.api.score.stream.bi.BiConstraintCollector;
 import org.optaplanner.core.impl.score.stream.drools.bi.DroolsBiAccumulateFunction;
 
-class BiGroupBy0Map1CollectMutator<A, B, NewA> extends AbstractBiGroupByMutator<A, B> {
+final class BiGroupBy0Map1CollectMutator<A, B, NewA> extends AbstractBiGroupByMutator<A, B> {
 
     private final BiConstraintCollector<A, B, ?, NewA> collector;
 
