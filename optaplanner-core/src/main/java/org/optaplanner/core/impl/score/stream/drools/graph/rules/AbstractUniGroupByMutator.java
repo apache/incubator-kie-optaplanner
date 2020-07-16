@@ -36,7 +36,7 @@ abstract class AbstractUniGroupByMutator<A> extends AbstractGroupByMutator {
     @Override
     protected <InTuple> PatternDef bindTupleVariableOnFirstGrouping(AbstractRuleBuilder ruleBuilder, PatternDef pattern,
             Variable<InTuple> inTupleVariable) {
-        return pattern.bind(inTupleVariable, fact -> fact);
+        return pattern.bind(inTupleVariable, a -> a);
     }
 
     protected <InTuple> AbstractRuleBuilder universalGroup(AbstractRuleBuilder ruleBuilder,

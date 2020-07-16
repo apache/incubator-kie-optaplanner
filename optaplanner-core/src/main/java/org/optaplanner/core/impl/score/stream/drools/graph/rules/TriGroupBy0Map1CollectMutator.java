@@ -16,18 +16,20 @@
 
 package org.optaplanner.core.impl.score.stream.drools.graph.rules;
 
-import static org.drools.model.PatternDSL.PatternDef;
+import org.optaplanner.core.api.score.stream.tri.TriConstraintCollector;
+import org.optaplanner.core.impl.score.stream.drools.tri.DroolsTriAccumulateFunction;
 
-import org.drools.model.Variable;
-import org.optaplanner.core.impl.score.stream.drools.common.BiTuple;
+class TriGroupBy0Map1CollectMutator<A, B, C, NewA> extends AbstractTriGroupByMutator<A, B, C> {
 
-abstract class AbstractBiGroupByMutator<A, B> extends AbstractGroupByMutator {
+    private final TriConstraintCollector<A, B, C, ?, NewA> collector;
 
-    @Override
-    protected <InTuple> PatternDef bindTupleVariableOnFirstGrouping(AbstractRuleBuilder ruleBuilder, PatternDef pattern,
-            Variable<InTuple> inTupleVariable) {
-        return pattern.bind(inTupleVariable, ruleBuilder.getVariables().get(0), ruleBuilder.getVariables().get(1),
-                (fact, a, b) -> new BiTuple<>((A) a, (B) b));
+    public TriGroupBy0Map1CollectMutator(TriConstraintCollector<A, B, C, ?, NewA> collector) {
+        this.collector = collector;
     }
 
+    @Override
+    public AbstractRuleBuilder apply(AbstractRuleBuilder ruleBuilder) {
+        DroolsTriAccumulateFunction<A, B, C, ?, NewA> bridge = new DroolsTriAccumulateFunction<>(collector);
+        return collect(ruleBuilder, bridge);
+    }
 }

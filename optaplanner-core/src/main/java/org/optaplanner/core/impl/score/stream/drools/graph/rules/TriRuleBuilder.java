@@ -33,6 +33,7 @@ import org.optaplanner.core.api.function.ToIntTriFunction;
 import org.optaplanner.core.api.function.ToLongTriFunction;
 import org.optaplanner.core.api.function.TriFunction;
 import org.optaplanner.core.api.function.TriPredicate;
+import org.optaplanner.core.api.score.stream.tri.TriConstraintCollector;
 import org.optaplanner.core.impl.score.holder.AbstractScoreHolder;
 import org.optaplanner.core.impl.score.stream.drools.DroolsConstraint;
 import org.optaplanner.core.impl.score.stream.drools.graph.consequences.ConstraintConsequence;
@@ -74,7 +75,41 @@ final class TriRuleBuilder extends AbstractRuleBuilder {
 
     @Override
     protected AbstractRuleBuilder andThenGroupBy(AbstractConstraintModelGroupingNode groupingNode) {
-        throw new UnsupportedOperationException();
+        List<TriFunction> mappings = groupingNode.getMappings();
+        int mappingCount = mappings.size();
+        List<TriConstraintCollector> collectors = groupingNode.getCollectors();
+        int collectorCount = collectors.size();
+        switch (groupingNode.getType()) {
+            case GROUPBY_MAPPING_ONLY:
+                switch (mappingCount) {
+                    case 1:
+                        return new TriGroupBy1Map0CollectMutator<>(mappings.get(0)).apply(this);
+                    case 2:
+                        return new TriGroupBy2Map0CollectMutator<>(mappings.get(0), mappings.get(1)).apply(this);
+                    default:
+                        throw new IllegalStateException("Invalid number of mappings: " + mappingCount);
+                }
+            case GROUPBY_COLLECTING_ONLY:
+                if (collectorCount == 1) {
+                    return new TriGroupBy0Map1CollectMutator<>(collectors.get(0)).apply(this);
+                }
+                throw new IllegalStateException("Invalid number of collectors: " + collectorCount);
+            case GROUPBY_MAPPING_AND_COLLECTING:
+                if (mappingCount == 1 && collectorCount == 1) {
+                    return new TriGroupBy1Map1CollectMutator<>(mappings.get(0), collectors.get(0)).apply(this);
+                } else if (mappingCount == 2 && collectorCount == 1) {
+                    return new TriGroupBy2Map1CollectMutator<>(mappings.get(0), mappings.get(1), collectors.get(0))
+                            .apply(this);
+                } else if (mappingCount == 2 && collectorCount == 2) {
+                    return new TriGroupBy2Map2CollectMutator<>(mappings.get(0), mappings.get(1), collectors.get(0),
+                            collectors.get(1)).apply(this);
+                } else {
+                    throw new IllegalStateException(
+                            "Invalid number of mappings (" + mappingCount + ") and collectors (" + collectorCount + ").");
+                }
+            default:
+                throw new UnsupportedOperationException();
+        }
     }
 
     @Override

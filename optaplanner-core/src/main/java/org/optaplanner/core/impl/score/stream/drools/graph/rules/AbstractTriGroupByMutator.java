@@ -19,15 +19,15 @@ package org.optaplanner.core.impl.score.stream.drools.graph.rules;
 import static org.drools.model.PatternDSL.PatternDef;
 
 import org.drools.model.Variable;
-import org.optaplanner.core.impl.score.stream.drools.common.BiTuple;
+import org.optaplanner.core.impl.score.stream.drools.common.TriTuple;
 
-abstract class AbstractBiGroupByMutator<A, B> extends AbstractGroupByMutator {
+abstract class AbstractTriGroupByMutator<A, B, C> extends AbstractGroupByMutator {
 
     @Override
     protected <InTuple> PatternDef bindTupleVariableOnFirstGrouping(AbstractRuleBuilder ruleBuilder, PatternDef pattern,
             Variable<InTuple> inTupleVariable) {
         return pattern.bind(inTupleVariable, ruleBuilder.getVariables().get(0), ruleBuilder.getVariables().get(1),
-                (fact, a, b) -> new BiTuple<>((A) a, (B) b));
+                ruleBuilder.getVariables().get(2), (fact, a, b, c) -> new TriTuple<>((A) a, (B) b, (C) c));
     }
 
 }
