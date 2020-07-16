@@ -297,7 +297,8 @@ The following functions are required for filtering constraint streams of differe
 [[constraintStreamsJoin]]
 === Joining
 
-Joining is a way to increase <<constraintStreamsCardinality,stream cardinality>> and it is similar to the inner join operation in SQL. As the following figure illustrates, a join creates a cartesian product of the streams being joined:
+Joining is a way to increase <<constraintStreamsCardinality,stream cardinality>> and it is similar to the inner join operation in SQL.
+As the following figure illustrates, a join creates a cartesian product of the streams being joined:
 
 image::ConstraintStreams/constraintStreamJoinWithoutJoiners.png[align="center"]
 
@@ -381,8 +382,7 @@ You can also provide your own collectors by implementing the
 ==== Out-of-the-box collectors
 
 The following section focuses on the collector implementations provided out of the box.
-This section only describes the
-`int`-based variants of the collectors in detail.
+This section only describes the `int`-based variants of the collectors in detail.
 Many of the collectors also provide variants for other applicable result data types, such as `long`, `BigDecimal` or `Duration`.
 You can find a complete list by exploring the
 `org.optaplanner.core.api.score.stream.ConstraintCollectors` class.
@@ -424,14 +424,14 @@ For example, the following use of the collector gives a number of talks in each 
     }
 ----
 
-The return value for this collector is a 32-bit signed integer (`int`).There is also a 64-bit variant, `countLong()`.
+The return value for this collector is a 32-bit signed integer (`int`).
+There is also a 64-bit variant, `countLong()`.
 
 [collectorsSum]
 ===== Collecting `sum()`
 
-To sum the values of a particular property of all elements in the group, use the `ConstraintCollectors.sum(...)`
-collector. The following code snippet first groups all processes by the computer they run on and sums up all the power
-required by the processes on that computer using the `ConstraintCollectors.sum(...)` collector.
+To sum the values of a particular property of all elements in the group, use the `ConstraintCollectors.sum(...)` collector.
+The following code snippet first groups all processes by the computer they run on and sums up all the power required by the processes on that computer using the `ConstraintCollectors.sum(...)` collector.
 
 [source,java,options="nowrap"]
 ----
@@ -444,7 +444,7 @@ required by the processes on that computer using the `ConstraintCollectors.sum(.
     }
 ----
 
-The return value for this collector is a 32-bit signed integer (`int`). There are also the following variants:
+The return value for this collector is a 32-bit signed integer (`int`).There are also the following variants:
 
 * 64-bit variant `sumLong()`
 * `java.math.BigDecimal`-based variant `sumBigDecimal()`
