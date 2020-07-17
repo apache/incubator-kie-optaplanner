@@ -20,7 +20,7 @@ import static java.util.Objects.requireNonNull;
 
 import org.optaplanner.core.impl.score.stream.drools.common.nodes.QuadConstraintGraphNode;
 
-final class QuadConstraintDefaultConsequence<A, B, C, D> implements QuadConstraintConsequence {
+final class QuadConstraintDefaultConsequence implements QuadConstraintConsequence {
 
     private final QuadConstraintGraphNode terminalNode;
 

@@ -20,7 +20,7 @@ import static java.util.Objects.requireNonNull;
 
 import org.optaplanner.core.impl.score.stream.drools.common.nodes.UniConstraintGraphNode;
 
-final class UniConstraintDefaultConsequence<A> implements UniConstraintConsequence {
+final class UniConstraintDefaultConsequence implements UniConstraintConsequence {
 
     private final UniConstraintGraphNode terminalNode;
 

@@ -20,7 +20,7 @@ import static java.util.Objects.requireNonNull;
 
 import org.optaplanner.core.impl.score.stream.drools.common.nodes.BiConstraintGraphNode;
 
-final class BiConstraintDefaultConsequence<A, B> implements BiConstraintConsequence {
+final class BiConstraintDefaultConsequence implements BiConstraintConsequence {
 
     private final BiConstraintGraphNode terminalNode;
 

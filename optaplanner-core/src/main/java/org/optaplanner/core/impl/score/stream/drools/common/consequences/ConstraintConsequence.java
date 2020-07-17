@@ -38,8 +38,8 @@ import org.optaplanner.core.impl.score.stream.drools.common.nodes.UniConstraintG
 
 public interface ConstraintConsequence<Node_ extends ConstraintGraphNode> {
 
-    static <A> UniConstraintConsequence create(UniConstraintGraphNode terminalNode) {
-        return new UniConstraintDefaultConsequence<>(terminalNode);
+    static UniConstraintConsequence create(UniConstraintGraphNode terminalNode) {
+        return new UniConstraintDefaultConsequence(terminalNode);
     }
 
     static <A> UniConstraintConsequence create(UniConstraintGraphNode terminalNode,
@@ -57,8 +57,8 @@ public interface ConstraintConsequence<Node_ extends ConstraintGraphNode> {
         return new UniConstraintBigDecimalConsequence<>(terminalNode, matchWeighter);
     }
 
-    static <A, B> BiConstraintConsequence create(BiConstraintGraphNode terminalNode) {
-        return new BiConstraintDefaultConsequence<>(terminalNode);
+    static BiConstraintConsequence create(BiConstraintGraphNode terminalNode) {
+        return new BiConstraintDefaultConsequence(terminalNode);
     }
 
     static <A, B> BiConstraintConsequence create(BiConstraintGraphNode terminalNode,
@@ -76,8 +76,8 @@ public interface ConstraintConsequence<Node_ extends ConstraintGraphNode> {
         return new BiConstraintBigDecimalConsequence<>(terminalNode, matchWeighter);
     }
 
-    static <A, B, C> TriConstraintConsequence create(TriConstraintGraphNode terminalNode) {
-        return new TriConstraintDefaultConsequence<>(terminalNode);
+    static TriConstraintConsequence create(TriConstraintGraphNode terminalNode) {
+        return new TriConstraintDefaultConsequence(terminalNode);
     }
 
     static <A, B, C> TriConstraintConsequence create(TriConstraintGraphNode terminalNode,
@@ -95,8 +95,8 @@ public interface ConstraintConsequence<Node_ extends ConstraintGraphNode> {
         return new TriConstraintBigDecimalConsequence<>(terminalNode, matchWeighter);
     }
 
-    static <A, B, C, D> QuadConstraintConsequence create(QuadConstraintGraphNode terminalNode) {
-        return new QuadConstraintDefaultConsequence<>(terminalNode);
+    static QuadConstraintConsequence create(QuadConstraintGraphNode terminalNode) {
+        return new QuadConstraintDefaultConsequence(terminalNode);
     }
 
     static <A, B, C, D> QuadConstraintConsequence create(QuadConstraintGraphNode terminalNode,

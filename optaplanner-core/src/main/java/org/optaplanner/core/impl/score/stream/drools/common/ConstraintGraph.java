@@ -92,8 +92,7 @@ public final class ConstraintGraph {
         return addNode(() -> ConstraintGraphNode.filter(predicate), parent);
     }
 
-    public <A, B, C> TriConstraintGraphNode filter(TriConstraintGraphNode parent,
-            TriPredicate<A, B, C> predicate) {
+    public <A, B, C> TriConstraintGraphNode filter(TriConstraintGraphNode parent, TriPredicate<A, B, C> predicate) {
         return addNode(() -> ConstraintGraphNode.filter(predicate), parent);
     }
 
@@ -102,8 +101,8 @@ public final class ConstraintGraph {
         return addNode(() -> ConstraintGraphNode.filter(predicate), parent);
     }
 
-    public <A, B> BiConstraintGraphNode join(UniConstraintGraphNode leftParent,
-            UniConstraintGraphNode rightParent, BiJoiner<A, B> joiner) {
+    public <A, B> BiConstraintGraphNode join(UniConstraintGraphNode leftParent, UniConstraintGraphNode rightParent,
+            BiJoiner<A, B> joiner) {
         return addNode(() -> ConstraintGraphNode.join(rightParent.getFactType(), joiner), leftParent, rightParent);
     }
 
@@ -117,43 +116,43 @@ public final class ConstraintGraph {
         return addNode(() -> ConstraintGraphNode.join(rightParent.getFactType(), joiner), leftParent, rightParent);
     }
 
-    public <A, B> UniConstraintGraphChildNode ifExists(UniConstraintGraphNode parent,
-            Class<B> existsType, BiJoiner<A, B>... joiners) {
+    public <A, B> UniConstraintGraphChildNode ifExists(UniConstraintGraphNode parent, Class<B> existsType,
+            BiJoiner<A, B>... joiners) {
         return addNode(() -> ConstraintGraphNode.ifExists(existsType, joiners), parent);
     }
 
-    public <A, B, C> BiConstraintGraphNode ifExists(BiConstraintGraphNode parent,
-            Class<C> existsType, TriJoiner<A, B, C>... joiners) {
+    public <A, B, C> BiConstraintGraphNode ifExists(BiConstraintGraphNode parent, Class<C> existsType,
+            TriJoiner<A, B, C>... joiners) {
         return addNode(() -> ConstraintGraphNode.ifExists(existsType, joiners), parent);
     }
 
-    public <A, B, C, D> TriConstraintGraphNode ifExists(TriConstraintGraphNode parent,
-            Class<D> existsType, QuadJoiner<A, B, C, D>... joiners) {
+    public <A, B, C, D> TriConstraintGraphNode ifExists(TriConstraintGraphNode parent, Class<D> existsType,
+            QuadJoiner<A, B, C, D>... joiners) {
         return addNode(() -> ConstraintGraphNode.ifExists(existsType, joiners), parent);
     }
 
-    public <A, B, C, D, E> QuadConstraintGraphNode ifExists(QuadConstraintGraphNode parent,
-            Class<E> existsType, PentaJoiner<A, B, C, D, E>... joiners) {
+    public <A, B, C, D, E> QuadConstraintGraphNode ifExists(QuadConstraintGraphNode parent, Class<E> existsType,
+            PentaJoiner<A, B, C, D, E>... joiners) {
         return addNode(() -> ConstraintGraphNode.ifExists(existsType, joiners), parent);
     }
 
-    public <A, B> UniConstraintGraphChildNode ifNotExists(UniConstraintGraphNode parent,
-            Class<B> existsType, BiJoiner<A, B>... joiners) {
+    public <A, B> UniConstraintGraphChildNode ifNotExists(UniConstraintGraphNode parent, Class<B> existsType,
+            BiJoiner<A, B>... joiners) {
         return addNode(() -> ConstraintGraphNode.ifNotExists(existsType, joiners), parent);
     }
 
-    public <A, B, C> BiConstraintGraphNode ifNotExists(BiConstraintGraphNode parent,
-            Class<C> existsType, TriJoiner<A, B, C>... joiners) {
+    public <A, B, C> BiConstraintGraphNode ifNotExists(BiConstraintGraphNode parent, Class<C> existsType,
+            TriJoiner<A, B, C>... joiners) {
         return addNode(() -> ConstraintGraphNode.ifNotExists(existsType, joiners), parent);
     }
 
-    public <A, B, C, D> TriConstraintGraphNode ifNotExists(TriConstraintGraphNode parent,
-            Class<D> existsType, QuadJoiner<A, B, C, D>... joiners) {
+    public <A, B, C, D> TriConstraintGraphNode ifNotExists(TriConstraintGraphNode parent, Class<D> existsType,
+            QuadJoiner<A, B, C, D>... joiners) {
         return addNode(() -> ConstraintGraphNode.ifNotExists(existsType, joiners), parent);
     }
 
-    public <A, B, C, D, E> QuadConstraintGraphNode ifNotExists(QuadConstraintGraphNode parent,
-            Class<E> existsType, PentaJoiner<A, B, C, D, E>... joiners) {
+    public <A, B, C, D, E> QuadConstraintGraphNode ifNotExists(QuadConstraintGraphNode parent, Class<E> existsType,
+            PentaJoiner<A, B, C, D, E>... joiners) {
         return addNode(() -> ConstraintGraphNode.ifNotExists(existsType, joiners), parent);
     }
 
@@ -162,8 +161,8 @@ public final class ConstraintGraph {
         return addNode(() -> ConstraintGraphNode.groupBy(mapping), parent);
     }
 
-    public <A, GroupKeyA_, GroupKeyB_> BiConstraintGraphNode groupBy(
-            UniConstraintGraphNode parent, Function<A, GroupKeyA_> aMapping, Function<A, GroupKeyB_> bMapping) {
+    public <A, GroupKeyA_, GroupKeyB_> BiConstraintGraphNode groupBy(UniConstraintGraphNode parent,
+            Function<A, GroupKeyA_> aMapping, Function<A, GroupKeyB_> bMapping) {
         return addNode(() -> ConstraintGraphNode.groupBy(aMapping, bMapping), parent);
     }
 
@@ -172,29 +171,26 @@ public final class ConstraintGraph {
         return addNode(() -> ConstraintGraphNode.groupBy(collector), parent);
     }
 
-    public <A, GroupKey_, ResultContainer_, Result_> BiConstraintGraphNode groupBy(
-            UniConstraintGraphNode parent, Function<A, GroupKey_> mapping,
-            UniConstraintCollector<A, ResultContainer_, Result_> collector) {
+    public <A, GroupKey_, ResultContainer_, Result_> BiConstraintGraphNode groupBy(UniConstraintGraphNode parent,
+            Function<A, GroupKey_> mapping, UniConstraintCollector<A, ResultContainer_, Result_> collector) {
         return addNode(() -> ConstraintGraphNode.groupBy(mapping, collector), parent);
     }
 
     public <A, GroupKeyA_, GroupKeyB_, ResultContainer_, Result_>
-            TriConstraintGraphNode groupBy(UniConstraintGraphNode parent,
-                    Function<A, GroupKeyA_> aMapping, Function<A, GroupKeyB_> bMapping,
-                    UniConstraintCollector<A, ResultContainer_, Result_> collector) {
+            TriConstraintGraphNode groupBy(UniConstraintGraphNode parent, Function<A, GroupKeyA_> aMapping,
+                    Function<A, GroupKeyB_> bMapping, UniConstraintCollector<A, ResultContainer_, Result_> collector) {
         return addNode(() -> ConstraintGraphNode.groupBy(aMapping, bMapping, collector), parent);
     }
 
     public <A, GroupKeyA_, GroupKeyB_, ResultContainerC_, ResultC_, ResultContainerD_, ResultD_>
-            QuadConstraintGraphNode groupBy(
-                    UniConstraintGraphNode parent, Function<A, GroupKeyA_> aMapping,
+            QuadConstraintGraphNode groupBy(UniConstraintGraphNode parent, Function<A, GroupKeyA_> aMapping,
                     Function<A, GroupKeyB_> bMapping, UniConstraintCollector<A, ResultContainerC_, ResultC_> cCollector,
                     UniConstraintCollector<A, ResultContainerD_, ResultD_> dCollector) {
         return addNode(() -> ConstraintGraphNode.groupBy(aMapping, bMapping, cCollector, dCollector), parent);
     }
 
-    public <A, B, ResultContainer_, Result_> UniConstraintGraphChildNode groupBy(
-            BiConstraintGraphNode parent, BiConstraintCollector<A, B, ResultContainer_, Result_> collector) {
+    public <A, B, ResultContainer_, Result_> UniConstraintGraphChildNode groupBy(BiConstraintGraphNode parent,
+            BiConstraintCollector<A, B, ResultContainer_, Result_> collector) {
         return addNode(() -> ConstraintGraphNode.groupBy(collector), parent);
     }
 
@@ -209,29 +205,27 @@ public final class ConstraintGraph {
         return addNode(() -> ConstraintGraphNode.groupBy(mapping, collector), parent);
     }
 
-    public <A, B, GroupKeyA_, GroupKeyB_> BiConstraintGraphNode groupBy(
-            BiConstraintGraphNode parent, BiFunction<A, B, GroupKeyA_> aMapping,
-            BiFunction<A, B, GroupKeyB_> bMapping) {
+    public <A, B, GroupKeyA_, GroupKeyB_> BiConstraintGraphNode groupBy(BiConstraintGraphNode parent,
+            BiFunction<A, B, GroupKeyA_> aMapping, BiFunction<A, B, GroupKeyB_> bMapping) {
         return addNode(() -> ConstraintGraphNode.groupBy(aMapping, bMapping), parent);
     }
 
     public <A, B, GroupKeyA_, GroupKeyB_, ResultContainer_, Result_>
-            TriConstraintGraphNode groupBy(BiConstraintGraphNode parent,
-                    BiFunction<A, B, GroupKeyA_> aMapping, BiFunction<A, B, GroupKeyB_> bMapping,
+            TriConstraintGraphNode groupBy(BiConstraintGraphNode parent, BiFunction<A, B, GroupKeyA_> aMapping,
+                    BiFunction<A, B, GroupKeyB_> bMapping,
                     BiConstraintCollector<A, B, ResultContainer_, Result_> collector) {
         return addNode(() -> ConstraintGraphNode.groupBy(aMapping, bMapping, collector), parent);
     }
 
     public <A, B, GroupKeyA_, GroupKeyB_, ResultContainerC_, ResultC_, ResultContainerD_, ResultD_>
-            QuadConstraintGraphNode groupBy(BiConstraintGraphNode parent,
-                    BiFunction<A, B, GroupKeyA_> aMapping, BiFunction<A, B, GroupKeyB_> bMapping,
+            QuadConstraintGraphNode groupBy(BiConstraintGraphNode parent, BiFunction<A, B, GroupKeyA_> aMapping,
+                    BiFunction<A, B, GroupKeyB_> bMapping,
                     BiConstraintCollector<A, B, ResultContainerC_, ResultC_> cCollector,
                     BiConstraintCollector<A, B, ResultContainerD_, ResultD_> dCollector) {
         return addNode(() -> ConstraintGraphNode.groupBy(aMapping, bMapping, cCollector, dCollector), parent);
     }
 
-    public <A, B, C, ResultContainer_, Result_> UniConstraintGraphChildNode groupBy(
-            TriConstraintGraphNode parent,
+    public <A, B, C, ResultContainer_, Result_> UniConstraintGraphChildNode groupBy(TriConstraintGraphNode parent,
             TriConstraintCollector<A, B, C, ResultContainer_, Result_> collector) {
         return addNode(() -> ConstraintGraphNode.groupBy(collector), parent);
     }
@@ -254,29 +248,27 @@ public final class ConstraintGraph {
     }
 
     public <A, B, C, GroupKeyA_, GroupKeyB_, ResultContainer_, Result_>
-            TriConstraintGraphNode groupBy(TriConstraintGraphNode parent,
-                    TriFunction<A, B, C, GroupKeyA_> aMapping, TriFunction<A, B, C, GroupKeyB_> bMapping,
+            TriConstraintGraphNode groupBy(TriConstraintGraphNode parent, TriFunction<A, B, C, GroupKeyA_> aMapping,
+                    TriFunction<A, B, C, GroupKeyB_> bMapping,
                     TriConstraintCollector<A, B, C, ResultContainer_, Result_> collector) {
         return addNode(() -> ConstraintGraphNode.groupBy(aMapping, bMapping, collector), parent);
     }
 
     public <A, B, C, GroupKeyA_, GroupKeyB_, ResultContainerC_, ResultC_, ResultContainerD_, ResultD_>
-            QuadConstraintGraphNode groupBy(
-                    TriConstraintGraphNode parent, TriFunction<A, B, C, GroupKeyA_> aMapping,
+            QuadConstraintGraphNode groupBy(TriConstraintGraphNode parent, TriFunction<A, B, C, GroupKeyA_> aMapping,
                     TriFunction<A, B, C, GroupKeyB_> bMapping,
                     TriConstraintCollector<A, B, C, ResultContainerC_, ResultC_> cCollector,
                     TriConstraintCollector<A, B, C, ResultContainerD_, ResultD_> dCollector) {
         return addNode(() -> ConstraintGraphNode.groupBy(aMapping, bMapping, cCollector, dCollector), parent);
     }
 
-    public <A, B, C, D, ResultContainer_, Result_> UniConstraintGraphChildNode groupBy(
-            QuadConstraintGraphNode parent,
+    public <A, B, C, D, ResultContainer_, Result_> UniConstraintGraphChildNode groupBy(QuadConstraintGraphNode parent,
             QuadConstraintCollector<A, B, C, D, ResultContainer_, Result_> collector) {
         return addNode(() -> ConstraintGraphNode.groupBy(collector), parent);
     }
 
-    public <A, B, C, D, GroupKey_> UniConstraintGraphChildNode groupBy(
-            QuadConstraintGraphNode parent, QuadFunction<A, B, C, D, GroupKey_> mapping) {
+    public <A, B, C, D, GroupKey_> UniConstraintGraphChildNode groupBy(QuadConstraintGraphNode parent,
+            QuadFunction<A, B, C, D, GroupKey_> mapping) {
         return addNode(() -> ConstraintGraphNode.groupBy(mapping), parent);
     }
 
@@ -286,23 +278,21 @@ public final class ConstraintGraph {
         return addNode(() -> ConstraintGraphNode.groupBy(mapping, collector), parent);
     }
 
-    public <A, B, C, D, GroupKeyA_, GroupKeyB_> BiConstraintGraphNode groupBy(
-            QuadConstraintGraphNode parent, QuadFunction<A, B, C, D, GroupKeyA_> aMapping,
-            QuadFunction<A, B, C, D, GroupKeyB_> bMapping) {
+    public <A, B, C, D, GroupKeyA_, GroupKeyB_> BiConstraintGraphNode groupBy(QuadConstraintGraphNode parent,
+            QuadFunction<A, B, C, D, GroupKeyA_> aMapping, QuadFunction<A, B, C, D, GroupKeyB_> bMapping) {
         return addNode(() -> ConstraintGraphNode.groupBy(aMapping, bMapping), parent);
     }
 
-    public <A, B, C, D, GroupKeyA_, GroupKeyB_, ResultContainer_, Result_>
-            TriConstraintGraphNode groupBy(QuadConstraintGraphNode parent,
-                    QuadFunction<A, B, C, D, GroupKeyA_> aMapping, QuadFunction<A, B, C, D, GroupKeyB_> bMapping,
-                    QuadConstraintCollector<A, B, C, D, ResultContainer_, Result_> collector) {
+    public <A, B, C, D, GroupKeyA_, GroupKeyB_, ResultContainer_, Result_> TriConstraintGraphNode groupBy(
+            QuadConstraintGraphNode parent, QuadFunction<A, B, C, D, GroupKeyA_> aMapping,
+            QuadFunction<A, B, C, D, GroupKeyB_> bMapping,
+            QuadConstraintCollector<A, B, C, D, ResultContainer_, Result_> collector) {
         return addNode(() -> ConstraintGraphNode.groupBy(aMapping, bMapping, collector), parent);
     }
 
     public <A, B, C, D, GroupKeyA_, GroupKeyB_, ResultContainerC_, ResultC_, ResultContainerD_, ResultD_>
-            QuadConstraintGraphNode groupBy(
-                    QuadConstraintGraphNode parent, QuadFunction<A, B, C, D, GroupKeyA_> aMapping,
-                    QuadFunction<A, B, C, D, GroupKeyB_> bMapping,
+            QuadConstraintGraphNode groupBy(QuadConstraintGraphNode parent,
+                    QuadFunction<A, B, C, D, GroupKeyA_> aMapping, QuadFunction<A, B, C, D, GroupKeyB_> bMapping,
                     QuadConstraintCollector<A, B, C, D, ResultContainerC_, ResultC_> cCollector,
                     QuadConstraintCollector<A, B, C, D, ResultContainerD_, ResultD_> dCollector) {
         return addNode(() -> ConstraintGraphNode.groupBy(aMapping, bMapping, cCollector, dCollector), parent);
@@ -320,7 +310,7 @@ public final class ConstraintGraph {
         return node;
     }
 
-    public <A> UniConstraintConsequence impact(UniConstraintGraphNode parent) {
+    public UniConstraintConsequence impact(UniConstraintGraphNode parent) {
         return impact(() -> ConstraintConsequence.create(parent));
     }
 
@@ -332,22 +322,19 @@ public final class ConstraintGraph {
         return impact(() -> ConstraintConsequence.create(parent, matchWeighter));
     }
 
-    public <A> UniConstraintConsequence impact(UniConstraintGraphNode parent,
-            Function<A, BigDecimal> matchWeighter) {
+    public <A> UniConstraintConsequence impact(UniConstraintGraphNode parent, Function<A, BigDecimal> matchWeighter) {
         return impact(() -> ConstraintConsequence.create(parent, matchWeighter));
     }
 
-    public <A, B> BiConstraintConsequence impact(BiConstraintGraphNode parent) {
+    public BiConstraintConsequence impact(BiConstraintGraphNode parent) {
         return impact(() -> ConstraintConsequence.create(parent));
     }
 
-    public <A, B> BiConstraintConsequence impact(BiConstraintGraphNode parent,
-            ToIntBiFunction<A, B> matchWeighter) {
+    public <A, B> BiConstraintConsequence impact(BiConstraintGraphNode parent, ToIntBiFunction<A, B> matchWeighter) {
         return impact(() -> ConstraintConsequence.create(parent, matchWeighter));
     }
 
-    public <A, B> BiConstraintConsequence impact(BiConstraintGraphNode parent,
-            ToLongBiFunction<A, B> matchWeighter) {
+    public <A, B> BiConstraintConsequence impact(BiConstraintGraphNode parent, ToLongBiFunction<A, B> matchWeighter) {
         return impact(() -> ConstraintConsequence.create(parent, matchWeighter));
     }
 
@@ -356,7 +343,7 @@ public final class ConstraintGraph {
         return impact(() -> ConstraintConsequence.create(parent, matchWeighter));
     }
 
-    public <A, B, C> TriConstraintConsequence impact(TriConstraintGraphNode parent) {
+    public TriConstraintConsequence impact(TriConstraintGraphNode parent) {
         return impact(() -> ConstraintConsequence.create(parent));
     }
 
@@ -375,7 +362,7 @@ public final class ConstraintGraph {
         return impact(() -> ConstraintConsequence.create(parent, matchWeighter));
     }
 
-    public <A, B, C, D> QuadConstraintConsequence impact(QuadConstraintGraphNode parent) {
+    public QuadConstraintConsequence impact(QuadConstraintGraphNode parent) {
         return impact(() -> ConstraintConsequence.create(parent));
     }
 

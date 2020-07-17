@@ -20,7 +20,7 @@ import static java.util.Objects.requireNonNull;
 
 import org.optaplanner.core.impl.score.stream.drools.common.nodes.TriConstraintGraphNode;
 
-final class TriConstraintDefaultConsequence<A, B, C> implements TriConstraintConsequence {
+final class TriConstraintDefaultConsequence implements TriConstraintConsequence {
 
     private final TriConstraintGraphNode terminalNode;
 
