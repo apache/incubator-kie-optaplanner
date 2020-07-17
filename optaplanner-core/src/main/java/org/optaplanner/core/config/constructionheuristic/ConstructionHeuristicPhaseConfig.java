@@ -18,7 +18,6 @@ package org.optaplanner.core.config.constructionheuristic;
 
 import static org.apache.commons.lang3.ObjectUtils.defaultIfNull;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.ThreadFactory;
 
@@ -74,16 +73,15 @@ public class ConstructionHeuristicPhaseConfig extends PhaseConfig<ConstructionHe
     protected EntitySorterManner entitySorterManner = null;
     protected ValueSorterManner valueSorterManner = null;
 
-    // TODO This is a List due to XStream limitations. With JAXB it could be just a EntityPlacerConfig instead.
     @XmlElements({
             @XmlElement(name = "queuedEntityPlacer", type = QueuedEntityPlacerConfig.class),
             @XmlElement(name = "queuedValuePlacer", type = QueuedValuePlacerConfig.class),
             @XmlElement(name = "pooledEntityPlacer", type = PooledEntityPlacerConfig.class)
     })
     @XStreamImplicit
-    protected List<EntityPlacerConfig> entityPlacerConfigList = null;
+    protected EntityPlacerConfig entityPlacerConfig = null;
 
-    /** Simpler alternative for {@link #entityPlacerConfigList}. */
+    /** Simpler alternative for {@link #entityPlacerConfig}. */
     @XmlElements({
             @XmlElement(name = CartesianProductMoveSelectorConfig.XML_ELEMENT_NAME,
                     type = CartesianProductMoveSelectorConfig.class),
@@ -139,11 +137,11 @@ public class ConstructionHeuristicPhaseConfig extends PhaseConfig<ConstructionHe
     }
 
     public EntityPlacerConfig getEntityPlacerConfig() {
-        return entityPlacerConfigList == null ? null : entityPlacerConfigList.get(0);
+        return entityPlacerConfig;
     }
 
     public void setEntityPlacerConfig(EntityPlacerConfig entityPlacerConfig) {
-        this.entityPlacerConfigList = entityPlacerConfig == null ? null : Collections.singletonList(entityPlacerConfig);
+        this.entityPlacerConfig = entityPlacerConfig;
     }
 
     public List<MoveSelectorConfig> getMoveSelectorConfigList() {
@@ -182,7 +180,7 @@ public class ConstructionHeuristicPhaseConfig extends PhaseConfig<ConstructionHe
     }
 
     public ConstructionHeuristicPhaseConfig withEntityPlacerConfig(EntityPlacerConfig entityPlacerConfig) {
-        this.entityPlacerConfigList = entityPlacerConfig == null ? null : Collections.singletonList(entityPlacerConfig);
+        this.entityPlacerConfig = entityPlacerConfig;
         return this;
     }
 
@@ -214,28 +212,23 @@ public class ConstructionHeuristicPhaseConfig extends PhaseConfig<ConstructionHe
                 : constructionHeuristicType_.getDefaultEntitySorterManner());
         phaseConfigPolicy.setValueSorterManner(valueSorterManner != null ? valueSorterManner
                 : constructionHeuristicType_.getDefaultValueSorterManner());
-        EntityPlacerConfig entityPlacerConfig;
-        if (ConfigUtils.isEmptyCollection(entityPlacerConfigList)) {
-            entityPlacerConfig = buildUnfoldedEntityPlacerConfig(phaseConfigPolicy, constructionHeuristicType_);
-        } else if (entityPlacerConfigList.size() == 1) {
-            entityPlacerConfig = entityPlacerConfigList.get(0);
+        EntityPlacerConfig entityPlacerConfig_;
+        if (entityPlacerConfig == null) {
+            entityPlacerConfig_ = buildUnfoldedEntityPlacerConfig(phaseConfigPolicy, constructionHeuristicType_);
+        } else {
+            entityPlacerConfig_ = entityPlacerConfig;
             if (constructionHeuristicType != null) {
                 throw new IllegalArgumentException("The constructionHeuristicType (" + constructionHeuristicType
-                        + ") must not be configured if the entityPlacerConfig (" + entityPlacerConfig
+                        + ") must not be configured if the entityPlacerConfig (" + entityPlacerConfig_
                         + ") is explicitly configured.");
             }
             if (moveSelectorConfigList != null) {
                 throw new IllegalArgumentException("The moveSelectorConfigList (" + moveSelectorConfigList
-                        + ") can not be configured if the entityPlacerConfig (" + entityPlacerConfig
+                        + ") can not be configured if the entityPlacerConfig (" + entityPlacerConfig_
                         + ") is explicitly configured.");
             }
-        } else {
-            // TODO entityPlacerConfigList is only a List because of XStream limitations.
-            throw new IllegalArgumentException("The entityPlacerConfigList (" + entityPlacerConfigList
-                    + ") must be a singleton or empty. Use multiple " + ConstructionHeuristicPhaseConfig.class
-                    + " elements to initialize multiple entity classes.");
         }
-        EntityPlacer entityPlacer = entityPlacerConfig.buildEntityPlacer(phaseConfigPolicy);
+        EntityPlacer entityPlacer = entityPlacerConfig_.buildEntityPlacer(phaseConfigPolicy);
         phase.setEntityPlacer(entityPlacer);
         EnvironmentMode environmentMode = phaseConfigPolicy.getEnvironmentMode();
         if (environmentMode.isNonIntrusiveFullAsserted()) {

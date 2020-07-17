@@ -18,7 +18,6 @@ package org.optaplanner.core.config.constructionheuristic.placer;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 
 import javax.xml.bind.annotation.XmlElement;
@@ -89,7 +88,6 @@ public class PooledEntityPlacerConfig extends EntityPlacerConfig<PooledEntityPla
         return config;
     }
 
-    // TODO This is a List due to XStream limitations. With JAXB it could be just a MoveSelectorConfig instead.
     @XmlElements({
             @XmlElement(name = CartesianProductMoveSelectorConfig.XML_ELEMENT_NAME,
                     type = CartesianProductMoveSelectorConfig.class),
@@ -110,17 +108,17 @@ public class PooledEntityPlacerConfig extends EntityPlacerConfig<PooledEntityPla
             @XmlElement(name = UnionMoveSelectorConfig.XML_ELEMENT_NAME, type = UnionMoveSelectorConfig.class)
     })
     @XStreamImplicit()
-    private List<MoveSelectorConfig> moveSelectorConfigList = null;
+    private MoveSelectorConfig moveSelectorConfig = null;
 
     public PooledEntityPlacerConfig() {
     }
 
     public MoveSelectorConfig getMoveSelectorConfig() {
-        return moveSelectorConfigList == null ? null : moveSelectorConfigList.get(0);
+        return moveSelectorConfig;
     }
 
     public void setMoveSelectorConfig(MoveSelectorConfig moveSelectorConfig) {
-        this.moveSelectorConfigList = moveSelectorConfig == null ? null : Collections.singletonList(moveSelectorConfig);
+        this.moveSelectorConfig = moveSelectorConfig;
     }
 
     // ************************************************************************
@@ -129,19 +127,10 @@ public class PooledEntityPlacerConfig extends EntityPlacerConfig<PooledEntityPla
 
     @Override
     public PooledEntityPlacer buildEntityPlacer(HeuristicConfigPolicy configPolicy) {
-        MoveSelectorConfig moveSelectorConfig;
-        if (ConfigUtils.isEmptyCollection(moveSelectorConfigList)) {
-            moveSelectorConfig = buildMoveSelectorConfig(configPolicy);
-        } else if (moveSelectorConfigList.size() == 1) {
-            moveSelectorConfig = moveSelectorConfigList.get(0);
-        } else {
-            // TODO moveSelectorConfigList is only a List because of XStream limitations.
-            throw new IllegalArgumentException("The moveSelectorConfigList (" + moveSelectorConfigList
-                    + ") must be a singleton or empty. Use a single " + UnionMoveSelectorConfig.class.getSimpleName()
-                    + " or " + CartesianProductMoveSelectorConfig.class.getSimpleName()
-                    + " element to nest multiple MoveSelectors.");
-        }
-        MoveSelector moveSelector = moveSelectorConfig.buildMoveSelector(
+        MoveSelectorConfig moveSelectorConfig_ =
+                moveSelectorConfig == null ? buildMoveSelectorConfig(configPolicy) : moveSelectorConfig;
+
+        MoveSelector moveSelector = moveSelectorConfig_.buildMoveSelector(
                 configPolicy, SelectionCacheType.JUST_IN_TIME, SelectionOrder.ORIGINAL);
         return new PooledEntityPlacer(moveSelector);
     }

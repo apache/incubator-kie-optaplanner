@@ -16,9 +16,6 @@
 
 package org.optaplanner.core.config.constructionheuristic.placer;
 
-import java.util.Collections;
-import java.util.List;
-
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElements;
 
@@ -67,7 +64,6 @@ public class QueuedValuePlacerConfig extends EntityPlacerConfig<QueuedValuePlace
     @XStreamAlias("valueSelector")
     protected ValueSelectorConfig valueSelectorConfig = null;
 
-    // TODO This is a List due to XStream limitations. With JAXB it could be just a MoveSelectorConfig instead.
     @XmlElements({
             @XmlElement(name = CartesianProductMoveSelectorConfig.XML_ELEMENT_NAME,
                     type = CartesianProductMoveSelectorConfig.class),
@@ -88,7 +84,7 @@ public class QueuedValuePlacerConfig extends EntityPlacerConfig<QueuedValuePlace
             @XmlElement(name = UnionMoveSelectorConfig.XML_ELEMENT_NAME, type = UnionMoveSelectorConfig.class)
     })
     @XStreamImplicit()
-    private List<MoveSelectorConfig> moveSelectorConfigList = null;
+    private MoveSelectorConfig moveSelectorConfig = null;
 
     public QueuedValuePlacerConfig() {
     }
@@ -110,11 +106,11 @@ public class QueuedValuePlacerConfig extends EntityPlacerConfig<QueuedValuePlace
     }
 
     public MoveSelectorConfig getMoveSelectorConfig() {
-        return moveSelectorConfigList == null ? null : moveSelectorConfigList.get(0);
+        return moveSelectorConfig;
     }
 
     public void setMoveSelectorConfig(MoveSelectorConfig moveSelectorConfig) {
-        this.moveSelectorConfigList = moveSelectorConfig == null ? null : Collections.singletonList(moveSelectorConfig);
+        this.moveSelectorConfig = moveSelectorConfig;
     }
 
     // ************************************************************************
@@ -128,20 +124,10 @@ public class QueuedValuePlacerConfig extends EntityPlacerConfig<QueuedValuePlace
         ValueSelector valueSelector = valueSelectorConfig_.buildValueSelector(configPolicy, entityDescriptor,
                 SelectionCacheType.PHASE, SelectionOrder.ORIGINAL, false);
 
-        MoveSelectorConfig moveSelectorConfig;
-        if (ConfigUtils.isEmptyCollection(moveSelectorConfigList)) {
-            moveSelectorConfig = buildChangeMoveSelectorConfig(configPolicy,
-                    valueSelectorConfig_.getId(), valueSelector.getVariableDescriptor());
-        } else if (moveSelectorConfigList.size() == 1) {
-            moveSelectorConfig = moveSelectorConfigList.get(0);
-        } else {
-            // TODO moveSelectorConfigList is only a List because of XStream limitations.
-            throw new IllegalArgumentException("The moveSelectorConfigList (" + moveSelectorConfigList
-                    + ") must be a singleton or empty. Use a single " + UnionMoveSelectorConfig.class.getSimpleName()
-                    + " or " + CartesianProductMoveSelectorConfig.class.getSimpleName()
-                    + " element to nest multiple MoveSelectors.");
-        }
-        MoveSelector moveSelector = moveSelectorConfig.buildMoveSelector(
+        MoveSelectorConfig moveSelectorConfig_ = moveSelectorConfig == null ? buildChangeMoveSelectorConfig(configPolicy,
+                valueSelectorConfig_.getId(), valueSelector.getVariableDescriptor()) : moveSelectorConfig;
+
+        MoveSelector moveSelector = moveSelectorConfig_.buildMoveSelector(
                 configPolicy, SelectionCacheType.JUST_IN_TIME, SelectionOrder.ORIGINAL);
         if (!(valueSelector instanceof EntityIndependentValueSelector)) {
             throw new IllegalArgumentException("The queuedValuePlacer (" + this
@@ -213,7 +199,7 @@ public class QueuedValuePlacerConfig extends EntityPlacerConfig<QueuedValuePlace
 
     @Override
     public String toString() {
-        return getClass().getSimpleName() + "(" + valueSelectorConfig + ", " + moveSelectorConfigList + ")";
+        return getClass().getSimpleName() + "(" + valueSelectorConfig + ", " + moveSelectorConfig + ")";
     }
 
 }
