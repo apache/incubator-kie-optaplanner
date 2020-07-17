@@ -18,7 +18,6 @@ package org.optaplanner.core.impl.score.stream.drools.common.rules;
 
 import static java.util.Collections.emptyList;
 import static java.util.Collections.emptyMap;
-import static java.util.Collections.singletonList;
 import static java.util.Collections.unmodifiableList;
 import static java.util.Collections.unmodifiableMap;
 import static org.drools.model.DSL.declarationOf;
@@ -33,7 +32,6 @@ import java.util.Map;
 import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.function.UnaryOperator;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.drools.model.Argument;
@@ -251,7 +249,7 @@ abstract class AbstractRuleAssembler<Predicate_> implements RuleAssembler {
     protected abstract ConsequenceBuilder.ValidBuilder buildConsequence(DroolsConstraint constraint,
             Global<? extends AbstractScoreHolder<?>> scoreHolderGlobal, Variable... variables);
 
-    public List<Rule> assemble(Global<? extends AbstractScoreHolder<?>> scoreHolderGlobal, DroolsConstraint constraint) {
+    public RuleAssembly assemble(Global<? extends AbstractScoreHolder<?>> scoreHolderGlobal, DroolsConstraint constraint) {
         applyFilterToLastPrimaryPattern();
         List<RuleItemBuilder> ruleItemBuilderList = new ArrayList<>(0);
         ruleItemBuilderList.addAll(finishedExpressions);
@@ -263,11 +261,8 @@ abstract class AbstractRuleAssembler<Predicate_> implements RuleAssembler {
                 variables.toArray(new Variable[0]));
         ruleItemBuilderList.add(consequence);
         Rule rule = rule(constraint.getConstraintPackage(), constraint.getConstraintName())
-                .metadata(VARIABLE_TYPE_RULE_METADATA_KEY, getExpectedJustificationTypes()
-                        .map(Class::getCanonicalName)
-                        .collect(Collectors.joining(",")))
                 .build(ruleItemBuilderList.toArray(new RuleItemBuilder[0]));
-        return singletonList(rule);
+        return new RuleAssembly(rule, getExpectedJustificationTypes().toArray(Class[]::new));
     }
 
     private Stream<Class> getExpectedJustificationTypes() {

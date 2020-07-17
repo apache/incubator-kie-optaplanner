@@ -16,10 +16,7 @@
 
 package org.optaplanner.core.impl.score.stream.drools.common.rules;
 
-import java.util.List;
-
 import org.drools.model.Global;
-import org.drools.model.Rule;
 import org.optaplanner.core.impl.score.holder.AbstractScoreHolder;
 import org.optaplanner.core.impl.score.stream.drools.DroolsConstraint;
 import org.optaplanner.core.impl.score.stream.drools.common.nodes.ConstraintGraphNode;
@@ -36,6 +33,6 @@ public interface RuleAssembler {
 
     RuleAssembler join(RuleAssembler ruleAssembler, ConstraintGraphNode joinNode);
 
-    List<Rule> assemble(Global<? extends AbstractScoreHolder<?>> scoreHolderGlobal, DroolsConstraint constraint);
+    RuleAssembly assemble(Global<? extends AbstractScoreHolder<?>> scoreHolderGlobal, DroolsConstraint constraint);
 
 }

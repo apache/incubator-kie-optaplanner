@@ -26,7 +26,6 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import java.util.function.Function;
-import java.util.stream.Collectors;
 
 import org.drools.model.Model;
 import org.drools.model.impl.ModelImpl;
@@ -44,7 +43,7 @@ import org.optaplanner.core.impl.score.holder.AbstractScoreHolder;
 import org.optaplanner.core.impl.score.stream.ConstraintSession;
 import org.optaplanner.core.impl.score.stream.common.AbstractConstraintSessionFactory;
 import org.optaplanner.core.impl.score.stream.drools.common.FactTuple;
-import org.optaplanner.core.impl.score.stream.drools.common.rules.RuleAssembler;
+import org.optaplanner.core.impl.score.stream.drools.common.rules.RuleAssembly;
 
 public class DroolsConstraintSessionFactory<Solution_> extends AbstractConstraintSessionFactory<Solution_> {
 
@@ -57,34 +56,27 @@ public class DroolsConstraintSessionFactory<Solution_> extends AbstractConstrain
     private Set<String> currentlyDisabledConstraintIdSet = null;
 
     public DroolsConstraintSessionFactory(SolutionDescriptor<Solution_> solutionDescriptor, Model model,
-            List<DroolsConstraint<Solution_>> constraintList) {
+            Map<org.drools.model.Rule, Class[]> modelRuleToExpectedTypesMap,
+            DroolsConstraint<Solution_>... constraints) {
         super(solutionDescriptor);
         this.originalModel = model;
         this.originalKieBase = KieBaseBuilder.createKieBaseFromModel(model);
         this.currentKieBase = originalKieBase;
-        this.compiledRuleToConstraintMap = constraintList.stream()
+        this.compiledRuleToConstraintMap = Arrays.stream(constraints)
                 .collect(toMap(constraint -> currentKieBase.getRule(constraint.getConstraintPackage(),
                         constraint.getConstraintName()), Function.identity()));
-        this.constraintToModelRuleMap = constraintList.stream()
+        this.constraintToModelRuleMap = Arrays.stream(constraints)
                 .collect(toMap(Constraint::getConstraintId, constraint -> model.getRules().stream()
                         .filter(rule -> Objects.equals(rule.getName(), constraint.getConstraintName()))
                         .filter(rule -> Objects.equals(rule.getPackage(), constraint.getConstraintPackage()))
                         .findFirst()
-                        .orElseThrow(() -> new IllegalStateException("Programming error: Rule for constraint (" +
+                        .orElseThrow(() -> new IllegalStateException("Impossible state: Rule for constraint (" +
                                 constraint + ") not found."))));
-        this.compiledRuleToExpectedTypesMap = compiledRuleToConstraintMap.keySet().stream()
-                .collect(Collectors.toMap(Function.identity(), rule -> {
-                    String commaSeparatedFqnList = (String) rule.getMetaData().getOrDefault(
-                            RuleAssembler.VARIABLE_TYPE_RULE_METADATA_KEY, "");
-                    return Arrays.stream(commaSeparatedFqnList.split("\\Q,\\E"))
-                            .map(className -> {
-                                try {
-                                    return Class.forName(className.trim());
-                                } catch (ClassNotFoundException e) {
-                                    throw new IllegalStateException("Constraint stream class not found (" + className + ").");
-                                }
-                            }).collect(Collectors.toList())
-                            .toArray(new Class[0]);
+        this.compiledRuleToExpectedTypesMap = compiledRuleToConstraintMap.entrySet().stream()
+                .collect(toMap(Map.Entry::getKey, e -> {
+                    DroolsConstraint<Solution_> constraint = e.getValue();
+                    org.drools.model.Rule modelRule = constraintToModelRuleMap.get(constraint.getConstraintId());
+                    return modelRuleToExpectedTypesMap.get(modelRule);
                 }));
     }
 
@@ -102,7 +94,7 @@ public class DroolsConstraintSessionFactory<Solution_> extends AbstractConstrain
      *
      * @param justificationList unordered list of justifications coming from the score director
      * @param expectedCount how many justifications are expected to be returned (1 for uni stream, 2 for bi stream, ...)
-     * @param expectedTypes as defined by {@link AbstractRuleAssembler#getExpectedJustificationTypes()}.
+     * @param expectedTypes as defined by {@link RuleAssembly#getExpectedJustificationTypes()}.
      * @return never null
      */
     private static List<Object> matchJustificationsToOutput(List<Object> justificationList, int expectedCount,

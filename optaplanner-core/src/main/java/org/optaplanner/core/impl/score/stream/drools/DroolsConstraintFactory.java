@@ -21,9 +21,11 @@ import static org.drools.model.DSL.globalOf;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.drools.model.Global;
+import org.drools.model.Rule;
 import org.drools.model.impl.ModelImpl;
 import org.optaplanner.core.api.score.stream.Constraint;
 import org.optaplanner.core.api.score.stream.uni.UniConstraintStream;
@@ -93,8 +95,13 @@ public final class DroolsConstraintFactory<Solution_> implements InnerConstraint
             DroolsConstraint<Solution_> droolsConstraint = (DroolsConstraint) constraint;
             droolsConstraintList.add(droolsConstraint);
         }
-        constraintGraph.generateRules(model, scoreHolderGlobal, droolsConstraintList.toArray(new DroolsConstraint[0]));
-        return new DroolsConstraintSessionFactory<>(solutionDescriptor, model, droolsConstraintList);
+        DroolsConstraint<Solution_>[] constraintArray = droolsConstraintList.toArray(new DroolsConstraint[0]);
+        Map<Rule, Class[]> ruleToExpectedJustificationTypesMap =
+                constraintGraph.generateRule(scoreHolderGlobal, constraintArray);
+        ruleToExpectedJustificationTypesMap.keySet()
+                .forEach(model::addRule);
+        return new DroolsConstraintSessionFactory<>(solutionDescriptor, model, ruleToExpectedJustificationTypesMap,
+                constraintArray);
     }
 
     // ************************************************************************

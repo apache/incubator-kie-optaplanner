@@ -18,10 +18,10 @@ package org.optaplanner.core.impl.score.stream.drools.common;
 
 import java.math.BigDecimal;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.function.BiFunction;
@@ -37,7 +37,6 @@ import java.util.stream.Collectors;
 
 import org.drools.model.Global;
 import org.drools.model.Rule;
-import org.drools.model.impl.ModelImpl;
 import org.optaplanner.core.api.function.QuadFunction;
 import org.optaplanner.core.api.function.QuadPredicate;
 import org.optaplanner.core.api.function.ToIntQuadFunction;
@@ -71,6 +70,7 @@ import org.optaplanner.core.impl.score.stream.drools.common.nodes.QuadConstraint
 import org.optaplanner.core.impl.score.stream.drools.common.nodes.TriConstraintGraphNode;
 import org.optaplanner.core.impl.score.stream.drools.common.nodes.UniConstraintGraphChildNode;
 import org.optaplanner.core.impl.score.stream.drools.common.nodes.UniConstraintGraphNode;
+import org.optaplanner.core.impl.score.stream.drools.common.rules.RuleAssembly;
 
 public final class ConstraintGraph {
 
@@ -418,7 +418,7 @@ public final class ConstraintGraph {
         return nextId.getAndIncrement();
     }
 
-    public void generateRules(ModelImpl executableModel, Global<? extends AbstractScoreHolder<?>> scoreHolderGlobal,
+    public Map<Rule, Class[]> generateRule(Global<? extends AbstractScoreHolder<?>> scoreHolderGlobal,
             DroolsConstraint... constraints) {
         List<ConstraintGraphNode> unusedNodeList = nodeSet.stream()
                 .filter(node -> node.getChildNodes().isEmpty())
@@ -432,14 +432,12 @@ public final class ConstraintGraph {
          * This treats every constraint individually, and therefore can not support CS-level node sharing.
          * TODO Support CS-level node sharing.
          */
-        Arrays.stream(constraints)
-                .map(constraint -> generateRules(scoreHolderGlobal, constraint))
-                .flatMap(Collection::stream)
-                .distinct()
-                .forEach(executableModel::addRule);
+        return Arrays.stream(constraints)
+                .map(constraint -> generateRule(scoreHolderGlobal, constraint))
+                .collect(Collectors.toMap(RuleAssembly::getRule, RuleAssembly::getExpectedJustificationTypes));
     }
 
-    public List<Rule> generateRules(Global<? extends AbstractScoreHolder<?>> scoreHolderGlobal,
+    private RuleAssembly generateRule(Global<? extends AbstractScoreHolder<?>> scoreHolderGlobal,
             DroolsConstraint constraint) {
         ConstraintTree constraintTree = getSubtree(constraint.getConsequence());
         return constraintTree.getNestedNodes()
