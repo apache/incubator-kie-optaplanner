@@ -21,7 +21,7 @@ import java.util.function.BiPredicate;
 import java.util.function.Supplier;
 
 final class BiFilterNode<A, B> extends AbstractConstraintModelChildNode
-        implements BiConstraintGraphNode<A, B>, Supplier<BiPredicate<A, B>> {
+        implements BiConstraintGraphNode, Supplier<BiPredicate<A, B>> {
 
     private final BiPredicate<A, B> predicate;
 

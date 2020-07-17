@@ -16,13 +16,14 @@
 
 package org.optaplanner.core.impl.score.stream.drools.common.rules;
 
-import java.util.function.BiFunction;
+import static org.drools.model.PatternDSL.PatternDef;
+
+import java.util.function.BiConsumer;
 import java.util.function.Function;
 
-import org.drools.model.PatternDSL;
 import org.drools.model.Variable;
 
-final class UniGroupBy1Map0CollectMutator<A, NewA> extends AbstractUniGroupByMutator<A> {
+final class UniGroupBy1Map0CollectMutator<A, NewA> extends AbstractUniGroupByMutator {
 
     private final Function<A, NewA> groupKeyMapping;
 
@@ -32,7 +33,7 @@ final class UniGroupBy1Map0CollectMutator<A, NewA> extends AbstractUniGroupByMut
 
     @Override
     public AbstractRuleAssembler apply(AbstractRuleAssembler ruleAssembler) {
-        BiFunction<PatternDSL.PatternDef, Variable<NewA>, PatternDSL.PatternDef> binder =
+        BiConsumer<PatternDef, Variable<NewA>> binder =
                 (pattern, tuple) -> pattern.bind(tuple, a -> groupKeyMapping.apply((A) a));
         return universalGroup(ruleAssembler, binder,
                 (var, pattern, accumulate) -> regroup(ruleAssembler, var, pattern, accumulate));

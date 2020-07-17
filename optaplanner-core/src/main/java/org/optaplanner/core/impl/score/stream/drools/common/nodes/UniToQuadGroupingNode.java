@@ -24,7 +24,7 @@ import org.optaplanner.core.api.score.stream.uni.UniConstraintCollector;
 
 final class UniToQuadGroupingNode<A, NewA, NewB, NewC, NewD>
         extends AbstractConstraintModelGroupingNode<Function<A, ?>, UniConstraintCollector<A, ?, ?>>
-        implements QuadConstraintGraphNode<NewA, NewB, NewC, NewD> {
+        implements QuadConstraintGraphNode {
 
     UniToQuadGroupingNode(Function<A, NewA> aMapping, Function<A, NewB> bMapping,
             UniConstraintCollector<A, ?, NewC> cCollector, UniConstraintCollector<A, ?, NewD> dCollector) {

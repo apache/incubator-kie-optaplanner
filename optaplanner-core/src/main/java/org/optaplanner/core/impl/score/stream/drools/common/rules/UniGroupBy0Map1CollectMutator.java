@@ -19,7 +19,7 @@ package org.optaplanner.core.impl.score.stream.drools.common.rules;
 import org.optaplanner.core.api.score.stream.uni.UniConstraintCollector;
 import org.optaplanner.core.impl.score.stream.drools.uni.DroolsUniAccumulateFunction;
 
-final class UniGroupBy0Map1CollectMutator<A, NewA> extends AbstractUniGroupByMutator<A> {
+final class UniGroupBy0Map1CollectMutator<A, NewA> extends AbstractUniGroupByMutator {
 
     private final UniConstraintCollector<A, ?, NewA> collector;
 

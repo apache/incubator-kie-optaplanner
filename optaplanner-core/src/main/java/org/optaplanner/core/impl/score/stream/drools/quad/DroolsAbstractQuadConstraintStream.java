@@ -161,7 +161,7 @@ public abstract class DroolsAbstractQuadConstraintStream<Solution_, A, B, C, D>
     @Override
     protected Constraint impactScore(String constraintPackage, String constraintName, Score<?> constraintWeight,
             ScoreImpactType impactType) {
-        ConstraintConsequence<QuadConstraintGraphNode<A, B, C, D>> consequence =
+        ConstraintConsequence<QuadConstraintGraphNode> consequence =
                 constraintFactory.getConstraintGraph().impact(getConstraintGraphNode());
         return buildConstraint(constraintPackage, constraintName, constraintWeight, impactType, consequence);
     }
@@ -169,7 +169,7 @@ public abstract class DroolsAbstractQuadConstraintStream<Solution_, A, B, C, D>
     @Override
     public Constraint impactScore(String constraintPackage, String constraintName, Score<?> constraintWeight,
             ToIntQuadFunction<A, B, C, D> matchWeigher, ScoreImpactType impactType) {
-        ConstraintConsequence<QuadConstraintGraphNode<A, B, C, D>> consequence =
+        ConstraintConsequence<QuadConstraintGraphNode> consequence =
                 constraintFactory.getConstraintGraph().impact(getConstraintGraphNode(), matchWeigher);
         return buildConstraint(constraintPackage, constraintName, constraintWeight, impactType, consequence);
     }
@@ -177,7 +177,7 @@ public abstract class DroolsAbstractQuadConstraintStream<Solution_, A, B, C, D>
     @Override
     public Constraint impactScoreLong(String constraintPackage, String constraintName, Score<?> constraintWeight,
             ToLongQuadFunction<A, B, C, D> matchWeigher, ScoreImpactType impactType) {
-        ConstraintConsequence<QuadConstraintGraphNode<A, B, C, D>> consequence =
+        ConstraintConsequence<QuadConstraintGraphNode> consequence =
                 constraintFactory.getConstraintGraph().impact(getConstraintGraphNode(), matchWeigher);
         return buildConstraint(constraintPackage, constraintName, constraintWeight, impactType, consequence);
     }
@@ -185,7 +185,7 @@ public abstract class DroolsAbstractQuadConstraintStream<Solution_, A, B, C, D>
     @Override
     public Constraint impactScoreBigDecimal(String constraintPackage, String constraintName, Score<?> constraintWeight,
             QuadFunction<A, B, C, D, BigDecimal> matchWeigher, ScoreImpactType impactType) {
-        ConstraintConsequence<QuadConstraintGraphNode<A, B, C, D>> consequence =
+        ConstraintConsequence<QuadConstraintGraphNode> consequence =
                 constraintFactory.getConstraintGraph().impact(getConstraintGraphNode(), matchWeigher);
         return buildConstraint(constraintPackage, constraintName, constraintWeight, impactType, consequence);
     }
@@ -193,7 +193,7 @@ public abstract class DroolsAbstractQuadConstraintStream<Solution_, A, B, C, D>
     @Override
     protected Constraint impactScoreConfigurable(String constraintPackage, String constraintName,
             ScoreImpactType impactType) {
-        ConstraintConsequence<QuadConstraintGraphNode<A, B, C, D>> consequence =
+        ConstraintConsequence<QuadConstraintGraphNode> consequence =
                 constraintFactory.getConstraintGraph().impact(getConstraintGraphNode());
         return buildConstraintConfigurable(constraintPackage, constraintName, impactType, consequence);
     }
@@ -201,7 +201,7 @@ public abstract class DroolsAbstractQuadConstraintStream<Solution_, A, B, C, D>
     @Override
     public Constraint impactScoreConfigurable(String constraintPackage, String constraintName,
             ToIntQuadFunction<A, B, C, D> matchWeigher, ScoreImpactType impactType) {
-        ConstraintConsequence<QuadConstraintGraphNode<A, B, C, D>> consequence =
+        ConstraintConsequence<QuadConstraintGraphNode> consequence =
                 constraintFactory.getConstraintGraph().impact(getConstraintGraphNode(), matchWeigher);
         return buildConstraintConfigurable(constraintPackage, constraintName, impactType, consequence);
     }
@@ -209,7 +209,7 @@ public abstract class DroolsAbstractQuadConstraintStream<Solution_, A, B, C, D>
     @Override
     public Constraint impactScoreConfigurableLong(String constraintPackage, String constraintName,
             ToLongQuadFunction<A, B, C, D> matchWeigher, ScoreImpactType impactType) {
-        ConstraintConsequence<QuadConstraintGraphNode<A, B, C, D>> consequence =
+        ConstraintConsequence<QuadConstraintGraphNode> consequence =
                 constraintFactory.getConstraintGraph().impact(getConstraintGraphNode(), matchWeigher);
         return buildConstraintConfigurable(constraintPackage, constraintName, impactType, consequence);
     }
@@ -217,7 +217,7 @@ public abstract class DroolsAbstractQuadConstraintStream<Solution_, A, B, C, D>
     @Override
     public Constraint impactScoreConfigurableBigDecimal(String constraintPackage, String constraintName,
             QuadFunction<A, B, C, D, BigDecimal> matchWeigher, ScoreImpactType impactType) {
-        ConstraintConsequence<QuadConstraintGraphNode<A, B, C, D>> consequence =
+        ConstraintConsequence<QuadConstraintGraphNode> consequence =
                 constraintFactory.getConstraintGraph().impact(getConstraintGraphNode(), matchWeigher);
         return buildConstraintConfigurable(constraintPackage, constraintName, impactType, consequence);
     }
@@ -226,6 +226,6 @@ public abstract class DroolsAbstractQuadConstraintStream<Solution_, A, B, C, D>
     // Pattern creation
     // ************************************************************************
 
-    public abstract QuadConstraintGraphNode<A, B, C, D> getConstraintGraphNode();
+    public abstract QuadConstraintGraphNode getConstraintGraphNode();
 
 }

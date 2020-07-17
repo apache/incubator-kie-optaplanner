@@ -16,8 +16,7 @@
 
 package org.optaplanner.core.impl.score.stream.drools.common.nodes;
 
-public interface QuadConstraintGraphNode<A, B, C, D>
-        extends ConstraintGraphNode, ChildNode {
+public interface QuadConstraintGraphNode extends ConstraintGraphNode, ChildNode {
 
     @Override
     default int getCardinality() {

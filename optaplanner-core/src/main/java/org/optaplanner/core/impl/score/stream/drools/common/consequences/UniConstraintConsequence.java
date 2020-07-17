@@ -23,7 +23,7 @@ import java.util.function.ToLongFunction;
 
 import org.optaplanner.core.impl.score.stream.drools.common.nodes.UniConstraintGraphNode;
 
-public interface UniConstraintConsequence<A> extends ConstraintConsequence<UniConstraintGraphNode<A>> {
+public interface UniConstraintConsequence<A> extends ConstraintConsequence<UniConstraintGraphNode> {
 
     /**
      * {@inheritDoc}

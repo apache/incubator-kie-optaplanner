@@ -22,14 +22,14 @@ import org.optaplanner.core.impl.score.stream.drools.common.nodes.UniConstraintG
 
 final class UniConstraintDefaultConsequence<A> implements UniConstraintConsequence<A> {
 
-    private final UniConstraintGraphNode<A> terminalNode;
+    private final UniConstraintGraphNode terminalNode;
 
-    UniConstraintDefaultConsequence(UniConstraintGraphNode<A> terminalNode) {
+    UniConstraintDefaultConsequence(UniConstraintGraphNode terminalNode) {
         this.terminalNode = requireNonNull(terminalNode);
     }
 
     @Override
-    public UniConstraintGraphNode<A> getTerminalNode() {
+    public UniConstraintGraphNode getTerminalNode() {
         return terminalNode;
     }
 

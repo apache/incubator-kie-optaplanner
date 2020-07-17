@@ -21,13 +21,13 @@ import static org.drools.model.PatternDSL.PatternDef;
 import org.drools.model.Variable;
 import org.optaplanner.core.impl.score.stream.drools.common.TriTuple;
 
-abstract class AbstractTriGroupByMutator<A, B, C> extends AbstractGroupByMutator {
+abstract class AbstractTriGroupByMutator extends AbstractGroupByMutator {
 
     @Override
     protected <InTuple> PatternDef bindTupleVariableOnFirstGrouping(AbstractRuleAssembler ruleAssembler, PatternDef pattern,
             Variable<InTuple> inTupleVariable) {
         return pattern.bind(inTupleVariable, ruleAssembler.getVariable(0), ruleAssembler.getVariable(1),
-                (c, a, b) -> new TriTuple<>((A) a, (B) b, (C) c));
+                (c, a, b) -> new TriTuple<>(a, b, c));
     }
 
 }

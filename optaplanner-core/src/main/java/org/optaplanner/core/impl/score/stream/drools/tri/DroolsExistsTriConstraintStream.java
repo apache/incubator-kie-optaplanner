@@ -23,7 +23,7 @@ import org.optaplanner.core.impl.score.stream.drools.common.nodes.TriConstraintG
 public final class DroolsExistsTriConstraintStream<Solution_, A, B, C>
         extends DroolsAbstractTriConstraintStream<Solution_, A, B, C> {
 
-    private final TriConstraintGraphNode<A, B, C> node;
+    private final TriConstraintGraphNode node;
     private final String streamName;
 
     public <D> DroolsExistsTriConstraintStream(DroolsConstraintFactory<Solution_> constraintFactory,
@@ -41,7 +41,7 @@ public final class DroolsExistsTriConstraintStream<Solution_, A, B, C>
     // ************************************************************************
 
     @Override
-    public TriConstraintGraphNode<A, B, C> getConstraintGraphNode() {
+    public TriConstraintGraphNode getConstraintGraphNode() {
         return node;
     }
 

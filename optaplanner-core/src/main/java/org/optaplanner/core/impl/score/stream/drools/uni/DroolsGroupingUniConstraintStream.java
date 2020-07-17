@@ -97,7 +97,7 @@ public final class DroolsGroupingUniConstraintStream<Solution_, NewA>
     // ************************************************************************
 
     @Override
-    public UniConstraintGraphNode<NewA> getConstraintGraphNode() {
+    public UniConstraintGraphNode getConstraintGraphNode() {
         return node;
     }
 

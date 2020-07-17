@@ -25,7 +25,7 @@ import org.optaplanner.core.api.score.stream.tri.TriConstraintCollector;
 
 final class TriToBiGroupingNode<A, B, C, NewA, NewB>
         extends AbstractConstraintModelGroupingNode<TriFunction<A, B, C, ?>, TriConstraintCollector<A, B, C, ?, ?>>
-        implements BiConstraintGraphNode<NewA, NewB> {
+        implements BiConstraintGraphNode {
 
     TriToBiGroupingNode(TriFunction<A, B, C, NewA> aMapping, TriFunction<A, B, C, NewB> bMapping) {
         super(asList(aMapping, bMapping), emptyList());

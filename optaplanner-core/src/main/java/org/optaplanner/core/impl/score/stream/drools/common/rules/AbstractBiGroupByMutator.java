@@ -21,12 +21,12 @@ import static org.drools.model.PatternDSL.PatternDef;
 import org.drools.model.Variable;
 import org.optaplanner.core.impl.score.stream.drools.common.BiTuple;
 
-abstract class AbstractBiGroupByMutator<A, B> extends AbstractGroupByMutator {
+abstract class AbstractBiGroupByMutator extends AbstractGroupByMutator {
 
     @Override
     protected <InTuple> PatternDef bindTupleVariableOnFirstGrouping(AbstractRuleAssembler ruleAssembler, PatternDef pattern,
             Variable<InTuple> inTupleVariable) {
-        return pattern.bind(inTupleVariable, ruleAssembler.getVariable(0), (b, a) -> new BiTuple<>((A) a, (B) b));
+        return pattern.bind(inTupleVariable, ruleAssembler.getVariable(0), (b, a) -> new BiTuple<>(a, b));
     }
 
 }

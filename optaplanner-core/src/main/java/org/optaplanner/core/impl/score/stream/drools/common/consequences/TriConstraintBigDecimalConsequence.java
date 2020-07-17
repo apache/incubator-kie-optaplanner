@@ -27,17 +27,17 @@ import org.optaplanner.core.impl.score.stream.drools.common.nodes.TriConstraintG
 final class TriConstraintBigDecimalConsequence<A, B, C> implements TriConstraintConsequence<A, B, C>,
         Supplier<TriFunction<A, B, C, BigDecimal>> {
 
-    private final TriConstraintGraphNode<A, B, C> terminalNode;
+    private final TriConstraintGraphNode terminalNode;
     private final TriFunction<A, B, C, BigDecimal> matchWeighter;
 
-    TriConstraintBigDecimalConsequence(TriConstraintGraphNode<A, B, C> terminalNode,
+    TriConstraintBigDecimalConsequence(TriConstraintGraphNode terminalNode,
             TriFunction<A, B, C, BigDecimal> matchWeighter) {
         this.terminalNode = requireNonNull(terminalNode);
         this.matchWeighter = requireNonNull(matchWeighter);
     }
 
     @Override
-    public TriConstraintGraphNode<A, B, C> getTerminalNode() {
+    public TriConstraintGraphNode getTerminalNode() {
         return terminalNode;
     }
 

@@ -62,9 +62,8 @@ final class BiJoinMutator<A, B> implements JoinMutator<UniRuleAssembler, BiRuleA
             Function<A, Object> leftMapping = biJoiner.getLeftMapping(mappingIndex);
             Function<B, Object> rightMapping = biJoiner.getRightMapping(mappingIndex);
             Function1<B, Object> rightExtractor = rightMapping::apply;
-            Predicate2<B, A> predicate = (b, a) -> { // Only extract B; A is coming from a pre-bound join var.
-                return joinerType.matches(a, rightExtractor.apply(b));
-            };
+            // Only extract B; A is coming from a pre-bound join var.
+            Predicate2<B, A> predicate = (b, a) -> joinerType.matches(a, rightExtractor.apply(b));
             BetaIndex<B, A, Object> index = betaIndexedBy(Object.class, Mutator.getConstraintType(joinerType),
                     mappingIndex, rightExtractor, leftMapping::apply);
             bJoiner.expr("Join using joiner #" + mappingIndex + " in " + biJoiner,

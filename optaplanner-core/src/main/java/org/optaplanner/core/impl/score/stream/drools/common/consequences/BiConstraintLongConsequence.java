@@ -26,16 +26,16 @@ import org.optaplanner.core.impl.score.stream.drools.common.nodes.BiConstraintGr
 final class BiConstraintLongConsequence<A, B> implements BiConstraintConsequence<A, B>,
         Supplier<ToLongBiFunction<A, B>> {
 
-    private final BiConstraintGraphNode<A, B> terminalNode;
+    private final BiConstraintGraphNode terminalNode;
     private final ToLongBiFunction<A, B> matchWeighter;
 
-    BiConstraintLongConsequence(BiConstraintGraphNode<A, B> terminalNode, ToLongBiFunction<A, B> matchWeighter) {
+    BiConstraintLongConsequence(BiConstraintGraphNode terminalNode, ToLongBiFunction<A, B> matchWeighter) {
         this.terminalNode = requireNonNull(terminalNode);
         this.matchWeighter = requireNonNull(matchWeighter);
     }
 
     @Override
-    public BiConstraintGraphNode<A, B> getTerminalNode() {
+    public BiConstraintGraphNode getTerminalNode() {
         return terminalNode;
     }
 

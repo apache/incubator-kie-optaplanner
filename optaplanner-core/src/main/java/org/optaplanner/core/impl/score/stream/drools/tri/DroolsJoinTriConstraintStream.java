@@ -25,7 +25,7 @@ import org.optaplanner.core.impl.score.stream.drools.uni.DroolsAbstractUniConstr
 public final class DroolsJoinTriConstraintStream<Solution_, A, B, C>
         extends DroolsAbstractTriConstraintStream<Solution_, A, B, C> {
 
-    private final TriConstraintGraphNode<A, B, C> node;
+    private final TriConstraintGraphNode node;
 
     public DroolsJoinTriConstraintStream(DroolsConstraintFactory<Solution_> constraintFactory,
             DroolsAbstractBiConstraintStream<Solution_, A, B> parent,
@@ -40,7 +40,7 @@ public final class DroolsJoinTriConstraintStream<Solution_, A, B, C>
     // ************************************************************************
 
     @Override
-    public TriConstraintGraphNode<A, B, C> getConstraintGraphNode() {
+    public TriConstraintGraphNode getConstraintGraphNode() {
         return node;
     }
 

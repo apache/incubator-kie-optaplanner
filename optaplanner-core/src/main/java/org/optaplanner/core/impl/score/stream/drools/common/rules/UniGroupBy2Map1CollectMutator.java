@@ -21,7 +21,7 @@ import java.util.function.Function;
 import org.optaplanner.core.api.score.stream.uni.UniConstraintCollector;
 import org.optaplanner.core.impl.score.stream.drools.uni.DroolsUniToTriGroupByAccumulator;
 
-final class UniGroupBy2Map1CollectMutator<A, NewA, NewB, NewC> extends AbstractUniGroupByMutator<A> {
+final class UniGroupBy2Map1CollectMutator<A, NewA, NewB, NewC> extends AbstractUniGroupByMutator {
 
     private final Function<A, NewA> groupKeyMappingA;
     private final Function<A, NewB> groupKeyMappingB;

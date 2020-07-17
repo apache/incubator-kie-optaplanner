@@ -23,7 +23,7 @@ import org.optaplanner.core.impl.score.stream.drools.common.nodes.BiConstraintGr
 public final class DroolsExistsBiConstraintStream<Solution_, A, B>
         extends DroolsAbstractBiConstraintStream<Solution_, A, B> {
 
-    private final BiConstraintGraphNode<A, B> node;
+    private final BiConstraintGraphNode node;
     private final String streamName;
 
     public <C> DroolsExistsBiConstraintStream(DroolsConstraintFactory<Solution_> constraintFactory,
@@ -41,7 +41,7 @@ public final class DroolsExistsBiConstraintStream<Solution_, A, B>
     // ************************************************************************
 
     @Override
-    public BiConstraintGraphNode<A, B> getConstraintGraphNode() {
+    public BiConstraintGraphNode getConstraintGraphNode() {
         return node;
     }
 

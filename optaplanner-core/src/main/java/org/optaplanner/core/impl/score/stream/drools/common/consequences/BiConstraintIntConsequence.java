@@ -26,16 +26,16 @@ import org.optaplanner.core.impl.score.stream.drools.common.nodes.BiConstraintGr
 final class BiConstraintIntConsequence<A, B> implements BiConstraintConsequence<A, B>,
         Supplier<ToIntBiFunction<A, B>> {
 
-    private final BiConstraintGraphNode<A, B> terminalNode;
+    private final BiConstraintGraphNode terminalNode;
     private final ToIntBiFunction<A, B> matchWeighter;
 
-    BiConstraintIntConsequence(BiConstraintGraphNode<A, B> terminalNode, ToIntBiFunction<A, B> matchWeighter) {
+    BiConstraintIntConsequence(BiConstraintGraphNode terminalNode, ToIntBiFunction<A, B> matchWeighter) {
         this.terminalNode = requireNonNull(terminalNode);
         this.matchWeighter = requireNonNull(matchWeighter);
     }
 
     @Override
-    public BiConstraintGraphNode<A, B> getTerminalNode() {
+    public BiConstraintGraphNode getTerminalNode() {
         return terminalNode;
     }
 

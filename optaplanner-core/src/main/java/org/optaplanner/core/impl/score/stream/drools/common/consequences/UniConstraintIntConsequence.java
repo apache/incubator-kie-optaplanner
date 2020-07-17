@@ -26,16 +26,16 @@ import org.optaplanner.core.impl.score.stream.drools.common.nodes.UniConstraintG
 final class UniConstraintIntConsequence<A> implements UniConstraintConsequence<A>,
         Supplier<ToIntFunction<A>> {
 
-    private final UniConstraintGraphNode<A> terminalNode;
+    private final UniConstraintGraphNode terminalNode;
     private final ToIntFunction<A> matchWeighter;
 
-    UniConstraintIntConsequence(UniConstraintGraphNode<A> terminalNode, ToIntFunction<A> matchWeighter) {
+    UniConstraintIntConsequence(UniConstraintGraphNode terminalNode, ToIntFunction<A> matchWeighter) {
         this.terminalNode = requireNonNull(terminalNode);
         this.matchWeighter = requireNonNull(matchWeighter);
     }
 
     @Override
-    public UniConstraintGraphNode<A> getTerminalNode() {
+    public UniConstraintGraphNode getTerminalNode() {
         return terminalNode;
     }
 

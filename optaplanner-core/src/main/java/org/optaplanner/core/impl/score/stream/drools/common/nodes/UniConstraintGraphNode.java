@@ -16,7 +16,7 @@
 
 package org.optaplanner.core.impl.score.stream.drools.common.nodes;
 
-public interface UniConstraintGraphNode<A> extends ConstraintGraphNode {
+public interface UniConstraintGraphNode extends ConstraintGraphNode {
 
     @Override
     default int getCardinality() {

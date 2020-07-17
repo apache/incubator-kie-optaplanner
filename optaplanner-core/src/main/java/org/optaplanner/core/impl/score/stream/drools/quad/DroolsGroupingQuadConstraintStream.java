@@ -34,7 +34,7 @@ import org.optaplanner.core.impl.score.stream.drools.uni.DroolsAbstractUniConstr
 public final class DroolsGroupingQuadConstraintStream<Solution_, NewA, NewB, NewC, NewD>
         extends DroolsAbstractQuadConstraintStream<Solution_, NewA, NewB, NewC, NewD> {
 
-    private final QuadConstraintGraphNode<NewA, NewB, NewC, NewD> node;
+    private final QuadConstraintGraphNode node;
 
     public <A, ResultContainerC, ResultContainerD> DroolsGroupingQuadConstraintStream(
             DroolsConstraintFactory<Solution_> constraintFactory,
@@ -84,7 +84,7 @@ public final class DroolsGroupingQuadConstraintStream<Solution_, NewA, NewB, New
     // ************************************************************************
 
     @Override
-    public QuadConstraintGraphNode<NewA, NewB, NewC, NewD> getConstraintGraphNode() {
+    public QuadConstraintGraphNode getConstraintGraphNode() {
         return node;
     }
 

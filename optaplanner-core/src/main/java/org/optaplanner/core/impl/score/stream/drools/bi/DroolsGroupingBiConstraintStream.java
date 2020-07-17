@@ -34,7 +34,7 @@ import org.optaplanner.core.impl.score.stream.drools.uni.DroolsAbstractUniConstr
 public class DroolsGroupingBiConstraintStream<Solution_, NewA, NewB>
         extends DroolsAbstractBiConstraintStream<Solution_, NewA, NewB> {
 
-    private final BiConstraintGraphNode<NewA, NewB> node;
+    private final BiConstraintGraphNode node;
 
     public <A> DroolsGroupingBiConstraintStream(DroolsConstraintFactory<Solution_> constraintFactory,
             DroolsAbstractUniConstraintStream<Solution_, A> parent, Function<A, NewA> groupKeyAMapping,
@@ -97,7 +97,7 @@ public class DroolsGroupingBiConstraintStream<Solution_, NewA, NewB>
     }
 
     @Override
-    public BiConstraintGraphNode<NewA, NewB> getConstraintGraphNode() {
+    public BiConstraintGraphNode getConstraintGraphNode() {
         return node;
     }
 

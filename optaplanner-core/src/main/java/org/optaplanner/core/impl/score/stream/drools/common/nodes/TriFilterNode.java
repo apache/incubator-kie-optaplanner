@@ -22,7 +22,7 @@ import java.util.function.Supplier;
 import org.optaplanner.core.api.function.TriPredicate;
 
 final class TriFilterNode<A, B, C> extends AbstractConstraintModelChildNode
-        implements TriConstraintGraphNode<A, B, C>, Supplier<TriPredicate<A, B, C>> {
+        implements TriConstraintGraphNode, Supplier<TriPredicate<A, B, C>> {
 
     private final TriPredicate<A, B, C> predicate;
 

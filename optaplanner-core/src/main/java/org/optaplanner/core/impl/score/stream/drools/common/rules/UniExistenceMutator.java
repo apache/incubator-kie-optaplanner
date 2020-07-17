@@ -16,7 +16,11 @@
 
 package org.optaplanner.core.impl.score.stream.drools.common.rules;
 
+import static org.drools.model.DSL.declarationOf;
+import static org.drools.model.DSL.exists;
+import static org.drools.model.DSL.not;
 import static org.drools.model.PatternDSL.betaIndexedBy;
+import static org.drools.model.PatternDSL.pattern;
 
 import java.util.Arrays;
 import java.util.function.BiPredicate;
@@ -50,38 +54,37 @@ final class UniExistenceMutator<A, B> implements Mutator {
     private AbstractRuleAssembler applyJoiners(AbstractRuleAssembler ruleAssembler, AbstractBiJoiner<A, B> joiner,
             BiPredicate<A, B> predicate) {
         PatternDSL.PatternDef<A> primaryPattern = ruleAssembler.getLastPrimaryPattern();
-        Variable<B> toExist = PatternDSL.declarationOf(otherFactType, ruleAssembler.generateNextId("toExist"));
-        PatternDSL.PatternDef<B> existencePattern = PatternDSL.pattern(toExist);
+        Variable<B> toExist = declarationOf(otherFactType, ruleAssembler.generateNextId("toExist"));
+        PatternDSL.PatternDef<B> existencePattern = pattern(toExist);
         if (joiner == null) {
             return applyFilters(ruleAssembler, existencePattern, predicate);
         }
         JoinerType[] joinerTypes = joiner.getJoinerTypes();
-        // We rebuild the A pattern, binding variables for left parts of the joins.
+        // Rebuild the A pattern, binding variables for left parts of the joins.
         Variable[] joinVars = new Variable[joinerTypes.length];
         for (int mappingIndex = 0; mappingIndex < joinerTypes.length; mappingIndex++) {
             // For each mapping, bind one join variable.
             int currentMappingIndex = mappingIndex;
-            Variable<Object> joinVar = PatternDSL.declarationOf(Object.class, "joinVar");
+            Variable<Object> joinVar = declarationOf(Object.class, "joinVar");
             Function<A, Object> leftMapping = joiner.getLeftMapping(currentMappingIndex);
             primaryPattern = primaryPattern.bind(joinVar, leftMapping::apply);
             joinVars[currentMappingIndex] = joinVar;
         }
-        // We create the B pattern, joining with the new A pattern using its freshly bound join variables.
+        // Create the B pattern, joining with the new A pattern using its freshly bound join variables.
         for (int mappingIndex = 0; mappingIndex < joinerTypes.length; mappingIndex++) {
             // For each mapping, bind a join variable from A to B and index the binding.
             int currentMappingIndex = mappingIndex;
             JoinerType joinerType = joinerTypes[currentMappingIndex];
             Function<A, Object> leftMapping = joiner.getLeftMapping(currentMappingIndex);
             Function<B, Object> rightMapping = joiner.getRightMapping(currentMappingIndex);
-            Predicate2<B, A> joinPredicate = (b, a) -> { // We only extract B; A is coming from a pre-bound join var.
-                return joinerType.matches(a, rightMapping.apply(b));
-            };
+            // Only extract B; A is coming from a pre-bound join var.
+            Predicate2<B, A> joinPredicate = (b, a) -> joinerType.matches(a, rightMapping.apply(b));
             BetaIndex<B, A, ?> index = betaIndexedBy(Object.class, Mutator.getConstraintType(joinerType),
                     currentMappingIndex, rightMapping::apply, leftMapping::apply);
             existencePattern = existencePattern.expr("Join using joiner #" + currentMappingIndex + " in " + joiner,
                     joinVars[currentMappingIndex], joinPredicate, index);
         }
-        // And finally we add the filter to the B pattern
+        // And finally add the filter to the B pattern.
         return applyFilters(ruleAssembler, existencePattern, predicate);
     }
 
@@ -90,9 +93,9 @@ final class UniExistenceMutator<A, B> implements Mutator {
         PatternDSL.PatternDef<B> possiblyFilteredExistencePattern = biPredicate == null ? existencePattern
                 : existencePattern.expr("Filter using " + biPredicate, ruleAssembler.getVariable(0),
                         (b, a) -> biPredicate.test((A) a, b));
-        ExprViewItem existenceExpression = PatternDSL.exists(possiblyFilteredExistencePattern);
+        ExprViewItem existenceExpression = exists(possiblyFilteredExistencePattern);
         if (!shouldExist) {
-            existenceExpression = PatternDSL.not(possiblyFilteredExistencePattern);
+            existenceExpression = not(possiblyFilteredExistencePattern);
         }
         ruleAssembler.addDependentExpressionToLastPattern(existenceExpression);
         return ruleAssembler;
@@ -118,10 +121,10 @@ final class UniExistenceMutator<A, B> implements Mutator {
                     finalJoiner = finalJoiner == null ? biJoiner : AbstractBiJoiner.merge(finalJoiner, biJoiner);
                 }
             } else {
-                if (!hasAFilter) { // From now on, we only allow filtering joiners.
+                if (!hasAFilter) { // From now on, only allow filtering joiners.
                     indexOfFirstFilter = i;
                 }
-                // We merge all filters into one, so that we don't pay the penalty for lack of indexing more than once.
+                // Merge all filters into one to avoid paying the penalty for lack of indexing more than once.
                 finalFilter = finalFilter == null ? biJoiner.getFilter() : finalFilter.and(biJoiner.getFilter());
             }
         }

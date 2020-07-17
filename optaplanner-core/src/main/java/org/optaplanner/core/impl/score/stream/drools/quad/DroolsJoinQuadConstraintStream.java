@@ -25,7 +25,7 @@ import org.optaplanner.core.impl.score.stream.drools.uni.DroolsAbstractUniConstr
 public final class DroolsJoinQuadConstraintStream<Solution_, A, B, C, D>
         extends DroolsAbstractQuadConstraintStream<Solution_, A, B, C, D> {
 
-    private final QuadConstraintGraphNode<A, B, C, D> node;
+    private final QuadConstraintGraphNode node;
 
     public DroolsJoinQuadConstraintStream(DroolsConstraintFactory<Solution_> constraintFactory,
             DroolsAbstractTriConstraintStream<Solution_, A, B, C> parent,
@@ -40,7 +40,7 @@ public final class DroolsJoinQuadConstraintStream<Solution_, A, B, C, D>
     // ************************************************************************
 
     @Override
-    public QuadConstraintGraphNode<A, B, C, D> getConstraintGraphNode() {
+    public QuadConstraintGraphNode getConstraintGraphNode() {
         return node;
     }
 

@@ -22,7 +22,7 @@ import static org.optaplanner.core.impl.score.stream.drools.common.nodes.Constra
 import org.optaplanner.core.api.score.stream.quad.QuadJoiner;
 
 final class TriExistenceNode<A, B, C, D> extends AbstractConstraintModelJoiningNode<D, QuadJoiner<A, B, C, D>>
-        implements TriConstraintGraphNode<A, B, C> {
+        implements TriConstraintGraphNode {
 
     TriExistenceNode(boolean expectExistence, Class<D> otherFactType, QuadJoiner<A, B, C, D>... joiners) {
         super(otherFactType, expectExistence ? IF_EXISTS : IF_NOT_EXISTS, joiners);

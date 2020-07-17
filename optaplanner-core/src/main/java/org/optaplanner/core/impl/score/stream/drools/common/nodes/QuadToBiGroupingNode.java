@@ -25,7 +25,7 @@ import org.optaplanner.core.api.score.stream.quad.QuadConstraintCollector;
 
 final class QuadToBiGroupingNode<A, B, C, D, NewA, NewB>
         extends AbstractConstraintModelGroupingNode<QuadFunction<A, B, C, D, ?>, QuadConstraintCollector<A, B, C, D, ?, ?>>
-        implements BiConstraintGraphNode<NewA, NewB> {
+        implements BiConstraintGraphNode {
 
     QuadToBiGroupingNode(QuadFunction<A, B, C, D, NewA> aMapping, QuadFunction<A, B, C, D, NewB> bMapping) {
         super(asList(aMapping, bMapping), emptyList());

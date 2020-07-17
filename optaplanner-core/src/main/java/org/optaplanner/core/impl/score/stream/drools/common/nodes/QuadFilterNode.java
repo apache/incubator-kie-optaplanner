@@ -22,7 +22,7 @@ import java.util.function.Supplier;
 import org.optaplanner.core.api.function.QuadPredicate;
 
 final class QuadFilterNode<A, B, C, D> extends AbstractConstraintModelChildNode
-        implements QuadConstraintGraphNode<A, B, C, D>, Supplier<QuadPredicate<A, B, C, D>> {
+        implements QuadConstraintGraphNode, Supplier<QuadPredicate<A, B, C, D>> {
 
     private final QuadPredicate<A, B, C, D> predicate;
 

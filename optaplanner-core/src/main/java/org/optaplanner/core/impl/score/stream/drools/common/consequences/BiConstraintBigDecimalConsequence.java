@@ -27,17 +27,17 @@ import org.optaplanner.core.impl.score.stream.drools.common.nodes.BiConstraintGr
 final class BiConstraintBigDecimalConsequence<A, B> implements BiConstraintConsequence<A, B>,
         Supplier<BiFunction<A, B, BigDecimal>> {
 
-    private final BiConstraintGraphNode<A, B> terminalNode;
+    private final BiConstraintGraphNode terminalNode;
     private final BiFunction<A, B, BigDecimal> matchWeighter;
 
-    BiConstraintBigDecimalConsequence(BiConstraintGraphNode<A, B> terminalNode,
+    BiConstraintBigDecimalConsequence(BiConstraintGraphNode terminalNode,
             BiFunction<A, B, BigDecimal> matchWeighter) {
         this.terminalNode = requireNonNull(terminalNode);
         this.matchWeighter = requireNonNull(matchWeighter);
     }
 
     @Override
-    public BiConstraintGraphNode<A, B> getTerminalNode() {
+    public BiConstraintGraphNode getTerminalNode() {
         return terminalNode;
     }
 

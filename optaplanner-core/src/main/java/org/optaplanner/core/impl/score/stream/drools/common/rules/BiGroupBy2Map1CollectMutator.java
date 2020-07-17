@@ -21,7 +21,7 @@ import java.util.function.BiFunction;
 import org.optaplanner.core.api.score.stream.bi.BiConstraintCollector;
 import org.optaplanner.core.impl.score.stream.drools.bi.DroolsBiToTriGroupByAccumulator;
 
-class BiGroupBy2Map1CollectMutator<A, B, NewA, NewB, NewC> extends AbstractBiGroupByMutator<A, B> {
+class BiGroupBy2Map1CollectMutator<A, B, NewA, NewB, NewC> extends AbstractBiGroupByMutator {
 
     private final BiFunction<A, B, NewA> groupKeyMappingA;
     private final BiFunction<A, B, NewB> groupKeyMappingB;

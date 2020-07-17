@@ -16,6 +16,11 @@
 
 package org.optaplanner.core.impl.score.stream.drools.common.rules;
 
+import static org.drools.model.DSL.declarationOf;
+import static org.drools.model.DSL.exists;
+import static org.drools.model.DSL.not;
+import static org.drools.model.PatternDSL.pattern;
+
 import java.util.Arrays;
 
 import org.drools.model.PatternDSL;
@@ -55,15 +60,15 @@ final class QuadExistenceMutator<A, B, C, D, E> implements Mutator {
     }
 
     private AbstractRuleAssembler applyFilters(AbstractRuleAssembler ruleAssembler, PentaPredicate<A, B, C, D, E> predicate) {
-        Variable<E> toExist = PatternDSL.declarationOf(otherFactType, ruleAssembler.generateNextId("quadToExist"));
-        PatternDSL.PatternDef<E> existencePattern = PatternDSL.pattern(toExist);
+        Variable<E> toExist = declarationOf(otherFactType, ruleAssembler.generateNextId("quadToExist"));
+        PatternDSL.PatternDef<E> existencePattern = pattern(toExist);
         PatternDSL.PatternDef<E> possiblyFilteredExistencePattern = predicate == null ? existencePattern
                 : existencePattern.expr("Filter using " + predicate, ruleAssembler.getVariable(0), ruleAssembler.getVariable(1),
                         ruleAssembler.getVariable(2), ruleAssembler.getVariable(3),
                         (e, a, b, c, d) -> predicate.test((A) a, (B) b, (C) c, (D) d, e));
-        ExprViewItem existenceExpression = PatternDSL.exists(possiblyFilteredExistencePattern);
+        ExprViewItem existenceExpression = exists(possiblyFilteredExistencePattern);
         if (!shouldExist) {
-            existenceExpression = PatternDSL.not(possiblyFilteredExistencePattern);
+            existenceExpression = not(possiblyFilteredExistencePattern);
         }
         ruleAssembler.addDependentExpressionToLastPattern(existenceExpression);
         return ruleAssembler;
@@ -92,7 +97,7 @@ final class QuadExistenceMutator<A, B, C, D, E> implements Mutator {
                 if (!hasAFilter) { // From now on, we only allow filtering joiners.
                     indexOfFirstFilter = i;
                 }
-                // We merge all filters into one, so that we don't pay the penalty for lack of indexing more than once.
+                // Merge all filters into one to avoid paying the penalty for lack of indexing more than once.
                 finalFilter = finalFilter == null ? joiner.getFilter() : finalFilter.and(joiner.getFilter());
             }
         }

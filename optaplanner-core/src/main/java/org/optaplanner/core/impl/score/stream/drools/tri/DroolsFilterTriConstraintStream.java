@@ -23,7 +23,7 @@ import org.optaplanner.core.impl.score.stream.drools.common.nodes.TriConstraintG
 public final class DroolsFilterTriConstraintStream<Solution_, A, B, C>
         extends DroolsAbstractTriConstraintStream<Solution_, A, B, C> {
 
-    private final TriConstraintGraphNode<A, B, C> node;
+    private final TriConstraintGraphNode node;
 
     public DroolsFilterTriConstraintStream(DroolsConstraintFactory<Solution_> constraintFactory,
             DroolsAbstractTriConstraintStream<Solution_, A, B, C> parent, TriPredicate<A, B, C> triPredicate) {
@@ -36,7 +36,7 @@ public final class DroolsFilterTriConstraintStream<Solution_, A, B, C>
     // ************************************************************************
 
     @Override
-    public TriConstraintGraphNode<A, B, C> getConstraintGraphNode() {
+    public TriConstraintGraphNode getConstraintGraphNode() {
         return node;
     }
 

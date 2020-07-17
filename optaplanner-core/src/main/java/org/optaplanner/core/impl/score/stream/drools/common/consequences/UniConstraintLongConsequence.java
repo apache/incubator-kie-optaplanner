@@ -26,16 +26,16 @@ import org.optaplanner.core.impl.score.stream.drools.common.nodes.UniConstraintG
 final class UniConstraintLongConsequence<A> implements UniConstraintConsequence<A>,
         Supplier<ToLongFunction<A>> {
 
-    private final UniConstraintGraphNode<A> terminalNode;
+    private final UniConstraintGraphNode terminalNode;
     private final ToLongFunction<A> matchWeighter;
 
-    UniConstraintLongConsequence(UniConstraintGraphNode<A> terminalNode, ToLongFunction<A> matchWeighter) {
+    UniConstraintLongConsequence(UniConstraintGraphNode terminalNode, ToLongFunction<A> matchWeighter) {
         this.terminalNode = requireNonNull(terminalNode);
         this.matchWeighter = requireNonNull(matchWeighter);
     }
 
     @Override
-    public UniConstraintGraphNode<A> getTerminalNode() {
+    public UniConstraintGraphNode getTerminalNode() {
         return terminalNode;
     }
 

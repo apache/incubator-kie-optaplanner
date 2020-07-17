@@ -21,6 +21,9 @@ import static java.util.Collections.emptyMap;
 import static java.util.Collections.singletonList;
 import static java.util.Collections.unmodifiableList;
 import static java.util.Collections.unmodifiableMap;
+import static org.drools.model.DSL.declarationOf;
+import static org.drools.model.PatternDSL.pattern;
+import static org.drools.model.PatternDSL.rule;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -35,7 +38,6 @@ import java.util.stream.Stream;
 import org.drools.model.Argument;
 import org.drools.model.Drools;
 import org.drools.model.Global;
-import org.drools.model.PatternDSL;
 import org.drools.model.PatternDSL.PatternDef;
 import org.drools.model.Rule;
 import org.drools.model.RuleItemBuilder;
@@ -64,8 +66,8 @@ abstract class AbstractRuleAssembler<Predicate_> implements RuleAssembler {
     protected AbstractRuleAssembler(ConstraintGraphNode fromNode, int expectedGroupByCount) {
         this(prefix -> prefix + ((FromNode) fromNode).getGraph().getNextId(), expectedGroupByCount, emptyList(),
                 emptyList(), emptyList(), emptyMap());
-        variables.add(PatternDSL.declarationOf(((FromNode) fromNode).getFactType(), generateNextId("var")));
-        primaryPatterns.add(PatternDSL.pattern(variables.get(0)));
+        variables.add(declarationOf(((FromNode) fromNode).getFactType(), generateNextId("var")));
+        primaryPatterns.add(pattern(variables.get(0)));
     }
 
     protected AbstractRuleAssembler(UnaryOperator<String> idSupplier, int expectedGroupByCount,
@@ -204,7 +206,7 @@ abstract class AbstractRuleAssembler<Predicate_> implements RuleAssembler {
         ConsequenceBuilder.ValidBuilder consequence = buildConsequence(constraint, scoreHolderGlobal,
                 variables.toArray(new Variable[0]));
         ruleItemBuilderList.add(consequence);
-        Rule rule = PatternDSL.rule(constraint.getConstraintPackage(), constraint.getConstraintName())
+        Rule rule = rule(constraint.getConstraintPackage(), constraint.getConstraintName())
                 .metadata(VARIABLE_TYPE_RULE_METADATA_KEY, getExpectedJustificationTypes()
                         .map(Class::getCanonicalName)
                         .collect(Collectors.joining(",")))

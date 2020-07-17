@@ -24,7 +24,7 @@ import org.optaplanner.core.api.score.stream.tri.TriConstraintCollector;
 
 final class TriToTriGroupingNode<A, B, C, NewA, NewB, NewC>
         extends AbstractConstraintModelGroupingNode<TriFunction<A, B, C, ?>, TriConstraintCollector<A, B, C, ?, ?>>
-        implements TriConstraintGraphNode<NewA, NewB, NewC> {
+        implements TriConstraintGraphNode {
 
     TriToTriGroupingNode(TriFunction<A, B, C, NewA> aMapping, TriFunction<A, B, C, NewB> bMapping,
             TriConstraintCollector<A, B, C, ?, NewC> collector) {

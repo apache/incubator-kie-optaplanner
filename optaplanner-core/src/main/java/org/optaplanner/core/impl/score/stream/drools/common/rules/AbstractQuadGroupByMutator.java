@@ -21,7 +21,7 @@ import static org.drools.model.PatternDSL.PatternDef;
 import org.drools.model.Variable;
 import org.optaplanner.core.impl.score.stream.drools.common.QuadTuple;
 
-abstract class AbstractQuadGroupByMutator<A, B, C, D> extends AbstractGroupByMutator {
+abstract class AbstractQuadGroupByMutator extends AbstractGroupByMutator {
 
     @Override
     protected <InTuple> PatternDef bindTupleVariableOnFirstGrouping(AbstractRuleAssembler ruleAssembler, PatternDef pattern,

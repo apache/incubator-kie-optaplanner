@@ -22,7 +22,7 @@ import static org.drools.model.PatternDSL.alphaIndexedBy;
 import static org.drools.model.PatternDSL.pattern;
 
 import java.util.Collection;
-import java.util.function.BiFunction;
+import java.util.function.BiConsumer;
 
 import org.drools.core.base.accumulators.CollectSetAccumulateFunction;
 import org.drools.model.DSL;
@@ -31,7 +31,7 @@ import org.drools.model.PatternDSL;
 import org.drools.model.Variable;
 import org.drools.model.view.ViewItem;
 
-abstract class AbstractUniGroupByMutator<A> extends AbstractGroupByMutator {
+abstract class AbstractUniGroupByMutator extends AbstractGroupByMutator {
 
     @Override
     protected <InTuple> PatternDef bindTupleVariableOnFirstGrouping(AbstractRuleAssembler ruleAssembler, PatternDef pattern,
@@ -40,10 +40,9 @@ abstract class AbstractUniGroupByMutator<A> extends AbstractGroupByMutator {
     }
 
     protected <InTuple> AbstractRuleAssembler universalGroup(AbstractRuleAssembler ruleAssembler,
-            BiFunction<PatternDef, Variable<InTuple>, PatternDef> bindFunction, Transformer<InTuple> mutator) {
+            BiConsumer<PatternDef, Variable<InTuple>> primaryPatternVariableBinder, Transformer<InTuple> mutator) {
         Variable<InTuple> mappedVariable = Util.createVariable(ruleAssembler.generateNextId("biMapped"));
-        // TODO evaluate need for bindFunction
-        bindFunction.apply(ruleAssembler.getLastPrimaryPattern(), mappedVariable);
+        primaryPatternVariableBinder.accept(ruleAssembler.getLastPrimaryPattern(), mappedVariable);
         ViewItem<?> innerAccumulatePattern = getInnerAccumulatePattern(ruleAssembler);
         Variable<Collection<InTuple>> tupleCollection =
                 (Variable<Collection<InTuple>>) Util.createVariable(Collection.class,

@@ -26,17 +26,17 @@ import org.optaplanner.core.impl.score.stream.drools.common.nodes.QuadConstraint
 final class QuadConstraintLongConsequence<A, B, C, D> implements QuadConstraintConsequence<A, B, C, D>,
         Supplier<ToLongQuadFunction<A, B, C, D>> {
 
-    private final QuadConstraintGraphNode<A, B, C, D> terminalNode;
+    private final QuadConstraintGraphNode terminalNode;
     private final ToLongQuadFunction<A, B, C, D> matchWeighter;
 
-    QuadConstraintLongConsequence(QuadConstraintGraphNode<A, B, C, D> terminalNode,
+    QuadConstraintLongConsequence(QuadConstraintGraphNode terminalNode,
             ToLongQuadFunction<A, B, C, D> matchWeighter) {
         this.terminalNode = requireNonNull(terminalNode);
         this.matchWeighter = requireNonNull(matchWeighter);
     }
 
     @Override
-    public QuadConstraintGraphNode<A, B, C, D> getTerminalNode() {
+    public QuadConstraintGraphNode getTerminalNode() {
         return terminalNode;
     }
 

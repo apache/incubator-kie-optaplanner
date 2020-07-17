@@ -26,16 +26,16 @@ import org.optaplanner.core.impl.score.stream.drools.common.nodes.TriConstraintG
 final class TriConstraintIntConsequence<A, B, C> implements TriConstraintConsequence<A, B, C>,
         Supplier<ToIntTriFunction<A, B, C>> {
 
-    private final TriConstraintGraphNode<A, B, C> terminalNode;
+    private final TriConstraintGraphNode terminalNode;
     private final ToIntTriFunction<A, B, C> matchWeighter;
 
-    TriConstraintIntConsequence(TriConstraintGraphNode<A, B, C> terminalNode, ToIntTriFunction<A, B, C> matchWeighter) {
+    TriConstraintIntConsequence(TriConstraintGraphNode terminalNode, ToIntTriFunction<A, B, C> matchWeighter) {
         this.terminalNode = requireNonNull(terminalNode);
         this.matchWeighter = requireNonNull(matchWeighter);
     }
 
     @Override
-    public TriConstraintGraphNode<A, B, C> getTerminalNode() {
+    public TriConstraintGraphNode getTerminalNode() {
         return terminalNode;
     }
 

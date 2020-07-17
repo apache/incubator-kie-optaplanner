@@ -20,7 +20,7 @@ import org.optaplanner.core.api.function.QuadFunction;
 import org.optaplanner.core.api.score.stream.quad.QuadConstraintCollector;
 import org.optaplanner.core.impl.score.stream.drools.quad.DroolsQuadToTriGroupByAccumulator;
 
-class QuadGroupBy2Map1CollectMutator<A, B, C, D, NewA, NewB, NewC> extends AbstractQuadGroupByMutator<A, B, C, D> {
+class QuadGroupBy2Map1CollectMutator<A, B, C, D, NewA, NewB, NewC> extends AbstractQuadGroupByMutator {
 
     private final QuadFunction<A, B, C, D, NewA> groupKeyMappingA;
     private final QuadFunction<A, B, C, D, NewB> groupKeyMappingB;

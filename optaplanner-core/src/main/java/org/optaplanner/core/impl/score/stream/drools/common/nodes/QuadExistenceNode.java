@@ -23,7 +23,7 @@ import org.optaplanner.core.api.score.stream.penta.PentaJoiner;
 
 final class QuadExistenceNode<A, B, C, D, E>
         extends AbstractConstraintModelJoiningNode<E, PentaJoiner<A, B, C, D, E>>
-        implements QuadConstraintGraphNode<A, B, C, D> {
+        implements QuadConstraintGraphNode {
 
     QuadExistenceNode(boolean expectExistence, Class<E> otherFactType, PentaJoiner<A, B, C, D, E>... joiners) {
         super(otherFactType, expectExistence ? IF_EXISTS : IF_NOT_EXISTS, joiners);

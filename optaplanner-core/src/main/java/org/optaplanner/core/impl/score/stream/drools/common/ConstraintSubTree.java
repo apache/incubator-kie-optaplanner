@@ -34,37 +34,37 @@ final class ConstraintSubTree {
     private final boolean isJoin;
     private final ConstraintSubTree leftSubTree;
     private final ConstraintSubTree rightSubTree;
-    private final List<ConstraintGraphNode> nodes;
+    private final List<ConstraintGraphNode> nodeList;
 
-    public ConstraintSubTree(List<ConstraintGraphNode> nodesWithoutJoin) {
+    public ConstraintSubTree(List<ConstraintGraphNode> joinlessNodeList) {
         this.isJoin = false;
         this.leftSubTree = null;
         this.rightSubTree = null;
-        this.nodes = Collections.unmodifiableList(nodesWithoutJoin);
-        if (nodes.isEmpty()) {
+        this.nodeList = Collections.unmodifiableList(joinlessNodeList);
+        if (nodeList.isEmpty()) {
             throw new IllegalStateException("Node list may not be empty.");
         }
-        if (nodes.get(0).getType() != FROM) {
-            throw new IllegalStateException("First node is not a From (" + nodes.get(0) + ").");
+        if (nodeList.get(0).getType() != FROM) {
+            throw new IllegalStateException("First node is not a From (" + nodeList.get(0) + ").");
         }
     }
 
     public ConstraintSubTree(ConstraintSubTree leftSubTree, ConstraintSubTree rightSubTree,
-            List<ConstraintGraphNode> joinAndOtherNodes) {
+            List<ConstraintGraphNode> joinAndOtherNodesList) {
         this.isJoin = true;
         this.leftSubTree = Objects.requireNonNull(leftSubTree);
         this.rightSubTree = Objects.requireNonNull(rightSubTree);
-        this.nodes = Collections.unmodifiableList(joinAndOtherNodes);
-        if (nodes.isEmpty()) {
+        this.nodeList = Collections.unmodifiableList(joinAndOtherNodesList);
+        if (nodeList.isEmpty()) {
             throw new IllegalStateException("Node list may not be empty.");
         }
-        if (nodes.get(0).getType() != JOIN) {
-            throw new IllegalStateException("First node is not a Join (" + nodes.get(0) + ").");
+        if (nodeList.get(0).getType() != JOIN) {
+            throw new IllegalStateException("First node is not a Join (" + nodeList.get(0) + ").");
         }
     }
 
     public int getGroupByCount() {
-        long groupByCount = nodes.stream()
+        long groupByCount = nodeList.stream()
                 .filter(n -> n.getType() == GROUPBY_COLLECTING_ONLY || n.getType() == GROUPBY_MAPPING_ONLY ||
                         n.getType() == GROUPBY_MAPPING_AND_COLLECTING)
                 .count();
@@ -77,9 +77,10 @@ final class ConstraintSubTree {
 
     public RuleAssembler getRuleAssembler() {
         RuleAssembler builder = isJoin ? leftSubTree.getRuleAssembler()
-                .join(rightSubTree.getRuleAssembler(), nodes.get(0)) : RuleAssembler.from(nodes.get(0), getGroupByCount());
-        for (int i = 1; i < nodes.size(); i++) {
-            builder = builder.andThen(nodes.get(i));
+                .join(rightSubTree.getRuleAssembler(), nodeList.get(0))
+                : RuleAssembler.from(nodeList.get(0), getGroupByCount());
+        for (int i = 1; i < nodeList.size(); i++) {
+            builder = builder.andThen(nodeList.get(i));
         }
         return builder;
     }

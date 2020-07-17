@@ -16,10 +16,11 @@
 
 package org.optaplanner.core.impl.score.stream.drools.common;
 
+import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Deque;
 import java.util.List;
-import java.util.Stack;
 
 import org.optaplanner.core.impl.score.stream.drools.common.consequences.ConstraintConsequence;
 import org.optaplanner.core.impl.score.stream.drools.common.nodes.ChildNode;
@@ -48,10 +49,10 @@ final class ConstraintTree<Node_ extends ConstraintGraphNode, Consequence_ exten
     private List<ConstraintGraphNode> orderNodes(Consequence_ consequence) {
         // Depth-first search, right parents of join nodes get precedence.
         List<ConstraintGraphNode> nodeList = new ArrayList<>(0);
-        Stack<ConstraintGraphNode> unprocessedNodes = new Stack<>();
-        unprocessedNodes.add(consequence.getTerminalNode());
-        while (!unprocessedNodes.isEmpty()) {
-            ConstraintGraphNode node = unprocessedNodes.pop();
+        Deque<ConstraintGraphNode> unprocessedNodeDeque = new ArrayDeque<>(0);
+        unprocessedNodeDeque.add(consequence.getTerminalNode());
+        while (!unprocessedNodeDeque.isEmpty()) {
+            ConstraintGraphNode node = unprocessedNodeDeque.pollLast();
             nodeList.add(node);
             if (node instanceof ChildNode) {
                 List<ConstraintGraphNode> parentNodes = ((ChildNode) node).getParentNodes();
@@ -64,10 +65,10 @@ final class ConstraintTree<Node_ extends ConstraintGraphNode, Consequence_ exten
                                 ") has lower cardinality (" + supposedLeftParent.getCardinality() + ") than right (" +
                                 supposedRightParent + ", " + supposedRightParent.getCardinality() + ")");
                     }
-                    unprocessedNodes.add(supposedLeftParent);
-                    unprocessedNodes.add(supposedRightParent);
+                    unprocessedNodeDeque.add(supposedLeftParent);
+                    unprocessedNodeDeque.add(supposedRightParent);
                 } else if (parentNodeCount == 1) {
-                    unprocessedNodes.add(parentNodes.get(0));
+                    unprocessedNodeDeque.add(parentNodes.get(0));
                 } else {
                     throw new IllegalStateException("Node (" + node + ") had unexpected number of parents (" +
                             parentNodeCount + ").");

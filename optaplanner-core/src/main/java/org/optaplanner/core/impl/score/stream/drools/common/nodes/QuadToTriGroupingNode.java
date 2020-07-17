@@ -24,7 +24,7 @@ import org.optaplanner.core.api.score.stream.quad.QuadConstraintCollector;
 
 final class QuadToTriGroupingNode<A, B, C, D, NewA, NewB, NewC>
         extends AbstractConstraintModelGroupingNode<QuadFunction<A, B, C, D, ?>, QuadConstraintCollector<A, B, C, D, ?, ?>>
-        implements TriConstraintGraphNode<NewA, NewB, NewC> {
+        implements TriConstraintGraphNode {
 
     QuadToTriGroupingNode(QuadFunction<A, B, C, D, NewA> aMapping, QuadFunction<A, B, C, D, NewB> bMapping,
             QuadConstraintCollector<A, B, C, D, ?, NewC> collector) {

@@ -19,6 +19,7 @@ package org.optaplanner.core.impl.score.stream.drools.common.rules;
 import static java.util.Collections.emptyMap;
 import static java.util.Collections.singletonList;
 import static org.drools.model.DSL.accFunction;
+import static org.drools.model.DSL.and;
 import static org.drools.model.PatternDSL.alphaIndexedBy;
 import static org.drools.model.PatternDSL.pattern;
 
@@ -61,7 +62,7 @@ abstract class AbstractGroupByMutator implements Mutator {
         }
         ViewItem[] remainingPatternArray = patternList.subList(1, patternList.size())
                 .toArray(new ViewItem[0]);
-        return PatternDSL.and(firstPattern, remainingPatternArray);
+        return and(firstPattern, remainingPatternArray);
     }
 
     protected <NewA, InTuple, OutTuple> AbstractRuleAssembler collect(AbstractRuleAssembler ruleAssembler,

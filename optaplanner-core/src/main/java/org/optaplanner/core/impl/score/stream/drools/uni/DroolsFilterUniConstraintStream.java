@@ -37,7 +37,7 @@ public final class DroolsFilterUniConstraintStream<Solution_, A> extends DroolsA
     // ************************************************************************
 
     @Override
-    public UniConstraintGraphNode<A> getConstraintGraphNode() {
+    public UniConstraintGraphNode getConstraintGraphNode() {
         return node;
     }
 

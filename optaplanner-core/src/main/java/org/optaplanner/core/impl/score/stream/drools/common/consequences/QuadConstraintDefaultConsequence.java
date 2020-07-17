@@ -22,14 +22,14 @@ import org.optaplanner.core.impl.score.stream.drools.common.nodes.QuadConstraint
 
 final class QuadConstraintDefaultConsequence<A, B, C, D> implements QuadConstraintConsequence<A, B, C, D> {
 
-    private final QuadConstraintGraphNode<A, B, C, D> terminalNode;
+    private final QuadConstraintGraphNode terminalNode;
 
-    QuadConstraintDefaultConsequence(QuadConstraintGraphNode<A, B, C, D> terminalNode) {
+    QuadConstraintDefaultConsequence(QuadConstraintGraphNode terminalNode) {
         this.terminalNode = requireNonNull(terminalNode);
     }
 
     @Override
-    public QuadConstraintGraphNode<A, B, C, D> getTerminalNode() {
+    public QuadConstraintGraphNode getTerminalNode() {
         return terminalNode;
     }
 

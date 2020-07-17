@@ -24,7 +24,7 @@ import org.optaplanner.core.api.function.ToLongQuadFunction;
 import org.optaplanner.core.impl.score.stream.drools.common.nodes.QuadConstraintGraphNode;
 
 public interface QuadConstraintConsequence<A, B, C, D>
-        extends ConstraintConsequence<QuadConstraintGraphNode<A, B, C, D>> {
+        extends ConstraintConsequence<QuadConstraintGraphNode> {
 
     /**
      * {@inheritDoc}

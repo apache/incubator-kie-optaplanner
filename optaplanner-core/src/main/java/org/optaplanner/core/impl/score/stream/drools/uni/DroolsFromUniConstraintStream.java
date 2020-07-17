@@ -23,7 +23,7 @@ import org.optaplanner.core.impl.score.stream.drools.common.nodes.UniConstraintG
 
 public final class DroolsFromUniConstraintStream<Solution_, A> extends DroolsAbstractUniConstraintStream<Solution_, A> {
 
-    private final UniConstraintGraphNode<A> node;
+    private final UniConstraintGraphNode node;
 
     public DroolsFromUniConstraintStream(DroolsConstraintFactory<Solution_> constraintFactory, Class<A> fromClass) {
         super(constraintFactory);
@@ -35,7 +35,7 @@ public final class DroolsFromUniConstraintStream<Solution_, A> extends DroolsAbs
     // ************************************************************************
 
     @Override
-    public UniConstraintGraphNode<A> getConstraintGraphNode() {
+    public UniConstraintGraphNode getConstraintGraphNode() {
         return node;
     }
 

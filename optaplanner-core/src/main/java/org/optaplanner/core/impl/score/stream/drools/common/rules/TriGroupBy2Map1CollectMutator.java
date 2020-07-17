@@ -20,7 +20,7 @@ import org.optaplanner.core.api.function.TriFunction;
 import org.optaplanner.core.api.score.stream.tri.TriConstraintCollector;
 import org.optaplanner.core.impl.score.stream.drools.tri.DroolsTriGroupByAccumulator;
 
-class TriGroupBy2Map1CollectMutator<A, B, C, NewA, NewB, NewC> extends AbstractTriGroupByMutator<A, B, C> {
+class TriGroupBy2Map1CollectMutator<A, B, C, NewA, NewB, NewC> extends AbstractTriGroupByMutator {
 
     private final TriFunction<A, B, C, NewA> groupKeyMappingA;
     private final TriFunction<A, B, C, NewB> groupKeyMappingB;

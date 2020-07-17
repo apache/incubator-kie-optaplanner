@@ -20,7 +20,7 @@ import java.util.Objects;
 
 import org.optaplanner.core.impl.score.stream.drools.common.ConstraintGraph;
 
-public final class FromNode<A> extends AbstractConstraintModelNode implements UniConstraintGraphNode<A> {
+public final class FromNode<A> extends AbstractConstraintModelNode implements UniConstraintGraphNode {
 
     private final Class<A> factType;
     private final ConstraintGraph graph;

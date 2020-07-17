@@ -22,7 +22,7 @@ import org.optaplanner.core.impl.score.stream.drools.uni.DroolsAbstractUniConstr
 
 public class DroolsJoinBiConstraintStream<Solution_, A, B> extends DroolsAbstractBiConstraintStream<Solution_, A, B> {
 
-    private final BiConstraintGraphNode<A, B> node;
+    private final BiConstraintGraphNode node;
 
     public DroolsJoinBiConstraintStream(DroolsConstraintFactory<Solution_> constraintFactory,
             DroolsAbstractUniConstraintStream<Solution_, A> parent,
@@ -33,7 +33,7 @@ public class DroolsJoinBiConstraintStream<Solution_, A, B> extends DroolsAbstrac
     }
 
     @Override
-    public BiConstraintGraphNode<A, B> getConstraintGraphNode() {
+    public BiConstraintGraphNode getConstraintGraphNode() {
         return node;
     }
 

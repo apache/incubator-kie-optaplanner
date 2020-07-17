@@ -16,14 +16,14 @@
 
 package org.optaplanner.core.impl.score.stream.drools.common.rules;
 
-import java.util.function.BiFunction;
+import java.util.function.BiConsumer;
 import java.util.function.Function;
 
 import org.drools.model.PatternDSL.PatternDef;
 import org.drools.model.Variable;
 import org.optaplanner.core.impl.score.stream.drools.common.BiTuple;
 
-final class UniGroupBy2Map0CollectMutator<A, NewA, NewB> extends AbstractUniGroupByMutator<A> {
+final class UniGroupBy2Map0CollectMutator<A, NewA, NewB> extends AbstractUniGroupByMutator {
 
     private final Function<A, NewA> groupKeyMappingA;
     private final Function<A, NewB> groupKeyMappingB;
@@ -35,12 +35,11 @@ final class UniGroupBy2Map0CollectMutator<A, NewA, NewB> extends AbstractUniGrou
 
     @Override
     public AbstractRuleAssembler apply(AbstractRuleAssembler ruleAssembler) {
-        BiFunction<PatternDef, Variable<BiTuple<NewA, NewB>>, PatternDef> binder =
-                (pattern, tuple) -> pattern.bind(tuple, a -> {
-                    final NewA newA = groupKeyMappingA.apply((A) a);
-                    final NewB newB = groupKeyMappingB.apply((A) a);
-                    return new BiTuple<>(newA, newB);
-                });
+        BiConsumer<PatternDef, Variable<NewA>> binder = (pattern, tuple) -> pattern.bind(tuple, a -> {
+            final NewA newA = groupKeyMappingA.apply((A) a);
+            final NewB newB = groupKeyMappingB.apply((A) a);
+            return new BiTuple<>(newA, newB);
+        });
         return universalGroup(ruleAssembler, binder,
                 (var, pattern, accumulate) -> regroup(ruleAssembler, var, pattern, accumulate));
     }

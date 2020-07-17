@@ -27,17 +27,17 @@ import org.optaplanner.core.impl.score.stream.drools.common.nodes.QuadConstraint
 final class QuadConstraintBigDecimalConsequence<A, B, C, D> implements QuadConstraintConsequence<A, B, C, D>,
         Supplier<QuadFunction<A, B, C, D, BigDecimal>> {
 
-    private final QuadConstraintGraphNode<A, B, C, D> terminalNode;
+    private final QuadConstraintGraphNode terminalNode;
     private final QuadFunction<A, B, C, D, BigDecimal> matchWeighter;
 
-    QuadConstraintBigDecimalConsequence(QuadConstraintGraphNode<A, B, C, D> terminalNode,
+    QuadConstraintBigDecimalConsequence(QuadConstraintGraphNode terminalNode,
             QuadFunction<A, B, C, D, BigDecimal> matchWeighter) {
         this.terminalNode = requireNonNull(terminalNode);
         this.matchWeighter = requireNonNull(matchWeighter);
     }
 
     @Override
-    public QuadConstraintGraphNode<A, B, C, D> getTerminalNode() {
+    public QuadConstraintGraphNode getTerminalNode() {
         return terminalNode;
     }
 

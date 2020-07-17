@@ -22,14 +22,14 @@ import org.optaplanner.core.impl.score.stream.drools.common.nodes.TriConstraintG
 
 final class TriConstraintDefaultConsequence<A, B, C> implements TriConstraintConsequence<A, B, C> {
 
-    private final TriConstraintGraphNode<A, B, C> terminalNode;
+    private final TriConstraintGraphNode terminalNode;
 
-    TriConstraintDefaultConsequence(TriConstraintGraphNode<A, B, C> terminalNode) {
+    TriConstraintDefaultConsequence(TriConstraintGraphNode terminalNode) {
         this.terminalNode = requireNonNull(terminalNode);
     }
 
     @Override
-    public TriConstraintGraphNode<A, B, C> getTerminalNode() {
+    public TriConstraintGraphNode getTerminalNode() {
         return terminalNode;
     }
 

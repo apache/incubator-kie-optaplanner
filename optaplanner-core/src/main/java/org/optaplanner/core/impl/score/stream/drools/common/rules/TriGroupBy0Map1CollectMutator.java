@@ -19,7 +19,7 @@ package org.optaplanner.core.impl.score.stream.drools.common.rules;
 import org.optaplanner.core.api.score.stream.tri.TriConstraintCollector;
 import org.optaplanner.core.impl.score.stream.drools.tri.DroolsTriAccumulateFunction;
 
-class TriGroupBy0Map1CollectMutator<A, B, C, NewA> extends AbstractTriGroupByMutator<A, B, C> {
+class TriGroupBy0Map1CollectMutator<A, B, C, NewA> extends AbstractTriGroupByMutator {
 
     private final TriConstraintCollector<A, B, C, ?, NewA> collector;
 

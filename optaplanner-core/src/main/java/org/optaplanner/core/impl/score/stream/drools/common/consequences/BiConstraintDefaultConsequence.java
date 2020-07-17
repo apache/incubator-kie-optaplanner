@@ -22,14 +22,14 @@ import org.optaplanner.core.impl.score.stream.drools.common.nodes.BiConstraintGr
 
 final class BiConstraintDefaultConsequence<A, B> implements BiConstraintConsequence<A, B> {
 
-    private final BiConstraintGraphNode<A, B> terminalNode;
+    private final BiConstraintGraphNode terminalNode;
 
-    BiConstraintDefaultConsequence(BiConstraintGraphNode<A, B> terminalNode) {
+    BiConstraintDefaultConsequence(BiConstraintGraphNode terminalNode) {
         this.terminalNode = requireNonNull(terminalNode);
     }
 
     @Override
-    public BiConstraintGraphNode<A, B> getTerminalNode() {
+    public BiConstraintGraphNode getTerminalNode() {
         return terminalNode;
     }
 

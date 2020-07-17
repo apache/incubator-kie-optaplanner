@@ -27,16 +27,16 @@ import org.optaplanner.core.impl.score.stream.drools.common.nodes.UniConstraintG
 final class UniConstraintBigDecimalConsequence<A> implements UniConstraintConsequence<A>,
         Supplier<Function<A, BigDecimal>> {
 
-    private final UniConstraintGraphNode<A> terminalNode;
+    private final UniConstraintGraphNode terminalNode;
     private final Function<A, BigDecimal> matchWeighter;
 
-    UniConstraintBigDecimalConsequence(UniConstraintGraphNode<A> terminalNode, Function<A, BigDecimal> matchWeighter) {
+    UniConstraintBigDecimalConsequence(UniConstraintGraphNode terminalNode, Function<A, BigDecimal> matchWeighter) {
         this.terminalNode = requireNonNull(terminalNode);
         this.matchWeighter = requireNonNull(matchWeighter);
     }
 
     @Override
-    public UniConstraintGraphNode<A> getTerminalNode() {
+    public UniConstraintGraphNode getTerminalNode() {
         return terminalNode;
     }
 
