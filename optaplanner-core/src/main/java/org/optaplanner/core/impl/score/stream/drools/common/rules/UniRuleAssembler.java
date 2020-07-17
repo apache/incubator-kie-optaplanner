@@ -37,7 +37,6 @@ import org.optaplanner.core.api.score.stream.uni.UniConstraintCollector;
 import org.optaplanner.core.impl.score.holder.AbstractScoreHolder;
 import org.optaplanner.core.impl.score.stream.drools.DroolsConstraint;
 import org.optaplanner.core.impl.score.stream.drools.common.consequences.ConstraintConsequence;
-import org.optaplanner.core.impl.score.stream.drools.common.nodes.AbstractConstraintModelGroupingNode;
 import org.optaplanner.core.impl.score.stream.drools.common.nodes.AbstractConstraintModelJoiningNode;
 import org.optaplanner.core.impl.score.stream.drools.common.nodes.ConstraintGraphNode;
 
@@ -76,42 +75,37 @@ final class UniRuleAssembler extends AbstractRuleAssembler<Predicate> {
     }
 
     @Override
-    protected AbstractRuleAssembler andThenGroupBy(AbstractConstraintModelGroupingNode groupingNode) {
-        List<Function> mappings = groupingNode.getMappings();
-        int mappingCount = mappings.size();
-        List<UniConstraintCollector> collectors = groupingNode.getCollectors();
-        int collectorCount = collectors.size();
-        switch (groupingNode.getType()) {
-            case GROUPBY_MAPPING_ONLY:
-                switch (mappingCount) {
-                    case 1:
-                        return new UniGroupBy1Map0CollectMutator<>(mappings.get(0)).apply(this);
-                    case 2:
-                        return new UniGroupBy2Map0CollectMutator<>(mappings.get(0), mappings.get(1)).apply(this);
-                    default:
-                        throw new IllegalStateException("Invalid number of mappings: " + mappingCount);
-                }
-            case GROUPBY_COLLECTING_ONLY:
-                if (collectorCount == 1) {
-                    return new UniGroupBy0Map1CollectMutator<>(collectors.get(0)).apply(this);
-                }
-                throw new IllegalStateException("Invalid number of collectors: " + collectorCount);
-            case GROUPBY_MAPPING_AND_COLLECTING:
-                if (mappingCount == 1 && collectorCount == 1) {
-                    return new UniGroupBy1Map1CollectMutator<>(mappings.get(0), collectors.get(0)).apply(this);
-                } else if (mappingCount == 2 && collectorCount == 1) {
-                    return new UniGroupBy2Map1CollectMutator<>(mappings.get(0), mappings.get(1), collectors.get(0))
-                            .apply(this);
-                } else if (mappingCount == 2 && collectorCount == 2) {
-                    return new UniGroupBy2Map2CollectMutator<>(mappings.get(0), mappings.get(1), collectors.get(0),
-                            collectors.get(1)).apply(this);
-                } else {
-                    throw new IllegalStateException(
-                            "Invalid number of mappings (" + mappingCount + ") and collectors (" + collectorCount + ").");
-                }
-            default:
-                throw new UnsupportedOperationException();
-        }
+    protected AbstractGroupByMutator new0Map1CollectGroupByMutator(Object collector) {
+        return new UniGroupBy0Map1CollectMutator<>((UniConstraintCollector) collector);
+    }
+
+    @Override
+    protected AbstractGroupByMutator new1Map0CollectGroupByMutator(Object mapping) {
+        return new UniGroupBy1Map0CollectMutator<>((Function) mapping);
+    }
+
+    @Override
+    protected AbstractGroupByMutator new1Map1CollectGroupByMutator(Object mapping, Object collector) {
+        return new UniGroupBy1Map1CollectMutator<>((Function) mapping, (UniConstraintCollector) collector);
+    }
+
+    @Override
+    protected AbstractGroupByMutator new2Map0CollectGroupByMutator(Object mappingA, Object mappingB) {
+        return new UniGroupBy2Map0CollectMutator<>((Function) mappingA, (Function) mappingB);
+    }
+
+    @Override
+    protected AbstractGroupByMutator new2Map1CollectGroupByMutator(Object mappingA, Object mappingB,
+            Object collectorC) {
+        return new UniGroupBy2Map1CollectMutator<>((Function) mappingA, (Function) mappingB,
+                (UniConstraintCollector) collectorC);
+    }
+
+    @Override
+    protected AbstractGroupByMutator new2Map2CollectGroupByMutator(Object mappingA, Object mappingB, Object collectorC,
+            Object collectorD) {
+        return new UniGroupBy2Map2CollectMutator<>((Function) mappingA, (Function) mappingB,
+                (UniConstraintCollector) collectorC, (UniConstraintCollector) collectorD);
     }
 
     @Override
@@ -139,7 +133,7 @@ final class UniRuleAssembler extends AbstractRuleAssembler<Predicate> {
                         .execute((drools, scoreHolder, a) -> impactScore((Drools) drools,
                                 (AbstractScoreHolder) scoreHolder));
             default:
-                throw new UnsupportedOperationException();
+                throw new UnsupportedOperationException(consequence.getMatchWeightType().toString());
         }
     }
 

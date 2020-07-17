@@ -16,18 +16,19 @@
 
 package org.optaplanner.core.impl.score.stream.drools.common;
 
-import static org.optaplanner.core.impl.score.stream.drools.common.nodes.ConstraintGraphNodeType.FROM;
-import static org.optaplanner.core.impl.score.stream.drools.common.nodes.ConstraintGraphNodeType.GROUPBY_COLLECTING_ONLY;
-import static org.optaplanner.core.impl.score.stream.drools.common.nodes.ConstraintGraphNodeType.GROUPBY_MAPPING_AND_COLLECTING;
-import static org.optaplanner.core.impl.score.stream.drools.common.nodes.ConstraintGraphNodeType.GROUPBY_MAPPING_ONLY;
-import static org.optaplanner.core.impl.score.stream.drools.common.nodes.ConstraintGraphNodeType.JOIN;
-
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
 import org.optaplanner.core.impl.score.stream.drools.common.nodes.ConstraintGraphNode;
+import org.optaplanner.core.impl.score.stream.drools.common.nodes.ConstraintGraphNodeType;
 import org.optaplanner.core.impl.score.stream.drools.common.rules.RuleAssembler;
+
+import static org.optaplanner.core.impl.score.stream.drools.common.nodes.ConstraintGraphNodeType.FROM;
+import static org.optaplanner.core.impl.score.stream.drools.common.nodes.ConstraintGraphNodeType.GROUPBY_COLLECTING_ONLY;
+import static org.optaplanner.core.impl.score.stream.drools.common.nodes.ConstraintGraphNodeType.GROUPBY_MAPPING_AND_COLLECTING;
+import static org.optaplanner.core.impl.score.stream.drools.common.nodes.ConstraintGraphNodeType.GROUPBY_MAPPING_ONLY;
+import static org.optaplanner.core.impl.score.stream.drools.common.nodes.ConstraintGraphNodeType.JOIN;
 
 final class ConstraintSubTree {
 
@@ -42,10 +43,13 @@ final class ConstraintSubTree {
         this.rightSubTree = null;
         this.nodeList = Collections.unmodifiableList(joinlessNodeList);
         if (nodeList.isEmpty()) {
-            throw new IllegalStateException("Node list may not be empty.");
+            throw new IllegalStateException("Impossible state: Node list is empty.");
         }
-        if (nodeList.get(0).getType() != FROM) {
-            throw new IllegalStateException("First node is not a From (" + nodeList.get(0) + ").");
+        ConstraintGraphNode firstNode = nodeList.get(0);
+        ConstraintGraphNodeType firstNodeType = firstNode.getType();
+        if (firstNodeType != FROM) {
+            throw new IllegalStateException("Impossible state: First node (" + firstNode + ") is not " +
+                    ConstraintGraphNodeType.FROM + " (" + firstNodeType + ").");
         }
     }
 
@@ -56,10 +60,13 @@ final class ConstraintSubTree {
         this.rightSubTree = Objects.requireNonNull(rightSubTree);
         this.nodeList = Collections.unmodifiableList(joinAndOtherNodesList);
         if (nodeList.isEmpty()) {
-            throw new IllegalStateException("Node list may not be empty.");
+            throw new IllegalStateException("Impossible state: Node list is empty.");
         }
+        ConstraintGraphNode firstNode = nodeList.get(0);
+        ConstraintGraphNodeType firstNodeType = firstNode.getType();
         if (nodeList.get(0).getType() != JOIN) {
-            throw new IllegalStateException("First node is not a Join (" + nodeList.get(0) + ").");
+            throw new IllegalStateException("Impossible state: First node (" + firstNode + ") is not " +
+                    ConstraintGraphNodeType.JOIN + " (" + firstNodeType + ").");
         }
     }
 

@@ -34,7 +34,7 @@ public abstract class AbstractConstraintModelGroupingNode<FunctionType_, Collect
     private static ConstraintGraphNodeType determineType(List mappings, List collectors) {
         if (mappings.isEmpty()) {
             if (collectors.isEmpty()) {
-                throw new IllegalStateException("Grouping node has no mappings or collectors.");
+                throw new IllegalStateException("Impossible state: Grouping node has no mappings or collectors.");
             } else {
                 return ConstraintGraphNodeType.GROUPBY_COLLECTING_ONLY;
             }

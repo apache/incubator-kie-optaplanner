@@ -36,12 +36,12 @@ final class ConstraintTree<Node_ extends ConstraintGraphNode, Consequence_ exten
         this.nestedNodes = assembleSubTree(orderedNodeList);
         ConstraintGraphNode firstNode = orderedNodeList.get(0);
         if (firstNode.getType() != ConstraintGraphNodeType.FROM) {
-            throw new IllegalStateException("First node (" + firstNode + ") is not a " + ConstraintGraphNodeType.FROM +
-                    " (" + firstNode.getType() + ").");
+            throw new IllegalStateException("Impossible state: First node (" + firstNode + ") is not " +
+                    ConstraintGraphNodeType.FROM + " (" + firstNode.getType() + ").");
         }
         ConstraintGraphNode lastNode = orderedNodeList.get(orderedNodeList.size() - 1);
         if (lastNode != consequence.getTerminalNode()) {
-            throw new IllegalStateException("Last node (" + lastNode + ") is not the terminal node (" +
+            throw new IllegalStateException("Impossible state: Last node (" + lastNode + ") is not terminal (" +
                     consequence.getTerminalNode() + ").");
         }
     }
@@ -61,7 +61,7 @@ final class ConstraintTree<Node_ extends ConstraintGraphNode, Consequence_ exten
                     ConstraintGraphNode supposedLeftParent = parentNodes.get(0);
                     ConstraintGraphNode supposedRightParent = parentNodes.get(1);
                     if (supposedLeftParent.getCardinality() < supposedRightParent.getCardinality()) {
-                        throw new IllegalStateException("Left join parent (" + supposedLeftParent +
+                        throw new IllegalStateException("Impossible state: Left join parent (" + supposedLeftParent +
                                 ") has lower cardinality (" + supposedLeftParent.getCardinality() + ") than right (" +
                                 supposedRightParent + ", " + supposedRightParent.getCardinality() + ")");
                     }
@@ -70,8 +70,8 @@ final class ConstraintTree<Node_ extends ConstraintGraphNode, Consequence_ exten
                 } else if (parentNodeCount == 1) {
                     unprocessedNodeDeque.add(parentNodes.get(0));
                 } else {
-                    throw new IllegalStateException("Node (" + node + ") had unexpected number of parents (" +
-                            parentNodeCount + ").");
+                    throw new IllegalStateException("Impossible state: Node (" + node + ") with wrong number of " +
+                            "parents (" + parentNodeCount + ").");
                 }
             }
         }
@@ -85,45 +85,47 @@ final class ConstraintTree<Node_ extends ConstraintGraphNode, Consequence_ exten
     }
 
     private ConstraintSubTree assembleSubTree(List<ConstraintGraphNode> orderedNodeList) {
-        List<List<ConstraintGraphNode>> sequentialChunks = new ArrayList<>(0);
-        List<ConstraintGraphNode> unincludedNodes = new ArrayList<>(0);
+        List<List<ConstraintGraphNode>> sequentialChunkList = new ArrayList<>(0);
+        List<ConstraintGraphNode> unincludedNodeList = new ArrayList<>(0);
         // Separate the ordered list into chunks to be later converted into proper subtrees.
         for (ConstraintGraphNode node : orderedNodeList) {
             if (node.getType() == ConstraintGraphNodeType.FROM || node.getType() == ConstraintGraphNodeType.JOIN) {
-                if (!unincludedNodes.isEmpty()) { // Finish previous chunk.
-                    sequentialChunks.add(unincludedNodes);
-                    unincludedNodes = new ArrayList<>(0);
+                if (!unincludedNodeList.isEmpty()) { // Finish previous chunk.
+                    sequentialChunkList.add(unincludedNodeList);
+                    unincludedNodeList = new ArrayList<>(0);
                 }
             }
-            unincludedNodes.add(node);
+            unincludedNodeList.add(node);
         }
-        if (!unincludedNodes.isEmpty()) {
-            sequentialChunks.add(unincludedNodes);
+        if (!unincludedNodeList.isEmpty()) {
+            sequentialChunkList.add(unincludedNodeList);
         }
         // Assemble the chunks into subtrees.
         ConstraintSubTree joinSubTree = null;
-        while (!sequentialChunks.isEmpty()) {
-            int chunkCount = sequentialChunks.size();
+        while (!sequentialChunkList.isEmpty()) {
+            int chunkCount = sequentialChunkList.size();
             if (joinSubTree == null) {
                 switch (chunkCount) {
                     case 2:
-                        throw new IllegalStateException("Must have at least three chunks (FROM, FROM, JOIN).");
+                        throw new IllegalStateException("Impossible state: Must have at least three chunks " +
+                                "(FROM, FROM, JOIN), but had " + sequentialChunkList + ".");
                     case 1: // This is the only subtree.
-                        return new ConstraintSubTree(sequentialChunks.get(0));
+                        return new ConstraintSubTree(sequentialChunkList.get(0));
                     default:
-                        List<ConstraintGraphNode> currentChunk = sequentialChunks.get(2);
-                        ConstraintSubTree leftSubTree = new ConstraintSubTree(sequentialChunks.get(0));
-                        ConstraintSubTree rightSubTree = new ConstraintSubTree(sequentialChunks.get(1));
-                        joinSubTree = new ConstraintSubTree(leftSubTree, rightSubTree, currentChunk);
-                        sequentialChunks = sequentialChunks.subList(3, sequentialChunks.size());
+                        List<ConstraintGraphNode> currentChunkList = sequentialChunkList.get(2);
+                        ConstraintSubTree leftSubTree = new ConstraintSubTree(sequentialChunkList.get(0));
+                        ConstraintSubTree rightSubTree = new ConstraintSubTree(sequentialChunkList.get(1));
+                        joinSubTree = new ConstraintSubTree(leftSubTree, rightSubTree, currentChunkList);
+                        sequentialChunkList = sequentialChunkList.subList(3, sequentialChunkList.size());
                 }
             } else {
                 if (chunkCount == 1) {
-                    throw new IllegalStateException("JOIN must have at least two follow-up chunks (FROM, JOIN).");
+                    throw new IllegalStateException("Impossible state: JOIN must have at least two follow-up chunks " +
+                            "(FROM, JOIN), but had " + sequentialChunkList + ".");
                 } else {
-                    ConstraintSubTree rightSubTree = new ConstraintSubTree(sequentialChunks.get(0));
-                    joinSubTree = new ConstraintSubTree(joinSubTree, rightSubTree, sequentialChunks.get(1));
-                    sequentialChunks = sequentialChunks.subList(2, sequentialChunks.size());
+                    ConstraintSubTree rightSubTree = new ConstraintSubTree(sequentialChunkList.get(0));
+                    joinSubTree = new ConstraintSubTree(joinSubTree, rightSubTree, sequentialChunkList.get(1));
+                    sequentialChunkList = sequentialChunkList.subList(2, sequentialChunkList.size());
                 }
             }
         }

@@ -16,20 +16,12 @@
 
 package org.optaplanner.core.impl.score.stream.drools.common.rules;
 
-import static java.util.Collections.emptyList;
-import static java.util.Collections.emptyMap;
-import static java.util.Collections.singletonList;
-import static java.util.Collections.unmodifiableList;
-import static java.util.Collections.unmodifiableMap;
-import static org.drools.model.DSL.declarationOf;
-import static org.drools.model.PatternDSL.pattern;
-import static org.drools.model.PatternDSL.rule;
-
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.function.UnaryOperator;
 import java.util.stream.Collectors;
@@ -45,6 +37,7 @@ import org.drools.model.Variable;
 import org.drools.model.consequences.ConsequenceBuilder;
 import org.drools.model.view.ViewItem;
 import org.kie.api.runtime.rule.RuleContext;
+import org.optaplanner.core.api.score.stream.uni.UniConstraintCollector;
 import org.optaplanner.core.impl.score.holder.AbstractScoreHolder;
 import org.optaplanner.core.impl.score.stream.drools.DroolsConstraint;
 import org.optaplanner.core.impl.score.stream.drools.common.FactTuple;
@@ -53,6 +46,15 @@ import org.optaplanner.core.impl.score.stream.drools.common.nodes.AbstractConstr
 import org.optaplanner.core.impl.score.stream.drools.common.nodes.ConstraintGraphNode;
 import org.optaplanner.core.impl.score.stream.drools.common.nodes.ConstraintGraphNodeType;
 import org.optaplanner.core.impl.score.stream.drools.common.nodes.FromNode;
+
+import static java.util.Collections.emptyList;
+import static java.util.Collections.emptyMap;
+import static java.util.Collections.singletonList;
+import static java.util.Collections.unmodifiableList;
+import static java.util.Collections.unmodifiableMap;
+import static org.drools.model.DSL.declarationOf;
+import static org.drools.model.PatternDSL.pattern;
+import static org.drools.model.PatternDSL.rule;
 
 abstract class AbstractRuleAssembler<Predicate_> implements RuleAssembler {
 
@@ -190,7 +192,61 @@ abstract class AbstractRuleAssembler<Predicate_> implements RuleAssembler {
     protected abstract AbstractRuleAssembler andThenExists(AbstractConstraintModelJoiningNode joiningNode,
             boolean shouldExist);
 
-    protected abstract AbstractRuleAssembler andThenGroupBy(AbstractConstraintModelGroupingNode groupingNode);
+    protected final AbstractRuleAssembler andThenGroupBy(AbstractConstraintModelGroupingNode groupingNode) {
+        List<Function> mappings = groupingNode.getMappings();
+        int mappingCount = mappings.size();
+        List<UniConstraintCollector> collectors = groupingNode.getCollectors();
+        int collectorCount = collectors.size();
+        switch (groupingNode.getType()) {
+            case GROUPBY_MAPPING_ONLY:
+                switch (mappingCount) {
+                    case 1:
+                        return new1Map0CollectGroupByMutator(mappings.get(0))
+                                .apply(this);
+                    case 2:
+                        return new2Map0CollectGroupByMutator(mappings.get(0), mappings.get(1))
+                                .apply(this);
+                    default:
+                        throw new UnsupportedOperationException("Impossible state: Mapping count (" + mappingCount + ").");
+                }
+            case GROUPBY_COLLECTING_ONLY:
+                if (collectorCount == 1) {
+                    return new0Map1CollectGroupByMutator(collectors.get(0))
+                            .apply(this);
+                }
+                throw new UnsupportedOperationException("Impossible state: Collector count (" + collectorCount + ").");
+            case GROUPBY_MAPPING_AND_COLLECTING:
+                if (mappingCount == 1 && collectorCount == 1) {
+                    return new1Map1CollectGroupByMutator(mappings.get(0), collectors.get(0))
+                            .apply(this);
+                } else if (mappingCount == 2 && collectorCount == 1) {
+                    return new2Map1CollectGroupByMutator(mappings.get(0), mappings.get(1), collectors.get(0))
+                            .apply(this);
+                } else if (mappingCount == 2 && collectorCount == 2) {
+                    return new2Map2CollectGroupByMutator(mappings.get(0), mappings.get(1), collectors.get(0),
+                            collectors.get(1)).apply(this);
+                } else {
+                    throw new UnsupportedOperationException("Impossible state: Mapping count (" + mappingCount + "), " +
+                            "collector count (" + collectorCount + ").");
+                }
+            default:
+                throw new UnsupportedOperationException(groupingNode.getType().toString());
+        }
+    }
+
+    protected abstract AbstractGroupByMutator new0Map1CollectGroupByMutator(Object collector);
+
+    protected abstract AbstractGroupByMutator new1Map0CollectGroupByMutator(Object mapping);
+
+    protected abstract AbstractGroupByMutator new1Map1CollectGroupByMutator(Object mapping, Object collector);
+
+    protected abstract AbstractGroupByMutator new2Map0CollectGroupByMutator(Object mappingA, Object mappingB);
+
+    protected abstract AbstractGroupByMutator new2Map1CollectGroupByMutator(Object mappingA, Object mappingB,
+            Object collectorC);
+
+    protected abstract AbstractGroupByMutator new2Map2CollectGroupByMutator(Object mappingA, Object mappingB,
+            Object collectorC, Object collectorD);
 
     protected abstract ConsequenceBuilder.ValidBuilder buildConsequence(DroolsConstraint constraint,
             Global<? extends AbstractScoreHolder<?>> scoreHolderGlobal, Variable... variables);

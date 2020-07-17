@@ -16,11 +16,11 @@
 
 package org.optaplanner.core.impl.score.stream.drools.common.nodes;
 
-import static java.util.Objects.requireNonNull;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+
+import static java.util.Objects.requireNonNull;
 
 public abstract class AbstractConstraintModelChildNode
         extends AbstractConstraintModelNode implements ChildNode {
@@ -42,7 +42,7 @@ public abstract class AbstractConstraintModelChildNode
     @Override
     public final Class getFactType() {
         if (parentNodeList.isEmpty()) {
-            throw new IllegalStateException("Child node (" + this + ") has no parents.");
+            throw new IllegalStateException("Impossible state: Child node (" + this + ") has no parents.");
         } else if (parentNodeList.size() == 1) {
             AbstractConstraintModelNode parentNode = (AbstractConstraintModelNode) parentNodeList.get(0);
             if (parentNode instanceof FromNode) {
@@ -50,7 +50,8 @@ public abstract class AbstractConstraintModelChildNode
             } else if (parentNode instanceof AbstractConstraintModelChildNode) {
                 return ((AbstractConstraintModelChildNode) parentNode).getFactType();
             } else {
-                throw new IllegalStateException("Parent node (" + parentNode + ") has no fact type accessor.");
+                throw new IllegalStateException("Impossible state: Parent node (" + parentNode +
+                        ") without fact type accessor.");
             }
         } else { // Parent is a join node.
             return null;
