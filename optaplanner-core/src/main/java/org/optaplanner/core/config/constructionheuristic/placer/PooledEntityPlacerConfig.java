@@ -47,10 +47,6 @@ import org.optaplanner.core.impl.domain.variable.descriptor.GenuineVariableDescr
 import org.optaplanner.core.impl.heuristic.HeuristicConfigPolicy;
 import org.optaplanner.core.impl.heuristic.selector.move.MoveSelector;
 
-import com.thoughtworks.xstream.annotations.XStreamAlias;
-import com.thoughtworks.xstream.annotations.XStreamImplicit;
-
-@XStreamAlias("pooledEntityPlacer")
 public class PooledEntityPlacerConfig extends EntityPlacerConfig<PooledEntityPlacerConfig> {
 
     public static PooledEntityPlacerConfig unfoldNew(HeuristicConfigPolicy configPolicy,
@@ -107,7 +103,6 @@ public class PooledEntityPlacerConfig extends EntityPlacerConfig<PooledEntityPla
                     type = TailChainSwapMoveSelectorConfig.class),
             @XmlElement(name = UnionMoveSelectorConfig.XML_ELEMENT_NAME, type = UnionMoveSelectorConfig.class)
     })
-    @XStreamImplicit()
     private MoveSelectorConfig moveSelectorConfig = null;
 
     public PooledEntityPlacerConfig() {
@@ -148,14 +143,14 @@ public class PooledEntityPlacerConfig extends EntityPlacerConfig<PooledEntityPla
         }
         // The first entitySelectorConfig must be the mimic recorder, not the mimic replayer
         ((ChangeMoveSelectorConfig) subMoveSelectorConfigList.get(0)).setEntitySelectorConfig(entitySelectorConfig);
-        MoveSelectorConfig moveSelectorConfig;
+        MoveSelectorConfig moveSelectorConfig_;
         if (subMoveSelectorConfigList.size() > 1) {
             // Default to cartesian product (not a union) of planning variables.
-            moveSelectorConfig = new CartesianProductMoveSelectorConfig(subMoveSelectorConfigList);
+            moveSelectorConfig_ = new CartesianProductMoveSelectorConfig(subMoveSelectorConfigList);
         } else {
-            moveSelectorConfig = subMoveSelectorConfigList.get(0);
+            moveSelectorConfig_ = subMoveSelectorConfigList.get(0);
         }
-        return moveSelectorConfig;
+        return moveSelectorConfig_;
     }
 
     private EntitySelectorConfig buildEntitySelectorConfig(HeuristicConfigPolicy configPolicy,

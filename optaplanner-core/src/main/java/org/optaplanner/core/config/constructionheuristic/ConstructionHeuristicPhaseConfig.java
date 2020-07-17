@@ -58,10 +58,6 @@ import org.optaplanner.core.impl.solver.recaller.BestSolutionRecaller;
 import org.optaplanner.core.impl.solver.termination.Termination;
 import org.optaplanner.core.impl.solver.thread.ChildThreadType;
 
-import com.thoughtworks.xstream.annotations.XStreamAlias;
-import com.thoughtworks.xstream.annotations.XStreamImplicit;
-
-@XStreamAlias("constructionHeuristic")
 public class ConstructionHeuristicPhaseConfig extends PhaseConfig<ConstructionHeuristicPhaseConfig> {
 
     public static final String XML_ELEMENT_NAME = "constructionHeuristic";
@@ -78,7 +74,6 @@ public class ConstructionHeuristicPhaseConfig extends PhaseConfig<ConstructionHe
             @XmlElement(name = "queuedValuePlacer", type = QueuedValuePlacerConfig.class),
             @XmlElement(name = "pooledEntityPlacer", type = PooledEntityPlacerConfig.class)
     })
-    @XStreamImplicit
     protected EntityPlacerConfig entityPlacerConfig = null;
 
     /** Simpler alternative for {@link #entityPlacerConfig}. */
@@ -101,11 +96,9 @@ public class ConstructionHeuristicPhaseConfig extends PhaseConfig<ConstructionHe
                     type = TailChainSwapMoveSelectorConfig.class),
             @XmlElement(name = UnionMoveSelectorConfig.XML_ELEMENT_NAME, type = UnionMoveSelectorConfig.class)
     })
-    @XStreamImplicit()
     protected List<MoveSelectorConfig> moveSelectorConfigList = null;
 
     @XmlElement(name = "forager")
-    @XStreamAlias("forager")
     protected ConstructionHeuristicForagerConfig foragerConfig = null;
 
     // ************************************************************************

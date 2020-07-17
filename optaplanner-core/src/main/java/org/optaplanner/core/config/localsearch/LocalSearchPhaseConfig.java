@@ -59,10 +59,6 @@ import org.optaplanner.core.impl.solver.recaller.BestSolutionRecaller;
 import org.optaplanner.core.impl.solver.termination.Termination;
 import org.optaplanner.core.impl.solver.thread.ChildThreadType;
 
-import com.thoughtworks.xstream.annotations.XStreamAlias;
-import com.thoughtworks.xstream.annotations.XStreamImplicit;
-
-@XStreamAlias("localSearch")
 public class LocalSearchPhaseConfig extends PhaseConfig<LocalSearchPhaseConfig> {
 
     public static final String XML_ELEMENT_NAME = "localSearch";
@@ -91,13 +87,10 @@ public class LocalSearchPhaseConfig extends PhaseConfig<LocalSearchPhaseConfig> 
                     type = TailChainSwapMoveSelectorConfig.class),
             @XmlElement(name = UnionMoveSelectorConfig.XML_ELEMENT_NAME, type = UnionMoveSelectorConfig.class)
     })
-    @XStreamImplicit()
     private MoveSelectorConfig moveSelectorConfig = null;
     @XmlElement(name = "acceptor")
-    @XStreamAlias("acceptor")
     private LocalSearchAcceptorConfig acceptorConfig = null;
     @XmlElement(name = "forager")
-    @XStreamAlias("forager")
     private LocalSearchForagerConfig foragerConfig = null;
 
     // ************************************************************************
