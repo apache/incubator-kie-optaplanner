@@ -41,7 +41,7 @@ import org.optaplanner.core.impl.score.stream.drools.common.nodes.AbstractConstr
 import org.optaplanner.core.impl.score.stream.drools.common.nodes.AbstractConstraintModelJoiningNode;
 import org.optaplanner.core.impl.score.stream.drools.common.nodes.ConstraintGraphNode;
 
-final class BiRuleAssembler extends AbstractRuleAssembler {
+final class BiRuleAssembler extends AbstractRuleAssembler<BiPredicate> {
 
     private BiPredicate filterToApplyToLastPrimaryPattern = null;
 
@@ -52,20 +52,18 @@ final class BiRuleAssembler extends AbstractRuleAssembler {
     }
 
     @Override
-    protected AbstractRuleAssembler join(AbstractRuleAssembler ruleAssembler, ConstraintGraphNode joinNode) {
-        return new TriJoinMutator<>((AbstractConstraintModelJoiningNode) joinNode)
-                .apply(this, ruleAssembler);
+    protected void addFilterToLastPrimaryPattern(BiPredicate biPredicate) {
+        if (filterToApplyToLastPrimaryPattern == null) {
+            filterToApplyToLastPrimaryPattern = biPredicate;
+        } else {
+            filterToApplyToLastPrimaryPattern = filterToApplyToLastPrimaryPattern.and(biPredicate);
+        }
     }
 
     @Override
-    protected AbstractRuleAssembler andThenFilter(ConstraintGraphNode filterNode) {
-        Supplier<BiPredicate> predicateSupplier = (Supplier<BiPredicate>) filterNode;
-        if (filterToApplyToLastPrimaryPattern == null) {
-            filterToApplyToLastPrimaryPattern = predicateSupplier.get();
-        } else {
-            filterToApplyToLastPrimaryPattern = filterToApplyToLastPrimaryPattern.and(predicateSupplier.get());
-        }
-        return this;
+    protected AbstractRuleAssembler join(UniRuleAssembler ruleAssembler, ConstraintGraphNode joinNode) {
+        return new TriJoinMutator<>((AbstractConstraintModelJoiningNode) joinNode)
+                .apply(this, ruleAssembler);
     }
 
     @Override

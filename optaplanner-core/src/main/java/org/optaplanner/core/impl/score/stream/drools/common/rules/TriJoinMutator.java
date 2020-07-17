@@ -25,7 +25,7 @@ import org.drools.model.view.ViewItem;
 import org.optaplanner.core.impl.score.stream.drools.common.nodes.AbstractConstraintModelJoiningNode;
 import org.optaplanner.core.impl.score.stream.tri.AbstractTriJoiner;
 
-final class TriJoinMutator<A, B, C> implements JoinMutator {
+final class TriJoinMutator<A, B, C> implements JoinMutator<BiRuleAssembler, TriRuleAssembler> {
 
     private final AbstractTriJoiner<A, B, C> joiner;
 
@@ -34,17 +34,14 @@ final class TriJoinMutator<A, B, C> implements JoinMutator {
     }
 
     @Override
-    public AbstractRuleAssembler apply(AbstractRuleAssembler leftRuleAssembler, AbstractRuleAssembler rightRuleAssembler) {
-        rightRuleAssembler.getLastPrimaryPattern()
-                .expr("Filter using " + joiner, leftRuleAssembler.getVariable(0),
-                        leftRuleAssembler.getVariable(1), rightRuleAssembler.getVariable(0),
-                        (fact, a, b, c) -> joiner.matches((A) a, (B) b, (C) c));
-        return merge(leftRuleAssembler, rightRuleAssembler);
+    public TriRuleAssembler apply(BiRuleAssembler leftRuleAssembler, UniRuleAssembler rightRuleAssembler) {
+        TriRuleAssembler triRuleAssembler = merge(leftRuleAssembler, rightRuleAssembler);
+        triRuleAssembler.addFilterToLastPrimaryPattern((a, b, c) -> joiner.matches((A) a, (B) b, (C) c));
+        return triRuleAssembler;
     }
 
     @Override
-    public AbstractRuleAssembler newRuleAssembler(AbstractRuleAssembler leftRuleAssembler,
-            AbstractRuleAssembler rightRuleAssembler,
+    public TriRuleAssembler newRuleAssembler(BiRuleAssembler leftRuleAssembler, UniRuleAssembler rightRuleAssembler,
             List<ViewItem> finishedExpressions, List<Variable> variables, List<PatternDef> primaryPatterns,
             Map<Integer, List<ViewItem>> dependentExpressionMap) {
         return new TriRuleAssembler(leftRuleAssembler::generateNextId,

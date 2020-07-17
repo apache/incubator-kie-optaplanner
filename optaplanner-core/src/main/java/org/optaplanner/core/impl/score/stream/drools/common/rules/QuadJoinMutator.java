@@ -25,7 +25,7 @@ import org.drools.model.view.ViewItem;
 import org.optaplanner.core.impl.score.stream.drools.common.nodes.AbstractConstraintModelJoiningNode;
 import org.optaplanner.core.impl.score.stream.quad.AbstractQuadJoiner;
 
-final class QuadJoinMutator<A, B, C, D> implements JoinMutator {
+final class QuadJoinMutator<A, B, C, D> implements JoinMutator<TriRuleAssembler, QuadRuleAssembler> {
 
     private final AbstractQuadJoiner<A, B, C, D> joiner;
 
@@ -34,17 +34,14 @@ final class QuadJoinMutator<A, B, C, D> implements JoinMutator {
     }
 
     @Override
-    public AbstractRuleAssembler apply(AbstractRuleAssembler leftRuleAssembler, AbstractRuleAssembler rightRuleAssembler) {
-        rightRuleAssembler.getLastPrimaryPattern()
-                .expr("Filter using " + joiner, leftRuleAssembler.getVariable(0), leftRuleAssembler.getVariable(1),
-                        leftRuleAssembler.getVariable(2), rightRuleAssembler.getVariable(0),
-                        (fact, a, b, c, d) -> joiner.matches((A) a, (B) b, (C) c, (D) d));
-        return merge(leftRuleAssembler, rightRuleAssembler);
+    public QuadRuleAssembler apply(TriRuleAssembler leftRuleAssembler, UniRuleAssembler rightRuleAssembler) {
+        QuadRuleAssembler quadRuleAssembler = merge(leftRuleAssembler, rightRuleAssembler);
+        quadRuleAssembler.addFilterToLastPrimaryPattern((a, b, c, d) -> joiner.matches((A) a, (B) b, (C) c, (D) d));
+        return quadRuleAssembler;
     }
 
     @Override
-    public AbstractRuleAssembler newRuleAssembler(AbstractRuleAssembler leftRuleAssembler,
-            AbstractRuleAssembler rightRuleAssembler,
+    public QuadRuleAssembler newRuleAssembler(TriRuleAssembler leftRuleAssembler, UniRuleAssembler rightRuleAssembler,
             List<ViewItem> finishedExpressions, List<Variable> variables, List<PatternDef> primaryPatterns,
             Map<Integer, List<ViewItem>> dependentExpressionMap) {
         return new QuadRuleAssembler(leftRuleAssembler::generateNextId,

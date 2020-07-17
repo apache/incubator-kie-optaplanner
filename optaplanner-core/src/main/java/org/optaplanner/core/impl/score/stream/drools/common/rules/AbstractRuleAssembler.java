@@ -27,6 +27,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Supplier;
 import java.util.function.UnaryOperator;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -51,7 +52,7 @@ import org.optaplanner.core.impl.score.stream.drools.common.nodes.ConstraintGrap
 import org.optaplanner.core.impl.score.stream.drools.common.nodes.ConstraintGraphNodeType;
 import org.optaplanner.core.impl.score.stream.drools.common.nodes.FromNode;
 
-abstract class AbstractRuleAssembler implements RuleAssembler {
+abstract class AbstractRuleAssembler<Predicate_> implements RuleAssembler {
 
     private final UnaryOperator<String> idSupplier;
     private final int expectedGroupByCount;
@@ -128,6 +129,8 @@ abstract class AbstractRuleAssembler implements RuleAssembler {
         return primaryPatterns.get(primaryPatterns.size() - 1);
     }
 
+    protected abstract void addFilterToLastPrimaryPattern(Predicate_ predicate);
+
     protected abstract void applyFilterToLastPrimaryPattern();
 
     Map<Integer, List<ViewItem>> getDependentExpressionMap() {
@@ -167,12 +170,20 @@ abstract class AbstractRuleAssembler implements RuleAssembler {
 
     @Override
     public final RuleAssembler join(RuleAssembler ruleAssembler, ConstraintGraphNode joinNode) {
-        return join((AbstractRuleAssembler) ruleAssembler, joinNode);
+        if (!(ruleAssembler instanceof UniRuleAssembler)) {
+            throw new IllegalStateException("Impossible state: Rule assembler (" + ruleAssembler + ") not instance of "
+                    + UniRuleAssembler.class + ".");
+        }
+        return join((UniRuleAssembler) ruleAssembler, joinNode);
     }
 
-    protected abstract AbstractRuleAssembler join(AbstractRuleAssembler ruleAssembler, ConstraintGraphNode joinNode);
+    protected abstract AbstractRuleAssembler join(UniRuleAssembler ruleAssembler, ConstraintGraphNode joinNode);
 
-    protected abstract AbstractRuleAssembler andThenFilter(ConstraintGraphNode filterNode);
+    protected final AbstractRuleAssembler andThenFilter(ConstraintGraphNode filterNode) {
+        Predicate_ predicate = ((Supplier<Predicate_>) filterNode).get();
+        addFilterToLastPrimaryPattern(predicate);
+        return this;
+    }
 
     protected abstract AbstractRuleAssembler andThenExists(AbstractConstraintModelJoiningNode joiningNode,
             boolean shouldExist);

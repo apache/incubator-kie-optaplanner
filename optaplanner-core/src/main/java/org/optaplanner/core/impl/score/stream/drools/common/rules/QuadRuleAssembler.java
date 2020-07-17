@@ -41,7 +41,7 @@ import org.optaplanner.core.impl.score.stream.drools.common.nodes.AbstractConstr
 import org.optaplanner.core.impl.score.stream.drools.common.nodes.AbstractConstraintModelJoiningNode;
 import org.optaplanner.core.impl.score.stream.drools.common.nodes.ConstraintGraphNode;
 
-final class QuadRuleAssembler extends AbstractRuleAssembler {
+final class QuadRuleAssembler extends AbstractRuleAssembler<QuadPredicate> {
 
     private QuadPredicate filterToApplyToLastPrimaryPattern = null;
 
@@ -52,19 +52,17 @@ final class QuadRuleAssembler extends AbstractRuleAssembler {
     }
 
     @Override
-    protected AbstractRuleAssembler join(AbstractRuleAssembler ruleAssembler, ConstraintGraphNode joinNode) {
-        throw new UnsupportedOperationException("Penta streams are not supported.");
+    protected void addFilterToLastPrimaryPattern(QuadPredicate quadPredicate) {
+        if (filterToApplyToLastPrimaryPattern == null) {
+            filterToApplyToLastPrimaryPattern = quadPredicate;
+        } else {
+            filterToApplyToLastPrimaryPattern = filterToApplyToLastPrimaryPattern.and(quadPredicate);
+        }
     }
 
     @Override
-    protected AbstractRuleAssembler andThenFilter(ConstraintGraphNode filterNode) {
-        Supplier<QuadPredicate> predicateSupplier = (Supplier<QuadPredicate>) filterNode;
-        if (filterToApplyToLastPrimaryPattern == null) {
-            filterToApplyToLastPrimaryPattern = predicateSupplier.get();
-        } else {
-            filterToApplyToLastPrimaryPattern = filterToApplyToLastPrimaryPattern.and(predicateSupplier.get());
-        }
-        return this;
+    protected AbstractRuleAssembler join(UniRuleAssembler ruleAssembler, ConstraintGraphNode joinNode) {
+        throw new UnsupportedOperationException("Impossible state: Penta streams are not supported.");
     }
 
     @Override

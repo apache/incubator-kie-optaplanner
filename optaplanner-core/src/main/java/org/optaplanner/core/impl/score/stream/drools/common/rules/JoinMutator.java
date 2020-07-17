@@ -20,15 +20,16 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.function.BinaryOperator;
+import java.util.function.BiFunction;
 
 import org.drools.model.PatternDSL.PatternDef;
 import org.drools.model.Variable;
 import org.drools.model.view.ViewItem;
 
-interface JoinMutator extends BinaryOperator<AbstractRuleAssembler> {
+interface JoinMutator<LeftAssembler_ extends AbstractRuleAssembler, ResultAssembler_ extends AbstractRuleAssembler>
+        extends BiFunction<LeftAssembler_, UniRuleAssembler, ResultAssembler_> {
 
-    default AbstractRuleAssembler merge(AbstractRuleAssembler leftRuleAssembler, AbstractRuleAssembler rightRuleAssembler) {
+    default ResultAssembler_ merge(LeftAssembler_ leftRuleAssembler, UniRuleAssembler rightRuleAssembler) {
         leftRuleAssembler.applyFilterToLastPrimaryPattern();
         rightRuleAssembler.applyFilterToLastPrimaryPattern();
         List<ViewItem> newFinishedExpressions = new ArrayList<>(leftRuleAssembler.getFinishedExpressions());
@@ -48,7 +49,7 @@ interface JoinMutator extends BinaryOperator<AbstractRuleAssembler> {
                 newPrimaryPatterns, newDependentExpressionMap);
     }
 
-    AbstractRuleAssembler newRuleAssembler(AbstractRuleAssembler leftRuleAssembler, AbstractRuleAssembler rightRuleAssembler,
+    ResultAssembler_ newRuleAssembler(LeftAssembler_ leftRuleAssembler, UniRuleAssembler rightRuleAssembler,
             List<ViewItem> finishedExpressions, List<Variable> variables, List<PatternDef> primaryPatterns,
             Map<Integer, List<ViewItem>> dependentExpressionMap);
 

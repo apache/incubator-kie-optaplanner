@@ -33,7 +33,7 @@ import org.optaplanner.core.impl.score.stream.bi.AbstractBiJoiner;
 import org.optaplanner.core.impl.score.stream.common.JoinerType;
 import org.optaplanner.core.impl.score.stream.drools.common.nodes.AbstractConstraintModelJoiningNode;
 
-final class BiJoinMutator<A, B> implements JoinMutator {
+final class BiJoinMutator<A, B> implements JoinMutator<UniRuleAssembler, BiRuleAssembler> {
 
     private final AbstractBiJoiner<A, B> biJoiner;
 
@@ -42,9 +42,9 @@ final class BiJoinMutator<A, B> implements JoinMutator {
     }
 
     @Override
-    public AbstractRuleAssembler apply(AbstractRuleAssembler leftRuleAssembler, AbstractRuleAssembler rightRuleAssembler) {
+    public BiRuleAssembler apply(UniRuleAssembler leftRuleAssembler, UniRuleAssembler rightRuleAssembler) {
         JoinerType[] joinerTypes = biJoiner.getJoinerTypes();
-        // We rebuild the A pattern, binding variables for left parts of the joins.
+        // Rebuild the A pattern, binding variables for left parts of the joins.
         PatternDef aJoiner = leftRuleAssembler.getLastPrimaryPattern();
         Variable[] joinVars = new Variable[joinerTypes.length];
         for (int mappingIndex = 0; mappingIndex < joinerTypes.length; mappingIndex++) {
@@ -62,7 +62,7 @@ final class BiJoinMutator<A, B> implements JoinMutator {
             Function<A, Object> leftMapping = biJoiner.getLeftMapping(mappingIndex);
             Function<B, Object> rightMapping = biJoiner.getRightMapping(mappingIndex);
             Function1<B, Object> rightExtractor = rightMapping::apply;
-            Predicate2<B, A> predicate = (b, a) -> { // We only extract B; A is coming from a pre-bound join var.
+            Predicate2<B, A> predicate = (b, a) -> { // Only extract B; A is coming from a pre-bound join var.
                 return joinerType.matches(a, rightExtractor.apply(b));
             };
             BetaIndex<B, A, Object> index = betaIndexedBy(Object.class, Mutator.getConstraintType(joinerType),
@@ -74,8 +74,7 @@ final class BiJoinMutator<A, B> implements JoinMutator {
     }
 
     @Override
-    public AbstractRuleAssembler newRuleAssembler(AbstractRuleAssembler leftRuleAssembler,
-            AbstractRuleAssembler rightRuleAssembler,
+    public BiRuleAssembler newRuleAssembler(UniRuleAssembler leftRuleAssembler, UniRuleAssembler rightRuleAssembler,
             List<ViewItem> finishedExpressions, List<Variable> variables, List<PatternDef> primaryPatterns,
             Map<Integer, List<ViewItem>> dependentExpressionMap) {
         return new BiRuleAssembler(leftRuleAssembler::generateNextId,

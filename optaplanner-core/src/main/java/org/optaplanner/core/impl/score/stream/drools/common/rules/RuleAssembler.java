@@ -26,7 +26,7 @@ import org.optaplanner.core.impl.score.stream.drools.common.nodes.ConstraintGrap
 
 public interface RuleAssembler {
 
-    static String VARIABLE_TYPE_RULE_METADATA_KEY = "constraintStreamVariableTypes";
+    String VARIABLE_TYPE_RULE_METADATA_KEY = "constraintStreamVariableTypes";
 
     static RuleAssembler from(ConstraintGraphNode node, int expectedGroupByCount) {
         return new UniRuleAssembler(node, expectedGroupByCount);

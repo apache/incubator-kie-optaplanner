@@ -16,7 +16,6 @@
 
 package org.optaplanner.core.impl.score.stream.drools.common.rules;
 
-import static java.util.Arrays.copyOfRange;
 import static java.util.Collections.emptyMap;
 import static java.util.Collections.singletonList;
 import static org.drools.model.DSL.accFunction;
@@ -50,14 +49,19 @@ abstract class AbstractGroupByMutator implements Mutator {
     protected abstract <InTuple> PatternDef bindTupleVariableOnFirstGrouping(AbstractRuleAssembler ruleAssembler,
             PatternDef pattern, Variable<InTuple> tupleVariable);
 
-    protected ViewItem<?> getInnerAccumulatePattern(AbstractRuleAssembler ruleAssembler) {
-        List<ViewItem> allPatterns = new ArrayList<>();
+    protected ViewItem getInnerAccumulatePattern(AbstractRuleAssembler<?> ruleAssembler) {
+        List<ViewItem> patternList = new ArrayList<>();
         for (int i = 0; i < ruleAssembler.getPrimaryPatterns().size(); i++) {
-            allPatterns.add(ruleAssembler.getPrimaryPatterns().get(i));
-            allPatterns.addAll(ruleAssembler.getDependentExpressionMap().getOrDefault(i, Collections.emptyList()));
+            patternList.add(ruleAssembler.getPrimaryPatterns().get(i));
+            patternList.addAll(ruleAssembler.getDependentExpressionMap().getOrDefault(i, Collections.emptyList()));
         }
-        ViewItem[] items = allPatterns.toArray(new ViewItem[0]);
-        return PatternDSL.and(items[0], copyOfRange(items, 1, items.length));
+        ViewItem firstPattern = patternList.get(0);
+        if (patternList.size() == 1) {
+            return firstPattern;
+        }
+        ViewItem[] remainingPatternArray = patternList.subList(1, patternList.size())
+                .toArray(new ViewItem[0]);
+        return PatternDSL.and(firstPattern, remainingPatternArray);
     }
 
     protected <NewA, InTuple, OutTuple> AbstractRuleAssembler collect(AbstractRuleAssembler ruleAssembler,
