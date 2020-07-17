@@ -24,7 +24,7 @@ import java.util.function.Supplier;
 import org.optaplanner.core.api.function.TriFunction;
 import org.optaplanner.core.impl.score.stream.drools.common.nodes.TriConstraintGraphNode;
 
-final class TriConstraintBigDecimalConsequence<A, B, C> implements TriConstraintConsequence<A, B, C>,
+final class TriConstraintBigDecimalConsequence<A, B, C> implements TriConstraintConsequence,
         Supplier<TriFunction<A, B, C, BigDecimal>> {
 
     private final TriConstraintGraphNode terminalNode;

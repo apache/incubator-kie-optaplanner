@@ -38,78 +38,78 @@ import org.optaplanner.core.impl.score.stream.drools.common.nodes.UniConstraintG
 
 public interface ConstraintConsequence<Node_ extends ConstraintGraphNode> {
 
-    static <A> UniConstraintConsequence<A> create(UniConstraintGraphNode terminalNode) {
+    static <A> UniConstraintConsequence create(UniConstraintGraphNode terminalNode) {
         return new UniConstraintDefaultConsequence<>(terminalNode);
     }
 
-    static <A> UniConstraintConsequence<A> create(UniConstraintGraphNode terminalNode,
+    static <A> UniConstraintConsequence create(UniConstraintGraphNode terminalNode,
             ToIntFunction<A> matchWeighter) {
         return new UniConstraintIntConsequence<>(terminalNode, matchWeighter);
     }
 
-    static <A> UniConstraintConsequence<A> create(UniConstraintGraphNode terminalNode,
+    static <A> UniConstraintConsequence create(UniConstraintGraphNode terminalNode,
             ToLongFunction<A> matchWeighter) {
         return new UniConstraintLongConsequence<>(terminalNode, matchWeighter);
     }
 
-    static <A> UniConstraintConsequence<A> create(UniConstraintGraphNode terminalNode,
+    static <A> UniConstraintConsequence create(UniConstraintGraphNode terminalNode,
             Function<A, BigDecimal> matchWeighter) {
         return new UniConstraintBigDecimalConsequence<>(terminalNode, matchWeighter);
     }
 
-    static <A, B> BiConstraintConsequence<A, B> create(BiConstraintGraphNode terminalNode) {
+    static <A, B> BiConstraintConsequence create(BiConstraintGraphNode terminalNode) {
         return new BiConstraintDefaultConsequence<>(terminalNode);
     }
 
-    static <A, B> BiConstraintConsequence<A, B> create(BiConstraintGraphNode terminalNode,
+    static <A, B> BiConstraintConsequence create(BiConstraintGraphNode terminalNode,
             ToIntBiFunction<A, B> matchWeighter) {
         return new BiConstraintIntConsequence<>(terminalNode, matchWeighter);
     }
 
-    static <A, B> BiConstraintConsequence<A, B> create(BiConstraintGraphNode terminalNode,
+    static <A, B> BiConstraintConsequence create(BiConstraintGraphNode terminalNode,
             ToLongBiFunction<A, B> matchWeighter) {
         return new BiConstraintLongConsequence<>(terminalNode, matchWeighter);
     }
 
-    static <A, B> BiConstraintConsequence<A, B> create(BiConstraintGraphNode terminalNode,
+    static <A, B> BiConstraintConsequence create(BiConstraintGraphNode terminalNode,
             BiFunction<A, B, BigDecimal> matchWeighter) {
         return new BiConstraintBigDecimalConsequence<>(terminalNode, matchWeighter);
     }
 
-    static <A, B, C> TriConstraintConsequence<A, B, C> create(TriConstraintGraphNode terminalNode) {
+    static <A, B, C> TriConstraintConsequence create(TriConstraintGraphNode terminalNode) {
         return new TriConstraintDefaultConsequence<>(terminalNode);
     }
 
-    static <A, B, C> TriConstraintConsequence<A, B, C> create(TriConstraintGraphNode terminalNode,
+    static <A, B, C> TriConstraintConsequence create(TriConstraintGraphNode terminalNode,
             ToIntTriFunction<A, B, C> matchWeighter) {
         return new TriConstraintIntConsequence<>(terminalNode, matchWeighter);
     }
 
-    static <A, B, C> TriConstraintConsequence<A, B, C> create(TriConstraintGraphNode terminalNode,
+    static <A, B, C> TriConstraintConsequence create(TriConstraintGraphNode terminalNode,
             ToLongTriFunction<A, B, C> matchWeighter) {
         return new TriConstraintLongConsequence<>(terminalNode, matchWeighter);
     }
 
-    static <A, B, C> TriConstraintConsequence<A, B, C> create(TriConstraintGraphNode terminalNode,
+    static <A, B, C> TriConstraintConsequence create(TriConstraintGraphNode terminalNode,
             TriFunction<A, B, C, BigDecimal> matchWeighter) {
         return new TriConstraintBigDecimalConsequence<>(terminalNode, matchWeighter);
     }
 
-    static <A, B, C, D> QuadConstraintConsequence<A, B, C, D> create(QuadConstraintGraphNode terminalNode) {
+    static <A, B, C, D> QuadConstraintConsequence create(QuadConstraintGraphNode terminalNode) {
         return new QuadConstraintDefaultConsequence<>(terminalNode);
     }
 
-    static <A, B, C, D> QuadConstraintConsequence<A, B, C, D> create(QuadConstraintGraphNode terminalNode,
+    static <A, B, C, D> QuadConstraintConsequence create(QuadConstraintGraphNode terminalNode,
             ToIntQuadFunction<A, B, C, D> matchWeighter) {
         return new QuadConstraintIntConsequence<>(terminalNode, matchWeighter);
     }
 
-    static <A, B, C, D> QuadConstraintConsequence<A, B, C, D> create(QuadConstraintGraphNode terminalNode,
+    static <A, B, C, D> QuadConstraintConsequence create(QuadConstraintGraphNode terminalNode,
             ToLongQuadFunction<A, B, C, D> matchWeighter) {
         return new QuadConstraintLongConsequence<>(terminalNode, matchWeighter);
     }
 
-    static <A, B, C, D> QuadConstraintConsequence<A, B, C, D> create(QuadConstraintGraphNode terminalNode,
+    static <A, B, C, D> QuadConstraintConsequence create(QuadConstraintGraphNode terminalNode,
             QuadFunction<A, B, C, D, BigDecimal> matchWeighter) {
         return new QuadConstraintBigDecimalConsequence<>(terminalNode, matchWeighter);
     }

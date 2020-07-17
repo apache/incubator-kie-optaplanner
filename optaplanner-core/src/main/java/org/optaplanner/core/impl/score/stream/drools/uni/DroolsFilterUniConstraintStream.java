@@ -24,7 +24,7 @@ import org.optaplanner.core.impl.score.stream.drools.common.nodes.UniConstraintG
 
 public final class DroolsFilterUniConstraintStream<Solution_, A> extends DroolsAbstractUniConstraintStream<Solution_, A> {
 
-    private final UniConstraintGraphChildNode<A> node;
+    private final UniConstraintGraphChildNode node;
 
     public DroolsFilterUniConstraintStream(DroolsConstraintFactory<Solution_> constraintFactory,
             DroolsAbstractUniConstraintStream<Solution_, A> parent, Predicate<A> predicate) {

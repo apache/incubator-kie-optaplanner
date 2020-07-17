@@ -38,7 +38,7 @@ import org.optaplanner.core.impl.score.stream.drools.common.consequences.Constra
 
 public interface ConstraintGraphNode {
 
-    static <A> UniConstraintGraphChildNode<A> filter(Predicate<A> predicate) {
+    static <A> UniConstraintGraphChildNode filter(Predicate<A> predicate) {
         return new UniFilterNode<>(predicate);
     }
 
@@ -67,7 +67,7 @@ public interface ConstraintGraphNode {
         return new QuadJoinNode<>(otherFactType, joiner);
     }
 
-    static <A, B> UniConstraintGraphChildNode<A> ifExists(Class<B> otherFactType, BiJoiner<A, B>... joiners) {
+    static <A, B> UniConstraintGraphChildNode ifExists(Class<B> otherFactType, BiJoiner<A, B>... joiners) {
         return new UniExistenceNode<>(true, otherFactType, joiners);
     }
 
@@ -85,7 +85,7 @@ public interface ConstraintGraphNode {
         return new QuadExistenceNode<>(true, otherFactType, joiners);
     }
 
-    static <A, B> UniConstraintGraphChildNode<A> ifNotExists(Class<B> otherFactType, BiJoiner<A, B>... joiners) {
+    static <A, B> UniConstraintGraphChildNode ifNotExists(Class<B> otherFactType, BiJoiner<A, B>... joiners) {
         return new UniExistenceNode<>(false, otherFactType, joiners);
     }
 
@@ -103,7 +103,7 @@ public interface ConstraintGraphNode {
         return new QuadExistenceNode<>(false, otherFactType, joiners);
     }
 
-    static <A, GroupKey_> UniConstraintGraphChildNode<GroupKey_> groupBy(Function<A, GroupKey_> mapping) {
+    static <A, GroupKey_> UniConstraintGraphChildNode groupBy(Function<A, GroupKey_> mapping) {
         return new UniToUniGroupingNode<>(mapping);
     }
 
@@ -112,7 +112,7 @@ public interface ConstraintGraphNode {
         return new UniToBiGroupingNode<>(aMapping, bMapping);
     }
 
-    static <A, ResultContainer_, Result_> UniConstraintGraphChildNode<Result_> groupBy(
+    static <A, ResultContainer_, Result_> UniConstraintGraphChildNode groupBy(
             UniConstraintCollector<A, ResultContainer_, Result_> collector) {
         return new UniToUniGroupingNode<>(collector);
     }
@@ -135,12 +135,12 @@ public interface ConstraintGraphNode {
         return new UniToQuadGroupingNode<>(aMapping, bMapping, cCollector, dCollector);
     }
 
-    static <A, B, ResultContainer_, Result_> UniConstraintGraphChildNode<Result_> groupBy(
+    static <A, B, ResultContainer_, Result_> UniConstraintGraphChildNode groupBy(
             BiConstraintCollector<A, B, ResultContainer_, Result_> collector) {
         return new BiToUniGroupingNode<>(collector);
     }
 
-    static <A, B, GroupKey_> UniConstraintGraphChildNode<GroupKey_> groupBy(BiFunction<A, B, GroupKey_> mapping) {
+    static <A, B, GroupKey_> UniConstraintGraphChildNode groupBy(BiFunction<A, B, GroupKey_> mapping) {
         return new BiToUniGroupingNode<>(mapping);
     }
 
@@ -167,12 +167,12 @@ public interface ConstraintGraphNode {
         return new BiToQuadGroupingNode<>(aMapping, bMapping, cCollector, dCollector);
     }
 
-    static <A, B, C, ResultContainer_, Result_> UniConstraintGraphChildNode<Result_> groupBy(
+    static <A, B, C, ResultContainer_, Result_> UniConstraintGraphChildNode groupBy(
             TriConstraintCollector<A, B, C, ResultContainer_, Result_> collector) {
         return new TriToUniGroupingNode<>(collector);
     }
 
-    static <A, B, C, GroupKey_> UniConstraintGraphChildNode<GroupKey_> groupBy(
+    static <A, B, C, GroupKey_> UniConstraintGraphChildNode groupBy(
             TriFunction<A, B, C, GroupKey_> mapping) {
         return new TriToUniGroupingNode<>(mapping);
     }
@@ -203,12 +203,12 @@ public interface ConstraintGraphNode {
         return new TriToQuadGroupingNode<>(aMapping, bMapping, cCollector, dCollector);
     }
 
-    static <A, B, C, D, ResultContainer_, Result_> UniConstraintGraphChildNode<Result_> groupBy(
+    static <A, B, C, D, ResultContainer_, Result_> UniConstraintGraphChildNode groupBy(
             QuadConstraintCollector<A, B, C, D, ResultContainer_, Result_> collector) {
         return new QuadToUniGroupingNode<>(collector);
     }
 
-    static <A, B, C, D, GroupKey_> UniConstraintGraphChildNode<GroupKey_> groupBy(
+    static <A, B, C, D, GroupKey_> UniConstraintGraphChildNode groupBy(
             QuadFunction<A, B, C, D, GroupKey_> mapping) {
         return new QuadToUniGroupingNode<>(mapping);
     }

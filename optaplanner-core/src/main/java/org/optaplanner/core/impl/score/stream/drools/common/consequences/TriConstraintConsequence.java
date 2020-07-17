@@ -23,8 +23,7 @@ import org.optaplanner.core.api.function.ToLongTriFunction;
 import org.optaplanner.core.api.function.TriFunction;
 import org.optaplanner.core.impl.score.stream.drools.common.nodes.TriConstraintGraphNode;
 
-public interface TriConstraintConsequence<A, B, C>
-        extends ConstraintConsequence<TriConstraintGraphNode> {
+public interface TriConstraintConsequence extends ConstraintConsequence<TriConstraintGraphNode> {
 
     /**
      * {@inheritDoc}

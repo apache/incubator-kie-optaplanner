@@ -20,6 +20,7 @@ import static java.util.Collections.emptyMap;
 import static java.util.Collections.singletonList;
 import static org.drools.model.DSL.accFunction;
 import static org.drools.model.DSL.and;
+import static org.drools.model.DSL.from;
 import static org.drools.model.PatternDSL.alphaIndexedBy;
 import static org.drools.model.PatternDSL.pattern;
 
@@ -33,7 +34,6 @@ import java.util.function.Supplier;
 
 import org.drools.model.DSL;
 import org.drools.model.Index;
-import org.drools.model.PatternDSL;
 import org.drools.model.PatternDSL.PatternDef;
 import org.drools.model.Variable;
 import org.drools.model.view.ViewItem;
@@ -118,7 +118,7 @@ abstract class AbstractGroupByMutator implements Mutator {
             ViewItem accumulatePattern) {
         List<ViewItem> newFinishedExpressions = new ArrayList<>(ruleAssembler.getFinishedExpressions());
         newFinishedExpressions.add(accumulatePattern); // The last pattern is added here.
-        PatternDef<NewA> newPrimaryPattern = PatternDSL.pattern(newA);
+        PatternDef<NewA> newPrimaryPattern = pattern(newA);
         return new UniRuleAssembler(ruleAssembler::generateNextId, ruleAssembler.getExpectedGroupByCount(),
                 newFinishedExpressions, singletonList(newA), singletonList(newPrimaryPattern), emptyMap());
     }
@@ -131,7 +131,7 @@ abstract class AbstractGroupByMutator implements Mutator {
         newFinishedExpressions.add(collectPattern);
         Variable<NewA> newA =
                 (Variable<NewA>) Util.createVariable(ruleAssembler.generateNextId("uniGrouped"), DSL.from(newASource));
-        PatternDef<NewA> newPrimaryPattern = PatternDSL.pattern(newA);
+        PatternDef<NewA> newPrimaryPattern = pattern(newA);
         return new UniRuleAssembler(ruleAssembler::generateNextId, ruleAssembler.getExpectedGroupByCount(),
                 newFinishedExpressions, singletonList(newA), singletonList(newPrimaryPattern), emptyMap());
     }
@@ -141,7 +141,7 @@ abstract class AbstractGroupByMutator implements Mutator {
         ruleAssembler.applyFilterToLastPrimaryPattern();
         Variable<BiTuple<NewA, NewB>> newTuple =
                 (Variable<BiTuple<NewA, NewB>>) Util.createVariable(BiTuple.class,
-                        ruleAssembler.generateNextId("biGrouped"), PatternDSL.from(newSource));
+                        ruleAssembler.generateNextId("biGrouped"), from(newSource));
         List<ViewItem> newFinishedExpressions = new ArrayList<>(ruleAssembler.getFinishedExpressions());
         newFinishedExpressions.add(accumulatePattern);
         newFinishedExpressions.add(collectPattern);
@@ -169,8 +169,8 @@ abstract class AbstractGroupByMutator implements Mutator {
         List<Variable> newVariables = Arrays.asList(newA, newB, newC);
         Variable<TriTuple<NewA, NewB, NewC>> newTuple =
                 (Variable<TriTuple<NewA, NewB, NewC>>) Util.createVariable(TriTuple.class,
-                        ruleAssembler.generateNextId("triGrouped"), PatternDSL.from(newSource));
-        PatternDef<TriTuple<NewA, NewB, NewC>> newPrimaryPattern = PatternDSL.pattern(newTuple)
+                        ruleAssembler.generateNextId("triGrouped"), from(newSource));
+        PatternDef<TriTuple<NewA, NewB, NewC>> newPrimaryPattern = pattern(newTuple)
                 .bind(newTuple, tuple -> tuple)
                 .bind(newA, tuple -> tuple.a)
                 .bind(newB, tuple -> tuple.b)
@@ -193,8 +193,8 @@ abstract class AbstractGroupByMutator implements Mutator {
         List<Variable> newVariables = Arrays.asList(newA, newB, newC, newD);
         Variable<QuadTuple<NewA, NewB, NewC, NewD>> newTuple =
                 (Variable<QuadTuple<NewA, NewB, NewC, NewD>>) Util.createVariable(QuadTuple.class,
-                        ruleAssembler.generateNextId("quadGrouped"), PatternDSL.from(newSource));
-        PatternDef<QuadTuple<NewA, NewB, NewC, NewD>> newPrimaryPattern = PatternDSL.pattern(newTuple)
+                        ruleAssembler.generateNextId("quadGrouped"), from(newSource));
+        PatternDef<QuadTuple<NewA, NewB, NewC, NewD>> newPrimaryPattern = pattern(newTuple)
                 .bind(newTuple, tuple -> tuple)
                 .bind(newA, tuple -> tuple.a)
                 .bind(newB, tuple -> tuple.b)

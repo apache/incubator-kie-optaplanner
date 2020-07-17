@@ -24,7 +24,7 @@ import org.optaplanner.core.api.score.stream.tri.TriConstraintCollector;
 
 final class TriToUniGroupingNode<A, B, C, NewA>
         extends AbstractConstraintModelGroupingNode<TriFunction<A, B, C, NewA>, TriConstraintCollector<A, B, C, ?, NewA>>
-        implements UniConstraintGraphChildNode<NewA> {
+        implements UniConstraintGraphChildNode {
 
     TriToUniGroupingNode(TriFunction<A, B, C, NewA> mapping) {
         super(singletonList(mapping), emptyList());

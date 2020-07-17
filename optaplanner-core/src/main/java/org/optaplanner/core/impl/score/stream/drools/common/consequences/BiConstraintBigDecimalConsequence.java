@@ -24,7 +24,7 @@ import java.util.function.Supplier;
 
 import org.optaplanner.core.impl.score.stream.drools.common.nodes.BiConstraintGraphNode;
 
-final class BiConstraintBigDecimalConsequence<A, B> implements BiConstraintConsequence<A, B>,
+final class BiConstraintBigDecimalConsequence<A, B> implements BiConstraintConsequence,
         Supplier<BiFunction<A, B, BigDecimal>> {
 
     private final BiConstraintGraphNode terminalNode;

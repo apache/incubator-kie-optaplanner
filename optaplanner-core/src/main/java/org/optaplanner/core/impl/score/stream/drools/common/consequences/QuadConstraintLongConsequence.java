@@ -23,7 +23,7 @@ import java.util.function.Supplier;
 import org.optaplanner.core.api.function.ToLongQuadFunction;
 import org.optaplanner.core.impl.score.stream.drools.common.nodes.QuadConstraintGraphNode;
 
-final class QuadConstraintLongConsequence<A, B, C, D> implements QuadConstraintConsequence<A, B, C, D>,
+final class QuadConstraintLongConsequence<A, B, C, D> implements QuadConstraintConsequence,
         Supplier<ToLongQuadFunction<A, B, C, D>> {
 
     private final QuadConstraintGraphNode terminalNode;

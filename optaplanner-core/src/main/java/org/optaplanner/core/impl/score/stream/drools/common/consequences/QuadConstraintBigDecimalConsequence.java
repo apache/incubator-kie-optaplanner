@@ -24,7 +24,7 @@ import java.util.function.Supplier;
 import org.optaplanner.core.api.function.QuadFunction;
 import org.optaplanner.core.impl.score.stream.drools.common.nodes.QuadConstraintGraphNode;
 
-final class QuadConstraintBigDecimalConsequence<A, B, C, D> implements QuadConstraintConsequence<A, B, C, D>,
+final class QuadConstraintBigDecimalConsequence<A, B, C, D> implements QuadConstraintConsequence,
         Supplier<QuadFunction<A, B, C, D, BigDecimal>> {
 
     private final QuadConstraintGraphNode terminalNode;

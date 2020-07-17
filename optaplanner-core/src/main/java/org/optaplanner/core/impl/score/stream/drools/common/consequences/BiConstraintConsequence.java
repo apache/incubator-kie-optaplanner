@@ -23,7 +23,7 @@ import java.util.function.ToLongBiFunction;
 
 import org.optaplanner.core.impl.score.stream.drools.common.nodes.BiConstraintGraphNode;
 
-public interface BiConstraintConsequence<A, B> extends ConstraintConsequence<BiConstraintGraphNode> {
+public interface BiConstraintConsequence extends ConstraintConsequence<BiConstraintGraphNode> {
 
     /**
      * {@inheritDoc}

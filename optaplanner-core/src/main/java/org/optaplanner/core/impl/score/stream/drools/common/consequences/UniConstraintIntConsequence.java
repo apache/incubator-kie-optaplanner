@@ -23,7 +23,7 @@ import java.util.function.ToIntFunction;
 
 import org.optaplanner.core.impl.score.stream.drools.common.nodes.UniConstraintGraphNode;
 
-final class UniConstraintIntConsequence<A> implements UniConstraintConsequence<A>,
+final class UniConstraintIntConsequence<A> implements UniConstraintConsequence,
         Supplier<ToIntFunction<A>> {
 
     private final UniConstraintGraphNode terminalNode;

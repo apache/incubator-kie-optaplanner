@@ -16,6 +16,6 @@
 
 package org.optaplanner.core.impl.score.stream.drools.common.nodes;
 
-public interface UniConstraintGraphChildNode<A> extends UniConstraintGraphNode, ChildNode {
+public interface UniConstraintGraphChildNode extends UniConstraintGraphNode, ChildNode {
 
 }

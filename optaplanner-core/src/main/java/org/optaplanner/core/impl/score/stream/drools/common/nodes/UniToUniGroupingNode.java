@@ -25,7 +25,7 @@ import org.optaplanner.core.api.score.stream.uni.UniConstraintCollector;
 
 final class UniToUniGroupingNode<A, NewA>
         extends AbstractConstraintModelGroupingNode<Function<A, NewA>, UniConstraintCollector<A, ?, NewA>>
-        implements UniConstraintGraphChildNode<NewA> {
+        implements UniConstraintGraphChildNode {
 
     UniToUniGroupingNode(Function<A, NewA> mapping) {
         super(singletonList(mapping), emptyList());

@@ -23,7 +23,7 @@ import java.util.function.ToLongFunction;
 
 import org.optaplanner.core.impl.score.stream.drools.common.nodes.UniConstraintGraphNode;
 
-final class UniConstraintLongConsequence<A> implements UniConstraintConsequence<A>,
+final class UniConstraintLongConsequence<A> implements UniConstraintConsequence,
         Supplier<ToLongFunction<A>> {
 
     private final UniConstraintGraphNode terminalNode;

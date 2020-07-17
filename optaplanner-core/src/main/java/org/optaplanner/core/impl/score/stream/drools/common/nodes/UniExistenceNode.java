@@ -22,7 +22,7 @@ import static org.optaplanner.core.impl.score.stream.drools.common.nodes.Constra
 import org.optaplanner.core.api.score.stream.bi.BiJoiner;
 
 final class UniExistenceNode<A, B> extends AbstractConstraintModelJoiningNode<B, BiJoiner<A, B>>
-        implements UniConstraintGraphChildNode<A> {
+        implements UniConstraintGraphChildNode {
 
     UniExistenceNode(boolean expectExistence, Class<B> otherFactType, BiJoiner<A, B>... joiners) {
         super(otherFactType, expectExistence ? IF_EXISTS : IF_NOT_EXISTS, joiners);

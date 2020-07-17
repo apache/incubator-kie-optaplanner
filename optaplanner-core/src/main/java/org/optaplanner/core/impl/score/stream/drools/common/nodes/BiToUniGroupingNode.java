@@ -25,7 +25,7 @@ import org.optaplanner.core.api.score.stream.bi.BiConstraintCollector;
 
 final class BiToUniGroupingNode<A, B, NewA>
         extends AbstractConstraintModelGroupingNode<BiFunction<A, B, NewA>, BiConstraintCollector<A, B, ?, NewA>>
-        implements UniConstraintGraphChildNode<NewA> {
+        implements UniConstraintGraphChildNode {
 
     BiToUniGroupingNode(BiFunction<A, B, NewA> mapping) {
         super(singletonList(mapping), emptyList());

@@ -23,7 +23,7 @@ import org.optaplanner.core.impl.score.stream.drools.common.nodes.UniConstraintG
 
 public final class DroolsExistsUniConstraintStream<Solution_, A> extends DroolsAbstractUniConstraintStream<Solution_, A> {
 
-    private final UniConstraintGraphChildNode<A> node;
+    private final UniConstraintGraphChildNode node;
     private final String streamName;
 
     public <B> DroolsExistsUniConstraintStream(DroolsConstraintFactory<Solution_> constraintFactory,

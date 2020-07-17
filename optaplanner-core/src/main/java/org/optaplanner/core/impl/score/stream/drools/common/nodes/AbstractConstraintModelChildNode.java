@@ -16,11 +16,11 @@
 
 package org.optaplanner.core.impl.score.stream.drools.common.nodes;
 
+import static java.util.Objects.requireNonNull;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-
-import static java.util.Objects.requireNonNull;
 
 public abstract class AbstractConstraintModelChildNode
         extends AbstractConstraintModelNode implements ChildNode {

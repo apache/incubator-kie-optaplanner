@@ -84,7 +84,7 @@ public final class ConstraintGraph {
         return node;
     }
 
-    public <A> UniConstraintGraphChildNode<A> filter(UniConstraintGraphNode parent, Predicate<A> predicate) {
+    public <A> UniConstraintGraphChildNode filter(UniConstraintGraphNode parent, Predicate<A> predicate) {
         return addNode(() -> ConstraintGraphNode.filter(predicate), parent);
     }
 
@@ -117,7 +117,7 @@ public final class ConstraintGraph {
         return addNode(() -> ConstraintGraphNode.join(rightParent.getFactType(), joiner), leftParent, rightParent);
     }
 
-    public <A, B> UniConstraintGraphChildNode<A> ifExists(UniConstraintGraphNode parent,
+    public <A, B> UniConstraintGraphChildNode ifExists(UniConstraintGraphNode parent,
             Class<B> existsType, BiJoiner<A, B>... joiners) {
         return addNode(() -> ConstraintGraphNode.ifExists(existsType, joiners), parent);
     }
@@ -137,7 +137,7 @@ public final class ConstraintGraph {
         return addNode(() -> ConstraintGraphNode.ifExists(existsType, joiners), parent);
     }
 
-    public <A, B> UniConstraintGraphChildNode<A> ifNotExists(UniConstraintGraphNode parent,
+    public <A, B> UniConstraintGraphChildNode ifNotExists(UniConstraintGraphNode parent,
             Class<B> existsType, BiJoiner<A, B>... joiners) {
         return addNode(() -> ConstraintGraphNode.ifNotExists(existsType, joiners), parent);
     }
@@ -157,7 +157,7 @@ public final class ConstraintGraph {
         return addNode(() -> ConstraintGraphNode.ifNotExists(existsType, joiners), parent);
     }
 
-    public <A, GroupKey_> UniConstraintGraphChildNode<GroupKey_> groupBy(UniConstraintGraphNode parent,
+    public <A, GroupKey_> UniConstraintGraphChildNode groupBy(UniConstraintGraphNode parent,
             Function<A, GroupKey_> mapping) {
         return addNode(() -> ConstraintGraphNode.groupBy(mapping), parent);
     }
@@ -167,7 +167,7 @@ public final class ConstraintGraph {
         return addNode(() -> ConstraintGraphNode.groupBy(aMapping, bMapping), parent);
     }
 
-    public <A, ResultContainer_, Result_> UniConstraintGraphChildNode<Result_> groupBy(UniConstraintGraphNode parent,
+    public <A, ResultContainer_, Result_> UniConstraintGraphChildNode groupBy(UniConstraintGraphNode parent,
             UniConstraintCollector<A, ResultContainer_, Result_> collector) {
         return addNode(() -> ConstraintGraphNode.groupBy(collector), parent);
     }
@@ -193,12 +193,12 @@ public final class ConstraintGraph {
         return addNode(() -> ConstraintGraphNode.groupBy(aMapping, bMapping, cCollector, dCollector), parent);
     }
 
-    public <A, B, ResultContainer_, Result_> UniConstraintGraphChildNode<Result_> groupBy(
+    public <A, B, ResultContainer_, Result_> UniConstraintGraphChildNode groupBy(
             BiConstraintGraphNode parent, BiConstraintCollector<A, B, ResultContainer_, Result_> collector) {
         return addNode(() -> ConstraintGraphNode.groupBy(collector), parent);
     }
 
-    public <A, B, GroupKey_> UniConstraintGraphChildNode<GroupKey_> groupBy(BiConstraintGraphNode parent,
+    public <A, B, GroupKey_> UniConstraintGraphChildNode groupBy(BiConstraintGraphNode parent,
             BiFunction<A, B, GroupKey_> mapping) {
         return addNode(() -> ConstraintGraphNode.groupBy(mapping), parent);
     }
@@ -230,13 +230,13 @@ public final class ConstraintGraph {
         return addNode(() -> ConstraintGraphNode.groupBy(aMapping, bMapping, cCollector, dCollector), parent);
     }
 
-    public <A, B, C, ResultContainer_, Result_> UniConstraintGraphChildNode<Result_> groupBy(
+    public <A, B, C, ResultContainer_, Result_> UniConstraintGraphChildNode groupBy(
             TriConstraintGraphNode parent,
             TriConstraintCollector<A, B, C, ResultContainer_, Result_> collector) {
         return addNode(() -> ConstraintGraphNode.groupBy(collector), parent);
     }
 
-    public <A, B, C, GroupKey_> UniConstraintGraphChildNode<GroupKey_> groupBy(TriConstraintGraphNode parent,
+    public <A, B, C, GroupKey_> UniConstraintGraphChildNode groupBy(TriConstraintGraphNode parent,
             TriFunction<A, B, C, GroupKey_> mapping) {
         return addNode(() -> ConstraintGraphNode.groupBy(mapping), parent);
     }
@@ -269,13 +269,13 @@ public final class ConstraintGraph {
         return addNode(() -> ConstraintGraphNode.groupBy(aMapping, bMapping, cCollector, dCollector), parent);
     }
 
-    public <A, B, C, D, ResultContainer_, Result_> UniConstraintGraphChildNode<Result_> groupBy(
+    public <A, B, C, D, ResultContainer_, Result_> UniConstraintGraphChildNode groupBy(
             QuadConstraintGraphNode parent,
             QuadConstraintCollector<A, B, C, D, ResultContainer_, Result_> collector) {
         return addNode(() -> ConstraintGraphNode.groupBy(collector), parent);
     }
 
-    public <A, B, C, D, GroupKey_> UniConstraintGraphChildNode<GroupKey_> groupBy(
+    public <A, B, C, D, GroupKey_> UniConstraintGraphChildNode groupBy(
             QuadConstraintGraphNode parent, QuadFunction<A, B, C, D, GroupKey_> mapping) {
         return addNode(() -> ConstraintGraphNode.groupBy(mapping), parent);
     }
@@ -320,76 +320,76 @@ public final class ConstraintGraph {
         return node;
     }
 
-    public <A> UniConstraintConsequence<A> impact(UniConstraintGraphNode parent) {
+    public <A> UniConstraintConsequence impact(UniConstraintGraphNode parent) {
         return impact(() -> ConstraintConsequence.create(parent));
     }
 
-    public <A> UniConstraintConsequence<A> impact(UniConstraintGraphNode parent, ToIntFunction<A> matchWeighter) {
+    public <A> UniConstraintConsequence impact(UniConstraintGraphNode parent, ToIntFunction<A> matchWeighter) {
         return impact(() -> ConstraintConsequence.create(parent, matchWeighter));
     }
 
-    public <A> UniConstraintConsequence<A> impact(UniConstraintGraphNode parent, ToLongFunction<A> matchWeighter) {
+    public <A> UniConstraintConsequence impact(UniConstraintGraphNode parent, ToLongFunction<A> matchWeighter) {
         return impact(() -> ConstraintConsequence.create(parent, matchWeighter));
     }
 
-    public <A> UniConstraintConsequence<A> impact(UniConstraintGraphNode parent,
+    public <A> UniConstraintConsequence impact(UniConstraintGraphNode parent,
             Function<A, BigDecimal> matchWeighter) {
         return impact(() -> ConstraintConsequence.create(parent, matchWeighter));
     }
 
-    public <A, B> BiConstraintConsequence<A, B> impact(BiConstraintGraphNode parent) {
+    public <A, B> BiConstraintConsequence impact(BiConstraintGraphNode parent) {
         return impact(() -> ConstraintConsequence.create(parent));
     }
 
-    public <A, B> BiConstraintConsequence<A, B> impact(BiConstraintGraphNode parent,
+    public <A, B> BiConstraintConsequence impact(BiConstraintGraphNode parent,
             ToIntBiFunction<A, B> matchWeighter) {
         return impact(() -> ConstraintConsequence.create(parent, matchWeighter));
     }
 
-    public <A, B> BiConstraintConsequence<A, B> impact(BiConstraintGraphNode parent,
+    public <A, B> BiConstraintConsequence impact(BiConstraintGraphNode parent,
             ToLongBiFunction<A, B> matchWeighter) {
         return impact(() -> ConstraintConsequence.create(parent, matchWeighter));
     }
 
-    public <A, B> BiConstraintConsequence<A, B> impact(BiConstraintGraphNode parent,
+    public <A, B> BiConstraintConsequence impact(BiConstraintGraphNode parent,
             BiFunction<A, B, BigDecimal> matchWeighter) {
         return impact(() -> ConstraintConsequence.create(parent, matchWeighter));
     }
 
-    public <A, B, C> TriConstraintConsequence<A, B, C> impact(TriConstraintGraphNode parent) {
+    public <A, B, C> TriConstraintConsequence impact(TriConstraintGraphNode parent) {
         return impact(() -> ConstraintConsequence.create(parent));
     }
 
-    public <A, B, C> TriConstraintConsequence<A, B, C> impact(TriConstraintGraphNode parent,
+    public <A, B, C> TriConstraintConsequence impact(TriConstraintGraphNode parent,
             ToIntTriFunction<A, B, C> matchWeighter) {
         return impact(() -> ConstraintConsequence.create(parent, matchWeighter));
     }
 
-    public <A, B, C> TriConstraintConsequence<A, B, C> impact(TriConstraintGraphNode parent,
+    public <A, B, C> TriConstraintConsequence impact(TriConstraintGraphNode parent,
             ToLongTriFunction<A, B, C> matchWeighter) {
         return impact(() -> ConstraintConsequence.create(parent, matchWeighter));
     }
 
-    public <A, B, C> TriConstraintConsequence<A, B, C> impact(TriConstraintGraphNode parent,
+    public <A, B, C> TriConstraintConsequence impact(TriConstraintGraphNode parent,
             TriFunction<A, B, C, BigDecimal> matchWeighter) {
         return impact(() -> ConstraintConsequence.create(parent, matchWeighter));
     }
 
-    public <A, B, C, D> QuadConstraintConsequence<A, B, C, D> impact(QuadConstraintGraphNode parent) {
+    public <A, B, C, D> QuadConstraintConsequence impact(QuadConstraintGraphNode parent) {
         return impact(() -> ConstraintConsequence.create(parent));
     }
 
-    public <A, B, C, D> QuadConstraintConsequence<A, B, C, D> impact(QuadConstraintGraphNode parent,
+    public <A, B, C, D> QuadConstraintConsequence impact(QuadConstraintGraphNode parent,
             ToIntQuadFunction<A, B, C, D> matchWeighter) {
         return impact(() -> ConstraintConsequence.create(parent, matchWeighter));
     }
 
-    public <A, B, C, D> QuadConstraintConsequence<A, B, C, D> impact(QuadConstraintGraphNode parent,
+    public <A, B, C, D> QuadConstraintConsequence impact(QuadConstraintGraphNode parent,
             ToLongQuadFunction<A, B, C, D> matchWeighter) {
         return impact(() -> ConstraintConsequence.create(parent, matchWeighter));
     }
 
-    public <A, B, C, D> QuadConstraintConsequence<A, B, C, D> impact(QuadConstraintGraphNode parent,
+    public <A, B, C, D> QuadConstraintConsequence impact(QuadConstraintGraphNode parent,
             QuadFunction<A, B, C, D, BigDecimal> matchWeighter) {
         return impact(() -> ConstraintConsequence.create(parent, matchWeighter));
     }
@@ -404,7 +404,8 @@ public final class ConstraintGraph {
     private <Node_ extends ConstraintGraphNode, Consequence_ extends ConstraintConsequence<Node_>>
             ConstraintTree<Node_, Consequence_> getSubtree(Consequence_ consequence) {
         if (!consequenceSet.contains(consequence)) {
-            throw new IllegalStateException("Impossible state: Requested subtree for a non-existent consequence (" + consequence + ").");
+            throw new IllegalStateException(
+                    "Impossible state: Requested subtree for a non-existent consequence (" + consequence + ").");
         }
         return new ConstraintTree<>(consequence);
     }

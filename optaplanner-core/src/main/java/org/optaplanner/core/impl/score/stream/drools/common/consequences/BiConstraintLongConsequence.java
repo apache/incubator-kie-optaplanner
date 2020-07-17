@@ -23,7 +23,7 @@ import java.util.function.ToLongBiFunction;
 
 import org.optaplanner.core.impl.score.stream.drools.common.nodes.BiConstraintGraphNode;
 
-final class BiConstraintLongConsequence<A, B> implements BiConstraintConsequence<A, B>,
+final class BiConstraintLongConsequence<A, B> implements BiConstraintConsequence,
         Supplier<ToLongBiFunction<A, B>> {
 
     private final BiConstraintGraphNode terminalNode;

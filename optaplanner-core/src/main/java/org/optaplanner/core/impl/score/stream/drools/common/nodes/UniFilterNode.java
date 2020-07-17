@@ -21,7 +21,7 @@ import java.util.function.Predicate;
 import java.util.function.Supplier;
 
 final class UniFilterNode<A> extends AbstractConstraintModelChildNode
-        implements UniConstraintGraphChildNode<A>, Supplier<Predicate<A>> {
+        implements UniConstraintGraphChildNode, Supplier<Predicate<A>> {
 
     private final Predicate<A> predicate;
 

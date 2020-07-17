@@ -23,7 +23,7 @@ import java.util.function.Supplier;
 import org.optaplanner.core.api.function.ToIntTriFunction;
 import org.optaplanner.core.impl.score.stream.drools.common.nodes.TriConstraintGraphNode;
 
-final class TriConstraintIntConsequence<A, B, C> implements TriConstraintConsequence<A, B, C>,
+final class TriConstraintIntConsequence<A, B, C> implements TriConstraintConsequence,
         Supplier<ToIntTriFunction<A, B, C>> {
 
     private final TriConstraintGraphNode terminalNode;

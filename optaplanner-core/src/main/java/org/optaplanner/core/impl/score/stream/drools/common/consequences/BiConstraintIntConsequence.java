@@ -23,7 +23,7 @@ import java.util.function.ToIntBiFunction;
 
 import org.optaplanner.core.impl.score.stream.drools.common.nodes.BiConstraintGraphNode;
 
-final class BiConstraintIntConsequence<A, B> implements BiConstraintConsequence<A, B>,
+final class BiConstraintIntConsequence<A, B> implements BiConstraintConsequence,
         Supplier<ToIntBiFunction<A, B>> {
 
     private final BiConstraintGraphNode terminalNode;

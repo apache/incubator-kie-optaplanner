@@ -16,12 +16,12 @@
 
 package org.optaplanner.core.impl.score.stream.drools.common.nodes;
 
+import static java.util.Objects.requireNonNull;
+
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.function.Supplier;
-
-import static java.util.Objects.requireNonNull;
 
 public abstract class AbstractConstraintModelJoiningNode<OtherFactType_, JoinerType_>
         extends AbstractConstraintModelChildNode implements Supplier<List<JoinerType_>> {

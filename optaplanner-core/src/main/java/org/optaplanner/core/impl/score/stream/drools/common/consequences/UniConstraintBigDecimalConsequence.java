@@ -24,7 +24,7 @@ import java.util.function.Supplier;
 
 import org.optaplanner.core.impl.score.stream.drools.common.nodes.UniConstraintGraphNode;
 
-final class UniConstraintBigDecimalConsequence<A> implements UniConstraintConsequence<A>,
+final class UniConstraintBigDecimalConsequence<A> implements UniConstraintConsequence,
         Supplier<Function<A, BigDecimal>> {
 
     private final UniConstraintGraphNode terminalNode;
