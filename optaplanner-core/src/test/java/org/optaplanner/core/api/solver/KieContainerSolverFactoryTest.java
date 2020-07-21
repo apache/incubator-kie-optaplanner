@@ -17,6 +17,7 @@
 package org.optaplanner.core.api.solver;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.io.IOException;
 import java.util.Collections;
@@ -25,6 +26,7 @@ import org.drools.compiler.CommonTestMethodBase;
 import org.junit.jupiter.api.Test;
 import org.kie.api.KieServices;
 import org.kie.api.builder.ReleaseId;
+import org.kie.api.io.Resource;
 import org.kie.api.runtime.KieContainer;
 import org.optaplanner.core.config.score.director.ScoreDirectorFactoryConfig;
 import org.optaplanner.core.config.solver.SolverConfig;
@@ -78,6 +80,61 @@ public class KieContainerSolverFactoryTest extends CommonTestMethodBase {
     }
 
     @Test
+    public void buildScanAnnotatedClassesSolverWithFailure() throws IOException {
+        ReleaseId releaseId = kieContainerHelper.deployTestdataSolverKjar(
+                "buildScanAnnotatedClassesSolver",
+                "org/optaplanner/core/api/solver/kieContainerNamedKsessionKmodule.xml",
+                "org/optaplanner/core/api/solver/scanAnnotatedKieContainerTestdataSolverConfigFailure.xml");
+        KieContainer kieContainer = KieServices.Factory.get().newKieContainer(releaseId);
+        SolverFactory<TestdataSolution> solverFactory = SolverFactory.createFromKieContainerXmlResource(
+                kieContainer, "testdata/kjar/solverConfig.solver");
+
+        String error = "The scanAnnotatedClasses " +
+                "(ScanAnnotatedClassesConfig([testdata.kjar], [testdata.kjar])) did not find any classes with a PlanningSolution annotation";
+        assertThatThrownBy(solverFactory::buildSolver).hasMessageStartingWith(error);
+    }
+
+    @Test
+    public void buildScanAnnotatedClassesSolverWithManySolutionsSuccess() throws IOException {
+        Resource secondSolution = kieContainerHelper.buildResource(
+                "org/optaplanner/core/impl/testdata/domain/classloaded/ClassloadedTestdataSecondSolution.java",
+                "testdata/second/kjar/ClassloadedTestdataSecondSolution.java");
+        ReleaseId releaseId = kieContainerHelper.deployTestdataSolverKjar(
+                "buildScanAnnotatedClassesSolver",
+                "org/optaplanner/core/api/solver/kieContainerNamedKsessionKmodule.xml",
+                "org/optaplanner/core/api/solver/scanAnnotatedMultiplePackagesKieContainerTestdataSolverConfig.xml",
+                secondSolution);
+        KieContainer kieContainer = KieServices.Factory.get().newKieContainer(releaseId);
+        SolverFactory<TestdataSolution> solverFactory =
+                SolverFactory.createFromKieContainerXmlResource(kieContainer, "testdata/kjar/solverConfig.solver");
+        Solver<TestdataSolution> solver = solverFactory.buildSolver();
+        assertThat(solver).isNotNull();
+        assertNewKieSessionSucceeds(solver);
+    }
+
+    @Test
+    public void buildScanAnnotatedClassesSolverWithManySolutionsFailure() throws IOException {
+        Resource secondSolution = kieContainerHelper.buildResource(
+                "org/optaplanner/core/impl/testdata/domain/classloaded/ClassloadedTestdataSecondSolution.java",
+                "testdata/second/kjar/ClassloadedTestdataSecondSolution.java");
+        ReleaseId releaseId = kieContainerHelper.deployTestdataSolverKjar(
+                "buildScanAnnotatedClassesSolver",
+                "org/optaplanner/core/api/solver/kieContainerNamedKsessionKmodule.xml",
+                "org/optaplanner/core/api/solver/scanAnnotatedMultiplePackagesKieContainerTestdataSolverConfigFailure.xml",
+                secondSolution);
+        KieContainer kieContainer = KieServices.Factory.get().newKieContainer(releaseId);
+        SolverFactory<TestdataSolution> solverFactory = SolverFactory.createFromKieContainerXmlResource(
+                kieContainer, "testdata/kjar/solverConfig.solver");
+
+        assertThatThrownBy(solverFactory::buildSolver)
+                .hasMessageStartingWith(
+                        "The scanAnnotatedClasses (ScanAnnotatedClassesConfig([testdata.kjar, testdata.second.kjar], )) found multiple classes")
+                .hasMessageContaining("class testdata.kjar.ClassloadedTestdataSolution")
+                .hasMessageContaining("class testdata.second.kjar.ClassloadedTestdataSecondSolution")
+                .hasMessageEndingWith("with a PlanningSolution annotation.");
+    }
+
+    @Test
     public void buildSolverWithDefaultKsessionKmodule() throws IOException {
         ReleaseId releaseId = kieContainerHelper.deployTestdataSolverKjar(
                 "buildSolverWithDefaultKsessionKmodule",
@@ -99,6 +156,28 @@ public class KieContainerSolverFactoryTest extends CommonTestMethodBase {
                 "org/optaplanner/core/api/solver/kieContainerDefaultKsessionTestdataSolverConfig.xml");
         SolverFactory<?> solverFactory = SolverFactory.createFromKieContainerXmlResource(
                 releaseId, "testdata/kjar/solverConfig.solver");
+        Solver<?> solver = solverFactory.buildSolver();
+        assertThat(solver).isNotNull();
+        assertNewKieSessionSucceeds(solver);
+    }
+
+    @Test
+    public void buildSolverWithKieContainerAndConfig() throws IOException, ReflectiveOperationException {
+        ReleaseId releaseId = kieContainerHelper.deployTestdataSolverKjar(
+                "buildSolverWithReleaseId",
+                "org/optaplanner/core/api/solver/kieContainerNamedKsessionKmodule.xml", null);
+        KieContainer kieContainer = KieServices.Factory.get().newKieContainer(releaseId);
+
+        SolverConfig solverConfig = new SolverConfig();
+        solverConfig.setSolutionClass(
+                kieContainer.getClassLoader().loadClass("testdata.kjar.ClassloadedTestdataSolution"));
+        solverConfig.setEntityClassList(Collections.singletonList(
+                kieContainer.getClassLoader().loadClass("testdata.kjar.ClassloadedTestdataEntity")));
+        ScoreDirectorFactoryConfig scoreDirectorFactoryConfig = new ScoreDirectorFactoryConfig();
+        scoreDirectorFactoryConfig.setKsessionName("testdataKsession");
+        solverConfig.setScoreDirectorFactoryConfig(scoreDirectorFactoryConfig);
+
+        SolverFactory<?> solverFactory = SolverFactory.createFromKieContainer(kieContainer, solverConfig);
         Solver<?> solver = solverFactory.buildSolver();
         assertThat(solver).isNotNull();
         assertNewKieSessionSucceeds(solver);

@@ -281,6 +281,18 @@ public abstract class SolverFactory<Solution_> {
 
     /**
      * @param kieContainer never null
+     * @param solverConfig never null
+     * @return never null
+     * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
+     */
+    public static <Solution_> SolverFactory<Solution_> createFromKieContainer(KieContainer kieContainer,
+            SolverConfig solverConfig) {
+        solverConfig.setClassLoader(kieContainer.getClassLoader());
+        return new DefaultSolverFactory<>(solverConfig, new SolverConfigContext(kieContainer));
+    }
+
+    /**
+     * @param kieContainer never null
      * @return never null
      * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
      */

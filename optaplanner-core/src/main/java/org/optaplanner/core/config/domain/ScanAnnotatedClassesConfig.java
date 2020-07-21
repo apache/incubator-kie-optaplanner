@@ -48,12 +48,23 @@ public class ScanAnnotatedClassesConfig extends AbstractConfig<ScanAnnotatedClas
     @XStreamImplicit(itemFieldName = "packageInclude")
     private List<String> packageIncludeList = null;
 
+    @XStreamImplicit(itemFieldName = "packageExclude")
+    private List<String> packageExcludeList = null;
+
     public List<String> getPackageIncludeList() {
         return packageIncludeList;
     }
 
     public void setPackageIncludeList(List<String> packageIncludeList) {
         this.packageIncludeList = packageIncludeList;
+    }
+
+    public List<String> getPackageExcludeList() {
+        return packageExcludeList;
+    }
+
+    public void setPackageExcludeList(List<String> packageExcludeList) {
+        this.packageExcludeList = packageExcludeList;
     }
 
     // ************************************************************************
@@ -92,6 +103,9 @@ public class ScanAnnotatedClassesConfig extends AbstractConfig<ScanAnnotatedClas
     protected Class<?> loadSolutionClass(Reflections reflections) {
         Set<Class<?>> solutionClassSet = reflections.getTypesAnnotatedWith(PlanningSolution.class);
         retainOnlyClassesWithDeclaredAnnotation(solutionClassSet, PlanningSolution.class);
+        // Minimize modifications in deprecated code by letting it execute as it did before and remove the classes that
+        // belongs to the scanExcludedPackages as last step.
+        removeClassesInExcludedPackages(solutionClassSet, packageExcludeList);
         if (solutionClassSet.contains(AbstractSolution.class)) {
             // Remove that core class to avoid a pointless fail-fast.
             // (if users have a class like this, they need to use packageIncludeList)
@@ -105,7 +119,9 @@ public class ScanAnnotatedClassesConfig extends AbstractConfig<ScanAnnotatedClas
                     + "Maybe you forgot to annotate a class with a " + PlanningSolution.class.getSimpleName()
                     + " annotation.\n"
                     + (ConfigUtils.isEmptyCollection(packageIncludeList) ? ""
-                            : "Maybe the annotated class does match the packageIncludeList (" + packageIncludeList + ").\n")
+                            : "Maybe the annotated class does not match the packageIncludeList (" + packageIncludeList + ").\n")
+                    + (ConfigUtils.isEmptyCollection(packageExcludeList) ? ""
+                            : "Maybe the annotated class does match the packageExcludeList (" + packageExcludeList + ").\n")
                     + "Maybe you're using special classloading mechanisms (OSGi, ...) and this is a bug."
                     + " If you can confirm that, report it to our issue tracker"
                     + " and workaround it by defining the classes explicitly in the solver configuration.");
@@ -121,6 +137,9 @@ public class ScanAnnotatedClassesConfig extends AbstractConfig<ScanAnnotatedClas
     protected List<Class<?>> loadEntityClassList(Reflections reflections) {
         Set<Class<?>> entityClassSet = reflections.getTypesAnnotatedWith(PlanningEntity.class);
         retainOnlyClassesWithDeclaredAnnotation(entityClassSet, PlanningEntity.class);
+        // Minimize modifications in deprecated code by letting it execute as it did before and remove the classes that
+        // belongs to the scanExcludedPackages as last step.
+        removeClassesInExcludedPackages(entityClassSet, packageExcludeList);
         if (ConfigUtils.isEmptyCollection(entityClassSet)) {
             throw new IllegalStateException("The scanAnnotatedClasses (" + this
                     + ") did not find any classes with a " + PlanningEntity.class.getSimpleName()
@@ -134,10 +153,18 @@ public class ScanAnnotatedClassesConfig extends AbstractConfig<ScanAnnotatedClas
         classSet.removeIf(clazz -> !clazz.isAnnotationPresent(annotation));
     }
 
+    private void removeClassesInExcludedPackages(Set<Class<?>> classSet, List<String> excludedPackages) {
+        if (excludedPackages != null) {
+            classSet.removeIf(clazz -> excludedPackages.contains(clazz.getPackage().getName()));
+        }
+    }
+
     @Override
     public ScanAnnotatedClassesConfig inherit(ScanAnnotatedClassesConfig inheritedConfig) {
         packageIncludeList = ConfigUtils.inheritMergeableListProperty(
                 packageIncludeList, inheritedConfig.getPackageIncludeList());
+        packageExcludeList =
+                ConfigUtils.inheritMergeableListProperty(packageExcludeList, inheritedConfig.getPackageExcludeList());
         return this;
     }
 
@@ -148,7 +175,7 @@ public class ScanAnnotatedClassesConfig extends AbstractConfig<ScanAnnotatedClas
 
     @Override
     public String toString() {
-        return getClass().getSimpleName() + "(" + (packageIncludeList == null ? "" : packageIncludeList) + ")";
+        return getClass().getSimpleName() + "(" + (packageIncludeList == null ? "" : packageIncludeList) + ", "
+                + (packageExcludeList == null ? "" : packageExcludeList) + ")";
     }
-
 }

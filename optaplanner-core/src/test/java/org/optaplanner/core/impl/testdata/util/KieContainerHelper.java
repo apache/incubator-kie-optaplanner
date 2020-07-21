@@ -23,6 +23,8 @@ import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
 
 import org.drools.compiler.CommonTestMethodBase;
 import org.kie.api.KieServices;
@@ -47,18 +49,23 @@ public class KieContainerHelper {
      * @param artifactId artifactId of the kjar to be created
      * @param kmodulePath path to a kmodule.xml
      * @param solverConfigPath path to a solver configuration xml file
+     * @param additionalResources additional resources that should be included in the kjar
      * @return releaseId of the created and deployed {@link KieModule}
      * @throws IOException in case ony of the resources cannot be read
      */
-    public ReleaseId deployTestdataSolverKjar(String artifactId, String kmodulePath, String solverConfigPath)
+    public ReleaseId deployTestdataSolverKjar(String artifactId, String kmodulePath, String solverConfigPath,
+            Resource... additionalResources)
             throws IOException {
 
         if (solverConfigPath != null) {
             Resource solverConfig = buildResource(solverConfigPath,
                     "testdata/kjar/solverConfig.solver");
-            return deployTestdataKjar(artifactId, kmodulePath, solverConfig);
+            List<Resource> allResources = new ArrayList<>();
+            allResources.add(solverConfig);
+            Collections.addAll(allResources, additionalResources);
+            return deployTestdataKjar(artifactId, kmodulePath, allResources.toArray(new Resource[0]));
         } else {
-            return deployTestdataKjar(artifactId, kmodulePath);
+            return deployTestdataKjar(artifactId, kmodulePath, additionalResources);
         }
     }
 
@@ -120,12 +127,12 @@ public class KieContainerHelper {
         return releaseId;
     }
 
-    private String readResourceToString(String resourceString) throws IOException {
+    public String readResourceToString(String resourceString) throws IOException {
         URL url = Resources.getResource(resourceString);
         return Resources.toString(url, Charset.forName("UTF-8"));
     }
 
-    private Resource buildResource(String resourceString, String targetPath) throws IOException {
+    public Resource buildResource(String resourceString, String targetPath) throws IOException {
         String content = readResourceToString(resourceString);
         Resource resource = kieServices.getResources().newReaderResource(new StringReader(content), "UTF-8");
         resource.setTargetPath(targetPath);
