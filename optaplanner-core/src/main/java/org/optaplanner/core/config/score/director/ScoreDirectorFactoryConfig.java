@@ -421,8 +421,7 @@ public class ScoreDirectorFactoryConfig extends AbstractConfig<ScoreDirectorFact
             KieResources kieResources = kieServices.getResources();
             KieFileSystem kieFileSystem = kieServices.newKieFileSystem();
             if (!ConfigUtils.isEmptyCollection(scoreDrlList)) {
-                ClassLoader actualClassLoader =
-                        (classLoader != null) ? classLoader : Thread.currentThread().getContextClassLoader();
+                ClassLoader actualClassLoader = (classLoader != null) ? classLoader : getClass().getClassLoader();
                 for (String scoreDrl : scoreDrlList) {
                     if (scoreDrl == null) {
                         throw new IllegalArgumentException("The scoreDrl (" + scoreDrl + ") cannot be null.");
@@ -533,4 +532,5 @@ public class ScoreDirectorFactoryConfig extends AbstractConfig<ScoreDirectorFact
     public ScoreDirectorFactoryConfig copyConfig() {
         return new ScoreDirectorFactoryConfig().inherit(this);
     }
+
 }
