@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,33 +16,33 @@
 
 package org.optaplanner.examples.curriculumcourse.optional.score;
 
-import static org.optaplanner.core.api.score.stream.ConstraintCollectors.countDistinct;
-import static org.optaplanner.core.api.score.stream.Joiners.equal;
-import static org.optaplanner.core.api.score.stream.Joiners.lessThan;
-
-import org.optaplanner.core.api.score.buildin.hardsoft.HardSoftScore;
 import org.optaplanner.core.api.score.stream.Constraint;
 import org.optaplanner.core.api.score.stream.ConstraintFactory;
 import org.optaplanner.core.api.score.stream.ConstraintProvider;
+import org.optaplanner.examples.curriculumcourse.domain.Curriculum;
 import org.optaplanner.examples.curriculumcourse.domain.Lecture;
 import org.optaplanner.examples.curriculumcourse.domain.UnavailablePeriodPenalty;
 import org.optaplanner.examples.curriculumcourse.domain.solver.CourseConflict;
+
+import static org.optaplanner.core.api.score.buildin.hardsoft.HardSoftScore.ONE_HARD;
+import static org.optaplanner.core.api.score.buildin.hardsoft.HardSoftScore.ofHard;
+import static org.optaplanner.core.api.score.buildin.hardsoft.HardSoftScore.ofSoft;
+import static org.optaplanner.core.api.score.stream.ConstraintCollectors.countDistinct;
+import static org.optaplanner.core.api.score.stream.Joiners.equal;
+import static org.optaplanner.core.api.score.stream.Joiners.filtering;
 
 public class CourseScheduleConstraintProvider implements ConstraintProvider {
 
     @Override
     public Constraint[] defineConstraints(ConstraintFactory factory) {
         return new Constraint[] {
-                // TODO replace the 2 conflictingLectures constraints with these
-                // teacherConflict(factory),
-                // curriculumConflict(factory),
                 conflictingLecturesDifferentCourseInSamePeriod(factory),
                 conflictingLecturesSameCourseInSamePeriod(factory),
-                roomOccupancy(factory), // TODO Doesn't work
+                roomOccupancy(factory),
                 unavailablePeriodPenalty(factory),
                 roomCapacity(factory),
                 minimumWorkingDays(factory),
-                curriculumCompactness(factory), // TODO Implement it
+                curriculumCompactness(factory),
                 roomStability(factory)
         };
     }
@@ -51,111 +51,82 @@ public class CourseScheduleConstraintProvider implements ConstraintProvider {
     // Hard constraints
     // ************************************************************************
 
-    private Constraint teacherConflict(ConstraintFactory factory) {
-        return factory.from(Lecture.class)
-                .join(Lecture.class,
-                        equal(Lecture::getTeacher),
-                        equal(Lecture::getPeriod),
-                        lessThan(Lecture::getId))
-                .penalize("teacherConflict",
-                        HardSoftScore.ofHard(1));
-    }
-
-    private Constraint curriculumConflict(ConstraintFactory factory) {
-        return factory.from(Lecture.class)
-                .join(Lecture.class,
-                        equal(Lecture::getPeriod),
-                        lessThan(Lecture::getId))
-                .filter((lecture1, lecture2) -> lecture1.getCurriculumList().stream()
-                        .anyMatch(lecture -> lecture2.getCurriculumList().contains(lecture)))
-                .penalize("curriculumConflict",
-                        HardSoftScore.ofHard(1),
-                        (lecture1, lecture2) -> (int) lecture1.getCurriculumList().stream()
-                                .filter(lecture -> lecture2.getCurriculumList().contains(lecture))
-                                .count());
-    }
-
-    private Constraint conflictingLecturesDifferentCourseInSamePeriod(ConstraintFactory factory) {
+    Constraint conflictingLecturesDifferentCourseInSamePeriod(ConstraintFactory factory) {
         return factory.from(CourseConflict.class)
                 .join(Lecture.class,
                         equal(CourseConflict::getLeftCourse, Lecture::getCourse))
+                .filter(((courseConflict, lecture) -> lecture.getPeriod() != null))
                 .join(Lecture.class,
                         equal((courseConflict, lecture1) -> courseConflict.getRightCourse(), Lecture::getCourse),
                         equal((courseConflict, lecture1) -> lecture1.getPeriod(), Lecture::getPeriod))
                 .filter(((courseConflict, lecture1, lecture2) -> lecture1 != lecture2))
-                .penalize("conflictingLecturesDifferentCourseInSamePeriod",
-                        HardSoftScore.ofHard(1),
+                .penalize("conflictingLecturesDifferentCourseInSamePeriod", ONE_HARD,
                         (courseConflict, lecture1, lecture2) -> courseConflict.getConflictCount());
     }
 
-    private Constraint conflictingLecturesSameCourseInSamePeriod(ConstraintFactory factory) {
-        return factory.from(Lecture.class)
-                .join(Lecture.class,
-                        equal(Lecture::getCourse, Lecture::getCourse),
-                        equal(Lecture::getPeriod, Lecture::getPeriod),
-                        lessThan(Lecture::getId, Lecture::getId))
-                .penalize("conflictingLecturesSameCourseInSamePeriod",
-                        HardSoftScore.ofHard(1),
+    Constraint conflictingLecturesSameCourseInSamePeriod(ConstraintFactory factory) {
+        return factory.fromUniquePair(Lecture.class,
+                equal(Lecture::getPeriod),
+                equal(Lecture::getCourse))
+                .penalize("conflictingLecturesSameCourseInSamePeriod", ONE_HARD,
                         (lecture1, lecture2) -> 1 + lecture1.getCurriculumList().size());
     }
 
-    private Constraint roomOccupancy(ConstraintFactory factory) {
-        throw new UnsupportedOperationException("Not yet implemented due to missing support for tri-grouping.");
-        //        return factory.from(Lecture.class)
-        //                .groupBy(Lecture::getPeriod, Lecture::getRoom, count())
-        //                .filter((period, room, count) -> count > 1)
-        //                .penalize("roomOccupancy",
-        //                        HardSoftScore.ofHard(1),
-        //                        (period, room, count) -> count - 1);
+    Constraint roomOccupancy(ConstraintFactory factory) {
+        return factory.fromUniquePair(Lecture.class,
+                equal(Lecture::getRoom),
+                equal(Lecture::getPeriod))
+                .penalize("roomOccupancy", ONE_HARD);
     }
 
-    private Constraint unavailablePeriodPenalty(ConstraintFactory factory) {
+    Constraint unavailablePeriodPenalty(ConstraintFactory factory) {
         return factory.from(UnavailablePeriodPenalty.class)
                 .join(Lecture.class,
                         equal(UnavailablePeriodPenalty::getCourse, Lecture::getCourse),
                         equal(UnavailablePeriodPenalty::getPeriod, Lecture::getPeriod))
-                .penalize("unavailablePeriodPenalty",
-                        HardSoftScore.ofHard(10));
+                .penalize("unavailablePeriodPenalty", ofHard(10));
     }
 
     // ************************************************************************
     // Soft constraints
     // ************************************************************************
 
-    private Constraint roomCapacity(ConstraintFactory factory) {
+    Constraint roomCapacity(ConstraintFactory factory) {
         return factory.from(Lecture.class)
                 .filter(lecture -> lecture.getStudentSize() > lecture.getRoom().getCapacity())
-                .penalize("roomCapacity",
-                        HardSoftScore.ofSoft(1),
+                .penalize("roomCapacity", ofSoft(1),
                         lecture -> lecture.getStudentSize() - lecture.getRoom().getCapacity());
     }
 
-    private Constraint minimumWorkingDays(ConstraintFactory factory) {
+    Constraint minimumWorkingDays(ConstraintFactory factory) {
         return factory.from(Lecture.class)
                 .groupBy(Lecture::getCourse, countDistinct(Lecture::getDay))
                 .filter((course, dayCount) -> course.getMinWorkingDaySize() > dayCount)
-                .penalize("minimumWorkingDays",
-                        HardSoftScore.ofSoft(5),
+                .penalize("minimumWorkingDays", ofSoft(5),
                         (course, dayCount) -> course.getMinWorkingDaySize() - dayCount);
     }
 
-    private Constraint curriculumCompactness(ConstraintFactory factory) {
-        throw new UnsupportedOperationException("Not yet implemented due to missing support for bi-grouping.");
-        //        return factory.from(Curriculum.class)
-        //                .join(Lecture.class)
-        //                .filter((curriculum, lecture) -> lecture.getCurriculumList().contains(curriculum));
-        //                .groupBy(curriculum, collectSortAndFilter(lecture, Lecture::getPeriod(), lectureList -> lectureList.filter(if no before or after))
-        //                .flatten()
-        //                .penalize("curriculumCompactness",
-        //                        HardSoftScore.ofSoft(2));
+    Constraint curriculumCompactness(ConstraintFactory factory) {
+        return factory.from(Curriculum.class)
+                .join(Lecture.class,
+                        filtering((curriculum, lecture) -> lecture.getPeriod() != null),
+                        filtering((curriculum, lecture) -> lecture.getCurriculumList().contains(curriculum)))
+                .ifNotExists(Lecture.class,
+                        equal((curriculum, lecture) -> lecture.getDay(), Lecture::getDay),
+                        equal((curriculum, lecture) -> lecture.getTimeslotIndex(), lecture -> lecture.getTimeslotIndex() + 1),
+                        filtering((curriculum, lectureA, lectureB) -> lectureB.getCurriculumList().contains(curriculum)))
+                .ifNotExists(Lecture.class,
+                        equal((curriculum, lecture) -> lecture.getDay(), Lecture::getDay),
+                        equal((curriculum, lecture) -> lecture.getTimeslotIndex(), lecture -> lecture.getTimeslotIndex() - 1),
+                        filtering((curriculum, lectureA, lectureB) -> lectureB.getCurriculumList().contains(curriculum)))
+                .penalize("curriculumCompactness", ofSoft(2));
     }
 
-    private Constraint roomStability(ConstraintFactory factory) {
+    Constraint roomStability(ConstraintFactory factory) {
         return factory.from(Lecture.class)
                 .groupBy(Lecture::getCourse, countDistinct(Lecture::getRoom))
                 .filter((course, roomCount) -> roomCount > 1)
-                .penalize("roomStability",
-                        HardSoftScore.ofSoft(1),
+                .penalize("roomStability", ofSoft(1),
                         (course, roomCount) -> roomCount - 1);
     }
 
