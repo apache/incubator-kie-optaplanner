@@ -30,7 +30,7 @@ import org.optaplanner.examples.curriculumcourse.domain.UnavailablePeriodPenalty
 import org.optaplanner.examples.curriculumcourse.domain.solver.CourseConflict;
 import org.optaplanner.test.api.score.stream.ConstraintVerifier;
 
-class CourseScheduleConstraintProviderTest {
+class CurriculumCourseConstraintProviderTest {
 
     private static final Curriculum CURRICULUM_1 = new Curriculum(1, "Curriculum1");
     private static final Curriculum CURRICULUM_2 = new Curriculum(2, "Curriculum2");
@@ -49,8 +49,8 @@ class CourseScheduleConstraintProviderTest {
     private static final Period PERIOD_2_MONDAY = new Period(1, MONDAY, SECOND_TIMESLOT);
     private static final Period PERIOD_1_TUESDAY = new Period(2, TUESDAY, FIRST_TIMESLOT);
 
-    private final ConstraintVerifier<CourseScheduleConstraintProvider, CourseSchedule> constraintVerifier =
-            ConstraintVerifier.build(new CourseScheduleConstraintProvider(), CourseSchedule.class, Lecture.class);
+    private final ConstraintVerifier<CurriculumCourseConstraintProvider, CourseSchedule> constraintVerifier =
+            ConstraintVerifier.build(new CurriculumCourseConstraintProvider(), CourseSchedule.class, Lecture.class);
 
     @Test
     void conflictingLecturesDifferentCourseInSamePeriod() {
@@ -63,7 +63,7 @@ class CourseScheduleConstraintProviderTest {
         // Make sure that different rooms are irrelevant.
         Lecture assignedLecture1 = new Lecture(2, COURSE_1, PERIOD_1_MONDAY, ROOM_1);
         Lecture assignedLecture2 = new Lecture(3, COURSE_2, PERIOD_1_MONDAY, ROOM_2);
-        constraintVerifier.verifyThat(CourseScheduleConstraintProvider::conflictingLecturesDifferentCourseInSamePeriod)
+        constraintVerifier.verifyThat(CurriculumCourseConstraintProvider::conflictingLecturesDifferentCourseInSamePeriod)
                 .given(courseConflict, unassignedLecture1, unassignedLecture2, assignedLecture1, assignedLecture2)
                 .penalizesBy(conflictCount);
     }
@@ -78,7 +78,7 @@ class CourseScheduleConstraintProviderTest {
         Lecture assignedLecture2 = new Lecture(3, COURSE_1, PERIOD_1_MONDAY, ROOM_2);
         // Make sure that only pairs with the same course and same period are counted.
         Lecture assignedLecture3 = new Lecture(4, COURSE_2, PERIOD_1_MONDAY, ROOM_1);
-        constraintVerifier.verifyThat(CourseScheduleConstraintProvider::conflictingLecturesSameCourseInSamePeriod)
+        constraintVerifier.verifyThat(CurriculumCourseConstraintProvider::conflictingLecturesSameCourseInSamePeriod)
                 .given(unassignedLecture1, unassignedLecture2, assignedLecture1, assignedLecture2, assignedLecture3)
                 .penalizesBy(2);
     }
@@ -93,7 +93,7 @@ class CourseScheduleConstraintProviderTest {
         Lecture assignedLecture3 = new Lecture(4, COURSE_3, PERIOD_1_MONDAY, ROOM_1);
         // Make sure that different rooms are irrelevant.
         Lecture assignedLecture4 = new Lecture(5, COURSE_1, PERIOD_1_MONDAY, ROOM_2);
-        constraintVerifier.verifyThat(CourseScheduleConstraintProvider::roomOccupancy)
+        constraintVerifier.verifyThat(CurriculumCourseConstraintProvider::roomOccupancy)
                 .given(unassignedLecture, assignedLecture1, assignedLecture2, assignedLecture3, assignedLecture4)
                 .penalizesBy(3);
     }
@@ -104,7 +104,7 @@ class CourseScheduleConstraintProviderTest {
         Lecture matchingLecture = new Lecture(0, COURSE_1, PERIOD_1_MONDAY, ROOM_1);
         Lecture wrongCourseLecture = new Lecture(1, COURSE_2, PERIOD_1_MONDAY, ROOM_2);
         Lecture wrongPeriodLecture = new Lecture(2, COURSE_1, PERIOD_2_MONDAY, ROOM_1);
-        constraintVerifier.verifyThat(CourseScheduleConstraintProvider::unavailablePeriodPenalty)
+        constraintVerifier.verifyThat(CurriculumCourseConstraintProvider::unavailablePeriodPenalty)
                 .given(unavailablePeriodPenalty, matchingLecture, wrongCourseLecture, wrongPeriodLecture)
                 .penalizesBy(1);
     }
@@ -114,7 +114,7 @@ class CourseScheduleConstraintProviderTest {
         Lecture overbookedLecture = new Lecture(0, COURSE_1, PERIOD_1_MONDAY, ROOM_1);
         Lecture packedLecture = new Lecture(1, COURSE_2, PERIOD_2_MONDAY, ROOM_1);
         Lecture nearlyEmptyLecture = new Lecture(2, COURSE_3, PERIOD_1_TUESDAY, ROOM_2);
-        constraintVerifier.verifyThat(CourseScheduleConstraintProvider::roomCapacity)
+        constraintVerifier.verifyThat(CurriculumCourseConstraintProvider::roomCapacity)
                 .given(overbookedLecture, packedLecture, nearlyEmptyLecture)
                 .penalizesBy(10); // Only penalizes the overbooked lecture.
     }
@@ -124,7 +124,7 @@ class CourseScheduleConstraintProviderTest {
         Lecture meetsMinimum = new Lecture(0, COURSE_3, PERIOD_1_MONDAY, ROOM_1);
         Lecture doesNotMeetMinimumBy1 = new Lecture(1, COURSE_2, PERIOD_1_MONDAY, ROOM_2);
         Lecture doesNotMeetMinimumBy2 = new Lecture(2, COURSE_1, PERIOD_2_MONDAY, ROOM_1);
-        constraintVerifier.verifyThat(CourseScheduleConstraintProvider::minimumWorkingDays)
+        constraintVerifier.verifyThat(CurriculumCourseConstraintProvider::minimumWorkingDays)
                 .given(meetsMinimum, doesNotMeetMinimumBy1, doesNotMeetMinimumBy2)
                 .penalizesBy(3);
     }
@@ -133,7 +133,7 @@ class CourseScheduleConstraintProviderTest {
     void curriculumCompactness() {
         Lecture lectureInCurriculumWithoutOthers1 = new Lecture(0, COURSE_1, PERIOD_1_MONDAY, ROOM_1);
         Lecture lectureInCurriculumWithoutOthers2 = new Lecture(1, COURSE_2, PERIOD_1_MONDAY, ROOM_1);
-        constraintVerifier.verifyThat(CourseScheduleConstraintProvider::curriculumCompactness)
+        constraintVerifier.verifyThat(CurriculumCourseConstraintProvider::curriculumCompactness)
                 .given(CURRICULUM_1, CURRICULUM_2, lectureInCurriculumWithoutOthers1, lectureInCurriculumWithoutOthers2)
                 .penalizesBy(2);
     }
@@ -144,7 +144,7 @@ class CourseScheduleConstraintProviderTest {
         Lecture lectureOfSameCourse2 = new Lecture(0, COURSE_1, PERIOD_1_MONDAY, ROOM_2);
         Lecture lectureOfSameCourse3 = new Lecture(0, COURSE_1, PERIOD_2_MONDAY, ROOM_1);
         Lecture lectureOfDifferentCourse = new Lecture(0, COURSE_2, PERIOD_2_MONDAY, ROOM_1);
-        constraintVerifier.verifyThat(CourseScheduleConstraintProvider::roomStability)
+        constraintVerifier.verifyThat(CurriculumCourseConstraintProvider::roomStability)
                 .given(lectureOfSameCourse1, lectureOfSameCourse2, lectureOfSameCourse3, lectureOfDifferentCourse)
                 .penalizesBy(1); // lectureOfSameCourse2 is penalized
     }
