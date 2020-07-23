@@ -16,10 +16,11 @@
 
 package org.optaplanner.examples.curriculumcourse.domain;
 
-import com.thoughtworks.xstream.annotations.XStreamAlias;
+import static java.util.Objects.requireNonNull;
+
 import org.optaplanner.examples.common.domain.AbstractPersistable;
 
-import static java.util.Objects.requireNonNull;
+import com.thoughtworks.xstream.annotations.XStreamAlias;
 
 @XStreamAlias("Teacher")
 public class Teacher extends AbstractPersistable {

@@ -20,9 +20,9 @@ import org.optaplanner.examples.common.app.CommonApp;
 import org.optaplanner.examples.common.persistence.AbstractSolutionExporter;
 import org.optaplanner.examples.common.persistence.AbstractSolutionImporter;
 import org.optaplanner.examples.curriculumcourse.domain.CourseSchedule;
-import org.optaplanner.examples.curriculumcourse.persistence.CurriculumCourseXmlSolutionFileIO;
 import org.optaplanner.examples.curriculumcourse.persistence.CurriculumCourseExporter;
 import org.optaplanner.examples.curriculumcourse.persistence.CurriculumCourseImporter;
+import org.optaplanner.examples.curriculumcourse.persistence.CurriculumCourseXmlSolutionFileIO;
 import org.optaplanner.examples.curriculumcourse.swingui.CurriculumCoursePanel;
 import org.optaplanner.persistence.common.api.domain.solution.SolutionFileIO;
 

@@ -16,11 +16,12 @@
 
 package org.optaplanner.examples.curriculumcourse.domain;
 
-import com.thoughtworks.xstream.annotations.XStreamAlias;
+import static java.util.Objects.requireNonNull;
+
 import org.optaplanner.examples.common.domain.AbstractPersistable;
 import org.optaplanner.examples.common.swingui.components.Labeled;
 
-import static java.util.Objects.requireNonNull;
+import com.thoughtworks.xstream.annotations.XStreamAlias;
 
 @XStreamAlias("Period")
 public class Period extends AbstractPersistable implements Labeled {
