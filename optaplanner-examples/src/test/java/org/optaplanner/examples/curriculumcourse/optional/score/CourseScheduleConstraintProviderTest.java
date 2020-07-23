@@ -76,7 +76,7 @@ class CourseScheduleConstraintProviderTest {
         // Make sure that different rooms are irrelevant.
         Lecture assignedLecture1 = new Lecture(2, COURSE_1, PERIOD_1_MONDAY, ROOM_1);
         Lecture assignedLecture2 = new Lecture(3, COURSE_1, PERIOD_1_MONDAY, ROOM_2);
-        // Make sure that only pars with the same course and same period are counted.
+        // Make sure that only pairs with the same course and same period are counted.
         Lecture assignedLecture3 = new Lecture(4, COURSE_2, PERIOD_1_MONDAY, ROOM_1);
         constraintVerifier.verifyThat(CourseScheduleConstraintProvider::conflictingLecturesSameCourseInSamePeriod)
                 .given(unassignedLecture1, unassignedLecture2, assignedLecture1, assignedLecture2, assignedLecture3)
