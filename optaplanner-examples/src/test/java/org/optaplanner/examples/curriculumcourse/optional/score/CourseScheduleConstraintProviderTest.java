@@ -32,7 +32,6 @@ import org.optaplanner.test.api.score.stream.ConstraintVerifier;
 
 class CourseScheduleConstraintProviderTest {
 
-
     private static final Curriculum CURRICULUM_1 = new Curriculum(1, "Curriculum1");
     private static final Curriculum CURRICULUM_2 = new Curriculum(2, "Curriculum2");
     private static final Teacher TEACHER_1 = new Teacher(1, "Teacher1");
