@@ -34,7 +34,6 @@ public class Day extends AbstractPersistable {
     private List<Period> periodList;
 
     public Day() {
-
     }
 
     public Day(int dayIndex, Period... periods) {

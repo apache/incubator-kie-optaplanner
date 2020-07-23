@@ -16,13 +16,6 @@
 
 package org.optaplanner.examples.curriculumcourse.optional.score;
 
-import static org.optaplanner.core.api.score.buildin.hardsoft.HardSoftScore.ONE_HARD;
-import static org.optaplanner.core.api.score.buildin.hardsoft.HardSoftScore.ofHard;
-import static org.optaplanner.core.api.score.buildin.hardsoft.HardSoftScore.ofSoft;
-import static org.optaplanner.core.api.score.stream.ConstraintCollectors.countDistinct;
-import static org.optaplanner.core.api.score.stream.Joiners.equal;
-import static org.optaplanner.core.api.score.stream.Joiners.filtering;
-
 import org.optaplanner.core.api.score.stream.Constraint;
 import org.optaplanner.core.api.score.stream.ConstraintFactory;
 import org.optaplanner.core.api.score.stream.ConstraintProvider;
@@ -30,6 +23,13 @@ import org.optaplanner.examples.curriculumcourse.domain.Curriculum;
 import org.optaplanner.examples.curriculumcourse.domain.Lecture;
 import org.optaplanner.examples.curriculumcourse.domain.UnavailablePeriodPenalty;
 import org.optaplanner.examples.curriculumcourse.domain.solver.CourseConflict;
+
+import static org.optaplanner.core.api.score.buildin.hardsoft.HardSoftScore.ONE_HARD;
+import static org.optaplanner.core.api.score.buildin.hardsoft.HardSoftScore.ofHard;
+import static org.optaplanner.core.api.score.buildin.hardsoft.HardSoftScore.ofSoft;
+import static org.optaplanner.core.api.score.stream.ConstraintCollectors.countDistinct;
+import static org.optaplanner.core.api.score.stream.Joiners.equal;
+import static org.optaplanner.core.api.score.stream.Joiners.filtering;
 
 public class CurriculumCourseConstraintProvider implements ConstraintProvider {
 
@@ -55,7 +55,6 @@ public class CurriculumCourseConstraintProvider implements ConstraintProvider {
         return factory.from(CourseConflict.class)
                 .join(Lecture.class,
                         equal(CourseConflict::getLeftCourse, Lecture::getCourse))
-                .filter(((courseConflict, lecture) -> lecture.getPeriod() != null))
                 .join(Lecture.class,
                         equal((courseConflict, lecture1) -> courseConflict.getRightCourse(), Lecture::getCourse),
                         equal((courseConflict, lecture1) -> lecture1.getPeriod(), Lecture::getPeriod))
@@ -109,7 +108,6 @@ public class CurriculumCourseConstraintProvider implements ConstraintProvider {
     Constraint curriculumCompactness(ConstraintFactory factory) {
         return factory.from(Curriculum.class)
                 .join(Lecture.class,
-                        filtering((curriculum, lecture) -> lecture.getPeriod() != null),
                         filtering((curriculum, lecture) -> lecture.getCurriculumSet().contains(curriculum)))
                 .ifNotExists(Lecture.class,
                         equal((curriculum, lecture) -> lecture.getDay(), Lecture::getDay),

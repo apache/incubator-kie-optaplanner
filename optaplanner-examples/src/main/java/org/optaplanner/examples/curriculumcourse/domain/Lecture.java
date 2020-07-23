@@ -41,7 +41,6 @@ public class Lecture extends AbstractPersistable {
     private Room room;
 
     public Lecture() {
-
     }
 
     public Lecture(int id, Course course, Period period, Room room) {

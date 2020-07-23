@@ -30,7 +30,6 @@ public class Room extends AbstractPersistable implements Labeled {
     private int capacity;
 
     public Room() {
-
     }
 
     public Room(int id, String code, int capacity) {
