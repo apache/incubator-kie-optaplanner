@@ -184,9 +184,7 @@ public class CurriculumCourseImporter extends AbstractTxtSolutionImporter<Course
             schedule.setDayList(dayList);
             List<Timeslot> timeslotList = new ArrayList<>(timeslotListSize);
             for (int i = 0; i < timeslotListSize; i++) {
-                Timeslot timeslot = new Timeslot();
-                timeslot.setId((long) i);
-                timeslot.setTimeslotIndex(i);
+                Timeslot timeslot = new Timeslot(i);
                 timeslotList.add(timeslot);
             }
             schedule.setTimeslotList(timeslotList);

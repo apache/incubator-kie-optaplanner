@@ -16,10 +16,15 @@
 
 package org.optaplanner.examples.curriculumcourse.domain;
 
+import java.util.Arrays;
+import java.util.LinkedHashSet;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import org.optaplanner.examples.common.domain.AbstractPersistable;
+
+import static java.util.Objects.requireNonNull;
 
 @XStreamAlias("Course")
 public class Course extends AbstractPersistable {
@@ -32,6 +37,21 @@ public class Course extends AbstractPersistable {
 
     private Set<Curriculum> curriculumSet;
     private int studentSize;
+
+    public Course() {
+
+    }
+
+    public Course(int id, String code, Teacher teacher, int lectureSize, int studentSize, int minWorkingDaySize,
+            Curriculum... curricula) {
+        super(id);
+        this.code = requireNonNull(code);
+        this.teacher = requireNonNull(teacher);
+        this.lectureSize = lectureSize;
+        this.minWorkingDaySize = minWorkingDaySize;
+        this.curriculumSet = Arrays.stream(curricula).collect(Collectors.toCollection(LinkedHashSet::new));
+        this.studentSize = studentSize;
+    }
 
     public String getCode() {
         return code;

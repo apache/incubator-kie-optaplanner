@@ -160,9 +160,7 @@ public class CurriculumCourseGenerator extends LoggingMain {
     private void createTimeslotList(CourseSchedule schedule) {
         List<Timeslot> timeslotList = new ArrayList<>(TIMESLOT_LIST_SIZE);
         for (int i = 0; i < TIMESLOT_LIST_SIZE; i++) {
-            Timeslot timeslot = new Timeslot();
-            timeslot.setId((long) i);
-            timeslot.setTimeslotIndex(i);
+            Timeslot timeslot = new Timeslot(i);
             timeslotList.add(timeslot);
         }
         schedule.setTimeslotList(timeslotList);

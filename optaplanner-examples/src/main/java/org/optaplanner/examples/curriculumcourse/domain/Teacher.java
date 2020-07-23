@@ -1,5 +1,5 @@
 /*
- * Copyright 2010 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,10 +20,21 @@ import org.optaplanner.examples.common.domain.AbstractPersistable;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 
+import static java.util.Objects.requireNonNull;
+
 @XStreamAlias("Teacher")
 public class Teacher extends AbstractPersistable {
 
     private String code;
+
+    public Teacher() {
+
+    }
+
+    public Teacher(int id, String code) {
+        super(id);
+        this.code = requireNonNull(code);
+    }
 
     public String getCode() {
         return code;

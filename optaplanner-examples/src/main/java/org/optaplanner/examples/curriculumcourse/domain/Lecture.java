@@ -40,6 +40,17 @@ public class Lecture extends AbstractPersistable {
     private Period period;
     private Room room;
 
+    public Lecture() {
+
+    }
+
+    public Lecture(int id, Course course, Period period, Room room) {
+        super(id);
+        this.course = course;
+        this.period = period;
+        this.room = room;
+    }
+
     public Course getCourse() {
         return course;
     }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,11 +20,23 @@ import org.optaplanner.examples.common.domain.AbstractPersistable;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 
+import static java.util.Objects.requireNonNull;
+
 @XStreamAlias("UnavailablePeriodPenalty")
 public class UnavailablePeriodPenalty extends AbstractPersistable {
 
     private Course course;
     private Period period;
+
+    public UnavailablePeriodPenalty() {
+
+    }
+
+    public UnavailablePeriodPenalty(int id, Course course, Period period) {
+        super(id);
+        this.course = requireNonNull(course);
+        this.period = requireNonNull(period);
+    }
 
     public Course getCourse() {
         return course;
