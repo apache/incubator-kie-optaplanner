@@ -16,15 +16,16 @@
 
 package org.optaplanner.examples.curriculumcourse.domain;
 
+import static java.util.Objects.requireNonNull;
+
 import java.util.Arrays;
 import java.util.LinkedHashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import com.thoughtworks.xstream.annotations.XStreamAlias;
 import org.optaplanner.examples.common.domain.AbstractPersistable;
 
-import static java.util.Objects.requireNonNull;
+import com.thoughtworks.xstream.annotations.XStreamAlias;
 
 @XStreamAlias("Course")
 public class Course extends AbstractPersistable {

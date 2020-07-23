@@ -16,11 +16,11 @@
 
 package org.optaplanner.examples.curriculumcourse.domain;
 
+import static java.util.Objects.requireNonNull;
+
 import org.optaplanner.examples.common.domain.AbstractPersistable;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
-
-import static java.util.Objects.requireNonNull;
 
 @XStreamAlias("UnavailablePeriodPenalty")
 public class UnavailablePeriodPenalty extends AbstractPersistable {

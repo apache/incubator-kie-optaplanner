@@ -16,6 +16,8 @@
 
 package org.optaplanner.examples.curriculumcourse.persistence;
 
+import static org.optaplanner.examples.common.persistence.AbstractSolutionImporter.getFlooredPossibleSolutionSize;
+
 import java.io.File;
 import java.math.BigInteger;
 import java.util.ArrayList;
@@ -43,8 +45,6 @@ import org.optaplanner.examples.curriculumcourse.domain.Timeslot;
 import org.optaplanner.examples.curriculumcourse.domain.UnavailablePeriodPenalty;
 import org.optaplanner.persistence.common.api.domain.solution.SolutionFileIO;
 import org.optaplanner.persistence.xstream.impl.domain.solution.XStreamSolutionFileIO;
-
-import static org.optaplanner.examples.common.persistence.AbstractSolutionImporter.getFlooredPossibleSolutionSize;
 
 public class CurriculumCourseGenerator extends LoggingMain {
 
