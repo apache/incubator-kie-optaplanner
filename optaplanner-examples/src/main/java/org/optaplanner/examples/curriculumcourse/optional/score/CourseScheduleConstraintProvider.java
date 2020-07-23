@@ -69,7 +69,7 @@ public class CourseScheduleConstraintProvider implements ConstraintProvider {
                 equal(Lecture::getPeriod),
                 equal(Lecture::getCourse))
                 .penalize("conflictingLecturesSameCourseInSamePeriod", ONE_HARD,
-                        (lecture1, lecture2) -> 1 + lecture1.getCurriculumList().size());
+                        (lecture1, lecture2) -> 1 + lecture1.getCurriculumSet().size());
     }
 
     Constraint roomOccupancy(ConstraintFactory factory) {
@@ -110,15 +110,15 @@ public class CourseScheduleConstraintProvider implements ConstraintProvider {
         return factory.from(Curriculum.class)
                 .join(Lecture.class,
                         filtering((curriculum, lecture) -> lecture.getPeriod() != null),
-                        filtering((curriculum, lecture) -> lecture.getCurriculumList().contains(curriculum)))
+                        filtering((curriculum, lecture) -> lecture.getCurriculumSet().contains(curriculum)))
                 .ifNotExists(Lecture.class,
                         equal((curriculum, lecture) -> lecture.getDay(), Lecture::getDay),
                         equal((curriculum, lecture) -> lecture.getTimeslotIndex(), lecture -> lecture.getTimeslotIndex() + 1),
-                        filtering((curriculum, lectureA, lectureB) -> lectureB.getCurriculumList().contains(curriculum)))
+                        filtering((curriculum, lectureA, lectureB) -> lectureB.getCurriculumSet().contains(curriculum)))
                 .ifNotExists(Lecture.class,
                         equal((curriculum, lecture) -> lecture.getDay(), Lecture::getDay),
                         equal((curriculum, lecture) -> lecture.getTimeslotIndex(), lecture -> lecture.getTimeslotIndex() - 1),
-                        filtering((curriculum, lectureA, lectureB) -> lectureB.getCurriculumList().contains(curriculum)))
+                        filtering((curriculum, lectureA, lectureB) -> lectureB.getCurriculumSet().contains(curriculum)))
                 .penalize("curriculumCompactness", ofSoft(2));
     }
 

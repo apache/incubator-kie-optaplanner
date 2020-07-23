@@ -1,5 +1,5 @@
 /*
- * Copyright 2017 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,13 +16,12 @@
 
 package org.optaplanner.examples.curriculumcourse.persistence;
 
-import static org.optaplanner.examples.common.persistence.AbstractSolutionImporter.getFlooredPossibleSolutionSize;
-
 import java.io.File;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Random;
 import java.util.Set;
@@ -44,6 +43,8 @@ import org.optaplanner.examples.curriculumcourse.domain.Timeslot;
 import org.optaplanner.examples.curriculumcourse.domain.UnavailablePeriodPenalty;
 import org.optaplanner.persistence.common.api.domain.solution.SolutionFileIO;
 import org.optaplanner.persistence.xstream.impl.domain.solution.XStreamSolutionFileIO;
+
+import static org.optaplanner.examples.common.persistence.AbstractSolutionImporter.getFlooredPossibleSolutionSize;
 
 public class CurriculumCourseGenerator extends LoggingMain {
 
@@ -227,7 +228,7 @@ public class CurriculumCourseGenerator extends LoggingMain {
             course.setTeacher(teacher);
             course.setLectureSize(0);
             course.setMinWorkingDaySize(1);
-            course.setCurriculumList(new ArrayList<>());
+            course.setCurriculumSet(new LinkedHashSet<>());
             course.setStudentSize(0);
             courseList.add(course);
         }
@@ -290,7 +291,7 @@ public class CurriculumCourseGenerator extends LoggingMain {
                 if (lectureCount > PERIOD_LIST_SIZE) {
                     break;
                 }
-                course.getCurriculumList().add(curriculum);
+                course.getCurriculumSet().add(curriculum);
                 course.setStudentSize(course.getStudentSize() + studentSize);
             }
 

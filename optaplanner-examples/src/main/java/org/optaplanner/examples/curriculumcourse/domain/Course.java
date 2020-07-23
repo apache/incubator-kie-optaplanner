@@ -1,5 +1,5 @@
 /*
- * Copyright 2010 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,11 +16,10 @@
 
 package org.optaplanner.examples.curriculumcourse.domain;
 
-import java.util.List;
-
-import org.optaplanner.examples.common.domain.AbstractPersistable;
+import java.util.Set;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
+import org.optaplanner.examples.common.domain.AbstractPersistable;
 
 @XStreamAlias("Course")
 public class Course extends AbstractPersistable {
@@ -31,7 +30,7 @@ public class Course extends AbstractPersistable {
     private int lectureSize;
     private int minWorkingDaySize;
 
-    private List<Curriculum> curriculumList;
+    private Set<Curriculum> curriculumSet;
     private int studentSize;
 
     public String getCode() {
@@ -66,12 +65,12 @@ public class Course extends AbstractPersistable {
         this.minWorkingDaySize = minWorkingDaySize;
     }
 
-    public List<Curriculum> getCurriculumList() {
-        return curriculumList;
+    public Set<Curriculum> getCurriculumSet() {
+        return curriculumSet;
     }
 
-    public void setCurriculumList(List<Curriculum> curriculumList) {
-        this.curriculumList = curriculumList;
+    public void setCurriculumSet(Set<Curriculum> curriculumSet) {
+        this.curriculumSet = curriculumSet;
     }
 
     public int getStudentSize() {

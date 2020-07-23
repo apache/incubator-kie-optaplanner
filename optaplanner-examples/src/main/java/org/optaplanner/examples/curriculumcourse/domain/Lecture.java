@@ -1,5 +1,5 @@
 /*
- * Copyright 2010 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,7 +16,7 @@
 
 package org.optaplanner.examples.curriculumcourse.domain;
 
-import java.util.List;
+import java.util.Set;
 
 import org.optaplanner.core.api.domain.entity.PlanningEntity;
 import org.optaplanner.core.api.domain.entity.PlanningPin;
@@ -96,8 +96,8 @@ public class Lecture extends AbstractPersistable {
         return course.getStudentSize();
     }
 
-    public List<Curriculum> getCurriculumList() {
-        return course.getCurriculumList();
+    public Set<Curriculum> getCurriculumSet() {
+        return course.getCurriculumSet();
     }
 
     public Day getDay() {
