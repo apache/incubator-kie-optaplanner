@@ -1,0 +1,16 @@
+jobs:
+  build-chain:
+    runs-on: ubuntu-latest
+    name: Build Pull Request
+    steps:
+    - uses: actions/checkout@v2
+    - name: Build Chain
+      id: build-chain
+      uses: Ginxo/github-action-build-chain@master
+      with:
+        parent-dependencies: 'drools'
+        child-dependencies: 'jbpm'
+        build-command: 'mvn -e clean install -nsu -Prun-code-coverage,wildfly -Dfull  -Dintegration-tests=true -Dmaven.test.failure.ignore=true -DjvmArgs="-Xms1g -Xmx4g" | mvn -nsu generate-resources -Psonarcloud-analysis -DjvmArgs="-Xms1g -Xmx4g"'
+        build-command-upstream: "mvn -e clean install -DskipTests -Dgwt.compiler.skip=true -Dgwt.skipCompilation=true -Denforcer.skip=true -Dcheckstyle.skip=true -Dspotbugs.skip=true -Drevapi.skip=true"
+      env:
+          GITHUB_TOKEN: "${{ secrets.KIE_TOKEN }}"
