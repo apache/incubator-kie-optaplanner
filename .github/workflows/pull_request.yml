@@ -6,7 +6,7 @@ jobs:
     - uses: actions/checkout@v2
     - name: Build Chain
       id: build-chain
-      uses: Ginxo/github-action-build-chain@master
+      uses: kiegroup/github-action-build-chain@master
       with:
         parent-dependencies: 'drools@7.x:master'
         child-dependencies: 'jbpm@7.x:master'
