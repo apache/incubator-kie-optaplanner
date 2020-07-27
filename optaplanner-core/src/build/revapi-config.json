@@ -316,7 +316,7 @@
           "classSimpleName": "SolverJob",
           "methodName": "getSolvingDuration",
           "elementKind": "method",
-          "justification": "False positive. Users should never implement this interface anyway."
+          "justification": "New functionality; interface not to be implemented by users."
         }
       ]
     }
