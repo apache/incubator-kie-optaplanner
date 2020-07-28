@@ -16,8 +16,6 @@
 
 package org.optaplanner.core.impl.score.stream.drools;
 
-import static org.drools.model.DSL.globalOf;
-
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -38,7 +36,9 @@ import org.optaplanner.core.impl.score.stream.InnerConstraintFactory;
 import org.optaplanner.core.impl.score.stream.drools.common.ConstraintGraph;
 import org.optaplanner.core.impl.score.stream.drools.uni.DroolsFromUniConstraintStream;
 
-public final class DroolsConstraintFactory<Solution_> implements InnerConstraintFactory<Solution_> {
+import static org.drools.model.DSL.globalOf;
+
+public final class DroolsConstraintFactory<Solution_> extends InnerConstraintFactory<Solution_> {
 
     private final SolutionDescriptor<Solution_> solutionDescriptor;
     private final String defaultConstraintPackage;
