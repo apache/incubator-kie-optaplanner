@@ -411,7 +411,9 @@ public class BiConstraintStreamTest extends AbstractConstraintStreamTest {
             return factory.fromUniquePair(TestdataLavishEntity.class)
                     .ifExists(Integer.class)
                     .penalize(TEST_CONSTRAINT_NAME, SimpleScore.ONE);
-        })).isInstanceOf(IllegalArgumentException.class);
+        })).isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining(Integer.class.getCanonicalName())
+                .hasMessageContaining("assignable from");
     }
 
     @TestTemplate
@@ -548,7 +550,9 @@ public class BiConstraintStreamTest extends AbstractConstraintStreamTest {
             return factory.fromUniquePair(TestdataLavishEntity.class)
                     .ifNotExists(Integer.class)
                     .penalize(TEST_CONSTRAINT_NAME, SimpleScore.ONE);
-        })).isInstanceOf(IllegalArgumentException.class);
+        })).isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining(Integer.class.getCanonicalName())
+                .hasMessageContaining("assignable from");
     }
 
     @TestTemplate

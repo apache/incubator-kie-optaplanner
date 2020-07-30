@@ -164,7 +164,9 @@ public class QuadConstraintStreamTest extends AbstractConstraintStreamTest {
                             TestdataLavishEntity::getEntityGroup))
                     .ifExists(Integer.class)
                     .penalize(TEST_CONSTRAINT_NAME, SimpleScore.ONE);
-        })).isInstanceOf(IllegalArgumentException.class);
+        })).isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining(Integer.class.getCanonicalName())
+                .hasMessageContaining("assignable from");
 
     }
 
@@ -317,7 +319,9 @@ public class QuadConstraintStreamTest extends AbstractConstraintStreamTest {
                             TestdataLavishEntity::getEntityGroup))
                     .ifNotExists(Integer.class)
                     .penalize(TEST_CONSTRAINT_NAME, SimpleScore.ONE);
-        })).isInstanceOf(IllegalArgumentException.class);
+        })).isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining(Integer.class.getCanonicalName())
+                .hasMessageContaining("assignable from");
 
     }
 

@@ -318,7 +318,9 @@ public class TriConstraintStreamTest extends AbstractConstraintStreamTest {
                     .join(TestdataLavishEntityGroup.class)
                     .ifExists(Integer.class)
                     .penalize(TEST_CONSTRAINT_NAME, SimpleScore.ONE);
-        })).isInstanceOf(IllegalArgumentException.class);
+        })).isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining(Integer.class.getCanonicalName())
+                .hasMessageContaining("assignable from");
     }
 
     @TestTemplate
@@ -466,7 +468,9 @@ public class TriConstraintStreamTest extends AbstractConstraintStreamTest {
                     .join(TestdataLavishEntityGroup.class)
                     .ifNotExists(Integer.class)
                     .penalize(TEST_CONSTRAINT_NAME, SimpleScore.ONE);
-        })).isInstanceOf(IllegalArgumentException.class);
+        })).isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining(Integer.class.getCanonicalName())
+                .hasMessageContaining("assignable from");
     }
 
     @TestTemplate

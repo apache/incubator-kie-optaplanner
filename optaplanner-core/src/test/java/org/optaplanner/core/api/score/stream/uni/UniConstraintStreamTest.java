@@ -184,7 +184,9 @@ public class UniConstraintStreamTest extends AbstractConstraintStreamTest {
             return factory.from(TestdataLavishValueGroup.class)
                     .join(Integer.class)
                     .penalize(TEST_CONSTRAINT_NAME, SimpleScore.ONE);
-        })).isInstanceOf(IllegalArgumentException.class);
+        })).isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining(Integer.class.getCanonicalName())
+                .hasMessageContaining("assignable from");
     }
 
     @TestTemplate
@@ -314,7 +316,9 @@ public class UniConstraintStreamTest extends AbstractConstraintStreamTest {
             return factory.from(TestdataLavishValueGroup.class)
                     .ifExists(Integer.class)
                     .penalize(TEST_CONSTRAINT_NAME, SimpleScore.ONE);
-        })).isInstanceOf(IllegalArgumentException.class);
+        })).isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining(Integer.class.getCanonicalName())
+                .hasMessageContaining("assignable from");
     }
 
     @TestTemplate
@@ -491,7 +495,9 @@ public class UniConstraintStreamTest extends AbstractConstraintStreamTest {
             return factory.from(TestdataLavishValueGroup.class)
                     .ifNotExists(Integer.class)
                     .penalize(TEST_CONSTRAINT_NAME, SimpleScore.ONE);
-        })).isInstanceOf(IllegalArgumentException.class);
+        })).isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining(Integer.class.getCanonicalName())
+                .hasMessageContaining("assignable from");
     }
 
     @TestTemplate
@@ -653,7 +659,9 @@ public class UniConstraintStreamTest extends AbstractConstraintStreamTest {
         assertThatThrownBy(() -> buildScoreDirector((factory) -> {
             return factory.from(Integer.class)
                     .penalize(TEST_CONSTRAINT_NAME, SimpleScore.ONE);
-        })).isInstanceOf(IllegalArgumentException.class);
+        })).isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining(Integer.class.getCanonicalName())
+                .hasMessageContaining("assignable from");
     }
 
     @TestTemplate
