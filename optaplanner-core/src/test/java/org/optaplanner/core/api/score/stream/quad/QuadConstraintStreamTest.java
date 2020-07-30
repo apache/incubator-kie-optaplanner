@@ -27,7 +27,6 @@ import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.Objects;
 
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.TestTemplate;
 import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
@@ -157,7 +156,7 @@ public class QuadConstraintStreamTest extends AbstractConstraintStreamTest {
     @TestTemplate
     public void ifExists_unknownClass() {
         assumeDrools();
-        Assertions.assertThatThrownBy(() -> buildScoreDirector((factory) -> {
+        assertThatThrownBy(() -> buildScoreDirector((factory) -> {
             return factory.from(TestdataLavishEntity.class)
                     .join(TestdataLavishEntityGroup.class, equal(TestdataLavishEntity::getEntityGroup, identity()))
                     .join(TestdataLavishValue.class, equal((entity, group) -> entity.getValue(), identity()))
@@ -310,7 +309,7 @@ public class QuadConstraintStreamTest extends AbstractConstraintStreamTest {
     @TestTemplate
     public void ifNotExists_unknownClass() {
         assumeDrools();
-        Assertions.assertThatThrownBy(() -> buildScoreDirector((factory) -> {
+        assertThatThrownBy(() -> buildScoreDirector((factory) -> {
             return factory.from(TestdataLavishEntity.class)
                     .join(TestdataLavishEntityGroup.class, equal(TestdataLavishEntity::getEntityGroup, identity()))
                     .join(TestdataLavishValue.class, equal((entity, group) -> entity.getValue(), identity()))

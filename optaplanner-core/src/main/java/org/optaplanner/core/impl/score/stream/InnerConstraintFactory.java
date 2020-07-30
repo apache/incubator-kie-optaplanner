@@ -16,6 +16,11 @@
 
 package org.optaplanner.core.impl.score.stream;
 
+import static java.util.stream.Collectors.toList;
+import static java.util.stream.Collectors.toSet;
+import static java.util.stream.Stream.concat;
+import static org.optaplanner.core.api.score.stream.Joiners.lessThan;
+
 import java.util.List;
 import java.util.Set;
 import java.util.function.BiPredicate;
@@ -35,11 +40,6 @@ import org.optaplanner.core.impl.domain.common.accessor.MemberAccessor;
 import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.core.impl.score.stream.bi.FilteringBiJoiner;
-
-import static java.util.stream.Collectors.toList;
-import static java.util.stream.Collectors.toSet;
-import static java.util.stream.Stream.concat;
-import static org.optaplanner.core.api.score.stream.Joiners.lessThan;
 
 public abstract class InnerConstraintFactory<Solution_> implements ConstraintFactory {
 
