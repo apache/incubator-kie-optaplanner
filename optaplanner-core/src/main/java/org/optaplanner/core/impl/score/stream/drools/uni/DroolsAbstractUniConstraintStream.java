@@ -105,7 +105,7 @@ public abstract class DroolsAbstractUniConstraintStream<Solution_, A> extends Dr
     @SafeVarargs
     private final <B> UniConstraintStream<A> ifExistsOrNot(boolean shouldExist, Class<B> otherClass,
             BiJoiner<A, B>... joiners) {
-        getConstraintFactory().assertValidFromClass(otherClass);
+        getConstraintFactory().assertValidFromType(otherClass);
         DroolsExistsUniConstraintStream<Solution_, A> stream = new DroolsExistsUniConstraintStream<>(constraintFactory, this,
                 shouldExist, otherClass, joiners);
         addChildStream(stream);

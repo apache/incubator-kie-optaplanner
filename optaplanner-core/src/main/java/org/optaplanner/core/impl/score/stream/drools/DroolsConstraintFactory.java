@@ -58,7 +58,7 @@ public final class DroolsConstraintFactory<Solution_> extends InnerConstraintFac
 
     @Override
     public <A> UniConstraintStream<A> fromUnfiltered(Class<A> fromClass) {
-        assertValidFromClass(fromClass);
+        assertValidFromType(fromClass);
         return new DroolsFromUniConstraintStream<>(this, fromClass);
     }
 

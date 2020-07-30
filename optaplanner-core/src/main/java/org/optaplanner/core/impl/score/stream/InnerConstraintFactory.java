@@ -16,11 +16,6 @@
 
 package org.optaplanner.core.impl.score.stream;
 
-import static java.util.stream.Collectors.toList;
-import static java.util.stream.Collectors.toSet;
-import static java.util.stream.Stream.concat;
-import static org.optaplanner.core.api.score.stream.Joiners.lessThan;
-
 import java.util.List;
 import java.util.Set;
 import java.util.function.BiPredicate;
@@ -40,6 +35,11 @@ import org.optaplanner.core.impl.domain.common.accessor.MemberAccessor;
 import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.core.impl.score.stream.bi.FilteringBiJoiner;
+
+import static java.util.stream.Collectors.toList;
+import static java.util.stream.Collectors.toSet;
+import static java.util.stream.Stream.concat;
+import static org.optaplanner.core.api.score.stream.Joiners.lessThan;
 
 public abstract class InnerConstraintFactory<Solution_> implements ConstraintFactory {
 
@@ -80,7 +80,7 @@ public abstract class InnerConstraintFactory<Solution_> implements ConstraintFac
         }
     }
 
-    public <A> void assertValidFromClass(Class<A> fromClass) {
+    public <A> void assertValidFromType(Class<A> fromType) {
         SolutionDescriptor<Solution_> solutionDescriptor = getSolutionDescriptor();
         Stream<Class> entityClassStream = solutionDescriptor.getEntityDescriptors().stream()
                 .map(EntityDescriptor::getEntityClass);
@@ -99,14 +99,20 @@ public abstract class InnerConstraintFactory<Solution_> implements ConstraintFac
                 });
         Set<Class> allAcceptedClassSet = concat(concat(entityClassStream, factClassStream), factCollectionClassStream)
                 .collect(toSet());
-        boolean hasMatchingClass = allAcceptedClassSet.stream()
-                .anyMatch(fromClass::isAssignableFrom);
-        if (!hasMatchingClass) {
+        /*
+         * Need to support the following situations:
+         * 1/ FactType == FromType; querying for the declared type.
+         * 2/ FromType extends/implements FactType; querying for impl type where declared type is its interface.
+         * 3/ FromType super FactType; querying for interface where declared type is its implementation.
+         */
+        boolean hasMatchingType = allAcceptedClassSet.stream()
+                .anyMatch(factType -> fromType.isAssignableFrom(factType) || factType.isAssignableFrom(fromType));
+        if (!hasMatchingType) {
             List<String> canonicalClassNameList = allAcceptedClassSet.stream()
                     .map(Class::getCanonicalName)
                     .sorted()
                     .collect(toList());
-            throw new IllegalArgumentException("Cannot use class (" + fromClass.getCanonicalName()
+            throw new IllegalArgumentException("Cannot use class (" + fromType.getCanonicalName()
                     + ") in a constraint stream as it is neither the same as, nor a superclass or superinterface of "
                     + "one of planning entities or problem facts.\n"
                     + "Ensure that all from(), join(), ifExists() and ifNotExists() building blocks only reference "
