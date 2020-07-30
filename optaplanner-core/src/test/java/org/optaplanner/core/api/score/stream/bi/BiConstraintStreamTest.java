@@ -405,6 +405,16 @@ public class BiConstraintStreamTest extends AbstractConstraintStreamTest {
     // ************************************************************************
 
     @TestTemplate
+    public void ifExists_unknownClass() {
+        assumeDrools();
+        assertThatThrownBy(() -> buildScoreDirector((factory) -> {
+            return factory.fromUniquePair(TestdataLavishEntity.class)
+                    .ifExists(Integer.class)
+                    .penalize(TEST_CONSTRAINT_NAME, SimpleScore.ONE);
+        })).isInstanceOf(IllegalArgumentException.class);
+    }
+
+    @TestTemplate
     public void ifExists_0Joiner0Filter() {
         assumeDrools();
         TestdataLavishSolution solution = TestdataLavishSolution.generateSolution(1, 1, 1, 1);
@@ -529,6 +539,16 @@ public class BiConstraintStreamTest extends AbstractConstraintStreamTest {
         solution.getEntityGroupList().remove(entityGroup);
         scoreDirector.afterProblemFactRemoved(entityGroup);
         assertScore(scoreDirector);
+    }
+
+    @TestTemplate
+    public void ifNotExists_unknownClass() {
+        assumeDrools();
+        assertThatThrownBy(() -> buildScoreDirector((factory) -> {
+            return factory.fromUniquePair(TestdataLavishEntity.class)
+                    .ifNotExists(Integer.class)
+                    .penalize(TEST_CONSTRAINT_NAME, SimpleScore.ONE);
+        })).isInstanceOf(IllegalArgumentException.class);
     }
 
     @TestTemplate

@@ -52,6 +52,7 @@ public final class BavetConstraintFactory<Solution_> extends InnerConstraintFact
 
     @Override
     public <A> BavetAbstractUniConstraintStream<Solution_, A> fromUnfiltered(Class<A> fromClass) {
+        assertValidFromClass(fromClass);
         return new BavetFromUniConstraintStream<>(this, fromClass);
     }
 

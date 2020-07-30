@@ -16,11 +16,18 @@
 
 package org.optaplanner.core.impl.score.stream;
 
+import static java.util.stream.Stream.concat;
+import static org.optaplanner.core.api.score.stream.Joiners.lessThan;
+
+import java.util.Set;
 import java.util.function.BiPredicate;
 import java.util.function.Function;
 import java.util.function.Predicate;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.optaplanner.core.api.domain.lookup.PlanningId;
+import org.optaplanner.core.api.domain.solution.ProblemFactCollectionProperty;
 import org.optaplanner.core.api.score.stream.Constraint;
 import org.optaplanner.core.api.score.stream.ConstraintFactory;
 import org.optaplanner.core.api.score.stream.bi.BiConstraintStream;
@@ -31,8 +38,6 @@ import org.optaplanner.core.impl.domain.common.accessor.MemberAccessor;
 import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.core.impl.score.stream.bi.FilteringBiJoiner;
-
-import static org.optaplanner.core.api.score.stream.Joiners.lessThan;
 
 public abstract class InnerConstraintFactory<Solution_> implements ConstraintFactory {
 
@@ -70,6 +75,34 @@ public abstract class InnerConstraintFactory<Solution_> implements ConstraintFac
         } else {
             return from(fromClass)
                     .join(fromClass, joiner, lessThan(planningIdGetter));
+        }
+    }
+
+    public <A> void assertValidFromClass(Class<A> fromClass) {
+        SolutionDescriptor<Solution_> solutionDescriptor = getSolutionDescriptor();
+        Stream<Class> entityClassStream = solutionDescriptor.getEntityDescriptors().stream()
+                .map(EntityDescriptor::getEntityClass);
+        Stream<Class> factClassStream = solutionDescriptor.getProblemFactMemberAccessorMap()
+                .values()
+                .stream()
+                .map(MemberAccessor::getType);
+        Stream<Class> factCollectionClassStream = solutionDescriptor.getProblemFactCollectionMemberAccessorMap()
+                .entrySet()
+                .stream()
+                .map(entry -> {
+                    MemberAccessor accessor = entry.getValue();
+                    return ConfigUtils.extractCollectionGenericTypeParameter("solutionClass",
+                            solutionDescriptor.getSolutionClass(), accessor.getType(), accessor.getGenericType(),
+                            ProblemFactCollectionProperty.class, entry.getKey());
+                });
+        Set<Class> allAcceptedClassSet = concat(concat(entityClassStream, factClassStream), factCollectionClassStream)
+                .collect(Collectors.toSet());
+        boolean hasMatchingClass = allAcceptedClassSet.stream()
+                .anyMatch(fromClass::isAssignableFrom);
+        if (!hasMatchingClass) {
+            throw new IllegalArgumentException("Cannot build a constraint from class (" + fromClass.getCanonicalName()
+                    + ") as it is neither the same as, nor a superclass or superinterface of one of planning entities "
+                    + "or problem facts (" + allAcceptedClassSet + ").");
         }
     }
 

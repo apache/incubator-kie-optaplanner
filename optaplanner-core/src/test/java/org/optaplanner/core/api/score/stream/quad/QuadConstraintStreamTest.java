@@ -27,6 +27,7 @@ import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.Objects;
 
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.TestTemplate;
 import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
@@ -152,6 +153,21 @@ public class QuadConstraintStreamTest extends AbstractConstraintStreamTest {
     // ************************************************************************
     // If (not) exists
     // ************************************************************************
+
+    @TestTemplate
+    public void ifExists_unknownClass() {
+        assumeDrools();
+        Assertions.assertThatThrownBy(() -> buildScoreDirector((factory) -> {
+            return factory.from(TestdataLavishEntity.class)
+                    .join(TestdataLavishEntityGroup.class, equal(TestdataLavishEntity::getEntityGroup, identity()))
+                    .join(TestdataLavishValue.class, equal((entity, group) -> entity.getValue(), identity()))
+                    .join(TestdataLavishEntity.class, equal((entity, group, value) -> group,
+                            TestdataLavishEntity::getEntityGroup))
+                    .ifExists(Integer.class)
+                    .penalize(TEST_CONSTRAINT_NAME, SimpleScore.ONE);
+        })).isInstanceOf(IllegalArgumentException.class);
+
+    }
 
     @TestTemplate
     public void ifExists_0Joiner0Filter() {
@@ -289,6 +305,21 @@ public class QuadConstraintStreamTest extends AbstractConstraintStreamTest {
         solution.getEntityGroupList().remove(entityGroup);
         scoreDirector.afterProblemFactRemoved(entityGroup);
         assertScore(scoreDirector);
+    }
+
+    @TestTemplate
+    public void ifNotExists_unknownClass() {
+        assumeDrools();
+        Assertions.assertThatThrownBy(() -> buildScoreDirector((factory) -> {
+            return factory.from(TestdataLavishEntity.class)
+                    .join(TestdataLavishEntityGroup.class, equal(TestdataLavishEntity::getEntityGroup, identity()))
+                    .join(TestdataLavishValue.class, equal((entity, group) -> entity.getValue(), identity()))
+                    .join(TestdataLavishEntity.class, equal((entity, group, value) -> group,
+                            TestdataLavishEntity::getEntityGroup))
+                    .ifNotExists(Integer.class)
+                    .penalize(TEST_CONSTRAINT_NAME, SimpleScore.ONE);
+        })).isInstanceOf(IllegalArgumentException.class);
+
     }
 
     @TestTemplate

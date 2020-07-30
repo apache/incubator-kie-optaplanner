@@ -16,6 +16,8 @@
 
 package org.optaplanner.core.impl.score.stream.drools;
 
+import static org.drools.model.DSL.globalOf;
+
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -35,8 +37,6 @@ import org.optaplanner.core.impl.score.stream.ConstraintSessionFactory;
 import org.optaplanner.core.impl.score.stream.InnerConstraintFactory;
 import org.optaplanner.core.impl.score.stream.drools.common.ConstraintGraph;
 import org.optaplanner.core.impl.score.stream.drools.uni.DroolsFromUniConstraintStream;
-
-import static org.drools.model.DSL.globalOf;
 
 public final class DroolsConstraintFactory<Solution_> extends InnerConstraintFactory<Solution_> {
 
@@ -58,6 +58,7 @@ public final class DroolsConstraintFactory<Solution_> extends InnerConstraintFac
 
     @Override
     public <A> UniConstraintStream<A> fromUnfiltered(Class<A> fromClass) {
+        assertValidFromClass(fromClass);
         return new DroolsFromUniConstraintStream<>(this, fromClass);
     }
 
