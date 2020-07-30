@@ -16,11 +16,11 @@
 
 package org.optaplanner.core.impl.score.stream;
 
+import java.util.List;
 import java.util.Set;
 import java.util.function.BiPredicate;
 import java.util.function.Function;
 import java.util.function.Predicate;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.optaplanner.core.api.domain.lookup.PlanningId;
@@ -36,6 +36,8 @@ import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.core.impl.score.stream.bi.FilteringBiJoiner;
 
+import static java.util.stream.Collectors.toList;
+import static java.util.stream.Collectors.toSet;
 import static java.util.stream.Stream.concat;
 import static org.optaplanner.core.api.score.stream.Joiners.lessThan;
 
@@ -96,15 +98,19 @@ public abstract class InnerConstraintFactory<Solution_> implements ConstraintFac
                             ProblemFactCollectionProperty.class, entry.getKey());
                 });
         Set<Class> allAcceptedClassSet = concat(concat(entityClassStream, factClassStream), factCollectionClassStream)
-                .collect(Collectors.toSet());
+                .collect(toSet());
         boolean hasMatchingClass = allAcceptedClassSet.stream()
                 .anyMatch(fromClass::isAssignableFrom);
         if (!hasMatchingClass) {
+            List<String> canonicalClassNameList = allAcceptedClassSet.stream()
+                    .map(Class::getCanonicalName)
+                    .sorted()
+                    .collect(toList());
             throw new IllegalArgumentException("Cannot use class (" + fromClass.getCanonicalName()
                     + ") in a constraint stream as it is neither the same as, nor a superclass or superinterface of "
                     + "one of planning entities or problem facts.\n"
                     + "Ensure that all from(), join(), ifExists() and ifNotExists() building blocks only reference "
-                    + "classes assignable from planning entities or problem facts (" + allAcceptedClassSet + ") "
+                    + "classes assignable from planning entities or problem facts (" + canonicalClassNameList + ") "
                     + "annotated on the planning solution (" + solutionDescriptor.getSolutionClass().getCanonicalName()
                     + ").");
         }
