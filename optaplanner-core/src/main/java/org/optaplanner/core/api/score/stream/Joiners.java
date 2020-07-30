@@ -31,6 +31,7 @@ import org.optaplanner.core.api.score.stream.penta.PentaJoiner;
 import org.optaplanner.core.api.score.stream.quad.QuadJoiner;
 import org.optaplanner.core.api.score.stream.tri.TriJoiner;
 import org.optaplanner.core.api.score.stream.uni.UniConstraintStream;
+import org.optaplanner.core.impl.score.stream.bi.AbstractBiJoiner;
 import org.optaplanner.core.impl.score.stream.bi.FilteringBiJoiner;
 import org.optaplanner.core.impl.score.stream.bi.SingleBiJoiner;
 import org.optaplanner.core.impl.score.stream.common.JoinerType;
@@ -151,6 +152,23 @@ public final class Joiners {
     // join(..., planningVariableContainsCached(Talk::getPeriod, (Period a, Period b) -> a.overlaps(b)))
     // get the period value range, does a cartesian product on it, so it maps every period to an overlapping periodList
     // then keep an index from every period to all talks in an overlapping period (possible the same period)
+    public static <A, B, Property_ extends Comparable<Property_>> BiJoiner<A, B> overlapsOrMeets(
+            Function<A, Property_> leftStartMapping,
+            Function<A, Property_> leftEndMapping,
+            Function<B, Property_> rightStartMapping,
+            Function<B, Property_> rightEndMapping) {
+        return AbstractBiJoiner.merge(lessThanOrEqual(leftStartMapping, rightEndMapping),
+                greaterThanOrEqual(leftEndMapping, rightStartMapping));
+    }
+
+    public static <A, B, Property_ extends Comparable<Property_>> BiJoiner<A, B> overlaps(
+            Function<A, Property_> leftStartMapping,
+            Function<A, Property_> leftEndMapping,
+            Function<B, Property_> rightStartMapping,
+            Function<B, Property_> rightEndMapping) {
+        return AbstractBiJoiner.merge(lessThan(leftStartMapping, rightEndMapping),
+                greaterThan(leftEndMapping, rightStartMapping));
+    }
 
     // ************************************************************************
     // TriJoiner
