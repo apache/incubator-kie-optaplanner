@@ -21,7 +21,6 @@ public class PatientAdmissionMoveConstraintProvider implements ConstraintProvide
         return constraintFactory.from(BedDesignation.class)
                 .filter(bd -> bd.getPatientGender() == Gender.FEMALE
                         && bd.getRoomGenderLimitation() == GenderLimitation.MALE_ONLY)
-                .penalize("Gender limitation: Female in a male only room", HardMediumSoftScore.ofHard(50),
-                          BedDesignation::getAdmissionPartNightCount);
+                .penalize("femaleInMaleRoom", HardMediumSoftScore.ofHard(50), BedDesignation::getAdmissionPartNightCount);
     }
 }
