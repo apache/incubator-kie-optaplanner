@@ -16,9 +16,6 @@
 
 package org.optaplanner.core.impl.score.stream;
 
-import static java.util.stream.Stream.concat;
-import static org.optaplanner.core.api.score.stream.Joiners.lessThan;
-
 import java.util.Set;
 import java.util.function.BiPredicate;
 import java.util.function.Function;
@@ -38,6 +35,9 @@ import org.optaplanner.core.impl.domain.common.accessor.MemberAccessor;
 import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.core.impl.score.stream.bi.FilteringBiJoiner;
+
+import static java.util.stream.Stream.concat;
+import static org.optaplanner.core.api.score.stream.Joiners.lessThan;
 
 public abstract class InnerConstraintFactory<Solution_> implements ConstraintFactory {
 
@@ -100,9 +100,13 @@ public abstract class InnerConstraintFactory<Solution_> implements ConstraintFac
         boolean hasMatchingClass = allAcceptedClassSet.stream()
                 .anyMatch(fromClass::isAssignableFrom);
         if (!hasMatchingClass) {
-            throw new IllegalArgumentException("Cannot build a constraint from class (" + fromClass.getCanonicalName()
-                    + ") as it is neither the same as, nor a superclass or superinterface of one of planning entities "
-                    + "or problem facts (" + allAcceptedClassSet + ").");
+            throw new IllegalArgumentException("Cannot use class (" + fromClass.getCanonicalName()
+                    + ") in a constraint stream as it is neither the same as, nor a superclass or superinterface of "
+                    + "one of planning entities or problem facts.\n"
+                    + "Ensure that all from(), join(), ifExists() and ifNotExists() building blocks only reference "
+                    + "classes assignable from planning entities or problem facts (" + allAcceptedClassSet + ") "
+                    + "annotated on the planning solution (" + solutionDescriptor.getSolutionClass().getCanonicalName()
+                    + ").");
         }
     }
 
