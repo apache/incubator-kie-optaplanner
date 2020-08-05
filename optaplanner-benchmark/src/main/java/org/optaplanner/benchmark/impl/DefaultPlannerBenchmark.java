@@ -229,13 +229,15 @@ public class DefaultPlannerBenchmark implements PlannerBenchmark {
             } catch (InterruptedException e) {
                 Thread.currentThread().interrupt();
                 subSingleBenchmarkRunner = futureMap.get(future);
-                singleBenchmarkRunnerExceptionLogger.error("The warm up singleBenchmarkRunner ({}) with random seed ({}) was interrupted.",
+                singleBenchmarkRunnerExceptionLogger.error(
+                        "The warm up singleBenchmarkRunner ({}) with random seed ({}) was interrupted.",
                         subSingleBenchmarkRunner, subSingleBenchmarkRunner.getRandomSeed(), e);
                 failureThrowable = e;
             } catch (ExecutionException e) {
                 Throwable cause = e.getCause();
                 subSingleBenchmarkRunner = futureMap.get(future);
-                singleBenchmarkRunnerExceptionLogger.warn("The warm up singleBenchmarkRunner ({}) with random seed ({}) failed.",
+                singleBenchmarkRunnerExceptionLogger.warn(
+                        "The warm up singleBenchmarkRunner ({}) with random seed ({}) failed.",
                         subSingleBenchmarkRunner, subSingleBenchmarkRunner.getRandomSeed(), cause);
                 failureThrowable = cause;
             }
@@ -281,7 +283,8 @@ public class DefaultPlannerBenchmark implements PlannerBenchmark {
                 subSingleBenchmarkRunner = future.get();
             } catch (InterruptedException e) {
                 Thread.currentThread().interrupt();
-                singleBenchmarkRunnerExceptionLogger.error("The subSingleBenchmarkRunner ({}) with random seed ({}) was interrupted.",
+                singleBenchmarkRunnerExceptionLogger.error(
+                        "The subSingleBenchmarkRunner ({}) with random seed ({}) was interrupted.",
                         subSingleBenchmarkRunner, subSingleBenchmarkRunner.getRandomSeed(), e);
                 failureThrowable = e;
             } catch (ExecutionException e) {
