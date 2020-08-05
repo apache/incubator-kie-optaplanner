@@ -93,9 +93,7 @@ public final class JaxbIO<T> {
     public T read(Reader reader) {
         Objects.requireNonNull(reader);
         try {
-            @SuppressWarnings("unchecked")
-            final T object = (T) createUnmarshaller().unmarshal(reader);
-            return object;
+            return (T) createUnmarshaller().unmarshal(reader);
         } catch (JAXBException jaxbException) {
             String errMessage = String.format(ERR_MSG_READ, rootClass.getName());
             throw new OptaPlannerXmlSerializationException(errMessage, jaxbException);
@@ -126,9 +124,7 @@ public final class JaxbIO<T> {
         }
 
         try {
-            @SuppressWarnings("unchecked")
-            final T object = (T) unmarshaller.unmarshal(reader);
-            return object;
+            return (T) unmarshaller.unmarshal(reader);
         } catch (JAXBException jaxbException) {
             String errMessage = String.format(ERR_MSG_READ, rootClass.getName());
             if (validationEventHandler.hasEvents()) {
@@ -193,9 +189,7 @@ public final class JaxbIO<T> {
         }
 
         try {
-            @SuppressWarnings("unchecked")
-            final T object = (T) unmarshallerHandler.getResult();
-            return object;
+            return (T) unmarshallerHandler.getResult();
         } catch (JAXBException e) {
             throw new OptaPlannerXmlSerializationException(errMessage, e);
         }
