@@ -102,13 +102,13 @@ public final class JaxbIO<T> {
 
     public T readAndValidate(Reader reader, String schemaResource) {
         Objects.requireNonNull(reader);
-        Objects.requireNonNull(schemaResource);
+        String nonNullSchemaResource = Objects.requireNonNull(schemaResource);
         SchemaFactory schemaFactory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
         Schema schema;
         try {
-            schema = schemaFactory.newSchema(JaxbIO.class.getResource(schemaResource));
+            schema = schemaFactory.newSchema(JaxbIO.class.getResource(nonNullSchemaResource));
         } catch (SAXException e) {
-            throw new IllegalArgumentException("Unable to read input schema resource (" + schemaResource + ")", e);
+            throw new IllegalArgumentException("Unable to read input schema resource (" + nonNullSchemaResource + ")", e);
         }
 
         Unmarshaller unmarshaller = createUnmarshaller();
