@@ -49,6 +49,7 @@ public class SolverBenchmarkResult {
 
     private Integer subSingleCount = null;
 
+    @XmlElement(namespace = SolverConfig.XML_NAMESPACE)
     private SolverConfig solverConfig = null;
     @XmlTransient // Restored through BenchmarkResultIO
     private ScoreDefinition scoreDefinition = null;

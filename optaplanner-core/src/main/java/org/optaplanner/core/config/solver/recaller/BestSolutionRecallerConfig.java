@@ -16,11 +16,14 @@
 
 package org.optaplanner.core.config.solver.recaller;
 
+import javax.xml.bind.annotation.XmlTransient;
+
 import org.optaplanner.core.config.AbstractConfig;
 import org.optaplanner.core.config.solver.EnvironmentMode;
 import org.optaplanner.core.impl.solver.recaller.BestSolutionRecaller;
 
-// Currently not yet supported as being nested, so no XStreamAlias
+// Currently not yet supported as being nested, so no XML (de)serialization.
+@XmlTransient // To omit the type in XSD generation.
 public class BestSolutionRecallerConfig extends AbstractConfig<BestSolutionRecallerConfig> {
 
     // ************************************************************************

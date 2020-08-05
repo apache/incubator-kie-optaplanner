@@ -31,7 +31,7 @@ public class SolverBenchmarkConfig<Solution_> extends AbstractConfig<SolverBench
 
     private String name = null;
 
-    @XmlElement(name = "solver")
+    @XmlElement(name = SolverConfig.XML_ELEMENT_NAME, namespace = SolverConfig.XML_NAMESPACE)
     private SolverConfig solverConfig = null;
 
     @XmlElement(name = "problemBenchmarks")

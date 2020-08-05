@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<solver>
+<?xml version="1.0" encoding="utf-8"?><solver>
   <environmentMode>FULL_ASSERT</environmentMode>
   <moveThreadCount>AUTO</moveThreadCount>
   <solutionClass>org.optaplanner.core.impl.testdata.domain.TestdataSolution</solutionClass>

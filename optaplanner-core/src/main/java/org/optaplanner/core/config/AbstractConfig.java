@@ -38,7 +38,7 @@ import org.optaplanner.core.impl.domain.variable.descriptor.GenuineVariableDescr
  *
  * @param <C> the same class as the implementing subclass
  */
-@XmlAccessorType(XmlAccessType.FIELD)
+@XmlAccessorType(XmlAccessType.FIELD) // Applies to all superclasses.
 public abstract class AbstractConfig<C extends AbstractConfig> {
 
     // ************************************************************************
