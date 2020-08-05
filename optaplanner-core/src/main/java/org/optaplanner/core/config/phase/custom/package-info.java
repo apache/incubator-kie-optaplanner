@@ -14,23 +14,15 @@
  * limitations under the License.
  */
 
-package org.optaplanner.core.impl.io;
+/**
+ * The {@link org.optaplanner.core.api.score.stream.ConstraintStream} API:
+ * a way to define constraints for {@link org.optaplanner.core.api.score.Score} calculation.
+ */
+@javax.xml.bind.annotation.XmlSchema(
+        namespace = SolverConfig.XML_NAMESPACE,
+        elementFormDefault = XmlNsForm.QUALIFIED)
+package org.optaplanner.core.config.phase.custom;
 
-public class XmlUnmarshallingException extends RuntimeException {
+import javax.xml.bind.annotation.XmlNsForm;
 
-    public XmlUnmarshallingException() {
-        super();
-    }
-
-    public XmlUnmarshallingException(String message) {
-        super(message);
-    }
-
-    public XmlUnmarshallingException(String message, Throwable cause) {
-        super(message, cause);
-    }
-
-    public XmlUnmarshallingException(Throwable cause) {
-        super(cause);
-    }
-}
+import org.optaplanner.core.config.solver.SolverConfig;

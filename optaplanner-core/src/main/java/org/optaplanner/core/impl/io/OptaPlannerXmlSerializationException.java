@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,17 +14,23 @@
  * limitations under the License.
  */
 
-/**
- * Classes which represent the XML Solver configuration of OptaPlanner.
- * <p>
- * The XML Solver configuration is backwards compatible for all elements,
- * except for elements that require the use of non public API classes.
- */
-@javax.xml.bind.annotation.XmlSchema(
-        namespace = SolverConfig.XML_NAMESPACE,
-        elementFormDefault = XmlNsForm.QUALIFIED)
-package org.optaplanner.core.config;
+package org.optaplanner.core.impl.io;
 
-import javax.xml.bind.annotation.XmlNsForm;
+public class OptaPlannerXmlSerializationException extends RuntimeException {
 
-import org.optaplanner.core.config.solver.SolverConfig;
+    public OptaPlannerXmlSerializationException() {
+        super();
+    }
+
+    public OptaPlannerXmlSerializationException(String message) {
+        super(message);
+    }
+
+    public OptaPlannerXmlSerializationException(String message, Throwable cause) {
+        super(message, cause);
+    }
+
+    public OptaPlannerXmlSerializationException(Throwable cause) {
+        super(cause);
+    }
+}

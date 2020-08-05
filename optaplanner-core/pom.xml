@@ -140,4 +140,41 @@
     </plugins>
   </build>
 
+  <profiles>
+    <profile>
+      <id>generate-xml-schema</id>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.codehaus.mojo</groupId>
+            <artifactId>jaxb2-maven-plugin</artifactId>
+            <executions>
+              <execution>
+                <id>schemagen</id>
+                <goals>
+                  <goal>schemagen</goal>
+                </goals>
+              </execution>
+            </executions>
+            <configuration>
+              <clearOutputDir>true</clearOutputDir>
+              <createJavaDocAnnotations>false</createJavaDocAnnotations>
+              <generateEpisode>false</generateEpisode>
+              <outputDirectory>${project.build.outputDirectory}</outputDirectory>
+              <sources>
+                <source>${project.build.sourceDirectory}/org/optaplanner/core/config/solver</source>
+              </sources>
+              <transformSchemas>
+                <transformSchema>
+                  <!-- Keep in sync with Namespace.SOLVER -->
+                  <uri>https://www.optaplanner.org/xsd/solver</uri>
+                  <toFile>solver.xsd</toFile>
+                </transformSchema>
+              </transformSchemas>
+            </configuration>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+  </profiles>
 </project>

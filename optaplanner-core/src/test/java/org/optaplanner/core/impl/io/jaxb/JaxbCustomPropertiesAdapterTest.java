@@ -32,7 +32,7 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 import org.junit.jupiter.api.Test;
 
-public class JaxbCustomPropertiesAdapterTest {
+class JaxbCustomPropertiesAdapterTest {
 
     private final Unmarshaller unmarshaller;
 
@@ -42,22 +42,23 @@ public class JaxbCustomPropertiesAdapterTest {
     }
 
     @Test
-    public void readCustomProperties() throws JAXBException {
+    void readCustomProperties() throws JAXBException {
         String xmlFragment = "<testBean>"
                 + "  <customProperties>"
-                + "    <property name=\"firstKey\" value=\"firstValue\"/>"
-                + "    <property name=\"secondKey\" value=\"secondValue\"/>"
+                + "    <property xmlns=\"https://www.optaplanner.org/xsd/solver\" name=\"firstKey\" value=\"firstValue\"/>"
+                + "    <property xmlns=\"https://www.optaplanner.org/xsd/solver\" name=\"secondKey\" value=\"secondValue\"/>"
                 + "  </customProperties>"
                 + "</testBean>";
         Reader stringReader = new StringReader(xmlFragment);
         TestBean testBean = (TestBean) unmarshaller.unmarshal(stringReader);
-        assertThat(testBean.customProperties).hasSize(2);
-        assertThat(testBean.customProperties.get("firstKey")).isEqualTo("firstValue");
-        assertThat(testBean.customProperties.get("secondKey")).isEqualTo("secondValue");
+        assertThat(testBean.customProperties)
+                .hasSize(2)
+                .containsEntry("firstKey", "firstValue")
+                .containsEntry("secondKey", "secondValue");
     }
 
     @Test
-    public void nullValues() {
+    void nullValues() {
         JaxbCustomPropertiesAdapter jaxbCustomPropertiesAdapter = new JaxbCustomPropertiesAdapter();
         assertThat(jaxbCustomPropertiesAdapter.marshal(null)).isNull();
         assertThat(jaxbCustomPropertiesAdapter.unmarshal(null)).isNull();

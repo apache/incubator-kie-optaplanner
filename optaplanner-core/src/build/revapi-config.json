@@ -8428,6 +8428,17 @@
           "classSimpleName": "BestSolutionRecallerConfig",
           "elementKind": "class",
           "justification": "The BestSolutionRecallerConfig has moved to BestSolutionRecallerFactory as it was not a part of the XML model."
+        },
+        {
+          "code": "java.annotation.added",
+          "old": "class org.optaplanner.core.config.solver.recaller.BestSolutionRecallerConfig",
+          "new": "class org.optaplanner.core.config.solver.recaller.BestSolutionRecallerConfig",
+          "annotationType": "javax.xml.bind.annotation.XmlTransient",
+          "annotation": "@javax.xml.bind.annotation.XmlTransient",
+          "package": "org.optaplanner.core.config.solver.recaller",
+          "classSimpleName": "BestSolutionRecallerConfig",
+          "elementKind": "class",
+          "justification": "Omit the class in XmlSchema generation."
         }
       ]
     }
