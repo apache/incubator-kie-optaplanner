@@ -14,7 +14,7 @@ jobs:
       with:
         parent-dependencies: 'drools@7.x:master'
         child-dependencies: 'jbpm@7.x:master'
-        build-command: 'mvn -e clean install -nsu -Prun-code-coverage,wildfly -Dfull  -Dintegration-tests=true -Dmaven.test.failure.ignore=true -DjvmArgs="-Xms1g -Xmx4g" | mvn -nsu generate-resources -Psonarcloud-analysis -DjvmArgs="-Xms1g -Xmx4g"'
+        build-command: 'mvn -e clean install -nsu -Prun-code-coverage,wildfly -Dfull  -Dintegration-tests=true -Dmaven.test.failure.ignore=true -DjvmArgs="-Xms1g -Xmx4g"'
         build-command-upstream: "mvn -e clean install -DskipTests -Dgwt.compiler.skip=true -Dgwt.skipCompilation=true -Denforcer.skip=true -Dcheckstyle.skip=true -Dspotbugs.skip=true -Drevapi.skip=true"
         workflow-file-name: "pull_request.yml"
       env:
@@ -30,7 +30,7 @@ jobs:
       with:
         parent-dependencies: 'drools@7.x:master'
         child-dependencies: 'jbpm@7.x:master'
-        build-command: 'mvn -e clean install -nsu -Prun-code-coverage,wildfly -Dfull  -Dintegration-tests=true -Dmaven.test.failure.ignore=true -DjvmArgs="-Xms1g -Xmx4g" | mvn -nsu generate-resources -Psonarcloud-analysis -DjvmArgs="-Xms1g -Xmx4g"'
+        build-command: 'mvn -e clean install -nsu -Prun-code-coverage,wildfly -Dfull  -Dintegration-tests=true -Dmaven.test.failure.ignore=true -DjvmArgs="-Xms1g -Xmx4g"'
         build-command-upstream: "mvn -e clean install -DskipTests -Dgwt.compiler.skip=true -Dgwt.skipCompilation=true -Denforcer.skip=true -Dcheckstyle.skip=true -Dspotbugs.skip=true -Drevapi.skip=true"
         workflow-file-name: "pull_request.yml"
       env:
