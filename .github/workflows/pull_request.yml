@@ -1,18 +1,39 @@
+name: Build Chain
+
 on: [ workflow_dispatch ]
 
 jobs:
-  build-chain:
+  build-chain-openjdk8:
     runs-on: ubuntu-latest
-    name: Build Pull Request
+    name: Pull Request openjdk8
     steps:
     - uses: actions/checkout@v2
     - name: Build Chain
       id: build-chain
-      uses: kiegroup/github-action-build-chain@master
+      uses: kiegroup/github-action-build-chain@openjdk8
       with:
         parent-dependencies: 'drools@7.x:master'
         child-dependencies: 'jbpm@7.x:master'
-        build-command: 'mvn -e clean install -nsu -Prun-code-coverage,wildfly -Dfull  -Dintegration-tests=true -Dmaven.test.failure.ignore=true -DjvmArgs="-Xms1g -Xmx4g" | mvn -nsu generate-resources -Psonarcloud-analysis -DjvmArgs="-Xms1g -Xmx4g"'
+        build-command: 'mvn -e clean install -nsu -Prun-code-coverage,wildfly -Dfull  -Dintegration-tests=true -Dmaven.test.failure.ignore=true -DjvmArgs="-Xms1g -Xmx4g"'
         build-command-upstream: "mvn -e clean install -DskipTests -Dgwt.compiler.skip=true -Dgwt.skipCompilation=true -Denforcer.skip=true -Dcheckstyle.skip=true -Dspotbugs.skip=true -Drevapi.skip=true"
+        workflow-file-name: "pull_request.yml"
       env:
           GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
+  build-chain-openjdk11:
+    runs-on: ubuntu-latest
+    name: Pull Request openjdk11
+    steps:
+    - uses: actions/checkout@v2
+    - name: Build Chain
+      id: build-chain
+      uses: kiegroup/github-action-build-chain@openjdk11
+      with:
+        parent-dependencies: 'drools@7.x:master'
+        child-dependencies: 'jbpm@7.x:master'
+        build-command: 'mvn -e clean install -nsu -Prun-code-coverage,wildfly -Dfull  -Dintegration-tests=true -Dmaven.test.failure.ignore=true -DjvmArgs="-Xms1g -Xmx4g"'
+        build-command-upstream: "mvn -e clean install -DskipTests -Dgwt.compiler.skip=true -Dgwt.skipCompilation=true -Denforcer.skip=true -Dcheckstyle.skip=true -Dspotbugs.skip=true -Drevapi.skip=true"
+        workflow-file-name: "pull_request.yml"
+      env:
+          GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
+        
+
