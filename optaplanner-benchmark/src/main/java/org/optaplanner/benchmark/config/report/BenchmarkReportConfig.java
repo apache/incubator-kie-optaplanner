@@ -20,6 +20,8 @@ import java.time.ZoneId;
 import java.util.Comparator;
 import java.util.Locale;
 
+import javax.xml.bind.annotation.XmlTransient;
+
 import org.optaplanner.benchmark.config.ranking.SolverRankingType;
 import org.optaplanner.benchmark.impl.ranking.SolverRankingWeightFactory;
 import org.optaplanner.benchmark.impl.ranking.TotalRankSolverRankingWeightFactory;
@@ -33,6 +35,8 @@ import org.optaplanner.core.config.util.ConfigUtils;
 
 public class BenchmarkReportConfig extends AbstractConfig<BenchmarkReportConfig> {
 
+    // TODO: will need an adapter
+    @XmlTransient
     private Locale locale = null;
     private SolverRankingType solverRankingType = null;
     private Class<? extends Comparator<SolverBenchmarkResult>> solverRankingComparatorClass = null;

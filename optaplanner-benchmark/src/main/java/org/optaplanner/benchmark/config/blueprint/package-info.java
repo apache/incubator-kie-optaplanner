@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,21 +14,11 @@
  * limitations under the License.
  */
 
-/**
- * Classes which represent the XML Benchmark configuration of OptaPlanner Benchmark.
- * <p>
- * The XML Benchmark configuration is backwards compatible for all elements,
- * except for elements that require the use of non public API classes.
- */
 @javax.xml.bind.annotation.XmlSchema(
         namespace = PlannerBenchmarkConfig.XML_NAMESPACE,
-        elementFormDefault = XmlNsForm.QUALIFIED,
-        xmlns = {
-                @XmlNs(prefix = SolverConfig.XML_ELEMENT_NAME, namespaceURI = SolverConfig.XML_NAMESPACE)
-        })
-package org.optaplanner.benchmark.config;
+        elementFormDefault = XmlNsForm.QUALIFIED)
+package org.optaplanner.benchmark.config.blueprint;
 
-import javax.xml.bind.annotation.XmlNs;
 import javax.xml.bind.annotation.XmlNsForm;
 
-import org.optaplanner.core.config.solver.SolverConfig;
+import org.optaplanner.benchmark.config.PlannerBenchmarkConfig;

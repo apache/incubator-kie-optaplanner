@@ -70,8 +70,11 @@ import freemarker.template.TemplateException;
  * To build a {@link PlannerBenchmarkFactory} with it, use {@link PlannerBenchmarkFactory#create(PlannerBenchmarkConfig)}.
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlRootElement(name = "plannerBenchmark")
+@XmlRootElement(name = PlannerBenchmarkConfig.XML_ELEMENT_NAME)
 public class PlannerBenchmarkConfig {
+
+    public static final String XML_ELEMENT_NAME = "plannerBenchmark";
+    public static final String XML_NAMESPACE = "https://www.optaplanner.org/xsd/benchmark";
 
     // ************************************************************************
     // Static creation methods: SolverConfig

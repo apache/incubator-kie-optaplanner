@@ -166,7 +166,6 @@
               </sources>
               <transformSchemas>
                 <transformSchema>
-                  <!-- Keep in sync with Namespace.SOLVER -->
                   <uri>https://www.optaplanner.org/xsd/solver</uri>
                   <toFile>solver.xsd</toFile>
                 </transformSchema>
