@@ -24,7 +24,7 @@
   <url>https://www.optaplanner.org</url>
 
   <properties>
-    <version.io.quarkus>1.6.0.Final</version.io.quarkus>
+    <version.io.quarkus>1.7.0.Final</version.io.quarkus>
 
     <!-- TODO remove if https://issues.redhat.com/browse/PLANNER-2005 is fixed for 8.x -->
     <!-- TODO Extending kie-parent 7 is extremely dangerous and messy because it's not aligned to quarkus -->
