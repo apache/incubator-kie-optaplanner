@@ -54,7 +54,8 @@ public class PatientAdmissionScheduleConstraintProviderTest {
 
     private final ConstraintVerifier<PatientAdmissionScheduleConstraintProvider, PatientAdmissionSchedule> constraintVerifier =
             ConstraintVerifier
-                    .build(new PatientAdmissionScheduleConstraintProvider(), PatientAdmissionSchedule.class, BedDesignation.class);
+                    .build(new PatientAdmissionScheduleConstraintProvider(), PatientAdmissionSchedule.class,
+                            BedDesignation.class);
 
     private static Stream genderLimitationsProvider() {
         return Stream.of(

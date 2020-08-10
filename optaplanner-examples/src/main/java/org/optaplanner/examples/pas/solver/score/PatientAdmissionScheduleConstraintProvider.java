@@ -16,6 +16,11 @@
 
 package org.optaplanner.examples.pas.solver.score;
 
+import static org.optaplanner.core.api.score.stream.Joiners.equal;
+import static org.optaplanner.core.api.score.stream.Joiners.filtering;
+import static org.optaplanner.core.api.score.stream.Joiners.greaterThan;
+import static org.optaplanner.core.api.score.stream.Joiners.lessThan;
+
 import java.util.function.Function;
 
 import org.optaplanner.core.api.score.buildin.hardmediumsoft.HardMediumSoftScore;
@@ -31,11 +36,6 @@ import org.optaplanner.examples.pas.domain.PreferredPatientEquipment;
 import org.optaplanner.examples.pas.domain.RequiredPatientEquipment;
 import org.optaplanner.examples.pas.domain.RoomEquipment;
 import org.optaplanner.examples.pas.domain.RoomSpecialism;
-
-import static org.optaplanner.core.api.score.stream.Joiners.equal;
-import static org.optaplanner.core.api.score.stream.Joiners.filtering;
-import static org.optaplanner.core.api.score.stream.Joiners.greaterThan;
-import static org.optaplanner.core.api.score.stream.Joiners.lessThan;
 
 /*
  * This is constraints for Hospital Bed Planning
