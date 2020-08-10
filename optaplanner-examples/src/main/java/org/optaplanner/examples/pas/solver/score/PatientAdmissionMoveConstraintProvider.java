@@ -52,11 +52,11 @@ public class PatientAdmissionMoveConstraintProvider implements ConstraintProvide
 
     public Constraint sameBedInSameNightConstraint(ConstraintFactory constraintFactory) {
         return constraintFactory.fromUniquePair(BedDesignation.class,
-                        equal(BedDesignation::getBed))
-                .filter((left,right) -> left.getAdmissionPart().calculateSameNightCount(right.getAdmissionPart()) > 0
-                && left.getBed()!=null && right.getBed()!=null)
+                equal(BedDesignation::getBed))
+                .filter((left, right) -> left.getBed() != null
+                        && left.getAdmissionPart().calculateSameNightCount(right.getAdmissionPart()) > 0)
                 .penalize("sameBedInSameNight", HardMediumSoftScore.ofHard(1000),
-                          (left,right) -> left.getAdmissionPart().calculateSameNightCount(right.getAdmissionPart()));
+                        (left, right) -> left.getAdmissionPart().calculateSameNightCount(right.getAdmissionPart()));
     }
 
     public Constraint femaleInMaleRoomConstraint(ConstraintFactory constraintFactory) {
@@ -121,7 +121,7 @@ public class PatientAdmissionMoveConstraintProvider implements ConstraintProvide
 
     //Medium
     public Constraint assignEveryPatientToABedConstraint(ConstraintFactory constraintFactory) {
-        return constraintFactory.fromUnfiltered(BedDesignation.class)
+        return constraintFactory.from(BedDesignation.class)
                 .filter(bd -> bd.getBed() == null)
                 .penalize("assignEveryPatientToABed", HardMediumSoftScore.ONE_MEDIUM,
                         BedDesignation::getAdmissionPartNightCount);

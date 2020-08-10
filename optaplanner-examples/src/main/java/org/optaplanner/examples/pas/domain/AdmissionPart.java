@@ -27,6 +27,14 @@ public class AdmissionPart extends AbstractPersistable {
     private Night firstNight;
     private Night lastNight;
     private Specialism specialism;
+    public AdmissionPart() {
+    }
+    public AdmissionPart(Patient patient, Night firstNight, Night lastNight, Specialism specialism) {
+        this.patient = patient;
+        this.firstNight = firstNight;
+        this.lastNight = lastNight;
+        this.specialism = specialism;
+    }
 
     public Patient getPatient() {
         return patient;

@@ -31,6 +31,20 @@ public class BedDesignation extends AbstractPersistable {
     private AdmissionPart admissionPart;
     private Bed bed;
 
+    public BedDesignation(long id, AdmissionPart admissionPart, Bed bed) {
+        super(id);
+        this.admissionPart = admissionPart;
+        this.bed = bed;
+    }
+
+    public BedDesignation() {
+    }
+
+    public BedDesignation(AdmissionPart admissionPart, Bed bed) {
+        this.admissionPart = admissionPart;
+        this.bed = bed;
+    }
+
     public AdmissionPart getAdmissionPart() {
         return admissionPart;
     }
@@ -116,51 +130,6 @@ public class BedDesignation extends AbstractPersistable {
     @Override
     public String toString() {
         return admissionPart.toString();
-    }
-
-    //Testing builder
-
-    public BedDesignation build(){
-        admissionPart = new AdmissionPart();
-        bed = new Bed();
-        return this;
-    }
-
-    //Testing methods
-
-    public BedDesignation withNights(int first, int last) {
-        Night firstNight = new Night();
-        firstNight.setIndex(first);
-        admissionPart.setFirstNight(firstNight);
-        Night lastNight = new Night();
-        lastNight.setIndex(last);
-        admissionPart.setLastNight(lastNight);
-        return this;
-    }
-
-    public BedDesignation withId(Long id) {
-        this.id = id;
-        return this;
-    }
-
-    public BedDesignation withPatient(Patient patient) {
-        this.admissionPart.setPatient(patient);
-        return this;
-    }
-
-    public BedDesignation withBed(Bed bed) {
-        this.bed = bed;
-        return this;
-    }
-
-    public BedDesignation withRoom(Room room) {
-        this.bed.setRoom(room);
-        return this;
-    }
-
-    public BedDesignation withSpecialism(Specialism spec1) {
-        this.admissionPart.setSpecialism(spec1);
-        return this;
     }
 
 }

@@ -9,6 +9,7 @@ import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.optaplanner.core.api.score.stream.Constraint;
 import org.optaplanner.core.api.score.stream.ConstraintFactory;
+import org.optaplanner.examples.pas.domain.AdmissionPart;
 import org.optaplanner.examples.pas.domain.Bed;
 import org.optaplanner.examples.pas.domain.BedDesignation;
 import org.optaplanner.examples.pas.domain.Department;
@@ -16,6 +17,7 @@ import org.optaplanner.examples.pas.domain.DepartmentSpecialism;
 import org.optaplanner.examples.pas.domain.Equipment;
 import org.optaplanner.examples.pas.domain.Gender;
 import org.optaplanner.examples.pas.domain.GenderLimitation;
+import org.optaplanner.examples.pas.domain.Night;
 import org.optaplanner.examples.pas.domain.Patient;
 import org.optaplanner.examples.pas.domain.PatientAdmissionSchedule;
 import org.optaplanner.examples.pas.domain.PreferredPatientEquipment;
@@ -28,6 +30,12 @@ import org.optaplanner.examples.pas.solver.score.PatientAdmissionMoveConstraintP
 import org.optaplanner.test.api.score.stream.ConstraintVerifier;
 
 public class PatientAdmissionMoveConstraintProviderTest {
+
+    private static final Night ZERO_NIGHT = new Night(0);
+    private static final Night FIVE_NIGHT = new Night(5);
+
+    private static final int DEFAULT_INDEX_IN_ROOM = 1;
+    private static final Specialism DEFAULT_SPECIALISM = new Specialism();
 
     private final ConstraintVerifier<PatientAdmissionMoveConstraintProvider, PatientAdmissionSchedule> constraintVerifier =
             ConstraintVerifier
@@ -68,34 +76,28 @@ public class PatientAdmissionMoveConstraintProviderTest {
         Patient patient = new Patient();
         patient.setGender(gender);
 
-        BedDesignation femaleInMaleRoom = new BedDesignation().build()
-                .withPatient(patient)
-                .withRoom(room)
-                .withNights(0, 5);
+        AdmissionPart genderAdmission = new AdmissionPart(patient, ZERO_NIGHT, FIVE_NIGHT, DEFAULT_SPECIALISM);
+        Bed bed = new Bed(room, DEFAULT_INDEX_IN_ROOM);
+        BedDesignation genderLimitationDesignation = new BedDesignation(genderAdmission, bed);
 
         constraintVerifier.verifyThat(constraintFunction)
-                .given(femaleInMaleRoom)
+                .given(genderLimitationDesignation)
                 .penalizesBy(6);
     }
 
     @Test
     public void sameBedInSameNightConstraintTest() {
 
+        Patient patient = new Patient();
+        AdmissionPart admissionPart = new AdmissionPart(patient, ZERO_NIGHT, FIVE_NIGHT, DEFAULT_SPECIALISM);
         Bed bed = new Bed();
+        BedDesignation designation = new BedDesignation(1L, admissionPart, bed);
 
-        BedDesignation designation = new BedDesignation().build()
-                .withId(1L)
-                .withBed(bed)
-                .withNights(0, 5);
-
-        BedDesignation sameBedAndNightsDesignation = new BedDesignation().build()
-                .withId(2L)
-                .withBed(bed)
-                .withNights(0, 2);
+        BedDesignation sameBedAndNightsDesignation = new BedDesignation(2L, admissionPart, bed);
 
         constraintVerifier.verifyThat(PatientAdmissionMoveConstraintProvider::sameBedInSameNightConstraint)
                 .given(designation, sameBedAndNightsDesignation)
-                .penalizesBy(3);
+                .penalizesBy(6);
     }
 
     @ParameterizedTest
@@ -108,10 +110,9 @@ public class PatientAdmissionMoveConstraintProviderTest {
         Patient patient = new Patient();
         patient.setAge(patientAge);
 
-        BedDesignation designation = new BedDesignation().build()
-                .withNights(0, 5)
-                .withPatient(patient)
-                .withRoom(room);
+        AdmissionPart admission = new AdmissionPart(patient, ZERO_NIGHT, FIVE_NIGHT, DEFAULT_SPECIALISM);
+        Bed bed = new Bed(room, DEFAULT_INDEX_IN_ROOM);
+        BedDesignation designation = new BedDesignation(admission, bed);
 
         constraintVerifier.verifyThat(constraintFunction)
                 .given(designation, department)
@@ -127,10 +128,9 @@ public class PatientAdmissionMoveConstraintProviderTest {
         Equipment equipment1 = new Equipment();
         Equipment equipment2 = new Equipment();
 
-        BedDesignation designation = new BedDesignation().build()
-                .withNights(0, 5)
-                .withPatient(patient)
-                .withRoom(room);
+        AdmissionPart admission = new AdmissionPart(patient, ZERO_NIGHT, FIVE_NIGHT, DEFAULT_SPECIALISM);
+        Bed bed = new Bed(room, DEFAULT_INDEX_IN_ROOM);
+        BedDesignation designation = new BedDesignation(admission, bed);
 
         //ReqPatientEq1
         RequiredPatientEquipment requiredPatientEquipment1 = new RequiredPatientEquipment();
@@ -162,11 +162,8 @@ public class PatientAdmissionMoveConstraintProviderTest {
         Bed bed1 = new Bed();
         bed1.setRoom(room);
 
-        BedDesignation bedDesignation1 = new BedDesignation().build()
-                .withNights(0, 5)
-                .withId(1L)
-                .withBed(bed1)
-                .withPatient(female);
+        AdmissionPart admissionPartFemale = new AdmissionPart(female, ZERO_NIGHT, FIVE_NIGHT, DEFAULT_SPECIALISM);
+        BedDesignation bedDesignationFemale = new BedDesignation(1, admissionPartFemale, bed1);
 
         //Assign male
         Patient male = new Patient();
@@ -175,49 +172,47 @@ public class PatientAdmissionMoveConstraintProviderTest {
         Bed bed2 = new Bed();
         bed2.setRoom(room);
 
-        BedDesignation bedDesignation2 = new BedDesignation().build()
-                .withNights(0, 5)
-                .withId(2L)
-                .withBed(bed2)
-                .withPatient(male);
+        AdmissionPart admissionPartMale = new AdmissionPart(male, ZERO_NIGHT, FIVE_NIGHT, DEFAULT_SPECIALISM);
+        BedDesignation bedDesignationMale = new BedDesignation(2, admissionPartMale, bed2);
 
         constraintVerifier
                 .verifyThat(PatientAdmissionMoveConstraintProvider::differentGenderInSameGenderRoomInSameNightConstraint)
-                .given(bedDesignation1, bedDesignation2)
+                .given(bedDesignationFemale, bedDesignationMale)
                 .penalizesBy(6);
     }
 
     @Test
     public void assignEveryPatientToABedConstraintTest() {
+        Patient patient = new Patient();
 
-        BedDesignation unassignedBed = new BedDesignation().build()
-                .withNights(0, 2)
-                .withBed(null);
+        AdmissionPart admissionPart = new AdmissionPart(patient, ZERO_NIGHT, FIVE_NIGHT, DEFAULT_SPECIALISM);
+        BedDesignation bedUnassignedDesignation = new BedDesignation(2, admissionPart, null);
 
         constraintVerifier
                 .verifyThat(PatientAdmissionMoveConstraintProvider::assignEveryPatientToABedConstraint)
-                .given(unassignedBed)
-                .penalizesBy(3);
+                .given(bedUnassignedDesignation)
+                .penalizesBy(6);
     }
 
     @Test()
     public void preferredMaximumRoomCapacityConstraintTest() {
 
-        Patient patient = new Patient();
-        patient.setPreferredMaximumRoomCapacity(3);
+        Patient patientWithRoomPreferences = new Patient();
+        patientWithRoomPreferences.setPreferredMaximumRoomCapacity(3);
 
         Room room = new Room();
         room.setCapacity(6);
 
-        BedDesignation capacityReferenced = new BedDesignation().build()
-                .withNights(0, 2)
-                .withRoom(room)
-                .withPatient(patient);
+        Bed assignedBedInExceedCapacity = new Bed();
+        assignedBedInExceedCapacity.setRoom(room);
+
+        AdmissionPart admissionPart = new AdmissionPart(patientWithRoomPreferences, ZERO_NIGHT, FIVE_NIGHT, DEFAULT_SPECIALISM);
+        BedDesignation bedDesignation = new BedDesignation(admissionPart, assignedBedInExceedCapacity);
 
         constraintVerifier
                 .verifyThat(PatientAdmissionMoveConstraintProvider::preferredMaximumRoomCapacityConstraint)
-                .given(capacityReferenced)
-                .penalizesBy(3);
+                .given(bedDesignation)
+                .penalizesBy(6);
     }
 
     @Test
@@ -227,16 +222,14 @@ public class PatientAdmissionMoveConstraintProviderTest {
 
         Room room = new Room();
 
-        Equipment equipment1 = new Equipment();
-        Equipment equipment2 = new Equipment();
-
         Bed bed = new Bed();
         bed.setRoom(room);
 
-        BedDesignation bedDesignation = new BedDesignation().build()
-                .withNights(0, 5)
-                .withPatient(patient)
-                .withBed(bed);
+        AdmissionPart admissionPart = new AdmissionPart(patient, ZERO_NIGHT, FIVE_NIGHT, DEFAULT_SPECIALISM);
+        BedDesignation bedDesignation = new BedDesignation(admissionPart, bed);
+
+        Equipment equipment1 = new Equipment();
+        Equipment equipment2 = new Equipment();
 
         PreferredPatientEquipment preferredPatientEquipment1 = new PreferredPatientEquipment();
         preferredPatientEquipment1.setEquipment(equipment1);
@@ -258,27 +251,27 @@ public class PatientAdmissionMoveConstraintProviderTest {
     @Test
     public void departmentSpecialismConstraintTest() {
 
+        Patient patient = new Patient();
+
         Department department = new Department();
 
         Room roomInDep = new Room();
         roomInDep.setDepartment(department);
 
-        Bed bedInDep = new Bed();
-        bedInDep.setRoom(roomInDep);
+        Bed bedInRoomInDep = new Bed();
+        bedInRoomInDep.setRoom(roomInDep);
 
         //Designation with 1st spec
         Specialism spec1 = new Specialism();
-        BedDesignation designationWithDepartmentSpecialism1 = new BedDesignation().build()
-                .withNights(0, 5)
-                .withBed(bedInDep)
-                .withSpecialism(spec1);
+
+        AdmissionPart admissionPartSpec1 = new AdmissionPart(patient, ZERO_NIGHT, FIVE_NIGHT, spec1);
+        BedDesignation designationWithDepartmentSpecialism1 = new BedDesignation(admissionPartSpec1, bedInRoomInDep);
 
         //Designation with 2nd spec
         Specialism spec2 = new Specialism();
-        BedDesignation designationWithDepartmentSpecialism2 = new BedDesignation().build()
-                .withNights(0, 5)
-                .withBed(bedInDep)
-                .withSpecialism(spec2);
+
+        AdmissionPart admissionPartSpec2 = new AdmissionPart(patient, ZERO_NIGHT, FIVE_NIGHT, spec2);
+        BedDesignation designationWithDepartmentSpecialism2 = new BedDesignation(admissionPartSpec2, bedInRoomInDep);
 
         DepartmentSpecialism departmentSpecialismWithOneSpec = new DepartmentSpecialism();
         departmentSpecialismWithOneSpec.setDepartment(department);
@@ -293,23 +286,21 @@ public class PatientAdmissionMoveConstraintProviderTest {
     @Test
     public void roomSpecialismConstraintTest() {
 
+        Patient patient = new Patient();
+
         Room roomInDep = new Room();
         Bed bedInDep = new Bed();
         bedInDep.setRoom(roomInDep);
 
         //Designation with 1st spec
         Specialism spec1 = new Specialism();
-        BedDesignation designationWithRoomSpecialism1 = new BedDesignation().build()
-                .withNights(0, 5)
-                .withBed(bedInDep)
-                .withSpecialism(spec1);
+        AdmissionPart admissionPart = new AdmissionPart(patient, ZERO_NIGHT, FIVE_NIGHT, spec1);
+        BedDesignation designationWithRoomSpecialism1 = new BedDesignation(2, admissionPart, bedInDep);
 
         //Designation with 2nd spec
         Specialism spec2 = new Specialism();
-        BedDesignation designationWithRoomSpecialism2 = new BedDesignation().build()
-                .withNights(0, 5)
-                .withBed(bedInDep)
-                .withSpecialism(spec2);
+        AdmissionPart admissionPart2 = new AdmissionPart(patient, ZERO_NIGHT, FIVE_NIGHT, spec2);
+        BedDesignation designationWithRoomSpecialism2 = new BedDesignation(2, admissionPart2, bedInDep);
 
         RoomSpecialism roomSpecialism = new RoomSpecialism();
         roomSpecialism.setRoom(roomInDep);
@@ -323,23 +314,21 @@ public class PatientAdmissionMoveConstraintProviderTest {
     @Test
     public void roomSpecialismNotFirstPriorityConstraintConstraintTest() {
 
+        Patient patient = new Patient();
+
         Room roomInDep = new Room();
         Bed bedInDep = new Bed();
 
         bedInDep.setRoom(roomInDep);
         //Designation with 1st spec
         Specialism spec1 = new Specialism();
-        BedDesignation designationWithRoomSpecialism1 = new BedDesignation().build()
-                .withNights(0, 5)
-                .withBed(bedInDep)
-                .withSpecialism(spec1);
+        AdmissionPart admissionPart1 = new AdmissionPart(patient, ZERO_NIGHT, FIVE_NIGHT, spec1);
+        BedDesignation designationWithRoomSpecialism1 = new BedDesignation(admissionPart1, bedInDep);
 
         //Designation with 2nd spec
         Specialism spec2 = new Specialism();
-        BedDesignation designationWithRoomSpecialism2 = new BedDesignation().build()
-                .withNights(0, 5)
-                .withBed(bedInDep)
-                .withSpecialism(spec2);
+        AdmissionPart admissionPart2 = new AdmissionPart(patient, ZERO_NIGHT, FIVE_NIGHT, spec2);
+        BedDesignation designationWithRoomSpecialism2 = new BedDesignation(admissionPart2, bedInDep);
 
         RoomSpecialism roomSpecialism = new RoomSpecialism();
         roomSpecialism.setRoom(roomInDep);
