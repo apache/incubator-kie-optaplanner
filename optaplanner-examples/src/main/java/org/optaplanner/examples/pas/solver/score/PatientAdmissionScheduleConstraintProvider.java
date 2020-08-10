@@ -1,9 +1,20 @@
-package org.optaplanner.examples.pas.solver.score;
+/*
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 
-import static org.optaplanner.core.api.score.stream.Joiners.equal;
-import static org.optaplanner.core.api.score.stream.Joiners.filtering;
-import static org.optaplanner.core.api.score.stream.Joiners.greaterThan;
-import static org.optaplanner.core.api.score.stream.Joiners.lessThan;
+package org.optaplanner.examples.pas.solver.score;
 
 import java.util.function.Function;
 
@@ -21,6 +32,11 @@ import org.optaplanner.examples.pas.domain.RequiredPatientEquipment;
 import org.optaplanner.examples.pas.domain.RoomEquipment;
 import org.optaplanner.examples.pas.domain.RoomSpecialism;
 
+import static org.optaplanner.core.api.score.stream.Joiners.equal;
+import static org.optaplanner.core.api.score.stream.Joiners.filtering;
+import static org.optaplanner.core.api.score.stream.Joiners.greaterThan;
+import static org.optaplanner.core.api.score.stream.Joiners.lessThan;
+
 /*
  * This is constraints for Hospital Bed Planning
  * They are based on patientAdmissionScheduleConstraints.drl
@@ -29,7 +45,7 @@ import org.optaplanner.examples.pas.domain.RoomSpecialism;
  * Bed is nullable so in case you need to access it members check that planning value bed is not null
  */
 
-public class PatientAdmissionMoveConstraintProvider implements ConstraintProvider {
+public class PatientAdmissionScheduleConstraintProvider implements ConstraintProvider {
 
     @Override
     public Constraint[] defineConstraints(ConstraintFactory constraintFactory) {

@@ -1,3 +1,19 @@
+/*
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package org.optaplanner.examples.pas.solver;
 
 import java.util.function.BiFunction;
@@ -26,26 +42,26 @@ import org.optaplanner.examples.pas.domain.Room;
 import org.optaplanner.examples.pas.domain.RoomEquipment;
 import org.optaplanner.examples.pas.domain.RoomSpecialism;
 import org.optaplanner.examples.pas.domain.Specialism;
-import org.optaplanner.examples.pas.solver.score.PatientAdmissionMoveConstraintProvider;
+import org.optaplanner.examples.pas.solver.score.PatientAdmissionScheduleConstraintProvider;
 import org.optaplanner.test.api.score.stream.ConstraintVerifier;
 
-public class PatientAdmissionMoveConstraintProviderTest {
+public class PatientAdmissionScheduleConstraintProviderTest {
 
     private static final Night ZERO_NIGHT = new Night(0);
     private static final Night FIVE_NIGHT = new Night(5);
 
     private static final Specialism DEFAULT_SPECIALISM = new Specialism();
 
-    private final ConstraintVerifier<PatientAdmissionMoveConstraintProvider, PatientAdmissionSchedule> constraintVerifier =
+    private final ConstraintVerifier<PatientAdmissionScheduleConstraintProvider, PatientAdmissionSchedule> constraintVerifier =
             ConstraintVerifier
-                    .build(new PatientAdmissionMoveConstraintProvider(), PatientAdmissionSchedule.class, BedDesignation.class);
+                    .build(new PatientAdmissionScheduleConstraintProvider(), PatientAdmissionSchedule.class, BedDesignation.class);
 
     private static Stream genderLimitationsProvider() {
         return Stream.of(
                 Arguments.of(Gender.FEMALE, GenderLimitation.MALE_ONLY,
-                        (BiFunction<PatientAdmissionMoveConstraintProvider, ConstraintFactory, Constraint>) PatientAdmissionMoveConstraintProvider::femaleInMaleRoomConstraint),
+                        (BiFunction<PatientAdmissionScheduleConstraintProvider, ConstraintFactory, Constraint>) PatientAdmissionScheduleConstraintProvider::femaleInMaleRoomConstraint),
                 Arguments.of(Gender.MALE, GenderLimitation.FEMALE_ONLY,
-                        (BiFunction<PatientAdmissionMoveConstraintProvider, ConstraintFactory, Constraint>) PatientAdmissionMoveConstraintProvider::maleInFemaleRoomConstraint));
+                        (BiFunction<PatientAdmissionScheduleConstraintProvider, ConstraintFactory, Constraint>) PatientAdmissionScheduleConstraintProvider::maleInFemaleRoomConstraint));
     }
 
     private static Stream departmentAgeLimitationProvider() {
@@ -59,9 +75,9 @@ public class PatientAdmissionMoveConstraintProviderTest {
 
         return Stream.of(
                 Arguments.of(adultDepartment, 5,
-                        (BiFunction<PatientAdmissionMoveConstraintProvider, ConstraintFactory, Constraint>) PatientAdmissionMoveConstraintProvider::departmentMinimumAgeConstraint),
+                        (BiFunction<PatientAdmissionScheduleConstraintProvider, ConstraintFactory, Constraint>) PatientAdmissionScheduleConstraintProvider::departmentMinimumAgeConstraint),
                 Arguments.of(underageDepartment, 42,
-                        (BiFunction<PatientAdmissionMoveConstraintProvider, ConstraintFactory, Constraint>) PatientAdmissionMoveConstraintProvider::departmentMaximumAgeConstraint));
+                        (BiFunction<PatientAdmissionScheduleConstraintProvider, ConstraintFactory, Constraint>) PatientAdmissionScheduleConstraintProvider::departmentMaximumAgeConstraint));
     }
 
     @ParameterizedTest
@@ -97,7 +113,7 @@ public class PatientAdmissionMoveConstraintProviderTest {
 
         BedDesignation sameBedAndNightsDesignation = new BedDesignation(2L, admissionPart, bed);
 
-        constraintVerifier.verifyThat(PatientAdmissionMoveConstraintProvider::sameBedInSameNightConstraint)
+        constraintVerifier.verifyThat(PatientAdmissionScheduleConstraintProvider::sameBedInSameNightConstraint)
                 .given(designation, sameBedAndNightsDesignation)
                 .penalizesBy(6);
     }
@@ -151,7 +167,7 @@ public class PatientAdmissionMoveConstraintProviderTest {
         roomEquipment.setEquipment(equipment2);
         roomEquipment.setRoom(room);
 
-        constraintVerifier.verifyThat(PatientAdmissionMoveConstraintProvider::requiredPatientEquipmentConstraint)
+        constraintVerifier.verifyThat(PatientAdmissionScheduleConstraintProvider::requiredPatientEquipmentConstraint)
                 .given(requiredPatientEquipment1, requiredPatientEquipment2, roomEquipment, designation)
                 .penalizesBy(6);
     }
@@ -183,7 +199,7 @@ public class PatientAdmissionMoveConstraintProviderTest {
         BedDesignation bedDesignationMale = new BedDesignation(2, admissionPartMale, bed2);
 
         constraintVerifier
-                .verifyThat(PatientAdmissionMoveConstraintProvider::differentGenderInSameGenderRoomInSameNightConstraint)
+                .verifyThat(PatientAdmissionScheduleConstraintProvider::differentGenderInSameGenderRoomInSameNightConstraint)
                 .given(bedDesignationFemale, bedDesignationMale)
                 .penalizesBy(6);
     }
@@ -197,7 +213,7 @@ public class PatientAdmissionMoveConstraintProviderTest {
         BedDesignation bedUnassignedDesignation = new BedDesignation(2, admissionPart, null);
 
         constraintVerifier
-                .verifyThat(PatientAdmissionMoveConstraintProvider::assignEveryPatientToABedConstraint)
+                .verifyThat(PatientAdmissionScheduleConstraintProvider::assignEveryPatientToABedConstraint)
                 .given(bedUnassignedDesignation)
                 .penalizesBy(6);
     }
@@ -218,7 +234,7 @@ public class PatientAdmissionMoveConstraintProviderTest {
         BedDesignation bedDesignation = new BedDesignation(admissionPart, assignedBedInExceedCapacity);
 
         constraintVerifier
-                .verifyThat(PatientAdmissionMoveConstraintProvider::preferredMaximumRoomCapacityConstraint)
+                .verifyThat(PatientAdmissionScheduleConstraintProvider::preferredMaximumRoomCapacityConstraint)
                 .given(bedDesignation)
                 .penalizesBy(6);
     }
@@ -251,7 +267,7 @@ public class PatientAdmissionMoveConstraintProviderTest {
         roomEquippedOnlyByOneEq.setEquipment(equipment2);
         roomEquippedOnlyByOneEq.setRoom(room);
 
-        constraintVerifier.verifyThat(PatientAdmissionMoveConstraintProvider::preferredPatientEquipmentConstraint)
+        constraintVerifier.verifyThat(PatientAdmissionScheduleConstraintProvider::preferredPatientEquipmentConstraint)
                 .given(preferredPatientEquipment1, preferredPatientEquipment2, roomEquippedOnlyByOneEq, bedDesignation)
                 .penalizesBy(6);
     }
@@ -285,7 +301,7 @@ public class PatientAdmissionMoveConstraintProviderTest {
         departmentSpecialismWithOneSpec.setDepartment(department);
         departmentSpecialismWithOneSpec.setSpecialism(spec1);
 
-        constraintVerifier.verifyThat(PatientAdmissionMoveConstraintProvider::departmentSpecialismConstraint)
+        constraintVerifier.verifyThat(PatientAdmissionScheduleConstraintProvider::departmentSpecialismConstraint)
                 .given(designationWithDepartmentSpecialism1, designationWithDepartmentSpecialism2,
                         departmentSpecialismWithOneSpec)
                 .penalizesBy(6);
@@ -314,7 +330,7 @@ public class PatientAdmissionMoveConstraintProviderTest {
         roomSpecialism.setRoom(roomInDep);
         roomSpecialism.setSpecialism(spec1);
 
-        constraintVerifier.verifyThat(PatientAdmissionMoveConstraintProvider::roomSpecialismNotExistsConstraint)
+        constraintVerifier.verifyThat(PatientAdmissionScheduleConstraintProvider::roomSpecialismNotExistsConstraint)
                 .given(designationWithRoomSpecialism1, designationWithRoomSpecialism2, roomSpecialism)
                 .penalizesBy(6);
     }
@@ -343,7 +359,7 @@ public class PatientAdmissionMoveConstraintProviderTest {
         roomSpecialism.setSpecialism(spec1);
         roomSpecialism.setPriority(2);
 
-        constraintVerifier.verifyThat(PatientAdmissionMoveConstraintProvider::roomSpecialismNotFirstPriorityConstraint)
+        constraintVerifier.verifyThat(PatientAdmissionScheduleConstraintProvider::roomSpecialismNotFirstPriorityConstraint)
                 .given(designationWithRoomSpecialism1, designationWithRoomSpecialism2, roomSpecialism)
                 .penalizesBy(6);
     }
