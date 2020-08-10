@@ -16,6 +16,8 @@
 
 package org.optaplanner.test.impl.score.stream;
 
+import static java.util.Objects.requireNonNull;
+
 import java.util.Collection;
 import java.util.Map;
 
@@ -25,8 +27,6 @@ import org.optaplanner.core.api.score.constraint.Indictment;
 import org.optaplanner.core.api.score.stream.ConstraintProvider;
 import org.optaplanner.core.impl.score.director.AbstractScoreDirector;
 import org.optaplanner.test.api.score.stream.MultiConstraintAssertion;
-
-import static java.util.Objects.requireNonNull;
 
 public final class DefaultMultiConstraintAssertion<Solution_>
         implements MultiConstraintAssertion {

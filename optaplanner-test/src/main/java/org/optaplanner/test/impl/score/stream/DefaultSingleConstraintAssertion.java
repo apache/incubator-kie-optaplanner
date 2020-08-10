@@ -16,6 +16,8 @@
 
 package org.optaplanner.test.impl.score.stream;
 
+import static java.util.Objects.*;
+
 import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.Collection;
@@ -33,8 +35,6 @@ import org.optaplanner.core.impl.score.director.stream.ConstraintStreamScoreDire
 import org.optaplanner.core.impl.score.stream.common.AbstractConstraint;
 import org.optaplanner.core.impl.score.stream.common.ScoreImpactType;
 import org.optaplanner.test.api.score.stream.SingleConstraintAssertion;
-
-import static java.util.Objects.*;
 
 public final class DefaultSingleConstraintAssertion<Solution_>
         implements SingleConstraintAssertion {
