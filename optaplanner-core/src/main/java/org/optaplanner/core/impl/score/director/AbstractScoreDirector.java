@@ -16,9 +16,6 @@
 
 package org.optaplanner.core.impl.score.director;
 
-import static java.util.Comparator.comparing;
-import static java.util.Objects.requireNonNull;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -60,6 +57,9 @@ import org.optaplanner.core.impl.solver.thread.ChildThreadType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import static java.util.Comparator.comparing;
+import static java.util.Objects.requireNonNull;
+
 /**
  * Abstract superclass for {@link ScoreDirector}.
  * <p>
@@ -73,6 +73,9 @@ import org.slf4j.LoggerFactory;
  */
 public abstract class AbstractScoreDirector<Solution_, Factory_ extends AbstractScoreDirectorFactory<Solution_>>
         implements InnerScoreDirector<Solution_>, Cloneable {
+
+    private static final int DEFAULT_SCORE_EXPLANATION_INDICTMENT_LIMIT = 5;
+    private static final int DEFAULT_SCORE_EXPLANATION_CONSTRAINT_MATCH_LIMIT = 2;
 
     protected final transient Logger logger = LoggerFactory.getLogger(getClass());
 
@@ -306,7 +309,8 @@ public abstract class AbstractScoreDirector<Solution_, Factory_ extends Abstract
     public static String explainScore(Score workingScore,
             Collection<ConstraintMatchTotal> constraintMatchTotalCollection,
             Collection<Indictment> indictmentCollection) {
-        return explainScore(workingScore, constraintMatchTotalCollection, indictmentCollection, 5, 2);
+        return explainScore(workingScore, constraintMatchTotalCollection, indictmentCollection,
+                DEFAULT_SCORE_EXPLANATION_INDICTMENT_LIMIT, DEFAULT_SCORE_EXPLANATION_CONSTRAINT_MATCH_LIMIT);
     }
 
     public static String explainScore(Score workingScore,
