@@ -57,6 +57,9 @@ import org.optaplanner.core.impl.solver.thread.ChildThreadType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import static java.util.Comparator.comparing;
+import static java.util.Objects.requireNonNull;
+
 /**
  * Abstract superclass for {@link ScoreDirector}.
  * <p>
@@ -168,7 +171,7 @@ public abstract class AbstractScoreDirector<Solution_, Factory_ extends Abstract
 
     @Override
     public void setWorkingSolution(Solution_ workingSolution) {
-        this.workingSolution = Objects.requireNonNull(workingSolution);
+        this.workingSolution = requireNonNull(workingSolution);
         SolutionDescriptor<Solution_> solutionDescriptor = getSolutionDescriptor();
         workingInitScore = -solutionDescriptor.countUninitializedVariables(workingSolution);
         Collection<Object> allFacts = solutionDescriptor.getAllFacts(workingSolution);
@@ -300,20 +303,22 @@ public abstract class AbstractScoreDirector<Solution_, Factory_ extends Abstract
         calculationCount++;
     }
 
-    @Override
-    public String explainScore() {
-        final int INDICTMENT_LIMIT = 5;
-        final int CONSTRAINT_MATCH_LIMIT = 2;
-        Score workingScore = calculateScore();
-        Collection<ConstraintMatchTotal> constraintMatchTotals = getConstraintMatchTotalMap().values();
-        StringBuilder scoreExplanation = new StringBuilder((constraintMatchTotals.size() + 4 + 2 * INDICTMENT_LIMIT) * 80);
+    public static String explainScore(Score workingScore,
+            Collection<ConstraintMatchTotal> constraintMatchTotalCollection,
+            Collection<Indictment> indictmentCollection) {
+        return explainScore(workingScore, constraintMatchTotalCollection, indictmentCollection, 5, 2);
+    }
+
+    public static String explainScore(Score workingScore,
+            Collection<ConstraintMatchTotal> constraintMatchTotalCollection,
+            Collection<Indictment> indictmentCollection, int indictmentLimit, int constraintMatchLimit) {
+        StringBuilder scoreExplanation =
+                new StringBuilder((constraintMatchTotalCollection.size() + 4 + 2 * indictmentLimit) * 80);
         scoreExplanation.append("Explanation of score (").append(workingScore).append("):\n");
         scoreExplanation.append("    Constraint match totals:\n");
-        Comparator<ConstraintMatchTotal> constraintMatchTotalComparator = Comparator
-                .comparing(ConstraintMatchTotal::getScore);
-        Comparator<ConstraintMatch> constraintMatchComparator = Comparator
-                .comparing(ConstraintMatch::getScore);
-        constraintMatchTotals.stream()
+        Comparator<ConstraintMatchTotal> constraintMatchTotalComparator = comparing(ConstraintMatchTotal::getScore);
+        Comparator<ConstraintMatch> constraintMatchComparator = comparing(ConstraintMatch::getScore);
+        constraintMatchTotalCollection.stream()
                 .sorted(constraintMatchTotalComparator)
                 .forEach(constraintMatchTotal -> {
                     Set<ConstraintMatch> constraintMatchSet = constraintMatchTotal.getConstraintMatchSet();
@@ -323,24 +328,28 @@ public abstract class AbstractScoreDirector<Solution_, Factory_ extends Abstract
                             .append(") has ").append(constraintMatchSet.size()).append(" matches:\n");
                     constraintMatchSet.stream()
                             .sorted(constraintMatchComparator)
-                            .limit(CONSTRAINT_MATCH_LIMIT)
+                            .limit(constraintMatchLimit)
                             .forEach(constraintMatch -> scoreExplanation
                                     .append("            ").append(constraintMatch.getScore().toShortString())
                                     .append(": justifications (").append(constraintMatch.getJustificationList())
                                     .append(")\n"));
-                    if (constraintMatchSet.size() > CONSTRAINT_MATCH_LIMIT) {
+                    if (constraintMatchSet.size() > constraintMatchLimit) {
                         scoreExplanation.append("            ...\n");
                     }
                 });
 
-        Collection<Indictment> indictments = getIndictmentMap().values();
-        scoreExplanation.append("    Indictments (top ").append(INDICTMENT_LIMIT)
-                .append(" of ").append(indictments.size()).append("):\n");
-        Comparator<Indictment> indictmentComparator = Comparator.comparing(Indictment::getScore);
-        Comparator<ConstraintMatch> constraintMatchScoreComparator = Comparator.comparing(ConstraintMatch::getScore);
-        indictments.stream()
+        int indictmentCount = requireNonNull(indictmentCollection).size();
+        if (indictmentLimit < indictmentCount) {
+            scoreExplanation.append("    Indictments (top ").append(indictmentLimit)
+                    .append(" of ").append(indictmentCount).append("):\n");
+        } else {
+            scoreExplanation.append("    Indictments:\n");
+        }
+        Comparator<Indictment> indictmentComparator = comparing(Indictment::getScore);
+        Comparator<ConstraintMatch> constraintMatchScoreComparator = comparing(ConstraintMatch::getScore);
+        indictmentCollection.stream()
                 .sorted(indictmentComparator)
-                .limit(INDICTMENT_LIMIT)
+                .limit(indictmentLimit)
                 .forEach(indictment -> {
                     Set<ConstraintMatch> constraintMatchSet = indictment.getConstraintMatchSet();
                     scoreExplanation
@@ -348,19 +357,25 @@ public abstract class AbstractScoreDirector<Solution_, Factory_ extends Abstract
                             .append(": justification (").append(indictment.getJustification())
                             .append(") has ").append(constraintMatchSet.size()).append(" matches:\n");
                     constraintMatchSet.stream()
-                            .sorted(constraintMatchScoreComparator).limit(CONSTRAINT_MATCH_LIMIT)
+                            .sorted(constraintMatchScoreComparator)
+                            .limit(constraintMatchLimit)
                             .forEach(constraintMatch -> scoreExplanation
                                     .append("            ").append(constraintMatch.getScore().toShortString())
                                     .append(": constraint (").append(constraintMatch.getConstraintName())
                                     .append(")\n"));
-                    if (constraintMatchSet.size() > CONSTRAINT_MATCH_LIMIT) {
+                    if (constraintMatchSet.size() > constraintMatchLimit) {
                         scoreExplanation.append("            ...\n");
                     }
                 });
-        if (indictments.size() > INDICTMENT_LIMIT) {
+        if (indictmentCount > indictmentLimit) {
             scoreExplanation.append("        ...\n");
         }
         return scoreExplanation.toString();
+    }
+
+    @Override
+    public String explainScore() {
+        return explainScore(calculateScore(), getConstraintMatchTotalMap().values(), getIndictmentMap().values());
     }
 
     @Override
@@ -617,7 +632,7 @@ public abstract class AbstractScoreDirector<Solution_, Factory_ extends Abstract
      */
     protected String createShadowVariablesViolationMessage() {
         Map<ShadowVariableDescriptor, List<String>> violationListMap = new TreeMap<>(
-                Comparator.comparing(ShadowVariableDescriptor::getGlobalShadowOrder));
+                comparing(ShadowVariableDescriptor::getGlobalShadowOrder));
         SolutionDescriptor<Solution_> solutionDescriptor = getSolutionDescriptor();
         Map<Object, Map<ShadowVariableDescriptor, Object>> entityToShadowVariableValuesMap = new IdentityHashMap<>();
         for (Iterator<Object> it = solutionDescriptor.extractAllEntitiesIterator(workingSolution); it.hasNext();) {
