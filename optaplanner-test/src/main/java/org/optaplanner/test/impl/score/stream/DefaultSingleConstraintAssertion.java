@@ -16,7 +16,7 @@
 
 package org.optaplanner.test.impl.score.stream;
 
-import static java.util.Objects.*;
+import static java.util.Objects.requireNonNull;
 
 import java.math.BigDecimal;
 import java.util.Arrays;
