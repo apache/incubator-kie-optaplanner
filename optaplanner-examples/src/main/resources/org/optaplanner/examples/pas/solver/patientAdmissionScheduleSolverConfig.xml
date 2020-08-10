@@ -1,19 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <solver>
-  <environmentMode>FULL_ASSERT</environmentMode>
+  <!--<environmentMode>FULL_ASSERT</environmentMode>--><!-- To slowly prove there are no bugs in this code -->
   <!--<moveThreadCount>AUTO</moveThreadCount>--><!-- To solve faster by saturating multiple CPU cores -->
 
   <solutionClass>org.optaplanner.examples.pas.domain.PatientAdmissionSchedule</solutionClass>
   <entityClass>org.optaplanner.examples.pas.domain.BedDesignation</entityClass>
 
   <scoreDirectorFactory>
-<!--    <scoreDrl>org/optaplanner/examples/pas/solver/patientAdmissionScheduleConstraints.drl</scoreDrl>-->
-<!--    Uncomment if you want to use constraints stream-->
+    <scoreDrl>org/optaplanner/examples/pas/solver/patientAdmissionScheduleConstraints.drl</scoreDrl>
     <initializingScoreTrend>ONLY_DOWN</initializingScoreTrend>
-    <constraintProviderClass>org.optaplanner.examples.pas.solver.score.PatientAdmissionMoveConstraintProvider</constraintProviderClass>
-    <assertionScoreDirectorFactory>
-      <scoreDrl>org/optaplanner/examples/pas/solver/patientAdmissionScheduleConstraints.drl</scoreDrl>
-    </assertionScoreDirectorFactory>
+    <!--    Uncomment if you want to use constraints stream-->
+    <!--    <constraintProviderClass>org.optaplanner.examples.pas.solver.score.PatientAdmissionMoveConstraintProvider</constraintProviderClass>-->
+    <!--    <assertionScoreDirectorFactory>-->
+    <!--      <scoreDrl>org/optaplanner/examples/pas/solver/patientAdmissionScheduleConstraints.drl</scoreDrl>-->
+    <!--    </assertionScoreDirectorFactory>-->
   </scoreDirectorFactory>
 
   <termination>

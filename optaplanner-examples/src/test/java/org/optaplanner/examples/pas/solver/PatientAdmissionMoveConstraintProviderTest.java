@@ -34,7 +34,6 @@ public class PatientAdmissionMoveConstraintProviderTest {
     private static final Night ZERO_NIGHT = new Night(0);
     private static final Night FIVE_NIGHT = new Night(5);
 
-    private static final int DEFAULT_INDEX_IN_ROOM = 1;
     private static final Specialism DEFAULT_SPECIALISM = new Specialism();
 
     private final ConstraintVerifier<PatientAdmissionMoveConstraintProvider, PatientAdmissionSchedule> constraintVerifier =
@@ -73,11 +72,13 @@ public class PatientAdmissionMoveConstraintProviderTest {
         Room room = new Room();
         room.setGenderLimitation(genderLimitation);
 
+        Bed bed = new Bed();
+        bed.setRoom(room);
+
         Patient patient = new Patient();
         patient.setGender(gender);
 
         AdmissionPart genderAdmission = new AdmissionPart(patient, ZERO_NIGHT, FIVE_NIGHT, DEFAULT_SPECIALISM);
-        Bed bed = new Bed(room, DEFAULT_INDEX_IN_ROOM);
         BedDesignation genderLimitationDesignation = new BedDesignation(genderAdmission, bed);
 
         constraintVerifier.verifyThat(constraintFunction)
@@ -89,8 +90,9 @@ public class PatientAdmissionMoveConstraintProviderTest {
     public void sameBedInSameNightConstraintTest() {
 
         Patient patient = new Patient();
-        AdmissionPart admissionPart = new AdmissionPart(patient, ZERO_NIGHT, FIVE_NIGHT, DEFAULT_SPECIALISM);
         Bed bed = new Bed();
+
+        AdmissionPart admissionPart = new AdmissionPart(patient, ZERO_NIGHT, FIVE_NIGHT, DEFAULT_SPECIALISM);
         BedDesignation designation = new BedDesignation(1L, admissionPart, bed);
 
         BedDesignation sameBedAndNightsDesignation = new BedDesignation(2L, admissionPart, bed);
@@ -110,8 +112,10 @@ public class PatientAdmissionMoveConstraintProviderTest {
         Patient patient = new Patient();
         patient.setAge(patientAge);
 
+        Bed bed = new Bed();
+        bed.setRoom(room);
+
         AdmissionPart admission = new AdmissionPart(patient, ZERO_NIGHT, FIVE_NIGHT, DEFAULT_SPECIALISM);
-        Bed bed = new Bed(room, DEFAULT_INDEX_IN_ROOM);
         BedDesignation designation = new BedDesignation(admission, bed);
 
         constraintVerifier.verifyThat(constraintFunction)
@@ -128,8 +132,10 @@ public class PatientAdmissionMoveConstraintProviderTest {
         Equipment equipment1 = new Equipment();
         Equipment equipment2 = new Equipment();
 
+        Bed bed = new Bed();
+        bed.setRoom(room);
+
         AdmissionPart admission = new AdmissionPart(patient, ZERO_NIGHT, FIVE_NIGHT, DEFAULT_SPECIALISM);
-        Bed bed = new Bed(room, DEFAULT_INDEX_IN_ROOM);
         BedDesignation designation = new BedDesignation(admission, bed);
 
         //ReqPatientEq1
@@ -152,6 +158,7 @@ public class PatientAdmissionMoveConstraintProviderTest {
 
     @Test
     public void differentGenderInSameGenderRoomInSameNightConstraintTest() {
+
         Room room = new Room();
         room.setGenderLimitation(GenderLimitation.SAME_GENDER);
 
@@ -183,6 +190,7 @@ public class PatientAdmissionMoveConstraintProviderTest {
 
     @Test
     public void assignEveryPatientToABedConstraintTest() {
+
         Patient patient = new Patient();
 
         AdmissionPart admissionPart = new AdmissionPart(patient, ZERO_NIGHT, FIVE_NIGHT, DEFAULT_SPECIALISM);
