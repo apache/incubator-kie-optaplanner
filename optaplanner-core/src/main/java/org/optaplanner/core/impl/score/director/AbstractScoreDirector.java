@@ -338,7 +338,7 @@ public abstract class AbstractScoreDirector<Solution_, Factory_ extends Abstract
                     }
                 });
 
-        int indictmentCount = requireNonNull(indictmentCollection).size();
+        int indictmentCount = indictmentCollection.size();
         if (indictmentLimit < indictmentCount) {
             scoreExplanation.append("    Indictments (top ").append(indictmentLimit)
                     .append(" of ").append(indictmentCount).append("):\n");
