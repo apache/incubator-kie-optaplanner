@@ -36,9 +36,9 @@ public class PatientAdmissionMoveConstraintProviderTest {
     private static Stream genderLimitationsProvider() {
         return Stream.of(
                 Arguments.of(Gender.FEMALE, GenderLimitation.MALE_ONLY,
-                             (BiFunction<PatientAdmissionMoveConstraintProvider, ConstraintFactory, Constraint>) PatientAdmissionMoveConstraintProvider::femaleInMaleRoomConstraint),
+                        (BiFunction<PatientAdmissionMoveConstraintProvider, ConstraintFactory, Constraint>) PatientAdmissionMoveConstraintProvider::femaleInMaleRoomConstraint),
                 Arguments.of(Gender.MALE, GenderLimitation.FEMALE_ONLY,
-                             (BiFunction<PatientAdmissionMoveConstraintProvider, ConstraintFactory, Constraint>) PatientAdmissionMoveConstraintProvider::maleInFemaleRoomConstraint));
+                        (BiFunction<PatientAdmissionMoveConstraintProvider, ConstraintFactory, Constraint>) PatientAdmissionMoveConstraintProvider::maleInFemaleRoomConstraint));
     }
 
     private static Stream departmentAgeLimitationProvider() {
@@ -52,15 +52,15 @@ public class PatientAdmissionMoveConstraintProviderTest {
 
         return Stream.of(
                 Arguments.of(adultDepartment, 5,
-                             (BiFunction<PatientAdmissionMoveConstraintProvider, ConstraintFactory, Constraint>) PatientAdmissionMoveConstraintProvider::departmentMinimumAgeConstraint),
+                        (BiFunction<PatientAdmissionMoveConstraintProvider, ConstraintFactory, Constraint>) PatientAdmissionMoveConstraintProvider::departmentMinimumAgeConstraint),
                 Arguments.of(underageDepartment, 42,
-                             (BiFunction<PatientAdmissionMoveConstraintProvider, ConstraintFactory, Constraint>) PatientAdmissionMoveConstraintProvider::departmentMaximumAgeConstraint));
+                        (BiFunction<PatientAdmissionMoveConstraintProvider, ConstraintFactory, Constraint>) PatientAdmissionMoveConstraintProvider::departmentMaximumAgeConstraint));
     }
 
     @ParameterizedTest
     @MethodSource("genderLimitationsProvider")
     public void genderRoomLimitationConstraintTest(Gender gender, GenderLimitation genderLimitation,
-                                                   BiFunction constraintFunction) {
+            BiFunction constraintFunction) {
 
         Room room = new Room();
         room.setGenderLimitation(genderLimitation);
@@ -297,7 +297,8 @@ public class PatientAdmissionMoveConstraintProviderTest {
         departmentSpecialismWithOneSpec.setSpecialism(spec1);
 
         constraintVerifier.verifyThat(PatientAdmissionMoveConstraintProvider::departmentSpecialismConstraint)
-                .given(designationWithDepartmentSpecialism1, designationWithDepartmentSpecialism2, departmentSpecialismWithOneSpec)
+                .given(designationWithDepartmentSpecialism1, designationWithDepartmentSpecialism2,
+                        departmentSpecialismWithOneSpec)
                 .penalizesBy(6);
     }
 

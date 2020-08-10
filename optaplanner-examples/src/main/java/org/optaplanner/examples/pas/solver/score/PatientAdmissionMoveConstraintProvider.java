@@ -1,5 +1,12 @@
 package org.optaplanner.examples.pas.solver.score;
 
+import static org.optaplanner.core.api.score.stream.Joiners.equal;
+import static org.optaplanner.core.api.score.stream.Joiners.filtering;
+import static org.optaplanner.core.api.score.stream.Joiners.greaterThan;
+import static org.optaplanner.core.api.score.stream.Joiners.lessThan;
+
+import java.util.function.Function;
+
 import org.optaplanner.core.api.score.buildin.hardmediumsoft.HardMediumSoftScore;
 import org.optaplanner.core.api.score.stream.Constraint;
 import org.optaplanner.core.api.score.stream.ConstraintFactory;
@@ -14,10 +21,6 @@ import org.optaplanner.examples.pas.domain.RequiredPatientEquipment;
 import org.optaplanner.examples.pas.domain.RoomEquipment;
 import org.optaplanner.examples.pas.domain.RoomSpecialism;
 
-import static org.optaplanner.core.api.score.stream.Joiners.equal;
-import static org.optaplanner.core.api.score.stream.Joiners.filtering;
-import static org.optaplanner.core.api.score.stream.Joiners.lessThan;
-
 /*
  * This is constraints for Hospital Bed Planning
  * They are based on patientAdmissionScheduleConstraints.drl
@@ -30,7 +33,7 @@ public class PatientAdmissionMoveConstraintProvider implements ConstraintProvide
 
     @Override
     public Constraint[] defineConstraints(ConstraintFactory constraintFactory) {
-        return new Constraint[]{
+        return new Constraint[] {
                 sameBedInSameNightConstraint(constraintFactory),
                 femaleInMaleRoomConstraint(constraintFactory),
                 maleInFemaleRoomConstraint(constraintFactory),
@@ -89,8 +92,8 @@ public class PatientAdmissionMoveConstraintProvider implements ConstraintProvide
         return constraintFactory.from(Department.class)
                 .filter(d -> d.getMinimumAge() != null)
                 .join(BedDesignation.class,
-                        equal(d -> d, BedDesignation::getDepartment),
-                        filtering((d, bd) -> bd.getPatientAge() < d.getMinimumAge()))
+                        equal(Function.identity(), BedDesignation::getDepartment),
+                        greaterThan(Department::getMinimumAge, BedDesignation::getPatientAge))
                 .penalize("departmentMinimumAge", HardMediumSoftScore.ofHard(100),
                         (d, bd) -> bd.getAdmissionPartNightCount());
     }
@@ -99,8 +102,8 @@ public class PatientAdmissionMoveConstraintProvider implements ConstraintProvide
         return constraintFactory.from(Department.class)
                 .filter(d -> d.getMaximumAge() != null)
                 .join(BedDesignation.class,
-                        equal(d -> d, BedDesignation::getDepartment),
-                        filtering((d, bd) -> bd.getPatientAge() > d.getMaximumAge()))
+                        equal(Function.identity(), BedDesignation::getDepartment),
+                        lessThan(Department::getMaximumAge, BedDesignation::getPatientAge))
                 .penalize("departmentMaximumAge", HardMediumSoftScore.ofHard(100),
                         (d, bd) -> bd.getAdmissionPartNightCount());
     }
