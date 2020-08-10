@@ -52,11 +52,11 @@ public final class DefaultMultiConstraintAssertion<Solution_>
         Class<?> constraintProviderClass = constraintProvider.getClass();
         String expectation = message == null ? "Broken expectation." : message;
         throw new AssertionError(expectation + System.lineSeparator() +
-                "    Constraint provider: " + constraintProviderClass + System.lineSeparator() +
-                "         Expected score: " + score + " (" + score.getClass() + ")" + System.lineSeparator() +
-                "           Actual score: " + actualScore + " (" + actualScore.getClass() + ")"
-                + System.lineSeparator() + System.lineSeparator() +
-                AbstractScoreDirector.explainScore(actualScore, constraintMatchTotalCollection, indictmentCollection));
+                "  Constraint provider: " + constraintProviderClass + System.lineSeparator() +
+                "       Expected score: " + score + " (" + score.getClass() + ")" + System.lineSeparator() +
+                "         Actual score: " + actualScore + " (" + actualScore.getClass() + ")" +
+                System.lineSeparator() + System.lineSeparator() +
+                "  " + AbstractScoreDirector.explainScore(actualScore, constraintMatchTotalCollection, indictmentCollection));
     }
 
 }

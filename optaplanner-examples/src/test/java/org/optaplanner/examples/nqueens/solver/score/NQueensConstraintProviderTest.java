@@ -108,7 +108,7 @@ public class NQueensConstraintProviderTest {
         Queen queen2 = new Queen(1, row2, column2);
         constraintVerifier.verifyThat(NQueensConstraintProvider::descendingDiagonalConflict)
                 .given(queen1, queen2)
-                .penalizesBy(2);
+                .penalizesBy(1);
     }
 
     @Test
@@ -132,7 +132,7 @@ public class NQueensConstraintProviderTest {
     public void givenSolutionMultipleConstraints() throws IOException {
         constraintVerifier.verifyThat()
                 .givenSolution(readSolution("256queensScore-30.xml"))
-                .scores(SimpleScore.of(-10));
+                .scores(SimpleScore.of(-30));
     }
 
     @Test

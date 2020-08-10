@@ -147,7 +147,7 @@ public final class DefaultSingleConstraintAssertion<Solution_>
                 "%18s: %s%n" +
                 "%18s: %s (%s)%n" +
                 "%18s: %s (%s)%n%n" +
-                "%s";
+                "  %s";
         String expectedImpactLabel = "Expected " + getImpactTypeLabel(expectedImpactType);
         String actualImpactLabel = "Actual " + getImpactTypeLabel(actualImpactType);
         return String.format(preformattedMessage,
