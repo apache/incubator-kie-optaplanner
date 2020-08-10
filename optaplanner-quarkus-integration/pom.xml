@@ -24,8 +24,6 @@
   <url>https://www.optaplanner.org</url>
 
   <properties>
-    <version.io.quarkus>1.7.0.Final</version.io.quarkus>
-
     <!-- TODO Quarkus is riddled with duplicate classes, see https://github.com/quarkusio/quarkus/issues/9834 -->
     <enforcer.failOnDuplicatedClasses>false</enforcer.failOnDuplicatedClasses>
   </properties>
