@@ -9,7 +9,7 @@
   <scoreDirectorFactory>
 <!--    <scoreDrl>org/optaplanner/examples/pas/solver/patientAdmissionScheduleConstraints.drl</scoreDrl>-->
 <!--    Uncomment if you want to use constraints stream-->
-<!--    <initializingScoreTrend>ONLY_DOWN</initializingScoreTrend>-->
+    <initializingScoreTrend>ONLY_DOWN</initializingScoreTrend>
     <constraintProviderClass>org.optaplanner.examples.pas.solver.score.PatientAdmissionMoveConstraintProvider</constraintProviderClass>
     <assertionScoreDirectorFactory>
       <scoreDrl>org/optaplanner/examples/pas/solver/patientAdmissionScheduleConstraints.drl</scoreDrl>

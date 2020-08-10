@@ -51,13 +51,12 @@ public class PatientAdmissionMoveConstraintProvider implements ConstraintProvide
     }
 
     public Constraint sameBedInSameNightConstraint(ConstraintFactory constraintFactory) {
-        return constraintFactory.fromUniquePair(BedDesignation.class)
-                .filter((left, right) -> left.getBed() != null
-                        && right.getBed() != null
-                        && left.getBed() == right.getBed()
-                        && left.getAdmissionPart().calculateSameNightCount(right.getAdmissionPart()) > 0)
+        return constraintFactory.fromUniquePair(BedDesignation.class,
+                        equal(BedDesignation::getBed))
+                .filter((left,right) -> left.getAdmissionPart().calculateSameNightCount(right.getAdmissionPart()) > 0
+                && left.getBed()!=null && right.getBed()!=null)
                 .penalize("sameBedInSameNight", HardMediumSoftScore.ofHard(1000),
-                        (leftBd, rightBd) -> leftBd.getAdmissionPart().calculateSameNightCount(rightBd.getAdmissionPart()));
+                          (left,right) -> left.getAdmissionPart().calculateSameNightCount(right.getAdmissionPart()));
     }
 
     public Constraint femaleInMaleRoomConstraint(ConstraintFactory constraintFactory) {
@@ -82,8 +81,8 @@ public class PatientAdmissionMoveConstraintProvider implements ConstraintProvide
                         equal(BedDesignation::getRoom),
                         lessThan(BedDesignation::getId),
                         filtering((left, right) -> right.getRoomGenderLimitation() == GenderLimitation.SAME_GENDER
-                                && left.getAdmissionPart().calculateSameNightCount(right.getAdmissionPart()) > 0
-                                && left.getPatient().getGender() != right.getPatient().getGender()))
+                                && left.getPatient().getGender() != right.getPatient().getGender()
+                                && left.getAdmissionPart().calculateSameNightCount(right.getAdmissionPart()) > 0))
                 .penalize("differentGenderInSameGenderRoomInSameNight", HardMediumSoftScore.ofHard(1000),
                         (left, right) -> left.getAdmissionPart().calculateSameNightCount(right.getAdmissionPart()));
     }

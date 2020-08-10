@@ -68,11 +68,10 @@ public class PatientAdmissionMoveConstraintProviderTest {
         Patient patient = new Patient();
         patient.setGender(gender);
 
-        BedDesignationDO femaleInMaleRoom = new BedDesignationDO.Builder()
+        BedDesignation femaleInMaleRoom = new BedDesignation().build()
                 .withPatient(patient)
                 .withRoom(room)
-                .withNights(0, 5)
-                .build();
+                .withNights(0, 5);
 
         constraintVerifier.verifyThat(constraintFunction)
                 .given(femaleInMaleRoom)
@@ -84,17 +83,15 @@ public class PatientAdmissionMoveConstraintProviderTest {
 
         Bed bed = new Bed();
 
-        BedDesignationDO designation = new BedDesignationDO.Builder()
+        BedDesignation designation = new BedDesignation().build()
                 .withId(1L)
                 .withBed(bed)
-                .withNights(0, 5)
-                .build();
+                .withNights(0, 5);
 
-        BedDesignationDO sameBedAndNightsDesignation = new BedDesignationDO.Builder()
+        BedDesignation sameBedAndNightsDesignation = new BedDesignation().build()
                 .withId(2L)
                 .withBed(bed)
-                .withNights(0, 2)
-                .build();
+                .withNights(0, 2);
 
         constraintVerifier.verifyThat(PatientAdmissionMoveConstraintProvider::sameBedInSameNightConstraint)
                 .given(designation, sameBedAndNightsDesignation)
@@ -111,11 +108,10 @@ public class PatientAdmissionMoveConstraintProviderTest {
         Patient patient = new Patient();
         patient.setAge(patientAge);
 
-        BedDesignationDO designation = new BedDesignationDO.Builder()
+        BedDesignation designation = new BedDesignation().build()
                 .withNights(0, 5)
                 .withPatient(patient)
-                .withRoom(room)
-                .build();
+                .withRoom(room);
 
         constraintVerifier.verifyThat(constraintFunction)
                 .given(designation, department)
@@ -131,11 +127,10 @@ public class PatientAdmissionMoveConstraintProviderTest {
         Equipment equipment1 = new Equipment();
         Equipment equipment2 = new Equipment();
 
-        BedDesignationDO designation = new BedDesignationDO.Builder()
+        BedDesignation designation = new BedDesignation().build()
                 .withNights(0, 5)
                 .withPatient(patient)
-                .withRoom(room)
-                .build();
+                .withRoom(room);
 
         //ReqPatientEq1
         RequiredPatientEquipment requiredPatientEquipment1 = new RequiredPatientEquipment();
@@ -167,12 +162,11 @@ public class PatientAdmissionMoveConstraintProviderTest {
         Bed bed1 = new Bed();
         bed1.setRoom(room);
 
-        BedDesignationDO bedDesignation1 = new BedDesignationDO.Builder()
+        BedDesignation bedDesignation1 = new BedDesignation().build()
                 .withNights(0, 5)
                 .withId(1L)
                 .withBed(bed1)
-                .withPatient(female)
-                .build();
+                .withPatient(female);
 
         //Assign male
         Patient male = new Patient();
@@ -181,12 +175,11 @@ public class PatientAdmissionMoveConstraintProviderTest {
         Bed bed2 = new Bed();
         bed2.setRoom(room);
 
-        BedDesignationDO bedDesignation2 = new BedDesignationDO.Builder()
+        BedDesignation bedDesignation2 = new BedDesignation().build()
                 .withNights(0, 5)
                 .withId(2L)
                 .withBed(bed2)
-                .withPatient(male)
-                .build();
+                .withPatient(male);
 
         constraintVerifier
                 .verifyThat(PatientAdmissionMoveConstraintProvider::differentGenderInSameGenderRoomInSameNightConstraint)
@@ -197,10 +190,9 @@ public class PatientAdmissionMoveConstraintProviderTest {
     @Test
     public void assignEveryPatientToABedConstraintTest() {
 
-        BedDesignationDO unassignedBed = new BedDesignationDO.Builder()
+        BedDesignation unassignedBed = new BedDesignation().build()
                 .withNights(0, 2)
-                .withBed(null)
-                .build();
+                .withBed(null);
 
         constraintVerifier
                 .verifyThat(PatientAdmissionMoveConstraintProvider::assignEveryPatientToABedConstraint)
@@ -217,11 +209,10 @@ public class PatientAdmissionMoveConstraintProviderTest {
         Room room = new Room();
         room.setCapacity(6);
 
-        BedDesignationDO capacityReferenced = new BedDesignationDO.Builder()
+        BedDesignation capacityReferenced = new BedDesignation().build()
                 .withNights(0, 2)
                 .withRoom(room)
-                .withPatient(patient)
-                .build();
+                .withPatient(patient);
 
         constraintVerifier
                 .verifyThat(PatientAdmissionMoveConstraintProvider::preferredMaximumRoomCapacityConstraint)
@@ -242,11 +233,10 @@ public class PatientAdmissionMoveConstraintProviderTest {
         Bed bed = new Bed();
         bed.setRoom(room);
 
-        BedDesignationDO bedDesignation = new BedDesignationDO.Builder()
+        BedDesignation bedDesignation = new BedDesignation().build()
                 .withNights(0, 5)
                 .withPatient(patient)
-                .withBed(bed)
-                .build();
+                .withBed(bed);
 
         PreferredPatientEquipment preferredPatientEquipment1 = new PreferredPatientEquipment();
         preferredPatientEquipment1.setEquipment(equipment1);
@@ -278,19 +268,17 @@ public class PatientAdmissionMoveConstraintProviderTest {
 
         //Designation with 1st spec
         Specialism spec1 = new Specialism();
-        BedDesignationDO designationWithDepartmentSpecialism1 = new BedDesignationDO.Builder()
+        BedDesignation designationWithDepartmentSpecialism1 = new BedDesignation().build()
                 .withNights(0, 5)
                 .withBed(bedInDep)
-                .withSpecialism(spec1)
-                .build();
+                .withSpecialism(spec1);
 
         //Designation with 2nd spec
         Specialism spec2 = new Specialism();
-        BedDesignationDO designationWithDepartmentSpecialism2 = new BedDesignationDO.Builder()
+        BedDesignation designationWithDepartmentSpecialism2 = new BedDesignation().build()
                 .withNights(0, 5)
                 .withBed(bedInDep)
-                .withSpecialism(spec2)
-                .build();
+                .withSpecialism(spec2);
 
         DepartmentSpecialism departmentSpecialismWithOneSpec = new DepartmentSpecialism();
         departmentSpecialismWithOneSpec.setDepartment(department);
@@ -311,19 +299,17 @@ public class PatientAdmissionMoveConstraintProviderTest {
 
         //Designation with 1st spec
         Specialism spec1 = new Specialism();
-        BedDesignationDO designationWithRoomSpecialism1 = new BedDesignationDO.Builder()
+        BedDesignation designationWithRoomSpecialism1 = new BedDesignation().build()
                 .withNights(0, 5)
                 .withBed(bedInDep)
-                .withSpecialism(spec1)
-                .build();
+                .withSpecialism(spec1);
 
         //Designation with 2nd spec
         Specialism spec2 = new Specialism();
-        BedDesignationDO designationWithRoomSpecialism2 = new BedDesignationDO.Builder()
+        BedDesignation designationWithRoomSpecialism2 = new BedDesignation().build()
                 .withNights(0, 5)
                 .withBed(bedInDep)
-                .withSpecialism(spec2)
-                .build();
+                .withSpecialism(spec2);
 
         RoomSpecialism roomSpecialism = new RoomSpecialism();
         roomSpecialism.setRoom(roomInDep);
@@ -343,19 +329,17 @@ public class PatientAdmissionMoveConstraintProviderTest {
         bedInDep.setRoom(roomInDep);
         //Designation with 1st spec
         Specialism spec1 = new Specialism();
-        BedDesignationDO designationWithRoomSpecialism1 = new BedDesignationDO.Builder()
+        BedDesignation designationWithRoomSpecialism1 = new BedDesignation().build()
                 .withNights(0, 5)
                 .withBed(bedInDep)
-                .withSpecialism(spec1)
-                .build();
+                .withSpecialism(spec1);
 
         //Designation with 2nd spec
         Specialism spec2 = new Specialism();
-        BedDesignationDO designationWithRoomSpecialism2 = new BedDesignationDO.Builder()
+        BedDesignation designationWithRoomSpecialism2 = new BedDesignation().build()
                 .withNights(0, 5)
                 .withBed(bedInDep)
-                .withSpecialism(spec2)
-                .build();
+                .withSpecialism(spec2);
 
         RoomSpecialism roomSpecialism = new RoomSpecialism();
         roomSpecialism.setRoom(roomInDep);
