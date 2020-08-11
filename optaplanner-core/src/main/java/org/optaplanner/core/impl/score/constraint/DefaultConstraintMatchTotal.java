@@ -16,6 +16,10 @@
 
 package org.optaplanner.core.impl.score.constraint;
 
+import static java.util.Comparator.comparing;
+import static java.util.Objects.hash;
+import static java.util.Objects.requireNonNull;
+
 import java.util.Comparator;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -25,10 +29,6 @@ import java.util.Set;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.constraint.ConstraintMatch;
 import org.optaplanner.core.api.score.constraint.ConstraintMatchTotal;
-
-import static java.util.Comparator.comparing;
-import static java.util.Objects.hash;
-import static java.util.Objects.requireNonNull;
 
 public final class DefaultConstraintMatchTotal implements ConstraintMatchTotal,
         Comparable<DefaultConstraintMatchTotal> {
