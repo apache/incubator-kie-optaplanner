@@ -18,8 +18,13 @@ package org.optaplanner.core.impl.score.constraint;
 
 import static java.util.Arrays.asList;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+
+import java.util.Arrays;
+import java.util.List;
 
 import org.junit.jupiter.api.Test;
+import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
 import org.optaplanner.core.api.score.constraint.ConstraintMatch;
 import org.optaplanner.core.impl.testdata.domain.TestdataEntity;
@@ -50,6 +55,34 @@ public class DefaultConstraintMatchTotalTest {
         assertThat(constraintMatchTotal.getScore()).isEqualTo(SimpleScore.of(-300));
         constraintMatchTotal.removeConstraintMatch(match3);
         assertThat(constraintMatchTotal.getScore()).isEqualTo(SimpleScore.ZERO);
+    }
+
+    @Test
+    public void duplicateConstraintMatch() {
+        List<Object> justificationList = Arrays.asList(Boolean.TRUE);
+        Score constraintMatchScore = SimpleScore.ONE;
+        DefaultConstraintMatchTotal constraintMatchTotal =
+                new DefaultConstraintMatchTotal("package1", "constraint1", SimpleScore.ZERO);
+        // Add the first constraint match.
+        ConstraintMatch constraintMatch = constraintMatchTotal.addConstraintMatch(justificationList, constraintMatchScore);
+        assertThat(constraintMatchTotal.getScore()).isEqualTo(SimpleScore.ONE);
+        // Add another identical constraint match.
+        ConstraintMatch equalConstraintMatch = constraintMatchTotal.addConstraintMatch(justificationList, constraintMatchScore);
+        // Ensure that the score was not changed.
+        assertThat(equalConstraintMatch)
+                .isEqualTo(constraintMatch)
+                .isNotSameAs(constraintMatch);
+        assertThat(constraintMatchTotal.getScore()).isEqualTo(SimpleScore.ONE);
+        // Remove the first instance, still leaving the constraint match in there.
+        constraintMatchTotal.removeConstraintMatch(constraintMatch);
+        assertThat(constraintMatchTotal.getScore()).isEqualTo(SimpleScore.ONE);
+        // Remove second instance, removing the constraint match overall.
+        constraintMatchTotal.removeConstraintMatch(equalConstraintMatch);
+        assertThat(constraintMatchTotal.getScore()).isEqualTo(SimpleScore.ZERO);
+        // Make sure there is nothing more to remove.
+        assertThatThrownBy(() -> constraintMatchTotal.removeConstraintMatch(equalConstraintMatch))
+                .isInstanceOf(IllegalStateException.class)
+                .hasMessageContaining("could not remove");
     }
 
     @Test
