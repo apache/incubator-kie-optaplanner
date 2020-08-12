@@ -1,0 +1,13 @@
+
+[id='set-solver-time-proc_{CONTEXT}']
+= Set the solver termination time
+
+If your planning application does not have a termination setting or a termination event, it theoretically runs forever and in reality eventually causes an HTTP timeout error. To prevent this from occurring, use the `optaplanner.solver.termination.spent-limit` parameter to specify the length of time after which the application terminates. In most applications, set the time to at least five minutes (`5m`). However, in the Timetable example, limit the solving time to five second, which is short enough to avoid the HTTP timeout.
+
+.Procedure
+Create the `src/main/resources/application.properties` file with the following content:
+
+[source,properties]
+----
+optaplanner.solver.termination.spent-limit=5s
+----

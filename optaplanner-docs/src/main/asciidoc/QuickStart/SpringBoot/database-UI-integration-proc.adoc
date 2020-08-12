@@ -1,0 +1,143 @@
+[id='database-UI-integration-proc_{CONTEXT}']
+= Add Database and UI integration
+
+After you create the {PLANNER} application example with Spring Boot, add database and UI integration.
+
+.Prerequisite
+* You have created the {PLANNER} Spring Boot timetable example.
+
+.Procedure
+
+. Create Java Persistence API (JPA) repositories for `Timeslot`, `Room`, and `Lesson`. For information about creating JPA repositories, see  https://spring.io/guides/gs/accessing-data-jpa/[_Accessing Data with JPA_] on the Spring website.
+
+. Expose the JPA repositories through REST. For information about exposing the repositories, see https://spring.io/guides/gs/accessing-data-rest/[_Accessing JPA Data with REST_] on the Spring website.
+
+
+. Build a `TimeTableRepository` facade to read and write a `TimeTable` in a single transaction.
+
+. Adjust the `TimeTableController` as shown in the following example:
++
+====
+[source,java]
+----
+package com.example.solver;
+
+import com.example.domain.TimeTable;
+import com.example.persistence.TimeTableRepository;
+import org.optaplanner.core.api.score.ScoreManager;
+import org.optaplanner.core.api.solver.SolverManager;
+import org.optaplanner.core.api.solver.SolverStatus;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+@RestController
+@RequestMapping("/timeTable")
+public class TimeTableController {
+
+    @Autowired
+    private TimeTableRepository timeTableRepository;
+    @Autowired
+    private SolverManager<TimeTable, Long> solverManager;
+    @Autowired
+    private ScoreManager<TimeTable> scoreManager;
+
+    // To try, GET http://localhost:8080/timeTable
+    @GetMapping()
+    public TimeTable getTimeTable() {
+        // Get the solver status before loading the solution
+        // to avoid the race condition that the solver terminates between them
+        SolverStatus solverStatus = getSolverStatus();
+        TimeTable solution = timeTableRepository.findById(TimeTableRepository.SINGLETON_TIME_TABLE_ID);
+        scoreManager.updateScore(solution); // Sets the score
+        solution.setSolverStatus(solverStatus);
+        return solution;
+    }
+
+    @PostMapping("/solve")
+    public void solve() {
+        solverManager.solveAndListen(TimeTableRepository.SINGLETON_TIME_TABLE_ID,
+                timeTableRepository::findById,
+                timeTableRepository::save);
+    }
+
+    public SolverStatus getSolverStatus() {
+        return solverManager.getSolverStatus(TimeTableRepository.SINGLETON_TIME_TABLE_ID);
+    }
+
+    @PostMapping("/stopSolving")
+    public void stopSolving() {
+        solverManager.terminateEarly(TimeTableRepository.SINGLETON_TIME_TABLE_ID);
+    }
+
+}
+----
+====
++
+For simplicity, this code handles only one `TimeTable` instance,
+but it is straightforward to enable multi-tenancy and handle multiple `TimeTable` instances of different high schools in parallel.
++
+The `getTimeTable()` method returns the latest timetable from the database.
+It uses the `ScoreManager` (which is automatically injected)
+to calculate the score of that timetable so the UI can show the score.
++
+The `solve()` method starts a job to solve the current timetable and store the time slot and room assignments in the database.
+It uses the `SolverManager.solveAndListen()` method to listen to intermediate best solutions
+and update the database accordingly.
+This enables the UI to show progress while the backend is still solving.
+
+. Now that the `solve()` method returns immediately, adjust the `TimeTableControllerTest` as shown in the following example:
+
++
+====
+[source,java]
+----
+package com.example.solver;
+
+import com.example.domain.Lesson;
+import com.example.domain.TimeTable;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Timeout;
+import org.optaplanner.core.api.solver.SolverStatus;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+@SpringBootTest(properties = {
+        "optaplanner.solver.termination.spent-limit=1h", // Effectively disable this termination in favor of the best-score-limit
+        "optaplanner.solver.termination.best-score-limit=0hard/*soft"})
+public class TimeTableControllerTest {
+
+    @Autowired
+    private TimeTableController timeTableController;
+
+    @Test
+    @Timeout(600_000)
+    public void solveDemoDataUntilFeasible() throws InterruptedException {
+        timeTableController.solve();
+        TimeTable timeTable = timeTableController.getTimeTable();
+        while (timeTable.getSolverStatus() != SolverStatus.NOT_SOLVING) {
+            // Quick polling (not a Test Thread Sleep anti-pattern)
+            // Test is still fast on fast machines and doesn't randomly fail on slow machines.
+            Thread.sleep(20L);
+            timeTable = timeTableController.getTimeTable();
+        }
+        assertFalse(timeTable.getLessonList().isEmpty());
+        for (Lesson lesson : timeTable.getLessonList()) {
+            assertNotNull(lesson.getTimeslot());
+            assertNotNull(lesson.getRoom());
+        }
+        assertTrue(timeTable.getScore().isFeasible());
+    }
+
+}
+----
+====
+. Poll for the latest solution until the solver finishes solving.
+//This looks like a separate step so I moved it below the example.
+. To visualize the timetable, build an attractive web UI on top of these REST methods.

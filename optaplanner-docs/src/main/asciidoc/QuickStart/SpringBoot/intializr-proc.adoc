@@ -1,0 +1,139 @@
+[id='intializr-proc_{CONTEXT}']
+= Generate the {PLANNER} Spring Boot project
+
+Spring Initialzr is a web-based application that creates a Spring Boot structure based on a few user inputs. You can use Spring Initializr to easily generate a Maven or Gradle Spring Boot project that you can customize for {PLANNER}.
+
+.Procedure
+. Open Spring Initializr in a web browser:
++
+[source]
+----
+https://start.spring.io/
+----
+. Select a project, language, Spring Boot version, and enter project metadata.
+. Click *Add Dependencies* and select *Spring Web* to add the `spring-boot-starter-web` dependency.
+. Click *GENERATE*. Your project ZIP file downloads.
+. Extract the ZIP file and change directory to your Spring Boot project directory.
+. Add the {PLANNER} dependency (`optaplanner-spring-boot-starter`). Currently `optaplanner-spring-boot-starter` is not included in Spring Initializr so you must manually add it to your build file.
++
+* If you generated a Maven project, add the `optaplanner-spring-boot-starter` dependency to your project's `pom.xml`:
++
+[source,xml,subs=attributes+]
+----
+<dependencyManagement>
+    <dependencies>
+        <dependency>
+            <groupId>org.optaplanner</groupId>
+            <artifactId>optaplanner-spring-boot-starter</artifactId>
+            <version>{project-version}</version>
+        </dependency>
+    </dependencies>
+</dependencyManagement>
+----
++
+The following example shows the `optaplanner-spring-boot-starter` dependency added to your project's `pom.xml` file:
++
+[source,xml,subs=attributes+]
+----
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-parent</artifactId>
+        <version>{version-org-spring-framework-boot}</version>
+    </parent>
+
+    <groupId>com.example</groupId>
+    <artifactId>constraint-solving-ai-optaplanner</artifactId>
+    <version>0.1.0-SNAPSHOT</version>
+    <name>Constraint Solving AI with {PLANNER}</name>
+    <description>A Spring Boot {PLANNER} example to generate a school timetable.</description>
+
+    <properties>
+        <java.version>1.8</java.version>
+    </properties>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.optaplanner</groupId>
+            <artifactId>optaplanner-spring-boot-starter</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-test</artifactId>
+            <scope>test</scope>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.junit.vintage</groupId>
+                    <artifactId>junit-vintage-engine</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+    </dependencies>
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>org.optaplanner</groupId>
+                <artifactId>optaplanner-spring-boot-starter</artifactId>
+                <version>{project-version}</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+            </plugin>
+        </plugins>
+    </build>
+
+</project>
+----
+
+* If you generated a Gradle project, add the `optaplanner-spring-boot-starter` to your `build.gradle` file:
++
+[source]
+----
+implementation "org.optaplanner:optaplanner-spring-boot-starter:{project-version}"
+----
++
+The following example shows the `optaplanner-spring-boot-starter` dependency added to your project's `build.gradle` file in a Gradle Java project:
++
+[source,groovy,subs=attributes+]
+----
+plugins {
+    id "org.springframework.boot" version "{version-org-spring-framework-boot}"
+    id "io.spring.dependency-management" version "1.0.9.RELEASE"
+    id "java"
+}
+
+group = "com.example"
+version = "0.1.0-SNAPSHOT"
+sourceCompatibility = "1.8"
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    implementation "org.springframework.boot:spring-boot-starter-web"
+    implementation "org.optaplanner:optaplanner-spring-boot-starter:{project-version}"
+    testImplementation("org.springframework.boot:spring-boot-starter-test") {
+        exclude group: "org.junit.vintage", module: "junit-vintage-engine"
+    }
+}
+
+test {
+    useJUnitPlatform()
+}
+----

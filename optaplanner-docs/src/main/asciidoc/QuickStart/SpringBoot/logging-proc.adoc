@@ -1,0 +1,38 @@
+[id='logging-proc_{CONTEXT}']
+= Logging
+
+After you complete the {PLANNER} Spring Boot timetable application, you can use logging information to help you fine-tune the constraints in the `ConstraintProvider`. Review the score calculation speed in the `info` log file to assess the impact of changes to your constraints. Run the application in debug mode to show every step that your application takes or use trace logging to log every step and every move.
+
+.Procedure
+. Run the timetable application for a fixed amount of time, for example, five minutes.
+. Review the score calculation speed in the  `log` file as shown in the following example:
++
+[source]
+----
+... Solving ended: ..., score calculation speed (29455/sec), ...
+----
+
+. Change a constraint, run the planning application again for the same amount of time, and review the  score calculation speed recorded in the `log` file.
+
+. Run the application in debug mode to log every step:
++
+* To run debug mode from the command line, use the `-D` system property.
+* To change logging in the `application.properties` file, add the following line to that file:
++
+[source,properties]
+----
+logging.level.org.optaplanner=debug
+----
++
+The following example shows output in the `log` file in debug mode:
++
+[options="nowrap"]
+----
+... Solving started: time spent (67), best score (-20init/0hard/0soft), environment mode (REPRODUCIBLE), random (JDK with seed 0).
+...     CH step (0), time spent (128), score (-18init/0hard/0soft), selected move count (15), picked move ([Math(101) {null -> Room A}, Math(101) {null -> MONDAY 08:30}]).
+...     CH step (1), time spent (145), score (-16init/0hard/0soft), selected move count (15), picked move ([Physics(102) {null -> Room A}, Physics(102) {null -> MONDAY 09:30}]).
+...
+----
+
+. Use `trace` logging to show every step and every move per step.
+//Need instructions on how to enable trace logging.

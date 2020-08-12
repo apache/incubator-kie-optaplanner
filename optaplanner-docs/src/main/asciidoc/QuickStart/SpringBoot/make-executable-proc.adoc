@@ -1,0 +1,33 @@
+[id='make-executable-proc_{CONTEXT}']
+= Make the application executable
+
+After you complete the {PLANNER} Spring Boot timetable project, package everything into a single executable JAR file driven by a standard Java `main()` method.
+
+.Prerequisites
+* You have a completed {PLANNER} Spring Boot timetable project.
+
+.Procedure
+
+. Create the `TimeTableSpringBootApp.java` class with the following content:
++
+[source,java]
+----
+package com.example;
+
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+
+@SpringBootApplication
+public class TimeTableSpringBootApp {
+
+    public static void main(String[] args) {
+        SpringApplication.run(TimeTableSpringBootApp.class, args);
+    }
+
+}
+----
+
+
+. Replace the `src/main/java/com/example/DemoApplication.java` class created by Spring Initializr
+with the `TimeTableSpringBootApp.java` class.
+. Run the `TimeTableSpringBootApp.java` class  as the main class of a regular Java application.
