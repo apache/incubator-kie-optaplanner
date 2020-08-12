@@ -180,8 +180,8 @@ public final class NearEntityNearbyEntitySelector extends AbstractEntitySelector
         @Override
         public Object next() {
             /*
-             * The originEntitySelector is guaranteed to be a replaying iterator.
-             * Therefore next() will point to whatever that the original recording iterator was pointing to at the time
+             * The origin iterator is guaranteed to be a replaying iterator.
+             * Therefore next() will point to whatever that the related recording iterator was pointing to at the time
              * when its next() was called.
              * As a result, origin here will be constant unless next() on the original recording iterator is called
              * first.
@@ -218,8 +218,8 @@ public final class NearEntityNearbyEntitySelector extends AbstractEntitySelector
         @Override
         public Object next() {
             /*
-             * The originEntitySelector is guaranteed to be a replaying iterator.
-             * Therefore next() will point to whatever that the original recording iterator was pointing to at the time
+             * The origin iterator is guaranteed to be a replaying iterator.
+             * Therefore next() will point to whatever that the related recording iterator was pointing to at the time
              * when its next() was called.
              * As a result, origin here will be constant unless next() on the original recording iterator is called
              * first.
