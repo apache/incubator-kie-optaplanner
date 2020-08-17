@@ -63,6 +63,7 @@ public abstract class AbstractMoveSelectorFactory<MoveSelectorConfig_ extends Mo
     /**
      * {@inheritDoc}
      */
+    @Override
     public MoveSelector buildMoveSelector(HeuristicConfigPolicy configPolicy, SelectionCacheType minimumCacheType,
             SelectionOrder inheritedSelectionOrder) {
         MoveSelectorConfig unfoldedMoveSelectorConfig = buildUnfoldedMoveSelectorConfig(configPolicy);
