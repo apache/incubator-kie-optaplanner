@@ -213,7 +213,7 @@ public class DefaultLocalSearchPhaseFactory<Solution_> extends AbstractPhaseFact
             moveSelector = new UnionMoveSelectorFactory(unionMoveSelectorConfig).buildMoveSelector(configPolicy,
                     defaultCacheType, defaultSelectionOrder);
         } else {
-            moveSelector = MoveSelectorFactory.get(phaseConfig.getMoveSelectorConfig())
+            moveSelector = MoveSelectorFactory.create(phaseConfig.getMoveSelectorConfig())
                     .buildMoveSelector(configPolicy, defaultCacheType, defaultSelectionOrder);
         }
         return moveSelector;

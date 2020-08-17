@@ -47,7 +47,7 @@ import org.optaplanner.core.impl.heuristic.selector.move.generic.chained.TailCha
 
 public interface MoveSelectorFactory {
 
-    static MoveSelectorFactory get(MoveSelectorConfig<?> moveSelectorConfig) {
+    static MoveSelectorFactory create(MoveSelectorConfig<?> moveSelectorConfig) {
         if (ChangeMoveSelectorConfig.class.isAssignableFrom(moveSelectorConfig.getClass())) {
             return new ChangeMoveSelectorFactory((ChangeMoveSelectorConfig) moveSelectorConfig);
         } else if (SwapMoveSelectorConfig.class.isAssignableFrom(moveSelectorConfig.getClass())) {

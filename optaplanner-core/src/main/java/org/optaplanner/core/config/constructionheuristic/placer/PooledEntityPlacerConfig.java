@@ -126,7 +126,7 @@ public class PooledEntityPlacerConfig extends EntityPlacerConfig<PooledEntityPla
         MoveSelectorConfig moveSelectorConfig_ =
                 moveSelectorConfig == null ? buildMoveSelectorConfig(configPolicy) : moveSelectorConfig;
 
-        MoveSelector moveSelector = MoveSelectorFactory.get(moveSelectorConfig_)
+        MoveSelector moveSelector = MoveSelectorFactory.create(moveSelectorConfig_)
                 .buildMoveSelector(configPolicy, SelectionCacheType.JUST_IN_TIME, SelectionOrder.ORIGINAL);
         return new PooledEntityPlacer(moveSelector);
     }

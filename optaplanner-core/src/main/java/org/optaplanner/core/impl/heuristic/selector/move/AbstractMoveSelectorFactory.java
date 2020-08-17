@@ -67,7 +67,7 @@ public abstract class AbstractMoveSelectorFactory<MoveSelectorConfig_ extends Mo
             SelectionOrder inheritedSelectionOrder) {
         MoveSelectorConfig unfoldedMoveSelectorConfig = buildUnfoldedMoveSelectorConfig(configPolicy);
         if (unfoldedMoveSelectorConfig != null) {
-            return MoveSelectorFactory.get(unfoldedMoveSelectorConfig).buildMoveSelector(configPolicy,
+            return MoveSelectorFactory.create(unfoldedMoveSelectorConfig).buildMoveSelector(configPolicy,
                     minimumCacheType, inheritedSelectionOrder);
         }
 

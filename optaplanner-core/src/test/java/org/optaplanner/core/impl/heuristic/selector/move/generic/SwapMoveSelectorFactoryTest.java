@@ -44,7 +44,7 @@ class SwapMoveSelectorFactoryTest extends AbstractSelectorConfigTest {
         SolutionDescriptor solutionDescriptor = TestdataMultiVarSolution.buildSolutionDescriptor();
         SwapMoveSelectorConfig moveSelectorConfig = new SwapMoveSelectorConfig();
         moveSelectorConfig.setVariableNameIncludeList(Arrays.asList("secondaryValue"));
-        MoveSelector moveSelector = MoveSelectorFactory.get(moveSelectorConfig).buildMoveSelector(
+        MoveSelector moveSelector = MoveSelectorFactory.create(moveSelectorConfig).buildMoveSelector(
                 buildHeuristicConfigPolicy(solutionDescriptor), SelectionCacheType.JUST_IN_TIME, SelectionOrder.RANDOM);
         assertThat(moveSelector)
                 .isInstanceOf(SwapMoveSelector.class);
@@ -55,7 +55,7 @@ class SwapMoveSelectorFactoryTest extends AbstractSelectorConfigTest {
         SolutionDescriptor solutionDescriptor = TestdataMultiVarSolution.buildSolutionDescriptor();
         SwapMoveSelectorConfig moveSelectorConfig = new SwapMoveSelectorConfig();
         moveSelectorConfig.setVariableNameIncludeList(Arrays.asList("nonExistingValue"));
-        assertThatIllegalArgumentException().isThrownBy(() -> MoveSelectorFactory.get(moveSelectorConfig).buildMoveSelector(
+        assertThatIllegalArgumentException().isThrownBy(() -> MoveSelectorFactory.create(moveSelectorConfig).buildMoveSelector(
                 buildHeuristicConfigPolicy(solutionDescriptor),
                 SelectionCacheType.JUST_IN_TIME,
                 SelectionOrder.RANDOM));
@@ -65,7 +65,7 @@ class SwapMoveSelectorFactoryTest extends AbstractSelectorConfigTest {
     void unfoldedMultiVar() {
         SolutionDescriptor solutionDescriptor = TestdataMultiVarSolution.buildSolutionDescriptor();
         SwapMoveSelectorConfig moveSelectorConfig = new SwapMoveSelectorConfig();
-        MoveSelector moveSelector = MoveSelectorFactory.get(moveSelectorConfig).buildMoveSelector(
+        MoveSelector moveSelector = MoveSelectorFactory.create(moveSelectorConfig).buildMoveSelector(
                 buildHeuristicConfigPolicy(solutionDescriptor), SelectionCacheType.JUST_IN_TIME, SelectionOrder.RANDOM);
         assertThat(moveSelector)
                 .isInstanceOf(SwapMoveSelector.class);
@@ -76,7 +76,7 @@ class SwapMoveSelectorFactoryTest extends AbstractSelectorConfigTest {
         SolutionDescriptor solutionDescriptor = TestdataMultiEntitySolution.buildSolutionDescriptor();
         SwapMoveSelectorConfig moveSelectorConfig = new SwapMoveSelectorConfig();
         moveSelectorConfig.setEntitySelectorConfig(new EntitySelectorConfig(TestdataHerdEntity.class));
-        MoveSelector moveSelector = MoveSelectorFactory.get(moveSelectorConfig).buildMoveSelector(
+        MoveSelector moveSelector = MoveSelectorFactory.create(moveSelectorConfig).buildMoveSelector(
                 buildHeuristicConfigPolicy(solutionDescriptor), SelectionCacheType.JUST_IN_TIME, SelectionOrder.RANDOM);
         assertThat(moveSelector)
                 .isInstanceOf(SwapMoveSelector.class);
@@ -87,7 +87,7 @@ class SwapMoveSelectorFactoryTest extends AbstractSelectorConfigTest {
         SolutionDescriptor solutionDescriptor = TestdataMultiEntitySolution.buildSolutionDescriptor();
         SwapMoveSelectorConfig moveSelectorConfig = new SwapMoveSelectorConfig();
         moveSelectorConfig.setEntitySelectorConfig(new EntitySelectorConfig(TestdataEntity.class));
-        assertThatIllegalArgumentException().isThrownBy(() -> MoveSelectorFactory.get(moveSelectorConfig).buildMoveSelector(
+        assertThatIllegalArgumentException().isThrownBy(() -> MoveSelectorFactory.create(moveSelectorConfig).buildMoveSelector(
                 buildHeuristicConfigPolicy(solutionDescriptor),
                 SelectionCacheType.JUST_IN_TIME,
                 SelectionOrder.RANDOM));
@@ -97,7 +97,7 @@ class SwapMoveSelectorFactoryTest extends AbstractSelectorConfigTest {
     void unfoldedMultiEntity() {
         SolutionDescriptor solutionDescriptor = TestdataMultiEntitySolution.buildSolutionDescriptor();
         SwapMoveSelectorConfig moveSelectorConfig = new SwapMoveSelectorConfig();
-        MoveSelector moveSelector = MoveSelectorFactory.get(moveSelectorConfig).buildMoveSelector(
+        MoveSelector moveSelector = MoveSelectorFactory.create(moveSelectorConfig).buildMoveSelector(
                 buildHeuristicConfigPolicy(solutionDescriptor), SelectionCacheType.JUST_IN_TIME, SelectionOrder.RANDOM);
         assertThat(moveSelector)
                 .isInstanceOf(UnionMoveSelector.class);
@@ -110,7 +110,7 @@ class SwapMoveSelectorFactoryTest extends AbstractSelectorConfigTest {
         SwapMoveSelectorConfig moveSelectorConfig = new SwapMoveSelectorConfig();
         moveSelectorConfig.setEntitySelectorConfig(new EntitySelectorConfig(TestdataHerdEntity.class));
         moveSelectorConfig.setSecondaryEntitySelectorConfig(new EntitySelectorConfig(TestdataHerdEntity.class));
-        MoveSelector moveSelector = MoveSelectorFactory.get(moveSelectorConfig).buildMoveSelector(
+        MoveSelector moveSelector = MoveSelectorFactory.create(moveSelectorConfig).buildMoveSelector(
                 buildHeuristicConfigPolicy(solutionDescriptor), SelectionCacheType.JUST_IN_TIME, SelectionOrder.RANDOM);
         assertThat(moveSelector)
                 .isInstanceOf(SwapMoveSelector.class);
@@ -122,7 +122,7 @@ class SwapMoveSelectorFactoryTest extends AbstractSelectorConfigTest {
         SwapMoveSelectorConfig moveSelectorConfig = new SwapMoveSelectorConfig();
         moveSelectorConfig.setEntitySelectorConfig(new EntitySelectorConfig(TestdataLeadEntity.class));
         moveSelectorConfig.setSecondaryEntitySelectorConfig(new EntitySelectorConfig(TestdataHerdEntity.class));
-        assertThatIllegalArgumentException().isThrownBy(() -> MoveSelectorFactory.get(moveSelectorConfig).buildMoveSelector(
+        assertThatIllegalArgumentException().isThrownBy(() -> MoveSelectorFactory.create(moveSelectorConfig).buildMoveSelector(
                 buildHeuristicConfigPolicy(solutionDescriptor),
                 SelectionCacheType.JUST_IN_TIME,
                 SelectionOrder.RANDOM));
@@ -134,7 +134,7 @@ class SwapMoveSelectorFactoryTest extends AbstractSelectorConfigTest {
         SwapMoveSelectorConfig moveSelectorConfig = new SwapMoveSelectorConfig();
         moveSelectorConfig.setEntitySelectorConfig(new EntitySelectorConfig());
         moveSelectorConfig.setSecondaryEntitySelectorConfig(new EntitySelectorConfig());
-        MoveSelector moveSelector = MoveSelectorFactory.get(moveSelectorConfig).buildMoveSelector(
+        MoveSelector moveSelector = MoveSelectorFactory.create(moveSelectorConfig).buildMoveSelector(
                 buildHeuristicConfigPolicy(solutionDescriptor), SelectionCacheType.JUST_IN_TIME, SelectionOrder.RANDOM);
         assertThat(moveSelector)
                 .isInstanceOf(UnionMoveSelector.class);

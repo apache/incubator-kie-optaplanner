@@ -160,7 +160,7 @@ public class QueuedEntityPlacerConfig extends EntityPlacerConfig<QueuedEntityPla
         }
         List<MoveSelector> moveSelectorList = new ArrayList<>(moveSelectorConfigList_.size());
         for (MoveSelectorConfig moveSelectorConfig : moveSelectorConfigList_) {
-            MoveSelector moveSelector = MoveSelectorFactory.get(moveSelectorConfig)
+            MoveSelector moveSelector = MoveSelectorFactory.create(moveSelectorConfig)
                     .buildMoveSelector(configPolicy, SelectionCacheType.JUST_IN_TIME, SelectionOrder.ORIGINAL);
             moveSelectorList.add(moveSelector);
         }

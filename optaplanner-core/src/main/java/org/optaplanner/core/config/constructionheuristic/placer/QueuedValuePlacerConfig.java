@@ -122,7 +122,7 @@ public class QueuedValuePlacerConfig extends EntityPlacerConfig<QueuedValuePlace
         MoveSelectorConfig moveSelectorConfig_ = moveSelectorConfig == null ? buildChangeMoveSelectorConfig(configPolicy,
                 valueSelectorConfig_.getId(), valueSelector.getVariableDescriptor()) : moveSelectorConfig;
 
-        MoveSelector moveSelector = MoveSelectorFactory.get(moveSelectorConfig_)
+        MoveSelector moveSelector = MoveSelectorFactory.create(moveSelectorConfig_)
                 .buildMoveSelector(configPolicy, SelectionCacheType.JUST_IN_TIME, SelectionOrder.ORIGINAL);
         if (!(valueSelector instanceof EntityIndependentValueSelector)) {
             throw new IllegalArgumentException("The queuedValuePlacer (" + this
