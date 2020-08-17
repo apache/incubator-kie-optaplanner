@@ -48,8 +48,7 @@ class MoveSelectorFactoryTest extends AbstractSelectorConfigTest {
         moveSelectorConfig.setSelectionOrder(SelectionOrder.ORIGINAL);
         MoveSelectorFactory moveSelectorFactory =
                 new AssertingMoveSelectorFactory(moveSelectorConfig, baseMoveSelector, SelectionCacheType.PHASE, false);
-        MoveSelector moveSelector = moveSelectorFactory.buildMoveSelector(
-                buildHeuristicConfigPolicy(),
+        MoveSelector moveSelector = moveSelectorFactory.buildMoveSelector(buildHeuristicConfigPolicy(),
                 SelectionCacheType.JUST_IN_TIME, SelectionOrder.RANDOM);
         assertThat(moveSelector)
                 .isInstanceOf(CachingMoveSelector.class)
@@ -66,8 +65,7 @@ class MoveSelectorFactoryTest extends AbstractSelectorConfigTest {
         moveSelectorConfig.setSelectionOrder(SelectionOrder.ORIGINAL);
         MoveSelectorFactory moveSelectorFactory =
                 new AssertingMoveSelectorFactory(moveSelectorConfig, baseMoveSelector, SelectionCacheType.STEP, false);
-        MoveSelector moveSelector = moveSelectorFactory.buildMoveSelector(
-                buildHeuristicConfigPolicy(),
+        MoveSelector moveSelector = moveSelectorFactory.buildMoveSelector(buildHeuristicConfigPolicy(),
                 SelectionCacheType.JUST_IN_TIME, SelectionOrder.RANDOM);
         assertThat(moveSelector)
                 .isInstanceOf(CachingMoveSelector.class)
@@ -84,8 +82,7 @@ class MoveSelectorFactoryTest extends AbstractSelectorConfigTest {
                 new AssertingMoveSelectorFactory(moveSelectorConfig, baseMoveSelector, SelectionCacheType.JUST_IN_TIME, false);
         moveSelectorConfig.setCacheType(SelectionCacheType.JUST_IN_TIME);
         moveSelectorConfig.setSelectionOrder(SelectionOrder.ORIGINAL);
-        MoveSelector moveSelector = moveSelectorFactory.buildMoveSelector(
-                buildHeuristicConfigPolicy(),
+        MoveSelector moveSelector = moveSelectorFactory.buildMoveSelector(buildHeuristicConfigPolicy(),
                 SelectionCacheType.JUST_IN_TIME, SelectionOrder.RANDOM);
         assertThat(moveSelector).isSameAs(baseMoveSelector);
         assertThat(moveSelector.getCacheType()).isEqualTo(SelectionCacheType.JUST_IN_TIME);
@@ -99,8 +96,7 @@ class MoveSelectorFactoryTest extends AbstractSelectorConfigTest {
                 new AssertingMoveSelectorFactory(moveSelectorConfig, baseMoveSelector, SelectionCacheType.PHASE, false);
         moveSelectorConfig.setCacheType(SelectionCacheType.PHASE);
         moveSelectorConfig.setSelectionOrder(SelectionOrder.RANDOM);
-        MoveSelector moveSelector = moveSelectorFactory.buildMoveSelector(
-                buildHeuristicConfigPolicy(),
+        MoveSelector moveSelector = moveSelectorFactory.buildMoveSelector(buildHeuristicConfigPolicy(),
                 SelectionCacheType.JUST_IN_TIME, SelectionOrder.RANDOM);
         assertThat(moveSelector)
                 .isInstanceOf(CachingMoveSelector.class)
@@ -117,8 +113,7 @@ class MoveSelectorFactoryTest extends AbstractSelectorConfigTest {
                 new AssertingMoveSelectorFactory(moveSelectorConfig, baseMoveSelector, SelectionCacheType.STEP, false);
         moveSelectorConfig.setCacheType(SelectionCacheType.STEP);
         moveSelectorConfig.setSelectionOrder(SelectionOrder.RANDOM);
-        MoveSelector moveSelector = moveSelectorFactory.buildMoveSelector(
-                buildHeuristicConfigPolicy(),
+        MoveSelector moveSelector = moveSelectorFactory.buildMoveSelector(buildHeuristicConfigPolicy(),
                 SelectionCacheType.JUST_IN_TIME, SelectionOrder.RANDOM);
         assertThat(moveSelector)
                 .isInstanceOf(CachingMoveSelector.class)
@@ -135,8 +130,7 @@ class MoveSelectorFactoryTest extends AbstractSelectorConfigTest {
                 new AssertingMoveSelectorFactory(moveSelectorConfig, baseMoveSelector, SelectionCacheType.JUST_IN_TIME, true);
         moveSelectorConfig.setCacheType(SelectionCacheType.JUST_IN_TIME);
         moveSelectorConfig.setSelectionOrder(SelectionOrder.RANDOM);
-        MoveSelector moveSelector = moveSelectorFactory.buildMoveSelector(
-                buildHeuristicConfigPolicy(),
+        MoveSelector moveSelector = moveSelectorFactory.buildMoveSelector(buildHeuristicConfigPolicy(),
                 SelectionCacheType.JUST_IN_TIME, SelectionOrder.RANDOM);
         assertThat(moveSelector).isSameAs(baseMoveSelector);
         assertThat(moveSelector.getCacheType()).isEqualTo(SelectionCacheType.JUST_IN_TIME);
@@ -150,8 +144,7 @@ class MoveSelectorFactoryTest extends AbstractSelectorConfigTest {
                 new AssertingMoveSelectorFactory(moveSelectorConfig, baseMoveSelector, SelectionCacheType.PHASE, false);
         moveSelectorConfig.setCacheType(SelectionCacheType.PHASE);
         moveSelectorConfig.setSelectionOrder(SelectionOrder.SHUFFLED);
-        MoveSelector moveSelector = moveSelectorFactory.buildMoveSelector(
-                buildHeuristicConfigPolicy(),
+        MoveSelector moveSelector = moveSelectorFactory.buildMoveSelector(buildHeuristicConfigPolicy(),
                 SelectionCacheType.JUST_IN_TIME, SelectionOrder.RANDOM);
         assertThat(moveSelector)
                 .isInstanceOf(ShufflingMoveSelector.class);
@@ -167,8 +160,7 @@ class MoveSelectorFactoryTest extends AbstractSelectorConfigTest {
                 new AssertingMoveSelectorFactory(moveSelectorConfig, baseMoveSelector, SelectionCacheType.STEP, false);
         moveSelectorConfig.setCacheType(SelectionCacheType.STEP);
         moveSelectorConfig.setSelectionOrder(SelectionOrder.SHUFFLED);
-        MoveSelector moveSelector = moveSelectorFactory.buildMoveSelector(
-                buildHeuristicConfigPolicy(),
+        MoveSelector moveSelector = moveSelectorFactory.buildMoveSelector(buildHeuristicConfigPolicy(),
                 SelectionCacheType.JUST_IN_TIME, SelectionOrder.RANDOM);
         assertThat(moveSelector)
                 .isInstanceOf(ShufflingMoveSelector.class);
