@@ -67,6 +67,11 @@
       <groupId>org.optaplanner</groupId>
       <artifactId>optaplanner-quarkus-jackson</artifactId>
     </dependency>
+    <dependency>
+      <groupId>org.optaplanner</groupId>
+      <artifactId>optaplanner-quarkus-jackson-deployment</artifactId>
+      <scope>provided</scope>
+    </dependency>
 
     <dependency>
       <groupId>org.webjars</groupId>
