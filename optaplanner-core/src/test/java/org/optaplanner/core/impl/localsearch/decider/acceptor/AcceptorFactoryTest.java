@@ -59,7 +59,6 @@ class AcceptorFactoryTest {
                 .withStepCountingHillClimbingSize(1)
                 .withStepCountingHillClimbingType(StepCountingHillClimbingType.IMPROVING_STEP);
 
-
         HeuristicConfigPolicy heuristicConfigPolicy = mock(HeuristicConfigPolicy.class);
         ScoreDefinition<HardSoftScore> scoreDefinition = new HardSoftScoreDefinition();
         when(heuristicConfigPolicy.getEnvironmentMode()).thenReturn(EnvironmentMode.NON_INTRUSIVE_FULL_ASSERT);
@@ -93,4 +92,3 @@ class AcceptorFactoryTest {
                 .withMessageContaining("The acceptor does not specify any acceptorType");
     }
 }
-
