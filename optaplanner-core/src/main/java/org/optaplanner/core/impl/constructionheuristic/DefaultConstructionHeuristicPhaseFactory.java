@@ -35,6 +35,7 @@ import org.optaplanner.core.config.util.ConfigUtils;
 import org.optaplanner.core.impl.constructionheuristic.decider.ConstructionHeuristicDecider;
 import org.optaplanner.core.impl.constructionheuristic.decider.MultiThreadedConstructionHeuristicDecider;
 import org.optaplanner.core.impl.constructionheuristic.decider.forager.ConstructionHeuristicForager;
+import org.optaplanner.core.impl.constructionheuristic.decider.forager.ConstructionHeuristicForagerFactory;
 import org.optaplanner.core.impl.constructionheuristic.placer.EntityPlacer;
 import org.optaplanner.core.impl.heuristic.HeuristicConfigPolicy;
 import org.optaplanner.core.impl.phase.AbstractPhaseFactory;
@@ -99,7 +100,8 @@ public class DefaultConstructionHeuristicPhaseFactory<Solution_>
         ConstructionHeuristicForagerConfig foragerConfig_ = phaseConfig.getForagerConfig() == null
                 ? new ConstructionHeuristicForagerConfig()
                 : phaseConfig.getForagerConfig();
-        ConstructionHeuristicForager forager = foragerConfig_.buildForager(configPolicy);
+        ConstructionHeuristicForager forager =
+                ConstructionHeuristicForagerFactory.create(foragerConfig_).buildForager(configPolicy);
         EnvironmentMode environmentMode = configPolicy.getEnvironmentMode();
         ConstructionHeuristicDecider<Solution_> decider;
         Integer moveThreadCount = configPolicy.getMoveThreadCount();
