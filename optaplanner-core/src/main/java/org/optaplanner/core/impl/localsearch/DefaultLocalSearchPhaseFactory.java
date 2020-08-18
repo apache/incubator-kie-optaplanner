@@ -41,6 +41,7 @@ import org.optaplanner.core.impl.heuristic.selector.move.composite.UnionMoveSele
 import org.optaplanner.core.impl.localsearch.decider.LocalSearchDecider;
 import org.optaplanner.core.impl.localsearch.decider.MultiThreadedLocalSearchDecider;
 import org.optaplanner.core.impl.localsearch.decider.acceptor.Acceptor;
+import org.optaplanner.core.impl.localsearch.decider.acceptor.AcceptorFactory;
 import org.optaplanner.core.impl.localsearch.decider.forager.LocalSearchForager;
 import org.optaplanner.core.impl.phase.AbstractPhaseFactory;
 import org.optaplanner.core.impl.solver.recaller.BestSolutionRecaller;
@@ -155,7 +156,7 @@ public class DefaultLocalSearchPhaseFactory<Solution_> extends AbstractPhaseFact
                             + ") is not implemented.");
             }
         }
-        return acceptorConfig_.buildAcceptor(configPolicy);
+        return AcceptorFactory.create(acceptorConfig_).buildAcceptor(configPolicy);
     }
 
     protected LocalSearchForager buildForager(HeuristicConfigPolicy configPolicy) {
