@@ -12,13 +12,13 @@
   <artifactId>optaplanner-quickstarts</artifactId>
   <packaging>pom</packaging>
 
-  <name>OptaPlanner Quickstarts</name>
+  <name>OptaPlanner quick starts</name>
   <description>
     OptaPlanner solves planning problems.
     This lightweight, embeddable planning engine implements powerful and scalable algorithms
     to optimize business resource scheduling and planning.
 
-    This module contains the quickstarts.
+    This module contains the quick starts.
   </description>
   <url>https://www.optaplanner.org</url>
 
