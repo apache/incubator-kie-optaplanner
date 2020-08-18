@@ -71,6 +71,7 @@
     <module>optaplanner-test</module>
     <module>optaplanner-integration</module><!-- TODO rename to optaplanner-spring-integration-->
     <module>optaplanner-examples</module>
+    <module>optaplanner-quickstarts</module>
   </modules>
 
   <dependencyManagement>
