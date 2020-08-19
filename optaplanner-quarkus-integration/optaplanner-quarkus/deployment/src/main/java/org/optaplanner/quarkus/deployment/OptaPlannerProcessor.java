@@ -85,7 +85,7 @@ class OptaPlannerProcessor {
 
     @BuildStep
     @Record(STATIC_INIT)
-    void recordSolverFactory(OptaPlannerRecorder recorder, RecorderContext recorderContext,
+    void recordAndRegisterBeans(OptaPlannerRecorder recorder, RecorderContext recorderContext,
             CombinedIndexBuildItem combinedIndex,
             BuildProducer<ReflectiveHierarchyBuildItem> reflectiveHierarchyClass,
             BuildProducer<ReflectiveClassBuildItem> reflectiveClass,
@@ -188,8 +188,7 @@ class OptaPlannerProcessor {
             throw new IllegalStateException("A target (" + solutionTarget
                     + ") with a @" + PlanningSolution.class.getSimpleName() + " must be a class.");
         }
-
-        return recorderContext.classProxy(solutionTarget.asClass().name().toString());
+        return convertClassInfoToClass(solutionTarget.asClass());
     }
 
     private List<Class<?>> findEntityClassList(RecorderContext recorderContext, IndexView indexView) {
@@ -206,7 +205,7 @@ class OptaPlannerProcessor {
                     + ") with a @" + PlanningEntity.class.getSimpleName() + " must be a class.");
         }
         return targetList.stream()
-                .map(target -> recorderContext.classProxy(target.asClass().name().toString()))
+                .map(target -> (Class<?>) convertClassInfoToClass(target.asClass()))
                 .collect(Collectors.toList());
     }
 
@@ -247,16 +246,8 @@ class OptaPlannerProcessor {
         if (classInfos.isEmpty()) {
             return null;
         }
-        String className = classInfos.iterator().next().name().toString();
-        ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
-        try {
-            // Don't use recorderContext.classProxy(className)
-            // because ReflectiveClassBuildItem cannot cope with a class proxy
-            return (Class<? extends T>) classLoader.loadClass(className);
-        } catch (ClassNotFoundException e) {
-            throw new IllegalStateException("The class (" + className
-                    + ") cannot be created during deployment.", e);
-        }
+        ClassInfo classInfo = classInfos.iterator().next();
+        return convertClassInfoToClass(classInfo);
     }
 
     private void applyTerminationProperties(SolverConfig solverConfig) {
@@ -279,6 +270,17 @@ class OptaPlannerProcessor {
     private String convertClassInfosToString(Collection<ClassInfo> classInfos) {
         return "[" + classInfos.stream().map(instance -> instance.name().toString())
                 .collect(Collectors.joining(", ")) + "]";
+    }
+
+    private <T> Class<? extends T> convertClassInfoToClass(ClassInfo classInfo) {
+        String className = classInfo.name().toString();
+        ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
+        try {
+            return (Class<? extends T>) classLoader.loadClass(className);
+        } catch (ClassNotFoundException e) {
+            throw new IllegalStateException("The class (" + className
+                    + ") cannot be created during deployment.", e);
+        }
     }
 
     @BuildStep
