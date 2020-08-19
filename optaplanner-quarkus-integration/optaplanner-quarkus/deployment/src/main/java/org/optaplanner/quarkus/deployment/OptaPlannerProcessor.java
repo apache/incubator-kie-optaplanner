@@ -33,6 +33,7 @@ import org.jboss.jandex.ClassInfo;
 import org.jboss.jandex.DotName;
 import org.jboss.jandex.IndexView;
 import org.jboss.jandex.Type;
+import org.jboss.logging.Logger;
 import org.optaplanner.core.api.domain.entity.PlanningEntity;
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.score.stream.ConstraintProvider;
@@ -61,10 +62,7 @@ import io.quarkus.runtime.configuration.ConfigurationException;
 
 class OptaPlannerProcessor {
 
-    private static final DotName EASY_SCORE_CALCULATOR_DOT_NAME = DotName.createSimple(EasyScoreCalculator.class.getName());
-    private static final DotName CONSTRAINT_PROVIDER_DOT_NAME = DotName.createSimple(ConstraintProvider.class.getName());
-    private static final DotName INCREMENTAL_SCORE_CALCULATOR_DOT_NAME =
-            DotName.createSimple(IncrementalScoreCalculator.class.getName());
+    private static final Logger log = Logger.getLogger(OptaPlannerProcessor.class.getName());
 
     OptaPlannerBuildTimeConfig optaPlannerBuildTimeConfig;
 
@@ -86,37 +84,25 @@ class OptaPlannerProcessor {
     }
 
     @BuildStep
-    void registerAdditionalBeans(CombinedIndexBuildItem combinedIndex,
-            BuildProducer<AdditionalBeanBuildItem> additionalBeans) {
-        IndexView indexView = combinedIndex.getIndex();
-        if (hasNoOptaPlannerContent(indexView)) {
-            return;
-        }
-        // The bean encapsulating the SolverFactory
-        additionalBeans.produce(new AdditionalBeanBuildItem(OptaPlannerBeanProvider.class));
-    }
-
-    private boolean hasNoOptaPlannerContent(IndexView indexView) {
-        // Only skip this extension if everything is missing. Otherwise, if some parts are missing, fail fast later.
-        return indexView.getAnnotations(DotNames.PLANNING_SOLUTION).isEmpty()
-                && indexView.getAnnotations(DotNames.PLANNING_ENTITY).isEmpty()
-                && indexView.getAllKnownImplementors(EASY_SCORE_CALCULATOR_DOT_NAME).isEmpty()
-                && indexView.getAllKnownImplementors(CONSTRAINT_PROVIDER_DOT_NAME).isEmpty()
-                && indexView.getAllKnownImplementors(INCREMENTAL_SCORE_CALCULATOR_DOT_NAME).isEmpty();
-    }
-
-    @BuildStep
     @Record(STATIC_INIT)
     void recordSolverFactory(OptaPlannerRecorder recorder, RecorderContext recorderContext,
             CombinedIndexBuildItem combinedIndex,
             BuildProducer<ReflectiveHierarchyBuildItem> reflectiveHierarchyClass,
             BuildProducer<ReflectiveClassBuildItem> reflectiveClass,
-            BuildProducer<SyntheticBeanBuildItem> syntheticBeanBuildItemBuildProducer) {
+            BuildProducer<SyntheticBeanBuildItem> syntheticBeanBuildItemBuildProducer,
+            BuildProducer<AdditionalBeanBuildItem> additionalBeans) {
         IndexView indexView = combinedIndex.getIndex();
-        if (hasNoOptaPlannerContent(indexView)) {
+
+        // Only skip this extension if everything is missing. Otherwise, if some parts are missing, fail fast later.
+        if (indexView.getAnnotations(DotNames.PLANNING_SOLUTION).isEmpty()
+                && indexView.getAnnotations(DotNames.PLANNING_ENTITY).isEmpty()) {
+            log.warn("Skipping OptaPlanner extension because there are no " + PlanningSolution.class.getSimpleName()
+                    + " or " + PlanningEntity.class.getSimpleName() + " annotated classes.");
             return;
         }
 
+        // Quarkus extensions must always use getContextClassLoader()
+        // Internally, OptaPlanner defaults the ClassLoader to getContextClassLoader() too
         ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
         SolverConfig solverConfig;
         if (optaPlannerBuildTimeConfig.solverConfigXml.isPresent()) {
@@ -125,12 +111,11 @@ class OptaPlannerProcessor {
                 throw new ConfigurationException("Invalid quarkus.optaplanner.solverConfigXML property ("
                         + solverConfigXML + "): that classpath resource does not exist.");
             }
-            solverConfig = SolverConfig.createFromXmlResource(solverConfigXML, classLoader);
+            solverConfig = SolverConfig.createFromXmlResource(solverConfigXML);
         } else if (classLoader.getResource(OptaPlannerBuildTimeConfig.DEFAULT_SOLVER_CONFIG_URL) != null) {
             solverConfig = SolverConfig.createFromXmlResource(
-                    OptaPlannerBuildTimeConfig.DEFAULT_SOLVER_CONFIG_URL, classLoader);
+                    OptaPlannerBuildTimeConfig.DEFAULT_SOLVER_CONFIG_URL);
         } else {
-            // No point in passing the classLoader because OptaPlannerBeanProvider needs to replace it
             solverConfig = new SolverConfig();
         }
         // The deployment classLoader must not escape to runtime
@@ -171,7 +156,7 @@ class OptaPlannerProcessor {
                 .scope(Singleton.class)
                 .defaultBean()
                 .supplier(recorder.solverManagerConfig(solverManagerConfig)).done());
-
+        additionalBeans.produce(new AdditionalBeanBuildItem(OptaPlannerBeanProvider.class));
     }
 
     private void applySolverProperties(RecorderContext recorderContext,
@@ -229,11 +214,11 @@ class OptaPlannerProcessor {
         if (solverConfig.getScoreDirectorFactoryConfig() == null) {
             ScoreDirectorFactoryConfig scoreDirectorFactoryConfig = new ScoreDirectorFactoryConfig();
             scoreDirectorFactoryConfig.setEasyScoreCalculatorClass(
-                    findImplementingClass(EASY_SCORE_CALCULATOR_DOT_NAME, indexView));
+                    findImplementingClass(DotNames.EASY_SCORE_CALCULATOR, indexView));
             scoreDirectorFactoryConfig.setConstraintProviderClass(
-                    findImplementingClass(CONSTRAINT_PROVIDER_DOT_NAME, indexView));
+                    findImplementingClass(DotNames.CONSTRAINT_PROVIDER, indexView));
             scoreDirectorFactoryConfig.setIncrementalScoreCalculatorClass(
-                    findImplementingClass(INCREMENTAL_SCORE_CALCULATOR_DOT_NAME, indexView));
+                    findImplementingClass(DotNames.INCREMENTAL_SCORE_CALCULATOR, indexView));
             ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
             if (classLoader.getResource(SolverBuildTimeConfig.DEFAULT_SCORE_DRL_URL) != null) {
                 scoreDirectorFactoryConfig.setScoreDrlList(Collections.singletonList(

@@ -33,8 +33,6 @@ public class OptaPlannerBeanProvider {
     @Singleton
     @Produces
     <Solution_> SolverFactory<Solution_> solverFactory(SolverConfig solverConfig) {
-        // Replace the ClassLoader, especially needed for quarkus:dev mode
-        solverConfig.setClassLoader(Thread.currentThread().getContextClassLoader());
         return SolverFactory.create(solverConfig);
     }
 
