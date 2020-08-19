@@ -61,6 +61,11 @@ import io.quarkus.runtime.configuration.ConfigurationException;
 
 class OptaPlannerProcessor {
 
+    private static final DotName EASY_SCORE_CALCULATOR_DOT_NAME = DotName.createSimple(EasyScoreCalculator.class.getName());
+    private static final DotName CONSTRAINT_PROVIDER_DOT_NAME = DotName.createSimple(ConstraintProvider.class.getName());
+    private static final DotName INCREMENTAL_SCORE_CALCULATOR_DOT_NAME =
+            DotName.createSimple(IncrementalScoreCalculator.class.getName());
+
     OptaPlannerBuildTimeConfig optaPlannerBuildTimeConfig;
 
     @BuildStep
@@ -81,9 +86,23 @@ class OptaPlannerProcessor {
     }
 
     @BuildStep
-    void registerAdditionalBeans(BuildProducer<AdditionalBeanBuildItem> additionalBeans) {
+    void registerAdditionalBeans(CombinedIndexBuildItem combinedIndex,
+            BuildProducer<AdditionalBeanBuildItem> additionalBeans) {
+        IndexView indexView = combinedIndex.getIndex();
+        if (hasNoOptaPlannerContent(indexView)) {
+            return;
+        }
         // The bean encapsulating the SolverFactory
         additionalBeans.produce(new AdditionalBeanBuildItem(OptaPlannerBeanProvider.class));
+    }
+
+    private boolean hasNoOptaPlannerContent(IndexView indexView) {
+        // Only skip this extension if everything is missing. Otherwise, if some parts are missing, fail fast later.
+        return indexView.getAnnotations(DotNames.PLANNING_SOLUTION).isEmpty()
+                && indexView.getAnnotations(DotNames.PLANNING_ENTITY).isEmpty()
+                && indexView.getAllKnownImplementors(EASY_SCORE_CALCULATOR_DOT_NAME).isEmpty()
+                && indexView.getAllKnownImplementors(CONSTRAINT_PROVIDER_DOT_NAME).isEmpty()
+                && indexView.getAllKnownImplementors(INCREMENTAL_SCORE_CALCULATOR_DOT_NAME).isEmpty();
     }
 
     @BuildStep
@@ -93,6 +112,11 @@ class OptaPlannerProcessor {
             BuildProducer<ReflectiveHierarchyBuildItem> reflectiveHierarchyClass,
             BuildProducer<ReflectiveClassBuildItem> reflectiveClass,
             BuildProducer<SyntheticBeanBuildItem> syntheticBeanBuildItemBuildProducer) {
+        IndexView indexView = combinedIndex.getIndex();
+        if (hasNoOptaPlannerContent(indexView)) {
+            return;
+        }
+
         ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
         SolverConfig solverConfig;
         if (optaPlannerBuildTimeConfig.solverConfigXml.isPresent()) {
@@ -106,12 +130,12 @@ class OptaPlannerProcessor {
             solverConfig = SolverConfig.createFromXmlResource(
                     OptaPlannerBuildTimeConfig.DEFAULT_SOLVER_CONFIG_URL, classLoader);
         } else {
-            solverConfig = new SolverConfig(classLoader);
+            // No point in passing the classLoader because OptaPlannerBeanProvider needs to replace it
+            solverConfig = new SolverConfig();
         }
         // The deployment classLoader must not escape to runtime
         solverConfig.setClassLoader(null);
 
-        IndexView indexView = combinedIndex.getIndex();
         applySolverProperties(recorderContext, indexView, solverConfig);
 
         if (solverConfig.getSolutionClass() != null) {
@@ -205,11 +229,11 @@ class OptaPlannerProcessor {
         if (solverConfig.getScoreDirectorFactoryConfig() == null) {
             ScoreDirectorFactoryConfig scoreDirectorFactoryConfig = new ScoreDirectorFactoryConfig();
             scoreDirectorFactoryConfig.setEasyScoreCalculatorClass(
-                    findImplementingClass(EasyScoreCalculator.class, indexView));
+                    findImplementingClass(EASY_SCORE_CALCULATOR_DOT_NAME, indexView));
             scoreDirectorFactoryConfig.setConstraintProviderClass(
-                    findImplementingClass(ConstraintProvider.class, indexView));
+                    findImplementingClass(CONSTRAINT_PROVIDER_DOT_NAME, indexView));
             scoreDirectorFactoryConfig.setIncrementalScoreCalculatorClass(
-                    findImplementingClass(IncrementalScoreCalculator.class, indexView));
+                    findImplementingClass(INCREMENTAL_SCORE_CALCULATOR_DOT_NAME, indexView));
             ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
             if (classLoader.getResource(SolverBuildTimeConfig.DEFAULT_SCORE_DRL_URL) != null) {
                 scoreDirectorFactoryConfig.setScoreDrlList(Collections.singletonList(
@@ -229,12 +253,11 @@ class OptaPlannerProcessor {
         }
     }
 
-    private <T> Class<? extends T> findImplementingClass(Class<T> targetClass, IndexView indexView) {
-        Collection<ClassInfo> classInfos = indexView.getAllKnownImplementors(
-                DotName.createSimple(targetClass.getName()));
+    private <T> Class<? extends T> findImplementingClass(DotName targetDotName, IndexView indexView) {
+        Collection<ClassInfo> classInfos = indexView.getAllKnownImplementors(targetDotName);
         if (classInfos.size() > 1) {
             throw new IllegalStateException("Multiple classes (" + convertClassInfosToString(classInfos)
-                    + ") found that implement the interface " + targetClass.getSimpleName() + ".");
+                    + ") found that implement the interface " + targetDotName + ".");
         }
         if (classInfos.isEmpty()) {
             return null;
