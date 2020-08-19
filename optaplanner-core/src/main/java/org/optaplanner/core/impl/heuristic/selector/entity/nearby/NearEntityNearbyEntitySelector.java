@@ -45,7 +45,7 @@ public final class NearEntityNearbyEntitySelector extends AbstractEntitySelector
         this.childEntitySelector = childEntitySelector;
         if (!(originEntitySelector instanceof MimicReplayingEntitySelector)) {
             // In order to select a nearby entity, we must first have something to be near by.
-            throw new IllegalStateException("Programming error: Nearby entity selector (" + this +
+            throw new IllegalStateException("Impossible state: Nearby entity selector (" + this +
                     ") did not receive a replaying entity selector (" + originEntitySelector + ").");
         }
         this.replayingOriginEntitySelector = originEntitySelector;

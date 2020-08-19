@@ -45,7 +45,7 @@ public final class NearEntityNearbyValueSelector extends AbstractValueSelector {
         this.childValueSelector = childValueSelector;
         if (!(originEntitySelector instanceof MimicReplayingEntitySelector)) {
             // In order to select a nearby value, we must first have something to be near by.
-            throw new IllegalStateException("Programming error: Nearby value selector (" + this +
+            throw new IllegalStateException("Impossible state: Nearby value selector (" + this +
                     ") did not receive a replaying entity selector (" + originEntitySelector + ").");
         }
         this.replayingOriginEntitySelector = originEntitySelector;
