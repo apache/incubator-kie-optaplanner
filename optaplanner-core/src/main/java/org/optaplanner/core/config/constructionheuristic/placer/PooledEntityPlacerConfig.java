@@ -17,7 +17,6 @@
 package org.optaplanner.core.config.constructionheuristic.placer;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
 import javax.xml.bind.annotation.XmlElement;
@@ -39,14 +38,9 @@ import org.optaplanner.core.config.heuristic.selector.move.generic.chained.KOptM
 import org.optaplanner.core.config.heuristic.selector.move.generic.chained.SubChainChangeMoveSelectorConfig;
 import org.optaplanner.core.config.heuristic.selector.move.generic.chained.SubChainSwapMoveSelectorConfig;
 import org.optaplanner.core.config.heuristic.selector.move.generic.chained.TailChainSwapMoveSelectorConfig;
-import org.optaplanner.core.config.heuristic.selector.value.ValueSelectorConfig;
 import org.optaplanner.core.config.util.ConfigUtils;
-import org.optaplanner.core.impl.constructionheuristic.placer.PooledEntityPlacer;
 import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
-import org.optaplanner.core.impl.domain.variable.descriptor.GenuineVariableDescriptor;
 import org.optaplanner.core.impl.heuristic.HeuristicConfigPolicy;
-import org.optaplanner.core.impl.heuristic.selector.move.MoveSelector;
-import org.optaplanner.core.impl.heuristic.selector.move.MoveSelectorFactory;
 
 public class PooledEntityPlacerConfig extends EntityPlacerConfig<PooledEntityPlacerConfig> {
 
@@ -106,52 +100,12 @@ public class PooledEntityPlacerConfig extends EntityPlacerConfig<PooledEntityPla
     })
     private MoveSelectorConfig moveSelectorConfig = null;
 
-    public PooledEntityPlacerConfig() {
-    }
-
     public MoveSelectorConfig getMoveSelectorConfig() {
         return moveSelectorConfig;
     }
 
     public void setMoveSelectorConfig(MoveSelectorConfig moveSelectorConfig) {
         this.moveSelectorConfig = moveSelectorConfig;
-    }
-
-    // ************************************************************************
-    // Builder methods
-    // ************************************************************************
-
-    @Override
-    public PooledEntityPlacer buildEntityPlacer(HeuristicConfigPolicy configPolicy) {
-        MoveSelectorConfig moveSelectorConfig_ =
-                moveSelectorConfig == null ? buildMoveSelectorConfig(configPolicy) : moveSelectorConfig;
-
-        MoveSelector moveSelector = MoveSelectorFactory.create(moveSelectorConfig_)
-                .buildMoveSelector(configPolicy, SelectionCacheType.JUST_IN_TIME, SelectionOrder.ORIGINAL);
-        return new PooledEntityPlacer(moveSelector);
-    }
-
-    private MoveSelectorConfig buildMoveSelectorConfig(HeuristicConfigPolicy configPolicy) {
-        EntityDescriptor entityDescriptor = configPolicy.getSolutionDescriptor().deduceEntityDescriptor(null);
-        EntitySelectorConfig entitySelectorConfig = buildEntitySelectorConfig(configPolicy, entityDescriptor);
-
-        Collection<GenuineVariableDescriptor> variableDescriptors = entityDescriptor.getGenuineVariableDescriptors();
-        List<MoveSelectorConfig> subMoveSelectorConfigList = new ArrayList<>(
-                variableDescriptors.size());
-        for (GenuineVariableDescriptor variableDescriptor : variableDescriptors) {
-            subMoveSelectorConfigList.add(buildChangeMoveSelectorConfig(
-                    configPolicy, entitySelectorConfig.getId(), variableDescriptor));
-        }
-        // The first entitySelectorConfig must be the mimic recorder, not the mimic replayer
-        ((ChangeMoveSelectorConfig) subMoveSelectorConfigList.get(0)).setEntitySelectorConfig(entitySelectorConfig);
-        MoveSelectorConfig moveSelectorConfig_;
-        if (subMoveSelectorConfigList.size() > 1) {
-            // Default to cartesian product (not a union) of planning variables.
-            moveSelectorConfig_ = new CartesianProductMoveSelectorConfig(subMoveSelectorConfigList);
-        } else {
-            moveSelectorConfig_ = subMoveSelectorConfigList.get(0);
-        }
-        return moveSelectorConfig_;
     }
 
     private EntitySelectorConfig buildEntitySelectorConfig(HeuristicConfigPolicy configPolicy,
@@ -166,26 +120,6 @@ public class PooledEntityPlacerConfig extends EntityPlacerConfig<PooledEntityPla
             entitySelectorConfig.setSorterManner(configPolicy.getEntitySorterManner());
         }
         return entitySelectorConfig;
-    }
-
-    private ChangeMoveSelectorConfig buildChangeMoveSelectorConfig(HeuristicConfigPolicy configPolicy,
-            String entitySelectorConfigId, GenuineVariableDescriptor variableDescriptor) {
-        ChangeMoveSelectorConfig changeMoveSelectorConfig = new ChangeMoveSelectorConfig();
-        changeMoveSelectorConfig.setEntitySelectorConfig(
-                EntitySelectorConfig.newMimicSelectorConfig(entitySelectorConfigId));
-        ValueSelectorConfig changeValueSelectorConfig = new ValueSelectorConfig();
-        changeValueSelectorConfig.setVariableName(variableDescriptor.getVariableName());
-        if (ValueSelectorConfig.hasSorter(configPolicy.getValueSorterManner(), variableDescriptor)) {
-            if (variableDescriptor.isValueRangeEntityIndependent()) {
-                changeValueSelectorConfig.setCacheType(SelectionCacheType.PHASE);
-            } else {
-                changeValueSelectorConfig.setCacheType(SelectionCacheType.STEP);
-            }
-            changeValueSelectorConfig.setSelectionOrder(SelectionOrder.SORTED);
-            changeValueSelectorConfig.setSorterManner(configPolicy.getValueSorterManner());
-        }
-        changeMoveSelectorConfig.setValueSelectorConfig(changeValueSelectorConfig);
-        return changeMoveSelectorConfig;
     }
 
     @Override

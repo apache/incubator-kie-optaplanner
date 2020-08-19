@@ -37,6 +37,7 @@ import org.optaplanner.core.impl.constructionheuristic.decider.MultiThreadedCons
 import org.optaplanner.core.impl.constructionheuristic.decider.forager.ConstructionHeuristicForager;
 import org.optaplanner.core.impl.constructionheuristic.decider.forager.ConstructionHeuristicForagerFactory;
 import org.optaplanner.core.impl.constructionheuristic.placer.EntityPlacer;
+import org.optaplanner.core.impl.constructionheuristic.placer.EntityPlacerFactory;
 import org.optaplanner.core.impl.heuristic.HeuristicConfigPolicy;
 import org.optaplanner.core.impl.phase.AbstractPhaseFactory;
 import org.optaplanner.core.impl.solver.recaller.BestSolutionRecaller;
@@ -83,7 +84,7 @@ public class DefaultConstructionHeuristicPhaseFactory<Solution_>
                         + ") is explicitly configured.");
             }
         }
-        EntityPlacer entityPlacer = entityPlacerConfig_.buildEntityPlacer(phaseConfigPolicy);
+        EntityPlacer entityPlacer = EntityPlacerFactory.create(entityPlacerConfig_).buildEntityPlacer(phaseConfigPolicy);
         phase.setEntityPlacer(entityPlacer);
         EnvironmentMode environmentMode = phaseConfigPolicy.getEnvironmentMode();
         if (environmentMode.isNonIntrusiveFullAsserted()) {
@@ -154,7 +155,7 @@ public class DefaultConstructionHeuristicPhaseFactory<Solution_>
                 return new QueuedEntityPlacerConfig();
             case ALLOCATE_TO_VALUE_FROM_QUEUE:
                 if (!ConfigUtils.isEmptyCollection(phaseConfig.getMoveSelectorConfigList())) {
-                    return QueuedValuePlacerConfig.unfoldNew(phaseConfigPolicy, checkSingleMoveSelectorConfig());
+                    return QueuedValuePlacerConfig.unfoldNew(checkSingleMoveSelectorConfig());
                 }
                 return new QueuedValuePlacerConfig();
             case CHEAPEST_INSERTION:
