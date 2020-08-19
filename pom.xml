@@ -71,6 +71,7 @@
     <module>optaplanner-test</module>
     <module>optaplanner-integration</module><!-- TODO rename to optaplanner-spring-integration-->
     <module>optaplanner-examples</module>
+    <module>optaplanner-quickstarts</module>
   </modules>
 
   <dependencyManagement>
@@ -128,22 +129,9 @@
       <modules>
         <!-- Until Kogito is productized, neither can optaplanner-quarkus be productized. -->
         <module>optaplanner-quarkus-integration</module>
+        <module>optaplanner-quickstarts/quarkus-school-timetabling</module>
       </modules>
     </profile>
-    <profile>
-      <id>quickstartsProfile</id>
-      <activation>
-        <property>
-          <!-- TODO Temporarily(?) exclude quickstarts from nightly/release community/product builds -->
-          <!-- Don't release the quickstart artifacts in a Maven repo such as Maven Central -->
-          <name>quickstarts</name>
-        </property>
-      </activation>
-      <modules>
-        <module>optaplanner-quickstarts</module>
-      </modules>
-    </profile>
-
     <profile>
       <id>run-code-coverage</id>
       <build>

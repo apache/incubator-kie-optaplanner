@@ -12,33 +12,18 @@
   <artifactId>optaplanner-quickstarts</artifactId>
   <packaging>pom</packaging>
 
-  <name>OptaPlanner quick starts</name>
+  <name>OptaPlanner Quickstarts</name>
   <description>
     OptaPlanner solves planning problems.
     This lightweight, embeddable planning engine implements powerful and scalable algorithms
     to optimize business resource scheduling and planning.
 
-    This module contains the quick starts.
+    This module contains the quickstarts.
   </description>
   <url>https://www.optaplanner.org</url>
 
   <modules>
     <module>spring-boot-school-timetabling</module>
   </modules>
-
-  <profiles>
-    <profile>
-      <id>notProductizedProfile</id>
-      <activation>
-        <property>
-          <name>!productized</name>
-        </property>
-      </activation>
-      <modules>
-        <!-- Until Kogito is productized, neither can optaplanner-quarkus be productized. -->
-        <module>quarkus-school-timetabling</module>
-      </modules>
-    </profile>
-  </profiles>
 
 </project>
