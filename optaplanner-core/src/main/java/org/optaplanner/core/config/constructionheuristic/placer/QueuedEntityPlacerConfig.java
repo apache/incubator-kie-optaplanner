@@ -16,7 +16,6 @@
 
 package org.optaplanner.core.config.constructionheuristic.placer;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.xml.bind.annotation.XmlElement;
@@ -37,42 +36,8 @@ import org.optaplanner.core.config.heuristic.selector.move.generic.chained.SubCh
 import org.optaplanner.core.config.heuristic.selector.move.generic.chained.SubChainSwapMoveSelectorConfig;
 import org.optaplanner.core.config.heuristic.selector.move.generic.chained.TailChainSwapMoveSelectorConfig;
 import org.optaplanner.core.config.util.ConfigUtils;
-import org.optaplanner.core.impl.constructionheuristic.placer.QueuedEntityPlacerFactory;
-import org.optaplanner.core.impl.heuristic.HeuristicConfigPolicy;
 
 public class QueuedEntityPlacerConfig extends EntityPlacerConfig<QueuedEntityPlacerConfig> {
-
-    public static QueuedEntityPlacerConfig unfoldNew(HeuristicConfigPolicy configPolicy,
-            List<MoveSelectorConfig> templateMoveSelectorConfigList) {
-        QueuedEntityPlacerConfig config = new QueuedEntityPlacerConfig();
-        config.entitySelectorConfig = new QueuedEntityPlacerFactory(config).buildEntitySelectorConfig(configPolicy);
-        config.moveSelectorConfigList = new ArrayList<>(templateMoveSelectorConfigList.size());
-        List<MoveSelectorConfig> leafMoveSelectorConfigList = new ArrayList<>(templateMoveSelectorConfigList.size());
-        for (MoveSelectorConfig templateMoveSelectorConfig : templateMoveSelectorConfigList) {
-            MoveSelectorConfig moveSelectorConfig = (MoveSelectorConfig) templateMoveSelectorConfig.copyConfig();
-            moveSelectorConfig.extractLeafMoveSelectorConfigsIntoList(leafMoveSelectorConfigList);
-            config.moveSelectorConfigList.add(moveSelectorConfig);
-        }
-        for (MoveSelectorConfig leafMoveSelectorConfig : leafMoveSelectorConfigList) {
-            if (!(leafMoveSelectorConfig instanceof ChangeMoveSelectorConfig)) {
-                throw new IllegalStateException("The <constructionHeuristic> contains a moveSelector ("
-                        + leafMoveSelectorConfig + ") that isn't a <changeMoveSelector>, a <unionMoveSelector>"
-                        + " or a <cartesianProductMoveSelector>.\n"
-                        + "Maybe you're using a moveSelector in <constructionHeuristic>"
-                        + " that's only supported for <localSearch>.");
-            }
-            ChangeMoveSelectorConfig changeMoveSelectorConfig = (ChangeMoveSelectorConfig) leafMoveSelectorConfig;
-            if (changeMoveSelectorConfig.getEntitySelectorConfig() != null) {
-                throw new IllegalStateException("The <constructionHeuristic> contains a changeMoveSelector ("
-                        + changeMoveSelectorConfig + ") that contains an entitySelector ("
-                        + changeMoveSelectorConfig.getEntitySelectorConfig()
-                        + ") without explicitly configuring the <queuedEntityPlacer>.");
-            }
-            changeMoveSelectorConfig.setEntitySelectorConfig(
-                    EntitySelectorConfig.newMimicSelectorConfig(config.entitySelectorConfig.getId()));
-        }
-        return config;
-    }
 
     @XmlElement(name = "entitySelector")
     protected EntitySelectorConfig entitySelectorConfig = null;

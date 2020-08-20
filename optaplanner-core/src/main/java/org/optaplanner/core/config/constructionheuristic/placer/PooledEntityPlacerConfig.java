@@ -16,15 +16,9 @@
 
 package org.optaplanner.core.config.constructionheuristic.placer;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElements;
 
-import org.optaplanner.core.config.heuristic.selector.common.SelectionCacheType;
-import org.optaplanner.core.config.heuristic.selector.common.SelectionOrder;
-import org.optaplanner.core.config.heuristic.selector.entity.EntitySelectorConfig;
 import org.optaplanner.core.config.heuristic.selector.move.MoveSelectorConfig;
 import org.optaplanner.core.config.heuristic.selector.move.composite.CartesianProductMoveSelectorConfig;
 import org.optaplanner.core.config.heuristic.selector.move.composite.UnionMoveSelectorConfig;
@@ -39,45 +33,8 @@ import org.optaplanner.core.config.heuristic.selector.move.generic.chained.SubCh
 import org.optaplanner.core.config.heuristic.selector.move.generic.chained.SubChainSwapMoveSelectorConfig;
 import org.optaplanner.core.config.heuristic.selector.move.generic.chained.TailChainSwapMoveSelectorConfig;
 import org.optaplanner.core.config.util.ConfigUtils;
-import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
-import org.optaplanner.core.impl.heuristic.HeuristicConfigPolicy;
 
 public class PooledEntityPlacerConfig extends EntityPlacerConfig<PooledEntityPlacerConfig> {
-
-    public static PooledEntityPlacerConfig unfoldNew(HeuristicConfigPolicy configPolicy,
-            MoveSelectorConfig templateMoveSelectorConfig) {
-        PooledEntityPlacerConfig config = new PooledEntityPlacerConfig();
-        List<MoveSelectorConfig> leafMoveSelectorConfigList = new ArrayList<>();
-        MoveSelectorConfig moveSelectorConfig = (MoveSelectorConfig) templateMoveSelectorConfig.copyConfig();
-        moveSelectorConfig.extractLeafMoveSelectorConfigsIntoList(leafMoveSelectorConfigList);
-        config.setMoveSelectorConfig(moveSelectorConfig);
-
-        EntitySelectorConfig entitySelectorConfig = null;
-        for (MoveSelectorConfig leafMoveSelectorConfig : leafMoveSelectorConfigList) {
-            if (!(leafMoveSelectorConfig instanceof ChangeMoveSelectorConfig)) {
-                throw new IllegalStateException("The <constructionHeuristic> contains a moveSelector ("
-                        + leafMoveSelectorConfig + ") that isn't a <changeMoveSelector>, a <unionMoveSelector>"
-                        + " or a <cartesianProductMoveSelector>.\n"
-                        + "Maybe you're using a moveSelector in <constructionHeuristic>"
-                        + " that's only supported for <localSearch>.");
-            }
-            ChangeMoveSelectorConfig changeMoveSelectorConfig = (ChangeMoveSelectorConfig) leafMoveSelectorConfig;
-            if (changeMoveSelectorConfig.getEntitySelectorConfig() != null) {
-                throw new IllegalStateException("The <constructionHeuristic> contains a changeMoveSelector ("
-                        + changeMoveSelectorConfig + ") that contains an entitySelector ("
-                        + changeMoveSelectorConfig.getEntitySelectorConfig()
-                        + ") without explicitly configuring the <pooledEntityPlacer>.");
-            }
-            if (entitySelectorConfig == null) {
-                EntityDescriptor entityDescriptor = configPolicy.getSolutionDescriptor().deduceEntityDescriptor(null);
-                entitySelectorConfig = config.buildEntitySelectorConfig(configPolicy, entityDescriptor);
-                changeMoveSelectorConfig.setEntitySelectorConfig(entitySelectorConfig);
-            }
-            changeMoveSelectorConfig.setEntitySelectorConfig(
-                    EntitySelectorConfig.newMimicSelectorConfig(entitySelectorConfig.getId()));
-        }
-        return config;
-    }
 
     @XmlElements({
             @XmlElement(name = CartesianProductMoveSelectorConfig.XML_ELEMENT_NAME,
@@ -106,20 +63,6 @@ public class PooledEntityPlacerConfig extends EntityPlacerConfig<PooledEntityPla
 
     public void setMoveSelectorConfig(MoveSelectorConfig moveSelectorConfig) {
         this.moveSelectorConfig = moveSelectorConfig;
-    }
-
-    private EntitySelectorConfig buildEntitySelectorConfig(HeuristicConfigPolicy configPolicy,
-            EntityDescriptor entityDescriptor) {
-        EntitySelectorConfig entitySelectorConfig = new EntitySelectorConfig();
-        Class<?> entityClass = entityDescriptor.getEntityClass();
-        entitySelectorConfig.setId(entityClass.getName());
-        entitySelectorConfig.setEntityClass(entityClass);
-        if (EntitySelectorConfig.hasSorter(configPolicy.getEntitySorterManner(), entityDescriptor)) {
-            entitySelectorConfig.setCacheType(SelectionCacheType.PHASE);
-            entitySelectorConfig.setSelectionOrder(SelectionOrder.SORTED);
-            entitySelectorConfig.setSorterManner(configPolicy.getEntitySorterManner());
-        }
-        return entitySelectorConfig;
     }
 
     @Override

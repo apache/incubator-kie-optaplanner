@@ -38,6 +38,9 @@ import org.optaplanner.core.impl.constructionheuristic.decider.forager.Construct
 import org.optaplanner.core.impl.constructionheuristic.decider.forager.ConstructionHeuristicForagerFactory;
 import org.optaplanner.core.impl.constructionheuristic.placer.EntityPlacer;
 import org.optaplanner.core.impl.constructionheuristic.placer.EntityPlacerFactory;
+import org.optaplanner.core.impl.constructionheuristic.placer.PooledEntityPlacerFactory;
+import org.optaplanner.core.impl.constructionheuristic.placer.QueuedEntityPlacerFactory;
+import org.optaplanner.core.impl.constructionheuristic.placer.QueuedValuePlacerFactory;
 import org.optaplanner.core.impl.heuristic.HeuristicConfigPolicy;
 import org.optaplanner.core.impl.phase.AbstractPhaseFactory;
 import org.optaplanner.core.impl.solver.recaller.BestSolutionRecaller;
@@ -150,18 +153,18 @@ public class DefaultConstructionHeuristicPhaseFactory<Solution_>
             case STRONGEST_FIT_DECREASING:
             case ALLOCATE_ENTITY_FROM_QUEUE:
                 if (!ConfigUtils.isEmptyCollection(phaseConfig.getMoveSelectorConfigList())) {
-                    return QueuedEntityPlacerConfig.unfoldNew(phaseConfigPolicy, phaseConfig.getMoveSelectorConfigList());
+                    return QueuedEntityPlacerFactory.unfoldNew(phaseConfigPolicy, phaseConfig.getMoveSelectorConfigList());
                 }
                 return new QueuedEntityPlacerConfig();
             case ALLOCATE_TO_VALUE_FROM_QUEUE:
                 if (!ConfigUtils.isEmptyCollection(phaseConfig.getMoveSelectorConfigList())) {
-                    return QueuedValuePlacerConfig.unfoldNew(checkSingleMoveSelectorConfig());
+                    return QueuedValuePlacerFactory.unfoldNew(checkSingleMoveSelectorConfig());
                 }
                 return new QueuedValuePlacerConfig();
             case CHEAPEST_INSERTION:
             case ALLOCATE_FROM_POOL:
                 if (!ConfigUtils.isEmptyCollection(phaseConfig.getMoveSelectorConfigList())) {
-                    return PooledEntityPlacerConfig.unfoldNew(phaseConfigPolicy, checkSingleMoveSelectorConfig());
+                    return PooledEntityPlacerFactory.unfoldNew(phaseConfigPolicy, checkSingleMoveSelectorConfig());
                 }
                 return new PooledEntityPlacerConfig();
             default:

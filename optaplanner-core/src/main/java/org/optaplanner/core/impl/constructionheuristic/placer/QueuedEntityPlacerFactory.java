@@ -27,6 +27,7 @@ import org.optaplanner.core.config.heuristic.selector.common.SelectionOrder;
 import org.optaplanner.core.config.heuristic.selector.entity.EntitySelectorConfig;
 import org.optaplanner.core.config.heuristic.selector.move.MoveSelectorConfig;
 import org.optaplanner.core.config.heuristic.selector.move.composite.CartesianProductMoveSelectorConfig;
+import org.optaplanner.core.config.heuristic.selector.move.generic.ChangeMoveSelectorConfig;
 import org.optaplanner.core.config.util.ConfigUtils;
 import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
 import org.optaplanner.core.impl.domain.variable.descriptor.GenuineVariableDescriptor;
@@ -36,6 +37,38 @@ import org.optaplanner.core.impl.heuristic.selector.move.MoveSelector;
 import org.optaplanner.core.impl.heuristic.selector.move.MoveSelectorFactory;
 
 public class QueuedEntityPlacerFactory extends AbstractEntityPlacerFactory<QueuedEntityPlacerConfig> {
+
+    public static QueuedEntityPlacerConfig unfoldNew(HeuristicConfigPolicy configPolicy,
+            List<MoveSelectorConfig> templateMoveSelectorConfigList) {
+        QueuedEntityPlacerConfig config = new QueuedEntityPlacerConfig();
+        config.setEntitySelectorConfig(new QueuedEntityPlacerFactory(config).buildEntitySelectorConfig(configPolicy));
+        config.setMoveSelectorConfigList(new ArrayList<>(templateMoveSelectorConfigList.size()));
+        List<MoveSelectorConfig> leafMoveSelectorConfigList = new ArrayList<>(templateMoveSelectorConfigList.size());
+        for (MoveSelectorConfig templateMoveSelectorConfig : templateMoveSelectorConfigList) {
+            MoveSelectorConfig moveSelectorConfig = (MoveSelectorConfig) templateMoveSelectorConfig.copyConfig();
+            moveSelectorConfig.extractLeafMoveSelectorConfigsIntoList(leafMoveSelectorConfigList);
+            config.getMoveSelectorConfigList().add(moveSelectorConfig);
+        }
+        for (MoveSelectorConfig leafMoveSelectorConfig : leafMoveSelectorConfigList) {
+            if (!(leafMoveSelectorConfig instanceof ChangeMoveSelectorConfig)) {
+                throw new IllegalStateException("The <constructionHeuristic> contains a moveSelector ("
+                        + leafMoveSelectorConfig + ") that isn't a <changeMoveSelector>, a <unionMoveSelector>"
+                        + " or a <cartesianProductMoveSelector>.\n"
+                        + "Maybe you're using a moveSelector in <constructionHeuristic>"
+                        + " that's only supported for <localSearch>.");
+            }
+            ChangeMoveSelectorConfig changeMoveSelectorConfig = (ChangeMoveSelectorConfig) leafMoveSelectorConfig;
+            if (changeMoveSelectorConfig.getEntitySelectorConfig() != null) {
+                throw new IllegalStateException("The <constructionHeuristic> contains a changeMoveSelector ("
+                        + changeMoveSelectorConfig + ") that contains an entitySelector ("
+                        + changeMoveSelectorConfig.getEntitySelectorConfig()
+                        + ") without explicitly configuring the <queuedEntityPlacer>.");
+            }
+            changeMoveSelectorConfig.setEntitySelectorConfig(
+                    EntitySelectorConfig.newMimicSelectorConfig(config.getEntitySelectorConfig().getId()));
+        }
+        return config;
+    }
 
     public QueuedEntityPlacerFactory(QueuedEntityPlacerConfig placerConfig) {
         super(placerConfig);

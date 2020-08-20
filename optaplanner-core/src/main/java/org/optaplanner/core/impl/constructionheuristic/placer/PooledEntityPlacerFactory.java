@@ -35,6 +35,55 @@ import org.optaplanner.core.impl.heuristic.selector.move.MoveSelectorFactory;
 
 public class PooledEntityPlacerFactory extends AbstractEntityPlacerFactory<PooledEntityPlacerConfig> {
 
+    public static PooledEntityPlacerConfig unfoldNew(HeuristicConfigPolicy configPolicy,
+            MoveSelectorConfig templateMoveSelectorConfig) {
+        PooledEntityPlacerConfig config = new PooledEntityPlacerConfig();
+        List<MoveSelectorConfig> leafMoveSelectorConfigList = new ArrayList<>();
+        MoveSelectorConfig moveSelectorConfig = (MoveSelectorConfig) templateMoveSelectorConfig.copyConfig();
+        moveSelectorConfig.extractLeafMoveSelectorConfigsIntoList(leafMoveSelectorConfigList);
+        config.setMoveSelectorConfig(moveSelectorConfig);
+
+        EntitySelectorConfig entitySelectorConfig = null;
+        for (MoveSelectorConfig leafMoveSelectorConfig : leafMoveSelectorConfigList) {
+            if (!(leafMoveSelectorConfig instanceof ChangeMoveSelectorConfig)) {
+                throw new IllegalStateException("The <constructionHeuristic> contains a moveSelector ("
+                        + leafMoveSelectorConfig + ") that isn't a <changeMoveSelector>, a <unionMoveSelector>"
+                        + " or a <cartesianProductMoveSelector>.\n"
+                        + "Maybe you're using a moveSelector in <constructionHeuristic>"
+                        + " that's only supported for <localSearch>.");
+            }
+            ChangeMoveSelectorConfig changeMoveSelectorConfig = (ChangeMoveSelectorConfig) leafMoveSelectorConfig;
+            if (changeMoveSelectorConfig.getEntitySelectorConfig() != null) {
+                throw new IllegalStateException("The <constructionHeuristic> contains a changeMoveSelector ("
+                        + changeMoveSelectorConfig + ") that contains an entitySelector ("
+                        + changeMoveSelectorConfig.getEntitySelectorConfig()
+                        + ") without explicitly configuring the <pooledEntityPlacer>.");
+            }
+            if (entitySelectorConfig == null) {
+                EntityDescriptor entityDescriptor = configPolicy.getSolutionDescriptor().deduceEntityDescriptor(null);
+                entitySelectorConfig = buildEntitySelectorConfig(configPolicy, entityDescriptor);
+                changeMoveSelectorConfig.setEntitySelectorConfig(entitySelectorConfig);
+            }
+            changeMoveSelectorConfig.setEntitySelectorConfig(
+                    EntitySelectorConfig.newMimicSelectorConfig(entitySelectorConfig.getId()));
+        }
+        return config;
+    }
+
+    private static EntitySelectorConfig buildEntitySelectorConfig(HeuristicConfigPolicy configPolicy,
+            EntityDescriptor entityDescriptor) {
+        EntitySelectorConfig entitySelectorConfig = new EntitySelectorConfig();
+        Class<?> entityClass = entityDescriptor.getEntityClass();
+        entitySelectorConfig.setId(entityClass.getName());
+        entitySelectorConfig.setEntityClass(entityClass);
+        if (EntitySelectorConfig.hasSorter(configPolicy.getEntitySorterManner(), entityDescriptor)) {
+            entitySelectorConfig.setCacheType(SelectionCacheType.PHASE);
+            entitySelectorConfig.setSelectionOrder(SelectionOrder.SORTED);
+            entitySelectorConfig.setSorterManner(configPolicy.getEntitySorterManner());
+        }
+        return entitySelectorConfig;
+    }
+
     public PooledEntityPlacerFactory(PooledEntityPlacerConfig placerConfig) {
         super(placerConfig);
     }
@@ -70,19 +119,5 @@ public class PooledEntityPlacerFactory extends AbstractEntityPlacerFactory<Poole
             moveSelectorConfig_ = subMoveSelectorConfigList.get(0);
         }
         return moveSelectorConfig_;
-    }
-
-    private EntitySelectorConfig buildEntitySelectorConfig(HeuristicConfigPolicy configPolicy,
-            EntityDescriptor entityDescriptor) {
-        EntitySelectorConfig entitySelectorConfig = new EntitySelectorConfig();
-        Class<?> entityClass = entityDescriptor.getEntityClass();
-        entitySelectorConfig.setId(entityClass.getName());
-        entitySelectorConfig.setEntityClass(entityClass);
-        if (EntitySelectorConfig.hasSorter(configPolicy.getEntitySorterManner(), entityDescriptor)) {
-            entitySelectorConfig.setCacheType(SelectionCacheType.PHASE);
-            entitySelectorConfig.setSelectionOrder(SelectionOrder.SORTED);
-            entitySelectorConfig.setSorterManner(configPolicy.getEntitySorterManner());
-        }
-        return entitySelectorConfig;
     }
 }

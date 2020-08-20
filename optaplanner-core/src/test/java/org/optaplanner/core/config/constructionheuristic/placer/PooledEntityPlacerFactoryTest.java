@@ -24,13 +24,14 @@ import org.junit.jupiter.api.Test;
 import org.optaplanner.core.config.heuristic.selector.move.generic.ChangeMoveSelectorConfig;
 import org.optaplanner.core.config.heuristic.selector.value.ValueSelectorConfig;
 import org.optaplanner.core.config.solver.EnvironmentMode;
+import org.optaplanner.core.impl.constructionheuristic.placer.PooledEntityPlacerFactory;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.core.impl.heuristic.HeuristicConfigPolicy;
 import org.optaplanner.core.impl.score.director.InnerScoreDirectorFactory;
 import org.optaplanner.core.impl.testdata.domain.TestdataEntity;
 import org.optaplanner.core.impl.testdata.domain.TestdataSolution;
 
-public class PooledEntityPlacerConfigTest {
+public class PooledEntityPlacerFactoryTest {
 
     @Test
     public void unfoldNew() {
@@ -40,7 +41,7 @@ public class PooledEntityPlacerConfigTest {
         moveSelectorConfig.setValueSelectorConfig(new ValueSelectorConfig("value"));
 
         HeuristicConfigPolicy configPolicy = buildHeuristicConfigPolicy(solutionDescriptor);
-        PooledEntityPlacerConfig placerConfig = PooledEntityPlacerConfig.unfoldNew(configPolicy, moveSelectorConfig);
+        PooledEntityPlacerConfig placerConfig = PooledEntityPlacerFactory.unfoldNew(configPolicy, moveSelectorConfig);
 
         assertThat(placerConfig.getMoveSelectorConfig())
                 .isNotNull()

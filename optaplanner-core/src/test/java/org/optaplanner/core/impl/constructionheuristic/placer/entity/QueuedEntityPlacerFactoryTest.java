@@ -55,7 +55,7 @@ public class QueuedEntityPlacerFactoryTest extends AbstractEntityPlacerTest {
         secondaryMoveSelectorConfig.setValueSelectorConfig(new ValueSelectorConfig("secondaryValue"));
 
         HeuristicConfigPolicy configPolicy = buildHeuristicConfigPolicy(solutionDescriptor);
-        QueuedEntityPlacerConfig placerConfig = QueuedEntityPlacerConfig.unfoldNew(configPolicy,
+        QueuedEntityPlacerConfig placerConfig = QueuedEntityPlacerFactory.unfoldNew(configPolicy,
                 Arrays.asList(primaryMoveSelectorConfig, secondaryMoveSelectorConfig));
 
         assertThat(placerConfig.getEntitySelectorConfig().getEntityClass()).isAssignableFrom(TestdataMultiVarEntity.class);
