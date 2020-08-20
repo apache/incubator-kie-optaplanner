@@ -60,8 +60,7 @@ public class SubChainSelectorFactory {
      * @param inheritedSelectionOrder never null
      * @return never null
      */
-    public SubChainSelector buildSubChainSelector(HeuristicConfigPolicy configPolicy,
-            EntityDescriptor entityDescriptor,
+    public SubChainSelector buildSubChainSelector(HeuristicConfigPolicy configPolicy, EntityDescriptor entityDescriptor,
             SelectionCacheType minimumCacheType, SelectionOrder inheritedSelectionOrder) {
         if (minimumCacheType.compareTo(SelectionCacheType.STEP) > 0) {
             throw new IllegalArgumentException("The subChainSelectorConfig (" + this
