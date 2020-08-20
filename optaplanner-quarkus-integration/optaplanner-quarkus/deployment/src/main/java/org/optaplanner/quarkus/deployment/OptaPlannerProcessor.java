@@ -33,6 +33,7 @@ import org.jboss.jandex.ClassInfo;
 import org.jboss.jandex.DotName;
 import org.jboss.jandex.IndexView;
 import org.jboss.jandex.Type;
+import org.jboss.logging.Logger;
 import org.optaplanner.core.api.domain.entity.PlanningEntity;
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.score.stream.ConstraintProvider;
@@ -61,6 +62,8 @@ import io.quarkus.runtime.configuration.ConfigurationException;
 
 class OptaPlannerProcessor {
 
+    private static final Logger log = Logger.getLogger(OptaPlannerProcessor.class.getName());
+
     OptaPlannerBuildTimeConfig optaPlannerBuildTimeConfig;
 
     @BuildStep
@@ -81,18 +84,22 @@ class OptaPlannerProcessor {
     }
 
     @BuildStep
-    void registerAdditionalBeans(BuildProducer<AdditionalBeanBuildItem> additionalBeans) {
-        // The bean encapsulating the SolverFactory
-        additionalBeans.produce(new AdditionalBeanBuildItem(OptaPlannerBeanProvider.class));
-    }
-
-    @BuildStep
     @Record(STATIC_INIT)
-    void recordSolverFactory(OptaPlannerRecorder recorder, RecorderContext recorderContext,
+    void recordAndRegisterBeans(OptaPlannerRecorder recorder, RecorderContext recorderContext,
             CombinedIndexBuildItem combinedIndex,
             BuildProducer<ReflectiveHierarchyBuildItem> reflectiveHierarchyClass,
             BuildProducer<ReflectiveClassBuildItem> reflectiveClass,
-            BuildProducer<SyntheticBeanBuildItem> syntheticBeanBuildItemBuildProducer) {
+            BuildProducer<SyntheticBeanBuildItem> syntheticBeanBuildItemBuildProducer,
+            BuildProducer<AdditionalBeanBuildItem> additionalBeans) {
+
+        IndexView indexView = combinedIndex.getIndex();
+        // Only skip this extension if everything is missing. Otherwise, if some parts are missing, fail fast later.
+        if (indexView.getAnnotations(DotNames.PLANNING_SOLUTION).isEmpty()
+                && indexView.getAnnotations(DotNames.PLANNING_ENTITY).isEmpty()) {
+            log.warn("Skipping OptaPlanner extension because there are no " + PlanningSolution.class.getSimpleName()
+                    + " or " + PlanningEntity.class.getSimpleName() + " annotated classes.");
+            return;
+        }
         ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
         SolverConfig solverConfig;
         if (optaPlannerBuildTimeConfig.solverConfigXml.isPresent()) {
@@ -111,7 +118,6 @@ class OptaPlannerProcessor {
         // The deployment classLoader must not escape to runtime
         solverConfig.setClassLoader(null);
 
-        IndexView indexView = combinedIndex.getIndex();
         applySolverProperties(recorderContext, indexView, solverConfig);
 
         if (solverConfig.getSolutionClass() != null) {
@@ -147,7 +153,7 @@ class OptaPlannerProcessor {
                 .scope(Singleton.class)
                 .defaultBean()
                 .supplier(recorder.solverManagerConfig(solverManagerConfig)).done());
-
+        additionalBeans.produce(new AdditionalBeanBuildItem(OptaPlannerBeanProvider.class));
     }
 
     private void applySolverProperties(RecorderContext recorderContext,
