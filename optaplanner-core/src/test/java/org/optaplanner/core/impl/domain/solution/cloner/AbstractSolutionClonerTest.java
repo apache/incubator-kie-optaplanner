@@ -16,6 +16,10 @@
 
 package org.optaplanner.core.impl.domain.solution.cloner;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.SoftAssertions.assertSoftly;
+import static org.optaplanner.core.impl.testdata.util.PlannerAssert.assertCode;
+
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
@@ -58,10 +62,6 @@ import org.optaplanner.core.impl.testdata.domain.extended.thirdparty.TestdataThi
 import org.optaplanner.core.impl.testdata.domain.reflect.accessmodifier.TestdataAccessModifierSolution;
 import org.optaplanner.core.impl.testdata.domain.reflect.field.TestdataFieldAnnotatedEntity;
 import org.optaplanner.core.impl.testdata.domain.reflect.field.TestdataFieldAnnotatedSolution;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.SoftAssertions.assertSoftly;
-import static org.optaplanner.core.impl.testdata.util.PlannerAssert.assertCode;
 
 public abstract class AbstractSolutionClonerTest {
 
