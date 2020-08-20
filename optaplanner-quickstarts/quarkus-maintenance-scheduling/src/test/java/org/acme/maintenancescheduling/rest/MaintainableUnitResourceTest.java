@@ -39,7 +39,7 @@ public class MaintainableUnitResourceTest {
                 .extract().body().jsonPath().getList(".", MaintainableUnit.class);
         assertFalse(unitList.isEmpty());
         MaintainableUnit firstUnit = unitList.get(0);
-        assertEquals("Track 1", firstUnit.getUnitName());
+        assertEquals("Switch 1", firstUnit.getUnitName());
     }
 
     @Test

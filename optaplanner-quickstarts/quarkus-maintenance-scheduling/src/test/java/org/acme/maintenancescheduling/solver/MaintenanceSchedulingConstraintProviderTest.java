@@ -182,7 +182,7 @@ public class MaintenanceSchedulingConstraintProviderTest {
         otherJob.setId(1L);
 
         MutuallyExclusiveJobs mutuallyExclusiveJobs =
-                new MutuallyExclusiveJobs(Arrays.asList(maintenanceJob, otherJob));
+                new MutuallyExclusiveJobs(maintenanceJob, otherJob);
 
         constraintVerifier.verifyThat(MaintenanceScheduleConstraintProvider::mutuallyExclusiveJobs)
                 .given(maintenanceJob, otherJob, mutuallyExclusiveJobs)

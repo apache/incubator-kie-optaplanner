@@ -25,6 +25,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.validation.constraints.NotNull;
+import java.util.Arrays;
 import java.util.List;
 
 @Entity
@@ -41,8 +42,8 @@ public class MutuallyExclusiveJobs extends PanacheEntityBase {
     public MutuallyExclusiveJobs() {
     }
 
-    public MutuallyExclusiveJobs(List<MaintenanceJob> mutexJobs) {
-        this.mutexJobs = mutexJobs;
+    public MutuallyExclusiveJobs(MaintenanceJob... mutexJobs) {
+        this.mutexJobs = Arrays.asList(mutexJobs);
     }
 
     public Long getId() {

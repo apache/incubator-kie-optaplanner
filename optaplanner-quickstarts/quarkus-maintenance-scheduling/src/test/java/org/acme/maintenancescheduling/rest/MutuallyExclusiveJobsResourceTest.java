@@ -40,7 +40,7 @@ public class MutuallyExclusiveJobsResourceTest {
                 .extract().body().jsonPath().getList(".", MutuallyExclusiveJobs.class);
         assertFalse(mutuallyExclusiveJobsList.isEmpty());
         MutuallyExclusiveJobs firstMutuallyExclusiveJobs = mutuallyExclusiveJobsList.get(0);
-        assertEquals(2, firstMutuallyExclusiveJobs.getMutexJobs().size());
+        assertEquals(3, firstMutuallyExclusiveJobs.getMutexJobs().size());
     }
 
     @Test
@@ -48,7 +48,7 @@ public class MutuallyExclusiveJobsResourceTest {
         MutuallyExclusiveJobs mutuallyExclusiveJobs = given()
                 .when()
                 .contentType(ContentType.JSON)
-                .body(new MutuallyExclusiveJobs(Collections.emptyList()))
+                .body(new MutuallyExclusiveJobs())
                 .post("/mutuallyExclusiveJobs")
                 .then()
                 .statusCode(202)
