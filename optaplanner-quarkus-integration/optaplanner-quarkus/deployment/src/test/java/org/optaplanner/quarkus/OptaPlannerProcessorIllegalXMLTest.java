@@ -23,6 +23,9 @@ import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.RegisterExtension;
+import org.optaplanner.quarkus.testdata.normal.constraints.TestdataQuarkusConstraintProvider;
+import org.optaplanner.quarkus.testdata.normal.domain.TestdataQuarkusEntity;
+import org.optaplanner.quarkus.testdata.normal.domain.TestdataQuarkusSolution;
 
 import io.quarkus.test.QuarkusUnitTest;
 
@@ -33,6 +36,8 @@ public class OptaPlannerProcessorIllegalXMLTest {
             .overrideConfigKey("quarkus.optaplanner.solver-config-xml",
                     "org/optaplanner/quarkus/illegalScanAnnotatedSolverConfig.xml")
             .setArchiveProducer(() -> ShrinkWrap.create(JavaArchive.class)
+                    .addClasses(TestdataQuarkusEntity.class,
+                            TestdataQuarkusSolution.class, TestdataQuarkusConstraintProvider.class)
                     .addAsResource("org/optaplanner/quarkus/illegalScanAnnotatedSolverConfig.xml"))
             .assertException(throwable -> {
                 assertTrue(throwable instanceof IllegalArgumentException);
