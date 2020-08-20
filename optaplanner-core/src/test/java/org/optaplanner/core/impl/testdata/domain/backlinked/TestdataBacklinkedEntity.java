@@ -21,9 +21,11 @@ import org.optaplanner.core.api.domain.variable.PlanningVariable;
 import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.core.impl.domain.variable.descriptor.GenuineVariableDescriptor;
+import org.optaplanner.core.impl.testdata.domain.TestdataObject;
+import org.optaplanner.core.impl.testdata.domain.TestdataValue;
 
 @PlanningEntity
-public class TestdataBacklinkedEntity extends TestdataBacklinkedObject {
+public class TestdataBacklinkedEntity extends TestdataObject {
 
     public static EntityDescriptor<TestdataBacklinkedSolution> buildEntityDescriptor() {
         SolutionDescriptor<TestdataBacklinkedSolution> solutionDescriptor =
@@ -40,7 +42,7 @@ public class TestdataBacklinkedEntity extends TestdataBacklinkedObject {
     }
 
     private TestdataBacklinkedSolution solution;
-    private TestdataBacklinkedValue value;
+    private TestdataValue value;
 
     public TestdataBacklinkedEntity() {
     }
@@ -49,7 +51,7 @@ public class TestdataBacklinkedEntity extends TestdataBacklinkedObject {
         this(solution, code, null);
     }
 
-    public TestdataBacklinkedEntity(TestdataBacklinkedSolution solution, String code, TestdataBacklinkedValue value) {
+    public TestdataBacklinkedEntity(TestdataBacklinkedSolution solution, String code, TestdataValue value) {
         super(code);
         this.solution = solution;
         this.value = value;
@@ -64,11 +66,11 @@ public class TestdataBacklinkedEntity extends TestdataBacklinkedObject {
     }
 
     @PlanningVariable(valueRangeProviderRefs = "valueRange")
-    public TestdataBacklinkedValue getValue() {
+    public TestdataValue getValue() {
         return value;
     }
 
-    public void setValue(TestdataBacklinkedValue value) {
+    public void setValue(TestdataValue value) {
         this.value = value;
     }
 

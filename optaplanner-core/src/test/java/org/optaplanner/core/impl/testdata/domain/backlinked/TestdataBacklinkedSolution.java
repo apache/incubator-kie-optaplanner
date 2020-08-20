@@ -26,9 +26,11 @@ import org.optaplanner.core.api.domain.solution.ProblemFactCollectionProperty;
 import org.optaplanner.core.api.domain.valuerange.ValueRangeProvider;
 import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
+import org.optaplanner.core.impl.testdata.domain.TestdataObject;
+import org.optaplanner.core.impl.testdata.domain.TestdataValue;
 
 @PlanningSolution
-public class TestdataBacklinkedSolution extends TestdataBacklinkedObject {
+public class TestdataBacklinkedSolution extends TestdataObject {
 
     public static SolutionDescriptor<TestdataBacklinkedSolution> buildSolutionDescriptor() {
         return SolutionDescriptor.buildSolutionDescriptor(TestdataBacklinkedSolution.class, TestdataBacklinkedEntity.class);
@@ -40,15 +42,15 @@ public class TestdataBacklinkedSolution extends TestdataBacklinkedObject {
 
     public static TestdataBacklinkedSolution generateSolution(int valueListSize, int entityListSize) {
         TestdataBacklinkedSolution solution = new TestdataBacklinkedSolution("Generated Solution 0");
-        List<TestdataBacklinkedValue> valueList = new ArrayList<>(valueListSize);
+        List<TestdataValue> valueList = new ArrayList<>(valueListSize);
         for (int i = 0; i < valueListSize; i++) {
-            TestdataBacklinkedValue value = new TestdataBacklinkedValue("Generated Value " + i);
+            TestdataValue value = new TestdataValue("Generated Value " + i);
             valueList.add(value);
         }
         solution.setValueList(valueList);
         List<TestdataBacklinkedEntity> entityList = new ArrayList<>(entityListSize);
         for (int i = 0; i < entityListSize; i++) {
-            TestdataBacklinkedValue value = valueList.get(i % valueListSize);
+            TestdataValue value = valueList.get(i % valueListSize);
             TestdataBacklinkedEntity entity = new TestdataBacklinkedEntity(solution, "Generated Entity " + i, value);
             entityList.add(entity);
         }
@@ -56,7 +58,7 @@ public class TestdataBacklinkedSolution extends TestdataBacklinkedObject {
         return solution;
     }
 
-    private List<TestdataBacklinkedValue> valueList;
+    private List<TestdataValue> valueList;
     private List<TestdataBacklinkedEntity> entityList;
 
     private SimpleScore score;
@@ -70,11 +72,11 @@ public class TestdataBacklinkedSolution extends TestdataBacklinkedObject {
 
     @ValueRangeProvider(id = "valueRange")
     @ProblemFactCollectionProperty
-    public List<TestdataBacklinkedValue> getValueList() {
+    public List<TestdataValue> getValueList() {
         return valueList;
     }
 
-    public void setValueList(List<TestdataBacklinkedValue> valueList) {
+    public void setValueList(List<TestdataValue> valueList) {
         this.valueList = valueList;
     }
 
