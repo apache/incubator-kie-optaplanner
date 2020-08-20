@@ -139,9 +139,11 @@ public class TerminationFactory {
     }
 
     protected Termination buildTerminationFromList(List<Termination> terminationList) {
-        if (terminationList.size() == 1) {
+        if (terminationList.isEmpty()) {
+            return null;
+        } else if (terminationList.size() == 1) {
             return terminationList.get(0);
-        } else if (terminationList.size() > 1) {
+        } else {
             AbstractCompositeTermination compositeTermination;
             if (terminationConfig.getTerminationCompositionStyle() == null
                     || terminationConfig.getTerminationCompositionStyle() == TerminationCompositionStyle.OR) {
@@ -153,8 +155,6 @@ public class TerminationFactory {
                         + terminationConfig.getTerminationCompositionStyle() + ") is not implemented.");
             }
             return compositeTermination;
-        } else {
-            return null;
         }
     }
 }

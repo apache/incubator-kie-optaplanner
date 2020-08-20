@@ -55,11 +55,10 @@ public class PooledEntityPlacerFactory extends AbstractEntityPlacerFactory<Poole
         EntitySelectorConfig entitySelectorConfig = buildEntitySelectorConfig(configPolicy, entityDescriptor);
 
         Collection<GenuineVariableDescriptor> variableDescriptors = entityDescriptor.getGenuineVariableDescriptors();
-        List<MoveSelectorConfig> subMoveSelectorConfigList = new ArrayList<>(
-                variableDescriptors.size());
+        List<MoveSelectorConfig> subMoveSelectorConfigList = new ArrayList<>(variableDescriptors.size());
         for (GenuineVariableDescriptor variableDescriptor : variableDescriptors) {
-            subMoveSelectorConfigList.add(buildChangeMoveSelectorConfig(
-                    configPolicy, entitySelectorConfig.getId(), variableDescriptor));
+            subMoveSelectorConfigList
+                    .add(buildChangeMoveSelectorConfig(configPolicy, entitySelectorConfig.getId(), variableDescriptor));
         }
         // The first entitySelectorConfig must be the mimic recorder, not the mimic replayer
         ((ChangeMoveSelectorConfig) subMoveSelectorConfigList.get(0)).setEntitySelectorConfig(entitySelectorConfig);

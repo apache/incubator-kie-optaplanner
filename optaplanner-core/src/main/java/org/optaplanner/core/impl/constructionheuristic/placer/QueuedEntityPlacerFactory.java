@@ -51,11 +51,10 @@ public class QueuedEntityPlacerFactory extends AbstractEntityPlacerFactory<Queue
         if (ConfigUtils.isEmptyCollection(placerConfig.getMoveSelectorConfigList())) {
             EntityDescriptor entityDescriptor = entitySelector.getEntityDescriptor();
             Collection<GenuineVariableDescriptor> variableDescriptors = entityDescriptor.getGenuineVariableDescriptors();
-            List<MoveSelectorConfig> subMoveSelectorConfigList = new ArrayList<>(
-                    variableDescriptors.size());
+            List<MoveSelectorConfig> subMoveSelectorConfigList = new ArrayList<>(variableDescriptors.size());
             for (GenuineVariableDescriptor variableDescriptor : variableDescriptors) {
-                subMoveSelectorConfigList.add(buildChangeMoveSelectorConfig(
-                        configPolicy, entitySelectorConfig_.getId(), variableDescriptor));
+                subMoveSelectorConfigList
+                        .add(buildChangeMoveSelectorConfig(configPolicy, entitySelectorConfig_.getId(), variableDescriptor));
             }
             MoveSelectorConfig subMoveSelectorConfig;
             if (subMoveSelectorConfigList.size() > 1) {

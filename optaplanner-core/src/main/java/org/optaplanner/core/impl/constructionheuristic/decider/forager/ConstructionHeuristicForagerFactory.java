@@ -28,8 +28,7 @@ public class ConstructionHeuristicForagerFactory {
 
     private final ConstructionHeuristicForagerConfig foragerConfig;
 
-    public ConstructionHeuristicForagerFactory(
-            ConstructionHeuristicForagerConfig foragerConfig) {
+    public ConstructionHeuristicForagerFactory(ConstructionHeuristicForagerConfig foragerConfig) {
         this.foragerConfig = foragerConfig;
     }
 
