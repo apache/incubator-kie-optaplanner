@@ -117,12 +117,12 @@ public class EntitySelectorFactory extends AbstractSelectorFactory<EntitySelecto
             entitySelector = applyNearbySelection(configPolicy, config.getNearbySelectionConfig(), minimumCacheType,
                     resolvedSelectionOrder, entitySelector);
         }
-        entitySelector = applyFiltering(resolvedCacheType, resolvedSelectionOrder, entitySelector);
+        entitySelector = applyFiltering(entitySelector);
         entitySelector = applySorting(resolvedCacheType, resolvedSelectionOrder, entitySelector);
         entitySelector = applyProbability(resolvedCacheType, resolvedSelectionOrder, entitySelector);
         entitySelector = applyShuffling(resolvedCacheType, resolvedSelectionOrder, entitySelector);
         entitySelector = applyCaching(resolvedCacheType, resolvedSelectionOrder, entitySelector);
-        entitySelector = applySelectedLimit(resolvedCacheType, resolvedSelectionOrder, entitySelector);
+        entitySelector = applySelectedLimit(resolvedSelectionOrder, entitySelector);
         entitySelector = applyMimicRecording(configPolicy, entitySelector);
         return entitySelector;
     }
@@ -210,8 +210,7 @@ public class EntitySelectorFactory extends AbstractSelectorFactory<EntitySelecto
                 randomSelection);
     }
 
-    private EntitySelector applyFiltering(SelectionCacheType resolvedCacheType, SelectionOrder resolvedSelectionOrder,
-            EntitySelector entitySelector) {
+    private EntitySelector applyFiltering(EntitySelector entitySelector) {
         EntityDescriptor entityDescriptor = entitySelector.getEntityDescriptor();
         if (hasFiltering(entityDescriptor)) {
             List<SelectionFilter> filterList = new ArrayList<>(config.getFilterClass() == null ? 1 : 2);
@@ -374,9 +373,7 @@ public class EntitySelectorFactory extends AbstractSelectorFactory<EntitySelecto
         }
     }
 
-    private EntitySelector applySelectedLimit(
-            SelectionCacheType resolvedCacheType, SelectionOrder resolvedSelectionOrder,
-            EntitySelector entitySelector) {
+    private EntitySelector applySelectedLimit(SelectionOrder resolvedSelectionOrder, EntitySelector entitySelector) {
         if (config.getSelectedCountLimit() != null) {
             entitySelector = new SelectedCountLimitEntitySelector(entitySelector,
                     resolvedSelectionOrder.toRandomSelectionBoolean(), config.getSelectedCountLimit());
