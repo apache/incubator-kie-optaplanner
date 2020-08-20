@@ -20,21 +20,22 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 
 import org.junit.jupiter.api.Test;
-import org.optaplanner.core.config.heuristic.selector.AbstractSelectorConfigTest;
+import org.optaplanner.core.config.heuristic.selector.AbstractSelectorFactoryTest;
 import org.optaplanner.core.config.heuristic.selector.common.SelectionCacheType;
 import org.optaplanner.core.config.heuristic.selector.common.SelectionOrder;
 import org.optaplanner.core.impl.heuristic.selector.entity.EntitySelector;
+import org.optaplanner.core.impl.heuristic.selector.entity.EntitySelectorFactory;
 import org.optaplanner.core.impl.heuristic.selector.entity.FromSolutionEntitySelector;
 import org.optaplanner.core.impl.heuristic.selector.entity.decorator.ShufflingEntitySelector;
 
-public class EntitySelectorConfigTest extends AbstractSelectorConfigTest {
+public class EntitySelectorFactoryTest extends AbstractSelectorFactoryTest {
 
     @Test
     public void phaseOriginal() {
         EntitySelectorConfig entitySelectorConfig = new EntitySelectorConfig();
         entitySelectorConfig.setCacheType(SelectionCacheType.PHASE);
         entitySelectorConfig.setSelectionOrder(SelectionOrder.ORIGINAL);
-        EntitySelector entitySelector = entitySelectorConfig.buildEntitySelector(
+        EntitySelector entitySelector = EntitySelectorFactory.create(entitySelectorConfig).buildEntitySelector(
                 buildHeuristicConfigPolicy(),
                 SelectionCacheType.JUST_IN_TIME, SelectionOrder.RANDOM);
         assertThat(entitySelector)
@@ -49,7 +50,7 @@ public class EntitySelectorConfigTest extends AbstractSelectorConfigTest {
         EntitySelectorConfig entitySelectorConfig = new EntitySelectorConfig();
         entitySelectorConfig.setCacheType(SelectionCacheType.STEP);
         entitySelectorConfig.setSelectionOrder(SelectionOrder.ORIGINAL);
-        EntitySelector entitySelector = entitySelectorConfig.buildEntitySelector(
+        EntitySelector entitySelector = EntitySelectorFactory.create(entitySelectorConfig).buildEntitySelector(
                 buildHeuristicConfigPolicy(),
                 SelectionCacheType.JUST_IN_TIME, SelectionOrder.RANDOM);
         assertThat(entitySelector)
@@ -64,7 +65,7 @@ public class EntitySelectorConfigTest extends AbstractSelectorConfigTest {
         EntitySelectorConfig entitySelectorConfig = new EntitySelectorConfig();
         entitySelectorConfig.setCacheType(SelectionCacheType.JUST_IN_TIME);
         entitySelectorConfig.setSelectionOrder(SelectionOrder.ORIGINAL);
-        EntitySelector entitySelector = entitySelectorConfig.buildEntitySelector(
+        EntitySelector entitySelector = EntitySelectorFactory.create(entitySelectorConfig).buildEntitySelector(
                 buildHeuristicConfigPolicy(),
                 SelectionCacheType.JUST_IN_TIME, SelectionOrder.RANDOM);
         assertThat(entitySelector)
@@ -78,7 +79,7 @@ public class EntitySelectorConfigTest extends AbstractSelectorConfigTest {
         EntitySelectorConfig entitySelectorConfig = new EntitySelectorConfig();
         entitySelectorConfig.setCacheType(SelectionCacheType.PHASE);
         entitySelectorConfig.setSelectionOrder(SelectionOrder.RANDOM);
-        EntitySelector entitySelector = entitySelectorConfig.buildEntitySelector(
+        EntitySelector entitySelector = EntitySelectorFactory.create(entitySelectorConfig).buildEntitySelector(
                 buildHeuristicConfigPolicy(),
                 SelectionCacheType.JUST_IN_TIME, SelectionOrder.RANDOM);
         assertThat(entitySelector)
@@ -93,7 +94,7 @@ public class EntitySelectorConfigTest extends AbstractSelectorConfigTest {
         EntitySelectorConfig entitySelectorConfig = new EntitySelectorConfig();
         entitySelectorConfig.setCacheType(SelectionCacheType.STEP);
         entitySelectorConfig.setSelectionOrder(SelectionOrder.RANDOM);
-        EntitySelector entitySelector = entitySelectorConfig.buildEntitySelector(
+        EntitySelector entitySelector = EntitySelectorFactory.create(entitySelectorConfig).buildEntitySelector(
                 buildHeuristicConfigPolicy(),
                 SelectionCacheType.JUST_IN_TIME, SelectionOrder.RANDOM);
         assertThat(entitySelector)
@@ -108,7 +109,7 @@ public class EntitySelectorConfigTest extends AbstractSelectorConfigTest {
         EntitySelectorConfig entitySelectorConfig = new EntitySelectorConfig();
         entitySelectorConfig.setCacheType(SelectionCacheType.JUST_IN_TIME);
         entitySelectorConfig.setSelectionOrder(SelectionOrder.RANDOM);
-        EntitySelector entitySelector = entitySelectorConfig.buildEntitySelector(
+        EntitySelector entitySelector = EntitySelectorFactory.create(entitySelectorConfig).buildEntitySelector(
                 buildHeuristicConfigPolicy(),
                 SelectionCacheType.JUST_IN_TIME, SelectionOrder.RANDOM);
         assertThat(entitySelector)
@@ -122,7 +123,7 @@ public class EntitySelectorConfigTest extends AbstractSelectorConfigTest {
         EntitySelectorConfig entitySelectorConfig = new EntitySelectorConfig();
         entitySelectorConfig.setCacheType(SelectionCacheType.PHASE);
         entitySelectorConfig.setSelectionOrder(SelectionOrder.SHUFFLED);
-        EntitySelector entitySelector = entitySelectorConfig.buildEntitySelector(
+        EntitySelector entitySelector = EntitySelectorFactory.create(entitySelectorConfig).buildEntitySelector(
                 buildHeuristicConfigPolicy(),
                 SelectionCacheType.JUST_IN_TIME, SelectionOrder.RANDOM);
         assertThat(entitySelector)
@@ -137,7 +138,7 @@ public class EntitySelectorConfigTest extends AbstractSelectorConfigTest {
         EntitySelectorConfig entitySelectorConfig = new EntitySelectorConfig();
         entitySelectorConfig.setCacheType(SelectionCacheType.STEP);
         entitySelectorConfig.setSelectionOrder(SelectionOrder.SHUFFLED);
-        EntitySelector entitySelector = entitySelectorConfig.buildEntitySelector(
+        EntitySelector entitySelector = EntitySelectorFactory.create(entitySelectorConfig).buildEntitySelector(
                 buildHeuristicConfigPolicy(),
                 SelectionCacheType.JUST_IN_TIME, SelectionOrder.RANDOM);
         assertThat(entitySelector)
@@ -152,9 +153,10 @@ public class EntitySelectorConfigTest extends AbstractSelectorConfigTest {
         EntitySelectorConfig entitySelectorConfig = new EntitySelectorConfig();
         entitySelectorConfig.setCacheType(SelectionCacheType.JUST_IN_TIME);
         entitySelectorConfig.setSelectionOrder(SelectionOrder.SHUFFLED);
-        assertThatIllegalArgumentException().isThrownBy(() -> entitySelectorConfig.buildEntitySelector(
-                buildHeuristicConfigPolicy(),
-                SelectionCacheType.JUST_IN_TIME, SelectionOrder.RANDOM));
+        assertThatIllegalArgumentException()
+                .isThrownBy(() -> EntitySelectorFactory.create(entitySelectorConfig).buildEntitySelector(
+                        buildHeuristicConfigPolicy(),
+                        SelectionCacheType.JUST_IN_TIME, SelectionOrder.RANDOM));
     }
 
 }

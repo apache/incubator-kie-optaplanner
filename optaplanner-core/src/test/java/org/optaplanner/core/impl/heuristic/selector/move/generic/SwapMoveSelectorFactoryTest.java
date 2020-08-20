@@ -22,7 +22,7 @@ import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException
 import java.util.Arrays;
 
 import org.junit.jupiter.api.Test;
-import org.optaplanner.core.config.heuristic.selector.AbstractSelectorConfigTest;
+import org.optaplanner.core.config.heuristic.selector.AbstractSelectorFactoryTest;
 import org.optaplanner.core.config.heuristic.selector.common.SelectionCacheType;
 import org.optaplanner.core.config.heuristic.selector.common.SelectionOrder;
 import org.optaplanner.core.config.heuristic.selector.entity.EntitySelectorConfig;
@@ -37,7 +37,7 @@ import org.optaplanner.core.impl.testdata.domain.multientity.TestdataLeadEntity;
 import org.optaplanner.core.impl.testdata.domain.multientity.TestdataMultiEntitySolution;
 import org.optaplanner.core.impl.testdata.domain.multivar.TestdataMultiVarSolution;
 
-class SwapMoveSelectorFactoryTest extends AbstractSelectorConfigTest {
+class SwapMoveSelectorFactoryTest extends AbstractSelectorFactoryTest {
 
     @Test
     void deducibleMultiVar() {

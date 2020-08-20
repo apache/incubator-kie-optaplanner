@@ -20,17 +20,18 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 
 import org.junit.jupiter.api.Test;
-import org.optaplanner.core.config.heuristic.selector.AbstractSelectorConfigTest;
+import org.optaplanner.core.config.heuristic.selector.AbstractSelectorFactoryTest;
 import org.optaplanner.core.config.heuristic.selector.common.SelectionCacheType;
 import org.optaplanner.core.config.heuristic.selector.common.SelectionOrder;
 import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
 import org.optaplanner.core.impl.heuristic.HeuristicConfigPolicy;
 import org.optaplanner.core.impl.heuristic.selector.value.FromSolutionPropertyValueSelector;
 import org.optaplanner.core.impl.heuristic.selector.value.ValueSelector;
+import org.optaplanner.core.impl.heuristic.selector.value.ValueSelectorFactory;
 import org.optaplanner.core.impl.heuristic.selector.value.decorator.ShufflingValueSelector;
 import org.optaplanner.core.impl.testdata.domain.TestdataEntity;
 
-public class ValueSelectorConfigTest extends AbstractSelectorConfigTest {
+public class ValueSelectorFactoryTest extends AbstractSelectorFactoryTest {
 
     @Test
     public void phaseOriginal() {
@@ -40,7 +41,7 @@ public class ValueSelectorConfigTest extends AbstractSelectorConfigTest {
         ValueSelectorConfig valueSelectorConfig = new ValueSelectorConfig();
         valueSelectorConfig.setCacheType(SelectionCacheType.PHASE);
         valueSelectorConfig.setSelectionOrder(SelectionOrder.ORIGINAL);
-        ValueSelector valueSelector = valueSelectorConfig.buildValueSelector(
+        ValueSelector valueSelector = ValueSelectorFactory.create(valueSelectorConfig).buildValueSelector(
                 configPolicy, entityDescriptor,
                 SelectionCacheType.JUST_IN_TIME, SelectionOrder.RANDOM);
         assertThat(valueSelector)
@@ -58,7 +59,7 @@ public class ValueSelectorConfigTest extends AbstractSelectorConfigTest {
         ValueSelectorConfig valueSelectorConfig = new ValueSelectorConfig();
         valueSelectorConfig.setCacheType(SelectionCacheType.STEP);
         valueSelectorConfig.setSelectionOrder(SelectionOrder.ORIGINAL);
-        ValueSelector valueSelector = valueSelectorConfig.buildValueSelector(
+        ValueSelector valueSelector = ValueSelectorFactory.create(valueSelectorConfig).buildValueSelector(
                 configPolicy, entityDescriptor,
                 SelectionCacheType.JUST_IN_TIME, SelectionOrder.RANDOM);
         assertThat(valueSelector)
@@ -77,7 +78,7 @@ public class ValueSelectorConfigTest extends AbstractSelectorConfigTest {
         ValueSelectorConfig valueSelectorConfig = new ValueSelectorConfig();
         valueSelectorConfig.setCacheType(SelectionCacheType.JUST_IN_TIME);
         valueSelectorConfig.setSelectionOrder(SelectionOrder.ORIGINAL);
-        ValueSelector valueSelector = valueSelectorConfig.buildValueSelector(
+        ValueSelector valueSelector = ValueSelectorFactory.create(valueSelectorConfig).buildValueSelector(
                 configPolicy, entityDescriptor,
                 SelectionCacheType.JUST_IN_TIME, SelectionOrder.RANDOM);
         assertThat(valueSelector)
@@ -94,7 +95,7 @@ public class ValueSelectorConfigTest extends AbstractSelectorConfigTest {
         ValueSelectorConfig valueSelectorConfig = new ValueSelectorConfig();
         valueSelectorConfig.setCacheType(SelectionCacheType.PHASE);
         valueSelectorConfig.setSelectionOrder(SelectionOrder.RANDOM);
-        ValueSelector valueSelector = valueSelectorConfig.buildValueSelector(
+        ValueSelector valueSelector = ValueSelectorFactory.create(valueSelectorConfig).buildValueSelector(
                 configPolicy, entityDescriptor,
                 SelectionCacheType.JUST_IN_TIME, SelectionOrder.RANDOM);
         assertThat(valueSelector)
@@ -112,7 +113,7 @@ public class ValueSelectorConfigTest extends AbstractSelectorConfigTest {
         ValueSelectorConfig valueSelectorConfig = new ValueSelectorConfig();
         valueSelectorConfig.setCacheType(SelectionCacheType.STEP);
         valueSelectorConfig.setSelectionOrder(SelectionOrder.RANDOM);
-        ValueSelector valueSelector = valueSelectorConfig.buildValueSelector(
+        ValueSelector valueSelector = ValueSelectorFactory.create(valueSelectorConfig).buildValueSelector(
                 configPolicy, entityDescriptor,
                 SelectionCacheType.JUST_IN_TIME, SelectionOrder.RANDOM);
         assertThat(valueSelector)
@@ -131,7 +132,7 @@ public class ValueSelectorConfigTest extends AbstractSelectorConfigTest {
         ValueSelectorConfig valueSelectorConfig = new ValueSelectorConfig();
         valueSelectorConfig.setCacheType(SelectionCacheType.JUST_IN_TIME);
         valueSelectorConfig.setSelectionOrder(SelectionOrder.RANDOM);
-        ValueSelector valueSelector = valueSelectorConfig.buildValueSelector(
+        ValueSelector valueSelector = ValueSelectorFactory.create(valueSelectorConfig).buildValueSelector(
                 configPolicy, entityDescriptor,
                 SelectionCacheType.JUST_IN_TIME, SelectionOrder.RANDOM);
         assertThat(valueSelector)
@@ -148,7 +149,7 @@ public class ValueSelectorConfigTest extends AbstractSelectorConfigTest {
         ValueSelectorConfig valueSelectorConfig = new ValueSelectorConfig();
         valueSelectorConfig.setCacheType(SelectionCacheType.PHASE);
         valueSelectorConfig.setSelectionOrder(SelectionOrder.SHUFFLED);
-        ValueSelector valueSelector = valueSelectorConfig.buildValueSelector(
+        ValueSelector valueSelector = ValueSelectorFactory.create(valueSelectorConfig).buildValueSelector(
                 configPolicy, entityDescriptor,
                 SelectionCacheType.JUST_IN_TIME, SelectionOrder.RANDOM);
         assertThat(valueSelector)
@@ -166,7 +167,7 @@ public class ValueSelectorConfigTest extends AbstractSelectorConfigTest {
         ValueSelectorConfig valueSelectorConfig = new ValueSelectorConfig();
         valueSelectorConfig.setCacheType(SelectionCacheType.STEP);
         valueSelectorConfig.setSelectionOrder(SelectionOrder.SHUFFLED);
-        ValueSelector valueSelector = valueSelectorConfig.buildValueSelector(
+        ValueSelector valueSelector = ValueSelectorFactory.create(valueSelectorConfig).buildValueSelector(
                 configPolicy, entityDescriptor,
                 SelectionCacheType.JUST_IN_TIME, SelectionOrder.RANDOM);
         assertThat(valueSelector)
@@ -184,9 +185,10 @@ public class ValueSelectorConfigTest extends AbstractSelectorConfigTest {
         ValueSelectorConfig valueSelectorConfig = new ValueSelectorConfig();
         valueSelectorConfig.setCacheType(SelectionCacheType.JUST_IN_TIME);
         valueSelectorConfig.setSelectionOrder(SelectionOrder.SHUFFLED);
-        assertThatIllegalArgumentException().isThrownBy(() -> valueSelectorConfig.buildValueSelector(
-                configPolicy, entityDescriptor,
-                SelectionCacheType.JUST_IN_TIME, SelectionOrder.RANDOM));
+        assertThatIllegalArgumentException()
+                .isThrownBy(() -> ValueSelectorFactory.create(valueSelectorConfig).buildValueSelector(
+                        configPolicy, entityDescriptor,
+                        SelectionCacheType.JUST_IN_TIME, SelectionOrder.RANDOM));
     }
 
 }

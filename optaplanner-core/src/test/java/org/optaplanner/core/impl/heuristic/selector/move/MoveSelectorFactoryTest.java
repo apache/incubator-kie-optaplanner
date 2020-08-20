@@ -23,7 +23,7 @@ import java.util.Comparator;
 
 import org.junit.jupiter.api.Test;
 import org.optaplanner.core.api.score.director.ScoreDirector;
-import org.optaplanner.core.config.heuristic.selector.AbstractSelectorConfigTest;
+import org.optaplanner.core.config.heuristic.selector.AbstractSelectorFactoryTest;
 import org.optaplanner.core.config.heuristic.selector.common.SelectionCacheType;
 import org.optaplanner.core.config.heuristic.selector.common.SelectionOrder;
 import org.optaplanner.core.config.heuristic.selector.common.decorator.SelectionSorterOrder;
@@ -38,7 +38,7 @@ import org.optaplanner.core.impl.heuristic.selector.move.decorator.ShufflingMove
 import org.optaplanner.core.impl.heuristic.selector.move.decorator.SortingMoveSelector;
 import org.optaplanner.core.impl.testdata.domain.TestdataSolution;
 
-class MoveSelectorFactoryTest extends AbstractSelectorConfigTest {
+class MoveSelectorFactoryTest extends AbstractSelectorFactoryTest {
 
     @Test
     void phaseOriginal() {

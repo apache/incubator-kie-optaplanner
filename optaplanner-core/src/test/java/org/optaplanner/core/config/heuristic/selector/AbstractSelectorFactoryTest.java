@@ -26,7 +26,7 @@ import org.optaplanner.core.impl.score.buildin.simple.SimpleScoreDefinition;
 import org.optaplanner.core.impl.score.director.InnerScoreDirectorFactory;
 import org.optaplanner.core.impl.testdata.domain.TestdataSolution;
 
-public abstract class AbstractSelectorConfigTest {
+public abstract class AbstractSelectorFactoryTest {
 
     public HeuristicConfigPolicy buildHeuristicConfigPolicy() {
         return buildHeuristicConfigPolicy(TestdataSolution.buildSolutionDescriptor());
