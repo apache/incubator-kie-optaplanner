@@ -145,7 +145,7 @@ public class ValueSelectorFactory extends AbstractSelectorFactory<ValueSelectorC
             valueSelector = applyNearbySelection(configPolicy, config.getNearbySelectionConfig(), minimumCacheType,
                     resolvedSelectionOrder, valueSelector);
         }
-        valueSelector = applyFiltering(resolvedCacheType, resolvedSelectionOrder, valueSelector);
+        valueSelector = applyFiltering(valueSelector);
         valueSelector = applyInitializedChainedValueFilter(configPolicy, variableDescriptor,
                 resolvedCacheType, resolvedSelectionOrder, valueSelector);
         valueSelector = applySorting(resolvedCacheType, resolvedSelectionOrder, valueSelector);
@@ -259,8 +259,7 @@ public class ValueSelectorFactory extends AbstractSelectorFactory<ValueSelectorC
         return config.getFilterClass() != null || variableDescriptor.hasMovableChainedTrailingValueFilter();
     }
 
-    private ValueSelector applyFiltering(SelectionCacheType resolvedCacheType, SelectionOrder resolvedSelectionOrder,
-            ValueSelector valueSelector) {
+    protected ValueSelector applyFiltering(ValueSelector valueSelector) {
         GenuineVariableDescriptor variableDescriptor = valueSelector.getVariableDescriptor();
         if (hasFiltering(variableDescriptor)) {
             List<SelectionFilter> filterList = new ArrayList<>(config.getFilterClass() == null ? 1 : 2);

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.optaplanner.core.config.heuristic.selector;
+package org.optaplanner.core.impl.heuristic.selector;
 
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;

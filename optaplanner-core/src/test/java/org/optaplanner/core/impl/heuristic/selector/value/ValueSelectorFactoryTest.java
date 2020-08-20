@@ -14,27 +14,31 @@
  * limitations under the License.
  */
 
-package org.optaplanner.core.config.heuristic.selector.value;
+package org.optaplanner.core.impl.heuristic.selector.value;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 
 import org.junit.jupiter.api.Test;
-import org.optaplanner.core.config.heuristic.selector.AbstractSelectorFactoryTest;
+import org.optaplanner.core.api.score.director.ScoreDirector;
 import org.optaplanner.core.config.heuristic.selector.common.SelectionCacheType;
 import org.optaplanner.core.config.heuristic.selector.common.SelectionOrder;
+import org.optaplanner.core.config.heuristic.selector.value.ValueSelectorConfig;
 import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
 import org.optaplanner.core.impl.heuristic.HeuristicConfigPolicy;
-import org.optaplanner.core.impl.heuristic.selector.value.FromSolutionPropertyValueSelector;
-import org.optaplanner.core.impl.heuristic.selector.value.ValueSelector;
-import org.optaplanner.core.impl.heuristic.selector.value.ValueSelectorFactory;
+import org.optaplanner.core.impl.heuristic.selector.AbstractSelectorFactoryTest;
+import org.optaplanner.core.impl.heuristic.selector.SelectorTestUtils;
+import org.optaplanner.core.impl.heuristic.selector.common.decorator.SelectionFilter;
+import org.optaplanner.core.impl.heuristic.selector.value.decorator.FilteringValueSelector;
 import org.optaplanner.core.impl.heuristic.selector.value.decorator.ShufflingValueSelector;
 import org.optaplanner.core.impl.testdata.domain.TestdataEntity;
+import org.optaplanner.core.impl.testdata.domain.TestdataSolution;
+import org.optaplanner.core.impl.testdata.domain.TestdataValue;
 
-public class ValueSelectorFactoryTest extends AbstractSelectorFactoryTest {
+class ValueSelectorFactoryTest extends AbstractSelectorFactoryTest {
 
     @Test
-    public void phaseOriginal() {
+    void phaseOriginal() {
         HeuristicConfigPolicy configPolicy = buildHeuristicConfigPolicy();
         EntityDescriptor entityDescriptor = configPolicy.getSolutionDescriptor()
                 .findEntityDescriptorOrFail(TestdataEntity.class);
@@ -52,7 +56,7 @@ public class ValueSelectorFactoryTest extends AbstractSelectorFactoryTest {
     }
 
     @Test
-    public void stepOriginal() {
+    void stepOriginal() {
         HeuristicConfigPolicy configPolicy = buildHeuristicConfigPolicy();
         EntityDescriptor entityDescriptor = configPolicy.getSolutionDescriptor()
                 .findEntityDescriptorOrFail(TestdataEntity.class);
@@ -71,7 +75,7 @@ public class ValueSelectorFactoryTest extends AbstractSelectorFactoryTest {
     }
 
     @Test
-    public void justInTimeOriginal() {
+    void justInTimeOriginal() {
         HeuristicConfigPolicy configPolicy = buildHeuristicConfigPolicy();
         EntityDescriptor entityDescriptor = configPolicy.getSolutionDescriptor()
                 .findEntityDescriptorOrFail(TestdataEntity.class);
@@ -88,7 +92,7 @@ public class ValueSelectorFactoryTest extends AbstractSelectorFactoryTest {
     }
 
     @Test
-    public void phaseRandom() {
+    void phaseRandom() {
         HeuristicConfigPolicy configPolicy = buildHeuristicConfigPolicy();
         EntityDescriptor entityDescriptor = configPolicy.getSolutionDescriptor()
                 .findEntityDescriptorOrFail(TestdataEntity.class);
@@ -106,7 +110,7 @@ public class ValueSelectorFactoryTest extends AbstractSelectorFactoryTest {
     }
 
     @Test
-    public void stepRandom() {
+    void stepRandom() {
         HeuristicConfigPolicy configPolicy = buildHeuristicConfigPolicy();
         EntityDescriptor entityDescriptor = configPolicy.getSolutionDescriptor()
                 .findEntityDescriptorOrFail(TestdataEntity.class);
@@ -125,7 +129,7 @@ public class ValueSelectorFactoryTest extends AbstractSelectorFactoryTest {
     }
 
     @Test
-    public void justInTimeRandom() {
+    void justInTimeRandom() {
         HeuristicConfigPolicy configPolicy = buildHeuristicConfigPolicy();
         EntityDescriptor entityDescriptor = configPolicy.getSolutionDescriptor()
                 .findEntityDescriptorOrFail(TestdataEntity.class);
@@ -142,7 +146,7 @@ public class ValueSelectorFactoryTest extends AbstractSelectorFactoryTest {
     }
 
     @Test
-    public void phaseShuffled() {
+    void phaseShuffled() {
         HeuristicConfigPolicy configPolicy = buildHeuristicConfigPolicy();
         EntityDescriptor entityDescriptor = configPolicy.getSolutionDescriptor()
                 .findEntityDescriptorOrFail(TestdataEntity.class);
@@ -160,7 +164,7 @@ public class ValueSelectorFactoryTest extends AbstractSelectorFactoryTest {
     }
 
     @Test
-    public void stepShuffled() {
+    void stepShuffled() {
         HeuristicConfigPolicy configPolicy = buildHeuristicConfigPolicy();
         EntityDescriptor entityDescriptor = configPolicy.getSolutionDescriptor()
                 .findEntityDescriptorOrFail(TestdataEntity.class);
@@ -178,7 +182,7 @@ public class ValueSelectorFactoryTest extends AbstractSelectorFactoryTest {
     }
 
     @Test
-    public void justInTimeShuffled() {
+    void justInTimeShuffled() {
         HeuristicConfigPolicy configPolicy = buildHeuristicConfigPolicy();
         EntityDescriptor entityDescriptor = configPolicy.getSolutionDescriptor()
                 .findEntityDescriptorOrFail(TestdataEntity.class);
@@ -191,4 +195,22 @@ public class ValueSelectorFactoryTest extends AbstractSelectorFactoryTest {
                         SelectionCacheType.JUST_IN_TIME, SelectionOrder.RANDOM));
     }
 
+    @Test
+    void applyFiltering_withFilterClass() {
+        ValueSelectorConfig valueSelectorConfig = new ValueSelectorConfig();
+        valueSelectorConfig.setFilterClass(DummyValueFilter.class);
+
+        ValueSelector baseValueSelector =
+                SelectorTestUtils.mockValueSelector(TestdataEntity.class, "value", new TestdataValue("v1"));
+        ValueSelector filteringValueSelector =
+                ValueSelectorFactory.create(valueSelectorConfig).applyFiltering(baseValueSelector);
+        assertThat(filteringValueSelector).isExactlyInstanceOf(FilteringValueSelector.class);
+    }
+
+    public static class DummyValueFilter implements SelectionFilter<TestdataSolution, TestdataValue> {
+        @Override
+        public boolean accept(ScoreDirector<TestdataSolution> scoreDirector, TestdataValue selection) {
+            return true;
+        }
+    }
 }
