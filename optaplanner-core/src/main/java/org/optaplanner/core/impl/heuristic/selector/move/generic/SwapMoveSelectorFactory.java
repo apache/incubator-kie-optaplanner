@@ -43,7 +43,7 @@ public class SwapMoveSelectorFactory extends AbstractMoveSelectorFactory<SwapMov
     }
 
     @Override
-    public MoveSelector buildBaseMoveSelector(HeuristicConfigPolicy configPolicy, SelectionCacheType minimumCacheType,
+    protected MoveSelector buildBaseMoveSelector(HeuristicConfigPolicy configPolicy, SelectionCacheType minimumCacheType,
             boolean randomSelection) {
         EntitySelectorConfig entitySelectorConfig_ =
                 config.getEntitySelectorConfig() == null ? new EntitySelectorConfig() : config.getEntitySelectorConfig();

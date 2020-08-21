@@ -38,7 +38,7 @@ public class PillarSwapMoveSelectorFactory extends AbstractMoveSelectorFactory<P
     }
 
     @Override
-    public MoveSelector buildBaseMoveSelector(HeuristicConfigPolicy configPolicy, SelectionCacheType minimumCacheType,
+    protected MoveSelector buildBaseMoveSelector(HeuristicConfigPolicy configPolicy, SelectionCacheType minimumCacheType,
             boolean randomSelection) {
         PillarSelectorConfig leftPillarSelectorConfig =
                 defaultIfNull(config.getPillarSelectorConfig(), new PillarSelectorConfig());

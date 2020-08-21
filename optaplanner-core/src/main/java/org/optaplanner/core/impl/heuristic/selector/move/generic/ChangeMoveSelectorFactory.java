@@ -45,7 +45,7 @@ public class ChangeMoveSelectorFactory extends AbstractMoveSelectorFactory<Chang
     }
 
     @Override
-    public MoveSelector buildBaseMoveSelector(HeuristicConfigPolicy configPolicy,
+    protected MoveSelector buildBaseMoveSelector(HeuristicConfigPolicy configPolicy,
             SelectionCacheType minimumCacheType, boolean randomSelection) {
         if (config.getEntitySelectorConfig() == null) {
             throw new IllegalStateException("The entitySelectorConfig (" + config.getEntitySelectorConfig()

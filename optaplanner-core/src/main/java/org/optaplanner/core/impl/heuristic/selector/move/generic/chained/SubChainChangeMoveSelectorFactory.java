@@ -41,10 +41,11 @@ public class SubChainChangeMoveSelectorFactory extends AbstractMoveSelectorFacto
     }
 
     @Override
-    public MoveSelector buildBaseMoveSelector(HeuristicConfigPolicy configPolicy,
+    protected MoveSelector buildBaseMoveSelector(HeuristicConfigPolicy configPolicy,
             SelectionCacheType minimumCacheType, boolean randomSelection) {
         EntityDescriptor entityDescriptor =
-                deduceEntityDescriptor(configPolicy.getSolutionDescriptor(), config.getEntityClass());
+                config.getEntityClass() == null ? deduceEntityDescriptor(configPolicy.getSolutionDescriptor())
+                        : deduceEntityDescriptor(configPolicy.getSolutionDescriptor(), config.getEntityClass());
         SubChainSelectorConfig subChainSelectorConfig_ =
                 config.getSubChainSelectorConfig() == null ? new SubChainSelectorConfig() : config.getSubChainSelectorConfig();
         SubChainSelector subChainSelector =
