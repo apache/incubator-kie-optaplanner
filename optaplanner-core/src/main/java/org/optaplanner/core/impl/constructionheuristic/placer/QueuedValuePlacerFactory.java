@@ -47,7 +47,8 @@ public class QueuedValuePlacerFactory extends AbstractEntityPlacerFactory<Queued
     @Override
     public QueuedValuePlacer buildEntityPlacer(HeuristicConfigPolicy configPolicy) {
         EntityDescriptor entityDescriptor =
-                deduceEntityDescriptor(configPolicy.getSolutionDescriptor(), config.getEntityClass());
+                config.getEntityClass() == null ? deduceEntityDescriptor(configPolicy.getSolutionDescriptor())
+                        : deduceEntityDescriptor(configPolicy.getSolutionDescriptor(), config.getEntityClass());
         ValueSelectorConfig valueSelectorConfig_ = buildValueSelectorConfig(configPolicy, entityDescriptor);
         ValueSelector valueSelector = ValueSelectorFactory.create(valueSelectorConfig_).buildValueSelector(configPolicy,
                 entityDescriptor, SelectionCacheType.PHASE, SelectionOrder.ORIGINAL, false);
