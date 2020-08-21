@@ -286,7 +286,7 @@ public class ValueSelectorFactory extends AbstractSelectorFactory<ValueSelectorC
         return valueSelector;
     }
 
-    private void validateSorting(SelectionOrder resolvedSelectionOrder) {
+    protected void validateSorting(SelectionOrder resolvedSelectionOrder) {
         if ((config.getSorterManner() != null || config.getSorterComparatorClass() != null
                 || config.getSorterWeightFactoryClass() != null
                 || config.getSorterOrder() != null || config.getSorterClass() != null)
@@ -342,7 +342,7 @@ public class ValueSelectorFactory extends AbstractSelectorFactory<ValueSelectorC
         }
     }
 
-    private ValueSelector applySorting(SelectionCacheType resolvedCacheType, SelectionOrder resolvedSelectionOrder,
+    protected ValueSelector applySorting(SelectionCacheType resolvedCacheType, SelectionOrder resolvedSelectionOrder,
             ValueSelector valueSelector) {
         if (resolvedSelectionOrder == SelectionOrder.SORTED) {
             SelectionSorter sorter;
@@ -353,13 +353,12 @@ public class ValueSelectorFactory extends AbstractSelectorFactory<ValueSelectorC
                 }
                 sorter = ValueSelectorConfig.determineSorter(config.getSorterManner(), variableDescriptor);
             } else if (config.getSorterComparatorClass() != null) {
-                Comparator<Object> sorterComparator = ConfigUtils.newInstance(config,
-                        "sorterComparatorClass", config.getSorterComparatorClass());
-                sorter = new ComparatorSelectionSorter(sorterComparator,
-                        SelectionSorterOrder.resolve(config.getSorterOrder()));
+                Comparator<Object> sorterComparator =
+                        ConfigUtils.newInstance(config, "sorterComparatorClass", config.getSorterComparatorClass());
+                sorter = new ComparatorSelectionSorter(sorterComparator, SelectionSorterOrder.resolve(config.getSorterOrder()));
             } else if (config.getSorterWeightFactoryClass() != null) {
-                SelectionSorterWeightFactory sorterWeightFactory = ConfigUtils.newInstance(config,
-                        "sorterWeightFactoryClass", config.getSorterWeightFactoryClass());
+                SelectionSorterWeightFactory sorterWeightFactory =
+                        ConfigUtils.newInstance(config, "sorterWeightFactoryClass", config.getSorterWeightFactoryClass());
                 sorter = new WeightFactorySelectionSorter(sorterWeightFactory,
                         SelectionSorterOrder.resolve(config.getSorterOrder()));
             } else if (config.getSorterClass() != null) {
@@ -374,8 +373,7 @@ public class ValueSelectorFactory extends AbstractSelectorFactory<ValueSelectorC
             }
             if (!valueSelector.getVariableDescriptor().isValueRangeEntityIndependent()
                     && resolvedCacheType == SelectionCacheType.STEP) {
-                valueSelector = new EntityDependentSortingValueSelector(valueSelector,
-                        resolvedCacheType, sorter);
+                valueSelector = new EntityDependentSortingValueSelector(valueSelector, resolvedCacheType, sorter);
             } else {
                 if (!(valueSelector instanceof EntityIndependentValueSelector)) {
                     throw new IllegalArgumentException("The valueSelectorConfig (" + config
@@ -384,14 +382,14 @@ public class ValueSelectorFactory extends AbstractSelectorFactory<ValueSelectorC
                             + ") needs to be based on an EntityIndependentValueSelector (" + valueSelector + ")."
                             + " Check your @" + ValueRangeProvider.class.getSimpleName() + " annotations.");
                 }
-                valueSelector = new SortingValueSelector((EntityIndependentValueSelector) valueSelector,
-                        resolvedCacheType, sorter);
+                valueSelector =
+                        new SortingValueSelector((EntityIndependentValueSelector) valueSelector, resolvedCacheType, sorter);
             }
         }
         return valueSelector;
     }
 
-    private void validateProbability(SelectionOrder resolvedSelectionOrder) {
+    protected void validateProbability(SelectionOrder resolvedSelectionOrder) {
         if (config.getProbabilityWeightFactoryClass() != null
                 && resolvedSelectionOrder != SelectionOrder.PROBABILISTIC) {
             throw new IllegalArgumentException("The valueSelectorConfig (" + config
@@ -401,7 +399,7 @@ public class ValueSelectorFactory extends AbstractSelectorFactory<ValueSelectorC
         }
     }
 
-    private ValueSelector applyProbability(SelectionCacheType resolvedCacheType, SelectionOrder resolvedSelectionOrder,
+    protected ValueSelector applyProbability(SelectionCacheType resolvedCacheType, SelectionOrder resolvedSelectionOrder,
             ValueSelector valueSelector) {
         if (resolvedSelectionOrder == SelectionOrder.PROBABILISTIC) {
             if (config.getProbabilityWeightFactoryClass() == null) {

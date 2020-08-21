@@ -228,7 +228,7 @@ public class EntitySelectorFactory extends AbstractSelectorFactory<EntitySelecto
         return entitySelector;
     }
 
-    private void validateSorting(SelectionOrder resolvedSelectionOrder) {
+    protected void validateSorting(SelectionOrder resolvedSelectionOrder) {
         if ((config.getSorterManner() != null || config.getSorterComparatorClass() != null
                 || config.getSorterWeightFactoryClass() != null
                 || config.getSorterOrder() != null || config.getSorterClass() != null)
@@ -284,7 +284,7 @@ public class EntitySelectorFactory extends AbstractSelectorFactory<EntitySelecto
         }
     }
 
-    private EntitySelector applySorting(SelectionCacheType resolvedCacheType, SelectionOrder resolvedSelectionOrder,
+    protected EntitySelector applySorting(SelectionCacheType resolvedCacheType, SelectionOrder resolvedSelectionOrder,
             EntitySelector entitySelector) {
         if (resolvedSelectionOrder == SelectionOrder.SORTED) {
             SelectionSorter sorter;
@@ -319,7 +319,7 @@ public class EntitySelectorFactory extends AbstractSelectorFactory<EntitySelecto
         return entitySelector;
     }
 
-    private void validateProbability(SelectionOrder resolvedSelectionOrder) {
+    protected void validateProbability(SelectionOrder resolvedSelectionOrder) {
         if (config.getProbabilityWeightFactoryClass() != null
                 && resolvedSelectionOrder != SelectionOrder.PROBABILISTIC) {
             throw new IllegalArgumentException("The entitySelectorConfig (" + config
@@ -329,7 +329,7 @@ public class EntitySelectorFactory extends AbstractSelectorFactory<EntitySelecto
         }
     }
 
-    private EntitySelector applyProbability(SelectionCacheType resolvedCacheType, SelectionOrder resolvedSelectionOrder,
+    protected EntitySelector applyProbability(SelectionCacheType resolvedCacheType, SelectionOrder resolvedSelectionOrder,
             EntitySelector entitySelector) {
         if (resolvedSelectionOrder == SelectionOrder.PROBABILISTIC) {
             if (config.getProbabilityWeightFactoryClass() == null) {
