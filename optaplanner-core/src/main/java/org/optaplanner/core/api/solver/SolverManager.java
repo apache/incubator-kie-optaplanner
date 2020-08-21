@@ -246,7 +246,7 @@ public interface SolverManager<Solution_, ProblemId_> extends AutoCloseable {
      * @param problemFinder never null, function that returns a {@link PlanningSolution}, usually with uninitialized planning
      *        variables
      * @param bestSolutionConsumer never null, called multiple times, on a consumer thread
-     * @param finalBestSolutionConsumer sometimes null, called only once, at the end, on a consumer thread,
+     * @param finalBestSolutionConsumer sometimes null, called only once, at the end, on a consumer thread.
      *        That final best solution is already consumed by the bestSolutionConsumer earlier.
      * @param exceptionHandler sometimes null, called if an exception or error occurs.
      *        If null it defaults to logging the exception as an error.
