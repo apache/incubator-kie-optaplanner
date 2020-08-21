@@ -46,17 +46,14 @@ public class SubChainChangeMoveSelectorFactory extends AbstractMoveSelectorFacto
         EntityDescriptor entityDescriptor =
                 deduceEntityDescriptor(configPolicy.getSolutionDescriptor(), config.getEntityClass());
         SubChainSelectorConfig subChainSelectorConfig_ =
-                config.getSubChainSelectorConfig() == null ? new SubChainSelectorConfig()
-                        : config.getSubChainSelectorConfig();
+                config.getSubChainSelectorConfig() == null ? new SubChainSelectorConfig() : config.getSubChainSelectorConfig();
         SubChainSelector subChainSelector =
-                SubChainSelectorFactory.create(subChainSelectorConfig_).buildSubChainSelector(configPolicy,
-                        entityDescriptor, minimumCacheType, SelectionOrder.fromRandomSelectionBoolean(randomSelection));
+                SubChainSelectorFactory.create(subChainSelectorConfig_).buildSubChainSelector(configPolicy, entityDescriptor,
+                        minimumCacheType, SelectionOrder.fromRandomSelectionBoolean(randomSelection));
         ValueSelectorConfig valueSelectorConfig_ =
-                config.getValueSelectorConfig() == null ? new ValueSelectorConfig()
-                        : config.getValueSelectorConfig();
+                config.getValueSelectorConfig() == null ? new ValueSelectorConfig() : config.getValueSelectorConfig();
         ValueSelector valueSelector = ValueSelectorFactory.create(valueSelectorConfig_).buildValueSelector(configPolicy,
-                entityDescriptor,
-                minimumCacheType, SelectionOrder.fromRandomSelectionBoolean(randomSelection));
+                entityDescriptor, minimumCacheType, SelectionOrder.fromRandomSelectionBoolean(randomSelection));
         if (!(valueSelector instanceof EntityIndependentValueSelector)) {
             throw new IllegalArgumentException("The moveSelectorConfig (" + config
                     + ") needs to be based on an EntityIndependentValueSelector (" + valueSelector + ")."

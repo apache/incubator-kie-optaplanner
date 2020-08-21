@@ -39,16 +39,14 @@ public class TailChainSwapMoveSelectorFactory extends AbstractMoveSelectorFactor
     public MoveSelector buildBaseMoveSelector(HeuristicConfigPolicy configPolicy,
             SelectionCacheType minimumCacheType, boolean randomSelection) {
         EntitySelectorConfig entitySelectorConfig_ =
-                config.getEntitySelectorConfig() == null ? new EntitySelectorConfig()
-                        : config.getEntitySelectorConfig();
+                config.getEntitySelectorConfig() == null ? new EntitySelectorConfig() : config.getEntitySelectorConfig();
         EntitySelector entitySelector = EntitySelectorFactory.create(entitySelectorConfig_).buildEntitySelector(configPolicy,
                 minimumCacheType, SelectionOrder.fromRandomSelectionBoolean(randomSelection));
         ValueSelectorConfig valueSelectorConfig_ =
-                config.getValueSelectorConfig() == null ? new ValueSelectorConfig()
-                        : config.getValueSelectorConfig();
+                config.getValueSelectorConfig() == null ? new ValueSelectorConfig() : config.getValueSelectorConfig();
         ValueSelector valueSelector = ValueSelectorFactory.create(valueSelectorConfig_).buildValueSelector(configPolicy,
-                entitySelector.getEntityDescriptor(),
-                minimumCacheType, SelectionOrder.fromRandomSelectionBoolean(randomSelection));
+                entitySelector.getEntityDescriptor(), minimumCacheType,
+                SelectionOrder.fromRandomSelectionBoolean(randomSelection));
         return new TailChainSwapMoveSelector(entitySelector, valueSelector, randomSelection);
     }
 }

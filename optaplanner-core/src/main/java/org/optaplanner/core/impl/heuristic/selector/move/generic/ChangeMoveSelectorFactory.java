@@ -70,8 +70,7 @@ public class ChangeMoveSelectorFactory extends AbstractMoveSelectorFactory<Chang
     protected MoveSelectorConfig buildUnfoldedMoveSelectorConfig(HeuristicConfigPolicy configPolicy) {
         Collection<EntityDescriptor> entityDescriptors;
         EntityDescriptor onlyEntityDescriptor = config.getEntitySelectorConfig() == null ? null
-                : EntitySelectorFactory.create(config.getEntitySelectorConfig())
-                        .extractEntityDescriptor(configPolicy);
+                : EntitySelectorFactory.create(config.getEntitySelectorConfig()).extractEntityDescriptor(configPolicy);
         if (onlyEntityDescriptor != null) {
             entityDescriptors = Collections.singletonList(onlyEntityDescriptor);
         } else {
@@ -80,8 +79,8 @@ public class ChangeMoveSelectorFactory extends AbstractMoveSelectorFactory<Chang
         List<GenuineVariableDescriptor> variableDescriptorList = new ArrayList<>();
         for (EntityDescriptor entityDescriptor : entityDescriptors) {
             GenuineVariableDescriptor onlyVariableDescriptor = config.getValueSelectorConfig() == null ? null
-                    : ValueSelectorFactory.create(config.getValueSelectorConfig())
-                            .extractVariableDescriptor(configPolicy, entityDescriptor);
+                    : ValueSelectorFactory.create(config.getValueSelectorConfig()).extractVariableDescriptor(configPolicy,
+                            entityDescriptor);
             if (onlyVariableDescriptor != null) {
                 if (onlyEntityDescriptor != null) {
                     // No need for unfolding or deducing
@@ -101,8 +100,7 @@ public class ChangeMoveSelectorFactory extends AbstractMoveSelectorFactory<Chang
             // No childMoveSelectorConfig.inherit() because of unfoldedMoveSelectorConfig.inheritFolded()
             ChangeMoveSelectorConfig childMoveSelectorConfig = new ChangeMoveSelectorConfig();
             // Different EntitySelector per child because it is a union
-            EntitySelectorConfig childEntitySelectorConfig =
-                    new EntitySelectorConfig(config.getEntitySelectorConfig());
+            EntitySelectorConfig childEntitySelectorConfig = new EntitySelectorConfig(config.getEntitySelectorConfig());
             if (childEntitySelectorConfig.getMimicSelectorRef() == null) {
                 childEntitySelectorConfig.setEntityClass(variableDescriptor.getEntityDescriptor().getEntityClass());
             }

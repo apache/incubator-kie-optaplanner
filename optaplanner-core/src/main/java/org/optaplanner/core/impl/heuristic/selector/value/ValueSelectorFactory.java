@@ -101,8 +101,7 @@ public class ValueSelectorFactory extends AbstractSelectorFactory<ValueSelectorC
      * @param inheritedSelectionOrder never null
      * @return never null
      */
-    public ValueSelector buildValueSelector(HeuristicConfigPolicy configPolicy,
-            EntityDescriptor entityDescriptor,
+    public ValueSelector buildValueSelector(HeuristicConfigPolicy configPolicy, EntityDescriptor entityDescriptor,
             SelectionCacheType minimumCacheType, SelectionOrder inheritedSelectionOrder) {
         return buildValueSelector(configPolicy, entityDescriptor, minimumCacheType, inheritedSelectionOrder,
                 configPolicy.isReinitializeVariableFilterEnabled());
@@ -124,8 +123,7 @@ public class ValueSelectorFactory extends AbstractSelectorFactory<ValueSelectorC
                 config.getVariableName() == null ? deduceVariableDescriptor(entityDescriptor)
                         : deduceVariableDescriptor(entityDescriptor, config.getVariableName());
         SelectionCacheType resolvedCacheType = SelectionCacheType.resolve(config.getCacheType(), minimumCacheType);
-        SelectionOrder resolvedSelectionOrder = SelectionOrder.resolve(config.getSelectionOrder(),
-                inheritedSelectionOrder);
+        SelectionOrder resolvedSelectionOrder = SelectionOrder.resolve(config.getSelectionOrder(), inheritedSelectionOrder);
 
         if (config.getNearbySelectionConfig() != null) {
             config.getNearbySelectionConfig().validateNearby(resolvedCacheType, resolvedSelectionOrder);
@@ -136,9 +134,9 @@ public class ValueSelectorFactory extends AbstractSelectorFactory<ValueSelectorC
         validateSelectedLimit(minimumCacheType);
 
         // baseValueSelector and lower should be SelectionOrder.ORIGINAL if they are going to get cached completely
-        ValueSelector valueSelector = buildBaseValueSelector(configPolicy, variableDescriptor,
-                SelectionCacheType.max(minimumCacheType, resolvedCacheType),
-                determineBaseRandomSelection(variableDescriptor, resolvedCacheType, resolvedSelectionOrder));
+        ValueSelector valueSelector =
+                buildBaseValueSelector(variableDescriptor, SelectionCacheType.max(minimumCacheType, resolvedCacheType),
+                        determineBaseRandomSelection(variableDescriptor, resolvedCacheType, resolvedSelectionOrder));
 
         if (config.getNearbySelectionConfig() != null) {
             // TODO Static filtering (such as movableEntitySelectionFilter) should affect nearbySelection too
@@ -146,13 +144,12 @@ public class ValueSelectorFactory extends AbstractSelectorFactory<ValueSelectorC
                     resolvedSelectionOrder, valueSelector);
         }
         valueSelector = applyFiltering(valueSelector);
-        valueSelector = applyInitializedChainedValueFilter(configPolicy, variableDescriptor,
-                resolvedCacheType, resolvedSelectionOrder, valueSelector);
+        valueSelector = applyInitializedChainedValueFilter(configPolicy, variableDescriptor, valueSelector);
         valueSelector = applySorting(resolvedCacheType, resolvedSelectionOrder, valueSelector);
         valueSelector = applyProbability(resolvedCacheType, resolvedSelectionOrder, valueSelector);
         valueSelector = applyShuffling(resolvedCacheType, resolvedSelectionOrder, valueSelector);
         valueSelector = applyCaching(resolvedCacheType, resolvedSelectionOrder, valueSelector);
-        valueSelector = applySelectedLimit(resolvedCacheType, resolvedSelectionOrder, valueSelector);
+        valueSelector = applySelectedLimit(valueSelector);
         valueSelector = applyMimicRecording(configPolicy, valueSelector);
         if (applyReinitializeVariableFiltering) {
             valueSelector = new ReinitializeVariableValueSelector(valueSelector);
@@ -234,8 +231,7 @@ public class ValueSelectorFactory extends AbstractSelectorFactory<ValueSelectorC
         return variableDescriptor.isValueRangeEntityIndependent();
     }
 
-    private ValueSelector buildBaseValueSelector(
-            HeuristicConfigPolicy configPolicy, GenuineVariableDescriptor variableDescriptor,
+    private ValueSelector buildBaseValueSelector(GenuineVariableDescriptor variableDescriptor,
             SelectionCacheType minimumCacheType, boolean randomSelection) {
         ValueRangeDescriptor valueRangeDescriptor = variableDescriptor.getValueRangeDescriptor();
         // TODO minimumCacheType SOLVER is only a problem if the valueRange includes entities or custom weird cloning
@@ -276,11 +272,8 @@ public class ValueSelectorFactory extends AbstractSelectorFactory<ValueSelectorC
     }
 
     protected ValueSelector applyInitializedChainedValueFilter(HeuristicConfigPolicy configPolicy,
-            GenuineVariableDescriptor variableDescriptor,
-            SelectionCacheType resolvedCacheType, SelectionOrder resolvedSelectionOrder,
-            ValueSelector valueSelector) {
-        if (configPolicy.isInitializedChainedValueFilterEnabled()
-                && variableDescriptor.isChained()) {
+            GenuineVariableDescriptor variableDescriptor, ValueSelector valueSelector) {
+        if (configPolicy.isInitializedChainedValueFilterEnabled() && variableDescriptor.isChained()) {
             valueSelector = InitializedValueSelector.create(valueSelector);
         }
         return valueSelector;
@@ -433,8 +426,7 @@ public class ValueSelectorFactory extends AbstractSelectorFactory<ValueSelectorC
                         + ") needs to be based on an EntityIndependentValueSelector (" + valueSelector + ")."
                         + " Check your @" + ValueRangeProvider.class.getSimpleName() + " annotations.");
             }
-            valueSelector = new ShufflingValueSelector((EntityIndependentValueSelector) valueSelector,
-                    resolvedCacheType);
+            valueSelector = new ShufflingValueSelector((EntityIndependentValueSelector) valueSelector, resolvedCacheType);
         }
         return valueSelector;
     }
@@ -456,8 +448,7 @@ public class ValueSelectorFactory extends AbstractSelectorFactory<ValueSelectorC
     }
 
     private void validateSelectedLimit(SelectionCacheType minimumCacheType) {
-        if (config.getSelectedCountLimit() != null
-                && minimumCacheType.compareTo(SelectionCacheType.JUST_IN_TIME) > 0) {
+        if (config.getSelectedCountLimit() != null && minimumCacheType.compareTo(SelectionCacheType.JUST_IN_TIME) > 0) {
             throw new IllegalArgumentException("The valueSelectorConfig (" + config
                     + ") with selectedCountLimit (" + config.getSelectedCountLimit()
                     + ") has a minimumCacheType (" + minimumCacheType
@@ -465,9 +456,7 @@ public class ValueSelectorFactory extends AbstractSelectorFactory<ValueSelectorC
         }
     }
 
-    private ValueSelector applySelectedLimit(
-            SelectionCacheType resolvedCacheType, SelectionOrder resolvedSelectionOrder,
-            ValueSelector valueSelector) {
+    private ValueSelector applySelectedLimit(ValueSelector valueSelector) {
         if (config.getSelectedCountLimit() != null) {
             valueSelector = new SelectedCountLimitValueSelector(valueSelector, config.getSelectedCountLimit());
         }
@@ -479,10 +468,10 @@ public class ValueSelectorFactory extends AbstractSelectorFactory<ValueSelectorC
         boolean randomSelection = resolvedSelectionOrder.toRandomSelectionBoolean();
         EntitySelectorFactory entitySelectorFactory =
                 EntitySelectorFactory.create(nearbySelectionConfig.getOriginEntitySelectorConfig());
-        EntitySelector originEntitySelector = entitySelectorFactory.buildEntitySelector(
-                configPolicy, minimumCacheType, resolvedSelectionOrder);
-        NearbyDistanceMeter nearbyDistanceMeter = ConfigUtils.newInstance(nearbySelectionConfig,
-                "nearbyDistanceMeterClass", nearbySelectionConfig.getNearbyDistanceMeterClass());
+        EntitySelector originEntitySelector =
+                entitySelectorFactory.buildEntitySelector(configPolicy, minimumCacheType, resolvedSelectionOrder);
+        NearbyDistanceMeter nearbyDistanceMeter = ConfigUtils.newInstance(nearbySelectionConfig, "nearbyDistanceMeterClass",
+                nearbySelectionConfig.getNearbyDistanceMeterClass());
         // TODO Check nearbyDistanceMeterClass.getGenericInterfaces() to confirm generic type S is an entityClass
         NearbyRandom nearbyRandom =
                 NearbyRandomFactory.create(config.getNearbySelectionConfig()).buildNearbyRandom(randomSelection);

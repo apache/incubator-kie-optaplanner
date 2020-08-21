@@ -41,18 +41,16 @@ public class KOptMoveSelectorFactory extends AbstractMoveSelectorFactory<KOptMov
     public MoveSelector buildBaseMoveSelector(HeuristicConfigPolicy configPolicy,
             SelectionCacheType minimumCacheType, boolean randomSelection) {
         EntitySelectorConfig entitySelectorConfig_ =
-                config.getEntitySelectorConfig() == null ? new EntitySelectorConfig()
-                        : config.getEntitySelectorConfig();
+                config.getEntitySelectorConfig() == null ? new EntitySelectorConfig() : config.getEntitySelectorConfig();
         EntitySelector entitySelector = EntitySelectorFactory.create(entitySelectorConfig_).buildEntitySelector(configPolicy,
                 minimumCacheType, SelectionOrder.fromRandomSelectionBoolean(randomSelection));
         ValueSelectorConfig valueSelectorConfig_ =
-                config.getValueSelectorConfig() == null ? new ValueSelectorConfig()
-                        : config.getValueSelectorConfig();
+                config.getValueSelectorConfig() == null ? new ValueSelectorConfig() : config.getValueSelectorConfig();
         ValueSelector[] valueSelectors = new ValueSelector[K - 1];
         for (int i = 0; i < valueSelectors.length; i++) {
             valueSelectors[i] = ValueSelectorFactory.create(valueSelectorConfig_).buildValueSelector(configPolicy,
-                    entitySelector.getEntityDescriptor(),
-                    minimumCacheType, SelectionOrder.fromRandomSelectionBoolean(randomSelection));
+                    entitySelector.getEntityDescriptor(), minimumCacheType,
+                    SelectionOrder.fromRandomSelectionBoolean(randomSelection));
 
         }
         return new KOptMoveSelector(entitySelector, valueSelectors, randomSelection);

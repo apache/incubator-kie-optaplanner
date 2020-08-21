@@ -41,14 +41,12 @@ public class SubChainSwapMoveSelectorFactory extends AbstractMoveSelectorFactory
         EntityDescriptor entityDescriptor =
                 deduceEntityDescriptor(configPolicy.getSolutionDescriptor(), config.getEntityClass());
         SubChainSelectorConfig subChainSelectorConfig_ =
-                config.getSubChainSelectorConfig() == null ? new SubChainSelectorConfig()
-                        : config.getSubChainSelectorConfig();
+                config.getSubChainSelectorConfig() == null ? new SubChainSelectorConfig() : config.getSubChainSelectorConfig();
         SubChainSelector leftSubChainSelector =
                 SubChainSelectorFactory.create(subChainSelectorConfig_).buildSubChainSelector(configPolicy,
                         entityDescriptor, minimumCacheType, SelectionOrder.fromRandomSelectionBoolean(randomSelection));
         SubChainSelectorConfig rightSubChainSelectorConfig =
-                defaultIfNull(config.getSecondarySubChainSelectorConfig(),
-                        subChainSelectorConfig_);
+                defaultIfNull(config.getSecondarySubChainSelectorConfig(), subChainSelectorConfig_);
         SubChainSelector rightSubChainSelector =
                 SubChainSelectorFactory.create(rightSubChainSelectorConfig).buildSubChainSelector(configPolicy,
                         entityDescriptor, minimumCacheType, SelectionOrder.fromRandomSelectionBoolean(randomSelection));

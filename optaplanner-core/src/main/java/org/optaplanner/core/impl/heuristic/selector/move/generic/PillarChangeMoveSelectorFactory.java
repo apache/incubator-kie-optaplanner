@@ -51,8 +51,7 @@ public class PillarChangeMoveSelectorFactory extends AbstractMoveSelectorFactory
         PillarSelector pillarSelector = PillarSelectorFactory.create(pillarSelectorConfig_).buildPillarSelector(configPolicy,
                 config.getSubPillarType(), config.getSubPillarSequenceComparatorClass(),
                 minimumCacheType, SelectionOrder.fromRandomSelectionBoolean(randomSelection), variableNameIncludeList);
-        ValueSelectorConfig valueSelectorConfig_ =
-                defaultIfNull(config.getValueSelectorConfig(), new ValueSelectorConfig());
+        ValueSelectorConfig valueSelectorConfig_ = defaultIfNull(config.getValueSelectorConfig(), new ValueSelectorConfig());
         SelectionOrder selectionOrder = SelectionOrder.fromRandomSelectionBoolean(randomSelection);
         ValueSelector valueSelector = ValueSelectorFactory.create(valueSelectorConfig_).buildValueSelector(configPolicy,
                 pillarSelector.getEntityDescriptor(), minimumCacheType, selectionOrder);

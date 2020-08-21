@@ -191,9 +191,8 @@ public final class DefaultSolverFactory<Solution_> implements SolverFactory<Solu
                     return null;
                 }
             } else {
-                resolvedMoveThreadCount = ConfigUtils.resolveThreadPoolSizeScript(
-                        "moveThreadCount", moveThreadCount, SolverConfig.MOVE_THREAD_COUNT_NONE,
-                        SolverConfig.MOVE_THREAD_COUNT_AUTO);
+                resolvedMoveThreadCount = ConfigUtils.resolveThreadPoolSizeScript("moveThreadCount", moveThreadCount,
+                        SolverConfig.MOVE_THREAD_COUNT_NONE, SolverConfig.MOVE_THREAD_COUNT_AUTO);
             }
             if (resolvedMoveThreadCount < 1) {
                 throw new IllegalArgumentException("The moveThreadCount (" + moveThreadCount

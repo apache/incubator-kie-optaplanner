@@ -36,8 +36,8 @@ public class MoveListFactoryFactory extends AbstractMoveSelectorFactory<MoveList
             throw new IllegalArgumentException("The moveListFactoryConfig (" + config
                     + ") lacks a moveListFactoryClass (" + config.getMoveListFactoryClass() + ").");
         }
-        MoveListFactory moveListFactory = ConfigUtils.newInstance(config,
-                "moveListFactoryClass", config.getMoveListFactoryClass());
+        MoveListFactory moveListFactory =
+                ConfigUtils.newInstance(config, "moveListFactoryClass", config.getMoveListFactoryClass());
         ConfigUtils.applyCustomProperties(moveListFactory, "moveListFactoryClass",
                 config.getMoveListFactoryCustomProperties(), "moveListFactoryCustomProperties");
         // MoveListFactoryToMoveSelectorBridge caches by design, so it uses the minimumCacheType

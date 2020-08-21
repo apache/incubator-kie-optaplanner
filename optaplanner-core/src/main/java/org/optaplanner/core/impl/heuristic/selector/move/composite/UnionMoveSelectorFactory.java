@@ -52,8 +52,7 @@ public class UnionMoveSelectorFactory extends AbstractCompositeMoveSelectorFacto
             selectorProbabilityWeightFactory = ConfigUtils.newInstance(config,
                     "selectorProbabilityWeightFactoryClass", config.getSelectorProbabilityWeightFactoryClass());
         } else if (randomSelection) {
-            Map<MoveSelector, Double> fixedProbabilityWeightMap = new HashMap<>(
-                    config.getMoveSelectorConfigList().size());
+            Map<MoveSelector, Double> fixedProbabilityWeightMap = new HashMap<>(config.getMoveSelectorConfigList().size());
             for (int i = 0; i < config.getMoveSelectorConfigList().size(); i++) {
                 MoveSelectorConfig innerMoveSelectorConfig = config.getMoveSelectorConfigList().get(i);
                 MoveSelector moveSelector = moveSelectorList.get(i);

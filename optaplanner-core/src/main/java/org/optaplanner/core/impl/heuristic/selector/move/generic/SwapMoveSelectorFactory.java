@@ -43,19 +43,16 @@ public class SwapMoveSelectorFactory extends AbstractMoveSelectorFactory<SwapMov
     }
 
     @Override
-    public MoveSelector buildBaseMoveSelector(HeuristicConfigPolicy configPolicy,
-            SelectionCacheType minimumCacheType, boolean randomSelection) {
+    public MoveSelector buildBaseMoveSelector(HeuristicConfigPolicy configPolicy, SelectionCacheType minimumCacheType,
+            boolean randomSelection) {
         EntitySelectorConfig entitySelectorConfig_ =
-                config.getEntitySelectorConfig() == null ? new EntitySelectorConfig()
-                        : config.getEntitySelectorConfig();
+                config.getEntitySelectorConfig() == null ? new EntitySelectorConfig() : config.getEntitySelectorConfig();
         EntitySelector leftEntitySelector = EntitySelectorFactory.create(entitySelectorConfig_).buildEntitySelector(
-                configPolicy,
-                minimumCacheType, SelectionOrder.fromRandomSelectionBoolean(randomSelection));
+                configPolicy, minimumCacheType, SelectionOrder.fromRandomSelectionBoolean(randomSelection));
         EntitySelectorConfig rightEntitySelectorConfig = defaultIfNull(config.getSecondaryEntitySelectorConfig(),
                 entitySelectorConfig_);
         EntitySelector rightEntitySelector = EntitySelectorFactory.create(rightEntitySelectorConfig).buildEntitySelector(
-                configPolicy,
-                minimumCacheType, SelectionOrder.fromRandomSelectionBoolean(randomSelection));
+                configPolicy, minimumCacheType, SelectionOrder.fromRandomSelectionBoolean(randomSelection));
         List<GenuineVariableDescriptor> variableDescriptorList =
                 deduceVariableDescriptorList(leftEntitySelector.getEntityDescriptor(), config.getVariableNameIncludeList());
         return new SwapMoveSelector(leftEntitySelector, rightEntitySelector, variableDescriptorList,
@@ -65,8 +62,7 @@ public class SwapMoveSelectorFactory extends AbstractMoveSelectorFactory<SwapMov
     @Override
     protected MoveSelectorConfig buildUnfoldedMoveSelectorConfig(HeuristicConfigPolicy configPolicy) {
         EntityDescriptor onlyEntityDescriptor = config.getEntitySelectorConfig() == null ? null
-                : EntitySelectorFactory.create(config.getEntitySelectorConfig())
-                        .extractEntityDescriptor(configPolicy);
+                : EntitySelectorFactory.create(config.getEntitySelectorConfig()).extractEntityDescriptor(configPolicy);
         if (config.getSecondaryEntitySelectorConfig() != null) {
             EntityDescriptor onlySecondaryEntityDescriptor = EntitySelectorFactory
                     .create(config.getSecondaryEntitySelectorConfig()).extractEntityDescriptor(configPolicy);
@@ -91,15 +87,14 @@ public class SwapMoveSelectorFactory extends AbstractMoveSelectorFactory<SwapMov
         for (EntityDescriptor entityDescriptor : entityDescriptors) {
             // No childMoveSelectorConfig.inherit() because of unfoldedMoveSelectorConfig.inheritFolded()
             SwapMoveSelectorConfig childMoveSelectorConfig = new SwapMoveSelectorConfig();
-            EntitySelectorConfig childEntitySelectorConfig =
-                    new EntitySelectorConfig(config.getEntitySelectorConfig());
+            EntitySelectorConfig childEntitySelectorConfig = new EntitySelectorConfig(config.getEntitySelectorConfig());
             if (childEntitySelectorConfig.getMimicSelectorRef() == null) {
                 childEntitySelectorConfig.setEntityClass(entityDescriptor.getEntityClass());
             }
             childMoveSelectorConfig.setEntitySelectorConfig(childEntitySelectorConfig);
             if (config.getSecondaryEntitySelectorConfig() != null) {
-                EntitySelectorConfig childSecondaryEntitySelectorConfig = new EntitySelectorConfig(
-                        config.getSecondaryEntitySelectorConfig());
+                EntitySelectorConfig childSecondaryEntitySelectorConfig =
+                        new EntitySelectorConfig(config.getSecondaryEntitySelectorConfig());
                 if (childSecondaryEntitySelectorConfig.getMimicSelectorRef() == null) {
                     childSecondaryEntitySelectorConfig.setEntityClass(entityDescriptor.getEntityClass());
                 }

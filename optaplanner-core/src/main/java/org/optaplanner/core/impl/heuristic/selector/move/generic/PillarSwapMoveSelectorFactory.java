@@ -38,8 +38,8 @@ public class PillarSwapMoveSelectorFactory extends AbstractMoveSelectorFactory<P
     }
 
     @Override
-    public MoveSelector buildBaseMoveSelector(HeuristicConfigPolicy configPolicy,
-            SelectionCacheType minimumCacheType, boolean randomSelection) {
+    public MoveSelector buildBaseMoveSelector(HeuristicConfigPolicy configPolicy, SelectionCacheType minimumCacheType,
+            boolean randomSelection) {
         PillarSelectorConfig leftPillarSelectorConfig =
                 defaultIfNull(config.getPillarSelectorConfig(), new PillarSelectorConfig());
         PillarSelector leftPillarSelector =
@@ -55,8 +55,8 @@ public class PillarSwapMoveSelectorFactory extends AbstractMoveSelectorFactory<P
                 randomSelection);
     }
 
-    private PillarSelector buildPillarSelector(PillarSelectorConfig pillarSelectorConfig,
-            HeuristicConfigPolicy configPolicy, SelectionCacheType minimumCacheType, boolean randomSelection) {
+    private PillarSelector buildPillarSelector(PillarSelectorConfig pillarSelectorConfig, HeuristicConfigPolicy configPolicy,
+            SelectionCacheType minimumCacheType, boolean randomSelection) {
         return PillarSelectorFactory.create(pillarSelectorConfig).buildPillarSelector(configPolicy,
                 config.getSubPillarType(), config.getSubPillarSequenceComparatorClass(),
                 minimumCacheType, SelectionOrder.fromRandomSelectionBoolean(randomSelection),

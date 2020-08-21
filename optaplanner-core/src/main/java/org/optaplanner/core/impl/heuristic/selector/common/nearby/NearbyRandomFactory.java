@@ -40,14 +40,12 @@ public class NearbyRandomFactory {
                         || nearbySelectionConfig.getBlockDistributionSizeMaximum() != null
                         || nearbySelectionConfig.getBlockDistributionSizeRatio() != null
                         || nearbySelectionConfig.getBlockDistributionUniformDistributionProbability() != null;
-        boolean linearDistributionEnabled =
-                nearbySelectionConfig
-                        .getNearbySelectionDistributionType() == NearbySelectionDistributionType.LINEAR_DISTRIBUTION
-                        || nearbySelectionConfig.getLinearDistributionSizeMaximum() != null;
-        boolean parabolicDistributionEnabled =
-                nearbySelectionConfig
-                        .getNearbySelectionDistributionType() == NearbySelectionDistributionType.PARABOLIC_DISTRIBUTION
-                        || nearbySelectionConfig.getParabolicDistributionSizeMaximum() != null;
+        boolean linearDistributionEnabled = nearbySelectionConfig
+                .getNearbySelectionDistributionType() == NearbySelectionDistributionType.LINEAR_DISTRIBUTION
+                || nearbySelectionConfig.getLinearDistributionSizeMaximum() != null;
+        boolean parabolicDistributionEnabled = nearbySelectionConfig
+                .getNearbySelectionDistributionType() == NearbySelectionDistributionType.PARABOLIC_DISTRIBUTION
+                || nearbySelectionConfig.getParabolicDistributionSizeMaximum() != null;
         boolean betaDistributionEnabled =
                 nearbySelectionConfig.getNearbySelectionDistributionType() == NearbySelectionDistributionType.BETA_DISTRIBUTION
                         || nearbySelectionConfig.getBetaDistributionAlpha() != null
