@@ -240,7 +240,7 @@ public interface SolverManager<Solution_, ProblemId_> extends AutoCloseable {
      * This allows for use cases that only process the {@link Score} first (during best solution changed events)
      * and then store the solution upon termination.
      *
-     * @param problemId never null, a ID for each planning problem. This must be unique.
+     * @param problemId never null, an ID for each planning problem. This must be unique.
      *        Use this problemId to {@link #terminateEarly(Object) terminate} the solver early,
      *        {@link #getSolverStatus(Object) to get the status} or if the problem changes while solving.
      * @param problemFinder never null, function that returns a {@link PlanningSolution}, usually with uninitialized planning
