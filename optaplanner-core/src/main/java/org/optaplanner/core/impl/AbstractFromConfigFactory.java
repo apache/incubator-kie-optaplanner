@@ -16,10 +16,10 @@
 
 package org.optaplanner.core.impl;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.config.AbstractConfig;
@@ -36,8 +36,7 @@ public abstract class AbstractFromConfigFactory<Config_ extends AbstractConfig<C
     }
 
     protected EntityDescriptor deduceEntityDescriptor(SolutionDescriptor solutionDescriptor, Class<?> entityClass) {
-        EntityDescriptor entityDescriptor;
-        entityDescriptor = solutionDescriptor.getEntityDescriptorStrict(Objects.requireNonNull(entityClass));
+        EntityDescriptor entityDescriptor = solutionDescriptor.getEntityDescriptorStrict(Objects.requireNonNull(entityClass));
         if (entityDescriptor == null) {
             throw new IllegalArgumentException("The config (" + config
                     + ") has an entityClass (" + entityClass + ") that is not a known planning entity.\n"
@@ -61,8 +60,8 @@ public abstract class AbstractFromConfigFactory<Config_ extends AbstractConfig<C
     }
 
     protected GenuineVariableDescriptor deduceVariableDescriptor(EntityDescriptor entityDescriptor, String variableName) {
-        GenuineVariableDescriptor variableDescriptor;
-        variableDescriptor = entityDescriptor.getGenuineVariableDescriptor(Objects.requireNonNull(variableName));
+        GenuineVariableDescriptor variableDescriptor =
+                entityDescriptor.getGenuineVariableDescriptor(Objects.requireNonNull(variableName));
         if (variableDescriptor == null) {
             throw new IllegalArgumentException("The config (" + config
                     + ") has a variableName (" + variableName
@@ -92,24 +91,15 @@ public abstract class AbstractFromConfigFactory<Config_ extends AbstractConfig<C
         if (variableNameIncludeList == null) {
             return variableDescriptorList;
         }
-        List<GenuineVariableDescriptor> resolvedVariableDescriptorList =
-                new ArrayList<>(variableDescriptorList.size());
-        for (String variableNameInclude : variableNameIncludeList) {
-            boolean found = false;
-            for (GenuineVariableDescriptor variableDescriptor : variableDescriptorList) {
-                if (variableDescriptor.getVariableName().equals(variableNameInclude)) {
-                    resolvedVariableDescriptorList.add(variableDescriptor);
-                    found = true;
-                    break;
-                }
-            }
-            if (!found) {
-                throw new IllegalArgumentException("The config (" + this
-                        + ") has a variableNameInclude (" + variableNameInclude
-                        + ") which does not exist in the entity (" + entityDescriptor.getEntityClass()
-                        + ")'s variableDescriptorList (" + variableDescriptorList + ").");
-            }
-        }
-        return resolvedVariableDescriptorList;
+
+        return variableNameIncludeList.stream()
+                .map(variableNameInclude -> variableDescriptorList.stream()
+                        .filter(variableDescriptor -> variableDescriptor.getVariableName().equals(variableNameInclude))
+                        .findFirst()
+                        .orElseThrow(() -> new IllegalArgumentException("The config (" + config
+                                + ") has a variableNameInclude (" + variableNameInclude
+                                + ") which does not exist in the entity (" + entityDescriptor.getEntityClass()
+                                + ")'s variableDescriptorList (" + variableDescriptorList + ").")))
+                .collect(Collectors.toList());
     }
 }

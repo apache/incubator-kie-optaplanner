@@ -19,6 +19,8 @@ package org.optaplanner.core.impl.heuristic.selector.entity;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Objects;
+import java.util.stream.Stream;
 
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.config.heuristic.selector.common.SelectionCacheType;
@@ -128,19 +130,13 @@ public class EntitySelectorFactory extends AbstractSelectorFactory<EntitySelecto
     }
 
     protected EntitySelector buildMimicReplaying(HeuristicConfigPolicy configPolicy) {
-        if (config.getId() != null
-                || config.getEntityClass() != null
-                || config.getCacheType() != null
-                || config.getSelectionOrder() != null
-                || config.getNearbySelectionConfig() != null
-                || config.getFilterClass() != null
-                || config.getSorterManner() != null
-                || config.getSorterComparatorClass() != null
-                || config.getSorterWeightFactoryClass() != null
-                || config.getSorterOrder() != null
-                || config.getSorterClass() != null
-                || config.getProbabilityWeightFactoryClass() != null
-                || config.getSelectedCountLimit() != null) {
+        final boolean anyConfigurationParameterDefined = Stream
+                .of(config.getId(), config.getEntityClass(), config.getCacheType(), config.getSelectionOrder(),
+                        config.getNearbySelectionConfig(), config.getFilterClass(), config.getSorterManner(),
+                        config.getSorterComparatorClass(), config.getSorterWeightFactoryClass(), config.getSorterOrder(),
+                        config.getSorterClass(), config.getProbabilityWeightFactoryClass(), config.getSelectedCountLimit())
+                .filter(Objects::nonNull).findFirst().isPresent();
+        if (anyConfigurationParameterDefined) {
             throw new IllegalArgumentException("The entitySelectorConfig (" + config
                     + ") with mimicSelectorRef (" + config.getMimicSelectorRef()
                     + ") has another property that is not null.");
