@@ -13,11 +13,17 @@
     <version.org.optaplanner>7.43.0-SNAPSHOT</version.org.optaplanner>
     <version.org.springframework.boot>2.2.6.RELEASE</version.org.springframework.boot>
 
+    <version.org.webjars.webjars-locator>0.37</version.org.webjars.webjars-locator>
+    <version.org.webjars.bootstrap>4.3.1</version.org.webjars.bootstrap>
+    <version.org.webjars.font-awesome>5.11.2</version.org.webjars.font-awesome>
+    <version.org.webjars.momentjs>2.24.0</version.org.webjars.momentjs>
+
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <compiler-plugin.version>3.8.1</compiler-plugin.version>
     <maven.compiler.target>1.8</maven.compiler.target>
     <maven.compiler.source>1.8</maven.compiler.source>
     <surefire-plugin.version>2.22.2</surefire-plugin.version>
+    <version.source.plugin>3.0.1</version.source.plugin>
   </properties>
 
   <dependencyManagement>
@@ -41,22 +47,22 @@
       <dependency>
         <groupId>org.webjars</groupId>
         <artifactId>webjars-locator</artifactId>
-        <version>0.37</version>
+        <version>${version.org.webjars.webjars-locator}</version>
       </dependency>
       <dependency>
         <groupId>org.webjars</groupId>
         <artifactId>bootstrap</artifactId>
-        <version>4.3.1</version>
+        <version>${version.org.webjars.bootstrap}</version>
       </dependency>
       <dependency>
         <groupId>org.webjars</groupId>
         <artifactId>font-awesome</artifactId>
-        <version>5.11.2</version>
+        <version>${version.org.webjars.font-awesome}</version>
       </dependency>
       <dependency>
         <groupId>org.webjars</groupId>
         <artifactId>momentjs</artifactId>
-        <version>2.24.0</version>
+        <version>${version.org.webjars.momentjs}</version>
       </dependency>
     </dependencies>
   </dependencyManagement>
@@ -138,6 +144,35 @@
       <plugin>
         <artifactId>maven-surefire-plugin</artifactId>
         <version>${surefire-plugin.version}</version>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-source-plugin</artifactId>
+        <version>${version.source.plugin}</version>
+        <executions>
+          <execution>
+            <id>attach-sources</id>
+            <goals>
+              <goal>jar-no-fork</goal>
+            </goals>
+            <configuration>
+              <archive>
+                <manifestEntries>
+                  <Bundle-ManifestVersion>2</Bundle-ManifestVersion>
+                  <Bundle-SymbolicName>${java.module.name}.source</Bundle-SymbolicName>
+                  <Bundle-Version>
+                    ${parsedVersion.majorVersion}.${parsedVersion.minorVersion}.${parsedVersion.incrementalVersion}.${osgi.snapshot.qualifier}
+                  </Bundle-Version>
+                  <Bundle-Name>${project.name}</Bundle-Name>
+                  <Bundle-Vendor>${project.organization.name}</Bundle-Vendor>
+                  <Eclipse-SourceBundle>
+                    ${java.module.name};version="${parsedVersion.majorVersion}.${parsedVersion.minorVersion}.${parsedVersion.incrementalVersion}.${osgi.snapshot.qualifier}";roots:="."
+                  </Eclipse-SourceBundle>
+                </manifestEntries>
+              </archive>
+            </configuration>
+          </execution>
+        </executions>
       </plugin>
     </plugins>
   </build>
