@@ -45,6 +45,7 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
+import javax.xml.bind.annotation.XmlType;
 
 import org.optaplanner.benchmark.api.PlannerBenchmark;
 import org.optaplanner.benchmark.api.PlannerBenchmarkFactory;
@@ -71,6 +72,21 @@ import freemarker.template.TemplateException;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlRootElement(name = PlannerBenchmarkConfig.XML_ELEMENT_NAME)
+@XmlType(propOrder = {
+        "name",
+        "benchmarkDirectory",
+        "threadFactoryClass",
+        "parallelBenchmarkCount",
+        "warmUpMillisecondsSpentLimit",
+        "warmUpSecondsSpentLimit",
+        "warmUpMinutesSpentLimit",
+        "warmUpHoursSpentLimit",
+        "warmUpDaysSpentLimit",
+        "benchmarkReportConfig",
+        "inheritedSolverBenchmarkConfig",
+        "solverBenchmarkBluePrintConfigList",
+        "solverBenchmarkConfigList"
+})
 public class PlannerBenchmarkConfig {
 
     public static final String XML_ELEMENT_NAME = "plannerBenchmark";

@@ -35,6 +35,7 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElements;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
+import javax.xml.bind.annotation.XmlType;
 
 import org.optaplanner.core.api.solver.Solver;
 import org.optaplanner.core.api.solver.SolverFactory;
@@ -59,6 +60,21 @@ import org.optaplanner.core.impl.solver.random.RandomFactory;
  * To build a {@link SolverFactory} with it, use {@link SolverFactory#create(SolverConfig)}.
  */
 @XmlRootElement(name = SolverConfig.XML_ELEMENT_NAME)
+@XmlType(propOrder = {
+        "environmentMode",
+        "daemon",
+        "randomType",
+        "randomSeed",
+        "randomFactoryClass",
+        "moveThreadCount",
+        "moveThreadBufferSize",
+        "threadFactoryClass",
+        "solutionClass",
+        "entityClassList",
+        "scoreDirectorFactoryConfig",
+        "terminationConfig",
+        "phaseConfigList"
+})
 public class SolverConfig extends AbstractConfig<SolverConfig> {
 
     public static final String XML_ELEMENT_NAME = "solver";

@@ -21,6 +21,7 @@ import java.util.Comparator;
 import java.util.Locale;
 
 import javax.xml.bind.annotation.XmlTransient;
+import javax.xml.bind.annotation.XmlType;
 
 import org.optaplanner.benchmark.config.ranking.SolverRankingType;
 import org.optaplanner.benchmark.impl.ranking.SolverRankingWeightFactory;
@@ -33,6 +34,11 @@ import org.optaplanner.benchmark.impl.result.SolverBenchmarkResult;
 import org.optaplanner.core.config.AbstractConfig;
 import org.optaplanner.core.config.util.ConfigUtils;
 
+@XmlType(propOrder = {
+        "solverRankingType",
+        "solverRankingComparatorClass",
+        "solverRankingWeightFactoryClass"
+})
 public class BenchmarkReportConfig extends AbstractConfig<BenchmarkReportConfig> {
 
     // TODO: will need an adapter
