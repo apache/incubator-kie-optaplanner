@@ -69,6 +69,7 @@
     <dependencySet>
       <includes>
         <include>org.optaplanner:*:jar</include>
+        <include>com.example:optaplanner-spring-boot-school-timetabling-quickstart:jar</include>
       </includes>
       <excludes>
         <exclude>org.optaplanner:optaplanner-examples</exclude>
@@ -83,6 +84,7 @@
     <dependencySet>
       <includes>
         <include>org.optaplanner:*:jar:sources</include>
+        <include>com.example:optaplanner-spring-boot-school-timetabling-quickstart:jar:sources</include>
       </includes>
       <excludes>
         <exclude>org.optaplanner:optaplanner-examples:jar:sources</exclude>

@@ -178,12 +178,10 @@
     <dependency>
       <groupId>com.example</groupId>
       <artifactId>optaplanner-spring-boot-school-timetabling-quickstart</artifactId>
-      <version>${optaplanner-spring-boot-school-timetabling-quickstart.version}</version>
     </dependency>
     <dependency>
       <groupId>com.example</groupId>
       <artifactId>optaplanner-spring-boot-school-timetabling-quickstart</artifactId>
-      <version>${optaplanner-spring-boot-school-timetabling-quickstart.version}</version>
       <classifier>sources</classifier>
     </dependency>
 

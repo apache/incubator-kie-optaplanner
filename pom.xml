@@ -104,6 +104,17 @@
         <!-- Old version until this issue is resolved: https://github.com/ImmobilienScout24/illegal-transitive-dependency-check/issues/30 -->
         <version>1.0.4</version>
       </dependency>
+      <dependency>
+        <groupId>com.example</groupId>
+        <artifactId>optaplanner-spring-boot-school-timetabling-quickstart</artifactId>
+        <version>${optaplanner-spring-boot-school-timetabling-quickstart.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>com.example</groupId>
+        <artifactId>optaplanner-spring-boot-school-timetabling-quickstart</artifactId>
+        <version>${optaplanner-spring-boot-school-timetabling-quickstart.version}</version>
+        <classifier>sources</classifier>
+      </dependency>
     </dependencies>
   </dependencyManagement>
 
