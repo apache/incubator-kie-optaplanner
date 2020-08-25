@@ -133,8 +133,9 @@ class SolverConfigTest {
     }
 
     @Test
-    void inherit() {
-        SolverConfig originalSolverConfig = unmarshallSolverConfigFromResource(TEST_SOLVER_CONFIG);
+    void inherit() throws IOException {
+        SolverConfig originalSolverConfig =
+                readSolverConfig(TEST_SOLVER_CONFIG_WITHOUT_NAMESPACE, (reader) -> solverConfigIO.read(reader));
         SolverConfig inheritedSolverConfig = new SolverConfig().inherit(originalSolverConfig);
         assertThat(inheritedSolverConfig).usingRecursiveComparison().isEqualTo(originalSolverConfig);
     }
