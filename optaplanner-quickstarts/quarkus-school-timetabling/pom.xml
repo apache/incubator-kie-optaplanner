@@ -44,6 +44,27 @@
         <type>pom</type>
         <scope>import</scope>
       </dependency>
+      <!-- UI -->
+      <dependency>
+        <groupId>org.webjars</groupId>
+        <artifactId>bootstrap</artifactId>
+        <version>${version.org.webjars.bootstrap}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.webjars</groupId>
+        <artifactId>jquery</artifactId>
+        <version>${version.org.webjars.jquery}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.webjars</groupId>
+        <artifactId>font-awesome</artifactId>
+        <version>${version.org.webjars.font-awesome}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.webjars</groupId>
+        <artifactId>momentjs</artifactId>
+        <version>${version.org.webjars.momentjs}</version>
+      </dependency>
     </dependencies>
   </dependencyManagement>
 
@@ -78,25 +99,22 @@
       <scope>provided</scope>
     </dependency>
 
+    <!-- UI -->
     <dependency>
       <groupId>org.webjars</groupId>
       <artifactId>bootstrap</artifactId>
-      <version>${version.org.webjars.bootstrap}</version>
     </dependency>
     <dependency>
       <groupId>org.webjars</groupId>
       <artifactId>jquery</artifactId>
-      <version>${version.org.webjars.jquery}</version>
     </dependency>
     <dependency>
       <groupId>org.webjars</groupId>
       <artifactId>font-awesome</artifactId>
-      <version>${version.org.webjars.font-awesome}</version>
     </dependency>
     <dependency>
       <groupId>org.webjars</groupId>
       <artifactId>momentjs</artifactId>
-      <version>${version.org.webjars.momentjs}</version>
     </dependency>
 
     <dependency>
