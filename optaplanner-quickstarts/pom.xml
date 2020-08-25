@@ -23,7 +23,6 @@
   <url>https://www.optaplanner.org</url>
 
   <modules>
-    <module>quarkus-school-timetabling</module>
     <module>spring-boot-school-timetabling</module>
   </modules>
 
