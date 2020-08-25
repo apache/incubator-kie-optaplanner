@@ -62,7 +62,7 @@ import org.optaplanner.core.impl.solver.random.RandomFactory;
 public class SolverConfig extends AbstractConfig<SolverConfig> {
 
     public static final String XML_ELEMENT_NAME = "solver";
-    public static final String XML_NAMESPACE = "https://www.optaplanner.org/xsd/solver";
+    public static final String XML_NAMESPACE = "https://www.optaplanner.org/xsd/optaplanner";
 
     /**
      * Reads an XML solver configuration from the classpath.

@@ -31,7 +31,7 @@ public class PlannerBenchmarkConfigIO {
     public PlannerBenchmarkConfig read(Reader reader) {
         return jaxbIO.readOverridingNamespace(reader,
                 ElementNamespaceOverride.of(SolverConfig.XML_ELEMENT_NAME, SolverConfig.XML_NAMESPACE),
-                ElementNamespaceOverride.of(PlannerBenchmarkConfig.XML_ELEMENT_NAME, PlannerBenchmarkConfig.XML_NAMESPACE));
+                ElementNamespaceOverride.of(PlannerBenchmarkConfig.XML_ELEMENT_NAME, SolverConfig.XML_NAMESPACE));
     }
 
     public void write(PlannerBenchmarkConfig plannerBenchmarkConfig, Writer writer) {

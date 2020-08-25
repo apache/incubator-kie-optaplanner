@@ -21,14 +21,10 @@
  * except for elements that require the use of non public API classes.
  */
 @javax.xml.bind.annotation.XmlSchema(
-        namespace = PlannerBenchmarkConfig.XML_NAMESPACE,
-        elementFormDefault = XmlNsForm.QUALIFIED,
-        xmlns = {
-                @XmlNs(prefix = SolverConfig.XML_ELEMENT_NAME, namespaceURI = SolverConfig.XML_NAMESPACE)
-        })
+        namespace = SolverConfig.XML_NAMESPACE,
+        elementFormDefault = XmlNsForm.QUALIFIED)
 package org.optaplanner.benchmark.config;
 
-import javax.xml.bind.annotation.XmlNs;
 import javax.xml.bind.annotation.XmlNsForm;
 
 import org.optaplanner.core.config.solver.SolverConfig;

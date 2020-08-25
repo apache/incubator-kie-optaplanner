@@ -74,7 +74,6 @@ import freemarker.template.TemplateException;
 public class PlannerBenchmarkConfig {
 
     public static final String XML_ELEMENT_NAME = "plannerBenchmark";
-    public static final String XML_NAMESPACE = "https://www.optaplanner.org/xsd/benchmark";
 
     // ************************************************************************
     // Static creation methods: SolverConfig

@@ -51,7 +51,7 @@ class SolverConfigTest {
 
     private static final String TEST_SOLVER_CONFIG_WITH_NAMESPACE = "testSolverConfigWithNamespace.xml";
     private static final String TEST_SOLVER_CONFIG_WITHOUT_NAMESPACE = "testSolverConfigWithoutNamespace.xml";
-    private static final String SOLVER_XSD = "/solver.xsd";
+    private static final String OPTAPLANNER_XSD = "/optaplanner.xsd";
     private final SolverConfigIO solverConfigIO = new SolverConfigIO();
 
     @Test
@@ -94,7 +94,7 @@ class SolverConfigTest {
     @Test
     void whiteCharsInClassName() {
         String solutionClassName = "org.optaplanner.core.impl.testdata.domain.TestdataSolution";
-        String xmlFragment = String.format("<solver xmlns=\"https://www.optaplanner.org/xsd/solver\">%n"
+        String xmlFragment = String.format("<solver xmlns=\"https://www.optaplanner.org/xsd/optaplanner\">%n"
                 + "  <solutionClass>  %s  %n" // Intentionally included white chars around the class name.
                 + "  </solutionClass>%n"
                 + "</solver>", solutionClassName);
@@ -104,7 +104,7 @@ class SolverConfigTest {
 
     @Test
     void readAndValidateInvalidSolverConfig_failsIndicatingTheIssue() {
-        String solverConfigXml = "<solver xmlns=\"https://www.optaplanner.org/xsd/solver\">\n"
+        String solverConfigXml = "<solver xmlns=\"https://www.optaplanner.org/xsd/optaplanner\">\n"
                 + "  <constructionHeuristic>\n"
                 + "      <changeMoveSelector>\n"
                 + "        <valueSelector>\n"
@@ -119,7 +119,7 @@ class SolverConfigTest {
         StringReader stringReader = new StringReader(solverConfigXml);
         assertThatExceptionOfType(OptaPlannerXmlSerializationException.class)
                 .isThrownBy(
-                        () -> jaxbIO.readAndValidate(stringReader, SOLVER_XSD))
+                        () -> jaxbIO.readAndValidate(stringReader, OPTAPLANNER_XSD))
                 .withMessageContaining("Invalid content was found")
                 .withMessageContaining("variableName");
     }
@@ -128,7 +128,8 @@ class SolverConfigTest {
     void readAndValidateSolverConfig() throws IOException {
         JaxbIO<SolverConfig> jaxbIO = new JaxbIO<>(SolverConfig.class);
         SolverConfig solverConfig =
-                readSolverConfig(TEST_SOLVER_CONFIG_WITH_NAMESPACE, (reader -> jaxbIO.readAndValidate(reader, SOLVER_XSD)));
+                readSolverConfig(TEST_SOLVER_CONFIG_WITH_NAMESPACE,
+                        (reader -> jaxbIO.readAndValidate(reader, OPTAPLANNER_XSD)));
         assertThat(solverConfig).isNotNull();
     }
 

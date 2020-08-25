@@ -15,10 +15,10 @@
  */
 
 @javax.xml.bind.annotation.XmlSchema(
-        namespace = PlannerBenchmarkConfig.XML_NAMESPACE,
+        namespace = SolverConfig.XML_NAMESPACE,
         elementFormDefault = XmlNsForm.QUALIFIED)
 package org.optaplanner.benchmark.config.ranking;
 
 import javax.xml.bind.annotation.XmlNsForm;
 
-import org.optaplanner.benchmark.config.PlannerBenchmarkConfig;
+import org.optaplanner.core.config.solver.SolverConfig;
