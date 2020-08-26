@@ -26,8 +26,11 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import java.util.function.Function;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.drools.model.Model;
+import org.drools.model.functions.accumulate.GroupKey;
 import org.drools.model.impl.ModelImpl;
 import org.drools.modelcompiler.builder.KieBaseBuilder;
 import org.kie.api.KieBase;
@@ -105,6 +108,18 @@ public final class DroolsConstraintSessionFactory<Solution_, Score_ extends Scor
         if (expectedTypes.length == 0) {
             throw new IllegalStateException("Impossible: there are no 0-cardinality constraint streams.");
         }
+        List<Object> ungroupedJustificationList = justificationList.stream()
+                .flatMap(o -> {
+                    if (!(o instanceof GroupKey)) {
+                        return Stream.of(o);
+                    }
+                    Object ungrouped = ((GroupKey)o).getKey();
+                    if (ungrouped instanceof FactTuple) {
+                        FactTuple factTuple = (FactTuple)ungrouped;
+                        return factTuple.asList().stream();
+                    }
+                    return Stream.of(ungrouped);
+                }).collect(Collectors.toList());
         Object[] matching = new Object[expectedTypes.length];
         // First process non-Object matches, as those are the most descriptive.
         for (int i = 0; i < expectedTypes.length; i++) {
@@ -112,12 +127,12 @@ public final class DroolsConstraintSessionFactory<Solution_, Score_ extends Scor
             if (Objects.equals(expectedType, Object.class)) {
                 continue;
             }
-            Object match = justificationList.stream()
+            Object match = ungroupedJustificationList.stream()
                     .filter(j -> expectedType.isAssignableFrom(j.getClass()))
                     .findFirst()
                     .orElseThrow(() -> new IllegalStateException("Impossible: no justification of type ("
                             + expectedType + ")."));
-            justificationList.remove(match);
+            ungroupedJustificationList.remove(match);
             matching[i] = match;
         }
         // Fill the remaining places with Object matches, but keep their original order coming from expectedMatches.
@@ -125,10 +140,10 @@ public final class DroolsConstraintSessionFactory<Solution_, Score_ extends Scor
             if (matching[i] != null) {
                 continue;
             }
-            Object match = justificationList.stream()
+            Object match = ungroupedJustificationList.stream()
                     .findFirst()
                     .orElseThrow(() -> new IllegalStateException("Impossible: there are no more constraint matches."));
-            justificationList.remove(match);
+            ungroupedJustificationList.remove(match);
             matching[i] = match;
         }
         if (matching.length > 1) {
