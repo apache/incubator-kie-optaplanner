@@ -31,6 +31,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 import org.junit.jupiter.api.Test;
+import org.optaplanner.core.impl.io.jaxb.adapters.JaxbCustomPropertiesAdapter;
 
 class JaxbCustomPropertiesAdapterTest {
 

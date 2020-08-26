@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.optaplanner.core.impl.io.jaxb;
+package org.optaplanner.core.impl.io.jaxb.adapters;
 
 import java.util.List;
 import java.util.Map;

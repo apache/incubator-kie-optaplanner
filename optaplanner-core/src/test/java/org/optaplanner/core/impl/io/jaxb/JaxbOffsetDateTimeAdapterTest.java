@@ -22,6 +22,7 @@ import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
 
 import org.junit.jupiter.api.Test;
+import org.optaplanner.core.impl.io.jaxb.adapters.JaxbOffsetDateTimeAdapter;
 
 class JaxbOffsetDateTimeAdapterTest {
 

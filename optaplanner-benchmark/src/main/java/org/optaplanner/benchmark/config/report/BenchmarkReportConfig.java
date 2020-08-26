@@ -33,7 +33,7 @@ import org.optaplanner.benchmark.impl.result.PlannerBenchmarkResult;
 import org.optaplanner.benchmark.impl.result.SolverBenchmarkResult;
 import org.optaplanner.core.config.AbstractConfig;
 import org.optaplanner.core.config.util.ConfigUtils;
-import org.optaplanner.core.impl.io.jaxb.JaxbLocaleAdapter;
+import org.optaplanner.core.impl.io.jaxb.adapters.JaxbLocaleAdapter;
 
 @XmlType(propOrder = {
         "locale",

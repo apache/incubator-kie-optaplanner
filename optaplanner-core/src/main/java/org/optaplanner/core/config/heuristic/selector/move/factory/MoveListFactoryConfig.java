@@ -24,7 +24,7 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import org.optaplanner.core.config.heuristic.selector.move.MoveSelectorConfig;
 import org.optaplanner.core.config.util.ConfigUtils;
 import org.optaplanner.core.impl.heuristic.selector.move.factory.MoveListFactory;
-import org.optaplanner.core.impl.io.jaxb.JaxbCustomPropertiesAdapter;
+import org.optaplanner.core.impl.io.jaxb.adapters.JaxbCustomPropertiesAdapter;
 
 @XmlType(propOrder = {
         "moveListFactoryClass",

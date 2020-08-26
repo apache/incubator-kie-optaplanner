@@ -21,6 +21,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import java.time.Duration;
 
 import org.junit.jupiter.api.Test;
+import org.optaplanner.core.impl.io.jaxb.adapters.JaxbDurationAdapter;
 
 public class JaxbDurationAdapterTest {
 

@@ -25,7 +25,7 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 import org.optaplanner.core.config.AbstractConfig;
 import org.optaplanner.core.config.util.ConfigUtils;
-import org.optaplanner.core.impl.io.jaxb.JaxbDurationAdapter;
+import org.optaplanner.core.impl.io.jaxb.adapters.JaxbDurationAdapter;
 import org.optaplanner.core.impl.solver.termination.Termination;
 
 @XmlType(propOrder = {
