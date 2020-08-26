@@ -42,7 +42,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class BenchmarkResultIO {
-    // BenchmarkResult contain <solverConfig/> element instead of the default SolverConfig.XML_ELEMENT_NAME
+    // BenchmarkResult contains <solverConfig/> element instead of the default SolverConfig.XML_ELEMENT_NAME.
     private static final String SOLVER_CONFIG_XML_ELEMENT_NAME = "solverConfig";
     private static final String PLANNER_BENCHMARK_RESULT_FILENAME = "plannerBenchmarkResult.xml";
 
