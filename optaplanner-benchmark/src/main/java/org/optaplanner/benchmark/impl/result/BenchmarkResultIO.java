@@ -36,7 +36,7 @@ import org.optaplanner.benchmark.impl.statistic.PureSubSingleStatistic;
 import org.optaplanner.core.config.solver.SolverConfig;
 import org.optaplanner.core.impl.io.OptaPlannerXmlSerializationException;
 import org.optaplanner.core.impl.io.jaxb.ElementNamespaceOverride;
-import org.optaplanner.core.impl.io.jaxb.JaxbIO;
+import org.optaplanner.core.impl.io.jaxb.GenericJaxbIO;
 import org.optaplanner.core.impl.solver.DefaultSolverFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -48,7 +48,7 @@ public class BenchmarkResultIO {
 
     protected final transient Logger logger = LoggerFactory.getLogger(getClass());
 
-    private final JaxbIO<PlannerBenchmarkResult> xmlIO = new JaxbIO<>(PlannerBenchmarkResult.class);
+    private final GenericJaxbIO<PlannerBenchmarkResult> genericJaxbIO = new GenericJaxbIO<>(PlannerBenchmarkResult.class);
 
     public void writePlannerBenchmarkResult(File benchmarkReportDirectory,
             PlannerBenchmarkResult plannerBenchmarkResult) {
@@ -108,12 +108,12 @@ public class BenchmarkResultIO {
     }
 
     protected PlannerBenchmarkResult read(Reader reader) {
-        return xmlIO.readOverridingNamespace(reader,
+        return genericJaxbIO.readOverridingNamespace(reader,
                 ElementNamespaceOverride.of(SOLVER_CONFIG_XML_ELEMENT_NAME, SolverConfig.XML_NAMESPACE));
     }
 
     protected void write(PlannerBenchmarkResult plannerBenchmarkResult, Writer writer) {
-        xmlIO.writeWithoutNamespaces(plannerBenchmarkResult, writer);
+        genericJaxbIO.writeWithoutNamespaces(plannerBenchmarkResult, writer);
     }
 
     private void restoreOmittedBidirectionalFields(PlannerBenchmarkResult plannerBenchmarkResult) {

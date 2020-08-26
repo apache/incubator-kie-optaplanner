@@ -32,9 +32,9 @@ import org.assertj.core.api.SoftAssertions;
 import org.junit.jupiter.api.Test;
 import org.optaplanner.core.impl.io.OptaPlannerXmlSerializationException;
 
-class JaxbIOTest {
+class GenericJaxbIOTest {
 
-    private final JaxbIO<DummyJaxbClass> xmlIO = new JaxbIO<>(DummyJaxbClass.class);
+    private final GenericJaxbIO<DummyJaxbClass> xmlIO = new GenericJaxbIO<>(DummyJaxbClass.class);
 
     @Test
     void readWriteSimpleObject() {
@@ -57,7 +57,7 @@ class JaxbIOTest {
 
     @Test
     void readThrowsExceptionOnNullParameter() {
-        assertThatNullPointerException().isThrownBy(() -> new JaxbIO<>(DummyJaxbClass.class).read(null));
+        assertThatNullPointerException().isThrownBy(() -> new GenericJaxbIO<>(DummyJaxbClass.class).read(null));
     }
 
     @Test

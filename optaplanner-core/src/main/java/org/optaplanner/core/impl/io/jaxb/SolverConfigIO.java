@@ -21,16 +21,18 @@ import java.io.Writer;
 
 import org.optaplanner.core.config.solver.SolverConfig;
 
-public class SolverConfigIO {
+public class SolverConfigIO implements JaxbIO<SolverConfig> {
 
-    private final JaxbIO<SolverConfig> jaxbIO = new JaxbIO<>(SolverConfig.class);
+    private final GenericJaxbIO<SolverConfig> genericJaxbIO = new GenericJaxbIO<>(SolverConfig.class);
 
+    @Override
     public SolverConfig read(Reader reader) {
-        return jaxbIO.readOverridingNamespace(reader,
+        return genericJaxbIO.readOverridingNamespace(reader,
                 ElementNamespaceOverride.of(SolverConfig.XML_ELEMENT_NAME, SolverConfig.XML_NAMESPACE));
     }
 
+    @Override
     public void write(SolverConfig solverConfig, Writer writer) {
-        jaxbIO.writeWithoutNamespaces(solverConfig, writer);
+        genericJaxbIO.writeWithoutNamespaces(solverConfig, writer);
     }
 }

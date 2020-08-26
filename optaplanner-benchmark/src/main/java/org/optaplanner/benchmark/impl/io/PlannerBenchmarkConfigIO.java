@@ -22,19 +22,22 @@ import java.io.Writer;
 import org.optaplanner.benchmark.config.PlannerBenchmarkConfig;
 import org.optaplanner.core.config.solver.SolverConfig;
 import org.optaplanner.core.impl.io.jaxb.ElementNamespaceOverride;
+import org.optaplanner.core.impl.io.jaxb.GenericJaxbIO;
 import org.optaplanner.core.impl.io.jaxb.JaxbIO;
 
-public class PlannerBenchmarkConfigIO {
+public class PlannerBenchmarkConfigIO implements JaxbIO<PlannerBenchmarkConfig> {
 
-    private final JaxbIO<PlannerBenchmarkConfig> jaxbIO = new JaxbIO<>(PlannerBenchmarkConfig.class);
+    private final GenericJaxbIO<PlannerBenchmarkConfig> genericJaxbIO = new GenericJaxbIO<>(PlannerBenchmarkConfig.class);
 
+    @Override
     public PlannerBenchmarkConfig read(Reader reader) {
-        return jaxbIO.readOverridingNamespace(reader,
+        return genericJaxbIO.readOverridingNamespace(reader,
                 ElementNamespaceOverride.of(SolverConfig.XML_ELEMENT_NAME, SolverConfig.XML_NAMESPACE),
                 ElementNamespaceOverride.of(PlannerBenchmarkConfig.XML_ELEMENT_NAME, SolverConfig.XML_NAMESPACE));
     }
 
+    @Override
     public void write(PlannerBenchmarkConfig plannerBenchmarkConfig, Writer writer) {
-        jaxbIO.writeWithoutNamespaces(plannerBenchmarkConfig, writer);
+        genericJaxbIO.writeWithoutNamespaces(plannerBenchmarkConfig, writer);
     }
 }

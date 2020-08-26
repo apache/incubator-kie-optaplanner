@@ -38,7 +38,7 @@ import org.optaplanner.core.impl.heuristic.selector.move.factory.MoveIteratorFac
 import org.optaplanner.core.impl.heuristic.selector.move.factory.MoveListFactory;
 import org.optaplanner.core.impl.heuristic.selector.move.generic.ChangeMove;
 import org.optaplanner.core.impl.io.OptaPlannerXmlSerializationException;
-import org.optaplanner.core.impl.io.jaxb.JaxbIO;
+import org.optaplanner.core.impl.io.jaxb.GenericJaxbIO;
 import org.optaplanner.core.impl.io.jaxb.SolverConfigIO;
 import org.optaplanner.core.impl.partitionedsearch.partitioner.SolutionPartitioner;
 import org.optaplanner.core.impl.score.director.easy.EasyScoreCalculator;
@@ -115,21 +115,21 @@ class SolverConfigTest {
                 + "  </constructionHeuristic>\n"
                 + "</solver>";
 
-        JaxbIO<SolverConfig> jaxbIO = new JaxbIO<>(SolverConfig.class);
+        GenericJaxbIO<SolverConfig> genericJaxbIO = new GenericJaxbIO<>(SolverConfig.class);
         StringReader stringReader = new StringReader(solverConfigXml);
         assertThatExceptionOfType(OptaPlannerXmlSerializationException.class)
                 .isThrownBy(
-                        () -> jaxbIO.readAndValidate(stringReader, OPTAPLANNER_XSD))
+                        () -> genericJaxbIO.readAndValidate(stringReader, OPTAPLANNER_XSD))
                 .withMessageContaining("Invalid content was found")
                 .withMessageContaining("variableName");
     }
 
     @Test
     void readAndValidateSolverConfig() throws IOException {
-        JaxbIO<SolverConfig> jaxbIO = new JaxbIO<>(SolverConfig.class);
+        GenericJaxbIO<SolverConfig> genericJaxbIO = new GenericJaxbIO<>(SolverConfig.class);
         SolverConfig solverConfig =
                 readSolverConfig(TEST_SOLVER_CONFIG_WITH_NAMESPACE,
-                        (reader -> jaxbIO.readAndValidate(reader, OPTAPLANNER_XSD)));
+                        (reader -> genericJaxbIO.readAndValidate(reader, OPTAPLANNER_XSD)));
         assertThat(solverConfig).isNotNull();
     }
 
