@@ -16,11 +16,6 @@
 
 package org.optaplanner.core.impl.score.stream.drools.common.rules;
 
-import static java.util.Collections.emptyMap;
-import static java.util.Collections.singletonList;
-import static org.drools.model.DSL.accFunction;
-import static org.drools.model.PatternDSL.pattern;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -32,6 +27,11 @@ import org.drools.model.view.ExprViewItem;
 import org.drools.model.view.ViewItem;
 import org.optaplanner.core.api.score.stream.uni.UniConstraintCollector;
 import org.optaplanner.core.impl.score.stream.drools.uni.DroolsUniAccumulateFunction;
+
+import static java.util.Collections.emptyMap;
+import static java.util.Collections.singletonList;
+import static org.drools.model.DSL.accFunction;
+import static org.drools.model.PatternDSL.pattern;
 
 final class UniGroupBy1Map1CollectFastMutator<A, NewA, NewB> extends AbstractUniGroupByMutator {
 
@@ -50,9 +50,9 @@ final class UniGroupBy1Map1CollectFastMutator<A, NewA, NewB> extends AbstractUni
         Variable<A> input = ruleAssembler.getVariable(0);
         Variable<NewA> groupKey = (Variable<NewA>) PatternDSL.declarationOf(Object.class);
         Variable<NewB> output = (Variable<NewB>) PatternDSL.declarationOf(Object.class);
-        DroolsUniAccumulateFunction<A, ?, NewB> bridge = new DroolsUniAccumulateFunction<>(collectorB);
         ExprViewItem<NewB> accumulatePattern = PatternDSL.groupBy(getInnerAccumulatePattern(ruleAssembler), input,
-                groupKey, groupKeyMappingA::apply, accFunction(() -> bridge).as(output));
+                groupKey, groupKeyMappingA::apply,
+                accFunction(() -> new DroolsUniAccumulateFunction<>(collectorB)).as(output));
         List<ViewItem> newFinishedExpressions = new ArrayList<>(ruleAssembler.getFinishedExpressions());
         newFinishedExpressions.add(accumulatePattern); // The last pattern is added here.
         PatternDSL.PatternDef<NewB> newPrimaryPattern = pattern(output);
