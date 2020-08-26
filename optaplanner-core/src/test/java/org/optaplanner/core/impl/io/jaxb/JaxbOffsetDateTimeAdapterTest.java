@@ -23,25 +23,25 @@ import java.time.ZoneOffset;
 
 import org.junit.jupiter.api.Test;
 
-class OffsetDateTimeJaxbAdapterTest {
+class JaxbOffsetDateTimeAdapterTest {
 
-    private final OffsetDateTimeJaxbAdapter offsetDateTimeJaxbAdapter = new OffsetDateTimeJaxbAdapter();
+    private final JaxbOffsetDateTimeAdapter jaxbOffsetDateTimeAdapter = new JaxbOffsetDateTimeAdapter();
 
     @Test
     public void unmarshall() {
-        OffsetDateTime offsetDateTime = offsetDateTimeJaxbAdapter.unmarshal("2020-01-01T12:00:05.1+02:00");
+        OffsetDateTime offsetDateTime = jaxbOffsetDateTimeAdapter.unmarshal("2020-01-01T12:00:05.1+02:00");
         assertThat(offsetDateTime).isEqualTo(OffsetDateTime.of(2020, 1, 1, 12, 0, 05, 100000000, ZoneOffset.ofHours(2)));
     }
 
     @Test
     public void nullOrEmpty_shouldUnmarshallAsNull() {
-        assertThat(offsetDateTimeJaxbAdapter.unmarshal(null)).isNull();
+        assertThat(jaxbOffsetDateTimeAdapter.unmarshal(null)).isNull();
     }
 
     @Test
     public void marshall() {
         String offsetDateTimeString =
-                offsetDateTimeJaxbAdapter.marshal(OffsetDateTime.of(2020, 1, 1, 12, 0, 05, 100000000, ZoneOffset.ofHours(2)));
+                jaxbOffsetDateTimeAdapter.marshal(OffsetDateTime.of(2020, 1, 1, 12, 0, 05, 100000000, ZoneOffset.ofHours(2)));
         assertThat(offsetDateTimeString).isEqualTo("2020-01-01T12:00:05.1+02:00");
     }
 }
