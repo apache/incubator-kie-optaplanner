@@ -32,7 +32,6 @@ public class PlannerBenchmarkConfigIO implements JaxbIO<PlannerBenchmarkConfig> 
     @Override
     public PlannerBenchmarkConfig read(Reader reader) {
         return genericJaxbIO.readOverridingNamespace(reader,
-                ElementNamespaceOverride.of(SolverConfig.XML_ELEMENT_NAME, SolverConfig.XML_NAMESPACE),
                 ElementNamespaceOverride.of(PlannerBenchmarkConfig.XML_ELEMENT_NAME, SolverConfig.XML_NAMESPACE));
     }
 
