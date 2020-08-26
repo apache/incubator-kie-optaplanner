@@ -66,7 +66,7 @@ class SolverConfigTest {
         String originalXml = IOUtils.toString(
                 SolverConfigTest.class.getResourceAsStream(TEST_SOLVER_CONFIG_WITHOUT_NAMESPACE), StandardCharsets.UTF_8);
 
-        assertThat(jaxbString.trim()).isEqualToNormalizingNewlines(originalXml.trim());
+        assertThat(jaxbString.trim()).isXmlEqualTo(originalXml.trim());
     }
 
     @Test
