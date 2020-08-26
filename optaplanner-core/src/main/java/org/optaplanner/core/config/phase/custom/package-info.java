@@ -13,11 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-/**
- * The {@link org.optaplanner.core.api.score.stream.ConstraintStream} API:
- * a way to define constraints for {@link org.optaplanner.core.api.score.Score} calculation.
- */
 @javax.xml.bind.annotation.XmlSchema(
         namespace = SolverConfig.XML_NAMESPACE,
         elementFormDefault = XmlNsForm.QUALIFIED)
