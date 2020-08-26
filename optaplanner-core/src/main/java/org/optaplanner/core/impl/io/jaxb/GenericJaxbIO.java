@@ -261,7 +261,7 @@ public final class GenericJaxbIO<T> implements JaxbIO<T> {
     /**
      * Overrides namespace of every XML element by the namespace defined in the {@link ElementNamespaceOverride}.
      */
-    private static class NamespaceOverridingXmlFilter extends XMLFilterImpl {
+    private static final class NamespaceOverridingXmlFilter extends XMLFilterImpl {
 
         private final Deque<String> activeNamespace = new ArrayDeque<>();
         private final Map<String, String> elementNamespaceOverridesMap = new HashMap<>();
