@@ -184,7 +184,7 @@ public class PlannerBenchmarkConfigTest {
         String originalXml = IOUtils.toString(
                 PlannerBenchmarkConfigTest.class.getResourceAsStream(TEST_PLANNER_BENCHMARK_CONFIG), StandardCharsets.UTF_8);
 
-        assertThat(jaxbString.trim()).isEqualToNormalizingNewlines(originalXml.trim());
+        assertThat(jaxbString.trim()).isXmlEqualTo(originalXml.trim());
     }
 
     // Used by the testBenchmarkConfig.xml

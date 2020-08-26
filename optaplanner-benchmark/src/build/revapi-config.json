@@ -437,7 +437,7 @@
           "old": "class org.optaplanner.benchmark.config.report.BenchmarkReportConfig",
           "new": "class org.optaplanner.benchmark.config.report.BenchmarkReportConfig",
           "annotationType": "javax.xml.bind.annotation.XmlType",
-          "annotation": "@javax.xml.bind.annotation.XmlType(propOrder = {\"solverRankingType\", \"solverRankingComparatorClass\", \"solverRankingWeightFactoryClass\"})",
+          "annotation": "@javax.xml.bind.annotation.XmlType(propOrder = {\"locale\", \"solverRankingType\", \"solverRankingComparatorClass\", \"solverRankingWeightFactoryClass\"})",
           "package": "org.optaplanner.benchmark.config.report",
           "classSimpleName": "BenchmarkReportConfig",
           "elementKind": "class",
