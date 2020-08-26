@@ -113,9 +113,9 @@ public final class DroolsConstraintSessionFactory<Solution_, Score_ extends Scor
                     if (!(o instanceof GroupKey)) {
                         return Stream.of(o);
                     }
-                    Object ungrouped = ((GroupKey)o).getKey();
+                    Object ungrouped = ((GroupKey) o).getKey();
                     if (ungrouped instanceof FactTuple) {
-                        FactTuple factTuple = (FactTuple)ungrouped;
+                        FactTuple factTuple = (FactTuple) ungrouped;
                         return factTuple.asList().stream();
                     }
                     return Stream.of(ungrouped);

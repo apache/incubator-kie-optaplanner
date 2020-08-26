@@ -16,6 +16,11 @@
 
 package org.optaplanner.core.impl.score.stream.drools.common.rules;
 
+import static java.util.Collections.emptyMap;
+import static java.util.Collections.singletonList;
+import static org.drools.model.DSL.accFunction;
+import static org.drools.model.PatternDSL.pattern;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -27,11 +32,6 @@ import org.drools.model.view.ExprViewItem;
 import org.drools.model.view.ViewItem;
 import org.optaplanner.core.api.score.stream.uni.UniConstraintCollector;
 import org.optaplanner.core.impl.score.stream.drools.uni.DroolsUniAccumulateFunction;
-
-import static java.util.Collections.emptyMap;
-import static java.util.Collections.singletonList;
-import static org.drools.model.DSL.accFunction;
-import static org.drools.model.PatternDSL.pattern;
 
 final class UniGroupBy1Map1CollectFastMutator<A, NewA, NewB> extends AbstractUniGroupByMutator {
 
