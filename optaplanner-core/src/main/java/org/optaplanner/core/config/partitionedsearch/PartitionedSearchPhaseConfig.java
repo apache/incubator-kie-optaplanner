@@ -33,7 +33,7 @@ import org.optaplanner.core.config.phase.NoChangePhaseConfig;
 import org.optaplanner.core.config.phase.PhaseConfig;
 import org.optaplanner.core.config.phase.custom.CustomPhaseConfig;
 import org.optaplanner.core.config.util.ConfigUtils;
-import org.optaplanner.core.impl.io.jaxb.adapters.JaxbCustomPropertiesAdapter;
+import org.optaplanner.core.impl.io.jaxb.adapter.JaxbCustomPropertiesAdapter;
 import org.optaplanner.core.impl.partitionedsearch.partitioner.SolutionPartitioner;
 
 @XmlType(propOrder = {

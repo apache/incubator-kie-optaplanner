@@ -14,27 +14,28 @@
  * limitations under the License.
  */
 
-package org.optaplanner.core.impl.io.jaxb.adapters;
+package org.optaplanner.core.impl.io.jaxb.adapter;
 
-import java.util.Locale;
+import java.time.Duration;
 
 import javax.xml.bind.annotation.adapters.XmlAdapter;
 
-public class JaxbLocaleAdapter extends XmlAdapter<String, Locale> {
+// TODO: Move the code to the jaxb-ri
+public class JaxbDurationAdapter extends XmlAdapter<String, Duration> {
 
     @Override
-    public Locale unmarshal(String localeString) {
-        if (localeString == null) {
+    public Duration unmarshal(String durationString) {
+        if (durationString == null) {
             return null;
         }
-        return new Locale(localeString);
+        return Duration.parse(durationString);
     }
 
     @Override
-    public String marshal(Locale locale) {
-        if (locale == null) {
+    public String marshal(Duration duration) {
+        if (duration == null) {
             return null;
         }
-        return locale.toString();
+        return duration.toString();
     }
 }

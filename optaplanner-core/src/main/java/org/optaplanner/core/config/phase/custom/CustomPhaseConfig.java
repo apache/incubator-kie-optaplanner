@@ -27,7 +27,7 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 import org.optaplanner.core.config.phase.PhaseConfig;
 import org.optaplanner.core.config.util.ConfigUtils;
-import org.optaplanner.core.impl.io.jaxb.adapters.JaxbCustomPropertiesAdapter;
+import org.optaplanner.core.impl.io.jaxb.adapter.JaxbCustomPropertiesAdapter;
 import org.optaplanner.core.impl.phase.custom.CustomPhaseCommand;
 
 @XmlType(propOrder = {
