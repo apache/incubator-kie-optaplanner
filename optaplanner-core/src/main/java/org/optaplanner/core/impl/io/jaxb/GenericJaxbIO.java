@@ -259,7 +259,7 @@ public final class GenericJaxbIO<T> implements JaxbIO<T> {
     }
 
     /**
-     * Overrides namespace of every XML element by the namespace.
+     * Overrides namespace of every XML element by the namespace defined in the {@link ElementNamespaceOverride}.
      */
     private static class NamespaceOverridingXmlFilter extends XMLFilterImpl {
 
