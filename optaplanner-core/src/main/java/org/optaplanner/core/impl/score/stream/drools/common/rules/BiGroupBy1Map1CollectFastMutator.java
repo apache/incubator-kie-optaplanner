@@ -16,6 +16,11 @@
 
 package org.optaplanner.core.impl.score.stream.drools.common.rules;
 
+import static java.util.Collections.emptyMap;
+import static java.util.Collections.singletonList;
+import static org.drools.model.DSL.accFunction;
+import static org.drools.model.PatternDSL.pattern;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -27,11 +32,6 @@ import org.drools.model.view.ExprViewItem;
 import org.drools.model.view.ViewItem;
 import org.optaplanner.core.api.score.stream.bi.BiConstraintCollector;
 import org.optaplanner.core.impl.score.stream.drools.bi.DroolsBiAccumulateFunction;
-
-import static java.util.Collections.emptyMap;
-import static java.util.Collections.singletonList;
-import static org.drools.model.DSL.accFunction;
-import static org.drools.model.PatternDSL.pattern;
 
 class BiGroupBy1Map1CollectFastMutator<A, B, NewA, NewB> extends AbstractBiGroupByMutator {
 
@@ -49,15 +49,15 @@ class BiGroupBy1Map1CollectFastMutator<A, B, NewA, NewB> extends AbstractBiGroup
         ruleAssembler.applyFilterToLastPrimaryPattern();
         Variable<A> inputA = ruleAssembler.getVariable(0);
         Variable<B> inputB = ruleAssembler.getVariable(1);
-        Variable<NewA> groupKey = (Variable<NewA>) PatternDSL.declarationOf(Object.class);
-        Variable<NewB> output = (Variable<NewB>) PatternDSL.declarationOf(Object.class);
+        Variable<NewA> groupKey = ruleAssembler.createVariable("groupKey");
+        Variable<NewB> output = ruleAssembler.createVariable("output");
         ExprViewItem<NewB> accumulatePattern = PatternDSL.groupBy(getInnerAccumulatePattern(ruleAssembler), inputA,
                 inputB, groupKey, groupKeyMappingA::apply,
                 accFunction(() -> new DroolsBiAccumulateFunction<>(collectorB)).as(output));
         List<ViewItem> newFinishedExpressions = new ArrayList<>(ruleAssembler.getFinishedExpressions());
         newFinishedExpressions.add(accumulatePattern); // The last pattern is added here.
         PatternDSL.PatternDef<NewB> newPrimaryPattern = pattern(output);
-        return new BiRuleAssembler(ruleAssembler::generateNextId, ruleAssembler.getExpectedGroupByCount(),
+        return new BiRuleAssembler(ruleAssembler, ruleAssembler.getExpectedGroupByCount(),
                 newFinishedExpressions, Arrays.asList(groupKey, output), singletonList(newPrimaryPattern), emptyMap());
     }
 }
