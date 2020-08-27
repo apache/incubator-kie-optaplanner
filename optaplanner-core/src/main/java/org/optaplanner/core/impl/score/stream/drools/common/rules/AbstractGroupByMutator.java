@@ -16,6 +16,14 @@
 
 package org.optaplanner.core.impl.score.stream.drools.common.rules;
 
+import static java.util.Collections.emptyMap;
+import static java.util.Collections.singletonList;
+import static org.drools.model.DSL.accFunction;
+import static org.drools.model.DSL.and;
+import static org.drools.model.DSL.from;
+import static org.drools.model.PatternDSL.alphaIndexedBy;
+import static org.drools.model.PatternDSL.pattern;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -36,14 +44,6 @@ import org.optaplanner.core.impl.score.stream.drools.common.DroolsAbstractGroupB
 import org.optaplanner.core.impl.score.stream.drools.common.FactTuple;
 import org.optaplanner.core.impl.score.stream.drools.common.QuadTuple;
 import org.optaplanner.core.impl.score.stream.drools.common.TriTuple;
-
-import static java.util.Collections.emptyMap;
-import static java.util.Collections.singletonList;
-import static org.drools.model.DSL.accFunction;
-import static org.drools.model.DSL.and;
-import static org.drools.model.DSL.from;
-import static org.drools.model.PatternDSL.alphaIndexedBy;
-import static org.drools.model.PatternDSL.pattern;
 
 abstract class AbstractGroupByMutator implements Mutator {
 
