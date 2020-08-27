@@ -1,23 +1,23 @@
-**Thank you for submitting this pull request**
+**JIRA**: [link](https://www.example.com) 
 
-**JIRA**: _(please edit the JIRA link if it exists)_ 
+**Referenced Pull Requests** (if any):
 
-[link](https://www.example.com)
+**Checklist**:
 
-**referenced Pull Requests**: _(please edit the URLs of referenced pullrequests if they exist)_
+- [ ] Documentation updated if applicable
+- [ ] Upgrade recipe provided if applicable
 
-paste the link(s) from GitHub here
+**Thank you for submitting this pull request!**
 
-**How to retest or run**:
+---
+<pre>
+<b>To run tests, please add a comment:</b>
 
-* a pull request please add comment: regex **[.\*[j|J]enkins,?.\*(retest|test) this.\*]**
-
-* a full downstream build please add comment: regex **[.*\[j|J]enkins,?.\*(execute|run|trigger|start|do) fdb.\*]**
-
-* a compile downstream build please  add comment: regex **[.\*[j|J]enkins,?.\*(execute|run|trigger|start|do) cdb.\*]**
-
-* a full production downstream please add comment: regex **[.\*[j|J]enkins,?.\*(execute|run|trigger|start|do) product fdb.\*]**
-
-* an upstream build please add comment: regex **[.\*[j|J]enkins,?.\*(execute|run|trigger|start|do) upstream.\*]**
-
-i.e for running a full downstream build =  **Jenkins do fdb**
+<ul>
+    <li><b>jenkins test this</b> (for a PR check)</li>
+    <li><b>jenkins run fdb</b> (for a full downstream build)</li>
+    <li><b>jenkins run cdb</b> (for a compile downstream build)</li>
+    <li><b>jenkins run product fdb</b> (a full production downstream)</li>
+    <li><b>jenkins run upstream</b> (for an upstream build)</li>
+</ul>
+</pre>
