@@ -343,7 +343,7 @@ public class ExaminationConstraintProviderTest {
         LeadingExam exam3 = new LeadingExam()
                 .withId(3L)
                 .withTopic(new Topic()
-                        .withId(4)
+                        .withId(3)
                         .withDuration(3))
                 .withPeriod(period)
                 .withRoom(room);
@@ -375,7 +375,7 @@ public class ExaminationConstraintProviderTest {
         LeadingExam exam3 = new LeadingExam()
                 .withId(3L)
                 .withTopic(new Topic()
-                        .withId(4)
+                        .withId(3)
                         .withDuration(3))
                 .withPeriod(period)
                 .withRoom(room);
@@ -407,7 +407,7 @@ public class ExaminationConstraintProviderTest {
         LeadingExam exam3 = new LeadingExam()
                 .withId(3L)
                 .withTopic(new Topic()
-                        .withId(4)
+                        .withId(3)
                         .withDuration(3))
                 .withPeriod(period)
                 .withRoom(room);
@@ -436,11 +436,10 @@ public class ExaminationConstraintProviderTest {
                         .withDuration(3))
                 .withPeriod(period)
                 .withRoom(room);
-
         LeadingExam exam3 = new LeadingExam()
                 .withId(3L)
                 .withTopic(new Topic()
-                        .withId(4)
+                        .withId(3)
                         .withDuration(1))
                 .withPeriod(period)
                 .withRoom(room);
@@ -472,7 +471,7 @@ public class ExaminationConstraintProviderTest {
         LeadingExam exam3 = new LeadingExam()
                 .withId(3L)
                 .withTopic(new Topic()
-                        .withId(4)
+                        .withId(3)
                         .withDuration(1))
                 .withPeriod(period)
                 .withRoom(room);
@@ -504,7 +503,7 @@ public class ExaminationConstraintProviderTest {
         LeadingExam exam3 = new LeadingExam()
                 .withId(3L)
                 .withTopic(new Topic()
-                        .withId(4)
+                        .withId(3)
                         .withDuration(1))
                 .withPeriod(period)
                 .withRoom(room);
@@ -536,7 +535,7 @@ public class ExaminationConstraintProviderTest {
         LeadingExam exam3 = new LeadingExam()
                 .withId(3L)
                 .withTopic(new Topic()
-                        .withId(4)
+                        .withId(3)
                         .withDuration(1))
                 .withPeriod(period)
                 .withRoom(room);
