@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.optaplanner.core.impl.score.stream.drools.common.rules;
+package org.optaplanner.core.impl.score.stream.drools.common;
 
 import org.drools.model.DSL;
 import org.drools.model.DeclarationSource;

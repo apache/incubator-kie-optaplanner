@@ -35,6 +35,7 @@ import org.drools.model.view.ViewItem;
 import org.optaplanner.core.api.score.stream.uni.UniConstraintCollector;
 import org.optaplanner.core.impl.score.holder.AbstractScoreHolder;
 import org.optaplanner.core.impl.score.stream.drools.DroolsConstraint;
+import org.optaplanner.core.impl.score.stream.drools.common.DroolsVariableFactory;
 import org.optaplanner.core.impl.score.stream.drools.common.consequences.ConstraintConsequence;
 import org.optaplanner.core.impl.score.stream.drools.common.nodes.AbstractConstraintModelJoiningNode;
 import org.optaplanner.core.impl.score.stream.drools.common.nodes.ConstraintGraphNode;
@@ -43,8 +44,9 @@ final class UniRuleAssembler extends AbstractRuleAssembler<Predicate> {
 
     private Predicate filterToApplyToLastPrimaryPattern = null;
 
-    public UniRuleAssembler(ConstraintGraphNode previousNode, int expectedGroupByCount) {
-        super(previousNode, expectedGroupByCount);
+    public UniRuleAssembler(DroolsVariableFactory variableFactory, ConstraintGraphNode previousNode,
+            int expectedGroupByCount) {
+        super(variableFactory, previousNode, expectedGroupByCount);
     }
 
     public UniRuleAssembler(DroolsVariableFactory variableFactory, int expectedGroupByCount,

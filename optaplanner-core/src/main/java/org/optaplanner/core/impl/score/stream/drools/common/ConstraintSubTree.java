@@ -16,12 +16,6 @@
 
 package org.optaplanner.core.impl.score.stream.drools.common;
 
-import static org.optaplanner.core.impl.score.stream.drools.common.nodes.ConstraintGraphNodeType.FROM;
-import static org.optaplanner.core.impl.score.stream.drools.common.nodes.ConstraintGraphNodeType.GROUPBY_COLLECTING_ONLY;
-import static org.optaplanner.core.impl.score.stream.drools.common.nodes.ConstraintGraphNodeType.GROUPBY_MAPPING_AND_COLLECTING;
-import static org.optaplanner.core.impl.score.stream.drools.common.nodes.ConstraintGraphNodeType.GROUPBY_MAPPING_ONLY;
-import static org.optaplanner.core.impl.score.stream.drools.common.nodes.ConstraintGraphNodeType.JOIN;
-
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
@@ -30,14 +24,22 @@ import org.optaplanner.core.impl.score.stream.drools.common.nodes.ConstraintGrap
 import org.optaplanner.core.impl.score.stream.drools.common.nodes.ConstraintGraphNodeType;
 import org.optaplanner.core.impl.score.stream.drools.common.rules.RuleAssembler;
 
+import static org.optaplanner.core.impl.score.stream.drools.common.nodes.ConstraintGraphNodeType.FROM;
+import static org.optaplanner.core.impl.score.stream.drools.common.nodes.ConstraintGraphNodeType.GROUPBY_COLLECTING_ONLY;
+import static org.optaplanner.core.impl.score.stream.drools.common.nodes.ConstraintGraphNodeType.GROUPBY_MAPPING_AND_COLLECTING;
+import static org.optaplanner.core.impl.score.stream.drools.common.nodes.ConstraintGraphNodeType.GROUPBY_MAPPING_ONLY;
+import static org.optaplanner.core.impl.score.stream.drools.common.nodes.ConstraintGraphNodeType.JOIN;
+
 final class ConstraintSubTree {
 
+    private final DroolsVariableFactory variableFactory;
     private final boolean isJoin;
     private final ConstraintSubTree leftSubTree;
     private final ConstraintSubTree rightSubTree;
     private final List<ConstraintGraphNode> nodeList;
 
-    public ConstraintSubTree(List<ConstraintGraphNode> joinlessNodeList) {
+    public ConstraintSubTree(List<ConstraintGraphNode> joinlessNodeList, DroolsVariableFactory variableFactory) {
+        this.variableFactory = variableFactory;
         this.isJoin = false;
         this.leftSubTree = null;
         this.rightSubTree = null;
@@ -54,7 +56,8 @@ final class ConstraintSubTree {
     }
 
     public ConstraintSubTree(ConstraintSubTree leftSubTree, ConstraintSubTree rightSubTree,
-            List<ConstraintGraphNode> joinAndOtherNodesList) {
+            List<ConstraintGraphNode> joinAndOtherNodesList, DroolsVariableFactory variableFactory) {
+        this.variableFactory = variableFactory;
         this.isJoin = true;
         this.leftSubTree = Objects.requireNonNull(leftSubTree);
         this.rightSubTree = Objects.requireNonNull(rightSubTree);
@@ -85,7 +88,7 @@ final class ConstraintSubTree {
     public RuleAssembler getRuleAssembler() {
         RuleAssembler builder = isJoin ? leftSubTree.getRuleAssembler()
                 .join(rightSubTree.getRuleAssembler(), nodeList.get(0))
-                : RuleAssembler.from(nodeList.get(0), getGroupByCount());
+                : RuleAssembler.from(variableFactory, nodeList.get(0), getGroupByCount());
         for (int i = 1; i < nodeList.size(); i++) {
             builder = builder.andThen(nodeList.get(i));
         }
