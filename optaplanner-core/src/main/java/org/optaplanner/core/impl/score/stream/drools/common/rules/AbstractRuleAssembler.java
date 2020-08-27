@@ -16,6 +16,13 @@
 
 package org.optaplanner.core.impl.score.stream.drools.common.rules;
 
+import static java.util.Collections.emptyList;
+import static java.util.Collections.emptyMap;
+import static java.util.Collections.unmodifiableList;
+import static java.util.Collections.unmodifiableMap;
+import static org.drools.model.PatternDSL.pattern;
+import static org.drools.model.PatternDSL.rule;
+
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -46,13 +53,6 @@ import org.optaplanner.core.impl.score.stream.drools.common.nodes.AbstractConstr
 import org.optaplanner.core.impl.score.stream.drools.common.nodes.ConstraintGraphNode;
 import org.optaplanner.core.impl.score.stream.drools.common.nodes.ConstraintGraphNodeType;
 import org.optaplanner.core.impl.score.stream.drools.common.nodes.FromNode;
-
-import static java.util.Collections.emptyList;
-import static java.util.Collections.emptyMap;
-import static java.util.Collections.unmodifiableList;
-import static java.util.Collections.unmodifiableMap;
-import static org.drools.model.PatternDSL.pattern;
-import static org.drools.model.PatternDSL.rule;
 
 abstract class AbstractRuleAssembler<Predicate_> implements RuleAssembler,
         DroolsVariableFactory {
