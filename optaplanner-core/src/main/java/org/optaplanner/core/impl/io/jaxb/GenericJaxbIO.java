@@ -27,6 +27,8 @@ import java.util.Deque;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import javax.xml.XMLConstants;
 import javax.xml.bind.JAXBContext;
@@ -62,8 +64,10 @@ import org.xml.sax.helpers.XMLFilterImpl;
 public final class GenericJaxbIO<T> implements JaxbIO<T> {
     private static final int DEFAULT_INDENTATION = 2;
 
-    private static final String ERR_MSG_WRITE = "Unable to write the %s to XML.";
-    private static final String ERR_MSG_READ = "Unable to read the (%s) from XML.";
+    private static final String ERR_MSG_WRITE = "Failed to marshall a root element class (%s) to XML.";
+    private static final String ERR_MSG_READ = "Failed to unmarshall a root element class (%s) from XML.";
+    private static final String ERR_MSG_READ_OVERRIDE_NAMESPACE =
+            "Failed to unmarshall a root element class (%s) from XML with overriding elements' namespaces: (%s).";
 
     private final JAXBContext jaxbContext;
     private final Marshaller marshaller;
@@ -84,7 +88,7 @@ public final class GenericJaxbIO<T> implements JaxbIO<T> {
             marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
             marshaller.setProperty(Marshaller.JAXB_ENCODING, StandardCharsets.UTF_8.toString());
         } catch (JAXBException jaxbException) {
-            String errMessage = String.format("Unable to create JAXB Marshaller for a root element class (%s).",
+            String errMessage = String.format("Failed to create JAXB Marshaller for a root element class (%s).",
                     rootClass.getName());
             throw new OptaPlannerXmlSerializationException(errMessage, jaxbException);
         }
@@ -109,17 +113,17 @@ public final class GenericJaxbIO<T> implements JaxbIO<T> {
         try {
             schema = schemaFactory.newSchema(GenericJaxbIO.class.getResource(nonNullSchemaResource));
         } catch (SAXException e) {
-            throw new IllegalArgumentException("Unable to read input schema resource (" + nonNullSchemaResource + ")", e);
+            throw new IllegalArgumentException("Failed to read input schema resource (" + nonNullSchemaResource + ")", e);
         }
 
         Unmarshaller unmarshaller = createUnmarshaller();
         unmarshaller.setSchema(schema);
-        ValidationEventStringCollector validationEventHandler = new ValidationEventStringCollector();
 
+        ValidationEventCollector validationEventCollector = new ValidationEventCollector();
         try {
-            unmarshaller.setEventHandler(validationEventHandler);
+            unmarshaller.setEventHandler(validationEventCollector);
         } catch (JAXBException jaxbException) {
-            String errMessage = String.format("Unable to set validation event handler to the unmarshaller for "
+            String errMessage = String.format("Failed to set a validation event handler to the unmarshaller for "
                     + "a root element class (%s).", rootClass.getName());
             throw new OptaPlannerXmlSerializationException(errMessage, jaxbException);
         }
@@ -127,11 +131,16 @@ public final class GenericJaxbIO<T> implements JaxbIO<T> {
         try {
             return (T) unmarshaller.unmarshal(reader);
         } catch (JAXBException jaxbException) {
-            String errMessage = String.format(ERR_MSG_READ, rootClass.getName());
-            if (validationEventHandler.hasEvents()) {
-                String errMessageWithValidationEvents = errMessage + "\n" + validationEventHandler.reportAll();
+            if (validationEventCollector.hasEvents()) {
+                String errMessage =
+                        String.format("XML validation failed for a root element class (%s).", rootClass.getName());
+                String validationErrors = Stream.of(validationEventCollector.getEvents())
+                        .map(ValidationEvent::getMessage)
+                        .collect(Collectors.joining("\n"));
+                String errMessageWithValidationEvents = errMessage + "\n" + validationErrors;
                 throw new OptaPlannerXmlSerializationException(errMessageWithValidationEvents, jaxbException);
             } else {
+                String errMessage = String.format(ERR_MSG_READ, rootClass.getName());
                 throw new OptaPlannerXmlSerializationException(errMessage, jaxbException);
             }
         }
@@ -141,7 +150,7 @@ public final class GenericJaxbIO<T> implements JaxbIO<T> {
         try {
             return jaxbContext.createUnmarshaller();
         } catch (JAXBException e) {
-            String errMessage = String.format("Unable to create JAXB unmarshaller for a root element class (%s).",
+            String errMessage = String.format("Failed to create JAXB unmarshaller for a root element class (%s).",
                     rootClass.getName());
             throw new OptaPlannerXmlSerializationException(errMessage, e);
         }
@@ -160,9 +169,6 @@ public final class GenericJaxbIO<T> implements JaxbIO<T> {
         Objects.requireNonNull(reader);
         Objects.requireNonNull(elementNamespaceOverrides);
 
-        final String errMessage = String.format("Unable to read the (%s) from XML with overriding elements' namespaces: %s.",
-                rootClass.getName(), Arrays.toString(elementNamespaceOverrides));
-
         // Create a SAXParser to use its XMLReader on the XMLFilter
         SAXParserFactory saxParserFactory = SAXParserFactory.newInstance();
         SAXParser saxParser;
@@ -172,12 +178,16 @@ public final class GenericJaxbIO<T> implements JaxbIO<T> {
             saxParserFactory.setFeature("http://xml.org/sax/features/external-general-entities", false);
             saxParser = saxParserFactory.newSAXParser();
         } catch (ParserConfigurationException | SAXException e) {
+            final String errMessage = String.format(ERR_MSG_READ_OVERRIDE_NAMESPACE, rootClass.getName(),
+                    Arrays.toString(elementNamespaceOverrides));
             throw new OptaPlannerXmlSerializationException(errMessage, e);
         }
         XMLReader xmlReader;
         try {
             xmlReader = saxParser.getXMLReader();
         } catch (SAXException e) {
+            final String errMessage = String.format(ERR_MSG_READ_OVERRIDE_NAMESPACE, rootClass.getName(),
+                    Arrays.toString(elementNamespaceOverrides));
             throw new OptaPlannerXmlSerializationException(errMessage, e);
         }
 
@@ -194,47 +204,45 @@ public final class GenericJaxbIO<T> implements JaxbIO<T> {
             // Parse the XML to feed its content into the UnmarshallerHandler.
             namespaceOverridingXmlFilter.parse(xmlInputSource);
         } catch (IOException | SAXException e) {
+            final String errMessage = String.format(ERR_MSG_READ_OVERRIDE_NAMESPACE, rootClass.getName(),
+                    Arrays.toString(elementNamespaceOverrides));
             throw new OptaPlannerXmlSerializationException(errMessage, e);
         }
 
         try {
             return (T) unmarshallerHandler.getResult();
         } catch (JAXBException e) {
+            final String errMessage = String.format(ERR_MSG_READ_OVERRIDE_NAMESPACE, rootClass.getName(),
+                    Arrays.toString(elementNamespaceOverrides));
             throw new OptaPlannerXmlSerializationException(errMessage, e);
         }
     }
 
     @Override
     public void write(T root, Writer writer) {
-        Objects.requireNonNull(root);
-        Objects.requireNonNull(writer);
-        DOMResult domResult = new DOMResult();
-        try {
-            marshaller.marshal(root, domResult);
-        } catch (JAXBException jaxbException) {
-            String errMessage = String.format(ERR_MSG_WRITE, rootClass.getName());
-            throw new OptaPlannerXmlSerializationException(errMessage, jaxbException);
-        }
-
+        DOMResult domResult = marshall(root, writer);
         formatXml(new DOMSource(domResult.getNode()), null, writer);
     }
 
     public void writeWithoutNamespaces(T root, Writer writer) {
-        Objects.requireNonNull(root);
-        Objects.requireNonNull(writer);
-        DOMResult domResult = new DOMResult();
-        final String errMessage = String.format(ERR_MSG_WRITE, rootClass.getName());
-        try {
-            marshaller.marshal(root, domResult);
-        } catch (JAXBException jaxbException) {
-            throw new OptaPlannerXmlSerializationException(errMessage, jaxbException);
-        }
-
+        DOMResult domResult = marshall(root, writer);
         try (InputStream xsltInputStream = getClass().getResourceAsStream("removeNamespaces.xslt")) {
             formatXml(new DOMSource(domResult.getNode()), new StreamSource(xsltInputStream), writer);
         } catch (IOException e) {
-            throw new OptaPlannerXmlSerializationException(errMessage, e);
+            throw new OptaPlannerXmlSerializationException(String.format(ERR_MSG_WRITE, rootClass.getName()), e);
         }
+    }
+
+    private DOMResult marshall(T root, Writer writer) {
+        Objects.requireNonNull(root);
+        Objects.requireNonNull(writer);
+        DOMResult domResult = new DOMResult();
+        try {
+            marshaller.marshal(root, domResult);
+        } catch (JAXBException jaxbException) {
+            throw new OptaPlannerXmlSerializationException(String.format(ERR_MSG_WRITE, rootClass.getName()), jaxbException);
+        }
+        return domResult;
     }
 
     private void formatXml(Source source, Source transformationTemplate, Writer writer) {
@@ -253,7 +261,7 @@ public final class GenericJaxbIO<T> implements JaxbIO<T> {
             transformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", String.valueOf(indentation));
             transformer.transform(source, new StreamResult(writer));
         } catch (TransformerException transformerException) {
-            String errMessage = String.format(ERR_MSG_WRITE, rootClass.getName());
+            String errMessage = String.format("Failed to format XML for a root element class (%s).", rootClass.getName());
             throw new OptaPlannerXmlSerializationException(errMessage, transformerException);
         }
     }
@@ -295,24 +303,5 @@ public final class GenericJaxbIO<T> implements JaxbIO<T> {
             super.startElement(resultingUri, localName, qName, atts);
         }
 
-    }
-
-    private static final class ValidationEventStringCollector extends ValidationEventCollector {
-
-        /**
-         * Reports all validation events in a single string.
-         *
-         * @return string containing all validation events separated by {@link Character#LINE_SEPARATOR}
-         */
-        public String reportAll() {
-            final StringBuilder validationEvents = new StringBuilder();
-
-            for (ValidationEvent event : this.getEvents()) {
-                validationEvents
-                        .append(event.getMessage())
-                        .append(Character.LINE_SEPARATOR);
-            }
-            return validationEvents.toString();
-        }
     }
 }
