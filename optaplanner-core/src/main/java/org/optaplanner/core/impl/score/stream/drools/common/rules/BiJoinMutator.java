@@ -16,9 +16,6 @@
 
 package org.optaplanner.core.impl.score.stream.drools.common.rules;
 
-import static org.drools.model.PatternDSL.PatternDef;
-import static org.drools.model.PatternDSL.betaIndexedBy;
-
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
@@ -31,6 +28,9 @@ import org.drools.model.view.ViewItem;
 import org.optaplanner.core.impl.score.stream.bi.AbstractBiJoiner;
 import org.optaplanner.core.impl.score.stream.common.JoinerType;
 import org.optaplanner.core.impl.score.stream.drools.common.nodes.AbstractConstraintModelJoiningNode;
+
+import static org.drools.model.PatternDSL.PatternDef;
+import static org.drools.model.PatternDSL.betaIndexedBy;
 
 final class BiJoinMutator<A, B> implements JoinMutator<UniRuleAssembler, BiRuleAssembler> {
 

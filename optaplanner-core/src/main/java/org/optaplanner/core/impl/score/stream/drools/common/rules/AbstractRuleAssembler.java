@@ -16,13 +16,6 @@
 
 package org.optaplanner.core.impl.score.stream.drools.common.rules;
 
-import static java.util.Collections.emptyList;
-import static java.util.Collections.emptyMap;
-import static java.util.Collections.unmodifiableList;
-import static java.util.Collections.unmodifiableMap;
-import static org.drools.model.PatternDSL.pattern;
-import static org.drools.model.PatternDSL.rule;
-
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -46,7 +39,6 @@ import org.kie.api.runtime.rule.RuleContext;
 import org.optaplanner.core.api.score.stream.uni.UniConstraintCollector;
 import org.optaplanner.core.impl.score.holder.AbstractScoreHolder;
 import org.optaplanner.core.impl.score.stream.drools.DroolsConstraint;
-import org.optaplanner.core.impl.score.stream.drools.common.DroolsVariableFactory;
 import org.optaplanner.core.impl.score.stream.drools.common.FactTuple;
 import org.optaplanner.core.impl.score.stream.drools.common.nodes.AbstractConstraintModelGroupingNode;
 import org.optaplanner.core.impl.score.stream.drools.common.nodes.AbstractConstraintModelJoiningNode;
@@ -54,8 +46,14 @@ import org.optaplanner.core.impl.score.stream.drools.common.nodes.ConstraintGrap
 import org.optaplanner.core.impl.score.stream.drools.common.nodes.ConstraintGraphNodeType;
 import org.optaplanner.core.impl.score.stream.drools.common.nodes.FromNode;
 
-abstract class AbstractRuleAssembler<Predicate_> implements RuleAssembler,
-        DroolsVariableFactory {
+import static java.util.Collections.emptyList;
+import static java.util.Collections.emptyMap;
+import static java.util.Collections.unmodifiableList;
+import static java.util.Collections.unmodifiableMap;
+import static org.drools.model.PatternDSL.pattern;
+import static org.drools.model.PatternDSL.rule;
+
+abstract class AbstractRuleAssembler<Predicate_> implements RuleAssembler, DroolsVariableFactory {
 
     private final DroolsVariableFactory variableFactory;
     private final int expectedGroupByCount;
@@ -64,9 +62,8 @@ abstract class AbstractRuleAssembler<Predicate_> implements RuleAssembler,
     private final List<PatternDef> primaryPatterns;
     private final Map<Integer, List<ViewItem>> dependentExpressionMap;
 
-    protected AbstractRuleAssembler(DroolsVariableFactory variableFactory, ConstraintGraphNode fromNode,
-            int expectedGroupByCount) {
-        this(variableFactory, expectedGroupByCount, emptyList(), emptyList(), emptyList(), emptyMap());
+    protected AbstractRuleAssembler(ConstraintGraphNode fromNode, int expectedGroupByCount) {
+        this(new DroolsVariableFactoryImpl(), expectedGroupByCount, emptyList(), emptyList(), emptyList(), emptyMap());
         variables.add(createVariable(((FromNode) fromNode).getFactType(), "var"));
         primaryPatterns.add(pattern(variables.get(0)));
     }
