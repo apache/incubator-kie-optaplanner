@@ -24,7 +24,6 @@ import java.util.function.BiPredicate;
 import java.util.function.Supplier;
 import java.util.function.ToIntBiFunction;
 import java.util.function.ToLongBiFunction;
-import java.util.function.UnaryOperator;
 
 import org.drools.model.DSL;
 import org.drools.model.Drools;
@@ -44,10 +43,10 @@ final class BiRuleAssembler extends AbstractRuleAssembler<BiPredicate> {
 
     private BiPredicate filterToApplyToLastPrimaryPattern = null;
 
-    public BiRuleAssembler(UnaryOperator<String> idSupplier, int expectedGroupByCount,
+    public BiRuleAssembler(DroolsVariableFactory variableFactory, int expectedGroupByCount,
             List<ViewItem> finishedExpressions, List<Variable> variables, List<PatternDef> primaryPatterns,
             Map<Integer, List<ViewItem>> dependentExpressionMap) {
-        super(idSupplier, expectedGroupByCount, finishedExpressions, variables, primaryPatterns, dependentExpressionMap);
+        super(variableFactory, expectedGroupByCount, finishedExpressions, variables, primaryPatterns, dependentExpressionMap);
     }
 
     @Override

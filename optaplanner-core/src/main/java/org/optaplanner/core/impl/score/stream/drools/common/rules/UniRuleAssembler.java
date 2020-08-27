@@ -24,7 +24,6 @@ import java.util.function.Predicate;
 import java.util.function.Supplier;
 import java.util.function.ToIntFunction;
 import java.util.function.ToLongFunction;
-import java.util.function.UnaryOperator;
 
 import org.drools.model.DSL;
 import org.drools.model.Drools;
@@ -48,10 +47,10 @@ final class UniRuleAssembler extends AbstractRuleAssembler<Predicate> {
         super(previousNode, expectedGroupByCount);
     }
 
-    public UniRuleAssembler(UnaryOperator<String> idSupplier, int expectedGroupByCount,
+    public UniRuleAssembler(DroolsVariableFactory variableFactory, int expectedGroupByCount,
             List<ViewItem> finishedExpressions, List<Variable> variables, List<PatternDef> primaryPatterns,
             Map<Integer, List<ViewItem>> dependentExpressionMap) {
-        super(idSupplier, expectedGroupByCount, finishedExpressions, variables, primaryPatterns, dependentExpressionMap);
+        super(variableFactory, expectedGroupByCount, finishedExpressions, variables, primaryPatterns, dependentExpressionMap);
     }
 
     @Override

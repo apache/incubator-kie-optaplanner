@@ -20,7 +20,6 @@ import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Supplier;
-import java.util.function.UnaryOperator;
 
 import org.drools.model.DSL;
 import org.drools.model.Drools;
@@ -44,10 +43,10 @@ final class TriRuleAssembler extends AbstractRuleAssembler<TriPredicate> {
 
     private TriPredicate filterToApplyToLastPrimaryPattern = null;
 
-    public TriRuleAssembler(UnaryOperator<String> idSupplier, int expectedGroupByCount,
+    public TriRuleAssembler(DroolsVariableFactory variableFactory, int expectedGroupByCount,
             List<ViewItem> finishedExpressions, List<Variable> variables, List<PatternDef> primaryPatterns,
             Map<Integer, List<ViewItem>> dependentExpressionMap) {
-        super(idSupplier, expectedGroupByCount, finishedExpressions, variables, primaryPatterns, dependentExpressionMap);
+        super(variableFactory, expectedGroupByCount, finishedExpressions, variables, primaryPatterns, dependentExpressionMap);
     }
 
     @Override

@@ -16,10 +16,6 @@
 
 package org.optaplanner.core.impl.score.stream.drools.common.rules;
 
-import static org.drools.model.PatternDSL.PatternDef;
-import static org.drools.model.PatternDSL.betaIndexedBy;
-import static org.drools.model.PatternDSL.declarationOf;
-
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
@@ -32,6 +28,9 @@ import org.drools.model.view.ViewItem;
 import org.optaplanner.core.impl.score.stream.bi.AbstractBiJoiner;
 import org.optaplanner.core.impl.score.stream.common.JoinerType;
 import org.optaplanner.core.impl.score.stream.drools.common.nodes.AbstractConstraintModelJoiningNode;
+
+import static org.drools.model.PatternDSL.PatternDef;
+import static org.drools.model.PatternDSL.betaIndexedBy;
 
 final class BiJoinMutator<A, B> implements JoinMutator<UniRuleAssembler, BiRuleAssembler> {
 
@@ -50,7 +49,7 @@ final class BiJoinMutator<A, B> implements JoinMutator<UniRuleAssembler, BiRuleA
         for (int mappingIndex = 0; mappingIndex < joinerTypes.length; mappingIndex++) {
             // For each mapping, bind one join variable.
             int currentMappingIndex = mappingIndex;
-            Variable<Object> joinVar = declarationOf(Object.class, "joinVar" + currentMappingIndex);
+            Variable<Object> joinVar = leftRuleAssembler.createVariable("joinVar" + currentMappingIndex);
             Function<A, Object> leftMapping = biJoiner.getLeftMapping(currentMappingIndex);
             aJoiner.bind(joinVar, a -> leftMapping.apply((A) a));
             joinVars[currentMappingIndex] = joinVar;
@@ -76,9 +75,9 @@ final class BiJoinMutator<A, B> implements JoinMutator<UniRuleAssembler, BiRuleA
     public BiRuleAssembler newRuleAssembler(UniRuleAssembler leftRuleAssembler, UniRuleAssembler rightRuleAssembler,
             List<ViewItem> finishedExpressions, List<Variable> variables, List<PatternDef> primaryPatterns,
             Map<Integer, List<ViewItem>> dependentExpressionMap) {
-        return new BiRuleAssembler(leftRuleAssembler::generateNextId,
-                Math.max(leftRuleAssembler.getExpectedGroupByCount(), rightRuleAssembler.getExpectedGroupByCount()),
-                finishedExpressions, variables, primaryPatterns, dependentExpressionMap);
+        return new BiRuleAssembler(leftRuleAssembler, Math.max(leftRuleAssembler.getExpectedGroupByCount(),
+                rightRuleAssembler.getExpectedGroupByCount()), finishedExpressions, variables, primaryPatterns,
+                dependentExpressionMap);
     }
 
 }
