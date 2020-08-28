@@ -142,6 +142,10 @@
         <artifactId>jaxb2-maven-plugin</artifactId>
         <configuration>
           <sources>
+            <!--
+              The XSD generated in this module contains only its types and thus is usable only for the solver but not for
+              the benchmark configuration XML.
+            -->
             <source>${project.build.sourceDirectory}/org/optaplanner/core/config/solver</source>
           </sources>
         </configuration>
