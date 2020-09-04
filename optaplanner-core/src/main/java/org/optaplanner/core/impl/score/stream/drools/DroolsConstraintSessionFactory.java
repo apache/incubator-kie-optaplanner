@@ -26,6 +26,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import java.util.function.Function;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -108,18 +109,23 @@ public final class DroolsConstraintSessionFactory<Solution_, Score_ extends Scor
         if (expectedTypes.length == 0) {
             throw new IllegalStateException("Impossible: there are no 0-cardinality constraint streams.");
         }
-        List<Object> ungroupedJustificationList = justificationList.stream()
-                .flatMap(o -> {
-                    if (!(o instanceof GroupKey)) {
-                        return Stream.of(o);
-                    }
-                    Object ungrouped = ((GroupKey) o).getKey();
+        // Send all groupKey instances to the beginning of the justification list as we can not rely on Drools putting
+        // them there for us.
+        Predicate<Object> isGroupKey = o -> o instanceof GroupKey;
+        Stream<Object> groupKeyValues = justificationList.stream()
+                .filter(isGroupKey)
+                .flatMap(groupKey -> {
+                    Object ungrouped = ((GroupKey) groupKey).getKey();
                     if (ungrouped instanceof FactTuple) {
                         FactTuple factTuple = (FactTuple) ungrouped;
                         return factTuple.asList().stream();
                     }
                     return Stream.of(ungrouped);
-                }).collect(Collectors.toList());
+                });
+        Stream<Object> otherValues = justificationList.stream()
+                .filter(o -> !isGroupKey.test(o));
+        List<Object> ungroupedJustificationList = Stream.concat(groupKeyValues, otherValues)
+                .collect(Collectors.toList());
         Object[] matching = new Object[expectedTypes.length];
         // First process non-Object matches, as those are the most descriptive.
         for (int i = 0; i < expectedTypes.length; i++) {
