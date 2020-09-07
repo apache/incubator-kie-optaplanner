@@ -22,6 +22,7 @@
     <maven.compiler.target>1.8</maven.compiler.target>
     <maven.compiler.source>1.8</maven.compiler.source>
     <surefire-plugin.version>2.22.2</surefire-plugin.version>
+    <deploy-plugin.version>2.8.2</deploy-plugin.version>
     <version.source.plugin>3.0.1</version.source.plugin>
   </properties>
 
@@ -195,5 +196,27 @@
       </plugin>
     </plugins>
   </build>
+
+  <profiles>
+    <profile> <!-- This is an example. Don't deploy it into Maven. -->
+      <id>onlyDeployWhenProductized</id>
+      <activation>
+        <property>
+          <name>!productized</name>
+        </property>
+      </activation>
+      <build>
+        <plugins>
+          <plugin>
+            <artifactId>maven-deploy-plugin</artifactId>
+            <version>${deploy-plugin.version}</version>
+            <configuration>
+              <skip>true</skip>
+            </configuration>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+  </profiles>
 
 </project>
