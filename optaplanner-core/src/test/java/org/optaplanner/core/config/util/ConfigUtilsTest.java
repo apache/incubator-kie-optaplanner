@@ -97,7 +97,7 @@ public class ConfigUtilsTest {
         Logger logger = LoggerFactory.getLogger(this.getClass());
         int resolvedPoolsSize = ConfigUtils.resolvePoolSize("poolSize", "availableProcessorCount-1", logger, "PROP", "PROP2");
         // This depends on the computer you're using.
-        // The assertion server the purpose of verifying the JavaScript logistics, not the actual value.
+        // The assertion serves the purpose of verifying the JavaScript logistics, not the actual value.
         assertThat(resolvedPoolsSize).isGreaterThanOrEqualTo(1);
     }
 
