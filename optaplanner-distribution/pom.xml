@@ -46,6 +46,11 @@
               </dependencySourceIncludes>
               <additionalDependencies>
                 <additionalDependency>
+                  <groupId>org.mozilla</groupId>
+                  <artifactId>rhino</artifactId>
+                  <version>${version.org.mozilla.rhino}</version>
+                </additionalDependency>
+                <additionalDependency>
                   <groupId>org.hibernate</groupId>
                   <artifactId>hibernate-core</artifactId>
                   <version>${version.org.hibernate}</version>
