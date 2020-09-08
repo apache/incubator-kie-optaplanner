@@ -16,6 +16,13 @@
 
 package org.optaplanner.core.impl.score.stream.drools.common.rules;
 
+import static java.util.Collections.emptyMap;
+import static java.util.Collections.singletonList;
+import static org.drools.model.DSL.accFunction;
+import static org.drools.model.DSL.from;
+import static org.drools.model.DSL.groupBy;
+import static org.drools.model.PatternDSL.pattern;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -28,13 +35,6 @@ import org.drools.model.view.ViewItem;
 import org.optaplanner.core.api.score.stream.bi.BiConstraintCollector;
 import org.optaplanner.core.impl.score.stream.drools.bi.DroolsBiAccumulateFunction;
 import org.optaplanner.core.impl.score.stream.drools.common.BiTuple;
-
-import static java.util.Collections.emptyMap;
-import static java.util.Collections.singletonList;
-import static org.drools.model.DSL.accFunction;
-import static org.drools.model.DSL.from;
-import static org.drools.model.DSL.groupBy;
-import static org.drools.model.PatternDSL.pattern;
 
 final class BiGroupBy2Map2CollectFastMutator<A, B, NewA, NewB, NewC, NewD> extends AbstractBiGroupByMutator {
 
