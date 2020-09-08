@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -206,9 +206,8 @@ public class PartitionedSearchPhaseConfig extends PhaseConfig<PartitionedSearchP
         } else if (runnablePartThreadLimit.equals(ACTIVE_THREAD_COUNT_UNLIMITED)) {
             resolvedActiveThreadCount = null;
         } else {
-            resolvedActiveThreadCount = ConfigUtils.resolveThreadPoolSizeScript(
-                    "runnablePartThreadLimit", runnablePartThreadLimit, ACTIVE_THREAD_COUNT_AUTO,
-                    ACTIVE_THREAD_COUNT_UNLIMITED);
+            resolvedActiveThreadCount = ConfigUtils.resolvePoolSize("runnablePartThreadLimit", runnablePartThreadLimit,
+                    logger, ACTIVE_THREAD_COUNT_AUTO, ACTIVE_THREAD_COUNT_UNLIMITED);
             if (resolvedActiveThreadCount < 1) {
                 throw new IllegalArgumentException("The runnablePartThreadLimit (" + runnablePartThreadLimit
                         + ") resulted in a resolvedActiveThreadCount (" + resolvedActiveThreadCount

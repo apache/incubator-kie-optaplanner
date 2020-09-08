@@ -1,5 +1,5 @@
 /*
- * Copyright 2011 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -795,8 +795,8 @@ public class PlannerBenchmarkConfig {
         } else if (parallelBenchmarkCount.equals(PARALLEL_BENCHMARK_COUNT_AUTO)) {
             resolvedParallelBenchmarkCount = resolveParallelBenchmarkCountAutomatically(availableProcessorCount);
         } else {
-            resolvedParallelBenchmarkCount = ConfigUtils.resolveThreadPoolSizeScript(
-                    "parallelBenchmarkCount", parallelBenchmarkCount, PARALLEL_BENCHMARK_COUNT_AUTO);
+            resolvedParallelBenchmarkCount = ConfigUtils.resolvePoolSize("parallelBenchmarkCount",
+                    parallelBenchmarkCount, logger, PARALLEL_BENCHMARK_COUNT_AUTO);
         }
         if (resolvedParallelBenchmarkCount < 1) {
             throw new IllegalArgumentException("The parallelBenchmarkCount (" + parallelBenchmarkCount

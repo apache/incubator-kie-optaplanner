@@ -33,6 +33,7 @@
     <jacoco.agent.argLine/>
     <!-- TODO https://issues.redhat.com/browse/PLANNER-2042 -->
     <spotbugs.failOnViolation>false</spotbugs.failOnViolation>
+    <version.org.mozilla.rhino>1.7.13</version.org.mozilla.rhino>
     <version.org.mockito>3.1.0</version.org.mockito>
     <version.com.example.optaplanner-school-timetabling-quickstart>0.1.0-SNAPSHOT</version.com.example.optaplanner-school-timetabling-quickstart>
   </properties>
@@ -103,6 +104,12 @@
         <artifactId>javax.json</artifactId>
         <!-- Old version until this issue is resolved: https://github.com/ImmobilienScout24/illegal-transitive-dependency-check/issues/30 -->
         <version>1.0.4</version>
+      </dependency>
+      <dependency> <!-- For (deprecated) JavaScript support. -->
+        <groupId>org.mozilla</groupId>
+        <artifactId>rhino</artifactId>
+        <version>${version.org.mozilla.rhino}</version>
+        <scope>provided</scope>
       </dependency>
       <dependency>
         <groupId>com.example</groupId>

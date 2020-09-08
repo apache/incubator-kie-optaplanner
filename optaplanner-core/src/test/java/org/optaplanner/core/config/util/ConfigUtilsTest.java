@@ -27,6 +27,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.junit.jupiter.api.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class ConfigUtilsTest {
 
@@ -81,6 +83,22 @@ public class ConfigUtilsTest {
     @Test
     public void ceilDivideByZero() {
         assertThatExceptionOfType(ArithmeticException.class).isThrownBy(() -> ConfigUtils.ceilDivide(20, -0));
+    }
+
+    @Test
+    public void resolvePoolSizeNumeric() {
+        int resolvedPoolsSize = ConfigUtils.resolvePoolSize("poolSize", "8", null);
+        assertThat(resolvedPoolsSize).isEqualTo(8);
+    }
+
+    @Deprecated
+    @Test
+    public void resolvePoolSizeExpression() {
+        Logger logger = LoggerFactory.getLogger(this.getClass());
+        int resolvedPoolsSize = ConfigUtils.resolvePoolSize("poolSize", "availableProcessorCount-1", logger, "PROP", "PROP2");
+        // This depends on the computer you're using.
+        // The assertion server the purpose of verifying the JavaScript logistics, not the actual value.
+        assertThat(resolvedPoolsSize).isGreaterThanOrEqualTo(1);
     }
 
     @Test

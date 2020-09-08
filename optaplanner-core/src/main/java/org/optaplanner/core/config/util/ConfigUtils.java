@@ -1,5 +1,5 @@
 /*
- * Copyright 2011 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -49,9 +49,14 @@ import org.optaplanner.core.impl.domain.common.AlphabeticMemberComparator;
 import org.optaplanner.core.impl.domain.common.ReflectionHelper;
 import org.optaplanner.core.impl.domain.common.accessor.MemberAccessor;
 import org.optaplanner.core.impl.domain.common.accessor.MemberAccessorFactory;
+import org.slf4j.Logger;
 
 public class ConfigUtils {
 
+    /**
+     * Name of the variable that represents {@link Runtime#availableProcessors()}.
+     */
+    public static final String AVAILABLE_PROCESSOR_COUNT = "availableProcessorCount";
     private static final AlphabeticMemberComparator alphabeticMemberComparator = new AlphabeticMemberComparator();
 
     public static <T> T newInstance(Object bean, String propertyName, Class<T> clazz) {
@@ -261,19 +266,23 @@ public class ConfigUtils {
         return (dividend / divisor) + correction;
     }
 
-    /**
-     * Name of the variable that represents {@link Runtime#availableProcessors()}.
-     */
-    public static final String AVAILABLE_PROCESSOR_COUNT = "availableProcessorCount";
-
-    public static int resolveThreadPoolSizeScript(String propertyName, String script, String... magicValues) {
-        final String scriptLanguage = "JavaScript";
-        ScriptEngine scriptEngine = new ScriptEngineManager().getEngineByName(scriptLanguage);
-        if (scriptEngine == null) {
-            throw new IllegalStateException("The " + propertyName + " (" + script
-                    + ") could not resolve because the JVM doesn't support scriptLanguage (" + scriptLanguage + ").\n"
-                    + "Maybe try running in a normal JVM.");
+    private static int resolvePoolSizePostJdk15(String propertyName, String script) {
+        try {
+            // Ensure that there are no CNFEs when Rhino not on classpath.
+            Class.forName("org.mozilla.javascript.ContextFactory", false,
+                    Thread.currentThread().getContextClassLoader());
+        } catch (ClassNotFoundException e) {
+            throw new IllegalArgumentException("The " + propertyName + " (" + script + ") contains JavaScript, " +
+                    "yet no JavaScript support found.\n" +
+                    "Maybe don't use JavaScript code here, it is deprecated.\n" +
+                    "Otherwise add a org.mozilla:rhino dependency on your classpath.", e);
         }
+        // Only load Rhino now that we know that the imports can be satisfied.
+        return new RhinoSupport(propertyName, script).getAsInt();
+    }
+
+    private static int resolvePoolSizePreJdk15(ScriptEngine scriptEngine, String propertyName, String script,
+            String... magicValues) {
         scriptEngine.put(AVAILABLE_PROCESSOR_COUNT, Runtime.getRuntime().availableProcessors());
         Object scriptResult;
         try {
@@ -281,15 +290,31 @@ public class ConfigUtils {
         } catch (ScriptException e) {
             throw new IllegalArgumentException("The " + propertyName + " (" + script
                     + ") is not in magicValues (" + Arrays.toString(magicValues)
-                    + ") and cannot be parsed in " + scriptLanguage
-                    + " with the variables ([" + AVAILABLE_PROCESSOR_COUNT + "]).", e);
+                    + ") and cannot be parsed in JavaScript with the variables ([" + AVAILABLE_PROCESSOR_COUNT + "]).", e);
         }
         if (!(scriptResult instanceof Number)) {
             throw new IllegalArgumentException("The " + propertyName + " (" + script
-                    + ") is resolved to scriptResult (" + scriptResult + ") in " + scriptLanguage
-                    + " but is not a " + Number.class.getSimpleName() + ".");
+                    + ") is resolved to scriptResult (" + scriptResult + ") in JavaScript but is not a " +
+                    Number.class.getSimpleName() + ".");
         }
         return ((Number) scriptResult).intValue();
+    }
+
+    public static int resolvePoolSize(String propertyName, String script, Logger logger, String... magicValues) {
+        try {
+            return Integer.parseInt(script);
+        } catch (NumberFormatException e) {
+            // Fall through to JavaScript.
+        }
+        logger.warn("Property (" + propertyName + ") resolved to neither (" + Arrays.toString(magicValues) +
+                ") nor a number, falling back to JavaScript.\n" +
+                "Note: JavaScript support is deprecated and will be removed in OptaPlanner 8.");
+        final String scriptLanguage = "JavaScript";
+        ScriptEngine scriptEngine = new ScriptEngineManager().getEngineByName(scriptLanguage);
+        if (scriptEngine == null) {
+            return resolvePoolSizePostJdk15(propertyName, script);
+        }
+        return resolvePoolSizePreJdk15(scriptEngine, propertyName, script, magicValues);
     }
 
     // ************************************************************************
