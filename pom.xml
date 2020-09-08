@@ -109,7 +109,8 @@
         <groupId>org.mozilla</groupId>
         <artifactId>rhino</artifactId>
         <version>${version.org.mozilla.rhino}</version>
-        <scope>provided</scope>
+        <scope>compile</scope>
+        <optional>true</optional>
       </dependency>
       <dependency>
         <groupId>com.example</groupId>
