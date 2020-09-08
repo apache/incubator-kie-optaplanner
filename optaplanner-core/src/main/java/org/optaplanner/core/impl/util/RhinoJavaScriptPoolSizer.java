@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.optaplanner.core.config.util;
+package org.optaplanner.core.impl.util;
 
 import java.util.function.IntSupplier;
 
@@ -22,17 +22,18 @@ import org.mozilla.javascript.Context;
 import org.mozilla.javascript.ContextFactory;
 import org.mozilla.javascript.RhinoException;
 import org.mozilla.javascript.Scriptable;
+import org.optaplanner.core.config.util.ConfigUtils;
 
 /**
  * This class exists separately, as Rhino is an optional dependency and the imports would have immediately triggered
  * {@link ClassNotFoundException}s if present on {@link ConfigUtils} directly.
  */
-final class RhinoSupport implements IntSupplier {
+public final class RhinoJavaScriptPoolSizer implements IntSupplier {
 
     private final String propertyName;
     private final String script;
 
-    public RhinoSupport(String propertyName, String script) {
+    public RhinoJavaScriptPoolSizer(String propertyName, String script) {
         this.propertyName = propertyName;
         this.script = script;
     }

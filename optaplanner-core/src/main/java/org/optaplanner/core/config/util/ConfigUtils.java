@@ -49,6 +49,7 @@ import org.optaplanner.core.impl.domain.common.AlphabeticMemberComparator;
 import org.optaplanner.core.impl.domain.common.ReflectionHelper;
 import org.optaplanner.core.impl.domain.common.accessor.MemberAccessor;
 import org.optaplanner.core.impl.domain.common.accessor.MemberAccessorFactory;
+import org.optaplanner.core.impl.util.RhinoJavaScriptPoolSizer;
 import org.slf4j.Logger;
 
 public class ConfigUtils {
@@ -278,7 +279,7 @@ public class ConfigUtils {
                     "Otherwise add a org.mozilla:rhino dependency on your classpath.", e);
         }
         // Only load Rhino now that we know that the imports can be satisfied.
-        return new RhinoSupport(propertyName, script).getAsInt();
+        return new RhinoJavaScriptPoolSizer(propertyName, script).getAsInt();
     }
 
     private static int resolvePoolSizePreJdk15(ScriptEngine scriptEngine, String propertyName, String script,
