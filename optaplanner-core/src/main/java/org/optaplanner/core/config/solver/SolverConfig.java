@@ -595,8 +595,8 @@ public class SolverConfig extends AbstractConfig<SolverConfig> {
                 return null;
             }
         } else {
-            resolvedMoveThreadCount = ConfigUtils.resolveThreadPoolSizeScript(
-                    "moveThreadCount", moveThreadCount, MOVE_THREAD_COUNT_NONE, MOVE_THREAD_COUNT_AUTO);
+            resolvedMoveThreadCount = ConfigUtils.resolvePoolSize("moveThreadCount", moveThreadCount, logger,
+                    MOVE_THREAD_COUNT_NONE, MOVE_THREAD_COUNT_AUTO);
         }
         if (resolvedMoveThreadCount < 1) {
             throw new IllegalArgumentException("The moveThreadCount (" + moveThreadCount
