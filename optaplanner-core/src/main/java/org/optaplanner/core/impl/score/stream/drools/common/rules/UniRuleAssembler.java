@@ -114,8 +114,13 @@ final class UniRuleAssembler extends AbstractRuleAssembler<Predicate> {
     @Override
     protected AbstractGroupByMutator new2Map2CollectGroupByMutator(Object mappingA, Object mappingB, Object collectorC,
             Object collectorD) {
-        return new UniGroupBy2Map2CollectMutator<>((Function) mappingA, (Function) mappingB,
-                (UniConstraintCollector) collectorC, (UniConstraintCollector) collectorD);
+        if (getExpectedGroupByCount() == 1) {
+            return new UniGroupBy2Map2CollectFastMutator<>((Function) mappingA, (Function) mappingB,
+                    (UniConstraintCollector) collectorC, (UniConstraintCollector) collectorD);
+        } else {
+            return new UniGroupBy2Map2CollectMutator<>((Function) mappingA, (Function) mappingB,
+                    (UniConstraintCollector) collectorC, (UniConstraintCollector) collectorD);
+        }
     }
 
     @Override

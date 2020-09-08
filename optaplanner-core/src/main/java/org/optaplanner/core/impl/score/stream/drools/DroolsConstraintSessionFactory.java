@@ -123,7 +123,14 @@ public final class DroolsConstraintSessionFactory<Solution_, Score_ extends Scor
                     return Stream.of(ungrouped);
                 });
         Stream<Object> otherValues = justificationList.stream()
-                .filter(o -> !isGroupKey.test(o));
+                .filter(o -> !isGroupKey.test(o))
+                .flatMap(o -> {
+                    if (o instanceof Object[]) { // Double accumulates return results as arrays of two objects.
+                        return Arrays.stream((Object[]) o);
+                    } else {
+                        return Stream.of(o);
+                    }
+                });
         List<Object> ungroupedJustificationList = Stream.concat(groupKeyValues, otherValues)
                 .collect(Collectors.toList());
         Object[] matching = new Object[expectedTypes.length];
