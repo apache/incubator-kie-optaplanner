@@ -30,7 +30,6 @@ import java.util.function.Function;
 
 import org.drools.model.PatternDSL;
 import org.drools.model.Variable;
-import org.drools.model.view.ExprViewItem;
 import org.drools.model.view.ViewItem;
 import org.optaplanner.core.api.score.stream.uni.UniConstraintCollector;
 import org.optaplanner.core.impl.score.stream.drools.common.BiTuple;
@@ -55,11 +54,10 @@ final class UniGroupBy2Map2CollectFastMutator<A, NewA, NewB, NewC, NewD> extends
     public AbstractRuleAssembler apply(AbstractRuleAssembler ruleAssembler) {
         ruleAssembler.applyFilterToLastPrimaryPattern();
         Variable<A> input = ruleAssembler.getVariable(0);
-        Variable<BiTuple<NewA, NewB>> groupKey =
-                (Variable<BiTuple<NewA, NewB>>) ruleAssembler.createVariable(BiTuple.class, "groupKey");
+        Variable<BiTuple<NewA, NewB>> groupKey = ruleAssembler.createVariable(BiTuple.class, "groupKey");
         Variable<NewC> outputC = ruleAssembler.createVariable("outputC");
         Variable<NewD> outputD = ruleAssembler.createVariable("outputD");
-        ExprViewItem accumulatePattern = groupBy(getInnerAccumulatePattern(ruleAssembler), input,
+        ViewItem accumulatePattern = groupBy(getInnerAccumulatePattern(ruleAssembler), input,
                 groupKey, a -> new BiTuple<>(groupKeyMappingA.apply(a), groupKeyMappingB.apply(a)),
                 accFunction(() -> new DroolsUniAccumulateFunction<>(collectorC)).as(outputC),
                 accFunction(() -> new DroolsUniAccumulateFunction<>(collectorD)).as(outputD));
@@ -67,15 +65,16 @@ final class UniGroupBy2Map2CollectFastMutator<A, NewA, NewB, NewC, NewD> extends
         newFinishedExpressions.add(accumulatePattern); // The last pattern is added here.
         Variable<NewA> newA = ruleAssembler.createVariable("newA", from(groupKey, k -> k.a));
         Variable<NewB> newB = ruleAssembler.createVariable("newB", from(groupKey, k -> k.b));
+        Variable<NewC> newC = ruleAssembler.createVariable("newC", from(outputC));
+        Variable<NewD> newD = ruleAssembler.createVariable("newD", from(outputD));
         PatternDSL.PatternDef<NewA> newAPattern = pattern(newA);
         newFinishedExpressions.add(newAPattern);
         PatternDSL.PatternDef<NewB> newBPattern = pattern(newB);
         newFinishedExpressions.add(newBPattern);
-        PatternDSL.PatternDef<NewC> newCPattern = pattern(outputC);
+        PatternDSL.PatternDef<NewC> newCPattern = pattern(newC);
         newFinishedExpressions.add(newCPattern);
-        PatternDSL.PatternDef<NewD> newPrimaryPattern = pattern(outputD);
-        return new QuadRuleAssembler(ruleAssembler, ruleAssembler.getExpectedGroupByCount(),
-                newFinishedExpressions, Arrays.asList(newA, newB, outputC, outputD), singletonList(newPrimaryPattern),
-                emptyMap());
+        PatternDSL.PatternDef<NewD> newPrimaryPattern = pattern(newD);
+        return new QuadRuleAssembler(ruleAssembler, ruleAssembler.getExpectedGroupByCount(), newFinishedExpressions,
+                Arrays.asList(newA, newB, newC, newD), singletonList(newPrimaryPattern), emptyMap());
     }
 }
