@@ -14,139 +14,32 @@
  * limitations under the License.
  */
 
-package org.optaplanner.core.api.score.stream;
+package org.optaplanner.core.impl.score.stream.common;
 
 import java.util.function.BiFunction;
-import java.util.function.BiPredicate;
 import java.util.function.Function;
 
-import org.optaplanner.core.api.function.PentaPredicate;
 import org.optaplanner.core.api.function.QuadFunction;
-import org.optaplanner.core.api.function.QuadPredicate;
 import org.optaplanner.core.api.function.TriFunction;
-import org.optaplanner.core.api.function.TriPredicate;
-import org.optaplanner.core.api.score.stream.bi.BiConstraintStream;
+import org.optaplanner.core.api.score.stream.Joiners;
 import org.optaplanner.core.api.score.stream.bi.BiJoiner;
 import org.optaplanner.core.api.score.stream.penta.PentaJoiner;
 import org.optaplanner.core.api.score.stream.quad.QuadJoiner;
 import org.optaplanner.core.api.score.stream.tri.TriJoiner;
-import org.optaplanner.core.api.score.stream.uni.UniConstraintStream;
-import org.optaplanner.core.impl.score.stream.bi.FilteringBiJoiner;
-import org.optaplanner.core.impl.score.stream.bi.SingleBiJoiner;
-import org.optaplanner.core.impl.score.stream.common.IntervalJoiners;
-import org.optaplanner.core.impl.score.stream.common.JoinerType;
-import org.optaplanner.core.impl.score.stream.penta.FilteringPentaJoiner;
-import org.optaplanner.core.impl.score.stream.penta.SinglePentaJoiner;
-import org.optaplanner.core.impl.score.stream.quad.FilteringQuadJoiner;
-import org.optaplanner.core.impl.score.stream.quad.SingleQuadJoiner;
-import org.optaplanner.core.impl.score.stream.tri.FilteringTriJoiner;
-import org.optaplanner.core.impl.score.stream.tri.SingleTriJoiner;
+import org.optaplanner.core.impl.score.stream.bi.AbstractBiJoiner;
+import org.optaplanner.core.impl.score.stream.penta.AbstractPentaJoiner;
+import org.optaplanner.core.impl.score.stream.quad.AbstractQuadJoiner;
+import org.optaplanner.core.impl.score.stream.tri.AbstractTriJoiner;
 
 /**
  * Creates an {@link BiJoiner}, {@link TriJoiner}, ... instance
- * for use in {@link UniConstraintStream#join(Class, BiJoiner)}, ...
+ * for data types that can be described as intervals (for instance,
+ * time slots and numeric ranges). Based on Allen's Interval Algebra.
+ * See https://en.wikipedia.org/wiki/Allen%27s_interval_algebra
  */
-public final class Joiners {
+public class IntervalJoiners {
 
-    // TODO Support using non-natural comparators, such as lessThan(leftMapping, rightMapping, comparator).
-
-    // ************************************************************************
-    // BiJoiner
-    // ************************************************************************
-
-    public static <A> BiJoiner<A, A> equal() {
-        return equal(Function.identity());
-    }
-
-    public static <A, Property_> BiJoiner<A, A> equal(Function<A, Property_> mapping) {
-        return equal(mapping, mapping);
-    }
-
-    public static <A, B, Property_> BiJoiner<A, B> equal(Function<A, Property_> leftMapping,
-            Function<B, Property_> rightMapping) {
-        return new SingleBiJoiner<>(leftMapping, JoinerType.EQUAL, rightMapping);
-    }
-
-    public static <A, Property_ extends Comparable<Property_>> BiJoiner<A, A> lessThan(Function<A, Property_> mapping) {
-        return lessThan(mapping, mapping);
-    }
-
-    public static <A, B, Property_ extends Comparable<Property_>> BiJoiner<A, B> lessThan(
-            Function<A, Property_> leftMapping, Function<B, Property_> rightMapping) {
-        return new SingleBiJoiner<>(leftMapping, JoinerType.LESS_THAN, rightMapping);
-    }
-
-    public static <A, Property_ extends Comparable<Property_>> BiJoiner<A, A> lessThanOrEqual(
-            Function<A, Property_> mapping) {
-        return lessThanOrEqual(mapping, mapping);
-    }
-
-    public static <A, B, Property_ extends Comparable<Property_>> BiJoiner<A, B> lessThanOrEqual(
-            Function<A, Property_> leftMapping, Function<B, Property_> rightMapping) {
-        return new SingleBiJoiner<>(leftMapping, JoinerType.LESS_THAN_OR_EQUAL, rightMapping);
-    }
-
-    public static <A, Property_ extends Comparable<Property_>> BiJoiner<A, A> greaterThan(
-            Function<A, Property_> mapping) {
-        return greaterThan(mapping, mapping);
-    }
-
-    public static <A, B, Property_ extends Comparable<Property_>> BiJoiner<A, B> greaterThan(
-            Function<A, Property_> leftMapping, Function<B, Property_> rightMapping) {
-        return new SingleBiJoiner<>(leftMapping, JoinerType.GREATER_THAN, rightMapping);
-    }
-
-    public static <A, Property_ extends Comparable<Property_>> BiJoiner<A, A> greaterThanOrEqual(
-            Function<A, Property_> mapping) {
-        return greaterThanOrEqual(mapping, mapping);
-    }
-
-    public static <A, B, Property_ extends Comparable<Property_>> BiJoiner<A, B> greaterThanOrEqual(
-            Function<A, Property_> leftMapping, Function<B, Property_> rightMapping) {
-        return new SingleBiJoiner<>(leftMapping, JoinerType.GREATER_THAN_OR_EQUAL, rightMapping);
-    }
-
-    /**
-     * Applies a filter to the joined tuple, with the semantics of {@link BiConstraintStream#filter(BiPredicate)}.
-     *
-     * @param filter never null, filter to apply
-     * @param <A> type of the first fact in the tuple
-     * @param <B> type of the second fact in the tuple
-     * @return never null
-     */
-    public static <A, B> BiJoiner<A, B> filtering(BiPredicate<A, B> filter) {
-        return new FilteringBiJoiner<>(filter);
-    }
-
-    /*
-     * // TODO implement these joiners
-     * public static <A, B, Property_> BiJoiner<A, B> containing(
-     * Function<A, ? extends Collection<Property_>> leftMapping, Function <B, Property_> rightMapping) {
-     * return new SingleBiJoiner<>(leftMapping, JoinerType.CONTAINING, rightMapping);
-     * }
-     *
-     * // TODO containedBy (inverse contains relationship)
-     *
-     * public static <A, Property_> BiJoiner<A, A> intersecting(
-     * Function<A, ? extends Collection<Property_>> mapping) {
-     * return intersecting(mapping, mapping);
-     * }
-     *
-     * public static <A, B, Property_> BiJoiner<A, B> intersecting(
-     * Function<A, ? extends Collection<Property_>> leftMapping,
-     * Function <B, ? extends Collection<Property_>> rightMapping) {
-     * return new SingleBiJoiner<>(leftMapping, JoinerType.INTERSECTING, rightMapping);
-     * }
-     *
-     * public static <A, Property_> BiJoiner<A, A> disjoint(Function<A, ? extends Collection<Property_>> mapping) {
-     * return disjoint(mapping, mapping);
-     * }
-     *
-     * public static <A, B, Property_> BiJoiner<A, B> disjoint(Function<A, ? extends Collection<Property_>> leftMapping,
-     * Function <B, ? extends Collection<Property_>> rightMapping) {
-     * return new SingleBiJoiner<>(leftMapping, JoinerType.DISJOINT, rightMapping);
-     * }
-     */
+    // BiJoiners
 
     /**
      * For pairs of intervals [a,b) and [c,d), returns only those
@@ -175,7 +68,8 @@ public final class Joiners {
             Function<A, Property_> leftEndMapping,
             Function<B, Property_> rightStartMapping,
             Function<B, Property_> rightEndMapping) {
-        return IntervalJoiners.overlaps(leftStartMapping, leftEndMapping, rightStartMapping, rightEndMapping);
+        return AbstractBiJoiner.merge(Joiners.lessThan(leftStartMapping, rightEndMapping),
+                Joiners.greaterThan(leftEndMapping, rightStartMapping));
     }
 
     /**
@@ -195,7 +89,7 @@ public final class Joiners {
     public static <A, Property_ extends Comparable<Property_>> BiJoiner<A, A> overlaps(
             Function<A, Property_> startMapping,
             Function<A, Property_> endMapping) {
-        return IntervalJoiners.overlaps(startMapping, endMapping);
+        return overlaps(startMapping, endMapping, startMapping, endMapping);
     }
 
     /**
@@ -223,7 +117,8 @@ public final class Joiners {
             Function<A, Property_> leftEndMapping,
             Function<B, Property_> rightStartMapping,
             Function<B, Property_> rightEndMapping) {
-        return IntervalJoiners.during(leftStartMapping, leftEndMapping, rightStartMapping, rightEndMapping);
+        return AbstractBiJoiner.merge(Joiners.lessThanOrEqual(leftStartMapping, rightStartMapping),
+                Joiners.greaterThanOrEqual(leftEndMapping, rightEndMapping));
     }
 
     /**
@@ -243,42 +138,10 @@ public final class Joiners {
     public static <A, Property_ extends Comparable<Property_>> BiJoiner<A, A> during(
             Function<A, Property_> startMapping,
             Function<A, Property_> endMapping) {
-        return IntervalJoiners.during(startMapping, endMapping);
+        return during(startMapping, endMapping, startMapping, endMapping);
     }
 
-    // ************************************************************************
-    // TriJoiner
-    // ************************************************************************
-
-    public static <A, B, C, Property_> TriJoiner<A, B, C> equal(BiFunction<A, B, Property_> leftMapping,
-            Function<C, Property_> rightMapping) {
-        return new SingleTriJoiner<>(leftMapping, JoinerType.EQUAL, rightMapping);
-    }
-
-    public static <A, B, C, Property_ extends Comparable<Property_>> TriJoiner<A, B, C> lessThan(
-            BiFunction<A, B, Property_> leftMapping, Function<C, Property_> rightMapping) {
-        return new SingleTriJoiner<>(leftMapping, JoinerType.LESS_THAN, rightMapping);
-    }
-
-    public static <A, B, C, Property_ extends Comparable<Property_>> TriJoiner<A, B, C> lessThanOrEqual(
-            BiFunction<A, B, Property_> leftMapping, Function<C, Property_> rightMapping) {
-        return new SingleTriJoiner<>(leftMapping, JoinerType.LESS_THAN_OR_EQUAL, rightMapping);
-    }
-
-    public static <A, B, C, Property_ extends Comparable<Property_>> TriJoiner<A, B, C> greaterThan(
-            BiFunction<A, B, Property_> leftMapping, Function<C, Property_> rightMapping) {
-        return new SingleTriJoiner<>(leftMapping, JoinerType.GREATER_THAN, rightMapping);
-    }
-
-    public static <A, B, C, Property_ extends Comparable<Property_>> TriJoiner<A, B, C> greaterThanOrEqual(
-            BiFunction<A, B, Property_> leftMapping, Function<C, Property_> rightMapping) {
-        return new SingleTriJoiner<>(leftMapping, JoinerType.GREATER_THAN_OR_EQUAL, rightMapping);
-    }
-
-    public static <A, B, C> TriJoiner<A, B, C> filtering(TriPredicate<A, B, C> filter) {
-        return new FilteringTriJoiner<>(filter);
-    }
-
+    // TriJoiners
     /**
      * Like {@link #overlaps(Function, Function, Function, Function)}, but for
      * TriConstraintStream.
@@ -302,7 +165,8 @@ public final class Joiners {
             BiFunction<A, B, Property_> leftEndMapping,
             Function<C, Property_> rightStartMapping,
             Function<C, Property_> rightEndMapping) {
-        return IntervalJoiners.overlaps(leftStartMapping, leftEndMapping, rightStartMapping, rightEndMapping);
+        return AbstractTriJoiner.merge(Joiners.lessThan(leftStartMapping, rightEndMapping),
+                Joiners.greaterThan(leftEndMapping, rightStartMapping));
     }
 
     /**
@@ -327,42 +191,11 @@ public final class Joiners {
             BiFunction<A, B, Property_> leftEndMapping,
             Function<C, Property_> rightStartMapping,
             Function<C, Property_> rightEndMapping) {
-        return IntervalJoiners.during(leftStartMapping, leftEndMapping, rightStartMapping, rightEndMapping);
+        return AbstractTriJoiner.merge(Joiners.lessThanOrEqual(leftStartMapping, rightStartMapping),
+                Joiners.greaterThanOrEqual(leftEndMapping, rightEndMapping));
     }
 
-    // ************************************************************************
-    // QuadJoiner
-    // ************************************************************************
-
-    public static <A, B, C, D, Property_> QuadJoiner<A, B, C, D> equal(
-            TriFunction<A, B, C, Property_> leftMapping, Function<D, Property_> rightMapping) {
-        return new SingleQuadJoiner<>(leftMapping, JoinerType.EQUAL, rightMapping);
-    }
-
-    public static <A, B, C, D, Property_ extends Comparable<Property_>> QuadJoiner<A, B, C, D> lessThan(
-            TriFunction<A, B, C, Property_> leftMapping, Function<D, Property_> rightMapping) {
-        return new SingleQuadJoiner<>(leftMapping, JoinerType.LESS_THAN, rightMapping);
-    }
-
-    public static <A, B, C, D, Property_ extends Comparable<Property_>> QuadJoiner<A, B, C, D> lessThanOrEqual(
-            TriFunction<A, B, C, Property_> leftMapping, Function<D, Property_> rightMapping) {
-        return new SingleQuadJoiner<>(leftMapping, JoinerType.LESS_THAN_OR_EQUAL, rightMapping);
-    }
-
-    public static <A, B, C, D, Property_ extends Comparable<Property_>> QuadJoiner<A, B, C, D> greaterThan(
-            TriFunction<A, B, C, Property_> leftMapping, Function<D, Property_> rightMapping) {
-        return new SingleQuadJoiner<>(leftMapping, JoinerType.GREATER_THAN, rightMapping);
-    }
-
-    public static <A, B, C, D, Property_ extends Comparable<Property_>> QuadJoiner<A, B, C, D> greaterThanOrEqual(
-            TriFunction<A, B, C, Property_> leftMapping, Function<D, Property_> rightMapping) {
-        return new SingleQuadJoiner<>(leftMapping, JoinerType.GREATER_THAN_OR_EQUAL, rightMapping);
-    }
-
-    public static <A, B, C, D> QuadJoiner<A, B, C, D> filtering(QuadPredicate<A, B, C, D> filter) {
-        return new FilteringQuadJoiner<>(filter);
-    }
-
+    // QuadJoiners
     /**
      * Like {@link #overlaps(Function, Function, Function, Function)}, but for
      * QuadConstraintStream.
@@ -387,7 +220,8 @@ public final class Joiners {
             TriFunction<A, B, C, Property_> leftEndMapping,
             Function<D, Property_> rightStartMapping,
             Function<D, Property_> rightEndMapping) {
-        return IntervalJoiners.overlaps(leftStartMapping, leftEndMapping, rightStartMapping, rightEndMapping);
+        return AbstractQuadJoiner.merge(Joiners.lessThan(leftStartMapping, rightEndMapping),
+                Joiners.greaterThan(leftEndMapping, rightStartMapping));
     }
 
     /**
@@ -413,42 +247,11 @@ public final class Joiners {
             TriFunction<A, B, C, Property_> leftEndMapping,
             Function<D, Property_> rightStartMapping,
             Function<D, Property_> rightEndMapping) {
-        return IntervalJoiners.during(leftStartMapping, leftEndMapping, rightStartMapping, rightEndMapping);
+        return AbstractQuadJoiner.merge(Joiners.lessThanOrEqual(leftStartMapping, rightStartMapping),
+                Joiners.greaterThanOrEqual(leftEndMapping, rightEndMapping));
     }
 
-    // ************************************************************************
-    // PentaJoiner
-    // ************************************************************************
-
-    public static <A, B, C, D, E, Property_> PentaJoiner<A, B, C, D, E> equal(
-            QuadFunction<A, B, C, D, Property_> leftMapping, Function<E, Property_> rightMapping) {
-        return new SinglePentaJoiner<>(leftMapping, JoinerType.EQUAL, rightMapping);
-    }
-
-    public static <A, B, C, D, E, Property_ extends Comparable<Property_>> PentaJoiner<A, B, C, D, E> lessThan(
-            QuadFunction<A, B, C, D, Property_> leftMapping, Function<E, Property_> rightMapping) {
-        return new SinglePentaJoiner<>(leftMapping, JoinerType.LESS_THAN, rightMapping);
-    }
-
-    public static <A, B, C, D, E, Property_ extends Comparable<Property_>> PentaJoiner<A, B, C, D, E> lessThanOrEqual(
-            QuadFunction<A, B, C, D, Property_> leftMapping, Function<E, Property_> rightMapping) {
-        return new SinglePentaJoiner<>(leftMapping, JoinerType.LESS_THAN_OR_EQUAL, rightMapping);
-    }
-
-    public static <A, B, C, D, E, Property_ extends Comparable<Property_>> PentaJoiner<A, B, C, D, E> greaterThan(
-            QuadFunction<A, B, C, D, Property_> leftMapping, Function<E, Property_> rightMapping) {
-        return new SinglePentaJoiner<>(leftMapping, JoinerType.GREATER_THAN, rightMapping);
-    }
-
-    public static <A, B, C, D, E, Property_ extends Comparable<Property_>> PentaJoiner<A, B, C, D, E> greaterThanOrEqual(
-            QuadFunction<A, B, C, D, Property_> leftMapping, Function<E, Property_> rightMapping) {
-        return new SinglePentaJoiner<>(leftMapping, JoinerType.GREATER_THAN_OR_EQUAL, rightMapping);
-    }
-
-    public static <A, B, C, D, E> PentaJoiner<A, B, C, D, E> filtering(PentaPredicate<A, B, C, D, E> filter) {
-        return new FilteringPentaJoiner<>(filter);
-    }
-
+    // PentaJoiners
     /**
      * Like {@link #overlaps(Function, Function, Function, Function)}, but for
      * PentaConstraintStream.
@@ -474,7 +277,8 @@ public final class Joiners {
             QuadFunction<A, B, C, D, Property_> leftEndMapping,
             Function<E, Property_> rightStartMapping,
             Function<E, Property_> rightEndMapping) {
-        return IntervalJoiners.overlaps(leftStartMapping, leftEndMapping, rightStartMapping, rightEndMapping);
+        return AbstractPentaJoiner.merge(Joiners.lessThan(leftStartMapping, rightEndMapping),
+                Joiners.greaterThan(leftEndMapping, rightStartMapping));
     }
 
     /**
@@ -501,10 +305,10 @@ public final class Joiners {
             QuadFunction<A, B, C, D, Property_> leftEndMapping,
             Function<E, Property_> rightStartMapping,
             Function<E, Property_> rightEndMapping) {
-        return IntervalJoiners.during(leftStartMapping, leftEndMapping, rightStartMapping, rightEndMapping);
+        return AbstractPentaJoiner.merge(Joiners.lessThanOrEqual(leftStartMapping, rightStartMapping),
+                Joiners.greaterThanOrEqual(leftEndMapping, rightEndMapping));
     }
 
-    private Joiners() {
+    private IntervalJoiners() {
     }
-
 }
