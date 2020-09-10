@@ -17,7 +17,6 @@
 package org.optaplanner.core.impl.score.director;
 
 import static java.util.Comparator.comparing;
-import static java.util.Objects.requireNonNull;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -36,6 +35,7 @@ import java.util.TreeMap;
 import java.util.function.Consumer;
 
 import org.optaplanner.core.api.domain.lookup.PlanningId;
+import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.domain.solution.cloner.SolutionCloner;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.constraint.ConstraintMatch;
@@ -172,9 +172,20 @@ public abstract class AbstractScoreDirector<Solution_, Factory_ extends Abstract
     // Complex methods
     // ************************************************************************
 
+    private void assertWorkingSolutionClassSameAsAnnotatedClass(Solution_ workingSolution) {
+        Class<Solution_> actualSolutionClass = (Class<Solution_>) Objects.requireNonNull(workingSolution).getClass();
+        Class<Solution_> expectedSolutionClass = getSolutionDescriptor().getSolutionClass();
+        if (!actualSolutionClass.equals(expectedSolutionClass)) {
+            throw new IllegalStateException("Working solution class (" + actualSolutionClass.getCanonicalName() +
+                    ") different from " + PlanningSolution.class + "-annotated class (" +
+                    expectedSolutionClass.getCanonicalName() + ").");
+        }
+    }
+
     @Override
     public void setWorkingSolution(Solution_ workingSolution) {
-        this.workingSolution = requireNonNull(workingSolution);
+        assertWorkingSolutionClassSameAsAnnotatedClass(workingSolution);
+        this.workingSolution = workingSolution;
         SolutionDescriptor<Solution_> solutionDescriptor = getSolutionDescriptor();
         workingInitScore = -solutionDescriptor.countUninitializedVariables(workingSolution);
         Collection<Object> allFacts = solutionDescriptor.getAllFacts(workingSolution);

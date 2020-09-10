@@ -34,9 +34,6 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.CyclicBarrier;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.function.BiConsumer;
-import java.util.function.Consumer;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -53,7 +50,6 @@ import org.optaplanner.core.config.solver.SolverManagerConfig;
 import org.optaplanner.core.config.solver.termination.TerminationConfig;
 import org.optaplanner.core.impl.testdata.domain.TestdataEntity;
 import org.optaplanner.core.impl.testdata.domain.TestdataSolution;
-import org.optaplanner.core.impl.testdata.domain.extended.TestdataUnannotatedExtendedSolution;
 import org.optaplanner.core.impl.testdata.util.PlannerTestUtils;
 
 public class SolverManagerTest {
@@ -177,25 +173,6 @@ public class SolverManagerTest {
         assertThat(exceptionCount.get()).isEqualTo(1);
         assertThat(solverManager.getSolverStatus(1L)).isEqualTo(NOT_SOLVING);
         assertThat(solverJob1.getSolverStatus()).isEqualTo(NOT_SOLVING);
-    }
-
-    @Test
-    @Timeout(60)
-    public void solveGenerics() throws ExecutionException, InterruptedException {
-        SolverConfig solverConfig = PlannerTestUtils
-                .buildSolverConfig(TestdataSolution.class, TestdataEntity.class);
-        SolverManager<TestdataSolution, Long> solverManager = SolverManager
-                .create(solverConfig, new SolverManagerConfig());
-
-        BiConsumer<Object, Object> exceptionHandler = (o1, o2) -> fail("Solving failed.");
-        Consumer<Object> finalBestSolutionConsumer = o -> {
-        };
-        Function<Object, TestdataUnannotatedExtendedSolution> problemFinder = o -> new TestdataUnannotatedExtendedSolution(
-                PlannerTestUtils.generateTestdataSolution("s1"));
-
-        SolverJob<TestdataSolution, Long> solverJob = solverManager.solve(1L, problemFinder, finalBestSolutionConsumer,
-                exceptionHandler);
-        solverJob.getFinalBestSolution();
     }
 
     @Disabled("Skip ahead not yet supported")

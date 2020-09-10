@@ -17,6 +17,7 @@ package org.optaplanner.core.impl.score.director.drools;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalStateException;
+import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 import static org.mockito.Mockito.withSettings;
@@ -53,11 +54,23 @@ public class DroolsScoreDirectorTest {
         assertThat(director.getIndictmentMap()).isNotNull();
     }
 
-    @SuppressWarnings("unchecked")
+    private <T> SolutionDescriptor<T> mockSolutionDescriptor(Class<T> planningSolutionClass) {
+        SolutionDescriptor<T> solutionDescriptor = mock(SolutionDescriptor.class);
+        when(solutionDescriptor.getSolutionClass()).thenReturn(planningSolutionClass);
+        return solutionDescriptor;
+    }
+
     private DroolsScoreDirectorFactory<Object> mockDroolsScoreDirectorFactory() {
-        DroolsScoreDirectorFactory<Object> factory = mock(DroolsScoreDirectorFactory.class);
+        return mockDroolsScoreDirectorFactory(Object.class);
+    }
+
+    @SuppressWarnings("unchecked")
+    private <T> DroolsScoreDirectorFactory<T> mockDroolsScoreDirectorFactory(Class<T> planningSolutionClass) {
+        DroolsScoreDirectorFactory<T> factory = mock(DroolsScoreDirectorFactory.class);
         when(factory.getScoreDefinition()).thenReturn(new SimpleScoreDefinition());
-        when(factory.getSolutionDescriptor()).thenReturn(mock(SolutionDescriptor.class));
+        doReturn(mockSolutionDescriptor(planningSolutionClass))
+                .when(factory)
+                .getSolutionDescriptor();
         when(factory.newKieSession()).thenReturn(
                 mock(KieSession.class, withSettings().extraInterfaces(RuleEventManager.class)));
         return factory;
