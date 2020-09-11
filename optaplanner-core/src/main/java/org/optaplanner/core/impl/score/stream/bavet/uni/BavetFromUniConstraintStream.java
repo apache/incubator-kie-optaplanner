@@ -45,13 +45,13 @@ public final class BavetFromUniConstraintStream<Solution_, A> extends BavetAbstr
     // ************************************************************************
 
     @Override
-    public BavetFromUniNode<A> createNodeChain(BavetNodeBuildPolicy<Solution_> buildPolicy, Score<?> constraintWeight,
+    public BavetFromUniNode<A> createNodeChain(BavetNodeBuildPolicy<Solution_> buildPolicy, Score constraintWeight,
             int nodeOrder, BavetAbstractUniNode<A> parentNode) {
         return (BavetFromUniNode<A>) super.createNodeChain(buildPolicy, constraintWeight, nodeOrder, parentNode);
     }
 
     @Override
-    protected BavetFromUniNode<A> createNode(BavetNodeBuildPolicy<Solution_> buildPolicy, Score<?> constraintWeight,
+    protected BavetFromUniNode<A> createNode(BavetNodeBuildPolicy<Solution_> buildPolicy, Score constraintWeight,
             int nodeOrder, BavetAbstractUniNode<A> parentNode) {
         if (parentNode != null) {
             throw new IllegalStateException("Impossible state: the stream (" + this

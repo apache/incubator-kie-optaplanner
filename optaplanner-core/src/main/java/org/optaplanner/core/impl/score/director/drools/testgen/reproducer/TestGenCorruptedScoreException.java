@@ -19,20 +19,20 @@ import org.optaplanner.core.api.score.Score;
 
 public class TestGenCorruptedScoreException extends RuntimeException {
 
-    private final Score<?> workingScore;
-    private final Score<?> uncorruptedScore;
+    private final Score workingScore;
+    private final Score uncorruptedScore;
 
-    public TestGenCorruptedScoreException(Score<?> workingScore, Score<?> uncorruptedScore) {
+    public TestGenCorruptedScoreException(Score workingScore, Score uncorruptedScore) {
         super("Working: " + workingScore + ", uncorrupted: " + uncorruptedScore);
         this.workingScore = workingScore;
         this.uncorruptedScore = uncorruptedScore;
     }
 
-    public Score<?> getWorkingScore() {
+    public Score getWorkingScore() {
         return workingScore;
     }
 
-    public Score<?> getUncorruptedScore() {
+    public Score getUncorruptedScore() {
         return uncorruptedScore;
     }
 

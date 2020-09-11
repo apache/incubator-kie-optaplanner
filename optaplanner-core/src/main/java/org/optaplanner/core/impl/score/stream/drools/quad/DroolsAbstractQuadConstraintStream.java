@@ -160,7 +160,7 @@ public abstract class DroolsAbstractQuadConstraintStream<Solution_, A, B, C, D>
     // ************************************************************************
 
     @Override
-    protected Constraint impactScore(String constraintPackage, String constraintName, Score<?> constraintWeight,
+    protected Constraint impactScore(String constraintPackage, String constraintName, Score constraintWeight,
             ScoreImpactType impactType) {
         ConstraintConsequence<QuadConstraintGraphNode> consequence =
                 constraintFactory.getConstraintGraph().impact(getConstraintGraphNode());
@@ -168,7 +168,7 @@ public abstract class DroolsAbstractQuadConstraintStream<Solution_, A, B, C, D>
     }
 
     @Override
-    public Constraint impactScore(String constraintPackage, String constraintName, Score<?> constraintWeight,
+    public Constraint impactScore(String constraintPackage, String constraintName, Score constraintWeight,
             ToIntQuadFunction<A, B, C, D> matchWeigher, ScoreImpactType impactType) {
         ConstraintConsequence<QuadConstraintGraphNode> consequence =
                 constraintFactory.getConstraintGraph().impact(getConstraintGraphNode(), matchWeigher);
@@ -176,7 +176,7 @@ public abstract class DroolsAbstractQuadConstraintStream<Solution_, A, B, C, D>
     }
 
     @Override
-    public Constraint impactScoreLong(String constraintPackage, String constraintName, Score<?> constraintWeight,
+    public Constraint impactScoreLong(String constraintPackage, String constraintName, Score constraintWeight,
             ToLongQuadFunction<A, B, C, D> matchWeigher, ScoreImpactType impactType) {
         ConstraintConsequence<QuadConstraintGraphNode> consequence =
                 constraintFactory.getConstraintGraph().impact(getConstraintGraphNode(), matchWeigher);
@@ -184,7 +184,7 @@ public abstract class DroolsAbstractQuadConstraintStream<Solution_, A, B, C, D>
     }
 
     @Override
-    public Constraint impactScoreBigDecimal(String constraintPackage, String constraintName, Score<?> constraintWeight,
+    public Constraint impactScoreBigDecimal(String constraintPackage, String constraintName, Score constraintWeight,
             QuadFunction<A, B, C, D, BigDecimal> matchWeigher, ScoreImpactType impactType) {
         ConstraintConsequence<QuadConstraintGraphNode> consequence =
                 constraintFactory.getConstraintGraph().impact(getConstraintGraphNode(), matchWeigher);

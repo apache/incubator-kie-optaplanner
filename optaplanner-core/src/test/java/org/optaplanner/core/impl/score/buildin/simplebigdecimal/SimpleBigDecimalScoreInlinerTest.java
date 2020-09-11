@@ -32,7 +32,7 @@ public class SimpleBigDecimalScoreInlinerTest {
     @Test
     public void buildWeightedScoreImpacter() {
         boolean constraintMatchEnabled = false;
-        Consumer<Score<?>> scoreConsumer = null;
+        Consumer<Score> scoreConsumer = null;
 
         SimpleBigDecimalScoreInliner scoreInliner = new SimpleBigDecimalScoreInliner(constraintMatchEnabled);
         assertThat(scoreInliner.extractScore(0)).isEqualTo(SimpleBigDecimalScore.ZERO);

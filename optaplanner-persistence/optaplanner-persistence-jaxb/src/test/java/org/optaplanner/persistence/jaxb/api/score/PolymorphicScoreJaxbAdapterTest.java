@@ -35,7 +35,7 @@ public class PolymorphicScoreJaxbAdapterTest {
 
     @Test
     public void marshall() {
-        Score<?> score = SimpleScore.of(1);
+        Score score = SimpleScore.of(1);
         PolymorphicScoreJaxbAdapter.JaxbAdaptedScore adaptedScore = scoreJaxbAdapter.marshal(score);
         assertThat(adaptedScore.getScoreClassName()).isEqualTo(SimpleScore.class.getName());
         assertThat(adaptedScore.getScoreString()).isEqualTo(score.toString());
@@ -59,13 +59,13 @@ public class PolymorphicScoreJaxbAdapterTest {
     private static class DummyRootElement {
 
         @XmlJavaTypeAdapter(PolymorphicScoreJaxbAdapter.class)
-        private Score<?> score;
+        private Score score;
 
         private DummyRootElement() {
             // Required by JAXB
         }
 
-        private DummyRootElement(Score<?> score) {
+        private DummyRootElement(Score score) {
             this.score = score;
         }
     }

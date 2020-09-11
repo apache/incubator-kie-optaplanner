@@ -41,10 +41,10 @@ public final class BavetConstraintSessionFactory<Solution_> extends AbstractCons
 
     @Override
     public ConstraintSession<Solution_> buildSession(boolean constraintMatchEnabled, Solution_ workingSolution) {
-        Score<?> zeroScore = getScoreDefinition().getZeroScore();
-        Map<BavetConstraint<Solution_>, Score<?>> constraintToWeightMap = new LinkedHashMap<>(constraintList.size());
+        Score zeroScore = getScoreDefinition().getZeroScore();
+        Map<BavetConstraint<Solution_>, Score> constraintToWeightMap = new LinkedHashMap<>(constraintList.size());
         for (BavetConstraint<Solution_> constraint : constraintList) {
-            Score<?> constraintWeight = constraint.extractConstraintWeight(workingSolution);
+            Score constraintWeight = constraint.extractConstraintWeight(workingSolution);
             if (!constraintWeight.equals(zeroScore)) {
                 constraintToWeightMap.put(constraint, constraintWeight);
             }

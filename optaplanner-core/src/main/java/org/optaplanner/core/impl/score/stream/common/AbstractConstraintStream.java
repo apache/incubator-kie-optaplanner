@@ -37,7 +37,7 @@ public abstract class AbstractConstraintStream<Solution_> implements ConstraintS
     // Penalize/reward
     // ************************************************************************
 
-    protected Function<Solution_, Score<?>> buildConstraintWeightExtractor(String constraintPackage, String constraintName) {
+    protected Function<Solution_, Score> buildConstraintWeightExtractor(String constraintPackage, String constraintName) {
         validateConstraintId(constraintPackage, constraintName);
         SolutionDescriptor<Solution_> solutionDescriptor = getConstraintFactory().getSolutionDescriptor();
         ConstraintConfigurationDescriptor<Solution_> configurationDescriptor = solutionDescriptor
@@ -66,8 +66,8 @@ public abstract class AbstractConstraintStream<Solution_> implements ConstraintS
         return weightDescriptor.createExtractor();
     }
 
-    protected Function<Solution_, Score<?>> buildConstraintWeightExtractor(String constraintPackage, String constraintName,
-            Score<?> constraintWeight) {
+    protected Function<Solution_, Score> buildConstraintWeightExtractor(String constraintPackage, String constraintName,
+            Score constraintWeight) {
         validateConstraintId(constraintPackage, constraintName);
         // Duplicates validation when the session is built, but this fails fast when weights are hard coded
         getConstraintFactory().getSolutionDescriptor().validateConstraintWeight(constraintPackage, constraintName,
@@ -93,7 +93,7 @@ public abstract class AbstractConstraintStream<Solution_> implements ConstraintS
     public abstract InnerConstraintFactory<Solution_> getConstraintFactory();
 
     @Override
-    public final Constraint penalize(String constraintPackage, String constraintName, Score<?> constraintWeight) {
+    public final Constraint penalize(String constraintPackage, String constraintName, Score constraintWeight) {
         return impactScore(constraintPackage, constraintName, constraintWeight, ScoreImpactType.PENALTY);
     }
 
@@ -103,7 +103,7 @@ public abstract class AbstractConstraintStream<Solution_> implements ConstraintS
     }
 
     @Override
-    public final Constraint reward(String constraintPackage, String constraintName, Score<?> constraintWeight) {
+    public final Constraint reward(String constraintPackage, String constraintName, Score constraintWeight) {
         return impactScore(constraintPackage, constraintName, constraintWeight, ScoreImpactType.REWARD);
     }
 
@@ -113,12 +113,12 @@ public abstract class AbstractConstraintStream<Solution_> implements ConstraintS
     }
 
     @Override
-    public final Constraint impact(String constraintPackage, String constraintName, Score<?> constraintWeight) {
+    public final Constraint impact(String constraintPackage, String constraintName, Score constraintWeight) {
         return impactScore(constraintPackage, constraintName, constraintWeight, ScoreImpactType.MIXED);
     }
 
     abstract protected Constraint impactScore(String constraintPackage, String constraintName,
-            Score<?> constraintWeight, ScoreImpactType impactType);
+            Score constraintWeight, ScoreImpactType impactType);
 
     abstract protected Constraint impactScoreConfigurable(String constraintPackage, String constraintName,
             ScoreImpactType impactType);

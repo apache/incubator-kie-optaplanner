@@ -54,7 +54,7 @@ public abstract class AbstractSolverRankingComparatorTest {
                 HardSoftLongScore.of(hardWorstScore, softWorstScore));
     }
 
-    protected <S extends Score<S>> SingleBenchmarkResult addSingleBenchmark(SolverBenchmarkResult solverBenchmarkResult,
+    protected <S extends Score> SingleBenchmarkResult addSingleBenchmark(SolverBenchmarkResult solverBenchmarkResult,
             List<SingleBenchmarkResult> singleBenchmarkResultList,
             S score, S bestScore, S worstScore) {
         SingleBenchmarkResult singleBenchmarkResult = new SingleBenchmarkResult(solverBenchmarkResult, null);

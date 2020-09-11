@@ -44,7 +44,7 @@ import org.optaplanner.core.impl.score.director.drools.OptaPlannerRuleEventListe
  *
  * @param <Score_> the {@link Score} type
  */
-public abstract class AbstractScoreHolder<Score_ extends Score<Score_>> implements ScoreHolder<Score_> {
+public abstract class AbstractScoreHolder<Score_ extends Score> implements ScoreHolder<Score_> {
 
     protected final boolean constraintMatchEnabled;
     protected final Map<String, ConstraintMatchTotal> constraintMatchTotalMap;

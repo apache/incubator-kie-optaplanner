@@ -32,19 +32,19 @@ import org.optaplanner.core.impl.score.stream.common.ScoreImpactType;
 public interface InnerQuadConstraintStream<A, B, C, D> extends QuadConstraintStream<A, B, C, D> {
 
     @Override
-    default Constraint penalize(String constraintPackage, String constraintName, Score<?> constraintWeight,
+    default Constraint penalize(String constraintPackage, String constraintName, Score constraintWeight,
             ToIntQuadFunction<A, B, C, D> matchWeigher) {
         return impactScore(constraintPackage, constraintName, constraintWeight, matchWeigher, PENALTY);
     }
 
     @Override
-    default Constraint penalizeLong(String constraintPackage, String constraintName, Score<?> constraintWeight,
+    default Constraint penalizeLong(String constraintPackage, String constraintName, Score constraintWeight,
             ToLongQuadFunction<A, B, C, D> matchWeigher) {
         return impactScoreLong(constraintPackage, constraintName, constraintWeight, matchWeigher, PENALTY);
     }
 
     @Override
-    default Constraint penalizeBigDecimal(String constraintPackage, String constraintName, Score<?> constraintWeight,
+    default Constraint penalizeBigDecimal(String constraintPackage, String constraintName, Score constraintWeight,
             QuadFunction<A, B, C, D, BigDecimal> matchWeigher) {
         return impactScoreBigDecimal(constraintPackage, constraintName, constraintWeight, matchWeigher, PENALTY);
     }
@@ -68,19 +68,19 @@ public interface InnerQuadConstraintStream<A, B, C, D> extends QuadConstraintStr
     }
 
     @Override
-    default Constraint reward(String constraintPackage, String constraintName, Score<?> constraintWeight,
+    default Constraint reward(String constraintPackage, String constraintName, Score constraintWeight,
             ToIntQuadFunction<A, B, C, D> matchWeigher) {
         return impactScore(constraintPackage, constraintName, constraintWeight, matchWeigher, REWARD);
     }
 
     @Override
-    default Constraint rewardLong(String constraintPackage, String constraintName, Score<?> constraintWeight,
+    default Constraint rewardLong(String constraintPackage, String constraintName, Score constraintWeight,
             ToLongQuadFunction<A, B, C, D> matchWeigher) {
         return impactScoreLong(constraintPackage, constraintName, constraintWeight, matchWeigher, REWARD);
     }
 
     @Override
-    default Constraint rewardBigDecimal(String constraintPackage, String constraintName, Score<?> constraintWeight,
+    default Constraint rewardBigDecimal(String constraintPackage, String constraintName, Score constraintWeight,
             QuadFunction<A, B, C, D, BigDecimal> matchWeigher) {
         return impactScoreBigDecimal(constraintPackage, constraintName, constraintWeight, matchWeigher, REWARD);
     }
@@ -104,19 +104,19 @@ public interface InnerQuadConstraintStream<A, B, C, D> extends QuadConstraintStr
     }
 
     @Override
-    default Constraint impact(String constraintPackage, String constraintName, Score<?> constraintWeight,
+    default Constraint impact(String constraintPackage, String constraintName, Score constraintWeight,
             ToIntQuadFunction<A, B, C, D> matchWeigher) {
         return impactScore(constraintPackage, constraintName, constraintWeight, matchWeigher, MIXED);
     }
 
     @Override
-    default Constraint impactLong(String constraintPackage, String constraintName, Score<?> constraintWeight,
+    default Constraint impactLong(String constraintPackage, String constraintName, Score constraintWeight,
             ToLongQuadFunction<A, B, C, D> matchWeigher) {
         return impactScoreLong(constraintPackage, constraintName, constraintWeight, matchWeigher, MIXED);
     }
 
     @Override
-    default Constraint impactBigDecimal(String constraintPackage, String constraintName, Score<?> constraintWeight,
+    default Constraint impactBigDecimal(String constraintPackage, String constraintName, Score constraintWeight,
             QuadFunction<A, B, C, D, BigDecimal> matchWeigher) {
         return impactScoreBigDecimal(constraintPackage, constraintName, constraintWeight, matchWeigher, MIXED);
     }
@@ -139,13 +139,13 @@ public interface InnerQuadConstraintStream<A, B, C, D> extends QuadConstraintStr
         return impactScoreConfigurableBigDecimal(constraintPackage, constraintName, matchWeigher, MIXED);
     }
 
-    Constraint impactScore(String constraintPackage, String constraintName, Score<?> constraintWeight,
+    Constraint impactScore(String constraintPackage, String constraintName, Score constraintWeight,
             ToIntQuadFunction<A, B, C, D> matchWeigher, ScoreImpactType impactType);
 
-    Constraint impactScoreLong(String constraintPackage, String constraintName, Score<?> constraintWeight,
+    Constraint impactScoreLong(String constraintPackage, String constraintName, Score constraintWeight,
             ToLongQuadFunction<A, B, C, D> matchWeigher, ScoreImpactType impactType);
 
-    Constraint impactScoreBigDecimal(String constraintPackage, String constraintName, Score<?> constraintWeight,
+    Constraint impactScoreBigDecimal(String constraintPackage, String constraintName, Score constraintWeight,
             QuadFunction<A, B, C, D, BigDecimal> matchWeigher, ScoreImpactType impactType);
 
     Constraint impactScoreConfigurable(String constraintPackage, String constraintName,

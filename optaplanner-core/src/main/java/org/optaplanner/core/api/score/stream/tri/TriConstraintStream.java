@@ -509,7 +509,7 @@ public interface TriConstraintStream<A, B, C> extends ConstraintStream {
      * @param matchWeigher never null, the result of this function (matchWeight) is multiplied by the constraintWeight
      * @return never null
      */
-    default Constraint penalize(String constraintName, Score<?> constraintWeight,
+    default Constraint penalize(String constraintName, Score constraintWeight,
             ToIntTriFunction<A, B, C> matchWeigher) {
         return penalize(getConstraintFactory().getDefaultConstraintPackage(), constraintName, constraintWeight,
                 matchWeigher);
@@ -524,7 +524,7 @@ public interface TriConstraintStream<A, B, C> extends ConstraintStream {
      * @param matchWeigher never null
      * @return never null
      */
-    Constraint penalize(String constraintPackage, String constraintName, Score<?> constraintWeight,
+    Constraint penalize(String constraintPackage, String constraintName, Score constraintWeight,
             ToIntTriFunction<A, B, C> matchWeigher);
 
     /**
@@ -536,7 +536,7 @@ public interface TriConstraintStream<A, B, C> extends ConstraintStream {
      * @param matchWeigher never null, the result of this function (matchWeight) is multiplied by the constraintWeight
      * @return never null
      */
-    default Constraint penalizeLong(String constraintName, Score<?> constraintWeight,
+    default Constraint penalizeLong(String constraintName, Score constraintWeight,
             ToLongTriFunction<A, B, C> matchWeigher) {
         return penalizeLong(getConstraintFactory().getDefaultConstraintPackage(), constraintName, constraintWeight,
                 matchWeigher);
@@ -551,7 +551,7 @@ public interface TriConstraintStream<A, B, C> extends ConstraintStream {
      * @param matchWeigher never null
      * @return never null
      */
-    Constraint penalizeLong(String constraintPackage, String constraintName, Score<?> constraintWeight,
+    Constraint penalizeLong(String constraintPackage, String constraintName, Score constraintWeight,
             ToLongTriFunction<A, B, C> matchWeigher);
 
     /**
@@ -563,7 +563,7 @@ public interface TriConstraintStream<A, B, C> extends ConstraintStream {
      * @param matchWeigher never null, the result of this function (matchWeight) is multiplied by the constraintWeight
      * @return never null
      */
-    default Constraint penalizeBigDecimal(String constraintName, Score<?> constraintWeight,
+    default Constraint penalizeBigDecimal(String constraintName, Score constraintWeight,
             TriFunction<A, B, C, BigDecimal> matchWeigher) {
         return penalizeBigDecimal(getConstraintFactory().getDefaultConstraintPackage(), constraintName,
                 constraintWeight, matchWeigher);
@@ -578,7 +578,7 @@ public interface TriConstraintStream<A, B, C> extends ConstraintStream {
      * @param matchWeigher never null
      * @return never null
      */
-    Constraint penalizeBigDecimal(String constraintPackage, String constraintName, Score<?> constraintWeight,
+    Constraint penalizeBigDecimal(String constraintPackage, String constraintName, Score constraintWeight,
             TriFunction<A, B, C, BigDecimal> matchWeigher);
 
     /**
@@ -668,7 +668,7 @@ public interface TriConstraintStream<A, B, C> extends ConstraintStream {
      * @param matchWeigher never null, the result of this function (matchWeight) is multiplied by the constraintWeight
      * @return never null
      */
-    default Constraint reward(String constraintName, Score<?> constraintWeight,
+    default Constraint reward(String constraintName, Score constraintWeight,
             ToIntTriFunction<A, B, C> matchWeigher) {
         return reward(getConstraintFactory().getDefaultConstraintPackage(), constraintName, constraintWeight,
                 matchWeigher);
@@ -683,7 +683,7 @@ public interface TriConstraintStream<A, B, C> extends ConstraintStream {
      * @param matchWeigher never null
      * @return never null
      */
-    Constraint reward(String constraintPackage, String constraintName, Score<?> constraintWeight,
+    Constraint reward(String constraintPackage, String constraintName, Score constraintWeight,
             ToIntTriFunction<A, B, C> matchWeigher);
 
     /**
@@ -695,7 +695,7 @@ public interface TriConstraintStream<A, B, C> extends ConstraintStream {
      * @param matchWeigher never null, the result of this function (matchWeight) is multiplied by the constraintWeight
      * @return never null
      */
-    default Constraint rewardLong(String constraintName, Score<?> constraintWeight,
+    default Constraint rewardLong(String constraintName, Score constraintWeight,
             ToLongTriFunction<A, B, C> matchWeigher) {
         return rewardLong(getConstraintFactory().getDefaultConstraintPackage(), constraintName, constraintWeight,
                 matchWeigher);
@@ -710,7 +710,7 @@ public interface TriConstraintStream<A, B, C> extends ConstraintStream {
      * @param matchWeigher never null
      * @return never null
      */
-    Constraint rewardLong(String constraintPackage, String constraintName, Score<?> constraintWeight,
+    Constraint rewardLong(String constraintPackage, String constraintName, Score constraintWeight,
             ToLongTriFunction<A, B, C> matchWeigher);
 
     /**
@@ -722,7 +722,7 @@ public interface TriConstraintStream<A, B, C> extends ConstraintStream {
      * @param matchWeigher never null, the result of this function (matchWeight) is multiplied by the constraintWeight
      * @return never null
      */
-    default Constraint rewardBigDecimal(String constraintName, Score<?> constraintWeight,
+    default Constraint rewardBigDecimal(String constraintName, Score constraintWeight,
             TriFunction<A, B, C, BigDecimal> matchWeigher) {
         return rewardBigDecimal(getConstraintFactory().getDefaultConstraintPackage(), constraintName, constraintWeight,
                 matchWeigher);
@@ -737,7 +737,7 @@ public interface TriConstraintStream<A, B, C> extends ConstraintStream {
      * @param matchWeigher never null
      * @return never null
      */
-    Constraint rewardBigDecimal(String constraintPackage, String constraintName, Score<?> constraintWeight,
+    Constraint rewardBigDecimal(String constraintPackage, String constraintName, Score constraintWeight,
             TriFunction<A, B, C, BigDecimal> matchWeigher);
 
     /**
@@ -830,7 +830,7 @@ public interface TriConstraintStream<A, B, C> extends ConstraintStream {
      * @param matchWeigher never null, the result of this function (matchWeight) is multiplied by the constraintWeight
      * @return never null
      */
-    default Constraint impact(String constraintName, Score<?> constraintWeight,
+    default Constraint impact(String constraintName, Score constraintWeight,
             ToIntTriFunction<A, B, C> matchWeigher) {
         return impact(getConstraintFactory().getDefaultConstraintPackage(), constraintName, constraintWeight,
                 matchWeigher);
@@ -845,7 +845,7 @@ public interface TriConstraintStream<A, B, C> extends ConstraintStream {
      * @param matchWeigher never null
      * @return never null
      */
-    Constraint impact(String constraintPackage, String constraintName, Score<?> constraintWeight,
+    Constraint impact(String constraintPackage, String constraintName, Score constraintWeight,
             ToIntTriFunction<A, B, C> matchWeigher);
 
     /**
@@ -860,7 +860,7 @@ public interface TriConstraintStream<A, B, C> extends ConstraintStream {
      * @param matchWeigher never null, the result of this function (matchWeight) is multiplied by the constraintWeight
      * @return never null
      */
-    default Constraint impactLong(String constraintName, Score<?> constraintWeight,
+    default Constraint impactLong(String constraintName, Score constraintWeight,
             ToLongTriFunction<A, B, C> matchWeigher) {
         return impactLong(getConstraintFactory().getDefaultConstraintPackage(), constraintName, constraintWeight,
                 matchWeigher);
@@ -875,7 +875,7 @@ public interface TriConstraintStream<A, B, C> extends ConstraintStream {
      * @param matchWeigher never null
      * @return never null
      */
-    Constraint impactLong(String constraintPackage, String constraintName, Score<?> constraintWeight,
+    Constraint impactLong(String constraintPackage, String constraintName, Score constraintWeight,
             ToLongTriFunction<A, B, C> matchWeigher);
 
     /**
@@ -890,7 +890,7 @@ public interface TriConstraintStream<A, B, C> extends ConstraintStream {
      * @param matchWeigher never null, the result of this function (matchWeight) is multiplied by the constraintWeight
      * @return never null
      */
-    default Constraint impactBigDecimal(String constraintName, Score<?> constraintWeight,
+    default Constraint impactBigDecimal(String constraintName, Score constraintWeight,
             TriFunction<A, B, C, BigDecimal> matchWeigher) {
         return impactBigDecimal(getConstraintFactory().getDefaultConstraintPackage(), constraintName,
                 constraintWeight, matchWeigher);
@@ -905,7 +905,7 @@ public interface TriConstraintStream<A, B, C> extends ConstraintStream {
      * @param matchWeigher never null
      * @return never null
      */
-    Constraint impactBigDecimal(String constraintPackage, String constraintName, Score<?> constraintWeight,
+    Constraint impactBigDecimal(String constraintPackage, String constraintName, Score constraintWeight,
             TriFunction<A, B, C, BigDecimal> matchWeigher);
 
     /**

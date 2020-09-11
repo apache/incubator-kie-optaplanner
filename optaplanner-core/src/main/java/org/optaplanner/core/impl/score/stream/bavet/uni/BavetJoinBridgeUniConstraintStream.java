@@ -63,14 +63,14 @@ public final class BavetJoinBridgeUniConstraintStream<Solution_, A>
 
     @Override
     protected BavetJoinBridgeUniNode<A> createNode(BavetNodeBuildPolicy<Solution_> buildPolicy,
-            Score<?> constraintWeight, int nodeOrder, BavetAbstractUniNode<A> parentNode) {
+            Score constraintWeight, int nodeOrder, BavetAbstractUniNode<A> parentNode) {
         BavetJoinBridgeUniNode<A> node = new BavetJoinBridgeUniNode<>(buildPolicy.getSession(),
                 nodeOrder, parentNode, mapping, indexFactory.buildIndex(isLeftBridge));
         return node;
     }
 
     @Override
-    protected void createChildNodeChains(BavetNodeBuildPolicy<Solution_> buildPolicy, Score<?> constraintWeight, int nodeOrder,
+    protected void createChildNodeChains(BavetNodeBuildPolicy<Solution_> buildPolicy, Score constraintWeight, int nodeOrder,
             BavetAbstractUniNode<A> uncastedNode) {
         if (!childStreamList.isEmpty()) {
             throw new IllegalStateException("Impossible state: the stream (" + this

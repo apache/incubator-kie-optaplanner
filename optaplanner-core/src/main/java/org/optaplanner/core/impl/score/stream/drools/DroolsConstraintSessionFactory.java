@@ -161,10 +161,10 @@ public class DroolsConstraintSessionFactory<Solution_> extends AbstractConstrain
                             constraint.getConsequence().getTerminalNode().getCardinality(), expectedTypes);
                 });
         // Determine which rules to enable based on the fact that their constraints carry weight.
-        Score<?> zeroScore = getScoreDefinition().getZeroScore();
+        Score zeroScore = getScoreDefinition().getZeroScore();
         Set<String> disabledConstraintIdSet = new LinkedHashSet<>(0);
         compiledRuleToConstraintMap.forEach((compiledRule, constraint) -> {
-            Score<?> constraintWeight = constraint.extractConstraintWeight(workingSolution);
+            Score constraintWeight = constraint.extractConstraintWeight(workingSolution);
             scoreHolder.configureConstraintWeight(compiledRule, constraintWeight);
             if (constraintWeight.equals(zeroScore)) {
                 disabledConstraintIdSet.add(constraint.getConstraintId());

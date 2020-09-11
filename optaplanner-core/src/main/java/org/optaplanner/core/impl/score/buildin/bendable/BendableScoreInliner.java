@@ -55,7 +55,7 @@ public class BendableScoreInliner extends ScoreInliner<BendableScore> {
             int levelWeight = constraintWeight.getHardOrSoftScore(singleLevel);
             if (singleLevel < constraintWeight.getHardLevelsSize()) {
                 int level = singleLevel;
-                return (int matchWeight, Consumer<Score<?>> matchScoreConsumer) -> {
+                return (int matchWeight, Consumer<Score> matchScoreConsumer) -> {
                     int hardImpact = levelWeight * matchWeight;
                     this.hardScores[level] += hardImpact;
                     if (constraintMatchEnabled) {
@@ -66,7 +66,7 @@ public class BendableScoreInliner extends ScoreInliner<BendableScore> {
                 };
             } else {
                 int level = singleLevel - constraintWeight.getHardLevelsSize();
-                return (int matchWeight, Consumer<Score<?>> matchScoreConsumer) -> {
+                return (int matchWeight, Consumer<Score> matchScoreConsumer) -> {
                     int softImpact = levelWeight * matchWeight;
                     this.softScores[level] += softImpact;
                     if (constraintMatchEnabled) {
@@ -79,7 +79,7 @@ public class BendableScoreInliner extends ScoreInliner<BendableScore> {
                 };
             }
         } else {
-            return (int matchWeight, Consumer<Score<?>> matchScoreConsumer) -> {
+            return (int matchWeight, Consumer<Score> matchScoreConsumer) -> {
                 int[] hardImpacts = new int[hardScores.length];
                 int[] softImpacts = new int[softScores.length];
                 for (int i = 0; i < hardImpacts.length; i++) {

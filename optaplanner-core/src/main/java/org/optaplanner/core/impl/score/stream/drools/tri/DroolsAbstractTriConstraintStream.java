@@ -174,7 +174,7 @@ public abstract class DroolsAbstractTriConstraintStream<Solution_, A, B, C>
     // ************************************************************************
 
     @Override
-    protected Constraint impactScore(String constraintPackage, String constraintName, Score<?> constraintWeight,
+    protected Constraint impactScore(String constraintPackage, String constraintName, Score constraintWeight,
             ScoreImpactType impactType) {
         ConstraintConsequence<TriConstraintGraphNode> consequence =
                 constraintFactory.getConstraintGraph().impact(getConstraintGraphNode());
@@ -182,7 +182,7 @@ public abstract class DroolsAbstractTriConstraintStream<Solution_, A, B, C>
     }
 
     @Override
-    public Constraint impactScore(String constraintPackage, String constraintName, Score<?> constraintWeight,
+    public Constraint impactScore(String constraintPackage, String constraintName, Score constraintWeight,
             ToIntTriFunction<A, B, C> matchWeigher, ScoreImpactType impactType) {
         ConstraintConsequence<TriConstraintGraphNode> consequence =
                 constraintFactory.getConstraintGraph().impact(getConstraintGraphNode(), matchWeigher);
@@ -190,7 +190,7 @@ public abstract class DroolsAbstractTriConstraintStream<Solution_, A, B, C>
     }
 
     @Override
-    public Constraint impactScoreLong(String constraintPackage, String constraintName, Score<?> constraintWeight,
+    public Constraint impactScoreLong(String constraintPackage, String constraintName, Score constraintWeight,
             ToLongTriFunction<A, B, C> matchWeigher, ScoreImpactType impactType) {
         ConstraintConsequence<TriConstraintGraphNode> consequence =
                 constraintFactory.getConstraintGraph().impact(getConstraintGraphNode(), matchWeigher);
@@ -198,7 +198,7 @@ public abstract class DroolsAbstractTriConstraintStream<Solution_, A, B, C>
     }
 
     @Override
-    public Constraint impactScoreBigDecimal(String constraintPackage, String constraintName, Score<?> constraintWeight,
+    public Constraint impactScoreBigDecimal(String constraintPackage, String constraintName, Score constraintWeight,
             TriFunction<A, B, C, BigDecimal> matchWeigher, ScoreImpactType impactType) {
         ConstraintConsequence<TriConstraintGraphNode> consequence =
                 constraintFactory.getConstraintGraph().impact(getConstraintGraphNode(), matchWeigher);

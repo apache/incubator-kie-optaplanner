@@ -32,7 +32,7 @@ import org.optaplanner.core.api.score.Score;
  *
  * @see Score
  */
-public final class HardMediumSoftLongScore extends AbstractScore<HardMediumSoftLongScore> {
+public final class HardMediumSoftLongScore extends AbstractScore {
 
     public static final HardMediumSoftLongScore ZERO = new HardMediumSoftLongScore(0, 0L, 0L, 0L);
     public static final HardMediumSoftLongScore ONE_HARD = new HardMediumSoftLongScore(0, 1L, 0L, 0L);
@@ -157,6 +157,10 @@ public final class HardMediumSoftLongScore extends AbstractScore<HardMediumSoftL
     }
 
     @Override
+    public Score add(Score addend) {
+        return add((HardMediumSoftLongScore) addend);
+    }
+
     public HardMediumSoftLongScore add(HardMediumSoftLongScore addend) {
         return new HardMediumSoftLongScore(
                 initScore + addend.getInitScore(),
@@ -166,6 +170,10 @@ public final class HardMediumSoftLongScore extends AbstractScore<HardMediumSoftL
     }
 
     @Override
+    public Score subtract(Score subtrahend) {
+        return subtract((HardMediumSoftLongScore) subtrahend);
+    }
+
     public HardMediumSoftLongScore subtract(HardMediumSoftLongScore subtrahend) {
         return new HardMediumSoftLongScore(
                 initScore - subtrahend.getInitScore(),
@@ -232,6 +240,10 @@ public final class HardMediumSoftLongScore extends AbstractScore<HardMediumSoftL
     }
 
     @Override
+    public int compareTo(Score other) {
+        return compareTo((HardMediumSoftLongScore) other);
+    }
+
     public int compareTo(HardMediumSoftLongScore other) {
         if (initScore != other.getInitScore()) {
             return Integer.compare(initScore, other.getInitScore());

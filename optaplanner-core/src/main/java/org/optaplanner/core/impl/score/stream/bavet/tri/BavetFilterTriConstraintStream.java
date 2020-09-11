@@ -52,7 +52,7 @@ public final class BavetFilterTriConstraintStream<Solution_, A, B, C>
 
     @Override
     protected BavetFilterTriNode<A, B, C> createNode(BavetNodeBuildPolicy<Solution_> buildPolicy,
-            Score<?> constraintWeight, int nodeOrder, BavetAbstractTriNode<A, B, C> parentNode) {
+            Score constraintWeight, int nodeOrder, BavetAbstractTriNode<A, B, C> parentNode) {
         return new BavetFilterTriNode<>(buildPolicy.getSession(), nodeOrder, parentNode, predicate);
     }
 

@@ -18,7 +18,7 @@ package org.optaplanner.core.impl.score.inliner;
 
 import org.optaplanner.core.api.score.Score;
 
-public abstract class ScoreInliner<Score_ extends Score<Score_>> {
+public abstract class ScoreInliner<Score_ extends Score> {
 
     protected final boolean constraintMatchEnabled;
 

@@ -39,7 +39,7 @@ public class TestGenCorruptedVariableListenerReproducer implements
     private static final Logger logger = LoggerFactory.getLogger(TestGenCorruptedVariableListenerReproducer.class);
     private final String analysis;
     private final TestGenDroolsScoreDirector<?> scoreDirector;
-    private Score<?> lastWorkingScore;
+    private Score lastWorkingScore;
     private int lastFireId;
 
     public TestGenCorruptedVariableListenerReproducer(String analysis, TestGenDroolsScoreDirector<?> scoreDirector) {
@@ -47,7 +47,7 @@ public class TestGenCorruptedVariableListenerReproducer implements
         this.scoreDirector = scoreDirector;
     }
 
-    private static Score<?> extractScore(KieSession kieSession) {
+    private static Score extractScore(KieSession kieSession) {
         AbstractScoreHolder sh = (AbstractScoreHolder) kieSession.getGlobal(DroolsScoreDirector.GLOBAL_SCORE_HOLDER_KEY);
         return sh.extractScore(0);
     }
@@ -89,7 +89,7 @@ public class TestGenCorruptedVariableListenerReproducer implements
     @Override
     public void afterFireAllRules(KieSession kieSession, TestGenKieSessionJournal journal,
             TestGenKieSessionFireAllRules fire) {
-        Score<?> workingScore = extractScore(kieSession);
+        Score workingScore = extractScore(kieSession);
         if (fire.isAssertFire()) {
             logger.debug("    [Assert mode] Score: working[{}], uncorrupted[{}] ({})",
                     workingScore, lastWorkingScore, fire);

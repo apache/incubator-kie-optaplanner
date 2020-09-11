@@ -28,7 +28,7 @@ public final class BavetScoringUniTuple<A> extends BavetAbstractUniTuple<A> impl
 
     private UndoScoreImpacter undoScoreImpacter = null;
     /** Always null if {@link BavetConstraintSession#isConstraintMatchEnabled()} is false. */
-    private Score<?> matchScore = null;
+    private Score matchScore = null;
 
     public BavetScoringUniTuple(BavetScoringUniNode<A> node, BavetAbstractUniTuple<A> parentTuple) {
         this.node = node;
@@ -70,12 +70,12 @@ public final class BavetScoringUniTuple<A> extends BavetAbstractUniTuple<A> impl
     }
 
     @Override
-    public Score<?> getMatchScore() {
+    public Score getMatchScore() {
         return matchScore;
     }
 
     @Override
-    public void setMatchScore(Score<?> matchScore) {
+    public void setMatchScore(Score matchScore) {
         this.matchScore = matchScore;
     }
 

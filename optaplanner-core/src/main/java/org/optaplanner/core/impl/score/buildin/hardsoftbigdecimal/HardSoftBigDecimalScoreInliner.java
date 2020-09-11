@@ -42,7 +42,7 @@ public class HardSoftBigDecimalScoreInliner extends ScoreInliner<HardSoftBigDeci
         BigDecimal hardConstraintWeight = constraintWeight.getHardScore();
         BigDecimal softConstraintWeight = constraintWeight.getSoftScore();
         if (softConstraintWeight.equals(BigDecimal.ZERO)) {
-            return (BigDecimal matchWeight, Consumer<Score<?>> matchScoreConsumer) -> {
+            return (BigDecimal matchWeight, Consumer<Score> matchScoreConsumer) -> {
                 BigDecimal hardImpact = hardConstraintWeight.multiply(matchWeight);
                 this.hardScore = this.hardScore.add(hardImpact);
                 if (constraintMatchEnabled) {
@@ -51,7 +51,7 @@ public class HardSoftBigDecimalScoreInliner extends ScoreInliner<HardSoftBigDeci
                 return () -> this.hardScore = this.hardScore.subtract(hardImpact);
             };
         } else if (hardConstraintWeight.equals(BigDecimal.ZERO)) {
-            return (BigDecimal matchWeight, Consumer<Score<?>> matchScoreConsumer) -> {
+            return (BigDecimal matchWeight, Consumer<Score> matchScoreConsumer) -> {
                 BigDecimal softImpact = softConstraintWeight.multiply(matchWeight);
                 this.softScore = this.softScore.add(softImpact);
                 if (constraintMatchEnabled) {
@@ -60,7 +60,7 @@ public class HardSoftBigDecimalScoreInliner extends ScoreInliner<HardSoftBigDeci
                 return () -> this.softScore = this.softScore.subtract(softImpact);
             };
         } else {
-            return (BigDecimal matchWeight, Consumer<Score<?>> matchScoreConsumer) -> {
+            return (BigDecimal matchWeight, Consumer<Score> matchScoreConsumer) -> {
                 BigDecimal hardImpact = hardConstraintWeight.multiply(matchWeight);
                 BigDecimal softImpact = softConstraintWeight.multiply(matchWeight);
                 this.hardScore = this.hardScore.add(hardImpact);

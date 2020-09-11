@@ -26,7 +26,7 @@ import org.optaplanner.core.impl.score.ScoreUtils;
 
 public class ScoreDifferencePercentage {
 
-    public static <Score_ extends Score<Score_>> ScoreDifferencePercentage calculateScoreDifferencePercentage(
+    public static <Score_ extends Score> ScoreDifferencePercentage calculateScoreDifferencePercentage(
             Score_ baseScore, Score_ valueScore) {
         double[] baseLevels = ScoreUtils.extractLevelDoubles(baseScore);
         double[] valueLevels = ScoreUtils.extractLevelDoubles(valueScore);

@@ -32,7 +32,7 @@ public class BendableBigDecimalScoreInlinerTest {
     @Test
     public void buildWeightedScoreImpacter() {
         boolean constraintMatchEnabled = false;
-        Consumer<Score<?>> scoreConsumer = null;
+        Consumer<Score> scoreConsumer = null;
 
         BendableBigDecimalScoreInliner scoreInliner = new BendableBigDecimalScoreInliner(constraintMatchEnabled, 1, 2);
         assertThat(scoreInliner.extractScore(0)).isEqualTo(BendableBigDecimalScore.zero(1, 2));

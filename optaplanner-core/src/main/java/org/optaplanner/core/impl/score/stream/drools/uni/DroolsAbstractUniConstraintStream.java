@@ -180,7 +180,7 @@ public abstract class DroolsAbstractUniConstraintStream<Solution_, A> extends Dr
     // ************************************************************************
 
     @Override
-    public final Constraint impactScore(String constraintPackage, String constraintName, Score<?> constraintWeight,
+    public final Constraint impactScore(String constraintPackage, String constraintName, Score constraintWeight,
             ScoreImpactType impactType) {
         ConstraintConsequence<UniConstraintGraphNode> consequence =
                 constraintFactory.getConstraintGraph().impact(getConstraintGraphNode());
@@ -188,7 +188,7 @@ public abstract class DroolsAbstractUniConstraintStream<Solution_, A> extends Dr
     }
 
     @Override
-    public final Constraint impactScore(String constraintPackage, String constraintName, Score<?> constraintWeight,
+    public final Constraint impactScore(String constraintPackage, String constraintName, Score constraintWeight,
             ToIntFunction<A> matchWeigher, ScoreImpactType impactType) {
         ConstraintConsequence<UniConstraintGraphNode> consequence =
                 constraintFactory.getConstraintGraph().impact(getConstraintGraphNode(), matchWeigher);
@@ -197,7 +197,7 @@ public abstract class DroolsAbstractUniConstraintStream<Solution_, A> extends Dr
 
     @Override
     public final Constraint impactScoreLong(String constraintPackage, String constraintName,
-            Score<?> constraintWeight, ToLongFunction<A> matchWeigher, ScoreImpactType impactType) {
+            Score constraintWeight, ToLongFunction<A> matchWeigher, ScoreImpactType impactType) {
         ConstraintConsequence<UniConstraintGraphNode> consequence =
                 constraintFactory.getConstraintGraph().impact(getConstraintGraphNode(), matchWeigher);
         return buildConstraint(constraintPackage, constraintName, constraintWeight, impactType, consequence);
@@ -205,7 +205,7 @@ public abstract class DroolsAbstractUniConstraintStream<Solution_, A> extends Dr
 
     @Override
     public final Constraint impactScoreBigDecimal(String constraintPackage, String constraintName,
-            Score<?> constraintWeight, Function<A, BigDecimal> matchWeigher, ScoreImpactType impactType) {
+            Score constraintWeight, Function<A, BigDecimal> matchWeigher, ScoreImpactType impactType) {
         ConstraintConsequence<UniConstraintGraphNode> consequence =
                 constraintFactory.getConstraintGraph().impact(getConstraintGraphNode(), matchWeigher);
         return buildConstraint(constraintPackage, constraintName, constraintWeight, impactType, consequence);

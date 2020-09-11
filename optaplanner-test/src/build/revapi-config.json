@@ -18,6 +18,32 @@
     "revapi": {
       "_comment": "Changes between 7.33.0.Final and the current branch. These changes are desired and thus ignored.",
       "ignore": [
+        {
+          "code": "java.method.parameterTypeParameterChanged",
+          "old": "parameter void org.optaplanner.test.api.score.stream.MultiConstraintAssertion::scores(===org.optaplanner.core.api.score.Score<?>===)",
+          "new": "parameter void org.optaplanner.test.api.score.stream.MultiConstraintAssertion::scores(===org.optaplanner.core.api.score.Score===)",
+          "oldType": "org.optaplanner.core.api.score.Score<?>",
+          "newType": "org.optaplanner.core.api.score.Score",
+          "package": "org.optaplanner.test.api.score.stream",
+          "classSimpleName": "MultiConstraintAssertion",
+          "methodName": "scores",
+          "parameterIndex": "0",
+          "elementKind": "parameter",
+          "justification": "Degenirify Score<S> to Score"
+        },
+        {
+          "code": "java.method.parameterTypeParameterChanged",
+          "old": "parameter void org.optaplanner.test.api.score.stream.MultiConstraintAssertion::scores(===org.optaplanner.core.api.score.Score<?>===, java.lang.String)",
+          "new": "parameter void org.optaplanner.test.api.score.stream.MultiConstraintAssertion::scores(===org.optaplanner.core.api.score.Score===, java.lang.String)",
+          "oldType": "org.optaplanner.core.api.score.Score<?>",
+          "newType": "org.optaplanner.core.api.score.Score",
+          "package": "org.optaplanner.test.api.score.stream",
+          "classSimpleName": "MultiConstraintAssertion",
+          "methodName": "scores",
+          "parameterIndex": "0",
+          "elementKind": "parameter",
+          "justification": "Degenirify Score<S> to Score"
+        }
       ]
     }
   }

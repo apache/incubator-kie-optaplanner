@@ -30,7 +30,7 @@ import com.fasterxml.jackson.databind.JsonDeserializer;
  * @see Score
  * @param <Score_> the actual score type
  */
-public abstract class AbstractScoreJacksonDeserializer<Score_ extends Score<Score_>>
+public abstract class AbstractScoreJacksonDeserializer<Score_ extends Score>
         extends JsonDeserializer<Score_> {
 
 }

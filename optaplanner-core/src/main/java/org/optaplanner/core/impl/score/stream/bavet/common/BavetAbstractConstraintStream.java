@@ -39,8 +39,8 @@ public abstract class BavetAbstractConstraintStream<Solution_> extends AbstractC
     // ************************************************************************
 
     protected BavetConstraint<Solution_> buildConstraint(String constraintPackage, String constraintName,
-            Score<?> constraintWeight, ScoreImpactType impactType) {
-        Function<Solution_, Score<?>> constraintWeightExtractor = buildConstraintWeightExtractor(
+            Score constraintWeight, ScoreImpactType impactType) {
+        Function<Solution_, Score> constraintWeightExtractor = buildConstraintWeightExtractor(
                 constraintPackage, constraintName, constraintWeight);
         List<BavetFromUniConstraintStream<Solution_, Object>> fromStreamList = getFromStreamList();
         return new BavetConstraint<>(constraintFactory, constraintPackage, constraintName, constraintWeightExtractor,
@@ -49,7 +49,7 @@ public abstract class BavetAbstractConstraintStream<Solution_> extends AbstractC
 
     protected BavetConstraint<Solution_> buildConstraintConfigurable(String constraintPackage, String constraintName,
             ScoreImpactType impactType) {
-        Function<Solution_, Score<?>> constraintWeightExtractor = buildConstraintWeightExtractor(
+        Function<Solution_, Score> constraintWeightExtractor = buildConstraintWeightExtractor(
                 constraintPackage, constraintName);
         List<BavetFromUniConstraintStream<Solution_, Object>> fromStreamList = getFromStreamList();
         return new BavetConstraint<>(constraintFactory, constraintPackage, constraintName, constraintWeightExtractor,

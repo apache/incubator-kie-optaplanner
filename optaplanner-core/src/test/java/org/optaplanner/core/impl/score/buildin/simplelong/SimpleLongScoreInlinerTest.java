@@ -31,7 +31,7 @@ public class SimpleLongScoreInlinerTest {
     @Test
     public void buildWeightedScoreImpacter() {
         boolean constraintMatchEnabled = false;
-        Consumer<Score<?>> scoreConsumer = null;
+        Consumer<Score> scoreConsumer = null;
 
         SimpleLongScoreInliner scoreInliner = new SimpleLongScoreInliner(constraintMatchEnabled);
         assertThat(scoreInliner.extractScore(0)).isEqualTo(SimpleLongScore.ZERO);

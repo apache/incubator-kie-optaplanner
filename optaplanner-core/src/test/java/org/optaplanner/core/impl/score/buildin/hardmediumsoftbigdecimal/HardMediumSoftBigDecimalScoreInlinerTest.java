@@ -32,7 +32,7 @@ public class HardMediumSoftBigDecimalScoreInlinerTest {
     @Test
     public void buildWeightedScoreImpacter() {
         boolean constraintMatchEnabled = false;
-        Consumer<Score<?>> scoreConsumer = null;
+        Consumer<Score> scoreConsumer = null;
 
         HardMediumSoftBigDecimalScoreInliner scoreInliner = new HardMediumSoftBigDecimalScoreInliner(constraintMatchEnabled);
         assertThat(scoreInliner.extractScore(0)).isEqualTo(HardMediumSoftBigDecimalScore.ZERO);

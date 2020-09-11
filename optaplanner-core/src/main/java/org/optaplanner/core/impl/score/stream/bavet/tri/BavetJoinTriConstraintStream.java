@@ -57,7 +57,7 @@ public final class BavetJoinTriConstraintStream<Solution_, A, B, C> extends Bave
 
     @Override
     public BavetJoinTriNode<A, B, C> createNodeChain(BavetNodeBuildPolicy<Solution_> buildPolicy,
-            Score<?> constraintWeight, int nodeOrder, BavetJoinBridgeNode leftNode_, BavetJoinBridgeNode rightNode_) {
+            Score constraintWeight, int nodeOrder, BavetJoinBridgeNode leftNode_, BavetJoinBridgeNode rightNode_) {
         BavetJoinBridgeBiNode<A, B> leftNode = (BavetJoinBridgeBiNode<A, B>) leftNode_;
         BavetJoinBridgeUniNode<C> rightNode = (BavetJoinBridgeUniNode<C>) rightNode_;
         BavetJoinTriNode<A, B, C> node = new BavetJoinTriNode<>(buildPolicy.getSession(), nodeOrder, leftNode, rightNode);
@@ -70,7 +70,7 @@ public final class BavetJoinTriConstraintStream<Solution_, A, B, C> extends Bave
 
     @Override
     protected BavetJoinTriNode<A, B, C> createNode(BavetNodeBuildPolicy<Solution_> buildPolicy,
-            Score<?> constraintWeight, int nodeOrder, BavetAbstractTriNode<A, B, C> parentNode) {
+            Score constraintWeight, int nodeOrder, BavetAbstractTriNode<A, B, C> parentNode) {
         throw new IllegalStateException("Impossible state: this code is never called.");
     }
 

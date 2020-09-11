@@ -42,7 +42,7 @@ import com.fasterxml.jackson.databind.ser.ContextualSerializer;
  * @see Score
  * @param <Score_> the actual score type
  */
-public abstract class AbstractScoreJacksonSerializer<Score_ extends Score<Score_>> extends JsonSerializer<Score_>
+public abstract class AbstractScoreJacksonSerializer<Score_ extends Score> extends JsonSerializer<Score_>
         implements ContextualSerializer {
 
     @Override

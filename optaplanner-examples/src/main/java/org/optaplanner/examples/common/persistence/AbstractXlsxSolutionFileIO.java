@@ -167,7 +167,7 @@ public abstract class AbstractXlsxSolutionFileIO<Solution_> implements SolutionF
             readHeaderCell("Description");
         }
 
-        protected <Score_ extends Score<Score_>> Score_ readScoreConstraintLine(
+        protected <Score_ extends Score> Score_ readScoreConstraintLine(
                 String constraintName, String constraintDescription) {
             nextRow();
             readHeaderCell(constraintName);
@@ -461,7 +461,7 @@ public abstract class AbstractXlsxSolutionFileIO<Solution_> implements SolutionF
             nextHeaderCell("Description");
         }
 
-        protected <Score_ extends Score<Score_>> void writeScoreConstraintLine(
+        protected <Score_ extends Score> void writeScoreConstraintLine(
                 String constraintName, Score_ constraintScore, String constraintDescription) {
             nextRow();
             nextHeaderCell(constraintName);

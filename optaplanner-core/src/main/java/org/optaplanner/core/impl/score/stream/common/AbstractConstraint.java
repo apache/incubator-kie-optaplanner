@@ -30,12 +30,12 @@ public abstract class AbstractConstraint<Solution_, ConstraintFactory extends In
     protected final ConstraintFactory constraintFactory;
     protected final String constraintPackage;
     protected final String constraintName;
-    private final Function<Solution_, Score<?>> constraintWeightExtractor;
+    private final Function<Solution_, Score> constraintWeightExtractor;
     protected final ScoreImpactType scoreImpactType;
     private final boolean isConstraintWeightConfigurable;
 
     protected AbstractConstraint(ConstraintFactory constraintFactory, String constraintPackage, String constraintName,
-            Function<Solution_, Score<?>> constraintWeightExtractor, ScoreImpactType scoreImpactType,
+            Function<Solution_, Score> constraintWeightExtractor, ScoreImpactType scoreImpactType,
             boolean isConstraintWeightConfigurable) {
         this.constraintFactory = constraintFactory;
         this.constraintPackage = constraintPackage;
@@ -45,7 +45,7 @@ public abstract class AbstractConstraint<Solution_, ConstraintFactory extends In
         this.isConstraintWeightConfigurable = isConstraintWeightConfigurable;
     }
 
-    public final Score<?> extractConstraintWeight(Solution_ workingSolution) {
+    public final Score extractConstraintWeight(Solution_ workingSolution) {
         if (isConstraintWeightConfigurable && workingSolution == null) {
             /*
              * In constraint verifier API, we allow for testing constraint providers without having a planning solution.
@@ -57,7 +57,7 @@ public abstract class AbstractConstraint<Solution_, ConstraintFactory extends In
              */
             return constraintFactory.getSolutionDescriptor().getScoreDefinition().getOneSoftestScore();
         }
-        Score<?> constraintWeight = constraintWeightExtractor.apply(workingSolution);
+        Score constraintWeight = constraintWeightExtractor.apply(workingSolution);
         constraintFactory.getSolutionDescriptor().validateConstraintWeight(constraintPackage, constraintName, constraintWeight);
         switch (scoreImpactType) {
             case PENALTY:

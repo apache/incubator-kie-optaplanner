@@ -33,7 +33,7 @@ import org.optaplanner.core.impl.score.trend.InitializingScoreTrend;
  * @see AbstractScoreDefinition
  * @see HardSoftScoreDefinition
  */
-public interface ScoreDefinition<S extends Score<S>> {
+public interface ScoreDefinition<S extends Score> {
 
     /**
      * Returns the label for {@link Score#getInitScore()}.

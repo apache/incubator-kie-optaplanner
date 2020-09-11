@@ -107,7 +107,7 @@ public interface ConstraintStream {
      * @param constraintWeight never null
      * @return never null
      */
-    default Constraint penalize(String constraintName, Score<?> constraintWeight) {
+    default Constraint penalize(String constraintName, Score constraintWeight) {
         return penalize(getConstraintFactory().getDefaultConstraintPackage(), constraintName, constraintWeight);
     }
 
@@ -119,7 +119,7 @@ public interface ConstraintStream {
      * @param constraintWeight never null
      * @return never null
      */
-    Constraint penalize(String constraintPackage, String constraintName, Score<?> constraintWeight);
+    Constraint penalize(String constraintPackage, String constraintName, Score constraintWeight);
 
     /**
      * Negatively impact the {@link Score}: subtract the {@link ConstraintWeight} for each match.
@@ -159,7 +159,7 @@ public interface ConstraintStream {
      * @param constraintWeight never null
      * @return never null
      */
-    default Constraint reward(String constraintName, Score<?> constraintWeight) {
+    default Constraint reward(String constraintName, Score constraintWeight) {
         return reward(getConstraintFactory().getDefaultConstraintPackage(), constraintName, constraintWeight);
     }
 
@@ -171,7 +171,7 @@ public interface ConstraintStream {
      * @param constraintWeight never null
      * @return never null
      */
-    Constraint reward(String constraintPackage, String constraintName, Score<?> constraintWeight);
+    Constraint reward(String constraintPackage, String constraintName, Score constraintWeight);
 
     /**
      * Positively impact the {@link Score}: add the {@link ConstraintWeight} for each match.
@@ -211,7 +211,7 @@ public interface ConstraintStream {
      * @param constraintWeight never null
      * @return never null
      */
-    default Constraint impact(String constraintName, Score<?> constraintWeight) {
+    default Constraint impact(String constraintName, Score constraintWeight) {
         return impact(getConstraintFactory().getDefaultConstraintPackage(), constraintName, constraintWeight);
     }
 
@@ -223,6 +223,6 @@ public interface ConstraintStream {
      * @param constraintWeight never null
      * @return never null
      */
-    Constraint impact(String constraintPackage, String constraintName, Score<?> constraintWeight);
+    Constraint impact(String constraintPackage, String constraintName, Score constraintWeight);
 
 }

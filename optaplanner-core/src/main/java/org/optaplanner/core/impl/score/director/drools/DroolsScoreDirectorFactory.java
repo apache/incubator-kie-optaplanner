@@ -46,7 +46,7 @@ public class DroolsScoreDirectorFactory<Solution_> extends AbstractScoreDirector
 
     private final KieBase kieBase;
 
-    protected Map<Rule, Function<Solution_, Score<?>>> ruleToConstraintWeightExtractorMap;
+    protected Map<Rule, Function<Solution_, Score>> ruleToConstraintWeightExtractorMap;
 
     /**
      * @param solutionDescriptor never null
@@ -117,7 +117,7 @@ public class DroolsScoreDirectorFactory<Solution_> extends AbstractScoreDirector
         }
     }
 
-    public Map<Rule, Function<Solution_, Score<?>>> getRuleToConstraintWeightExtractorMap() {
+    public Map<Rule, Function<Solution_, Score>> getRuleToConstraintWeightExtractorMap() {
         return ruleToConstraintWeightExtractorMap;
     }
 

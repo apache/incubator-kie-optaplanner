@@ -201,7 +201,7 @@ public abstract class BavetAbstractUniConstraintStream<Solution_, A> extends Bav
     // ************************************************************************
 
     @Override
-    public final Constraint impactScore(String constraintPackage, String constraintName, Score<?> constraintWeight,
+    public final Constraint impactScore(String constraintPackage, String constraintName, Score constraintWeight,
             ScoreImpactType impactType) {
         BavetConstraint<Solution_> constraint = buildConstraint(constraintPackage, constraintName, constraintWeight,
                 impactType);
@@ -212,7 +212,7 @@ public abstract class BavetAbstractUniConstraintStream<Solution_, A> extends Bav
     }
 
     @Override
-    public final Constraint impactScore(String constraintPackage, String constraintName, Score<?> constraintWeight,
+    public final Constraint impactScore(String constraintPackage, String constraintName, Score constraintWeight,
             ToIntFunction<A> matchWeigher, ScoreImpactType impactType) {
         BavetConstraint<Solution_> constraint = buildConstraint(constraintPackage, constraintName, constraintWeight,
                 impactType);
@@ -223,7 +223,7 @@ public abstract class BavetAbstractUniConstraintStream<Solution_, A> extends Bav
     }
 
     @Override
-    public final Constraint impactScoreLong(String constraintPackage, String constraintName, Score<?> constraintWeight,
+    public final Constraint impactScoreLong(String constraintPackage, String constraintName, Score constraintWeight,
             ToLongFunction<A> matchWeigher, ScoreImpactType impactType) {
         BavetConstraint<Solution_> constraint = buildConstraint(constraintPackage, constraintName, constraintWeight,
                 impactType);
@@ -235,7 +235,7 @@ public abstract class BavetAbstractUniConstraintStream<Solution_, A> extends Bav
 
     @Override
     public final Constraint impactScoreBigDecimal(String constraintPackage, String constraintName,
-            Score<?> constraintWeight, Function<A, BigDecimal> matchWeigher, ScoreImpactType impactType) {
+            Score constraintWeight, Function<A, BigDecimal> matchWeigher, ScoreImpactType impactType) {
         BavetConstraint<Solution_> constraint = buildConstraint(constraintPackage, constraintName, constraintWeight,
                 impactType);
         BavetScoringUniConstraintStream<Solution_, A> stream = new BavetScoringUniConstraintStream<>(constraintFactory,
@@ -293,7 +293,7 @@ public abstract class BavetAbstractUniConstraintStream<Solution_, A> extends Bav
     // ************************************************************************
 
     public BavetAbstractUniNode<A> createNodeChain(BavetNodeBuildPolicy<Solution_> buildPolicy,
-            Score<?> constraintWeight, int nodeOrder, BavetAbstractUniNode<A> parentNode) {
+            Score constraintWeight, int nodeOrder, BavetAbstractUniNode<A> parentNode) {
         BavetAbstractUniNode<A> node = createNode(buildPolicy, constraintWeight, nodeOrder, parentNode);
         node = processNode(buildPolicy, nodeOrder, parentNode, node);
         createChildNodeChains(buildPolicy, constraintWeight, nodeOrder, node);
@@ -315,7 +315,7 @@ public abstract class BavetAbstractUniConstraintStream<Solution_, A> extends Bav
         return node;
     }
 
-    protected void createChildNodeChains(BavetNodeBuildPolicy<Solution_> buildPolicy, Score<?> constraintWeight, int nodeOrder,
+    protected void createChildNodeChains(BavetNodeBuildPolicy<Solution_> buildPolicy, Score constraintWeight, int nodeOrder,
             BavetAbstractUniNode<A> node) {
         if (childStreamList.isEmpty()) {
             throw new IllegalStateException("The stream (" + this + ") leads to nowhere.\n"
@@ -327,6 +327,6 @@ public abstract class BavetAbstractUniConstraintStream<Solution_, A> extends Bav
     }
 
     protected abstract BavetAbstractUniNode<A> createNode(BavetNodeBuildPolicy<Solution_> buildPolicy,
-            Score<?> constraintWeight, int nodeOrder, BavetAbstractUniNode<A> parentNode);
+            Score constraintWeight, int nodeOrder, BavetAbstractUniNode<A> parentNode);
 
 }

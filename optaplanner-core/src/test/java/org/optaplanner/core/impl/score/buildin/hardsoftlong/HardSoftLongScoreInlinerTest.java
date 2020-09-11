@@ -31,7 +31,7 @@ public class HardSoftLongScoreInlinerTest {
     @Test
     public void buildWeightedScoreImpacter() {
         boolean constraintMatchEnabled = false;
-        Consumer<Score<?>> scoreConsumer = null;
+        Consumer<Score> scoreConsumer = null;
 
         HardSoftLongScoreInliner scoreInliner = new HardSoftLongScoreInliner(constraintMatchEnabled);
         assertThat(scoreInliner.extractScore(0)).isEqualTo(HardSoftLongScore.ZERO);

@@ -25,7 +25,7 @@ import org.optaplanner.core.api.score.Score;
  *
  * @param <Score_> the {@link Score} type
  */
-public interface ScoreHolder<Score_ extends Score<Score_>> {
+public interface ScoreHolder<Score_ extends Score> {
 
     /**
      * Penalize a match by the {@link ConstraintWeight} negated.

@@ -32,11 +32,11 @@ public final class DefaultMultiConstraintAssertion<Solution_>
         implements MultiConstraintAssertion {
 
     private final ConstraintProvider constraintProvider;
-    private final Score<?> actualScore;
+    private final Score actualScore;
     private final Collection<ConstraintMatchTotal> constraintMatchTotalCollection;
     private final Collection<Indictment> indictmentCollection;
 
-    protected DefaultMultiConstraintAssertion(ConstraintProvider constraintProvider, Score<?> actualScore,
+    protected DefaultMultiConstraintAssertion(ConstraintProvider constraintProvider, Score actualScore,
             Map<String, ConstraintMatchTotal> constraintMatchTotalMap, Map<Object, Indictment> indictmentMap) {
         this.constraintProvider = requireNonNull(constraintProvider);
         this.actualScore = requireNonNull(actualScore);
@@ -45,7 +45,7 @@ public final class DefaultMultiConstraintAssertion<Solution_>
     }
 
     @Override
-    public final void scores(Score<?> score, String message) {
+    public final void scores(Score score, String message) {
         if (actualScore.equals(score)) {
             return;
         }

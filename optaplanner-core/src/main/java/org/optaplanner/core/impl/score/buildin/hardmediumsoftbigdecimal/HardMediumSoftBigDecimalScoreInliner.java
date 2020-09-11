@@ -44,7 +44,7 @@ public class HardMediumSoftBigDecimalScoreInliner extends ScoreInliner<HardMediu
         BigDecimal mediumConstraintWeight = constraintWeight.getMediumScore();
         BigDecimal softConstraintWeight = constraintWeight.getSoftScore();
         if (mediumConstraintWeight.equals(BigDecimal.ZERO) && softConstraintWeight.equals(BigDecimal.ZERO)) {
-            return (BigDecimal matchWeight, Consumer<Score<?>> matchScoreConsumer) -> {
+            return (BigDecimal matchWeight, Consumer<Score> matchScoreConsumer) -> {
                 BigDecimal hardImpact = hardConstraintWeight.multiply(matchWeight);
                 this.hardScore = this.hardScore.add(hardImpact);
                 if (constraintMatchEnabled) {
@@ -53,7 +53,7 @@ public class HardMediumSoftBigDecimalScoreInliner extends ScoreInliner<HardMediu
                 return () -> this.hardScore = this.hardScore.subtract(hardImpact);
             };
         } else if (hardConstraintWeight.equals(BigDecimal.ZERO) && softConstraintWeight.equals(BigDecimal.ZERO)) {
-            return (BigDecimal matchWeight, Consumer<Score<?>> matchScoreConsumer) -> {
+            return (BigDecimal matchWeight, Consumer<Score> matchScoreConsumer) -> {
                 BigDecimal mediumImpact = mediumConstraintWeight.multiply(matchWeight);
                 this.mediumScore = this.mediumScore.add(mediumImpact);
                 if (constraintMatchEnabled) {
@@ -62,7 +62,7 @@ public class HardMediumSoftBigDecimalScoreInliner extends ScoreInliner<HardMediu
                 return () -> this.mediumScore = this.mediumScore.subtract(mediumImpact);
             };
         } else if (hardConstraintWeight.equals(BigDecimal.ZERO) && mediumConstraintWeight.equals(BigDecimal.ZERO)) {
-            return (BigDecimal matchWeight, Consumer<Score<?>> matchScoreConsumer) -> {
+            return (BigDecimal matchWeight, Consumer<Score> matchScoreConsumer) -> {
                 BigDecimal softImpact = softConstraintWeight.multiply(matchWeight);
                 this.softScore = this.softScore.add(softImpact);
                 if (constraintMatchEnabled) {
@@ -71,7 +71,7 @@ public class HardMediumSoftBigDecimalScoreInliner extends ScoreInliner<HardMediu
                 return () -> this.softScore = this.softScore.subtract(softImpact);
             };
         } else {
-            return (BigDecimal matchWeight, Consumer<Score<?>> matchScoreConsumer) -> {
+            return (BigDecimal matchWeight, Consumer<Score> matchScoreConsumer) -> {
                 BigDecimal hardImpact = hardConstraintWeight.multiply(matchWeight);
                 BigDecimal mediumImpact = mediumConstraintWeight.multiply(matchWeight);
                 BigDecimal softImpact = softConstraintWeight.multiply(matchWeight);

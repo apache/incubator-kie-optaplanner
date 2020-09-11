@@ -33,15 +33,15 @@ public final class BavetScoringBiNode<A, B> extends BavetAbstractBiNode<A, B> im
 
     private final String constraintPackage;
     private final String constraintName;
-    private final Score<?> constraintWeight;
-    private final TriFunction<A, B, Consumer<Score<?>>, UndoScoreImpacter> scoreImpacter;
+    private final Score constraintWeight;
+    private final TriFunction<A, B, Consumer<Score>, UndoScoreImpacter> scoreImpacter;
 
     private final boolean constraintMatchEnabled;
     private final Set<BavetScoringBiTuple<A, B>> tupleSet;
 
     public BavetScoringBiNode(BavetConstraintSession session, int nodeOrder,
-            String constraintPackage, String constraintName, Score<?> constraintWeight,
-            TriFunction<A, B, Consumer<Score<?>>, UndoScoreImpacter> scoreImpacter) {
+            String constraintPackage, String constraintName, Score constraintWeight,
+            TriFunction<A, B, Consumer<Score>, UndoScoreImpacter> scoreImpacter) {
         super(session, nodeOrder);
         this.constraintPackage = constraintPackage;
         this.constraintName = constraintName;
@@ -98,7 +98,7 @@ public final class BavetScoringBiNode<A, B> extends BavetAbstractBiNode<A, B> im
     }
 
     @Override
-    public ConstraintMatchTotal buildConstraintMatchTotal(Score<?> zeroScore) {
+    public ConstraintMatchTotal buildConstraintMatchTotal(Score zeroScore) {
         DefaultConstraintMatchTotal constraintMatchTotal = new DefaultConstraintMatchTotal(constraintPackage,
                 constraintName, constraintWeight, zeroScore);
         for (BavetScoringBiTuple<A, B> tuple : tupleSet) {
@@ -133,7 +133,7 @@ public final class BavetScoringBiNode<A, B> extends BavetAbstractBiNode<A, B> im
     }
 
     @Override
-    public Score<?> getConstraintWeight() {
+    public Score getConstraintWeight() {
         return constraintWeight;
     }
 

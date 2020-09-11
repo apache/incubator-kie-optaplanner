@@ -29,6 +29,6 @@ public interface LongWeightedScoreImpacter extends WeightedScoreImpacter {
      * @param scoreConsumer null if {@link InnerScoreDirector#isConstraintMatchEnabled()} is false
      * @return never null
      */
-    UndoScoreImpacter impactScore(long matchWeight, Consumer<Score<?>> scoreConsumer);
+    UndoScoreImpacter impactScore(long matchWeight, Consumer<Score> scoreConsumer);
 
 }

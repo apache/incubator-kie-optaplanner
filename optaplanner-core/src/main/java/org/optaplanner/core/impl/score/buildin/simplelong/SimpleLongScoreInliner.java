@@ -38,7 +38,7 @@ public class SimpleLongScoreInliner extends ScoreInliner<SimpleLongScore> {
                     + " this constraint should have been culled during node creation.");
         }
         long simpleConstraintWeight = constraintWeight.getScore();
-        return (long matchWeight, Consumer<Score<?>> matchScoreConsumer) -> {
+        return (long matchWeight, Consumer<Score> matchScoreConsumer) -> {
             long impact = simpleConstraintWeight * matchWeight;
             this.score += impact;
             if (constraintMatchEnabled) {

@@ -43,7 +43,7 @@ public class HardMediumSoftLongScoreInliner extends ScoreInliner<HardMediumSoftL
         long mediumConstraintWeight = constraintWeight.getMediumScore();
         long softConstraintWeight = constraintWeight.getSoftScore();
         if (mediumConstraintWeight == 0L && softConstraintWeight == 0L) {
-            return (long matchWeight, Consumer<Score<?>> matchScoreConsumer) -> {
+            return (long matchWeight, Consumer<Score> matchScoreConsumer) -> {
                 long hardImpact = hardConstraintWeight * matchWeight;
                 this.hardScore += hardImpact;
                 if (constraintMatchEnabled) {
@@ -52,7 +52,7 @@ public class HardMediumSoftLongScoreInliner extends ScoreInliner<HardMediumSoftL
                 return () -> this.hardScore -= hardImpact;
             };
         } else if (hardConstraintWeight == 0L && softConstraintWeight == 0L) {
-            return (long matchWeight, Consumer<Score<?>> matchScoreConsumer) -> {
+            return (long matchWeight, Consumer<Score> matchScoreConsumer) -> {
                 long mediumImpact = mediumConstraintWeight * matchWeight;
                 this.mediumScore += mediumImpact;
                 if (constraintMatchEnabled) {
@@ -61,7 +61,7 @@ public class HardMediumSoftLongScoreInliner extends ScoreInliner<HardMediumSoftL
                 return () -> this.mediumScore -= mediumImpact;
             };
         } else if (hardConstraintWeight == 0L && mediumConstraintWeight == 0L) {
-            return (long matchWeight, Consumer<Score<?>> matchScoreConsumer) -> {
+            return (long matchWeight, Consumer<Score> matchScoreConsumer) -> {
                 long softImpact = softConstraintWeight * matchWeight;
                 this.softScore += softImpact;
                 if (constraintMatchEnabled) {
@@ -70,7 +70,7 @@ public class HardMediumSoftLongScoreInliner extends ScoreInliner<HardMediumSoftL
                 return () -> this.softScore -= softImpact;
             };
         } else {
-            return (long matchWeight, Consumer<Score<?>> matchScoreConsumer) -> {
+            return (long matchWeight, Consumer<Score> matchScoreConsumer) -> {
                 long hardImpact = hardConstraintWeight * matchWeight;
                 long mediumImpact = mediumConstraintWeight * matchWeight;
                 long softImpact = softConstraintWeight * matchWeight;

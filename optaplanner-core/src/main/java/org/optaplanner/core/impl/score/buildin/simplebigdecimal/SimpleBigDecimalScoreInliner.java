@@ -39,7 +39,7 @@ public class SimpleBigDecimalScoreInliner extends ScoreInliner<SimpleBigDecimalS
                     + " this constraint should have been culled during node creation.");
         }
         BigDecimal simpleConstraintWeight = constraintWeight.getScore();
-        return (BigDecimal matchWeight, Consumer<Score<?>> matchScoreConsumer) -> {
+        return (BigDecimal matchWeight, Consumer<Score> matchScoreConsumer) -> {
             BigDecimal impact = simpleConstraintWeight.multiply(matchWeight);
             this.score = this.score.add(impact);
             if (constraintMatchEnabled) {

@@ -31,7 +31,7 @@ public class BendableScoreInlinerTest {
     @Test
     public void buildIntWeightedScoreImpacter() {
         boolean constraintMatchEnabled = false;
-        Consumer<Score<?>> scoreConsumer = null;
+        Consumer<Score> scoreConsumer = null;
 
         BendableScoreInliner scoreInliner = new BendableScoreInliner(constraintMatchEnabled, 1, 2);
         assertThat(scoreInliner.extractScore(0)).isEqualTo(BendableScore.zero(1, 2));

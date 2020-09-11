@@ -28,7 +28,7 @@ public final class BavetScoringBiTuple<A, B> extends BavetAbstractBiTuple<A, B> 
 
     private UndoScoreImpacter undoScoreImpacter = null;
     /** Always null if {@link BavetConstraintSession#constraintMatchEnabled} is false. */
-    private Score<?> matchScore = null;
+    private Score matchScore = null;
 
     public BavetScoringBiTuple(BavetScoringBiNode<A, B> node, BavetAbstractBiTuple<A, B> parentTuple) {
         this.node = node;
@@ -75,12 +75,12 @@ public final class BavetScoringBiTuple<A, B> extends BavetAbstractBiTuple<A, B> 
     }
 
     @Override
-    public Score<?> getMatchScore() {
+    public Score getMatchScore() {
         return matchScore;
     }
 
     @Override
-    public void setMatchScore(Score<?> matchScore) {
+    public void setMatchScore(Score matchScore) {
         this.matchScore = matchScore;
     }
 

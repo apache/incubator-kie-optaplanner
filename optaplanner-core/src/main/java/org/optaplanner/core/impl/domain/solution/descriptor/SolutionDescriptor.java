@@ -830,7 +830,7 @@ public class SolutionDescriptor<Solution_> {
         return lookUpStrategyResolver;
     }
 
-    public void validateConstraintWeight(String constraintPackage, String constraintName, Score<?> constraintWeight) {
+    public void validateConstraintWeight(String constraintPackage, String constraintName, Score constraintWeight) {
         if (constraintWeight == null) {
             throw new IllegalArgumentException("The constraintWeight (" + constraintWeight
                     + ") for constraintPackage (" + constraintPackage

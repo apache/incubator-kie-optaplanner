@@ -43,7 +43,7 @@ public class HardMediumSoftScoreInliner extends ScoreInliner<HardMediumSoftScore
         int mediumConstraintWeight = constraintWeight.getMediumScore();
         int softConstraintWeight = constraintWeight.getSoftScore();
         if (mediumConstraintWeight == 0 && softConstraintWeight == 0) {
-            return (int matchWeight, Consumer<Score<?>> matchScoreConsumer) -> {
+            return (int matchWeight, Consumer<Score> matchScoreConsumer) -> {
                 int hardImpact = hardConstraintWeight * matchWeight;
                 this.hardScore += hardImpact;
                 if (constraintMatchEnabled) {
@@ -52,7 +52,7 @@ public class HardMediumSoftScoreInliner extends ScoreInliner<HardMediumSoftScore
                 return () -> this.hardScore -= hardImpact;
             };
         } else if (hardConstraintWeight == 0 && softConstraintWeight == 0) {
-            return (int matchWeight, Consumer<Score<?>> matchScoreConsumer) -> {
+            return (int matchWeight, Consumer<Score> matchScoreConsumer) -> {
                 int mediumImpact = mediumConstraintWeight * matchWeight;
                 this.mediumScore += mediumImpact;
                 if (constraintMatchEnabled) {
@@ -61,7 +61,7 @@ public class HardMediumSoftScoreInliner extends ScoreInliner<HardMediumSoftScore
                 return () -> this.mediumScore -= mediumImpact;
             };
         } else if (hardConstraintWeight == 0 && mediumConstraintWeight == 0) {
-            return (int matchWeight, Consumer<Score<?>> matchScoreConsumer) -> {
+            return (int matchWeight, Consumer<Score> matchScoreConsumer) -> {
                 int softImpact = softConstraintWeight * matchWeight;
                 this.softScore += softImpact;
                 if (constraintMatchEnabled) {
@@ -70,7 +70,7 @@ public class HardMediumSoftScoreInliner extends ScoreInliner<HardMediumSoftScore
                 return () -> this.softScore -= softImpact;
             };
         } else {
-            return (int matchWeight, Consumer<Score<?>> matchScoreConsumer) -> {
+            return (int matchWeight, Consumer<Score> matchScoreConsumer) -> {
                 int hardImpact = hardConstraintWeight * matchWeight;
                 int mediumImpact = mediumConstraintWeight * matchWeight;
                 int softImpact = softConstraintWeight * matchWeight;

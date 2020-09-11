@@ -43,7 +43,7 @@ import org.optaplanner.core.impl.score.stream.bavet.uni.BavetFromUniTuple;
 public final class BavetConstraintSession<Solution_> implements ConstraintSession<Solution_> {
 
     private final boolean constraintMatchEnabled;
-    private final Score<?> zeroScore;
+    private final Score zeroScore;
     private final ScoreInliner<?> scoreInliner;
 
     private final Map<Class<?>, BavetFromUniNode<Object>> declaredClassToNodeMap;
@@ -56,7 +56,7 @@ public final class BavetConstraintSession<Solution_> implements ConstraintSessio
     private final Map<Object, List<BavetFromUniTuple<Object>>> fromTupleListMap;
 
     public BavetConstraintSession(boolean constraintMatchEnabled, ScoreDefinition scoreDefinition,
-            Map<BavetConstraint<Solution_>, Score<?>> constraintToWeightMap) {
+            Map<BavetConstraint<Solution_>, Score> constraintToWeightMap) {
         this.constraintMatchEnabled = constraintMatchEnabled;
         this.zeroScore = scoreDefinition.getZeroScore();
         this.scoreInliner = scoreDefinition.buildScoreInliner(constraintMatchEnabled);
@@ -146,7 +146,7 @@ public final class BavetConstraintSession<Solution_> implements ConstraintSessio
     }
 
     @Override
-    public Score<?> calculateScore(int initScore) {
+    public Score calculateScore(int initScore) {
         for (int i = 0; i < nodeOrderSize; i++) {
             Queue<BavetAbstractTuple> queue = nodeOrderedQueueList.get(i);
             BavetAbstractTuple tuple = queue.poll();

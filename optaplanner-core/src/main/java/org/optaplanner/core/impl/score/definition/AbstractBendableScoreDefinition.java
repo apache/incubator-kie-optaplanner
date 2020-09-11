@@ -19,7 +19,7 @@ package org.optaplanner.core.impl.score.definition;
 import org.optaplanner.core.api.score.AbstractBendableScore;
 import org.optaplanner.core.api.score.Score;
 
-public abstract class AbstractBendableScoreDefinition<S extends Score<S>> extends AbstractScoreDefinition<S>
+public abstract class AbstractBendableScoreDefinition<S extends Score> extends AbstractScoreDefinition<S>
         implements ScoreDefinition<S> {
 
     protected static String[] generateLevelLabels(int hardLevelsSize, int softLevelsSize) {

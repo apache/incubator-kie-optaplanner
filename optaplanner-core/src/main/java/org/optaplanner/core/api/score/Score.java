@@ -33,11 +33,10 @@ import org.optaplanner.core.impl.score.definition.ScoreDefinition;
  * <p>
  * An implementation must extend {@link AbstractScore} to ensure backwards compatibility in future versions.
  *
- * @param <Score_> the actual score type to allow addition, subtraction and other arithmetic
  * @see AbstractScore
  * @see HardSoftScore
  */
-public interface Score<Score_ extends Score> extends Comparable<Score_> {
+public interface Score extends Comparable<Score> {
 
     /**
      * The init score is the negative of the number of uninitialized genuine planning variables.
@@ -65,7 +64,7 @@ public interface Score<Score_ extends Score> extends Comparable<Score_> {
      * @param newInitScore always negative (except in statistical calculations), 0 if all planning variables are initialized
      * @return equals score except that {@link #getInitScore()} is set to {@code newInitScore}
      */
-    Score_ withInitScore(int newInitScore);
+    Score withInitScore(int newInitScore);
 
     /**
      * Returns a Score whose value is (this + addend).
@@ -73,7 +72,7 @@ public interface Score<Score_ extends Score> extends Comparable<Score_> {
      * @param addend value to be added to this Score
      * @return this + addend
      */
-    Score_ add(Score_ addend);
+    Score add(Score addend);
 
     /**
      * Returns a Score whose value is (this - subtrahend).
@@ -81,7 +80,7 @@ public interface Score<Score_ extends Score> extends Comparable<Score_> {
      * @param subtrahend value to be subtracted from this Score
      * @return this - subtrahend, rounded as necessary
      */
-    Score_ subtract(Score_ subtrahend);
+    Score subtract(Score subtrahend);
 
     /**
      * Returns a Score whose value is (this * multiplicand).
@@ -93,7 +92,7 @@ public interface Score<Score_ extends Score> extends Comparable<Score_> {
      * @param multiplicand value to be multiplied by this Score.
      * @return this * multiplicand
      */
-    Score_ multiply(double multiplicand);
+    Score multiply(double multiplicand);
 
     /**
      * Returns a Score whose value is (this / divisor).
@@ -105,7 +104,7 @@ public interface Score<Score_ extends Score> extends Comparable<Score_> {
      * @param divisor value by which this Score is to be divided
      * @return this / divisor
      */
-    Score_ divide(double divisor);
+    Score divide(double divisor);
 
     /**
      * Returns a Score whose value is (this ^ exponent).
@@ -117,14 +116,14 @@ public interface Score<Score_ extends Score> extends Comparable<Score_> {
      * @param exponent value by which this Score is to be powered
      * @return this ^ exponent
      */
-    Score_ power(double exponent);
+    Score power(double exponent);
 
     /**
      * Returns a Score whose value is (- this).
      *
      * @return - this
      */
-    Score_ negate();
+    Score negate();
 
     /**
      * Returns an array of numbers representing the Score. Each number represents 1 score level.

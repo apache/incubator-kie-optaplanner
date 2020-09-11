@@ -43,7 +43,7 @@ public class TestGenCorruptedScoreReproducer implements TestGenOriginalProblemRe
         this.scoreDirector = scoreDirector;
     }
 
-    private static Score<?> extractScore(KieSession kieSession) {
+    private static Score extractScore(KieSession kieSession) {
         AbstractScoreHolder sh = (AbstractScoreHolder) kieSession.getGlobal(DroolsScoreDirector.GLOBAL_SCORE_HOLDER_KEY);
         return sh.extractScore(0);
     }
@@ -87,8 +87,8 @@ public class TestGenCorruptedScoreReproducer implements TestGenOriginalProblemRe
         }
         uncorruptedSession.fireAllRules();
         uncorruptedSession.dispose();
-        Score<?> uncorruptedScore = extractScore(uncorruptedSession);
-        Score<?> workingScore = extractScore(kieSession);
+        Score uncorruptedScore = extractScore(uncorruptedSession);
+        Score workingScore = extractScore(kieSession);
         if (!workingScore.equals(uncorruptedScore)) {
             logger.debug("    Score: working[{}], uncorrupted[{}]", workingScore, uncorruptedScore);
             throw new TestGenCorruptedScoreException(workingScore, uncorruptedScore);

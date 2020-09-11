@@ -288,7 +288,7 @@ public class EnvironmentModeTest {
 
             scoreDirector.triggerVariableListeners();
             InnerScoreDirector<TestdataSolution> innerScoreDirector = (InnerScoreDirector<TestdataSolution>) scoreDirector;
-            Score<?> score = innerScoreDirector.calculateScore();
+            Score score = innerScoreDirector.calculateScore();
 
             if (!score.isSolutionInitialized()) {
                 throw new IllegalStateException("The solution (" + TestdataEntity.class.getSimpleName()

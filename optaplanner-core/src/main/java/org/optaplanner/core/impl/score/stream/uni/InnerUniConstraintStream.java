@@ -28,19 +28,19 @@ import org.optaplanner.core.impl.score.stream.common.ScoreImpactType;
 public interface InnerUniConstraintStream<A> extends UniConstraintStream<A> {
 
     @Override
-    default Constraint penalize(String constraintPackage, String constraintName, Score<?> constraintWeight,
+    default Constraint penalize(String constraintPackage, String constraintName, Score constraintWeight,
             ToIntFunction<A> matchWeigher) {
         return impactScore(constraintPackage, constraintName, constraintWeight, matchWeigher, ScoreImpactType.PENALTY);
     }
 
     @Override
-    default Constraint penalizeLong(String constraintPackage, String constraintName, Score<?> constraintWeight,
+    default Constraint penalizeLong(String constraintPackage, String constraintName, Score constraintWeight,
             ToLongFunction<A> matchWeigher) {
         return impactScoreLong(constraintPackage, constraintName, constraintWeight, matchWeigher, ScoreImpactType.PENALTY);
     }
 
     @Override
-    default Constraint penalizeBigDecimal(String constraintPackage, String constraintName, Score<?> constraintWeight,
+    default Constraint penalizeBigDecimal(String constraintPackage, String constraintName, Score constraintWeight,
             Function<A, BigDecimal> matchWeigher) {
         return impactScoreBigDecimal(constraintPackage, constraintName, constraintWeight, matchWeigher,
                 ScoreImpactType.PENALTY);
@@ -66,19 +66,19 @@ public interface InnerUniConstraintStream<A> extends UniConstraintStream<A> {
     }
 
     @Override
-    default Constraint reward(String constraintPackage, String constraintName, Score<?> constraintWeight,
+    default Constraint reward(String constraintPackage, String constraintName, Score constraintWeight,
             ToIntFunction<A> matchWeigher) {
         return impactScore(constraintPackage, constraintName, constraintWeight, matchWeigher, ScoreImpactType.REWARD);
     }
 
     @Override
-    default Constraint rewardLong(String constraintPackage, String constraintName, Score<?> constraintWeight,
+    default Constraint rewardLong(String constraintPackage, String constraintName, Score constraintWeight,
             ToLongFunction<A> matchWeigher) {
         return impactScoreLong(constraintPackage, constraintName, constraintWeight, matchWeigher, ScoreImpactType.REWARD);
     }
 
     @Override
-    default Constraint rewardBigDecimal(String constraintPackage, String constraintName, Score<?> constraintWeight,
+    default Constraint rewardBigDecimal(String constraintPackage, String constraintName, Score constraintWeight,
             Function<A, BigDecimal> matchWeigher) {
         return impactScoreBigDecimal(constraintPackage, constraintName, constraintWeight, matchWeigher,
                 ScoreImpactType.REWARD);
@@ -103,19 +103,19 @@ public interface InnerUniConstraintStream<A> extends UniConstraintStream<A> {
     }
 
     @Override
-    default Constraint impact(String constraintPackage, String constraintName, Score<?> constraintWeight,
+    default Constraint impact(String constraintPackage, String constraintName, Score constraintWeight,
             ToIntFunction<A> matchWeigher) {
         return impactScore(constraintPackage, constraintName, constraintWeight, matchWeigher, ScoreImpactType.MIXED);
     }
 
     @Override
-    default Constraint impactLong(String constraintPackage, String constraintName, Score<?> constraintWeight,
+    default Constraint impactLong(String constraintPackage, String constraintName, Score constraintWeight,
             ToLongFunction<A> matchWeigher) {
         return impactScoreLong(constraintPackage, constraintName, constraintWeight, matchWeigher, ScoreImpactType.MIXED);
     }
 
     @Override
-    default Constraint impactBigDecimal(String constraintPackage, String constraintName, Score<?> constraintWeight,
+    default Constraint impactBigDecimal(String constraintPackage, String constraintName, Score constraintWeight,
             Function<A, BigDecimal> matchWeigher) {
         return impactScoreBigDecimal(constraintPackage, constraintName, constraintWeight, matchWeigher,
                 ScoreImpactType.MIXED);
@@ -140,13 +140,13 @@ public interface InnerUniConstraintStream<A> extends UniConstraintStream<A> {
 
     }
 
-    Constraint impactScore(String constraintPackage, String constraintName, Score<?> constraintWeight,
+    Constraint impactScore(String constraintPackage, String constraintName, Score constraintWeight,
             ToIntFunction<A> matchWeigher, ScoreImpactType impactType);
 
-    Constraint impactScoreLong(String constraintPackage, String constraintName, Score<?> constraintWeight,
+    Constraint impactScoreLong(String constraintPackage, String constraintName, Score constraintWeight,
             ToLongFunction<A> matchWeigher, ScoreImpactType impactType);
 
-    Constraint impactScoreBigDecimal(String constraintPackage, String constraintName, Score<?> constraintWeight,
+    Constraint impactScoreBigDecimal(String constraintPackage, String constraintName, Score constraintWeight,
             Function<A, BigDecimal> matchWeigher, ScoreImpactType impactType);
 
     Constraint impactScoreConfigurable(String constraintPackage, String constraintName, ToIntFunction<A> matchWeigher,

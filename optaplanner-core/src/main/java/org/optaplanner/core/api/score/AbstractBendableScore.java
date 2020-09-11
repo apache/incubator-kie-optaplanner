@@ -28,7 +28,7 @@ import org.optaplanner.core.api.score.buildin.bendable.BendableScore;
  *
  * @see BendableScore
  */
-public abstract class AbstractBendableScore<S extends Score<S>> extends AbstractScore<S> {
+public abstract class AbstractBendableScore<S extends Score> extends AbstractScore {
 
     protected static final String HARD_LABEL = "hard";
     protected static final String SOFT_LABEL = "soft";

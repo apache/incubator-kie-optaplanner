@@ -58,7 +58,7 @@ public final class BavetGroupBridgeUniConstraintStream<Solution_, A, NewA, Resul
 
     @Override
     protected BavetGroupBridgeUniNode<A, NewA, ResultContainer_, NewB> createNode(BavetNodeBuildPolicy<Solution_> buildPolicy,
-            Score<?> constraintWeight, int nodeOrder, BavetAbstractUniNode<A> parentNode) {
+            Score constraintWeight, int nodeOrder, BavetAbstractUniNode<A> parentNode) {
         // TODO create bridge first. Move this to createChildNodeChains
         BavetGroupBiNode<NewA, ResultContainer_, NewB> groupNode = groupStream.createNodeChain(buildPolicy, constraintWeight,
                 nodeOrder + 1, null);
@@ -68,7 +68,7 @@ public final class BavetGroupBridgeUniConstraintStream<Solution_, A, NewA, Resul
     }
 
     @Override
-    protected void createChildNodeChains(BavetNodeBuildPolicy<Solution_> buildPolicy, Score<?> constraintWeight, int nodeOrder,
+    protected void createChildNodeChains(BavetNodeBuildPolicy<Solution_> buildPolicy, Score constraintWeight, int nodeOrder,
             BavetAbstractUniNode<A> node) {
         if (!childStreamList.isEmpty()) {
             throw new IllegalStateException("Impossible state: the stream (" + this

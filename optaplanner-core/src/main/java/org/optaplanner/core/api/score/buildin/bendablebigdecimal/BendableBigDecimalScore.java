@@ -241,6 +241,10 @@ public final class BendableBigDecimalScore extends AbstractBendableScore<Bendabl
     }
 
     @Override
+    public Score add(Score addend) {
+        return add((BendableBigDecimalScore) addend);
+    }
+
     public BendableBigDecimalScore add(BendableBigDecimalScore addend) {
         validateCompatible(addend);
         BigDecimal[] newHardScores = new BigDecimal[hardScores.length];
@@ -257,6 +261,10 @@ public final class BendableBigDecimalScore extends AbstractBendableScore<Bendabl
     }
 
     @Override
+    public Score subtract(Score subtrahend) {
+        return subtract((BendableBigDecimalScore) subtrahend);
+    }
+
     public BendableBigDecimalScore subtract(BendableBigDecimalScore subtrahend) {
         validateCompatible(subtrahend);
         BigDecimal[] newHardScores = new BigDecimal[hardScores.length];
@@ -395,6 +403,10 @@ public final class BendableBigDecimalScore extends AbstractBendableScore<Bendabl
     }
 
     @Override
+    public int compareTo(Score other) {
+        return compareTo((BendableBigDecimalScore) other);
+    }
+
     public int compareTo(BendableBigDecimalScore other) {
         validateCompatible(other);
         if (initScore != other.getInitScore()) {

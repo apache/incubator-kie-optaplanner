@@ -34,15 +34,15 @@ public final class BavetScoringUniNode<A> extends BavetAbstractUniNode<A> implem
     private final BavetAbstractUniNode<A> parentNode;
     private final String constraintPackage;
     private final String constraintName;
-    private final Score<?> constraintWeight;
-    private final BiFunction<A, Consumer<Score<?>>, UndoScoreImpacter> scoreImpacter;
+    private final Score constraintWeight;
+    private final BiFunction<A, Consumer<Score>, UndoScoreImpacter> scoreImpacter;
 
     private final boolean constraintMatchEnabled;
     private final Set<BavetScoringUniTuple<A>> tupleSet;
 
     public BavetScoringUniNode(BavetConstraintSession session, int nodeOrder, BavetAbstractUniNode<A> parentNode,
-            String constraintPackage, String constraintName, Score<?> constraintWeight,
-            BiFunction<A, Consumer<Score<?>>, UndoScoreImpacter> scoreImpacter) {
+            String constraintPackage, String constraintName, Score constraintWeight,
+            BiFunction<A, Consumer<Score>, UndoScoreImpacter> scoreImpacter) {
         super(session, nodeOrder);
         this.parentNode = parentNode;
         this.constraintPackage = constraintPackage;
@@ -99,7 +99,7 @@ public final class BavetScoringUniNode<A> extends BavetAbstractUniNode<A> implem
     }
 
     @Override
-    public ConstraintMatchTotal buildConstraintMatchTotal(Score<?> zeroScore) {
+    public ConstraintMatchTotal buildConstraintMatchTotal(Score zeroScore) {
         DefaultConstraintMatchTotal constraintMatchTotal = new DefaultConstraintMatchTotal(constraintPackage,
                 constraintName, constraintWeight, zeroScore);
         for (BavetScoringUniTuple<A> tuple : tupleSet) {
@@ -134,7 +134,7 @@ public final class BavetScoringUniNode<A> extends BavetAbstractUniNode<A> implem
     }
 
     @Override
-    public Score<?> getConstraintWeight() {
+    public Score getConstraintWeight() {
         return constraintWeight;
     }
 

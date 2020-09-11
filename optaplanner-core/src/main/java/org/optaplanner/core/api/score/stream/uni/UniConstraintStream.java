@@ -687,7 +687,7 @@ public interface UniConstraintStream<A> extends ConstraintStream {
      * @param matchWeigher never null, the result of this function (matchWeight) is multiplied by the constraintWeight
      * @return never null
      */
-    default Constraint penalize(String constraintName, Score<?> constraintWeight, ToIntFunction<A> matchWeigher) {
+    default Constraint penalize(String constraintName, Score constraintWeight, ToIntFunction<A> matchWeigher) {
         return penalize(getConstraintFactory().getDefaultConstraintPackage(), constraintName, constraintWeight,
                 matchWeigher);
     }
@@ -701,7 +701,7 @@ public interface UniConstraintStream<A> extends ConstraintStream {
      * @param matchWeigher never null
      * @return never null
      */
-    Constraint penalize(String constraintPackage, String constraintName, Score<?> constraintWeight,
+    Constraint penalize(String constraintPackage, String constraintName, Score constraintWeight,
             ToIntFunction<A> matchWeigher);
 
     /**
@@ -713,7 +713,7 @@ public interface UniConstraintStream<A> extends ConstraintStream {
      * @param matchWeigher never null, the result of this function (matchWeight) is multiplied by the constraintWeight
      * @return never null
      */
-    default Constraint penalizeLong(String constraintName, Score<?> constraintWeight, ToLongFunction<A> matchWeigher) {
+    default Constraint penalizeLong(String constraintName, Score constraintWeight, ToLongFunction<A> matchWeigher) {
         return penalizeLong(getConstraintFactory().getDefaultConstraintPackage(), constraintName, constraintWeight,
                 matchWeigher);
     }
@@ -727,7 +727,7 @@ public interface UniConstraintStream<A> extends ConstraintStream {
      * @param matchWeigher never null
      * @return never null
      */
-    Constraint penalizeLong(String constraintPackage, String constraintName, Score<?> constraintWeight,
+    Constraint penalizeLong(String constraintPackage, String constraintName, Score constraintWeight,
             ToLongFunction<A> matchWeigher);
 
     /**
@@ -739,7 +739,7 @@ public interface UniConstraintStream<A> extends ConstraintStream {
      * @param matchWeigher never null, the result of this function (matchWeight) is multiplied by the constraintWeight
      * @return never null
      */
-    default Constraint penalizeBigDecimal(String constraintName, Score<?> constraintWeight,
+    default Constraint penalizeBigDecimal(String constraintName, Score constraintWeight,
             Function<A, BigDecimal> matchWeigher) {
         return penalizeBigDecimal(getConstraintFactory().getDefaultConstraintPackage(), constraintName,
                 constraintWeight, matchWeigher);
@@ -754,7 +754,7 @@ public interface UniConstraintStream<A> extends ConstraintStream {
      * @param matchWeigher never null
      * @return never null
      */
-    Constraint penalizeBigDecimal(String constraintPackage, String constraintName, Score<?> constraintWeight,
+    Constraint penalizeBigDecimal(String constraintPackage, String constraintName, Score constraintWeight,
             Function<A, BigDecimal> matchWeigher);
 
     /**
@@ -842,7 +842,7 @@ public interface UniConstraintStream<A> extends ConstraintStream {
      * @param matchWeigher never null, the result of this function (matchWeight) is multiplied by the constraintWeight
      * @return never null
      */
-    default Constraint reward(String constraintName, Score<?> constraintWeight, ToIntFunction<A> matchWeigher) {
+    default Constraint reward(String constraintName, Score constraintWeight, ToIntFunction<A> matchWeigher) {
         return reward(getConstraintFactory().getDefaultConstraintPackage(), constraintName, constraintWeight,
                 matchWeigher);
     }
@@ -856,7 +856,7 @@ public interface UniConstraintStream<A> extends ConstraintStream {
      * @param matchWeigher never null
      * @return never null
      */
-    Constraint reward(String constraintPackage, String constraintName, Score<?> constraintWeight,
+    Constraint reward(String constraintPackage, String constraintName, Score constraintWeight,
             ToIntFunction<A> matchWeigher);
 
     /**
@@ -868,7 +868,7 @@ public interface UniConstraintStream<A> extends ConstraintStream {
      * @param matchWeigher never null, the result of this function (matchWeight) is multiplied by the constraintWeight
      * @return never null
      */
-    default Constraint rewardLong(String constraintName, Score<?> constraintWeight, ToLongFunction<A> matchWeigher) {
+    default Constraint rewardLong(String constraintName, Score constraintWeight, ToLongFunction<A> matchWeigher) {
         return rewardLong(getConstraintFactory().getDefaultConstraintPackage(), constraintName, constraintWeight,
                 matchWeigher);
     }
@@ -882,7 +882,7 @@ public interface UniConstraintStream<A> extends ConstraintStream {
      * @param matchWeigher never null
      * @return never null
      */
-    Constraint rewardLong(String constraintPackage, String constraintName, Score<?> constraintWeight,
+    Constraint rewardLong(String constraintPackage, String constraintName, Score constraintWeight,
             ToLongFunction<A> matchWeigher);
 
     /**
@@ -894,7 +894,7 @@ public interface UniConstraintStream<A> extends ConstraintStream {
      * @param matchWeigher never null, the result of this function (matchWeight) is multiplied by the constraintWeight
      * @return never null
      */
-    default Constraint rewardBigDecimal(String constraintName, Score<?> constraintWeight,
+    default Constraint rewardBigDecimal(String constraintName, Score constraintWeight,
             Function<A, BigDecimal> matchWeigher) {
         return rewardBigDecimal(getConstraintFactory().getDefaultConstraintPackage(), constraintName, constraintWeight,
                 matchWeigher);
@@ -909,7 +909,7 @@ public interface UniConstraintStream<A> extends ConstraintStream {
      * @param matchWeigher never null
      * @return never null
      */
-    Constraint rewardBigDecimal(String constraintPackage, String constraintName, Score<?> constraintWeight,
+    Constraint rewardBigDecimal(String constraintPackage, String constraintName, Score constraintWeight,
             Function<A, BigDecimal> matchWeigher);
 
     /**
@@ -999,7 +999,7 @@ public interface UniConstraintStream<A> extends ConstraintStream {
      * @param matchWeigher never null, the result of this function (matchWeight) is multiplied by the constraintWeight
      * @return never null
      */
-    default Constraint impact(String constraintName, Score<?> constraintWeight, ToIntFunction<A> matchWeigher) {
+    default Constraint impact(String constraintName, Score constraintWeight, ToIntFunction<A> matchWeigher) {
         return impact(getConstraintFactory().getDefaultConstraintPackage(), constraintName, constraintWeight,
                 matchWeigher);
     }
@@ -1013,7 +1013,7 @@ public interface UniConstraintStream<A> extends ConstraintStream {
      * @param matchWeigher never null
      * @return never null
      */
-    Constraint impact(String constraintPackage, String constraintName, Score<?> constraintWeight,
+    Constraint impact(String constraintPackage, String constraintName, Score constraintWeight,
             ToIntFunction<A> matchWeigher);
 
     /**
@@ -1028,7 +1028,7 @@ public interface UniConstraintStream<A> extends ConstraintStream {
      * @param matchWeigher never null, the result of this function (matchWeight) is multiplied by the constraintWeight
      * @return never null
      */
-    default Constraint impactLong(String constraintName, Score<?> constraintWeight, ToLongFunction<A> matchWeigher) {
+    default Constraint impactLong(String constraintName, Score constraintWeight, ToLongFunction<A> matchWeigher) {
         return impactLong(getConstraintFactory().getDefaultConstraintPackage(), constraintName, constraintWeight,
                 matchWeigher);
     }
@@ -1042,7 +1042,7 @@ public interface UniConstraintStream<A> extends ConstraintStream {
      * @param matchWeigher never null
      * @return never null
      */
-    Constraint impactLong(String constraintPackage, String constraintName, Score<?> constraintWeight,
+    Constraint impactLong(String constraintPackage, String constraintName, Score constraintWeight,
             ToLongFunction<A> matchWeigher);
 
     /**
@@ -1057,7 +1057,7 @@ public interface UniConstraintStream<A> extends ConstraintStream {
      * @param matchWeigher never null, the result of this function (matchWeight) is multiplied by the constraintWeight
      * @return never null
      */
-    default Constraint impactBigDecimal(String constraintName, Score<?> constraintWeight,
+    default Constraint impactBigDecimal(String constraintName, Score constraintWeight,
             Function<A, BigDecimal> matchWeigher) {
         return impactBigDecimal(getConstraintFactory().getDefaultConstraintPackage(), constraintName,
                 constraintWeight, matchWeigher);
@@ -1072,7 +1072,7 @@ public interface UniConstraintStream<A> extends ConstraintStream {
      * @param matchWeigher never null
      * @return never null
      */
-    Constraint impactBigDecimal(String constraintPackage, String constraintName, Score<?> constraintWeight,
+    Constraint impactBigDecimal(String constraintPackage, String constraintName, Score constraintWeight,
             Function<A, BigDecimal> matchWeigher);
 
     /**

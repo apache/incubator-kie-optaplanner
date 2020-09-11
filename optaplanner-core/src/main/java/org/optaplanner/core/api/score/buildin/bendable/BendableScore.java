@@ -230,6 +230,10 @@ public final class BendableScore extends AbstractBendableScore<BendableScore> {
     }
 
     @Override
+    public Score add(Score addend) {
+        return add((BendableScore) addend);
+    }
+
     public BendableScore add(BendableScore addend) {
         validateCompatible(addend);
         int[] newHardScores = new int[hardScores.length];
@@ -246,6 +250,10 @@ public final class BendableScore extends AbstractBendableScore<BendableScore> {
     }
 
     @Override
+    public Score subtract(Score subtrahend) {
+        return subtract((BendableScore) subtrahend);
+    }
+
     public BendableScore subtract(BendableScore subtrahend) {
         validateCompatible(subtrahend);
         int[] newHardScores = new int[hardScores.length];
@@ -366,6 +374,10 @@ public final class BendableScore extends AbstractBendableScore<BendableScore> {
     }
 
     @Override
+    public int compareTo(Score other) {
+        return compareTo((BendableScore) other);
+    }
+
     public int compareTo(BendableScore other) {
         validateCompatible(other);
         if (initScore != other.getInitScore()) {

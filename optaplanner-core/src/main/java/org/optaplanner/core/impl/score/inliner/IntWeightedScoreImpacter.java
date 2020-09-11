@@ -29,6 +29,6 @@ public interface IntWeightedScoreImpacter extends WeightedScoreImpacter {
      * @param matchScoreConsumer null if {@link InnerScoreDirector#isConstraintMatchEnabled()} is false
      * @return never null
      */
-    UndoScoreImpacter impactScore(int matchWeight, Consumer<Score<?>> matchScoreConsumer);
+    UndoScoreImpacter impactScore(int matchWeight, Consumer<Score> matchScoreConsumer);
 
 }

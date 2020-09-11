@@ -32,7 +32,7 @@ import org.optaplanner.core.api.score.Score;
  *
  * @see Score
  */
-public final class HardSoftBigDecimalScore extends AbstractScore<HardSoftBigDecimalScore> {
+public final class HardSoftBigDecimalScore extends AbstractScore {
 
     public static final HardSoftBigDecimalScore ZERO = new HardSoftBigDecimalScore(0, BigDecimal.ZERO, BigDecimal.ZERO);
     public static final HardSoftBigDecimalScore ONE_HARD = new HardSoftBigDecimalScore(0, BigDecimal.ONE, BigDecimal.ZERO);
@@ -128,6 +128,10 @@ public final class HardSoftBigDecimalScore extends AbstractScore<HardSoftBigDeci
     }
 
     @Override
+    public Score add(Score addend) {
+        return add((HardSoftBigDecimalScore) addend);
+    }
+
     public HardSoftBigDecimalScore add(HardSoftBigDecimalScore addend) {
         return new HardSoftBigDecimalScore(
                 initScore + addend.getInitScore(),
@@ -136,6 +140,10 @@ public final class HardSoftBigDecimalScore extends AbstractScore<HardSoftBigDeci
     }
 
     @Override
+    public Score subtract(Score subtrahend) {
+        return subtract((HardSoftBigDecimalScore) subtrahend);
+    }
+
     public HardSoftBigDecimalScore subtract(HardSoftBigDecimalScore subtrahend) {
         return new HardSoftBigDecimalScore(
                 initScore - subtrahend.getInitScore(),
@@ -211,6 +219,10 @@ public final class HardSoftBigDecimalScore extends AbstractScore<HardSoftBigDeci
     }
 
     @Override
+    public int compareTo(Score other) {
+        return compareTo((HardSoftBigDecimalScore) other);
+    }
+
     public int compareTo(HardSoftBigDecimalScore other) {
         if (initScore != other.getInitScore()) {
             return Integer.compare(initScore, other.getInitScore());

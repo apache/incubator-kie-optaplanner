@@ -28,7 +28,7 @@ public class DroolsConstraint<Solution_> extends AbstractConstraint<Solution_, D
     private final ConstraintConsequence consequence;
 
     public DroolsConstraint(DroolsConstraintFactory<Solution_> constraintFactory, String constraintPackage,
-            String constraintName, Function<Solution_, Score<?>> constraintWeightExtractor,
+            String constraintName, Function<Solution_, Score> constraintWeightExtractor,
             ScoreImpactType scoreImpactType, boolean isConstraintWeightConfigurable,
             ConstraintConsequence constraintConsequence) {
         super(constraintFactory, constraintPackage, constraintName, constraintWeightExtractor, scoreImpactType,

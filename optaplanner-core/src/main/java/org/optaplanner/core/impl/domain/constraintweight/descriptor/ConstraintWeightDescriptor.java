@@ -78,7 +78,7 @@ public class ConstraintWeightDescriptor<Solution_> {
         return memberAccessor;
     }
 
-    public Function<Solution_, Score<?>> createExtractor() {
+    public Function<Solution_, Score> createExtractor() {
         SolutionDescriptor<Solution_> solutionDescriptor = constraintConfigurationDescriptor.getSolutionDescriptor();
         MemberAccessor constraintConfigurationMemberAccessor = solutionDescriptor.getConstraintConfigurationMemberAccessor();
         return (Solution_ solution) -> {
@@ -86,7 +86,7 @@ public class ConstraintWeightDescriptor<Solution_> {
                     constraintConfigurationMemberAccessor.executeGetter(solution),
                     "Constraint configuration provider (" + constraintConfigurationMemberAccessor +
                             ") returns null.");
-            return (Score<?>) memberAccessor.executeGetter(constraintConfiguration);
+            return (Score) memberAccessor.executeGetter(constraintConfiguration);
         };
     }
 

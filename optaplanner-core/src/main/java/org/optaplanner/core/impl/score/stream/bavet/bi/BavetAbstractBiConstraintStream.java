@@ -179,7 +179,7 @@ public abstract class BavetAbstractBiConstraintStream<Solution_, A, B> extends B
     // ************************************************************************
 
     @Override
-    public final Constraint impactScore(String constraintPackage, String constraintName, Score<?> constraintWeight,
+    public final Constraint impactScore(String constraintPackage, String constraintName, Score constraintWeight,
             ScoreImpactType impactType) {
         BavetConstraint<Solution_> constraint = buildConstraint(constraintPackage, constraintName, constraintWeight,
                 impactType);
@@ -190,7 +190,7 @@ public abstract class BavetAbstractBiConstraintStream<Solution_, A, B> extends B
     }
 
     @Override
-    public final Constraint impactScore(String constraintPackage, String constraintName, Score<?> constraintWeight,
+    public final Constraint impactScore(String constraintPackage, String constraintName, Score constraintWeight,
             ToIntBiFunction<A, B> matchWeigher, ScoreImpactType impactType) {
         BavetConstraint<Solution_> constraint = buildConstraint(constraintPackage, constraintName, constraintWeight,
                 impactType);
@@ -202,7 +202,7 @@ public abstract class BavetAbstractBiConstraintStream<Solution_, A, B> extends B
 
     @Override
     public final Constraint impactScoreLong(String constraintPackage, String constraintName,
-            Score<?> constraintWeight, ToLongBiFunction<A, B> matchWeigher, ScoreImpactType impactType) {
+            Score constraintWeight, ToLongBiFunction<A, B> matchWeigher, ScoreImpactType impactType) {
         BavetConstraint<Solution_> constraint = buildConstraint(constraintPackage, constraintName, constraintWeight,
                 impactType);
         BavetScoringBiConstraintStream<Solution_, A, B> stream = new BavetScoringBiConstraintStream<>(constraintFactory,
@@ -213,7 +213,7 @@ public abstract class BavetAbstractBiConstraintStream<Solution_, A, B> extends B
 
     @Override
     public final Constraint impactScoreBigDecimal(String constraintPackage, String constraintName,
-            Score<?> constraintWeight, BiFunction<A, B, BigDecimal> matchWeigher, ScoreImpactType impactType) {
+            Score constraintWeight, BiFunction<A, B, BigDecimal> matchWeigher, ScoreImpactType impactType) {
         BavetConstraint<Solution_> constraint = buildConstraint(constraintPackage, constraintName, constraintWeight,
                 impactType);
         BavetScoringBiConstraintStream<Solution_, A, B> stream = new BavetScoringBiConstraintStream<>(constraintFactory,
@@ -271,7 +271,7 @@ public abstract class BavetAbstractBiConstraintStream<Solution_, A, B> extends B
     // ************************************************************************
 
     public BavetAbstractBiNode<A, B> createNodeChain(BavetNodeBuildPolicy<Solution_> buildPolicy,
-            Score<?> constraintWeight, int nodeOrder, BavetAbstractBiNode<A, B> parentNode) {
+            Score constraintWeight, int nodeOrder, BavetAbstractBiNode<A, B> parentNode) {
         BavetAbstractBiNode<A, B> node = createNode(buildPolicy, constraintWeight, nodeOrder, parentNode);
         node = processNode(buildPolicy, nodeOrder, parentNode, node);
         createChildNodeChains(buildPolicy, constraintWeight, nodeOrder, node);
@@ -293,7 +293,7 @@ public abstract class BavetAbstractBiConstraintStream<Solution_, A, B> extends B
         return node;
     }
 
-    protected void createChildNodeChains(BavetNodeBuildPolicy<Solution_> buildPolicy, Score<?> constraintWeight,
+    protected void createChildNodeChains(BavetNodeBuildPolicy<Solution_> buildPolicy, Score constraintWeight,
             int nodeOrder, BavetAbstractBiNode<A, B> node) {
         if (childStreamList.isEmpty()) {
             throw new IllegalStateException("The stream (" + this + ") leads to nowhere.\n"
@@ -305,5 +305,5 @@ public abstract class BavetAbstractBiConstraintStream<Solution_, A, B> extends B
     }
 
     protected abstract BavetAbstractBiNode<A, B> createNode(BavetNodeBuildPolicy<Solution_> buildPolicy,
-            Score<?> constraintWeight, int nodeOrder, BavetAbstractBiNode<A, B> parentNode);
+            Score constraintWeight, int nodeOrder, BavetAbstractBiNode<A, B> parentNode);
 }

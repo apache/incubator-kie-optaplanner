@@ -28,19 +28,19 @@ import org.optaplanner.core.impl.score.stream.common.ScoreImpactType;
 public interface InnerTriConstraintStream<A, B, C> extends TriConstraintStream<A, B, C> {
 
     @Override
-    default Constraint penalize(String constraintPackage, String constraintName, Score<?> constraintWeight,
+    default Constraint penalize(String constraintPackage, String constraintName, Score constraintWeight,
             ToIntTriFunction<A, B, C> matchWeigher) {
         return impactScore(constraintPackage, constraintName, constraintWeight, matchWeigher, ScoreImpactType.PENALTY);
     }
 
     @Override
-    default Constraint penalizeLong(String constraintPackage, String constraintName, Score<?> constraintWeight,
+    default Constraint penalizeLong(String constraintPackage, String constraintName, Score constraintWeight,
             ToLongTriFunction<A, B, C> matchWeigher) {
         return impactScoreLong(constraintPackage, constraintName, constraintWeight, matchWeigher, ScoreImpactType.PENALTY);
     }
 
     @Override
-    default Constraint penalizeBigDecimal(String constraintPackage, String constraintName, Score<?> constraintWeight,
+    default Constraint penalizeBigDecimal(String constraintPackage, String constraintName, Score constraintWeight,
             TriFunction<A, B, C, BigDecimal> matchWeigher) {
         return impactScoreBigDecimal(constraintPackage, constraintName, constraintWeight, matchWeigher,
                 ScoreImpactType.PENALTY);
@@ -65,19 +65,19 @@ public interface InnerTriConstraintStream<A, B, C> extends TriConstraintStream<A
     }
 
     @Override
-    default Constraint reward(String constraintPackage, String constraintName, Score<?> constraintWeight,
+    default Constraint reward(String constraintPackage, String constraintName, Score constraintWeight,
             ToIntTriFunction<A, B, C> matchWeigher) {
         return impactScore(constraintPackage, constraintName, constraintWeight, matchWeigher, ScoreImpactType.REWARD);
     }
 
     @Override
-    default Constraint rewardLong(String constraintPackage, String constraintName, Score<?> constraintWeight,
+    default Constraint rewardLong(String constraintPackage, String constraintName, Score constraintWeight,
             ToLongTriFunction<A, B, C> matchWeigher) {
         return impactScoreLong(constraintPackage, constraintName, constraintWeight, matchWeigher, ScoreImpactType.REWARD);
     }
 
     @Override
-    default Constraint rewardBigDecimal(String constraintPackage, String constraintName, Score<?> constraintWeight,
+    default Constraint rewardBigDecimal(String constraintPackage, String constraintName, Score constraintWeight,
             TriFunction<A, B, C, BigDecimal> matchWeigher) {
         return impactScoreBigDecimal(constraintPackage, constraintName, constraintWeight, matchWeigher, ScoreImpactType.REWARD);
     }
@@ -101,19 +101,19 @@ public interface InnerTriConstraintStream<A, B, C> extends TriConstraintStream<A
     }
 
     @Override
-    default Constraint impact(String constraintPackage, String constraintName, Score<?> constraintWeight,
+    default Constraint impact(String constraintPackage, String constraintName, Score constraintWeight,
             ToIntTriFunction<A, B, C> matchWeigher) {
         return impactScore(constraintPackage, constraintName, constraintWeight, matchWeigher, ScoreImpactType.MIXED);
     }
 
     @Override
-    default Constraint impactLong(String constraintPackage, String constraintName, Score<?> constraintWeight,
+    default Constraint impactLong(String constraintPackage, String constraintName, Score constraintWeight,
             ToLongTriFunction<A, B, C> matchWeigher) {
         return impactScoreLong(constraintPackage, constraintName, constraintWeight, matchWeigher, ScoreImpactType.MIXED);
     }
 
     @Override
-    default Constraint impactBigDecimal(String constraintPackage, String constraintName, Score<?> constraintWeight,
+    default Constraint impactBigDecimal(String constraintPackage, String constraintName, Score constraintWeight,
             TriFunction<A, B, C, BigDecimal> matchWeigher) {
         return impactScoreBigDecimal(constraintPackage, constraintName, constraintWeight, matchWeigher, ScoreImpactType.MIXED);
     }
@@ -136,13 +136,13 @@ public interface InnerTriConstraintStream<A, B, C> extends TriConstraintStream<A
         return impactScoreConfigurableBigDecimal(constraintPackage, constraintName, matchWeigher, ScoreImpactType.MIXED);
     }
 
-    Constraint impactScore(String constraintPackage, String constraintName, Score<?> constraintWeight,
+    Constraint impactScore(String constraintPackage, String constraintName, Score constraintWeight,
             ToIntTriFunction<A, B, C> matchWeigher, ScoreImpactType impactType);
 
-    Constraint impactScoreLong(String constraintPackage, String constraintName, Score<?> constraintWeight,
+    Constraint impactScoreLong(String constraintPackage, String constraintName, Score constraintWeight,
             ToLongTriFunction<A, B, C> matchWeigher, ScoreImpactType impactType);
 
-    Constraint impactScoreBigDecimal(String constraintPackage, String constraintName, Score<?> constraintWeight,
+    Constraint impactScoreBigDecimal(String constraintPackage, String constraintName, Score constraintWeight,
             TriFunction<A, B, C, BigDecimal> matchWeigher, ScoreImpactType impactType);
 
     Constraint impactScoreConfigurable(String constraintPackage, String constraintName,

@@ -41,7 +41,7 @@ public class HardSoftScoreInliner extends ScoreInliner<HardSoftScore> {
         int hardConstraintWeight = constraintWeight.getHardScore();
         int softConstraintWeight = constraintWeight.getSoftScore();
         if (softConstraintWeight == 0) {
-            return (int matchWeight, Consumer<Score<?>> matchScoreConsumer) -> {
+            return (int matchWeight, Consumer<Score> matchScoreConsumer) -> {
                 int hardImpact = hardConstraintWeight * matchWeight;
                 this.hardScore += hardImpact;
                 if (constraintMatchEnabled) {
@@ -50,7 +50,7 @@ public class HardSoftScoreInliner extends ScoreInliner<HardSoftScore> {
                 return () -> this.hardScore -= hardImpact;
             };
         } else if (hardConstraintWeight == 0) {
-            return (int matchWeight, Consumer<Score<?>> matchScoreConsumer) -> {
+            return (int matchWeight, Consumer<Score> matchScoreConsumer) -> {
                 int softImpact = softConstraintWeight * matchWeight;
                 this.softScore += softImpact;
                 if (constraintMatchEnabled) {
@@ -59,7 +59,7 @@ public class HardSoftScoreInliner extends ScoreInliner<HardSoftScore> {
                 return () -> this.softScore -= softImpact;
             };
         } else {
-            return (int matchWeight, Consumer<Score<?>> matchScoreConsumer) -> {
+            return (int matchWeight, Consumer<Score> matchScoreConsumer) -> {
                 int hardImpact = hardConstraintWeight * matchWeight;
                 int softImpact = softConstraintWeight * matchWeight;
                 this.hardScore += hardImpact;

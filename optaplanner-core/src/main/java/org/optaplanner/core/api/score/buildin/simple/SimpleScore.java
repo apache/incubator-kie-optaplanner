@@ -28,7 +28,7 @@ import org.optaplanner.core.api.score.Score;
  *
  * @see Score
  */
-public final class SimpleScore extends AbstractScore<SimpleScore> {
+public final class SimpleScore extends AbstractScore {
 
     public static final SimpleScore ZERO = new SimpleScore(0, 0);
     public static final SimpleScore ONE = new SimpleScore(0, 1);
@@ -91,6 +91,10 @@ public final class SimpleScore extends AbstractScore<SimpleScore> {
     }
 
     @Override
+    public Score add(Score addend) {
+        return add((SimpleScore) addend);
+    }
+
     public SimpleScore add(SimpleScore addend) {
         return new SimpleScore(
                 initScore + addend.getInitScore(),
@@ -98,6 +102,10 @@ public final class SimpleScore extends AbstractScore<SimpleScore> {
     }
 
     @Override
+    public Score subtract(Score subtrahend) {
+        return subtract((SimpleScore) subtrahend);
+    }
+
     public SimpleScore subtract(SimpleScore subtrahend) {
         return new SimpleScore(
                 initScore - subtrahend.getInitScore(),
@@ -159,6 +167,10 @@ public final class SimpleScore extends AbstractScore<SimpleScore> {
     }
 
     @Override
+    public int compareTo(Score other) {
+        return compareTo((SimpleScore) other);
+    }
+
     public int compareTo(SimpleScore other) {
         if (initScore != other.getInitScore()) {
             return Integer.compare(initScore, other.getInitScore());

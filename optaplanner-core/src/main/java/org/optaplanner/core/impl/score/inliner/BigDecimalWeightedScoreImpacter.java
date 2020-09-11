@@ -30,6 +30,6 @@ public interface BigDecimalWeightedScoreImpacter extends WeightedScoreImpacter {
      * @param scoreConsumer null if {@link InnerScoreDirector#isConstraintMatchEnabled()} is false
      * @return never null
      */
-    UndoScoreImpacter impactScore(BigDecimal matchWeight, Consumer<Score<?>> scoreConsumer);
+    UndoScoreImpacter impactScore(BigDecimal matchWeight, Consumer<Score> scoreConsumer);
 
 }

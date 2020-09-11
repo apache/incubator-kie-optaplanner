@@ -29,7 +29,7 @@ import org.optaplanner.core.impl.score.buildin.hardsoft.HardSoftScoreDefinition;
  * @see ScoreDefinition
  * @see HardSoftScoreDefinition
  */
-public abstract class AbstractScoreDefinition<S extends Score<S>> implements ScoreDefinition<S> {
+public abstract class AbstractScoreDefinition<S extends Score> implements ScoreDefinition<S> {
 
     private final String[] levelLabels;
 

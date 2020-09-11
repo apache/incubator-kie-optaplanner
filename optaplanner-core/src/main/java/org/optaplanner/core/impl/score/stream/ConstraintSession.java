@@ -34,7 +34,7 @@ public interface ConstraintSession<Solution_> extends AutoCloseable {
 
     void retract(Object fact);
 
-    Score<?> calculateScore(int initScore);
+    Score calculateScore(int initScore);
 
     /**
      * As defined by {@link InnerScoreDirector#getConstraintMatchTotalMap()}.

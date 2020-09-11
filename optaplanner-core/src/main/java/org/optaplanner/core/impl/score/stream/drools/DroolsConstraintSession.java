@@ -54,7 +54,7 @@ public class DroolsConstraintSession<Solution_> implements ConstraintSession<Sol
     }
 
     @Override
-    public Score<?> calculateScore(int initScore) {
+    public Score calculateScore(int initScore) {
         kieSession.fireAllRules();
         return scoreHolder.extractScore(initScore);
     }

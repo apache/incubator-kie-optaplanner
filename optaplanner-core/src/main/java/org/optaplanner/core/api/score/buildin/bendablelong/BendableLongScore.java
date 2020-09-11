@@ -228,6 +228,10 @@ public final class BendableLongScore extends AbstractBendableScore<BendableLongS
     }
 
     @Override
+    public Score add(Score addend) {
+        return add((BendableLongScore) addend);
+    }
+
     public BendableLongScore add(BendableLongScore addend) {
         validateCompatible(addend);
         long[] newHardScores = new long[hardScores.length];
@@ -244,6 +248,10 @@ public final class BendableLongScore extends AbstractBendableScore<BendableLongS
     }
 
     @Override
+    public Score subtract(Score subtrahend) {
+        return subtract((BendableLongScore) subtrahend);
+    }
+
     public BendableLongScore subtract(BendableLongScore subtrahend) {
         validateCompatible(subtrahend);
         long[] newHardScores = new long[hardScores.length];
@@ -364,6 +372,10 @@ public final class BendableLongScore extends AbstractBendableScore<BendableLongS
     }
 
     @Override
+    public int compareTo(Score other) {
+        return compareTo((BendableLongScore) other);
+    }
+
     public int compareTo(BendableLongScore other) {
         validateCompatible(other);
         if (initScore != other.getInitScore()) {

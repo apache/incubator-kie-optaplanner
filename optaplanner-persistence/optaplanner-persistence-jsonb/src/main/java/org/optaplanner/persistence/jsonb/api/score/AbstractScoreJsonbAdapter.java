@@ -31,7 +31,7 @@ import org.optaplanner.persistence.jsonb.api.OptaPlannerJsonbConfig;
  * @see Score
  * @param <Score_> the actual score type
  */
-public abstract class AbstractScoreJsonbAdapter<Score_ extends Score<Score_>> implements JsonbAdapter<Score_, String> {
+public abstract class AbstractScoreJsonbAdapter<Score_ extends Score> implements JsonbAdapter<Score_, String> {
 
     @Override
     public String adaptToJson(Score_ score) {

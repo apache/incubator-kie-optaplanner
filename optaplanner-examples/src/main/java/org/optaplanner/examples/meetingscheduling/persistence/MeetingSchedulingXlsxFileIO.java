@@ -46,7 +46,6 @@ import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.util.CellRangeAddress;
 import org.apache.poi.xssf.usermodel.XSSFCell;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
-import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.buildin.hardmediumsoft.HardMediumSoftScore;
 import org.optaplanner.core.api.score.constraint.ConstraintMatch;
 import org.optaplanner.core.api.score.constraint.Indictment;
@@ -916,7 +915,7 @@ public class MeetingSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<Meet
                     .map(constraintMatch -> (HardMediumSoftScore) constraintMatch.getScore())
                     // Filter out positive constraints
                     .filter(indictmentScore -> !(indictmentScore.getHardScore() >= 0 && indictmentScore.getSoftScore() >= 0))
-                    .reduce(Score::add).orElse(HardMediumSoftScore.ZERO);
+                    .reduce(HardMediumSoftScore::add).orElse(HardMediumSoftScore.ZERO);
 
             XSSFCell cell = getXSSFCellOfScore(score);
 

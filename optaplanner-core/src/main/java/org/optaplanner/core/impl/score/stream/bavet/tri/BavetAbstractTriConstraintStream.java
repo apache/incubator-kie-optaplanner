@@ -147,7 +147,7 @@ public abstract class BavetAbstractTriConstraintStream<Solution_, A, B, C> exten
     // ************************************************************************
 
     @Override
-    public final Constraint impactScore(String constraintPackage, String constraintName, Score<?> constraintWeight,
+    public final Constraint impactScore(String constraintPackage, String constraintName, Score constraintWeight,
             ScoreImpactType impactType) {
         BavetConstraint<Solution_> constraint = buildConstraint(constraintPackage, constraintName, constraintWeight,
                 impactType);
@@ -158,7 +158,7 @@ public abstract class BavetAbstractTriConstraintStream<Solution_, A, B, C> exten
     }
 
     @Override
-    public final Constraint impactScore(String constraintPackage, String constraintName, Score<?> constraintWeight,
+    public final Constraint impactScore(String constraintPackage, String constraintName, Score constraintWeight,
             ToIntTriFunction<A, B, C> matchWeigher, ScoreImpactType impactType) {
         BavetConstraint<Solution_> constraint = buildConstraint(constraintPackage, constraintName, constraintWeight,
                 impactType);
@@ -170,7 +170,7 @@ public abstract class BavetAbstractTriConstraintStream<Solution_, A, B, C> exten
 
     @Override
     public final Constraint impactScoreLong(String constraintPackage, String constraintName,
-            Score<?> constraintWeight, ToLongTriFunction<A, B, C> matchWeigher, ScoreImpactType impactType) {
+            Score constraintWeight, ToLongTriFunction<A, B, C> matchWeigher, ScoreImpactType impactType) {
         BavetConstraint<Solution_> constraint = buildConstraint(constraintPackage, constraintName, constraintWeight,
                 impactType);
         BavetScoringTriConstraintStream<Solution_, A, B, C> stream = new BavetScoringTriConstraintStream<>(constraintFactory,
@@ -181,7 +181,7 @@ public abstract class BavetAbstractTriConstraintStream<Solution_, A, B, C> exten
 
     @Override
     public final Constraint impactScoreBigDecimal(String constraintPackage, String constraintName,
-            Score<?> constraintWeight, TriFunction<A, B, C, BigDecimal> matchWeigher, ScoreImpactType impactType) {
+            Score constraintWeight, TriFunction<A, B, C, BigDecimal> matchWeigher, ScoreImpactType impactType) {
         BavetConstraint<Solution_> constraint = buildConstraint(constraintPackage, constraintName, constraintWeight,
                 impactType);
         BavetScoringTriConstraintStream<Solution_, A, B, C> stream = new BavetScoringTriConstraintStream<>(constraintFactory,
@@ -239,7 +239,7 @@ public abstract class BavetAbstractTriConstraintStream<Solution_, A, B, C> exten
     // ************************************************************************
 
     public BavetAbstractTriNode<A, B, C> createNodeChain(BavetNodeBuildPolicy<Solution_> buildPolicy,
-            Score<?> constraintWeight, int nodeOrder, BavetAbstractTriNode<A, B, C> parentNode) {
+            Score constraintWeight, int nodeOrder, BavetAbstractTriNode<A, B, C> parentNode) {
         BavetAbstractTriNode<A, B, C> node = createNode(buildPolicy, constraintWeight, nodeOrder, parentNode);
         node = processNode(buildPolicy, nodeOrder, parentNode, node);
         createChildNodeChains(buildPolicy, constraintWeight, nodeOrder, node);
@@ -261,7 +261,7 @@ public abstract class BavetAbstractTriConstraintStream<Solution_, A, B, C> exten
         return node;
     }
 
-    protected void createChildNodeChains(BavetNodeBuildPolicy<Solution_> buildPolicy, Score<?> constraintWeight, int nodeOrder,
+    protected void createChildNodeChains(BavetNodeBuildPolicy<Solution_> buildPolicy, Score constraintWeight, int nodeOrder,
             BavetAbstractTriNode<A, B, C> node) {
         if (childStreamList.isEmpty()) {
             throw new IllegalStateException("The stream (" + this + ") leads to nowhere.\n"
@@ -273,6 +273,6 @@ public abstract class BavetAbstractTriConstraintStream<Solution_, A, B, C> exten
     }
 
     protected abstract BavetAbstractTriNode<A, B, C> createNode(BavetNodeBuildPolicy<Solution_> buildPolicy,
-            Score<?> constraintWeight, int nodeOrder, BavetAbstractTriNode<A, B, C> parentNode);
+            Score constraintWeight, int nodeOrder, BavetAbstractTriNode<A, B, C> parentNode);
 
 }

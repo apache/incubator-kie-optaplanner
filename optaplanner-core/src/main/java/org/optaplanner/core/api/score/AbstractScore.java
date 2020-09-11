@@ -27,11 +27,10 @@ import org.optaplanner.core.api.score.buildin.hardsoft.HardSoftScore;
  * <p>
  * Subclasses must be immutable.
  *
- * @param <S> the actual score type
  * @see Score
  * @see HardSoftScore
  */
-public abstract class AbstractScore<S extends Score> implements Score<S>,
+public abstract class AbstractScore implements Score,
         Serializable {
 
     protected static final String INIT_LABEL = "init";

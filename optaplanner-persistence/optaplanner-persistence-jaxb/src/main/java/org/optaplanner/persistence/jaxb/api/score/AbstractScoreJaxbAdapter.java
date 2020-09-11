@@ -29,7 +29,7 @@ import org.optaplanner.core.api.score.Score;
  * @see Score
  * @param <Score_> the actual score type
  */
-public abstract class AbstractScoreJaxbAdapter<Score_ extends Score<Score_>> extends XmlAdapter<String, Score_> {
+public abstract class AbstractScoreJaxbAdapter<Score_ extends Score> extends XmlAdapter<String, Score_> {
 
     @Override
     public String marshal(Score_ score) {

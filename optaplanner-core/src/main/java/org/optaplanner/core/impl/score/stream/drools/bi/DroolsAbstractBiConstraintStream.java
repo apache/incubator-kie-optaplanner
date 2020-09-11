@@ -171,7 +171,7 @@ public abstract class DroolsAbstractBiConstraintStream<Solution_, A, B>
     // ************************************************************************
 
     @Override
-    public final Constraint impactScore(String constraintPackage, String constraintName, Score<?> constraintWeight,
+    public final Constraint impactScore(String constraintPackage, String constraintName, Score constraintWeight,
             ScoreImpactType impactType) {
         ConstraintConsequence<BiConstraintGraphNode> consequence =
                 constraintFactory.getConstraintGraph().impact(getConstraintGraphNode());
@@ -180,7 +180,7 @@ public abstract class DroolsAbstractBiConstraintStream<Solution_, A, B>
 
     @Override
     public final Constraint impactScore(String constraintPackage, String constraintName,
-            Score<?> constraintWeight, ToIntBiFunction<A, B> matchWeigher, ScoreImpactType impactType) {
+            Score constraintWeight, ToIntBiFunction<A, B> matchWeigher, ScoreImpactType impactType) {
         ConstraintConsequence<BiConstraintGraphNode> consequence =
                 constraintFactory.getConstraintGraph().impact(getConstraintGraphNode(), matchWeigher);
         return buildConstraint(constraintPackage, constraintName, constraintWeight, impactType, consequence);
@@ -188,7 +188,7 @@ public abstract class DroolsAbstractBiConstraintStream<Solution_, A, B>
 
     @Override
     public final Constraint impactScoreLong(String constraintPackage, String constraintName,
-            Score<?> constraintWeight, ToLongBiFunction<A, B> matchWeigher, ScoreImpactType impactType) {
+            Score constraintWeight, ToLongBiFunction<A, B> matchWeigher, ScoreImpactType impactType) {
         ConstraintConsequence<BiConstraintGraphNode> consequence =
                 constraintFactory.getConstraintGraph().impact(getConstraintGraphNode(), matchWeigher);
         return buildConstraint(constraintPackage, constraintName, constraintWeight, impactType, consequence);
@@ -196,7 +196,7 @@ public abstract class DroolsAbstractBiConstraintStream<Solution_, A, B>
 
     @Override
     public final Constraint impactScoreBigDecimal(String constraintPackage, String constraintName,
-            Score<?> constraintWeight, BiFunction<A, B, BigDecimal> matchWeigher, ScoreImpactType impactType) {
+            Score constraintWeight, BiFunction<A, B, BigDecimal> matchWeigher, ScoreImpactType impactType) {
         ConstraintConsequence<BiConstraintGraphNode> consequence =
                 constraintFactory.getConstraintGraph().impact(getConstraintGraphNode(), matchWeigher);
         return buildConstraint(constraintPackage, constraintName, constraintWeight, impactType, consequence);

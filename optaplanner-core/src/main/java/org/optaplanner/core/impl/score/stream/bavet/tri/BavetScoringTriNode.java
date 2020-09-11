@@ -33,15 +33,15 @@ public final class BavetScoringTriNode<A, B, C> extends BavetAbstractTriNode<A, 
 
     private final String constraintPackage;
     private final String constraintName;
-    private final Score<?> constraintWeight;
-    private final QuadFunction<A, B, C, Consumer<Score<?>>, UndoScoreImpacter> scoreImpacter;
+    private final Score constraintWeight;
+    private final QuadFunction<A, B, C, Consumer<Score>, UndoScoreImpacter> scoreImpacter;
 
     private final boolean constraintMatchEnabled;
     private final Set<BavetScoringTriTuple<A, B, C>> tupleSet;
 
     public BavetScoringTriNode(BavetConstraintSession session, int nodeOrder,
-            String constraintPackage, String constraintName, Score<?> constraintWeight,
-            QuadFunction<A, B, C, Consumer<Score<?>>, UndoScoreImpacter> scoreImpacter) {
+            String constraintPackage, String constraintName, Score constraintWeight,
+            QuadFunction<A, B, C, Consumer<Score>, UndoScoreImpacter> scoreImpacter) {
         super(session, nodeOrder);
         this.constraintPackage = constraintPackage;
         this.constraintName = constraintName;
@@ -99,7 +99,7 @@ public final class BavetScoringTriNode<A, B, C> extends BavetAbstractTriNode<A, 
     }
 
     @Override
-    public ConstraintMatchTotal buildConstraintMatchTotal(Score<?> zeroScore) {
+    public ConstraintMatchTotal buildConstraintMatchTotal(Score zeroScore) {
         DefaultConstraintMatchTotal constraintMatchTotal = new DefaultConstraintMatchTotal(constraintPackage,
                 constraintName, constraintWeight, zeroScore);
         for (BavetScoringTriTuple<A, B, C> tuple : tupleSet) {
@@ -134,7 +134,7 @@ public final class BavetScoringTriNode<A, B, C> extends BavetAbstractTriNode<A, 
     }
 
     @Override
-    public Score<?> getConstraintWeight() {
+    public Score getConstraintWeight() {
         return constraintWeight;
     }
 

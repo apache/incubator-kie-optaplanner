@@ -25,8 +25,8 @@ public interface BavetScoringTuple {
 
     void setUndoScoreImpacter(UndoScoreImpacter undoScoreImpacter);
 
-    Score<?> getMatchScore();
+    Score getMatchScore();
 
-    void setMatchScore(Score<?> matchScore);
+    void setMatchScore(Score matchScore);
 
 }

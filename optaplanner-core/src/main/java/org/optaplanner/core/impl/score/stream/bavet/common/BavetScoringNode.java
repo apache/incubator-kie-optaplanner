@@ -39,12 +39,12 @@ public interface BavetScoringNode extends BavetNode {
     /**
      * @return never null
      */
-    Score<?> getConstraintWeight();
+    Score getConstraintWeight();
 
     /**
      * @param zeroScore never null
      * @return never null
      */
-    ConstraintMatchTotal buildConstraintMatchTotal(Score<?> zeroScore);
+    ConstraintMatchTotal buildConstraintMatchTotal(Score zeroScore);
 
 }
