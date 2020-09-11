@@ -29,7 +29,6 @@ import java.util.List;
 
 import org.drools.model.PatternDSL;
 import org.drools.model.Variable;
-import org.drools.model.view.ExprViewItem;
 import org.drools.model.view.ViewItem;
 import org.optaplanner.core.api.function.TriFunction;
 import org.optaplanner.core.api.score.stream.tri.TriConstraintCollector;
@@ -55,23 +54,22 @@ final class TriGroupBy2Map1CollectFastMutator<A, B, C, NewA, NewB, NewC> extends
         Variable<A> inputA = ruleAssembler.getVariable(0);
         Variable<B> inputB = ruleAssembler.getVariable(1);
         Variable<C> inputC = ruleAssembler.getVariable(2);
-        Variable<BiTuple<NewA, NewB>> groupKey =
-                (Variable<BiTuple<NewA, NewB>>) ruleAssembler.createVariable(BiTuple.class, "groupKey");
+        Variable<BiTuple<NewA, NewB>> groupKey = ruleAssembler.createVariable(BiTuple.class, "groupKey");
         Variable<NewC> output = ruleAssembler.createVariable("output");
-        ExprViewItem accumulatePattern = groupBy(getInnerAccumulatePattern(ruleAssembler), inputA, inputB, inputC,
-                groupKey, (a, b, c) -> new BiTuple<>(groupKeyMappingA.apply(a, b, c), groupKeyMappingB.apply(a, b, c)),
+        ViewItem accumulatePattern = groupBy(getInnerAccumulatePattern(ruleAssembler), inputA, inputB, inputC, groupKey,
+                (a, b, c) -> new BiTuple<>(groupKeyMappingA.apply(a, b, c), groupKeyMappingB.apply(a, b, c)),
                 accFunction(() -> new DroolsTriAccumulateFunction<>(collectorC)).as(output));
         List<ViewItem> newFinishedExpressions = new ArrayList<>(ruleAssembler.getFinishedExpressions());
         newFinishedExpressions.add(accumulatePattern); // The last pattern is added here.
         Variable<NewA> newA = ruleAssembler.createVariable("newA", from(groupKey, k -> k.a));
         Variable<NewB> newB = ruleAssembler.createVariable("newB", from(groupKey, k -> k.b));
+        Variable<NewC> newC = ruleAssembler.createVariable("newC", from(output));
         PatternDSL.PatternDef<NewA> newAPattern = pattern(newA);
         newFinishedExpressions.add(newAPattern);
         PatternDSL.PatternDef<NewB> newBPattern = pattern(newB);
         newFinishedExpressions.add(newBPattern);
-        PatternDSL.PatternDef<NewC> newPrimaryPattern = pattern(output);
-        return new TriRuleAssembler(ruleAssembler, ruleAssembler.getExpectedGroupByCount(),
-                newFinishedExpressions, Arrays.asList(newA, newB, output), singletonList(newPrimaryPattern),
-                emptyMap());
+        PatternDSL.PatternDef<NewC> newPrimaryPattern = pattern(newC);
+        return new TriRuleAssembler(ruleAssembler, ruleAssembler.getExpectedGroupByCount(), newFinishedExpressions,
+                Arrays.asList(newA, newB, newC), singletonList(newPrimaryPattern), emptyMap());
     }
 }

@@ -77,17 +77,29 @@ final class TriRuleAssembler extends AbstractRuleAssembler<TriPredicate> {
 
     @Override
     protected AbstractGroupByMutator new1Map0CollectGroupByMutator(Object mapping) {
-        return new TriGroupBy1Map0CollectMutator<>((TriFunction) mapping);
+        if (getExpectedGroupByCount() == 1) {
+            return new TriGroupBy1Map0CollectFastMutator<>((TriFunction) mapping);
+        } else {
+            return new TriGroupBy1Map0CollectMutator<>((TriFunction) mapping);
+        }
     }
 
     @Override
     protected AbstractGroupByMutator new1Map1CollectGroupByMutator(Object mapping, Object collector) {
-        return new TriGroupBy1Map1CollectMutator<>((TriFunction) mapping, (TriConstraintCollector) collector);
+        if (getExpectedGroupByCount() == 1) {
+            return new TriGroupBy1Map1CollectFastMutator<>((TriFunction) mapping, (TriConstraintCollector) collector);
+        } else {
+            return new TriGroupBy1Map1CollectMutator<>((TriFunction) mapping, (TriConstraintCollector) collector);
+        }
     }
 
     @Override
     protected AbstractGroupByMutator new2Map0CollectGroupByMutator(Object mappingA, Object mappingB) {
-        return new TriGroupBy2Map0CollectMutator<>((TriFunction) mappingA, (TriFunction) mappingB);
+        if (getExpectedGroupByCount() == 1) {
+            return new TriGroupBy2Map0CollectFastMutator<>((TriFunction) mappingA, (TriFunction) mappingB);
+        } else {
+            return new TriGroupBy2Map0CollectMutator<>((TriFunction) mappingA, (TriFunction) mappingB);
+        }
     }
 
     @Override

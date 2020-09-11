@@ -23,19 +23,21 @@ import static org.drools.model.PatternDSL.groupBy;
 import static org.drools.model.PatternDSL.pattern;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
-import java.util.function.BiFunction;
 
 import org.drools.model.PatternDSL;
 import org.drools.model.Variable;
 import org.drools.model.view.ViewItem;
+import org.optaplanner.core.api.function.TriFunction;
+import org.optaplanner.core.impl.score.stream.drools.common.BiTuple;
 
-class BiGroupBy1Map0CollectFastMutator<A, B, NewA> extends AbstractBiGroupByMutator {
+final class TriGroupBy1Map0CollectFastMutator<A, B, C, NewA> extends AbstractTriGroupByMutator {
 
-    private final BiFunction<A, B, NewA> groupKeyMapping;
+    private final TriFunction<A, B, C, NewA> groupKeyMappingA;
 
-    public BiGroupBy1Map0CollectFastMutator(BiFunction<A, B, NewA> groupKeyMapping) {
-        this.groupKeyMapping = groupKeyMapping;
+    public TriGroupBy1Map0CollectFastMutator(TriFunction<A, B, C, NewA> groupKeyMapping) {
+        this.groupKeyMappingA = groupKeyMapping;
     }
 
     @Override
@@ -43,14 +45,15 @@ class BiGroupBy1Map0CollectFastMutator<A, B, NewA> extends AbstractBiGroupByMuta
         ruleAssembler.applyFilterToLastPrimaryPattern();
         Variable<A> inputA = ruleAssembler.getVariable(0);
         Variable<B> inputB = ruleAssembler.getVariable(1);
-        Variable<NewA> groupKey = ruleAssembler.createVariable("groupKey");
-        ViewItem accumulatePattern = groupBy(getInnerAccumulatePattern(ruleAssembler), inputA, inputB, groupKey,
-                groupKeyMapping::apply);
+        Variable<C> inputC = ruleAssembler.getVariable(2);
+        Variable<NewA> groupKey = ruleAssembler.createVariable(BiTuple.class, "groupKey");
+        ViewItem accumulatePattern = groupBy(getInnerAccumulatePattern(ruleAssembler), inputA, inputB, inputC, groupKey,
+                groupKeyMappingA::apply);
         List<ViewItem> newFinishedExpressions = new ArrayList<>(ruleAssembler.getFinishedExpressions());
         newFinishedExpressions.add(accumulatePattern); // The last pattern is added here.
-        Variable<NewA> newA = ruleAssembler.createVariable("newB", from(groupKey));
+        Variable<NewA> newA = ruleAssembler.createVariable("newA", from(groupKey));
         PatternDSL.PatternDef<NewA> newPrimaryPattern = pattern(newA);
         return new UniRuleAssembler(ruleAssembler, ruleAssembler.getExpectedGroupByCount(), newFinishedExpressions,
-                singletonList(newA), singletonList(newPrimaryPattern), emptyMap());
+                Arrays.asList(newA), singletonList(newPrimaryPattern), emptyMap());
     }
 }

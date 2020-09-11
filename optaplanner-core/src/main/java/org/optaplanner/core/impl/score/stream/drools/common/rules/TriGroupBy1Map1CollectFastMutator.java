@@ -18,24 +18,31 @@ package org.optaplanner.core.impl.score.stream.drools.common.rules;
 
 import static java.util.Collections.emptyMap;
 import static java.util.Collections.singletonList;
+import static org.drools.model.DSL.accFunction;
 import static org.drools.model.PatternDSL.from;
 import static org.drools.model.PatternDSL.groupBy;
 import static org.drools.model.PatternDSL.pattern;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
-import java.util.function.BiFunction;
 
 import org.drools.model.PatternDSL;
 import org.drools.model.Variable;
 import org.drools.model.view.ViewItem;
+import org.optaplanner.core.api.function.TriFunction;
+import org.optaplanner.core.api.score.stream.tri.TriConstraintCollector;
+import org.optaplanner.core.impl.score.stream.drools.tri.DroolsTriAccumulateFunction;
 
-class BiGroupBy1Map0CollectFastMutator<A, B, NewA> extends AbstractBiGroupByMutator {
+final class TriGroupBy1Map1CollectFastMutator<A, B, C, NewA, NewB> extends AbstractTriGroupByMutator {
 
-    private final BiFunction<A, B, NewA> groupKeyMapping;
+    private final TriFunction<A, B, C, NewA> groupKeyMapping;
+    private final TriConstraintCollector<A, B, C, ?, NewB> collectorB;
 
-    public BiGroupBy1Map0CollectFastMutator(BiFunction<A, B, NewA> groupKeyMapping) {
+    public TriGroupBy1Map1CollectFastMutator(TriFunction<A, B, C, NewA> groupKeyMapping,
+            TriConstraintCollector<A, B, C, ?, NewB> collectorB) {
         this.groupKeyMapping = groupKeyMapping;
+        this.collectorB = collectorB;
     }
 
     @Override
@@ -43,14 +50,20 @@ class BiGroupBy1Map0CollectFastMutator<A, B, NewA> extends AbstractBiGroupByMuta
         ruleAssembler.applyFilterToLastPrimaryPattern();
         Variable<A> inputA = ruleAssembler.getVariable(0);
         Variable<B> inputB = ruleAssembler.getVariable(1);
+        Variable<C> inputC = ruleAssembler.getVariable(2);
         Variable<NewA> groupKey = ruleAssembler.createVariable("groupKey");
-        ViewItem accumulatePattern = groupBy(getInnerAccumulatePattern(ruleAssembler), inputA, inputB, groupKey,
-                groupKeyMapping::apply);
+        Variable<NewB> output = ruleAssembler.createVariable("output");
+        ViewItem accumulatePattern = groupBy(getInnerAccumulatePattern(ruleAssembler), inputA, inputB, inputC, groupKey,
+                groupKeyMapping::apply,
+                accFunction(() -> new DroolsTriAccumulateFunction<>(collectorB)).as(output));
         List<ViewItem> newFinishedExpressions = new ArrayList<>(ruleAssembler.getFinishedExpressions());
         newFinishedExpressions.add(accumulatePattern); // The last pattern is added here.
-        Variable<NewA> newA = ruleAssembler.createVariable("newB", from(groupKey));
-        PatternDSL.PatternDef<NewA> newPrimaryPattern = pattern(newA);
-        return new UniRuleAssembler(ruleAssembler, ruleAssembler.getExpectedGroupByCount(), newFinishedExpressions,
-                singletonList(newA), singletonList(newPrimaryPattern), emptyMap());
+        Variable<NewA> newA = ruleAssembler.createVariable("newA", from(groupKey));
+        Variable<NewB> newB = ruleAssembler.createVariable("newB", from(output));
+        PatternDSL.PatternDef<NewA> newAPattern = pattern(newA);
+        newFinishedExpressions.add(newAPattern);
+        PatternDSL.PatternDef<NewB> newPrimaryPattern = pattern(newB);
+        return new BiRuleAssembler(ruleAssembler, ruleAssembler.getExpectedGroupByCount(), newFinishedExpressions,
+                Arrays.asList(newA, newB), singletonList(newPrimaryPattern), emptyMap());
     }
 }
