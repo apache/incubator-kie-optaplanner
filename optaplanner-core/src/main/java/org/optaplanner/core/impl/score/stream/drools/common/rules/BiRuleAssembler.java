@@ -77,7 +77,11 @@ final class BiRuleAssembler extends AbstractRuleAssembler<BiPredicate> {
 
     @Override
     protected AbstractGroupByMutator new1Map0CollectGroupByMutator(Object mapping) {
-        return new BiGroupBy1Map0CollectMutator<>((BiFunction) mapping);
+        if (getExpectedGroupByCount() == 1) {
+            return new BiGroupBy1Map0CollectFastMutator<>((BiFunction) mapping);
+        } else {
+            return new BiGroupBy1Map0CollectMutator<>((BiFunction) mapping);
+        }
     }
 
     @Override
@@ -91,7 +95,11 @@ final class BiRuleAssembler extends AbstractRuleAssembler<BiPredicate> {
 
     @Override
     protected AbstractGroupByMutator new2Map0CollectGroupByMutator(Object mappingA, Object mappingB) {
-        return new BiGroupBy2Map0CollectMutator<>((BiFunction) mappingA, (BiFunction) mappingB);
+        if (getExpectedGroupByCount() == 1) {
+            return new BiGroupBy2Map0CollectFastMutator<>((BiFunction) mappingA, (BiFunction) mappingB);
+        } else {
+            return new BiGroupBy2Map0CollectMutator<>((BiFunction) mappingA, (BiFunction) mappingB);
+        }
     }
 
     @Override
