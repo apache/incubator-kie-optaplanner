@@ -99,19 +99,19 @@ public class IntervalJoinersTest {
 
             softly.assertThat(joiner.matches(Interval.ofBigInt(1L, 7L),
                     Interval.ofBigDecimal(1L, 3L)))
-                    .as("A starts B").isTrue();
+                    .as("A started by B").isTrue();
 
             softly.assertThat(joiner.matches(Interval.ofBigInt(1L, 3L),
                     Interval.ofBigDecimal(1L, 7L)))
-                    .as("B starts A").isTrue();
+                    .as("B started by A").isTrue();
 
             softly.assertThat(joiner.matches(Interval.ofBigInt(1L, 7L),
                     Interval.ofBigDecimal(3L, 7L)))
-                    .as("A ends B").isTrue();
+                    .as("A ended by B").isTrue();
 
             softly.assertThat(joiner.matches(Interval.ofBigInt(3L, 7L),
                     Interval.ofBigDecimal(1L, 7L)))
-                    .as("B ends A").isTrue();
+                    .as("B ended by A").isTrue();
 
             // False Cases (before, after, meets)
 
@@ -132,6 +132,76 @@ public class IntervalJoinersTest {
 
             softly.assertThat(joiner.matches(Interval.ofBigInt(3L, 7L),
                     Interval.ofBigDecimal(1L, 3L)))
+                    .as("B meets A").isFalse();
+        });
+    }
+
+    @Test
+    public void overlapsBiShort() {
+        Function<Interval<Long, BigInteger>, Long> leftStartMapping = interval -> interval.getStart().longValue();
+        Function<Interval<Long, BigInteger>, Long> leftEndMapping = interval -> interval.getEnd().longValue();
+
+        AbstractBiJoiner<Interval<Long, BigInteger>, Interval<Long, BigInteger>> joiner =
+                (AbstractBiJoiner<Interval<Long, BigInteger>, Interval<Long, BigInteger>>) Joiners.overlaps(leftStartMapping,
+                        leftEndMapping);
+
+        assertSoftly(softly -> {
+            // True cases (equals, overlaps, contains, starts, ends)
+            softly.assertThat(joiner.matches(Interval.ofBigInt(1L, 5L),
+                    Interval.ofBigInt(1L, 5L)))
+                    .as("Case A = B").isTrue();
+
+            softly.assertThat(joiner.matches(Interval.ofBigInt(3L, 7L),
+                    Interval.ofBigInt(1L, 5L)))
+                    .as("B starts before A, A ends after B").isTrue();
+
+            softly.assertThat(joiner.matches(Interval.ofBigInt(1L, 5L),
+                    Interval.ofBigInt(3L, 7L)))
+                    .as("A starts before B, B ends after A").isTrue();
+
+            softly.assertThat(joiner.matches(Interval.ofBigInt(3L, 5L),
+                    Interval.ofBigInt(1L, 7L)))
+                    .as("B contains A").isTrue();
+
+            softly.assertThat(joiner.matches(Interval.ofBigInt(1L, 7L),
+                    Interval.ofBigInt(3L, 5L)))
+                    .as("A contains B").isTrue();
+
+            softly.assertThat(joiner.matches(Interval.ofBigInt(1L, 7L),
+                    Interval.ofBigInt(1L, 3L)))
+                    .as("A started by B").isTrue();
+
+            softly.assertThat(joiner.matches(Interval.ofBigInt(1L, 3L),
+                    Interval.ofBigInt(1L, 7L)))
+                    .as("B started by A").isTrue();
+
+            softly.assertThat(joiner.matches(Interval.ofBigInt(1L, 7L),
+                    Interval.ofBigInt(3L, 7L)))
+                    .as("A ended by B").isTrue();
+
+            softly.assertThat(joiner.matches(Interval.ofBigInt(3L, 7L),
+                    Interval.ofBigInt(1L, 7L)))
+                    .as("B ended by A").isTrue();
+
+            // False Cases (before, after, meets)
+
+            softly.assertThat(joiner.matches(Interval.ofBigInt(1L, 3L),
+                    Interval.ofBigInt(5L, 7L)))
+                    .as("A before B").isFalse();
+
+            softly.assertThat(joiner.matches(Interval.ofBigInt(5L, 7L),
+                    Interval.ofBigInt(1L, 3L)))
+                    .as("B before A").isFalse();
+
+            // This is false since typically, when overlaps is used,
+            // end is exclusive, and start is inclusive,
+            // so 0-5, 5-10 do not overlap
+            softly.assertThat(joiner.matches(Interval.ofBigInt(1L, 3L),
+                    Interval.ofBigInt(3L, 7L)))
+                    .as("A meets B").isFalse();
+
+            softly.assertThat(joiner.matches(Interval.ofBigInt(3L, 7L),
+                    Interval.ofBigInt(1L, 3L)))
                     .as("B meets A").isFalse();
         });
     }
@@ -159,11 +229,11 @@ public class IntervalJoinersTest {
 
             softly.assertThat(joiner.matches(Interval.ofBigInt(1L, 7L),
                     Interval.ofBigDecimal(1L, 3L)))
-                    .as("A starts B").isTrue();
+                    .as("A started by B").isTrue();
 
             softly.assertThat(joiner.matches(Interval.ofBigInt(1L, 7L),
                     Interval.ofBigDecimal(4L, 7L)))
-                    .as("A ends B").isTrue();
+                    .as("A ended by B").isTrue();
 
             // False cases (before, meets, second contains, overlaps, second starts, second ends)
             softly.assertThat(joiner.matches(Interval.ofBigInt(1L, 3L),
@@ -199,11 +269,80 @@ public class IntervalJoinersTest {
 
             softly.assertThat(joiner.matches(Interval.ofBigInt(4L, 7L),
                     Interval.ofBigDecimal(1L, 7L)))
-                    .as("B ends A").isFalse();
+                    .as("B ended by A").isFalse();
 
             softly.assertThat(joiner.matches(Interval.ofBigInt(1L, 3L),
                     Interval.ofBigDecimal(1L, 7L)))
-                    .as("B starts A").isFalse();
+                    .as("B started by A").isFalse();
+        });
+    }
+
+    @Test
+    public void duringBiShort() {
+        Function<Interval<Long, BigInteger>, Long> leftStartMapping = interval -> interval.getStart().longValue();
+        Function<Interval<Long, BigInteger>, Long> leftEndMapping = interval -> interval.getEnd().longValue();
+
+        AbstractBiJoiner<Interval<Long, BigInteger>, Interval<Long, BigInteger>> joiner =
+                (AbstractBiJoiner<Interval<Long, BigInteger>, Interval<Long, BigInteger>>) Joiners.during(leftStartMapping,
+                        leftEndMapping);
+
+        assertSoftly(softly -> {
+            // True cases (equals, first contains, first starts, first ends)
+            softly.assertThat(joiner.matches(Interval.ofBigInt(1L, 5L),
+                    Interval.ofBigInt(1L, 5L)))
+                    .as("Case A = B").isTrue();
+
+            softly.assertThat(joiner.matches(Interval.ofBigInt(1L, 7L),
+                    Interval.ofBigInt(3L, 5L)))
+                    .as("A contains B").isTrue();
+
+            softly.assertThat(joiner.matches(Interval.ofBigInt(1L, 7L),
+                    Interval.ofBigInt(1L, 3L)))
+                    .as("A started by B").isTrue();
+
+            softly.assertThat(joiner.matches(Interval.ofBigInt(1L, 7L),
+                    Interval.ofBigInt(4L, 7L)))
+                    .as("A ended by B").isTrue();
+
+            // False cases (before, meets, second contains, overlaps, second starts, second ends)
+            softly.assertThat(joiner.matches(Interval.ofBigInt(1L, 3L),
+                    Interval.ofBigInt(5L, 7L)))
+                    .as("A before B").isFalse();
+
+            softly.assertThat(joiner.matches(Interval.ofBigInt(5L, 7L),
+                    Interval.ofBigInt(1L, 3L)))
+                    .as("B before A").isFalse();
+
+            // This is false since typically, when overlaps is used,
+            // end is exclusive, and start is inclusive,
+            // so 0-5, 5-10 do not overlap
+            softly.assertThat(joiner.matches(Interval.ofBigInt(1L, 3L),
+                    Interval.ofBigInt(3L, 7L)))
+                    .as("A meets B").isFalse();
+
+            softly.assertThat(joiner.matches(Interval.ofBigInt(3L, 7L),
+                    Interval.ofBigInt(1L, 3L)))
+                    .as("B meets A").isFalse();
+
+            softly.assertThat(joiner.matches(Interval.ofBigInt(3L, 5L),
+                    Interval.ofBigInt(1L, 7L)))
+                    .as("B contains A").isFalse();
+
+            softly.assertThat(joiner.matches(Interval.ofBigInt(3L, 7L),
+                    Interval.ofBigInt(1L, 5L)))
+                    .as("B starts before A, A ends after B").isFalse();
+
+            softly.assertThat(joiner.matches(Interval.ofBigInt(1L, 5L),
+                    Interval.ofBigInt(3L, 7L)))
+                    .as("A starts before B, B ends after A").isFalse();
+
+            softly.assertThat(joiner.matches(Interval.ofBigInt(4L, 7L),
+                    Interval.ofBigInt(1L, 7L)))
+                    .as("B ended by A").isFalse();
+
+            softly.assertThat(joiner.matches(Interval.ofBigInt(1L, 3L),
+                    Interval.ofBigInt(1L, 7L)))
+                    .as("B started by A").isFalse();
         });
     }
 
@@ -251,22 +390,22 @@ public class IntervalJoinersTest {
             softly.assertThat(joiner.matches(Interval.ofBigInt(1L, 7L),
                     "Ignored Arg",
                     Interval.ofBigDecimal(1L, 3L)))
-                    .as("A starts B").isTrue();
+                    .as("A started by B").isTrue();
 
             softly.assertThat(joiner.matches(Interval.ofBigInt(1L, 3L),
                     "Ignored Arg",
                     Interval.ofBigDecimal(1L, 7L)))
-                    .as("B starts A").isTrue();
+                    .as("B started by A").isTrue();
 
             softly.assertThat(joiner.matches(Interval.ofBigInt(1L, 7L),
                     "Ignored Arg",
                     Interval.ofBigDecimal(3L, 7L)))
-                    .as("A ends B").isTrue();
+                    .as("A ended by B").isTrue();
 
             softly.assertThat(joiner.matches(Interval.ofBigInt(3L, 7L),
                     "Ignored Arg",
                     Interval.ofBigDecimal(1L, 7L)))
-                    .as("B ends A").isTrue();
+                    .as("B ended by A").isTrue();
 
             // False Cases (before, after, meets)
 
@@ -324,12 +463,12 @@ public class IntervalJoinersTest {
             softly.assertThat(joiner.matches(Interval.ofBigInt(1L, 7L),
                     "Ignored Arg",
                     Interval.ofBigDecimal(1L, 3L)))
-                    .as("A starts B").isTrue();
+                    .as("A started by B").isTrue();
 
             softly.assertThat(joiner.matches(Interval.ofBigInt(1L, 7L),
                     "Ignored Arg",
                     Interval.ofBigDecimal(3L, 7L)))
-                    .as("A ends B").isTrue();
+                    .as("A ended by B").isTrue();
 
             // False cases (before, meets, second contains, overlaps, second starts, second ends)
             softly.assertThat(joiner.matches(Interval.ofBigInt(1L, 3L),
@@ -373,12 +512,12 @@ public class IntervalJoinersTest {
             softly.assertThat(joiner.matches(Interval.ofBigInt(1L, 3L),
                     "Ignored Arg",
                     Interval.ofBigDecimal(1L, 7L)))
-                    .as("B starts A").isFalse();
+                    .as("B started by A").isFalse();
 
             softly.assertThat(joiner.matches(Interval.ofBigInt(3L, 7L),
                     "Ignored Arg",
                     Interval.ofBigDecimal(1L, 7L)))
-                    .as("B ends A").isFalse();
+                    .as("B ended by A").isFalse();
         });
     }
 
@@ -432,25 +571,25 @@ public class IntervalJoinersTest {
                     "Ignored Arg",
                     "Ignored Arg",
                     Interval.ofBigDecimal(1L, 3L)))
-                    .as("A starts B").isTrue();
+                    .as("A started by B").isTrue();
 
             softly.assertThat(joiner.matches(Interval.ofBigInt(1L, 3L),
                     "Ignored Arg",
                     "Ignored Arg",
                     Interval.ofBigDecimal(1L, 7L)))
-                    .as("B starts A").isTrue();
+                    .as("B started by A").isTrue();
 
             softly.assertThat(joiner.matches(Interval.ofBigInt(1L, 7L),
                     "Ignored Arg",
                     "Ignored Arg",
                     Interval.ofBigDecimal(3L, 7L)))
-                    .as("A ends B").isTrue();
+                    .as("A ended by B").isTrue();
 
             softly.assertThat(joiner.matches(Interval.ofBigInt(3L, 7L),
                     "Ignored Arg",
                     "Ignored Arg",
                     Interval.ofBigDecimal(1L, 7L)))
-                    .as("B ends A").isTrue();
+                    .as("B ended by A").isTrue();
 
             // False Cases (before, after, meets)
 
@@ -515,13 +654,13 @@ public class IntervalJoinersTest {
                     "Ignored Arg",
                     "Ignored Arg",
                     Interval.ofBigDecimal(1L, 3L)))
-                    .as("A starts B").isTrue();
+                    .as("A started by B").isTrue();
 
             softly.assertThat(joiner.matches(Interval.ofBigInt(1L, 7L),
                     "Ignored Arg",
                     "Ignored Arg",
                     Interval.ofBigDecimal(3L, 7L)))
-                    .as("A ends B").isTrue();
+                    .as("A ended by B").isTrue();
 
             // False cases (before, meets, second contains, overlaps, second starts, second ends)
             softly.assertThat(joiner.matches(Interval.ofBigInt(1L, 3L),
@@ -573,13 +712,13 @@ public class IntervalJoinersTest {
                     "Ignored Arg",
                     "Ignored Arg",
                     Interval.ofBigDecimal(1L, 7L)))
-                    .as("B starts A").isFalse();
+                    .as("B started by A").isFalse();
 
             softly.assertThat(joiner.matches(Interval.ofBigInt(3L, 7L),
                     "Ignored Arg",
                     "Ignored Arg",
                     Interval.ofBigDecimal(1L, 7L)))
-                    .as("B ends A").isFalse();
+                    .as("B ended by A").isFalse();
         });
     }
 
@@ -639,28 +778,28 @@ public class IntervalJoinersTest {
                     "Ignored Arg",
                     "Ignored Arg",
                     Interval.ofBigDecimal(1L, 3L)))
-                    .as("A starts B").isTrue();
+                    .as("A started by B").isTrue();
 
             softly.assertThat(joiner.matches(Interval.ofBigInt(1L, 3L),
                     "Ignored Arg",
                     "Ignored Arg",
                     "Ignored Arg",
                     Interval.ofBigDecimal(1L, 7L)))
-                    .as("B starts A").isTrue();
+                    .as("B started by A").isTrue();
 
             softly.assertThat(joiner.matches(Interval.ofBigInt(1L, 7L),
                     "Ignored Arg",
                     "Ignored Arg",
                     "Ignored Arg",
                     Interval.ofBigDecimal(3L, 7L)))
-                    .as("A ends B").isTrue();
+                    .as("A ended by B").isTrue();
 
             softly.assertThat(joiner.matches(Interval.ofBigInt(3L, 7L),
                     "Ignored Arg",
                     "Ignored Arg",
                     "Ignored Arg",
                     Interval.ofBigDecimal(1L, 7L)))
-                    .as("B ends A").isTrue();
+                    .as("B ended by A").isTrue();
 
             // False Cases (before, after, meets)
 
@@ -732,14 +871,14 @@ public class IntervalJoinersTest {
                     "Ignored Arg",
                     "Ignored Arg",
                     Interval.ofBigDecimal(1L, 3L)))
-                    .as("A starts B").isTrue();
+                    .as("A started by B").isTrue();
 
             softly.assertThat(joiner.matches(Interval.ofBigInt(1L, 7L),
                     "Ignored Arg",
                     "Ignored Arg",
                     "Ignored Arg",
                     Interval.ofBigDecimal(3L, 7L)))
-                    .as("A ends B").isTrue();
+                    .as("A ended by B").isTrue();
 
             // False cases (before, meets, second contains, overlaps, second starts, second ends)
             softly.assertThat(joiner.matches(Interval.ofBigInt(1L, 3L),
@@ -799,14 +938,14 @@ public class IntervalJoinersTest {
                     "Ignored Arg",
                     "Ignored Arg",
                     Interval.ofBigDecimal(1L, 7L)))
-                    .as("B starts A").isFalse();
+                    .as("B started by A").isFalse();
 
             softly.assertThat(joiner.matches(Interval.ofBigInt(3L, 7L),
                     "Ignored Arg",
                     "Ignored Arg",
                     "Ignored Arg",
                     Interval.ofBigDecimal(1L, 7L)))
-                    .as("B ends A").isFalse();
+                    .as("B ended by A").isFalse();
         });
     }
 }

@@ -161,10 +161,10 @@ public final class Joiners {
      * @param <B> the type of the second argument
      * @param <Property_> the type used to define the interval, comparable
      * 
-     * @param leftStartMapping maps the first argument to the first interval start point
-     * @param leftEndMapping maps the first argument to the first interval end point
-     * @param rightStartMapping maps the second argument to the second interval start point
-     * @param rightEndMapping maps the second argument to the second interval end point
+     * @param leftStartMapping maps the first argument to the first interval start point (inclusive)
+     * @param leftEndMapping maps the first argument to the first interval end point (exclusive)
+     * @param rightStartMapping maps the second argument to the second interval start point (inclusive)
+     * @param rightEndMapping maps the second argument to the second interval end point (exclusive)
      * 
      * @return never null, an indexed joiner that filters the constraint stream to only include elements (A,B) where
      *         A's and B's intervals (as defined by the function mapping) overlap
@@ -187,8 +187,8 @@ public final class Joiners {
      * @param <A> the type of both the first and second argument
      * @param <Property_> the type used to define the interval, comparable
      * 
-     * @param startMapping maps the argument to the start point of its interval
-     * @param endMapping maps the argument to the end point of its interval
+     * @param startMapping maps the argument to the start point of its interval (inclusive)
+     * @param endMapping maps the argument to the end point of its interval (exclusive)
      * 
      * @return see {@link #overlaps(Function, Function, Function, Function)}
      */
@@ -208,10 +208,10 @@ public final class Joiners {
      * @param <B> the type of the second argument
      * @param <Property_> the type used to define the interval, comparable
      * 
-     * @param leftStartMapping maps the first argument to the first interval start point
-     * @param leftEndMapping maps the first argument to the first interval end point
-     * @param rightStartMapping maps the second argument to the second interval start point
-     * @param rightEndMapping maps the second argument to the second interval end point
+     * @param leftStartMapping maps the first argument to the first interval start point (inclusive)
+     * @param leftEndMapping maps the first argument to the first interval end point (exclusive)
+     * @param rightStartMapping maps the second argument to the second interval start point (inclusive)
+     * @param rightEndMapping maps the second argument to the second interval end point (exclusive)
      * 
      * @return never null, an indexed joiner that filters the constraint stream to only include elements (A,B) where
      *         A's interval contains B's interval (as defined by the function mapping)
@@ -234,8 +234,8 @@ public final class Joiners {
      * @param <A> the type of both the first and second argument
      * @param <Property_> the type used to define the interval, comparable
      * 
-     * @param startMapping maps the argument to the start point of its interval
-     * @param endMapping maps the argument to the end point of its interval
+     * @param startMapping maps the argument to the start point of its interval (inclusive)
+     * @param endMapping maps the argument to the end point of its interval (exclusive)
      * 
      * @return see {@link #during(Function, Function, Function, Function)}
      */
@@ -286,10 +286,10 @@ public final class Joiners {
      * @param <C> the type of the third argument
      * @param <Property_> the type used to define the interval, comparable
      * 
-     * @param leftStartMapping maps the first and second arguments to the first interval start point
-     * @param leftEndMapping maps the first and second arguments to the first interval end point
-     * @param rightStartMapping maps the third argument to the second interval start point
-     * @param rightEndMapping maps the third argument to the second interval end point
+     * @param leftStartMapping maps the first and second arguments to the first interval start point (inclusive)
+     * @param leftEndMapping maps the first and second arguments to the first interval end point (exclusive)
+     * @param rightStartMapping maps the third argument to the second interval start point (inclusive)
+     * @param rightEndMapping maps the third argument to the second interval end point (exclusive)
      * 
      * @return never null, an indexed joiner that filters the constraint stream to only include elements (A,B,C) where
      *         (A,B)'s and C's intervals (as defined by the function mapping) overlap
@@ -311,10 +311,10 @@ public final class Joiners {
      * @param <C> the type of the third argument
      * @param <Property_> the type used to define the interval, comparable
      * 
-     * @param leftStartMapping maps the first and second arguments to the first interval start point
-     * @param leftEndMapping maps the first and second arguments to the first interval end point
-     * @param rightStartMapping maps the third argument to the second interval start point
-     * @param rightEndMapping maps the third argument to the second interval end point
+     * @param leftStartMapping maps the first and second arguments to the first interval start point (inclusive)
+     * @param leftEndMapping maps the first and second arguments to the first interval end point (exclusive)
+     * @param rightStartMapping maps the third argument to the second interval start point (inclusive)
+     * @param rightEndMapping maps the third argument to the second interval end point (exclusive)
      * 
      * @return never null, an indexed joiner that filters the constraint stream to only include elements (A,B,C) where
      *         (A,B)'s interval contains C's interval (as defined by the function mapping)
@@ -370,10 +370,10 @@ public final class Joiners {
      * @param <D> the type of the fourth argument
      * @param <Property_> the type used to define the interval, comparable
      * 
-     * @param leftStartMapping maps the first, second and third arguments to the first interval start point
-     * @param leftEndMapping maps the first, second and third arguments to the first interval end point
-     * @param rightStartMapping maps the fourth argument to the second interval start point
-     * @param rightEndMapping maps the fourth argument to the second interval end point
+     * @param leftStartMapping maps the first, second and third arguments to the first interval start point (inclusive)
+     * @param leftEndMapping maps the first, second and third arguments to the first interval end point (exclusive)
+     * @param rightStartMapping maps the fourth argument to the second interval start point (inclusive)
+     * @param rightEndMapping maps the fourth argument to the second interval end point (exclusive)
      * 
      * @return never null, an indexed joiner that filters the constraint stream to only include elements (A,B,C,D)
      *         where (A,B,C)'s and D's intervals (as defined by the function mapping) overlap
@@ -396,10 +396,10 @@ public final class Joiners {
      * @param <D> the type of the fourth argument
      * @param <Property_> the type used to define the interval, comparable
      * 
-     * @param leftStartMapping maps the first, second and third arguments to the first interval start point
-     * @param leftEndMapping maps the first, second and third arguments to the first interval end point
-     * @param rightStartMapping maps the fourth argument to the second interval start point
-     * @param rightEndMapping maps the fourth argument to the second interval end point
+     * @param leftStartMapping maps the first, second and third arguments to the first interval start point (inclusive)
+     * @param leftEndMapping maps the first, second and third arguments to the first interval end point (exclusive)
+     * @param rightStartMapping maps the fourth argument to the second interval start point (inclusive)
+     * @param rightEndMapping maps the fourth argument to the second interval end point (exclusive)
      * 
      * @return nerver null, an indexed joiner that filters the constraint stream to only include elements (A,B,C,D)
      *         where (A,B,C)'s interval contains D's interval (as defined by the function mapping)
@@ -456,10 +456,10 @@ public final class Joiners {
      * @param <E> the type of the fifth argument
      * @param <Property_> the type used to define the interval, comparable
      * 
-     * @param leftStartMapping maps the first, second, third and fourth arguments to the first interval start point
-     * @param leftEndMapping maps the first, second, third and fourth arguments to the first interval end point
-     * @param rightStartMapping maps the fifth argument to the second interval start point
-     * @param rightEndMapping maps the fifth argument to the second interval end point
+     * @param leftStartMapping maps the first, second, third and fourth arguments to the first interval start point (inclusive)
+     * @param leftEndMapping maps the first, second, third and fourth arguments to the first interval end point (exclusive)
+     * @param rightStartMapping maps the fifth argument to the second interval start point (inclusive)
+     * @param rightEndMapping maps the fifth argument to the second interval end point (exclusive)
      * 
      * @return never null, an indexed joiner that filters the constraint stream to only include elements (A,B,C,D,E)
      *         where (A,B,C,D)'s and E's intervals (as defined by the function mapping) overlap
@@ -483,10 +483,10 @@ public final class Joiners {
      * @param <E> the type of the fifth argument
      * @param <Property_> the type used to define the interval, comparable
      * 
-     * @param leftStartMapping maps the first, second, third and fourth arguments to the first interval start point
-     * @param leftEndMapping maps the first, second, third and fourth arguments to the first interval end point
-     * @param rightStartMapping maps the fifth argument to the second interval start point
-     * @param rightEndMapping maps the fifth argument to the second interval end point
+     * @param leftStartMapping maps the first, second, third and fourth arguments to the first interval start point (inclusive)
+     * @param leftEndMapping maps the first, second, third and fourth arguments to the first interval end point (exclusive)
+     * @param rightStartMapping maps the fifth argument to the second interval start point (inclusive)
+     * @param rightEndMapping maps the fifth argument to the second interval end point (exclusive)
      * 
      * @return never null, an indexed joiner that filters the constraint stream to only include elements (A,B,C,D,E)
      *         where (A,B,C,D)'s interval contains E's interval (as defined by the function mapping)
