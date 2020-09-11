@@ -32,20 +32,17 @@ import org.drools.model.Variable;
 import org.drools.model.view.ViewItem;
 import org.optaplanner.core.api.function.QuadFunction;
 import org.optaplanner.core.api.score.stream.quad.QuadConstraintCollector;
-import org.optaplanner.core.impl.score.stream.drools.common.BiTuple;
 import org.optaplanner.core.impl.score.stream.drools.quad.DroolsQuadAccumulateFunction;
 
-final class QuadGroupBy2Map1CollectFastMutator<A, B, C, D, NewA, NewB, NewC> extends AbstractQuadGroupByMutator {
+final class QuadGroupBy1Map1CollectFastMutator<A, B, C, D, NewA, NewB> extends AbstractQuadGroupByMutator {
 
     private final QuadFunction<A, B, C, D, NewA> groupKeyMappingA;
-    private final QuadFunction<A, B, C, D, NewB> groupKeyMappingB;
-    private final QuadConstraintCollector<A, B, C, D, ?, NewC> collectorC;
+    private final QuadConstraintCollector<A, B, C, D, ?, NewB> collectorB;
 
-    public QuadGroupBy2Map1CollectFastMutator(QuadFunction<A, B, C, D, NewA> groupKeyMappingA,
-            QuadFunction<A, B, C, D, NewB> groupKeyMappingB, QuadConstraintCollector<A, B, C, D, ?, NewC> collectorC) {
+    public QuadGroupBy1Map1CollectFastMutator(QuadFunction<A, B, C, D, NewA> groupKeyMappingA,
+            QuadConstraintCollector<A, B, C, D, ?, NewB> collectorB) {
         this.groupKeyMappingA = groupKeyMappingA;
-        this.groupKeyMappingB = groupKeyMappingB;
-        this.collectorC = collectorC;
+        this.collectorB = collectorB;
     }
 
     @Override
@@ -55,23 +52,19 @@ final class QuadGroupBy2Map1CollectFastMutator<A, B, C, D, NewA, NewB, NewC> ext
         Variable<B> inputB = ruleAssembler.getVariable(1);
         Variable<C> inputC = ruleAssembler.getVariable(2);
         Variable<D> inputD = ruleAssembler.getVariable(3);
-        Variable<BiTuple<NewA, NewB>> groupKey = ruleAssembler.createVariable(BiTuple.class, "groupKey");
-        Variable<NewC> output = ruleAssembler.createVariable("output");
+        Variable<NewA> groupKey = ruleAssembler.createVariable("groupKey");
+        Variable<NewB> output = ruleAssembler.createVariable("output");
         ViewItem accumulatePattern = groupBy(getInnerAccumulatePattern(ruleAssembler), inputA, inputB, inputC, inputD,
-                groupKey, (a, b, c, d) -> new BiTuple<>(groupKeyMappingA.apply(a, b, c, d),
-                        groupKeyMappingB.apply(a, b, c, d)),
-                accFunction(() -> new DroolsQuadAccumulateFunction<>(collectorC)).as(output));
+                groupKey, groupKeyMappingA::apply,
+                accFunction(() -> new DroolsQuadAccumulateFunction<>(collectorB)).as(output));
         List<ViewItem> newFinishedExpressions = new ArrayList<>(ruleAssembler.getFinishedExpressions());
         newFinishedExpressions.add(accumulatePattern); // The last pattern is added here.
-        Variable<NewA> newA = ruleAssembler.createVariable("newA", from(groupKey, k -> k.a));
-        Variable<NewB> newB = ruleAssembler.createVariable("newB", from(groupKey, k -> k.b));
-        Variable<NewC> newC = ruleAssembler.createVariable("newB", from(output));
+        Variable<NewA> newA = ruleAssembler.createVariable("newA", from(groupKey));
+        Variable<NewB> newB = ruleAssembler.createVariable("newB", from(output));
         PatternDSL.PatternDef<NewA> newAPattern = pattern(newA);
         newFinishedExpressions.add(newAPattern);
-        PatternDSL.PatternDef<NewB> newBPattern = pattern(newB);
-        newFinishedExpressions.add(newBPattern);
-        PatternDSL.PatternDef<NewC> newPrimaryPattern = pattern(newC);
+        PatternDSL.PatternDef<NewB> newPrimaryPattern = pattern(newB);
         return new TriRuleAssembler(ruleAssembler, ruleAssembler.getExpectedGroupByCount(), newFinishedExpressions,
-                Arrays.asList(newA, newB, newC), singletonList(newPrimaryPattern), emptyMap());
+                Arrays.asList(newA, newB), singletonList(newPrimaryPattern), emptyMap());
     }
 }

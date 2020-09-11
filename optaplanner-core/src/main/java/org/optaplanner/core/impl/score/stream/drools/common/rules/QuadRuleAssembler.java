@@ -76,17 +76,29 @@ final class QuadRuleAssembler extends AbstractRuleAssembler<QuadPredicate> {
 
     @Override
     protected AbstractGroupByMutator new1Map0CollectGroupByMutator(Object mapping) {
-        return new QuadGroupBy1Map0CollectMutator<>((QuadFunction) mapping);
+        if (getExpectedGroupByCount() == 1) {
+            return new QuadGroupBy1Map0CollectFastMutator<>((QuadFunction) mapping);
+        } else {
+            return new QuadGroupBy1Map0CollectMutator<>((QuadFunction) mapping);
+        }
     }
 
     @Override
     protected AbstractGroupByMutator new1Map1CollectGroupByMutator(Object mapping, Object collector) {
-        return new QuadGroupBy1Map1CollectMutator<>((QuadFunction) mapping, (QuadConstraintCollector) collector);
+        if (getExpectedGroupByCount() == 1) {
+            return new QuadGroupBy1Map1CollectFastMutator<>((QuadFunction) mapping, (QuadConstraintCollector) collector);
+        } else {
+            return new QuadGroupBy1Map1CollectMutator<>((QuadFunction) mapping, (QuadConstraintCollector) collector);
+        }
     }
 
     @Override
     protected AbstractGroupByMutator new2Map0CollectGroupByMutator(Object mappingA, Object mappingB) {
-        return new QuadGroupBy2Map0CollectMutator<>((QuadFunction) mappingA, (QuadFunction) mappingB);
+        if (getExpectedGroupByCount() == 1) {
+            return new QuadGroupBy2Map0CollectFastMutator<>((QuadFunction) mappingA, (QuadFunction) mappingB);
+        } else {
+            return new QuadGroupBy2Map0CollectMutator<>((QuadFunction) mappingA, (QuadFunction) mappingB);
+        }
     }
 
     @Override
