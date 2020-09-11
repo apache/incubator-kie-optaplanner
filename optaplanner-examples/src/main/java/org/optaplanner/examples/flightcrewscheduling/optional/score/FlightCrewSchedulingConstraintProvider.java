@@ -35,8 +35,9 @@ public class FlightCrewSchedulingConstraintProvider implements ConstraintProvide
     }
 
     private Constraint flightConflict(ConstraintFactory constraintFactory) {
-        return constraintFactory.fromUniquePair(FlightAssignment.class, Joiners.equal(FlightAssignment::getEmployee))
-                .filter((first, second) -> second.getFlight().overlaps(first.getFlight()))
+        return constraintFactory.fromUniquePair(FlightAssignment.class, Joiners.equal(FlightAssignment::getEmployee),
+                Joiners.overlaps(fa -> fa.getFlight().getDepartureUTCDateTime(),
+                        fa -> fa.getFlight().getArrivalUTCDateTime()))
                 .penalize("Flight conflict", HardSoftLongScore.ofHard(10));
     }
 
