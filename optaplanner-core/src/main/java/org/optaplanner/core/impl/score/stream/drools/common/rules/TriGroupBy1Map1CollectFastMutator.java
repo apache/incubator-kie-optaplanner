@@ -53,11 +53,10 @@ final class TriGroupBy1Map1CollectFastMutator<A, B, C, NewA, NewB> extends Abstr
         Variable<C> inputC = ruleAssembler.getVariable(2);
         Variable<NewA> groupKey = ruleAssembler.createVariable("groupKey");
         Variable<NewB> output = ruleAssembler.createVariable("output");
-        ViewItem accumulatePattern = groupBy(getInnerAccumulatePattern(ruleAssembler), inputA, inputB, inputC, groupKey,
-                groupKeyMapping::apply,
-                accFunction(() -> new DroolsTriAccumulateFunction<>(collectorB)).as(output));
+        ViewItem groupByPattern = groupBy(getInnerAccumulatePattern(ruleAssembler), inputA, inputB, inputC, groupKey,
+                groupKeyMapping::apply, accFunction(() -> new DroolsTriAccumulateFunction<>(collectorB)).as(output));
         List<ViewItem> newFinishedExpressions = new ArrayList<>(ruleAssembler.getFinishedExpressions());
-        newFinishedExpressions.add(accumulatePattern); // The last pattern is added here.
+        newFinishedExpressions.add(groupByPattern); // The last pattern is added here.
         Variable<NewA> newA = ruleAssembler.createVariable("newA", from(groupKey));
         Variable<NewB> newB = ruleAssembler.createVariable("newB", from(output));
         PatternDSL.PatternDef<NewA> newAPattern = pattern(newA);

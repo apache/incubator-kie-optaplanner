@@ -43,10 +43,10 @@ final class UniGroupBy1Map0CollectFastMutator<A, NewA> extends AbstractUniGroupB
         ruleAssembler.applyFilterToLastPrimaryPattern();
         Variable<A> input = ruleAssembler.getVariable(0);
         Variable<NewA> groupKey = ruleAssembler.createVariable("groupKey");
-        ViewItem accumulatePattern = groupBy(getInnerAccumulatePattern(ruleAssembler), input, groupKey,
+        ViewItem groupByPattern = groupBy(getInnerAccumulatePattern(ruleAssembler), input, groupKey,
                 groupKeyMapping::apply);
         List<ViewItem> newFinishedExpressions = new ArrayList<>(ruleAssembler.getFinishedExpressions());
-        newFinishedExpressions.add(accumulatePattern); // The last pattern is added here.
+        newFinishedExpressions.add(groupByPattern); // The last pattern is added here.
         Variable<NewA> newA = ruleAssembler.createVariable("newA", from(groupKey));
         PatternDSL.PatternDef<NewA> newPrimaryPattern = pattern(newA);
         return new UniRuleAssembler(ruleAssembler, ruleAssembler.getExpectedGroupByCount(), newFinishedExpressions,

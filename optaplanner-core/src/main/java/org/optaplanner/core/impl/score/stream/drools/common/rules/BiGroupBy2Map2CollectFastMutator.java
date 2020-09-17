@@ -59,12 +59,12 @@ final class BiGroupBy2Map2CollectFastMutator<A, B, NewA, NewB, NewC, NewD> exten
         Variable<BiTuple<NewA, NewB>> groupKey = ruleAssembler.createVariable(BiTuple.class, "groupKey");
         Variable<NewC> outputC = ruleAssembler.createVariable("outputC");
         Variable<NewD> outputD = ruleAssembler.createVariable("outputD");
-        ViewItem accumulatePattern = groupBy(getInnerAccumulatePattern(ruleAssembler), inputA, inputB,
-                groupKey, (a, b) -> new BiTuple<>(groupKeyMappingA.apply(a, b), groupKeyMappingB.apply(a, b)),
+        ViewItem groupByPattern = groupBy(getInnerAccumulatePattern(ruleAssembler), inputA, inputB, groupKey,
+                (a, b) -> new BiTuple<>(groupKeyMappingA.apply(a, b), groupKeyMappingB.apply(a, b)),
                 accFunction(() -> new DroolsBiAccumulateFunction<>(collectorC)).as(outputC),
                 accFunction(() -> new DroolsBiAccumulateFunction<>(collectorD)).as(outputD));
         List<ViewItem> newFinishedExpressions = new ArrayList<>(ruleAssembler.getFinishedExpressions());
-        newFinishedExpressions.add(accumulatePattern); // The last pattern is added here.
+        newFinishedExpressions.add(groupByPattern); // The last pattern is added here.
         Variable<NewA> newA = ruleAssembler.createVariable("newA", from(groupKey, k -> k.a));
         Variable<NewB> newB = ruleAssembler.createVariable("newB", from(groupKey, k -> k.b));
         Variable<NewC> newC = ruleAssembler.createVariable("newC", from(outputC));

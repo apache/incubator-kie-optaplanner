@@ -54,11 +54,11 @@ final class QuadGroupBy1Map1CollectFastMutator<A, B, C, D, NewA, NewB> extends A
         Variable<D> inputD = ruleAssembler.getVariable(3);
         Variable<NewA> groupKey = ruleAssembler.createVariable("groupKey");
         Variable<NewB> output = ruleAssembler.createVariable("output");
-        ViewItem accumulatePattern = groupBy(getInnerAccumulatePattern(ruleAssembler), inputA, inputB, inputC, inputD,
+        ViewItem groupByPattern = groupBy(getInnerAccumulatePattern(ruleAssembler), inputA, inputB, inputC, inputD,
                 groupKey, groupKeyMappingA::apply,
                 accFunction(() -> new DroolsQuadAccumulateFunction<>(collectorB)).as(output));
         List<ViewItem> newFinishedExpressions = new ArrayList<>(ruleAssembler.getFinishedExpressions());
-        newFinishedExpressions.add(accumulatePattern); // The last pattern is added here.
+        newFinishedExpressions.add(groupByPattern); // The last pattern is added here.
         Variable<NewA> newA = ruleAssembler.createVariable("newA", from(groupKey));
         Variable<NewB> newB = ruleAssembler.createVariable("newB", from(output));
         PatternDSL.PatternDef<NewA> newAPattern = pattern(newA);

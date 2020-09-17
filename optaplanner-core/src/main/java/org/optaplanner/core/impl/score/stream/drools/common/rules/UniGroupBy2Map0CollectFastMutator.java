@@ -47,10 +47,10 @@ final class UniGroupBy2Map0CollectFastMutator<A, NewA, NewB> extends AbstractUni
         ruleAssembler.applyFilterToLastPrimaryPattern();
         Variable<A> input = ruleAssembler.getVariable(0);
         Variable<BiTuple<NewA, NewB>> groupKey = ruleAssembler.createVariable(BiTuple.class, "groupKey");
-        ViewItem accumulatePattern = groupBy(getInnerAccumulatePattern(ruleAssembler), input, groupKey,
+        ViewItem groupByPattern = groupBy(getInnerAccumulatePattern(ruleAssembler), input, groupKey,
                 a -> new BiTuple<>(groupKeyMappingA.apply(a), groupKeyMappingB.apply(a)));
         List<ViewItem> newFinishedExpressions = new ArrayList<>(ruleAssembler.getFinishedExpressions());
-        newFinishedExpressions.add(accumulatePattern); // The last pattern is added here.
+        newFinishedExpressions.add(groupByPattern); // The last pattern is added here.
         Variable<NewA> newA = ruleAssembler.createVariable("newA", from(groupKey, k -> k.a));
         Variable<NewA> newB = ruleAssembler.createVariable("newB", from(groupKey, k -> k.b));
         newFinishedExpressions.add(pattern(newA));
