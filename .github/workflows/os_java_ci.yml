@@ -21,7 +21,26 @@ defaults:
     shell: bash
 
 jobs:
+  offline:
+    name: Cache Maven repo
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out Git repository
+        uses: actions/checkout@v2
+      - name: Install Java and Maven
+        uses: actions/setup-java@v1
+        with:
+          java-version: 11
+      - name: Run the build
+        run: mvn dependency:go-offline --batch-mode
+      - name: Upload the Maven repo cache
+        uses: actions/upload-artifact@v2
+        with:
+          name: maven-repo-cache
+          path: .m2/repository/**/*
+
   os-java:
+    needs: offline
     name: OS x Java
     strategy:
       matrix:
@@ -34,12 +53,18 @@ jobs:
         uses: actions/setup-java@v1
         with:
           java-version: ${{ matrix.java }}
+      - name: Download the Maven cache
+          uses: actions/download-artifact@v2
+          with:
+            name: maven-repo-cache
+            path: .m2/repository
       - name: Build with Maven
         run: mvn -B clean install ${{ env.MVN_CONNECTION_PROPS }}
 
   # Early feedback on a compatibility with the newest Java version.
   # TODO: update each time a new major Java version is released.
   latest-jdk:
+    needs: offline
     name: OpenJDK 15
     runs-on: ubuntu-latest
     steps:
@@ -48,5 +73,10 @@ jobs:
         uses: actions/setup-java@v1
         with:
           java-version: 15
+      - name: Download the Maven cache
+          uses: actions/download-artifact@v2
+          with:
+            name: maven-repo-cache
+            path: .m2/repository
       - name: Build with Maven
         run: mvn -B clean install ${{ env.MVN_CONNECTION_PROPS }}
