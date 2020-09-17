@@ -35,6 +35,7 @@ jobs:
         uses: actions/setup-java@v1
         with:
           java-version: ${{ matrix.java }}
+      # See https://docs.github.com/en/actions/guides/building-and-testing-java-with-maven#caching-dependencies
       - name: Cache Maven packages
         uses: actions/cache@v2
         with:
@@ -43,7 +44,6 @@ jobs:
           restore-keys: ${{ runner.os }}-m2
       - name: Build with Maven
         run: mvn -B clean install ${{ env.MVN_CONNECTION_PROPS }}
-      # See https://docs.github.com/en/actions/guides/building-and-testing-java-with-maven#caching-dependencies
 
   # Early feedback on a compatibility with the newest Java version.
   # TODO: update each time a new major Java version is released.
