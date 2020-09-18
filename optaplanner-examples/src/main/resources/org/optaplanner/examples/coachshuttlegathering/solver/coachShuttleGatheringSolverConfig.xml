@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <solver xmlns="https://www.optaplanner.org/xsd/solver" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="https://www.optaplanner.org/xsd/solver https://www.optaplanner.org/xsd/solver/solver.xsd">
-  <<environmentMode>FULL_ASSERT</environmentMode>
+  <environmentMode>FULL_ASSERT</environmentMode>
   <moveThreadCount>AUTO</moveThreadCount><!-- To solve faster by saturating multiple CPU cores -->
 
   <solutionClass>org.optaplanner.examples.coachshuttlegathering.domain.CoachShuttleGatheringSolution</solutionClass>
@@ -15,10 +15,11 @@
     <!--<easyScoreCalculatorClass>org.optaplanner.examples.coachshuttlegathering.solver.CoachShuttleGatheringEasyScoreCalculator</easyScoreCalculatorClass>-->
     <!--<incrementalScoreCalculatorClass>org.optaplanner.examples.coachshuttlegathering.solver.score.CoachShuttleGatheringIncrementalScoreCalculator</incrementalScoreCalculatorClass>-->
     <scoreDrl>org/optaplanner/examples/coachshuttlegathering/solver/coachShuttleGatheringConstraints.drl</scoreDrl>
-    <assertionScoreDirectorFactory>
+    <!-- <constraintProviderClass>org.optaplanner.examples.coachshuttlegathering.solver.CoachShuttleGatheringConstraintProvider</constraintProviderClass> -->
+    <!-- <assertionScoreDirectorFactory>
       <easyScoreCalculatorClass>org.optaplanner.examples.coachshuttlegathering.solver.CoachShuttleGatheringEasyScoreCalculator</easyScoreCalculatorClass>
-    </assertionScoreDirectorFactory>
-    <initializingScoreTrend>ONLY_DOWN</initializingScoreTrend>
+    </assertionScoreDirectorFactory> -->
+    <!-- <initializingScoreTrend>ONLY_DOWN</initializingScoreTrend> -->
   </scoreDirectorFactory>
 
   <termination>

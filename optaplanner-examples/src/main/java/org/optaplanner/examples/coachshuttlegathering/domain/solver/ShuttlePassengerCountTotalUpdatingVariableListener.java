@@ -20,7 +20,6 @@ import org.optaplanner.core.api.score.director.ScoreDirector;
 import org.optaplanner.core.impl.domain.variable.listener.VariableListener;
 import org.optaplanner.examples.coachshuttlegathering.domain.Bus;
 import org.optaplanner.examples.coachshuttlegathering.domain.BusStop;
-import org.optaplanner.examples.coachshuttlegathering.domain.Coach;
 import org.optaplanner.examples.coachshuttlegathering.domain.CoachShuttleGatheringSolution;
 import org.optaplanner.examples.coachshuttlegathering.domain.Shuttle;
 
@@ -45,21 +44,6 @@ public class ShuttlePassengerCountTotalUpdatingVariableListener implements Varia
             return;
         }
         adjustBus(scoreDirector, bus, increase ? busStop.getPassengerQuantity() : -busStop.getPassengerQuantity());
-        Shuttle shuttle = (Shuttle) bus;
-        Bus destinationBus = shuttle.getDestinationBus();
-        if (destinationBus instanceof Coach) {
-            int difference = increase ? busStop.getPassengerQuantity() : -busStop.getPassengerQuantity();
-            adjustBus(scoreDirector, destinationBus, difference);
-        }
-    }
-
-    private static void adjustShuttle(ScoreDirector<CoachShuttleGatheringSolution> scoreDirector, Shuttle shuttle,
-            boolean increase) {
-        Bus destinationBus = shuttle.getDestinationBus();
-        if (destinationBus instanceof Coach) {
-            adjustBus(scoreDirector, destinationBus,
-                    increase ? shuttle.getPassengerQuantityTotal() : -shuttle.getPassengerQuantityTotal());
-        }
     }
 
     private static void increase(ScoreDirector<CoachShuttleGatheringSolution> scoreDirector, BusStop busStop) {
@@ -70,14 +54,6 @@ public class ShuttlePassengerCountTotalUpdatingVariableListener implements Varia
         adjustBusStop(scoreDirector, busStop, false);
     }
 
-    private static void increase(ScoreDirector<CoachShuttleGatheringSolution> scoreDirector, Shuttle shuttle) {
-        adjustShuttle(scoreDirector, shuttle, true);
-    }
-
-    private static void decrease(ScoreDirector<CoachShuttleGatheringSolution> scoreDirector, Shuttle shuttle) {
-        adjustShuttle(scoreDirector, shuttle, false);
-    }
-
     @Override
     public void beforeEntityAdded(ScoreDirector scoreDirector, Object entity) {
     }
@@ -86,8 +62,6 @@ public class ShuttlePassengerCountTotalUpdatingVariableListener implements Varia
     public void afterEntityAdded(ScoreDirector scoreDirector, Object entity) {
         if (entity instanceof BusStop) {
             increase(scoreDirector, (BusStop) entity);
-        } else if (entity instanceof Shuttle) {
-            increase(scoreDirector, (Shuttle) entity);
         }
     }
 
@@ -95,8 +69,6 @@ public class ShuttlePassengerCountTotalUpdatingVariableListener implements Varia
     public void beforeVariableChanged(ScoreDirector scoreDirector, Object entity) {
         if (entity instanceof BusStop) {
             decrease(scoreDirector, (BusStop) entity);
-        } else if (entity instanceof Shuttle) {
-            decrease(scoreDirector, (Shuttle) entity);
         }
     }
 
@@ -104,8 +76,6 @@ public class ShuttlePassengerCountTotalUpdatingVariableListener implements Varia
     public void afterVariableChanged(ScoreDirector scoreDirector, Object entity) {
         if (entity instanceof BusStop) {
             increase(scoreDirector, (BusStop) entity);
-        } else if (entity instanceof Shuttle) {
-            increase(scoreDirector, (Shuttle) entity);
         }
     }
 
@@ -117,8 +87,6 @@ public class ShuttlePassengerCountTotalUpdatingVariableListener implements Varia
     public void afterEntityRemoved(ScoreDirector scoreDirector, Object entity) {
         if (entity instanceof BusStop) {
             decrease(scoreDirector, (BusStop) entity);
-        } else if (entity instanceof Shuttle) {
-            decrease(scoreDirector, (Shuttle) entity);
         }
     }
 }
