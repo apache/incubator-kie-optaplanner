@@ -22,7 +22,9 @@ import org.optaplanner.core.api.domain.solution.PlanningSolution;
  * Abstract superclass for {@link CustomPhaseCommand}.
  *
  * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
+ * @deprecated Use the {@link CustomPhaseCommand)} interface directly instead.
  */
+@Deprecated
 public abstract class AbstractCustomPhaseCommand<Solution_> implements CustomPhaseCommand<Solution_> {
 
 }
