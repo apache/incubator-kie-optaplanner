@@ -16,6 +16,9 @@
 
 package org.optaplanner.examples.tennis.optional.score;
 
+import static org.optaplanner.core.api.score.stream.Joiners.equal;
+import static org.optaplanner.core.api.score.stream.Joiners.lessThan;
+
 import java.util.function.BiFunction;
 import java.util.function.Function;
 
@@ -31,9 +34,6 @@ import org.optaplanner.examples.common.solver.drools.functions.LoadBalanceByCoun
 import org.optaplanner.examples.common.solver.drools.functions.LoadBalanceByCountAccumulateFunction.LoadBalanceByCountResult;
 import org.optaplanner.examples.tennis.domain.TeamAssignment;
 import org.optaplanner.examples.tennis.domain.UnavailabilityPenalty;
-
-import static org.optaplanner.core.api.score.stream.Joiners.equal;
-import static org.optaplanner.core.api.score.stream.Joiners.lessThan;
 
 public final class TennisConstraintProvider implements ConstraintProvider {
 
