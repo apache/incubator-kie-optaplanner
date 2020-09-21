@@ -58,8 +58,6 @@ public class TestdataAnnotatedExtendedSolution extends TestdataSolution {
         return solution;
     }
 
-
-
     private List<TestdataValue> subValueList;
 
     private List<TestdataAnnotatedExtendedEntity> subEntityList;

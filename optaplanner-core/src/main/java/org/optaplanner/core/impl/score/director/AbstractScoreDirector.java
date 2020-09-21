@@ -16,6 +16,9 @@
 
 package org.optaplanner.core.impl.score.director;
 
+import static java.util.Comparator.comparing;
+import static java.util.Objects.requireNonNull;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -59,9 +62,6 @@ import org.optaplanner.core.impl.score.definition.ScoreDefinition;
 import org.optaplanner.core.impl.solver.thread.ChildThreadType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import static java.util.Comparator.comparing;
-import static java.util.Objects.requireNonNull;
 
 /**
  * Abstract superclass for {@link ScoreDirector}.
@@ -183,7 +183,7 @@ public abstract class AbstractScoreDirector<Solution_, Factory_ extends Abstract
             return;
         } else if (actualSolutionClass.isAnnotationPresent(PlanningSolution.class)) {
             throw new IllegalStateException("Working solution class (" + actualSolutionClass.getCanonicalName() +
-                    ") is " + PlanningSolution.class + "-annotated and different from the planning solution (" +
+                    ") is @" + PlanningSolution.class + " annotated and different from the planning solution (" +
                     expectedSolutionClass.getCanonicalName() + ") for which the solver was created.");
         }
         Optional<Class<?>> firstPlanningSolutionAnnotatedSuperClass = ClassUtils.getAllSuperclasses(actualSolutionClass)
@@ -196,8 +196,8 @@ public abstract class AbstractScoreDirector<Solution_, Factory_ extends Abstract
             if (!actualFirstPlanningSolutionAnnotatedSuperClass.equals(expectedSolutionClass)) {
                 throw new IllegalStateException("Working solution class (" + actualSolutionClass.getCanonicalName() +
                         ") has a super class (" + actualFirstPlanningSolutionAnnotatedSuperClass.getCanonicalName() +
-                        ") that is " + PlanningSolution.class + "-annotated and different from the planning solution (" +
-                        expectedSolutionClass.getCanonicalName() + ") for which the solver was created.");
+                        ") that is @" + PlanningSolution.class + " annotated and different from the planning solution" +
+                        " (" + expectedSolutionClass.getCanonicalName() + ") for which the solver was created.");
             }
         } else {
             // Superclasses are OK, but we need to check implemented interfaces as well.
@@ -210,8 +210,8 @@ public abstract class AbstractScoreDirector<Solution_, Factory_ extends Abstract
             if (!firstPlanningSolutionAnnotatedInterface.equals(expectedSolutionClass)) {
                 throw new IllegalStateException("Working solution class (" + actualSolutionClass.getCanonicalName() +
                         ") has an interface (" + firstPlanningSolutionAnnotatedInterface.getCanonicalName() +
-                        ") that is " + PlanningSolution.class + "-annotated and different from the planning solution (" +
-                        expectedSolutionClass.getCanonicalName() + ") for which the solver was created.");
+                        ") that is @" + PlanningSolution.class + " annotated and different from the planning solution" +
+                        " (" + expectedSolutionClass.getCanonicalName() + ") for which the solver was created.");
             }
         }
     }
