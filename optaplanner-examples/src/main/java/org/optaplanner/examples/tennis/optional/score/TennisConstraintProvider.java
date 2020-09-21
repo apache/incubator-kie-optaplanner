@@ -16,49 +16,61 @@
 
 package org.optaplanner.examples.tennis.optional.score;
 
-import static org.optaplanner.core.api.score.stream.Joiners.equal;
-import static org.optaplanner.core.api.score.stream.Joiners.lessThan;
+import java.util.function.BiFunction;
+import java.util.function.Function;
 
+import org.apache.commons.lang3.tuple.Pair;
 import org.optaplanner.core.api.score.buildin.hardmediumsoft.HardMediumSoftScore;
 import org.optaplanner.core.api.score.stream.Constraint;
 import org.optaplanner.core.api.score.stream.ConstraintFactory;
 import org.optaplanner.core.api.score.stream.ConstraintProvider;
 import org.optaplanner.core.impl.score.stream.bi.DefaultBiConstraintCollector;
 import org.optaplanner.core.impl.score.stream.uni.DefaultUniConstraintCollector;
+import org.optaplanner.examples.common.solver.drools.functions.LoadBalanceByCountAccumulateFunction;
+import org.optaplanner.examples.common.solver.drools.functions.LoadBalanceByCountAccumulateFunction.LoadBalanceByCountData;
 import org.optaplanner.examples.common.solver.drools.functions.LoadBalanceByCountAccumulateFunction.LoadBalanceByCountResult;
 import org.optaplanner.examples.tennis.domain.TeamAssignment;
 import org.optaplanner.examples.tennis.domain.UnavailabilityPenalty;
 
+import static org.optaplanner.core.api.score.stream.Joiners.equal;
+import static org.optaplanner.core.api.score.stream.Joiners.lessThan;
+
 public final class TennisConstraintProvider implements ConstraintProvider {
 
-    private static <A> DefaultUniConstraintCollector<A, ?, LoadBalanceByCountResult> loadBalanceByCount() {
+    private static final String CONSTRAINT_PACKAGE = "org.optaplanner.examples.tennis.solver";
+
+    private static <A> DefaultUniConstraintCollector<A, ?, LoadBalanceByCountResult>
+            loadBalanceByCount(Function<A, Object> groupKey) {
+        LoadBalanceByCountAccumulateFunction accumulateFunction = new LoadBalanceByCountAccumulateFunction();
         return new DefaultUniConstraintCollector<>(
-                () -> new long[2],
-                (resultContainer, a) -> {
-                    resultContainer[0]++;
-                    long count = resultContainer[0];
-                    resultContainer[1] += (2 * count - 1);
-                    return () -> {
-                        resultContainer[1] -= (2 * resultContainer[0] - 1);
-                        resultContainer[0]--;
-                    };
+                () -> {
+                    LoadBalanceByCountData resultContainer = accumulateFunction.createContext();
+                    accumulateFunction.init(resultContainer);
+                    return resultContainer;
                 },
-                resultContainer -> new LoadBalanceByCountResult(resultContainer[1]));
+                (resultContainer, a) -> {
+                    Object mapped = groupKey.apply(a);
+                    accumulateFunction.accumulate(resultContainer, mapped);
+                    return () -> accumulateFunction.reverse(resultContainer, mapped);
+                },
+                accumulateFunction::getResult);
     }
 
-    private static <A, B> DefaultBiConstraintCollector<A, B, ?, LoadBalanceByCountResult> loadBalanceByCountBi() {
+    private static <A, B> DefaultBiConstraintCollector<A, B, ?, LoadBalanceByCountResult>
+            loadBalanceByCount(BiFunction<A, B, Object> groupKey) {
+        LoadBalanceByCountAccumulateFunction accumulateFunction = new LoadBalanceByCountAccumulateFunction();
         return new DefaultBiConstraintCollector<>(
-                () -> new long[2],
-                (resultContainer, a, b) -> {
-                    resultContainer[0]++;
-                    long count = resultContainer[0];
-                    resultContainer[1] += (2 * count - 1);
-                    return () -> {
-                        resultContainer[1] -= (2 * resultContainer[0] - 1);
-                        resultContainer[0]--;
-                    };
+                () -> {
+                    LoadBalanceByCountData resultContainer = accumulateFunction.createContext();
+                    accumulateFunction.init(resultContainer);
+                    return resultContainer;
                 },
-                resultContainer -> new LoadBalanceByCountResult(resultContainer[1]));
+                (resultContainer, a, b) -> {
+                    Object mapped = groupKey.apply(a, b);
+                    accumulateFunction.accumulate(resultContainer, mapped);
+                    return () -> accumulateFunction.reverse(resultContainer, mapped);
+                },
+                accumulateFunction::getResult);
     }
 
     @Override
@@ -77,7 +89,7 @@ public final class TennisConstraintProvider implements ConstraintProvider {
                         equal(TeamAssignment::getTeam),
                         equal(TeamAssignment::getDay),
                         lessThan(TeamAssignment::getId))
-                .penalize("oneAssignmentPerDatePerTeam", HardMediumSoftScore.ONE_HARD);
+                .penalize(CONSTRAINT_PACKAGE, "oneAssignmentPerDatePerTeam", HardMediumSoftScore.ONE_HARD);
     }
 
     protected Constraint unavailabilityPenalty(ConstraintFactory constraintFactory) {
@@ -85,24 +97,24 @@ public final class TennisConstraintProvider implements ConstraintProvider {
                 .ifExists(TeamAssignment.class,
                         equal(UnavailabilityPenalty::getTeam, TeamAssignment::getTeam),
                         equal(UnavailabilityPenalty::getDay, TeamAssignment::getDay))
-                .penalize("unavailabilityPenalty", HardMediumSoftScore.ONE_HARD);
+                .penalize(CONSTRAINT_PACKAGE, "unavailabilityPenalty", HardMediumSoftScore.ONE_HARD);
     }
 
     protected Constraint fairAssignmentCountPerTeam(ConstraintFactory constraintFactory) {
         return constraintFactory.from(TeamAssignment.class)
-                .groupBy(TeamAssignment::getTeam, loadBalanceByCount())
-                .penalize("fairAssignmentCountPerTeam", HardMediumSoftScore.ONE_MEDIUM,
-                        (team, result) -> (int) result.getZeroDeviationSquaredSumRootMillis());
+                .groupBy(loadBalanceByCount(TeamAssignment::getTeam))
+                .penalize(CONSTRAINT_PACKAGE, "fairAssignmentCountPerTeam", HardMediumSoftScore.ONE_MEDIUM,
+                        (result) -> (int) result.getZeroDeviationSquaredSumRootMillis());
     }
 
     protected Constraint evenlyConfrontationCount(ConstraintFactory constraintFactory) {
         return constraintFactory.from(TeamAssignment.class)
                 .join(TeamAssignment.class,
-                        equal(TeamAssignment::getTeam),
                         equal(TeamAssignment::getDay),
-                        lessThan(TeamAssignment::getId))
-                .groupBy(loadBalanceByCountBi())
-                .penalize("evenlyConfrontationCount", HardMediumSoftScore.ONE_SOFT,
+                        lessThan(assignment -> assignment.getTeam().getId()))
+                .groupBy(loadBalanceByCount(
+                        (assignment, otherAssignment) -> Pair.of(assignment.getTeam(), otherAssignment.getTeam())))
+                .penalize(CONSTRAINT_PACKAGE, "evenlyConfrontationCount", HardMediumSoftScore.ONE_SOFT,
                         result -> (int) result.getZeroDeviationSquaredSumRootMillis());
     }
 
