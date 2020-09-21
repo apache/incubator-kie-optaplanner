@@ -69,9 +69,6 @@ public abstract class BusPassengerCountTotalUpdatingVariableListener implements 
             return;
         }
         int difference = increase ? busStop.getPassengerQuantity() : -busStop.getPassengerQuantity();
-        if (difference == 0) {
-            return;
-        }
         scoreDirector.beforeVariableChanged(bus, "passengerQuantityTotal");
         bus.setPassengerQuantityTotal(bus.getPassengerQuantityTotal() + difference);
         scoreDirector.afterVariableChanged(bus, "passengerQuantityTotal");

@@ -1,13 +1,15 @@
 package org.optaplanner.examples.coachshuttlegathering.solver;
 
+import static org.optaplanner.core.api.score.stream.ConstraintCollectors.countBi;
+import static org.optaplanner.core.api.score.stream.ConstraintCollectors.sum;
+import static org.optaplanner.core.api.score.stream.Joiners.equal;
+
 import java.util.function.Function;
 
 import org.optaplanner.core.api.score.buildin.hardsoftlong.HardSoftLongScore;
 import org.optaplanner.core.api.score.stream.Constraint;
-import org.optaplanner.core.api.score.stream.ConstraintCollectors;
 import org.optaplanner.core.api.score.stream.ConstraintFactory;
 import org.optaplanner.core.api.score.stream.ConstraintProvider;
-import org.optaplanner.core.api.score.stream.Joiners;
 import org.optaplanner.examples.coachshuttlegathering.domain.Bus;
 import org.optaplanner.examples.coachshuttlegathering.domain.BusStop;
 import org.optaplanner.examples.coachshuttlegathering.domain.Coach;
@@ -36,8 +38,8 @@ public class CoachShuttleGatheringConstraintProvider implements ConstraintProvid
 
     Constraint coachStopLimit(ConstraintFactory constraintFactory) {
         return constraintFactory.from(Coach.class)
-                .join(BusStop.class, Joiners.equal(coach -> coach, BusStop::getBus))
-                .groupBy((coach, busStop) -> coach, ConstraintCollectors.countBi())
+                .join(BusStop.class, equal(coach -> coach, BusStop::getBus))
+                .groupBy((coach, busStop) -> coach, countBi())
                 .filter((coach, stopCount) -> stopCount > coach.getStopLimit())
                 .penalizeLong(CONSTRAINT_PACKAGE, "coachStopLimit", HardSoftLongScore.ONE_HARD,
                         (coach, stopCount) -> (stopCount - coach.getStopLimit()) * 1000000L);
@@ -53,11 +55,11 @@ public class CoachShuttleGatheringConstraintProvider implements ConstraintProvid
     Constraint coachCapacity(ConstraintFactory constraintFactory) {
         return constraintFactory.from(Coach.class)
                 .join(Shuttle.class)
-                .join(BusStop.class, Joiners.equal((coach, shuttle) -> shuttle.getDestination(), stop -> stop),
-                        Joiners.equal((coach, shuttle) -> coach, BusStop::getBus))
-                .join(BusStop.class, Joiners.equal((coach, shuttle, stop) -> shuttle, BusStop::getBus))
+                .join(BusStop.class, equal((coach, shuttle) -> shuttle.getDestination(), stop -> stop),
+                        equal((coach, shuttle) -> coach, BusStop::getBus))
+                .join(BusStop.class, equal((coach, shuttle, stop) -> shuttle, BusStop::getBus))
                 .groupBy((coach, shuttle, stop1, stop2) -> coach,
-                        ConstraintCollectors.sum((coach, shuttle, stop1, stop2) -> stop2.getPassengerQuantity()))
+                        sum((coach, shuttle, stop1, stop2) -> stop2.getPassengerQuantity()))
                 .filter((coach,
                         shuttlePassengerQuantityTotal) -> coach.getPassengerQuantityTotal()
                                 + shuttlePassengerQuantityTotal > coach.getCapacity())
@@ -66,20 +68,22 @@ public class CoachShuttleGatheringConstraintProvider implements ConstraintProvid
                                 + shuttlePassengerQuantityTotal - coach.getCapacity()) * 1000L);
     }
 
-    // Correct the double counting
-    // Explanation: groupBy is like accumlate, but it doesn't trigger on empty streams.
-    // We need something like
-    // .accumlate(Function<ConstraintStream, UniConstraintStream<T>>, T defaultValue): ConstraintStream+1
-    // To change it from 3 separate constraints (one for the normal case, one in the case of empty stream,
-    // one to remove double counting)
+    /*
+     * Correct the double counting
+     * Explanation: groupBy is like accumulate, but it doesn't trigger on empty streams.
+     * We need something like
+     * .accumulate(Function<ConstraintStream, UniConstraintStream<T>>, T defaultValue): ConstraintStream+1
+     * To change it from 3 separate constraints (one for the normal case, one in the case of empty stream,
+     * one to remove double counting).
+     */
     Constraint coachCapacityCorrection(ConstraintFactory constraintFactory) {
         return constraintFactory.from(Coach.class)
                 .join(Shuttle.class)
-                .join(BusStop.class, Joiners.equal((coach, shuttle) -> shuttle.getDestination(), stop -> stop),
-                        Joiners.equal((coach, shuttle) -> coach, BusStop::getBus))
-                .join(BusStop.class, Joiners.equal((coach, shuttle, stop) -> shuttle, BusStop::getBus))
+                .join(BusStop.class, equal((coach, shuttle) -> shuttle.getDestination(), stop -> stop),
+                        equal((coach, shuttle) -> coach, BusStop::getBus))
+                .join(BusStop.class, equal((coach, shuttle, stop) -> shuttle, BusStop::getBus))
                 .groupBy((coach, shuttle, stop1, stop2) -> coach,
-                        ConstraintCollectors.sum((coach, shuttle, stop1, stop2) -> stop2.getPassengerQuantity()))
+                        sum((coach, shuttle, stop1, stop2) -> stop2.getPassengerQuantity()))
                 .filter((coach,
                         shuttlePassengerQuantityTotal) -> coach.getPassengerQuantityTotal() > coach.getCapacity())
                 .rewardLong(CONSTRAINT_PACKAGE, "coachCapacityCorrection", HardSoftLongScore.ONE_HARD,
@@ -104,7 +108,7 @@ public class CoachShuttleGatheringConstraintProvider implements ConstraintProvid
     Constraint shuttleDestinationIsCoachOrHub(ConstraintFactory constraintFactory) {
         return constraintFactory.from(Shuttle.class)
                 .filter((shuttle) -> shuttle.getDestination() != null)
-                .join(StopOrHub.class, Joiners.equal(Shuttle::getDestination, Function.identity()))
+                .join(StopOrHub.class, equal(Shuttle::getDestination, Function.identity()))
                 .filter((shuttle, stop) -> !stop.isVisitedByCoach())
                 .penalizeLong(CONSTRAINT_PACKAGE, "shuttleDestinationIsCoachOrHub", HardSoftLongScore.ONE_HARD,
                         (bus, stop) -> 1000000000L);
@@ -126,7 +130,7 @@ public class CoachShuttleGatheringConstraintProvider implements ConstraintProvid
     Constraint distanceBusStopToBusDestination(ConstraintFactory constraintFactory) {
         return constraintFactory.from(BusStop.class)
                 .filter(busStop -> busStop.getNextStop() == null)
-                .join(Bus.class, Joiners.equal(BusStop::getBus, Function.identity()))
+                .join(Bus.class, equal(BusStop::getBus, Function.identity()))
                 .filter((busStop, bus) -> bus.getDestination() != null && bus.getNextStop() != null)
                 .penalizeLong(CONSTRAINT_PACKAGE, "distanceBusStopToBusDestination", HardSoftLongScore.ONE_SOFT,
                         (busStop, bus) -> busStop.getDistanceToDestinationCost(bus.getDestination()));
