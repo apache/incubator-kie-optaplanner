@@ -32,6 +32,7 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Timeout;
@@ -45,6 +46,7 @@ import org.optaplanner.core.config.solver.SolverManagerConfig;
 import org.optaplanner.core.config.solver.termination.TerminationConfig;
 import org.optaplanner.core.impl.testdata.domain.TestdataEntity;
 import org.optaplanner.core.impl.testdata.domain.TestdataSolution;
+import org.optaplanner.core.impl.testdata.domain.extended.TestdataAnnotatedExtendedSolution;
 import org.optaplanner.core.impl.testdata.domain.extended.TestdataUnannotatedExtendedSolution;
 import org.optaplanner.core.impl.testdata.util.PlannerTestUtils;
 
@@ -182,12 +184,11 @@ public class SolverManagerTest {
     @Test
     @Timeout(60)
     public void solveGenerics() throws ExecutionException, InterruptedException {
-        SolverConfig solverConfig = PlannerTestUtils
-                .buildSolverConfig(TestdataSolution.class, TestdataEntity.class);
-        SolverManager<TestdataSolution, Long> solverManager = SolverManager
-                .create(solverConfig, new SolverManagerConfig());
+        SolverConfig solverConfig = PlannerTestUtils.buildSolverConfig(TestdataSolution.class, TestdataEntity.class);
+        SolverManager<TestdataSolution, Long> solverManager = SolverManager.create(solverConfig,
+                new SolverManagerConfig());
 
-        BiConsumer<Object, Object> exceptionHandler = (o1, o2) -> fail("Solving failed.");
+        BiConsumer<Object, ? super Throwable> exceptionHandler = (o1, o2) -> fail("Solving failed.", o2);
         Consumer<Object> finalBestSolutionConsumer = o -> {
         };
         Function<Object, TestdataUnannotatedExtendedSolution> problemFinder = o -> new TestdataUnannotatedExtendedSolution(
@@ -196,6 +197,24 @@ public class SolverManagerTest {
         SolverJob<TestdataSolution, Long> solverJob = solverManager.solve(1L, problemFinder, finalBestSolutionConsumer,
                 exceptionHandler);
         solverJob.getFinalBestSolution();
+    }
+
+    @Test
+    @Timeout(60)
+    public void solveGenericsOnAnnotatedSuperClass() {
+        SolverConfig solverConfig = PlannerTestUtils.buildSolverConfig(TestdataSolution.class, TestdataEntity.class);
+        SolverManager<TestdataSolution, Long> solverManager = SolverManager.create(solverConfig,
+                new SolverManagerConfig());
+
+        BiConsumer<Object, ? super Throwable> exceptionHandler = (o1, o2) -> fail("Solving failed.", o2);
+        Consumer<Object> finalBestSolutionConsumer = o -> {
+        };
+        Function<Object, TestdataSolution> problemFinder = o -> TestdataAnnotatedExtendedSolution.generateSolution();
+
+        SolverJob<TestdataSolution, Long> solverJob = solverManager.solve(1L, problemFinder, finalBestSolutionConsumer,
+                exceptionHandler);
+        Assertions.assertThatThrownBy(solverJob::getFinalBestSolution)
+                .hasRootCauseInstanceOf(IllegalStateException.class);
     }
 
     @Disabled("Skip ahead not yet supported")

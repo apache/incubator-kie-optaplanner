@@ -16,8 +16,6 @@
 
 package org.optaplanner.core.impl.score.director;
 
-import static java.util.Comparator.comparing;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -30,10 +28,12 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.Set;
 import java.util.TreeMap;
 import java.util.function.Consumer;
 
+import org.apache.commons.lang3.ClassUtils;
 import org.optaplanner.core.api.domain.lookup.PlanningId;
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.domain.solution.cloner.SolutionCloner;
@@ -59,6 +59,9 @@ import org.optaplanner.core.impl.score.definition.ScoreDefinition;
 import org.optaplanner.core.impl.solver.thread.ChildThreadType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import static java.util.Comparator.comparing;
+import static java.util.Objects.requireNonNull;
 
 /**
  * Abstract superclass for {@link ScoreDirector}.
@@ -173,12 +176,43 @@ public abstract class AbstractScoreDirector<Solution_, Factory_ extends Abstract
     // ************************************************************************
 
     private void assertWorkingSolutionClassSameAsAnnotatedClass(Solution_ workingSolution) {
-        Class<Solution_> actualSolutionClass = (Class<Solution_>) Objects.requireNonNull(workingSolution).getClass();
+        Class<Solution_> actualSolutionClass = (Class<Solution_>) requireNonNull(workingSolution).getClass();
         Class<Solution_> expectedSolutionClass = getSolutionDescriptor().getSolutionClass();
-        if (!actualSolutionClass.equals(expectedSolutionClass)) {
+        if (actualSolutionClass.equals(expectedSolutionClass)) {
+            // The working solution class is the same as annotated, no need to check further.
+            return;
+        } else if (actualSolutionClass.isAnnotationPresent(PlanningSolution.class)) {
             throw new IllegalStateException("Working solution class (" + actualSolutionClass.getCanonicalName() +
-                    ") different from " + PlanningSolution.class + "-annotated class (" +
-                    expectedSolutionClass.getCanonicalName() + ").");
+                    ") is " + PlanningSolution.class + "-annotated and different from the planning solution (" +
+                    expectedSolutionClass.getCanonicalName() + ") for which the solver was created.");
+        }
+        Optional<Class<?>> firstPlanningSolutionAnnotatedSuperClass = ClassUtils.getAllSuperclasses(actualSolutionClass)
+                .stream()
+                .filter(clz -> clz.isAnnotationPresent(PlanningSolution.class))
+                .findFirst();
+        if (firstPlanningSolutionAnnotatedSuperClass.isPresent()) {
+            // The first planning-annotated class in the superclass hierarchy is different from the one on solver.
+            Class<?> actualFirstPlanningSolutionAnnotatedSuperClass = firstPlanningSolutionAnnotatedSuperClass.get();
+            if (!actualFirstPlanningSolutionAnnotatedSuperClass.equals(expectedSolutionClass)) {
+                throw new IllegalStateException("Working solution class (" + actualSolutionClass.getCanonicalName() +
+                        ") has a super class (" + actualFirstPlanningSolutionAnnotatedSuperClass.getCanonicalName() +
+                        ") that is " + PlanningSolution.class + "-annotated and different from the planning solution (" +
+                        expectedSolutionClass.getCanonicalName() + ") for which the solver was created.");
+            }
+        } else {
+            // Superclasses are OK, but we need to check implemented interfaces as well.
+            Class<?> firstPlanningSolutionAnnotatedInterface = ClassUtils.getAllInterfaces(actualSolutionClass)
+                    .stream()
+                    .filter(clz -> clz.isAnnotationPresent(PlanningSolution.class))
+                    .findFirst()
+                    .orElseThrow(() -> new IllegalStateException("Impossible state: no planning solution annotation " +
+                            "anywhere in the class hierarchy."));
+            if (!firstPlanningSolutionAnnotatedInterface.equals(expectedSolutionClass)) {
+                throw new IllegalStateException("Working solution class (" + actualSolutionClass.getCanonicalName() +
+                        ") has an interface (" + firstPlanningSolutionAnnotatedInterface.getCanonicalName() +
+                        ") that is " + PlanningSolution.class + "-annotated and different from the planning solution (" +
+                        expectedSolutionClass.getCanonicalName() + ") for which the solver was created.");
+            }
         }
     }
 
