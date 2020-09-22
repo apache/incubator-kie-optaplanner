@@ -21,14 +21,13 @@ import java.io.ObjectOutput;
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Objects;
 
 import org.kie.api.runtime.rule.AccumulateFunction;
 
 public class LoadBalanceByCountAccumulateFunction
         implements AccumulateFunction<LoadBalanceByCountAccumulateFunction.LoadBalanceByCountData> {
 
-    public static class LoadBalanceByCountData implements Serializable {
+    protected static class LoadBalanceByCountData implements Serializable {
 
         private Map<Object, Long> groupCountMap;
         // the sum of squared deviation from zero
@@ -120,22 +119,6 @@ public class LoadBalanceByCountAccumulateFunction
             return (long) (Math.sqrt((double) squaredSum) * scaleMultiplier);
         }
 
-        @Override
-        public boolean equals(Object o) {
-            if (this == o) {
-                return true;
-            }
-            if (o == null || getClass() != o.getClass()) {
-                return false;
-            }
-            LoadBalanceByCountResult that = (LoadBalanceByCountResult) o;
-            return squaredSum == that.squaredSum;
-        }
-
-        @Override
-        public int hashCode() {
-            return Objects.hash(squaredSum);
-        }
     }
 
 }
