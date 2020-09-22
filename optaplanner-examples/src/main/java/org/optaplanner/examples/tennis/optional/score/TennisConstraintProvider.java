@@ -19,10 +19,8 @@ package org.optaplanner.examples.tennis.optional.score;
 import static org.optaplanner.core.api.score.stream.Joiners.equal;
 import static org.optaplanner.core.api.score.stream.Joiners.lessThan;
 
-import java.io.Serializable;
 import java.util.LinkedHashMap;
 import java.util.Map;
-import java.util.Objects;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 
@@ -40,26 +38,13 @@ public final class TennisConstraintProvider implements ConstraintProvider {
 
     private static final String CONSTRAINT_PACKAGE = "org.optaplanner.examples.tennis.solver";
 
-    private static Runnable loadBalance(LoadBalanceData resultContainer, Object mapped) {
-        long count = resultContainer.groupCountMap.compute(mapped,
-                (key, value) -> (value == null) ? 1L : value + 1L);
-        // squaredZeroDeviation = squaredZeroDeviation - (count - 1)² + count²
-        // <=> squaredZeroDeviation = squaredZeroDeviation + (2 * count - 1)
-        resultContainer.squaredSum += (2 * count - 1);
-        return () -> {
-            Long computed = resultContainer.groupCountMap.compute(mapped,
-                    (key, value) -> (value == 1L) ? null : value - 1L);
-            resultContainer.squaredSum -= (computed == null) ? 1L : (2 * computed + 1);
-        };
-    }
-
     private static <A> DefaultUniConstraintCollector<A, ?, LoadBalanceData> loadBalance(
             Function<A, Object> groupKey) {
         return new DefaultUniConstraintCollector<>(
                 LoadBalanceData::new,
                 (resultContainer, a) -> {
                     Object mapped = groupKey.apply(a);
-                    return loadBalance(resultContainer, mapped);
+                    return resultContainer.apply(mapped);
                 },
                 resultContainer -> resultContainer);
     }
@@ -70,7 +55,7 @@ public final class TennisConstraintProvider implements ConstraintProvider {
                 LoadBalanceData::new,
                 (resultContainer, a, b) -> {
                     Object mapped = groupKey.apply(a, b);
-                    return loadBalance(resultContainer, mapped);
+                    return resultContainer.apply(mapped);
                 },
                 resultContainer -> resultContainer);
     }
@@ -120,33 +105,29 @@ public final class TennisConstraintProvider implements ConstraintProvider {
                         result -> (int) result.getZeroDeviationSquaredSumRootMillis());
     }
 
-    private static class LoadBalanceData implements Serializable {
+    private static final class LoadBalanceData {
 
-        private final Map<Object, Long> groupCountMap = new LinkedHashMap<>();
+        private final Map<Object, Long> groupCountMap = new LinkedHashMap<>(0);
         // the sum of squared deviation from zero
         private long squaredSum = 0L;
+
+        private Runnable apply(Object mapped) {
+            long count = groupCountMap.compute(mapped,
+                    (key, value) -> (value == null) ? 1L : value + 1L);
+            // squaredZeroDeviation = squaredZeroDeviation - (count - 1)² + count²
+            // <=> squaredZeroDeviation = squaredZeroDeviation + (2 * count - 1)
+            squaredSum += (2 * count - 1);
+            return () -> {
+                Long computed = groupCountMap.compute(mapped,
+                        (key, value) -> (value == 1L) ? null : value - 1L);
+                squaredSum -= (computed == null) ? 1L : (2 * computed + 1);
+            };
+        }
 
         public long getZeroDeviationSquaredSumRootMillis() {
             return (long) (Math.sqrt((double) squaredSum) * 1_000);
         }
 
-        @Override
-        public boolean equals(Object o) {
-            if (this == o) {
-                return true;
-            }
-            if (o == null || getClass() != o.getClass()) {
-                return false;
-            }
-            LoadBalanceData that = (LoadBalanceData) o;
-            return squaredSum == that.squaredSum &&
-                    Objects.equals(groupCountMap, that.groupCountMap);
-        }
-
-        @Override
-        public int hashCode() {
-            return Objects.hash(groupCountMap, squaredSum);
-        }
     }
 
 }
