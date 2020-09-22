@@ -197,8 +197,8 @@ public final class Joiners {
      * @param <A> the type of both the first and second argument
      * @param <Property_> the type used to define the interval, comparable
      *
-     * @return never null, an indexed joiner that filters the constraint stream to only include elements (A,B) where
-     *         A's and B's intervals (as defined by the function mapping) overlap
+     * @return never null, a joiner that filters the constraint stream to only include elements (A,B) where A's and B's
+     *         intervals (as defined by the function mapping) overlap
      */
     public static <A, Property_ extends Comparable<Property_>> BiJoiner<A, A> overlapping(
             Function<A, Property_> startMapping,
@@ -218,8 +218,8 @@ public final class Joiners {
      * @param <B> the type of the second argument
      * @param <Property_> the type used to define the interval, comparable
      *
-     * @return never null, an indexed joiner that filters the constraint stream to only include elements (A,B) where
-     *         A's and B's intervals (as defined by the function mapping) overlap
+     * @return never null, a joiner that filters the constraint stream to only include elements (A,B) where A's and B's
+     *         intervals (as defined by the function mapping) overlap
      */
     public static <A, B, Property_ extends Comparable<Property_>> BiJoiner<A, B> overlapping(
             Function<A, Property_> leftStartMapping,
@@ -300,8 +300,8 @@ public final class Joiners {
      * @param <C> the type of the third argument
      * @param <Property_> the type used to define the interval, comparable
      *
-     * @return never null, an indexed joiner that filters the constraint stream to only include elements (A,B,C) where
-     *         (A,B)'s and C's intervals (as defined by the function mapping) overlap
+     * @return never null, a joiner that filters the constraint stream to only include elements (A,B,C) where (A,B)'s
+     *         and C's intervals (as defined by the function mapping) overlap
      */
     public static <A, B, C, Property_ extends Comparable<Property_>> TriJoiner<A, B, C> overlapping(
             BiFunction<A, B, Property_> leftStartMapping,
@@ -385,7 +385,7 @@ public final class Joiners {
      * @param <D> the type of the fourth argument
      * @param <Property_> the type used to define the interval, comparable
      *
-     * @return never null, an indexed joiner that filters the constraint stream to only include elements (A,B,C,D)
+     * @return never null, a joiner that filters the constraint stream to only include elements (A,B,C,D)
      *         where (A,B,C)'s and D's intervals (as defined by the function mapping) overlap
      */
     public static <A, B, C, D, Property_ extends Comparable<Property_>> QuadJoiner<A, B, C, D> overlapping(
@@ -461,7 +461,7 @@ public final class Joiners {
      * @param <E> the type of the fifth argument
      * @param <Property_> the type used to define the interval, comparable
      *
-     * @return never null, an indexed joiner that filters the constraint stream to only include elements (A,B,C,D,E)
+     * @return never null, a joiner that filters the constraint stream to only include elements (A,B,C,D,E)
      *         where (A,B,C,D)'s and E's intervals (as defined by the function mapping) overlap
      */
     public static <A, B, C, D, E, Property_ extends Comparable<Property_>> PentaJoiner<A, B, C, D, E> overlapping(
