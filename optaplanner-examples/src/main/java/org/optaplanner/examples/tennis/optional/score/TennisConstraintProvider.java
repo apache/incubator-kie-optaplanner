@@ -53,7 +53,7 @@ public final class TennisConstraintProvider implements ConstraintProvider {
         };
     }
 
-    private static <A> DefaultUniConstraintCollector<A, ?, LoadBalanceResult> loadBalance(
+    private static <A> DefaultUniConstraintCollector<A, ?, LoadBalanceData> loadBalance(
             Function<A, Object> groupKey) {
         return new DefaultUniConstraintCollector<>(
                 LoadBalanceData::new,
@@ -61,10 +61,10 @@ public final class TennisConstraintProvider implements ConstraintProvider {
                     Object mapped = groupKey.apply(a);
                     return loadBalance(resultContainer, mapped);
                 },
-                resultContainer -> new LoadBalanceResult(resultContainer.squaredSum));
+                resultContainer -> resultContainer);
     }
 
-    private static <A, B> DefaultBiConstraintCollector<A, B, ?, LoadBalanceResult> loadBalance(
+    private static <A, B> DefaultBiConstraintCollector<A, B, ?, LoadBalanceData> loadBalance(
             BiFunction<A, B, Object> groupKey) {
         return new DefaultBiConstraintCollector<>(
                 LoadBalanceData::new,
@@ -72,7 +72,7 @@ public final class TennisConstraintProvider implements ConstraintProvider {
                     Object mapped = groupKey.apply(a, b);
                     return loadBalance(resultContainer, mapped);
                 },
-                resultContainer -> new LoadBalanceResult(resultContainer.squaredSum));
+                resultContainer -> resultContainer);
     }
 
     @Override
@@ -126,40 +126,8 @@ public final class TennisConstraintProvider implements ConstraintProvider {
         // the sum of squared deviation from zero
         private long squaredSum = 0L;
 
-    }
-
-    private static class LoadBalanceResult implements Serializable {
-
-        private final long squaredSum;
-
-        public LoadBalanceResult(long squaredSum) {
-            this.squaredSum = squaredSum;
-        }
-
-        public long getZeroDeviationSquaredSum() {
-            return squaredSum;
-        }
-
-        /**
-         * @return {@link #getZeroDeviationSquaredSumRoot(double)} multiplied by {@literal 1 000}
-         */
         public long getZeroDeviationSquaredSumRootMillis() {
-            return getZeroDeviationSquaredSumRoot(1_000.0);
-        }
-
-        /**
-         * @return {@link #getZeroDeviationSquaredSumRoot(double)} multiplied by {@literal 1 000 000}
-         */
-        public long getZeroDeviationSquaredSumRootMicros() {
-            return getZeroDeviationSquaredSumRoot(1_000_000.0);
-        }
-
-        /**
-         * @param scaleMultiplier {@code > 0}
-         * @return {@code >= 0}, {@code latexmath:[f(n) = \sqrt{\sum_{i=1}^{n} (x_i - 0)^2}]} multiplied by scaleMultiplier
-         */
-        public long getZeroDeviationSquaredSumRoot(double scaleMultiplier) {
-            return (long) (Math.sqrt((double) squaredSum) * scaleMultiplier);
+            return (long) (Math.sqrt((double) squaredSum) * 1_000);
         }
 
         @Override
@@ -170,13 +138,14 @@ public final class TennisConstraintProvider implements ConstraintProvider {
             if (o == null || getClass() != o.getClass()) {
                 return false;
             }
-            LoadBalanceResult that = (LoadBalanceResult) o;
-            return squaredSum == that.squaredSum;
+            LoadBalanceData that = (LoadBalanceData) o;
+            return squaredSum == that.squaredSum &&
+                    Objects.equals(groupCountMap, that.groupCountMap);
         }
 
         @Override
         public int hashCode() {
-            return Objects.hash(squaredSum);
+            return Objects.hash(groupCountMap, squaredSum);
         }
     }
 
