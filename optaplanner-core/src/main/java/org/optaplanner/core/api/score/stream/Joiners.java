@@ -28,7 +28,9 @@ import org.optaplanner.core.api.function.TriPredicate;
 import org.optaplanner.core.api.score.stream.bi.BiConstraintStream;
 import org.optaplanner.core.api.score.stream.bi.BiJoiner;
 import org.optaplanner.core.api.score.stream.penta.PentaJoiner;
+import org.optaplanner.core.api.score.stream.quad.QuadConstraintStream;
 import org.optaplanner.core.api.score.stream.quad.QuadJoiner;
+import org.optaplanner.core.api.score.stream.tri.TriConstraintStream;
 import org.optaplanner.core.api.score.stream.tri.TriJoiner;
 import org.optaplanner.core.api.score.stream.uni.UniConstraintStream;
 import org.optaplanner.core.impl.score.stream.bi.AbstractBiJoiner;
@@ -271,6 +273,16 @@ public final class Joiners {
         return new SingleTriJoiner<>(leftMapping, JoinerType.GREATER_THAN_OR_EQUAL, rightMapping);
     }
 
+    /**
+     * Applies a filter to the joined tuple (A,B,C), with the semantics of
+     * {@link TriConstraintStream#filter(TriPredicate)}.
+     *
+     * @param filter never null, filter to apply
+     * @param <A> type of the first fact in the tuple
+     * @param <B> type of the second fact in the tuple
+     * @param <C> type of the third fact in the tuple
+     * @return never null
+     */
     public static <A, B, C> TriJoiner<A, B, C> filtering(TriPredicate<A, B, C> filter) {
         return new FilteringTriJoiner<>(filter);
     }
@@ -344,6 +356,17 @@ public final class Joiners {
         return new SingleQuadJoiner<>(leftMapping, JoinerType.GREATER_THAN_OR_EQUAL, rightMapping);
     }
 
+    /**
+     * Applies a filter to the joined tuple (A,B,C,D), with the semantics of
+     * {@link QuadConstraintStream#filter(QuadPredicate)}.
+     *
+     * @param filter never null, filter to apply
+     * @param <A> type of the first fact in the tuple
+     * @param <B> type of the second fact in the tuple
+     * @param <C> type of the third fact in the tuple
+     * @param <D> type of the fourth fact in the tuple
+     * @return never null
+     */
     public static <A, B, C, D> QuadJoiner<A, B, C, D> filtering(QuadPredicate<A, B, C, D> filter) {
         return new FilteringQuadJoiner<>(filter);
     }
