@@ -17,7 +17,7 @@ import org.optaplanner.examples.coachshuttlegathering.domain.Shuttle;
 import org.optaplanner.examples.coachshuttlegathering.domain.StopOrHub;
 
 public class CoachShuttleGatheringConstraintProvider implements ConstraintProvider {
-    final static String CONSTRAINT_PACKAGE = "org.optaplanner.examples.coachshuttlegathering.solver";
+    static final String CONSTRAINT_PACKAGE = "org.optaplanner.examples.coachshuttlegathering.solver";
 
     @Override
     public Constraint[] defineConstraints(ConstraintFactory constraintFactory) {
@@ -47,9 +47,9 @@ public class CoachShuttleGatheringConstraintProvider implements ConstraintProvid
 
     Constraint shuttleCapacity(ConstraintFactory constraintFactory) {
         return constraintFactory.from(Shuttle.class)
-                .filter((bus) -> bus.getPassengerQuantityTotal() > bus.getCapacity())
+                .filter(bus -> bus.getPassengerQuantityTotal() > bus.getCapacity())
                 .penalizeLong(CONSTRAINT_PACKAGE, "shuttleCapacity", HardSoftLongScore.ONE_HARD,
-                        (bus) -> (bus.getPassengerQuantityTotal() - bus.getCapacity()) * 1000L);
+                        bus -> (bus.getPassengerQuantityTotal() - bus.getCapacity()) * 1000L);
     }
 
     Constraint coachCapacity(ConstraintFactory constraintFactory) {
@@ -100,14 +100,14 @@ public class CoachShuttleGatheringConstraintProvider implements ConstraintProvid
 
     Constraint transportTime(ConstraintFactory constraintFactory) {
         return constraintFactory.from(BusStop.class)
-                .filter((busStop) -> busStop.getTransportTimeToHub() != null && busStop.getTransportTimeRemainder() < 0)
+                .filter(busStop -> busStop.getTransportTimeToHub() != null && busStop.getTransportTimeRemainder() < 0)
                 .penalizeLong(CONSTRAINT_PACKAGE, "transportTime", HardSoftLongScore.ONE_HARD,
-                        (busStop) -> -busStop.getTransportTimeRemainder());
+                        busStop -> -busStop.getTransportTimeRemainder());
     }
 
     Constraint shuttleDestinationIsCoachOrHub(ConstraintFactory constraintFactory) {
         return constraintFactory.from(Shuttle.class)
-                .filter((shuttle) -> shuttle.getDestination() != null)
+                .filter(shuttle -> shuttle.getDestination() != null)
                 .join(StopOrHub.class, equal(Shuttle::getDestination, Function.identity()))
                 .filter((shuttle, stop) -> !stop.isVisitedByCoach())
                 .penalizeLong(CONSTRAINT_PACKAGE, "shuttleDestinationIsCoachOrHub", HardSoftLongScore.ONE_HARD,
