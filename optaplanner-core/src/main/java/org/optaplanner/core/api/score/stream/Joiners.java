@@ -138,11 +138,34 @@ public final class Joiners {
         return new SingleBiJoiner<>(leftMapping, JoinerType.LESS_THAN, rightMapping);
     }
 
+    /**
+     * Joins every A and B where a value of property on A is less than or equal to the value of the same property on B.
+     * These are exactly the pairs where {@code mapping.apply(A).compareTo(mapping.apply(B)) <= 0}.
+     * Delegates to {@link #lessThanOrEqual(Function, Function)} with both arguments using the same mapping.
+     *
+     * @param mapping mapping function to apply
+     * @param <A> the type of both objects
+     * @param <Property_> the type of the property to compare
+     * @return never null, a joiner that filters the constraint stream to only include elements (A,B) where a property
+     *         of A is less than or equal to that of B
+     */
     public static <A, Property_ extends Comparable<Property_>> BiJoiner<A, A> lessThanOrEqual(
             Function<A, Property_> mapping) {
         return lessThanOrEqual(mapping, mapping);
     }
 
+    /**
+     * Joins every A and B where a value of property on A is less than or equal to the value of a property on B.
+     * These are exactly the pairs where {@code leftMapping.apply(A).compareTo(rightMapping.apply(B)) <= 0}.
+     *
+     * @param leftMapping mapping function to apply to A
+     * @param rightMapping mapping function to apply to B
+     * @param <A> the type of object on the left
+     * @param <B> the type of object on the right
+     * @param <Property_> the type of the property to compare
+     * @return never null, a joiner that filters the constraint stream to only include elements (A,B) where a property
+     *         of A is less than or equal to a property of B
+     */
     public static <A, B, Property_ extends Comparable<Property_>> BiJoiner<A, B> lessThanOrEqual(
             Function<A, Property_> leftMapping, Function<B, Property_> rightMapping) {
         return new SingleBiJoiner<>(leftMapping, JoinerType.LESS_THAN_OR_EQUAL, rightMapping);
@@ -294,6 +317,19 @@ public final class Joiners {
         return new SingleTriJoiner<>(leftMapping, JoinerType.LESS_THAN, rightMapping);
     }
 
+    /**
+     * Joins every (A,B) and C where a value of property of (A,B) is less than or equal to the value of a property of C.
+     * These are exactly the pairs where {@code leftMapping.apply(A, B).compareTo(rightMapping.apply(C)) <= 0}.
+     *
+     * @param leftMapping mapping function to apply to (A,B)
+     * @param rightMapping mapping function to apply to C
+     * @param <A> the type of the first object on the left
+     * @param <B> the type of the second object on the left
+     * @param <C> the type of object on the right
+     * @param <Property_> the type of the property to compare
+     * @return never null, a joiner that filters the constraint stream to only include elements (A,B,C)
+     *         where a property of (A,B) is less than or equal to a property of C
+     */
     public static <A, B, C, Property_ extends Comparable<Property_>> TriJoiner<A, B, C> lessThanOrEqual(
             BiFunction<A, B, Property_> leftMapping, Function<C, Property_> rightMapping) {
         return new SingleTriJoiner<>(leftMapping, JoinerType.LESS_THAN_OR_EQUAL, rightMapping);
@@ -391,6 +427,21 @@ public final class Joiners {
         return new SingleQuadJoiner<>(leftMapping, JoinerType.LESS_THAN, rightMapping);
     }
 
+    /**
+     * Joins every (A,B,C) and D where a value of property of (A,B,C) is less than or equal to
+     * the value of a property of D.
+     * These are exactly the pairs where {@code leftMapping.apply(A, B, C).compareTo(rightMapping.apply(D)) <= 0}.
+     *
+     * @param leftMapping mapping function to apply to (A,B,C)
+     * @param rightMapping mapping function to apply to D
+     * @param <A> the type of the first object on the left
+     * @param <B> the type of the second object on the left
+     * @param <C> the type of the third object on the left
+     * @param <D> the type of object on the right
+     * @param <Property_> the type of the property to compare
+     * @return never null, a joiner that filters the constraint stream to only include elements (A,B,C,D)
+     *         where a property of (A,B,C) is less than or equal to a property of D
+     */
     public static <A, B, C, D, Property_ extends Comparable<Property_>> QuadJoiner<A, B, C, D> lessThanOrEqual(
             TriFunction<A, B, C, Property_> leftMapping, Function<D, Property_> rightMapping) {
         return new SingleQuadJoiner<>(leftMapping, JoinerType.LESS_THAN_OR_EQUAL, rightMapping);
@@ -492,6 +543,22 @@ public final class Joiners {
         return new SinglePentaJoiner<>(leftMapping, JoinerType.LESS_THAN, rightMapping);
     }
 
+    /**
+     * Joins every (A,B,C,D) and E where a value of property of (A,B,C,D) is less than or equal to
+     * the value of a property of E.
+     * These are exactly the pairs where {@code leftMapping.apply(A, B, C, D).compareTo(rightMapping.apply(E)) <= 0}.
+     *
+     * @param leftMapping mapping function to apply to (A,B,C,D)
+     * @param rightMapping mapping function to apply to E
+     * @param <A> the type of the first object on the left
+     * @param <B> the type of the second object on the left
+     * @param <C> the type of the third object on the left
+     * @param <D> the type of the fourth object on the left
+     * @param <E> the type of object on the right
+     * @param <Property_> the type of the property to compare
+     * @return never null, a joiner that filters the constraint stream to only include elements (A,B,C,D,E)
+     *         where a property of (A,B,C,D) is less than or equal to a property of E
+     */
     public static <A, B, C, D, E, Property_ extends Comparable<Property_>> PentaJoiner<A, B, C, D, E> lessThanOrEqual(
             QuadFunction<A, B, C, D, Property_> leftMapping, Function<E, Property_> rightMapping) {
         return new SinglePentaJoiner<>(leftMapping, JoinerType.LESS_THAN_OR_EQUAL, rightMapping);
