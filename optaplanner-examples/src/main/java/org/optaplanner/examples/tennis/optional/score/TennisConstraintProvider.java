@@ -106,7 +106,7 @@ public final class TennisConstraintProvider implements ConstraintProvider {
         return constraintFactory.from(TeamAssignment.class)
                 .groupBy(loadBalance(TeamAssignment::getTeam))
                 .penalize(CONSTRAINT_PACKAGE, "fairAssignmentCountPerTeam", HardMediumSoftScore.ONE_MEDIUM,
-                        (result) -> (int) result.getZeroDeviationSquaredSumRootMillis());
+                        result -> (int) result.getZeroDeviationSquaredSumRootMillis());
     }
 
     protected Constraint evenlyConfrontationCount(ConstraintFactory constraintFactory) {
