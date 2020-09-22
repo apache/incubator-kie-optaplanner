@@ -1,5 +1,5 @@
 /*
- * Copyright 2017 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -89,15 +89,10 @@ public class Timeslot extends AbstractPersistable {
         if (!this.isOnSameDayAs(other)) {
             return true;
         }
-        if (this.startsAfter(other)) {
-            // TODO use Duration.between(a, b).toMinutes()
-            return (this.getStartDateTime().getHour() * 60 + this.getStartDateTime().getMinute())
-                    - (other.getEndDateTime().getHour() * 60 + other.getEndDateTime().getMinute()) >= pauseInMinutes;
-        } else {
-            // TODO use Duration.between(a, b).toMinutes()
-            return (other.getStartDateTime().getHour() * 60 + other.getStartDateTime().getMinute())
-                    - (this.getEndDateTime().getHour() * 60 + this.getEndDateTime().getMinute()) >= pauseInMinutes;
-        }
+        Duration pause = startsAfter(other) ?
+                Duration.between(other.getEndDateTime(), getStartDateTime()) :
+                Duration.between(getEndDateTime(), other.getStartDateTime());
+        return pause.toMinutes() >= pauseInMinutes;
     }
 
     @Override
