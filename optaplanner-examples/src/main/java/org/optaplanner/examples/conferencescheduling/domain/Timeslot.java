@@ -89,9 +89,8 @@ public class Timeslot extends AbstractPersistable {
         if (!this.isOnSameDayAs(other)) {
             return true;
         }
-        Duration pause = startsAfter(other) ?
-                Duration.between(other.getEndDateTime(), getStartDateTime()) :
-                Duration.between(getEndDateTime(), other.getStartDateTime());
+        Duration pause = startsAfter(other) ? Duration.between(other.getEndDateTime(), getStartDateTime())
+                : Duration.between(getEndDateTime(), other.getStartDateTime());
         return pause.toMinutes() >= pauseInMinutes;
     }
 
