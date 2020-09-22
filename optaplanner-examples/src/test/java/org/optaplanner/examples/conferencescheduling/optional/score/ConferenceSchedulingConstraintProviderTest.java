@@ -501,4 +501,163 @@ public class ConferenceSchedulingConstraintProviderTest {
                 .penalizesBy(120); // talk1 + talk2.
     }
 
+    @Test
+    public void speakerPreferredTimeslotTags() {
+        Room room = new Room(0);
+        Speaker speaker1 = new Speaker(1)
+                .withPreferredTimeslotTagSet(singleton("a"));
+        Speaker speaker2 = new Speaker(1)
+                .withPreferredTimeslotTagSet(singleton("x"));
+        Talk talk1 = new Talk(1)
+                .withRoom(room)
+                .withSpeakerList(singletonList(speaker1))
+                .withPreferredTimeslotTagSet(new HashSet<>(Arrays.asList("a", "b")))
+                .withTimeslot(TIMESLOT1);
+        Talk talk2 = new Talk(2)
+                .withRoom(room)
+                .withSpeakerList(singletonList(speaker2))
+                .withPreferredTimeslotTagSet(emptySet())
+                .withTimeslot(TIMESLOT2);
+
+        constraintVerifier.verifyThat(ConferenceSchedulingConstraintProvider::speakerPreferredTimeslotTags)
+                .given(talk1, talk2)
+                .penalizesBy(TIMESLOT2.getDurationInMinutes());
+    }
+
+    @Test
+    public void speakerUndesiredTimeslotTags() {
+        Room room = new Room(0);
+        Speaker speaker1 = new Speaker(1)
+                .withUndesiredTimeslotTagSet(singleton("a"));
+        Speaker speaker2 = new Speaker(1)
+                .withUndesiredTimeslotTagSet(singleton("x"));
+        Talk talk1 = new Talk(1)
+                .withRoom(room)
+                .withSpeakerList(singletonList(speaker1))
+                .withUndesiredTimeslotTagSet(new HashSet<>(Arrays.asList("a", "b")))
+                .withTimeslot(TIMESLOT1);
+        Talk talk2 = new Talk(2)
+                .withRoom(room)
+                .withSpeakerList(singletonList(speaker2))
+                .withUndesiredTimeslotTagSet(emptySet())
+                .withTimeslot(TIMESLOT2);
+
+        constraintVerifier.verifyThat(ConferenceSchedulingConstraintProvider::speakerUndesiredTimeslotTags)
+                .given(talk1, talk2)
+                .penalizesBy(TIMESLOT1.getDurationInMinutes());
+    }
+
+    @Test
+    public void talkPreferredTimeslotTags() {
+        Room room = new Room(0);
+        Talk talk1 = new Talk(1)
+                .withRoom(room)
+                .withPreferredTimeslotTagSet(new HashSet<>(Arrays.asList("a", "b")))
+                .withTimeslot(TIMESLOT1);
+        Talk talk2 = new Talk(2)
+                .withRoom(room)
+                .withPreferredTimeslotTagSet(emptySet())
+                .withTimeslot(TIMESLOT2);
+
+        constraintVerifier.verifyThat(ConferenceSchedulingConstraintProvider::talkPreferredTimeslotTags)
+                .given(talk1, talk2)
+                .penalizesBy(TIMESLOT2.getDurationInMinutes());
+    }
+
+    @Test
+    public void talkUndesiredTimeslotTags() {
+        Room room = new Room(0);
+        Talk talk1 = new Talk(1)
+                .withRoom(room)
+                .withUndesiredTimeslotTagSet(new HashSet<>(Arrays.asList("a", "b")))
+                .withTimeslot(TIMESLOT1);
+        Talk talk2 = new Talk(2)
+                .withRoom(room)
+                .withUndesiredTimeslotTagSet(emptySet())
+                .withTimeslot(TIMESLOT2);
+
+        constraintVerifier.verifyThat(ConferenceSchedulingConstraintProvider::talkUndesiredTimeslotTags)
+                .given(talk1, talk2)
+                .penalizesBy(TIMESLOT1.getDurationInMinutes());
+    }
+
+    @Test
+    public void speakerPreferredRoomTags() {
+        Room room = new Room(0)
+                .withTagSet(singleton("a"));
+        Speaker speaker1 = new Speaker(1)
+                .withPreferredRoomTagSet(singleton("a"));
+        Speaker speaker2 = new Speaker(1)
+                .withPreferredRoomTagSet(singleton("x"));
+        Talk talk1 = new Talk(1)
+                .withRoom(room)
+                .withSpeakerList(singletonList(speaker1))
+                .withTimeslot(TIMESLOT1);
+        Talk talk2 = new Talk(2)
+                .withRoom(room)
+                .withSpeakerList(singletonList(speaker2))
+                .withTimeslot(TIMESLOT2);
+
+        constraintVerifier.verifyThat(ConferenceSchedulingConstraintProvider::speakerPreferredRoomTags)
+                .given(talk1, talk2)
+                .penalizesBy(TIMESLOT2.getDurationInMinutes());
+    }
+
+    @Test
+    public void speakerUndesiredRoomTags() {
+        Room room = new Room(0)
+                .withTagSet(singleton("a"));
+        Speaker speaker1 = new Speaker(1)
+                .withUndesiredRoomTagSet(singleton("a"));
+        Speaker speaker2 = new Speaker(1)
+                .withUndesiredRoomTagSet(singleton("x"));
+        Talk talk1 = new Talk(1)
+                .withRoom(room)
+                .withSpeakerList(singletonList(speaker1))
+                .withTimeslot(TIMESLOT1);
+        Talk talk2 = new Talk(2)
+                .withRoom(room)
+                .withSpeakerList(singletonList(speaker2))
+                .withTimeslot(TIMESLOT2);
+
+        constraintVerifier.verifyThat(ConferenceSchedulingConstraintProvider::speakerUndesiredRoomTags)
+                .given(talk1, talk2)
+                .penalizesBy(TIMESLOT1.getDurationInMinutes());
+    }
+
+    @Test
+    public void talkPreferredRoomTags() {
+        Room room = new Room(0)
+                .withTagSet(singleton("a"));
+        Talk talk1 = new Talk(1)
+                .withRoom(room)
+                .withPreferredRoomTagSet(new HashSet<>(Arrays.asList("a", "b")))
+                .withTimeslot(TIMESLOT1);
+        Talk talk2 = new Talk(2)
+                .withRoom(room)
+                .withPreferredRoomTagSet(emptySet())
+                .withTimeslot(TIMESLOT2);
+
+        constraintVerifier.verifyThat(ConferenceSchedulingConstraintProvider::talkPreferredRoomTags)
+                .given(talk1, talk2)
+                .penalizesBy(TIMESLOT2.getDurationInMinutes());
+    }
+
+    @Test
+    public void talkUndesiredRoomTags() {
+        Room room = new Room(0)
+                .withTagSet(singleton("a"));
+        Talk talk1 = new Talk(1)
+                .withRoom(room)
+                .withUndesiredRoomTagSet(new HashSet<>(Arrays.asList("a", "b")))
+                .withTimeslot(TIMESLOT1);
+        Talk talk2 = new Talk(2)
+                .withRoom(room)
+                .withUndesiredRoomTagSet(emptySet())
+                .withTimeslot(TIMESLOT2);
+
+        constraintVerifier.verifyThat(ConferenceSchedulingConstraintProvider::talkUndesiredRoomTags)
+                .given(talk1, talk2)
+                .penalizesBy(TIMESLOT1.getDurationInMinutes());
+    }
 }
