@@ -21,7 +21,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.optaplanner.core.api.score.buildin.hardsoftlong.HardSoftLongScore;
-import org.optaplanner.core.impl.score.director.incremental.AbstractIncrementalScoreCalculator;
 import org.optaplanner.examples.vehiclerouting.domain.Customer;
 import org.optaplanner.examples.vehiclerouting.domain.Standstill;
 import org.optaplanner.examples.vehiclerouting.domain.Vehicle;
@@ -30,7 +29,7 @@ import org.optaplanner.examples.vehiclerouting.domain.timewindowed.TimeWindowedC
 import org.optaplanner.examples.vehiclerouting.domain.timewindowed.TimeWindowedVehicleRoutingSolution;
 
 public class VehicleRoutingIncrementalScoreCalculator
-        extends AbstractIncrementalScoreCalculator<VehicleRoutingSolution, HardSoftLongScore> {
+        implements org.optaplanner.core.impl.score.director.incremental.IncrementalScoreCalculator<VehicleRoutingSolution, HardSoftLongScore> {
 
     private boolean timeWindowed;
     private Map<Vehicle, Integer> vehicleDemandMap;

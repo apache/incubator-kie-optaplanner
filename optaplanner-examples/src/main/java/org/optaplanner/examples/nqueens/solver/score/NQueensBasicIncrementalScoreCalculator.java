@@ -20,12 +20,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
-import org.optaplanner.core.impl.score.director.incremental.AbstractIncrementalScoreCalculator;
 import org.optaplanner.examples.nqueens.domain.NQueens;
 import org.optaplanner.examples.nqueens.domain.Queen;
 import org.optaplanner.examples.nqueens.domain.Row;
 
-public class NQueensBasicIncrementalScoreCalculator extends AbstractIncrementalScoreCalculator<NQueens, SimpleScore> {
+public class NQueensBasicIncrementalScoreCalculator implements org.optaplanner.core.impl.score.director.incremental.IncrementalScoreCalculator<NQueens, SimpleScore> {
 
     private List<Queen> insertedQueenList;
     private int score;

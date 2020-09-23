@@ -17,13 +17,12 @@
 package org.optaplanner.examples.tsp.solver.score;
 
 import org.optaplanner.core.api.score.buildin.simplelong.SimpleLongScore;
-import org.optaplanner.core.impl.score.director.incremental.AbstractIncrementalScoreCalculator;
 import org.optaplanner.examples.tsp.domain.Domicile;
 import org.optaplanner.examples.tsp.domain.Standstill;
 import org.optaplanner.examples.tsp.domain.TspSolution;
 import org.optaplanner.examples.tsp.domain.Visit;
 
-public class TspIncrementalScoreCalculator extends AbstractIncrementalScoreCalculator<TspSolution, SimpleLongScore> {
+public class TspIncrementalScoreCalculator implements org.optaplanner.core.impl.score.director.incremental.IncrementalScoreCalculator<TspSolution, SimpleLongScore> {
 
     private Domicile domicile;
 

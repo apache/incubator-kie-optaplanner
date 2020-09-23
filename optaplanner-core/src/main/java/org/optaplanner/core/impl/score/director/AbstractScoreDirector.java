@@ -16,9 +16,6 @@
 
 package org.optaplanner.core.impl.score.director;
 
-import static java.util.Comparator.comparing;
-import static java.util.Objects.requireNonNull;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -58,6 +55,9 @@ import org.optaplanner.core.impl.score.definition.ScoreDefinition;
 import org.optaplanner.core.impl.solver.thread.ChildThreadType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import static java.util.Comparator.comparing;
+import static java.util.Objects.requireNonNull;
 
 /**
  * Abstract superclass for {@link ScoreDirector}.
@@ -379,7 +379,7 @@ public abstract class AbstractScoreDirector<Solution_, Score_ extends Score<Scor
     @Override
     public String explainScore() {
         // TODO this causes 3 "fireAllRule" calls.
-        Score_ score = (Score_) calculateScore();
+        Score_ score = calculateScore();
         Map<String, ConstraintMatchTotal<Score_>> constraintMatchTotalMap = getConstraintMatchTotalMap();
         Map<Object, Indictment<Score_>> indictmentMap = getIndictmentMap();
         return explainScore(score, constraintMatchTotalMap.values(), indictmentMap.values());

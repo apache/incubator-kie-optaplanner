@@ -164,7 +164,7 @@ public final class BavetConstraintSession<Solution_, Score_ extends Score<Score_
         Map<String, ConstraintMatchTotal<Score_>> constraintMatchTotalMap = new LinkedHashMap<>(
                 constraintIdToScoringNodeMap.size());
         constraintIdToScoringNodeMap.forEach((constraintId, scoringNode) -> {
-            ConstraintMatchTotal<Score_> constraintMatchTotal = scoringNode.buildConstraintMatchTotal((Score_) zeroScore);
+            ConstraintMatchTotal<Score_> constraintMatchTotal = scoringNode.buildConstraintMatchTotal(zeroScore);
             constraintMatchTotalMap.put(constraintId, constraintMatchTotal);
         });
         return constraintMatchTotalMap;
@@ -182,7 +182,7 @@ public final class BavetConstraintSession<Solution_, Score_ extends Score<Score_
                         .forEach(justification -> {
                             DefaultIndictment<Score_> indictment =
                                     (DefaultIndictment<Score_>) indictmentMap.computeIfAbsent(justification,
-                                            k -> new DefaultIndictment<>(justification, (Score_) zeroScore));
+                                            k -> new DefaultIndictment<>(justification, zeroScore));
                             indictment.addConstraintMatch(constraintMatch);
                         });
             }

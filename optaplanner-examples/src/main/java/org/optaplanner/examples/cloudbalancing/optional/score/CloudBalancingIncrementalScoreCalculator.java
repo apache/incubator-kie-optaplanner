@@ -20,13 +20,12 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.optaplanner.core.api.score.buildin.hardsoft.HardSoftScore;
-import org.optaplanner.core.impl.score.director.incremental.AbstractIncrementalScoreCalculator;
 import org.optaplanner.examples.cloudbalancing.domain.CloudBalance;
 import org.optaplanner.examples.cloudbalancing.domain.CloudComputer;
 import org.optaplanner.examples.cloudbalancing.domain.CloudProcess;
 
 public class CloudBalancingIncrementalScoreCalculator
-        extends AbstractIncrementalScoreCalculator<CloudBalance, HardSoftScore> {
+        implements org.optaplanner.core.impl.score.director.incremental.IncrementalScoreCalculator<CloudBalance, HardSoftScore> {
 
     private Map<CloudComputer, Integer> cpuPowerUsageMap;
     private Map<CloudComputer, Integer> memoryUsageMap;
