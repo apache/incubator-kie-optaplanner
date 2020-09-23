@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -46,7 +46,7 @@ public class MoveThreadRunner<Solution_> implements Runnable {
     private final boolean assertExpectedStepScore;
     private final boolean assertShadowVariablesAreNotStaleAfterStep;
 
-    private InnerScoreDirector<Solution_> scoreDirector = null;
+    private InnerScoreDirector scoreDirector = null;
     private AtomicLong calculationCount = new AtomicLong(-1);
 
     public MoveThreadRunner(String logIndentation, int moveThreadIndex, boolean evaluateDoable,
@@ -73,7 +73,7 @@ public class MoveThreadRunner<Solution_> implements Runnable {
     public void run() {
         try {
             int stepIndex = -1;
-            Score lastStepScore = null;
+            Score<?> lastStepScore = null;
             while (true) {
                 MoveThreadOperation<Solution_> operation;
                 try {
@@ -115,7 +115,7 @@ public class MoveThreadRunner<Solution_> implements Runnable {
                     }
                     stepIndex = applyStepOperation.getStepIndex();
                     Move<Solution_> step = applyStepOperation.getStep().rebase(scoreDirector);
-                    Score score = applyStepOperation.getScore();
+                    Score<?> score = applyStepOperation.getScore();
                     step.doMove(scoreDirector);
                     predictWorkingStepScore(step, score);
                     lastStepScore = score;
@@ -143,7 +143,7 @@ public class MoveThreadRunner<Solution_> implements Runnable {
                                 logIndentation, moveThreadIndex, stepIndex, moveIndex);
                         resultQueue.addUndoableMove(moveThreadIndex, stepIndex, moveIndex, move);
                     } else {
-                        Score score = scoreDirector.doAndProcessMove(move, assertMoveScoreFromScratch);
+                        Score<?> score = scoreDirector.doAndProcessMove(move, assertMoveScoreFromScratch);
                         if (assertExpectedUndoMoveScore) {
                             scoreDirector.assertExpectedUndoMoveScore(move, lastStepScore);
                         }
@@ -171,7 +171,7 @@ public class MoveThreadRunner<Solution_> implements Runnable {
         }
     }
 
-    protected void predictWorkingStepScore(Move<Solution_> step, Score score) {
+    protected void predictWorkingStepScore(Move<Solution_> step, Score<?> score) {
         // There is no need to recalculate the score, but we still need to set it
         scoreDirector.getSolutionDescriptor().setScore(scoreDirector.getWorkingSolution(), score);
         if (assertStepScoreFromScratch) {

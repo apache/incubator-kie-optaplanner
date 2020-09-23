@@ -202,7 +202,7 @@ public abstract class AbstractPhase<Solution_> implements Phase<Solution_> {
 
     protected void assertWorkingSolutionInitialized(AbstractPhaseScope<Solution_> phaseScope) {
         if (!phaseScope.getStartingScore().isSolutionInitialized()) {
-            InnerScoreDirector<Solution_> scoreDirector = phaseScope.getScoreDirector();
+            InnerScoreDirector<Solution_, ?> scoreDirector = phaseScope.getScoreDirector();
             SolutionDescriptor<Solution_> solutionDescriptor = scoreDirector.getSolutionDescriptor();
             Solution_ workingSolution = scoreDirector.getWorkingSolution();
             for (Iterator<Object> it = solutionDescriptor.extractAllEntitiesIterator(workingSolution); it.hasNext();) {

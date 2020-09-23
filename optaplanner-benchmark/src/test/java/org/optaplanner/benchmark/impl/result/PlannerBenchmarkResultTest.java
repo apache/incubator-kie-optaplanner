@@ -178,7 +178,7 @@ public class PlannerBenchmarkResultTest {
     // nested class below are used in the testPlannerBenchmarkResult.xml
 
     private static abstract class DummyIncrementalScoreCalculator
-            extends AbstractIncrementalScoreCalculator<TestdataChainedSolution> {
+            extends AbstractIncrementalScoreCalculator<TestdataChainedSolution, SimpleScore> {
 
     }
 

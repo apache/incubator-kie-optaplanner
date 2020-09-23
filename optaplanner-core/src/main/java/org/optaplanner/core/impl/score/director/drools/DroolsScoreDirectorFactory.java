@@ -39,14 +39,16 @@ import org.optaplanner.core.impl.score.director.ScoreDirectorFactory;
  * Drools implementation of {@link ScoreDirectorFactory}.
  *
  * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
+ * @param <Score_> the score type to go with the solution
  * @see DroolsScoreDirector
  * @see ScoreDirectorFactory
  */
-public class DroolsScoreDirectorFactory<Solution_> extends AbstractScoreDirectorFactory<Solution_> {
+public class DroolsScoreDirectorFactory<Solution_, Score_ extends Score<Score_>>
+        extends AbstractScoreDirectorFactory<Solution_, Score_> {
 
     private final KieBase kieBase;
 
-    protected Map<Rule, Function<Solution_, Score<?>>> ruleToConstraintWeightExtractorMap;
+    protected Map<Rule, Function<Solution_, ?>> ruleToConstraintWeightExtractorMap;
 
     /**
      * @param solutionDescriptor never null
@@ -117,8 +119,8 @@ public class DroolsScoreDirectorFactory<Solution_> extends AbstractScoreDirector
         }
     }
 
-    public Map<Rule, Function<Solution_, Score<?>>> getRuleToConstraintWeightExtractorMap() {
-        return ruleToConstraintWeightExtractorMap;
+    public Map<Rule, Function<Solution_, Score_>> getRuleToConstraintWeightExtractorMap() {
+        return (Map) ruleToConstraintWeightExtractorMap;
     }
 
     // ************************************************************************
@@ -126,7 +128,7 @@ public class DroolsScoreDirectorFactory<Solution_> extends AbstractScoreDirector
     // ************************************************************************
 
     @Override
-    public DroolsScoreDirector<Solution_> buildScoreDirector(
+    public DroolsScoreDirector<Solution_, Score_> buildScoreDirector(
             boolean lookUpEnabled, boolean constraintMatchEnabledPreference) {
         return new DroolsScoreDirector<>(this, lookUpEnabled, constraintMatchEnabledPreference);
     }

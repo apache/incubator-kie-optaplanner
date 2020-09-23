@@ -43,7 +43,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class MachineReassignmentIncrementalScoreCalculator
-        extends AbstractIncrementalScoreCalculator<MachineReassignment>
+        extends AbstractIncrementalScoreCalculator<MachineReassignment, HardSoftLongScore>
         implements ConstraintMatchAwareIncrementalScoreCalculator<MachineReassignment, HardSoftLongScore> {
 
     protected static final String CONSTRAINT_PACKAGE = "org.optaplanner.examples.machinereassignment.solver";

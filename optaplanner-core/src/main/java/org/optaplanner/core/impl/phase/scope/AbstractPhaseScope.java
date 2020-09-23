@@ -138,7 +138,7 @@ public abstract class AbstractPhaseScope<Solution_> {
         return getPhaseScoreCalculationCount() * 1000L / (timeMillisSpent == 0L ? 1L : timeMillisSpent);
     }
 
-    public InnerScoreDirector<Solution_> getScoreDirector() {
+    public InnerScoreDirector getScoreDirector() {
         return solverScope.getScoreDirector();
     }
 

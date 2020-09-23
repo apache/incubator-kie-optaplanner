@@ -40,7 +40,8 @@ import org.optaplanner.examples.cheaptime.solver.CheapTimeCostCalculator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class CheapTimeIncrementalScoreCalculator extends AbstractIncrementalScoreCalculator<CheapTimeSolution>
+public class CheapTimeIncrementalScoreCalculator
+        extends AbstractIncrementalScoreCalculator<CheapTimeSolution, HardMediumSoftLongScore>
         implements ConstraintMatchAwareIncrementalScoreCalculator<CheapTimeSolution, HardMediumSoftLongScore> {
 
     protected static final String CONSTRAINT_PACKAGE = "org.optaplanner.examples.cheaptime.solver";

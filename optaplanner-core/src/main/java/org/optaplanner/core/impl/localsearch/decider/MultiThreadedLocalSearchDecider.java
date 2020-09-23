@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -94,7 +94,7 @@ public class MultiThreadedLocalSearchDecider<Solution_> extends LocalSearchDecid
         // Capacity: number of moves in circulation + number of exception handling results
         resultQueue = new OrderByMoveIndexBlockingQueue<>(selectedMoveBufferSize + moveThreadCount);
         moveThreadBarrier = new CyclicBarrier(moveThreadCount);
-        InnerScoreDirector<Solution_> scoreDirector = phaseScope.getScoreDirector();
+        InnerScoreDirector<Solution_, ?> scoreDirector = phaseScope.getScoreDirector();
         executor = createThreadPoolExecutor();
         moveThreadRunnerList = new ArrayList<>(moveThreadCount);
         for (int moveThreadIndex = 0; moveThreadIndex < moveThreadCount; moveThreadIndex++) {

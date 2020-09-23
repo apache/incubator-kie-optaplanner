@@ -1,5 +1,5 @@
 /*
- * Copyright 2012 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -30,9 +30,10 @@ import org.optaplanner.core.impl.score.director.easy.EasyScoreCalculator;
  * Any implementation is naturally stateful.
  *
  * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
+ * @param <Score_> the score type to go with the solution
  * @see IncrementalScoreDirector
  */
-public interface IncrementalScoreCalculator<Solution_> {
+public interface IncrementalScoreCalculator<Solution_, Score_ extends Score<Score_>> {
 
     /**
      * There are no {@link #beforeEntityAdded(Object)} and {@link #afterEntityAdded(Object)} calls
@@ -80,6 +81,6 @@ public interface IncrementalScoreCalculator<Solution_> {
      *
      * @return never null
      */
-    Score calculateScore();
+    Score_ calculateScore();
 
 }
