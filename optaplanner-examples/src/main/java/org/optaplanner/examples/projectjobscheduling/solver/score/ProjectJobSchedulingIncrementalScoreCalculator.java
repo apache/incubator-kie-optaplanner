@@ -21,6 +21,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.optaplanner.core.api.score.buildin.bendable.BendableScore;
+import org.optaplanner.core.impl.score.director.incremental.IncrementalScoreCalculator;
 import org.optaplanner.examples.projectjobscheduling.domain.Allocation;
 import org.optaplanner.examples.projectjobscheduling.domain.ExecutionMode;
 import org.optaplanner.examples.projectjobscheduling.domain.JobType;
@@ -33,7 +34,7 @@ import org.optaplanner.examples.projectjobscheduling.solver.score.capacity.Renew
 import org.optaplanner.examples.projectjobscheduling.solver.score.capacity.ResourceCapacityTracker;
 
 public class ProjectJobSchedulingIncrementalScoreCalculator
-        implements org.optaplanner.core.impl.score.director.incremental.IncrementalScoreCalculator<Schedule, BendableScore> {
+        implements IncrementalScoreCalculator<Schedule, BendableScore> {
 
     private Map<Resource, ResourceCapacityTracker> resourceCapacityTrackerMap;
     private Map<Project, Integer> projectEndDateMap;

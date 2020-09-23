@@ -22,11 +22,12 @@ import java.util.List;
 import java.util.Map;
 
 import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
+import org.optaplanner.core.impl.score.director.incremental.IncrementalScoreCalculator;
 import org.optaplanner.examples.nqueens.domain.NQueens;
 import org.optaplanner.examples.nqueens.domain.Queen;
 import org.optaplanner.examples.nqueens.domain.Row;
 
-public class NQueensAdvancedIncrementalScoreCalculator implements org.optaplanner.core.impl.score.director.incremental.IncrementalScoreCalculator<NQueens, SimpleScore> {
+public class NQueensAdvancedIncrementalScoreCalculator implements IncrementalScoreCalculator<NQueens, SimpleScore> {
 
     private Map<Integer, List<Queen>> rowIndexMap;
     private Map<Integer, List<Queen>> ascendingDiagonalIndexMap;

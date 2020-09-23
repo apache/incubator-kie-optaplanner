@@ -21,6 +21,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.optaplanner.core.api.score.buildin.hardsoftlong.HardSoftLongScore;
+import org.optaplanner.core.impl.score.director.incremental.IncrementalScoreCalculator;
 import org.optaplanner.examples.investment.domain.AssetClassAllocation;
 import org.optaplanner.examples.investment.domain.InvestmentSolution;
 import org.optaplanner.examples.investment.domain.Region;
@@ -29,7 +30,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class InvestmentIncrementalScoreCalculator
-        implements org.optaplanner.core.impl.score.director.incremental.IncrementalScoreCalculator<InvestmentSolution, HardSoftLongScore> {
+        implements IncrementalScoreCalculator<InvestmentSolution, HardSoftLongScore> {
 
     protected final transient Logger logger = LoggerFactory.getLogger(getClass());
 
