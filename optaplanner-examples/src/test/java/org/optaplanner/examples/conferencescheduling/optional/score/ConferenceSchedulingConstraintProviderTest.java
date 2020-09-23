@@ -16,10 +16,6 @@
 
 package org.optaplanner.examples.conferencescheduling.optional.score;
 
-import static java.util.Collections.emptySet;
-import static java.util.Collections.singleton;
-import static java.util.Collections.singletonList;
-
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -34,6 +30,10 @@ import org.optaplanner.examples.conferencescheduling.domain.Speaker;
 import org.optaplanner.examples.conferencescheduling.domain.Talk;
 import org.optaplanner.examples.conferencescheduling.domain.Timeslot;
 import org.optaplanner.test.api.score.stream.ConstraintVerifier;
+
+import static java.util.Collections.emptySet;
+import static java.util.Collections.singleton;
+import static java.util.Collections.singletonList;
 
 public class ConferenceSchedulingConstraintProviderTest {
 
@@ -55,7 +55,7 @@ public class ConferenceSchedulingConstraintProviderTest {
             .withStartDateTime(TIMESLOT2.getEndDateTime())
             .withEndDateTime(TIMESLOT2.getEndDateTime().plusHours(1))
             .withTagSet(singleton("c"));
-    private static final Timeslot TIMESLOT4 = new Timeslot(3)
+    private static final Timeslot TIMESLOT_ANOTHER_DAY = new Timeslot(3)
             .withStartDateTime(TIMESLOT1.getStartDateTime().plusDays(1))
             .withEndDateTime(TIMESLOT1.getStartDateTime().plusDays(1).plusHours(1))
             .withTagSet(singleton("c"));
@@ -494,11 +494,267 @@ public class ConferenceSchedulingConstraintProviderTest {
         Talk talk4 = new Talk(4)
                 .withRoom(room2)
                 .withThemeTrackTagSet(singleton("a"))
-                .withTimeslot(TIMESLOT4);
+                .withTimeslot(TIMESLOT_ANOTHER_DAY);
 
         constraintVerifier.verifyThat(ConferenceSchedulingConstraintProvider::themeTrackRoomStability)
                 .given(talk1, talk2, talk3, talk4)
                 .penalizesBy(120); // talk1 + talk2.
+    }
+
+    @Test
+    public void sectorConflict() {
+        Room room = new Room(0);
+        Talk talk1 = new Talk(1)
+                .withRoom(room)
+                .withSectorTagSet(singleton("a"))
+                .withTimeslot(TIMESLOT1);
+        Talk talk2 = new Talk(2)
+                .withRoom(room)
+                .withSectorTagSet(singleton("a"))
+                .withTimeslot(TIMESLOT1);
+        Talk talk3 = new Talk(3)
+                .withRoom(room)
+                .withSectorTagSet(singleton("b"))
+                .withTimeslot(TIMESLOT1);
+        Talk talk4 = new Talk(4)
+                .withRoom(room)
+                .withSectorTagSet(singleton("a"))
+                .withTimeslot(TIMESLOT2);
+
+        constraintVerifier.verifyThat(ConferenceSchedulingConstraintProvider::sectorConflict)
+                .given(talk1, talk2, talk3, talk4)
+                .penalizesBy(60); // talk1 + talk2.
+    }
+
+    @Test
+    public void audienceTypeDiversity() {
+        Room room = new Room(0);
+        Talk talk1 = new Talk(1)
+                .withRoom(room)
+                .withAudienceTypeSet(singleton("a"))
+                .withTimeslot(TIMESLOT1);
+        Talk talk2 = new Talk(2)
+                .withRoom(room)
+                .withAudienceTypeSet(singleton("a"))
+                .withTimeslot(TIMESLOT1);
+        Talk talk3 = new Talk(3)
+                .withRoom(room)
+                .withAudienceTypeSet(singleton("b"))
+                .withTimeslot(TIMESLOT1);
+        Talk talk4 = new Talk(4)
+                .withRoom(room)
+                .withAudienceTypeSet(singleton("a"))
+                .withTimeslot(TIMESLOT2);
+
+        constraintVerifier.verifyThat(ConferenceSchedulingConstraintProvider::audienceTypeDiversity)
+                .given(talk1, talk2, talk3, talk4)
+                .rewardsWith(60); // talk1 + talk2.
+    }
+
+    @Test
+    public void audienceTypeThemeTrackConflict() {
+        Room room = new Room(0);
+        Talk talk1 = new Talk(1)
+                .withRoom(room)
+                .withAudienceTypeSet(singleton("a"))
+                .withThemeTrackTagSet(singleton("b"))
+                .withTimeslot(TIMESLOT1);
+        Talk talk2 = new Talk(2)
+                .withRoom(room)
+                .withAudienceTypeSet(singleton("a"))
+                .withThemeTrackTagSet(singleton("a"))
+                .withTimeslot(TIMESLOT1);
+        Talk talk3 = new Talk(3)
+                .withRoom(room)
+                .withAudienceTypeSet(singleton("b"))
+                .withThemeTrackTagSet(singleton("a"))
+                .withTimeslot(TIMESLOT1);
+        Talk talk4 = new Talk(4)
+                .withRoom(room)
+                .withAudienceTypeSet(singleton("a"))
+                .withThemeTrackTagSet(singleton("a"))
+                .withTimeslot(TIMESLOT2);
+        Talk talk5 = new Talk(5)
+                .withRoom(room)
+                .withAudienceTypeSet(singleton("a"))
+                .withThemeTrackTagSet(singleton("b"))
+                .withTimeslot(TIMESLOT1);
+        Talk talk6 = new Talk(6)
+                .withRoom(room)
+                .withAudienceTypeSet(singleton("a"))
+                .withThemeTrackTagSet(singleton("c"))
+                .withTimeslot(TIMESLOT1);
+
+        constraintVerifier.verifyThat(ConferenceSchedulingConstraintProvider::audienceTypeThemeTrackConflict)
+                .given(talk1, talk2, talk3, talk4, talk5, talk6)
+                .penalizesBy(60); // talk1 + talk2.
+    }
+
+    @Test
+    public void audienceLevelDiversity() {
+        Room room = new Room(0);
+        Talk talk1 = new Talk(1)
+                .withRoom(room)
+                .withAudienceLevel(1)
+                .withTimeslot(TIMESLOT1);
+        Talk talk2 = new Talk(2)
+                .withRoom(room)
+                .withAudienceLevel(1)
+                .withTimeslot(TIMESLOT1);
+        Talk talk3 = new Talk(3)
+                .withRoom(room)
+                .withAudienceLevel(2)
+                .withTimeslot(TIMESLOT1);
+        Talk talk4 = new Talk(4)
+                .withRoom(room)
+                .withAudienceLevel(1)
+                .withTimeslot(TIMESLOT2);
+
+        constraintVerifier.verifyThat(ConferenceSchedulingConstraintProvider::audienceLevelDiversity)
+                .given(talk1, talk2, talk3, talk4)
+                .rewardsWith(120); // talk1 + talk2 v. talk3.
+    }
+
+    @Test
+    public void contentAudienceLevelFlowViolation() {
+        Room room = new Room(0);
+        Talk talk1 = new Talk(1)
+                .withRoom(room)
+                .withAudienceLevel(1)
+                .withContentTagSet(singleton("a"))
+                .withTimeslot(TIMESLOT1);
+        Talk talk2 = new Talk(2)
+                .withRoom(room)
+                .withAudienceLevel(2)
+                .withContentTagSet(singleton("a"))
+                .withTimeslot(TIMESLOT1);
+        Talk talk3 = new Talk(3)
+                .withRoom(room)
+                .withAudienceLevel(3)
+                .withContentTagSet(singleton("b"))
+                .withTimeslot(TIMESLOT1);
+        Talk talk4 = new Talk(4)
+                .withRoom(room)
+                .withAudienceLevel(1)
+                .withContentTagSet(singleton("a"))
+                .withTimeslot(TIMESLOT2);
+
+        constraintVerifier.verifyThat(ConferenceSchedulingConstraintProvider::contentAudienceLevelFlowViolation)
+                .given(talk1, talk2, talk3, talk4)
+                .penalizesBy(240); // talk1 + talk2, talk2 + talk1, talk2 + talk4, talk4 + talk2.
+    }
+
+    @Test
+    public void contentConflict() {
+        Room room = new Room(0);
+        Talk talk1 = new Talk(1)
+                .withRoom(room)
+                .withContentTagSet(singleton("a"))
+                .withTimeslot(TIMESLOT1);
+        Talk talk2 = new Talk(2)
+                .withRoom(room)
+                .withContentTagSet(singleton("a"))
+                .withTimeslot(TIMESLOT1);
+        Talk talk3 = new Talk(3)
+                .withRoom(room)
+                .withContentTagSet(singleton("b"))
+                .withTimeslot(TIMESLOT1);
+        Talk talk4 = new Talk(4)
+                .withRoom(room)
+                .withContentTagSet(singleton("a"))
+                .withTimeslot(TIMESLOT2);
+
+        constraintVerifier.verifyThat(ConferenceSchedulingConstraintProvider::contentConflict)
+                .given(talk1, talk2, talk3, talk4)
+                .penalizesBy(60); // talk1 + talk2.
+    }
+
+    @Test
+    public void languageDiversity() {
+        Room room = new Room(0);
+        Talk talk1 = new Talk(1)
+                .withRoom(room)
+                .withLanguage("a")
+                .withTimeslot(TIMESLOT1);
+        Talk talk2 = new Talk(2)
+                .withRoom(room)
+                .withLanguage("a")
+                .withTimeslot(TIMESLOT1);
+        Talk talk3 = new Talk(3)
+                .withRoom(room)
+                .withLanguage("b")
+                .withTimeslot(TIMESLOT1);
+        Talk talk4 = new Talk(4)
+                .withRoom(room)
+                .withLanguage("a")
+                .withTimeslot(TIMESLOT2);
+
+        constraintVerifier.verifyThat(ConferenceSchedulingConstraintProvider::languageDiversity)
+                .given(talk1, talk2, talk3, talk4)
+                .rewardsWith(120); // talk1 + talk3.
+    }
+
+    @Test
+    public void sameDayTalks() {
+        Room room = new Room(0);
+        Talk talk1 = new Talk(1)
+                .withRoom(room)
+                .withContentTagSet(singleton("a"))
+                .withThemeTrackTagSet(singleton("a"))
+                .withTimeslot(TIMESLOT1);
+        Talk talk2 = new Talk(3)
+                .withRoom(room)
+                .withContentTagSet(singleton("b"))
+                .withThemeTrackTagSet(singleton("a"))
+                .withTimeslot(TIMESLOT_ANOTHER_DAY);
+        Talk talk3 = new Talk(4)
+                .withRoom(room)
+                .withContentTagSet(singleton("a"))
+                .withThemeTrackTagSet(singleton("a"))
+                .withTimeslot(TIMESLOT_ANOTHER_DAY);
+        Talk talk4 = new Talk(5)
+                .withRoom(room)
+                .withContentTagSet(singleton("a"))
+                .withThemeTrackTagSet(singleton("b"))
+                .withTimeslot(TIMESLOT1);
+        Talk talk5 = new Talk(7)
+                .withRoom(room)
+                .withContentTagSet(singleton("b"))
+                .withThemeTrackTagSet(singleton("b"))
+                .withTimeslot(TIMESLOT_ANOTHER_DAY);
+        Talk talk6 = new Talk(8)
+                .withRoom(room)
+                .withContentTagSet(singleton("a"))
+                .withThemeTrackTagSet(singleton("b"))
+                .withTimeslot(TIMESLOT_ANOTHER_DAY);
+
+        constraintVerifier.verifyThat(ConferenceSchedulingConstraintProvider::sameDayTalks)
+                .given(talk1, talk2, talk3, talk4, talk5, talk6)
+                .penalizesBy(960);
+    }
+
+    @Test
+    public void popularTalks() {
+        Room smallerRoom = new Room(0)
+                .withCapacity(10);
+        Room biggerRoom = new Room(1)
+                .withCapacity(20);
+        Talk talk1 = new Talk(1)
+                .withRoom(smallerRoom)
+                .withFavoriteCount(2)
+                .withTimeslot(TIMESLOT1);
+        Talk talk2 = new Talk(2)
+                .withRoom(biggerRoom)
+                .withFavoriteCount(2)
+                .withTimeslot(TIMESLOT1);
+        Talk talk3 = new Talk(3)
+                .withRoom(biggerRoom)
+                .withFavoriteCount(1)
+                .withTimeslot(TIMESLOT1);
+
+        constraintVerifier.verifyThat(ConferenceSchedulingConstraintProvider::popularTalks)
+                .given(talk1, talk2, talk3)
+                .penalizesBy(120); // talk1 + talk3
     }
 
     @Test

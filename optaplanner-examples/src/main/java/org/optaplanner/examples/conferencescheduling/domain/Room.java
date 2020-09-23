@@ -93,6 +93,11 @@ public class Room extends AbstractPersistable {
     // With methods
     // ************************************************************************
 
+    public Room withCapacity(int capacity) {
+        this.capacity = capacity;
+        return this;
+    }
+
     public Room withTagSet(Set<String> tagSet) {
         this.tagSet = tagSet;
         return this;

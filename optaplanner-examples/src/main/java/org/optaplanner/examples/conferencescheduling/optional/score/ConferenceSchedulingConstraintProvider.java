@@ -16,6 +16,15 @@
 
 package org.optaplanner.examples.conferencescheduling.optional.score;
 
+import java.util.Objects;
+
+import org.optaplanner.core.api.score.stream.Constraint;
+import org.optaplanner.core.api.score.stream.ConstraintFactory;
+import org.optaplanner.core.api.score.stream.ConstraintProvider;
+import org.optaplanner.examples.conferencescheduling.domain.ConferenceConstraintConfiguration;
+import org.optaplanner.examples.conferencescheduling.domain.Speaker;
+import org.optaplanner.examples.conferencescheduling.domain.Talk;
+
 import static org.optaplanner.core.api.score.stream.ConstraintCollectors.countBi;
 import static org.optaplanner.core.api.score.stream.Joiners.equal;
 import static org.optaplanner.core.api.score.stream.Joiners.filtering;
@@ -59,15 +68,6 @@ import static org.optaplanner.examples.conferencescheduling.domain.ConferenceCon
 import static org.optaplanner.examples.conferencescheduling.domain.ConferenceConstraintConfiguration.TALK_UNDESIRED_TIMESLOT_TAGS;
 import static org.optaplanner.examples.conferencescheduling.domain.ConferenceConstraintConfiguration.THEME_TRACK_CONFLICT;
 import static org.optaplanner.examples.conferencescheduling.domain.ConferenceConstraintConfiguration.THEME_TRACK_ROOM_STABILITY;
-
-import java.util.Objects;
-
-import org.optaplanner.core.api.score.stream.Constraint;
-import org.optaplanner.core.api.score.stream.ConstraintFactory;
-import org.optaplanner.core.api.score.stream.ConstraintProvider;
-import org.optaplanner.examples.conferencescheduling.domain.ConferenceConstraintConfiguration;
-import org.optaplanner.examples.conferencescheduling.domain.Speaker;
-import org.optaplanner.examples.conferencescheduling.domain.Talk;
 
 public final class ConferenceSchedulingConstraintProvider implements ConstraintProvider {
 
@@ -349,12 +349,12 @@ public final class ConferenceSchedulingConstraintProvider implements ConstraintP
 
     protected Constraint sameDayTalks(ConstraintFactory factory) {
         return factory.fromUniquePair(Talk.class)
-                .filter((talk1,
-                        talk2) -> (talk1.overlappingContentCount(talk2) > 0 || talk1.overlappingThemeTrackCount(talk2) > 0)
+                .filter((talk1, talk2) ->
+                        (talk1.overlappingContentCount(talk2) > 0 || talk1.overlappingThemeTrackCount(talk2) > 0)
                                 && !talk1.getTimeslot().isOnSameDayAs(talk2.getTimeslot()))
-                .penalizeConfigurable(SAME_DAY_TALKS,
-                        (talk1, talk2) -> (talk2.overlappingThemeTrackCount(talk1) + talk2.overlappingContentCount(talk1))
-                                * (talk1.getDurationInMinutes() + talk2.getDurationInMinutes()));
+                .penalizeConfigurable(SAME_DAY_TALKS, (talk1, talk2) ->
+                        (talk2.overlappingThemeTrackCount(talk1) + talk2.overlappingContentCount(talk1))
+                                * talk1.combinedDurationInMinutes(talk2));
     }
 
     protected Constraint popularTalks(ConstraintFactory factory) {
