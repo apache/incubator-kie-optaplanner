@@ -515,11 +515,6 @@ public class Talk extends AbstractPersistable {
     // With methods
     // ************************************************************************
 
-    public Talk withFavoriteCount(int favoriteCount) {
-        this.favoriteCount = favoriteCount;
-        return this;
-    }
-
     public Talk withTalkType(TalkType talkType) {
         this.talkType = talkType;
         return this;
@@ -607,6 +602,11 @@ public class Talk extends AbstractPersistable {
 
     public Talk withPrerequisiteTalksCodesSet(Set<Talk> prerequisiteTalksCodesSet) {
         this.prerequisiteTalkSet = prerequisiteTalksCodesSet;
+        return this;
+    }
+
+    public Talk withFavoriteCount(int favoriteCount) {
+        this.favoriteCount = favoriteCount;
         return this;
     }
 

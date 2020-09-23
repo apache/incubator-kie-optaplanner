@@ -98,11 +98,6 @@ public class Room extends AbstractPersistable {
         return this;
     }
 
-    public Room withTagSet(Set<String> tagSet) {
-        this.tagSet = tagSet;
-        return this;
-    }
-
     public Room withTalkTypeSet(Set<TalkType> talkTypeSet) {
         this.talkTypeSet = talkTypeSet;
         return this;
@@ -112,4 +107,10 @@ public class Room extends AbstractPersistable {
         this.unavailableTimeslotSet = unavailableTimeslotTest;
         return this;
     }
+
+    public Room withTagSet(Set<String> tagSet) {
+        this.tagSet = tagSet;
+        return this;
+    }
+
 }

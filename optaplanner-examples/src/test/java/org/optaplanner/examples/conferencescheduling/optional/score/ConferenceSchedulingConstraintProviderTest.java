@@ -20,9 +20,7 @@ import static java.util.Collections.emptySet;
 import static java.util.Collections.singleton;
 import static java.util.Collections.singletonList;
 
-import java.time.Instant;
 import java.time.LocalDateTime;
-import java.time.ZoneId;
 import java.util.Arrays;
 import java.util.HashSet;
 
@@ -41,23 +39,23 @@ public class ConferenceSchedulingConstraintProviderTest {
             ConstraintVerifier.build(new ConferenceSchedulingConstraintProvider(), ConferenceSolution.class,
                     Talk.class);
 
-    private static final LocalDateTime START = LocalDateTime.ofInstant(Instant.EPOCH, ZoneId.systemDefault());
+    private static final LocalDateTime START = LocalDateTime.of(2000, 2, 1, 9, 0);
 
-    private static final Timeslot TIMESLOT1 = new Timeslot(1)
+    private static final Timeslot MONDAY_9_TO_10 = new Timeslot(1)
             .withStartDateTime(START)
             .withEndDateTime(START.plusHours(1))
             .withTagSet(singleton("a"));
-    private static final Timeslot TIMESLOT2 = new Timeslot(2)
-            .withStartDateTime(TIMESLOT1.getEndDateTime())
-            .withEndDateTime(TIMESLOT1.getEndDateTime().plusHours(1))
+    private static final Timeslot MONDAY_10_TO_11 = new Timeslot(2)
+            .withStartDateTime(MONDAY_9_TO_10.getEndDateTime())
+            .withEndDateTime(MONDAY_9_TO_10.getEndDateTime().plusHours(1))
             .withTagSet(singleton("b"));
-    private static final Timeslot TIMESLOT3 = new Timeslot(3)
-            .withStartDateTime(TIMESLOT2.getEndDateTime())
-            .withEndDateTime(TIMESLOT2.getEndDateTime().plusHours(1))
+    private static final Timeslot MONDAY_11_TO_12 = new Timeslot(3)
+            .withStartDateTime(MONDAY_10_TO_11.getEndDateTime())
+            .withEndDateTime(MONDAY_10_TO_11.getEndDateTime().plusHours(1))
             .withTagSet(singleton("c"));
-    private static final Timeslot TIMESLOT_ANOTHER_DAY = new Timeslot(3)
-            .withStartDateTime(TIMESLOT1.getStartDateTime().plusDays(1))
-            .withEndDateTime(TIMESLOT1.getStartDateTime().plusDays(1).plusHours(1))
+    private static final Timeslot TUESDAY_9_TO_10 = new Timeslot(4)
+            .withStartDateTime(START.plusDays(1))
+            .withEndDateTime(START.plusDays(1).plusHours(1))
             .withTagSet(singleton("c"));
 
     // ************************************************************************
@@ -67,59 +65,59 @@ public class ConferenceSchedulingConstraintProviderTest {
     @Test
     public void roomUnavailableTimeslot() {
         Room room1 = new Room(1)
-                .withUnavailableTimeslotSet(singleton(TIMESLOT1));
+                .withUnavailableTimeslotSet(singleton(MONDAY_9_TO_10));
         Room room2 = new Room(2)
-                .withUnavailableTimeslotSet(singleton(TIMESLOT2));
+                .withUnavailableTimeslotSet(singleton(MONDAY_10_TO_11));
         Talk talk1 = new Talk(1)
                 .withRoom(room1)
-                .withTimeslot(TIMESLOT1);
+                .withTimeslot(MONDAY_9_TO_10);
         Talk talk2 = new Talk(2)
                 .withRoom(room2)
-                .withTimeslot(TIMESLOT1);
+                .withTimeslot(MONDAY_9_TO_10);
 
         constraintVerifier.verifyThat(ConferenceSchedulingConstraintProvider::roomUnavailableTimeslot)
                 .given(talk1, talk2)
-                .penalizesBy(TIMESLOT1.getDurationInMinutes()); // room1 is in an unavailable timeslot.
+                .penalizesBy(MONDAY_9_TO_10.getDurationInMinutes()); // room1 is in an unavailable timeslot.
     }
 
     @Test
     public void roomConflict() {
         Room room = new Room(1)
-                .withUnavailableTimeslotSet(singleton(TIMESLOT1));
+                .withUnavailableTimeslotSet(singleton(MONDAY_9_TO_10));
         Talk talk1 = new Talk(1)
                 .withRoom(room)
-                .withTimeslot(TIMESLOT1);
+                .withTimeslot(MONDAY_9_TO_10);
         Talk talk2 = new Talk(2)
                 .withRoom(room)
-                .withTimeslot(TIMESLOT1);
+                .withTimeslot(MONDAY_9_TO_10);
         Talk talk3 = new Talk(3)
                 .withRoom(room)
-                .withTimeslot(TIMESLOT2);
+                .withTimeslot(MONDAY_10_TO_11);
 
         constraintVerifier.verifyThat(ConferenceSchedulingConstraintProvider::roomConflict)
                 .given(talk1, talk2, talk3)
-                .penalizesBy(TIMESLOT1.getDurationInMinutes()); // talk1 and talk2 are in conflict.
+                .penalizesBy(MONDAY_9_TO_10.getDurationInMinutes()); // talk1 and talk2 are in conflict.
     }
 
     @Test
     public void speakerUnavailableTimeslot() {
         Room room = new Room(0);
         Speaker speaker1 = new Speaker(1)
-                .withUnavailableTimeslotSet(singleton(TIMESLOT1));
+                .withUnavailableTimeslotSet(singleton(MONDAY_9_TO_10));
         Speaker speaker2 = new Speaker(2)
-                .withUnavailableTimeslotSet(singleton(TIMESLOT2));
+                .withUnavailableTimeslotSet(singleton(MONDAY_10_TO_11));
         Talk talk1 = new Talk(1)
                 .withRoom(room)
                 .withSpeakerList(singletonList(speaker1))
-                .withTimeslot(TIMESLOT1);
+                .withTimeslot(MONDAY_9_TO_10);
         Talk talk2 = new Talk(2)
                 .withRoom(room)
                 .withSpeakerList(singletonList(speaker2))
-                .withTimeslot(TIMESLOT1);
+                .withTimeslot(MONDAY_9_TO_10);
 
         constraintVerifier.verifyThat(ConferenceSchedulingConstraintProvider::speakerUnavailableTimeslot)
                 .given(talk1, talk2)
-                .penalizesBy(TIMESLOT1.getDurationInMinutes()); // speaker1 is in an unavailable timeslot.
+                .penalizesBy(MONDAY_9_TO_10.getDurationInMinutes()); // speaker1 is in an unavailable timeslot.
     }
 
     @Test
@@ -129,19 +127,19 @@ public class ConferenceSchedulingConstraintProviderTest {
         Talk talk1 = new Talk(1)
                 .withRoom(room)
                 .withSpeakerList(singletonList(speaker))
-                .withTimeslot(TIMESLOT1);
+                .withTimeslot(MONDAY_9_TO_10);
         Talk talk2 = new Talk(2)
                 .withRoom(room)
                 .withSpeakerList(singletonList(speaker))
-                .withTimeslot(TIMESLOT1);
+                .withTimeslot(MONDAY_9_TO_10);
         Talk talk3 = new Talk(3)
                 .withRoom(room)
                 .withSpeakerList(singletonList(speaker))
-                .withTimeslot(TIMESLOT2);
+                .withTimeslot(MONDAY_10_TO_11);
 
         constraintVerifier.verifyThat(ConferenceSchedulingConstraintProvider::speakerConflict)
                 .given(speaker, talk1, talk2, talk3)
-                .penalizesBy(TIMESLOT1.getDurationInMinutes()); // talk1 and talk2 are in conflict.
+                .penalizesBy(MONDAY_9_TO_10.getDurationInMinutes()); // talk1 and talk2 are in conflict.
     }
 
     @Test
@@ -150,19 +148,19 @@ public class ConferenceSchedulingConstraintProviderTest {
         Talk talk1 = new Talk(1)
                 .withRoom(room)
                 .withPrerequisiteTalksCodesSet(emptySet())
-                .withTimeslot(TIMESLOT1);
+                .withTimeslot(MONDAY_9_TO_10);
         Talk talk2 = new Talk(2)
                 .withRoom(room)
                 .withPrerequisiteTalksCodesSet(singleton(talk1))
-                .withTimeslot(TIMESLOT1);
+                .withTimeslot(MONDAY_9_TO_10);
         Talk talk3 = new Talk(3)
                 .withRoom(room)
                 .withPrerequisiteTalksCodesSet(singleton(talk1))
-                .withTimeslot(TIMESLOT2);
+                .withTimeslot(MONDAY_10_TO_11);
 
         constraintVerifier.verifyThat(ConferenceSchedulingConstraintProvider::talkPrerequisiteTalks)
                 .given(talk1, talk2, talk3)
-                .penalizesBy(TIMESLOT1.getDurationInMinutes() * 2); // talk2 is not after talk1.
+                .penalizesBy(MONDAY_9_TO_10.getDurationInMinutes() * 2); // talk2 is not after talk1.
     }
 
     @Test
@@ -171,19 +169,19 @@ public class ConferenceSchedulingConstraintProviderTest {
         Talk talk1 = new Talk(1)
                 .withRoom(room)
                 .withMutuallyExclusiveTalksTagSet(emptySet())
-                .withTimeslot(TIMESLOT1);
+                .withTimeslot(MONDAY_9_TO_10);
         Talk talk2 = new Talk(2)
                 .withRoom(room)
                 .withMutuallyExclusiveTalksTagSet(new HashSet<>(Arrays.asList("a", "b")))
-                .withTimeslot(TIMESLOT1);
+                .withTimeslot(MONDAY_9_TO_10);
         Talk talk3 = new Talk(3)
                 .withRoom(room)
                 .withMutuallyExclusiveTalksTagSet(new HashSet<>(Arrays.asList("a", "b", "c")))
-                .withTimeslot(TIMESLOT1);
+                .withTimeslot(MONDAY_9_TO_10);
 
         constraintVerifier.verifyThat(ConferenceSchedulingConstraintProvider::talkMutuallyExclusiveTalksTags)
                 .given(talk1, talk2, talk3)
-                .penalizesBy(TIMESLOT1.getDurationInMinutes() * 2); // talk2 and talk3 excluded twice.
+                .penalizesBy(MONDAY_9_TO_10.getDurationInMinutes() * 2); // talk2 and talk3 excluded twice.
     }
 
     @Test
@@ -194,25 +192,25 @@ public class ConferenceSchedulingConstraintProviderTest {
         Talk talk1 = new Talk(1)
                 .withRoom(room)
                 .withSpeakerList(singletonList(speaker1))
-                .withTimeslot(TIMESLOT1);
+                .withTimeslot(MONDAY_9_TO_10);
         Talk talk2 = new Talk(2)
                 .withRoom(room)
                 .withSpeakerList(singletonList(speaker1))
-                .withTimeslot(TIMESLOT2);
+                .withTimeslot(MONDAY_10_TO_11);
         Talk talk3 = new Talk(3)
                 .withRoom(room)
                 .withSpeakerList(singletonList(speaker1))
-                .withTimeslot(TIMESLOT3);
+                .withTimeslot(MONDAY_11_TO_12);
         Talk talk4 = new Talk(4)
                 .withRoom(room)
                 .withSpeakerList(singletonList(speaker2))
-                .withTimeslot(TIMESLOT1);
+                .withTimeslot(MONDAY_9_TO_10);
         ConferenceConstraintConfiguration configuration = new ConferenceConstraintConfiguration(0);
         configuration.setMinimumConsecutiveTalksPauseInMinutes(10);
 
         constraintVerifier.verifyThat(ConferenceSchedulingConstraintProvider::consecutiveTalksPause)
                 .given(configuration, talk1, talk2, talk3, talk4)
-                .penalizesBy(TIMESLOT1.getDurationInMinutes() * 4); // talk1+talk2 , talk2+talk3.
+                .penalizesBy(MONDAY_9_TO_10.getDurationInMinutes() * 4); // talk1+talk2 , talk2+talk3.
     }
 
     @Test
@@ -220,31 +218,31 @@ public class ConferenceSchedulingConstraintProviderTest {
         Room room = new Room(0);
         Talk talk1 = new Talk(1)
                 .withRoom(room)
-                .withTimeslot(TIMESLOT1);
+                .withTimeslot(MONDAY_9_TO_10);
         talk1.setCrowdControlRisk(1);
         Talk talk2 = new Talk(2)
                 .withRoom(room)
-                .withTimeslot(TIMESLOT1);
+                .withTimeslot(MONDAY_9_TO_10);
         talk2.setCrowdControlRisk(1);
         Talk talk3 = new Talk(3)
                 .withRoom(room)
-                .withTimeslot(TIMESLOT1);
+                .withTimeslot(MONDAY_9_TO_10);
         talk3.setCrowdControlRisk(1);
         Talk talk4 = new Talk(4)
                 .withRoom(room)
-                .withTimeslot(TIMESLOT2);
+                .withTimeslot(MONDAY_10_TO_11);
         talk4.setCrowdControlRisk(1);
         Talk talk5 = new Talk(5)
                 .withRoom(room)
-                .withTimeslot(TIMESLOT2);
+                .withTimeslot(MONDAY_10_TO_11);
         talk5.setCrowdControlRisk(1);
         Talk noRiskTalk = new Talk(6)
                 .withRoom(room)
-                .withTimeslot(TIMESLOT2);
+                .withTimeslot(MONDAY_10_TO_11);
 
         constraintVerifier.verifyThat(ConferenceSchedulingConstraintProvider::crowdControl)
                 .given(talk1, talk2, talk3, talk4, talk5, noRiskTalk)
-                .penalizesBy(TIMESLOT1.getDurationInMinutes() * 3); // talk1, talk2, talk3.
+                .penalizesBy(MONDAY_9_TO_10.getDurationInMinutes() * 3); // talk1, talk2, talk3.
     }
 
     @Test
@@ -258,16 +256,16 @@ public class ConferenceSchedulingConstraintProviderTest {
                 .withRoom(room)
                 .withSpeakerList(singletonList(speaker1))
                 .withRequiredTimeslotTagSet(new HashSet<>(Arrays.asList("a", "b")))
-                .withTimeslot(TIMESLOT1);
+                .withTimeslot(MONDAY_9_TO_10);
         Talk talk2 = new Talk(2)
                 .withRoom(room)
                 .withSpeakerList(singletonList(speaker2))
                 .withRequiredTimeslotTagSet(emptySet())
-                .withTimeslot(TIMESLOT2);
+                .withTimeslot(MONDAY_10_TO_11);
 
         constraintVerifier.verifyThat(ConferenceSchedulingConstraintProvider::speakerRequiredTimeslotTags)
                 .given(talk1, talk2)
-                .penalizesBy(TIMESLOT2.getDurationInMinutes());
+                .penalizesBy(MONDAY_10_TO_11.getDurationInMinutes());
     }
 
     @Test
@@ -281,16 +279,16 @@ public class ConferenceSchedulingConstraintProviderTest {
                 .withRoom(room)
                 .withSpeakerList(singletonList(speaker1))
                 .withProhibitedTimeslotTagSet(new HashSet<>(Arrays.asList("a", "b")))
-                .withTimeslot(TIMESLOT1);
+                .withTimeslot(MONDAY_9_TO_10);
         Talk talk2 = new Talk(2)
                 .withRoom(room)
                 .withSpeakerList(singletonList(speaker2))
                 .withProhibitedTimeslotTagSet(emptySet())
-                .withTimeslot(TIMESLOT2);
+                .withTimeslot(MONDAY_10_TO_11);
 
         constraintVerifier.verifyThat(ConferenceSchedulingConstraintProvider::speakerProhibitedTimeslotTags)
                 .given(talk1, talk2)
-                .penalizesBy(TIMESLOT1.getDurationInMinutes());
+                .penalizesBy(MONDAY_9_TO_10.getDurationInMinutes());
     }
 
     @Test
@@ -299,15 +297,15 @@ public class ConferenceSchedulingConstraintProviderTest {
         Talk talk1 = new Talk(1)
                 .withRoom(room)
                 .withRequiredTimeslotTagSet(new HashSet<>(Arrays.asList("a", "b")))
-                .withTimeslot(TIMESLOT1);
+                .withTimeslot(MONDAY_9_TO_10);
         Talk talk2 = new Talk(2)
                 .withRoom(room)
                 .withRequiredTimeslotTagSet(emptySet())
-                .withTimeslot(TIMESLOT2);
+                .withTimeslot(MONDAY_10_TO_11);
 
         constraintVerifier.verifyThat(ConferenceSchedulingConstraintProvider::talkRequiredTimeslotTags)
                 .given(talk1, talk2)
-                .penalizesBy(TIMESLOT2.getDurationInMinutes());
+                .penalizesBy(MONDAY_10_TO_11.getDurationInMinutes());
     }
 
     @Test
@@ -316,15 +314,15 @@ public class ConferenceSchedulingConstraintProviderTest {
         Talk talk1 = new Talk(1)
                 .withRoom(room)
                 .withProhibitedTimeslotTagSet(new HashSet<>(Arrays.asList("a", "b")))
-                .withTimeslot(TIMESLOT1);
+                .withTimeslot(MONDAY_9_TO_10);
         Talk talk2 = new Talk(2)
                 .withRoom(room)
                 .withProhibitedTimeslotTagSet(emptySet())
-                .withTimeslot(TIMESLOT2);
+                .withTimeslot(MONDAY_10_TO_11);
 
         constraintVerifier.verifyThat(ConferenceSchedulingConstraintProvider::talkProhibitedTimeslotTags)
                 .given(talk1, talk2)
-                .penalizesBy(TIMESLOT1.getDurationInMinutes());
+                .penalizesBy(MONDAY_9_TO_10.getDurationInMinutes());
     }
 
     @Test
@@ -338,15 +336,15 @@ public class ConferenceSchedulingConstraintProviderTest {
         Talk talk1 = new Talk(1)
                 .withRoom(room)
                 .withSpeakerList(singletonList(speaker1))
-                .withTimeslot(TIMESLOT1);
+                .withTimeslot(MONDAY_9_TO_10);
         Talk talk2 = new Talk(2)
                 .withRoom(room)
                 .withSpeakerList(singletonList(speaker2))
-                .withTimeslot(TIMESLOT2);
+                .withTimeslot(MONDAY_10_TO_11);
 
         constraintVerifier.verifyThat(ConferenceSchedulingConstraintProvider::speakerRequiredRoomTags)
                 .given(talk1, talk2)
-                .penalizesBy(TIMESLOT2.getDurationInMinutes());
+                .penalizesBy(MONDAY_10_TO_11.getDurationInMinutes());
     }
 
     @Test
@@ -360,15 +358,15 @@ public class ConferenceSchedulingConstraintProviderTest {
         Talk talk1 = new Talk(1)
                 .withRoom(room)
                 .withSpeakerList(singletonList(speaker1))
-                .withTimeslot(TIMESLOT1);
+                .withTimeslot(MONDAY_9_TO_10);
         Talk talk2 = new Talk(2)
                 .withRoom(room)
                 .withSpeakerList(singletonList(speaker2))
-                .withTimeslot(TIMESLOT2);
+                .withTimeslot(MONDAY_10_TO_11);
 
         constraintVerifier.verifyThat(ConferenceSchedulingConstraintProvider::speakerProhibitedRoomTags)
                 .given(talk1, talk2)
-                .penalizesBy(TIMESLOT1.getDurationInMinutes());
+                .penalizesBy(MONDAY_9_TO_10.getDurationInMinutes());
     }
 
     @Test
@@ -378,15 +376,15 @@ public class ConferenceSchedulingConstraintProviderTest {
         Talk talk1 = new Talk(1)
                 .withRoom(room)
                 .withRequiredRoomTagSet(new HashSet<>(Arrays.asList("a", "b")))
-                .withTimeslot(TIMESLOT1);
+                .withTimeslot(MONDAY_9_TO_10);
         Talk talk2 = new Talk(2)
                 .withRoom(room)
                 .withRequiredRoomTagSet(emptySet())
-                .withTimeslot(TIMESLOT2);
+                .withTimeslot(MONDAY_10_TO_11);
 
         constraintVerifier.verifyThat(ConferenceSchedulingConstraintProvider::talkRequiredRoomTags)
                 .given(talk1, talk2)
-                .penalizesBy(TIMESLOT2.getDurationInMinutes());
+                .penalizesBy(MONDAY_10_TO_11.getDurationInMinutes());
     }
 
     @Test
@@ -396,15 +394,15 @@ public class ConferenceSchedulingConstraintProviderTest {
         Talk talk1 = new Talk(1)
                 .withRoom(room)
                 .withProhibitedRoomTagSet(new HashSet<>(Arrays.asList("a", "b")))
-                .withTimeslot(TIMESLOT1);
+                .withTimeslot(MONDAY_9_TO_10);
         Talk talk2 = new Talk(2)
                 .withRoom(room)
                 .withProhibitedRoomTagSet(emptySet())
-                .withTimeslot(TIMESLOT2);
+                .withTimeslot(MONDAY_10_TO_11);
 
         constraintVerifier.verifyThat(ConferenceSchedulingConstraintProvider::talkProhibitedRoomTags)
                 .given(talk1, talk2)
-                .penalizesBy(TIMESLOT1.getDurationInMinutes());
+                .penalizesBy(MONDAY_9_TO_10.getDurationInMinutes());
     }
 
     // ************************************************************************
@@ -416,12 +414,12 @@ public class ConferenceSchedulingConstraintProviderTest {
         Room room = new Room(0);
         Talk talk1 = new Talk(1)
                 .withRoom(room)
-                .withTimeslot(TIMESLOT1);
-        talk1.setPublishedTimeslot(TIMESLOT1);
+                .withTimeslot(MONDAY_9_TO_10);
+        talk1.setPublishedTimeslot(MONDAY_9_TO_10);
         Talk talk2 = new Talk(2)
                 .withRoom(room)
-                .withTimeslot(TIMESLOT2);
-        talk2.setPublishedTimeslot(TIMESLOT1);
+                .withTimeslot(MONDAY_10_TO_11);
+        talk2.setPublishedTimeslot(MONDAY_9_TO_10);
 
         constraintVerifier.verifyThat(ConferenceSchedulingConstraintProvider::publishedTimeslot)
                 .given(talk1, talk2)
@@ -438,11 +436,11 @@ public class ConferenceSchedulingConstraintProviderTest {
         Room room2 = new Room(1);
         Talk talk1 = new Talk(1)
                 .withRoom(room1)
-                .withTimeslot(TIMESLOT1);
+                .withTimeslot(MONDAY_9_TO_10);
         talk1.setPublishedRoom(room1);
         Talk talk2 = new Talk(2)
                 .withRoom(room1)
-                .withTimeslot(TIMESLOT2);
+                .withTimeslot(MONDAY_10_TO_11);
         talk2.setPublishedRoom(room2);
 
         constraintVerifier.verifyThat(ConferenceSchedulingConstraintProvider::publishedRoom)
@@ -456,19 +454,19 @@ public class ConferenceSchedulingConstraintProviderTest {
         Talk talk1 = new Talk(1)
                 .withRoom(room)
                 .withThemeTrackTagSet(singleton("a"))
-                .withTimeslot(TIMESLOT1);
+                .withTimeslot(MONDAY_9_TO_10);
         Talk talk2 = new Talk(2)
                 .withRoom(room)
                 .withThemeTrackTagSet(singleton("a"))
-                .withTimeslot(TIMESLOT1);
+                .withTimeslot(MONDAY_9_TO_10);
         Talk talk3 = new Talk(3)
                 .withRoom(room)
                 .withThemeTrackTagSet(singleton("b"))
-                .withTimeslot(TIMESLOT1);
+                .withTimeslot(MONDAY_9_TO_10);
         Talk talk4 = new Talk(3)
                 .withRoom(room)
                 .withThemeTrackTagSet(singleton("a"))
-                .withTimeslot(TIMESLOT2);
+                .withTimeslot(MONDAY_10_TO_11);
 
         constraintVerifier.verifyThat(ConferenceSchedulingConstraintProvider::themeTrackConflict)
                 .given(talk1, talk2, talk3, talk4)
@@ -482,19 +480,19 @@ public class ConferenceSchedulingConstraintProviderTest {
         Talk talk1 = new Talk(1)
                 .withRoom(room1)
                 .withThemeTrackTagSet(singleton("a"))
-                .withTimeslot(TIMESLOT1);
+                .withTimeslot(MONDAY_9_TO_10);
         Talk talk2 = new Talk(2)
                 .withRoom(room2)
                 .withThemeTrackTagSet(singleton("a"))
-                .withTimeslot(TIMESLOT2);
+                .withTimeslot(MONDAY_10_TO_11);
         Talk talk3 = new Talk(3)
                 .withRoom(room1)
                 .withThemeTrackTagSet(singleton("b"))
-                .withTimeslot(TIMESLOT3);
+                .withTimeslot(MONDAY_11_TO_12);
         Talk talk4 = new Talk(4)
                 .withRoom(room2)
                 .withThemeTrackTagSet(singleton("a"))
-                .withTimeslot(TIMESLOT_ANOTHER_DAY);
+                .withTimeslot(TUESDAY_9_TO_10);
 
         constraintVerifier.verifyThat(ConferenceSchedulingConstraintProvider::themeTrackRoomStability)
                 .given(talk1, talk2, talk3, talk4)
@@ -507,19 +505,19 @@ public class ConferenceSchedulingConstraintProviderTest {
         Talk talk1 = new Talk(1)
                 .withRoom(room)
                 .withSectorTagSet(singleton("a"))
-                .withTimeslot(TIMESLOT1);
+                .withTimeslot(MONDAY_9_TO_10);
         Talk talk2 = new Talk(2)
                 .withRoom(room)
                 .withSectorTagSet(singleton("a"))
-                .withTimeslot(TIMESLOT1);
+                .withTimeslot(MONDAY_9_TO_10);
         Talk talk3 = new Talk(3)
                 .withRoom(room)
                 .withSectorTagSet(singleton("b"))
-                .withTimeslot(TIMESLOT1);
+                .withTimeslot(MONDAY_9_TO_10);
         Talk talk4 = new Talk(4)
                 .withRoom(room)
                 .withSectorTagSet(singleton("a"))
-                .withTimeslot(TIMESLOT2);
+                .withTimeslot(MONDAY_10_TO_11);
 
         constraintVerifier.verifyThat(ConferenceSchedulingConstraintProvider::sectorConflict)
                 .given(talk1, talk2, talk3, talk4)
@@ -532,19 +530,19 @@ public class ConferenceSchedulingConstraintProviderTest {
         Talk talk1 = new Talk(1)
                 .withRoom(room)
                 .withAudienceTypeSet(singleton("a"))
-                .withTimeslot(TIMESLOT1);
+                .withTimeslot(MONDAY_9_TO_10);
         Talk talk2 = new Talk(2)
                 .withRoom(room)
                 .withAudienceTypeSet(singleton("a"))
-                .withTimeslot(TIMESLOT1);
+                .withTimeslot(MONDAY_9_TO_10);
         Talk talk3 = new Talk(3)
                 .withRoom(room)
                 .withAudienceTypeSet(singleton("b"))
-                .withTimeslot(TIMESLOT1);
+                .withTimeslot(MONDAY_9_TO_10);
         Talk talk4 = new Talk(4)
                 .withRoom(room)
                 .withAudienceTypeSet(singleton("a"))
-                .withTimeslot(TIMESLOT2);
+                .withTimeslot(MONDAY_10_TO_11);
 
         constraintVerifier.verifyThat(ConferenceSchedulingConstraintProvider::audienceTypeDiversity)
                 .given(talk1, talk2, talk3, talk4)
@@ -558,32 +556,32 @@ public class ConferenceSchedulingConstraintProviderTest {
                 .withRoom(room)
                 .withAudienceTypeSet(singleton("a"))
                 .withThemeTrackTagSet(singleton("b"))
-                .withTimeslot(TIMESLOT1);
+                .withTimeslot(MONDAY_9_TO_10);
         Talk talk2 = new Talk(2)
                 .withRoom(room)
                 .withAudienceTypeSet(singleton("a"))
                 .withThemeTrackTagSet(singleton("a"))
-                .withTimeslot(TIMESLOT1);
+                .withTimeslot(MONDAY_9_TO_10);
         Talk talk3 = new Talk(3)
                 .withRoom(room)
                 .withAudienceTypeSet(singleton("b"))
                 .withThemeTrackTagSet(singleton("a"))
-                .withTimeslot(TIMESLOT1);
+                .withTimeslot(MONDAY_9_TO_10);
         Talk talk4 = new Talk(4)
                 .withRoom(room)
                 .withAudienceTypeSet(singleton("a"))
                 .withThemeTrackTagSet(singleton("a"))
-                .withTimeslot(TIMESLOT2);
+                .withTimeslot(MONDAY_10_TO_11);
         Talk talk5 = new Talk(5)
                 .withRoom(room)
                 .withAudienceTypeSet(singleton("a"))
                 .withThemeTrackTagSet(singleton("b"))
-                .withTimeslot(TIMESLOT1);
+                .withTimeslot(MONDAY_9_TO_10);
         Talk talk6 = new Talk(6)
                 .withRoom(room)
                 .withAudienceTypeSet(singleton("a"))
                 .withThemeTrackTagSet(singleton("c"))
-                .withTimeslot(TIMESLOT1);
+                .withTimeslot(MONDAY_9_TO_10);
 
         constraintVerifier.verifyThat(ConferenceSchedulingConstraintProvider::audienceTypeThemeTrackConflict)
                 .given(talk1, talk2, talk3, talk4, talk5, talk6)
@@ -596,19 +594,19 @@ public class ConferenceSchedulingConstraintProviderTest {
         Talk talk1 = new Talk(1)
                 .withRoom(room)
                 .withAudienceLevel(1)
-                .withTimeslot(TIMESLOT1);
+                .withTimeslot(MONDAY_9_TO_10);
         Talk talk2 = new Talk(2)
                 .withRoom(room)
                 .withAudienceLevel(1)
-                .withTimeslot(TIMESLOT1);
+                .withTimeslot(MONDAY_9_TO_10);
         Talk talk3 = new Talk(3)
                 .withRoom(room)
                 .withAudienceLevel(2)
-                .withTimeslot(TIMESLOT1);
+                .withTimeslot(MONDAY_9_TO_10);
         Talk talk4 = new Talk(4)
                 .withRoom(room)
                 .withAudienceLevel(1)
-                .withTimeslot(TIMESLOT2);
+                .withTimeslot(MONDAY_10_TO_11);
 
         constraintVerifier.verifyThat(ConferenceSchedulingConstraintProvider::audienceLevelDiversity)
                 .given(talk1, talk2, talk3, talk4)
@@ -622,22 +620,22 @@ public class ConferenceSchedulingConstraintProviderTest {
                 .withRoom(room)
                 .withAudienceLevel(1)
                 .withContentTagSet(singleton("a"))
-                .withTimeslot(TIMESLOT1);
+                .withTimeslot(MONDAY_9_TO_10);
         Talk talk2 = new Talk(2)
                 .withRoom(room)
                 .withAudienceLevel(2)
                 .withContentTagSet(singleton("a"))
-                .withTimeslot(TIMESLOT1);
+                .withTimeslot(MONDAY_9_TO_10);
         Talk talk3 = new Talk(3)
                 .withRoom(room)
                 .withAudienceLevel(3)
                 .withContentTagSet(singleton("b"))
-                .withTimeslot(TIMESLOT1);
+                .withTimeslot(MONDAY_9_TO_10);
         Talk talk4 = new Talk(4)
                 .withRoom(room)
                 .withAudienceLevel(1)
                 .withContentTagSet(singleton("a"))
-                .withTimeslot(TIMESLOT2);
+                .withTimeslot(MONDAY_10_TO_11);
 
         constraintVerifier.verifyThat(ConferenceSchedulingConstraintProvider::contentAudienceLevelFlowViolation)
                 .given(talk1, talk2, talk3, talk4)
@@ -650,19 +648,19 @@ public class ConferenceSchedulingConstraintProviderTest {
         Talk talk1 = new Talk(1)
                 .withRoom(room)
                 .withContentTagSet(singleton("a"))
-                .withTimeslot(TIMESLOT1);
+                .withTimeslot(MONDAY_9_TO_10);
         Talk talk2 = new Talk(2)
                 .withRoom(room)
                 .withContentTagSet(singleton("a"))
-                .withTimeslot(TIMESLOT1);
+                .withTimeslot(MONDAY_9_TO_10);
         Talk talk3 = new Talk(3)
                 .withRoom(room)
                 .withContentTagSet(singleton("b"))
-                .withTimeslot(TIMESLOT1);
+                .withTimeslot(MONDAY_9_TO_10);
         Talk talk4 = new Talk(4)
                 .withRoom(room)
                 .withContentTagSet(singleton("a"))
-                .withTimeslot(TIMESLOT2);
+                .withTimeslot(MONDAY_10_TO_11);
 
         constraintVerifier.verifyThat(ConferenceSchedulingConstraintProvider::contentConflict)
                 .given(talk1, talk2, talk3, talk4)
@@ -675,19 +673,19 @@ public class ConferenceSchedulingConstraintProviderTest {
         Talk talk1 = new Talk(1)
                 .withRoom(room)
                 .withLanguage("a")
-                .withTimeslot(TIMESLOT1);
+                .withTimeslot(MONDAY_9_TO_10);
         Talk talk2 = new Talk(2)
                 .withRoom(room)
                 .withLanguage("a")
-                .withTimeslot(TIMESLOT1);
+                .withTimeslot(MONDAY_9_TO_10);
         Talk talk3 = new Talk(3)
                 .withRoom(room)
                 .withLanguage("b")
-                .withTimeslot(TIMESLOT1);
+                .withTimeslot(MONDAY_9_TO_10);
         Talk talk4 = new Talk(4)
                 .withRoom(room)
                 .withLanguage("a")
-                .withTimeslot(TIMESLOT2);
+                .withTimeslot(MONDAY_10_TO_11);
 
         constraintVerifier.verifyThat(ConferenceSchedulingConstraintProvider::languageDiversity)
                 .given(talk1, talk2, talk3, talk4)
@@ -701,32 +699,32 @@ public class ConferenceSchedulingConstraintProviderTest {
                 .withRoom(room)
                 .withContentTagSet(singleton("a"))
                 .withThemeTrackTagSet(singleton("a"))
-                .withTimeslot(TIMESLOT1);
+                .withTimeslot(MONDAY_9_TO_10);
         Talk talk2 = new Talk(3)
                 .withRoom(room)
                 .withContentTagSet(singleton("b"))
                 .withThemeTrackTagSet(singleton("a"))
-                .withTimeslot(TIMESLOT_ANOTHER_DAY);
+                .withTimeslot(TUESDAY_9_TO_10);
         Talk talk3 = new Talk(4)
                 .withRoom(room)
                 .withContentTagSet(singleton("a"))
                 .withThemeTrackTagSet(singleton("a"))
-                .withTimeslot(TIMESLOT_ANOTHER_DAY);
+                .withTimeslot(TUESDAY_9_TO_10);
         Talk talk4 = new Talk(5)
                 .withRoom(room)
                 .withContentTagSet(singleton("a"))
                 .withThemeTrackTagSet(singleton("b"))
-                .withTimeslot(TIMESLOT1);
+                .withTimeslot(MONDAY_9_TO_10);
         Talk talk5 = new Talk(7)
                 .withRoom(room)
                 .withContentTagSet(singleton("b"))
                 .withThemeTrackTagSet(singleton("b"))
-                .withTimeslot(TIMESLOT_ANOTHER_DAY);
+                .withTimeslot(TUESDAY_9_TO_10);
         Talk talk6 = new Talk(8)
                 .withRoom(room)
                 .withContentTagSet(singleton("a"))
                 .withThemeTrackTagSet(singleton("b"))
-                .withTimeslot(TIMESLOT_ANOTHER_DAY);
+                .withTimeslot(TUESDAY_9_TO_10);
 
         constraintVerifier.verifyThat(ConferenceSchedulingConstraintProvider::sameDayTalks)
                 .given(talk1, talk2, talk3, talk4, talk5, talk6)
@@ -742,15 +740,15 @@ public class ConferenceSchedulingConstraintProviderTest {
         Talk talk1 = new Talk(1)
                 .withRoom(smallerRoom)
                 .withFavoriteCount(2)
-                .withTimeslot(TIMESLOT1);
+                .withTimeslot(MONDAY_9_TO_10);
         Talk talk2 = new Talk(2)
                 .withRoom(biggerRoom)
                 .withFavoriteCount(2)
-                .withTimeslot(TIMESLOT1);
+                .withTimeslot(MONDAY_9_TO_10);
         Talk talk3 = new Talk(3)
                 .withRoom(biggerRoom)
                 .withFavoriteCount(1)
-                .withTimeslot(TIMESLOT1);
+                .withTimeslot(MONDAY_9_TO_10);
 
         constraintVerifier.verifyThat(ConferenceSchedulingConstraintProvider::popularTalks)
                 .given(talk1, talk2, talk3)
@@ -768,16 +766,16 @@ public class ConferenceSchedulingConstraintProviderTest {
                 .withRoom(room)
                 .withSpeakerList(singletonList(speaker1))
                 .withPreferredTimeslotTagSet(new HashSet<>(Arrays.asList("a", "b")))
-                .withTimeslot(TIMESLOT1);
+                .withTimeslot(MONDAY_9_TO_10);
         Talk talk2 = new Talk(2)
                 .withRoom(room)
                 .withSpeakerList(singletonList(speaker2))
                 .withPreferredTimeslotTagSet(emptySet())
-                .withTimeslot(TIMESLOT2);
+                .withTimeslot(MONDAY_10_TO_11);
 
         constraintVerifier.verifyThat(ConferenceSchedulingConstraintProvider::speakerPreferredTimeslotTags)
                 .given(talk1, talk2)
-                .penalizesBy(TIMESLOT2.getDurationInMinutes());
+                .penalizesBy(MONDAY_10_TO_11.getDurationInMinutes());
     }
 
     @Test
@@ -791,16 +789,16 @@ public class ConferenceSchedulingConstraintProviderTest {
                 .withRoom(room)
                 .withSpeakerList(singletonList(speaker1))
                 .withUndesiredTimeslotTagSet(new HashSet<>(Arrays.asList("a", "b")))
-                .withTimeslot(TIMESLOT1);
+                .withTimeslot(MONDAY_9_TO_10);
         Talk talk2 = new Talk(2)
                 .withRoom(room)
                 .withSpeakerList(singletonList(speaker2))
                 .withUndesiredTimeslotTagSet(emptySet())
-                .withTimeslot(TIMESLOT2);
+                .withTimeslot(MONDAY_10_TO_11);
 
         constraintVerifier.verifyThat(ConferenceSchedulingConstraintProvider::speakerUndesiredTimeslotTags)
                 .given(talk1, talk2)
-                .penalizesBy(TIMESLOT1.getDurationInMinutes());
+                .penalizesBy(MONDAY_9_TO_10.getDurationInMinutes());
     }
 
     @Test
@@ -809,15 +807,15 @@ public class ConferenceSchedulingConstraintProviderTest {
         Talk talk1 = new Talk(1)
                 .withRoom(room)
                 .withPreferredTimeslotTagSet(new HashSet<>(Arrays.asList("a", "b")))
-                .withTimeslot(TIMESLOT1);
+                .withTimeslot(MONDAY_9_TO_10);
         Talk talk2 = new Talk(2)
                 .withRoom(room)
                 .withPreferredTimeslotTagSet(emptySet())
-                .withTimeslot(TIMESLOT2);
+                .withTimeslot(MONDAY_10_TO_11);
 
         constraintVerifier.verifyThat(ConferenceSchedulingConstraintProvider::talkPreferredTimeslotTags)
                 .given(talk1, talk2)
-                .penalizesBy(TIMESLOT2.getDurationInMinutes());
+                .penalizesBy(MONDAY_10_TO_11.getDurationInMinutes());
     }
 
     @Test
@@ -826,15 +824,15 @@ public class ConferenceSchedulingConstraintProviderTest {
         Talk talk1 = new Talk(1)
                 .withRoom(room)
                 .withUndesiredTimeslotTagSet(new HashSet<>(Arrays.asList("a", "b")))
-                .withTimeslot(TIMESLOT1);
+                .withTimeslot(MONDAY_9_TO_10);
         Talk talk2 = new Talk(2)
                 .withRoom(room)
                 .withUndesiredTimeslotTagSet(emptySet())
-                .withTimeslot(TIMESLOT2);
+                .withTimeslot(MONDAY_10_TO_11);
 
         constraintVerifier.verifyThat(ConferenceSchedulingConstraintProvider::talkUndesiredTimeslotTags)
                 .given(talk1, talk2)
-                .penalizesBy(TIMESLOT1.getDurationInMinutes());
+                .penalizesBy(MONDAY_9_TO_10.getDurationInMinutes());
     }
 
     @Test
@@ -848,15 +846,15 @@ public class ConferenceSchedulingConstraintProviderTest {
         Talk talk1 = new Talk(1)
                 .withRoom(room)
                 .withSpeakerList(singletonList(speaker1))
-                .withTimeslot(TIMESLOT1);
+                .withTimeslot(MONDAY_9_TO_10);
         Talk talk2 = new Talk(2)
                 .withRoom(room)
                 .withSpeakerList(singletonList(speaker2))
-                .withTimeslot(TIMESLOT2);
+                .withTimeslot(MONDAY_10_TO_11);
 
         constraintVerifier.verifyThat(ConferenceSchedulingConstraintProvider::speakerPreferredRoomTags)
                 .given(talk1, talk2)
-                .penalizesBy(TIMESLOT2.getDurationInMinutes());
+                .penalizesBy(MONDAY_10_TO_11.getDurationInMinutes());
     }
 
     @Test
@@ -870,15 +868,15 @@ public class ConferenceSchedulingConstraintProviderTest {
         Talk talk1 = new Talk(1)
                 .withRoom(room)
                 .withSpeakerList(singletonList(speaker1))
-                .withTimeslot(TIMESLOT1);
+                .withTimeslot(MONDAY_9_TO_10);
         Talk talk2 = new Talk(2)
                 .withRoom(room)
                 .withSpeakerList(singletonList(speaker2))
-                .withTimeslot(TIMESLOT2);
+                .withTimeslot(MONDAY_10_TO_11);
 
         constraintVerifier.verifyThat(ConferenceSchedulingConstraintProvider::speakerUndesiredRoomTags)
                 .given(talk1, talk2)
-                .penalizesBy(TIMESLOT1.getDurationInMinutes());
+                .penalizesBy(MONDAY_9_TO_10.getDurationInMinutes());
     }
 
     @Test
@@ -888,15 +886,15 @@ public class ConferenceSchedulingConstraintProviderTest {
         Talk talk1 = new Talk(1)
                 .withRoom(room)
                 .withPreferredRoomTagSet(new HashSet<>(Arrays.asList("a", "b")))
-                .withTimeslot(TIMESLOT1);
+                .withTimeslot(MONDAY_9_TO_10);
         Talk talk2 = new Talk(2)
                 .withRoom(room)
                 .withPreferredRoomTagSet(emptySet())
-                .withTimeslot(TIMESLOT2);
+                .withTimeslot(MONDAY_10_TO_11);
 
         constraintVerifier.verifyThat(ConferenceSchedulingConstraintProvider::talkPreferredRoomTags)
                 .given(talk1, talk2)
-                .penalizesBy(TIMESLOT2.getDurationInMinutes());
+                .penalizesBy(MONDAY_10_TO_11.getDurationInMinutes());
     }
 
     @Test
@@ -906,14 +904,14 @@ public class ConferenceSchedulingConstraintProviderTest {
         Talk talk1 = new Talk(1)
                 .withRoom(room)
                 .withUndesiredRoomTagSet(new HashSet<>(Arrays.asList("a", "b")))
-                .withTimeslot(TIMESLOT1);
+                .withTimeslot(MONDAY_9_TO_10);
         Talk talk2 = new Talk(2)
                 .withRoom(room)
                 .withUndesiredRoomTagSet(emptySet())
-                .withTimeslot(TIMESLOT2);
+                .withTimeslot(MONDAY_10_TO_11);
 
         constraintVerifier.verifyThat(ConferenceSchedulingConstraintProvider::talkUndesiredRoomTags)
                 .given(talk1, talk2)
-                .penalizesBy(TIMESLOT1.getDurationInMinutes());
+                .penalizesBy(MONDAY_9_TO_10.getDurationInMinutes());
     }
 }

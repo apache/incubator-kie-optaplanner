@@ -143,16 +143,6 @@ public class Timeslot extends AbstractPersistable {
     // With methods
     // ************************************************************************
 
-    public Timeslot withTagSet(Set<String> tagSet) {
-        this.tagSet = tagSet;
-        return this;
-    }
-
-    public Timeslot withTalkTypeSet(Set<TalkType> talkTypeSet) {
-        this.talkTypeSet = talkTypeSet;
-        return this;
-    }
-
     public Timeslot withStartDateTime(LocalDateTime startDateTime) {
         this.startDateTime = startDateTime;
         durationInMinutes = (startDateTime == null || endDateTime == null) ? null
@@ -166,4 +156,15 @@ public class Timeslot extends AbstractPersistable {
                 : (int) Duration.between(startDateTime, endDateTime).toMinutes();
         return this;
     }
+
+    public Timeslot withTalkTypeSet(Set<TalkType> talkTypeSet) {
+        this.talkTypeSet = talkTypeSet;
+        return this;
+    }
+
+    public Timeslot withTagSet(Set<String> tagSet) {
+        this.tagSet = tagSet;
+        return this;
+    }
+
 }
