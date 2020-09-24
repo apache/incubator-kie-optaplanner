@@ -31,7 +31,6 @@ import org.optaplanner.core.impl.score.director.easy.EasyScoreCalculator;
  *
  * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
  * @param <Score_> the score type to go with the solution
- * @see IncrementalScoreDirector
  */
 public interface IncrementalScoreCalculator<Solution_, Score_ extends Score<Score_>> {
 
