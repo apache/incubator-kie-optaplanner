@@ -128,17 +128,17 @@ public class LocalSearchDecider<Solution_> {
         pickMove(stepScope);
     }
 
-    protected void doMove(LocalSearchMoveScope<Solution_> moveScope) {
-        InnerScoreDirector scoreDirector = moveScope.getScoreDirector();
+    protected <Score_ extends Score<Score_>> void doMove(LocalSearchMoveScope<Solution_> moveScope) {
+        InnerScoreDirector<Solution_, Score_> scoreDirector = moveScope.getScoreDirector();
         scoreDirector.doAndProcessMove(moveScope.getMove(), assertMoveScoreFromScratch, score -> {
-            moveScope.setScore((Score) score);
+            moveScope.setScore(score);
             boolean accepted = acceptor.isAccepted(moveScope);
             moveScope.setAccepted(accepted);
             forager.addMove(moveScope);
         });
         if (assertExpectedUndoMoveScore) {
             scoreDirector.assertExpectedUndoMoveScore(moveScope.getMove(),
-                    moveScope.getStepScope().getPhaseScope().getLastCompletedStepScope().getScore());
+                    (Score_) moveScope.getStepScope().getPhaseScope().getLastCompletedStepScope().getScore());
         }
         logger.trace("{}        Move index ({}), score ({}), accepted ({}), move ({}).",
                 logIndentation,

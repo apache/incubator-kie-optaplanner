@@ -123,15 +123,15 @@ public class ConstructionHeuristicDecider<Solution_> {
         }
     }
 
-    protected void doMove(ConstructionHeuristicMoveScope<Solution_> moveScope) {
-        InnerScoreDirector scoreDirector = moveScope.getScoreDirector();
+    protected <Score_ extends Score<Score_>> void doMove(ConstructionHeuristicMoveScope<Solution_> moveScope) {
+        InnerScoreDirector<Solution_, Score_> scoreDirector = moveScope.getScoreDirector();
         scoreDirector.doAndProcessMove(moveScope.getMove(), assertMoveScoreFromScratch, score -> {
-            moveScope.setScore((Score<?>) score);
+            moveScope.setScore(score);
             forager.addMove(moveScope);
         });
         if (assertExpectedUndoMoveScore) {
             scoreDirector.assertExpectedUndoMoveScore(moveScope.getMove(),
-                    moveScope.getStepScope().getPhaseScope().getLastCompletedStepScope().getScore());
+                    (Score_) moveScope.getStepScope().getPhaseScope().getLastCompletedStepScope().getScore());
         }
         logger.trace("{}        Move index ({}), score ({}), move ({}).",
                 logIndentation,
