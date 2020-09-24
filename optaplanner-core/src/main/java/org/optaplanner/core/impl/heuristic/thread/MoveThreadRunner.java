@@ -46,7 +46,7 @@ public class MoveThreadRunner<Solution_> implements Runnable {
     private final boolean assertExpectedStepScore;
     private final boolean assertShadowVariablesAreNotStaleAfterStep;
 
-    private InnerScoreDirector scoreDirector = null;
+    private InnerScoreDirector<Solution_, ?> scoreDirector = null;
     private AtomicLong calculationCount = new AtomicLong(-1);
 
     public MoveThreadRunner(String logIndentation, int moveThreadIndex, boolean evaluateDoable,
@@ -145,7 +145,7 @@ public class MoveThreadRunner<Solution_> implements Runnable {
                     } else {
                         Score<?> score = scoreDirector.doAndProcessMove(move, assertMoveScoreFromScratch);
                         if (assertExpectedUndoMoveScore) {
-                            scoreDirector.assertExpectedUndoMoveScore(move, lastStepScore);
+                            ((InnerScoreDirector) scoreDirector).assertExpectedUndoMoveScore(move, lastStepScore);
                         }
                         logger.trace("{}            Move thread ({}) evaluation: step index ({}), move index ({}), score ({}).",
                                 logIndentation, moveThreadIndex, stepIndex, moveIndex, score);
@@ -171,17 +171,19 @@ public class MoveThreadRunner<Solution_> implements Runnable {
         }
     }
 
-    protected void predictWorkingStepScore(Move<Solution_> step, Score<?> score) {
+    protected <Score_ extends Score<Score_>> void predictWorkingStepScore(Move<Solution_> step, Score<?> score) {
+        InnerScoreDirector<Solution_, Score_> innerScoreDirector =
+                (InnerScoreDirector<Solution_, Score_>) scoreDirector;
         // There is no need to recalculate the score, but we still need to set it
         scoreDirector.getSolutionDescriptor().setScore(scoreDirector.getWorkingSolution(), score);
         if (assertStepScoreFromScratch) {
-            scoreDirector.assertPredictedScoreFromScratch(score, step);
+            innerScoreDirector.assertPredictedScoreFromScratch((Score_) score, step);
         }
         if (assertExpectedStepScore) {
-            scoreDirector.assertExpectedWorkingScore(score, step);
+            innerScoreDirector.assertExpectedWorkingScore((Score_) score, step);
         }
         if (assertShadowVariablesAreNotStaleAfterStep) {
-            scoreDirector.assertShadowVariablesAreNotStale(score, step);
+            innerScoreDirector.assertShadowVariablesAreNotStale((Score_) score, step);
         }
     }
 
