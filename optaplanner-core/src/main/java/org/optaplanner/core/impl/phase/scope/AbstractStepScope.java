@@ -29,7 +29,7 @@ public abstract class AbstractStepScope<Solution_> {
 
     protected final int stepIndex;
 
-    protected Score score = null;
+    protected Score<?> score = null;
     protected Boolean bestScoreImproved;
     // Stays null if there is no need to clone it
     protected Solution_ clonedSolution = null;
@@ -44,11 +44,11 @@ public abstract class AbstractStepScope<Solution_> {
         return stepIndex;
     }
 
-    public Score getScore() {
+    public Score<?> getScore() {
         return score;
     }
 
-    public void setScore(Score score) {
+    public void setScore(Score<?> score) {
         this.score = score;
     }
 
@@ -72,7 +72,7 @@ public abstract class AbstractStepScope<Solution_> {
     // Calculated methods
     // ************************************************************************
 
-    public InnerScoreDirector getScoreDirector() {
+    public <Score_ extends Score<Score_>> InnerScoreDirector<Solution_, Score_> getScoreDirector() {
         return getPhaseScope().getScoreDirector();
     }
 
@@ -86,7 +86,7 @@ public abstract class AbstractStepScope<Solution_> {
 
     public Solution_ createOrGetClonedSolution() {
         if (clonedSolution == null) {
-            clonedSolution = (Solution_) getScoreDirector().cloneWorkingSolution();
+            clonedSolution = getScoreDirector().cloneWorkingSolution();
         }
         return clonedSolution;
     }

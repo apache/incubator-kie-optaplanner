@@ -60,7 +60,7 @@ public class DefaultExhaustiveSearchPhaseTest {
         TestdataSolution workingSolution = new TestdataSolution();
         when(phaseScope.getWorkingSolution()).thenReturn(workingSolution);
         InnerScoreDirector<TestdataSolution, SimpleScore> scoreDirector = mock(InnerScoreDirector.class);
-        when(phaseScope.getScoreDirector()).thenReturn(scoreDirector);
+        when(phaseScope.getScoreDirector()).thenReturn((InnerScoreDirector) scoreDirector);
 
         SolutionDescriptor<TestdataSolution> solutionDescriptor = TestdataSolution.buildSolutionDescriptor();
         when(phaseScope.getSolutionDescriptor()).thenReturn(solutionDescriptor);
