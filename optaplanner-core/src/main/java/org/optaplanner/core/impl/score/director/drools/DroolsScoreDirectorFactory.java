@@ -48,7 +48,7 @@ public class DroolsScoreDirectorFactory<Solution_, Score_ extends Score<Score_>>
 
     private final KieBase kieBase;
 
-    protected Map<Rule, Function<Solution_, ?>> ruleToConstraintWeightExtractorMap;
+    protected Map<Rule, Function<Solution_, Score_>> ruleToConstraintWeightExtractorMap;
 
     /**
      * @param solutionDescriptor never null
@@ -115,12 +115,14 @@ public class DroolsScoreDirectorFactory<Solution_, Score_ extends Score<Score_>>
                                 : "Maybe there is a typo in the constraintName (" + constraintName
                                         + ") so it not identical to the constraint's ruleName."));
             }
-            ruleToConstraintWeightExtractorMap.put(rule, constraintWeightDescriptor.createExtractor());
+            Function<Solution_, Score_> constraintWeightExtractor =
+                    (Function<Solution_, Score_>) constraintWeightDescriptor.createExtractor();
+            ruleToConstraintWeightExtractorMap.put(rule, constraintWeightExtractor);
         }
     }
 
     public Map<Rule, Function<Solution_, Score_>> getRuleToConstraintWeightExtractorMap() {
-        return (Map) ruleToConstraintWeightExtractorMap;
+        return ruleToConstraintWeightExtractorMap;
     }
 
     // ************************************************************************
