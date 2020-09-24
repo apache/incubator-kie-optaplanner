@@ -28,6 +28,7 @@ import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.ThreadPoolExecutor;
 
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
+import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.impl.constructionheuristic.decider.forager.ConstructionHeuristicForager;
 import org.optaplanner.core.impl.constructionheuristic.placer.Placement;
 import org.optaplanner.core.impl.constructionheuristic.scope.ConstructionHeuristicMoveScope;
@@ -62,7 +63,7 @@ public class MultiThreadedConstructionHeuristicDecider<Solution_> extends Constr
     protected OrderByMoveIndexBlockingQueue<Solution_> resultQueue;
     protected CyclicBarrier moveThreadBarrier;
     protected ExecutorService executor;
-    protected List<MoveThreadRunner<Solution_>> moveThreadRunnerList;
+    protected List<MoveThreadRunner<Solution_, ?>> moveThreadRunnerList;
 
     public MultiThreadedConstructionHeuristicDecider(String logIndentation, Termination termination,
             ConstructionHeuristicForager forager,
@@ -97,7 +98,7 @@ public class MultiThreadedConstructionHeuristicDecider<Solution_> extends Constr
         executor = createThreadPoolExecutor();
         moveThreadRunnerList = new ArrayList<>(moveThreadCount);
         for (int moveThreadIndex = 0; moveThreadIndex < moveThreadCount; moveThreadIndex++) {
-            MoveThreadRunner<Solution_> moveThreadRunner = new MoveThreadRunner<>(
+            MoveThreadRunner<Solution_, ?> moveThreadRunner = new MoveThreadRunner<>(
                     logIndentation, moveThreadIndex, false,
                     operationQueue, resultQueue, moveThreadBarrier,
                     assertMoveScoreFromScratch, assertExpectedUndoMoveScore,
@@ -121,7 +122,7 @@ public class MultiThreadedConstructionHeuristicDecider<Solution_> extends Constr
         // TODO This should probably be in a finally that spans at least the entire phase, maybe even the entire solve
         ThreadUtils.shutdownAwaitOrKill(executor, logIndentation, "Multithreaded Local Search");
         long childThreadsScoreCalculationCount = 0;
-        for (MoveThreadRunner<Solution_> moveThreadRunner : moveThreadRunnerList) {
+        for (MoveThreadRunner<Solution_, ?> moveThreadRunner : moveThreadRunnerList) {
             childThreadsScoreCalculationCount += moveThreadRunner.getCalculationCount();
         }
         phaseScope.addChildThreadsScoreCalculationCount(childThreadsScoreCalculationCount);
@@ -172,8 +173,8 @@ public class MultiThreadedConstructionHeuristicDecider<Solution_> extends Constr
         // Start doing the step on every move thread. Don't wait for the stepEnded() event.
         if (stepScope.getStep() != null) {
             // Increase stepIndex by 1, because it's a preliminary action
-            ApplyStepOperation<Solution_> stepOperation = new ApplyStepOperation<>(
-                    stepIndex + 1, stepScope.getStep(), stepScope.getScore());
+            ApplyStepOperation<Solution_, ?> stepOperation = new ApplyStepOperation<>(stepIndex + 1,
+                    stepScope.getStep(), (Score) stepScope.getScore());
             for (int i = 0; i < moveThreadCount; i++) {
                 operationQueue.add(stepOperation);
             }
