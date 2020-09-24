@@ -27,7 +27,6 @@ import org.optaplanner.core.impl.heuristic.move.Move;
  *
  * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
  * @param <Score_> the score type to go with the solution
- * @see EasyScoreDirector
  */
 public interface EasyScoreCalculator<Solution_, Score_ extends Score<Score_>> {
 
