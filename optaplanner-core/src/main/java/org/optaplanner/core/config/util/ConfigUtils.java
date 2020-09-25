@@ -374,6 +374,8 @@ public class ConfigUtils {
         if (typeArgument instanceof WildcardType) {
             Type[] upperBounds = ((WildcardType) typeArgument).getUpperBounds();
             if (upperBounds.length > 1) {
+                // Multiple upper bounds is impossible in traditional Java
+                // Other JVM languages or future java versions might enabling triggering this
                 throw new IllegalArgumentException("The " + parentClassConcept + " (" + parentClass + ") has a "
                         + (annotationClass == null ? "auto discovered" : annotationClass.getSimpleName() + " annotated")
                         + " member (" + memberName
