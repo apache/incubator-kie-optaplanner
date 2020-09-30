@@ -21,7 +21,6 @@ import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.domain.variable.PlanningVariable;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.impl.heuristic.move.Move;
-import org.optaplanner.core.api.score.calculator.EasyScoreCalculator;
 
 /**
  * Used for incremental java {@link Score} calculation.

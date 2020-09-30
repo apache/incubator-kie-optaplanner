@@ -16,11 +16,14 @@
 
 package org.optaplanner.core.config.score.director;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import java.util.HashMap;
 
 import org.junit.jupiter.api.Test;
 import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
 import org.optaplanner.core.api.score.calculator.EasyScoreCalculator;
+import org.optaplanner.core.api.score.calculator.IncrementalScoreCalculator;
 import org.optaplanner.core.config.SolverConfigContext;
 import org.optaplanner.core.config.score.definition.ScoreDefinitionType;
 import org.optaplanner.core.config.solver.EnvironmentMode;
@@ -28,11 +31,8 @@ import org.optaplanner.core.impl.score.buildin.bendable.BendableScoreDefinition;
 import org.optaplanner.core.impl.score.buildin.simple.SimpleScoreDefinition;
 import org.optaplanner.core.impl.score.definition.ScoreDefinition;
 import org.optaplanner.core.impl.score.director.easy.EasyScoreDirector;
-import org.optaplanner.core.api.score.calculator.IncrementalScoreCalculator;
 import org.optaplanner.core.impl.score.director.incremental.IncrementalScoreDirector;
 import org.optaplanner.core.impl.testdata.domain.TestdataSolution;
-
-import static org.assertj.core.api.Assertions.assertThat;
 
 public class ScoreDirectorFactoryConfigTest {
 

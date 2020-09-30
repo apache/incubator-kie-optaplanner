@@ -121,7 +121,8 @@ public class IncrementalScoreDirector<Solution_>
                     + ") is disabled in the constructor, this method should not be called.");
         }
         Map<Object, Indictment> incrementalIndictmentMap =
-                ((org.optaplanner.core.api.score.calculator.ConstraintMatchAwareIncrementalScoreCalculator<Solution_, ?>) incrementalScoreCalculator).getIndictmentMap();
+                ((org.optaplanner.core.api.score.calculator.ConstraintMatchAwareIncrementalScoreCalculator<Solution_, ?>) incrementalScoreCalculator)
+                        .getIndictmentMap();
         if (incrementalIndictmentMap != null) {
             return incrementalIndictmentMap;
         }

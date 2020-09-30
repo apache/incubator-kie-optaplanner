@@ -16,6 +16,8 @@
 
 package org.optaplanner.core.config.solver;
 
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -53,8 +55,6 @@ import org.optaplanner.core.impl.testdata.domain.TestdataEntity;
 import org.optaplanner.core.impl.testdata.domain.TestdataSolution;
 import org.optaplanner.core.impl.testdata.domain.TestdataValue;
 import org.optaplanner.core.impl.testdata.util.PlannerTestUtils;
-
-import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
 public class EnvironmentModeTest {
 

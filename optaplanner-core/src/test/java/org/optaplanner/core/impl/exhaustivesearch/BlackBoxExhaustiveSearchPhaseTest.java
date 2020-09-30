@@ -16,6 +16,8 @@
 
 package org.optaplanner.core.impl.exhaustivesearch;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -54,8 +56,6 @@ import org.optaplanner.core.impl.testdata.domain.TestdataValue;
 import org.optaplanner.core.impl.testdata.domain.comparable.TestdataDifficultyComparingEntity;
 import org.optaplanner.core.impl.testdata.domain.comparable.TestdataDifficultyComparingSolution;
 import org.optaplanner.core.impl.testdata.util.PlannerTestUtils;
-
-import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * The test runs through all available configuration combinations related to ExhaustiveSearch and compares the results

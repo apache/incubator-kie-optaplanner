@@ -16,6 +16,14 @@
 
 package org.optaplanner.core.impl.score.director.incremental;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatIllegalStateException;
+import static org.mockito.Mockito.inOrder;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.reset;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.when;
+
 import java.util.Arrays;
 import java.util.List;
 
@@ -28,14 +36,6 @@ import org.optaplanner.core.impl.score.buildin.simple.SimpleScoreDefinition;
 import org.optaplanner.core.impl.testdata.domain.chained.shadow.TestdataShadowingChainedAnchor;
 import org.optaplanner.core.impl.testdata.domain.chained.shadow.TestdataShadowingChainedEntity;
 import org.optaplanner.core.impl.testdata.domain.chained.shadow.TestdataShadowingChainedSolution;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatIllegalStateException;
-import static org.mockito.Mockito.inOrder;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.reset;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.when;
 
 public class IncrementalScoreDirectorTest {
 
@@ -64,7 +64,8 @@ public class IncrementalScoreDirectorTest {
         IncrementalScoreDirectorFactory<TestdataShadowingChainedSolution> scoreDirectorFactory = mock(
                 IncrementalScoreDirectorFactory.class);
         when(scoreDirectorFactory.getSolutionDescriptor()).thenReturn(solutionDescriptor);
-        org.optaplanner.core.api.score.calculator.IncrementalScoreCalculator<TestdataShadowingChainedSolution, SimpleScore> incrementalScoreCalculator = mock(org.optaplanner.core.api.score.calculator.IncrementalScoreCalculator.class);
+        org.optaplanner.core.api.score.calculator.IncrementalScoreCalculator<TestdataShadowingChainedSolution, SimpleScore> incrementalScoreCalculator =
+                mock(org.optaplanner.core.api.score.calculator.IncrementalScoreCalculator.class);
         IncrementalScoreDirector<TestdataShadowingChainedSolution> scoreDirector =
                 new IncrementalScoreDirector<TestdataShadowingChainedSolution>(
                         scoreDirectorFactory, false, false, incrementalScoreCalculator) {
@@ -130,7 +131,8 @@ public class IncrementalScoreDirectorTest {
     }
 
     @SuppressWarnings("unchecked")
-    private org.optaplanner.core.api.score.calculator.IncrementalScoreCalculator<Object, ?> mockIncrementalScoreCalculator(boolean constraintMatchAware) {
+    private org.optaplanner.core.api.score.calculator.IncrementalScoreCalculator<Object, ?>
+            mockIncrementalScoreCalculator(boolean constraintMatchAware) {
         return constraintMatchAware
                 ? mock(org.optaplanner.core.api.score.calculator.ConstraintMatchAwareIncrementalScoreCalculator.class)
                 : mock(org.optaplanner.core.api.score.calculator.IncrementalScoreCalculator.class);
