@@ -55,7 +55,7 @@ public interface ConstraintMatchAwareIncrementalScoreCalculator<Solution_, Score
     Collection<ConstraintMatchTotal> getConstraintMatchTotals();
 
     /**
-     * @return null if it should to be calculated non-incrementally from {@link #getConstraintMatchTotals()}
+     * @return null if it should be calculated non-incrementally from {@link #getConstraintMatchTotals()}
      * @throws IllegalStateException if {@link #resetWorkingSolution}'s constraintMatchEnabled parameter was false
      * @see ScoreDirector#getIndictmentMap()
      */
