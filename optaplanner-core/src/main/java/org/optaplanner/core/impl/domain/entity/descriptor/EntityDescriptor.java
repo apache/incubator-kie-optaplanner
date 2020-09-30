@@ -40,6 +40,7 @@ import org.optaplanner.core.api.domain.variable.AnchorShadowVariable;
 import org.optaplanner.core.api.domain.variable.CustomShadowVariable;
 import org.optaplanner.core.api.domain.variable.InverseRelationShadowVariable;
 import org.optaplanner.core.api.domain.variable.PlanningVariable;
+import org.optaplanner.core.api.score.director.ScoreDirector;
 import org.optaplanner.core.config.heuristic.selector.common.decorator.SelectionSorterOrder;
 import org.optaplanner.core.config.util.ConfigUtils;
 import org.optaplanner.core.impl.domain.common.ReflectionHelper;
@@ -60,7 +61,6 @@ import org.optaplanner.core.impl.heuristic.selector.common.decorator.SelectionSo
 import org.optaplanner.core.impl.heuristic.selector.common.decorator.SelectionSorterWeightFactory;
 import org.optaplanner.core.impl.heuristic.selector.common.decorator.WeightFactorySelectionSorter;
 import org.optaplanner.core.impl.heuristic.selector.entity.decorator.PinEntityFilter;
-import org.optaplanner.core.impl.score.director.ScoreDirector;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -159,16 +159,8 @@ public class EntityDescriptor<Solution_> {
     }
 
     private void processMovable(DescriptorPolicy descriptorPolicy, PlanningEntity entityAnnotation) {
-        Class<? extends SelectionFilter> movableEntitySelectionFilterClass = entityAnnotation.movableEntitySelectionFilter();
-        boolean hasSelectionFilter = movableEntitySelectionFilterClass != PlanningEntity.NullMovableEntitySelectionFilter.class;
         Class<? extends PinningFilter> pinningFilterClass = entityAnnotation.pinningFilter();
         boolean hasPinningFilter = pinningFilterClass != PlanningEntity.NullPinningFilter.class;
-        if (hasPinningFilter && hasSelectionFilter) {
-            throw new IllegalStateException("The entityClass (" + entityClass
-                    + ") uses both movableEntitySelectionFilter (" + movableEntitySelectionFilterClass +
-                    ") and pinningFilter (" + pinningFilterClass + ").\n" +
-                    "Maybe use only pinningFilterClass on your @" + PlanningEntity.class.getSimpleName() + " annotation.");
-        }
         if (hasPinningFilter) {
             declaredMovableEntitySelectionFilter = new SelectionFilter() {
 
@@ -180,9 +172,6 @@ public class EntityDescriptor<Solution_> {
                     return !pinningFilter.accept(scoreDirector.getWorkingSolution(), selection);
                 }
             };
-        } else if (hasSelectionFilter) {
-            declaredMovableEntitySelectionFilter = ConfigUtils.newInstance(this,
-                    "movableEntitySelectionFilterClass", movableEntitySelectionFilterClass);
         }
     }
 

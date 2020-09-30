@@ -22,7 +22,6 @@ import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException
 import org.junit.jupiter.api.Test;
 import org.optaplanner.core.api.score.buildin.AbstractScoreTest;
 import org.optaplanner.core.impl.testdata.util.PlannerAssert;
-import org.optaplanner.core.impl.testdata.util.PlannerTestUtils;
 
 public class HardMediumSoftLongScoreTest extends AbstractScoreTest {
 
@@ -68,14 +67,6 @@ public class HardMediumSoftLongScoreTest extends AbstractScoreTest {
     @Test
     public void parseScoreIllegalArgument() {
         assertThatIllegalArgumentException().isThrownBy(() -> HardMediumSoftLongScore.parseScore("-147"));
-    }
-
-    @Test
-    public void toInitializedScore() {
-        assertThat(HardMediumSoftLongScore.of(-147L, -258L, -369L).toInitializedScore())
-                .isEqualTo(HardMediumSoftLongScore.of(-147L, -258L, -369L));
-        assertThat(HardMediumSoftLongScore.ofUninitialized(-7, -147L, -258L, -369L).toInitializedScore())
-                .isEqualTo(HardMediumSoftLongScore.of(-147L, -258L, -369L));
     }
 
     @Test
@@ -188,25 +179,4 @@ public class HardMediumSoftLongScoreTest extends AbstractScoreTest {
                 HardMediumSoftLongScore.of(1L, Long.MIN_VALUE, -20L),
                 HardMediumSoftLongScore.of(1L, -20L, Long.MIN_VALUE));
     }
-
-    @Test
-    public void serializeAndDeserialize() {
-        PlannerTestUtils.serializeAndDeserializeWithAll(
-                HardMediumSoftLongScore.of(-12L, 3400L, -56L),
-                output -> {
-                    assertThat(output.getInitScore()).isEqualTo(0);
-                    assertThat(output.getHardScore()).isEqualTo(-12L);
-                    assertThat(output.getMediumScore()).isEqualTo(3400L);
-                    assertThat(output.getSoftScore()).isEqualTo(-56L);
-                });
-        PlannerTestUtils.serializeAndDeserializeWithAll(
-                HardMediumSoftLongScore.ofUninitialized(-7, -12L, 3400L, -56L),
-                output -> {
-                    assertThat(output.getInitScore()).isEqualTo(-7);
-                    assertThat(output.getHardScore()).isEqualTo(-12L);
-                    assertThat(output.getMediumScore()).isEqualTo(3400L);
-                    assertThat(output.getSoftScore()).isEqualTo(-56L);
-                });
-    }
-
 }

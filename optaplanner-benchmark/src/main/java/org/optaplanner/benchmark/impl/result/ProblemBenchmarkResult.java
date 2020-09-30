@@ -30,9 +30,16 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlElements;
+import javax.xml.bind.annotation.XmlIDREF;
+import javax.xml.bind.annotation.XmlTransient;
+
 import org.optaplanner.benchmark.config.ProblemBenchmarksConfig;
 import org.optaplanner.benchmark.config.statistic.ProblemStatisticType;
 import org.optaplanner.benchmark.config.statistic.SingleStatisticType;
+import org.optaplanner.benchmark.impl.loader.FileProblemProvider;
+import org.optaplanner.benchmark.impl.loader.InstanceProblemProvider;
 import org.optaplanner.benchmark.impl.loader.ProblemProvider;
 import org.optaplanner.benchmark.impl.measurement.ScoreDifferencePercentage;
 import org.optaplanner.benchmark.impl.ranking.TotalScoreSingleBenchmarkRankingComparator;
@@ -40,6 +47,12 @@ import org.optaplanner.benchmark.impl.report.BenchmarkReport;
 import org.optaplanner.benchmark.impl.report.ReportHelper;
 import org.optaplanner.benchmark.impl.statistic.ProblemStatistic;
 import org.optaplanner.benchmark.impl.statistic.PureSubSingleStatistic;
+import org.optaplanner.benchmark.impl.statistic.bestscore.BestScoreProblemStatistic;
+import org.optaplanner.benchmark.impl.statistic.bestsolutionmutation.BestSolutionMutationProblemStatistic;
+import org.optaplanner.benchmark.impl.statistic.memoryuse.MemoryUseProblemStatistic;
+import org.optaplanner.benchmark.impl.statistic.movecountperstep.MoveCountPerStepProblemStatistic;
+import org.optaplanner.benchmark.impl.statistic.scorecalculationspeed.ScoreCalculationSpeedProblemStatistic;
+import org.optaplanner.benchmark.impl.statistic.stepscore.StepScoreProblemStatistic;
 import org.optaplanner.core.api.domain.solution.PlanningScore;
 import org.optaplanner.core.api.solver.Solver;
 import org.optaplanner.core.config.util.ConfigUtils;
@@ -47,30 +60,37 @@ import org.optaplanner.core.impl.score.definition.ScoreDefinition;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.thoughtworks.xstream.annotations.XStreamAlias;
-import com.thoughtworks.xstream.annotations.XStreamImplicit;
-import com.thoughtworks.xstream.annotations.XStreamOmitField;
-
 /**
  * Represents 1 problem instance (data set) benchmarked on multiple {@link Solver} configurations.
  */
-@XStreamAlias("problemBenchmarkResult")
 public class ProblemBenchmarkResult<Solution_> {
 
     protected final transient Logger logger = LoggerFactory.getLogger(getClass());
 
-    @XStreamOmitField // Bi-directional relationship restored through BenchmarkResultIO
+    @XmlTransient // Bi-directional relationship restored through BenchmarkResultIO
     private PlannerBenchmarkResult plannerBenchmarkResult;
 
     private String name = null;
 
+    @XmlElements({
+            @XmlElement(type = InstanceProblemProvider.class, name = "instanceProblemProvider"),
+            @XmlElement(type = FileProblemProvider.class, name = "fileProblemProvider")
+    })
     private ProblemProvider<Solution_> problemProvider;
     private boolean writeOutputSolutionEnabled = false;
 
-    @XStreamImplicit(itemFieldName = "problemStatistic")
+    @XmlElements({
+            @XmlElement(name = "bestScoreProblemStatistic", type = BestScoreProblemStatistic.class),
+            @XmlElement(name = "stepScoreProblemStatistic", type = StepScoreProblemStatistic.class),
+            @XmlElement(name = "scoreCalculationSpeedProblemStatistic", type = ScoreCalculationSpeedProblemStatistic.class),
+            @XmlElement(name = "bestSolutionMutationProblemStatistic", type = BestSolutionMutationProblemStatistic.class),
+            @XmlElement(name = "moveCountPerStepProblemStatistic", type = MoveCountPerStepProblemStatistic.class),
+            @XmlElement(name = "memoryUseProblemStatistic", type = MemoryUseProblemStatistic.class),
+    })
     private List<ProblemStatistic> problemStatisticList = null;
 
-    @XStreamImplicit(itemFieldName = "singleBenchmarkResult")
+    @XmlIDREF
+    @XmlElement(name = "singleBenchmarkResult")
     private List<SingleBenchmarkResult> singleBenchmarkResultList = null;
 
     private Long entityCount = null;
@@ -79,7 +99,7 @@ public class ProblemBenchmarkResult<Solution_> {
     private Long problemScale = null;
     private Long inputSolutionLoadingTimeMillisSpent = null;
 
-    @XStreamOmitField // Loaded lazily from singleBenchmarkResults
+    @XmlTransient // Loaded lazily from singleBenchmarkResults
     private Integer maximumSubSingleCount = null;
 
     // ************************************************************************
@@ -95,6 +115,10 @@ public class ProblemBenchmarkResult<Solution_> {
     // ************************************************************************
     // Constructors and simple getters/setters
     // ************************************************************************
+
+    private ProblemBenchmarkResult() {
+        // Required by JAXB
+    }
 
     public ProblemBenchmarkResult(PlannerBenchmarkResult plannerBenchmarkResult) {
         this.plannerBenchmarkResult = plannerBenchmarkResult;

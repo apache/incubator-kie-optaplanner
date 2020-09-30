@@ -1,5 +1,5 @@
 /*
- * Copyright 2010 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -29,7 +29,7 @@ import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.constraint.ConstraintMatch;
 import org.optaplanner.core.api.score.constraint.Indictment;
-import org.optaplanner.core.impl.solver.ProblemFactChange;
+import org.optaplanner.core.api.solver.ProblemFactChange;
 import org.optaplanner.examples.common.business.SolutionBusiness;
 import org.optaplanner.swing.impl.TangoColorFactory;
 import org.slf4j.Logger;
@@ -57,7 +57,7 @@ public abstract class SolutionPanel<Solution_> extends JPanel implements Scrolla
     protected final transient Logger logger = LoggerFactory.getLogger(getClass());
 
     protected SolverAndPersistenceFrame solverAndPersistenceFrame;
-    protected SolutionBusiness<Solution_> solutionBusiness;
+    protected SolutionBusiness<Solution_, ?> solutionBusiness;
 
     protected boolean useIndictmentColor = false;
     protected TangoColorFactory normalColorFactory;
@@ -71,11 +71,11 @@ public abstract class SolutionPanel<Solution_> extends JPanel implements Scrolla
         this.solverAndPersistenceFrame = solverAndPersistenceFrame;
     }
 
-    public SolutionBusiness<Solution_> getSolutionBusiness() {
+    public SolutionBusiness<Solution_, ?> getSolutionBusiness() {
         return solutionBusiness;
     }
 
-    public void setSolutionBusiness(SolutionBusiness<Solution_> solutionBusiness) {
+    public void setSolutionBusiness(SolutionBusiness<Solution_, ?> solutionBusiness) {
         this.solutionBusiness = solutionBusiness;
     }
 
@@ -102,7 +102,7 @@ public abstract class SolutionPanel<Solution_> extends JPanel implements Scrolla
     }
 
     public Solution_ getSolution() {
-        return (Solution_) solutionBusiness.getSolution();
+        return solutionBusiness.getSolution();
     }
 
     @Override
@@ -144,7 +144,7 @@ public abstract class SolutionPanel<Solution_> extends JPanel implements Scrolla
         if (useIndictmentColor) {
             indictmentMinimumLevelNumbers = null;
             for (Object planningEntity : planningEntityList) {
-                Indictment indictment = solutionBusiness.getIndictmentMap().get(planningEntity);
+                Indictment<?> indictment = solutionBusiness.getIndictmentMap().get(planningEntity);
                 if (indictment != null) {
                     Number[] levelNumbers = indictment.getScore().toLevelNumbers();
                     if (indictmentMinimumLevelNumbers == null) {
@@ -169,7 +169,7 @@ public abstract class SolutionPanel<Solution_> extends JPanel implements Scrolla
 
     public Color determinePlanningEntityColor(Object planningEntity, Object normalColorObject) {
         if (useIndictmentColor) {
-            Indictment indictment = solutionBusiness.getIndictmentMap().get(planningEntity);
+            Indictment<?> indictment = solutionBusiness.getIndictmentMap().get(planningEntity);
             if (indictment != null) {
                 Number[] levelNumbers = indictment.getScore().toLevelNumbers();
                 for (int i = 0; i < levelNumbers.length; i++) {
@@ -191,12 +191,12 @@ public abstract class SolutionPanel<Solution_> extends JPanel implements Scrolla
     }
 
     public String determinePlanningEntityTooltip(Object planningEntity) {
-        Indictment indictment = solutionBusiness.getIndictmentMap().get(planningEntity);
+        Indictment<?> indictment = solutionBusiness.getIndictmentMap().get(planningEntity);
         if (indictment == null) {
             return "<html>No indictment</html>";
         }
         StringBuilder s = new StringBuilder("<html>Indictment: ").append(indictment.getScore().toShortString());
-        for (ConstraintMatch constraintMatch : indictment.getConstraintMatchSet()) {
+        for (ConstraintMatch<?> constraintMatch : indictment.getConstraintMatchSet()) {
             s.append("<br/>&nbsp;&nbsp;").append(constraintMatch.getConstraintName())
                     .append(" = ").append(constraintMatch.getScore().toShortString());
         }

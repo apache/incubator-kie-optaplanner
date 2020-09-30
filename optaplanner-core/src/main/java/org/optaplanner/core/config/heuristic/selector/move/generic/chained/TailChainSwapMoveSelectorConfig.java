@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,34 +16,33 @@
 
 package org.optaplanner.core.config.heuristic.selector.move.generic.chained;
 
-import org.optaplanner.core.config.heuristic.policy.HeuristicConfigPolicy;
-import org.optaplanner.core.config.heuristic.selector.common.SelectionCacheType;
-import org.optaplanner.core.config.heuristic.selector.common.SelectionOrder;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlType;
+
 import org.optaplanner.core.config.heuristic.selector.entity.EntitySelectorConfig;
 import org.optaplanner.core.config.heuristic.selector.move.MoveSelectorConfig;
 import org.optaplanner.core.config.heuristic.selector.value.ValueSelectorConfig;
 import org.optaplanner.core.config.util.ConfigUtils;
-import org.optaplanner.core.impl.heuristic.selector.entity.EntitySelector;
-import org.optaplanner.core.impl.heuristic.selector.move.MoveSelector;
-import org.optaplanner.core.impl.heuristic.selector.move.generic.chained.TailChainSwapMoveSelector;
-import org.optaplanner.core.impl.heuristic.selector.value.ValueSelector;
-
-import com.thoughtworks.xstream.annotations.XStreamAlias;
 
 /**
  * Also known as a 2-opt move selector config.
  */
-@XStreamAlias("tailChainSwapMoveSelector")
+@XmlType(propOrder = {
+        "entitySelectorConfig",
+        "valueSelectorConfig"
+})
 public class TailChainSwapMoveSelectorConfig extends MoveSelectorConfig<TailChainSwapMoveSelectorConfig> {
 
-    @XStreamAlias("entitySelector")
+    public static final String XML_ELEMENT_NAME = "tailChainSwapMoveSelector";
+
+    @XmlElement(name = "entitySelector")
     private EntitySelectorConfig entitySelectorConfig = null;
     /**
      * Uses a valueSelector instead of a secondaryEntitySelector because
      * the secondary entity might not exist if the value is a buoy (= the last entity in a chain)
      * and also because with nearby selection, it's more important that the value is near (instead of the secondary entity).
      */
-    @XStreamAlias("valueSelector")
+    @XmlElement(name = "valueSelector")
     private ValueSelectorConfig valueSelectorConfig = null;
 
     public EntitySelectorConfig getEntitySelectorConfig() {
@@ -60,25 +59,6 @@ public class TailChainSwapMoveSelectorConfig extends MoveSelectorConfig<TailChai
 
     public void setValueSelectorConfig(ValueSelectorConfig valueSelectorConfig) {
         this.valueSelectorConfig = valueSelectorConfig;
-    }
-
-    // ************************************************************************
-    // Builder methods
-    // ************************************************************************
-
-    @Override
-    public MoveSelector buildBaseMoveSelector(HeuristicConfigPolicy configPolicy,
-            SelectionCacheType minimumCacheType, boolean randomSelection) {
-        EntitySelectorConfig entitySelectorConfig_ = entitySelectorConfig == null ? new EntitySelectorConfig()
-                : entitySelectorConfig;
-        EntitySelector entitySelector = entitySelectorConfig_.buildEntitySelector(configPolicy,
-                minimumCacheType, SelectionOrder.fromRandomSelectionBoolean(randomSelection));
-        ValueSelectorConfig valueSelectorConfig_ = valueSelectorConfig == null ? new ValueSelectorConfig()
-                : valueSelectorConfig;
-        ValueSelector valueSelector = valueSelectorConfig_.buildValueSelector(configPolicy,
-                entitySelector.getEntityDescriptor(),
-                minimumCacheType, SelectionOrder.fromRandomSelectionBoolean(randomSelection));
-        return new TailChainSwapMoveSelector(entitySelector, valueSelector, randomSelection);
     }
 
     @Override

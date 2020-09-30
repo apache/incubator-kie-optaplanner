@@ -16,11 +16,15 @@
 
 package org.optaplanner.benchmark.impl.result;
 
+import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.Map;
+
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlTransient;
 
 import org.apache.commons.lang3.StringEscapeUtils;
 import org.optaplanner.benchmark.impl.measurement.ScoreDifferencePercentage;
@@ -31,32 +35,26 @@ import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.solver.Solver;
 import org.optaplanner.core.config.solver.EnvironmentMode;
 import org.optaplanner.core.config.solver.SolverConfig;
+import org.optaplanner.core.impl.io.jaxb.GenericJaxbIO;
 import org.optaplanner.core.impl.score.definition.ScoreDefinition;
-import org.optaplanner.core.impl.solver.io.XStreamConfigReader;
-
-import com.thoughtworks.xstream.XStream;
-import com.thoughtworks.xstream.annotations.XStreamAlias;
-import com.thoughtworks.xstream.annotations.XStreamImplicit;
-import com.thoughtworks.xstream.annotations.XStreamOmitField;
 
 /**
  * Represents 1 {@link Solver} configuration benchmarked on multiple problem instances (data sets).
  */
-@XStreamAlias("solverBenchmarkResult")
 public class SolverBenchmarkResult {
-
-    @XStreamOmitField // Bi-directional relationship restored through BenchmarkResultIO
+    @XmlTransient // Bi-directional relationship restored through BenchmarkResultIO
     private PlannerBenchmarkResult plannerBenchmarkResult;
 
     private String name = null;
 
     private Integer subSingleCount = null;
 
+    @XmlElement(namespace = SolverConfig.XML_NAMESPACE)
     private SolverConfig solverConfig = null;
-    @XStreamOmitField // Restored through BenchmarkResultIO
+    @XmlTransient // Restored through BenchmarkResultIO
     private ScoreDefinition scoreDefinition = null;
 
-    @XStreamImplicit(itemFieldName = "singleBenchmarkResult")
+    @XmlElement(name = "singleBenchmarkResult")
     private List<SingleBenchmarkResult> singleBenchmarkResultList = null;
 
     // ************************************************************************
@@ -85,6 +83,10 @@ public class SolverBenchmarkResult {
     // ************************************************************************
     // Constructors and simple getters/setters
     // ************************************************************************
+
+    private SolverBenchmarkResult() {
+        // Required by JAXB
+    }
 
     public SolverBenchmarkResult(PlannerBenchmarkResult plannerBenchmarkResult) {
         this.plannerBenchmarkResult = plannerBenchmarkResult;
@@ -257,10 +259,11 @@ public class SolverBenchmarkResult {
     }
 
     public String getSolverConfigAsHtmlEscapedXml() {
-        // TODO reuse a single XStream instance for the entire report
-        XStream xStream = XStreamConfigReader.buildXStream();
-        xStream.setMode(XStream.NO_REFERENCES);
-        String xml = xStream.toXML(solverConfig);
+        GenericJaxbIO<SolverConfig> xmlIO = new GenericJaxbIO<>(SolverConfig.class);
+        StringWriter stringWriter = new StringWriter();
+        xmlIO.write(solverConfig, stringWriter);
+        String xml = stringWriter.toString();
+        // TODO: replace the deprecated class
         return StringEscapeUtils.escapeHtml4(xml);
     }
 

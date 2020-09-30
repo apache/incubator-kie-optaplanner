@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,7 +18,6 @@ package org.optaplanner.examples.common.persistence;
 
 import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
@@ -52,24 +51,23 @@ import org.optaplanner.core.api.score.constraint.ConstraintMatchTotal;
 import org.optaplanner.core.api.score.constraint.Indictment;
 import org.optaplanner.core.api.solver.SolverFactory;
 import org.optaplanner.core.impl.score.definition.ScoreDefinition;
+import org.optaplanner.core.impl.score.director.InnerScoreDirector;
 import org.optaplanner.core.impl.score.director.InnerScoreDirectorFactory;
-import org.optaplanner.core.impl.score.director.ScoreDirector;
 import org.optaplanner.core.impl.score.director.ScoreDirectorFactory;
+import org.optaplanner.core.impl.solver.DefaultSolverFactory;
 import org.optaplanner.persistence.common.api.domain.solution.SolutionFileIO;
 import org.optaplanner.swing.impl.TangoColorFactory;
 
 public abstract class AbstractXlsxSolutionFileIO<Solution_> implements SolutionFileIO<Solution_> {
 
-    protected static final Pattern VALID_TAG_PATTERN = Pattern
-            .compile("(?U)^[\\w&\\-\\.\\/\\(\\)\\'][\\w&\\-\\.\\/\\(\\)\\' ]*[\\w&\\-\\.\\/\\(\\)\\']?$");
-    protected static final Pattern VALID_NAME_PATTERN = AbstractXlsxSolutionFileIO.VALID_TAG_PATTERN;
-    protected static final Pattern VALID_CODE_PATTERN = Pattern.compile("(?U)^[\\w\\-\\.\\/\\(\\)]+$");
-
     public static final DateTimeFormatter DAY_FORMATTER = DateTimeFormatter.ofPattern("E yyyy-MM-dd", Locale.ENGLISH);
     public static final DateTimeFormatter MONTH_FORMATTER = DateTimeFormatter.ofPattern("MMM yyyy", Locale.ENGLISH);
     public static final DateTimeFormatter TIME_FORMATTER = DateTimeFormatter.ofPattern("HH:mm", Locale.ENGLISH);
     public static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm", Locale.ENGLISH);
-
+    protected static final Pattern VALID_TAG_PATTERN = Pattern
+            .compile("(?U)^[\\w&\\-\\.\\/\\(\\)\\'][\\w&\\-\\.\\/\\(\\)\\' ]*[\\w&\\-\\.\\/\\(\\)\\']?$");
+    protected static final Pattern VALID_NAME_PATTERN = AbstractXlsxSolutionFileIO.VALID_TAG_PATTERN;
+    protected static final Pattern VALID_CODE_PATTERN = Pattern.compile("(?U)^[\\w\\-\\.\\/\\(\\)]+$");
     protected static final XSSFColor VIEW_TAB_COLOR = new XSSFColor(TangoColorFactory.BUTTER_1);
     protected static final XSSFColor DISABLED_COLOR = new XSSFColor(TangoColorFactory.ALUMINIUM_3);
     protected static final XSSFColor UNAVAILABLE_COLOR = new XSSFColor(TangoColorFactory.ALUMINIUM_5);
@@ -85,10 +83,10 @@ public abstract class AbstractXlsxSolutionFileIO<Solution_> implements SolutionF
         return "xlsx";
     }
 
-    public static abstract class AbstractXlsxReader<Solution_> {
+    public static abstract class AbstractXlsxReader<Solution_, Score_ extends Score<Score_>> {
 
         protected final XSSFWorkbook workbook;
-        protected final ScoreDefinition scoreDefinition;
+        protected final ScoreDefinition<Score_> scoreDefinition;
 
         protected Solution_ solution;
 
@@ -100,8 +98,9 @@ public abstract class AbstractXlsxSolutionFileIO<Solution_> implements SolutionF
 
         public AbstractXlsxReader(XSSFWorkbook workbook, String solverConfigResource) {
             this.workbook = workbook;
-            ScoreDirectorFactory<Solution_> scoreDirectorFactory = SolverFactory
-                    .<Solution_> createFromXmlResource(solverConfigResource).getScoreDirectorFactory();
+            SolverFactory<Solution_> solverFactory = SolverFactory.createFromXmlResource(solverConfigResource);
+            ScoreDirectorFactory<Solution_> scoreDirectorFactory =
+                    ((DefaultSolverFactory<Solution_>) solverFactory).getScoreDirectorFactory();
             scoreDefinition = ((InnerScoreDirectorFactory) scoreDirectorFactory).getScoreDefinition();
         }
 
@@ -168,13 +167,13 @@ public abstract class AbstractXlsxSolutionFileIO<Solution_> implements SolutionF
             readHeaderCell("Description");
         }
 
-        protected <Score_ extends Score<Score_>> Score_ readScoreConstraintLine(
+        protected Score_ readScoreConstraintLine(
                 String constraintName, String constraintDescription) {
             nextRow();
             readHeaderCell(constraintName);
             String scoreString = nextStringCell().getStringCellValue();
             readHeaderCell(constraintDescription);
-            return (Score_) scoreDefinition.parseScore(scoreString);
+            return scoreDefinition.parseScore(scoreString);
         }
 
         protected String currentPosition() {
@@ -339,13 +338,13 @@ public abstract class AbstractXlsxSolutionFileIO<Solution_> implements SolutionF
         }
     }
 
-    public static abstract class AbstractXlsxWriter<Solution_> {
+    public static abstract class AbstractXlsxWriter<Solution_, Score_ extends Score<Score_>> {
 
         protected final Solution_ solution;
-        protected final Score score;
-        protected final ScoreDefinition scoreDefinition;
-        protected final Collection<ConstraintMatchTotal> constraintMatchTotals;
-        protected final Map<Object, Indictment> indictmentMap;
+        protected final Score_ score;
+        protected final ScoreDefinition<Score_> scoreDefinition;
+        protected final Map<String, ConstraintMatchTotal<Score_>> constraintMatchTotalsMap;
+        protected final Map<Object, Indictment<Score_>> indictmentMap;
 
         protected XSSFWorkbook workbook;
         protected CreationHelper creationHelper;
@@ -372,13 +371,15 @@ public abstract class AbstractXlsxSolutionFileIO<Solution_> implements SolutionF
 
         public AbstractXlsxWriter(Solution_ solution, String solverConfigResource) {
             this.solution = solution;
-            ScoreDirectorFactory<Solution_> scoreDirectorFactory = SolverFactory
-                    .<Solution_> createFromXmlResource(solverConfigResource).getScoreDirectorFactory();
-            scoreDefinition = ((InnerScoreDirectorFactory) scoreDirectorFactory).getScoreDefinition();
-            try (ScoreDirector<Solution_> scoreDirector = scoreDirectorFactory.buildScoreDirector()) {
+            InnerScoreDirectorFactory<Solution_, Score_> scoreDirectorFactory =
+                    (InnerScoreDirectorFactory<Solution_, Score_>) ((DefaultSolverFactory<Solution_>) SolverFactory
+                            .createFromXmlResource(solverConfigResource))
+                                    .getScoreDirectorFactory();
+            scoreDefinition = scoreDirectorFactory.getScoreDefinition();
+            try (InnerScoreDirector<Solution_, Score_> scoreDirector = scoreDirectorFactory.buildScoreDirector()) {
                 scoreDirector.setWorkingSolution(solution);
                 score = scoreDirector.calculateScore();
-                constraintMatchTotals = scoreDirector.getConstraintMatchTotals();
+                constraintMatchTotalsMap = scoreDirector.getConstraintMatchTotalMap();
                 indictmentMap = scoreDirector.getIndictmentMap();
             }
         }
@@ -461,7 +462,7 @@ public abstract class AbstractXlsxSolutionFileIO<Solution_> implements SolutionF
             nextHeaderCell("Description");
         }
 
-        protected <Score_ extends Score<Score_>> void writeScoreConstraintLine(
+        protected void writeScoreConstraintLine(
                 String constraintName, Score_ constraintScore, String constraintDescription) {
             nextRow();
             nextHeaderCell(constraintName);
@@ -491,16 +492,16 @@ public abstract class AbstractXlsxSolutionFileIO<Solution_> implements SolutionF
                 nextCell();
                 nextCell().setCellValue(score.getInitScore());
             }
-            Comparator<ConstraintMatchTotal> constraintWeightComparator = Comparator.comparing(
+            Comparator<ConstraintMatchTotal<Score_>> constraintWeightComparator = Comparator.comparing(
                     ConstraintMatchTotal::getConstraintWeight, Comparator.nullsLast(Comparator.reverseOrder()));
-            constraintMatchTotals.stream()
+            constraintMatchTotalsMap.values().stream()
                     .sorted(constraintWeightComparator
                             .thenComparing(ConstraintMatchTotal::getConstraintPackage)
                             .thenComparing(ConstraintMatchTotal::getConstraintName))
                     .forEach(constraintMatchTotal -> {
                         nextRow();
                         nextHeaderCell(constraintMatchTotal.getConstraintName());
-                        Score constraintWeight = constraintMatchTotal.getConstraintWeight();
+                        Score_ constraintWeight = constraintMatchTotal.getConstraintWeight();
                         nextCell(scoreStyle).setCellValue(constraintWeight == null ? "N/A" : constraintWeight.toShortString());
                         nextCell().setCellValue(constraintMatchTotal.getConstraintMatchSet().size());
                         nextCell(scoreStyle).setCellValue(constraintMatchTotal.getScore().toShortString());
@@ -508,19 +509,19 @@ public abstract class AbstractXlsxSolutionFileIO<Solution_> implements SolutionF
             nextRow();
             nextRow();
 
-            Comparator<ConstraintMatchTotal> constraintMatchTotalComparator = Comparator
+            Comparator<ConstraintMatchTotal<Score_>> constraintMatchTotalComparator = Comparator
                     .comparing(ConstraintMatchTotal::getScore);
             constraintMatchTotalComparator = constraintMatchTotalComparator
                     .thenComparing(ConstraintMatchTotal::getConstraintPackage)
                     .thenComparing(ConstraintMatchTotal::getConstraintName);
-            Comparator<ConstraintMatch> constraintMatchComparator = Comparator
+            Comparator<ConstraintMatch<Score_>> constraintMatchComparator = Comparator
                     .comparing(ConstraintMatch::getScore);
-            constraintMatchTotals.stream()
+            constraintMatchTotalsMap.values().stream()
                     .sorted(constraintMatchTotalComparator)
                     .forEach(constraintMatchTotal -> {
                         nextRow();
                         nextHeaderCell(constraintMatchTotal.getConstraintName());
-                        Score constraintWeight = constraintMatchTotal.getConstraintWeight();
+                        Score_ constraintWeight = constraintMatchTotal.getConstraintWeight();
                         nextCell(scoreStyle).setCellValue(constraintWeight == null ? "N/A" : constraintWeight.toShortString());
                         nextCell().setCellValue(constraintMatchTotal.getConstraintMatchSet().size());
                         nextCell(scoreStyle).setCellValue(constraintMatchTotal.getScore().toShortString());

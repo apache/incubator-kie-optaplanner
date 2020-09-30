@@ -16,40 +16,59 @@
 
 package org.optaplanner.core.impl.score;
 
+import java.util.Map;
+
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.score.Score;
+import org.optaplanner.core.api.score.ScoreExplanation;
 import org.optaplanner.core.api.score.ScoreManager;
-import org.optaplanner.core.impl.score.director.ScoreDirector;
-import org.optaplanner.core.impl.score.director.ScoreDirectorFactory;
+import org.optaplanner.core.api.score.constraint.ConstraintMatchTotal;
+import org.optaplanner.core.api.score.constraint.Indictment;
+import org.optaplanner.core.impl.score.director.InnerScoreDirector;
+import org.optaplanner.core.impl.score.director.InnerScoreDirectorFactory;
 
 /**
  * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
  */
-public class DefaultScoreManager<Solution_> implements ScoreManager<Solution_> {
+public class DefaultScoreManager<Solution_, Score_ extends Score<Score_>> implements ScoreManager<Solution_, Score_> {
 
-    private ScoreDirectorFactory<Solution_> scoreDirectorFactory;
+    private InnerScoreDirectorFactory<Solution_, Score_> scoreDirectorFactory;
 
-    public DefaultScoreManager(ScoreDirectorFactory<Solution_> scoreDirectorFactory) {
+    public DefaultScoreManager(InnerScoreDirectorFactory<Solution_, Score_> scoreDirectorFactory) {
         this.scoreDirectorFactory = scoreDirectorFactory;
     }
 
-    public ScoreDirectorFactory<Solution_> getScoreDirectorFactory() {
+    public InnerScoreDirectorFactory<Solution_, Score_> getScoreDirectorFactory() {
         return scoreDirectorFactory;
     }
 
     @Override
-    public Score updateScore(Solution_ solution) {
-        try (ScoreDirector<Solution_> scoreDirector = scoreDirectorFactory.buildScoreDirector()) {
+    public Score_ updateScore(Solution_ solution) {
+        try (InnerScoreDirector<Solution_, Score_> scoreDirector = scoreDirectorFactory.buildScoreDirector()) {
             scoreDirector.setWorkingSolution(solution);
             return scoreDirector.calculateScore();
         }
     }
 
     @Override
-    public String explainScore(Solution_ solution) {
-        try (ScoreDirector<Solution_> scoreDirector = scoreDirectorFactory.buildScoreDirector()) {
-            scoreDirector.setWorkingSolution(solution);
-            return scoreDirector.explainScore();
+    public String getSummary(Solution_ solution) {
+        return explainScore(solution).getSummary();
+    }
+
+    @Override
+    public ScoreExplanation<Solution_, Score_> explainScore(Solution_ solution) {
+        try (InnerScoreDirector<Solution_, Score_> scoreDirector =
+                scoreDirectorFactory.buildScoreDirector(true, true)) {
+            scoreDirector.setWorkingSolution(solution); // Init the ScoreDirector first, else NPEs may be thrown.
+            boolean constraintMatchEnabled = scoreDirector.isConstraintMatchEnabled();
+            if (!constraintMatchEnabled) {
+                throw new IllegalStateException("When constraintMatchEnabled (" + constraintMatchEnabled
+                        + ") is disabled, this method should not be called.");
+            }
+            Map<String, ConstraintMatchTotal<Score_>> constraintMatchTotalMap = scoreDirector.getConstraintMatchTotalMap();
+            Map<Object, Indictment<Score_>> indictmentMap = scoreDirector.getIndictmentMap();
+            return new DefaultScoreExplanation<>(solution, scoreDirector.calculateScore(), scoreDirector.explainScore(),
+                    constraintMatchTotalMap, indictmentMap);
         }
     }
 }

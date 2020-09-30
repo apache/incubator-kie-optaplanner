@@ -1,5 +1,5 @@
 /*
- * Copyright 2012 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,23 +16,22 @@
 
 package org.optaplanner.core.impl.heuristic.selector.move.composite;
 
-import java.util.Collections;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.NavigableMap;
 import java.util.TreeMap;
+import java.util.stream.Stream;
+import java.util.stream.StreamSupport;
 
+import org.optaplanner.core.api.score.director.ScoreDirector;
 import org.optaplanner.core.impl.heuristic.move.Move;
 import org.optaplanner.core.impl.heuristic.selector.common.decorator.SelectionProbabilityWeightFactory;
 import org.optaplanner.core.impl.heuristic.selector.common.iterator.SelectionIterator;
 import org.optaplanner.core.impl.heuristic.selector.move.MoveSelector;
 import org.optaplanner.core.impl.phase.scope.AbstractStepScope;
-import org.optaplanner.core.impl.score.director.ScoreDirector;
 import org.optaplanner.core.impl.solver.random.RandomUtils;
-
-import com.google.common.collect.Iterators;
 
 /**
  * A {@link CompositeMoveSelector} that unions 2 or more {@link MoveSelector}s.
@@ -122,14 +121,18 @@ public class UnionMoveSelector extends CompositeMoveSelector {
     @Override
     public Iterator<Move> iterator() {
         if (!randomSelection) {
-            Iterator<Move> iterator = Collections.emptyIterator();
+            Stream<Move> stream = Stream.empty();
             for (MoveSelector moveSelector : childMoveSelectorList) {
-                iterator = Iterators.concat(iterator, moveSelector.iterator());
+                stream = Stream.concat(stream, toStream(moveSelector));
             }
-            return iterator;
+            return stream.iterator();
         } else {
             return new RandomUnionMoveIterator();
         }
+    }
+
+    private static Stream<Move> toStream(MoveSelector moveSelector) {
+        return StreamSupport.stream(moveSelector.spliterator(), false);
     }
 
     public class RandomUnionMoveIterator extends SelectionIterator<Move> {

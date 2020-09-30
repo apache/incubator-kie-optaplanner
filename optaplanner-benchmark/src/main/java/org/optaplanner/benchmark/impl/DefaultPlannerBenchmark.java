@@ -42,7 +42,6 @@ import org.optaplanner.benchmark.impl.result.SolverBenchmarkResult;
 import org.optaplanner.benchmark.impl.result.SubSingleBenchmarkResult;
 import org.optaplanner.benchmark.impl.statistic.ProblemStatistic;
 import org.optaplanner.benchmark.impl.statistic.PureSubSingleStatistic;
-import org.optaplanner.core.config.SolverConfigContext;
 import org.optaplanner.core.config.solver.termination.TerminationConfig;
 import org.optaplanner.core.config.util.ConfigUtils;
 import org.slf4j.Logger;
@@ -55,7 +54,6 @@ public class DefaultPlannerBenchmark implements PlannerBenchmark {
             getClass().getName() + ".singleBenchmarkRunnerException");
 
     private final PlannerBenchmarkResult plannerBenchmarkResult;
-    private final SolverConfigContext solverConfigContext;
 
     private final File benchmarkDirectory;
     private final ExecutorService warmUpExecutorService;
@@ -67,13 +65,9 @@ public class DefaultPlannerBenchmark implements PlannerBenchmark {
     private long startingSystemTimeMillis = -1L;
     private SubSingleBenchmarkRunner firstFailureSubSingleBenchmarkRunner = null;
 
-    public DefaultPlannerBenchmark(
-            PlannerBenchmarkResult plannerBenchmarkResult, SolverConfigContext solverConfigContext,
-            File benchmarkDirectory,
-            ExecutorService warmUpExecutorService, ExecutorService executorService,
-            BenchmarkReport benchmarkReport) {
+    public DefaultPlannerBenchmark(PlannerBenchmarkResult plannerBenchmarkResult, File benchmarkDirectory,
+            ExecutorService warmUpExecutorService, ExecutorService executorService, BenchmarkReport benchmarkReport) {
         this.plannerBenchmarkResult = plannerBenchmarkResult;
-        this.solverConfigContext = solverConfigContext;
         this.benchmarkDirectory = benchmarkDirectory;
         this.warmUpExecutorService = warmUpExecutorService;
         warmUpExecutorCompletionService = new ExecutorCompletionService<>(warmUpExecutorService);
@@ -206,7 +200,7 @@ public class DefaultPlannerBenchmark implements PlannerBenchmark {
                     .get(singleBenchmarkResultIndex);
             // Just take the first subSingle, we don't need to warm up each one
             SubSingleBenchmarkRunner subSingleBenchmarkRunner = new SubSingleBenchmarkRunner(
-                    singleBenchmarkResult.getSubSingleBenchmarkResultList().get(0), true, solverConfigContext);
+                    singleBenchmarkResult.getSubSingleBenchmarkResultList().get(0), true);
             Future<SubSingleBenchmarkRunner> future = warmUpExecutorCompletionService.submit(subSingleBenchmarkRunner);
             futureMap.put(future, subSingleBenchmarkRunner);
             singleBenchmarkResultIndexMap.put(solverBenchmarkResult, singleBenchmarkResultIndex + 1);
@@ -235,14 +229,16 @@ public class DefaultPlannerBenchmark implements PlannerBenchmark {
             } catch (InterruptedException e) {
                 Thread.currentThread().interrupt();
                 subSingleBenchmarkRunner = futureMap.get(future);
-                singleBenchmarkRunnerExceptionLogger.error("The warm up singleBenchmarkRunner ({}) was interrupted.",
-                        subSingleBenchmarkRunner, e);
+                singleBenchmarkRunnerExceptionLogger.error(
+                        "The warm up singleBenchmarkRunner ({}) with random seed ({}) was interrupted.",
+                        subSingleBenchmarkRunner, subSingleBenchmarkRunner.getRandomSeed(), e);
                 failureThrowable = e;
             } catch (ExecutionException e) {
                 Throwable cause = e.getCause();
                 subSingleBenchmarkRunner = futureMap.get(future);
-                singleBenchmarkRunnerExceptionLogger.warn("The warm up singleBenchmarkRunner ({}) failed.",
-                        subSingleBenchmarkRunner, cause);
+                singleBenchmarkRunnerExceptionLogger.warn(
+                        "The warm up singleBenchmarkRunner ({}) with random seed ({}) failed.",
+                        subSingleBenchmarkRunner, subSingleBenchmarkRunner.getRandomSeed(), cause);
                 failureThrowable = cause;
             }
             if (failureThrowable != null) {
@@ -271,7 +267,7 @@ public class DefaultPlannerBenchmark implements PlannerBenchmark {
                 for (SubSingleBenchmarkResult subSingleBenchmarkResult : singleBenchmarkResult
                         .getSubSingleBenchmarkResultList()) {
                     SubSingleBenchmarkRunner subSingleBenchmarkRunner = new SubSingleBenchmarkRunner(
-                            subSingleBenchmarkResult, false, solverConfigContext);
+                            subSingleBenchmarkResult, false);
                     Future<SubSingleBenchmarkRunner> future = executorService.submit(subSingleBenchmarkRunner);
                     futureMap.put(subSingleBenchmarkRunner, future);
                 }
@@ -287,13 +283,14 @@ public class DefaultPlannerBenchmark implements PlannerBenchmark {
                 subSingleBenchmarkRunner = future.get();
             } catch (InterruptedException e) {
                 Thread.currentThread().interrupt();
-                singleBenchmarkRunnerExceptionLogger.error("The subSingleBenchmarkRunner ({}) was interrupted.",
-                        subSingleBenchmarkRunner, e);
+                singleBenchmarkRunnerExceptionLogger.error(
+                        "The subSingleBenchmarkRunner ({}) with random seed ({}) was interrupted.",
+                        subSingleBenchmarkRunner, subSingleBenchmarkRunner.getRandomSeed(), e);
                 failureThrowable = e;
             } catch (ExecutionException e) {
                 Throwable cause = e.getCause();
-                singleBenchmarkRunnerExceptionLogger.warn("The subSingleBenchmarkRunner ({}) failed.",
-                        subSingleBenchmarkRunner, cause);
+                singleBenchmarkRunnerExceptionLogger.warn("The subSingleBenchmarkRunner ({}) with random seed ({}) failed.",
+                        subSingleBenchmarkRunner, subSingleBenchmarkRunner.getRandomSeed(), cause);
                 failureThrowable = cause;
             }
             if (failureThrowable == null) {

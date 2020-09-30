@@ -21,7 +21,6 @@ import java.util.List;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlType;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 import org.optaplanner.core.api.domain.solution.PlanningEntityCollectionProperty;
@@ -31,11 +30,11 @@ import org.optaplanner.core.api.domain.solution.ProblemFactCollectionProperty;
 import org.optaplanner.core.api.domain.valuerange.ValueRangeProvider;
 import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
-import org.optaplanner.persistence.jaxb.api.score.buildin.simple.SimpleScoreJaxbXmlAdapter;
+import org.optaplanner.persistence.jaxb.api.score.buildin.simple.SimpleScoreJaxbAdapter;
 
 @PlanningSolution
 @XmlRootElement
-@XmlType(propOrder = { "valueList", "entityList", "score" })
+
 public class JaxbTestdataSolution extends JaxbTestdataObject {
 
     public static SolutionDescriptor<JaxbTestdataSolution> buildSolutionDescriptor() {
@@ -78,7 +77,7 @@ public class JaxbTestdataSolution extends JaxbTestdataObject {
     }
 
     @PlanningScore
-    @XmlJavaTypeAdapter(SimpleScoreJaxbXmlAdapter.class)
+    @XmlJavaTypeAdapter(SimpleScoreJaxbAdapter.class)
     public SimpleScore getScore() {
         return score;
     }

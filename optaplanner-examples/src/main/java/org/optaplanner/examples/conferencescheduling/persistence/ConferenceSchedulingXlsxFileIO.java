@@ -1,5 +1,5 @@
 /*
- * Copyright 2017 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -101,7 +101,6 @@ import org.apache.poi.xssf.usermodel.XSSFCell;
 import org.apache.poi.xssf.usermodel.XSSFCellStyle;
 import org.apache.poi.xssf.usermodel.XSSFColor;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
-import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.buildin.hardmediumsoft.HardMediumSoftScore;
 import org.optaplanner.core.api.score.constraint.ConstraintMatch;
 import org.optaplanner.core.api.score.constraint.Indictment;
@@ -221,7 +220,7 @@ public class ConferenceSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<C
         }
     }
 
-    private class ConferenceSchedulingXlsxReader extends AbstractXlsxReader<ConferenceSolution> {
+    private class ConferenceSchedulingXlsxReader extends AbstractXlsxReader<ConferenceSolution, HardMediumSoftScore> {
 
         private Map<String, TalkType> totalTalkTypeMap;
         private Set<String> totalTimeslotTagSet;
@@ -855,7 +854,7 @@ public class ConferenceSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<C
         }
     }
 
-    private class ConferenceSchedulingXlsxWriter extends AbstractXlsxWriter<ConferenceSolution> {
+    private static class ConferenceSchedulingXlsxWriter extends AbstractXlsxWriter<ConferenceSolution, HardMediumSoftScore> {
 
         private Map<String, XSSFCellStyle> themeTrackToStyleMap;
 
@@ -1659,7 +1658,7 @@ public class ConferenceSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<C
                     // Filter out positive constraints
                     .filter(indictmentScore -> !(indictmentScore.getHardScore() >= 0 && indictmentScore.getMediumScore() >= 0
                             && indictmentScore.getSoftScore() >= 0))
-                    .reduce(Score::add).orElse(HardMediumSoftScore.ZERO);
+                    .reduce(HardMediumSoftScore::add).orElse(HardMediumSoftScore.ZERO);
             XSSFCell cell;
             if (isPrintedView) {
                 cell = nextCellVertically(talkList.isEmpty() || talkList.get(0).getThemeTrackTagSet().isEmpty() ? wrappedStyle
@@ -1690,18 +1689,18 @@ public class ConferenceSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<C
                             .append(": ").append(talk.getTitle()).append("\n    ")
                             .append(talk.getSpeakerList().stream().map(Speaker::getName).collect(joining(", ")))
                             .append(talk.isPinnedByUser() ? "\nPINNED BY USER" : "");
-                    Indictment indictment = indictmentMap.get(talk);
+                    Indictment<?> indictment = indictmentMap.get(talk);
                     if (indictment != null) {
                         commentString.append("\n").append(indictment.getScore().toShortString())
                                 .append(" total");
-                        Set<ConstraintMatch> constraintMatchSet = indictment.getConstraintMatchSet().stream()
+                        Set<ConstraintMatch<?>> constraintMatchSet = indictment.getConstraintMatchSet().stream()
                                 .filter(constraintMatch -> filteredConstraintNameList == null
                                         || filteredConstraintNameList.contains(constraintMatch.getConstraintName()))
                                 .collect(toSet());
                         List<String> constraintNameList = constraintMatchSet.stream()
                                 .map(ConstraintMatch::getConstraintName).distinct().collect(toList());
                         for (String constraintName : constraintNameList) {
-                            List<ConstraintMatch> filteredConstraintMatchList = constraintMatchSet.stream()
+                            List<ConstraintMatch<?>> filteredConstraintMatchList = constraintMatchSet.stream()
                                     .filter(constraintMatch -> constraintMatch.getConstraintName().equals(constraintName)
                                             && (isValidJustificationList == null
                                                     || isValidJustificationList.test(constraintMatch.getJustificationList())))

@@ -19,6 +19,8 @@ package org.optaplanner.benchmark.impl.statistic;
 import java.io.File;
 import java.util.List;
 
+import javax.xml.bind.annotation.XmlSeeAlso;
+
 import org.jfree.chart.JFreeChart;
 import org.optaplanner.benchmark.config.statistic.SingleStatisticType;
 import org.optaplanner.benchmark.impl.report.BenchmarkReport;
@@ -29,12 +31,10 @@ import org.optaplanner.benchmark.impl.statistic.subsingle.constraintmatchtotalst
 import org.optaplanner.benchmark.impl.statistic.subsingle.pickedmovetypebestscore.PickedMoveTypeBestScoreDiffSubSingleStatistic;
 import org.optaplanner.benchmark.impl.statistic.subsingle.pickedmovetypestepscore.PickedMoveTypeStepScoreDiffSubSingleStatistic;
 
-import com.thoughtworks.xstream.annotations.XStreamInclude;
-
 /**
  * 1 statistic of {@link SubSingleBenchmarkResult}.
  */
-@XStreamInclude({
+@XmlSeeAlso({
         ConstraintMatchTotalBestScoreSubSingleStatistic.class,
         ConstraintMatchTotalStepScoreSubSingleStatistic.class,
         PickedMoveTypeBestScoreDiffSubSingleStatistic.class,

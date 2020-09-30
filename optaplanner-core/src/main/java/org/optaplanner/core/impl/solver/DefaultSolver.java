@@ -22,14 +22,15 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.score.Score;
+import org.optaplanner.core.api.solver.ProblemFactChange;
 import org.optaplanner.core.api.solver.Solver;
 import org.optaplanner.core.config.solver.EnvironmentMode;
 import org.optaplanner.core.impl.phase.Phase;
+import org.optaplanner.core.impl.score.director.InnerScoreDirector;
 import org.optaplanner.core.impl.score.director.InnerScoreDirectorFactory;
-import org.optaplanner.core.impl.score.director.ScoreDirector;
 import org.optaplanner.core.impl.solver.random.RandomFactory;
 import org.optaplanner.core.impl.solver.recaller.BestSolutionRecaller;
-import org.optaplanner.core.impl.solver.scope.DefaultSolverScope;
+import org.optaplanner.core.impl.solver.scope.SolverScope;
 import org.optaplanner.core.impl.solver.termination.BasicPlumbingTermination;
 import org.optaplanner.core.impl.solver.termination.Termination;
 
@@ -49,7 +50,7 @@ public class DefaultSolver<Solution_> extends AbstractSolver<Solution_> {
 
     protected final AtomicBoolean solving = new AtomicBoolean(false);
 
-    protected final DefaultSolverScope<Solution_> solverScope;
+    protected final SolverScope<Solution_> solverScope;
 
     // ************************************************************************
     // Constructors and simple getters/setters
@@ -59,7 +60,7 @@ public class DefaultSolver<Solution_> extends AbstractSolver<Solution_> {
             BestSolutionRecaller<Solution_> bestSolutionRecaller, BasicPlumbingTermination basicPlumbingTermination,
             Termination termination,
             List<Phase<Solution_>> phaseList,
-            DefaultSolverScope<Solution_> solverScope) {
+            SolverScope<Solution_> solverScope) {
         super(bestSolutionRecaller, termination, phaseList);
         this.environmentMode = environmentMode;
         this.randomFactory = randomFactory;
@@ -75,8 +76,7 @@ public class DefaultSolver<Solution_> extends AbstractSolver<Solution_> {
         return randomFactory;
     }
 
-    @Override
-    public InnerScoreDirectorFactory<Solution_> getScoreDirectorFactory() {
+    public InnerScoreDirectorFactory<Solution_, ?> getScoreDirectorFactory() {
         return solverScope.getScoreDirector().getScoreDirectorFactory();
     }
 
@@ -88,7 +88,7 @@ public class DefaultSolver<Solution_> extends AbstractSolver<Solution_> {
         return phaseList;
     }
 
-    public DefaultSolverScope<Solution_> getSolverScope() {
+    public SolverScope<Solution_> getSolverScope() {
         return solverScope;
     }
 
@@ -96,34 +96,6 @@ public class DefaultSolver<Solution_> extends AbstractSolver<Solution_> {
     // Complex getters
     // ************************************************************************
 
-    @Override
-    public Solution_ getBestSolution() {
-        return solverScope.getBestSolution();
-    }
-
-    @Override
-    public Score getBestScore() {
-        return solverScope.getBestScore();
-    }
-
-    @Override
-    public String explainBestScore() {
-        Solution_ bestSolution = solverScope.getBestSolution();
-        if (bestSolution == null) {
-            return null;
-        }
-        // Do not simply call getBestScore() because this method is thread-safe
-        // That would create a race condition with the getBestSolution() call earlier.
-        if (solverScope.getSolutionDescriptor().getScore(bestSolution) == null) {
-            return null;
-        }
-        try (ScoreDirector<Solution_> scoreDirector = getScoreDirectorFactory().buildScoreDirector()) {
-            scoreDirector.setWorkingSolution(bestSolution);
-            return scoreDirector.explainScore();
-        }
-    }
-
-    @Override
     public long getTimeMillisSpent() {
         Long startingSystemTimeMillis = solverScope.getStartingSystemTimeMillis();
         if (startingSystemTimeMillis == null) {
@@ -194,7 +166,7 @@ public class DefaultSolver<Solution_> extends AbstractSolver<Solution_> {
         return solverScope.getBestSolution();
     }
 
-    public void outerSolvingStarted(DefaultSolverScope<Solution_> solverScope) {
+    public void outerSolvingStarted(SolverScope<Solution_> solverScope) {
         solving.set(true);
         basicPlumbingTermination.resetTerminateEarly();
         solverScope.setStartingSolverCount(0);
@@ -202,7 +174,7 @@ public class DefaultSolver<Solution_> extends AbstractSolver<Solution_> {
     }
 
     @Override
-    public void solvingStarted(DefaultSolverScope<Solution_> solverScope) {
+    public void solvingStarted(SolverScope<Solution_> solverScope) {
         solverScope.startingNow();
         solverScope.getScoreDirector().resetCalculationCount();
         super.solvingStarted(solverScope);
@@ -217,12 +189,12 @@ public class DefaultSolver<Solution_> extends AbstractSolver<Solution_> {
     }
 
     @Override
-    public void solvingEnded(DefaultSolverScope<Solution_> solverScope) {
+    public void solvingEnded(SolverScope<Solution_> solverScope) {
         super.solvingEnded(solverScope);
         solverScope.endingNow();
     }
 
-    public void outerSolvingEnded(DefaultSolverScope<Solution_> solverScope) {
+    public void outerSolvingEnded(SolverScope<Solution_> solverScope) {
         // Must be kept open for doProblemFactChange
         solverScope.getScoreDirector().close();
         logger.info("Solving ended: time spent ({}), best score ({}), score calculation speed ({}/sec),"
@@ -251,6 +223,10 @@ public class DefaultSolver<Solution_> extends AbstractSolver<Solution_> {
                 stepIndex++;
                 problemFactChange = problemFactChangeQueue.poll();
             }
+            // All PFCs are processed, fail fast if any of the new facts have null planning IDs.
+            InnerScoreDirector<Solution_, ?> scoreDirector = solverScope.getScoreDirector();
+            scoreDirector.assertNonNullPlanningIds();
+            // Everything is fine, proceed.
             basicPlumbingTermination.endProblemFactChangesProcessing();
             bestSolutionRecaller.updateBestSolution(solverScope);
             logger.info("Real-time problem fact changes done: step total ({}), new best score ({}).",

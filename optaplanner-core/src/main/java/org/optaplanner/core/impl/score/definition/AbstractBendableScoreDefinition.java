@@ -17,11 +17,10 @@
 package org.optaplanner.core.impl.score.definition;
 
 import org.optaplanner.core.api.score.AbstractBendableScore;
-import org.optaplanner.core.api.score.FeasibilityScore;
 import org.optaplanner.core.api.score.Score;
 
-public abstract class AbstractBendableScoreDefinition<S extends FeasibilityScore<S>> extends AbstractScoreDefinition<S>
-        implements ScoreDefinition<S> {
+public abstract class AbstractBendableScoreDefinition<Score_ extends Score<Score_>> extends AbstractScoreDefinition<Score_>
+        implements ScoreDefinition<Score_> {
 
     protected static String[] generateLevelLabels(int hardLevelsSize, int softLevelsSize) {
         if (hardLevelsSize < 0 || softLevelsSize < 0) {

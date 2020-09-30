@@ -19,12 +19,12 @@ import java.io.File;
 import java.util.List;
 
 import org.kie.api.KieBase;
-import org.kie.api.runtime.KieContainer;
+import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
-import org.optaplanner.core.impl.score.director.drools.DroolsScoreDirector;
 import org.optaplanner.core.impl.score.director.drools.DroolsScoreDirectorFactory;
 
-public class TestGenDroolsScoreDirectorFactory<Solution_> extends DroolsScoreDirectorFactory<Solution_> {
+public class TestGenDroolsScoreDirectorFactory<Solution_, Score_ extends Score<Score_>>
+        extends DroolsScoreDirectorFactory<Solution_, Score_> {
 
     private final List<String> scoreDrlList;
     private final List<File> scoreDrlFileList;
@@ -34,9 +34,7 @@ public class TestGenDroolsScoreDirectorFactory<Solution_> extends DroolsScoreDir
      * @param kieBase never null
      * @param scoreDrlList
      * @param scoreDrlFileList
-     * @deprecated for removal, legacy code.
      */
-    @Deprecated(/* forRemoval = "true" */)
     public TestGenDroolsScoreDirectorFactory(SolutionDescriptor<Solution_> solutionDescriptor,
             KieBase kieBase, List<String> scoreDrlList, List<File> scoreDrlFileList) {
         super(solutionDescriptor, kieBase);
@@ -44,15 +42,8 @@ public class TestGenDroolsScoreDirectorFactory<Solution_> extends DroolsScoreDir
         this.scoreDrlFileList = scoreDrlFileList;
     }
 
-    public TestGenDroolsScoreDirectorFactory(SolutionDescriptor<Solution_> solutionDescriptor,
-            KieContainer kieContainer, String ksessionName) {
-        super(solutionDescriptor, kieContainer, ksessionName);
-        this.scoreDrlList = null;
-        this.scoreDrlFileList = null;
-    }
-
     @Override
-    public DroolsScoreDirector<Solution_> buildScoreDirector(
+    public TestGenDroolsScoreDirector<Solution_, Score_> buildScoreDirector(
             boolean lookUpEnabled, boolean constraintMatchEnabledPreference) {
         return new TestGenDroolsScoreDirector<>(this, lookUpEnabled, constraintMatchEnabledPreference, scoreDrlList,
                 scoreDrlFileList);

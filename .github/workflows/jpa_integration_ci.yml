@@ -6,9 +6,11 @@ on:
   push:
     branches:
       - master
+      - 7.x
   pull_request:
     branches:
       - master
+      - 7.x
 
 env:
   # To prevent build failures due to "Connection reset" during artifact download.
@@ -45,6 +47,14 @@ jobs:
         with:
           java-version: 11
 
+      # See https://docs.github.com/en/actions/guides/building-and-testing-java-with-maven#caching-dependencies
+      - name: Cache Maven packages
+        uses: actions/cache@v2
+        with:
+          path: ~/.m2
+          key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
+          restore-keys: ${{ runner.os }}-m2
+
       # Builds the JPA module and runs tests in a PostgreSQL container
       - name: Build with Maven
-        run: cd optaplanner-persistence/optaplanner-persistence-jpa && mvn -B clean install -Ppostgresql ${{ env.MVN_CONNECTION_PROPS }}
+        run: mvn -B clean install -pl :optaplanner-persistence-jpa -am -Ppostgresql ${{ env.MVN_CONNECTION_PROPS }}

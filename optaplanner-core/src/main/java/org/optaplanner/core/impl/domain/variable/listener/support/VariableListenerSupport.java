@@ -24,6 +24,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
+import org.optaplanner.core.api.score.director.ScoreDirector;
 import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.core.impl.domain.variable.descriptor.GenuineVariableDescriptor;
@@ -35,14 +36,13 @@ import org.optaplanner.core.impl.domain.variable.supply.Demand;
 import org.optaplanner.core.impl.domain.variable.supply.Supply;
 import org.optaplanner.core.impl.domain.variable.supply.SupplyManager;
 import org.optaplanner.core.impl.score.director.InnerScoreDirector;
-import org.optaplanner.core.impl.score.director.ScoreDirector;
 
 /**
  * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
  */
 public class VariableListenerSupport<Solution_> implements SupplyManager {
 
-    protected final InnerScoreDirector<Solution_> scoreDirector;
+    protected final InnerScoreDirector<Solution_, ?> scoreDirector;
 
     protected final List<VariableListenerNotifiable> notifiableList;
     protected final Map<VariableDescriptor, List<VariableListenerNotifiable>> sourceVariableToNotifiableMap;
@@ -52,7 +52,7 @@ public class VariableListenerSupport<Solution_> implements SupplyManager {
 
     protected boolean notificationQueuesAreEmpty;
 
-    public VariableListenerSupport(InnerScoreDirector<Solution_> scoreDirector) {
+    public VariableListenerSupport(InnerScoreDirector<Solution_, ?> scoreDirector) {
         this.scoreDirector = scoreDirector;
         notifiableList = new ArrayList<>();
         sourceVariableToNotifiableMap = new LinkedHashMap<>();
@@ -96,8 +96,8 @@ public class VariableListenerSupport<Solution_> implements SupplyManager {
     }
 
     @Override
-    public <S extends Supply> S demand(Demand<S> demand) {
-        S supply = (S) supplyMap.get(demand);
+    public <Supply_ extends Supply> Supply_ demand(Demand<Supply_> demand) {
+        Supply_ supply = (Supply_) supplyMap.get(demand);
         if (supply == null) {
             supply = demand.createExternalizedSupply(scoreDirector);
             if (supply instanceof StatefulVariableListener) {

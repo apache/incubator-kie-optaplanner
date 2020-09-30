@@ -1,5 +1,5 @@
 /*
- * Copyright 2014 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,12 +17,22 @@
 package org.optaplanner.core.impl.score.director;
 
 import java.util.List;
+import java.util.Map;
 import java.util.function.Consumer;
 
+import org.optaplanner.core.api.domain.entity.PlanningEntity;
+import org.optaplanner.core.api.domain.lookup.PlanningId;
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
+import org.optaplanner.core.api.domain.solution.ProblemFactCollectionProperty;
+import org.optaplanner.core.api.domain.variable.PlanningVariable;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.constraint.ConstraintMatch;
+import org.optaplanner.core.api.score.constraint.ConstraintMatchTotal;
+import org.optaplanner.core.api.score.constraint.Indictment;
+import org.optaplanner.core.api.score.director.ScoreDirector;
+import org.optaplanner.core.api.score.stream.Constraint;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
+import org.optaplanner.core.impl.domain.variable.descriptor.VariableDescriptor;
 import org.optaplanner.core.impl.domain.variable.listener.VariableListener;
 import org.optaplanner.core.impl.domain.variable.supply.SupplyManager;
 import org.optaplanner.core.impl.heuristic.move.Move;
@@ -31,8 +41,83 @@ import org.optaplanner.core.impl.solver.thread.ChildThreadType;
 
 /**
  * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
+ * @param <Score_> the score type to go with the solution
  */
-public interface InnerScoreDirector<Solution_> extends ScoreDirector<Solution_> {
+public interface InnerScoreDirector<Solution_, Score_ extends Score<Score_>>
+        extends ScoreDirector<Solution_>, AutoCloseable {
+
+    /**
+     * The {@link PlanningSolution working solution} must never be the same instance as the
+     * {@link PlanningSolution best solution}, it should be a (un)changed clone.
+     *
+     * @param workingSolution never null
+     */
+    void setWorkingSolution(Solution_ workingSolution);
+
+    /**
+     * Calculates the {@link Score} and updates the {@link PlanningSolution working solution} accordingly.
+     *
+     * @return never null, the {@link Score} of the {@link PlanningSolution working solution}
+     */
+    Score_ calculateScore();
+
+    /**
+     * @return true if {@link #getConstraintMatchTotalMap()} and {@link #getIndictmentMap} can be called
+     */
+    boolean isConstraintMatchEnabled();
+
+    /**
+     * Explains the {@link Score} of {@link #calculateScore()} by splitting it up per {@link Constraint}.
+     * <p>
+     * The sum of {@link ConstraintMatchTotal#getScore()} equals {@link #calculateScore()}.
+     * <p>
+     * Call {@link #calculateScore()} before calling this method,
+     * unless that method has already been called since the last {@link PlanningVariable} changes.
+     *
+     * @return never null, the key is the {@link ConstraintMatchTotal#getConstraintId() constraintId}
+     *         (to create one, use {@link ConstraintMatchTotal#composeConstraintId(String, String)}).
+     * @throws IllegalStateException if {@link #isConstraintMatchEnabled()} returns false
+     * @see #getIndictmentMap()
+     */
+    Map<String, ConstraintMatchTotal<Score_>> getConstraintMatchTotalMap();
+
+    /**
+     * Explains the impact of each planning entity or problem fact on the {@link Score}.
+     * An {@link Indictment} is basically the inverse of a {@link ConstraintMatchTotal}:
+     * it is a {@link Score} total for each justification {@link Object}
+     * in {@link ConstraintMatch#getJustificationList()}.
+     * <p>
+     * The sum of {@link ConstraintMatchTotal#getScore()} differs from {@link #calculateScore()}
+     * because each {@link ConstraintMatch#getScore()} is counted
+     * for each justification in {@link ConstraintMatch#getJustificationList()}.
+     * <p>
+     * Call {@link #calculateScore()} before calling this method,
+     * unless that method has already been called since the last {@link PlanningVariable} changes.
+     *
+     * @return never null, the key is a {@link ProblemFactCollectionProperty problem fact} or a
+     *         {@link PlanningEntity planning entity}
+     * @throws IllegalStateException if {@link #isConstraintMatchEnabled()} returns false
+     * @see #getConstraintMatchTotalMap()
+     */
+    Map<Object, Indictment<Score_>> getIndictmentMap();
+
+    /**
+     * Returns a diagnostic text that explains the {@link Score} through the {@link ConstraintMatch} API
+     * to identify which constraints or planning entities cause that score quality.
+     * In case of an {@link Score#isFeasible() infeasible} solution,
+     * this can help diagnose the cause of that.
+     * <p>
+     * Do not parse this string.
+     * Instead, to provide this information in a UI or a service,
+     * use {@link #getConstraintMatchTotalMap()} and {@link #getIndictmentMap()}
+     * and convert those into a domain specific API.
+     * <p>
+     * This automatically calls {@link #calculateScore()} first.
+     *
+     * @return never null
+     * @throws IllegalStateException if {@link #isConstraintMatchEnabled()} returns false
+     */
+    String explainScore();
 
     /**
      * @param constraintMatchEnabledPreference false if a {@link ScoreDirector} implementation
@@ -50,14 +135,14 @@ public interface InnerScoreDirector<Solution_> extends ScoreDirector<Solution_> 
      * @param assertMoveScoreFromScratch true will hurt performance
      * @return never null
      */
-    Score doAndProcessMove(Move<Solution_> move, boolean assertMoveScoreFromScratch);
+    Score_ doAndProcessMove(Move<Solution_> move, boolean assertMoveScoreFromScratch);
 
     /**
      * @param move never null
      * @param assertMoveScoreFromScratch true will hurt performance
      * @param moveProcessor never null, use this to store the score as well as call the acceptor and forager
      */
-    void doAndProcessMove(Move<Solution_> move, boolean assertMoveScoreFromScratch, Consumer<Score> moveProcessor);
+    void doAndProcessMove(Move<Solution_> move, boolean assertMoveScoreFromScratch, Consumer<Score_> moveProcessor);
 
     /**
      * @param expectedWorkingEntityListRevision an
@@ -68,7 +153,7 @@ public interface InnerScoreDirector<Solution_> extends ScoreDirector<Solution_> 
     /**
      * @return never null
      */
-    InnerScoreDirectorFactory<Solution_> getScoreDirectorFactory();
+    InnerScoreDirectorFactory<Solution_, Score_> getScoreDirectorFactory();
 
     /**
      * @return never null
@@ -78,7 +163,7 @@ public interface InnerScoreDirector<Solution_> extends ScoreDirector<Solution_> 
     /**
      * @return never null
      */
-    ScoreDefinition getScoreDefinition();
+    ScoreDefinition<Score_> getScoreDefinition();
 
     /**
      * Returns a planning clone of the solution,
@@ -133,9 +218,9 @@ public interface InnerScoreDirector<Solution_> extends ScoreDirector<Solution_> 
      *
      * @return never null
      */
-    ScoreDirector<Solution_> clone();
+    InnerScoreDirector<Solution_, Score_> clone();
 
-    InnerScoreDirector<Solution_> createChildThreadScoreDirector(ChildThreadType childThreadType);
+    InnerScoreDirector<Solution_, Score_> createChildThreadScoreDirector(ChildThreadType childThreadType);
 
     /**
      * Do not waste performance by propagating changes to step (or higher) mechanisms.
@@ -155,7 +240,7 @@ public interface InnerScoreDirector<Solution_> extends ScoreDirector<Solution_> 
      * @param completedAction sometimes null, when assertion fails then the completedAction's {@link Object#toString()}
      *        is included in the exception message
      */
-    void assertExpectedWorkingScore(Score expectedWorkingScore, Object completedAction);
+    void assertExpectedWorkingScore(Score_ expectedWorkingScore, Object completedAction);
 
     /**
      * Asserts that if all {@link VariableListener}s are forcibly triggered,
@@ -170,7 +255,7 @@ public interface InnerScoreDirector<Solution_> extends ScoreDirector<Solution_> 
      * @param completedAction sometimes null, when assertion fails then the completedAction's {@link Object#toString()}
      *        is included in the exception message
      */
-    void assertShadowVariablesAreNotStale(Score expectedWorkingScore, Object completedAction);
+    void assertShadowVariablesAreNotStale(Score_ expectedWorkingScore, Object completedAction);
 
     /**
      * Asserts that if the {@link Score} is calculated for the current {@link PlanningSolution working solution}
@@ -184,7 +269,7 @@ public interface InnerScoreDirector<Solution_> extends ScoreDirector<Solution_> 
      *        is included in the exception message
      * @see InnerScoreDirectorFactory#assertScoreFromScratch
      */
-    void assertWorkingScoreFromScratch(Score workingScore, Object completedAction);
+    void assertWorkingScoreFromScratch(Score_ workingScore, Object completedAction);
 
     /**
      * Asserts that if the {@link Score} is calculated for the current {@link PlanningSolution working solution}
@@ -198,7 +283,7 @@ public interface InnerScoreDirector<Solution_> extends ScoreDirector<Solution_> 
      *        is included in the exception message
      * @see InnerScoreDirectorFactory#assertScoreFromScratch
      */
-    void assertPredictedScoreFromScratch(Score predictedScore, Object completedAction);
+    void assertPredictedScoreFromScratch(Score_ predictedScore, Object completedAction);
 
     /**
      * Asserts that if the {@link Score} is calculated for the current {@link PlanningSolution working solution}
@@ -210,6 +295,24 @@ public interface InnerScoreDirector<Solution_> extends ScoreDirector<Solution_> 
      * @param move never null
      * @param beforeMoveScore never null
      */
-    void assertExpectedUndoMoveScore(Move move, Score beforeMoveScore);
+    void assertExpectedUndoMoveScore(Move move, Score_ beforeMoveScore);
+
+    /**
+     * Asserts that none of the planning facts from {@link SolutionDescriptor#getAllFacts(Object)} for
+     * {@link #getWorkingSolution()} have {@link PlanningId}s with a null value.
+     */
+    void assertNonNullPlanningIds();
+
+    /**
+     * Needs to be called after use because some implementations need to clean up their resources.
+     */
+    @Override
+    void close();
+
+    void beforeVariableChanged(VariableDescriptor<Solution_> variableDescriptor, Object entity);
+
+    void afterVariableChanged(VariableDescriptor<Solution_> variableDescriptor, Object entity);
+
+    void changeVariableFacade(VariableDescriptor<Solution_> variableDescriptor, Object entity, Object newValue);
 
 }

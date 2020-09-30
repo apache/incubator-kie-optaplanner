@@ -35,85 +35,50 @@ import org.kie.api.definition.rule.Rule;
 import org.kie.api.runtime.KieSession;
 import org.kie.internal.event.rule.RuleEventManager;
 import org.optaplanner.core.api.score.Score;
-import org.optaplanner.core.api.score.holder.AbstractScoreHolder;
 import org.optaplanner.core.api.score.stream.Constraint;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.core.impl.score.director.drools.DroolsScoreDirector;
 import org.optaplanner.core.impl.score.director.drools.OptaPlannerRuleEventListener;
+import org.optaplanner.core.impl.score.holder.AbstractScoreHolder;
 import org.optaplanner.core.impl.score.stream.ConstraintSession;
 import org.optaplanner.core.impl.score.stream.common.AbstractConstraintSessionFactory;
-import org.optaplanner.core.impl.score.stream.drools.common.DroolsRuleStructure;
 import org.optaplanner.core.impl.score.stream.drools.common.FactTuple;
+import org.optaplanner.core.impl.score.stream.drools.common.rules.RuleAssembly;
 
-public class DroolsConstraintSessionFactory<Solution_> extends AbstractConstraintSessionFactory<Solution_> {
+public class DroolsConstraintSessionFactory<Solution_, Score_ extends Score<Score_>>
+        extends AbstractConstraintSessionFactory<Solution_, Score_> {
 
     private final Model originalModel;
     private final KieBase originalKieBase;
-    private KieBase currentKieBase;
-    private Set<String> currentlyDisabledConstraintIdSet = null;
     private final Map<Rule, DroolsConstraint<Solution_>> compiledRuleToConstraintMap;
     private final Map<String, org.drools.model.Rule> constraintToModelRuleMap;
+    private final Map<Rule, Class[]> compiledRuleToExpectedTypesMap;
+    private KieBase currentKieBase;
+    private Set<String> currentlyDisabledConstraintIdSet = null;
 
     public DroolsConstraintSessionFactory(SolutionDescriptor<Solution_> solutionDescriptor, Model model,
-            List<DroolsConstraint<Solution_>> constraintList) {
+            Map<org.drools.model.Rule, Class[]> modelRuleToExpectedTypesMap,
+            DroolsConstraint<Solution_>... constraints) {
         super(solutionDescriptor);
         this.originalModel = model;
         this.originalKieBase = KieBaseBuilder.createKieBaseFromModel(model);
         this.currentKieBase = originalKieBase;
-        this.compiledRuleToConstraintMap = constraintList.stream()
+        this.compiledRuleToConstraintMap = Arrays.stream(constraints)
                 .collect(toMap(constraint -> currentKieBase.getRule(constraint.getConstraintPackage(),
                         constraint.getConstraintName()), Function.identity()));
-        this.constraintToModelRuleMap = constraintList.stream()
+        this.constraintToModelRuleMap = Arrays.stream(constraints)
                 .collect(toMap(Constraint::getConstraintId, constraint -> model.getRules().stream()
                         .filter(rule -> Objects.equals(rule.getName(), constraint.getConstraintName()))
                         .filter(rule -> Objects.equals(rule.getPackage(), constraint.getConstraintPackage()))
                         .findFirst()
-                        .orElseThrow(() -> new IllegalStateException("Programming error: Rule for constraint (" +
+                        .orElseThrow(() -> new IllegalStateException("Impossible state: Rule for constraint (" +
                                 constraint + ") not found."))));
-    }
-
-    @Override
-    public ConstraintSession<Solution_> buildSession(boolean constraintMatchEnabled, Solution_ workingSolution) {
-        // Make sure the constraint justifications match what comes out of Bavet.
-        AbstractScoreHolder scoreHolder = (AbstractScoreHolder) getScoreDefinition().buildScoreHolder(constraintMatchEnabled);
-        scoreHolder.setJustificationListConverter(
-                (justificationList, rule) -> {
-                    DroolsConstraint<Solution_> constraint = compiledRuleToConstraintMap.get(rule);
-                    return matchJustificationsToOutput((List<Object>) justificationList,
-                            constraint.getExpectedJustificationCount(),
-                            constraint.getExpectedJustificationTypes());
-                });
-        // Determine which rules to enable based on the fact that their constraints carry weight.
-        Score<?> zeroScore = getScoreDefinition().getZeroScore();
-        Set<String> disabledConstraintIdSet = new LinkedHashSet<>(0);
-        compiledRuleToConstraintMap.forEach((compiledRule, constraint) -> {
-            Score<?> constraintWeight = constraint.extractConstraintWeight(workingSolution);
-            scoreHolder.configureConstraintWeight(compiledRule, constraintWeight);
-            if (constraintWeight.equals(zeroScore)) {
-                disabledConstraintIdSet.add(constraint.getConstraintId());
-            }
-        });
-        // Determine the KieBase to use.
-        if (disabledConstraintIdSet.isEmpty()) { // Shortcut; don't change the original KieBase.
-            currentKieBase = originalKieBase;
-            currentlyDisabledConstraintIdSet = null;
-        } else if (!disabledConstraintIdSet.equals(currentlyDisabledConstraintIdSet)) {
-            // Only rebuild the active KieBase when the set of disabled constraints changed.
-            ModelImpl model = new ModelImpl().withGlobals(originalModel.getGlobals());
-            constraintToModelRuleMap.forEach((constraintId, modelRule) -> {
-                if (disabledConstraintIdSet.contains(constraintId)) {
-                    return;
-                }
-                model.addRule(modelRule);
-            });
-            currentKieBase = KieBaseBuilder.createKieBaseFromModel(model);
-            currentlyDisabledConstraintIdSet = disabledConstraintIdSet;
-        }
-        // Create the session itself.
-        KieSession kieSession = currentKieBase.newKieSession();
-        ((RuleEventManager) kieSession).addEventListener(new OptaPlannerRuleEventListener()); // Enables undo in rules.
-        kieSession.setGlobal(DroolsScoreDirector.GLOBAL_SCORE_HOLDER_KEY, scoreHolder);
-        return new DroolsConstraintSession<>(kieSession, scoreHolder);
+        this.compiledRuleToExpectedTypesMap = compiledRuleToConstraintMap.entrySet().stream()
+                .collect(toMap(Map.Entry::getKey, e -> {
+                    DroolsConstraint<Solution_> constraint = e.getValue();
+                    org.drools.model.Rule modelRule = constraintToModelRuleMap.get(constraint.getConstraintId());
+                    return modelRuleToExpectedTypesMap.get(modelRule);
+                }));
     }
 
     /**
@@ -130,7 +95,7 @@ public class DroolsConstraintSessionFactory<Solution_> extends AbstractConstrain
      *
      * @param justificationList unordered list of justifications coming from the score director
      * @param expectedCount how many justifications are expected to be returned (1 for uni stream, 2 for bi stream, ...)
-     * @param expectedTypes as defined by {@link DroolsRuleStructure#getExpectedJustificationTypes()}
+     * @param expectedTypes as defined by {@link RuleAssembly#getExpectedJustificationTypes()}.
      * @return never null
      */
     private static List<Object> matchJustificationsToOutput(List<Object> justificationList, int expectedCount,
@@ -183,6 +148,50 @@ public class DroolsConstraintSessionFactory<Solution_> extends AbstractConstrain
             // This comes from a simple uni stream.
             return Collections.singletonList(item);
         }
+    }
+
+    @Override
+    public ConstraintSession<Solution_, Score_> buildSession(boolean constraintMatchEnabled, Solution_ workingSolution) {
+        // Make sure the constraint justifications match what comes out of Bavet.
+        AbstractScoreHolder<Score_> scoreHolder = getScoreDefinition().buildScoreHolder(constraintMatchEnabled);
+        scoreHolder.setJustificationListConverter(
+                (justificationList, rule) -> {
+                    DroolsConstraint<Solution_> constraint = compiledRuleToConstraintMap.get(rule);
+                    Class[] expectedTypes = compiledRuleToExpectedTypesMap.get(rule);
+                    return matchJustificationsToOutput(justificationList,
+                            constraint.getConsequence().getTerminalNode().getCardinality(), expectedTypes);
+                });
+        // Determine which rules to enable based on the fact that their constraints carry weight.
+        Score_ zeroScore = getScoreDefinition().getZeroScore();
+        Set<String> disabledConstraintIdSet = new LinkedHashSet<>(0);
+        compiledRuleToConstraintMap.forEach((compiledRule, constraint) -> {
+            Score_ constraintWeight = (Score_) constraint.extractConstraintWeight(workingSolution);
+            scoreHolder.configureConstraintWeight(compiledRule, constraintWeight);
+            if (constraintWeight.equals(zeroScore)) {
+                disabledConstraintIdSet.add(constraint.getConstraintId());
+            }
+        });
+        // Determine the KieBase to use.
+        if (disabledConstraintIdSet.isEmpty()) { // Shortcut; don't change the original KieBase.
+            currentKieBase = originalKieBase;
+            currentlyDisabledConstraintIdSet = null;
+        } else if (!disabledConstraintIdSet.equals(currentlyDisabledConstraintIdSet)) {
+            // Only rebuild the active KieBase when the set of disabled constraints changed.
+            ModelImpl model = new ModelImpl().withGlobals(originalModel.getGlobals());
+            constraintToModelRuleMap.forEach((constraintId, modelRule) -> {
+                if (disabledConstraintIdSet.contains(constraintId)) {
+                    return;
+                }
+                model.addRule(modelRule);
+            });
+            currentKieBase = KieBaseBuilder.createKieBaseFromModel(model);
+            currentlyDisabledConstraintIdSet = disabledConstraintIdSet;
+        }
+        // Create the session itself.
+        KieSession kieSession = currentKieBase.newKieSession();
+        ((RuleEventManager) kieSession).addEventListener(new OptaPlannerRuleEventListener()); // Enables undo in rules.
+        kieSession.setGlobal(DroolsScoreDirector.GLOBAL_SCORE_HOLDER_KEY, scoreHolder);
+        return new DroolsConstraintSession<>(kieSession, scoreHolder);
     }
 
 }

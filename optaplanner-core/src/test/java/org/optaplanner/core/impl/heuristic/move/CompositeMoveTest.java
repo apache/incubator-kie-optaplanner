@@ -31,11 +31,12 @@ import java.util.Arrays;
 import java.util.Collections;
 
 import org.junit.jupiter.api.Test;
+import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
+import org.optaplanner.core.api.score.director.ScoreDirector;
 import org.optaplanner.core.impl.domain.variable.descriptor.GenuineVariableDescriptor;
 import org.optaplanner.core.impl.heuristic.selector.move.generic.ChangeMove;
 import org.optaplanner.core.impl.heuristic.selector.move.generic.SwapMove;
 import org.optaplanner.core.impl.score.director.InnerScoreDirector;
-import org.optaplanner.core.impl.score.director.ScoreDirector;
 import org.optaplanner.core.impl.testdata.domain.TestdataEntity;
 import org.optaplanner.core.impl.testdata.domain.TestdataSolution;
 import org.optaplanner.core.impl.testdata.domain.TestdataValue;
@@ -45,8 +46,8 @@ public class CompositeMoveTest {
 
     @Test
     public void createUndoMove() {
-        InnerScoreDirector<TestdataSolution> scoreDirector = PlannerTestUtils.mockScoreDirector(
-                TestdataSolution.buildSolutionDescriptor());
+        InnerScoreDirector<TestdataSolution, SimpleScore> scoreDirector =
+                PlannerTestUtils.mockScoreDirector(TestdataSolution.buildSolutionDescriptor());
         DummyMove a = new DummyMove("a");
         DummyMove b = new DummyMove("b");
         DummyMove c = new DummyMove("c");
@@ -58,8 +59,8 @@ public class CompositeMoveTest {
 
     @Test
     public void createUndoMoveWithNonDoableMove() {
-        InnerScoreDirector<TestdataSolution> scoreDirector = PlannerTestUtils.mockScoreDirector(
-                TestdataSolution.buildSolutionDescriptor());
+        InnerScoreDirector<TestdataSolution, SimpleScore> scoreDirector =
+                PlannerTestUtils.mockScoreDirector(TestdataSolution.buildSolutionDescriptor());
 
         DummyMove a = new DummyMove("a");
         DummyMove b = new NotDoableDummyMove("b");
@@ -80,8 +81,8 @@ public class CompositeMoveTest {
 
     @Test
     public void doMove() {
-        InnerScoreDirector<TestdataSolution> scoreDirector = PlannerTestUtils.mockScoreDirector(
-                TestdataSolution.buildSolutionDescriptor());
+        InnerScoreDirector<TestdataSolution, SimpleScore> scoreDirector =
+                PlannerTestUtils.mockScoreDirector(TestdataSolution.buildSolutionDescriptor());
         DummyMove a = mock(DummyMove.class);
         when(a.isMoveDoable(any())).thenReturn(true);
         DummyMove b = mock(DummyMove.class);
@@ -176,8 +177,8 @@ public class CompositeMoveTest {
 
     @Test
     public void isMoveDoable() {
-        InnerScoreDirector<TestdataSolution> scoreDirector = PlannerTestUtils.mockScoreDirector(
-                TestdataSolution.buildSolutionDescriptor());
+        InnerScoreDirector<TestdataSolution, SimpleScore> scoreDirector =
+                PlannerTestUtils.mockScoreDirector(TestdataSolution.buildSolutionDescriptor());
 
         DummyMove first = new DummyMove();
         DummyMove second = new DummyMove();

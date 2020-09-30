@@ -24,7 +24,6 @@ import java.math.BigDecimal;
 import org.junit.jupiter.api.Test;
 import org.optaplanner.core.api.score.buildin.AbstractScoreTest;
 import org.optaplanner.core.impl.testdata.util.PlannerAssert;
-import org.optaplanner.core.impl.testdata.util.PlannerTestUtils;
 
 public class SimpleBigDecimalScoreTest extends AbstractScoreTest {
 
@@ -54,14 +53,6 @@ public class SimpleBigDecimalScoreTest extends AbstractScoreTest {
     @Test
     public void parseScoreIllegalArgument() {
         assertThatIllegalArgumentException().isThrownBy(() -> SimpleBigDecimalScore.parseScore("-147.2hard/-258.3soft"));
-    }
-
-    @Test
-    public void toInitializedScore() {
-        assertThat(SimpleBigDecimalScore.of(new BigDecimal("-147.2")).toInitializedScore())
-                .isEqualTo(SimpleBigDecimalScore.of(new BigDecimal("-147.2")));
-        assertThat(SimpleBigDecimalScore.ofUninitialized(-7, new BigDecimal("-147.2")).toInitializedScore())
-                .isEqualTo(SimpleBigDecimalScore.of(new BigDecimal("-147.2")));
     }
 
     @Test
@@ -161,21 +152,4 @@ public class SimpleBigDecimalScoreTest extends AbstractScoreTest {
                 SimpleBigDecimalScore.of(new BigDecimal("0")),
                 SimpleBigDecimalScore.of(new BigDecimal("1")));
     }
-
-    @Test
-    public void serializeAndDeserialize() {
-        PlannerTestUtils.serializeAndDeserializeWithAll(
-                SimpleBigDecimalScore.of(new BigDecimal("123.4")),
-                output -> {
-                    assertThat(output.getInitScore()).isEqualTo(0);
-                    assertThat(output.getScore()).isEqualTo(new BigDecimal("123.4"));
-                });
-        PlannerTestUtils.serializeAndDeserializeWithAll(
-                SimpleBigDecimalScore.ofUninitialized(-7, new BigDecimal("123.4")),
-                output -> {
-                    assertThat(output.getInitScore()).isEqualTo(-7);
-                    assertThat(output.getScore()).isEqualTo(new BigDecimal("123.4"));
-                });
-    }
-
 }

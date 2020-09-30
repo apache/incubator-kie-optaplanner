@@ -37,7 +37,7 @@ import org.optaplanner.core.impl.score.definition.ScoreDefinition;
  * @see AbstractScore
  * @see HardSoftScore
  */
-public interface Score<Score_ extends Score> extends Comparable<Score_> {
+public interface Score<Score_ extends Score<Score_>> extends Comparable<Score_> {
 
     /**
      * The init score is the negative of the number of uninitialized genuine planning variables.
@@ -58,21 +58,6 @@ public interface Score<Score_ extends Score> extends Comparable<Score_> {
      * @return true if {@link #getInitScore()} is 0
      */
     boolean isSolutionInitialized();
-
-    /**
-     * For example {@code -7init/0hard/-8soft} returns {@code 0hard/-8soft}.
-     *
-     * @return equal score except that {@link #getInitScore()} is {@code 0}.
-     * @deprecated Use {@link #withInitScore(int)} with 0 as the argument.
-     */
-    @Deprecated
-    default Score_ toInitializedScore() {
-        if (isSolutionInitialized()) {
-            return (Score_) this;
-        } else {
-            return withInitScore(0);
-        }
-    }
 
     /**
      * For example {@code 0hard/-8soft} with {@code -7} returns {@code -7init/0hard/-8soft}.
@@ -159,15 +144,6 @@ public interface Score<Score_ extends Score> extends Comparable<Score_> {
     Number[] toLevelNumbers();
 
     /**
-     * @param otherScore never null
-     * @return true if the otherScore is accepted as a parameter of {@link #add(Score)}, {@link #subtract(Score)}
-     *         and {@link #compareTo(Object)}.
-     * @deprecated in favor of {@link ScoreDefinition#isCompatibleArithmeticArgument(Score)}
-     */
-    @Deprecated(/* forRemoval = true */)
-    boolean isCompatibleArithmeticArgument(Score otherScore);
-
-    /**
      * A {@link PlanningSolution} is feasible if it has no broken hard constraints
      * and {@link #isSolutionInitialized()} is true.
      *
@@ -176,13 +152,7 @@ public interface Score<Score_ extends Score> extends Comparable<Score_> {
      *
      * @return true if the hard score is 0 or higher and the {@link #getInitScore()} is 0.
      */
-    default boolean isFeasible() {
-        /*
-         * This exception will only be thrown for custom scores that did not implement FeasibilityScore.
-         * TODO Safe to remove this default implementation once FeasibilityScore has been removed in 8.0.
-         */
-        throw new UnsupportedOperationException();
-    }
+    boolean isFeasible();
 
     /**
      * Like {@link Object#toString()}, but trims score levels which have a zero weight.

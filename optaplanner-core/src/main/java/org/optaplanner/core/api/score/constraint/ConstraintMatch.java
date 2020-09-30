@@ -16,25 +16,28 @@
 
 package org.optaplanner.core.api.score.constraint;
 
-import java.io.Serializable;
-import java.util.Collections;
+import static java.util.Objects.hash;
+import static java.util.Objects.requireNonNull;
+
 import java.util.Comparator;
 import java.util.List;
-import java.util.Objects;
 
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.impl.domain.lookup.ClassAndPlanningIdComparator;
 
 /**
- * Retrievable from {@link ConstraintMatchTotal#getConstraintMatchSet()}.
+ * Retrievable from {@link ConstraintMatchTotal#getConstraintMatchSet()}
+ * and {@link Indictment#getConstraintMatchSet()}.
+ * 
+ * @param <Score_> the actual score type
  */
-public final class ConstraintMatch implements Serializable, Comparable<ConstraintMatch> {
+public final class ConstraintMatch<Score_ extends Score<Score_>> implements Comparable<ConstraintMatch<Score_>> {
 
     private final String constraintPackage;
     private final String constraintName;
 
     private final List<Object> justificationList;
-    private final Score score;
+    private final Score_ score;
 
     /**
      * @param constraintPackage never null
@@ -43,11 +46,11 @@ public final class ConstraintMatch implements Serializable, Comparable<Constrain
      * @param score never null
      */
     public ConstraintMatch(String constraintPackage, String constraintName, List<Object> justificationList,
-            Score score) {
-        this.constraintPackage = constraintPackage;
-        this.constraintName = constraintName;
-        this.justificationList = Collections.unmodifiableList(justificationList);
-        this.score = score;
+            Score_ score) {
+        this.constraintPackage = requireNonNull(constraintPackage);
+        this.constraintName = requireNonNull(constraintName);
+        this.justificationList = requireNonNull(justificationList);
+        this.score = requireNonNull(score);
     }
 
     public String getConstraintPackage() {
@@ -62,7 +65,7 @@ public final class ConstraintMatch implements Serializable, Comparable<Constrain
         return justificationList;
     }
 
-    public Score getScore() {
+    public Score_ getScore() {
         return score;
     }
 
@@ -79,7 +82,7 @@ public final class ConstraintMatch implements Serializable, Comparable<Constrain
     }
 
     @Override
-    public int compareTo(ConstraintMatch other) {
+    public int compareTo(ConstraintMatch<Score_> other) {
         if (!constraintPackage.equals(other.constraintPackage)) {
             return constraintPackage.compareTo(other.constraintPackage);
         } else if (!constraintName.equals(other.constraintName)) {
@@ -114,7 +117,7 @@ public final class ConstraintMatch implements Serializable, Comparable<Constrain
         if (this == o) {
             return true;
         } else if (o instanceof ConstraintMatch) {
-            ConstraintMatch other = (ConstraintMatch) o;
+            ConstraintMatch<Score_> other = (ConstraintMatch<Score_>) o;
             return constraintPackage.equals(other.constraintPackage)
                     && constraintName.equals(other.constraintName)
                     && justificationList.equals(other.justificationList);
@@ -125,7 +128,7 @@ public final class ConstraintMatch implements Serializable, Comparable<Constrain
 
     @Override
     public int hashCode() {
-        return Objects.hash(constraintPackage, constraintName, justificationList);
+        return hash(constraintPackage, constraintName, justificationList);
     }
 
     @Override

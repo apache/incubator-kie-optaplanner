@@ -19,8 +19,6 @@ package org.optaplanner.persistence.jsonb.api.score;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.fail;
 
-import java.io.Serializable;
-
 import javax.json.bind.Jsonb;
 import javax.json.bind.JsonbBuilder;
 import javax.json.bind.JsonbException;
@@ -33,7 +31,8 @@ public class AbstractScoreJsonbAdapterTest {
     // Helper methods
     // ************************************************************************
 
-    protected <S extends Score, W extends TestScoreWrapper<S>> void assertSerializeAndDeserialize(S expectedScore, W input) {
+    protected <Score_ extends Score<Score_>, W extends TestScoreWrapper<Score_>> void
+            assertSerializeAndDeserialize(Score_ expectedScore, W input) {
         String jsonString;
         W output;
         try {
@@ -60,10 +59,10 @@ public class AbstractScoreJsonbAdapterTest {
         }
     }
 
-    public static abstract class TestScoreWrapper<S extends Score> implements Serializable {
+    public static abstract class TestScoreWrapper<Score_ extends Score<Score_>> {
 
-        public abstract S getScore();
+        public abstract Score_ getScore();
 
-        public abstract void setScore(S score);
+        public abstract void setScore(Score_ score);
     }
 }

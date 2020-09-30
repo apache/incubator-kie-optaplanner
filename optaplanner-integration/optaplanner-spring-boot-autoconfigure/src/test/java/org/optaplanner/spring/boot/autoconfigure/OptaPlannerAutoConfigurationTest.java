@@ -17,7 +17,6 @@
 package org.optaplanner.spring.boot.autoconfigure;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatIllegalStateException;
 
 import java.time.Duration;
 import java.util.Collections;
@@ -34,25 +33,32 @@ import org.optaplanner.core.config.solver.EnvironmentMode;
 import org.optaplanner.core.config.solver.SolverConfig;
 import org.optaplanner.core.config.solver.termination.TerminationConfig;
 import org.optaplanner.core.impl.solver.DefaultSolverManager;
-import org.optaplanner.spring.boot.autoconfigure.solver.TestdataSpringConstraintProvider;
-import org.optaplanner.spring.boot.autoconfigure.testdata.TestdataSpringEntity;
-import org.optaplanner.spring.boot.autoconfigure.testdata.TestdataSpringSolution;
-import org.springframework.boot.autoconfigure.AutoConfigurationPackage;
+import org.optaplanner.spring.boot.autoconfigure.chained.ChainedSpringTestConfiguration;
+import org.optaplanner.spring.boot.autoconfigure.chained.constraints.TestdataChainedSpringConstraintProvider;
+import org.optaplanner.spring.boot.autoconfigure.chained.domain.TestdataChainedSpringEntity;
+import org.optaplanner.spring.boot.autoconfigure.chained.domain.TestdataChainedSpringObject;
+import org.optaplanner.spring.boot.autoconfigure.chained.domain.TestdataChainedSpringSolution;
+import org.optaplanner.spring.boot.autoconfigure.normal.SpringTestConfiguration;
+import org.optaplanner.spring.boot.autoconfigure.normal.constraints.TestdataSpringConstraintProvider;
+import org.optaplanner.spring.boot.autoconfigure.normal.domain.TestdataSpringEntity;
+import org.optaplanner.spring.boot.autoconfigure.normal.domain.TestdataSpringSolution;
 import org.springframework.boot.autoconfigure.AutoConfigurations;
-import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.boot.test.context.FilteredClassLoader;
 import org.springframework.boot.test.context.runner.ApplicationContextRunner;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.ClassPathResource;
 
 public class OptaPlannerAutoConfigurationTest {
 
     private final ApplicationContextRunner contextRunner;
+    private final ApplicationContextRunner chainedContextRunner;
 
     public OptaPlannerAutoConfigurationTest() {
-        this.contextRunner = new ApplicationContextRunner()
+        contextRunner = new ApplicationContextRunner()
                 .withConfiguration(AutoConfigurations.of(OptaPlannerAutoConfiguration.class))
-                .withUserConfiguration(TestConfiguration.class);
+                .withUserConfiguration(SpringTestConfiguration.class);
+        chainedContextRunner = new ApplicationContextRunner()
+                .withConfiguration(AutoConfigurations.of(OptaPlannerAutoConfiguration.class))
+                .withUserConfiguration(ChainedSpringTestConfiguration.class);
     }
 
     @Test
@@ -116,14 +122,6 @@ public class OptaPlannerAutoConfigurationTest {
     }
 
     @Test
-    public void scanAnnotatedClasses() {
-        assertThatIllegalStateException().isThrownBy(() -> contextRunner
-                .withPropertyValues(
-                        "optaplanner.solver-config-xml=org/optaplanner/spring/boot/autoconfigure/illegalScanAnnotatedSpringBootSolverConfig.xml")
-                .run(context -> context.getBean(SolverConfig.class)));
-    }
-
-    @Test
     public void solverProperties() {
         contextRunner
                 .withPropertyValues("optaplanner.solver.environment-mode=FULL_ASSERT")
@@ -179,7 +177,7 @@ public class OptaPlannerAutoConfigurationTest {
                 .run(context -> {
                     SolverFactory<TestdataSpringSolution> solverFactory = context.getBean(SolverFactory.class);
                     assertThat(solverFactory).isNotNull();
-                    ScoreManager<TestdataSpringSolution> scoreManager = context.getBean(ScoreManager.class);
+                    ScoreManager<TestdataSpringSolution, SimpleScore> scoreManager = context.getBean(ScoreManager.class);
                     assertThat(scoreManager).isNotNull();
                     // TODO in 8.0, once SolverFactory.getScoreDirectorFactory() doesn't create a new instance every time
                     // assertSame(solverFactory.getScoreDirectorFactory(), ((DefaultScoreManager<TestdataSpringSolution>) scoreManager).getScoreDirectorFactory());
@@ -212,11 +210,25 @@ public class OptaPlannerAutoConfigurationTest {
                 });
     }
 
-    @Configuration
-    @EntityScan(basePackageClasses = { TestdataSpringSolution.class, TestdataSpringConstraintProvider.class })
-    @AutoConfigurationPackage
-    public static class TestConfiguration {
-
+    @Test
+    public void chained_solverConfigXml_none() {
+        chainedContextRunner
+                .withClassLoader(new FilteredClassLoader(new ClassPathResource("solverConfig.xml")))
+                .run(context -> {
+                    SolverConfig solverConfig = context.getBean(SolverConfig.class);
+                    assertThat(solverConfig).isNotNull();
+                    assertThat(solverConfig.getSolutionClass()).isEqualTo(TestdataChainedSpringSolution.class);
+                    assertThat(solverConfig.getEntityClassList()).containsExactlyInAnyOrder(
+                            TestdataChainedSpringObject.class,
+                            TestdataChainedSpringEntity.class);
+                    assertThat(solverConfig.getScoreDirectorFactoryConfig().getConstraintProviderClass())
+                            .isEqualTo(TestdataChainedSpringConstraintProvider.class);
+                    // No termination defined
+                    assertThat(solverConfig.getTerminationConfig()).isNull();
+                    SolverFactory<TestdataSpringSolution> solverFactory = context.getBean(SolverFactory.class);
+                    assertThat(solverFactory).isNotNull();
+                    assertThat(solverFactory.buildSolver()).isNotNull();
+                });
     }
 
 }

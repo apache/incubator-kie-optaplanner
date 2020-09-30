@@ -115,7 +115,8 @@ Add the following code to your solver configuration:
 
 [source,xml,options="nowrap"]
 ----
-    <solver>
+    <solver xmlns="https://www.optaplanner.org/xsd/solver" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="https://www.optaplanner.org/xsd/solver https://www.optaplanner.org/xsd/solver/solver.xsd">
       <scoreDirectorFactory>
         <constraintProviderClass>com.example.MyConstraintProvider</constraintProviderClass>
       </scoreDirectorFactory>
@@ -191,8 +192,19 @@ The following example shows the simplest possible constraint stream:
     }
 ----
 
-This constraint stream iterates over all known and initialized instances of `Shift`.
-To include uninitialized instances, replace the `from()` building block with `fromUnfiltered()`:
+This constraint stream penalizes each known and initialized instance of `Shift`.
+
+[[constraintStreamsFrom]]
+=== From
+
+The `.from(T)` building block selects every `T` instance that
+is in a <<problemFacts, problem fact collection>>
+or a <<planningEntitiesOfASolution, planning entity collection>>
+and has no `null` planning variables.
+
+To include instances with a `null` planning variable,
+especially if you use <<nullablePlanningVariable, nullable>> variables,
+replace the `from()` building block by `fromUnfiltered()`:
 
 [source,java,options="nowrap"]
 ----
@@ -582,7 +594,7 @@ To use it, first add a test scoped dependency to the `optaplanner-test` JAR.
 
 
 [[constraintStreamsTestingIsolatedConstraints]]
-== Testing constraints in isolation
+=== Testing constraints in isolation
 
 Consider the following constraint stream:
 
@@ -712,7 +724,8 @@ To try it out, implement the `ConstraintProvider` interface and use the followin
 
 [source,xml,options="nowrap"]
 ----
-    <solver>
+    <solver xmlns="https://www.optaplanner.org/xsd/solver" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="https://www.optaplanner.org/xsd/solver https://www.optaplanner.org/xsd/solver/solver.xsd">
       <scoreDirectorFactory>
         <constraintStreamImplType>BAVET</constraintStreamImplType>
         <constraintProviderClass>com.example.MyConstraintProvider</constraintProviderClass>

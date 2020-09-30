@@ -1,5 +1,5 @@
 /*
- * Copyright 2010 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,9 +18,11 @@ package org.optaplanner.core.config.solver;
 
 import java.util.Random;
 
+import javax.xml.bind.annotation.XmlEnum;
+
 import org.optaplanner.core.api.solver.Solver;
 import org.optaplanner.core.impl.heuristic.move.Move;
-import org.optaplanner.core.impl.score.director.ScoreDirector;
+import org.optaplanner.core.impl.score.director.InnerScoreDirector;
 
 /**
  * The environment mode also allows you to detect common bugs in your implementation.
@@ -31,6 +33,7 @@ import org.optaplanner.core.impl.score.director.ScoreDirector;
  * while tabu search only depends on it to deal with score ties.
  * This environment mode influences the seed of that {@link Random} instance.
  */
+@XmlEnum
 public enum EnvironmentMode {
     /**
      * This mode turns on all assertions
@@ -39,7 +42,7 @@ public enum EnvironmentMode {
      * <p>
      * This mode is reproducible (see {@link #REPRODUCIBLE} mode).
      * <p>
-     * This mode is intrusive because it calls the {@link ScoreDirector#calculateScore()} more frequently
+     * This mode is intrusive because it calls the {@link InnerScoreDirector#calculateScore()} more frequently
      * than a non assert mode.
      * <p>
      * This mode is horribly slow.
@@ -64,7 +67,7 @@ public enum EnvironmentMode {
      * <p>
      * This mode is reproducible (see {@link #REPRODUCIBLE} mode).
      * <p>
-     * This mode is intrusive because it calls the {@link ScoreDirector#calculateScore()} more frequently
+     * This mode is intrusive because it calls the {@link InnerScoreDirector#calculateScore()} more frequently
      * than a non assert mode.
      * <p>
      * This mode is slow.
@@ -84,14 +87,6 @@ public enum EnvironmentMode {
      * and it also disables certain concurrency optimizations (such as work stealing).
      */
     REPRODUCIBLE,
-    /**
-     * This mode has been renamed to {@link #NON_REPRODUCIBLE}
-     * because most users prefer to use {@link #REPRODUCIBLE} in production.
-     *
-     * @deprecated Use {@link #NON_REPRODUCIBLE} instead. Will be removed in 8.0.
-     */
-    @Deprecated
-    PRODUCTION,
     /**
      * The non reproducible mode is equally fast or slightly faster than {@link #REPRODUCIBLE}.
      * <p>

@@ -4,14 +4,16 @@
 
   <modelVersion>4.0.0</modelVersion>
   <parent>
-    <groupId>org.kie</groupId>
-    <artifactId>kie-parent</artifactId>
-    <version>7.40.0-SNAPSHOT</version>
+    <groupId>org.jboss</groupId>
+    <artifactId>jboss-parent</artifactId>
+    <version>36</version>
+    <relativePath/>
   </parent>
 
   <groupId>org.optaplanner</groupId>
-  <artifactId>optaplanner</artifactId>
+  <artifactId>optaplanner-parent</artifactId>
   <packaging>pom</packaging>
+  <version>8.0.0-SNAPSHOT</version>
 
   <name>OptaPlanner multiproject parent</name>
   <description>
@@ -23,28 +25,30 @@
   </description>
   <url>https://www.optaplanner.org</url>
   <inceptionYear>2006</inceptionYear>
+  <licenses>
+    <license>
+      <name>The Apache Software License, Version 2.0</name>
+      <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+      <distribution>repo</distribution>
+    </license>
+  </licenses>
 
   <properties>
-    <!-- override in each parent module in the hierarchy -->
-    <format.directory>${project.basedir}/../ide-configuration</format.directory>
-    <formatter.skip>false</formatter.skip>
-    <formatter.goal>format</formatter.goal>
-    <impsort.goal>sort</impsort.goal>
-    <jacoco.agent.argLine/>
-    <spotbugs.failOnViolation>true</spotbugs.failOnViolation>
-    <version.org.mockito>3.1.0</version.org.mockito>
+    <!-- override the default GroupId:ArtifactId to map both master branch and 7.x branches to the same SonarCloud project -->
+    <sonar.projectKey>org.optaplanner:optaplanner</sonar.projectKey>
+    <sonar.moduleKey>${project.groupId}:${project.artifactId}</sonar.moduleKey>
   </properties>
 
   <repositories>
-    <!-- Bootstrap repository to locate the parent pom when the parent pom has not been build locally. -->
     <repository>
       <id>jboss-public-repository-group</id>
       <name>JBoss Public Repository Group</name>
       <url>https://repository.jboss.org/nexus/content/groups/public/</url>
       <layout>default</layout>
       <releases>
-        <enabled>true</enabled>
-        <updatePolicy>never</updatePolicy>
+        <!-- Only get SNAPSHOTS from JBoss repository,
+             so it tries to get releases first (and only) from Maven Central. -->
+        <enabled>false</enabled>
       </releases>
       <snapshots>
         <enabled>true</enabled>
@@ -62,47 +66,37 @@
     <system>jira</system>
     <url>https://issues.redhat.com/browse/PLANNER</url>
   </issueManagement>
+  <developers>
+    <developer>
+      <name>All developers are listed on the team website</name>
+      <url>https://www.optaplanner.org/community/team.html</url>
+    </developer>
+  </developers>
+  <contributors>
+    <contributor>
+      <name>All contributors are listed on the team website</name>
+      <url>https://www.optaplanner.org/community/team.html</url>
+    </contributor>
+  </contributors>
+  <mailingLists>
+    <mailingList>
+      <name>setup</name>
+      <subscribe>https://groups.google.com/forum/#!forum/optaplanner-dev</subscribe>
+      <unsubscribe>https://groups.google.com/forum/#!forum/optaplanner-dev</unsubscribe>
+    </mailingList>
+  </mailingLists>
 
   <modules>
+    <module>optaplanner-bom</module>
+    <module>optaplanner-build-parent</module>
     <module>optaplanner-core</module>
     <module>optaplanner-persistence</module>
     <module>optaplanner-benchmark</module>
     <module>optaplanner-test</module>
     <module>optaplanner-integration</module><!-- TODO rename to optaplanner-spring-integration-->
+    <module>optaplanner-quarkus-integration</module>
     <module>optaplanner-examples</module>
   </modules>
-
-  <dependencyManagement>
-    <dependencies>
-      <dependency>
-        <groupId>org.optaplanner</groupId>
-        <artifactId>optaplanner-bom</artifactId>
-        <version>${version.org.kie}</version>
-        <type>pom</type>
-        <scope>import</scope>
-      </dependency>
-      <dependency>
-        <groupId>org.drools</groupId>
-        <artifactId>drools-bom</artifactId>
-        <version>${version.org.kie}</version>
-        <type>pom</type>
-        <scope>import</scope>
-      </dependency>
-      <dependency>
-        <groupId>org.kie.soup</groupId>
-        <artifactId>kie-soup-bom</artifactId>
-        <version>${version.org.kie}</version>
-        <type>pom</type>
-        <scope>import</scope>
-      </dependency>
-      <dependency>
-        <groupId>org.glassfish</groupId>
-        <artifactId>javax.json</artifactId>
-        <!-- Old version until this issue is resolved: https://github.com/ImmobilienScout24/illegal-transitive-dependency-check/issues/30 -->
-        <version>1.0.4</version>
-      </dependency>
-    </dependencies>
-  </dependencyManagement>
 
   <profiles>
     <profile>
@@ -117,253 +111,6 @@
         <module>optaplanner-distribution</module>
       </modules>
     </profile>
-    <profile>
-      <id>notProductizedProfile</id>
-      <activation>
-        <property>
-          <name>!productized</name>
-        </property>
-      </activation>
-      <modules>
-        <!-- Until Kogito is productized, neither can optaplanner-quarkus be productized. -->
-        <module>optaplanner-quarkus-integration</module>
-      </modules>
-    </profile>
-    <profile>
-      <id>quickstartsProfile</id>
-      <activation>
-        <property>
-          <!-- TODO Temporarily(?) exclude quickstarts from nightly/release community/product builds -->
-          <!-- Don't release the quickstart artifacts in a Maven repo such as Maven Central -->
-          <name>quickstarts</name>
-        </property>
-      </activation>
-      <modules>
-        <module>optaplanner-quickstarts</module>
-      </modules>
-    </profile>
-
-    <profile>
-      <id>run-code-coverage</id>
-      <build>
-        <pluginManagement>
-          <plugins>
-            <plugin>
-              <groupId>org.apache.maven.plugins</groupId>
-              <artifactId>maven-surefire-plugin</artifactId>
-              <configuration>
-                <!-- Append jacoco.agent.argLine property populated by JaCoCo's prepare-agent goal. -->
-                <argLine>@{jacoco.agent.argLine}</argLine>
-              </configuration>
-            </plugin>
-          </plugins>
-        </pluginManagement>
-        <plugins>
-          <plugin>
-            <groupId>org.jacoco</groupId>
-            <artifactId>jacoco-maven-plugin</artifactId>
-          </plugin>
-        </plugins>
-      </build>
-    </profile>
-
-    <profile>
-      <!-- Fail the build in CI if code does not follow the standards. -->
-      <id>validate-formatting-ci</id>
-      <activation>
-        <property>
-          <name>env.CI</name>
-        </property>
-      </activation>
-      <properties>
-        <formatter.goal>validate</formatter.goal>
-        <impsort.goal>check</impsort.goal>
-      </properties>
-    </profile>
   </profiles>
-
-  <build>
-    <pluginManagement>
-      <plugins>
-        <plugin>
-          <groupId>com.github.spotbugs</groupId>
-          <artifactId>spotbugs-maven-plugin</artifactId>
-          <configuration>
-            <maxRank>14</maxRank>
-            <includeTests>true</includeTests>
-          </configuration>
-        </plugin>
-        <plugin>
-          <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-compiler-plugin</artifactId>
-          <configuration>
-            <compilerArgs>
-              <!-- Visit https://docs.oracle.com/javase/8/docs/technotes/tools/windows/javac.html
-                   to learn more about javac warnings -->
-              <arg>-Xmaxwarns</arg>
-              <arg>100</arg>
-              <arg>-Xlint</arg>
-              <arg>-Xlint:-rawtypes</arg>
-              <arg>-Xlint:-serial</arg>
-              <arg>-Xlint:-unchecked</arg>
-            </compilerArgs>
-          </configuration>
-        </plugin>
-        <plugin>
-          <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-checkstyle-plugin</artifactId>
-          <executions>
-            <execution>
-              <id>validate</id>
-              <phase>validate</phase>
-              <goals>
-                <goal>check</goal>
-              </goals>
-              <configuration>
-                <checkstyleRules combine.self="override">
-                  <module name="Checker">
-                    <property name="severity" value="warning" default="warning"/>
-                    <!-- Checks whether files end with a new line. -->
-                    <module name="NewlineAtEndOfFile">
-                      <property name="lineSeparator" value="lf"/>
-                    </module>
-                    <!-- Checks for whitespace. -->
-                    <module name="FileTabCharacter">
-                      <property name="severity" value="error"/>
-                      <property name="eachLine" value="true"/>
-                    </module>
-                    <module name="SuppressWarningsFilter"/>
-                    <module name="TreeWalker">
-                      <property name="cacheFile" value="target/cachefile"/>
-                      <property name="tabWidth" value="4"/>
-                      <!-- Checks for Javadoc comments. -->
-                      <module name="JavadocStyle"/>
-                      <!-- TODO: Enable NonEmptyAtclauseDescription after https://github.com/checkstyle/checkstyle/issues/1064 is fixed -->
-                      <!-- Update: #1064 is resolved and the performance has greatly improved but this check still adds ~2 seconds -->
-                      <!-- to the build time -> always measure build time before enabling this module (use github.com/jcgay/maven-profiler) -->
-                      <!--<module name="NonEmptyAtclauseDescription"/>-->
-                      <!-- Checks for imports. -->
-                      <module name="RedundantImport"/>
-                      <!-- defaults to sun.* packages -->
-                      <module name="IllegalImport"/>
-                      <!-- Checks for size violations. -->
-                      <!--<module name="LineLength">-->
-                      <!--<property name="max" value="120"/>-->
-                      <!--</module>-->
-                      <module name="ParameterNumber"/>
-                      <!-- Checks for whitespace. -->
-                      <module name="GenericWhitespace"/>
-                      <module name="MethodParamPad"/>
-                      <module name="NoWhitespaceBefore"/>
-                      <module name="ParenPad"/>
-                      <module name="TypecastParenPad"/>
-                      <module name="WhitespaceAfter"/>
-                      <module name="WhitespaceAround">
-                        <property name="allowEmptyConstructors" value="true"/>
-                        <property name="allowEmptyTypes" value="true"/>
-                      </module>
-                      <!-- Checks for blocks. -->
-                      <module name="LeftCurly"/>
-                      <module name="NeedBraces"/>
-                      <module name="RightCurly"/>
-                      <!-- Checks for common coding problems. -->
-                      <module name="EmptyStatement"/>
-                      <module name="EqualsHashCode"/>
-                      <module name="IllegalInstantiation"/>
-                      <module name="InnerAssignment"/>
-                      <module name="OneStatementPerLine"/>
-                      <!-- Checks for class design. -->
-                      <!--<module name="HideUtilityClassConstructor"/>-->
-                      <module name="InterfaceIsType"/>
-                      <!-- Miscellaneous other checks. -->
-                      <module name="ArrayTypeStyle"/>
-                      <module name="UpperEll"/>
-                      <module name="SuppressWarningsHolder"/>
-                    </module>
-                  </module>
-                </checkstyleRules>
-                <consoleOutput>true</consoleOutput>
-                <logViolationsToConsole>true</logViolationsToConsole>
-                <failOnViolation>true</failOnViolation>
-                <failsOnError>true</failsOnError>
-              </configuration>
-            </execution>
-          </executions>
-        </plugin>
-        <plugin>
-          <groupId>org.jacoco</groupId>
-          <artifactId>jacoco-maven-plugin</artifactId>
-          <executions>
-            <execution>
-              <id>jacoco-prepare-agent</id>
-              <goals>
-                <goal>prepare-agent</goal>
-              </goals>
-              <configuration>
-                <append>true</append>
-                <destFile>${jacoco.exec.file}</destFile>
-                <excludes>
-                  <!-- Instrumentation of classes generated by antlr fails due to exceeding method size limit. -->
-                  <exclude>*Lexer</exclude>
-                  <!--
-                    JaCoCo adds a field to every class and as a result tests checking fields on test data classes fail.
-                  -->
-                  <exclude>org.optaplanner.core.impl.testdata.domain.*</exclude>
-                  <exclude>*TestdataAbstractSolutionBasedSolution</exclude>
-                </excludes>
-                <propertyName>jacoco.agent.argLine</propertyName>
-              </configuration>
-            </execution>
-          </executions>
-        </plugin>
-        <plugin>
-          <groupId>net.revelc.code.formatter</groupId>
-          <artifactId>formatter-maven-plugin</artifactId>
-          <version>2.11.0</version>
-          <configuration>
-            <configFile>${format.directory}/eclipse-format.xml</configFile>
-            <lineEnding>LF</lineEnding>
-            <skip>${formatter.skip}</skip>
-          </configuration>
-          <executions>
-            <execution>
-              <goals>
-                <goal>${formatter.goal}</goal>
-              </goals>
-            </execution>
-          </executions>
-        </plugin>
-        <plugin>
-          <groupId>net.revelc.code</groupId>
-          <artifactId>impsort-maven-plugin</artifactId>
-          <version>1.3.2</version>
-          <configuration>
-            <groups>java.,javax.,org.,com.</groups>
-            <staticGroups>*</staticGroups>
-            <!-- keep in sync with the formatter-maven-plugin -->
-            <skip>${formatter.skip}</skip>
-            <removeUnused>true</removeUnused>
-          </configuration>
-          <executions>
-            <execution>
-              <goals>
-                <goal>${impsort.goal}</goal>
-              </goals>
-            </execution>
-          </executions>
-        </plugin>
-      </plugins>
-    </pluginManagement>
-    <plugins>
-      <plugin>
-        <groupId>net.revelc.code.formatter</groupId>
-        <artifactId>formatter-maven-plugin</artifactId>
-      </plugin>
-      <plugin>
-        <groupId>net.revelc.code</groupId>
-        <artifactId>impsort-maven-plugin</artifactId>
-      </plugin>
-    </plugins>
-  </build>
 
 </project>

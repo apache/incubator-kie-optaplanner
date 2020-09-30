@@ -1,5 +1,5 @@
 /*
- * Copyright 2012 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,23 +18,25 @@ package org.optaplanner.core.config.heuristic.selector.move.factory;
 
 import java.util.Map;
 
-import org.optaplanner.core.config.heuristic.policy.HeuristicConfigPolicy;
-import org.optaplanner.core.config.heuristic.selector.common.SelectionCacheType;
+import javax.xml.bind.annotation.XmlType;
+import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
+
 import org.optaplanner.core.config.heuristic.selector.move.MoveSelectorConfig;
 import org.optaplanner.core.config.util.ConfigUtils;
-import org.optaplanner.core.config.util.KeyAsElementMapConverter;
-import org.optaplanner.core.impl.heuristic.selector.move.MoveSelector;
 import org.optaplanner.core.impl.heuristic.selector.move.factory.MoveIteratorFactory;
-import org.optaplanner.core.impl.heuristic.selector.move.factory.MoveIteratorFactoryToMoveSelectorBridge;
+import org.optaplanner.core.impl.io.jaxb.adapter.JaxbCustomPropertiesAdapter;
 
-import com.thoughtworks.xstream.annotations.XStreamAlias;
-import com.thoughtworks.xstream.annotations.XStreamConverter;
-
-@XStreamAlias("moveIteratorFactory")
+@XmlType(propOrder = {
+        "moveIteratorFactoryClass",
+        "moveIteratorFactoryCustomProperties"
+})
 public class MoveIteratorFactoryConfig extends MoveSelectorConfig<MoveIteratorFactoryConfig> {
 
+    public static final String XML_ELEMENT_NAME = "moveIteratorFactory";
+
     protected Class<? extends MoveIteratorFactory> moveIteratorFactoryClass = null;
-    @XStreamConverter(KeyAsElementMapConverter.class)
+
+    @XmlJavaTypeAdapter(JaxbCustomPropertiesAdapter.class)
     protected Map<String, String> moveIteratorFactoryCustomProperties = null;
 
     public Class<? extends MoveIteratorFactory> getMoveIteratorFactoryClass() {
@@ -51,24 +53,6 @@ public class MoveIteratorFactoryConfig extends MoveSelectorConfig<MoveIteratorFa
 
     public void setMoveIteratorFactoryCustomProperties(Map<String, String> moveIteratorFactoryCustomProperties) {
         this.moveIteratorFactoryCustomProperties = moveIteratorFactoryCustomProperties;
-    }
-
-    // ************************************************************************
-    // Builder methods
-    // ************************************************************************
-
-    @Override
-    public MoveSelector buildBaseMoveSelector(HeuristicConfigPolicy configPolicy,
-            SelectionCacheType minimumCacheType, boolean randomSelection) {
-        if (moveIteratorFactoryClass == null) {
-            throw new IllegalArgumentException("The moveIteratorFactoryConfig (" + this
-                    + ") lacks a moveListFactoryClass (" + moveIteratorFactoryClass + ").");
-        }
-        MoveIteratorFactory moveIteratorFactory = ConfigUtils.newInstance(this,
-                "moveIteratorFactoryClass", moveIteratorFactoryClass);
-        ConfigUtils.applyCustomProperties(moveIteratorFactory, "moveIteratorFactoryClass",
-                moveIteratorFactoryCustomProperties, "moveIteratorFactoryCustomProperties");
-        return new MoveIteratorFactoryToMoveSelectorBridge(moveIteratorFactory, randomSelection);
     }
 
     @Override

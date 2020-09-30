@@ -20,6 +20,7 @@ import static java.util.Objects.requireNonNull;
 
 import java.util.function.BiFunction;
 
+import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.stream.Constraint;
 import org.optaplanner.core.api.score.stream.ConstraintFactory;
 import org.optaplanner.core.api.score.stream.ConstraintProvider;
@@ -28,7 +29,7 @@ import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.core.impl.score.director.stream.ConstraintStreamScoreDirectorFactory;
 import org.optaplanner.test.api.score.stream.ConstraintVerifier;
 
-public final class DefaultConstraintVerifier<ConstraintProvider_ extends ConstraintProvider, Solution_>
+public final class DefaultConstraintVerifier<ConstraintProvider_ extends ConstraintProvider, Solution_, Score_ extends Score<Score_>>
         implements ConstraintVerifier<ConstraintProvider_, Solution_> {
 
     private final ConstraintProvider_ constraintProvider;
@@ -56,22 +57,23 @@ public final class DefaultConstraintVerifier<ConstraintProvider_ extends Constra
     // ************************************************************************
 
     @Override
-    public DefaultSingleConstraintVerification<Solution_> verifyThat(
+    public DefaultSingleConstraintVerification<Solution_, Score_> verifyThat(
             BiFunction<ConstraintProvider_, ConstraintFactory, Constraint> constraintFunction) {
         requireNonNull(constraintFunction);
-        ConstraintStreamScoreDirectorFactory<Solution_> scoreDirectorFactory = new ConstraintStreamScoreDirectorFactory<>(
-                solutionDescriptor,
-                constraintFactory -> new Constraint[] {
-                        constraintFunction.apply(constraintProvider, constraintFactory)
-                },
-                constraintStreamImplType);
+        ConstraintStreamScoreDirectorFactory<Solution_, Score_> scoreDirectorFactory =
+                new ConstraintStreamScoreDirectorFactory<>(solutionDescriptor,
+                        constraintFactory -> new Constraint[] {
+                                constraintFunction.apply(constraintProvider, constraintFactory)
+                        },
+                        constraintStreamImplType);
         return new DefaultSingleConstraintVerification<>(scoreDirectorFactory);
     }
 
     @Override
-    public DefaultMultiConstraintVerification<Solution_> verifyThat() {
-        ConstraintStreamScoreDirectorFactory<Solution_> scoreDirectorFactory = new ConstraintStreamScoreDirectorFactory<>(
-                solutionDescriptor, constraintProvider, constraintStreamImplType);
+    public DefaultMultiConstraintVerification<Solution_, Score_> verifyThat() {
+        ConstraintStreamScoreDirectorFactory<Solution_, Score_> scoreDirectorFactory =
+                new ConstraintStreamScoreDirectorFactory<>(solutionDescriptor, constraintProvider,
+                        constraintStreamImplType);
         return new DefaultMultiConstraintVerification<>(scoreDirectorFactory, constraintProvider);
     }
 

@@ -22,6 +22,12 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicLong;
+
+import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlID;
+import javax.xml.bind.annotation.XmlTransient;
 
 import org.optaplanner.benchmark.config.statistic.ProblemStatisticType;
 import org.optaplanner.benchmark.impl.measurement.ScoreDifferencePercentage;
@@ -33,27 +39,25 @@ import org.optaplanner.benchmark.impl.statistic.SubSingleStatistic;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.solver.Solver;
 import org.optaplanner.core.config.util.ConfigUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import com.thoughtworks.xstream.annotations.XStreamAlias;
-import com.thoughtworks.xstream.annotations.XStreamImplicit;
-import com.thoughtworks.xstream.annotations.XStreamOmitField;
 
 /**
  * Represents 1 benchmark for 1 {@link Solver} configuration for 1 problem instance (data set).
  */
-@XStreamAlias("singleBenchmarkResult")
 public class SingleBenchmarkResult implements BenchmarkResult {
 
-    private static final Logger logger = LoggerFactory.getLogger(SingleBenchmarkResult.class);
+    // Required by JAXB to refer to existing instances of this class
+    private static final AtomicLong ID_GENERATOR = new AtomicLong(1L);
 
-    @XStreamOmitField // Bi-directional relationship restored through BenchmarkResultIO
+    @XmlID
+    @XmlAttribute
+    private String id = String.valueOf(ID_GENERATOR.getAndIncrement());
+
+    @XmlTransient // Bi-directional relationship restored through BenchmarkResultIO
     private SolverBenchmarkResult solverBenchmarkResult;
-    @XStreamOmitField // Bi-directional relationship restored through BenchmarkResultIO
+    @XmlTransient // Bi-directional relationship restored through BenchmarkResultIO
     private ProblemBenchmarkResult problemBenchmarkResult;
 
-    @XStreamImplicit(itemFieldName = "subSingleBenchmarkResult")
+    @XmlElement(name = "subSingleBenchmarkResult")
     private List<SubSingleBenchmarkResult> subSingleBenchmarkResultList = null;
 
     private Long usedMemoryAfterInputSolution = null;
@@ -88,6 +92,10 @@ public class SingleBenchmarkResult implements BenchmarkResult {
     // ************************************************************************
     // Constructors and simple getters/setters
     // ************************************************************************
+
+    public SingleBenchmarkResult() {
+        // Required by JAXB
+    }
 
     public SingleBenchmarkResult(SolverBenchmarkResult solverBenchmarkResult, ProblemBenchmarkResult problemBenchmarkResult) {
         this.solverBenchmarkResult = solverBenchmarkResult;

@@ -77,7 +77,7 @@ public abstract class AbstractPhaseTest<Solution_, T> extends LoggingTest {
 
         Solution_ bestSolution = solver.solve(problem);
         assertSolution(bestSolution);
-        ScoreManager<Solution_> scoreManager = ScoreManager.create(solverFactory);
+        ScoreManager<Solution_, ?> scoreManager = ScoreManager.create(solverFactory);
         assertThat(scoreManager.updateScore(bestSolution)).isNotNull();
     }
 

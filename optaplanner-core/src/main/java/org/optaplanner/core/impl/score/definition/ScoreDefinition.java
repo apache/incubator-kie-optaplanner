@@ -18,11 +18,11 @@ package org.optaplanner.core.impl.score.definition;
 
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.buildin.hardsoft.HardSoftScore;
-import org.optaplanner.core.api.score.holder.ScoreHolder;
 import org.optaplanner.core.impl.score.ScoreUtils;
 import org.optaplanner.core.impl.score.buildin.hardsoft.HardSoftScoreDefinition;
-import org.optaplanner.core.impl.score.director.ScoreDirector;
+import org.optaplanner.core.impl.score.director.InnerScoreDirector;
 import org.optaplanner.core.impl.score.director.drools.DroolsScoreDirector;
+import org.optaplanner.core.impl.score.holder.AbstractScoreHolder;
 import org.optaplanner.core.impl.score.inliner.ScoreInliner;
 import org.optaplanner.core.impl.score.stream.bavet.BavetConstraintFactory;
 import org.optaplanner.core.impl.score.trend.InitializingScoreTrend;
@@ -32,8 +32,9 @@ import org.optaplanner.core.impl.score.trend.InitializingScoreTrend;
  *
  * @see AbstractScoreDefinition
  * @see HardSoftScoreDefinition
+ * @param <Score_> the {@link Score} type
  */
-public interface ScoreDefinition<S extends Score<S>> {
+public interface ScoreDefinition<Score_ extends Score<Score_>> {
 
     /**
      * Returns the label for {@link Score#getInitScore()}.
@@ -75,27 +76,27 @@ public interface ScoreDefinition<S extends Score<S>> {
      *
      * @return never null
      */
-    Class<S> getScoreClass();
+    Class<Score_> getScoreClass();
 
     /**
      * The score that represents zero.
      *
      * @return never null
      */
-    S getZeroScore();
+    Score_ getZeroScore();
 
     /**
      * The score that represents the softest possible one.
      *
      * @return never null
      */
-    S getOneSoftestScore();
+    Score_ getOneSoftestScore();
 
     /**
      * @param score never null
      * @return true if the score is higher or equal to {@link #getZeroScore()}
      */
-    default boolean isPositiveOrZero(S score) {
+    default boolean isPositiveOrZero(Score_ score) {
         return score.compareTo(getZeroScore()) >= 0;
     }
 
@@ -103,7 +104,7 @@ public interface ScoreDefinition<S extends Score<S>> {
      * @param score never null
      * @return true if the score is lower or equal to {@link #getZeroScore()}
      */
-    default boolean isNegativeOrZero(S score) {
+    default boolean isNegativeOrZero(Score_ score) {
         return score.compareTo(getZeroScore()) <= 0;
     }
 
@@ -114,7 +115,7 @@ public interface ScoreDefinition<S extends Score<S>> {
      * @return never null
      * @see #parseScore(String)
      */
-    String formatScore(S score);
+    String formatScore(Score_ score);
 
     /**
      * Parses the {@link String} and returns a {@link Score}.
@@ -124,7 +125,7 @@ public interface ScoreDefinition<S extends Score<S>> {
      * @see #formatScore(Score)
      * @see ScoreUtils#parseScore(Class, String)
      */
-    S parseScore(String scoreString);
+    Score_ parseScore(String scoreString);
 
     /**
      * The opposite of {@link Score#toLevelNumbers()}.
@@ -134,23 +135,23 @@ public interface ScoreDefinition<S extends Score<S>> {
      * @param levelNumbers never null
      * @return never null
      */
-    S fromLevelNumbers(int initScore, Number[] levelNumbers);
+    Score_ fromLevelNumbers(int initScore, Number[] levelNumbers);
 
     /**
      * Used by {@link BavetConstraintFactory}
      *
-     * @param constraintMatchEnabled true if {@link ScoreDirector#isConstraintMatchEnabled()} should be true
+     * @param constraintMatchEnabled true if {@link InnerScoreDirector#isConstraintMatchEnabled()} should be true
      * @return never null
      */
-    ScoreInliner<S> buildScoreInliner(boolean constraintMatchEnabled);
+    ScoreInliner<Score_> buildScoreInliner(boolean constraintMatchEnabled);
 
     /**
      * Used by {@link DroolsScoreDirector}.
      *
-     * @param constraintMatchEnabled true if {@link ScoreDirector#isConstraintMatchEnabled()} should be true
+     * @param constraintMatchEnabled true if{@link InnerScoreDirector#isConstraintMatchEnabled()} should be true
      * @return never null
      */
-    ScoreHolder<S> buildScoreHolder(boolean constraintMatchEnabled);
+    AbstractScoreHolder<Score_> buildScoreHolder(boolean constraintMatchEnabled);
 
     /**
      * Builds a {@link Score} which is equal or better than any other {@link Score} with more variables initialized
@@ -161,7 +162,7 @@ public interface ScoreDefinition<S extends Score<S>> {
      * @param score never null, with {@link Score#getInitScore()} {@code 0}.
      * @return never null
      */
-    S buildOptimisticBound(InitializingScoreTrend initializingScoreTrend, S score);
+    Score_ buildOptimisticBound(InitializingScoreTrend initializingScoreTrend, Score_ score);
 
     /**
      * Builds a {@link Score} which is equal or worse than any other {@link Score} with more variables initialized
@@ -172,7 +173,7 @@ public interface ScoreDefinition<S extends Score<S>> {
      * @param score never null, with {@link Score#getInitScore()} {@code 0}
      * @return never null
      */
-    S buildPessimisticBound(InitializingScoreTrend initializingScoreTrend, S score);
+    Score_ buildPessimisticBound(InitializingScoreTrend initializingScoreTrend, Score_ score);
 
     /**
      * Return {@link Score} whose every level is the result of dividing the matching levels in this and the divisor.
@@ -183,7 +184,7 @@ public interface ScoreDefinition<S extends Score<S>> {
      * @param divisor value by which this Score is to be divided
      * @return this / divisor
      */
-    S divideBySanitizedDivisor(S dividend, S divisor);
+    Score_ divideBySanitizedDivisor(Score_ dividend, Score_ divisor);
 
     /**
      * @param score never null

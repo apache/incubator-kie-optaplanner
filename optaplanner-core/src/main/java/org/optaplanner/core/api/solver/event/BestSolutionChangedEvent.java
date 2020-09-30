@@ -20,8 +20,8 @@ import java.util.EventObject;
 
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.score.Score;
+import org.optaplanner.core.api.solver.ProblemFactChange;
 import org.optaplanner.core.api.solver.Solver;
-import org.optaplanner.core.impl.solver.ProblemFactChange;
 
 /**
  * Delivered when the {@link PlanningSolution best solution} changes during solving.
@@ -91,15 +91,6 @@ public class BestSolutionChangedEvent<Solution_> extends EventObject {
      */
     public boolean isEveryProblemFactChangeProcessed() {
         return solver.isEveryProblemFactChangeProcessed();
-    }
-
-    /**
-     * @return true if all the planning entities have planning variables that are initialized.
-     * @deprecated Use {@link #getNewBestScore()}'s {@link Score#isSolutionInitialized()} instead. Will be removed in 8.0.
-     */
-    @Deprecated
-    public boolean isNewBestSolutionInitialized() {
-        return newBestScore.isSolutionInitialized();
     }
 
 }

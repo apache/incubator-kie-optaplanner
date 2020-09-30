@@ -1,5 +1,5 @@
 /*
- * Copyright 2011 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -34,33 +34,33 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
-import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadFactory;
 import java.util.regex.Pattern;
 
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
+import javax.xml.bind.annotation.XmlType;
+
 import org.optaplanner.benchmark.api.PlannerBenchmark;
 import org.optaplanner.benchmark.api.PlannerBenchmarkFactory;
 import org.optaplanner.benchmark.config.blueprint.SolverBenchmarkBluePrintConfig;
 import org.optaplanner.benchmark.config.report.BenchmarkReportConfig;
 import org.optaplanner.benchmark.impl.DefaultPlannerBenchmark;
+import org.optaplanner.benchmark.impl.io.PlannerBenchmarkConfigIO;
 import org.optaplanner.benchmark.impl.report.BenchmarkReport;
 import org.optaplanner.benchmark.impl.result.PlannerBenchmarkResult;
-import org.optaplanner.core.config.SolverConfigContext;
 import org.optaplanner.core.config.solver.SolverConfig;
 import org.optaplanner.core.config.util.ConfigUtils;
-import org.optaplanner.core.impl.solver.io.XStreamConfigReader;
+import org.optaplanner.core.impl.io.OptaPlannerXmlSerializationException;
 import org.optaplanner.core.impl.solver.thread.DefaultSolverThreadFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import com.thoughtworks.xstream.XStream;
-import com.thoughtworks.xstream.annotations.XStreamAlias;
-import com.thoughtworks.xstream.annotations.XStreamImplicit;
-import com.thoughtworks.xstream.annotations.XStreamOmitField;
-import com.thoughtworks.xstream.converters.ConversionException;
 
 import freemarker.template.Configuration;
 import freemarker.template.Template;
@@ -70,8 +70,27 @@ import freemarker.template.TemplateException;
  * To read it from XML, use {@link #createFromXmlResource(String)}.
  * To build a {@link PlannerBenchmarkFactory} with it, use {@link PlannerBenchmarkFactory#create(PlannerBenchmarkConfig)}.
  */
-@XStreamAlias("plannerBenchmark")
+@XmlAccessorType(XmlAccessType.FIELD)
+@XmlRootElement(name = PlannerBenchmarkConfig.XML_ELEMENT_NAME)
+@XmlType(propOrder = {
+        "name",
+        "benchmarkDirectory",
+        "threadFactoryClass",
+        "parallelBenchmarkCount",
+        "warmUpMillisecondsSpentLimit",
+        "warmUpSecondsSpentLimit",
+        "warmUpMinutesSpentLimit",
+        "warmUpHoursSpentLimit",
+        "warmUpDaysSpentLimit",
+        "benchmarkReportConfig",
+        "inheritedSolverBenchmarkConfig",
+        "solverBenchmarkBluePrintConfigList",
+        "solverBenchmarkConfigList"
+})
 public class PlannerBenchmarkConfig {
+    public static final String SOLVER_NAMESPACE_PREFIX = "solver";
+    public static final String XML_ELEMENT_NAME = "plannerBenchmark";
+    public static final String XML_NAMESPACE = "https://www.optaplanner.org/xsd/benchmark";
 
     // ************************************************************************
     // Static creation methods: SolverConfig
@@ -125,7 +144,7 @@ public class PlannerBenchmarkConfig {
      * @return never null
      */
     public static PlannerBenchmarkConfig createFromXmlResource(String benchmarkConfigResource, ClassLoader classLoader) {
-        ClassLoader actualClassLoader = classLoader != null ? classLoader : PlannerBenchmarkConfig.class.getClassLoader();
+        ClassLoader actualClassLoader = classLoader != null ? classLoader : Thread.currentThread().getContextClassLoader();
         try (InputStream in = actualClassLoader.getResourceAsStream(benchmarkConfigResource)) {
             if (in == null) {
                 String errorMessage = "The benchmarkConfigResource (" + benchmarkConfigResource
@@ -138,17 +157,11 @@ public class PlannerBenchmarkConfig {
                 throw new IllegalArgumentException(errorMessage);
             }
             return createFromXmlInputStream(in, classLoader);
-        } catch (ConversionException e) {
-            String lineNumber = e.get("line number");
+        } catch (OptaPlannerXmlSerializationException e) {
             throw new IllegalArgumentException("Unmarshalling of benchmarkConfigResource (" + benchmarkConfigResource
-                    + ") fails on line number (" + lineNumber + ")."
-                    + (Objects.equals(e.get("required-type"), "java.lang.Class")
-                            ? "\n  Maybe the classname on line number (" + lineNumber
-                                    + ") is surrounded by whitespace, which is invalid."
-                            : ""),
-                    e);
+                    + ") fails.", e);
         } catch (IOException e) {
-            throw new IllegalArgumentException("Reading the benchmarkConfigResource (" + benchmarkConfigResource + ") failed.",
+            throw new IllegalArgumentException("Reading the benchmarkConfigResource (" + benchmarkConfigResource + ") fails.",
                     e);
         }
     }
@@ -177,11 +190,12 @@ public class PlannerBenchmarkConfig {
     public static PlannerBenchmarkConfig createFromXmlFile(File benchmarkConfigFile, ClassLoader classLoader) {
         try (InputStream in = new FileInputStream(benchmarkConfigFile)) {
             return createFromXmlInputStream(in, classLoader);
+        } catch (OptaPlannerXmlSerializationException e) {
+            throw new IllegalArgumentException("Unmarshalling the benchmarkConfigFile (" + benchmarkConfigFile + ") fails.", e);
         } catch (FileNotFoundException e) {
-            throw new IllegalArgumentException("The benchmarkConfigFile (" + benchmarkConfigFile
-                    + ") was not found.", e);
+            throw new IllegalArgumentException("The benchmarkConfigFile (" + benchmarkConfigFile + ") was not found.", e);
         } catch (IOException e) {
-            throw new IllegalArgumentException("Reading the benchmarkConfigFile (" + benchmarkConfigFile + ") failed.", e);
+            throw new IllegalArgumentException("Reading the benchmarkConfigFile (" + benchmarkConfigFile + ") fails.", e);
         }
     }
 
@@ -205,7 +219,7 @@ public class PlannerBenchmarkConfig {
         } catch (UnsupportedEncodingException e) {
             throw new IllegalStateException("This vm does not support the charset (" + StandardCharsets.UTF_8 + ").", e);
         } catch (IOException e) {
-            throw new IllegalArgumentException("Reading failed.", e);
+            throw new IllegalArgumentException("Reading fails.", e);
         }
     }
 
@@ -224,8 +238,8 @@ public class PlannerBenchmarkConfig {
      * @return never null
      */
     public static PlannerBenchmarkConfig createFromXmlReader(Reader reader, ClassLoader classLoader) {
-        XStream xStream = XStreamConfigReader.buildXStreamPortable(classLoader, PlannerBenchmarkConfig.class);
-        Object benchmarkConfigObject = xStream.fromXML(reader);
+        PlannerBenchmarkConfigIO xmlIO = new PlannerBenchmarkConfigIO();
+        Object benchmarkConfigObject = xmlIO.read(reader);
         if (!(benchmarkConfigObject instanceof PlannerBenchmarkConfig)) {
             throw new IllegalArgumentException("The " + PlannerBenchmarkConfig.class.getSimpleName()
                     + "'s XML root element resolves to a different type ("
@@ -288,7 +302,7 @@ public class PlannerBenchmarkConfig {
      */
     public static PlannerBenchmarkConfig createFromFreemarkerXmlResource(String templateResource, Object model,
             ClassLoader classLoader) {
-        ClassLoader actualClassLoader = classLoader != null ? classLoader : PlannerBenchmarkConfig.class.getClassLoader();
+        ClassLoader actualClassLoader = classLoader != null ? classLoader : Thread.currentThread().getContextClassLoader();
         try (InputStream templateIn = actualClassLoader.getResourceAsStream(templateResource)) {
             if (templateIn == null) {
                 String errorMessage = "The templateResource (" + templateResource
@@ -302,7 +316,7 @@ public class PlannerBenchmarkConfig {
             }
             return createFromFreemarkerXmlInputStream(templateIn, model, classLoader);
         } catch (IOException e) {
-            throw new IllegalArgumentException("Reading the templateResource (" + templateResource + ") failed.", e);
+            throw new IllegalArgumentException("Reading the templateResource (" + templateResource + ") fails.", e);
         }
     }
 
@@ -357,7 +371,7 @@ public class PlannerBenchmarkConfig {
         } catch (FileNotFoundException e) {
             throw new IllegalArgumentException("The templateFile (" + templateFile + ") was not found.", e);
         } catch (IOException e) {
-            throw new IllegalArgumentException("Reading the templateFile (" + templateFile + ") failed.", e);
+            throw new IllegalArgumentException("Reading the templateFile (" + templateFile + ") fails.", e);
         }
     }
 
@@ -408,7 +422,7 @@ public class PlannerBenchmarkConfig {
         } catch (UnsupportedEncodingException e) {
             throw new IllegalStateException("This vm does not support the charset (" + StandardCharsets.UTF_8 + ").", e);
         } catch (IOException e) {
-            throw new IllegalArgumentException("Reading failed.", e);
+            throw new IllegalArgumentException("Reading fails.", e);
         }
     }
 
@@ -491,7 +505,7 @@ public class PlannerBenchmarkConfig {
 
     private static final Logger logger = LoggerFactory.getLogger(PlannerBenchmarkConfig.class);
 
-    @XStreamOmitField
+    @XmlTransient
     private ClassLoader classLoader = null;
 
     private String name = null;
@@ -505,15 +519,16 @@ public class PlannerBenchmarkConfig {
     private Long warmUpHoursSpentLimit = null;
     private Long warmUpDaysSpentLimit = null;
 
-    @XStreamAlias("benchmarkReport")
+    @XmlElement(name = "benchmarkReport")
     private BenchmarkReportConfig benchmarkReportConfig = null;
 
-    @XStreamAlias("inheritedSolverBenchmark")
+    @XmlElement(name = "inheritedSolverBenchmark")
     private SolverBenchmarkConfig inheritedSolverBenchmarkConfig = null;
 
-    @XStreamImplicit(itemFieldName = "solverBenchmarkBluePrint")
+    @XmlElement(name = "solverBenchmarkBluePrint")
     private List<SolverBenchmarkBluePrintConfig> solverBenchmarkBluePrintConfigList = null;
-    @XStreamImplicit(itemFieldName = "solverBenchmark")
+
+    @XmlElement(name = "solverBenchmark")
     private List<SolverBenchmarkConfig> solverBenchmarkConfigList = null;
 
     // ************************************************************************
@@ -570,8 +585,7 @@ public class PlannerBenchmarkConfig {
      * <p>
      * If there aren't enough processors available, it will be decreased.
      *
-     * @return null, a number, {@value #PARALLEL_BENCHMARK_COUNT_AUTO} or a JavaScript calculation using
-     *         {@value org.optaplanner.core.config.util.ConfigUtils#AVAILABLE_PROCESSOR_COUNT}.
+     * @return null, a number or {@value #PARALLEL_BENCHMARK_COUNT_AUTO}.
      */
     public String getParallelBenchmarkCount() {
         return parallelBenchmarkCount;
@@ -663,11 +677,10 @@ public class PlannerBenchmarkConfig {
      * <p>
      * Will be removed in 8.0.
      *
-     * @param solverConfigContext never null
      * @return never null
      */
-    public PlannerBenchmark buildPlannerBenchmark(SolverConfigContext solverConfigContext) {
-        return buildPlannerBenchmark(solverConfigContext, new Object[0]);
+    public PlannerBenchmark buildPlannerBenchmark() {
+        return buildPlannerBenchmark(new Object[0]);
     }
 
     /**
@@ -676,12 +689,10 @@ public class PlannerBenchmarkConfig {
      * <p>
      * Will be removed in 8.0.
      *
-     * @param solverConfigContext never null
      * @param extraProblems never null
      * @return never null
      */
-    public <Solution_> PlannerBenchmark buildPlannerBenchmark(SolverConfigContext solverConfigContext,
-            Solution_[] extraProblems) {
+    public <Solution_> PlannerBenchmark buildPlannerBenchmark(Solution_[] extraProblems) {
         validate();
         generateSolverBenchmarkConfigNames();
         List<SolverBenchmarkConfig> effectiveSolverBenchmarkConfigList = buildEffectiveSolverBenchmarkConfigList();
@@ -696,14 +707,14 @@ public class PlannerBenchmarkConfig {
         plannerBenchmarkResult.setSolverBenchmarkResultList(new ArrayList<>(
                 effectiveSolverBenchmarkConfigList.size()));
         for (SolverBenchmarkConfig solverBenchmarkConfig : effectiveSolverBenchmarkConfigList) {
-            solverBenchmarkConfig.buildSolverBenchmark(solverConfigContext, classLoader, plannerBenchmarkResult, extraProblems);
+            solverBenchmarkConfig.buildSolverBenchmark(classLoader, plannerBenchmarkResult, extraProblems);
         }
 
         BenchmarkReportConfig benchmarkReportConfig_ = benchmarkReportConfig == null ? new BenchmarkReportConfig()
                 : benchmarkReportConfig;
         BenchmarkReport benchmarkReport = benchmarkReportConfig_.buildBenchmarkReport(plannerBenchmarkResult);
         return new DefaultPlannerBenchmark(
-                plannerBenchmarkResult, solverConfigContext, benchmarkDirectory,
+                plannerBenchmarkResult, benchmarkDirectory,
                 buildExecutorService(parallelBenchmarkCount), buildExecutorService(parallelBenchmarkCount),
                 benchmarkReport);
     }
@@ -795,8 +806,8 @@ public class PlannerBenchmarkConfig {
         } else if (parallelBenchmarkCount.equals(PARALLEL_BENCHMARK_COUNT_AUTO)) {
             resolvedParallelBenchmarkCount = resolveParallelBenchmarkCountAutomatically(availableProcessorCount);
         } else {
-            resolvedParallelBenchmarkCount = ConfigUtils.resolveThreadPoolSizeScript(
-                    "parallelBenchmarkCount", parallelBenchmarkCount, PARALLEL_BENCHMARK_COUNT_AUTO);
+            resolvedParallelBenchmarkCount = ConfigUtils.resolvePoolSize("parallelBenchmarkCount",
+                    parallelBenchmarkCount, PARALLEL_BENCHMARK_COUNT_AUTO);
         }
         if (resolvedParallelBenchmarkCount < 1) {
             throw new IllegalArgumentException("The parallelBenchmarkCount (" + parallelBenchmarkCount

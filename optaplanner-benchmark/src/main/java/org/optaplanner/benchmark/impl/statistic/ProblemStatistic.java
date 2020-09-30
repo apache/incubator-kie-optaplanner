@@ -20,6 +20,11 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlSeeAlso;
+import javax.xml.bind.annotation.XmlTransient;
+
 import org.jfree.chart.JFreeChart;
 import org.optaplanner.benchmark.config.statistic.ProblemStatisticType;
 import org.optaplanner.benchmark.impl.report.BenchmarkReport;
@@ -37,13 +42,11 @@ import org.optaplanner.benchmark.impl.statistic.stepscore.StepScoreProblemStatis
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.thoughtworks.xstream.annotations.XStreamInclude;
-import com.thoughtworks.xstream.annotations.XStreamOmitField;
-
 /**
  * 1 statistic of {@link ProblemBenchmarkResult}.
  */
-@XStreamInclude({
+@XmlAccessorType(XmlAccessType.FIELD)
+@XmlSeeAlso({
         BestScoreProblemStatistic.class,
         StepScoreProblemStatistic.class,
         ScoreCalculationSpeedProblemStatistic.class,
@@ -55,7 +58,7 @@ public abstract class ProblemStatistic {
 
     protected final transient Logger logger = LoggerFactory.getLogger(getClass());
 
-    @XStreamOmitField // Bi-directional relationship restored through BenchmarkResultIO
+    @XmlTransient // Bi-directional relationship restored through BenchmarkResultIO
     protected ProblemBenchmarkResult<Object> problemBenchmarkResult;
 
     protected final ProblemStatisticType problemStatisticType;
@@ -65,6 +68,10 @@ public abstract class ProblemStatistic {
     // ************************************************************************
 
     protected List<String> warningList = null;
+
+    public ProblemStatistic() {
+        problemStatisticType = null;
+    }
 
     protected ProblemStatistic(ProblemBenchmarkResult problemBenchmarkResult, ProblemStatisticType problemStatisticType) {
         this.problemBenchmarkResult = problemBenchmarkResult;

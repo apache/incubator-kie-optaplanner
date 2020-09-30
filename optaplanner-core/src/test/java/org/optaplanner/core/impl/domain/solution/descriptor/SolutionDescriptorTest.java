@@ -24,23 +24,21 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.junit.jupiter.api.Test;
+import org.optaplanner.core.api.solver.Solver;
 import org.optaplanner.core.api.solver.SolverFactory;
 import org.optaplanner.core.impl.testdata.domain.TestdataEntity;
 import org.optaplanner.core.impl.testdata.domain.TestdataObject;
 import org.optaplanner.core.impl.testdata.domain.TestdataValue;
 import org.optaplanner.core.impl.testdata.domain.collection.TestdataArrayBasedSolution;
 import org.optaplanner.core.impl.testdata.domain.collection.TestdataSetBasedSolution;
-import org.optaplanner.core.impl.testdata.domain.deprecated.TestdataAnnotatedWithDeprecatedAnnotationsSolution;
 import org.optaplanner.core.impl.testdata.domain.extended.TestdataAnnotatedExtendedSolution;
 import org.optaplanner.core.impl.testdata.domain.extended.TestdataUnannotatedExtendedEntity;
-import org.optaplanner.core.impl.testdata.domain.extended.abstractsolution.TestdataExtendedAbstractSolution;
-import org.optaplanner.core.impl.testdata.domain.extended.abstractsolution.TestdataScoreGetterOverrideExtendedAbstractSolution;
-import org.optaplanner.core.impl.testdata.domain.extended.legacysolution.TestdataLegacySolution;
 import org.optaplanner.core.impl.testdata.domain.reflect.generic.TestdataGenericEntity;
 import org.optaplanner.core.impl.testdata.domain.reflect.generic.TestdataGenericSolution;
 import org.optaplanner.core.impl.testdata.domain.solutionproperties.TestdataNoProblemFactPropertySolution;
 import org.optaplanner.core.impl.testdata.domain.solutionproperties.TestdataProblemFactPropertySolution;
 import org.optaplanner.core.impl.testdata.domain.solutionproperties.TestdataReadMethodProblemFactCollectionPropertySolution;
+import org.optaplanner.core.impl.testdata.domain.solutionproperties.TestdataWildcardSolution;
 import org.optaplanner.core.impl.testdata.domain.solutionproperties.autodiscover.TestdataAutoDiscoverFieldOverrideSolution;
 import org.optaplanner.core.impl.testdata.domain.solutionproperties.autodiscover.TestdataAutoDiscoverFieldSolution;
 import org.optaplanner.core.impl.testdata.domain.solutionproperties.autodiscover.TestdataAutoDiscoverGetterOverrideSolution;
@@ -53,7 +51,7 @@ import org.optaplanner.core.impl.testdata.domain.solutionproperties.invalid.Test
 import org.optaplanner.core.impl.testdata.domain.solutionproperties.invalid.TestdataProblemFactCollectionPropertyWithArgumentSolution;
 import org.optaplanner.core.impl.testdata.domain.solutionproperties.invalid.TestdataProblemFactIsPlanningEntityCollectionPropertySolution;
 import org.optaplanner.core.impl.testdata.domain.solutionproperties.invalid.TestdataUnknownFactTypeSolution;
-import org.optaplanner.core.impl.testdata.domain.solutionproperties.invalid.TestdataUnsupportedFactTypeSolution;
+import org.optaplanner.core.impl.testdata.domain.solutionproperties.invalid.TestdataUnsupportedWildcardSolution;
 import org.optaplanner.core.impl.testdata.util.CodeAssertableArrayList;
 import org.optaplanner.core.impl.testdata.util.PlannerTestUtils;
 
@@ -112,6 +110,29 @@ public class SolutionDescriptorTest {
     }
 
     @Test
+    public void wildcardProblemFactAndEntityProperties() {
+        SolutionDescriptor<TestdataWildcardSolution> solutionDescriptor = TestdataWildcardSolution
+                .buildSolutionDescriptor();
+        assertThat(solutionDescriptor.getProblemFactMemberAccessorMap()).containsOnlyKeys();
+        assertThat(solutionDescriptor.getProblemFactCollectionMemberAccessorMap()).containsOnlyKeys("extendsValueList",
+                "supersValueList");
+        assertThat(solutionDescriptor.getEntityMemberAccessorMap()).containsOnlyKeys();
+        assertThat(solutionDescriptor.getEntityCollectionMemberAccessorMap()).containsOnlyKeys("extendsEntityList");
+    }
+
+    @Test
+    public void wildcardSupersEntityListProperty() {
+        SolverFactory<TestdataUnsupportedWildcardSolution> solverFactory = PlannerTestUtils.buildSolverFactory(
+                TestdataUnsupportedWildcardSolution.class, TestdataEntity.class);
+        Solver<TestdataUnsupportedWildcardSolution> solver = solverFactory.buildSolver();
+        TestdataUnsupportedWildcardSolution solution = new TestdataUnsupportedWildcardSolution();
+        solution.setValueList(Arrays.asList(new TestdataValue("v1")));
+        solution.setSupersEntityList(Arrays.asList(new TestdataEntity("e1"), new TestdataValue("v2")));
+        // TODO Ideally, this already fails fast on buildSolverFactory
+        assertThatIllegalArgumentException().isThrownBy(() -> solver.solve(solution));
+    }
+
+    @Test
     public void noProblemFactPropertyWithEasyScoreCalculation() {
         SolverFactory<TestdataNoProblemFactPropertySolution> solverFactory = PlannerTestUtils.buildSolverFactory(
                 TestdataNoProblemFactPropertySolution.class, TestdataEntity.class);
@@ -131,17 +152,6 @@ public class SolutionDescriptorTest {
         SolutionDescriptor<TestdataAnnotatedExtendedSolution> solutionDescriptor = TestdataAnnotatedExtendedSolution
                 .buildExtendedSolutionDescriptor();
         assertThat(solutionDescriptor.getProblemFactMemberAccessorMap()).containsOnlyKeys();
-        assertThat(solutionDescriptor.getProblemFactCollectionMemberAccessorMap()).containsOnlyKeys("valueList",
-                "subValueList");
-        assertThat(solutionDescriptor.getEntityMemberAccessorMap()).containsOnlyKeys();
-        assertThat(solutionDescriptor.getEntityCollectionMemberAccessorMap()).containsOnlyKeys("entityList", "subEntityList");
-    }
-
-    @Test
-    public void deprecated() {
-        SolutionDescriptor<TestdataAnnotatedWithDeprecatedAnnotationsSolution> solutionDescriptor =
-                TestdataAnnotatedWithDeprecatedAnnotationsSolution.buildExtendedSolutionDescriptor();
-        assertThat(solutionDescriptor.getProblemFactMemberAccessorMap()).containsOnlyKeys("value");
         assertThat(solutionDescriptor.getProblemFactCollectionMemberAccessorMap()).containsOnlyKeys("valueList",
                 "subValueList");
         assertThat(solutionDescriptor.getEntityMemberAccessorMap()).containsOnlyKeys();
@@ -180,54 +190,8 @@ public class SolutionDescriptorTest {
     }
 
     // ************************************************************************
-    // Inheritance
-    // ************************************************************************
-
-    @Test
-    @Deprecated
-    public void extendedAbstractSolution() {
-        SolutionDescriptor<TestdataExtendedAbstractSolution> solutionDescriptor = TestdataExtendedAbstractSolution
-                .buildSolutionDescriptor();
-        assertThat(solutionDescriptor.getProblemFactMemberAccessorMap()).containsOnlyKeys();
-        assertThat(solutionDescriptor.getProblemFactCollectionMemberAccessorMap()).containsOnlyKeys("problemFactList");
-        assertThat(solutionDescriptor.getEntityMemberAccessorMap()).containsOnlyKeys();
-        assertThat(solutionDescriptor.getEntityCollectionMemberAccessorMap()).containsOnlyKeys("entityList");
-
-        TestdataExtendedAbstractSolution solution = new TestdataExtendedAbstractSolution();
-        solution.setValueList(Arrays.asList(new TestdataValue("v1"), new TestdataValue("v2")));
-        solution.setExtraObject(new TestdataValue("extra"));
-        solution.setEntityList(Arrays.asList(new TestdataEntity("e1"), new TestdataEntity("e2")));
-
-        assertAllCodesOfCollection(solutionDescriptor.getAllFacts(solution), "e1", "e2", "extra", "v1", "v2");
-    }
-
-    @Test
-    @Deprecated
-    public void extendedAbstractSolutionOverridesGetScore() {
-        SolutionDescriptor<TestdataScoreGetterOverrideExtendedAbstractSolution> solutionDescriptor =
-                TestdataScoreGetterOverrideExtendedAbstractSolution.buildSolutionDescriptor();
-        assertThat(solutionDescriptor.getProblemFactMemberAccessorMap()).containsOnlyKeys();
-        assertThat(solutionDescriptor.getProblemFactCollectionMemberAccessorMap()).containsOnlyKeys("problemFactList");
-        assertThat(solutionDescriptor.getEntityMemberAccessorMap()).containsOnlyKeys();
-        assertThat(solutionDescriptor.getEntityCollectionMemberAccessorMap()).containsOnlyKeys("entityList");
-
-        TestdataScoreGetterOverrideExtendedAbstractSolution solution =
-                new TestdataScoreGetterOverrideExtendedAbstractSolution();
-        solution.setValueList(Arrays.asList(new TestdataValue("v1"), new TestdataValue("v2")));
-        solution.setExtraObject(new TestdataValue("extra"));
-        solution.setEntityList(Arrays.asList(new TestdataEntity("e1"), new TestdataEntity("e2")));
-
-        assertAllCodesOfCollection(solutionDescriptor.getAllFacts(solution), "e1", "e2", "extra", "v1", "v2");
-    }
-
-    // ************************************************************************
     // Autodiscovery
     // ************************************************************************
-
-    @Test
-    public void autoDiscoverProblemFactCollectionPropertyElementTypeUnsupported() {
-        assertThatIllegalArgumentException().isThrownBy(TestdataUnsupportedFactTypeSolution::buildSolutionDescriptor);
-    }
 
     @Test
     public void autoDiscoverProblemFactCollectionPropertyElementTypeUnknown() {
@@ -364,20 +328,6 @@ public class SolutionDescriptorTest {
                 "s1", singleProblemFact, listAsSingleProblemFact, entityList, otherEntity);
 
         assertAllCodesOfCollection(solutionDescriptor.getAllFacts(solution), "otherE1", "f1", "p1", "e1", "e2");
-    }
-
-    // ************************************************************************
-    // Legacy
-    // ************************************************************************
-
-    @Test
-    @Deprecated
-    public void legacySolution() {
-        SolutionDescriptor<TestdataLegacySolution> solutionDescriptor = TestdataLegacySolution.buildSolutionDescriptor();
-        assertThat(solutionDescriptor.getProblemFactMemberAccessorMap()).containsOnlyKeys();
-        assertThat(solutionDescriptor.getProblemFactCollectionMemberAccessorMap()).containsOnlyKeys("problemFacts");
-        assertThat(solutionDescriptor.getEntityMemberAccessorMap()).containsOnlyKeys();
-        assertThat(solutionDescriptor.getEntityCollectionMemberAccessorMap()).containsOnlyKeys("entityList");
     }
 
 }

@@ -16,12 +16,11 @@
 
 package org.optaplanner.benchmark.impl.loader;
 
+import javax.xml.bind.annotation.XmlSeeAlso;
+
 import org.optaplanner.benchmark.config.ProblemBenchmarksConfig;
 import org.optaplanner.benchmark.impl.result.SubSingleBenchmarkResult;
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
-
-import com.thoughtworks.xstream.annotations.XStreamAlias;
-import com.thoughtworks.xstream.annotations.XStreamInclude;
 
 /**
  * Subclasses need to implement {@link Object#equals(Object) equals()} and {@link Object#hashCode() hashCode()}
@@ -29,8 +28,7 @@ import com.thoughtworks.xstream.annotations.XStreamInclude;
  *
  * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
  */
-@XStreamAlias("problemProvider")
-@XStreamInclude({
+@XmlSeeAlso({
         InstanceProblemProvider.class,
         FileProblemProvider.class
 })

@@ -31,7 +31,7 @@ import org.optaplanner.core.impl.phase.scope.AbstractStepScope;
 import org.optaplanner.core.impl.score.director.InnerScoreDirector;
 import org.optaplanner.core.impl.solver.DefaultSolver;
 import org.optaplanner.core.impl.solver.recaller.BestSolutionRecaller;
-import org.optaplanner.core.impl.solver.scope.DefaultSolverScope;
+import org.optaplanner.core.impl.solver.scope.SolverScope;
 import org.optaplanner.core.impl.solver.termination.Termination;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -110,7 +110,7 @@ public abstract class AbstractPhase<Solution_> implements Phase<Solution_> {
     // ************************************************************************
 
     @Override
-    public void solvingStarted(DefaultSolverScope<Solution_> solverScope) {
+    public void solvingStarted(SolverScope<Solution_> solverScope) {
         // bestSolutionRecaller.solvingStarted(...) is called by DefaultSolver
         // solverPhaseLifecycleSupport.solvingStarted(...) is called by DefaultSolver
         termination.solvingStarted(solverScope);
@@ -118,7 +118,7 @@ public abstract class AbstractPhase<Solution_> implements Phase<Solution_> {
     }
 
     @Override
-    public void solvingEnded(DefaultSolverScope<Solution_> solverScope) {
+    public void solvingEnded(SolverScope<Solution_> solverScope) {
         // bestSolutionRecaller.solvingEnded(...) is called by DefaultSolver
         // solverPhaseLifecycleSupport.solvingEnded(...) is called by DefaultSolver
         termination.solvingEnded(solverScope);
@@ -143,30 +143,32 @@ public abstract class AbstractPhase<Solution_> implements Phase<Solution_> {
         phaseLifecycleSupport.fireStepStarted(stepScope);
     }
 
-    protected void calculateWorkingStepScore(AbstractStepScope<Solution_> stepScope, Object completedAction) {
+    protected <Score_ extends Score<Score_>> void calculateWorkingStepScore(AbstractStepScope<Solution_> stepScope,
+            Object completedAction) {
         AbstractPhaseScope<Solution_> phaseScope = stepScope.getPhaseScope();
-        Score score = phaseScope.calculateScore();
+        Score_ score = phaseScope.calculateScore();
         stepScope.setScore(score);
         if (assertStepScoreFromScratch) {
-            phaseScope.assertWorkingScoreFromScratch(stepScope.getScore(), completedAction);
+            phaseScope.assertWorkingScoreFromScratch((Score_) stepScope.getScore(), completedAction);
         }
         if (assertShadowVariablesAreNotStaleAfterStep) {
-            phaseScope.assertShadowVariablesAreNotStale(stepScope.getScore(), completedAction);
+            phaseScope.assertShadowVariablesAreNotStale((Score_) stepScope.getScore(), completedAction);
         }
     }
 
-    protected void predictWorkingStepScore(AbstractStepScope<Solution_> stepScope, Object completedAction) {
+    protected <Score_ extends Score<Score_>> void predictWorkingStepScore(AbstractStepScope<Solution_> stepScope,
+            Object completedAction) {
         AbstractPhaseScope<Solution_> phaseScope = stepScope.getPhaseScope();
         // There is no need to recalculate the score, but we still need to set it
         phaseScope.getSolutionDescriptor().setScore(phaseScope.getWorkingSolution(), stepScope.getScore());
         if (assertStepScoreFromScratch) {
-            phaseScope.assertPredictedScoreFromScratch(stepScope.getScore(), completedAction);
+            phaseScope.assertPredictedScoreFromScratch((Score_) stepScope.getScore(), completedAction);
         }
         if (assertExpectedStepScore) {
-            phaseScope.assertExpectedWorkingScore(stepScope.getScore(), completedAction);
+            phaseScope.assertExpectedWorkingScore((Score_) stepScope.getScore(), completedAction);
         }
         if (assertShadowVariablesAreNotStaleAfterStep) {
-            phaseScope.assertShadowVariablesAreNotStale(stepScope.getScore(), completedAction);
+            phaseScope.assertShadowVariablesAreNotStale((Score_) stepScope.getScore(), completedAction);
         }
     }
 
@@ -202,7 +204,7 @@ public abstract class AbstractPhase<Solution_> implements Phase<Solution_> {
 
     protected void assertWorkingSolutionInitialized(AbstractPhaseScope<Solution_> phaseScope) {
         if (!phaseScope.getStartingScore().isSolutionInitialized()) {
-            InnerScoreDirector<Solution_> scoreDirector = phaseScope.getScoreDirector();
+            InnerScoreDirector<Solution_, ?> scoreDirector = phaseScope.getScoreDirector();
             SolutionDescriptor<Solution_> solutionDescriptor = scoreDirector.getSolutionDescriptor();
             Solution_ workingSolution = scoreDirector.getWorkingSolution();
             for (Iterator<Object> it = solutionDescriptor.extractAllEntitiesIterator(workingSolution); it.hasNext();) {

@@ -1,3 +1,19 @@
+/*
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package org.optaplanner.examples.meetingscheduling.persistence;
 
 import static java.util.stream.Collectors.groupingBy;
@@ -46,7 +62,6 @@ import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.util.CellRangeAddress;
 import org.apache.poi.xssf.usermodel.XSSFCell;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
-import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.buildin.hardmediumsoft.HardMediumSoftScore;
 import org.optaplanner.core.api.score.constraint.ConstraintMatch;
 import org.optaplanner.core.api.score.constraint.Indictment;
@@ -77,7 +92,7 @@ public class MeetingSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<Meet
         }
     }
 
-    private static class MeetingSchedulingXlsxReader extends AbstractXlsxReader<MeetingSchedule> {
+    private static class MeetingSchedulingXlsxReader extends AbstractXlsxReader<MeetingSchedule, HardMediumSoftScore> {
 
         MeetingSchedulingXlsxReader(XSSFWorkbook workbook) {
             super(workbook, MeetingSchedulingApp.SOLVER_CONFIG);
@@ -483,7 +498,7 @@ public class MeetingSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<Meet
         }
     }
 
-    private class MeetingSchedulingXlsxWriter extends AbstractXlsxWriter<MeetingSchedule> {
+    private class MeetingSchedulingXlsxWriter extends AbstractXlsxWriter<MeetingSchedule, HardMediumSoftScore> {
 
         MeetingSchedulingXlsxWriter(MeetingSchedule solution) {
             super(solution, MeetingSchedulingApp.SOLVER_CONFIG);
@@ -916,7 +931,7 @@ public class MeetingSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<Meet
                     .map(constraintMatch -> (HardMediumSoftScore) constraintMatch.getScore())
                     // Filter out positive constraints
                     .filter(indictmentScore -> !(indictmentScore.getHardScore() >= 0 && indictmentScore.getSoftScore() >= 0))
-                    .reduce(Score::add).orElse(HardMediumSoftScore.ZERO);
+                    .reduce(HardMediumSoftScore::add).orElse(HardMediumSoftScore.ZERO);
 
             XSSFCell cell = getXSSFCellOfScore(score);
 
@@ -946,15 +961,15 @@ public class MeetingSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<Meet
                         .append(" minutes.\n")
                         .append("Room: ").append(meetingAssignment.getRoom().getName()).append("\n");
 
-                Indictment indictment = indictmentMap.get(meetingAssignment);
+                Indictment<HardMediumSoftScore> indictment = indictmentMap.get(meetingAssignment);
                 if (indictment != null) {
                     commentString.append("\n").append(indictment.getScore().toShortString())
                             .append(" total");
-                    Set<ConstraintMatch> constraintMatchSet = indictment.getConstraintMatchSet();
+                    Set<ConstraintMatch<HardMediumSoftScore>> constraintMatchSet = indictment.getConstraintMatchSet();
                     List<String> constraintNameList = constraintMatchSet.stream()
                             .map(ConstraintMatch::getConstraintName).distinct().collect(toList());
                     for (String constraintName : constraintNameList) {
-                        List<ConstraintMatch> filteredConstraintMatchList = constraintMatchSet.stream()
+                        List<ConstraintMatch<HardMediumSoftScore>> filteredConstraintMatchList = constraintMatchSet.stream()
                                 .filter(constraintMatch -> constraintMatch.getConstraintName().equals(constraintName))
                                 .collect(toList());
                         HardMediumSoftScore sum = filteredConstraintMatchList.stream()

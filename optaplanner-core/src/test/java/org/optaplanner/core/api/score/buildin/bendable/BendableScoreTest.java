@@ -23,7 +23,6 @@ import org.junit.jupiter.api.Test;
 import org.optaplanner.core.api.score.buildin.AbstractScoreTest;
 import org.optaplanner.core.impl.score.buildin.bendable.BendableScoreDefinition;
 import org.optaplanner.core.impl.testdata.util.PlannerAssert;
-import org.optaplanner.core.impl.testdata.util.PlannerTestUtils;
 
 public class BendableScoreTest extends AbstractScoreTest {
 
@@ -91,14 +90,6 @@ public class BendableScoreTest extends AbstractScoreTest {
         assertThat(initializedScore.getHardOrSoftScore(0)).isEqualTo(-5);
         assertThat(initializedScore.getHardOrSoftScore(1)).isEqualTo(-10);
         assertThat(initializedScore.getHardOrSoftScore(2)).isEqualTo(-200);
-    }
-
-    @Test
-    public void toInitializedScoreHSS() {
-        assertThat(scoreDefinitionHSS.createScore(-147, -258, -369).toInitializedScore())
-                .isEqualTo(scoreDefinitionHSS.createScore(-147, -258, -369));
-        assertThat(scoreDefinitionHSS.createScoreUninitialized(-7, -147, -258, -369).toInitializedScore())
-                .isEqualTo(scoreDefinitionHSS.createScore(-147, -258, -369));
     }
 
     @Test
@@ -306,25 +297,4 @@ public class BendableScoreTest extends AbstractScoreTest {
                 scoreDefinitionHHSSS.createScore(1, Integer.MIN_VALUE, -20, 0, 0),
                 scoreDefinitionHHSSS.createScore(1, -20, Integer.MIN_VALUE, 0, 0));
     }
-
-    @Test
-    public void serializeAndDeserialize() {
-        PlannerTestUtils.serializeAndDeserializeWithAll(
-                scoreDefinitionHSS.createScore(-12, 3400, -56),
-                output -> {
-                    assertThat(output.getInitScore()).isEqualTo(0);
-                    assertThat(output.getHardScore(0)).isEqualTo(-12);
-                    assertThat(output.getSoftScore(0)).isEqualTo(3400);
-                    assertThat(output.getSoftScore(1)).isEqualTo(-56);
-                });
-        PlannerTestUtils.serializeAndDeserializeWithAll(
-                scoreDefinitionHSS.createScoreUninitialized(-7, -12, 3400, -56),
-                output -> {
-                    assertThat(output.getInitScore()).isEqualTo(-7);
-                    assertThat(output.getHardScore(0)).isEqualTo(-12);
-                    assertThat(output.getSoftScore(0)).isEqualTo(3400);
-                    assertThat(output.getSoftScore(1)).isEqualTo(-56);
-                });
-    }
-
 }

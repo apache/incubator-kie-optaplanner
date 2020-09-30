@@ -95,7 +95,8 @@ A benchmark configuration XML file looks like this:
 [source,xml,options="nowrap"]
 ----
 <?xml version="1.0" encoding="UTF-8"?>
-<plannerBenchmark>
+<plannerBenchmark xmlns="https://www.optaplanner.org/xsd/benchmark" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="https://www.optaplanner.org/xsd/benchmark https://www.optaplanner.org/xsd/benchmark/benchmark.xsd">
   <benchmarkDirectory>local/data/nqueens</benchmarkDirectory>
 
   <inheritedSolverBenchmark>
@@ -197,20 +198,32 @@ There are several ways to serialize a solution:
 [[xStreamSolutionFileIO]]
 ==== `XStreamSolutionFileIO`: serialize to and from an XML format
 
-To use the `XStreamSolutionFileIO` instance to read and write solutions,
-configure your `@PlanningSolution` class as an ``xStreamAnnotatedClass``:
+To read and write solutions in the XML format via XStream, extend the `XStreamSolutionFileIO`:
+
+[source,java,options="nowrap"]
+----
+public class NQueensXmlSolutionFileIO extends XStreamSolutionFileIO<NQueens> {
+    public NQueensXmlSolutionFileIO() {
+        // NQueens is the @PlanningSolution class.
+        super(NQueens.class);
+    }
+}
+----
+
+and use it in the benchmark configuration:
 
 [source,xml,options="nowrap"]
 ----
     <problemBenchmarks>
-      <xStreamAnnotatedClass>org.optaplanner.examples.nqueens.domain.NQueens</xStreamAnnotatedClass>
+      <solutionFileIOClass>org.optaplanner.examples.nqueens.persistence.NQueensXmlSolutionFileIO</solutionFileIOClass>
       <inputSolutionFile>data/nqueens/unsolved/32queens.xml</inputSolutionFile>
       ...
     </problemBenchmarks>
 ----
 
-Those input files need to have been written with a `XStreamSolutionFileIO` instance, not just any `XStream` instance,
-because the `XStreamSolutionFileIO` uses a customized `XStream` instance.
+Those input files need to have been written with the same `SolutionFileIO` class that uses or extends the
+`XStreamSolutionFileIO`, not just any `XStream` instance, because the `XStreamSolutionFileIO` uses a customized `XStream`
+instance.
 
 [IMPORTANT]
 ====
@@ -277,7 +290,8 @@ To avoid that distortion, the benchmarker runs some of the benchmarks for 30 sec
 
 [source,xml,options="nowrap"]
 ----
-<plannerBenchmark>
+<plannerBenchmark xmlns="https://www.optaplanner.org/xsd/benchmark" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="https://www.optaplanner.org/xsd/benchmark https://www.optaplanner.org/xsd/benchmark/benchmark.xsd">
   ...
   <warmUpSecondsSpentLimit>60</warmUpSecondsSpentLimit>
   ...
@@ -288,7 +302,8 @@ Turn off the warm up phase altogether by setting it to zero:
 
 [source,xml,options="nowrap"]
 ----
-<plannerBenchmark>
+<plannerBenchmark xmlns="https://www.optaplanner.org/xsd/benchmark" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="https://www.optaplanner.org/xsd/benchmark https://www.optaplanner.org/xsd/benchmark/benchmark.xsd">
   ...
   <warmUpSecondsSpentLimit>0</warmUpSecondsSpentLimit>
   ...
@@ -310,12 +325,13 @@ To quickly configure and run a benchmark for typical solver configs, use a `solv
 [source,xml,options="nowrap"]
 ----
 <?xml version="1.0" encoding="UTF-8"?>
-<plannerBenchmark>
+<plannerBenchmark xmlns="https://www.optaplanner.org/xsd/benchmark" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="https://www.optaplanner.org/xsd/benchmark https://www.optaplanner.org/xsd/benchmark/benchmark.xsd">
   <benchmarkDirectory>local/data/nqueens</benchmarkDirectory>
 
   <inheritedSolverBenchmark>
     <problemBenchmarks>
-      <xStreamAnnotatedClass>org.optaplanner.examples.nqueens.domain.NQueens</xStreamAnnotatedClass>
+      <solutionFileIOClass>org.optaplanner.examples.nqueens.persistence.NQueensXmlSolutionFileIO</solutionFileIOClass>
       <inputSolutionFile>data/nqueens/unsolved/32queens.xml</inputSolutionFile>
       <inputSolutionFile>data/nqueens/unsolved/64queens.xml</inputSolutionFile>
     </problemBenchmarks>
@@ -420,7 +436,8 @@ If you share the benchmark report with people from another country, consider ove
 
 [source,xml,options="nowrap"]
 ----
-<plannerBenchmark>
+<plannerBenchmark xmlns="https://www.optaplanner.org/xsd/benchmark" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="https://www.optaplanner.org/xsd/benchmark https://www.optaplanner.org/xsd/benchmark/benchmark.xsd">
   ...
   <benchmarkReport>
     <locale>en_US</locale>
@@ -442,7 +459,8 @@ Configure it like this:
 
 [source,xml,options="nowrap"]
 ----
-<plannerBenchmark>
+<plannerBenchmark xmlns="https://www.optaplanner.org/xsd/benchmark" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="https://www.optaplanner.org/xsd/benchmark https://www.optaplanner.org/xsd/benchmark/benchmark.xsd">
   ...
   <benchmarkReport>
     <solverRankingType>TOTAL_SCORE</solverRankingType>
@@ -586,7 +604,8 @@ To configure one or more, add a `problemStatisticType` line for each one:
 
 [source,xml,options="nowrap"]
 ----
-<plannerBenchmark>
+<plannerBenchmark xmlns="https://www.optaplanner.org/xsd/benchmark" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="https://www.optaplanner.org/xsd/benchmark https://www.optaplanner.org/xsd/benchmark/benchmark.xsd">
   <benchmarkDirectory>local/data/nqueens/solved</benchmarkDirectory>
   <inheritedSolverBenchmark>
     <problemBenchmarks>
@@ -782,7 +801,8 @@ To configure one, add a `singleStatisticType` line:
 
 [source,xml,options="nowrap"]
 ----
-<plannerBenchmark>
+<plannerBenchmark xmlns="https://www.optaplanner.org/xsd/benchmark" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="https://www.optaplanner.org/xsd/benchmark https://www.optaplanner.org/xsd/benchmark/benchmark.xsd">
   <benchmarkDirectory>local/data/nqueens/solved</benchmarkDirectory>
   <inheritedSolverBenchmark>
     <problemBenchmarks>
@@ -906,7 +926,8 @@ If you have multiple processors available on your computer, you can run multiple
 
 [source,xml,options="nowrap"]
 ----
-<plannerBenchmark>
+<plannerBenchmark xmlns="https://www.optaplanner.org/xsd/benchmark" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="https://www.optaplanner.org/xsd/benchmark https://www.optaplanner.org/xsd/benchmark/benchmark.xsd">
   ...
   <parallelBenchmarkCount>AUTO</parallelBenchmarkCount>
   ...
@@ -929,12 +950,6 @@ The following ``parallelBenchmarkCount``s are supported:
 ----
 <parallelBenchmarkCount>2</parallelBenchmarkCount>
 ----
-* JavaScript formula: Formula for the number of benchmarks to run in parallel. It can use the variable ``availableProcessorCount``. For example:
-+
-[source,xml,options="nowrap"]
-----
-<parallelBenchmarkCount>(availableProcessorCount / 2) + 1</parallelBenchmarkCount>
-----
 
 [NOTE]
 ====
@@ -956,7 +971,8 @@ for example when running benchmarks on an application server or a cloud platform
 
 [source,xml,options="nowrap"]
 ----
-<plannerBenchmark>
+<plannerBenchmark xmlns="https://www.optaplanner.org/xsd/benchmark" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="https://www.optaplanner.org/xsd/benchmark https://www.optaplanner.org/xsd/benchmark/benchmark.xsd">
   ...
   <threadFactoryClass>...MyCustomThreadFactory</threadFactoryClass>
   ...
@@ -982,7 +998,8 @@ Just add a `<subSingleCount>` element to an <<inheritedSolverBenchmark,`<inherit
 [source,xml,options="nowrap"]
 ----
 <?xml version="1.0" encoding="UTF-8"?>
-<plannerBenchmark>
+<plannerBenchmark xmlns="https://www.optaplanner.org/xsd/benchmark" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="https://www.optaplanner.org/xsd/benchmark https://www.optaplanner.org/xsd/benchmark/benchmark.xsd">
   ...
   <inheritedSolverBenchmark>
     ...
@@ -1013,7 +1030,8 @@ To reduce the verbosity of such a benchmark configuration, you can use a http://
 
 [source,xml,options="nowrap"]
 ----
-<plannerBenchmark>
+<plannerBenchmark xmlns="https://www.optaplanner.org/xsd/benchmark" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="https://www.optaplanner.org/xsd/benchmark https://www.optaplanner.org/xsd/benchmark/benchmark.xsd">
   ...
   <inheritedSolverBenchmark>
     ...
@@ -1047,7 +1065,8 @@ To configure Matrix Benchmarking for Simulated Annealing (or any other configura
 
 [source,xml,options="nowrap"]
 ----
-<plannerBenchmark>
+<plannerBenchmark xmlns="https://www.optaplanner.org/xsd/benchmark" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="https://www.optaplanner.org/xsd/benchmark https://www.optaplanner.org/xsd/benchmark/benchmark.xsd">
   ...
   <inheritedSolverBenchmark>
     ...

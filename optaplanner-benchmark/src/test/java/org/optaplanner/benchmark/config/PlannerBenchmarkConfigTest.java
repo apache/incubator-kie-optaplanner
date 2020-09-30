@@ -17,10 +17,16 @@
 package org.optaplanner.benchmark.config;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 import static org.assertj.core.api.Assertions.assertThatIllegalStateException;
 
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.Reader;
+import java.io.StringReader;
+import java.io.StringWriter;
+import java.io.Writer;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.Collections;
@@ -29,17 +35,20 @@ import java.util.TreeSet;
 
 import org.apache.commons.io.IOUtils;
 import org.junit.jupiter.api.Test;
-import org.optaplanner.benchmark.api.PlannerBenchmarkFactory;
-import org.optaplanner.core.config.util.ConfigUtils;
-import org.optaplanner.core.impl.solver.io.XStreamConfigReader;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
+import org.optaplanner.benchmark.impl.io.PlannerBenchmarkConfigIO;
+import org.optaplanner.core.impl.io.OptaPlannerXmlSerializationException;
 import org.optaplanner.core.impl.testdata.domain.TestdataSolution;
+import org.optaplanner.persistence.xstream.impl.domain.solution.XStreamSolutionFileIO;
 
-import com.thoughtworks.xstream.XStream;
+class PlannerBenchmarkConfigTest {
 
-public class PlannerBenchmarkConfigTest {
+    private static final String TEST_PLANNER_BENCHMARK_CONFIG_WITH_NAMESPACE = "testBenchmarkConfigWithNamespace.xml";
+    private static final String TEST_PLANNER_BENCHMARK_CONFIG_WITHOUT_NAMESPACE = "testBenchmarkConfigWithoutNamespace.xml";
 
     @Test
-    public void validNameWithUnderscoreAndSpace() {
+    void validNameWithUnderscoreAndSpace() {
         PlannerBenchmarkConfig config = new PlannerBenchmarkConfig();
         config.setName("Valid_name with space_and_underscore");
         config.setSolverBenchmarkConfigList(Collections.singletonList(new SolverBenchmarkConfig()));
@@ -47,7 +56,7 @@ public class PlannerBenchmarkConfigTest {
     }
 
     @Test
-    public void validNameWithJapanese() {
+    void validNameWithJapanese() {
         PlannerBenchmarkConfig config = new PlannerBenchmarkConfig();
         config.setName("Valid name (有効名 in Japanese)");
         config.setSolverBenchmarkConfigList(Collections.singletonList(new SolverBenchmarkConfig()));
@@ -55,7 +64,7 @@ public class PlannerBenchmarkConfigTest {
     }
 
     @Test
-    public void invalidNameWithSlash() {
+    void invalidNameWithSlash() {
         PlannerBenchmarkConfig config = new PlannerBenchmarkConfig();
         config.setName("slash/name");
         config.setSolverBenchmarkConfigList(Collections.singletonList(new SolverBenchmarkConfig()));
@@ -63,7 +72,7 @@ public class PlannerBenchmarkConfigTest {
     }
 
     @Test
-    public void invalidNameWithSuffixWhitespace() {
+    void invalidNameWithSuffixWhitespace() {
         PlannerBenchmarkConfig config = new PlannerBenchmarkConfig();
         config.setName("Suffixed with space ");
         config.setSolverBenchmarkConfigList(Collections.singletonList(new SolverBenchmarkConfig()));
@@ -71,7 +80,7 @@ public class PlannerBenchmarkConfigTest {
     }
 
     @Test
-    public void invalidNameWithPrefixWhitespace() {
+    void invalidNameWithPrefixWhitespace() {
         PlannerBenchmarkConfig config = new PlannerBenchmarkConfig();
         config.setName(" prefixed with space");
         config.setSolverBenchmarkConfigList(Collections.singletonList(new SolverBenchmarkConfig()));
@@ -79,7 +88,7 @@ public class PlannerBenchmarkConfigTest {
     }
 
     @Test
-    public void noSolverConfigs() {
+    void noSolverConfigs() {
         PlannerBenchmarkConfig config = new PlannerBenchmarkConfig();
         config.setSolverBenchmarkConfigList(null);
         config.setSolverBenchmarkBluePrintConfigList(null);
@@ -87,7 +96,7 @@ public class PlannerBenchmarkConfigTest {
     }
 
     @Test
-    public void nonUniqueSolverConfigName() {
+    void nonUniqueSolverConfigName() {
         PlannerBenchmarkConfig config = new PlannerBenchmarkConfig();
         final String sbcName = "x";
         SolverBenchmarkConfig sbc1 = new SolverBenchmarkConfig();
@@ -99,7 +108,7 @@ public class PlannerBenchmarkConfigTest {
     }
 
     @Test
-    public void uniqueNamesGenerated() {
+    void uniqueNamesGenerated() {
         PlannerBenchmarkConfig config = new PlannerBenchmarkConfig();
         SolverBenchmarkConfig sbc1 = new SolverBenchmarkConfig();
         SolverBenchmarkConfig sbc2 = new SolverBenchmarkConfig();
@@ -119,7 +128,7 @@ public class PlannerBenchmarkConfigTest {
     }
 
     @Test
-    public void resolveParallelBenchmarkCountAutomatically() {
+    void resolveParallelBenchmarkCountAutomatically() {
         PlannerBenchmarkConfig config = new PlannerBenchmarkConfig();
         assertThat(config.resolveParallelBenchmarkCountAutomatically(-1)).isEqualTo(1);
         assertThat(config.resolveParallelBenchmarkCountAutomatically(0)).isEqualTo(1);
@@ -133,28 +142,20 @@ public class PlannerBenchmarkConfigTest {
     }
 
     @Test
-    public void resolveParallelBenchmarkCountFromFormula() {
-        PlannerBenchmarkConfig config = new PlannerBenchmarkConfig();
-        config.setParallelBenchmarkCount(ConfigUtils.AVAILABLE_PROCESSOR_COUNT + "+1");
-        // resolved benchmark count cannot be higher than available processors
-        assertThat(config.resolveParallelBenchmarkCount()).isEqualTo(Runtime.getRuntime().availableProcessors());
-    }
-
-    @Test
-    public void parallelBenchmarkDisabledByDefault() {
+    void parallelBenchmarkDisabledByDefault() {
         PlannerBenchmarkConfig config = new PlannerBenchmarkConfig();
         assertThat(config.resolveParallelBenchmarkCount()).isEqualTo(1);
     }
 
     @Test
-    public void resolvedParallelBenchmarkCountNegative() {
+    void resolvedParallelBenchmarkCountNegative() {
         PlannerBenchmarkConfig config = new PlannerBenchmarkConfig();
         config.setParallelBenchmarkCount("-1");
         assertThatIllegalArgumentException().isThrownBy(config::resolveParallelBenchmarkCount);
     }
 
     @Test
-    public void calculateWarmUpTimeMillisSpentLimit() {
+    void calculateWarmUpTimeMillisSpentLimit() {
         PlannerBenchmarkConfig config = new PlannerBenchmarkConfig();
         config.setWarmUpHoursSpentLimit(1L);
         config.setWarmUpMinutesSpentLimit(2L);
@@ -163,17 +164,66 @@ public class PlannerBenchmarkConfigTest {
         assertThat(config.calculateWarmUpTimeMillisSpentLimit()).isEqualTo(3_725_753L);
     }
 
-    @Test
-    public void xmlConfigFileRemainsSameAfterReadWrite() throws IOException {
-        String benchmarkConfigResource = "org/optaplanner/benchmark/config/testdataBenchmarkConfigNoInheritence.xml";
-        String originalXml = IOUtils.toString(
-                getClass().getClassLoader().getResourceAsStream(benchmarkConfigResource), StandardCharsets.UTF_8);
-        PlannerBenchmarkConfig benchmarkConfig = PlannerBenchmarkConfig.createFromXmlResource(benchmarkConfigResource);
-        assertThat(PlannerBenchmarkFactory.create(benchmarkConfig).buildPlannerBenchmark(new TestdataSolution())).isNotNull();
-        XStream xStream = XStreamConfigReader.buildXStreamPortable(getClass().getClassLoader(), PlannerBenchmarkConfig.class);
-        xStream.setMode(XStream.NO_REFERENCES);
-        String savedXml = xStream.toXML(benchmarkConfig);
-        assertThat(savedXml.trim()).isEqualTo(originalXml.trim());
+    @ParameterizedTest
+    @ValueSource(strings = { TEST_PLANNER_BENCHMARK_CONFIG_WITHOUT_NAMESPACE, TEST_PLANNER_BENCHMARK_CONFIG_WITH_NAMESPACE })
+    void xmlConfigFileRemainsSameAfterReadWrite(String xmlBenchmarkConfigResource) throws IOException {
+        PlannerBenchmarkConfigIO xmlIO = new PlannerBenchmarkConfigIO();
+        PlannerBenchmarkConfig jaxbBenchmarkConfig;
+
+        try (Reader reader = new InputStreamReader(
+                PlannerBenchmarkConfigTest.class.getResourceAsStream(xmlBenchmarkConfigResource))) {
+            jaxbBenchmarkConfig = xmlIO.read(reader);
+        }
+
+        assertThat(jaxbBenchmarkConfig).isNotNull();
+
+        Writer stringWriter = new StringWriter();
+        xmlIO.write(jaxbBenchmarkConfig, stringWriter);
+        String jaxbString = stringWriter.toString();
+
+        String originalXml = IOUtils.toString(PlannerBenchmarkConfigTest.class.getResourceAsStream(xmlBenchmarkConfigResource),
+                StandardCharsets.UTF_8);
+
+        // During writing the benchmark config, the benchmark element's namespace is removed.
+        String benchmarkElementWithNamespace =
+                PlannerBenchmarkConfig.XML_ELEMENT_NAME + " xmlns=\"" + PlannerBenchmarkConfig.XML_NAMESPACE + "\"";
+        if (originalXml.contains(benchmarkElementWithNamespace)) {
+            originalXml = originalXml.replace(benchmarkElementWithNamespace, PlannerBenchmarkConfig.XML_ELEMENT_NAME);
+        }
+        assertThat(jaxbString).isXmlEqualTo(originalXml);
     }
 
+    @Test
+    void readAndValidateInvalidBenchmarkConfig_failsIndicatingTheIssue() {
+        PlannerBenchmarkConfigIO xmlIO = new PlannerBenchmarkConfigIO();
+        String benchmarkConfigXml = "<plannerBenchmark xmlns=\"https://www.optaplanner.org/xsd/benchmark\">\n"
+                + "  <benchmarkDirectory>data</benchmarkDirectory>\n"
+                + "  <parallelBenchmarkCount>AUTO</parallelBenchmarkCount>\n"
+                + "  <solverBenchmark>\n"
+                + "    <name>Entity Tabu Search</name>\n"
+                + "    <solver>\n"
+                // Intentionally wrong to simulate a typo.
+                + "      <solutionKlazz>org.optaplanner.core.impl.testdata.domain.TestdataSolution</solutionKlazz>\n"
+                + "      <entityClass>org.optaplanner.core.impl.testdata.domain.TestdataEntity</entityClass>\n"
+                + "    </solver>\n"
+                + "    <problemBenchmarks>\n"
+                + "      <solutionFileIOClass>org.optaplanner.benchmark.config.PlannerBenchmarkConfigTest$TestdataSolutionFileIO</solutionFileIOClass>\n"
+                + "      <inputSolutionFile>nonExistingDataset1.xml</inputSolutionFile>\n"
+                + "    </problemBenchmarks>\n"
+                + "  </solverBenchmark>\n"
+                + "</plannerBenchmark>\n";
+
+        StringReader stringReader = new StringReader(benchmarkConfigXml);
+        assertThatExceptionOfType(OptaPlannerXmlSerializationException.class)
+                .isThrownBy(() -> xmlIO.read(stringReader))
+                .withMessageContaining("Invalid content was found")
+                .withMessageContaining("solutionKlazz");
+    }
+
+    // Used by the testBenchmarkConfig.xml
+    private static class TestdataSolutionFileIO extends XStreamSolutionFileIO<TestdataSolution> {
+        private TestdataSolutionFileIO() {
+            super(TestdataSolution.class);
+        }
+    }
 }

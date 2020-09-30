@@ -28,7 +28,7 @@ import org.optaplanner.core.config.constructionheuristic.ConstructionHeuristicTy
 import org.optaplanner.core.config.heuristic.selector.common.SelectionOrder;
 import org.optaplanner.core.config.heuristic.selector.move.generic.ChangeMoveSelectorConfig;
 import org.optaplanner.core.config.localsearch.LocalSearchPhaseConfig;
-import org.optaplanner.core.config.localsearch.decider.acceptor.AcceptorConfig;
+import org.optaplanner.core.config.localsearch.decider.acceptor.LocalSearchAcceptorConfig;
 import org.optaplanner.core.config.phase.PhaseConfig;
 import org.optaplanner.core.config.score.director.ScoreDirectorFactoryConfig;
 import org.optaplanner.core.config.solver.SolverConfig;
@@ -36,9 +36,9 @@ import org.optaplanner.core.config.solver.termination.TerminationConfig;
 import org.optaplanner.examples.common.app.CommonApp;
 import org.optaplanner.examples.nqueens.domain.NQueens;
 import org.optaplanner.examples.nqueens.domain.Queen;
+import org.optaplanner.examples.nqueens.persistence.NQueensXmlSolutionFileIO;
 import org.optaplanner.examples.nqueens.swingui.NQueensPanel;
 import org.optaplanner.persistence.common.api.domain.solution.SolutionFileIO;
-import org.optaplanner.persistence.xstream.impl.domain.solution.XStreamSolutionFileIO;
 
 /**
  * For an easy example, look at {@link NQueensHelloWorld} instead.
@@ -106,7 +106,7 @@ public class NQueensApp extends CommonApp<NQueens> {
         ChangeMoveSelectorConfig changeMoveSelectorConfig = new ChangeMoveSelectorConfig();
         changeMoveSelectorConfig.setSelectionOrder(SelectionOrder.ORIGINAL);
         localSearchPhaseConfig.setMoveSelectorConfig(changeMoveSelectorConfig);
-        localSearchPhaseConfig.setAcceptorConfig(new AcceptorConfig().withEntityTabuSize(5));
+        localSearchPhaseConfig.setAcceptorConfig(new LocalSearchAcceptorConfig().withEntityTabuSize(5));
         phaseConfigList.add(localSearchPhaseConfig);
 
         solverConfig.setPhaseConfigList(phaseConfigList);
@@ -120,7 +120,7 @@ public class NQueensApp extends CommonApp<NQueens> {
 
     @Override
     public SolutionFileIO<NQueens> createSolutionFileIO() {
-        return new XStreamSolutionFileIO<>(NQueens.class);
+        return new NQueensXmlSolutionFileIO();
     }
 
 }

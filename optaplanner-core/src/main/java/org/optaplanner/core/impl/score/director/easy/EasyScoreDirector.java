@@ -16,39 +16,40 @@
 
 package org.optaplanner.core.impl.score.director.easy;
 
-import java.util.Collection;
 import java.util.Map;
 
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.score.Score;
+import org.optaplanner.core.api.score.ScoreExplanation;
 import org.optaplanner.core.api.score.constraint.ConstraintMatch;
 import org.optaplanner.core.api.score.constraint.ConstraintMatchTotal;
 import org.optaplanner.core.api.score.constraint.Indictment;
+import org.optaplanner.core.api.score.director.ScoreDirector;
 import org.optaplanner.core.impl.score.director.AbstractScoreDirector;
-import org.optaplanner.core.impl.score.director.ScoreDirector;
 
 /**
  * Easy java implementation of {@link ScoreDirector}, which recalculates the {@link Score}
  * of the {@link PlanningSolution working solution} every time. This is non-incremental calculation, which is slow.
- * This score director implementation does not support {@link ScoreDirector#getConstraintMatchTotals()},
- * {@link ScoreDirector#getConstraintMatchTotalMap()} and {@link ScoreDirector#getIndictmentMap()}.
+ * This score director implementation does not support {@link ScoreExplanation#getConstraintMatchTotalMap()} and
+ * {@link ScoreExplanation#getIndictmentMap()}.
  *
  * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
+ * @param <Score_> the score type to go with the solution
  * @see ScoreDirector
  */
-public class EasyScoreDirector<Solution_>
-        extends AbstractScoreDirector<Solution_, EasyScoreDirectorFactory<Solution_>> {
+public class EasyScoreDirector<Solution_, Score_ extends Score<Score_>>
+        extends AbstractScoreDirector<Solution_, Score_, EasyScoreDirectorFactory<Solution_, Score_>> {
 
-    private final EasyScoreCalculator<Solution_> easyScoreCalculator;
+    private final EasyScoreCalculator<Solution_, Score_> easyScoreCalculator;
 
-    public EasyScoreDirector(EasyScoreDirectorFactory<Solution_> scoreDirectorFactory,
+    public EasyScoreDirector(EasyScoreDirectorFactory<Solution_, Score_> scoreDirectorFactory,
             boolean lookUpEnabled, boolean constraintMatchEnabledPreference,
-            EasyScoreCalculator<Solution_> easyScoreCalculator) {
+            EasyScoreCalculator<Solution_, Score_> easyScoreCalculator) {
         super(scoreDirectorFactory, lookUpEnabled, constraintMatchEnabledPreference);
         this.easyScoreCalculator = easyScoreCalculator;
     }
 
-    public EasyScoreCalculator<Solution_> getEasyScoreCalculator() {
+    public EasyScoreCalculator<Solution_, Score_> getEasyScoreCalculator() {
         return easyScoreCalculator;
     }
 
@@ -57,9 +58,9 @@ public class EasyScoreDirector<Solution_>
     // ************************************************************************
 
     @Override
-    public Score calculateScore() {
+    public Score_ calculateScore() {
         variableListenerSupport.assertNotificationQueuesAreEmpty();
-        Score score = easyScoreCalculator.calculateScore(workingSolution);
+        Score_ score = easyScoreCalculator.calculateScore(workingSolution);
         if (score == null) {
             throw new IllegalStateException("The easyScoreCalculator (" + easyScoreCalculator.getClass()
                     + ") must return a non-null score (" + score + ") in the method calculateScore().");
@@ -93,7 +94,7 @@ public class EasyScoreDirector<Solution_>
      * @return throws {@link IllegalStateException}
      */
     @Override
-    public Collection<ConstraintMatchTotal> getConstraintMatchTotals() {
+    public Map<String, ConstraintMatchTotal<Score_>> getConstraintMatchTotalMap() {
         throw new IllegalStateException(ConstraintMatch.class.getSimpleName()
                 + " is not supported by " + EasyScoreDirector.class.getSimpleName() + ".");
     }
@@ -105,19 +106,7 @@ public class EasyScoreDirector<Solution_>
      * @return throws {@link IllegalStateException}
      */
     @Override
-    public Map<String, ConstraintMatchTotal> getConstraintMatchTotalMap() {
-        throw new IllegalStateException(ConstraintMatch.class.getSimpleName()
-                + " is not supported by " + EasyScoreDirector.class.getSimpleName() + ".");
-    }
-
-    /**
-     * {@link ConstraintMatch}s are not supported by this {@link ScoreDirector} implementation.
-     *
-     * @throws IllegalStateException always
-     * @return throws {@link IllegalStateException}
-     */
-    @Override
-    public Map<Object, Indictment> getIndictmentMap() {
+    public Map<Object, Indictment<Score_>> getIndictmentMap() {
         throw new IllegalStateException(ConstraintMatch.class.getSimpleName()
                 + " is not supported by " + EasyScoreDirector.class.getSimpleName() + ".");
     }

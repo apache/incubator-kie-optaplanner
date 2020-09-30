@@ -23,7 +23,9 @@ import org.optaplanner.core.api.score.constraint.ConstraintMatchTotal;
 import org.optaplanner.core.api.score.constraint.Indictment;
 import org.optaplanner.core.api.solver.SolverFactory;
 import org.optaplanner.core.impl.score.DefaultScoreManager;
-import org.optaplanner.core.impl.score.director.ScoreDirector;
+import org.optaplanner.core.impl.score.director.InnerScoreDirectorFactory;
+import org.optaplanner.core.impl.score.director.easy.EasyScoreCalculator;
+import org.optaplanner.core.impl.solver.DefaultSolverFactory;
 
 /**
  * A stateless service to help calculate {@link Score}, {@link ConstraintMatchTotal},
@@ -34,8 +36,9 @@ import org.optaplanner.core.impl.score.director.ScoreDirector;
  * These methods are thread-safe unless explicitly stated otherwise.
  *
  * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
+ * @param <Score_> the actual score type
  */
-public interface ScoreManager<Solution_> {
+public interface ScoreManager<Solution_, Score_ extends Score<Score_>> {
 
     // ************************************************************************
     // Static creation methods: SolverFactory
@@ -47,9 +50,14 @@ public interface ScoreManager<Solution_> {
      * @param solverFactory never null
      * @return never null
      * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
+     * @param <Score_> the actual score type
      */
-    static <Solution_> ScoreManager<Solution_> create(SolverFactory<Solution_> solverFactory) {
-        return new DefaultScoreManager<>(solverFactory.getScoreDirectorFactory());
+    static <Solution_, Score_ extends Score<Score_>> ScoreManager<Solution_, Score_> create(
+            SolverFactory<Solution_> solverFactory) {
+        InnerScoreDirectorFactory<Solution_, Score_> scoreDirectorFactory =
+                (InnerScoreDirectorFactory<Solution_, Score_>) ((DefaultSolverFactory<Solution_>) solverFactory)
+                        .getScoreDirectorFactory();
+        return new DefaultScoreManager<>(scoreDirectorFactory);
     }
 
     // ************************************************************************
@@ -61,7 +69,7 @@ public interface ScoreManager<Solution_> {
      *
      * @param solution never null
      */
-    Score updateScore(Solution_ solution);
+    Score_ updateScore(Solution_ solution);
 
     /**
      * Returns a diagnostic text that explains the solution through the {@link ConstraintMatch} API to identify which
@@ -69,15 +77,26 @@ public interface ScoreManager<Solution_> {
      * In case of an {@link Score#isFeasible() infeasible} solution, this can help diagnose the cause of that.
      * <p>
      * Do not parse this string.
-     * Instead, to provide this information in a UI or a service, use {@link SolverFactory#getScoreDirectorFactory()}
-     * to retrieve {@link ScoreDirector#getConstraintMatchTotalMap()} and {@link ScoreDirector#getIndictmentMap()}
+     * Instead, to provide this information in a UI or a service, use {@link #explainScore(Object)}
+     * to retrieve {@link ScoreExplanation#getConstraintMatchTotalMap()} and {@link ScoreExplanation#getIndictmentMap()}
      * and convert those into a domain specific API.
-     * <p>
-     * This method is thread-safe.
      *
+     * @param solution never null
      * @return null if {@link #updateScore(Object)} returns null with the same solution
-     * @see ScoreDirector#explainScore()
+     * @throws IllegalStateException when constraint matching is disabled or not supported by the underlying score
+     *         calculator, such as {@link EasyScoreCalculator}.
      */
-    String explainScore(Solution_ solution);
+    String getSummary(Solution_ solution);
+
+    /**
+     * Calculates and retrieves {@link ConstraintMatchTotal}s and {@link Indictment}s necessary for describing the
+     * quality of a particular solution.
+     *
+     * @param solution never null
+     * @return never null
+     * @throws IllegalStateException when constraint matching is disabled or not supported by the underlying score
+     *         calculator, such as {@link EasyScoreCalculator}.
+     */
+    ScoreExplanation<Solution_, Score_> explainScore(Solution_ solution);
 
 }

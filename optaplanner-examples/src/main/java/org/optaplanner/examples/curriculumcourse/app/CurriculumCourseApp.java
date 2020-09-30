@@ -1,5 +1,5 @@
 /*
- * Copyright 2010 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,9 +22,9 @@ import org.optaplanner.examples.common.persistence.AbstractSolutionImporter;
 import org.optaplanner.examples.curriculumcourse.domain.CourseSchedule;
 import org.optaplanner.examples.curriculumcourse.persistence.CurriculumCourseExporter;
 import org.optaplanner.examples.curriculumcourse.persistence.CurriculumCourseImporter;
+import org.optaplanner.examples.curriculumcourse.persistence.CurriculumCourseXmlSolutionFileIO;
 import org.optaplanner.examples.curriculumcourse.swingui.CurriculumCoursePanel;
 import org.optaplanner.persistence.common.api.domain.solution.SolutionFileIO;
-import org.optaplanner.persistence.xstream.impl.domain.solution.XStreamSolutionFileIO;
 
 public class CurriculumCourseApp extends CommonApp<CourseSchedule> {
 
@@ -53,7 +53,7 @@ public class CurriculumCourseApp extends CommonApp<CourseSchedule> {
 
     @Override
     public SolutionFileIO<CourseSchedule> createSolutionFileIO() {
-        return new XStreamSolutionFileIO<>(CourseSchedule.class);
+        return new CurriculumCourseXmlSolutionFileIO();
     }
 
     @Override

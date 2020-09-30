@@ -17,39 +17,40 @@
 package org.optaplanner.test.impl.score.stream;
 
 import java.util.Arrays;
-import java.util.Map;
 import java.util.Objects;
 
-import org.optaplanner.core.api.score.constraint.ConstraintMatchTotal;
-import org.optaplanner.core.impl.score.director.ScoreDirector;
+import org.optaplanner.core.api.score.Score;
+import org.optaplanner.core.impl.score.director.InnerScoreDirector;
 import org.optaplanner.core.impl.score.director.stream.ConstraintStreamScoreDirectorFactory;
 import org.optaplanner.core.impl.score.stream.ConstraintSession;
 import org.optaplanner.test.api.score.stream.SingleConstraintVerification;
 
-public final class DefaultSingleConstraintVerification<Solution_>
+public final class DefaultSingleConstraintVerification<Solution_, Score_ extends Score<Score_>>
         implements SingleConstraintVerification<Solution_> {
 
-    private final ConstraintStreamScoreDirectorFactory<Solution_> scoreDirectorFactory;
+    private final ConstraintStreamScoreDirectorFactory<Solution_, Score_> scoreDirectorFactory;
 
-    protected DefaultSingleConstraintVerification(ConstraintStreamScoreDirectorFactory<Solution_> scoreDirectorFactory) {
+    protected DefaultSingleConstraintVerification(
+            ConstraintStreamScoreDirectorFactory<Solution_, Score_> scoreDirectorFactory) {
         this.scoreDirectorFactory = scoreDirectorFactory;
     }
 
     @Override
-    public final DefaultSingleConstraintAssertion given(Object... facts) {
-        try (ConstraintSession<Solution_> constraintSession = scoreDirectorFactory.newConstraintStreamingSession(true, null)) {
+    public final DefaultSingleConstraintAssertion<Solution_, Score_> given(Object... facts) {
+        try (ConstraintSession<Solution_, Score_> constraintSession =
+                scoreDirectorFactory.newConstraintStreamingSession(true, null)) {
             Arrays.stream(facts).forEach(constraintSession::insert);
-            Map<String, ConstraintMatchTotal> constraintMatchTotalMap = constraintSession.getConstraintMatchTotalMap();
-            return new DefaultSingleConstraintAssertion<>(scoreDirectorFactory, constraintMatchTotalMap);
+            return new DefaultSingleConstraintAssertion<>(scoreDirectorFactory, constraintSession.calculateScore(0),
+                    constraintSession.getConstraintMatchTotalMap(), constraintSession.getIndictmentMap());
         }
     }
 
     @Override
-    public final DefaultSingleConstraintAssertion givenSolution(Solution_ solution) {
-        try (ScoreDirector<Solution_> scoreDirector = scoreDirectorFactory.buildScoreDirector(true, true)) {
+    public final DefaultSingleConstraintAssertion<Solution_, Score_> givenSolution(Solution_ solution) {
+        try (InnerScoreDirector<Solution_, Score_> scoreDirector = scoreDirectorFactory.buildScoreDirector(true, true)) {
             scoreDirector.setWorkingSolution(Objects.requireNonNull(solution));
-            Map<String, ConstraintMatchTotal> constraintMatchTotalMap = scoreDirector.getConstraintMatchTotalMap();
-            return new DefaultSingleConstraintAssertion<>(scoreDirectorFactory, constraintMatchTotalMap);
+            return new DefaultSingleConstraintAssertion<>(scoreDirectorFactory, scoreDirector.calculateScore(),
+                    scoreDirector.getConstraintMatchTotalMap(), scoreDirector.getIndictmentMap());
         }
     }
 
