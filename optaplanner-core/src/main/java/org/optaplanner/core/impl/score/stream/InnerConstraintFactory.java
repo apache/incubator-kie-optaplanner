@@ -29,7 +29,6 @@ import java.util.function.Predicate;
 import java.util.stream.Stream;
 
 import org.optaplanner.core.api.domain.lookup.PlanningId;
-import org.optaplanner.core.api.domain.solution.ProblemFactCollectionProperty;
 import org.optaplanner.core.api.score.stream.Constraint;
 import org.optaplanner.core.api.score.stream.ConstraintFactory;
 import org.optaplanner.core.api.score.stream.bi.BiConstraintStream;
@@ -82,22 +81,11 @@ public abstract class InnerConstraintFactory<Solution_> implements ConstraintFac
 
     public <A> void assertValidFromType(Class<A> fromType) {
         SolutionDescriptor<Solution_> solutionDescriptor = getSolutionDescriptor();
-        Stream<Class> entityClassStream = solutionDescriptor.getEntityDescriptors().stream()
+        Stream<Class<?>> entityClassStream = solutionDescriptor.getEntityDescriptors().stream()
                 .map(EntityDescriptor::getEntityClass);
-        Stream<Class> factClassStream = solutionDescriptor.getProblemFactMemberAccessorMap()
-                .values()
-                .stream()
-                .map(MemberAccessor::getType);
-        Stream<Class> factCollectionClassStream = solutionDescriptor.getProblemFactCollectionMemberAccessorMap()
-                .entrySet()
-                .stream()
-                .map(entry -> {
-                    MemberAccessor accessor = entry.getValue();
-                    return ConfigUtils.extractCollectionGenericTypeParameter("solutionClass",
-                            solutionDescriptor.getSolutionClass(), accessor.getType(), accessor.getGenericType(),
-                            ProblemFactCollectionProperty.class, entry.getKey());
-                });
-        Set<Class> allAcceptedClassSet = concat(concat(entityClassStream, factClassStream), factCollectionClassStream)
+        Stream<Class<?>> factClassStream = solutionDescriptor.getProblemFactClassSet()
+                .stream();
+        Set<Class<?>> allAcceptedClassSet = concat(entityClassStream, factClassStream)
                 .collect(toSet());
         /*
          * Need to support the following situations:

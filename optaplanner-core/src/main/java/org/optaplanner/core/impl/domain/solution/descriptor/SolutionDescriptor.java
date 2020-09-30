@@ -16,6 +16,8 @@
 
 package org.optaplanner.core.impl.domain.solution.descriptor;
 
+import static java.util.stream.Collectors.toSet;
+import static java.util.stream.Stream.concat;
 import static org.optaplanner.core.impl.domain.common.accessor.MemberAccessorFactory.MemberAccessorType.FIELD_OR_GETTER_METHOD;
 import static org.optaplanner.core.impl.domain.common.accessor.MemberAccessorFactory.MemberAccessorType.FIELD_OR_GETTER_METHOD_WITH_SETTER;
 import static org.optaplanner.core.impl.domain.common.accessor.MemberAccessorFactory.MemberAccessorType.FIELD_OR_READ_METHOD;
@@ -710,6 +712,23 @@ public class SolutionDescriptor<Solution_> {
         memberNames.addAll(problemFactMemberAccessorMap.keySet());
         memberNames.addAll(problemFactCollectionMemberAccessorMap.keySet());
         return memberNames;
+    }
+
+    public Set<Class<?>> getProblemFactClassSet() {
+        Stream<Class<?>> factClassStream = getProblemFactMemberAccessorMap()
+                .values()
+                .stream()
+                .map(MemberAccessor::getType);
+        Stream<Class<?>> factCollectionClassStream = getProblemFactCollectionMemberAccessorMap()
+                .entrySet()
+                .stream()
+                .map(entry -> {
+                    MemberAccessor accessor = entry.getValue();
+                    return ConfigUtils.extractCollectionGenericTypeParameter("solutionClass", getSolutionClass(),
+                            accessor.getType(), accessor.getGenericType(), ProblemFactCollectionProperty.class, entry.getKey());
+                });
+        return concat(factClassStream, factCollectionClassStream)
+                .collect(toSet());
     }
 
     public Map<String, MemberAccessor> getEntityMemberAccessorMap() {
