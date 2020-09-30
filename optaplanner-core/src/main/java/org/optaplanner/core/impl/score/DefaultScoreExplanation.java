@@ -134,11 +134,6 @@ public final class DefaultScoreExplanation<Solution_, Score_ extends Score<Score
     }
 
     @Override
-    public String getSummary() {
-        return summary;
-    }
-
-    @Override
     public Map<String, ConstraintMatchTotal<Score_>> getConstraintMatchTotalMap() {
         return constraintMatchTotalMap;
     }
@@ -146,6 +141,11 @@ public final class DefaultScoreExplanation<Solution_, Score_ extends Score<Score
     @Override
     public Map<Object, Indictment<Score_>> getIndictmentMap() {
         return indictmentMap;
+    }
+
+    @Override
+    public String getSummary() {
+        return summary;
     }
 
     @Override
