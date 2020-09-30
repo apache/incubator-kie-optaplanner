@@ -22,7 +22,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import java.io.IOException;
 import java.util.Collections;
 
-import org.drools.compiler.CommonTestMethodBase;
+import org.drools.mvel.CommonTestMethodBase;
 import org.junit.jupiter.api.Test;
 import org.kie.api.KieServices;
 import org.kie.api.builder.ReleaseId;
