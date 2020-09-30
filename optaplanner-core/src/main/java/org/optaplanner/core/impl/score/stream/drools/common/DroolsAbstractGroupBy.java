@@ -17,17 +17,16 @@
 package org.optaplanner.core.impl.score.stream.drools.common;
 
 import java.io.Serializable;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Set;
 
 import org.drools.core.common.InternalFactHandle;
 
 public abstract class DroolsAbstractGroupBy<InTuple, OutTuple> implements Serializable {
 
-    private static final long serialVersionUID = 510l;
     private final Map<Long, Runnable> undoMap = new HashMap<>(0);
-    private GroupByAccumulator<InTuple, OutTuple> acc;
+    private GroupByCollectorProcessor<InTuple, OutTuple> acc;
 
     public void init() {
         acc = newAccumulator();
@@ -50,10 +49,10 @@ public abstract class DroolsAbstractGroupBy<InTuple, OutTuple> implements Serial
         undo.run();
     }
 
-    public Set<OutTuple> getResult() {
+    public Collection<OutTuple> getResult() {
         return acc.finish();
     }
 
-    protected abstract GroupByAccumulator<InTuple, OutTuple> newAccumulator();
+    protected abstract GroupByCollectorProcessor<InTuple, OutTuple> newAccumulator();
 
 }

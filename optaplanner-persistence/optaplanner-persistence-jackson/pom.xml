@@ -6,11 +6,10 @@
   <parent>
     <groupId>org.optaplanner</groupId>
     <artifactId>optaplanner-persistence</artifactId>
-    <version>7.34.0-SNAPSHOT</version>
+    <version>8.0.0-SNAPSHOT</version>
   </parent>
 
   <artifactId>optaplanner-persistence-jackson</artifactId>
-  <packaging>bundle</packaging><!-- bundle = jar + OSGi metadata -->
 
   <name>OptaPlanner persistence Jackson</name>
   <description>
@@ -38,10 +37,6 @@
       <type>test-jar</type>
       <scope>test</scope>
     </dependency>
-    <dependency>
-      <groupId>org.optaplanner</groupId>
-      <artifactId>optaplanner-persistence-common</artifactId>
-    </dependency>
     <!-- External dependencies -->
     <!-- Logging -->
     <dependency>
@@ -58,23 +53,22 @@
       <groupId>com.fasterxml.jackson.core</groupId>
       <artifactId>jackson-databind</artifactId>
     </dependency>
+    <!-- Testing -->
+    <dependency>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter-api</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter-engine</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.assertj</groupId>
+      <artifactId>assertj-core</artifactId>
+      <scope>test</scope>
+    </dependency>
   </dependencies>
-
-  <build>
-    <plugins>
-      <plugin>
-        <groupId>org.apache.felix</groupId>
-        <artifactId>maven-bundle-plugin</artifactId>
-        <extensions>true</extensions>
-        <configuration>
-          <instructions>
-            <Export-Package>
-              org.optaplanner.persistence.jackson.*
-            </Export-Package>
-          </instructions>
-        </configuration>
-      </plugin>
-    </plugins>
-  </build>
 
 </project>

@@ -1,5 +1,5 @@
 /*
- * Copyright 2013 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,14 +21,13 @@ import org.optaplanner.core.api.score.buildin.bendable.BendableScore;
 import org.optaplanner.core.api.score.buildin.bendablebigdecimal.BendableBigDecimalScore;
 import org.optaplanner.core.api.score.buildin.bendablelong.BendableLongScore;
 import org.optaplanner.core.api.score.buildin.hardmediumsoft.HardMediumSoftScore;
+import org.optaplanner.core.api.score.buildin.hardmediumsoftbigdecimal.HardMediumSoftBigDecimalScore;
 import org.optaplanner.core.api.score.buildin.hardmediumsoftlong.HardMediumSoftLongScore;
 import org.optaplanner.core.api.score.buildin.hardsoft.HardSoftScore;
 import org.optaplanner.core.api.score.buildin.hardsoftbigdecimal.HardSoftBigDecimalScore;
-import org.optaplanner.core.api.score.buildin.hardsoftdouble.HardSoftDoubleScore;
 import org.optaplanner.core.api.score.buildin.hardsoftlong.HardSoftLongScore;
 import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
 import org.optaplanner.core.api.score.buildin.simplebigdecimal.SimpleBigDecimalScore;
-import org.optaplanner.core.api.score.buildin.simpledouble.SimpleDoubleScore;
 import org.optaplanner.core.api.score.buildin.simplelong.SimpleLongScore;
 import org.optaplanner.core.impl.score.definition.ScoreDefinition;
 
@@ -41,27 +40,25 @@ public class ScoreUtils {
      * @throws IllegalArgumentException if the scoreClass is a custom {@link Score}
      * @see ScoreDefinition#parseScore(String)
      */
-    public static Score parseScore(Class<? extends Score> scoreClass, String scoreString) {
+    public static Score parseScore(Class<? extends Score<?>> scoreClass, String scoreString) {
         if (SimpleScore.class.equals(scoreClass)) {
             return SimpleScore.parseScore(scoreString);
         } else if (SimpleLongScore.class.equals(scoreClass)) {
             return SimpleLongScore.parseScore(scoreString);
-        } else if (SimpleDoubleScore.class.equals(scoreClass)) {
-            return SimpleDoubleScore.parseScore(scoreString);
         } else if (SimpleBigDecimalScore.class.equals(scoreClass)) {
             return SimpleBigDecimalScore.parseScore(scoreString);
         } else if (HardSoftScore.class.equals(scoreClass)) {
             return HardSoftScore.parseScore(scoreString);
         } else if (HardSoftLongScore.class.equals(scoreClass)) {
             return HardSoftLongScore.parseScore(scoreString);
-        } else if (HardSoftDoubleScore.class.equals(scoreClass)) {
-            return HardSoftDoubleScore.parseScore(scoreString);
         } else if (HardSoftBigDecimalScore.class.equals(scoreClass)) {
             return HardSoftBigDecimalScore.parseScore(scoreString);
         } else if (HardMediumSoftScore.class.equals(scoreClass)) {
             return HardMediumSoftScore.parseScore(scoreString);
         } else if (HardMediumSoftLongScore.class.equals(scoreClass)) {
             return HardMediumSoftLongScore.parseScore(scoreString);
+        } else if (HardMediumSoftBigDecimalScore.class.equals(scoreClass)) {
+            return HardMediumSoftBigDecimalScore.parseScore(scoreString);
         } else if (BendableScore.class.equals(scoreClass)) {
             return BendableScore.parseScore(scoreString);
         } else if (BendableLongScore.class.equals(scoreClass)) {

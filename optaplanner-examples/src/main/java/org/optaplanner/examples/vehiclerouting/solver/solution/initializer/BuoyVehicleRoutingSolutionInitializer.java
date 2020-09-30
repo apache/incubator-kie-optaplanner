@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,8 +24,9 @@ import java.util.List;
 import java.util.Map;
 
 import org.optaplanner.core.api.score.Score;
-import org.optaplanner.core.impl.phase.custom.AbstractCustomPhaseCommand;
-import org.optaplanner.core.impl.score.director.ScoreDirector;
+import org.optaplanner.core.api.score.director.ScoreDirector;
+import org.optaplanner.core.impl.phase.custom.CustomPhaseCommand;
+import org.optaplanner.core.impl.score.director.InnerScoreDirector;
 import org.optaplanner.examples.vehiclerouting.domain.Customer;
 import org.optaplanner.examples.vehiclerouting.domain.Standstill;
 import org.optaplanner.examples.vehiclerouting.domain.Vehicle;
@@ -34,7 +35,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 // TODO PLANNER-380 Delete this class. Temporary implementation until BUOY_FIT is implemented as a Construction Heuristic
-public class BuoyVehicleRoutingSolutionInitializer extends AbstractCustomPhaseCommand<VehicleRoutingSolution> {
+public class BuoyVehicleRoutingSolutionInitializer implements CustomPhaseCommand<VehicleRoutingSolution> {
 
     protected final transient Logger logger = LoggerFactory.getLogger(getClass());
 
@@ -82,12 +83,12 @@ public class BuoyVehicleRoutingSolutionInitializer extends AbstractCustomPhaseCo
                     customer.setPreviousStandstill(buoy);
                     scoreDirector.afterVariableChanged(customer, "previousStandstill");
                     scoreDirector.triggerVariableListeners();
-                    Score score = scoreDirector.calculateScore();
+                    Score score = ((InnerScoreDirector<VehicleRoutingSolution, ?>) scoreDirector).calculateScore();
                     scoreDirector.beforeVariableChanged(customer, "previousStandstill");
                     customer.setPreviousStandstill(null);
                     scoreDirector.afterVariableChanged(customer, "previousStandstill");
                     scoreDirector.triggerVariableListeners();
-                    if (stepScore == null || score.toInitializedScore().compareTo(stepScore.toInitializedScore()) > 0) {
+                    if (stepScore == null || score.withInitScore(0).compareTo(stepScore.withInitScore(0)) > 0) {
                         stepScore = score;
                         stepBuoyIndex = i;
                         stepEntity = customer;

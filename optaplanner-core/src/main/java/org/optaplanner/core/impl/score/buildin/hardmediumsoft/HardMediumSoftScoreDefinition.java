@@ -1,5 +1,5 @@
 /*
- * Copyright 2012 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,16 +19,15 @@ package org.optaplanner.core.impl.score.buildin.hardmediumsoft;
 import java.util.Arrays;
 
 import org.optaplanner.core.api.score.buildin.hardmediumsoft.HardMediumSoftScore;
-import org.optaplanner.core.api.score.buildin.hardmediumsoft.HardMediumSoftScoreHolder;
 import org.optaplanner.core.config.score.trend.InitializingScoreTrendLevel;
-import org.optaplanner.core.impl.score.definition.AbstractFeasibilityScoreDefinition;
+import org.optaplanner.core.impl.score.definition.AbstractScoreDefinition;
 import org.optaplanner.core.impl.score.inliner.ScoreInliner;
 import org.optaplanner.core.impl.score.trend.InitializingScoreTrend;
 
-public class HardMediumSoftScoreDefinition extends AbstractFeasibilityScoreDefinition<HardMediumSoftScore> {
+public class HardMediumSoftScoreDefinition extends AbstractScoreDefinition<HardMediumSoftScore> {
 
     public HardMediumSoftScoreDefinition() {
-        super(new String[]{"hard score", "medium score", "soft score"});
+        super(new String[] { "hard score", "medium score", "soft score" });
     }
 
     // ************************************************************************
@@ -56,6 +55,11 @@ public class HardMediumSoftScoreDefinition extends AbstractFeasibilityScoreDefin
     }
 
     @Override
+    public HardMediumSoftScore getOneSoftestScore() {
+        return HardMediumSoftScore.ONE_SOFT;
+    }
+
+    @Override
     public HardMediumSoftScore parseScore(String scoreString) {
         return HardMediumSoftScore.parseScore(scoreString);
     }
@@ -66,7 +70,8 @@ public class HardMediumSoftScoreDefinition extends AbstractFeasibilityScoreDefin
             throw new IllegalStateException("The levelNumbers (" + Arrays.toString(levelNumbers)
                     + ")'s length (" + levelNumbers.length + ") must equal the levelSize (" + getLevelsSize() + ").");
         }
-        return HardMediumSoftScore.ofUninitialized(initScore, (Integer) levelNumbers[0], (Integer) levelNumbers[1], (Integer) levelNumbers[2]);
+        return HardMediumSoftScore.ofUninitialized(initScore, (Integer) levelNumbers[0], (Integer) levelNumbers[1],
+                (Integer) levelNumbers[2]);
     }
 
     @Override
@@ -75,12 +80,13 @@ public class HardMediumSoftScoreDefinition extends AbstractFeasibilityScoreDefin
     }
 
     @Override
-    public HardMediumSoftScoreHolder buildScoreHolder(boolean constraintMatchEnabled) {
-        return new HardMediumSoftScoreHolder(constraintMatchEnabled);
+    public HardMediumSoftScoreHolderImpl buildScoreHolder(boolean constraintMatchEnabled) {
+        return new HardMediumSoftScoreHolderImpl(constraintMatchEnabled);
     }
 
     @Override
-    public HardMediumSoftScore buildOptimisticBound(InitializingScoreTrend initializingScoreTrend, HardMediumSoftScore score) {
+    public HardMediumSoftScore buildOptimisticBound(InitializingScoreTrend initializingScoreTrend,
+            HardMediumSoftScore score) {
         InitializingScoreTrendLevel[] trendLevels = initializingScoreTrend.getTrendLevels();
         return HardMediumSoftScore.ofUninitialized(0,
                 trendLevels[0] == InitializingScoreTrendLevel.ONLY_DOWN ? score.getHardScore() : Integer.MAX_VALUE,
@@ -89,7 +95,8 @@ public class HardMediumSoftScoreDefinition extends AbstractFeasibilityScoreDefin
     }
 
     @Override
-    public HardMediumSoftScore buildPessimisticBound(InitializingScoreTrend initializingScoreTrend, HardMediumSoftScore score) {
+    public HardMediumSoftScore buildPessimisticBound(InitializingScoreTrend initializingScoreTrend,
+            HardMediumSoftScore score) {
         InitializingScoreTrendLevel[] trendLevels = initializingScoreTrend.getTrendLevels();
         return HardMediumSoftScore.ofUninitialized(0,
                 trendLevels[0] == InitializingScoreTrendLevel.ONLY_UP ? score.getHardScore() : Integer.MIN_VALUE,
@@ -97,4 +104,22 @@ public class HardMediumSoftScoreDefinition extends AbstractFeasibilityScoreDefin
                 trendLevels[2] == InitializingScoreTrendLevel.ONLY_UP ? score.getSoftScore() : Integer.MIN_VALUE);
     }
 
+    @Override
+    public HardMediumSoftScore divideBySanitizedDivisor(HardMediumSoftScore dividend, HardMediumSoftScore divisor) {
+        int dividendInitScore = dividend.getInitScore();
+        int divisorInitScore = sanitize(divisor.getInitScore());
+        int dividendHardScore = dividend.getHardScore();
+        int divisorHardScore = sanitize(divisor.getHardScore());
+        int dividendMediumScore = dividend.getMediumScore();
+        int divisorMediumScore = sanitize(divisor.getMediumScore());
+        int dividendSoftScore = dividend.getSoftScore();
+        int divisorSoftScore = sanitize(divisor.getSoftScore());
+        return fromLevelNumbers(
+                divide(dividendInitScore, divisorInitScore),
+                new Number[] {
+                        divide(dividendHardScore, divisorHardScore),
+                        divide(dividendMediumScore, divisorMediumScore),
+                        divide(dividendSoftScore, divisorSoftScore)
+                });
+    }
 }

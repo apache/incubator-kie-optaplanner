@@ -1,11 +1,11 @@
 /*
- * Copyright 2011 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- * http://www.apache.org/licenses/LICENSE-2.0
+ *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -16,6 +16,9 @@
 
 package org.optaplanner.core.api.domain.solution;
 
+import static java.lang.annotation.ElementType.TYPE;
+import static java.lang.annotation.RetentionPolicy.RUNTIME;
+
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
@@ -23,11 +26,6 @@ import org.optaplanner.core.api.domain.autodiscover.AutoDiscoverMemberType;
 import org.optaplanner.core.api.domain.constraintweight.ConstraintConfigurationProvider;
 import org.optaplanner.core.api.domain.lookup.LookUpStrategyType;
 import org.optaplanner.core.api.domain.solution.cloner.SolutionCloner;
-import org.optaplanner.core.api.domain.solution.drools.ProblemFactCollectionProperty;
-import org.optaplanner.core.api.domain.solution.drools.ProblemFactProperty;
-
-import static java.lang.annotation.ElementType.*;
-import static java.lang.annotation.RetentionPolicy.*;
 
 /**
  * Specifies that the class is a planning solution.
@@ -53,7 +51,7 @@ import static java.lang.annotation.RetentionPolicy.*;
  * The class should have a public no-arg constructor, so it can be cloned
  * (unless the {@link #solutionCloner()} is specified).
  */
-@Target({TYPE})
+@Target({ TYPE })
 @Retention(RUNTIME)
 public @interface PlanningSolution {
 
@@ -62,6 +60,7 @@ public @interface PlanningSolution {
      * to automatically assume {@link PlanningScore}, {@link PlanningEntityCollectionProperty},
      * {@link PlanningEntityProperty}, {@link ProblemFactCollectionProperty}, {@link ProblemFactProperty}
      * and {@link ConstraintConfigurationProvider} annotations based on the member type.
+     *
      * @return never null
      */
     AutoDiscoverMemberType autoDiscoverMemberType() default AutoDiscoverMemberType.NONE;
@@ -71,13 +70,14 @@ public @interface PlanningSolution {
      * <p>
      * If this is not specified, then the default reflection-based {@link SolutionCloner} is used,
      * so you don't have to worry about it.
+     *
      * @return {@link NullSolutionCloner} when it is null (workaround for annotation limitation)
      */
-    Class<? extends SolutionCloner> solutionCloner()
-            default NullSolutionCloner.class;
+    Class<? extends SolutionCloner> solutionCloner() default NullSolutionCloner.class;
 
     /** Workaround for annotation limitation in {@link #solutionCloner()}. */
-    interface NullSolutionCloner extends SolutionCloner {}
+    interface NullSolutionCloner extends SolutionCloner {
+    }
 
     /**
      * @return never null

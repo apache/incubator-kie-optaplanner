@@ -1,5 +1,5 @@
 /*
- * Copyright 2012 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,19 +16,23 @@
 
 package org.optaplanner.core.impl.heuristic.selector.move.decorator;
 
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+import static org.optaplanner.core.impl.testdata.util.PlannerAssert.assertAllCodesOfMoveSelector;
+import static org.optaplanner.core.impl.testdata.util.PlannerAssert.verifyPhaseLifecycle;
+
 import java.util.Random;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.optaplanner.core.config.heuristic.selector.common.SelectionCacheType;
 import org.optaplanner.core.impl.heuristic.move.DummyMove;
 import org.optaplanner.core.impl.heuristic.selector.SelectorTestUtils;
 import org.optaplanner.core.impl.heuristic.selector.move.MoveSelector;
 import org.optaplanner.core.impl.phase.scope.AbstractPhaseScope;
 import org.optaplanner.core.impl.phase.scope.AbstractStepScope;
-import org.optaplanner.core.impl.solver.scope.DefaultSolverScope;
-
-import static org.mockito.Mockito.*;
-import static org.optaplanner.core.impl.testdata.util.PlannerAssert.*;
+import org.optaplanner.core.impl.solver.scope.SolverScope;
 
 public class ShufflingMoveSelectorTest {
 
@@ -56,7 +60,7 @@ public class ShufflingMoveSelectorTest {
 
         Random workingRandom = mock(Random.class);
 
-        DefaultSolverScope solverScope = mock(DefaultSolverScope.class);
+        SolverScope solverScope = mock(SolverScope.class);
         when(solverScope.getWorkingRandom()).thenReturn(workingRandom);
         moveSelector.solvingStarted(solverScope);
 

@@ -1,8 +1,25 @@
+/*
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package org.optaplanner.core.config.solver;
+
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Random;
@@ -10,12 +27,11 @@ import java.util.stream.IntStream;
 
 import org.assertj.core.api.Assertions;
 import org.assertj.core.api.SoftAssertions;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.EnumSource;
 import org.optaplanner.core.api.score.Score;
+import org.optaplanner.core.api.score.director.ScoreDirector;
 import org.optaplanner.core.api.solver.Solver;
 import org.optaplanner.core.api.solver.SolverFactory;
 import org.optaplanner.core.config.heuristic.selector.move.factory.MoveListFactoryConfig;
@@ -31,7 +47,7 @@ import org.optaplanner.core.impl.heuristic.selector.move.factory.MoveListFactory
 import org.optaplanner.core.impl.phase.custom.CustomPhaseCommand;
 import org.optaplanner.core.impl.phase.event.PhaseLifecycleListenerAdapter;
 import org.optaplanner.core.impl.phase.scope.AbstractStepScope;
-import org.optaplanner.core.impl.score.director.ScoreDirector;
+import org.optaplanner.core.impl.score.director.InnerScoreDirector;
 import org.optaplanner.core.impl.score.director.easy.EasyScoreCalculator;
 import org.optaplanner.core.impl.solver.DefaultSolver;
 import org.optaplanner.core.impl.solver.random.RandomFactory;
@@ -40,61 +56,48 @@ import org.optaplanner.core.impl.testdata.domain.TestdataSolution;
 import org.optaplanner.core.impl.testdata.domain.TestdataValue;
 import org.optaplanner.core.impl.testdata.util.PlannerTestUtils;
 
-import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
-
-@RunWith(Parameterized.class)
 public class EnvironmentModeTest {
 
     private static final int NUMBER_OF_RANDOM_NUMBERS_GENERATED = 1000;
     private static final int NUMBER_OF_TIMES_RUN = 10;
     private static final int NUMBER_OF_TERMINATION_STEP_COUNT_LIMIT = 20;
 
-    private final EnvironmentMode environmentMode;
     private static TestdataSolution inputProblem;
-    private SolverConfig solverConfig;
 
-    public EnvironmentModeTest(EnvironmentMode environmentMode) {
-        this.environmentMode = environmentMode;
-    }
-
-    @BeforeClass
+    @BeforeAll
     public static void setUpInputProblem() {
         inputProblem = new TestdataSolution("s1");
         inputProblem.setValueList(Arrays.asList(new TestdataValue("v1"), new TestdataValue("v2"),
-                                                new TestdataValue("v3")));
+                new TestdataValue("v3")));
         inputProblem.setEntityList(Arrays.asList(new TestdataEntity("e1"), new TestdataEntity("e2"),
-                                                 new TestdataEntity("e3"), new TestdataEntity("e4")));
+                new TestdataEntity("e3"), new TestdataEntity("e4")));
     }
 
-    @Before
-    public void setUpSolverConfig() {
+    private static SolverConfig buildSolverConfig(EnvironmentMode environmentMode) {
         CustomPhaseConfig initializerPhaseConfig = new CustomPhaseConfig()
                 .withCustomPhaseCommandClassList(Collections.singletonList(TestdataFirstValueInitializer.class));
 
         LocalSearchPhaseConfig localSearchPhaseConfig = new LocalSearchPhaseConfig();
-        localSearchPhaseConfig.setTerminationConfig(new TerminationConfig().withStepCountLimit(NUMBER_OF_TERMINATION_STEP_COUNT_LIMIT));
+        localSearchPhaseConfig
+                .setTerminationConfig(new TerminationConfig().withStepCountLimit(NUMBER_OF_TERMINATION_STEP_COUNT_LIMIT));
 
-        solverConfig = new SolverConfig()
+        return new SolverConfig()
                 .withSolutionClass(TestdataSolution.class)
                 .withEntityClasses(TestdataEntity.class)
                 .withEnvironmentMode(environmentMode)
                 .withPhases(initializerPhaseConfig, localSearchPhaseConfig);
     }
 
-    @Parameterized.Parameters(name = "{0}")
-    public static Collection<EnvironmentMode> params() {
-        return Arrays.asList(EnvironmentMode.values());
-    }
-
-    @Test
-    public void determinismTest() {
-        setSolverConfigCalculatorClass(TestdataDifferentValuesCalculator.class);
+    @ParameterizedTest(name = "{0}")
+    @EnumSource(EnvironmentMode.class)
+    public void determinism(EnvironmentMode environmentMode) {
+        SolverConfig solverConfig = buildSolverConfig(environmentMode);
+        setSolverConfigCalculatorClass(solverConfig, TestdataDifferentValuesCalculator.class);
 
         Solver solver1 = SolverFactory.create(solverConfig).buildSolver();
         Solver solver2 = SolverFactory.create(solverConfig).buildSolver();
 
         switch (environmentMode) {
-            case PRODUCTION:
             case NON_REPRODUCIBLE:
                 assertNonReproducibility(solver1, solver2);
                 break;
@@ -109,24 +112,29 @@ public class EnvironmentModeTest {
         }
     }
 
-    @Test
-    public void corruptedCustomMovesTest() {
+    @ParameterizedTest(name = "{0}")
+    @EnumSource(EnvironmentMode.class)
+    public void corruptedCustomMoves(EnvironmentMode environmentMode) {
+        SolverConfig solverConfig = buildSolverConfig(environmentMode);
         // Intrusive modes should throw exception about corrupted undoMove
-        setSolverConfigCalculatorClass(TestdataDifferentValuesCalculator.class);
+        setSolverConfigCalculatorClass(solverConfig, TestdataDifferentValuesCalculator.class);
 
         switch (environmentMode) {
             case FULL_ASSERT:
             case FAST_ASSERT:
-                setSolverConfigMoveListFactoryClassToCorrupted(TestdataCorruptedUndoMoveFactory.class);
-                assertIllegalStateExceptionWhileSolving("corrupted undoMove");
+                setSolverConfigMoveListFactoryClassToCorrupted(
+                        solverConfig,
+                        TestdataCorruptedUndoMoveFactory.class);
+                assertIllegalStateExceptionWhileSolving(solverConfig, "corrupted undoMove");
                 break;
             case NON_INTRUSIVE_FULL_ASSERT:
-                setSolverConfigMoveListFactoryClassToCorrupted(TestdataCorruptedEntityUndoMoveFactory.class);
-                assertIllegalStateExceptionWhileSolving("not the uncorruptedScore");
+                setSolverConfigMoveListFactoryClassToCorrupted(
+                        solverConfig,
+                        TestdataCorruptedEntityUndoMoveFactory.class);
+                assertIllegalStateExceptionWhileSolving(solverConfig, "not the uncorruptedScore");
                 break;
             case REPRODUCIBLE:
             case NON_REPRODUCIBLE:
-            case PRODUCTION:
                 // No exception expected
                 break;
             default:
@@ -134,22 +142,27 @@ public class EnvironmentModeTest {
         }
     }
 
-    @Test
-    public void corruptedScoreRulesTest() {
+    @ParameterizedTest(name = "{0}")
+    @EnumSource(EnvironmentMode.class)
+    public void corruptedConstraints(EnvironmentMode environmentMode) {
+        SolverConfig solverConfig = buildSolverConfig(environmentMode);
         // For full assert modes it should throw exception about corrupted score
-        setSolverConfigCalculatorClass(TestdataCorruptedDifferentValuesCalculator.class);
+        setSolverConfigCalculatorClass(solverConfig, TestdataCorruptedDifferentValuesCalculator.class);
 
         switch (environmentMode) {
             case FULL_ASSERT:
             case NON_INTRUSIVE_FULL_ASSERT:
-                assertIllegalStateExceptionWhileSolving("not the uncorruptedScore");
+                assertIllegalStateExceptionWhileSolving(
+                        solverConfig,
+                        "not the uncorruptedScore");
                 break;
             case FAST_ASSERT:
-                assertIllegalStateExceptionWhileSolving("Score corruption analysis could not be generated ");
+                assertIllegalStateExceptionWhileSolving(
+                        solverConfig,
+                        "Score corruption analysis could not be generated ");
                 break;
             case REPRODUCIBLE:
             case NON_REPRODUCIBLE:
-            case PRODUCTION:
                 // No exception expected
                 break;
             default:
@@ -159,17 +172,17 @@ public class EnvironmentModeTest {
 
     private void assertReproducibility(Solver<TestdataSolution> solver1, Solver<TestdataSolution> solver2) {
         assertGeneratingSameNumbers(((DefaultSolver<TestdataSolution>) solver1).getRandomFactory(),
-                                    ((DefaultSolver<TestdataSolution>) solver2).getRandomFactory());
+                ((DefaultSolver<TestdataSolution>) solver2).getRandomFactory());
         assertSameScoreSeries(solver1, solver2);
     }
 
     private void assertNonReproducibility(Solver<TestdataSolution> solver1, Solver<TestdataSolution> solver2) {
         assertGeneratingDifferentNumbers(((DefaultSolver<TestdataSolution>) solver1).getRandomFactory(),
-                                         ((DefaultSolver<TestdataSolution>) solver2).getRandomFactory());
+                ((DefaultSolver<TestdataSolution>) solver2).getRandomFactory());
         assertDifferentScoreSeries(solver1, solver2);
     }
 
-    private void assertIllegalStateExceptionWhileSolving(String exceptionMessage) {
+    private void assertIllegalStateExceptionWhileSolving(SolverConfig solverConfig, String exceptionMessage) {
         assertThatExceptionOfType(IllegalStateException.class)
                 .isThrownBy(() -> PlannerTestUtils.solve(solverConfig, inputProblem))
                 .withMessageContaining(exceptionMessage);
@@ -188,7 +201,7 @@ public class EnvironmentModeTest {
                     solver2.solve(inputProblem);
                     softly.assertThat(listener.getScores())
                             .as("Score steps should be the same "
-                                        + "in a reproducible environment mode.")
+                                    + "in a reproducible environment mode.")
                             .isEqualTo(listener2.getScores());
                 }));
     }
@@ -206,9 +219,9 @@ public class EnvironmentModeTest {
                     solver2.solve(inputProblem);
                     softly.assertThat(listener.getScores())
                             .as("Score steps should not be the same in a non-reproducible environment mode. "
-                                        + "This might be possible because searchSpace is not infinite and "
-                                        + "two different random scenarios can have the same results. "
-                                        + "Run test again.")
+                                    + "This might be possible because searchSpace is not infinite and "
+                                    + "two different random scenarios can have the same results. "
+                                    + "Run test again.")
                             .isNotEqualTo(listener2.getScores());
                 }));
     }
@@ -220,7 +233,7 @@ public class EnvironmentModeTest {
         SoftAssertions.assertSoftly(softly -> IntStream.range(0, NUMBER_OF_RANDOM_NUMBERS_GENERATED)
                 .forEach(i -> softly.assertThat(random.nextInt())
                         .as("Random factories should generate the same results "
-                                    + "in a reproducible environment mode.")
+                                + "in a reproducible environment mode.")
                         .isEqualTo(random2.nextInt())));
     }
 
@@ -231,17 +244,19 @@ public class EnvironmentModeTest {
         SoftAssertions.assertSoftly(softly -> IntStream.range(0, NUMBER_OF_RANDOM_NUMBERS_GENERATED)
                 .forEach(i -> softly.assertThat(random.nextInt())
                         .as("Random factories should not generate exactly the same results "
-                                    + "in the non-reproducible environment mode. "
-                                    + "It can happen but the probability is very low. Run test again")
+                                + "in the non-reproducible environment mode. "
+                                + "It can happen but the probability is very low. Run test again")
                         .isNotEqualTo(random2.nextInt())));
     }
 
-    private void setSolverConfigCalculatorClass(Class<? extends EasyScoreCalculator<TestdataSolution>> easyScoreCalculatorClass) {
+    private void setSolverConfigCalculatorClass(SolverConfig solverConfig,
+            Class<? extends EasyScoreCalculator> easyScoreCalculatorClass) {
         solverConfig.setScoreDirectorFactoryConfig(new ScoreDirectorFactoryConfig()
-                                                           .withEasyScoreCalculatorClass(easyScoreCalculatorClass));
+                .withEasyScoreCalculatorClass(easyScoreCalculatorClass));
     }
 
-    private void setSolverConfigMoveListFactoryClassToCorrupted(Class<? extends MoveListFactory<TestdataSolution>> move) {
+    private void setSolverConfigMoveListFactoryClassToCorrupted(SolverConfig solverConfig,
+            Class<? extends MoveListFactory<TestdataSolution>> move) {
         MoveListFactoryConfig moveListFactoryConfig = new MoveListFactoryConfig();
         moveListFactoryConfig.setMoveListFactoryClass(move);
 
@@ -250,7 +265,8 @@ public class EnvironmentModeTest {
 
         LocalSearchPhaseConfig localSearchPhaseConfig = new LocalSearchPhaseConfig();
         localSearchPhaseConfig.setMoveSelectorConfig(moveListFactoryConfig);
-        localSearchPhaseConfig.setTerminationConfig(new TerminationConfig().withStepCountLimit(NUMBER_OF_TERMINATION_STEP_COUNT_LIMIT));
+        localSearchPhaseConfig
+                .setTerminationConfig(new TerminationConfig().withStepCountLimit(NUMBER_OF_TERMINATION_STEP_COUNT_LIMIT));
 
         solverConfig.withPhases(initializerPhaseConfig, localSearchPhaseConfig);
     }
@@ -269,12 +285,14 @@ public class EnvironmentModeTest {
             }
 
             scoreDirector.triggerVariableListeners();
-            Score<?> score = scoreDirector.calculateScore();
+            InnerScoreDirector<TestdataSolution, ?> innerScoreDirector =
+                    (InnerScoreDirector<TestdataSolution, ?>) scoreDirector;
+            Score<?> score = innerScoreDirector.calculateScore();
 
             if (!score.isSolutionInitialized()) {
                 throw new IllegalStateException("The solution (" + TestdataEntity.class.getSimpleName()
-                                                        + ") was not fully initialized by CustomSolverPhase: ("
-                                                        + this.getClass().getCanonicalName() + ")");
+                        + ") was not fully initialized by CustomSolverPhase: ("
+                        + this.getClass().getCanonicalName() + ")");
             }
         }
     }

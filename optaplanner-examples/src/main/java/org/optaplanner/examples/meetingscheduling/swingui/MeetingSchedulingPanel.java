@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,6 +16,12 @@
 
 package org.optaplanner.examples.meetingscheduling.swingui;
 
+import static org.apache.commons.lang3.ObjectUtils.defaultIfNull;
+import static org.optaplanner.examples.common.swingui.timetable.TimeTablePanel.HeaderColumnKey.HEADER_COLUMN;
+import static org.optaplanner.examples.common.swingui.timetable.TimeTablePanel.HeaderColumnKey.HEADER_COLUMN_GROUP1;
+import static org.optaplanner.examples.common.swingui.timetable.TimeTablePanel.HeaderRowKey.HEADER_ROW;
+import static org.optaplanner.examples.common.swingui.timetable.TimeTablePanel.HeaderRowKey.HEADER_ROW_GROUP1;
+
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.GridLayout;
@@ -23,6 +29,7 @@ import java.awt.event.ActionEvent;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 import javax.swing.AbstractAction;
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
@@ -50,10 +57,6 @@ import org.optaplanner.examples.meetingscheduling.domain.Room;
 import org.optaplanner.examples.meetingscheduling.domain.TimeGrain;
 import org.optaplanner.swing.impl.SwingUtils;
 import org.optaplanner.swing.impl.TangoColorFactory;
-
-import static org.apache.commons.lang3.ObjectUtils.*;
-import static org.optaplanner.examples.common.swingui.timetable.TimeTablePanel.HeaderColumnKey.*;
-import static org.optaplanner.examples.common.swingui.timetable.TimeTablePanel.HeaderRowKey.*;
 
 public class MeetingSchedulingPanel extends SolutionPanel<MeetingSchedule> {
 
@@ -273,7 +276,7 @@ public class MeetingSchedulingPanel extends SolutionPanel<MeetingSchedule> {
             roomListField.setSelectedItem(meetingAssignment.getRoom());
             listFieldsPanel.add(roomListField);
             listFieldsPanel.add(new JLabel("Pinned:"));
-            JCheckBox pinnedField = new JCheckBox("immovable during solving");
+            JCheckBox pinnedField = new JCheckBox("cannot move during solving");
             pinnedField.setSelected(meetingAssignment.isPinned());
             listFieldsPanel.add(pinnedField);
             int result = JOptionPane.showConfirmDialog(MeetingSchedulingPanel.this.getRootPane(), listFieldsPanel,

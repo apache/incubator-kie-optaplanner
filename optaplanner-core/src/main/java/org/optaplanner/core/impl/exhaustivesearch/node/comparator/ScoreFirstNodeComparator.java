@@ -1,5 +1,5 @@
 /*
- * Copyright 2014 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,7 +16,6 @@
 
 package org.optaplanner.core.impl.exhaustivesearch.node.comparator;
 
-import java.io.Serializable;
 import java.util.Comparator;
 
 import org.optaplanner.core.impl.exhaustivesearch.node.ExhaustiveSearchNode;
@@ -24,7 +23,7 @@ import org.optaplanner.core.impl.exhaustivesearch.node.ExhaustiveSearchNode;
 /**
  * Investigate the nodes with a better optimistic bound first, then deeper nodes.
  */
-public class ScoreFirstNodeComparator implements Comparator<ExhaustiveSearchNode>, Serializable {
+public class ScoreFirstNodeComparator implements Comparator<ExhaustiveSearchNode> {
 
     public ScoreFirstNodeComparator(boolean scoreBounderEnabled) {
         if (!scoreBounderEnabled) {
@@ -36,7 +35,7 @@ public class ScoreFirstNodeComparator implements Comparator<ExhaustiveSearchNode
     @Override
     public int compare(ExhaustiveSearchNode a, ExhaustiveSearchNode b) {
         // Investigate better score first (ignore initScore to avoid depth first ordering)
-        int scoreComparison = a.getScore().toInitializedScore().compareTo(b.getScore().toInitializedScore());
+        int scoreComparison = a.getScore().withInitScore(0).compareTo(b.getScore().withInitScore(0));
         if (scoreComparison < 0) {
             return -1;
         } else if (scoreComparison > 0) {

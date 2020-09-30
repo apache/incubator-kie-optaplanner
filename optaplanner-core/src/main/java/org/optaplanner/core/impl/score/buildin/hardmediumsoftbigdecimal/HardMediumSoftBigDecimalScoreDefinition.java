@@ -1,5 +1,5 @@
 /*
- * Copyright 2017 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,14 +20,13 @@ import java.math.BigDecimal;
 import java.util.Arrays;
 
 import org.optaplanner.core.api.score.buildin.hardmediumsoftbigdecimal.HardMediumSoftBigDecimalScore;
-import org.optaplanner.core.api.score.buildin.hardmediumsoftbigdecimal.HardMediumSoftBigDecimalScoreHolder;
-import org.optaplanner.core.impl.score.definition.AbstractFeasibilityScoreDefinition;
+import org.optaplanner.core.impl.score.definition.AbstractScoreDefinition;
 import org.optaplanner.core.impl.score.trend.InitializingScoreTrend;
 
-public class HardMediumSoftBigDecimalScoreDefinition extends AbstractFeasibilityScoreDefinition<HardMediumSoftBigDecimalScore> {
+public class HardMediumSoftBigDecimalScoreDefinition extends AbstractScoreDefinition<HardMediumSoftBigDecimalScore> {
 
     public HardMediumSoftBigDecimalScoreDefinition() {
-        super(new String[]{"hard score", "medium score", "soft score"});
+        super(new String[] { "hard score", "medium score", "soft score" });
     }
 
     // ************************************************************************
@@ -55,6 +54,11 @@ public class HardMediumSoftBigDecimalScoreDefinition extends AbstractFeasibility
     }
 
     @Override
+    public HardMediumSoftBigDecimalScore getOneSoftestScore() {
+        return HardMediumSoftBigDecimalScore.ONE_SOFT;
+    }
+
+    @Override
     public HardMediumSoftBigDecimalScore parseScore(String scoreString) {
         return HardMediumSoftBigDecimalScore.parseScore(scoreString);
     }
@@ -65,7 +69,8 @@ public class HardMediumSoftBigDecimalScoreDefinition extends AbstractFeasibility
             throw new IllegalStateException("The levelNumbers (" + Arrays.toString(levelNumbers)
                     + ")'s length (" + levelNumbers.length + ") must equal the levelSize (" + getLevelsSize() + ").");
         }
-        return HardMediumSoftBigDecimalScore.ofUninitialized(initScore, (BigDecimal) levelNumbers[0], (BigDecimal) levelNumbers[1], (BigDecimal) levelNumbers[2]);
+        return HardMediumSoftBigDecimalScore.ofUninitialized(initScore, (BigDecimal) levelNumbers[0],
+                (BigDecimal) levelNumbers[1], (BigDecimal) levelNumbers[2]);
     }
 
     @Override
@@ -74,22 +79,43 @@ public class HardMediumSoftBigDecimalScoreDefinition extends AbstractFeasibility
     }
 
     @Override
-    public HardMediumSoftBigDecimalScoreHolder buildScoreHolder(boolean constraintMatchEnabled) {
-        return new HardMediumSoftBigDecimalScoreHolder(constraintMatchEnabled);
+    public HardMediumSoftBigDecimalScoreHolderImpl buildScoreHolder(boolean constraintMatchEnabled) {
+        return new HardMediumSoftBigDecimalScoreHolderImpl(constraintMatchEnabled);
     }
 
     @Override
-    public HardMediumSoftBigDecimalScore buildOptimisticBound(InitializingScoreTrend initializingScoreTrend, HardMediumSoftBigDecimalScore score) {
+    public HardMediumSoftBigDecimalScore buildOptimisticBound(InitializingScoreTrend initializingScoreTrend,
+            HardMediumSoftBigDecimalScore score) {
         // TODO https://issues.redhat.com/browse/PLANNER-232
         throw new UnsupportedOperationException("PLANNER-232: BigDecimalScore does not support bounds" +
                 " because a BigDecimal cannot represent infinity.");
     }
 
     @Override
-    public HardMediumSoftBigDecimalScore buildPessimisticBound(InitializingScoreTrend initializingScoreTrend, HardMediumSoftBigDecimalScore score) {
+    public HardMediumSoftBigDecimalScore buildPessimisticBound(InitializingScoreTrend initializingScoreTrend,
+            HardMediumSoftBigDecimalScore score) {
         // TODO https://issues.redhat.com/browse/PLANNER-232
         throw new UnsupportedOperationException("PLANNER-232: BigDecimalScore does not support bounds" +
                 " because a BigDecimal cannot represent infinity.");
     }
 
+    @Override
+    public HardMediumSoftBigDecimalScore divideBySanitizedDivisor(HardMediumSoftBigDecimalScore dividend,
+            HardMediumSoftBigDecimalScore divisor) {
+        int dividendInitScore = dividend.getInitScore();
+        int divisorInitScore = sanitize(divisor.getInitScore());
+        BigDecimal dividendHardScore = dividend.getHardScore();
+        BigDecimal divisorHardScore = sanitize(divisor.getHardScore());
+        BigDecimal dividendMediumScore = dividend.getMediumScore();
+        BigDecimal divisorMediumScore = sanitize(divisor.getMediumScore());
+        BigDecimal dividendSoftScore = dividend.getSoftScore();
+        BigDecimal divisorSoftScore = sanitize(divisor.getSoftScore());
+        return fromLevelNumbers(
+                divide(dividendInitScore, divisorInitScore),
+                new Number[] {
+                        divide(dividendHardScore, divisorHardScore),
+                        divide(dividendMediumScore, divisorMediumScore),
+                        divide(dividendSoftScore, divisorSoftScore)
+                });
+    }
 }

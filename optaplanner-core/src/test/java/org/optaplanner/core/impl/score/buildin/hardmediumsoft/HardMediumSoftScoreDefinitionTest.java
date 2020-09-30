@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,28 +16,41 @@
 
 package org.optaplanner.core.impl.score.buildin.hardmediumsoft;
 
-import org.junit.Test;
+import static org.assertj.core.api.Assertions.assertThat;
+
+import org.junit.jupiter.api.Test;
 import org.optaplanner.core.api.score.buildin.hardmediumsoft.HardMediumSoftScore;
 import org.optaplanner.core.config.score.trend.InitializingScoreTrendLevel;
 import org.optaplanner.core.impl.score.trend.InitializingScoreTrend;
 
-import static org.junit.Assert.*;
-
 public class HardMediumSoftScoreDefinitionTest {
 
     @Test
+    public void getZeroScore() {
+        HardMediumSoftScore score = new HardMediumSoftScoreDefinition().getZeroScore();
+        assertThat(score).isEqualTo(HardMediumSoftScore.ZERO);
+    }
+
+    @Test
+    public void getSoftestOneScore() {
+        HardMediumSoftScore score = new HardMediumSoftScoreDefinition().getOneSoftestScore();
+        assertThat(score).isEqualTo(HardMediumSoftScore.ONE_SOFT);
+    }
+
+    @Test
     public void getLevelsSize() {
-        assertEquals(3, new HardMediumSoftScoreDefinition().getLevelsSize());
+        assertThat(new HardMediumSoftScoreDefinition().getLevelsSize()).isEqualTo(3);
     }
 
     @Test
     public void getLevelLabels() {
-        assertArrayEquals(new String[]{"hard score", "medium score", "soft score"}, new HardMediumSoftScoreDefinition().getLevelLabels());
+        assertThat(new HardMediumSoftScoreDefinition().getLevelLabels())
+                .isEqualTo(new String[] { "hard score", "medium score", "soft score" });
     }
 
     @Test
     public void getFeasibleLevelsSize() {
-        assertEquals(1, new HardMediumSoftScoreDefinition().getFeasibleLevelsSize());
+        assertThat(new HardMediumSoftScoreDefinition().getFeasibleLevelsSize()).isEqualTo(1);
     }
 
     @Test
@@ -46,10 +59,10 @@ public class HardMediumSoftScoreDefinitionTest {
         HardMediumSoftScore optimisticBound = scoreDefinition.buildOptimisticBound(
                 InitializingScoreTrend.buildUniformTrend(InitializingScoreTrendLevel.ONLY_UP, 3),
                 HardMediumSoftScore.of(-1, -2, -3));
-        assertEquals(0, optimisticBound.getInitScore());
-        assertEquals(Integer.MAX_VALUE, optimisticBound.getHardScore());
-        assertEquals(Integer.MAX_VALUE, optimisticBound.getMediumScore());
-        assertEquals(Integer.MAX_VALUE, optimisticBound.getSoftScore());
+        assertThat(optimisticBound.getInitScore()).isEqualTo(0);
+        assertThat(optimisticBound.getHardScore()).isEqualTo(Integer.MAX_VALUE);
+        assertThat(optimisticBound.getMediumScore()).isEqualTo(Integer.MAX_VALUE);
+        assertThat(optimisticBound.getSoftScore()).isEqualTo(Integer.MAX_VALUE);
     }
 
     @Test
@@ -58,10 +71,10 @@ public class HardMediumSoftScoreDefinitionTest {
         HardMediumSoftScore optimisticBound = scoreDefinition.buildOptimisticBound(
                 InitializingScoreTrend.buildUniformTrend(InitializingScoreTrendLevel.ONLY_DOWN, 3),
                 HardMediumSoftScore.of(-1, -2, -3));
-        assertEquals(0, optimisticBound.getInitScore());
-        assertEquals(-1, optimisticBound.getHardScore());
-        assertEquals(-2, optimisticBound.getMediumScore());
-        assertEquals(-3, optimisticBound.getSoftScore());
+        assertThat(optimisticBound.getInitScore()).isEqualTo(0);
+        assertThat(optimisticBound.getHardScore()).isEqualTo(-1);
+        assertThat(optimisticBound.getMediumScore()).isEqualTo(-2);
+        assertThat(optimisticBound.getSoftScore()).isEqualTo(-3);
     }
 
     @Test
@@ -70,10 +83,10 @@ public class HardMediumSoftScoreDefinitionTest {
         HardMediumSoftScore pessimisticBound = scoreDefinition.buildPessimisticBound(
                 InitializingScoreTrend.buildUniformTrend(InitializingScoreTrendLevel.ONLY_UP, 3),
                 HardMediumSoftScore.of(-1, -2, -3));
-        assertEquals(0, pessimisticBound.getInitScore());
-        assertEquals(-1, pessimisticBound.getHardScore());
-        assertEquals(-2, pessimisticBound.getMediumScore());
-        assertEquals(-3, pessimisticBound.getSoftScore());
+        assertThat(pessimisticBound.getInitScore()).isEqualTo(0);
+        assertThat(pessimisticBound.getHardScore()).isEqualTo(-1);
+        assertThat(pessimisticBound.getMediumScore()).isEqualTo(-2);
+        assertThat(pessimisticBound.getSoftScore()).isEqualTo(-3);
     }
 
     @Test
@@ -82,10 +95,25 @@ public class HardMediumSoftScoreDefinitionTest {
         HardMediumSoftScore pessimisticBound = scoreDefinition.buildPessimisticBound(
                 InitializingScoreTrend.buildUniformTrend(InitializingScoreTrendLevel.ONLY_DOWN, 3),
                 HardMediumSoftScore.of(-1, -2, -3));
-        assertEquals(0, pessimisticBound.getInitScore());
-        assertEquals(Integer.MIN_VALUE, pessimisticBound.getHardScore());
-        assertEquals(Integer.MIN_VALUE, pessimisticBound.getMediumScore());
-        assertEquals(Integer.MIN_VALUE, pessimisticBound.getSoftScore());
+        assertThat(pessimisticBound.getInitScore()).isEqualTo(0);
+        assertThat(pessimisticBound.getHardScore()).isEqualTo(Integer.MIN_VALUE);
+        assertThat(pessimisticBound.getMediumScore()).isEqualTo(Integer.MIN_VALUE);
+        assertThat(pessimisticBound.getSoftScore()).isEqualTo(Integer.MIN_VALUE);
+    }
+
+    @Test
+    public void divideBySanitizedDivisor() {
+        HardMediumSoftScoreDefinition scoreDefinition = new HardMediumSoftScoreDefinition();
+        HardMediumSoftScore dividend = scoreDefinition.fromLevelNumbers(2, new Number[] { 0, 1, 10 });
+        HardMediumSoftScore zeroDivisor = scoreDefinition.getZeroScore();
+        assertThat(scoreDefinition.divideBySanitizedDivisor(dividend, zeroDivisor))
+                .isEqualTo(dividend);
+        HardMediumSoftScore oneDivisor = scoreDefinition.getOneSoftestScore();
+        assertThat(scoreDefinition.divideBySanitizedDivisor(dividend, oneDivisor))
+                .isEqualTo(dividend);
+        HardMediumSoftScore tenDivisor = scoreDefinition.fromLevelNumbers(10, new Number[] { 10, 10, 10 });
+        assertThat(scoreDefinition.divideBySanitizedDivisor(dividend, tenDivisor))
+                .isEqualTo(scoreDefinition.fromLevelNumbers(0, new Number[] { 0, 0, 1 }));
     }
 
 }

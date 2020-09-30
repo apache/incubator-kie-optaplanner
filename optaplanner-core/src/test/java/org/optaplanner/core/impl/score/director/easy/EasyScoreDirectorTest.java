@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,11 +15,15 @@
  */
 package org.optaplanner.core.impl.score.director.easy;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatIllegalStateException;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+
 import java.util.Arrays;
 
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.ExpectedException;
+import org.junit.jupiter.api.Test;
 import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
 import org.optaplanner.core.config.score.trend.InitializingScoreTrendLevel;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
@@ -28,39 +32,33 @@ import org.optaplanner.core.impl.testdata.domain.TestdataValue;
 import org.optaplanner.core.impl.testdata.domain.shadow.corrupted.TestdataCorruptedShadowedEntity;
 import org.optaplanner.core.impl.testdata.domain.shadow.corrupted.TestdataCorruptedShadowedSolution;
 
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
-
 public class EasyScoreDirectorTest {
-
-    @Rule
-    public final ExpectedException expectedException = ExpectedException.none();
 
     @Test
     public void constraintMatchTotalsUnsupported() {
-        EasyScoreDirector<Object> director
-                = new EasyScoreDirector<>(mockEasyScoreDirectorFactory(), false, true, null);
-        assertFalse(director.isConstraintMatchEnabled());
-        expectedException.expect(IllegalStateException.class);
-        expectedException.expectMessage("not supported");
-        director.getConstraintMatchTotals();
+        EasyScoreDirector<Object, ?> director = new EasyScoreDirector<>(mockEasyScoreDirectorFactory(), false, true, null);
+        assertThat(director.isConstraintMatchEnabled()).isFalse();
+        assertThatIllegalStateException()
+                .isThrownBy(director::getConstraintMatchTotalMap)
+                .withMessageContaining("not supported");
     }
 
     @SuppressWarnings("unchecked")
-    private EasyScoreDirectorFactory<Object> mockEasyScoreDirectorFactory() {
-        EasyScoreDirectorFactory<Object> factory = mock(EasyScoreDirectorFactory.class);
+    private EasyScoreDirectorFactory<Object, ?> mockEasyScoreDirectorFactory() {
+        EasyScoreDirectorFactory<Object, ?> factory = mock(EasyScoreDirectorFactory.class);
         when(factory.getSolutionDescriptor()).thenReturn(mock(SolutionDescriptor.class));
         return factory;
     }
 
     @Test
     public void shadowVariableCorruption() {
-        EasyScoreDirectorFactory<TestdataCorruptedShadowedSolution> scoreDirectorFactory =
+        EasyScoreDirectorFactory<TestdataCorruptedShadowedSolution, SimpleScore> scoreDirectorFactory =
                 new EasyScoreDirectorFactory<>(TestdataCorruptedShadowedSolution.buildSolutionDescriptor(),
-                        (EasyScoreCalculator<TestdataCorruptedShadowedSolution>) (solution_) -> SimpleScore.of(0));
+                        (solution_) -> SimpleScore.of(0));
         scoreDirectorFactory.setInitializingScoreTrend(
                 InitializingScoreTrend.buildUniformTrend(InitializingScoreTrendLevel.ONLY_DOWN, 1));
-        EasyScoreDirector<TestdataCorruptedShadowedSolution> scoreDirector = scoreDirectorFactory.buildScoreDirector(false, false);
+        EasyScoreDirector<TestdataCorruptedShadowedSolution, SimpleScore> scoreDirector =
+                scoreDirectorFactory.buildScoreDirector(false, false);
 
         TestdataCorruptedShadowedSolution solution = new TestdataCorruptedShadowedSolution("s1");
         TestdataValue v1 = new TestdataValue("v1");
@@ -79,13 +77,8 @@ public class EasyScoreDirectorTest {
         e2.setValue(v1);
         scoreDirector.afterVariableChanged(e2, "value");
         scoreDirector.triggerVariableListeners();
-        // TODO After upgrade to JUnit 5, clean this up
-        try {
-            scoreDirector.assertShadowVariablesAreNotStale(SimpleScore.ofUninitialized(0, 0), "FirstChange");
-            fail("IllegalStateException wasn't thrown.");
-        } catch (IllegalStateException e) {
-            // ok
-        }
+        assertThatThrownBy(
+                () -> scoreDirector.assertShadowVariablesAreNotStale(SimpleScore.ofUninitialized(0, 0), "FirstChange"))
+                        .isInstanceOf(IllegalStateException.class);
     }
-
 }

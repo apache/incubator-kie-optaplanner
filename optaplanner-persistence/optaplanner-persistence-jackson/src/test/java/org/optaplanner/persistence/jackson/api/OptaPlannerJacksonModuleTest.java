@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,16 +16,17 @@
 
 package org.optaplanner.persistence.jackson.api;
 
-import com.fasterxml.jackson.databind.MapperFeature;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import org.junit.Test;
+import static org.assertj.core.api.Assertions.assertThat;
+
+import org.junit.jupiter.api.Test;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.buildin.bendable.BendableScore;
 import org.optaplanner.core.api.score.buildin.hardsoft.HardSoftScore;
 
-import static org.junit.Assert.*;
+import com.fasterxml.jackson.databind.MapperFeature;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
-public class OptaPlannerJacksonModuleTest extends AbstractJacksonJsonSerializerAndDeserializerTest {
+public class OptaPlannerJacksonModuleTest extends AbstractJacksonRoundTripTest {
 
     /**
      * According to official specification (see {@link Class#getDeclaredMethods()}),
@@ -39,25 +40,38 @@ public class OptaPlannerJacksonModuleTest extends AbstractJacksonJsonSerializerA
         objectMapper.registerModule(OptaPlannerJacksonModule.createModule());
 
         TestOptaPlannerJacksonModuleWrapper input = new TestOptaPlannerJacksonModuleWrapper();
+        input.setBendableScore(BendableScore.of(new int[] { 1000, 200 }, new int[] { 34 }));
         input.setHardSoftScore(HardSoftScore.of(-1, -20));
         input.setPolymorphicScore(HardSoftScore.of(-20, -300));
         TestOptaPlannerJacksonModuleWrapper output = serializeAndDeserialize(objectMapper, input);
-        assertEquals(HardSoftScore.of(-1, -20), output.getHardSoftScore());
-        assertEquals(HardSoftScore.of(-20, -300), output.getPolymorphicScore());
+        assertThat(output.getBendableScore()).isEqualTo(BendableScore.of(new int[] { 1000, 200 }, new int[] { 34 }));
+        assertThat(output.getHardSoftScore()).isEqualTo(HardSoftScore.of(-1, -20));
+        assertThat(output.getPolymorphicScore()).isEqualTo(HardSoftScore.of(-20, -300));
 
-        input.setPolymorphicScore(BendableScore.of(new int[] {-1, -20}, new int[] {-300, -4000, -50000}));
+        input.setPolymorphicScore(BendableScore.of(new int[] { -1, -20 }, new int[] { -300, -4000, -50000 }));
         output = serializeAndDeserialize(objectMapper, input);
-        assertEquals(HardSoftScore.of(-1, -20), output.getHardSoftScore());
-        assertEquals(BendableScore.of(new int[] {-1, -20}, new int[] {-300, -4000, -50000}), output.getPolymorphicScore());
+        assertThat(output.getBendableScore()).isEqualTo(BendableScore.of(new int[] { 1000, 200 }, new int[] { 34 }));
+        assertThat(output.getHardSoftScore()).isEqualTo(HardSoftScore.of(-1, -20));
+        assertThat(output.getPolymorphicScore())
+                .isEqualTo(BendableScore.of(new int[] { -1, -20 }, new int[] { -300, -4000, -50000 }));
     }
 
     public static class TestOptaPlannerJacksonModuleWrapper {
 
+        private BendableScore bendableScore;
         private HardSoftScore hardSoftScore;
         private Score polymorphicScore;
 
         @SuppressWarnings("unused")
         private TestOptaPlannerJacksonModuleWrapper() {
+        }
+
+        public BendableScore getBendableScore() {
+            return bendableScore;
+        }
+
+        public void setBendableScore(BendableScore bendableScore) {
+            this.bendableScore = bendableScore;
         }
 
         public HardSoftScore getHardSoftScore() {

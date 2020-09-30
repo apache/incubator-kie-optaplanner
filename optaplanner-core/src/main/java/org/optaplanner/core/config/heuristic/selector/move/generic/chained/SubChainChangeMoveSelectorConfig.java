@@ -1,5 +1,5 @@
 /*
- * Copyright 2012 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,31 +16,28 @@
 
 package org.optaplanner.core.config.heuristic.selector.move.generic.chained;
 
-import com.thoughtworks.xstream.annotations.XStreamAlias;
-import org.optaplanner.core.api.domain.valuerange.ValueRangeProvider;
-import org.optaplanner.core.config.heuristic.policy.HeuristicConfigPolicy;
-import org.optaplanner.core.config.heuristic.selector.common.SelectionCacheType;
-import org.optaplanner.core.config.heuristic.selector.common.SelectionOrder;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlType;
+
 import org.optaplanner.core.config.heuristic.selector.move.MoveSelectorConfig;
 import org.optaplanner.core.config.heuristic.selector.value.ValueSelectorConfig;
 import org.optaplanner.core.config.heuristic.selector.value.chained.SubChainSelectorConfig;
 import org.optaplanner.core.config.util.ConfigUtils;
-import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
-import org.optaplanner.core.impl.heuristic.selector.move.MoveSelector;
-import org.optaplanner.core.impl.heuristic.selector.move.generic.chained.SubChainChangeMoveSelector;
-import org.optaplanner.core.impl.heuristic.selector.value.EntityIndependentValueSelector;
-import org.optaplanner.core.impl.heuristic.selector.value.ValueSelector;
-import org.optaplanner.core.impl.heuristic.selector.value.chained.SubChainSelector;
 
-import static org.apache.commons.lang3.ObjectUtils.defaultIfNull;
-
-@XStreamAlias("subChainChangeMoveSelector")
+@XmlType(propOrder = {
+        "entityClass",
+        "subChainSelectorConfig",
+        "valueSelectorConfig",
+        "selectReversingMoveToo"
+})
 public class SubChainChangeMoveSelectorConfig extends MoveSelectorConfig<SubChainChangeMoveSelectorConfig> {
 
+    public static final String XML_ELEMENT_NAME = "subChainChangeMoveSelector";
+
     private Class<?> entityClass = null;
-    @XStreamAlias("subChainSelector")
+    @XmlElement(name = "subChainSelector")
     private SubChainSelectorConfig subChainSelectorConfig = null;
-    @XStreamAlias("valueSelector")
+    @XmlElement(name = "valueSelector")
     private ValueSelectorConfig valueSelectorConfig = null;
 
     private Boolean selectReversingMoveToo = null;
@@ -75,34 +72,6 @@ public class SubChainChangeMoveSelectorConfig extends MoveSelectorConfig<SubChai
 
     public void setSelectReversingMoveToo(Boolean selectReversingMoveToo) {
         this.selectReversingMoveToo = selectReversingMoveToo;
-    }
-
-    // ************************************************************************
-    // Builder methods
-    // ************************************************************************
-
-    @Override
-    public MoveSelector buildBaseMoveSelector(HeuristicConfigPolicy configPolicy,
-            SelectionCacheType minimumCacheType, boolean randomSelection) {
-        EntityDescriptor entityDescriptor = deduceEntityDescriptor(
-                configPolicy.getSolutionDescriptor(), entityClass);
-        SubChainSelectorConfig subChainSelectorConfig_ = subChainSelectorConfig == null ? new SubChainSelectorConfig()
-                : subChainSelectorConfig;
-        SubChainSelector subChainSelector = subChainSelectorConfig_.buildSubChainSelector(configPolicy,
-                entityDescriptor,
-                minimumCacheType, SelectionOrder.fromRandomSelectionBoolean(randomSelection));
-        ValueSelectorConfig valueSelectorConfig_ = valueSelectorConfig == null ? new ValueSelectorConfig()
-                : valueSelectorConfig;
-        ValueSelector valueSelector = valueSelectorConfig_.buildValueSelector(configPolicy,
-                entityDescriptor,
-                minimumCacheType, SelectionOrder.fromRandomSelectionBoolean(randomSelection));
-        if (!(valueSelector instanceof EntityIndependentValueSelector)) {
-            throw new IllegalArgumentException("The moveSelectorConfig (" + this
-                    + ") needs to be based on an EntityIndependentValueSelector (" + valueSelector + ")."
-                    + " Check your @" + ValueRangeProvider.class.getSimpleName() + " annotations.");
-        }
-        return new SubChainChangeMoveSelector(subChainSelector, (EntityIndependentValueSelector) valueSelector,
-                randomSelection, defaultIfNull(selectReversingMoveToo, true));
     }
 
     @Override

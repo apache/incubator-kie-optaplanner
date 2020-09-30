@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,11 +16,13 @@
 
 package org.optaplanner.core.impl.solver;
 
+import java.time.Duration;
 import java.util.UUID;
 import java.util.concurrent.Callable;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.function.Function;
@@ -29,6 +31,7 @@ import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.solver.Solver;
 import org.optaplanner.core.api.solver.SolverJob;
 import org.optaplanner.core.api.solver.SolverStatus;
+import org.optaplanner.core.impl.solver.scope.SolverScope;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -41,14 +44,15 @@ public final class DefaultSolverJob<Solution_, ProblemId_> implements SolverJob<
     protected final transient Logger logger = LoggerFactory.getLogger(getClass());
 
     private final DefaultSolverManager<Solution_, ProblemId_> solverManager;
-    private final Solver<Solution_> solver;
+    private final DefaultSolver<Solution_> solver;
     private final ProblemId_ problemId;
     private final Function<? super ProblemId_, ? extends Solution_> problemFinder;
     private final Consumer<? super Solution_> finalBestSolutionConsumer;
     private final BiConsumer<? super ProblemId_, ? super Throwable> exceptionHandler;
 
-    private volatile SolverStatus solverStatus;
+    private final AtomicReference<SolverStatus> solverStatusReference;
     private CountDownLatch terminatedLatch;
+
     private Future<Solution_> future;
 
     public DefaultSolverJob(
@@ -59,11 +63,15 @@ public final class DefaultSolverJob<Solution_, ProblemId_> implements SolverJob<
             BiConsumer<? super ProblemId_, ? super Throwable> exceptionHandler) {
         this.solverManager = solverManager;
         this.problemId = problemId;
-        this.solver = solver;
+        if (!(solver instanceof DefaultSolver)) {
+            throw new IllegalStateException("Impossible state: solver is not instance of " +
+                    DefaultSolver.class.getSimpleName() + ".");
+        }
+        this.solver = (DefaultSolver<Solution_>) solver;
         this.problemFinder = problemFinder;
         this.finalBestSolutionConsumer = finalBestSolutionConsumer;
         this.exceptionHandler = exceptionHandler;
-        solverStatus = SolverStatus.SOLVING_SCHEDULED;
+        solverStatusReference = new AtomicReference<>(SolverStatus.SOLVING_SCHEDULED);
         terminatedLatch = new CountDownLatch(1);
     }
 
@@ -78,12 +86,16 @@ public final class DefaultSolverJob<Solution_, ProblemId_> implements SolverJob<
 
     @Override
     public SolverStatus getSolverStatus() {
-        return solverStatus;
+        return solverStatusReference.get();
     }
 
     @Override
     public Solution_ call() {
-        solverStatus = SolverStatus.SOLVING_ACTIVE;
+        SolverStatus solverStatus = solverStatusReference.getAndSet(SolverStatus.SOLVING_ACTIVE);
+        if (solverStatus != SolverStatus.SOLVING_SCHEDULED) {
+            // This job has been canceled before it started
+            return problemFinder.apply(problemId);
+        }
         try {
             Solution_ problem = problemFinder.apply(problemId);
             final Solution_ finalBestSolution = solver.solve(problem);
@@ -96,39 +108,52 @@ public final class DefaultSolverJob<Solution_, ProblemId_> implements SolverJob<
             exceptionHandler.accept(problemId, e);
             throw new IllegalStateException("Solving failed for problemId (" + problemId + ").", e);
         } finally {
-            solverManager.getProblemIdToSolverJobMap().remove(problemId);
-            solverStatus = SolverStatus.NOT_SOLVING;
-            terminatedLatch.countDown();
+            solvingTerminated();
         }
     }
 
-    // TODO Future features
-//    @Override
-//    public void reloadProblem(Function<? super ProblemId_, Solution_> problemFinder) {
-//        throw new UnsupportedOperationException("The solver is still solving and reloadProblem() is not yet supported.");
-//    }
+    private void solvingTerminated() {
+        solverStatusReference.set(SolverStatus.NOT_SOLVING);
+        solverManager.getProblemIdToSolverJobMap().remove(problemId);
+        terminatedLatch.countDown();
+    }
 
     // TODO Future features
-//    @Override
-//    public void addProblemFactChange(ProblemFactChange<Solution_> problemFactChange) {
-//        solver.addProblemFactChange(problemFactChange);
-//    }
+    //    @Override
+    //    public void reloadProblem(Function<? super ProblemId_, Solution_> problemFinder) {
+    //        throw new UnsupportedOperationException("The solver is still solving and reloadProblem() is not yet supported.");
+    //    }
+
+    // TODO Future features
+    //    @Override
+    //    public void addProblemFactChange(ProblemFactChange<Solution_> problemFactChange) {
+    //        solver.addProblemFactChange(problemFactChange);
+    //    }
 
     @Override
     public void terminateEarly() {
-        boolean cancelled = future.cancel(false);
-        if (cancelled) {
-            solverStatus = SolverStatus.NOT_SOLVING;
-        } else {
-            // The solver is either actively solving or has already terminated
-            solver.terminateEarly();
-            try {
-                // Don't return until bestSolutionConsumer won't be called any more
-                terminatedLatch.await();
-            } catch (InterruptedException e) {
-                Thread.currentThread().interrupt();
-                logger.warn("The terminateEarly() call is interrupted.", e);
-            }
+        future.cancel(false);
+        SolverStatus solverStatus = solverStatusReference.get();
+        switch (solverStatus) {
+            case SOLVING_SCHEDULED:
+                solvingTerminated();
+                break;
+            case SOLVING_ACTIVE:
+                // Indirectly triggers solvingTerminated()
+                solver.terminateEarly();
+                break;
+            case NOT_SOLVING:
+                // Do nothing, solvingTerminated() already called
+                break;
+            default:
+                throw new IllegalStateException("Unsupported solverStatus (" + solverStatus + ").");
+        }
+        try {
+            // Don't return until bestSolutionConsumer won't be called any more
+            terminatedLatch.await();
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+            logger.warn("The terminateEarly() call is interrupted.", e);
         }
     }
 
@@ -137,4 +162,19 @@ public final class DefaultSolverJob<Solution_, ProblemId_> implements SolverJob<
         return future.get();
     }
 
+    @Override
+    public Duration getSolvingDuration() {
+        SolverScope<Solution_> solverScope = solver.getSolverScope();
+        Long startingSystemTimeMillis = solverScope.getStartingSystemTimeMillis();
+        if (startingSystemTimeMillis == null) {
+            // The solver hasn't started yet
+            return Duration.ZERO;
+        }
+        Long endingSystemTimeMillis = solverScope.getEndingSystemTimeMillis();
+        if (endingSystemTimeMillis == null) {
+            // The solver hasn't ended yet
+            endingSystemTimeMillis = System.currentTimeMillis();
+        }
+        return Duration.ofMillis(endingSystemTimeMillis - startingSystemTimeMillis);
+    }
 }

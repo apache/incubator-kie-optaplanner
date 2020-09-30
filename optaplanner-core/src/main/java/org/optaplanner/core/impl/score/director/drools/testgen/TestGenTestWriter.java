@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -71,17 +71,16 @@ class TestGenTestWriter {
     private void printInit() {
         sb.append("package org.optaplanner.testgen;\n\n");
         List<String> imports = new ArrayList<>();
-        imports.add("org.junit.Test");
+        imports.add("org.junit.jupiter.api.Test");
         imports.add("org.kie.api.KieServices");
         imports.add("org.kie.api.builder.KieFileSystem");
         imports.add("org.kie.api.runtime.KieContainer");
         imports.add("org.kie.api.runtime.KieSession");
-        imports.add("org.drools.compiler.kie.builder.impl.DrlProject");
         if (!scoreDrlFileList.isEmpty()) {
             imports.add("java.io.File");
         }
         if (scoreDefinition != null) {
-            imports.add("org.junit.Assert");
+            imports.add("org.junit.jupiter.api.Assertions");
             imports.add(ScoreHolder.class.getCanonicalName());
             imports.add(scoreDefinition.getClass().getCanonicalName());
         }
@@ -89,14 +88,13 @@ class TestGenTestWriter {
         Stream<String> classes = Stream.concat(
                 // imports from facts
                 journal.getFacts().stream()
-                .flatMap(fact -> fact.getImports().stream()),
+                        .flatMap(fact -> fact.getImports().stream()),
                 // imports from update operations (including shadow variable updates with inline values)
                 journal.getMoveOperations().stream()
-                .filter(op -> op instanceof TestGenKieSessionUpdate)
-                .flatMap(up -> {
-                    return ((TestGenKieSessionUpdate) up).getValue().getImports().stream();
-                })
-        )
+                        .filter(op -> op instanceof TestGenKieSessionUpdate)
+                        .flatMap(up -> {
+                            return ((TestGenKieSessionUpdate) up).getValue().getImports().stream();
+                        }))
                 .filter(cls -> !cls.getPackage().getName().equals("java.lang"))
                 .map(cls -> cls.getCanonicalName());
 
@@ -127,7 +125,7 @@ class TestGenTestWriter {
                     .append("                .newClassPathResource(\"").append(drl).append("\"));\n");
         });
         sb
-                .append("        kieServices.newKieBuilder(kfs).buildAll(DrlProject.class);\n")
+                .append("        kieServices.newKieBuilder(kfs).buildAll();\n")
                 .append("        KieContainer kieContainer = kieServices.newKieContainer("
                         + "kieServices.getRepository().getDefaultReleaseId());\n")
                 .append("        KieSession kieSession = kieContainer.newKieSession();\n\n");
@@ -160,7 +158,7 @@ class TestGenTestWriter {
         if (scoreEx != null) {
             sb
                     .append("        // This is the corrupted score, just to make sure the bug is reproducible\n")
-                    .append("        Assert.assertEquals(\"").append(scoreEx.getWorkingScore())
+                    .append("        Assertions.assertEquals(\"").append(scoreEx.getWorkingScore())
                     .append("\", scoreHolder.extractScore(0).toString());\n");
             // demonstrate the uncorrupted score
             sb
@@ -177,7 +175,7 @@ class TestGenTestWriter {
             }
             sb
                     .append("        kieSession.fireAllRules();\n")
-                    .append("        Assert.assertEquals(\"").append(scoreEx.getUncorruptedScore())
+                    .append("        Assertions.assertEquals(\"").append(scoreEx.getUncorruptedScore())
                     .append("\", scoreHolder.extractScore(0).toString());\n");
         }
         sb

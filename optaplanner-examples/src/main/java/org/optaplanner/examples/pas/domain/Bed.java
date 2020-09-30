@@ -16,15 +16,24 @@
 
 package org.optaplanner.examples.pas.domain;
 
-import com.thoughtworks.xstream.annotations.XStreamAlias;
 import org.optaplanner.examples.common.domain.AbstractPersistable;
 import org.optaplanner.examples.common.swingui.components.Labeled;
+
+import com.thoughtworks.xstream.annotations.XStreamAlias;
 
 @XStreamAlias("Bed")
 public class Bed extends AbstractPersistable implements Labeled {
 
     private Room room;
     private int indexInRoom;
+
+    public Bed() {
+    }
+
+    public Bed(Room room, int indexInRoom) {
+        this.room = room;
+        this.indexInRoom = indexInRoom;
+    }
 
     public Room getRoom() {
         return room;

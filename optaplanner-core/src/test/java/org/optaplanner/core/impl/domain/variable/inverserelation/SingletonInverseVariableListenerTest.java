@@ -1,5 +1,5 @@
 /*
- * Copyright 2013 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,20 +16,21 @@
 
 package org.optaplanner.core.impl.domain.variable.inverserelation;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.inOrder;
+import static org.mockito.Mockito.mock;
+
 import java.util.Arrays;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.mockito.InOrder;
 import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.core.impl.domain.variable.descriptor.ShadowVariableDescriptor;
-import org.optaplanner.core.impl.score.director.ScoreDirector;
+import org.optaplanner.core.impl.score.director.InnerScoreDirector;
 import org.optaplanner.core.impl.testdata.domain.chained.shadow.TestdataShadowingChainedAnchor;
 import org.optaplanner.core.impl.testdata.domain.chained.shadow.TestdataShadowingChainedEntity;
 import org.optaplanner.core.impl.testdata.domain.chained.shadow.TestdataShadowingChainedSolution;
-
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
 
 public class SingletonInverseVariableListenerTest {
 
@@ -41,7 +42,7 @@ public class SingletonInverseVariableListenerTest {
         SingletonInverseVariableListener variableListener = new SingletonInverseVariableListener(
                 (InverseRelationShadowVariableDescriptor) nextEntityVariableDescriptor,
                 entityDescriptor.getGenuineVariableDescriptor("chainedObject"));
-        ScoreDirector scoreDirector = mock(ScoreDirector.class);
+        InnerScoreDirector scoreDirector = mock(InnerScoreDirector.class);
 
         TestdataShadowingChainedAnchor a0 = new TestdataShadowingChainedAnchor("a0");
         TestdataShadowingChainedEntity a1 = new TestdataShadowingChainedEntity("a1", a0);
@@ -63,12 +64,12 @@ public class SingletonInverseVariableListenerTest {
         solution.setChainedAnchorList(Arrays.asList(a0, b0));
         solution.setChainedEntityList(Arrays.asList(a1, a2, a3, b1));
 
-        assertEquals(null, b1.getNextEntity());
+        assertThat(b1.getNextEntity()).isEqualTo(null);
 
         variableListener.beforeVariableChanged(scoreDirector, a3);
         a3.setChainedObject(b1);
         variableListener.afterVariableChanged(scoreDirector, a3);
-        assertEquals(a3, b1.getNextEntity());
+        assertThat(b1.getNextEntity()).isEqualTo(a3);
 
         InOrder inOrder = inOrder(scoreDirector);
         inOrder.verify(scoreDirector).beforeVariableChanged(nextEntityVariableDescriptor, b1);

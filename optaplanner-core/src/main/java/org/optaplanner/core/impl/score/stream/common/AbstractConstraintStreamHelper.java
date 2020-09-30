@@ -60,14 +60,13 @@ public abstract class AbstractConstraintStreamHelper<Right, JoinedStream, Joiner
             return doJoin(otherClass, mergedJoiners);
         }
         // Assemble the join stream that may be followed by filter stream.
-        JoinedStream joined = indexOfFirstFilter == 0 ?
-                doJoin(otherClass) :
-                doJoin(otherClass, Arrays.copyOf(joiners, indexOfFirstFilter));
+        JoinedStream joined = indexOfFirstFilter == 0 ? doJoin(otherClass)
+                : doJoin(otherClass, Arrays.copyOf(joiners, indexOfFirstFilter));
         int filterCount = joinerCount - indexOfFirstFilter;
         if (filterCount == 0) { // No filters, return the original join stream.
             return joined;
         }
-        // We merge all filters into one, so that we don't pay the penalty for lack of indexing more than once.
+        // Merge all filters into one to avoid paying the penalty for lack of indexing more than once.
         Joiner filteringJoiner = joiners[indexOfFirstFilter];
         Predicate resultingFilter = extractPredicate(filteringJoiner);
         for (int i = indexOfFirstFilter + 1; i < joinerCount; i++) {

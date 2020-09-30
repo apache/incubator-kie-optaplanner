@@ -16,6 +16,8 @@
 
 package org.optaplanner.core.config.score.trend;
 
+import javax.xml.bind.annotation.XmlEnum;
+
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.impl.score.trend.InitializingScoreTrend;
@@ -23,8 +25,10 @@ import org.optaplanner.core.impl.score.trend.InitializingScoreTrend;
 /**
  * Bounds 1 score level of the possible {@link Score}s for a {@link PlanningSolution} as more and more variables are initialized
  * (while the already initialized variables don't change).
+ *
  * @see InitializingScoreTrend
  */
+@XmlEnum
 public enum InitializingScoreTrendLevel {
     /**
      * No predictions can be made.

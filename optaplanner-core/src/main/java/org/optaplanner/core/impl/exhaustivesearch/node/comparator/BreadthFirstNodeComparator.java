@@ -1,5 +1,5 @@
 /*
- * Copyright 2014 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,13 +16,12 @@
 
 package org.optaplanner.core.impl.exhaustivesearch.node.comparator;
 
-import java.io.Serializable;
 import java.util.Comparator;
 
 import org.optaplanner.core.api.score.Score;
+import org.optaplanner.core.api.score.director.ScoreDirector;
 import org.optaplanner.core.impl.exhaustivesearch.node.ExhaustiveSearchNode;
 import org.optaplanner.core.impl.exhaustivesearch.node.bounder.ScoreBounder;
-import org.optaplanner.core.impl.score.director.ScoreDirector;
 
 /**
  * Investigate nodes layer by layer: investigate shallower nodes first.
@@ -31,7 +30,7 @@ import org.optaplanner.core.impl.score.director.ScoreDirector;
  * A typical {@link ScoreBounder}'s {@link ScoreBounder#calculateOptimisticBound(ScoreDirector, Score)}
  * will be weak, which results in horrible performance scalability too.
  */
-public class BreadthFirstNodeComparator implements Comparator<ExhaustiveSearchNode>, Serializable {
+public class BreadthFirstNodeComparator implements Comparator<ExhaustiveSearchNode> {
 
     private final boolean scoreBounderEnabled;
 
@@ -50,7 +49,7 @@ public class BreadthFirstNodeComparator implements Comparator<ExhaustiveSearchNo
             return -1;
         }
         // Investigate better score first (ignore initScore to avoid depth first ordering)
-        int scoreComparison = a.getScore().toInitializedScore().compareTo(b.getScore().toInitializedScore());
+        int scoreComparison = a.getScore().withInitScore(0).compareTo(b.getScore().withInitScore(0));
         if (scoreComparison < 0) {
             return -1;
         } else if (scoreComparison > 0) {

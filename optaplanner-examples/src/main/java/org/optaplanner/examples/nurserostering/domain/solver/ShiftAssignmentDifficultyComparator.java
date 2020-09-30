@@ -1,5 +1,5 @@
 /*
- * Copyright 2010 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,7 +16,9 @@
 
 package org.optaplanner.examples.nurserostering.domain.solver;
 
-import java.io.Serializable;
+import static java.util.Comparator.comparing;
+import static java.util.Comparator.comparingLong;
+
 import java.util.Collections;
 import java.util.Comparator;
 
@@ -25,14 +27,10 @@ import org.optaplanner.examples.nurserostering.domain.ShiftAssignment;
 import org.optaplanner.examples.nurserostering.domain.ShiftDate;
 import org.optaplanner.examples.nurserostering.domain.ShiftType;
 
-import static java.util.Comparator.comparing;
-import static java.util.Comparator.comparingLong;
+public class ShiftAssignmentDifficultyComparator implements Comparator<ShiftAssignment> {
 
-public class ShiftAssignmentDifficultyComparator implements Comparator<ShiftAssignment>,
-        Serializable {
-
-    private static final Comparator<Shift> COMPARATOR =
-            comparing(Shift::getShiftDate, Collections.reverseOrder(comparing(ShiftDate::getDate)))
+    private static final Comparator<Shift> COMPARATOR = comparing(Shift::getShiftDate,
+            Collections.reverseOrder(comparing(ShiftDate::getDate)))
                     .thenComparing(Shift::getShiftType, comparingLong(ShiftType::getId).reversed())
                     .thenComparingInt(Shift::getRequiredEmployeeSize);
 

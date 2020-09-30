@@ -1,5 +1,5 @@
 /*
- * Copyright 2012 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,10 +21,11 @@ import java.util.List;
 import java.util.Objects;
 
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
+import org.optaplanner.core.api.score.director.ScoreDirector;
 import org.optaplanner.core.impl.domain.variable.descriptor.GenuineVariableDescriptor;
 import org.optaplanner.core.impl.domain.variable.inverserelation.SingletonInverseVariableSupply;
 import org.optaplanner.core.impl.heuristic.selector.move.generic.SwapMove;
-import org.optaplanner.core.impl.score.director.ScoreDirector;
+import org.optaplanner.core.impl.score.director.InnerScoreDirector;
 
 /**
  * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
@@ -40,8 +41,9 @@ public class ChainedSwapMove<Solution_> extends SwapMove<Solution_> {
         oldLeftTrailingEntityList = new ArrayList<>(inverseVariableSupplyList.size());
         oldRightTrailingEntityList = new ArrayList<>(inverseVariableSupplyList.size());
         for (SingletonInverseVariableSupply inverseVariableSupply : inverseVariableSupplyList) {
-            oldLeftTrailingEntityList.add(inverseVariableSupply.getInverseSingleton(leftEntity));
-            oldRightTrailingEntityList.add(inverseVariableSupply.getInverseSingleton(rightEntity));
+            boolean hasSupply = inverseVariableSupply != null;
+            oldLeftTrailingEntityList.add(hasSupply ? inverseVariableSupply.getInverseSingleton(leftEntity) : null);
+            oldRightTrailingEntityList.add(hasSupply ? inverseVariableSupply.getInverseSingleton(rightEntity) : null);
         }
     }
 
@@ -59,7 +61,8 @@ public class ChainedSwapMove<Solution_> extends SwapMove<Solution_> {
 
     @Override
     public ChainedSwapMove<Solution_> createUndoMove(ScoreDirector<Solution_> scoreDirector) {
-        return new ChainedSwapMove<>(variableDescriptorList, rightEntity, leftEntity, oldLeftTrailingEntityList, oldRightTrailingEntityList);
+        return new ChainedSwapMove<>(variableDescriptorList, rightEntity, leftEntity, oldLeftTrailingEntityList,
+                oldRightTrailingEntityList);
     }
 
     @Override
@@ -69,42 +72,43 @@ public class ChainedSwapMove<Solution_> extends SwapMove<Solution_> {
             Object oldLeftValue = variableDescriptor.getValue(leftEntity);
             Object oldRightValue = variableDescriptor.getValue(rightEntity);
             if (!Objects.equals(oldLeftValue, oldRightValue)) {
+                InnerScoreDirector<Solution_, ?> innerScoreDirector = (InnerScoreDirector<Solution_, ?>) scoreDirector;
                 if (!variableDescriptor.isChained()) {
-                    scoreDirector.changeVariableFacade(variableDescriptor, leftEntity, oldRightValue);
-                    scoreDirector.changeVariableFacade(variableDescriptor, rightEntity, oldLeftValue);
+                    innerScoreDirector.changeVariableFacade(variableDescriptor, leftEntity, oldRightValue);
+                    innerScoreDirector.changeVariableFacade(variableDescriptor, rightEntity, oldLeftValue);
                 } else {
                     Object oldLeftTrailingEntity = oldLeftTrailingEntityList.get(i);
                     Object oldRightTrailingEntity = oldRightTrailingEntityList.get(i);
                     if (oldRightValue == leftEntity) {
                         // Change the right entity
-                        scoreDirector.changeVariableFacade(variableDescriptor, rightEntity, oldLeftValue);
+                        innerScoreDirector.changeVariableFacade(variableDescriptor, rightEntity, oldLeftValue);
                         // Change the left entity
-                        scoreDirector.changeVariableFacade(variableDescriptor, leftEntity, rightEntity);
+                        innerScoreDirector.changeVariableFacade(variableDescriptor, leftEntity, rightEntity);
                         // Reroute the new left chain
                         if (oldRightTrailingEntity != null) {
-                            scoreDirector.changeVariableFacade(variableDescriptor, oldRightTrailingEntity, leftEntity);
+                            innerScoreDirector.changeVariableFacade(variableDescriptor, oldRightTrailingEntity, leftEntity);
                         }
                     } else if (oldLeftValue == rightEntity) {
                         // Change the right entity
-                        scoreDirector.changeVariableFacade(variableDescriptor, leftEntity, oldRightValue);
+                        innerScoreDirector.changeVariableFacade(variableDescriptor, leftEntity, oldRightValue);
                         // Change the left entity
-                        scoreDirector.changeVariableFacade(variableDescriptor, rightEntity, leftEntity);
+                        innerScoreDirector.changeVariableFacade(variableDescriptor, rightEntity, leftEntity);
                         // Reroute the new left chain
                         if (oldLeftTrailingEntity != null) {
-                            scoreDirector.changeVariableFacade(variableDescriptor, oldLeftTrailingEntity, rightEntity);
+                            innerScoreDirector.changeVariableFacade(variableDescriptor, oldLeftTrailingEntity, rightEntity);
                         }
                     } else {
                         // Change the left entity
-                        scoreDirector.changeVariableFacade(variableDescriptor, leftEntity, oldRightValue);
+                        innerScoreDirector.changeVariableFacade(variableDescriptor, leftEntity, oldRightValue);
                         // Change the right entity
-                        scoreDirector.changeVariableFacade(variableDescriptor, rightEntity, oldLeftValue);
+                        innerScoreDirector.changeVariableFacade(variableDescriptor, rightEntity, oldLeftValue);
                         // Reroute the new left chain
                         if (oldRightTrailingEntity != null) {
-                            scoreDirector.changeVariableFacade(variableDescriptor, oldRightTrailingEntity, leftEntity);
+                            innerScoreDirector.changeVariableFacade(variableDescriptor, oldRightTrailingEntity, leftEntity);
                         }
                         // Reroute the new right chain
                         if (oldLeftTrailingEntity != null) {
-                            scoreDirector.changeVariableFacade(variableDescriptor, oldLeftTrailingEntity, rightEntity);
+                            innerScoreDirector.changeVariableFacade(variableDescriptor, oldLeftTrailingEntity, rightEntity);
                         }
                     }
                 }

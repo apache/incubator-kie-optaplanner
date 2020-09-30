@@ -1,5 +1,5 @@
 /*
- * Copyright 2011 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,7 +16,9 @@
 
 package org.optaplanner.examples.machinereassignment.solver.drools;
 
-import java.io.Serializable;
+import static java.util.Comparator.comparing;
+import static java.util.Comparator.comparingLong;
+
 import java.util.Comparator;
 import java.util.Objects;
 
@@ -24,13 +26,10 @@ import org.optaplanner.examples.machinereassignment.domain.MrMachine;
 import org.optaplanner.examples.machinereassignment.domain.MrMachineCapacity;
 import org.optaplanner.examples.machinereassignment.domain.MrResource;
 
-import static java.util.Comparator.comparing;
-import static java.util.Comparator.comparingLong;
+public class MrMachineUsage implements Comparable<MrMachineUsage> {
 
-public class MrMachineUsage implements Serializable, Comparable<MrMachineUsage> {
-
-    private static final Comparator<MrMachineUsage> COMPARATOR =
-            comparing((MrMachineUsage machineUsage) -> machineUsage.getClass().getName())
+    private static final Comparator<MrMachineUsage> COMPARATOR = comparing(
+            (MrMachineUsage machineUsage) -> machineUsage.getClass().getName())
                     .thenComparing(machineUsage -> machineUsage.machineCapacity, comparingLong(MrMachineCapacity::getId))
                     .thenComparingLong(machineUsage -> machineUsage.usage);
 

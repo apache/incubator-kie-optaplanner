@@ -1,5 +1,5 @@
 /*
- * Copyright 2013 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,7 +19,6 @@ package org.optaplanner.core.impl.score.buildin.simplelong;
 import java.util.Arrays;
 
 import org.optaplanner.core.api.score.buildin.simplelong.SimpleLongScore;
-import org.optaplanner.core.api.score.buildin.simplelong.SimpleLongScoreHolder;
 import org.optaplanner.core.config.score.trend.InitializingScoreTrendLevel;
 import org.optaplanner.core.impl.score.definition.AbstractScoreDefinition;
 import org.optaplanner.core.impl.score.trend.InitializingScoreTrend;
@@ -27,12 +26,17 @@ import org.optaplanner.core.impl.score.trend.InitializingScoreTrend;
 public class SimpleLongScoreDefinition extends AbstractScoreDefinition<SimpleLongScore> {
 
     public SimpleLongScoreDefinition() {
-        super(new String[]{"score"});
+        super(new String[] { "score" });
     }
 
     // ************************************************************************
     // Worker methods
     // ************************************************************************
+
+    @Override
+    public int getFeasibleLevelsSize() {
+        return 0;
+    }
 
     @Override
     public Class<SimpleLongScore> getScoreClass() {
@@ -42,6 +46,11 @@ public class SimpleLongScoreDefinition extends AbstractScoreDefinition<SimpleLon
     @Override
     public SimpleLongScore getZeroScore() {
         return SimpleLongScore.ZERO;
+    }
+
+    @Override
+    public SimpleLongScore getOneSoftestScore() {
+        return SimpleLongScore.ONE;
     }
 
     @Override
@@ -64,8 +73,8 @@ public class SimpleLongScoreDefinition extends AbstractScoreDefinition<SimpleLon
     }
 
     @Override
-    public SimpleLongScoreHolder buildScoreHolder(boolean constraintMatchEnabled) {
-        return new SimpleLongScoreHolder(constraintMatchEnabled);
+    public SimpleLongScoreHolderImpl buildScoreHolder(boolean constraintMatchEnabled) {
+        return new SimpleLongScoreHolderImpl(constraintMatchEnabled);
     }
 
     @Override
@@ -82,4 +91,16 @@ public class SimpleLongScoreDefinition extends AbstractScoreDefinition<SimpleLon
                 trendLevels[0] == InitializingScoreTrendLevel.ONLY_UP ? score.getScore() : Long.MIN_VALUE);
     }
 
+    @Override
+    public SimpleLongScore divideBySanitizedDivisor(SimpleLongScore dividend, SimpleLongScore divisor) {
+        int dividendInitScore = dividend.getInitScore();
+        int divisorInitScore = sanitize(divisor.getInitScore());
+        long dividendScore = dividend.getScore();
+        long divisorScore = sanitize(divisor.getScore());
+        return fromLevelNumbers(
+                divide(dividendInitScore, divisorInitScore),
+                new Number[] {
+                        divide(dividendScore, divisorScore)
+                });
+    }
 }

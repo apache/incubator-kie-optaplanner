@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<solver>
+<solver xmlns="https://www.optaplanner.org/xsd/solver" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="https://www.optaplanner.org/xsd/solver https://www.optaplanner.org/xsd/solver/solver.xsd">
   <!--<environmentMode>FULL_ASSERT</environmentMode>--><!-- To slowly prove there are no bugs in this code -->
   <!--<moveThreadCount>AUTO</moveThreadCount>--><!-- To solve faster by saturating multiple CPU cores -->
 
@@ -10,7 +11,7 @@
     <!--<easyScoreCalculatorClass>org.optaplanner.examples.tsp.solver.score.TspEasyScoreCalculator</easyScoreCalculatorClass>-->
     <!--<constraintProviderClass>org.optaplanner.examples.tsp.optional.score.TspConstraintProvider</constraintProviderClass>-->
     <!--<incrementalScoreCalculatorClass>org.optaplanner.examples.tsp.solver.score.TspIncrementalScoreCalculator</incrementalScoreCalculatorClass>-->
-    <scoreDrl>org/optaplanner/examples/tsp/solver/tspScoreRules.drl</scoreDrl>
+    <scoreDrl>org/optaplanner/examples/tsp/solver/tspConstraints.drl</scoreDrl>
     <!--<assertionScoreDirectorFactory>-->
       <!--<easyScoreCalculatorClass>org.optaplanner.examples.tsp.solver.score.TspEasyScoreCalculator</easyScoreCalculatorClass>-->
     <!--</assertionScoreDirectorFactory>-->

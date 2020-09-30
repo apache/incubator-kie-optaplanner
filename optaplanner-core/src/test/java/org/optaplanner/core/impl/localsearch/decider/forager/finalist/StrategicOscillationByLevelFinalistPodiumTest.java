@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,20 +16,20 @@
 
 package org.optaplanner.core.impl.localsearch.decider.forager.finalist;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.mock;
+import static org.optaplanner.core.impl.testdata.util.PlannerAssert.extractSingleton;
+
 import org.assertj.core.api.Assertions;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.optaplanner.core.api.score.buildin.hardmediumsoft.HardMediumSoftScore;
 import org.optaplanner.core.api.score.buildin.hardsoft.HardSoftScore;
 import org.optaplanner.core.impl.heuristic.move.Move;
 import org.optaplanner.core.impl.localsearch.scope.LocalSearchMoveScope;
 import org.optaplanner.core.impl.localsearch.scope.LocalSearchPhaseScope;
 import org.optaplanner.core.impl.localsearch.scope.LocalSearchStepScope;
-import org.optaplanner.core.impl.solver.scope.DefaultSolverScope;
+import org.optaplanner.core.impl.solver.scope.SolverScope;
 import org.optaplanner.core.impl.testdata.domain.TestdataSolution;
-
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
-import static org.optaplanner.core.impl.testdata.util.PlannerAssert.*;
 
 public class StrategicOscillationByLevelFinalistPodiumTest {
 
@@ -37,7 +37,7 @@ public class StrategicOscillationByLevelFinalistPodiumTest {
     public void referenceLastStepScore() {
         StrategicOscillationByLevelFinalistPodium finalistPodium = new StrategicOscillationByLevelFinalistPodium(false);
 
-        DefaultSolverScope<TestdataSolution> solverScope = new DefaultSolverScope<>();
+        SolverScope<TestdataSolution> solverScope = new SolverScope<>();
         solverScope.setBestScore(HardSoftScore.of(-200, -5000));
         LocalSearchPhaseScope<TestdataSolution> phaseScope = new LocalSearchPhaseScope<>(solverScope);
         LocalSearchStepScope<TestdataSolution> lastCompletedStepScope = new LocalSearchStepScope<>(phaseScope, -1);
@@ -52,7 +52,7 @@ public class StrategicOscillationByLevelFinalistPodiumTest {
         finalistPodium.addMove(moveScope0);
         finalistPodium.addMove(buildMoveScope(stepScope0, -100, -7100));
         finalistPodium.addMove(buildMoveScope(stepScope0, -200, -1000));
-        assertSame(moveScope0, extractSingleton(finalistPodium.getFinalistList()));
+        assertThat(extractSingleton(finalistPodium.getFinalistList())).isSameAs(moveScope0);
         stepScope0.setScore(moveScope0.getScore());
         finalistPodium.stepEnded(stepScope0);
         phaseScope.setLastCompletedStepScope(stepScope0);
@@ -66,7 +66,7 @@ public class StrategicOscillationByLevelFinalistPodiumTest {
         finalistPodium.addMove(moveScope1);
         finalistPodium.addMove(buildMoveScope(stepScope1, -150, -2000));
         finalistPodium.addMove(buildMoveScope(stepScope1, -200, -1000));
-        assertSame(moveScope1, extractSingleton(finalistPodium.getFinalistList()));
+        assertThat(extractSingleton(finalistPodium.getFinalistList())).isSameAs(moveScope1);
         stepScope1.setScore(moveScope1.getScore());
         finalistPodium.stepEnded(stepScope1);
         phaseScope.setLastCompletedStepScope(stepScope1);
@@ -80,7 +80,7 @@ public class StrategicOscillationByLevelFinalistPodiumTest {
         finalistPodium.addMove(moveScope2);
         finalistPodium.addMove(buildMoveScope(stepScope2, -150, -2000));
         finalistPodium.addMove(buildMoveScope(stepScope2, -160, -500));
-        assertSame(moveScope2, extractSingleton(finalistPodium.getFinalistList()));
+        assertThat(extractSingleton(finalistPodium.getFinalistList())).isSameAs(moveScope2);
         stepScope2.setScore(moveScope2.getScore());
         finalistPodium.stepEnded(stepScope2);
         phaseScope.setLastCompletedStepScope(stepScope2);
@@ -90,7 +90,7 @@ public class StrategicOscillationByLevelFinalistPodiumTest {
     public void referenceBestScore() {
         StrategicOscillationByLevelFinalistPodium finalistPodium = new StrategicOscillationByLevelFinalistPodium(true);
 
-        DefaultSolverScope<TestdataSolution> solverScope = new DefaultSolverScope<>();
+        SolverScope<TestdataSolution> solverScope = new SolverScope<>();
         solverScope.setBestScore(HardSoftScore.of(-200, -5000));
         LocalSearchPhaseScope<TestdataSolution> phaseScope = new LocalSearchPhaseScope<>(solverScope);
         LocalSearchStepScope<TestdataSolution> lastCompletedStepScope = new LocalSearchStepScope<>(phaseScope, -1);
@@ -105,7 +105,7 @@ public class StrategicOscillationByLevelFinalistPodiumTest {
         finalistPodium.addMove(moveScope0);
         finalistPodium.addMove(buildMoveScope(stepScope0, -100, -7100));
         finalistPodium.addMove(buildMoveScope(stepScope0, -200, -1000));
-        assertSame(moveScope0, extractSingleton(finalistPodium.getFinalistList()));
+        assertThat(extractSingleton(finalistPodium.getFinalistList())).isSameAs(moveScope0);
         stepScope0.setScore(moveScope0.getScore());
         finalistPodium.stepEnded(stepScope0);
         phaseScope.setLastCompletedStepScope(stepScope0);
@@ -120,7 +120,7 @@ public class StrategicOscillationByLevelFinalistPodiumTest {
         finalistPodium.addMove(moveScope1);
         finalistPodium.addMove(buildMoveScope(stepScope1, -150, -2000));
         finalistPodium.addMove(buildMoveScope(stepScope1, -200, -1000));
-        assertSame(moveScope1, extractSingleton(finalistPodium.getFinalistList()));
+        assertThat(extractSingleton(finalistPodium.getFinalistList())).isSameAs(moveScope1);
         stepScope1.setScore(moveScope1.getScore());
         finalistPodium.stepEnded(stepScope1);
         phaseScope.setLastCompletedStepScope(stepScope1);
@@ -135,7 +135,7 @@ public class StrategicOscillationByLevelFinalistPodiumTest {
         finalistPodium.addMove(moveScope2);
         finalistPodium.addMove(buildMoveScope(stepScope2, -150, -2000));
         finalistPodium.addMove(buildMoveScope(stepScope2, -160, -500));
-        assertSame(moveScope2, extractSingleton(finalistPodium.getFinalistList()));
+        assertThat(extractSingleton(finalistPodium.getFinalistList())).isSameAs(moveScope2);
         stepScope2.setScore(moveScope2.getScore());
         finalistPodium.stepEnded(stepScope2);
         phaseScope.setLastCompletedStepScope(stepScope2);
@@ -155,7 +155,7 @@ public class StrategicOscillationByLevelFinalistPodiumTest {
     public void referenceLastStepScore3Levels() {
         StrategicOscillationByLevelFinalistPodium finalistPodium = new StrategicOscillationByLevelFinalistPodium(false);
 
-        DefaultSolverScope<TestdataSolution> solverScope = new DefaultSolverScope<>();
+        SolverScope<TestdataSolution> solverScope = new SolverScope<>();
         solverScope.setBestScore(HardMediumSoftScore.of(-200, -5000, -10));
         LocalSearchPhaseScope<TestdataSolution> phaseScope = new LocalSearchPhaseScope<>(solverScope);
         LocalSearchStepScope<TestdataSolution> lastCompletedStepScope = new LocalSearchStepScope<>(phaseScope, -1);
@@ -170,7 +170,7 @@ public class StrategicOscillationByLevelFinalistPodiumTest {
         finalistPodium.addMove(moveScope0);
         finalistPodium.addMove(buildMoveScope(stepScope0, -100, -7100, -5));
         finalistPodium.addMove(buildMoveScope(stepScope0, -200, -1000, -10));
-        assertSame(moveScope0, extractSingleton(finalistPodium.getFinalistList()));
+        assertThat(extractSingleton(finalistPodium.getFinalistList())).isSameAs(moveScope0);
         stepScope0.setScore(moveScope0.getScore());
         finalistPodium.stepEnded(stepScope0);
         phaseScope.setLastCompletedStepScope(stepScope0);
@@ -184,7 +184,7 @@ public class StrategicOscillationByLevelFinalistPodiumTest {
         finalistPodium.addMove(moveScope1);
         finalistPodium.addMove(buildMoveScope(stepScope1, -150, -2000, -10));
         finalistPodium.addMove(buildMoveScope(stepScope1, -200, -1000, -10));
-        assertSame(moveScope1, extractSingleton(finalistPodium.getFinalistList()));
+        assertThat(extractSingleton(finalistPodium.getFinalistList())).isSameAs(moveScope1);
         stepScope1.setScore(moveScope1.getScore());
         finalistPodium.stepEnded(stepScope1);
         phaseScope.setLastCompletedStepScope(stepScope1);
@@ -198,7 +198,7 @@ public class StrategicOscillationByLevelFinalistPodiumTest {
         finalistPodium.addMove(moveScope2);
         finalistPodium.addMove(buildMoveScope(stepScope2, -150, -2000, -10));
         finalistPodium.addMove(buildMoveScope(stepScope2, -160, -500, -10));
-        assertSame(moveScope2, extractSingleton(finalistPodium.getFinalistList()));
+        assertThat(extractSingleton(finalistPodium.getFinalistList())).isSameAs(moveScope2);
         stepScope2.setScore(moveScope2.getScore());
         finalistPodium.stepEnded(stepScope2);
         phaseScope.setLastCompletedStepScope(stepScope2);
@@ -209,7 +209,7 @@ public class StrategicOscillationByLevelFinalistPodiumTest {
         StrategicOscillationByLevelFinalistPodium finalistPodium = new StrategicOscillationByLevelFinalistPodium(false);
 
         // Reference score is [0, -2, -3]
-        DefaultSolverScope<TestdataSolution> solverScope = new DefaultSolverScope<>();
+        SolverScope<TestdataSolution> solverScope = new SolverScope<>();
         solverScope.setBestScore(HardMediumSoftScore.of(-0, -2, -3));
         LocalSearchPhaseScope<TestdataSolution> phaseScope = new LocalSearchPhaseScope<>(solverScope);
         LocalSearchStepScope<TestdataSolution> lastCompletedStepScope = new LocalSearchStepScope<>(phaseScope, -1);

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,9 +16,8 @@
 
 package org.optaplanner.examples.curriculumcourse.domain;
 
-import java.util.List;
+import java.util.Set;
 
-import com.thoughtworks.xstream.annotations.XStreamAlias;
 import org.optaplanner.core.api.domain.entity.PlanningEntity;
 import org.optaplanner.core.api.domain.entity.PlanningPin;
 import org.optaplanner.core.api.domain.variable.PlanningVariable;
@@ -26,6 +25,8 @@ import org.optaplanner.examples.common.domain.AbstractPersistable;
 import org.optaplanner.examples.curriculumcourse.domain.solver.LectureDifficultyWeightFactory;
 import org.optaplanner.examples.curriculumcourse.domain.solver.PeriodStrengthWeightFactory;
 import org.optaplanner.examples.curriculumcourse.domain.solver.RoomStrengthWeightFactory;
+
+import com.thoughtworks.xstream.annotations.XStreamAlias;
 
 @PlanningEntity(difficultyWeightFactoryClass = LectureDifficultyWeightFactory.class)
 @XStreamAlias("Lecture")
@@ -38,6 +39,16 @@ public class Lecture extends AbstractPersistable {
     // Planning variables: changes during planning, between score calculations.
     private Period period;
     private Room room;
+
+    public Lecture() {
+    }
+
+    public Lecture(int id, Course course, Period period, Room room) {
+        super(id);
+        this.course = course;
+        this.period = period;
+        this.room = room;
+    }
 
     public Course getCourse() {
         return course;
@@ -64,8 +75,8 @@ public class Lecture extends AbstractPersistable {
         this.pinned = pinned;
     }
 
-    @PlanningVariable(valueRangeProviderRefs = {"periodRange"},
-            strengthWeightFactoryClass = PeriodStrengthWeightFactory.class)
+    @PlanningVariable(valueRangeProviderRefs = {
+            "periodRange" }, strengthWeightFactoryClass = PeriodStrengthWeightFactory.class)
     public Period getPeriod() {
         return period;
     }
@@ -74,8 +85,7 @@ public class Lecture extends AbstractPersistable {
         this.period = period;
     }
 
-    @PlanningVariable(valueRangeProviderRefs = {"roomRange"},
-            strengthWeightFactoryClass = RoomStrengthWeightFactory.class)
+    @PlanningVariable(valueRangeProviderRefs = { "roomRange" }, strengthWeightFactoryClass = RoomStrengthWeightFactory.class)
     public Room getRoom() {
         return room;
     }
@@ -96,8 +106,8 @@ public class Lecture extends AbstractPersistable {
         return course.getStudentSize();
     }
 
-    public List<Curriculum> getCurriculumList() {
-        return course.getCurriculumList();
+    public Set<Curriculum> getCurriculumSet() {
+        return course.getCurriculumSet();
     }
 
     public Day getDay() {

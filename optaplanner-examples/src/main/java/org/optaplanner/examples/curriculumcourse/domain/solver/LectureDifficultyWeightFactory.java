@@ -1,5 +1,5 @@
 /*
- * Copyright 2010 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,6 +16,9 @@
 
 package org.optaplanner.examples.curriculumcourse.domain.solver;
 
+import static java.util.Comparator.comparingInt;
+import static java.util.Comparator.comparingLong;
+
 import java.util.Comparator;
 
 import org.optaplanner.core.impl.heuristic.selector.common.decorator.SelectionSorterWeightFactory;
@@ -23,8 +26,6 @@ import org.optaplanner.examples.curriculumcourse.domain.Course;
 import org.optaplanner.examples.curriculumcourse.domain.CourseSchedule;
 import org.optaplanner.examples.curriculumcourse.domain.Lecture;
 import org.optaplanner.examples.curriculumcourse.domain.UnavailablePeriodPenalty;
-
-import static java.util.Comparator.*;
 
 public class LectureDifficultyWeightFactory implements SelectionSorterWeightFactory<CourseSchedule, Lecture> {
 
@@ -42,8 +43,8 @@ public class LectureDifficultyWeightFactory implements SelectionSorterWeightFact
 
     public static class LectureDifficultyWeight implements Comparable<LectureDifficultyWeight> {
 
-        private static final Comparator<LectureDifficultyWeight> COMPARATOR =
-                comparingInt((LectureDifficultyWeight c) -> c.lecture.getCurriculumList().size())
+        private static final Comparator<LectureDifficultyWeight> COMPARATOR = comparingInt(
+                (LectureDifficultyWeight c) -> c.lecture.getCurriculumSet().size())
                         .thenComparing(c -> c.unavailablePeriodPenaltyCount)
                         .thenComparingInt(c -> c.lecture.getCourse().getLectureSize())
                         .thenComparingInt(c -> c.lecture.getCourse().getStudentSize())
@@ -60,7 +61,7 @@ public class LectureDifficultyWeightFactory implements SelectionSorterWeightFact
 
         @Override
         public int compareTo(LectureDifficultyWeight other) {
-           return COMPARATOR.compare(this, other);
+            return COMPARATOR.compare(this, other);
         }
     }
 }

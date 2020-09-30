@@ -1,5 +1,5 @@
 /*
- * Copyright 2014 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,17 +16,18 @@
 
 package org.optaplanner.core.impl.domain.variable.inverserelation;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+
 import java.util.Arrays;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
+import org.optaplanner.core.api.score.director.ScoreDirector;
 import org.optaplanner.core.impl.domain.variable.descriptor.GenuineVariableDescriptor;
-import org.optaplanner.core.impl.score.director.ScoreDirector;
 import org.optaplanner.core.impl.testdata.domain.chained.TestdataChainedAnchor;
 import org.optaplanner.core.impl.testdata.domain.chained.TestdataChainedEntity;
 import org.optaplanner.core.impl.testdata.domain.chained.TestdataChainedSolution;
-
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
 
 public class ExternalizedSingletonInverseVariableSupplyTest {
 
@@ -51,19 +52,19 @@ public class ExternalizedSingletonInverseVariableSupplyTest {
         when(scoreDirector.getWorkingSolution()).thenReturn(solution);
         supply.resetWorkingSolution(scoreDirector);
 
-        assertSame(a1, supply.getInverseSingleton(a0));
-        assertSame(a2, supply.getInverseSingleton(a1));
-        assertSame(a3, supply.getInverseSingleton(a2));
-        assertSame(null, supply.getInverseSingleton(a3));
-        assertSame(b1, supply.getInverseSingleton(b0));
-        assertSame(null, supply.getInverseSingleton(b1));
+        assertThat(supply.getInverseSingleton(a0)).isSameAs(a1);
+        assertThat(supply.getInverseSingleton(a1)).isSameAs(a2);
+        assertThat(supply.getInverseSingleton(a2)).isSameAs(a3);
+        assertThat(supply.getInverseSingleton(a3)).isSameAs(null);
+        assertThat(supply.getInverseSingleton(b0)).isSameAs(b1);
+        assertThat(supply.getInverseSingleton(b1)).isSameAs(null);
 
         supply.beforeVariableChanged(scoreDirector, a3);
         a3.setChainedObject(b1);
         supply.afterVariableChanged(scoreDirector, a3);
 
-        assertSame(null, supply.getInverseSingleton(a2));
-        assertSame(a3, supply.getInverseSingleton(b1));
+        assertThat(supply.getInverseSingleton(a2)).isSameAs(null);
+        assertThat(supply.getInverseSingleton(b1)).isSameAs(a3);
 
         supply.clearWorkingSolution(scoreDirector);
     }

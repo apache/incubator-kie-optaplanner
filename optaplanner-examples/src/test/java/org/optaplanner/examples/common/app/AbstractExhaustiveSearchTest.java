@@ -16,12 +16,9 @@
 
 package org.optaplanner.examples.common.app;
 
-import java.io.File;
 import java.util.Arrays;
-import java.util.Collection;
+import java.util.stream.Stream;
 
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.solver.SolverFactory;
 import org.optaplanner.core.config.exhaustivesearch.ExhaustiveSearchPhaseConfig;
@@ -32,31 +29,24 @@ import org.optaplanner.core.config.solver.termination.TerminationConfig;
 /**
  * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
  */
-@RunWith(Parameterized.class)
-public abstract class AbstractExhaustiveSearchTest<Solution_> extends AbstractPhaseTest<Solution_> {
+public abstract class AbstractExhaustiveSearchTest<Solution_>
+        extends AbstractPhaseTest<Solution_, ExhaustiveSearchType> {
 
-    protected static <Solution_> Collection<Object[]> buildParameters(CommonApp<Solution_> commonApp,
-            String... unsolvedFileNames) {
-        return buildParameters(commonApp, ExhaustiveSearchType.values(),
-                unsolvedFileNames);
-    }
-
-    protected ExhaustiveSearchType exhaustiveSearchType;
-
-    protected AbstractExhaustiveSearchTest(CommonApp<Solution_> commonApp, File dataFile,
-            ExhaustiveSearchType exhaustiveSearchType) {
-        super(commonApp, dataFile);
-        this.exhaustiveSearchType = exhaustiveSearchType;
+    @Override
+    protected Stream<ExhaustiveSearchType> solverFactoryParams() {
+        return Stream.of(ExhaustiveSearchType.values());
     }
 
     @Override
-    protected SolverFactory<Solution_> buildSolverFactory() {
-        SolverConfig solverConfig = SolverConfig.createFromXmlResource(commonApp.getSolverConfigResource());
+    protected SolverFactory<Solution_> buildSolverFactory(
+            CommonApp<Solution_> commonApp,
+            ExhaustiveSearchType exhaustiveSearchType) {
+        String solverConfigResource = commonApp.getSolverConfigResource();
+        SolverConfig solverConfig = SolverConfig.createFromXmlResource(solverConfigResource);
         solverConfig.setTerminationConfig(new TerminationConfig());
         ExhaustiveSearchPhaseConfig exhaustiveSearchPhaseConfig = new ExhaustiveSearchPhaseConfig();
         exhaustiveSearchPhaseConfig.setExhaustiveSearchType(exhaustiveSearchType);
         solverConfig.setPhaseConfigList(Arrays.asList(exhaustiveSearchPhaseConfig));
         return SolverFactory.create(solverConfig);
     }
-
 }

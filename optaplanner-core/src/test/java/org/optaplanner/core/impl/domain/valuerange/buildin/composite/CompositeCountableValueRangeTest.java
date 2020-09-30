@@ -1,5 +1,5 @@
 /*
- * Copyright 2013 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,18 +16,21 @@
 
 package org.optaplanner.core.impl.domain.valuerange.buildin.composite;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.anyInt;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+import static org.optaplanner.core.impl.testdata.util.PlannerAssert.assertAllElementsOfIterator;
+import static org.optaplanner.core.impl.testdata.util.PlannerAssert.assertElementsOfIterator;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.optaplanner.core.impl.domain.valuerange.buildin.collection.ListValueRange;
-
-import static org.junit.Assert.assertEquals;
-import static org.mockito.Mockito.*;
-import static org.optaplanner.core.impl.testdata.util.PlannerAssert.*;
 
 public class CompositeCountableValueRangeTest {
 
@@ -42,29 +45,29 @@ public class CompositeCountableValueRangeTest {
 
     @Test
     public void getSize() {
-        assertEquals(7L, createValueRange(Arrays.asList(0, 2, 5, 10), Arrays.asList(-15, 25, -1)).getSize());
-        assertEquals(4L, createValueRange(Arrays.asList("a", "b"), Arrays.asList("c"), Arrays.asList("d")).getSize());
-        assertEquals(0L, createValueRange(Collections.<String>emptyList(), Collections.<String>emptyList()).getSize());
+        assertThat(createValueRange(Arrays.asList(0, 2, 5, 10), Arrays.asList(-15, 25, -1)).getSize()).isEqualTo(7L);
+        assertThat(createValueRange(Arrays.asList("a", "b"), Arrays.asList("c"), Arrays.asList("d")).getSize()).isEqualTo(4L);
+        assertThat(createValueRange(Collections.emptyList()).getSize()).isEqualTo(0L);
     }
 
     @Test
     public void get() {
-        assertEquals(5, createValueRange(Arrays.asList(0, 2, 5, 10), Arrays.asList(-15, 25, -1)).get(2L).intValue());
-        assertEquals(-15, createValueRange(Arrays.asList(0, 2, 5, 10), Arrays.asList(-15, 25, -1)).get(4L).intValue());
-        assertEquals(-1, createValueRange(Arrays.asList(0, 2, 5, 10), Arrays.asList(-15, 25, -1)).get(6L).intValue());
-        assertEquals("c", createValueRange(Arrays.asList("a", "b"), Arrays.asList("c"), Arrays.asList("d")).get(2L));
+        assertThat(createValueRange(Arrays.asList(0, 2, 5, 10), Arrays.asList(-15, 25, -1)).get(2L).intValue()).isEqualTo(5);
+        assertThat(createValueRange(Arrays.asList(0, 2, 5, 10), Arrays.asList(-15, 25, -1)).get(4L).intValue()).isEqualTo(-15);
+        assertThat(createValueRange(Arrays.asList(0, 2, 5, 10), Arrays.asList(-15, 25, -1)).get(6L).intValue()).isEqualTo(-1);
+        assertThat(createValueRange(Arrays.asList("a", "b"), Arrays.asList("c"), Arrays.asList("d")).get(2L)).isEqualTo("c");
     }
 
     @Test
     public void contains() {
-        assertEquals(true, createValueRange(Arrays.asList(0, 2, 5, 10), Arrays.asList(-15, 25, -1)).contains(5));
-        assertEquals(false, createValueRange(Arrays.asList(0, 2, 5, 10), Arrays.asList(-15, 25, -1)).contains(4));
-        assertEquals(true, createValueRange(Arrays.asList(0, 2, 5, 10), Arrays.asList(-15, 25, -1)).contains(-15));
-        assertEquals(false, createValueRange(Arrays.asList(0, 2, 5, 10), Arrays.asList(-15, 25, -1)).contains(-14));
-        assertEquals(true, createValueRange(Arrays.asList(0, 2, 5, 10), Arrays.asList(-15, 25, -1)).contains(-1));
-        assertEquals(false, createValueRange(Arrays.asList(0, 2, 5, 10), Arrays.asList(-15, 25, -1)).contains(1));
-        assertEquals(true, createValueRange(Arrays.asList("a", "b"), Arrays.asList("c"), Arrays.asList("d")).contains("c"));
-        assertEquals(false, createValueRange(Arrays.asList("a", "b"), Arrays.asList("c"), Arrays.asList("d")).contains("n"));
+        assertThat(createValueRange(Arrays.asList(0, 2, 5, 10), Arrays.asList(-15, 25, -1)).contains(5)).isTrue();
+        assertThat(createValueRange(Arrays.asList(0, 2, 5, 10), Arrays.asList(-15, 25, -1)).contains(4)).isFalse();
+        assertThat(createValueRange(Arrays.asList(0, 2, 5, 10), Arrays.asList(-15, 25, -1)).contains(-15)).isTrue();
+        assertThat(createValueRange(Arrays.asList(0, 2, 5, 10), Arrays.asList(-15, 25, -1)).contains(-14)).isFalse();
+        assertThat(createValueRange(Arrays.asList(0, 2, 5, 10), Arrays.asList(-15, 25, -1)).contains(-1)).isTrue();
+        assertThat(createValueRange(Arrays.asList(0, 2, 5, 10), Arrays.asList(-15, 25, -1)).contains(1)).isFalse();
+        assertThat(createValueRange(Arrays.asList("a", "b"), Arrays.asList("c"), Arrays.asList("d")).contains("c")).isTrue();
+        assertThat(createValueRange(Arrays.asList("a", "b"), Arrays.asList("c"), Arrays.asList("d")).contains("n")).isFalse();
     }
 
     @Test
@@ -73,7 +76,7 @@ public class CompositeCountableValueRangeTest {
                 .createOriginalIterator(), 0, 2, 5, 10, -15, 25, -1);
         assertAllElementsOfIterator(createValueRange(Arrays.asList("a", "b"), Arrays.asList("c"), Arrays.asList("d"))
                 .createOriginalIterator(), "a", "b", "c", "d");
-        assertAllElementsOfIterator(createValueRange(Collections.<String>emptyList(), Collections.<String>emptyList())
+        assertAllElementsOfIterator(createValueRange(Collections.emptyList())
                 .createOriginalIterator());
     }
 
@@ -87,7 +90,7 @@ public class CompositeCountableValueRangeTest {
         when(workingRandom.nextInt(anyInt())).thenReturn(3, 0);
         assertElementsOfIterator(createValueRange(Arrays.asList("a", "b"), Arrays.asList("c"), Arrays.asList("d"))
                 .createRandomIterator(workingRandom), "d", "a");
-        assertElementsOfIterator(createValueRange(Collections.<String>emptyList(), Collections.<String>emptyList())
+        assertElementsOfIterator(createValueRange(Collections.emptyList())
                 .createRandomIterator(workingRandom));
     }
 

@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,6 +17,7 @@
 package org.optaplanner.core.impl.constructionheuristic.decider;
 
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
+import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.impl.constructionheuristic.decider.forager.ConstructionHeuristicForager;
 import org.optaplanner.core.impl.constructionheuristic.placer.Placement;
 import org.optaplanner.core.impl.constructionheuristic.scope.ConstructionHeuristicMoveScope;
@@ -24,7 +25,7 @@ import org.optaplanner.core.impl.constructionheuristic.scope.ConstructionHeurist
 import org.optaplanner.core.impl.constructionheuristic.scope.ConstructionHeuristicStepScope;
 import org.optaplanner.core.impl.heuristic.move.Move;
 import org.optaplanner.core.impl.score.director.InnerScoreDirector;
-import org.optaplanner.core.impl.solver.scope.DefaultSolverScope;
+import org.optaplanner.core.impl.solver.scope.SolverScope;
 import org.optaplanner.core.impl.solver.termination.Termination;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -66,7 +67,7 @@ public class ConstructionHeuristicDecider<Solution_> {
     // Worker methods
     // ************************************************************************
 
-    public void solvingStarted(DefaultSolverScope<Solution_> solverScope) {
+    public void solvingStarted(SolverScope<Solution_> solverScope) {
         forager.solvingStarted(solverScope);
     }
 
@@ -86,14 +87,15 @@ public class ConstructionHeuristicDecider<Solution_> {
         forager.phaseEnded(phaseScope);
     }
 
-    public void solvingEnded(DefaultSolverScope<Solution_> solverScope) {
+    public void solvingEnded(SolverScope<Solution_> solverScope) {
         forager.solvingEnded(solverScope);
     }
 
     public void decideNextStep(ConstructionHeuristicStepScope<Solution_> stepScope, Placement<Solution_> placement) {
         int moveIndex = 0;
         for (Move<Solution_> move : placement) {
-            ConstructionHeuristicMoveScope<Solution_> moveScope = new ConstructionHeuristicMoveScope<>(stepScope, moveIndex, move);
+            ConstructionHeuristicMoveScope<Solution_> moveScope = new ConstructionHeuristicMoveScope<>(stepScope, moveIndex,
+                    move);
             moveIndex++;
             // Do not filter out pointless moves, because the original value of the entity(s) is irrelevant.
             // If the original value is null and the variable is nullable, the move to null must be done too.
@@ -121,15 +123,15 @@ public class ConstructionHeuristicDecider<Solution_> {
         }
     }
 
-    protected void doMove(ConstructionHeuristicMoveScope<Solution_> moveScope) {
-        InnerScoreDirector<Solution_> scoreDirector = moveScope.getScoreDirector();
+    protected <Score_ extends Score<Score_>> void doMove(ConstructionHeuristicMoveScope<Solution_> moveScope) {
+        InnerScoreDirector<Solution_, Score_> scoreDirector = moveScope.getScoreDirector();
         scoreDirector.doAndProcessMove(moveScope.getMove(), assertMoveScoreFromScratch, score -> {
             moveScope.setScore(score);
             forager.addMove(moveScope);
         });
         if (assertExpectedUndoMoveScore) {
             scoreDirector.assertExpectedUndoMoveScore(moveScope.getMove(),
-                    moveScope.getStepScope().getPhaseScope().getLastCompletedStepScope().getScore());
+                    (Score_) moveScope.getStepScope().getPhaseScope().getLastCompletedStepScope().getScore());
         }
         logger.trace("{}        Move index ({}), score ({}), move ({}).",
                 logIndentation,

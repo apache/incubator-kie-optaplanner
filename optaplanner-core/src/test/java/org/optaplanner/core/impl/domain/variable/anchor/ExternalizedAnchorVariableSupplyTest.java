@@ -1,5 +1,5 @@
 /*
- * Copyright 2014 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,18 +16,19 @@
 
 package org.optaplanner.core.impl.domain.variable.anchor;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+
 import java.util.Arrays;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
+import org.optaplanner.core.api.score.director.ScoreDirector;
 import org.optaplanner.core.impl.domain.variable.descriptor.GenuineVariableDescriptor;
 import org.optaplanner.core.impl.domain.variable.inverserelation.ExternalizedSingletonInverseVariableSupply;
-import org.optaplanner.core.impl.score.director.ScoreDirector;
 import org.optaplanner.core.impl.testdata.domain.chained.TestdataChainedAnchor;
 import org.optaplanner.core.impl.testdata.domain.chained.TestdataChainedEntity;
 import org.optaplanner.core.impl.testdata.domain.chained.TestdataChainedSolution;
-
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
 
 public class ExternalizedAnchorVariableSupplyTest {
 
@@ -35,7 +36,8 @@ public class ExternalizedAnchorVariableSupplyTest {
     public void chainedEntity() {
         GenuineVariableDescriptor variableDescriptor = TestdataChainedEntity.buildVariableDescriptorForChainedObject();
         ScoreDirector scoreDirector = mock(ScoreDirector.class);
-        ExternalizedSingletonInverseVariableSupply nextVariableSupply = new ExternalizedSingletonInverseVariableSupply(variableDescriptor);
+        ExternalizedSingletonInverseVariableSupply nextVariableSupply = new ExternalizedSingletonInverseVariableSupply(
+                variableDescriptor);
         ExternalizedAnchorVariableSupply supply = new ExternalizedAnchorVariableSupply(variableDescriptor, nextVariableSupply);
 
         TestdataChainedAnchor a0 = new TestdataChainedAnchor("a0");
@@ -54,10 +56,10 @@ public class ExternalizedAnchorVariableSupplyTest {
         nextVariableSupply.resetWorkingSolution(scoreDirector);
         supply.resetWorkingSolution(scoreDirector);
 
-        assertSame(a0, supply.getAnchor(a1));
-        assertSame(a0, supply.getAnchor(a2));
-        assertSame(a0, supply.getAnchor(a3));
-        assertSame(b0, supply.getAnchor(b1));
+        assertThat(supply.getAnchor(a1)).isSameAs(a0);
+        assertThat(supply.getAnchor(a2)).isSameAs(a0);
+        assertThat(supply.getAnchor(a3)).isSameAs(a0);
+        assertThat(supply.getAnchor(b1)).isSameAs(b0);
 
         nextVariableSupply.beforeVariableChanged(scoreDirector, a3);
         supply.beforeVariableChanged(scoreDirector, a3);
@@ -65,10 +67,10 @@ public class ExternalizedAnchorVariableSupplyTest {
         nextVariableSupply.afterVariableChanged(scoreDirector, a3);
         supply.afterVariableChanged(scoreDirector, a3);
 
-        assertSame(a0, supply.getAnchor(a1));
-        assertSame(a0, supply.getAnchor(a2));
-        assertSame(b0, supply.getAnchor(a3));
-        assertSame(b0, supply.getAnchor(b1));
+        assertThat(supply.getAnchor(a1)).isSameAs(a0);
+        assertThat(supply.getAnchor(a2)).isSameAs(a0);
+        assertThat(supply.getAnchor(a3)).isSameAs(b0);
+        assertThat(supply.getAnchor(b1)).isSameAs(b0);
 
         nextVariableSupply.clearWorkingSolution(scoreDirector);
         supply.clearWorkingSolution(scoreDirector);

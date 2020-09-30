@@ -208,8 +208,8 @@ add the `solutionPartitionerCustomProperties` element and use <<customProperties
   <partitionedSearch>
     <solutionPartitionerClass>...CloudBalancePartitioner</solutionPartitionerClass>
     <solutionPartitionerCustomProperties>
-      <myPartCount>8</myPartCount>
-      <myMinimumProcessListSize>100</myMinimumProcessListSize>
+      <property name="myPartCount" value="8"/>
+      <property name="myMinimumProcessListSize" value="100"/>
     </solutionPartitionerCustomProperties>
   </partitionedSearch>
 ----
@@ -252,13 +252,6 @@ It does not hog all CPU cores on a multi-core machine.
 [source,xml,options="nowrap"]
 ----
 <runnablePartThreadLimit>2</runnablePartThreadLimit>
-----
-* JavaScript formula: Formula for the number of CPU cores to occupy.
-It can use the variable `availableProcessorCount`. For example:
-+
-[source,xml,options="nowrap"]
-----
-<runnablePartThreadLimit>availableProcessorCount - 2</runnablePartThreadLimit>
 ----
 
 [WARNING]

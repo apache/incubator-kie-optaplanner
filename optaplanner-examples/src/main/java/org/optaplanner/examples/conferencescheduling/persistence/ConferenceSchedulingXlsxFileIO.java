@@ -1,5 +1,5 @@
 /*
- * Copyright 2017 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,56 +15,6 @@
  */
 
 package org.optaplanner.examples.conferencescheduling.persistence;
-
-import java.io.BufferedInputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
-import java.time.format.DateTimeParseException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.LinkedHashMap;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Set;
-import java.util.function.Function;
-import java.util.function.Predicate;
-import java.util.stream.Collectors;
-
-import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.tuple.Pair;
-import org.apache.poi.ss.usermodel.ClientAnchor;
-import org.apache.poi.ss.usermodel.Comment;
-import org.apache.poi.ss.usermodel.Workbook;
-import org.apache.poi.ss.util.CellRangeAddress;
-import org.apache.poi.xssf.usermodel.XSSFCell;
-import org.apache.poi.xssf.usermodel.XSSFCellStyle;
-import org.apache.poi.xssf.usermodel.XSSFColor;
-import org.apache.poi.xssf.usermodel.XSSFWorkbook;
-import org.optaplanner.core.api.score.Score;
-import org.optaplanner.core.api.score.buildin.hardmediumsoft.HardMediumSoftScore;
-import org.optaplanner.core.api.score.constraint.ConstraintMatch;
-import org.optaplanner.core.api.score.constraint.Indictment;
-import org.optaplanner.examples.common.persistence.AbstractXlsxSolutionFileIO;
-import org.optaplanner.examples.conferencescheduling.app.ConferenceSchedulingApp;
-import org.optaplanner.examples.conferencescheduling.domain.ConferenceConstraintConfiguration;
-import org.optaplanner.examples.conferencescheduling.domain.ConferenceSolution;
-import org.optaplanner.examples.conferencescheduling.domain.Room;
-import org.optaplanner.examples.conferencescheduling.domain.Speaker;
-import org.optaplanner.examples.conferencescheduling.domain.Talk;
-import org.optaplanner.examples.conferencescheduling.domain.TalkType;
-import org.optaplanner.examples.conferencescheduling.domain.Timeslot;
-import org.optaplanner.swing.impl.TangoColorFactory;
 
 import static java.util.Collections.disjoint;
 import static java.util.Collections.emptyList;
@@ -116,48 +66,133 @@ import static org.optaplanner.examples.conferencescheduling.domain.ConferenceCon
 import static org.optaplanner.examples.conferencescheduling.domain.ConferenceConstraintConfiguration.THEME_TRACK_CONFLICT;
 import static org.optaplanner.examples.conferencescheduling.domain.ConferenceConstraintConfiguration.THEME_TRACK_ROOM_STABILITY;
 
+import java.io.BufferedInputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.format.DateTimeParseException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Set;
+import java.util.function.Function;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
+
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.tuple.Pair;
+import org.apache.poi.ss.usermodel.ClientAnchor;
+import org.apache.poi.ss.usermodel.Comment;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.ss.util.CellRangeAddress;
+import org.apache.poi.xssf.usermodel.XSSFCell;
+import org.apache.poi.xssf.usermodel.XSSFCellStyle;
+import org.apache.poi.xssf.usermodel.XSSFColor;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.optaplanner.core.api.score.buildin.hardmediumsoft.HardMediumSoftScore;
+import org.optaplanner.core.api.score.constraint.ConstraintMatch;
+import org.optaplanner.core.api.score.constraint.Indictment;
+import org.optaplanner.examples.common.persistence.AbstractXlsxSolutionFileIO;
+import org.optaplanner.examples.conferencescheduling.app.ConferenceSchedulingApp;
+import org.optaplanner.examples.conferencescheduling.domain.ConferenceConstraintConfiguration;
+import org.optaplanner.examples.conferencescheduling.domain.ConferenceSolution;
+import org.optaplanner.examples.conferencescheduling.domain.Room;
+import org.optaplanner.examples.conferencescheduling.domain.Speaker;
+import org.optaplanner.examples.conferencescheduling.domain.Talk;
+import org.optaplanner.examples.conferencescheduling.domain.TalkType;
+import org.optaplanner.examples.conferencescheduling.domain.Timeslot;
+import org.optaplanner.swing.impl.TangoColorFactory;
+
 public class ConferenceSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<ConferenceSolution> {
 
-    private static final String ROOM_UNAVAILABLE_TIMESLOT_DESCRIPTION = "Penalty per talk with an unavailable room in its timeslot, per minute";
-    private static final String ROOM_CONFLICT_DESCRIPTION = "Penalty per 2 talks in the same room and overlapping timeslots, per overlapping minute";
-    private static final String SPEAKER_UNAVAILABLE_TIMESLOT_DESCRIPTION = "Penalty per talk with an unavailable speaker in its timeslot, per minute";
-    private static final String SPEAKER_CONFLICT_DESCRIPTION = "Penalty per 2 talks with the same speaker and overlapping timeslots, per overlapping minute";
-    private static final String TALK_PREREQUISITE_TALKS_DESCRIPTION = "Penalty per prerequisite talk of a talk that doesn't end before the second talk starts, per minute of either talk";
-    private static final String TALK_MUTUALLY_EXCLUSIVE_TALKS_TAGS_DESCRIPTION = "Penalty per common mutually exclusive talks tag of 2 talks with overlapping timeslots, per overlapping minute";
-    private static final String CONSECUTIVE_TALKS_PAUSE_DESCRIPTION = "Penalty per 2 consecutive talks for the same speaker with a pause less than the minimum pause, per minute of either talk";
-    private static final String CROWD_CONTROL_DESCRIPTION = "Penalty per talk with a non-zero crowd control risk that are not in paired with exactly one other such talk, per minute of either talk";
+    private static final String ROOM_UNAVAILABLE_TIMESLOT_DESCRIPTION =
+            "Penalty per talk with an unavailable room in its timeslot, per minute";
+    private static final String ROOM_CONFLICT_DESCRIPTION =
+            "Penalty per 2 talks in the same room and overlapping timeslots, per overlapping minute";
+    private static final String SPEAKER_UNAVAILABLE_TIMESLOT_DESCRIPTION =
+            "Penalty per talk with an unavailable speaker in its timeslot, per minute";
+    private static final String SPEAKER_CONFLICT_DESCRIPTION =
+            "Penalty per 2 talks with the same speaker and overlapping timeslots, per overlapping minute";
+    private static final String TALK_PREREQUISITE_TALKS_DESCRIPTION =
+            "Penalty per prerequisite talk of a talk that doesn't end before the second talk starts, per minute of either talk";
+    private static final String TALK_MUTUALLY_EXCLUSIVE_TALKS_TAGS_DESCRIPTION =
+            "Penalty per common mutually exclusive talks tag of 2 talks with overlapping timeslots, per overlapping minute";
+    private static final String CONSECUTIVE_TALKS_PAUSE_DESCRIPTION =
+            "Penalty per 2 consecutive talks for the same speaker with a pause less than the minimum pause, per minute of either talk";
+    private static final String CROWD_CONTROL_DESCRIPTION =
+            "Penalty per talk with a non-zero crowd control risk that are not in paired with exactly one other such talk, per minute of either talk";
 
-    private static final String SPEAKER_REQUIRED_TIMESLOT_TAGS_DESCRIPTION = "Penalty per missing required tag in a talk's timeslot, per minute";
-    private static final String SPEAKER_PROHIBITED_TIMESLOT_TAGS_DESCRIPTION = "Penalty per prohibited tag in a talk's timeslot, per minute";
-    private static final String TALK_REQUIRED_TIMESLOT_TAGS_DESCRIPTION = "Penalty per missing required tag in a talk's timeslot, per minute";
-    private static final String TALK_PROHIBITED_TIMESLOT_TAGS_DESCRIPTION = "Penalty per prohibited tag in a talk's timeslot, per minute";
-    private static final String SPEAKER_REQUIRED_ROOM_TAGS_DESCRIPTION = "Penalty per missing required tag in a talk's room, per minute";
-    private static final String SPEAKER_PROHIBITED_ROOM_TAGS_DESCRIPTION = "Penalty per prohibited tag in a talk's room, per minute";
-    private static final String TALK_REQUIRED_ROOM_TAGS_DESCRIPTION = "Penalty per missing required tag in a talk's room, per minute";
-    private static final String TALK_PROHIBITED_ROOM_TAGS_DESCRIPTION = "Penalty per prohibited tag in a talk's room, per minute";
+    private static final String SPEAKER_REQUIRED_TIMESLOT_TAGS_DESCRIPTION =
+            "Penalty per missing required tag in a talk's timeslot, per minute";
+    private static final String SPEAKER_PROHIBITED_TIMESLOT_TAGS_DESCRIPTION =
+            "Penalty per prohibited tag in a talk's timeslot, per minute";
+    private static final String TALK_REQUIRED_TIMESLOT_TAGS_DESCRIPTION =
+            "Penalty per missing required tag in a talk's timeslot, per minute";
+    private static final String TALK_PROHIBITED_TIMESLOT_TAGS_DESCRIPTION =
+            "Penalty per prohibited tag in a talk's timeslot, per minute";
+    private static final String SPEAKER_REQUIRED_ROOM_TAGS_DESCRIPTION =
+            "Penalty per missing required tag in a talk's room, per minute";
+    private static final String SPEAKER_PROHIBITED_ROOM_TAGS_DESCRIPTION =
+            "Penalty per prohibited tag in a talk's room, per minute";
+    private static final String TALK_REQUIRED_ROOM_TAGS_DESCRIPTION =
+            "Penalty per missing required tag in a talk's room, per minute";
+    private static final String TALK_PROHIBITED_ROOM_TAGS_DESCRIPTION =
+            "Penalty per prohibited tag in a talk's room, per minute";
 
-    private static final String PUBLISHED_TIMESLOT_DESCRIPTION = "Penalty per published talk with a different timeslot than its published timeslot, per match";
+    private static final String PUBLISHED_TIMESLOT_DESCRIPTION =
+            "Penalty per published talk with a different timeslot than its published timeslot, per match";
 
-    private static final String PUBLISHED_ROOM_DESCRIPTION = "Penalty per published talk with a different room than its published room, per match";
-    private static final String THEME_TRACK_CONFLICT_DESCRIPTION = "Penalty per common theme track of 2 talks with overlapping timeslots, per overlapping minute";
-    private static final String THEME_TRACK_ROOM_STABILITY_DESCRIPTION = "Penalty per common theme track of 2 talks in a different room on the same day, per minute of either talk";
-    private static final String SECTOR_CONFLICT_DESCRIPTION = "Penalty per common sector of 2 talks with overlapping timeslots, per overlapping minute";
-    private static final String AUDIENCE_TYPE_DIVERSITY_DESCRIPTION = "Reward per 2 talks with a different audience type and the same timeslot, per (overlapping) minute";
-    private static final String AUDIENCE_TYPE_THEME_TRACK_CONFLICT_DESCRIPTION = "Penalty per 2 talks with a common audience type, a common theme track and overlapping timeslots, per overlapping minute";
-    private static final String AUDIENCE_LEVEL_DIVERSITY_DESCRIPTION = "Reward per 2 talks with a different audience level and the same timeslot, per (overlapping) minute";
-    private static final String CONTENT_AUDIENCE_LEVEL_FLOW_VIOLATION_DESCRIPTION = "Penalty per common content of 2 talks with a different audience level for which the easier talk isn't scheduled earlier than the other talk, per minute of either talk";
-    private static final String CONTENT_CONFLICT_DESCRIPTION = "Penalty per common content of 2 talks with overlapping timeslots, per overlapping minute";
-    private static final String LANGUAGE_DIVERSITY_DESCRIPTION = "Reward per 2 talks with a different language and the the same timeslot, per (overlapping) minute";
-    private static final String SAME_DAY_TALKS_DESCRIPTION = "Penalty per common content or theme track of 2 talks with a different day, per minute of either talk";
-    private static final String POPULAR_TALKS_DESCRIPTION = "Penalty per 2 talks where the less popular one (has lower favorite count) is assigned a larger room than the more popular talk";
+    private static final String PUBLISHED_ROOM_DESCRIPTION =
+            "Penalty per published talk with a different room than its published room, per match";
+    private static final String THEME_TRACK_CONFLICT_DESCRIPTION =
+            "Penalty per common theme track of 2 talks with overlapping timeslots, per overlapping minute";
+    private static final String THEME_TRACK_ROOM_STABILITY_DESCRIPTION =
+            "Penalty per common theme track of 2 talks in a different room on the same day, per minute of either talk";
+    private static final String SECTOR_CONFLICT_DESCRIPTION =
+            "Penalty per common sector of 2 talks with overlapping timeslots, per overlapping minute";
+    private static final String AUDIENCE_TYPE_DIVERSITY_DESCRIPTION =
+            "Reward per 2 talks with a different audience type and the same timeslot, per (overlapping) minute";
+    private static final String AUDIENCE_TYPE_THEME_TRACK_CONFLICT_DESCRIPTION =
+            "Penalty per 2 talks with a common audience type, a common theme track and overlapping timeslots, per overlapping minute";
+    private static final String AUDIENCE_LEVEL_DIVERSITY_DESCRIPTION =
+            "Reward per 2 talks with a different audience level and the same timeslot, per (overlapping) minute";
+    private static final String CONTENT_AUDIENCE_LEVEL_FLOW_VIOLATION_DESCRIPTION =
+            "Penalty per common content of 2 talks with a different audience level for which the easier talk isn't scheduled earlier than the other talk, per minute of either talk";
+    private static final String CONTENT_CONFLICT_DESCRIPTION =
+            "Penalty per common content of 2 talks with overlapping timeslots, per overlapping minute";
+    private static final String LANGUAGE_DIVERSITY_DESCRIPTION =
+            "Reward per 2 talks with a different language and the the same timeslot, per (overlapping) minute";
+    private static final String SAME_DAY_TALKS_DESCRIPTION =
+            "Penalty per common content or theme track of 2 talks with a different day, per minute of either talk";
+    private static final String POPULAR_TALKS_DESCRIPTION =
+            "Penalty per 2 talks where the less popular one (has lower favorite count) is assigned a larger room than the more popular talk";
 
-    private static final String SPEAKER_PREFERRED_TIMESLOT_TAGS_DESCRIPTION = "Penalty per missing preferred tag in a talk's timeslot, per minute";
-    private static final String SPEAKER_UNDESIRED_TIMESLOT_TAGS_DESCRIPTION = "Penalty per undesired tag in a talk's timeslot, per minute";
-    private static final String TALK_PREFERRED_TIMESLOT_TAGS_DESCRIPTION = "Penalty per missing preferred tag in a talk's timeslot, per minute";
-    private static final String TALK_UNDESIRED_TIMESLOT_TAGS_DESCRIPTION = "Penalty per undesired tag in a talk's timeslot, per minute";
-    private static final String SPEAKER_PREFERRED_ROOM_TAGS_DESCRIPTION = "Penalty per missing preferred tag in a talk's room, per minute";
-    private static final String SPEAKER_UNDESIRED_ROOM_TAGS_DESCRIPTION = "Penalty per undesired tag in a talk's room, per minute";
-    private static final String TALK_PREFERRED_ROOM_TAGS_DESCRIPTION = "Penalty per missing preferred tag in a talk's room, per minute";
+    private static final String SPEAKER_PREFERRED_TIMESLOT_TAGS_DESCRIPTION =
+            "Penalty per missing preferred tag in a talk's timeslot, per minute";
+    private static final String SPEAKER_UNDESIRED_TIMESLOT_TAGS_DESCRIPTION =
+            "Penalty per undesired tag in a talk's timeslot, per minute";
+    private static final String TALK_PREFERRED_TIMESLOT_TAGS_DESCRIPTION =
+            "Penalty per missing preferred tag in a talk's timeslot, per minute";
+    private static final String TALK_UNDESIRED_TIMESLOT_TAGS_DESCRIPTION =
+            "Penalty per undesired tag in a talk's timeslot, per minute";
+    private static final String SPEAKER_PREFERRED_ROOM_TAGS_DESCRIPTION =
+            "Penalty per missing preferred tag in a talk's room, per minute";
+    private static final String SPEAKER_UNDESIRED_ROOM_TAGS_DESCRIPTION =
+            "Penalty per undesired tag in a talk's room, per minute";
+    private static final String TALK_PREFERRED_ROOM_TAGS_DESCRIPTION =
+            "Penalty per missing preferred tag in a talk's room, per minute";
     private static final String TALK_UNDESIRED_ROOM_TAGS_DESCRIPTION = "Penalty per undesired tag in a talk's room, per minute";
 
     private static final Comparator<Timeslot> COMPARATOR = comparing(Timeslot::getStartDateTime)
@@ -185,7 +220,7 @@ public class ConferenceSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<C
         }
     }
 
-    private class ConferenceSchedulingXlsxReader extends AbstractXlsxReader<ConferenceSolution> {
+    private class ConferenceSchedulingXlsxReader extends AbstractXlsxReader<ConferenceSolution, HardMediumSoftScore> {
 
         private Map<String, TalkType> totalTalkTypeMap;
         private Set<String> totalTimeslotTagSet;
@@ -240,8 +275,9 @@ public class ConferenceSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<C
                     SPEAKER_CONFLICT_DESCRIPTION));
             constraintConfiguration.setTalkPrerequisiteTalks(readScoreConstraintLine(TALK_PREREQUISITE_TALKS,
                     TALK_PREREQUISITE_TALKS_DESCRIPTION));
-            constraintConfiguration.setTalkMutuallyExclusiveTalksTags(readScoreConstraintLine(TALK_MUTUALLY_EXCLUSIVE_TALKS_TAGS,
-                    TALK_MUTUALLY_EXCLUSIVE_TALKS_TAGS_DESCRIPTION));
+            constraintConfiguration
+                    .setTalkMutuallyExclusiveTalksTags(readScoreConstraintLine(TALK_MUTUALLY_EXCLUSIVE_TALKS_TAGS,
+                            TALK_MUTUALLY_EXCLUSIVE_TALKS_TAGS_DESCRIPTION));
             constraintConfiguration.setConsecutiveTalksPause(readScoreConstraintLine(CONSECUTIVE_TALKS_PAUSE,
                     CONSECUTIVE_TALKS_PAUSE_DESCRIPTION));
             constraintConfiguration.setCrowdControl(readScoreConstraintLine(CROWD_CONTROL,
@@ -277,12 +313,14 @@ public class ConferenceSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<C
                     SECTOR_CONFLICT_DESCRIPTION));
             constraintConfiguration.setAudienceTypeDiversity(readScoreConstraintLine(AUDIENCE_TYPE_DIVERSITY,
                     AUDIENCE_TYPE_DIVERSITY_DESCRIPTION));
-            constraintConfiguration.setAudienceTypeThemeTrackConflict(readScoreConstraintLine(AUDIENCE_TYPE_THEME_TRACK_CONFLICT,
-                    AUDIENCE_TYPE_THEME_TRACK_CONFLICT_DESCRIPTION));
+            constraintConfiguration
+                    .setAudienceTypeThemeTrackConflict(readScoreConstraintLine(AUDIENCE_TYPE_THEME_TRACK_CONFLICT,
+                            AUDIENCE_TYPE_THEME_TRACK_CONFLICT_DESCRIPTION));
             constraintConfiguration.setAudienceLevelDiversity(readScoreConstraintLine(AUDIENCE_LEVEL_DIVERSITY,
                     AUDIENCE_LEVEL_DIVERSITY_DESCRIPTION));
-            constraintConfiguration.setContentAudienceLevelFlowViolation(readScoreConstraintLine(CONTENT_AUDIENCE_LEVEL_FLOW_VIOLATION,
-                    CONTENT_AUDIENCE_LEVEL_FLOW_VIOLATION_DESCRIPTION));
+            constraintConfiguration
+                    .setContentAudienceLevelFlowViolation(readScoreConstraintLine(CONTENT_AUDIENCE_LEVEL_FLOW_VIOLATION,
+                            CONTENT_AUDIENCE_LEVEL_FLOW_VIOLATION_DESCRIPTION));
             constraintConfiguration.setContentConflict(readScoreConstraintLine(CONTENT_CONFLICT,
                     CONTENT_CONFLICT_DESCRIPTION));
             constraintConfiguration.setLanguageDiversity(readScoreConstraintLine(LANGUAGE_DIVERSITY,
@@ -620,11 +658,13 @@ public class ConferenceSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<C
                         .filter(tag -> !tag.isEmpty()).collect(toCollection(LinkedHashSet::new)));
                 for (String audienceType : talk.getAudienceTypeSet()) {
                     if (strict && !VALID_TAG_PATTERN.matcher(audienceType).matches()) {
-                        throw new IllegalStateException(currentPosition() + ": The talk (" + talk + ")'s audience type (" + audienceType
-                                + ") must match to the regular expression (" + VALID_TAG_PATTERN + ").");
+                        throw new IllegalStateException(
+                                currentPosition() + ": The talk (" + talk + ")'s audience type (" + audienceType
+                                        + ") must match to the regular expression (" + VALID_TAG_PATTERN + ").");
                     }
                 }
-                talk.setAudienceLevel(getNextStrictlyPositiveIntegerCell("talk with code (" + talk.getCode(), "an audience level"));
+                talk.setAudienceLevel(
+                        getNextStrictlyPositiveIntegerCell("talk with code (" + talk.getCode(), "an audience level"));
                 talk.setContentTagSet(Arrays.stream(nextStringCell().getStringCellValue().split(", "))
                         .filter(tag -> !tag.isEmpty()).collect(toCollection(LinkedHashSet::new)));
                 for (String tag : talk.getContentTagSet()) {
@@ -663,7 +703,8 @@ public class ConferenceSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<C
                 talkToPrerequisiteTalkSetMap.put(talk, Arrays.stream(nextStringCell().getStringCellValue().split(", "))
                         .filter(tag -> !tag.isEmpty()).collect(Collectors.toCollection(LinkedHashSet::new)));
                 talk.setFavoriteCount(getNextPositiveIntegerCell("talk with code (" + talk.getCode(), "a Favorite count"));
-                talk.setCrowdControlRisk(getNextPositiveIntegerCell("talk with code (" + talk.getCode(), "a crowd control risk"));
+                talk.setCrowdControlRisk(
+                        getNextPositiveIntegerCell("talk with code (" + talk.getCode(), "a crowd control risk"));
                 talk.setPinnedByUser(nextBooleanCell().getBooleanCellValue());
                 talk.setTimeslot(extractTimeslot(timeslotMap, talk));
                 talk.setRoom(extractRoom(roomMap, talk));
@@ -730,7 +771,8 @@ public class ConferenceSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<C
             double cellValueDouble = nextNumericCell().getNumericCellValue();
             if (strict && (cellValueDouble <= 0 || cellValueDouble != Math.floor(cellValueDouble))) {
                 throw new IllegalStateException(currentPosition() + ": The" + classSpecifier
-                        + ")'s has " + columnName + " (" + cellValueDouble + ") that isn't a strictly positive integer number.");
+                        + ")'s has " + columnName + " (" + cellValueDouble
+                        + ") that isn't a strictly positive integer number.");
             }
             return (int) cellValueDouble;
         }
@@ -771,7 +813,8 @@ public class ConferenceSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<C
                     Talk prerequisiteTalk = totalTalkCodeMap.get(prerequisiteTalkCode);
                     if (prerequisiteTalk == null) {
                         throw new IllegalStateException("The talk (" + currentTalk.getCode()
-                                + ") has a prerequisite talk (" + prerequisiteTalkCode + ") that doesn't exist in the talk list.");
+                                + ") has a prerequisite talk (" + prerequisiteTalkCode
+                                + ") that doesn't exist in the talk list.");
                     }
                     prerequisiteTalkSet.add(prerequisiteTalk);
                 }
@@ -811,7 +854,7 @@ public class ConferenceSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<C
         }
     }
 
-    private class ConferenceSchedulingXlsxWriter extends AbstractXlsxWriter<ConferenceSolution> {
+    private static class ConferenceSchedulingXlsxWriter extends AbstractXlsxWriter<ConferenceSolution, HardMediumSoftScore> {
 
         private Map<String, XSSFCellStyle> themeTrackToStyleMap;
 
@@ -878,7 +921,8 @@ public class ConferenceSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<C
                     SPEAKER_CONFLICT_DESCRIPTION);
             writeScoreConstraintLine(TALK_PREREQUISITE_TALKS, constraintConfiguration.getTalkPrerequisiteTalks(),
                     TALK_PREREQUISITE_TALKS_DESCRIPTION);
-            writeScoreConstraintLine(TALK_MUTUALLY_EXCLUSIVE_TALKS_TAGS, constraintConfiguration.getTalkMutuallyExclusiveTalksTags(),
+            writeScoreConstraintLine(TALK_MUTUALLY_EXCLUSIVE_TALKS_TAGS,
+                    constraintConfiguration.getTalkMutuallyExclusiveTalksTags(),
                     TALK_MUTUALLY_EXCLUSIVE_TALKS_TAGS_DESCRIPTION);
             writeScoreConstraintLine(CONSECUTIVE_TALKS_PAUSE, constraintConfiguration.getConsecutiveTalksPause(),
                     CONSECUTIVE_TALKS_PAUSE_DESCRIPTION);
@@ -887,7 +931,8 @@ public class ConferenceSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<C
 
             writeScoreConstraintLine(SPEAKER_REQUIRED_TIMESLOT_TAGS, constraintConfiguration.getSpeakerRequiredTimeslotTags(),
                     SPEAKER_REQUIRED_TIMESLOT_TAGS_DESCRIPTION);
-            writeScoreConstraintLine(SPEAKER_PROHIBITED_TIMESLOT_TAGS, constraintConfiguration.getSpeakerProhibitedTimeslotTags(),
+            writeScoreConstraintLine(SPEAKER_PROHIBITED_TIMESLOT_TAGS,
+                    constraintConfiguration.getSpeakerProhibitedTimeslotTags(),
                     SPEAKER_PROHIBITED_TIMESLOT_TAGS_DESCRIPTION);
             writeScoreConstraintLine(TALK_REQUIRED_TIMESLOT_TAGS, constraintConfiguration.getTalkRequiredTimeslotTags(),
                     TALK_REQUIRED_TIMESLOT_TAGS_DESCRIPTION);
@@ -917,11 +962,13 @@ public class ConferenceSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<C
                     SECTOR_CONFLICT_DESCRIPTION);
             writeScoreConstraintLine(AUDIENCE_TYPE_DIVERSITY, constraintConfiguration.getAudienceTypeDiversity(),
                     AUDIENCE_TYPE_DIVERSITY_DESCRIPTION);
-            writeScoreConstraintLine(AUDIENCE_TYPE_THEME_TRACK_CONFLICT, constraintConfiguration.getAudienceTypeThemeTrackConflict(),
+            writeScoreConstraintLine(AUDIENCE_TYPE_THEME_TRACK_CONFLICT,
+                    constraintConfiguration.getAudienceTypeThemeTrackConflict(),
                     AUDIENCE_TYPE_THEME_TRACK_CONFLICT_DESCRIPTION);
             writeScoreConstraintLine(AUDIENCE_LEVEL_DIVERSITY, constraintConfiguration.getAudienceLevelDiversity(),
                     AUDIENCE_LEVEL_DIVERSITY_DESCRIPTION);
-            writeScoreConstraintLine(CONTENT_AUDIENCE_LEVEL_FLOW_VIOLATION, constraintConfiguration.getContentAudienceLevelFlowViolation(),
+            writeScoreConstraintLine(CONTENT_AUDIENCE_LEVEL_FLOW_VIOLATION,
+                    constraintConfiguration.getContentAudienceLevelFlowViolation(),
                     CONTENT_AUDIENCE_LEVEL_FLOW_VIOLATION_DESCRIPTION);
             writeScoreConstraintLine(CONTENT_CONFLICT, constraintConfiguration.getContentConflict(),
                     CONTENT_CONFLICT_DESCRIPTION);
@@ -965,7 +1012,8 @@ public class ConferenceSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<C
                 nextCell().setCellValue(DAY_FORMATTER.format(timeslot.getDate()));
                 nextCell().setCellValue(TIME_FORMATTER.format(timeslot.getStartDateTime()));
                 nextCell().setCellValue(TIME_FORMATTER.format(timeslot.getEndDateTime()));
-                nextCell().setCellValue(String.join(", ", timeslot.getTalkTypeSet().stream().map(TalkType::getName).collect(toList())));
+                nextCell().setCellValue(
+                        String.join(", ", timeslot.getTalkTypeSet().stream().map(TalkType::getName).collect(toList())));
                 nextCell().setCellValue(String.join(", ", timeslot.getTagSet()));
             }
             autoSizeColumnsWithHeader();
@@ -989,7 +1037,8 @@ public class ConferenceSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<C
                 nextRow();
                 nextCell().setCellValue(room.getName());
                 nextCell().setCellValue(room.getCapacity());
-                nextCell().setCellValue(String.join(", ", room.getTalkTypeSet().stream().map(TalkType::getName).collect(toList())));
+                nextCell().setCellValue(
+                        String.join(", ", room.getTalkTypeSet().stream().map(TalkType::getName).collect(toList())));
                 nextCell().setCellValue(String.join(", ", room.getTagSet()));
                 for (Timeslot timeslot : solution.getTimeslotList()) {
                     nextCell(room.getUnavailableTimeslotSet().contains(timeslot) ? unavailableStyle : defaultStyle)
@@ -1099,7 +1148,8 @@ public class ConferenceSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<C
                 nextCell().setCellValue(String.join(", ", talk.getProhibitedRoomTagSet()));
                 nextCell().setCellValue(String.join(", ", talk.getUndesiredRoomTagSet()));
                 nextCell().setCellValue(String.join(", ", talk.getMutuallyExclusiveTalksTagSet()));
-                nextCell().setCellValue(String.join(", ", talk.getPrerequisiteTalkSet().stream().map(Talk::getCode).collect(toList())));
+                nextCell().setCellValue(
+                        String.join(", ", talk.getPrerequisiteTalkSet().stream().map(Talk::getCode).collect(toList())));
                 nextCell().setCellValue(talk.getFavoriteCount());
                 nextCell().setCellValue(talk.getCrowdControlRisk());
                 nextCell(talk.isPinnedByUser() ? pinnedStyle : defaultStyle).setCellValue(talk.isPinnedByUser());
@@ -1109,16 +1159,26 @@ public class ConferenceSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<C
                     timeslotStyle = (talk.getTimeslot() == null) ? hardPenaltyStyle : defaultStyle;
                     roomStyle = (talk.getRoom() == null) ? hardPenaltyStyle : defaultStyle;
                 } else {
-                    timeslotStyle = (talk.getPublishedTimeslot() == null || talk.getTimeslot() == talk.getPublishedTimeslot()) ? planningVariableStyle : republishedStyle;
-                    roomStyle = (talk.getPublishedRoom() == null || talk.getRoom() == talk.getPublishedRoom()) ? planningVariableStyle : republishedStyle;
+                    timeslotStyle = (talk.getPublishedTimeslot() == null || talk.getTimeslot() == talk.getPublishedTimeslot())
+                            ? planningVariableStyle
+                            : republishedStyle;
+                    roomStyle = (talk.getPublishedRoom() == null || talk.getRoom() == talk.getPublishedRoom())
+                            ? planningVariableStyle
+                            : republishedStyle;
                 }
-                nextCell(timeslotStyle).setCellValue(talk.getTimeslot() == null ? "" : DAY_FORMATTER.format(talk.getTimeslot().getDate()));
-                nextCell(timeslotStyle).setCellValue(talk.getTimeslot() == null ? "" : TIME_FORMATTER.format(talk.getTimeslot().getStartDateTime()));
-                nextCell(timeslotStyle).setCellValue(talk.getTimeslot() == null ? "" : TIME_FORMATTER.format(talk.getTimeslot().getEndDateTime()));
+                nextCell(timeslotStyle)
+                        .setCellValue(talk.getTimeslot() == null ? "" : DAY_FORMATTER.format(talk.getTimeslot().getDate()));
+                nextCell(timeslotStyle).setCellValue(
+                        talk.getTimeslot() == null ? "" : TIME_FORMATTER.format(talk.getTimeslot().getStartDateTime()));
+                nextCell(timeslotStyle).setCellValue(
+                        talk.getTimeslot() == null ? "" : TIME_FORMATTER.format(talk.getTimeslot().getEndDateTime()));
                 nextCell(roomStyle).setCellValue(talk.getRoom() == null ? "" : talk.getRoom().getName());
-                nextCell().setCellValue(talk.getPublishedTimeslot() == null ? "" : DAY_FORMATTER.format(talk.getPublishedTimeslot().getDate()));
-                nextCell().setCellValue(talk.getPublishedTimeslot() == null ? "" : TIME_FORMATTER.format(talk.getPublishedTimeslot().getStartDateTime()));
-                nextCell().setCellValue(talk.getPublishedTimeslot() == null ? "" : TIME_FORMATTER.format(talk.getPublishedTimeslot().getEndDateTime()));
+                nextCell().setCellValue(
+                        talk.getPublishedTimeslot() == null ? "" : DAY_FORMATTER.format(talk.getPublishedTimeslot().getDate()));
+                nextCell().setCellValue(talk.getPublishedTimeslot() == null ? ""
+                        : TIME_FORMATTER.format(talk.getPublishedTimeslot().getStartDateTime()));
+                nextCell().setCellValue(talk.getPublishedTimeslot() == null ? ""
+                        : TIME_FORMATTER.format(talk.getPublishedTimeslot().getEndDateTime()));
                 nextCell().setCellValue(talk.getPublishedRoom() == null ? "" : talk.getPublishedRoom().getName());
             }
             autoSizeColumnsWithHeader();
@@ -1203,7 +1263,8 @@ public class ConferenceSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<C
                         nextCell();
                     } else {
                         if (mergePreviousTimeslot != null && mergeStart < currentColumnNumber) {
-                            currentSheet.addMergedRegion(new CellRangeAddress(currentRowNumber, currentRowNumber, mergeStart, currentColumnNumber));
+                            currentSheet.addMergedRegion(
+                                    new CellRangeAddress(currentRowNumber, currentRowNumber, mergeStart, currentColumnNumber));
                         }
                         boolean unavailable = room.getUnavailableTimeslotSet().contains(timeslot)
                                 || disjoint(room.getTalkTypeSet(), timeslot.getTalkTypeSet());
@@ -1214,7 +1275,8 @@ public class ConferenceSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<C
                     }
                 }
                 if (mergePreviousTimeslot != null && mergeStart < currentColumnNumber) {
-                    currentSheet.addMergedRegion(new CellRangeAddress(currentRowNumber, currentRowNumber, mergeStart, currentColumnNumber));
+                    currentSheet.addMergedRegion(
+                            new CellRangeAddress(currentRowNumber, currentRowNumber, mergeStart, currentColumnNumber));
                 }
             }
             currentSheet.autoSizeColumn(0);
@@ -1230,7 +1292,7 @@ public class ConferenceSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<C
                     SPEAKER_REQUIRED_TIMESLOT_TAGS, SPEAKER_PROHIBITED_TIMESLOT_TAGS,
                     SPEAKER_PREFERRED_TIMESLOT_TAGS, SPEAKER_UNDESIRED_TIMESLOT_TAGS,
                     SPEAKER_REQUIRED_ROOM_TAGS, SPEAKER_PROHIBITED_ROOM_TAGS,
-                    SPEAKER_PREFERRED_ROOM_TAGS, SPEAKER_UNDESIRED_ROOM_TAGS};
+                    SPEAKER_PREFERRED_ROOM_TAGS, SPEAKER_UNDESIRED_ROOM_TAGS };
             nextRow();
             nextHeaderCell("");
             writeTimeslotDaysHeaders();
@@ -1254,7 +1316,8 @@ public class ConferenceSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<C
                         nextCell();
                     } else {
                         if (mergePreviousTimeslot != null && mergeStart < currentColumnNumber) {
-                            currentSheet.addMergedRegion(new CellRangeAddress(currentRowNumber, currentRowNumber, mergeStart, currentColumnNumber));
+                            currentSheet.addMergedRegion(
+                                    new CellRangeAddress(currentRowNumber, currentRowNumber, mergeStart, currentColumnNumber));
                         }
                         boolean unavailable = speaker.getUnavailableTimeslotSet().contains(timeslot);
                         nextTalkListCell(unavailable, talkList, filteredConstraintNames);
@@ -1263,7 +1326,8 @@ public class ConferenceSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<C
                     }
                 }
                 if (mergePreviousTimeslot != null && mergeStart < currentColumnNumber) {
-                    currentSheet.addMergedRegion(new CellRangeAddress(currentRowNumber, currentRowNumber, mergeStart, currentColumnNumber));
+                    currentSheet.addMergedRegion(
+                            new CellRangeAddress(currentRowNumber, currentRowNumber, mergeStart, currentColumnNumber));
                 }
             }
             currentSheet.autoSizeColumn(0);
@@ -1274,7 +1338,7 @@ public class ConferenceSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<C
 
         private void writeThemeTracksView() {
             nextSheet("Theme tracks view", 1, 2, true);
-            String[] filteredConstraintNames = {THEME_TRACK_CONFLICT, AUDIENCE_TYPE_THEME_TRACK_CONFLICT, SAME_DAY_TALKS};
+            String[] filteredConstraintNames = { THEME_TRACK_CONFLICT, AUDIENCE_TYPE_THEME_TRACK_CONFLICT, SAME_DAY_TALKS };
             nextRow();
             nextHeaderCell("");
             writeTimeslotDaysHeaders();
@@ -1286,7 +1350,8 @@ public class ConferenceSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<C
                     .filter(talk -> talk.getTimeslot() != null)
                     .flatMap(talk -> talk.getThemeTrackTagSet().stream()
                             .map(tag -> Pair.of(tag, Pair.of(talk.getTimeslot(), talk))))
-                    .collect(groupingBy(Pair::getLeft, groupingBy(o -> o.getRight().getLeft(), mapping(o -> o.getRight().getRight(), toList()))));
+                    .collect(groupingBy(Pair::getLeft,
+                            groupingBy(o -> o.getRight().getLeft(), mapping(o -> o.getRight().getRight(), toList()))));
             for (Map.Entry<String, Map<Timeslot, List<Talk>>> entry : tagToTimeslotToTalkListMap.entrySet()) {
                 nextRow();
                 nextHeaderCell(entry.getKey());
@@ -1301,7 +1366,7 @@ public class ConferenceSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<C
 
         private void writeSectorsView() {
             nextSheet("Sectors view", 1, 2, true);
-            String[] filteredConstraintNames = {SECTOR_CONFLICT};
+            String[] filteredConstraintNames = { SECTOR_CONFLICT };
             nextRow();
             nextHeaderCell("");
             writeTimeslotDaysHeaders();
@@ -1313,7 +1378,8 @@ public class ConferenceSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<C
                     .filter(talk -> talk.getTimeslot() != null)
                     .flatMap(talk -> talk.getSectorTagSet().stream()
                             .map(tag -> Pair.of(tag, Pair.of(talk.getTimeslot(), talk))))
-                    .collect(groupingBy(Pair::getLeft, groupingBy(o -> o.getRight().getLeft(), mapping(o -> o.getRight().getRight(), toList()))));
+                    .collect(groupingBy(Pair::getLeft,
+                            groupingBy(o -> o.getRight().getLeft(), mapping(o -> o.getRight().getRight(), toList()))));
             for (Map.Entry<String, Map<Timeslot, List<Talk>>> entry : tagToTimeslotToTalkListMap.entrySet()) {
                 nextRow();
                 nextHeaderCell(entry.getKey());
@@ -1328,7 +1394,7 @@ public class ConferenceSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<C
 
         private void writeAudienceTypesView() {
             nextSheet("Audience types view", 1, 2, true);
-            String[] filteredConstraintNames = {AUDIENCE_TYPE_DIVERSITY, AUDIENCE_TYPE_THEME_TRACK_CONFLICT};
+            String[] filteredConstraintNames = { AUDIENCE_TYPE_DIVERSITY, AUDIENCE_TYPE_THEME_TRACK_CONFLICT };
             nextRow();
             nextHeaderCell("");
             writeTimeslotDaysHeaders();
@@ -1340,7 +1406,8 @@ public class ConferenceSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<C
                     .filter(talk -> talk.getTimeslot() != null)
                     .flatMap(talk -> talk.getAudienceTypeSet().stream()
                             .map(audienceType -> Pair.of(audienceType, Pair.of(talk.getTimeslot(), talk))))
-                    .collect(groupingBy(Pair::getLeft, groupingBy(o -> o.getRight().getLeft(), mapping(o -> o.getRight().getRight(), toList()))));
+                    .collect(groupingBy(Pair::getLeft,
+                            groupingBy(o -> o.getRight().getLeft(), mapping(o -> o.getRight().getRight(), toList()))));
             for (Map.Entry<String, Map<Timeslot, List<Talk>>> entry : audienceTypeToTimeslotToTalkListMap.entrySet()) {
                 nextRow();
                 nextHeaderCell(entry.getKey());
@@ -1355,7 +1422,7 @@ public class ConferenceSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<C
 
         private void writeAudienceLevelsView() {
             nextSheet("Audience levels view", 1, 2, true);
-            String[] filteredConstraintNames = {AUDIENCE_LEVEL_DIVERSITY, CONTENT_AUDIENCE_LEVEL_FLOW_VIOLATION};
+            String[] filteredConstraintNames = { AUDIENCE_LEVEL_DIVERSITY, CONTENT_AUDIENCE_LEVEL_FLOW_VIOLATION };
             nextRow();
             nextHeaderCell("");
             writeTimeslotDaysHeaders();
@@ -1366,7 +1433,8 @@ public class ConferenceSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<C
             Map<Integer, Map<Timeslot, List<Talk>>> levelToTimeslotToTalkListMap = solution.getTalkList().stream()
                     .filter(talk -> talk.getTimeslot() != null)
                     .map(talk -> Pair.of(talk.getAudienceLevel(), Pair.of(talk.getTimeslot(), talk)))
-                    .collect(groupingBy(Pair::getLeft, groupingBy(o -> o.getRight().getLeft(), mapping(o -> o.getRight().getRight(), toList()))));
+                    .collect(groupingBy(Pair::getLeft,
+                            groupingBy(o -> o.getRight().getLeft(), mapping(o -> o.getRight().getRight(), toList()))));
             for (Map.Entry<Integer, Map<Timeslot, List<Talk>>> entry : levelToTimeslotToTalkListMap.entrySet()) {
                 nextRow();
                 nextHeaderCell(Integer.toString(entry.getKey()));
@@ -1381,7 +1449,7 @@ public class ConferenceSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<C
 
         private void writeContentsView() {
             nextSheet("Contents view", 1, 2, true);
-            String[] filteredConstraintNames = {CONTENT_AUDIENCE_LEVEL_FLOW_VIOLATION, CONTENT_CONFLICT};
+            String[] filteredConstraintNames = { CONTENT_AUDIENCE_LEVEL_FLOW_VIOLATION, CONTENT_CONFLICT };
             nextRow();
             nextHeaderCell("");
             writeTimeslotDaysHeaders();
@@ -1393,7 +1461,8 @@ public class ConferenceSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<C
                     .filter(talk -> talk.getTimeslot() != null)
                     .flatMap(talk -> talk.getContentTagSet().stream()
                             .map(tag -> Pair.of(tag, Pair.of(talk.getTimeslot(), talk))))
-                    .collect(groupingBy(Pair::getLeft, groupingBy(o -> o.getRight().getLeft(), mapping(o -> o.getRight().getRight(), toList()))));
+                    .collect(groupingBy(Pair::getLeft,
+                            groupingBy(o -> o.getRight().getLeft(), mapping(o -> o.getRight().getRight(), toList()))));
             for (Map.Entry<String, Map<Timeslot, List<Talk>>> entry : tagToTimeslotToTalkListMap.entrySet()) {
                 nextRow();
                 nextHeaderCell(entry.getKey());
@@ -1403,9 +1472,9 @@ public class ConferenceSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<C
                     nextTalkListCell(talkList,
                             talk -> talk.getCode() + " (level " + talk.getAudienceLevel() + ")",
                             filteredConstraintNames,
-                            justificationList -> justificationList.stream().allMatch(justification -> !(justification instanceof Talk)
-                                    || ((Talk) justification).getContentTagSet().contains(entry.getKey())
-                            ));
+                            justificationList -> justificationList.stream()
+                                    .allMatch(justification -> !(justification instanceof Talk)
+                                            || ((Talk) justification).getContentTagSet().contains(entry.getKey())));
                 }
             }
             autoSizeColumnsWithHeader();
@@ -1413,7 +1482,7 @@ public class ConferenceSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<C
 
         private void writeLanguagesView() {
             nextSheet("Languages view", 1, 2, true);
-            String[] filteredConstraintNames = {LANGUAGE_DIVERSITY};
+            String[] filteredConstraintNames = { LANGUAGE_DIVERSITY };
             nextRow();
             nextHeaderCell("");
             writeTimeslotDaysHeaders();
@@ -1424,7 +1493,8 @@ public class ConferenceSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<C
             Map<String, Map<Timeslot, List<Talk>>> languageToTimeslotToTalkListMap = solution.getTalkList().stream()
                     .filter(talk -> talk.getTimeslot() != null)
                     .map(talk -> Pair.of(talk.getLanguage(), Pair.of(talk.getTimeslot(), talk)))
-                    .collect(groupingBy(Pair::getLeft, groupingBy(o -> o.getRight().getLeft(), mapping(o -> o.getRight().getRight(), toList()))));
+                    .collect(groupingBy(Pair::getLeft,
+                            groupingBy(o -> o.getRight().getLeft(), mapping(o -> o.getRight().getRight(), toList()))));
             for (Map.Entry<String, Map<Timeslot, List<Talk>>> entry : languageToTimeslotToTalkListMap.entrySet()) {
                 nextRow();
                 nextHeaderCell(entry.getKey());
@@ -1441,9 +1511,11 @@ public class ConferenceSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<C
             List<LocalDate> dayList = solution.getTimeslotList().stream().map(Timeslot::getDate).distinct().collect(toList());
 
             for (LocalDate day : dayList) {
-                List<Timeslot> dayTimeslotList = solution.getTimeslotList().stream().filter(timeslot -> timeslot.getDate().equals(day)).collect(toList());
-                List<Talk> dayTalkList = solution.getTalkList().stream().filter(talk ->
-                        talk.getTimeslot() != null && talk.getTimeslot().getDate().equals(day)).collect(toList());
+                List<Timeslot> dayTimeslotList = solution.getTimeslotList().stream()
+                        .filter(timeslot -> timeslot.getDate().equals(day)).collect(toList());
+                List<Talk> dayTalkList = solution.getTalkList().stream()
+                        .filter(talk -> talk.getTimeslot() != null && talk.getTimeslot().getDate().equals(day))
+                        .collect(toList());
                 writeDaySheet(day, dayTimeslotList, dayTalkList);
             }
         }
@@ -1484,18 +1556,22 @@ public class ConferenceSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<C
                     nextCellVertically();
                 } else {
                     if (mergePreviousTimeslot != null && mergeStart < currentRowNumber) {
-                        currentSheet.addMergedRegion(new CellRangeAddress(mergeStart, currentRowNumber, currentColumnNumber, currentColumnNumber));
+                        currentSheet.addMergedRegion(
+                                new CellRangeAddress(mergeStart, currentRowNumber, currentColumnNumber, currentColumnNumber));
                     }
                     boolean unavailable = room.getUnavailableTimeslotSet().contains(timeslot)
                             || disjoint(room.getTalkTypeSet(), timeslot.getTalkTypeSet());
                     nextTalkListCell(unavailable, talkList, talk -> StringUtils.abbreviate(talk.getTitle(), 50) + "\n"
-                            + StringUtils.abbreviate(talk.getSpeakerList().stream().map(Speaker::getName).collect(joining(", ")), 30), true);
+                            + StringUtils.abbreviate(
+                                    talk.getSpeakerList().stream().map(Speaker::getName).collect(joining(", ")), 30),
+                            true);
                     mergePreviousTimeslot = talkList.isEmpty() ? null : timeslot;
                     mergeStart = currentRowNumber;
                 }
             }
             if (mergePreviousTimeslot != null && mergeStart < currentRowNumber) {
-                currentSheet.addMergedRegion(new CellRangeAddress(mergeStart, currentRowNumber, currentColumnNumber, currentColumnNumber));
+                currentSheet.addMergedRegion(
+                        new CellRangeAddress(mergeStart, currentRowNumber, currentColumnNumber, currentColumnNumber));
             }
         }
 
@@ -1508,7 +1584,8 @@ public class ConferenceSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<C
                     nextHeaderCell("");
                 } else {
                     if (previousTimeslotDay != null) {
-                        currentSheet.addMergedRegion(new CellRangeAddress(currentRowNumber, currentRowNumber, mergeStart, currentColumnNumber));
+                        currentSheet.addMergedRegion(
+                                new CellRangeAddress(currentRowNumber, currentRowNumber, mergeStart, currentColumnNumber));
                     }
                     nextHeaderCell(DAY_FORMATTER.format(timeslotDay));
                     previousTimeslotDay = timeslotDay;
@@ -1516,7 +1593,8 @@ public class ConferenceSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<C
                 }
             }
             if (previousTimeslotDay != null) {
-                currentSheet.addMergedRegion(new CellRangeAddress(currentRowNumber, currentRowNumber, mergeStart, currentColumnNumber));
+                currentSheet.addMergedRegion(
+                        new CellRangeAddress(currentRowNumber, currentRowNumber, mergeStart, currentColumnNumber));
             }
         }
 
@@ -1555,7 +1633,8 @@ public class ConferenceSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<C
             nextTalkListCell(unavailable, talkList, stringFunction, null, false, null);
         }
 
-        protected void nextTalkListCell(boolean unavailable, List<Talk> talkList, Function<Talk, String> stringFunction, boolean isVerticalView) {
+        protected void nextTalkListCell(boolean unavailable, List<Talk> talkList, Function<Talk, String> stringFunction,
+                boolean isVerticalView) {
             nextTalkListCell(unavailable, talkList, stringFunction, null, isVerticalView, null);
         }
 
@@ -1577,12 +1656,13 @@ public class ConferenceSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<C
                             || isValidJustificationList.test(constraintMatch.getJustificationList()))
                     .map(constraintMatch -> (HardMediumSoftScore) constraintMatch.getScore())
                     // Filter out positive constraints
-                    .filter(indictmentScore -> !(indictmentScore.getHardScore() >= 0 && indictmentScore.getMediumScore() >= 0 && indictmentScore.getSoftScore() >= 0))
-                    .reduce(Score::add).orElse(HardMediumSoftScore.ZERO);
+                    .filter(indictmentScore -> !(indictmentScore.getHardScore() >= 0 && indictmentScore.getMediumScore() >= 0
+                            && indictmentScore.getSoftScore() >= 0))
+                    .reduce(HardMediumSoftScore::add).orElse(HardMediumSoftScore.ZERO);
             XSSFCell cell;
             if (isPrintedView) {
-                cell = nextCellVertically(talkList.isEmpty() || talkList.get(0).getThemeTrackTagSet().isEmpty() ? wrappedStyle :
-                        themeTrackToStyleMap.get(talkList.get(0).getThemeTrackTagSet().iterator().next()));
+                cell = nextCellVertically(talkList.isEmpty() || talkList.get(0).getThemeTrackTagSet().isEmpty() ? wrappedStyle
+                        : themeTrackToStyleMap.get(talkList.get(0).getThemeTrackTagSet().iterator().next()));
             } else if (talkList.stream().anyMatch(Talk::isPinnedByUser)) {
                 cell = nextCell(pinnedStyle);
             } else if (!score.isFeasible()) {
@@ -1609,20 +1689,21 @@ public class ConferenceSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<C
                             .append(": ").append(talk.getTitle()).append("\n    ")
                             .append(talk.getSpeakerList().stream().map(Speaker::getName).collect(joining(", ")))
                             .append(talk.isPinnedByUser() ? "\nPINNED BY USER" : "");
-                    Indictment indictment = indictmentMap.get(talk);
+                    Indictment<?> indictment = indictmentMap.get(talk);
                     if (indictment != null) {
                         commentString.append("\n").append(indictment.getScore().toShortString())
                                 .append(" total");
-                        Set<ConstraintMatch> constraintMatchSet = indictment.getConstraintMatchSet().stream()
+                        Set<ConstraintMatch<?>> constraintMatchSet = indictment.getConstraintMatchSet().stream()
                                 .filter(constraintMatch -> filteredConstraintNameList == null
                                         || filteredConstraintNameList.contains(constraintMatch.getConstraintName()))
                                 .collect(toSet());
                         List<String> constraintNameList = constraintMatchSet.stream()
                                 .map(ConstraintMatch::getConstraintName).distinct().collect(toList());
                         for (String constraintName : constraintNameList) {
-                            List<ConstraintMatch> filteredConstraintMatchList = constraintMatchSet.stream()
+                            List<ConstraintMatch<?>> filteredConstraintMatchList = constraintMatchSet.stream()
                                     .filter(constraintMatch -> constraintMatch.getConstraintName().equals(constraintName)
-                                            && (isValidJustificationList == null || isValidJustificationList.test(constraintMatch.getJustificationList())))
+                                            && (isValidJustificationList == null
+                                                    || isValidJustificationList.test(constraintMatch.getJustificationList())))
                                     .collect(toList());
                             HardMediumSoftScore sum = filteredConstraintMatchList.stream()
                                     .map(constraintMatch -> (HardMediumSoftScore) constraintMatch.getScore())
@@ -1644,7 +1725,8 @@ public class ConferenceSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<C
                 cell.setCellComment(comment);
             }
             cell.setCellValue(talkList.stream().map(stringFunction).collect(joining("\n")));
-            currentRow.setHeightInPoints(Math.max(currentRow.getHeightInPoints(), talkList.size() * currentSheet.getDefaultRowHeightInPoints()));
+            currentRow.setHeightInPoints(
+                    Math.max(currentRow.getHeightInPoints(), talkList.size() * currentSheet.getDefaultRowHeightInPoints()));
         }
     }
 }

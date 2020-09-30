@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,11 +20,11 @@ import org.optaplanner.core.api.domain.entity.PlanningEntity;
 import org.optaplanner.core.api.domain.variable.CustomShadowVariable;
 import org.optaplanner.core.api.domain.variable.PlanningVariable;
 import org.optaplanner.core.api.domain.variable.PlanningVariableReference;
+import org.optaplanner.core.api.score.director.ScoreDirector;
 import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.core.impl.domain.variable.descriptor.GenuineVariableDescriptor;
 import org.optaplanner.core.impl.domain.variable.listener.VariableListenerAdapter;
-import org.optaplanner.core.impl.score.director.ScoreDirector;
 import org.optaplanner.core.impl.testdata.domain.TestdataObject;
 import org.optaplanner.core.impl.testdata.domain.TestdataValue;
 
@@ -38,7 +38,8 @@ public class TestdataExtendedShadowedParentEntity extends TestdataObject {
 
     public static GenuineVariableDescriptor buildVariableDescriptorForValue() {
         SolutionDescriptor solutionDescriptor = TestdataExtendedShadowedSolution.buildSolutionDescriptor();
-        EntityDescriptor entityDescriptor = solutionDescriptor.findEntityDescriptorOrFail(TestdataExtendedShadowedParentEntity.class);
+        EntityDescriptor entityDescriptor = solutionDescriptor
+                .findEntityDescriptorOrFail(TestdataExtendedShadowedParentEntity.class);
         return entityDescriptor.getGenuineVariableDescriptor("value");
     }
 
@@ -67,8 +68,8 @@ public class TestdataExtendedShadowedParentEntity extends TestdataObject {
         this.value = value;
     }
 
-    @CustomShadowVariable(variableListenerClass = FirstShadowUpdatingVariableListener.class,
-            sources = {@PlanningVariableReference(variableName = "value")})
+    @CustomShadowVariable(variableListenerClass = FirstShadowUpdatingVariableListener.class, sources = {
+            @PlanningVariableReference(variableName = "value") })
     public String getFirstShadow() {
         return firstShadow;
     }
@@ -78,8 +79,8 @@ public class TestdataExtendedShadowedParentEntity extends TestdataObject {
     }
 
     @CustomShadowVariable(variableListenerClass = ThirdShadowUpdatingVariableListener.class,
-            sources = {@PlanningVariableReference(
-                    entityClass = TestdataExtendedShadowedChildEntity.class, variableName = "secondShadow")})
+            sources = { @PlanningVariableReference(entityClass = TestdataExtendedShadowedChildEntity.class,
+                    variableName = "secondShadow") })
     public String getThirdShadow() {
         return thirdShadow;
     }
@@ -96,7 +97,8 @@ public class TestdataExtendedShadowedParentEntity extends TestdataObject {
     // Static inner classes
     // ************************************************************************
 
-    public static class FirstShadowUpdatingVariableListener extends VariableListenerAdapter<TestdataExtendedShadowedParentEntity> {
+    public static class FirstShadowUpdatingVariableListener
+            extends VariableListenerAdapter<TestdataExtendedShadowedParentEntity> {
 
         @Override
         public void afterEntityAdded(ScoreDirector scoreDirector, TestdataExtendedShadowedParentEntity entity) {
@@ -117,7 +119,8 @@ public class TestdataExtendedShadowedParentEntity extends TestdataObject {
 
     }
 
-    public static class ThirdShadowUpdatingVariableListener extends VariableListenerAdapter<TestdataExtendedShadowedChildEntity> {
+    public static class ThirdShadowUpdatingVariableListener
+            extends VariableListenerAdapter<TestdataExtendedShadowedChildEntity> {
 
         @Override
         public void afterEntityAdded(ScoreDirector scoreDirector, TestdataExtendedShadowedChildEntity entity) {

@@ -15,6 +15,10 @@
  */
 package org.optaplanner.benchmark.impl.aggregator.swingui;
 
+import static org.optaplanner.benchmark.impl.aggregator.swingui.MixedCheckBox.MixedCheckBoxStatus.CHECKED;
+import static org.optaplanner.benchmark.impl.aggregator.swingui.MixedCheckBox.MixedCheckBoxStatus.MIXED;
+import static org.optaplanner.benchmark.impl.aggregator.swingui.MixedCheckBox.MixedCheckBoxStatus.UNCHECKED;
+
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.event.MouseAdapter;
@@ -22,6 +26,7 @@ import java.awt.event.MouseEvent;
 import java.util.Enumeration;
 import java.util.HashSet;
 import java.util.Set;
+
 import javax.swing.JTree;
 import javax.swing.UIManager;
 import javax.swing.tree.DefaultMutableTreeNode;
@@ -31,8 +36,6 @@ import javax.swing.tree.TreePath;
 import javax.swing.tree.TreeSelectionModel;
 
 import org.optaplanner.benchmark.impl.result.SingleBenchmarkResult;
-
-import static org.optaplanner.benchmark.impl.aggregator.swingui.MixedCheckBox.MixedCheckBoxStatus.*;
 
 public class CheckBoxTree extends JTree {
 
@@ -185,7 +188,8 @@ public class CheckBoxTree extends JTree {
     private static class CheckBoxTreeCellRenderer implements TreeCellRenderer {
 
         @Override
-        public Component getTreeCellRendererComponent(JTree tree, Object value, boolean selected, boolean expanded, boolean leaf, int row, boolean hasFocus) {
+        public Component getTreeCellRendererComponent(JTree tree, Object value, boolean selected, boolean expanded,
+                boolean leaf, int row, boolean hasFocus) {
             DefaultMutableTreeNode node = (DefaultMutableTreeNode) value;
             MixedCheckBox checkBox = (MixedCheckBox) node.getUserObject();
             checkBox.setBackground(selected ? TREE_SELECTION_COLOR : Color.WHITE);

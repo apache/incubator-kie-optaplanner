@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,48 +16,41 @@
 
 package org.optaplanner.core.impl.score.stream.drools;
 
+import static org.drools.model.DSL.globalOf;
+
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.atomic.AtomicLong;
-import java.util.function.Function;
-import java.util.function.LongSupplier;
 
 import org.drools.model.Global;
+import org.drools.model.Rule;
 import org.drools.model.impl.ModelImpl;
-import org.drools.modelcompiler.builder.KieBaseBuilder;
-import org.kie.api.KieBase;
-import org.optaplanner.core.api.domain.lookup.PlanningId;
-import org.optaplanner.core.api.score.holder.AbstractScoreHolder;
 import org.optaplanner.core.api.score.stream.Constraint;
-import org.optaplanner.core.api.score.stream.Joiners;
-import org.optaplanner.core.api.score.stream.bi.BiConstraintStream;
-import org.optaplanner.core.api.score.stream.bi.BiJoiner;
 import org.optaplanner.core.api.score.stream.uni.UniConstraintStream;
-import org.optaplanner.core.config.util.ConfigUtils;
-import org.optaplanner.core.impl.domain.common.accessor.MemberAccessor;
 import org.optaplanner.core.impl.domain.constraintweight.descriptor.ConstraintConfigurationDescriptor;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.core.impl.score.director.drools.DroolsScoreDirector;
+import org.optaplanner.core.impl.score.holder.AbstractScoreHolder;
 import org.optaplanner.core.impl.score.stream.ConstraintSessionFactory;
 import org.optaplanner.core.impl.score.stream.InnerConstraintFactory;
+import org.optaplanner.core.impl.score.stream.drools.common.ConstraintGraph;
 import org.optaplanner.core.impl.score.stream.drools.uni.DroolsFromUniConstraintStream;
 
-import static org.drools.model.DSL.globalOf;
-
-public final class DroolsConstraintFactory<Solution_> implements InnerConstraintFactory<Solution_> {
+public final class DroolsConstraintFactory<Solution_> extends InnerConstraintFactory<Solution_> {
 
     private final SolutionDescriptor<Solution_> solutionDescriptor;
     private final String defaultConstraintPackage;
-    private final AtomicLong createdVariableCounter = new AtomicLong();
+    private final ConstraintGraph constraintGraph = new ConstraintGraph();
 
     public DroolsConstraintFactory(SolutionDescriptor<Solution_> solutionDescriptor) {
         this.solutionDescriptor = solutionDescriptor;
-        ConstraintConfigurationDescriptor<Solution_> configurationDescriptor
-                = solutionDescriptor.getConstraintConfigurationDescriptor();
+        ConstraintConfigurationDescriptor<Solution_> configurationDescriptor = solutionDescriptor
+                .getConstraintConfigurationDescriptor();
         if (configurationDescriptor == null) {
-            defaultConstraintPackage = solutionDescriptor.getSolutionClass().getPackage().getName();
+            Package pack = solutionDescriptor.getSolutionClass().getPackage();
+            defaultConstraintPackage = (pack == null) ? "" : pack.getName();
         } else {
             defaultConstraintPackage = configurationDescriptor.getConstraintPackage();
         }
@@ -65,19 +58,8 @@ public final class DroolsConstraintFactory<Solution_> implements InnerConstraint
 
     @Override
     public <A> UniConstraintStream<A> fromUnfiltered(Class<A> fromClass) {
+        assertValidFromType(fromClass);
         return new DroolsFromUniConstraintStream<>(this, fromClass);
-    }
-
-    @Override
-    public <A> BiConstraintStream<A, A> fromUniquePair(Class<A> fromClass, BiJoiner<A, A> joiner) {
-        MemberAccessor planningIdMemberAccessor = ConfigUtils.findPlanningIdMemberAccessor(fromClass);
-        if (planningIdMemberAccessor == null) {
-            throw new IllegalArgumentException("The fromClass (" + fromClass + ") has no member with a @"
-                    + PlanningId.class.getSimpleName() + " annotation,"
-                    + " so the pairs can not be made unique ([A,B] vs [B,A]).");
-        }
-        Function<A, Comparable> planningIdGetter = (fact) -> (Comparable<?>) planningIdMemberAccessor.executeGetter(fact);
-        return from(fromClass).join(fromClass, joiner, Joiners.lessThan(planningIdGetter));
     }
 
     // ************************************************************************
@@ -85,15 +67,16 @@ public final class DroolsConstraintFactory<Solution_> implements InnerConstraint
     // ************************************************************************
 
     @Override
-    public ConstraintSessionFactory<Solution_> buildSessionFactory(Constraint[] constraints) {
+    public ConstraintSessionFactory<Solution_, ?> buildSessionFactory(Constraint[] constraints) {
         ModelImpl model = new ModelImpl();
 
-        AbstractScoreHolder<?> scoreHolder = (AbstractScoreHolder<?>) solutionDescriptor.getScoreDefinition()
+        AbstractScoreHolder<?> scoreHolder = solutionDescriptor.getScoreDefinition()
                 .buildScoreHolder(false);
-        Class<? extends AbstractScoreHolder<?>> scoreHolderClass =
-                (Class<? extends AbstractScoreHolder<?>>) scoreHolder.getClass();
+        Class<? extends AbstractScoreHolder<?>> scoreHolderClass = (Class<? extends AbstractScoreHolder<?>>) scoreHolder
+                .getClass();
+        Package pack = solutionDescriptor.getSolutionClass().getPackage();
         Global<? extends AbstractScoreHolder<?>> scoreHolderGlobal = globalOf(scoreHolderClass,
-                solutionDescriptor.getSolutionClass().getPackage().getName(),
+                (pack == null) ? "" : pack.getName(),
                 DroolsScoreDirector.GLOBAL_SCORE_HOLDER_KEY);
         model.addGlobal(scoreHolderGlobal);
 
@@ -112,11 +95,14 @@ public final class DroolsConstraintFactory<Solution_> implements InnerConstraint
             }
             DroolsConstraint<Solution_> droolsConstraint = (DroolsConstraint) constraint;
             droolsConstraintList.add(droolsConstraint);
-            model.addRule(droolsConstraint.createRule(scoreHolderGlobal));
         }
-        // TODO when trace is active, show the Rule (DRL or exectable model) in logging
-        KieBase kieBase = KieBaseBuilder.createKieBaseFromModel(model);
-        return new DroolsConstraintSessionFactory<>(solutionDescriptor, kieBase, droolsConstraintList);
+        DroolsConstraint<Solution_>[] constraintArray = droolsConstraintList.toArray(new DroolsConstraint[0]);
+        Map<Rule, Class[]> ruleToExpectedJustificationTypesMap =
+                constraintGraph.generateRule(scoreHolderGlobal, constraintArray);
+        ruleToExpectedJustificationTypesMap.keySet()
+                .forEach(model::addRule);
+        return new DroolsConstraintSessionFactory<>(solutionDescriptor, model, ruleToExpectedJustificationTypesMap,
+                constraintArray);
     }
 
     // ************************************************************************
@@ -127,14 +113,8 @@ public final class DroolsConstraintFactory<Solution_> implements InnerConstraint
         return solutionDescriptor;
     }
 
-    /**
-     * In order to guarantee that all variables have unique names within the context of a rule, we need to be able to
-     * uniquely identify them. This ID supplier is used by all variable-creating code.
-     *
-     * @return supplier that returns a unique number each time it is invoked
-     */
-    public LongSupplier getVariableIdSupplier() {
-        return createdVariableCounter::incrementAndGet;
+    public ConstraintGraph getConstraintGraph() {
+        return constraintGraph;
     }
 
     @Override

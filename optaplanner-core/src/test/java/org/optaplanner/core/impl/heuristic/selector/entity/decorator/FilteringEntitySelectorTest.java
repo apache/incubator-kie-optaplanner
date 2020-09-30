@@ -1,5 +1,5 @@
 /*
- * Copyright 2012 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,22 +16,27 @@
 
 package org.optaplanner.core.impl.heuristic.selector.entity.decorator;
 
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+import static org.optaplanner.core.impl.testdata.util.PlannerAssert.assertAllCodesOfEntitySelector;
+import static org.optaplanner.core.impl.testdata.util.PlannerAssert.verifyPhaseLifecycle;
+
 import java.util.Arrays;
 import java.util.List;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.optaplanner.core.config.heuristic.selector.common.SelectionCacheType;
 import org.optaplanner.core.impl.heuristic.selector.SelectorTestUtils;
 import org.optaplanner.core.impl.heuristic.selector.common.decorator.SelectionFilter;
 import org.optaplanner.core.impl.heuristic.selector.entity.EntitySelector;
 import org.optaplanner.core.impl.phase.scope.AbstractPhaseScope;
 import org.optaplanner.core.impl.phase.scope.AbstractStepScope;
-import org.optaplanner.core.impl.solver.scope.DefaultSolverScope;
+import org.optaplanner.core.impl.solver.scope.SolverScope;
 import org.optaplanner.core.impl.testdata.domain.TestdataEntity;
 import org.optaplanner.core.impl.testdata.domain.TestdataSolution;
-
-import static org.mockito.Mockito.*;
-import static org.optaplanner.core.impl.testdata.util.PlannerAssert.*;
 
 public class FilteringEntitySelectorTest {
 
@@ -59,15 +64,14 @@ public class FilteringEntitySelectorTest {
         EntitySelector childEntitySelector = SelectorTestUtils.mockEntitySelector(TestdataEntity.class,
                 new TestdataEntity("e1"), new TestdataEntity("e2"), new TestdataEntity("e3"), new TestdataEntity("e4"));
 
-        SelectionFilter<TestdataSolution, TestdataEntity> filter
-                = (scoreDirector, entity) -> !entity.getCode().equals("e3");
+        SelectionFilter<TestdataSolution, TestdataEntity> filter = (scoreDirector, entity) -> !entity.getCode().equals("e3");
         List<SelectionFilter> filterList = Arrays.asList(filter);
         EntitySelector entitySelector = new FilteringEntitySelector(childEntitySelector, filterList);
         if (cacheType.isCached()) {
             entitySelector = new CachingEntitySelector(entitySelector, cacheType, false);
         }
 
-        DefaultSolverScope solverScope = mock(DefaultSolverScope.class);
+        SolverScope solverScope = mock(SolverScope.class);
         entitySelector.solvingStarted(solverScope);
 
         AbstractPhaseScope phaseScopeA = mock(AbstractPhaseScope.class);
@@ -119,18 +123,18 @@ public class FilteringEntitySelectorTest {
         verify(childEntitySelector, times(timesCalled)).getSize();
     }
 
-    @Test(expected = UnsupportedOperationException.class)
+    @Test
     public void listIteratorWithRandomSelection() {
         EntitySelector childEntitySelector = SelectorTestUtils.mockEntitySelector(TestdataEntity.class);
         EntitySelector entitySelector = new FilteringEntitySelector(childEntitySelector, null);
-        entitySelector.listIterator();
+        assertThatExceptionOfType(UnsupportedOperationException.class).isThrownBy(entitySelector::listIterator);
     }
 
-    @Test(expected = UnsupportedOperationException.class)
+    @Test
     public void indexedListIteratorWithRandomSelection() {
         EntitySelector childEntitySelector = SelectorTestUtils.mockEntitySelector(TestdataEntity.class);
         EntitySelector entitySelector = new FilteringEntitySelector(childEntitySelector, null);
-        entitySelector.listIterator(0);
+        assertThatExceptionOfType(UnsupportedOperationException.class).isThrownBy(() -> entitySelector.listIterator(0));
     }
 
 }

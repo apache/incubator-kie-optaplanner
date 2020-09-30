@@ -1,5 +1,5 @@
 /*
- * Copyright 2014 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,16 +19,15 @@ package org.optaplanner.core.impl.score.buildin.hardmediumsoftlong;
 import java.util.Arrays;
 
 import org.optaplanner.core.api.score.buildin.hardmediumsoftlong.HardMediumSoftLongScore;
-import org.optaplanner.core.api.score.buildin.hardmediumsoftlong.HardMediumSoftLongScoreHolder;
 import org.optaplanner.core.config.score.trend.InitializingScoreTrendLevel;
-import org.optaplanner.core.impl.score.definition.AbstractFeasibilityScoreDefinition;
+import org.optaplanner.core.impl.score.definition.AbstractScoreDefinition;
 import org.optaplanner.core.impl.score.inliner.ScoreInliner;
 import org.optaplanner.core.impl.score.trend.InitializingScoreTrend;
 
-public class HardMediumSoftLongScoreDefinition extends AbstractFeasibilityScoreDefinition<HardMediumSoftLongScore> {
+public class HardMediumSoftLongScoreDefinition extends AbstractScoreDefinition<HardMediumSoftLongScore> {
 
     public HardMediumSoftLongScoreDefinition() {
-        super(new String[]{"hard score", "medium score", "soft score"});
+        super(new String[] { "hard score", "medium score", "soft score" });
     }
 
     // ************************************************************************
@@ -56,6 +55,11 @@ public class HardMediumSoftLongScoreDefinition extends AbstractFeasibilityScoreD
     }
 
     @Override
+    public HardMediumSoftLongScore getOneSoftestScore() {
+        return HardMediumSoftLongScore.ONE_SOFT;
+    }
+
+    @Override
     public HardMediumSoftLongScore parseScore(String scoreString) {
         return HardMediumSoftLongScore.parseScore(scoreString);
     }
@@ -66,7 +70,8 @@ public class HardMediumSoftLongScoreDefinition extends AbstractFeasibilityScoreD
             throw new IllegalStateException("The levelNumbers (" + Arrays.toString(levelNumbers)
                     + ")'s length (" + levelNumbers.length + ") must equal the levelSize (" + getLevelsSize() + ").");
         }
-        return HardMediumSoftLongScore.ofUninitialized(initScore, (Long) levelNumbers[0], (Long) levelNumbers[1], (Long) levelNumbers[2]);
+        return HardMediumSoftLongScore.ofUninitialized(initScore, (Long) levelNumbers[0], (Long) levelNumbers[1],
+                (Long) levelNumbers[2]);
     }
 
     @Override
@@ -75,12 +80,13 @@ public class HardMediumSoftLongScoreDefinition extends AbstractFeasibilityScoreD
     }
 
     @Override
-    public HardMediumSoftLongScoreHolder buildScoreHolder(boolean constraintMatchEnabled) {
-        return new HardMediumSoftLongScoreHolder(constraintMatchEnabled);
+    public HardMediumSoftLongScoreHolderImpl buildScoreHolder(boolean constraintMatchEnabled) {
+        return new HardMediumSoftLongScoreHolderImpl(constraintMatchEnabled);
     }
 
     @Override
-    public HardMediumSoftLongScore buildOptimisticBound(InitializingScoreTrend initializingScoreTrend, HardMediumSoftLongScore score) {
+    public HardMediumSoftLongScore buildOptimisticBound(InitializingScoreTrend initializingScoreTrend,
+            HardMediumSoftLongScore score) {
         InitializingScoreTrendLevel[] trendLevels = initializingScoreTrend.getTrendLevels();
         return HardMediumSoftLongScore.ofUninitialized(0,
                 trendLevels[0] == InitializingScoreTrendLevel.ONLY_DOWN ? score.getHardScore() : Long.MAX_VALUE,
@@ -89,7 +95,8 @@ public class HardMediumSoftLongScoreDefinition extends AbstractFeasibilityScoreD
     }
 
     @Override
-    public HardMediumSoftLongScore buildPessimisticBound(InitializingScoreTrend initializingScoreTrend, HardMediumSoftLongScore score) {
+    public HardMediumSoftLongScore buildPessimisticBound(InitializingScoreTrend initializingScoreTrend,
+            HardMediumSoftLongScore score) {
         InitializingScoreTrendLevel[] trendLevels = initializingScoreTrend.getTrendLevels();
         return HardMediumSoftLongScore.ofUninitialized(0,
                 trendLevels[0] == InitializingScoreTrendLevel.ONLY_UP ? score.getHardScore() : Long.MIN_VALUE,
@@ -97,4 +104,23 @@ public class HardMediumSoftLongScoreDefinition extends AbstractFeasibilityScoreD
                 trendLevels[2] == InitializingScoreTrendLevel.ONLY_UP ? score.getSoftScore() : Long.MIN_VALUE);
     }
 
+    @Override
+    public HardMediumSoftLongScore divideBySanitizedDivisor(HardMediumSoftLongScore dividend,
+            HardMediumSoftLongScore divisor) {
+        int dividendInitScore = dividend.getInitScore();
+        int divisorInitScore = sanitize(divisor.getInitScore());
+        long dividendHardScore = dividend.getHardScore();
+        long divisorHardScore = sanitize(divisor.getHardScore());
+        long dividendMediumScore = dividend.getMediumScore();
+        long divisorMediumScore = sanitize(divisor.getMediumScore());
+        long dividendSoftScore = dividend.getSoftScore();
+        long divisorSoftScore = sanitize(divisor.getSoftScore());
+        return fromLevelNumbers(
+                divide(dividendInitScore, divisorInitScore),
+                new Number[] {
+                        divide(dividendHardScore, divisorHardScore),
+                        divide(dividendMediumScore, divisorMediumScore),
+                        divide(dividendSoftScore, divisorSoftScore)
+                });
+    }
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -29,9 +29,10 @@ import java.util.Map;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
-import com.thoughtworks.xstream.annotations.XStreamAlias;
-import com.thoughtworks.xstream.annotations.XStreamImplicit;
-import com.thoughtworks.xstream.annotations.XStreamOmitField;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
+
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.optaplanner.benchmark.impl.report.BenchmarkReport;
@@ -40,18 +41,19 @@ import org.optaplanner.core.api.solver.Solver;
 import org.optaplanner.core.api.solver.SolverFactory;
 import org.optaplanner.core.config.solver.EnvironmentMode;
 import org.optaplanner.core.config.util.ConfigUtils;
+import org.optaplanner.core.impl.score.definition.ScoreDefinition;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
  * Represents the benchmarks on multiple {@link Solver} configurations on multiple problem instances (data sets).
  */
-@XStreamAlias("plannerBenchmarkResult")
+@XmlRootElement(name = "plannerBenchmarkResult")
 public class PlannerBenchmarkResult {
 
     private String name;
     private Boolean aggregation;
-    @XStreamOmitField // Moving or renaming a report directory after creation is allowed
+    @XmlTransient // Moving or renaming a report directory after creation is allowed
     private File benchmarkReportDirectory;
 
     // If it is an aggregation, many properties can stay null
@@ -69,9 +71,10 @@ public class PlannerBenchmarkResult {
     private Long warmUpTimeMillisSpentLimit = null;
     private EnvironmentMode environmentMode = null;
 
-    @XStreamImplicit(itemFieldName = "solverBenchmarkResult")
+    @XmlElement(name = "solverBenchmarkResult")
     private List<SolverBenchmarkResult> solverBenchmarkResultList = null;
-    @XStreamImplicit(itemFieldName = "unifiedProblemBenchmarkResult")
+
+    @XmlElement(name = "unifiedProblemBenchmarkResult")
     private List<ProblemBenchmarkResult> unifiedProblemBenchmarkResultList = null;
 
     private OffsetDateTime startingTimestamp = null;
@@ -247,7 +250,8 @@ public class PlannerBenchmarkResult {
     }
 
     public String getStartingTimestampAsMediumString() {
-        return startingTimestamp == null ? null : startingTimestamp.format(DateTimeFormatter.ofLocalizedDateTime(FormatStyle.MEDIUM));
+        return startingTimestamp == null ? null
+                : startingTimestamp.format(DateTimeFormatter.ofLocalizedDateTime(FormatStyle.MEDIUM));
     }
 
     // ************************************************************************
@@ -360,7 +364,8 @@ public class PlannerBenchmarkResult {
 
             Score score = solverBenchmarkResult.getAverageScore();
             if (score != null) {
-                if (totalScore != null && !totalScore.isCompatibleArithmeticArgument(score)) {
+                ScoreDefinition scoreDefinition = solverBenchmarkResult.getScoreDefinition();
+                if (totalScore != null && !scoreDefinition.isCompatibleArithmeticArgument(totalScore)) {
                     // Mixing different use cases with different score definitions.
                     totalScore = null;
                     break;
@@ -412,8 +417,7 @@ public class PlannerBenchmarkResult {
                 previousSolverBenchmarkResult = solverBenchmarkResult;
             }
         } else if (benchmarkReport.getSolverRankingWeightFactory() != null) {
-            SortedMap<Comparable, List<SolverBenchmarkResult>> rankedMap
-                    = new TreeMap<>(Collections.reverseOrder());
+            SortedMap<Comparable, List<SolverBenchmarkResult>> rankedMap = new TreeMap<>(Collections.reverseOrder());
             for (SolverBenchmarkResult solverBenchmarkResult : rankableSolverBenchmarkResultList) {
                 Comparable rankingWeight = benchmarkReport.getSolverRankingWeightFactory()
                         .createRankingWeight(rankableSolverBenchmarkResultList, solverBenchmarkResult);
@@ -438,10 +442,10 @@ public class PlannerBenchmarkResult {
     public static PlannerBenchmarkResult createMergedResult(
             List<SingleBenchmarkResult> singleBenchmarkResultList) {
         PlannerBenchmarkResult mergedResult = createMergeSingleton(singleBenchmarkResultList);
-        Map<SolverBenchmarkResult, SolverBenchmarkResult> solverMergeMap
-                = SolverBenchmarkResult.createMergeMap(mergedResult, singleBenchmarkResultList);
-        Map<ProblemBenchmarkResult, ProblemBenchmarkResult> problemMergeMap
-                = ProblemBenchmarkResult.createMergeMap(mergedResult, singleBenchmarkResultList);
+        Map<SolverBenchmarkResult, SolverBenchmarkResult> solverMergeMap = SolverBenchmarkResult.createMergeMap(mergedResult,
+                singleBenchmarkResultList);
+        Map<ProblemBenchmarkResult, ProblemBenchmarkResult> problemMergeMap = ProblemBenchmarkResult
+                .createMergeMap(mergedResult, singleBenchmarkResultList);
         for (SingleBenchmarkResult singleBenchmarkResult : singleBenchmarkResultList) {
             SolverBenchmarkResult solverBenchmarkResult = solverMergeMap.get(
                     singleBenchmarkResult.getSolverBenchmarkResult());
@@ -455,8 +459,7 @@ public class PlannerBenchmarkResult {
 
     protected static PlannerBenchmarkResult createMergeSingleton(List<SingleBenchmarkResult> singleBenchmarkResultList) {
         PlannerBenchmarkResult newResult = null;
-        Map<PlannerBenchmarkResult, PlannerBenchmarkResult> mergeMap
-                = new IdentityHashMap<>();
+        Map<PlannerBenchmarkResult, PlannerBenchmarkResult> mergeMap = new IdentityHashMap<>();
         for (SingleBenchmarkResult singleBenchmarkResult : singleBenchmarkResultList) {
             PlannerBenchmarkResult oldResult = singleBenchmarkResult
                     .getSolverBenchmarkResult().getPlannerBenchmarkResult();

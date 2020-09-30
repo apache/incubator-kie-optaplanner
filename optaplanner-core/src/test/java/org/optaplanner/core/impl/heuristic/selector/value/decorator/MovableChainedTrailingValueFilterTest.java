@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,9 +16,11 @@
 
 package org.optaplanner.core.impl.heuristic.selector.value.decorator;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import java.util.Arrays;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.core.impl.domain.variable.descriptor.GenuineVariableDescriptor;
 import org.optaplanner.core.impl.domain.variable.descriptor.VariableDescriptor;
@@ -26,34 +28,32 @@ import org.optaplanner.core.impl.domain.variable.inverserelation.SingletonInvers
 import org.optaplanner.core.impl.domain.variable.inverserelation.SingletonInverseVariableSupply;
 import org.optaplanner.core.impl.score.director.InnerScoreDirector;
 import org.optaplanner.core.impl.testdata.domain.chained.TestdataChainedAnchor;
-import org.optaplanner.core.impl.testdata.domain.immovable.chained.TestdataImmovableChainedEntity;
-import org.optaplanner.core.impl.testdata.domain.immovable.chained.TestdataImmovableChainedSolution;
+import org.optaplanner.core.impl.testdata.domain.pinned.chained.TestdataPinnedChainedEntity;
+import org.optaplanner.core.impl.testdata.domain.pinned.chained.TestdataPinnedChainedSolution;
 import org.optaplanner.core.impl.testdata.util.PlannerTestUtils;
-
-import static org.junit.Assert.*;
 
 public class MovableChainedTrailingValueFilterTest {
 
     @Test
-    public void immovableChained() {
-        GenuineVariableDescriptor variableDescriptor = TestdataImmovableChainedEntity.buildVariableDescriptorForChainedObject();
+    public void pinnedChained() {
+        GenuineVariableDescriptor variableDescriptor = TestdataPinnedChainedEntity.buildVariableDescriptorForChainedObject();
         SolutionDescriptor solutionDescriptor = variableDescriptor.getEntityDescriptor().getSolutionDescriptor();
         InnerScoreDirector scoreDirector = PlannerTestUtils.mockScoreDirector(solutionDescriptor);
 
         TestdataChainedAnchor a0 = new TestdataChainedAnchor("a0");
-        TestdataImmovableChainedEntity a1 = new TestdataImmovableChainedEntity("a1", a0, true);
-        TestdataImmovableChainedEntity a2 = new TestdataImmovableChainedEntity("a2", a1, false);
-        TestdataImmovableChainedEntity a3 = new TestdataImmovableChainedEntity("a3", a2, false);
+        TestdataPinnedChainedEntity a1 = new TestdataPinnedChainedEntity("a1", a0, true);
+        TestdataPinnedChainedEntity a2 = new TestdataPinnedChainedEntity("a2", a1, false);
+        TestdataPinnedChainedEntity a3 = new TestdataPinnedChainedEntity("a3", a2, false);
 
         TestdataChainedAnchor b0 = new TestdataChainedAnchor("b0");
-        TestdataImmovableChainedEntity b1 = new TestdataImmovableChainedEntity("b1", b0, false);
-        TestdataImmovableChainedEntity b2 = new TestdataImmovableChainedEntity("b2", b1, false);
+        TestdataPinnedChainedEntity b1 = new TestdataPinnedChainedEntity("b1", b0, false);
+        TestdataPinnedChainedEntity b2 = new TestdataPinnedChainedEntity("b2", b1, false);
 
         TestdataChainedAnchor c0 = new TestdataChainedAnchor("c0");
-        TestdataImmovableChainedEntity c1 = new TestdataImmovableChainedEntity("c1", c0, true);
-        TestdataImmovableChainedEntity c2 = new TestdataImmovableChainedEntity("c2", c1, true);
+        TestdataPinnedChainedEntity c1 = new TestdataPinnedChainedEntity("c1", c0, true);
+        TestdataPinnedChainedEntity c2 = new TestdataPinnedChainedEntity("c2", c1, true);
 
-        TestdataImmovableChainedSolution solution = new TestdataImmovableChainedSolution("solution");
+        TestdataPinnedChainedSolution solution = new TestdataPinnedChainedSolution("solution");
         solution.setChainedAnchorList(Arrays.asList(a0, b0, c0));
         solution.setChainedEntityList(Arrays.asList(a1, a2, a3, b1, b2, c1, c2));
 
@@ -63,25 +63,25 @@ public class MovableChainedTrailingValueFilterTest {
 
         MovableChainedTrailingValueFilter filter = new MovableChainedTrailingValueFilter(variableDescriptor);
 
-        assertEquals(false, filter.accept(scoreDirector, a0));
-        assertEquals(true, filter.accept(scoreDirector, a1));
-        assertEquals(true, filter.accept(scoreDirector, a2));
-        assertEquals(true, filter.accept(scoreDirector, a3));
+        assertThat(filter.accept(scoreDirector, a0)).isFalse();
+        assertThat(filter.accept(scoreDirector, a1)).isTrue();
+        assertThat(filter.accept(scoreDirector, a2)).isTrue();
+        assertThat(filter.accept(scoreDirector, a3)).isTrue();
 
-        assertEquals(true, filter.accept(scoreDirector, b0));
-        assertEquals(true, filter.accept(scoreDirector, b1));
-        assertEquals(true, filter.accept(scoreDirector, b2));
+        assertThat(filter.accept(scoreDirector, b0)).isTrue();
+        assertThat(filter.accept(scoreDirector, b1)).isTrue();
+        assertThat(filter.accept(scoreDirector, b2)).isTrue();
 
-        assertEquals(false, filter.accept(scoreDirector, c0));
-        assertEquals(false, filter.accept(scoreDirector, c1));
-        assertEquals(true, filter.accept(scoreDirector, c2));
+        assertThat(filter.accept(scoreDirector, c0)).isFalse();
+        assertThat(filter.accept(scoreDirector, c1)).isFalse();
+        assertThat(filter.accept(scoreDirector, c2)).isTrue();
     }
 
     @Test
     public void getMovableChainedTrailingValueFilter() {
-        VariableDescriptor variableDescriptor = TestdataImmovableChainedEntity.buildEntityDescriptor()
+        VariableDescriptor variableDescriptor = TestdataPinnedChainedEntity.buildEntityDescriptor()
                 .getVariableDescriptor("chainedObject");
-        assertNotNull(((GenuineVariableDescriptor) variableDescriptor).getMovableChainedTrailingValueFilter());
+        assertThat(((GenuineVariableDescriptor) variableDescriptor).getMovableChainedTrailingValueFilter()).isNotNull();
     }
 
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,15 +16,27 @@
 
 package org.optaplanner.examples.curriculumcourse.domain;
 
-import com.thoughtworks.xstream.annotations.XStreamAlias;
+import java.util.Objects;
+
 import org.optaplanner.examples.common.domain.AbstractPersistable;
 import org.optaplanner.examples.common.swingui.components.Labeled;
+
+import com.thoughtworks.xstream.annotations.XStreamAlias;
 
 @XStreamAlias("Room")
 public class Room extends AbstractPersistable implements Labeled {
 
     private String code;
     private int capacity;
+
+    public Room() {
+    }
+
+    public Room(int id, String code, int capacity) {
+        super(id);
+        this.code = Objects.requireNonNull(code);
+        this.capacity = capacity;
+    }
 
     public String getCode() {
         return code;

@@ -22,17 +22,17 @@ import org.optaplanner.examples.common.persistence.AbstractSolutionImporter;
 import org.optaplanner.examples.travelingtournament.domain.TravelingTournament;
 import org.optaplanner.examples.travelingtournament.persistence.TravelingTournamentExporter;
 import org.optaplanner.examples.travelingtournament.persistence.TravelingTournamentImporter;
+import org.optaplanner.examples.travelingtournament.persistence.TravelingTournamentXmlSolutionFileIO;
 import org.optaplanner.examples.travelingtournament.swingui.TravelingTournamentPanel;
 import org.optaplanner.persistence.common.api.domain.solution.SolutionFileIO;
-import org.optaplanner.persistence.xstream.impl.domain.solution.XStreamSolutionFileIO;
 
 /**
  * WARNING: This is an old, complex, tailored example. You're probably better off with one of the other examples.
  */
 public class TravelingTournamentApp extends CommonApp<TravelingTournament> {
 
-    public static final String SOLVER_CONFIG
-            = "org/optaplanner/examples/travelingtournament/solver/travelingTournamentSolverConfig.xml";
+    public static final String SOLVER_CONFIG =
+            "org/optaplanner/examples/travelingtournament/solver/travelingTournamentSolverConfig.xml";
 
     public static final String DATA_DIR_NAME = "travelingtournament";
 
@@ -56,12 +56,12 @@ public class TravelingTournamentApp extends CommonApp<TravelingTournament> {
 
     @Override
     public SolutionFileIO<TravelingTournament> createSolutionFileIO() {
-        return new XStreamSolutionFileIO<>(TravelingTournament.class);
+        return new TravelingTournamentXmlSolutionFileIO();
     }
 
     @Override
     protected AbstractSolutionImporter[] createSolutionImporters() {
-        return new AbstractSolutionImporter[]{
+        return new AbstractSolutionImporter[] {
                 new TravelingTournamentImporter()
         };
     }

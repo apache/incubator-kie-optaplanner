@@ -17,6 +17,7 @@
 package org.optaplanner.examples.coachshuttlegathering.swingui;
 
 import java.awt.BorderLayout;
+
 import javax.swing.JTabbedPane;
 
 import org.optaplanner.examples.coachshuttlegathering.domain.CoachShuttleGatheringSolution;
@@ -24,7 +25,8 @@ import org.optaplanner.examples.common.swingui.SolutionPanel;
 
 public class CoachShuttleGatheringPanel extends SolutionPanel<CoachShuttleGatheringSolution> {
 
-    public static final String LOGO_PATH = "/org/optaplanner/examples/coachshuttlegathering/swingui/coachShuttleGatheringLogo.png";
+    public static final String LOGO_PATH =
+            "/org/optaplanner/examples/coachshuttlegathering/swingui/coachShuttleGatheringLogo.png";
 
     private CoachShuttleGatheringWorldPanel coachShuttleGatheringWorldPanel;
 

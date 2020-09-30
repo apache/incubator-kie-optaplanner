@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,12 +18,16 @@ package org.optaplanner.test.impl.score.buildin.hardmediumsoft;
 
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.score.buildin.hardmediumsoft.HardMediumSoftScore;
+import org.optaplanner.core.api.score.stream.ConstraintStream;
 import org.optaplanner.core.api.solver.SolverFactory;
+import org.optaplanner.test.api.score.stream.ConstraintVerifier;
 import org.optaplanner.test.impl.score.AbstractScoreVerifier;
 
 /**
- * To assert the constraints (including score rules) of a {@link SolverFactory}
+ * To assert the constraints of a {@link SolverFactory}
  * that uses a {@link HardMediumSoftScore}.
+ * If you're using {@link ConstraintStream}s, use {@link ConstraintVerifier} instead.
+ *
  * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
  */
 public class HardMediumSoftScoreVerifier<Solution_> extends AbstractScoreVerifier<Solution_> {
@@ -36,9 +40,10 @@ public class HardMediumSoftScoreVerifier<Solution_> extends AbstractScoreVerifie
     }
 
     /**
-     * Assert that the constraint (which is usually a score rule) of {@link PlanningSolution}
+     * Assert that the constraint of {@link PlanningSolution}
      * has the expected weight for that score level.
-     * @param constraintName never null, the name of the constraint, which is usually the name of the score rule
+     *
+     * @param constraintName never null, the name of the constraint
      * @param expectedWeight the total weight for all matches of that 1 constraint
      * @param solution never null, the actual {@link PlanningSolution}
      */
@@ -47,11 +52,12 @@ public class HardMediumSoftScoreVerifier<Solution_> extends AbstractScoreVerifie
     }
 
     /**
-     * Assert that the constraint (which is usually a score rule) of {@link PlanningSolution}
+     * Assert that the constraint of {@link PlanningSolution}
      * has the expected weight for that score level.
+     *
      * @param constraintPackage sometimes null.
-     * When null, {@code constraintName} for the {@code scoreLevel} must be unique.
-     * @param constraintName never null, the name of the constraint, which is usually the name of the score rule
+     *        When null, {@code constraintName} for the {@code scoreLevel} must be unique.
+     * @param constraintName never null, the name of the constraint
      * @param expectedWeight the total weight for all matches of that 1 constraint
      * @param solution never null, the actual {@link PlanningSolution}
      */
@@ -60,9 +66,10 @@ public class HardMediumSoftScoreVerifier<Solution_> extends AbstractScoreVerifie
     }
 
     /**
-     * Assert that the constraint (which is usually a score rule) of {@link PlanningSolution}
+     * Assert that the constraint of {@link PlanningSolution}
      * has the expected weight for that score level.
-     * @param constraintName never null, the name of the constraint, which is usually the name of the score rule
+     *
+     * @param constraintName never null, the name of the constraint
      * @param expectedWeight the total weight for all matches of that 1 constraint
      * @param solution never null, the actual {@link PlanningSolution}
      */
@@ -71,11 +78,12 @@ public class HardMediumSoftScoreVerifier<Solution_> extends AbstractScoreVerifie
     }
 
     /**
-     * Assert that the constraint (which is usually a score rule) of {@link PlanningSolution}
+     * Assert that the constraint of {@link PlanningSolution}
      * has the expected weight for that score level.
+     *
      * @param constraintPackage sometimes null.
-     * When null, {@code constraintName} for the {@code scoreLevel} must be unique.
-     * @param constraintName never null, the name of the constraint, which is usually the name of the score rule
+     *        When null, {@code constraintName} for the {@code scoreLevel} must be unique.
+     * @param constraintName never null, the name of the constraint
      * @param expectedWeight the total weight for all matches of that 1 constraint
      * @param solution never null, the actual {@link PlanningSolution}
      */
@@ -84,9 +92,10 @@ public class HardMediumSoftScoreVerifier<Solution_> extends AbstractScoreVerifie
     }
 
     /**
-     * Assert that the constraint (which is usually a score rule) of {@link PlanningSolution}
+     * Assert that the constraint of {@link PlanningSolution}
      * has the expected weight for that score level.
-     * @param constraintName never null, the name of the constraint, which is usually the name of the score rule
+     *
+     * @param constraintName never null, the name of the constraint
      * @param expectedWeight the total weight for all matches of that 1 constraint
      * @param solution never null, the actual {@link PlanningSolution}
      */
@@ -95,11 +104,12 @@ public class HardMediumSoftScoreVerifier<Solution_> extends AbstractScoreVerifie
     }
 
     /**
-     * Assert that the constraint (which is usually a score rule) of {@link PlanningSolution}
+     * Assert that the constraint of {@link PlanningSolution}
      * has the expected weight for that score level.
+     *
      * @param constraintPackage sometimes null.
-     * When null, {@code constraintName} for the {@code scoreLevel} must be unique.
-     * @param constraintName never null, the name of the constraint, which is usually the name of the score rule
+     *        When null, {@code constraintName} for the {@code scoreLevel} must be unique.
+     * @param constraintName never null, the name of the constraint
      * @param expectedWeight the total weight for all matches of that 1 constraint
      * @param solution never null, the actual {@link PlanningSolution}
      */

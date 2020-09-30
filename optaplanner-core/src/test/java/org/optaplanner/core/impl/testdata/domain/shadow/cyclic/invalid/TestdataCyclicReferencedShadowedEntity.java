@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,11 +20,11 @@ import org.optaplanner.core.api.domain.entity.PlanningEntity;
 import org.optaplanner.core.api.domain.variable.CustomShadowVariable;
 import org.optaplanner.core.api.domain.variable.PlanningVariable;
 import org.optaplanner.core.api.domain.variable.PlanningVariableReference;
+import org.optaplanner.core.api.score.director.ScoreDirector;
 import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.core.impl.domain.variable.descriptor.GenuineVariableDescriptor;
 import org.optaplanner.core.impl.domain.variable.listener.VariableListenerAdapter;
-import org.optaplanner.core.impl.score.director.ScoreDirector;
 import org.optaplanner.core.impl.testdata.domain.TestdataObject;
 import org.optaplanner.core.impl.testdata.domain.TestdataValue;
 
@@ -38,7 +38,8 @@ public class TestdataCyclicReferencedShadowedEntity extends TestdataObject {
 
     public static GenuineVariableDescriptor buildVariableDescriptorForValue() {
         SolutionDescriptor solutionDescriptor = TestdataCyclicReferencedShadowedSolution.buildSolutionDescriptor();
-        EntityDescriptor entityDescriptor = solutionDescriptor.findEntityDescriptorOrFail(TestdataCyclicReferencedShadowedEntity.class);
+        EntityDescriptor entityDescriptor = solutionDescriptor
+                .findEntityDescriptorOrFail(TestdataCyclicReferencedShadowedEntity.class);
         return entityDescriptor.getGenuineVariableDescriptor("value");
     }
 
@@ -67,9 +68,9 @@ public class TestdataCyclicReferencedShadowedEntity extends TestdataObject {
         this.value = value;
     }
 
-    @CustomShadowVariable(variableListenerClass = BarberAndCutsOwnHairUpdatingVariableListener.class,
-            sources = {@PlanningVariableReference(variableName = "value"),
-                    @PlanningVariableReference(variableName = "cutsOwnHair")})
+    @CustomShadowVariable(variableListenerClass = BarberAndCutsOwnHairUpdatingVariableListener.class, sources = {
+            @PlanningVariableReference(variableName = "value"),
+            @PlanningVariableReference(variableName = "cutsOwnHair") })
     public boolean isBarber() {
         return barber;
     }
@@ -95,7 +96,8 @@ public class TestdataCyclicReferencedShadowedEntity extends TestdataObject {
     // Static inner classes
     // ************************************************************************
 
-    public static class BarberAndCutsOwnHairUpdatingVariableListener extends VariableListenerAdapter<TestdataCyclicReferencedShadowedEntity> {
+    public static class BarberAndCutsOwnHairUpdatingVariableListener
+            extends VariableListenerAdapter<TestdataCyclicReferencedShadowedEntity> {
 
         @Override
         public void afterEntityAdded(ScoreDirector scoreDirector, TestdataCyclicReferencedShadowedEntity entity) {

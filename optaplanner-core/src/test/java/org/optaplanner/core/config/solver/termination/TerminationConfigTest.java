@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,88 +16,30 @@
 
 package org.optaplanner.core.config.solver.termination;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import java.time.Duration;
 
-import org.junit.Test;
-import org.optaplanner.core.config.heuristic.policy.HeuristicConfigPolicy;
-import org.optaplanner.core.impl.solver.termination.Termination;
-import org.optaplanner.core.impl.solver.termination.TimeMillisSpentTermination;
-import org.optaplanner.core.impl.solver.termination.UnimprovedTimeMillisSpentTermination;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
-import static org.optaplanner.core.impl.testdata.util.PlannerAssert.*;
-
-public class TerminationConfigTest {
+class TerminationConfigTest {
 
     @Test
-    public void spentLimit() {
-        TerminationConfig terminationConfig = new TerminationConfig();
-        terminationConfig.setSpentLimit(Duration.ofMillis(5L)
-                .plusSeconds(4L)
-                .plusMinutes(3L)
-                .plusHours(2L)
-                .plusDays(1L));
-        Termination termination = terminationConfig.buildTermination(mock(HeuristicConfigPolicy.class));
-        assertInstanceOf(TimeMillisSpentTermination.class, termination);
-        assertEquals(93784005L, ((TimeMillisSpentTermination) termination).getTimeMillisSpentLimit());
-    }
-
-    @Test
-    public void spentLimitWithoutJavaTime() {
-        TerminationConfig terminationConfig = new TerminationConfig();
-        terminationConfig.setMillisecondsSpentLimit(5L);
-        terminationConfig.setSecondsSpentLimit(4L);
-        terminationConfig.setMinutesSpentLimit(3L);
-        terminationConfig.setHoursSpentLimit(2L);
-        terminationConfig.setDaysSpentLimit(1L);
-        Termination termination = terminationConfig.buildTermination(mock(HeuristicConfigPolicy.class));
-        assertInstanceOf(TimeMillisSpentTermination.class, termination);
-        assertEquals(93784005L, ((TimeMillisSpentTermination) termination).getTimeMillisSpentLimit());
-    }
-
-    @Test
-    public void overwriteSpentLimit() {
+    void overwriteSpentLimit() {
         TerminationConfig terminationConfig = new TerminationConfig();
         terminationConfig.setMinutesSpentLimit(1L);
-        assertNotNull(terminationConfig.getMinutesSpentLimit());
+        assertThat(terminationConfig.getMinutesSpentLimit()).isNotNull();
         terminationConfig.overwriteSpentLimit(Duration.ofHours(2L));
-        assertNull(terminationConfig.getMinutesSpentLimit());
+        assertThat(terminationConfig.getMinutesSpentLimit()).isNull();
     }
 
     @Test
-    public void unimprovedSpentLimit() {
-        TerminationConfig terminationConfig = new TerminationConfig();
-        terminationConfig.setUnimprovedSpentLimit(Duration.ofMillis(5L)
-                .plusSeconds(4L)
-                .plusMinutes(3L)
-                .plusHours(2L)
-                .plusDays(1L));
-        Termination termination = terminationConfig.buildTermination(mock(HeuristicConfigPolicy.class));
-        assertInstanceOf(UnimprovedTimeMillisSpentTermination.class, termination);
-        assertEquals(93784005L, ((UnimprovedTimeMillisSpentTermination) termination).getUnimprovedTimeMillisSpentLimit());
-    }
-
-    @Test
-    public void unimprovedSpentLimitWithoutJavaTime() {
-        TerminationConfig terminationConfig = new TerminationConfig();
-        terminationConfig.setUnimprovedMillisecondsSpentLimit(5L);
-        terminationConfig.setUnimprovedSecondsSpentLimit(4L);
-        terminationConfig.setUnimprovedMinutesSpentLimit(3L);
-        terminationConfig.setUnimprovedHoursSpentLimit(2L);
-        terminationConfig.setUnimprovedDaysSpentLimit(1L);
-        Termination termination = terminationConfig.buildTermination(mock(HeuristicConfigPolicy.class));
-        assertInstanceOf(UnimprovedTimeMillisSpentTermination.class, termination);
-        assertEquals(93784005L, ((UnimprovedTimeMillisSpentTermination) termination).getUnimprovedTimeMillisSpentLimit());
-    }
-
-    @Test
-    public void overwriteUnimprovedSpentLimit() {
+    void overwriteUnimprovedSpentLimit() {
         TerminationConfig terminationConfig = new TerminationConfig();
         terminationConfig.setUnimprovedMinutesSpentLimit(1L);
-        assertNotNull(terminationConfig.getUnimprovedMinutesSpentLimit());
+        assertThat(terminationConfig.getUnimprovedMinutesSpentLimit()).isNotNull();
         terminationConfig.overwriteUnimprovedSpentLimit(Duration.ofHours(2L));
-        assertNull(terminationConfig.getUnimprovedMinutesSpentLimit());
+        assertThat(terminationConfig.getUnimprovedMinutesSpentLimit()).isNull();
     }
 
 }

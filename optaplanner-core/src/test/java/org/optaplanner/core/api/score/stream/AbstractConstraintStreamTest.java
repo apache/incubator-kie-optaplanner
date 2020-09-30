@@ -16,16 +16,19 @@
 
 package org.optaplanner.core.api.score.stream;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.fail;
+import static org.optaplanner.core.api.score.constraint.ConstraintMatchTotal.composeConstraintId;
+
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 import java.util.function.Supplier;
-import java.util.stream.Collectors;
 
-import org.junit.Assume;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
+import org.junit.jupiter.api.Assumptions;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
 import org.optaplanner.core.api.score.constraint.ConstraintMatch;
 import org.optaplanner.core.api.score.constraint.ConstraintMatchTotal;
@@ -34,36 +37,22 @@ import org.optaplanner.core.impl.score.director.InnerScoreDirector;
 import org.optaplanner.core.impl.score.director.stream.ConstraintStreamScoreDirectorFactory;
 import org.optaplanner.core.impl.testdata.domain.score.lavish.TestdataLavishSolution;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
-import static org.optaplanner.core.api.score.constraint.ConstraintMatchTotal.composeConstraintId;
-
-@RunWith(Parameterized.class)
+@ExtendWith(ConstraintStreamTestExtension.class)
 public abstract class AbstractConstraintStreamTest {
 
     protected static final String TEST_CONSTRAINT_NAME = "testConstraintName";
-
-    @Parameterized.Parameters(name = "constraintMatchEnabled={0}, constraintStreamImplType={1}")
-    public static Object[][] data() {
-        return new Object[][]{
-                {false, ConstraintStreamImplType.BAVET},
-                {true, ConstraintStreamImplType.BAVET},
-                {false, ConstraintStreamImplType.DROOLS},
-                {true, ConstraintStreamImplType.DROOLS}
-        };
-    }
 
     protected final boolean constraintMatchEnabled;
     protected final ConstraintStreamImplType constraintStreamImplType;
 
     protected void assumeBavet() {
-        Assume.assumeTrue("This functionality is not yet supported in Drools-based constraint streams.",
-                constraintStreamImplType == ConstraintStreamImplType.BAVET);
+        Assumptions.assumeTrue(constraintStreamImplType == ConstraintStreamImplType.BAVET,
+                "This functionality is not yet supported in Drools-based constraint streams.");
     }
 
     protected void assumeDrools() {
-        Assume.assumeTrue("This functionality is not yet supported in Bavet constraint streams.",
-                constraintStreamImplType == ConstraintStreamImplType.DROOLS);
+        Assumptions.assumeTrue(constraintStreamImplType == ConstraintStreamImplType.DROOLS,
+                "This functionality is not yet supported in Bavet constraint streams.");
     }
 
     public AbstractConstraintStreamTest(boolean constraintMatchEnabled, ConstraintStreamImplType constraintStreamImplType) {
@@ -75,23 +64,23 @@ public abstract class AbstractConstraintStreamTest {
     // SimpleScore creation and assertion methods
     // ************************************************************************
 
-    protected InnerScoreDirector<TestdataLavishSolution> buildScoreDirector(Function<ConstraintFactory, Constraint> function) {
+    protected InnerScoreDirector<TestdataLavishSolution, SimpleScore> buildScoreDirector(
+            Function<ConstraintFactory, Constraint> function) {
         return buildScoreDirector(TestdataLavishSolution::buildSolutionDescriptor, function);
     }
 
-    protected <Solution_> InnerScoreDirector<Solution_> buildScoreDirector(
+    protected <Score_ extends Score<Score_>, Solution_> InnerScoreDirector<Solution_, Score_> buildScoreDirector(
             Supplier<SolutionDescriptor<Solution_>> solutionDescriptorSupplier,
             Function<ConstraintFactory, Constraint> function) {
-        ConstraintStreamScoreDirectorFactory<Solution_> scoreDirectorFactory
-                = new ConstraintStreamScoreDirectorFactory<>(
-                solutionDescriptorSupplier.get(),
-                (constraintFactory) -> new Constraint[] {function.apply(constraintFactory)},
-                constraintStreamImplType);
+        ConstraintStreamScoreDirectorFactory<Solution_, Score_> scoreDirectorFactory =
+                new ConstraintStreamScoreDirectorFactory<>(solutionDescriptorSupplier.get(),
+                        (constraintFactory) -> new Constraint[] { function.apply(constraintFactory) },
+                        constraintStreamImplType);
         return scoreDirectorFactory.buildScoreDirector(false, constraintMatchEnabled);
     }
 
-    protected void assertScore(InnerScoreDirector<TestdataLavishSolution> scoreDirector,
-            AssertableMatch... assertableMatches) {
+    protected <Score_ extends Score<Score_>> void assertScore(
+            InnerScoreDirector<TestdataLavishSolution, Score_> scoreDirector, AssertableMatch... assertableMatches) {
         scoreDirector.triggerVariableListeners();
         SimpleScore score = (SimpleScore) scoreDirector.calculateScore();
         int scoreTotal = Arrays.stream(assertableMatches)
@@ -100,9 +89,10 @@ public abstract class AbstractConstraintStreamTest {
         if (constraintMatchEnabled) {
             String constraintPackage = scoreDirector.getSolutionDescriptor().getSolutionClass().getPackage().getName();
             for (AssertableMatch assertableMatch : assertableMatches) {
-                Map<String, ConstraintMatchTotal> constraintMatchTotals = scoreDirector.getConstraintMatchTotalMap();
+                Map<String, ConstraintMatchTotal<Score_>> constraintMatchTotals =
+                        scoreDirector.getConstraintMatchTotalMap();
                 String constraintId = composeConstraintId(constraintPackage, assertableMatch.constraintName);
-                ConstraintMatchTotal constraintMatchTotal = constraintMatchTotals.get(constraintId);
+                ConstraintMatchTotal<Score_> constraintMatchTotal = constraintMatchTotals.get(constraintId);
                 if (constraintMatchTotal == null) {
                     throw new IllegalStateException("Requested constraint matches for unknown constraint (" +
                             constraintId + ").");
@@ -113,20 +103,21 @@ public abstract class AbstractConstraintStreamTest {
                             + constraintMatchTotal.getConstraintMatchSet() + ").");
                 }
             }
-            List<ConstraintMatch> constraintMatches = scoreDirector.getConstraintMatchTotalMap().values()
-                    .stream()
-                    .flatMap(t -> t.getConstraintMatchSet().stream())
-                    .collect(Collectors.toList());
-            for (ConstraintMatch constraintMatch : constraintMatches) {
-                if (Arrays.stream(assertableMatches)
-                        .filter(assertableMatch -> assertableMatch.constraintName.equals(constraintMatch.getConstraintName()))
-                        .noneMatch(assertableMatch -> assertableMatch.isEqualTo(constraintMatch))) {
-                    fail("The constraintMatch (" + constraintMatch + ") is in excess,"
-                            + " it's not in the assertableMatches (" + Arrays.toString(assertableMatches) + ").");
+            Map<String, ConstraintMatchTotal<Score_>> constraintMatchTotalMap =
+                    scoreDirector.getConstraintMatchTotalMap();
+            for (ConstraintMatchTotal<Score_> constraintMatchTotal : constraintMatchTotalMap.values()) {
+                for (ConstraintMatch<Score_> constraintMatch : constraintMatchTotal.getConstraintMatchSet()) {
+                    if (Arrays.stream(assertableMatches)
+                            .filter(assertableMatch -> assertableMatch.constraintName
+                                    .equals(constraintMatch.getConstraintName()))
+                            .noneMatch(assertableMatch -> assertableMatch.isEqualTo(constraintMatch))) {
+                        fail("The constraintMatch (" + constraintMatch + ") is in excess,"
+                                + " it's not in the assertableMatches (" + Arrays.toString(assertableMatches) + ").");
+                    }
                 }
             }
         }
-        assertEquals(scoreTotal, score.getScore());
+        assertThat(score.getScore()).isEqualTo(scoreTotal);
     }
 
     protected static AssertableMatch assertMatch(Object... justifications) {

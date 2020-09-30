@@ -1,0 +1,68 @@
+# Tests PRs on multiple operating systems and Java versions
+
+name: OptaPlanner CI
+
+on:
+  push:
+    branches:
+      - master
+      - 7.x
+  pull_request:
+    branches:
+      - master
+      - 7.x
+
+env:
+  # To prevent build failures due to "Connection reset" during artifact download.
+  MVN_CONNECTION_PROPS: -Dmaven.wagon.httpconnectionManager.ttlSeconds=60 -Dmaven.wagon.http.retryHandler.count=5
+
+defaults:
+  run:
+    shell: bash
+
+jobs:
+  os-java:
+    name: OS x Java
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+        java: [8, 11]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - name: Check out Git repository
+        uses: actions/checkout@v2
+      - name: Set up JDK
+        uses: actions/setup-java@v1
+        with:
+          java-version: ${{ matrix.java }}
+      # See https://docs.github.com/en/actions/guides/building-and-testing-java-with-maven#caching-dependencies
+      - name: Cache Maven packages
+        uses: actions/cache@v2
+        with:
+          path: ~/.m2
+          key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
+          restore-keys: ${{ runner.os }}-m2
+      - name: Build with Maven
+        run: mvn -B clean install ${{ env.MVN_CONNECTION_PROPS }}
+
+  # Early feedback on a compatibility with the newest Java version.
+  # TODO: update each time a new major Java version is released.
+  latest-jdk:
+    name: OpenJDK 15
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out Git repository
+        uses: actions/checkout@v2
+      - name: Set up JDK
+        uses: actions/setup-java@v1
+        with:
+          java-version: 15
+      # See https://docs.github.com/en/actions/guides/building-and-testing-java-with-maven#caching-dependencies
+      - name: Cache Maven packages
+        uses: actions/cache@v2
+        with:
+          path: ~/.m2
+          key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
+          restore-keys: ${{ runner.os }}-m2
+      - name: Build with Maven
+        run: mvn -B clean install ${{ env.MVN_CONNECTION_PROPS }}

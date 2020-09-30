@@ -1,5 +1,5 @@
 /*
- * Copyright 2013 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,15 +16,14 @@
 
 package org.optaplanner.core.config.constructionheuristic.decider.forager;
 
-import com.thoughtworks.xstream.annotations.XStreamAlias;
-import org.optaplanner.core.config.AbstractConfig;
-import org.optaplanner.core.config.heuristic.policy.HeuristicConfigPolicy;
-import org.optaplanner.core.config.util.ConfigUtils;
-import org.optaplanner.core.impl.constructionheuristic.decider.forager.ConstructionHeuristicForager;
-import org.optaplanner.core.impl.constructionheuristic.decider.forager.DefaultConstructionHeuristicForager;
-import org.optaplanner.core.impl.score.definition.FeasibilityScoreDefinition;
+import javax.xml.bind.annotation.XmlType;
 
-@XStreamAlias("constructionHeuristicForager")
+import org.optaplanner.core.config.AbstractConfig;
+import org.optaplanner.core.config.util.ConfigUtils;
+
+@XmlType(propOrder = {
+        "pickEarlyType"
+})
 public class ConstructionHeuristicForagerConfig extends AbstractConfig<ConstructionHeuristicForagerConfig> {
 
     private ConstructionHeuristicPickEarlyType pickEarlyType = null;
@@ -35,28 +34,6 @@ public class ConstructionHeuristicForagerConfig extends AbstractConfig<Construct
 
     public void setPickEarlyType(ConstructionHeuristicPickEarlyType pickEarlyType) {
         this.pickEarlyType = pickEarlyType;
-    }
-
-    // ************************************************************************
-    // Builder methods
-    // ************************************************************************
-
-    public ConstructionHeuristicForager buildForager(HeuristicConfigPolicy configPolicy) {
-        ConstructionHeuristicPickEarlyType pickEarlyType_;
-        if (pickEarlyType == null) {
-            pickEarlyType_ = configPolicy.getScoreDirectorFactory().getInitializingScoreTrend().isOnlyDown()
-                    ? ConstructionHeuristicPickEarlyType.FIRST_NON_DETERIORATING_SCORE : ConstructionHeuristicPickEarlyType.NEVER;
-        } else {
-            if ((pickEarlyType == ConstructionHeuristicPickEarlyType.FIRST_FEASIBLE_SCORE
-                    || pickEarlyType == ConstructionHeuristicPickEarlyType.FIRST_FEASIBLE_SCORE_OR_NON_DETERIORATING_HARD)
-                    && !(configPolicy.getScoreDefinition() instanceof FeasibilityScoreDefinition)) {
-                throw new IllegalArgumentException("The pickEarlyType (" + pickEarlyType
-                        + ") is not compatible with the scoreDefinition (" + configPolicy.getScoreDefinition() + ").");
-
-            }
-            pickEarlyType_ = pickEarlyType;
-        }
-        return new DefaultConstructionHeuristicForager(pickEarlyType_);
     }
 
     @Override

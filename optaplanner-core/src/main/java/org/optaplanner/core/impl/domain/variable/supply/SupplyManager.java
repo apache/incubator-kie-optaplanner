@@ -22,12 +22,15 @@ package org.optaplanner.core.impl.domain.variable.supply;
 public interface SupplyManager {
 
     /**
-     * Returns the {@link Supply} for a {@link Demand}, preferably an existing one.
-     * If the {@link Supply} doesn't exist yet (as part of the domain model or externalized), it creates and attaches it.
+     * Returns the {@link org.optaplanner.core.impl.domain.variable.supply.Supply} for a {@link Demand}, preferably an existing
+     * one.
+     * If the {@link org.optaplanner.core.impl.domain.variable.supply.Supply} doesn't exist yet (as part of the domain model or
+     * externalized), it creates and attaches it.
+     *
      * @param demand never null
-     * @param <S> Subclass of {@link Supply}
+     * @param <Supply_> Subclass of {@link org.optaplanner.core.impl.domain.variable.supply.Supply}
      * @return never null
      */
-    <S extends Supply> S demand(Demand<S> demand);
+    <Supply_ extends Supply> Supply_ demand(Demand<Supply_> demand);
 
 }

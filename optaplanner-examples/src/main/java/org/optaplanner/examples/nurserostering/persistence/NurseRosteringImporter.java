@@ -16,6 +16,8 @@
 
 package org.optaplanner.examples.nurserostering.persistence;
 
+import static java.time.temporal.ChronoUnit.DAYS;
+
 import java.io.IOException;
 import java.math.BigInteger;
 import java.time.DayOfWeek;
@@ -61,8 +63,6 @@ import org.optaplanner.examples.nurserostering.domain.request.DayOffRequest;
 import org.optaplanner.examples.nurserostering.domain.request.DayOnRequest;
 import org.optaplanner.examples.nurserostering.domain.request.ShiftOffRequest;
 import org.optaplanner.examples.nurserostering.domain.request.ShiftOnRequest;
-
-import static java.time.temporal.ChronoUnit.*;
 
 public class NurseRosteringImporter extends AbstractXmlSolutionImporter<NurseRoster> {
 
@@ -219,8 +219,7 @@ public class NurseRosteringImporter extends AbstractXmlSolutionImporter<NurseRos
             shiftTypeMap = new HashMap<>(shiftTypeElementList.size());
             long id = 0L;
             int index = 0;
-            List<ShiftTypeSkillRequirement> shiftTypeSkillRequirementList
-                    = new ArrayList<>(shiftTypeElementList.size() * 2);
+            List<ShiftTypeSkillRequirement> shiftTypeSkillRequirementList = new ArrayList<>(shiftTypeElementList.size() * 2);
             long shiftTypeSkillRequirementId = 0L;
             for (Element element : shiftTypeElementList) {
                 assertElementName(element, "Shift");
@@ -443,7 +442,7 @@ public class NurseRosteringImporter extends AbstractXmlSolutionImporter<NurseRos
                             if (patternEntryIndex != 0 && shiftTypeIsNone) {
                                 throw new IllegalArgumentException("On patternEntryIndex (" + patternEntryIndex
                                         + ") of FreeBeforeWorkSequence pattern (" + pattern.getCode()
-                                        + ") the shiftType can not be (None).");
+                                        + ") the shiftType cannot be (None).");
                             }
                         } else if (pattern instanceof WorkBeforeFreeSequencePattern) {
                             WorkBeforeFreeSequencePattern castedPattern = (WorkBeforeFreeSequencePattern) pattern;
@@ -738,8 +737,7 @@ public class NurseRosteringImporter extends AbstractXmlSolutionImporter<NurseRos
             List<Employee> employeeList = new ArrayList<>(employeeElementList.size());
             employeeMap = new HashMap<>(employeeElementList.size());
             long id = 0L;
-            List<SkillProficiency> skillProficiencyList
-                    = new ArrayList<>(employeeElementList.size() * 2);
+            List<SkillProficiency> skillProficiencyList = new ArrayList<>(employeeElementList.size() * 2);
             long skillProficiencyId = 0L;
             for (Element element : employeeElementList) {
                 assertElementName(element, "Employee");

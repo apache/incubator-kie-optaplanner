@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,9 +23,9 @@ import java.util.NavigableMap;
 import java.util.Random;
 import java.util.TreeMap;
 
+import org.optaplanner.core.api.score.director.ScoreDirector;
 import org.optaplanner.core.impl.heuristic.move.Move;
 import org.optaplanner.core.impl.heuristic.selector.move.factory.MoveIteratorFactory;
-import org.optaplanner.core.impl.score.director.ScoreDirector;
 import org.optaplanner.core.impl.solver.random.RandomUtils;
 import org.optaplanner.examples.investment.domain.AssetClassAllocation;
 import org.optaplanner.examples.investment.domain.InvestmentSolution;
@@ -92,10 +92,9 @@ public class InvestmentQuantityTransferMoveIteratorFactory implements MoveIterat
 
         @Override
         public InvestmentQuantityTransferMove next() {
-            long transferMillis
-                    = RandomUtils.nextLong(workingRandom, InvestmentNumericUtil.MAXIMUM_QUANTITY_MILLIS) + 1L;
-            Map.Entry<Long, AssetClassAllocation> lowerEntry
-                    = quantityMillisIncrementToAllocationMap.lowerEntry(transferMillis);
+            long transferMillis = RandomUtils.nextLong(workingRandom, InvestmentNumericUtil.MAXIMUM_QUANTITY_MILLIS) + 1L;
+            Map.Entry<Long, AssetClassAllocation> lowerEntry = quantityMillisIncrementToAllocationMap
+                    .lowerEntry(transferMillis);
             Map.Entry<Long, AssetClassAllocation> ceilingEntry = quantityMillisIncrementToAllocationMap
                     .ceilingEntry(transferMillis);
             transferMillis -= (lowerEntry == null ? 0L : lowerEntry.getKey());

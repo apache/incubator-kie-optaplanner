@@ -28,7 +28,7 @@ import org.optaplanner.core.config.constructionheuristic.ConstructionHeuristicTy
 import org.optaplanner.core.config.heuristic.selector.common.SelectionOrder;
 import org.optaplanner.core.config.heuristic.selector.move.generic.ChangeMoveSelectorConfig;
 import org.optaplanner.core.config.localsearch.LocalSearchPhaseConfig;
-import org.optaplanner.core.config.localsearch.decider.acceptor.AcceptorConfig;
+import org.optaplanner.core.config.localsearch.decider.acceptor.LocalSearchAcceptorConfig;
 import org.optaplanner.core.config.phase.PhaseConfig;
 import org.optaplanner.core.config.score.director.ScoreDirectorFactoryConfig;
 import org.optaplanner.core.config.solver.SolverConfig;
@@ -36,17 +36,16 @@ import org.optaplanner.core.config.solver.termination.TerminationConfig;
 import org.optaplanner.examples.common.app.CommonApp;
 import org.optaplanner.examples.nqueens.domain.NQueens;
 import org.optaplanner.examples.nqueens.domain.Queen;
+import org.optaplanner.examples.nqueens.persistence.NQueensXmlSolutionFileIO;
 import org.optaplanner.examples.nqueens.swingui.NQueensPanel;
 import org.optaplanner.persistence.common.api.domain.solution.SolutionFileIO;
-import org.optaplanner.persistence.xstream.impl.domain.solution.XStreamSolutionFileIO;
 
 /**
  * For an easy example, look at {@link NQueensHelloWorld} instead.
  */
 public class NQueensApp extends CommonApp<NQueens> {
 
-    public static final String SOLVER_CONFIG
-            = "org/optaplanner/examples/nqueens/solver/nqueensSolverConfig.xml";
+    public static final String SOLVER_CONFIG = "org/optaplanner/examples/nqueens/solver/nqueensSolverConfig.xml";
 
     public static final String DATA_DIR_NAME = "nqueens";
 
@@ -70,6 +69,7 @@ public class NQueensApp extends CommonApp<NQueens> {
 
     /**
      * Normal way to create a {@link Solver}.
+     *
      * @return never null
      */
     protected SolverFactory<NQueens> createSolverFactoryByXml() {
@@ -80,17 +80,18 @@ public class NQueensApp extends CommonApp<NQueens> {
      * Unused alternative. A way to create a {@link Solver} without using XML.
      * <p>
      * It is recommended to use {@link #createSolverFactoryByXml()} instead.
+     *
      * @return never null
      */
     protected SolverFactory<NQueens> createSolverFactoryByApi() {
         SolverConfig solverConfig = new SolverConfig();
 
         solverConfig.setSolutionClass(NQueens.class);
-        solverConfig.setEntityClassList(Collections.<Class<?>>singletonList(Queen.class));
+        solverConfig.setEntityClassList(Collections.singletonList(Queen.class));
 
         ScoreDirectorFactoryConfig scoreDirectorFactoryConfig = new ScoreDirectorFactoryConfig();
         scoreDirectorFactoryConfig.setScoreDrlList(
-                Arrays.asList("org/optaplanner/examples/nqueens/solver/nQueensScoreRules.drl"));
+                Arrays.asList("org/optaplanner/examples/nqueens/solver/nQueensConstraints.drl"));
         solverConfig.setScoreDirectorFactoryConfig(scoreDirectorFactoryConfig);
 
         solverConfig.setTerminationConfig(new TerminationConfig().withBestScoreLimit("0"));
@@ -105,7 +106,7 @@ public class NQueensApp extends CommonApp<NQueens> {
         ChangeMoveSelectorConfig changeMoveSelectorConfig = new ChangeMoveSelectorConfig();
         changeMoveSelectorConfig.setSelectionOrder(SelectionOrder.ORIGINAL);
         localSearchPhaseConfig.setMoveSelectorConfig(changeMoveSelectorConfig);
-        localSearchPhaseConfig.setAcceptorConfig(new AcceptorConfig().withEntityTabuSize(5));
+        localSearchPhaseConfig.setAcceptorConfig(new LocalSearchAcceptorConfig().withEntityTabuSize(5));
         phaseConfigList.add(localSearchPhaseConfig);
 
         solverConfig.setPhaseConfigList(phaseConfigList);
@@ -119,7 +120,7 @@ public class NQueensApp extends CommonApp<NQueens> {
 
     @Override
     public SolutionFileIO<NQueens> createSolutionFileIO() {
-        return new XStreamSolutionFileIO<>(NQueens.class);
+        return new NQueensXmlSolutionFileIO();
     }
 
 }

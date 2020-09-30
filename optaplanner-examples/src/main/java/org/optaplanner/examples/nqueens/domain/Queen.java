@@ -1,5 +1,5 @@
 /*
- * Copyright 2010 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,12 +16,13 @@
 
 package org.optaplanner.examples.nqueens.domain;
 
-import com.thoughtworks.xstream.annotations.XStreamAlias;
 import org.optaplanner.core.api.domain.entity.PlanningEntity;
 import org.optaplanner.core.api.domain.variable.PlanningVariable;
 import org.optaplanner.examples.common.domain.AbstractPersistable;
 import org.optaplanner.examples.nqueens.domain.solution.QueenDifficultyWeightFactory;
 import org.optaplanner.examples.nqueens.domain.solution.RowStrengthWeightFactory;
+
+import com.thoughtworks.xstream.annotations.XStreamAlias;
 
 @PlanningEntity(difficultyWeightFactoryClass = QueenDifficultyWeightFactory.class)
 @XStreamAlias("Queen")
@@ -32,6 +33,15 @@ public class Queen extends AbstractPersistable {
     // Planning variables: changes during planning, between score calculations.
     private Row row;
 
+    public Queen() {
+    }
+
+    public Queen(long id, Row row, Column column) {
+        super(id);
+        this.row = row;
+        this.column = column;
+    }
+
     public Column getColumn() {
         return column;
     }
@@ -40,8 +50,7 @@ public class Queen extends AbstractPersistable {
         this.column = column;
     }
 
-    @PlanningVariable(valueRangeProviderRefs = {"rowRange"},
-            strengthWeightFactoryClass = RowStrengthWeightFactory.class)
+    @PlanningVariable(valueRangeProviderRefs = { "rowRange" }, strengthWeightFactoryClass = RowStrengthWeightFactory.class)
     public Row getRow() {
         return row;
     }

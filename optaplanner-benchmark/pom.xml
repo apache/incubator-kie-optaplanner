@@ -5,12 +5,12 @@
   <modelVersion>4.0.0</modelVersion>
   <parent>
     <groupId>org.optaplanner</groupId>
-    <artifactId>optaplanner</artifactId>
-    <version>7.34.0-SNAPSHOT</version>
+    <artifactId>optaplanner-build-parent</artifactId>
+    <version>8.0.0-SNAPSHOT</version>
+    <relativePath>../optaplanner-build-parent/pom.xml</relativePath>
   </parent>
 
   <artifactId>optaplanner-benchmark</artifactId>
-  <packaging>bundle</packaging><!-- bundle = jar + OSGi metadata -->
 
   <name>OptaPlanner benchmark</name>
   <description>
@@ -28,10 +28,6 @@
 
   <dependencies>
     <!-- Internal dependencies -->
-    <dependency>
-      <groupId>org.kie</groupId>
-      <artifactId>kie-api</artifactId>
-    </dependency>
     <dependency>
       <groupId>org.optaplanner</groupId>
       <artifactId>optaplanner-core</artifactId>
@@ -55,21 +51,11 @@
     <dependency>
       <groupId>org.optaplanner</groupId>
       <artifactId>optaplanner-persistence-xstream</artifactId>
+      <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.optaplanner</groupId>
       <artifactId>optaplanner-persistence-jaxb</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.drools</groupId>
-      <artifactId>drools-core</artifactId>
-      <scope>runtime</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.drools</groupId>
-      <artifactId>drools-compiler</artifactId>
-      <type>test-jar</type>
-      <scope>test</scope>
     </dependency>
 
     <!-- External dependencies -->
@@ -94,8 +80,13 @@
     </dependency>
     <!-- XML -->
     <dependency>
-      <groupId>com.thoughtworks.xstream</groupId>
-      <artifactId>xstream</artifactId>
+      <groupId>jakarta.xml.bind</groupId>
+      <artifactId>jakarta.xml.bind-api</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.glassfish.jaxb</groupId>
+      <artifactId>jaxb-runtime</artifactId>
+      <scope>runtime</scope>
     </dependency>
     <!-- Benchmarker statistics -->
     <dependency>
@@ -106,9 +97,30 @@
       <groupId>org.freemarker</groupId>
       <artifactId>freemarker</artifactId>
     </dependency>
+    <!-- Testing -->
+    <dependency>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter-api</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter-engine</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter-params</artifactId>
+      <scope>test</scope>
+    </dependency>
     <dependency>
       <groupId>org.assertj</groupId>
       <artifactId>assertj-core</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.mockito</groupId>
+      <artifactId>mockito-core</artifactId>
       <scope>test</scope>
     </dependency>
   </dependencies>
@@ -116,15 +128,23 @@
   <build>
     <plugins>
       <plugin>
-        <groupId>org.apache.felix</groupId>
-        <artifactId>maven-bundle-plugin</artifactId>
-        <extensions>true</extensions>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-jar-plugin</artifactId>
         <configuration>
-          <instructions>
-            <Export-Package>
-              org.optaplanner.benchmark.*
-            </Export-Package>
-          </instructions>
+          <excludes combine.children="append">
+            <!-- Remove the solver XSD as the JAR file should contain only the benchmark XSD. -->
+            <exclude>${schema.filename.solver}</exclude>
+          </excludes>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-source-plugin</artifactId>
+        <configuration>
+          <excludes combine.children="append">
+            <!-- Remove the solver XSD as the JAR file should contain only the benchmark XSD. -->
+            <exclude>${schema.filename.solver}</exclude>
+          </excludes>
         </configuration>
       </plugin>
       <plugin>
@@ -140,7 +160,36 @@
           </systemPropertyVariables>
         </configuration>
       </plugin>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>jaxb2-maven-plugin</artifactId>
+        <configuration>
+          <sources>
+            <source>${project.build.sourceDirectory}/org/optaplanner/benchmark/config</source>
+          </sources>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>exec-maven-plugin</artifactId>
+        <executions>
+          <execution>
+            <phase>compile</phase>
+            <goals>
+              <goal>java</goal>
+            </goals>
+            <configuration>
+              <!-- Merge the first two XSD files to a standalone benchmark XSD file containing XML types from both of them. -->
+              <mainClass>org.optaplanner.benchmark.impl.xsd.XsdAggregator</mainClass>
+              <arguments>
+                <argument>${project.build.outputDirectory}/${schema.filename.solver}</argument>
+                <argument>${project.build.outputDirectory}/${schema.filename.benchmark}</argument>
+                <argument>${project.build.outputDirectory}/benchmark.xsd</argument>
+              </arguments>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
     </plugins>
   </build>
-
 </project>

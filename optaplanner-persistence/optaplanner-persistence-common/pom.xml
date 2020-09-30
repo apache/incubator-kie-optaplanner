@@ -6,11 +6,10 @@
   <parent>
     <groupId>org.optaplanner</groupId>
     <artifactId>optaplanner-persistence</artifactId>
-    <version>7.34.0-SNAPSHOT</version>
+    <version>8.0.0-SNAPSHOT</version>
   </parent>
 
   <artifactId>optaplanner-persistence-common</artifactId>
-  <packaging>bundle</packaging><!-- bundle = jar + OSGi metadata -->
 
   <name>OptaPlanner persistence common</name>
   <description>
@@ -43,15 +42,13 @@
   <build>
     <plugins>
       <plugin>
-        <groupId>org.apache.felix</groupId>
-        <artifactId>maven-bundle-plugin</artifactId>
-        <extensions>true</extensions>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-dependency-plugin</artifactId>
         <configuration>
-          <instructions>
-            <Export-Package>
-              org.optaplanner.persistence.common.*
-            </Export-Package>
-          </instructions>
+          <ignoredUnusedDeclaredDependencies>
+            <!-- Uses PlanningEntity in Javadoc. -->
+            <dependency>org.optaplanner:optaplanner-core:jar</dependency>
+          </ignoredUnusedDeclaredDependencies>
         </configuration>
       </plugin>
     </plugins>

@@ -1,5 +1,5 @@
 /*
- * Copyright 2012 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,40 +16,32 @@
 
 package org.optaplanner.core.config.heuristic.selector.move.generic;
 
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
-import com.thoughtworks.xstream.annotations.XStreamAlias;
-import com.thoughtworks.xstream.annotations.XStreamImplicit;
-import org.optaplanner.core.config.heuristic.policy.HeuristicConfigPolicy;
-import org.optaplanner.core.config.heuristic.selector.common.SelectionCacheType;
-import org.optaplanner.core.config.heuristic.selector.common.SelectionOrder;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlElementWrapper;
+import javax.xml.bind.annotation.XmlType;
+
 import org.optaplanner.core.config.heuristic.selector.entity.EntitySelectorConfig;
 import org.optaplanner.core.config.heuristic.selector.move.MoveSelectorConfig;
-import org.optaplanner.core.config.heuristic.selector.move.composite.UnionMoveSelectorConfig;
 import org.optaplanner.core.config.util.ConfigUtils;
-import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
-import org.optaplanner.core.impl.domain.variable.descriptor.GenuineVariableDescriptor;
-import org.optaplanner.core.impl.heuristic.selector.entity.EntitySelector;
-import org.optaplanner.core.impl.heuristic.selector.move.MoveSelector;
-import org.optaplanner.core.impl.heuristic.selector.move.generic.SwapMoveSelector;
 
-import static org.apache.commons.lang3.ObjectUtils.defaultIfNull;
-
-@XStreamAlias("swapMoveSelector")
+@XmlType(propOrder = {
+        "entitySelectorConfig",
+        "secondaryEntitySelectorConfig",
+        "variableNameIncludeList"
+})
 public class SwapMoveSelectorConfig extends MoveSelectorConfig<SwapMoveSelectorConfig> {
 
-    @XStreamAlias("entitySelector")
+    public static final String XML_ELEMENT_NAME = "swapMoveSelector";
+
+    @XmlElement(name = "entitySelector")
     private EntitySelectorConfig entitySelectorConfig = null;
-    @XStreamAlias("secondaryEntitySelector")
+    @XmlElement(name = "secondaryEntitySelector")
     private EntitySelectorConfig secondaryEntitySelectorConfig = null;
 
-    // TODO Wrap in <variableNameIncludes> https://issues.redhat.com/browse/PLANNER-838
-    @XStreamImplicit(itemFieldName = "variableNameInclude")
-//    @XStreamAlias("variableNameIncludes")
-//    @XStreamConverter(value = NamedCollectionConverter.class,
-//            strings = {"variableNameInclude"}, types = {String.class}, useImplicitType = false)
+    @XmlElementWrapper(name = "variableNameIncludes")
+    @XmlElement(name = "variableNameInclude")
     private List<String> variableNameIncludeList = null;
 
     public EntitySelectorConfig getEntitySelectorConfig() {
@@ -76,87 +68,12 @@ public class SwapMoveSelectorConfig extends MoveSelectorConfig<SwapMoveSelectorC
         this.variableNameIncludeList = variableNameIncludeList;
     }
 
-    // ************************************************************************
-    // Builder methods
-    // ************************************************************************
-
-    @Override
-    public MoveSelector buildBaseMoveSelector(HeuristicConfigPolicy configPolicy,
-            SelectionCacheType minimumCacheType, boolean randomSelection) {
-        EntitySelectorConfig entitySelectorConfig_ = entitySelectorConfig == null ? new EntitySelectorConfig()
-                : entitySelectorConfig;
-        EntitySelector leftEntitySelector = entitySelectorConfig_.buildEntitySelector(
-                configPolicy,
-                minimumCacheType, SelectionOrder.fromRandomSelectionBoolean(randomSelection));
-        EntitySelectorConfig rightEntitySelectorConfig = defaultIfNull(secondaryEntitySelectorConfig,
-                entitySelectorConfig_);
-        EntitySelector rightEntitySelector = rightEntitySelectorConfig.buildEntitySelector(
-                configPolicy,
-                minimumCacheType, SelectionOrder.fromRandomSelectionBoolean(randomSelection));
-        List<GenuineVariableDescriptor> variableDescriptorList = deduceVariableDescriptorList(
-                leftEntitySelector.getEntityDescriptor(), variableNameIncludeList);
-        return new SwapMoveSelector(leftEntitySelector, rightEntitySelector, variableDescriptorList,
-                randomSelection);
-    }
-
-    @Override
-    protected MoveSelectorConfig buildUnfoldedMoveSelectorConfig(HeuristicConfigPolicy configPolicy) {
-        EntityDescriptor onlyEntityDescriptor = entitySelectorConfig == null ? null
-                : entitySelectorConfig.extractEntityDescriptor(configPolicy);
-        if (secondaryEntitySelectorConfig != null) {
-            EntityDescriptor onlySecondaryEntityDescriptor = secondaryEntitySelectorConfig.extractEntityDescriptor(configPolicy);
-            if (onlyEntityDescriptor != onlySecondaryEntityDescriptor) {
-                throw new IllegalArgumentException("The entitySelector (" + entitySelectorConfig
-                        + ")'s entityClass (" + (onlyEntityDescriptor == null ? null : onlyEntityDescriptor.getEntityClass())
-                        + ") and secondaryEntitySelectorConfig (" + secondaryEntitySelectorConfig
-                        + ")'s entityClass (" + (onlySecondaryEntityDescriptor == null ? null : onlySecondaryEntityDescriptor.getEntityClass())
-                        + ") must be the same entity class.");
-            }
-        }
-        if (onlyEntityDescriptor != null) {
-            return null;
-        }
-        Collection<EntityDescriptor> entityDescriptors = configPolicy.getSolutionDescriptor().getGenuineEntityDescriptors();
-        return buildUnfoldedMoveSelectorConfig(entityDescriptors);
-    }
-
-    protected MoveSelectorConfig buildUnfoldedMoveSelectorConfig(
-            Collection<EntityDescriptor> entityDescriptors) {
-        List<MoveSelectorConfig> moveSelectorConfigList = new ArrayList<>(entityDescriptors.size());
-        for (EntityDescriptor entityDescriptor : entityDescriptors) {
-            // No childMoveSelectorConfig.inherit() because of unfoldedMoveSelectorConfig.inheritFolded()
-            SwapMoveSelectorConfig childMoveSelectorConfig = new SwapMoveSelectorConfig();
-            EntitySelectorConfig childEntitySelectorConfig = new EntitySelectorConfig(entitySelectorConfig);
-            if (childEntitySelectorConfig.getMimicSelectorRef() == null) {
-                childEntitySelectorConfig.setEntityClass(entityDescriptor.getEntityClass());
-            }
-            childMoveSelectorConfig.setEntitySelectorConfig(childEntitySelectorConfig);
-            if (secondaryEntitySelectorConfig != null) {
-                EntitySelectorConfig childSecondaryEntitySelectorConfig = new EntitySelectorConfig(secondaryEntitySelectorConfig);
-                if (childSecondaryEntitySelectorConfig.getMimicSelectorRef() == null) {
-                    childSecondaryEntitySelectorConfig.setEntityClass(entityDescriptor.getEntityClass());
-                }
-                childMoveSelectorConfig.setSecondaryEntitySelectorConfig(childSecondaryEntitySelectorConfig);
-            }
-            childMoveSelectorConfig.setVariableNameIncludeList(variableNameIncludeList);
-            moveSelectorConfigList.add(childMoveSelectorConfig);
-        }
-
-        MoveSelectorConfig unfoldedMoveSelectorConfig;
-        if (moveSelectorConfigList.size() == 1) {
-            unfoldedMoveSelectorConfig = moveSelectorConfigList.get(0);
-        } else {
-            unfoldedMoveSelectorConfig = new UnionMoveSelectorConfig(moveSelectorConfigList);
-        }
-        unfoldedMoveSelectorConfig.inheritFolded(this);
-        return unfoldedMoveSelectorConfig;
-    }
-
     @Override
     public SwapMoveSelectorConfig inherit(SwapMoveSelectorConfig inheritedConfig) {
         super.inherit(inheritedConfig);
         entitySelectorConfig = ConfigUtils.inheritConfig(entitySelectorConfig, inheritedConfig.getEntitySelectorConfig());
-        secondaryEntitySelectorConfig = ConfigUtils.inheritConfig(secondaryEntitySelectorConfig, inheritedConfig.getSecondaryEntitySelectorConfig());
+        secondaryEntitySelectorConfig = ConfigUtils.inheritConfig(secondaryEntitySelectorConfig,
+                inheritedConfig.getSecondaryEntitySelectorConfig());
         variableNameIncludeList = ConfigUtils.inheritMergeableListProperty(
                 variableNameIncludeList, inheritedConfig.getVariableNameIncludeList());
         return this;

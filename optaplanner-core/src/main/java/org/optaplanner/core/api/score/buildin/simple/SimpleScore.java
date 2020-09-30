@@ -1,5 +1,5 @@
 /*
- * Copyright 2010 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,6 +25,7 @@ import org.optaplanner.core.api.score.Score;
  * This {@link Score} is based on 1 level of int constraints.
  * <p>
  * This class is immutable.
+ *
  * @see Score
  */
 public final class SimpleScore extends AbstractScore<SimpleScore> {
@@ -43,23 +44,7 @@ public final class SimpleScore extends AbstractScore<SimpleScore> {
         return new SimpleScore(initScore, score);
     }
 
-    /**
-     * @deprecated in favor of {@link #ofUninitialized(int, int)}
-     */
-    @Deprecated
-    public static SimpleScore valueOfUninitialized(int initScore, int score) {
-        return new SimpleScore(initScore, score);
-    }
-
     public static SimpleScore of(int score) {
-        return new SimpleScore(0, score);
-    }
-
-    /**
-     * @deprecated in favor of {@link #of(int)}
-     */
-    @Deprecated
-    public static SimpleScore valueOf(int score) {
         return new SimpleScore(0, score);
     }
 
@@ -89,6 +74,7 @@ public final class SimpleScore extends AbstractScore<SimpleScore> {
      * The total of the broken negative constraints and fulfilled positive constraints.
      * Their weight is included in the total.
      * The score is usually a negative number because most use cases only have negative constraints.
+     *
      * @return higher is better, usually negative, 0 if no constraints are broken/fulfilled
      */
     public int getScore() {
@@ -100,13 +86,7 @@ public final class SimpleScore extends AbstractScore<SimpleScore> {
     // ************************************************************************
 
     @Override
-    public SimpleScore toInitializedScore() {
-        return initScore == 0 ? this : new SimpleScore(0, score);
-    }
-
-    @Override
     public SimpleScore withInitScore(int newInitScore) {
-        assertNoInitScore();
         return new SimpleScore(newInitScore, score);
     }
 
@@ -151,8 +131,13 @@ public final class SimpleScore extends AbstractScore<SimpleScore> {
     }
 
     @Override
+    public boolean isFeasible() {
+        return initScore >= 0;
+    }
+
+    @Override
     public Number[] toLevelNumbers() {
-        return new Number[]{score};
+        return new Number[] { score };
     }
 
     @Override
@@ -190,11 +175,6 @@ public final class SimpleScore extends AbstractScore<SimpleScore> {
     @Override
     public String toString() {
         return getInitPrefix() + score;
-    }
-
-    @Override
-    public boolean isCompatibleArithmeticArgument(Score otherScore) {
-        return otherScore instanceof SimpleScore;
     }
 
 }

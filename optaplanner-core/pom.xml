@@ -5,12 +5,12 @@
   <modelVersion>4.0.0</modelVersion>
   <parent>
     <groupId>org.optaplanner</groupId>
-    <artifactId>optaplanner</artifactId>
-    <version>7.34.0-SNAPSHOT</version>
+    <artifactId>optaplanner-build-parent</artifactId>
+    <version>8.0.0-SNAPSHOT</version>
+    <relativePath>../optaplanner-build-parent/pom.xml</relativePath>
   </parent>
 
   <artifactId>optaplanner-core</artifactId>
-  <packaging>bundle</packaging><!-- bundle = jar + OSGi metadata -->
 
   <name>OptaPlanner core</name>
   <description>
@@ -29,34 +29,30 @@
   <dependencies>
     <!-- Internal dependencies -->
     <dependency>
-      <groupId>org.kie</groupId>
-      <artifactId>kie-api</artifactId>
+      <groupId>org.kie.kogito</groupId>
+      <artifactId>kogito-api</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.kie</groupId>
-      <artifactId>kie-internal</artifactId>
+      <groupId>org.kie.kogito</groupId>
+      <artifactId>kogito-internal</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.drools</groupId>
+      <groupId>org.kie.kogito</groupId>
+      <artifactId>kogito-drools-model</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.kie.kogito</groupId>
       <artifactId>drools-core</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.drools</groupId>
+      <groupId>org.kie.kogito</groupId>
       <artifactId>drools-compiler</artifactId>
+      <scope>runtime</scope>
     </dependency>
     <dependency>
-      <groupId>org.drools</groupId>
-      <artifactId>drools-compiler</artifactId>
-      <type>test-jar</type>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.drools</groupId>
-      <artifactId>drools-canonical-model</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.drools</groupId>
-      <artifactId>drools-model-compiler</artifactId>
+      <groupId>org.kie.kogito</groupId>
+      <artifactId>drools-core-dynamic</artifactId>
+      <scope>runtime</scope>
     </dependency>
     <!-- External dependencies -->
     <!-- Common utils -->
@@ -83,19 +79,40 @@
       <artifactId>logback-classic</artifactId>
       <scope>test</scope>
     </dependency>
-    <!-- Scan for annotated classes (can be excluded if scanAnnotatedClasses isn't used) -->
-    <dependency>
-      <groupId>org.reflections</groupId>
-      <artifactId>reflections</artifactId>
-    </dependency>
     <!-- XML -->
     <dependency>
-      <groupId>com.thoughtworks.xstream</groupId>
-      <artifactId>xstream</artifactId>
+      <groupId>jakarta.xml.bind</groupId>
+      <artifactId>jakarta.xml.bind-api</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.glassfish.jaxb</groupId>
+      <artifactId>jaxb-runtime</artifactId>
+      <scope>runtime</scope>
+    </dependency>
+    <!-- Testing -->
+    <dependency>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter-api</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter-engine</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter-params</artifactId>
+      <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.assertj</groupId>
       <artifactId>assertj-core</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.mockito</groupId>
+      <artifactId>mockito-core</artifactId>
       <scope>test</scope>
     </dependency>
   </dependencies>
@@ -103,21 +120,33 @@
   <build>
     <plugins>
       <plugin>
-        <groupId>org.apache.felix</groupId>
-        <artifactId>maven-bundle-plugin</artifactId>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-dependency-plugin</artifactId>
         <configuration>
-          <instructions>
-            <Export-Package>
-              org.optaplanner.core.*
-            </Export-Package>
-          </instructions>
+          <ignoredUsedUndeclaredDependencies>
+            <!-- TODO Remove this and declare org.drools dependencies once their versions are managed by kogito-bom. -->
+            <dependency>org.drools:*</dependency>
+          </ignoredUsedUndeclaredDependencies>
+          <ignoredUnusedDeclaredDependencies>
+            <!-- Provides org.drools:* dependencies -->
+            <dependency>org.kie.kogito:kogito-drools-model</dependency>
+            <dependency>org.kie.kogito:drools-core</dependency>
+          </ignoredUnusedDeclaredDependencies>
         </configuration>
       </plugin>
       <plugin>
         <groupId>org.revapi</groupId>
         <artifactId>revapi-maven-plugin</artifactId>
       </plugin>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>jaxb2-maven-plugin</artifactId>
+        <configuration>
+          <sources>
+            <source>${project.build.sourceDirectory}/org/optaplanner/core/config/solver</source>
+          </sources>
+        </configuration>
+      </plugin>
     </plugins>
   </build>
-
 </project>

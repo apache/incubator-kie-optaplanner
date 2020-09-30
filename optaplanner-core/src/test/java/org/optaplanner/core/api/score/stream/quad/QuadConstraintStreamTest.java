@@ -16,12 +16,19 @@
 
 package org.optaplanner.core.api.score.stream.quad;
 
+import static java.util.function.Function.identity;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.optaplanner.core.api.score.stream.ConstraintCollectors.countQuad;
+import static org.optaplanner.core.api.score.stream.Joiners.equal;
+import static org.optaplanner.core.api.score.stream.Joiners.filtering;
+
 import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.Objects;
 
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.TestTemplate;
 import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
 import org.optaplanner.core.api.score.buildin.simplebigdecimal.SimpleBigDecimalScore;
 import org.optaplanner.core.api.score.buildin.simplelong.SimpleLongScore;
@@ -42,13 +49,6 @@ import org.optaplanner.core.impl.testdata.domain.score.lavish.TestdataLavishSolu
 import org.optaplanner.core.impl.testdata.domain.score.lavish.TestdataLavishValue;
 import org.optaplanner.core.impl.testdata.domain.score.lavish.TestdataLavishValueGroup;
 
-import static java.util.function.Function.identity;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.junit.Assert.assertEquals;
-import static org.optaplanner.core.api.score.stream.ConstraintCollectors.countQuad;
-import static org.optaplanner.core.api.score.stream.Joiners.equal;
-import static org.optaplanner.core.api.score.stream.Joiners.filtering;
-
 public class QuadConstraintStreamTest extends AbstractConstraintStreamTest {
 
     public QuadConstraintStreamTest(boolean constraintMatchEnabled, ConstraintStreamImplType constraintStreamImplType) {
@@ -59,7 +59,7 @@ public class QuadConstraintStreamTest extends AbstractConstraintStreamTest {
     // Filter
     // ************************************************************************
 
-    @Test
+    @TestTemplate
     public void filter_entity() {
         assumeDrools();
         TestdataLavishSolution solution = TestdataLavishSolution.generateSolution(1, 0, 1, 0);
@@ -78,7 +78,7 @@ public class QuadConstraintStreamTest extends AbstractConstraintStreamTest {
         TestdataLavishExtra extra2 = new TestdataLavishExtra("MyExtra 2");
         solution.getExtraList().add(extra2);
 
-        InnerScoreDirector<TestdataLavishSolution> scoreDirector = buildScoreDirector((factory) -> {
+        InnerScoreDirector<TestdataLavishSolution, SimpleScore> scoreDirector = buildScoreDirector((factory) -> {
             return factory.fromUniquePair(TestdataLavishEntity.class)
                     .join(TestdataLavishValue.class, equal((e1, e2) -> e1.getValue(), identity()))
                     .join(TestdataLavishExtra.class)
@@ -111,6 +111,38 @@ public class QuadConstraintStreamTest extends AbstractConstraintStreamTest {
                 assertMatch(entity2, entity3, value1, extra1));
     }
 
+    @TestTemplate
+    public void filterConsecutive() {
+        assumeDrools();
+        TestdataLavishSolution solution = TestdataLavishSolution.generateSolution(5, 5);
+        TestdataLavishEntity entity1 = solution.getEntityList().get(0);
+        TestdataLavishEntity entity2 = solution.getEntityList().get(1);
+        TestdataLavishEntity entity3 = solution.getEntityList().get(2);
+        TestdataLavishEntity entity4 = solution.getEntityList().get(3);
+        TestdataLavishEntity entity5 = solution.getEntityList().get(4);
+
+        InnerScoreDirector<TestdataLavishSolution, SimpleScore> scoreDirector = buildScoreDirector((factory) -> {
+            return factory.fromUniquePair(TestdataLavishEntity.class)
+                    .join(TestdataLavishEntity.class, equal((a, b) -> a, identity()))
+                    .join(TestdataLavishEntity.class,
+                            equal((a, b, c) -> a, identity()),
+                            filtering((entityA, entityB, entityC, entityD) -> !Objects.equals(entityA, entity1)))
+                    .filter((entityA, entityB, entityC, entityD) -> !Objects.equals(entityA, entity2))
+                    .filter((entityA, entityB, entityC, entityD) -> !Objects.equals(entityA, entity3))
+                    .penalize(TEST_CONSTRAINT_NAME, SimpleScore.ONE);
+        });
+
+        // From scratch
+        scoreDirector.setWorkingSolution(solution);
+        assertScore(scoreDirector, assertMatch(entity4, entity5, entity4, entity4));
+
+        // Remove entity
+        scoreDirector.beforeEntityRemoved(entity4);
+        solution.getEntityList().remove(entity4);
+        scoreDirector.afterEntityRemoved(entity4);
+        assertScore(scoreDirector);
+    }
+
     // ************************************************************************
     // Join
     // ************************************************************************
@@ -121,12 +153,29 @@ public class QuadConstraintStreamTest extends AbstractConstraintStreamTest {
     // If (not) exists
     // ************************************************************************
 
-    @Test
+    @TestTemplate
+    public void ifExists_unknownClass() {
+        assumeDrools();
+        assertThatThrownBy(() -> buildScoreDirector((factory) -> {
+            return factory.from(TestdataLavishEntity.class)
+                    .join(TestdataLavishEntityGroup.class, equal(TestdataLavishEntity::getEntityGroup, identity()))
+                    .join(TestdataLavishValue.class, equal((entity, group) -> entity.getValue(), identity()))
+                    .join(TestdataLavishEntity.class, equal((entity, group, value) -> group,
+                            TestdataLavishEntity::getEntityGroup))
+                    .ifExists(Integer.class)
+                    .penalize(TEST_CONSTRAINT_NAME, SimpleScore.ONE);
+        })).isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining(Integer.class.getCanonicalName())
+                .hasMessageContaining("assignable from");
+
+    }
+
+    @TestTemplate
     public void ifExists_0Joiner0Filter() {
         assumeDrools();
         TestdataLavishSolution solution = TestdataLavishSolution.generateSolution(1, 1, 1, 1);
 
-        InnerScoreDirector<TestdataLavishSolution> scoreDirector = buildScoreDirector((factory) -> {
+        InnerScoreDirector<TestdataLavishSolution, SimpleScore> scoreDirector = buildScoreDirector((factory) -> {
             return factory.from(TestdataLavishEntity.class)
                     .join(TestdataLavishEntityGroup.class, equal(TestdataLavishEntity::getEntityGroup, identity()))
                     .join(TestdataLavishValue.class, equal((entity, group) -> entity.getValue(), identity()))
@@ -140,7 +189,8 @@ public class QuadConstraintStreamTest extends AbstractConstraintStreamTest {
         TestdataLavishValueGroup valueGroup = solution.getFirstValueGroup();
         scoreDirector.setWorkingSolution(solution);
         assertScore(scoreDirector,
-                assertMatch(solution.getFirstEntity(), solution.getFirstEntityGroup(), solution.getFirstValue(), solution.getFirstEntity()));
+                assertMatch(solution.getFirstEntity(), solution.getFirstEntityGroup(), solution.getFirstValue(),
+                        solution.getFirstEntity()));
 
         // Incremental
         scoreDirector.beforeProblemFactRemoved(valueGroup);
@@ -149,7 +199,7 @@ public class QuadConstraintStreamTest extends AbstractConstraintStreamTest {
         assertScore(scoreDirector);
     }
 
-    @Test
+    @TestTemplate
     public void ifExists_0Join1Filter() {
         assumeDrools();
         TestdataLavishSolution solution = TestdataLavishSolution.generateSolution(2, 2, 1, 1);
@@ -161,13 +211,13 @@ public class QuadConstraintStreamTest extends AbstractConstraintStreamTest {
                 solution.getValueList().get(1));
         solution.getEntityList().add(entity2);
 
-        InnerScoreDirector<TestdataLavishSolution> scoreDirector = buildScoreDirector((factory) -> {
+        InnerScoreDirector<TestdataLavishSolution, SimpleScore> scoreDirector = buildScoreDirector((factory) -> {
             return factory.fromUniquePair(TestdataLavishEntity.class)
                     .join(TestdataLavishEntityGroup.class, equal((entityA, entityB) -> entityA.getEntityGroup(), identity()))
                     .join(TestdataLavishValue.class, equal((entityA, entityB, group) -> entityA.getValue(), identity()))
                     .ifExists(TestdataLavishValueGroup.class,
-                            filtering((entityA, entityB, entityAGroup, value, valueGroup) ->
-                                    Objects.equals(value.getValueGroup(), valueGroup)))
+                            filtering((entityA, entityB, entityAGroup, value, valueGroup) -> Objects
+                                    .equals(value.getValueGroup(), valueGroup)))
                     .penalize(TEST_CONSTRAINT_NAME, SimpleScore.ONE);
         });
 
@@ -186,7 +236,7 @@ public class QuadConstraintStreamTest extends AbstractConstraintStreamTest {
         assertScore(scoreDirector);
     }
 
-    @Test
+    @TestTemplate
     public void ifExists_1Join0Filter() {
         assumeDrools();
         TestdataLavishSolution solution = TestdataLavishSolution.generateSolution(2, 5, 1, 1);
@@ -198,7 +248,7 @@ public class QuadConstraintStreamTest extends AbstractConstraintStreamTest {
                 solution.getFirstValue());
         solution.getEntityList().add(entity2);
 
-        InnerScoreDirector<TestdataLavishSolution> scoreDirector = buildScoreDirector((factory) -> {
+        InnerScoreDirector<TestdataLavishSolution, SimpleScore> scoreDirector = buildScoreDirector((factory) -> {
             return factory.fromUniquePair(TestdataLavishEntity.class)
                     .join(TestdataLavishEntityGroup.class, equal((entityA, entityB) -> entityA.getEntityGroup(), identity()))
                     .join(TestdataLavishValue.class, equal((entityA, entityB, group) -> entityA.getValue(), identity()))
@@ -223,7 +273,7 @@ public class QuadConstraintStreamTest extends AbstractConstraintStreamTest {
                 assertMatch(entity1, solution.getFirstEntity(), solution.getFirstEntityGroup(), solution.getFirstValue()));
     }
 
-    @Test
+    @TestTemplate
     public void ifExists_1Join1Filter() {
         assumeDrools();
         TestdataLavishSolution solution = TestdataLavishSolution.generateSolution(2, 5, 1, 1);
@@ -235,14 +285,14 @@ public class QuadConstraintStreamTest extends AbstractConstraintStreamTest {
                 solution.getFirstValue());
         solution.getEntityList().add(entity2);
 
-        InnerScoreDirector<TestdataLavishSolution> scoreDirector = buildScoreDirector((factory) -> {
+        InnerScoreDirector<TestdataLavishSolution, SimpleScore> scoreDirector = buildScoreDirector((factory) -> {
             return factory.fromUniquePair(TestdataLavishEntity.class)
                     .join(TestdataLavishEntityGroup.class, equal((entityA, entityB) -> entityA.getEntityGroup(), identity()))
                     .join(TestdataLavishValue.class, equal((entityA, entityB, group) -> entityA.getValue(), identity()))
                     .ifExists(TestdataLavishEntityGroup.class,
                             equal((entityA, entityB, groupA, valueA) -> entityA.getEntityGroup(), identity()),
-                            filtering((entityA, entityB, groupA, valueA, groupB) ->
-                                    entityA.getCode().contains("MyEntity") || groupA.getCode().contains("MyEntity")))
+                            filtering((entityA, entityB, groupA, valueA, groupB) -> entityA.getCode().contains("MyEntity")
+                                    || groupA.getCode().contains("MyEntity")))
                     .penalize(TEST_CONSTRAINT_NAME, SimpleScore.ONE);
         });
 
@@ -258,12 +308,29 @@ public class QuadConstraintStreamTest extends AbstractConstraintStreamTest {
         assertScore(scoreDirector);
     }
 
-    @Test
+    @TestTemplate
+    public void ifNotExists_unknownClass() {
+        assumeDrools();
+        assertThatThrownBy(() -> buildScoreDirector((factory) -> {
+            return factory.from(TestdataLavishEntity.class)
+                    .join(TestdataLavishEntityGroup.class, equal(TestdataLavishEntity::getEntityGroup, identity()))
+                    .join(TestdataLavishValue.class, equal((entity, group) -> entity.getValue(), identity()))
+                    .join(TestdataLavishEntity.class, equal((entity, group, value) -> group,
+                            TestdataLavishEntity::getEntityGroup))
+                    .ifNotExists(Integer.class)
+                    .penalize(TEST_CONSTRAINT_NAME, SimpleScore.ONE);
+        })).isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining(Integer.class.getCanonicalName())
+                .hasMessageContaining("assignable from");
+
+    }
+
+    @TestTemplate
     public void ifNotExists_0Joiner0Filter() {
         assumeDrools();
         TestdataLavishSolution solution = TestdataLavishSolution.generateSolution(1, 1, 1, 1);
 
-        InnerScoreDirector<TestdataLavishSolution> scoreDirector = buildScoreDirector((factory) -> {
+        InnerScoreDirector<TestdataLavishSolution, SimpleScore> scoreDirector = buildScoreDirector((factory) -> {
             return factory.from(TestdataLavishEntity.class)
                     .join(TestdataLavishEntityGroup.class, equal(TestdataLavishEntity::getEntityGroup, identity()))
                     .join(TestdataLavishValue.class, equal((entity, group) -> entity.getValue(), identity()))
@@ -283,10 +350,11 @@ public class QuadConstraintStreamTest extends AbstractConstraintStreamTest {
         solution.getValueGroupList().remove(valueGroup);
         scoreDirector.afterProblemFactRemoved(valueGroup);
         assertScore(scoreDirector,
-                assertMatch(solution.getFirstEntity(), solution.getFirstEntityGroup(), solution.getFirstValue(), solution.getFirstEntity()));
+                assertMatch(solution.getFirstEntity(), solution.getFirstEntityGroup(), solution.getFirstValue(),
+                        solution.getFirstEntity()));
     }
 
-    @Test
+    @TestTemplate
     public void ifNotExists_0Join1Filter() {
         assumeDrools();
         TestdataLavishSolution solution = TestdataLavishSolution.generateSolution(2, 2, 1, 1);
@@ -298,13 +366,13 @@ public class QuadConstraintStreamTest extends AbstractConstraintStreamTest {
                 solution.getValueList().get(1));
         solution.getEntityList().add(entity2);
 
-        InnerScoreDirector<TestdataLavishSolution> scoreDirector = buildScoreDirector((factory) -> {
+        InnerScoreDirector<TestdataLavishSolution, SimpleScore> scoreDirector = buildScoreDirector((factory) -> {
             return factory.fromUniquePair(TestdataLavishEntity.class)
                     .join(TestdataLavishEntityGroup.class, equal((entityA, entityB) -> entityA.getEntityGroup(), identity()))
                     .join(TestdataLavishValue.class, equal((entityA, entityB, group) -> entityA.getValue(), identity()))
                     .ifNotExists(TestdataLavishValueGroup.class,
-                            filtering((entityA, entityB, entityAGroup, value, valueGroup) ->
-                                    Objects.equals(value.getValueGroup(), valueGroup)))
+                            filtering((entityA, entityB, entityAGroup, value, valueGroup) -> Objects
+                                    .equals(value.getValueGroup(), valueGroup)))
                     .penalize(TEST_CONSTRAINT_NAME, SimpleScore.ONE);
         });
 
@@ -323,7 +391,7 @@ public class QuadConstraintStreamTest extends AbstractConstraintStreamTest {
                 assertMatch(entity1, solution.getFirstEntity(), solution.getFirstEntityGroup(), solution.getFirstValue()));
     }
 
-    @Test
+    @TestTemplate
     public void ifNotExists_1Join0Filter() {
         assumeDrools();
         TestdataLavishSolution solution = TestdataLavishSolution.generateSolution(2, 5, 1, 1);
@@ -335,7 +403,7 @@ public class QuadConstraintStreamTest extends AbstractConstraintStreamTest {
                 solution.getFirstValue());
         solution.getEntityList().add(entity2);
 
-        InnerScoreDirector<TestdataLavishSolution> scoreDirector = buildScoreDirector((factory) -> {
+        InnerScoreDirector<TestdataLavishSolution, SimpleScore> scoreDirector = buildScoreDirector((factory) -> {
             return factory.fromUniquePair(TestdataLavishEntity.class)
                     .join(TestdataLavishEntityGroup.class, equal((entityA, entityB) -> entityA.getEntityGroup(), identity()))
                     .join(TestdataLavishValue.class, equal((entityA, entityB, group) -> entityA.getValue(), identity()))
@@ -356,7 +424,7 @@ public class QuadConstraintStreamTest extends AbstractConstraintStreamTest {
                 assertMatch(entity1, solution.getFirstEntity(), solution.getFirstEntityGroup(), solution.getFirstValue()));
     }
 
-    @Test
+    @TestTemplate
     public void ifNotExists_1Join1Filter() {
         assumeDrools();
         TestdataLavishSolution solution = TestdataLavishSolution.generateSolution(2, 5, 1, 1);
@@ -368,14 +436,15 @@ public class QuadConstraintStreamTest extends AbstractConstraintStreamTest {
                 solution.getFirstValue());
         solution.getEntityList().add(entity2);
 
-        InnerScoreDirector<TestdataLavishSolution> scoreDirector = buildScoreDirector((factory) -> {
+        InnerScoreDirector<TestdataLavishSolution, SimpleScore> scoreDirector = buildScoreDirector((factory) -> {
             return factory.fromUniquePair(TestdataLavishEntity.class)
                     .join(TestdataLavishEntityGroup.class, equal((entityA, entityB) -> entityA.getEntityGroup(), identity()))
                     .join(TestdataLavishValue.class, equal((entityA, entityB, group) -> entityA.getValue(), identity()))
                     .ifNotExists(TestdataLavishEntityGroup.class,
                             equal((entityA, entityB, groupA, valueA) -> entityA.getEntityGroup(), identity()),
-                            filtering((entityA, entityB, groupA, valueA, groupB) ->
-                                    !(entityA.getCode().contains("MyEntity") && groupB.getCode().contains("MyEntity"))))
+                            filtering((entityA, entityB, groupA, valueA,
+                                    groupB) -> !(entityA.getCode().contains("MyEntity")
+                                            && groupB.getCode().contains("MyEntity"))))
                     .penalize(TEST_CONSTRAINT_NAME, SimpleScore.ONE);
         });
 
@@ -395,8 +464,8 @@ public class QuadConstraintStreamTest extends AbstractConstraintStreamTest {
     // Group by
     // ************************************************************************
 
-    @Test
-    public void groupBy_OMapping1Collector() {
+    @TestTemplate
+    public void groupBy_0Mapping1Collector() {
         assumeDrools();
         /*
          * E1 has G1 and V1
@@ -405,7 +474,7 @@ public class QuadConstraintStreamTest extends AbstractConstraintStreamTest {
          */
         TestdataLavishSolution solution = TestdataLavishSolution.generateSolution(1, 2, 2, 3);
 
-        InnerScoreDirector<TestdataLavishSolution> scoreDirector = buildScoreDirector((factory) -> {
+        InnerScoreDirector<TestdataLavishSolution, SimpleScore> scoreDirector = buildScoreDirector((factory) -> {
             return factory.from(TestdataLavishEntity.class)
                     .join(TestdataLavishEntityGroup.class, equal(TestdataLavishEntity::getEntityGroup, identity()))
                     .join(TestdataLavishValue.class, equal((entity, group) -> entity.getValue(), identity()))
@@ -429,12 +498,12 @@ public class QuadConstraintStreamTest extends AbstractConstraintStreamTest {
                 assertMatchWithScore(-2, 2)); // E2 G2 V2 E2, E3 G1 V1 E3
     }
 
-    @Test
+    @TestTemplate
     public void groupBy_1Mapping0Collector() {
         assumeDrools();
         TestdataLavishSolution solution = TestdataLavishSolution.generateSolution(1, 2, 2, 3);
 
-        InnerScoreDirector<TestdataLavishSolution> scoreDirector = buildScoreDirector((factory) -> {
+        InnerScoreDirector<TestdataLavishSolution, SimpleScore> scoreDirector = buildScoreDirector((factory) -> {
             return factory.from(TestdataLavishEntity.class)
                     .join(TestdataLavishEntityGroup.class, equal(TestdataLavishEntity::getEntityGroup, identity()))
                     .join(TestdataLavishValue.class, equal((entity, group) -> entity.getValue(), identity()))
@@ -453,12 +522,12 @@ public class QuadConstraintStreamTest extends AbstractConstraintStreamTest {
                 assertMatchWithScore(-1, value1));
     }
 
-    @Test
+    @TestTemplate
     public void groupBy_1Mapping1Collector_count() {
         assumeDrools();
         TestdataLavishSolution solution = TestdataLavishSolution.generateSolution(1, 2, 2, 3);
 
-        InnerScoreDirector<TestdataLavishSolution> scoreDirector = buildScoreDirector((factory) -> {
+        InnerScoreDirector<TestdataLavishSolution, SimpleScore> scoreDirector = buildScoreDirector((factory) -> {
             return factory.from(TestdataLavishEntity.class)
                     .join(TestdataLavishEntityGroup.class, equal(TestdataLavishEntity::getEntityGroup, identity()))
                     .join(TestdataLavishValue.class, equal((entity, group) -> entity.getValue(), identity()))
@@ -487,11 +556,11 @@ public class QuadConstraintStreamTest extends AbstractConstraintStreamTest {
                 assertMatchWithScore(-1, value1, 1));
     }
 
-    @Test
+    @TestTemplate
     public void groupBy_2Mapping0Collector() {
         assumeDrools();
         TestdataLavishSolution solution = TestdataLavishSolution.generateSolution(1, 2, 2, 3);
-        InnerScoreDirector<TestdataLavishSolution> scoreDirector = buildScoreDirector((factory) -> {
+        InnerScoreDirector<TestdataLavishSolution, SimpleScore> scoreDirector = buildScoreDirector((factory) -> {
             return factory.from(TestdataLavishEntity.class)
                     .join(TestdataLavishEntityGroup.class, equal(TestdataLavishEntity::getEntityGroup, identity()))
                     .join(TestdataLavishValue.class, equal((entity, group) -> entity.getValue(), identity()))
@@ -522,12 +591,12 @@ public class QuadConstraintStreamTest extends AbstractConstraintStreamTest {
                 assertMatchWithScore(-1, group1, value1));
     }
 
-    @Test
+    @TestTemplate
     public void groupBy_2Mapping1Collector_count() {
         assumeDrools();
         TestdataLavishSolution solution = TestdataLavishSolution.generateSolution(1, 2, 2, 3);
 
-        InnerScoreDirector<TestdataLavishSolution> scoreDirector = buildScoreDirector((factory) -> {
+        InnerScoreDirector<TestdataLavishSolution, SimpleScore> scoreDirector = buildScoreDirector((factory) -> {
             return factory.from(TestdataLavishEntity.class)
                     .join(TestdataLavishEntityGroup.class, equal(TestdataLavishEntity::getEntityGroup, identity()))
                     .join(TestdataLavishValue.class, equal((entity, group) -> entity.getValue(), identity()))
@@ -559,12 +628,12 @@ public class QuadConstraintStreamTest extends AbstractConstraintStreamTest {
                 assertMatchWithScore(-1, group1, value1, 1));
     }
 
-    @Test
+    @TestTemplate
     public void groupBy_2Mapping2Collector() {
         assumeDrools();
         TestdataLavishSolution solution = TestdataLavishSolution.generateSolution(1, 2, 2, 3);
 
-        InnerScoreDirector<TestdataLavishSolution> scoreDirector = buildScoreDirector((factory) -> {
+        InnerScoreDirector<TestdataLavishSolution, SimpleScore> scoreDirector = buildScoreDirector((factory) -> {
             return factory.from(TestdataLavishEntity.class)
                     .join(TestdataLavishEntityGroup.class, equal(TestdataLavishEntity::getEntityGroup, identity()))
                     .join(TestdataLavishValue.class, equal((entity, group) -> entity.getValue(), identity()))
@@ -600,7 +669,7 @@ public class QuadConstraintStreamTest extends AbstractConstraintStreamTest {
     // Penalize/reward
     // ************************************************************************
 
-    @Test
+    @TestTemplate
     public void penalize_Int() {
         assumeDrools();
         TestdataSolution solution = new TestdataSolution();
@@ -610,25 +679,26 @@ public class QuadConstraintStreamTest extends AbstractConstraintStreamTest {
         TestdataEntity e2 = new TestdataEntity("e2", v1);
         solution.setEntityList(Arrays.asList(e1, e2));
 
-        ConstraintStreamScoreDirectorFactory<TestdataSolution> scoreDirectorFactory
-                = new ConstraintStreamScoreDirectorFactory<>(TestdataSolution.buildSolutionDescriptor(), (factory) -> {
-            QuadConstraintStream<TestdataEntity, TestdataEntity, TestdataValue, TestdataValue> base =
-                    factory.fromUniquePair(TestdataEntity.class)
-                            .join(TestdataValue.class, equal((entity1, entity2) -> e1.getValue(), identity()))
-                            .join(TestdataValue.class);
-            return new Constraint[]{
-                    base.penalize("myConstraint1", SimpleScore.ONE),
-                    base.penalize("myConstraint2", SimpleScore.ONE, (entity1, entity2, value, extra) -> 20)
-            };
-        }, constraintStreamImplType);
-        InnerScoreDirector<TestdataSolution> scoreDirector = scoreDirectorFactory.buildScoreDirector(false,
-                constraintMatchEnabled);
+        ConstraintStreamScoreDirectorFactory<TestdataSolution, SimpleScore> scoreDirectorFactory =
+                new ConstraintStreamScoreDirectorFactory<>(
+                        TestdataSolution.buildSolutionDescriptor(), (factory) -> {
+                            QuadConstraintStream<TestdataEntity, TestdataEntity, TestdataValue, TestdataValue> base = factory
+                                    .fromUniquePair(TestdataEntity.class)
+                                    .join(TestdataValue.class, equal((entity1, entity2) -> e1.getValue(), identity()))
+                                    .join(TestdataValue.class);
+                            return new Constraint[] {
+                                    base.penalize("myConstraint1", SimpleScore.ONE),
+                                    base.penalize("myConstraint2", SimpleScore.ONE, (entity1, entity2, value, extra) -> 20)
+                            };
+                        }, constraintStreamImplType);
+        InnerScoreDirector<TestdataSolution, SimpleScore> scoreDirector =
+                scoreDirectorFactory.buildScoreDirector(false, constraintMatchEnabled);
 
         scoreDirector.setWorkingSolution(solution);
-        assertEquals(SimpleScore.of(-21), scoreDirector.calculateScore());
+        assertThat(scoreDirector.calculateScore()).isEqualTo(SimpleScore.of(-21));
     }
 
-    @Test
+    @TestTemplate
     public void penalize_Long() {
         assumeDrools();
         TestdataSimpleLongScoreSolution solution = new TestdataSimpleLongScoreSolution();
@@ -638,27 +708,28 @@ public class QuadConstraintStreamTest extends AbstractConstraintStreamTest {
         TestdataEntity e2 = new TestdataEntity("e2", v1);
         solution.setEntityList(Arrays.asList(e1, e2));
 
-        ConstraintStreamScoreDirectorFactory<TestdataSimpleLongScoreSolution> scoreDirectorFactory
-                = new ConstraintStreamScoreDirectorFactory<>(TestdataSimpleLongScoreSolution.buildSolutionDescriptor(),
-                (factory) -> {
-                    QuadConstraintStream<TestdataEntity, TestdataEntity, TestdataValue, TestdataValue> base =
-                            factory.fromUniquePair(TestdataEntity.class)
+        ConstraintStreamScoreDirectorFactory<TestdataSimpleLongScoreSolution, SimpleLongScore> scoreDirectorFactory =
+                new ConstraintStreamScoreDirectorFactory<>(
+                        TestdataSimpleLongScoreSolution.buildSolutionDescriptor(),
+                        (factory) -> {
+                            QuadConstraintStream<TestdataEntity, TestdataEntity, TestdataValue, TestdataValue> base = factory
+                                    .fromUniquePair(TestdataEntity.class)
                                     .join(TestdataValue.class, equal((entity1, entity2) -> e1.getValue(), identity()))
                                     .join(TestdataValue.class);
-                    return new Constraint[]{
-                            base.penalize("myConstraint1", SimpleLongScore.ONE),
-                            base.penalizeLong("myConstraint2", SimpleLongScore.ONE,
-                                    (entity1, entity2, value, extra) -> 20L)
-                    };
-                }, constraintStreamImplType);
-        InnerScoreDirector<TestdataSimpleLongScoreSolution> scoreDirector = scoreDirectorFactory.buildScoreDirector(
-                false, constraintMatchEnabled);
+                            return new Constraint[] {
+                                    base.penalize("myConstraint1", SimpleLongScore.ONE),
+                                    base.penalizeLong("myConstraint2", SimpleLongScore.ONE,
+                                            (entity1, entity2, value, extra) -> 20L)
+                            };
+                        }, constraintStreamImplType);
+        InnerScoreDirector<TestdataSimpleLongScoreSolution, SimpleLongScore> scoreDirector =
+                scoreDirectorFactory.buildScoreDirector(false, constraintMatchEnabled);
 
         scoreDirector.setWorkingSolution(solution);
-        assertEquals(SimpleLongScore.of(-21L), scoreDirector.calculateScore());
+        assertThat(scoreDirector.calculateScore()).isEqualTo(SimpleLongScore.of(-21L));
     }
 
-    @Test
+    @TestTemplate
     public void penalize_BigDecimal() {
         assumeDrools();
         TestdataSimpleBigDecimalScoreSolution solution = new TestdataSimpleBigDecimalScoreSolution();
@@ -668,48 +739,50 @@ public class QuadConstraintStreamTest extends AbstractConstraintStreamTest {
         TestdataEntity e2 = new TestdataEntity("e2", v1);
         solution.setEntityList(Arrays.asList(e1, e2));
 
-        ConstraintStreamScoreDirectorFactory<TestdataSimpleBigDecimalScoreSolution> scoreDirectorFactory
-                = new ConstraintStreamScoreDirectorFactory<>(
-                TestdataSimpleBigDecimalScoreSolution.buildSolutionDescriptor(), (factory) -> {
-            QuadConstraintStream<TestdataEntity, TestdataEntity, TestdataValue, TestdataValue> base =
-                    factory.fromUniquePair(TestdataEntity.class)
-                            .join(TestdataValue.class, equal((entity1, entity2) -> e1.getValue(), identity()))
-                            .join(TestdataValue.class);
-            return new Constraint[]{
-                    base.penalize("myConstraint1", SimpleBigDecimalScore.ONE),
-                    base.penalizeBigDecimal("myConstraint2", SimpleBigDecimalScore.ONE,
-                            (entity1, entity2, value, extra) -> new BigDecimal("0.2"))
-            };
-        }, constraintStreamImplType);
-        InnerScoreDirector<TestdataSimpleBigDecimalScoreSolution> scoreDirector = scoreDirectorFactory.buildScoreDirector(
-                false, constraintMatchEnabled);
+        ConstraintStreamScoreDirectorFactory<TestdataSimpleBigDecimalScoreSolution, SimpleBigDecimalScore> scoreDirectorFactory =
+                new ConstraintStreamScoreDirectorFactory<>(
+                        TestdataSimpleBigDecimalScoreSolution.buildSolutionDescriptor(), (factory) -> {
+                            QuadConstraintStream<TestdataEntity, TestdataEntity, TestdataValue, TestdataValue> base = factory
+                                    .fromUniquePair(TestdataEntity.class)
+                                    .join(TestdataValue.class, equal((entity1, entity2) -> e1.getValue(), identity()))
+                                    .join(TestdataValue.class);
+                            return new Constraint[] {
+                                    base.penalize("myConstraint1", SimpleBigDecimalScore.ONE),
+                                    base.penalizeBigDecimal("myConstraint2", SimpleBigDecimalScore.ONE,
+                                            (entity1, entity2, value, extra) -> new BigDecimal("0.2"))
+                            };
+                        }, constraintStreamImplType);
+        InnerScoreDirector<TestdataSimpleBigDecimalScoreSolution, SimpleBigDecimalScore> scoreDirector =
+                scoreDirectorFactory.buildScoreDirector(false, constraintMatchEnabled);
 
         scoreDirector.setWorkingSolution(solution);
-        assertEquals(SimpleBigDecimalScore.of(new BigDecimal("-1.2")), scoreDirector.calculateScore());
+        assertThat(scoreDirector.calculateScore())
+                .isEqualTo(SimpleBigDecimalScore.of(new BigDecimal("-1.2")));
     }
 
-    @Test
+    @TestTemplate
     public void penalize_negative() {
         assumeDrools();
         TestdataLavishSolution solution = TestdataLavishSolution.generateSolution(1, 1, 1, 2);
 
         String constraintName = "myConstraint";
-        ConstraintStreamScoreDirectorFactory<TestdataLavishSolution> scoreDirectorFactory
-                = new ConstraintStreamScoreDirectorFactory<>(TestdataLavishSolution.buildSolutionDescriptor(),
-                (factory) -> new Constraint[] {
-                        factory.fromUniquePair(TestdataLavishEntity.class)
-                                .join(TestdataLavishEntityGroup.class)
-                                .join(TestdataLavishValue.class)
-                                .penalize(constraintName, SimpleScore.ONE, (entityA, entityB, group, value) -> -1)
-                }, constraintStreamImplType);
-        InnerScoreDirector<TestdataLavishSolution> scoreDirector =
+        ConstraintStreamScoreDirectorFactory<TestdataLavishSolution, SimpleScore> scoreDirectorFactory =
+                new ConstraintStreamScoreDirectorFactory<>(
+                        TestdataLavishSolution.buildSolutionDescriptor(),
+                        (factory) -> new Constraint[] {
+                                factory.fromUniquePair(TestdataLavishEntity.class)
+                                        .join(TestdataLavishEntityGroup.class)
+                                        .join(TestdataLavishValue.class)
+                                        .penalize(constraintName, SimpleScore.ONE, (entityA, entityB, group, value) -> -1)
+                        }, constraintStreamImplType);
+        InnerScoreDirector<TestdataLavishSolution, SimpleScore> scoreDirector =
                 scoreDirectorFactory.buildScoreDirector(false, constraintMatchEnabled);
 
         scoreDirector.setWorkingSolution(solution);
         assertThatThrownBy(scoreDirector::calculateScore).hasMessageContaining(constraintName);
     }
 
-    @Test
+    @TestTemplate
     public void reward_Int() {
         assumeDrools();
         TestdataSolution solution = new TestdataSolution();
@@ -719,25 +792,26 @@ public class QuadConstraintStreamTest extends AbstractConstraintStreamTest {
         TestdataEntity e2 = new TestdataEntity("e2", v1);
         solution.setEntityList(Arrays.asList(e1, e2));
 
-        ConstraintStreamScoreDirectorFactory<TestdataSolution> scoreDirectorFactory
-                = new ConstraintStreamScoreDirectorFactory<>(
-                TestdataSolution.buildSolutionDescriptor(), (factory) -> new Constraint[]{
-                factory.fromUniquePair(TestdataEntity.class)
-                        .join(TestdataValue.class, equal((entity1, entity2) -> e1.getValue(), identity()))
-                        .join(TestdataValue.class)
-                        .reward("myConstraint1", SimpleScore.ONE),
-                factory.fromUniquePair(TestdataEntity.class)
-                        .join(TestdataValue.class, equal((entity1, entity2) -> e1.getValue(), identity()))
-                        .join(TestdataValue.class)
-                        .reward("myConstraint2", SimpleScore.ONE, (entity1, entity2, value, extra) -> 20)
-        }, constraintStreamImplType);
-        InnerScoreDirector<TestdataSolution> scoreDirector = scoreDirectorFactory.buildScoreDirector(false, constraintMatchEnabled);
+        ConstraintStreamScoreDirectorFactory<TestdataSolution, SimpleScore> scoreDirectorFactory =
+                new ConstraintStreamScoreDirectorFactory<>(
+                        TestdataSolution.buildSolutionDescriptor(), (factory) -> new Constraint[] {
+                                factory.fromUniquePair(TestdataEntity.class)
+                                        .join(TestdataValue.class, equal((entity1, entity2) -> e1.getValue(), identity()))
+                                        .join(TestdataValue.class)
+                                        .reward("myConstraint1", SimpleScore.ONE),
+                                factory.fromUniquePair(TestdataEntity.class)
+                                        .join(TestdataValue.class, equal((entity1, entity2) -> e1.getValue(), identity()))
+                                        .join(TestdataValue.class)
+                                        .reward("myConstraint2", SimpleScore.ONE, (entity1, entity2, value, extra) -> 20)
+                        }, constraintStreamImplType);
+        InnerScoreDirector<TestdataSolution, SimpleScore> scoreDirector =
+                scoreDirectorFactory.buildScoreDirector(false, constraintMatchEnabled);
 
         scoreDirector.setWorkingSolution(solution);
-        assertEquals(SimpleScore.of(21), scoreDirector.calculateScore());
+        assertThat(scoreDirector.calculateScore()).isEqualTo(SimpleScore.of(21));
     }
 
-    @Test
+    @TestTemplate
     public void reward_Long() {
         assumeDrools();
         TestdataSimpleLongScoreSolution solution = new TestdataSimpleLongScoreSolution();
@@ -747,25 +821,27 @@ public class QuadConstraintStreamTest extends AbstractConstraintStreamTest {
         TestdataEntity e2 = new TestdataEntity("e2", v1);
         solution.setEntityList(Arrays.asList(e1, e2));
 
-        ConstraintStreamScoreDirectorFactory<TestdataSimpleLongScoreSolution> scoreDirectorFactory
-                = new ConstraintStreamScoreDirectorFactory<>(
-                TestdataSimpleLongScoreSolution.buildSolutionDescriptor(), (factory) -> new Constraint[]{
-                factory.fromUniquePair(TestdataEntity.class)
-                        .join(TestdataValue.class, equal((entity1, entity2) -> e1.getValue(), identity()))
-                        .join(TestdataValue.class)
-                        .reward("myConstraint1", SimpleLongScore.ONE),
-                factory.fromUniquePair(TestdataEntity.class)
-                        .join(TestdataValue.class, equal((entity1, entity2) -> e1.getValue(), identity()))
-                        .join(TestdataValue.class)
-                        .rewardLong("myConstraint2", SimpleLongScore.ONE, (entity1, entity2, value, extra) -> 20L)
-        }, constraintStreamImplType);
-        InnerScoreDirector<TestdataSimpleLongScoreSolution> scoreDirector = scoreDirectorFactory.buildScoreDirector(false, constraintMatchEnabled);
+        ConstraintStreamScoreDirectorFactory<TestdataSimpleLongScoreSolution, SimpleLongScore> scoreDirectorFactory =
+                new ConstraintStreamScoreDirectorFactory<>(
+                        TestdataSimpleLongScoreSolution.buildSolutionDescriptor(), (factory) -> new Constraint[] {
+                                factory.fromUniquePair(TestdataEntity.class)
+                                        .join(TestdataValue.class, equal((entity1, entity2) -> e1.getValue(), identity()))
+                                        .join(TestdataValue.class)
+                                        .reward("myConstraint1", SimpleLongScore.ONE),
+                                factory.fromUniquePair(TestdataEntity.class)
+                                        .join(TestdataValue.class, equal((entity1, entity2) -> e1.getValue(), identity()))
+                                        .join(TestdataValue.class)
+                                        .rewardLong("myConstraint2", SimpleLongScore.ONE,
+                                                (entity1, entity2, value, extra) -> 20L)
+                        }, constraintStreamImplType);
+        InnerScoreDirector<TestdataSimpleLongScoreSolution, SimpleLongScore> scoreDirector =
+                scoreDirectorFactory.buildScoreDirector(false, constraintMatchEnabled);
 
         scoreDirector.setWorkingSolution(solution);
-        assertEquals(SimpleLongScore.of(21L), scoreDirector.calculateScore());
+        assertThat(scoreDirector.calculateScore()).isEqualTo(SimpleLongScore.of(21L));
     }
 
-    @Test
+    @TestTemplate
     public void reward_BigDecimal() {
         assumeDrools();
         TestdataSimpleBigDecimalScoreSolution solution = new TestdataSimpleBigDecimalScoreSolution();
@@ -775,39 +851,43 @@ public class QuadConstraintStreamTest extends AbstractConstraintStreamTest {
         TestdataEntity e2 = new TestdataEntity("e2", v1);
         solution.setEntityList(Arrays.asList(e1, e2));
 
-        ConstraintStreamScoreDirectorFactory<TestdataSimpleBigDecimalScoreSolution> scoreDirectorFactory
-                = new ConstraintStreamScoreDirectorFactory<>(
-                TestdataSimpleBigDecimalScoreSolution.buildSolutionDescriptor(), (factory) -> new Constraint[]{
-                factory.fromUniquePair(TestdataEntity.class)
-                        .join(TestdataValue.class, equal((entity1, entity2) -> e1.getValue(), identity()))
-                        .join(TestdataValue.class)
-                        .reward("myConstraint1", SimpleBigDecimalScore.ONE),
-                factory.fromUniquePair(TestdataEntity.class)
-                        .join(TestdataValue.class, equal((entity1, entity2) -> e1.getValue(), identity()))
-                        .join(TestdataValue.class)
-                        .rewardBigDecimal("myConstraint2", SimpleBigDecimalScore.ONE, (entity1, entity2, value, extra) -> new BigDecimal("0.2"))
-        }, constraintStreamImplType);
-        InnerScoreDirector<TestdataSimpleBigDecimalScoreSolution> scoreDirector = scoreDirectorFactory.buildScoreDirector(false, constraintMatchEnabled);
+        ConstraintStreamScoreDirectorFactory<TestdataSimpleBigDecimalScoreSolution, SimpleBigDecimalScore> scoreDirectorFactory =
+                new ConstraintStreamScoreDirectorFactory<>(
+                        TestdataSimpleBigDecimalScoreSolution.buildSolutionDescriptor(), (factory) -> new Constraint[] {
+                                factory.fromUniquePair(TestdataEntity.class)
+                                        .join(TestdataValue.class, equal((entity1, entity2) -> e1.getValue(), identity()))
+                                        .join(TestdataValue.class)
+                                        .reward("myConstraint1", SimpleBigDecimalScore.ONE),
+                                factory.fromUniquePair(TestdataEntity.class)
+                                        .join(TestdataValue.class, equal((entity1, entity2) -> e1.getValue(), identity()))
+                                        .join(TestdataValue.class)
+                                        .rewardBigDecimal("myConstraint2", SimpleBigDecimalScore.ONE,
+                                                (entity1, entity2, value, extra) -> new BigDecimal("0.2"))
+                        }, constraintStreamImplType);
+        InnerScoreDirector<TestdataSimpleBigDecimalScoreSolution, SimpleBigDecimalScore> scoreDirector =
+                scoreDirectorFactory.buildScoreDirector(false, constraintMatchEnabled);
 
         scoreDirector.setWorkingSolution(solution);
-        assertEquals(SimpleBigDecimalScore.of(new BigDecimal("1.2")), scoreDirector.calculateScore());
+        assertThat(scoreDirector.calculateScore())
+                .isEqualTo(SimpleBigDecimalScore.of(new BigDecimal("1.2")));
     }
 
-    @Test
+    @TestTemplate
     public void reward_negative() {
         assumeDrools();
         TestdataLavishSolution solution = TestdataLavishSolution.generateSolution(1, 1, 1, 2);
 
         String constraintName = "myConstraint";
-        ConstraintStreamScoreDirectorFactory<TestdataLavishSolution> scoreDirectorFactory
-                = new ConstraintStreamScoreDirectorFactory<>(TestdataLavishSolution.buildSolutionDescriptor(),
-                (factory) -> new Constraint[] {
-                        factory.fromUniquePair(TestdataLavishEntity.class)
-                                .join(TestdataLavishEntityGroup.class)
-                                .join(TestdataLavishValue.class)
-                                .reward(constraintName, SimpleScore.ONE, (entityA, entityB, group, value) -> -1)
-                }, constraintStreamImplType);
-        InnerScoreDirector<TestdataLavishSolution> scoreDirector =
+        ConstraintStreamScoreDirectorFactory<TestdataLavishSolution, SimpleScore> scoreDirectorFactory =
+                new ConstraintStreamScoreDirectorFactory<>(
+                        TestdataLavishSolution.buildSolutionDescriptor(),
+                        (factory) -> new Constraint[] {
+                                factory.fromUniquePair(TestdataLavishEntity.class)
+                                        .join(TestdataLavishEntityGroup.class)
+                                        .join(TestdataLavishValue.class)
+                                        .reward(constraintName, SimpleScore.ONE, (entityA, entityB, group, value) -> -1)
+                        }, constraintStreamImplType);
+        InnerScoreDirector<TestdataLavishSolution, SimpleScore> scoreDirector =
                 scoreDirectorFactory.buildScoreDirector(false, constraintMatchEnabled);
 
         scoreDirector.setWorkingSolution(solution);
@@ -818,14 +898,14 @@ public class QuadConstraintStreamTest extends AbstractConstraintStreamTest {
     // Combinations
     // ************************************************************************
 
-    @Test
-    @Ignore("Not yet implemented") // TODO
+    @TestTemplate
+    @Disabled("Not yet implemented") // TODO
     public void globalNodeOrder() {
 
     }
 
-    @Test
-    @Ignore("Not yet supported") // TODO
+    @TestTemplate
+    @Disabled("Not yet supported") // TODO
     public void nodeSharing() {
 
     }

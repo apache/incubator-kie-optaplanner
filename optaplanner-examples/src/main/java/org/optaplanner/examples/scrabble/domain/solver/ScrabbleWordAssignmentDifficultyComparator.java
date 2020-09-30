@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,17 +16,15 @@
 
 package org.optaplanner.examples.scrabble.domain.solver;
 
-import java.io.Serializable;
 import java.util.Comparator;
 
 import org.optaplanner.examples.scrabble.domain.ScrabbleWordAssignment;
 
-public class ScrabbleWordAssignmentDifficultyComparator implements Comparator<ScrabbleWordAssignment>,
-        Serializable {
+public class ScrabbleWordAssignmentDifficultyComparator implements Comparator<ScrabbleWordAssignment> {
 
-    private static final Comparator<ScrabbleWordAssignment> COMPARATOR =
-            Comparator.comparingInt((ScrabbleWordAssignment assignment) -> assignment.getWord().length())
-                    .thenComparingLong(ScrabbleWordAssignment::getId);
+    private static final Comparator<ScrabbleWordAssignment> COMPARATOR = Comparator
+            .comparingInt((ScrabbleWordAssignment assignment) -> assignment.getWord().length())
+            .thenComparingLong(ScrabbleWordAssignment::getId);
 
     @Override
     public int compare(ScrabbleWordAssignment a, ScrabbleWordAssignment b) {

@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,20 +16,21 @@
 
 package org.optaplanner.examples.nqueens.solver.tracking;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.optaplanner.core.api.solver.SolverFactory;
 import org.optaplanner.core.config.heuristic.selector.common.SelectionOrder;
 import org.optaplanner.core.config.heuristic.selector.move.generic.ChangeMoveSelectorConfig;
 import org.optaplanner.core.config.localsearch.LocalSearchPhaseConfig;
-import org.optaplanner.core.config.localsearch.decider.acceptor.AcceptorConfig;
 import org.optaplanner.core.config.localsearch.decider.acceptor.AcceptorType;
+import org.optaplanner.core.config.localsearch.decider.acceptor.LocalSearchAcceptorConfig;
 import org.optaplanner.core.config.localsearch.decider.forager.LocalSearchForagerConfig;
 import org.optaplanner.core.config.solver.SolverConfig;
 import org.optaplanner.core.config.solver.termination.TerminationConfig;
@@ -38,27 +39,15 @@ import org.optaplanner.examples.nqueens.app.NQueensApp;
 import org.optaplanner.examples.nqueens.domain.NQueens;
 import org.optaplanner.examples.nqueens.persistence.NQueensGenerator;
 
-import static org.junit.Assert.*;
-
-@RunWith(Parameterized.class)
 public class NQueensLocalSearchTrackingTest extends NQueensAbstractTrackingTest {
 
     private static final int N = 6;
 
-    private final AcceptorConfig acceptorConfig;
-    private final LocalSearchForagerConfig localSearchForagerConfig;
-    private final List<NQueensStepTracking> expectedCoordinates;
-
-    public NQueensLocalSearchTrackingTest(AcceptorConfig acceptorConfig,
+    @ParameterizedTest(name = "AcceptorType: {0}")
+    @MethodSource("parameters")
+    public void trackLocalSearch(LocalSearchAcceptorConfig acceptorConfig,
             LocalSearchForagerConfig localSearchForagerConfig,
             List<NQueensStepTracking> expectedCoordinates) {
-        this.expectedCoordinates = expectedCoordinates;
-        this.localSearchForagerConfig = localSearchForagerConfig;
-        this.acceptorConfig = acceptorConfig;
-    }
-
-    @Test
-    public void trackLocalSearch() {
         SolverConfig solverConfig = SolverConfig.createFromXmlResource(NQueensApp.SOLVER_CONFIG);
 
         NQueensGenerator generator = new NQueensGenerator();
@@ -79,16 +68,15 @@ public class NQueensLocalSearchTrackingTest extends NQueensAbstractTrackingTest 
         solver.addPhaseLifecycleListener(listener);
         NQueens bestSolution = solver.solve(problem);
 
-        assertNotNull(bestSolution);
+        assertThat(bestSolution).isNotNull();
         assertTrackingList(expectedCoordinates, listener.getTrackingList());
     }
 
-    @Parameterized.Parameters(name = "AcceptorType: {0}")
     public static Collection<Object[]> parameters() {
         Collection<Object[]> params = new ArrayList<>();
 
-        params.add(new Object[]{
-                new AcceptorConfig()
+        params.add(new Object[] {
+                new LocalSearchAcceptorConfig()
                         .withAcceptorTypeList(Arrays.asList(AcceptorType.HILL_CLIMBING)),
                 new LocalSearchForagerConfig()
                         .withAcceptedCountLimit(N * N),
@@ -97,10 +85,9 @@ public class NQueensLocalSearchTrackingTest extends NQueensAbstractTrackingTest 
                         new NQueensStepTracking(4, 3), new NQueensStepTracking(2, 2),
                         new NQueensStepTracking(3, 5), new NQueensStepTracking(1, 4),
                         new NQueensStepTracking(1, 5), new NQueensStepTracking(1, 4),
-                        new NQueensStepTracking(1, 5)
-                )});
-        params.add(new Object[]{
-                new AcceptorConfig()
+                        new NQueensStepTracking(1, 5)) });
+        params.add(new Object[] {
+                new LocalSearchAcceptorConfig()
                         .withAcceptorTypeList(Arrays.asList(AcceptorType.ENTITY_TABU))
                         .withEntityTabuSize(N - 1),
                 new LocalSearchForagerConfig()
@@ -110,10 +97,9 @@ public class NQueensLocalSearchTrackingTest extends NQueensAbstractTrackingTest 
                         new NQueensStepTracking(4, 3), new NQueensStepTracking(2, 2),
                         new NQueensStepTracking(3, 5), new NQueensStepTracking(5, 4),
                         new NQueensStepTracking(1, 4), new NQueensStepTracking(0, 0),
-                        new NQueensStepTracking(4, 1)
-                )});
-        params.add(new Object[]{
-                new AcceptorConfig()
+                        new NQueensStepTracking(4, 1)) });
+        params.add(new Object[] {
+                new LocalSearchAcceptorConfig()
                         .withAcceptorTypeList(Arrays.asList(AcceptorType.LATE_ACCEPTANCE))
                         .withLateAcceptanceSize(1),
                 new LocalSearchForagerConfig()
@@ -122,8 +108,7 @@ public class NQueensLocalSearchTrackingTest extends NQueensAbstractTrackingTest 
                         // (0, 0) is rejected due to high score
                         new NQueensStepTracking(0, 1), new NQueensStepTracking(0, 2),
                         new NQueensStepTracking(0, 1), new NQueensStepTracking(0, 2),
-                        new NQueensStepTracking(0, 1), new NQueensStepTracking(0, 2)
-                )});
+                        new NQueensStepTracking(0, 1), new NQueensStepTracking(0, 2)) });
         return params;
     }
 }

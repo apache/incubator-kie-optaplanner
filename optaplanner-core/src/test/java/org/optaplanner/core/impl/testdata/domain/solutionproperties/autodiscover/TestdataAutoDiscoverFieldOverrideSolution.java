@@ -1,5 +1,5 @@
 /*
- * Copyright 2017 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,7 +19,7 @@ import java.util.List;
 
 import org.optaplanner.core.api.domain.autodiscover.AutoDiscoverMemberType;
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
-import org.optaplanner.core.api.domain.solution.drools.ProblemFactProperty;
+import org.optaplanner.core.api.domain.solution.ProblemFactProperty;
 import org.optaplanner.core.api.domain.valuerange.ValueRangeProvider;
 import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
@@ -31,7 +31,8 @@ import org.optaplanner.core.impl.testdata.domain.TestdataValue;
 public class TestdataAutoDiscoverFieldOverrideSolution extends TestdataObject {
 
     public static SolutionDescriptor<TestdataAutoDiscoverFieldOverrideSolution> buildSolutionDescriptor() {
-        return SolutionDescriptor.buildSolutionDescriptor(TestdataAutoDiscoverFieldOverrideSolution.class, TestdataEntity.class);
+        return SolutionDescriptor.buildSolutionDescriptor(TestdataAutoDiscoverFieldOverrideSolution.class,
+                TestdataEntity.class);
     }
 
     private TestdataObject singleProblemFact;

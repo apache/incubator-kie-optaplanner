@@ -49,11 +49,11 @@ Just add the score rules DRL file in the solver configuration as a `<scoreDrl>` 
 [source,xml,options="nowrap"]
 ----
   <scoreDirectorFactory>
-    <scoreDrl>org/optaplanner/examples/nqueens/solver/nQueensScoreRules.drl</scoreDrl>
+    <scoreDrl>org/optaplanner/examples/nqueens/solver/nQueensConstraints.drl</scoreDrl>
   </scoreDirectorFactory>
 ----
 
-In a typical project (following the Maven directory structure), that DRL file would be located at `$PROJECT_DIR/src/main/resources/org/optaplanner/examples/nqueens/solver/nQueensScoreRules.drl` (even for a war project).
+In a typical project (following the Maven directory structure), that DRL file would be located at `$PROJECT_DIR/src/main/resources/org/optaplanner/examples/nqueens/solver/nQueensConstraints.drl` (even for a war project).
 
 [NOTE]
 ====
@@ -68,7 +68,7 @@ Optionally, you can also set drools configuration properties:
 [source,xml,options="nowrap"]
 ----
   <scoreDirectorFactory>
-    <scoreDrl>org/optaplanner/examples/nqueens/solver/nQueensScoreRules.drl</scoreDrl>
+    <scoreDrl>org/optaplanner/examples/nqueens/solver/nQueensConstraints.drl</scoreDrl>
     <kieBaseConfigurationProperties>
       <drools.equalityBehavior>...</drools.equalityBehavior>
     </kieBaseConfigurationProperties>
@@ -88,7 +88,7 @@ To use `File` on the local file system, instead of a classpath resource, add the
 [source,xml,options="nowrap"]
 ----
   <scoreDirectorFactory>
-    <scoreDrlFile>/home/ge0ffrey/tmp/nQueensScoreRules.drl</scoreDrlFile>
+    <scoreDrlFile>/home/ge0ffrey/tmp/nQueensConstraints.drl</scoreDrlFile>
   </scoreDirectorFactory>
 ----
 
@@ -100,51 +100,6 @@ Worse, if they use a different Operating System, it is hard to choose a portable
 ====
 
 Add multiple `<scoreDrlFile>` elements if the score rules are split across multiple DRL files.
-
-
-[[droolsScoreCalculationKsessionName]]
-=== A `ksessionName` in a KJAR from a Maven repository
-
-This way allows you to use score rules defined by the Workbench or build a kjar and deploy it to the Execution Server.
-Both the score rules and the solver configuration are resources in a kjar.
-Clients can obtain that kjar either from the local classpath, from a local Maven repository or even from a remote Maven repository.
-
-The score rules still live in a DRL file, but the `KieContainer` finds that DRL file through the `META-INF/kmodule.xml` file:
-
-[source,xml,options="nowrap"]
-----
-<kmodule xmlns="http://www.drools.org/xsd/kmodule">
-  <configuration>
-    <!-- Don't enable propertyReactive unless there is a @PropertyReactive annotation on the domain classes -->
-    <property key="drools.propertySpecific" value="ALLOWED"/>
-  </configuration>
-  <kbase name="nQueensKbase" packages="org.optaplanner.examples.nqueens.solver">
-    <ksession name="nQueensKsession"/>
-  </kbase>
-</kmodule>
-----
-
-The kmodule above will pick up all the DRL files in the package ``org.optaplanner.examples.nqueens.solver``.
-A kbase can even extend another kbase.
-
-[NOTE]
-====
-Starting from version 7.0, Drools enables property reactive by default for all classes.
-This means if you have a non-simple getter and forget to apply `@Modifies` correctly, corruption occurs.
-To avoid this, simply set `drools.propertySpecific` to `ALLOWED` as shown above.
-====
-
-Add the ksession name in the solver configuration as a `<ksessionName>` element:
-
-[source,xml,options="nowrap"]
-----
-  <scoreDirectorFactory>
-    <ksessionName>nQueensKsession</ksessionName>
-  </scoreDirectorFactory>
-----
-
-In this approach, it's required to use a `SolverFactory.createFromKieContainerXmlResource(...)` method to <<solverConfigurationByXML,build the `SolverFactory`>>.
-If no `<ksessionName>` element is specified, the default ksession of the `kmodule.xml` is used.
 
 
 [[implementingAScoreRule]]
@@ -301,3 +256,98 @@ end
 Notice how `addSoftConstraintMatch()` specifies that it's a soft constraint,
 and needs a negative number to penalize each match. Otherwise it would reward such matches.
 The parameter `($capacity - $studentSize)` always results in a negative number because `studentSize > $capacity`.
+
+
+[[testingDroolsConstraints]]
+== Testing Drools-based constraints
+
+Drools-based constraints come with a unit testing harness.
+To use it, first add a test scoped dependency to the `optaplanner-test` jar to take advantage of the JUnit integration
+and use the `ScoreVerifier` classes to test score rules in DRL (or a constraint match aware incremental score calculator).
+For example, suppose you want to test these score rules:
+
+[source,options="nowrap"]
+----
+global HardSoftScoreHolder scoreHolder;
+
+rule "requiredCpuPowerTotal"
+    when
+        ...
+    then
+        scoreHolder.addHardConstraintMatch(...);
+end
+
+...
+
+rule "computerCost"
+    when
+        ...
+    then
+        scoreHolder.addSoftConstraintMatch(...);
+end
+----
+
+For each score rule, create a separate `@Test` that only tests the effect of that score rule on the score:
+
+[source,java,options="nowrap"]
+----
+public class CloudBalancingScoreConstraintTest {
+
+    private HardSoftScoreVerifier<CloudBalance> scoreVerifier = new HardSoftScoreVerifier<>(
+            SolverFactory.createFromXmlResource(
+                    "org/optaplanner/examples/cloudbalancing/solver/cloudBalancingSolverConfig.xml"));
+
+    @Test
+    public void requiredCpuPowerTotal() {
+        CloudComputer c1 = new CloudComputer(1L, 1000, 1, 1, 1);
+        CloudComputer c2 = new CloudComputer(2L, 200, 1, 1, 1);
+        CloudProcess p1 = new CloudProcess(1L, 700, 0, 0);
+        CloudProcess p2 = new CloudProcess(2L, 70, 0, 0);
+        CloudBalance solution = new CloudBalance(0L,
+                Arrays.asList(c1, c2),
+                Arrays.asList(p1, p2));
+        // Uninitialized
+        scoreVerifier.assertHardWeight("requiredCpuPowerTotal", 0, solution);
+        p1.setComputer(c1);
+        p2.setComputer(c1);
+        // Usage 700 + 70 is within capacity 1000 of c1
+        scoreVerifier.assertHardWeight("requiredCpuPowerTotal", 0, solution);
+        p1.setComputer(c2);
+        p2.setComputer(c2);
+        // Usage 700 + 70 is above capacity 200 of c2
+        scoreVerifier.assertHardWeight("requiredCpuPowerTotal", -570, solution);
+    }
+
+    ...
+
+    @Test
+    public void computerCost() {
+        CloudComputer c1 = new CloudComputer(1L, 1, 1, 1, 200);
+        CloudComputer c2 = new CloudComputer(2L, 1, 1, 1, 30);
+        CloudProcess p1 = new CloudProcess(1L, 0, 0, 0);
+        CloudProcess p2 = new CloudProcess(2L, 0, 0, 0);
+        CloudBalance solution = new CloudBalance(0L,
+                Arrays.asList(c1, c2),
+                Arrays.asList(p1, p2));
+        // Uninitialized
+        scoreVerifier.assertSoftWeight("computerCost", 0, solution);
+        p1.setComputer(c1);
+        p2.setComputer(c1);
+        // Pay 200 for c1
+        scoreVerifier.assertSoftWeight("computerCost", -200, solution);
+        p2.setComputer(c2);
+        // Pay 200 + 30 for c1 and c2
+        scoreVerifier.assertSoftWeight("computerCost", -230, solution);
+    }
+
+}
+----
+
+There is a `ScoreVerifier` implementation for each `Score` implementation.
+In the `assertHardWeight()` and `assertSoftWeight()` methods, the weight of the other score rules is ignored (even those of the same score level).
+
+[NOTE]
+====
+A ScoreVerifier does not work well to isolate score corruption,
+use <<invalidScoreDetection, an `assertionScoreDirectorFactory`>> instead.
+====

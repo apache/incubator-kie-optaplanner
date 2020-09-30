@@ -1,5 +1,5 @@
 /*
- * Copyright 2013 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,8 +16,8 @@
 
 package org.optaplanner.core.impl.domain.variable.listener;
 
+import org.optaplanner.core.api.score.director.ScoreDirector;
 import org.optaplanner.core.impl.domain.variable.supply.Supply;
-import org.optaplanner.core.impl.score.director.ScoreDirector;
 
 /**
  * Changes shadow variables when a genuine planning variable changes.
@@ -35,8 +35,9 @@ public interface VariableListener<Entity_> extends Supply {
     /**
      * When set to {@code true}, this has a slight performance loss in Planner.
      * When set to {@code false}, it's often easier to make the listener implementation correct and fast.
+     *
      * @return true to guarantee that each of the before/after methods will only be called once per entity instance
-     * per operation type (add, change or remove).
+     *         per operation type (add, change or remove).
      */
     default boolean requiresUniqueEntityEvents() {
         return false;

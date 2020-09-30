@@ -1,5 +1,5 @@
 /*
- * Copyright 2012 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,18 +16,24 @@
 
 package org.optaplanner.core.impl.heuristic.selector.entity.decorator;
 
-import org.junit.Test;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatIllegalStateException;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+import static org.optaplanner.core.impl.testdata.util.PlannerAssert.assertAllCodesOfEntitySelector;
+import static org.optaplanner.core.impl.testdata.util.PlannerAssert.verifyPhaseLifecycle;
+
+import org.junit.jupiter.api.Test;
 import org.optaplanner.core.config.heuristic.selector.common.SelectionCacheType;
 import org.optaplanner.core.impl.heuristic.selector.SelectorTestUtils;
 import org.optaplanner.core.impl.heuristic.selector.common.iterator.CachedListRandomIterator;
 import org.optaplanner.core.impl.heuristic.selector.entity.EntitySelector;
 import org.optaplanner.core.impl.phase.scope.AbstractPhaseScope;
 import org.optaplanner.core.impl.phase.scope.AbstractStepScope;
-import org.optaplanner.core.impl.solver.scope.DefaultSolverScope;
+import org.optaplanner.core.impl.solver.scope.SolverScope;
 import org.optaplanner.core.impl.testdata.domain.TestdataEntity;
-
-import static org.mockito.Mockito.*;
-import static org.optaplanner.core.impl.testdata.util.PlannerAssert.*;
 
 public class CachingEntitySelectorTest {
 
@@ -53,7 +59,7 @@ public class CachingEntitySelectorTest {
         CachingEntitySelector entitySelector = new CachingEntitySelector(childEntitySelector, cacheType, false);
         verify(childEntitySelector, times(1)).isNeverEnding();
 
-        DefaultSolverScope solverScope = mock(DefaultSolverScope.class);
+        SolverScope solverScope = mock(SolverScope.class);
         entitySelector.solvingStarted(solverScope);
 
         AbstractPhaseScope phaseScopeA = mock(AbstractPhaseScope.class);
@@ -105,27 +111,30 @@ public class CachingEntitySelectorTest {
         verify(childEntitySelector, times(timesCalled)).getSize();
     }
 
-    @Test(expected = IllegalStateException.class)
+    @Test
     public void listIteratorWithRandomSelection() {
         EntitySelector childEntitySelector = SelectorTestUtils.mockEntitySelector(TestdataEntity.class);
-        CachingEntitySelector cachingEntitySelector = new CachingEntitySelector(childEntitySelector, SelectionCacheType.PHASE, true);
-        cachingEntitySelector.listIterator();
+        CachingEntitySelector cachingEntitySelector = new CachingEntitySelector(childEntitySelector, SelectionCacheType.PHASE,
+                true);
+        assertThatIllegalStateException().isThrownBy(cachingEntitySelector::listIterator);
     }
 
-    @Test(expected = IllegalStateException.class)
+    @Test
     public void indexedListIteratorWithRandomSelection() {
         EntitySelector childEntitySelector = SelectorTestUtils.mockEntitySelector(TestdataEntity.class);
-        CachingEntitySelector cachingEntitySelector = new CachingEntitySelector(childEntitySelector, SelectionCacheType.PHASE, true);
-        cachingEntitySelector.listIterator(0);
+        CachingEntitySelector cachingEntitySelector = new CachingEntitySelector(childEntitySelector, SelectionCacheType.PHASE,
+                true);
+        assertThatIllegalStateException().isThrownBy(() -> cachingEntitySelector.listIterator(0));
     }
 
     @Test
     public void isNeverEnding() {
         EntitySelector childEntitySelector = SelectorTestUtils.mockEntitySelector(TestdataEntity.class);
-        CachingEntitySelector cachingEntitySelector = new CachingEntitySelector(childEntitySelector, SelectionCacheType.PHASE, true);
-        assertTrue(cachingEntitySelector.isNeverEnding());
+        CachingEntitySelector cachingEntitySelector = new CachingEntitySelector(childEntitySelector, SelectionCacheType.PHASE,
+                true);
+        assertThat(cachingEntitySelector.isNeverEnding()).isTrue();
         cachingEntitySelector = new CachingEntitySelector(childEntitySelector, SelectionCacheType.PHASE, false);
-        assertFalse(cachingEntitySelector.isNeverEnding());
+        assertThat(cachingEntitySelector.isNeverEnding()).isFalse();
     }
 
     @Test
@@ -133,13 +142,16 @@ public class CachingEntitySelectorTest {
         EntitySelector childEntitySelector = SelectorTestUtils.mockEntitySelector(TestdataEntity.class);
         when(childEntitySelector.getSize()).thenReturn(1L);
 
-        CachingEntitySelector cachingEntitySelector = new CachingEntitySelector(childEntitySelector, SelectionCacheType.PHASE, true);
+        CachingEntitySelector cachingEntitySelector = new CachingEntitySelector(childEntitySelector, SelectionCacheType.PHASE,
+                true);
         cachingEntitySelector.constructCache(null);
-        assertInstanceOf(CachedListRandomIterator.class, cachingEntitySelector.iterator());
+        assertThat(cachingEntitySelector.iterator())
+                .isInstanceOf(CachedListRandomIterator.class);
 
         cachingEntitySelector = new CachingEntitySelector(childEntitySelector, SelectionCacheType.PHASE, false);
         cachingEntitySelector.constructCache(null);
-        assertNotInstanceOf(CachedListRandomIterator.class, cachingEntitySelector.iterator());
+        assertThat(cachingEntitySelector.iterator())
+                .isNotInstanceOf(CachedListRandomIterator.class);
     }
 
 }

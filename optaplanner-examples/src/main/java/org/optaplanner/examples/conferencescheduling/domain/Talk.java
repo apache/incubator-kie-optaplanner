@@ -1,5 +1,5 @@
 /*
- * Copyright 2017 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -229,7 +229,8 @@ public class Talk extends AbstractPersistable {
     }
 
     public int overlappingMutuallyExclusiveTalksTagCount(Talk other) {
-        return (int) mutuallyExclusiveTalksTagSet.stream().filter(tag -> other.mutuallyExclusiveTalksTagSet.contains(tag)).count();
+        return (int) mutuallyExclusiveTalksTagSet.stream().filter(tag -> other.mutuallyExclusiveTalksTagSet.contains(tag))
+                .count();
     }
 
     public int missingPrerequisiteCount() {
@@ -601,6 +602,11 @@ public class Talk extends AbstractPersistable {
 
     public Talk withPrerequisiteTalksCodesSet(Set<Talk> prerequisiteTalksCodesSet) {
         this.prerequisiteTalkSet = prerequisiteTalksCodesSet;
+        return this;
+    }
+
+    public Talk withFavoriteCount(int favoriteCount) {
+        this.favoriteCount = favoriteCount;
         return this;
     }
 

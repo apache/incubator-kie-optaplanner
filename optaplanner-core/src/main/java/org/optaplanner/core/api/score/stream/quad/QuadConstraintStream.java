@@ -31,6 +31,7 @@ import org.optaplanner.core.api.function.TriFunction;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.constraint.ConstraintMatchTotal;
 import org.optaplanner.core.api.score.stream.Constraint;
+import org.optaplanner.core.api.score.stream.ConstraintCollectors;
 import org.optaplanner.core.api.score.stream.ConstraintStream;
 import org.optaplanner.core.api.score.stream.Joiners;
 import org.optaplanner.core.api.score.stream.bi.BiConstraintStream;
@@ -40,6 +41,7 @@ import org.optaplanner.core.api.score.stream.uni.UniConstraintStream;
 
 /**
  * A {@link ConstraintStream} that matches four facts.
+ *
  * @param <A> the type of the first matched fact (either a problem fact or a {@link PlanningEntity planning entity})
  * @param <B> the type of the second matched fact (either a problem fact or a {@link PlanningEntity planning entity})
  * @param <C> the type of the third matched fact (either a problem fact or a {@link PlanningEntity planning entity})
@@ -60,6 +62,7 @@ public interface QuadConstraintStream<A, B, C, D> extends ConstraintStream {
      * {@link TriConstraintStream#join(UniConstraintStream, QuadJoiner)} with a proper {@link QuadJoiner} predicate
      * (such as {@link Joiners#equal(TriFunction, Function)},
      * because the latter applies hashing and/or indexing, so it doesn't create every combination just to filter it out.
+     *
      * @param predicate never null
      * @return never null
      */
@@ -74,11 +77,12 @@ public interface QuadConstraintStream<A, B, C, D> extends ConstraintStream {
      * {@link PentaJoiner} is true (for the properties it extracts from the facts).
      * <p>
      * This method has overloaded methods with multiple {@link PentaJoiner} parameters.
+     *
      * @param otherClass never null
      * @param joiner never null
      * @param <E> the type of the fifth matched fact
      * @return never null, a stream that matches every tuple of A, B, C and D where E exists for which the
-     * {@link PentaJoiner} is true
+     *         {@link PentaJoiner} is true
      */
     default <E> QuadConstraintStream<A, B, C, D> ifExists(Class<E> otherClass, PentaJoiner<A, B, C, D, E> joiner) {
         return ifExists(otherClass, new PentaJoiner[] { joiner });
@@ -87,37 +91,40 @@ public interface QuadConstraintStream<A, B, C, D> extends ConstraintStream {
     /**
      * As defined by {@link #ifExists(Class, PentaJoiner)}. For performance reasons, indexing joiners must be placed
      * before filtering joiners.
+     *
      * @param otherClass never null
      * @param joiner1 never null
      * @param joiner2 never null
      * @param <E> the type of the fifth matched fact
      * @return never null, a stream that matches every tuple of A, B, C and D where E exists for which the
-     * {@link PentaJoiner}s are true
+     *         {@link PentaJoiner}s are true
      */
     default <E> QuadConstraintStream<A, B, C, D> ifExists(Class<E> otherClass, PentaJoiner<A, B, C, D, E> joiner1,
             PentaJoiner<A, B, C, D, E> joiner2) {
-        return ifExists(otherClass, new PentaJoiner[] {joiner1, joiner2});
+        return ifExists(otherClass, new PentaJoiner[] { joiner1, joiner2 });
     }
 
     /**
      * As defined by {@link #ifExists(Class, PentaJoiner)}. For performance reasons, indexing joiners must be placed
      * before filtering joiners.
+     *
      * @param otherClass never null
      * @param joiner1 never null
      * @param joiner2 never null
      * @param joiner3 never null
      * @param <E> the type of the fifth matched fact
      * @return never null, a stream that matches every tuple of A, B, C and D where E exists for which the
-     * {@link PentaJoiner}s are true
+     *         {@link PentaJoiner}s are true
      */
     default <E> QuadConstraintStream<A, B, C, D> ifExists(Class<E> otherClass, PentaJoiner<A, B, C, D, E> joiner1,
             PentaJoiner<A, B, C, D, E> joiner2, PentaJoiner<A, B, C, D, E> joiner3) {
-        return ifExists(otherClass, new PentaJoiner[] {joiner1, joiner2, joiner3});
+        return ifExists(otherClass, new PentaJoiner[] { joiner1, joiner2, joiner3 });
     }
 
     /**
      * As defined by {@link #ifExists(Class, PentaJoiner)}. For performance reasons, indexing joiners must be placed
      * before filtering joiners.
+     *
      * @param otherClass never null
      * @param joiner1 never null
      * @param joiner2 never null
@@ -125,12 +132,12 @@ public interface QuadConstraintStream<A, B, C, D> extends ConstraintStream {
      * @param joiner4 never null
      * @param <E> the type of the fifth matched fact
      * @return never null, a stream that matches every tuple of A, B, C and D where E exists for which the
-     * {@link PentaJoiner}s are true
+     *         {@link PentaJoiner}s are true
      */
     default <E> QuadConstraintStream<A, B, C, D> ifExists(Class<E> otherClass, PentaJoiner<A, B, C, D, E> joiner1,
             PentaJoiner<A, B, C, D, E> joiner2, PentaJoiner<A, B, C, D, E> joiner3,
             PentaJoiner<A, B, C, D, E> joiner4) {
-        return ifExists(otherClass, new PentaJoiner[] {joiner1, joiner2, joiner3, joiner4});
+        return ifExists(otherClass, new PentaJoiner[] { joiner1, joiner2, joiner3, joiner4 });
     }
 
     /**
@@ -140,11 +147,12 @@ public interface QuadConstraintStream<A, B, C, D> extends ConstraintStream {
      * This method causes <i>Unchecked generics array creation for varargs parameter</i> warnings,
      * but we can't fix it with a {@link SafeVarargs} annotation because it's an interface method.
      * Therefore, there are overloaded methods with up to 4 {@link PentaJoiner} parameters.
+     *
      * @param otherClass never null
      * @param joiners never null
      * @param <E> the type of the fifth matched fact
      * @return never null, a stream that matches every tuple of A, B, C and D where E exists for which the
-     * {@link PentaJoiner}s are true
+     *         {@link PentaJoiner}s are true
      */
     <E> QuadConstraintStream<A, B, C, D> ifExists(Class<E> otherClass, PentaJoiner<A, B, C, D, E>... joiners);
 
@@ -153,11 +161,12 @@ public interface QuadConstraintStream<A, B, C, D> extends ConstraintStream {
      * {@link PentaJoiner} is true (for the properties it extracts from the facts).
      * <p>
      * This method has overloaded methods with multiple {@link PentaJoiner} parameters.
+     *
      * @param otherClass never null
      * @param joiner never null
      * @param <E> the type of the fifth matched fact
      * @return never null, a stream that matches every tuple of A, B, C and D where E does not exist for which the
-     * {@link PentaJoiner} is true
+     *         {@link PentaJoiner} is true
      */
     default <E> QuadConstraintStream<A, B, C, D> ifNotExists(Class<E> otherClass, PentaJoiner<A, B, C, D, E> joiner) {
         return ifNotExists(otherClass, new PentaJoiner[] { joiner });
@@ -166,37 +175,40 @@ public interface QuadConstraintStream<A, B, C, D> extends ConstraintStream {
     /**
      * As defined by {@link #ifNotExists(Class, PentaJoiner)}. For performance reasons, indexing joiners must be placed
      * before filtering joiners.
+     *
      * @param otherClass never null
      * @param joiner1 never null
      * @param joiner2 never null
      * @param <E> the type of the fifth matched fact
      * @return never null, a stream that matches every tuple of A, B, C and D where E does not exist for which the
-     * {@link PentaJoiner}s are true
+     *         {@link PentaJoiner}s are true
      */
     default <E> QuadConstraintStream<A, B, C, D> ifNotExists(Class<E> otherClass, PentaJoiner<A, B, C, D, E> joiner1,
             PentaJoiner<A, B, C, D, E> joiner2) {
-        return ifNotExists(otherClass, new PentaJoiner[] {joiner1, joiner2});
+        return ifNotExists(otherClass, new PentaJoiner[] { joiner1, joiner2 });
     }
 
     /**
      * As defined by {@link #ifNotExists(Class, PentaJoiner)}. For performance reasons, indexing joiners must be placed
      * before filtering joiners.
+     *
      * @param otherClass never null
      * @param joiner1 never null
      * @param joiner2 never null
      * @param joiner3 never null
      * @param <E> the type of the fifth matched fact
      * @return never null, a stream that matches every tuple of A, B, C and D where E does not exist for which the
-     * {@link PentaJoiner}s are true
+     *         {@link PentaJoiner}s are true
      */
     default <E> QuadConstraintStream<A, B, C, D> ifNotExists(Class<E> otherClass, PentaJoiner<A, B, C, D, E> joiner1,
             PentaJoiner<A, B, C, D, E> joiner2, PentaJoiner<A, B, C, D, E> joiner3) {
-        return ifNotExists(otherClass, new PentaJoiner[] {joiner1, joiner2, joiner3});
+        return ifNotExists(otherClass, new PentaJoiner[] { joiner1, joiner2, joiner3 });
     }
 
     /**
      * As defined by {@link #ifNotExists(Class, PentaJoiner)}. For performance reasons, indexing joiners must be placed
      * before filtering joiners.
+     *
      * @param otherClass never null
      * @param joiner1 never null
      * @param joiner2 never null
@@ -204,11 +216,11 @@ public interface QuadConstraintStream<A, B, C, D> extends ConstraintStream {
      * @param joiner4 never null
      * @param <E> the type of the fifth matched fact
      * @return never null, a stream that matches every tuple of A, B, C and D where E does not exist for which the
-     * {@link PentaJoiner}s are true
+     *         {@link PentaJoiner}s are true
      */
     default <E> QuadConstraintStream<A, B, C, D> ifNotExists(Class<E> otherClass, PentaJoiner<A, B, C, D, E> joiner1,
             PentaJoiner<A, B, C, D, E> joiner2, PentaJoiner<A, B, C, D, E> joiner3, PentaJoiner<A, B, C, D, E> joiner4) {
-        return ifNotExists(otherClass, new PentaJoiner[] {joiner1, joiner2, joiner3, joiner4});
+        return ifNotExists(otherClass, new PentaJoiner[] { joiner1, joiner2, joiner3, joiner4 });
     }
 
     /**
@@ -218,11 +230,12 @@ public interface QuadConstraintStream<A, B, C, D> extends ConstraintStream {
      * This method causes <i>Unchecked generics array creation for varargs parameter</i> warnings,
      * but we can't fix it with a {@link SafeVarargs} annotation because it's an interface method.
      * Therefore, there are overloaded methods with up to 4 {@link PentaJoiner} parameters.
+     *
      * @param <E> the type of the fifth matched fact
      * @param otherClass never null
      * @param joiners never null
      * @return never null, a stream that matches every tuple of A, B, C and D where E does not exist for which the
-     * {@link PentaJoiner}s are true
+     *         {@link PentaJoiner}s are true
      */
     <E> QuadConstraintStream<A, B, C, D> ifNotExists(Class<E> otherClass, PentaJoiner<A, B, C, D, E>... joiners);
 
@@ -235,7 +248,9 @@ public interface QuadConstraintStream<A, B, C, D> extends ConstraintStream {
      * result of applying {@link QuadConstraintCollector}.
      * {@link UniConstraintStream} which only has a single tuple, the result of applying
      * {@link QuadConstraintCollector}.
+     *
      * @param collector never null, the collector to perform the grouping operation with
+     *        See {@link ConstraintCollectors} for common operations, such as {@code count()}, {@code sum()} and others.
      * @param <ResultContainer_> the mutable accumulation type (often hidden as an implementation detail)
      * @param <Result_> the type of a fact in the destination {@link UniConstraintStream}'s tuple
      * @return never null
@@ -247,6 +262,7 @@ public interface QuadConstraintStream<A, B, C, D> extends ConstraintStream {
      * Convert the {@link QuadConstraintStream} to a {@link UniConstraintStream}, containing the set of tuples resulting
      * from applying the group key mapping function on all tuples of the original stream.
      * Neither tuple of the new stream {@link Objects#equals(Object, Object)} any other.
+     *
      * @param groupKeyMapping never null, mapping function to convert each element in the stream to a different element
      * @param <GroupKey_> the type of a fact in the destination {@link UniConstraintStream}'s tuple
      * @return never null
@@ -259,7 +275,10 @@ public interface QuadConstraintStream<A, B, C, D> extends ConstraintStream {
      * The first fact is the return value of the first group key mapping function, applied on the incoming tuple.
      * The second fact is the return value of a given {@link QuadConstraintCollector} applied on all incoming tuples
      * with the same first fact.
+     *
      * @param groupKeyMapping never null, function to convert the fact in the original tuple to a different fact
+     * @param collector never null, the collector to perform the grouping operation with
+     *        See {@link ConstraintCollectors} for common operations, such as {@code count()}, {@code sum()} and others.
      * @param <GroupKey_> the type of the first fact in the destination {@link BiConstraintStream}'s tuple
      * @param <ResultContainer_> the mutable accumulation type (often hidden as an implementation detail)
      * @param <Result_> the type of the second fact in the destination {@link BiConstraintStream}'s tuple
@@ -275,6 +294,7 @@ public interface QuadConstraintStream<A, B, C, D> extends ConstraintStream {
      * The first fact is the return value of the first group key mapping function, applied on the incoming tuple.
      * The second fact is the return value of the second group key mapping function, applied on all incoming tuples with
      * the same first fact.
+     *
      * @param groupKeyAMapping never null, function to convert the facts in the original tuple to a new fact
      * @param groupKeyBMapping never null, function to convert the facts in the original tuple to another new fact
      * @param <GroupKeyA_> the type of the first fact in the destination {@link BiConstraintStream}'s tuple
@@ -291,9 +311,11 @@ public interface QuadConstraintStream<A, B, C, D> extends ConstraintStream {
      * semantics,
      * and the third fact is the result of applying {@link QuadConstraintCollector#finisher()} on all the tuples of the
      * original {@link UniConstraintStream} that belong to the group.
+     *
      * @param groupKeyAMapping never null, function to convert the original tuple into a first fact
      * @param groupKeyBMapping never null, function to convert the original tuple into a second fact
      * @param collector never null, the collector to perform the grouping operation with
+     *        See {@link ConstraintCollectors} for common operations, such as {@code count()}, {@code sum()} and others.
      * @param <GroupKeyA_> the type of the first fact in the destination {@link TriConstraintStream}'s tuple
      * @param <GroupKeyB_> the type of the second fact in the destination {@link TriConstraintStream}'s tuple
      * @param <ResultContainer_> the mutable accumulation type (often hidden as an implementation detail)
@@ -313,10 +335,13 @@ public interface QuadConstraintStream<A, B, C, D> extends ConstraintStream {
      * of the original {@link QuadConstraintStream} that belong to the group.
      * The fourth fact is the result of applying the second {@link QuadConstraintCollector#finisher()} on all the tuples
      * of the original {@link QuadConstraintStream} that belong to the group
+     *
      * @param groupKeyAMapping never null, function to convert the original tuple into a first fact
      * @param groupKeyBMapping never null, function to convert the original tuple into a second fact
      * @param collectorC never null, the collector to perform the first grouping operation with
-     * @param collectorD never null, the collector to perform the first grouping operation with
+     *        See {@link ConstraintCollectors} for common operations, such as {@code count()}, {@code sum()} and others.
+     * @param collectorD never null, the collector to perform the second grouping operation with
+     *        See {@link ConstraintCollectors} for common operations, such as {@code count()}, {@code sum()} and others.
      * @param <GroupKeyA_> the type of the first fact in the destination {@link QuadConstraintStream}'s tuple
      * @param <GroupKeyB_> the type of the second fact in the destination {@link QuadConstraintStream}'s tuple
      * @param <ResultContainerC_> the mutable accumulation type (often hidden as an implementation detail)
@@ -326,10 +351,11 @@ public interface QuadConstraintStream<A, B, C, D> extends ConstraintStream {
      * @return never null
      */
     <GroupKeyA_, GroupKeyB_, ResultContainerC_, ResultC_, ResultContainerD_, ResultD_>
-    QuadConstraintStream<GroupKeyA_, GroupKeyB_, ResultC_, ResultD_> groupBy(
-            QuadFunction<A, B, C, D, GroupKeyA_> groupKeyAMapping, QuadFunction<A, B, C, D, GroupKeyB_> groupKeyBMapping,
-            QuadConstraintCollector<A, B, C, D, ResultContainerC_, ResultC_> collectorC,
-            QuadConstraintCollector<A, B, C, D, ResultContainerD_, ResultD_> collectorD);
+            QuadConstraintStream<GroupKeyA_, GroupKeyB_, ResultC_, ResultD_> groupBy(
+                    QuadFunction<A, B, C, D, GroupKeyA_> groupKeyAMapping,
+                    QuadFunction<A, B, C, D, GroupKeyB_> groupKeyBMapping,
+                    QuadConstraintCollector<A, B, C, D, ResultContainerC_, ResultC_> collectorC,
+                    QuadConstraintCollector<A, B, C, D, ResultContainerD_, ResultD_> collectorD);
 
     // ************************************************************************
     // Penalize/reward
@@ -341,6 +367,7 @@ public interface QuadConstraintStream<A, B, C, D> extends ConstraintStream {
      * <p>
      * For non-int {@link Score} types use {@link #penalizeLong(String, Score, ToLongQuadFunction)} or
      * {@link #penalizeBigDecimal(String, Score, QuadFunction)} instead.
+     *
      * @param constraintName never null, shows up in {@link ConstraintMatchTotal} during score justification
      * @param constraintWeight never null
      * @param matchWeigher never null, the result of this function (matchWeight) is multiplied by the constraintWeight
@@ -354,6 +381,7 @@ public interface QuadConstraintStream<A, B, C, D> extends ConstraintStream {
 
     /**
      * As defined by {@link #penalize(String, Score, ToIntQuadFunction)}.
+     *
      * @param constraintPackage never null
      * @param constraintName never null
      * @param constraintWeight never null
@@ -366,6 +394,7 @@ public interface QuadConstraintStream<A, B, C, D> extends ConstraintStream {
     /**
      * Negatively impact the {@link Score}: subtract the constraintWeight multiplied by the match weight.
      * Otherwise as defined by {@link #penalize(String, Score)}.
+     *
      * @param constraintName never null, shows up in {@link ConstraintMatchTotal} during score justification
      * @param constraintWeight never null
      * @param matchWeigher never null, the result of this function (matchWeight) is multiplied by the constraintWeight
@@ -379,6 +408,7 @@ public interface QuadConstraintStream<A, B, C, D> extends ConstraintStream {
 
     /**
      * As defined by {@link #penalizeLong(String, Score, ToLongQuadFunction)}.
+     *
      * @param constraintPackage never null
      * @param constraintName never null
      * @param constraintWeight never null
@@ -391,6 +421,7 @@ public interface QuadConstraintStream<A, B, C, D> extends ConstraintStream {
     /**
      * Negatively impact the {@link Score}: subtract the constraintWeight multiplied by the match weight.
      * Otherwise as defined by {@link #penalize(String, Score)}.
+     *
      * @param constraintName never null, shows up in {@link ConstraintMatchTotal} during score justification
      * @param constraintWeight never null
      * @param matchWeigher never null, the result of this function (matchWeight) is multiplied by the constraintWeight
@@ -404,6 +435,7 @@ public interface QuadConstraintStream<A, B, C, D> extends ConstraintStream {
 
     /**
      * As defined by {@link #penalizeBigDecimal(String, Score, QuadFunction)}.
+     *
      * @param constraintPackage never null
      * @param constraintName never null
      * @param constraintWeight never null
@@ -419,6 +451,7 @@ public interface QuadConstraintStream<A, B, C, D> extends ConstraintStream {
      * <p>
      * For non-int {@link Score} types use {@link #penalizeConfigurableLong(String, ToLongQuadFunction)} or
      * {@link #penalizeConfigurableBigDecimal(String, QuadFunction)} instead.
+     *
      * @param constraintName never null, shows up in {@link ConstraintMatchTotal} during score justification
      * @param matchWeigher never null, the result of this function (matchWeight) is multiplied by the constraintWeight
      * @return never null
@@ -429,6 +462,7 @@ public interface QuadConstraintStream<A, B, C, D> extends ConstraintStream {
 
     /**
      * As defined by {@link #penalizeConfigurable(String, ToIntQuadFunction)}.
+     *
      * @param constraintPackage never null
      * @param constraintName never null
      * @param matchWeigher never null
@@ -440,6 +474,7 @@ public interface QuadConstraintStream<A, B, C, D> extends ConstraintStream {
     /**
      * Negatively impact the {@link Score}: subtract the {@link ConstraintWeight} multiplied by the match weight.
      * Otherwise as defined by {@link #penalizeConfigurable(String)}.
+     *
      * @param constraintName never null, shows up in {@link ConstraintMatchTotal} during score justification
      * @param matchWeigher never null, the result of this function (matchWeight) is multiplied by the constraintWeight
      * @return never null
@@ -451,6 +486,7 @@ public interface QuadConstraintStream<A, B, C, D> extends ConstraintStream {
 
     /**
      * As defined by {@link #penalizeConfigurableLong(String, ToLongQuadFunction)}.
+     *
      * @param constraintPackage never null
      * @param constraintName never null
      * @param matchWeigher never null
@@ -462,17 +498,20 @@ public interface QuadConstraintStream<A, B, C, D> extends ConstraintStream {
     /**
      * Negatively impact the {@link Score}: subtract the {@link ConstraintWeight} multiplied by the match weight.
      * Otherwise as defined by {@link #penalizeConfigurable(String)}.
+     *
      * @param constraintName never null, shows up in {@link ConstraintMatchTotal} during score justification
      * @param matchWeigher never null, the result of this function (matchWeight) is multiplied by the constraintWeight
      * @return never null
      */
     default Constraint penalizeConfigurableBigDecimal(String constraintName,
             QuadFunction<A, B, C, D, BigDecimal> matchWeigher) {
-        return penalizeConfigurableBigDecimal(getConstraintFactory().getDefaultConstraintPackage(), constraintName, matchWeigher);
+        return penalizeConfigurableBigDecimal(getConstraintFactory().getDefaultConstraintPackage(), constraintName,
+                matchWeigher);
     }
 
     /**
      * As defined by {@link #penalizeConfigurableBigDecimal(String, QuadFunction)}.
+     *
      * @param constraintPackage never null
      * @param constraintName never null
      * @param matchWeigher never null
@@ -481,13 +520,13 @@ public interface QuadConstraintStream<A, B, C, D> extends ConstraintStream {
     Constraint penalizeConfigurableBigDecimal(String constraintPackage, String constraintName,
             QuadFunction<A, B, C, D, BigDecimal> matchWeigher);
 
-
     /**
      * Positively impact the {@link Score}: add the constraintWeight multiplied by the match weight.
      * Otherwise as defined by {@link #reward(String, Score)}.
      * <p>
      * For non-int {@link Score} types use {@link #rewardLong(String, Score, ToLongQuadFunction)} or
      * {@link #rewardBigDecimal(String, Score, QuadFunction)} instead.
+     *
      * @param constraintName never null, shows up in {@link ConstraintMatchTotal} during score justification
      * @param constraintWeight never null
      * @param matchWeigher never null, the result of this function (matchWeight) is multiplied by the constraintWeight
@@ -501,6 +540,7 @@ public interface QuadConstraintStream<A, B, C, D> extends ConstraintStream {
 
     /**
      * As defined by {@link #reward(String, Score, ToIntQuadFunction)}.
+     *
      * @param constraintPackage never null
      * @param constraintName never null
      * @param constraintWeight never null
@@ -513,6 +553,7 @@ public interface QuadConstraintStream<A, B, C, D> extends ConstraintStream {
     /**
      * Positively impact the {@link Score}: add the constraintWeight multiplied by the match weight.
      * Otherwise as defined by {@link #reward(String, Score)}.
+     *
      * @param constraintName never null, shows up in {@link ConstraintMatchTotal} during score justification
      * @param constraintWeight never null
      * @param matchWeigher never null, the result of this function (matchWeight) is multiplied by the constraintWeight
@@ -525,6 +566,7 @@ public interface QuadConstraintStream<A, B, C, D> extends ConstraintStream {
 
     /**
      * As defined by {@link #rewardLong(String, Score, ToLongQuadFunction)}.
+     *
      * @param constraintPackage never null
      * @param constraintName never null
      * @param constraintWeight never null
@@ -537,6 +579,7 @@ public interface QuadConstraintStream<A, B, C, D> extends ConstraintStream {
     /**
      * Positively impact the {@link Score}: add the constraintWeight multiplied by the match weight.
      * Otherwise as defined by {@link #reward(String, Score)}.
+     *
      * @param constraintName never null, shows up in {@link ConstraintMatchTotal} during score justification
      * @param constraintWeight never null
      * @param matchWeigher never null, the result of this function (matchWeight) is multiplied by the constraintWeight
@@ -550,6 +593,7 @@ public interface QuadConstraintStream<A, B, C, D> extends ConstraintStream {
 
     /**
      * As defined by {@link #rewardBigDecimal(String, Score, QuadFunction)}.
+     *
      * @param constraintPackage never null
      * @param constraintName never null
      * @param constraintWeight never null
@@ -565,6 +609,7 @@ public interface QuadConstraintStream<A, B, C, D> extends ConstraintStream {
      * <p>
      * For non-int {@link Score} types use {@link #rewardConfigurableLong(String, ToLongQuadFunction)} or
      * {@link #rewardConfigurableBigDecimal(String, QuadFunction)} instead.
+     *
      * @param constraintName never null, shows up in {@link ConstraintMatchTotal} during score justification
      * @param matchWeigher never null, the result of this function (matchWeight) is multiplied by the constraintWeight
      * @return never null
@@ -575,6 +620,7 @@ public interface QuadConstraintStream<A, B, C, D> extends ConstraintStream {
 
     /**
      * As defined by {@link #rewardConfigurable(String, ToIntQuadFunction)}.
+     *
      * @param constraintPackage never null
      * @param constraintName never null
      * @param matchWeigher never null
@@ -586,6 +632,7 @@ public interface QuadConstraintStream<A, B, C, D> extends ConstraintStream {
     /**
      * Positively impact the {@link Score}: add the {@link ConstraintWeight} multiplied by the match weight.
      * Otherwise as defined by {@link #rewardConfigurable(String)}.
+     *
      * @param constraintName never null, shows up in {@link ConstraintMatchTotal} during score justification
      * @param matchWeigher never null, the result of this function (matchWeight) is multiplied by the constraintWeight
      * @return never null
@@ -597,6 +644,7 @@ public interface QuadConstraintStream<A, B, C, D> extends ConstraintStream {
 
     /**
      * As defined by {@link #rewardConfigurableLong(String, ToLongQuadFunction)}.
+     *
      * @param constraintPackage never null
      * @param constraintName never null
      * @param matchWeigher never null
@@ -608,6 +656,7 @@ public interface QuadConstraintStream<A, B, C, D> extends ConstraintStream {
     /**
      * Positively impact the {@link Score}: add the {@link ConstraintWeight} multiplied by the match weight.
      * Otherwise as defined by {@link #rewardConfigurable(String)}.
+     *
      * @param constraintName never null, shows up in {@link ConstraintMatchTotal} during score justification
      * @param matchWeigher never null, the result of this function (matchWeight) is multiplied by the constraintWeight
      * @return never null
@@ -620,6 +669,7 @@ public interface QuadConstraintStream<A, B, C, D> extends ConstraintStream {
 
     /**
      * As defined by {@link #rewardConfigurableBigDecimal(String, QuadFunction)}.
+     *
      * @param constraintPackage never null
      * @param constraintName never null
      * @param matchWeigher never null
@@ -637,6 +687,7 @@ public interface QuadConstraintStream<A, B, C, D> extends ConstraintStream {
      * <p>
      * For non-int {@link Score} types use {@link #impactLong(String, Score, ToLongQuadFunction)} or
      * {@link #impactBigDecimal(String, Score, QuadFunction)} instead.
+     *
      * @param constraintName never null, shows up in {@link ConstraintMatchTotal} during score justification
      * @param constraintWeight never null
      * @param matchWeigher never null, the result of this function (matchWeight) is multiplied by the constraintWeight
@@ -650,6 +701,7 @@ public interface QuadConstraintStream<A, B, C, D> extends ConstraintStream {
 
     /**
      * As defined by {@link #impact(String, Score, ToIntQuadFunction)}.
+     *
      * @param constraintPackage never null
      * @param constraintName never null
      * @param constraintWeight never null
@@ -665,6 +717,7 @@ public interface QuadConstraintStream<A, B, C, D> extends ConstraintStream {
      * <p>
      * Use {@code penalizeLong(...)} or {@code rewardLong(...)} instead, unless this constraint can both have positive
      * and negative weights.
+     *
      * @param constraintName never null, shows up in {@link ConstraintMatchTotal} during score justification
      * @param constraintWeight never null
      * @param matchWeigher never null, the result of this function (matchWeight) is multiplied by the constraintWeight
@@ -678,6 +731,7 @@ public interface QuadConstraintStream<A, B, C, D> extends ConstraintStream {
 
     /**
      * As defined by {@link #impactLong(String, Score, ToLongQuadFunction)}.
+     *
      * @param constraintPackage never null
      * @param constraintName never null
      * @param constraintWeight never null
@@ -693,6 +747,7 @@ public interface QuadConstraintStream<A, B, C, D> extends ConstraintStream {
      * <p>
      * Use {@code penalizeBigDecimal(...)} or {@code rewardBigDecimal(...)} instead, unless this constraint can both
      * have positive and negative weights.
+     *
      * @param constraintName never null, shows up in {@link ConstraintMatchTotal} during score justification
      * @param constraintWeight never null
      * @param matchWeigher never null, the result of this function (matchWeight) is multiplied by the constraintWeight
@@ -706,6 +761,7 @@ public interface QuadConstraintStream<A, B, C, D> extends ConstraintStream {
 
     /**
      * As defined by {@link #impactBigDecimal(String, Score, QuadFunction)}.
+     *
      * @param constraintPackage never null
      * @param constraintName never null
      * @param constraintWeight never null
@@ -730,6 +786,7 @@ public interface QuadConstraintStream<A, B, C, D> extends ConstraintStream {
      * If there is no {@link ConstraintConfiguration}, use {@link #impact(String, Score)} instead.
      * <p>
      * The {@link Constraint#getConstraintPackage()} defaults to {@link ConstraintConfiguration#constraintPackage()}.
+     *
      * @param constraintName never null, shows up in {@link ConstraintMatchTotal} during score justification
      * @param matchWeigher never null, the result of this function (matchWeight) is multiplied by the constraintWeight
      * @return never null
@@ -740,6 +797,7 @@ public interface QuadConstraintStream<A, B, C, D> extends ConstraintStream {
 
     /**
      * As defined by {@link #impactConfigurable(String, ToIntQuadFunction)}.
+     *
      * @param constraintPackage never null
      * @param constraintName never null
      * @param matchWeigher never null
@@ -760,6 +818,7 @@ public interface QuadConstraintStream<A, B, C, D> extends ConstraintStream {
      * If there is no {@link ConstraintConfiguration}, use {@link #impact(String, Score)} instead.
      * <p>
      * The {@link Constraint#getConstraintPackage()} defaults to {@link ConstraintConfiguration#constraintPackage()}.
+     *
      * @param constraintName never null, shows up in {@link ConstraintMatchTotal} during score justification
      * @param matchWeigher never null, the result of this function (matchWeight) is multiplied by the constraintWeight
      * @return never null
@@ -771,6 +830,7 @@ public interface QuadConstraintStream<A, B, C, D> extends ConstraintStream {
 
     /**
      * As defined by {@link #impactConfigurableLong(String, ToLongQuadFunction)}.
+     *
      * @param constraintPackage never null
      * @param constraintName never null
      * @param matchWeigher never null
@@ -791,6 +851,7 @@ public interface QuadConstraintStream<A, B, C, D> extends ConstraintStream {
      * If there is no {@link ConstraintConfiguration}, use {@link #impact(String, Score)} instead.
      * <p>
      * The {@link Constraint#getConstraintPackage()} defaults to {@link ConstraintConfiguration#constraintPackage()}.
+     *
      * @param constraintName never null, shows up in {@link ConstraintMatchTotal} during score justification
      * @param matchWeigher never null, the result of this function (matchWeight) is multiplied by the constraintWeight
      * @return never null
@@ -802,6 +863,7 @@ public interface QuadConstraintStream<A, B, C, D> extends ConstraintStream {
 
     /**
      * As defined by {@link #impactConfigurableBigDecimal(String, QuadFunction)}.
+     *
      * @param constraintPackage never null
      * @param constraintName never null
      * @param matchWeigher never null

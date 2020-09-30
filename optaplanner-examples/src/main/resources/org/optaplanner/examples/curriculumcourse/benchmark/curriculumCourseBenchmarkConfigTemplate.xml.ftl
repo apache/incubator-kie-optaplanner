@@ -5,7 +5,7 @@
 
   <inheritedSolverBenchmark>
     <problemBenchmarks>
-      <xStreamAnnotatedClass>org.optaplanner.examples.curriculumcourse.domain.CourseSchedule</xStreamAnnotatedClass>
+      <solutionFileIOClass>org.optaplanner.examples.curriculumcourse.persistence.CurriculumCourseXmlSolutionFileIO</solutionFileIOClass>
       <inputSolutionFile>data/curriculumcourse/unsolved/comp01.xml</inputSolutionFile>
       <inputSolutionFile>data/curriculumcourse/unsolved/comp02.xml</inputSolutionFile>
       <inputSolutionFile>data/curriculumcourse/unsolved/comp03.xml</inputSolutionFile>
@@ -26,7 +26,7 @@
       <solutionClass>org.optaplanner.examples.curriculumcourse.domain.CourseSchedule</solutionClass>
       <entityClass>org.optaplanner.examples.curriculumcourse.domain.Lecture</entityClass>
       <scoreDirectorFactory>
-        <scoreDrl>org/optaplanner/examples/curriculumcourse/solver/curriculumCourseScoreRules.drl</scoreDrl>
+        <scoreDrl>org/optaplanner/examples/curriculumcourse/solver/curriculumCourseConstraints.drl</scoreDrl>
       </scoreDirectorFactory>
       <termination>
           <minutesSpentLimit>5</minutesSpentLimit>

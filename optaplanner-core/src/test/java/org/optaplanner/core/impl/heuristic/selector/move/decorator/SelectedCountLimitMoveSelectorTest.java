@@ -1,5 +1,5 @@
 /*
- * Copyright 2014 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,16 +16,20 @@
 
 package org.optaplanner.core.impl.heuristic.selector.move.decorator;
 
-import org.junit.Test;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+import static org.optaplanner.core.impl.testdata.util.PlannerAssert.assertAllCodesOfMoveSelector;
+import static org.optaplanner.core.impl.testdata.util.PlannerAssert.verifyPhaseLifecycle;
+
+import org.junit.jupiter.api.Test;
 import org.optaplanner.core.impl.heuristic.move.DummyMove;
 import org.optaplanner.core.impl.heuristic.selector.SelectorTestUtils;
 import org.optaplanner.core.impl.heuristic.selector.move.MoveSelector;
 import org.optaplanner.core.impl.phase.scope.AbstractPhaseScope;
 import org.optaplanner.core.impl.phase.scope.AbstractStepScope;
-import org.optaplanner.core.impl.solver.scope.DefaultSolverScope;
-
-import static org.mockito.Mockito.*;
-import static org.optaplanner.core.impl.testdata.util.PlannerAssert.*;
+import org.optaplanner.core.impl.solver.scope.SolverScope;
 
 public class SelectedCountLimitMoveSelectorTest {
 
@@ -35,7 +39,7 @@ public class SelectedCountLimitMoveSelectorTest {
                 new DummyMove("a1"), new DummyMove("a2"), new DummyMove("a3"), new DummyMove("a4"), new DummyMove("a5"));
         MoveSelector moveSelector = new SelectedCountLimitMoveSelector(childMoveSelector, 3L);
 
-        DefaultSolverScope solverScope = mock(DefaultSolverScope.class);
+        SolverScope solverScope = mock(SolverScope.class);
         moveSelector.solvingStarted(solverScope);
 
         AbstractPhaseScope phaseScopeA = mock(AbstractPhaseScope.class);
@@ -87,14 +91,13 @@ public class SelectedCountLimitMoveSelectorTest {
         verify(childMoveSelector, times(5)).getSize();
     }
 
-
     @Test
     public void selectSizeLimitHigherThanSelectorSize() {
         MoveSelector childMoveSelector = SelectorTestUtils.mockMoveSelector(DummyMove.class,
                 new DummyMove("a1"), new DummyMove("a2"), new DummyMove("a3"));
         MoveSelector moveSelector = new SelectedCountLimitMoveSelector(childMoveSelector, 5L);
 
-        DefaultSolverScope solverScope = mock(DefaultSolverScope.class);
+        SolverScope solverScope = mock(SolverScope.class);
         moveSelector.solvingStarted(solverScope);
 
         AbstractPhaseScope phaseScopeA = mock(AbstractPhaseScope.class);

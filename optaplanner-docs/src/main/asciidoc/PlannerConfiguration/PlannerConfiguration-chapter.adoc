@@ -55,22 +55,6 @@ In those cases, provide the `ClassLoader` of your classes as a parameter:
 ----
 ====
 
-[NOTE]
-====
-When using Workbench or Execution Server or to take advantage of Drools's `KieContainer` features, provide the `KieContainer` as a parameter:
-
-[source,java,options="nowrap"]
-----
-       KieServices kieServices = KieServices.Factory.get();
-       KieContainer kieContainer = kieServices.newKieContainer(
-               kieServices.newReleaseId("org.nqueens", "nqueens", "1.0.0"));
-       SolverFactory<NQueens> solverFactory = SolverFactory.createFromKieContainerXmlResource(
-               kieContainer, ".../nqueensSolverConfig.xml");
-----
-
-Also use <<droolsScoreCalculationKsessionName,a ksessionName in the solver configuration>>.
-====
-
 Both a `Solver` and a `SolverFactory` have a generic type called ``Solution_``, which is the class representing a <<planningProblemAndPlanningSolution,planning problem and solution>>.
 
 A solver configuration XML file looks like this:
@@ -78,14 +62,15 @@ A solver configuration XML file looks like this:
 [source,xml,options="nowrap"]
 ----
 <?xml version="1.0" encoding="UTF-8"?>
-<solver>
+<solver xmlns="https://www.optaplanner.org/xsd/solver" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="https://www.optaplanner.org/xsd/solver https://www.optaplanner.org/xsd/solver/solver.xsd">
   <!-- Define the model -->
   <solutionClass>org.optaplanner.examples.nqueens.domain.NQueens</solutionClass>
   <entityClass>org.optaplanner.examples.nqueens.domain.Queen</entityClass>
 
   <!-- Define the score function -->
   <scoreDirectorFactory>
-    <scoreDrl>org/optaplanner/examples/nqueens/solver/nQueensScoreRules.drl</scoreDrl>
+    <scoreDrl>org/optaplanner/examples/nqueens/solver/nQueensConstraints.drl</scoreDrl>
   </scoreDirectorFactory>
 
   <!-- Configure the optimization algorithms (optional) -->
@@ -163,81 +148,21 @@ and copy it with the copy constructor for each user request:
 ----
 ====
 
-
-[[annotationsConfiguration]]
-=== Annotations configuration
-
-
-[[automaticScanningForAnnotations]]
-==== Automatic scanning for annotations
-
-Instead of declaring classes that have a `@PlanningSolution` or `@PlanningEntity` manually:
-
-[source,xml,options="nowrap"]
-----
-<solver>
-  <!-- Define the model -->
-  <solutionClass>org.optaplanner.examples.nqueens.domain.NQueens</solutionClass>
-  <entityClass>org.optaplanner.examples.nqueens.domain.Queen</entityClass>
-
-  ...
-</solver>
-----
-
-OptaPlanner can find scan the classpath and find them automatically:
-
-[source,xml,options="nowrap"]
-----
-<solver>
-  <!-- Define the model -->
-  <scanAnnotatedClasses/>
-
-  ...
-</solver>
-----
-
-[NOTE]
-====
-On environments such as OSGi and Android, which use a non-standard `ClassLoader`,
-automated scanning might not find the `@PlanningSolution` or `@PlanningEntity` classes.
-====
-
-Automated scanning inflicts a performance cost during bootstrap.
-To speed up scanning or if there are multiple models in your classpath,
-specify the packages to scan:
-
-[source,xml,options="nowrap"]
-----
-<solver>
-  <!-- Define the model -->
-  <scanAnnotatedClasses>
-    <packageInclude>org.optaplanner.examples.cloudbalancing</packageInclude>
-  </scanAnnotatedClasses>
-
-  ...
-</solver>
-----
-
-This finds all solution and entity classes in that package or its subpackages.
-
-[NOTE]
-====
-If `scanAnnotatedClasses` is not specified, the `org.reflections` transitive maven dependency can be excluded.
-====
-
-
 [[annotationAlternatives]]
-==== Annotation alternatives
+=== Annotation alternatives
 
 OptaPlanner needs to be told which classes in your domain model are planning entities, which properties are planning variables, etc.
 There are several ways to deliver this information:
 
-* Add class annotations and JavaBean property annotations on the domain model (recommended). The property annotations must be on the getter method, not on the setter method. Such a getter does not need to be public.
-* Add class annotations and field annotations on the domain model. Such a field does not need to be public.
-* No annotations: externalize the domain configuration in an XML file. This is https://issues.redhat.com/browse/PLANNER-151[not yet supported].
+* Add class annotations and JavaBean property annotations on the domain model (recommended).
+The property annotations must be on the getter method, not on the setter method.
+Such a getter does not need to be public.
+* Add class annotations and field annotations on the domain model.
+Such a field does not need to be public.
+* No annotations: externalize the domain configuration in an XML file.
+This is https://issues.redhat.com/browse/PLANNER-151[not yet supported].
 
 This manual focuses on the first manner, but every feature supports all three manners, even if it's not explicitly mentioned.
-
 
 [[customPropertiesConfiguration]]
 === Custom properties configuration
@@ -252,7 +177,7 @@ and you want to increase the cache size in one benchmark:
   <scoreDirectorFactory>
     <easyScoreCalculatorClass>...MyEasyScoreCalculator</easyScoreCalculatorClass>
     <easyScoreCalculatorCustomProperties>
-      <myCacheSize>1000</myCacheSize><!-- Override value -->
+      <property name="myCacheSize" value="1000"/><!-- Override value -->
     </easyScoreCalculatorCustomProperties>
   </scoreDirectorFactory>
 ----
@@ -287,9 +212,13 @@ Most value types are supported (including `boolean`, `int`, `double`, `BigDecima
 Look at a dataset of your planning problem.
 You will recognize domain classes in there, each of which can be categorized as one of the following:
 
-* An unrelated class: not used by any of the score constraints. From a planning standpoint, this data is obsolete.
-* A *problem fact* class: used by the score constraints, but does NOT change during planning (as long as the problem stays the same). For example: ``Bed``, ``Room``, ``Shift``, ``Employee``, ``Topic``, ``Period``, ... All the properties of a problem fact class are problem properties.
-* A *planning entity* class: used by the score constraints and changes during planning. For example: ``BedDesignation``, ``ShiftAssignment``, ``Exam``, ... The properties that change during planning are planning variables. The other properties are problem properties.
+* An unrelated class: not used by any of the score constraints.
+From a planning standpoint, this data is obsolete.
+* A *problem fact* class: used by the score constraints, but does NOT change during planning (as long as the problem stays the same).
+For example: ``Bed``, ``Room``, ``Shift``, ``Employee``, ``Topic``, ``Period``, ... All the properties of a problem fact class are problem properties.
+* A *planning entity* class: used by the score constraints and changes during planning.
+For example: ``BedDesignation``, ``ShiftAssignment``, ``Exam``, ... The properties that change during planning are planning variables.
+The other properties are problem properties.
 
 Ask yourself: __What class changes during planning?__ __Which class has variables that I want the ``__Solver__`` to change for me?__ That class is a planning entity.
 Most use cases have only one planning entity class.
@@ -304,16 +233,15 @@ To create a good domain model, read the <<domainModelingGuide,domain modeling gu
 
 *In OptaPlanner, all problem facts and planning entities are plain old JavaBeans (POJOs).* Load them from a database, an XML file, a data repository, a REST service, a noSQL cloud, ... (see <<integration,integration>>): it doesn't matter.
 
-
 [[problemFact]]
 === Problem fact
 
 A problem fact is any JavaBean (POJO) with getters that does not change during planning.
-Implementing the interface `Serializable` is recommended (but not required). For example in n queens, the columns and rows are problem facts:
+For example in n queens, the columns and rows are problem facts:
 
 [source,java,options="nowrap"]
 ----
-public class Column implements Serializable {
+public class Column {
 
     private int index;
 
@@ -323,7 +251,7 @@ public class Column implements Serializable {
 
 [source,java,options="nowrap"]
 ----
-public class Row implements Serializable {
+public class Row {
 
     private int index;
 
@@ -335,7 +263,7 @@ A problem fact can reference other problem facts of course:
 
 [source,java,options="nowrap"]
 ----
-public class Course implements Serializable {
+public class Course {
 
     private String code;
 
@@ -416,11 +344,12 @@ public class Lecture {
 }
 ----
 
-Without <<automaticScanningForAnnotations,automated scanning>>, the solver configuration also needs to declare each planning entity class:
+The solver configuration needs to declare each planning entity class:
 
 [source,java,options="nowrap"]
 ----
-<solver>
+<solver xmlns="https://www.optaplanner.org/xsd/solver" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="https://www.optaplanner.org/xsd/solver https://www.optaplanner.org/xsd/solver/solver.xsd">
   ...
   <entityClass>org.optaplanner.examples.nqueens.domain.Queen</entityClass>
   ...
@@ -582,15 +511,18 @@ To allow an initialized planning variable to be ``null``, set `nullable` to ``tr
     }
 ----
 
-[IMPORTANT]
+[NOTE]
 ====
+Constraint Streams filter out planning entities with a `null` planning variable by default.
+Use <<constraintStreamsFrom,fromUnfiltered()>> to avoid such unwanted behaviour.
+====
+
 OptaPlanner will automatically add the value `null` to the value range.
-There is no need to add `null` in a collection used by a ``ValueRangeProvider``.
-====
+There is no need to add `null` in a collection provided by a ``ValueRangeProvider``.
 
 [NOTE]
 ====
-Using a nullable planning variable implies that your score calculation is responsible for punishing (or even rewarding) variables with a null value.
+Using a nullable planning variable implies that your score calculation is responsible for punishing (or even rewarding) variables with a `null` value.
 ====
 
 [WARNING]
@@ -599,24 +531,36 @@ Currently <<chainedPlanningVariable, chained>> planning variables are not compat
 ====
 
 <<repeatedPlanning,Repeated planning>> (especially <<realTimePlanning,real-time planning>>) does not mix well with a nullable planning variable.
-Every time the Solver starts or a problem fact change is made,
-the <<constructionHeuristics,Construction Heuristics>> will try to initialize all the `null` variables again, which can be a huge waste of time.
-One way to deal with this, is to change when a planning entity should be reinitialized with an ``reinitializeVariableEntityFilter``:
+Every time the Solver starts or a problem fact change is made, the <<constructionHeuristics,Construction Heuristics>>
+will try to initialize all the `null` variables again, which can be a huge waste of time.
+One way to deal with this is to filter the entity selector of the placer in the construction heuristic.
 
-[source,java,options="nowrap"]
+[source,xml,options="nowrap"]
 ----
-    @PlanningVariable(..., nullable = true, reinitializeVariableEntityFilter = ReinitializeTaskFilter.class)
-    public Worker getWorker() {
-        return worker;
-    }
+<solver xmlns="https://www.optaplanner.org/xsd/solver" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="https://www.optaplanner.org/xsd/solver https://www.optaplanner.org/xsd/solver/solver.xsd">
+  ...
+  <constructionHeuristics>
+    <queuedEntityPlacer>
+      <entitySelector id="entitySelector1">
+        <filterClass>...</filterClass>
+      </entitySelector>
+    </queuedEntityPlacer>
+    ...
+    <changeMoveselector>
+      <entitySelector mimicRef="entitySelector1" />
+    </changeMoveselector>
+    ...
+  </constructionHeuristics>
+ ...
+</solver>
 ----
-
 
 [[whenIsAPlanningVariableInitialized]]
 ==== When is a planning variable considered initialized?
 
 A planning variable is considered initialized if its value is not `null` or if the variable is ``nullable``.
-So a nullable variable is always considered initialized, even when a custom `reinitializeVariableEntityFilter` triggers a reinitialization during construction heuristics.
+So a nullable variable is always considered initialized.
 
 A planning entity is initialized if all of its planning variables are initialized.
 
@@ -737,7 +681,7 @@ For example, if a teacher can *never* teach in a room that does not belong to hi
     }
 ----
 
-Never use this to enforce a soft constraint (or even a hard constraint when the problem might not have a feasible solution). For example: __Unless there is no other way__, a teacher can not teach in a room that does not belong to his department.
+Never use this to enforce a soft constraint (or even a hard constraint when the problem might not have a feasible solution). For example: __Unless there is no other way__, a teacher cannot teach in a room that does not belong to his department.
 In this case, the teacher should _not_ be limited in his room value range (because sometimes there is no other way).
 
 [NOTE]
@@ -1046,17 +990,17 @@ public class NQueens {
 }
 ----
 
-Without <<automaticScanningForAnnotations,automated scanning>>, the solver configuration also needs to declare the planning solution class:
+The solver configuration needs to declare the planning solution class:
 
 [source,java,options="nowrap"]
 ----
-<solver>
+<solver xmlns="https://www.optaplanner.org/xsd/solver" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="https://www.optaplanner.org/xsd/solver https://www.optaplanner.org/xsd/solver/solver.xsd">
   ...
   <solutionClass>org.optaplanner.examples.nqueens.domain.NQueens</solutionClass>
   ...
 </solver>
 ----
-
 
 [[planningEntitiesOfASolution]]
 ==== Planning entities of a solution (`@PlanningEntityCollectionProperty`)
@@ -1155,8 +1099,7 @@ This annotation can also be <<autoDiscoverSolutionProperties, auto discovered>> 
 For <<constraintStreams,constraint streams>> and <<droolsScoreCalculation,Drools score calculation>>,
 OptaPlanner needs to extract the problem fact instances from the solution instance.
 It gets those collection(s) by calling every method (or field) that is annotated with ``@ProblemFactCollectionProperty``.
-All objects returned by those methods will be inserted into the ConstrainStreams or Drools session,
-so the constraint steams or score rules can access them.
+All objects returned by those methods are available to use by the constraint streams or Drools rules.
 For example in `NQueens` all `Column` and `Row` instances are problem facts.
 
 [source,java,options="nowrap"]
@@ -1539,7 +1482,8 @@ You can set the environment mode in the solver configuration XML file:
 
 [source,xml,options="nowrap"]
 ----
-<solver>
+<solver xmlns="https://www.optaplanner.org/xsd/solver" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="https://www.optaplanner.org/xsd/solver https://www.optaplanner.org/xsd/solver/solver.xsd">
   <environmentMode>FAST_ASSERT</environmentMode>
   ...
 </solver>
@@ -1556,7 +1500,7 @@ These are the environment modes:
 [[environmentModeFullAssert]]
 ==== `FULL_ASSERT`
 
-The FULL_ASSERT mode turns on all assertions (such as assert that the incremental score calculation is uncorrupted for each move) to fail-fast on a bug in a Move implementation, a score rule, the rule engine itself, ...
+The FULL_ASSERT mode turns on all assertions (such as assert that the incremental score calculation is uncorrupted for each move) to fail-fast on a bug in a Move implementation, a constraint, the engine itself, ...
 
 This mode is reproducible (see the reproducible mode). It is also intrusive because it calls the method `calculateScore()` more frequently than a non-assert mode.
 
@@ -1566,7 +1510,7 @@ The FULL_ASSERT mode is horribly slow (because it does not rely on incremental s
 [[environmentModeNonIntrusiveFullAssert]]
 ==== `NON_INTRUSIVE_FULL_ASSERT`
 
-The NON_INTRUSIVE_FULL_ASSERT turns on several assertions to fail-fast on a bug in a Move implementation, a score rule, the rule engine itself, ...
+The NON_INTRUSIVE_FULL_ASSERT turns on several assertions to fail-fast on a bug in a Move implementation, a constraint, the engine itself, ...
 
 This mode is reproducible (see the reproducible mode). It is non-intrusive because it does not call the method `calculateScore()` more frequently than a non assert mode.
 
@@ -1576,7 +1520,7 @@ The NON_INTRUSIVE_FULL_ASSERT mode is horribly slow (because it does not rely on
 [[environmentModeFastAssert]]
 ==== `FAST_ASSERT`
 
-The FAST_ASSERT mode turns on most assertions (such as assert that an undoMove's score is the same as before the Move) to fail-fast on a bug in a Move implementation, a score rule, the rule engine itself, ...
+The FAST_ASSERT mode turns on most assertions (such as assert that an undoMove's score is the same as before the Move) to fail-fast on a bug in a Move implementation, a constraint, the engine itself, ...
 
 This mode is reproducible (see the reproducible mode). It is also intrusive because it calls the method `calculateScore()` more frequently than a non assert mode.
 
@@ -1775,7 +1719,8 @@ To change the random seed of that `Random` instance, specify a ``randomSeed``:
 
 [source,xml,options="nowrap"]
 ----
-<solver>
+<solver xmlns="https://www.optaplanner.org/xsd/solver" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="https://www.optaplanner.org/xsd/solver https://www.optaplanner.org/xsd/solver/solver.xsd">
   <randomSeed>0</randomSeed>
   ...
 </solver>
@@ -1785,7 +1730,8 @@ To change the pseudorandom number generator implementation, specify a ``randomTy
 
 [source,xml,options="nowrap"]
 ----
-<solver>
+<solver xmlns="https://www.optaplanner.org/xsd/solver" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="https://www.optaplanner.org/xsd/solver https://www.optaplanner.org/xsd/solver/solver.xsd">
   <randomType>MERSENNE_TWISTER</randomType>
   ...
 </solver>

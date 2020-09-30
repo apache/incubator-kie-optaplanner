@@ -20,7 +20,9 @@ import java.time.ZoneId;
 import java.util.Comparator;
 import java.util.Locale;
 
-import com.thoughtworks.xstream.annotations.XStreamAlias;
+import javax.xml.bind.annotation.XmlType;
+import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
+
 import org.optaplanner.benchmark.config.ranking.SolverRankingType;
 import org.optaplanner.benchmark.impl.ranking.SolverRankingWeightFactory;
 import org.optaplanner.benchmark.impl.ranking.TotalRankSolverRankingWeightFactory;
@@ -31,10 +33,17 @@ import org.optaplanner.benchmark.impl.result.PlannerBenchmarkResult;
 import org.optaplanner.benchmark.impl.result.SolverBenchmarkResult;
 import org.optaplanner.core.config.AbstractConfig;
 import org.optaplanner.core.config.util.ConfigUtils;
+import org.optaplanner.core.impl.io.jaxb.adapter.JaxbLocaleAdapter;
 
-@XStreamAlias("benchmarkReport")
+@XmlType(propOrder = {
+        "locale",
+        "solverRankingType",
+        "solverRankingComparatorClass",
+        "solverRankingWeightFactoryClass"
+})
 public class BenchmarkReportConfig extends AbstractConfig<BenchmarkReportConfig> {
 
+    @XmlJavaTypeAdapter(JaxbLocaleAdapter.class)
     private Locale locale = null;
     private SolverRankingType solverRankingType = null;
     private Class<? extends Comparator<SolverBenchmarkResult>> solverRankingComparatorClass = null;
@@ -67,7 +76,8 @@ public class BenchmarkReportConfig extends AbstractConfig<BenchmarkReportConfig>
         return solverRankingComparatorClass;
     }
 
-    public void setSolverRankingComparatorClass(Class<? extends Comparator<SolverBenchmarkResult>> solverRankingComparatorClass) {
+    public void setSolverRankingComparatorClass(
+            Class<? extends Comparator<SolverBenchmarkResult>> solverRankingComparatorClass) {
         this.solverRankingComparatorClass = solverRankingComparatorClass;
     }
 
@@ -75,7 +85,8 @@ public class BenchmarkReportConfig extends AbstractConfig<BenchmarkReportConfig>
         return solverRankingWeightFactoryClass;
     }
 
-    public void setSolverRankingWeightFactoryClass(Class<? extends SolverRankingWeightFactory> solverRankingWeightFactoryClass) {
+    public void setSolverRankingWeightFactoryClass(
+            Class<? extends SolverRankingWeightFactory> solverRankingWeightFactoryClass) {
         this.solverRankingWeightFactoryClass = solverRankingWeightFactoryClass;
     }
 

@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,15 +25,17 @@ import org.optaplanner.core.api.score.buildin.bendable.BendableScore;
  * Abstract superclass for bendable {@link Score} types.
  * <p>
  * Subclasses must be immutable.
+ *
  * @see BendableScore
  */
-public abstract class AbstractBendableScore<S extends FeasibilityScore<S>> extends AbstractScore<S> {
+public abstract class AbstractBendableScore<Score_ extends AbstractBendableScore<Score_>> extends AbstractScore<Score_> {
 
     protected static final String HARD_LABEL = "hard";
     protected static final String SOFT_LABEL = "soft";
-    protected static final String[] LEVEL_SUFFIXES = new String[]{HARD_LABEL, SOFT_LABEL};
+    protected static final String[] LEVEL_SUFFIXES = new String[] { HARD_LABEL, SOFT_LABEL };
 
-    protected static String[][] parseBendableScoreTokens(Class<? extends Score> scoreClass, String scoreString) {
+    protected static String[][] parseBendableScoreTokens(Class<? extends AbstractBendableScore<?>> scoreClass,
+            String scoreString) {
         String[][] scoreTokens = new String[3][];
         scoreTokens[0] = new String[1];
         int startIndex = 0;
@@ -87,12 +89,14 @@ public abstract class AbstractBendableScore<S extends FeasibilityScore<S>> exten
 
     /**
      * The sum of this and {@link #getSoftLevelsSize()} equals {@link #getLevelsSize()}.
+     *
      * @return {@code >= 0} and {@code <} {@link #getLevelsSize()}
      */
     public abstract int getHardLevelsSize();
 
     /**
      * The sum of {@link #getHardLevelsSize()} and this equals {@link #getLevelsSize()}.
+     *
      * @return {@code >= 0} and {@code <} {@link #getLevelsSize()}
      */
     public abstract int getSoftLevelsSize();

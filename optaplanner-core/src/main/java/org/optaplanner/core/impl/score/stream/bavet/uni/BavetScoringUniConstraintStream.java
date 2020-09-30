@@ -81,7 +81,8 @@ public final class BavetScoringUniConstraintStream<Solution_, A> extends BavetAb
     private BavetScoringUniConstraintStream(BavetConstraintFactory<Solution_> constraintFactory,
             BavetAbstractUniConstraintStream<Solution_, A> parent,
             BavetConstraint<Solution_> constraint, boolean noMatchWeigher,
-            ToIntFunction<A> intMatchWeigher, ToLongFunction<A> longMatchWeigher, Function<A, BigDecimal> bigDecimalMatchWeigher) {
+            ToIntFunction<A> intMatchWeigher, ToLongFunction<A> longMatchWeigher,
+            Function<A, BigDecimal> bigDecimalMatchWeigher) {
         super(constraintFactory);
         this.parent = parent;
         this.constraint = constraint;
@@ -115,8 +116,8 @@ public final class BavetScoringUniConstraintStream<Solution_, A> extends BavetAb
                     return castedWeightedScoreImpacter.impactScore(matchWeight, matchScoreConsumer);
                 };
             } else if (noMatchWeigher) {
-                scoreImpacter = (A a, Consumer<Score<?>> matchScoreConsumer) ->
-                        castedWeightedScoreImpacter.impactScore(1, matchScoreConsumer);
+                scoreImpacter = (A a, Consumer<Score<?>> matchScoreConsumer) -> castedWeightedScoreImpacter.impactScore(1,
+                        matchScoreConsumer);
             } else {
                 throw new IllegalStateException("The matchWeigher of " + UniConstraintStream.class.getSimpleName()
                         + ".penalize(matchWeigher) of the constraint (" + constraint.getConstraintId()
@@ -131,15 +132,16 @@ public final class BavetScoringUniConstraintStream<Solution_, A> extends BavetAb
                     return castedWeightedScoreImpacter.impactScore(matchWeight, matchScoreConsumer);
                 };
             } else if (noMatchWeigher) {
-                scoreImpacter = (A a, Consumer<Score<?>> matchScoreConsumer) ->
-                        castedWeightedScoreImpacter.impactScore(1L, matchScoreConsumer);
+                scoreImpacter = (A a, Consumer<Score<?>> matchScoreConsumer) -> castedWeightedScoreImpacter.impactScore(1L,
+                        matchScoreConsumer);
             } else {
                 throw new IllegalStateException("The matchWeigher of " + UniConstraintStream.class.getSimpleName()
                         + ".penalize(matchWeigher) of the constraint (" + constraint.getConstraintId()
                         + ") must return a long.");
             }
         } else if (weightedScoreImpacter instanceof BigDecimalWeightedScoreImpacter) {
-            BigDecimalWeightedScoreImpacter castedWeightedScoreImpacter = (BigDecimalWeightedScoreImpacter) weightedScoreImpacter;
+            BigDecimalWeightedScoreImpacter castedWeightedScoreImpacter =
+                    (BigDecimalWeightedScoreImpacter) weightedScoreImpacter;
             if (bigDecimalMatchWeigher != null) {
                 scoreImpacter = (A a, Consumer<Score<?>> matchScoreConsumer) -> {
                     BigDecimal matchWeight = bigDecimalMatchWeigher.apply(a);
@@ -147,8 +149,8 @@ public final class BavetScoringUniConstraintStream<Solution_, A> extends BavetAb
                     return castedWeightedScoreImpacter.impactScore(matchWeight, matchScoreConsumer);
                 };
             } else if (noMatchWeigher) {
-                scoreImpacter = (A a, Consumer<Score<?>> matchScoreConsumer) ->
-                        castedWeightedScoreImpacter.impactScore(BigDecimal.ONE, matchScoreConsumer);
+                scoreImpacter = (A a, Consumer<Score<?>> matchScoreConsumer) -> castedWeightedScoreImpacter
+                        .impactScore(BigDecimal.ONE, matchScoreConsumer);
             } else {
                 throw new IllegalStateException("The matchWeigher of " + UniConstraintStream.class.getSimpleName()
                         + ".penalize(matchWeigher) of the constraint (" + constraint.getConstraintId()
@@ -165,7 +167,8 @@ public final class BavetScoringUniConstraintStream<Solution_, A> extends BavetAb
     }
 
     @Override
-    protected void createChildNodeChains(BavetNodeBuildPolicy<Solution_> buildPolicy, Score<?> constraintWeight, int nodeOrder, BavetAbstractUniNode<A> node) {
+    protected void createChildNodeChains(BavetNodeBuildPolicy<Solution_> buildPolicy, Score<?> constraintWeight, int nodeOrder,
+            BavetAbstractUniNode<A> node) {
         if (!childStreamList.isEmpty()) {
             throw new IllegalStateException("Impossible state: the stream (" + this
                     + ") has an non-empty childStreamList (" + childStreamList + ") but it's an endpoint.");

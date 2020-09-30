@@ -1,5 +1,5 @@
 /*
- * Copyright 2014 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -31,7 +31,7 @@ import org.optaplanner.examples.cheaptime.domain.TaskAssignment;
 import org.optaplanner.examples.cheaptime.domain.TaskRequirement;
 import org.optaplanner.examples.cheaptime.solver.CheapTimeCostCalculator;
 
-public class CheapTimeEasyScoreCalculator implements EasyScoreCalculator<CheapTimeSolution> {
+public class CheapTimeEasyScoreCalculator implements EasyScoreCalculator<CheapTimeSolution, HardMediumSoftLongScore> {
 
     @Override
     public HardMediumSoftLongScore calculateScore(CheapTimeSolution solution) {
@@ -42,8 +42,7 @@ public class CheapTimeEasyScoreCalculator implements EasyScoreCalculator<CheapTi
         int resourceListSize = solution.getResourceList().size();
         int globalPeriodRangeTo = solution.getGlobalPeriodRangeTo();
         List<Machine> machineList = solution.getMachineList();
-        Map<Machine, List<MachinePeriodPart>> machinePeriodListMap
-                = new LinkedHashMap<>(machineList.size());
+        Map<Machine, List<MachinePeriodPart>> machinePeriodListMap = new LinkedHashMap<>(machineList.size());
         for (Machine machine : machineList) {
             List<MachinePeriodPart> machinePeriodList = new ArrayList<>(globalPeriodRangeTo);
             for (int period = 0; period < globalPeriodRangeTo; period++) {
@@ -64,7 +63,8 @@ public class CheapTimeEasyScoreCalculator implements EasyScoreCalculator<CheapTi
                     MachinePeriodPart machinePeriodPart = machinePeriodList.get(period);
                     machinePeriodPart.addTaskAssignment(taskAssignment);
                     PeriodPowerPrice periodPowerPrice = periodPowerPriceList.get(period);
-                    mediumScore -= CheapTimeCostCalculator.multiplyTwoMicros(taskAssignment.getTask().getPowerConsumptionMicros(),
+                    mediumScore -= CheapTimeCostCalculator.multiplyTwoMicros(
+                            taskAssignment.getTask().getPowerConsumptionMicros(),
                             periodPowerPrice.getPowerPriceMicros());
                 }
                 softScore -= startPeriod;

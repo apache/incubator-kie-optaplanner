@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,10 +15,10 @@
  */
 package org.optaplanner.core.api.domain.solution.cloner;
 
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.ExpectedException;
-import org.optaplanner.core.api.solver.SolverFactory;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatIllegalStateException;
+
+import org.junit.jupiter.api.Test;
 import org.optaplanner.core.config.solver.EnvironmentMode;
 import org.optaplanner.core.config.solver.SolverConfig;
 import org.optaplanner.core.impl.testdata.domain.TestdataEntity;
@@ -28,12 +28,7 @@ import org.optaplanner.core.impl.testdata.domain.clone.customcloner.TestdataScor
 import org.optaplanner.core.impl.testdata.domain.clone.customcloner.TestdataScoreNotEqualSolution;
 import org.optaplanner.core.impl.testdata.util.PlannerTestUtils;
 
-import static org.junit.Assert.*;
-
 public class CustomSolutionClonerTest {
-
-    @Rule
-    public final ExpectedException expectedException = ExpectedException.none();
 
     @Test
     public void clonedUsingCustomCloner() {
@@ -43,7 +38,7 @@ public class CustomSolutionClonerTest {
 
         TestdataCorrectlyClonedSolution solution = new TestdataCorrectlyClonedSolution();
         TestdataCorrectlyClonedSolution solved = PlannerTestUtils.solve(solverConfig, solution);
-        assertTrue("Custom solution cloner was not used", solved.isClonedByCustomCloner());
+        assertThat(solved.isClonedByCustomCloner()).as("Custom solution cloner was not used").isTrue();
     }
 
     @Test
@@ -55,9 +50,9 @@ public class CustomSolutionClonerTest {
 
         TestdataScoreNotClonedSolution solution = new TestdataScoreNotClonedSolution();
 
-        expectedException.expect(IllegalStateException.class);
-        expectedException.expectMessage("Cloning corruption: the original's score ");
-        PlannerTestUtils.solve(solverConfig, solution);
+        assertThatIllegalStateException()
+                .isThrownBy(() -> PlannerTestUtils.solve(solverConfig, solution))
+                .withMessageContaining("Cloning corruption: the original's score ");
     }
 
     @Test
@@ -68,9 +63,9 @@ public class CustomSolutionClonerTest {
 
         TestdataScoreNotEqualSolution solution = new TestdataScoreNotEqualSolution();
 
-        expectedException.expect(IllegalStateException.class);
-        expectedException.expectMessage("Cloning corruption: the original's score ");
-        PlannerTestUtils.solve(solverConfig, solution);
+        assertThatIllegalStateException()
+                .isThrownBy(() -> PlannerTestUtils.solve(solverConfig, solution))
+                .withMessageContaining("Cloning corruption: the original's score ");
     }
 
     @Test
@@ -81,9 +76,8 @@ public class CustomSolutionClonerTest {
 
         TestdataEntitiesNotClonedSolution solution = new TestdataEntitiesNotClonedSolution();
 
-        expectedException.expect(IllegalStateException.class);
-        expectedException.expectMessage("Cloning corruption: the same entity ");
-        PlannerTestUtils.solve(solverConfig, solution);
+        assertThatIllegalStateException()
+                .isThrownBy(() -> PlannerTestUtils.solve(solverConfig, solution))
+                .withMessageContaining("Cloning corruption: the same entity ");
     }
-
 }

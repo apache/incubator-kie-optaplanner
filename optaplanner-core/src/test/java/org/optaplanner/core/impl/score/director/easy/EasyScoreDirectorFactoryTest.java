@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,33 +16,37 @@
 
 package org.optaplanner.core.impl.score.director.easy;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+
 import java.util.Collections;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.core.impl.testdata.domain.TestdataSolution;
-
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
 
 public class EasyScoreDirectorFactoryTest {
 
     @Test
     public void buildScoreDirector() {
         SolutionDescriptor<TestdataSolution> solutionDescriptor = TestdataSolution.buildSolutionDescriptor();
-        EasyScoreCalculator<TestdataSolution> scoreCalculator = mock(EasyScoreCalculator.class);
+        EasyScoreCalculator<TestdataSolution, SimpleScore> scoreCalculator = mock(EasyScoreCalculator.class);
         when(scoreCalculator.calculateScore(any(TestdataSolution.class)))
                 .thenAnswer(invocation -> SimpleScore.of(-10));
-        EasyScoreDirectorFactory<TestdataSolution> directorFactory = new EasyScoreDirectorFactory<>(
+        EasyScoreDirectorFactory<TestdataSolution, SimpleScore> directorFactory = new EasyScoreDirectorFactory<>(
                 solutionDescriptor, scoreCalculator);
 
-        EasyScoreDirector<TestdataSolution> director = directorFactory.buildScoreDirector(false, false);
+        EasyScoreDirector<TestdataSolution, SimpleScore> director =
+                directorFactory.buildScoreDirector(false, false);
         TestdataSolution solution = new TestdataSolution();
         solution.setValueList(Collections.emptyList());
         solution.setEntityList(Collections.emptyList());
         director.setWorkingSolution(solution);
-        assertEquals(SimpleScore.ofUninitialized(0, -10), director.calculateScore());
+        assertThat(director.calculateScore())
+                .isEqualTo(SimpleScore.ofUninitialized(0, -10));
     }
 
 }

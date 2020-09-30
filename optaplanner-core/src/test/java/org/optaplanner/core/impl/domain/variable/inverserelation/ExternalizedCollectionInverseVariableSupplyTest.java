@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,18 +16,19 @@
 
 package org.optaplanner.core.impl.domain.variable.inverserelation;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+
 import java.util.Arrays;
 import java.util.Collection;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
+import org.optaplanner.core.api.score.director.ScoreDirector;
 import org.optaplanner.core.impl.domain.variable.descriptor.GenuineVariableDescriptor;
-import org.optaplanner.core.impl.score.director.ScoreDirector;
 import org.optaplanner.core.impl.testdata.domain.TestdataEntity;
 import org.optaplanner.core.impl.testdata.domain.TestdataSolution;
 import org.optaplanner.core.impl.testdata.domain.TestdataValue;
-
-import static org.mockito.Mockito.*;
-import static org.optaplanner.core.impl.testdata.util.PlannerAssert.*;
 
 public class ExternalizedCollectionInverseVariableSupplyTest {
 
@@ -35,7 +36,8 @@ public class ExternalizedCollectionInverseVariableSupplyTest {
     public void normal() {
         GenuineVariableDescriptor variableDescriptor = TestdataEntity.buildVariableDescriptorForValue();
         ScoreDirector scoreDirector = mock(ScoreDirector.class);
-        ExternalizedCollectionInverseVariableSupply supply = new ExternalizedCollectionInverseVariableSupply(variableDescriptor);
+        ExternalizedCollectionInverseVariableSupply supply = new ExternalizedCollectionInverseVariableSupply(
+                variableDescriptor);
 
         TestdataValue val1 = new TestdataValue("1");
         TestdataValue val2 = new TestdataValue("2");
@@ -52,17 +54,17 @@ public class ExternalizedCollectionInverseVariableSupplyTest {
         when(scoreDirector.getWorkingSolution()).thenReturn(solution);
         supply.resetWorkingSolution(scoreDirector);
 
-        assertCollectionContainsExactly((Collection<Object>) supply.getInverseCollection(val1), a, b);
-        assertCollectionContainsExactly((Collection<Object>) supply.getInverseCollection(val2));
-        assertCollectionContainsExactly((Collection<Object>) supply.getInverseCollection(val3), c, d);
+        assertThat((Collection<TestdataEntity>) supply.getInverseCollection(val1)).containsExactlyInAnyOrder(a, b);
+        assertThat((Collection<TestdataEntity>) supply.getInverseCollection(val2)).isEmpty();
+        assertThat((Collection<TestdataEntity>) supply.getInverseCollection(val3)).containsExactlyInAnyOrder(c, d);
 
         supply.beforeVariableChanged(scoreDirector, c);
         c.setValue(val2);
         supply.afterVariableChanged(scoreDirector, c);
 
-        assertCollectionContainsExactly((Collection<Object>) supply.getInverseCollection(val1), a, b);
-        assertCollectionContainsExactly((Collection<Object>) supply.getInverseCollection(val2), c);
-        assertCollectionContainsExactly((Collection<Object>) supply.getInverseCollection(val3), d);
+        assertThat((Collection<TestdataEntity>) supply.getInverseCollection(val1)).containsExactlyInAnyOrder(a, b);
+        assertThat((Collection<TestdataEntity>) supply.getInverseCollection(val2)).containsExactly(c);
+        assertThat((Collection<TestdataEntity>) supply.getInverseCollection(val3)).containsExactly(d);
 
         supply.clearWorkingSolution(scoreDirector);
     }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,18 +16,17 @@
 
 package org.optaplanner.examples.projectjobscheduling.domain.solver;
 
-import org.optaplanner.core.impl.heuristic.selector.common.decorator.SelectionFilter;
-import org.optaplanner.core.impl.score.director.ScoreDirector;
+import org.optaplanner.core.api.domain.entity.PinningFilter;
 import org.optaplanner.examples.projectjobscheduling.domain.Allocation;
 import org.optaplanner.examples.projectjobscheduling.domain.JobType;
 import org.optaplanner.examples.projectjobscheduling.domain.Schedule;
 
-public class NotSourceOrSinkAllocationFilter implements SelectionFilter<Schedule, Allocation> {
+public class NotSourceOrSinkAllocationFilter implements PinningFilter<Schedule, Allocation> {
 
     @Override
-    public boolean accept(ScoreDirector<Schedule> scoreDirector, Allocation allocation) {
+    public boolean accept(Schedule schedule, Allocation allocation) {
         JobType jobType = allocation.getJob().getJobType();
-        return jobType != JobType.SOURCE && jobType != JobType.SINK;
+        return jobType == JobType.SOURCE || jobType == JobType.SINK;
     }
 
 }

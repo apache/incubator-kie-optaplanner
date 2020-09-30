@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,25 +16,26 @@
 
 package org.optaplanner.core.impl.solver.recaller;
 
-import org.junit.Test;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+
+import org.junit.jupiter.api.Test;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
 import org.optaplanner.core.impl.constructionheuristic.scope.ConstructionHeuristicPhaseScope;
 import org.optaplanner.core.impl.constructionheuristic.scope.ConstructionHeuristicStepScope;
-import org.optaplanner.core.impl.domain.solution.AbstractSolution;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.core.impl.score.director.InnerScoreDirector;
 import org.optaplanner.core.impl.solver.event.SolverEventSupport;
-import org.optaplanner.core.impl.solver.scope.DefaultSolverScope;
-
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
+import org.optaplanner.core.impl.solver.scope.SolverScope;
+import org.optaplanner.core.impl.testdata.domain.TestdataSolution;
 
 public class BestSolutionRecallerTest {
 
-    private static <Solution_> DefaultSolverScope<Solution_> createSolverScope() {
-        DefaultSolverScope<Solution_> solverScope = new DefaultSolverScope<>();
-        InnerScoreDirector<Solution_> scoreDirector = mock(InnerScoreDirector.class);
+    private static <Solution_> SolverScope<Solution_> createSolverScope() {
+        SolverScope<Solution_> solverScope = new SolverScope<>();
+        InnerScoreDirector<Solution_, ?> scoreDirector = mock(InnerScoreDirector.class);
         SolutionDescriptor<Solution_> solutionDescriptor = mock(SolutionDescriptor.class);
         when(scoreDirector.getSolutionDescriptor()).thenReturn(solutionDescriptor);
         solverScope.setScoreDirector(scoreDirector);
@@ -42,10 +43,10 @@ public class BestSolutionRecallerTest {
     }
 
     private static <Solution_> ConstructionHeuristicStepScope<Solution_> setupConstrunctionHeuristics(
-            DefaultSolverScope<Solution_> solverScope) {
-        ConstructionHeuristicPhaseScope<Solution_>  phaseScope = mock(ConstructionHeuristicPhaseScope.class);
+            SolverScope<Solution_> solverScope) {
+        ConstructionHeuristicPhaseScope<Solution_> phaseScope = mock(ConstructionHeuristicPhaseScope.class);
         when(phaseScope.getSolverScope()).thenReturn(solverScope);
-        ConstructionHeuristicStepScope<Solution_>  stepScope = mock(ConstructionHeuristicStepScope.class);
+        ConstructionHeuristicStepScope<Solution_> stepScope = mock(ConstructionHeuristicStepScope.class);
         when(stepScope.getPhaseScope()).thenReturn(phaseScope);
         return stepScope;
     }
@@ -86,26 +87,27 @@ public class BestSolutionRecallerTest {
 
     protected void doProcessWorkingSolutionDuringStep(Score originalBestScore, Score stepScore,
             boolean stepImprovesBestSolution) {
-        DefaultSolverScope<AbstractSolution> solverScope = createSolverScope();
-        AbstractSolution originalBestSolution = mock(AbstractSolution.class);
-        when(solverScope.getScoreDirector().getSolutionDescriptor().getScore(originalBestSolution)).thenReturn(originalBestScore);
+        SolverScope<TestdataSolution> solverScope = createSolverScope();
+        TestdataSolution originalBestSolution = mock(TestdataSolution.class);
+        when(solverScope.getScoreDirector().getSolutionDescriptor().getScore(originalBestSolution))
+                .thenReturn(originalBestScore);
         solverScope.setBestSolution(originalBestSolution);
         solverScope.setBestScore(originalBestScore);
 
-        ConstructionHeuristicStepScope<AbstractSolution> stepScope = setupConstrunctionHeuristics(solverScope);
-        AbstractSolution stepSolution = mock(AbstractSolution.class);
+        ConstructionHeuristicStepScope<TestdataSolution> stepScope = setupConstrunctionHeuristics(solverScope);
+        TestdataSolution stepSolution = mock(TestdataSolution.class);
         when(solverScope.getScoreDirector().getSolutionDescriptor().getScore(stepSolution)).thenReturn(stepScore);
         when(stepScope.getScore()).thenReturn(stepScore);
         when(stepScope.createOrGetClonedSolution()).thenReturn(stepSolution);
 
-        BestSolutionRecaller<AbstractSolution> recaller = createBestSolutionRecaller();
+        BestSolutionRecaller<TestdataSolution> recaller = createBestSolutionRecaller();
         recaller.processWorkingSolutionDuringStep(stepScope);
         if (stepImprovesBestSolution) {
-            assertEquals(stepSolution, solverScope.getBestSolution());
-            assertEquals(stepScore, solverScope.getBestScore());
+            assertThat(solverScope.getBestSolution()).isEqualTo(stepSolution);
+            assertThat(solverScope.getBestScore()).isEqualTo(stepScore);
         } else {
-            assertEquals(originalBestSolution, solverScope.getBestSolution());
-            assertEquals(originalBestScore, solverScope.getBestScore());
+            assertThat(solverScope.getBestSolution()).isEqualTo(originalBestSolution);
+            assertThat(solverScope.getBestScore()).isEqualTo(originalBestScore);
         }
     }
 
@@ -115,7 +117,6 @@ public class BestSolutionRecallerTest {
         Score moveScore = SimpleScore.ofUninitialized(-1, -1);
         doProcessWorkingSolutionDuringMove(bestScore, moveScore, false);
     }
-
 
     @Test
     public void unimprovedInitializedProcessWorkingSolutionDuringMove() {
@@ -140,27 +141,28 @@ public class BestSolutionRecallerTest {
 
     protected void doProcessWorkingSolutionDuringMove(Score originalBestScore, Score moveScore,
             boolean moveImprovesBestSolution) {
-        DefaultSolverScope<AbstractSolution> solverScope = createSolverScope();
-        AbstractSolution originalBestSolution = mock(AbstractSolution.class);
-        when(solverScope.getScoreDirector().getSolutionDescriptor().getScore(originalBestSolution)).thenReturn(originalBestScore);
+        SolverScope<TestdataSolution> solverScope = createSolverScope();
+        TestdataSolution originalBestSolution = mock(TestdataSolution.class);
+        when(solverScope.getScoreDirector().getSolutionDescriptor().getScore(originalBestSolution))
+                .thenReturn(originalBestScore);
         solverScope.setBestSolution(originalBestSolution);
         solverScope.setBestScore(originalBestScore);
 
-        ConstructionHeuristicStepScope<AbstractSolution> stepScope = setupConstrunctionHeuristics(solverScope);
+        ConstructionHeuristicStepScope<TestdataSolution> stepScope = setupConstrunctionHeuristics(solverScope);
 
-        AbstractSolution moveSolution = mock(AbstractSolution.class);
+        TestdataSolution moveSolution = mock(TestdataSolution.class);
         when(solverScope.getScoreDirector().getSolutionDescriptor().getScore(moveSolution))
                 .thenReturn(moveScore);
         when(solverScope.getScoreDirector().cloneWorkingSolution()).thenReturn(moveSolution);
 
-        BestSolutionRecaller<AbstractSolution> recaller = createBestSolutionRecaller();
+        BestSolutionRecaller<TestdataSolution> recaller = createBestSolutionRecaller();
         recaller.processWorkingSolutionDuringMove(moveScore, stepScope);
         if (moveImprovesBestSolution) {
-            assertEquals(moveSolution, solverScope.getBestSolution());
-            assertEquals(moveScore, solverScope.getBestScore());
+            assertThat(solverScope.getBestSolution()).isEqualTo(moveSolution);
+            assertThat(solverScope.getBestScore()).isEqualTo(moveScore);
         } else {
-            assertEquals(originalBestSolution, solverScope.getBestSolution());
-            assertEquals(originalBestScore, solverScope.getBestScore());
+            assertThat(solverScope.getBestSolution()).isEqualTo(originalBestSolution);
+            assertThat(solverScope.getBestScore()).isEqualTo(originalBestScore);
         }
     }
 

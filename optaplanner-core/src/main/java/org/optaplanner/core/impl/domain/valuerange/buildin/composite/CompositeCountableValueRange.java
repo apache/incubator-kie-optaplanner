@@ -1,5 +1,5 @@
 /*
- * Copyright 2013 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,12 +16,14 @@
 
 package org.optaplanner.core.impl.domain.valuerange.buildin.composite;
 
-import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Random;
+import java.util.Spliterator;
+import java.util.Spliterators;
+import java.util.stream.Stream;
+import java.util.stream.StreamSupport;
 
-import com.google.common.collect.Iterators;
 import org.optaplanner.core.api.domain.valuerange.CountableValueRange;
 import org.optaplanner.core.api.domain.valuerange.ValueRange;
 import org.optaplanner.core.impl.domain.valuerange.AbstractCountableValueRange;
@@ -37,7 +39,7 @@ public class CompositeCountableValueRange<T> extends AbstractCountableValueRange
         this.childValueRangeList = childValueRangeList;
         long size = 0L;
         for (CountableValueRange<T> childValueRange : childValueRangeList) {
-            size +=  childValueRange.getSize();
+            size += childValueRange.getSize();
         }
         this.size = size;
     }
@@ -76,11 +78,17 @@ public class CompositeCountableValueRange<T> extends AbstractCountableValueRange
 
     @Override
     public Iterator<T> createOriginalIterator() {
-        List<Iterator<T>> iteratorList = new ArrayList<>(childValueRangeList.size());
+        Stream<T> stream = Stream.empty();
         for (CountableValueRange<T> childValueRange : childValueRangeList) {
-            iteratorList.add(childValueRange.createOriginalIterator());
+            stream = Stream.concat(stream, originalIteratorToStream(childValueRange));
         }
-        return Iterators.concat(iteratorList.iterator());
+        return stream.iterator();
+    }
+
+    private static <T> Stream<T> originalIteratorToStream(CountableValueRange<T> valueRange) {
+        return StreamSupport.stream(
+                Spliterators.spliterator(valueRange.createOriginalIterator(), valueRange.getSize(), Spliterator.ORDERED),
+                false);
     }
 
     @Override

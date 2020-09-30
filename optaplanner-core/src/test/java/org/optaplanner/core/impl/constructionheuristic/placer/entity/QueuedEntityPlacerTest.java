@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,12 +16,18 @@
 
 package org.optaplanner.core.impl.constructionheuristic.placer.entity;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+import static org.optaplanner.core.impl.testdata.util.PlannerAssert.assertAllCodesOfIterator;
+import static org.optaplanner.core.impl.testdata.util.PlannerAssert.verifyPhaseLifecycle;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.optaplanner.core.impl.constructionheuristic.placer.Placement;
 import org.optaplanner.core.impl.constructionheuristic.placer.QueuedEntityPlacer;
 import org.optaplanner.core.impl.heuristic.selector.SelectorTestUtils;
@@ -34,17 +40,10 @@ import org.optaplanner.core.impl.heuristic.selector.move.generic.ChangeMoveSelec
 import org.optaplanner.core.impl.heuristic.selector.value.ValueSelector;
 import org.optaplanner.core.impl.phase.scope.AbstractPhaseScope;
 import org.optaplanner.core.impl.phase.scope.AbstractStepScope;
-import org.optaplanner.core.impl.solver.scope.DefaultSolverScope;
+import org.optaplanner.core.impl.solver.scope.SolverScope;
 import org.optaplanner.core.impl.testdata.domain.TestdataEntity;
 import org.optaplanner.core.impl.testdata.domain.TestdataValue;
 import org.optaplanner.core.impl.testdata.domain.multivar.TestdataMultiVarEntity;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-import static org.mockito.Mockito.*;
-import static org.optaplanner.core.impl.testdata.util.PlannerAssert.*;
 
 public class QueuedEntityPlacerTest extends AbstractEntityPlacerTest {
 
@@ -63,7 +62,7 @@ public class QueuedEntityPlacerTest extends AbstractEntityPlacerTest {
                 false);
         QueuedEntityPlacer placer = new QueuedEntityPlacer(recordingEntitySelector, Collections.singletonList(moveSelector));
 
-        DefaultSolverScope solverScope = mock(DefaultSolverScope.class);
+        SolverScope solverScope = mock(SolverScope.class);
         placer.solvingStarted(solverScope);
 
         AbstractPhaseScope phaseScopeA = mock(AbstractPhaseScope.class);
@@ -71,28 +70,28 @@ public class QueuedEntityPlacerTest extends AbstractEntityPlacerTest {
         placer.phaseStarted(phaseScopeA);
         Iterator<Placement> placementIterator = placer.iterator();
 
-        assertTrue(placementIterator.hasNext());
+        assertThat(placementIterator.hasNext()).isTrue();
         AbstractStepScope stepScopeA1 = mock(AbstractStepScope.class);
         when(stepScopeA1.getPhaseScope()).thenReturn(phaseScopeA);
         placer.stepStarted(stepScopeA1);
         assertEntityPlacement(placementIterator.next(), "a", "1", "2");
         placer.stepEnded(stepScopeA1);
 
-        assertTrue(placementIterator.hasNext());
+        assertThat(placementIterator.hasNext()).isTrue();
         AbstractStepScope stepScopeA2 = mock(AbstractStepScope.class);
         when(stepScopeA2.getPhaseScope()).thenReturn(phaseScopeA);
         placer.stepStarted(stepScopeA2);
         assertEntityPlacement(placementIterator.next(), "b", "1", "2");
         placer.stepEnded(stepScopeA2);
 
-        assertTrue(placementIterator.hasNext());
+        assertThat(placementIterator.hasNext()).isTrue();
         AbstractStepScope stepScopeA3 = mock(AbstractStepScope.class);
         when(stepScopeA3.getPhaseScope()).thenReturn(phaseScopeA);
         placer.stepStarted(stepScopeA3);
         assertEntityPlacement(placementIterator.next(), "c", "1", "2");
         placer.stepEnded(stepScopeA3);
 
-        assertFalse(placementIterator.hasNext());
+        assertThat(placementIterator.hasNext()).isFalse();
         placer.phaseEnded(phaseScopeA);
 
         AbstractPhaseScope phaseScopeB = mock(AbstractPhaseScope.class);
@@ -100,7 +99,7 @@ public class QueuedEntityPlacerTest extends AbstractEntityPlacerTest {
         placer.phaseStarted(phaseScopeB);
         placementIterator = placer.iterator();
 
-        assertTrue(placementIterator.hasNext());
+        assertThat(placementIterator.hasNext()).isTrue();
         AbstractStepScope stepScopeB1 = mock(AbstractStepScope.class);
         when(stepScopeB1.getPhaseScope()).thenReturn(phaseScopeB);
         placer.stepStarted(stepScopeB1);
@@ -139,7 +138,7 @@ public class QueuedEntityPlacerTest extends AbstractEntityPlacerTest {
                 false));
         QueuedEntityPlacer placer = new QueuedEntityPlacer(recordingEntitySelector, moveSelectorList);
 
-        DefaultSolverScope solverScope = mock(DefaultSolverScope.class);
+        SolverScope solverScope = mock(SolverScope.class);
         placer.solvingStarted(solverScope);
 
         AbstractPhaseScope phaseScopeA = mock(AbstractPhaseScope.class);
@@ -147,35 +146,35 @@ public class QueuedEntityPlacerTest extends AbstractEntityPlacerTest {
         placer.phaseStarted(phaseScopeA);
         Iterator<Placement> placementIterator = placer.iterator();
 
-        assertTrue(placementIterator.hasNext());
+        assertThat(placementIterator.hasNext()).isTrue();
         AbstractStepScope stepScopeA1 = mock(AbstractStepScope.class);
         when(stepScopeA1.getPhaseScope()).thenReturn(phaseScopeA);
         placer.stepStarted(stepScopeA1);
         assertEntityPlacement(placementIterator.next(), "a", "1", "2", "3");
         placer.stepEnded(stepScopeA1);
 
-        assertTrue(placementIterator.hasNext());
+        assertThat(placementIterator.hasNext()).isTrue();
         AbstractStepScope stepScopeA2 = mock(AbstractStepScope.class);
         when(stepScopeA2.getPhaseScope()).thenReturn(phaseScopeA);
         placer.stepStarted(stepScopeA2);
         assertEntityPlacement(placementIterator.next(), "a", "8", "9");
         placer.stepEnded(stepScopeA2);
 
-        assertTrue(placementIterator.hasNext());
+        assertThat(placementIterator.hasNext()).isTrue();
         AbstractStepScope stepScopeA3 = mock(AbstractStepScope.class);
         when(stepScopeA3.getPhaseScope()).thenReturn(phaseScopeA);
         placer.stepStarted(stepScopeA3);
         assertEntityPlacement(placementIterator.next(), "b", "1", "2", "3");
         placer.stepEnded(stepScopeA3);
 
-        assertTrue(placementIterator.hasNext());
+        assertThat(placementIterator.hasNext()).isTrue();
         AbstractStepScope stepScopeA4 = mock(AbstractStepScope.class);
         when(stepScopeA4.getPhaseScope()).thenReturn(phaseScopeA);
         placer.stepStarted(stepScopeA4);
         assertEntityPlacement(placementIterator.next(), "b", "8", "9");
         placer.stepEnded(stepScopeA4);
 
-        assertFalse(placementIterator.hasNext());
+        assertThat(placementIterator.hasNext()).isFalse();
         placer.phaseEnded(phaseScopeA);
 
         placer.solvingEnded(solverScope);
@@ -211,7 +210,7 @@ public class QueuedEntityPlacerTest extends AbstractEntityPlacerTest {
         QueuedEntityPlacer placer = new QueuedEntityPlacer(recordingEntitySelector,
                 Collections.singletonList(moveSelector));
 
-        DefaultSolverScope solverScope = mock(DefaultSolverScope.class);
+        SolverScope solverScope = mock(SolverScope.class);
         placer.solvingStarted(solverScope);
 
         AbstractPhaseScope phaseScopeA = mock(AbstractPhaseScope.class);
@@ -219,7 +218,7 @@ public class QueuedEntityPlacerTest extends AbstractEntityPlacerTest {
         placer.phaseStarted(phaseScopeA);
         Iterator<Placement> placementIterator = placer.iterator();
 
-        assertEquals(true, placementIterator.hasNext());
+        assertThat(placementIterator.hasNext()).isTrue();
         AbstractStepScope stepScopeA1 = mock(AbstractStepScope.class);
         when(stepScopeA1.getPhaseScope()).thenReturn(phaseScopeA);
         placer.stepStarted(stepScopeA1);
@@ -227,7 +226,7 @@ public class QueuedEntityPlacerTest extends AbstractEntityPlacerTest {
                 "a->1+a->8", "a->1+a->9", "a->2+a->8", "a->2+a->9", "a->3+a->8", "a->3+a->9");
         placer.stepEnded(stepScopeA1);
 
-        assertEquals(true, placementIterator.hasNext());
+        assertThat(placementIterator.hasNext()).isTrue();
         AbstractStepScope stepScopeA2 = mock(AbstractStepScope.class);
         when(stepScopeA2.getPhaseScope()).thenReturn(phaseScopeA);
         placer.stepStarted(stepScopeA2);
@@ -235,7 +234,7 @@ public class QueuedEntityPlacerTest extends AbstractEntityPlacerTest {
                 "b->1+b->8", "b->1+b->9", "b->2+b->8", "b->2+b->9", "b->3+b->8", "b->3+b->9");
         placer.stepEnded(stepScopeA2);
 
-        assertEquals(false, placementIterator.hasNext());
+        assertThat(placementIterator.hasNext()).isFalse();
         placer.phaseEnded(phaseScopeA);
 
         placer.solvingEnded(solverScope);

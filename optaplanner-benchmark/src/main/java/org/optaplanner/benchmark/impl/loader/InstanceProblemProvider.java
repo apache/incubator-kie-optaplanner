@@ -16,22 +16,25 @@
 
 package org.optaplanner.benchmark.impl.loader;
 
-import java.io.File;
+import java.util.Objects;
 
-import com.thoughtworks.xstream.annotations.XStreamAlias;
-import com.thoughtworks.xstream.annotations.XStreamOmitField;
-import org.apache.commons.io.FilenameUtils;
+import javax.xml.bind.annotation.XmlTransient;
+
 import org.optaplanner.benchmark.impl.result.SubSingleBenchmarkResult;
 import org.optaplanner.core.api.domain.solution.cloner.SolutionCloner;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
-import org.optaplanner.persistence.common.api.domain.solution.SolutionFileIO;
 
-@XStreamAlias("instanceProblemProvider")
 public class InstanceProblemProvider<Solution_> implements ProblemProvider<Solution_> {
 
-    private final String problemName;
-    private final Solution_ problem;
-    private final SolutionCloner<Solution_> solutionCloner;
+    private String problemName;
+    @XmlTransient
+    private Solution_ problem;
+    @XmlTransient
+    private SolutionCloner<Solution_> solutionCloner;
+
+    public InstanceProblemProvider() {
+        // Required by JAXB
+    }
 
     public InstanceProblemProvider(String problemName, SolutionDescriptor<Solution_> solutionDescriptor, Solution_ problem) {
         this.problemName = problemName;
@@ -61,22 +64,24 @@ public class InstanceProblemProvider<Solution_> implements ProblemProvider<Solut
     public boolean equals(Object o) {
         if (this == o) {
             return true;
-        } else if (o instanceof InstanceProblemProvider) {
-            InstanceProblemProvider other = (InstanceProblemProvider) o;
-            return problem.equals(other.problem);
-        } else {
+        }
+        if (!(o instanceof InstanceProblemProvider)) {
             return false;
         }
+        InstanceProblemProvider<?> that = (InstanceProblemProvider<?>) o;
+        return Objects.equals(problemName, that.problemName) &&
+                Objects.equals(problem, that.problem) &&
+                Objects.equals(solutionCloner, that.solutionCloner);
     }
 
     @Override
     public int hashCode() {
-        return problem.hashCode();
+        return Objects.hash(problemName, problem, solutionCloner);
     }
 
     @Override
     public String toString() {
-        return problem.toString();
+        return problemName;
     }
 
 }

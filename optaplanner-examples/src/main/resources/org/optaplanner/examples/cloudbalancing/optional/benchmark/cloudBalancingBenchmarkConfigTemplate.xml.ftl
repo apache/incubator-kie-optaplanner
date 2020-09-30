@@ -5,7 +5,7 @@
 
   <inheritedSolverBenchmark>
     <problemBenchmarks>
-      <xStreamAnnotatedClass>org.optaplanner.examples.cloudbalancing.domain.CloudBalance</xStreamAnnotatedClass>
+      <solutionFileIOClass>org.optaplanner.examples.cloudbalancing.persistence.CloudBalanceXmlSolutionFileIO</solutionFileIOClass>
       <!--<inputSolutionFile>data/cloudbalancing/unsolved/2computers-6processes.xml</inputSolutionFile>-->
       <!--<inputSolutionFile>data/cloudbalancing/unsolved/3computers-9processes.xml</inputSolutionFile>-->
       <!--<inputSolutionFile>data/cloudbalancing/unsolved/4computers-12processes.xml</inputSolutionFile>-->
@@ -19,7 +19,7 @@
       <solutionClass>org.optaplanner.examples.cloudbalancing.domain.CloudBalance</solutionClass>
       <entityClass>org.optaplanner.examples.cloudbalancing.domain.CloudProcess</entityClass>
       <scoreDirectorFactory>
-        <scoreDrl>org/optaplanner/examples/cloudbalancing/solver/cloudBalancingScoreRules.drl</scoreDrl>
+        <scoreDrl>org/optaplanner/examples/cloudbalancing/solver/cloudBalancingConstraints.drl</scoreDrl>
         <initializingScoreTrend>ONLY_DOWN/ONLY_DOWN</initializingScoreTrend>
       </scoreDirectorFactory>
       <termination>

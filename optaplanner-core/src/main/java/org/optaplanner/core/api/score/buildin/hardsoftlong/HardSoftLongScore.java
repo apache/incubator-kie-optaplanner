@@ -1,5 +1,5 @@
 /*
- * Copyright 2011 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,7 +19,6 @@ package org.optaplanner.core.api.score.buildin.hardsoftlong;
 import java.util.Objects;
 
 import org.optaplanner.core.api.score.AbstractScore;
-import org.optaplanner.core.api.score.FeasibilityScore;
 import org.optaplanner.core.api.score.Score;
 
 /**
@@ -28,10 +27,10 @@ import org.optaplanner.core.api.score.Score;
  * Hard constraints determine feasibility.
  * <p>
  * This class is immutable.
+ *
  * @see Score
  */
-public final class HardSoftLongScore extends AbstractScore<HardSoftLongScore>
-        implements FeasibilityScore<HardSoftLongScore> {
+public final class HardSoftLongScore extends AbstractScore<HardSoftLongScore> {
 
     public static final HardSoftLongScore ZERO = new HardSoftLongScore(0, 0L, 0L);
     public static final HardSoftLongScore ONE_HARD = new HardSoftLongScore(0, 1L, 0L);
@@ -51,23 +50,7 @@ public final class HardSoftLongScore extends AbstractScore<HardSoftLongScore>
         return new HardSoftLongScore(initScore, hardScore, softScore);
     }
 
-    /**
-     * @deprecated in favor of {@link #ofUninitialized(int, long, long)}
-     */
-    @Deprecated
-    public static HardSoftLongScore valueOfUninitialized(int initScore, long hardScore, long softScore) {
-        return new HardSoftLongScore(initScore, hardScore, softScore);
-    }
-
     public static HardSoftLongScore of(long hardScore, long softScore) {
-        return new HardSoftLongScore(0, hardScore, softScore);
-    }
-
-    /**
-     * @deprecated in favor of {@link #of(long, long)}
-     */
-    @Deprecated
-    public static HardSoftLongScore valueOf(long hardScore, long softScore) {
         return new HardSoftLongScore(0, hardScore, softScore);
     }
 
@@ -108,6 +91,7 @@ public final class HardSoftLongScore extends AbstractScore<HardSoftLongScore>
      * The total of the broken negative hard constraints and fulfilled positive hard constraints.
      * Their weight is included in the total.
      * The hard score is usually a negative number because most use cases only have negative constraints.
+     *
      * @return higher is better, usually negative, 0 if no hard constraints are broken/fulfilled
      */
     public long getHardScore() {
@@ -120,6 +104,7 @@ public final class HardSoftLongScore extends AbstractScore<HardSoftLongScore>
      * The soft score is usually a negative number because most use cases only have negative constraints.
      * <p>
      * In a normal score comparison, the soft score is irrelevant if the 2 scores don't have the same hard score.
+     *
      * @return higher is better, usually negative, 0 if no soft constraints are broken/fulfilled
      */
     public long getSoftScore() {
@@ -131,13 +116,7 @@ public final class HardSoftLongScore extends AbstractScore<HardSoftLongScore>
     // ************************************************************************
 
     @Override
-    public HardSoftLongScore toInitializedScore() {
-        return initScore == 0 ? this : new HardSoftLongScore(0, hardScore, softScore);
-    }
-
-    @Override
     public HardSoftLongScore withInitScore(int newInitScore) {
-        assertNoInitScore();
         return new HardSoftLongScore(newInitScore, hardScore, softScore);
     }
 
@@ -193,7 +172,7 @@ public final class HardSoftLongScore extends AbstractScore<HardSoftLongScore>
 
     @Override
     public Number[] toLevelNumbers() {
-        return new Number[]{hardScore, softScore};
+        return new Number[] { hardScore, softScore };
     }
 
     @Override
@@ -234,11 +213,6 @@ public final class HardSoftLongScore extends AbstractScore<HardSoftLongScore>
     @Override
     public String toString() {
         return getInitPrefix() + hardScore + HARD_LABEL + "/" + softScore + SOFT_LABEL;
-    }
-
-    @Override
-    public boolean isCompatibleArithmeticArgument(Score otherScore) {
-        return otherScore instanceof HardSoftLongScore;
     }
 
 }

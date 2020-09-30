@@ -173,8 +173,8 @@ When two scores are compared, each of the score constraints are compared individ
 Pareto scoring can even be combined with score levels and score constraint weighting.
 
 Consider this example with positive constraints, where we want to get the most apples and oranges.
-Since it is impossible to compare apples and oranges, we can not weigh them against each other.
-Yet, despite that we can not compare them, we can state that two apples are better than one apple.
+Since it is impossible to compare apples and oranges, we cannot weigh them against each other.
+Yet, despite that we cannot compare them, we can state that two apples are better than one apple.
 Similarly, we can state that two apples and one orange are better than just one orange.
 So despite our inability to compare some Scores conclusively (at which point we declare them equal), we can find a set of optimal scores.
 Those are called pareto optimal.
@@ -223,7 +223,7 @@ Most use cases tend to use the built-in ``HardSoftScore``.
 
 image::ScoreCalculation/scoreClassDiagram.png[align="center"]
 
-All Score implementations also have an `initScore` (which is an ``int``). It is mostly intended for internal use in OptaPlanner: it is the negative number of uninitialized planning variables.
+All Score implementations also have an `initScore` (which is an ``int``).It is mostly intended for internal use in OptaPlanner: it is the negative number of uninitialized planning variables.
 From a user's perspective this is ``0``, unless a Construction Heuristic is terminated before it could initialize all planning variables (in which case `Score.isSolutionInitialized()` returns ``false``).
 
 The `Score` implementation (for example ``HardSoftScore``) must be the same throughout a `Solver` runtime.
@@ -240,7 +240,6 @@ public class CloudBalance {
 
 }
 ----
-
 
 [[avoidFloatingPointNumbersInScoreCalculation]]
 === Avoid floating point numbers in score calculation
@@ -304,7 +303,6 @@ It has a single score level.
 Variants of this `Score` type:
 
 * `SimpleLongScore` uses a `long` value instead of an `int` value.
-* `SimpleDoubleScore` uses a `double` value instead of an `int` value. <<avoidFloatingPointNumbersInScoreCalculation,Not recommended to use.>>
 * `SimpleBigDecimalScore` uses a `BigDecimal` value instead of an `int` value.
 
 
@@ -323,7 +321,6 @@ It has two score levels (hard and soft).
 Variants of this `Score` type:
 
 * `HardSoftLongScore` uses `long` values instead of `int` values.
-* `HardSoftDoubleScore` uses `double` values instead of `int` values. <<avoidFloatingPointNumbersInScoreCalculation,Not recommended to use.>>
 * `HardSoftBigDecimalScore` uses `BigDecimal` values instead of `int` values.
 
 
@@ -513,7 +510,7 @@ add the `easyScoreCalculatorCustomProperties` element and use <<customProperties
   <scoreDirectorFactory>
     <easyScoreCalculatorClass>...MyEasyScoreCalculator</easyScoreCalculatorClass>
     <easyScoreCalculatorCustomProperties>
-      <myCacheSize>1000</myCacheSize>
+      <property name="myCacheSize" value="1000" />
     </easyScoreCalculatorCustomProperties>
   </scoreDirectorFactory>
 ----
@@ -681,7 +678,7 @@ add the `incrementalScoreCalculatorCustomProperties` element and use <<customPro
   <scoreDirectorFactory>
     <incrementalScoreCalculatorClass>...MyIncrementalScoreCalculator</incrementalScoreCalculatorClass>
     <incrementalScoreCalculatorCustomProperties>
-      <myCacheSize>1000</myCacheSize>
+      <property name="myCacheSize" value="1000"/>
     </incrementalScoreCalculatorCustomProperties>
   </scoreDirectorFactory>
 ----
@@ -692,29 +689,28 @@ add the `incrementalScoreCalculatorCustomProperties` element and use <<customPro
 
 Optionally, also implement the `ConstraintMatchAwareIncrementalScoreCalculator` interface to:
 
-* Explain a score by splitting it up per score constraint with `ScoreDirector.getConstraintMatchTotals()`.
-* Visualize or sort planning entities by how many constraints each one breaks with `ScoreDirector.getIndictmentMap()`.
+* Explain a score by splitting it up per score constraint with `ScoreExplanation.getConstraintMatchTotalMap()`.
+* Visualize or sort planning entities by how many constraints each one breaks with `ScoreExplanation.getIndictmentMap()`.
 * Receive a detailed analysis if the `IncrementalScoreCalculator` is corrupted in `FAST_ASSERT` or `FULL_ASSERT` `environmentMode`,
 
 [source,java,options="nowrap"]
 ----
-public interface ConstraintMatchAwareIncrementalScoreCalculator<Solution_> {
+public interface ConstraintMatchAwareIncrementalScoreCalculator<Solution_, Score_ extends Score<Score_>> {
 
     void resetWorkingSolution(Solution_ workingSolution, boolean constraintMatchEnabled);
 
-    Collection<ConstraintMatchTotal> getConstraintMatchTotals();
+    Collection<ConstraintMatchTotal<Score_>> getConstraintMatchTotals();
 
-    Map<Object, Indictment> getIndictmentMap();
+    Map<Object, Indictment<Score_>> getIndictmentMap();
 }
 ----
 
-For example in machine reassignment, create one ConstraintMatchTotal per constraint type
-and call `addConstraintMatch()` for each constraint match:
+For example in machine reassignment, create one `ConstraintMatchTotal` per constraint type and call `addConstraintMatch()` for each constraint match:
 
 [source,java,options="nowrap"]
 ----
 public class MachineReassignmentIncrementalScoreCalculator
-        implements ConstraintMatchAwareIncrementalScoreCalculator<MachineReassignment> {
+        implements ConstraintMatchAwareIncrementalScoreCalculator<MachineReassignment, HardSoftLongScore> {
     ...
 
     @Override
@@ -724,9 +720,9 @@ public class MachineReassignmentIncrementalScoreCalculator
     }
 
     @Override
-    public Collection<ConstraintMatchTotal> getConstraintMatchTotals() {
-        ConstraintMatchTotal maximumCapacityMatchTotal = new ConstraintMatchTotal(
-                CONSTRAINT_PACKAGE, "maximumCapacity", HardSoftLongScore.ZERO);
+    public Collection<ConstraintMatchTotal<HardSoftLongScore>> getConstraintMatchTotals() {
+        ConstraintMatchTotal<HardSoftLongScore> maximumCapacityMatchTotal = new DefaultConstraintMatchTotal<>(CONSTRAINT_PACKAGE,
+            "maximumCapacity", HardSoftLongScore.ZERO);
         ...
         for (MrMachineScorePart machineScorePart : machineScorePartMap.values()) {
             for (MrMachineCapacityScorePart machineCapacityScorePart : machineScorePart.machineCapacityScorePartList) {
@@ -738,21 +734,21 @@ public class MachineReassignmentIncrementalScoreCalculator
             }
         }
         ...
-        List<ConstraintMatchTotal> constraintMatchTotalList = new ArrayList<>(4);
+        List<ConstraintMatchTotal<HardSoftLongScore>> constraintMatchTotalList = new ArrayList<>(4);
         constraintMatchTotalList.add(maximumCapacityMatchTotal);
         ...
         return constraintMatchTotalList;
     }
 
     @Override
-    public Map<Object, Indictment> getIndictmentMap() {
+    public Map<Object, Indictment<HardSoftLongScore>> getIndictmentMap() {
         return null; // Calculate it non-incrementally from getConstraintMatchTotals()
     }
 }
 ----
 
 That `getConstraintMatchTotals()` code often duplicates some of the logic of the normal `IncrementalScoreCalculator` methods.
-Drools Score Calculation doesn't have this disadvantage, because it is constraint match aware automatically when needed,
+Constraint Streams and Drools Score Calculation don't have this disadvantage, because they are constraint match aware automatically when needed,
 without any extra domain-specific code.
 
 
@@ -766,10 +762,10 @@ For the Score (or each <<scoreLevel,score level>> separately), specify a trend:
 * `ANY` (default): Initializing an extra variable can change the score positively or negatively. Gives no performance gain.
 * `ONLY_UP` (rare): Initializing an extra variable can only change the score positively. Implies that:
 ** There are only positive constraints
-** And initializing the next variable can not unmatch a positive constraint that was matched by a previous initialized variable.
+** And initializing the next variable cannot unmatch a positive constraint that was matched by a previous initialized variable.
 * ``ONLY_DOWN``: Initializing an extra variable can only change the score negatively. Implies that:
 ** There are only negative constraints
-** And initializing the next variable can not unmatch a negative constraint that was matched by a previous initialized variable.
+** And initializing the next variable cannot unmatch a negative constraint that was matched by a previous initialized variable.
 
 Most use cases only have negative constraints.
 Many of those have an `InitializingScoreTrend` that only goes down:
@@ -777,7 +773,7 @@ Many of those have an `InitializingScoreTrend` that only goes down:
 [source,xml,options="nowrap"]
 ----
   <scoreDirectorFactory>
-    <scoreDrl>.../cloudBalancingScoreRules.drl</scoreDrl>
+    <scoreDrl>.../cloudBalancingConstraints.drl</scoreDrl>
     <initializingScoreTrend>ONLY_DOWN</initializingScoreTrend>
   </scoreDirectorFactory>
 ----
@@ -787,7 +783,7 @@ Alternatively, you can also specify the trend for each score level separately:
 [source,xml,options="nowrap"]
 ----
   <scoreDirectorFactory>
-    <scoreDrl>.../cloudBalancingScoreRules.drl</scoreDrl>
+    <scoreDrl>.../cloudBalancingConstraints.drl</scoreDrl>
     <initializingScoreTrend>ONLY_DOWN/ONLY_DOWN</initializingScoreTrend>
   </scoreDirectorFactory>
 ----
@@ -799,28 +795,28 @@ Alternatively, you can also specify the trend for each score level separately:
 When you put the <<environmentMode,`environmentMode`>> in `FULL_ASSERT` (or ``FAST_ASSERT``),
 it will detect score corruption in the <<incrementalScoreCalculation,incremental score calculation>>.
 However, that will not verify that your score calculator actually implements your score constraints as your business desires.
-For example, one score rule might consistently match the wrong pattern.
-To verify the score rules against an independent implementation, configure a ``assertionScoreDirectorFactory``:
+For example, one constraint might consistently match the wrong pattern.
+To verify the constraints against an independent implementation, configure a ``assertionScoreDirectorFactory``:
 
 [source,xml,options="nowrap"]
 ----
   <environmentMode>FAST_ASSERT</environmentMode>
   ...
   <scoreDirectorFactory>
-    <scoreDrl>org/optaplanner/examples/nqueens/solver/nQueensScoreRules.drl</scoreDrl>
+    <constraintProviderClass>org.optaplanner.examples.nqueens.solver.score.NQueensConstraintProvider</constraintProviderClass>
     <assertionScoreDirectorFactory>
       <easyScoreCalculatorClass>org.optaplanner.examples.nqueens.solver.score.NQueensEasyScoreCalculator</easyScoreCalculatorClass>
     </assertionScoreDirectorFactory>
   </scoreDirectorFactory>
 ----
 
-This way, the `scoreDrl` will be validated by the ``EasyScoreCalculator``.
+This way, the `NQueensConstraintProvider` implementation is validated by the ``EasyScoreCalculator``.
 
 [NOTE]
 ====
 This works well to isolate score corruption,
-but to verify that the score rules implement the real business needs,
-<<testingScoreConstraints, a unit test with a ScoreVerifier>> is usually better.
+but to verify that the constraint implement the real business needs,
+<<constraintStreamsTesting, a unit test with a ConstraintVerifier>> is usually better.
 ====
 
 
@@ -1008,27 +1004,27 @@ image::ScoreCalculation/fairnessScoreConstraintPitfall.png[align="center"]
 
 [NOTE]
 ====
-Instead of the __squared workload__, it is also possible to use the https://en.wikipedia.org/wiki/Variance[variance] (squared difference to the average) or the http://en.wikipedia.org/wiki/Standard_deviation[standard deviation] (square root of the variance). This has no effect on the score comparison, because the average will not change during planning.
+Instead of the __squared workload__, it is also possible to use the https://en.wikipedia.org/wiki/Variance[variance]
+(squared difference to the average) or the http://en.wikipedia.org/wiki/Standard_deviation[standard deviation]
+(square root of the variance).
+This has no effect on the score comparison, because the average will not change during planning.
 It is just more work to implement (because the average needs to be known) and trivially slower (because the calculation is a bit longer).
 ====
 
-When the workload is perfectly balanced, the user often likes to see a `0` score, instead of the distracting `-34soft` in the image above (for the last solution which is almost perfectly balanced). To nullify this, either add the average multiplied by the number of entities to the score or instead show the variance or standard deviation in the UI.
-
+When the workload is perfectly balanced, the user often likes to see a `0` score, instead of the distracting `-34soft` in the image above (for the last solution which is almost perfectly balanced).
+To nullify this, either add the average multiplied by the number of entities to the score or instead show the variance or standard deviation in the UI.
 
 [[constraintConfiguration]]
 == Constraint configuration: adjust constraint weights dynamically
 
-Deciding the correct <<scoreConstraintWeight,weight>> and <<scoreLevel,level>> for each constraint
-is not easy. It often involves negotiating with different stakeholders and their priorities.
-Furthermore, quantifying the impact of soft constraints is often a new experience for business managers,
-so they 'll need a number of iterations to get it right.
+Deciding the correct <<scoreConstraintWeight,weight>> and <<scoreLevel,level>> for each constraint is not easy.
+It often involves negotiating with different stakeholders and their priorities.
+Furthermore, quantifying the impact of soft constraints is often a new experience for business managers, so they 'll need a number of iterations to get it right.
 
 Don't get stuck between a rock and a hard place.
-Provide a UI to adjust the constraint weights and visualize the resulting solution,
-so the business managers can tweak the constraint weights themselves:
+Provide a UI to adjust the constraint weights and visualize the resulting solution, so the business managers can tweak the constraint weights themselves:
 
 image::ScoreCalculation/parameterizeTheScoreWeights.png[align="center"]
-
 
 [[createAConstraintConfiguration]]
 === Create a constraint configuration
@@ -1183,20 +1179,17 @@ end
 So when 2 overlapping talks share only 1 content tag, the score is impacted by `-100soft`.
 But when 2 overlapping talks share 3 content tags, the match weight is `3`, so the score is impacted by `-300soft`.
 
-
 [[explainingTheScore]]
 == Explaining the score: which constraints are broken?
 
-The easiest way to explain the score during development is to print the return value of `explainBestScore()`,
-but only use that method for diagnostic purposes:
+The easiest way to explain the score during development is to print the return value of `explainScore()`, but only use that method for diagnostic purposes:
 
 [source,java,options="nowrap"]
 ----
-System.out.println(solver.explainBestScore());
+System.out.println(scoreManager.explainScore(solution));
 ----
 
-For example in conference scheduling, this prints that talk `S51` is responsible
-for breaking the hard constraint `Speaker required room tag`:
+For example in conference scheduling, this prints that talk `S51` is responsible for breaking the hard constraint `Speaker required room tag`:
 
 ----
 Explanation of score (-1hard/-806soft):
@@ -1225,197 +1218,93 @@ Instead use the ConstraintMatch API below and do it properly.
 [[usingScoreCalculationOutsideTheSolver]]
 === Using score calculation outside the `Solver`
 
-If other parts of your application, for example your webUI, need to calculate the score of a solution,
-reuse the `ScoreDirectorFactory` of the `SolverFactory` to build a separate `ScoreDirector` for that webUI:
+If other parts of your application, for example your webUI, need to calculate the score of a solution, use the `ScoreManager` API:
 
 [source,java,options="nowrap"]
 ----
-ScoreDirectorFactory<CloudBalance> scoreDirectorFactory = solverFactory.getScoreDirectorFactory();
-try (ScoreDirector<CloudBalance> guiScoreDirector = scoreDirectorFactory.buildScoreDirector()) {
-    ...
-}
+ScoreManager<CloudBalance, HardSoftScore> scoreManager = ScoreManager.create(solverFactory);
+ScoreExplanation<CloudBalance, HardSoftScore> scoreExplanation = scoreManager.explain(cloudBalance);
 ----
-
-[NOTE]
-====
-The `try` ARM will call `ScoreDirector.close()` when the `ScoreDirector` becomes useless,
-to avoid a memory leak, especially with <<droolsScoreCalculation,Drools score calculation>>.
-====
 
 Then use it when you need to calculate the `Score` of a solution:
 
 [source,java,options="nowrap"]
 ----
-guiScoreDirector.setWorkingSolution(cloudBalance);
-Score score = guiScoreDirector.calculateScore();
+HardSoftScore score = scoreExplanation.getScore();
 ----
 
-Furthermore, the `ScoreDirector` can explain the score through constraint match totals and/or indictments:
+Furthermore, the `ScoreExplanation` can help explain the score through constraint match totals and/or indictments:
 
 image::ScoreCalculation/scoreVisualization.png[align="center"]
-
 
 [[constraintMatchTotal]]
 === Constraint match total: break down the score by constraint
 
-To break down the score per constraint (so per score rule with Drools score calculation),
-get the ``ConstraintMatchTotal``s from the ``ScoreDirector``:
+To break down the score per constraint, get the ``ConstraintMatchTotal``s from the ``ScoreExplanation``:
 
 [source,java,options="nowrap"]
 ----
-Collection<ConstraintMatchTotal> constraintMatchTotals = guiScoreDirector.getConstraintMatchTotals();
-for (ConstraintMatchTotal constraintMatchTotal : constraintMatchTotals) {
+Collection<ConstraintMatchTotal<HardSoftScore>> constraintMatchTotals = scoreExplanation.getConstraintMatchTotalMap().values();
+for (ConstraintMatchTotal<HardSoftScore> constraintMatchTotal : constraintMatchTotals) {
     String constraintName = constraintMatchTotal.getConstraintName();
     // The score impact of that constraint
-    HardSoftScore totalScore = (HardSoftScore) constraintMatchTotal.getScore();
+    HardSoftScore totalScore = constraintMatchTotal.getScore();
 
-    for (ConstraintMatch constraintMatch : constraintMatchTotal.getConstraintMatchSet()) {
+    for (ConstraintMatch<HardSoftScore> constraintMatch : constraintMatchTotal.getConstraintMatchSet()) {
         List<Object> justificationList = constraintMatch.getJustificationList();
-        HardSoftScore score = (HardSoftScore) constraintMatch.getScore();
+        HardSoftScore score = constraintMatch.getScore();
         ...
     }
 }
 ----
 
-Each `ConstraintMatchTotal` represents one constraint (so one score rule) and has a part of the overall score.
+Each `ConstraintMatchTotal` represents one constraint and has a part of the overall score.
 The sum of all the `ConstraintMatchTotal.getScore()` equals the overall score.
 
 [NOTE]
 ====
-<<droolsScoreCalculation,Drools score calculation>> supports constraint matches automatically,
-but <<incrementalJavaScoreCalculation,incremental Java score calculation>> requires
+<<constraintStreams,Constraint streams>> and <<droolsScoreCalculation,Drools score calculation>> supports constraint matches automatically, but <<incrementalJavaScoreCalculation,incremental Java score calculation>> requires
 <<constraintMatchAwareIncrementalScoreCalculator,implementing an extra interface>>.
 ====
-
 
 [[indictmentHeatMap]]
 === Indictment heat map: visualize the hot planning entities
 
-To show a heat map in the UI that highlights the planning entities and problem facts have an impact on the ``Score``,
-get the `Indictment` map from the ``ScoreDirector``:
+To show a heat map in the UI that highlights the planning entities and problem facts have an impact on the ``Score``, get the `Indictment` map from the ``ScoreExplanation``:
 
 [source,java,options="nowrap"]
 ----
-Map<Object, Indictment> indictmentMap = guiScoreDirector.getIndictmentMap();
+Map<Object, Indictment<HardSoftScore>> indictmentMap = scoreExplanation.getIndictmentMap();
 for (CloudProcess process : cloudBalance.getProcessList()) {
-    Indictment indictment = indictmentMap.get(process);
+    Indictment<HardSoftScore> indictment = indictmentMap.get(process);
     if (indictment == null) {
         continue;
     }
     // The score impact of that planning entity
-    HardSoftScore totalScore = (HardSoftScore) indictment.getScore();
+    HardSoftScore totalScore = indictment.getScore();
 
-    for (ConstraintMatch constraintMatch : indictment.getConstraintMatchSet()) {
+    for (ConstraintMatch<HardSoftScore> constraintMatch : indictment.getConstraintMatchSet()) {
         String constraintName = constraintMatch.getConstraintName();
-        HardSoftScore score = (HardSoftScore) constraintMatch.getScore();
+        HardSoftScore score = constraintMatch.getScore();
         ...
     }
 }
 ----
 
 Each `Indictment` is the sum of all constraints where that justification object is involved with.
-The sum of all the `Indictment.getScoreTotal()` differs from the overall score,
-because multiple ``Indictment``s can share the same `ConstraintMatch`.
+The sum of all the `Indictment.getScoreTotal()` differs from the overall score, because multiple ``Indictment``s can share the same `ConstraintMatch`.
 
 [NOTE]
 ====
-<<droolsScoreCalculation,Drools score calculation>> supports constraint matches automatically,
-but <<incrementalJavaScoreCalculation,incremental Java score calculation>> requires
+<<constraintStreams,Constraint streams>> and <<droolsScoreCalculation,Drools score calculation>> supports constraint matches automatically, but <<incrementalJavaScoreCalculation,incremental Java score calculation>> requires
 <<constraintMatchAwareIncrementalScoreCalculator,implementing an extra interface>>.
 ====
 
 
 [[testingScoreConstraints]]
-== Testing score constraints with JUnit
+== Testing score constraints
 
 It's recommended to write a unit test for each score constraint individually to check that it behaves correctly.
-
-Add a test scoped dependency to the `optaplanner-test` jar to take advantage of the JUnit integration
-and use the `ScoreVerifier` classes to test score rules in DRL (or a constraint match aware incremental score calculator).
-For example, suppose we want to test these score rules:
-
-[source,options="nowrap"]
-----
-global HardSoftScoreHolder scoreHolder;
-
-rule "requiredCpuPowerTotal"
-    when
-        ...
-    then
-        scoreHolder.addHardConstraintMatch(...);
-end
-
-...
-
-rule "computerCost"
-    when
-        ...
-    then
-        scoreHolder.addSoftConstraintMatch(...);
-end
-----
-
-For each score rule, we have a separate `@Test` that only tests the effect of that score rule on the score:
-
-[source,java,options="nowrap"]
-----
-public class CloudBalancingScoreConstraintTest {
-
-    private HardSoftScoreVerifier<CloudBalance> scoreVerifier = new HardSoftScoreVerifier<>(
-            SolverFactory.createFromXmlResource(
-                    "org/optaplanner/examples/cloudbalancing/solver/cloudBalancingSolverConfig.xml"));
-
-    @Test
-    public void requiredCpuPowerTotal() {
-        CloudComputer c1 = new CloudComputer(1L, 1000, 1, 1, 1);
-        CloudComputer c2 = new CloudComputer(2L, 200, 1, 1, 1);
-        CloudProcess p1 = new CloudProcess(1L, 700, 0, 0);
-        CloudProcess p2 = new CloudProcess(2L, 70, 0, 0);
-        CloudBalance solution = new CloudBalance(0L,
-                Arrays.asList(c1, c2),
-                Arrays.asList(p1, p2));
-        // Uninitialized
-        scoreVerifier.assertHardWeight("requiredCpuPowerTotal", 0, solution);
-        p1.setComputer(c1);
-        p2.setComputer(c1);
-        // Usage 700 + 70 is within capacity 1000 of c1
-        scoreVerifier.assertHardWeight("requiredCpuPowerTotal", 0, solution);
-        p1.setComputer(c2);
-        p2.setComputer(c2);
-        // Usage 700 + 70 is above capacity 200 of c2
-        scoreVerifier.assertHardWeight("requiredCpuPowerTotal", -570, solution);
-    }
-
-    ...
-
-    @Test
-    public void computerCost() {
-        CloudComputer c1 = new CloudComputer(1L, 1, 1, 1, 200);
-        CloudComputer c2 = new CloudComputer(2L, 1, 1, 1, 30);
-        CloudProcess p1 = new CloudProcess(1L, 0, 0, 0);
-        CloudProcess p2 = new CloudProcess(2L, 0, 0, 0);
-        CloudBalance solution = new CloudBalance(0L,
-                Arrays.asList(c1, c2),
-                Arrays.asList(p1, p2));
-        // Uninitialized
-        scoreVerifier.assertSoftWeight("computerCost", 0, solution);
-        p1.setComputer(c1);
-        p2.setComputer(c1);
-        // Pay 200 for c1
-        scoreVerifier.assertSoftWeight("computerCost", -200, solution);
-        p2.setComputer(c2);
-        // Pay 200 + 30 for c1 and c2
-        scoreVerifier.assertSoftWeight("computerCost", -230, solution);
-    }
-
-}
-----
-
-There is a `ScoreVerifier` implementation for each `Score` implementation.
-In the `assertHardWeight()` and `assertSoftWeight()` methods, the weight of the other score rules is ignored (even those of the same score level).
-
-[NOTE]
-====
-A ScoreVerifier does not work well to isolate score corruption,
-use <<invalidScoreDetection, an `assertionScoreDirectorFactory`>> instead.
-====
+Different score calculation types come with different tools for testing.
+For more, see <<constraintStreamsTesting,testing constraint streams>> or
+<<testingDroolsConstraints,testing Drools constraints>>.

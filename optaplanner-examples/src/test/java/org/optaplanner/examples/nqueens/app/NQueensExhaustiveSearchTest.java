@@ -1,5 +1,5 @@
 /*
- * Copyright 2014 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,31 +16,29 @@
 
 package org.optaplanner.examples.nqueens.app;
 
-import java.io.File;
-import java.util.Collection;
+import static org.assertj.core.api.Assertions.assertThat;
 
-import org.junit.runners.Parameterized;
-import org.optaplanner.core.config.exhaustivesearch.ExhaustiveSearchType;
+import java.util.stream.Stream;
+
 import org.optaplanner.examples.common.app.AbstractExhaustiveSearchTest;
+import org.optaplanner.examples.common.app.CommonApp;
 import org.optaplanner.examples.nqueens.domain.NQueens;
-
-import static org.junit.Assert.*;
 
 public class NQueensExhaustiveSearchTest extends AbstractExhaustiveSearchTest<NQueens> {
 
-    @Parameterized.Parameters(name = "{index}: {0} - {1}")
-    public static Collection<Object[]> getSolutionFilesAsParameters() {
-        return buildParameters(new NQueensApp(), "4queens.xml");
+    @Override
+    protected CommonApp<NQueens> createCommonApp() {
+        return new NQueensApp();
     }
 
-    public NQueensExhaustiveSearchTest(File unsolvedDataFile, ExhaustiveSearchType exhaustiveSearchType) {
-        super(new NQueensApp(), unsolvedDataFile, exhaustiveSearchType);
+    @Override
+    protected Stream<String> unsolvedFileNames() {
+        return Stream.of("4queens.xml");
     }
 
     @Override
     protected void assertSolution(NQueens bestSolution) {
         super.assertSolution(bestSolution);
-        assertEquals(0, ((NQueens) bestSolution).getScore().getScore());
+        assertThat(bestSolution.getScore().getScore()).isEqualTo(0);
     }
-
 }

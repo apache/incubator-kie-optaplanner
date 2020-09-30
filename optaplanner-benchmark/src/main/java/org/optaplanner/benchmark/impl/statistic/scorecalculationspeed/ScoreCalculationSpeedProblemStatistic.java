@@ -23,7 +23,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 
-import com.thoughtworks.xstream.annotations.XStreamAlias;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.axis.NumberAxis;
 import org.jfree.chart.plot.PlotOrientation;
@@ -41,7 +40,6 @@ import org.optaplanner.benchmark.impl.statistic.ProblemStatistic;
 import org.optaplanner.benchmark.impl.statistic.SubSingleStatistic;
 import org.optaplanner.benchmark.impl.statistic.common.MillisecondsSpentNumberFormat;
 
-@XStreamAlias("scoreCalculationSpeedProblemStatistic")
 public class ScoreCalculationSpeedProblemStatistic extends ProblemStatistic {
 
     protected File graphFile = null;
@@ -82,8 +80,9 @@ public class ScoreCalculationSpeedProblemStatistic extends ProblemStatistic {
             XYSeries series = new XYSeries(singleBenchmarkResult.getSolverBenchmarkResult().getNameWithFavoriteSuffix());
             XYItemRenderer renderer = new XYLineAndShapeRenderer();
             if (singleBenchmarkResult.hasAllSuccess()) {
-                ScoreCalculationSpeedSubSingleStatistic subSingleStatistic = (ScoreCalculationSpeedSubSingleStatistic)
-                        singleBenchmarkResult.getSubSingleStatistic(problemStatisticType);
+                ScoreCalculationSpeedSubSingleStatistic subSingleStatistic =
+                        (ScoreCalculationSpeedSubSingleStatistic) singleBenchmarkResult
+                                .getSubSingleStatistic(problemStatisticType);
                 List<ScoreCalculationSpeedStatisticPoint> points = subSingleStatistic.getPointList();
                 for (ScoreCalculationSpeedStatisticPoint point : points) {
                     long timeMillisSpent = point.getTimeMillisSpent();

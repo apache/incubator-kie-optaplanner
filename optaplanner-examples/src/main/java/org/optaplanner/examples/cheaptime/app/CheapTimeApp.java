@@ -19,17 +19,16 @@ package org.optaplanner.examples.cheaptime.app;
 import org.optaplanner.examples.cheaptime.domain.CheapTimeSolution;
 import org.optaplanner.examples.cheaptime.persistence.CheapTimeExporter;
 import org.optaplanner.examples.cheaptime.persistence.CheapTimeImporter;
+import org.optaplanner.examples.cheaptime.persistence.CheapTimeXmlSolutionFileIO;
 import org.optaplanner.examples.cheaptime.swingui.CheapTimePanel;
 import org.optaplanner.examples.common.app.CommonApp;
 import org.optaplanner.examples.common.persistence.AbstractSolutionExporter;
 import org.optaplanner.examples.common.persistence.AbstractSolutionImporter;
 import org.optaplanner.persistence.common.api.domain.solution.SolutionFileIO;
-import org.optaplanner.persistence.xstream.impl.domain.solution.XStreamSolutionFileIO;
 
 public class CheapTimeApp extends CommonApp<CheapTimeSolution> {
 
-    public static final String SOLVER_CONFIG
-            = "org/optaplanner/examples/cheaptime/solver/cheapTimeSolverConfig.xml";
+    public static final String SOLVER_CONFIG = "org/optaplanner/examples/cheaptime/solver/cheapTimeSolverConfig.xml";
 
     public static final String DATA_DIR_NAME = "cheaptime";
 
@@ -41,10 +40,10 @@ public class CheapTimeApp extends CommonApp<CheapTimeSolution> {
     public CheapTimeApp() {
         super("Cheap time scheduling",
                 "Official competition name: ICON Challenge on Forecasting and Scheduling\n\n" +
-                "Assign tasks to machines and time.\n\n" +
-                "Each machine must have enough hardware to run all of its tasks.\n" +
-                "Each task and machine consumes power. The power price differs over time.\n" +
-                "Minimize the power cost.",
+                        "Assign tasks to machines and time.\n\n" +
+                        "Each machine must have enough hardware to run all of its tasks.\n" +
+                        "Each task and machine consumes power. The power price differs over time.\n" +
+                        "Minimize the power cost.",
                 SOLVER_CONFIG, DATA_DIR_NAME,
                 CheapTimePanel.LOGO_PATH);
     }
@@ -56,12 +55,12 @@ public class CheapTimeApp extends CommonApp<CheapTimeSolution> {
 
     @Override
     public SolutionFileIO<CheapTimeSolution> createSolutionFileIO() {
-        return new XStreamSolutionFileIO<>(CheapTimeSolution.class);
+        return new CheapTimeXmlSolutionFileIO();
     }
 
     @Override
     protected AbstractSolutionImporter[] createSolutionImporters() {
-        return new AbstractSolutionImporter[]{
+        return new AbstractSolutionImporter[] {
                 new CheapTimeImporter()
         };
     }

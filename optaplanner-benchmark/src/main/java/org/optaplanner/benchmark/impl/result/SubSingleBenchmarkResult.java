@@ -1,11 +1,11 @@
 /*
- * Copyright 2015 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *       http://www.apache.org/licenses/LICENSE-2.0
+ *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -22,15 +22,19 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.thoughtworks.xstream.annotations.XStreamAlias;
-import com.thoughtworks.xstream.annotations.XStreamImplicit;
-import com.thoughtworks.xstream.annotations.XStreamOmitField;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlElements;
+import javax.xml.bind.annotation.XmlTransient;
+
 import org.optaplanner.benchmark.impl.report.BenchmarkReport;
 import org.optaplanner.benchmark.impl.statistic.ProblemStatistic;
 import org.optaplanner.benchmark.impl.statistic.PureSubSingleStatistic;
 import org.optaplanner.benchmark.impl.statistic.StatisticType;
 import org.optaplanner.benchmark.impl.statistic.SubSingleStatistic;
-import org.optaplanner.core.api.score.FeasibilityScore;
+import org.optaplanner.benchmark.impl.statistic.subsingle.constraintmatchtotalbestscore.ConstraintMatchTotalBestScoreSubSingleStatistic;
+import org.optaplanner.benchmark.impl.statistic.subsingle.constraintmatchtotalstepscore.ConstraintMatchTotalStepScoreSubSingleStatistic;
+import org.optaplanner.benchmark.impl.statistic.subsingle.pickedmovetypebestscore.PickedMoveTypeBestScoreDiffSubSingleStatistic;
+import org.optaplanner.benchmark.impl.statistic.subsingle.pickedmovetypestepscore.PickedMoveTypeStepScoreDiffSubSingleStatistic;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.solver.Solver;
 import org.slf4j.Logger;
@@ -40,19 +44,27 @@ import org.slf4j.LoggerFactory;
  * Represents 1 benchmark run for 1 Single Benchmark configuration for 1 {@link Solver} configuration for 1 problem
  * instance (data set).
  */
-@XStreamAlias("subSingleBenchmarkResult")
 public class SubSingleBenchmarkResult implements BenchmarkResult {
 
     private static final Logger logger = LoggerFactory.getLogger(SubSingleBenchmarkResult.class);
 
-    @XStreamOmitField // Bi-directional relationship restored through BenchmarkResultIO
+    @XmlTransient // Bi-directional relationship restored through BenchmarkResultIO
     private SingleBenchmarkResult singleBenchmarkResult;
-    private final int subSingleBenchmarkIndex;
+    private int subSingleBenchmarkIndex;
 
-    @XStreamImplicit(itemFieldName = "pureSubSingleStatistic")
+    @XmlElements({
+            @XmlElement(name = "constraintMatchTotalBestScoreSubSingleStatistic",
+                    type = ConstraintMatchTotalBestScoreSubSingleStatistic.class),
+            @XmlElement(name = "constraintMatchTotalStepScoreSubSingleStatistic",
+                    type = ConstraintMatchTotalStepScoreSubSingleStatistic.class),
+            @XmlElement(name = "pickedMoveTypeBestScoreDiffSubSingleStatistic",
+                    type = PickedMoveTypeBestScoreDiffSubSingleStatistic.class),
+            @XmlElement(name = "pickedMoveTypeStepScoreDiffSubSingleStatistic",
+                    type = PickedMoveTypeStepScoreDiffSubSingleStatistic.class)
+    })
     private List<PureSubSingleStatistic> pureSubSingleStatisticList = null;
 
-    @XStreamOmitField // Lazily restored when read through ProblemStatistic and CSV files
+    @XmlTransient // Lazily restored when read through ProblemStatistic and CSV files
     private Map<StatisticType, SubSingleStatistic> effectiveSubSingleStatisticMap;
 
     private Long usedMemoryAfterInputSolution = null;
@@ -73,6 +85,10 @@ public class SubSingleBenchmarkResult implements BenchmarkResult {
     // Constructors and simple getters/setters
     // ************************************************************************
 
+    private SubSingleBenchmarkResult() {
+        // Required by JAXB
+    }
+
     public SubSingleBenchmarkResult(SingleBenchmarkResult singleBenchmarkResult, int subSingleBenchmarkIndex) {
         this.singleBenchmarkResult = singleBenchmarkResult;
         this.subSingleBenchmarkIndex = subSingleBenchmarkIndex;
@@ -87,7 +103,8 @@ public class SubSingleBenchmarkResult implements BenchmarkResult {
     }
 
     public void initSubSingleStatisticMap() {
-        List<ProblemStatistic> problemStatisticList = singleBenchmarkResult.getProblemBenchmarkResult().getProblemStatisticList();
+        List<ProblemStatistic> problemStatisticList = singleBenchmarkResult.getProblemBenchmarkResult()
+                .getProblemStatisticList();
         effectiveSubSingleStatisticMap = new HashMap<>(
                 problemStatisticList.size() + pureSubSingleStatisticList.size());
         for (ProblemStatistic problemStatistic : problemStatisticList) {
@@ -193,11 +210,7 @@ public class SubSingleBenchmarkResult implements BenchmarkResult {
     }
 
     public boolean isScoreFeasible() {
-        if (score instanceof FeasibilityScore) {
-            return ((FeasibilityScore) score).isFeasible();
-        } else {
-            return true;
-        }
+        return score.isFeasible();
     }
 
     public Long getScoreCalculationSpeed() {
@@ -261,7 +274,8 @@ public class SubSingleBenchmarkResult implements BenchmarkResult {
 
         newResult.initSubSingleStatisticMap();
         for (SubSingleStatistic newSubSingleStatistic : newResult.effectiveSubSingleStatisticMap.values()) {
-            SubSingleStatistic oldSubSingleStatistic = oldResult.getSubSingleStatistic(newSubSingleStatistic.getStatisticType());
+            SubSingleStatistic oldSubSingleStatistic = oldResult
+                    .getSubSingleStatistic(newSubSingleStatistic.getStatisticType());
             if (!oldSubSingleStatistic.getCsvFile().exists()) {
                 if (oldResult.hasAnyFailure()) {
                     newSubSingleStatistic.initPointList();

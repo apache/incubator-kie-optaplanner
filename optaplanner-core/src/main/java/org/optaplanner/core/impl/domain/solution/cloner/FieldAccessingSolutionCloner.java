@@ -80,6 +80,7 @@ public class FieldAccessingSolutionCloner<Solution_> implements SolutionCloner<S
 
     /**
      * This method is thread-safe.
+     *
      * @param clazz never null
      * @param <C> type
      * @return never null
@@ -101,6 +102,7 @@ public class FieldAccessingSolutionCloner<Solution_> implements SolutionCloner<S
 
     /**
      * This method is thread-safe.
+     *
      * @param clazz never null
      * @param <C> type
      * @return never null
@@ -121,6 +123,7 @@ public class FieldAccessingSolutionCloner<Solution_> implements SolutionCloner<S
 
     /**
      * This method is thread-safe.
+     *
      * @param field never null
      * @param fieldInstanceClass never null
      * @param actualValueClass never null
@@ -134,6 +137,9 @@ public class FieldAccessingSolutionCloner<Solution_> implements SolutionCloner<S
     }
 
     private boolean isFieldDeepCloned(Field field, Class<?> fieldInstanceClass) {
+        if (field.getType().isEnum()) {
+            return false;
+        }
         return isFieldAnEntityPropertyOnSolution(field, fieldInstanceClass)
                 || isFieldAnEntityOrSolution(field, fieldInstanceClass)
                 || isFieldADeepCloneProperty(field, fieldInstanceClass);
@@ -205,6 +211,7 @@ public class FieldAccessingSolutionCloner<Solution_> implements SolutionCloner<S
 
     /**
      * This method is thread-safe.
+     *
      * @param actualValueClass never null
      * @return never null
      */
@@ -241,7 +248,7 @@ public class FieldAccessingSolutionCloner<Solution_> implements SolutionCloner<S
             }
             C existingClone = (C) originalToCloneMap.get(original);
             if (existingClone != null) {
-                return  existingClone;
+                return existingClone;
             }
             Class<C> instanceClass = (Class<C>) original.getClass();
             C clone = constructClone(instanceClass);
@@ -416,33 +423,32 @@ public class FieldAccessingSolutionCloner<Solution_> implements SolutionCloner<S
 
         /**
          * Fails fast if {@link #isFieldAnEntityPropertyOnSolution} assumptions were wrong.
+         *
          * @param originalSolution never null
          * @param cloneSolution never null
          */
         protected void validateCloneSolution(Solution_ originalSolution, Solution_ cloneSolution) {
-            for (MemberAccessor memberAccessor
-                    : solutionDescriptor.getEntityMemberAccessorMap().values()) {
+            for (MemberAccessor memberAccessor : solutionDescriptor.getEntityMemberAccessorMap().values()) {
                 Object originalProperty = memberAccessor.executeGetter(originalSolution);
                 if (originalProperty != null) {
                     Object cloneProperty = memberAccessor.executeGetter(cloneSolution);
                     if (originalProperty == cloneProperty) {
                         throw new IllegalStateException(
                                 "The solutionProperty (" + memberAccessor.getName() + ") was not cloned as expected."
-                                + " The " + FieldAccessingSolutionCloner.class.getSimpleName() + " failed to recognize"
-                                + " that property's field, probably because its field name is different.");
+                                        + " The " + FieldAccessingSolutionCloner.class.getSimpleName() + " failed to recognize"
+                                        + " that property's field, probably because its field name is different.");
                     }
                 }
             }
-            for (MemberAccessor memberAccessor
-                    : solutionDescriptor.getEntityCollectionMemberAccessorMap().values()) {
+            for (MemberAccessor memberAccessor : solutionDescriptor.getEntityCollectionMemberAccessorMap().values()) {
                 Object originalProperty = memberAccessor.executeGetter(originalSolution);
                 if (originalProperty != null) {
                     Object cloneProperty = memberAccessor.executeGetter(cloneSolution);
                     if (originalProperty == cloneProperty) {
                         throw new IllegalStateException(
                                 "The solutionProperty (" + memberAccessor.getName() + ") was not cloned as expected."
-                                + " The " + FieldAccessingSolutionCloner.class.getSimpleName() + " failed to recognize"
-                                + " that property's field, probably because its field name is different.");
+                                        + " The " + FieldAccessingSolutionCloner.class.getSimpleName() + " failed to recognize"
+                                        + " that property's field, probably because its field name is different.");
                     }
                 }
             }
@@ -453,7 +459,7 @@ public class FieldAccessingSolutionCloner<Solution_> implements SolutionCloner<S
                 return field.get(bean);
             } catch (IllegalAccessException e) {
                 throw new IllegalStateException("The class (" + bean.getClass() + ") has a field (" + field
-                        + ") which can not be read to create a planning clone.", e);
+                        + ") which cannot be read to create a planning clone.", e);
             }
         }
 
@@ -462,7 +468,7 @@ public class FieldAccessingSolutionCloner<Solution_> implements SolutionCloner<S
                 field.set(bean, value);
             } catch (IllegalAccessException e) {
                 throw new IllegalStateException("The class (" + bean.getClass() + ") has a field (" + field
-                        + ") which can not be written with the value (" + value + ") to create a planning clone.", e);
+                        + ") which cannot be written with the value (" + value + ") to create a planning clone.", e);
             }
         }
 

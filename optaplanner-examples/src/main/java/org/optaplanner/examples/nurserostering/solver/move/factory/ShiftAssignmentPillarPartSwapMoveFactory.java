@@ -1,5 +1,5 @@
 /*
- * Copyright 2010 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,32 +24,32 @@ import java.util.ListIterator;
 import java.util.Map;
 import java.util.NoSuchElementException;
 
+import org.optaplanner.core.api.domain.entity.PinningFilter;
 import org.optaplanner.core.impl.heuristic.move.CompositeMove;
 import org.optaplanner.core.impl.heuristic.move.Move;
 import org.optaplanner.core.impl.heuristic.selector.move.factory.MoveListFactory;
 import org.optaplanner.examples.nurserostering.domain.Employee;
 import org.optaplanner.examples.nurserostering.domain.NurseRoster;
 import org.optaplanner.examples.nurserostering.domain.ShiftAssignment;
-import org.optaplanner.examples.nurserostering.domain.solver.MovableShiftAssignmentSelectionFilter;
+import org.optaplanner.examples.nurserostering.domain.solver.ShiftAssignmentPinningFilter;
 import org.optaplanner.examples.nurserostering.solver.drools.EmployeeWorkSequence;
 import org.optaplanner.examples.nurserostering.solver.move.EmployeeMultipleChangeMove;
 
 public class ShiftAssignmentPillarPartSwapMoveFactory implements MoveListFactory<NurseRoster> {
 
-    private MovableShiftAssignmentSelectionFilter filter = new MovableShiftAssignmentSelectionFilter();
+    private PinningFilter<NurseRoster, ShiftAssignment> filter = new ShiftAssignmentPinningFilter();
 
     @Override
     public List<Move<NurseRoster>> createMoveList(NurseRoster nurseRoster) {
         List<Employee> employeeList = nurseRoster.getEmployeeList();
         // This code assumes the shiftAssignmentList is sorted
-        // Filter out every immovable ShiftAssignment
+        // Filter out every pinned ShiftAssignment
         List<ShiftAssignment> shiftAssignmentList = new ArrayList<>(
                 nurseRoster.getShiftAssignmentList());
-        shiftAssignmentList.removeIf(shiftAssignment -> !filter.accept(nurseRoster, shiftAssignment));
+        shiftAssignmentList.removeIf(shiftAssignment -> filter.accept(nurseRoster, shiftAssignment));
 
         // Hash the assignments per employee
-        Map<Employee, List<AssignmentSequence>> employeeToAssignmentSequenceListMap
-                = new HashMap<>(employeeList.size());
+        Map<Employee, List<AssignmentSequence>> employeeToAssignmentSequenceListMap = new HashMap<>(employeeList.size());
         int assignmentSequenceCapacity = nurseRoster.getShiftDateList().size() + 1 / 2;
         for (Employee employee : employeeList) {
             employeeToAssignmentSequenceListMap.put(employee,
@@ -78,10 +78,9 @@ public class ShiftAssignmentPillarPartSwapMoveFactory implements MoveListFactory
         // For every 2 distinct employees
         for (ListIterator<Employee> leftEmployeeIt = employeeList.listIterator(); leftEmployeeIt.hasNext();) {
             Employee leftEmployee = leftEmployeeIt.next();
-            List<AssignmentSequence> leftAssignmentSequenceList
-                    = employeeToAssignmentSequenceListMap.get(leftEmployee);
-            for (ListIterator<Employee> rightEmployeeIt = employeeList.listIterator(leftEmployeeIt.nextIndex());
-                    rightEmployeeIt.hasNext();) {
+            List<AssignmentSequence> leftAssignmentSequenceList = employeeToAssignmentSequenceListMap.get(leftEmployee);
+            for (ListIterator<Employee> rightEmployeeIt = employeeList.listIterator(leftEmployeeIt.nextIndex()); rightEmployeeIt
+                    .hasNext();) {
                 Employee rightEmployee = rightEmployeeIt.next();
                 List<AssignmentSequence> rightAssignmentSequenceList = employeeToAssignmentSequenceListMap.get(
                         rightEmployee);

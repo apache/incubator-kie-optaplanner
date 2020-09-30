@@ -18,9 +18,10 @@ package org.optaplanner.examples.examination.domain;
 
 import java.util.List;
 
-import com.thoughtworks.xstream.annotations.XStreamAlias;
 import org.optaplanner.core.api.domain.entity.PlanningEntity;
 import org.optaplanner.core.api.domain.variable.PlanningVariable;
+
+import com.thoughtworks.xstream.annotations.XStreamAlias;
 
 @PlanningEntity
 @XStreamAlias("LeadingExam")
@@ -40,13 +41,42 @@ public class LeadingExam extends Exam {
     }
 
     @Override
-    @PlanningVariable(valueRangeProviderRefs = {"periodRange"})
+    @PlanningVariable(valueRangeProviderRefs = { "periodRange" })
     public Period getPeriod() {
         return period;
     }
 
     public void setPeriod(Period period) {
         this.period = period;
+    }
+
+    // ************************************************************************
+    // With methods
+    // ************************************************************************
+
+    public LeadingExam withId(long id) {
+        this.setId(id);
+        return this;
+    }
+
+    public LeadingExam withTopic(Topic topic) {
+        this.setTopic(topic);
+        return this;
+    }
+
+    public LeadingExam withRoom(Room room) {
+        this.setRoom(room);
+        return this;
+    }
+
+    public LeadingExam withPeriod(Period period) {
+        this.setPeriod(period);
+        return this;
+    }
+
+    public LeadingExam withFollowingExamList(List<FollowingExam> followingExamList) {
+        this.setFollowingExamList(followingExamList);
+        return this;
     }
 
     // ************************************************************************

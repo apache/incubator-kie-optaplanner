@@ -6,11 +6,10 @@
   <parent>
     <groupId>org.optaplanner</groupId>
     <artifactId>optaplanner-persistence</artifactId>
-    <version>7.34.0-SNAPSHOT</version>
+    <version>8.0.0-SNAPSHOT</version>
   </parent>
 
   <artifactId>optaplanner-persistence-jpa</artifactId>
-  <packaging>bundle</packaging><!-- bundle = jar + OSGi metadata -->
 
   <name>OptaPlanner persistence JPA</name>
   <description>
@@ -21,6 +20,10 @@
     This module contains the JPA and Hibernate integration.
   </description>
   <url>https://www.optaplanner.org</url>
+
+  <properties>
+    <java.module.name>org.optaplanner.persistence.jpa</java.module.name>
+  </properties>
 
   <dependencies>
     <!-- Internal dependencies -->
@@ -49,6 +52,18 @@
     <dependency>
       <groupId>org.hibernate</groupId>
       <artifactId>hibernate-core</artifactId>
+      <exclusions>
+        <!-- Duplicates classes of jakarta.activation:jakarta.activation-api -->
+        <exclusion>
+          <groupId>javax.activation</groupId>
+          <artifactId>javax.activation-api</artifactId>
+        </exclusion>
+        <!-- Duplicates classes of jakarta.xml.bind:jakarta.xml.bind-api -->
+        <exclusion>
+          <groupId>javax.xml.bind</groupId>
+          <artifactId>jaxb-api</artifactId>
+        </exclusion>
+      </exclusions>
       <!-- Used at compile time by *ScoreHibernateType -->
       <optional>true</optional>
     </dependency>
@@ -59,20 +74,21 @@
       <scope>runtime</scope>
       <optional>true</optional>
     </dependency>
-    <dependency>
-      <groupId>org.jboss.spec.javax.xml.bind</groupId>
-      <artifactId>jboss-jaxb-api_2.3_spec</artifactId>
-    </dependency>
 
-    <!-- Test -->
+    <!-- Testing -->
     <dependency>
-      <groupId>org.hibernate</groupId>
-      <artifactId>hibernate-entitymanager</artifactId>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter-api</artifactId>
       <scope>test</scope>
     </dependency>
     <dependency>
-      <groupId>com.h2database</groupId>
-      <artifactId>h2</artifactId>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter-engine</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.hibernate</groupId>
+      <artifactId>hibernate-entitymanager</artifactId>
       <scope>test</scope>
     </dependency>
     <dependency>
@@ -80,23 +96,66 @@
       <artifactId>narayana-jta</artifactId>
       <scope>test</scope>
     </dependency>
+    <dependency>
+      <groupId>org.assertj</groupId>
+      <artifactId>assertj-core</artifactId>
+      <scope>test</scope>
+    </dependency>
   </dependencies>
 
-  <properties>
-    <java.module.name>org.optaplanner.persistence.jpa</java.module.name>
+  <profiles>
+    <profile>
+      <id>h2</id>
+      <activation>
+        <activeByDefault>true</activeByDefault>
+      </activation>
+      <dependencies>
+        <dependency>
+          <groupId>com.h2database</groupId>
+          <artifactId>h2</artifactId>
+          <scope>test</scope>
+        </dependency>
+      </dependencies>
 
-    <maven.hibernate.dialect>org.hibernate.dialect.H2Dialect</maven.hibernate.dialect>
-    <maven.datasource.classname>org.h2.jdbcx.JdbcDataSource</maven.datasource.classname>
-    <maven.jdbc.driver.class>org.h2.Driver</maven.jdbc.driver.class>
-    <maven.jdbc.db.name/>
-    <maven.jdbc.db.port/>
-    <maven.jdbc.db.server/>
-    <maven.jdbc.driver.jar/>
-    <maven.jdbc.username/>
-    <maven.jdbc.password/>
-    <maven.jdbc.url>jdbc:h2:</maven.jdbc.url>
-    <maven.jdbc.schema>public</maven.jdbc.schema>
-  </properties>
+      <properties>
+        <maven.hibernate.dialect>org.hibernate.dialect.H2Dialect</maven.hibernate.dialect>
+        <maven.datasource.classname>org.h2.jdbcx.JdbcDataSource</maven.datasource.classname>
+        <maven.jdbc.driver.class>org.h2.Driver</maven.jdbc.driver.class>
+        <maven.jdbc.db.name/>
+        <maven.jdbc.db.port/>
+        <maven.jdbc.db.server/>
+        <maven.jdbc.driver.jar/>
+        <maven.jdbc.username/>
+        <maven.jdbc.password/>
+        <maven.jdbc.url>jdbc:h2:</maven.jdbc.url>
+        <maven.jdbc.schema>public</maven.jdbc.schema>
+      </properties>
+    </profile>
+
+    <profile>
+      <id>postgresql</id>
+      <dependencies>
+        <dependency>
+          <groupId>org.postgresql</groupId>
+          <artifactId>postgresql</artifactId>
+          <scope>test</scope>
+        </dependency>
+      </dependencies>
+
+      <properties>
+        <maven.hibernate.dialect>org.hibernate.dialect.PostgreSQL95Dialect</maven.hibernate.dialect>
+        <maven.datasource.classname>org.postgresql.xa.PGXADataSource</maven.datasource.classname>
+        <maven.jdbc.driver.class>org.postgresql.Driver</maven.jdbc.driver.class>
+        <maven.jdbc.db.name>postgres</maven.jdbc.db.name>
+        <maven.jdbc.db.port>5432</maven.jdbc.db.port>
+        <maven.jdbc.db.server/>
+        <maven.jdbc.username>postgres</maven.jdbc.username>
+        <maven.jdbc.password>postgres</maven.jdbc.password>
+        <maven.jdbc.url>jdbc:postgresql://localhost:5432/postgres</maven.jdbc.url>
+        <maven.jdbc.schema>public</maven.jdbc.schema>
+      </properties>
+    </profile>
+  </profiles>
 
   <build>
     <testResources>
@@ -110,18 +169,6 @@
       </testResource>
     </testResources>
     <plugins>
-      <plugin>
-        <groupId>org.apache.felix</groupId>
-        <artifactId>maven-bundle-plugin</artifactId>
-        <extensions>true</extensions>
-        <configuration>
-          <instructions>
-            <Export-Package>
-              org.optaplanner.persistence.jpa.*
-            </Export-Package>
-          </instructions>
-        </configuration>
-      </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-surefire-plugin</artifactId>

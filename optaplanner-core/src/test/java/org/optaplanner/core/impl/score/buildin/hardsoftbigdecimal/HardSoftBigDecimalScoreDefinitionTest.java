@@ -1,5 +1,5 @@
 /*
- * Copyright 2014 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,27 +16,61 @@
 
 package org.optaplanner.core.impl.score.buildin.hardsoftbigdecimal;
 
-import org.junit.Test;
+import static org.assertj.core.api.Assertions.assertThat;
 
-import static org.junit.Assert.*;
+import java.math.BigDecimal;
+
+import org.junit.jupiter.api.Test;
+import org.optaplanner.core.api.score.buildin.hardsoftbigdecimal.HardSoftBigDecimalScore;
 
 public class HardSoftBigDecimalScoreDefinitionTest {
 
     @Test
+    public void getZeroScore() {
+        HardSoftBigDecimalScore score = new HardSoftBigDecimalScoreDefinition().getZeroScore();
+        assertThat(score).isEqualTo(HardSoftBigDecimalScore.ZERO);
+    }
+
+    @Test
+    public void getSoftestOneScore() {
+        HardSoftBigDecimalScore score = new HardSoftBigDecimalScoreDefinition().getOneSoftestScore();
+        assertThat(score).isEqualTo(HardSoftBigDecimalScore.ONE_SOFT);
+    }
+
+    @Test
     public void getLevelsSize() {
-        assertEquals(2, new HardSoftBigDecimalScoreDefinition().getLevelsSize());
+        assertThat(new HardSoftBigDecimalScoreDefinition().getLevelsSize()).isEqualTo(2);
     }
 
     @Test
     public void getLevelLabels() {
-        assertArrayEquals(new String[]{"hard score", "soft score"}, new HardSoftBigDecimalScoreDefinition().getLevelLabels());
+        assertThat(new HardSoftBigDecimalScoreDefinition().getLevelLabels())
+                .isEqualTo(new String[] { "hard score", "soft score" });
     }
 
     @Test
     public void getFeasibleLevelsSize() {
-        assertEquals(1, new HardSoftBigDecimalScoreDefinition().getFeasibleLevelsSize());
+        assertThat(new HardSoftBigDecimalScoreDefinition().getFeasibleLevelsSize()).isEqualTo(1);
     }
 
     // Optimistic and pessimistic bounds are currently not supported for this score definition
+
+    @Test
+    public void divideBySanitizedDivisor() {
+        HardSoftBigDecimalScoreDefinition scoreDefinition = new HardSoftBigDecimalScoreDefinition();
+        HardSoftBigDecimalScore dividend = scoreDefinition.fromLevelNumbers(2,
+                new Number[] { BigDecimal.ZERO, BigDecimal.TEN });
+        HardSoftBigDecimalScore zeroDivisor = scoreDefinition.getZeroScore();
+        assertThat(scoreDefinition.divideBySanitizedDivisor(dividend, zeroDivisor))
+                .isEqualTo(dividend);
+        HardSoftBigDecimalScore oneDivisor = scoreDefinition.getOneSoftestScore();
+        assertThat(scoreDefinition.divideBySanitizedDivisor(dividend, oneDivisor))
+                .isEqualTo(dividend);
+        HardSoftBigDecimalScore tenDivisor = scoreDefinition.fromLevelNumbers(10,
+                new Number[] { BigDecimal.TEN, BigDecimal.TEN });
+        assertThat(scoreDefinition.divideBySanitizedDivisor(dividend, tenDivisor))
+                .isEqualTo(scoreDefinition.fromLevelNumbers(0,
+                        new Number[] { BigDecimal.ZERO, BigDecimal.ONE }));
+    }
 
 }

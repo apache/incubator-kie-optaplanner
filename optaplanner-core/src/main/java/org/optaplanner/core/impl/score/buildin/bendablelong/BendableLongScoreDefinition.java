@@ -1,5 +1,5 @@
 /*
- * Copyright 2013 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,9 +17,9 @@
 package org.optaplanner.core.impl.score.buildin.bendablelong;
 
 import java.util.Arrays;
+import java.util.stream.LongStream;
 
 import org.optaplanner.core.api.score.buildin.bendablelong.BendableLongScore;
-import org.optaplanner.core.api.score.buildin.bendablelong.BendableLongScoreHolder;
 import org.optaplanner.core.config.score.trend.InitializingScoreTrendLevel;
 import org.optaplanner.core.impl.score.definition.AbstractBendableScoreDefinition;
 import org.optaplanner.core.impl.score.trend.InitializingScoreTrend;
@@ -42,6 +42,11 @@ public class BendableLongScoreDefinition extends AbstractBendableScoreDefinition
     @Override
     public BendableLongScore getZeroScore() {
         return BendableLongScore.zero(hardLevelsSize, softLevelsSize);
+    }
+
+    @Override
+    public final BendableLongScore getOneSoftestScore() {
+        return BendableLongScore.ofSoft(hardLevelsSize, softLevelsSize, softLevelsSize - 1, 1L);
     }
 
     @Override
@@ -103,40 +108,61 @@ public class BendableLongScoreDefinition extends AbstractBendableScoreDefinition
     }
 
     @Override
-    public BendableLongScoreHolder buildScoreHolder(boolean constraintMatchEnabled) {
-        return new BendableLongScoreHolder(constraintMatchEnabled, hardLevelsSize, softLevelsSize);
+    public BendableLongScoreHolderImpl buildScoreHolder(boolean constraintMatchEnabled) {
+        return new BendableLongScoreHolderImpl(constraintMatchEnabled, hardLevelsSize, softLevelsSize);
     }
 
     @Override
-    public BendableLongScore buildOptimisticBound(InitializingScoreTrend initializingScoreTrend, BendableLongScore score) {
+    public BendableLongScore buildOptimisticBound(InitializingScoreTrend initializingScoreTrend,
+            BendableLongScore score) {
         InitializingScoreTrendLevel[] trendLevels = initializingScoreTrend.getTrendLevels();
         long[] hardScores = new long[hardLevelsSize];
         for (int i = 0; i < hardLevelsSize; i++) {
             hardScores[i] = (trendLevels[i] == InitializingScoreTrendLevel.ONLY_DOWN)
-                    ? score.getHardScore(i) : Long.MAX_VALUE;
+                    ? score.getHardScore(i)
+                    : Long.MAX_VALUE;
         }
         long[] softScores = new long[softLevelsSize];
         for (int i = 0; i < softLevelsSize; i++) {
             softScores[i] = (trendLevels[hardLevelsSize + i] == InitializingScoreTrendLevel.ONLY_DOWN)
-                    ? score.getSoftScore(i) : Long.MAX_VALUE;
+                    ? score.getSoftScore(i)
+                    : Long.MAX_VALUE;
         }
         return BendableLongScore.ofUninitialized(0, hardScores, softScores);
     }
 
     @Override
-    public BendableLongScore buildPessimisticBound(InitializingScoreTrend initializingScoreTrend, BendableLongScore score) {
+    public BendableLongScore buildPessimisticBound(InitializingScoreTrend initializingScoreTrend,
+            BendableLongScore score) {
         InitializingScoreTrendLevel[] trendLevels = initializingScoreTrend.getTrendLevels();
         long[] hardScores = new long[hardLevelsSize];
         for (int i = 0; i < hardLevelsSize; i++) {
             hardScores[i] = (trendLevels[i] == InitializingScoreTrendLevel.ONLY_UP)
-                    ? score.getHardScore(i) : Long.MIN_VALUE;
+                    ? score.getHardScore(i)
+                    : Long.MIN_VALUE;
         }
         long[] softScores = new long[softLevelsSize];
         for (int i = 0; i < softLevelsSize; i++) {
             softScores[i] = (trendLevels[hardLevelsSize + i] == InitializingScoreTrendLevel.ONLY_UP)
-                    ? score.getSoftScore(i) : Long.MIN_VALUE;
+                    ? score.getSoftScore(i)
+                    : Long.MIN_VALUE;
         }
         return BendableLongScore.ofUninitialized(0, hardScores, softScores);
     }
 
+    @Override
+    public BendableLongScore divideBySanitizedDivisor(BendableLongScore dividend, BendableLongScore divisor) {
+        int dividendInitScore = dividend.getInitScore();
+        int divisorInitScore = sanitize(divisor.getInitScore());
+        long[] hardScores = new long[hardLevelsSize];
+        for (int i = 0; i < hardLevelsSize; i++) {
+            hardScores[i] = divide(dividend.getHardScore(i), sanitize(divisor.getHardScore(i)));
+        }
+        long[] softScores = new long[softLevelsSize];
+        for (int i = 0; i < softLevelsSize; i++) {
+            softScores[i] = divide(dividend.getSoftScore(i), sanitize(divisor.getSoftScore(i)));
+        }
+        long[] levels = LongStream.concat(Arrays.stream(hardScores), Arrays.stream(softScores)).toArray();
+        return createScoreUninitialized(divide(dividendInitScore, divisorInitScore), levels);
+    }
 }

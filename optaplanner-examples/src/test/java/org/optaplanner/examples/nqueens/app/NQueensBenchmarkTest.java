@@ -19,7 +19,8 @@ package org.optaplanner.examples.nqueens.app;
 import java.io.File;
 import java.util.Arrays;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Timeout;
 import org.optaplanner.benchmark.api.PlannerBenchmark;
 import org.optaplanner.benchmark.api.PlannerBenchmarkFactory;
 import org.optaplanner.benchmark.config.PlannerBenchmarkConfig;
@@ -41,7 +42,8 @@ public class NQueensBenchmarkTest extends PlannerBenchmarkTest {
     // Tests
     // ************************************************************************
 
-    @Test(timeout = 600000)
+    @Test
+    @Timeout(600)
     public void benchmark64queens() {
         NQueens problem = new XStreamSolutionFileIO<NQueens>(NQueens.class)
                 .read(new File("data/nqueens/unsolved/64queens.xml"));
@@ -52,11 +54,12 @@ public class NQueensBenchmarkTest extends PlannerBenchmarkTest {
         benchmark.benchmark();
     }
 
-    @Test(timeout = 600000)
+    @Test
+    @Timeout(600)
     public void benchmark64queensSingleThread() {
         NQueens problem = new XStreamSolutionFileIO<NQueens>(NQueens.class)
                 .read(new File("data/nqueens/unsolved/64queens.xml"));
-        PlannerBenchmarkConfig benchmarkConfig= buildPlannerBenchmarkConfig();
+        PlannerBenchmarkConfig benchmarkConfig = buildPlannerBenchmarkConfig();
         addAllStatistics(benchmarkConfig);
         benchmarkConfig.setParallelBenchmarkCount("1");
         PlannerBenchmark benchmark = PlannerBenchmarkFactory.create(benchmarkConfig).buildPlannerBenchmark(problem);

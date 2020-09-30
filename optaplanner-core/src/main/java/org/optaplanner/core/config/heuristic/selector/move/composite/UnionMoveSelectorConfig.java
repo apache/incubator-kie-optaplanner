@@ -1,5 +1,5 @@
 /*
- * Copyright 2012 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,27 +16,51 @@
 
 package org.optaplanner.core.config.heuristic.selector.move.composite;
 
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
-import com.thoughtworks.xstream.annotations.XStreamAlias;
-import com.thoughtworks.xstream.annotations.XStreamImplicit;
-import org.optaplanner.core.config.heuristic.policy.HeuristicConfigPolicy;
-import org.optaplanner.core.config.heuristic.selector.common.SelectionCacheType;
-import org.optaplanner.core.config.heuristic.selector.common.SelectionOrder;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlElements;
+import javax.xml.bind.annotation.XmlType;
+
 import org.optaplanner.core.config.heuristic.selector.move.MoveSelectorConfig;
+import org.optaplanner.core.config.heuristic.selector.move.factory.MoveIteratorFactoryConfig;
+import org.optaplanner.core.config.heuristic.selector.move.factory.MoveListFactoryConfig;
+import org.optaplanner.core.config.heuristic.selector.move.generic.ChangeMoveSelectorConfig;
+import org.optaplanner.core.config.heuristic.selector.move.generic.PillarChangeMoveSelectorConfig;
+import org.optaplanner.core.config.heuristic.selector.move.generic.PillarSwapMoveSelectorConfig;
+import org.optaplanner.core.config.heuristic.selector.move.generic.SwapMoveSelectorConfig;
+import org.optaplanner.core.config.heuristic.selector.move.generic.chained.SubChainChangeMoveSelectorConfig;
+import org.optaplanner.core.config.heuristic.selector.move.generic.chained.SubChainSwapMoveSelectorConfig;
+import org.optaplanner.core.config.heuristic.selector.move.generic.chained.TailChainSwapMoveSelectorConfig;
 import org.optaplanner.core.config.util.ConfigUtils;
-import org.optaplanner.core.impl.heuristic.selector.common.decorator.FixedSelectorProbabilityWeightFactory;
 import org.optaplanner.core.impl.heuristic.selector.common.decorator.SelectionProbabilityWeightFactory;
-import org.optaplanner.core.impl.heuristic.selector.move.MoveSelector;
-import org.optaplanner.core.impl.heuristic.selector.move.composite.UnionMoveSelector;
 
-@XStreamAlias("unionMoveSelector")
+@XmlType(propOrder = {
+        "moveSelectorConfigList",
+        "selectorProbabilityWeightFactoryClass"
+})
 public class UnionMoveSelectorConfig extends MoveSelectorConfig<UnionMoveSelectorConfig> {
 
-    @XStreamImplicit()
+    public static final String XML_ELEMENT_NAME = "unionMoveSelector";
+
+    @XmlElements({
+            @XmlElement(name = CartesianProductMoveSelectorConfig.XML_ELEMENT_NAME,
+                    type = CartesianProductMoveSelectorConfig.class),
+            @XmlElement(name = ChangeMoveSelectorConfig.XML_ELEMENT_NAME, type = ChangeMoveSelectorConfig.class),
+            @XmlElement(name = MoveIteratorFactoryConfig.XML_ELEMENT_NAME, type = MoveIteratorFactoryConfig.class),
+            @XmlElement(name = MoveListFactoryConfig.XML_ELEMENT_NAME, type = MoveListFactoryConfig.class),
+            @XmlElement(name = PillarChangeMoveSelectorConfig.XML_ELEMENT_NAME,
+                    type = PillarChangeMoveSelectorConfig.class),
+            @XmlElement(name = PillarSwapMoveSelectorConfig.XML_ELEMENT_NAME, type = PillarSwapMoveSelectorConfig.class),
+            @XmlElement(name = SubChainChangeMoveSelectorConfig.XML_ELEMENT_NAME,
+                    type = SubChainChangeMoveSelectorConfig.class),
+            @XmlElement(name = SubChainSwapMoveSelectorConfig.XML_ELEMENT_NAME,
+                    type = SubChainSwapMoveSelectorConfig.class),
+            @XmlElement(name = SwapMoveSelectorConfig.XML_ELEMENT_NAME, type = SwapMoveSelectorConfig.class),
+            @XmlElement(name = TailChainSwapMoveSelectorConfig.XML_ELEMENT_NAME,
+                    type = TailChainSwapMoveSelectorConfig.class),
+            @XmlElement(name = UnionMoveSelectorConfig.XML_ELEMENT_NAME, type = UnionMoveSelectorConfig.class)
+    })
     private List<MoveSelectorConfig> moveSelectorConfigList = null;
 
     private Class<? extends SelectionProbabilityWeightFactory> selectorProbabilityWeightFactoryClass = null;
@@ -60,52 +84,9 @@ public class UnionMoveSelectorConfig extends MoveSelectorConfig<UnionMoveSelecto
         return selectorProbabilityWeightFactoryClass;
     }
 
-    public void setSelectorProbabilityWeightFactoryClass(Class<? extends SelectionProbabilityWeightFactory> selectorProbabilityWeightFactoryClass) {
+    public void setSelectorProbabilityWeightFactoryClass(
+            Class<? extends SelectionProbabilityWeightFactory> selectorProbabilityWeightFactoryClass) {
         this.selectorProbabilityWeightFactoryClass = selectorProbabilityWeightFactoryClass;
-    }
-
-    // ************************************************************************
-    // Builder methods
-    // ************************************************************************
-
-    @Override
-    public MoveSelector buildBaseMoveSelector(HeuristicConfigPolicy configPolicy,
-            SelectionCacheType minimumCacheType, boolean randomSelection) {
-        List<MoveSelector> moveSelectorList = new ArrayList<>(moveSelectorConfigList.size());
-        for (MoveSelectorConfig moveSelectorConfig : moveSelectorConfigList) {
-            moveSelectorList.add(
-                    moveSelectorConfig.buildMoveSelector(configPolicy,
-                            minimumCacheType, SelectionOrder.fromRandomSelectionBoolean(randomSelection)));
-        }
-
-        SelectionProbabilityWeightFactory selectorProbabilityWeightFactory;
-        if (selectorProbabilityWeightFactoryClass != null) {
-            if (!randomSelection) {
-                throw new IllegalArgumentException("The moveSelectorConfig (" + this
-                        + ") with selectorProbabilityWeightFactoryClass (" + selectorProbabilityWeightFactoryClass
-                        + ") has non-random randomSelection (" + randomSelection + ").");
-            }
-            selectorProbabilityWeightFactory = ConfigUtils.newInstance(this,
-                    "selectorProbabilityWeightFactoryClass", selectorProbabilityWeightFactoryClass);
-        } else if (randomSelection) {
-            Map<MoveSelector, Double> fixedProbabilityWeightMap = new HashMap<>(
-                    moveSelectorConfigList.size());
-            for (int i = 0; i < moveSelectorConfigList.size(); i++) {
-                MoveSelectorConfig moveSelectorConfig = moveSelectorConfigList.get(i);
-                MoveSelector moveSelector = moveSelectorList.get(i);
-                Double fixedProbabilityWeight = moveSelectorConfig.getFixedProbabilityWeight();
-                if (fixedProbabilityWeight == null) {
-                    // Default to equal probability for each move type => unequal probability for each move instance
-                    fixedProbabilityWeight = 1.0;
-                }
-                fixedProbabilityWeightMap.put(moveSelector, fixedProbabilityWeight);
-            }
-            selectorProbabilityWeightFactory = new FixedSelectorProbabilityWeightFactory(fixedProbabilityWeightMap);
-        } else {
-            selectorProbabilityWeightFactory = null;
-        }
-        return new UnionMoveSelector(moveSelectorList, randomSelection,
-                selectorProbabilityWeightFactory);
     }
 
     @Override

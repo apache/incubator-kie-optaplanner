@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,10 +20,11 @@ import java.util.Collection;
 import java.util.Collections;
 
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
-import org.optaplanner.core.impl.score.director.ScoreDirector;
+import org.optaplanner.core.api.score.director.ScoreDirector;
 
 /**
  * Makes no changes.
+ *
  * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
  */
 public class NoChangeMove<Solution_> extends AbstractMove<Solution_> {
@@ -54,12 +55,12 @@ public class NoChangeMove<Solution_> extends AbstractMove<Solution_> {
 
     @Override
     public Collection<? extends Object> getPlanningEntities() {
-        return Collections.<Object>emptyList();
+        return Collections.emptyList();
     }
 
     @Override
     public Collection<? extends Object> getPlanningValues() {
-        return Collections.<Object>emptyList();
+        return Collections.emptyList();
     }
 
     @Override

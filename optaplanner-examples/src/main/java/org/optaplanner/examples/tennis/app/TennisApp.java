@@ -1,5 +1,5 @@
 /*
- * Copyright 2013 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,14 +18,13 @@ package org.optaplanner.examples.tennis.app;
 
 import org.optaplanner.examples.common.app.CommonApp;
 import org.optaplanner.examples.tennis.domain.TennisSolution;
+import org.optaplanner.examples.tennis.persistence.TennisXmlSolutionFileIO;
 import org.optaplanner.examples.tennis.swingui.TennisPanel;
 import org.optaplanner.persistence.common.api.domain.solution.SolutionFileIO;
-import org.optaplanner.persistence.xstream.impl.domain.solution.XStreamSolutionFileIO;
 
 public class TennisApp extends CommonApp<TennisSolution> {
 
-    public static final String SOLVER_CONFIG
-            = "org/optaplanner/examples/tennis/solver/tennisSolverConfig.xml";
+    public static final String SOLVER_CONFIG = "org/optaplanner/examples/tennis/solver/tennisSolverConfig.xml";
 
     public static final String DATA_DIR_NAME = "tennis";
 
@@ -50,7 +49,7 @@ public class TennisApp extends CommonApp<TennisSolution> {
 
     @Override
     public SolutionFileIO<TennisSolution> createSolutionFileIO() {
-        return new XStreamSolutionFileIO<>(TennisSolution.class);
+        return new TennisXmlSolutionFileIO();
     }
 
 }

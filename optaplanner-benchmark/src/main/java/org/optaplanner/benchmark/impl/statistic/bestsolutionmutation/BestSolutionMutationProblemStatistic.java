@@ -23,7 +23,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 
-import com.thoughtworks.xstream.annotations.XStreamAlias;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.axis.NumberAxis;
 import org.jfree.chart.plot.PlotOrientation;
@@ -41,7 +40,6 @@ import org.optaplanner.benchmark.impl.statistic.ProblemStatistic;
 import org.optaplanner.benchmark.impl.statistic.SubSingleStatistic;
 import org.optaplanner.benchmark.impl.statistic.common.MillisecondsSpentNumberFormat;
 
-@XStreamAlias("bestSolutionMutationProblemStatistic")
 public class BestSolutionMutationProblemStatistic extends ProblemStatistic {
 
     protected File graphFile = null;
@@ -72,11 +70,13 @@ public class BestSolutionMutationProblemStatistic extends ProblemStatistic {
         XYPlot plot = createPlot(benchmarkReport);
         int seriesIndex = 0;
         for (SingleBenchmarkResult singleBenchmarkResult : problemBenchmarkResult.getSingleBenchmarkResultList()) {
-            XYIntervalSeries series = new XYIntervalSeries(singleBenchmarkResult.getSolverBenchmarkResult().getNameWithFavoriteSuffix());
+            XYIntervalSeries series = new XYIntervalSeries(
+                    singleBenchmarkResult.getSolverBenchmarkResult().getNameWithFavoriteSuffix());
             XYItemRenderer renderer = new YIntervalRenderer();
             if (singleBenchmarkResult.hasAllSuccess()) {
-                BestSolutionMutationSubSingleStatistic subSingleStatistic = (BestSolutionMutationSubSingleStatistic)
-                        singleBenchmarkResult.getSubSingleStatistic(problemStatisticType);
+                BestSolutionMutationSubSingleStatistic subSingleStatistic =
+                        (BestSolutionMutationSubSingleStatistic) singleBenchmarkResult
+                                .getSubSingleStatistic(problemStatisticType);
                 List<BestSolutionMutationStatisticPoint> points = subSingleStatistic.getPointList();
                 for (BestSolutionMutationStatisticPoint point : points) {
                     long timeMillisSpent = point.getTimeMillisSpent();

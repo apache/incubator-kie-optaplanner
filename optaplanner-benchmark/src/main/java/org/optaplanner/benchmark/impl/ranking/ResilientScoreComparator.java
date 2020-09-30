@@ -1,5 +1,5 @@
 /*
- * Copyright 2014 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,16 +16,21 @@
 
 package org.optaplanner.benchmark.impl.ranking;
 
-import java.io.Serializable;
 import java.util.Comparator;
 
 import org.optaplanner.core.api.score.Score;
-import org.optaplanner.core.api.score.comparator.NaturalScoreComparator;
+import org.optaplanner.core.impl.score.definition.ScoreDefinition;
 
 /**
- * Like {@link NaturalScoreComparator}, but is able to compare {@link Score}s of different types or nulls.
+ * Able to compare {@link Score}s of different types or nulls.
  */
-public class ResilientScoreComparator implements Comparator<Score>, Serializable {
+final class ResilientScoreComparator implements Comparator<Score> {
+
+    private final ScoreDefinition aScoreDefinition;
+
+    public ResilientScoreComparator(ScoreDefinition aScoreDefinition) {
+        this.aScoreDefinition = aScoreDefinition;
+    }
 
     @Override
     public int compare(Score a, Score b) {
@@ -34,7 +39,8 @@ public class ResilientScoreComparator implements Comparator<Score>, Serializable
         } else if (b == null) {
             return 1;
         }
-        if (!a.isCompatibleArithmeticArgument(b)) {
+        if (!aScoreDefinition.isCompatibleArithmeticArgument(a) ||
+                !aScoreDefinition.isCompatibleArithmeticArgument(b)) {
             Number[] aNumbers = a.toLevelNumbers();
             Number[] bNumbers = b.toLevelNumbers();
             for (int i = 0; i < aNumbers.length || i < bNumbers.length; i++) {

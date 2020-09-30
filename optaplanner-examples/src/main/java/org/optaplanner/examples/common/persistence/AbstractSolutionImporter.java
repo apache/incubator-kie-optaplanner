@@ -1,5 +1,5 @@
 /*
- * Copyright 2010 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,10 +17,9 @@
 package org.optaplanner.examples.common.persistence;
 
 import java.io.File;
+import java.math.BigDecimal;
 import java.math.BigInteger;
-import java.math.RoundingMode;
 
-import com.google.common.math.BigIntegerMath;
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.examples.common.app.LoggingMain;
 
@@ -67,7 +66,11 @@ public abstract class AbstractSolutionImporter<Solution_> extends LoggingMain {
         if (possibleSolutionSize.compareTo(BigInteger.valueOf(1000L)) < 0) {
             return possibleSolutionSize.toString();
         }
-        return "10^" + (BigIntegerMath.log10(possibleSolutionSize, RoundingMode.FLOOR));
+        BigDecimal possibleSolutionSizeBigDecimal = new BigDecimal(possibleSolutionSize);
+        int decimalDigits = possibleSolutionSizeBigDecimal.scale() < 0
+                ? possibleSolutionSizeBigDecimal.precision() - possibleSolutionSizeBigDecimal.scale()
+                : possibleSolutionSizeBigDecimal.precision();
+        return "10^" + decimalDigits;
     }
 
 }

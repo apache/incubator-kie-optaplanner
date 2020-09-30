@@ -1,5 +1,5 @@
 /*
- * Copyright 2017 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,20 +16,19 @@
 
 package org.optaplanner.examples.common.persistence;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import java.math.BigInteger;
 
-import org.junit.Test;
-
-import static org.junit.Assert.*;
+import org.junit.jupiter.api.Test;
 
 public class AbstractSolutionImporterTest {
 
     @Test
     public void factorial() {
-        assertEquals(BigInteger.valueOf(1), AbstractSolutionImporter.factorial(1));
-        assertEquals(BigInteger.valueOf(2), AbstractSolutionImporter.factorial(2));
-        assertEquals(BigInteger.valueOf(6), AbstractSolutionImporter.factorial(3));
-        assertEquals(BigInteger.valueOf(24), AbstractSolutionImporter.factorial(4));
+        assertThat(AbstractSolutionImporter.factorial(1)).isEqualTo(BigInteger.valueOf(1));
+        assertThat(AbstractSolutionImporter.factorial(2)).isEqualTo(BigInteger.valueOf(2));
+        assertThat(AbstractSolutionImporter.factorial(3)).isEqualTo(BigInteger.valueOf(6));
+        assertThat(AbstractSolutionImporter.factorial(4)).isEqualTo(BigInteger.valueOf(24));
     }
-
 }

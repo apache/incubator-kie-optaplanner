@@ -16,9 +16,12 @@
 
 package org.optaplanner.examples.nqueens.app;
 
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
+
 import java.io.File;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Timeout;
 import org.optaplanner.benchmark.api.PlannerBenchmark;
 import org.optaplanner.benchmark.api.PlannerBenchmarkException;
 import org.optaplanner.benchmark.api.PlannerBenchmarkFactory;
@@ -37,7 +40,8 @@ public class BrokenNQueensBenchmarkTest extends PlannerBenchmarkTest {
     // Tests
     // ************************************************************************
 
-    @Test(timeout = 100000, expected = PlannerBenchmarkException.class)
+    @Test
+    @Timeout(100)
     public void benchmarkBroken8queens() {
         NQueens problem = new XStreamSolutionFileIO<NQueens>(NQueens.class)
                 .read(new File("data/nqueens/unsolved/8queens.xml"));
@@ -46,7 +50,7 @@ public class BrokenNQueensBenchmarkTest extends PlannerBenchmarkTest {
         benchmarkConfig.getInheritedSolverBenchmarkConfig().getSolverConfig().getTerminationConfig()
                 .setStepCountLimit(-100); // Intentionally crash the solver
         PlannerBenchmark benchmark = PlannerBenchmarkFactory.create(benchmarkConfig).buildPlannerBenchmark(problem);
-        benchmark.benchmark();
+        assertThatExceptionOfType(PlannerBenchmarkException.class).isThrownBy(benchmark::benchmark);
     }
 
 }

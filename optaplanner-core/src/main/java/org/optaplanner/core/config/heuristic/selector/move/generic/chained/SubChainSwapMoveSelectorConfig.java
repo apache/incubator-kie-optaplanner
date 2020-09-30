@@ -1,5 +1,5 @@
 /*
- * Copyright 2012 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,27 +16,27 @@
 
 package org.optaplanner.core.config.heuristic.selector.move.generic.chained;
 
-import com.thoughtworks.xstream.annotations.XStreamAlias;
-import org.optaplanner.core.config.heuristic.policy.HeuristicConfigPolicy;
-import org.optaplanner.core.config.heuristic.selector.common.SelectionCacheType;
-import org.optaplanner.core.config.heuristic.selector.common.SelectionOrder;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlType;
+
 import org.optaplanner.core.config.heuristic.selector.move.MoveSelectorConfig;
 import org.optaplanner.core.config.heuristic.selector.value.chained.SubChainSelectorConfig;
 import org.optaplanner.core.config.util.ConfigUtils;
-import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
-import org.optaplanner.core.impl.heuristic.selector.move.MoveSelector;
-import org.optaplanner.core.impl.heuristic.selector.move.generic.chained.SubChainSwapMoveSelector;
-import org.optaplanner.core.impl.heuristic.selector.value.chained.SubChainSelector;
 
-import static org.apache.commons.lang3.ObjectUtils.defaultIfNull;
-
-@XStreamAlias("subChainSwapMoveSelector")
+@XmlType(propOrder = {
+        "entityClass",
+        "subChainSelectorConfig",
+        "secondarySubChainSelectorConfig",
+        "selectReversingMoveToo"
+})
 public class SubChainSwapMoveSelectorConfig extends MoveSelectorConfig<SubChainSwapMoveSelectorConfig> {
 
+    public static final String XML_ELEMENT_NAME = "subChainSwapMoveSelector";
+
     private Class<?> entityClass = null;
-    @XStreamAlias("subChainSelector")
+    @XmlElement(name = "subChainSelector")
     private SubChainSelectorConfig subChainSelectorConfig = null;
-    @XStreamAlias("secondarySubChainSelector")
+    @XmlElement(name = "secondarySubChainSelector")
     private SubChainSelectorConfig secondarySubChainSelectorConfig = null;
 
     private Boolean selectReversingMoveToo = null;
@@ -73,35 +73,13 @@ public class SubChainSwapMoveSelectorConfig extends MoveSelectorConfig<SubChainS
         this.selectReversingMoveToo = selectReversingMoveToo;
     }
 
-    // ************************************************************************
-    // Builder methods
-    // ************************************************************************
-
-    @Override
-    public MoveSelector buildBaseMoveSelector(HeuristicConfigPolicy configPolicy,
-            SelectionCacheType minimumCacheType, boolean randomSelection) {
-        EntityDescriptor entityDescriptor = deduceEntityDescriptor(
-                configPolicy.getSolutionDescriptor(), entityClass);
-        SubChainSelectorConfig subChainSelectorConfig_ = subChainSelectorConfig == null ? new SubChainSelectorConfig()
-                : subChainSelectorConfig;
-        SubChainSelector leftSubChainSelector = subChainSelectorConfig_.buildSubChainSelector(configPolicy,
-                entityDescriptor,
-                minimumCacheType, SelectionOrder.fromRandomSelectionBoolean(randomSelection));
-        SubChainSelectorConfig rightSubChainSelectorConfig = defaultIfNull(secondarySubChainSelectorConfig,
-                subChainSelectorConfig_);
-        SubChainSelector rightSubChainSelector = rightSubChainSelectorConfig.buildSubChainSelector(configPolicy,
-                entityDescriptor,
-                minimumCacheType, SelectionOrder.fromRandomSelectionBoolean(randomSelection));
-        return new SubChainSwapMoveSelector(leftSubChainSelector, rightSubChainSelector, randomSelection,
-                defaultIfNull(selectReversingMoveToo, true));
-    }
-
     @Override
     public SubChainSwapMoveSelectorConfig inherit(SubChainSwapMoveSelectorConfig inheritedConfig) {
         super.inherit(inheritedConfig);
         entityClass = ConfigUtils.inheritOverwritableProperty(entityClass, inheritedConfig.getEntityClass());
         subChainSelectorConfig = ConfigUtils.inheritConfig(subChainSelectorConfig, inheritedConfig.getSubChainSelectorConfig());
-        secondarySubChainSelectorConfig = ConfigUtils.inheritConfig(secondarySubChainSelectorConfig, inheritedConfig.getSecondarySubChainSelectorConfig());
+        secondarySubChainSelectorConfig = ConfigUtils.inheritConfig(secondarySubChainSelectorConfig,
+                inheritedConfig.getSecondarySubChainSelectorConfig());
         selectReversingMoveToo = ConfigUtils.inheritOverwritableProperty(selectReversingMoveToo,
                 inheritedConfig.getSelectReversingMoveToo());
         return this;

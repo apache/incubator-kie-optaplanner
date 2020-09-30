@@ -1,5 +1,5 @@
 /*
- * Copyright 2010 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,11 +22,12 @@ import java.util.List;
 
 import org.optaplanner.core.impl.phase.scope.AbstractPhaseScope;
 import org.optaplanner.core.impl.phase.scope.AbstractStepScope;
+import org.optaplanner.core.impl.solver.scope.SolverScope;
 import org.optaplanner.core.impl.solver.thread.ChildThreadType;
-import org.optaplanner.core.impl.solver.scope.DefaultSolverScope;
 
 /**
  * Abstract superclass that combines multiple {@link Termination}s.
+ *
  * @see AndCompositeTermination
  * @see OrCompositeTermination
  */
@@ -47,7 +48,7 @@ public abstract class AbstractCompositeTermination extends AbstractTermination {
     // ************************************************************************
 
     @Override
-    public void solvingStarted(DefaultSolverScope solverScope) {
+    public void solvingStarted(SolverScope solverScope) {
         for (Termination termination : terminationList) {
             termination.solvingStarted(solverScope);
         }
@@ -82,7 +83,7 @@ public abstract class AbstractCompositeTermination extends AbstractTermination {
     }
 
     @Override
-    public void solvingEnded(DefaultSolverScope solverScope) {
+    public void solvingEnded(SolverScope solverScope) {
         for (Termination termination : terminationList) {
             termination.solvingEnded(solverScope);
         }
@@ -92,7 +93,8 @@ public abstract class AbstractCompositeTermination extends AbstractTermination {
     // Other methods
     // ************************************************************************
 
-    protected List<Termination> createChildThreadTerminationList(DefaultSolverScope solverScope, ChildThreadType childThreadType) {
+    protected List<Termination> createChildThreadTerminationList(SolverScope solverScope,
+            ChildThreadType childThreadType) {
         List<Termination> childThreadTerminationList = new ArrayList<>(terminationList.size());
         for (Termination termination : terminationList) {
             childThreadTerminationList.add(termination.createChildThreadTermination(solverScope, childThreadType));

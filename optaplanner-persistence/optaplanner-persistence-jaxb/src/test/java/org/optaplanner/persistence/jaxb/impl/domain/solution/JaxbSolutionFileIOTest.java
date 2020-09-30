@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,28 +16,26 @@
 
 package org.optaplanner.persistence.jaxb.impl.domain.solution;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.optaplanner.core.impl.testdata.util.PlannerAssert.assertAllCodesOfIterator;
+import static org.optaplanner.core.impl.testdata.util.PlannerAssert.assertCode;
+
 import java.io.File;
-import java.io.IOException;
 import java.util.Arrays;
 
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
 import org.optaplanner.persistence.jaxb.impl.testdata.domain.JaxbTestdataEntity;
 import org.optaplanner.persistence.jaxb.impl.testdata.domain.JaxbTestdataSolution;
 import org.optaplanner.persistence.jaxb.impl.testdata.domain.JaxbTestdataValue;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotSame;
-import static org.junit.Assert.assertSame;
-import static org.optaplanner.core.impl.testdata.util.PlannerAssert.*;
-
 public class JaxbSolutionFileIOTest {
 
     private static File solutionTestDir;
 
-    @BeforeClass
-    public static void setup() throws IOException {
+    @BeforeAll
+    public static void setup() {
         solutionTestDir = new File("target/solutionTest/");
         solutionTestDir.mkdirs();
     }
@@ -56,15 +54,15 @@ public class JaxbSolutionFileIOTest {
         solutionFileIO.write(original, file);
         JaxbTestdataSolution copy = solutionFileIO.read(file);
 
-        assertNotSame(original, copy);
+        assertThat(copy).isNotSameAs(original);
         assertCode("s1", copy);
         assertAllCodesOfIterator(copy.getValueList().iterator(), "v1", "v2");
         assertAllCodesOfIterator(copy.getEntityList().iterator(), "e1", "e2", "e3");
         JaxbTestdataValue copyV1 = copy.getValueList().get(0);
         JaxbTestdataEntity copyE2 = copy.getEntityList().get(1);
         assertCode("v1", copyE2.getValue());
-        assertSame(copyV1, copyE2.getValue());
-        assertEquals(SimpleScore.of(-123), copy.getScore());
+        assertThat(copyE2.getValue()).isSameAs(copyV1);
+        assertThat(copy.getScore()).isEqualTo(SimpleScore.of(-123));
     }
 
 }

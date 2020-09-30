@@ -1,5 +1,5 @@
 /*
- * Copyright 2010 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,15 +21,16 @@ import java.util.List;
 
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
-import org.optaplanner.core.impl.phase.custom.AbstractCustomPhaseCommand;
-import org.optaplanner.core.impl.score.director.ScoreDirector;
+import org.optaplanner.core.api.score.director.ScoreDirector;
+import org.optaplanner.core.impl.phase.custom.CustomPhaseCommand;
+import org.optaplanner.core.impl.score.director.InnerScoreDirector;
 import org.optaplanner.examples.dinnerparty.domain.DinnerParty;
 import org.optaplanner.examples.dinnerparty.domain.Seat;
 import org.optaplanner.examples.dinnerparty.domain.SeatDesignation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class DinnerPartySolutionInitializer extends AbstractCustomPhaseCommand<DinnerParty> {
+public class DinnerPartySolutionInitializer implements CustomPhaseCommand<DinnerParty> {
 
     protected final transient Logger logger = LoggerFactory.getLogger(getClass());
 
@@ -55,8 +56,8 @@ public class DinnerPartySolutionInitializer extends AbstractCustomPhaseCommand<D
                     seatDesignation.setSeat(seat);
                     scoreDirector.afterVariableChanged(seatDesignation, "seat");
                     scoreDirector.triggerVariableListeners();
-                    Score score = scoreDirector.calculateScore();
-                    if (score.toInitializedScore().compareTo(bestScore.toInitializedScore()) > 0) {
+                    Score score = ((InnerScoreDirector<DinnerParty, ?>) scoreDirector).calculateScore();
+                    if (score.withInitScore(0).compareTo(bestScore.withInitScore(0)) > 0) {
                         bestScore = score;
                         bestSeat = seat;
                     }

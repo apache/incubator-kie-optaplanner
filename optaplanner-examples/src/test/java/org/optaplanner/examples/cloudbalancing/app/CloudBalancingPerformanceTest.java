@@ -16,38 +16,25 @@
 
 package org.optaplanner.examples.cloudbalancing.app;
 
-import java.io.File;
+import java.util.stream.Stream;
 
-import org.junit.Test;
 import org.optaplanner.core.config.solver.EnvironmentMode;
 import org.optaplanner.examples.cloudbalancing.domain.CloudBalance;
 import org.optaplanner.examples.common.app.SolverPerformanceTest;
 
 public class CloudBalancingPerformanceTest extends SolverPerformanceTest<CloudBalance> {
 
-    public CloudBalancingPerformanceTest(String moveThreadCount) {
-        super(moveThreadCount);
-    }
+    private static final String UNSOLVED_DATA_FILE = "data/cloudbalancing/unsolved/200computers-600processes.xml";
 
     @Override
     protected CloudBalancingApp createCommonApp() {
         return new CloudBalancingApp();
     }
 
-    // ************************************************************************
-    // Tests
-    // ************************************************************************
-
-    @Test(timeout = 600000)
-    public void solveModel_200computers_600processes() {
-        File unsolvedDataFile = new File("data/cloudbalancing/unsolved/200computers-600processes.xml");
-        runSpeedTest(unsolvedDataFile, "0hard/-218850soft");
+    @Override
+    protected Stream<TestData> testData() {
+        return Stream.of(
+                testData(UNSOLVED_DATA_FILE, "0hard/-218850soft", EnvironmentMode.REPRODUCIBLE),
+                testData(UNSOLVED_DATA_FILE, "0hard/-223260soft", EnvironmentMode.FAST_ASSERT));
     }
-
-    @Test(timeout = 600000)
-    public void solveModel_200computers_600processesFastAssert() {
-        File unsolvedDataFile = new File("data/cloudbalancing/unsolved/200computers-600processes.xml");
-        runSpeedTest(unsolvedDataFile, "0hard/-223260soft", EnvironmentMode.FAST_ASSERT);
-    }
-
 }

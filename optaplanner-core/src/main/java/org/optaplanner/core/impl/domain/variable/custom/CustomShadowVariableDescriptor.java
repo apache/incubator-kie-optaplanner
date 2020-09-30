@@ -1,5 +1,5 @@
 /*
- * Copyright 2014 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -72,7 +72,7 @@ public class CustomShadowVariableDescriptor<Solution_> extends ShadowVariableDes
                         + ") has a " + CustomShadowVariable.class.getSimpleName()
                         + " annotated property (" + variableMemberAccessor.getName()
                         + ") with a non-null variableListenerRef (" + variableListenerRef
-                        + "), so it can not have a variableListenerClass (" + variableListenerClass
+                        + "), so it cannot have a variableListenerClass (" + variableListenerClass
                         + ") nor any sources (" + Arrays.toString(sources) + ").");
             }
         } else {
@@ -125,7 +125,8 @@ public class CustomShadowVariableDescriptor<Solution_> extends ShadowVariableDes
                 }
             }
             String refVariableName = variableListenerRef.variableName();
-            VariableDescriptor<Solution_> uncastRefVariableDescriptor = refEntityDescriptor.getVariableDescriptor(refVariableName);
+            VariableDescriptor<Solution_> uncastRefVariableDescriptor = refEntityDescriptor
+                    .getVariableDescriptor(refVariableName);
             if (uncastRefVariableDescriptor == null) {
                 throw new IllegalArgumentException("The entityClass (" + entityDescriptor.getEntityClass()
                         + ") has a " + CustomShadowVariable.class.getSimpleName()
@@ -218,7 +219,7 @@ public class CustomShadowVariableDescriptor<Solution_> extends ShadowVariableDes
     }
 
     @Override
-    public VariableListener<Solution_> buildVariableListener(InnerScoreDirector<Solution_> scoreDirector) {
+    public VariableListener<Solution_> buildVariableListener(InnerScoreDirector<Solution_, ?> scoreDirector) {
         if (refVariableDescriptor != null) {
             throw new IllegalStateException("The shadowVariableDescriptor (" + this
                     + ") references another shadowVariableDescriptor (" + refVariableDescriptor

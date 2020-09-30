@@ -1,5 +1,5 @@
 /*
- * Copyright 2012 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,23 +16,28 @@
 
 package org.optaplanner.core.impl.heuristic.selector.entity.decorator;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+import static org.optaplanner.core.impl.testdata.util.PlannerAssert.assertAllCodesOfEntitySelector;
+import static org.optaplanner.core.impl.testdata.util.PlannerAssert.verifyPhaseLifecycle;
+
 import java.util.Comparator;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.optaplanner.core.config.heuristic.selector.common.SelectionCacheType;
 import org.optaplanner.core.impl.heuristic.selector.SelectorTestUtils;
 import org.optaplanner.core.impl.heuristic.selector.common.decorator.SelectionSorter;
 import org.optaplanner.core.impl.heuristic.selector.entity.EntitySelector;
 import org.optaplanner.core.impl.phase.scope.AbstractPhaseScope;
 import org.optaplanner.core.impl.phase.scope.AbstractStepScope;
-import org.optaplanner.core.impl.solver.scope.DefaultSolverScope;
+import org.optaplanner.core.impl.solver.scope.SolverScope;
 import org.optaplanner.core.impl.testdata.domain.TestdataEntity;
 import org.optaplanner.core.impl.testdata.domain.TestdataObject;
 import org.optaplanner.core.impl.testdata.domain.TestdataSolution;
-
-import static org.junit.Assert.assertEquals;
-import static org.mockito.Mockito.*;
-import static org.optaplanner.core.impl.testdata.util.PlannerAssert.*;
 
 public class SortingEntitySelectorTest {
 
@@ -51,9 +56,9 @@ public class SortingEntitySelectorTest {
         runCacheType(SelectionCacheType.STEP, 5);
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void cacheTypeJustInTime() {
-        runCacheType(SelectionCacheType.JUST_IN_TIME, 5);
+        assertThatIllegalArgumentException().isThrownBy(() -> runCacheType(SelectionCacheType.JUST_IN_TIME, 5));
     }
 
     public void runCacheType(SelectionCacheType cacheType, int timesCalled) {
@@ -61,11 +66,11 @@ public class SortingEntitySelectorTest {
                 new TestdataEntity("jan"), new TestdataEntity("feb"), new TestdataEntity("mar"),
                 new TestdataEntity("apr"), new TestdataEntity("may"), new TestdataEntity("jun"));
 
-        SelectionSorter<TestdataSolution, TestdataEntity> sorter = (scoreDirector, selectionList)
-                -> selectionList.sort(Comparator.comparing(TestdataObject::getCode));
+        SelectionSorter<TestdataSolution, TestdataEntity> sorter = (scoreDirector, selectionList) -> selectionList
+                .sort(Comparator.comparing(TestdataObject::getCode));
         EntitySelector entitySelector = new SortingEntitySelector(childEntitySelector, cacheType, sorter);
 
-        DefaultSolverScope solverScope = mock(DefaultSolverScope.class);
+        SolverScope solverScope = mock(SolverScope.class);
         entitySelector.solvingStarted(solverScope);
 
         AbstractPhaseScope phaseScopeA = mock(AbstractPhaseScope.class);
@@ -121,14 +126,14 @@ public class SortingEntitySelectorTest {
     public void isNeverEnding() {
         EntitySelector entitySelector = new SortingEntitySelector(mock(EntitySelector.class), SelectionCacheType.PHASE,
                 mock(SelectionSorter.class));
-        assertEquals(false, entitySelector.isNeverEnding());
+        assertThat(entitySelector.isNeverEnding()).isFalse();
     }
 
     @Test
     public void isCountable() {
         EntitySelector entitySelector = new SortingEntitySelector(mock(EntitySelector.class), SelectionCacheType.PHASE,
                 mock(SelectionSorter.class));
-        assertEquals(true, entitySelector.isCountable());
+        assertThat(entitySelector.isCountable()).isTrue();
     }
 
 }

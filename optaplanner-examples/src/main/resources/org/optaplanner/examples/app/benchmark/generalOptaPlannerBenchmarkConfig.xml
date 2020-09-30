@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<plannerBenchmark>
+<plannerBenchmark xmlns="https://www.optaplanner.org/xsd/benchmark" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="https://www.optaplanner.org/xsd/benchmark https://www.optaplanner.org/xsd/benchmark/benchmark.xsd">
   <benchmarkDirectory>local/data/general</benchmarkDirectory>
   <!--<warmUpMinutesSpentLimit>10</warmUpMinutesSpentLimit>-->
 
@@ -12,19 +13,13 @@
     <!--<subSingleCount>8</subSingleCount>-->
   </inheritedSolverBenchmark>
 
-
   <solverBenchmark>
     <name>Cloud Balancing Late Acceptance</name>
-    <problemBenchmarks>
-      <xStreamAnnotatedClass>org.optaplanner.examples.cloudbalancing.domain.CloudBalance</xStreamAnnotatedClass>
-      <inputSolutionFile>data/cloudbalancing/unsolved/200computers-600processes.xml</inputSolutionFile>
-      <inputSolutionFile>data/cloudbalancing/unsolved/800computers-2400processes.xml</inputSolutionFile>
-    </problemBenchmarks>
     <solver>
       <solutionClass>org.optaplanner.examples.cloudbalancing.domain.CloudBalance</solutionClass>
       <entityClass>org.optaplanner.examples.cloudbalancing.domain.CloudProcess</entityClass>
       <scoreDirectorFactory>
-        <scoreDrl>org/optaplanner/examples/cloudbalancing/solver/cloudBalancingScoreRules.drl</scoreDrl>
+        <scoreDrl>org/optaplanner/examples/cloudbalancing/solver/cloudBalancingConstraints.drl</scoreDrl>
         <initializingScoreTrend>ONLY_DOWN</initializingScoreTrend>
       </scoreDirectorFactory>
       <constructionHeuristic>
@@ -43,14 +38,14 @@
         </forager>
       </localSearch>
     </solver>
+    <problemBenchmarks>
+      <solutionFileIOClass>org.optaplanner.examples.cloudbalancing.persistence.CloudBalanceXmlSolutionFileIO</solutionFileIOClass>
+      <inputSolutionFile>data/cloudbalancing/unsolved/200computers-600processes.xml</inputSolutionFile>
+      <inputSolutionFile>data/cloudbalancing/unsolved/800computers-2400processes.xml</inputSolutionFile>
+    </problemBenchmarks>
   </solverBenchmark>
   <solverBenchmark>
     <name>Machine Reassignment Tabu Search</name>
-    <problemBenchmarks>
-      <solutionFileIOClass>org.optaplanner.examples.machinereassignment.persistence.MachineReassignmentFileIO</solutionFileIOClass>
-      <inputSolutionFile>data/machinereassignment/import/model_b_1.txt</inputSolutionFile>
-      <inputSolutionFile>data/machinereassignment/import/model_b_10.txt</inputSolutionFile>
-    </problemBenchmarks>
     <solver>
       <solutionClass>org.optaplanner.examples.machinereassignment.domain.MachineReassignment</solutionClass>
       <entityClass>org.optaplanner.examples.machinereassignment.domain.MrProcessAssignment</entityClass>
@@ -73,19 +68,19 @@
         </forager>
       </localSearch>
     </solver>
+    <problemBenchmarks>
+      <solutionFileIOClass>org.optaplanner.examples.machinereassignment.persistence.MachineReassignmentFileIO</solutionFileIOClass>
+      <inputSolutionFile>data/machinereassignment/import/model_b_1.txt</inputSolutionFile>
+      <inputSolutionFile>data/machinereassignment/import/model_b_10.txt</inputSolutionFile>
+    </problemBenchmarks>
   </solverBenchmark>
   <solverBenchmark>
     <name>Course Scheduling Late Acceptance</name>
-    <problemBenchmarks>
-      <xStreamAnnotatedClass>org.optaplanner.examples.curriculumcourse.domain.CourseSchedule</xStreamAnnotatedClass>
-      <inputSolutionFile>data/curriculumcourse/unsolved/comp07.xml</inputSolutionFile>
-      <inputSolutionFile>data/curriculumcourse/unsolved/comp08.xml</inputSolutionFile>
-    </problemBenchmarks>
     <solver>
       <solutionClass>org.optaplanner.examples.curriculumcourse.domain.CourseSchedule</solutionClass>
       <entityClass>org.optaplanner.examples.curriculumcourse.domain.Lecture</entityClass>
       <scoreDirectorFactory>
-        <scoreDrl>org/optaplanner/examples/curriculumcourse/solver/curriculumCourseScoreRules.drl</scoreDrl>
+        <scoreDrl>org/optaplanner/examples/curriculumcourse/solver/curriculumCourseConstraints.drl</scoreDrl>
       </scoreDirectorFactory>
       <constructionHeuristic>
         <constructionHeuristicType>FIRST_FIT_DECREASING</constructionHeuristicType>
@@ -105,21 +100,21 @@
         </forager>
       </localSearch>
     </solver>
+    <problemBenchmarks>
+      <solutionFileIOClass>org.optaplanner.examples.curriculumcourse.persistence.CurriculumCourseXmlSolutionFileIO</solutionFileIOClass>
+      <inputSolutionFile>data/curriculumcourse/unsolved/comp07.xml</inputSolutionFile>
+      <inputSolutionFile>data/curriculumcourse/unsolved/comp08.xml</inputSolutionFile>
+    </problemBenchmarks>
   </solverBenchmark>
   <solverBenchmark>
     <name>Examination Tabu Search</name>
-    <problemBenchmarks>
-      <xStreamAnnotatedClass>org.optaplanner.examples.examination.domain.Examination</xStreamAnnotatedClass>
-      <inputSolutionFile>data/examination/unsolved/exam_comp_set2.xml</inputSolutionFile>
-      <inputSolutionFile>data/examination/unsolved/exam_comp_set3.xml</inputSolutionFile>
-    </problemBenchmarks>
     <solver>
       <solutionClass>org.optaplanner.examples.examination.domain.Examination</solutionClass>
       <entityClass>org.optaplanner.examples.examination.domain.Exam</entityClass>
       <entityClass>org.optaplanner.examples.examination.domain.LeadingExam</entityClass>
       <entityClass>org.optaplanner.examples.examination.domain.FollowingExam</entityClass>
       <scoreDirectorFactory>
-        <scoreDrl>org/optaplanner/examples/examination/solver/examinationScoreRules.drl</scoreDrl>
+        <scoreDrl>org/optaplanner/examples/examination/solver/examinationConstraints.drl</scoreDrl>
       </scoreDirectorFactory>
       <constructionHeuristic>
         <queuedEntityPlacer>
@@ -180,19 +175,19 @@
         </forager>
       </localSearch>
     </solver>
+    <problemBenchmarks>
+      <solutionFileIOClass>org.optaplanner.examples.examination.persistence.ExaminationXmlSolutionFileIO</solutionFileIOClass>
+      <inputSolutionFile>data/examination/unsolved/exam_comp_set2.xml</inputSolutionFile>
+      <inputSolutionFile>data/examination/unsolved/exam_comp_set3.xml</inputSolutionFile>
+    </problemBenchmarks>
   </solverBenchmark>
   <solverBenchmark>
     <name>Nurse Rostering Tabu Search</name>
-    <problemBenchmarks>
-      <xStreamAnnotatedClass>org.optaplanner.examples.nurserostering.domain.NurseRoster</xStreamAnnotatedClass>
-      <inputSolutionFile>data/nurserostering/unsolved/medium01.xml</inputSolutionFile>
-      <inputSolutionFile>data/nurserostering/unsolved/medium_hint01.xml</inputSolutionFile>
-    </problemBenchmarks>
     <solver>
       <solutionClass>org.optaplanner.examples.nurserostering.domain.NurseRoster</solutionClass>
       <entityClass>org.optaplanner.examples.nurserostering.domain.ShiftAssignment</entityClass>
       <scoreDirectorFactory>
-        <scoreDrl>org/optaplanner/examples/nurserostering/solver/nurseRosteringScoreRules.drl</scoreDrl>
+        <scoreDrl>org/optaplanner/examples/nurserostering/solver/nurseRosteringConstraints.drl</scoreDrl>
       </scoreDirectorFactory>
       <constructionHeuristic>
         <constructionHeuristicType>WEAKEST_FIT</constructionHeuristicType>
@@ -238,18 +233,19 @@
         </forager>
       </localSearch>
     </solver>
+    <problemBenchmarks>
+      <solutionFileIOClass>org.optaplanner.examples.nurserostering.persistence.NurseRosterXmlSolutionFileIO</solutionFileIOClass>
+      <inputSolutionFile>data/nurserostering/unsolved/medium01.xml</inputSolutionFile>
+      <inputSolutionFile>data/nurserostering/unsolved/medium_hint01.xml</inputSolutionFile>
+    </problemBenchmarks>
   </solverBenchmark>
   <solverBenchmark>
     <name>TravelingTournament Tabu Search</name>
-    <problemBenchmarks>
-      <xStreamAnnotatedClass>org.optaplanner.examples.travelingtournament.domain.TravelingTournament</xStreamAnnotatedClass>
-      <inputSolutionFile>data/travelingtournament/unsolved/1-nl14.xml</inputSolutionFile>
-    </problemBenchmarks>
     <solver>
       <solutionClass>org.optaplanner.examples.travelingtournament.domain.TravelingTournament</solutionClass>
       <entityClass>org.optaplanner.examples.travelingtournament.domain.Match</entityClass>
       <scoreDirectorFactory>
-        <scoreDrl>org/optaplanner/examples/travelingtournament/solver/travelingTournamentScoreRules.drl</scoreDrl>
+        <scoreDrl>org/optaplanner/examples/travelingtournament/solver/travelingTournamentConstraints.drl</scoreDrl>
       </scoreDirectorFactory>
       <localSearch>
         <unionMoveSelector>
@@ -272,5 +268,9 @@
         </forager>
       </localSearch>
     </solver>
+    <problemBenchmarks>
+      <solutionFileIOClass>org.optaplanner.examples.travelingtournament.persistence.TravelingTournamentXmlSolutionFileIO</solutionFileIOClass>
+      <inputSolutionFile>data/travelingtournament/unsolved/1-nl14.xml</inputSolutionFile>
+    </problemBenchmarks>
   </solverBenchmark>
 </plannerBenchmark>

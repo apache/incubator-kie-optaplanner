@@ -1,5 +1,5 @@
 /*
- * Copyright 2014 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,8 +25,8 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
-import com.thoughtworks.xstream.annotations.XStreamAlias;
-import com.thoughtworks.xstream.annotations.XStreamOmitField;
+import javax.xml.bind.annotation.XmlTransient;
+
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.axis.NumberAxis;
 import org.jfree.chart.plot.PlotOrientation;
@@ -51,14 +51,13 @@ import org.optaplanner.core.impl.score.definition.ScoreDefinition;
 import org.optaplanner.core.impl.score.director.InnerScoreDirector;
 import org.optaplanner.core.impl.solver.DefaultSolver;
 
-@XStreamAlias("constraintMatchTotalBestScoreSubSingleStatistic")
 public class ConstraintMatchTotalBestScoreSubSingleStatistic<Solution_>
         extends PureSubSingleStatistic<Solution_, ConstraintMatchTotalBestScoreStatisticPoint> {
 
-    @XStreamOmitField
+    @XmlTransient
     private ConstraintMatchTotalBestScoreSubSingleStatisticListener listener;
 
-    @XStreamOmitField
+    @XmlTransient
     protected List<File> graphFileList = null;
 
     public ConstraintMatchTotalBestScoreSubSingleStatistic(SubSingleBenchmarkResult subSingleBenchmarkResult) {
@@ -114,7 +113,9 @@ public class ConstraintMatchTotalBestScoreSubSingleStatistic<Solution_>
         private void localSearchStepEnded(LocalSearchStepScope<Solution_> stepScope) {
             if (constraintMatchEnabled && stepScope.getBestScoreImproved()) {
                 long timeMillisSpent = stepScope.getPhaseScope().calculateSolverTimeMillisSpentUpToNow();
-                for (ConstraintMatchTotal constraintMatchTotal : stepScope.getScoreDirector().getConstraintMatchTotals()) {
+                InnerScoreDirector<Solution_, ?> scoreDirector = stepScope.getScoreDirector();
+                for (ConstraintMatchTotal<?> constraintMatchTotal : scoreDirector.getConstraintMatchTotalMap()
+                        .values()) {
                     pointList.add(new ConstraintMatchTotalBestScoreStatisticPoint(
                             timeMillisSpent,
                             constraintMatchTotal.getConstraintPackage(),
@@ -152,8 +153,8 @@ public class ConstraintMatchTotalBestScoreSubSingleStatistic<Solution_>
 
     @Override
     public void writeGraphFiles(BenchmarkReport benchmarkReport) {
-        List<Map<String, XYSeries>> constraintIdToWeightSeriesMapList
-                = new ArrayList<>(BenchmarkReport.CHARTED_SCORE_LEVEL_SIZE);
+        List<Map<String, XYSeries>> constraintIdToWeightSeriesMapList = new ArrayList<>(
+                BenchmarkReport.CHARTED_SCORE_LEVEL_SIZE);
         for (ConstraintMatchTotalBestScoreStatisticPoint point : getPointList()) {
             long timeMillisSpent = point.getTimeMillisSpent();
             double[] levelValues = ScoreUtils.extractLevelDoubles(point.getScoreTotal());
@@ -173,7 +174,8 @@ public class ConstraintMatchTotalBestScoreSubSingleStatistic<Solution_>
         }
         long timeMillisSpent = subSingleBenchmarkResult.getTimeMillisSpent();
         for (Map<String, XYSeries> constraintIdToWeightSeriesMap : constraintIdToWeightSeriesMapList) {
-            for (Iterator<Map.Entry<String, XYSeries>> it = constraintIdToWeightSeriesMap.entrySet().iterator(); it.hasNext(); ) {
+            for (Iterator<Map.Entry<String, XYSeries>> it = constraintIdToWeightSeriesMap.entrySet().iterator(); it
+                    .hasNext();) {
                 XYSeries weightSeries = it.next().getValue();
                 if (weightSeries.getItemCount() == 0) {
                     // Only show the constraint type on the score levels that it affects

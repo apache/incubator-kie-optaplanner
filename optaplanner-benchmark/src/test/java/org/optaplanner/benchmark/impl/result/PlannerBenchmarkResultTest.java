@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,21 +16,39 @@
 
 package org.optaplanner.benchmark.impl.result;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import java.io.File;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.Reader;
+import java.io.StringWriter;
+import java.io.Writer;
+import java.net.URISyntaxException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-import org.junit.Test;
+import org.apache.commons.io.IOUtils;
+import org.junit.jupiter.api.Test;
+import org.optaplanner.benchmark.config.report.BenchmarkReportConfig;
+import org.optaplanner.benchmark.impl.aggregator.BenchmarkAggregator;
 import org.optaplanner.benchmark.impl.loader.FileProblemProvider;
+import org.optaplanner.benchmark.impl.report.BenchmarkReport;
 import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
 import org.optaplanner.core.config.solver.SolverConfig;
 import org.optaplanner.core.config.solver.random.RandomType;
-
-import static org.junit.Assert.*;
+import org.optaplanner.core.impl.heuristic.selector.common.nearby.NearbyDistanceMeter;
+import org.optaplanner.core.impl.score.director.incremental.IncrementalScoreCalculator;
+import org.optaplanner.core.impl.testdata.domain.chained.TestdataChainedEntity;
+import org.optaplanner.core.impl.testdata.domain.chained.TestdataChainedSolution;
 
 public class PlannerBenchmarkResultTest {
+
+    private static final String TEST_PLANNER_BENCHMARK_RESULT = "testPlannerBenchmarkResult.xml";
 
     @Test
     public void createMergedResult() {
@@ -84,16 +102,16 @@ public class PlannerBenchmarkResultTest {
         PlannerBenchmarkResult mergedResult = PlannerBenchmarkResult.createMergedResult(Arrays.asList(
                 p1SolverXProblemA, p1SolverXProblemB, p1SolverYProblemA, p1SolverYProblemB, p2SolverZProblemA));
 
-        assertEquals(true, mergedResult.getAggregation());
+        assertThat(mergedResult.getAggregation()).isTrue();
         List<ProblemBenchmarkResult> mergedProblemBenchmarkResultList = mergedResult.getUnifiedProblemBenchmarkResultList();
         List<SolverBenchmarkResult> mergedSolverBenchmarkResultList = mergedResult.getSolverBenchmarkResultList();
-        assertEquals(3, mergedSolverBenchmarkResultList.size());
-        assertEquals("Solver X", mergedSolverBenchmarkResultList.get(0).getName());
-        assertEquals("Solver Y", mergedSolverBenchmarkResultList.get(1).getName());
-        assertEquals("Solver Z", mergedSolverBenchmarkResultList.get(2).getName());
-        assertEquals(2, mergedProblemBenchmarkResultList.size());
-        assertEquals("problemA", mergedProblemBenchmarkResultList.get(0).getProblemProvider().getProblemName());
-        assertEquals("problemB", mergedProblemBenchmarkResultList.get(1).getProblemProvider().getProblemName());
+        assertThat(mergedSolverBenchmarkResultList.size()).isEqualTo(3);
+        assertThat(mergedSolverBenchmarkResultList.get(0).getName()).isEqualTo("Solver X");
+        assertThat(mergedSolverBenchmarkResultList.get(1).getName()).isEqualTo("Solver Y");
+        assertThat(mergedSolverBenchmarkResultList.get(2).getName()).isEqualTo("Solver Z");
+        assertThat(mergedProblemBenchmarkResultList.size()).isEqualTo(2);
+        assertThat(mergedProblemBenchmarkResultList.get(0).getProblemProvider().getProblemName()).isEqualTo("problemA");
+        assertThat(mergedProblemBenchmarkResultList.get(1).getProblemProvider().getProblemName()).isEqualTo("problemB");
     }
 
     protected SingleBenchmarkResult createSingleBenchmarkResult(
@@ -114,4 +132,58 @@ public class PlannerBenchmarkResultTest {
         return subSingleBenchmarkResult;
     }
 
+    @Test
+    public void xmlReportRemainsSameAfterReadWrite() throws IOException {
+        BenchmarkResultIO benchmarkResultIO = new BenchmarkResultIO();
+        PlannerBenchmarkResult plannerBenchmarkResult;
+        try (Reader reader = new InputStreamReader(
+                PlannerBenchmarkResultTest.class.getResourceAsStream(TEST_PLANNER_BENCHMARK_RESULT), "UTF-8")) {
+            plannerBenchmarkResult = benchmarkResultIO.read(reader);
+        }
+
+        Writer stringWriter = new StringWriter();
+        benchmarkResultIO.write(plannerBenchmarkResult, stringWriter);
+        String jaxbString = stringWriter.toString();
+
+        String originalXml = IOUtils.toString(
+                PlannerBenchmarkResultTest.class.getResourceAsStream(TEST_PLANNER_BENCHMARK_RESULT), StandardCharsets.UTF_8);
+
+        assertThat(jaxbString.trim()).isXmlEqualTo(originalXml.trim());
+    }
+
+    @Test
+    public void xmlReadBenchmarkResultAggregated() throws URISyntaxException, IOException {
+        BenchmarkAggregator benchmarkAggregator = new BenchmarkAggregator();
+        benchmarkAggregator.setBenchmarkDirectory(Files.createTempDirectory(getClass().getSimpleName()).toFile());
+        benchmarkAggregator.setBenchmarkReportConfig(new BenchmarkReportConfig());
+
+        File plannerBenchmarkResultFile =
+                new File(PlannerBenchmarkResultTest.class.getResource(TEST_PLANNER_BENCHMARK_RESULT).toURI());
+
+        BenchmarkResultIO benchmarkResultIO = new BenchmarkResultIO();
+        PlannerBenchmarkResult plannerBenchmarkResult =
+                benchmarkResultIO.readPlannerBenchmarkResult(plannerBenchmarkResultFile);
+
+        BenchmarkReport benchmarkReport =
+                benchmarkAggregator.getBenchmarkReportConfig().buildBenchmarkReport(plannerBenchmarkResult);
+        plannerBenchmarkResult.accumulateResults(benchmarkReport);
+
+        PlannerBenchmarkResult aggregatedPlannerBenchmarkResult = benchmarkReport.getPlannerBenchmarkResult();
+
+        assertThat(aggregatedPlannerBenchmarkResult.getSolverBenchmarkResultList()).hasSize(6);
+        assertThat(aggregatedPlannerBenchmarkResult.getUnifiedProblemBenchmarkResultList()).hasSize(2);
+        assertThat(aggregatedPlannerBenchmarkResult.getFailureCount()).isZero();
+    }
+
+    // nested class below are used in the testPlannerBenchmarkResult.xml
+
+    private static abstract class DummyIncrementalScoreCalculator
+            implements IncrementalScoreCalculator<TestdataChainedSolution, SimpleScore> {
+
+    }
+
+    private static abstract class DummyDistanceNearbyMeter
+            implements NearbyDistanceMeter<TestdataChainedSolution, TestdataChainedEntity> {
+
+    }
 }

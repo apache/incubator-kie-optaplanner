@@ -16,9 +16,10 @@
 
 package org.optaplanner.examples.examination.domain;
 
-import com.thoughtworks.xstream.annotations.XStreamAlias;
 import org.optaplanner.examples.common.domain.AbstractPersistable;
 import org.optaplanner.examples.common.swingui.components.Labeled;
+
+import com.thoughtworks.xstream.annotations.XStreamAlias;
 
 @XStreamAlias("Room")
 public class Room extends AbstractPersistable implements Labeled {
@@ -50,6 +51,25 @@ public class Room extends AbstractPersistable implements Labeled {
     @Override
     public String toString() {
         return Long.toString(id);
+    }
+
+    // ************************************************************************
+    // With methods
+    // ************************************************************************
+
+    public Room withId(long id) {
+        this.setId(id);
+        return this;
+    }
+
+    public Room withCapacity(int capacity) {
+        this.setCapacity(capacity);
+        return this;
+    }
+
+    public Room withPenalty(int penalty) {
+        this.setPenalty(penalty);
+        return this;
     }
 
 }

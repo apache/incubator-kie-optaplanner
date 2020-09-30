@@ -205,14 +205,36 @@ Between planning entities, there are three ways to create gaps:
 
 In some use case there is an overhead time for certain tasks,
 which can be shared by multiple tasks, of those are consecutively scheduled.
+Basically, the solver receives a _discount_ if it combines those tasks.
+
 For example when delivering pizza to two different customers,
 a food delivery service combines both deliveries into a single trip,
-if both customers ordered from the same restaurant around the same time and live in the same part of the city.
+if those two customers ordered from the same restaurant around the same time and live in the same part of the city.
 
 image::DesignPatterns/chainedThroughTimeAutomaticCollapse.png[align="center"]
 
 Implement the automatic collapse in the <<customVariableListener,customer variable listener>>
 that calculates the start and end times of each task.
+
+
+[[chainedThroughTimeAutomaticDelayUntilLast]]
+
+==== Chained through time: automatic delay until last
+
+Some tasks require more than one person to execute.
+In such cases, both employees need to be there at the same time,
+before the work can start.
+
+For example when assembling furniture, assembling a bed is a two-person job.
+
+image::DesignPatterns/chainedThroughTimeAutomaticDelayUntilLast.png[align="center"]
+
+Implement the automatic delay in the <<customVariableListener,customer variable listener>>
+that calculates the arrival, start and end times of each task.
+*Separate the arrival time from the start time.*
+Additionally, add loop detection to avoid an infinite loop:
+
+image::DesignPatterns/chainedThroughTimeAutomaticDelayUntilLastLoop.png[align="center"]
 
 
 [[timeBucketPattern]]
@@ -228,19 +250,6 @@ Each task is assigned to a bucket, which determines the employee and the coarse-
 _The tasks within one bucket are not ordered_: it's up to the employee to decide the order.
 This gives the employee more autonomy, but makes it harder to do certain optimization,
 such as minimize travel time between task locations.
-
-
-[[multiStagePlanning]]
-== Multi-stage Planning
-
-For practical or organizational reasons (such as Conway's law), complex planning problems are often broken down in multiple stages.
-A typical example is train scheduling, where one department decides where and when a train will arrive or depart, and another department assigns the operators to the actual train cars/locomotives.
-
-Each stage has its own solver configuration (and therefore its own ``SolverFactory``). Do not confuse it with <<solverPhase,multi-phase solving>> which uses a one-solver configuration.
-
-Similarly to <<partitionedSearch,Partitioned Search>>, multi-stage planning leads to suboptimal results.
-Nevertheless, it may be beneficial in order to simplify the maintenance, ownership, and help to start a project.
-
 
 [[cloudArchitecturePatterns]]
 == Cloud architecture patterns

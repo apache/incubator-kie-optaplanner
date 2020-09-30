@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,6 +15,9 @@
  */
 
 package org.optaplanner.examples.flightcrewscheduling.persistence;
+
+import static java.time.temporal.ChronoUnit.DAYS;
+import static org.optaplanner.examples.common.persistence.generator.ProbabilisticDataGenerator.extractRandomElement;
 
 import java.io.File;
 import java.math.BigInteger;
@@ -46,9 +49,6 @@ import org.optaplanner.examples.flightcrewscheduling.domain.FlightCrewParametriz
 import org.optaplanner.examples.flightcrewscheduling.domain.FlightCrewSolution;
 import org.optaplanner.examples.flightcrewscheduling.domain.Skill;
 import org.optaplanner.persistence.common.api.domain.solution.SolutionFileIO;
-
-import static java.time.temporal.ChronoUnit.*;
-import static org.optaplanner.examples.common.persistence.generator.ProbabilisticDataGenerator.*;
 
 public class FlightCrewSchedulingGenerator extends LoggingMain {
 
@@ -89,7 +89,7 @@ public class FlightCrewSchedulingGenerator extends LoggingMain {
     }
 
     private void writeFlightCrewSolution(String locationDataName,
-            LocationDataGenerator.LocationData[] locationDataArray, int flightRoundTripsPerDay, int dayCount) {
+            List<LocationDataGenerator.LocationData> locationDataArray, int flightRoundTripsPerDay, int dayCount) {
         int flightListSize = (flightRoundTripsPerDay * 5 / 2) * dayCount;
         String fileName = flightListSize + "flights-" + dayCount + "days-" + locationDataName;
         File outputFile = new File(outputDir, fileName + "." + solutionFileIO.getOutputFileExtension());
@@ -99,7 +99,7 @@ public class FlightCrewSchedulingGenerator extends LoggingMain {
     }
 
     public FlightCrewSolution createFlightCrewSolution(String fileName,
-            LocationDataGenerator.LocationData[] locationDataArray, int flightRoundTripsPerDay, int dayCount) {
+            List<LocationDataGenerator.LocationData> locationDataList, int flightRoundTripsPerDay, int dayCount) {
         random = new Random(37);
         FlightCrewSolution solution = new FlightCrewSolution();
         solution.setId(0L);
@@ -111,7 +111,7 @@ public class FlightCrewSchedulingGenerator extends LoggingMain {
         solution.setParametrization(parametrization);
 
         createSkillList(solution);
-        createAirportList(solution, locationDataArray);
+        createAirportList(solution, locationDataList);
         createFlightList(solution, flightRoundTripsPerDay, dayCount);
         createFlightAssignmentList(solution);
         createEmployeeList(solution, flightRoundTripsPerDay, dayCount);
@@ -119,7 +119,8 @@ public class FlightCrewSchedulingGenerator extends LoggingMain {
         int employeeListSize = solution.getEmployeeList().size();
         int flightAssignmentListSize = solution.getFlightAssignmentList().size();
         BigInteger possibleSolutionSize = BigInteger.valueOf((long) employeeListSize).pow(flightAssignmentListSize);
-        logger.info("FlightCrew {} has {} skills, {} airports, {} employees, {} flights and {} flight assignments with a search space of {}.",
+        logger.info(
+                "FlightCrew {} has {} skills, {} airports, {} employees, {} flights and {} flight assignments with a search space of {}.",
                 fileName,
                 solution.getSkillList().size(),
                 solution.getAirportList().size(),
@@ -143,10 +144,11 @@ public class FlightCrewSchedulingGenerator extends LoggingMain {
         solution.setSkillList(skillList);
     }
 
-    private void createAirportList(FlightCrewSolution solution, LocationDataGenerator.LocationData[] locationDataArray) {
-        List<Airport> airportList = new ArrayList<>(locationDataArray.length);
+    private void createAirportList(FlightCrewSolution solution,
+            List<LocationDataGenerator.LocationData> locationDataList) {
+        List<Airport> airportList = new ArrayList<>(locationDataList.size());
         long id = 0L;
-        for (LocationDataGenerator.LocationData locationData : locationDataArray) {
+        for (LocationDataGenerator.LocationData locationData : locationDataList) {
             Airport airport = new Airport();
             airport.setId(id);
             id++;
@@ -205,7 +207,7 @@ public class FlightCrewSchedulingGenerator extends LoggingMain {
                 int arrivalMinute = departureMinute + flyingTime;
                 for (LocalDate date = firstDate; date.compareTo(lastDate) <= 0; date = date.plusDays(1)) {
                     Flight flight = new Flight();
-                    flight.setId((long) flightId);
+                    flight.setId(flightId);
                     flightId++;
                     flight.setFlightNumber(flightNumber);
                     flight.setDepartureAirport(departureAirport);
@@ -228,7 +230,7 @@ public class FlightCrewSchedulingGenerator extends LoggingMain {
         for (Flight flight : flightList) {
             for (int indexInFlight = 0; indexInFlight < EMPLOYEE_COUNT_PER_FLIGHT; indexInFlight++) {
                 FlightAssignment flightAssignment = new FlightAssignment();
-                flightAssignment.setId((long) flightAssignmentId);
+                flightAssignment.setId(flightAssignmentId);
                 flightAssignmentId++;
                 flightAssignment.setFlight(flight);
                 flightAssignment.setIndexInFlight(indexInFlight);
@@ -239,7 +241,6 @@ public class FlightCrewSchedulingGenerator extends LoggingMain {
         }
         solution.setFlightAssignmentList(flightAssignmentList);
     }
-
 
     private void createEmployeeList(FlightCrewSolution solution, int flightRoundTripsPerDay, int dayCount) {
         int employeeListSize = flightRoundTripsPerDay * EMPLOYEE_COUNT_PER_FLIGHT * 3;
@@ -285,7 +286,7 @@ public class FlightCrewSchedulingGenerator extends LoggingMain {
             pool.addAll(allDateList);
             Collections.shuffle(pool, random);
             // Add those that haven't been added yet
-            for (Iterator<LocalDate> it = pool.iterator(); it.hasNext() && unavailableDaySet.size() < size; ) {
+            for (Iterator<LocalDate> it = pool.iterator(); it.hasNext() && unavailableDaySet.size() < size;) {
                 LocalDate date = it.next();
                 if (unavailableDaySet.add(date)) {
                     it.remove();

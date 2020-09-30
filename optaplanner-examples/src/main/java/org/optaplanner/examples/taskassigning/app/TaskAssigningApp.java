@@ -18,14 +18,13 @@ package org.optaplanner.examples.taskassigning.app;
 
 import org.optaplanner.examples.common.app.CommonApp;
 import org.optaplanner.examples.taskassigning.domain.TaskAssigningSolution;
+import org.optaplanner.examples.taskassigning.persistence.TaskAssigningXmlSolutionFileIO;
 import org.optaplanner.examples.taskassigning.swingui.TaskAssigningPanel;
 import org.optaplanner.persistence.common.api.domain.solution.SolutionFileIO;
-import org.optaplanner.persistence.xstream.impl.domain.solution.XStreamSolutionFileIO;
 
 public class TaskAssigningApp extends CommonApp<TaskAssigningSolution> {
 
-    public static final String SOLVER_CONFIG
-            = "org/optaplanner/examples/taskassigning/solver/taskAssigningSolverConfig.xml";
+    public static final String SOLVER_CONFIG = "org/optaplanner/examples/taskassigning/solver/taskAssigningSolverConfig.xml";
 
     public static final String DATA_DIR_NAME = "taskassigning";
 
@@ -37,9 +36,9 @@ public class TaskAssigningApp extends CommonApp<TaskAssigningSolution> {
     public TaskAssigningApp() {
         super("Task assigning",
                 "Assign tasks to employees in a sequence.\n\n"
-                + "Match skills and affinity.\n"
-                + "Prioritize critical tasks.\n"
-                + "Minimize the makespan.",
+                        + "Match skills and affinity.\n"
+                        + "Prioritize critical tasks.\n"
+                        + "Minimize the makespan.",
                 SOLVER_CONFIG, DATA_DIR_NAME,
                 TaskAssigningPanel.LOGO_PATH);
     }
@@ -51,7 +50,7 @@ public class TaskAssigningApp extends CommonApp<TaskAssigningSolution> {
 
     @Override
     public SolutionFileIO<TaskAssigningSolution> createSolutionFileIO() {
-        return new XStreamSolutionFileIO<>(TaskAssigningSolution.class);
+        return new TaskAssigningXmlSolutionFileIO();
     }
 
 }

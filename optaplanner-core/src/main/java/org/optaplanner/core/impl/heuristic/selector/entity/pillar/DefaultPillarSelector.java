@@ -1,5 +1,5 @@
 /*
- * Copyright 2012 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -40,7 +40,7 @@ import org.optaplanner.core.impl.heuristic.selector.common.SelectionCacheLifecyc
 import org.optaplanner.core.impl.heuristic.selector.common.iterator.CachedListRandomIterator;
 import org.optaplanner.core.impl.heuristic.selector.common.iterator.UpcomingSelectionIterator;
 import org.optaplanner.core.impl.heuristic.selector.entity.EntitySelector;
-import org.optaplanner.core.impl.solver.scope.DefaultSolverScope;
+import org.optaplanner.core.impl.solver.scope.SolverScope;
 
 /**
  * @see PillarSelector
@@ -132,7 +132,7 @@ public class DefaultPillarSelector extends AbstractSelector implements PillarSel
     }
 
     @Override
-    public void constructCache(DefaultSolverScope solverScope) {
+    public void constructCache(SolverScope solverScope) {
         long entitySize = entitySelector.getSize();
         if (entitySize > (long) Integer.MAX_VALUE) {
             throw new IllegalStateException("The selector (" + this + ") has an entitySelector ("
@@ -152,9 +152,8 @@ public class DefaultPillarSelector extends AbstractSelector implements PillarSel
         Map<List<Object>, List<Object>> valueStateToPillarMap = new LinkedHashMap<>((int) entitySize);
         int variableCount = variableDescriptors.size();
         entities.forEach(entity -> {
-            List<Object> valueState = variableCount == 1 ?
-                    getSingleVariableValueState(entity, variableDescriptors) :
-                    getMultiVariableValueState(entity, variableDescriptors, variableCount);
+            List<Object> valueState = variableCount == 1 ? getSingleVariableValueState(entity, variableDescriptors)
+                    : getMultiVariableValueState(entity, variableDescriptors, variableCount);
             List<Object> pillar = valueStateToPillarMap.computeIfAbsent(valueState, key -> new ArrayList<>());
             pillar.add(entity);
         });
@@ -171,7 +170,7 @@ public class DefaultPillarSelector extends AbstractSelector implements PillarSel
     }
 
     @Override
-    public void disposeCache(DefaultSolverScope solverScope) {
+    public void disposeCache(SolverScope solverScope) {
         cachedBasePillarList = null;
     }
 

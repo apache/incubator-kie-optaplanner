@@ -1,5 +1,5 @@
 /*
- * Copyright 2014 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,20 +16,21 @@
 
 package org.optaplanner.core.impl.exhaustivesearch.node.comparator;
 
+import static org.assertj.core.api.SoftAssertions.assertSoftly;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+
 import java.util.Comparator;
 
 import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
 import org.optaplanner.core.impl.exhaustivesearch.node.ExhaustiveSearchNode;
-
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
 
 public abstract class AbstractNodeComparatorTest {
 
     protected ExhaustiveSearchNode buildNode(int depth, String score, long parentBreadth, long breadth) {
         return buildNode(depth,
                 SimpleScore.parseScore(score),
-                SimpleScore.parseScore(score).toInitializedScore(),
+                SimpleScore.parseScore(score).withInitScore(0),
                 parentBreadth, breadth);
     }
 
@@ -55,8 +56,14 @@ public abstract class AbstractNodeComparatorTest {
 
     protected static void assertLesser(Comparator<ExhaustiveSearchNode> comparator,
             ExhaustiveSearchNode a, ExhaustiveSearchNode b) {
-        assertTrue("Node (" + a + ") must be lesser than node (" + b + ").", comparator.compare(a, b) < 0);
-        assertTrue("Node (" + b + ") must be greater than node (" + a + ").", comparator.compare(b, a) > 0);
+        assertSoftly(softly -> {
+            softly.assertThat(comparator.compare(a, b))
+                    .as("Node (" + a + ") must be lesser than node (" + b + ").")
+                    .isLessThan(0);
+            softly.assertThat(comparator.compare(b, a))
+                    .as("Node (" + b + ") must be greater than node (" + a + ").")
+                    .isGreaterThan(0);
+        });
     }
 
     protected static void assertScoreCompareToOrder(Comparator<ExhaustiveSearchNode> comparator,

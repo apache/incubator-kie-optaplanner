@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,15 +23,16 @@ import java.util.Map;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.core.impl.score.stream.ConstraintSession;
-import org.optaplanner.core.impl.score.stream.ConstraintSessionFactory;
+import org.optaplanner.core.impl.score.stream.common.AbstractConstraintSessionFactory;
 
-public final class BavetConstraintSessionFactory<Solution_> implements ConstraintSessionFactory<Solution_> {
+public final class BavetConstraintSessionFactory<Solution_, Score_ extends Score<Score_>>
+        extends AbstractConstraintSessionFactory<Solution_, Score_> {
 
-    private final SolutionDescriptor<Solution_> solutionDescriptor;
     private final List<BavetConstraint<Solution_>> constraintList;
 
-    public BavetConstraintSessionFactory(SolutionDescriptor<Solution_> solutionDescriptor,  List<BavetConstraint<Solution_>> constraintList) {
-        this.solutionDescriptor = solutionDescriptor;
+    public BavetConstraintSessionFactory(SolutionDescriptor<Solution_> solutionDescriptor,
+            List<BavetConstraint<Solution_>> constraintList) {
+        super(solutionDescriptor);
         this.constraintList = constraintList;
     }
 
@@ -40,21 +41,17 @@ public final class BavetConstraintSessionFactory<Solution_> implements Constrain
     // ************************************************************************
 
     @Override
-    public ConstraintSession<Solution_> buildSession(boolean constraintMatchEnabled, Solution_ workingSolution) {
-        Score<?> zeroScore = solutionDescriptor.getScoreDefinition().getZeroScore();
-        Map<BavetConstraint<Solution_>, Score<?>> constraintToWeightMap = new LinkedHashMap<>(constraintList.size());
+    public ConstraintSession<Solution_, Score_> buildSession(boolean constraintMatchEnabled,
+            Solution_ workingSolution) {
+        Score_ zeroScore = getScoreDefinition().getZeroScore();
+        Map<BavetConstraint<Solution_>, Score_> constraintToWeightMap = new LinkedHashMap<>(constraintList.size());
         for (BavetConstraint<Solution_> constraint : constraintList) {
-            Score<?> constraintWeight = constraint.extractConstraintWeight(workingSolution);
+            Score_ constraintWeight = (Score_) constraint.extractConstraintWeight(workingSolution);
             if (!constraintWeight.equals(zeroScore)) {
                 constraintToWeightMap.put(constraint, constraintWeight);
             }
         }
-        return new BavetConstraintSession<>(constraintMatchEnabled, solutionDescriptor.getScoreDefinition(),
-                constraintToWeightMap);
+        return new BavetConstraintSession<>(constraintMatchEnabled, getScoreDefinition(), constraintToWeightMap);
     }
-
-    // ************************************************************************
-    // Getters/setters
-    // ************************************************************************
 
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,11 +16,16 @@
 
 package org.optaplanner.examples.curriculumcourse.swingui;
 
+import static org.optaplanner.examples.common.swingui.timetable.TimeTablePanel.HeaderColumnKey.HEADER_COLUMN;
+import static org.optaplanner.examples.common.swingui.timetable.TimeTablePanel.HeaderColumnKey.HEADER_COLUMN_GROUP1;
+import static org.optaplanner.examples.common.swingui.timetable.TimeTablePanel.HeaderRowKey.HEADER_ROW;
+
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.util.List;
+
 import javax.swing.AbstractAction;
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
@@ -46,9 +51,6 @@ import org.optaplanner.examples.curriculumcourse.domain.Room;
 import org.optaplanner.examples.curriculumcourse.domain.Teacher;
 import org.optaplanner.swing.impl.SwingUtils;
 import org.optaplanner.swing.impl.TangoColorFactory;
-
-import static org.optaplanner.examples.common.swingui.timetable.TimeTablePanel.HeaderColumnKey.*;
-import static org.optaplanner.examples.common.swingui.timetable.TimeTablePanel.HeaderRowKey.*;
 
 public class CurriculumCoursePanel extends SolutionPanel<CourseSchedule> {
 
@@ -195,7 +197,7 @@ public class CurriculumCoursePanel extends SolutionPanel<CourseSchedule> {
                     createButton(lecture, color, toolTip));
             teachersPanel.addCell(lecture.getTeacher(), lecture.getPeriod(),
                     createButton(lecture, color, toolTip));
-            for (Curriculum curriculum : lecture.getCurriculumList()) {
+            for (Curriculum curriculum : lecture.getCurriculumSet()) {
                 curriculaPanel.addCell(curriculum, lecture.getPeriod(),
                         createButton(lecture, color, toolTip));
             }
@@ -256,7 +258,7 @@ public class CurriculumCoursePanel extends SolutionPanel<CourseSchedule> {
             roomListField.setSelectedItem(lecture.getRoom());
             listFieldsPanel.add(roomListField);
             listFieldsPanel.add(new JLabel("Pinned:"));
-            JCheckBox pinnedField = new JCheckBox("immovable during solving");
+            JCheckBox pinnedField = new JCheckBox("cannot move during solving");
             pinnedField.setSelected(lecture.isPinned());
             listFieldsPanel.add(pinnedField);
             int result = JOptionPane.showConfirmDialog(CurriculumCoursePanel.this.getRootPane(), listFieldsPanel,

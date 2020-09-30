@@ -1,5 +1,5 @@
 /*
- * Copyright 2013 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,22 +16,21 @@
 
 package org.optaplanner.core.api.score.buildin;
 
-import org.optaplanner.core.api.score.FeasibilityScore;
-import org.optaplanner.core.api.score.Score;
+import static org.assertj.core.api.Assertions.assertThat;
 
-import static org.junit.Assert.*;
+import org.optaplanner.core.api.score.Score;
 
 public abstract class AbstractScoreTest {
 
-    public static void assertScoreNotFeasible(FeasibilityScore... scores) {
-        for (FeasibilityScore score : scores) {
-            assertEquals(score + " should not be feasible.", false, score.isFeasible());
+    protected static void assertScoreNotFeasible(Score... scores) {
+        for (Score score : scores) {
+            assertThat(score.isFeasible()).as(score + " should not be feasible.").isFalse();
         }
     }
 
-    public static void assertScoreFeasible(FeasibilityScore ... scores) {
-        for (FeasibilityScore score : scores) {
-            assertEquals(score + " should be feasible.", true, score.isFeasible());
+    protected static void assertScoreFeasible(Score... scores) {
+        for (Score score : scores) {
+            assertThat(score.isFeasible()).as(score + " should be feasible.").isTrue();
         }
     }
 

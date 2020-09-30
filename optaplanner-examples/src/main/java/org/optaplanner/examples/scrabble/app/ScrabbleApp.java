@@ -18,14 +18,13 @@ package org.optaplanner.examples.scrabble.app;
 
 import org.optaplanner.examples.common.app.CommonApp;
 import org.optaplanner.examples.scrabble.domain.ScrabbleSolution;
+import org.optaplanner.examples.scrabble.persistence.ScrabbleXmlSolutionFileIO;
 import org.optaplanner.examples.scrabble.swingui.ScrabblePanel;
 import org.optaplanner.persistence.common.api.domain.solution.SolutionFileIO;
-import org.optaplanner.persistence.xstream.impl.domain.solution.XStreamSolutionFileIO;
 
 public class ScrabbleApp extends CommonApp<ScrabbleSolution> {
 
-    public static final String SOLVER_CONFIG
-            = "org/optaplanner/examples/scrabble/solver/scrabbleSolverConfig.xml";
+    public static final String SOLVER_CONFIG = "org/optaplanner/examples/scrabble/solver/scrabbleSolverConfig.xml";
 
     public static final String DATA_DIR_NAME = "scrabble";
 
@@ -48,7 +47,7 @@ public class ScrabbleApp extends CommonApp<ScrabbleSolution> {
 
     @Override
     public SolutionFileIO<ScrabbleSolution> createSolutionFileIO() {
-        return new XStreamSolutionFileIO<>(ScrabbleSolution.class);
+        return new ScrabbleXmlSolutionFileIO();
     }
 
 }

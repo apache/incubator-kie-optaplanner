@@ -5,8 +5,9 @@
   <modelVersion>4.0.0</modelVersion>
   <parent>
     <groupId>org.optaplanner</groupId>
-    <artifactId>optaplanner</artifactId>
-    <version>7.34.0-SNAPSHOT</version>
+    <artifactId>optaplanner-build-parent</artifactId>
+    <version>8.0.0-SNAPSHOT</version>
+    <relativePath>../optaplanner-build-parent/pom.xml</relativePath>
   </parent>
 
   <artifactId>optaplanner-persistence</artifactId>
@@ -22,12 +23,17 @@
   </description>
   <url>https://www.optaplanner.org</url>
 
+  <properties>
+    <format.directory>${project.basedir}/../../ide-configuration</format.directory>
+  </properties>
+
   <modules>
     <module>optaplanner-persistence-common</module>
     <module>optaplanner-persistence-xstream</module>
     <module>optaplanner-persistence-jaxb</module>
     <module>optaplanner-persistence-jackson</module>
     <module>optaplanner-persistence-jpa</module>
+    <module>optaplanner-persistence-jsonb</module>
   </modules>
 
 </project>

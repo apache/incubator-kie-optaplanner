@@ -1,5 +1,5 @@
 /*
- * Copyright 2010 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,9 +16,13 @@
 
 package org.optaplanner.core.impl.localsearch.decider.forager;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+
 import java.util.Random;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
 import org.optaplanner.core.config.localsearch.decider.forager.LocalSearchPickEarlyType;
@@ -29,11 +33,8 @@ import org.optaplanner.core.impl.localsearch.scope.LocalSearchPhaseScope;
 import org.optaplanner.core.impl.localsearch.scope.LocalSearchStepScope;
 import org.optaplanner.core.impl.score.buildin.simple.SimpleScoreDefinition;
 import org.optaplanner.core.impl.score.director.InnerScoreDirector;
-import org.optaplanner.core.impl.solver.scope.DefaultSolverScope;
+import org.optaplanner.core.impl.solver.scope.SolverScope;
 import org.optaplanner.core.impl.testdata.domain.TestdataSolution;
-
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
 
 public class AcceptedLocalSearchForagerTest {
 
@@ -54,18 +55,18 @@ public class AcceptedLocalSearchForagerTest {
         LocalSearchMoveScope<TestdataSolution> e = createMoveScope(stepScope, SimpleScore.of(-300), true);
         // Do stuff
         forager.addMove(a);
-        assertFalse(forager.isQuitEarly());
+        assertThat(forager.isQuitEarly()).isFalse();
         forager.addMove(b);
-        assertFalse(forager.isQuitEarly());
+        assertThat(forager.isQuitEarly()).isFalse();
         forager.addMove(c);
-        assertFalse(forager.isQuitEarly());
+        assertThat(forager.isQuitEarly()).isFalse();
         forager.addMove(d);
-        assertFalse(forager.isQuitEarly());
+        assertThat(forager.isQuitEarly()).isFalse();
         forager.addMove(e);
-        assertFalse(forager.isQuitEarly());
+        assertThat(forager.isQuitEarly()).isFalse();
         LocalSearchMoveScope pickedScope = forager.pickMove(stepScope);
         // Post conditions
-        assertSame(d, pickedScope);
+        assertThat(pickedScope).isSameAs(d);
         forager.phaseEnded(phaseScope);
     }
 
@@ -86,18 +87,18 @@ public class AcceptedLocalSearchForagerTest {
         LocalSearchMoveScope<TestdataSolution> e = createMoveScope(stepScope, SimpleScore.of(-300), false);
         // Do stuff
         forager.addMove(a);
-        assertFalse(forager.isQuitEarly());
+        assertThat(forager.isQuitEarly()).isFalse();
         forager.addMove(b);
-        assertFalse(forager.isQuitEarly());
+        assertThat(forager.isQuitEarly()).isFalse();
         forager.addMove(c);
-        assertFalse(forager.isQuitEarly());
+        assertThat(forager.isQuitEarly()).isFalse();
         forager.addMove(d);
-        assertFalse(forager.isQuitEarly());
+        assertThat(forager.isQuitEarly()).isFalse();
         forager.addMove(e);
-        assertFalse(forager.isQuitEarly());
+        assertThat(forager.isQuitEarly()).isFalse();
         LocalSearchMoveScope pickedScope = forager.pickMove(stepScope);
         // Post conditions
-        assertSame(b, pickedScope);
+        assertThat(pickedScope).isSameAs(b);
         forager.phaseEnded(phaseScope);
     }
 
@@ -117,16 +118,16 @@ public class AcceptedLocalSearchForagerTest {
         LocalSearchMoveScope<TestdataSolution> d = createMoveScope(stepScope, SimpleScore.of(-1), true);
         // Do stuff
         forager.addMove(a);
-        assertFalse(forager.isQuitEarly());
+        assertThat(forager.isQuitEarly()).isFalse();
         forager.addMove(b);
-        assertFalse(forager.isQuitEarly());
+        assertThat(forager.isQuitEarly()).isFalse();
         forager.addMove(c);
-        assertFalse(forager.isQuitEarly());
+        assertThat(forager.isQuitEarly()).isFalse();
         forager.addMove(d);
-        assertTrue(forager.isQuitEarly());
+        assertThat(forager.isQuitEarly()).isTrue();
         // Post conditions
         LocalSearchMoveScope pickedScope = forager.pickMove(stepScope);
-        assertSame(d, pickedScope);
+        assertThat(pickedScope).isSameAs(d);
         forager.phaseEnded(phaseScope);
     }
 
@@ -146,16 +147,16 @@ public class AcceptedLocalSearchForagerTest {
         LocalSearchMoveScope<TestdataSolution> d = createMoveScope(stepScope, SimpleScore.of(-20), true);
         // Do stuff
         forager.addMove(a);
-        assertFalse(forager.isQuitEarly());
+        assertThat(forager.isQuitEarly()).isFalse();
         forager.addMove(b);
-        assertFalse(forager.isQuitEarly());
+        assertThat(forager.isQuitEarly()).isFalse();
         forager.addMove(c);
-        assertFalse(forager.isQuitEarly());
+        assertThat(forager.isQuitEarly()).isFalse();
         forager.addMove(d);
-        assertTrue(forager.isQuitEarly());
+        assertThat(forager.isQuitEarly()).isTrue();
         // Post conditions
         LocalSearchMoveScope pickedScope = forager.pickMove(stepScope);
-        assertSame(d, pickedScope);
+        assertThat(pickedScope).isSameAs(d);
         forager.phaseEnded(phaseScope);
     }
 
@@ -176,18 +177,18 @@ public class AcceptedLocalSearchForagerTest {
         LocalSearchMoveScope<TestdataSolution> e = createMoveScope(stepScope, SimpleScore.of(-1), true);
         // Do stuff
         forager.addMove(a);
-        assertFalse(forager.isQuitEarly());
+        assertThat(forager.isQuitEarly()).isFalse();
         forager.addMove(b);
-        assertFalse(forager.isQuitEarly());
+        assertThat(forager.isQuitEarly()).isFalse();
         forager.addMove(c);
-        assertFalse(forager.isQuitEarly());
+        assertThat(forager.isQuitEarly()).isFalse();
         forager.addMove(d);
-        assertFalse(forager.isQuitEarly());
+        assertThat(forager.isQuitEarly()).isFalse();
         forager.addMove(e);
-        assertTrue(forager.isQuitEarly());
+        assertThat(forager.isQuitEarly()).isTrue();
         // Post conditions
         LocalSearchMoveScope pickedScope = forager.pickMove(stepScope);
-        assertSame(c, pickedScope);
+        assertThat(pickedScope).isSameAs(c);
         forager.phaseEnded(phaseScope);
     }
 
@@ -208,23 +209,23 @@ public class AcceptedLocalSearchForagerTest {
         LocalSearchMoveScope<TestdataSolution> e = createMoveScope(stepScope, SimpleScore.of(-1), true);
         // Do stuff
         forager.addMove(a);
-        assertFalse(forager.isQuitEarly());
+        assertThat(forager.isQuitEarly()).isFalse();
         forager.addMove(b);
-        assertFalse(forager.isQuitEarly());
+        assertThat(forager.isQuitEarly()).isFalse();
         forager.addMove(c);
-        assertFalse(forager.isQuitEarly());
+        assertThat(forager.isQuitEarly()).isFalse();
         forager.addMove(d);
-        assertFalse(forager.isQuitEarly());
+        assertThat(forager.isQuitEarly()).isFalse();
         forager.addMove(e);
-        assertTrue(forager.isQuitEarly());
+        assertThat(forager.isQuitEarly()).isTrue();
         // Post conditions
         LocalSearchMoveScope pickedScope = forager.pickMove(stepScope);
-        assertSame(b, pickedScope);
+        assertThat(pickedScope).isSameAs(b);
         forager.phaseEnded(phaseScope);
     }
 
     private LocalSearchPhaseScope<TestdataSolution> createPhaseScope() {
-        DefaultSolverScope<TestdataSolution> solverScope = new DefaultSolverScope<>();
+        SolverScope<TestdataSolution> solverScope = new SolverScope<>();
         LocalSearchPhaseScope<TestdataSolution> phaseScope = new LocalSearchPhaseScope<>(solverScope);
         InnerScoreDirector scoreDirector = mock(InnerScoreDirector.class);
         when(scoreDirector.getSolutionDescriptor()).thenReturn(TestdataSolution.buildSolutionDescriptor());

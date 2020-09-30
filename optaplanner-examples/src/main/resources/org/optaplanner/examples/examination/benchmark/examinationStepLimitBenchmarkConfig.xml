@@ -1,23 +1,23 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<plannerBenchmark>
+<plannerBenchmark xmlns="https://www.optaplanner.org/xsd/benchmark" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="https://www.optaplanner.org/xsd/benchmark https://www.optaplanner.org/xsd/benchmark/benchmark.xsd">
   <benchmarkDirectory>local/data/examination/stepLimit</benchmarkDirectory>
   <warmUpSecondsSpentLimit>0</warmUpSecondsSpentLimit>
 
   <inheritedSolverBenchmark>
-    <problemBenchmarks>
-      <xStreamAnnotatedClass>org.optaplanner.examples.examination.domain.Examination</xStreamAnnotatedClass>
-      <inputSolutionFile>data/examination/unsolved/exam_comp_set1_initialized.xml</inputSolutionFile>
-    </problemBenchmarks>
-
     <solver>
       <solutionClass>org.optaplanner.examples.examination.domain.Examination</solutionClass>
       <entityClass>org.optaplanner.examples.examination.domain.Exam</entityClass>
       <entityClass>org.optaplanner.examples.examination.domain.LeadingExam</entityClass>
       <entityClass>org.optaplanner.examples.examination.domain.FollowingExam</entityClass>
       <scoreDirectorFactory>
-        <scoreDrl>org/optaplanner/examples/examination/solver/examinationScoreRules.drl</scoreDrl>
+        <scoreDrl>org/optaplanner/examples/examination/solver/examinationConstraints.drl</scoreDrl>
       </scoreDirectorFactory>
     </solver>
+    <problemBenchmarks>
+      <solutionFileIOClass>org.optaplanner.examples.examination.persistence.ExaminationXmlSolutionFileIO</solutionFileIOClass>
+      <inputSolutionFile>data/examination/unsolved/exam_comp_set1_initialized.xml</inputSolutionFile>
+    </problemBenchmarks>
   </inheritedSolverBenchmark>
 
   <solverBenchmark>

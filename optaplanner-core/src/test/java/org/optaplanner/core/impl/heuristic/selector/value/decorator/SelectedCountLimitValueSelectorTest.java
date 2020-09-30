@@ -1,5 +1,5 @@
 /*
- * Copyright 2014 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,18 +16,23 @@
 
 package org.optaplanner.core.impl.heuristic.selector.value.decorator;
 
-import org.junit.Test;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+import static org.optaplanner.core.impl.testdata.util.PlannerAssert.assertAllCodesOfValueSelector;
+import static org.optaplanner.core.impl.testdata.util.PlannerAssert.assertAllCodesOfValueSelectorForEntity;
+import static org.optaplanner.core.impl.testdata.util.PlannerAssert.verifyPhaseLifecycle;
+
+import org.junit.jupiter.api.Test;
 import org.optaplanner.core.impl.heuristic.selector.SelectorTestUtils;
 import org.optaplanner.core.impl.heuristic.selector.value.EntityIndependentValueSelector;
 import org.optaplanner.core.impl.heuristic.selector.value.ValueSelector;
 import org.optaplanner.core.impl.phase.scope.AbstractPhaseScope;
 import org.optaplanner.core.impl.phase.scope.AbstractStepScope;
-import org.optaplanner.core.impl.solver.scope.DefaultSolverScope;
+import org.optaplanner.core.impl.solver.scope.SolverScope;
 import org.optaplanner.core.impl.testdata.domain.TestdataEntity;
 import org.optaplanner.core.impl.testdata.domain.TestdataValue;
-
-import static org.mockito.Mockito.*;
-import static org.optaplanner.core.impl.testdata.util.PlannerAssert.*;
 
 public class SelectedCountLimitValueSelectorTest {
 
@@ -39,7 +44,7 @@ public class SelectedCountLimitValueSelectorTest {
                 new TestdataValue("v5"));
         EntityIndependentValueSelector valueSelector = new SelectedCountLimitValueSelector(childValueSelector, 3L);
 
-        DefaultSolverScope solverScope = mock(DefaultSolverScope.class);
+        SolverScope solverScope = mock(SolverScope.class);
         valueSelector.solvingStarted(solverScope);
 
         AbstractPhaseScope phaseScopeA = mock(AbstractPhaseScope.class);
@@ -91,7 +96,6 @@ public class SelectedCountLimitValueSelectorTest {
         verify(childValueSelector, times(5)).getSize();
     }
 
-
     @Test
     public void selectSizeLimitHigherThanSelectorSize() {
         EntityIndependentValueSelector childValueSelector = SelectorTestUtils.mockEntityIndependentValueSelector(
@@ -99,7 +103,7 @@ public class SelectedCountLimitValueSelectorTest {
                 new TestdataValue("v1"), new TestdataValue("v2"), new TestdataValue("v3"));
         EntityIndependentValueSelector valueSelector = new SelectedCountLimitValueSelector(childValueSelector, 5L);
 
-        DefaultSolverScope solverScope = mock(DefaultSolverScope.class);
+        SolverScope solverScope = mock(SolverScope.class);
         valueSelector.solvingStarted(solverScope);
 
         AbstractPhaseScope phaseScopeA = mock(AbstractPhaseScope.class);
@@ -156,10 +160,11 @@ public class SelectedCountLimitValueSelectorTest {
         TestdataEntity entity = new TestdataEntity("e1");
         ValueSelector childValueSelector = SelectorTestUtils.mockValueSelectorForEntity(TestdataValue.class,
                 entity, "value",
-                new TestdataValue("v1"), new TestdataValue("v2"), new TestdataValue("v3"), new TestdataValue("v4"), new TestdataValue("v5"));
+                new TestdataValue("v1"), new TestdataValue("v2"), new TestdataValue("v3"), new TestdataValue("v4"),
+                new TestdataValue("v5"));
         ValueSelector valueSelector = new SelectedCountLimitValueSelector(childValueSelector, 3L);
 
-        DefaultSolverScope solverScope = mock(DefaultSolverScope.class);
+        SolverScope solverScope = mock(SolverScope.class);
         valueSelector.solvingStarted(solverScope);
 
         AbstractPhaseScope phaseScopeA = mock(AbstractPhaseScope.class);
@@ -211,7 +216,6 @@ public class SelectedCountLimitValueSelectorTest {
         verify(childValueSelector, times(5)).getSize(entity);
     }
 
-
     @Test
     public void selectSizeLimitHigherThanSelectorSizeEntityDependent() {
         TestdataEntity entity = new TestdataEntity("e1");
@@ -220,7 +224,7 @@ public class SelectedCountLimitValueSelectorTest {
                 new TestdataValue("v1"), new TestdataValue("v2"), new TestdataValue("v3"));
         ValueSelector valueSelector = new SelectedCountLimitValueSelector(childValueSelector, 5L);
 
-        DefaultSolverScope solverScope = mock(DefaultSolverScope.class);
+        SolverScope solverScope = mock(SolverScope.class);
         valueSelector.solvingStarted(solverScope);
 
         AbstractPhaseScope phaseScopeA = mock(AbstractPhaseScope.class);

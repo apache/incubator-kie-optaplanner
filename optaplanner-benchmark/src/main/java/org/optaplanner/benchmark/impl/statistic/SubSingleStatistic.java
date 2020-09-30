@@ -1,5 +1,5 @@
 /*
- * Copyright 2012 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -31,8 +31,10 @@ import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
 
-import com.thoughtworks.xstream.annotations.XStreamInclude;
-import com.thoughtworks.xstream.annotations.XStreamOmitField;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlTransient;
+
 import org.optaplanner.benchmark.impl.report.ReportHelper;
 import org.optaplanner.benchmark.impl.result.PlannerBenchmarkResult;
 import org.optaplanner.benchmark.impl.result.SingleBenchmarkResult;
@@ -45,17 +47,15 @@ import org.slf4j.LoggerFactory;
 /**
  * 1 statistic of {@link SubSingleBenchmarkResult}.
  */
-@XStreamInclude({
-        PureSubSingleStatistic.class
-})
+@XmlAccessorType(XmlAccessType.FIELD)
 public abstract class SubSingleStatistic<Solution_, StatisticPoint_ extends StatisticPoint> {
 
     protected final transient Logger logger = LoggerFactory.getLogger(getClass());
 
-    @XStreamOmitField // Bi-directional relationship restored through subSingleBenchmarkResultIO
+    @XmlTransient // Bi-directional relationship restored through BenchmarkResultIO
     protected SubSingleBenchmarkResult subSingleBenchmarkResult;
 
-    @XStreamOmitField
+    @XmlTransient
     protected List<StatisticPoint_> pointList;
 
     protected SubSingleStatistic(SubSingleBenchmarkResult subSingleBenchmarkResult) {
@@ -75,6 +75,7 @@ public abstract class SubSingleStatistic<Solution_, StatisticPoint_ extends Stat
     public List<StatisticPoint_> getPointList() {
         return pointList;
     }
+
     public void setPointList(List<StatisticPoint_> pointList) {
         this.pointList = pointList;
     }
@@ -167,8 +168,8 @@ public abstract class SubSingleStatistic<Solution_, StatisticPoint_ extends Stat
                 // Some statistics (such as CONSTRAINT_MATCH_TOTAL_STEP_SCORE) contain the same String many times
                 // During generation those are all the same instance to save memory.
                 // During aggregation this code assures they are the same instance too
-                for (ListIterator<String> it = csvLine.listIterator(); it.hasNext(); ) {
-                    String token =  it.next();
+                for (ListIterator<String> it = csvLine.listIterator(); it.hasNext();) {
+                    String token = it.next();
                     if (token == null) {
                         continue;
                     }

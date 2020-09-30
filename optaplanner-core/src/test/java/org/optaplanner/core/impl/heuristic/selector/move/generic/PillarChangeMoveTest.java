@@ -1,5 +1,5 @@
 /*
- * Copyright 2014 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,12 +16,20 @@
 
 package org.optaplanner.core.impl.heuristic.selector.move.generic;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.mock;
+import static org.optaplanner.core.impl.testdata.util.PlannerAssert.assertAllCodesOfCollection;
+import static org.optaplanner.core.impl.testdata.util.PlannerAssert.assertCode;
+import static org.optaplanner.core.impl.testdata.util.PlannerAssert.assertListElementsSameExactly;
+import static org.optaplanner.core.impl.testdata.util.PlannerTestUtils.mockRebasingScoreDirector;
+
 import java.util.Arrays;
 import java.util.List;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
+import org.optaplanner.core.api.score.director.ScoreDirector;
 import org.optaplanner.core.impl.domain.variable.descriptor.GenuineVariableDescriptor;
-import org.optaplanner.core.impl.score.director.ScoreDirector;
+import org.optaplanner.core.impl.score.director.InnerScoreDirector;
 import org.optaplanner.core.impl.testdata.domain.TestdataEntity;
 import org.optaplanner.core.impl.testdata.domain.TestdataSolution;
 import org.optaplanner.core.impl.testdata.domain.TestdataValue;
@@ -29,12 +37,6 @@ import org.optaplanner.core.impl.testdata.domain.multivar.TestdataMultiVarEntity
 import org.optaplanner.core.impl.testdata.domain.multivar.TestdataMultiVarSolution;
 import org.optaplanner.core.impl.testdata.domain.valuerange.entityproviding.TestdataEntityProvidingEntity;
 import org.optaplanner.core.impl.testdata.domain.valuerange.entityproviding.TestdataEntityProvidingSolution;
-
-import static org.junit.Assert.assertEquals;
-import static org.mockito.Mockito.*;
-import static org.optaplanner.core.impl.testdata.util.PlannerAssert.*;
-import static org.optaplanner.core.impl.testdata.util.PlannerAssert.assertSame;
-import static org.optaplanner.core.impl.testdata.util.PlannerTestUtils.*;
 
 public class PillarChangeMoveTest {
 
@@ -50,25 +52,26 @@ public class PillarChangeMoveTest {
         TestdataEntityProvidingEntity b = new TestdataEntityProvidingEntity("b", Arrays.asList(v2, v3, v4, v5), null);
 
         ScoreDirector<TestdataEntityProvidingSolution> scoreDirector = mock(ScoreDirector.class);
-        GenuineVariableDescriptor<TestdataEntityProvidingSolution> variableDescriptor = TestdataEntityProvidingEntity.buildVariableDescriptorForValue();
+        GenuineVariableDescriptor<TestdataEntityProvidingSolution> variableDescriptor = TestdataEntityProvidingEntity
+                .buildVariableDescriptorForValue();
 
         PillarChangeMove<TestdataEntityProvidingSolution> abMove;
         a.setValue(v2);
         b.setValue(v2);
-        abMove = new PillarChangeMove<>(Arrays.<Object>asList(a, b), variableDescriptor, v1);
-        assertEquals(false, abMove.isMoveDoable(scoreDirector));
+        abMove = new PillarChangeMove<>(Arrays.asList(a, b), variableDescriptor, v1);
+        assertThat(abMove.isMoveDoable(scoreDirector)).isFalse();
         a.setValue(v2);
         b.setValue(v2);
-        abMove = new PillarChangeMove<>(Arrays.<Object>asList(a, b), variableDescriptor, v2);
-        assertEquals(false, abMove.isMoveDoable(scoreDirector));
+        abMove = new PillarChangeMove<>(Arrays.asList(a, b), variableDescriptor, v2);
+        assertThat(abMove.isMoveDoable(scoreDirector)).isFalse();
         a.setValue(v2);
         b.setValue(v2);
-        abMove = new PillarChangeMove<>(Arrays.<Object>asList(a, b), variableDescriptor, v3);
-        assertEquals(true, abMove.isMoveDoable(scoreDirector));
+        abMove = new PillarChangeMove<>(Arrays.asList(a, b), variableDescriptor, v3);
+        assertThat(abMove.isMoveDoable(scoreDirector)).isTrue();
         a.setValue(v2);
         b.setValue(v2);
-        abMove = new PillarChangeMove<>(Arrays.<Object>asList(a, b), variableDescriptor, v4);
-        assertEquals(false, abMove.isMoveDoable(scoreDirector));
+        abMove = new PillarChangeMove<>(Arrays.asList(a, b), variableDescriptor, v4);
+        assertThat(abMove.isMoveDoable(scoreDirector)).isFalse();
     }
 
     @Test
@@ -83,40 +86,43 @@ public class PillarChangeMoveTest {
         TestdataEntityProvidingEntity b = new TestdataEntityProvidingEntity("b", Arrays.asList(v2, v3, v4, v5), null);
         TestdataEntityProvidingEntity c = new TestdataEntityProvidingEntity("c", Arrays.asList(v3, v4, v5), null);
 
-        ScoreDirector<TestdataEntityProvidingSolution> scoreDirector = mock(ScoreDirector.class);
-        GenuineVariableDescriptor<TestdataEntityProvidingSolution> variableDescriptor = TestdataEntityProvidingEntity.buildVariableDescriptorForValue();
+        InnerScoreDirector<TestdataEntityProvidingSolution, ?> scoreDirector = mock(InnerScoreDirector.class);
+        GenuineVariableDescriptor<TestdataEntityProvidingSolution> variableDescriptor = TestdataEntityProvidingEntity
+                .buildVariableDescriptorForValue();
 
-        PillarChangeMove<TestdataEntityProvidingSolution> abMove = new PillarChangeMove<>(Arrays.<Object>asList(a, b), variableDescriptor, v2);
+        PillarChangeMove<TestdataEntityProvidingSolution> abMove = new PillarChangeMove<>(Arrays.asList(a, b),
+                variableDescriptor, v2);
 
         a.setValue(v3);
         b.setValue(v3);
         abMove.doMove(scoreDirector);
-        assertEquals(v2, a.getValue());
-        assertEquals(v2, b.getValue());
+        assertThat(a.getValue()).isEqualTo(v2);
+        assertThat(b.getValue()).isEqualTo(v2);
 
         a.setValue(v2);
         b.setValue(v2);
         abMove.doMove(scoreDirector);
-        assertEquals(v2, a.getValue());
-        assertEquals(v2, b.getValue());
+        assertThat(a.getValue()).isEqualTo(v2);
+        assertThat(b.getValue()).isEqualTo(v2);
 
-        PillarChangeMove<TestdataEntityProvidingSolution> abcMove = new PillarChangeMove<>(Arrays.<Object>asList(a, b, c), variableDescriptor, v2);
+        PillarChangeMove<TestdataEntityProvidingSolution> abcMove = new PillarChangeMove<>(Arrays.asList(a, b, c),
+                variableDescriptor, v2);
 
         a.setValue(v2);
         b.setValue(v2);
         c.setValue(v2);
         abcMove.doMove(scoreDirector);
-        assertEquals(v2, a.getValue());
-        assertEquals(v2, b.getValue());
-        assertEquals(v2, c.getValue());
+        assertThat(a.getValue()).isEqualTo(v2);
+        assertThat(b.getValue()).isEqualTo(v2);
+        assertThat(c.getValue()).isEqualTo(v2);
 
         a.setValue(v3);
         b.setValue(v3);
         c.setValue(v3);
         abcMove.doMove(scoreDirector);
-        assertEquals(v2, a.getValue());
-        assertEquals(v2, b.getValue());
-        assertEquals(v2, c.getValue());
+        assertThat(a.getValue()).isEqualTo(v2);
+        assertThat(b.getValue()).isEqualTo(v2);
+        assertThat(c.getValue()).isEqualTo(v2);
     }
 
     @Test
@@ -140,14 +146,14 @@ public class PillarChangeMoveTest {
         TestdataEntity destinationE4 = new TestdataEntity("e4", destinationV3);
 
         ScoreDirector<TestdataSolution> destinationScoreDirector = mockRebasingScoreDirector(
-                variableDescriptor.getEntityDescriptor().getSolutionDescriptor(), new Object[][]{
-                        {v1, destinationV1},
-                        {v2, destinationV2},
-                        {v3, destinationV3},
-                        {e1, destinationE1},
-                        {e2, destinationE2},
-                        {e3, destinationE3},
-                        {e4, destinationE4},
+                variableDescriptor.getEntityDescriptor().getSolutionDescriptor(), new Object[][] {
+                        { v1, destinationV1 },
+                        { v2, destinationV2 },
+                        { v3, destinationV3 },
+                        { e1, destinationE1 },
+                        { e2, destinationE2 },
+                        { e3, destinationE3 },
+                        { e4, destinationE4 },
                 });
 
         assertSameProperties(Arrays.asList(destinationE1, destinationE3), null,
@@ -161,24 +167,24 @@ public class PillarChangeMoveTest {
     }
 
     public void assertSameProperties(List<Object> pillar, Object toPlanningVariable, PillarChangeMove<?> move) {
-        assertListElementsSameExactly(pillar, (List<Object>) move.getPillar());
-        assertSame(toPlanningVariable, move.getToPlanningValue());
+        assertListElementsSameExactly(pillar, move.getPillar());
+        assertThat(move.getToPlanningValue()).isSameAs(toPlanningVariable);
     }
 
     @Test
     public void getters() {
         PillarChangeMove<TestdataMultiVarSolution> move = new PillarChangeMove<>(
-                Arrays.<Object>asList(new TestdataMultiVarEntity("a"), new TestdataMultiVarEntity("b")),
+                Arrays.asList(new TestdataMultiVarEntity("a"), new TestdataMultiVarEntity("b")),
                 TestdataMultiVarEntity.buildVariableDescriptorForPrimaryValue(), null);
         assertAllCodesOfCollection(move.getPillar(), "a", "b");
-        assertEquals("primaryValue", move.getVariableName());
+        assertThat(move.getVariableName()).isEqualTo("primaryValue");
         assertCode(null, move.getToPlanningValue());
 
         move = new PillarChangeMove<>(
-                Arrays.<Object>asList(new TestdataMultiVarEntity("c"), new TestdataMultiVarEntity("d")),
+                Arrays.asList(new TestdataMultiVarEntity("c"), new TestdataMultiVarEntity("d")),
                 TestdataMultiVarEntity.buildVariableDescriptorForSecondaryValue(), new TestdataValue("1"));
         assertAllCodesOfCollection(move.getPillar(), "c", "d");
-        assertEquals("secondaryValue", move.getVariableName());
+        assertThat(move.getVariableName()).isEqualTo("secondaryValue");
         assertCode("1", move.getToPlanningValue());
     }
 
@@ -193,11 +199,15 @@ public class PillarChangeMoveTest {
         TestdataEntity e = new TestdataEntity("e", v1);
         GenuineVariableDescriptor<TestdataSolution> variableDescriptor = TestdataEntity.buildVariableDescriptorForValue();
 
-        assertEquals("[a, b] {null -> v1}", new PillarChangeMove<>(Arrays.<Object>asList(a, b), variableDescriptor, v1).toString());
-        assertEquals("[a, b] {null -> v2}", new PillarChangeMove<>(Arrays.<Object>asList(a, b), variableDescriptor, v2).toString());
-        assertEquals("[c, d, e] {v1 -> null}", new PillarChangeMove<>(Arrays.<Object>asList(c, d, e), variableDescriptor, null).toString());
-        assertEquals("[c, d, e] {v1 -> v2}", new PillarChangeMove<>(Arrays.<Object>asList(c, d, e), variableDescriptor, v2).toString());
-        assertEquals("[d] {v1 -> v2}", new PillarChangeMove<>(Arrays.<Object>asList(d), variableDescriptor, v2).toString());
+        assertThat(new PillarChangeMove<>(Arrays.asList(a, b), variableDescriptor, v1).toString())
+                .isEqualTo("[a, b] {null -> v1}");
+        assertThat(new PillarChangeMove<>(Arrays.asList(a, b), variableDescriptor, v2).toString())
+                .isEqualTo("[a, b] {null -> v2}");
+        assertThat(new PillarChangeMove<>(Arrays.asList(c, d, e), variableDescriptor, null).toString())
+                .isEqualTo("[c, d, e] {v1 -> null}");
+        assertThat(new PillarChangeMove<>(Arrays.asList(c, d, e), variableDescriptor, v2).toString())
+                .isEqualTo("[c, d, e] {v1 -> v2}");
+        assertThat(new PillarChangeMove<>(Arrays.asList(d), variableDescriptor, v2).toString()).isEqualTo("[d] {v1 -> v2}");
     }
 
 }

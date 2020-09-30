@@ -1,5 +1,5 @@
 /*
- * Copyright 2010 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,29 +16,41 @@
 
 package org.optaplanner.core.impl.score.buildin.hardsoft;
 
-import org.junit.Test;
+import static org.assertj.core.api.Assertions.assertThat;
+
+import org.junit.jupiter.api.Test;
 import org.optaplanner.core.api.score.buildin.hardsoft.HardSoftScore;
 import org.optaplanner.core.config.score.trend.InitializingScoreTrendLevel;
 import org.optaplanner.core.impl.score.buildin.AbstractScoreDefinitionTest;
 import org.optaplanner.core.impl.score.trend.InitializingScoreTrend;
 
-import static org.junit.Assert.*;
-
 public class HardSoftScoreDefinitionTest extends AbstractScoreDefinitionTest {
 
     @Test
+    public void getZeroScore() {
+        HardSoftScore score = new HardSoftScoreDefinition().getZeroScore();
+        assertThat(score).isEqualTo(HardSoftScore.ZERO);
+    }
+
+    @Test
+    public void getSoftestOneScore() {
+        HardSoftScore score = new HardSoftScoreDefinition().getOneSoftestScore();
+        assertThat(score).isEqualTo(HardSoftScore.ONE_SOFT);
+    }
+
+    @Test
     public void getLevelsSize() {
-        assertEquals(2, new HardSoftScoreDefinition().getLevelsSize());
+        assertThat(new HardSoftScoreDefinition().getLevelsSize()).isEqualTo(2);
     }
 
     @Test
     public void getLevelLabels() {
-        assertArrayEquals(new String[]{"hard score", "soft score"}, new HardSoftScoreDefinition().getLevelLabels());
+        assertThat(new HardSoftScoreDefinition().getLevelLabels()).isEqualTo(new String[] { "hard score", "soft score" });
     }
 
     @Test
     public void getFeasibleLevelsSize() {
-        assertEquals(1, new HardSoftScoreDefinition().getFeasibleLevelsSize());
+        assertThat(new HardSoftScoreDefinition().getFeasibleLevelsSize()).isEqualTo(1);
     }
 
     @Test
@@ -47,9 +59,9 @@ public class HardSoftScoreDefinitionTest extends AbstractScoreDefinitionTest {
         HardSoftScore optimisticBound = scoreDefinition.buildOptimisticBound(
                 InitializingScoreTrend.buildUniformTrend(InitializingScoreTrendLevel.ONLY_UP, 2),
                 HardSoftScore.of(-1, -2));
-        assertEquals(0, optimisticBound.getInitScore());
-        assertEquals(Integer.MAX_VALUE, optimisticBound.getHardScore());
-        assertEquals(Integer.MAX_VALUE, optimisticBound.getSoftScore());
+        assertThat(optimisticBound.getInitScore()).isEqualTo(0);
+        assertThat(optimisticBound.getHardScore()).isEqualTo(Integer.MAX_VALUE);
+        assertThat(optimisticBound.getSoftScore()).isEqualTo(Integer.MAX_VALUE);
     }
 
     @Test
@@ -58,9 +70,9 @@ public class HardSoftScoreDefinitionTest extends AbstractScoreDefinitionTest {
         HardSoftScore optimisticBound = scoreDefinition.buildOptimisticBound(
                 InitializingScoreTrend.buildUniformTrend(InitializingScoreTrendLevel.ONLY_DOWN, 2),
                 HardSoftScore.of(-1, -2));
-        assertEquals(0, optimisticBound.getInitScore());
-        assertEquals(-1, optimisticBound.getHardScore());
-        assertEquals(-2, optimisticBound.getSoftScore());
+        assertThat(optimisticBound.getInitScore()).isEqualTo(0);
+        assertThat(optimisticBound.getHardScore()).isEqualTo(-1);
+        assertThat(optimisticBound.getSoftScore()).isEqualTo(-2);
     }
 
     @Test
@@ -69,9 +81,9 @@ public class HardSoftScoreDefinitionTest extends AbstractScoreDefinitionTest {
         HardSoftScore pessimisticBound = scoreDefinition.buildPessimisticBound(
                 InitializingScoreTrend.buildUniformTrend(InitializingScoreTrendLevel.ONLY_UP, 2),
                 HardSoftScore.of(-1, -2));
-        assertEquals(0, pessimisticBound.getInitScore());
-        assertEquals(-1, pessimisticBound.getHardScore());
-        assertEquals(-2, pessimisticBound.getSoftScore());
+        assertThat(pessimisticBound.getInitScore()).isEqualTo(0);
+        assertThat(pessimisticBound.getHardScore()).isEqualTo(-1);
+        assertThat(pessimisticBound.getSoftScore()).isEqualTo(-2);
     }
 
     @Test
@@ -80,9 +92,24 @@ public class HardSoftScoreDefinitionTest extends AbstractScoreDefinitionTest {
         HardSoftScore pessimisticBound = scoreDefinition.buildPessimisticBound(
                 InitializingScoreTrend.buildUniformTrend(InitializingScoreTrendLevel.ONLY_DOWN, 2),
                 HardSoftScore.of(-1, -2));
-        assertEquals(0, pessimisticBound.getInitScore());
-        assertEquals(Integer.MIN_VALUE, pessimisticBound.getHardScore());
-        assertEquals(Integer.MIN_VALUE, pessimisticBound.getSoftScore());
+        assertThat(pessimisticBound.getInitScore()).isEqualTo(0);
+        assertThat(pessimisticBound.getHardScore()).isEqualTo(Integer.MIN_VALUE);
+        assertThat(pessimisticBound.getSoftScore()).isEqualTo(Integer.MIN_VALUE);
+    }
+
+    @Test
+    public void divideBySanitizedDivisor() {
+        HardSoftScoreDefinition scoreDefinition = new HardSoftScoreDefinition();
+        HardSoftScore dividend = scoreDefinition.fromLevelNumbers(2, new Number[] { 0, 10 });
+        HardSoftScore zeroDivisor = scoreDefinition.getZeroScore();
+        assertThat(scoreDefinition.divideBySanitizedDivisor(dividend, zeroDivisor))
+                .isEqualTo(dividend);
+        HardSoftScore oneDivisor = scoreDefinition.getOneSoftestScore();
+        assertThat(scoreDefinition.divideBySanitizedDivisor(dividend, oneDivisor))
+                .isEqualTo(dividend);
+        HardSoftScore tenDivisor = scoreDefinition.fromLevelNumbers(10, new Number[] { 10, 10 });
+        assertThat(scoreDefinition.divideBySanitizedDivisor(dividend, tenDivisor))
+                .isEqualTo(scoreDefinition.fromLevelNumbers(0, new Number[] { 0, 1 }));
     }
 
 }

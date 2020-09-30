@@ -16,12 +16,13 @@
 
 package org.optaplanner.examples.pas.domain;
 
-import com.thoughtworks.xstream.annotations.XStreamAlias;
 import org.optaplanner.core.api.domain.entity.PlanningEntity;
 import org.optaplanner.core.api.domain.variable.PlanningVariable;
 import org.optaplanner.examples.common.domain.AbstractPersistable;
 import org.optaplanner.examples.pas.domain.solver.BedDesignationDifficultyWeightFactory;
 import org.optaplanner.examples.pas.domain.solver.BedStrengthComparator;
+
+import com.thoughtworks.xstream.annotations.XStreamAlias;
 
 @PlanningEntity(difficultyWeightFactoryClass = BedDesignationDifficultyWeightFactory.class)
 @XStreamAlias("BedDesignation")
@@ -29,6 +30,20 @@ public class BedDesignation extends AbstractPersistable {
 
     private AdmissionPart admissionPart;
     private Bed bed;
+
+    public BedDesignation(long id, AdmissionPart admissionPart, Bed bed) {
+        super(id);
+        this.admissionPart = admissionPart;
+        this.bed = bed;
+    }
+
+    public BedDesignation() {
+    }
+
+    public BedDesignation(AdmissionPart admissionPart, Bed bed) {
+        this.admissionPart = admissionPart;
+        this.bed = bed;
+    }
 
     public AdmissionPart getAdmissionPart() {
         return admissionPart;
@@ -38,8 +53,8 @@ public class BedDesignation extends AbstractPersistable {
         this.admissionPart = admissionPart;
     }
 
-    @PlanningVariable(nullable = true, valueRangeProviderRefs = {"bedRange"},
-            strengthComparatorClass = BedStrengthComparator.class)
+    @PlanningVariable(nullable = true, valueRangeProviderRefs = {
+            "bedRange" }, strengthComparatorClass = BedStrengthComparator.class)
     public Bed getBed() {
         return bed;
     }

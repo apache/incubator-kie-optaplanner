@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,17 +18,18 @@ package org.optaplanner.persistence.jackson.impl.testdata.domain;
 
 import java.util.List;
 
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import org.optaplanner.core.api.domain.solution.PlanningEntityCollectionProperty;
 import org.optaplanner.core.api.domain.solution.PlanningScore;
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
-import org.optaplanner.core.api.domain.solution.drools.ProblemFactCollectionProperty;
+import org.optaplanner.core.api.domain.solution.ProblemFactCollectionProperty;
 import org.optaplanner.core.api.domain.valuerange.ValueRangeProvider;
 import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
-import org.optaplanner.persistence.jackson.api.score.buildin.simple.SimpleScoreJacksonJsonDeserializer;
-import org.optaplanner.persistence.jackson.api.score.buildin.simple.SimpleScoreJacksonJsonSerializer;
+import org.optaplanner.persistence.jackson.api.score.buildin.simple.SimpleScoreJacksonDeserializer;
+import org.optaplanner.persistence.jackson.api.score.buildin.simple.SimpleScoreJacksonSerializer;
+
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
 @PlanningSolution
 public class JacksonTestdataSolution extends JacksonTestdataObject {
@@ -69,8 +70,8 @@ public class JacksonTestdataSolution extends JacksonTestdataObject {
     }
 
     @PlanningScore
-    @JsonSerialize(using = SimpleScoreJacksonJsonSerializer.class)
-    @JsonDeserialize(using = SimpleScoreJacksonJsonDeserializer.class)
+    @JsonSerialize(using = SimpleScoreJacksonSerializer.class)
+    @JsonDeserialize(using = SimpleScoreJacksonDeserializer.class)
     public SimpleScore getScore() {
         return score;
     }

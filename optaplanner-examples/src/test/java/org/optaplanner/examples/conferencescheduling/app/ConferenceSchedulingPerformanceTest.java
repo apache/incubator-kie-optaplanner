@@ -16,38 +16,25 @@
 
 package org.optaplanner.examples.conferencescheduling.app;
 
-import java.io.File;
+import java.util.stream.Stream;
 
-import org.junit.Test;
 import org.optaplanner.core.config.solver.EnvironmentMode;
 import org.optaplanner.examples.common.app.SolverPerformanceTest;
 import org.optaplanner.examples.conferencescheduling.domain.ConferenceSolution;
 
 public class ConferenceSchedulingPerformanceTest extends SolverPerformanceTest<ConferenceSolution> {
 
-    public ConferenceSchedulingPerformanceTest(String moveThreadCount) {
-        super(moveThreadCount);
-    }
+    private static final String UNSOLVED_DATA_FILE = "data/conferencescheduling/unsolved/72talks-12timeslots-10rooms.xlsx";
 
     @Override
     protected ConferenceSchedulingApp createCommonApp() {
         return new ConferenceSchedulingApp();
     }
 
-    // ************************************************************************
-    // Tests
-    // ************************************************************************
-
-    @Test(timeout = 600000)
-    public void solveModel() {
-        File unsolvedDataFile = new File("data/conferencescheduling/unsolved/72talks-12timeslots-10rooms.xlsx");
-        runSpeedTest(unsolvedDataFile, "-2115hard/0medium/-1350915soft");
+    @Override
+    protected Stream<TestData> testData() {
+        return Stream.of(
+                testData(UNSOLVED_DATA_FILE, "-2115hard/0medium/-1350915soft", EnvironmentMode.REPRODUCIBLE),
+                testData(UNSOLVED_DATA_FILE, "-2700hard/0medium/-1379805soft", EnvironmentMode.FAST_ASSERT));
     }
-
-    @Test(timeout = 600000)
-    public void solveModelFastAssert() {
-        File unsolvedDataFile = new File("data/conferencescheduling/unsolved/72talks-12timeslots-10rooms.xlsx");
-        runSpeedTest(unsolvedDataFile, "-2700hard/0medium/-1379805soft", EnvironmentMode.FAST_ASSERT);
-    }
-
 }

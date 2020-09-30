@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,11 +24,12 @@ import java.util.List;
 import java.util.Objects;
 
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
+import org.optaplanner.core.api.score.director.ScoreDirector;
 import org.optaplanner.core.impl.domain.variable.anchor.AnchorVariableSupply;
 import org.optaplanner.core.impl.domain.variable.descriptor.GenuineVariableDescriptor;
 import org.optaplanner.core.impl.domain.variable.inverserelation.SingletonInverseVariableSupply;
 import org.optaplanner.core.impl.heuristic.move.AbstractMove;
-import org.optaplanner.core.impl.score.director.ScoreDirector;
+import org.optaplanner.core.impl.score.director.InnerScoreDirector;
 
 /**
  * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
@@ -81,7 +82,8 @@ public class KOptMove<Solution_> extends AbstractMove<Solution_> {
         Object formerValue = firstValue;
         for (Object value : values) {
             Object anchor = variableDescriptor.isValuePotentialAnchor(value)
-                    ? value : anchorVariableSupply.getAnchor(value);
+                    ? value
+                    : anchorVariableSupply.getAnchor(value);
             if (anchor == formerAnchor && compareValuesInSameChain(formerValue, value) >= 0) {
                 return false;
             }
@@ -121,26 +123,27 @@ public class KOptMove<Solution_> extends AbstractMove<Solution_> {
 
     @Override
     protected void doMoveOnGenuineVariables(ScoreDirector<Solution_> scoreDirector) {
+        InnerScoreDirector<Solution_, ?> innerScoreDirector = (InnerScoreDirector<Solution_, ?>) scoreDirector;
         Object firstValue = variableDescriptor.getValue(entity);
         Object formerEntity = entity;
         for (int i = 0; i < values.length; i++) {
             Object value = values[i];
             if (formerEntity != null) {
-                scoreDirector.changeVariableFacade(variableDescriptor, formerEntity, value);
+                innerScoreDirector.changeVariableFacade(variableDescriptor, formerEntity, value);
             }
             formerEntity = inverseVariableSupply.getInverseSingleton(value);
         }
         if (formerEntity != null) {
-            scoreDirector.changeVariableFacade(variableDescriptor, formerEntity, firstValue);
+            innerScoreDirector.changeVariableFacade(variableDescriptor, formerEntity, firstValue);
         }
     }
 
     @Override
     public KOptMove<Solution_> rebase(ScoreDirector<Solution_> destinationScoreDirector) {
         throw new UnsupportedOperationException("https://issues.redhat.com/browse/PLANNER-1250"); // TODO test also disabled
-//        return new KOptMove<>(variableDescriptor, inverseVariableSupply, anchorVariableSupply,
-//                destinationScoreDirector.lookUpWorkingObject(entity),
-//                rebaseArray(values, destinationScoreDirector));
+        //        return new KOptMove<>(variableDescriptor, inverseVariableSupply, anchorVariableSupply,
+        //                destinationScoreDirector.lookUpWorkingObject(entity),
+        //                rebaseArray(values, destinationScoreDirector));
     }
 
     // ************************************************************************

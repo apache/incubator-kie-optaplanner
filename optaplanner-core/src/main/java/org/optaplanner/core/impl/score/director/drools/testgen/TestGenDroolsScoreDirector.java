@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -36,7 +36,8 @@ import org.optaplanner.core.impl.score.director.drools.testgen.reproducer.TestGe
 import org.optaplanner.core.impl.score.director.drools.testgen.reproducer.TestGenCorruptedVariableListenerReproducer;
 import org.optaplanner.core.impl.score.director.drools.testgen.reproducer.TestGenDroolsExceptionReproducer;
 
-public class TestGenDroolsScoreDirector<Solution_> extends DroolsScoreDirector<Solution_> {
+public class TestGenDroolsScoreDirector<Solution_, Score_ extends Score<Score_>>
+        extends DroolsScoreDirector<Solution_, Score_> {
 
     private static final String TEST_CLASS_NAME = "DroolsReproducerTest";
     private final TestGenKieSessionJournal journal = new TestGenKieSessionJournal();
@@ -44,8 +45,7 @@ public class TestGenDroolsScoreDirector<Solution_> extends DroolsScoreDirector<S
     private final TestGenTestWriter writer = new TestGenTestWriter();
     private final Deque<String> oldValues = new ArrayDeque<>();
 
-    public TestGenDroolsScoreDirector(
-            DroolsScoreDirectorFactory<Solution_> scoreDirectorFactory,
+    public TestGenDroolsScoreDirector(DroolsScoreDirectorFactory<Solution_, Score_> scoreDirectorFactory,
             boolean lookUpEnabled,
             boolean constraintMatchEnabledPreference,
             List<String> scoreDrlList,
@@ -62,9 +62,9 @@ public class TestGenDroolsScoreDirector<Solution_> extends DroolsScoreDirector<S
         KieSession newKieSession = getScoreDirectorFactory().newKieSession();
 
         // set a fresh score holder
-        ScoreDefinition<?> scoreDefinition = getScoreDefinition();
+        ScoreDefinition<Score_> scoreDefinition = getScoreDefinition();
         if (scoreDefinition != null) {
-            ScoreHolder sh = scoreDefinition.buildScoreHolder(constraintMatchEnabledPreference);
+            ScoreHolder<Score_> sh = scoreDefinition.buildScoreHolder(constraintMatchEnabledPreference);
             newKieSession.setGlobal(DroolsScoreDirector.GLOBAL_SCORE_HOLDER_KEY, sh);
         }
 
@@ -83,7 +83,7 @@ public class TestGenDroolsScoreDirector<Solution_> extends DroolsScoreDirector<S
     }
 
     @Override
-    public Score calculateScore() {
+    public Score_ calculateScore() {
         journal.fireAllRules();
         try {
             return super.calculateScore();
@@ -98,7 +98,7 @@ public class TestGenDroolsScoreDirector<Solution_> extends DroolsScoreDirector<S
     }
 
     @Override
-    public void assertShadowVariablesAreNotStale(Score expectedWorkingScore, Object completedAction) {
+    public void assertShadowVariablesAreNotStale(Score_ expectedWorkingScore, Object completedAction) {
         try {
             journal.enterAssertMode();
             super.assertShadowVariablesAreNotStale(expectedWorkingScore, completedAction);
@@ -106,8 +106,8 @@ public class TestGenDroolsScoreDirector<Solution_> extends DroolsScoreDirector<S
         } catch (IllegalStateException e) {
             // catch corrupted VariableListener exception and create a minimal reproducing test
             if (e.getMessage().startsWith("Impossible")) {
-                TestGenCorruptedVariableListenerReproducer reproducer
-                        = new TestGenCorruptedVariableListenerReproducer(e.getMessage(), this);
+                TestGenCorruptedVariableListenerReproducer reproducer = new TestGenCorruptedVariableListenerReproducer(
+                        e.getMessage(), this);
                 // FIXME this is currently broken. The pruning needs to be smarter and not remove genuine variable
                 // updates that directly affect shadow variables in the last (corrupted) variable listeners update.
                 // If the genuine update is removed the shadow update obviously becomes inconsistent, which leads
@@ -129,7 +129,7 @@ public class TestGenDroolsScoreDirector<Solution_> extends DroolsScoreDirector<S
     }
 
     @Override
-    public void assertWorkingScoreFromScratch(Score workingScore, Object completedAction) {
+    public void assertWorkingScoreFromScratch(Score_ workingScore, Object completedAction) {
         try {
             super.assertWorkingScoreFromScratch(workingScore, completedAction);
         } catch (IllegalStateException e) {
@@ -149,13 +149,7 @@ public class TestGenDroolsScoreDirector<Solution_> extends DroolsScoreDirector<S
     }
 
     @Override
-    public Collection<ConstraintMatchTotal> getConstraintMatchTotals() {
-        journal.fireAllRules();
-        return super.getConstraintMatchTotals();
-    }
-
-    @Override
-    public Map<String, ConstraintMatchTotal> getConstraintMatchTotalMap() {
+    public Map<String, ConstraintMatchTotal<Score_>> getConstraintMatchTotalMap() {
         journal.fireAllRules();
         return super.getConstraintMatchTotalMap();
     }

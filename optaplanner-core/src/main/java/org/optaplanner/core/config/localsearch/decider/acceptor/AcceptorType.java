@@ -1,5 +1,5 @@
 /*
- * Copyright 2014 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,13 +16,15 @@
 
 package org.optaplanner.core.config.localsearch.decider.acceptor;
 
+import javax.xml.bind.annotation.XmlEnum;
+
+@XmlEnum
 public enum AcceptorType {
     HILL_CLIMBING,
     ENTITY_TABU,
     VALUE_TABU,
     MOVE_TABU,
     UNDO_MOVE_TABU,
-    SOLUTION_TABU,
     SIMULATED_ANNEALING,
     LATE_ACCEPTANCE,
     GREAT_DELUGE,

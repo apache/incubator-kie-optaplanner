@@ -1,5 +1,5 @@
 /*
- * Copyright 2017 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,6 +14,9 @@
  * limitations under the License.
  */
 package org.optaplanner.core.impl.domain.lookup;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.params.provider.Arguments.arguments;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -30,85 +33,77 @@ import java.time.OffsetTime;
 import java.time.Period;
 import java.time.Year;
 import java.time.YearMonth;
-import java.time.ZoneId;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.time.temporal.ChronoUnit;
-import java.time.temporal.TemporalUnit;
 import java.util.Collections;
+import java.util.stream.Stream;
 
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.optaplanner.core.api.domain.lookup.LookUpStrategyType;
 
-import static org.junit.Assert.*;
-
-@RunWith(Parameterized.class)
 public class LookUpStrategyImmutableTest {
 
-    private final Object internalObject;
-    private final Object externalObject;
     private LookUpManager lookUpManager;
 
-    public LookUpStrategyImmutableTest(Object internalObject, Object externalObject) {
-        this.internalObject = internalObject;
-        this.externalObject = externalObject;
+    public static Stream<Arguments> data() {
+        return Stream.of(
+                arguments(true, new Boolean(true)),
+                arguments((byte) 1, new Byte((byte) 1)),
+                arguments((short) 1, new Short((short) 1)),
+                arguments(1, new Integer(1)),
+                arguments(1L, new Long(1)),
+                arguments(0.5f, new Float(0.5f)),
+                arguments(0.1d, new Double(0.1d)),
+                arguments(BigInteger.ONE, new BigInteger("1")),
+                arguments(BigDecimal.ONE, new BigDecimal("1")),
+                arguments('!', new Character((char) 33)),
+                arguments("", new String()),
+
+                arguments(Instant.ofEpochMilli(12345L), Instant.ofEpochMilli(12345L)),
+                arguments(LocalDateTime.of(1, 2, 3, 4, 5), LocalDateTime.of(1, 2, 3, 4, 5)),
+                arguments(LocalTime.of(1, 2), LocalTime.of(1, 2)),
+                arguments(LocalDate.of(1, 2, 3), LocalDate.of(1, 2, 3)),
+                arguments(MonthDay.of(12, 31), MonthDay.of(12, 31)),
+                arguments(DayOfWeek.MONDAY, DayOfWeek.MONDAY),
+                arguments(Month.DECEMBER, Month.DECEMBER),
+                arguments(YearMonth.of(1999, 12), YearMonth.of(1999, 12)),
+                arguments(Year.of(1999), Year.of(1999)),
+                arguments(OffsetDateTime.of(1, 2, 3, 4, 5, 6, 7, ZoneOffset.UTC),
+                        OffsetDateTime.of(1, 2, 3, 4, 5, 6, 7, ZoneOffset.UTC)),
+                arguments(OffsetTime.of(1, 2, 3, 4, ZoneOffset.UTC), OffsetTime.of(1, 2, 3, 4, ZoneOffset.UTC)),
+                arguments(ZonedDateTime.of(1, 2, 3, 4, 5, 6, 7, ZoneOffset.UTC),
+                        ZonedDateTime.of(1, 2, 3, 4, 5, 6, 7, ZoneOffset.UTC)),
+                arguments(ZoneOffset.UTC, ZoneOffset.UTC),
+                arguments(Duration.of(5, ChronoUnit.DAYS), Duration.of(5, ChronoUnit.DAYS)),
+                arguments(Period.of(1, 2, 3), Period.of(1, 2, 3)));
     }
 
-    @Parameterized.Parameters(name = "{index}: {0}")
-    public static Object[] data() {
-        return new Object[][]{
-                {true, new Boolean(true)},
-                {(byte) 1, new Byte((byte) 1)},
-                {(short) 1, new Short((short) 1)},
-                {1, new Integer(1)},
-                {1L, new Long(1)},
-                {0.5f, new Float(0.5f)},
-                {0.1d, new Double(0.1d)},
-                {BigInteger.ONE, new BigInteger("1")},
-                {BigDecimal.ONE, new BigDecimal("1")},
-                {'!', new Character((char) 33)},
-                {"", new String()},
-
-                {Instant.ofEpochMilli(12345L), Instant.ofEpochMilli(12345L)},
-                {LocalDateTime.of(1, 2, 3, 4, 5), LocalDateTime.of(1, 2, 3, 4, 5)},
-                {LocalTime.of(1, 2), LocalTime.of(1, 2)},
-                {LocalDate.of(1, 2, 3), LocalDate.of(1, 2, 3)},
-                {MonthDay.of(12, 31), MonthDay.of(12, 31)},
-                {DayOfWeek.MONDAY, DayOfWeek.MONDAY},
-                {Month.DECEMBER, Month.DECEMBER},
-                {YearMonth.of(1999, 12), YearMonth.of(1999, 12)},
-                {Year.of(1999), Year.of(1999)},
-                {OffsetDateTime.of(1, 2, 3, 4, 5, 6, 7, ZoneOffset.UTC), OffsetDateTime.of(1, 2, 3, 4, 5, 6, 7, ZoneOffset.UTC)},
-                {OffsetTime.of(1, 2, 3, 4, ZoneOffset.UTC), OffsetTime.of(1, 2, 3, 4, ZoneOffset.UTC)},
-                {ZonedDateTime.of(1, 2, 3, 4, 5, 6, 7, ZoneOffset.UTC), ZonedDateTime.of(1, 2, 3, 4, 5, 6, 7, ZoneOffset.UTC)},
-                {ZoneOffset.UTC, ZoneOffset.UTC},
-                {Duration.of(5, ChronoUnit.DAYS), Duration.of(5, ChronoUnit.DAYS)},
-                {Period.of(1 ,2, 3), Period.of(1 ,2, 3)}
-        };
-    }
-
-    @Before
+    @BeforeEach
     public void setUpLookUpManager() {
         lookUpManager = new LookUpManager(new LookUpStrategyResolver(LookUpStrategyType.PLANNING_ID_OR_NONE));
         lookUpManager.resetWorkingObjects(Collections.emptyList());
     }
 
-    @Test
-    public void addImmutable() {
+    @ParameterizedTest(name = "{index}: {0}")
+    @MethodSource("data")
+    public void addImmutable(Object internalObject) {
         lookUpManager.addWorkingObject(internalObject);
     }
 
-    @Test
-    public void removeImmutable() {
+    @ParameterizedTest(name = "{index}: {0}")
+    @MethodSource("data")
+    public void removeImmutable(Object internalObject) {
         lookUpManager.removeWorkingObject(internalObject);
     }
 
-    @Test
-    public void lookUpImmutable() {
-        assertEquals(internalObject, lookUpManager.lookUpWorkingObject(externalObject));
+    @ParameterizedTest(name = "{index}: {0}")
+    @MethodSource("data")
+    public void lookUpImmutable(Object internalObject, Object externalObject) {
+        assertThat(lookUpManager.lookUpWorkingObject(externalObject)).isEqualTo(internalObject);
     }
 
 }

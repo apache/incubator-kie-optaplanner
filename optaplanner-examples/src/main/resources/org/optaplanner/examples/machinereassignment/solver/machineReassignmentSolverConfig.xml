@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<solver>
+<solver xmlns="https://www.optaplanner.org/xsd/solver" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="https://www.optaplanner.org/xsd/solver https://www.optaplanner.org/xsd/solver/solver.xsd">
   <!--<environmentMode>FULL_ASSERT</environmentMode>--><!-- To slowly prove there are no bugs in this code -->
   <!--<moveThreadCount>AUTO</moveThreadCount>--><!-- To solve faster by saturating multiple CPU cores -->
 
@@ -9,10 +10,10 @@
   <scoreDirectorFactory>
     <incrementalScoreCalculatorClass>org.optaplanner.examples.machinereassignment.solver.score.MachineReassignmentIncrementalScoreCalculator</incrementalScoreCalculatorClass>
     <!--<constraintProviderClass>org.optaplanner.examples.machinereassignment.solver.score.MachineReassignmentConstraintProvider</constraintProviderClass>-->
-    <!--<scoreDrl>org/optaplanner/examples/machinereassignment/solver/machineReassignmentScoreRules.drl</scoreDrl>-->
+    <!--<scoreDrl>org/optaplanner/examples/machinereassignment/solver/machineReassignmentConstraints.drl</scoreDrl>-->
     <!-- TODO incrementalScoreCalculator and scoreDRL give different scores, so assertionScoreDirectorFactory fails -->
     <!--<assertionScoreDirectorFactory>-->
-      <!--<scoreDrl>org/optaplanner/examples/machinereassignment/solver/machineReassignmentScoreRules.drl</scoreDrl>-->
+      <!--<scoreDrl>org/optaplanner/examples/machinereassignment/solver/machineReassignmentConstraints.drl</scoreDrl>-->
     <!--</assertionScoreDirectorFactory>-->
   </scoreDirectorFactory>
   <termination>

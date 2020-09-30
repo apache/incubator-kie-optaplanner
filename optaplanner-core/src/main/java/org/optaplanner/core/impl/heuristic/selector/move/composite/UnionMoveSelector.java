@@ -1,5 +1,5 @@
 /*
- * Copyright 2012 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,21 +16,21 @@
 
 package org.optaplanner.core.impl.heuristic.selector.move.composite;
 
-import java.util.Collections;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.NavigableMap;
 import java.util.TreeMap;
+import java.util.stream.Stream;
+import java.util.stream.StreamSupport;
 
-import com.google.common.collect.Iterators;
+import org.optaplanner.core.api.score.director.ScoreDirector;
 import org.optaplanner.core.impl.heuristic.move.Move;
 import org.optaplanner.core.impl.heuristic.selector.common.decorator.SelectionProbabilityWeightFactory;
 import org.optaplanner.core.impl.heuristic.selector.common.iterator.SelectionIterator;
 import org.optaplanner.core.impl.heuristic.selector.move.MoveSelector;
 import org.optaplanner.core.impl.phase.scope.AbstractStepScope;
-import org.optaplanner.core.impl.score.director.ScoreDirector;
 import org.optaplanner.core.impl.solver.random.RandomUtils;
 
 /**
@@ -39,6 +39,7 @@ import org.optaplanner.core.impl.solver.random.RandomUtils;
  * For example: a union of {A, B, C} and {X, Y} will result in {A, B, C, X, Y}.
  * <p>
  * Warning: there is no duplicated {@link Move} check, so union of {A, B, C} and {B, D} will result in {A, B, C, B, D}.
+ *
  * @see CompositeMoveSelector
  */
 public class UnionMoveSelector extends CompositeMoveSelector {
@@ -66,7 +67,7 @@ public class UnionMoveSelector extends CompositeMoveSelector {
             if (selectorProbabilityWeightFactory == null) {
                 throw new IllegalArgumentException("The selector (" + this
                         + ") with randomSelection (" + randomSelection
-                        + ") requires a selectorProbabilityWeightFactory ("  + selectorProbabilityWeightFactory
+                        + ") requires a selectorProbabilityWeightFactory (" + selectorProbabilityWeightFactory
                         + ").");
             }
         }
@@ -120,14 +121,18 @@ public class UnionMoveSelector extends CompositeMoveSelector {
     @Override
     public Iterator<Move> iterator() {
         if (!randomSelection) {
-            Iterator<Move> iterator = Collections.emptyIterator();
+            Stream<Move> stream = Stream.empty();
             for (MoveSelector moveSelector : childMoveSelectorList) {
-                iterator = Iterators.concat(iterator, moveSelector.iterator());
+                stream = Stream.concat(stream, toStream(moveSelector));
             }
-            return iterator;
+            return stream.iterator();
         } else {
             return new RandomUnionMoveIterator();
         }
+    }
+
+    private static Stream<Move> toStream(MoveSelector moveSelector) {
+        return StreamSupport.stream(moveSelector.spliterator(), false);
     }
 
     public class RandomUnionMoveIterator extends SelectionIterator<Move> {
@@ -150,7 +155,7 @@ public class UnionMoveSelector extends CompositeMoveSelector {
                 if (probabilityItem.probabilityWeight < 0.0) {
                     throw new IllegalStateException(
                             "The selectorProbabilityWeightFactory (" + selectorProbabilityWeightFactory
-                            + ") returned a negative probabilityWeight (" + probabilityItem.probabilityWeight + ").");
+                                    + ") returned a negative probabilityWeight (" + probabilityItem.probabilityWeight + ").");
                 }
                 probabilityItemMap.put(moveIterator, probabilityItem);
             }

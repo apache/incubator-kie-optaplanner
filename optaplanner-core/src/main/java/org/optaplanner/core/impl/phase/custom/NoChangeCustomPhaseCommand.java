@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,12 +16,12 @@
 
 package org.optaplanner.core.impl.phase.custom;
 
-import org.optaplanner.core.impl.score.director.ScoreDirector;
+import org.optaplanner.core.api.score.director.ScoreDirector;
 
 /**
  * Makes no changes.
  */
-public class NoChangeCustomPhaseCommand extends AbstractCustomPhaseCommand<Object> {
+public class NoChangeCustomPhaseCommand implements CustomPhaseCommand<Object> {
 
     @Override
     public void changeWorkingSolution(ScoreDirector<Object> scoreDirector) {

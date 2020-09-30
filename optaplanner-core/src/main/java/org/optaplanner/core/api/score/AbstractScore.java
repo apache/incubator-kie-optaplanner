@@ -1,5 +1,5 @@
 /*
- * Copyright 2010 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,15 +26,17 @@ import org.optaplanner.core.api.score.buildin.hardsoft.HardSoftScore;
  * Abstract superclass for {@link Score}.
  * <p>
  * Subclasses must be immutable.
- * @param <S> the actual score type
+ *
+ * @param <Score_> the actual score type
  * @see Score
  * @see HardSoftScore
  */
-public abstract class AbstractScore<S extends Score> implements Score<S>, Serializable {
+public abstract class AbstractScore<Score_ extends AbstractScore<Score_>> implements Score<Score_>,
+        Serializable {
 
     protected static final String INIT_LABEL = "init";
 
-    protected static String[] parseScoreTokens(Class<? extends Score> scoreClass,
+    protected static String[] parseScoreTokens(Class<? extends AbstractScore<?>> scoreClass,
             String scoreString, String... levelSuffixes) {
         String[] scoreTokens = new String[levelSuffixes.length + 1];
         String[] suffixedScoreTokens = scoreString.split("/");
@@ -76,7 +78,7 @@ public abstract class AbstractScore<S extends Score> implements Score<S>, Serial
         return scoreTokens;
     }
 
-    protected static int parseInitScore(Class<? extends Score> scoreClass,
+    protected static int parseInitScore(Class<? extends AbstractScore<?>> scoreClass,
             String scoreString, String initScoreString) {
         try {
             return Integer.parseInt(initScoreString);
@@ -87,7 +89,7 @@ public abstract class AbstractScore<S extends Score> implements Score<S>, Serial
         }
     }
 
-    protected static int parseLevelAsInt(Class<? extends Score> scoreClass,
+    protected static int parseLevelAsInt(Class<? extends AbstractScore<?>> scoreClass,
             String scoreString, String levelString) {
         if (levelString.equals("*")) {
             return Integer.MIN_VALUE;
@@ -101,7 +103,7 @@ public abstract class AbstractScore<S extends Score> implements Score<S>, Serial
         }
     }
 
-    protected static long parseLevelAsLong(Class<? extends Score> scoreClass,
+    protected static long parseLevelAsLong(Class<? extends AbstractScore<?>> scoreClass,
             String scoreString, String levelString) {
         if (levelString.equals("*")) {
             return Long.MIN_VALUE;
@@ -115,21 +117,7 @@ public abstract class AbstractScore<S extends Score> implements Score<S>, Serial
         }
     }
 
-    protected static double parseLevelAsDouble(Class<? extends Score> scoreClass,
-            String scoreString, String levelString) {
-        if (levelString.equals("*")) {
-            return Double.MIN_VALUE;
-        }
-        try {
-            return Double.parseDouble(levelString);
-        } catch (NumberFormatException e) {
-            throw new IllegalArgumentException("The scoreString (" + scoreString
-                    + ") for the scoreClass (" + scoreClass.getSimpleName() + ") has a levelString (" + levelString
-                    + ") which is not a valid double.", e);
-        }
-    }
-
-    protected static BigDecimal parseLevelAsBigDecimal(Class<? extends Score> scoreClass,
+    protected static BigDecimal parseLevelAsBigDecimal(Class<? extends AbstractScore<?>> scoreClass,
             String scoreString, String levelString) {
         if (levelString.equals("*")) {
             throw new IllegalArgumentException("The scoreString (" + scoreString
@@ -192,15 +180,6 @@ public abstract class AbstractScore<S extends Score> implements Score<S>, Serial
     @Override
     public boolean isSolutionInitialized() {
         return initScore >= 0;
-    }
-
-    protected void assertNoInitScore() {
-        if (initScore != 0) {
-            throw new IllegalStateException("The score (" + this + ")'s initScore (" + initScore
-                    + ") should be 0.\n"
-                    + "Maybe the score calculator is calculating the initScore too,"
-                    + " although it's the score director's responsibility.");
-        }
     }
 
     protected String getInitPrefix() {

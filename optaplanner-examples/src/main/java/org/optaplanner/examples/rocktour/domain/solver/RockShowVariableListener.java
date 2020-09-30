@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,17 +16,17 @@
 
 package org.optaplanner.examples.rocktour.domain.solver;
 
+import static java.time.temporal.ChronoUnit.DAYS;
+
 import java.time.LocalDate;
 import java.util.Objects;
 
+import org.optaplanner.core.api.score.director.ScoreDirector;
 import org.optaplanner.core.impl.domain.variable.listener.VariableListener;
-import org.optaplanner.core.impl.score.director.ScoreDirector;
 import org.optaplanner.examples.rocktour.domain.RockShow;
 import org.optaplanner.examples.rocktour.domain.RockStandstill;
 import org.optaplanner.examples.rocktour.domain.RockTimeOfDay;
 import org.optaplanner.examples.rocktour.domain.RockTourSolution;
-
-import static java.time.temporal.ChronoUnit.*;
 
 public class RockShowVariableListener implements VariableListener<RockShow> {
 
@@ -68,9 +68,9 @@ public class RockShowVariableListener implements VariableListener<RockShow> {
         RockShow shadowShow = sourceShow;
         while (shadowShow != null
                 && !(Objects.equals(shadowShow.getDate(), arrival.date)
-                    && Objects.equals(shadowShow.getTimeOfDay(), arrival.timeOfDay)
-                    && shadowShow.getHosWeekStart() == arrival.hosWeekStart
-                    && Objects.equals(shadowShow.getHosWeekDrivingSecondsTotal(), arrival.hosWeekDrivingSecondsTotal))) {
+                        && Objects.equals(shadowShow.getTimeOfDay(), arrival.timeOfDay)
+                        && shadowShow.getHosWeekStart() == arrival.hosWeekStart
+                        && Objects.equals(shadowShow.getHosWeekDrivingSecondsTotal(), arrival.hosWeekDrivingSecondsTotal))) {
             scoreDirector.beforeVariableChanged(shadowShow, "date");
             shadowShow.setDate(arrival.date);
             scoreDirector.afterVariableChanged(shadowShow, "date");
@@ -100,7 +100,8 @@ public class RockShowVariableListener implements VariableListener<RockShow> {
         long earlyLateBreakDrivingSecondsBudget = solution.getConstraintConfiguration().getEarlyLateBreakDrivingSecondsBudget();
         long nightDrivingSecondsBudget = solution.getConstraintConfiguration().getNightDrivingSecondsBudget();
         long hosWeekDrivingSecondsBudget = solution.getConstraintConfiguration().getHosWeekDrivingSecondsBudget();
-        int hosWeekConsecutiveDrivingDaysBudget = solution.getConstraintConfiguration().getHosWeekConsecutiveDrivingDaysBudget();
+        int hosWeekConsecutiveDrivingDaysBudget = solution.getConstraintConfiguration()
+                .getHosWeekConsecutiveDrivingDaysBudget();
         int hosWeekRestDays = solution.getConstraintConfiguration().getHosWeekRestDays();
 
         RockTimeOfDay timeOfDay = previousStandstill.getDepartureTimeOfDay();
@@ -153,12 +154,12 @@ public class RockShowVariableListener implements VariableListener<RockShow> {
         return new Arrival(showDate, timeOfDay, hosWeekStart, hosWeekDrivingSecondsTotal);
     }
 
-    private class Arrival {
+    private static final class Arrival {
 
-        public LocalDate date;
-        public RockTimeOfDay timeOfDay;
-        public RockStandstill hosWeekStart;
-        public Long hosWeekDrivingSecondsTotal;
+        public final LocalDate date;
+        public final RockTimeOfDay timeOfDay;
+        public final RockStandstill hosWeekStart;
+        public final Long hosWeekDrivingSecondsTotal;
 
         public Arrival(LocalDate date, RockTimeOfDay timeOfDay, RockStandstill hosWeekStart, Long hosWeekDrivingSecondsTotal) {
             this.date = date;

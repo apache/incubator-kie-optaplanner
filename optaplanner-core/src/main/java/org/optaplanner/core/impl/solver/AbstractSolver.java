@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -30,7 +30,7 @@ import org.optaplanner.core.impl.phase.scope.AbstractPhaseScope;
 import org.optaplanner.core.impl.phase.scope.AbstractStepScope;
 import org.optaplanner.core.impl.solver.event.SolverEventSupport;
 import org.optaplanner.core.impl.solver.recaller.BestSolutionRecaller;
-import org.optaplanner.core.impl.solver.scope.DefaultSolverScope;
+import org.optaplanner.core.impl.solver.scope.SolverScope;
 import org.optaplanner.core.impl.solver.termination.Termination;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -40,6 +40,7 @@ import org.slf4j.LoggerFactory;
  * <p>
  * Do not create a new child {@link Solver} to implement a new heuristic or metaheuristic,
  * just use a new {@link Phase} for that.
+ *
  * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
  * @see Solver
  * @see DefaultSolver
@@ -75,7 +76,7 @@ public abstract class AbstractSolver<Solution_> implements Solver<Solution_> {
     // Lifecycle methods
     // ************************************************************************
 
-    public void solvingStarted(DefaultSolverScope<Solution_> solverScope) {
+    public void solvingStarted(SolverScope<Solution_> solverScope) {
         solverScope.setWorkingSolutionFromBestSolution();
         bestSolutionRecaller.solvingStarted(solverScope);
         termination.solvingStarted(solverScope);
@@ -85,7 +86,7 @@ public abstract class AbstractSolver<Solution_> implements Solver<Solution_> {
         }
     }
 
-    protected void runPhases(DefaultSolverScope<Solution_> solverScope) {
+    protected void runPhases(SolverScope<Solution_> solverScope) {
         if (solverScope.getSolutionDescriptor().getMovableEntityCount(solverScope.getScoreDirector()) == 0) {
             logger.info("Skipped all phases ({}): out of {} planning entities, none are movable (non-pinned).",
                     phaseList.size(),
@@ -103,7 +104,7 @@ public abstract class AbstractSolver<Solution_> implements Solver<Solution_> {
         // TODO support doing round-robin of phases (only non-construction heuristics)
     }
 
-    public void solvingEnded(DefaultSolverScope<Solution_> solverScope) {
+    public void solvingEnded(SolverScope<Solution_> solverScope) {
         for (Phase<Solution_> phase : phaseList) {
             phase.solvingEnded(solverScope);
         }
@@ -128,11 +129,12 @@ public abstract class AbstractSolver<Solution_> implements Solver<Solution_> {
 
     /**
      * Add a {@link PhaseLifecycleListener} that is notified
-     * of {@link PhaseLifecycleListener#solvingStarted(DefaultSolverScope)} solving} events
+     * of {@link PhaseLifecycleListener#solvingStarted(SolverScope)} solving} events
      * and also of the {@link PhaseLifecycleListener#phaseStarted(AbstractPhaseScope) phase}
      * and the {@link PhaseLifecycleListener#stepStarted(AbstractStepScope)} step} starting/ending events of all phases.
      * <p>
      * To get notified for only 1 phase, use {@link Phase#addPhaseLifecycleListener(PhaseLifecycleListener)} instead.
+     *
      * @param phaseLifecycleListener never null
      */
     public void addPhaseLifecycleListener(PhaseLifecycleListener<Solution_> phaseLifecycleListener) {

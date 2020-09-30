@@ -1,5 +1,5 @@
 /*
- * Copyright 2010 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,26 +21,29 @@ import org.optaplanner.core.impl.localsearch.decider.acceptor.simulatedannealing
 import org.optaplanner.core.impl.phase.Phase;
 import org.optaplanner.core.impl.phase.event.PhaseLifecycleListener;
 import org.optaplanner.core.impl.phase.scope.AbstractPhaseScope;
+import org.optaplanner.core.impl.solver.scope.SolverScope;
 import org.optaplanner.core.impl.solver.thread.ChildThreadType;
-import org.optaplanner.core.impl.solver.scope.DefaultSolverScope;
 
 /**
  * A Termination determines when a {@link Solver} or a {@link Phase} should stop.
  * <p>
  * An implementation must extend {@link AbstractTermination} to ensure backwards compatibility in future versions.
+ *
  * @see AbstractTermination
  */
 public interface Termination extends PhaseLifecycleListener {
 
     /**
      * Called by the {@link Solver} after every phase to determine if the search should stop.
+     *
      * @param solverScope never null
      * @return true if the search should terminate.
      */
-    boolean isSolverTerminated(DefaultSolverScope solverScope);
+    boolean isSolverTerminated(SolverScope solverScope);
 
     /**
      * Called by the {@link Phase} after every step and every move to determine if the search should stop.
+     *
      * @param phaseScope never null
      * @return true if the search should terminate.
      */
@@ -52,19 +55,21 @@ public interface Termination extends PhaseLifecycleListener {
      * Clients that use a timeGradient should cache it at the start of a single step
      * because some implementations are not time-stable.
      * <p>
-     * If a timeGradient can not be calculated, it should return -1.0.
+     * If a timeGradient cannot be calculated, it should return -1.0.
      * Several implementations (such a {@link SimulatedAnnealingAcceptor}) require a correctly implemented timeGradient.
      * <p>
      * A Termination's timeGradient can be requested after they are terminated, so implementations
      * should be careful not to return a timeGradient above 1.0.
+     *
      * @param solverScope never null
      * @return timeGradient t for which {@code 0.0 <= t <= 1.0 or -1.0} when it is not supported.
      *         At the start of a solver t is 0.0 and at the end t would be 1.0.
      */
-    double calculateSolverTimeGradient(DefaultSolverScope solverScope);
+    double calculateSolverTimeGradient(SolverScope solverScope);
 
     /**
-     * See {@link #calculateSolverTimeGradient(DefaultSolverScope)}.
+     * See {@link #calculateSolverTimeGradient(SolverScope)}.
+     *
      * @param phaseScope never null
      * @return timeGradient t for which {@code 0.0 <= t <= 1.0 or -1.0} when it is not supported.
      *         At the start of a phase t is 0.0 and at the end t would be 1.0.
@@ -73,11 +78,12 @@ public interface Termination extends PhaseLifecycleListener {
 
     /**
      * Create a {@link Termination} for a child {@link Thread} of the {@link Solver}.
+     *
      * @param solverScope never null
      * @param childThreadType never null
      * @return not null
      * @throws UnsupportedOperationException if not supported by this termination
      */
-    Termination createChildThreadTermination(DefaultSolverScope solverScope, ChildThreadType childThreadType);
+    Termination createChildThreadTermination(SolverScope solverScope, ChildThreadType childThreadType);
 
 }

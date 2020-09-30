@@ -1,24 +1,5 @@
 package org.optaplanner.examples.conferencescheduling.solver;
 
-import java.time.LocalDateTime;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashSet;
-
-import org.junit.Ignore;
-import org.junit.Test;
-import org.optaplanner.core.api.score.buildin.hardmediumsoft.HardMediumSoftScore;
-import org.optaplanner.core.api.solver.SolverFactory;
-import org.optaplanner.examples.conferencescheduling.app.ConferenceSchedulingApp;
-import org.optaplanner.examples.conferencescheduling.domain.ConferenceConstraintConfiguration;
-import org.optaplanner.examples.conferencescheduling.domain.ConferenceSolution;
-import org.optaplanner.examples.conferencescheduling.domain.Room;
-import org.optaplanner.examples.conferencescheduling.domain.Speaker;
-import org.optaplanner.examples.conferencescheduling.domain.Talk;
-import org.optaplanner.examples.conferencescheduling.domain.TalkType;
-import org.optaplanner.examples.conferencescheduling.domain.Timeslot;
-import org.optaplanner.test.impl.score.buildin.hardmediumsoft.HardMediumSoftScoreVerifier;
-
 import static org.optaplanner.examples.conferencescheduling.domain.ConferenceConstraintConfiguration.LANGUAGE_DIVERSITY;
 import static org.optaplanner.examples.conferencescheduling.domain.ConferenceConstraintConfiguration.SECTOR_CONFLICT;
 import static org.optaplanner.examples.conferencescheduling.domain.ConferenceConstraintConfiguration.SPEAKER_PREFERRED_ROOM_TAGS;
@@ -31,8 +12,27 @@ import static org.optaplanner.examples.conferencescheduling.domain.ConferenceCon
 import static org.optaplanner.examples.conferencescheduling.domain.ConferenceConstraintConfiguration.TALK_UNDESIRED_TIMESLOT_TAGS;
 import static org.optaplanner.examples.conferencescheduling.domain.ConferenceConstraintConfiguration.THEME_TRACK_CONFLICT;
 
+import java.time.LocalDateTime;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashSet;
+
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
+import org.optaplanner.core.api.score.buildin.hardmediumsoft.HardMediumSoftScore;
+import org.optaplanner.core.api.solver.SolverFactory;
+import org.optaplanner.examples.conferencescheduling.app.ConferenceSchedulingApp;
+import org.optaplanner.examples.conferencescheduling.domain.ConferenceConstraintConfiguration;
+import org.optaplanner.examples.conferencescheduling.domain.ConferenceSolution;
+import org.optaplanner.examples.conferencescheduling.domain.Room;
+import org.optaplanner.examples.conferencescheduling.domain.Speaker;
+import org.optaplanner.examples.conferencescheduling.domain.Talk;
+import org.optaplanner.examples.conferencescheduling.domain.TalkType;
+import org.optaplanner.examples.conferencescheduling.domain.Timeslot;
+import org.optaplanner.test.impl.score.buildin.hardmediumsoft.HardMediumSoftScoreVerifier;
+
 // TODO https://issues.redhat.com/browse/PLANNER-1335
-@Ignore("Temporarily disabled until ScoreVerifier.assertPenalty() exists to avoid unneeded refactor")
+@Disabled("Temporarily disabled until ScoreVerifier.assertPenalty() exists to avoid unneeded refactor")
 public class ConferenceSchedulingScoreSoftConstraintTest {
 
     private HardMediumSoftScoreVerifier<ConferenceSolution> scoreVerifier = new HardMediumSoftScoreVerifier<>(

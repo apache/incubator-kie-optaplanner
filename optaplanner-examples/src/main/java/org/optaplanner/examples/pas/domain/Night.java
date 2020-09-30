@@ -16,13 +16,21 @@
 
 package org.optaplanner.examples.pas.domain;
 
-import com.thoughtworks.xstream.annotations.XStreamAlias;
 import org.optaplanner.examples.common.domain.AbstractPersistable;
+
+import com.thoughtworks.xstream.annotations.XStreamAlias;
 
 @XStreamAlias("Night")
 public class Night extends AbstractPersistable {
 
     private int index;
+
+    public Night() {
+    }
+
+    public Night(int index) {
+        this.index = index;
+    }
 
     public int getIndex() {
         return index;

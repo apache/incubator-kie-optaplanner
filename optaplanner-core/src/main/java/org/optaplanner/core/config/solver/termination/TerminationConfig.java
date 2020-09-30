@@ -1,5 +1,5 @@
 /*
- * Copyright 2010 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,42 +17,47 @@
 package org.optaplanner.core.config.solver.termination;
 
 import java.time.Duration;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
-import com.thoughtworks.xstream.annotations.XStreamAlias;
-import com.thoughtworks.xstream.annotations.XStreamImplicit;
-import org.optaplanner.core.api.score.Score;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlType;
+import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
+
 import org.optaplanner.core.config.AbstractConfig;
-import org.optaplanner.core.config.heuristic.policy.HeuristicConfigPolicy;
 import org.optaplanner.core.config.util.ConfigUtils;
-import org.optaplanner.core.impl.score.definition.FeasibilityScoreDefinition;
-import org.optaplanner.core.impl.score.definition.ScoreDefinition;
-import org.optaplanner.core.impl.solver.termination.AbstractCompositeTermination;
-import org.optaplanner.core.impl.solver.termination.AndCompositeTermination;
-import org.optaplanner.core.impl.solver.termination.BestScoreFeasibleTermination;
-import org.optaplanner.core.impl.solver.termination.BestScoreTermination;
-import org.optaplanner.core.impl.solver.termination.OrCompositeTermination;
-import org.optaplanner.core.impl.solver.termination.ScoreCalculationCountTermination;
-import org.optaplanner.core.impl.solver.termination.StepCountTermination;
+import org.optaplanner.core.impl.io.jaxb.adapter.JaxbDurationAdapter;
 import org.optaplanner.core.impl.solver.termination.Termination;
-import org.optaplanner.core.impl.solver.termination.TimeMillisSpentTermination;
-import org.optaplanner.core.impl.solver.termination.UnimprovedStepCountTermination;
-import org.optaplanner.core.impl.solver.termination.UnimprovedTimeMillisSpentScoreDifferenceThresholdTermination;
-import org.optaplanner.core.impl.solver.termination.UnimprovedTimeMillisSpentTermination;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
-@XStreamAlias("termination")
+@XmlType(propOrder = {
+        "terminationClass",
+        "terminationCompositionStyle",
+        "spentLimit",
+        "millisecondsSpentLimit",
+        "secondsSpentLimit",
+        "minutesSpentLimit",
+        "hoursSpentLimit",
+        "daysSpentLimit",
+        "unimprovedSpentLimit",
+        "unimprovedMillisecondsSpentLimit",
+        "unimprovedSecondsSpentLimit",
+        "unimprovedMinutesSpentLimit",
+        "unimprovedHoursSpentLimit",
+        "unimprovedDaysSpentLimit",
+        "unimprovedScoreDifferenceThreshold",
+        "bestScoreLimit",
+        "bestScoreFeasible",
+        "stepCountLimit",
+        "unimprovedStepCountLimit",
+        "scoreCalculationCountLimit",
+        "terminationConfigList"
+})
 public class TerminationConfig extends AbstractConfig<TerminationConfig> {
-
-    private static final Logger logger = LoggerFactory.getLogger(TerminationConfig.class);
 
     private Class<? extends Termination> terminationClass = null;
 
     private TerminationCompositionStyle terminationCompositionStyle = null;
 
+    @XmlJavaTypeAdapter(JaxbDurationAdapter.class)
     private Duration spentLimit = null;
     private Long millisecondsSpentLimit = null;
     private Long secondsSpentLimit = null;
@@ -60,6 +65,7 @@ public class TerminationConfig extends AbstractConfig<TerminationConfig> {
     private Long hoursSpentLimit = null;
     private Long daysSpentLimit = null;
 
+    @XmlJavaTypeAdapter(JaxbDurationAdapter.class)
     private Duration unimprovedSpentLimit = null;
     private Long unimprovedMillisecondsSpentLimit = null;
     private Long unimprovedSecondsSpentLimit = null;
@@ -74,14 +80,9 @@ public class TerminationConfig extends AbstractConfig<TerminationConfig> {
     private Integer stepCountLimit = null;
     private Integer unimprovedStepCountLimit = null;
 
-    /**
-     * @deprecated Use {@link #scoreCalculationCountLimit} instead. Will be removed in 8.0.
-     */
-    @Deprecated
-    private Long calculateCountLimit = null;
     private Long scoreCalculationCountLimit = null;
 
-    @XStreamImplicit(itemFieldName = "termination")
+    @XmlElement(name = "termination")
     private List<TerminationConfig> terminationConfigList = null;
 
     public Class<? extends Termination> getTerminationClass() {
@@ -236,22 +237,6 @@ public class TerminationConfig extends AbstractConfig<TerminationConfig> {
         this.unimprovedStepCountLimit = unimprovedStepCountLimit;
     }
 
-    /**
-     * @deprecated Use {@link #getScoreCalculationCountLimit()} instead. Will be removed in 8.0.
-     */
-    @Deprecated
-    public Long getCalculateCountLimit() {
-        return calculateCountLimit;
-    }
-
-    /**
-     * @deprecated Use {@link #setScoreCalculationCountLimit(Long)} instead. Will be removed in 8.0.
-     */
-    @Deprecated
-    public void setCalculateCountLimit(Long calculateCountLimit) {
-        this.calculateCountLimit = calculateCountLimit;
-    }
-
     public Long getScoreCalculationCountLimit() {
         return scoreCalculationCountLimit;
     }
@@ -377,120 +362,6 @@ public class TerminationConfig extends AbstractConfig<TerminationConfig> {
         return this;
     }
 
-    // ************************************************************************
-    // Builder methods
-    // ************************************************************************
-
-    public Termination buildTermination(HeuristicConfigPolicy configPolicy, Termination chainedTermination) {
-        Termination termination = buildTermination(configPolicy);
-        if (termination == null) {
-            return chainedTermination;
-        }
-        return new OrCompositeTermination(chainedTermination, termination);
-    }
-
-    /**
-     * @param configPolicy never null
-     * @return sometimes null
-     */
-    public Termination buildTermination(HeuristicConfigPolicy configPolicy) {
-        List<Termination> terminationList = new ArrayList<>();
-        if (terminationClass != null) {
-            Termination termination = ConfigUtils.newInstance(this, "terminationClass", terminationClass);
-            terminationList.add(termination);
-        }
-        Long timeMillisSpentLimit = calculateTimeMillisSpentLimit();
-        if (timeMillisSpentLimit != null) {
-            terminationList.add(new TimeMillisSpentTermination(timeMillisSpentLimit));
-        }
-        Long unimprovedTimeMillisSpentLimit = calculateUnimprovedTimeMillisSpentLimit();
-        if (unimprovedTimeMillisSpentLimit != null) {
-            if (unimprovedScoreDifferenceThreshold == null) {
-                terminationList.add(new UnimprovedTimeMillisSpentTermination(unimprovedTimeMillisSpentLimit));
-            } else {
-                ScoreDefinition scoreDefinition = configPolicy.getScoreDefinition();
-                Score unimprovedScoreDifferenceThreshold_ = scoreDefinition.parseScore(unimprovedScoreDifferenceThreshold);
-                if (unimprovedScoreDifferenceThreshold_.compareTo(scoreDefinition.getZeroScore()) <= 0) {
-                    throw new IllegalStateException("The unimprovedScoreDifferenceThreshold ("
-                            + unimprovedScoreDifferenceThreshold + ") must be positive.");
-
-                }
-                terminationList.add(new UnimprovedTimeMillisSpentScoreDifferenceThresholdTermination(unimprovedTimeMillisSpentLimit, unimprovedScoreDifferenceThreshold_));
-            }
-        } else if (unimprovedScoreDifferenceThreshold != null) {
-            throw new IllegalStateException("The unimprovedScoreDifferenceThreshold ("
-                    + unimprovedScoreDifferenceThreshold + ") can only be used if an unimproved*SpentLimit ("
-                    + unimprovedTimeMillisSpentLimit + ") is used too.");
-        }
-        if (bestScoreLimit != null) {
-            ScoreDefinition scoreDefinition = configPolicy.getScoreDefinition();
-            Score bestScoreLimit_ = scoreDefinition.parseScore(bestScoreLimit);
-            double[] timeGradientWeightNumbers = new double[scoreDefinition.getLevelsSize() - 1];
-            Arrays.fill(timeGradientWeightNumbers, 0.50); // Number pulled out of thin air
-            terminationList.add(new BestScoreTermination(scoreDefinition, bestScoreLimit_, timeGradientWeightNumbers));
-        }
-        if (bestScoreFeasible != null) {
-            ScoreDefinition scoreDefinition = configPolicy.getScoreDefinition();
-            if (!(scoreDefinition instanceof FeasibilityScoreDefinition)) {
-                throw new IllegalStateException("The termination bestScoreFeasible (" + bestScoreFeasible
-                        + ") is not compatible with a scoreDefinitionClass (" + scoreDefinition.getClass()
-                        + ") which does not implement the interface "
-                        + FeasibilityScoreDefinition.class.getSimpleName() + ".");
-            }
-            if (!bestScoreFeasible) {
-                throw new IllegalArgumentException("The termination bestScoreFeasible (" + bestScoreFeasible
-                        + ") cannot be false.");
-            }
-            FeasibilityScoreDefinition feasibilityScoreDefinition = (FeasibilityScoreDefinition) scoreDefinition;
-            double[] timeGradientWeightFeasibleNumbers
-                    = new double[feasibilityScoreDefinition.getFeasibleLevelsSize() - 1];
-            Arrays.fill(timeGradientWeightFeasibleNumbers, 0.50); // Number pulled out of thin air
-            terminationList.add(new BestScoreFeasibleTermination(feasibilityScoreDefinition,
-                    timeGradientWeightFeasibleNumbers));
-        }
-        if (stepCountLimit != null) {
-            terminationList.add(new StepCountTermination(stepCountLimit));
-        }
-        if (calculateCountLimit != null) {
-            logger.info("Deprecated use of calculateCountLimit ({}) in solver configuration.", calculateCountLimit);
-            if (scoreCalculationCountLimit != null) {
-                throw new IllegalStateException("The calculateCountLimit (" + calculateCountLimit
-                        + ") and scoreCalculationCountLimit (" +  scoreCalculationCountLimit + ") cannot be used together.");
-            }
-            terminationList.add(new ScoreCalculationCountTermination(calculateCountLimit));
-        }
-        if (scoreCalculationCountLimit != null) {
-            terminationList.add(new ScoreCalculationCountTermination(scoreCalculationCountLimit));
-        }
-        if (unimprovedStepCountLimit != null) {
-            terminationList.add(new UnimprovedStepCountTermination(unimprovedStepCountLimit));
-        }
-        if (!ConfigUtils.isEmptyCollection(terminationConfigList)) {
-            for (TerminationConfig terminationConfig : terminationConfigList) {
-                Termination termination = terminationConfig.buildTermination(configPolicy);
-                if (termination != null) {
-                    terminationList.add(termination);
-                }
-            }
-        }
-        if (terminationList.size() == 1) {
-            return terminationList.get(0);
-        } else if (terminationList.size() > 1) {
-            AbstractCompositeTermination compositeTermination;
-            if (terminationCompositionStyle == null || terminationCompositionStyle == TerminationCompositionStyle.OR) {
-                compositeTermination = new OrCompositeTermination(terminationList);
-            } else if (terminationCompositionStyle == TerminationCompositionStyle.AND) {
-                compositeTermination = new AndCompositeTermination(terminationList);
-            } else {
-                throw new IllegalStateException("The terminationCompositionStyle (" + terminationCompositionStyle
-                        + ") is not implemented.");
-            }
-            return compositeTermination;
-        } else {
-            return null;
-        }
-    }
-
     public void overwriteSpentLimit(Duration spentLimit) {
         setSpentLimit(spentLimit);
         setMillisecondsSpentLimit(null);
@@ -602,8 +473,9 @@ public class TerminationConfig extends AbstractConfig<TerminationConfig> {
         long unimprovedTimeMillisSpentLimit = 0L;
         if (unimprovedMillisecondsSpentLimit != null) {
             if (unimprovedMillisecondsSpentLimit < 0L) {
-                throw new IllegalArgumentException("The termination unimprovedMillisecondsSpentLimit (" + unimprovedMillisecondsSpentLimit
-                        + ") cannot be negative.");
+                throw new IllegalArgumentException(
+                        "The termination unimprovedMillisecondsSpentLimit (" + unimprovedMillisecondsSpentLimit
+                                + ") cannot be negative.");
             }
             unimprovedTimeMillisSpentLimit += unimprovedMillisecondsSpentLimit;
         }
@@ -678,8 +550,6 @@ public class TerminationConfig extends AbstractConfig<TerminationConfig> {
                 inheritedConfig.getStepCountLimit());
         unimprovedStepCountLimit = ConfigUtils.inheritOverwritableProperty(unimprovedStepCountLimit,
                 inheritedConfig.getUnimprovedStepCountLimit());
-        calculateCountLimit = ConfigUtils.inheritOverwritableProperty(calculateCountLimit,
-                inheritedConfig.getCalculateCountLimit());
         scoreCalculationCountLimit = ConfigUtils.inheritOverwritableProperty(scoreCalculationCountLimit,
                 inheritedConfig.getScoreCalculationCountLimit());
         terminationConfigList = ConfigUtils.inheritMergeableListConfig(

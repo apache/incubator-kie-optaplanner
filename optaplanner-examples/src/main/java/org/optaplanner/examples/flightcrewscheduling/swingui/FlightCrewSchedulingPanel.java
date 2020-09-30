@@ -21,6 +21,7 @@ import java.awt.Desktop;
 import java.awt.FlowLayout;
 import java.io.File;
 import java.io.IOException;
+
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -32,7 +33,8 @@ import org.optaplanner.persistence.common.api.domain.solution.SolutionFileIO;
 
 public class FlightCrewSchedulingPanel extends SolutionPanel<FlightCrewSolution> {
 
-    public static final String LOGO_PATH = "/org/optaplanner/examples/flightcrewscheduling/swingui/flightCrewSchedulingLogo.png";
+    public static final String LOGO_PATH =
+            "/org/optaplanner/examples/flightcrewscheduling/swingui/flightCrewSchedulingLogo.png";
 
     private FlightCrewSchedulingWorldPanel flightCrewSchedulingWorldPanel;
 
@@ -44,7 +46,8 @@ public class FlightCrewSchedulingPanel extends SolutionPanel<FlightCrewSolution>
             SolutionFileIO<FlightCrewSolution> solutionFileIO = new FlightCrewSchedulingXlsxFileIO();
             File tempFile;
             try {
-                tempFile = File.createTempFile(solutionBusiness.getSolutionFileName(), "." + solutionFileIO.getOutputFileExtension());
+                tempFile = File.createTempFile(solutionBusiness.getSolutionFileName(),
+                        "." + solutionFileIO.getOutputFileExtension());
             } catch (IOException e) {
                 throw new IllegalStateException("Failed to create temp file.", e);
             }

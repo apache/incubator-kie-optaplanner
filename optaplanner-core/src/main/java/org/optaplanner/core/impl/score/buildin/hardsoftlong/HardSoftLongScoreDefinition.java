@@ -1,5 +1,5 @@
 /*
- * Copyright 2011 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,15 +19,14 @@ package org.optaplanner.core.impl.score.buildin.hardsoftlong;
 import java.util.Arrays;
 
 import org.optaplanner.core.api.score.buildin.hardsoftlong.HardSoftLongScore;
-import org.optaplanner.core.api.score.buildin.hardsoftlong.HardSoftLongScoreHolder;
 import org.optaplanner.core.config.score.trend.InitializingScoreTrendLevel;
-import org.optaplanner.core.impl.score.definition.AbstractFeasibilityScoreDefinition;
+import org.optaplanner.core.impl.score.definition.AbstractScoreDefinition;
 import org.optaplanner.core.impl.score.trend.InitializingScoreTrend;
 
-public class HardSoftLongScoreDefinition extends AbstractFeasibilityScoreDefinition<HardSoftLongScore> {
+public class HardSoftLongScoreDefinition extends AbstractScoreDefinition<HardSoftLongScore> {
 
     public HardSoftLongScoreDefinition() {
-        super(new String[]{"hard score", "soft score"});
+        super(new String[] { "hard score", "soft score" });
     }
 
     // ************************************************************************
@@ -55,6 +54,11 @@ public class HardSoftLongScoreDefinition extends AbstractFeasibilityScoreDefinit
     }
 
     @Override
+    public HardSoftLongScore getOneSoftestScore() {
+        return HardSoftLongScore.ONE_SOFT;
+    }
+
+    @Override
     public HardSoftLongScore parseScore(String scoreString) {
         return HardSoftLongScore.parseScore(scoreString);
     }
@@ -74,12 +78,13 @@ public class HardSoftLongScoreDefinition extends AbstractFeasibilityScoreDefinit
     }
 
     @Override
-    public HardSoftLongScoreHolder buildScoreHolder(boolean constraintMatchEnabled) {
-        return new HardSoftLongScoreHolder(constraintMatchEnabled);
+    public HardSoftLongScoreHolderImpl buildScoreHolder(boolean constraintMatchEnabled) {
+        return new HardSoftLongScoreHolderImpl(constraintMatchEnabled);
     }
 
     @Override
-    public HardSoftLongScore buildOptimisticBound(InitializingScoreTrend initializingScoreTrend, HardSoftLongScore score) {
+    public HardSoftLongScore buildOptimisticBound(InitializingScoreTrend initializingScoreTrend,
+            HardSoftLongScore score) {
         InitializingScoreTrendLevel[] trendLevels = initializingScoreTrend.getTrendLevels();
         return HardSoftLongScore.ofUninitialized(0,
                 trendLevels[0] == InitializingScoreTrendLevel.ONLY_DOWN ? score.getHardScore() : Long.MAX_VALUE,
@@ -87,11 +92,27 @@ public class HardSoftLongScoreDefinition extends AbstractFeasibilityScoreDefinit
     }
 
     @Override
-    public HardSoftLongScore buildPessimisticBound(InitializingScoreTrend initializingScoreTrend, HardSoftLongScore score) {
+    public HardSoftLongScore buildPessimisticBound(InitializingScoreTrend initializingScoreTrend,
+            HardSoftLongScore score) {
         InitializingScoreTrendLevel[] trendLevels = initializingScoreTrend.getTrendLevels();
         return HardSoftLongScore.ofUninitialized(0,
                 trendLevels[0] == InitializingScoreTrendLevel.ONLY_UP ? score.getHardScore() : Long.MIN_VALUE,
                 trendLevels[1] == InitializingScoreTrendLevel.ONLY_UP ? score.getSoftScore() : Long.MIN_VALUE);
     }
 
+    @Override
+    public HardSoftLongScore divideBySanitizedDivisor(HardSoftLongScore dividend, HardSoftLongScore divisor) {
+        int dividendInitScore = dividend.getInitScore();
+        int divisorInitScore = sanitize(divisor.getInitScore());
+        long dividendHardScore = dividend.getHardScore();
+        long divisorHardScore = sanitize(divisor.getHardScore());
+        long dividendSoftScore = dividend.getSoftScore();
+        long divisorSoftScore = sanitize(divisor.getSoftScore());
+        return fromLevelNumbers(
+                divide(dividendInitScore, divisorInitScore),
+                new Number[] {
+                        divide(dividendHardScore, divisorHardScore),
+                        divide(dividendSoftScore, divisorSoftScore)
+                });
+    }
 }

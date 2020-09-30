@@ -1,5 +1,5 @@
 /*
- * Copyright 2013 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,7 +20,6 @@ import java.awt.Component;
 import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.LayoutManager2;
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -28,7 +27,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-public class TimeTableLayout implements LayoutManager2, Serializable {
+public class TimeTableLayout implements LayoutManager2 {
 
     public static final int FILL_COLLISIONS_FLAG = -1;
 
@@ -106,11 +105,11 @@ public class TimeTableLayout implements LayoutManager2, Serializable {
         TimeTableLayoutConstraints c = (TimeTableLayoutConstraints) o;
         if (c.getXEnd() > columns.size()) {
             throw new IllegalArgumentException("The xEnd (" + c.getXEnd()
-                    + ") is > columnsSize (" +  columns.size() + ").");
+                    + ") is > columnsSize (" + columns.size() + ").");
         }
         if (c.getYEnd() > rows.size()) {
             throw new IllegalArgumentException("The yEnd (" + c.getYEnd()
-                    + ") is > rowsSize (" +  rows.size() + ").");
+                    + ") is > rowsSize (" + rows.size() + ").");
         }
         stale = true;
         ComponentSpan span = new ComponentSpan(component);
@@ -192,7 +191,6 @@ public class TimeTableLayout implements LayoutManager2, Serializable {
         return 0.5f;
     }
 
-
     @Override
     public void invalidateLayout(Container target) {
         // No effect
@@ -205,11 +203,13 @@ public class TimeTableLayout implements LayoutManager2, Serializable {
             for (ComponentSpan span : spanMap.values()) {
                 int x1 = span.topLeftCell.column.boundX;
                 int collisionIndexStart = (span.collisionIndex == FILL_COLLISIONS_FLAG)
-                        ? 0 : span.collisionIndex;
+                        ? 0
+                        : span.collisionIndex;
                 int y1 = span.topLeftCell.row.boundY + (collisionIndexStart * span.topLeftCell.row.baseHeight);
                 int x2 = span.bottomRightCell.column.boundX + span.bottomRightCell.column.baseWidth;
                 int collisionIndexEnd = (span.collisionIndex == FILL_COLLISIONS_FLAG)
-                        ? span.bottomRightCell.row.collisionCount : span.collisionIndex + 1;
+                        ? span.bottomRightCell.row.collisionCount
+                        : span.collisionIndex + 1;
                 int y2 = span.bottomRightCell.row.boundY + (collisionIndexEnd * span.bottomRightCell.row.baseHeight);
                 span.component.setBounds(x1, y1, x2 - x1, y2 - y1);
             }
@@ -307,7 +307,7 @@ public class TimeTableLayout implements LayoutManager2, Serializable {
         totalRowHeight = nextRowBoundY;
     }
 
-    private static class Column implements Serializable {
+    private static class Column {
 
         private final int index;
         private final boolean autoWidth;
@@ -325,7 +325,7 @@ public class TimeTableLayout implements LayoutManager2, Serializable {
 
     }
 
-    private static class Row implements Serializable {
+    private static class Row {
 
         private final int index;
         private final boolean autoHeight;
@@ -344,7 +344,7 @@ public class TimeTableLayout implements LayoutManager2, Serializable {
 
     }
 
-    private static class Cell implements Serializable {
+    private static class Cell {
 
         private Column column;
         private Row row;
@@ -359,7 +359,7 @@ public class TimeTableLayout implements LayoutManager2, Serializable {
 
     }
 
-    private static class ComponentSpan implements Serializable {
+    private static class ComponentSpan {
 
         private Component component;
 

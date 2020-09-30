@@ -17,9 +17,6 @@
 package org.optaplanner.core.impl.score.stream.drools.tri;
 
 import java.math.BigDecimal;
-import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import org.optaplanner.core.api.function.ToIntTriFunction;
 import org.optaplanner.core.api.function.ToLongTriFunction;
@@ -37,11 +34,12 @@ import org.optaplanner.core.impl.score.stream.common.ScoreImpactType;
 import org.optaplanner.core.impl.score.stream.drools.DroolsConstraintFactory;
 import org.optaplanner.core.impl.score.stream.drools.bi.DroolsGroupingBiConstraintStream;
 import org.optaplanner.core.impl.score.stream.drools.common.DroolsAbstractConstraintStream;
+import org.optaplanner.core.impl.score.stream.drools.common.consequences.ConstraintConsequence;
+import org.optaplanner.core.impl.score.stream.drools.common.nodes.TriConstraintGraphNode;
 import org.optaplanner.core.impl.score.stream.drools.quad.DroolsAbstractQuadConstraintStream;
 import org.optaplanner.core.impl.score.stream.drools.quad.DroolsGroupingQuadConstraintStream;
 import org.optaplanner.core.impl.score.stream.drools.quad.DroolsJoinQuadConstraintStream;
 import org.optaplanner.core.impl.score.stream.drools.uni.DroolsAbstractUniConstraintStream;
-import org.optaplanner.core.impl.score.stream.drools.uni.DroolsFromUniConstraintStream;
 import org.optaplanner.core.impl.score.stream.drools.uni.DroolsGroupingUniConstraintStream;
 import org.optaplanner.core.impl.score.stream.quad.FilteringQuadJoiner;
 import org.optaplanner.core.impl.score.stream.tri.InnerTriConstraintStream;
@@ -49,22 +47,19 @@ import org.optaplanner.core.impl.score.stream.tri.InnerTriConstraintStream;
 public abstract class DroolsAbstractTriConstraintStream<Solution_, A, B, C>
         extends DroolsAbstractConstraintStream<Solution_> implements InnerTriConstraintStream<A, B, C> {
 
-    protected final DroolsAbstractConstraintStream<Solution_> parent;
-
-    public DroolsAbstractTriConstraintStream(DroolsConstraintFactory<Solution_> constraintFactory,
-            DroolsAbstractConstraintStream<Solution_> parent) {
+    public DroolsAbstractTriConstraintStream(DroolsConstraintFactory<Solution_> constraintFactory) {
         super(constraintFactory);
-        if (parent == null && !(this instanceof DroolsJoinTriConstraintStream)) {
-            throw new IllegalArgumentException("The stream (" + this + ") must have a parent (null), " +
-                    "unless it's a join stream.");
-        }
-        this.parent = parent;
+    }
+
+    @Override
+    public int getCardinality() {
+        return 3;
     }
 
     @Override
     public TriConstraintStream<A, B, C> filter(TriPredicate<A, B, C> predicate) {
-        DroolsAbstractTriConstraintStream<Solution_, A, B, C> stream =
-                new DroolsFilterTriConstraintStream<>(constraintFactory, this, predicate);
+        DroolsAbstractTriConstraintStream<Solution_, A, B, C> stream = new DroolsFilterTriConstraintStream<>(constraintFactory,
+                this, predicate);
         addChildStream(stream);
         return stream;
     }
@@ -76,9 +71,9 @@ public abstract class DroolsAbstractTriConstraintStream<Solution_, A, B, C>
             return join(otherStream)
                     .filter(((FilteringQuadJoiner<A, B, C, D>) joiner).getFilter());
         }
-        DroolsAbstractQuadConstraintStream<Solution_, A, B, C, D> stream =
-                new DroolsJoinQuadConstraintStream<>(constraintFactory, this,
-                        (DroolsAbstractUniConstraintStream<Solution_, D>) otherStream, joiner);
+        DroolsAbstractQuadConstraintStream<Solution_, A, B, C, D> stream = new DroolsJoinQuadConstraintStream<>(
+                constraintFactory, this,
+                (DroolsAbstractUniConstraintStream<Solution_, D>) otherStream, joiner);
         addChildStream(stream);
         return stream;
     }
@@ -102,8 +97,9 @@ public abstract class DroolsAbstractTriConstraintStream<Solution_, A, B, C>
     @SafeVarargs
     private final <D> TriConstraintStream<A, B, C> ifExistsOrNot(boolean shouldExist, Class<D> otherClass,
             QuadJoiner<A, B, C, D>... joiners) {
-        DroolsExistsTriConstraintStream<Solution_, A, B, C> stream =
-                new DroolsExistsTriConstraintStream<>(constraintFactory, this, shouldExist, otherClass, joiners);
+        getConstraintFactory().assertValidFromType(otherClass);
+        DroolsExistsTriConstraintStream<Solution_, A, B, C> stream = new DroolsExistsTriConstraintStream<>(constraintFactory,
+                this, shouldExist, otherClass, joiners);
         addChildStream(stream);
         return stream;
     }
@@ -115,16 +111,16 @@ public abstract class DroolsAbstractTriConstraintStream<Solution_, A, B, C>
     @Override
     public <ResultContainer_, Result_> UniConstraintStream<Result_> groupBy(
             TriConstraintCollector<A, B, C, ResultContainer_, Result_> collector) {
-        DroolsGroupingUniConstraintStream<Solution_, Result_> stream =
-                new DroolsGroupingUniConstraintStream<>(constraintFactory, this, collector);
+        DroolsGroupingUniConstraintStream<Solution_, Result_> stream = new DroolsGroupingUniConstraintStream<>(
+                constraintFactory, this, collector);
         addChildStream(stream);
         return stream;
     }
 
     @Override
     public <GroupKey_> UniConstraintStream<GroupKey_> groupBy(TriFunction<A, B, C, GroupKey_> groupKeyMapping) {
-        DroolsGroupingUniConstraintStream<Solution_, GroupKey_> stream =
-                new DroolsGroupingUniConstraintStream<>(constraintFactory, this, groupKeyMapping);
+        DroolsGroupingUniConstraintStream<Solution_, GroupKey_> stream = new DroolsGroupingUniConstraintStream<>(
+                constraintFactory, this, groupKeyMapping);
         addChildStream(stream);
         return stream;
     }
@@ -133,8 +129,8 @@ public abstract class DroolsAbstractTriConstraintStream<Solution_, A, B, C>
     public <GroupKey_, ResultContainer_, Result_> BiConstraintStream<GroupKey_, Result_> groupBy(
             TriFunction<A, B, C, GroupKey_> groupKeyMapping,
             TriConstraintCollector<A, B, C, ResultContainer_, Result_> collector) {
-        DroolsGroupingBiConstraintStream<Solution_, GroupKey_, Result_> stream =
-                new DroolsGroupingBiConstraintStream<>(constraintFactory, this, groupKeyMapping, collector);
+        DroolsGroupingBiConstraintStream<Solution_, GroupKey_, Result_> stream = new DroolsGroupingBiConstraintStream<>(
+                constraintFactory, this, groupKeyMapping, collector);
         addChildStream(stream);
         return stream;
     }
@@ -142,34 +138,33 @@ public abstract class DroolsAbstractTriConstraintStream<Solution_, A, B, C>
     @Override
     public <GroupKeyA_, GroupKeyB_> BiConstraintStream<GroupKeyA_, GroupKeyB_> groupBy(
             TriFunction<A, B, C, GroupKeyA_> groupKeyAMapping, TriFunction<A, B, C, GroupKeyB_> groupKeyBMapping) {
-        DroolsGroupingBiConstraintStream<Solution_, GroupKeyA_, GroupKeyB_> stream =
-                new DroolsGroupingBiConstraintStream<>(constraintFactory, this, groupKeyAMapping,
-                        groupKeyBMapping);
+        DroolsGroupingBiConstraintStream<Solution_, GroupKeyA_, GroupKeyB_> stream = new DroolsGroupingBiConstraintStream<>(
+                constraintFactory, this, groupKeyAMapping,
+                groupKeyBMapping);
         addChildStream(stream);
         return stream;
     }
 
     @Override
-    public <GroupKeyA_, GroupKeyB_, ResultContainer_, Result_> TriConstraintStream<GroupKeyA_, GroupKeyB_, Result_>
-    groupBy(TriFunction<A, B, C, GroupKeyA_> groupKeyAMapping, TriFunction<A, B, C, GroupKeyB_> groupKeyBMapping,
+    public <GroupKeyA_, GroupKeyB_, ResultContainer_, Result_> TriConstraintStream<GroupKeyA_, GroupKeyB_, Result_> groupBy(
+            TriFunction<A, B, C, GroupKeyA_> groupKeyAMapping, TriFunction<A, B, C, GroupKeyB_> groupKeyBMapping,
             TriConstraintCollector<A, B, C, ResultContainer_, Result_> collector) {
         DroolsGroupingTriConstraintStream<Solution_, GroupKeyA_, GroupKeyB_, Result_> stream =
-                new DroolsGroupingTriConstraintStream<>(constraintFactory, this, groupKeyAMapping,
-                        groupKeyBMapping, collector);
+                new DroolsGroupingTriConstraintStream<>(constraintFactory, this, groupKeyAMapping, groupKeyBMapping, collector);
         addChildStream(stream);
         return stream;
     }
 
     @Override
     public <GroupKeyA_, GroupKeyB_, ResultContainerC_, ResultC_, ResultContainerD_, ResultD_>
-    QuadConstraintStream<GroupKeyA_, GroupKeyB_, ResultC_, ResultD_> groupBy(
-            TriFunction<A, B, C, GroupKeyA_> groupKeyAMapping,
-            TriFunction<A, B, C, GroupKeyB_> groupKeyBMapping,
-            TriConstraintCollector<A, B, C, ResultContainerC_, ResultC_> collectorC,
-            TriConstraintCollector<A, B, C, ResultContainerD_, ResultD_> collectorD) {
+            QuadConstraintStream<GroupKeyA_, GroupKeyB_, ResultC_, ResultD_> groupBy(
+                    TriFunction<A, B, C, GroupKeyA_> groupKeyAMapping,
+                    TriFunction<A, B, C, GroupKeyB_> groupKeyBMapping,
+                    TriConstraintCollector<A, B, C, ResultContainerC_, ResultC_> collectorC,
+                    TriConstraintCollector<A, B, C, ResultContainerD_, ResultD_> collectorD) {
         DroolsGroupingQuadConstraintStream<Solution_, GroupKeyA_, GroupKeyB_, ResultC_, ResultD_> stream =
-                new DroolsGroupingQuadConstraintStream<>(constraintFactory, this, groupKeyAMapping,
-                        groupKeyBMapping, collectorC, collectorD);
+                new DroolsGroupingQuadConstraintStream<>(constraintFactory, this, groupKeyAMapping, groupKeyBMapping,
+                        collectorC, collectorD);
         addChildStream(stream);
         return stream;
     }
@@ -181,95 +176,71 @@ public abstract class DroolsAbstractTriConstraintStream<Solution_, A, B, C>
     @Override
     protected Constraint impactScore(String constraintPackage, String constraintName, Score<?> constraintWeight,
             ScoreImpactType impactType) {
-        DroolsScoringTriConstraintStream<Solution_, A, B, C> stream =
-                new DroolsScoringTriConstraintStream<>(constraintFactory, this);
-        addChildStream(stream);
-        return buildConstraint(constraintPackage, constraintName, constraintWeight, impactType, stream);
+        ConstraintConsequence<TriConstraintGraphNode> consequence =
+                constraintFactory.getConstraintGraph().impact(getConstraintGraphNode());
+        return buildConstraint(constraintPackage, constraintName, constraintWeight, impactType, consequence);
     }
 
     @Override
     public Constraint impactScore(String constraintPackage, String constraintName, Score<?> constraintWeight,
             ToIntTriFunction<A, B, C> matchWeigher, ScoreImpactType impactType) {
-        DroolsScoringTriConstraintStream<Solution_, A, B, C> stream =
-                new DroolsScoringTriConstraintStream<>(constraintFactory, this, matchWeigher);
-        addChildStream(stream);
-        return buildConstraint(constraintPackage, constraintName, constraintWeight, impactType, stream);
+        ConstraintConsequence<TriConstraintGraphNode> consequence =
+                constraintFactory.getConstraintGraph().impact(getConstraintGraphNode(), matchWeigher);
+        return buildConstraint(constraintPackage, constraintName, constraintWeight, impactType, consequence);
     }
 
     @Override
     public Constraint impactScoreLong(String constraintPackage, String constraintName, Score<?> constraintWeight,
             ToLongTriFunction<A, B, C> matchWeigher, ScoreImpactType impactType) {
-        DroolsScoringTriConstraintStream<Solution_, A, B, C> stream =
-                new DroolsScoringTriConstraintStream<>(constraintFactory, this, matchWeigher);
-        addChildStream(stream);
-        return buildConstraint(constraintPackage, constraintName, constraintWeight, impactType, stream);
+        ConstraintConsequence<TriConstraintGraphNode> consequence =
+                constraintFactory.getConstraintGraph().impact(getConstraintGraphNode(), matchWeigher);
+        return buildConstraint(constraintPackage, constraintName, constraintWeight, impactType, consequence);
     }
 
     @Override
     public Constraint impactScoreBigDecimal(String constraintPackage, String constraintName, Score<?> constraintWeight,
             TriFunction<A, B, C, BigDecimal> matchWeigher, ScoreImpactType impactType) {
-        DroolsScoringTriConstraintStream<Solution_, A, B, C> stream =
-                new DroolsScoringTriConstraintStream<>(constraintFactory, this, matchWeigher);
-        addChildStream(stream);
-        return buildConstraint(constraintPackage, constraintName, constraintWeight, impactType, stream);
+        ConstraintConsequence<TriConstraintGraphNode> consequence =
+                constraintFactory.getConstraintGraph().impact(getConstraintGraphNode(), matchWeigher);
+        return buildConstraint(constraintPackage, constraintName, constraintWeight, impactType, consequence);
     }
 
     @Override
     protected Constraint impactScoreConfigurable(String constraintPackage, String constraintName,
             ScoreImpactType impactType) {
-        DroolsScoringTriConstraintStream<Solution_, A, B, C> stream =
-                new DroolsScoringTriConstraintStream<>(constraintFactory, this);
-        addChildStream(stream);
-        return buildConstraintConfigurable(constraintPackage, constraintName, impactType, stream);
+        ConstraintConsequence<TriConstraintGraphNode> consequence =
+                constraintFactory.getConstraintGraph().impact(getConstraintGraphNode());
+        return buildConstraintConfigurable(constraintPackage, constraintName, impactType, consequence);
     }
 
     @Override
     public Constraint impactScoreConfigurable(String constraintPackage, String constraintName,
             ToIntTriFunction<A, B, C> matchWeigher, ScoreImpactType impactType) {
-        DroolsScoringTriConstraintStream<Solution_, A, B, C> stream =
-                new DroolsScoringTriConstraintStream<>(constraintFactory, this, matchWeigher);
-        addChildStream(stream);
-        return buildConstraintConfigurable(constraintPackage, constraintName, impactType, stream);
+        ConstraintConsequence<TriConstraintGraphNode> consequence =
+                constraintFactory.getConstraintGraph().impact(getConstraintGraphNode(), matchWeigher);
+        return buildConstraintConfigurable(constraintPackage, constraintName, impactType, consequence);
     }
 
     @Override
     public Constraint impactScoreConfigurableLong(String constraintPackage, String constraintName,
             ToLongTriFunction<A, B, C> matchWeigher, ScoreImpactType impactType) {
-        DroolsScoringTriConstraintStream<Solution_, A, B, C> stream =
-                new DroolsScoringTriConstraintStream<>(constraintFactory, this, matchWeigher);
-        addChildStream(stream);
-        return buildConstraintConfigurable(constraintPackage, constraintName, impactType, stream);
+        ConstraintConsequence<TriConstraintGraphNode> consequence =
+                constraintFactory.getConstraintGraph().impact(getConstraintGraphNode(), matchWeigher);
+        return buildConstraintConfigurable(constraintPackage, constraintName, impactType, consequence);
     }
 
     @Override
     public Constraint impactScoreConfigurableBigDecimal(String constraintPackage, String constraintName,
             TriFunction<A, B, C, BigDecimal> matchWeigher, ScoreImpactType impactType) {
-        DroolsScoringTriConstraintStream<Solution_, A, B, C> stream =
-                new DroolsScoringTriConstraintStream<>(constraintFactory, this, matchWeigher);
-        addChildStream(stream);
-        return buildConstraintConfigurable(constraintPackage, constraintName, impactType, stream);
+        ConstraintConsequence<TriConstraintGraphNode> consequence =
+                constraintFactory.getConstraintGraph().impact(getConstraintGraphNode(), matchWeigher);
+        return buildConstraintConfigurable(constraintPackage, constraintName, impactType, consequence);
     }
 
     // ************************************************************************
     // Pattern creation
     // ************************************************************************
 
-    @Override
-    public List<DroolsFromUniConstraintStream<Solution_, Object>> getFromStreamList() {
-        if (parent == null) {
-            DroolsJoinTriConstraintStream<Solution_, A, B, C> joinStream =
-                    (DroolsJoinTriConstraintStream<Solution_, A, B, C>) this;
-            List<DroolsFromUniConstraintStream<Solution_, Object>> leftParentFromStreamList =
-                    joinStream.getLeftParentStream().getFromStreamList();
-            List<DroolsFromUniConstraintStream<Solution_, Object>> rightParentFromStreamList =
-                    joinStream.getRightParentStream().getFromStreamList();
-            return Stream.concat(leftParentFromStreamList.stream(), rightParentFromStreamList.stream())
-                    .collect(Collectors.toList()); // TODO Should we distinct?
-        } else {
-            return parent.getFromStreamList();
-        }
-    }
-
-    public abstract DroolsTriCondition<A, B, C, ?> getCondition();
+    public abstract TriConstraintGraphNode getConstraintGraphNode();
 
 }

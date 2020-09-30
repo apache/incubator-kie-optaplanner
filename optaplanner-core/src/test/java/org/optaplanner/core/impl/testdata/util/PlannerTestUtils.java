@@ -16,7 +16,11 @@
 
 package org.optaplanner.core.impl.testdata.util;
 
-import java.io.Serializable;
+import static java.util.Arrays.stream;
+import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -29,14 +33,11 @@ import java.util.SortedMap;
 import java.util.SortedSet;
 import java.util.TreeMap;
 import java.util.TreeSet;
-import java.util.function.Consumer;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-import com.thoughtworks.xstream.XStream;
-import com.thoughtworks.xstream.security.AnyTypePermission;
-import org.apache.commons.lang3.SerializationUtils;
 import org.mockito.AdditionalAnswers;
+import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
 import org.optaplanner.core.api.solver.SolverFactory;
 import org.optaplanner.core.config.constructionheuristic.ConstructionHeuristicPhaseConfig;
@@ -49,17 +50,11 @@ import org.optaplanner.core.config.solver.termination.TerminationConfig;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.core.impl.score.DummySimpleScoreEasyScoreCalculator;
 import org.optaplanner.core.impl.score.director.InnerScoreDirector;
-import org.optaplanner.core.impl.score.director.easy.EasyScoreCalculator;
 import org.optaplanner.core.impl.score.director.easy.EasyScoreDirectorFactory;
 import org.optaplanner.core.impl.score.trend.InitializingScoreTrend;
 import org.optaplanner.core.impl.testdata.domain.TestdataEntity;
 import org.optaplanner.core.impl.testdata.domain.TestdataSolution;
 import org.optaplanner.core.impl.testdata.domain.TestdataValue;
-
-import static java.util.Arrays.stream;
-import static org.mockito.Mockito.any;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 
 /**
  * @see PlannerAssert
@@ -101,7 +96,7 @@ public class PlannerTestUtils {
         ScoreDirectorFactoryConfig scoreDirectorFactoryConfig = solverConfig.getScoreDirectorFactoryConfig();
         scoreDirectorFactoryConfig.setEasyScoreCalculatorClass(null);
         scoreDirectorFactoryConfig.setScoreDrlList(Collections.singletonList(
-                "org/optaplanner/core/impl/score/dummySimpleScoreDroolsScoreRules.drl"));
+                "org/optaplanner/core/impl/score/dummySimpleScoreDroolsConstraints.drl"));
         return SolverFactory.create(solverConfig);
     }
 
@@ -133,17 +128,19 @@ public class PlannerTestUtils {
     // ScoreDirector methods
     // ************************************************************************
 
-    public static <Solution_> InnerScoreDirector<Solution_> mockScoreDirector(SolutionDescriptor<Solution_> solutionDescriptor) {
-        EasyScoreDirectorFactory<Solution_> scoreDirectorFactory =
-                new EasyScoreDirectorFactory<>(solutionDescriptor, (EasyScoreCalculator<Solution_>) (solution_) -> SimpleScore.of(0));
+    public static <Solution_> InnerScoreDirector<Solution_, SimpleScore> mockScoreDirector(
+            SolutionDescriptor<Solution_> solutionDescriptor) {
+        EasyScoreDirectorFactory<Solution_, SimpleScore> scoreDirectorFactory =
+                new EasyScoreDirectorFactory<>(solutionDescriptor, (solution_) -> SimpleScore.of(0));
         scoreDirectorFactory.setInitializingScoreTrend(
                 InitializingScoreTrend.buildUniformTrend(InitializingScoreTrendLevel.ONLY_DOWN, 1));
-        return mock(InnerScoreDirector.class, AdditionalAnswers.delegatesTo(scoreDirectorFactory.buildScoreDirector(false, false)));
+        return mock(InnerScoreDirector.class,
+                AdditionalAnswers.delegatesTo(scoreDirectorFactory.buildScoreDirector(false, false)));
     }
 
-    public static <Solution_> InnerScoreDirector<Solution_> mockRebasingScoreDirector(
-            SolutionDescriptor<Solution_> solutionDescriptor, Object[][] lookUpMappings) {
-        InnerScoreDirector scoreDirector = mock(InnerScoreDirector.class);
+    public static <Solution_, Score_ extends Score<Score_>> InnerScoreDirector<Solution_, Score_>
+            mockRebasingScoreDirector(SolutionDescriptor<Solution_> solutionDescriptor, Object[][] lookUpMappings) {
+        InnerScoreDirector<Solution_, Score_> scoreDirector = mock(InnerScoreDirector.class);
         when(scoreDirector.getSolutionDescriptor()).thenReturn(solutionDescriptor);
         when(scoreDirector.lookUpWorkingObject(any())).thenAnswer((invocation) -> {
             Object externalObject = invocation.getArguments()[0];
@@ -158,32 +155,6 @@ public class PlannerTestUtils {
             throw new IllegalStateException("No method mocked for parameter (" + externalObject + ").");
         });
         return scoreDirector;
-    }
-
-    // ************************************************************************
-    // Serialization methods
-    // ************************************************************************
-
-    public static <T> void serializeAndDeserializeWithAll(T input, Consumer<T> outputAsserter) {
-        outputAsserter.accept(serializeAndDeserializeWithJavaSerialization(input));
-        outputAsserter.accept(serializeAndDeserializeWithXStream(input));
-    }
-
-    public static <T> T serializeAndDeserializeWithJavaSerialization(T input) {
-        byte[] bytes = SerializationUtils.serialize((Serializable) input);
-        return (T) SerializationUtils.deserialize(bytes);
-    }
-
-    public static <T> T serializeAndDeserializeWithXStream(T input) {
-        XStream xStream = new XStream();
-        xStream.setMode(XStream.ID_REFERENCES);
-        if (input != null) {
-            xStream.processAnnotations(input.getClass());
-        }
-        XStream.setupDefaultSecurity(xStream);
-        xStream.addPermission(new AnyTypePermission());
-        String xmlString = xStream.toXML(input);
-        return (T) xStream.fromXML(xmlString);
     }
 
     // ************************************************************************

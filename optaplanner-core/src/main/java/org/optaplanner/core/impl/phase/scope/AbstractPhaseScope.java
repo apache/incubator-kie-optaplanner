@@ -1,11 +1,11 @@
 /*
- * Copyright 2011 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      hhttp://www.apache.org/licenses/LICENSE-2.0
+ *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -21,13 +21,10 @@ import java.util.Random;
 
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.score.Score;
-import org.optaplanner.core.config.solver.EnvironmentMode;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
-import org.optaplanner.core.impl.domain.variable.listener.VariableListener;
-import org.optaplanner.core.impl.heuristic.move.Move;
 import org.optaplanner.core.impl.score.definition.ScoreDefinition;
 import org.optaplanner.core.impl.score.director.InnerScoreDirector;
-import org.optaplanner.core.impl.solver.scope.DefaultSolverScope;
+import org.optaplanner.core.impl.solver.scope.SolverScope;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -38,7 +35,7 @@ public abstract class AbstractPhaseScope<Solution_> {
 
     protected final transient Logger logger = LoggerFactory.getLogger(getClass());
 
-    protected final DefaultSolverScope<Solution_> solverScope;
+    protected final SolverScope<Solution_> solverScope;
 
     protected Long startingSystemTimeMillis;
     protected Long startingScoreCalculationCount;
@@ -49,11 +46,11 @@ public abstract class AbstractPhaseScope<Solution_> {
 
     protected int bestSolutionStepIndex;
 
-    public AbstractPhaseScope(DefaultSolverScope<Solution_> solverScope) {
+    public AbstractPhaseScope(SolverScope<Solution_> solverScope) {
         this.solverScope = solverScope;
     }
 
-    public DefaultSolverScope<Solution_> getSolverScope() {
+    public SolverScope<Solution_> getSolverScope() {
         return solverScope;
     }
 
@@ -61,8 +58,8 @@ public abstract class AbstractPhaseScope<Solution_> {
         return startingSystemTimeMillis;
     }
 
-    public Score getStartingScore() {
-        return startingScore;
+    public <Score_ extends Score<Score_>> Score_ getStartingScore() {
+        return (Score_) startingScore;
     }
 
     public Long getEndingSystemTimeMillis() {
@@ -106,7 +103,7 @@ public abstract class AbstractPhaseScope<Solution_> {
         return solverScope.getSolutionDescriptor();
     }
 
-    public ScoreDefinition getScoreDefinition() {
+    public <Score_ extends Score<Score_>> ScoreDefinition<Score_> getScoreDefinition() {
         return solverScope.getScoreDefinition();
     }
 
@@ -141,8 +138,8 @@ public abstract class AbstractPhaseScope<Solution_> {
         return getPhaseScoreCalculationCount() * 1000L / (timeMillisSpent == 0L ? 1L : timeMillisSpent);
     }
 
-    public InnerScoreDirector<Solution_> getScoreDirector() {
-        return solverScope.getScoreDirector();
+    public <Score_ extends Score<Score_>> InnerScoreDirector<Solution_, Score_> getScoreDirector() {
+        return (InnerScoreDirector<Solution_, Score_>) solverScope.getScoreDirector();
     }
 
     public Solution_ getWorkingSolution() {
@@ -161,24 +158,32 @@ public abstract class AbstractPhaseScope<Solution_> {
         return solverScope.getWorkingValueCount();
     }
 
-    public Score calculateScore() {
-        return solverScope.calculateScore();
+    public <Score_ extends Score<Score_>> Score_ calculateScore() {
+        return (Score_) solverScope.calculateScore();
     }
 
-    public void assertExpectedWorkingScore(Score expectedWorkingScore, Object completedAction) {
-        getScoreDirector().assertExpectedWorkingScore(expectedWorkingScore, completedAction);
+    public <Score_ extends Score<Score_>> void assertExpectedWorkingScore(Score_ expectedWorkingScore,
+            Object completedAction) {
+        InnerScoreDirector<Solution_, Score_> innerScoreDirector = getScoreDirector();
+        innerScoreDirector.assertExpectedWorkingScore(expectedWorkingScore, completedAction);
     }
 
-    public void assertWorkingScoreFromScratch(Score workingScore, Object completedAction) {
-        getScoreDirector().assertWorkingScoreFromScratch(workingScore, completedAction);
+    public <Score_ extends Score<Score_>> void assertWorkingScoreFromScratch(Score_ workingScore,
+            Object completedAction) {
+        InnerScoreDirector<Solution_, Score_> innerScoreDirector = getScoreDirector();
+        innerScoreDirector.assertWorkingScoreFromScratch(workingScore, completedAction);
     }
 
-    public void assertPredictedScoreFromScratch(Score workingScore, Object completedAction) {
-        getScoreDirector().assertPredictedScoreFromScratch(workingScore, completedAction);
+    public <Score_ extends Score<Score_>> void assertPredictedScoreFromScratch(Score_ workingScore,
+            Object completedAction) {
+        InnerScoreDirector<Solution_, Score_> innerScoreDirector = getScoreDirector();
+        innerScoreDirector.assertPredictedScoreFromScratch(workingScore, completedAction);
     }
 
-    public void assertShadowVariablesAreNotStale(Score workingScore, Object completedAction) {
-        getScoreDirector().assertShadowVariablesAreNotStale(workingScore, completedAction);
+    public <Score_ extends Score<Score_>> void assertShadowVariablesAreNotStale(Score_ workingScore,
+            Object completedAction) {
+        InnerScoreDirector<Solution_, Score_> innerScoreDirector = getScoreDirector();
+        innerScoreDirector.assertShadowVariablesAreNotStale(workingScore, completedAction);
     }
 
     public Random getWorkingRandom() {
@@ -189,8 +194,8 @@ public abstract class AbstractPhaseScope<Solution_> {
         return solverScope.isBestSolutionInitialized();
     }
 
-    public Score getBestScore() {
-        return solverScope.getBestScore();
+    public <Score_ extends Score<Score_>> Score_ getBestScore() {
+        return (Score_) solverScope.getBestScore();
     }
 
     public long getPhaseBestSolutionTimeMillis() {

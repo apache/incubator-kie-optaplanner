@@ -1,5 +1,5 @@
 /*
- * Copyright 2010 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,18 +16,17 @@
 
 package org.optaplanner.examples.nurserostering.solver.drools;
 
-import java.io.Serializable;
 import java.util.Comparator;
 import java.util.Objects;
 
 import org.optaplanner.examples.nurserostering.domain.Employee;
 
-public class EmployeeWeekendSequence implements Comparable<EmployeeWeekendSequence>, Serializable {
+public class EmployeeWeekendSequence implements Comparable<EmployeeWeekendSequence> {
 
-    private static final Comparator<EmployeeWeekendSequence> COMPARATOR =
-            Comparator.comparing(EmployeeWeekendSequence::getEmployee)
-                    .thenComparingInt(EmployeeWeekendSequence::getFirstSundayIndex)
-                    .thenComparingInt(EmployeeWeekendSequence::getLastSundayIndex);
+    private static final Comparator<EmployeeWeekendSequence> COMPARATOR = Comparator
+            .comparing(EmployeeWeekendSequence::getEmployee)
+            .thenComparingInt(EmployeeWeekendSequence::getFirstSundayIndex)
+            .thenComparingInt(EmployeeWeekendSequence::getLastSundayIndex);
 
     private Employee employee;
     private int firstSundayIndex;

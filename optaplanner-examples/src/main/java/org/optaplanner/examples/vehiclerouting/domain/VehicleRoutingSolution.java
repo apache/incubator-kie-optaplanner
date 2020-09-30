@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,13 +19,10 @@ package org.optaplanner.examples.vehiclerouting.domain;
 import java.text.NumberFormat;
 import java.util.List;
 
-import com.thoughtworks.xstream.annotations.XStreamAlias;
-import com.thoughtworks.xstream.annotations.XStreamConverter;
-import com.thoughtworks.xstream.annotations.XStreamInclude;
 import org.optaplanner.core.api.domain.solution.PlanningEntityCollectionProperty;
 import org.optaplanner.core.api.domain.solution.PlanningScore;
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
-import org.optaplanner.core.api.domain.solution.drools.ProblemFactCollectionProperty;
+import org.optaplanner.core.api.domain.solution.ProblemFactCollectionProperty;
 import org.optaplanner.core.api.domain.valuerange.ValueRangeProvider;
 import org.optaplanner.core.api.score.buildin.hardsoftlong.HardSoftLongScore;
 import org.optaplanner.examples.common.domain.AbstractPersistable;
@@ -33,6 +30,10 @@ import org.optaplanner.examples.vehiclerouting.domain.location.DistanceType;
 import org.optaplanner.examples.vehiclerouting.domain.location.Location;
 import org.optaplanner.examples.vehiclerouting.domain.timewindowed.TimeWindowedVehicleRoutingSolution;
 import org.optaplanner.persistence.xstream.api.score.buildin.hardsoftlong.HardSoftLongScoreXStreamConverter;
+
+import com.thoughtworks.xstream.annotations.XStreamAlias;
+import com.thoughtworks.xstream.annotations.XStreamConverter;
+import com.thoughtworks.xstream.annotations.XStreamInclude;
 
 @PlanningSolution
 @XStreamAlias("VrpVehicleRoutingSolution")
@@ -132,12 +133,12 @@ public class VehicleRoutingSolution extends AbstractPersistable {
         if (score == null) {
             return null;
         }
-        long distance = - score.getSoftScore();
+        long distance = -score.getSoftScore();
         if (distanceUnitOfMeasurement == null) {
             return numberFormat.format(((double) distance) / 1000.0);
         }
         switch (distanceUnitOfMeasurement) {
-            case "sec":  // TODO why are the values 1000 larger?
+            case "sec": // TODO why are the values 1000 larger?
                 long hours = distance / 3600000L;
                 long minutes = distance % 3600000L / 60000L;
                 long seconds = distance % 60000L / 1000L;

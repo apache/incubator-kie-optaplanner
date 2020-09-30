@@ -1,5 +1,5 @@
 /*
- * Copyright 2012 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,12 +19,13 @@ package org.optaplanner.core.impl.constructionheuristic.placer;
 import org.optaplanner.core.impl.phase.event.PhaseLifecycleSupport;
 import org.optaplanner.core.impl.phase.scope.AbstractPhaseScope;
 import org.optaplanner.core.impl.phase.scope.AbstractStepScope;
-import org.optaplanner.core.impl.solver.scope.DefaultSolverScope;
+import org.optaplanner.core.impl.solver.scope.SolverScope;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
  * Abstract superclass for {@link EntityPlacer}.
+ *
  * @see EntityPlacer
  */
 public abstract class AbstractEntityPlacer {
@@ -33,7 +34,7 @@ public abstract class AbstractEntityPlacer {
 
     protected PhaseLifecycleSupport phaseLifecycleSupport = new PhaseLifecycleSupport();
 
-    public void solvingStarted(DefaultSolverScope solverScope) {
+    public void solvingStarted(SolverScope solverScope) {
         phaseLifecycleSupport.fireSolvingStarted(solverScope);
     }
 
@@ -53,7 +54,7 @@ public abstract class AbstractEntityPlacer {
         phaseLifecycleSupport.firePhaseEnded(phaseScope);
     }
 
-    public void solvingEnded(DefaultSolverScope solverScope) {
+    public void solvingEnded(SolverScope solverScope) {
         phaseLifecycleSupport.fireSolvingEnded(solverScope);
     }
 

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,16 +19,17 @@ package org.optaplanner.examples.nurserostering.domain;
 import java.time.DayOfWeek;
 import java.util.Comparator;
 
-import com.thoughtworks.xstream.annotations.XStreamAlias;
 import org.optaplanner.core.api.domain.entity.PlanningEntity;
 import org.optaplanner.core.api.domain.variable.PlanningVariable;
 import org.optaplanner.examples.common.domain.AbstractPersistable;
 import org.optaplanner.examples.nurserostering.domain.contract.Contract;
 import org.optaplanner.examples.nurserostering.domain.solver.EmployeeStrengthComparator;
-import org.optaplanner.examples.nurserostering.domain.solver.MovableShiftAssignmentSelectionFilter;
 import org.optaplanner.examples.nurserostering.domain.solver.ShiftAssignmentDifficultyComparator;
+import org.optaplanner.examples.nurserostering.domain.solver.ShiftAssignmentPinningFilter;
 
-@PlanningEntity(movableEntitySelectionFilter = MovableShiftAssignmentSelectionFilter.class,
+import com.thoughtworks.xstream.annotations.XStreamAlias;
+
+@PlanningEntity(pinningFilter = ShiftAssignmentPinningFilter.class,
         difficultyComparatorClass = ShiftAssignmentDifficultyComparator.class)
 @XStreamAlias("ShiftAssignment")
 public class ShiftAssignment extends AbstractPersistable implements Comparable<ShiftAssignment> {
@@ -41,8 +42,7 @@ public class ShiftAssignment extends AbstractPersistable implements Comparable<S
     private int indexInShift;
 
     // Planning variables: changes during planning, between score calculations.
-    @PlanningVariable(valueRangeProviderRefs = {"employeeRange"},
-            strengthComparatorClass = EmployeeStrengthComparator.class)
+    @PlanningVariable(valueRangeProviderRefs = { "employeeRange" }, strengthComparatorClass = EmployeeStrengthComparator.class)
     private Employee employee;
 
     public Shift getShift() {

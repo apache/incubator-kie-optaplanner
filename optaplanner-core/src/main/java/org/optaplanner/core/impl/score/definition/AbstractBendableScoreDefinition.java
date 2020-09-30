@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,9 +16,11 @@
 
 package org.optaplanner.core.impl.score.definition;
 
-import org.optaplanner.core.api.score.FeasibilityScore;
+import org.optaplanner.core.api.score.AbstractBendableScore;
+import org.optaplanner.core.api.score.Score;
 
-public abstract class AbstractBendableScoreDefinition<S extends FeasibilityScore<S>> extends AbstractFeasibilityScoreDefinition<S> {
+public abstract class AbstractBendableScoreDefinition<Score_ extends Score<Score_>> extends AbstractScoreDefinition<Score_>
+        implements ScoreDefinition<Score_> {
 
     protected static String[] generateLevelLabels(int hardLevelsSize, int softLevelsSize) {
         if (hardLevelsSize < 0 || softLevelsSize < 0) {
@@ -69,4 +71,14 @@ public abstract class AbstractBendableScoreDefinition<S extends FeasibilityScore
         return hardLevelsSize;
     }
 
+    @Override
+    public boolean isCompatibleArithmeticArgument(Score score) {
+        if (super.isCompatibleArithmeticArgument(score)) {
+            AbstractBendableScore bendableScore = (AbstractBendableScore) score;
+            return getLevelsSize() == bendableScore.getLevelsSize()
+                    && getHardLevelsSize() == bendableScore.getHardLevelsSize()
+                    && getSoftLevelsSize() == bendableScore.getSoftLevelsSize();
+        }
+        return false;
+    }
 }

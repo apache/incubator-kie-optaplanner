@@ -15,6 +15,8 @@
  */
 package org.optaplanner.core.impl.score.director.drools.testgen;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
@@ -32,7 +34,8 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Timeout;
 import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
 import org.optaplanner.core.impl.domain.variable.descriptor.VariableDescriptor;
 import org.optaplanner.core.impl.score.buildin.simple.SimpleScoreDefinition;
@@ -41,14 +44,13 @@ import org.optaplanner.core.impl.testdata.domain.TestdataEntity;
 import org.optaplanner.core.impl.testdata.domain.TestdataSolution;
 import org.optaplanner.core.impl.testdata.domain.TestdataValue;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
 public class TestGenTestWriterTest {
 
     private static final String DRL_FILE_PLACEHOLDER = "SCORE_DRL_ABSOLUTE_PATH";
     private static final String DRL_FILE_PATH = "/x/y.drl";
 
-    @Test(timeout = 600000)
+    @Test
+    @Timeout(600)
     public void fullJournalOutput() throws IOException, URISyntaxException {
         TestGenKieSessionJournal journal = new TestGenKieSessionJournal();
         TestdataEntity entity = new TestdataEntity("E");
@@ -111,8 +113,7 @@ public class TestGenTestWriterTest {
 
         assertThat(generatedCode).contains(
                 "import java.util.Date;",
-                "setDate(new Date(" + now.getTime() + "));"
-        );
+                "setDate(new Date(" + now.getTime() + "));");
     }
 
     private static void checkOutput(Path expected, String actual) throws IOException {

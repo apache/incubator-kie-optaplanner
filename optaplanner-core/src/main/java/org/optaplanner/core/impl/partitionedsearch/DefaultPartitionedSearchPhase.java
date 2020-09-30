@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,9 +26,8 @@ import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.ThreadPoolExecutor;
 
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
-import org.optaplanner.core.config.heuristic.policy.HeuristicConfigPolicy;
 import org.optaplanner.core.config.phase.PhaseConfig;
-import org.optaplanner.core.config.solver.recaller.BestSolutionRecallerConfig;
+import org.optaplanner.core.impl.heuristic.HeuristicConfigPolicy;
 import org.optaplanner.core.impl.heuristic.move.Move;
 import org.optaplanner.core.impl.partitionedsearch.event.PartitionedSearchPhaseLifecycleListener;
 import org.optaplanner.core.impl.partitionedsearch.partitioner.SolutionPartitioner;
@@ -38,17 +37,20 @@ import org.optaplanner.core.impl.partitionedsearch.scope.PartitionedSearchPhaseS
 import org.optaplanner.core.impl.partitionedsearch.scope.PartitionedSearchStepScope;
 import org.optaplanner.core.impl.phase.AbstractPhase;
 import org.optaplanner.core.impl.phase.Phase;
+import org.optaplanner.core.impl.phase.PhaseFactory;
 import org.optaplanner.core.impl.score.director.InnerScoreDirector;
-import org.optaplanner.core.impl.solver.thread.ChildThreadType;
 import org.optaplanner.core.impl.solver.recaller.BestSolutionRecaller;
-import org.optaplanner.core.impl.solver.scope.DefaultSolverScope;
+import org.optaplanner.core.impl.solver.recaller.BestSolutionRecallerFactory;
+import org.optaplanner.core.impl.solver.scope.SolverScope;
 import org.optaplanner.core.impl.solver.termination.ChildThreadPlumbingTermination;
 import org.optaplanner.core.impl.solver.termination.OrCompositeTermination;
 import org.optaplanner.core.impl.solver.termination.Termination;
+import org.optaplanner.core.impl.solver.thread.ChildThreadType;
 import org.optaplanner.core.impl.solver.thread.ThreadUtils;
 
 /**
  * Default implementation of {@link PartitionedSearchPhase}.
+ *
  * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
  */
 public class DefaultPartitionedSearchPhase<Solution_> extends AbstractPhase<Solution_>
@@ -89,7 +91,7 @@ public class DefaultPartitionedSearchPhase<Solution_> extends AbstractPhase<Solu
     // ************************************************************************
 
     @Override
-    public void solve(DefaultSolverScope<Solution_> solverScope) {
+    public void solve(SolverScope<Solution_> solverScope) {
         PartitionedSearchPhaseScope<Solution_> phaseScope = new PartitionedSearchPhaseScope<>(solverScope);
         List<Solution_> partList = solutionPartitioner.splitWorkingSolution(
                 solverScope.getScoreDirector(), runnablePartThreadLimit);
@@ -99,8 +101,8 @@ public class DefaultPartitionedSearchPhase<Solution_> extends AbstractPhase<Solu
         ExecutorService executor = createThreadPoolExecutor(partCount);
         ChildThreadPlumbingTermination childThreadPlumbingTermination = new ChildThreadPlumbingTermination();
         PartitionQueue<Solution_> partitionQueue = new PartitionQueue<>(partCount);
-        Semaphore runnablePartThreadSemaphore
-                = runnablePartThreadLimit == null ? null : new Semaphore(runnablePartThreadLimit, true);
+        Semaphore runnablePartThreadSemaphore = runnablePartThreadLimit == null ? null
+                : new Semaphore(runnablePartThreadLimit, true);
         try {
             for (ListIterator<Solution_> it = partList.listIterator(); it.hasNext();) {
                 int partIndex = it.nextIndex();
@@ -108,9 +110,10 @@ public class DefaultPartitionedSearchPhase<Solution_> extends AbstractPhase<Solu
                 PartitionSolver<Solution_> partitionSolver = buildPartitionSolver(
                         childThreadPlumbingTermination, runnablePartThreadSemaphore, solverScope);
                 partitionSolver.addEventListener(event -> {
-                    InnerScoreDirector<Solution_> childScoreDirector = partitionSolver.solverScope.getScoreDirector();
+                    InnerScoreDirector<Solution_, ?> childScoreDirector =
+                            partitionSolver.solverScope.getScoreDirector();
                     PartitionChangeMove<Solution_> move = PartitionChangeMove.createMove(childScoreDirector, partIndex);
-                    InnerScoreDirector<Solution_> parentScoreDirector = solverScope.getScoreDirector();
+                    InnerScoreDirector<Solution_, ?> parentScoreDirector = solverScope.getScoreDirector();
                     move = move.rebase(parentScoreDirector);
                     partitionQueue.addMove(partIndex, move);
                 });
@@ -151,35 +154,36 @@ public class DefaultPartitionedSearchPhase<Solution_> extends AbstractPhase<Solu
     }
 
     private ExecutorService createThreadPoolExecutor(int partCount) {
-        ThreadPoolExecutor threadPoolExecutor
-                = (ThreadPoolExecutor) Executors.newFixedThreadPool(partCount, threadFactory);
+        ThreadPoolExecutor threadPoolExecutor = (ThreadPoolExecutor) Executors.newFixedThreadPool(partCount, threadFactory);
         if (threadPoolExecutor.getMaximumPoolSize() < partCount) {
             throw new IllegalStateException(
                     "The threadPoolExecutor's maximumPoolSize (" + threadPoolExecutor.getMaximumPoolSize()
-                    + ") is less than the partCount (" + partCount + "), so some partitions will starve.\n"
-                    + "Normally this is impossible because the threadPoolExecutor should be unbounded."
-                    + " Use runnablePartThreadLimit (" + runnablePartThreadLimit
-                    + ") instead to avoid CPU hogging and live locks.");
+                            + ") is less than the partCount (" + partCount + "), so some partitions will starve.\n"
+                            + "Normally this is impossible because the threadPoolExecutor should be unbounded."
+                            + " Use runnablePartThreadLimit (" + runnablePartThreadLimit
+                            + ") instead to avoid CPU hogging and live locks.");
         }
         return threadPoolExecutor;
     }
 
     public PartitionSolver<Solution_> buildPartitionSolver(
             ChildThreadPlumbingTermination childThreadPlumbingTermination, Semaphore runnablePartThreadSemaphore,
-            DefaultSolverScope<Solution_> solverScope) {
-        BestSolutionRecaller<Solution_> bestSolutionRecaller = new BestSolutionRecallerConfig()
-                .buildBestSolutionRecaller(configPolicy.getEnvironmentMode());
+            SolverScope<Solution_> solverScope) {
+        BestSolutionRecaller<Solution_> bestSolutionRecaller =
+                BestSolutionRecallerFactory.create().buildBestSolutionRecaller(configPolicy.getEnvironmentMode());
         Termination partTermination = new OrCompositeTermination(childThreadPlumbingTermination,
                 termination.createChildThreadTermination(solverScope, ChildThreadType.PART_THREAD));
         List<Phase<Solution_>> phaseList = new ArrayList<>(phaseConfigList.size());
         int partPhaseIndex = 0;
         for (PhaseConfig phaseConfig : phaseConfigList) {
-            phaseList.add(phaseConfig.buildPhase(partPhaseIndex, configPolicy, bestSolutionRecaller, partTermination));
+            PhaseFactory<Solution_> phaseFactory = PhaseFactory.create(phaseConfig);
+            Phase<Solution_> phase =
+                    phaseFactory.buildPhase(partPhaseIndex, configPolicy, bestSolutionRecaller, partTermination);
+            phaseList.add(phase);
             partPhaseIndex++;
         }
         // TODO create PartitionSolverScope alternative to deal with 3 layer terminations
-        DefaultSolverScope<Solution_> partSolverScope
-                = solverScope.createChildThreadSolverScope(ChildThreadType.PART_THREAD);
+        SolverScope<Solution_> partSolverScope = solverScope.createChildThreadSolverScope(ChildThreadType.PART_THREAD);
         partSolverScope.setRunnableThreadSemaphore(runnablePartThreadSemaphore);
         return new PartitionSolver<>(bestSolutionRecaller, partTermination, phaseList, partSolverScope);
     }

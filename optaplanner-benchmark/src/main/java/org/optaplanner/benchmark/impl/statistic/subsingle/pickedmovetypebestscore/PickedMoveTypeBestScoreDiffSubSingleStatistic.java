@@ -1,5 +1,5 @@
 /*
- * Copyright 2014 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,8 +24,8 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
-import com.thoughtworks.xstream.annotations.XStreamAlias;
-import com.thoughtworks.xstream.annotations.XStreamOmitField;
+import javax.xml.bind.annotation.XmlTransient;
+
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.axis.NumberAxis;
 import org.jfree.chart.plot.PlotOrientation;
@@ -50,14 +50,13 @@ import org.optaplanner.core.impl.score.ScoreUtils;
 import org.optaplanner.core.impl.score.definition.ScoreDefinition;
 import org.optaplanner.core.impl.solver.DefaultSolver;
 
-@XStreamAlias("pickedMoveTypeBestScoreDiffSubSingleStatistic")
 public class PickedMoveTypeBestScoreDiffSubSingleStatistic<Solution_>
         extends PureSubSingleStatistic<Solution_, PickedMoveTypeBestScoreDiffStatisticPoint> {
 
-    @XStreamOmitField
+    @XmlTransient
     private PickedMoveTypeBestScoreDiffSubSingleStatisticListener listener;
 
-    @XStreamOmitField
+    @XmlTransient
     protected List<File> graphFileList = null;
 
     public PickedMoveTypeBestScoreDiffSubSingleStatistic(SubSingleBenchmarkResult subSingleBenchmarkResult) {
@@ -148,8 +147,7 @@ public class PickedMoveTypeBestScoreDiffSubSingleStatistic<Solution_>
 
     @Override
     public void writeGraphFiles(BenchmarkReport benchmarkReport) {
-        List<Map<String, XYIntervalSeries>> moveTypeToSeriesMapList
-                = new ArrayList<>(BenchmarkReport.CHARTED_SCORE_LEVEL_SIZE);
+        List<Map<String, XYIntervalSeries>> moveTypeToSeriesMapList = new ArrayList<>(BenchmarkReport.CHARTED_SCORE_LEVEL_SIZE);
         for (PickedMoveTypeBestScoreDiffStatisticPoint point : getPointList()) {
             long timeMillisSpent = point.getTimeMillisSpent();
             String moveType = point.getMoveType();

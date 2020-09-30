@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -30,7 +30,7 @@ import org.optaplanner.core.impl.heuristic.selector.common.iterator.UpcomingSele
 import org.optaplanner.core.impl.heuristic.selector.entity.EntitySelector;
 import org.optaplanner.core.impl.heuristic.selector.move.generic.GenericMoveSelector;
 import org.optaplanner.core.impl.heuristic.selector.value.ValueSelector;
-import org.optaplanner.core.impl.solver.scope.DefaultSolverScope;
+import org.optaplanner.core.impl.solver.scope.SolverScope;
 
 public class KOptMoveSelector extends GenericMoveSelector {
 
@@ -50,7 +50,7 @@ public class KOptMoveSelector extends GenericMoveSelector {
         if (!randomSelection) {
             throw new UnsupportedOperationException(
                     "Non randomSelection (such as original selection) is not yet supported on "
-                    + KOptMoveSelector.class.getSimpleName() + "."); // TODO
+                            + KOptMoveSelector.class.getSimpleName() + "."); // TODO
         }
         variableDescriptor = valueSelectors[0].getVariableDescriptor();
         if (!variableDescriptor.isChained()) {
@@ -70,7 +70,7 @@ public class KOptMoveSelector extends GenericMoveSelector {
         for (ValueSelector valueSelector : valueSelectors) {
             if (valueSelector.getVariableDescriptor() != variableDescriptor) {
                 throw new IllegalStateException("The selector (" + this
-                        + ") has a valueSelector with a variableDescriptor ("  + valueSelector.getVariableDescriptor()
+                        + ") has a valueSelector with a variableDescriptor (" + valueSelector.getVariableDescriptor()
                         + ") that differs from the first variableDescriptor (" + variableDescriptor + ").");
             }
             phaseLifecycleSupport.addEventListener(valueSelector);
@@ -78,7 +78,7 @@ public class KOptMoveSelector extends GenericMoveSelector {
     }
 
     @Override
-    public void solvingStarted(DefaultSolverScope solverScope) {
+    public void solvingStarted(SolverScope solverScope) {
         super.solvingStarted(solverScope);
         SupplyManager supplyManager = solverScope.getScoreDirector().getSupplyManager();
         inverseVariableSupply = supplyManager.demand(new SingletonInverseVariableDemand(variableDescriptor));
@@ -86,7 +86,7 @@ public class KOptMoveSelector extends GenericMoveSelector {
     }
 
     @Override
-    public void solvingEnded(DefaultSolverScope solverScope) {
+    public void solvingEnded(SolverScope solverScope) {
         super.solvingEnded(solverScope);
         inverseVariableSupply = null;
         anchorVariableSupply = null;
@@ -125,10 +125,10 @@ public class KOptMoveSelector extends GenericMoveSelector {
     @Override
     public long getSize() {
         throw new UnsupportedOperationException("Not yet supported."); // TODO
-//        if (valueSelector instanceof IterableSelector) {
-//            return entitySelector.getSize() * (long) Math.pow(((IterableSelector) valueSelector).getSize(), K);
-//        } else {
-//        }
+        //        if (valueSelector instanceof IterableSelector) {
+        //            return entitySelector.getSize() * (long) Math.pow(((IterableSelector) valueSelector).getSize(), K);
+        //        } else {
+        //        }
     }
 
     @Override

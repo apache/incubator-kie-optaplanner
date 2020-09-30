@@ -1,5 +1,5 @@
 /*
- * Copyright 2013 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,14 +20,13 @@ import java.math.BigDecimal;
 import java.util.Arrays;
 
 import org.optaplanner.core.api.score.buildin.simplebigdecimal.SimpleBigDecimalScore;
-import org.optaplanner.core.api.score.buildin.simplebigdecimal.SimpleBigDecimalScoreHolder;
 import org.optaplanner.core.impl.score.definition.AbstractScoreDefinition;
 import org.optaplanner.core.impl.score.trend.InitializingScoreTrend;
 
 public class SimpleBigDecimalScoreDefinition extends AbstractScoreDefinition<SimpleBigDecimalScore> {
 
     public SimpleBigDecimalScoreDefinition() {
-        super(new String[]{"score"});
+        super(new String[] { "score" });
     }
 
     // ************************************************************************
@@ -40,6 +39,11 @@ public class SimpleBigDecimalScoreDefinition extends AbstractScoreDefinition<Sim
     }
 
     @Override
+    public int getFeasibleLevelsSize() {
+        return 0;
+    }
+
+    @Override
     public Class<SimpleBigDecimalScore> getScoreClass() {
         return SimpleBigDecimalScore.class;
     }
@@ -47,6 +51,11 @@ public class SimpleBigDecimalScoreDefinition extends AbstractScoreDefinition<Sim
     @Override
     public SimpleBigDecimalScore getZeroScore() {
         return SimpleBigDecimalScore.ZERO;
+    }
+
+    @Override
+    public SimpleBigDecimalScore getOneSoftestScore() {
+        return SimpleBigDecimalScore.ONE;
     }
 
     @Override
@@ -69,22 +78,37 @@ public class SimpleBigDecimalScoreDefinition extends AbstractScoreDefinition<Sim
     }
 
     @Override
-    public SimpleBigDecimalScoreHolder buildScoreHolder(boolean constraintMatchEnabled) {
-        return new SimpleBigDecimalScoreHolder(constraintMatchEnabled);
+    public SimpleBigDecimalScoreHolderImpl buildScoreHolder(boolean constraintMatchEnabled) {
+        return new SimpleBigDecimalScoreHolderImpl(constraintMatchEnabled);
     }
 
     @Override
-    public SimpleBigDecimalScore buildOptimisticBound(InitializingScoreTrend initializingScoreTrend, SimpleBigDecimalScore score) {
+    public SimpleBigDecimalScore buildOptimisticBound(InitializingScoreTrend initializingScoreTrend,
+            SimpleBigDecimalScore score) {
         // TODO https://issues.redhat.com/browse/PLANNER-232
         throw new UnsupportedOperationException("PLANNER-232: BigDecimalScore does not support bounds" +
                 " because a BigDecimal cannot represent infinity.");
     }
 
     @Override
-    public SimpleBigDecimalScore buildPessimisticBound(InitializingScoreTrend initializingScoreTrend, SimpleBigDecimalScore score) {
+    public SimpleBigDecimalScore buildPessimisticBound(InitializingScoreTrend initializingScoreTrend,
+            SimpleBigDecimalScore score) {
         // TODO https://issues.redhat.com/browse/PLANNER-232
         throw new UnsupportedOperationException("PLANNER-232: BigDecimalScore does not support bounds" +
                 " because a BigDecimal cannot represent infinity.");
     }
 
+    @Override
+    public SimpleBigDecimalScore divideBySanitizedDivisor(SimpleBigDecimalScore dividend,
+            SimpleBigDecimalScore divisor) {
+        int dividendInitScore = dividend.getInitScore();
+        int divisorInitScore = sanitize(divisor.getInitScore());
+        BigDecimal dividendScore = dividend.getScore();
+        BigDecimal divisorScore = sanitize(divisor.getScore());
+        return fromLevelNumbers(
+                divide(dividendInitScore, divisorInitScore),
+                new Number[] {
+                        divide(dividendScore, divisorScore)
+                });
+    }
 }

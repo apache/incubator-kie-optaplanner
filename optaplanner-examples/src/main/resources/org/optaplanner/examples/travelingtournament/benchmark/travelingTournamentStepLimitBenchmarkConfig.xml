@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<plannerBenchmark>
+<plannerBenchmark xmlns="https://www.optaplanner.org/xsd/benchmark" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="https://www.optaplanner.org/xsd/benchmark https://www.optaplanner.org/xsd/benchmark/benchmark.xsd">
   <benchmarkDirectory>local/data/travelingtournament/stepLimit</benchmarkDirectory>
   <warmUpSecondsSpentLimit>0</warmUpSecondsSpentLimit>
 
   <inheritedSolverBenchmark>
     <problemBenchmarks>
-      <xStreamAnnotatedClass>org.optaplanner.examples.travelingtournament.domain.TravelingTournament</xStreamAnnotatedClass>
+      <solutionFileIOClass>org.optaplanner.examples.travelingtournament.persistence.TravelingTournamentXmlSolutionFileIO</solutionFileIOClass>
       <inputSolutionFile>data/travelingtournament/unsolved/1-nl14.xml</inputSolutionFile>
     </problemBenchmarks>
   </inheritedSolverBenchmark>
@@ -15,7 +16,7 @@
       <solutionClass>org.optaplanner.examples.travelingtournament.domain.TravelingTournament</solutionClass>
       <entityClass>org.optaplanner.examples.travelingtournament.domain.Match</entityClass>
       <scoreDirectorFactory>
-        <scoreDrl>org/optaplanner/examples/travelingtournament/solver/travelingTournamentScoreRules.drl</scoreDrl>
+        <scoreDrl>org/optaplanner/examples/travelingtournament/solver/travelingTournamentConstraints.drl</scoreDrl>
       </scoreDirectorFactory>
       <termination>
         <stepCountLimit>100</stepCountLimit>

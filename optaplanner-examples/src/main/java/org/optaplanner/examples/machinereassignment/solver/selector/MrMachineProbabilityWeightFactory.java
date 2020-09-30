@@ -1,5 +1,5 @@
 /*
- * Copyright 2012 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,18 +16,20 @@
 
 package org.optaplanner.examples.machinereassignment.solver.selector;
 
+import org.optaplanner.core.api.score.director.ScoreDirector;
 import org.optaplanner.core.impl.heuristic.selector.common.decorator.SelectionProbabilityWeightFactory;
-import org.optaplanner.core.impl.score.director.ScoreDirector;
 import org.optaplanner.examples.machinereassignment.domain.MachineReassignment;
 import org.optaplanner.examples.machinereassignment.domain.MrMachine;
 import org.optaplanner.examples.machinereassignment.domain.MrProcess;
 import org.optaplanner.examples.machinereassignment.domain.MrProcessAssignment;
 import org.optaplanner.examples.machinereassignment.domain.MrResource;
 
-public class MrMachineProbabilityWeightFactory implements SelectionProbabilityWeightFactory<MachineReassignment, MrProcessAssignment> {
+public class MrMachineProbabilityWeightFactory
+        implements SelectionProbabilityWeightFactory<MachineReassignment, MrProcessAssignment> {
 
     @Override
-    public double createProbabilityWeight(ScoreDirector<MachineReassignment> scoreDirector, MrProcessAssignment processAssignment) {
+    public double createProbabilityWeight(ScoreDirector<MachineReassignment> scoreDirector,
+            MrProcessAssignment processAssignment) {
         MachineReassignment machineReassignment = scoreDirector.getWorkingSolution();
         MrMachine machine = processAssignment.getMachine();
         // TODO reuse usage calculated by of the ScoreCalculator which is a delta
@@ -42,8 +44,7 @@ public class MrMachineProbabilityWeightFactory implements SelectionProbabilityWe
         }
         double sum = 0.0;
         for (MrResource resource : machineReassignment.getResourceList()) {
-            double available = (double)
-                    (machine.getMachineCapacity(resource).getSafetyCapacity() - usage[resource.getIndex()]);
+            double available = (double) (machine.getMachineCapacity(resource).getSafetyCapacity() - usage[resource.getIndex()]);
             sum += (available * available);
         }
         return sum + 1.0;

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,15 +16,28 @@
 
 package org.optaplanner.examples.curriculumcourse.domain;
 
-import com.thoughtworks.xstream.annotations.XStreamAlias;
+import static java.util.Objects.requireNonNull;
+
 import org.optaplanner.examples.common.domain.AbstractPersistable;
 import org.optaplanner.examples.common.swingui.components.Labeled;
+
+import com.thoughtworks.xstream.annotations.XStreamAlias;
 
 @XStreamAlias("Period")
 public class Period extends AbstractPersistable implements Labeled {
 
     private Day day;
     private Timeslot timeslot;
+
+    public Period() {
+    }
+
+    public Period(int id, Day day, Timeslot timeslot) {
+        super(id);
+        this.day = requireNonNull(day);
+        day.getPeriodList().add(this);
+        this.timeslot = requireNonNull(timeslot);
+    }
 
     public Day getDay() {
         return day;

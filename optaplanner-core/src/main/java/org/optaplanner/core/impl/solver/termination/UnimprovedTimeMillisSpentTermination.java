@@ -1,5 +1,5 @@
 /*
- * Copyright 2014 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,8 +19,8 @@ package org.optaplanner.core.impl.solver.termination;
 import java.time.Clock;
 
 import org.optaplanner.core.impl.phase.scope.AbstractPhaseScope;
+import org.optaplanner.core.impl.solver.scope.SolverScope;
 import org.optaplanner.core.impl.solver.thread.ChildThreadType;
-import org.optaplanner.core.impl.solver.scope.DefaultSolverScope;
 
 public class UnimprovedTimeMillisSpentTermination extends AbstractTermination {
 
@@ -36,7 +36,7 @@ public class UnimprovedTimeMillisSpentTermination extends AbstractTermination {
         this.unimprovedTimeMillisSpentLimit = unimprovedTimeMillisSpentLimit;
         if (unimprovedTimeMillisSpentLimit < 0L) {
             throw new IllegalArgumentException("The unimprovedTimeMillisSpentLimit (" + unimprovedTimeMillisSpentLimit
-                                                       + ") cannot be negative.");
+                    + ") cannot be negative.");
         }
         this.clock = clock;
     }
@@ -50,7 +50,7 @@ public class UnimprovedTimeMillisSpentTermination extends AbstractTermination {
     // ************************************************************************
 
     @Override
-    public boolean isSolverTerminated(DefaultSolverScope solverScope) {
+    public boolean isSolverTerminated(SolverScope solverScope) {
         long bestSolutionTimeMillis = solverScope.getBestSolutionTimeMillis();
         return isTerminated(bestSolutionTimeMillis);
     }
@@ -72,7 +72,7 @@ public class UnimprovedTimeMillisSpentTermination extends AbstractTermination {
     // ************************************************************************
 
     @Override
-    public double calculateSolverTimeGradient(DefaultSolverScope solverScope) {
+    public double calculateSolverTimeGradient(SolverScope solverScope) {
         long bestSolutionTimeMillis = solverScope.getBestSolutionTimeMillis();
         return calculateTimeGradient(bestSolutionTimeMillis);
     }
@@ -96,7 +96,7 @@ public class UnimprovedTimeMillisSpentTermination extends AbstractTermination {
 
     @Override
     public UnimprovedTimeMillisSpentTermination createChildThreadTermination(
-            DefaultSolverScope solverScope, ChildThreadType childThreadType) {
+            SolverScope solverScope, ChildThreadType childThreadType) {
         return new UnimprovedTimeMillisSpentTermination(unimprovedTimeMillisSpentLimit);
     }
 

@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<solver>
+<solver xmlns="https://www.optaplanner.org/xsd/solver" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="https://www.optaplanner.org/xsd/solver https://www.optaplanner.org/xsd/solver/solver.xsd">
   <!--<environmentMode>FULL_ASSERT</environmentMode>--><!-- To slowly prove there are no bugs in this code -->
   <!--<moveThreadCount>AUTO</moveThreadCount>--><!-- To solve faster by saturating multiple CPU cores -->
 
@@ -7,8 +8,8 @@
   <entityClass>org.optaplanner.examples.dinnerparty.domain.SeatDesignation</entityClass>
 
   <scoreDirectorFactory>
-    <scoreDrl>org/optaplanner/examples/dinnerparty/solver/dinnerPartyScoreRules.drl</scoreDrl>
-    <scoreDrl>org/optaplanner/examples/dinnerparty/solver/dinnerPartyExtraScoreRules.xls</scoreDrl>
+    <scoreDrl>org/optaplanner/examples/dinnerparty/solver/dinnerPartyConstraints.drl</scoreDrl>
+    <scoreDrl>org/optaplanner/examples/dinnerparty/solver/dinnerPartyExtraConstraints.xls</scoreDrl>
   </scoreDirectorFactory>
 
   <termination>

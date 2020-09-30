@@ -1,5 +1,5 @@
 /*
- * Copyright 2010 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,7 +19,7 @@ package org.optaplanner.core.impl.heuristic.move;
 import java.util.Collection;
 import java.util.Collections;
 
-import org.optaplanner.core.impl.score.director.ScoreDirector;
+import org.optaplanner.core.api.score.director.ScoreDirector;
 import org.optaplanner.core.impl.testdata.domain.TestdataSolution;
 import org.optaplanner.core.impl.testdata.util.CodeAssertable;
 
@@ -60,12 +60,12 @@ public class DummyMove extends AbstractMove<TestdataSolution> implements CodeAss
 
     @Override
     public Collection<? extends TestdataSolution> getPlanningEntities() {
-        return Collections.<TestdataSolution>emptyList();
+        return Collections.emptyList();
     }
 
     @Override
     public Collection<? extends TestdataSolution> getPlanningValues() {
-        return Collections.<TestdataSolution>emptyList();
+        return Collections.emptyList();
     }
 
     @Override

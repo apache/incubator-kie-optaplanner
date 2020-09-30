@@ -1,5 +1,5 @@
 /*
- * Copyright 2013 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,9 +18,9 @@ package org.optaplanner.core.impl.score.buildin.bendablebigdecimal;
 
 import java.math.BigDecimal;
 import java.util.Arrays;
+import java.util.stream.Stream;
 
 import org.optaplanner.core.api.score.buildin.bendablebigdecimal.BendableBigDecimalScore;
-import org.optaplanner.core.api.score.buildin.bendablebigdecimal.BendableBigDecimalScoreHolder;
 import org.optaplanner.core.impl.score.definition.AbstractBendableScoreDefinition;
 import org.optaplanner.core.impl.score.trend.InitializingScoreTrend;
 
@@ -42,6 +42,11 @@ public class BendableBigDecimalScoreDefinition extends AbstractBendableScoreDefi
     @Override
     public BendableBigDecimalScore getZeroScore() {
         return BendableBigDecimalScore.zero(hardLevelsSize, softLevelsSize);
+    }
+
+    @Override
+    public final BendableBigDecimalScore getOneSoftestScore() {
+        return BendableBigDecimalScore.ofSoft(hardLevelsSize, softLevelsSize, softLevelsSize - 1, BigDecimal.ONE);
     }
 
     @Override
@@ -103,22 +108,41 @@ public class BendableBigDecimalScoreDefinition extends AbstractBendableScoreDefi
     }
 
     @Override
-    public BendableBigDecimalScoreHolder buildScoreHolder(boolean constraintMatchEnabled) {
-        return new BendableBigDecimalScoreHolder(constraintMatchEnabled, hardLevelsSize, softLevelsSize);
+    public BendableBigDecimalScoreHolderImpl buildScoreHolder(boolean constraintMatchEnabled) {
+        return new BendableBigDecimalScoreHolderImpl(constraintMatchEnabled, hardLevelsSize, softLevelsSize);
     }
 
     @Override
-    public BendableBigDecimalScore buildOptimisticBound(InitializingScoreTrend initializingScoreTrend, BendableBigDecimalScore score) {
+    public BendableBigDecimalScore buildOptimisticBound(InitializingScoreTrend initializingScoreTrend,
+            BendableBigDecimalScore score) {
         // TODO https://issues.redhat.com/browse/PLANNER-232
         throw new UnsupportedOperationException("PLANNER-232: BigDecimalScore does not support bounds" +
                 " because a BigDecimal cannot represent infinity.");
     }
 
     @Override
-    public BendableBigDecimalScore buildPessimisticBound(InitializingScoreTrend initializingScoreTrend, BendableBigDecimalScore score) {
+    public BendableBigDecimalScore buildPessimisticBound(InitializingScoreTrend initializingScoreTrend,
+            BendableBigDecimalScore score) {
         // TODO https://issues.redhat.com/browse/PLANNER-232
         throw new UnsupportedOperationException("PLANNER-232: BigDecimalScore does not support bounds" +
                 " because a BigDecimal cannot represent infinity.");
     }
 
+    @Override
+    public BendableBigDecimalScore divideBySanitizedDivisor(BendableBigDecimalScore dividend,
+            BendableBigDecimalScore divisor) {
+        int dividendInitScore = dividend.getInitScore();
+        int divisorInitScore = sanitize(divisor.getInitScore());
+        BigDecimal[] hardScores = new BigDecimal[hardLevelsSize];
+        for (int i = 0; i < hardLevelsSize; i++) {
+            hardScores[i] = divide(dividend.getHardScore(i), sanitize(divisor.getHardScore(i)));
+        }
+        BigDecimal[] softScores = new BigDecimal[softLevelsSize];
+        for (int i = 0; i < softLevelsSize; i++) {
+            softScores[i] = divide(dividend.getSoftScore(i), sanitize(divisor.getSoftScore(i)));
+        }
+        BigDecimal[] levels = Stream.concat(Arrays.stream(hardScores), Arrays.stream(softScores))
+                .toArray(BigDecimal[]::new);
+        return createScoreUninitialized(divide(dividendInitScore, divisorInitScore), levels);
+    }
 }

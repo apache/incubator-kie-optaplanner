@@ -1,5 +1,5 @@
 /*
- * Copyright 2012 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,23 +16,7 @@
 
 package org.optaplanner.core.impl.heuristic.selector.entity.pillar;
 
-import java.util.Arrays;
-import java.util.Comparator;
-import java.util.Random;
-
-import org.junit.Test;
-import org.optaplanner.core.config.heuristic.selector.entity.pillar.SubPillarConfigPolicy;
-import org.optaplanner.core.impl.domain.variable.descriptor.GenuineVariableDescriptor;
-import org.optaplanner.core.impl.heuristic.selector.SelectorTestUtils;
-import org.optaplanner.core.impl.heuristic.selector.entity.EntitySelector;
-import org.optaplanner.core.impl.phase.scope.AbstractPhaseScope;
-import org.optaplanner.core.impl.phase.scope.AbstractStepScope;
-import org.optaplanner.core.impl.solver.scope.DefaultSolverScope;
-import org.optaplanner.core.impl.testdata.domain.TestdataEntity;
-import org.optaplanner.core.impl.testdata.domain.TestdataObject;
-import org.optaplanner.core.impl.testdata.domain.TestdataValue;
-
-import static org.junit.Assert.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.anyInt;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -40,49 +24,65 @@ import static org.optaplanner.core.impl.testdata.util.PlannerAssert.assertAllCod
 import static org.optaplanner.core.impl.testdata.util.PlannerAssert.assertCodesOfIterator;
 import static org.optaplanner.core.impl.testdata.util.PlannerAssert.verifyPhaseLifecycle;
 
+import java.util.Arrays;
+import java.util.Comparator;
+import java.util.Random;
+
+import org.junit.jupiter.api.Test;
+import org.optaplanner.core.config.heuristic.selector.entity.pillar.SubPillarConfigPolicy;
+import org.optaplanner.core.impl.domain.variable.descriptor.GenuineVariableDescriptor;
+import org.optaplanner.core.impl.heuristic.selector.SelectorTestUtils;
+import org.optaplanner.core.impl.heuristic.selector.entity.EntitySelector;
+import org.optaplanner.core.impl.phase.scope.AbstractPhaseScope;
+import org.optaplanner.core.impl.phase.scope.AbstractStepScope;
+import org.optaplanner.core.impl.solver.scope.SolverScope;
+import org.optaplanner.core.impl.testdata.domain.TestdataEntity;
+import org.optaplanner.core.impl.testdata.domain.TestdataObject;
+import org.optaplanner.core.impl.testdata.domain.TestdataValue;
+
 public class DefaultPillarSelectorTest {
 
-//    @Test
-//    public void calculateBasePillarSelectionSize() {
-//        assertCalculateBasePillarSelectionSize(4L, 1, 1);
-//        assertCalculateBasePillarSelectionSize(6L, 2, 2);
-//        assertCalculateBasePillarSelectionSize(4L, 3, 3);
-//        assertCalculateBasePillarSelectionSize(1L, 4, 4);
-//
-//        assertCalculateBasePillarSelectionSize(10L, 1, 2);
-//        assertCalculateBasePillarSelectionSize(14L, 1, 3);
-//        assertCalculateBasePillarSelectionSize(15L, 1, 4);
-//        assertCalculateBasePillarSelectionSize(10L, 2, 3);
-//        assertCalculateBasePillarSelectionSize(11L, 2, 4);
-//        assertCalculateBasePillarSelectionSize(5L, 3, 4);
-//
-//        assertCalculateBasePillarSelectionSize(15L, 1, 5);
-//        assertCalculateBasePillarSelectionSize(11L, 2, 5);
-//        assertCalculateBasePillarSelectionSize(5L, 3, 5);
-//        assertCalculateBasePillarSelectionSize(1L, 4, 5);
-//        assertCalculateBasePillarSelectionSize(0L, 5, 5);
-//    }
-//
-//    private void assertCalculateBasePillarSelectionSize(long expected, int minimumPillarSize, int maximumPillarSize) {
-//        TestdataValue val1 = new TestdataValue("1");
-//        TestdataValue val2 = new TestdataValue("2");
-//        TestdataValue val3 = new TestdataValue("3");
-//        TestdataValue val4 = new TestdataValue("4");
-//
-//        final TestdataEntity a = new TestdataEntity("a", val1);
-//        final TestdataEntity b = new TestdataEntity("b", val2);
-//        final TestdataEntity c = new TestdataEntity("c", val3);
-//        final TestdataEntity d = new TestdataEntity("d", val2);
-//
-//        EntitySelector entitySelector = SelectorTestUtils.mockEntitySelector(TestdataEntity.class,
-//                a, b, c, d);
-//        GenuineVariableDescriptor variableDescriptor = SelectorTestUtils.mockVariableDescriptor(
-//                entitySelector.findEntityDescriptorOrFail(), "value");
-//        DefaultPillarSelector selector = new DefaultPillarSelector(
-//                entitySelector, Collections.singletonList(variableDescriptor), false,
-//                true, minimumPillarSize, maximumPillarSize);
-//        assertEquals(expected, selector.calculateBasePillarSelectionSize(Arrays.<Object>asList(a, b, c, d)));
-//    }
+    //    @Test
+    //    public void calculateBasePillarSelectionSize() {
+    //        assertCalculateBasePillarSelectionSize(4L, 1, 1);
+    //        assertCalculateBasePillarSelectionSize(6L, 2, 2);
+    //        assertCalculateBasePillarSelectionSize(4L, 3, 3);
+    //        assertCalculateBasePillarSelectionSize(1L, 4, 4);
+    //
+    //        assertCalculateBasePillarSelectionSize(10L, 1, 2);
+    //        assertCalculateBasePillarSelectionSize(14L, 1, 3);
+    //        assertCalculateBasePillarSelectionSize(15L, 1, 4);
+    //        assertCalculateBasePillarSelectionSize(10L, 2, 3);
+    //        assertCalculateBasePillarSelectionSize(11L, 2, 4);
+    //        assertCalculateBasePillarSelectionSize(5L, 3, 4);
+    //
+    //        assertCalculateBasePillarSelectionSize(15L, 1, 5);
+    //        assertCalculateBasePillarSelectionSize(11L, 2, 5);
+    //        assertCalculateBasePillarSelectionSize(5L, 3, 5);
+    //        assertCalculateBasePillarSelectionSize(1L, 4, 5);
+    //        assertCalculateBasePillarSelectionSize(0L, 5, 5);
+    //    }
+    //
+    //    private void assertCalculateBasePillarSelectionSize(long expected, int minimumPillarSize, int maximumPillarSize) {
+    //        TestdataValue val1 = new TestdataValue("1");
+    //        TestdataValue val2 = new TestdataValue("2");
+    //        TestdataValue val3 = new TestdataValue("3");
+    //        TestdataValue val4 = new TestdataValue("4");
+    //
+    //        final TestdataEntity a = new TestdataEntity("a", val1);
+    //        final TestdataEntity b = new TestdataEntity("b", val2);
+    //        final TestdataEntity c = new TestdataEntity("c", val3);
+    //        final TestdataEntity d = new TestdataEntity("d", val2);
+    //
+    //        EntitySelector entitySelector = SelectorTestUtils.mockEntitySelector(TestdataEntity.class,
+    //                a, b, c, d);
+    //        GenuineVariableDescriptor variableDescriptor = SelectorTestUtils.mockVariableDescriptor(
+    //                entitySelector.findEntityDescriptorOrFail(), "value");
+    //        DefaultPillarSelector selector = new DefaultPillarSelector(
+    //                entitySelector, Collections.singletonList(variableDescriptor), false,
+    //                true, minimumPillarSize, maximumPillarSize);
+    //        assertEquals(expected, selector.calculateBasePillarSelectionSize(Arrays.<Object>asList(a, b, c, d)));
+    //    }
 
     @Test
     public void originalNoSubs() {
@@ -100,12 +100,12 @@ public class DefaultPillarSelectorTest {
 
         GenuineVariableDescriptor variableDescriptor = TestdataEntity.buildVariableDescriptorForValue();
         EntitySelector entitySelector = SelectorTestUtils.mockEntitySelector(variableDescriptor.getEntityDescriptor(),
-                                                                             a, b, c, d, e, f);
+                a, b, c, d, e, f);
 
         DefaultPillarSelector pillarSelector = new DefaultPillarSelector(
                 entitySelector, Arrays.asList(variableDescriptor), false, SubPillarConfigPolicy.withoutSubpillars());
 
-        DefaultSolverScope solverScope = mock(DefaultSolverScope.class);
+        SolverScope solverScope = mock(SolverScope.class);
         pillarSelector.solvingStarted(solverScope);
 
         AbstractPhaseScope phaseScopeA = mock(AbstractPhaseScope.class);
@@ -154,7 +154,7 @@ public class DefaultPillarSelectorTest {
         DefaultPillarSelector pillarSelector = new DefaultPillarSelector(
                 entitySelector, Arrays.asList(variableDescriptor), false, SubPillarConfigPolicy.withoutSubpillars());
 
-        DefaultSolverScope solverScope = mock(DefaultSolverScope.class);
+        SolverScope solverScope = mock(SolverScope.class);
         pillarSelector.solvingStarted(solverScope);
 
         AbstractPhaseScope phaseScopeA = mock(AbstractPhaseScope.class);
@@ -208,7 +208,7 @@ public class DefaultPillarSelectorTest {
 
         GenuineVariableDescriptor variableDescriptor = TestdataEntity.buildVariableDescriptorForValue();
         EntitySelector entitySelector = SelectorTestUtils.mockEntitySelector(variableDescriptor.getEntityDescriptor(),
-                                                                             a, b, c, d, e, f);
+                a, b, c, d, e, f);
 
         DefaultPillarSelector pillarSelector = new DefaultPillarSelector(
                 entitySelector, Arrays.asList(variableDescriptor), true,
@@ -216,7 +216,7 @@ public class DefaultPillarSelectorTest {
 
         Random workingRandom = mock(Random.class);
 
-        DefaultSolverScope solverScope = mock(DefaultSolverScope.class);
+        SolverScope solverScope = mock(SolverScope.class);
         when(solverScope.getWorkingRandom()).thenReturn(workingRandom);
         pillarSelector.solvingStarted(solverScope);
 
@@ -294,14 +294,14 @@ public class DefaultPillarSelectorTest {
 
         GenuineVariableDescriptor variableDescriptor = TestdataEntity.buildVariableDescriptorForValue();
         EntitySelector entitySelector = SelectorTestUtils.mockEntitySelector(variableDescriptor.getEntityDescriptor(),
-                                                                             a, b, c, d, e, f);
+                a, b, c, d, e, f);
 
         DefaultPillarSelector pillarSelector = new DefaultPillarSelector(
                 entitySelector, Arrays.asList(variableDescriptor), true, SubPillarConfigPolicy.withSubpillars(2, 2));
 
         Random workingRandom = mock(Random.class);
 
-        DefaultSolverScope solverScope = mock(DefaultSolverScope.class);
+        SolverScope solverScope = mock(SolverScope.class);
         when(solverScope.getWorkingRandom()).thenReturn(workingRandom);
         pillarSelector.solvingStarted(solverScope);
 
@@ -327,7 +327,6 @@ public class DefaultPillarSelectorTest {
         verifyPhaseLifecycle(entitySelector, 1, 1, 1);
     }
 
-
     @Test
     public void sequentialUnlimited() {
         TestdataValue val1 = new TestdataValue("1");
@@ -352,7 +351,7 @@ public class DefaultPillarSelectorTest {
 
         Random workingRandom = mock(Random.class);
 
-        DefaultSolverScope solverScope = mock(DefaultSolverScope.class);
+        SolverScope solverScope = mock(SolverScope.class);
         when(solverScope.getWorkingRandom()).thenReturn(workingRandom);
         pillarSelector.solvingStarted(solverScope);
 
@@ -368,7 +367,7 @@ public class DefaultPillarSelectorTest {
         when(workingRandom.nextInt(anyInt())).thenReturn(
                 1, 1, // [b, d]
                 2, 2, // [c, e, f]
-                2, 1, 1,  // [c, e, f]
+                2, 1, 1, // [c, e, f]
                 0 // [a]
         );
         assertCodesOfNeverEndingPillarSelector(pillarSelector, "[b, d]", "[c, e, f]", "[e, f]", "[a]");
@@ -390,7 +389,7 @@ public class DefaultPillarSelectorTest {
                 entitySelector, Arrays.asList(variableDescriptor), true,
                 SubPillarConfigPolicy.withSubpillarsUnlimited());
 
-        DefaultSolverScope solverScope = mock(DefaultSolverScope.class);
+        SolverScope solverScope = mock(SolverScope.class);
         pillarSelector.solvingStarted(solverScope);
 
         AbstractPhaseScope phaseScopeA = mock(AbstractPhaseScope.class);
@@ -430,15 +429,15 @@ public class DefaultPillarSelectorTest {
 
     private void assertAllCodesOfPillarSelector(PillarSelector pillarSelector, String... codes) {
         assertAllCodesOfIterator(pillarSelector.iterator(), codes);
-        assertEquals(true, pillarSelector.isCountable());
-        assertEquals(false, pillarSelector.isNeverEnding());
-        assertEquals(codes.length, pillarSelector.getSize());
+        assertThat(pillarSelector.isCountable()).isTrue();
+        assertThat(pillarSelector.isNeverEnding()).isFalse();
+        assertThat(pillarSelector.getSize()).isEqualTo(codes.length);
     }
 
     private void assertCodesOfNeverEndingPillarSelector(PillarSelector pillarSelector, String... codes) {
         assertCodesOfIterator(pillarSelector.iterator(), codes);
-        assertEquals(true, pillarSelector.isCountable());
-        assertEquals(true, pillarSelector.isNeverEnding());
+        assertThat(pillarSelector.isCountable()).isTrue();
+        assertThat(pillarSelector.isNeverEnding()).isTrue();
     }
 
 }

@@ -16,38 +16,25 @@
 
 package org.optaplanner.examples.tennis.app;
 
-import java.io.File;
+import java.util.stream.Stream;
 
-import org.junit.Test;
 import org.optaplanner.core.config.solver.EnvironmentMode;
 import org.optaplanner.examples.common.app.SolverPerformanceTest;
 import org.optaplanner.examples.tennis.domain.TennisSolution;
 
 public class TennisPerformanceTest extends SolverPerformanceTest<TennisSolution> {
 
-    public TennisPerformanceTest(String moveThreadCount) {
-        super(moveThreadCount);
-    }
+    private static final String UNSOLVED_DATA_FILE = "data/tennis/unsolved/munich-7teams.xml";
 
     @Override
     protected TennisApp createCommonApp() {
         return new TennisApp();
     }
 
-    // ************************************************************************
-    // Tests
-    // ************************************************************************
-
-    @Test(timeout = 600000)
-    public void solveModel_munich_7teams() {
-        File unsolvedDataFile = new File("data/tennis/unsolved/munich-7teams.xml");
-        runSpeedTest(unsolvedDataFile, "0hard/-27239medium/-23706soft");
+    @Override
+    protected Stream<TestData> testData() {
+        return Stream.of(
+                testData(UNSOLVED_DATA_FILE, "0hard/-27239medium/-23706soft", EnvironmentMode.REPRODUCIBLE),
+                testData(UNSOLVED_DATA_FILE, "0hard/-27239medium/-23706soft", EnvironmentMode.FAST_ASSERT));
     }
-
-    @Test(timeout = 600000)
-    public void solveModel_munich_7teamsFastAssert() {
-        File unsolvedDataFile = new File("data/tennis/unsolved/munich-7teams.xml");
-        runSpeedTest(unsolvedDataFile, "0hard/-27239medium/-23706soft", EnvironmentMode.FAST_ASSERT);
-    }
-
 }

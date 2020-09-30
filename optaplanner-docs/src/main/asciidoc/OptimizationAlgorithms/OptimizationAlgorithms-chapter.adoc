@@ -192,7 +192,8 @@ Here is a configuration that runs three phases in sequence:
 
 [source,xml,options="nowrap"]
 ----
-<solver>
+<solver xmlns="https://www.optaplanner.org/xsd/solver" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="https://www.optaplanner.org/xsd/solver https://www.optaplanner.org/xsd/solver/solver.xsd">
   ...
   <constructionHeuristic>
     ... <!-- First phase: First Fit Decreasing -->
@@ -222,7 +223,8 @@ Other phases (especially metaheuristics) will only terminate if the `Phase` is c
 
 [source,xml,options="nowrap"]
 ----
-<solver>
+<solver xmlns="https://www.optaplanner.org/xsd/solver" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="https://www.optaplanner.org/xsd/solver https://www.optaplanner.org/xsd/solver/solver.xsd">
   ...
   <termination><!-- Solver termination -->
     <secondsSpentLimit>90</secondsSpentLimit>
@@ -537,7 +539,6 @@ In this instance, `Termination` once a feasible solution has been reached is not
 === `BestScoreFeasibleTermination`
 
 Terminates as soon as a feasible solution has been discovered.
-Requires that `Score` implements `FeasibilityScore`.
 
 [source,xml,options="nowrap"]
 ----
@@ -728,7 +729,7 @@ public interface CustomPhaseCommand<Solution_> {
 }
 ----
 
-For example, extend `AbstractCustomPhaseCommand` and implement the `changeWorkingSolution()` method:
+For example, implement `CustomPhaseCommand` and its `changeWorkingSolution()` method:
 
 [source,java,options="nowrap"]
 ----
@@ -763,7 +764,8 @@ Configure the `CustomPhaseCommand` in the solver configuration:
 
 [source,xml,options="nowrap"]
 ----
-<solver>
+<solver xmlns="https://www.optaplanner.org/xsd/solver" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="https://www.optaplanner.org/xsd/solver https://www.optaplanner.org/xsd/solver/solver.xsd">
   ...
   <customPhase>
     <customPhaseCommandClass>org.optaplanner.examples.machinereassignment.solver.solution.initializer.ToOriginalMachineSolutionInitializer</customPhaseCommandClass>
@@ -797,7 +799,7 @@ add the `customProperties` element and use <<customPropertiesConfiguration,custo
   <customPhase>
     <customPhaseCommandClass>...MyCustomPhase</customPhaseCommandClass>
     <customProperties>
-      <mySelectionSize>5</mySelectionSize>
+      <property name="mySelectionSize" value="5"/>
     </customProperties>
   </customPhase>
 ----
@@ -812,7 +814,8 @@ To avoid those, configure a `NoChangePhase`:
 
 [source,xml,options="nowrap"]
 ----
-<solver>
+<solver xmlns="https://www.optaplanner.org/xsd/solver" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="https://www.optaplanner.org/xsd/solver https://www.optaplanner.org/xsd/solver/solver.xsd">
   ...
   <noChangePhase/>
 </solver>
@@ -900,7 +903,8 @@ and the <<partitionedSearch,Partition Search threads>> with it:
 
 [source,xml,options="nowrap"]
 ----
-<solver>
+<solver xmlns="https://www.optaplanner.org/xsd/solver" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="https://www.optaplanner.org/xsd/solver https://www.optaplanner.org/xsd/solver/solver.xsd">
   <threadFactoryClass>...MyAppServerThreadFactory</threadFactoryClass>
   ...
 </solver>
@@ -915,7 +919,8 @@ Then configure a `moveThreadCount`:
 
 [source,xml,options="nowrap"]
 ----
-<solver>
+<solver xmlns="https://www.optaplanner.org/xsd/solver" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="https://www.optaplanner.org/xsd/solver https://www.optaplanner.org/xsd/solver/solver.xsd">
   <moveThreadCount>AUTO</moveThreadCount>
   ...
 </solver>
@@ -928,7 +933,8 @@ Advanced configuration:
 
 [source,xml,options="nowrap"]
 ----
-<solver>
+<solver xmlns="https://www.optaplanner.org/xsd/solver" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="https://www.optaplanner.org/xsd/solver https://www.optaplanner.org/xsd/solver/solver.xsd">
   <moveThreadCount>4</moveThreadCount>
   <moveThreadBufferSize>10</moveThreadBufferSize>
   <threadFactoryClass>...MyAppServerThreadFactory</threadFactoryClass>
@@ -954,12 +960,6 @@ On machines or containers with little or no CPUs, this falls back to the single 
 +
 This can be `1` to enforce running the multithreaded code with only 1 move thread
 (which is less efficient than `NONE`).
-* JavaScript formula: Formula for the number of move threads to run in parallel. It can use the variable ``availableProcessorCount``. For example:
-+
-[source,xml,options="nowrap"]
-----
-<moveThreadCount>(availableProcessorCount / 2) + 1</moveThreadCount>
-----
 
 It is counter-effective to set a `moveThreadCount`
 that is higher than the number of available CPU cores,

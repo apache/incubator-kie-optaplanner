@@ -19,17 +19,17 @@ package org.optaplanner.examples.coachshuttlegathering.app;
 import org.optaplanner.examples.coachshuttlegathering.domain.CoachShuttleGatheringSolution;
 import org.optaplanner.examples.coachshuttlegathering.persistence.CoachShuttleGatheringExporter;
 import org.optaplanner.examples.coachshuttlegathering.persistence.CoachShuttleGatheringImporter;
+import org.optaplanner.examples.coachshuttlegathering.persistence.CoachShuttleGatheringXmlSolutionFileIO;
 import org.optaplanner.examples.coachshuttlegathering.swingui.CoachShuttleGatheringPanel;
 import org.optaplanner.examples.common.app.CommonApp;
 import org.optaplanner.examples.common.persistence.AbstractSolutionExporter;
 import org.optaplanner.examples.common.persistence.AbstractSolutionImporter;
 import org.optaplanner.persistence.common.api.domain.solution.SolutionFileIO;
-import org.optaplanner.persistence.xstream.impl.domain.solution.XStreamSolutionFileIO;
 
 public class CoachShuttleGatheringApp extends CommonApp<CoachShuttleGatheringSolution> {
 
-    public static final String SOLVER_CONFIG
-            = "org/optaplanner/examples/coachshuttlegathering/solver/coachShuttleGatheringSolverConfig.xml";
+    public static final String SOLVER_CONFIG =
+            "org/optaplanner/examples/coachshuttlegathering/solver/coachShuttleGatheringSolverConfig.xml";
 
     public static final String DATA_DIR_NAME = "coachshuttlegathering";
 
@@ -52,12 +52,12 @@ public class CoachShuttleGatheringApp extends CommonApp<CoachShuttleGatheringSol
 
     @Override
     public SolutionFileIO<CoachShuttleGatheringSolution> createSolutionFileIO() {
-        return new XStreamSolutionFileIO<>(CoachShuttleGatheringSolution.class);
+        return new CoachShuttleGatheringXmlSolutionFileIO();
     }
 
     @Override
     protected AbstractSolutionImporter[] createSolutionImporters() {
-        return new AbstractSolutionImporter[]{
+        return new AbstractSolutionImporter[] {
                 new CoachShuttleGatheringImporter()
         };
     }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2013 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,9 +17,9 @@
 package org.optaplanner.core.impl.score.buildin.bendable;
 
 import java.util.Arrays;
+import java.util.stream.IntStream;
 
 import org.optaplanner.core.api.score.buildin.bendable.BendableScore;
-import org.optaplanner.core.api.score.buildin.bendable.BendableScoreHolder;
 import org.optaplanner.core.config.score.trend.InitializingScoreTrendLevel;
 import org.optaplanner.core.impl.score.definition.AbstractBendableScoreDefinition;
 import org.optaplanner.core.impl.score.trend.InitializingScoreTrend;
@@ -42,6 +42,11 @@ public class BendableScoreDefinition extends AbstractBendableScoreDefinition<Ben
     @Override
     public BendableScore getZeroScore() {
         return BendableScore.zero(hardLevelsSize, softLevelsSize);
+    }
+
+    @Override
+    public final BendableScore getOneSoftestScore() {
+        return BendableScore.ofSoft(hardLevelsSize, softLevelsSize, softLevelsSize - 1, 1);
     }
 
     @Override
@@ -103,8 +108,8 @@ public class BendableScoreDefinition extends AbstractBendableScoreDefinition<Ben
     }
 
     @Override
-    public BendableScoreHolder buildScoreHolder(boolean constraintMatchEnabled) {
-        return new BendableScoreHolder(constraintMatchEnabled, hardLevelsSize, softLevelsSize);
+    public BendableScoreHolderImpl buildScoreHolder(boolean constraintMatchEnabled) {
+        return new BendableScoreHolderImpl(constraintMatchEnabled, hardLevelsSize, softLevelsSize);
     }
 
     @Override
@@ -113,12 +118,14 @@ public class BendableScoreDefinition extends AbstractBendableScoreDefinition<Ben
         int[] hardScores = new int[hardLevelsSize];
         for (int i = 0; i < hardLevelsSize; i++) {
             hardScores[i] = (trendLevels[i] == InitializingScoreTrendLevel.ONLY_DOWN)
-                    ? score.getHardScore(i) : Integer.MAX_VALUE;
+                    ? score.getHardScore(i)
+                    : Integer.MAX_VALUE;
         }
         int[] softScores = new int[softLevelsSize];
         for (int i = 0; i < softLevelsSize; i++) {
             softScores[i] = (trendLevels[hardLevelsSize + i] == InitializingScoreTrendLevel.ONLY_DOWN)
-                    ? score.getSoftScore(i) : Integer.MAX_VALUE;
+                    ? score.getSoftScore(i)
+                    : Integer.MAX_VALUE;
         }
         return BendableScore.ofUninitialized(0, hardScores, softScores);
     }
@@ -129,14 +136,31 @@ public class BendableScoreDefinition extends AbstractBendableScoreDefinition<Ben
         int[] hardScores = new int[hardLevelsSize];
         for (int i = 0; i < hardLevelsSize; i++) {
             hardScores[i] = (trendLevels[i] == InitializingScoreTrendLevel.ONLY_UP)
-                    ? score.getHardScore(i) : Integer.MIN_VALUE;
+                    ? score.getHardScore(i)
+                    : Integer.MIN_VALUE;
         }
         int[] softScores = new int[softLevelsSize];
         for (int i = 0; i < softLevelsSize; i++) {
             softScores[i] = (trendLevels[hardLevelsSize + i] == InitializingScoreTrendLevel.ONLY_UP)
-                    ? score.getSoftScore(i) : Integer.MIN_VALUE;
+                    ? score.getSoftScore(i)
+                    : Integer.MIN_VALUE;
         }
         return BendableScore.ofUninitialized(0, hardScores, softScores);
     }
 
+    @Override
+    public BendableScore divideBySanitizedDivisor(BendableScore dividend, BendableScore divisor) {
+        int dividendInitScore = dividend.getInitScore();
+        int divisorInitScore = sanitize(divisor.getInitScore());
+        int[] hardScores = new int[hardLevelsSize];
+        for (int i = 0; i < hardLevelsSize; i++) {
+            hardScores[i] = divide(dividend.getHardScore(i), sanitize(divisor.getHardScore(i)));
+        }
+        int[] softScores = new int[softLevelsSize];
+        for (int i = 0; i < softLevelsSize; i++) {
+            softScores[i] = divide(dividend.getSoftScore(i), sanitize(divisor.getSoftScore(i)));
+        }
+        int[] levels = IntStream.concat(Arrays.stream(hardScores), Arrays.stream(softScores)).toArray();
+        return createScoreUninitialized(divide(dividendInitScore, divisorInitScore), levels);
+    }
 }

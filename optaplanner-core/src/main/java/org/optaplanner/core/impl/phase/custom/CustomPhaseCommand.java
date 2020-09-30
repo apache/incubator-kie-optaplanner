@@ -1,5 +1,5 @@
 /*
- * Copyright 2010 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,21 +18,20 @@ package org.optaplanner.core.impl.phase.custom;
 
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.score.Score;
+import org.optaplanner.core.api.score.director.ScoreDirector;
+import org.optaplanner.core.api.solver.ProblemFactChange;
 import org.optaplanner.core.api.solver.Solver;
 import org.optaplanner.core.impl.phase.Phase;
-import org.optaplanner.core.impl.score.director.ScoreDirector;
-import org.optaplanner.core.impl.solver.ProblemFactChange;
+import org.optaplanner.core.impl.score.director.InnerScoreDirector;
 
 /**
  * Runs a custom algorithm as a {@link Phase} of the {@link Solver} that changes the planning variables.
  * Do not abuse to change the problems facts,
  * instead use {@link Solver#addProblemFactChange(ProblemFactChange)} for that.
  * <p>
- * An implementation must extend {@link AbstractCustomPhaseCommand} to ensure backwards compatibility in future versions.
- * <p>
  * To add custom properties, configure custom properties and add public setters for them.
+ *
  * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
- * @see AbstractCustomPhaseCommand
  */
 @FunctionalInterface
 public interface CustomPhaseCommand<Solution_> {
@@ -45,8 +44,9 @@ public interface CustomPhaseCommand<Solution_> {
      * otherwise calculated {@link Score}s will be corrupted.
      * <p>
      * Don't forget to call {@link ScoreDirector#triggerVariableListeners()} after each set of changes
-     * (especially before every {@link ScoreDirector#calculateScore()} call)
+     * (especially before every {@link InnerScoreDirector#calculateScore()} call)
      * to ensure all shadow variables are updated.
+     *
      * @param scoreDirector never null, the {@link ScoreDirector} that needs to get notified of the changes.
      */
     void changeWorkingSolution(ScoreDirector<Solution_> scoreDirector);

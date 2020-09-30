@@ -5,8 +5,9 @@
   <modelVersion>4.0.0</modelVersion>
   <parent>
     <groupId>org.optaplanner</groupId>
-    <artifactId>optaplanner</artifactId>
-    <version>7.34.0-SNAPSHOT</version>
+    <artifactId>optaplanner-build-parent</artifactId>
+    <version>8.0.0-SNAPSHOT</version>
+    <relativePath>../optaplanner-build-parent/pom.xml</relativePath>
   </parent>
 
   <artifactId>optaplanner-examples</artifactId>
@@ -50,7 +51,6 @@
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-surefire-plugin</artifactId>
           <configuration>
-            <forkCount>0.5C</forkCount>
             <systemPropertyVariables>
               <java.awt.headless>true</java.awt.headless>
             </systemPropertyVariables>
@@ -89,14 +89,6 @@
       <groupId>org.optaplanner</groupId>
       <artifactId>optaplanner-persistence-xstream</artifactId>
     </dependency>
-    <dependency><!-- TODO add examples that use the JAXB integration -->
-      <groupId>org.optaplanner</groupId>
-      <artifactId>optaplanner-persistence-jaxb</artifactId>
-    </dependency>
-    <dependency><!-- TODO add examples that use the jackson integration -->
-      <groupId>org.optaplanner</groupId>
-      <artifactId>optaplanner-persistence-jackson</artifactId>
-    </dependency>
     <dependency>
       <groupId>org.optaplanner</groupId>
       <artifactId>optaplanner-benchmark</artifactId>
@@ -107,28 +99,22 @@
       <scope>test</scope>
     </dependency>
     <dependency>
-      <groupId>org.kie</groupId>
-      <artifactId>kie-api</artifactId>
+      <groupId>org.kie.kogito</groupId>
+      <artifactId>kogito-api</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.drools</groupId>
+      <groupId>org.kie.kogito</groupId>
       <artifactId>drools-decisiontables</artifactId>
-      <scope>runtime</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.drools</groupId>
-      <artifactId>drools-canonical-model</artifactId>
-      <scope>runtime</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.drools</groupId>
-      <artifactId>drools-model-compiler</artifactId>
       <scope>runtime</scope>
     </dependency>
     <!-- External dependencies -->
     <dependency>
       <groupId>commons-io</groupId>
       <artifactId>commons-io</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.glassfish</groupId>
+      <artifactId>jakarta.json</artifactId>
     </dependency>
     <dependency>
       <groupId>org.jfree</groupId>
@@ -154,6 +140,27 @@
       <groupId>com.thoughtworks.xstream</groupId>
       <artifactId>xstream</artifactId>
     </dependency>
+    <!-- Testing -->
+    <dependency>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter-api</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter-engine</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter-params</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.assertj</groupId>
+      <artifactId>assertj-core</artifactId>
+      <scope>test</scope>
+    </dependency>
 
     <!-- Examples only dependencies. -->
     <!--
@@ -172,17 +179,6 @@
     <dependency>
       <groupId>org.apache.poi</groupId>
       <artifactId>poi-ooxml</artifactId>
-      <exclusions>
-        <exclusion>
-          <!-- Collides with 'javax.xml.stream:stax-api' brought in by 'org.drools:drools-decisiontables'. -->
-          <groupId>stax</groupId>
-          <artifactId>stax-api</artifactId>
-        </exclusion>
-      </exclusions>
-    </dependency>
-    <dependency>
-      <groupId>org.glassfish</groupId>
-      <artifactId>javax.json</artifactId>
     </dependency>
   </dependencies>
 

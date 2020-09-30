@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,13 +19,11 @@ package org.optaplanner.core.impl.partitionedsearch;
 import java.util.List;
 
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
-import org.optaplanner.core.api.score.Score;
+import org.optaplanner.core.api.solver.ProblemFactChange;
 import org.optaplanner.core.impl.phase.Phase;
-import org.optaplanner.core.impl.score.director.InnerScoreDirectorFactory;
 import org.optaplanner.core.impl.solver.AbstractSolver;
-import org.optaplanner.core.impl.solver.ProblemFactChange;
 import org.optaplanner.core.impl.solver.recaller.BestSolutionRecaller;
-import org.optaplanner.core.impl.solver.scope.DefaultSolverScope;
+import org.optaplanner.core.impl.solver.scope.SolverScope;
 import org.optaplanner.core.impl.solver.termination.Termination;
 
 /**
@@ -33,46 +31,21 @@ import org.optaplanner.core.impl.solver.termination.Termination;
  */
 public class PartitionSolver<Solution_> extends AbstractSolver<Solution_> {
 
-    protected final DefaultSolverScope<Solution_> solverScope;
+    protected final SolverScope<Solution_> solverScope;
 
     // ************************************************************************
     // Constructors and simple getters/setters
     // ************************************************************************
 
     public PartitionSolver(BestSolutionRecaller<Solution_> bestSolutionRecaller, Termination termination,
-            List<Phase<Solution_>> phaseList, DefaultSolverScope<Solution_> solverScope) {
+            List<Phase<Solution_>> phaseList, SolverScope<Solution_> solverScope) {
         super(bestSolutionRecaller, termination, phaseList);
         this.solverScope = solverScope;
-    }
-
-    @Override
-    public InnerScoreDirectorFactory<Solution_> getScoreDirectorFactory() {
-        return solverScope.getScoreDirector().getScoreDirectorFactory();
     }
 
     // ************************************************************************
     // Complex getters
     // ************************************************************************
-
-    @Override
-    public Solution_ getBestSolution() {
-        return solverScope.getBestSolution();
-    }
-
-    @Override
-    public Score getBestScore() {
-        return solverScope.getBestScore();
-    }
-
-    @Override
-    public String explainBestScore() {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public long getTimeMillisSpent() {
-        throw new UnsupportedOperationException();
-    }
 
     @Override
     public boolean isSolving() {
@@ -123,13 +96,13 @@ public class PartitionSolver<Solution_> extends AbstractSolver<Solution_> {
     }
 
     @Override
-    public void solvingStarted(DefaultSolverScope<Solution_> solverScope) {
+    public void solvingStarted(SolverScope<Solution_> solverScope) {
         solverScope.setWorkingSolutionFromBestSolution();
         super.solvingStarted(solverScope);
     }
 
     @Override
-    public void solvingEnded(DefaultSolverScope<Solution_> solverScope) {
+    public void solvingEnded(SolverScope<Solution_> solverScope) {
         super.solvingEnded(solverScope);
         solverScope.getScoreDirector().close();
         // TODO log?

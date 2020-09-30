@@ -1,5 +1,5 @@
 /*
- * Copyright 2011 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,24 +18,31 @@ package org.optaplanner.benchmark.config;
 
 import java.util.ArrayList;
 
-import com.thoughtworks.xstream.annotations.XStreamAlias;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlType;
+
 import org.optaplanner.benchmark.impl.result.PlannerBenchmarkResult;
 import org.optaplanner.benchmark.impl.result.SolverBenchmarkResult;
 import org.optaplanner.core.config.AbstractConfig;
-import org.optaplanner.core.config.SolverConfigContext;
 import org.optaplanner.core.config.solver.SolverConfig;
 import org.optaplanner.core.config.util.ConfigUtils;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
+import org.optaplanner.core.impl.solver.DefaultSolverFactory;
 
-@XStreamAlias("solverBenchmark")
+@XmlType(propOrder = {
+        "name",
+        "solverConfig",
+        "problemBenchmarksConfig",
+        "subSingleCount"
+})
 public class SolverBenchmarkConfig<Solution_> extends AbstractConfig<SolverBenchmarkConfig> {
 
     private String name = null;
 
-    @XStreamAlias("solver")
+    @XmlElement(name = SolverConfig.XML_ELEMENT_NAME, namespace = SolverConfig.XML_NAMESPACE)
     private SolverConfig solverConfig = null;
 
-    @XStreamAlias("problemBenchmarks")
+    @XmlElement(name = "problemBenchmarks")
     private ProblemBenchmarksConfig problemBenchmarksConfig = null;
 
     private Integer subSingleCount = null;
@@ -80,8 +87,8 @@ public class SolverBenchmarkConfig<Solution_> extends AbstractConfig<SolverBench
     // Builder methods
     // ************************************************************************
 
-    public void buildSolverBenchmark(SolverConfigContext solverConfigContext, ClassLoader classLoader,
-            PlannerBenchmarkResult plannerBenchmark, Solution_[] extraProblems) {
+    public void buildSolverBenchmark(ClassLoader classLoader, PlannerBenchmarkResult plannerBenchmark,
+            Solution_[] extraProblems) {
         validate();
         SolverBenchmarkResult solverBenchmarkResult = new SolverBenchmarkResult(plannerBenchmark);
         solverBenchmarkResult.setName(name);
@@ -90,7 +97,8 @@ public class SolverBenchmarkConfig<Solution_> extends AbstractConfig<SolverBench
             solverConfig.setClassLoader(classLoader);
         }
         solverBenchmarkResult.setSolverConfig(solverConfig);
-        SolutionDescriptor<Object> solutionDescriptor = solverConfig.buildSolutionDescriptor(solverConfigContext);
+        DefaultSolverFactory<Solution_> defaultSolverFactory = new DefaultSolverFactory<>(solverConfig);
+        SolutionDescriptor<Solution_> solutionDescriptor = defaultSolverFactory.buildSolutionDescriptor();
         for (Solution_ extraProblem : extraProblems) {
             if (!solutionDescriptor.getSolutionClass().isInstance(extraProblem)) {
                 throw new IllegalArgumentException("The solverBenchmark name (" + name
@@ -102,11 +110,10 @@ public class SolverBenchmarkConfig<Solution_> extends AbstractConfig<SolverBench
         solverBenchmarkResult.setScoreDefinition(
                 solutionDescriptor.getScoreDefinition());
         solverBenchmarkResult.setSingleBenchmarkResultList(new ArrayList<>());
-        ProblemBenchmarksConfig problemBenchmarksConfig_
-                = problemBenchmarksConfig == null ? new ProblemBenchmarksConfig()
+        ProblemBenchmarksConfig problemBenchmarksConfig_ = problemBenchmarksConfig == null ? new ProblemBenchmarksConfig()
                 : problemBenchmarksConfig;
         plannerBenchmark.getSolverBenchmarkResultList().add(solverBenchmarkResult);
-        problemBenchmarksConfig_.buildProblemBenchmarkList(solverConfigContext, solverBenchmarkResult, extraProblems);
+        problemBenchmarksConfig_.buildProblemBenchmarkList(solverBenchmarkResult, extraProblems);
     }
 
     protected void validate() {

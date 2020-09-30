@@ -34,7 +34,8 @@ import org.optaplanner.persistence.common.api.domain.solution.SolutionFileIO;
 
 public class ConferenceSchedulingPanel extends SolutionPanel<ConferenceSolution> {
 
-    public static final String LOGO_PATH = "/org/optaplanner/examples/conferencescheduling/swingui/conferenceSchedulingLogo.png";
+    public static final String LOGO_PATH =
+            "/org/optaplanner/examples/conferencescheduling/swingui/conferenceSchedulingLogo.png";
 
     public ConferenceSchedulingPanel() {
         JButton publishButton = new JButton("Publish");
@@ -50,7 +51,8 @@ public class ConferenceSchedulingPanel extends SolutionPanel<ConferenceSolution>
             SolutionFileIO<ConferenceSolution> solutionFileIO = new ConferenceSchedulingXlsxFileIO();
             File tempFile;
             try {
-                tempFile = File.createTempFile(solutionBusiness.getSolutionFileName(), "." + solutionFileIO.getOutputFileExtension());
+                tempFile = File.createTempFile(solutionBusiness.getSolutionFileName(),
+                        "." + solutionFileIO.getOutputFileExtension());
             } catch (IOException e) {
                 throw new IllegalStateException("Failed to create temp file.", e);
             }
@@ -83,6 +85,5 @@ public class ConferenceSchedulingPanel extends SolutionPanel<ConferenceSolution>
     @Override
     public void resetPanel(ConferenceSolution solution) {
     }
-
 
 }

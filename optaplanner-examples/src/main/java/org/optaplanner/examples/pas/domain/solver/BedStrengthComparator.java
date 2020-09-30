@@ -1,5 +1,5 @@
 /*
- * Copyright 2010 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,7 +16,10 @@
 
 package org.optaplanner.examples.pas.domain.solver;
 
-import java.io.Serializable;
+import static java.util.Comparator.comparing;
+import static java.util.Comparator.comparingInt;
+import static java.util.Comparator.nullsFirst;
+
 import java.util.Collections;
 import java.util.Comparator;
 
@@ -24,24 +27,19 @@ import org.optaplanner.examples.pas.domain.Bed;
 import org.optaplanner.examples.pas.domain.Department;
 import org.optaplanner.examples.pas.domain.Room;
 
-import static java.util.Comparator.*;
-import static java.util.Comparator.comparing;
-
-public class BedStrengthComparator implements Comparator<Bed>,
-        Serializable {
+public class BedStrengthComparator implements Comparator<Bed> {
 
     private static final Comparator<Integer> NULLSAFE_INTEGER_COMPARATOR = nullsFirst(Integer::compareTo);
-    private static final Comparator<Department> DEPARTMENT_COMPARATOR =
-            comparing((Department department) -> department.getMinimumAge() == null) // null minimumAge is stronger
+    private static final Comparator<Department> DEPARTMENT_COMPARATOR = comparing(
+            (Department department) -> department.getMinimumAge() == null) // null minimumAge is stronger
                     .thenComparing(department -> department.getMaximumAge() == null) // null maximumAge is stronger
                     .thenComparing(Department::getMinimumAge, Collections.reverseOrder(NULLSAFE_INTEGER_COMPARATOR)) // Descending, low minimumAge is stronger
                     .thenComparing(Department::getMaximumAge, NULLSAFE_INTEGER_COMPARATOR); // High maximumAge is stronger
-    private static final Comparator<Room> ROOM_COMPARATOR =
-            comparingInt((Room room) -> room.getRoomEquipmentList().size())
-                    .thenComparingInt(room -> room.getRoomSpecialismList().size())
-                    .thenComparingInt(room -> -room.getCapacity()); // Descending (smaller rooms are stronger)
-    private static final Comparator<Bed> COMPARATOR =
-            comparing((Bed bed) -> bed.getRoom().getDepartment(), DEPARTMENT_COMPARATOR)
+    private static final Comparator<Room> ROOM_COMPARATOR = comparingInt((Room room) -> room.getRoomEquipmentList().size())
+            .thenComparingInt(room -> room.getRoomSpecialismList().size())
+            .thenComparingInt(room -> -room.getCapacity()); // Descending (smaller rooms are stronger)
+    private static final Comparator<Bed> COMPARATOR = comparing((Bed bed) -> bed.getRoom().getDepartment(),
+            DEPARTMENT_COMPARATOR)
                     .thenComparing(Bed::getRoom, ROOM_COMPARATOR)
                     .thenComparingLong(Bed::getId);
 

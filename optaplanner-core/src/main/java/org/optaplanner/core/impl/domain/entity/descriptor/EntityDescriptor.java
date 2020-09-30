@@ -1,11 +1,11 @@
 /*
- * Copyright 2011 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- * http://www.apache.org/licenses/LICENSE-2.0
+ *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -15,6 +15,10 @@
  */
 
 package org.optaplanner.core.impl.domain.entity.descriptor;
+
+import static org.optaplanner.core.impl.domain.common.accessor.MemberAccessorFactory.MemberAccessorType.FIELD_OR_GETTER_METHOD;
+import static org.optaplanner.core.impl.domain.common.accessor.MemberAccessorFactory.MemberAccessorType.FIELD_OR_GETTER_METHOD_WITH_SETTER;
+import static org.optaplanner.core.impl.domain.common.accessor.MemberAccessorFactory.MemberAccessorType.FIELD_OR_READ_METHOD;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.AnnotatedElement;
@@ -27,6 +31,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Predicate;
 
+import org.optaplanner.core.api.domain.entity.PinningFilter;
 import org.optaplanner.core.api.domain.entity.PlanningEntity;
 import org.optaplanner.core.api.domain.entity.PlanningPin;
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
@@ -35,6 +40,7 @@ import org.optaplanner.core.api.domain.variable.AnchorShadowVariable;
 import org.optaplanner.core.api.domain.variable.CustomShadowVariable;
 import org.optaplanner.core.api.domain.variable.InverseRelationShadowVariable;
 import org.optaplanner.core.api.domain.variable.PlanningVariable;
+import org.optaplanner.core.api.score.director.ScoreDirector;
 import org.optaplanner.core.config.heuristic.selector.common.decorator.SelectionSorterOrder;
 import org.optaplanner.core.config.util.ConfigUtils;
 import org.optaplanner.core.impl.domain.common.ReflectionHelper;
@@ -55,19 +61,20 @@ import org.optaplanner.core.impl.heuristic.selector.common.decorator.SelectionSo
 import org.optaplanner.core.impl.heuristic.selector.common.decorator.SelectionSorterWeightFactory;
 import org.optaplanner.core.impl.heuristic.selector.common.decorator.WeightFactorySelectionSorter;
 import org.optaplanner.core.impl.heuristic.selector.entity.decorator.PinEntityFilter;
-import org.optaplanner.core.impl.score.director.ScoreDirector;
-
-import static org.optaplanner.core.impl.domain.common.accessor.MemberAccessorFactory.MemberAccessorType.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
  */
 public class EntityDescriptor<Solution_> {
 
-    public static final Class[] VARIABLE_ANNOTATION_CLASSES = {
+    private static final Class[] VARIABLE_ANNOTATION_CLASSES = {
             PlanningVariable.class,
             InverseRelationShadowVariable.class, AnchorShadowVariable.class,
-            CustomShadowVariable.class};
+            CustomShadowVariable.class };
+
+    protected final transient Logger logger = LoggerFactory.getLogger(getClass());
 
     private final SolutionDescriptor<Solution_> solutionDescriptor;
 
@@ -101,11 +108,15 @@ public class EntityDescriptor<Solution_> {
         this.solutionDescriptor = solutionDescriptor;
         this.entityClass = entityClass;
         isInitializedPredicate = this::isInitialized;
+        if (entityClass.getPackage() == null) {
+            logger.warn("The entityClass ({}) should be in a proper java package.", entityClass);
+        }
     }
 
     /**
      * Using entityDescriptor::isInitialized directly breaks node sharing
      * because it creates multiple instances of this {@link Predicate}.
+     *
      * @return never null, always the same {@link Predicate} instance to {@link #isInitialized(Object)}
      */
     public Predicate<Object> getIsInitializedPredicate() {
@@ -148,13 +159,19 @@ public class EntityDescriptor<Solution_> {
     }
 
     private void processMovable(DescriptorPolicy descriptorPolicy, PlanningEntity entityAnnotation) {
-        Class<? extends SelectionFilter> movableEntitySelectionFilterClass = entityAnnotation.movableEntitySelectionFilter();
-        if (movableEntitySelectionFilterClass == PlanningEntity.NullMovableEntitySelectionFilter.class) {
-            movableEntitySelectionFilterClass = null;
-        }
-        if (movableEntitySelectionFilterClass != null) {
-            declaredMovableEntitySelectionFilter = ConfigUtils.newInstance(this,
-                    "movableEntitySelectionFilterClass", movableEntitySelectionFilterClass);
+        Class<? extends PinningFilter> pinningFilterClass = entityAnnotation.pinningFilter();
+        boolean hasPinningFilter = pinningFilterClass != PlanningEntity.NullPinningFilter.class;
+        if (hasPinningFilter) {
+            declaredMovableEntitySelectionFilter = new SelectionFilter() {
+
+                private final PinningFilter pinningFilter =
+                        ConfigUtils.newInstance(this, "pinningFilterClass", pinningFilterClass);
+
+                @Override
+                public boolean accept(ScoreDirector scoreDirector, Object selection) {
+                    return !pinningFilter.accept(scoreDirector.getWorkingSolution(), selection);
+                }
+            };
         }
     }
 
@@ -163,8 +180,8 @@ public class EntityDescriptor<Solution_> {
         if (difficultyComparatorClass == PlanningEntity.NullDifficultyComparator.class) {
             difficultyComparatorClass = null;
         }
-        Class<? extends SelectionSorterWeightFactory> difficultyWeightFactoryClass
-                = entityAnnotation.difficultyWeightFactoryClass();
+        Class<? extends SelectionSorterWeightFactory> difficultyWeightFactoryClass = entityAnnotation
+                .difficultyWeightFactoryClass();
         if (difficultyWeightFactoryClass == PlanningEntity.NullDifficultyWeightFactory.class) {
             difficultyWeightFactoryClass = null;
         }
@@ -479,7 +496,9 @@ public class EntityDescriptor<Solution_> {
                 + ") for entityClass (" + entityClass
                 + ") exists as a getter or field on that class,"
                 + " but isn't in the planning variables (" + effectiveVariableDescriptorMap.keySet() + ").\n"
-                + (Character.isUpperCase(variableName.charAt(0)) ? "Maybe the variableName (" + variableName + ") should start with a lowercase.\n" : "")
+                + (Character.isUpperCase(variableName.charAt(0))
+                        ? "Maybe the variableName (" + variableName + ") should start with a lowercase.\n"
+                        : "")
                 + "Maybe your planning entity's getter or field lacks a " + PlanningVariable.class.getSimpleName()
                 + " annotation or a shadow variable annotation.";
     }
@@ -556,15 +575,16 @@ public class EntityDescriptor<Solution_> {
     }
 
     public boolean isMovable(ScoreDirector<Solution_> scoreDirector, Object entity) {
-        return effectiveMovableEntitySelectionFilter == null || effectiveMovableEntitySelectionFilter.accept(scoreDirector, entity);
+        return effectiveMovableEntitySelectionFilter == null
+                || effectiveMovableEntitySelectionFilter.accept(scoreDirector, entity);
     }
 
     /**
      * @param scoreDirector never null
      * @param entity never null
-     * @return true if the entity is initialized or immovable
+     * @return true if the entity is initialized or pinned
      */
-    public boolean isEntityInitializedOrImmovable(ScoreDirector<Solution_> scoreDirector, Object entity) {
+    public boolean isEntityInitializedOrPinned(ScoreDirector<Solution_> scoreDirector, Object entity) {
         return isInitialized(entity) || !isMovable(scoreDirector, entity);
     }
 

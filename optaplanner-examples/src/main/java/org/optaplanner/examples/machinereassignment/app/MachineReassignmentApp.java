@@ -22,14 +22,14 @@ import org.optaplanner.examples.common.persistence.AbstractSolutionImporter;
 import org.optaplanner.examples.machinereassignment.domain.MachineReassignment;
 import org.optaplanner.examples.machinereassignment.persistence.MachineReassignmentExporter;
 import org.optaplanner.examples.machinereassignment.persistence.MachineReassignmentImporter;
+import org.optaplanner.examples.machinereassignment.persistence.MachineReassignmentXmlSolutionFileIO;
 import org.optaplanner.examples.machinereassignment.swingui.MachineReassignmentPanel;
 import org.optaplanner.persistence.common.api.domain.solution.SolutionFileIO;
-import org.optaplanner.persistence.xstream.impl.domain.solution.XStreamSolutionFileIO;
 
 public class MachineReassignmentApp extends CommonApp<MachineReassignment> {
 
-    public static final String SOLVER_CONFIG
-            = "org/optaplanner/examples/machinereassignment/solver/machineReassignmentSolverConfig.xml";
+    public static final String SOLVER_CONFIG =
+            "org/optaplanner/examples/machinereassignment/solver/machineReassignmentSolverConfig.xml";
 
     public static final String DATA_DIR_NAME = "machinereassignment";
 
@@ -53,12 +53,12 @@ public class MachineReassignmentApp extends CommonApp<MachineReassignment> {
 
     @Override
     public SolutionFileIO<MachineReassignment> createSolutionFileIO() {
-        return new XStreamSolutionFileIO<>(MachineReassignment.class);
+        return new MachineReassignmentXmlSolutionFileIO();
     }
 
     @Override
     protected AbstractSolutionImporter[] createSolutionImporters() {
-        return new AbstractSolutionImporter[]{
+        return new AbstractSolutionImporter[] {
                 new MachineReassignmentImporter()
         };
     }

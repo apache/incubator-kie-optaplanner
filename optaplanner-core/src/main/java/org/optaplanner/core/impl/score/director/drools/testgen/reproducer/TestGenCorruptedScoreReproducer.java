@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,7 +17,6 @@ package org.optaplanner.core.impl.score.director.drools.testgen.reproducer;
 
 import org.kie.api.runtime.KieSession;
 import org.optaplanner.core.api.score.Score;
-import org.optaplanner.core.api.score.holder.ScoreHolder;
 import org.optaplanner.core.impl.score.director.AbstractScoreDirector;
 import org.optaplanner.core.impl.score.director.drools.DroolsScoreDirector;
 import org.optaplanner.core.impl.score.director.drools.testgen.TestGenDroolsScoreDirector;
@@ -25,6 +24,7 @@ import org.optaplanner.core.impl.score.director.drools.testgen.TestGenKieSession
 import org.optaplanner.core.impl.score.director.drools.testgen.TestGenKieSessionListener;
 import org.optaplanner.core.impl.score.director.drools.testgen.operation.TestGenKieSessionFireAllRules;
 import org.optaplanner.core.impl.score.director.drools.testgen.operation.TestGenKieSessionInsert;
+import org.optaplanner.core.impl.score.holder.AbstractScoreHolder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -36,15 +36,16 @@ public class TestGenCorruptedScoreReproducer implements TestGenOriginalProblemRe
 
     private static final Logger logger = LoggerFactory.getLogger(TestGenCorruptedScoreReproducer.class);
     private final String analysis;
-    private final TestGenDroolsScoreDirector<?> scoreDirector;
+    private final TestGenDroolsScoreDirector<?, ?> scoreDirector;
 
-    public TestGenCorruptedScoreReproducer(String analysis, TestGenDroolsScoreDirector<?> scoreDirector) {
+    public TestGenCorruptedScoreReproducer(String analysis, TestGenDroolsScoreDirector<?, ?> scoreDirector) {
         this.analysis = analysis;
         this.scoreDirector = scoreDirector;
     }
 
     private static Score<?> extractScore(KieSession kieSession) {
-        ScoreHolder sh = (ScoreHolder) kieSession.getGlobal(DroolsScoreDirector.GLOBAL_SCORE_HOLDER_KEY);
+        AbstractScoreHolder<?> sh =
+                (AbstractScoreHolder<?>) kieSession.getGlobal(DroolsScoreDirector.GLOBAL_SCORE_HOLDER_KEY);
         return sh.extractScore(0);
     }
 

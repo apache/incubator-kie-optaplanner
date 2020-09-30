@@ -1,5 +1,5 @@
 /*
- * Copyright 2014 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,51 +25,43 @@ import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.Reader;
 import java.io.Writer;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import com.thoughtworks.xstream.XStream;
-import com.thoughtworks.xstream.XStreamException;
-import com.thoughtworks.xstream.converters.ConversionException;
 import org.apache.commons.io.filefilter.DirectoryFileFilter;
 import org.optaplanner.benchmark.impl.statistic.ProblemStatistic;
 import org.optaplanner.benchmark.impl.statistic.PureSubSingleStatistic;
-import org.optaplanner.core.config.SolverConfigContext;
 import org.optaplanner.core.config.solver.SolverConfig;
-import org.optaplanner.core.impl.solver.io.XStreamConfigReader;
-import org.optaplanner.persistence.xstream.api.score.AbstractScoreXStreamConverter;
+import org.optaplanner.core.impl.io.OptaPlannerXmlSerializationException;
+import org.optaplanner.core.impl.io.jaxb.ElementNamespaceOverride;
+import org.optaplanner.core.impl.io.jaxb.GenericJaxbIO;
+import org.optaplanner.core.impl.solver.DefaultSolverFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class BenchmarkResultIO {
-
+    // BenchmarkResult contains <solverConfig/> element instead of the default SolverConfig.XML_ELEMENT_NAME.
+    private static final String SOLVER_CONFIG_XML_ELEMENT_NAME = "solverConfig";
     private static final String PLANNER_BENCHMARK_RESULT_FILENAME = "plannerBenchmarkResult.xml";
 
     protected final transient Logger logger = LoggerFactory.getLogger(getClass());
 
-    private final XStream xStream;
-
-    public BenchmarkResultIO() {
-        xStream = XStreamConfigReader.buildXStream();
-        xStream.processAnnotations(PlannerBenchmarkResult.class);
-        xStream.allowTypesByRegExp(new String[]{"org\\.optaplanner\\.\\w+\\.api\\..*"});
-        xStream.allowTypesByRegExp(new String[]{"org\\.optaplanner\\.\\w+\\.impl\\..*"});
-        AbstractScoreXStreamConverter.registerScoreConverters(xStream);
-    }
+    private final GenericJaxbIO<PlannerBenchmarkResult> genericJaxbIO = new GenericJaxbIO<>(PlannerBenchmarkResult.class);
 
     public void writePlannerBenchmarkResult(File benchmarkReportDirectory,
             PlannerBenchmarkResult plannerBenchmarkResult) {
         File plannerBenchmarkResultFile = new File(benchmarkReportDirectory, PLANNER_BENCHMARK_RESULT_FILENAME);
-        try (Writer writer = new OutputStreamWriter(new FileOutputStream(plannerBenchmarkResultFile), "UTF-8")) {
-            xStream.toXML(plannerBenchmarkResult, writer);
+        try (Writer writer = new OutputStreamWriter(new FileOutputStream(plannerBenchmarkResultFile), StandardCharsets.UTF_8)) {
+            write(plannerBenchmarkResult, writer);
         } catch (IOException e) {
             throw new IllegalArgumentException(
                     "Failed writing plannerBenchmarkResultFile (" + plannerBenchmarkResultFile + ").", e);
         }
     }
 
-    public List<PlannerBenchmarkResult> readPlannerBenchmarkResultList(SolverConfigContext configContext, File benchmarkDirectory) {
+    public List<PlannerBenchmarkResult> readPlannerBenchmarkResultList(File benchmarkDirectory) {
         if (!benchmarkDirectory.exists() || !benchmarkDirectory.isDirectory()) {
             throw new IllegalArgumentException("The benchmarkDirectory (" + benchmarkDirectory
                     + ") does not exist or is not a directory.");
@@ -84,39 +76,49 @@ public class BenchmarkResultIO {
         for (File benchmarkReportDirectory : benchmarkReportDirectories) {
             File plannerBenchmarkResultFile = new File(benchmarkReportDirectory, PLANNER_BENCHMARK_RESULT_FILENAME);
             if (plannerBenchmarkResultFile.exists()) {
-                PlannerBenchmarkResult plannerBenchmarkResult = readPlannerBenchmarkResult(configContext, plannerBenchmarkResultFile);
+                PlannerBenchmarkResult plannerBenchmarkResult = readPlannerBenchmarkResult(plannerBenchmarkResultFile);
                 plannerBenchmarkResultList.add(plannerBenchmarkResult);
             }
         }
         return plannerBenchmarkResultList;
     }
 
-    protected PlannerBenchmarkResult readPlannerBenchmarkResult(SolverConfigContext configContext, File plannerBenchmarkResultFile) {
+    protected PlannerBenchmarkResult readPlannerBenchmarkResult(File plannerBenchmarkResultFile) {
         if (!plannerBenchmarkResultFile.exists()) {
             throw new IllegalArgumentException("The plannerBenchmarkResultFile (" + plannerBenchmarkResultFile
                     + ") does not exist.");
         }
         PlannerBenchmarkResult plannerBenchmarkResult;
-        try (Reader reader = new InputStreamReader(new FileInputStream(plannerBenchmarkResultFile), "UTF-8")) {
-            plannerBenchmarkResult = (PlannerBenchmarkResult) xStream.fromXML(reader);
-        } catch (ConversionException e) {
+        try (Reader reader = new InputStreamReader(new FileInputStream(plannerBenchmarkResultFile), StandardCharsets.UTF_8)) {
+            plannerBenchmarkResult = read(reader);
+        } catch (OptaPlannerXmlSerializationException e) {
             logger.warn("Failed reading plannerBenchmarkResultFile ({}).", plannerBenchmarkResultFile, e);
             // If the plannerBenchmarkResultFile's format has changed, the app should not crash entirely
             String benchmarkReportDirectoryName = plannerBenchmarkResultFile.getParentFile().getName();
             plannerBenchmarkResult = PlannerBenchmarkResult.createUnmarshallingFailedResult(
                     benchmarkReportDirectoryName);
-        } catch (XStreamException | IOException e) {
+        } catch (IOException e) {
             throw new IllegalArgumentException(
                     "Failed reading plannerBenchmarkResultFile (" + plannerBenchmarkResultFile + ").", e);
         }
         plannerBenchmarkResult.setBenchmarkReportDirectory(plannerBenchmarkResultFile.getParentFile());
         restoreOmittedBidirectionalFields(plannerBenchmarkResult);
-        restoreOtherOmittedFields(configContext, plannerBenchmarkResult);
+        restoreOtherOmittedFields(plannerBenchmarkResult);
         return plannerBenchmarkResult;
     }
 
+    protected PlannerBenchmarkResult read(Reader reader) {
+        return genericJaxbIO.readOverridingNamespace(reader,
+                ElementNamespaceOverride.of(SOLVER_CONFIG_XML_ELEMENT_NAME, SolverConfig.XML_NAMESPACE));
+    }
+
+    protected void write(PlannerBenchmarkResult plannerBenchmarkResult, Writer writer) {
+        genericJaxbIO.writeWithoutNamespaces(plannerBenchmarkResult, writer);
+    }
+
     private void restoreOmittedBidirectionalFields(PlannerBenchmarkResult plannerBenchmarkResult) {
-        for (ProblemBenchmarkResult<Object> problemBenchmarkResult : plannerBenchmarkResult.getUnifiedProblemBenchmarkResultList()) {
+        for (ProblemBenchmarkResult<Object> problemBenchmarkResult : plannerBenchmarkResult
+                .getUnifiedProblemBenchmarkResultList()) {
             problemBenchmarkResult.setPlannerBenchmarkResult(plannerBenchmarkResult);
             if (problemBenchmarkResult.getProblemStatisticList() == null) {
                 problemBenchmarkResult.setProblemStatisticList(new ArrayList<>(0));
@@ -132,13 +134,16 @@ public class BenchmarkResultIO {
             solverBenchmarkResult.setPlannerBenchmarkResult(plannerBenchmarkResult);
             for (SingleBenchmarkResult singleBenchmarkResult : solverBenchmarkResult.getSingleBenchmarkResultList()) {
                 singleBenchmarkResult.setSolverBenchmarkResult(solverBenchmarkResult);
-                for (SubSingleBenchmarkResult subSingleBenchmarkResult : singleBenchmarkResult.getSubSingleBenchmarkResultList()) {
+                for (SubSingleBenchmarkResult subSingleBenchmarkResult : singleBenchmarkResult
+                        .getSubSingleBenchmarkResultList()) {
                     if (subSingleBenchmarkResult.getPureSubSingleStatisticList() == null) {
                         subSingleBenchmarkResult.setPureSubSingleStatisticList(new ArrayList<>(0));
                     }
                 }
-                for (SubSingleBenchmarkResult subSingleBenchmarkResult : singleBenchmarkResult.getSubSingleBenchmarkResultList()) {
-                    for (PureSubSingleStatistic pureSubSingleStatistic : subSingleBenchmarkResult.getPureSubSingleStatisticList()) {
+                for (SubSingleBenchmarkResult subSingleBenchmarkResult : singleBenchmarkResult
+                        .getSubSingleBenchmarkResultList()) {
+                    for (PureSubSingleStatistic pureSubSingleStatistic : subSingleBenchmarkResult
+                            .getPureSubSingleStatisticList()) {
                         pureSubSingleStatistic.setSubSingleBenchmarkResult(subSingleBenchmarkResult);
                     }
                 }
@@ -146,11 +151,11 @@ public class BenchmarkResultIO {
         }
     }
 
-    private void restoreOtherOmittedFields(SolverConfigContext configContext, PlannerBenchmarkResult plannerBenchmarkResult) {
+    private void restoreOtherOmittedFields(PlannerBenchmarkResult plannerBenchmarkResult) {
         for (SolverBenchmarkResult solverBenchmarkResult : plannerBenchmarkResult.getSolverBenchmarkResultList()) {
             SolverConfig solverConfig = solverBenchmarkResult.getSolverConfig();
-            solverBenchmarkResult.setScoreDefinition(
-                    solverConfig.buildSolutionDescriptor(configContext).getScoreDefinition());
+            DefaultSolverFactory<?> defaultSolverFactory = new DefaultSolverFactory<>(solverConfig);
+            solverBenchmarkResult.setScoreDefinition(defaultSolverFactory.buildSolutionDescriptor().getScoreDefinition());
         }
     }
 

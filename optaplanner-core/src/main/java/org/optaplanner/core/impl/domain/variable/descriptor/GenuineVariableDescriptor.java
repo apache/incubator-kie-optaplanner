@@ -1,11 +1,11 @@
 /*
- * Copyright 2011 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- * http://www.apache.org/licenses/LICENSE-2.0
+ *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -28,6 +28,7 @@ import org.optaplanner.core.api.domain.valuerange.CountableValueRange;
 import org.optaplanner.core.api.domain.valuerange.ValueRangeProvider;
 import org.optaplanner.core.api.domain.variable.PlanningVariable;
 import org.optaplanner.core.api.domain.variable.PlanningVariableGraphType;
+import org.optaplanner.core.api.score.director.ScoreDirector;
 import org.optaplanner.core.config.heuristic.selector.common.decorator.SelectionSorterOrder;
 import org.optaplanner.core.config.util.ConfigUtils;
 import org.optaplanner.core.impl.domain.common.accessor.MemberAccessor;
@@ -44,7 +45,6 @@ import org.optaplanner.core.impl.heuristic.selector.common.decorator.SelectionSo
 import org.optaplanner.core.impl.heuristic.selector.common.decorator.WeightFactorySelectionSorter;
 import org.optaplanner.core.impl.heuristic.selector.entity.decorator.NullValueReinitializeVariableEntityFilter;
 import org.optaplanner.core.impl.heuristic.selector.value.decorator.MovableChainedTrailingValueFilter;
-import org.optaplanner.core.impl.score.director.ScoreDirector;
 
 /**
  * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
@@ -93,17 +93,7 @@ public class GenuineVariableDescriptor<Solution_> extends VariableDescriptor<Sol
                     + ") with nullable (" + nullable + "), which is not compatible with the primitive propertyType ("
                     + variableMemberAccessor.getType() + ").");
         }
-        Class<? extends SelectionFilter> reinitializeVariableEntityFilterClass
-                = planningVariableAnnotation.reinitializeVariableEntityFilter();
-        if (reinitializeVariableEntityFilterClass == PlanningVariable.NullReinitializeVariableEntityFilter.class) {
-            reinitializeVariableEntityFilterClass = null;
-        }
-        if (reinitializeVariableEntityFilterClass != null) {
-            reinitializeVariableEntityFilter = ConfigUtils.newInstance(this,
-                    "reinitializeVariableEntityFilterClass", reinitializeVariableEntityFilterClass);
-        } else {
-            reinitializeVariableEntityFilter = new NullValueReinitializeVariableEntityFilter(this);
-        }
+        reinitializeVariableEntityFilter = new NullValueReinitializeVariableEntityFilter(this);
     }
 
     private void processChained(DescriptorPolicy descriptorPolicy, PlanningVariable planningVariableAnnotation) {
@@ -136,7 +126,8 @@ public class GenuineVariableDescriptor<Solution_> extends VariableDescriptor<Sol
         List<ValueRangeDescriptor<Solution_>> valueRangeDescriptorList = new ArrayList<>(valueRangeProviderRefs.length);
         boolean addNullInValueRange = nullable && valueRangeProviderRefs.length == 1;
         for (String valueRangeProviderRef : valueRangeProviderRefs) {
-            valueRangeDescriptorList.add(buildValueRangeDescriptor(descriptorPolicy, valueRangeProviderRef, addNullInValueRange));
+            valueRangeDescriptorList
+                    .add(buildValueRangeDescriptor(descriptorPolicy, valueRangeProviderRef, addNullInValueRange));
         }
         if (valueRangeDescriptorList.size() == 1) {
             valueRangeDescriptor = valueRangeDescriptorList.get(0);
@@ -165,9 +156,10 @@ public class GenuineVariableDescriptor<Solution_> extends VariableDescriptor<Sol
                     + ") or on that entityClass.\n"
                     + "The valueRangeProviderRef (" + valueRangeProviderRef
                     + ") does not appear in the valueRangeProvideIds (" + providerIds
-                    + ")." + (!providerIds.isEmpty() ? "" : "\nMaybe a @" + ValueRangeProvider.class.getSimpleName()
-                    + " annotation is missing on a method in the solution class ("
-                    + entityDescriptor.getSolutionDescriptor().getSolutionClass().getSimpleName() + ")."));
+                    + ")." + (!providerIds.isEmpty() ? ""
+                            : "\nMaybe a @" + ValueRangeProvider.class.getSimpleName()
+                                    + " annotation is missing on a method in the solution class ("
+                                    + entityDescriptor.getSolutionDescriptor().getSolutionClass().getSimpleName() + ")."));
         }
     }
 
@@ -176,8 +168,8 @@ public class GenuineVariableDescriptor<Solution_> extends VariableDescriptor<Sol
         if (strengthComparatorClass == PlanningVariable.NullStrengthComparator.class) {
             strengthComparatorClass = null;
         }
-        Class<? extends SelectionSorterWeightFactory> strengthWeightFactoryClass
-                = planningVariableAnnotation.strengthWeightFactoryClass();
+        Class<? extends SelectionSorterWeightFactory> strengthWeightFactoryClass = planningVariableAnnotation
+                .strengthWeightFactoryClass();
         if (strengthWeightFactoryClass == PlanningVariable.NullStrengthWeightFactory.class) {
             strengthWeightFactoryClass = null;
         }
@@ -252,8 +244,8 @@ public class GenuineVariableDescriptor<Solution_> extends VariableDescriptor<Sol
     // ************************************************************************
 
     /**
-     * A {@link PlanningVariable#nullable()} value is always considered initialized, but it can still be reinitialized
-     * with {@link PlanningVariable#reinitializeVariableEntityFilter()}.
+     * A {@link PlanningVariable#nullable()} value is always considered initialized.
+     *
      * @param entity never null
      * @return true if the variable on that entity is initialized
      */

@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,30 +16,9 @@
 
 package org.optaplanner.core.config.phase;
 
-import com.thoughtworks.xstream.annotations.XStreamAlias;
-import org.optaplanner.core.config.heuristic.policy.HeuristicConfigPolicy;
-import org.optaplanner.core.impl.phase.NoChangePhase;
-import org.optaplanner.core.impl.solver.recaller.BestSolutionRecaller;
-import org.optaplanner.core.impl.solver.termination.Termination;
-
-@XStreamAlias("noChangePhase")
 public class NoChangePhaseConfig extends PhaseConfig<NoChangePhaseConfig> {
 
-    // Warning: all fields are null (and not defaulted) because they can be inherited
-    // and also because the input config file should match the output config file
-
-    // ************************************************************************
-    // Builder methods
-    // ************************************************************************
-
-    @Override
-    public NoChangePhase buildPhase(int phaseIndex, HeuristicConfigPolicy solverConfigPolicy,
-            BestSolutionRecaller bestSolutionRecaller, Termination solverTermination) {
-        HeuristicConfigPolicy phaseConfigPolicy = solverConfigPolicy.createPhaseConfigPolicy();
-        return new NoChangePhase(
-                phaseIndex, solverConfigPolicy.getLogIndentation(), bestSolutionRecaller,
-                buildPhaseTermination(phaseConfigPolicy, solverTermination));
-    }
+    public static final String XML_ELEMENT_NAME = "noChangePhase";
 
     @Override
     public NoChangePhaseConfig inherit(NoChangePhaseConfig inheritedConfig) {

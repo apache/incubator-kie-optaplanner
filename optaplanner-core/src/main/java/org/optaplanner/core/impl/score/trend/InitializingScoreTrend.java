@@ -1,5 +1,5 @@
 /*
- * Copyright 2014 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,8 +16,6 @@
 
 package org.optaplanner.core.impl.score.trend;
 
-import java.io.Serializable;
-
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.config.score.trend.InitializingScoreTrendLevel;
@@ -25,9 +23,10 @@ import org.optaplanner.core.config.score.trend.InitializingScoreTrendLevel;
 /**
  * Bounds the possible {@link Score}s for a {@link PlanningSolution} as more and more variables are initialized
  * (while the already initialized variables don't change).
+ *
  * @see InitializingScoreTrendLevel
  */
-public class InitializingScoreTrend implements Serializable {
+public class InitializingScoreTrend {
 
     public static InitializingScoreTrend parseTrend(String initializingScoreTrendString, int levelsSize) {
         String[] trendTokens = initializingScoreTrendString.split("/");

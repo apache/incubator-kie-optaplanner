@@ -1,5 +1,5 @@
 /*
- * Copyright 2013 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,46 +16,68 @@
 
 package org.optaplanner.core.impl.score.buildin.bendablebigdecimal;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
+
 import java.math.BigDecimal;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.optaplanner.core.api.score.buildin.bendablebigdecimal.BendableBigDecimalScore;
-
-import static org.junit.Assert.*;
 
 public class BendableBigDecimalScoreDefinitionTest {
 
     @Test
+    public void getZeroScore() {
+        BendableBigDecimalScore score = new BendableBigDecimalScoreDefinition(1, 2).getZeroScore();
+        assertThat(score).isEqualTo(BendableBigDecimalScore.zero(1, 2));
+    }
+
+    @Test
+    public void getSoftestOneScore() {
+        BendableBigDecimalScore score = new BendableBigDecimalScoreDefinition(1, 2).getOneSoftestScore();
+        assertThat(score).isEqualTo(BendableBigDecimalScore.of(new BigDecimal[] { BigDecimal.ZERO },
+                new BigDecimal[] { BigDecimal.ZERO, BigDecimal.ONE }));
+    }
+
+    @Test
     public void getLevelsSize() {
-        assertEquals(2, new BendableBigDecimalScoreDefinition(1, 1).getLevelsSize());
-        assertEquals(7, new BendableBigDecimalScoreDefinition(3, 4).getLevelsSize());
-        assertEquals(7, new BendableBigDecimalScoreDefinition(4, 3).getLevelsSize());
-        assertEquals(5, new BendableBigDecimalScoreDefinition(0, 5).getLevelsSize());
-        assertEquals(5, new BendableBigDecimalScoreDefinition(5, 0).getLevelsSize());
+        assertThat(new BendableBigDecimalScoreDefinition(1, 1).getLevelsSize()).isEqualTo(2);
+        assertThat(new BendableBigDecimalScoreDefinition(3, 4).getLevelsSize()).isEqualTo(7);
+        assertThat(new BendableBigDecimalScoreDefinition(4, 3).getLevelsSize()).isEqualTo(7);
+        assertThat(new BendableBigDecimalScoreDefinition(0, 5).getLevelsSize()).isEqualTo(5);
+        assertThat(new BendableBigDecimalScoreDefinition(5, 0).getLevelsSize()).isEqualTo(5);
     }
 
     @Test
     public void getLevelLabels() {
-        assertArrayEquals(new String[]{"hard 0 score", "soft 0 score"}, new BendableBigDecimalScoreDefinition(1, 1).getLevelLabels());
-        assertArrayEquals(new String[]{"hard 0 score", "hard 1 score", "hard 2 score", "soft 0 score", "soft 1 score", "soft 2 score", "soft 3 score"}, new BendableBigDecimalScoreDefinition(3, 4).getLevelLabels());
-        assertArrayEquals(new String[]{"hard 0 score", "hard 1 score", "hard 2 score", "hard 3 score", "soft 0 score", "soft 1 score", "soft 2 score"}, new BendableBigDecimalScoreDefinition(4, 3).getLevelLabels());
-        assertArrayEquals(new String[]{"soft 0 score", "soft 1 score", "soft 2 score", "soft 3 score", "soft 4 score"}, new BendableBigDecimalScoreDefinition(0, 5).getLevelLabels());
-        assertArrayEquals(new String[]{"hard 0 score", "hard 1 score", "hard 2 score", "hard 3 score", "hard 4 score"}, new BendableBigDecimalScoreDefinition(5, 0).getLevelLabels());
+        assertThat(new BendableBigDecimalScoreDefinition(1, 1).getLevelLabels())
+                .isEqualTo(new String[] { "hard 0 score", "soft 0 score" });
+        assertThat(new BendableBigDecimalScoreDefinition(3, 4).getLevelLabels())
+                .isEqualTo(new String[] { "hard 0 score", "hard 1 score", "hard 2 score", "soft 0 score", "soft 1 score",
+                        "soft 2 score", "soft 3 score" });
+        assertThat(new BendableBigDecimalScoreDefinition(4, 3).getLevelLabels())
+                .isEqualTo(new String[] { "hard 0 score", "hard 1 score", "hard 2 score", "hard 3 score", "soft 0 score",
+                        "soft 1 score", "soft 2 score" });
+        assertThat(new BendableBigDecimalScoreDefinition(0, 5).getLevelLabels())
+                .isEqualTo(new String[] { "soft 0 score", "soft 1 score", "soft 2 score", "soft 3 score", "soft 4 score" });
+        assertThat(new BendableBigDecimalScoreDefinition(5, 0).getLevelLabels())
+                .isEqualTo(new String[] { "hard 0 score", "hard 1 score", "hard 2 score", "hard 3 score", "hard 4 score" });
     }
 
     @Test
     public void getFeasibleLevelsSize() {
-        assertEquals(1, new BendableBigDecimalScoreDefinition(1, 1).getFeasibleLevelsSize());
-        assertEquals(3, new BendableBigDecimalScoreDefinition(3, 4).getFeasibleLevelsSize());
-        assertEquals(4, new BendableBigDecimalScoreDefinition(4, 3).getFeasibleLevelsSize());
-        assertEquals(0, new BendableBigDecimalScoreDefinition(0, 5).getFeasibleLevelsSize());
-        assertEquals(5, new BendableBigDecimalScoreDefinition(5, 0).getFeasibleLevelsSize());
+        assertThat(new BendableBigDecimalScoreDefinition(1, 1).getFeasibleLevelsSize()).isEqualTo(1);
+        assertThat(new BendableBigDecimalScoreDefinition(3, 4).getFeasibleLevelsSize()).isEqualTo(3);
+        assertThat(new BendableBigDecimalScoreDefinition(4, 3).getFeasibleLevelsSize()).isEqualTo(4);
+        assertThat(new BendableBigDecimalScoreDefinition(0, 5).getFeasibleLevelsSize()).isEqualTo(0);
+        assertThat(new BendableBigDecimalScoreDefinition(5, 0).getFeasibleLevelsSize()).isEqualTo(5);
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void createScoreWithIllegalArgument() {
         BendableBigDecimalScoreDefinition bendableScoreDefinition = new BendableBigDecimalScoreDefinition(2, 3);
-        bendableScoreDefinition.createScore(new BigDecimal(1), new BigDecimal(2), new BigDecimal(3));
+        assertThatIllegalArgumentException().isThrownBy(() -> bendableScoreDefinition.createScore(
+                new BigDecimal(1), new BigDecimal(2), new BigDecimal(3)));
     }
 
     @Test
@@ -67,15 +89,16 @@ public class BendableBigDecimalScoreDefinitionTest {
                 for (int i = 0; i < levelSize; i++) {
                     scores[i] = new BigDecimal(i);
                 }
-                BendableBigDecimalScoreDefinition bendableScoreDefinition = new BendableBigDecimalScoreDefinition(hardLevelSize, softLevelSize);
+                BendableBigDecimalScoreDefinition bendableScoreDefinition = new BendableBigDecimalScoreDefinition(hardLevelSize,
+                        softLevelSize);
                 BendableBigDecimalScore bendableScore = bendableScoreDefinition.createScore(scores);
-                assertEquals(hardLevelSize, bendableScore.getHardLevelsSize());
-                assertEquals(softLevelSize, bendableScore.getSoftLevelsSize());
+                assertThat(bendableScore.getHardLevelsSize()).isEqualTo(hardLevelSize);
+                assertThat(bendableScore.getSoftLevelsSize()).isEqualTo(softLevelSize);
                 for (int i = 0; i < levelSize; i++) {
                     if (i < hardLevelSize) {
-                        assertEquals(scores[i], bendableScore.getHardScore(i));
+                        assertThat(bendableScore.getHardScore(i)).isEqualTo(scores[i]);
                     } else {
-                        assertEquals(scores[i], bendableScore.getSoftScore(i - hardLevelSize));
+                        assertThat(bendableScore.getSoftScore(i - hardLevelSize)).isEqualTo(scores[i]);
                     }
                 }
             }
@@ -83,5 +106,20 @@ public class BendableBigDecimalScoreDefinitionTest {
     }
 
     // Optimistic and pessimistic bounds are currently not supported for this score definition
+
+    @Test
+    public void divideBySanitizedDivisor() {
+        BendableBigDecimalScoreDefinition scoreDefinition = new BendableBigDecimalScoreDefinition(1, 1);
+        BendableBigDecimalScore dividend = scoreDefinition.createScoreUninitialized(2, BigDecimal.ZERO, BigDecimal.TEN);
+        BendableBigDecimalScore zeroDivisor = scoreDefinition.getZeroScore();
+        assertThat(scoreDefinition.divideBySanitizedDivisor(dividend, zeroDivisor))
+                .isEqualTo(dividend);
+        BendableBigDecimalScore oneDivisor = scoreDefinition.getOneSoftestScore();
+        assertThat(scoreDefinition.divideBySanitizedDivisor(dividend, oneDivisor))
+                .isEqualTo(dividend);
+        BendableBigDecimalScore tenDivisor = scoreDefinition.createScoreUninitialized(10, BigDecimal.TEN, BigDecimal.TEN);
+        assertThat(scoreDefinition.divideBySanitizedDivisor(dividend, tenDivisor))
+                .isEqualTo(scoreDefinition.createScoreUninitialized(0, BigDecimal.ZERO, BigDecimal.ONE));
+    }
 
 }

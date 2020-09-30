@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,32 +16,29 @@
 
 package org.optaplanner.core.impl.constructionheuristic.placer.entity;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+import static org.optaplanner.core.impl.testdata.util.PlannerAssert.verifyPhaseLifecycle;
+
 import java.util.Iterator;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.optaplanner.core.impl.constructionheuristic.placer.Placement;
 import org.optaplanner.core.impl.constructionheuristic.placer.QueuedValuePlacer;
 import org.optaplanner.core.impl.domain.variable.descriptor.GenuineVariableDescriptor;
-import org.optaplanner.core.impl.heuristic.move.Move;
 import org.optaplanner.core.impl.heuristic.selector.SelectorTestUtils;
 import org.optaplanner.core.impl.heuristic.selector.entity.EntitySelector;
 import org.optaplanner.core.impl.heuristic.selector.move.MoveSelector;
-import org.optaplanner.core.impl.heuristic.selector.move.generic.ChangeMove;
 import org.optaplanner.core.impl.heuristic.selector.move.generic.ChangeMoveSelector;
 import org.optaplanner.core.impl.heuristic.selector.value.EntityIndependentValueSelector;
 import org.optaplanner.core.impl.heuristic.selector.value.mimic.MimicRecordingValueSelector;
 import org.optaplanner.core.impl.heuristic.selector.value.mimic.MimicReplayingValueSelector;
 import org.optaplanner.core.impl.phase.scope.AbstractPhaseScope;
 import org.optaplanner.core.impl.phase.scope.AbstractStepScope;
-import org.optaplanner.core.impl.solver.scope.DefaultSolverScope;
+import org.optaplanner.core.impl.solver.scope.SolverScope;
 import org.optaplanner.core.impl.testdata.domain.TestdataEntity;
 import org.optaplanner.core.impl.testdata.domain.TestdataValue;
-
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-import static org.mockito.Mockito.*;
-import static org.optaplanner.core.impl.testdata.util.PlannerAssert.*;
 
 public class QueuedValuePlacerTest extends AbstractEntityPlacerTest {
 
@@ -62,7 +59,7 @@ public class QueuedValuePlacerTest extends AbstractEntityPlacerTest {
                 false);
         QueuedValuePlacer placer = new QueuedValuePlacer(recordingValueSelector, moveSelector);
 
-        DefaultSolverScope solverScope = mock(DefaultSolverScope.class);
+        SolverScope solverScope = mock(SolverScope.class);
         placer.solvingStarted(solverScope);
 
         AbstractPhaseScope phaseScopeA = mock(AbstractPhaseScope.class);
@@ -70,21 +67,21 @@ public class QueuedValuePlacerTest extends AbstractEntityPlacerTest {
         placer.phaseStarted(phaseScopeA);
         Iterator<Placement> placementIterator = placer.iterator();
 
-        assertTrue(placementIterator.hasNext());
+        assertThat(placementIterator.hasNext()).isTrue();
         AbstractStepScope stepScopeA1 = mock(AbstractStepScope.class);
         when(stepScopeA1.getPhaseScope()).thenReturn(phaseScopeA);
         placer.stepStarted(stepScopeA1);
         assertValuePlacement(placementIterator.next(), "1", "a", "b", "c");
         placer.stepEnded(stepScopeA1);
 
-        assertTrue(placementIterator.hasNext());
+        assertThat(placementIterator.hasNext()).isTrue();
         AbstractStepScope stepScopeA2 = mock(AbstractStepScope.class);
         when(stepScopeA2.getPhaseScope()).thenReturn(phaseScopeA);
         placer.stepStarted(stepScopeA2);
         assertValuePlacement(placementIterator.next(), "2", "a", "b", "c");
         placer.stepEnded(stepScopeA2);
 
-        assertTrue(placementIterator.hasNext());
+        assertThat(placementIterator.hasNext()).isTrue();
         AbstractStepScope stepScopeA3 = mock(AbstractStepScope.class);
         when(stepScopeA3.getPhaseScope()).thenReturn(phaseScopeA);
         placer.stepStarted(stepScopeA3);
@@ -100,7 +97,7 @@ public class QueuedValuePlacerTest extends AbstractEntityPlacerTest {
         placer.phaseStarted(phaseScopeB);
         placementIterator = placer.iterator();
 
-        assertTrue(placementIterator.hasNext());
+        assertThat(placementIterator.hasNext()).isTrue();
         AbstractStepScope stepScopeB1 = mock(AbstractStepScope.class);
         when(stepScopeB1.getPhaseScope()).thenReturn(phaseScopeB);
         placer.stepStarted(stepScopeB1);

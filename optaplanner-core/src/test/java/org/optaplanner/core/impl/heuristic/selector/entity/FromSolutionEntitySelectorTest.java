@@ -1,5 +1,5 @@
 /*
- * Copyright 2012 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,22 +16,27 @@
 
 package org.optaplanner.core.impl.heuristic.selector.entity;
 
+import static org.assertj.core.api.Assertions.assertThatIllegalStateException;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+import static org.optaplanner.core.impl.testdata.util.PlannerAssert.assertAllCodesOfEntitySelector;
+import static org.optaplanner.core.impl.testdata.util.PlannerAssert.assertCodesOfNeverEndingOfEntitySelector;
+
 import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.optaplanner.core.config.heuristic.selector.common.SelectionCacheType;
 import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
 import org.optaplanner.core.impl.phase.scope.AbstractPhaseScope;
 import org.optaplanner.core.impl.phase.scope.AbstractStepScope;
 import org.optaplanner.core.impl.score.director.InnerScoreDirector;
-import org.optaplanner.core.impl.solver.scope.DefaultSolverScope;
+import org.optaplanner.core.impl.solver.scope.SolverScope;
 import org.optaplanner.core.impl.testdata.domain.TestdataEntity;
 import org.optaplanner.core.impl.testdata.domain.TestdataSolution;
-
-import static org.mockito.Mockito.*;
-import static org.optaplanner.core.impl.testdata.util.PlannerAssert.*;
 
 public class FromSolutionEntitySelectorTest {
 
@@ -52,8 +57,8 @@ public class FromSolutionEntitySelectorTest {
 
     public void runOriginalWithoutEntityListDirtyAndMinimumCacheType(SelectionCacheType cacheType) {
         TestdataSolution workingSolution = new TestdataSolution();
-        final List<Object> entityList = Arrays.<Object>asList(
-                new TestdataEntity("e1"), new TestdataEntity("e2"), new TestdataEntity("e3"));
+        final List<Object> entityList = Arrays.asList(new TestdataEntity("e1"), new TestdataEntity("e2"),
+                new TestdataEntity("e3"));
         EntityDescriptor entityDescriptor = mock(EntityDescriptor.class);
         when(entityDescriptor.extractEntities(workingSolution)).thenReturn(entityList);
         InnerScoreDirector scoreDirector = mock(InnerScoreDirector.class);
@@ -62,7 +67,7 @@ public class FromSolutionEntitySelectorTest {
         when(scoreDirector.isWorkingEntityListDirty(7L)).thenReturn(false);
         FromSolutionEntitySelector entitySelector = new FromSolutionEntitySelector(entityDescriptor, cacheType, false);
 
-        DefaultSolverScope solverScope = mock(DefaultSolverScope.class);
+        SolverScope solverScope = mock(SolverScope.class);
         entitySelector.solvingStarted(solverScope);
 
         AbstractPhaseScope phaseScopeA = mock(AbstractPhaseScope.class);
@@ -123,15 +128,16 @@ public class FromSolutionEntitySelectorTest {
     public void originalWithEntityListDirty() {
         TestdataSolution workingSolution = new TestdataSolution();
         EntityDescriptor entityDescriptor = mock(EntityDescriptor.class);
-        when(entityDescriptor.extractEntities(workingSolution)).thenReturn(Arrays.<Object>asList(
-                new TestdataEntity("e1"), new TestdataEntity("e2"), new TestdataEntity("e3")));
+        when(entityDescriptor.extractEntities(workingSolution))
+                .thenReturn(Arrays.asList(new TestdataEntity("e1"), new TestdataEntity("e2"), new TestdataEntity("e3")));
         InnerScoreDirector scoreDirector = mock(InnerScoreDirector.class);
         when(scoreDirector.getWorkingSolution()).thenReturn(workingSolution);
         when(scoreDirector.getWorkingEntityListRevision()).thenReturn(7L);
         when(scoreDirector.isWorkingEntityListDirty(7L)).thenReturn(false);
-        FromSolutionEntitySelector entitySelector = new FromSolutionEntitySelector(entityDescriptor, SelectionCacheType.JUST_IN_TIME, false);
+        FromSolutionEntitySelector entitySelector = new FromSolutionEntitySelector(entityDescriptor,
+                SelectionCacheType.JUST_IN_TIME, false);
 
-        DefaultSolverScope solverScope = mock(DefaultSolverScope.class);
+        SolverScope solverScope = mock(SolverScope.class);
         entitySelector.solvingStarted(solverScope);
 
         AbstractPhaseScope phaseScopeA = mock(AbstractPhaseScope.class);
@@ -146,8 +152,8 @@ public class FromSolutionEntitySelectorTest {
         assertAllCodesOfEntitySelector(entitySelector, "e1", "e2", "e3");
         entitySelector.stepEnded(stepScopeA1);
 
-        when(entityDescriptor.extractEntities(workingSolution)).thenReturn(Arrays.<Object>asList(
-                new TestdataEntity("f1"), new TestdataEntity("f2"), new TestdataEntity("f3")));
+        when(entityDescriptor.extractEntities(workingSolution))
+                .thenReturn(Arrays.asList(new TestdataEntity("f1"), new TestdataEntity("f2"), new TestdataEntity("f3")));
         when(scoreDirector.getWorkingEntityListRevision()).thenReturn(8L);
         when(scoreDirector.isWorkingEntityListDirty(7L)).thenReturn(true);
         when(scoreDirector.isWorkingEntityListDirty(8L)).thenReturn(false);
@@ -180,8 +186,8 @@ public class FromSolutionEntitySelectorTest {
         assertAllCodesOfEntitySelector(entitySelector, "f1", "f2", "f3");
         entitySelector.stepEnded(stepScopeB2);
 
-        when(entityDescriptor.extractEntities(workingSolution)).thenReturn(Arrays.<Object>asList(
-                new TestdataEntity("e1"), new TestdataEntity("e2"), new TestdataEntity("e3")));
+        when(entityDescriptor.extractEntities(workingSolution))
+                .thenReturn(Arrays.asList(new TestdataEntity("e1"), new TestdataEntity("e2"), new TestdataEntity("e3")));
         when(scoreDirector.getWorkingEntityListRevision()).thenReturn(9L);
         when(scoreDirector.isWorkingEntityListDirty(8L)).thenReturn(true);
         when(scoreDirector.isWorkingEntityListDirty(9L)).thenReturn(false);
@@ -217,8 +223,8 @@ public class FromSolutionEntitySelectorTest {
 
     public void runRandomWithoutEntityListDirtyAndMinimumCacheType(SelectionCacheType cacheType) {
         TestdataSolution workingSolution = new TestdataSolution();
-        final List<Object> entityList = Arrays.<Object>asList(
-                new TestdataEntity("e1"), new TestdataEntity("e2"), new TestdataEntity("e3"));
+        final List<Object> entityList = Arrays.asList(new TestdataEntity("e1"), new TestdataEntity("e2"),
+                new TestdataEntity("e3"));
         EntityDescriptor entityDescriptor = mock(EntityDescriptor.class);
         when(entityDescriptor.extractEntities(workingSolution)).thenReturn(entityList);
         InnerScoreDirector scoreDirector = mock(InnerScoreDirector.class);
@@ -230,7 +236,7 @@ public class FromSolutionEntitySelectorTest {
         Random workingRandom = mock(Random.class);
         when(workingRandom.nextInt(3)).thenReturn(1, 0, 0, 2, 1, 2, 2, 1, 0);
 
-        DefaultSolverScope solverScope = mock(DefaultSolverScope.class);
+        SolverScope solverScope = mock(SolverScope.class);
         when(solverScope.getWorkingRandom()).thenReturn(workingRandom);
         entitySelector.solvingStarted(solverScope);
 
@@ -292,18 +298,19 @@ public class FromSolutionEntitySelectorTest {
     public void randomWithEntityListDirty() {
         TestdataSolution workingSolution = new TestdataSolution();
         EntityDescriptor entityDescriptor = mock(EntityDescriptor.class);
-        when(entityDescriptor.extractEntities(workingSolution)).thenReturn(Arrays.<Object>asList(
-                new TestdataEntity("e1"), new TestdataEntity("e2"), new TestdataEntity("e3")));
+        when(entityDescriptor.extractEntities(workingSolution))
+                .thenReturn(Arrays.asList(new TestdataEntity("e1"), new TestdataEntity("e2"), new TestdataEntity("e3")));
         InnerScoreDirector scoreDirector = mock(InnerScoreDirector.class);
         when(scoreDirector.getWorkingSolution()).thenReturn(workingSolution);
         when(scoreDirector.getWorkingEntityListRevision()).thenReturn(7L);
         when(scoreDirector.isWorkingEntityListDirty(7L)).thenReturn(false);
-        FromSolutionEntitySelector entitySelector = new FromSolutionEntitySelector(entityDescriptor, SelectionCacheType.JUST_IN_TIME, true);
+        FromSolutionEntitySelector entitySelector = new FromSolutionEntitySelector(entityDescriptor,
+                SelectionCacheType.JUST_IN_TIME, true);
 
         Random workingRandom = mock(Random.class);
         when(workingRandom.nextInt(3)).thenReturn(1, 0, 0, 2, 1, 2, 2, 1, 0);
 
-        DefaultSolverScope solverScope = mock(DefaultSolverScope.class);
+        SolverScope solverScope = mock(SolverScope.class);
         when(solverScope.getWorkingRandom()).thenReturn(workingRandom);
         entitySelector.solvingStarted(solverScope);
 
@@ -319,8 +326,8 @@ public class FromSolutionEntitySelectorTest {
         assertCodesOfNeverEndingOfEntitySelector(entitySelector, 3L, "e2", "e1", "e1", "e3");
         entitySelector.stepEnded(stepScopeA1);
 
-        when(entityDescriptor.extractEntities(workingSolution)).thenReturn(Arrays.<Object>asList(
-                new TestdataEntity("f1"), new TestdataEntity("f2"), new TestdataEntity("f3")));
+        when(entityDescriptor.extractEntities(workingSolution))
+                .thenReturn(Arrays.asList(new TestdataEntity("f1"), new TestdataEntity("f2"), new TestdataEntity("f3")));
         when(scoreDirector.getWorkingEntityListRevision()).thenReturn(8L);
         when(scoreDirector.isWorkingEntityListDirty(7L)).thenReturn(true);
         when(scoreDirector.isWorkingEntityListDirty(8L)).thenReturn(false);
@@ -353,8 +360,8 @@ public class FromSolutionEntitySelectorTest {
         assertCodesOfNeverEndingOfEntitySelector(entitySelector, 3L, "f2");
         entitySelector.stepEnded(stepScopeB2);
 
-        when(entityDescriptor.extractEntities(workingSolution)).thenReturn(Arrays.<Object>asList(
-                new TestdataEntity("e1"), new TestdataEntity("e2"), new TestdataEntity("e3")));
+        when(entityDescriptor.extractEntities(workingSolution))
+                .thenReturn(Arrays.asList(new TestdataEntity("e1"), new TestdataEntity("e2"), new TestdataEntity("e3")));
         when(scoreDirector.getWorkingEntityListRevision()).thenReturn(9L);
         when(scoreDirector.isWorkingEntityListDirty(8L)).thenReturn(true);
         when(scoreDirector.isWorkingEntityListDirty(9L)).thenReturn(false);
@@ -373,20 +380,22 @@ public class FromSolutionEntitySelectorTest {
         verify(entityDescriptor, times(4)).extractEntities(workingSolution);
     }
 
-    @Test(expected = IllegalStateException.class)
+    @Test
     public void listIteratorWithRandomSelection() {
         EntityDescriptor entityDescriptor = mock(EntityDescriptor.class);
-        when(entityDescriptor.getEntityClass()).thenReturn((Class) TestdataEntity.class);
-        FromSolutionEntitySelector entitySelector = new FromSolutionEntitySelector(entityDescriptor, SelectionCacheType.JUST_IN_TIME, true);
-        entitySelector.listIterator();
+        when(entityDescriptor.getEntityClass()).thenReturn(TestdataEntity.class);
+        FromSolutionEntitySelector entitySelector = new FromSolutionEntitySelector(entityDescriptor,
+                SelectionCacheType.JUST_IN_TIME, true);
+        assertThatIllegalStateException().isThrownBy(entitySelector::listIterator);
     }
 
-    @Test(expected = IllegalStateException.class)
+    @Test
     public void indexedListIteratorWithRandomSelection() {
         EntityDescriptor entityDescriptor = mock(EntityDescriptor.class);
-        when(entityDescriptor.getEntityClass()).thenReturn((Class) TestdataEntity.class);
-        FromSolutionEntitySelector entitySelector = new FromSolutionEntitySelector(entityDescriptor, SelectionCacheType.JUST_IN_TIME, true);
-        entitySelector.listIterator(0);
+        when(entityDescriptor.getEntityClass()).thenReturn(TestdataEntity.class);
+        FromSolutionEntitySelector entitySelector = new FromSolutionEntitySelector(entityDescriptor,
+                SelectionCacheType.JUST_IN_TIME, true);
+        assertThatIllegalStateException().isThrownBy(() -> entitySelector.listIterator(0));
     }
 
 }

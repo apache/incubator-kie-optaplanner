@@ -16,14 +16,14 @@
 
 package org.optaplanner.core.impl.domain.lookup;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.optaplanner.core.impl.testdata.util.PlannerAssert.assertCompareToOrder;
+
 import java.util.Comparator;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.optaplanner.core.impl.testdata.domain.score.lavish.TestdataLavishEntity;
 import org.optaplanner.core.impl.testdata.domain.score.lavish.TestdataLavishEntityGroup;
-
-import static org.junit.Assert.assertEquals;
-import static org.optaplanner.core.impl.testdata.util.PlannerAssert.assertCompareToOrder;
 
 public class ClassAndPlanningIdComparatorTest {
 
@@ -53,7 +53,7 @@ public class ClassAndPlanningIdComparatorTest {
         Object firstObject = new ClassAndPlanningIdComparator(false);
         Object secondObject = new ClassAndPlanningIdComparator(false);
         int result = comparator.compare(firstObject, secondObject);
-        assertEquals(0, result);
+        assertThat(result).isEqualTo(0);
     }
 
 }

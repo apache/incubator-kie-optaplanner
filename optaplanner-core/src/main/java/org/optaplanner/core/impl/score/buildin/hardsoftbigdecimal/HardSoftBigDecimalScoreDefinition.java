@@ -1,5 +1,5 @@
 /*
- * Copyright 2013 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,14 +20,13 @@ import java.math.BigDecimal;
 import java.util.Arrays;
 
 import org.optaplanner.core.api.score.buildin.hardsoftbigdecimal.HardSoftBigDecimalScore;
-import org.optaplanner.core.api.score.buildin.hardsoftbigdecimal.HardSoftBigDecimalScoreHolder;
-import org.optaplanner.core.impl.score.definition.AbstractFeasibilityScoreDefinition;
+import org.optaplanner.core.impl.score.definition.AbstractScoreDefinition;
 import org.optaplanner.core.impl.score.trend.InitializingScoreTrend;
 
-public class HardSoftBigDecimalScoreDefinition extends AbstractFeasibilityScoreDefinition<HardSoftBigDecimalScore> {
+public class HardSoftBigDecimalScoreDefinition extends AbstractScoreDefinition<HardSoftBigDecimalScore> {
 
     public HardSoftBigDecimalScoreDefinition() {
-        super(new String[]{"hard score", "soft score"});
+        super(new String[] { "hard score", "soft score" });
     }
 
     // ************************************************************************
@@ -55,6 +54,11 @@ public class HardSoftBigDecimalScoreDefinition extends AbstractFeasibilityScoreD
     }
 
     @Override
+    public HardSoftBigDecimalScore getOneSoftestScore() {
+        return HardSoftBigDecimalScore.ONE_SOFT;
+    }
+
+    @Override
     public HardSoftBigDecimalScore parseScore(String scoreString) {
         return HardSoftBigDecimalScore.parseScore(scoreString);
     }
@@ -74,22 +78,40 @@ public class HardSoftBigDecimalScoreDefinition extends AbstractFeasibilityScoreD
     }
 
     @Override
-    public HardSoftBigDecimalScoreHolder buildScoreHolder(boolean constraintMatchEnabled) {
-        return new HardSoftBigDecimalScoreHolder(constraintMatchEnabled);
+    public HardSoftBigDecimalScoreHolderImpl buildScoreHolder(boolean constraintMatchEnabled) {
+        return new HardSoftBigDecimalScoreHolderImpl(constraintMatchEnabled);
     }
 
     @Override
-    public HardSoftBigDecimalScore buildOptimisticBound(InitializingScoreTrend initializingScoreTrend, HardSoftBigDecimalScore score) {
+    public HardSoftBigDecimalScore buildOptimisticBound(InitializingScoreTrend initializingScoreTrend,
+            HardSoftBigDecimalScore score) {
         // TODO https://issues.redhat.com/browse/PLANNER-232
         throw new UnsupportedOperationException("PLANNER-232: BigDecimalScore does not support bounds" +
                 " because a BigDecimal cannot represent infinity.");
     }
 
     @Override
-    public HardSoftBigDecimalScore buildPessimisticBound(InitializingScoreTrend initializingScoreTrend, HardSoftBigDecimalScore score) {
+    public HardSoftBigDecimalScore buildPessimisticBound(InitializingScoreTrend initializingScoreTrend,
+            HardSoftBigDecimalScore score) {
         // TODO https://issues.redhat.com/browse/PLANNER-232
         throw new UnsupportedOperationException("PLANNER-232: BigDecimalScore does not support bounds" +
                 " because a BigDecimal cannot represent infinity.");
     }
 
+    @Override
+    public HardSoftBigDecimalScore divideBySanitizedDivisor(HardSoftBigDecimalScore dividend,
+            HardSoftBigDecimalScore divisor) {
+        int dividendInitScore = dividend.getInitScore();
+        int divisorInitScore = sanitize(divisor.getInitScore());
+        BigDecimal dividendHardScore = dividend.getHardScore();
+        BigDecimal divisorHardScore = sanitize(divisor.getHardScore());
+        BigDecimal dividendSoftScore = dividend.getSoftScore();
+        BigDecimal divisorSoftScore = sanitize(divisor.getSoftScore());
+        return fromLevelNumbers(
+                divide(dividendInitScore, divisorInitScore),
+                new Number[] {
+                        divide(dividendHardScore, divisorHardScore),
+                        divide(dividendSoftScore, divisorSoftScore)
+                });
+    }
 }

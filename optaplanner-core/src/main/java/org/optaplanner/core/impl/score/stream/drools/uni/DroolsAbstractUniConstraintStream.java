@@ -37,6 +37,8 @@ import org.optaplanner.core.impl.score.stream.drools.bi.DroolsAbstractBiConstrai
 import org.optaplanner.core.impl.score.stream.drools.bi.DroolsGroupingBiConstraintStream;
 import org.optaplanner.core.impl.score.stream.drools.bi.DroolsJoinBiConstraintStream;
 import org.optaplanner.core.impl.score.stream.drools.common.DroolsAbstractConstraintStream;
+import org.optaplanner.core.impl.score.stream.drools.common.consequences.ConstraintConsequence;
+import org.optaplanner.core.impl.score.stream.drools.common.nodes.UniConstraintGraphNode;
 import org.optaplanner.core.impl.score.stream.drools.quad.DroolsGroupingQuadConstraintStream;
 import org.optaplanner.core.impl.score.stream.drools.tri.DroolsGroupingTriConstraintStream;
 import org.optaplanner.core.impl.score.stream.uni.InnerUniConstraintStream;
@@ -48,14 +50,19 @@ public abstract class DroolsAbstractUniConstraintStream<Solution_, A> extends Dr
         super(constraintFactory);
     }
 
+    @Override
+    public int getCardinality() {
+        return 1;
+    }
+
     // ************************************************************************
     // Filter
     // ************************************************************************
 
     @Override
-    public DroolsAbstractUniConstraintStream<Solution_, A> filter(Predicate<A> predicate) {
-        DroolsFilterUniConstraintStream<Solution_, A> stream =
-                new DroolsFilterUniConstraintStream<>(constraintFactory, this, predicate);
+    public UniConstraintStream<A> filter(Predicate<A> predicate) {
+        DroolsFilterUniConstraintStream<Solution_, A> stream = new DroolsFilterUniConstraintStream<>(constraintFactory, this,
+                predicate);
         addChildStream(stream);
         return stream;
     }
@@ -68,7 +75,7 @@ public abstract class DroolsAbstractUniConstraintStream<Solution_, A> extends Dr
     public <B> BiConstraintStream<A, B> join(UniConstraintStream<B> otherStream, BiJoiner<A, B> joiner) {
         if (joiner instanceof FilteringBiJoiner) {
             return join(otherStream)
-                .filter(((FilteringBiJoiner<A, B>) joiner).getFilter());
+                    .filter(((FilteringBiJoiner<A, B>) joiner).getFilter());
         }
         DroolsAbstractUniConstraintStream<Solution_, B> castOtherStream =
                 (DroolsAbstractUniConstraintStream<Solution_, B>) otherStream;
@@ -98,8 +105,9 @@ public abstract class DroolsAbstractUniConstraintStream<Solution_, A> extends Dr
     @SafeVarargs
     private final <B> UniConstraintStream<A> ifExistsOrNot(boolean shouldExist, Class<B> otherClass,
             BiJoiner<A, B>... joiners) {
-        DroolsExistsUniConstraintStream<Solution_, A> stream =
-                new DroolsExistsUniConstraintStream<>(constraintFactory, this, shouldExist, otherClass, joiners);
+        getConstraintFactory().assertValidFromType(otherClass);
+        DroolsExistsUniConstraintStream<Solution_, A> stream = new DroolsExistsUniConstraintStream<>(constraintFactory, this,
+                shouldExist, otherClass, joiners);
         addChildStream(stream);
         return stream;
     }
@@ -111,16 +119,16 @@ public abstract class DroolsAbstractUniConstraintStream<Solution_, A> extends Dr
     @Override
     public <ResultContainer_, Result_> UniConstraintStream<Result_> groupBy(
             UniConstraintCollector<A, ResultContainer_, Result_> collector) {
-        DroolsGroupingUniConstraintStream<Solution_, Result_> stream =
-                new DroolsGroupingUniConstraintStream<>(constraintFactory, this, collector);
+        DroolsGroupingUniConstraintStream<Solution_, Result_> stream = new DroolsGroupingUniConstraintStream<>(
+                constraintFactory, this, collector);
         addChildStream(stream);
         return stream;
     }
 
     @Override
     public <GroupKey_> UniConstraintStream<GroupKey_> groupBy(Function<A, GroupKey_> groupKeyMapping) {
-        DroolsGroupingUniConstraintStream<Solution_, GroupKey_> stream =
-                new DroolsGroupingUniConstraintStream<>(constraintFactory, this, groupKeyMapping);
+        DroolsGroupingUniConstraintStream<Solution_, GroupKey_> stream = new DroolsGroupingUniConstraintStream<>(
+                constraintFactory, this, groupKeyMapping);
         addChildStream(stream);
         return stream;
     }
@@ -128,8 +136,8 @@ public abstract class DroolsAbstractUniConstraintStream<Solution_, A> extends Dr
     @Override
     public <GroupKey_, ResultContainer_, Result_> BiConstraintStream<GroupKey_, Result_> groupBy(
             Function<A, GroupKey_> groupKeyMapping, UniConstraintCollector<A, ResultContainer_, Result_> collector) {
-        DroolsGroupingBiConstraintStream<Solution_, GroupKey_, Result_> stream =
-                new DroolsGroupingBiConstraintStream<>(constraintFactory, this, groupKeyMapping, collector);
+        DroolsGroupingBiConstraintStream<Solution_, GroupKey_, Result_> stream = new DroolsGroupingBiConstraintStream<>(
+                constraintFactory, this, groupKeyMapping, collector);
         addChildStream(stream);
         return stream;
     }
@@ -137,29 +145,29 @@ public abstract class DroolsAbstractUniConstraintStream<Solution_, A> extends Dr
     @Override
     public <GroupKeyA_, GroupKeyB_> BiConstraintStream<GroupKeyA_, GroupKeyB_> groupBy(
             Function<A, GroupKeyA_> groupKeyAMapping, Function<A, GroupKeyB_> groupKeyBMapping) {
-        DroolsGroupingBiConstraintStream<Solution_, GroupKeyA_, GroupKeyB_> stream =
-                new DroolsGroupingBiConstraintStream<>(constraintFactory, this, groupKeyAMapping,
-                        groupKeyBMapping);
+        DroolsGroupingBiConstraintStream<Solution_, GroupKeyA_, GroupKeyB_> stream = new DroolsGroupingBiConstraintStream<>(
+                constraintFactory, this, groupKeyAMapping,
+                groupKeyBMapping);
         addChildStream(stream);
         return stream;
     }
 
     @Override
-    public <GroupKeyA_, GroupKeyB_, ResultContainer_, Result_> TriConstraintStream<GroupKeyA_, GroupKeyB_, Result_>
-    groupBy(Function<A, GroupKeyA_> groupKeyAMapping,
+    public <GroupKeyA_, GroupKeyB_, ResultContainer_, Result_> TriConstraintStream<GroupKeyA_, GroupKeyB_, Result_> groupBy(
+            Function<A, GroupKeyA_> groupKeyAMapping,
             Function<A, GroupKeyB_> groupKeyBMapping, UniConstraintCollector<A, ResultContainer_, Result_> collector) {
         DroolsGroupingTriConstraintStream<Solution_, GroupKeyA_, GroupKeyB_, Result_> stream =
-                new DroolsGroupingTriConstraintStream<>(constraintFactory, this, groupKeyAMapping, groupKeyBMapping,
-                        collector);
+                new DroolsGroupingTriConstraintStream<>(constraintFactory, this, groupKeyAMapping, groupKeyBMapping, collector);
         addChildStream(stream);
         return stream;
     }
 
     @Override
     public <GroupKeyA_, GroupKeyB_, ResultContainerC_, ResultC_, ResultContainerD_, ResultD_>
-    QuadConstraintStream<GroupKeyA_, GroupKeyB_, ResultC_, ResultD_> groupBy(Function<A, GroupKeyA_> groupKeyAMapping,
-            Function<A, GroupKeyB_> groupKeyBMapping, UniConstraintCollector<A, ResultContainerC_, ResultC_> collectorC,
-            UniConstraintCollector<A, ResultContainerD_, ResultD_> collectorD) {
+            QuadConstraintStream<GroupKeyA_, GroupKeyB_, ResultC_, ResultD_> groupBy(
+                    Function<A, GroupKeyA_> groupKeyAMapping,
+                    Function<A, GroupKeyB_> groupKeyBMapping, UniConstraintCollector<A, ResultContainerC_, ResultC_> collectorC,
+                    UniConstraintCollector<A, ResultContainerD_, ResultD_> collectorD) {
         DroolsGroupingQuadConstraintStream<Solution_, GroupKeyA_, GroupKeyB_, ResultC_, ResultD_> stream =
                 new DroolsGroupingQuadConstraintStream<>(constraintFactory, this, groupKeyAMapping, groupKeyBMapping,
                         collectorC, collectorD);
@@ -174,74 +182,71 @@ public abstract class DroolsAbstractUniConstraintStream<Solution_, A> extends Dr
     @Override
     public final Constraint impactScore(String constraintPackage, String constraintName, Score<?> constraintWeight,
             ScoreImpactType impactType) {
-        DroolsScoringUniConstraintStream<Solution_, A> stream =
-                new DroolsScoringUniConstraintStream<>(constraintFactory, this);
-        addChildStream(stream);
-        return buildConstraint(constraintPackage, constraintName, constraintWeight, impactType, stream);
+        ConstraintConsequence<UniConstraintGraphNode> consequence =
+                constraintFactory.getConstraintGraph().impact(getConstraintGraphNode());
+        return buildConstraint(constraintPackage, constraintName, constraintWeight, impactType, consequence);
     }
 
     @Override
     public final Constraint impactScore(String constraintPackage, String constraintName, Score<?> constraintWeight,
             ToIntFunction<A> matchWeigher, ScoreImpactType impactType) {
-        DroolsScoringUniConstraintStream<Solution_, A> stream =
-                new DroolsScoringUniConstraintStream<>(constraintFactory, this, matchWeigher);
-        addChildStream(stream);
-        return buildConstraint(constraintPackage, constraintName, constraintWeight, impactType, stream);
+        ConstraintConsequence<UniConstraintGraphNode> consequence =
+                constraintFactory.getConstraintGraph().impact(getConstraintGraphNode(), matchWeigher);
+        return buildConstraint(constraintPackage, constraintName, constraintWeight, impactType, consequence);
     }
 
     @Override
     public final Constraint impactScoreLong(String constraintPackage, String constraintName,
             Score<?> constraintWeight, ToLongFunction<A> matchWeigher, ScoreImpactType impactType) {
-        DroolsScoringUniConstraintStream<Solution_, A> stream =
-                new DroolsScoringUniConstraintStream<>(constraintFactory, this, matchWeigher);
-        addChildStream(stream);
-        return buildConstraint(constraintPackage, constraintName, constraintWeight, impactType, stream);
+        ConstraintConsequence<UniConstraintGraphNode> consequence =
+                constraintFactory.getConstraintGraph().impact(getConstraintGraphNode(), matchWeigher);
+        return buildConstraint(constraintPackage, constraintName, constraintWeight, impactType, consequence);
     }
 
     @Override
     public final Constraint impactScoreBigDecimal(String constraintPackage, String constraintName,
             Score<?> constraintWeight, Function<A, BigDecimal> matchWeigher, ScoreImpactType impactType) {
-        DroolsScoringUniConstraintStream<Solution_, A> stream =
-                new DroolsScoringUniConstraintStream<>(constraintFactory, this, matchWeigher);
-        addChildStream(stream);
-        return buildConstraint(constraintPackage, constraintName, constraintWeight, impactType, stream);
+        ConstraintConsequence<UniConstraintGraphNode> consequence =
+                constraintFactory.getConstraintGraph().impact(getConstraintGraphNode(), matchWeigher);
+        return buildConstraint(constraintPackage, constraintName, constraintWeight, impactType, consequence);
     }
 
     @Override
     public final Constraint impactScoreConfigurable(String constraintPackage, String constraintName,
             ScoreImpactType impactType) {
-        DroolsScoringUniConstraintStream<Solution_, A> stream =
-                new DroolsScoringUniConstraintStream<>(constraintFactory, this);
-        addChildStream(stream);
-        return buildConstraintConfigurable(constraintPackage, constraintName, impactType, stream);
+        ConstraintConsequence<UniConstraintGraphNode> consequence =
+                constraintFactory.getConstraintGraph().impact(getConstraintGraphNode());
+        return buildConstraintConfigurable(constraintPackage, constraintName, impactType, consequence);
     }
 
     @Override
     public final Constraint impactScoreConfigurable(String constraintPackage, String constraintName,
             ToIntFunction<A> matchWeigher, ScoreImpactType impactType) {
-        DroolsScoringUniConstraintStream<Solution_, A> stream =
-                new DroolsScoringUniConstraintStream<>(constraintFactory, this, matchWeigher);
-        addChildStream(stream);
-        return buildConstraintConfigurable(constraintPackage, constraintName, impactType, stream);
+        ConstraintConsequence<UniConstraintGraphNode> consequence =
+                constraintFactory.getConstraintGraph().impact(getConstraintGraphNode(), matchWeigher);
+        return buildConstraintConfigurable(constraintPackage, constraintName, impactType, consequence);
     }
 
     @Override
     public final Constraint impactScoreConfigurableLong(String constraintPackage, String constraintName,
             ToLongFunction<A> matchWeigher, ScoreImpactType impactType) {
-        DroolsScoringUniConstraintStream<Solution_, A> stream =
-                new DroolsScoringUniConstraintStream<>(constraintFactory, this, matchWeigher);
-        addChildStream(stream);
-        return buildConstraintConfigurable(constraintPackage, constraintName, impactType, stream);
+        ConstraintConsequence<UniConstraintGraphNode> consequence =
+                constraintFactory.getConstraintGraph().impact(getConstraintGraphNode(), matchWeigher);
+        return buildConstraintConfigurable(constraintPackage, constraintName, impactType, consequence);
     }
 
     @Override
     public final Constraint impactScoreConfigurableBigDecimal(String constraintPackage, String constraintName,
             Function<A, BigDecimal> matchWeigher, ScoreImpactType impactType) {
-        DroolsScoringUniConstraintStream<Solution_, A> stream =
-                new DroolsScoringUniConstraintStream<>(constraintFactory, this, matchWeigher);
-        addChildStream(stream);
-        return buildConstraintConfigurable(constraintPackage, constraintName, impactType, stream);
+        ConstraintConsequence<UniConstraintGraphNode> consequence =
+                constraintFactory.getConstraintGraph().impact(getConstraintGraphNode(), matchWeigher);
+        return buildConstraintConfigurable(constraintPackage, constraintName, impactType, consequence);
     }
 
-    public abstract DroolsUniCondition<A, ?> getCondition();
+    // ************************************************************************
+    // Pattern creation
+    // ************************************************************************
+
+    public abstract UniConstraintGraphNode getConstraintGraphNode();
+
 }

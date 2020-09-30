@@ -1,5 +1,5 @@
 /*
- * Copyright 2011 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,6 +16,8 @@
 
 package org.optaplanner.core.config.util;
 
+import static org.optaplanner.core.impl.domain.common.accessor.MemberAccessorFactory.MemberAccessorType.FIELD_OR_READ_METHOD;
+
 import java.lang.annotation.Annotation;
 import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Field;
@@ -25,6 +27,7 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
+import java.lang.reflect.WildcardType;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -36,9 +39,6 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-import javax.script.ScriptEngine;
-import javax.script.ScriptEngineManager;
-import javax.script.ScriptException;
 
 import org.optaplanner.core.api.domain.lookup.PlanningId;
 import org.optaplanner.core.config.AbstractConfig;
@@ -46,8 +46,6 @@ import org.optaplanner.core.impl.domain.common.AlphabeticMemberComparator;
 import org.optaplanner.core.impl.domain.common.ReflectionHelper;
 import org.optaplanner.core.impl.domain.common.accessor.MemberAccessor;
 import org.optaplanner.core.impl.domain.common.accessor.MemberAccessorFactory;
-
-import static org.optaplanner.core.impl.domain.common.accessor.MemberAccessorFactory.MemberAccessorType.FIELD_OR_READ_METHOD;
 
 public class ConfigUtils {
 
@@ -61,7 +59,8 @@ public class ConfigUtils {
                     + clazz.getName() + ") does not have a public no-arg constructor"
                     // Inner classes include local, anonymous and non-static member classes
                     + ((clazz.isLocalClass() || clazz.isAnonymousClass() || clazz.isMemberClass())
-                    && !Modifier.isStatic(clazz.getModifiers()) ? " because it is an inner class." : "."), e);
+                            && !Modifier.isStatic(clazz.getModifiers()) ? " because it is an inner class." : "."),
+                    e);
         }
     }
 
@@ -141,7 +140,8 @@ public class ConfigUtils {
         return original;
     }
 
-    public static <C extends AbstractConfig<C>> List<C> inheritMergeableListConfig(List<C> originalList, List<C> inheritedList) {
+    public static <C extends AbstractConfig<C>> List<C> inheritMergeableListConfig(List<C> originalList,
+            List<C> inheritedList) {
         if (inheritedList != null) {
             List<C> mergedList = new ArrayList<>(inheritedList.size()
                     + (originalList == null ? 0 : originalList.size()));
@@ -206,9 +206,10 @@ public class ConfigUtils {
      * <p>
      * Null-handling:
      * <ul>
-     *     <li>if <strong>both</strong> properties <strong>are null</strong>, returns null</li>
-     *     <li>if <strong>only one</strong> of the properties <strong>is not null</strong>, returns that property</li>
-     *     <li>if <strong>both</strong> properties <strong>are not null</strong>, returns {@link #mergeProperty(Object, Object)}</li>
+     * <li>if <strong>both</strong> properties <strong>are null</strong>, returns null</li>
+     * <li>if <strong>only one</strong> of the properties <strong>is not null</strong>, returns that property</li>
+     * <li>if <strong>both</strong> properties <strong>are not null</strong>, returns
+     * {@link #mergeProperty(Object, Object)}</li>
      * </ul>
      *
      * @see #mergeProperty(Object, Object)
@@ -257,35 +258,13 @@ public class ConfigUtils {
         return (dividend / divisor) + correction;
     }
 
-    /**
-     * Name of the variable that represents {@link Runtime#availableProcessors()}.
-     */
-    public static final String AVAILABLE_PROCESSOR_COUNT = "availableProcessorCount";
-
-    public static int resolveThreadPoolSizeScript(String propertyName, String script, String... magicValues) {
-        final String scriptLanguage = "JavaScript";
-        ScriptEngine scriptEngine = new ScriptEngineManager().getEngineByName(scriptLanguage);
-        if (scriptEngine == null) {
-            throw new IllegalStateException("The " + propertyName + " (" + script
-                    + ") could not resolve because the JVM doesn't support scriptLanguage (" + scriptLanguage + ").\n"
-                    + "Maybe try running in a normal JVM.");
-        }
-        scriptEngine.put(AVAILABLE_PROCESSOR_COUNT, Runtime.getRuntime().availableProcessors());
-        Object scriptResult;
+    public static int resolvePoolSize(String propertyName, String value, String... magicValues) {
         try {
-            scriptResult = scriptEngine.eval(script);
-        } catch (ScriptException e) {
-            throw new IllegalArgumentException("The " + propertyName + " (" + script
-                    + ") is not in magicValues (" + Arrays.toString(magicValues)
-                    + ") and cannot be parsed in " + scriptLanguage
-                    + " with the variables ([" + AVAILABLE_PROCESSOR_COUNT + "]).", e);
+            return Integer.parseInt(value);
+        } catch (NumberFormatException ex) {
+            throw new IllegalStateException("The " + propertyName + " (" + value + ") resolved to neither of ("
+                    + Arrays.toString(magicValues) + ") nor a number.");
         }
-        if (!(scriptResult instanceof Number)) {
-            throw new IllegalArgumentException("The " + propertyName + " (" + script
-                    + ") is resolved to scriptResult (" + scriptResult + ") in " + scriptLanguage
-                    + " but is not a " + Number.class.getSimpleName() + ".");
-        }
-        return ((Number) scriptResult).intValue();
     }
 
     // ************************************************************************
@@ -319,7 +298,7 @@ public class ConfigUtils {
                 // Example: "Score getScore()" that duplicates "HardSoftScore getScore()"
                 .filter(method -> !method.isBridge())
                 .sorted(alphabeticMemberComparator);
-        return Stream.<Member>concat(fieldStream, methodStream)
+        return Stream.concat(fieldStream, methodStream)
                 .collect(Collectors.toList());
     }
 
@@ -392,6 +371,25 @@ public class ConfigUtils {
             // Remove the type parameters so it can be cast to a Class
             typeArgument = ((ParameterizedType) typeArgument).getRawType();
         }
+        if (typeArgument instanceof WildcardType) {
+            Type[] upperBounds = ((WildcardType) typeArgument).getUpperBounds();
+            if (upperBounds.length > 1) {
+                // Multiple upper bounds is impossible in traditional Java
+                // Other JVM languages or future java versions might enabling triggering this
+                throw new IllegalArgumentException("The " + parentClassConcept + " (" + parentClass + ") has a "
+                        + (annotationClass == null ? "auto discovered" : annotationClass.getSimpleName() + " annotated")
+                        + " member (" + memberName
+                        + ") with a member type (" + type
+                        + ") which is parameterized collection with a wildcard type argument ("
+                        + typeArgument + ") that has multiple upper bounds (" + Arrays.toString(upperBounds) + ").\n"
+                        + "Maybe don't use wildcards with multiple upper bounds for the member (" + memberName + ").");
+            }
+            if (upperBounds.length == 0) {
+                typeArgument = Object.class;
+            } else {
+                typeArgument = upperBounds[0];
+            }
+        }
         if (!(typeArgument instanceof Class)) {
             throw new IllegalArgumentException("The " + parentClassConcept + " (" + parentClass + ") has a "
                     + (annotationClass == null ? "auto discovered" : annotationClass.getSimpleName() + " annotated")
@@ -414,7 +412,8 @@ public class ConfigUtils {
                     + PlanningId.class.getSimpleName() + " annotation.");
         }
         Member member = memberList.get(0);
-        MemberAccessor memberAccessor = MemberAccessorFactory.buildMemberAccessor(member, FIELD_OR_READ_METHOD, PlanningId.class);
+        MemberAccessor memberAccessor = MemberAccessorFactory.buildMemberAccessor(member, FIELD_OR_READ_METHOD,
+                PlanningId.class);
         if (!memberAccessor.getType().isPrimitive() && !Comparable.class.isAssignableFrom(memberAccessor.getType())) {
             throw new IllegalArgumentException("The class (" + clazz
                     + ") has a member (" + member + ") with a " + PlanningId.class.getSimpleName()

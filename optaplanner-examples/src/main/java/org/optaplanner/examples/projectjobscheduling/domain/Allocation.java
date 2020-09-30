@@ -1,5 +1,5 @@
 /*
- * Copyright 2010 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,7 +18,6 @@ package org.optaplanner.examples.projectjobscheduling.domain;
 
 import java.util.List;
 
-import com.thoughtworks.xstream.annotations.XStreamAlias;
 import org.optaplanner.core.api.domain.entity.PlanningEntity;
 import org.optaplanner.core.api.domain.valuerange.CountableValueRange;
 import org.optaplanner.core.api.domain.valuerange.ValueRangeFactory;
@@ -32,7 +31,9 @@ import org.optaplanner.examples.projectjobscheduling.domain.solver.ExecutionMode
 import org.optaplanner.examples.projectjobscheduling.domain.solver.NotSourceOrSinkAllocationFilter;
 import org.optaplanner.examples.projectjobscheduling.domain.solver.PredecessorsDoneDateUpdatingVariableListener;
 
-@PlanningEntity(movableEntitySelectionFilter = NotSourceOrSinkAllocationFilter.class)
+import com.thoughtworks.xstream.annotations.XStreamAlias;
+
+@PlanningEntity(pinningFilter = NotSourceOrSinkAllocationFilter.class)
 @XStreamAlias("PjsAllocation")
 public class Allocation extends AbstractPersistable {
 
@@ -90,8 +91,8 @@ public class Allocation extends AbstractPersistable {
         this.successorAllocationList = successorAllocationList;
     }
 
-    @PlanningVariable(valueRangeProviderRefs = {"executionModeRange"},
-            strengthWeightFactoryClass = ExecutionModeStrengthWeightFactory.class)
+    @PlanningVariable(valueRangeProviderRefs = {
+            "executionModeRange" }, strengthWeightFactoryClass = ExecutionModeStrengthWeightFactory.class)
     public ExecutionMode getExecutionMode() {
         return executionMode;
     }
@@ -100,8 +101,7 @@ public class Allocation extends AbstractPersistable {
         this.executionMode = executionMode;
     }
 
-    @PlanningVariable(valueRangeProviderRefs = {"delayRange"},
-            strengthComparatorClass = DelayStrengthComparator.class)
+    @PlanningVariable(valueRangeProviderRefs = { "delayRange" }, strengthComparatorClass = DelayStrengthComparator.class)
     public Integer getDelay() {
         return delay;
     }
@@ -110,9 +110,9 @@ public class Allocation extends AbstractPersistable {
         this.delay = delay;
     }
 
-    @CustomShadowVariable(variableListenerClass = PredecessorsDoneDateUpdatingVariableListener.class,
-            sources = {@PlanningVariableReference(variableName = "executionMode"),
-                    @PlanningVariableReference(variableName = "delay")})
+    @CustomShadowVariable(variableListenerClass = PredecessorsDoneDateUpdatingVariableListener.class, sources = {
+            @PlanningVariableReference(variableName = "executionMode"),
+            @PlanningVariableReference(variableName = "delay") })
     public Integer getPredecessorsDoneDate() {
         return predecessorsDoneDate;
     }

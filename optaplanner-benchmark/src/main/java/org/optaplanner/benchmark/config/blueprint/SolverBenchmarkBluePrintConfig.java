@@ -18,10 +18,13 @@ package org.optaplanner.benchmark.config.blueprint;
 
 import java.util.List;
 
-import com.thoughtworks.xstream.annotations.XStreamAlias;
+import javax.xml.bind.annotation.XmlType;
+
 import org.optaplanner.benchmark.config.SolverBenchmarkConfig;
 
-@XStreamAlias("solverBenchmarkBluePrint")
+@XmlType(propOrder = {
+        "solverBenchmarkBluePrintType"
+})
 public class SolverBenchmarkBluePrintConfig {
 
     protected SolverBenchmarkBluePrintType solverBenchmarkBluePrintType = null;
@@ -55,7 +58,8 @@ public class SolverBenchmarkBluePrintConfig {
     // With methods
     // ************************************************************************
 
-    public SolverBenchmarkBluePrintConfig withSolverBenchmarkBluePrintType(SolverBenchmarkBluePrintType solverBenchmarkBluePrintType) {
+    public SolverBenchmarkBluePrintConfig withSolverBenchmarkBluePrintType(
+            SolverBenchmarkBluePrintType solverBenchmarkBluePrintType) {
         this.solverBenchmarkBluePrintType = solverBenchmarkBluePrintType;
         return this;
     }

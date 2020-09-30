@@ -86,8 +86,9 @@ public final class DefaultSolverManager<Solution_, ProblemId_> implements Solver
     public SolverJob<Solution_, ProblemId_> solveAndListen(ProblemId_ problemId,
             Function<? super ProblemId_, ? extends Solution_> problemFinder,
             Consumer<? super Solution_> bestSolutionConsumer,
+            Consumer<? super Solution_> finalBestSolutionConsumer,
             BiConsumer<? super ProblemId_, ? super Throwable> exceptionHandler) {
-        return solve(problemId, problemFinder, bestSolutionConsumer, null, exceptionHandler);
+        return solve(problemId, problemFinder, bestSolutionConsumer, finalBestSolutionConsumer, exceptionHandler);
     }
 
     protected SolverJob<Solution_, ProblemId_> solve(ProblemId_ problemId,
@@ -101,16 +102,18 @@ public final class DefaultSolverManager<Solution_, ProblemId_> implements Solver
             solver.addEventListener(event -> bestSolutionConsumer.accept(event.getNewBestSolution()));
         }
         BiConsumer<? super ProblemId_, ? super Throwable> finalExceptionHandler = (exceptionHandler != null)
-                ? exceptionHandler : defaultExceptionHandler;
+                ? exceptionHandler
+                : defaultExceptionHandler;
         DefaultSolverJob<Solution_, ProblemId_> solverJob = problemIdToSolverJobMap
                 .compute(problemId, (key, oldSolverJob) -> {
-           if (oldSolverJob != null) {
-               // TODO Future features: automatically restart solving by calling reloadProblem()
-               throw new IllegalStateException("The problemId (" + problemId + ") is already solving.");
-           } else {
-               return new DefaultSolverJob<>(this, solver, problemId, problemFinder, finalBestSolutionConsumer, finalExceptionHandler);
-           }
-        });
+                    if (oldSolverJob != null) {
+                        // TODO Future features: automatically restart solving by calling reloadProblem()
+                        throw new IllegalStateException("The problemId (" + problemId + ") is already solving.");
+                    } else {
+                        return new DefaultSolverJob<>(this, solver, problemId, problemFinder, finalBestSolutionConsumer,
+                                finalExceptionHandler);
+                    }
+                });
         Future<Solution_> future = solverThreadPool.submit(solverJob);
         solverJob.setFuture(future);
         return solverJob;
@@ -126,28 +129,28 @@ public final class DefaultSolverManager<Solution_, ProblemId_> implements Solver
     }
 
     // TODO Future features
-//    @Override
-//    public void reloadProblem(ProblemId_ problemId, Function<? super ProblemId_, Solution_> problemFinder) {
-//        DefaultSolverJob<Solution_, ProblemId_> solverJob = problemIdToSolverJobMap.get(problemId);
-//        if (solverJob == null) {
-//            // We cannot distinguish between "already terminated" and "never solved" without causing a memory leak.
-//            logger.debug("Ignoring reloadProblem() call because problemId ({}) is not solving.", problemId);
-//            return;
-//        }
-//        solverJob.reloadProblem(problemFinder);
-//    }
+    //    @Override
+    //    public void reloadProblem(ProblemId_ problemId, Function<? super ProblemId_, Solution_> problemFinder) {
+    //        DefaultSolverJob<Solution_, ProblemId_> solverJob = problemIdToSolverJobMap.get(problemId);
+    //        if (solverJob == null) {
+    //            // We cannot distinguish between "already terminated" and "never solved" without causing a memory leak.
+    //            logger.debug("Ignoring reloadProblem() call because problemId ({}) is not solving.", problemId);
+    //            return;
+    //        }
+    //        solverJob.reloadProblem(problemFinder);
+    //    }
 
     // TODO Future features
-//    @Override
-//    public void addProblemFactChange(ProblemId_ problemId, ProblemFactChange<Solution_> problemFactChange) {
-//        DefaultSolverJob<Solution_, ProblemId_> solverJob = problemIdToSolverJobMap.get(problemId);
-//        if (solverJob == null) {
-//            // We cannot distinguish between "already terminated" and "never solved" without causing a memory leak.
-//            logger.debug("Ignoring addProblemFactChange() call because problemId ({}) is not solving.", problemId);
-//            return;
-//        }
-//        solverJob.addProblemFactChange(problemFactChange);
-//    }
+    //    @Override
+    //    public void addProblemFactChange(ProblemId_ problemId, ProblemFactChange<Solution_> problemFactChange) {
+    //        DefaultSolverJob<Solution_, ProblemId_> solverJob = problemIdToSolverJobMap.get(problemId);
+    //        if (solverJob == null) {
+    //            // We cannot distinguish between "already terminated" and "never solved" without causing a memory leak.
+    //            logger.debug("Ignoring addProblemFactChange() call because problemId ({}) is not solving.", problemId);
+    //            return;
+    //        }
+    //        solverJob.addProblemFactChange(problemFactChange);
+    //    }
 
     @Override
     public void terminateEarly(ProblemId_ problemId) {

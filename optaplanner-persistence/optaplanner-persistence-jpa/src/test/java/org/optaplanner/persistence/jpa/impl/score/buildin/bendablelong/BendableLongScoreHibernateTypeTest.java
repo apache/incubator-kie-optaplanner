@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,24 +22,27 @@ import javax.persistence.Entity;
 import org.hibernate.annotations.Columns;
 import org.hibernate.annotations.Parameter;
 import org.hibernate.annotations.TypeDef;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.optaplanner.core.api.score.buildin.bendablelong.BendableLongScore;
-import org.optaplanner.persistence.jpa.impl.score.AbstractScoreHibernateTypeTest;
+import org.optaplanner.persistence.jpa.impl.AbstractScoreJpaTest;
 
-public class BendableLongScoreHibernateTypeTest extends AbstractScoreHibernateTypeTest {
+public class BendableLongScoreHibernateTypeTest extends AbstractScoreJpaTest {
 
     @Test
     public void persistAndMerge() {
         persistAndMerge(new TestJpaEntity(BendableLongScore.zero(3, 2)),
-                BendableLongScore.of(new long[]{10000L, 2000L, 300L}, new long[]{40L, 5L}),
-                BendableLongScore.ofUninitialized(-7, new long[]{10000L, 2000L, 300L}, new long[]{40L, 5L}));
+                BendableLongScore.of(new long[] { 10000L, 2000L, 300L }, new long[] { 40L, 5L }),
+                BendableLongScore.ofUninitialized(-7, new long[] { 10000L, 2000L, 300L }, new long[] { 40L, 5L }));
     }
 
     @Entity
-    @TypeDef(defaultForType = BendableLongScore.class, typeClass = BendableLongScoreHibernateType.class,
-            parameters = {@Parameter(name = "hardLevelsSize", value = "3"), @Parameter(name = "softLevelsSize", value = "2")})
+    @TypeDef(defaultForType = BendableLongScore.class, typeClass = BendableLongScoreHibernateType.class, parameters = {
+            @Parameter(name = "hardLevelsSize", value = "3"), @Parameter(name = "softLevelsSize", value = "2") })
     public static class TestJpaEntity extends AbstractTestJpaEntity<BendableLongScore> {
 
+        @Columns(columns = { @Column(name = "initScore"),
+                @Column(name = "hard0Score"), @Column(name = "hard1Score"), @Column(name = "hard2Score"),
+                @Column(name = "soft0Score"), @Column(name = "soft1Score") })
         protected BendableLongScore score;
 
         private TestJpaEntity() {
@@ -50,9 +53,6 @@ public class BendableLongScoreHibernateTypeTest extends AbstractScoreHibernateTy
         }
 
         @Override
-        @Columns(columns = {@Column(name = "initScore"),
-                @Column(name = "hard0Score"), @Column(name = "hard1Score"), @Column(name = "hard2Score"),
-                @Column(name = "soft0Score"), @Column(name = "soft1Score")})
         public BendableLongScore getScore() {
             return score;
         }

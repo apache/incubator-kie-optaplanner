@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,6 +24,7 @@ import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import java.awt.image.BufferedImage;
 import java.util.List;
+
 import javax.swing.JPanel;
 
 import org.apache.commons.lang3.StringUtils;
@@ -51,7 +52,8 @@ public class CoachShuttleGatheringWorldPanel extends JPanel {
             @Override
             public void componentResized(ComponentEvent e) {
                 // TODO Not thread-safe during solving
-                CoachShuttleGatheringSolution solution = CoachShuttleGatheringWorldPanel.this.coachShuttleGatheringPanel.getSolution();
+                CoachShuttleGatheringSolution solution = CoachShuttleGatheringWorldPanel.this.coachShuttleGatheringPanel
+                        .getSolution();
                 if (solution != null) {
                     resetPanel(solution);
                 }
@@ -78,7 +80,8 @@ public class CoachShuttleGatheringWorldPanel extends JPanel {
             RoadLocation location = stop.getLocation();
             g.setColor((stop.getPassengerQuantity() <= 0) ? TangoColorFactory.ALUMINIUM_4
                     : (stop.getTransportTimeToHub() == null) ? TangoColorFactory.ORANGE_2
-                    : (stop.getTransportTimeRemainder() < 0) ? TangoColorFactory.SCARLET_2 : TangoColorFactory.ORANGE_2);
+                            : (stop.getTransportTimeRemainder() < 0) ? TangoColorFactory.SCARLET_2
+                                    : TangoColorFactory.ORANGE_2);
             translator.drawSquare(g, location.getLongitude(), location.getLatitude(), 3,
                     stop.getTransportLabel());
         }
@@ -88,11 +91,12 @@ public class CoachShuttleGatheringWorldPanel extends JPanel {
         for (Bus bus : busList) {
             RoadLocation location = bus.getLocation();
             g.setColor(bus instanceof Coach ? TangoColorFactory.ORANGE_1 : TangoColorFactory.ALUMINIUM_2);
-            translator.drawSquare(g, location.getLongitude(), location.getLatitude(), 3, StringUtils.abbreviate(bus.getName(), 20));
+            translator.drawSquare(g, location.getLongitude(), location.getLatitude(), 3,
+                    StringUtils.abbreviate(bus.getName(), 20));
         }
         int colorIndex = 0;
         for (Bus bus : busList) {
-            g.setColor(TangoColorFactory.SEQUENCE_2[colorIndex]);
+            g.setColor(TangoColorFactory.SEQUENCE_2.get(colorIndex));
             BusStop lastStop = null;
             for (BusStop stop = bus.getNextStop(); stop != null; stop = stop.getNextStop()) {
                 RoadLocation previousLocation = stop.getPreviousBusOrStop().getLocation();
@@ -112,7 +116,7 @@ public class CoachShuttleGatheringWorldPanel extends JPanel {
                             false, true);
                 }
             }
-            colorIndex = (colorIndex + 1) % TangoColorFactory.SEQUENCE_2.length;
+            colorIndex = (colorIndex + 1) % TangoColorFactory.SEQUENCE_2.size();
         }
         repaint();
     }

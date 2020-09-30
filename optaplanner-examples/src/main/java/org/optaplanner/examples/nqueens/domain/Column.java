@@ -1,5 +1,5 @@
 /*
- * Copyright 2011 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,13 +16,22 @@
 
 package org.optaplanner.examples.nqueens.domain;
 
-import com.thoughtworks.xstream.annotations.XStreamAlias;
 import org.optaplanner.examples.common.domain.AbstractPersistable;
+
+import com.thoughtworks.xstream.annotations.XStreamAlias;
 
 @XStreamAlias("Column")
 public class Column extends AbstractPersistable {
 
     private int index;
+
+    public Column() {
+    }
+
+    public Column(int index) {
+        super(index);
+        this.index = index;
+    }
 
     public int getIndex() {
         return index;

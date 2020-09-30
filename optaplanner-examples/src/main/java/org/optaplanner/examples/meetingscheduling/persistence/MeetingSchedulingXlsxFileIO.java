@@ -1,4 +1,37 @@
+/*
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package org.optaplanner.examples.meetingscheduling.persistence;
+
+import static java.util.stream.Collectors.groupingBy;
+import static java.util.stream.Collectors.joining;
+import static java.util.stream.Collectors.toList;
+import static java.util.stream.Collectors.toMap;
+import static org.optaplanner.examples.meetingscheduling.domain.MeetingConstraintConfiguration.ASSIGN_LARGER_ROOMS_FIRST;
+import static org.optaplanner.examples.meetingscheduling.domain.MeetingConstraintConfiguration.DONT_GO_IN_OVERTIME;
+import static org.optaplanner.examples.meetingscheduling.domain.MeetingConstraintConfiguration.DO_ALL_MEETINGS_AS_SOON_AS_POSSIBLE;
+import static org.optaplanner.examples.meetingscheduling.domain.MeetingConstraintConfiguration.ONE_TIME_GRAIN_BREAK_BETWEEN_TWO_CONSECUTIVE_MEETINGS;
+import static org.optaplanner.examples.meetingscheduling.domain.MeetingConstraintConfiguration.OVERLAPPING_MEETINGS;
+import static org.optaplanner.examples.meetingscheduling.domain.MeetingConstraintConfiguration.PREFERRED_ATTENDANCE_CONFLICT;
+import static org.optaplanner.examples.meetingscheduling.domain.MeetingConstraintConfiguration.REQUIRED_AND_PREFERRED_ATTENDANCE_CONFLICT;
+import static org.optaplanner.examples.meetingscheduling.domain.MeetingConstraintConfiguration.REQUIRED_ATTENDANCE_CONFLICT;
+import static org.optaplanner.examples.meetingscheduling.domain.MeetingConstraintConfiguration.REQUIRED_ROOM_CAPACITY;
+import static org.optaplanner.examples.meetingscheduling.domain.MeetingConstraintConfiguration.ROOM_CONFLICT;
+import static org.optaplanner.examples.meetingscheduling.domain.MeetingConstraintConfiguration.ROOM_STABILITY;
+import static org.optaplanner.examples.meetingscheduling.domain.MeetingConstraintConfiguration.START_AND_END_ON_SAME_DAY;
 
 import java.io.BufferedInputStream;
 import java.io.File;
@@ -29,9 +62,7 @@ import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.util.CellRangeAddress;
 import org.apache.poi.xssf.usermodel.XSSFCell;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
-import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.buildin.hardmediumsoft.HardMediumSoftScore;
-import org.optaplanner.core.api.score.buildin.hardsoft.HardSoftScore;
 import org.optaplanner.core.api.score.constraint.ConstraintMatch;
 import org.optaplanner.core.api.score.constraint.Indictment;
 import org.optaplanner.examples.common.persistence.AbstractXlsxSolutionFileIO;
@@ -48,9 +79,6 @@ import org.optaplanner.examples.meetingscheduling.domain.RequiredAttendance;
 import org.optaplanner.examples.meetingscheduling.domain.Room;
 import org.optaplanner.examples.meetingscheduling.domain.TimeGrain;
 
-import static java.util.stream.Collectors.*;
-import static org.optaplanner.examples.meetingscheduling.domain.MeetingConstraintConfiguration.*;
-
 public class MeetingSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<MeetingSchedule> {
 
     @Override
@@ -60,11 +88,11 @@ public class MeetingSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<Meet
             return new MeetingSchedulingXlsxReader(workbook).read();
         } catch (IOException | RuntimeException e) {
             throw new IllegalStateException("Failed reading inputScheduleFile ("
-                                                    + inputScheduleFile + ").", e);
+                    + inputScheduleFile + ").", e);
         }
     }
 
-    private static class MeetingSchedulingXlsxReader extends AbstractXlsxReader<MeetingSchedule> {
+    private static class MeetingSchedulingXlsxReader extends AbstractXlsxReader<MeetingSchedule, HardMediumSoftScore> {
 
         MeetingSchedulingXlsxReader(XSSFWorkbook workbook) {
             super(workbook, MeetingSchedulingApp.SOLVER_CONFIG);
@@ -93,20 +121,35 @@ public class MeetingSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<Meet
             constraintConfiguration.setId(0L);
 
             // TODO refactor this to allow setting pos/neg, weight and score level
-            readIntConstraintParameterLine(ROOM_CONFLICT, hardScore -> constraintConfiguration.setRoomConflict(HardMediumSoftScore.ofHard(hardScore)), "");
-            readIntConstraintParameterLine(DONT_GO_IN_OVERTIME, hardScore -> constraintConfiguration.setDontGoInOvertime(HardMediumSoftScore.ofHard(hardScore)), "");
-            readIntConstraintParameterLine(REQUIRED_ATTENDANCE_CONFLICT, hardScore -> constraintConfiguration.setRequiredAttendanceConflict(HardMediumSoftScore.ofHard(hardScore)), "");
-            readIntConstraintParameterLine(REQUIRED_ROOM_CAPACITY, hardScore -> constraintConfiguration.setRequiredRoomCapacity(HardMediumSoftScore.ofHard(hardScore)), "");
-            readIntConstraintParameterLine(START_AND_END_ON_SAME_DAY, hardScore -> constraintConfiguration.setStartAndEndOnSameDay(HardMediumSoftScore.ofHard(hardScore)), "");
+            readIntConstraintParameterLine(ROOM_CONFLICT,
+                    hardScore -> constraintConfiguration.setRoomConflict(HardMediumSoftScore.ofHard(hardScore)), "");
+            readIntConstraintParameterLine(DONT_GO_IN_OVERTIME,
+                    hardScore -> constraintConfiguration.setDontGoInOvertime(HardMediumSoftScore.ofHard(hardScore)), "");
+            readIntConstraintParameterLine(REQUIRED_ATTENDANCE_CONFLICT,
+                    hardScore -> constraintConfiguration.setRequiredAttendanceConflict(HardMediumSoftScore.ofHard(hardScore)),
+                    "");
+            readIntConstraintParameterLine(REQUIRED_ROOM_CAPACITY,
+                    hardScore -> constraintConfiguration.setRequiredRoomCapacity(HardMediumSoftScore.ofHard(hardScore)), "");
+            readIntConstraintParameterLine(START_AND_END_ON_SAME_DAY,
+                    hardScore -> constraintConfiguration.setStartAndEndOnSameDay(HardMediumSoftScore.ofHard(hardScore)), "");
 
-            readIntConstraintParameterLine(REQUIRED_AND_PREFERRED_ATTENDANCE_CONFLICT, mediumScore -> constraintConfiguration.setRequiredAndPreferredAttendanceConflict(HardMediumSoftScore.ofMedium(mediumScore)), "");
-            readIntConstraintParameterLine(PREFERRED_ATTENDANCE_CONFLICT, mediumScore -> constraintConfiguration.setPreferredAttendanceConflict(HardMediumSoftScore.ofMedium(mediumScore)), "");
+            readIntConstraintParameterLine(REQUIRED_AND_PREFERRED_ATTENDANCE_CONFLICT, mediumScore -> constraintConfiguration
+                    .setRequiredAndPreferredAttendanceConflict(HardMediumSoftScore.ofMedium(mediumScore)), "");
+            readIntConstraintParameterLine(PREFERRED_ATTENDANCE_CONFLICT, mediumScore -> constraintConfiguration
+                    .setPreferredAttendanceConflict(HardMediumSoftScore.ofMedium(mediumScore)), "");
 
-            readIntConstraintParameterLine(DO_ALL_MEETINGS_AS_SOON_AS_POSSIBLE, softScore -> constraintConfiguration.setDoAllMeetingsAsSoonAsPossible(HardMediumSoftScore.ofSoft(softScore)), "");
-            readIntConstraintParameterLine(ONE_TIME_GRAIN_BREAK_BETWEEN_TWO_CONSECUTIVE_MEETINGS, softScore -> constraintConfiguration.setOneTimeGrainBreakBetweenTwoConsecutiveMeetings(HardMediumSoftScore.ofSoft(softScore)), "");
-            readIntConstraintParameterLine(OVERLAPPING_MEETINGS, softScore -> constraintConfiguration.setOverlappingMeetings(HardMediumSoftScore.ofSoft(softScore)), "");
-            readIntConstraintParameterLine(ASSIGN_LARGER_ROOMS_FIRST, softScore -> constraintConfiguration.setAssignLargerRoomsFirst(HardMediumSoftScore.ofSoft(softScore)), "");
-            readIntConstraintParameterLine(ROOM_STABILITY, softScore -> constraintConfiguration.setRoomStability(HardMediumSoftScore.ofSoft(softScore)), "");
+            readIntConstraintParameterLine(DO_ALL_MEETINGS_AS_SOON_AS_POSSIBLE, softScore -> constraintConfiguration
+                    .setDoAllMeetingsAsSoonAsPossible(HardMediumSoftScore.ofSoft(softScore)), "");
+            readIntConstraintParameterLine(ONE_TIME_GRAIN_BREAK_BETWEEN_TWO_CONSECUTIVE_MEETINGS,
+                    softScore -> constraintConfiguration
+                            .setOneTimeGrainBreakBetweenTwoConsecutiveMeetings(HardMediumSoftScore.ofSoft(softScore)),
+                    "");
+            readIntConstraintParameterLine(OVERLAPPING_MEETINGS,
+                    softScore -> constraintConfiguration.setOverlappingMeetings(HardMediumSoftScore.ofSoft(softScore)), "");
+            readIntConstraintParameterLine(ASSIGN_LARGER_ROOMS_FIRST,
+                    softScore -> constraintConfiguration.setAssignLargerRoomsFirst(HardMediumSoftScore.ofSoft(softScore)), "");
+            readIntConstraintParameterLine(ROOM_STABILITY,
+                    softScore -> constraintConfiguration.setRoomStability(HardMediumSoftScore.ofSoft(softScore)), "");
 
             solution.setConstraintConfiguration(constraintConfiguration);
         }
@@ -203,7 +246,8 @@ public class MeetingSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<Meet
             solution.setAttendanceList(attendanceList);
         }
 
-        private void readSpeakerList(Map<String, Person> personMap, Meeting meeting, List<Attendance> speakerAttendanceList, Set<Person> speakerSet) {
+        private void readSpeakerList(Map<String, Person> personMap, Meeting meeting, List<Attendance> speakerAttendanceList,
+                Set<Person> speakerSet) {
             meeting.setSpeakerList(Arrays.stream(nextStringCell().getStringCellValue().split(", "))
                     .filter(speaker -> !speaker.isEmpty())
                     .map(speakerName -> {
@@ -243,18 +287,21 @@ public class MeetingSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<Meet
             meeting.setDurationInGrains((int) durationDouble / TimeGrain.GRAIN_LENGTH_IN_MINUTES);
         }
 
-        private List<Attendance> getAttendanceLists(Meeting meeting, Map<String, Person> personMap, long attendanceId, Set<Person> speakerSet) {
+        private List<Attendance> getAttendanceLists(Meeting meeting, Map<String, Person> personMap, long attendanceId,
+                Set<Person> speakerSet) {
             List<Attendance> attendanceList = new ArrayList<>(currentSheet.getLastRowNum() - 1);
             Set<Person> requiredPersonSet = new HashSet<>();
 
-            List<RequiredAttendance> requiredAttendanceList = getRequiredAttendanceList(meeting, personMap, speakerSet, requiredPersonSet);
+            List<RequiredAttendance> requiredAttendanceList = getRequiredAttendanceList(meeting, personMap, speakerSet,
+                    requiredPersonSet);
             for (RequiredAttendance requiredAttendance : requiredAttendanceList) {
                 requiredAttendance.setId(attendanceId++);
             }
             meeting.setRequiredAttendanceList(requiredAttendanceList);
             attendanceList.addAll(requiredAttendanceList);
 
-            List<PreferredAttendance> preferredAttendanceList = getPreferredAttendanceList(meeting, personMap, speakerSet, requiredPersonSet);
+            List<PreferredAttendance> preferredAttendanceList = getPreferredAttendanceList(meeting, personMap, speakerSet,
+                    requiredPersonSet);
             for (PreferredAttendance preferredAttendance : preferredAttendanceList) {
                 preferredAttendance.setId(attendanceId++);
             }
@@ -264,7 +311,8 @@ public class MeetingSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<Meet
             return attendanceList;
         }
 
-        private List<RequiredAttendance> getRequiredAttendanceList(Meeting meeting, Map<String, Person> personMap, Set<Person> speakerSet, Set<Person> requiredPersonSet) {
+        private List<RequiredAttendance> getRequiredAttendanceList(Meeting meeting, Map<String, Person> personMap,
+                Set<Person> speakerSet, Set<Person> requiredPersonSet) {
             return Arrays.stream(nextStringCell().getStringCellValue().split(", "))
                     .filter(requiredAttendee -> !requiredAttendee.isEmpty())
                     .map(personName -> {
@@ -273,7 +321,8 @@ public class MeetingSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<Meet
                         if (person == null) {
                             throw new IllegalStateException(
                                     currentPosition() + ": The meeting with id (" + meeting.getId()
-                                            + ") has a required attendee (" + personName + ") that doesn't exist in the Persons list.");
+                                            + ") has a required attendee (" + personName
+                                            + ") that doesn't exist in the Persons list.");
                         }
                         if (requiredPersonSet.contains(person)) {
                             throw new IllegalStateException(
@@ -293,7 +342,8 @@ public class MeetingSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<Meet
                     .collect(toList());
         }
 
-        private List<PreferredAttendance> getPreferredAttendanceList(Meeting meeting, Map<String, Person> personMap, Set<Person> speakerSet, Set<Person> requiredPersonSet) {
+        private List<PreferredAttendance> getPreferredAttendanceList(Meeting meeting, Map<String, Person> personMap,
+                Set<Person> speakerSet, Set<Person> requiredPersonSet) {
             Set<Person> preferredPersonSet = new HashSet<>();
             return Arrays.stream(nextStringCell().getStringCellValue().split(", "))
                     .filter(preferredAttendee -> !preferredAttendee.isEmpty())
@@ -303,7 +353,8 @@ public class MeetingSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<Meet
                         if (person == null) {
                             throw new IllegalStateException(
                                     currentPosition() + ": The meeting with id (" + meeting.getId()
-                                            + ") has a preferred attendee (" + personName + ") that doesn't exist in the Persons list.");
+                                            + ") has a preferred attendee (" + personName
+                                            + ") that doesn't exist in the Persons list.");
                         }
                         if (preferredPersonSet.contains(person)) {
                             throw new IllegalStateException(
@@ -313,7 +364,8 @@ public class MeetingSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<Meet
                         if (requiredPersonSet.contains(person)) {
                             throw new IllegalStateException(
                                     currentPosition() + ": The meeting with id (" + meeting.getId()
-                                            + ") has a preferred attendee (" + personName + ") that is also a required attendee.");
+                                            + ") has a preferred attendee (" + personName
+                                            + ") that is also a required attendee.");
                         }
                         if (speakerSet.contains(person)) {
                             throw new IllegalStateException(
@@ -425,7 +477,8 @@ public class MeetingSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<Meet
                 if (capacityDouble <= 0 || capacityDouble != Math.floor(capacityDouble)) {
                     throw new IllegalStateException(
                             currentPosition() + ": The room with name (" + room.getName()
-                                    + ") has a capacity (" + capacityDouble + ") that isn't a strictly positive integer number.");
+                                    + ") has a capacity (" + capacityDouble
+                                    + ") that isn't a strictly positive integer number.");
                 }
                 room.setCapacity((int) capacityDouble);
                 roomList.add(room);
@@ -441,11 +494,11 @@ public class MeetingSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<Meet
             workbook.write(out);
         } catch (IOException | RuntimeException e) {
             throw new IllegalStateException("Failed writing outputScheduleFile (" + outputScheduleFile
-                                                    + ") for schedule (" + solution + ").", e);
+                    + ") for schedule (" + solution + ").", e);
         }
     }
 
-    private class MeetingSchedulingXlsxWriter extends AbstractXlsxWriter<MeetingSchedule> {
+    private class MeetingSchedulingXlsxWriter extends AbstractXlsxWriter<MeetingSchedule, HardMediumSoftScore> {
 
         MeetingSchedulingXlsxWriter(MeetingSchedule solution) {
             super(solution, MeetingSchedulingApp.SOLVER_CONFIG);
@@ -473,7 +526,8 @@ public class MeetingSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<Meet
         private void writeConfiguration() {
             nextSheet("Configuration", 1, 3, false);
             nextRow();
-            nextCell().setCellValue(DAY_FORMATTER.format(LocalDateTime.now()) + " " + TIME_FORMATTER.format(LocalDateTime.now()));
+            nextCell()
+                    .setCellValue(DAY_FORMATTER.format(LocalDateTime.now()) + " " + TIME_FORMATTER.format(LocalDateTime.now()));
             nextRow();
             nextRow();
             nextHeaderCell("Constraint");
@@ -484,18 +538,28 @@ public class MeetingSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<Meet
 
             // TODO refactor this to allow setting pos/neg, weight and score level
             writeIntConstraintParameterLine(ROOM_CONFLICT, constraintConfiguration.getRoomConflict().getHardScore(), "");
-            writeIntConstraintParameterLine(DONT_GO_IN_OVERTIME, constraintConfiguration.getDontGoInOvertime().getHardScore(), "");
-            writeIntConstraintParameterLine(REQUIRED_ATTENDANCE_CONFLICT, constraintConfiguration.getRequiredAttendanceConflict().getHardScore(), "");
-            writeIntConstraintParameterLine(REQUIRED_ROOM_CAPACITY, constraintConfiguration.getRequiredRoomCapacity().getHardScore(), "");
-            writeIntConstraintParameterLine(START_AND_END_ON_SAME_DAY, constraintConfiguration.getStartAndEndOnSameDay().getHardScore(), "");
+            writeIntConstraintParameterLine(DONT_GO_IN_OVERTIME, constraintConfiguration.getDontGoInOvertime().getHardScore(),
+                    "");
+            writeIntConstraintParameterLine(REQUIRED_ATTENDANCE_CONFLICT,
+                    constraintConfiguration.getRequiredAttendanceConflict().getHardScore(), "");
+            writeIntConstraintParameterLine(REQUIRED_ROOM_CAPACITY,
+                    constraintConfiguration.getRequiredRoomCapacity().getHardScore(), "");
+            writeIntConstraintParameterLine(START_AND_END_ON_SAME_DAY,
+                    constraintConfiguration.getStartAndEndOnSameDay().getHardScore(), "");
             nextRow();
-            writeIntConstraintParameterLine(REQUIRED_AND_PREFERRED_ATTENDANCE_CONFLICT, constraintConfiguration.getRequiredAndPreferredAttendanceConflict().getMediumScore(), "");
-            writeIntConstraintParameterLine(PREFERRED_ATTENDANCE_CONFLICT, constraintConfiguration.getPreferredAttendanceConflict().getMediumScore(), "");
+            writeIntConstraintParameterLine(REQUIRED_AND_PREFERRED_ATTENDANCE_CONFLICT,
+                    constraintConfiguration.getRequiredAndPreferredAttendanceConflict().getMediumScore(), "");
+            writeIntConstraintParameterLine(PREFERRED_ATTENDANCE_CONFLICT,
+                    constraintConfiguration.getPreferredAttendanceConflict().getMediumScore(), "");
             nextRow();
-            writeIntConstraintParameterLine(DO_ALL_MEETINGS_AS_SOON_AS_POSSIBLE, constraintConfiguration.getDoAllMeetingsAsSoonAsPossible().getSoftScore(), "");
-            writeIntConstraintParameterLine(ONE_TIME_GRAIN_BREAK_BETWEEN_TWO_CONSECUTIVE_MEETINGS, constraintConfiguration.getOneTimeGrainBreakBetweenTwoConsecutiveMeetings().getSoftScore(), "");
-            writeIntConstraintParameterLine(OVERLAPPING_MEETINGS, constraintConfiguration.getOverlappingMeetings().getSoftScore(), "");
-            writeIntConstraintParameterLine(ASSIGN_LARGER_ROOMS_FIRST, constraintConfiguration.getAssignLargerRoomsFirst().getSoftScore(), "");
+            writeIntConstraintParameterLine(DO_ALL_MEETINGS_AS_SOON_AS_POSSIBLE,
+                    constraintConfiguration.getDoAllMeetingsAsSoonAsPossible().getSoftScore(), "");
+            writeIntConstraintParameterLine(ONE_TIME_GRAIN_BREAK_BETWEEN_TWO_CONSECUTIVE_MEETINGS,
+                    constraintConfiguration.getOneTimeGrainBreakBetweenTwoConsecutiveMeetings().getSoftScore(), "");
+            writeIntConstraintParameterLine(OVERLAPPING_MEETINGS,
+                    constraintConfiguration.getOverlappingMeetings().getSoftScore(), "");
+            writeIntConstraintParameterLine(ASSIGN_LARGER_ROOMS_FIRST,
+                    constraintConfiguration.getAssignLargerRoomsFirst().getSoftScore(), "");
             writeIntConstraintParameterLine(ROOM_STABILITY, constraintConfiguration.getRoomStability().getSoftScore(), "");
 
             autoSizeColumnsWithHeader();
@@ -532,10 +596,10 @@ public class MeetingSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<Meet
                 nextCell().setCellValue(meeting.getTopic());
                 nextCell().setCellValue(meeting.isEntireGroupMeeting() ? "Y" : "");
                 nextCell().setCellValue(meeting.getDurationInGrains() * TimeGrain.GRAIN_LENGTH_IN_MINUTES);
-                nextCell().setCellValue(meeting.getSpeakerList() == null ? "" :
-                                                meeting.getSpeakerList().stream()
-                                                        .map(Person::getFullName)
-                                                        .collect(joining(", ")));
+                nextCell().setCellValue(meeting.getSpeakerList() == null ? ""
+                        : meeting.getSpeakerList().stream()
+                                .map(Person::getFullName)
+                                .collect(joining(", ")));
                 nextCell().setCellValue(meeting.getContent() == null ? "" : meeting.getContent());
                 nextCell().setCellValue(
                         meeting.getRequiredAttendanceList().stream()
@@ -573,10 +637,12 @@ public class MeetingSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<Meet
                 int startMinuteOfDay = 24 * 60, endMinuteOfDay = 0;
                 for (TimeGrain timeGrain : solution.getTimeGrainList()) {
                     if (timeGrain.getDay().equals(dayOfYear)) {
-                        startMinuteOfDay = timeGrain.getStartingMinuteOfDay() < startMinuteOfDay ?
-                                timeGrain.getStartingMinuteOfDay() : startMinuteOfDay;
-                        endMinuteOfDay = timeGrain.getStartingMinuteOfDay() + TimeGrain.GRAIN_LENGTH_IN_MINUTES > endMinuteOfDay ?
-                                timeGrain.getStartingMinuteOfDay() + TimeGrain.GRAIN_LENGTH_IN_MINUTES : endMinuteOfDay;
+                        startMinuteOfDay = timeGrain.getStartingMinuteOfDay() < startMinuteOfDay
+                                ? timeGrain.getStartingMinuteOfDay()
+                                : startMinuteOfDay;
+                        endMinuteOfDay = timeGrain.getStartingMinuteOfDay() + TimeGrain.GRAIN_LENGTH_IN_MINUTES > endMinuteOfDay
+                                ? timeGrain.getStartingMinuteOfDay() + TimeGrain.GRAIN_LENGTH_IN_MINUTES
+                                : endMinuteOfDay;
                     }
                 }
                 LocalTime startTime = LocalTime.ofSecondOfDay(startMinuteOfDay * 60);
@@ -647,7 +713,8 @@ public class MeetingSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<Meet
             if (required) {
                 nextHeaderCell("Required");
             } else {
-                currentSheet.addMergedRegion(new CellRangeAddress(currentRowNumber - 1, currentRowNumber, currentColumnNumber, currentColumnNumber));
+                currentSheet.addMergedRegion(
+                        new CellRangeAddress(currentRowNumber - 1, currentRowNumber, currentColumnNumber, currentColumnNumber));
                 nextHeaderCell("Preferred");
             }
 
@@ -659,7 +726,8 @@ public class MeetingSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<Meet
                         .collect(toList());
             } else {
                 personMeetingList = solution.getAttendanceList().stream()
-                        .filter(attendance -> attendance.getPerson().equals(person) && attendance instanceof PreferredAttendance)
+                        .filter(attendance -> attendance.getPerson().equals(person)
+                                && attendance instanceof PreferredAttendance)
                         .map(Attendance::getMeeting)
                         .collect(toList());
             }
@@ -704,20 +772,28 @@ public class MeetingSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<Meet
                     nextCellVertically();
                 } else {
                     if (mergingPreviousTimeGrain && mergeStart < currentRowNumber) {
-                        currentSheet.addMergedRegion(new CellRangeAddress(mergeStart, currentRowNumber, currentColumnNumber, currentColumnNumber));
+                        currentSheet.addMergedRegion(
+                                new CellRangeAddress(mergeStart, currentRowNumber, currentColumnNumber, currentColumnNumber));
                     }
 
                     StringBuilder meetingInfo = new StringBuilder();
                     for (MeetingAssignment meetingAssignment : meetingAssignmentList) {
-                        String startTimeString = getTimeString(meetingAssignment.getStartingTimeGrain().getStartingMinuteOfDay());
-                        int lastTimeGrainIndex = meetingAssignment.getLastTimeGrainIndex() <= solution.getTimeGrainList().size() - 1 ?
-                               meetingAssignment.getLastTimeGrainIndex() : solution.getTimeGrainList().size() - 1;
-                        String endTimeString = getTimeString(solution.getTimeGrainList().get(lastTimeGrainIndex).getStartingMinuteOfDay()
-                                                                     + TimeGrain.GRAIN_LENGTH_IN_MINUTES);
-                        meetingInfo.append(StringUtils.abbreviate(meetingAssignment.getMeeting().getTopic(), 150)).append("\n  ")
-                                .append(meetingAssignment.getMeeting().getSpeakerList().stream().map(Person::getFullName).collect(joining(", "))).append("\n  ")
+                        String startTimeString = getTimeString(
+                                meetingAssignment.getStartingTimeGrain().getStartingMinuteOfDay());
+                        int lastTimeGrainIndex = meetingAssignment.getLastTimeGrainIndex() <= solution.getTimeGrainList().size()
+                                - 1 ? meetingAssignment.getLastTimeGrainIndex() : solution.getTimeGrainList().size() - 1;
+                        String endTimeString = getTimeString(
+                                solution.getTimeGrainList().get(lastTimeGrainIndex).getStartingMinuteOfDay()
+                                        + TimeGrain.GRAIN_LENGTH_IN_MINUTES);
+                        meetingInfo.append(StringUtils.abbreviate(meetingAssignment.getMeeting().getTopic(), 150))
+                                .append("\n  ")
+                                .append(meetingAssignment.getMeeting().getSpeakerList().stream().map(Person::getFullName)
+                                        .collect(joining(", ")))
+                                .append("\n  ")
                                 .append(startTimeString).append(" - ").append(endTimeString)
-                                .append(" (").append(meetingAssignment.getMeeting().getDurationInGrains() * TimeGrain.GRAIN_LENGTH_IN_MINUTES).append(" mins)");
+                                .append(" (").append(meetingAssignment.getMeeting().getDurationInGrains()
+                                        * TimeGrain.GRAIN_LENGTH_IN_MINUTES)
+                                .append(" mins)");
                     }
                     nextCellVertically().setCellValue(meetingInfo.toString());
 
@@ -727,7 +803,8 @@ public class MeetingSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<Meet
                 }
             }
             if (mergeStart < currentRowNumber) {
-                currentSheet.addMergedRegion(new CellRangeAddress(mergeStart, currentRowNumber, currentColumnNumber, currentColumnNumber));
+                currentSheet.addMergedRegion(
+                        new CellRangeAddress(mergeStart, currentRowNumber, currentColumnNumber, currentColumnNumber));
             }
         }
 
@@ -753,18 +830,20 @@ public class MeetingSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<Meet
                 List<MeetingAssignment> timeGrainMeetingAssignmentList = meetingAssignmentList.stream()
                         .filter(meetingAssignment -> meetingAssignment.getStartingTimeGrain() == timeGrain)
                         .collect(toList());
-                if (timeGrainMeetingAssignmentList.isEmpty() && mergingPreviousMeetingList && previousMeetingRemainingTimeGrains > 0) {
+                if (timeGrainMeetingAssignmentList.isEmpty() && mergingPreviousMeetingList
+                        && previousMeetingRemainingTimeGrains > 0) {
                     previousMeetingRemainingTimeGrains--;
                     nextCell();
                 } else {
                     if (mergingPreviousMeetingList && mergeStart < currentColumnNumber) {
-                        currentSheet.addMergedRegion(new CellRangeAddress(currentRowNumber, currentRowNumber, mergeStart, currentColumnNumber));
+                        currentSheet.addMergedRegion(
+                                new CellRangeAddress(currentRowNumber, currentRowNumber, mergeStart, currentColumnNumber));
                     }
                     nextMeetingAssignmentListCell(timeGrainMeetingAssignmentList,
-                                                  meetingAssignment -> meetingAssignment.getMeeting().getTopic() + "\n  "
-                                                          + meetingAssignment.getMeeting().getSpeakerList().
-                                                          stream().map(Person::getFullName).collect(joining(", ")),
-                                                  Arrays.asList(filteredConstraintNames));
+                            meetingAssignment -> meetingAssignment.getMeeting().getTopic() + "\n  "
+                                    + meetingAssignment.getMeeting().getSpeakerList().stream().map(Person::getFullName)
+                                            .collect(joining(", ")),
+                            Arrays.asList(filteredConstraintNames));
                     mergingPreviousMeetingList = !timeGrainMeetingAssignmentList.isEmpty();
                     mergeStart = currentColumnNumber;
                     previousMeetingRemainingTimeGrains = getLongestDurationInGrains(timeGrainMeetingAssignmentList) - 1;
@@ -772,7 +851,8 @@ public class MeetingSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<Meet
             }
 
             if (mergingPreviousMeetingList && mergeStart < currentColumnNumber) {
-                currentSheet.addMergedRegion(new CellRangeAddress(currentRowNumber, currentRowNumber, mergeStart, currentColumnNumber));
+                currentSheet.addMergedRegion(
+                        new CellRangeAddress(currentRowNumber, currentRowNumber, mergeStart, currentColumnNumber));
             }
         }
 
@@ -796,7 +876,8 @@ public class MeetingSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<Meet
                     nextHeaderCell("");
                 } else {
                     if (previousTimeGrainDay != null) {
-                        currentSheet.addMergedRegion(new CellRangeAddress(currentRowNumber, currentRowNumber, mergeStart, currentColumnNumber));
+                        currentSheet.addMergedRegion(
+                                new CellRangeAddress(currentRowNumber, currentRowNumber, mergeStart, currentColumnNumber));
                     }
                     nextHeaderCell(DAY_FORMATTER.format(
                             LocalDate.ofYearDay(Year.now().getValue(), timeGrainDay.getDayOfYear())));
@@ -805,7 +886,8 @@ public class MeetingSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<Meet
                 }
             }
             if (previousTimeGrainDay != null) {
-                currentSheet.addMergedRegion(new CellRangeAddress(currentRowNumber, currentRowNumber, mergeStart, currentColumnNumber));
+                currentSheet.addMergedRegion(
+                        new CellRangeAddress(currentRowNumber, currentRowNumber, mergeStart, currentColumnNumber));
             }
         }
 
@@ -849,7 +931,7 @@ public class MeetingSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<Meet
                     .map(constraintMatch -> (HardMediumSoftScore) constraintMatch.getScore())
                     // Filter out positive constraints
                     .filter(indictmentScore -> !(indictmentScore.getHardScore() >= 0 && indictmentScore.getSoftScore() >= 0))
-                    .reduce(Score::add).orElse(HardMediumSoftScore.ZERO);
+                    .reduce(HardMediumSoftScore::add).orElse(HardMediumSoftScore.ZERO);
 
             XSSFCell cell = getXSSFCellOfScore(score);
 
@@ -865,25 +947,29 @@ public class MeetingSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<Meet
                 cell.setCellComment(comment);
             }
             cell.setCellValue(meetingAssignmentList.stream().map(stringFunction).collect(joining("\n")));
-            currentRow.setHeightInPoints(Math.max(currentRow.getHeightInPoints(), meetingAssignmentList.size() * currentSheet.getDefaultRowHeightInPoints()));
+            currentRow.setHeightInPoints(Math.max(currentRow.getHeightInPoints(),
+                    meetingAssignmentList.size() * currentSheet.getDefaultRowHeightInPoints()));
         }
 
         private String getMeetingAssignmentListString(List<MeetingAssignment> meetingAssignmentList) {
             StringBuilder commentString = new StringBuilder(meetingAssignmentList.size() * 200);
             for (MeetingAssignment meetingAssignment : meetingAssignmentList) {
-                commentString.append("Date and Time: ").append(meetingAssignment.getStartingTimeGrain().getDateTimeString()).append("\n")
-                        .append("Duration: ").append(meetingAssignment.getMeeting().getDurationInGrains() * TimeGrain.GRAIN_LENGTH_IN_MINUTES).append(" minutes.\n")
+                commentString.append("Date and Time: ").append(meetingAssignment.getStartingTimeGrain().getDateTimeString())
+                        .append("\n")
+                        .append("Duration: ")
+                        .append(meetingAssignment.getMeeting().getDurationInGrains() * TimeGrain.GRAIN_LENGTH_IN_MINUTES)
+                        .append(" minutes.\n")
                         .append("Room: ").append(meetingAssignment.getRoom().getName()).append("\n");
 
-                Indictment indictment = indictmentMap.get(meetingAssignment);
+                Indictment<HardMediumSoftScore> indictment = indictmentMap.get(meetingAssignment);
                 if (indictment != null) {
                     commentString.append("\n").append(indictment.getScore().toShortString())
                             .append(" total");
-                    Set<ConstraintMatch> constraintMatchSet = indictment.getConstraintMatchSet();
+                    Set<ConstraintMatch<HardMediumSoftScore>> constraintMatchSet = indictment.getConstraintMatchSet();
                     List<String> constraintNameList = constraintMatchSet.stream()
                             .map(ConstraintMatch::getConstraintName).distinct().collect(toList());
                     for (String constraintName : constraintNameList) {
-                        List<ConstraintMatch> filteredConstraintMatchList = constraintMatchSet.stream()
+                        List<ConstraintMatch<HardMediumSoftScore>> filteredConstraintMatchList = constraintMatchSet.stream()
                                 .filter(constraintMatch -> constraintMatch.getConstraintName().equals(constraintName))
                                 .collect(toList());
                         HardMediumSoftScore sum = filteredConstraintMatchList.stream()
@@ -892,7 +978,8 @@ public class MeetingSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<Meet
                                 .orElse(HardMediumSoftScore.ZERO);
                         String justificationTalkCodes = filteredConstraintMatchList.stream()
                                 .flatMap(constraintMatch -> constraintMatch.getJustificationList().stream())
-                                .filter(justification -> justification instanceof MeetingAssignment && justification != meetingAssignment)
+                                .filter(justification -> justification instanceof MeetingAssignment
+                                        && justification != meetingAssignment)
                                 .distinct().map(o -> Long.toString(((MeetingAssignment) o).getMeeting().getId()))
                                 .collect(joining(", "));
                         commentString.append("\n    ").append(sum.toShortString())

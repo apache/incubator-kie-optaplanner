@@ -1,5 +1,5 @@
 /*
- * Copyright 2014 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,9 +16,12 @@
 
 package org.optaplanner.core.config.constructionheuristic;
 
+import javax.xml.bind.annotation.XmlEnum;
+
 import org.optaplanner.core.config.heuristic.selector.entity.EntitySorterManner;
 import org.optaplanner.core.config.heuristic.selector.value.ValueSorterManner;
 
+@XmlEnum
 public enum ConstructionHeuristicType {
     /**
      * A specific form of {@link #ALLOCATE_ENTITY_FROM_QUEUE}.
@@ -109,7 +112,8 @@ public enum ConstructionHeuristicType {
     }
 
     /**
-     * @return {@link ConstructionHeuristicType#values()} without duplicates (abstract types that end up behaving as one of the other types).
+     * @return {@link ConstructionHeuristicType#values()} without duplicates (abstract types that end up behaving as one of the
+     *         other types).
      */
     public static ConstructionHeuristicType[] getBluePrintTypes() {
         return new ConstructionHeuristicType[] {

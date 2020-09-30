@@ -1,5 +1,5 @@
 /*
- * Copyright 2017 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,32 +15,29 @@
  */
 package org.optaplanner.core.impl.domain.lookup;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatNullPointerException;
+
 import java.util.Arrays;
 import java.util.Collections;
 
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.rules.ExpectedException;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.optaplanner.core.api.domain.lookup.LookUpStrategyType;
 import org.optaplanner.core.impl.testdata.domain.clone.lookup.TestdataObjectIntegerId;
 
-import static org.junit.Assert.*;
-
 public class LookUpManagerTest {
-
-    public final ExpectedException expectedException = ExpectedException.none();
 
     private LookUpManager lookUpManager;
 
-    @Before
+    @BeforeEach
     public void setUpLookUpManager() {
         lookUpManager = new LookUpManager(new LookUpStrategyResolver(LookUpStrategyType.PLANNING_ID_OR_NONE));
     }
 
     @Test
     public void lookUpNull() {
-        assertNull(lookUpManager.lookUpWorkingObject(null));
+        assertThat(lookUpManager.<Object> lookUpWorkingObject(null)).isNull();
     }
 
     @Test
@@ -50,8 +47,8 @@ public class LookUpManagerTest {
         // The objects should be added during the reset
         lookUpManager.resetWorkingObjects(Arrays.asList(o, p));
         // So it's possible to look up and remove them
-        Assert.assertSame(o, lookUpManager.lookUpWorkingObject(new TestdataObjectIntegerId(0)));
-        Assert.assertSame(p, lookUpManager.lookUpWorkingObject(new TestdataObjectIntegerId(1)));
+        assertThat(lookUpManager.lookUpWorkingObject(new TestdataObjectIntegerId(0))).isSameAs(o);
+        assertThat(lookUpManager.lookUpWorkingObject(new TestdataObjectIntegerId(1))).isSameAs(p);
         lookUpManager.removeWorkingObject(o);
         lookUpManager.removeWorkingObject(p);
     }
@@ -59,10 +56,9 @@ public class LookUpManagerTest {
     @Test
     public void clearWorkingObjects() {
         lookUpManager.resetWorkingObjects(Collections.emptyList());
-        lookUpManager.addWorkingObject("");
+        lookUpManager.addWorkingObject(new TestdataObjectIntegerId(0));
         lookUpManager.clearWorkingObjects();
-        expectedException.expect(NullPointerException.class);
-        lookUpManager.addWorkingObject("");
+        assertThatNullPointerException()
+                .isThrownBy(() -> lookUpManager.addWorkingObject(new TestdataObjectIntegerId(0)));
     }
-
 }

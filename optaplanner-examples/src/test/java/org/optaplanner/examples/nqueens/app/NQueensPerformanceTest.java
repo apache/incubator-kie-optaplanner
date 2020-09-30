@@ -16,44 +16,24 @@
 
 package org.optaplanner.examples.nqueens.app;
 
-import java.io.File;
+import java.util.stream.Stream;
 
-import org.junit.Test;
 import org.optaplanner.core.config.solver.EnvironmentMode;
 import org.optaplanner.examples.common.app.SolverPerformanceTest;
 import org.optaplanner.examples.nqueens.domain.NQueens;
 
 public class NQueensPerformanceTest extends SolverPerformanceTest<NQueens> {
 
-    public NQueensPerformanceTest(String moveThreadCount) {
-        super(moveThreadCount);
-    }
-
     @Override
     protected NQueensApp createCommonApp() {
         return new NQueensApp();
     }
 
-    // ************************************************************************
-    // Tests
-    // ************************************************************************
-
-    @Test(timeout = 600000)
-    public void solveModel_16queens() {
-        runSpeedTest(new File("data/nqueens/unsolved/16queens.xml"),
-                "0");
+    @Override
+    protected Stream<TestData> testData() {
+        return Stream.of(
+                testData("data/nqueens/unsolved/16queens.xml", "0", EnvironmentMode.REPRODUCIBLE),
+                testData("data/nqueens/unsolved/8queens.xml", "0", EnvironmentMode.FAST_ASSERT),
+                testData("data/nqueens/unsolved/4queens.xml", "0", EnvironmentMode.FULL_ASSERT));
     }
-
-    @Test(timeout = 600000)
-    public void solveModel_8queensFastAssert() {
-        runSpeedTest(new File("data/nqueens/unsolved/8queens.xml"),
-                "0", EnvironmentMode.FAST_ASSERT);
-    }
-
-    @Test(timeout = 600000)
-    public void solveModel_4queensFullAssert() {
-        runSpeedTest(new File("data/nqueens/unsolved/4queens.xml"),
-                "0", EnvironmentMode.FULL_ASSERT);
-    }
-
 }

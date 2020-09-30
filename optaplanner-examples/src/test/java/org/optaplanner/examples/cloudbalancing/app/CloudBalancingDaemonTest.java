@@ -1,5 +1,5 @@
 /*
- * Copyright 2014 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,13 +16,16 @@
 
 package org.optaplanner.examples.cloudbalancing.app;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Queue;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Timeout;
 import org.optaplanner.core.api.solver.Solver;
 import org.optaplanner.core.api.solver.SolverFactory;
 import org.optaplanner.core.api.solver.event.BestSolutionChangedEvent;
@@ -35,8 +38,6 @@ import org.optaplanner.examples.cloudbalancing.optional.realtime.AddProcessProbl
 import org.optaplanner.examples.cloudbalancing.persistence.CloudBalancingGenerator;
 import org.optaplanner.examples.common.app.LoggingTest;
 
-import static org.junit.Assert.*;
-
 public class CloudBalancingDaemonTest extends LoggingTest {
 
     private Object stageLock = new Object();
@@ -47,8 +48,10 @@ public class CloudBalancingDaemonTest extends LoggingTest {
 
     private Queue<CloudProcess> notYetAddedProcessQueue = new ArrayDeque<>();
     private volatile Throwable solverThreadException = null;
+    private volatile CloudBalance currentBestSolution = null;
 
-    @Test(timeout = 600000)
+    @Test
+    @Timeout(600)
     public void daemon() throws InterruptedException {
         // In main thread
         Solver<CloudBalance> solver = buildSolver();
@@ -66,7 +69,7 @@ public class CloudBalancingDaemonTest extends LoggingTest {
         }
         // Wait until those AddProcessChanges are processed
         waitForNextStage();
-        assertEquals(8, (solver.getBestSolution()).getProcessList().size());
+        assertThat(currentBestSolution.getProcessList()).hasSize(8);
 
         // Give the solver thread some time to solve, terminate and get into the daemon waiting state
         Thread.sleep(1000);
@@ -85,8 +88,8 @@ public class CloudBalancingDaemonTest extends LoggingTest {
             Thread.currentThread().interrupt();
             throw new IllegalStateException("SolverThread did not die yet due to an interruption.", e);
         }
-        assertEquals(true, solver.isEveryProblemFactChangeProcessed());
-        assertEquals(12, (solver.getBestSolution()).getProcessList().size());
+        assertThat(solver.isEveryProblemFactChangeProcessed()).isTrue();
+        assertThat(currentBestSolution.getProcessList()).hasSize(12);
     }
 
     private class SolverThread extends Thread implements SolverEventListener<CloudBalance> {
@@ -113,6 +116,7 @@ public class CloudBalancingDaemonTest extends LoggingTest {
 
         @Override
         public void bestSolutionChanged(BestSolutionChangedEvent<CloudBalance> event) { // In solver thread
+            currentBestSolution = event.getNewBestSolution();
             if (event.isEveryProblemFactChangeProcessed()
                     && event.getNewBestSolution().getScore().isFeasible()) {
                 // TODO bestSolutionChanged() is not the most reliable way to control this test's execution:

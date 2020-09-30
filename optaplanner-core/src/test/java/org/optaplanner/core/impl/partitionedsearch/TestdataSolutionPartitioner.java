@@ -1,5 +1,5 @@
 /*
- * Copyright 2017 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,8 +18,8 @@ package org.optaplanner.core.impl.partitionedsearch;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.optaplanner.core.api.score.director.ScoreDirector;
 import org.optaplanner.core.impl.partitionedsearch.partitioner.SolutionPartitioner;
-import org.optaplanner.core.impl.score.director.ScoreDirector;
 import org.optaplanner.core.impl.testdata.domain.TestdataEntity;
 import org.optaplanner.core.impl.testdata.domain.TestdataSolution;
 
@@ -46,8 +46,7 @@ public class TestdataSolutionPartitioner implements SolutionPartitioner<Testdata
         }
         List<TestdataSolution> partitions = new ArrayList<>();
         for (int i = 0; i < allEntities.size() / partSize; i++) {
-            List<TestdataEntity> partitionEntitites
-                    = new ArrayList<>(allEntities.subList(i * partSize, (i + 1) * partSize));
+            List<TestdataEntity> partitionEntitites = new ArrayList<>(allEntities.subList(i * partSize, (i + 1) * partSize));
             TestdataSolution partition = new TestdataSolution();
             partition.setEntityList(partitionEntitites);
             partition.setValueList(workingSolution.getValueList());

@@ -1,11 +1,11 @@
 /*
- * Copyright 2015 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *       http://www.apache.org/licenses/LICENSE-2.0
+ *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -16,71 +16,71 @@
 
 package org.optaplanner.core.config.util;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
+import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
+import static org.assertj.core.api.Assertions.assertThatIllegalStateException;
+import static org.assertj.core.data.Offset.offset;
+
 import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.ExpectedException;
-
-import static org.junit.Assert.*;
+import org.junit.jupiter.api.Test;
 
 public class ConfigUtilsTest {
-
-    @Rule
-    public ExpectedException expectedException = ExpectedException.none();
 
     @Test
     public void mergeProperty() {
         Integer a = null;
         Integer b = null;
-        assertEquals(null, ConfigUtils.mergeProperty(a, b));
+        assertThat(ConfigUtils.mergeProperty(a, b)).isEqualTo(null);
         a = Integer.valueOf(1);
-        assertEquals(null, ConfigUtils.mergeProperty(a, b));
+        assertThat(ConfigUtils.mergeProperty(a, b)).isEqualTo(null);
         b = Integer.valueOf(10);
-        assertEquals(null, ConfigUtils.mergeProperty(a, b));
+        assertThat(ConfigUtils.mergeProperty(a, b)).isEqualTo(null);
         b = Integer.valueOf(1);
-        assertEquals(Integer.valueOf(1), ConfigUtils.mergeProperty(a, b));
+        assertThat(ConfigUtils.mergeProperty(a, b)).isEqualTo(Integer.valueOf(1));
         a = null;
-        assertEquals(null, ConfigUtils.mergeProperty(a, b));
+        assertThat(ConfigUtils.mergeProperty(a, b)).isEqualTo(null);
     }
 
     @Test
     public void meldProperty() {
         Integer a = null;
         Integer b = null;
-        assertEquals(null, ConfigUtils.meldProperty(a, b));
+        assertThat(ConfigUtils.meldProperty(a, b)).isEqualTo(null);
         a = Integer.valueOf(1);
-        assertEquals(Integer.valueOf(1), ConfigUtils.meldProperty(a, b));
+        assertThat(ConfigUtils.meldProperty(a, b)).isEqualTo(Integer.valueOf(1));
         b = Integer.valueOf(10);
-        assertEquals(ConfigUtils.mergeProperty(Integer.valueOf(1), Integer.valueOf(10)), ConfigUtils.meldProperty(a, b));
+        assertThat(ConfigUtils.meldProperty(a, b))
+                .isEqualTo(ConfigUtils.mergeProperty(Integer.valueOf(1), Integer.valueOf(10)));
         a = null;
-        assertEquals(Integer.valueOf(10), ConfigUtils.meldProperty(a, b));
+        assertThat(ConfigUtils.meldProperty(a, b)).isEqualTo(Integer.valueOf(10));
     }
 
     @Test
     public void ceilDivide() {
-        assertEquals(10, ConfigUtils.ceilDivide(19, 2));
-        assertEquals(10, ConfigUtils.ceilDivide(20, 2));
-        assertEquals(11, ConfigUtils.ceilDivide(21, 2));
+        assertThat(ConfigUtils.ceilDivide(19, 2)).isEqualTo(10);
+        assertThat(ConfigUtils.ceilDivide(20, 2)).isEqualTo(10);
+        assertThat(ConfigUtils.ceilDivide(21, 2)).isEqualTo(11);
 
-        assertEquals(-9, ConfigUtils.ceilDivide(19, -2));
-        assertEquals(-10, ConfigUtils.ceilDivide(20, -2));
-        assertEquals(-10, ConfigUtils.ceilDivide(21, -2));
+        assertThat(ConfigUtils.ceilDivide(19, -2)).isEqualTo(-9);
+        assertThat(ConfigUtils.ceilDivide(20, -2)).isEqualTo(-10);
+        assertThat(ConfigUtils.ceilDivide(21, -2)).isEqualTo(-10);
 
-        assertEquals(-9, ConfigUtils.ceilDivide(-19, 2));
-        assertEquals(-10, ConfigUtils.ceilDivide(-20, 2));
-        assertEquals(-10, ConfigUtils.ceilDivide(-21, 2));
+        assertThat(ConfigUtils.ceilDivide(-19, 2)).isEqualTo(-9);
+        assertThat(ConfigUtils.ceilDivide(-20, 2)).isEqualTo(-10);
+        assertThat(ConfigUtils.ceilDivide(-21, 2)).isEqualTo(-10);
 
-        assertEquals(10, ConfigUtils.ceilDivide(-19, -2));
-        assertEquals(10, ConfigUtils.ceilDivide(-20, -2));
-        assertEquals(11, ConfigUtils.ceilDivide(-21, -2));
+        assertThat(ConfigUtils.ceilDivide(-19, -2)).isEqualTo(10);
+        assertThat(ConfigUtils.ceilDivide(-20, -2)).isEqualTo(10);
+        assertThat(ConfigUtils.ceilDivide(-21, -2)).isEqualTo(11);
     }
 
-    @Test(expected = ArithmeticException.class)
+    @Test
     public void ceilDivideByZero() {
-        ConfigUtils.ceilDivide(20, -0);
+        assertThatExceptionOfType(ArithmeticException.class).isThrownBy(() -> ConfigUtils.ceilDivide(20, -0));
     }
 
     @Test
@@ -101,19 +101,19 @@ public class ConfigUtilsTest {
         customProperties.put("configUtilsTestBeanEnum", "BETA");
         ConfigUtilsTestBean bean = new ConfigUtilsTestBean();
         ConfigUtils.applyCustomProperties(bean, "bean", customProperties, "customProperties");
-        assertEquals(true, bean.primitiveBoolean);
-        assertEquals(Boolean.TRUE, bean.objectBoolean);
-        assertEquals(1, bean.primitiveInt);
-        assertEquals(Integer.valueOf(2), bean.objectInteger);
-        assertEquals(3L, bean.primitiveLong);
-        assertEquals(Long.valueOf(4L), bean.objectLong);
-        assertEquals(5.5F, bean.primitiveFloat, 0.0F);
-        assertEquals(Float.valueOf(6.6F), bean.objectFloat);
-        assertEquals(7.7, bean.primitiveDouble, 0.0);
-        assertEquals(Double.valueOf(8.8), bean.objectDouble);
-        assertEquals(new BigDecimal("9.9"), bean.bigDecimal);
-        assertEquals("This is a sentence.", bean.string);
-        assertEquals(ConfigUtilsTestBeanEnum.BETA, bean.configUtilsTestBeanEnum);
+        assertThat(bean.primitiveBoolean).isTrue();
+        assertThat(bean.objectBoolean).isEqualTo(Boolean.TRUE);
+        assertThat(bean.primitiveInt).isEqualTo(1);
+        assertThat(bean.objectInteger).isEqualTo(Integer.valueOf(2));
+        assertThat(bean.primitiveLong).isEqualTo(3L);
+        assertThat(bean.objectLong).isEqualTo(Long.valueOf(4L));
+        assertThat((double) bean.primitiveFloat).isEqualTo((double) 5.5F, offset((double) 0.0F));
+        assertThat(bean.objectFloat).isEqualTo(Float.valueOf(6.6F));
+        assertThat(bean.primitiveDouble).isEqualTo(7.7, offset(0.0));
+        assertThat(bean.objectDouble).isEqualTo(Double.valueOf(8.8));
+        assertThat(bean.bigDecimal).isEqualTo(new BigDecimal("9.9"));
+        assertThat(bean.string).isEqualTo("This is a sentence.");
+        assertThat(bean.configUtilsTestBeanEnum).isEqualTo(ConfigUtilsTestBeanEnum.BETA);
     }
 
     @Test
@@ -122,15 +122,16 @@ public class ConfigUtilsTest {
         customProperties.put("string", "This is a sentence.");
         ConfigUtilsTestBean bean = new ConfigUtilsTestBean();
         ConfigUtils.applyCustomProperties(bean, "bean", customProperties, "customProperties");
-        assertEquals("This is a sentence.", bean.string);
+        assertThat(bean.string).isEqualTo("This is a sentence.");
     }
 
-    @Test(expected = IllegalStateException.class)
+    @Test
     public void applyCustomPropertiesNonExistingCustomProperty() {
         Map<String, String> customProperties = new HashMap<>();
         customProperties.put("doesNotExist", "This is a sentence.");
         ConfigUtilsTestBean bean = new ConfigUtilsTestBean();
-        ConfigUtils.applyCustomProperties(bean, "bean", customProperties, "customProperties");
+        assertThatIllegalStateException().isThrownBy(
+                () -> ConfigUtils.applyCustomProperties(bean, "bean", customProperties, "customProperties"));
     }
 
     private static class ConfigUtilsTestBean {
@@ -211,7 +212,7 @@ public class ConfigUtilsTest {
 
     @Test
     public void newInstanceStaticInnerClass() {
-        assertNotNull(ConfigUtils.newInstance(this, "testProperty", StaticInnerClass.class));
+        assertThat(ConfigUtils.newInstance(this, "testProperty", StaticInnerClass.class)).isNotNull();
     }
 
     public static class StaticInnerClass {
@@ -219,9 +220,10 @@ public class ConfigUtilsTest {
 
     @Test
     public void newInstanceStaticInnerClassWithArgsConstructor() {
-        expectedException.expect(IllegalArgumentException.class);
-        expectedException.expectMessage("no-arg constructor.");
-        assertNotNull(ConfigUtils.newInstance(this, "testProperty", StaticInnerClassWithArgsConstructor.class));
+        assertThatIllegalArgumentException()
+                .isThrownBy(() -> ConfigUtils.newInstance(
+                        this, "testProperty", StaticInnerClassWithArgsConstructor.class))
+                .withMessageContaining("no-arg constructor.");
     }
 
     public static class StaticInnerClassWithArgsConstructor {
@@ -233,9 +235,9 @@ public class ConfigUtilsTest {
 
     @Test
     public void newInstanceNonStaticInnerClass() {
-        expectedException.expect(IllegalArgumentException.class);
-        expectedException.expectMessage("inner class");
-        assertNotNull(ConfigUtils.newInstance(this, "testProperty", NonStaticInnerClass.class));
+        assertThatIllegalArgumentException()
+                .isThrownBy(() -> ConfigUtils.newInstance(this, "testProperty", NonStaticInnerClass.class))
+                .withMessageContaining("inner class");
     }
 
     public class NonStaticInnerClass {
@@ -243,10 +245,11 @@ public class ConfigUtilsTest {
 
     @Test
     public void newInstanceLocalClass() {
-        class LocalClass {}
-        expectedException.expect(IllegalArgumentException.class);
-        expectedException.expectMessage("inner class");
-        assertNotNull(ConfigUtils.newInstance(this, "testProperty", LocalClass.class));
+        class LocalClass {
+        }
+        assertThatIllegalArgumentException()
+                .isThrownBy(() -> ConfigUtils.newInstance(this, "testProperty", LocalClass.class))
+                .withMessageContaining("inner class");
     }
 
 }

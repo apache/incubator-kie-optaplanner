@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,23 +16,35 @@
 
 package org.optaplanner.core.impl.score.buildin.simplelong;
 
-import org.junit.Test;
+import static org.assertj.core.api.Assertions.assertThat;
+
+import org.junit.jupiter.api.Test;
 import org.optaplanner.core.api.score.buildin.simplelong.SimpleLongScore;
 import org.optaplanner.core.config.score.trend.InitializingScoreTrendLevel;
 import org.optaplanner.core.impl.score.trend.InitializingScoreTrend;
 
-import static org.junit.Assert.*;
-
 public class SimpleLongScoreDefinitionTest {
 
     @Test
+    public void getZeroScore() {
+        SimpleLongScore score = new SimpleLongScoreDefinition().getZeroScore();
+        assertThat(score).isEqualTo(SimpleLongScore.ZERO);
+    }
+
+    @Test
+    public void getSoftestOneScore() {
+        SimpleLongScore score = new SimpleLongScoreDefinition().getOneSoftestScore();
+        assertThat(score).isEqualTo(SimpleLongScore.ONE);
+    }
+
+    @Test
     public void getLevelSize() {
-        assertEquals(1, new SimpleLongScoreDefinition().getLevelsSize());
+        assertThat(new SimpleLongScoreDefinition().getLevelsSize()).isEqualTo(1);
     }
 
     @Test
     public void getLevelLabels() {
-        assertArrayEquals(new String[]{"score"}, new SimpleLongScoreDefinition().getLevelLabels());
+        assertThat(new SimpleLongScoreDefinition().getLevelLabels()).isEqualTo(new String[] { "score" });
     }
 
     @Test
@@ -41,8 +53,8 @@ public class SimpleLongScoreDefinitionTest {
         SimpleLongScore optimisticBound = scoreDefinition.buildOptimisticBound(
                 InitializingScoreTrend.buildUniformTrend(InitializingScoreTrendLevel.ONLY_UP, 1),
                 SimpleLongScore.of(-1L));
-        assertEquals(0, optimisticBound.getInitScore());
-        assertEquals(Long.MAX_VALUE, optimisticBound.getScore());
+        assertThat(optimisticBound.getInitScore()).isEqualTo(0);
+        assertThat(optimisticBound.getScore()).isEqualTo(Long.MAX_VALUE);
     }
 
     @Test
@@ -51,8 +63,8 @@ public class SimpleLongScoreDefinitionTest {
         SimpleLongScore optimisticBound = scoreDefinition.buildOptimisticBound(
                 InitializingScoreTrend.buildUniformTrend(InitializingScoreTrendLevel.ONLY_DOWN, 1),
                 SimpleLongScore.of(-1L));
-        assertEquals(0, optimisticBound.getInitScore());
-        assertEquals(-1L, optimisticBound.getScore());
+        assertThat(optimisticBound.getInitScore()).isEqualTo(0);
+        assertThat(optimisticBound.getScore()).isEqualTo(-1L);
     }
 
     @Test
@@ -61,8 +73,8 @@ public class SimpleLongScoreDefinitionTest {
         SimpleLongScore pessimisticBound = scoreDefinition.buildPessimisticBound(
                 InitializingScoreTrend.buildUniformTrend(InitializingScoreTrendLevel.ONLY_UP, 1),
                 SimpleLongScore.of(-1L));
-        assertEquals(0, pessimisticBound.getInitScore());
-        assertEquals(-1L, pessimisticBound.getScore());
+        assertThat(pessimisticBound.getInitScore()).isEqualTo(0);
+        assertThat(pessimisticBound.getScore()).isEqualTo(-1L);
     }
 
     @Test
@@ -71,8 +83,23 @@ public class SimpleLongScoreDefinitionTest {
         SimpleLongScore pessimisticBound = scoreDefinition.buildPessimisticBound(
                 InitializingScoreTrend.buildUniformTrend(InitializingScoreTrendLevel.ONLY_DOWN, 1),
                 SimpleLongScore.of(-1L));
-        assertEquals(0, pessimisticBound.getInitScore());
-        assertEquals(Long.MIN_VALUE, pessimisticBound.getScore());
+        assertThat(pessimisticBound.getInitScore()).isEqualTo(0);
+        assertThat(pessimisticBound.getScore()).isEqualTo(Long.MIN_VALUE);
+    }
+
+    @Test
+    public void divideBySanitizedDivisor() {
+        SimpleLongScoreDefinition scoreDefinition = new SimpleLongScoreDefinition();
+        SimpleLongScore dividend = scoreDefinition.fromLevelNumbers(2, new Number[] { 10L });
+        SimpleLongScore zeroDivisor = scoreDefinition.getZeroScore();
+        assertThat(scoreDefinition.divideBySanitizedDivisor(dividend, zeroDivisor))
+                .isEqualTo(dividend);
+        SimpleLongScore oneDivisor = scoreDefinition.getOneSoftestScore();
+        assertThat(scoreDefinition.divideBySanitizedDivisor(dividend, oneDivisor))
+                .isEqualTo(dividend);
+        SimpleLongScore tenDivisor = scoreDefinition.fromLevelNumbers(10, new Number[] { 10L });
+        assertThat(scoreDefinition.divideBySanitizedDivisor(dividend, tenDivisor))
+                .isEqualTo(scoreDefinition.fromLevelNumbers(0, new Number[] { 1L }));
     }
 
 }
