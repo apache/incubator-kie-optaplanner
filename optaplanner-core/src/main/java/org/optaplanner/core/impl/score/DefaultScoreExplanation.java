@@ -16,19 +16,20 @@
 
 package org.optaplanner.core.impl.score;
 
+import static java.util.Comparator.comparing;
+import static java.util.Objects.requireNonNull;
+
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.atomic.AtomicReference;
 
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.ScoreExplanation;
 import org.optaplanner.core.api.score.constraint.ConstraintMatch;
 import org.optaplanner.core.api.score.constraint.ConstraintMatchTotal;
 import org.optaplanner.core.api.score.constraint.Indictment;
-
-import static java.util.Comparator.comparing;
-import static java.util.Objects.requireNonNull;
 
 public final class DefaultScoreExplanation<Solution_, Score_ extends Score<Score_>>
         implements ScoreExplanation<Solution_, Score_> {
@@ -40,7 +41,7 @@ public final class DefaultScoreExplanation<Solution_, Score_ extends Score<Score
     private final Score_ score;
     private final Map<String, ConstraintMatchTotal<Score_>> constraintMatchTotalMap;
     private final Map<Object, Indictment<Score_>> indictmentMap;
-    private final String summary;
+    private final AtomicReference<String> summary = new AtomicReference<>(); // Will be calculated lazily.
 
     public static <Score_ extends Score<Score_>> String explainScore(Score_ workingScore,
             Collection<ConstraintMatchTotal<Score_>> constraintMatchTotalCollection,
@@ -120,7 +121,6 @@ public final class DefaultScoreExplanation<Solution_, Score_ extends Score<Score
         this.score = requireNonNull(score);
         this.constraintMatchTotalMap = requireNonNull(constraintMatchTotalMap);
         this.indictmentMap = requireNonNull(indictmentMap);
-        this.summary = explainScore(score, constraintMatchTotalMap.values(), indictmentMap.values());
     }
 
     @Override
@@ -145,11 +145,16 @@ public final class DefaultScoreExplanation<Solution_, Score_ extends Score<Score
 
     @Override
     public String getSummary() {
-        return summary;
+        return summary.updateAndGet(currentSummary -> {
+            if (currentSummary != null) {
+                return currentSummary;
+            }
+            return explainScore(score, constraintMatchTotalMap.values(), indictmentMap.values());
+        });
     }
 
     @Override
     public String toString() {
-        return summary; // So that this class can be used in strings directly.
+        return getSummary(); // So that this class can be used in strings directly.
     }
 }
