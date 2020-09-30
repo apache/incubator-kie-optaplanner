@@ -43,16 +43,16 @@ import org.optaplanner.core.impl.score.director.ScoreDirector;
 public class IncrementalScoreDirector<Solution_>
         extends AbstractScoreDirector<Solution_, IncrementalScoreDirectorFactory<Solution_>> {
 
-    private final IncrementalScoreCalculator<Solution_> incrementalScoreCalculator;
+    private final org.optaplanner.core.api.score.calculator.IncrementalScoreCalculator<Solution_, ?> incrementalScoreCalculator;
 
     public IncrementalScoreDirector(IncrementalScoreDirectorFactory<Solution_> scoreDirectorFactory,
             boolean lookUpEnabled, boolean constraintMatchEnabledPreference,
-            IncrementalScoreCalculator<Solution_> incrementalScoreCalculator) {
+            org.optaplanner.core.api.score.calculator.IncrementalScoreCalculator<Solution_, ?> incrementalScoreCalculator) {
         super(scoreDirectorFactory, lookUpEnabled, constraintMatchEnabledPreference);
         this.incrementalScoreCalculator = incrementalScoreCalculator;
     }
 
-    public IncrementalScoreCalculator<Solution_> getIncrementalScoreCalculator() {
+    public org.optaplanner.core.api.score.calculator.IncrementalScoreCalculator<Solution_, ?> getIncrementalScoreCalculator() {
         return incrementalScoreCalculator;
     }
 
@@ -63,8 +63,8 @@ public class IncrementalScoreDirector<Solution_>
     @Override
     public void setWorkingSolution(Solution_ workingSolution) {
         super.setWorkingSolution(workingSolution);
-        if (incrementalScoreCalculator instanceof ConstraintMatchAwareIncrementalScoreCalculator) {
-            ((ConstraintMatchAwareIncrementalScoreCalculator<Solution_>) incrementalScoreCalculator)
+        if (incrementalScoreCalculator instanceof org.optaplanner.core.api.score.calculator.ConstraintMatchAwareIncrementalScoreCalculator) {
+            ((org.optaplanner.core.api.score.calculator.ConstraintMatchAwareIncrementalScoreCalculator<Solution_, ?>) incrementalScoreCalculator)
                     .resetWorkingSolution(workingSolution, constraintMatchEnabledPreference);
         } else {
             incrementalScoreCalculator.resetWorkingSolution(workingSolution);
@@ -94,7 +94,7 @@ public class IncrementalScoreDirector<Solution_>
     @Override
     public boolean isConstraintMatchEnabled() {
         return constraintMatchEnabledPreference
-                && incrementalScoreCalculator instanceof ConstraintMatchAwareIncrementalScoreCalculator;
+                && incrementalScoreCalculator instanceof org.optaplanner.core.api.score.calculator.ConstraintMatchAwareIncrementalScoreCalculator;
     }
 
     @Override
@@ -104,7 +104,7 @@ public class IncrementalScoreDirector<Solution_>
                     + ") is disabled in the constructor, this method should not be called.");
         }
         // Notice that we don't trigger the variable listeners
-        return ((ConstraintMatchAwareIncrementalScoreCalculator<Solution_>) incrementalScoreCalculator)
+        return ((org.optaplanner.core.api.score.calculator.ConstraintMatchAwareIncrementalScoreCalculator<Solution_, ?>) incrementalScoreCalculator)
                 .getConstraintMatchTotals();
     }
 
@@ -121,7 +121,7 @@ public class IncrementalScoreDirector<Solution_>
                     + ") is disabled in the constructor, this method should not be called.");
         }
         Map<Object, Indictment> incrementalIndictmentMap =
-                ((ConstraintMatchAwareIncrementalScoreCalculator<Solution_>) incrementalScoreCalculator).getIndictmentMap();
+                ((org.optaplanner.core.api.score.calculator.ConstraintMatchAwareIncrementalScoreCalculator<Solution_, ?>) incrementalScoreCalculator).getIndictmentMap();
         if (incrementalIndictmentMap != null) {
             return incrementalIndictmentMap;
         }

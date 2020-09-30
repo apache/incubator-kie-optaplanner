@@ -531,12 +531,11 @@ A way to implement your score calculation incrementally in Java.
 ** Hard to read
 *** Regular score constraint changes can lead to a high maintenance cost
 
-Implement all the methods of the interface `IncrementalScoreCalculator`
-and extend the class ``AbstractIncrementalScoreCalculator``:
+Implement all the methods of the interface `IncrementalScoreCalculator`:
 
 [source,java,options="nowrap"]
 ----
-public interface IncrementalScoreCalculator<Solution_> {
+public interface IncrementalScoreCalculator<Solution_, Score_ extends Score> {
 
     void resetWorkingSolution(Solution_ workingSolution);
 
@@ -552,7 +551,7 @@ public interface IncrementalScoreCalculator<Solution_> {
 
     void afterEntityRemoved(Object entity);
 
-    Score calculateScore();
+    Score_ calculateScore();
 
 }
 ----
