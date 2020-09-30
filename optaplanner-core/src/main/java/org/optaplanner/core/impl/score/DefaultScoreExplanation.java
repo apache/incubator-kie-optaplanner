@@ -16,9 +16,6 @@
 
 package org.optaplanner.core.impl.score;
 
-import static java.util.Comparator.comparing;
-import static java.util.Objects.requireNonNull;
-
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.Map;
@@ -30,6 +27,9 @@ import org.optaplanner.core.api.score.constraint.ConstraintMatch;
 import org.optaplanner.core.api.score.constraint.ConstraintMatchTotal;
 import org.optaplanner.core.api.score.constraint.Indictment;
 
+import static java.util.Comparator.comparing;
+import static java.util.Objects.requireNonNull;
+
 public final class DefaultScoreExplanation<Solution_, Score_ extends Score<Score_>>
         implements ScoreExplanation<Solution_, Score_> {
 
@@ -38,9 +38,9 @@ public final class DefaultScoreExplanation<Solution_, Score_ extends Score<Score
 
     private final Solution_ solution;
     private final Score_ score;
-    private final String summary;
     private final Map<String, ConstraintMatchTotal<Score_>> constraintMatchTotalMap;
     private final Map<Object, Indictment<Score_>> indictmentMap;
+    private final String summary;
 
     public static <Score_ extends Score<Score_>> String explainScore(Score_ workingScore,
             Collection<ConstraintMatchTotal<Score_>> constraintMatchTotalCollection,
@@ -118,9 +118,9 @@ public final class DefaultScoreExplanation<Solution_, Score_ extends Score<Score
             Map<Object, Indictment<Score_>> indictmentMap) {
         this.solution = solution;
         this.score = requireNonNull(score);
-        this.summary = explainScore(score, constraintMatchTotalMap.values(), indictmentMap.values());
         this.constraintMatchTotalMap = requireNonNull(constraintMatchTotalMap);
         this.indictmentMap = requireNonNull(indictmentMap);
+        this.summary = explainScore(score, constraintMatchTotalMap.values(), indictmentMap.values());
     }
 
     @Override
