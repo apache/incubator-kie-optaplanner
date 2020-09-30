@@ -33,7 +33,8 @@ public class EasyScoreDirectorFactoryTest {
     @Test
     public void buildScoreDirector() {
         SolutionDescriptor<TestdataSolution> solutionDescriptor = TestdataSolution.buildSolutionDescriptor();
-        EasyScoreCalculator<TestdataSolution> scoreCalculator = mock(EasyScoreCalculator.class);
+        org.optaplanner.core.api.score.calculator.EasyScoreCalculator<TestdataSolution, SimpleScore> scoreCalculator =
+                mock(org.optaplanner.core.api.score.calculator.EasyScoreCalculator.class);
         when(scoreCalculator.calculateScore(any(TestdataSolution.class)))
                 .thenAnswer(invocation -> SimpleScore.of(-10));
         EasyScoreDirectorFactory<TestdataSolution> directorFactory = new EasyScoreDirectorFactory<>(

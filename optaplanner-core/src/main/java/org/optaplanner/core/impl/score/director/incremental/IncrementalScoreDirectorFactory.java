@@ -1,5 +1,5 @@
 /*
- * Copyright 2012 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -33,11 +33,11 @@ import org.optaplanner.core.impl.score.director.ScoreDirectorFactory;
  */
 public class IncrementalScoreDirectorFactory<Solution_> extends AbstractScoreDirectorFactory<Solution_> {
 
-    private final Class<? extends IncrementalScoreCalculator> incrementalScoreCalculatorClass;
+    private final Class<? extends org.optaplanner.core.api.score.calculator.IncrementalScoreCalculator> incrementalScoreCalculatorClass;
     private final Map<String, String> incrementalScoreCalculatorCustomProperties;
 
     public IncrementalScoreDirectorFactory(SolutionDescriptor<Solution_> solutionDescriptor,
-            Class<? extends IncrementalScoreCalculator> incrementalScoreCalculatorClass,
+            Class<? extends org.optaplanner.core.api.score.calculator.IncrementalScoreCalculator> incrementalScoreCalculatorClass,
             Map<String, String> incrementalScoreCalculatorCustomProperties) {
         super(solutionDescriptor);
         this.incrementalScoreCalculatorClass = incrementalScoreCalculatorClass;
@@ -51,8 +51,8 @@ public class IncrementalScoreDirectorFactory<Solution_> extends AbstractScoreDir
     @Override
     public IncrementalScoreDirector<Solution_> buildScoreDirector(
             boolean lookUpEnabled, boolean constraintMatchEnabledPreference) {
-        IncrementalScoreCalculator<Solution_> incrementalScoreCalculator = ConfigUtils.newInstance(this,
-                "incrementalScoreCalculatorClass", incrementalScoreCalculatorClass);
+        org.optaplanner.core.api.score.calculator.IncrementalScoreCalculator<Solution_, ?> incrementalScoreCalculator =
+                ConfigUtils.newInstance(this, "incrementalScoreCalculatorClass", incrementalScoreCalculatorClass);
         ConfigUtils.applyCustomProperties(incrementalScoreCalculator, "incrementalScoreCalculatorClass",
                 incrementalScoreCalculatorCustomProperties, "incrementalScoreCalculatorCustomProperties");
         return new IncrementalScoreDirector<>(this,

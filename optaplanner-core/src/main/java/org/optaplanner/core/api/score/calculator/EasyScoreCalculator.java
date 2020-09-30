@@ -14,15 +14,29 @@
  * limitations under the License.
  */
 
-package org.optaplanner.core.impl.score.director.incremental;
+package org.optaplanner.core.api.score.calculator;
 
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
+import org.optaplanner.core.api.score.Score;
+import org.optaplanner.core.impl.heuristic.move.Move;
 
 /**
- * @deprecated for removal
+ * Used for easy java {@link Score} calculation. This is non-incremental calculation, which is slow.
+ * <p>
+ * An implementation must be stateless.
+ *
  * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
+ * @param <Score_> the score type to go with the solution
  */
-@Deprecated
-public abstract class AbstractIncrementalScoreCalculator<Solution_> implements IncrementalScoreCalculator<Solution_> {
+public interface EasyScoreCalculator<Solution_, Score_ extends Score> {
+
+    /**
+     * This method is only called if the {@link Score} cannot be predicted.
+     * The {@link Score} can be predicted for example after an undo {@link Move}.
+     *
+     * @param solution never null
+     * @return never null
+     */
+    Score_ calculateScore(Solution_ solution);
 
 }

@@ -64,8 +64,8 @@ public class IncrementalScoreDirectorTest {
         IncrementalScoreDirectorFactory<TestdataShadowingChainedSolution> scoreDirectorFactory = mock(
                 IncrementalScoreDirectorFactory.class);
         when(scoreDirectorFactory.getSolutionDescriptor()).thenReturn(solutionDescriptor);
-        IncrementalScoreCalculator<TestdataShadowingChainedSolution> incrementalScoreCalculator = mock(
-                IncrementalScoreCalculator.class);
+        org.optaplanner.core.api.score.calculator.IncrementalScoreCalculator<TestdataShadowingChainedSolution, SimpleScore> incrementalScoreCalculator =
+                mock(org.optaplanner.core.api.score.calculator.IncrementalScoreCalculator.class);
         IncrementalScoreDirector<TestdataShadowingChainedSolution> scoreDirector =
                 new IncrementalScoreDirector<TestdataShadowingChainedSolution>(
                         scoreDirectorFactory, false, false, incrementalScoreCalculator) {
@@ -131,9 +131,10 @@ public class IncrementalScoreDirectorTest {
     }
 
     @SuppressWarnings("unchecked")
-    private IncrementalScoreCalculator<Object> mockIncrementalScoreCalculator(boolean constraintMatchAware) {
+    private org.optaplanner.core.api.score.calculator.IncrementalScoreCalculator<Object, ?>
+            mockIncrementalScoreCalculator(boolean constraintMatchAware) {
         return constraintMatchAware
-                ? mock(ConstraintMatchAwareIncrementalScoreCalculator.class)
-                : mock(IncrementalScoreCalculator.class);
+                ? mock(org.optaplanner.core.api.score.calculator.ConstraintMatchAwareIncrementalScoreCalculator.class)
+                : mock(org.optaplanner.core.api.score.calculator.IncrementalScoreCalculator.class);
     }
 }

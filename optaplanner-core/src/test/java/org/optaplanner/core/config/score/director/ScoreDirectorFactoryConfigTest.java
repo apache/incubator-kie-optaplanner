@@ -22,15 +22,15 @@ import java.util.HashMap;
 
 import org.junit.jupiter.api.Test;
 import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
+import org.optaplanner.core.api.score.calculator.EasyScoreCalculator;
+import org.optaplanner.core.api.score.calculator.IncrementalScoreCalculator;
 import org.optaplanner.core.config.SolverConfigContext;
 import org.optaplanner.core.config.score.definition.ScoreDefinitionType;
 import org.optaplanner.core.config.solver.EnvironmentMode;
 import org.optaplanner.core.impl.score.buildin.bendable.BendableScoreDefinition;
 import org.optaplanner.core.impl.score.buildin.simple.SimpleScoreDefinition;
 import org.optaplanner.core.impl.score.definition.ScoreDefinition;
-import org.optaplanner.core.impl.score.director.easy.EasyScoreCalculator;
 import org.optaplanner.core.impl.score.director.easy.EasyScoreDirector;
-import org.optaplanner.core.impl.score.director.incremental.IncrementalScoreCalculator;
 import org.optaplanner.core.impl.score.director.incremental.IncrementalScoreDirector;
 import org.optaplanner.core.impl.testdata.domain.TestdataSolution;
 
@@ -74,7 +74,8 @@ public class ScoreDirectorFactoryConfigTest {
         assertThat(scoreCalculator.getIntProperty()).isEqualTo(7);
     }
 
-    public static class TestCustomPropertiesEasyScoreCalculator implements EasyScoreCalculator<TestdataSolution> {
+    public static class TestCustomPropertiesEasyScoreCalculator
+            implements EasyScoreCalculator<TestdataSolution, SimpleScore> {
 
         private String stringProperty;
         private int intProperty;
@@ -122,7 +123,8 @@ public class ScoreDirectorFactoryConfigTest {
         assertThat(scoreCalculator.getIntProperty()).isEqualTo(7);
     }
 
-    public static class TestCustomPropertiesIncrementalScoreCalculator implements IncrementalScoreCalculator<TestdataSolution> {
+    public static class TestCustomPropertiesIncrementalScoreCalculator
+            implements IncrementalScoreCalculator<TestdataSolution, SimpleScore> {
 
         private String stringProperty;
         private int intProperty;

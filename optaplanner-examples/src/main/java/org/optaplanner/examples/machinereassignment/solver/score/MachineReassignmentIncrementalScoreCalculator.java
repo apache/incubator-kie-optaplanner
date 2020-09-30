@@ -1,5 +1,5 @@
 /*
- * Copyright 2012 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,10 +24,9 @@ import java.util.List;
 import java.util.Map;
 
 import org.optaplanner.core.api.score.buildin.hardsoftlong.HardSoftLongScore;
+import org.optaplanner.core.api.score.calculator.ConstraintMatchAwareIncrementalScoreCalculator;
 import org.optaplanner.core.api.score.constraint.ConstraintMatchTotal;
 import org.optaplanner.core.api.score.constraint.Indictment;
-import org.optaplanner.core.impl.score.director.incremental.AbstractIncrementalScoreCalculator;
-import org.optaplanner.core.impl.score.director.incremental.ConstraintMatchAwareIncrementalScoreCalculator;
 import org.optaplanner.examples.machinereassignment.domain.MachineReassignment;
 import org.optaplanner.examples.machinereassignment.domain.MrBalancePenalty;
 import org.optaplanner.examples.machinereassignment.domain.MrGlobalPenaltyInfo;
@@ -42,8 +41,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class MachineReassignmentIncrementalScoreCalculator
-        extends AbstractIncrementalScoreCalculator<MachineReassignment>
-        implements ConstraintMatchAwareIncrementalScoreCalculator<MachineReassignment> {
+        implements ConstraintMatchAwareIncrementalScoreCalculator<MachineReassignment, HardSoftLongScore> {
 
     protected static final String CONSTRAINT_PACKAGE = "org.optaplanner.examples.machinereassignment.solver";
 

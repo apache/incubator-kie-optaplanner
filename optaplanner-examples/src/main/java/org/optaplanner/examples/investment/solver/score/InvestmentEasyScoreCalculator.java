@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,12 +19,12 @@ package org.optaplanner.examples.investment.solver.score;
 import java.util.Map;
 
 import org.optaplanner.core.api.score.buildin.hardsoftlong.HardSoftLongScore;
-import org.optaplanner.core.impl.score.director.easy.EasyScoreCalculator;
+import org.optaplanner.core.api.score.calculator.EasyScoreCalculator;
 import org.optaplanner.examples.investment.domain.InvestmentSolution;
 import org.optaplanner.examples.investment.domain.Region;
 import org.optaplanner.examples.investment.domain.Sector;
 
-public class InvestmentEasyScoreCalculator implements EasyScoreCalculator<InvestmentSolution> {
+public class InvestmentEasyScoreCalculator implements EasyScoreCalculator<InvestmentSolution, HardSoftLongScore> {
 
     @Override
     public HardSoftLongScore calculateScore(InvestmentSolution solution) {
