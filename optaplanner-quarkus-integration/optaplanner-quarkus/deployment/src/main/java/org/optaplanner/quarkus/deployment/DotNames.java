@@ -20,8 +20,8 @@ import org.jboss.jandex.DotName;
 import org.optaplanner.core.api.domain.entity.PlanningEntity;
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.score.stream.ConstraintProvider;
-import org.optaplanner.core.impl.score.director.easy.EasyScoreCalculator;
-import org.optaplanner.core.impl.score.director.incremental.IncrementalScoreCalculator;
+import org.optaplanner.core.api.score.calculator.EasyScoreCalculator;
+import org.optaplanner.core.api.score.calculator.IncrementalScoreCalculator;
 
 public final class DotNames {
 

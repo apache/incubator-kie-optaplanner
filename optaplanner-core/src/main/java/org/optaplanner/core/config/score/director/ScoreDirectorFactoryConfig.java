@@ -30,8 +30,8 @@ import org.optaplanner.core.api.score.stream.ConstraintStreamImplType;
 import org.optaplanner.core.config.AbstractConfig;
 import org.optaplanner.core.config.util.ConfigUtils;
 import org.optaplanner.core.impl.io.jaxb.adapter.JaxbCustomPropertiesAdapter;
-import org.optaplanner.core.impl.score.director.easy.EasyScoreCalculator;
-import org.optaplanner.core.impl.score.director.incremental.IncrementalScoreCalculator;
+import org.optaplanner.core.api.score.calculator.EasyScoreCalculator;
+import org.optaplanner.core.api.score.calculator.IncrementalScoreCalculator;
 
 @XmlType(propOrder = {
         "easyScoreCalculatorClass",
