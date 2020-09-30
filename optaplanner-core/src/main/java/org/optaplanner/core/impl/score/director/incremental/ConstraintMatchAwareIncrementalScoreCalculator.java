@@ -19,7 +19,7 @@ package org.optaplanner.core.impl.score.director.incremental;
 import org.optaplanner.core.api.score.Score;
 
 /**
- * @deprecated in favor of {@link org.optaplanner.core.api.score.calculator.IncrementalScoreCalculator}
+ * @deprecated in favor of {@link org.optaplanner.core.api.score.calculator.ConstraintMatchAwareIncrementalScoreCalculator}
  * @see IncrementalScoreCalculator
  */
 @Deprecated
