@@ -621,8 +621,8 @@ public class SolutionDescriptor<Solution_> {
         determineGlobalShadowOrder();
         // Figure out all problem fact or entity types that are used within this solution,
         // using the knowledge we've already gained by processing all the annotations.
-        Stream<Class<?>> entityClassStream = getEntityDescriptors().stream()
-                .map(EntityDescriptor::getEntityClass);
+        Stream<Class<?>> entityClassStream = entityDescriptorMap.keySet()
+                .stream();
         Stream<Class<?>> factClassStream = getProblemFactMemberAccessorMap()
                 .values()
                 .stream()
