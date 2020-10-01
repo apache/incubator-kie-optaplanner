@@ -17,8 +17,6 @@
 package org.optaplanner.core.impl.score.stream;
 
 import static java.util.stream.Collectors.toList;
-import static java.util.stream.Collectors.toSet;
-import static java.util.stream.Stream.concat;
 import static org.optaplanner.core.api.score.stream.Joiners.lessThan;
 
 import java.util.List;
@@ -26,7 +24,6 @@ import java.util.Set;
 import java.util.function.BiPredicate;
 import java.util.function.Function;
 import java.util.function.Predicate;
-import java.util.stream.Stream;
 
 import org.optaplanner.core.api.domain.lookup.PlanningId;
 import org.optaplanner.core.api.score.stream.Constraint;
@@ -81,22 +78,17 @@ public abstract class InnerConstraintFactory<Solution_> implements ConstraintFac
 
     public <A> void assertValidFromType(Class<A> fromType) {
         SolutionDescriptor<Solution_> solutionDescriptor = getSolutionDescriptor();
-        Stream<Class<?>> entityClassStream = solutionDescriptor.getEntityDescriptors().stream()
-                .map(EntityDescriptor::getEntityClass);
-        Stream<Class<?>> factClassStream = solutionDescriptor.getProblemFactClassSet()
-                .stream();
-        Set<Class<?>> allAcceptedClassSet = concat(entityClassStream, factClassStream)
-                .collect(toSet());
+        Set<Class<?>> problemFactOrEntityClassSet = solutionDescriptor.getProblemFactOrEntityClassSet();
         /*
          * Need to support the following situations:
          * 1/ FactType == FromType; querying for the declared type.
          * 2/ FromType extends/implements FactType; querying for impl type where declared type is its interface.
          * 3/ FromType super FactType; querying for interface where declared type is its implementation.
          */
-        boolean hasMatchingType = allAcceptedClassSet.stream()
+        boolean hasMatchingType = problemFactOrEntityClassSet.stream()
                 .anyMatch(factType -> fromType.isAssignableFrom(factType) || factType.isAssignableFrom(fromType));
         if (!hasMatchingType) {
-            List<String> canonicalClassNameList = allAcceptedClassSet.stream()
+            List<String> canonicalClassNameList = problemFactOrEntityClassSet.stream()
                     .map(Class::getCanonicalName)
                     .sorted()
                     .collect(toList());

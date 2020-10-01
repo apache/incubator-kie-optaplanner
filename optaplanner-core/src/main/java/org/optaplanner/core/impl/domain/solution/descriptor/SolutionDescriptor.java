@@ -159,6 +159,7 @@ public class SolutionDescriptor<Solution_> {
     private final Map<String, MemberAccessor> problemFactCollectionMemberAccessorMap;
     private final Map<String, MemberAccessor> entityMemberAccessorMap;
     private final Map<String, MemberAccessor> entityCollectionMemberAccessorMap;
+    private Set<Class<?>> problemFactOrEntityClassSet;
     private MemberAccessor scoreMemberAccessor;
     private ScoreDefinition scoreDefinition;
 
@@ -239,6 +240,23 @@ public class SolutionDescriptor<Solution_> {
             // The scoreDefinition is definitely initialized at this point.
             constraintConfigurationDescriptor.processAnnotations(descriptorPolicy, scoreDefinition);
         }
+        // Figure out all problem fact or entity types that are used within this solution,
+        // using the knowledge we've already gained by processing all the annotations.
+        Stream<Class<?>> factClassStream = getProblemFactMemberAccessorMap()
+                .values()
+                .stream()
+                .map(MemberAccessor::getType);
+        Stream<Class<?>> factCollectionClassStream = getProblemFactCollectionMemberAccessorMap()
+                .entrySet()
+                .stream()
+                .map(entry -> {
+                    MemberAccessor accessor = entry.getValue();
+                    return ConfigUtils.extractCollectionGenericTypeParameter("solutionClass", getSolutionClass(),
+                            accessor.getType(), accessor.getGenericType(), ProblemFactCollectionProperty.class, entry.getKey());
+                });
+        problemFactOrEntityClassSet = concat(concat(factClassStream, factCollectionClassStream),
+                Stream.of(constraintConfigurationDescriptor.getConstraintConfigurationClass()))
+                        .collect(toSet());
     }
 
     /**
@@ -714,23 +732,6 @@ public class SolutionDescriptor<Solution_> {
         return memberNames;
     }
 
-    public Set<Class<?>> getProblemFactClassSet() {
-        Stream<Class<?>> factClassStream = getProblemFactMemberAccessorMap()
-                .values()
-                .stream()
-                .map(MemberAccessor::getType);
-        Stream<Class<?>> factCollectionClassStream = getProblemFactCollectionMemberAccessorMap()
-                .entrySet()
-                .stream()
-                .map(entry -> {
-                    MemberAccessor accessor = entry.getValue();
-                    return ConfigUtils.extractCollectionGenericTypeParameter("solutionClass", getSolutionClass(),
-                            accessor.getType(), accessor.getGenericType(), ProblemFactCollectionProperty.class, entry.getKey());
-                });
-        return concat(factClassStream, factCollectionClassStream)
-                .collect(toSet());
-    }
-
     public Map<String, MemberAccessor> getEntityMemberAccessorMap() {
         return entityMemberAccessorMap;
     }
@@ -745,6 +746,10 @@ public class SolutionDescriptor<Solution_> {
         memberNames.addAll(entityMemberAccessorMap.keySet());
         memberNames.addAll(entityCollectionMemberAccessorMap.keySet());
         return memberNames;
+    }
+
+    public Set<Class<?>> getProblemFactOrEntityClassSet() {
+        return problemFactOrEntityClassSet;
     }
 
     // ************************************************************************
