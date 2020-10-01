@@ -623,19 +623,16 @@ public class SolutionDescriptor<Solution_> {
         // using the knowledge we've already gained by processing all the annotations.
         Stream<Class<?>> entityClassStream = entityDescriptorMap.keySet()
                 .stream();
-        Stream<Class<?>> factClassStream = getProblemFactMemberAccessorMap()
+        Stream<Class<?>> factClassStream = problemFactMemberAccessorMap
                 .values()
                 .stream()
                 .map(MemberAccessor::getType);
         Stream<Class<?>> problemFactOrEntityClassStream = concat(entityClassStream, factClassStream);
-        Stream<Class<?>> factCollectionClassStream = getProblemFactCollectionMemberAccessorMap()
-                .entrySet()
+        Stream<Class<?>> factCollectionClassStream = problemFactCollectionMemberAccessorMap.values()
                 .stream()
-                .map(entry -> {
-                    MemberAccessor accessor = entry.getValue();
-                    return ConfigUtils.extractCollectionGenericTypeParameter("solutionClass", getSolutionClass(),
-                            accessor.getType(), accessor.getGenericType(), ProblemFactCollectionProperty.class, entry.getKey());
-                });
+                .map(accessor -> ConfigUtils.extractCollectionGenericTypeParameter("solutionClass", getSolutionClass(),
+                        accessor.getType(), accessor.getGenericType(), ProblemFactCollectionProperty.class,
+                        accessor.getName()));
         problemFactOrEntityClassStream = concat(problemFactOrEntityClassStream, factCollectionClassStream);
         // Add constraint configuration, if configured.
         if (constraintConfigurationDescriptor != null) {

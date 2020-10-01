@@ -347,14 +347,7 @@ public class ConfigUtils {
             Class<?> type, Type genericType,
             Class<? extends Annotation> annotationClass, String memberName) {
         if (!(genericType instanceof ParameterizedType)) {
-            throw new IllegalArgumentException("The " + parentClassConcept + " (" + parentClass + ") has a "
-                    + (annotationClass == null ? "auto discovered" : annotationClass.getSimpleName() + " annotated")
-                    + " member (" + memberName
-                    + ") with a member type (" + type
-                    + ") that returns a " + Collection.class.getSimpleName()
-                    + " which has no generic parameters.\n"
-                    + "Maybe the member (" + memberName + ") should return a typed "
-                    + Collection.class.getSimpleName() + ".");
+            return Object.class;
         }
         ParameterizedType parameterizedType = (ParameterizedType) genericType;
         Type[] typeArguments = parameterizedType.getActualTypeArguments();
@@ -389,6 +382,9 @@ public class ConfigUtils {
             } else {
                 typeArgument = upperBounds[0];
             }
+        }
+        if (typeArgument instanceof ParameterizedType) {
+            return (Class) ((ParameterizedType) typeArgument).getRawType();
         }
         if (!(typeArgument instanceof Class)) {
             throw new IllegalArgumentException("The " + parentClassConcept + " (" + parentClass + ") has a "
