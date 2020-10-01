@@ -240,23 +240,6 @@ public class SolutionDescriptor<Solution_> {
             // The scoreDefinition is definitely initialized at this point.
             constraintConfigurationDescriptor.processAnnotations(descriptorPolicy, scoreDefinition);
         }
-        // Figure out all problem fact or entity types that are used within this solution,
-        // using the knowledge we've already gained by processing all the annotations.
-        Stream<Class<?>> factClassStream = getProblemFactMemberAccessorMap()
-                .values()
-                .stream()
-                .map(MemberAccessor::getType);
-        Stream<Class<?>> factCollectionClassStream = getProblemFactCollectionMemberAccessorMap()
-                .entrySet()
-                .stream()
-                .map(entry -> {
-                    MemberAccessor accessor = entry.getValue();
-                    return ConfigUtils.extractCollectionGenericTypeParameter("solutionClass", getSolutionClass(),
-                            accessor.getType(), accessor.getGenericType(), ProblemFactCollectionProperty.class, entry.getKey());
-                });
-        problemFactOrEntityClassSet = concat(concat(factClassStream, factCollectionClassStream),
-                Stream.of(constraintConfigurationDescriptor.getConstraintConfigurationClass()))
-                        .collect(toSet());
     }
 
     /**
@@ -628,7 +611,7 @@ public class SolutionDescriptor<Solution_> {
         }
     }
 
-    public void afterAnnotationsProcessed(DescriptorPolicy descriptorPolicy) {
+    private void afterAnnotationsProcessed(DescriptorPolicy descriptorPolicy) {
         for (EntityDescriptor<Solution_> entityDescriptor : entityDescriptorMap.values()) {
             entityDescriptor.linkEntityDescriptors(descriptorPolicy);
         }
@@ -636,6 +619,31 @@ public class SolutionDescriptor<Solution_> {
             entityDescriptor.linkVariableDescriptors(descriptorPolicy);
         }
         determineGlobalShadowOrder();
+        // Figure out all problem fact or entity types that are used within this solution,
+        // using the knowledge we've already gained by processing all the annotations.
+        Stream<Class<?>> entityClassStream = getEntityDescriptors().stream()
+                .map(EntityDescriptor::getEntityClass);
+        Stream<Class<?>> factClassStream = getProblemFactMemberAccessorMap()
+                .values()
+                .stream()
+                .map(MemberAccessor::getType);
+        Stream<Class<?>> problemFactOrEntityClassStream = concat(entityClassStream, factClassStream);
+        Stream<Class<?>> factCollectionClassStream = getProblemFactCollectionMemberAccessorMap()
+                .entrySet()
+                .stream()
+                .map(entry -> {
+                    MemberAccessor accessor = entry.getValue();
+                    return ConfigUtils.extractCollectionGenericTypeParameter("solutionClass", getSolutionClass(),
+                            accessor.getType(), accessor.getGenericType(), ProblemFactCollectionProperty.class, entry.getKey());
+                });
+        problemFactOrEntityClassStream = concat(problemFactOrEntityClassStream, factCollectionClassStream);
+        // Add constraint configuration, if configured.
+        if (constraintConfigurationDescriptor != null) {
+            problemFactOrEntityClassStream = concat(problemFactOrEntityClassStream,
+                    Stream.of(constraintConfigurationDescriptor.getConstraintConfigurationClass()));
+        }
+        problemFactOrEntityClassSet = problemFactOrEntityClassStream.collect(toSet());
+        // And finally log the successful completion of processing.
         if (logger.isTraceEnabled()) {
             logger.trace("    Model annotations parsed for solution {}:", solutionClass.getSimpleName());
             for (Map.Entry<Class<?>, EntityDescriptor<Solution_>> entry : entityDescriptorMap.entrySet()) {
