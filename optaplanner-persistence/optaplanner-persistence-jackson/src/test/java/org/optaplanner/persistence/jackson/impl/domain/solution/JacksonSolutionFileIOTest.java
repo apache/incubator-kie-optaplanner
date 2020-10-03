@@ -42,7 +42,8 @@ public class JacksonSolutionFileIOTest {
 
     @Test
     public void readAndWrite() {
-        JacksonSolutionFileIO<JacksonTestdataSolution> solutionFileIO = new JacksonSolutionFileIO<>(JacksonTestdataSolution.class);
+        JacksonSolutionFileIO<JacksonTestdataSolution> solutionFileIO =
+                new JacksonSolutionFileIO<>(JacksonTestdataSolution.class);
         File file = new File(solutionTestDir, "testdataSolution.json");
 
         JacksonTestdataSolution original = new JacksonTestdataSolution("s1");
