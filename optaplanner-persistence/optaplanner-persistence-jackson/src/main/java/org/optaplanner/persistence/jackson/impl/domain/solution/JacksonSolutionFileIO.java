@@ -39,7 +39,7 @@ public class JacksonSolutionFileIO<Solution_> implements SolutionFileIO<Solution
     @Override
     public Solution_ read(File inputSolutionFile) {
         try {
-            return (Solution_) mapper.readValue(inputSolutionFile, clazz);
+            return mapper.readValue(inputSolutionFile, clazz);
         } catch (IOException e) {
             throw new IllegalArgumentException("Failed reading inputSolutionFile (" + inputSolutionFile + ").", e);
         }
