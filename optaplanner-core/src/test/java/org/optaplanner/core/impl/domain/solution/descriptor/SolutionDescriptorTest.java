@@ -50,6 +50,7 @@ import org.optaplanner.core.impl.testdata.domain.solutionproperties.invalid.Test
 import org.optaplanner.core.impl.testdata.domain.solutionproperties.invalid.TestdataDuplicateProblemFactCollectionPropertySolution;
 import org.optaplanner.core.impl.testdata.domain.solutionproperties.invalid.TestdataProblemFactCollectionPropertyWithArgumentSolution;
 import org.optaplanner.core.impl.testdata.domain.solutionproperties.invalid.TestdataProblemFactIsPlanningEntityCollectionPropertySolution;
+import org.optaplanner.core.impl.testdata.domain.solutionproperties.invalid.TestdataUnknownFactTypeSolution;
 import org.optaplanner.core.impl.testdata.domain.solutionproperties.invalid.TestdataUnsupportedWildcardSolution;
 import org.optaplanner.core.impl.testdata.util.CodeAssertableArrayList;
 import org.optaplanner.core.impl.testdata.util.PlannerTestUtils;
@@ -191,6 +192,11 @@ public class SolutionDescriptorTest {
     // ************************************************************************
     // Autodiscovery
     // ************************************************************************
+
+    @Test
+    public void autoDiscoverProblemFactCollectionPropertyElementTypeUnknown() {
+        assertThatIllegalArgumentException().isThrownBy(TestdataUnknownFactTypeSolution::buildSolutionDescriptor);
+    }
 
     @Test
     public void autoDiscoverFields() {

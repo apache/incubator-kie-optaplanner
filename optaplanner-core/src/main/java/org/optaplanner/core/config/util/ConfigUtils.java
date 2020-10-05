@@ -383,18 +383,11 @@ public class ConfigUtils {
                 typeArgument = upperBounds[0];
             }
         }
-        if (typeArgument instanceof ParameterizedType) {
+        if (!(typeArgument instanceof Class)) { // Turns SomeGenericType<T> into SomeGenericType.
             return (Class) ((ParameterizedType) typeArgument).getRawType();
+        } else {
+            return ((Class) typeArgument);
         }
-        if (!(typeArgument instanceof Class)) {
-            throw new IllegalArgumentException("The " + parentClassConcept + " (" + parentClass + ") has a "
-                    + (annotationClass == null ? "auto discovered" : annotationClass.getSimpleName() + " annotated")
-                    + " member (" + memberName
-                    + ") with a member type (" + type
-                    + ") which is parameterized collection with an unsupported type argument ("
-                    + typeArgument + ").");
-        }
-        return ((Class) typeArgument);
     }
 
     public static <C> MemberAccessor findPlanningIdMemberAccessor(Class<C> clazz) {
