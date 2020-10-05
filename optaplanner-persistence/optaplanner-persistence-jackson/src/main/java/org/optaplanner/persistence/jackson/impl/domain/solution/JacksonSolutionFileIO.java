@@ -14,8 +14,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
  */
 public class JacksonSolutionFileIO<Solution_> implements SolutionFileIO<Solution_> {
 
-    protected Class<Solution_> clazz;
-    protected ObjectMapper mapper;
+    private final Class<Solution_> clazz;
+    private final ObjectMapper mapper;
 
     public JacksonSolutionFileIO(Class<Solution_> clazz) {
         this(clazz, new ObjectMapper());
