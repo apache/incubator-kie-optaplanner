@@ -273,7 +273,7 @@ public class NQueensJsonSolutionFileIO extends JacksonSolutionFileIO<NQueens> {
 }
 ----
 
-and use it in the benchmark configuration:
+Then use it in the benchmark configuration like so:
 
 [source,xml,options="nowrap"]
 ----
