@@ -27,6 +27,7 @@ import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Field;
 import java.lang.reflect.Member;
 import java.lang.reflect.Method;
+import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -335,6 +336,15 @@ public class SolutionDescriptor<Solution_> {
                     if (Collection.class.isAssignableFrom(type)) {
                         Type genericType = (member instanceof Field) ? ((Field) member).getGenericType()
                                 : ((Method) member).getGenericReturnType();
+                        String memberName = member.getName();
+                        if (!(genericType instanceof ParameterizedType)) {
+                            throw new IllegalArgumentException("The solutionClass (" + solutionClass + ") has a "
+                                    + "auto discovered member (" + memberName + ") with a member type (" + type
+                                    + ") that returns a " + Collection.class.getSimpleName()
+                                    + " which has no generic parameters.\n"
+                                    + "Maybe the member (" + memberName + ") should return a typed "
+                                    + Collection.class.getSimpleName() + ".");
+                        }
                         elementType = ConfigUtils.extractCollectionGenericTypeParameter(
                                 "solutionClass", solutionClass,
                                 type, genericType,
