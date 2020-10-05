@@ -254,8 +254,10 @@ public class NQueensJsonSolutionFileIO extends JacksonSolutionFileIO<NQueens> {
     }
 }
 ----
+
 If the JSON file requires specific Jackson modules and features to be enabled/disabled.
-You could create your desired object mapper as an dependency to the JacksonSolutionFileIO as the following.
+You could create your desired object mapper as a dependency to the JacksonSolutionFileIO as follows:
+
 [source,java,options="nowrap"]
 ----
 public class NQueensJsonSolutionFileIO extends JacksonSolutionFileIO<NQueens> {
