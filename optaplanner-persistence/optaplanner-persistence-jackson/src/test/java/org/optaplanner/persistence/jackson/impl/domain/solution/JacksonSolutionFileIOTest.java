@@ -62,7 +62,7 @@ public class JacksonSolutionFileIOTest {
         JacksonTestdataValue copyV1 = copy.getValueList().get(0);
         JacksonTestdataEntity copyE2 = copy.getEntityList().get(1);
         assertCode("v1", copyE2.getValue());
-        //        assertThat(copyE2.getValue()).isSameAs(copyV1);
+        assertThat(copyE2.getValue()).isSameAs(copyV1);
         assertThat(copy.getScore()).isEqualTo(SimpleScore.of(-321));
     }
 
