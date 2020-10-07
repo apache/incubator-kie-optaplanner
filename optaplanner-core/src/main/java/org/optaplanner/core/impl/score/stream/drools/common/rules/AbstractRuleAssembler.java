@@ -188,6 +188,10 @@ abstract class AbstractRuleAssembler<Predicate_> implements RuleAssembler,
             boolean shouldExist);
 
     protected final AbstractRuleAssembler andThenGroupBy(AbstractConstraintModelGroupingNode groupingNode) {
+        if (expectedGroupByCount < 1) {
+            throw new IllegalStateException("Impossible state: expectedGroupByCount (" + expectedGroupByCount +
+                    ") is less than 1 when already grouping.");
+        }
         List<Function> mappings = groupingNode.getMappings();
         int mappingCount = mappings.size();
         List<UniConstraintCollector> collectors = groupingNode.getCollectors();
