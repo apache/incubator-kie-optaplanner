@@ -65,7 +65,7 @@ final class QuadGroupBy2Map1CollectFastMutator<A, B, C, D, NewA, NewB, NewC> ext
         newFinishedExpressions.add(groupByPattern); // The last pattern is added here.
         Variable<NewA> newA = ruleAssembler.createVariable("newA", from(groupKey, k -> k.a));
         Variable<NewB> newB = ruleAssembler.createVariable("newB", from(groupKey, k -> k.b));
-        Variable<NewC> newC = ruleAssembler.createVariable("newB", from(output));
+        Variable<NewC> newC = ruleAssembler.createVariable("newC", from(output));
         PatternDSL.PatternDef<NewA> newAPattern = pattern(newA);
         newFinishedExpressions.add(newAPattern);
         PatternDSL.PatternDef<NewB> newBPattern = pattern(newB);
