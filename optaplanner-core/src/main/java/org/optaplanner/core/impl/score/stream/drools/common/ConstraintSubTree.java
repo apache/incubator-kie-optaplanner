@@ -16,12 +16,6 @@
 
 package org.optaplanner.core.impl.score.stream.drools.common;
 
-import static org.optaplanner.core.impl.score.stream.drools.common.nodes.ConstraintGraphNodeType.FROM;
-import static org.optaplanner.core.impl.score.stream.drools.common.nodes.ConstraintGraphNodeType.GROUPBY_COLLECTING_ONLY;
-import static org.optaplanner.core.impl.score.stream.drools.common.nodes.ConstraintGraphNodeType.GROUPBY_MAPPING_AND_COLLECTING;
-import static org.optaplanner.core.impl.score.stream.drools.common.nodes.ConstraintGraphNodeType.GROUPBY_MAPPING_ONLY;
-import static org.optaplanner.core.impl.score.stream.drools.common.nodes.ConstraintGraphNodeType.JOIN;
-
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
@@ -29,6 +23,12 @@ import java.util.Objects;
 import org.optaplanner.core.impl.score.stream.drools.common.nodes.ConstraintGraphNode;
 import org.optaplanner.core.impl.score.stream.drools.common.nodes.ConstraintGraphNodeType;
 import org.optaplanner.core.impl.score.stream.drools.common.rules.RuleAssembler;
+
+import static org.optaplanner.core.impl.score.stream.drools.common.nodes.ConstraintGraphNodeType.FROM;
+import static org.optaplanner.core.impl.score.stream.drools.common.nodes.ConstraintGraphNodeType.GROUPBY_COLLECTING_ONLY;
+import static org.optaplanner.core.impl.score.stream.drools.common.nodes.ConstraintGraphNodeType.GROUPBY_MAPPING_AND_COLLECTING;
+import static org.optaplanner.core.impl.score.stream.drools.common.nodes.ConstraintGraphNodeType.GROUPBY_MAPPING_ONLY;
+import static org.optaplanner.core.impl.score.stream.drools.common.nodes.ConstraintGraphNodeType.JOIN;
 
 final class ConstraintSubTree {
 
@@ -86,9 +86,13 @@ final class ConstraintSubTree {
     }
 
     public RuleAssembler getRuleAssembler() {
-        RuleAssembler builder = isJoin ? leftSubTree.getRuleAssembler()
-                .join(rightSubTree.getRuleAssembler(), nodeList.get(0))
-                : RuleAssembler.from(variableFactory, nodeList.get(0), getGroupByCount());
+        return this.getRuleAssembler(getGroupByCount());
+    }
+
+    public RuleAssembler getRuleAssembler(int totalExpectedGroupByCount) {
+        RuleAssembler builder = isJoin ? leftSubTree.getRuleAssembler(totalExpectedGroupByCount)
+                .join(rightSubTree.getRuleAssembler(totalExpectedGroupByCount), nodeList.get(0))
+                : RuleAssembler.from(variableFactory, nodeList.get(0), totalExpectedGroupByCount);
         for (int i = 1; i < nodeList.size(); i++) {
             builder = builder.andThen(nodeList.get(i));
         }
