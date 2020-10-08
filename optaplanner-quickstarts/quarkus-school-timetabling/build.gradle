@@ -1,5 +1,5 @@
 plugins {
-    id "io.quarkus" version "1.7.0.Final"
+    id "io.quarkus" version "1.8.2.Final"
     id "java"
 }
 
