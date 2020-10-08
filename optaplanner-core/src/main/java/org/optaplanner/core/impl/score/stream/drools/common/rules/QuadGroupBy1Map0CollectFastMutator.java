@@ -16,12 +16,6 @@
 
 package org.optaplanner.core.impl.score.stream.drools.common.rules;
 
-import static java.util.Collections.emptyMap;
-import static java.util.Collections.singletonList;
-import static org.drools.model.PatternDSL.from;
-import static org.drools.model.PatternDSL.groupBy;
-import static org.drools.model.PatternDSL.pattern;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -29,6 +23,12 @@ import org.drools.model.PatternDSL;
 import org.drools.model.Variable;
 import org.drools.model.view.ViewItem;
 import org.optaplanner.core.api.function.QuadFunction;
+
+import static java.util.Collections.emptyMap;
+import static java.util.Collections.singletonList;
+import static org.drools.model.PatternDSL.from;
+import static org.drools.model.PatternDSL.groupBy;
+import static org.drools.model.PatternDSL.pattern;
 
 final class QuadGroupBy1Map0CollectFastMutator<A, B, C, D, NewA> extends AbstractQuadGroupByMutator {
 
@@ -52,7 +52,7 @@ final class QuadGroupBy1Map0CollectFastMutator<A, B, C, D, NewA> extends Abstrac
         newFinishedExpressions.add(groupByPattern); // The last pattern is added here.
         Variable<NewA> newA = ruleAssembler.createVariable("newA", from(groupKey));
         PatternDSL.PatternDef<NewA> newPrimaryPattern = pattern(newA);
-        return new BiRuleAssembler(ruleAssembler, ruleAssembler.getExpectedGroupByCount(), newFinishedExpressions,
+        return new UniRuleAssembler(ruleAssembler, ruleAssembler.getExpectedGroupByCount(), newFinishedExpressions,
                 singletonList(newA), singletonList(newPrimaryPattern), emptyMap());
     }
 }
