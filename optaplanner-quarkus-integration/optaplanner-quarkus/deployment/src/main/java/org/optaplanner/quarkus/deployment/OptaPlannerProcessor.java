@@ -122,7 +122,12 @@ class OptaPlannerProcessor {
 
         if (solverConfig.getSolutionClass() != null) {
             Type jandexType = Type.create(DotName.createSimple(solverConfig.getSolutionClass().getName()), Type.Kind.CLASS);
-            reflectiveHierarchyClass.produce(new ReflectiveHierarchyBuildItem(jandexType));
+            reflectiveHierarchyClass.produce(new ReflectiveHierarchyBuildItem.Builder()
+                    .type(jandexType)
+                    .ignoreTypePredicate(
+                            dotName -> ReflectiveHierarchyBuildItem.DefaultIgnoreTypePredicate.INSTANCE.test(dotName)
+                                    || dotName.toString().startsWith("org.optaplanner"))
+                    .build());
         }
         List<Class<?>> reflectiveClassList = new ArrayList<>(5);
         ScoreDirectorFactoryConfig scoreDirectorFactoryConfig = solverConfig.getScoreDirectorFactoryConfig();
@@ -190,8 +195,7 @@ class OptaPlannerProcessor {
             throw new IllegalStateException("A target (" + solutionTarget
                     + ") with a @" + PlanningSolution.class.getSimpleName() + " must be a class.");
         }
-
-        return recorderContext.classProxy(solutionTarget.asClass().name().toString());
+        return convertClassInfoToClass(solutionTarget.asClass());
     }
 
     private List<Class<?>> findEntityClassList(RecorderContext recorderContext, IndexView indexView) {
@@ -208,7 +212,7 @@ class OptaPlannerProcessor {
                     + ") with a @" + PlanningEntity.class.getSimpleName() + " must be a class.");
         }
         return targetList.stream()
-                .map(target -> recorderContext.classProxy(target.asClass().name().toString()))
+                .map(target -> (Class<?>) convertClassInfoToClass(target.asClass()))
                 .collect(Collectors.toList());
     }
 
@@ -216,11 +220,11 @@ class OptaPlannerProcessor {
         if (solverConfig.getScoreDirectorFactoryConfig() == null) {
             ScoreDirectorFactoryConfig scoreDirectorFactoryConfig = new ScoreDirectorFactoryConfig();
             scoreDirectorFactoryConfig.setEasyScoreCalculatorClass(
-                    findImplementingClass(EasyScoreCalculator.class, indexView));
+                    findImplementingClass(DotNames.EASY_SCORE_CALCULATOR, indexView));
             scoreDirectorFactoryConfig.setConstraintProviderClass(
-                    findImplementingClass(ConstraintProvider.class, indexView));
+                    findImplementingClass(DotNames.CONSTRAINT_PROVIDER, indexView));
             scoreDirectorFactoryConfig.setIncrementalScoreCalculatorClass(
-                    findImplementingClass(IncrementalScoreCalculator.class, indexView));
+                    findImplementingClass(DotNames.INCREMENTAL_SCORE_CALCULATOR, indexView));
             ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
             if (classLoader.getResource(SolverBuildTimeConfig.DEFAULT_SCORE_DRL_URL) != null) {
                 scoreDirectorFactoryConfig.setScoreDrlList(Collections.singletonList(
@@ -240,26 +244,17 @@ class OptaPlannerProcessor {
         }
     }
 
-    private <T> Class<? extends T> findImplementingClass(Class<T> targetClass, IndexView indexView) {
-        Collection<ClassInfo> classInfos = indexView.getAllKnownImplementors(
-                DotName.createSimple(targetClass.getName()));
+    private <T> Class<? extends T> findImplementingClass(DotName targetDotName, IndexView indexView) {
+        Collection<ClassInfo> classInfos = indexView.getAllKnownImplementors(targetDotName);
         if (classInfos.size() > 1) {
             throw new IllegalStateException("Multiple classes (" + convertClassInfosToString(classInfos)
-                    + ") found that implement the interface " + targetClass.getSimpleName() + ".");
+                    + ") found that implement the interface " + targetDotName + ".");
         }
         if (classInfos.isEmpty()) {
             return null;
         }
-        String className = classInfos.iterator().next().name().toString();
-        ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
-        try {
-            // Don't use recorderContext.classProxy(className)
-            // because ReflectiveClassBuildItem cannot cope with a class proxy
-            return (Class<? extends T>) classLoader.loadClass(className);
-        } catch (ClassNotFoundException e) {
-            throw new IllegalStateException("The class (" + className
-                    + ") cannot be created during deployment.", e);
-        }
+        ClassInfo classInfo = classInfos.iterator().next();
+        return convertClassInfoToClass(classInfo);
     }
 
     private void applyTerminationProperties(SolverConfig solverConfig) {
@@ -282,6 +277,17 @@ class OptaPlannerProcessor {
     private String convertClassInfosToString(Collection<ClassInfo> classInfos) {
         return "[" + classInfos.stream().map(instance -> instance.name().toString())
                 .collect(Collectors.joining(", ")) + "]";
+    }
+
+    private <T> Class<? extends T> convertClassInfoToClass(ClassInfo classInfo) {
+        String className = classInfo.name().toString();
+        ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
+        try {
+            return (Class<? extends T>) classLoader.loadClass(className);
+        } catch (ClassNotFoundException e) {
+            throw new IllegalStateException("The class (" + className
+                    + ") cannot be created during deployment.", e);
+        }
     }
 
     @BuildStep

@@ -33,6 +33,8 @@ public class OptaPlannerBeanProvider {
     @Singleton
     @Produces
     <Solution_> SolverFactory<Solution_> solverFactory(SolverConfig solverConfig) {
+        // Workaround for 7.x: in 8.x, optaplanner-core uses the context class loader by default
+        solverConfig.setClassLoader(Thread.currentThread().getContextClassLoader());
         return SolverFactory.create(solverConfig);
     }
 
