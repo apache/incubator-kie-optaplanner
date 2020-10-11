@@ -16,8 +16,6 @@
 
 package org.optaplanner.core.impl.heuristic.selector.entity.pillar;
 
-import static org.apache.commons.lang3.ObjectUtils.defaultIfNull;
-
 import java.util.Comparator;
 import java.util.List;
 
@@ -34,13 +32,16 @@ import org.optaplanner.core.impl.heuristic.selector.AbstractSelectorFactory;
 import org.optaplanner.core.impl.heuristic.selector.entity.EntitySelector;
 import org.optaplanner.core.impl.heuristic.selector.entity.EntitySelectorFactory;
 
-public class PillarSelectorFactory extends AbstractSelectorFactory<PillarSelectorConfig> {
+import static org.apache.commons.lang3.ObjectUtils.defaultIfNull;
 
-    public static PillarSelectorFactory create(PillarSelectorConfig pillarSelectorConfig) {
-        return new PillarSelectorFactory(pillarSelectorConfig);
+public class PillarSelectorFactory<Solution_>
+        extends AbstractSelectorFactory<Solution_, PillarSelectorConfig<Solution_>> {
+
+    public static <Solution_> PillarSelectorFactory<Solution_> create(PillarSelectorConfig<Solution_> pillarSelectorConfig) {
+        return new PillarSelectorFactory<>(pillarSelectorConfig);
     }
 
-    public PillarSelectorFactory(PillarSelectorConfig pillarSelectorConfig) {
+    public PillarSelectorFactory(PillarSelectorConfig<Solution_> pillarSelectorConfig) {
         super(pillarSelectorConfig);
     }
 
@@ -55,9 +56,10 @@ public class PillarSelectorFactory extends AbstractSelectorFactory<PillarSelecto
      * @param variableNameIncludeList sometimes null
      * @return never null
      */
-    public PillarSelector buildPillarSelector(HeuristicConfigPolicy configPolicy, SubPillarType subPillarType,
-            Class<? extends Comparator> subPillarSequenceComparatorClass, SelectionCacheType minimumCacheType,
-            SelectionOrder inheritedSelectionOrder, List<String> variableNameIncludeList) {
+    public PillarSelector<Solution_> buildPillarSelector(HeuristicConfigPolicy<Solution_> configPolicy,
+            SubPillarType subPillarType, Class<? extends Comparator> subPillarSequenceComparatorClass,
+            SelectionCacheType minimumCacheType, SelectionOrder inheritedSelectionOrder,
+            List<String> variableNameIncludeList) {
         if (subPillarType != SubPillarType.SEQUENCE && subPillarSequenceComparatorClass != null) {
             throw new IllegalArgumentException("Subpillar type (" + subPillarType + ") on pillarSelectorConfig (" + config +
                     ") is not " + SubPillarType.SEQUENCE + ", yet subPillarSequenceComparatorClass (" +
@@ -71,11 +73,11 @@ public class PillarSelectorFactory extends AbstractSelectorFactory<PillarSelecto
         }
         boolean subPillarEnabled = subPillarType != SubPillarType.NONE;
         // EntitySelector uses SelectionOrder.ORIGINAL because a DefaultPillarSelector STEP caches the values
-        EntitySelectorConfig entitySelectorConfig_ = config.getEntitySelectorConfig() == null ? new EntitySelectorConfig()
+        EntitySelectorConfig<Solution_> entitySelectorConfig_ = config.getEntitySelectorConfig() == null ? new EntitySelectorConfig<>()
                 : config.getEntitySelectorConfig();
-        EntitySelector entitySelector = EntitySelectorFactory.create(entitySelectorConfig_).buildEntitySelector(configPolicy,
+        EntitySelector<Solution_> entitySelector = EntitySelectorFactory.create(entitySelectorConfig_).buildEntitySelector(configPolicy,
                 minimumCacheType, SelectionOrder.ORIGINAL);
-        List<GenuineVariableDescriptor> variableDescriptors =
+        List<GenuineVariableDescriptor<Solution_>> variableDescriptors =
                 deduceVariableDescriptorList(entitySelector.getEntityDescriptor(), variableNameIncludeList);
         if (!subPillarEnabled
                 && (config.getMinimumSubPillarSize() != null || config.getMaximumSubPillarSize() != null)) {
@@ -84,16 +86,16 @@ public class PillarSelectorFactory extends AbstractSelectorFactory<PillarSelecto
                     + ") or maximumSubPillarSize (" + config.getMaximumSubPillarSize() + ").");
         }
 
-        SubPillarConfigPolicy subPillarPolicy = subPillarEnabled
+        SubPillarConfigPolicy<Solution_> subPillarPolicy = subPillarEnabled
                 ? configureSubPillars(subPillarType, subPillarSequenceComparatorClass, entitySelector,
                         config.getMinimumSubPillarSize(), config.getMaximumSubPillarSize())
                 : SubPillarConfigPolicy.withoutSubpillars();
-        return new DefaultPillarSelector(entitySelector, variableDescriptors,
+        return new DefaultPillarSelector<>(entitySelector, variableDescriptors,
                 inheritedSelectionOrder.toRandomSelectionBoolean(), subPillarPolicy);
     }
 
-    private SubPillarConfigPolicy configureSubPillars(SubPillarType pillarType,
-            Class<? extends Comparator> pillarOrderComparatorClass, EntitySelector entitySelector,
+    private SubPillarConfigPolicy<Solution_> configureSubPillars(SubPillarType pillarType,
+            Class<? extends Comparator> pillarOrderComparatorClass, EntitySelector<Solution_> entitySelector,
             Integer minimumSubPillarSize, Integer maximumSubPillarSize) {
         int actualMinimumSubPillarSize = defaultIfNull(minimumSubPillarSize, 1);
         int actualMaximumSubPillarSize = defaultIfNull(maximumSubPillarSize, Integer.MAX_VALUE);

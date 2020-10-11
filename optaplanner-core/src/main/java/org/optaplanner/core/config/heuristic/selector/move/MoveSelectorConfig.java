@@ -64,7 +64,8 @@ import org.optaplanner.core.impl.heuristic.selector.common.decorator.SelectionSo
         "selectedCountLimit",
         "fixedProbabilityWeight"
 })
-public abstract class MoveSelectorConfig<C extends MoveSelectorConfig> extends SelectorConfig<C> {
+public abstract class MoveSelectorConfig<Solution_, C extends MoveSelectorConfig<Solution_, C>>
+        extends SelectorConfig<Solution_, C> {
 
     protected SelectionCacheType cacheType = null;
     protected SelectionOrder selectionOrder = null;
@@ -171,54 +172,54 @@ public abstract class MoveSelectorConfig<C extends MoveSelectorConfig> extends S
     // With methods
     // ************************************************************************
 
-    public MoveSelectorConfig withCacheType(SelectionCacheType cacheType) {
+    public MoveSelectorConfig<Solution_, C> withCacheType(SelectionCacheType cacheType) {
         this.cacheType = cacheType;
         return this;
     }
 
-    public MoveSelectorConfig withSelectionOrder(SelectionOrder selectionOrder) {
+    public MoveSelectorConfig<Solution_, C> withSelectionOrder(SelectionOrder selectionOrder) {
         this.selectionOrder = selectionOrder;
         return this;
     }
 
-    public MoveSelectorConfig withFilterClass(Class<? extends SelectionFilter> filterClass) {
+    public MoveSelectorConfig<Solution_, C> withFilterClass(Class<? extends SelectionFilter> filterClass) {
         this.filterClass = filterClass;
         return this;
     }
 
-    public MoveSelectorConfig withSorterComparatorClass(Class<? extends Comparator> sorterComparatorClass) {
+    public MoveSelectorConfig<Solution_, C> withSorterComparatorClass(Class<? extends Comparator> sorterComparatorClass) {
         this.sorterComparatorClass = sorterComparatorClass;
         return this;
     }
 
-    public MoveSelectorConfig withSorterWeightFactoryClass(
+    public MoveSelectorConfig<Solution_, C> withSorterWeightFactoryClass(
             Class<? extends SelectionSorterWeightFactory> sorterWeightFactoryClass) {
         this.sorterWeightFactoryClass = sorterWeightFactoryClass;
         return this;
     }
 
-    public MoveSelectorConfig withSorterOrder(SelectionSorterOrder sorterOrder) {
+    public MoveSelectorConfig<Solution_, C> withSorterOrder(SelectionSorterOrder sorterOrder) {
         this.sorterOrder = sorterOrder;
         return this;
     }
 
-    public MoveSelectorConfig withSorterClass(Class<? extends SelectionSorter> sorterClass) {
+    public MoveSelectorConfig<Solution_, C> withSorterClass(Class<? extends SelectionSorter> sorterClass) {
         this.sorterClass = sorterClass;
         return this;
     }
 
-    public MoveSelectorConfig withProbabilityWeightFactoryClass(
+    public MoveSelectorConfig<Solution_, C> withProbabilityWeightFactoryClass(
             Class<? extends SelectionProbabilityWeightFactory> probabilityWeightFactoryClass) {
         this.probabilityWeightFactoryClass = probabilityWeightFactoryClass;
         return this;
     }
 
-    public MoveSelectorConfig withSelectedCountLimit(Long selectedCountLimit) {
+    public MoveSelectorConfig<Solution_, C> withSelectedCountLimit(Long selectedCountLimit) {
         this.selectedCountLimit = selectedCountLimit;
         return this;
     }
 
-    public MoveSelectorConfig withFixedProbabilityWeight(Double fixedProbabilityWeight) {
+    public MoveSelectorConfig<Solution_, C> withFixedProbabilityWeight(Double fixedProbabilityWeight) {
         this.fixedProbabilityWeight = fixedProbabilityWeight;
         return this;
     }
@@ -244,11 +245,11 @@ public abstract class MoveSelectorConfig<C extends MoveSelectorConfig> extends S
      *
      * @param foldedConfig never null
      */
-    public void inheritFolded(MoveSelectorConfig foldedConfig) {
+    public void inheritFolded(MoveSelectorConfig<Solution_, C> foldedConfig) {
         inheritCommon(foldedConfig);
     }
 
-    private void inheritCommon(MoveSelectorConfig inheritedConfig) {
+    private void inheritCommon(MoveSelectorConfig<Solution_, C> inheritedConfig) {
         cacheType = ConfigUtils.inheritOverwritableProperty(cacheType, inheritedConfig.getCacheType());
         selectionOrder = ConfigUtils.inheritOverwritableProperty(selectionOrder, inheritedConfig.getSelectionOrder());
         filterClass = ConfigUtils.inheritOverwritableProperty(filterClass, inheritedConfig.getFilterClass());

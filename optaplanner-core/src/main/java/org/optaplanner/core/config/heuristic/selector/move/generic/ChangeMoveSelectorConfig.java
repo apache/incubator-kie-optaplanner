@@ -28,34 +28,35 @@ import org.optaplanner.core.config.util.ConfigUtils;
         "entitySelectorConfig",
         "valueSelectorConfig"
 })
-public class ChangeMoveSelectorConfig extends MoveSelectorConfig<ChangeMoveSelectorConfig> {
+public class ChangeMoveSelectorConfig<Solution_>
+        extends MoveSelectorConfig<Solution_, ChangeMoveSelectorConfig<Solution_>> {
 
     public static final String XML_ELEMENT_NAME = "changeMoveSelector";
 
     @XmlElement(name = "entitySelector")
-    private EntitySelectorConfig entitySelectorConfig = null;
+    private EntitySelectorConfig<Solution_> entitySelectorConfig = null;
 
     @XmlElement(name = "valueSelector")
-    private ValueSelectorConfig valueSelectorConfig = null;
+    private ValueSelectorConfig<Solution_> valueSelectorConfig = null;
 
-    public EntitySelectorConfig getEntitySelectorConfig() {
+    public EntitySelectorConfig<Solution_> getEntitySelectorConfig() {
         return entitySelectorConfig;
     }
 
-    public void setEntitySelectorConfig(EntitySelectorConfig entitySelectorConfig) {
+    public void setEntitySelectorConfig(EntitySelectorConfig<Solution_> entitySelectorConfig) {
         this.entitySelectorConfig = entitySelectorConfig;
     }
 
-    public ValueSelectorConfig getValueSelectorConfig() {
+    public ValueSelectorConfig<Solution_> getValueSelectorConfig() {
         return valueSelectorConfig;
     }
 
-    public void setValueSelectorConfig(ValueSelectorConfig valueSelectorConfig) {
+    public void setValueSelectorConfig(ValueSelectorConfig<Solution_> valueSelectorConfig) {
         this.valueSelectorConfig = valueSelectorConfig;
     }
 
     @Override
-    public ChangeMoveSelectorConfig inherit(ChangeMoveSelectorConfig inheritedConfig) {
+    public ChangeMoveSelectorConfig<Solution_> inherit(ChangeMoveSelectorConfig<Solution_> inheritedConfig) {
         super.inherit(inheritedConfig);
         entitySelectorConfig = ConfigUtils.inheritConfig(entitySelectorConfig, inheritedConfig.getEntitySelectorConfig());
         valueSelectorConfig = ConfigUtils.inheritConfig(valueSelectorConfig, inheritedConfig.getValueSelectorConfig());
@@ -63,8 +64,8 @@ public class ChangeMoveSelectorConfig extends MoveSelectorConfig<ChangeMoveSelec
     }
 
     @Override
-    public ChangeMoveSelectorConfig copyConfig() {
-        return new ChangeMoveSelectorConfig().inherit(this);
+    public ChangeMoveSelectorConfig<Solution_> copyConfig() {
+        return new ChangeMoveSelectorConfig<Solution_>().inherit(this);
     }
 
     @Override

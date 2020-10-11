@@ -37,20 +37,22 @@ import org.optaplanner.core.impl.heuristic.selector.entity.EntitySelectorFactory
 import org.optaplanner.core.impl.heuristic.selector.move.MoveSelector;
 import org.optaplanner.core.impl.heuristic.selector.move.MoveSelectorFactory;
 
-public class QueuedEntityPlacerFactory extends AbstractEntityPlacerFactory<QueuedEntityPlacerConfig> {
+public class QueuedEntityPlacerFactory<Solution_>
+        extends AbstractEntityPlacerFactory<Solution_, QueuedEntityPlacerConfig<Solution_>> {
 
-    public static QueuedEntityPlacerConfig unfoldNew(HeuristicConfigPolicy configPolicy,
+    public static <Solution_> QueuedEntityPlacerConfig<Solution_> unfoldNew(
+            HeuristicConfigPolicy<Solution_> configPolicy,
             List<MoveSelectorConfig> templateMoveSelectorConfigList) {
-        QueuedEntityPlacerConfig config = new QueuedEntityPlacerConfig();
-        config.setEntitySelectorConfig(new QueuedEntityPlacerFactory(config).buildEntitySelectorConfig(configPolicy));
+        QueuedEntityPlacerConfig<Solution_> config = new QueuedEntityPlacerConfig<>();
+        config.setEntitySelectorConfig(new QueuedEntityPlacerFactory<>(config).buildEntitySelectorConfig(configPolicy));
         config.setMoveSelectorConfigList(new ArrayList<>(templateMoveSelectorConfigList.size()));
         List<MoveSelectorConfig> leafMoveSelectorConfigList = new ArrayList<>(templateMoveSelectorConfigList.size());
-        for (MoveSelectorConfig templateMoveSelectorConfig : templateMoveSelectorConfigList) {
-            MoveSelectorConfig moveSelectorConfig = (MoveSelectorConfig) templateMoveSelectorConfig.copyConfig();
+        for (MoveSelectorConfig<Solution_, ?> templateMoveSelectorConfig : templateMoveSelectorConfigList) {
+            MoveSelectorConfig<Solution_, ?> moveSelectorConfig = templateMoveSelectorConfig.copyConfig();
             moveSelectorConfig.extractLeafMoveSelectorConfigsIntoList(leafMoveSelectorConfigList);
             config.getMoveSelectorConfigList().add(moveSelectorConfig);
         }
-        for (MoveSelectorConfig leafMoveSelectorConfig : leafMoveSelectorConfigList) {
+        for (MoveSelectorConfig<Solution_, ?> leafMoveSelectorConfig : leafMoveSelectorConfigList) {
             if (!(leafMoveSelectorConfig instanceof ChangeMoveSelectorConfig)) {
                 throw new IllegalStateException("The <constructionHeuristic> contains a moveSelector ("
                         + leafMoveSelectorConfig + ") that isn't a <changeMoveSelector>, a <unionMoveSelector>"
@@ -58,7 +60,8 @@ public class QueuedEntityPlacerFactory extends AbstractEntityPlacerFactory<Queue
                         + "Maybe you're using a moveSelector in <constructionHeuristic>"
                         + " that's only supported for <localSearch>.");
             }
-            ChangeMoveSelectorConfig changeMoveSelectorConfig = (ChangeMoveSelectorConfig) leafMoveSelectorConfig;
+            ChangeMoveSelectorConfig<Solution_> changeMoveSelectorConfig =
+                    (ChangeMoveSelectorConfig<Solution_>) leafMoveSelectorConfig;
             if (changeMoveSelectorConfig.getEntitySelectorConfig() != null) {
                 throw new IllegalStateException("The <constructionHeuristic> contains a changeMoveSelector ("
                         + changeMoveSelectorConfig + ") that contains an entitySelector ("
@@ -71,29 +74,30 @@ public class QueuedEntityPlacerFactory extends AbstractEntityPlacerFactory<Queue
         return config;
     }
 
-    public QueuedEntityPlacerFactory(QueuedEntityPlacerConfig placerConfig) {
+    public QueuedEntityPlacerFactory(QueuedEntityPlacerConfig<Solution_> placerConfig) {
         super(placerConfig);
     }
 
     @Override
-    public QueuedEntityPlacer buildEntityPlacer(HeuristicConfigPolicy configPolicy) {
-        EntitySelectorConfig entitySelectorConfig_ = buildEntitySelectorConfig(configPolicy);
-        EntitySelector entitySelector = EntitySelectorFactory.create(entitySelectorConfig_).buildEntitySelector(configPolicy,
-                SelectionCacheType.PHASE, SelectionOrder.ORIGINAL);
+    public QueuedEntityPlacer<Solution_> buildEntityPlacer(HeuristicConfigPolicy<Solution_> configPolicy) {
+        EntitySelectorConfig<Solution_> entitySelectorConfig_ = buildEntitySelectorConfig(configPolicy);
+        EntitySelector<Solution_> entitySelector = EntitySelectorFactory.create(entitySelectorConfig_)
+                .buildEntitySelector(configPolicy, SelectionCacheType.PHASE, SelectionOrder.ORIGINAL);
 
         List<MoveSelectorConfig> moveSelectorConfigList_;
         if (ConfigUtils.isEmptyCollection(config.getMoveSelectorConfigList())) {
-            EntityDescriptor entityDescriptor = entitySelector.getEntityDescriptor();
-            Collection<GenuineVariableDescriptor> variableDescriptors = entityDescriptor.getGenuineVariableDescriptors();
+            EntityDescriptor<Solution_> entityDescriptor = entitySelector.getEntityDescriptor();
+            Collection<GenuineVariableDescriptor<Solution_>> variableDescriptors =
+                    entityDescriptor.getGenuineVariableDescriptors();
             List<MoveSelectorConfig> subMoveSelectorConfigList = new ArrayList<>(variableDescriptors.size());
-            for (GenuineVariableDescriptor variableDescriptor : variableDescriptors) {
+            for (GenuineVariableDescriptor<Solution_> variableDescriptor : variableDescriptors) {
                 subMoveSelectorConfigList
                         .add(buildChangeMoveSelectorConfig(configPolicy, entitySelectorConfig_.getId(), variableDescriptor));
             }
-            MoveSelectorConfig subMoveSelectorConfig;
+            MoveSelectorConfig<Solution_, ?> subMoveSelectorConfig;
             if (subMoveSelectorConfigList.size() > 1) {
                 // Default to cartesian product (not a queue) of planning variables.
-                subMoveSelectorConfig = new CartesianProductMoveSelectorConfig(subMoveSelectorConfigList);
+                subMoveSelectorConfig = new CartesianProductMoveSelectorConfig<>(subMoveSelectorConfigList);
             } else {
                 subMoveSelectorConfig = subMoveSelectorConfigList.get(0);
             }
@@ -101,20 +105,20 @@ public class QueuedEntityPlacerFactory extends AbstractEntityPlacerFactory<Queue
         } else {
             moveSelectorConfigList_ = config.getMoveSelectorConfigList();
         }
-        List<MoveSelector> moveSelectorList = new ArrayList<>(moveSelectorConfigList_.size());
-        for (MoveSelectorConfig moveSelectorConfig : moveSelectorConfigList_) {
-            MoveSelector moveSelector = MoveSelectorFactory.create(moveSelectorConfig)
+        List<MoveSelector<Solution_>> moveSelectorList = new ArrayList<>(moveSelectorConfigList_.size());
+        for (MoveSelectorConfig<Solution_, ?> moveSelectorConfig : moveSelectorConfigList_) {
+            MoveSelector<Solution_> moveSelector = MoveSelectorFactory.create(moveSelectorConfig)
                     .buildMoveSelector(configPolicy, SelectionCacheType.JUST_IN_TIME, SelectionOrder.ORIGINAL);
             moveSelectorList.add(moveSelector);
         }
-        return new QueuedEntityPlacer(entitySelector, moveSelectorList);
+        return new QueuedEntityPlacer<>(entitySelector, moveSelectorList);
     }
 
-    public EntitySelectorConfig buildEntitySelectorConfig(HeuristicConfigPolicy configPolicy) {
-        EntitySelectorConfig entitySelectorConfig_;
+    public EntitySelectorConfig<Solution_> buildEntitySelectorConfig(HeuristicConfigPolicy<Solution_> configPolicy) {
+        EntitySelectorConfig<Solution_> entitySelectorConfig_;
         if (config.getEntitySelectorConfig() == null) {
-            entitySelectorConfig_ = new EntitySelectorConfig();
-            EntityDescriptor entityDescriptor = deduceEntityDescriptor(configPolicy.getSolutionDescriptor());
+            entitySelectorConfig_ = new EntitySelectorConfig<>();
+            EntityDescriptor<Solution_> entityDescriptor = deduceEntityDescriptor(configPolicy.getSolutionDescriptor());
             Class<?> entityClass = entityDescriptor.getEntityClass();
             entitySelectorConfig_.setId(entityClass.getName());
             entitySelectorConfig_.setEntityClass(entityClass);

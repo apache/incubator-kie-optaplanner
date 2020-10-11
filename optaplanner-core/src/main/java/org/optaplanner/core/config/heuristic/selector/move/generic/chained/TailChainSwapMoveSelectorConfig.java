@@ -31,38 +31,39 @@ import org.optaplanner.core.config.util.ConfigUtils;
         "entitySelectorConfig",
         "valueSelectorConfig"
 })
-public class TailChainSwapMoveSelectorConfig extends MoveSelectorConfig<TailChainSwapMoveSelectorConfig> {
+public class TailChainSwapMoveSelectorConfig<Solution_>
+        extends MoveSelectorConfig<Solution_, TailChainSwapMoveSelectorConfig<Solution_>> {
 
     public static final String XML_ELEMENT_NAME = "tailChainSwapMoveSelector";
 
     @XmlElement(name = "entitySelector")
-    private EntitySelectorConfig entitySelectorConfig = null;
+    private EntitySelectorConfig<Solution_> entitySelectorConfig = null;
     /**
      * Uses a valueSelector instead of a secondaryEntitySelector because
      * the secondary entity might not exist if the value is a buoy (= the last entity in a chain)
      * and also because with nearby selection, it's more important that the value is near (instead of the secondary entity).
      */
     @XmlElement(name = "valueSelector")
-    private ValueSelectorConfig valueSelectorConfig = null;
+    private ValueSelectorConfig<Solution_> valueSelectorConfig = null;
 
-    public EntitySelectorConfig getEntitySelectorConfig() {
+    public EntitySelectorConfig<Solution_> getEntitySelectorConfig() {
         return entitySelectorConfig;
     }
 
-    public void setEntitySelectorConfig(EntitySelectorConfig entitySelectorConfig) {
+    public void setEntitySelectorConfig(EntitySelectorConfig<Solution_> entitySelectorConfig) {
         this.entitySelectorConfig = entitySelectorConfig;
     }
 
-    public ValueSelectorConfig getValueSelectorConfig() {
+    public ValueSelectorConfig<Solution_> getValueSelectorConfig() {
         return valueSelectorConfig;
     }
 
-    public void setValueSelectorConfig(ValueSelectorConfig valueSelectorConfig) {
+    public void setValueSelectorConfig(ValueSelectorConfig<Solution_> valueSelectorConfig) {
         this.valueSelectorConfig = valueSelectorConfig;
     }
 
     @Override
-    public TailChainSwapMoveSelectorConfig inherit(TailChainSwapMoveSelectorConfig inheritedConfig) {
+    public TailChainSwapMoveSelectorConfig<Solution_> inherit(TailChainSwapMoveSelectorConfig<Solution_> inheritedConfig) {
         super.inherit(inheritedConfig);
         entitySelectorConfig = ConfigUtils.inheritConfig(entitySelectorConfig, inheritedConfig.getEntitySelectorConfig());
         valueSelectorConfig = ConfigUtils.inheritConfig(valueSelectorConfig, inheritedConfig.getValueSelectorConfig());
@@ -70,8 +71,8 @@ public class TailChainSwapMoveSelectorConfig extends MoveSelectorConfig<TailChai
     }
 
     @Override
-    public TailChainSwapMoveSelectorConfig copyConfig() {
-        return new TailChainSwapMoveSelectorConfig().inherit(this);
+    public TailChainSwapMoveSelectorConfig<Solution_> copyConfig() {
+        return new TailChainSwapMoveSelectorConfig<Solution_>().inherit(this);
     }
 
     @Override

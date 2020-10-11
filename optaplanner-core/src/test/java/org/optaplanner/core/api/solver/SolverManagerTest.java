@@ -16,14 +16,6 @@
 
 package org.optaplanner.core.api.solver;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.assertj.core.api.Assertions.fail;
-import static org.optaplanner.core.api.solver.SolverStatus.NOT_SOLVING;
-import static org.optaplanner.core.api.solver.SolverStatus.SOLVING_ACTIVE;
-import static org.optaplanner.core.api.solver.SolverStatus.SOLVING_SCHEDULED;
-import static org.optaplanner.core.impl.testdata.util.PlannerAssert.assertSolutionInitialized;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -55,6 +47,14 @@ import org.optaplanner.core.impl.testdata.domain.TestdataEntity;
 import org.optaplanner.core.impl.testdata.domain.TestdataSolution;
 import org.optaplanner.core.impl.testdata.domain.extended.TestdataUnannotatedExtendedSolution;
 import org.optaplanner.core.impl.testdata.util.PlannerTestUtils;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.assertj.core.api.Assertions.fail;
+import static org.optaplanner.core.api.solver.SolverStatus.NOT_SOLVING;
+import static org.optaplanner.core.api.solver.SolverStatus.SOLVING_ACTIVE;
+import static org.optaplanner.core.api.solver.SolverStatus.SOLVING_SCHEDULED;
+import static org.optaplanner.core.impl.testdata.util.PlannerAssert.assertSolutionInitialized;
 
 public class SolverManagerTest {
 
@@ -203,8 +203,9 @@ public class SolverManagerTest {
     @Timeout(60)
     public void skipAhead() throws ExecutionException, InterruptedException {
         CountDownLatch latch = new CountDownLatch(1);
-        SolverConfig solverConfig = PlannerTestUtils.buildSolverConfig(TestdataSolution.class, TestdataEntity.class)
-                .withPhases(new CustomPhaseConfig().withCustomPhaseCommands(
+        SolverConfig<TestdataSolution> solverConfig = PlannerTestUtils.buildSolverConfig(TestdataSolution.class,
+                TestdataEntity.class)
+                .withPhases(new CustomPhaseConfig<TestdataSolution>().withCustomPhaseCommands(
                         (ScoreDirector<TestdataSolution> scoreDirector) -> {
                             TestdataSolution solution = scoreDirector.getWorkingSolution();
                             TestdataEntity entity = solution.getEntityList().get(0);
@@ -237,7 +238,7 @@ public class SolverManagerTest {
                             scoreDirector.triggerVariableListeners();
                         }));
         SolverManager<TestdataSolution, Long> solverManager = SolverManager.create(
-                solverConfig, new SolverManagerConfig().withParallelSolverCount("1"));
+                solverConfig, new SolverManagerConfig<>().withParallelSolverCount("1"));
         AtomicInteger bestSolutionCount = new AtomicInteger();
         AtomicInteger finalBestSolutionCount = new AtomicInteger();
         AtomicInteger exceptionCount = new AtomicInteger();
@@ -272,20 +273,21 @@ public class SolverManagerTest {
     @Timeout(600)
     public void terminateEarly() throws InterruptedException, BrokenBarrierException {
         CyclicBarrier startedBarrier = new CyclicBarrier(2);
-        SolverConfig solverConfig = PlannerTestUtils.buildSolverConfig(TestdataSolution.class, TestdataEntity.class)
-                .withTerminationConfig(new TerminationConfig())
-                .withPhases(new CustomPhaseConfig().withCustomPhaseCommands((scoreDirector) -> {
+        SolverConfig<TestdataSolution> solverConfig = PlannerTestUtils.buildSolverConfig(TestdataSolution.class,
+                TestdataEntity.class)
+                .withTerminationConfig(new TerminationConfig<>())
+                .withPhases(new CustomPhaseConfig<>().withCustomPhaseCommands((scoreDirector) -> {
                     try {
                         startedBarrier.await();
                     } catch (InterruptedException | BrokenBarrierException e) {
                         throw new IllegalStateException("The startedBarrier failed.", e);
                     }
                 }),
-                        new ConstructionHeuristicPhaseConfig(),
-                        new LocalSearchPhaseConfig());
+                        new ConstructionHeuristicPhaseConfig<>(),
+                        new LocalSearchPhaseConfig<>());
 
         SolverManager<TestdataSolution, Long> solverManager = SolverManager.create(
-                solverConfig, new SolverManagerConfig().withParallelSolverCount("1"));
+                solverConfig, new SolverManagerConfig<>().withParallelSolverCount("1"));
 
         SolverJob<TestdataSolution, Long> solverJob1 = solverManager.solve(1L,
                 PlannerTestUtils.generateTestdataSolution("s1", 4));
@@ -335,13 +337,14 @@ public class SolverManagerTest {
     @Timeout(60)
     public void solveMultipleThreadedMovesWithSolverManager_allGetSolved() throws ExecutionException, InterruptedException {
         int processCount = Runtime.getRuntime().availableProcessors();
-        SolverConfig solverConfig = PlannerTestUtils.buildSolverConfig(TestdataSolution.class, TestdataEntity.class)
-                .withPhases(new ConstructionHeuristicPhaseConfig(), new LocalSearchPhaseConfig())
+        SolverConfig<TestdataSolution> solverConfig = PlannerTestUtils.buildSolverConfig(TestdataSolution.class, TestdataEntity.class)
+                .withPhases(new ConstructionHeuristicPhaseConfig<>(), new LocalSearchPhaseConfig<>())
                 //                .withTerminationConfig(new TerminationConfig().withSecondsSpentLimit(4L))
                 // Adds moveThreadCount to the solver config.
                 .withMoveThreadCount("AUTO");
         // Creates solverManagerConfig with multiple threads.
-        SolverManager<TestdataSolution, Integer> solverManager = SolverManager.create(solverConfig, new SolverManagerConfig());
+        SolverManager<TestdataSolution, Integer> solverManager =
+                SolverManager.create(solverConfig, new SolverManagerConfig<>());
 
         List<SolverJob<TestdataSolution, Integer>> jobs = new ArrayList<>();
         for (int i = 0; i < processCount; i++) {
@@ -371,7 +374,7 @@ public class SolverManagerTest {
 
     private SolverManager<TestdataSolution, Integer> createSolverManagerTestableByDifferentConsumers() {
         List<PhaseConfig> phaseConfigList = IntStream.of(0, 1)
-                .mapToObj((x) -> new CustomPhaseConfig().withCustomPhaseCommands(
+                .mapToObj((x) -> new CustomPhaseConfig<TestdataSolution>().withCustomPhaseCommands(
                         (ScoreDirector<TestdataSolution> scoreDirector) -> {
                             TestdataSolution solution = scoreDirector.getWorkingSolution();
                             TestdataEntity entity = solution.getEntityList().get(x);
@@ -382,10 +385,11 @@ public class SolverManagerTest {
                         }))
                 .collect(Collectors.toList());
 
-        SolverConfig solverConfig = PlannerTestUtils.buildSolverConfig(TestdataSolution.class, TestdataEntity.class)
+        SolverConfig<TestdataSolution> solverConfig = PlannerTestUtils.buildSolverConfig(TestdataSolution.class,
+                TestdataEntity.class)
                 .withPhases(phaseConfigList.toArray(new PhaseConfig[0]));
 
-        SolverManagerConfig solverManagerConfig = new SolverManagerConfig();
+        SolverManagerConfig<TestdataSolution> solverManagerConfig = new SolverManagerConfig<>();
 
         return SolverManager.create(solverConfig, solverManagerConfig);
     }
@@ -478,9 +482,10 @@ public class SolverManagerTest {
     @Test
     @Timeout(60)
     public void runSameIdProcesses_throwsIllegalStateException() {
-        SolverManagerConfig solverManagerConfig = new SolverManagerConfig();
+        SolverManagerConfig<TestdataSolution> solverManagerConfig = new SolverManagerConfig<>();
 
-        SolverConfig solverConfig = PlannerTestUtils.buildSolverConfig(TestdataSolution.class, TestdataEntity.class)
+        SolverConfig<TestdataSolution> solverConfig = PlannerTestUtils.buildSolverConfig(TestdataSolution.class,
+                TestdataEntity.class)
                 .withPhases(createPhaseWithConcurrentSolvingStart(2));
 
         SolverManager<TestdataSolution, Long> solverManager = SolverManager.create(solverConfig, solverManagerConfig);

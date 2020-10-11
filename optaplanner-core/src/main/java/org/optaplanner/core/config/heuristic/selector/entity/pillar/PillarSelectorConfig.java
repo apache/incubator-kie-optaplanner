@@ -28,19 +28,19 @@ import org.optaplanner.core.config.util.ConfigUtils;
         "minimumSubPillarSize",
         "maximumSubPillarSize"
 })
-public class PillarSelectorConfig extends SelectorConfig<PillarSelectorConfig> {
+public class PillarSelectorConfig<Solution_> extends SelectorConfig<Solution_, PillarSelectorConfig<Solution_>> {
 
     @XmlElement(name = "entitySelector")
-    protected EntitySelectorConfig entitySelectorConfig = null;
+    protected EntitySelectorConfig<Solution_> entitySelectorConfig = null;
 
     protected Integer minimumSubPillarSize = null;
     protected Integer maximumSubPillarSize = null;
 
-    public EntitySelectorConfig getEntitySelectorConfig() {
+    public EntitySelectorConfig<Solution_> getEntitySelectorConfig() {
         return entitySelectorConfig;
     }
 
-    public void setEntitySelectorConfig(EntitySelectorConfig entitySelectorConfig) {
+    public void setEntitySelectorConfig(EntitySelectorConfig<Solution_> entitySelectorConfig) {
         this.entitySelectorConfig = entitySelectorConfig;
     }
 
@@ -61,7 +61,7 @@ public class PillarSelectorConfig extends SelectorConfig<PillarSelectorConfig> {
     }
 
     @Override
-    public PillarSelectorConfig inherit(PillarSelectorConfig inheritedConfig) {
+    public PillarSelectorConfig<Solution_> inherit(PillarSelectorConfig<Solution_> inheritedConfig) {
         entitySelectorConfig = ConfigUtils.inheritConfig(entitySelectorConfig, inheritedConfig.getEntitySelectorConfig());
         minimumSubPillarSize = ConfigUtils.inheritOverwritableProperty(minimumSubPillarSize,
                 inheritedConfig.getMinimumSubPillarSize());
@@ -71,8 +71,8 @@ public class PillarSelectorConfig extends SelectorConfig<PillarSelectorConfig> {
     }
 
     @Override
-    public PillarSelectorConfig copyConfig() {
-        return new PillarSelectorConfig().inherit(this);
+    public PillarSelectorConfig<Solution_> copyConfig() {
+        return new PillarSelectorConfig<Solution_>().inherit(this);
     }
 
     @Override

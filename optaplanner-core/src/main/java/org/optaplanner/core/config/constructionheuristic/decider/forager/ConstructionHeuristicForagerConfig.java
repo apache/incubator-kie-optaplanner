@@ -24,7 +24,8 @@ import org.optaplanner.core.config.util.ConfigUtils;
 @XmlType(propOrder = {
         "pickEarlyType"
 })
-public class ConstructionHeuristicForagerConfig extends AbstractConfig<ConstructionHeuristicForagerConfig> {
+public class ConstructionHeuristicForagerConfig<Solution_>
+        extends AbstractConfig<Solution_, ConstructionHeuristicForagerConfig<Solution_>> {
 
     private ConstructionHeuristicPickEarlyType pickEarlyType = null;
 
@@ -37,14 +38,15 @@ public class ConstructionHeuristicForagerConfig extends AbstractConfig<Construct
     }
 
     @Override
-    public ConstructionHeuristicForagerConfig inherit(ConstructionHeuristicForagerConfig inheritedConfig) {
+    public ConstructionHeuristicForagerConfig<Solution_> inherit(
+            ConstructionHeuristicForagerConfig<Solution_> inheritedConfig) {
         pickEarlyType = ConfigUtils.inheritOverwritableProperty(pickEarlyType, inheritedConfig.getPickEarlyType());
         return this;
     }
 
     @Override
-    public ConstructionHeuristicForagerConfig copyConfig() {
-        return new ConstructionHeuristicForagerConfig().inherit(this);
+    public ConstructionHeuristicForagerConfig<Solution_> copyConfig() {
+        return new ConstructionHeuristicForagerConfig<Solution_>().inherit(this);
     }
 
 }

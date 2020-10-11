@@ -16,8 +16,6 @@
 
 package org.optaplanner.examples.vehiclerouting.app;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
 import java.io.File;
 import java.util.stream.IntStream;
 
@@ -32,6 +30,8 @@ import org.optaplanner.examples.common.TurtleTest;
 import org.optaplanner.examples.common.app.CommonApp;
 import org.optaplanner.examples.vehiclerouting.domain.VehicleRoutingSolution;
 import org.optaplanner.examples.vehiclerouting.persistence.VehicleRoutingImporter;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * The idea is to verify one of the basic requirements of Multithreaded Solving - the reproducibility of results. After
@@ -62,12 +62,13 @@ public class VehicleRoutingMultiThreadedReproducibilityTest {
             vehicleRoutingSolutions[i] = solution;
         }
 
-        SolverConfig solverConfig = SolverConfig.createFromXmlResource(vehicleRoutingApp.getSolverConfigResource());
+        SolverConfig<VehicleRoutingSolution> solverConfig =
+                SolverConfig.createFromXmlResource(vehicleRoutingApp.getSolverConfigResource());
         solverConfig.withEnvironmentMode(EnvironmentMode.REPRODUCIBLE)
                 .withMoveThreadCount(MOVE_THREAD_COUNT);
         solverConfig.getPhaseConfigList().forEach(phaseConfig -> {
             if (LocalSearchPhaseConfig.class.isAssignableFrom(phaseConfig.getClass())) {
-                phaseConfig.setTerminationConfig(new TerminationConfig().withStepCountLimit(STEP_LIMIT));
+                phaseConfig.setTerminationConfig(new TerminationConfig<>().withStepCountLimit(STEP_LIMIT));
             }
         });
         solverFactory = SolverFactory.create(solverConfig);

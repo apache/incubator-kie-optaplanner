@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -52,7 +52,7 @@ public final class DefaultSolverManager<Solution_, ProblemId_> implements Solver
     private ConcurrentMap<Object, DefaultSolverJob<Solution_, ProblemId_>> problemIdToSolverJobMap;
 
     public DefaultSolverManager(SolverFactory<Solution_> solverFactory,
-            SolverManagerConfig solverManagerConfig) {
+            SolverManagerConfig<Solution_> solverManagerConfig) {
         defaultExceptionHandler = (problemId, throwable) -> logger.error(
                 "Solving failed for problemId ({}).", problemId, throwable);
         this.solverFactory = solverFactory;

@@ -26,19 +26,20 @@ import org.optaplanner.core.impl.AbstractFromConfigFactory;
 import org.optaplanner.core.impl.domain.variable.descriptor.GenuineVariableDescriptor;
 import org.optaplanner.core.impl.heuristic.HeuristicConfigPolicy;
 
-abstract class AbstractEntityPlacerFactory<EntityPlacerConfig_ extends EntityPlacerConfig<EntityPlacerConfig_>>
-        extends AbstractFromConfigFactory<EntityPlacerConfig_> implements EntityPlacerFactory {
+abstract class AbstractEntityPlacerFactory<Solution_, EntityPlacerConfig_ extends EntityPlacerConfig<Solution_, EntityPlacerConfig_>>
+        extends AbstractFromConfigFactory<Solution_, EntityPlacerConfig_> implements EntityPlacerFactory<Solution_> {
 
     protected AbstractEntityPlacerFactory(EntityPlacerConfig_ placerConfig) {
         super(placerConfig);
     }
 
-    protected ChangeMoveSelectorConfig buildChangeMoveSelectorConfig(HeuristicConfigPolicy configPolicy,
-            String entitySelectorConfigId, GenuineVariableDescriptor variableDescriptor) {
-        ChangeMoveSelectorConfig changeMoveSelectorConfig = new ChangeMoveSelectorConfig();
+    protected ChangeMoveSelectorConfig<Solution_> buildChangeMoveSelectorConfig(
+            HeuristicConfigPolicy<Solution_> configPolicy, String entitySelectorConfigId,
+            GenuineVariableDescriptor<Solution_> variableDescriptor) {
+        ChangeMoveSelectorConfig<Solution_> changeMoveSelectorConfig = new ChangeMoveSelectorConfig<>();
         changeMoveSelectorConfig.setEntitySelectorConfig(
                 EntitySelectorConfig.newMimicSelectorConfig(entitySelectorConfigId));
-        ValueSelectorConfig changeValueSelectorConfig = new ValueSelectorConfig();
+        ValueSelectorConfig<Solution_> changeValueSelectorConfig = new ValueSelectorConfig<>();
         changeValueSelectorConfig.setVariableName(variableDescriptor.getVariableName());
         if (ValueSelectorConfig.hasSorter(configPolicy.getValueSorterManner(), variableDescriptor)) {
             if (variableDescriptor.isValueRangeEntityIndependent()) {

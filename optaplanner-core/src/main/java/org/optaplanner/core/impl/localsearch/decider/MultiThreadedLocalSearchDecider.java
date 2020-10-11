@@ -66,8 +66,8 @@ public class MultiThreadedLocalSearchDecider<Solution_> extends LocalSearchDecid
     protected ExecutorService executor;
     protected List<MoveThreadRunner<Solution_, ?>> moveThreadRunnerList;
 
-    public MultiThreadedLocalSearchDecider(String logIndentation, Termination termination,
-            MoveSelector<Solution_> moveSelector, Acceptor acceptor, LocalSearchForager forager,
+    public MultiThreadedLocalSearchDecider(String logIndentation, Termination<Solution_> termination,
+            MoveSelector<Solution_> moveSelector, Acceptor<Solution_> acceptor, LocalSearchForager<Solution_> forager,
             ThreadFactory threadFactory, int moveThreadCount, int selectedMoveBufferSize) {
         super(logIndentation, termination, moveSelector, acceptor, forager);
         this.threadFactory = threadFactory;

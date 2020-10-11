@@ -16,8 +16,6 @@
 
 package org.optaplanner.core.impl.score.director;
 
-import static org.apache.commons.lang3.ObjectUtils.defaultIfNull;
-
 import java.io.File;
 import java.net.URL;
 import java.util.ArrayList;
@@ -56,14 +54,16 @@ import org.optaplanner.core.impl.score.trend.InitializingScoreTrend;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import static org.apache.commons.lang3.ObjectUtils.defaultIfNull;
+
 public class ScoreDirectorFactoryFactory<Solution_, Score_ extends Score<Score_>> {
 
     private static final String GENERATE_DROOLS_TEST_ON_ERROR_PROPERTY_NAME = "optaplanner.drools.generateTestOnError";
     private static final Logger logger = LoggerFactory.getLogger(ScoreDirectorFactoryFactory.class);
 
-    private final ScoreDirectorFactoryConfig config;
+    private final ScoreDirectorFactoryConfig<Solution_> config;
 
-    public ScoreDirectorFactoryFactory(ScoreDirectorFactoryConfig config) {
+    public ScoreDirectorFactoryFactory(ScoreDirectorFactoryConfig<Solution_> config) {
         this.config = config;
     }
 

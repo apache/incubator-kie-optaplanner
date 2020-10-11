@@ -27,27 +27,28 @@ import org.optaplanner.core.impl.phase.AbstractPhaseFactory;
 import org.optaplanner.core.impl.solver.recaller.BestSolutionRecaller;
 import org.optaplanner.core.impl.solver.termination.Termination;
 
-public class DefaultCustomPhaseFactory<Solution_> extends AbstractPhaseFactory<Solution_, CustomPhaseConfig> {
+public class DefaultCustomPhaseFactory<Solution_> extends AbstractPhaseFactory<Solution_, CustomPhaseConfig<Solution_>> {
 
-    public DefaultCustomPhaseFactory(CustomPhaseConfig phaseConfig) {
+    public DefaultCustomPhaseFactory(CustomPhaseConfig<Solution_> phaseConfig) {
         super(phaseConfig);
     }
 
     @Override
-    public CustomPhase<Solution_> buildPhase(int phaseIndex, HeuristicConfigPolicy solverConfigPolicy,
-            BestSolutionRecaller<Solution_> bestSolutionRecaller, Termination solverTermination) {
-        HeuristicConfigPolicy phaseConfigPolicy = solverConfigPolicy.createPhaseConfigPolicy();
-        DefaultCustomPhase phase = new DefaultCustomPhase(phaseIndex, solverConfigPolicy.getLogIndentation(),
-                bestSolutionRecaller, buildPhaseTermination(phaseConfigPolicy, solverTermination));
+    public CustomPhase<Solution_> buildPhase(int phaseIndex, HeuristicConfigPolicy<Solution_> solverConfigPolicy,
+            BestSolutionRecaller<Solution_> bestSolutionRecaller, Termination<Solution_> solverTermination) {
+        HeuristicConfigPolicy<Solution_> phaseConfigPolicy = solverConfigPolicy.createPhaseConfigPolicy();
+        DefaultCustomPhase<Solution_> phase = new DefaultCustomPhase<>(phaseIndex,
+                solverConfigPolicy.getLogIndentation(), bestSolutionRecaller,
+                buildPhaseTermination(phaseConfigPolicy, solverTermination));
         if (ConfigUtils.isEmptyCollection(phaseConfig.getCustomPhaseCommandClassList())
                 && ConfigUtils.isEmptyCollection(phaseConfig.getCustomPhaseCommandList())) {
             throw new IllegalArgumentException(
                     "Configure at least 1 <customPhaseCommandClass> in the <customPhase> configuration.");
         }
 
-        List<CustomPhaseCommand<?>> customPhaseCommandList_ = new ArrayList<>(getCustomPhaseCommandListSize());
+        List<CustomPhaseCommand<Solution_>> customPhaseCommandList_ = new ArrayList<>(getCustomPhaseCommandListSize());
         if (phaseConfig.getCustomPhaseCommandClassList() != null) {
-            for (Class<? extends CustomPhaseCommand> customPhaseCommandClass : phaseConfig.getCustomPhaseCommandClassList()) {
+            for (Class<? extends CustomPhaseCommand<Solution_>> customPhaseCommandClass : phaseConfig.getCustomPhaseCommandClassList()) {
                 customPhaseCommandList_.add(createCustomPhaseCommand(customPhaseCommandClass));
             }
         }
@@ -62,9 +63,9 @@ public class DefaultCustomPhaseFactory<Solution_> extends AbstractPhaseFactory<S
         return phase;
     }
 
-    private CustomPhaseCommand<?> createCustomPhaseCommand(Class<? extends CustomPhaseCommand> customPhaseCommandClass) {
-        CustomPhaseCommand<?> customPhaseCommand =
-                ConfigUtils.newInstance(phaseConfig, "customPhaseCommandClass", customPhaseCommandClass);
+    private CustomPhaseCommand<Solution_> createCustomPhaseCommand(Class<? extends CustomPhaseCommand<Solution_>> customPhaseCommandClass) {
+        CustomPhaseCommand<Solution_> customPhaseCommand = ConfigUtils.newInstance(phaseConfig,
+                "customPhaseCommandClass", customPhaseCommandClass);
         ConfigUtils.applyCustomProperties(customPhaseCommand, "customPhaseCommandClass", phaseConfig.getCustomProperties(),
                 "customProperties");
         return customPhaseCommand;

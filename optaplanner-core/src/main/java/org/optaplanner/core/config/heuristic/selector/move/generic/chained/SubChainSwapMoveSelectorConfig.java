@@ -29,15 +29,16 @@ import org.optaplanner.core.config.util.ConfigUtils;
         "secondarySubChainSelectorConfig",
         "selectReversingMoveToo"
 })
-public class SubChainSwapMoveSelectorConfig extends MoveSelectorConfig<SubChainSwapMoveSelectorConfig> {
+public class SubChainSwapMoveSelectorConfig<Solution_>
+        extends MoveSelectorConfig<Solution_, SubChainSwapMoveSelectorConfig<Solution_>> {
 
     public static final String XML_ELEMENT_NAME = "subChainSwapMoveSelector";
 
     private Class<?> entityClass = null;
     @XmlElement(name = "subChainSelector")
-    private SubChainSelectorConfig subChainSelectorConfig = null;
+    private SubChainSelectorConfig<Solution_> subChainSelectorConfig = null;
     @XmlElement(name = "secondarySubChainSelector")
-    private SubChainSelectorConfig secondarySubChainSelectorConfig = null;
+    private SubChainSelectorConfig<Solution_> secondarySubChainSelectorConfig = null;
 
     private Boolean selectReversingMoveToo = null;
 
@@ -49,19 +50,19 @@ public class SubChainSwapMoveSelectorConfig extends MoveSelectorConfig<SubChainS
         this.entityClass = entityClass;
     }
 
-    public SubChainSelectorConfig getSubChainSelectorConfig() {
+    public SubChainSelectorConfig<Solution_> getSubChainSelectorConfig() {
         return subChainSelectorConfig;
     }
 
-    public void setSubChainSelectorConfig(SubChainSelectorConfig subChainSelectorConfig) {
+    public void setSubChainSelectorConfig(SubChainSelectorConfig<Solution_> subChainSelectorConfig) {
         this.subChainSelectorConfig = subChainSelectorConfig;
     }
 
-    public SubChainSelectorConfig getSecondarySubChainSelectorConfig() {
+    public SubChainSelectorConfig<Solution_> getSecondarySubChainSelectorConfig() {
         return secondarySubChainSelectorConfig;
     }
 
-    public void setSecondarySubChainSelectorConfig(SubChainSelectorConfig secondarySubChainSelectorConfig) {
+    public void setSecondarySubChainSelectorConfig(SubChainSelectorConfig<Solution_> secondarySubChainSelectorConfig) {
         this.secondarySubChainSelectorConfig = secondarySubChainSelectorConfig;
     }
 
@@ -74,7 +75,7 @@ public class SubChainSwapMoveSelectorConfig extends MoveSelectorConfig<SubChainS
     }
 
     @Override
-    public SubChainSwapMoveSelectorConfig inherit(SubChainSwapMoveSelectorConfig inheritedConfig) {
+    public SubChainSwapMoveSelectorConfig<Solution_> inherit(SubChainSwapMoveSelectorConfig<Solution_> inheritedConfig) {
         super.inherit(inheritedConfig);
         entityClass = ConfigUtils.inheritOverwritableProperty(entityClass, inheritedConfig.getEntityClass());
         subChainSelectorConfig = ConfigUtils.inheritConfig(subChainSelectorConfig, inheritedConfig.getSubChainSelectorConfig());
@@ -86,8 +87,8 @@ public class SubChainSwapMoveSelectorConfig extends MoveSelectorConfig<SubChainS
     }
 
     @Override
-    public SubChainSwapMoveSelectorConfig copyConfig() {
-        return new SubChainSwapMoveSelectorConfig().inherit(this);
+    public SubChainSwapMoveSelectorConfig<Solution_> copyConfig() {
+        return new SubChainSwapMoveSelectorConfig<Solution_>().inherit(this);
     }
 
     @Override

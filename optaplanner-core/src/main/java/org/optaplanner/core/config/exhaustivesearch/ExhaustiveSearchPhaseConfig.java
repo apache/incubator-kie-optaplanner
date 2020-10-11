@@ -46,7 +46,8 @@ import org.optaplanner.core.config.util.ConfigUtils;
         "entitySelectorConfig",
         "moveSelectorConfig"
 })
-public class ExhaustiveSearchPhaseConfig extends PhaseConfig<ExhaustiveSearchPhaseConfig> {
+public class ExhaustiveSearchPhaseConfig<Solution_>
+        extends PhaseConfig<Solution_, ExhaustiveSearchPhaseConfig<Solution_>> {
 
     public static final String XML_ELEMENT_NAME = "exhaustiveSearch";
 
@@ -59,7 +60,7 @@ public class ExhaustiveSearchPhaseConfig extends PhaseConfig<ExhaustiveSearchPha
     protected ValueSorterManner valueSorterManner = null;
 
     @XmlElement(name = "entitySelector")
-    protected EntitySelectorConfig entitySelectorConfig = null;
+    protected EntitySelectorConfig<Solution_> entitySelectorConfig = null;
 
     @XmlElements({
             @XmlElement(name = CartesianProductMoveSelectorConfig.XML_ELEMENT_NAME,
@@ -113,11 +114,11 @@ public class ExhaustiveSearchPhaseConfig extends PhaseConfig<ExhaustiveSearchPha
         this.valueSorterManner = valueSorterManner;
     }
 
-    public EntitySelectorConfig getEntitySelectorConfig() {
+    public EntitySelectorConfig<Solution_> getEntitySelectorConfig() {
         return entitySelectorConfig;
     }
 
-    public void setEntitySelectorConfig(EntitySelectorConfig entitySelectorConfig) {
+    public void setEntitySelectorConfig(EntitySelectorConfig<Solution_> entitySelectorConfig) {
         this.entitySelectorConfig = entitySelectorConfig;
     }
 
@@ -130,7 +131,7 @@ public class ExhaustiveSearchPhaseConfig extends PhaseConfig<ExhaustiveSearchPha
     }
 
     @Override
-    public ExhaustiveSearchPhaseConfig inherit(ExhaustiveSearchPhaseConfig inheritedConfig) {
+    public ExhaustiveSearchPhaseConfig<Solution_> inherit(ExhaustiveSearchPhaseConfig<Solution_> inheritedConfig) {
         super.inherit(inheritedConfig);
         exhaustiveSearchType = ConfigUtils.inheritOverwritableProperty(exhaustiveSearchType,
                 inheritedConfig.getExhaustiveSearchType());
@@ -141,14 +142,13 @@ public class ExhaustiveSearchPhaseConfig extends PhaseConfig<ExhaustiveSearchPha
         valueSorterManner = ConfigUtils.inheritOverwritableProperty(valueSorterManner,
                 inheritedConfig.getValueSorterManner());
         entitySelectorConfig = ConfigUtils.inheritConfig(entitySelectorConfig, inheritedConfig.getEntitySelectorConfig());
-        moveSelectorConfig = ConfigUtils.<MoveSelectorConfig> inheritConfig(moveSelectorConfig,
-                inheritedConfig.getMoveSelectorConfig());
+        moveSelectorConfig = ConfigUtils.inheritConfig(moveSelectorConfig, inheritedConfig.getMoveSelectorConfig());
         return this;
     }
 
     @Override
-    public ExhaustiveSearchPhaseConfig copyConfig() {
-        return new ExhaustiveSearchPhaseConfig().inherit(this);
+    public ExhaustiveSearchPhaseConfig<Solution_> copyConfig() {
+        return new ExhaustiveSearchPhaseConfig<Solution_>().inherit(this);
     }
 
 }

@@ -37,7 +37,8 @@ import org.optaplanner.core.config.util.ConfigUtils;
 @XmlType(propOrder = {
         "moveSelectorConfig"
 })
-public class PooledEntityPlacerConfig extends EntityPlacerConfig<PooledEntityPlacerConfig> {
+public class PooledEntityPlacerConfig<Solution_>
+        extends EntityPlacerConfig<Solution_, PooledEntityPlacerConfig<Solution_>> {
 
     @XmlElements({
             @XmlElement(name = CartesianProductMoveSelectorConfig.XML_ELEMENT_NAME,
@@ -57,20 +58,20 @@ public class PooledEntityPlacerConfig extends EntityPlacerConfig<PooledEntityPla
                     type = TailChainSwapMoveSelectorConfig.class),
             @XmlElement(name = UnionMoveSelectorConfig.XML_ELEMENT_NAME, type = UnionMoveSelectorConfig.class)
     })
-    private MoveSelectorConfig moveSelectorConfig = null;
+    private MoveSelectorConfig<Solution_, ?> moveSelectorConfig = null;
 
-    public MoveSelectorConfig getMoveSelectorConfig() {
+    public MoveSelectorConfig<Solution_, ?> getMoveSelectorConfig() {
         return moveSelectorConfig;
     }
 
-    public void setMoveSelectorConfig(MoveSelectorConfig moveSelectorConfig) {
+    public void setMoveSelectorConfig(MoveSelectorConfig<Solution_, ?> moveSelectorConfig) {
         this.moveSelectorConfig = moveSelectorConfig;
     }
 
     @Override
-    public PooledEntityPlacerConfig inherit(PooledEntityPlacerConfig inheritedConfig) {
-        setMoveSelectorConfig(ConfigUtils.inheritOverwritableProperty(
-                getMoveSelectorConfig(), inheritedConfig.getMoveSelectorConfig()));
+    public PooledEntityPlacerConfig<Solution_> inherit(PooledEntityPlacerConfig<Solution_> inheritedConfig) {
+        setMoveSelectorConfig(ConfigUtils.inheritOverwritableProperty(getMoveSelectorConfig(),
+                inheritedConfig.getMoveSelectorConfig()));
         return this;
     }
 

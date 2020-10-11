@@ -42,7 +42,8 @@ import org.optaplanner.core.impl.partitionedsearch.partitioner.SolutionPartition
         "runnablePartThreadLimit",
         "phaseConfigList"
 })
-public class PartitionedSearchPhaseConfig extends PhaseConfig<PartitionedSearchPhaseConfig> {
+public class PartitionedSearchPhaseConfig<Solution_>
+        extends PhaseConfig<Solution_, PartitionedSearchPhaseConfig<Solution_>> {
 
     public static final String XML_ELEMENT_NAME = "partitionedSearch";
     public static final String ACTIVE_THREAD_COUNT_AUTO = "AUTO";
@@ -126,7 +127,7 @@ public class PartitionedSearchPhaseConfig extends PhaseConfig<PartitionedSearchP
     }
 
     @Override
-    public PartitionedSearchPhaseConfig inherit(PartitionedSearchPhaseConfig inheritedConfig) {
+    public PartitionedSearchPhaseConfig<Solution_> inherit(PartitionedSearchPhaseConfig<Solution_> inheritedConfig) {
         super.inherit(inheritedConfig);
         solutionPartitionerClass = ConfigUtils.inheritOverwritableProperty(solutionPartitionerClass,
                 inheritedConfig.getSolutionPartitionerClass());
@@ -140,8 +141,8 @@ public class PartitionedSearchPhaseConfig extends PhaseConfig<PartitionedSearchP
     }
 
     @Override
-    public PartitionedSearchPhaseConfig copyConfig() {
-        return new PartitionedSearchPhaseConfig().inherit(this);
+    public PartitionedSearchPhaseConfig<Solution_> copyConfig() {
+        return new PartitionedSearchPhaseConfig<Solution_>().inherit(this);
     }
 
 }

@@ -16,8 +16,6 @@
 
 package org.optaplanner.core.impl.heuristic.selector.move.composite;
 
-import static org.apache.commons.lang3.ObjectUtils.defaultIfNull;
-
 import java.util.List;
 
 import org.optaplanner.core.config.heuristic.selector.common.SelectionCacheType;
@@ -25,19 +23,21 @@ import org.optaplanner.core.config.heuristic.selector.move.composite.CartesianPr
 import org.optaplanner.core.impl.heuristic.HeuristicConfigPolicy;
 import org.optaplanner.core.impl.heuristic.selector.move.MoveSelector;
 
-public class CartesianProductMoveSelectorFactory
-        extends AbstractCompositeMoveSelectorFactory<CartesianProductMoveSelectorConfig> {
+import static org.apache.commons.lang3.ObjectUtils.defaultIfNull;
 
-    public CartesianProductMoveSelectorFactory(CartesianProductMoveSelectorConfig moveSelectorConfig) {
+public class CartesianProductMoveSelectorFactory<Solution_>
+        extends AbstractCompositeMoveSelectorFactory<Solution_, CartesianProductMoveSelectorConfig<Solution_>> {
+
+    public CartesianProductMoveSelectorFactory(CartesianProductMoveSelectorConfig<Solution_> moveSelectorConfig) {
         super(moveSelectorConfig);
     }
 
     @Override
-    public MoveSelector buildBaseMoveSelector(HeuristicConfigPolicy configPolicy,
+    public MoveSelector<Solution_> buildBaseMoveSelector(HeuristicConfigPolicy<Solution_> configPolicy,
             SelectionCacheType minimumCacheType, boolean randomSelection) {
-        List<MoveSelector> moveSelectorList = buildInnerMoveSelectors(config.getMoveSelectorConfigList(),
+        List<MoveSelector<Solution_>> moveSelectorList = buildInnerMoveSelectors(config.getMoveSelectorConfigList(),
                 configPolicy, minimumCacheType, randomSelection);
         boolean ignoreEmptyChildIterators_ = defaultIfNull(config.getIgnoreEmptyChildIterators(), true);
-        return new CartesianProductMoveSelector(moveSelectorList, ignoreEmptyChildIterators_, randomSelection);
+        return new CartesianProductMoveSelector<>(moveSelectorList, ignoreEmptyChildIterators_, randomSelection);
     }
 }

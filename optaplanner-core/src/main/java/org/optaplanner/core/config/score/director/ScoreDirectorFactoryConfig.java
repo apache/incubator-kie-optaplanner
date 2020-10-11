@@ -47,7 +47,8 @@ import org.optaplanner.core.impl.io.jaxb.adapter.JaxbCustomPropertiesAdapter;
         "initializingScoreTrend",
         "assertionScoreDirectorFactory"
 })
-public class ScoreDirectorFactoryConfig extends AbstractConfig<ScoreDirectorFactoryConfig> {
+public class ScoreDirectorFactoryConfig<Solution_>
+        extends AbstractConfig<Solution_, ScoreDirectorFactoryConfig<Solution_>> {
 
     protected Class<? extends EasyScoreCalculator> easyScoreCalculatorClass = null;
 
@@ -77,7 +78,7 @@ public class ScoreDirectorFactoryConfig extends AbstractConfig<ScoreDirectorFact
     protected String initializingScoreTrend = null;
 
     @XmlElement(name = "assertionScoreDirectorFactory")
-    protected ScoreDirectorFactoryConfig assertionScoreDirectorFactory = null;
+    protected ScoreDirectorFactoryConfig<Solution_> assertionScoreDirectorFactory = null;
 
     // ************************************************************************
     // Constructors and simple getters/setters
@@ -172,11 +173,11 @@ public class ScoreDirectorFactoryConfig extends AbstractConfig<ScoreDirectorFact
         this.initializingScoreTrend = initializingScoreTrend;
     }
 
-    public ScoreDirectorFactoryConfig getAssertionScoreDirectorFactory() {
+    public ScoreDirectorFactoryConfig<Solution_> getAssertionScoreDirectorFactory() {
         return assertionScoreDirectorFactory;
     }
 
-    public void setAssertionScoreDirectorFactory(ScoreDirectorFactoryConfig assertionScoreDirectorFactory) {
+    public void setAssertionScoreDirectorFactory(ScoreDirectorFactoryConfig<Solution_> assertionScoreDirectorFactory) {
         this.assertionScoreDirectorFactory = assertionScoreDirectorFactory;
     }
 
@@ -184,79 +185,79 @@ public class ScoreDirectorFactoryConfig extends AbstractConfig<ScoreDirectorFact
     // With methods
     // ************************************************************************
 
-    public ScoreDirectorFactoryConfig withEasyScoreCalculatorClass(
+    public ScoreDirectorFactoryConfig<Solution_> withEasyScoreCalculatorClass(
             Class<? extends EasyScoreCalculator> easyScoreCalculatorClass) {
         this.easyScoreCalculatorClass = easyScoreCalculatorClass;
         return this;
     }
 
-    public ScoreDirectorFactoryConfig withEasyScoreCalculatorCustomProperties(
+    public ScoreDirectorFactoryConfig<Solution_> withEasyScoreCalculatorCustomProperties(
             Map<String, String> easyScoreCalculatorCustomProperties) {
         this.easyScoreCalculatorCustomProperties = easyScoreCalculatorCustomProperties;
         return this;
     }
 
-    public ScoreDirectorFactoryConfig withConstraintProviderClass(Class<? extends ConstraintProvider> constraintProviderClass) {
+    public ScoreDirectorFactoryConfig<Solution_> withConstraintProviderClass(Class<? extends ConstraintProvider> constraintProviderClass) {
         this.constraintProviderClass = constraintProviderClass;
         return this;
     }
 
-    public ScoreDirectorFactoryConfig withConstraintProviderCustomProperties(
+    public ScoreDirectorFactoryConfig<Solution_> withConstraintProviderCustomProperties(
             Map<String, String> constraintProviderCustomProperties) {
         this.constraintProviderCustomProperties = constraintProviderCustomProperties;
         return this;
     }
 
-    public ScoreDirectorFactoryConfig withConstraintStreamImplType(ConstraintStreamImplType constraintStreamImplType) {
+    public ScoreDirectorFactoryConfig<Solution_> withConstraintStreamImplType(ConstraintStreamImplType constraintStreamImplType) {
         this.constraintStreamImplType = constraintStreamImplType;
         return this;
     }
 
-    public ScoreDirectorFactoryConfig withIncrementalScoreCalculatorClass(
+    public ScoreDirectorFactoryConfig<Solution_> withIncrementalScoreCalculatorClass(
             Class<? extends IncrementalScoreCalculator> incrementalScoreCalculatorClass) {
         this.incrementalScoreCalculatorClass = incrementalScoreCalculatorClass;
         return this;
     }
 
-    public ScoreDirectorFactoryConfig withIncrementalScoreCalculatorCustomProperties(
+    public ScoreDirectorFactoryConfig<Solution_> withIncrementalScoreCalculatorCustomProperties(
             Map<String, String> incrementalScoreCalculatorCustomProperties) {
         this.incrementalScoreCalculatorCustomProperties = incrementalScoreCalculatorCustomProperties;
         return this;
     }
 
-    public ScoreDirectorFactoryConfig withScoreDrlList(List<String> scoreDrlList) {
+    public ScoreDirectorFactoryConfig<Solution_> withScoreDrlList(List<String> scoreDrlList) {
         this.scoreDrlList = scoreDrlList;
         return this;
     }
 
-    public ScoreDirectorFactoryConfig withScoreDrls(String... scoreDrls) {
+    public ScoreDirectorFactoryConfig<Solution_> withScoreDrls(String... scoreDrls) {
         this.scoreDrlList = Arrays.asList(scoreDrls);
         return this;
     }
 
-    public ScoreDirectorFactoryConfig withScoreDrlFileList(List<File> scoreDrlFileList) {
+    public ScoreDirectorFactoryConfig<Solution_> withScoreDrlFileList(List<File> scoreDrlFileList) {
         this.scoreDrlFileList = scoreDrlFileList;
         return this;
     }
 
-    public ScoreDirectorFactoryConfig withScoreDrlFiles(File... scoreDrlFiles) {
+    public ScoreDirectorFactoryConfig<Solution_> withScoreDrlFiles(File... scoreDrlFiles) {
         this.scoreDrlFileList = Arrays.asList(scoreDrlFiles);
         return this;
     }
 
-    public ScoreDirectorFactoryConfig withInitializingScoreTrend(String initializingScoreTrend) {
+    public ScoreDirectorFactoryConfig<Solution_> withInitializingScoreTrend(String initializingScoreTrend) {
         this.initializingScoreTrend = initializingScoreTrend;
         return this;
     }
 
-    public ScoreDirectorFactoryConfig withAssertionScoreDirectorFactory(
-            ScoreDirectorFactoryConfig assertionScoreDirectorFactory) {
+    public ScoreDirectorFactoryConfig<Solution_> withAssertionScoreDirectorFactory(
+            ScoreDirectorFactoryConfig<Solution_> assertionScoreDirectorFactory) {
         this.assertionScoreDirectorFactory = assertionScoreDirectorFactory;
         return this;
     }
 
     @Override
-    public ScoreDirectorFactoryConfig inherit(ScoreDirectorFactoryConfig inheritedConfig) {
+    public ScoreDirectorFactoryConfig<Solution_> inherit(ScoreDirectorFactoryConfig<Solution_> inheritedConfig) {
         easyScoreCalculatorClass = ConfigUtils.inheritOverwritableProperty(
                 easyScoreCalculatorClass, inheritedConfig.getEasyScoreCalculatorClass());
         easyScoreCalculatorCustomProperties = ConfigUtils.inheritMergeableMapProperty(
@@ -286,8 +287,8 @@ public class ScoreDirectorFactoryConfig extends AbstractConfig<ScoreDirectorFact
     }
 
     @Override
-    public ScoreDirectorFactoryConfig copyConfig() {
-        return new ScoreDirectorFactoryConfig().inherit(this);
+    public ScoreDirectorFactoryConfig<Solution_> copyConfig() {
+        return new ScoreDirectorFactoryConfig<Solution_>().inherit(this);
     }
 
 }

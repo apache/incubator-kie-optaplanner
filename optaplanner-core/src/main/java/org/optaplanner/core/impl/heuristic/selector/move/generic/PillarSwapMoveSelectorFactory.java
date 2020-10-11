@@ -16,8 +16,6 @@
 
 package org.optaplanner.core.impl.heuristic.selector.move.generic;
 
-import static org.apache.commons.lang3.ObjectUtils.defaultIfNull;
-
 import java.util.List;
 
 import org.optaplanner.core.config.heuristic.selector.common.SelectionCacheType;
@@ -31,36 +29,41 @@ import org.optaplanner.core.impl.heuristic.selector.entity.pillar.PillarSelector
 import org.optaplanner.core.impl.heuristic.selector.move.AbstractMoveSelectorFactory;
 import org.optaplanner.core.impl.heuristic.selector.move.MoveSelector;
 
-public class PillarSwapMoveSelectorFactory extends AbstractMoveSelectorFactory<PillarSwapMoveSelectorConfig> {
+import static org.apache.commons.lang3.ObjectUtils.defaultIfNull;
 
-    public PillarSwapMoveSelectorFactory(PillarSwapMoveSelectorConfig moveSelectorConfig) {
+public class PillarSwapMoveSelectorFactory<Solution_>
+        extends AbstractMoveSelectorFactory<Solution_, PillarSwapMoveSelectorConfig<Solution_>> {
+
+    public PillarSwapMoveSelectorFactory(PillarSwapMoveSelectorConfig<Solution_> moveSelectorConfig) {
         super(moveSelectorConfig);
     }
 
     @Override
-    protected MoveSelector buildBaseMoveSelector(HeuristicConfigPolicy configPolicy, SelectionCacheType minimumCacheType,
-            boolean randomSelection) {
-        PillarSelectorConfig leftPillarSelectorConfig =
-                defaultIfNull(config.getPillarSelectorConfig(), new PillarSelectorConfig());
-        PillarSelector leftPillarSelector =
+    protected MoveSelector<Solution_> buildBaseMoveSelector(HeuristicConfigPolicy<Solution_> configPolicy,
+            SelectionCacheType minimumCacheType, boolean randomSelection) {
+        PillarSelectorConfig<Solution_> leftPillarSelectorConfig =
+                defaultIfNull(config.getPillarSelectorConfig(), new PillarSelectorConfig<>());
+        PillarSelector<Solution_> leftPillarSelector =
                 buildPillarSelector(leftPillarSelectorConfig, configPolicy, minimumCacheType, randomSelection);
-        PillarSelectorConfig rightPillarSelectorConfig =
+        PillarSelectorConfig<Solution_> rightPillarSelectorConfig =
                 defaultIfNull(config.getSecondaryPillarSelectorConfig(), leftPillarSelectorConfig);
-        PillarSelector rightPillarSelector =
+        PillarSelector<Solution_> rightPillarSelector =
                 buildPillarSelector(rightPillarSelectorConfig, configPolicy, minimumCacheType, randomSelection);
 
-        List<GenuineVariableDescriptor> variableDescriptorList =
+        List<GenuineVariableDescriptor<Solution_>> variableDescriptorList =
                 deduceVariableDescriptorList(leftPillarSelector.getEntityDescriptor(), config.getVariableNameIncludeList());
-        return new PillarSwapMoveSelector(leftPillarSelector, rightPillarSelector, variableDescriptorList,
+        return new PillarSwapMoveSelector<>(leftPillarSelector, rightPillarSelector, variableDescriptorList,
                 randomSelection);
     }
 
-    private PillarSelector buildPillarSelector(PillarSelectorConfig pillarSelectorConfig, HeuristicConfigPolicy configPolicy,
-            SelectionCacheType minimumCacheType, boolean randomSelection) {
-        return PillarSelectorFactory.create(pillarSelectorConfig).buildPillarSelector(configPolicy,
-                config.getSubPillarType(), config.getSubPillarSequenceComparatorClass(),
-                minimumCacheType, SelectionOrder.fromRandomSelectionBoolean(randomSelection),
-                config.getVariableNameIncludeList());
+    private PillarSelector<Solution_> buildPillarSelector(PillarSelectorConfig<Solution_> pillarSelectorConfig,
+            HeuristicConfigPolicy<Solution_> configPolicy, SelectionCacheType minimumCacheType,
+            boolean randomSelection) {
+        return PillarSelectorFactory.create(pillarSelectorConfig)
+                .buildPillarSelector(configPolicy, config.getSubPillarType(),
+                        config.getSubPillarSequenceComparatorClass(), minimumCacheType,
+                        SelectionOrder.fromRandomSelectionBoolean(randomSelection),
+                        config.getVariableNameIncludeList());
     }
 
 }

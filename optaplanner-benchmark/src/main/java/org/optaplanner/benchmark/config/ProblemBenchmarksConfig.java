@@ -51,9 +51,9 @@ import org.optaplanner.persistence.common.api.domain.solution.SolutionFileIO;
         "problemStatisticTypeList",
         "singleStatisticTypeList"
 })
-public class ProblemBenchmarksConfig extends AbstractConfig<ProblemBenchmarksConfig> {
+public class ProblemBenchmarksConfig<Solution_> extends AbstractConfig<Solution_, ProblemBenchmarksConfig<Solution_>> {
 
-    private Class<SolutionFileIO> solutionFileIOClass = null;
+    private Class<SolutionFileIO<Solution_>> solutionFileIOClass = null;
 
     private Boolean writeOutputSolutionEnabled = null;
 
@@ -72,11 +72,11 @@ public class ProblemBenchmarksConfig extends AbstractConfig<ProblemBenchmarksCon
     // Constructors and simple getters/setters
     // ************************************************************************
 
-    public Class<SolutionFileIO> getSolutionFileIOClass() {
+    public Class<SolutionFileIO<Solution_>> getSolutionFileIOClass() {
         return solutionFileIOClass;
     }
 
-    public void setSolutionFileIOClass(Class<SolutionFileIO> solutionFileIOClass) {
+    public void setSolutionFileIOClass(Class<SolutionFileIO<Solution_>> solutionFileIOClass) {
         this.solutionFileIOClass = solutionFileIOClass;
     }
 
@@ -124,7 +124,7 @@ public class ProblemBenchmarksConfig extends AbstractConfig<ProblemBenchmarksCon
     // Builder methods
     // ************************************************************************
 
-    public <Solution_> void buildProblemBenchmarkList(SolverBenchmarkResult solverBenchmarkResult,
+    public void buildProblemBenchmarkList(SolverBenchmarkResult solverBenchmarkResult,
             Solution_[] extraProblems) {
         PlannerBenchmarkResult plannerBenchmarkResult = solverBenchmarkResult.getPlannerBenchmarkResult();
         List<ProblemBenchmarkResult> unifiedProblemBenchmarkResultList = plannerBenchmarkResult
@@ -134,7 +134,7 @@ public class ProblemBenchmarksConfig extends AbstractConfig<ProblemBenchmarksCon
             // 2 SolverBenchmarks containing equal ProblemBenchmarks should contain the same instance
             ProblemBenchmarkResult<Solution_> newProblemBenchmarkResult = buildProblemBenchmark(
                     plannerBenchmarkResult, problemProvider);
-            ProblemBenchmarkResult problemBenchmarkResult;
+            ProblemBenchmarkResult<Solution_> problemBenchmarkResult;
             int index = unifiedProblemBenchmarkResultList.indexOf(newProblemBenchmarkResult);
             if (index < 0) {
                 problemBenchmarkResult = newProblemBenchmarkResult;
@@ -146,7 +146,7 @@ public class ProblemBenchmarksConfig extends AbstractConfig<ProblemBenchmarksCon
         }
     }
 
-    private <Solution_> List<ProblemProvider<Solution_>> buildProblemProviderList(
+    private List<ProblemProvider<Solution_>> buildProblemProviderList(
             SolverBenchmarkResult solverBenchmarkResult, Solution_[] extraProblems) {
         if (ConfigUtils.isEmptyCollection(inputSolutionFileList) && extraProblems.length == 0) {
             throw new IllegalArgumentException(
@@ -187,14 +187,14 @@ public class ProblemBenchmarksConfig extends AbstractConfig<ProblemBenchmarksCon
         return problemProviderList;
     }
 
-    private <Solution_> SolutionFileIO<Solution_> buildSolutionFileIO() {
+    private SolutionFileIO<Solution_> buildSolutionFileIO() {
         if (solutionFileIOClass == null) {
             throw new IllegalArgumentException("The solutionFileIOClass (" + solutionFileIOClass + ") cannot be null.");
         }
         return ConfigUtils.newInstance(this, "solutionFileIOClass", solutionFileIOClass);
     }
 
-    private <Solution_> ProblemBenchmarkResult<Solution_> buildProblemBenchmark(
+    private ProblemBenchmarkResult<Solution_> buildProblemBenchmark(
             PlannerBenchmarkResult plannerBenchmarkResult, ProblemProvider<Solution_> problemProvider) {
         ProblemBenchmarkResult<Solution_> problemBenchmarkResult = new ProblemBenchmarkResult<>(plannerBenchmarkResult);
         problemBenchmarkResult.setName(problemProvider.getProblemName());
@@ -254,7 +254,7 @@ public class ProblemBenchmarksConfig extends AbstractConfig<ProblemBenchmarksCon
     }
 
     @Override
-    public ProblemBenchmarksConfig inherit(ProblemBenchmarksConfig inheritedConfig) {
+    public ProblemBenchmarksConfig<Solution_> inherit(ProblemBenchmarksConfig<Solution_> inheritedConfig) {
         solutionFileIOClass = ConfigUtils.inheritOverwritableProperty(solutionFileIOClass,
                 inheritedConfig.getSolutionFileIOClass());
         writeOutputSolutionEnabled = ConfigUtils.inheritOverwritableProperty(writeOutputSolutionEnabled,
@@ -271,8 +271,8 @@ public class ProblemBenchmarksConfig extends AbstractConfig<ProblemBenchmarksCon
     }
 
     @Override
-    public ProblemBenchmarksConfig copyConfig() {
-        return new ProblemBenchmarksConfig().inherit(this);
+    public ProblemBenchmarksConfig<Solution_> copyConfig() {
+        return new ProblemBenchmarksConfig<Solution_>().inherit(this);
     }
 
 }

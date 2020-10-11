@@ -1,5 +1,5 @@
 /*
- * Copyright 2012 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -30,13 +30,13 @@ import org.optaplanner.core.config.util.ConfigUtils;
         "subPillarSequenceComparatorClass",
         "pillarSelectorConfig"
 })
-public abstract class AbstractPillarMoveSelectorConfig<C extends AbstractPillarMoveSelectorConfig<C>>
-        extends MoveSelectorConfig<C> {
+public abstract class AbstractPillarMoveSelectorConfig<Solution_, C extends AbstractPillarMoveSelectorConfig<Solution_, C>>
+        extends MoveSelectorConfig<Solution_, C> {
 
     protected SubPillarType subPillarType = null;
     protected Class<? extends Comparator> subPillarSequenceComparatorClass = null;
     @XmlElement(name = "pillarSelector")
-    protected PillarSelectorConfig pillarSelectorConfig = null;
+    protected PillarSelectorConfig<Solution_> pillarSelectorConfig = null;
 
     public SubPillarType getSubPillarType() {
         return subPillarType;
@@ -54,11 +54,11 @@ public abstract class AbstractPillarMoveSelectorConfig<C extends AbstractPillarM
         this.subPillarSequenceComparatorClass = subPillarSequenceComparatorClass;
     }
 
-    public PillarSelectorConfig getPillarSelectorConfig() {
+    public PillarSelectorConfig<Solution_> getPillarSelectorConfig() {
         return pillarSelectorConfig;
     }
 
-    public void setPillarSelectorConfig(PillarSelectorConfig pillarSelectorConfig) {
+    public void setPillarSelectorConfig(PillarSelectorConfig<Solution_> pillarSelectorConfig) {
         this.pillarSelectorConfig = pillarSelectorConfig;
     }
 

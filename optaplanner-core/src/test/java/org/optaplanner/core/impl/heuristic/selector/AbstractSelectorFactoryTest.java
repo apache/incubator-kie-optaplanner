@@ -16,9 +16,7 @@
 
 package org.optaplanner.core.impl.heuristic.selector;
 
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
-
+import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
 import org.optaplanner.core.config.solver.EnvironmentMode;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.core.impl.heuristic.HeuristicConfigPolicy;
@@ -26,14 +24,17 @@ import org.optaplanner.core.impl.score.buildin.simple.SimpleScoreDefinition;
 import org.optaplanner.core.impl.score.director.InnerScoreDirectorFactory;
 import org.optaplanner.core.impl.testdata.domain.TestdataSolution;
 
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+
 public abstract class AbstractSelectorFactoryTest {
 
     public HeuristicConfigPolicy buildHeuristicConfigPolicy() {
         return buildHeuristicConfigPolicy(TestdataSolution.buildSolutionDescriptor());
     }
 
-    public HeuristicConfigPolicy buildHeuristicConfigPolicy(SolutionDescriptor solutionDescriptor) {
-        InnerScoreDirectorFactory scoreDirectorFactory = mock(InnerScoreDirectorFactory.class);
+    public <Solution_> HeuristicConfigPolicy buildHeuristicConfigPolicy(SolutionDescriptor<Solution_> solutionDescriptor) {
+        InnerScoreDirectorFactory<Solution_, SimpleScore> scoreDirectorFactory = mock(InnerScoreDirectorFactory.class);
         when(scoreDirectorFactory.getSolutionDescriptor()).thenReturn(solutionDescriptor);
         when(scoreDirectorFactory.getScoreDefinition()).thenReturn(new SimpleScoreDefinition());
         return new HeuristicConfigPolicy(EnvironmentMode.REPRODUCIBLE, null, null, null, scoreDirectorFactory);

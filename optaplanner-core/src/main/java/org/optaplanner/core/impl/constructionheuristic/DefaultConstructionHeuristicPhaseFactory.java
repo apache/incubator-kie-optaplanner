@@ -16,8 +16,6 @@
 
 package org.optaplanner.core.impl.constructionheuristic;
 
-import static org.apache.commons.lang3.ObjectUtils.defaultIfNull;
-
 import java.util.concurrent.ThreadFactory;
 
 import org.optaplanner.core.config.constructionheuristic.ConstructionHeuristicPhaseConfig;
@@ -47,18 +45,21 @@ import org.optaplanner.core.impl.solver.recaller.BestSolutionRecaller;
 import org.optaplanner.core.impl.solver.termination.Termination;
 import org.optaplanner.core.impl.solver.thread.ChildThreadType;
 
-public class DefaultConstructionHeuristicPhaseFactory<Solution_>
-        extends AbstractPhaseFactory<Solution_, ConstructionHeuristicPhaseConfig> {
+import static org.apache.commons.lang3.ObjectUtils.defaultIfNull;
 
-    public DefaultConstructionHeuristicPhaseFactory(ConstructionHeuristicPhaseConfig phaseConfig) {
+public class DefaultConstructionHeuristicPhaseFactory<Solution_>
+        extends AbstractPhaseFactory<Solution_, ConstructionHeuristicPhaseConfig<Solution_>> {
+
+    public DefaultConstructionHeuristicPhaseFactory(ConstructionHeuristicPhaseConfig<Solution_> phaseConfig) {
         super(phaseConfig);
     }
 
     @Override
-    public ConstructionHeuristicPhase<Solution_> buildPhase(int phaseIndex, HeuristicConfigPolicy solverConfigPolicy,
-            BestSolutionRecaller<Solution_> bestSolutionRecaller, Termination solverTermination) {
+    public ConstructionHeuristicPhase<Solution_> buildPhase(int phaseIndex,
+            HeuristicConfigPolicy<Solution_> solverConfigPolicy, BestSolutionRecaller<Solution_> bestSolutionRecaller,
+            Termination<Solution_> solverTermination) {
 
-        HeuristicConfigPolicy phaseConfigPolicy = solverConfigPolicy.createFilteredPhaseConfigPolicy();
+        HeuristicConfigPolicy<Solution_> phaseConfigPolicy = solverConfigPolicy.createFilteredPhaseConfigPolicy();
         DefaultConstructionHeuristicPhase<Solution_> phase =
                 new DefaultConstructionHeuristicPhase<>(phaseIndex, solverConfigPolicy.getLogIndentation(),
                         bestSolutionRecaller, buildPhaseTermination(phaseConfigPolicy, solverTermination));
@@ -100,9 +101,10 @@ public class DefaultConstructionHeuristicPhaseFactory<Solution_>
         return phase;
     }
 
-    private ConstructionHeuristicDecider<Solution_> buildDecider(HeuristicConfigPolicy configPolicy, Termination termination) {
-        ConstructionHeuristicForagerConfig foragerConfig_ = phaseConfig.getForagerConfig() == null
-                ? new ConstructionHeuristicForagerConfig()
+    private ConstructionHeuristicDecider<Solution_> buildDecider(HeuristicConfigPolicy<Solution_> configPolicy,
+            Termination<Solution_> termination) {
+        ConstructionHeuristicForagerConfig<Solution_> foragerConfig_ = phaseConfig.getForagerConfig() == null
+                ? new ConstructionHeuristicForagerConfig<>()
                 : phaseConfig.getForagerConfig();
         ConstructionHeuristicForager forager =
                 ConstructionHeuristicForagerFactory.create(foragerConfig_).buildForager(configPolicy);
@@ -142,8 +144,8 @@ public class DefaultConstructionHeuristicPhaseFactory<Solution_>
         return decider;
     }
 
-    private EntityPlacerConfig buildUnfoldedEntityPlacerConfig(
-            HeuristicConfigPolicy phaseConfigPolicy, ConstructionHeuristicType constructionHeuristicType) {
+    private EntityPlacerConfig buildUnfoldedEntityPlacerConfig(HeuristicConfigPolicy<Solution_> phaseConfigPolicy,
+            ConstructionHeuristicType constructionHeuristicType) {
         switch (constructionHeuristicType) {
             case FIRST_FIT:
             case FIRST_FIT_DECREASING:
@@ -155,25 +157,25 @@ public class DefaultConstructionHeuristicPhaseFactory<Solution_>
                 if (!ConfigUtils.isEmptyCollection(phaseConfig.getMoveSelectorConfigList())) {
                     return QueuedEntityPlacerFactory.unfoldNew(phaseConfigPolicy, phaseConfig.getMoveSelectorConfigList());
                 }
-                return new QueuedEntityPlacerConfig();
+                return new QueuedEntityPlacerConfig<>();
             case ALLOCATE_TO_VALUE_FROM_QUEUE:
                 if (!ConfigUtils.isEmptyCollection(phaseConfig.getMoveSelectorConfigList())) {
                     return QueuedValuePlacerFactory.unfoldNew(checkSingleMoveSelectorConfig());
                 }
-                return new QueuedValuePlacerConfig();
+                return new QueuedValuePlacerConfig<>();
             case CHEAPEST_INSERTION:
             case ALLOCATE_FROM_POOL:
                 if (!ConfigUtils.isEmptyCollection(phaseConfig.getMoveSelectorConfigList())) {
                     return PooledEntityPlacerFactory.unfoldNew(phaseConfigPolicy, checkSingleMoveSelectorConfig());
                 }
-                return new PooledEntityPlacerConfig();
+                return new PooledEntityPlacerConfig<>();
             default:
                 throw new IllegalStateException(
                         "The constructionHeuristicType (" + constructionHeuristicType + ") is not implemented.");
         }
     }
 
-    private MoveSelectorConfig<?> checkSingleMoveSelectorConfig() {
+    private MoveSelectorConfig<Solution_, ?> checkSingleMoveSelectorConfig() {
         if (phaseConfig.getMoveSelectorConfigList().size() != 1) {
             throw new IllegalArgumentException("For the constructionHeuristicType ("
                     + phaseConfig.getConstructionHeuristicType() + "), the moveSelectorConfigList ("

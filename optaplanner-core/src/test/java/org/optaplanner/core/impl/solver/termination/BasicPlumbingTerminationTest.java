@@ -16,19 +16,20 @@
 
 package org.optaplanner.core.impl.solver.termination;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
 import java.util.Arrays;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import org.junit.jupiter.api.Test;
+import org.optaplanner.core.impl.testdata.domain.TestdataSolution;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class BasicPlumbingTerminationTest {
 
     @Test
     public void addProblemFactChangeWithoutDaemon() {
         AtomicInteger count = new AtomicInteger(0);
-        BasicPlumbingTermination basicPlumbingTermination = new BasicPlumbingTermination(false);
+        BasicPlumbingTermination<TestdataSolution> basicPlumbingTermination = new BasicPlumbingTermination<>(false);
         assertThat(basicPlumbingTermination.waitForRestartSolverDecision()).isFalse();
         basicPlumbingTermination.addProblemFactChange(scoreDirector -> count.getAndIncrement());
         assertThat(basicPlumbingTermination.waitForRestartSolverDecision()).isTrue();
@@ -44,7 +45,7 @@ public class BasicPlumbingTerminationTest {
     @Test
     public void addProblemFactChangesWithoutDaemon() {
         AtomicInteger count = new AtomicInteger(0);
-        BasicPlumbingTermination basicPlumbingTermination = new BasicPlumbingTermination(false);
+        BasicPlumbingTermination<TestdataSolution> basicPlumbingTermination = new BasicPlumbingTermination<>(false);
         assertThat(basicPlumbingTermination.waitForRestartSolverDecision()).isFalse();
         basicPlumbingTermination.addProblemFactChanges(Arrays.asList(
                 scoreDirector -> count.getAndIncrement(),

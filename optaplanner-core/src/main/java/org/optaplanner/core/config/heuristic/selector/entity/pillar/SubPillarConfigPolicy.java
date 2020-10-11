@@ -1,3 +1,19 @@
+/*
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package org.optaplanner.core.config.heuristic.selector.entity.pillar;
 
 import java.util.Comparator;
@@ -10,7 +26,7 @@ import javax.xml.bind.annotation.XmlType;
         "maximumSubPillarSize",
         "maximumSubPillarSize"
 })
-public final class SubPillarConfigPolicy {
+public final class SubPillarConfigPolicy<Solution_> {
 
     private final boolean subPillarEnabled;
     private final int minimumSubPillarSize;
@@ -43,23 +59,24 @@ public final class SubPillarConfigPolicy {
         this.entityComparator = null;
     }
 
-    public static SubPillarConfigPolicy withoutSubpillars() {
-        return new SubPillarConfigPolicy();
+    public static <Solution_> SubPillarConfigPolicy<Solution_> withoutSubpillars() {
+        return new SubPillarConfigPolicy<>();
     }
 
-    public static SubPillarConfigPolicy withSubpillars(int minSize, int maxSize) {
-        return new SubPillarConfigPolicy(minSize, maxSize);
+    public static <Solution_> SubPillarConfigPolicy<Solution_> withSubpillars(int minSize, int maxSize) {
+        return new SubPillarConfigPolicy<>(minSize, maxSize);
     }
 
-    public static SubPillarConfigPolicy withSubpillarsUnlimited() {
+    public static <Solution_> SubPillarConfigPolicy<Solution_> withSubpillarsUnlimited() {
         return withSubpillars(1, Integer.MAX_VALUE);
     }
 
-    public static SubPillarConfigPolicy sequential(int minSize, int maxSize, Comparator<?> entityComparator) {
-        return new SubPillarConfigPolicy(minSize, maxSize, entityComparator);
+    public static <Solution_> SubPillarConfigPolicy<Solution_> sequential(int minSize, int maxSize,
+            Comparator<?> entityComparator) {
+        return new SubPillarConfigPolicy<>(minSize, maxSize, entityComparator);
     }
 
-    public static SubPillarConfigPolicy sequentialUnlimited(Comparator<?> entityComparator) {
+    public static <Solution_> SubPillarConfigPolicy<Solution_> sequentialUnlimited(Comparator<?> entityComparator) {
         return sequential(1, Integer.MAX_VALUE, entityComparator);
     }
 

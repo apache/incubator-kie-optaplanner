@@ -16,8 +16,6 @@
 
 package org.optaplanner.core.impl.heuristic.selector.move.generic.chained;
 
-import static org.apache.commons.lang3.ObjectUtils.defaultIfNull;
-
 import org.optaplanner.core.api.domain.valuerange.ValueRangeProvider;
 import org.optaplanner.core.config.heuristic.selector.common.SelectionCacheType;
 import org.optaplanner.core.config.heuristic.selector.common.SelectionOrder;
@@ -34,33 +32,37 @@ import org.optaplanner.core.impl.heuristic.selector.value.ValueSelectorFactory;
 import org.optaplanner.core.impl.heuristic.selector.value.chained.SubChainSelector;
 import org.optaplanner.core.impl.heuristic.selector.value.chained.SubChainSelectorFactory;
 
-public class SubChainChangeMoveSelectorFactory extends AbstractMoveSelectorFactory<SubChainChangeMoveSelectorConfig> {
+import static org.apache.commons.lang3.ObjectUtils.defaultIfNull;
 
-    public SubChainChangeMoveSelectorFactory(SubChainChangeMoveSelectorConfig moveSelectorConfig) {
+public class SubChainChangeMoveSelectorFactory<Solution_>
+        extends AbstractMoveSelectorFactory<Solution_, SubChainChangeMoveSelectorConfig<Solution_>> {
+
+    public SubChainChangeMoveSelectorFactory(SubChainChangeMoveSelectorConfig<Solution_> moveSelectorConfig) {
         super(moveSelectorConfig);
     }
 
     @Override
-    protected MoveSelector buildBaseMoveSelector(HeuristicConfigPolicy configPolicy,
+    protected MoveSelector<Solution_> buildBaseMoveSelector(HeuristicConfigPolicy<Solution_> configPolicy,
             SelectionCacheType minimumCacheType, boolean randomSelection) {
-        EntityDescriptor entityDescriptor =
+        EntityDescriptor<Solution_> entityDescriptor =
                 config.getEntityClass() == null ? deduceEntityDescriptor(configPolicy.getSolutionDescriptor())
                         : deduceEntityDescriptor(configPolicy.getSolutionDescriptor(), config.getEntityClass());
-        SubChainSelectorConfig subChainSelectorConfig_ =
-                config.getSubChainSelectorConfig() == null ? new SubChainSelectorConfig() : config.getSubChainSelectorConfig();
-        SubChainSelector subChainSelector =
+        SubChainSelectorConfig<Solution_> subChainSelectorConfig_ =
+                config.getSubChainSelectorConfig() == null ? new SubChainSelectorConfig<>() : config.getSubChainSelectorConfig();
+        SubChainSelector<Solution_> subChainSelector =
                 SubChainSelectorFactory.create(subChainSelectorConfig_).buildSubChainSelector(configPolicy, entityDescriptor,
                         minimumCacheType, SelectionOrder.fromRandomSelectionBoolean(randomSelection));
-        ValueSelectorConfig valueSelectorConfig_ =
-                config.getValueSelectorConfig() == null ? new ValueSelectorConfig() : config.getValueSelectorConfig();
-        ValueSelector valueSelector = ValueSelectorFactory.create(valueSelectorConfig_).buildValueSelector(configPolicy,
+        ValueSelectorConfig<Solution_> valueSelectorConfig_ =
+                config.getValueSelectorConfig() == null ? new ValueSelectorConfig<>() : config.getValueSelectorConfig();
+        ValueSelector<Solution_> valueSelector = ValueSelectorFactory.create(valueSelectorConfig_).buildValueSelector(configPolicy,
                 entityDescriptor, minimumCacheType, SelectionOrder.fromRandomSelectionBoolean(randomSelection));
         if (!(valueSelector instanceof EntityIndependentValueSelector)) {
             throw new IllegalArgumentException("The moveSelectorConfig (" + config
                     + ") needs to be based on an EntityIndependentValueSelector (" + valueSelector + ")."
                     + " Check your @" + ValueRangeProvider.class.getSimpleName() + " annotations.");
         }
-        return new SubChainChangeMoveSelector(subChainSelector, (EntityIndependentValueSelector) valueSelector,
-                randomSelection, defaultIfNull(config.getSelectReversingMoveToo(), true));
+        return new SubChainChangeMoveSelector<>(subChainSelector,
+                (EntityIndependentValueSelector<Solution_>) valueSelector, randomSelection,
+                defaultIfNull(config.getSelectReversingMoveToo(), true));
     }
 }

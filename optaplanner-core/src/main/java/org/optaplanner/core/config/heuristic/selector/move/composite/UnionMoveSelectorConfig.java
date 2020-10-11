@@ -39,7 +39,8 @@ import org.optaplanner.core.impl.heuristic.selector.common.decorator.SelectionPr
         "moveSelectorConfigList",
         "selectorProbabilityWeightFactoryClass"
 })
-public class UnionMoveSelectorConfig extends MoveSelectorConfig<UnionMoveSelectorConfig> {
+public class UnionMoveSelectorConfig<Solution_>
+        extends MoveSelectorConfig<Solution_, UnionMoveSelectorConfig<Solution_>> {
 
     public static final String XML_ELEMENT_NAME = "unionMoveSelector";
 
@@ -97,7 +98,7 @@ public class UnionMoveSelectorConfig extends MoveSelectorConfig<UnionMoveSelecto
     }
 
     @Override
-    public UnionMoveSelectorConfig inherit(UnionMoveSelectorConfig inheritedConfig) {
+    public UnionMoveSelectorConfig<Solution_> inherit(UnionMoveSelectorConfig<Solution_> inheritedConfig) {
         super.inherit(inheritedConfig);
         moveSelectorConfigList = ConfigUtils.inheritMergeableListConfig(
                 moveSelectorConfigList, inheritedConfig.getMoveSelectorConfigList());
@@ -107,8 +108,8 @@ public class UnionMoveSelectorConfig extends MoveSelectorConfig<UnionMoveSelecto
     }
 
     @Override
-    public UnionMoveSelectorConfig copyConfig() {
-        return new UnionMoveSelectorConfig().inherit(this);
+    public UnionMoveSelectorConfig<Solution_> copyConfig() {
+        return new UnionMoveSelectorConfig<Solution_>().inherit(this);
     }
 
     @Override

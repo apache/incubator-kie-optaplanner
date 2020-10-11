@@ -16,9 +16,6 @@
 
 package org.optaplanner.core.impl.partitionedsearch;
 
-import static org.optaplanner.core.config.partitionedsearch.PartitionedSearchPhaseConfig.ACTIVE_THREAD_COUNT_AUTO;
-import static org.optaplanner.core.config.partitionedsearch.PartitionedSearchPhaseConfig.ACTIVE_THREAD_COUNT_UNLIMITED;
-
 import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.ThreadFactory;
@@ -38,21 +35,25 @@ import org.optaplanner.core.impl.solver.thread.ChildThreadType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import static org.optaplanner.core.config.partitionedsearch.PartitionedSearchPhaseConfig.ACTIVE_THREAD_COUNT_AUTO;
+import static org.optaplanner.core.config.partitionedsearch.PartitionedSearchPhaseConfig.ACTIVE_THREAD_COUNT_UNLIMITED;
+
 public class DefaultPartitionedSearchPhaseFactory<Solution_>
-        extends AbstractPhaseFactory<Solution_, PartitionedSearchPhaseConfig> {
+        extends AbstractPhaseFactory<Solution_, PartitionedSearchPhaseConfig<Solution_>> {
 
     private static final Logger logger = LoggerFactory.getLogger(DefaultPartitionedSearchPhaseFactory.class);
 
-    public DefaultPartitionedSearchPhaseFactory(PartitionedSearchPhaseConfig phaseConfig) {
+    public DefaultPartitionedSearchPhaseFactory(PartitionedSearchPhaseConfig<Solution_> phaseConfig) {
         super(phaseConfig);
     }
 
     @Override
-    public PartitionedSearchPhase<Solution_> buildPhase(int phaseIndex, HeuristicConfigPolicy solverConfigPolicy,
-            BestSolutionRecaller<Solution_> bestSolutionRecaller, Termination solverTermination) {
-        HeuristicConfigPolicy phaseConfigPolicy = solverConfigPolicy.createPhaseConfigPolicy();
+    public PartitionedSearchPhase<Solution_> buildPhase(int phaseIndex,
+            HeuristicConfigPolicy<Solution_> solverConfigPolicy, BestSolutionRecaller<Solution_> bestSolutionRecaller,
+            Termination<Solution_> solverTermination) {
+        HeuristicConfigPolicy<Solution_> phaseConfigPolicy = solverConfigPolicy.createPhaseConfigPolicy();
         ThreadFactory threadFactory = solverConfigPolicy.buildThreadFactory(ChildThreadType.PART_THREAD);
-        Termination phaseTermination = buildPhaseTermination(phaseConfigPolicy, solverTermination);
+        Termination<Solution_> phaseTermination = buildPhaseTermination(phaseConfigPolicy, solverTermination);
         Integer resolvedActiveThreadCount = resolveActiveThreadCount(phaseConfig.getRunnablePartThreadLimit());
         DefaultPartitionedSearchPhase<Solution_> phase =
                 new DefaultPartitionedSearchPhase<>(phaseIndex, solverConfigPolicy.getLogIndentation(), bestSolutionRecaller,
@@ -60,8 +61,8 @@ public class DefaultPartitionedSearchPhaseFactory<Solution_>
         List<PhaseConfig> phaseConfigList_ = phaseConfig.getPhaseConfigList();
         if (ConfigUtils.isEmptyCollection(phaseConfigList_)) {
             phaseConfigList_ = Arrays.asList(
-                    new ConstructionHeuristicPhaseConfig(),
-                    new LocalSearchPhaseConfig());
+                    new ConstructionHeuristicPhaseConfig<>(),
+                    new LocalSearchPhaseConfig<>());
         }
         phase.setPhaseConfigList(phaseConfigList_);
         phase.setConfigPolicy(phaseConfigPolicy.createChildThreadConfigPolicy(ChildThreadType.PART_THREAD));

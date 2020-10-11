@@ -1,5 +1,5 @@
 /*
- * Copyright 2014 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -41,7 +41,7 @@ import org.optaplanner.core.impl.io.jaxb.adapter.JaxbLocaleAdapter;
         "solverRankingComparatorClass",
         "solverRankingWeightFactoryClass"
 })
-public class BenchmarkReportConfig extends AbstractConfig<BenchmarkReportConfig> {
+public class BenchmarkReportConfig<Solution_> extends AbstractConfig<Solution_, BenchmarkReportConfig<Solution_>> {
 
     @XmlJavaTypeAdapter(JaxbLocaleAdapter.class)
     private Locale locale = null;
@@ -52,7 +52,7 @@ public class BenchmarkReportConfig extends AbstractConfig<BenchmarkReportConfig>
     public BenchmarkReportConfig() {
     }
 
-    public BenchmarkReportConfig(BenchmarkReportConfig inheritedConfig) {
+    public BenchmarkReportConfig(BenchmarkReportConfig<Solution_> inheritedConfig) {
         inherit(inheritedConfig);
     }
 
@@ -159,7 +159,7 @@ public class BenchmarkReportConfig extends AbstractConfig<BenchmarkReportConfig>
     }
 
     @Override
-    public BenchmarkReportConfig inherit(BenchmarkReportConfig inheritedConfig) {
+    public BenchmarkReportConfig<Solution_> inherit(BenchmarkReportConfig<Solution_> inheritedConfig) {
         locale = ConfigUtils.inheritOverwritableProperty(locale, inheritedConfig.getLocale());
         solverRankingType = ConfigUtils.inheritOverwritableProperty(solverRankingType,
                 inheritedConfig.getSolverRankingType());
@@ -171,8 +171,8 @@ public class BenchmarkReportConfig extends AbstractConfig<BenchmarkReportConfig>
     }
 
     @Override
-    public BenchmarkReportConfig copyConfig() {
-        return new BenchmarkReportConfig().inherit(this);
+    public BenchmarkReportConfig<Solution_> copyConfig() {
+        return new BenchmarkReportConfig<Solution_>().inherit(this);
     }
 
 }

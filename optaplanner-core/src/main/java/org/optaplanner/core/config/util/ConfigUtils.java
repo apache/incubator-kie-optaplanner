@@ -16,8 +16,6 @@
 
 package org.optaplanner.core.config.util;
 
-import static org.optaplanner.core.impl.domain.common.accessor.MemberAccessorFactory.MemberAccessorType.FIELD_OR_READ_METHOD;
-
 import java.lang.annotation.Annotation;
 import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Field;
@@ -46,6 +44,8 @@ import org.optaplanner.core.impl.domain.common.AlphabeticMemberComparator;
 import org.optaplanner.core.impl.domain.common.ReflectionHelper;
 import org.optaplanner.core.impl.domain.common.accessor.MemberAccessor;
 import org.optaplanner.core.impl.domain.common.accessor.MemberAccessorFactory;
+
+import static org.optaplanner.core.impl.domain.common.accessor.MemberAccessorFactory.MemberAccessorType.FIELD_OR_READ_METHOD;
 
 public class ConfigUtils {
 
@@ -129,7 +129,7 @@ public class ConfigUtils {
         });
     }
 
-    public static <C extends AbstractConfig<C>> C inheritConfig(C original, C inherited) {
+    public static <Solution_, C extends AbstractConfig<Solution_, C>> C inheritConfig(C original, C inherited) {
         if (inherited != null) {
             if (original == null) {
                 original = inherited.copyConfig();
@@ -140,8 +140,8 @@ public class ConfigUtils {
         return original;
     }
 
-    public static <C extends AbstractConfig<C>> List<C> inheritMergeableListConfig(List<C> originalList,
-            List<C> inheritedList) {
+    public static <Solution_, C extends AbstractConfig<Solution_, C>> List<C> inheritMergeableListConfig(
+            List<C> originalList, List<C> inheritedList) {
         if (inheritedList != null) {
             List<C> mergedList = new ArrayList<>(inheritedList.size()
                     + (originalList == null ? 0 : originalList.size()));

@@ -51,10 +51,10 @@ import org.optaplanner.core.impl.heuristic.selector.common.decorator.SelectionSo
         "probabilityWeightFactoryClass",
         "selectedCountLimit"
 })
-public class EntitySelectorConfig extends SelectorConfig<EntitySelectorConfig> {
+public class EntitySelectorConfig<Solution_> extends SelectorConfig<Solution_, EntitySelectorConfig<Solution_>> {
 
-    public static EntitySelectorConfig newMimicSelectorConfig(String mimicSelectorRef) {
-        EntitySelectorConfig entitySelectorConfig = new EntitySelectorConfig();
+    public static <Solution_> EntitySelectorConfig<Solution_> newMimicSelectorConfig(String mimicSelectorRef) {
+        EntitySelectorConfig<Solution_> entitySelectorConfig = new EntitySelectorConfig<>();
         entitySelectorConfig.setMimicSelectorRef(mimicSelectorRef);
         return entitySelectorConfig;
     }
@@ -70,7 +70,7 @@ public class EntitySelectorConfig extends SelectorConfig<EntitySelectorConfig> {
     protected SelectionOrder selectionOrder = null;
 
     @XmlElement(name = "nearbySelection")
-    protected NearbySelectionConfig nearbySelectionConfig = null;
+    protected NearbySelectionConfig<Solution_> nearbySelectionConfig = null;
 
     protected Class<? extends SelectionFilter> filterClass = null;
 
@@ -91,7 +91,7 @@ public class EntitySelectorConfig extends SelectorConfig<EntitySelectorConfig> {
         this.entityClass = entityClass;
     }
 
-    public EntitySelectorConfig(EntitySelectorConfig inheritedConfig) {
+    public EntitySelectorConfig(EntitySelectorConfig<Solution_> inheritedConfig) {
         if (inheritedConfig != null) {
             inherit(inheritedConfig);
         }
@@ -137,11 +137,11 @@ public class EntitySelectorConfig extends SelectorConfig<EntitySelectorConfig> {
         this.selectionOrder = selectionOrder;
     }
 
-    public NearbySelectionConfig getNearbySelectionConfig() {
+    public NearbySelectionConfig<Solution_> getNearbySelectionConfig() {
         return nearbySelectionConfig;
     }
 
-    public void setNearbySelectionConfig(NearbySelectionConfig nearbySelectionConfig) {
+    public void setNearbySelectionConfig(NearbySelectionConfig<Solution_> nearbySelectionConfig) {
         this.nearbySelectionConfig = nearbySelectionConfig;
     }
 
@@ -211,7 +211,7 @@ public class EntitySelectorConfig extends SelectorConfig<EntitySelectorConfig> {
     }
 
     @Override
-    public EntitySelectorConfig inherit(EntitySelectorConfig inheritedConfig) {
+    public EntitySelectorConfig<Solution_> inherit(EntitySelectorConfig<Solution_> inheritedConfig) {
         id = ConfigUtils.inheritOverwritableProperty(id, inheritedConfig.getId());
         mimicSelectorRef = ConfigUtils.inheritOverwritableProperty(mimicSelectorRef,
                 inheritedConfig.getMimicSelectorRef());
@@ -240,8 +240,8 @@ public class EntitySelectorConfig extends SelectorConfig<EntitySelectorConfig> {
     }
 
     @Override
-    public EntitySelectorConfig copyConfig() {
-        return new EntitySelectorConfig().inherit(this);
+    public EntitySelectorConfig<Solution_> copyConfig() {
+        return new EntitySelectorConfig<Solution_>().inherit(this);
     }
 
     @Override
@@ -249,7 +249,8 @@ public class EntitySelectorConfig extends SelectorConfig<EntitySelectorConfig> {
         return getClass().getSimpleName() + "(" + entityClass + ")";
     }
 
-    public static boolean hasSorter(EntitySorterManner entitySorterManner, EntityDescriptor entityDescriptor) {
+    public static <Solution_> boolean hasSorter(EntitySorterManner entitySorterManner,
+            EntityDescriptor<Solution_> entityDescriptor) {
         switch (entitySorterManner) {
             case NONE:
                 return false;
@@ -263,8 +264,9 @@ public class EntitySelectorConfig extends SelectorConfig<EntitySelectorConfig> {
         }
     }
 
-    public static SelectionSorter determineSorter(EntitySorterManner entitySorterManner, EntityDescriptor entityDescriptor) {
-        SelectionSorter sorter;
+    public static <Solution_, T> SelectionSorter<Solution_, T> determineSorter(EntitySorterManner entitySorterManner,
+            EntityDescriptor<Solution_> entityDescriptor) {
+        SelectionSorter<Solution_, T> sorter;
         switch (entitySorterManner) {
             case NONE:
                 throw new IllegalStateException("Impossible state: hasSorter() should have returned null.");

@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -30,7 +30,7 @@ import javax.xml.bind.annotation.XmlAccessorType;
  * @param <C> the same class as the implementing subclass
  */
 @XmlAccessorType(XmlAccessType.FIELD) // Applies to all subclasses.
-public abstract class AbstractConfig<C extends AbstractConfig> {
+public abstract class AbstractConfig<Solution_, C extends AbstractConfig<Solution_, C>> {
 
     /**
      * Inherits each property of the {@code inheritedConfig} unless that property (or a semantic alternative)

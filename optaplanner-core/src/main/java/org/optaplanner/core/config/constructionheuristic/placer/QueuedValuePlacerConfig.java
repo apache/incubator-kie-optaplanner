@@ -40,12 +40,13 @@ import org.optaplanner.core.config.util.ConfigUtils;
         "valueSelectorConfig",
         "moveSelectorConfig"
 })
-public class QueuedValuePlacerConfig extends EntityPlacerConfig<QueuedValuePlacerConfig> {
+public class QueuedValuePlacerConfig<Solution_>
+        extends EntityPlacerConfig<Solution_, QueuedValuePlacerConfig<Solution_>> {
 
     protected Class<?> entityClass = null;
 
     @XmlElement(name = "valueSelector")
-    protected ValueSelectorConfig valueSelectorConfig = null;
+    protected ValueSelectorConfig<Solution_> valueSelectorConfig = null;
 
     @XmlElements({
             @XmlElement(name = CartesianProductMoveSelectorConfig.XML_ELEMENT_NAME,
@@ -75,11 +76,11 @@ public class QueuedValuePlacerConfig extends EntityPlacerConfig<QueuedValuePlace
         this.entityClass = entityClass;
     }
 
-    public ValueSelectorConfig getValueSelectorConfig() {
+    public ValueSelectorConfig<Solution_> getValueSelectorConfig() {
         return valueSelectorConfig;
     }
 
-    public void setValueSelectorConfig(ValueSelectorConfig valueSelectorConfig) {
+    public void setValueSelectorConfig(ValueSelectorConfig<Solution_> valueSelectorConfig) {
         this.valueSelectorConfig = valueSelectorConfig;
     }
 
@@ -92,7 +93,7 @@ public class QueuedValuePlacerConfig extends EntityPlacerConfig<QueuedValuePlace
     }
 
     @Override
-    public QueuedValuePlacerConfig inherit(QueuedValuePlacerConfig inheritedConfig) {
+    public QueuedValuePlacerConfig<Solution_> inherit(QueuedValuePlacerConfig<Solution_> inheritedConfig) {
         entityClass = ConfigUtils.inheritOverwritableProperty(entityClass, inheritedConfig.getEntityClass());
         valueSelectorConfig = ConfigUtils.inheritConfig(valueSelectorConfig, inheritedConfig.getValueSelectorConfig());
         setMoveSelectorConfig(ConfigUtils.inheritOverwritableProperty(
@@ -101,8 +102,8 @@ public class QueuedValuePlacerConfig extends EntityPlacerConfig<QueuedValuePlace
     }
 
     @Override
-    public QueuedValuePlacerConfig copyConfig() {
-        return new QueuedValuePlacerConfig().inherit(this);
+    public QueuedValuePlacerConfig<Solution_> copyConfig() {
+        return new QueuedValuePlacerConfig<Solution_>().inherit(this);
     }
 
     @Override

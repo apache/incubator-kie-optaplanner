@@ -28,19 +28,19 @@ import org.optaplanner.core.config.util.ConfigUtils;
         "minimumSubChainSize",
         "maximumSubChainSize"
 })
-public class SubChainSelectorConfig extends SelectorConfig<SubChainSelectorConfig> {
+public class SubChainSelectorConfig<Solution_> extends SelectorConfig<Solution_, SubChainSelectorConfig<Solution_>> {
 
     @XmlElement(name = "valueSelector")
-    protected ValueSelectorConfig valueSelectorConfig = null;
+    protected ValueSelectorConfig<Solution_> valueSelectorConfig = null;
 
     protected Integer minimumSubChainSize = null;
     protected Integer maximumSubChainSize = null;
 
-    public ValueSelectorConfig getValueSelectorConfig() {
+    public ValueSelectorConfig<Solution_> getValueSelectorConfig() {
         return valueSelectorConfig;
     }
 
-    public void setValueSelectorConfig(ValueSelectorConfig valueSelectorConfig) {
+    public void setValueSelectorConfig(ValueSelectorConfig<Solution_> valueSelectorConfig) {
         this.valueSelectorConfig = valueSelectorConfig;
     }
 
@@ -64,7 +64,7 @@ public class SubChainSelectorConfig extends SelectorConfig<SubChainSelectorConfi
     }
 
     @Override
-    public SubChainSelectorConfig inherit(SubChainSelectorConfig inheritedConfig) {
+    public SubChainSelectorConfig<Solution_> inherit(SubChainSelectorConfig<Solution_> inheritedConfig) {
         valueSelectorConfig = ConfigUtils.inheritConfig(valueSelectorConfig, inheritedConfig.getValueSelectorConfig());
         minimumSubChainSize = ConfigUtils.inheritOverwritableProperty(minimumSubChainSize,
                 inheritedConfig.getMinimumSubChainSize());
@@ -74,8 +74,8 @@ public class SubChainSelectorConfig extends SelectorConfig<SubChainSelectorConfi
     }
 
     @Override
-    public SubChainSelectorConfig copyConfig() {
-        return new SubChainSelectorConfig().inherit(this);
+    public SubChainSelectorConfig<Solution_> copyConfig() {
+        return new SubChainSelectorConfig<Solution_>().inherit(this);
     }
 
     @Override

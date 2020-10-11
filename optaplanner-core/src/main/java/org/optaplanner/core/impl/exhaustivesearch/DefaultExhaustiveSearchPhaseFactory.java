@@ -16,8 +16,6 @@
 
 package org.optaplanner.core.impl.exhaustivesearch;
 
-import static org.apache.commons.lang3.ObjectUtils.defaultIfNull;
-
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -49,17 +47,20 @@ import org.optaplanner.core.impl.phase.AbstractPhaseFactory;
 import org.optaplanner.core.impl.solver.recaller.BestSolutionRecaller;
 import org.optaplanner.core.impl.solver.termination.Termination;
 
-public class DefaultExhaustiveSearchPhaseFactory<Solution_>
-        extends AbstractPhaseFactory<Solution_, ExhaustiveSearchPhaseConfig> {
+import static org.apache.commons.lang3.ObjectUtils.defaultIfNull;
 
-    public DefaultExhaustiveSearchPhaseFactory(ExhaustiveSearchPhaseConfig phaseConfig) {
+public class DefaultExhaustiveSearchPhaseFactory<Solution_>
+        extends AbstractPhaseFactory<Solution_, ExhaustiveSearchPhaseConfig<Solution_>> {
+
+    public DefaultExhaustiveSearchPhaseFactory(ExhaustiveSearchPhaseConfig<Solution_> phaseConfig) {
         super(phaseConfig);
     }
 
     @Override
-    public ExhaustiveSearchPhase<Solution_> buildPhase(int phaseIndex, HeuristicConfigPolicy solverConfigPolicy,
-            BestSolutionRecaller<Solution_> bestSolutionRecaller, Termination solverTermination) {
-        HeuristicConfigPolicy phaseConfigPolicy = solverConfigPolicy.createFilteredPhaseConfigPolicy();
+    public ExhaustiveSearchPhase<Solution_> buildPhase(int phaseIndex,
+            HeuristicConfigPolicy<Solution_> solverConfigPolicy, BestSolutionRecaller<Solution_> bestSolutionRecaller,
+            Termination<Solution_> solverTermination) {
+        HeuristicConfigPolicy<Solution_> phaseConfigPolicy = solverConfigPolicy.createFilteredPhaseConfigPolicy();
         ExhaustiveSearchType exhaustiveSearchType_ = phaseConfig.getExhaustiveSearchType() == null
                 ? ExhaustiveSearchType.BRANCH_AND_BOUND
                 : phaseConfig.getExhaustiveSearchType();
@@ -85,8 +86,8 @@ public class DefaultExhaustiveSearchPhaseFactory<Solution_>
             nodeExplorationType_ = defaultIfNull(phaseConfig.getNodeExplorationType(), NodeExplorationType.DEPTH_FIRST);
         }
         phase.setNodeComparator(nodeExplorationType_.buildNodeComparator(scoreBounderEnabled));
-        EntitySelectorConfig entitySelectorConfig_ = buildEntitySelectorConfig(phaseConfigPolicy);
-        EntitySelector entitySelector = EntitySelectorFactory.create(entitySelectorConfig_)
+        EntitySelectorConfig<Solution_> entitySelectorConfig_ = buildEntitySelectorConfig(phaseConfigPolicy);
+        EntitySelector<Solution_> entitySelector = EntitySelectorFactory.create(entitySelectorConfig_)
                 .buildEntitySelector(phaseConfigPolicy, SelectionCacheType.PHASE, SelectionOrder.ORIGINAL);
         phase.setEntitySelector(entitySelector);
         phase.setDecider(buildDecider(phaseConfigPolicy, entitySelector, bestSolutionRecaller, phase.getTermination(),
@@ -104,10 +105,10 @@ public class DefaultExhaustiveSearchPhaseFactory<Solution_>
         return phase;
     }
 
-    private EntitySelectorConfig buildEntitySelectorConfig(HeuristicConfigPolicy configPolicy) {
-        EntitySelectorConfig entitySelectorConfig_;
+    private EntitySelectorConfig<Solution_> buildEntitySelectorConfig(HeuristicConfigPolicy<Solution_> configPolicy) {
+        EntitySelectorConfig<Solution_> entitySelectorConfig_;
         if (phaseConfig.getEntitySelectorConfig() == null) {
-            entitySelectorConfig_ = new EntitySelectorConfig();
+            entitySelectorConfig_ = new EntitySelectorConfig<>();
             EntityDescriptor<Solution_> entityDescriptor = deduceEntityDescriptor(configPolicy.getSolutionDescriptor());
             entitySelectorConfig_.setEntityClass(entityDescriptor.getEntityClass());
             if (EntitySelectorConfig.hasSorter(configPolicy.getEntitySorterManner(), entityDescriptor)) {
@@ -139,15 +140,16 @@ public class DefaultExhaustiveSearchPhaseFactory<Solution_>
         return entityDescriptors.iterator().next();
     }
 
-    private ExhaustiveSearchDecider<Solution_> buildDecider(HeuristicConfigPolicy configPolicy,
-            EntitySelector sourceEntitySelector, BestSolutionRecaller<Solution_> bestSolutionRecaller, Termination termination,
-            boolean scoreBounderEnabled) {
-        ManualEntityMimicRecorder manualEntityMimicRecorder = new ManualEntityMimicRecorder(sourceEntitySelector);
+    private ExhaustiveSearchDecider<Solution_> buildDecider(HeuristicConfigPolicy<Solution_> configPolicy,
+            EntitySelector<Solution_> sourceEntitySelector, BestSolutionRecaller<Solution_> bestSolutionRecaller,
+            Termination<Solution_> termination, boolean scoreBounderEnabled) {
+        ManualEntityMimicRecorder<Solution_> manualEntityMimicRecorder =
+                new ManualEntityMimicRecorder<>(sourceEntitySelector);
         String mimicSelectorId = sourceEntitySelector.getEntityDescriptor().getEntityClass().getName(); // TODO mimicSelectorId must be a field
         configPolicy.addEntityMimicRecorder(mimicSelectorId, manualEntityMimicRecorder);
-        MoveSelectorConfig moveSelectorConfig_ = buildMoveSelectorConfig(configPolicy,
+        MoveSelectorConfig<Solution_, ?> moveSelectorConfig_ = buildMoveSelectorConfig(configPolicy,
                 sourceEntitySelector, mimicSelectorId);
-        MoveSelector moveSelector = MoveSelectorFactory.create(moveSelectorConfig_)
+        MoveSelector<Solution_> moveSelector = MoveSelectorFactory.create(moveSelectorConfig_)
                 .buildMoveSelector(configPolicy, SelectionCacheType.JUST_IN_TIME, SelectionOrder.ORIGINAL);
         ScoreBounder scoreBounder = scoreBounderEnabled
                 ? new TrendBasedScoreBounder(configPolicy.getScoreDirectorFactory())
@@ -165,9 +167,9 @@ public class DefaultExhaustiveSearchPhaseFactory<Solution_>
         return decider;
     }
 
-    private MoveSelectorConfig buildMoveSelectorConfig(HeuristicConfigPolicy configPolicy,
-            EntitySelector entitySelector, String mimicSelectorId) {
-        MoveSelectorConfig moveSelectorConfig_;
+    private MoveSelectorConfig<Solution_, ?> buildMoveSelectorConfig(HeuristicConfigPolicy<Solution_> configPolicy,
+            EntitySelector<Solution_> entitySelector, String mimicSelectorId) {
+        MoveSelectorConfig<Solution_, ?> moveSelectorConfig_;
         if (phaseConfig.getMoveSelectorConfig() == null) {
             EntityDescriptor<Solution_> entityDescriptor = entitySelector.getEntityDescriptor();
             // Keep in sync with DefaultExhaustiveSearchPhase.fillLayerList()
@@ -177,10 +179,10 @@ public class DefaultExhaustiveSearchPhaseFactory<Solution_>
             List<MoveSelectorConfig> subMoveSelectorConfigList = new ArrayList<>(
                     variableDescriptors.size());
             for (GenuineVariableDescriptor<Solution_> variableDescriptor : variableDescriptors) {
-                ChangeMoveSelectorConfig changeMoveSelectorConfig = new ChangeMoveSelectorConfig();
+                ChangeMoveSelectorConfig<Solution_> changeMoveSelectorConfig = new ChangeMoveSelectorConfig<>();
                 changeMoveSelectorConfig.setEntitySelectorConfig(
                         EntitySelectorConfig.newMimicSelectorConfig(mimicSelectorId));
-                ValueSelectorConfig changeValueSelectorConfig = new ValueSelectorConfig();
+                ValueSelectorConfig<Solution_> changeValueSelectorConfig = new ValueSelectorConfig<>();
                 changeValueSelectorConfig.setVariableName(variableDescriptor.getVariableName());
                 if (ValueSelectorConfig.hasSorter(configPolicy.getValueSorterManner(), variableDescriptor)) {
                     if (variableDescriptor.isValueRangeEntityIndependent()) {
@@ -195,7 +197,7 @@ public class DefaultExhaustiveSearchPhaseFactory<Solution_>
                 subMoveSelectorConfigList.add(changeMoveSelectorConfig);
             }
             if (subMoveSelectorConfigList.size() > 1) {
-                moveSelectorConfig_ = new CartesianProductMoveSelectorConfig(subMoveSelectorConfigList);
+                moveSelectorConfig_ = new CartesianProductMoveSelectorConfig<>(subMoveSelectorConfigList);
             } else {
                 moveSelectorConfig_ = subMoveSelectorConfigList.get(0);
             }

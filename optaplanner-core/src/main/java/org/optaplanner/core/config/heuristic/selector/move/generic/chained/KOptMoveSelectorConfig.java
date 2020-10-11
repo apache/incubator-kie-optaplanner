@@ -37,36 +37,37 @@ import org.optaplanner.core.config.util.ConfigUtils;
         "entitySelectorConfig",
         "valueSelectorConfig"
 })
-public class KOptMoveSelectorConfig extends MoveSelectorConfig<KOptMoveSelectorConfig> {
+public class KOptMoveSelectorConfig<Solution_>
+        extends MoveSelectorConfig<Solution_, KOptMoveSelectorConfig<Solution_>> {
 
     public static final String XML_ELEMENT_NAME = "kOptMoveSelector";
 
     @XmlElement(name = "entitySelector")
-    private EntitySelectorConfig entitySelectorConfig = null;
+    private EntitySelectorConfig<Solution_> entitySelectorConfig = null;
     /**
      * Like {@link TailChainSwapMoveSelectorConfig#valueSelectorConfig} but used multiple times to create 1 move.
      */
     @XmlElement(name = "valueSelector")
-    private ValueSelectorConfig valueSelectorConfig = null;
+    private ValueSelectorConfig<Solution_> valueSelectorConfig = null;
 
-    public EntitySelectorConfig getEntitySelectorConfig() {
+    public EntitySelectorConfig<Solution_> getEntitySelectorConfig() {
         return entitySelectorConfig;
     }
 
-    public void setEntitySelectorConfig(EntitySelectorConfig entitySelectorConfig) {
+    public void setEntitySelectorConfig(EntitySelectorConfig<Solution_> entitySelectorConfig) {
         this.entitySelectorConfig = entitySelectorConfig;
     }
 
-    public ValueSelectorConfig getValueSelectorConfig() {
+    public ValueSelectorConfig<Solution_> getValueSelectorConfig() {
         return valueSelectorConfig;
     }
 
-    public void setValueSelectorConfig(ValueSelectorConfig valueSelectorConfig) {
+    public void setValueSelectorConfig(ValueSelectorConfig<Solution_> valueSelectorConfig) {
         this.valueSelectorConfig = valueSelectorConfig;
     }
 
     @Override
-    public KOptMoveSelectorConfig inherit(KOptMoveSelectorConfig inheritedConfig) {
+    public KOptMoveSelectorConfig<Solution_> inherit(KOptMoveSelectorConfig<Solution_> inheritedConfig) {
         super.inherit(inheritedConfig);
         entitySelectorConfig = ConfigUtils.inheritConfig(entitySelectorConfig, inheritedConfig.getEntitySelectorConfig());
         valueSelectorConfig = ConfigUtils.inheritConfig(valueSelectorConfig, inheritedConfig.getValueSelectorConfig());
@@ -74,8 +75,8 @@ public class KOptMoveSelectorConfig extends MoveSelectorConfig<KOptMoveSelectorC
     }
 
     @Override
-    public KOptMoveSelectorConfig copyConfig() {
-        return new KOptMoveSelectorConfig().inherit(this);
+    public KOptMoveSelectorConfig<Solution_> copyConfig() {
+        return new KOptMoveSelectorConfig<Solution_>().inherit(this);
     }
 
     @Override

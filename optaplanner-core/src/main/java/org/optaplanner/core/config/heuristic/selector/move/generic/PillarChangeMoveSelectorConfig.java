@@ -25,31 +25,32 @@ import org.optaplanner.core.config.util.ConfigUtils;
 @XmlType(propOrder = {
         "valueSelectorConfig"
 })
-public class PillarChangeMoveSelectorConfig extends AbstractPillarMoveSelectorConfig<PillarChangeMoveSelectorConfig> {
+public class PillarChangeMoveSelectorConfig<Solution_>
+        extends AbstractPillarMoveSelectorConfig<Solution_, PillarChangeMoveSelectorConfig<Solution_>> {
 
     public static final String XML_ELEMENT_NAME = "pillarChangeMoveSelector";
 
     @XmlElement(name = "valueSelector")
-    private ValueSelectorConfig valueSelectorConfig = null;
+    private ValueSelectorConfig<Solution_> valueSelectorConfig = null;
 
-    public ValueSelectorConfig getValueSelectorConfig() {
+    public ValueSelectorConfig<Solution_> getValueSelectorConfig() {
         return valueSelectorConfig;
     }
 
-    public void setValueSelectorConfig(ValueSelectorConfig valueSelectorConfig) {
+    public void setValueSelectorConfig(ValueSelectorConfig<Solution_> valueSelectorConfig) {
         this.valueSelectorConfig = valueSelectorConfig;
     }
 
     @Override
-    public PillarChangeMoveSelectorConfig inherit(PillarChangeMoveSelectorConfig inheritedConfig) {
+    public PillarChangeMoveSelectorConfig<Solution_> inherit(PillarChangeMoveSelectorConfig<Solution_> inheritedConfig) {
         super.inherit(inheritedConfig);
         valueSelectorConfig = ConfigUtils.inheritConfig(valueSelectorConfig, inheritedConfig.getValueSelectorConfig());
         return this;
     }
 
     @Override
-    public PillarChangeMoveSelectorConfig copyConfig() {
-        return new PillarChangeMoveSelectorConfig().inherit(this);
+    public PillarChangeMoveSelectorConfig<Solution_> copyConfig() {
+        return new PillarChangeMoveSelectorConfig<Solution_>().inherit(this);
     }
 
     @Override

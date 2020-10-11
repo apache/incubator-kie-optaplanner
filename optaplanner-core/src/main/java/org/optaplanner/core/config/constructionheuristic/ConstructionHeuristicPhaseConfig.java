@@ -52,7 +52,8 @@ import org.optaplanner.core.config.util.ConfigUtils;
         "moveSelectorConfigList",
         "foragerConfig"
 })
-public class ConstructionHeuristicPhaseConfig extends PhaseConfig<ConstructionHeuristicPhaseConfig> {
+public class ConstructionHeuristicPhaseConfig<Solution_>
+        extends PhaseConfig<Solution_, ConstructionHeuristicPhaseConfig<Solution_>> {
 
     public static final String XML_ELEMENT_NAME = "constructionHeuristic";
 
@@ -68,7 +69,7 @@ public class ConstructionHeuristicPhaseConfig extends PhaseConfig<ConstructionHe
             @XmlElement(name = "queuedValuePlacer", type = QueuedValuePlacerConfig.class),
             @XmlElement(name = "pooledEntityPlacer", type = PooledEntityPlacerConfig.class)
     })
-    protected EntityPlacerConfig entityPlacerConfig = null;
+    protected EntityPlacerConfig<Solution_, ?> entityPlacerConfig = null;
 
     /** Simpler alternative for {@link #entityPlacerConfig}. */
     @XmlElements({
@@ -92,7 +93,7 @@ public class ConstructionHeuristicPhaseConfig extends PhaseConfig<ConstructionHe
     protected List<MoveSelectorConfig> moveSelectorConfigList = null;
 
     @XmlElement(name = "forager")
-    protected ConstructionHeuristicForagerConfig foragerConfig = null;
+    protected ConstructionHeuristicForagerConfig<Solution_> foragerConfig = null;
 
     // ************************************************************************
     // Constructors and simple getters/setters
@@ -122,11 +123,11 @@ public class ConstructionHeuristicPhaseConfig extends PhaseConfig<ConstructionHe
         this.valueSorterManner = valueSorterManner;
     }
 
-    public EntityPlacerConfig getEntityPlacerConfig() {
+    public EntityPlacerConfig<Solution_, ?> getEntityPlacerConfig() {
         return entityPlacerConfig;
     }
 
-    public void setEntityPlacerConfig(EntityPlacerConfig entityPlacerConfig) {
+    public void setEntityPlacerConfig(EntityPlacerConfig<Solution_, ?> entityPlacerConfig) {
         this.entityPlacerConfig = entityPlacerConfig;
     }
 
@@ -138,11 +139,11 @@ public class ConstructionHeuristicPhaseConfig extends PhaseConfig<ConstructionHe
         this.moveSelectorConfigList = moveSelectorConfigList;
     }
 
-    public ConstructionHeuristicForagerConfig getForagerConfig() {
+    public ConstructionHeuristicForagerConfig<Solution_> getForagerConfig() {
         return foragerConfig;
     }
 
-    public void setForagerConfig(ConstructionHeuristicForagerConfig foragerConfig) {
+    public void setForagerConfig(ConstructionHeuristicForagerConfig<Solution_> foragerConfig) {
         this.foragerConfig = foragerConfig;
     }
 
@@ -150,38 +151,43 @@ public class ConstructionHeuristicPhaseConfig extends PhaseConfig<ConstructionHe
     // With methods
     // ************************************************************************
 
-    public ConstructionHeuristicPhaseConfig withConstructionHeuristicType(ConstructionHeuristicType constructionHeuristicType) {
+    public ConstructionHeuristicPhaseConfig<Solution_> withConstructionHeuristicType(
+            ConstructionHeuristicType constructionHeuristicType) {
         this.constructionHeuristicType = constructionHeuristicType;
         return this;
     }
 
-    public ConstructionHeuristicPhaseConfig withEntitySorterManner(EntitySorterManner entitySorterManner) {
+    public ConstructionHeuristicPhaseConfig<Solution_> withEntitySorterManner(EntitySorterManner entitySorterManner) {
         this.entitySorterManner = entitySorterManner;
         return this;
     }
 
-    public ConstructionHeuristicPhaseConfig withValueSorterManner(ValueSorterManner valueSorterManner) {
+    public ConstructionHeuristicPhaseConfig<Solution_> withValueSorterManner(ValueSorterManner valueSorterManner) {
         this.valueSorterManner = valueSorterManner;
         return this;
     }
 
-    public ConstructionHeuristicPhaseConfig withEntityPlacerConfig(EntityPlacerConfig entityPlacerConfig) {
+    public ConstructionHeuristicPhaseConfig<Solution_> withEntityPlacerConfig(
+            EntityPlacerConfig<Solution_, ?> entityPlacerConfig) {
         this.entityPlacerConfig = entityPlacerConfig;
         return this;
     }
 
-    public ConstructionHeuristicPhaseConfig withMoveSelectorConfigList(List<MoveSelectorConfig> moveSelectorConfigList) {
+    public ConstructionHeuristicPhaseConfig<Solution_> withMoveSelectorConfigList(
+            List<MoveSelectorConfig> moveSelectorConfigList) {
         this.moveSelectorConfigList = moveSelectorConfigList;
         return this;
     }
 
-    public ConstructionHeuristicPhaseConfig withForagerConfig(ConstructionHeuristicForagerConfig foragerConfig) {
+    public ConstructionHeuristicPhaseConfig<Solution_> withForagerConfig(
+            ConstructionHeuristicForagerConfig<Solution_> foragerConfig) {
         this.foragerConfig = foragerConfig;
         return this;
     }
 
     @Override
-    public ConstructionHeuristicPhaseConfig inherit(ConstructionHeuristicPhaseConfig inheritedConfig) {
+    public ConstructionHeuristicPhaseConfig<Solution_> inherit(
+            ConstructionHeuristicPhaseConfig<Solution_> inheritedConfig) {
         super.inherit(inheritedConfig);
         constructionHeuristicType = ConfigUtils.inheritOverwritableProperty(constructionHeuristicType,
                 inheritedConfig.getConstructionHeuristicType());
@@ -198,8 +204,8 @@ public class ConstructionHeuristicPhaseConfig extends PhaseConfig<ConstructionHe
     }
 
     @Override
-    public ConstructionHeuristicPhaseConfig copyConfig() {
-        return new ConstructionHeuristicPhaseConfig().inherit(this);
+    public ConstructionHeuristicPhaseConfig<Solution_> copyConfig() {
+        return new ConstructionHeuristicPhaseConfig<Solution_>().inherit(this);
     }
 
 }

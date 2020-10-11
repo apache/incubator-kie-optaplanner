@@ -30,15 +30,16 @@ import org.optaplanner.core.config.util.ConfigUtils;
         "valueSelectorConfig",
         "selectReversingMoveToo"
 })
-public class SubChainChangeMoveSelectorConfig extends MoveSelectorConfig<SubChainChangeMoveSelectorConfig> {
+public class SubChainChangeMoveSelectorConfig<Solution_>
+        extends MoveSelectorConfig<Solution_, SubChainChangeMoveSelectorConfig<Solution_>> {
 
     public static final String XML_ELEMENT_NAME = "subChainChangeMoveSelector";
 
     private Class<?> entityClass = null;
     @XmlElement(name = "subChainSelector")
-    private SubChainSelectorConfig subChainSelectorConfig = null;
+    private SubChainSelectorConfig<Solution_> subChainSelectorConfig = null;
     @XmlElement(name = "valueSelector")
-    private ValueSelectorConfig valueSelectorConfig = null;
+    private ValueSelectorConfig<Solution_> valueSelectorConfig = null;
 
     private Boolean selectReversingMoveToo = null;
 
@@ -50,19 +51,19 @@ public class SubChainChangeMoveSelectorConfig extends MoveSelectorConfig<SubChai
         this.entityClass = entityClass;
     }
 
-    public SubChainSelectorConfig getSubChainSelectorConfig() {
+    public SubChainSelectorConfig<Solution_> getSubChainSelectorConfig() {
         return subChainSelectorConfig;
     }
 
-    public void setSubChainSelectorConfig(SubChainSelectorConfig subChainSelectorConfig) {
+    public void setSubChainSelectorConfig(SubChainSelectorConfig<Solution_> subChainSelectorConfig) {
         this.subChainSelectorConfig = subChainSelectorConfig;
     }
 
-    public ValueSelectorConfig getValueSelectorConfig() {
+    public ValueSelectorConfig<Solution_> getValueSelectorConfig() {
         return valueSelectorConfig;
     }
 
-    public void setValueSelectorConfig(ValueSelectorConfig valueSelectorConfig) {
+    public void setValueSelectorConfig(ValueSelectorConfig<Solution_> valueSelectorConfig) {
         this.valueSelectorConfig = valueSelectorConfig;
     }
 
@@ -75,7 +76,8 @@ public class SubChainChangeMoveSelectorConfig extends MoveSelectorConfig<SubChai
     }
 
     @Override
-    public SubChainChangeMoveSelectorConfig inherit(SubChainChangeMoveSelectorConfig inheritedConfig) {
+    public SubChainChangeMoveSelectorConfig<Solution_> inherit(
+            SubChainChangeMoveSelectorConfig<Solution_> inheritedConfig) {
         super.inherit(inheritedConfig);
         entityClass = ConfigUtils.inheritOverwritableProperty(entityClass, inheritedConfig.getEntityClass());
         subChainSelectorConfig = ConfigUtils.inheritConfig(subChainSelectorConfig, inheritedConfig.getSubChainSelectorConfig());
@@ -86,8 +88,8 @@ public class SubChainChangeMoveSelectorConfig extends MoveSelectorConfig<SubChai
     }
 
     @Override
-    public SubChainChangeMoveSelectorConfig copyConfig() {
-        return new SubChainChangeMoveSelectorConfig().inherit(this);
+    public SubChainChangeMoveSelectorConfig<Solution_> copyConfig() {
+        return new SubChainChangeMoveSelectorConfig<Solution_>().inherit(this);
     }
 
     @Override
