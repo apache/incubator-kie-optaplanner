@@ -262,7 +262,8 @@ public class TerminationConfig<Solution_> extends AbstractConfig<Solution_, Term
         return this;
     }
 
-    public TerminationConfig<Solution_> withTerminationCompositionStyle(TerminationCompositionStyle terminationCompositionStyle) {
+    public TerminationConfig<Solution_>
+            withTerminationCompositionStyle(TerminationCompositionStyle terminationCompositionStyle) {
         this.terminationCompositionStyle = terminationCompositionStyle;
         return this;
     }

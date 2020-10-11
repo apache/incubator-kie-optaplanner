@@ -28,7 +28,7 @@ import org.optaplanner.core.impl.heuristic.selector.move.MoveSelector;
 import org.optaplanner.core.impl.solver.scope.SolverScope;
 
 public abstract class AbstractCachingMoveSelector<Solution_> extends AbstractMoveSelector<Solution_>
-        implements SelectionCacheLifecycleListener<Solution_>{
+        implements SelectionCacheLifecycleListener<Solution_> {
 
     protected final MoveSelector<Solution_> childMoveSelector;
     protected final SelectionCacheType cacheType;

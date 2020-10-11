@@ -55,7 +55,8 @@ public class TerminationFactory<Solution_> {
      * @param configPolicy never null
      * @return sometimes null
      */
-    public <Score_ extends Score<Score_>> Termination<Solution_> buildTermination(HeuristicConfigPolicy<Solution_> configPolicy) {
+    public <Score_ extends Score<Score_>> Termination<Solution_>
+            buildTermination(HeuristicConfigPolicy<Solution_> configPolicy) {
         List<Termination<Solution_>> terminationList = new ArrayList<>();
         if (terminationConfig.getTerminationClass() != null) {
             Termination<Solution_> termination =
@@ -96,7 +97,8 @@ public class TerminationFactory<Solution_> {
         return buildTerminationFromList(terminationList);
     }
 
-    protected <Score_ extends Score<Score_>> List<Termination<Solution_>> buildTimeBasedTermination(HeuristicConfigPolicy<Solution_> configPolicy) {
+    protected <Score_ extends Score<Score_>> List<Termination<Solution_>>
+            buildTimeBasedTermination(HeuristicConfigPolicy<Solution_> configPolicy) {
         List<Termination<Solution_>> terminationList = new ArrayList<>();
         Long timeMillisSpentLimit = terminationConfig.calculateTimeMillisSpentLimit();
         if (timeMillisSpentLimit != null) {

@@ -16,6 +16,9 @@
 
 package org.optaplanner.core.impl.heuristic.selector.move;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
+
 import java.util.Comparator;
 
 import org.junit.jupiter.api.Test;
@@ -34,9 +37,6 @@ import org.optaplanner.core.impl.heuristic.selector.move.decorator.ProbabilityMo
 import org.optaplanner.core.impl.heuristic.selector.move.decorator.ShufflingMoveSelector;
 import org.optaplanner.core.impl.heuristic.selector.move.decorator.SortingMoveSelector;
 import org.optaplanner.core.impl.testdata.domain.TestdataSolution;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 
 class MoveSelectorFactoryTest extends AbstractSelectorFactoryTest {
 

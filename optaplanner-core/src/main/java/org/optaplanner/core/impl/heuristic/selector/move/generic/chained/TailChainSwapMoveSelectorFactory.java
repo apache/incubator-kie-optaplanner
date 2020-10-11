@@ -41,13 +41,15 @@ public class TailChainSwapMoveSelectorFactory<Solution_>
             SelectionCacheType minimumCacheType, boolean randomSelection) {
         EntitySelectorConfig<Solution_> entitySelectorConfig_ =
                 config.getEntitySelectorConfig() == null ? new EntitySelectorConfig<>() : config.getEntitySelectorConfig();
-        EntitySelector<Solution_> entitySelector = EntitySelectorFactory.create(entitySelectorConfig_).buildEntitySelector(configPolicy,
-                minimumCacheType, SelectionOrder.fromRandomSelectionBoolean(randomSelection));
+        EntitySelector<Solution_> entitySelector =
+                EntitySelectorFactory.create(entitySelectorConfig_).buildEntitySelector(configPolicy,
+                        minimumCacheType, SelectionOrder.fromRandomSelectionBoolean(randomSelection));
         ValueSelectorConfig<Solution_> valueSelectorConfig_ =
                 config.getValueSelectorConfig() == null ? new ValueSelectorConfig<>() : config.getValueSelectorConfig();
-        ValueSelector<Solution_> valueSelector = ValueSelectorFactory.create(valueSelectorConfig_).buildValueSelector(configPolicy,
-                entitySelector.getEntityDescriptor(), minimumCacheType,
-                SelectionOrder.fromRandomSelectionBoolean(randomSelection));
+        ValueSelector<Solution_> valueSelector =
+                ValueSelectorFactory.create(valueSelectorConfig_).buildValueSelector(configPolicy,
+                        entitySelector.getEntityDescriptor(), minimumCacheType,
+                        SelectionOrder.fromRandomSelectionBoolean(randomSelection));
         return new TailChainSwapMoveSelector<>(entitySelector, valueSelector, randomSelection);
     }
 }

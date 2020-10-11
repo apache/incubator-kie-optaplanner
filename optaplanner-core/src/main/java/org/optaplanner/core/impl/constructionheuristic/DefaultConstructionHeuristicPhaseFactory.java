@@ -16,6 +16,8 @@
 
 package org.optaplanner.core.impl.constructionheuristic;
 
+import static org.apache.commons.lang3.ObjectUtils.defaultIfNull;
+
 import java.util.concurrent.ThreadFactory;
 
 import org.optaplanner.core.config.constructionheuristic.ConstructionHeuristicPhaseConfig;
@@ -44,8 +46,6 @@ import org.optaplanner.core.impl.phase.AbstractPhaseFactory;
 import org.optaplanner.core.impl.solver.recaller.BestSolutionRecaller;
 import org.optaplanner.core.impl.solver.termination.Termination;
 import org.optaplanner.core.impl.solver.thread.ChildThreadType;
-
-import static org.apache.commons.lang3.ObjectUtils.defaultIfNull;
 
 public class DefaultConstructionHeuristicPhaseFactory<Solution_>
         extends AbstractPhaseFactory<Solution_, ConstructionHeuristicPhaseConfig<Solution_>> {

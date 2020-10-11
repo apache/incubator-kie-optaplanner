@@ -43,8 +43,9 @@ public class KOptMoveSelectorFactory<Solution_>
             SelectionCacheType minimumCacheType, boolean randomSelection) {
         EntitySelectorConfig<Solution_> entitySelectorConfig_ =
                 config.getEntitySelectorConfig() == null ? new EntitySelectorConfig<>() : config.getEntitySelectorConfig();
-        EntitySelector<Solution_> entitySelector = EntitySelectorFactory.create(entitySelectorConfig_).buildEntitySelector(configPolicy,
-                minimumCacheType, SelectionOrder.fromRandomSelectionBoolean(randomSelection));
+        EntitySelector<Solution_> entitySelector =
+                EntitySelectorFactory.create(entitySelectorConfig_).buildEntitySelector(configPolicy,
+                        minimumCacheType, SelectionOrder.fromRandomSelectionBoolean(randomSelection));
         ValueSelectorConfig<Solution_> valueSelectorConfig_ =
                 config.getValueSelectorConfig() == null ? new ValueSelectorConfig<>() : config.getValueSelectorConfig();
         ValueSelector<Solution_>[] valueSelectors = new ValueSelector[K - 1];

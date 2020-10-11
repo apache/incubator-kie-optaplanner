@@ -16,6 +16,8 @@
 
 package org.optaplanner.core.impl.heuristic.selector.move.generic;
 
+import static org.apache.commons.lang3.ObjectUtils.defaultIfNull;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -34,8 +36,6 @@ import org.optaplanner.core.impl.heuristic.selector.entity.EntitySelectorFactory
 import org.optaplanner.core.impl.heuristic.selector.move.AbstractMoveSelectorFactory;
 import org.optaplanner.core.impl.heuristic.selector.move.MoveSelector;
 
-import static org.apache.commons.lang3.ObjectUtils.defaultIfNull;
-
 public class SwapMoveSelectorFactory<Solution_>
         extends AbstractMoveSelectorFactory<Solution_, SwapMoveSelectorConfig<Solution_>> {
 
@@ -52,8 +52,9 @@ public class SwapMoveSelectorFactory<Solution_>
                 configPolicy, minimumCacheType, SelectionOrder.fromRandomSelectionBoolean(randomSelection));
         EntitySelectorConfig<Solution_> rightEntitySelectorConfig = defaultIfNull(config.getSecondaryEntitySelectorConfig(),
                 entitySelectorConfig_);
-        EntitySelector<Solution_> rightEntitySelector = EntitySelectorFactory.create(rightEntitySelectorConfig).buildEntitySelector(
-                configPolicy, minimumCacheType, SelectionOrder.fromRandomSelectionBoolean(randomSelection));
+        EntitySelector<Solution_> rightEntitySelector =
+                EntitySelectorFactory.create(rightEntitySelectorConfig).buildEntitySelector(
+                        configPolicy, minimumCacheType, SelectionOrder.fromRandomSelectionBoolean(randomSelection));
         List<GenuineVariableDescriptor<Solution_>> variableDescriptorList =
                 deduceVariableDescriptorList(leftEntitySelector.getEntityDescriptor(), config.getVariableNameIncludeList());
         return new SwapMoveSelector<>(leftEntitySelector, rightEntitySelector, variableDescriptorList,
@@ -85,12 +86,14 @@ public class SwapMoveSelectorFactory<Solution_>
         return buildUnfoldedMoveSelectorConfig(entityDescriptors);
     }
 
-    protected MoveSelectorConfig<Solution_, ?> buildUnfoldedMoveSelectorConfig(Collection<EntityDescriptor<Solution_>> entityDescriptors) {
+    protected MoveSelectorConfig<Solution_, ?>
+            buildUnfoldedMoveSelectorConfig(Collection<EntityDescriptor<Solution_>> entityDescriptors) {
         List<MoveSelectorConfig> moveSelectorConfigList = new ArrayList<>(entityDescriptors.size());
         for (EntityDescriptor<Solution_> entityDescriptor : entityDescriptors) {
             // No childMoveSelectorConfig.inherit() because of unfoldedMoveSelectorConfig.inheritFolded()
             SwapMoveSelectorConfig<Solution_> childMoveSelectorConfig = new SwapMoveSelectorConfig<>();
-            EntitySelectorConfig<Solution_> childEntitySelectorConfig = new EntitySelectorConfig(config.getEntitySelectorConfig());
+            EntitySelectorConfig<Solution_> childEntitySelectorConfig =
+                    new EntitySelectorConfig(config.getEntitySelectorConfig());
             if (childEntitySelectorConfig.getMimicSelectorRef() == null) {
                 childEntitySelectorConfig.setEntityClass(entityDescriptor.getEntityClass());
             }

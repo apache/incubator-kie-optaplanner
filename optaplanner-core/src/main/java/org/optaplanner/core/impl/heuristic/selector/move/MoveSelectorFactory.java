@@ -59,7 +59,8 @@ public interface MoveSelectorFactory<Solution_> {
         } else if (UnionMoveSelectorConfig.class.isAssignableFrom(moveSelectorConfig.getClass())) {
             return new UnionMoveSelectorFactory<>((UnionMoveSelectorConfig<Solution_>) moveSelectorConfig);
         } else if (CartesianProductMoveSelectorConfig.class.isAssignableFrom(moveSelectorConfig.getClass())) {
-            return new CartesianProductMoveSelectorFactory<>((CartesianProductMoveSelectorConfig<Solution_>) moveSelectorConfig);
+            return new CartesianProductMoveSelectorFactory<>(
+                    (CartesianProductMoveSelectorConfig<Solution_>) moveSelectorConfig);
         } else if (SubChainChangeMoveSelectorConfig.class.isAssignableFrom(moveSelectorConfig.getClass())) {
             return new SubChainChangeMoveSelectorFactory<>((SubChainChangeMoveSelectorConfig<Solution_>) moveSelectorConfig);
         } else if (SubChainSwapMoveSelectorConfig.class.isAssignableFrom(moveSelectorConfig.getClass())) {

@@ -128,9 +128,9 @@ public class SubChainSwapMoveSelector<Solution_> extends GenericMoveSelector<Sol
                     boolean reversing = selectReversingMoveToo && workingRandom.nextBoolean();
                     return reversing
                             ? new SubChainReversingSwapMove<>(variableDescriptor, inverseVariableSupply,
-                            leftSubSelection, rightSubSelection)
+                                    leftSubSelection, rightSubSelection)
                             : new SubChainSwapMove<>(variableDescriptor, inverseVariableSupply, leftSubSelection,
-                            rightSubSelection);
+                                    rightSubSelection);
                 }
             };
         }

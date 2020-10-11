@@ -58,7 +58,8 @@ public class CustomPhaseConfig<Solution_> extends PhaseConfig<Solution_, CustomP
         return customPhaseCommandClassList;
     }
 
-    public void setCustomPhaseCommandClassList(List<Class<? extends CustomPhaseCommand<Solution_>>> customPhaseCommandClassList) {
+    public void
+            setCustomPhaseCommandClassList(List<Class<? extends CustomPhaseCommand<Solution_>>> customPhaseCommandClassList) {
         this.customPhaseCommandClassList = customPhaseCommandClassList;
     }
 

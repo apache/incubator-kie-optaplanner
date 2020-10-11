@@ -305,7 +305,8 @@ public class LocalSearchAcceptorConfig<Solution_>
         return this;
     }
 
-    public LocalSearchAcceptorConfig<Solution_> withSimulatedAnnealingStartingTemperature(String simulatedAnnealingStartingTemperature) {
+    public LocalSearchAcceptorConfig<Solution_>
+            withSimulatedAnnealingStartingTemperature(String simulatedAnnealingStartingTemperature) {
         this.simulatedAnnealingStartingTemperature = simulatedAnnealingStartingTemperature;
         return this;
     }

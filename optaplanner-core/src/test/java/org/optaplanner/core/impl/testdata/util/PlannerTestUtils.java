@@ -16,6 +16,11 @@
 
 package org.optaplanner.core.impl.testdata.util;
 
+import static java.util.Arrays.stream;
+import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -51,11 +56,6 @@ import org.optaplanner.core.impl.testdata.domain.TestdataEntity;
 import org.optaplanner.core.impl.testdata.domain.TestdataSolution;
 import org.optaplanner.core.impl.testdata.domain.TestdataValue;
 
-import static java.util.Arrays.stream;
-import static org.mockito.Mockito.any;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
-
 /**
  * @see PlannerAssert
  */
@@ -84,7 +84,8 @@ public class PlannerTestUtils {
         List<PhaseConfig> phaseConfigList = new ArrayList<>(2);
         phaseConfigList.add(new ConstructionHeuristicPhaseConfig<>());
         LocalSearchPhaseConfig<Solution_> localSearchPhaseConfig = new LocalSearchPhaseConfig<>();
-        localSearchPhaseConfig.setTerminationConfig(new TerminationConfig<Solution_>().withStepCountLimit(TERMINATION_STEP_COUNT_LIMIT));
+        localSearchPhaseConfig
+                .setTerminationConfig(new TerminationConfig<Solution_>().withStepCountLimit(TERMINATION_STEP_COUNT_LIMIT));
         phaseConfigList.add(localSearchPhaseConfig);
         solverConfig.setPhaseConfigList(phaseConfigList);
         return solverConfig;

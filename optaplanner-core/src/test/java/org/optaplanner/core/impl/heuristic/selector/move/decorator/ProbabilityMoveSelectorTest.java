@@ -16,6 +16,13 @@
 
 package org.optaplanner.core.impl.heuristic.selector.move.decorator;
 
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+import static org.optaplanner.core.impl.testdata.util.PlannerAssert.assertCodesOfNeverEndingMoveSelector;
+import static org.optaplanner.core.impl.testdata.util.PlannerAssert.verifyPhaseLifecycle;
+
 import java.util.Random;
 
 import org.junit.jupiter.api.Test;
@@ -29,13 +36,6 @@ import org.optaplanner.core.impl.phase.scope.AbstractStepScope;
 import org.optaplanner.core.impl.solver.scope.SolverScope;
 import org.optaplanner.core.impl.testdata.domain.TestdataSolution;
 
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-import static org.optaplanner.core.impl.testdata.util.PlannerAssert.assertCodesOfNeverEndingMoveSelector;
-import static org.optaplanner.core.impl.testdata.util.PlannerAssert.verifyPhaseLifecycle;
-
 public class ProbabilityMoveSelectorTest {
 
     @Test
@@ -45,19 +45,19 @@ public class ProbabilityMoveSelectorTest {
 
         SelectionProbabilityWeightFactory<TestdataSolution, DummyMove> probabilityWeightFactory =
                 (scoreDirector, move) -> {
-            switch (move.getCode()) {
-                case "e1":
-                    return 1000.0;
-                case "e2":
-                    return 200.0;
-                case "e3":
-                    return 30.0;
-                case "e4":
-                    return 4.0;
-                default:
-                    throw new IllegalStateException("Unknown move (" + move + ").");
-            }
-        };
+                    switch (move.getCode()) {
+                        case "e1":
+                            return 1000.0;
+                        case "e2":
+                            return 200.0;
+                        case "e3":
+                            return 30.0;
+                        case "e4":
+                            return 4.0;
+                        default:
+                            throw new IllegalStateException("Unknown move (" + move + ").");
+                    }
+                };
         MoveSelector<TestdataSolution> moveSelector = new ProbabilityMoveSelector<>(childMoveSelector,
                 SelectionCacheType.STEP, probabilityWeightFactory);
 

@@ -37,8 +37,7 @@ public class EntityIndependentFilteringValueSelector<Solution_> extends Filterin
 
     @Override
     public Iterator<Object> iterator() {
-        return new JustInTimeFilteringValueIterator((
-                (EntityIndependentValueSelector<Solution_>) childValueSelector).iterator(),
+        return new JustInTimeFilteringValueIterator(((EntityIndependentValueSelector<Solution_>) childValueSelector).iterator(),
                 determineBailOutSize());
     }
 

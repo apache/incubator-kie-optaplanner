@@ -16,6 +16,8 @@
 
 package org.optaplanner.core.impl.exhaustivesearch;
 
+import static org.apache.commons.lang3.ObjectUtils.defaultIfNull;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -46,8 +48,6 @@ import org.optaplanner.core.impl.heuristic.selector.move.MoveSelectorFactory;
 import org.optaplanner.core.impl.phase.AbstractPhaseFactory;
 import org.optaplanner.core.impl.solver.recaller.BestSolutionRecaller;
 import org.optaplanner.core.impl.solver.termination.Termination;
-
-import static org.apache.commons.lang3.ObjectUtils.defaultIfNull;
 
 public class DefaultExhaustiveSearchPhaseFactory<Solution_>
         extends AbstractPhaseFactory<Solution_, ExhaustiveSearchPhaseConfig<Solution_>> {

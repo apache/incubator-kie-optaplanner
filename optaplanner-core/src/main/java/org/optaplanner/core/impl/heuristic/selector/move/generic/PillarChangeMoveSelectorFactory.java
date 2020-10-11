@@ -16,6 +16,8 @@
 
 package org.optaplanner.core.impl.heuristic.selector.move.generic;
 
+import static org.apache.commons.lang3.ObjectUtils.defaultIfNull;
+
 import java.util.Collections;
 import java.util.List;
 
@@ -31,8 +33,6 @@ import org.optaplanner.core.impl.heuristic.selector.move.AbstractMoveSelectorFac
 import org.optaplanner.core.impl.heuristic.selector.move.MoveSelector;
 import org.optaplanner.core.impl.heuristic.selector.value.ValueSelector;
 import org.optaplanner.core.impl.heuristic.selector.value.ValueSelectorFactory;
-
-import static org.apache.commons.lang3.ObjectUtils.defaultIfNull;
 
 public class PillarChangeMoveSelectorFactory<Solution_>
         extends AbstractMoveSelectorFactory<Solution_, PillarChangeMoveSelectorConfig<Solution_>> {
@@ -51,7 +51,7 @@ public class PillarChangeMoveSelectorFactory<Solution_>
                         : Collections.singletonList(config.getValueSelectorConfig().getVariableName());
         PillarSelector<Solution_> pillarSelector = PillarSelectorFactory.create(pillarSelectorConfig_)
                 .buildPillarSelector(configPolicy, config.getSubPillarType(), config.getSubPillarSequenceComparatorClass(),
-                minimumCacheType, SelectionOrder.fromRandomSelectionBoolean(randomSelection), variableNameIncludeList);
+                        minimumCacheType, SelectionOrder.fromRandomSelectionBoolean(randomSelection), variableNameIncludeList);
         ValueSelectorConfig<Solution_> valueSelectorConfig_ = defaultIfNull(config.getValueSelectorConfig(),
                 new ValueSelectorConfig<>());
         SelectionOrder selectionOrder = SelectionOrder.fromRandomSelectionBoolean(randomSelection);

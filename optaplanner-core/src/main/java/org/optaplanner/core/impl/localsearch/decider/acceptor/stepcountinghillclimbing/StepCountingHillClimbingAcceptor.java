@@ -87,10 +87,10 @@ public class StepCountingHillClimbingAcceptor<Solution_> extends AbstractAccepto
             case STEP:
                 return 1;
             case EQUAL_OR_IMPROVING_STEP:
-                return ((Score)stepScope.getScore()).compareTo(
+                return ((Score) stepScope.getScore()).compareTo(
                         stepScope.getPhaseScope().getLastCompletedStepScope().getScore()) >= 0 ? 1 : 0;
             case IMPROVING_STEP:
-                return ((Score)stepScope.getScore()).compareTo(
+                return ((Score) stepScope.getScore()).compareTo(
                         stepScope.getPhaseScope().getLastCompletedStepScope().getScore()) > 0 ? 1 : 0;
             default:
                 throw new IllegalStateException("The stepCountingHillClimbingType (" + stepCountingHillClimbingType

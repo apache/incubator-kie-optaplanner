@@ -191,7 +191,8 @@ public abstract class AbstractMoveSelectorFactory<Solution_, MoveSelectorConfig_
             if (config.getSorterComparatorClass() != null) {
                 Comparator<Move<Solution_>> sorterComparator = ConfigUtils.newInstance(config,
                         "sorterComparatorClass", config.getSorterComparatorClass());
-                sorter = new ComparatorSelectionSorter<>(sorterComparator, SelectionSorterOrder.resolve(config.getSorterOrder()));
+                sorter = new ComparatorSelectionSorter<>(sorterComparator,
+                        SelectionSorterOrder.resolve(config.getSorterOrder()));
             } else if (config.getSorterWeightFactoryClass() != null) {
                 SelectionSorterWeightFactory<Solution_, Move<Solution_>> sorterWeightFactory =
                         ConfigUtils.newInstance(config, "sorterWeightFactoryClass",
@@ -250,7 +251,8 @@ public abstract class AbstractMoveSelectorFactory<Solution_, MoveSelectorConfig_
             SelectionOrder resolvedSelectionOrder, MoveSelector<Solution_> moveSelector) {
         if (resolvedCacheType.isCached() && resolvedCacheType.compareTo(moveSelector.getCacheType()) > 0) {
             moveSelector =
-                    new CachingMoveSelector<>(moveSelector, resolvedCacheType, resolvedSelectionOrder.toRandomSelectionBoolean());
+                    new CachingMoveSelector<>(moveSelector, resolvedCacheType,
+                            resolvedSelectionOrder.toRandomSelectionBoolean());
         }
         return moveSelector;
     }

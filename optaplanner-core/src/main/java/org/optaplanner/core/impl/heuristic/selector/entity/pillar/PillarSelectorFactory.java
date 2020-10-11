@@ -16,6 +16,8 @@
 
 package org.optaplanner.core.impl.heuristic.selector.entity.pillar;
 
+import static org.apache.commons.lang3.ObjectUtils.defaultIfNull;
+
 import java.util.Comparator;
 import java.util.List;
 
@@ -31,8 +33,6 @@ import org.optaplanner.core.impl.heuristic.HeuristicConfigPolicy;
 import org.optaplanner.core.impl.heuristic.selector.AbstractSelectorFactory;
 import org.optaplanner.core.impl.heuristic.selector.entity.EntitySelector;
 import org.optaplanner.core.impl.heuristic.selector.entity.EntitySelectorFactory;
-
-import static org.apache.commons.lang3.ObjectUtils.defaultIfNull;
 
 public class PillarSelectorFactory<Solution_>
         extends AbstractSelectorFactory<Solution_, PillarSelectorConfig<Solution_>> {
@@ -73,10 +73,12 @@ public class PillarSelectorFactory<Solution_>
         }
         boolean subPillarEnabled = subPillarType != SubPillarType.NONE;
         // EntitySelector uses SelectionOrder.ORIGINAL because a DefaultPillarSelector STEP caches the values
-        EntitySelectorConfig<Solution_> entitySelectorConfig_ = config.getEntitySelectorConfig() == null ? new EntitySelectorConfig<>()
-                : config.getEntitySelectorConfig();
-        EntitySelector<Solution_> entitySelector = EntitySelectorFactory.create(entitySelectorConfig_).buildEntitySelector(configPolicy,
-                minimumCacheType, SelectionOrder.ORIGINAL);
+        EntitySelectorConfig<Solution_> entitySelectorConfig_ =
+                config.getEntitySelectorConfig() == null ? new EntitySelectorConfig<>()
+                        : config.getEntitySelectorConfig();
+        EntitySelector<Solution_> entitySelector =
+                EntitySelectorFactory.create(entitySelectorConfig_).buildEntitySelector(configPolicy,
+                        minimumCacheType, SelectionOrder.ORIGINAL);
         List<GenuineVariableDescriptor<Solution_>> variableDescriptors =
                 deduceVariableDescriptorList(entitySelector.getEntityDescriptor(), variableNameIncludeList);
         if (!subPillarEnabled

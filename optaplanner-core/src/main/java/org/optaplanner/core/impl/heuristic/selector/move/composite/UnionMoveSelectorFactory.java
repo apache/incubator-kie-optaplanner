@@ -53,7 +53,8 @@ public class UnionMoveSelectorFactory<Solution_>
             selectorProbabilityWeightFactory = ConfigUtils.newInstance(config,
                     "selectorProbabilityWeightFactoryClass", config.getSelectorProbabilityWeightFactoryClass());
         } else if (randomSelection) {
-            Map<MoveSelector<Solution_>, Double> fixedProbabilityWeightMap = new HashMap<>(config.getMoveSelectorConfigList().size());
+            Map<MoveSelector<Solution_>, Double> fixedProbabilityWeightMap =
+                    new HashMap<>(config.getMoveSelectorConfigList().size());
             for (int i = 0; i < config.getMoveSelectorConfigList().size(); i++) {
                 MoveSelectorConfig<Solution_, ?> innerMoveSelectorConfig = config.getMoveSelectorConfigList().get(i);
                 MoveSelector<Solution_> moveSelector = moveSelectorList.get(i);

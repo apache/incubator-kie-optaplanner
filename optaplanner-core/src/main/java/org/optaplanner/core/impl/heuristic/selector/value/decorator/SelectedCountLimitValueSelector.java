@@ -93,8 +93,7 @@ public class SelectedCountLimitValueSelector<Solution_> extends AbstractValueSel
 
     @Override
     public Iterator<Object> iterator() {
-        return new SelectedCountLimitValueIterator((
-                (EntityIndependentValueSelector<Solution_>) childValueSelector).iterator());
+        return new SelectedCountLimitValueIterator(((EntityIndependentValueSelector<Solution_>) childValueSelector).iterator());
     }
 
     @Override

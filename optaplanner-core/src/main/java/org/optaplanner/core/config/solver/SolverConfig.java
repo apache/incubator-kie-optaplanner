@@ -16,6 +16,8 @@
 
 package org.optaplanner.core.config.solver;
 
+import static org.apache.commons.lang3.ObjectUtils.defaultIfNull;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -52,8 +54,6 @@ import org.optaplanner.core.config.util.ConfigUtils;
 import org.optaplanner.core.impl.io.OptaPlannerXmlSerializationException;
 import org.optaplanner.core.impl.io.jaxb.SolverConfigIO;
 import org.optaplanner.core.impl.solver.random.RandomFactory;
-
-import static org.apache.commons.lang3.ObjectUtils.defaultIfNull;
 
 /**
  * To read it from XML, use {@link #createFromXmlResource(String)}.

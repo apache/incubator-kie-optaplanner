@@ -16,6 +16,8 @@
 
 package org.optaplanner.core.impl.localsearch.decider.acceptor;
 
+import static org.apache.commons.lang3.ObjectUtils.defaultIfNull;
+
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -36,8 +38,6 @@ import org.optaplanner.core.impl.localsearch.decider.acceptor.tabu.ValueTabuAcce
 import org.optaplanner.core.impl.localsearch.decider.acceptor.tabu.size.EntityRatioTabuSizeStrategy;
 import org.optaplanner.core.impl.localsearch.decider.acceptor.tabu.size.FixedTabuSizeStrategy;
 import org.optaplanner.core.impl.localsearch.decider.acceptor.tabu.size.ValueRatioTabuSizeStrategy;
-
-import static org.apache.commons.lang3.ObjectUtils.defaultIfNull;
 
 public class AcceptorFactory<Solution_> {
 
@@ -134,7 +134,8 @@ public class AcceptorFactory<Solution_> {
                 }
                 acceptor.setFadingTabuSizeStrategy(new FixedTabuSizeStrategy<>(acceptorConfig.getFadingEntityTabuSize()));
             } else if (acceptorConfig.getFadingEntityTabuRatio() != null) {
-                acceptor.setFadingTabuSizeStrategy(new EntityRatioTabuSizeStrategy<>(acceptorConfig.getFadingEntityTabuRatio()));
+                acceptor.setFadingTabuSizeStrategy(
+                        new EntityRatioTabuSizeStrategy<>(acceptorConfig.getFadingEntityTabuRatio()));
             }
             if (configPolicy.getEnvironmentMode().isNonIntrusiveFullAsserted()) {
                 acceptor.setAssertTabuHashCodeCorrectness(true);
@@ -225,7 +226,8 @@ public class AcceptorFactory<Solution_> {
         return Optional.empty();
     }
 
-    private Optional<SimulatedAnnealingAcceptor<Solution_>> buildSimulatedAnnealingAcceptor(HeuristicConfigPolicy<Solution_> configPolicy) {
+    private Optional<SimulatedAnnealingAcceptor<Solution_>>
+            buildSimulatedAnnealingAcceptor(HeuristicConfigPolicy<Solution_> configPolicy) {
         if ((acceptorConfig.getAcceptorTypeList() != null
                 && acceptorConfig.getAcceptorTypeList().contains(AcceptorType.SIMULATED_ANNEALING))
                 || acceptorConfig.getSimulatedAnnealingStartingTemperature() != null) {

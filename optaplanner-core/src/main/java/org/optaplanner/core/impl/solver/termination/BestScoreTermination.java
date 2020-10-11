@@ -101,7 +101,8 @@ public class BestScoreTermination<Solution_> extends AbstractTermination<Solutio
     // ************************************************************************
 
     @Override
-    public Termination<Solution_> createChildThreadTermination(SolverScope<Solution_> solverScope, ChildThreadType childThreadType) {
+    public Termination<Solution_> createChildThreadTermination(SolverScope<Solution_> solverScope,
+            ChildThreadType childThreadType) {
         // TODO FIXME through some sort of solverlistener and async behaviour...
         throw new UnsupportedOperationException("This terminationClass (" + getClass()
                 + ") does not yet support being used in child threads of type (" + childThreadType + ").");

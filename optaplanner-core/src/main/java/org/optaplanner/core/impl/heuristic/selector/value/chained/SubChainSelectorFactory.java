@@ -16,6 +16,8 @@
 
 package org.optaplanner.core.impl.heuristic.selector.value.chained;
 
+import static org.apache.commons.lang3.ObjectUtils.defaultIfNull;
+
 import org.optaplanner.core.api.domain.valuerange.ValueRangeProvider;
 import org.optaplanner.core.config.heuristic.selector.common.SelectionCacheType;
 import org.optaplanner.core.config.heuristic.selector.common.SelectionOrder;
@@ -28,8 +30,6 @@ import org.optaplanner.core.impl.heuristic.selector.value.EntityIndependentValue
 import org.optaplanner.core.impl.heuristic.selector.value.ValueSelector;
 import org.optaplanner.core.impl.heuristic.selector.value.ValueSelectorFactory;
 
-import static org.apache.commons.lang3.ObjectUtils.defaultIfNull;
-
 public class SubChainSelectorFactory<Solution_> {
 
     /**
@@ -40,7 +40,8 @@ public class SubChainSelectorFactory<Solution_> {
     private static final int DEFAULT_MINIMUM_SUB_CHAIN_SIZE = 1;
     private static final int DEFAULT_MAXIMUM_SUB_CHAIN_SIZE = Integer.MAX_VALUE;
 
-    public static <Solution_> SubChainSelectorFactory<Solution_> create(SubChainSelectorConfig<Solution_> subChainSelectorConfig) {
+    public static <Solution_> SubChainSelectorFactory<Solution_>
+            create(SubChainSelectorConfig<Solution_> subChainSelectorConfig) {
         return new SubChainSelectorFactory<>(subChainSelectorConfig);
     }
 
@@ -69,11 +70,13 @@ public class SubChainSelectorFactory<Solution_> {
                     + ") must not be higher than " + SelectionCacheType.STEP
                     + " because the chains change every step.");
         }
-        ValueSelectorConfig<Solution_> valueSelectorConfig_ = config.getValueSelectorConfig() == null ? new ValueSelectorConfig<>()
-                : config.getValueSelectorConfig();
+        ValueSelectorConfig<Solution_> valueSelectorConfig_ =
+                config.getValueSelectorConfig() == null ? new ValueSelectorConfig<>()
+                        : config.getValueSelectorConfig();
         // ValueSelector uses SelectionOrder.ORIGINAL because a SubChainSelector STEP caches the values
-        ValueSelector<Solution_> valueSelector = ValueSelectorFactory.create(valueSelectorConfig_).buildValueSelector(configPolicy,
-                entityDescriptor, minimumCacheType, SelectionOrder.ORIGINAL);
+        ValueSelector<Solution_> valueSelector =
+                ValueSelectorFactory.create(valueSelectorConfig_).buildValueSelector(configPolicy,
+                        entityDescriptor, minimumCacheType, SelectionOrder.ORIGINAL);
         if (!(valueSelector instanceof EntityIndependentValueSelector)) {
             throw new IllegalArgumentException("The minimumCacheType (" + this
                     + ") needs to be based on an EntityIndependentValueSelector (" + valueSelector + ")."

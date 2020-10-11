@@ -352,7 +352,8 @@ public class ValueSelectorFactory<Solution_>
             } else if (config.getSorterComparatorClass() != null) {
                 Comparator<Object> sorterComparator =
                         ConfigUtils.newInstance(config, "sorterComparatorClass", config.getSorterComparatorClass());
-                sorter = new ComparatorSelectionSorter<>(sorterComparator, SelectionSorterOrder.resolve(config.getSorterOrder()));
+                sorter = new ComparatorSelectionSorter<>(sorterComparator,
+                        SelectionSorterOrder.resolve(config.getSorterOrder()));
             } else if (config.getSorterWeightFactoryClass() != null) {
                 SelectionSorterWeightFactory<Solution_, Object> sorterWeightFactory =
                         ConfigUtils.newInstance(config, "sorterWeightFactoryClass", config.getSorterWeightFactoryClass());
@@ -479,7 +480,7 @@ public class ValueSelectorFactory<Solution_>
                 entitySelectorFactory.buildEntitySelector(configPolicy, minimumCacheType, resolvedSelectionOrder);
         NearbyDistanceMeter<?, ?> nearbyDistanceMeter =
                 (NearbyDistanceMeter<?, ?>) ConfigUtils.newInstance(nearbySelectionConfig, "nearbyDistanceMeterClass",
-                nearbySelectionConfig.getNearbyDistanceMeterClass());
+                        nearbySelectionConfig.getNearbyDistanceMeterClass());
         // TODO Check nearbyDistanceMeterClass.getGenericInterfaces() to confirm generic type S is an entityClass
         NearbyRandom nearbyRandom =
                 NearbyRandomFactory.create(config.getNearbySelectionConfig()).buildNearbyRandom(randomSelection);

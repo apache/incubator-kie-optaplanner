@@ -16,11 +16,11 @@
 
 package org.optaplanner.core.impl.localsearch.decider.forager;
 
+import static org.apache.commons.lang3.ObjectUtils.defaultIfNull;
+
 import org.optaplanner.core.config.localsearch.decider.forager.FinalistPodiumType;
 import org.optaplanner.core.config.localsearch.decider.forager.LocalSearchForagerConfig;
 import org.optaplanner.core.config.localsearch.decider.forager.LocalSearchPickEarlyType;
-
-import static org.apache.commons.lang3.ObjectUtils.defaultIfNull;
 
 public class LocalSearchForagerFactory<Solution_> {
 

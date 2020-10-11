@@ -16,6 +16,14 @@
 
 package org.optaplanner.core.api.solver;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.assertj.core.api.Assertions.fail;
+import static org.optaplanner.core.api.solver.SolverStatus.NOT_SOLVING;
+import static org.optaplanner.core.api.solver.SolverStatus.SOLVING_ACTIVE;
+import static org.optaplanner.core.api.solver.SolverStatus.SOLVING_SCHEDULED;
+import static org.optaplanner.core.impl.testdata.util.PlannerAssert.assertSolutionInitialized;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -47,14 +55,6 @@ import org.optaplanner.core.impl.testdata.domain.TestdataEntity;
 import org.optaplanner.core.impl.testdata.domain.TestdataSolution;
 import org.optaplanner.core.impl.testdata.domain.extended.TestdataUnannotatedExtendedSolution;
 import org.optaplanner.core.impl.testdata.util.PlannerTestUtils;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.assertj.core.api.Assertions.fail;
-import static org.optaplanner.core.api.solver.SolverStatus.NOT_SOLVING;
-import static org.optaplanner.core.api.solver.SolverStatus.SOLVING_ACTIVE;
-import static org.optaplanner.core.api.solver.SolverStatus.SOLVING_SCHEDULED;
-import static org.optaplanner.core.impl.testdata.util.PlannerAssert.assertSolutionInitialized;
 
 public class SolverManagerTest {
 
@@ -337,11 +337,12 @@ public class SolverManagerTest {
     @Timeout(60)
     public void solveMultipleThreadedMovesWithSolverManager_allGetSolved() throws ExecutionException, InterruptedException {
         int processCount = Runtime.getRuntime().availableProcessors();
-        SolverConfig<TestdataSolution> solverConfig = PlannerTestUtils.buildSolverConfig(TestdataSolution.class, TestdataEntity.class)
-                .withPhases(new ConstructionHeuristicPhaseConfig<>(), new LocalSearchPhaseConfig<>())
-                //                .withTerminationConfig(new TerminationConfig().withSecondsSpentLimit(4L))
-                // Adds moveThreadCount to the solver config.
-                .withMoveThreadCount("AUTO");
+        SolverConfig<TestdataSolution> solverConfig =
+                PlannerTestUtils.buildSolverConfig(TestdataSolution.class, TestdataEntity.class)
+                        .withPhases(new ConstructionHeuristicPhaseConfig<>(), new LocalSearchPhaseConfig<>())
+                        //                .withTerminationConfig(new TerminationConfig().withSecondsSpentLimit(4L))
+                        // Adds moveThreadCount to the solver config.
+                        .withMoveThreadCount("AUTO");
         // Creates solverManagerConfig with multiple threads.
         SolverManager<TestdataSolution, Integer> solverManager =
                 SolverManager.create(solverConfig, new SolverManagerConfig<>());

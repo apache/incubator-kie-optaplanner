@@ -197,7 +197,8 @@ public class ScoreDirectorFactoryConfig<Solution_>
         return this;
     }
 
-    public ScoreDirectorFactoryConfig<Solution_> withConstraintProviderClass(Class<? extends ConstraintProvider> constraintProviderClass) {
+    public ScoreDirectorFactoryConfig<Solution_>
+            withConstraintProviderClass(Class<? extends ConstraintProvider> constraintProviderClass) {
         this.constraintProviderClass = constraintProviderClass;
         return this;
     }
@@ -208,7 +209,8 @@ public class ScoreDirectorFactoryConfig<Solution_>
         return this;
     }
 
-    public ScoreDirectorFactoryConfig<Solution_> withConstraintStreamImplType(ConstraintStreamImplType constraintStreamImplType) {
+    public ScoreDirectorFactoryConfig<Solution_>
+            withConstraintStreamImplType(ConstraintStreamImplType constraintStreamImplType) {
         this.constraintStreamImplType = constraintStreamImplType;
         return this;
     }

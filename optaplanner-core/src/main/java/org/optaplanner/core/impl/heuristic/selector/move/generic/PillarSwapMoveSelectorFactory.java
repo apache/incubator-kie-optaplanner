@@ -16,6 +16,8 @@
 
 package org.optaplanner.core.impl.heuristic.selector.move.generic;
 
+import static org.apache.commons.lang3.ObjectUtils.defaultIfNull;
+
 import java.util.List;
 
 import org.optaplanner.core.config.heuristic.selector.common.SelectionCacheType;
@@ -28,8 +30,6 @@ import org.optaplanner.core.impl.heuristic.selector.entity.pillar.PillarSelector
 import org.optaplanner.core.impl.heuristic.selector.entity.pillar.PillarSelectorFactory;
 import org.optaplanner.core.impl.heuristic.selector.move.AbstractMoveSelectorFactory;
 import org.optaplanner.core.impl.heuristic.selector.move.MoveSelector;
-
-import static org.apache.commons.lang3.ObjectUtils.defaultIfNull;
 
 public class PillarSwapMoveSelectorFactory<Solution_>
         extends AbstractMoveSelectorFactory<Solution_, PillarSwapMoveSelectorConfig<Solution_>> {

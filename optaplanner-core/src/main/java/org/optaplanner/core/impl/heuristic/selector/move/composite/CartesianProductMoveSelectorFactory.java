@@ -16,14 +16,14 @@
 
 package org.optaplanner.core.impl.heuristic.selector.move.composite;
 
+import static org.apache.commons.lang3.ObjectUtils.defaultIfNull;
+
 import java.util.List;
 
 import org.optaplanner.core.config.heuristic.selector.common.SelectionCacheType;
 import org.optaplanner.core.config.heuristic.selector.move.composite.CartesianProductMoveSelectorConfig;
 import org.optaplanner.core.impl.heuristic.HeuristicConfigPolicy;
 import org.optaplanner.core.impl.heuristic.selector.move.MoveSelector;
-
-import static org.apache.commons.lang3.ObjectUtils.defaultIfNull;
 
 public class CartesianProductMoveSelectorFactory<Solution_>
         extends AbstractCompositeMoveSelectorFactory<Solution_, CartesianProductMoveSelectorConfig<Solution_>> {
