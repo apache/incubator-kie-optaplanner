@@ -41,17 +41,16 @@ public class ExhaustiveSearchDecider<Solution_> implements ExhaustiveSearchPhase
     protected final BestSolutionRecaller<Solution_> bestSolutionRecaller;
     protected final Termination termination;
     protected final ManualEntityMimicRecorder manualEntityMimicRecorder;
-    protected final MoveSelector moveSelector;
+    protected final MoveSelector<Solution_> moveSelector;
     protected final boolean scoreBounderEnabled;
     protected final ScoreBounder scoreBounder;
 
     protected boolean assertMoveScoreFromScratch = false;
     protected boolean assertExpectedUndoMoveScore = false;
 
-    public ExhaustiveSearchDecider(String logIndentation,
-            BestSolutionRecaller<Solution_> bestSolutionRecaller, Termination termination,
-            ManualEntityMimicRecorder manualEntityMimicRecorder, MoveSelector moveSelector,
-            boolean scoreBounderEnabled, ScoreBounder scoreBounder) {
+    public ExhaustiveSearchDecider(String logIndentation, BestSolutionRecaller<Solution_> bestSolutionRecaller,
+            Termination termination, ManualEntityMimicRecorder manualEntityMimicRecorder,
+            MoveSelector<Solution_> moveSelector, boolean scoreBounderEnabled, ScoreBounder scoreBounder) {
         this.logIndentation = logIndentation;
         this.bestSolutionRecaller = bestSolutionRecaller;
         this.termination = termination;
@@ -65,7 +64,7 @@ public class ExhaustiveSearchDecider<Solution_> implements ExhaustiveSearchPhase
         return manualEntityMimicRecorder;
     }
 
-    public MoveSelector getMoveSelector() {
+    public MoveSelector<Solution_> getMoveSelector() {
         return moveSelector;
     }
 

@@ -23,7 +23,8 @@ import org.optaplanner.core.impl.heuristic.move.Move;
 import org.optaplanner.core.impl.heuristic.selector.entity.EntitySelector;
 import org.optaplanner.core.impl.heuristic.selector.value.ValueSelector;
 
-public abstract class AbstractOriginalChangeIterator<S extends Move> extends UpcomingSelectionIterator<S> {
+public abstract class AbstractOriginalChangeIterator<Solution_, Move_ extends Move<Solution_>>
+        extends UpcomingSelectionIterator<Move_> {
 
     private final ValueSelector valueSelector;
 
@@ -40,7 +41,7 @@ public abstract class AbstractOriginalChangeIterator<S extends Move> extends Upc
     }
 
     @Override
-    protected S createUpcomingSelection() {
+    protected Move_ createUpcomingSelection() {
         while (!valueIterator.hasNext()) {
             if (!entityIterator.hasNext()) {
                 return noUpcomingSelection();
@@ -52,6 +53,6 @@ public abstract class AbstractOriginalChangeIterator<S extends Move> extends Upc
         return newChangeSelection(upcomingEntity, toValue);
     }
 
-    protected abstract S newChangeSelection(Object entity, Object toValue);
+    protected abstract Move_ newChangeSelection(Object entity, Object toValue);
 
 }

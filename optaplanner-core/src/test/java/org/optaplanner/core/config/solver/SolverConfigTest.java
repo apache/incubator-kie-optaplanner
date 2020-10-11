@@ -16,9 +16,6 @@
 
 package org.optaplanner.core.config.solver;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
-
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
@@ -38,6 +35,7 @@ import org.optaplanner.core.api.score.calculator.IncrementalScoreCalculator;
 import org.optaplanner.core.api.score.stream.ConstraintProvider;
 import org.optaplanner.core.config.constructionheuristic.ConstructionHeuristicPhaseConfig;
 import org.optaplanner.core.config.localsearch.LocalSearchPhaseConfig;
+import org.optaplanner.core.impl.heuristic.move.DummyMove;
 import org.optaplanner.core.impl.heuristic.selector.common.decorator.SelectionFilter;
 import org.optaplanner.core.impl.heuristic.selector.move.factory.MoveIteratorFactory;
 import org.optaplanner.core.impl.heuristic.selector.move.factory.MoveListFactory;
@@ -48,6 +46,9 @@ import org.optaplanner.core.impl.partitionedsearch.partitioner.SolutionPartition
 import org.optaplanner.core.impl.testdata.domain.TestdataEntity;
 import org.optaplanner.core.impl.testdata.domain.TestdataSolution;
 import org.optaplanner.core.impl.testdata.domain.TestdataValue;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
 class SolverConfigTest {
 
@@ -157,10 +158,11 @@ class SolverConfigTest {
     private abstract class DummyEntityFilter implements SelectionFilter<TestdataSolution, TestdataEntity> {
     }
 
-    private abstract class DummyChangeMoveFilter implements SelectionFilter<TestdataSolution, ChangeMove> {
+    private abstract class DummyChangeMoveFilter
+            implements SelectionFilter<TestdataSolution, ChangeMove<TestdataSolution>> {
     }
 
-    private abstract class DummyMoveIteratorFactory implements MoveIteratorFactory<TestdataSolution> {
+    private abstract class DummyMoveIteratorFactory implements MoveIteratorFactory<TestdataSolution, DummyMove> {
     }
 
     private abstract class DummyMoveListFactory implements MoveListFactory<TestdataSolution> {

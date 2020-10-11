@@ -40,15 +40,14 @@ public class LocalSearchDecider<Solution_> {
 
     protected final String logIndentation;
     protected final Termination termination;
-    protected final MoveSelector moveSelector;
+    protected final MoveSelector<Solution_> moveSelector;
     protected final Acceptor acceptor;
     protected final LocalSearchForager forager;
 
     protected boolean assertMoveScoreFromScratch = false;
     protected boolean assertExpectedUndoMoveScore = false;
 
-    public LocalSearchDecider(String logIndentation,
-            Termination termination, MoveSelector moveSelector, Acceptor acceptor, LocalSearchForager forager) {
+    public LocalSearchDecider(String logIndentation, Termination termination, MoveSelector<Solution_> moveSelector, Acceptor acceptor, LocalSearchForager forager) {
         this.logIndentation = logIndentation;
         this.termination = termination;
         this.moveSelector = moveSelector;
