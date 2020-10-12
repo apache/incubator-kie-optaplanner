@@ -22,9 +22,9 @@ import java.io.Writer;
 import org.optaplanner.core.config.solver.SolverConfig;
 import org.w3c.dom.Document;
 
-public class SolverConfigIO<Solution_> implements JaxbIO<SolverConfig> {
+public class SolverConfigIO implements JaxbIO<SolverConfig> {
     private static final String SOLVER_XSD_RESOURCE = "/solver.xsd";
-    private final GenericJaxbIO<SolverConfig> genericJaxbIO = new GenericJaxbIO(SolverConfig.class);
+    private final GenericJaxbIO<SolverConfig> genericJaxbIO = new GenericJaxbIO<>(SolverConfig.class);
 
     @Override
     public SolverConfig read(Reader reader) {

@@ -36,7 +36,7 @@ import org.optaplanner.core.impl.heuristic.selector.value.ValueSelectorFactory;
 public class QueuedValuePlacerFactory<Solution_>
         extends AbstractEntityPlacerFactory<Solution_, QueuedValuePlacerConfig> {
 
-    public static <Solution_> QueuedValuePlacerConfig unfoldNew(MoveSelectorConfig templateMoveSelectorConfig) {
+    public static QueuedValuePlacerConfig unfoldNew(MoveSelectorConfig templateMoveSelectorConfig) {
         throw new UnsupportedOperationException("The <constructionHeuristic> contains a moveSelector ("
                 + templateMoveSelectorConfig + ") and the <queuedValuePlacer> does not support unfolding those yet.");
     }

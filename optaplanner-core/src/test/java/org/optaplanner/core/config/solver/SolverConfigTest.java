@@ -54,7 +54,7 @@ class SolverConfigTest {
 
     private static final String TEST_SOLVER_CONFIG_WITH_NAMESPACE = "testSolverConfigWithNamespace.xml";
     private static final String TEST_SOLVER_CONFIG_WITHOUT_NAMESPACE = "testSolverConfigWithoutNamespace.xml";
-    private final SolverConfigIO<TestdataSolution> solverConfigIO = new SolverConfigIO<>();
+    private final SolverConfigIO solverConfigIO = new SolverConfigIO();
 
     @ParameterizedTest
     @ValueSource(strings = { TEST_SOLVER_CONFIG_WITHOUT_NAMESPACE, TEST_SOLVER_CONFIG_WITH_NAMESPACE })

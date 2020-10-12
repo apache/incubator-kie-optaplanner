@@ -199,7 +199,7 @@ public class SolverConfig extends AbstractConfig<SolverConfig> {
      * @return never null
      */
     public static SolverConfig createFromXmlReader(Reader reader, ClassLoader classLoader) {
-        SolverConfigIO<?> solverConfigIO = new SolverConfigIO<>();
+        SolverConfigIO solverConfigIO = new SolverConfigIO();
         Object solverConfigObject = solverConfigIO.read(reader);
 
         if (!(solverConfigObject instanceof SolverConfig)) {
