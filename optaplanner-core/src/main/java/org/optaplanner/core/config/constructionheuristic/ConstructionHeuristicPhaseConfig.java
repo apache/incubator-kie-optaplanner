@@ -166,27 +166,23 @@ public class ConstructionHeuristicPhaseConfig extends PhaseConfig<ConstructionHe
         return this;
     }
 
-    public ConstructionHeuristicPhaseConfig withEntityPlacerConfig(
-            EntityPlacerConfig<?> entityPlacerConfig) {
+    public ConstructionHeuristicPhaseConfig withEntityPlacerConfig(EntityPlacerConfig<?> entityPlacerConfig) {
         this.entityPlacerConfig = entityPlacerConfig;
         return this;
     }
 
-    public ConstructionHeuristicPhaseConfig withMoveSelectorConfigList(
-            List<MoveSelectorConfig> moveSelectorConfigList) {
+    public ConstructionHeuristicPhaseConfig withMoveSelectorConfigList(List<MoveSelectorConfig> moveSelectorConfigList) {
         this.moveSelectorConfigList = moveSelectorConfigList;
         return this;
     }
 
-    public ConstructionHeuristicPhaseConfig withForagerConfig(
-            ConstructionHeuristicForagerConfig foragerConfig) {
+    public ConstructionHeuristicPhaseConfig withForagerConfig(ConstructionHeuristicForagerConfig foragerConfig) {
         this.foragerConfig = foragerConfig;
         return this;
     }
 
     @Override
-    public ConstructionHeuristicPhaseConfig inherit(
-            ConstructionHeuristicPhaseConfig inheritedConfig) {
+    public ConstructionHeuristicPhaseConfig inherit(ConstructionHeuristicPhaseConfig inheritedConfig) {
         super.inherit(inheritedConfig);
         constructionHeuristicType = ConfigUtils.inheritOverwritableProperty(constructionHeuristicType,
                 inheritedConfig.getConstructionHeuristicType());

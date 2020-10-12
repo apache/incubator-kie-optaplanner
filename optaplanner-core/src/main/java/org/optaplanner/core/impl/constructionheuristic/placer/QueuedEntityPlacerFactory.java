@@ -40,20 +40,19 @@ import org.optaplanner.core.impl.heuristic.selector.move.MoveSelectorFactory;
 public class QueuedEntityPlacerFactory<Solution_>
         extends AbstractEntityPlacerFactory<Solution_, QueuedEntityPlacerConfig> {
 
-    public static <Solution_> QueuedEntityPlacerConfig unfoldNew(
-            HeuristicConfigPolicy<Solution_> configPolicy,
+    public static <Solution_> QueuedEntityPlacerConfig unfoldNew(HeuristicConfigPolicy<Solution_> configPolicy,
             List<MoveSelectorConfig> templateMoveSelectorConfigList) {
         QueuedEntityPlacerConfig config = new QueuedEntityPlacerConfig();
         config.setEntitySelectorConfig(new QueuedEntityPlacerFactory<Solution_>(config)
                 .buildEntitySelectorConfig(configPolicy));
         config.setMoveSelectorConfigList(new ArrayList<>(templateMoveSelectorConfigList.size()));
         List<MoveSelectorConfig> leafMoveSelectorConfigList = new ArrayList<>(templateMoveSelectorConfigList.size());
-        for (MoveSelectorConfig<?> templateMoveSelectorConfig : templateMoveSelectorConfigList) {
-            MoveSelectorConfig<?> moveSelectorConfig = templateMoveSelectorConfig.copyConfig();
+        for (MoveSelectorConfig templateMoveSelectorConfig : templateMoveSelectorConfigList) {
+            MoveSelectorConfig moveSelectorConfig = (MoveSelectorConfig) templateMoveSelectorConfig.copyConfig();
             moveSelectorConfig.extractLeafMoveSelectorConfigsIntoList(leafMoveSelectorConfigList);
             config.getMoveSelectorConfigList().add(moveSelectorConfig);
         }
-        for (MoveSelectorConfig<?> leafMoveSelectorConfig : leafMoveSelectorConfigList) {
+        for (MoveSelectorConfig leafMoveSelectorConfig : leafMoveSelectorConfigList) {
             if (!(leafMoveSelectorConfig instanceof ChangeMoveSelectorConfig)) {
                 throw new IllegalStateException("The <constructionHeuristic> contains a moveSelector ("
                         + leafMoveSelectorConfig + ") that isn't a <changeMoveSelector>, a <unionMoveSelector>"
@@ -61,8 +60,7 @@ public class QueuedEntityPlacerFactory<Solution_>
                         + "Maybe you're using a moveSelector in <constructionHeuristic>"
                         + " that's only supported for <localSearch>.");
             }
-            ChangeMoveSelectorConfig changeMoveSelectorConfig =
-                    (ChangeMoveSelectorConfig) leafMoveSelectorConfig;
+            ChangeMoveSelectorConfig changeMoveSelectorConfig = (ChangeMoveSelectorConfig) leafMoveSelectorConfig;
             if (changeMoveSelectorConfig.getEntitySelectorConfig() != null) {
                 throw new IllegalStateException("The <constructionHeuristic> contains a changeMoveSelector ("
                         + changeMoveSelectorConfig + ") that contains an entitySelector ("
@@ -95,7 +93,7 @@ public class QueuedEntityPlacerFactory<Solution_>
                 subMoveSelectorConfigList
                         .add(buildChangeMoveSelectorConfig(configPolicy, entitySelectorConfig_.getId(), variableDescriptor));
             }
-            MoveSelectorConfig<?> subMoveSelectorConfig;
+            MoveSelectorConfig subMoveSelectorConfig;
             if (subMoveSelectorConfigList.size() > 1) {
                 // Default to cartesian product (not a queue) of planning variables.
                 subMoveSelectorConfig = new CartesianProductMoveSelectorConfig(subMoveSelectorConfigList);
@@ -107,7 +105,7 @@ public class QueuedEntityPlacerFactory<Solution_>
             moveSelectorConfigList_ = config.getMoveSelectorConfigList();
         }
         List<MoveSelector<Solution_>> moveSelectorList = new ArrayList<>(moveSelectorConfigList_.size());
-        for (MoveSelectorConfig<?> moveSelectorConfig : moveSelectorConfigList_) {
+        for (MoveSelectorConfig moveSelectorConfig : moveSelectorConfigList_) {
             MoveSelector<Solution_> moveSelector = MoveSelectorFactory.<Solution_> create(moveSelectorConfig)
                     .buildMoveSelector(configPolicy, SelectionCacheType.JUST_IN_TIME, SelectionOrder.ORIGINAL);
             moveSelectorList.add(moveSelector);

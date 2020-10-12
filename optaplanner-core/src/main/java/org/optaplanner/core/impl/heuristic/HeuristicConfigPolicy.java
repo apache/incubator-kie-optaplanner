@@ -51,14 +51,14 @@ public class HeuristicConfigPolicy<Solution_> {
     private Map<String, EntityMimicRecorder<Solution_>> entityMimicRecorderMap = new HashMap<>();
     private Map<String, ValueMimicRecorder<Solution_>> valueMimicRecorderMap = new HashMap<>();
 
-    public HeuristicConfigPolicy(EnvironmentMode environmentMode,
-            Integer moveThreadCount, Integer moveThreadBufferSize, Class<? extends ThreadFactory> threadFactoryClass,
+    public HeuristicConfigPolicy(EnvironmentMode environmentMode, Integer moveThreadCount, Integer moveThreadBufferSize,
+            Class<? extends ThreadFactory> threadFactoryClass,
             InnerScoreDirectorFactory<Solution_, ?> scoreDirectorFactory) {
         this(environmentMode, "", moveThreadCount, moveThreadBufferSize, threadFactoryClass, scoreDirectorFactory);
     }
 
-    public HeuristicConfigPolicy(EnvironmentMode environmentMode, String logIndentation,
-            Integer moveThreadCount, Integer moveThreadBufferSize, Class<? extends ThreadFactory> threadFactoryClass,
+    public HeuristicConfigPolicy(EnvironmentMode environmentMode, String logIndentation, Integer moveThreadCount,
+            Integer moveThreadBufferSize, Class<? extends ThreadFactory> threadFactoryClass,
             InnerScoreDirectorFactory<Solution_, ?> scoreDirectorFactory) {
         this.environmentMode = environmentMode;
         this.logIndentation = logIndentation;

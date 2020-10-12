@@ -75,8 +75,7 @@ public class SubChainChangeMoveSelectorConfig extends MoveSelectorConfig<SubChai
     }
 
     @Override
-    public SubChainChangeMoveSelectorConfig inherit(
-            SubChainChangeMoveSelectorConfig inheritedConfig) {
+    public SubChainChangeMoveSelectorConfig inherit(SubChainChangeMoveSelectorConfig inheritedConfig) {
         super.inherit(inheritedConfig);
         entityClass = ConfigUtils.inheritOverwritableProperty(entityClass, inheritedConfig.getEntityClass());
         subChainSelectorConfig = ConfigUtils.inheritConfig(subChainSelectorConfig, inheritedConfig.getSubChainSelectorConfig());

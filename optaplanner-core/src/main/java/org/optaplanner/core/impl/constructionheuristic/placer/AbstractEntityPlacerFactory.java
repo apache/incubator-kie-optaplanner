@@ -33,9 +33,8 @@ abstract class AbstractEntityPlacerFactory<Solution_, EntityPlacerConfig_ extend
         super(placerConfig);
     }
 
-    protected ChangeMoveSelectorConfig buildChangeMoveSelectorConfig(
-            HeuristicConfigPolicy<Solution_> configPolicy, String entitySelectorConfigId,
-            GenuineVariableDescriptor<Solution_> variableDescriptor) {
+    protected ChangeMoveSelectorConfig buildChangeMoveSelectorConfig(HeuristicConfigPolicy<Solution_> configPolicy,
+            String entitySelectorConfigId, GenuineVariableDescriptor<Solution_> variableDescriptor) {
         ChangeMoveSelectorConfig changeMoveSelectorConfig = new ChangeMoveSelectorConfig();
         changeMoveSelectorConfig.setEntitySelectorConfig(
                 EntitySelectorConfig.newMimicSelectorConfig(entitySelectorConfigId));

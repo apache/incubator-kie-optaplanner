@@ -90,8 +90,7 @@ public abstract class AbstractFromConfigFactory<Solution_, Config_ extends Abstr
     }
 
     protected List<GenuineVariableDescriptor<Solution_>> deduceVariableDescriptorList(
-            EntityDescriptor<Solution_> entityDescriptor,
-            List<String> variableNameIncludeList) {
+            EntityDescriptor<Solution_> entityDescriptor, List<String> variableNameIncludeList) {
         Objects.requireNonNull(entityDescriptor);
         List<GenuineVariableDescriptor<Solution_>> variableDescriptorList =
                 entityDescriptor.getGenuineVariableDescriptorList();

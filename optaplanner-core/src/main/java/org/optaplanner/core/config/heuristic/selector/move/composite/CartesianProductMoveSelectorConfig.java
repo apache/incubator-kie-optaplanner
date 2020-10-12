@@ -95,8 +95,7 @@ public class CartesianProductMoveSelectorConfig extends MoveSelectorConfig<Carte
     }
 
     @Override
-    public CartesianProductMoveSelectorConfig inherit(
-            CartesianProductMoveSelectorConfig inheritedConfig) {
+    public CartesianProductMoveSelectorConfig inherit(CartesianProductMoveSelectorConfig inheritedConfig) {
         super.inherit(inheritedConfig);
         moveSelectorConfigList = ConfigUtils.inheritMergeableListConfig(
                 moveSelectorConfigList, inheritedConfig.getMoveSelectorConfigList());
