@@ -93,7 +93,8 @@ public class PooledEntityPlacerFactory<Solution_>
 
     @Override
     public PooledEntityPlacer<Solution_> buildEntityPlacer(HeuristicConfigPolicy<Solution_> configPolicy) {
-        MoveSelectorConfig moveSelectorConfig_ = config.getMoveSelectorConfig() == null ? buildMoveSelectorConfig(configPolicy) : config.getMoveSelectorConfig();
+        MoveSelectorConfig moveSelectorConfig_ =
+                config.getMoveSelectorConfig() == null ? buildMoveSelectorConfig(configPolicy) : config.getMoveSelectorConfig();
 
         MoveSelector<Solution_> moveSelector = MoveSelectorFactory.<Solution_> create(moveSelectorConfig_)
                 .buildMoveSelector(configPolicy, SelectionCacheType.JUST_IN_TIME, SelectionOrder.ORIGINAL);

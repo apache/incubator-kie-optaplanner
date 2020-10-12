@@ -127,7 +127,8 @@ public class ScoreDirectorFactoryConfig extends AbstractConfig<ScoreDirectorFact
         return incrementalScoreCalculatorClass;
     }
 
-    public void setIncrementalScoreCalculatorClass(Class<? extends IncrementalScoreCalculator> incrementalScoreCalculatorClass) {
+    public void
+            setIncrementalScoreCalculatorClass(Class<? extends IncrementalScoreCalculator> incrementalScoreCalculatorClass) {
         this.incrementalScoreCalculatorClass = incrementalScoreCalculatorClass;
     }
 
@@ -183,12 +184,14 @@ public class ScoreDirectorFactoryConfig extends AbstractConfig<ScoreDirectorFact
     // With methods
     // ************************************************************************
 
-    public ScoreDirectorFactoryConfig withEasyScoreCalculatorClass(Class<? extends EasyScoreCalculator> easyScoreCalculatorClass) {
+    public ScoreDirectorFactoryConfig
+            withEasyScoreCalculatorClass(Class<? extends EasyScoreCalculator> easyScoreCalculatorClass) {
         this.easyScoreCalculatorClass = easyScoreCalculatorClass;
         return this;
     }
 
-    public ScoreDirectorFactoryConfig withEasyScoreCalculatorCustomProperties(Map<String, String> easyScoreCalculatorCustomProperties) {
+    public ScoreDirectorFactoryConfig
+            withEasyScoreCalculatorCustomProperties(Map<String, String> easyScoreCalculatorCustomProperties) {
         this.easyScoreCalculatorCustomProperties = easyScoreCalculatorCustomProperties;
         return this;
     }
@@ -198,7 +201,8 @@ public class ScoreDirectorFactoryConfig extends AbstractConfig<ScoreDirectorFact
         return this;
     }
 
-    public ScoreDirectorFactoryConfig withConstraintProviderCustomProperties(Map<String, String> constraintProviderCustomProperties) {
+    public ScoreDirectorFactoryConfig
+            withConstraintProviderCustomProperties(Map<String, String> constraintProviderCustomProperties) {
         this.constraintProviderCustomProperties = constraintProviderCustomProperties;
         return this;
     }
@@ -208,12 +212,14 @@ public class ScoreDirectorFactoryConfig extends AbstractConfig<ScoreDirectorFact
         return this;
     }
 
-    public ScoreDirectorFactoryConfig withIncrementalScoreCalculatorClass(Class<? extends IncrementalScoreCalculator> incrementalScoreCalculatorClass) {
+    public ScoreDirectorFactoryConfig
+            withIncrementalScoreCalculatorClass(Class<? extends IncrementalScoreCalculator> incrementalScoreCalculatorClass) {
         this.incrementalScoreCalculatorClass = incrementalScoreCalculatorClass;
         return this;
     }
 
-    public ScoreDirectorFactoryConfig withIncrementalScoreCalculatorCustomProperties(Map<String, String> incrementalScoreCalculatorCustomProperties) {
+    public ScoreDirectorFactoryConfig
+            withIncrementalScoreCalculatorCustomProperties(Map<String, String> incrementalScoreCalculatorCustomProperties) {
         this.incrementalScoreCalculatorCustomProperties = incrementalScoreCalculatorCustomProperties;
         return this;
     }

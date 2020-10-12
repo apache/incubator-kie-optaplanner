@@ -319,7 +319,8 @@ public class LocalSearchAcceptorConfig extends AbstractConfig<LocalSearchAccepto
         return this;
     }
 
-    public LocalSearchAcceptorConfig withStepCountingHillClimbingType(StepCountingHillClimbingType stepCountingHillClimbingType) {
+    public LocalSearchAcceptorConfig
+            withStepCountingHillClimbingType(StepCountingHillClimbingType stepCountingHillClimbingType) {
         this.stepCountingHillClimbingType = stepCountingHillClimbingType;
         return this;
     }
