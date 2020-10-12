@@ -51,7 +51,7 @@ public class FromEntityPropertyValueSelector<Solution_> extends AbstractValueSel
     public void phaseStarted(AbstractPhaseScope<Solution_> phaseScope) {
         super.phaseStarted(phaseScope);
         // type cast in order to avoid SolverLifeCycleListener and all its children needing to be generified
-        workingSolution = (Solution_) phaseScope.getWorkingSolution();
+        workingSolution = phaseScope.getWorkingSolution();
     }
 
     @Override
