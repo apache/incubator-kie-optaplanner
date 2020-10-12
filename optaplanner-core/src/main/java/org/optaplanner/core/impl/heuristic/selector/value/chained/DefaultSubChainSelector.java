@@ -176,7 +176,7 @@ public class DefaultSubChainSelector<Solution_> extends AbstractSelector<Solutio
     }
 
     protected long calculateSubChainSelectionSize(SubChain anchorTrailingChain) {
-        long anchorTrailingChainSize = (long) anchorTrailingChain.getSize();
+        long anchorTrailingChainSize = anchorTrailingChain.getSize();
         long n = anchorTrailingChainSize - (long) minimumSubChainSize + 1L;
         long m = (maximumSubChainSize >= anchorTrailingChainSize)
                 ? 0L

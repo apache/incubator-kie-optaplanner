@@ -118,7 +118,7 @@ public class ScoreUtils {
                 // timeGradient += 0.0
                 break;
             } else {
-                double levelTimeGradient = (double) scoreDiffLevel / (double) totalDiffLevel;
+                double levelTimeGradient = scoreDiffLevel / totalDiffLevel;
                 timeGradient += levelTimeGradient * levelTimeGradientWeight;
             }
 

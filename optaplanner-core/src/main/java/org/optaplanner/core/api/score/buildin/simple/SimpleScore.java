@@ -169,7 +169,7 @@ public final class SimpleScore extends AbstractScore<SimpleScore> {
 
     @Override
     public String toShortString() {
-        return buildShortString((n) -> ((Integer) n).intValue() != 0, "");
+        return buildShortString((n) -> n.intValue() != 0, "");
     }
 
     @Override

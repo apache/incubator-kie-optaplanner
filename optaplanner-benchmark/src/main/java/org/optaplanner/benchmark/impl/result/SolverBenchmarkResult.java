@@ -1,5 +1,5 @@
 /*
- * Copyright 2010 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -337,7 +337,7 @@ public class SolverBenchmarkResult {
         if (!firstNonFailure) {
             int successCount = getSuccessCount();
             averageScore = totalScore.divide(successCount);
-            averageWorstScoreDifferencePercentage = totalWorstScoreDifferencePercentage.divide((double) successCount);
+            averageWorstScoreDifferencePercentage = totalWorstScoreDifferencePercentage.divide(successCount);
             averageScoreCalculationSpeed = totalScoreCalculationSpeed / (long) successCount;
             averageTimeMillisSpent = totalTimeMillisSpent / (long) successCount;
             averageWorstScoreCalculationSpeedDifferencePercentage = totalWorstScoreCalculationSpeedDifferencePercentage

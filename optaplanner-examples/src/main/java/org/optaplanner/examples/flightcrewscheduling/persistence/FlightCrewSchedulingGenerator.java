@@ -118,7 +118,7 @@ public class FlightCrewSchedulingGenerator extends LoggingMain {
 
         int employeeListSize = solution.getEmployeeList().size();
         int flightAssignmentListSize = solution.getFlightAssignmentList().size();
-        BigInteger possibleSolutionSize = BigInteger.valueOf((long) employeeListSize).pow(flightAssignmentListSize);
+        BigInteger possibleSolutionSize = BigInteger.valueOf(employeeListSize).pow(flightAssignmentListSize);
         logger.info(
                 "FlightCrew {} has {} skills, {} airports, {} employees, {} flights and {} flight assignments with a search space of {}.",
                 fileName,

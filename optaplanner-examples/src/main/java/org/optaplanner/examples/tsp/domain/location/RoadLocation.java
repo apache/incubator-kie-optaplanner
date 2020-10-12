@@ -1,5 +1,5 @@
 /*
- * Copyright 2014 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -51,7 +51,7 @@ public class RoadLocation extends Location {
         if (this == location) {
             return 0L;
         }
-        double distance = travelDistanceMap.get((RoadLocation) location);
+        double distance = travelDistanceMap.get(location);
         // Multiplied by 1000 to avoid floating point arithmetic rounding errors
         return (long) (distance * 1000.0 + 0.5);
     }

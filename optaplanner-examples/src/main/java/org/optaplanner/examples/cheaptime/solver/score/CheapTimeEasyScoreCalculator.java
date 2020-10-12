@@ -152,7 +152,7 @@ public class CheapTimeEasyScoreCalculator implements EasyScoreCalculator<CheapTi
             long hardScore = 0L;
             for (int resourceAvailable : resourceAvailableList) {
                 if (resourceAvailable < 0) {
-                    hardScore += (long) resourceAvailable;
+                    hardScore += resourceAvailable;
                 }
             }
             return hardScore;
