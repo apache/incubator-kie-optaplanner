@@ -129,7 +129,7 @@ public class TspPanel extends SolutionPanel<TspSolution> {
         }
         if (targetStandstill instanceof Visit
                 && (sourceStandstill instanceof Domicile || ((Visit) sourceStandstill).getPreviousStandstill() != null)) {
-            solutionBusiness.doChangeMove(targetStandstill, "previousStandstill", sourceStandstill);
+            solutionBusiness.doChangeMove((Visit) targetStandstill, "previousStandstill", sourceStandstill);
         }
         solverAndPersistenceFrame.resetScreen();
     }

@@ -63,7 +63,7 @@ public class HubSegmentLocation extends Location {
         if (location instanceof RoadSegmentLocation) {
             distance = getDistanceDouble((RoadSegmentLocation) location);
         } else {
-            distance = hubTravelDistanceMap.get(location);
+            distance = hubTravelDistanceMap.get((HubSegmentLocation) location);
         }
         // Multiplied by 1000 to avoid floating point arithmetic rounding errors
         return (long) (distance * 1000.0 + 0.5);

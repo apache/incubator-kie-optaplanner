@@ -34,7 +34,7 @@ public class RandomUtils {
             throw new IllegalArgumentException("n must be positive");
         }
         if (n < Integer.MAX_VALUE) {
-            return random.nextInt((int) n);
+            return (long) random.nextInt((int) n);
         }
 
         long bits;

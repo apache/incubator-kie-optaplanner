@@ -518,7 +518,7 @@ public class MeetingSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<Meet
             writePersonsView();
             writePrintedFormView();
             writeScoreView(justificationList -> justificationList.stream()
-                    .filter(o -> o instanceof MeetingAssignment).map(o -> o.toString())
+                    .filter(o -> o instanceof MeetingAssignment).map(o -> ((MeetingAssignment) o).toString())
                     .collect(joining(", ")));
             return workbook;
         }

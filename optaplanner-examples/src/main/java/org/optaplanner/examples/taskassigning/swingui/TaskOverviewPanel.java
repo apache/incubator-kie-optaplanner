@@ -220,7 +220,7 @@ public class TaskOverviewPanel extends JPanel implements Scrollable {
     @Override
     public boolean getScrollableTracksViewportWidth() {
         if (getParent() instanceof JViewport) {
-            return (getParent().getWidth() > getPreferredSize().width);
+            return (((JViewport) getParent()).getWidth() > getPreferredSize().width);
         }
         return false;
     }
@@ -228,7 +228,7 @@ public class TaskOverviewPanel extends JPanel implements Scrollable {
     @Override
     public boolean getScrollableTracksViewportHeight() {
         if (getParent() instanceof JViewport) {
-            return (getParent().getHeight() > getPreferredSize().height);
+            return (((JViewport) getParent()).getHeight() > getPreferredSize().height);
         }
         return false;
     }

@@ -337,7 +337,7 @@ public class SolverBenchmarkResult {
         if (!firstNonFailure) {
             int successCount = getSuccessCount();
             averageScore = totalScore.divide(successCount);
-            averageWorstScoreDifferencePercentage = totalWorstScoreDifferencePercentage.divide(successCount);
+            averageWorstScoreDifferencePercentage = totalWorstScoreDifferencePercentage.divide((double) successCount);
             averageScoreCalculationSpeed = totalScoreCalculationSpeed / (long) successCount;
             averageTimeMillisSpent = totalTimeMillisSpent / (long) successCount;
             averageWorstScoreCalculationSpeedDifferencePercentage = totalWorstScoreCalculationSpeedDifferencePercentage

@@ -386,7 +386,7 @@ public final class BendableScore extends AbstractBendableScore<BendableScore> {
 
     @Override
     public String toShortString() {
-        return buildBendableShortString((n) -> n.intValue() != 0);
+        return buildBendableShortString((n) -> ((Integer) n).intValue() != 0);
     }
 
     @Override
