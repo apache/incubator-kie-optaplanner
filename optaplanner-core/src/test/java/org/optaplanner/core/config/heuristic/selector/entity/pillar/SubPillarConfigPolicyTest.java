@@ -1,3 +1,19 @@
+/*
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package org.optaplanner.core.config.heuristic.selector.entity.pillar;
 
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -12,7 +28,7 @@ public class SubPillarConfigPolicyTest {
 
     @Test
     public void withoutSubpillars() {
-        SubPillarConfigPolicy policy = SubPillarConfigPolicy.withoutSubpillars();
+        SubPillarConfigPolicy<?> policy = SubPillarConfigPolicy.withoutSubpillars();
         assertSoftly(softly -> {
             softly.assertThat(policy.isSubPillarEnabled()).isFalse();
             softly.assertThat(policy.getEntityComparator()).isNull();
@@ -23,7 +39,7 @@ public class SubPillarConfigPolicyTest {
 
     @Test
     public void withLimitedSubpillars() {
-        SubPillarConfigPolicy policy = SubPillarConfigPolicy.withSubpillars(2, 10);
+        SubPillarConfigPolicy<?> policy = SubPillarConfigPolicy.withSubpillars(2, 10);
         assertSoftly(softly -> {
             softly.assertThat(policy.isSubPillarEnabled()).isTrue();
             softly.assertThat(policy.getEntityComparator()).isNull();
@@ -34,7 +50,7 @@ public class SubPillarConfigPolicyTest {
 
     @Test
     public void unlimitedSequential() {
-        SubPillarConfigPolicy policy = SubPillarConfigPolicy.sequentialUnlimited(mock(Comparator.class));
+        SubPillarConfigPolicy<?> policy = SubPillarConfigPolicy.sequentialUnlimited(mock(Comparator.class));
         assertSoftly(softly -> {
             softly.assertThat(policy.isSubPillarEnabled()).isTrue();
             softly.assertThat(policy.getEntityComparator()).isNotNull();
@@ -45,7 +61,7 @@ public class SubPillarConfigPolicyTest {
 
     @Test
     public void sequential() {
-        SubPillarConfigPolicy policy = SubPillarConfigPolicy.sequential(3, 5, mock(Comparator.class));
+        SubPillarConfigPolicy<?> policy = SubPillarConfigPolicy.sequential(3, 5, mock(Comparator.class));
         assertSoftly(softly -> {
             softly.assertThat(policy.isSubPillarEnabled()).isTrue();
             softly.assertThat(policy.getEntityComparator()).isNotNull();

@@ -76,8 +76,8 @@ public class PooledEntityPlacerConfig<Solution_>
     }
 
     @Override
-    public PooledEntityPlacerConfig copyConfig() {
-        return new PooledEntityPlacerConfig().inherit(this);
+    public PooledEntityPlacerConfig<Solution_> copyConfig() {
+        return new PooledEntityPlacerConfig<Solution_>().inherit(this);
     }
 
     @Override

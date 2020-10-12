@@ -1,5 +1,5 @@
 /*
- * Copyright 2014 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -42,9 +42,9 @@ public abstract class AbstractExhaustiveSearchTest<Solution_>
             CommonApp<Solution_> commonApp,
             ExhaustiveSearchType exhaustiveSearchType) {
         String solverConfigResource = commonApp.getSolverConfigResource();
-        SolverConfig solverConfig = SolverConfig.createFromXmlResource(solverConfigResource);
-        solverConfig.setTerminationConfig(new TerminationConfig());
-        ExhaustiveSearchPhaseConfig exhaustiveSearchPhaseConfig = new ExhaustiveSearchPhaseConfig();
+        SolverConfig<Solution_> solverConfig = SolverConfig.createFromXmlResource(solverConfigResource);
+        solverConfig.setTerminationConfig(new TerminationConfig<>());
+        ExhaustiveSearchPhaseConfig<Solution_> exhaustiveSearchPhaseConfig = new ExhaustiveSearchPhaseConfig<>();
         exhaustiveSearchPhaseConfig.setExhaustiveSearchType(exhaustiveSearchType);
         solverConfig.setPhaseConfigList(Arrays.asList(exhaustiveSearchPhaseConfig));
         return SolverFactory.create(solverConfig);

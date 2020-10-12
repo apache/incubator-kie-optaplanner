@@ -25,12 +25,13 @@ import org.optaplanner.core.impl.heuristic.selector.value.ValueSelector;
 public abstract class AbstractRandomChangeIterator<Solution_, Move_ extends Move<Solution_>>
         extends UpcomingSelectionIterator<Move_> {
 
-    private final EntitySelector entitySelector;
-    private final ValueSelector valueSelector;
+    private final EntitySelector<Solution_> entitySelector;
+    private final ValueSelector<Solution_> valueSelector;
 
     private Iterator<Object> entityIterator;
 
-    public AbstractRandomChangeIterator(EntitySelector entitySelector, ValueSelector valueSelector) {
+    public AbstractRandomChangeIterator(EntitySelector<Solution_> entitySelector,
+            ValueSelector<Solution_> valueSelector) {
         this.entitySelector = entitySelector;
         this.valueSelector = valueSelector;
         entityIterator = entitySelector.iterator();

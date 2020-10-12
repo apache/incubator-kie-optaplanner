@@ -60,9 +60,9 @@ public class ChangeMoveSelector<Solution_> extends GenericMoveSelector<Solution_
     public void solvingStarted(SolverScope<Solution_> solverScope) {
         super.solvingStarted(solverScope);
         if (chained) {
-            SupplyManager supplyManager = solverScope.getScoreDirector().getSupplyManager();
-            inverseVariableSupply = supplyManager.demand(
-                    new SingletonInverseVariableDemand(valueSelector.getVariableDescriptor()));
+            SupplyManager<Solution_> supplyManager = solverScope.getScoreDirector().getSupplyManager();
+            inverseVariableSupply =
+                    supplyManager.demand(new SingletonInverseVariableDemand<>(valueSelector.getVariableDescriptor()));
         }
     }
 

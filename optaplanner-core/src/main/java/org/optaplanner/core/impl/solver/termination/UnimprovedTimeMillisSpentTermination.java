@@ -97,7 +97,7 @@ public class UnimprovedTimeMillisSpentTermination<Solution_> extends AbstractTer
     @Override
     public UnimprovedTimeMillisSpentTermination<Solution_> createChildThreadTermination(
             SolverScope<Solution_> solverScope, ChildThreadType childThreadType) {
-        return new UnimprovedTimeMillisSpentTermination(unimprovedTimeMillisSpentLimit);
+        return new UnimprovedTimeMillisSpentTermination<>(unimprovedTimeMillisSpentLimit);
     }
 
     @Override

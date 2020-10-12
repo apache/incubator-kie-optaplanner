@@ -54,12 +54,12 @@ class SolverConfigTest {
 
     private static final String TEST_SOLVER_CONFIG_WITH_NAMESPACE = "testSolverConfigWithNamespace.xml";
     private static final String TEST_SOLVER_CONFIG_WITHOUT_NAMESPACE = "testSolverConfigWithoutNamespace.xml";
-    private final SolverConfigIO solverConfigIO = new SolverConfigIO();
+    private final SolverConfigIO<TestdataSolution> solverConfigIO = new SolverConfigIO<>();
 
     @ParameterizedTest
     @ValueSource(strings = { TEST_SOLVER_CONFIG_WITHOUT_NAMESPACE, TEST_SOLVER_CONFIG_WITH_NAMESPACE })
     void xmlConfigRemainsSameAfterReadWrite(String solverConfigResource) throws IOException {
-        SolverConfig jaxbSolverConfig = readSolverConfig(solverConfigResource);
+        SolverConfig<TestdataSolution> jaxbSolverConfig = readSolverConfig(solverConfigResource);
 
         Writer stringWriter = new StringWriter();
         solverConfigIO.write(jaxbSolverConfig, stringWriter);
@@ -78,7 +78,7 @@ class SolverConfigTest {
 
     @Test
     void readXmlConfigWithNamespace() {
-        SolverConfig solverConfig = readSolverConfig(TEST_SOLVER_CONFIG_WITH_NAMESPACE);
+        SolverConfig<TestdataSolution> solverConfig = readSolverConfig(TEST_SOLVER_CONFIG_WITH_NAMESPACE);
 
         assertThat(solverConfig).isNotNull();
         assertThat(solverConfig.getPhaseConfigList())
@@ -90,7 +90,7 @@ class SolverConfigTest {
                 .isAssignableFrom(DummyConstraintProvider.class);
     }
 
-    private SolverConfig readSolverConfig(String solverConfigResource) {
+    private SolverConfig<TestdataSolution> readSolverConfig(String solverConfigResource) {
         try (Reader reader = new InputStreamReader(SolverConfigTest.class.getResourceAsStream(solverConfigResource))) {
             return solverConfigIO.read(reader);
         } catch (IOException ioException) {
@@ -105,7 +105,7 @@ class SolverConfigTest {
                 + "  <solutionClass>  %s  %n" // Intentionally included white chars around the class name.
                 + "  </solutionClass>%n"
                 + "</solver>", solutionClassName);
-        SolverConfig solverConfig = solverConfigIO.read(new StringReader(xmlFragment));
+        SolverConfig<TestdataSolution> solverConfig = solverConfigIO.read(new StringReader(xmlFragment));
         assertThat(solverConfig.getSolutionClass().getName()).isEqualTo(solutionClassName);
     }
 
@@ -131,8 +131,9 @@ class SolverConfigTest {
 
     @Test
     void inherit() {
-        SolverConfig originalSolverConfig = readSolverConfig(TEST_SOLVER_CONFIG_WITHOUT_NAMESPACE);
-        SolverConfig inheritedSolverConfig = new SolverConfig().inherit(originalSolverConfig);
+        SolverConfig<TestdataSolution> originalSolverConfig = readSolverConfig(TEST_SOLVER_CONFIG_WITHOUT_NAMESPACE);
+        SolverConfig<TestdataSolution> inheritedSolverConfig =
+                new SolverConfig<TestdataSolution>().inherit(originalSolverConfig);
         assertThat(inheritedSolverConfig).usingRecursiveComparison().isEqualTo(originalSolverConfig);
     }
 

@@ -13068,6 +13068,32 @@
           "classSimpleName": "TerminationConfig",
           "elementKind": "class",
           "justification": "Various classes are properly generified."
+        },
+        {
+          "code": "java.method.parameterTypeParameterChanged",
+          "old": "parameter <Solution_> org.optaplanner.core.api.solver.SolverFactory<Solution_> org.optaplanner.core.api.solver.SolverFactory<Solution_>::create(===org.optaplanner.core.config.solver.SolverConfig===)",
+          "new": "parameter <Solution_> org.optaplanner.core.api.solver.SolverFactory<Solution_> org.optaplanner.core.api.solver.SolverFactory<Solution_>::create(===org.optaplanner.core.config.solver.SolverConfig<Solution_>===)",
+          "oldType": "org.optaplanner.core.config.solver.SolverConfig",
+          "newType": "org.optaplanner.core.config.solver.SolverConfig<Solution_ extends java.lang.Object>",
+          "package": "org.optaplanner.core.api.solver",
+          "classSimpleName": "SolverFactory",
+          "methodName": "create",
+          "parameterIndex": "0",
+          "elementKind": "parameter",
+          "justification": "Various classes are properly generified."
+        },
+        {
+          "code": "java.method.parameterTypeParameterChanged",
+          "old": "parameter <Solution_> org.optaplanner.core.api.solver.SolverFactory<Solution_> org.optaplanner.core.api.solver.SolverFactory<Solution_>::create(===org.optaplanner.core.config.solver.SolverConfig===)",
+          "new": "parameter <Solution_> org.optaplanner.core.api.solver.SolverFactory<Solution_> org.optaplanner.core.api.solver.SolverFactory<Solution_>::create(===org.optaplanner.core.config.solver.SolverConfig<Solution_>===)",
+          "oldType": "org.optaplanner.core.config.solver.SolverConfig",
+          "newType": "org.optaplanner.core.config.solver.SolverConfig<Solution_ extends java.lang.Object>",
+          "package": "org.optaplanner.core.api.solver",
+          "classSimpleName": "SolverFactory",
+          "methodName": "create",
+          "parameterIndex": "0",
+          "elementKind": "parameter",
+          "justification": "Various classes are properly generified."
         }
       ]
     }

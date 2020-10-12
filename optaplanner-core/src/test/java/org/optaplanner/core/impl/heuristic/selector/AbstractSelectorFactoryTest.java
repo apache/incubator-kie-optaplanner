@@ -29,15 +29,16 @@ import org.optaplanner.core.impl.testdata.domain.TestdataSolution;
 
 public abstract class AbstractSelectorFactoryTest {
 
-    public HeuristicConfigPolicy buildHeuristicConfigPolicy() {
+    public HeuristicConfigPolicy<TestdataSolution> buildHeuristicConfigPolicy() {
         return buildHeuristicConfigPolicy(TestdataSolution.buildSolutionDescriptor());
     }
 
-    public <Solution_> HeuristicConfigPolicy buildHeuristicConfigPolicy(SolutionDescriptor<Solution_> solutionDescriptor) {
+    public <Solution_> HeuristicConfigPolicy<Solution_>
+            buildHeuristicConfigPolicy(SolutionDescriptor<Solution_> solutionDescriptor) {
         InnerScoreDirectorFactory<Solution_, SimpleScore> scoreDirectorFactory = mock(InnerScoreDirectorFactory.class);
         when(scoreDirectorFactory.getSolutionDescriptor()).thenReturn(solutionDescriptor);
         when(scoreDirectorFactory.getScoreDefinition()).thenReturn(new SimpleScoreDefinition());
-        return new HeuristicConfigPolicy(EnvironmentMode.REPRODUCIBLE, null, null, null, scoreDirectorFactory);
+        return new HeuristicConfigPolicy<>(EnvironmentMode.REPRODUCIBLE, null, null, null, scoreDirectorFactory);
     }
 
 }

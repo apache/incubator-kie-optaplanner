@@ -176,8 +176,7 @@ public class DefaultExhaustiveSearchPhaseFactory<Solution_>
             // which includes all genuineVariableDescriptors
             Collection<GenuineVariableDescriptor<Solution_>> variableDescriptors =
                     entityDescriptor.getGenuineVariableDescriptors();
-            List<MoveSelectorConfig> subMoveSelectorConfigList = new ArrayList<>(
-                    variableDescriptors.size());
+            List<MoveSelectorConfig> subMoveSelectorConfigList = new ArrayList<>(variableDescriptors.size());
             for (GenuineVariableDescriptor<Solution_> variableDescriptor : variableDescriptors) {
                 ChangeMoveSelectorConfig<Solution_> changeMoveSelectorConfig = new ChangeMoveSelectorConfig<>();
                 changeMoveSelectorConfig.setEntitySelectorConfig(

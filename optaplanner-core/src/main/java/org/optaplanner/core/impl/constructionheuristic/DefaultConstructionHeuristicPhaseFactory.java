@@ -88,7 +88,8 @@ public class DefaultConstructionHeuristicPhaseFactory<Solution_>
                         + ") is explicitly configured.");
             }
         }
-        EntityPlacer entityPlacer = EntityPlacerFactory.create(entityPlacerConfig_).buildEntityPlacer(phaseConfigPolicy);
+        EntityPlacer<Solution_> entityPlacer =
+                EntityPlacerFactory.create(entityPlacerConfig_).buildEntityPlacer(phaseConfigPolicy);
         phase.setEntityPlacer(entityPlacer);
         EnvironmentMode environmentMode = phaseConfigPolicy.getEnvironmentMode();
         if (environmentMode.isNonIntrusiveFullAsserted()) {
@@ -106,7 +107,7 @@ public class DefaultConstructionHeuristicPhaseFactory<Solution_>
         ConstructionHeuristicForagerConfig<Solution_> foragerConfig_ = phaseConfig.getForagerConfig() == null
                 ? new ConstructionHeuristicForagerConfig<>()
                 : phaseConfig.getForagerConfig();
-        ConstructionHeuristicForager forager =
+        ConstructionHeuristicForager<Solution_> forager =
                 ConstructionHeuristicForagerFactory.create(foragerConfig_).buildForager(configPolicy);
         EnvironmentMode environmentMode = configPolicy.getEnvironmentMode();
         ConstructionHeuristicDecider<Solution_> decider;

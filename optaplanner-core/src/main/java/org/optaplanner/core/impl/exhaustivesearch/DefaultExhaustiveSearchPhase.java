@@ -55,7 +55,7 @@ public class DefaultExhaustiveSearchPhase<Solution_> extends AbstractPhase<Solut
     protected boolean assertExpectedWorkingSolutionScore = false;
 
     public DefaultExhaustiveSearchPhase(int phaseIndex, String logIndentation,
-            BestSolutionRecaller<Solution_> bestSolutionRecaller, Termination termination) {
+            BestSolutionRecaller<Solution_> bestSolutionRecaller, Termination<Solution_> termination) {
         super(phaseIndex, logIndentation, bestSolutionRecaller, termination);
     }
 

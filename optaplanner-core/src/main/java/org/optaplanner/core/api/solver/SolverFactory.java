@@ -52,7 +52,7 @@ public interface SolverFactory<Solution_> {
      * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
      */
     static <Solution_> SolverFactory<Solution_> createFromXmlResource(String solverConfigResource) {
-        SolverConfig solverConfig = SolverConfig.createFromXmlResource(solverConfigResource);
+        SolverConfig<Solution_> solverConfig = SolverConfig.createFromXmlResource(solverConfigResource);
         return new DefaultSolverFactory<>(solverConfig);
     }
 
@@ -68,7 +68,7 @@ public interface SolverFactory<Solution_> {
      */
     static <Solution_> SolverFactory<Solution_> createFromXmlResource(String solverConfigResource,
             ClassLoader classLoader) {
-        SolverConfig solverConfig = SolverConfig.createFromXmlResource(solverConfigResource, classLoader);
+        SolverConfig<Solution_> solverConfig = SolverConfig.createFromXmlResource(solverConfigResource, classLoader);
         return new DefaultSolverFactory<>(solverConfig);
     }
 
@@ -84,7 +84,7 @@ public interface SolverFactory<Solution_> {
      * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
      */
     static <Solution_> SolverFactory<Solution_> createFromXmlFile(File solverConfigFile) {
-        SolverConfig solverConfig = SolverConfig.createFromXmlFile(solverConfigFile);
+        SolverConfig<Solution_> solverConfig = SolverConfig.createFromXmlFile(solverConfigFile);
         return new DefaultSolverFactory<>(solverConfig);
     }
 
@@ -98,7 +98,7 @@ public interface SolverFactory<Solution_> {
      * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
      */
     static <Solution_> SolverFactory<Solution_> createFromXmlFile(File solverConfigFile, ClassLoader classLoader) {
-        SolverConfig solverConfig = SolverConfig.createFromXmlFile(solverConfigFile, classLoader);
+        SolverConfig<Solution_> solverConfig = SolverConfig.createFromXmlFile(solverConfigFile, classLoader);
         return new DefaultSolverFactory<>(solverConfig);
     }
 
@@ -115,10 +115,10 @@ public interface SolverFactory<Solution_> {
      * @return never null
      * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
      */
-    static <Solution_> SolverFactory<Solution_> create(SolverConfig solverConfig) {
+    static <Solution_> SolverFactory<Solution_> create(SolverConfig<Solution_> solverConfig) {
         Objects.requireNonNull(solverConfig);
         // Defensive copy of solverConfig, because the DefaultSolverFactory doesn't internalize it yet
-        solverConfig = new SolverConfig(solverConfig);
+        solverConfig = new SolverConfig<>(solverConfig);
         return new DefaultSolverFactory<>(solverConfig);
     }
 

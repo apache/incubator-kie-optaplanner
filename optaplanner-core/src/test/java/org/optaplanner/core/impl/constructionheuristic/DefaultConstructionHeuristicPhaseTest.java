@@ -36,10 +36,10 @@ public class DefaultConstructionHeuristicPhaseTest {
 
     @Test
     public void solveWithInitializedEntities() {
-        SolverConfig solverConfig = PlannerTestUtils.buildSolverConfig(
+        SolverConfig<TestdataSolution> solverConfig = PlannerTestUtils.buildSolverConfig(
                 TestdataSolution.class, TestdataEntity.class);
         solverConfig.setPhaseConfigList(Collections.singletonList(
-                new ConstructionHeuristicPhaseConfig()));
+                new ConstructionHeuristicPhaseConfig<>()));
 
         TestdataSolution solution = new TestdataSolution("s1");
         TestdataValue v1 = new TestdataValue("v1");
@@ -67,10 +67,10 @@ public class DefaultConstructionHeuristicPhaseTest {
 
     @Test
     public void solveWithPinnedEntities() {
-        SolverConfig solverConfig = PlannerTestUtils.buildSolverConfig(
-                TestdataPinnedSolution.class, TestdataPinnedEntity.class);
+        SolverConfig<TestdataPinnedSolution> solverConfig =
+                PlannerTestUtils.buildSolverConfig(TestdataPinnedSolution.class, TestdataPinnedEntity.class);
         solverConfig.setPhaseConfigList(Collections.singletonList(
-                new ConstructionHeuristicPhaseConfig()));
+                new ConstructionHeuristicPhaseConfig<>()));
 
         TestdataPinnedSolution solution = new TestdataPinnedSolution("s1");
         TestdataValue v1 = new TestdataValue("v1");
@@ -98,10 +98,10 @@ public class DefaultConstructionHeuristicPhaseTest {
 
     @Test
     public void solveWithEmptyEntityList() {
-        SolverConfig solverConfig = PlannerTestUtils.buildSolverConfig(
-                TestdataSolution.class, TestdataEntity.class);
+        SolverConfig<TestdataSolution> solverConfig = PlannerTestUtils.buildSolverConfig(TestdataSolution.class,
+                TestdataEntity.class);
         solverConfig.setPhaseConfigList(Collections.singletonList(
-                new ConstructionHeuristicPhaseConfig()));
+                new ConstructionHeuristicPhaseConfig<>()));
 
         TestdataSolution solution = new TestdataSolution("s1");
         TestdataValue v1 = new TestdataValue("v1");

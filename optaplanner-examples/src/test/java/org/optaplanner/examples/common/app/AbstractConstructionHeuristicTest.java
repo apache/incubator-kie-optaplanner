@@ -1,5 +1,5 @@
 /*
- * Copyright 2014 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -47,9 +47,10 @@ public abstract class AbstractConstructionHeuristicTest<Solution_>
             CommonApp<Solution_> commonApp,
             ConstructionHeuristicType constructionHeuristicType) {
         String solverConfigResource = commonApp.getSolverConfigResource();
-        SolverConfig solverConfig = SolverConfig.createFromXmlResource(solverConfigResource);
-        solverConfig.setTerminationConfig(new TerminationConfig());
-        ConstructionHeuristicPhaseConfig constructionHeuristicPhaseConfig = new ConstructionHeuristicPhaseConfig();
+        SolverConfig<Solution_> solverConfig = SolverConfig.createFromXmlResource(solverConfigResource);
+        solverConfig.setTerminationConfig(new TerminationConfig<>());
+        ConstructionHeuristicPhaseConfig<Solution_> constructionHeuristicPhaseConfig =
+                new ConstructionHeuristicPhaseConfig<>();
         constructionHeuristicPhaseConfig.setConstructionHeuristicType(constructionHeuristicType);
         solverConfig.setPhaseConfigList(Arrays.asList(constructionHeuristicPhaseConfig));
         return SolverFactory.create(solverConfig);

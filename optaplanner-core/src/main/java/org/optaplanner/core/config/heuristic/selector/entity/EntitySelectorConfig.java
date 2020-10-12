@@ -272,7 +272,7 @@ public class EntitySelectorConfig<Solution_> extends SelectorConfig<Solution_, E
                 throw new IllegalStateException("Impossible state: hasSorter() should have returned null.");
             case DECREASING_DIFFICULTY:
             case DECREASING_DIFFICULTY_IF_AVAILABLE:
-                sorter = entityDescriptor.getDecreasingDifficultySorter();
+                sorter = (SelectionSorter<Solution_, T>) entityDescriptor.getDecreasingDifficultySorter();
                 if (sorter == null) {
                     throw new IllegalArgumentException("The sorterManner (" + entitySorterManner
                             + ") on entity class (" + entityDescriptor.getEntityClass()

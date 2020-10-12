@@ -43,7 +43,7 @@ public class DefaultConstructionHeuristicPhase<Solution_> extends AbstractPhase<
     protected final boolean skipBestSolutionCloningInSteps = true;
 
     public DefaultConstructionHeuristicPhase(int phaseIndex, String logIndentation,
-            BestSolutionRecaller<Solution_> bestSolutionRecaller, Termination termination) {
+            BestSolutionRecaller<Solution_> bestSolutionRecaller, Termination<Solution_> termination) {
         super(phaseIndex, logIndentation, bestSolutionRecaller, termination);
     }
 

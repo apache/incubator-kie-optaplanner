@@ -48,7 +48,7 @@ public abstract class AbstractCachingMoveSelector<Solution_> extends AbstractMov
             throw new IllegalArgumentException("The selector (" + this
                     + ") does not support the cacheType (" + cacheType + ").");
         }
-        phaseLifecycleSupport.addEventListener(new SelectionCacheLifecycleBridge(cacheType, this));
+        phaseLifecycleSupport.addEventListener(new SelectionCacheLifecycleBridge<>(cacheType, this));
     }
 
     public MoveSelector<Solution_> getChildMoveSelector() {

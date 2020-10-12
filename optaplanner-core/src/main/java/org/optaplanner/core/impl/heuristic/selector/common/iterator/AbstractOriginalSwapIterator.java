@@ -25,7 +25,8 @@ import org.optaplanner.core.impl.heuristic.selector.ListIterableSelector;
 public abstract class AbstractOriginalSwapIterator<Solution_, Move_ extends Move<Solution_>, SubSelection_>
         extends UpcomingSelectionIterator<Move_> {
 
-    public static <SubS> long getSize(ListIterableSelector leftSubSelector, ListIterableSelector rightSubSelector) {
+    public static <Solution_, SubSelection_> long getSize(ListIterableSelector<Solution_, SubSelection_> leftSubSelector,
+            ListIterableSelector<Solution_, SubSelection_> rightSubSelector) {
         if (leftSubSelector != rightSubSelector) {
             return leftSubSelector.getSize() * rightSubSelector.getSize();
         } else {
