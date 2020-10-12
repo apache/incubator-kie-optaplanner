@@ -27,7 +27,7 @@ import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.core.impl.domain.variable.descriptor.GenuineVariableDescriptor;
 
-public abstract class AbstractFromConfigFactory<Solution_, Config_ extends AbstractConfig<Solution_, Config_>> {
+public abstract class AbstractFromConfigFactory<Solution_, Config_ extends AbstractConfig<Config_>> {
 
     protected final Config_ config;
 

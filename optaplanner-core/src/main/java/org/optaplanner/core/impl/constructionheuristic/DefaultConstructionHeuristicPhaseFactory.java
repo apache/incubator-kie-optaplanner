@@ -48,9 +48,9 @@ import org.optaplanner.core.impl.solver.termination.Termination;
 import org.optaplanner.core.impl.solver.thread.ChildThreadType;
 
 public class DefaultConstructionHeuristicPhaseFactory<Solution_>
-        extends AbstractPhaseFactory<Solution_, ConstructionHeuristicPhaseConfig<Solution_>> {
+        extends AbstractPhaseFactory<Solution_, ConstructionHeuristicPhaseConfig> {
 
-    public DefaultConstructionHeuristicPhaseFactory(ConstructionHeuristicPhaseConfig<Solution_> phaseConfig) {
+    public DefaultConstructionHeuristicPhaseFactory(ConstructionHeuristicPhaseConfig phaseConfig) {
         super(phaseConfig);
     }
 
@@ -88,8 +88,8 @@ public class DefaultConstructionHeuristicPhaseFactory<Solution_>
                         + ") is explicitly configured.");
             }
         }
-        EntityPlacer<Solution_> entityPlacer =
-                EntityPlacerFactory.create(entityPlacerConfig_).buildEntityPlacer(phaseConfigPolicy);
+        EntityPlacer<Solution_> entityPlacer = EntityPlacerFactory.<Solution_> create(entityPlacerConfig_)
+                .buildEntityPlacer(phaseConfigPolicy);
         phase.setEntityPlacer(entityPlacer);
         EnvironmentMode environmentMode = phaseConfigPolicy.getEnvironmentMode();
         if (environmentMode.isNonIntrusiveFullAsserted()) {
@@ -104,11 +104,12 @@ public class DefaultConstructionHeuristicPhaseFactory<Solution_>
 
     private ConstructionHeuristicDecider<Solution_> buildDecider(HeuristicConfigPolicy<Solution_> configPolicy,
             Termination<Solution_> termination) {
-        ConstructionHeuristicForagerConfig<Solution_> foragerConfig_ = phaseConfig.getForagerConfig() == null
-                ? new ConstructionHeuristicForagerConfig<>()
+        ConstructionHeuristicForagerConfig foragerConfig_ = phaseConfig.getForagerConfig() == null
+                ? new ConstructionHeuristicForagerConfig()
                 : phaseConfig.getForagerConfig();
         ConstructionHeuristicForager<Solution_> forager =
-                ConstructionHeuristicForagerFactory.create(foragerConfig_).buildForager(configPolicy);
+                ConstructionHeuristicForagerFactory.<Solution_> create(foragerConfig_)
+                        .buildForager(configPolicy);
         EnvironmentMode environmentMode = configPolicy.getEnvironmentMode();
         ConstructionHeuristicDecider<Solution_> decider;
         Integer moveThreadCount = configPolicy.getMoveThreadCount();
@@ -158,25 +159,25 @@ public class DefaultConstructionHeuristicPhaseFactory<Solution_>
                 if (!ConfigUtils.isEmptyCollection(phaseConfig.getMoveSelectorConfigList())) {
                     return QueuedEntityPlacerFactory.unfoldNew(phaseConfigPolicy, phaseConfig.getMoveSelectorConfigList());
                 }
-                return new QueuedEntityPlacerConfig<>();
+                return new QueuedEntityPlacerConfig();
             case ALLOCATE_TO_VALUE_FROM_QUEUE:
                 if (!ConfigUtils.isEmptyCollection(phaseConfig.getMoveSelectorConfigList())) {
                     return QueuedValuePlacerFactory.unfoldNew(checkSingleMoveSelectorConfig());
                 }
-                return new QueuedValuePlacerConfig<>();
+                return new QueuedValuePlacerConfig();
             case CHEAPEST_INSERTION:
             case ALLOCATE_FROM_POOL:
                 if (!ConfigUtils.isEmptyCollection(phaseConfig.getMoveSelectorConfigList())) {
                     return PooledEntityPlacerFactory.unfoldNew(phaseConfigPolicy, checkSingleMoveSelectorConfig());
                 }
-                return new PooledEntityPlacerConfig<>();
+                return new PooledEntityPlacerConfig();
             default:
                 throw new IllegalStateException(
                         "The constructionHeuristicType (" + constructionHeuristicType + ") is not implemented.");
         }
     }
 
-    private MoveSelectorConfig<Solution_, ?> checkSingleMoveSelectorConfig() {
+    private MoveSelectorConfig<?> checkSingleMoveSelectorConfig() {
         if (phaseConfig.getMoveSelectorConfigList().size() != 1) {
             throw new IllegalArgumentException("For the constructionHeuristicType ("
                     + phaseConfig.getConstructionHeuristicType() + "), the moveSelectorConfigList ("

@@ -29,7 +29,7 @@ import org.slf4j.LoggerFactory;
         "parallelSolverCount",
         "threadFactoryClass"
 })
-public class SolverManagerConfig<Solution_> extends AbstractConfig<Solution_, SolverManagerConfig<Solution_>> {
+public class SolverManagerConfig extends AbstractConfig<SolverManagerConfig> {
 
     public static final String PARALLEL_SOLVER_COUNT_AUTO = "AUTO";
 
@@ -69,12 +69,12 @@ public class SolverManagerConfig<Solution_> extends AbstractConfig<Solution_, So
     // With methods
     // ************************************************************************
 
-    public SolverManagerConfig<Solution_> withParallelSolverCount(String parallelSolverCount) {
+    public SolverManagerConfig withParallelSolverCount(String parallelSolverCount) {
         this.parallelSolverCount = parallelSolverCount;
         return this;
     }
 
-    public SolverManagerConfig<Solution_> withThreadFactoryClass(Class<? extends ThreadFactory> threadFactoryClass) {
+    public SolverManagerConfig withThreadFactoryClass(Class<? extends ThreadFactory> threadFactoryClass) {
         this.threadFactoryClass = threadFactoryClass;
         return this;
     }
@@ -120,7 +120,7 @@ public class SolverManagerConfig<Solution_> extends AbstractConfig<Solution_, So
     }
 
     @Override
-    public SolverManagerConfig<Solution_> inherit(SolverManagerConfig<Solution_> inheritedConfig) {
+    public SolverManagerConfig inherit(SolverManagerConfig inheritedConfig) {
         parallelSolverCount = ConfigUtils.inheritOverwritableProperty(parallelSolverCount,
                 inheritedConfig.getParallelSolverCount());
         threadFactoryClass = ConfigUtils.inheritOverwritableProperty(threadFactoryClass,
@@ -129,8 +129,8 @@ public class SolverManagerConfig<Solution_> extends AbstractConfig<Solution_, So
     }
 
     @Override
-    public SolverManagerConfig<Solution_> copyConfig() {
-        return new SolverManagerConfig<Solution_>().inherit(this);
+    public SolverManagerConfig copyConfig() {
+        return new SolverManagerConfig().inherit(this);
     }
 
 }

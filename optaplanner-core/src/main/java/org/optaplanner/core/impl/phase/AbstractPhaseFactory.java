@@ -23,7 +23,7 @@ import org.optaplanner.core.impl.solver.termination.PhaseToSolverTerminationBrid
 import org.optaplanner.core.impl.solver.termination.Termination;
 import org.optaplanner.core.impl.solver.termination.TerminationFactory;
 
-public abstract class AbstractPhaseFactory<Solution_, PhaseConfig_ extends PhaseConfig<Solution_, PhaseConfig_>>
+public abstract class AbstractPhaseFactory<Solution_, PhaseConfig_ extends PhaseConfig<PhaseConfig_>>
         implements PhaseFactory<Solution_> {
 
     protected final PhaseConfig_ phaseConfig;
@@ -34,11 +34,12 @@ public abstract class AbstractPhaseFactory<Solution_, PhaseConfig_ extends Phase
 
     protected Termination<Solution_> buildPhaseTermination(HeuristicConfigPolicy<Solution_> configPolicy,
             Termination<Solution_> solverTermination) {
-        TerminationConfig<Solution_> terminationConfig_ = phaseConfig.getTerminationConfig() == null ? new TerminationConfig<>()
+        TerminationConfig terminationConfig_ = phaseConfig.getTerminationConfig() == null ? new TerminationConfig()
                 : phaseConfig.getTerminationConfig();
         // In case of childThread PART_THREAD, the solverTermination is actually the parent phase's phaseTermination
         // with the bridge removed, so it's ok to add it again
         Termination<Solution_> phaseTermination = new PhaseToSolverTerminationBridge<>(solverTermination);
-        return TerminationFactory.create(terminationConfig_).buildTermination(configPolicy, phaseTermination);
+        return TerminationFactory.<Solution_> create(terminationConfig_)
+                .buildTermination(configPolicy, phaseTermination);
     }
 }

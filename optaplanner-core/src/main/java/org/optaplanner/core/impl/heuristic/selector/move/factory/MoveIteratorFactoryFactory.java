@@ -24,9 +24,9 @@ import org.optaplanner.core.impl.heuristic.selector.move.AbstractMoveSelectorFac
 import org.optaplanner.core.impl.heuristic.selector.move.MoveSelector;
 
 public class MoveIteratorFactoryFactory<Solution_>
-        extends AbstractMoveSelectorFactory<Solution_, MoveIteratorFactoryConfig<Solution_>> {
+        extends AbstractMoveSelectorFactory<Solution_, MoveIteratorFactoryConfig> {
 
-    public MoveIteratorFactoryFactory(MoveIteratorFactoryConfig<Solution_> moveSelectorConfig) {
+    public MoveIteratorFactoryFactory(MoveIteratorFactoryConfig moveSelectorConfig) {
         super(moveSelectorConfig);
     }
 

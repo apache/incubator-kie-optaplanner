@@ -26,9 +26,9 @@ import org.optaplanner.core.impl.heuristic.HeuristicConfigPolicy;
 import org.optaplanner.core.impl.heuristic.selector.move.MoveSelector;
 
 public class CartesianProductMoveSelectorFactory<Solution_>
-        extends AbstractCompositeMoveSelectorFactory<Solution_, CartesianProductMoveSelectorConfig<Solution_>> {
+        extends AbstractCompositeMoveSelectorFactory<Solution_, CartesianProductMoveSelectorConfig> {
 
-    public CartesianProductMoveSelectorFactory(CartesianProductMoveSelectorConfig<Solution_> moveSelectorConfig) {
+    public CartesianProductMoveSelectorFactory(CartesianProductMoveSelectorConfig moveSelectorConfig) {
         super(moveSelectorConfig);
     }
 

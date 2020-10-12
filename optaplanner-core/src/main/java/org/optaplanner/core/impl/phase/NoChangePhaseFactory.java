@@ -21,9 +21,9 @@ import org.optaplanner.core.impl.heuristic.HeuristicConfigPolicy;
 import org.optaplanner.core.impl.solver.recaller.BestSolutionRecaller;
 import org.optaplanner.core.impl.solver.termination.Termination;
 
-public class NoChangePhaseFactory<Solution_> extends AbstractPhaseFactory<Solution_, NoChangePhaseConfig<Solution_>> {
+public class NoChangePhaseFactory<Solution_> extends AbstractPhaseFactory<Solution_, NoChangePhaseConfig> {
 
-    public NoChangePhaseFactory(NoChangePhaseConfig<Solution_> phaseConfig) {
+    public NoChangePhaseFactory(NoChangePhaseConfig phaseConfig) {
         super(phaseConfig);
     }
 

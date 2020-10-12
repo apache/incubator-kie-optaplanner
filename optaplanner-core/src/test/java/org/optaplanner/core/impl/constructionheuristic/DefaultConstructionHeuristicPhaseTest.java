@@ -36,10 +36,9 @@ public class DefaultConstructionHeuristicPhaseTest {
 
     @Test
     public void solveWithInitializedEntities() {
-        SolverConfig<TestdataSolution> solverConfig = PlannerTestUtils.buildSolverConfig(
+        SolverConfig solverConfig = PlannerTestUtils.buildSolverConfig(
                 TestdataSolution.class, TestdataEntity.class);
-        solverConfig.setPhaseConfigList(Collections.singletonList(
-                new ConstructionHeuristicPhaseConfig<>()));
+        solverConfig.setPhaseConfigList(Collections.singletonList(new ConstructionHeuristicPhaseConfig()));
 
         TestdataSolution solution = new TestdataSolution("s1");
         TestdataValue v1 = new TestdataValue("v1");
@@ -67,10 +66,9 @@ public class DefaultConstructionHeuristicPhaseTest {
 
     @Test
     public void solveWithPinnedEntities() {
-        SolverConfig<TestdataPinnedSolution> solverConfig =
+        SolverConfig solverConfig =
                 PlannerTestUtils.buildSolverConfig(TestdataPinnedSolution.class, TestdataPinnedEntity.class);
-        solverConfig.setPhaseConfigList(Collections.singletonList(
-                new ConstructionHeuristicPhaseConfig<>()));
+        solverConfig.setPhaseConfigList(Collections.singletonList(new ConstructionHeuristicPhaseConfig()));
 
         TestdataPinnedSolution solution = new TestdataPinnedSolution("s1");
         TestdataValue v1 = new TestdataValue("v1");
@@ -98,10 +96,8 @@ public class DefaultConstructionHeuristicPhaseTest {
 
     @Test
     public void solveWithEmptyEntityList() {
-        SolverConfig<TestdataSolution> solverConfig = PlannerTestUtils.buildSolverConfig(TestdataSolution.class,
-                TestdataEntity.class);
-        solverConfig.setPhaseConfigList(Collections.singletonList(
-                new ConstructionHeuristicPhaseConfig<>()));
+        SolverConfig solverConfig = PlannerTestUtils.buildSolverConfig(TestdataSolution.class, TestdataEntity.class);
+        solverConfig.setPhaseConfigList(Collections.singletonList(new ConstructionHeuristicPhaseConfig()));
 
         TestdataSolution solution = new TestdataSolution("s1");
         TestdataValue v1 = new TestdataValue("v1");

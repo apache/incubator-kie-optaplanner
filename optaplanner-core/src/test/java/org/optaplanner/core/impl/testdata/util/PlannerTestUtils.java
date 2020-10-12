@@ -69,23 +69,23 @@ public class PlannerTestUtils {
 
     public static <Solution_> SolverFactory<Solution_> buildSolverFactory(
             Class<Solution_> solutionClass, Class<?>... entityClasses) {
-        SolverConfig<Solution_> solverConfig = buildSolverConfig(solutionClass, entityClasses);
+        SolverConfig solverConfig = buildSolverConfig(solutionClass, entityClasses);
         return SolverFactory.create(solverConfig);
     }
 
-    public static <Solution_> SolverConfig<Solution_> buildSolverConfig(Class<Solution_> solutionClass,
+    public static <Solution_> SolverConfig buildSolverConfig(Class<Solution_> solutionClass,
             Class<?>... entityClasses) {
-        SolverConfig<Solution_> solverConfig = new SolverConfig<>();
+        SolverConfig solverConfig = new SolverConfig();
         solverConfig.setSolutionClass(solutionClass);
         solverConfig.setEntityClassList(Arrays.asList(entityClasses));
-        ScoreDirectorFactoryConfig<Solution_> scoreDirectorFactoryConfig = new ScoreDirectorFactoryConfig<>();
+        ScoreDirectorFactoryConfig scoreDirectorFactoryConfig = new ScoreDirectorFactoryConfig();
         scoreDirectorFactoryConfig.setEasyScoreCalculatorClass(DummySimpleScoreEasyScoreCalculator.class);
         solverConfig.setScoreDirectorFactoryConfig(scoreDirectorFactoryConfig);
         List<PhaseConfig> phaseConfigList = new ArrayList<>(2);
-        phaseConfigList.add(new ConstructionHeuristicPhaseConfig<>());
-        LocalSearchPhaseConfig<Solution_> localSearchPhaseConfig = new LocalSearchPhaseConfig<>();
+        phaseConfigList.add(new ConstructionHeuristicPhaseConfig());
+        LocalSearchPhaseConfig localSearchPhaseConfig = new LocalSearchPhaseConfig();
         localSearchPhaseConfig
-                .setTerminationConfig(new TerminationConfig<Solution_>().withStepCountLimit(TERMINATION_STEP_COUNT_LIMIT));
+                .setTerminationConfig(new TerminationConfig().withStepCountLimit(TERMINATION_STEP_COUNT_LIMIT));
         phaseConfigList.add(localSearchPhaseConfig);
         solverConfig.setPhaseConfigList(phaseConfigList);
         return solverConfig;
@@ -93,8 +93,8 @@ public class PlannerTestUtils {
 
     public static <Solution_> SolverFactory<Solution_> buildSolverFactoryWithDroolsScoreDirector(
             Class<Solution_> solutionClass, Class<?>... entityClasses) {
-        SolverConfig<Solution_> solverConfig = buildSolverConfig(solutionClass, entityClasses);
-        ScoreDirectorFactoryConfig<Solution_> scoreDirectorFactoryConfig =
+        SolverConfig solverConfig = buildSolverConfig(solutionClass, entityClasses);
+        ScoreDirectorFactoryConfig scoreDirectorFactoryConfig =
                 solverConfig.getScoreDirectorFactoryConfig();
         scoreDirectorFactoryConfig.setEasyScoreCalculatorClass(null);
         scoreDirectorFactoryConfig.setScoreDrlList(Collections.singletonList(
@@ -102,7 +102,7 @@ public class PlannerTestUtils {
         return SolverFactory.create(solverConfig);
     }
 
-    public static <Solution_> Solution_ solve(SolverConfig<Solution_> solverConfig, Solution_ problem) {
+    public static <Solution_> Solution_ solve(SolverConfig solverConfig, Solution_ problem) {
         SolverFactory<Solution_> solverFactory = SolverFactory.create(solverConfig);
         return solverFactory.buildSolver().solve(problem);
     }

@@ -39,10 +39,10 @@ import org.optaplanner.core.impl.heuristic.selector.common.nearby.NearbyDistance
         "betaDistributionAlpha",
         "betaDistributionBeta"
 })
-public class NearbySelectionConfig<Solution_> extends SelectorConfig<Solution_, NearbySelectionConfig<Solution_>> {
+public class NearbySelectionConfig extends SelectorConfig<NearbySelectionConfig> {
 
     @XmlElement(name = "originEntitySelector")
-    protected EntitySelectorConfig<Solution_> originEntitySelectorConfig = null;
+    protected EntitySelectorConfig originEntitySelectorConfig = null;
     protected Class<? extends NearbyDistanceMeter> nearbyDistanceMeterClass = null;
 
     protected NearbySelectionDistributionType nearbySelectionDistributionType = null;
@@ -59,11 +59,11 @@ public class NearbySelectionConfig<Solution_> extends SelectorConfig<Solution_, 
     protected Double betaDistributionAlpha = null;
     protected Double betaDistributionBeta = null;
 
-    public EntitySelectorConfig<Solution_> getOriginEntitySelectorConfig() {
+    public EntitySelectorConfig getOriginEntitySelectorConfig() {
         return originEntitySelectorConfig;
     }
 
-    public void setOriginEntitySelectorConfig(EntitySelectorConfig<Solution_> originEntitySelectorConfig) {
+    public void setOriginEntitySelectorConfig(EntitySelectorConfig originEntitySelectorConfig) {
         this.originEntitySelectorConfig = originEntitySelectorConfig;
     }
 
@@ -181,7 +181,7 @@ public class NearbySelectionConfig<Solution_> extends SelectorConfig<Solution_, 
     }
 
     @Override
-    public NearbySelectionConfig<Solution_> inherit(NearbySelectionConfig<Solution_> inheritedConfig) {
+    public NearbySelectionConfig inherit(NearbySelectionConfig inheritedConfig) {
         originEntitySelectorConfig = ConfigUtils.inheritConfig(originEntitySelectorConfig,
                 inheritedConfig.getOriginEntitySelectorConfig());
         nearbyDistanceMeterClass = ConfigUtils.inheritOverwritableProperty(nearbyDistanceMeterClass,
@@ -209,8 +209,8 @@ public class NearbySelectionConfig<Solution_> extends SelectorConfig<Solution_, 
     }
 
     @Override
-    public NearbySelectionConfig<Solution_> copyConfig() {
-        return new NearbySelectionConfig<Solution_>().inherit(this);
+    public NearbySelectionConfig copyConfig() {
+        return new NearbySelectionConfig().inherit(this);
     }
 
 }

@@ -51,10 +51,10 @@ import org.optaplanner.core.impl.heuristic.selector.common.decorator.SelectionSo
         "probabilityWeightFactoryClass",
         "selectedCountLimit"
 })
-public class EntitySelectorConfig<Solution_> extends SelectorConfig<Solution_, EntitySelectorConfig<Solution_>> {
+public class EntitySelectorConfig extends SelectorConfig<EntitySelectorConfig> {
 
-    public static <Solution_> EntitySelectorConfig<Solution_> newMimicSelectorConfig(String mimicSelectorRef) {
-        EntitySelectorConfig<Solution_> entitySelectorConfig = new EntitySelectorConfig<>();
+    public static EntitySelectorConfig newMimicSelectorConfig(String mimicSelectorRef) {
+        EntitySelectorConfig entitySelectorConfig = new EntitySelectorConfig();
         entitySelectorConfig.setMimicSelectorRef(mimicSelectorRef);
         return entitySelectorConfig;
     }
@@ -70,7 +70,7 @@ public class EntitySelectorConfig<Solution_> extends SelectorConfig<Solution_, E
     protected SelectionOrder selectionOrder = null;
 
     @XmlElement(name = "nearbySelection")
-    protected NearbySelectionConfig<Solution_> nearbySelectionConfig = null;
+    protected NearbySelectionConfig nearbySelectionConfig = null;
 
     protected Class<? extends SelectionFilter> filterClass = null;
 
@@ -91,7 +91,7 @@ public class EntitySelectorConfig<Solution_> extends SelectorConfig<Solution_, E
         this.entityClass = entityClass;
     }
 
-    public EntitySelectorConfig(EntitySelectorConfig<Solution_> inheritedConfig) {
+    public EntitySelectorConfig(EntitySelectorConfig inheritedConfig) {
         if (inheritedConfig != null) {
             inherit(inheritedConfig);
         }
@@ -137,11 +137,11 @@ public class EntitySelectorConfig<Solution_> extends SelectorConfig<Solution_, E
         this.selectionOrder = selectionOrder;
     }
 
-    public NearbySelectionConfig<Solution_> getNearbySelectionConfig() {
+    public NearbySelectionConfig getNearbySelectionConfig() {
         return nearbySelectionConfig;
     }
 
-    public void setNearbySelectionConfig(NearbySelectionConfig<Solution_> nearbySelectionConfig) {
+    public void setNearbySelectionConfig(NearbySelectionConfig nearbySelectionConfig) {
         this.nearbySelectionConfig = nearbySelectionConfig;
     }
 
@@ -211,7 +211,7 @@ public class EntitySelectorConfig<Solution_> extends SelectorConfig<Solution_, E
     }
 
     @Override
-    public EntitySelectorConfig<Solution_> inherit(EntitySelectorConfig<Solution_> inheritedConfig) {
+    public EntitySelectorConfig inherit(EntitySelectorConfig inheritedConfig) {
         id = ConfigUtils.inheritOverwritableProperty(id, inheritedConfig.getId());
         mimicSelectorRef = ConfigUtils.inheritOverwritableProperty(mimicSelectorRef,
                 inheritedConfig.getMimicSelectorRef());
@@ -240,8 +240,8 @@ public class EntitySelectorConfig<Solution_> extends SelectorConfig<Solution_, E
     }
 
     @Override
-    public EntitySelectorConfig<Solution_> copyConfig() {
-        return new EntitySelectorConfig<Solution_>().inherit(this);
+    public EntitySelectorConfig copyConfig() {
+        return new EntitySelectorConfig().inherit(this);
     }
 
     @Override

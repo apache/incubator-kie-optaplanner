@@ -44,13 +44,13 @@ public class AcceptorFactory<Solution_> {
     // Based on Tomas Muller's work. TODO Confirm with benchmark across our examples/datasets
     private static final double DEFAULT_WATER_LEVEL_INCREMENT_RATIO = 0.00_000_005;
 
-    public static <Solution_> AcceptorFactory<Solution_> create(LocalSearchAcceptorConfig<Solution_> acceptorConfig) {
+    public static <Solution_> AcceptorFactory<Solution_> create(LocalSearchAcceptorConfig acceptorConfig) {
         return new AcceptorFactory<>(acceptorConfig);
     }
 
-    private final LocalSearchAcceptorConfig<Solution_> acceptorConfig;
+    private final LocalSearchAcceptorConfig acceptorConfig;
 
-    public AcceptorFactory(LocalSearchAcceptorConfig<Solution_> acceptorConfig) {
+    public AcceptorFactory(LocalSearchAcceptorConfig acceptorConfig) {
         this.acceptorConfig = acceptorConfig;
     }
 

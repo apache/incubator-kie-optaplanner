@@ -40,30 +40,30 @@ import org.optaplanner.core.config.util.ConfigUtils;
 @XmlType(propOrder = {
         "terminationConfig"
 })
-public abstract class PhaseConfig<Solution_, C extends PhaseConfig<Solution_, C>> extends AbstractConfig<Solution_, C> {
+public abstract class PhaseConfig<Config_ extends PhaseConfig<Config_>> extends AbstractConfig<Config_> {
 
     // Warning: all fields are null (and not defaulted) because they can be inherited
     // and also because the input config file should match the output config file
 
     @XmlElement(name = "termination")
-    private TerminationConfig<Solution_> terminationConfig = null;
+    private TerminationConfig terminationConfig = null;
 
     // ************************************************************************
     // Constructors and simple getters/setters
     // ************************************************************************
 
-    public TerminationConfig<Solution_> getTerminationConfig() {
+    public TerminationConfig getTerminationConfig() {
         return terminationConfig;
     }
 
-    public void setTerminationConfig(TerminationConfig<Solution_> terminationConfig) {
+    public void setTerminationConfig(TerminationConfig terminationConfig) {
         this.terminationConfig = terminationConfig;
     }
 
     @Override
-    public C inherit(C inheritedConfig) {
+    public Config_ inherit(Config_ inheritedConfig) {
         terminationConfig = ConfigUtils.inheritConfig(terminationConfig, inheritedConfig.getTerminationConfig());
-        return (C) this;
+        return (Config_) this;
     }
 
     @Override

@@ -34,19 +34,19 @@ import org.optaplanner.core.impl.solver.termination.Termination;
 
 public interface PhaseFactory<Solution_> {
 
-    static <Solution_> PhaseFactory<Solution_> create(PhaseConfig<Solution_, ?> phaseConfig) {
+    static <Solution_> PhaseFactory<Solution_> create(PhaseConfig<?> phaseConfig) {
         if (LocalSearchPhaseConfig.class.isAssignableFrom(phaseConfig.getClass())) {
-            return new DefaultLocalSearchPhaseFactory<>((LocalSearchPhaseConfig<Solution_>) phaseConfig);
+            return new DefaultLocalSearchPhaseFactory<>((LocalSearchPhaseConfig) phaseConfig);
         } else if (ConstructionHeuristicPhaseConfig.class.isAssignableFrom(phaseConfig.getClass())) {
             return new DefaultConstructionHeuristicPhaseFactory<>((ConstructionHeuristicPhaseConfig) phaseConfig);
         } else if (PartitionedSearchPhaseConfig.class.isAssignableFrom(phaseConfig.getClass())) {
-            return new DefaultPartitionedSearchPhaseFactory<>((PartitionedSearchPhaseConfig<Solution_>) phaseConfig);
+            return new DefaultPartitionedSearchPhaseFactory<>((PartitionedSearchPhaseConfig) phaseConfig);
         } else if (CustomPhaseConfig.class.isAssignableFrom(phaseConfig.getClass())) {
-            return new DefaultCustomPhaseFactory<>((CustomPhaseConfig<Solution_>) phaseConfig);
+            return new DefaultCustomPhaseFactory<>((CustomPhaseConfig) phaseConfig);
         } else if (ExhaustiveSearchPhaseConfig.class.isAssignableFrom(phaseConfig.getClass())) {
-            return new DefaultExhaustiveSearchPhaseFactory<>((ExhaustiveSearchPhaseConfig<Solution_>) phaseConfig);
+            return new DefaultExhaustiveSearchPhaseFactory<>((ExhaustiveSearchPhaseConfig) phaseConfig);
         } else if (NoChangePhaseConfig.class.isAssignableFrom(phaseConfig.getClass())) {
-            return new NoChangePhaseFactory<>((NoChangePhaseConfig<Solution_>) phaseConfig);
+            return new NoChangePhaseFactory<>((NoChangePhaseConfig) phaseConfig);
         } else {
             throw new IllegalArgumentException(
                     String.format("Unknown PhaseConfig type: (%s).", phaseConfig.getClass().getName()));

@@ -29,7 +29,6 @@ import org.optaplanner.core.config.AbstractConfig;
         QueuedValuePlacerConfig.class,
         PooledEntityPlacerConfig.class
 })
-public abstract class EntityPlacerConfig<Solution_, C extends EntityPlacerConfig<Solution_, C>>
-        extends AbstractConfig<Solution_, C> {
+public abstract class EntityPlacerConfig<Config_ extends EntityPlacerConfig<Config_>> extends AbstractConfig<Config_> {
 
 }

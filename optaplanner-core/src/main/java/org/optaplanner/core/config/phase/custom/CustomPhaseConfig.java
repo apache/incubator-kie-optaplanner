@@ -34,7 +34,7 @@ import org.optaplanner.core.impl.phase.custom.CustomPhaseCommand;
         "customPhaseCommandClassList",
         "customProperties",
 })
-public class CustomPhaseConfig<Solution_> extends PhaseConfig<Solution_, CustomPhaseConfig<Solution_>> {
+public class CustomPhaseConfig extends PhaseConfig<CustomPhaseConfig> {
 
     public static final String XML_ELEMENT_NAME = "customPhase";
 
@@ -42,24 +42,23 @@ public class CustomPhaseConfig<Solution_> extends PhaseConfig<Solution_, CustomP
     // and also because the input config file should match the output config file
 
     @XmlElement(name = "customPhaseCommandClass")
-    protected List<Class<? extends CustomPhaseCommand<Solution_>>> customPhaseCommandClassList = null;
+    protected List<Class<? extends CustomPhaseCommand>> customPhaseCommandClassList = null;
 
     @XmlJavaTypeAdapter(JaxbCustomPropertiesAdapter.class)
     protected Map<String, String> customProperties = null;
 
     @XmlTransient
-    protected List<CustomPhaseCommand<Solution_>> customPhaseCommandList = null;
+    protected List<CustomPhaseCommand> customPhaseCommandList = null;
 
     // ************************************************************************
     // Constructors and simple getters/setters
     // ************************************************************************
 
-    public List<Class<? extends CustomPhaseCommand<Solution_>>> getCustomPhaseCommandClassList() {
+    public List<Class<? extends CustomPhaseCommand>> getCustomPhaseCommandClassList() {
         return customPhaseCommandClassList;
     }
 
-    public void
-            setCustomPhaseCommandClassList(List<Class<? extends CustomPhaseCommand<Solution_>>> customPhaseCommandClassList) {
+    public void setCustomPhaseCommandClassList(List<Class<? extends CustomPhaseCommand>> customPhaseCommandClassList) {
         this.customPhaseCommandClassList = customPhaseCommandClassList;
     }
 
@@ -71,11 +70,11 @@ public class CustomPhaseConfig<Solution_> extends PhaseConfig<Solution_, CustomP
         this.customProperties = customProperties;
     }
 
-    public List<CustomPhaseCommand<Solution_>> getCustomPhaseCommandList() {
+    public List<CustomPhaseCommand> getCustomPhaseCommandList() {
         return customPhaseCommandList;
     }
 
-    public void setCustomPhaseCommandList(List<CustomPhaseCommand<Solution_>> customPhaseCommandList) {
+    public void setCustomPhaseCommandList(List<CustomPhaseCommand> customPhaseCommandList) {
         this.customPhaseCommandList = customPhaseCommandList;
     }
 
@@ -83,8 +82,8 @@ public class CustomPhaseConfig<Solution_> extends PhaseConfig<Solution_, CustomP
     // With methods
     // ************************************************************************
 
-    public CustomPhaseConfig<Solution_> withCustomPhaseCommandClassList(
-            List<Class<? extends CustomPhaseCommand<Solution_>>> customPhaseCommandClassList) {
+    public CustomPhaseConfig withCustomPhaseCommandClassList(
+            List<Class<? extends CustomPhaseCommand>> customPhaseCommandClassList) {
         this.customPhaseCommandClassList = customPhaseCommandClassList;
         return this;
     }
@@ -93,18 +92,18 @@ public class CustomPhaseConfig<Solution_> extends PhaseConfig<Solution_, CustomP
         this.customProperties = customProperties;
     }
 
-    public CustomPhaseConfig<Solution_> withCustomPhaseCommandList(List<CustomPhaseCommand<Solution_>> customPhaseCommandList) {
+    public <Solution_> CustomPhaseConfig withCustomPhaseCommandList(List<CustomPhaseCommand> customPhaseCommandList) {
         this.customPhaseCommandList = customPhaseCommandList;
         return this;
     }
 
-    public CustomPhaseConfig<Solution_> withCustomPhaseCommands(CustomPhaseCommand<Solution_>... customPhaseCommands) {
+    public <Solution_> CustomPhaseConfig withCustomPhaseCommands(CustomPhaseCommand<Solution_>... customPhaseCommands) {
         this.customPhaseCommandList = Arrays.asList(customPhaseCommands);
         return this;
     }
 
     @Override
-    public CustomPhaseConfig<Solution_> inherit(CustomPhaseConfig<Solution_> inheritedConfig) {
+    public CustomPhaseConfig inherit(CustomPhaseConfig inheritedConfig) {
         super.inherit(inheritedConfig);
         customPhaseCommandClassList = ConfigUtils.inheritMergeableListProperty(
                 customPhaseCommandClassList, inheritedConfig.getCustomPhaseCommandClassList());
@@ -116,8 +115,8 @@ public class CustomPhaseConfig<Solution_> extends PhaseConfig<Solution_, CustomP
     }
 
     @Override
-    public CustomPhaseConfig<Solution_> copyConfig() {
-        return new CustomPhaseConfig<Solution_>().inherit(this);
+    public CustomPhaseConfig copyConfig() {
+        return new CustomPhaseConfig().inherit(this);
     }
 
 }

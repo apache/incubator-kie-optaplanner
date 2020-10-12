@@ -363,37 +363,35 @@ public class BlackBoxExhaustiveSearchPhaseTest {
         return parameters;
     }
 
-    private static SolverConfig<TestdataDifficultyComparingSolution> buildSolverConfig(
+    private static SolverConfig buildSolverConfig(
             EntitySorterManner entitySorterManner, ValueSorterManner valueSorterManner,
             ExhaustiveSearchType exhaustiveSearchType, NodeExplorationType nodeExplorationType) {
-        SolverConfig<TestdataDifficultyComparingSolution> solverConfig = PlannerTestUtils.buildSolverConfig(
+        SolverConfig solverConfig = PlannerTestUtils.buildSolverConfig(
                 TestdataDifficultyComparingSolution.class, TestdataDifficultyComparingEntity.class);
 
-        EntitySelectorConfig<TestdataDifficultyComparingSolution> entitySelectorConfig = new EntitySelectorConfig<>();
+        EntitySelectorConfig entitySelectorConfig = new EntitySelectorConfig();
         entitySelectorConfig.setSelectionOrder(SelectionOrder.SORTED);
         entitySelectorConfig.setCacheType(SelectionCacheType.PHASE);
         entitySelectorConfig.setSorterManner(entitySorterManner);
 
-        ValueSelectorConfig<TestdataDifficultyComparingSolution> valueSelectorConfig = new ValueSelectorConfig<>();
+        ValueSelectorConfig valueSelectorConfig = new ValueSelectorConfig();
         valueSelectorConfig.setSelectionOrder(SelectionOrder.SORTED);
         valueSelectorConfig.setCacheType(SelectionCacheType.PHASE);
         valueSelectorConfig.setSorterManner(valueSorterManner);
 
-        ChangeMoveSelectorConfig<TestdataDifficultyComparingSolution> moveSelectorConfig =
-                new ChangeMoveSelectorConfig<>();
+        ChangeMoveSelectorConfig moveSelectorConfig = new ChangeMoveSelectorConfig();
         moveSelectorConfig.setEntitySelectorConfig(entitySelectorConfig);
         moveSelectorConfig.setValueSelectorConfig(valueSelectorConfig);
 
-        ExhaustiveSearchPhaseConfig<TestdataDifficultyComparingSolution> exhaustiveSearchPhaseConfig =
-                new ExhaustiveSearchPhaseConfig<>();
+        ExhaustiveSearchPhaseConfig exhaustiveSearchPhaseConfig = new ExhaustiveSearchPhaseConfig();
         exhaustiveSearchPhaseConfig.setExhaustiveSearchType(exhaustiveSearchType);
         exhaustiveSearchPhaseConfig.setNodeExplorationType(nodeExplorationType);
         exhaustiveSearchPhaseConfig.setMoveSelectorConfig(moveSelectorConfig);
         exhaustiveSearchPhaseConfig
-                .setTerminationConfig(new TerminationConfig<TestdataDifficultyComparingSolution>().withStepCountLimit(10));
+                .setTerminationConfig(new TerminationConfig().withStepCountLimit(10));
 
         solverConfig.setPhaseConfigList(Collections.singletonList(exhaustiveSearchPhaseConfig));
-        solverConfig.setScoreDirectorFactoryConfig(new ScoreDirectorFactoryConfig<TestdataDifficultyComparingSolution>()
+        solverConfig.setScoreDirectorFactoryConfig(new ScoreDirectorFactoryConfig()
                 .withEasyScoreCalculatorClass(TestdataComparableDifferentValuesCalculator.class)
                 .withInitializingScoreTrend("ONLY_DOWN"));
 
@@ -421,7 +419,7 @@ public class BlackBoxExhaustiveSearchPhaseTest {
             EntitySorterManner entitySorterManner,
             ValueSorterManner valueSorterManner,
             List<String> steps) {
-        SolverConfig<TestdataDifficultyComparingSolution> solverConfig = buildSolverConfig(
+        SolverConfig solverConfig = buildSolverConfig(
                 entitySorterManner,
                 valueSorterManner,
                 exhaustiveSearchType,

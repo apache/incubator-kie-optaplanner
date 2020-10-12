@@ -46,7 +46,7 @@ class QueuedValuePlacerFactoryTest extends AbstractEntityPlacerTest {
 
     @Test
     void buildEntityPlacer_withoutConfiguredMoveSelector() {
-        QueuedValuePlacerConfig<TestdataSolution> config = new QueuedValuePlacerConfig<TestdataSolution>();
+        QueuedValuePlacerConfig config = new QueuedValuePlacerConfig();
         config.setEntityClass(TestdataEntity.class);
 
         QueuedValuePlacer<TestdataSolution> placer =

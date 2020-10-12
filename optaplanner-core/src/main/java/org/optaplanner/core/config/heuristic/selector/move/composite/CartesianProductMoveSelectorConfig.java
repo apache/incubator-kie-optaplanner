@@ -38,8 +38,7 @@ import org.optaplanner.core.config.util.ConfigUtils;
         "moveSelectorConfigList",
         "ignoreEmptyChildIterators"
 })
-public class CartesianProductMoveSelectorConfig<Solution_>
-        extends MoveSelectorConfig<Solution_, CartesianProductMoveSelectorConfig<Solution_>> {
+public class CartesianProductMoveSelectorConfig extends MoveSelectorConfig<CartesianProductMoveSelectorConfig> {
 
     public static final String XML_ELEMENT_NAME = "cartesianProductMoveSelector";
 
@@ -96,8 +95,8 @@ public class CartesianProductMoveSelectorConfig<Solution_>
     }
 
     @Override
-    public CartesianProductMoveSelectorConfig<Solution_> inherit(
-            CartesianProductMoveSelectorConfig<Solution_> inheritedConfig) {
+    public CartesianProductMoveSelectorConfig inherit(
+            CartesianProductMoveSelectorConfig inheritedConfig) {
         super.inherit(inheritedConfig);
         moveSelectorConfigList = ConfigUtils.inheritMergeableListConfig(
                 moveSelectorConfigList, inheritedConfig.getMoveSelectorConfigList());
@@ -107,8 +106,8 @@ public class CartesianProductMoveSelectorConfig<Solution_>
     }
 
     @Override
-    public CartesianProductMoveSelectorConfig<Solution_> copyConfig() {
-        return new CartesianProductMoveSelectorConfig<Solution_>().inherit(this);
+    public CartesianProductMoveSelectorConfig copyConfig() {
+        return new CartesianProductMoveSelectorConfig().inherit(this);
     }
 
     @Override

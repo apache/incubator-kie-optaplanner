@@ -51,7 +51,7 @@ import org.optaplanner.core.impl.solver.termination.Termination;
         "scoreCalculationCountLimit",
         "terminationConfigList"
 })
-public class TerminationConfig<Solution_> extends AbstractConfig<Solution_, TerminationConfig<Solution_>> {
+public class TerminationConfig extends AbstractConfig<TerminationConfig> {
 
     private Class<? extends Termination> terminationClass = null;
 
@@ -83,7 +83,7 @@ public class TerminationConfig<Solution_> extends AbstractConfig<Solution_, Term
     private Long scoreCalculationCountLimit = null;
 
     @XmlElement(name = "termination")
-    private List<TerminationConfig<Solution_>> terminationConfigList = null;
+    private List<TerminationConfig> terminationConfigList = null;
 
     public Class<? extends Termination> getTerminationClass() {
         return terminationClass;
@@ -245,11 +245,11 @@ public class TerminationConfig<Solution_> extends AbstractConfig<Solution_, Term
         this.scoreCalculationCountLimit = scoreCalculationCountLimit;
     }
 
-    public List<TerminationConfig<Solution_>> getTerminationConfigList() {
+    public List<TerminationConfig> getTerminationConfigList() {
         return terminationConfigList;
     }
 
-    public void setTerminationConfigList(List<TerminationConfig<Solution_>> terminationConfigList) {
+    public void setTerminationConfigList(List<TerminationConfig> terminationConfigList) {
         this.terminationConfigList = terminationConfigList;
     }
 
@@ -257,108 +257,108 @@ public class TerminationConfig<Solution_> extends AbstractConfig<Solution_, Term
     // With methods
     // ************************************************************************
 
-    public TerminationConfig<Solution_> withTerminationClass(Class<? extends Termination> terminationClass) {
+    public TerminationConfig withTerminationClass(Class<? extends Termination> terminationClass) {
         this.terminationClass = terminationClass;
         return this;
     }
 
-    public TerminationConfig<Solution_>
+    public TerminationConfig
             withTerminationCompositionStyle(TerminationCompositionStyle terminationCompositionStyle) {
         this.terminationCompositionStyle = terminationCompositionStyle;
         return this;
     }
 
-    public TerminationConfig<Solution_> withSpentLimit(Duration spentLimit) {
+    public TerminationConfig withSpentLimit(Duration spentLimit) {
         this.spentLimit = spentLimit;
         return this;
     }
 
-    public TerminationConfig<Solution_> withMillisecondsSpentLimit(Long millisecondsSpentLimit) {
+    public TerminationConfig withMillisecondsSpentLimit(Long millisecondsSpentLimit) {
         this.millisecondsSpentLimit = millisecondsSpentLimit;
         return this;
     }
 
-    public TerminationConfig<Solution_> withSecondsSpentLimit(Long secondsSpentLimit) {
+    public TerminationConfig withSecondsSpentLimit(Long secondsSpentLimit) {
         this.secondsSpentLimit = secondsSpentLimit;
         return this;
     }
 
-    public TerminationConfig<Solution_> withMinutesSpentLimit(Long minutesSpentLimit) {
+    public TerminationConfig withMinutesSpentLimit(Long minutesSpentLimit) {
         this.minutesSpentLimit = minutesSpentLimit;
         return this;
     }
 
-    public TerminationConfig<Solution_> withHoursSpentLimit(Long hoursSpentLimit) {
+    public TerminationConfig withHoursSpentLimit(Long hoursSpentLimit) {
         this.hoursSpentLimit = hoursSpentLimit;
         return this;
     }
 
-    public TerminationConfig<Solution_> withDaysSpentLimit(Long daysSpentLimit) {
+    public TerminationConfig withDaysSpentLimit(Long daysSpentLimit) {
         this.daysSpentLimit = daysSpentLimit;
         return this;
     }
 
-    public TerminationConfig<Solution_> withUnimprovedSpentLimit(Duration unimprovedSpentLimit) {
+    public TerminationConfig withUnimprovedSpentLimit(Duration unimprovedSpentLimit) {
         this.unimprovedSpentLimit = unimprovedSpentLimit;
         return this;
     }
 
-    public TerminationConfig<Solution_> withUnimprovedMillisecondsSpentLimit(Long unimprovedMillisecondsSpentLimit) {
+    public TerminationConfig withUnimprovedMillisecondsSpentLimit(Long unimprovedMillisecondsSpentLimit) {
         this.unimprovedMillisecondsSpentLimit = unimprovedMillisecondsSpentLimit;
         return this;
     }
 
-    public TerminationConfig<Solution_> withUnimprovedSecondsSpentLimit(Long unimprovedSecondsSpentLimit) {
+    public TerminationConfig withUnimprovedSecondsSpentLimit(Long unimprovedSecondsSpentLimit) {
         this.unimprovedSecondsSpentLimit = unimprovedSecondsSpentLimit;
         return this;
     }
 
-    public TerminationConfig<Solution_> withUnimprovedMinutesSpentLimit(Long unimprovedMinutesSpentLimit) {
+    public TerminationConfig withUnimprovedMinutesSpentLimit(Long unimprovedMinutesSpentLimit) {
         this.unimprovedMinutesSpentLimit = unimprovedMinutesSpentLimit;
         return this;
     }
 
-    public TerminationConfig<Solution_> withUnimprovedHoursSpentLimit(Long unimprovedHoursSpentLimit) {
+    public TerminationConfig withUnimprovedHoursSpentLimit(Long unimprovedHoursSpentLimit) {
         this.unimprovedHoursSpentLimit = unimprovedHoursSpentLimit;
         return this;
     }
 
-    public TerminationConfig<Solution_> withUnimprovedDaysSpentLimit(Long unimprovedDaysSpentLimit) {
+    public TerminationConfig withUnimprovedDaysSpentLimit(Long unimprovedDaysSpentLimit) {
         this.unimprovedDaysSpentLimit = unimprovedDaysSpentLimit;
         return this;
     }
 
-    public TerminationConfig<Solution_> withUnimprovedScoreDifferenceThreshold(String unimprovedScoreDifferenceThreshold) {
+    public TerminationConfig withUnimprovedScoreDifferenceThreshold(String unimprovedScoreDifferenceThreshold) {
         this.unimprovedScoreDifferenceThreshold = unimprovedScoreDifferenceThreshold;
         return this;
     }
 
-    public TerminationConfig<Solution_> withBestScoreLimit(String bestScoreLimit) {
+    public TerminationConfig withBestScoreLimit(String bestScoreLimit) {
         this.bestScoreLimit = bestScoreLimit;
         return this;
     }
 
-    public TerminationConfig<Solution_> withBestScoreFeasible(Boolean bestScoreFeasible) {
+    public TerminationConfig withBestScoreFeasible(Boolean bestScoreFeasible) {
         this.bestScoreFeasible = bestScoreFeasible;
         return this;
     }
 
-    public TerminationConfig<Solution_> withStepCountLimit(Integer stepCountLimit) {
+    public TerminationConfig withStepCountLimit(Integer stepCountLimit) {
         this.stepCountLimit = stepCountLimit;
         return this;
     }
 
-    public TerminationConfig<Solution_> withUnimprovedStepCountLimit(Integer unimprovedStepCountLimit) {
+    public TerminationConfig withUnimprovedStepCountLimit(Integer unimprovedStepCountLimit) {
         this.unimprovedStepCountLimit = unimprovedStepCountLimit;
         return this;
     }
 
-    public TerminationConfig<Solution_> withScoreCalculationCountLimit(Long scoreCalculationCountLimit) {
+    public TerminationConfig withScoreCalculationCountLimit(Long scoreCalculationCountLimit) {
         this.scoreCalculationCountLimit = scoreCalculationCountLimit;
         return this;
     }
 
-    public TerminationConfig<Solution_> withTerminationConfigList(List<TerminationConfig<Solution_>> terminationConfigList) {
+    public TerminationConfig withTerminationConfigList(List<TerminationConfig> terminationConfigList) {
         this.terminationConfigList = terminationConfigList;
         return this;
     }
@@ -512,7 +512,7 @@ public class TerminationConfig<Solution_> extends AbstractConfig<Solution_, Term
     }
 
     @Override
-    public TerminationConfig<Solution_> inherit(TerminationConfig<Solution_> inheritedConfig) {
+    public TerminationConfig inherit(TerminationConfig inheritedConfig) {
         terminationClass = ConfigUtils.inheritOverwritableProperty(terminationClass,
                 inheritedConfig.getTerminationClass());
         terminationCompositionStyle = ConfigUtils.inheritOverwritableProperty(terminationCompositionStyle,
@@ -559,8 +559,8 @@ public class TerminationConfig<Solution_> extends AbstractConfig<Solution_, Term
     }
 
     @Override
-    public TerminationConfig<Solution_> copyConfig() {
-        return new TerminationConfig<Solution_>().inherit(this);
+    public TerminationConfig copyConfig() {
+        return new TerminationConfig().inherit(this);
     }
 
 }

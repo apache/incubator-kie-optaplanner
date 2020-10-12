@@ -30,13 +30,13 @@ import org.optaplanner.core.config.util.ConfigUtils;
         "subPillarSequenceComparatorClass",
         "pillarSelectorConfig"
 })
-public abstract class AbstractPillarMoveSelectorConfig<Solution_, C extends AbstractPillarMoveSelectorConfig<Solution_, C>>
-        extends MoveSelectorConfig<Solution_, C> {
+public abstract class AbstractPillarMoveSelectorConfig<Config_ extends AbstractPillarMoveSelectorConfig<Config_>>
+        extends MoveSelectorConfig<Config_> {
 
     protected SubPillarType subPillarType = null;
     protected Class<? extends Comparator> subPillarSequenceComparatorClass = null;
     @XmlElement(name = "pillarSelector")
-    protected PillarSelectorConfig<Solution_> pillarSelectorConfig = null;
+    protected PillarSelectorConfig pillarSelectorConfig = null;
 
     public SubPillarType getSubPillarType() {
         return subPillarType;
@@ -54,22 +54,22 @@ public abstract class AbstractPillarMoveSelectorConfig<Solution_, C extends Abst
         this.subPillarSequenceComparatorClass = subPillarSequenceComparatorClass;
     }
 
-    public PillarSelectorConfig<Solution_> getPillarSelectorConfig() {
+    public PillarSelectorConfig getPillarSelectorConfig() {
         return pillarSelectorConfig;
     }
 
-    public void setPillarSelectorConfig(PillarSelectorConfig<Solution_> pillarSelectorConfig) {
+    public void setPillarSelectorConfig(PillarSelectorConfig pillarSelectorConfig) {
         this.pillarSelectorConfig = pillarSelectorConfig;
     }
 
     @Override
-    public C inherit(C inheritedConfig) {
+    public Config_ inherit(Config_ inheritedConfig) {
         super.inherit(inheritedConfig);
         subPillarType = ConfigUtils.inheritOverwritableProperty(subPillarType, inheritedConfig.getSubPillarType());
         subPillarSequenceComparatorClass = ConfigUtils.inheritOverwritableProperty(subPillarSequenceComparatorClass,
                 inheritedConfig.getSubPillarSequenceComparatorClass());
         pillarSelectorConfig = ConfigUtils.inheritConfig(pillarSelectorConfig, inheritedConfig.getPillarSelectorConfig());
-        return (C) this;
+        return (Config_) this;
     }
 
 }

@@ -41,11 +41,10 @@ import org.optaplanner.core.config.util.ConfigUtils;
         "entitySelectorConfig",
         "moveSelectorConfigList"
 })
-public class QueuedEntityPlacerConfig<Solution_>
-        extends EntityPlacerConfig<Solution_, QueuedEntityPlacerConfig<Solution_>> {
+public class QueuedEntityPlacerConfig extends EntityPlacerConfig<QueuedEntityPlacerConfig> {
 
     @XmlElement(name = "entitySelector")
-    protected EntitySelectorConfig<Solution_> entitySelectorConfig = null;
+    protected EntitySelectorConfig entitySelectorConfig = null;
 
     @XmlElements({
             @XmlElement(name = CartesianProductMoveSelectorConfig.XML_ELEMENT_NAME,
@@ -67,11 +66,11 @@ public class QueuedEntityPlacerConfig<Solution_>
     })
     protected List<MoveSelectorConfig> moveSelectorConfigList = null;
 
-    public EntitySelectorConfig<Solution_> getEntitySelectorConfig() {
+    public EntitySelectorConfig getEntitySelectorConfig() {
         return entitySelectorConfig;
     }
 
-    public void setEntitySelectorConfig(EntitySelectorConfig<Solution_> entitySelectorConfig) {
+    public void setEntitySelectorConfig(EntitySelectorConfig entitySelectorConfig) {
         this.entitySelectorConfig = entitySelectorConfig;
     }
 
@@ -84,7 +83,7 @@ public class QueuedEntityPlacerConfig<Solution_>
     }
 
     @Override
-    public QueuedEntityPlacerConfig<Solution_> inherit(QueuedEntityPlacerConfig<Solution_> inheritedConfig) {
+    public QueuedEntityPlacerConfig inherit(QueuedEntityPlacerConfig inheritedConfig) {
         entitySelectorConfig = ConfigUtils.inheritConfig(entitySelectorConfig, inheritedConfig.getEntitySelectorConfig());
         moveSelectorConfigList = ConfigUtils.inheritMergeableListConfig(
                 moveSelectorConfigList, inheritedConfig.getMoveSelectorConfigList());
@@ -92,8 +91,8 @@ public class QueuedEntityPlacerConfig<Solution_>
     }
 
     @Override
-    public QueuedEntityPlacerConfig<Solution_> copyConfig() {
-        return new QueuedEntityPlacerConfig<Solution_>().inherit(this);
+    public QueuedEntityPlacerConfig copyConfig() {
+        return new QueuedEntityPlacerConfig().inherit(this);
     }
 
     @Override

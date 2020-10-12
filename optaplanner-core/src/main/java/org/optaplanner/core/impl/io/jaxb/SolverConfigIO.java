@@ -22,12 +22,12 @@ import java.io.Writer;
 import org.optaplanner.core.config.solver.SolverConfig;
 import org.w3c.dom.Document;
 
-public class SolverConfigIO<Solution_> implements JaxbIO<SolverConfig<Solution_>> {
+public class SolverConfigIO<Solution_> implements JaxbIO<SolverConfig> {
     private static final String SOLVER_XSD_RESOURCE = "/solver.xsd";
-    private final GenericJaxbIO<SolverConfig<Solution_>> genericJaxbIO = new GenericJaxbIO(SolverConfig.class);
+    private final GenericJaxbIO<SolverConfig> genericJaxbIO = new GenericJaxbIO(SolverConfig.class);
 
     @Override
-    public SolverConfig<Solution_> read(Reader reader) {
+    public SolverConfig read(Reader reader) {
         Document document = genericJaxbIO.parseXml(reader);
         String rootElementNamespace = document.getDocumentElement().getNamespaceURI();
         if (SolverConfig.XML_NAMESPACE.equals(rootElementNamespace)) { // If there is the correct namespace, validate.
@@ -44,7 +44,7 @@ public class SolverConfigIO<Solution_> implements JaxbIO<SolverConfig<Solution_>
     }
 
     @Override
-    public void write(SolverConfig<Solution_> solverConfig, Writer writer) {
+    public void write(SolverConfig solverConfig, Writer writer) {
         genericJaxbIO.writeWithoutNamespaces(solverConfig, writer);
     }
 }

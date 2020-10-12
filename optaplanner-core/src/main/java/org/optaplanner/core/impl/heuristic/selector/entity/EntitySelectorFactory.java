@@ -53,14 +53,14 @@ import org.optaplanner.core.impl.heuristic.selector.entity.mimic.MimicRecordingE
 import org.optaplanner.core.impl.heuristic.selector.entity.mimic.MimicReplayingEntitySelector;
 import org.optaplanner.core.impl.heuristic.selector.entity.nearby.NearEntityNearbyEntitySelector;
 
-public class EntitySelectorFactory<Solution_> extends AbstractSelectorFactory<Solution_, EntitySelectorConfig<Solution_>> {
+public class EntitySelectorFactory<Solution_> extends AbstractSelectorFactory<Solution_, EntitySelectorConfig> {
 
     public static <Solution_> EntitySelectorFactory<Solution_> create(
-            EntitySelectorConfig<Solution_> entitySelectorConfig) {
+            EntitySelectorConfig entitySelectorConfig) {
         return new EntitySelectorFactory<>(entitySelectorConfig);
     }
 
-    public EntitySelectorFactory(EntitySelectorConfig<Solution_> entitySelectorConfig) {
+    public EntitySelectorFactory(EntitySelectorConfig entitySelectorConfig) {
         super(entitySelectorConfig);
     }
 
@@ -196,7 +196,7 @@ public class EntitySelectorFactory<Solution_> extends AbstractSelectorFactory<So
     }
 
     private EntitySelector<Solution_> applyNearbySelection(HeuristicConfigPolicy<Solution_> configPolicy,
-            NearbySelectionConfig<Solution_> nearbySelectionConfig, SelectionCacheType minimumCacheType,
+            NearbySelectionConfig nearbySelectionConfig, SelectionCacheType minimumCacheType,
             SelectionOrder resolvedSelectionOrder, EntitySelector<Solution_> entitySelector) {
         boolean randomSelection = resolvedSelectionOrder.toRandomSelectionBoolean();
         EntitySelectorFactory<Solution_> entitySelectorFactory =

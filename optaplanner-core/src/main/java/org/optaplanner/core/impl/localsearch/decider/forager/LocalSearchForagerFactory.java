@@ -24,13 +24,13 @@ import org.optaplanner.core.config.localsearch.decider.forager.LocalSearchPickEa
 
 public class LocalSearchForagerFactory<Solution_> {
 
-    public static <Solution_> LocalSearchForagerFactory<Solution_> create(LocalSearchForagerConfig<Solution_> foragerConfig) {
+    public static <Solution_> LocalSearchForagerFactory<Solution_> create(LocalSearchForagerConfig foragerConfig) {
         return new LocalSearchForagerFactory<>(foragerConfig);
     }
 
-    private final LocalSearchForagerConfig<Solution_> foragerConfig;
+    private final LocalSearchForagerConfig foragerConfig;
 
-    public LocalSearchForagerFactory(LocalSearchForagerConfig<Solution_> foragerConfig) {
+    public LocalSearchForagerFactory(LocalSearchForagerConfig foragerConfig) {
         this.foragerConfig = foragerConfig;
     }
 

@@ -50,9 +50,9 @@ import org.optaplanner.core.impl.solver.termination.Termination;
 import org.optaplanner.core.impl.solver.thread.ChildThreadType;
 
 public class DefaultLocalSearchPhaseFactory<Solution_>
-        extends AbstractPhaseFactory<Solution_, LocalSearchPhaseConfig<Solution_>> {
+        extends AbstractPhaseFactory<Solution_, LocalSearchPhaseConfig> {
 
-    public DefaultLocalSearchPhaseFactory(LocalSearchPhaseConfig<Solution_> phaseConfig) {
+    public DefaultLocalSearchPhaseFactory(LocalSearchPhaseConfig phaseConfig) {
         super(phaseConfig);
     }
 
@@ -125,7 +125,7 @@ public class DefaultLocalSearchPhaseFactory<Solution_>
     }
 
     protected Acceptor<Solution_> buildAcceptor(HeuristicConfigPolicy<Solution_> configPolicy) {
-        LocalSearchAcceptorConfig<Solution_> acceptorConfig_;
+        LocalSearchAcceptorConfig acceptorConfig_;
         if (phaseConfig.getAcceptorConfig() != null) {
             if (phaseConfig.getLocalSearchType() != null) {
                 throw new IllegalArgumentException("The localSearchType (" + phaseConfig.getLocalSearchType()
@@ -136,7 +136,7 @@ public class DefaultLocalSearchPhaseFactory<Solution_>
         } else {
             LocalSearchType localSearchType_ =
                     defaultIfNull(phaseConfig.getLocalSearchType(), LocalSearchType.LATE_ACCEPTANCE);
-            acceptorConfig_ = new LocalSearchAcceptorConfig<>();
+            acceptorConfig_ = new LocalSearchAcceptorConfig();
             switch (localSearchType_) {
                 case HILL_CLIMBING:
                 case VARIABLE_NEIGHBORHOOD_DESCENT:
@@ -159,11 +159,12 @@ public class DefaultLocalSearchPhaseFactory<Solution_>
                             + ") is not implemented.");
             }
         }
-        return AcceptorFactory.create(acceptorConfig_).buildAcceptor(configPolicy);
+        return AcceptorFactory.<Solution_> create(acceptorConfig_)
+                .buildAcceptor(configPolicy);
     }
 
     protected LocalSearchForager<Solution_> buildForager(HeuristicConfigPolicy<Solution_> configPolicy) {
-        LocalSearchForagerConfig<Solution_> foragerConfig_;
+        LocalSearchForagerConfig foragerConfig_;
         if (phaseConfig.getForagerConfig() != null) {
             if (phaseConfig.getLocalSearchType() != null) {
                 throw new IllegalArgumentException("The localSearchType (" + phaseConfig.getLocalSearchType()
@@ -174,7 +175,7 @@ public class DefaultLocalSearchPhaseFactory<Solution_>
         } else {
             LocalSearchType localSearchType_ =
                     defaultIfNull(phaseConfig.getLocalSearchType(), LocalSearchType.LATE_ACCEPTANCE);
-            foragerConfig_ = new LocalSearchForagerConfig<>();
+            foragerConfig_ = new LocalSearchForagerConfig();
             switch (localSearchType_) {
                 case HILL_CLIMBING:
                     foragerConfig_.setAcceptedCountLimit(1);
@@ -197,7 +198,7 @@ public class DefaultLocalSearchPhaseFactory<Solution_>
                             + ") is not implemented.");
             }
         }
-        return LocalSearchForagerFactory.create(foragerConfig_).buildForager();
+        return LocalSearchForagerFactory.<Solution_> create(foragerConfig_).buildForager();
     }
 
     protected MoveSelector<Solution_> buildMoveSelector(HeuristicConfigPolicy<Solution_> configPolicy) {
@@ -211,13 +212,13 @@ public class DefaultLocalSearchPhaseFactory<Solution_>
         }
         if (phaseConfig.getMoveSelectorConfig() == null) {
             // Default to changeMoveSelector and swapMoveSelector
-            UnionMoveSelectorConfig<Solution_> unionMoveSelectorConfig = new UnionMoveSelectorConfig<>();
-            unionMoveSelectorConfig.setMoveSelectorConfigList(Arrays.asList(
-                    new ChangeMoveSelectorConfig<>(), new SwapMoveSelectorConfig<>()));
-            moveSelector = new UnionMoveSelectorFactory<>(unionMoveSelectorConfig).buildMoveSelector(configPolicy,
-                    defaultCacheType, defaultSelectionOrder);
+            UnionMoveSelectorConfig unionMoveSelectorConfig = new UnionMoveSelectorConfig();
+            unionMoveSelectorConfig.setMoveSelectorConfigList(Arrays.asList(new ChangeMoveSelectorConfig(),
+                    new SwapMoveSelectorConfig()));
+            moveSelector = new UnionMoveSelectorFactory<Solution_>(unionMoveSelectorConfig)
+                    .buildMoveSelector(configPolicy, defaultCacheType, defaultSelectionOrder);
         } else {
-            moveSelector = MoveSelectorFactory.create(phaseConfig.getMoveSelectorConfig())
+            moveSelector = MoveSelectorFactory.<Solution_> create(phaseConfig.getMoveSelectorConfig())
                     .buildMoveSelector(configPolicy, defaultCacheType, defaultSelectionOrder);
         }
         return moveSelector;

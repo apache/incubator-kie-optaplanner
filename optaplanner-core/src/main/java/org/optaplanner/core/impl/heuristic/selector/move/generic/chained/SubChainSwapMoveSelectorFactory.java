@@ -30,9 +30,9 @@ import org.optaplanner.core.impl.heuristic.selector.value.chained.SubChainSelect
 import org.optaplanner.core.impl.heuristic.selector.value.chained.SubChainSelectorFactory;
 
 public class SubChainSwapMoveSelectorFactory<Solution_>
-        extends AbstractMoveSelectorFactory<Solution_, SubChainSwapMoveSelectorConfig<Solution_>> {
+        extends AbstractMoveSelectorFactory<Solution_, SubChainSwapMoveSelectorConfig> {
 
-    public SubChainSwapMoveSelectorFactory(SubChainSwapMoveSelectorConfig<Solution_> moveSelectorConfig) {
+    public SubChainSwapMoveSelectorFactory(SubChainSwapMoveSelectorConfig moveSelectorConfig) {
         super(moveSelectorConfig);
     }
 
@@ -42,17 +42,19 @@ public class SubChainSwapMoveSelectorFactory<Solution_>
         EntityDescriptor<Solution_> entityDescriptor =
                 config.getEntityClass() == null ? deduceEntityDescriptor(configPolicy.getSolutionDescriptor())
                         : deduceEntityDescriptor(configPolicy.getSolutionDescriptor(), config.getEntityClass());
-        SubChainSelectorConfig<Solution_> subChainSelectorConfig_ =
-                config.getSubChainSelectorConfig() == null ? new SubChainSelectorConfig<>()
+        SubChainSelectorConfig subChainSelectorConfig_ =
+                config.getSubChainSelectorConfig() == null ? new SubChainSelectorConfig()
                         : config.getSubChainSelectorConfig();
         SubChainSelector<Solution_> leftSubChainSelector =
-                SubChainSelectorFactory.create(subChainSelectorConfig_).buildSubChainSelector(configPolicy,
-                        entityDescriptor, minimumCacheType, SelectionOrder.fromRandomSelectionBoolean(randomSelection));
-        SubChainSelectorConfig<Solution_> rightSubChainSelectorConfig =
+                SubChainSelectorFactory.<Solution_> create(subChainSelectorConfig_)
+                        .buildSubChainSelector(configPolicy, entityDescriptor, minimumCacheType,
+                                SelectionOrder.fromRandomSelectionBoolean(randomSelection));
+        SubChainSelectorConfig rightSubChainSelectorConfig =
                 defaultIfNull(config.getSecondarySubChainSelectorConfig(), subChainSelectorConfig_);
         SubChainSelector<Solution_> rightSubChainSelector =
-                SubChainSelectorFactory.create(rightSubChainSelectorConfig).buildSubChainSelector(configPolicy,
-                        entityDescriptor, minimumCacheType, SelectionOrder.fromRandomSelectionBoolean(randomSelection));
+                SubChainSelectorFactory.<Solution_> create(rightSubChainSelectorConfig)
+                        .buildSubChainSelector(configPolicy, entityDescriptor, minimumCacheType,
+                                SelectionOrder.fromRandomSelectionBoolean(randomSelection));
         return new SubChainSwapMoveSelector<>(leftSubChainSelector, rightSubChainSelector, randomSelection,
                 defaultIfNull(config.getSelectReversingMoveToo(), true));
     }

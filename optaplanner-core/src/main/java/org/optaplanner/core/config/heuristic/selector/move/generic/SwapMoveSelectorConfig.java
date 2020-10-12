@@ -31,33 +31,32 @@ import org.optaplanner.core.config.util.ConfigUtils;
         "secondaryEntitySelectorConfig",
         "variableNameIncludeList"
 })
-public class SwapMoveSelectorConfig<Solution_>
-        extends MoveSelectorConfig<Solution_, SwapMoveSelectorConfig<Solution_>> {
+public class SwapMoveSelectorConfig extends MoveSelectorConfig<SwapMoveSelectorConfig> {
 
     public static final String XML_ELEMENT_NAME = "swapMoveSelector";
 
     @XmlElement(name = "entitySelector")
-    private EntitySelectorConfig<Solution_> entitySelectorConfig = null;
+    private EntitySelectorConfig entitySelectorConfig = null;
     @XmlElement(name = "secondaryEntitySelector")
-    private EntitySelectorConfig<Solution_> secondaryEntitySelectorConfig = null;
+    private EntitySelectorConfig secondaryEntitySelectorConfig = null;
 
     @XmlElementWrapper(name = "variableNameIncludes")
     @XmlElement(name = "variableNameInclude")
     private List<String> variableNameIncludeList = null;
 
-    public EntitySelectorConfig<Solution_> getEntitySelectorConfig() {
+    public EntitySelectorConfig getEntitySelectorConfig() {
         return entitySelectorConfig;
     }
 
-    public void setEntitySelectorConfig(EntitySelectorConfig<Solution_> entitySelectorConfig) {
+    public void setEntitySelectorConfig(EntitySelectorConfig entitySelectorConfig) {
         this.entitySelectorConfig = entitySelectorConfig;
     }
 
-    public EntitySelectorConfig<Solution_> getSecondaryEntitySelectorConfig() {
+    public EntitySelectorConfig getSecondaryEntitySelectorConfig() {
         return secondaryEntitySelectorConfig;
     }
 
-    public void setSecondaryEntitySelectorConfig(EntitySelectorConfig<Solution_> secondaryEntitySelectorConfig) {
+    public void setSecondaryEntitySelectorConfig(EntitySelectorConfig secondaryEntitySelectorConfig) {
         this.secondaryEntitySelectorConfig = secondaryEntitySelectorConfig;
     }
 
@@ -70,7 +69,7 @@ public class SwapMoveSelectorConfig<Solution_>
     }
 
     @Override
-    public SwapMoveSelectorConfig<Solution_> inherit(SwapMoveSelectorConfig<Solution_> inheritedConfig) {
+    public SwapMoveSelectorConfig inherit(SwapMoveSelectorConfig inheritedConfig) {
         super.inherit(inheritedConfig);
         entitySelectorConfig = ConfigUtils.inheritConfig(entitySelectorConfig, inheritedConfig.getEntitySelectorConfig());
         secondaryEntitySelectorConfig = ConfigUtils.inheritConfig(secondaryEntitySelectorConfig,
@@ -81,8 +80,8 @@ public class SwapMoveSelectorConfig<Solution_>
     }
 
     @Override
-    public SwapMoveSelectorConfig<Solution_> copyConfig() {
-        return new SwapMoveSelectorConfig<Solution_>().inherit(this);
+    public SwapMoveSelectorConfig copyConfig() {
+        return new SwapMoveSelectorConfig().inherit(this);
     }
 
     @Override

@@ -56,7 +56,7 @@ public abstract class AbstractBenchmarkConfigTest {
         PlannerBenchmarkResult plannerBenchmarkResult = ((DefaultPlannerBenchmark) plannerBenchmark)
                 .getPlannerBenchmarkResult();
         for (SolverBenchmarkResult solverBenchmarkResult : plannerBenchmarkResult.getSolverBenchmarkResultList()) {
-            SolverConfig<?> solverConfig = solverBenchmarkResult.getSolverConfig();
+            SolverConfig solverConfig = solverBenchmarkResult.getSolverConfig();
             SolverFactory.create(solverConfig).buildSolver();
         }
     }

@@ -41,13 +41,13 @@ public class SubChainSelectorFactory<Solution_> {
     private static final int DEFAULT_MAXIMUM_SUB_CHAIN_SIZE = Integer.MAX_VALUE;
 
     public static <Solution_> SubChainSelectorFactory<Solution_>
-            create(SubChainSelectorConfig<Solution_> subChainSelectorConfig) {
+            create(SubChainSelectorConfig subChainSelectorConfig) {
         return new SubChainSelectorFactory<>(subChainSelectorConfig);
     }
 
-    private final SubChainSelectorConfig<Solution_> config;
+    private final SubChainSelectorConfig config;
 
-    public SubChainSelectorFactory(SubChainSelectorConfig<Solution_> subChainSelectorConfig) {
+    public SubChainSelectorFactory(SubChainSelectorConfig subChainSelectorConfig) {
         this.config = subChainSelectorConfig;
     }
 
@@ -70,13 +70,12 @@ public class SubChainSelectorFactory<Solution_> {
                     + ") must not be higher than " + SelectionCacheType.STEP
                     + " because the chains change every step.");
         }
-        ValueSelectorConfig<Solution_> valueSelectorConfig_ =
-                config.getValueSelectorConfig() == null ? new ValueSelectorConfig<>()
-                        : config.getValueSelectorConfig();
+        ValueSelectorConfig valueSelectorConfig_ = config.getValueSelectorConfig() == null ? new ValueSelectorConfig()
+                : config.getValueSelectorConfig();
         // ValueSelector uses SelectionOrder.ORIGINAL because a SubChainSelector STEP caches the values
         ValueSelector<Solution_> valueSelector =
-                ValueSelectorFactory.create(valueSelectorConfig_).buildValueSelector(configPolicy,
-                        entityDescriptor, minimumCacheType, SelectionOrder.ORIGINAL);
+                ValueSelectorFactory.<Solution_> create(valueSelectorConfig_)
+                        .buildValueSelector(configPolicy, entityDescriptor, minimumCacheType, SelectionOrder.ORIGINAL);
         if (!(valueSelector instanceof EntityIndependentValueSelector)) {
             throw new IllegalArgumentException("The minimumCacheType (" + this
                     + ") needs to be based on an EntityIndependentValueSelector (" + valueSelector + ")."

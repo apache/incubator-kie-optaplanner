@@ -50,13 +50,13 @@ public class QueuedEntityPlacerFactoryTest extends AbstractEntityPlacerTest {
     public void buildFromUnfoldNew() {
         SolutionDescriptor<TestdataMultiVarSolution> solutionDescriptor = TestdataMultiVarSolution.buildSolutionDescriptor();
 
-        ChangeMoveSelectorConfig<TestdataMultiVarSolution> primaryMoveSelectorConfig = new ChangeMoveSelectorConfig<>();
-        primaryMoveSelectorConfig.setValueSelectorConfig(new ValueSelectorConfig<>("primaryValue"));
-        ChangeMoveSelectorConfig<TestdataMultiVarSolution> secondaryMoveSelectorConfig = new ChangeMoveSelectorConfig<>();
-        secondaryMoveSelectorConfig.setValueSelectorConfig(new ValueSelectorConfig<>("secondaryValue"));
+        ChangeMoveSelectorConfig primaryMoveSelectorConfig = new ChangeMoveSelectorConfig();
+        primaryMoveSelectorConfig.setValueSelectorConfig(new ValueSelectorConfig("primaryValue"));
+        ChangeMoveSelectorConfig secondaryMoveSelectorConfig = new ChangeMoveSelectorConfig();
+        secondaryMoveSelectorConfig.setValueSelectorConfig(new ValueSelectorConfig("secondaryValue"));
 
         HeuristicConfigPolicy<TestdataMultiVarSolution> configPolicy = buildHeuristicConfigPolicy(solutionDescriptor);
-        QueuedEntityPlacerConfig<TestdataMultiVarSolution> placerConfig = QueuedEntityPlacerFactory.unfoldNew(configPolicy,
+        QueuedEntityPlacerConfig placerConfig = QueuedEntityPlacerFactory.unfoldNew(configPolicy,
                 Arrays.asList(primaryMoveSelectorConfig, secondaryMoveSelectorConfig));
 
         assertThat(placerConfig.getEntitySelectorConfig().getEntityClass()).isAssignableFrom(TestdataMultiVarEntity.class);
@@ -65,7 +65,7 @@ public class QueuedEntityPlacerFactoryTest extends AbstractEntityPlacerTest {
                 .hasOnlyElementsOfType(ChangeMoveSelectorConfig.class);
 
         QueuedEntityPlacer<TestdataMultiVarSolution> entityPlacer =
-                new QueuedEntityPlacerFactory<>(placerConfig).buildEntityPlacer(configPolicy);
+                new QueuedEntityPlacerFactory<TestdataMultiVarSolution>(placerConfig).buildEntityPlacer(configPolicy);
 
         SolverScope<TestdataMultiVarSolution> solverScope = mock(SolverScope.class);
         entityPlacer.solvingStarted(solverScope);

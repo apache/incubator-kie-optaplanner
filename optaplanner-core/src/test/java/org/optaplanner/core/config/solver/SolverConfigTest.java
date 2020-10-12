@@ -59,7 +59,7 @@ class SolverConfigTest {
     @ParameterizedTest
     @ValueSource(strings = { TEST_SOLVER_CONFIG_WITHOUT_NAMESPACE, TEST_SOLVER_CONFIG_WITH_NAMESPACE })
     void xmlConfigRemainsSameAfterReadWrite(String solverConfigResource) throws IOException {
-        SolverConfig<TestdataSolution> jaxbSolverConfig = readSolverConfig(solverConfigResource);
+        SolverConfig jaxbSolverConfig = readSolverConfig(solverConfigResource);
 
         Writer stringWriter = new StringWriter();
         solverConfigIO.write(jaxbSolverConfig, stringWriter);
@@ -78,7 +78,7 @@ class SolverConfigTest {
 
     @Test
     void readXmlConfigWithNamespace() {
-        SolverConfig<TestdataSolution> solverConfig = readSolverConfig(TEST_SOLVER_CONFIG_WITH_NAMESPACE);
+        SolverConfig solverConfig = readSolverConfig(TEST_SOLVER_CONFIG_WITH_NAMESPACE);
 
         assertThat(solverConfig).isNotNull();
         assertThat(solverConfig.getPhaseConfigList())
@@ -90,7 +90,7 @@ class SolverConfigTest {
                 .isAssignableFrom(DummyConstraintProvider.class);
     }
 
-    private SolverConfig<TestdataSolution> readSolverConfig(String solverConfigResource) {
+    private SolverConfig readSolverConfig(String solverConfigResource) {
         try (Reader reader = new InputStreamReader(SolverConfigTest.class.getResourceAsStream(solverConfigResource))) {
             return solverConfigIO.read(reader);
         } catch (IOException ioException) {
@@ -105,7 +105,7 @@ class SolverConfigTest {
                 + "  <solutionClass>  %s  %n" // Intentionally included white chars around the class name.
                 + "  </solutionClass>%n"
                 + "</solver>", solutionClassName);
-        SolverConfig<TestdataSolution> solverConfig = solverConfigIO.read(new StringReader(xmlFragment));
+        SolverConfig solverConfig = solverConfigIO.read(new StringReader(xmlFragment));
         assertThat(solverConfig.getSolutionClass().getName()).isEqualTo(solutionClassName);
     }
 
@@ -131,9 +131,9 @@ class SolverConfigTest {
 
     @Test
     void inherit() {
-        SolverConfig<TestdataSolution> originalSolverConfig = readSolverConfig(TEST_SOLVER_CONFIG_WITHOUT_NAMESPACE);
-        SolverConfig<TestdataSolution> inheritedSolverConfig =
-                new SolverConfig<TestdataSolution>().inherit(originalSolverConfig);
+        SolverConfig originalSolverConfig = readSolverConfig(TEST_SOLVER_CONFIG_WITHOUT_NAMESPACE);
+        SolverConfig inheritedSolverConfig =
+                new SolverConfig().inherit(originalSolverConfig);
         assertThat(inheritedSolverConfig).usingRecursiveComparison().isEqualTo(originalSolverConfig);
     }
 

@@ -29,23 +29,22 @@ import org.optaplanner.core.config.util.ConfigUtils;
         "secondaryPillarSelectorConfig",
         "variableNameIncludeList"
 })
-public class PillarSwapMoveSelectorConfig<Solution_>
-        extends AbstractPillarMoveSelectorConfig<Solution_, PillarSwapMoveSelectorConfig<Solution_>> {
+public class PillarSwapMoveSelectorConfig extends AbstractPillarMoveSelectorConfig<PillarSwapMoveSelectorConfig> {
 
     public static final String XML_ELEMENT_NAME = "pillarSwapMoveSelector";
 
     @XmlElement(name = "secondaryPillarSelector")
-    private PillarSelectorConfig<Solution_> secondaryPillarSelectorConfig = null;
+    private PillarSelectorConfig secondaryPillarSelectorConfig = null;
 
     @XmlElementWrapper(name = "variableNameIncludes")
     @XmlElement(name = "variableNameInclude")
     private List<String> variableNameIncludeList = null;
 
-    public PillarSelectorConfig<Solution_> getSecondaryPillarSelectorConfig() {
+    public PillarSelectorConfig getSecondaryPillarSelectorConfig() {
         return secondaryPillarSelectorConfig;
     }
 
-    public void setSecondaryPillarSelectorConfig(PillarSelectorConfig<Solution_> secondaryPillarSelectorConfig) {
+    public void setSecondaryPillarSelectorConfig(PillarSelectorConfig secondaryPillarSelectorConfig) {
         this.secondaryPillarSelectorConfig = secondaryPillarSelectorConfig;
     }
 
@@ -58,7 +57,7 @@ public class PillarSwapMoveSelectorConfig<Solution_>
     }
 
     @Override
-    public PillarSwapMoveSelectorConfig<Solution_> inherit(PillarSwapMoveSelectorConfig<Solution_> inheritedConfig) {
+    public PillarSwapMoveSelectorConfig inherit(PillarSwapMoveSelectorConfig inheritedConfig) {
         super.inherit(inheritedConfig);
         secondaryPillarSelectorConfig = ConfigUtils.inheritConfig(secondaryPillarSelectorConfig,
                 inheritedConfig.getSecondaryPillarSelectorConfig());
@@ -68,8 +67,8 @@ public class PillarSwapMoveSelectorConfig<Solution_>
     }
 
     @Override
-    public PillarSwapMoveSelectorConfig<Solution_> copyConfig() {
-        return new PillarSwapMoveSelectorConfig<Solution_>().inherit(this);
+    public PillarSwapMoveSelectorConfig copyConfig() {
+        return new PillarSwapMoveSelectorConfig().inherit(this);
     }
 
     @Override

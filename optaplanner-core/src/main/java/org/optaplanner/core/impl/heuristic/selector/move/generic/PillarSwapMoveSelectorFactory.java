@@ -32,20 +32,20 @@ import org.optaplanner.core.impl.heuristic.selector.move.AbstractMoveSelectorFac
 import org.optaplanner.core.impl.heuristic.selector.move.MoveSelector;
 
 public class PillarSwapMoveSelectorFactory<Solution_>
-        extends AbstractMoveSelectorFactory<Solution_, PillarSwapMoveSelectorConfig<Solution_>> {
+        extends AbstractMoveSelectorFactory<Solution_, PillarSwapMoveSelectorConfig> {
 
-    public PillarSwapMoveSelectorFactory(PillarSwapMoveSelectorConfig<Solution_> moveSelectorConfig) {
+    public PillarSwapMoveSelectorFactory(PillarSwapMoveSelectorConfig moveSelectorConfig) {
         super(moveSelectorConfig);
     }
 
     @Override
     protected MoveSelector<Solution_> buildBaseMoveSelector(HeuristicConfigPolicy<Solution_> configPolicy,
             SelectionCacheType minimumCacheType, boolean randomSelection) {
-        PillarSelectorConfig<Solution_> leftPillarSelectorConfig =
-                defaultIfNull(config.getPillarSelectorConfig(), new PillarSelectorConfig<>());
+        PillarSelectorConfig leftPillarSelectorConfig =
+                defaultIfNull(config.getPillarSelectorConfig(), new PillarSelectorConfig());
         PillarSelector<Solution_> leftPillarSelector =
                 buildPillarSelector(leftPillarSelectorConfig, configPolicy, minimumCacheType, randomSelection);
-        PillarSelectorConfig<Solution_> rightPillarSelectorConfig =
+        PillarSelectorConfig rightPillarSelectorConfig =
                 defaultIfNull(config.getSecondaryPillarSelectorConfig(), leftPillarSelectorConfig);
         PillarSelector<Solution_> rightPillarSelector =
                 buildPillarSelector(rightPillarSelectorConfig, configPolicy, minimumCacheType, randomSelection);
@@ -56,10 +56,10 @@ public class PillarSwapMoveSelectorFactory<Solution_>
                 randomSelection);
     }
 
-    private PillarSelector<Solution_> buildPillarSelector(PillarSelectorConfig<Solution_> pillarSelectorConfig,
+    private PillarSelector<Solution_> buildPillarSelector(PillarSelectorConfig pillarSelectorConfig,
             HeuristicConfigPolicy<Solution_> configPolicy, SelectionCacheType minimumCacheType,
             boolean randomSelection) {
-        return PillarSelectorFactory.create(pillarSelectorConfig)
+        return PillarSelectorFactory.<Solution_> create(pillarSelectorConfig)
                 .buildPillarSelector(configPolicy, config.getSubPillarType(),
                         config.getSubPillarSequenceComparatorClass(), minimumCacheType,
                         SelectionOrder.fromRandomSelectionBoolean(randomSelection),

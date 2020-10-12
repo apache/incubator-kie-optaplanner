@@ -46,8 +46,7 @@ import org.optaplanner.core.config.util.ConfigUtils;
         "entitySelectorConfig",
         "moveSelectorConfig"
 })
-public class ExhaustiveSearchPhaseConfig<Solution_>
-        extends PhaseConfig<Solution_, ExhaustiveSearchPhaseConfig<Solution_>> {
+public class ExhaustiveSearchPhaseConfig extends PhaseConfig<ExhaustiveSearchPhaseConfig> {
 
     public static final String XML_ELEMENT_NAME = "exhaustiveSearch";
 
@@ -60,7 +59,7 @@ public class ExhaustiveSearchPhaseConfig<Solution_>
     protected ValueSorterManner valueSorterManner = null;
 
     @XmlElement(name = "entitySelector")
-    protected EntitySelectorConfig<Solution_> entitySelectorConfig = null;
+    protected EntitySelectorConfig entitySelectorConfig = null;
 
     @XmlElements({
             @XmlElement(name = CartesianProductMoveSelectorConfig.XML_ELEMENT_NAME,
@@ -114,11 +113,11 @@ public class ExhaustiveSearchPhaseConfig<Solution_>
         this.valueSorterManner = valueSorterManner;
     }
 
-    public EntitySelectorConfig<Solution_> getEntitySelectorConfig() {
+    public EntitySelectorConfig getEntitySelectorConfig() {
         return entitySelectorConfig;
     }
 
-    public void setEntitySelectorConfig(EntitySelectorConfig<Solution_> entitySelectorConfig) {
+    public void setEntitySelectorConfig(EntitySelectorConfig entitySelectorConfig) {
         this.entitySelectorConfig = entitySelectorConfig;
     }
 
@@ -131,7 +130,7 @@ public class ExhaustiveSearchPhaseConfig<Solution_>
     }
 
     @Override
-    public ExhaustiveSearchPhaseConfig<Solution_> inherit(ExhaustiveSearchPhaseConfig<Solution_> inheritedConfig) {
+    public ExhaustiveSearchPhaseConfig inherit(ExhaustiveSearchPhaseConfig inheritedConfig) {
         super.inherit(inheritedConfig);
         exhaustiveSearchType = ConfigUtils.inheritOverwritableProperty(exhaustiveSearchType,
                 inheritedConfig.getExhaustiveSearchType());
@@ -147,8 +146,8 @@ public class ExhaustiveSearchPhaseConfig<Solution_>
     }
 
     @Override
-    public ExhaustiveSearchPhaseConfig<Solution_> copyConfig() {
-        return new ExhaustiveSearchPhaseConfig<Solution_>().inherit(this);
+    public ExhaustiveSearchPhaseConfig copyConfig() {
+        return new ExhaustiveSearchPhaseConfig().inherit(this);
     }
 
 }

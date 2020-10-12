@@ -17,6 +17,7 @@
 package org.optaplanner.core.impl.phase.custom;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import org.optaplanner.core.config.phase.custom.CustomPhaseConfig;
@@ -27,9 +28,9 @@ import org.optaplanner.core.impl.phase.AbstractPhaseFactory;
 import org.optaplanner.core.impl.solver.recaller.BestSolutionRecaller;
 import org.optaplanner.core.impl.solver.termination.Termination;
 
-public class DefaultCustomPhaseFactory<Solution_> extends AbstractPhaseFactory<Solution_, CustomPhaseConfig<Solution_>> {
+public class DefaultCustomPhaseFactory<Solution_> extends AbstractPhaseFactory<Solution_, CustomPhaseConfig> {
 
-    public DefaultCustomPhaseFactory(CustomPhaseConfig<Solution_> phaseConfig) {
+    public DefaultCustomPhaseFactory(CustomPhaseConfig phaseConfig) {
         super(phaseConfig);
     }
 
@@ -48,13 +49,12 @@ public class DefaultCustomPhaseFactory<Solution_> extends AbstractPhaseFactory<S
 
         List<CustomPhaseCommand<Solution_>> customPhaseCommandList_ = new ArrayList<>(getCustomPhaseCommandListSize());
         if (phaseConfig.getCustomPhaseCommandClassList() != null) {
-            for (Class<? extends CustomPhaseCommand<Solution_>> customPhaseCommandClass : phaseConfig
-                    .getCustomPhaseCommandClassList()) {
+            for (Class<? extends CustomPhaseCommand> customPhaseCommandClass : phaseConfig.getCustomPhaseCommandClassList()) {
                 customPhaseCommandList_.add(createCustomPhaseCommand(customPhaseCommandClass));
             }
         }
         if (phaseConfig.getCustomPhaseCommandList() != null) {
-            customPhaseCommandList_.addAll(phaseConfig.getCustomPhaseCommandList());
+            customPhaseCommandList_.addAll((Collection) phaseConfig.getCustomPhaseCommandList());
         }
         phase.setCustomPhaseCommandList(customPhaseCommandList_);
         EnvironmentMode environmentMode = phaseConfigPolicy.getEnvironmentMode();
@@ -65,7 +65,7 @@ public class DefaultCustomPhaseFactory<Solution_> extends AbstractPhaseFactory<S
     }
 
     private CustomPhaseCommand<Solution_>
-            createCustomPhaseCommand(Class<? extends CustomPhaseCommand<Solution_>> customPhaseCommandClass) {
+            createCustomPhaseCommand(Class<? extends CustomPhaseCommand> customPhaseCommandClass) {
         CustomPhaseCommand<Solution_> customPhaseCommand = ConfigUtils.newInstance(phaseConfig,
                 "customPhaseCommandClass", customPhaseCommandClass);
         ConfigUtils.applyCustomProperties(customPhaseCommand, "customPhaseCommandClass", phaseConfig.getCustomProperties(),

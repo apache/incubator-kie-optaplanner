@@ -30,9 +30,9 @@ import org.optaplanner.core.impl.heuristic.selector.common.decorator.SelectionPr
 import org.optaplanner.core.impl.heuristic.selector.move.MoveSelector;
 
 public class UnionMoveSelectorFactory<Solution_>
-        extends AbstractCompositeMoveSelectorFactory<Solution_, UnionMoveSelectorConfig<Solution_>> {
+        extends AbstractCompositeMoveSelectorFactory<Solution_, UnionMoveSelectorConfig> {
 
-    public UnionMoveSelectorFactory(UnionMoveSelectorConfig<Solution_> moveSelectorConfig) {
+    public UnionMoveSelectorFactory(UnionMoveSelectorConfig moveSelectorConfig) {
         super(moveSelectorConfig);
     }
 
@@ -56,7 +56,7 @@ public class UnionMoveSelectorFactory<Solution_>
             Map<MoveSelector<Solution_>, Double> fixedProbabilityWeightMap =
                     new HashMap<>(config.getMoveSelectorConfigList().size());
             for (int i = 0; i < config.getMoveSelectorConfigList().size(); i++) {
-                MoveSelectorConfig<Solution_, ?> innerMoveSelectorConfig = config.getMoveSelectorConfigList().get(i);
+                MoveSelectorConfig<?> innerMoveSelectorConfig = config.getMoveSelectorConfigList().get(i);
                 MoveSelector<Solution_> moveSelector = moveSelectorList.get(i);
                 Double fixedProbabilityWeight = innerMoveSelectorConfig.getFixedProbabilityWeight();
                 if (fixedProbabilityWeight == null) {

@@ -43,14 +43,12 @@ public abstract class AbstractConstructionHeuristicTest<Solution_>
     }
 
     @Override
-    protected SolverFactory<Solution_> buildSolverFactory(
-            CommonApp<Solution_> commonApp,
+    protected SolverFactory<Solution_> buildSolverFactory(CommonApp<Solution_> commonApp,
             ConstructionHeuristicType constructionHeuristicType) {
         String solverConfigResource = commonApp.getSolverConfigResource();
-        SolverConfig<Solution_> solverConfig = SolverConfig.createFromXmlResource(solverConfigResource);
-        solverConfig.setTerminationConfig(new TerminationConfig<>());
-        ConstructionHeuristicPhaseConfig<Solution_> constructionHeuristicPhaseConfig =
-                new ConstructionHeuristicPhaseConfig<>();
+        SolverConfig solverConfig = SolverConfig.createFromXmlResource(solverConfigResource);
+        solverConfig.setTerminationConfig(new TerminationConfig());
+        ConstructionHeuristicPhaseConfig constructionHeuristicPhaseConfig = new ConstructionHeuristicPhaseConfig();
         constructionHeuristicPhaseConfig.setConstructionHeuristicType(constructionHeuristicType);
         solverConfig.setPhaseConfigList(Arrays.asList(constructionHeuristicPhaseConfig));
         return SolverFactory.create(solverConfig);

@@ -52,7 +52,7 @@ public final class DefaultSolverManager<Solution_, ProblemId_> implements Solver
     private ConcurrentMap<Object, DefaultSolverJob<Solution_, ProblemId_>> problemIdToSolverJobMap;
 
     public DefaultSolverManager(SolverFactory<Solution_> solverFactory,
-            SolverManagerConfig<Solution_> solverManagerConfig) {
+            SolverManagerConfig solverManagerConfig) {
         defaultExceptionHandler = (problemId, throwable) -> logger.error(
                 "Solving failed for problemId ({}).", problemId, throwable);
         this.solverFactory = solverFactory;

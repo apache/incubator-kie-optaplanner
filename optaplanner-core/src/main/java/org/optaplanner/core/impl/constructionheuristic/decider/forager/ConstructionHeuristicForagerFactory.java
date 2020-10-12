@@ -23,13 +23,13 @@ import org.optaplanner.core.impl.heuristic.HeuristicConfigPolicy;
 public class ConstructionHeuristicForagerFactory<Solution_> {
 
     public static <Solution_> ConstructionHeuristicForagerFactory<Solution_> create(
-            ConstructionHeuristicForagerConfig<Solution_> foragerConfig) {
+            ConstructionHeuristicForagerConfig foragerConfig) {
         return new ConstructionHeuristicForagerFactory<>(foragerConfig);
     }
 
-    private final ConstructionHeuristicForagerConfig<Solution_> foragerConfig;
+    private final ConstructionHeuristicForagerConfig foragerConfig;
 
-    public ConstructionHeuristicForagerFactory(ConstructionHeuristicForagerConfig<Solution_> foragerConfig) {
+    public ConstructionHeuristicForagerFactory(ConstructionHeuristicForagerConfig foragerConfig) {
         this.foragerConfig = foragerConfig;
     }
 

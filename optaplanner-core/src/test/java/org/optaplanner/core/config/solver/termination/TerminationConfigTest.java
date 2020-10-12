@@ -26,7 +26,7 @@ class TerminationConfigTest {
 
     @Test
     void overwriteSpentLimit() {
-        TerminationConfig<?> terminationConfig = new TerminationConfig<>();
+        TerminationConfig terminationConfig = new TerminationConfig();
         terminationConfig.setMinutesSpentLimit(1L);
         assertThat(terminationConfig.getMinutesSpentLimit()).isNotNull();
         terminationConfig.overwriteSpentLimit(Duration.ofHours(2L));
@@ -35,7 +35,7 @@ class TerminationConfigTest {
 
     @Test
     void overwriteUnimprovedSpentLimit() {
-        TerminationConfig<?> terminationConfig = new TerminationConfig<>();
+        TerminationConfig terminationConfig = new TerminationConfig();
         terminationConfig.setUnimprovedMinutesSpentLimit(1L);
         assertThat(terminationConfig.getUnimprovedMinutesSpentLimit()).isNotNull();
         terminationConfig.overwriteUnimprovedSpentLimit(Duration.ofHours(2L));

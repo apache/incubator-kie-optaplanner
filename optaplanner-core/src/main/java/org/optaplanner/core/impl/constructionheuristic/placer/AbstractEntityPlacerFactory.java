@@ -26,20 +26,20 @@ import org.optaplanner.core.impl.AbstractFromConfigFactory;
 import org.optaplanner.core.impl.domain.variable.descriptor.GenuineVariableDescriptor;
 import org.optaplanner.core.impl.heuristic.HeuristicConfigPolicy;
 
-abstract class AbstractEntityPlacerFactory<Solution_, EntityPlacerConfig_ extends EntityPlacerConfig<Solution_, EntityPlacerConfig_>>
+abstract class AbstractEntityPlacerFactory<Solution_, EntityPlacerConfig_ extends EntityPlacerConfig<EntityPlacerConfig_>>
         extends AbstractFromConfigFactory<Solution_, EntityPlacerConfig_> implements EntityPlacerFactory<Solution_> {
 
     protected AbstractEntityPlacerFactory(EntityPlacerConfig_ placerConfig) {
         super(placerConfig);
     }
 
-    protected ChangeMoveSelectorConfig<Solution_> buildChangeMoveSelectorConfig(
+    protected ChangeMoveSelectorConfig buildChangeMoveSelectorConfig(
             HeuristicConfigPolicy<Solution_> configPolicy, String entitySelectorConfigId,
             GenuineVariableDescriptor<Solution_> variableDescriptor) {
-        ChangeMoveSelectorConfig<Solution_> changeMoveSelectorConfig = new ChangeMoveSelectorConfig<>();
+        ChangeMoveSelectorConfig changeMoveSelectorConfig = new ChangeMoveSelectorConfig();
         changeMoveSelectorConfig.setEntitySelectorConfig(
                 EntitySelectorConfig.newMimicSelectorConfig(entitySelectorConfigId));
-        ValueSelectorConfig<Solution_> changeValueSelectorConfig = new ValueSelectorConfig<>();
+        ValueSelectorConfig changeValueSelectorConfig = new ValueSelectorConfig();
         changeValueSelectorConfig.setVariableName(variableDescriptor.getVariableName());
         if (ValueSelectorConfig.hasSorter(configPolicy.getValueSorterManner(), variableDescriptor)) {
             if (variableDescriptor.isValueRangeEntityIndependent()) {

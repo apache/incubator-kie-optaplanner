@@ -47,32 +47,32 @@ import org.optaplanner.core.impl.heuristic.selector.move.generic.chained.TailCha
 
 public interface MoveSelectorFactory<Solution_> {
 
-    static <Solution_> MoveSelectorFactory<Solution_> create(MoveSelectorConfig<Solution_, ?> moveSelectorConfig) {
+    static <Solution_> MoveSelectorFactory<Solution_> create(MoveSelectorConfig<?> moveSelectorConfig) {
         if (ChangeMoveSelectorConfig.class.isAssignableFrom(moveSelectorConfig.getClass())) {
-            return new ChangeMoveSelectorFactory<>((ChangeMoveSelectorConfig<Solution_>) moveSelectorConfig);
+            return new ChangeMoveSelectorFactory<>((ChangeMoveSelectorConfig) moveSelectorConfig);
         } else if (SwapMoveSelectorConfig.class.isAssignableFrom(moveSelectorConfig.getClass())) {
-            return new SwapMoveSelectorFactory<>((SwapMoveSelectorConfig<Solution_>) moveSelectorConfig);
+            return new SwapMoveSelectorFactory<>((SwapMoveSelectorConfig) moveSelectorConfig);
         } else if (PillarChangeMoveSelectorConfig.class.isAssignableFrom(moveSelectorConfig.getClass())) {
-            return new PillarChangeMoveSelectorFactory<>((PillarChangeMoveSelectorConfig<Solution_>) moveSelectorConfig);
+            return new PillarChangeMoveSelectorFactory<>((PillarChangeMoveSelectorConfig) moveSelectorConfig);
         } else if (PillarSwapMoveSelectorConfig.class.isAssignableFrom(moveSelectorConfig.getClass())) {
-            return new PillarSwapMoveSelectorFactory<>((PillarSwapMoveSelectorConfig<Solution_>) moveSelectorConfig);
+            return new PillarSwapMoveSelectorFactory<>((PillarSwapMoveSelectorConfig) moveSelectorConfig);
         } else if (UnionMoveSelectorConfig.class.isAssignableFrom(moveSelectorConfig.getClass())) {
-            return new UnionMoveSelectorFactory<>((UnionMoveSelectorConfig<Solution_>) moveSelectorConfig);
+            return new UnionMoveSelectorFactory<>((UnionMoveSelectorConfig) moveSelectorConfig);
         } else if (CartesianProductMoveSelectorConfig.class.isAssignableFrom(moveSelectorConfig.getClass())) {
             return new CartesianProductMoveSelectorFactory<>(
-                    (CartesianProductMoveSelectorConfig<Solution_>) moveSelectorConfig);
+                    (CartesianProductMoveSelectorConfig) moveSelectorConfig);
         } else if (SubChainChangeMoveSelectorConfig.class.isAssignableFrom(moveSelectorConfig.getClass())) {
-            return new SubChainChangeMoveSelectorFactory<>((SubChainChangeMoveSelectorConfig<Solution_>) moveSelectorConfig);
+            return new SubChainChangeMoveSelectorFactory<>((SubChainChangeMoveSelectorConfig) moveSelectorConfig);
         } else if (SubChainSwapMoveSelectorConfig.class.isAssignableFrom(moveSelectorConfig.getClass())) {
-            return new SubChainSwapMoveSelectorFactory<>((SubChainSwapMoveSelectorConfig<Solution_>) moveSelectorConfig);
+            return new SubChainSwapMoveSelectorFactory<>((SubChainSwapMoveSelectorConfig) moveSelectorConfig);
         } else if (TailChainSwapMoveSelectorConfig.class.isAssignableFrom(moveSelectorConfig.getClass())) {
-            return new TailChainSwapMoveSelectorFactory<>((TailChainSwapMoveSelectorConfig<Solution_>) moveSelectorConfig);
+            return new TailChainSwapMoveSelectorFactory<>((TailChainSwapMoveSelectorConfig) moveSelectorConfig);
         } else if (MoveIteratorFactoryConfig.class.isAssignableFrom(moveSelectorConfig.getClass())) {
-            return new MoveIteratorFactoryFactory<>((MoveIteratorFactoryConfig<Solution_>) moveSelectorConfig);
+            return new MoveIteratorFactoryFactory<>((MoveIteratorFactoryConfig) moveSelectorConfig);
         } else if (MoveListFactoryConfig.class.isAssignableFrom(moveSelectorConfig.getClass())) {
-            return new MoveListFactoryFactory<>((MoveListFactoryConfig<Solution_>) moveSelectorConfig);
+            return new MoveListFactoryFactory<>((MoveListFactoryConfig) moveSelectorConfig);
         } else if (KOptMoveSelectorConfig.class.isAssignableFrom(moveSelectorConfig.getClass())) {
-            return new KOptMoveSelectorFactory<>((KOptMoveSelectorConfig<Solution_>) moveSelectorConfig);
+            return new KOptMoveSelectorFactory<>((KOptMoveSelectorConfig) moveSelectorConfig);
         } else {
             throw new IllegalArgumentException(
                     String.format("Unknown MoveSelectorConfig type: (%s).", moveSelectorConfig.getClass().getName()));

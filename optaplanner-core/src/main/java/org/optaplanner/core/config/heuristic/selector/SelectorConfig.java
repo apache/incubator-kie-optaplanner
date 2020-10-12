@@ -24,7 +24,6 @@ import org.optaplanner.core.config.heuristic.selector.value.ValueSelectorConfig;
 /**
  * General superclass for {@link MoveSelectorConfig}, {@link EntitySelectorConfig} and {@link ValueSelectorConfig}.
  */
-public abstract class SelectorConfig<Solution_, C extends SelectorConfig<Solution_, C>>
-        extends AbstractConfig<Solution_, C> {
+public abstract class SelectorConfig<Config_ extends SelectorConfig<Config_>> extends AbstractConfig<Config_> {
 
 }

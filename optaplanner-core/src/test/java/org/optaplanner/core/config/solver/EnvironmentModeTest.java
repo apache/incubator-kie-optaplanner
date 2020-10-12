@@ -74,16 +74,16 @@ public class EnvironmentModeTest {
                 new TestdataEntity("e3"), new TestdataEntity("e4")));
     }
 
-    private static SolverConfig<TestdataSolution> buildSolverConfig(EnvironmentMode environmentMode) {
-        CustomPhaseConfig<TestdataSolution> initializerPhaseConfig = new CustomPhaseConfig()
+    private static SolverConfig buildSolverConfig(EnvironmentMode environmentMode) {
+        CustomPhaseConfig initializerPhaseConfig = new CustomPhaseConfig()
                 .withCustomPhaseCommandClassList(Collections.singletonList(TestdataFirstValueInitializer.class));
 
-        LocalSearchPhaseConfig<TestdataSolution> localSearchPhaseConfig = new LocalSearchPhaseConfig<>();
+        LocalSearchPhaseConfig localSearchPhaseConfig = new LocalSearchPhaseConfig();
         localSearchPhaseConfig
                 .setTerminationConfig(
-                        new TerminationConfig<TestdataSolution>().withStepCountLimit(NUMBER_OF_TERMINATION_STEP_COUNT_LIMIT));
+                        new TerminationConfig().withStepCountLimit(NUMBER_OF_TERMINATION_STEP_COUNT_LIMIT));
 
-        return new SolverConfig<TestdataSolution>()
+        return new SolverConfig()
                 .withSolutionClass(TestdataSolution.class)
                 .withEntityClasses(TestdataEntity.class)
                 .withEnvironmentMode(environmentMode)
@@ -93,11 +93,11 @@ public class EnvironmentModeTest {
     @ParameterizedTest(name = "{0}")
     @EnumSource(EnvironmentMode.class)
     public void determinism(EnvironmentMode environmentMode) {
-        SolverConfig<TestdataSolution> solverConfig = buildSolverConfig(environmentMode);
+        SolverConfig solverConfig = buildSolverConfig(environmentMode);
         setSolverConfigCalculatorClass(solverConfig, TestdataDifferentValuesCalculator.class);
 
-        Solver<TestdataSolution> solver1 = SolverFactory.create(solverConfig).buildSolver();
-        Solver<TestdataSolution> solver2 = SolverFactory.create(solverConfig).buildSolver();
+        Solver<TestdataSolution> solver1 = SolverFactory.<TestdataSolution> create(solverConfig).buildSolver();
+        Solver<TestdataSolution> solver2 = SolverFactory.<TestdataSolution> create(solverConfig).buildSolver();
 
         switch (environmentMode) {
             case NON_REPRODUCIBLE:
@@ -117,7 +117,7 @@ public class EnvironmentModeTest {
     @ParameterizedTest(name = "{0}")
     @EnumSource(EnvironmentMode.class)
     public void corruptedCustomMoves(EnvironmentMode environmentMode) {
-        SolverConfig<TestdataSolution> solverConfig = buildSolverConfig(environmentMode);
+        SolverConfig solverConfig = buildSolverConfig(environmentMode);
         // Intrusive modes should throw exception about corrupted undoMove
         setSolverConfigCalculatorClass(solverConfig, TestdataDifferentValuesCalculator.class);
 
@@ -147,7 +147,7 @@ public class EnvironmentModeTest {
     @ParameterizedTest(name = "{0}")
     @EnumSource(EnvironmentMode.class)
     public void corruptedConstraints(EnvironmentMode environmentMode) {
-        SolverConfig<TestdataSolution> solverConfig = buildSolverConfig(environmentMode);
+        SolverConfig solverConfig = buildSolverConfig(environmentMode);
         // For full assert modes it should throw exception about corrupted score
         setSolverConfigCalculatorClass(solverConfig, TestdataCorruptedDifferentValuesCalculator.class);
 
@@ -184,7 +184,7 @@ public class EnvironmentModeTest {
         assertDifferentScoreSeries(solver1, solver2);
     }
 
-    private void assertIllegalStateExceptionWhileSolving(SolverConfig<TestdataSolution> solverConfig, String exceptionMessage) {
+    private void assertIllegalStateExceptionWhileSolving(SolverConfig solverConfig, String exceptionMessage) {
         assertThatExceptionOfType(IllegalStateException.class)
                 .isThrownBy(() -> PlannerTestUtils.solve(solverConfig, inputProblem))
                 .withMessageContaining(exceptionMessage);
@@ -251,25 +251,25 @@ public class EnvironmentModeTest {
                         .isNotEqualTo(random2.nextInt())));
     }
 
-    private void setSolverConfigCalculatorClass(SolverConfig<TestdataSolution> solverConfig,
+    private void setSolverConfigCalculatorClass(SolverConfig solverConfig,
             Class<? extends EasyScoreCalculator> easyScoreCalculatorClass) {
-        solverConfig.setScoreDirectorFactoryConfig(new ScoreDirectorFactoryConfig<TestdataSolution>()
+        solverConfig.setScoreDirectorFactoryConfig(new ScoreDirectorFactoryConfig()
                 .withEasyScoreCalculatorClass(easyScoreCalculatorClass));
     }
 
-    private void setSolverConfigMoveListFactoryClassToCorrupted(SolverConfig<TestdataSolution> solverConfig,
+    private void setSolverConfigMoveListFactoryClassToCorrupted(SolverConfig solverConfig,
             Class<? extends MoveListFactory<TestdataSolution>> move) {
-        MoveListFactoryConfig<TestdataSolution> moveListFactoryConfig = new MoveListFactoryConfig<>();
+        MoveListFactoryConfig moveListFactoryConfig = new MoveListFactoryConfig();
         moveListFactoryConfig.setMoveListFactoryClass(move);
 
-        CustomPhaseConfig<TestdataSolution> initializerPhaseConfig = new CustomPhaseConfig<TestdataSolution>()
+        CustomPhaseConfig initializerPhaseConfig = new CustomPhaseConfig()
                 .withCustomPhaseCommandClassList(Collections.singletonList(TestdataFirstValueInitializer.class));
 
-        LocalSearchPhaseConfig<TestdataSolution> localSearchPhaseConfig = new LocalSearchPhaseConfig<>();
+        LocalSearchPhaseConfig localSearchPhaseConfig = new LocalSearchPhaseConfig();
         localSearchPhaseConfig.setMoveSelectorConfig(moveListFactoryConfig);
         localSearchPhaseConfig
                 .setTerminationConfig(
-                        new TerminationConfig<TestdataSolution>().withStepCountLimit(NUMBER_OF_TERMINATION_STEP_COUNT_LIMIT));
+                        new TerminationConfig().withStepCountLimit(NUMBER_OF_TERMINATION_STEP_COUNT_LIMIT));
 
         solverConfig.withPhases(initializerPhaseConfig, localSearchPhaseConfig);
     }

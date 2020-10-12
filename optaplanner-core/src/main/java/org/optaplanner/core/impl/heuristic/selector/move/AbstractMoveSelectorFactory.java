@@ -39,7 +39,7 @@ import org.optaplanner.core.impl.heuristic.selector.move.decorator.SelectedCount
 import org.optaplanner.core.impl.heuristic.selector.move.decorator.ShufflingMoveSelector;
 import org.optaplanner.core.impl.heuristic.selector.move.decorator.SortingMoveSelector;
 
-public abstract class AbstractMoveSelectorFactory<Solution_, MoveSelectorConfig_ extends MoveSelectorConfig<Solution_, MoveSelectorConfig_>>
+public abstract class AbstractMoveSelectorFactory<Solution_, MoveSelectorConfig_ extends MoveSelectorConfig<MoveSelectorConfig_>>
         extends AbstractSelectorFactory<Solution_, MoveSelectorConfig_> implements MoveSelectorFactory<Solution_> {
 
     public AbstractMoveSelectorFactory(MoveSelectorConfig_ moveSelectorConfig) {
@@ -66,10 +66,10 @@ public abstract class AbstractMoveSelectorFactory<Solution_, MoveSelectorConfig_
     @Override
     public MoveSelector<Solution_> buildMoveSelector(HeuristicConfigPolicy<Solution_> configPolicy,
             SelectionCacheType minimumCacheType, SelectionOrder inheritedSelectionOrder) {
-        MoveSelectorConfig<Solution_, ?> unfoldedMoveSelectorConfig = buildUnfoldedMoveSelectorConfig(configPolicy);
+        MoveSelectorConfig<?> unfoldedMoveSelectorConfig = buildUnfoldedMoveSelectorConfig(configPolicy);
         if (unfoldedMoveSelectorConfig != null) {
-            return MoveSelectorFactory.create(unfoldedMoveSelectorConfig).buildMoveSelector(configPolicy,
-                    minimumCacheType, inheritedSelectionOrder);
+            return MoveSelectorFactory.<Solution_> create(unfoldedMoveSelectorConfig)
+                    .buildMoveSelector(configPolicy, minimumCacheType, inheritedSelectionOrder);
         }
 
         SelectionCacheType resolvedCacheType = SelectionCacheType.resolve(config.getCacheType(), minimumCacheType);
@@ -101,7 +101,7 @@ public abstract class AbstractMoveSelectorFactory<Solution_, MoveSelectorConfig_
      * @param configPolicy never null
      * @return null if no unfolding is needed
      */
-    protected MoveSelectorConfig<Solution_, ?> buildUnfoldedMoveSelectorConfig(
+    protected MoveSelectorConfig<?> buildUnfoldedMoveSelectorConfig(
             HeuristicConfigPolicy<Solution_> configPolicy) {
         return null;
     }

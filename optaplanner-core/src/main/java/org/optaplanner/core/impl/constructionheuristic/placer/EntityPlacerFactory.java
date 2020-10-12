@@ -24,13 +24,13 @@ import org.optaplanner.core.impl.heuristic.HeuristicConfigPolicy;
 
 public interface EntityPlacerFactory<Solution_> {
 
-    static <Solution_> EntityPlacerFactory<Solution_> create(EntityPlacerConfig<Solution_, ?> entityPlacerConfig) {
+    static <Solution_> EntityPlacerFactory<Solution_> create(EntityPlacerConfig<?> entityPlacerConfig) {
         if (PooledEntityPlacerConfig.class.isAssignableFrom(entityPlacerConfig.getClass())) {
-            return new PooledEntityPlacerFactory<>((PooledEntityPlacerConfig<Solution_>) entityPlacerConfig);
+            return new PooledEntityPlacerFactory<>((PooledEntityPlacerConfig) entityPlacerConfig);
         } else if (QueuedEntityPlacerConfig.class.isAssignableFrom(entityPlacerConfig.getClass())) {
-            return new QueuedEntityPlacerFactory<>((QueuedEntityPlacerConfig<Solution_>) entityPlacerConfig);
+            return new QueuedEntityPlacerFactory<>((QueuedEntityPlacerConfig) entityPlacerConfig);
         } else if (QueuedValuePlacerConfig.class.isAssignableFrom(entityPlacerConfig.getClass())) {
-            return new QueuedValuePlacerFactory<>((QueuedValuePlacerConfig<Solution_>) entityPlacerConfig);
+            return new QueuedValuePlacerFactory<>((QueuedValuePlacerConfig) entityPlacerConfig);
         } else {
             throw new IllegalArgumentException(
                     String.format("Unknown EntityPlacerConfig type: (%s).", entityPlacerConfig.getClass().getName()));

@@ -26,7 +26,7 @@ import javax.xml.bind.annotation.XmlType;
         "maximumSubPillarSize",
         "maximumSubPillarSize"
 })
-public final class SubPillarConfigPolicy<Solution_> {
+public final class SubPillarConfigPolicy {
 
     private final boolean subPillarEnabled;
     private final int minimumSubPillarSize;
@@ -59,24 +59,23 @@ public final class SubPillarConfigPolicy<Solution_> {
         this.entityComparator = null;
     }
 
-    public static <Solution_> SubPillarConfigPolicy<Solution_> withoutSubpillars() {
-        return new SubPillarConfigPolicy<>();
+    public static SubPillarConfigPolicy withoutSubpillars() {
+        return new SubPillarConfigPolicy();
     }
 
-    public static <Solution_> SubPillarConfigPolicy<Solution_> withSubpillars(int minSize, int maxSize) {
-        return new SubPillarConfigPolicy<>(minSize, maxSize);
+    public static SubPillarConfigPolicy withSubpillars(int minSize, int maxSize) {
+        return new SubPillarConfigPolicy(minSize, maxSize);
     }
 
-    public static <Solution_> SubPillarConfigPolicy<Solution_> withSubpillarsUnlimited() {
+    public static SubPillarConfigPolicy withSubpillarsUnlimited() {
         return withSubpillars(1, Integer.MAX_VALUE);
     }
 
-    public static <Solution_> SubPillarConfigPolicy<Solution_> sequential(int minSize, int maxSize,
-            Comparator<?> entityComparator) {
-        return new SubPillarConfigPolicy<>(minSize, maxSize, entityComparator);
+    public static SubPillarConfigPolicy sequential(int minSize, int maxSize, Comparator<?> entityComparator) {
+        return new SubPillarConfigPolicy(minSize, maxSize, entityComparator);
     }
 
-    public static <Solution_> SubPillarConfigPolicy<Solution_> sequentialUnlimited(Comparator<?> entityComparator) {
+    public static SubPillarConfigPolicy sequentialUnlimited(Comparator<?> entityComparator) {
         return sequential(1, Integer.MAX_VALUE, entityComparator);
     }
 

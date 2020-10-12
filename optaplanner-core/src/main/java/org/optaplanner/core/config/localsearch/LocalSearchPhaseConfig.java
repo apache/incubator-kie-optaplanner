@@ -43,7 +43,7 @@ import org.optaplanner.core.config.util.ConfigUtils;
         "acceptorConfig",
         "foragerConfig"
 })
-public class LocalSearchPhaseConfig<Solution_> extends PhaseConfig<Solution_, LocalSearchPhaseConfig<Solution_>> {
+public class LocalSearchPhaseConfig extends PhaseConfig<LocalSearchPhaseConfig> {
 
     public static final String XML_ELEMENT_NAME = "localSearch";
 
@@ -72,9 +72,9 @@ public class LocalSearchPhaseConfig<Solution_> extends PhaseConfig<Solution_, Lo
     })
     private MoveSelectorConfig moveSelectorConfig = null;
     @XmlElement(name = "acceptor")
-    private LocalSearchAcceptorConfig<Solution_> acceptorConfig = null;
+    private LocalSearchAcceptorConfig acceptorConfig = null;
     @XmlElement(name = "forager")
-    private LocalSearchForagerConfig<Solution_> foragerConfig = null;
+    private LocalSearchForagerConfig foragerConfig = null;
 
     // ************************************************************************
     // Constructors and simple getters/setters
@@ -96,19 +96,19 @@ public class LocalSearchPhaseConfig<Solution_> extends PhaseConfig<Solution_, Lo
         this.moveSelectorConfig = moveSelectorConfig;
     }
 
-    public LocalSearchAcceptorConfig<Solution_> getAcceptorConfig() {
+    public LocalSearchAcceptorConfig getAcceptorConfig() {
         return acceptorConfig;
     }
 
-    public void setAcceptorConfig(LocalSearchAcceptorConfig<Solution_> acceptorConfig) {
+    public void setAcceptorConfig(LocalSearchAcceptorConfig acceptorConfig) {
         this.acceptorConfig = acceptorConfig;
     }
 
-    public LocalSearchForagerConfig<Solution_> getForagerConfig() {
+    public LocalSearchForagerConfig getForagerConfig() {
         return foragerConfig;
     }
 
-    public void setForagerConfig(LocalSearchForagerConfig<Solution_> foragerConfig) {
+    public void setForagerConfig(LocalSearchForagerConfig foragerConfig) {
         this.foragerConfig = foragerConfig;
     }
 
@@ -116,28 +116,28 @@ public class LocalSearchPhaseConfig<Solution_> extends PhaseConfig<Solution_, Lo
     // With methods
     // ************************************************************************
 
-    public LocalSearchPhaseConfig<Solution_> withLocalSearchType(LocalSearchType localSearchType) {
+    public LocalSearchPhaseConfig withLocalSearchType(LocalSearchType localSearchType) {
         this.localSearchType = localSearchType;
         return this;
     }
 
-    public LocalSearchPhaseConfig<Solution_> withMoveSelectorConfig(MoveSelectorConfig moveSelectorConfig) {
+    public LocalSearchPhaseConfig withMoveSelectorConfig(MoveSelectorConfig moveSelectorConfig) {
         this.moveSelectorConfig = moveSelectorConfig;
         return this;
     }
 
-    public LocalSearchPhaseConfig<Solution_> withAcceptorConfig(LocalSearchAcceptorConfig<Solution_> acceptorConfig) {
+    public LocalSearchPhaseConfig withAcceptorConfig(LocalSearchAcceptorConfig acceptorConfig) {
         this.acceptorConfig = acceptorConfig;
         return this;
     }
 
-    public LocalSearchPhaseConfig<Solution_> withForagerConfig(LocalSearchForagerConfig<Solution_> foragerConfig) {
+    public LocalSearchPhaseConfig withForagerConfig(LocalSearchForagerConfig foragerConfig) {
         this.foragerConfig = foragerConfig;
         return this;
     }
 
     @Override
-    public LocalSearchPhaseConfig<Solution_> inherit(LocalSearchPhaseConfig<Solution_> inheritedConfig) {
+    public LocalSearchPhaseConfig inherit(LocalSearchPhaseConfig inheritedConfig) {
         super.inherit(inheritedConfig);
         localSearchType = ConfigUtils.inheritOverwritableProperty(localSearchType,
                 inheritedConfig.getLocalSearchType());
@@ -149,8 +149,8 @@ public class LocalSearchPhaseConfig<Solution_> extends PhaseConfig<Solution_, Lo
     }
 
     @Override
-    public LocalSearchPhaseConfig<Solution_> copyConfig() {
-        return new LocalSearchPhaseConfig<Solution_>().inherit(this);
+    public LocalSearchPhaseConfig copyConfig() {
+        return new LocalSearchPhaseConfig().inherit(this);
     }
 
 }

@@ -60,9 +60,9 @@ public final class DefaultSolverFactory<Solution_> implements SolverFactory<Solu
     private static final Logger logger = LoggerFactory.getLogger(DefaultSolverFactory.class);
     private static final long DEFAULT_RANDOM_SEED = 0L;
 
-    private final SolverConfig<Solution_> solverConfig;
+    private final SolverConfig solverConfig;
 
-    public DefaultSolverFactory(SolverConfig<Solution_> solverConfig) {
+    public DefaultSolverFactory(SolverConfig solverConfig) {
         if (solverConfig == null) {
             throw new IllegalStateException("The solverConfig (" + solverConfig + ") cannot be null.");
         }
@@ -90,12 +90,12 @@ public final class DefaultSolverFactory<Solution_> implements SolverFactory<Solu
         HeuristicConfigPolicy<Solution_> configPolicy = new HeuristicConfigPolicy<>(environmentMode_,
                 moveThreadCount_, solverConfig.getMoveThreadBufferSize(), solverConfig.getThreadFactoryClass(),
                 scoreDirectorFactory);
-        TerminationConfig<Solution_> terminationConfig_ = solverConfig.getTerminationConfig() == null
-                ? new TerminationConfig<>()
+        TerminationConfig terminationConfig_ = solverConfig.getTerminationConfig() == null
+                ? new TerminationConfig()
                 : solverConfig.getTerminationConfig();
         BasicPlumbingTermination<Solution_> basicPlumbingTermination = new BasicPlumbingTermination<>(daemon_);
-        Termination<Solution_> termination =
-                TerminationFactory.create(terminationConfig_).buildTermination(configPolicy, basicPlumbingTermination);
+        Termination<Solution_> termination = TerminationFactory.<Solution_> create(terminationConfig_)
+                .buildTermination(configPolicy, basicPlumbingTermination);
         List<Phase<Solution_>> phaseList = buildPhaseList(configPolicy, bestSolutionRecaller, termination);
         return new DefaultSolver<>(environmentMode_, randomFactory,
                 bestSolutionRecaller, basicPlumbingTermination, termination, phaseList, solverScope);
@@ -107,8 +107,8 @@ public final class DefaultSolverFactory<Solution_> implements SolverFactory<Solu
      */
     public InnerScoreDirectorFactory<Solution_, ?> buildScoreDirectorFactory(EnvironmentMode environmentMode) {
         SolutionDescriptor<Solution_> solutionDescriptor = buildSolutionDescriptor();
-        ScoreDirectorFactoryConfig<Solution_> scoreDirectorFactoryConfig_ = solverConfig.getScoreDirectorFactoryConfig() == null
-                ? new ScoreDirectorFactoryConfig<>()
+        ScoreDirectorFactoryConfig scoreDirectorFactoryConfig_ = solverConfig.getScoreDirectorFactoryConfig() == null
+                ? new ScoreDirectorFactoryConfig()
                 : solverConfig.getScoreDirectorFactoryConfig();
         ScoreDirectorFactoryFactory<Solution_, ?> scoreDirectorFactoryFactory =
                 new ScoreDirectorFactoryFactory<>(scoreDirectorFactoryConfig_);
@@ -160,9 +160,7 @@ public final class DefaultSolverFactory<Solution_> implements SolverFactory<Solu
             BestSolutionRecaller<Solution_> bestSolutionRecaller, Termination<Solution_> termination) {
         List<PhaseConfig> phaseConfigList_ = solverConfig.getPhaseConfigList();
         if (ConfigUtils.isEmptyCollection(phaseConfigList_)) {
-            phaseConfigList_ = Arrays.asList(
-                    new ConstructionHeuristicPhaseConfig<>(),
-                    new LocalSearchPhaseConfig<>());
+            phaseConfigList_ = Arrays.asList(new ConstructionHeuristicPhaseConfig(), new LocalSearchPhaseConfig());
         }
         List<Phase<Solution_>> phaseList = new ArrayList<>(phaseConfigList_.size());
         int phaseIndex = 0;

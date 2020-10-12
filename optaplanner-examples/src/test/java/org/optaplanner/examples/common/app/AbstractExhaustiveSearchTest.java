@@ -42,9 +42,9 @@ public abstract class AbstractExhaustiveSearchTest<Solution_>
             CommonApp<Solution_> commonApp,
             ExhaustiveSearchType exhaustiveSearchType) {
         String solverConfigResource = commonApp.getSolverConfigResource();
-        SolverConfig<Solution_> solverConfig = SolverConfig.createFromXmlResource(solverConfigResource);
-        solverConfig.setTerminationConfig(new TerminationConfig<>());
-        ExhaustiveSearchPhaseConfig<Solution_> exhaustiveSearchPhaseConfig = new ExhaustiveSearchPhaseConfig<>();
+        SolverConfig solverConfig = SolverConfig.createFromXmlResource(solverConfigResource);
+        solverConfig.setTerminationConfig(new TerminationConfig());
+        ExhaustiveSearchPhaseConfig exhaustiveSearchPhaseConfig = new ExhaustiveSearchPhaseConfig();
         exhaustiveSearchPhaseConfig.setExhaustiveSearchType(exhaustiveSearchType);
         solverConfig.setPhaseConfigList(Arrays.asList(exhaustiveSearchPhaseConfig));
         return SolverFactory.create(solverConfig);

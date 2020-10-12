@@ -32,13 +32,13 @@ import org.optaplanner.core.impl.score.definition.ScoreDefinition;
 
 public class TerminationFactory<Solution_> {
 
-    public static <Solution_> TerminationFactory<Solution_> create(TerminationConfig<Solution_> terminationConfig) {
+    public static <Solution_> TerminationFactory<Solution_> create(TerminationConfig terminationConfig) {
         return new TerminationFactory<>(terminationConfig);
     }
 
-    private final TerminationConfig<Solution_> terminationConfig;
+    private final TerminationConfig terminationConfig;
 
-    private TerminationFactory(TerminationConfig<Solution_> terminationConfig) {
+    private TerminationFactory(TerminationConfig terminationConfig) {
         this.terminationConfig = terminationConfig;
     }
 
@@ -55,8 +55,8 @@ public class TerminationFactory<Solution_> {
      * @param configPolicy never null
      * @return sometimes null
      */
-    public <Score_ extends Score<Score_>> Termination<Solution_>
-            buildTermination(HeuristicConfigPolicy<Solution_> configPolicy) {
+    public <Score_ extends Score<Score_>> Termination<Solution_> buildTermination(
+            HeuristicConfigPolicy<Solution_> configPolicy) {
         List<Termination<Solution_>> terminationList = new ArrayList<>();
         if (terminationConfig.getTerminationClass() != null) {
             Termination<Solution_> termination =
@@ -136,7 +136,8 @@ public class TerminationFactory<Solution_> {
         }
 
         return terminationConfig.getTerminationConfigList().stream()
-                .map(config -> TerminationFactory.create(config).buildTermination(configPolicy))
+                .map(config -> TerminationFactory.<Solution_> create(config)
+                        .buildTermination(configPolicy))
                 .filter(Objects::nonNull)
                 .collect(Collectors.toList());
     }

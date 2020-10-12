@@ -61,13 +61,13 @@ import org.optaplanner.core.impl.heuristic.selector.value.mimic.ValueMimicRecord
 import org.optaplanner.core.impl.heuristic.selector.value.nearby.NearEntityNearbyValueSelector;
 
 public class ValueSelectorFactory<Solution_>
-        extends AbstractSelectorFactory<Solution_, ValueSelectorConfig<Solution_>> {
+        extends AbstractSelectorFactory<Solution_, ValueSelectorConfig> {
 
-    public static <Solution_> ValueSelectorFactory<Solution_> create(ValueSelectorConfig<Solution_> valueSelectorConfig) {
+    public static <Solution_> ValueSelectorFactory<Solution_> create(ValueSelectorConfig valueSelectorConfig) {
         return new ValueSelectorFactory<>(valueSelectorConfig);
     }
 
-    public ValueSelectorFactory(ValueSelectorConfig<Solution_> valueSelectorConfig) {
+    public ValueSelectorFactory(ValueSelectorConfig valueSelectorConfig) {
         super(valueSelectorConfig);
     }
 
@@ -471,7 +471,7 @@ public class ValueSelectorFactory<Solution_>
     }
 
     private ValueSelector<Solution_> applyNearbySelection(HeuristicConfigPolicy<Solution_> configPolicy,
-            NearbySelectionConfig<Solution_> nearbySelectionConfig, SelectionCacheType minimumCacheType,
+            NearbySelectionConfig nearbySelectionConfig, SelectionCacheType minimumCacheType,
             SelectionOrder resolvedSelectionOrder, ValueSelector<Solution_> valueSelector) {
         boolean randomSelection = resolvedSelectionOrder.toRandomSelectionBoolean();
         EntitySelectorFactory<Solution_> entitySelectorFactory =

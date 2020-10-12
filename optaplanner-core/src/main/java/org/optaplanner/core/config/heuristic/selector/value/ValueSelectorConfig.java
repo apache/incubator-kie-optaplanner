@@ -52,7 +52,7 @@ import org.optaplanner.core.impl.heuristic.selector.common.decorator.SelectionSo
         "probabilityWeightFactoryClass",
         "selectedCountLimit"
 })
-public class ValueSelectorConfig<Solution_> extends SelectorConfig<Solution_, ValueSelectorConfig<Solution_>> {
+public class ValueSelectorConfig extends SelectorConfig<ValueSelectorConfig> {
 
     @XmlAttribute
     protected String id = null;
@@ -67,7 +67,7 @@ public class ValueSelectorConfig<Solution_> extends SelectorConfig<Solution_, Va
     protected SelectionOrder selectionOrder = null;
 
     @XmlElement(name = "nearbySelection")
-    protected NearbySelectionConfig<Solution_> nearbySelectionConfig = null;
+    protected NearbySelectionConfig nearbySelectionConfig = null;
 
     protected Class<? extends SelectionFilter> filterClass = null;
 
@@ -88,7 +88,7 @@ public class ValueSelectorConfig<Solution_> extends SelectorConfig<Solution_, Va
         this.variableName = variableName;
     }
 
-    public ValueSelectorConfig(ValueSelectorConfig<Solution_> inheritedConfig) {
+    public ValueSelectorConfig(ValueSelectorConfig inheritedConfig) {
         if (inheritedConfig != null) {
             inherit(inheritedConfig);
         }
@@ -142,11 +142,11 @@ public class ValueSelectorConfig<Solution_> extends SelectorConfig<Solution_, Va
         this.selectionOrder = selectionOrder;
     }
 
-    public NearbySelectionConfig<Solution_> getNearbySelectionConfig() {
+    public NearbySelectionConfig getNearbySelectionConfig() {
         return nearbySelectionConfig;
     }
 
-    public void setNearbySelectionConfig(NearbySelectionConfig<Solution_> nearbySelectionConfig) {
+    public void setNearbySelectionConfig(NearbySelectionConfig nearbySelectionConfig) {
         this.nearbySelectionConfig = nearbySelectionConfig;
     }
 
@@ -216,7 +216,7 @@ public class ValueSelectorConfig<Solution_> extends SelectorConfig<Solution_, Va
     }
 
     @Override
-    public ValueSelectorConfig<Solution_> inherit(ValueSelectorConfig<Solution_> inheritedConfig) {
+    public ValueSelectorConfig inherit(ValueSelectorConfig inheritedConfig) {
         id = ConfigUtils.inheritOverwritableProperty(id, inheritedConfig.getId());
         mimicSelectorRef = ConfigUtils.inheritOverwritableProperty(mimicSelectorRef,
                 inheritedConfig.getMimicSelectorRef());
@@ -244,8 +244,8 @@ public class ValueSelectorConfig<Solution_> extends SelectorConfig<Solution_, Va
     }
 
     @Override
-    public ValueSelectorConfig<Solution_> copyConfig() {
-        return new ValueSelectorConfig<Solution_>().inherit(this);
+    public ValueSelectorConfig copyConfig() {
+        return new ValueSelectorConfig().inherit(this);
     }
 
     @Override

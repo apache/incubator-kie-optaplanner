@@ -45,7 +45,7 @@ class AcceptorFactoryTest {
 
     @Test
     <Solution_> void buildCompositeAcceptor() {
-        LocalSearchAcceptorConfig<Solution_> localSearchAcceptorConfig = new LocalSearchAcceptorConfig<Solution_>()
+        LocalSearchAcceptorConfig localSearchAcceptorConfig = new LocalSearchAcceptorConfig()
                 .withAcceptorTypeList(Arrays.asList(AcceptorType.values()))
                 .withEntityTabuSize(1)
                 .withFadingEntityTabuSize(1)
@@ -87,7 +87,7 @@ class AcceptorFactoryTest {
 
     @Test
     <Solution_> void noAcceptorConfigured_throwsException() {
-        AcceptorFactory<Solution_> acceptorFactory = AcceptorFactory.create(new LocalSearchAcceptorConfig<>());
+        AcceptorFactory<Solution_> acceptorFactory = AcceptorFactory.create(new LocalSearchAcceptorConfig());
         assertThatIllegalArgumentException().isThrownBy(() -> acceptorFactory.buildAcceptor(mock(HeuristicConfigPolicy.class)))
                 .withMessageContaining("The acceptor does not specify any acceptorType");
     }

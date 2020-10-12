@@ -35,9 +35,9 @@ import org.optaplanner.core.impl.heuristic.selector.value.chained.SubChainSelect
 import org.optaplanner.core.impl.heuristic.selector.value.chained.SubChainSelectorFactory;
 
 public class SubChainChangeMoveSelectorFactory<Solution_>
-        extends AbstractMoveSelectorFactory<Solution_, SubChainChangeMoveSelectorConfig<Solution_>> {
+        extends AbstractMoveSelectorFactory<Solution_, SubChainChangeMoveSelectorConfig> {
 
-    public SubChainChangeMoveSelectorFactory(SubChainChangeMoveSelectorConfig<Solution_> moveSelectorConfig) {
+    public SubChainChangeMoveSelectorFactory(SubChainChangeMoveSelectorConfig moveSelectorConfig) {
         super(moveSelectorConfig);
     }
 
@@ -47,17 +47,18 @@ public class SubChainChangeMoveSelectorFactory<Solution_>
         EntityDescriptor<Solution_> entityDescriptor =
                 config.getEntityClass() == null ? deduceEntityDescriptor(configPolicy.getSolutionDescriptor())
                         : deduceEntityDescriptor(configPolicy.getSolutionDescriptor(), config.getEntityClass());
-        SubChainSelectorConfig<Solution_> subChainSelectorConfig_ =
-                config.getSubChainSelectorConfig() == null ? new SubChainSelectorConfig<>()
+        SubChainSelectorConfig subChainSelectorConfig_ =
+                config.getSubChainSelectorConfig() == null ? new SubChainSelectorConfig()
                         : config.getSubChainSelectorConfig();
         SubChainSelector<Solution_> subChainSelector =
-                SubChainSelectorFactory.create(subChainSelectorConfig_).buildSubChainSelector(configPolicy, entityDescriptor,
-                        minimumCacheType, SelectionOrder.fromRandomSelectionBoolean(randomSelection));
-        ValueSelectorConfig<Solution_> valueSelectorConfig_ =
-                config.getValueSelectorConfig() == null ? new ValueSelectorConfig<>() : config.getValueSelectorConfig();
-        ValueSelector<Solution_> valueSelector =
-                ValueSelectorFactory.create(valueSelectorConfig_).buildValueSelector(configPolicy,
-                        entityDescriptor, minimumCacheType, SelectionOrder.fromRandomSelectionBoolean(randomSelection));
+                SubChainSelectorFactory.<Solution_> create(subChainSelectorConfig_)
+                        .buildSubChainSelector(configPolicy, entityDescriptor, minimumCacheType,
+                                SelectionOrder.fromRandomSelectionBoolean(randomSelection));
+        ValueSelectorConfig valueSelectorConfig_ =
+                config.getValueSelectorConfig() == null ? new ValueSelectorConfig() : config.getValueSelectorConfig();
+        ValueSelector<Solution_> valueSelector = ValueSelectorFactory.<Solution_> create(valueSelectorConfig_)
+                .buildValueSelector(configPolicy, entityDescriptor, minimumCacheType,
+                        SelectionOrder.fromRandomSelectionBoolean(randomSelection));
         if (!(valueSelector instanceof EntityIndependentValueSelector)) {
             throw new IllegalArgumentException("The moveSelectorConfig (" + config
                     + ") needs to be based on an EntityIndependentValueSelector (" + valueSelector + ")."

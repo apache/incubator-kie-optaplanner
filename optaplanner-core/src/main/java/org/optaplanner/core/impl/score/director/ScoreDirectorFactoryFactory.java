@@ -61,9 +61,9 @@ public class ScoreDirectorFactoryFactory<Solution_, Score_ extends Score<Score_>
     private static final String GENERATE_DROOLS_TEST_ON_ERROR_PROPERTY_NAME = "optaplanner.drools.generateTestOnError";
     private static final Logger logger = LoggerFactory.getLogger(ScoreDirectorFactoryFactory.class);
 
-    private final ScoreDirectorFactoryConfig<Solution_> config;
+    private final ScoreDirectorFactoryConfig config;
 
-    public ScoreDirectorFactoryFactory(ScoreDirectorFactoryConfig<Solution_> config) {
+    public ScoreDirectorFactoryFactory(ScoreDirectorFactoryConfig config) {
         this.config = config;
     }
 

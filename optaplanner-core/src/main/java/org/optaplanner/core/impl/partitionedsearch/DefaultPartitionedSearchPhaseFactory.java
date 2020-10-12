@@ -39,11 +39,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class DefaultPartitionedSearchPhaseFactory<Solution_>
-        extends AbstractPhaseFactory<Solution_, PartitionedSearchPhaseConfig<Solution_>> {
+        extends AbstractPhaseFactory<Solution_, PartitionedSearchPhaseConfig> {
 
     private static final Logger logger = LoggerFactory.getLogger(DefaultPartitionedSearchPhaseFactory.class);
 
-    public DefaultPartitionedSearchPhaseFactory(PartitionedSearchPhaseConfig<Solution_> phaseConfig) {
+    public DefaultPartitionedSearchPhaseFactory(PartitionedSearchPhaseConfig phaseConfig) {
         super(phaseConfig);
     }
 
@@ -60,9 +60,7 @@ public class DefaultPartitionedSearchPhaseFactory<Solution_>
                         phaseTermination, buildSolutionPartitioner(), threadFactory, resolvedActiveThreadCount);
         List<PhaseConfig> phaseConfigList_ = phaseConfig.getPhaseConfigList();
         if (ConfigUtils.isEmptyCollection(phaseConfigList_)) {
-            phaseConfigList_ = Arrays.asList(
-                    new ConstructionHeuristicPhaseConfig<>(),
-                    new LocalSearchPhaseConfig<>());
+            phaseConfigList_ = Arrays.asList(new ConstructionHeuristicPhaseConfig(), new LocalSearchPhaseConfig());
         }
         phase.setPhaseConfigList(phaseConfigList_);
         phase.setConfigPolicy(phaseConfigPolicy.createChildThreadConfigPolicy(ChildThreadType.PART_THREAD));

@@ -38,19 +38,19 @@ public class PooledEntityPlacerFactoryTest {
     public void unfoldNew() {
         SolutionDescriptor<TestdataSolution> solutionDescriptor = TestdataSolution.buildSolutionDescriptor();
 
-        ChangeMoveSelectorConfig<TestdataSolution> moveSelectorConfig = new ChangeMoveSelectorConfig<>();
-        moveSelectorConfig.setValueSelectorConfig(new ValueSelectorConfig<>("value"));
+        ChangeMoveSelectorConfig moveSelectorConfig = new ChangeMoveSelectorConfig();
+        moveSelectorConfig.setValueSelectorConfig(new ValueSelectorConfig("value"));
 
         HeuristicConfigPolicy<TestdataSolution> configPolicy = buildHeuristicConfigPolicy(solutionDescriptor);
-        PooledEntityPlacerConfig<TestdataSolution> placerConfig =
+        PooledEntityPlacerConfig placerConfig =
                 PooledEntityPlacerFactory.unfoldNew(configPolicy, moveSelectorConfig);
 
         assertThat(placerConfig.getMoveSelectorConfig())
                 .isNotNull()
                 .isExactlyInstanceOf(ChangeMoveSelectorConfig.class);
 
-        ChangeMoveSelectorConfig<TestdataSolution> changeMoveSelectorConfig =
-                (ChangeMoveSelectorConfig<TestdataSolution>) placerConfig.getMoveSelectorConfig();
+        ChangeMoveSelectorConfig changeMoveSelectorConfig =
+                (ChangeMoveSelectorConfig) placerConfig.getMoveSelectorConfig();
         assertThat(changeMoveSelectorConfig.getEntitySelectorConfig().getEntityClass()).isNull();
         assertThat(changeMoveSelectorConfig.getEntitySelectorConfig().getMimicSelectorRef())
                 .isEqualTo(TestdataEntity.class.getName());

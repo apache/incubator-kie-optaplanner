@@ -41,7 +41,7 @@ import org.optaplanner.core.impl.io.jaxb.adapter.JaxbLocaleAdapter;
         "solverRankingComparatorClass",
         "solverRankingWeightFactoryClass"
 })
-public class BenchmarkReportConfig<Solution_> extends AbstractConfig<Solution_, BenchmarkReportConfig<Solution_>> {
+public class BenchmarkReportConfig extends AbstractConfig<BenchmarkReportConfig> {
 
     @XmlJavaTypeAdapter(JaxbLocaleAdapter.class)
     private Locale locale = null;
@@ -52,7 +52,7 @@ public class BenchmarkReportConfig<Solution_> extends AbstractConfig<Solution_, 
     public BenchmarkReportConfig() {
     }
 
-    public BenchmarkReportConfig(BenchmarkReportConfig<Solution_> inheritedConfig) {
+    public BenchmarkReportConfig(BenchmarkReportConfig inheritedConfig) {
         inherit(inheritedConfig);
     }
 
@@ -159,7 +159,7 @@ public class BenchmarkReportConfig<Solution_> extends AbstractConfig<Solution_, 
     }
 
     @Override
-    public BenchmarkReportConfig<Solution_> inherit(BenchmarkReportConfig<Solution_> inheritedConfig) {
+    public BenchmarkReportConfig inherit(BenchmarkReportConfig inheritedConfig) {
         locale = ConfigUtils.inheritOverwritableProperty(locale, inheritedConfig.getLocale());
         solverRankingType = ConfigUtils.inheritOverwritableProperty(solverRankingType,
                 inheritedConfig.getSolverRankingType());
@@ -171,8 +171,8 @@ public class BenchmarkReportConfig<Solution_> extends AbstractConfig<Solution_, 
     }
 
     @Override
-    public BenchmarkReportConfig<Solution_> copyConfig() {
-        return new BenchmarkReportConfig<Solution_>().inherit(this);
+    public BenchmarkReportConfig copyConfig() {
+        return new BenchmarkReportConfig().inherit(this);
     }
 
 }

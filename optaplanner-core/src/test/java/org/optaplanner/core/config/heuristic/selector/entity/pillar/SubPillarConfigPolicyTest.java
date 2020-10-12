@@ -28,7 +28,7 @@ public class SubPillarConfigPolicyTest {
 
     @Test
     public void withoutSubpillars() {
-        SubPillarConfigPolicy<?> policy = SubPillarConfigPolicy.withoutSubpillars();
+        SubPillarConfigPolicy policy = SubPillarConfigPolicy.withoutSubpillars();
         assertSoftly(softly -> {
             softly.assertThat(policy.isSubPillarEnabled()).isFalse();
             softly.assertThat(policy.getEntityComparator()).isNull();
@@ -39,7 +39,7 @@ public class SubPillarConfigPolicyTest {
 
     @Test
     public void withLimitedSubpillars() {
-        SubPillarConfigPolicy<?> policy = SubPillarConfigPolicy.withSubpillars(2, 10);
+        SubPillarConfigPolicy policy = SubPillarConfigPolicy.withSubpillars(2, 10);
         assertSoftly(softly -> {
             softly.assertThat(policy.isSubPillarEnabled()).isTrue();
             softly.assertThat(policy.getEntityComparator()).isNull();
@@ -50,7 +50,7 @@ public class SubPillarConfigPolicyTest {
 
     @Test
     public void unlimitedSequential() {
-        SubPillarConfigPolicy<?> policy = SubPillarConfigPolicy.sequentialUnlimited(mock(Comparator.class));
+        SubPillarConfigPolicy policy = SubPillarConfigPolicy.sequentialUnlimited(mock(Comparator.class));
         assertSoftly(softly -> {
             softly.assertThat(policy.isSubPillarEnabled()).isTrue();
             softly.assertThat(policy.getEntityComparator()).isNotNull();
@@ -61,7 +61,7 @@ public class SubPillarConfigPolicyTest {
 
     @Test
     public void sequential() {
-        SubPillarConfigPolicy<?> policy = SubPillarConfigPolicy.sequential(3, 5, mock(Comparator.class));
+        SubPillarConfigPolicy policy = SubPillarConfigPolicy.sequential(3, 5, mock(Comparator.class));
         assertSoftly(softly -> {
             softly.assertThat(policy.isSubPillarEnabled()).isTrue();
             softly.assertThat(policy.getEntityComparator()).isNotNull();

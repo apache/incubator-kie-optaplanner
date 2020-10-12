@@ -30,7 +30,7 @@ import org.optaplanner.core.impl.io.jaxb.adapter.JaxbCustomPropertiesAdapter;
         "moveListFactoryClass",
         "moveListFactoryCustomProperties"
 })
-public class MoveListFactoryConfig<Solution_> extends MoveSelectorConfig<Solution_, MoveListFactoryConfig<Solution_>> {
+public class MoveListFactoryConfig extends MoveSelectorConfig<MoveListFactoryConfig> {
 
     public static final String XML_ELEMENT_NAME = "moveListFactory";
 
@@ -60,7 +60,7 @@ public class MoveListFactoryConfig<Solution_> extends MoveSelectorConfig<Solutio
     // ************************************************************************
 
     @Override
-    public MoveListFactoryConfig<Solution_> inherit(MoveListFactoryConfig<Solution_> inheritedConfig) {
+    public MoveListFactoryConfig inherit(MoveListFactoryConfig inheritedConfig) {
         super.inherit(inheritedConfig);
         moveListFactoryClass = ConfigUtils.inheritOverwritableProperty(
                 moveListFactoryClass, inheritedConfig.getMoveListFactoryClass());
@@ -70,8 +70,8 @@ public class MoveListFactoryConfig<Solution_> extends MoveSelectorConfig<Solutio
     }
 
     @Override
-    public MoveListFactoryConfig<Solution_> copyConfig() {
-        return new MoveListFactoryConfig<Solution_>().inherit(this);
+    public MoveListFactoryConfig copyConfig() {
+        return new MoveListFactoryConfig().inherit(this);
     }
 
     @Override

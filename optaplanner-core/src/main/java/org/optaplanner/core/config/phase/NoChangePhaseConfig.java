@@ -16,19 +16,19 @@
 
 package org.optaplanner.core.config.phase;
 
-public class NoChangePhaseConfig<Solution_> extends PhaseConfig<Solution_, NoChangePhaseConfig<Solution_>> {
+public class NoChangePhaseConfig extends PhaseConfig<NoChangePhaseConfig> {
 
     public static final String XML_ELEMENT_NAME = "noChangePhase";
 
     @Override
-    public NoChangePhaseConfig<Solution_> inherit(NoChangePhaseConfig<Solution_> inheritedConfig) {
+    public NoChangePhaseConfig inherit(NoChangePhaseConfig inheritedConfig) {
         super.inherit(inheritedConfig);
         return this;
     }
 
     @Override
-    public NoChangePhaseConfig<Solution_> copyConfig() {
-        return new NoChangePhaseConfig<Solution_>().inherit(this);
+    public NoChangePhaseConfig copyConfig() {
+        return new NoChangePhaseConfig().inherit(this);
     }
 
 }

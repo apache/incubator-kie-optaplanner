@@ -236,7 +236,7 @@ class MoveSelectorFactoryTest extends AbstractSelectorFactoryTest {
         assertThat(sortingMoveSelector).isExactlyInstanceOf(ProbabilityMoveSelector.class);
     }
 
-    static class DummyMoveSelectorConfig extends MoveSelectorConfig<TestdataSolution, DummyMoveSelectorConfig> {
+    static class DummyMoveSelectorConfig extends MoveSelectorConfig<DummyMoveSelectorConfig> {
 
         @Override
         public DummyMoveSelectorConfig copyConfig() {

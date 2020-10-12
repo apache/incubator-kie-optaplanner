@@ -27,8 +27,7 @@ import org.optaplanner.core.config.util.ConfigUtils;
         "finalistPodiumType",
         "breakTieRandomly"
 })
-public class LocalSearchForagerConfig<Solution_>
-        extends AbstractConfig<Solution_, LocalSearchForagerConfig<Solution_>> {
+public class LocalSearchForagerConfig extends AbstractConfig<LocalSearchForagerConfig> {
 
     protected LocalSearchPickEarlyType pickEarlyType = null;
     protected Integer acceptedCountLimit = null;
@@ -71,28 +70,28 @@ public class LocalSearchForagerConfig<Solution_>
     // With methods
     // ************************************************************************
 
-    public LocalSearchForagerConfig<Solution_> withPickEarlyType(LocalSearchPickEarlyType pickEarlyType) {
+    public LocalSearchForagerConfig withPickEarlyType(LocalSearchPickEarlyType pickEarlyType) {
         this.pickEarlyType = pickEarlyType;
         return this;
     }
 
-    public LocalSearchForagerConfig<Solution_> withAcceptedCountLimit(int acceptedCountLimit) {
+    public LocalSearchForagerConfig withAcceptedCountLimit(int acceptedCountLimit) {
         this.acceptedCountLimit = acceptedCountLimit;
         return this;
     }
 
-    public LocalSearchForagerConfig<Solution_> withFinalistPodiumType(FinalistPodiumType finalistPodiumType) {
+    public LocalSearchForagerConfig withFinalistPodiumType(FinalistPodiumType finalistPodiumType) {
         this.finalistPodiumType = finalistPodiumType;
         return this;
     }
 
-    public LocalSearchForagerConfig<Solution_> withBreakTieRandomly(boolean breakTieRandomly) {
+    public LocalSearchForagerConfig withBreakTieRandomly(boolean breakTieRandomly) {
         this.breakTieRandomly = breakTieRandomly;
         return this;
     }
 
     @Override
-    public LocalSearchForagerConfig<Solution_> inherit(LocalSearchForagerConfig<Solution_> inheritedConfig) {
+    public LocalSearchForagerConfig inherit(LocalSearchForagerConfig inheritedConfig) {
         pickEarlyType = ConfigUtils.inheritOverwritableProperty(pickEarlyType,
                 inheritedConfig.getPickEarlyType());
         acceptedCountLimit = ConfigUtils.inheritOverwritableProperty(acceptedCountLimit,
@@ -105,8 +104,8 @@ public class LocalSearchForagerConfig<Solution_>
     }
 
     @Override
-    public LocalSearchForagerConfig<Solution_> copyConfig() {
-        return new LocalSearchForagerConfig<Solution_>().inherit(this);
+    public LocalSearchForagerConfig copyConfig() {
+        return new LocalSearchForagerConfig().inherit(this);
     }
 
 }

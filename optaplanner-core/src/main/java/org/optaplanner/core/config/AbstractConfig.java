@@ -27,10 +27,10 @@ import javax.xml.bind.annotation.XmlAccessorType;
  * so all non-static fields should be null by default.
  * Using the config class to build a runtime class, must not alter the config class's XML/JSON output.
  *
- * @param <C> the same class as the implementing subclass
+ * @param <Config_> the same class as the implementing subclass
  */
 @XmlAccessorType(XmlAccessType.FIELD) // Applies to all subclasses.
-public abstract class AbstractConfig<Solution_, C extends AbstractConfig<Solution_, C>> {
+public abstract class AbstractConfig<Config_ extends AbstractConfig<Config_>> {
 
     /**
      * Inherits each property of the {@code inheritedConfig} unless that property (or a semantic alternative)
@@ -42,14 +42,14 @@ public abstract class AbstractConfig<Solution_, C extends AbstractConfig<Solutio
      * @param inheritedConfig never null
      * @return this
      */
-    public abstract C inherit(C inheritedConfig);
+    public abstract Config_ inherit(Config_ inheritedConfig);
 
     /**
      * Typically implemented by constructing a new instance and calling {@link #inherit(AbstractConfig)} on it
      *
      * @return new instance
      */
-    public abstract C copyConfig();
+    public abstract Config_ copyConfig();
 
     @Override
     public String toString() {
