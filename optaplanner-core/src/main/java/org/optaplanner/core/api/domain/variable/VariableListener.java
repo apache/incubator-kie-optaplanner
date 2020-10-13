@@ -89,6 +89,7 @@ public interface VariableListener<Solution_, Entity_> extends Closeable {
     /**
      * Called when the entire working solution changes.
      * At this point, implementations should clear state, if any.
+     * 
      * @param scoreDirector never null
      */
     default void resetWorkingSolution(ScoreDirector<Solution_> scoreDirector) {

@@ -69,7 +69,8 @@ public class TestdataExtendedShadowedChildEntity extends TestdataExtendedShadowe
             implements VariableListener<TestdataExtendedShadowedSolution, TestdataExtendedShadowedParentEntity> {
 
         @Override
-        public void beforeEntityAdded(ScoreDirector<TestdataExtendedShadowedSolution> scoreDirector, TestdataExtendedShadowedParentEntity testdataExtendedShadowedParentEntity) {
+        public void beforeEntityAdded(ScoreDirector<TestdataExtendedShadowedSolution> scoreDirector,
+                TestdataExtendedShadowedParentEntity testdataExtendedShadowedParentEntity) {
             // Do nothing.
         }
 
@@ -80,7 +81,8 @@ public class TestdataExtendedShadowedChildEntity extends TestdataExtendedShadowe
         }
 
         @Override
-        public void beforeVariableChanged(ScoreDirector<TestdataExtendedShadowedSolution> scoreDirector, TestdataExtendedShadowedParentEntity testdataExtendedShadowedParentEntity) {
+        public void beforeVariableChanged(ScoreDirector<TestdataExtendedShadowedSolution> scoreDirector,
+                TestdataExtendedShadowedParentEntity testdataExtendedShadowedParentEntity) {
             // Do nothing.
         }
 
@@ -91,12 +93,14 @@ public class TestdataExtendedShadowedChildEntity extends TestdataExtendedShadowe
         }
 
         @Override
-        public void beforeEntityRemoved(ScoreDirector<TestdataExtendedShadowedSolution> scoreDirector, TestdataExtendedShadowedParentEntity testdataExtendedShadowedParentEntity) {
+        public void beforeEntityRemoved(ScoreDirector<TestdataExtendedShadowedSolution> scoreDirector,
+                TestdataExtendedShadowedParentEntity testdataExtendedShadowedParentEntity) {
             // Do nothing.
         }
 
         @Override
-        public void afterEntityRemoved(ScoreDirector<TestdataExtendedShadowedSolution> scoreDirector, TestdataExtendedShadowedParentEntity testdataExtendedShadowedParentEntity) {
+        public void afterEntityRemoved(ScoreDirector<TestdataExtendedShadowedSolution> scoreDirector,
+                TestdataExtendedShadowedParentEntity testdataExtendedShadowedParentEntity) {
             // Do nothing.
         }
 

@@ -82,7 +82,8 @@ public class TestdataCorruptedShadowedEntity extends TestdataObject {
             implements VariableListener<TestdataCorruptedShadowedSolution, TestdataCorruptedShadowedEntity> {
 
         @Override
-        public void beforeEntityAdded(ScoreDirector<TestdataCorruptedShadowedSolution> scoreDirector, TestdataCorruptedShadowedEntity testdataCorruptedShadowedEntity) {
+        public void beforeEntityAdded(ScoreDirector<TestdataCorruptedShadowedSolution> scoreDirector,
+                TestdataCorruptedShadowedEntity testdataCorruptedShadowedEntity) {
             // Do nothing.
         }
 
@@ -93,7 +94,8 @@ public class TestdataCorruptedShadowedEntity extends TestdataObject {
         }
 
         @Override
-        public void beforeVariableChanged(ScoreDirector<TestdataCorruptedShadowedSolution> scoreDirector, TestdataCorruptedShadowedEntity testdataCorruptedShadowedEntity) {
+        public void beforeVariableChanged(ScoreDirector<TestdataCorruptedShadowedSolution> scoreDirector,
+                TestdataCorruptedShadowedEntity testdataCorruptedShadowedEntity) {
             // Do nothing.
         }
 
@@ -104,12 +106,14 @@ public class TestdataCorruptedShadowedEntity extends TestdataObject {
         }
 
         @Override
-        public void beforeEntityRemoved(ScoreDirector<TestdataCorruptedShadowedSolution> scoreDirector, TestdataCorruptedShadowedEntity testdataCorruptedShadowedEntity) {
+        public void beforeEntityRemoved(ScoreDirector<TestdataCorruptedShadowedSolution> scoreDirector,
+                TestdataCorruptedShadowedEntity testdataCorruptedShadowedEntity) {
             // Do nothing.
         }
 
         @Override
-        public void afterEntityRemoved(ScoreDirector<TestdataCorruptedShadowedSolution> scoreDirector, TestdataCorruptedShadowedEntity testdataCorruptedShadowedEntity) {
+        public void afterEntityRemoved(ScoreDirector<TestdataCorruptedShadowedSolution> scoreDirector,
+                TestdataCorruptedShadowedEntity testdataCorruptedShadowedEntity) {
             // Do nothing.
         }
 

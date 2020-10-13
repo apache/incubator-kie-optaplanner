@@ -18,8 +18,8 @@ package org.optaplanner.core.impl.domain.variable.listener.support;
 
 import java.util.Objects;
 
-import org.optaplanner.core.impl.domain.variable.descriptor.ShadowVariableDescriptor;
 import org.optaplanner.core.api.domain.variable.VariableListener;
+import org.optaplanner.core.impl.domain.variable.descriptor.ShadowVariableDescriptor;
 
 public class VariableListenerNotification {
 

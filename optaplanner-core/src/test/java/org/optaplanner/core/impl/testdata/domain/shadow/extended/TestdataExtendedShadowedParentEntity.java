@@ -103,7 +103,8 @@ public class TestdataExtendedShadowedParentEntity extends TestdataObject {
             implements VariableListener<TestdataExtendedShadowedSolution, TestdataExtendedShadowedParentEntity> {
 
         @Override
-        public void beforeEntityAdded(ScoreDirector<TestdataExtendedShadowedSolution> scoreDirector, TestdataExtendedShadowedParentEntity testdataExtendedShadowedParentEntity) {
+        public void beforeEntityAdded(ScoreDirector<TestdataExtendedShadowedSolution> scoreDirector,
+                TestdataExtendedShadowedParentEntity testdataExtendedShadowedParentEntity) {
             // Do nothing.
         }
 
@@ -114,7 +115,8 @@ public class TestdataExtendedShadowedParentEntity extends TestdataObject {
         }
 
         @Override
-        public void beforeVariableChanged(ScoreDirector<TestdataExtendedShadowedSolution> scoreDirector, TestdataExtendedShadowedParentEntity testdataExtendedShadowedParentEntity) {
+        public void beforeVariableChanged(ScoreDirector<TestdataExtendedShadowedSolution> scoreDirector,
+                TestdataExtendedShadowedParentEntity testdataExtendedShadowedParentEntity) {
             // Do nothing.
         }
 
@@ -125,12 +127,14 @@ public class TestdataExtendedShadowedParentEntity extends TestdataObject {
         }
 
         @Override
-        public void beforeEntityRemoved(ScoreDirector<TestdataExtendedShadowedSolution> scoreDirector, TestdataExtendedShadowedParentEntity testdataExtendedShadowedParentEntity) {
+        public void beforeEntityRemoved(ScoreDirector<TestdataExtendedShadowedSolution> scoreDirector,
+                TestdataExtendedShadowedParentEntity testdataExtendedShadowedParentEntity) {
             // Do nothing.
         }
 
         @Override
-        public void afterEntityRemoved(ScoreDirector<TestdataExtendedShadowedSolution> scoreDirector, TestdataExtendedShadowedParentEntity testdataExtendedShadowedParentEntity) {
+        public void afterEntityRemoved(ScoreDirector<TestdataExtendedShadowedSolution> scoreDirector,
+                TestdataExtendedShadowedParentEntity testdataExtendedShadowedParentEntity) {
             // Do nothing.
         }
 
@@ -148,7 +152,8 @@ public class TestdataExtendedShadowedParentEntity extends TestdataObject {
             implements VariableListener<TestdataExtendedShadowedSolution, TestdataExtendedShadowedChildEntity> {
 
         @Override
-        public void beforeEntityAdded(ScoreDirector<TestdataExtendedShadowedSolution> scoreDirector, TestdataExtendedShadowedChildEntity testdataExtendedShadowedChildEntity) {
+        public void beforeEntityAdded(ScoreDirector<TestdataExtendedShadowedSolution> scoreDirector,
+                TestdataExtendedShadowedChildEntity testdataExtendedShadowedChildEntity) {
             // Do nothing.
         }
 
@@ -159,7 +164,8 @@ public class TestdataExtendedShadowedParentEntity extends TestdataObject {
         }
 
         @Override
-        public void beforeVariableChanged(ScoreDirector<TestdataExtendedShadowedSolution> scoreDirector, TestdataExtendedShadowedChildEntity testdataExtendedShadowedChildEntity) {
+        public void beforeVariableChanged(ScoreDirector<TestdataExtendedShadowedSolution> scoreDirector,
+                TestdataExtendedShadowedChildEntity testdataExtendedShadowedChildEntity) {
             // Do nothing.
         }
 
@@ -170,12 +176,14 @@ public class TestdataExtendedShadowedParentEntity extends TestdataObject {
         }
 
         @Override
-        public void beforeEntityRemoved(ScoreDirector<TestdataExtendedShadowedSolution> scoreDirector, TestdataExtendedShadowedChildEntity testdataExtendedShadowedChildEntity) {
+        public void beforeEntityRemoved(ScoreDirector<TestdataExtendedShadowedSolution> scoreDirector,
+                TestdataExtendedShadowedChildEntity testdataExtendedShadowedChildEntity) {
             // Do nothing.
         }
 
         @Override
-        public void afterEntityRemoved(ScoreDirector<TestdataExtendedShadowedSolution> scoreDirector, TestdataExtendedShadowedChildEntity testdataExtendedShadowedChildEntity) {
+        public void afterEntityRemoved(ScoreDirector<TestdataExtendedShadowedSolution> scoreDirector,
+                TestdataExtendedShadowedChildEntity testdataExtendedShadowedChildEntity) {
             // Do nothing.
         }
 

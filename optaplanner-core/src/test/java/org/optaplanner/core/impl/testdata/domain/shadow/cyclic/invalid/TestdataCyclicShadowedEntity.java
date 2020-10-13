@@ -113,7 +113,8 @@ public class TestdataCyclicShadowedEntity extends TestdataObject {
             implements VariableListener<TestdataCyclicShadowedSolution, TestdataCyclicShadowedEntity> {
 
         @Override
-        public void beforeEntityAdded(ScoreDirector<TestdataCyclicShadowedSolution> scoreDirector, TestdataCyclicShadowedEntity testdataCyclicShadowedEntity) {
+        public void beforeEntityAdded(ScoreDirector<TestdataCyclicShadowedSolution> scoreDirector,
+                TestdataCyclicShadowedEntity testdataCyclicShadowedEntity) {
             // Do nothing.
         }
 
@@ -124,7 +125,8 @@ public class TestdataCyclicShadowedEntity extends TestdataObject {
         }
 
         @Override
-        public void beforeVariableChanged(ScoreDirector<TestdataCyclicShadowedSolution> scoreDirector, TestdataCyclicShadowedEntity testdataCyclicShadowedEntity) {
+        public void beforeVariableChanged(ScoreDirector<TestdataCyclicShadowedSolution> scoreDirector,
+                TestdataCyclicShadowedEntity testdataCyclicShadowedEntity) {
             // Do nothing.
         }
 
@@ -135,12 +137,14 @@ public class TestdataCyclicShadowedEntity extends TestdataObject {
         }
 
         @Override
-        public void beforeEntityRemoved(ScoreDirector<TestdataCyclicShadowedSolution> scoreDirector, TestdataCyclicShadowedEntity testdataCyclicShadowedEntity) {
+        public void beforeEntityRemoved(ScoreDirector<TestdataCyclicShadowedSolution> scoreDirector,
+                TestdataCyclicShadowedEntity testdataCyclicShadowedEntity) {
             // Do nothing.
         }
 
         @Override
-        public void afterEntityRemoved(ScoreDirector<TestdataCyclicShadowedSolution> scoreDirector, TestdataCyclicShadowedEntity testdataCyclicShadowedEntity) {
+        public void afterEntityRemoved(ScoreDirector<TestdataCyclicShadowedSolution> scoreDirector,
+                TestdataCyclicShadowedEntity testdataCyclicShadowedEntity) {
             // Do nothing.
         }
 
@@ -158,7 +162,8 @@ public class TestdataCyclicShadowedEntity extends TestdataObject {
             implements VariableListener<TestdataCyclicShadowedSolution, TestdataCyclicShadowedEntity> {
 
         @Override
-        public void beforeEntityAdded(ScoreDirector<TestdataCyclicShadowedSolution> scoreDirector, TestdataCyclicShadowedEntity testdataCyclicShadowedEntity) {
+        public void beforeEntityAdded(ScoreDirector<TestdataCyclicShadowedSolution> scoreDirector,
+                TestdataCyclicShadowedEntity testdataCyclicShadowedEntity) {
             // Do nothing.
         }
 
@@ -169,7 +174,8 @@ public class TestdataCyclicShadowedEntity extends TestdataObject {
         }
 
         @Override
-        public void beforeVariableChanged(ScoreDirector<TestdataCyclicShadowedSolution> scoreDirector, TestdataCyclicShadowedEntity testdataCyclicShadowedEntity) {
+        public void beforeVariableChanged(ScoreDirector<TestdataCyclicShadowedSolution> scoreDirector,
+                TestdataCyclicShadowedEntity testdataCyclicShadowedEntity) {
             // Do nothing.
         }
 
@@ -180,12 +186,14 @@ public class TestdataCyclicShadowedEntity extends TestdataObject {
         }
 
         @Override
-        public void beforeEntityRemoved(ScoreDirector<TestdataCyclicShadowedSolution> scoreDirector, TestdataCyclicShadowedEntity testdataCyclicShadowedEntity) {
+        public void beforeEntityRemoved(ScoreDirector<TestdataCyclicShadowedSolution> scoreDirector,
+                TestdataCyclicShadowedEntity testdataCyclicShadowedEntity) {
             // Do nothing.
         }
 
         @Override
-        public void afterEntityRemoved(ScoreDirector<TestdataCyclicShadowedSolution> scoreDirector, TestdataCyclicShadowedEntity testdataCyclicShadowedEntity) {
+        public void afterEntityRemoved(ScoreDirector<TestdataCyclicShadowedSolution> scoreDirector,
+                TestdataCyclicShadowedEntity testdataCyclicShadowedEntity) {
             // Do nothing.
         }
 
@@ -203,7 +211,8 @@ public class TestdataCyclicShadowedEntity extends TestdataObject {
             implements VariableListener<TestdataCyclicShadowedSolution, TestdataCyclicShadowedEntity> {
 
         @Override
-        public void beforeEntityAdded(ScoreDirector<TestdataCyclicShadowedSolution> scoreDirector, TestdataCyclicShadowedEntity testdataCyclicShadowedEntity) {
+        public void beforeEntityAdded(ScoreDirector<TestdataCyclicShadowedSolution> scoreDirector,
+                TestdataCyclicShadowedEntity testdataCyclicShadowedEntity) {
             // Do nothing.
         }
 
@@ -214,7 +223,8 @@ public class TestdataCyclicShadowedEntity extends TestdataObject {
         }
 
         @Override
-        public void beforeVariableChanged(ScoreDirector<TestdataCyclicShadowedSolution> scoreDirector, TestdataCyclicShadowedEntity testdataCyclicShadowedEntity) {
+        public void beforeVariableChanged(ScoreDirector<TestdataCyclicShadowedSolution> scoreDirector,
+                TestdataCyclicShadowedEntity testdataCyclicShadowedEntity) {
             // Do nothing.
         }
 
@@ -225,12 +235,14 @@ public class TestdataCyclicShadowedEntity extends TestdataObject {
         }
 
         @Override
-        public void beforeEntityRemoved(ScoreDirector<TestdataCyclicShadowedSolution> scoreDirector, TestdataCyclicShadowedEntity testdataCyclicShadowedEntity) {
+        public void beforeEntityRemoved(ScoreDirector<TestdataCyclicShadowedSolution> scoreDirector,
+                TestdataCyclicShadowedEntity testdataCyclicShadowedEntity) {
             // Do nothing.
         }
 
         @Override
-        public void afterEntityRemoved(ScoreDirector<TestdataCyclicShadowedSolution> scoreDirector, TestdataCyclicShadowedEntity testdataCyclicShadowedEntity) {
+        public void afterEntityRemoved(ScoreDirector<TestdataCyclicShadowedSolution> scoreDirector,
+                TestdataCyclicShadowedEntity testdataCyclicShadowedEntity) {
             // Do nothing.
         }
 

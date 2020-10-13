@@ -102,7 +102,8 @@ public class TestdataCyclicReferencedShadowedEntity extends TestdataObject {
             implements VariableListener<TestdataCyclicReferencedShadowedSolution, TestdataCyclicReferencedShadowedEntity> {
 
         @Override
-        public void beforeEntityAdded(ScoreDirector<TestdataCyclicReferencedShadowedSolution> scoreDirector, TestdataCyclicReferencedShadowedEntity testdataCyclicReferencedShadowedEntity) {
+        public void beforeEntityAdded(ScoreDirector<TestdataCyclicReferencedShadowedSolution> scoreDirector,
+                TestdataCyclicReferencedShadowedEntity testdataCyclicReferencedShadowedEntity) {
             // Do nothing.
         }
 
@@ -113,7 +114,8 @@ public class TestdataCyclicReferencedShadowedEntity extends TestdataObject {
         }
 
         @Override
-        public void beforeVariableChanged(ScoreDirector<TestdataCyclicReferencedShadowedSolution> scoreDirector, TestdataCyclicReferencedShadowedEntity testdataCyclicReferencedShadowedEntity) {
+        public void beforeVariableChanged(ScoreDirector<TestdataCyclicReferencedShadowedSolution> scoreDirector,
+                TestdataCyclicReferencedShadowedEntity testdataCyclicReferencedShadowedEntity) {
             // Do nothing.
         }
 
@@ -124,12 +126,14 @@ public class TestdataCyclicReferencedShadowedEntity extends TestdataObject {
         }
 
         @Override
-        public void beforeEntityRemoved(ScoreDirector<TestdataCyclicReferencedShadowedSolution> scoreDirector, TestdataCyclicReferencedShadowedEntity testdataCyclicReferencedShadowedEntity) {
+        public void beforeEntityRemoved(ScoreDirector<TestdataCyclicReferencedShadowedSolution> scoreDirector,
+                TestdataCyclicReferencedShadowedEntity testdataCyclicReferencedShadowedEntity) {
             // Do nothing.
         }
 
         @Override
-        public void afterEntityRemoved(ScoreDirector<TestdataCyclicReferencedShadowedSolution> scoreDirector, TestdataCyclicReferencedShadowedEntity testdataCyclicReferencedShadowedEntity) {
+        public void afterEntityRemoved(ScoreDirector<TestdataCyclicReferencedShadowedSolution> scoreDirector,
+                TestdataCyclicReferencedShadowedEntity testdataCyclicReferencedShadowedEntity) {
             // Do nothing.
         }
 

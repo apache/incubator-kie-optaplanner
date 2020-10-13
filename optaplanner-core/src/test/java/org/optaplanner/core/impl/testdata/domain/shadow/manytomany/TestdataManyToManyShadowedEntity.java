@@ -104,7 +104,8 @@ public class TestdataManyToManyShadowedEntity extends TestdataObject {
             implements VariableListener<TestdataManyToManyShadowedSolution, TestdataManyToManyShadowedEntity> {
 
         @Override
-        public void beforeEntityAdded(ScoreDirector<TestdataManyToManyShadowedSolution> scoreDirector, TestdataManyToManyShadowedEntity testdataManyToManyShadowedEntity) {
+        public void beforeEntityAdded(ScoreDirector<TestdataManyToManyShadowedSolution> scoreDirector,
+                TestdataManyToManyShadowedEntity testdataManyToManyShadowedEntity) {
             // Do nothing.
         }
 
@@ -115,7 +116,8 @@ public class TestdataManyToManyShadowedEntity extends TestdataObject {
         }
 
         @Override
-        public void beforeVariableChanged(ScoreDirector<TestdataManyToManyShadowedSolution> scoreDirector, TestdataManyToManyShadowedEntity testdataManyToManyShadowedEntity) {
+        public void beforeVariableChanged(ScoreDirector<TestdataManyToManyShadowedSolution> scoreDirector,
+                TestdataManyToManyShadowedEntity testdataManyToManyShadowedEntity) {
             // Do nothing.
         }
 
@@ -126,12 +128,14 @@ public class TestdataManyToManyShadowedEntity extends TestdataObject {
         }
 
         @Override
-        public void beforeEntityRemoved(ScoreDirector<TestdataManyToManyShadowedSolution> scoreDirector, TestdataManyToManyShadowedEntity testdataManyToManyShadowedEntity) {
+        public void beforeEntityRemoved(ScoreDirector<TestdataManyToManyShadowedSolution> scoreDirector,
+                TestdataManyToManyShadowedEntity testdataManyToManyShadowedEntity) {
             // Do nothing.
         }
 
         @Override
-        public void afterEntityRemoved(ScoreDirector<TestdataManyToManyShadowedSolution> scoreDirector, TestdataManyToManyShadowedEntity testdataManyToManyShadowedEntity) {
+        public void afterEntityRemoved(ScoreDirector<TestdataManyToManyShadowedSolution> scoreDirector,
+                TestdataManyToManyShadowedEntity testdataManyToManyShadowedEntity) {
             // Do nothing.
         }
 
