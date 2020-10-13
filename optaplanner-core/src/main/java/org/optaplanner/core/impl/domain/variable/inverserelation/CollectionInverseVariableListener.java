@@ -20,7 +20,7 @@ import java.util.Collection;
 
 import org.optaplanner.core.api.score.director.ScoreDirector;
 import org.optaplanner.core.impl.domain.variable.descriptor.VariableDescriptor;
-import org.optaplanner.core.impl.domain.variable.listener.VariableListener;
+import org.optaplanner.core.api.domain.variable.VariableListener;
 import org.optaplanner.core.impl.score.director.InnerScoreDirector;
 
 public class CollectionInverseVariableListener<Solution_>

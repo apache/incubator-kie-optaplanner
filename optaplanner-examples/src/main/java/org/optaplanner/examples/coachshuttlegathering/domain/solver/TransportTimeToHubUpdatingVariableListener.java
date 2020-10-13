@@ -20,7 +20,7 @@ import java.util.List;
 import java.util.Objects;
 
 import org.optaplanner.core.api.score.director.ScoreDirector;
-import org.optaplanner.core.impl.domain.variable.listener.VariableListener;
+import org.optaplanner.core.api.domain.variable.VariableListener;
 import org.optaplanner.examples.coachshuttlegathering.domain.Bus;
 import org.optaplanner.examples.coachshuttlegathering.domain.BusOrStop;
 import org.optaplanner.examples.coachshuttlegathering.domain.BusStop;

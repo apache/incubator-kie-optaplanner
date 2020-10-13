@@ -16,6 +16,7 @@
 
 package org.optaplanner.core.impl.domain.variable.listener;
 
+import org.optaplanner.core.api.domain.variable.VariableListener;
 import org.optaplanner.core.api.score.director.ScoreDirector;
 
 public abstract class VariableListenerAdapter<Solution_, Entity_> implements VariableListener<Solution_, Entity_> {
