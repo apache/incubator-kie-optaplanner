@@ -23,10 +23,8 @@ import org.optaplanner.core.impl.domain.variable.supply.Supply;
 /**
  * Used to externalize data for a {@link Supply} from the domain model itself.
  */
-public interface StatefulVariableListener<Solution_, Entity_> extends VariableListener<Solution_, Entity_> {
+public interface SourcedVariableListener<Solution_, Entity_> extends VariableListener<Solution_, Entity_>, Supply {
 
     VariableDescriptor<Solution_> getSourceVariableDescriptor();
-
-    void resetWorkingSolution(ScoreDirector<Solution_> scoreDirector);
 
 }

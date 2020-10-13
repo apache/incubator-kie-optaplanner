@@ -30,7 +30,7 @@ import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.core.impl.domain.variable.descriptor.GenuineVariableDescriptor;
 import org.optaplanner.core.impl.domain.variable.descriptor.ShadowVariableDescriptor;
 import org.optaplanner.core.impl.domain.variable.descriptor.VariableDescriptor;
-import org.optaplanner.core.impl.domain.variable.listener.StatefulVariableListener;
+import org.optaplanner.core.impl.domain.variable.listener.SourcedVariableListener;
 import org.optaplanner.core.impl.domain.variable.listener.VariableListener;
 import org.optaplanner.core.impl.domain.variable.supply.Demand;
 import org.optaplanner.core.impl.domain.variable.supply.Supply;
@@ -71,26 +71,30 @@ public class VariableListenerSupport<Solution_> implements SupplyManager<Solutio
         for (EntityDescriptor<Solution_> entityDescriptor : scoreDirector.getSolutionDescriptor().getEntityDescriptors()) {
             for (ShadowVariableDescriptor<Solution_> shadowVariableDescriptor : entityDescriptor
                     .getDeclaredShadowVariableDescriptors()) {
-                if (shadowVariableDescriptor.hasVariableListener(scoreDirector)) {
-                    VariableListener<Solution_, ?> variableListener =
-                            shadowVariableDescriptor.buildVariableListener(scoreDirector);
-                    supplyMap.put(shadowVariableDescriptor.getProvidedDemand(), variableListener);
-                    int globalOrder = shadowVariableDescriptor.getGlobalShadowOrder();
-                    if (nextGlobalOrder <= globalOrder) {
-                        nextGlobalOrder = globalOrder + 1;
-                    }
-                    VariableListenerNotifiable notifiable = new VariableListenerNotifiable(variableListener, globalOrder);
-                    for (VariableDescriptor<Solution_> source : shadowVariableDescriptor.getSourceVariableDescriptorList()) {
-                        List<VariableListenerNotifiable> variableNotifiableList = sourceVariableToNotifiableMap.get(source);
-                        variableNotifiableList.add(notifiable);
-                        List<VariableListenerNotifiable> entityNotifiableList = sourceEntityToNotifiableMap
-                                .get(source.getEntityDescriptor());
-                        if (!entityNotifiableList.contains(notifiable)) {
-                            entityNotifiableList.add(notifiable);
-                        }
-                    }
-                    notifiableList.add(notifiable);
+                if (!shadowVariableDescriptor.hasVariableListener(scoreDirector)) {
+                    continue;
                 }
+                VariableListener<Solution_, ?> variableListener =
+                        shadowVariableDescriptor.buildVariableListener(scoreDirector);
+                if (variableListener instanceof SourcedVariableListener) {
+                    // Non-sourced variable listeners (ie. ones provided by the user) can never be a supply.
+                    supplyMap.put(shadowVariableDescriptor.getProvidedDemand(), (Supply) variableListener);
+                }
+                int globalOrder = shadowVariableDescriptor.getGlobalShadowOrder();
+                if (nextGlobalOrder <= globalOrder) {
+                    nextGlobalOrder = globalOrder + 1;
+                }
+                VariableListenerNotifiable notifiable = new VariableListenerNotifiable(variableListener, globalOrder);
+                for (VariableDescriptor<Solution_> source : shadowVariableDescriptor.getSourceVariableDescriptorList()) {
+                    List<VariableListenerNotifiable> variableNotifiableList = sourceVariableToNotifiableMap.get(source);
+                    variableNotifiableList.add(notifiable);
+                    List<VariableListenerNotifiable> entityNotifiableList = sourceEntityToNotifiableMap
+                            .get(source.getEntityDescriptor());
+                    if (!entityNotifiableList.contains(notifiable)) {
+                        entityNotifiableList.add(notifiable);
+                    }
+                }
+                notifiableList.add(notifiable);
             }
         }
         Collections.sort(notifiableList);
@@ -101,9 +105,9 @@ public class VariableListenerSupport<Solution_> implements SupplyManager<Solutio
         Supply_ supply = (Supply_) supplyMap.get(demand);
         if (supply == null) {
             supply = demand.createExternalizedSupply(scoreDirector);
-            if (supply instanceof StatefulVariableListener) {
-                StatefulVariableListener<Solution_, ?> variableListener =
-                        (StatefulVariableListener<Solution_, ?>) supply;
+            if (supply instanceof SourcedVariableListener) {
+                SourcedVariableListener<Solution_, ?> variableListener =
+                        (SourcedVariableListener<Solution_, ?>) supply;
                 // An external ScoreDirector can be created before the working solution is set
                 if (scoreDirector.getWorkingSolution() != null) {
                     variableListener.resetWorkingSolution(scoreDirector);
@@ -133,9 +137,7 @@ public class VariableListenerSupport<Solution_> implements SupplyManager<Solutio
     public void resetWorkingSolution() {
         for (VariableListenerNotifiable notifiable : notifiableList) {
             VariableListener<Solution_, ?> variableListener = notifiable.getVariableListener();
-            if (variableListener instanceof StatefulVariableListener) {
-                ((StatefulVariableListener<Solution_, ?>) variableListener).resetWorkingSolution(scoreDirector);
-            }
+            variableListener.resetWorkingSolution(scoreDirector);
         }
     }
 

@@ -26,13 +26,13 @@ import java.util.Set;
 import org.optaplanner.core.api.score.director.ScoreDirector;
 import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
 import org.optaplanner.core.impl.domain.variable.descriptor.VariableDescriptor;
-import org.optaplanner.core.impl.domain.variable.listener.StatefulVariableListener;
+import org.optaplanner.core.impl.domain.variable.listener.SourcedVariableListener;
 
 /**
  * Alternative to {@link CollectionInverseVariableListener}.
  */
 public class ExternalizedCollectionInverseVariableSupply<Solution_>
-        implements StatefulVariableListener<Solution_, Object>, CollectionInverseVariableSupply {
+        implements SourcedVariableListener<Solution_, Object>, CollectionInverseVariableSupply {
 
     protected final VariableDescriptor<Solution_> sourceVariableDescriptor;
 
