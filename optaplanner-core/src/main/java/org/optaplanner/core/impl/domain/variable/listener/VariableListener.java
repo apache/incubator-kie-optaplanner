@@ -16,6 +16,8 @@
 
 package org.optaplanner.core.impl.domain.variable.listener;
 
+import java.io.Closeable;
+
 import org.optaplanner.core.api.score.director.ScoreDirector;
 import org.optaplanner.core.impl.domain.variable.supply.Supply;
 
@@ -30,7 +32,7 @@ import org.optaplanner.core.impl.domain.variable.supply.Supply;
  * Each {@link ScoreDirector} has a different {@link VariableListener} instance, so it can be stateful.
  * If it is stateful, it must implement {@link StatefulVariableListener}.
  */
-public interface VariableListener<Solution_, Entity_> extends Supply {
+public interface VariableListener<Solution_, Entity_> extends Closeable, Supply {
 
     /**
      * When set to {@code true}, this has a slight performance loss in Planner.
@@ -79,4 +81,11 @@ public interface VariableListener<Solution_, Entity_> extends Supply {
      */
     void afterEntityRemoved(ScoreDirector<Solution_> scoreDirector, Entity_ entity);
 
+    /**
+     * Called before this {@link VariableListener} is thrown away and not used anymore.
+     */
+    @Override
+    default void close() {
+        // No need to do anything.
+    }
 }

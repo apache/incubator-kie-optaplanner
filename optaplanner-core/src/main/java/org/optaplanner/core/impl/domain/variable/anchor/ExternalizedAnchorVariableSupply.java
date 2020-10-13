@@ -59,7 +59,7 @@ public class ExternalizedAnchorVariableSupply<Solution_> implements StatefulVari
     }
 
     @Override
-    public void clearWorkingSolution(ScoreDirector<Solution_> scoreDirector) {
+    public void close() {
         anchorMap = null;
     }
 

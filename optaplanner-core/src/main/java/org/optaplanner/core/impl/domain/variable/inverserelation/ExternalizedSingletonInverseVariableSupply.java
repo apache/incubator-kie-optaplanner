@@ -55,7 +55,7 @@ public class ExternalizedSingletonInverseVariableSupply<Solution_>
     }
 
     @Override
-    public void clearWorkingSolution(ScoreDirector<Solution_> scoreDirector) {
+    public void close() {
         inverseEntityMap = null;
     }
 

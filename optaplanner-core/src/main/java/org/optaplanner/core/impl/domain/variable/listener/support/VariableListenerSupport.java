@@ -142,9 +142,7 @@ public class VariableListenerSupport<Solution_> implements SupplyManager<Solutio
     public void clearWorkingSolution() {
         for (VariableListenerNotifiable notifiable : notifiableList) {
             VariableListener<Solution_, ?> variableListener = notifiable.getVariableListener();
-            if (variableListener instanceof StatefulVariableListener) {
-                ((StatefulVariableListener<Solution_, ?>) variableListener).clearWorkingSolution(scoreDirector);
-            }
+            variableListener.close();
         }
     }
 

@@ -58,7 +58,7 @@ public class ExternalizedCollectionInverseVariableSupply<Solution_>
     }
 
     @Override
-    public void clearWorkingSolution(ScoreDirector<Solution_> scoreDirector) {
+    public void close() {
         inverseEntitySetMap = null;
     }
 
