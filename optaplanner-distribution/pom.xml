@@ -180,15 +180,6 @@
       <artifactId>optaplanner-examples</artifactId>
       <classifier>sources</classifier>
     </dependency>
-    <dependency>
-      <groupId>com.example</groupId>
-      <artifactId>optaplanner-spring-boot-school-timetabling-quickstart</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>com.example</groupId>
-      <artifactId>optaplanner-spring-boot-school-timetabling-quickstart</artifactId>
-      <classifier>sources</classifier>
-    </dependency>
 
     <!-- Documentation -->
     <dependency>
