@@ -18,7 +18,6 @@ package org.optaplanner.core.api.domain.variable;
 
 import java.io.Closeable;
 
-import org.optaplanner.core.impl.domain.variable.supply.Supply;
 import org.optaplanner.core.impl.score.director.ScoreDirector;
 
 /**

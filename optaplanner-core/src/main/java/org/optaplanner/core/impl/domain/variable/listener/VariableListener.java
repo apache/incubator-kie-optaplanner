@@ -16,9 +16,6 @@
 
 package org.optaplanner.core.impl.domain.variable.listener;
 
-import java.io.Closeable;
-import java.io.IOException;
-
 import org.optaplanner.core.impl.domain.variable.supply.Supply;
 import org.optaplanner.core.impl.score.director.ScoreDirector;
 

@@ -16,10 +16,8 @@
 
 package org.optaplanner.core.impl.domain.variable.listener;
 
-import org.kie.internal.runtime.StatefulKnowledgeSession;
 import org.optaplanner.core.impl.domain.variable.descriptor.VariableDescriptor;
 import org.optaplanner.core.impl.domain.variable.supply.Supply;
-import org.optaplanner.core.impl.score.director.ScoreDirector;
 
 /**
  * Often used to externalize data for a {@link Supply} from the domain model itself.

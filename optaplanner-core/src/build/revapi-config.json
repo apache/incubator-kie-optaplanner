@@ -28,55 +28,87 @@
       "_comment": "Changes between 7.44.0.Final and the current branch. These changes are desired and thus ignored.",
       "ignore": [
         {
-           "code": "java.method.returnTypeTypeParametersChanged",
-           "old": "method java.lang.Class<? extends org.optaplanner.core.impl.score.director.easy.EasyScoreCalculator> org.optaplanner.core.config.score.director.ScoreDirectorFactoryConfig::getEasyScoreCalculatorClass()",
-           "new": "method java.lang.Class<? extends org.optaplanner.core.api.score.calculator.EasyScoreCalculator> org.optaplanner.core.config.score.director.ScoreDirectorFactoryConfig::getEasyScoreCalculatorClass()",
-           "oldType": "java.lang.Class<? extends org.optaplanner.core.impl.score.director.easy.EasyScoreCalculator>",
-           "newType": "java.lang.Class<? extends org.optaplanner.core.api.score.calculator.EasyScoreCalculator>",
-           "package": "org.optaplanner.core.config.score.director",
-           "classSimpleName": "ScoreDirectorFactoryConfig",
-           "methodName": "getEasyScoreCalculatorClass",
-           "elementKind": "method",
-           "justification": "Score calculators moved package."
-         },
-         {
-           "code": "java.method.returnTypeTypeParametersChanged",
-           "old": "method java.lang.Class<? extends org.optaplanner.core.impl.score.director.incremental.IncrementalScoreCalculator> org.optaplanner.core.config.score.director.ScoreDirectorFactoryConfig::getIncrementalScoreCalculatorClass()",
-           "new": "method java.lang.Class<? extends org.optaplanner.core.api.score.calculator.IncrementalScoreCalculator> org.optaplanner.core.config.score.director.ScoreDirectorFactoryConfig::getIncrementalScoreCalculatorClass()",
-           "oldType": "java.lang.Class<? extends org.optaplanner.core.impl.score.director.incremental.IncrementalScoreCalculator>",
-           "newType": "java.lang.Class<? extends org.optaplanner.core.api.score.calculator.IncrementalScoreCalculator>",
-           "package": "org.optaplanner.core.config.score.director",
-           "classSimpleName": "ScoreDirectorFactoryConfig",
-           "methodName": "getIncrementalScoreCalculatorClass",
-           "elementKind": "method",
-           "justification": "Score calculators moved package."
-         },
-         {
-           "code": "java.method.parameterTypeParameterChanged",
-           "old": "parameter void org.optaplanner.core.config.score.director.ScoreDirectorFactoryConfig::setEasyScoreCalculatorClass(===java.lang.Class<? extends org.optaplanner.core.impl.score.director.easy.EasyScoreCalculator>===)",
-           "new": "parameter void org.optaplanner.core.config.score.director.ScoreDirectorFactoryConfig::setEasyScoreCalculatorClass(===java.lang.Class<? extends org.optaplanner.core.api.score.calculator.EasyScoreCalculator>===)",
-           "oldType": "java.lang.Class<? extends org.optaplanner.core.impl.score.director.easy.EasyScoreCalculator>",
-           "newType": "java.lang.Class<? extends org.optaplanner.core.api.score.calculator.EasyScoreCalculator>",
-           "package": "org.optaplanner.core.config.score.director",
-           "classSimpleName": "ScoreDirectorFactoryConfig",
-           "methodName": "setEasyScoreCalculatorClass",
-           "parameterIndex": "0",
-           "elementKind": "parameter",
-           "justification": "Score calculators moved package."
-         },
-         {
-           "code": "java.method.parameterTypeParameterChanged",
-           "old": "parameter void org.optaplanner.core.config.score.director.ScoreDirectorFactoryConfig::setIncrementalScoreCalculatorClass(===java.lang.Class<? extends org.optaplanner.core.impl.score.director.incremental.IncrementalScoreCalculator>===)",
-           "new": "parameter void org.optaplanner.core.config.score.director.ScoreDirectorFactoryConfig::setIncrementalScoreCalculatorClass(===java.lang.Class<? extends org.optaplanner.core.api.score.calculator.IncrementalScoreCalculator>===)",
-           "oldType": "java.lang.Class<? extends org.optaplanner.core.impl.score.director.incremental.IncrementalScoreCalculator>",
-           "newType": "java.lang.Class<? extends org.optaplanner.core.api.score.calculator.IncrementalScoreCalculator>",
-           "package": "org.optaplanner.core.config.score.director",
-           "classSimpleName": "ScoreDirectorFactoryConfig",
-           "methodName": "setIncrementalScoreCalculatorClass",
-           "parameterIndex": "0",
-           "elementKind": "parameter",
-           "justification": "Score calculators moved package."
-         }
+          "code": "java.method.returnTypeTypeParametersChanged",
+          "old": "method java.lang.Class<? extends org.optaplanner.core.impl.score.director.easy.EasyScoreCalculator> org.optaplanner.core.config.score.director.ScoreDirectorFactoryConfig::getEasyScoreCalculatorClass()",
+          "new": "method java.lang.Class<? extends org.optaplanner.core.api.score.calculator.EasyScoreCalculator> org.optaplanner.core.config.score.director.ScoreDirectorFactoryConfig::getEasyScoreCalculatorClass()",
+          "oldType": "java.lang.Class<? extends org.optaplanner.core.impl.score.director.easy.EasyScoreCalculator>",
+          "newType": "java.lang.Class<? extends org.optaplanner.core.api.score.calculator.EasyScoreCalculator>",
+          "package": "org.optaplanner.core.config.score.director",
+          "classSimpleName": "ScoreDirectorFactoryConfig",
+          "methodName": "getEasyScoreCalculatorClass",
+          "elementKind": "method",
+          "justification": "Score calculators moved package."
+        },
+        {
+          "code": "java.method.returnTypeTypeParametersChanged",
+          "old": "method java.lang.Class<? extends org.optaplanner.core.impl.score.director.incremental.IncrementalScoreCalculator> org.optaplanner.core.config.score.director.ScoreDirectorFactoryConfig::getIncrementalScoreCalculatorClass()",
+          "new": "method java.lang.Class<? extends org.optaplanner.core.api.score.calculator.IncrementalScoreCalculator> org.optaplanner.core.config.score.director.ScoreDirectorFactoryConfig::getIncrementalScoreCalculatorClass()",
+          "oldType": "java.lang.Class<? extends org.optaplanner.core.impl.score.director.incremental.IncrementalScoreCalculator>",
+          "newType": "java.lang.Class<? extends org.optaplanner.core.api.score.calculator.IncrementalScoreCalculator>",
+          "package": "org.optaplanner.core.config.score.director",
+          "classSimpleName": "ScoreDirectorFactoryConfig",
+          "methodName": "getIncrementalScoreCalculatorClass",
+          "elementKind": "method",
+          "justification": "Score calculators moved package."
+        },
+        {
+          "code": "java.method.parameterTypeParameterChanged",
+          "old": "parameter void org.optaplanner.core.config.score.director.ScoreDirectorFactoryConfig::setEasyScoreCalculatorClass(===java.lang.Class<? extends org.optaplanner.core.impl.score.director.easy.EasyScoreCalculator>===)",
+          "new": "parameter void org.optaplanner.core.config.score.director.ScoreDirectorFactoryConfig::setEasyScoreCalculatorClass(===java.lang.Class<? extends org.optaplanner.core.api.score.calculator.EasyScoreCalculator>===)",
+          "oldType": "java.lang.Class<? extends org.optaplanner.core.impl.score.director.easy.EasyScoreCalculator>",
+          "newType": "java.lang.Class<? extends org.optaplanner.core.api.score.calculator.EasyScoreCalculator>",
+          "package": "org.optaplanner.core.config.score.director",
+          "classSimpleName": "ScoreDirectorFactoryConfig",
+          "methodName": "setEasyScoreCalculatorClass",
+          "parameterIndex": "0",
+          "elementKind": "parameter",
+          "justification": "Score calculators moved package."
+        },
+        {
+          "code": "java.method.parameterTypeParameterChanged",
+          "old": "parameter void org.optaplanner.core.config.score.director.ScoreDirectorFactoryConfig::setIncrementalScoreCalculatorClass(===java.lang.Class<? extends org.optaplanner.core.impl.score.director.incremental.IncrementalScoreCalculator>===)",
+          "new": "parameter void org.optaplanner.core.config.score.director.ScoreDirectorFactoryConfig::setIncrementalScoreCalculatorClass(===java.lang.Class<? extends org.optaplanner.core.api.score.calculator.IncrementalScoreCalculator>===)",
+          "oldType": "java.lang.Class<? extends org.optaplanner.core.impl.score.director.incremental.IncrementalScoreCalculator>",
+          "newType": "java.lang.Class<? extends org.optaplanner.core.api.score.calculator.IncrementalScoreCalculator>",
+          "package": "org.optaplanner.core.config.score.director",
+          "classSimpleName": "ScoreDirectorFactoryConfig",
+          "methodName": "setIncrementalScoreCalculatorClass",
+          "parameterIndex": "0",
+          "elementKind": "parameter",
+          "justification": "Score calculators moved package."
+        },
+        {
+          "code": "java.class.noLongerImplementsInterface",
+          "old": "interface org.optaplanner.core.api.domain.variable.CustomShadowVariable.NullVariableListener",
+          "new": "interface org.optaplanner.core.api.domain.variable.CustomShadowVariable.NullVariableListener",
+          "interface": "org.optaplanner.core.impl.domain.variable.listener.VariableListener",
+          "package": "org.optaplanner.core.api.domain.variable",
+          "classSimpleName": "NullVariableListener",
+          "elementKind": "interface",
+          "justification": "VariableListener moved to public API."
+        },
+        {
+          "code": "java.class.noLongerImplementsInterface",
+          "old": "interface org.optaplanner.core.api.domain.variable.CustomShadowVariable.NullVariableListener",
+          "new": "interface org.optaplanner.core.api.domain.variable.CustomShadowVariable.NullVariableListener",
+          "interface": "org.optaplanner.core.impl.domain.variable.supply.Supply",
+          "package": "org.optaplanner.core.api.domain.variable",
+          "classSimpleName": "NullVariableListener",
+          "elementKind": "interface",
+          "justification": "VariableListener moved to public API."
+        },
+        {
+          "code": "java.method.returnTypeTypeParametersChanged",
+          "old": "method java.lang.Class<? extends org.optaplanner.core.impl.domain.variable.listener.VariableListener> org.optaplanner.core.api.domain.variable.CustomShadowVariable::variableListenerClass()",
+          "new": "method java.lang.Class<? extends org.optaplanner.core.api.domain.variable.VariableListener> org.optaplanner.core.api.domain.variable.CustomShadowVariable::variableListenerClass()",
+          "oldType": "java.lang.Class<? extends org.optaplanner.core.impl.domain.variable.listener.VariableListener>",
+          "newType": "java.lang.Class<? extends org.optaplanner.core.api.domain.variable.VariableListener>",
+          "package": "org.optaplanner.core.api.domain.variable",
+          "classSimpleName": "CustomShadowVariable",
+          "methodName": "variableListenerClass",
+          "elementKind": "method",
+          "justification": "VariableListener moved to public API."
+        }
       ]
     }
   }

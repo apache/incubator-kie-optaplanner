@@ -34,7 +34,8 @@ public interface StatefulVariableListener<Entity_> extends VariableListener<Enti
     /**
      *
      * @param scoreDirector
-     * @deprecated Overrides {@link org.optaplanner.core.api.domain.variable.VariableListener#resetWorkingSolution(ScoreDirector)}.
+     * @deprecated Overrides
+     *             {@link org.optaplanner.core.api.domain.variable.VariableListener#resetWorkingSolution(ScoreDirector)}.
      */
     @Override
     @Deprecated(/* forRemoval = true */)
