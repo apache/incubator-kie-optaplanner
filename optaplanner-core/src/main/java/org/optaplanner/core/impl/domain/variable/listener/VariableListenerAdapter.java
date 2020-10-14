@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,35 +18,37 @@ package org.optaplanner.core.impl.domain.variable.listener;
 
 import org.optaplanner.core.impl.score.director.ScoreDirector;
 
-public abstract class VariableListenerAdapter<Entity_> implements VariableListener<Entity_> {
+@Deprecated
+public abstract class VariableListenerAdapter<Entity_>
+        implements org.optaplanner.core.api.domain.variable.VariableListener<Object, Entity_> {
 
     @Override
-    public void beforeEntityAdded(ScoreDirector scoreDirector, Entity_ entity) {
+    public void beforeEntityAdded(ScoreDirector<Object> scoreDirector, Entity_ entity) {
         // Hook method
     }
 
     @Override
-    public void afterEntityAdded(ScoreDirector scoreDirector, Entity_ entity) {
+    public void afterEntityAdded(ScoreDirector<Object> scoreDirector, Entity_ entity) {
         // Hook method
     }
 
     @Override
-    public void beforeVariableChanged(ScoreDirector scoreDirector, Entity_ entity) {
+    public void beforeVariableChanged(ScoreDirector<Object> scoreDirector, Entity_ entity) {
         // Hook method
     }
 
     @Override
-    public void afterVariableChanged(ScoreDirector scoreDirector, Entity_ entity) {
+    public void afterVariableChanged(ScoreDirector<Object> scoreDirector, Entity_ entity) {
         // Hook method
     }
 
     @Override
-    public void beforeEntityRemoved(ScoreDirector scoreDirector, Entity_ entity) {
+    public void beforeEntityRemoved(ScoreDirector<Object> scoreDirector, Entity_ entity) {
         // Hook method
     }
 
     @Override
-    public void afterEntityRemoved(ScoreDirector scoreDirector, Entity_ entity) {
+    public void afterEntityRemoved(ScoreDirector<Object> scoreDirector, Entity_ entity) {
         // Hook method
     }
 

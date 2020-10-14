@@ -24,13 +24,13 @@ import java.util.List;
 import java.util.Map;
 
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
+import org.optaplanner.core.api.domain.variable.VariableListener;
 import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.core.impl.domain.variable.descriptor.GenuineVariableDescriptor;
 import org.optaplanner.core.impl.domain.variable.descriptor.ShadowVariableDescriptor;
 import org.optaplanner.core.impl.domain.variable.descriptor.VariableDescriptor;
 import org.optaplanner.core.impl.domain.variable.listener.StatefulVariableListener;
-import org.optaplanner.core.impl.domain.variable.listener.VariableListener;
 import org.optaplanner.core.impl.domain.variable.supply.Demand;
 import org.optaplanner.core.impl.domain.variable.supply.Supply;
 import org.optaplanner.core.impl.domain.variable.supply.SupplyManager;
@@ -63,7 +63,7 @@ public class VariableListenerSupport<Solution_> implements SupplyManager {
     public void linkVariableListeners() {
         notificationQueuesAreEmpty = true;
         for (EntityDescriptor<Solution_> entityDescriptor : scoreDirector.getSolutionDescriptor().getEntityDescriptors()) {
-            for (VariableDescriptor variableDescriptor : entityDescriptor.getDeclaredVariableDescriptors()) {
+            for (VariableDescriptor<Solution_> variableDescriptor : entityDescriptor.getDeclaredVariableDescriptors()) {
                 sourceVariableToNotifiableMap.put(variableDescriptor, new ArrayList<>());
             }
             sourceEntityToNotifiableMap.put(entityDescriptor, new ArrayList<>());
@@ -72,8 +72,11 @@ public class VariableListenerSupport<Solution_> implements SupplyManager {
             for (ShadowVariableDescriptor<Solution_> shadowVariableDescriptor : entityDescriptor
                     .getDeclaredShadowVariableDescriptors()) {
                 if (shadowVariableDescriptor.hasVariableListener(scoreDirector)) {
-                    VariableListener variableListener = shadowVariableDescriptor.buildVariableListener(scoreDirector);
-                    supplyMap.put(shadowVariableDescriptor.getProvidedDemand(), variableListener);
+                    VariableListener<Solution_, ?> variableListener =
+                            shadowVariableDescriptor.buildVariableListener(scoreDirector);
+                    if (variableListener instanceof Supply) {
+                        supplyMap.put(shadowVariableDescriptor.getProvidedDemand(), (Supply) variableListener);
+                    }
                     int globalOrder = shadowVariableDescriptor.getGlobalShadowOrder();
                     if (nextGlobalOrder <= globalOrder) {
                         nextGlobalOrder = globalOrder + 1;

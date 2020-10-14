@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 
-package org.optaplanner.core.impl.domain.variable.listener;
+package org.optaplanner.core.api.domain.variable;
 
 import java.io.Closeable;
-import java.io.IOException;
 
+import org.optaplanner.core.impl.domain.variable.listener.StatefulVariableListener;
 import org.optaplanner.core.impl.domain.variable.supply.Supply;
 import org.optaplanner.core.impl.score.director.ScoreDirector;
 
@@ -33,9 +33,7 @@ import org.optaplanner.core.impl.score.director.ScoreDirector;
  * Each {@link ScoreDirector} has a different {@link VariableListener} instance, so it can be stateful.
  * If it is stateful, it must implement {@link StatefulVariableListener}.
  */
-@Deprecated
-public interface VariableListener<Entity_>
-        extends org.optaplanner.core.api.domain.variable.VariableListener<Object, Entity_>, Supply {
+public interface VariableListener<Solution_, Entity_> extends Closeable {
 
     /**
      * When set to {@code true}, this has a slight performance loss in Planner.
@@ -52,36 +50,45 @@ public interface VariableListener<Entity_>
      * @param scoreDirector never null
      * @param entity never null
      */
-    void beforeEntityAdded(ScoreDirector<Object> scoreDirector, Entity_ entity);
+    void beforeEntityAdded(ScoreDirector<Solution_> scoreDirector, Entity_ entity);
 
     /**
      * @param scoreDirector never null
      * @param entity never null
      */
-    void afterEntityAdded(ScoreDirector<Object> scoreDirector, Entity_ entity);
+    void afterEntityAdded(ScoreDirector<Solution_> scoreDirector, Entity_ entity);
 
     /**
      * @param scoreDirector never null
      * @param entity never null
      */
-    void beforeVariableChanged(ScoreDirector<Object> scoreDirector, Entity_ entity);
+    void beforeVariableChanged(ScoreDirector<Solution_> scoreDirector, Entity_ entity);
 
     /**
      * @param scoreDirector never null
      * @param entity never null
      */
-    void afterVariableChanged(ScoreDirector<Object> scoreDirector, Entity_ entity);
+    void afterVariableChanged(ScoreDirector<Solution_> scoreDirector, Entity_ entity);
 
     /**
      * @param scoreDirector never null
      * @param entity never null
      */
-    void beforeEntityRemoved(ScoreDirector<Object> scoreDirector, Entity_ entity);
+    void beforeEntityRemoved(ScoreDirector<Solution_> scoreDirector, Entity_ entity);
 
     /**
      * @param scoreDirector never null
      * @param entity never null
      */
-    void afterEntityRemoved(ScoreDirector<Object> scoreDirector, Entity_ entity);
+    void afterEntityRemoved(ScoreDirector<Solution_> scoreDirector, Entity_ entity);
+
+    default void resetWorkingSolution(ScoreDirector<Solution_> scoreDirector) {
+        // No need to do anything for stateless variable listeners.
+    }
+
+    @Override
+    default void close() {
+        // No need to do anything for stateless variable listeners.
+    }
 
 }
