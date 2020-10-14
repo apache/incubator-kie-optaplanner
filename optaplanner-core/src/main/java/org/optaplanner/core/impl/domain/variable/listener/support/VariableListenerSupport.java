@@ -30,6 +30,7 @@ import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.core.impl.domain.variable.descriptor.GenuineVariableDescriptor;
 import org.optaplanner.core.impl.domain.variable.descriptor.ShadowVariableDescriptor;
 import org.optaplanner.core.impl.domain.variable.descriptor.VariableDescriptor;
+import org.optaplanner.core.impl.domain.variable.listener.SourcedVariableListener;
 import org.optaplanner.core.impl.domain.variable.listener.StatefulVariableListener;
 import org.optaplanner.core.impl.domain.variable.supply.Demand;
 import org.optaplanner.core.impl.domain.variable.supply.Supply;
@@ -103,12 +104,10 @@ public class VariableListenerSupport<Solution_> implements SupplyManager {
         S supply = (S) supplyMap.get(demand);
         if (supply == null) {
             supply = demand.createExternalizedSupply(scoreDirector);
-            if (supply instanceof StatefulVariableListener) {
-                StatefulVariableListener variableListener = (StatefulVariableListener) supply;
+            if (supply instanceof SourcedVariableListener) {
+                SourcedVariableListener variableListener = (SourcedVariableListener) supply;
                 // An external ScoreDirector can be created before the working solution is set
-                if (scoreDirector.getWorkingSolution() != null) {
-                    variableListener.resetWorkingSolution(scoreDirector);
-                }
+                variableListener.resetWorkingSolution(scoreDirector);
                 VariableDescriptor<Solution_> source = variableListener.getSourceVariableDescriptor();
                 VariableListenerNotifiable notifiable = new VariableListenerNotifiable(variableListener, nextGlobalOrder);
                 nextGlobalOrder++;
@@ -134,9 +133,7 @@ public class VariableListenerSupport<Solution_> implements SupplyManager {
     public void resetWorkingSolution() {
         for (VariableListenerNotifiable notifiable : notifiableList) {
             VariableListener variableListener = notifiable.getVariableListener();
-            if (variableListener instanceof StatefulVariableListener) {
-                ((StatefulVariableListener) variableListener).resetWorkingSolution(scoreDirector);
-            }
+            variableListener.resetWorkingSolution(scoreDirector);
         }
     }
 
@@ -145,6 +142,8 @@ public class VariableListenerSupport<Solution_> implements SupplyManager {
             VariableListener variableListener = notifiable.getVariableListener();
             if (variableListener instanceof StatefulVariableListener) {
                 ((StatefulVariableListener) variableListener).clearWorkingSolution(scoreDirector);
+            } else {
+                variableListener.close();
             }
         }
     }

@@ -18,7 +18,6 @@ package org.optaplanner.core.api.domain.variable;
 
 import java.io.Closeable;
 
-import org.optaplanner.core.impl.domain.variable.listener.StatefulVariableListener;
 import org.optaplanner.core.impl.domain.variable.supply.Supply;
 import org.optaplanner.core.impl.score.director.ScoreDirector;
 
@@ -31,7 +30,6 @@ import org.optaplanner.core.impl.score.director.ScoreDirector;
  * (for example: an arrivalTime change affects all trailing entities too).
  * <p>
  * Each {@link ScoreDirector} has a different {@link VariableListener} instance, so it can be stateful.
- * If it is stateful, it must implement {@link StatefulVariableListener}.
  */
 public interface VariableListener<Solution_, Entity_> extends Closeable {
 

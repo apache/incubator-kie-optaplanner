@@ -32,8 +32,10 @@ import org.optaplanner.core.impl.score.director.ScoreDirector;
  * <p>
  * Each {@link ScoreDirector} has a different {@link VariableListener} instance, so it can be stateful.
  * If it is stateful, it must implement {@link StatefulVariableListener}.
+ *
+ * @deprecated in favor of {@link org.optaplanner.core.api.domain.variable.VariableListener}
  */
-@Deprecated
+@Deprecated(/* forRemoval = true */)
 public interface VariableListener<Entity_>
         extends org.optaplanner.core.api.domain.variable.VariableListener<Object, Entity_>, Supply {
 
