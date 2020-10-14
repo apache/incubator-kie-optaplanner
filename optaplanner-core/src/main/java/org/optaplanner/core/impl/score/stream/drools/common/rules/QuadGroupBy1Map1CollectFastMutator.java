@@ -68,7 +68,7 @@ final class QuadGroupBy1Map1CollectFastMutator<A, B, C, D, NewA, NewB> extends A
         PatternDSL.PatternDef<NewA> newAPattern = pattern(newA);
         newFinishedExpressions.add(newAPattern);
         PatternDSL.PatternDef<NewB> newPrimaryPattern = pattern(newB);
-        return new TriRuleAssembler(ruleAssembler, ruleAssembler.getExpectedGroupByCount(), newFinishedExpressions,
+        return new BiRuleAssembler(ruleAssembler, ruleAssembler.getExpectedGroupByCount(), newFinishedExpressions,
                 Arrays.asList(newA, newB), singletonList(newPrimaryPattern), emptyMap());
     }
 }
