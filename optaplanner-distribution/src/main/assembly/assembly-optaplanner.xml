@@ -63,13 +63,26 @@
         <exclude>.git/**</exclude>
       </excludes>
     </fileSet>
+    <fileSet><!-- Note: going outside the module dir is bad, but it is not fetching generated files -->
+      <directory>../optaplanner-quickstarts/spring-boot-school-timetabling</directory>
+      <outputDirectory>quickstarts/spring-boot-school-timetabling</outputDirectory>
+      <excludes>
+        <exclude>target/**</exclude>
+        <exclude>local/**</exclude>
+        <exclude>.*/**</exclude>
+        <exclude>nbproject/**</exclude>
+        <exclude>*.ipr</exclude>
+        <exclude>*.iws</exclude>
+        <exclude>*.iml</exclude>
+        <exclude>.git/**</exclude>
+      </excludes>
+    </fileSet>
   </fileSets>
 
   <dependencySets>
     <dependencySet>
       <includes>
         <include>org.optaplanner:*:jar</include>
-        <include>com.example:optaplanner-spring-boot-school-timetabling-quickstart:jar</include>
       </includes>
       <excludes>
         <exclude>org.optaplanner:optaplanner-examples</exclude>
@@ -84,7 +97,6 @@
     <dependencySet>
       <includes>
         <include>org.optaplanner:*:jar:sources</include>
-        <include>com.example:optaplanner-spring-boot-school-timetabling-quickstart:jar:sources</include>
       </includes>
       <excludes>
         <exclude>org.optaplanner:optaplanner-examples:jar:sources</exclude>
