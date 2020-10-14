@@ -33,6 +33,7 @@ import org.drools.model.Variable;
 import org.drools.model.view.ViewItem;
 import org.optaplanner.core.api.score.stream.bi.BiConstraintCollector;
 import org.optaplanner.core.impl.score.stream.drools.bi.DroolsBiAccumulateFunction;
+import org.optaplanner.core.impl.score.stream.drools.common.BiTuple;
 
 class BiGroupBy1Map1CollectFastMutator<A, B, NewA, NewB> extends AbstractBiGroupByMutator {
 
@@ -50,10 +51,14 @@ class BiGroupBy1Map1CollectFastMutator<A, B, NewA, NewB> extends AbstractBiGroup
         ruleAssembler.applyFilterToLastPrimaryPattern();
         Variable<A> inputA = ruleAssembler.getVariable(0);
         Variable<B> inputB = ruleAssembler.getVariable(1);
+        Variable<BiTuple<A, B>> accumulateSource = ruleAssembler.createVariable(BiTuple.class, "source");
+        ruleAssembler.getLastPrimaryPattern()
+                .bind(accumulateSource, inputA, (b, a) -> new BiTuple<>(a, b));
         Variable<NewA> groupKey = ruleAssembler.createVariable("groupKey");
         Variable<NewB> output = ruleAssembler.createVariable("output");
         ViewItem groupByPattern = groupBy(getInnerAccumulatePattern(ruleAssembler), inputA, inputB, groupKey,
-                groupKeyMappingA::apply, accFunction(() -> new DroolsBiAccumulateFunction<>(collectorB)).as(output));
+                groupKeyMappingA::apply,
+                accFunction(() -> new DroolsBiAccumulateFunction<>(collectorB), accumulateSource).as(output));
         List<ViewItem> newFinishedExpressions = new ArrayList<>(ruleAssembler.getFinishedExpressions());
         newFinishedExpressions.add(groupByPattern); // The last pattern is added here.
         Variable<NewB> newB = ruleAssembler.createVariable("newB", from(output));

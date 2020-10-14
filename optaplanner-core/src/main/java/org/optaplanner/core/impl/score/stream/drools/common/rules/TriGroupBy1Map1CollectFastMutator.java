@@ -32,6 +32,7 @@ import org.drools.model.Variable;
 import org.drools.model.view.ViewItem;
 import org.optaplanner.core.api.function.TriFunction;
 import org.optaplanner.core.api.score.stream.tri.TriConstraintCollector;
+import org.optaplanner.core.impl.score.stream.drools.common.TriTuple;
 import org.optaplanner.core.impl.score.stream.drools.tri.DroolsTriAccumulateFunction;
 
 final class TriGroupBy1Map1CollectFastMutator<A, B, C, NewA, NewB> extends AbstractTriGroupByMutator {
@@ -51,10 +52,14 @@ final class TriGroupBy1Map1CollectFastMutator<A, B, C, NewA, NewB> extends Abstr
         Variable<A> inputA = ruleAssembler.getVariable(0);
         Variable<B> inputB = ruleAssembler.getVariable(1);
         Variable<C> inputC = ruleAssembler.getVariable(2);
+        Variable<TriTuple<A, B, C>> accumulateSource = ruleAssembler.createVariable(TriTuple.class, "source");
+        ruleAssembler.getLastPrimaryPattern()
+                .bind(accumulateSource, inputA, inputB, (c, a, b) -> new TriTuple<>(a, b, c));
         Variable<NewA> groupKey = ruleAssembler.createVariable("groupKey");
         Variable<NewB> output = ruleAssembler.createVariable("output");
         ViewItem groupByPattern = groupBy(getInnerAccumulatePattern(ruleAssembler), inputA, inputB, inputC, groupKey,
-                groupKeyMapping::apply, accFunction(() -> new DroolsTriAccumulateFunction<>(collectorB)).as(output));
+                groupKeyMapping::apply,
+                accFunction(() -> new DroolsTriAccumulateFunction<>(collectorB), accumulateSource).as(output));
         List<ViewItem> newFinishedExpressions = new ArrayList<>(ruleAssembler.getFinishedExpressions());
         newFinishedExpressions.add(groupByPattern); // The last pattern is added here.
         Variable<NewA> newA = ruleAssembler.createVariable("newA", from(groupKey));

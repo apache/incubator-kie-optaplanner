@@ -16,6 +16,12 @@
 
 package org.optaplanner.core.impl.score.stream.drools.common;
 
+import static org.optaplanner.core.impl.score.stream.drools.common.nodes.ConstraintGraphNodeType.FROM;
+import static org.optaplanner.core.impl.score.stream.drools.common.nodes.ConstraintGraphNodeType.GROUPBY_COLLECTING_ONLY;
+import static org.optaplanner.core.impl.score.stream.drools.common.nodes.ConstraintGraphNodeType.GROUPBY_MAPPING_AND_COLLECTING;
+import static org.optaplanner.core.impl.score.stream.drools.common.nodes.ConstraintGraphNodeType.GROUPBY_MAPPING_ONLY;
+import static org.optaplanner.core.impl.score.stream.drools.common.nodes.ConstraintGraphNodeType.JOIN;
+
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
@@ -23,12 +29,6 @@ import java.util.Objects;
 import org.optaplanner.core.impl.score.stream.drools.common.nodes.ConstraintGraphNode;
 import org.optaplanner.core.impl.score.stream.drools.common.nodes.ConstraintGraphNodeType;
 import org.optaplanner.core.impl.score.stream.drools.common.rules.RuleAssembler;
-
-import static org.optaplanner.core.impl.score.stream.drools.common.nodes.ConstraintGraphNodeType.FROM;
-import static org.optaplanner.core.impl.score.stream.drools.common.nodes.ConstraintGraphNodeType.GROUPBY_COLLECTING_ONLY;
-import static org.optaplanner.core.impl.score.stream.drools.common.nodes.ConstraintGraphNodeType.GROUPBY_MAPPING_AND_COLLECTING;
-import static org.optaplanner.core.impl.score.stream.drools.common.nodes.ConstraintGraphNodeType.GROUPBY_MAPPING_ONLY;
-import static org.optaplanner.core.impl.score.stream.drools.common.nodes.ConstraintGraphNodeType.JOIN;
 
 final class ConstraintSubTree {
 

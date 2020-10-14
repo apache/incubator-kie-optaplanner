@@ -53,11 +53,14 @@ final class BiGroupBy2Map1CollectFastMutator<A, B, NewA, NewB, NewC> extends Abs
         ruleAssembler.applyFilterToLastPrimaryPattern();
         Variable<A> inputA = ruleAssembler.getVariable(0);
         Variable<B> inputB = ruleAssembler.getVariable(1);
+        Variable<BiTuple<A, B>> accumulateSource = ruleAssembler.createVariable(BiTuple.class, "source");
+        ruleAssembler.getLastPrimaryPattern()
+                .bind(accumulateSource, inputA, (b, a) -> new BiTuple<>(a, b));
         Variable<BiTuple<NewA, NewB>> groupKey = ruleAssembler.createVariable(BiTuple.class, "groupKey");
         Variable<NewC> output = ruleAssembler.createVariable("output");
         ViewItem groupByPattern = groupBy(getInnerAccumulatePattern(ruleAssembler), inputA, inputB, groupKey,
                 (a, b) -> new BiTuple<>(groupKeyMappingA.apply(a, b), groupKeyMappingB.apply(a, b)),
-                accFunction(() -> new DroolsBiAccumulateFunction<>(collectorC)).as(output));
+                accFunction(() -> new DroolsBiAccumulateFunction<>(collectorC), accumulateSource).as(output));
         List<ViewItem> newFinishedExpressions = new ArrayList<>(ruleAssembler.getFinishedExpressions());
         newFinishedExpressions.add(groupByPattern); // The last pattern is added here.
         Variable<NewA> newA = ruleAssembler.createVariable("newA", from(groupKey, k -> k.a));

@@ -56,7 +56,7 @@ final class UniGroupBy2Map1CollectFastMutator<A, NewA, NewB, NewC> extends Abstr
         Variable<NewC> output = ruleAssembler.createVariable("output");
         ViewItem groupByPattern = groupBy(getInnerAccumulatePattern(ruleAssembler), input, groupKey,
                 a -> new BiTuple<>(groupKeyMappingA.apply(a), groupKeyMappingB.apply(a)),
-                accFunction(() -> new DroolsUniAccumulateFunction<>(collectorC)).as(output));
+                accFunction(() -> new DroolsUniAccumulateFunction<>(collectorC), input).as(output));
         List<ViewItem> newFinishedExpressions = new ArrayList<>(ruleAssembler.getFinishedExpressions());
         newFinishedExpressions.add(groupByPattern); // The last pattern is added here.
         Variable<NewA> newA = ruleAssembler.createVariable("newA", from(groupKey, k -> k.a));

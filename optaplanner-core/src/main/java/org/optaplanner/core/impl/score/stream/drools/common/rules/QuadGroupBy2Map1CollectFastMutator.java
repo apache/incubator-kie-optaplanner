@@ -33,6 +33,7 @@ import org.drools.model.view.ViewItem;
 import org.optaplanner.core.api.function.QuadFunction;
 import org.optaplanner.core.api.score.stream.quad.QuadConstraintCollector;
 import org.optaplanner.core.impl.score.stream.drools.common.BiTuple;
+import org.optaplanner.core.impl.score.stream.drools.common.QuadTuple;
 import org.optaplanner.core.impl.score.stream.drools.quad.DroolsQuadAccumulateFunction;
 
 final class QuadGroupBy2Map1CollectFastMutator<A, B, C, D, NewA, NewB, NewC> extends AbstractQuadGroupByMutator {
@@ -55,12 +56,15 @@ final class QuadGroupBy2Map1CollectFastMutator<A, B, C, D, NewA, NewB, NewC> ext
         Variable<B> inputB = ruleAssembler.getVariable(1);
         Variable<C> inputC = ruleAssembler.getVariable(2);
         Variable<D> inputD = ruleAssembler.getVariable(3);
+        Variable<QuadTuple<A, B, C, D>> accumulateSource = ruleAssembler.createVariable(QuadTuple.class, "source");
+        ruleAssembler.getLastPrimaryPattern()
+                .bind(accumulateSource, inputA, inputB, inputC, (d, a, b, c) -> new QuadTuple<>(a, b, c, d));
         Variable<BiTuple<NewA, NewB>> groupKey = ruleAssembler.createVariable(BiTuple.class, "groupKey");
         Variable<NewC> output = ruleAssembler.createVariable("output");
         ViewItem groupByPattern = groupBy(getInnerAccumulatePattern(ruleAssembler), inputA, inputB, inputC, inputD,
                 groupKey, (a, b, c, d) -> new BiTuple<>(groupKeyMappingA.apply(a, b, c, d),
                         groupKeyMappingB.apply(a, b, c, d)),
-                accFunction(() -> new DroolsQuadAccumulateFunction<>(collectorC)).as(output));
+                accFunction(() -> new DroolsQuadAccumulateFunction<>(collectorC), accumulateSource).as(output));
         List<ViewItem> newFinishedExpressions = new ArrayList<>(ruleAssembler.getFinishedExpressions());
         newFinishedExpressions.add(groupByPattern); // The last pattern is added here.
         Variable<NewA> newA = ruleAssembler.createVariable("newA", from(groupKey, k -> k.a));
