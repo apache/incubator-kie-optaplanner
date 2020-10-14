@@ -25,6 +25,8 @@
     <deploy-plugin.version>2.8.2</deploy-plugin.version>
     <surefire-plugin.version>2.22.2</surefire-plugin.version>
     <docker-plugin.version>0.28.0</docker-plugin.version>
+    <!-- TODO Workaround for "mvn quarkus:dev" for https://github.com/quarkusio/quarkus/issues/12715 -->
+    <noDeps>true</noDeps>
   </properties>
 
   <dependencyManagement>
