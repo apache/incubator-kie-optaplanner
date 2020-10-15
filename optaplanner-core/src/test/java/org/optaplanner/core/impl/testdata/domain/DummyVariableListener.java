@@ -19,7 +19,7 @@ package org.optaplanner.core.impl.testdata.domain;
 import org.optaplanner.core.api.domain.variable.VariableListener;
 import org.optaplanner.core.api.score.director.ScoreDirector;
 
-public class DummyVariableListener<Solution_, Entity_> implements VariableListener<Solution_, Entity_> {
+public abstract class DummyVariableListener<Solution_, Entity_> implements VariableListener<Solution_, Entity_> {
 
     @Override
     public void beforeEntityAdded(ScoreDirector<Solution_> scoreDirector, Entity_ entity_) {
