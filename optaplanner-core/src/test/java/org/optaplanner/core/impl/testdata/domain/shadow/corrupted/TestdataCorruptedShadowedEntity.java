@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,8 +22,8 @@ import org.optaplanner.core.api.domain.variable.PlanningVariable;
 import org.optaplanner.core.api.domain.variable.PlanningVariableReference;
 import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
-import org.optaplanner.core.impl.domain.variable.listener.VariableListenerAdapter;
 import org.optaplanner.core.impl.score.director.ScoreDirector;
+import org.optaplanner.core.impl.testdata.domain.DummyVariableListener;
 import org.optaplanner.core.impl.testdata.domain.TestdataObject;
 import org.optaplanner.core.impl.testdata.domain.TestdataValue;
 
@@ -77,7 +77,8 @@ public class TestdataCorruptedShadowedEntity extends TestdataObject {
     // Static inner classes
     // ************************************************************************
 
-    public static class CountUpdatingVariableListener extends VariableListenerAdapter<TestdataCorruptedShadowedEntity> {
+    public static class CountUpdatingVariableListener
+            extends DummyVariableListener<TestdataCorruptedShadowedSolution, TestdataCorruptedShadowedEntity> {
 
         @Override
         public void afterEntityAdded(ScoreDirector scoreDirector, TestdataCorruptedShadowedEntity entity) {
@@ -89,7 +90,8 @@ public class TestdataCorruptedShadowedEntity extends TestdataObject {
             updateShadow(entity, scoreDirector);
         }
 
-        private void updateShadow(TestdataCorruptedShadowedEntity entity, ScoreDirector scoreDirector) {
+        private void updateShadow(TestdataCorruptedShadowedEntity entity,
+                ScoreDirector<TestdataCorruptedShadowedSolution> scoreDirector) {
             TestdataValue primaryValue = entity.getValue();
             Integer count;
             if (primaryValue == null) {

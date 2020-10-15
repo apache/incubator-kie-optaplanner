@@ -1,5 +1,5 @@
 /*
- * Copyright 2014 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,13 +23,32 @@ import org.optaplanner.core.impl.score.director.ScoreDirector;
 /**
  * A stateful {@link VariableListener},
  * often used to externalize data for a {@link Supply} from the domain model itself.
+ * 
+ * @deprecated {@link org.optaplanner.core.api.domain.variable.VariableListener} can now be stateful too.
  */
+@Deprecated(/* forRemoval = true */)
 public interface StatefulVariableListener<Entity_> extends VariableListener<Entity_> {
 
     VariableDescriptor getSourceVariableDescriptor();
 
+    /**
+     *
+     * @param scoreDirector
+     * @deprecated Overrides
+     *             {@link org.optaplanner.core.api.domain.variable.VariableListener#resetWorkingSolution(ScoreDirector)}.
+     */
+    @Override
+    @Deprecated(/* forRemoval = true */)
     void resetWorkingSolution(ScoreDirector scoreDirector);
 
-    void clearWorkingSolution(ScoreDirector scoreDirector);
+    /**
+     *
+     * @param scoreDirector
+     * @deprecated Implement {@link org.optaplanner.core.api.domain.variable.VariableListener#close()} instead.
+     */
+    @Deprecated(/* forRemoval = true */)
+    default void clearWorkingSolution(ScoreDirector scoreDirector) {
+        close();
+    }
 
 }

@@ -14,9 +14,10 @@
  * limitations under the License.
  */
 
-package org.optaplanner.core.impl.domain.variable.listener;
+package org.optaplanner.core.api.domain.variable;
 
-import org.optaplanner.core.impl.domain.variable.supply.Supply;
+import java.io.Closeable;
+
 import org.optaplanner.core.impl.score.director.ScoreDirector;
 
 /**
@@ -27,14 +28,13 @@ import org.optaplanner.core.impl.score.director.ScoreDirector;
  * It can change its shadow variable(s) on multiple entity instances
  * (for example: an arrivalTime change affects all trailing entities too).
  * <p>
- * Each {@link ScoreDirector} has a different {@link VariableListener} instance, so it can be stateful.
- * If it is stateful, it must implement {@link StatefulVariableListener}.
+ * It is recommended that implementations be kept stateless.
+ * If state must be implemented, implementations may need to override the default methods
+ * ({@link #resetWorkingSolution(ScoreDirector)}, {@link #close()}).
  *
- * @deprecated in favor of {@link org.optaplanner.core.api.domain.variable.VariableListener}
+ * @param <Entity_> @{@link PlanningEntity} on which the variable is declared
  */
-@Deprecated(/* forRemoval = true */)
-public interface VariableListener<Entity_>
-        extends org.optaplanner.core.api.domain.variable.VariableListener<Entity_>, Supply {
+public interface VariableListener<Entity_> extends Closeable {
 
     /**
      * When set to {@code true}, this has a slight performance loss in Planner.
@@ -82,5 +82,21 @@ public interface VariableListener<Entity_>
      * @param entity never null
      */
     void afterEntityRemoved(ScoreDirector scoreDirector, Entity_ entity);
+
+    /**
+     * Called when the entire working solution changes. In this event, the other before..()/after...() methods will not
+     * be called.
+     * At this point, implementations should clear state, if any.
+     *
+     * @param scoreDirector never null
+     */
+    default void resetWorkingSolution(ScoreDirector scoreDirector) {
+        // No need to do anything for stateless variable listeners.
+    }
+
+    @Override
+    default void close() {
+        // No need to do anything for stateless variable listeners.
+    }
 
 }

@@ -14,13 +14,13 @@
  * limitations under the License.
  */
 
-package org.optaplanner.core.impl.domain.variable.listener;
+package org.optaplanner.core.impl.testdata.domain;
 
+import org.optaplanner.core.api.domain.variable.VariableListener;
 import org.optaplanner.core.impl.score.director.ScoreDirector;
 
-@Deprecated
-public abstract class VariableListenerAdapter<Entity_>
-        implements org.optaplanner.core.api.domain.variable.VariableListener<Entity_> {
+public abstract class DummyVariableListener<Solution_, Entity_>
+        implements VariableListener<Entity_> {
 
     @Override
     public void beforeEntityAdded(ScoreDirector scoreDirector, Entity_ entity) {

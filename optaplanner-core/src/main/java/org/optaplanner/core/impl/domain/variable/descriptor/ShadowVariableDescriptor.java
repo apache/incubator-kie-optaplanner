@@ -1,5 +1,5 @@
 /*
- * Copyright 2013 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,10 +19,10 @@ package org.optaplanner.core.impl.domain.variable.descriptor;
 import java.util.List;
 
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
+import org.optaplanner.core.api.domain.variable.VariableListener;
 import org.optaplanner.core.impl.domain.common.accessor.MemberAccessor;
 import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
 import org.optaplanner.core.impl.domain.policy.DescriptorPolicy;
-import org.optaplanner.core.impl.domain.variable.listener.VariableListener;
 import org.optaplanner.core.impl.domain.variable.supply.Demand;
 import org.optaplanner.core.impl.score.director.InnerScoreDirector;
 
@@ -82,7 +82,7 @@ public abstract class ShadowVariableDescriptor<Solution_> extends VariableDescri
      * @param scoreDirector never null
      * @return never null
      */
-    public abstract VariableListener<Solution_> buildVariableListener(InnerScoreDirector<Solution_> scoreDirector);
+    public abstract VariableListener<?> buildVariableListener(InnerScoreDirector<Solution_> scoreDirector);
 
     // ************************************************************************
     // Extraction methods

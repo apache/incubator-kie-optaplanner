@@ -1,5 +1,5 @@
 /*
- * Copyright 2014 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,13 +23,13 @@ import java.util.Map;
 import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
 import org.optaplanner.core.impl.domain.variable.descriptor.VariableDescriptor;
 import org.optaplanner.core.impl.domain.variable.inverserelation.SingletonInverseVariableSupply;
-import org.optaplanner.core.impl.domain.variable.listener.StatefulVariableListener;
+import org.optaplanner.core.impl.domain.variable.listener.SourcedVariableListener;
 import org.optaplanner.core.impl.score.director.ScoreDirector;
 
 /**
  * Alternative to {@link AnchorVariableListener}.
  */
-public class ExternalizedAnchorVariableSupply implements StatefulVariableListener<Object>, AnchorVariableSupply {
+public class ExternalizedAnchorVariableSupply implements SourcedVariableListener<Object>, AnchorVariableSupply {
 
     protected final VariableDescriptor previousVariableDescriptor;
     protected final SingletonInverseVariableSupply nextVariableSupply;
