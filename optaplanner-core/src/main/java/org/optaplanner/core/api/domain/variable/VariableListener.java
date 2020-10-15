@@ -28,7 +28,12 @@ import org.optaplanner.core.impl.score.director.ScoreDirector;
  * It can change its shadow variable(s) on multiple entity instances
  * (for example: an arrivalTime change affects all trailing entities too).
  * <p>
- * Each {@link ScoreDirector} has a different {@link VariableListener} instance, so it can be stateful.
+ * It is recommended that implementations be kept stateless.
+ * If state must be implemented, implementations may need to override the default methods
+ * ({@link #resetWorkingSolution(ScoreDirector)}, {@link #close()}).
+ *
+ * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
+ * @param <Entity_> @{@link PlanningEntity} on which the variable is declared
  */
 public interface VariableListener<Solution_, Entity_> extends Closeable {
 
@@ -79,6 +84,13 @@ public interface VariableListener<Solution_, Entity_> extends Closeable {
      */
     void afterEntityRemoved(ScoreDirector<Solution_> scoreDirector, Entity_ entity);
 
+    /**
+     * Called when the entire working solution changes. In this event, the other before..()/after...() methods will not
+     * be called.
+     * At this point, implementations should clear state, if any.
+     *
+     * @param scoreDirector never null
+     */
     default void resetWorkingSolution(ScoreDirector<Solution_> scoreDirector) {
         // No need to do anything for stateless variable listeners.
     }
