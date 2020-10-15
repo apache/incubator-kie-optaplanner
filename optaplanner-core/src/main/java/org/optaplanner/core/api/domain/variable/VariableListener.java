@@ -34,7 +34,7 @@ import org.optaplanner.core.api.score.director.ScoreDirector;
  * If state must be implemented, implementations may need to override the default methods
  * ({@link #resetWorkingSolution(ScoreDirector)}, {@link #close()}).
  *
- * @param <Solution_> @{@link PlanningSolution} holding the @{@link PlanningEntity} on which the variable is declared
+ * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
  * @param <Entity_> @{@link PlanningEntity} on which the variable is declared
  */
 public interface VariableListener<Solution_, Entity_> extends Closeable {
@@ -87,9 +87,10 @@ public interface VariableListener<Solution_, Entity_> extends Closeable {
     void afterEntityRemoved(ScoreDirector<Solution_> scoreDirector, Entity_ entity);
 
     /**
-     * Called when the entire working solution changes.
+     * Called when the entire working solution changes. In this event, the other before..()/after...() methods will not
+     * be called.
      * At this point, implementations should clear state, if any.
-     * 
+     *
      * @param scoreDirector never null
      */
     default void resetWorkingSolution(ScoreDirector<Solution_> scoreDirector) {

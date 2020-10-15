@@ -20,10 +20,10 @@ import org.optaplanner.core.api.domain.entity.PlanningEntity;
 import org.optaplanner.core.api.domain.variable.CustomShadowVariable;
 import org.optaplanner.core.api.domain.variable.PlanningVariable;
 import org.optaplanner.core.api.domain.variable.PlanningVariableReference;
-import org.optaplanner.core.api.domain.variable.VariableListener;
 import org.optaplanner.core.api.score.director.ScoreDirector;
 import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
+import org.optaplanner.core.impl.testdata.domain.DummyVariableListener;
 import org.optaplanner.core.impl.testdata.domain.TestdataObject;
 import org.optaplanner.core.impl.testdata.domain.TestdataValue;
 
@@ -79,13 +79,7 @@ public class TestdataCorruptedShadowedEntity extends TestdataObject {
     // ************************************************************************
 
     public static class CountUpdatingVariableListener
-            implements VariableListener<TestdataCorruptedShadowedSolution, TestdataCorruptedShadowedEntity> {
-
-        @Override
-        public void beforeEntityAdded(ScoreDirector<TestdataCorruptedShadowedSolution> scoreDirector,
-                TestdataCorruptedShadowedEntity testdataCorruptedShadowedEntity) {
-            // Do nothing.
-        }
+            extends DummyVariableListener<TestdataCorruptedShadowedSolution, TestdataCorruptedShadowedEntity> {
 
         @Override
         public void afterEntityAdded(ScoreDirector<TestdataCorruptedShadowedSolution> scoreDirector,
@@ -94,27 +88,9 @@ public class TestdataCorruptedShadowedEntity extends TestdataObject {
         }
 
         @Override
-        public void beforeVariableChanged(ScoreDirector<TestdataCorruptedShadowedSolution> scoreDirector,
-                TestdataCorruptedShadowedEntity testdataCorruptedShadowedEntity) {
-            // Do nothing.
-        }
-
-        @Override
         public void afterVariableChanged(ScoreDirector<TestdataCorruptedShadowedSolution> scoreDirector,
                 TestdataCorruptedShadowedEntity entity) {
             updateShadow(entity, scoreDirector);
-        }
-
-        @Override
-        public void beforeEntityRemoved(ScoreDirector<TestdataCorruptedShadowedSolution> scoreDirector,
-                TestdataCorruptedShadowedEntity testdataCorruptedShadowedEntity) {
-            // Do nothing.
-        }
-
-        @Override
-        public void afterEntityRemoved(ScoreDirector<TestdataCorruptedShadowedSolution> scoreDirector,
-                TestdataCorruptedShadowedEntity testdataCorruptedShadowedEntity) {
-            // Do nothing.
         }
 
         private void updateShadow(TestdataCorruptedShadowedEntity entity,
