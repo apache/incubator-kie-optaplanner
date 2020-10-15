@@ -103,14 +103,12 @@ public class TestdataManyToManyShadowedEntity extends TestdataObject {
             extends DummyVariableListener<TestdataManyToManyShadowedSolution, TestdataManyToManyShadowedEntity> {
 
         @Override
-        public void afterEntityAdded(ScoreDirector<TestdataManyToManyShadowedSolution> scoreDirector,
-                TestdataManyToManyShadowedEntity entity) {
+        public void afterEntityAdded(ScoreDirector scoreDirector, TestdataManyToManyShadowedEntity entity) {
             updateShadow(entity, scoreDirector);
         }
 
         @Override
-        public void afterVariableChanged(ScoreDirector<TestdataManyToManyShadowedSolution> scoreDirector,
-                TestdataManyToManyShadowedEntity entity) {
+        public void afterVariableChanged(ScoreDirector scoreDirector, TestdataManyToManyShadowedEntity entity) {
             updateShadow(entity, scoreDirector);
         }
 

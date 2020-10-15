@@ -20,35 +20,35 @@ import org.optaplanner.core.impl.score.director.ScoreDirector;
 
 @Deprecated
 public abstract class VariableListenerAdapter<Entity_>
-        implements org.optaplanner.core.api.domain.variable.VariableListener<Object, Entity_> {
+        implements org.optaplanner.core.api.domain.variable.VariableListener<Entity_> {
 
     @Override
-    public void beforeEntityAdded(ScoreDirector<Object> scoreDirector, Entity_ entity) {
+    public void beforeEntityAdded(ScoreDirector scoreDirector, Entity_ entity) {
         // Hook method
     }
 
     @Override
-    public void afterEntityAdded(ScoreDirector<Object> scoreDirector, Entity_ entity) {
+    public void afterEntityAdded(ScoreDirector scoreDirector, Entity_ entity) {
         // Hook method
     }
 
     @Override
-    public void beforeVariableChanged(ScoreDirector<Object> scoreDirector, Entity_ entity) {
+    public void beforeVariableChanged(ScoreDirector scoreDirector, Entity_ entity) {
         // Hook method
     }
 
     @Override
-    public void afterVariableChanged(ScoreDirector<Object> scoreDirector, Entity_ entity) {
+    public void afterVariableChanged(ScoreDirector scoreDirector, Entity_ entity) {
         // Hook method
     }
 
     @Override
-    public void beforeEntityRemoved(ScoreDirector<Object> scoreDirector, Entity_ entity) {
+    public void beforeEntityRemoved(ScoreDirector scoreDirector, Entity_ entity) {
         // Hook method
     }
 
     @Override
-    public void afterEntityRemoved(ScoreDirector<Object> scoreDirector, Entity_ entity) {
+    public void afterEntityRemoved(ScoreDirector scoreDirector, Entity_ entity) {
         // Hook method
     }
 

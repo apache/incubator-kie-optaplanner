@@ -20,35 +20,35 @@ import org.optaplanner.core.api.domain.variable.VariableListener;
 import org.optaplanner.core.impl.score.director.ScoreDirector;
 
 public abstract class DummyVariableListener<Solution_, Entity_>
-        implements VariableListener<Solution_, Entity_> {
+        implements VariableListener<Entity_> {
 
     @Override
-    public void beforeEntityAdded(ScoreDirector<Solution_> scoreDirector, Entity_ entity) {
+    public void beforeEntityAdded(ScoreDirector scoreDirector, Entity_ entity) {
         // Hook method
     }
 
     @Override
-    public void afterEntityAdded(ScoreDirector<Solution_> scoreDirector, Entity_ entity) {
+    public void afterEntityAdded(ScoreDirector scoreDirector, Entity_ entity) {
         // Hook method
     }
 
     @Override
-    public void beforeVariableChanged(ScoreDirector<Solution_> scoreDirector, Entity_ entity) {
+    public void beforeVariableChanged(ScoreDirector scoreDirector, Entity_ entity) {
         // Hook method
     }
 
     @Override
-    public void afterVariableChanged(ScoreDirector<Solution_> scoreDirector, Entity_ entity) {
+    public void afterVariableChanged(ScoreDirector scoreDirector, Entity_ entity) {
         // Hook method
     }
 
     @Override
-    public void beforeEntityRemoved(ScoreDirector<Solution_> scoreDirector, Entity_ entity) {
+    public void beforeEntityRemoved(ScoreDirector scoreDirector, Entity_ entity) {
         // Hook method
     }
 
     @Override
-    public void afterEntityRemoved(ScoreDirector<Solution_> scoreDirector, Entity_ entity) {
+    public void afterEntityRemoved(ScoreDirector scoreDirector, Entity_ entity) {
         // Hook method
     }
 

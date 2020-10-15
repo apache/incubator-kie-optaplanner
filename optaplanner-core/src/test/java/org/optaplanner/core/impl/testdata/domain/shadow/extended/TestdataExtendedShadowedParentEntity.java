@@ -102,14 +102,12 @@ public class TestdataExtendedShadowedParentEntity extends TestdataObject {
             extends DummyVariableListener<TestdataCyclicReferencedShadowedSolution, TestdataExtendedShadowedParentEntity> {
 
         @Override
-        public void afterEntityAdded(ScoreDirector<TestdataCyclicReferencedShadowedSolution> scoreDirector,
-                TestdataExtendedShadowedParentEntity entity) {
+        public void afterEntityAdded(ScoreDirector scoreDirector, TestdataExtendedShadowedParentEntity entity) {
             updateShadow(scoreDirector, entity);
         }
 
         @Override
-        public void afterVariableChanged(ScoreDirector<TestdataCyclicReferencedShadowedSolution> scoreDirector,
-                TestdataExtendedShadowedParentEntity entity) {
+        public void afterVariableChanged(ScoreDirector scoreDirector, TestdataExtendedShadowedParentEntity entity) {
             updateShadow(scoreDirector, entity);
         }
 
@@ -127,14 +125,12 @@ public class TestdataExtendedShadowedParentEntity extends TestdataObject {
             extends DummyVariableListener<TestdataCyclicReferencedShadowedSolution, TestdataExtendedShadowedChildEntity> {
 
         @Override
-        public void afterEntityAdded(ScoreDirector<TestdataCyclicReferencedShadowedSolution> scoreDirector,
-                TestdataExtendedShadowedChildEntity entity) {
+        public void afterEntityAdded(ScoreDirector scoreDirector, TestdataExtendedShadowedChildEntity entity) {
             updateShadow(scoreDirector, entity);
         }
 
         @Override
-        public void afterVariableChanged(ScoreDirector<TestdataCyclicReferencedShadowedSolution> scoreDirector,
-                TestdataExtendedShadowedChildEntity entity) {
+        public void afterVariableChanged(ScoreDirector scoreDirector, TestdataExtendedShadowedChildEntity entity) {
             updateShadow(scoreDirector, entity);
         }
 

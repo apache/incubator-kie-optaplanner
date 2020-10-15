@@ -68,14 +68,12 @@ public class TestdataExtendedShadowedChildEntity extends TestdataExtendedShadowe
             extends DummyVariableListener<TestdataExtendedShadowedSolution, TestdataExtendedShadowedParentEntity> {
 
         @Override
-        public void afterEntityAdded(ScoreDirector<TestdataExtendedShadowedSolution> scoreDirector,
-                TestdataExtendedShadowedParentEntity entity) {
+        public void afterEntityAdded(ScoreDirector scoreDirector, TestdataExtendedShadowedParentEntity entity) {
             updateShadow(scoreDirector, entity);
         }
 
         @Override
-        public void afterVariableChanged(ScoreDirector<TestdataExtendedShadowedSolution> scoreDirector,
-                TestdataExtendedShadowedParentEntity entity) {
+        public void afterVariableChanged(ScoreDirector scoreDirector, TestdataExtendedShadowedParentEntity entity) {
             updateShadow(scoreDirector, entity);
         }
 

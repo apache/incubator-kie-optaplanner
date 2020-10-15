@@ -100,14 +100,12 @@ public class TestdataCyclicReferencedShadowedEntity extends TestdataObject {
             extends DummyVariableListener<TestdataCyclicReferencedShadowedSolution, TestdataCyclicReferencedShadowedEntity> {
 
         @Override
-        public void afterEntityAdded(ScoreDirector<TestdataCyclicReferencedShadowedSolution> scoreDirector,
-                TestdataCyclicReferencedShadowedEntity entity) {
+        public void afterEntityAdded(ScoreDirector scoreDirector, TestdataCyclicReferencedShadowedEntity entity) {
             updateShadow(entity, scoreDirector);
         }
 
         @Override
-        public void afterVariableChanged(ScoreDirector<TestdataCyclicReferencedShadowedSolution> scoreDirector,
-                TestdataCyclicReferencedShadowedEntity entity) {
+        public void afterVariableChanged(ScoreDirector scoreDirector, TestdataCyclicReferencedShadowedEntity entity) {
             updateShadow(entity, scoreDirector);
         }
 

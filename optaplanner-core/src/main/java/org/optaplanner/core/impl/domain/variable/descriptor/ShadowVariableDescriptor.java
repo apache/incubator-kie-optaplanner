@@ -82,7 +82,7 @@ public abstract class ShadowVariableDescriptor<Solution_> extends VariableDescri
      * @param scoreDirector never null
      * @return never null
      */
-    public abstract VariableListener<Solution_, ?> buildVariableListener(InnerScoreDirector<Solution_> scoreDirector);
+    public abstract VariableListener<?> buildVariableListener(InnerScoreDirector<Solution_> scoreDirector);
 
     // ************************************************************************
     // Extraction methods

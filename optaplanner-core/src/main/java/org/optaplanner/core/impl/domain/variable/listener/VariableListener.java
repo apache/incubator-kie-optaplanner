@@ -34,7 +34,7 @@ import org.optaplanner.core.impl.score.director.ScoreDirector;
  */
 @Deprecated(/* forRemoval = true */)
 public interface VariableListener<Entity_>
-        extends org.optaplanner.core.api.domain.variable.VariableListener<Object, Entity_>, Supply {
+        extends org.optaplanner.core.api.domain.variable.VariableListener<Entity_>, Supply {
 
     /**
      * When set to {@code true}, this has a slight performance loss in Planner.
@@ -51,36 +51,36 @@ public interface VariableListener<Entity_>
      * @param scoreDirector never null
      * @param entity never null
      */
-    void beforeEntityAdded(ScoreDirector<Object> scoreDirector, Entity_ entity);
+    void beforeEntityAdded(ScoreDirector scoreDirector, Entity_ entity);
 
     /**
      * @param scoreDirector never null
      * @param entity never null
      */
-    void afterEntityAdded(ScoreDirector<Object> scoreDirector, Entity_ entity);
+    void afterEntityAdded(ScoreDirector scoreDirector, Entity_ entity);
 
     /**
      * @param scoreDirector never null
      * @param entity never null
      */
-    void beforeVariableChanged(ScoreDirector<Object> scoreDirector, Entity_ entity);
+    void beforeVariableChanged(ScoreDirector scoreDirector, Entity_ entity);
 
     /**
      * @param scoreDirector never null
      * @param entity never null
      */
-    void afterVariableChanged(ScoreDirector<Object> scoreDirector, Entity_ entity);
+    void afterVariableChanged(ScoreDirector scoreDirector, Entity_ entity);
 
     /**
      * @param scoreDirector never null
      * @param entity never null
      */
-    void beforeEntityRemoved(ScoreDirector<Object> scoreDirector, Entity_ entity);
+    void beforeEntityRemoved(ScoreDirector scoreDirector, Entity_ entity);
 
     /**
      * @param scoreDirector never null
      * @param entity never null
      */
-    void afterEntityRemoved(ScoreDirector<Object> scoreDirector, Entity_ entity);
+    void afterEntityRemoved(ScoreDirector scoreDirector, Entity_ entity);
 
 }

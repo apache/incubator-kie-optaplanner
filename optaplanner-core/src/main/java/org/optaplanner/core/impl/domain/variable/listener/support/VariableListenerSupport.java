@@ -73,7 +73,7 @@ public class VariableListenerSupport<Solution_> implements SupplyManager {
             for (ShadowVariableDescriptor<Solution_> shadowVariableDescriptor : entityDescriptor
                     .getDeclaredShadowVariableDescriptors()) {
                 if (shadowVariableDescriptor.hasVariableListener(scoreDirector)) {
-                    VariableListener<Solution_, ?> variableListener =
+                    VariableListener<?> variableListener =
                             shadowVariableDescriptor.buildVariableListener(scoreDirector);
                     if (variableListener instanceof Supply) {
                         supplyMap.put(shadowVariableDescriptor.getProvidedDemand(), (Supply) variableListener);
