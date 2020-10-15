@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,6 +25,7 @@ import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.core.impl.domain.variable.descriptor.GenuineVariableDescriptor;
 import org.optaplanner.core.impl.domain.variable.listener.VariableListenerAdapter;
 import org.optaplanner.core.impl.score.director.ScoreDirector;
+import org.optaplanner.core.impl.testdata.domain.DummyVariableListener;
 import org.optaplanner.core.impl.testdata.domain.TestdataObject;
 import org.optaplanner.core.impl.testdata.domain.TestdataValue;
 
@@ -106,19 +107,19 @@ public class TestdataCyclicShadowedEntity extends TestdataObject {
     // Static inner classes
     // ************************************************************************
 
-    public static class RockShadowUpdatingVariableListener extends VariableListenerAdapter<TestdataCyclicShadowedEntity> {
+    public static class RockShadowUpdatingVariableListener extends DummyVariableListener<TestdataCyclicReferencedShadowedSolution, TestdataCyclicShadowedEntity> {
 
         @Override
-        public void afterEntityAdded(ScoreDirector scoreDirector, TestdataCyclicShadowedEntity entity) {
+        public void afterEntityAdded(ScoreDirector<TestdataCyclicReferencedShadowedSolution> scoreDirector, TestdataCyclicShadowedEntity entity) {
             updateShadow(entity, scoreDirector);
         }
 
         @Override
-        public void afterVariableChanged(ScoreDirector scoreDirector, TestdataCyclicShadowedEntity entity) {
+        public void afterVariableChanged(ScoreDirector<TestdataCyclicReferencedShadowedSolution> scoreDirector, TestdataCyclicShadowedEntity entity) {
             updateShadow(entity, scoreDirector);
         }
 
-        private void updateShadow(TestdataCyclicShadowedEntity entity, ScoreDirector scoreDirector) {
+        private void updateShadow(TestdataCyclicShadowedEntity entity, ScoreDirector<TestdataCyclicReferencedShadowedSolution> scoreDirector) {
             String scissors = entity.getScissorsShadow();
             scoreDirector.beforeVariableChanged(entity, "rockShadow");
             entity.setRockShadow("Rock beats (" + scissors + ")");
@@ -127,19 +128,19 @@ public class TestdataCyclicShadowedEntity extends TestdataObject {
 
     }
 
-    public static class PaperShadowUpdatingVariableListener extends VariableListenerAdapter<TestdataCyclicShadowedEntity> {
+    public static class PaperShadowUpdatingVariableListener extends DummyVariableListener<TestdataCyclicReferencedShadowedSolution, TestdataCyclicShadowedEntity> {
 
         @Override
-        public void afterEntityAdded(ScoreDirector scoreDirector, TestdataCyclicShadowedEntity entity) {
+        public void afterEntityAdded(ScoreDirector<TestdataCyclicReferencedShadowedSolution> scoreDirector, TestdataCyclicShadowedEntity entity) {
             updateShadow(entity, scoreDirector);
         }
 
         @Override
-        public void afterVariableChanged(ScoreDirector scoreDirector, TestdataCyclicShadowedEntity entity) {
+        public void afterVariableChanged(ScoreDirector<TestdataCyclicReferencedShadowedSolution> scoreDirector, TestdataCyclicShadowedEntity entity) {
             updateShadow(entity, scoreDirector);
         }
 
-        private void updateShadow(TestdataCyclicShadowedEntity entity, ScoreDirector scoreDirector) {
+        private void updateShadow(TestdataCyclicShadowedEntity entity, ScoreDirector<TestdataCyclicReferencedShadowedSolution> scoreDirector) {
             String rock = entity.getRockShadow();
             scoreDirector.beforeVariableChanged(entity, "paperShadow");
             entity.setPaperShadow("Paper beats (" + rock + ")");
@@ -148,19 +149,19 @@ public class TestdataCyclicShadowedEntity extends TestdataObject {
 
     }
 
-    public static class ScissorsShadowUpdatingVariableListener extends VariableListenerAdapter<TestdataCyclicShadowedEntity> {
+    public static class ScissorsShadowUpdatingVariableListener extends DummyVariableListener<TestdataCyclicReferencedShadowedSolution, TestdataCyclicShadowedEntity> {
 
         @Override
-        public void afterEntityAdded(ScoreDirector scoreDirector, TestdataCyclicShadowedEntity entity) {
+        public void afterEntityAdded(ScoreDirector<TestdataCyclicReferencedShadowedSolution> scoreDirector, TestdataCyclicShadowedEntity entity) {
             updateShadow(entity, scoreDirector);
         }
 
         @Override
-        public void afterVariableChanged(ScoreDirector scoreDirector, TestdataCyclicShadowedEntity entity) {
+        public void afterVariableChanged(ScoreDirector<TestdataCyclicReferencedShadowedSolution> scoreDirector, TestdataCyclicShadowedEntity entity) {
             updateShadow(entity, scoreDirector);
         }
 
-        private void updateShadow(TestdataCyclicShadowedEntity entity, ScoreDirector scoreDirector) {
+        private void updateShadow(TestdataCyclicShadowedEntity entity, ScoreDirector<TestdataCyclicReferencedShadowedSolution> scoreDirector) {
             String paper = entity.getPaperShadow();
             scoreDirector.beforeVariableChanged(entity, "scissorsShadow");
             entity.setScissorsShadow("Scissors beats (" + paper + ")");

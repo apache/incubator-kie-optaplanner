@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,10 +22,11 @@ import org.optaplanner.core.api.domain.variable.PlanningVariable;
 import org.optaplanner.core.api.domain.variable.PlanningVariableReference;
 import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
-import org.optaplanner.core.impl.domain.variable.listener.VariableListenerAdapter;
 import org.optaplanner.core.impl.score.director.ScoreDirector;
+import org.optaplanner.core.impl.testdata.domain.DummyVariableListener;
 import org.optaplanner.core.impl.testdata.domain.TestdataObject;
 import org.optaplanner.core.impl.testdata.domain.TestdataValue;
+import org.optaplanner.core.impl.testdata.domain.shadow.cyclic.invalid.TestdataCyclicReferencedShadowedSolution;
 
 @PlanningEntity
 public class TestdataManyToManyShadowedEntity extends TestdataObject {
@@ -100,19 +101,19 @@ public class TestdataManyToManyShadowedEntity extends TestdataObject {
     // ************************************************************************
 
     public static class ComposedValuesUpdatingVariableListener
-            extends VariableListenerAdapter<TestdataManyToManyShadowedEntity> {
+            extends DummyVariableListener<TestdataManyToManyShadowedSolution, TestdataManyToManyShadowedEntity> {
 
         @Override
-        public void afterEntityAdded(ScoreDirector scoreDirector, TestdataManyToManyShadowedEntity entity) {
+        public void afterEntityAdded(ScoreDirector<TestdataManyToManyShadowedSolution> scoreDirector, TestdataManyToManyShadowedEntity entity) {
             updateShadow(entity, scoreDirector);
         }
 
         @Override
-        public void afterVariableChanged(ScoreDirector scoreDirector, TestdataManyToManyShadowedEntity entity) {
+        public void afterVariableChanged(ScoreDirector<TestdataManyToManyShadowedSolution> scoreDirector, TestdataManyToManyShadowedEntity entity) {
             updateShadow(entity, scoreDirector);
         }
 
-        private void updateShadow(TestdataManyToManyShadowedEntity entity, ScoreDirector scoreDirector) {
+        private void updateShadow(TestdataManyToManyShadowedEntity entity, ScoreDirector<TestdataManyToManyShadowedSolution> scoreDirector) {
             TestdataValue primaryValue = entity.getPrimaryValue();
             TestdataValue secondaryValue = entity.getSecondaryValue();
             String composedValue;

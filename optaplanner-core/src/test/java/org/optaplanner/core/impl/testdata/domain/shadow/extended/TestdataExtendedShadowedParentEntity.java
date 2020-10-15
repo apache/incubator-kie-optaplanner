@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,8 +25,10 @@ import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.core.impl.domain.variable.descriptor.GenuineVariableDescriptor;
 import org.optaplanner.core.impl.domain.variable.listener.VariableListenerAdapter;
 import org.optaplanner.core.impl.score.director.ScoreDirector;
+import org.optaplanner.core.impl.testdata.domain.DummyVariableListener;
 import org.optaplanner.core.impl.testdata.domain.TestdataObject;
 import org.optaplanner.core.impl.testdata.domain.TestdataValue;
+import org.optaplanner.core.impl.testdata.domain.shadow.cyclic.invalid.TestdataCyclicReferencedShadowedSolution;
 
 @PlanningEntity
 public class TestdataExtendedShadowedParentEntity extends TestdataObject {
@@ -98,19 +100,19 @@ public class TestdataExtendedShadowedParentEntity extends TestdataObject {
     // ************************************************************************
 
     public static class FirstShadowUpdatingVariableListener
-            extends VariableListenerAdapter<TestdataExtendedShadowedParentEntity> {
+            extends DummyVariableListener<TestdataCyclicReferencedShadowedSolution, TestdataExtendedShadowedParentEntity> {
 
         @Override
-        public void afterEntityAdded(ScoreDirector scoreDirector, TestdataExtendedShadowedParentEntity entity) {
+        public void afterEntityAdded(ScoreDirector<TestdataCyclicReferencedShadowedSolution> scoreDirector, TestdataExtendedShadowedParentEntity entity) {
             updateShadow(scoreDirector, entity);
         }
 
         @Override
-        public void afterVariableChanged(ScoreDirector scoreDirector, TestdataExtendedShadowedParentEntity entity) {
+        public void afterVariableChanged(ScoreDirector<TestdataCyclicReferencedShadowedSolution> scoreDirector, TestdataExtendedShadowedParentEntity entity) {
             updateShadow(scoreDirector, entity);
         }
 
-        private void updateShadow(ScoreDirector scoreDirector, TestdataExtendedShadowedParentEntity entity) {
+        private void updateShadow(ScoreDirector<TestdataCyclicReferencedShadowedSolution> scoreDirector, TestdataExtendedShadowedParentEntity entity) {
             TestdataValue value = entity.getValue();
             scoreDirector.beforeVariableChanged(entity, "firstShadow");
             entity.setFirstShadow((value == null) ? null : value.getCode() + "/firstShadow");
@@ -120,19 +122,19 @@ public class TestdataExtendedShadowedParentEntity extends TestdataObject {
     }
 
     public static class ThirdShadowUpdatingVariableListener
-            extends VariableListenerAdapter<TestdataExtendedShadowedChildEntity> {
+            extends DummyVariableListener<TestdataCyclicReferencedShadowedSolution, TestdataExtendedShadowedChildEntity> {
 
         @Override
-        public void afterEntityAdded(ScoreDirector scoreDirector, TestdataExtendedShadowedChildEntity entity) {
+        public void afterEntityAdded(ScoreDirector<TestdataCyclicReferencedShadowedSolution> scoreDirector, TestdataExtendedShadowedChildEntity entity) {
             updateShadow(scoreDirector, entity);
         }
 
         @Override
-        public void afterVariableChanged(ScoreDirector scoreDirector, TestdataExtendedShadowedChildEntity entity) {
+        public void afterVariableChanged(ScoreDirector<TestdataCyclicReferencedShadowedSolution> scoreDirector, TestdataExtendedShadowedChildEntity entity) {
             updateShadow(scoreDirector, entity);
         }
 
-        private void updateShadow(ScoreDirector scoreDirector, TestdataExtendedShadowedChildEntity entity) {
+        private void updateShadow(ScoreDirector<TestdataCyclicReferencedShadowedSolution> scoreDirector, TestdataExtendedShadowedChildEntity entity) {
             String secondShadow = entity.getSecondShadow();
             scoreDirector.beforeVariableChanged(entity, "thirdShadow");
             entity.setThirdShadow((secondShadow == null) ? null : secondShadow + "/thirdShadow");
