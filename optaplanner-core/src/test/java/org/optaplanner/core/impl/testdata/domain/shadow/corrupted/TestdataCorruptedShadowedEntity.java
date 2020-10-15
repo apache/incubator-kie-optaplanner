@@ -22,7 +22,6 @@ import org.optaplanner.core.api.domain.variable.PlanningVariable;
 import org.optaplanner.core.api.domain.variable.PlanningVariableReference;
 import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
-import org.optaplanner.core.impl.domain.variable.listener.VariableListenerAdapter;
 import org.optaplanner.core.impl.score.director.ScoreDirector;
 import org.optaplanner.core.impl.testdata.domain.DummyVariableListener;
 import org.optaplanner.core.impl.testdata.domain.TestdataObject;
@@ -82,16 +81,19 @@ public class TestdataCorruptedShadowedEntity extends TestdataObject {
             extends DummyVariableListener<TestdataCorruptedShadowedSolution, TestdataCorruptedShadowedEntity> {
 
         @Override
-        public void afterEntityAdded(ScoreDirector<TestdataCorruptedShadowedSolution> scoreDirector, TestdataCorruptedShadowedEntity entity) {
+        public void afterEntityAdded(ScoreDirector<TestdataCorruptedShadowedSolution> scoreDirector,
+                TestdataCorruptedShadowedEntity entity) {
             updateShadow(entity, scoreDirector);
         }
 
         @Override
-        public void afterVariableChanged(ScoreDirector<TestdataCorruptedShadowedSolution> scoreDirector, TestdataCorruptedShadowedEntity entity) {
+        public void afterVariableChanged(ScoreDirector<TestdataCorruptedShadowedSolution> scoreDirector,
+                TestdataCorruptedShadowedEntity entity) {
             updateShadow(entity, scoreDirector);
         }
 
-        private void updateShadow(TestdataCorruptedShadowedEntity entity, ScoreDirector<TestdataCorruptedShadowedSolution> scoreDirector) {
+        private void updateShadow(TestdataCorruptedShadowedEntity entity,
+                ScoreDirector<TestdataCorruptedShadowedSolution> scoreDirector) {
             TestdataValue primaryValue = entity.getValue();
             Integer count;
             if (primaryValue == null) {

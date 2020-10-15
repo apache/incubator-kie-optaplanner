@@ -26,7 +26,6 @@ import org.optaplanner.core.impl.score.director.ScoreDirector;
 import org.optaplanner.core.impl.testdata.domain.DummyVariableListener;
 import org.optaplanner.core.impl.testdata.domain.TestdataObject;
 import org.optaplanner.core.impl.testdata.domain.TestdataValue;
-import org.optaplanner.core.impl.testdata.domain.shadow.cyclic.invalid.TestdataCyclicReferencedShadowedSolution;
 
 @PlanningEntity
 public class TestdataManyToManyShadowedEntity extends TestdataObject {
@@ -104,16 +103,19 @@ public class TestdataManyToManyShadowedEntity extends TestdataObject {
             extends DummyVariableListener<TestdataManyToManyShadowedSolution, TestdataManyToManyShadowedEntity> {
 
         @Override
-        public void afterEntityAdded(ScoreDirector<TestdataManyToManyShadowedSolution> scoreDirector, TestdataManyToManyShadowedEntity entity) {
+        public void afterEntityAdded(ScoreDirector<TestdataManyToManyShadowedSolution> scoreDirector,
+                TestdataManyToManyShadowedEntity entity) {
             updateShadow(entity, scoreDirector);
         }
 
         @Override
-        public void afterVariableChanged(ScoreDirector<TestdataManyToManyShadowedSolution> scoreDirector, TestdataManyToManyShadowedEntity entity) {
+        public void afterVariableChanged(ScoreDirector<TestdataManyToManyShadowedSolution> scoreDirector,
+                TestdataManyToManyShadowedEntity entity) {
             updateShadow(entity, scoreDirector);
         }
 
-        private void updateShadow(TestdataManyToManyShadowedEntity entity, ScoreDirector<TestdataManyToManyShadowedSolution> scoreDirector) {
+        private void updateShadow(TestdataManyToManyShadowedEntity entity,
+                ScoreDirector<TestdataManyToManyShadowedSolution> scoreDirector) {
             TestdataValue primaryValue = entity.getPrimaryValue();
             TestdataValue secondaryValue = entity.getSecondaryValue();
             String composedValue;

@@ -100,16 +100,19 @@ public class TestdataCyclicReferencedShadowedEntity extends TestdataObject {
             extends DummyVariableListener<TestdataCyclicReferencedShadowedSolution, TestdataCyclicReferencedShadowedEntity> {
 
         @Override
-        public void afterEntityAdded(ScoreDirector<TestdataCyclicReferencedShadowedSolution> scoreDirector, TestdataCyclicReferencedShadowedEntity entity) {
+        public void afterEntityAdded(ScoreDirector<TestdataCyclicReferencedShadowedSolution> scoreDirector,
+                TestdataCyclicReferencedShadowedEntity entity) {
             updateShadow(entity, scoreDirector);
         }
 
         @Override
-        public void afterVariableChanged(ScoreDirector<TestdataCyclicReferencedShadowedSolution> scoreDirector, TestdataCyclicReferencedShadowedEntity entity) {
+        public void afterVariableChanged(ScoreDirector<TestdataCyclicReferencedShadowedSolution> scoreDirector,
+                TestdataCyclicReferencedShadowedEntity entity) {
             updateShadow(entity, scoreDirector);
         }
 
-        private void updateShadow(TestdataCyclicReferencedShadowedEntity entity, ScoreDirector<TestdataCyclicReferencedShadowedSolution> scoreDirector) {
+        private void updateShadow(TestdataCyclicReferencedShadowedEntity entity,
+                ScoreDirector<TestdataCyclicReferencedShadowedSolution> scoreDirector) {
             // The barber cuts the hair of everyone in the village who does not cut his/her own hair
             // Does the barber cut his own hair?
             TestdataValue value = entity.getValue();
