@@ -45,9 +45,10 @@ final class BiRuleAssembler extends AbstractRuleAssembler<BiPredicate> {
     private BiPredicate filterToApplyToLastPrimaryPattern = null;
 
     public BiRuleAssembler(DroolsVariableFactory variableFactory, int expectedGroupByCount,
-            List<ViewItem> finishedExpressions, List<Variable> variables, List<PatternDef> primaryPatterns,
+            List<ViewItem> finishedExpressions, Variable aVariable, Variable bVariable, List<PatternDef> primaryPatterns,
             Map<Integer, List<ViewItem>> dependentExpressionMap) {
-        super(variableFactory, expectedGroupByCount, finishedExpressions, variables, primaryPatterns, dependentExpressionMap);
+        super(variableFactory, expectedGroupByCount, finishedExpressions, primaryPatterns, dependentExpressionMap,
+                aVariable, bVariable);
     }
 
     @Override

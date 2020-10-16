@@ -23,7 +23,6 @@ import static org.drools.model.PatternDSL.pattern;
 import static org.drools.modelcompiler.dsl.flow.D.from;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.function.Function;
 
@@ -56,6 +55,6 @@ final class UniGroupBy2Map0CollectFastMutator<A, NewA, NewB> extends AbstractUni
         newFinishedExpressions.add(pattern(newA));
         PatternDSL.PatternDef<NewA> newPrimaryPattern = pattern(newB);
         return new BiRuleAssembler(ruleAssembler, ruleAssembler.getExpectedGroupByCount(), newFinishedExpressions,
-                Arrays.asList(newA, newB), singletonList(newPrimaryPattern), emptyMap());
+                newA, newB, singletonList(newPrimaryPattern), emptyMap());
     }
 }

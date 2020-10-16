@@ -24,7 +24,6 @@ import static org.drools.model.PatternDSL.groupBy;
 import static org.drools.model.PatternDSL.pattern;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.function.Function;
 
@@ -59,6 +58,6 @@ final class UniGroupBy1Map1CollectFastMutator<A, NewA, NewB> extends AbstractUni
         Variable<NewB> newB = ruleAssembler.createVariable("newB", from(output));
         PatternDef<NewB> newPrimaryPattern = pattern(newB);
         return new BiRuleAssembler(ruleAssembler, ruleAssembler.getExpectedGroupByCount(), newFinishedExpressions,
-                Arrays.asList(groupKey, newB), singletonList(newPrimaryPattern), emptyMap());
+                groupKey, newB, singletonList(newPrimaryPattern), emptyMap());
     }
 }

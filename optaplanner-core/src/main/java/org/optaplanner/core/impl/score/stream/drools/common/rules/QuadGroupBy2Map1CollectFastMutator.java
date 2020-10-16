@@ -24,7 +24,6 @@ import static org.drools.model.PatternDSL.groupBy;
 import static org.drools.model.PatternDSL.pattern;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import org.drools.model.PatternDSL;
@@ -76,6 +75,6 @@ final class QuadGroupBy2Map1CollectFastMutator<A, B, C, D, NewA, NewB, NewC> ext
         newFinishedExpressions.add(newBPattern);
         PatternDSL.PatternDef<NewC> newPrimaryPattern = pattern(newC);
         return new TriRuleAssembler(ruleAssembler, ruleAssembler.getExpectedGroupByCount(), newFinishedExpressions,
-                Arrays.asList(newA, newB, newC), singletonList(newPrimaryPattern), emptyMap());
+                newA, newB, newC, singletonList(newPrimaryPattern), emptyMap());
     }
 }

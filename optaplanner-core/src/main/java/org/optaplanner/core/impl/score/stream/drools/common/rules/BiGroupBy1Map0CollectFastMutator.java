@@ -51,6 +51,6 @@ class BiGroupBy1Map0CollectFastMutator<A, B, NewA> extends AbstractBiGroupByMuta
         Variable<NewA> newA = ruleAssembler.createVariable("newB", from(groupKey));
         PatternDSL.PatternDef<NewA> newPrimaryPattern = pattern(newA);
         return new UniRuleAssembler(ruleAssembler, ruleAssembler.getExpectedGroupByCount(), newFinishedExpressions,
-                singletonList(newA), singletonList(newPrimaryPattern), emptyMap());
+                newA, singletonList(newPrimaryPattern), emptyMap());
     }
 }

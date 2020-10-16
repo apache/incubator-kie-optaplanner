@@ -23,7 +23,6 @@ import static org.drools.model.PatternDSL.groupBy;
 import static org.drools.model.PatternDSL.pattern;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import org.drools.model.PatternDSL;
@@ -54,6 +53,6 @@ final class TriGroupBy1Map0CollectFastMutator<A, B, C, NewA> extends AbstractTri
         Variable<NewA> newA = ruleAssembler.createVariable("newA", from(groupKey));
         PatternDSL.PatternDef<NewA> newPrimaryPattern = pattern(newA);
         return new UniRuleAssembler(ruleAssembler, ruleAssembler.getExpectedGroupByCount(), newFinishedExpressions,
-                Arrays.asList(newA), singletonList(newPrimaryPattern), emptyMap());
+                newA, singletonList(newPrimaryPattern), emptyMap());
     }
 }

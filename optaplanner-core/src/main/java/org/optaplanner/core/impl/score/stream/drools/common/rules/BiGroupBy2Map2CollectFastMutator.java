@@ -24,7 +24,6 @@ import static org.drools.model.DSL.groupBy;
 import static org.drools.model.PatternDSL.pattern;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.function.BiFunction;
 
@@ -80,6 +79,6 @@ final class BiGroupBy2Map2CollectFastMutator<A, B, NewA, NewB, NewC, NewD> exten
         newFinishedExpressions.add(newCPattern);
         PatternDSL.PatternDef<NewD> newPrimaryPattern = pattern(newD);
         return new QuadRuleAssembler(ruleAssembler, ruleAssembler.getExpectedGroupByCount(), newFinishedExpressions,
-                Arrays.asList(newA, newB, newC, newD), singletonList(newPrimaryPattern), emptyMap());
+                newA, newB, newC, newD, singletonList(newPrimaryPattern), emptyMap());
     }
 }

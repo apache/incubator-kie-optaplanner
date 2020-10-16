@@ -45,9 +45,10 @@ final class TriRuleAssembler extends AbstractRuleAssembler<TriPredicate> {
     private TriPredicate filterToApplyToLastPrimaryPattern = null;
 
     public TriRuleAssembler(DroolsVariableFactory variableFactory, int expectedGroupByCount,
-            List<ViewItem> finishedExpressions, List<Variable> variables, List<PatternDef> primaryPatterns,
-            Map<Integer, List<ViewItem>> dependentExpressionMap) {
-        super(variableFactory, expectedGroupByCount, finishedExpressions, variables, primaryPatterns, dependentExpressionMap);
+            List<ViewItem> finishedExpressions, Variable aVariable, Variable bVariable, Variable cVariable,
+            List<PatternDef> primaryPatterns, Map<Integer, List<ViewItem>> dependentExpressionMap) {
+        super(variableFactory, expectedGroupByCount, finishedExpressions, primaryPatterns, dependentExpressionMap,
+                aVariable, bVariable, cVariable);
     }
 
     @Override

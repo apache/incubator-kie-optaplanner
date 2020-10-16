@@ -45,9 +45,10 @@ final class QuadRuleAssembler extends AbstractRuleAssembler<QuadPredicate> {
     private QuadPredicate filterToApplyToLastPrimaryPattern = null;
 
     public QuadRuleAssembler(DroolsVariableFactory variableFactory, int expectedGroupByCount,
-            List<ViewItem> finishedExpressions, List<Variable> variables, List<PatternDef> primaryPatterns,
-            Map<Integer, List<ViewItem>> dependentExpressionMap) {
-        super(variableFactory, expectedGroupByCount, finishedExpressions, variables, primaryPatterns, dependentExpressionMap);
+            List<ViewItem> finishedExpressions, Variable aVariable, Variable bVariable, Variable cVariable,
+            Variable dVariable, List<PatternDef> primaryPatterns, Map<Integer, List<ViewItem>> dependentExpressionMap) {
+        super(variableFactory, expectedGroupByCount, finishedExpressions, primaryPatterns, dependentExpressionMap,
+                aVariable, bVariable, cVariable, dVariable);
     }
 
     @Override

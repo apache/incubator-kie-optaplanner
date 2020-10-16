@@ -53,6 +53,6 @@ final class QuadGroupBy1Map0CollectFastMutator<A, B, C, D, NewA> extends Abstrac
         Variable<NewA> newA = ruleAssembler.createVariable("newA", from(groupKey));
         PatternDSL.PatternDef<NewA> newPrimaryPattern = pattern(newA);
         return new UniRuleAssembler(ruleAssembler, ruleAssembler.getExpectedGroupByCount(), newFinishedExpressions,
-                singletonList(newA), singletonList(newPrimaryPattern), emptyMap());
+                newA, singletonList(newPrimaryPattern), emptyMap());
     }
 }

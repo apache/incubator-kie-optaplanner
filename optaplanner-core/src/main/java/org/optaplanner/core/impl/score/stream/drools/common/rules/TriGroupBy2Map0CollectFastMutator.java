@@ -23,7 +23,6 @@ import static org.drools.model.PatternDSL.groupBy;
 import static org.drools.model.PatternDSL.pattern;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import org.drools.model.PatternDSL;
@@ -60,6 +59,6 @@ final class TriGroupBy2Map0CollectFastMutator<A, B, C, NewA, NewB> extends Abstr
         newFinishedExpressions.add(newAPattern);
         PatternDSL.PatternDef<NewB> newPrimaryPattern = pattern(newB);
         return new BiRuleAssembler(ruleAssembler, ruleAssembler.getExpectedGroupByCount(), newFinishedExpressions,
-                Arrays.asList(newA, newB), singletonList(newPrimaryPattern), emptyMap());
+                newA, newB, singletonList(newPrimaryPattern), emptyMap());
     }
 }
