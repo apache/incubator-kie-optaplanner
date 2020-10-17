@@ -51,6 +51,7 @@ abstract class AbstractGroupByMutator implements Mutator {
             PatternDef pattern, Variable<InTuple> tupleVariable);
 
     protected ViewItem getInnerAccumulatePattern(AbstractRuleAssembler<?> ruleAssembler) {
+        ruleAssembler.applyFilterToLastPrimaryPattern();
         List<ViewItem> patternList = new ArrayList<>();
         for (int i = 0; i < ruleAssembler.getPrimaryPatterns().size(); i++) {
             patternList.add(ruleAssembler.getPrimaryPatterns().get(i));
@@ -67,7 +68,6 @@ abstract class AbstractGroupByMutator implements Mutator {
 
     protected <NewA, InTuple, OutTuple> AbstractRuleAssembler collect(AbstractRuleAssembler ruleAssembler,
             DroolsAbstractAccumulateFunction<?, InTuple, OutTuple> accumulateFunctionBridge) {
-        ruleAssembler.applyFilterToLastPrimaryPattern();
         PatternDef mainAccumulatePattern = ruleAssembler.getLastPrimaryPattern();
         boolean isRegrouping = FactTuple.class.isAssignableFrom(mainAccumulatePattern.getFirstVariable().getType());
         Variable<InTuple> tupleVariable = isRegrouping ? mainAccumulatePattern.getFirstVariable()
@@ -90,7 +90,6 @@ abstract class AbstractGroupByMutator implements Mutator {
 
     private <InTuple> AbstractRuleAssembler universalGroupWithCollect(AbstractRuleAssembler ruleAssembler,
             Supplier<? extends DroolsAbstractGroupByAccumulator<InTuple>> invokerSupplier, Transformer<InTuple> mutator) {
-        ruleAssembler.applyFilterToLastPrimaryPattern();
         ViewItem<?> innerAccumulatePattern = getInnerAccumulatePattern(ruleAssembler);
         Variable<Collection<InTuple>> tupleCollection =
                 (Variable<Collection<InTuple>>) ruleAssembler.createVariable(Collection.class, "tupleCollection");

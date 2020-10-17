@@ -46,7 +46,6 @@ final class UniGroupBy1Map1CollectFastMutator<A, NewA, NewB> extends AbstractUni
 
     @Override
     public AbstractRuleAssembler apply(AbstractRuleAssembler ruleAssembler) {
-        ruleAssembler.applyFilterToLastPrimaryPattern();
         Variable<A> input = ruleAssembler.getVariable(0);
         Variable<NewA> groupKey = ruleAssembler.createVariable("groupKey");
         Variable<NewB> output = ruleAssembler.createVariable("output");

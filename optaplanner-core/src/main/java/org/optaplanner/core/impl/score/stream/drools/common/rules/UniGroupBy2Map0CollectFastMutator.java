@@ -43,7 +43,6 @@ final class UniGroupBy2Map0CollectFastMutator<A, NewA, NewB> extends AbstractUni
 
     @Override
     public AbstractRuleAssembler apply(AbstractRuleAssembler ruleAssembler) {
-        ruleAssembler.applyFilterToLastPrimaryPattern();
         Variable<A> input = ruleAssembler.getVariable(0);
         Variable<BiTuple<NewA, NewB>> groupKey = ruleAssembler.createVariable(BiTuple.class, "groupKey");
         ViewItem groupByPattern = groupBy(getInnerAccumulatePattern(ruleAssembler), input, groupKey,

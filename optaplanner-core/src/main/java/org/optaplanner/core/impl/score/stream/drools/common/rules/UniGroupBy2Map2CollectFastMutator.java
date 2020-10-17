@@ -51,7 +51,6 @@ final class UniGroupBy2Map2CollectFastMutator<A, NewA, NewB, NewC, NewD> extends
 
     @Override
     public AbstractRuleAssembler apply(AbstractRuleAssembler ruleAssembler) {
-        ruleAssembler.applyFilterToLastPrimaryPattern();
         Variable<A> input = ruleAssembler.getVariable(0);
         Variable<BiTuple<NewA, NewB>> groupKey = ruleAssembler.createVariable(BiTuple.class, "groupKey");
         Variable<NewC> outputC = ruleAssembler.createVariable("outputC");

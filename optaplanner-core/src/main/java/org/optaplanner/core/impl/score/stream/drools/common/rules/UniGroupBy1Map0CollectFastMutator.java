@@ -40,7 +40,6 @@ final class UniGroupBy1Map0CollectFastMutator<A, NewA> extends AbstractUniGroupB
 
     @Override
     public AbstractRuleAssembler apply(AbstractRuleAssembler ruleAssembler) {
-        ruleAssembler.applyFilterToLastPrimaryPattern();
         Variable<A> input = ruleAssembler.getVariable(0);
         Variable<NewA> groupKey = ruleAssembler.createVariable("groupKey");
         ViewItem groupByPattern = groupBy(getInnerAccumulatePattern(ruleAssembler), input, groupKey,
