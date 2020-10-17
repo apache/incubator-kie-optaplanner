@@ -16,18 +16,12 @@
 
 package org.optaplanner.core.impl.score.stream.drools.common.rules;
 
-import static java.util.Collections.emptyMap;
-import static java.util.Collections.singletonList;
 import static org.drools.model.DSL.accFunction;
 import static org.drools.model.DSL.from;
 import static org.drools.model.DSL.groupBy;
-import static org.drools.model.PatternDSL.pattern;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.function.BiFunction;
 
-import org.drools.model.PatternDSL;
 import org.drools.model.Variable;
 import org.drools.model.view.ViewItem;
 import org.optaplanner.core.api.score.stream.bi.BiConstraintCollector;

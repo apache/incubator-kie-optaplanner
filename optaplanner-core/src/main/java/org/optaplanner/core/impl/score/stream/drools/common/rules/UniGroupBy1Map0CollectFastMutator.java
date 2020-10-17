@@ -16,17 +16,11 @@
 
 package org.optaplanner.core.impl.score.stream.drools.common.rules;
 
-import static java.util.Collections.emptyMap;
-import static java.util.Collections.singletonList;
 import static org.drools.model.DSL.groupBy;
-import static org.drools.model.PatternDSL.pattern;
 import static org.drools.modelcompiler.dsl.flow.D.from;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.function.Function;
 
-import org.drools.model.PatternDSL;
 import org.drools.model.Variable;
 import org.drools.model.view.ViewItem;
 
