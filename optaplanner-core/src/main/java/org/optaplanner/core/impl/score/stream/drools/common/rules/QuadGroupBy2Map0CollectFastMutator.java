@@ -52,14 +52,8 @@ final class QuadGroupBy2Map0CollectFastMutator<A, B, C, D, NewA, NewB> extends A
         ViewItem groupByPattern = groupBy(getInnerAccumulatePattern(ruleAssembler), inputA, inputB, inputC, inputD,
                 groupKey, (a, b, c, d) -> new BiTuple<>(groupKeyMappingA.apply(a, b, c, d),
                         groupKeyMappingB.apply(a, b, c, d)));
-        List<ViewItem> newFinishedExpressions = new ArrayList<>(ruleAssembler.getFinishedExpressions());
-        newFinishedExpressions.add(groupByPattern); // The last pattern is added here.
         Variable<NewA> newA = ruleAssembler.createVariable("newA", from(groupKey, k -> k.a));
         Variable<NewB> newB = ruleAssembler.createVariable("newB", from(groupKey, k -> k.b));
-        PatternDSL.PatternDef<NewA> newAPattern = pattern(newA);
-        newFinishedExpressions.add(newAPattern);
-        PatternDSL.PatternDef<NewB> newPrimaryPattern = pattern(newB);
-        return new BiRuleAssembler(ruleAssembler, ruleAssembler.getExpectedGroupByCount(), newFinishedExpressions,
-                newA, newB, singletonList(newPrimaryPattern), emptyMap());
+        return toBi(ruleAssembler, groupByPattern, newA, newB);
     }
 }

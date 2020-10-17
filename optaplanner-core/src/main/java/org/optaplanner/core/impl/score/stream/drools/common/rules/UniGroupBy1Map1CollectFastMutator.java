@@ -52,11 +52,8 @@ final class UniGroupBy1Map1CollectFastMutator<A, NewA, NewB> extends AbstractUni
         ViewItem groupByPattern = groupBy(getInnerAccumulatePattern(ruleAssembler), input, groupKey,
                 groupKeyMappingA::apply,
                 accFunction(() -> new DroolsUniAccumulateFunction<>(collectorB), input).as(output));
-        List<ViewItem> newFinishedExpressions = new ArrayList<>(ruleAssembler.getFinishedExpressions());
-        newFinishedExpressions.add(groupByPattern); // The last pattern is added here.
+        Variable<NewA> newA = ruleAssembler.createVariable("newA", from(groupKey));
         Variable<NewB> newB = ruleAssembler.createVariable("newB", from(output));
-        PatternDef<NewB> newPrimaryPattern = pattern(newB);
-        return new BiRuleAssembler(ruleAssembler, ruleAssembler.getExpectedGroupByCount(), newFinishedExpressions,
-                groupKey, newB, singletonList(newPrimaryPattern), emptyMap());
+        return toBi(ruleAssembler, groupByPattern, newA, newB);
     }
 }

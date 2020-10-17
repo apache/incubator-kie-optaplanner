@@ -57,11 +57,8 @@ class BiGroupBy1Map1CollectFastMutator<A, B, NewA, NewB> extends AbstractBiGroup
         ViewItem groupByPattern = groupBy(getInnerAccumulatePattern(ruleAssembler), inputA, inputB, groupKey,
                 groupKeyMappingA::apply,
                 accFunction(() -> new DroolsBiAccumulateFunction<>(collectorB), accumulateSource).as(output));
-        List<ViewItem> newFinishedExpressions = new ArrayList<>(ruleAssembler.getFinishedExpressions());
-        newFinishedExpressions.add(groupByPattern); // The last pattern is added here.
+        Variable<NewA> newA = ruleAssembler.createVariable("newA", from(groupKey));
         Variable<NewB> newB = ruleAssembler.createVariable("newB", from(output));
-        PatternDSL.PatternDef<NewB> newPrimaryPattern = pattern(newB);
-        return new BiRuleAssembler(ruleAssembler, ruleAssembler.getExpectedGroupByCount(), newFinishedExpressions,
-                groupKey, newB, singletonList(newPrimaryPattern), emptyMap());
+        return toBi(ruleAssembler, groupByPattern, newA, newB);
     }
 }
