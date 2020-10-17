@@ -34,6 +34,7 @@ import java.util.function.Supplier;
 
 import org.drools.model.DSL;
 import org.drools.model.Index;
+import org.drools.model.PatternDSL;
 import org.drools.model.PatternDSL.PatternDef;
 import org.drools.model.Variable;
 import org.drools.model.view.ViewItem;
@@ -211,6 +212,22 @@ abstract class AbstractGroupByMutator implements Mutator {
         return new BiRuleAssembler(ruleAssembler, ruleAssembler.getExpectedGroupByCount(),
                 ruleAssembler.getFinishedExpressions(), ruleAssembler.getVariable(0), ruleAssembler.getVariable(1),
                 ruleAssembler.getPrimaryPatterns(), emptyMap());
+    }
+
+    protected <NewA, NewB, NewC, NewD> QuadRuleAssembler toQuad(AbstractRuleAssembler ruleAssembler,
+            ViewItem groupByPattern, Variable<NewA> aVariable, Variable<NewB> bVariable, Variable<NewC> cVariable,
+            Variable<NewD> dVariable) {
+        List<ViewItem> newFinishedExpressions = new ArrayList<>(ruleAssembler.getFinishedExpressions());
+        newFinishedExpressions.add(groupByPattern); // The last pattern is added here.
+        PatternDSL.PatternDef<NewA> newAPattern = pattern(aVariable);
+        newFinishedExpressions.add(newAPattern);
+        PatternDSL.PatternDef<NewB> newBPattern = pattern(bVariable);
+        newFinishedExpressions.add(newBPattern);
+        PatternDSL.PatternDef<NewC> newCPattern = pattern(cVariable);
+        newFinishedExpressions.add(newCPattern);
+        PatternDSL.PatternDef<NewD> newPrimaryPattern = pattern(dVariable);
+        return new QuadRuleAssembler(ruleAssembler, ruleAssembler.getExpectedGroupByCount(), newFinishedExpressions,
+                aVariable, bVariable, cVariable, dVariable, singletonList(newPrimaryPattern), emptyMap());
     }
 
     @FunctionalInterface

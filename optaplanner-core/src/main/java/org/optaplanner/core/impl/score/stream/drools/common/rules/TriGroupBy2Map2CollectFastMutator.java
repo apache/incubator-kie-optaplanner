@@ -66,20 +66,10 @@ final class TriGroupBy2Map2CollectFastMutator<A, B, C, NewA, NewB, NewC, NewD> e
                 (a, b, c) -> new BiTuple<>(groupKeyMappingA.apply(a, b, c), groupKeyMappingB.apply(a, b, c)),
                 accFunction(() -> new DroolsTriAccumulateFunction<>(collectorC), accumulateSource).as(outputC),
                 accFunction(() -> new DroolsTriAccumulateFunction<>(collectorD), accumulateSource).as(outputD));
-        List<ViewItem> newFinishedExpressions = new ArrayList<>(ruleAssembler.getFinishedExpressions());
-        newFinishedExpressions.add(groupByPattern); // The last pattern is added here.
         Variable<NewA> newA = ruleAssembler.createVariable("newA", from(groupKey, k -> k.a));
         Variable<NewB> newB = ruleAssembler.createVariable("newB", from(groupKey, k -> k.b));
         Variable<NewC> newC = ruleAssembler.createVariable("newC", from(outputC));
         Variable<NewD> newD = ruleAssembler.createVariable("newD", from(outputD));
-        PatternDSL.PatternDef<NewA> newAPattern = pattern(newA);
-        newFinishedExpressions.add(newAPattern);
-        PatternDSL.PatternDef<NewB> newBPattern = pattern(newB);
-        newFinishedExpressions.add(newBPattern);
-        PatternDSL.PatternDef<NewC> newCPattern = pattern(newC);
-        newFinishedExpressions.add(newCPattern);
-        PatternDSL.PatternDef<NewD> newPrimaryPattern = pattern(newD);
-        return new QuadRuleAssembler(ruleAssembler, ruleAssembler.getExpectedGroupByCount(), newFinishedExpressions,
-                newA, newB, newC, newD, singletonList(newPrimaryPattern), emptyMap());
+        return toQuad(ruleAssembler, groupByPattern, newA, newB, newC, newD);
     }
 }
