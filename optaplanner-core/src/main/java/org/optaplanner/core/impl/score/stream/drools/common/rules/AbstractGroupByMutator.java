@@ -214,6 +214,15 @@ abstract class AbstractGroupByMutator implements Mutator {
                 ruleAssembler.getPrimaryPatterns(), emptyMap());
     }
 
+    protected <NewA> UniRuleAssembler toUni(AbstractRuleAssembler ruleAssembler, ViewItem groupBy,
+            Variable<NewA> aVariable) {
+        List<ViewItem> newFinishedExpressions = new ArrayList<>(ruleAssembler.getFinishedExpressions());
+        newFinishedExpressions.add(groupBy); // The last pattern is added here.
+        PatternDSL.PatternDef<NewA> newPrimaryPattern = pattern(aVariable);
+        return new UniRuleAssembler(ruleAssembler, ruleAssembler.getExpectedGroupByCount(), newFinishedExpressions,
+                aVariable, singletonList(newPrimaryPattern), emptyMap());
+    }
+
     protected <NewA, NewB> BiRuleAssembler toBi(AbstractRuleAssembler ruleAssembler, ViewItem groupBy,
             Variable<NewA> aVariable, Variable<NewB> bVariable) {
         List<ViewItem> newFinishedExpressions = new ArrayList<>(ruleAssembler.getFinishedExpressions());

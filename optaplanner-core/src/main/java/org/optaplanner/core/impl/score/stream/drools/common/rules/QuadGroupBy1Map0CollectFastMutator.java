@@ -47,11 +47,7 @@ final class QuadGroupBy1Map0CollectFastMutator<A, B, C, D, NewA> extends Abstrac
         Variable<NewA> groupKey = ruleAssembler.createVariable("groupKey");
         ViewItem groupByPattern = groupBy(getInnerAccumulatePattern(ruleAssembler), inputA, inputB, inputC, inputD,
                 groupKey, groupKeyMapping::apply);
-        List<ViewItem> newFinishedExpressions = new ArrayList<>(ruleAssembler.getFinishedExpressions());
-        newFinishedExpressions.add(groupByPattern); // The last pattern is added here.
         Variable<NewA> newA = ruleAssembler.createVariable("newA", from(groupKey));
-        PatternDSL.PatternDef<NewA> newPrimaryPattern = pattern(newA);
-        return new UniRuleAssembler(ruleAssembler, ruleAssembler.getExpectedGroupByCount(), newFinishedExpressions,
-                newA, singletonList(newPrimaryPattern), emptyMap());
+        return toUni(ruleAssembler, groupByPattern, newA);
     }
 }
