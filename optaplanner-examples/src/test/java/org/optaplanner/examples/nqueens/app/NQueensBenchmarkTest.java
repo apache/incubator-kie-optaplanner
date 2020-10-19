@@ -43,9 +43,8 @@ public class NQueensBenchmarkTest extends PlannerBenchmarkTest {
     // Tests
     // ************************************************************************
 
-    @Test
     @Timeout(600)
-    @Disabled("TODO ConcurrentModificationException")
+    @Disabled("DROOLS-5740")
     public void benchmark64queens() {
         NQueens problem = new XStreamSolutionFileIO<NQueens>(NQueens.class)
                 .read(new File("data/nqueens/unsolved/64queens.xml"));
