@@ -26,6 +26,7 @@ import java.util.Optional;
 import java.util.stream.Stream;
 
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DynamicTest;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestFactory;
@@ -72,6 +73,7 @@ public abstract class SolverPerformanceTest<Solution_> extends LoggingTest {
 
     @TestFactory
     @Timeout(600)
+    @Disabled("Some issue, possibly in Drools, that we're currently investigating.")
     Stream<DynamicTest> runSpeedTest() {
         return moveThreadCounts().flatMap(moveThreadCount -> testData().map(testData -> dynamicTest(
                 testData.unsolvedDataFile.replaceFirst(".*/", "")
