@@ -180,6 +180,11 @@ public final class BendableLongScoreHolderImpl extends AbstractScoreHolder<Benda
     }
 
     @Override
+    public void impactScore(RuleContext kcontext, int weightMultiplier) {
+        impactScore(kcontext, (long) weightMultiplier);
+    }
+
+    @Override
     public void impactScore(RuleContext kcontext, long weightMultiplier) {
         Rule rule = kcontext.getRule();
         BiConsumer<RuleContext, Long> matchExecutor = matchExecutorByNumberMap.get(rule);

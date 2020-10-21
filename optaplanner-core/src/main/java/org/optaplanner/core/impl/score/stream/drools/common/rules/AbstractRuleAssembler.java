@@ -105,7 +105,11 @@ abstract class AbstractRuleAssembler<Predicate_> implements RuleAssembler,
             BigDecimal impact) {
         RuleContext kcontext = (RuleContext) drools;
         constraint.assertCorrectImpact(impact);
-        scoreHolder.impactScore(kcontext, impact);
+        try {
+            scoreHolder.impactScore(kcontext, impact);
+        } catch (UnsupportedOperationException exception) {
+
+        }
     }
 
     int getExpectedGroupByCount() {
