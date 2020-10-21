@@ -174,7 +174,7 @@ public abstract class AbstractScoreHolder<Score_ extends Score<Score_>> implemen
     public void impactScore(RuleContext kcontext, long weightMultiplier) {
         throw new UnsupportedOperationException("In the rule (" + kcontext.getRule().getName()
                 + "), the scoreHolder class (" + getClass()
-                + ") does not support an int weightMultiplier (" + weightMultiplier + ").");
+                + ") does not support a long weightMultiplier (" + weightMultiplier + ").");
     }
 
     /**
@@ -186,7 +186,7 @@ public abstract class AbstractScoreHolder<Score_ extends Score<Score_>> implemen
     public void impactScore(RuleContext kcontext, BigDecimal weightMultiplier) {
         throw new UnsupportedOperationException("In the rule (" + kcontext.getRule().getName()
                 + "), the scoreHolder class (" + getClass()
-                + ") does not support an int weightMultiplier (" + weightMultiplier + ").");
+                + ") does not support a BigDecimal weightMultiplier (" + weightMultiplier + ").");
     }
 
     public abstract Score_ extractScore(int initScore);
