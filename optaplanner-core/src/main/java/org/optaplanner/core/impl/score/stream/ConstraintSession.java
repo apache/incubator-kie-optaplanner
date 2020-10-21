@@ -30,7 +30,11 @@ public interface ConstraintSession<Solution_, Score_ extends Score<Score_>> exte
 
     void insert(Object fact);
 
-    void update(Object fact);
+    default void update(Object fact) {
+        update(fact, null);
+    }
+
+    void update(Object fact, String variableName);
 
     void retract(Object fact);
 

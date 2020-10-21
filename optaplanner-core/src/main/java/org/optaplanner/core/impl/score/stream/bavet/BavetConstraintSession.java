@@ -105,7 +105,7 @@ public final class BavetConstraintSession<Solution_, Score_ extends Score<Score_
     }
 
     @Override
-    public void update(Object fact) {
+    public void update(Object fact, String variableName) {
         List<BavetFromUniTuple<Object>> tupleList = fromTupleListMap.get(fact);
         if (tupleList == null) {
             throw new IllegalStateException("The fact (" + fact + ") was never inserted, so it cannot update.");

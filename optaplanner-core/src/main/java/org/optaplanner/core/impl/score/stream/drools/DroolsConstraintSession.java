@@ -43,9 +43,13 @@ public class DroolsConstraintSession<Solution_, Score_ extends Score<Score_>>
     }
 
     @Override
-    public void update(Object fact) {
+    public void update(Object fact, String variableName) {
         FactHandle factHandle = kieSession.getFactHandle(fact);
-        kieSession.update(factHandle, fact);
+        if (variableName == null) {
+            kieSession.update(factHandle, fact);
+        } else {
+            kieSession.update(factHandle, fact, variableName);
+        }
     }
 
     @Override
