@@ -48,7 +48,7 @@ public class DroolsConstraintSession<Solution_, Score_ extends Score<Score_>>
     }
 
     @Override
-    public void update(Object fact, String variableName) {
+    public void update(Object fact) {
         FactHandle factHandle = kieSession.getFactHandle(fact);
         if (factHandle == null) {
             throw new IllegalArgumentException("The fact (" + fact
@@ -58,11 +58,7 @@ public class DroolsConstraintSession<Solution_, Score_ extends Score<Score_>>
                     + solutionDescriptor.getEntityMemberAndEntityCollectionMemberNames() + ") or fact members ("
                     + solutionDescriptor.getProblemFactMemberAndProblemFactCollectionMemberNames() + ").");
         }
-        if (variableName == null) {
-            kieSession.update(factHandle, fact);
-        } else {
-            kieSession.update(factHandle, fact, variableName);
-        }
+        kieSession.update(factHandle, fact);
     }
 
     @Override
