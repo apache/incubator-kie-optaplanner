@@ -16,6 +16,7 @@
 
 package org.optaplanner.core.impl.score.buildin.hardsoftlong;
 
+import java.math.BigDecimal;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.function.BiConsumer;
@@ -136,6 +137,14 @@ public final class HardSoftLongScoreHolderImpl extends AbstractScoreHolder<HardS
                     + ConstraintConfiguration.class.getSimpleName() + " annotated class.");
         }
         matchExecutor.accept(kcontext, weightMultiplier);
+    }
+
+    @Override
+    public void impactScore(RuleContext kcontext, BigDecimal weightMultiplier) {
+        throw new UnsupportedOperationException("In the rule (" + kcontext.getRule().getName()
+                + "), the scoreHolder class (" + getClass()
+                + ") does not support a BigDecimal weightMultiplier (" + weightMultiplier + ").\n"
+                + "If you're using constraint streams, maybe switch from penalizeBigDecimal() to penalizeLong()?");
     }
 
     private void impactScore(RuleContext kcontext, long hardWeightMultiplier, long softWeightMultiplier) {
