@@ -64,6 +64,18 @@
       </excludes>
     </fileSet>
     <fileSet><!-- Note: going outside the module dir is bad, but it is not fetching generated files -->
+      <directory>../ide-configuration</directory>
+      <outputDirectory>examples/ide-configuration</outputDirectory>
+      <excludes>
+        <exclude>.*/**</exclude>
+        <exclude>nbproject/**</exclude>
+        <exclude>*.ipr</exclude>
+        <exclude>*.iws</exclude>
+        <exclude>*.iml</exclude>
+        <exclude>.git/**</exclude>
+      </excludes>
+    </fileSet>
+    <fileSet><!-- Note: going outside the module dir is bad, but it is not fetching generated files -->
       <directory>../optaplanner-quickstarts/spring-boot-school-timetabling</directory>
       <outputDirectory>quickstarts/spring-boot-school-timetabling</outputDirectory>
       <excludes>
