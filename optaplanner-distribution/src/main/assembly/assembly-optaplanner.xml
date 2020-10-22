@@ -77,6 +77,20 @@
         <exclude>.git/**</exclude>
       </excludes>
     </fileSet>
+    <fileSet><!-- Note: going outside the module dir is bad, but it is not fetching generated files -->
+      <directory>../optaplanner-quickstarts/quarkus-school-timetabling</directory>
+      <outputDirectory>quickstarts/quarkus-school-timetabling</outputDirectory>
+      <excludes>
+        <exclude>target/**</exclude>
+        <exclude>local/**</exclude>
+        <exclude>.*/**</exclude>
+        <exclude>nbproject/**</exclude>
+        <exclude>*.ipr</exclude>
+        <exclude>*.iws</exclude>
+        <exclude>*.iml</exclude>
+        <exclude>.git/**</exclude>
+      </excludes>
+    </fileSet>
   </fileSets>
 
   <dependencySets>
