@@ -25,7 +25,6 @@ import static org.drools.model.PatternDSL.alphaIndexedBy;
 import static org.drools.model.PatternDSL.pattern;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
@@ -186,7 +185,6 @@ abstract class AbstractGroupByMutator implements Mutator {
         Variable<NewB> newB = ruleAssembler.createVariable("newB");
         Variable<NewC> newC = ruleAssembler.createVariable("newC");
         Variable<NewD> newD = ruleAssembler.createVariable("newD");
-        List<Variable> newVariables = Arrays.asList(newA, newB, newC, newD);
         Variable<QuadTuple<NewA, NewB, NewC, NewD>> newTuple =
                 (Variable<QuadTuple<NewA, NewB, NewC, NewD>>) ruleAssembler.createVariable(QuadTuple.class, "quadGrouped",
                         from(newSource));
