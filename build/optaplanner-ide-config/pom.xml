@@ -9,4 +9,13 @@
   </parent>
   <artifactId>optaplanner-ide-config</artifactId>
   <name>OptaPlanner IDE Configuration</name>
+  <description>
+    OptaPlanner solves planning problems.
+    This lightweight, embeddable planning engine implements powerful and scalable algorithms
+    to optimize business resource scheduling and planning.
+
+    This module contains the IDE configuration files used for formatting OptaPlanner's
+    source code.
+  </description>
+  <url>https://www.optaplanner.org</url>
 </project>
