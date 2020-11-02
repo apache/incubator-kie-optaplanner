@@ -202,7 +202,7 @@ public final class BendableLongScoreHolderImpl extends AbstractScoreHolder<Benda
         throw new UnsupportedOperationException("In the rule (" + kcontext.getRule().getName()
                 + "), the scoreHolder class (" + getClass()
                 + ") does not support a BigDecimal weightMultiplier (" + weightMultiplier + ").\n"
-                + "If you're using constraint streams, maybe switch from penalizeBigDecimal() to penalizeLong()?");
+                + "If you're using constraint streams, maybe switch from penalizeBigDecimal() to penalizeLong().");
     }
 
     private void impactScore(RuleContext kcontext, long[] hardWeightsMultiplier, long[] softWeightsMultiplier) {

@@ -149,7 +149,7 @@ public final class HardMediumSoftScoreHolderImpl extends AbstractScoreHolder<Har
         throw new UnsupportedOperationException("In the rule (" + kcontext.getRule().getName()
                 + "), the scoreHolder class (" + getClass()
                 + ") does not support a long weightMultiplier (" + weightMultiplier + ").\n"
-                + "If you're using constraint streams, maybe switch from penalizeLong() to penalize()?");
+                + "If you're using constraint streams, maybe switch from penalizeLong() to penalize().");
     }
 
     @Override
@@ -157,7 +157,7 @@ public final class HardMediumSoftScoreHolderImpl extends AbstractScoreHolder<Har
         throw new UnsupportedOperationException("In the rule (" + kcontext.getRule().getName()
                 + "), the scoreHolder class (" + getClass()
                 + ") does not support a BigDecimal weightMultiplier (" + weightMultiplier + ").\n"
-                + "If you're using constraint streams, maybe switch from penalizeBigDecimal() to penalize()?");
+                + "If you're using constraint streams, maybe switch from penalizeBigDecimal() to penalize().");
     }
 
     private void impactScore(RuleContext kcontext, int hardWeightMultiplier, int mediumWeightMultiplier,
