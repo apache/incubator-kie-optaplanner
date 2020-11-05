@@ -1,0 +1,96 @@
+= Release Procedure
+
+== Projects and Artifacts
+Following sections describe what projects are part of the OptaPlanner release procedure and their resulting
+release artefacts.
+
+=== OptaPlanner
+
+* JAR files hosted on Maven Central
+* https://download.jboss.org/optaplanner/release/7.44.0.Final/optaplanner-distribution-7.44.0.Final.zip[Distribution.zip]
+available via a link on the optaplanner-website
+* https://docs.optaplanner.org/7.44.0.Final/optaplanner-docs/html_single/index.html[Documentation]
+available via a link on the optaplanner-website
+* XML Schema Definition files for both the https://www.optaplanner.org/xsd/solver/[Solver]
+and the https://www.optaplanner.org/xsd/benchmark/[Benchmark] available on the optaplanner-website
+
+=== OptaPlanner Quickstarts
+
+No build artifacts are required; as a result of the release, the development branch must be rebased onto
+the stable branch and must point to the released final version of OptaPlanner.
+
+=== OptaWeb Employee Rostering and Vehicle Routing
+
+* https://www.optaplanner.org/download/download.html[Distribution.zip] available via a link on the optaplanner-website
+* https://www.optaplanner.org/learn/documentation.html[Documentation] available via a link on the optaplanner-website
+
+=== OptaPlanner Website
+The website contains https://github.com/kiegroup/optaplanner-website/blob/master/_config/pom.yml[links]
+to the distribution.zip files and documentation (see above). To update the documentation, and the distribution.zip,
+upload them to the JBoss file mgmt and then, open a PR changing the links.
+
+For the OptaPlanner project, there is a https://github.com/kiegroup/optaplanner/blob/master/build/release/upload_distribution.sh[script]
+uploading the documentation and distribution.zip. The release pipeline calls the script and updates also
+the links on the website. For the Optawebs, the upload has to be done manually at this moment.
+
+== Versioning
+
+=== Project Version
+
+The first version released by this procedure is going to be 8.0.0.Final. After the release, the master branch
+upgrades to the version 8.1.0-SNAPSHOT. The next release is 8.1.0.Final
+
+=== Release Branches
+
+Release branches are named based on the released version by using the following convention:
+Version 8.0.0 is released from a release branch 8.0.x, which is upgraded to 8.0.1-SNAPSHOT version of the OptaPlanner.
+
+== Release Steps
+
+This chapter describes steps required to release artifacts enlisted above, as well as other preliminary and
+postliminary actions.
+
+=== 1. Release the version in Jira
+
+Navigate to the https://issues.redhat.com/projects/PLANNER?selectedItem=com.atlassian.jira.jira-projects-plugin:release-page[Releases page in JIRA],
+find the version to be released and pick “Release” from the Actions.
+
+=== 2. Run kogito-release-pipeline
+
+OptaPlanner is released as a part of the Kogito release pipeline. Thus, a person releasing the Kogito triggers the pipeline.
+Make sure you agree with this person on setting the correct OptaPlanner version before running the pipeline.
+
+==== Actions covered by the Kogito release pipeline:
+* Create a release branch and update the project to the release version.
+* Build the project and deploy maven artefacts into a staging repository on JBoss Nexus.
+* Promote maven artefacts from the staging repository to the Maven Central.
+* Update version to the next bugfix snapshot on the release branch.
+
+=== 3. Update versions to the next snapshot
+*_This step is yet to be automated._*
+
+After the pipeline finishes, update the version on the master branch of OptaPlanner to the next minor snapshot version,
+e.g. 8.0.0.Final -> 8.1.0-SNAPSHOT. Update also the version of kogito by editing
+the value of the property `version.org.kie.kogito` in the optaplanner-build-parent.
+
+=== 4. Release OptaPlanner Quickstarts
+*_This step is yet to be automated._*
+
+. https://issues.redhat.com/browse/PLANNER-2230[Sync-up the stable branch from the development.]
+. Open a PR to the stable branch
+. Create and push a tag for the release.
+. Update the project version on the development branch to the next minor snapshot. Update the optaplanner version via the version.org.optaplanner property in all quickstarts, including gradle build files.
+. Open a PR to the development branch.
+
+=== 5. Release Optawebs
+*_This step is yet to be automated. Follow the recipe below for both the Optaweb projects._*
+
+. Update the version of the project and its parent pom.xml to the release version.
+. Build both projects to get the distribution and documentation (required for the next step).
+. Upload the documentation and distribution.zip to the filemgmt.jboss.org using either sftp, scp or rsync.
+Make sure to update the latest and latestFinal symlinks. See the https://github.com/kiegroup/optaplanner/blob/master/build/release/upload_distribution.sh[script]
+which takes care of this step for the OptaPlanner project.
+. Create a commit and a tag for the release. Push the tag.
+. Update the version of the project to the next minor snapshot version.
+.. Make sure the project builds.
+. Open a PR.
