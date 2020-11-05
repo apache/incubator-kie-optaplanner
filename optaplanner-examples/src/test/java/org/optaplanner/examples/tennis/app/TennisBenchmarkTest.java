@@ -18,7 +18,6 @@ package org.optaplanner.examples.tennis.app;
 
 import java.io.File;
 
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.optaplanner.benchmark.api.PlannerBenchmark;
 import org.optaplanner.benchmark.api.PlannerBenchmarkFactory;

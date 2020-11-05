@@ -18,7 +18,6 @@ package org.optaplanner.examples.curriculumcourse.app;
 
 import java.util.stream.Stream;
 
-import org.junit.jupiter.api.Disabled;
 import org.optaplanner.core.config.solver.EnvironmentMode;
 import org.optaplanner.examples.common.app.SolverPerformanceTest;
 import org.optaplanner.examples.curriculumcourse.domain.CourseSchedule;
