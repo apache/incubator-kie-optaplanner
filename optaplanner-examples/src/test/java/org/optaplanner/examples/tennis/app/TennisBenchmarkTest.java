@@ -29,7 +29,6 @@ import org.optaplanner.examples.common.app.LoggingTest;
 import org.optaplanner.examples.tennis.domain.TennisSolution;
 import org.optaplanner.examples.tennis.persistence.TennisGenerator;
 
-@Disabled("DROOLS-5776")
 public class TennisBenchmarkTest extends LoggingTest {
 
     @Test
