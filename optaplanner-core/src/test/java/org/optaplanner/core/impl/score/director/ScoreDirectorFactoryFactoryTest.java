@@ -144,7 +144,7 @@ class ScoreDirectorFactoryFactoryTest {
                 .withScoreDrls("org/optaplanner/core/impl/score/director/invalidDroolsConstraints.drl");
         assertThatExceptionOfType(IllegalStateException.class)
                 .isThrownBy(() -> buildTestdataScoreDirectoryFactory(config))
-                .withMessageContaining("DRL")
+                .withMessageContaining("scoreDrl")
                 .withRootCauseInstanceOf(RuntimeException.class);
     }
 
@@ -154,7 +154,7 @@ class ScoreDirectorFactoryFactoryTest {
                 .withScoreDrls("nonExisting.drl");
         assertThatExceptionOfType(IllegalStateException.class)
                 .isThrownBy(() -> buildTestdataScoreDirectoryFactory(config))
-                .withMessageContaining("DRL");
+                .withMessageContaining("scoreDrl");
     }
 
     @Test
@@ -163,7 +163,7 @@ class ScoreDirectorFactoryFactoryTest {
                 .withScoreDrlFiles(new File("nonExisting.drl"));
         assertThatExceptionOfType(IllegalStateException.class)
                 .isThrownBy(() -> buildTestdataScoreDirectoryFactory(config))
-                .withMessageContaining("DRL");
+                .withMessageContaining("scoreDrl");
     }
 
     private <Score_ extends Score<Score_>> ScoreDirectorFactory<TestdataSolution> buildTestdataScoreDirectoryFactory(
