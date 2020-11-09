@@ -257,7 +257,7 @@ public class ScoreDirectorFactoryFactory<Solution_, Score_ extends Score<Score_>
                 return new DroolsScoreDirectorFactory<>(solutionDescriptor, kieBase);
             }
         } catch (Exception ex) {
-            throw new IllegalStateException("There are problems in your DRL.", ex);
+            throw new IllegalStateException("There is an error in a scoreDrl or scoreDrlFile.", ex);
         }
     }
 
