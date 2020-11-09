@@ -25,7 +25,6 @@ pipeline {
                 script {
                     mailer.buildLogScriptPR()
 
-                    checkoutRepo('kogito-runtimes')
                     checkoutRepo('optaplanner')
                     String quickstartsRepo = 'optaplanner-quickstarts'
                     dir(quickstartsRepo) {
@@ -34,11 +33,6 @@ pipeline {
                         githubscm.checkoutIfExists(quickstartsRepo, changeAuthor, changeBranch, 'kiegroup', quickstartsChangeTarget, true)
                     }
                 }
-            }
-        }
-        stage('Build Kogito Runtimes skipping tests') {
-            steps {
-                mavenCleanInstall("kogito-runtimes", true, [])
             }
         }
         stage('Build OptaPlanner') {
