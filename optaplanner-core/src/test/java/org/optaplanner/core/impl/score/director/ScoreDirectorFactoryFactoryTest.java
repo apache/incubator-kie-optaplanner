@@ -139,6 +139,16 @@ class ScoreDirectorFactoryFactoryTest {
     }
 
     @Test
+    void invalidDrlResource_throwsException() {
+        ScoreDirectorFactoryConfig config = new ScoreDirectorFactoryConfig()
+                .withScoreDrls("org/optaplanner/core/impl/score/director/invalidDroolsConstraints.drl");
+        assertThatExceptionOfType(IllegalArgumentException.class)
+                .isThrownBy(() -> buildTestdataScoreDirectoryFactory(config))
+                .withMessageContaining("DRL")
+                .withRootCauseInstanceOf(RuntimeException.class);
+    }
+
+    @Test
     void nonExistingDrlResource_throwsException() {
         ScoreDirectorFactoryConfig config = new ScoreDirectorFactoryConfig()
                 .withScoreDrls("nonExisting.drl");
