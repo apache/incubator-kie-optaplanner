@@ -61,6 +61,8 @@ import org.optaplanner.core.impl.score.stream.bi.DefaultBiConstraintCollector;
 import org.optaplanner.core.impl.score.stream.quad.DefaultQuadConstraintCollector;
 import org.optaplanner.core.impl.score.stream.tri.DefaultTriConstraintCollector;
 import org.optaplanner.core.impl.score.stream.uni.DefaultUniConstraintCollector;
+import org.optaplanner.core.impl.util.ConsecutiveData;
+import org.optaplanner.core.impl.util.ConsecutiveSetTree;
 
 /**
  * Creates an {@link UniConstraintCollector}, {@link BiConstraintCollector}, ... instance
@@ -2107,6 +2109,112 @@ public final class ConstraintCollectors {
                         .filter(e -> !e.value.isEmpty()) // Filter out keys without values.
                         .collect(Collectors.toMap(e -> e.key, e -> toValue(e.value, mergeFunction),
                                 ConstraintCollectors::throwOnKeyConflict, TreeMap::new)));
+    }
+
+    // Consecutive
+
+    /**
+     * Creates a constraint collector that returns {@link ConsecutiveData} about the first
+     * fact.
+     *
+     * For instance ${@code [Shift slot=1] [Shift slot=2] [Shift slot=4] [Shift slot=6]}
+     * returns the following infomation
+     *
+     * ${@code
+     * Consecutive Lengths: 2 1 1
+     * Break Lengths: 1 2
+     * Consecutive Items [[Shift slot=1] [Shift slot=2]], [[Shift slot=4]] [[Shift slot=6]]
+     * }
+     * 
+     * @param indexMap Maps the fact to its position in the sequence
+     * @param <A> type of the first mapped fact
+     * @return never null
+     */
+    public static <A> UniConstraintCollector<A, ConsecutiveSetTree<A>, ConsecutiveData<A>>
+            consecutive(ToIntFunction<A> indexMap) {
+        return new DefaultUniConstraintCollector<>(() -> new ConsecutiveSetTree<>((Class<? extends A>) Object.class, indexMap),
+                (acc, a) -> {
+                    acc.add(a);
+                    return () -> {
+                        acc.remove(a);
+                    };
+                },
+                ConsecutiveSetTree::getConsecutiveData);
+    }
+
+    /**
+     * As defined by {@link #consecutive(ToIntFunction)} (Function, Function, BinaryOperator)}.
+     *
+     * @param resultMap Maps both facts to an item in the sequence
+     * @param indexMap Maps the item to its position in the sequence
+     * @param <A> type of the first mapped fact
+     * @param <B> type of the second mapped fact
+     * @param <Result> type of item in the sequence
+     * @return never null
+     */
+    public static <A, B, Result> BiConstraintCollector<A, B, ConsecutiveSetTree<Result>, ConsecutiveData<Result>>
+            consecutive(BiFunction<A, B, Result> resultMap, ToIntFunction<Result> indexMap) {
+        return new DefaultBiConstraintCollector<>(
+                () -> new ConsecutiveSetTree<>((Class<? extends Result>) Object.class, indexMap),
+                (acc, a, b) -> {
+                    Result result = resultMap.apply(a, b);
+                    acc.add(result);
+                    return () -> {
+                        acc.remove(result);
+                    };
+                },
+                ConsecutiveSetTree::getConsecutiveData);
+    }
+
+    /**
+     * As defined by {@link #consecutive(ToIntFunction)} (Function, Function, BinaryOperator)}.
+     *
+     * @param resultMap Maps the three facts to an item in the sequence
+     * @param indexMap Maps the item to its position in the sequence
+     * @param <A> type of the first mapped fact
+     * @param <B> type of the second mapped fact
+     * @param <C> type of the third mapped fact
+     * @param <Result> type of item in the sequence
+     * @return never null
+     */
+    public static <A, B, C, Result> TriConstraintCollector<A, B, C, ConsecutiveSetTree<Result>, ConsecutiveData<Result>>
+            consecutive(TriFunction<A, B, C, Result> resultMap, ToIntFunction<Result> indexMap) {
+        return new DefaultTriConstraintCollector<>(
+                () -> new ConsecutiveSetTree<>((Class<? extends Result>) Object.class, indexMap),
+                (acc, a, b, c) -> {
+                    Result result = resultMap.apply(a, b, c);
+                    acc.add(result);
+                    return () -> {
+                        acc.remove(result);
+                    };
+                },
+                ConsecutiveSetTree::getConsecutiveData);
+    }
+
+    /**
+     * As defined by {@link #consecutive(ToIntFunction)} (Function, Function, BinaryOperator)}.
+     *
+     * @param resultMap Maps the four facts to an item in the sequence
+     * @param indexMap Maps the item to its position in the sequence
+     * @param <A> type of the first mapped fact
+     * @param <B> type of the second mapped fact
+     * @param <C> type of the third mapped fact
+     * @param <D> type of the fourth mapped fact
+     * @param <Result> type of item in the sequence
+     * @return never null
+     */
+    public static <A, B, C, D, Result> QuadConstraintCollector<A, B, C, D, ConsecutiveSetTree<Result>, ConsecutiveData<Result>>
+            consecutive(QuadFunction<A, B, C, D, Result> resultMap, ToIntFunction<Result> indexMap) {
+        return new DefaultQuadConstraintCollector<>(
+                () -> new ConsecutiveSetTree<>((Class<? extends Result>) Object.class, indexMap),
+                (acc, a, b, c, d) -> {
+                    Result result = resultMap.apply(a, b, c, d);
+                    acc.add(result);
+                    return () -> {
+                        acc.remove(result);
+                    };
+                },
+                ConsecutiveSetTree::getConsecutiveData);
     }
 
     private ConstraintCollectors() {

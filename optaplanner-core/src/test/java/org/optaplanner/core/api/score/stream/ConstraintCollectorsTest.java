@@ -53,6 +53,8 @@ import org.optaplanner.core.api.score.stream.bi.BiConstraintCollector;
 import org.optaplanner.core.api.score.stream.quad.QuadConstraintCollector;
 import org.optaplanner.core.api.score.stream.tri.TriConstraintCollector;
 import org.optaplanner.core.api.score.stream.uni.UniConstraintCollector;
+import org.optaplanner.core.impl.util.ConsecutiveData;
+import org.optaplanner.core.impl.util.ConsecutiveSetTree;
 
 public class ConstraintCollectorsTest {
 
@@ -2553,16 +2555,53 @@ public class ConstraintCollectorsTest {
         assertResult(collector, container, emptySortedMap());
     }
 
-    private static <A, B, C, D, Container_, Result_> Runnable accumulate(
-            QuadConstraintCollector<A, B, C, D, Container_, Result_> collector, Object container, A valueA, B valueB,
-            C valueC, D valueD) {
-        return collector.accumulator().apply((Container_) container, valueA, valueB, valueC, valueD);
+    @Test
+    public void consecutive() {
+        // Do a basic test w/o edge cases; edge cases are covered in
+        // ConsecutiveSetTreeTest
+        UniConstraintCollector<Integer, ?, ConsecutiveData<Integer>> collector =
+                ConstraintCollectors.consecutive(Integer::intValue);
+        Object container = collector.supplier().get();
+        // Add first value, sequence is [2]
+        int firstValue = 2;
+        Runnable firstRetractor = accumulate(collector, container, firstValue);
+        assertResult(collector, container, consecutiveData(2));
+        // Add second value, sequence is [1,2]
+        int secondValue = 1;
+        Runnable secondRetractor = accumulate(collector, container, secondValue);
+        assertResult(collector, container, consecutiveData(1, 2));
+        // Add third value, same as the second. Sequence is [{1,1},2}]
+        Runnable thirdRetractor = accumulate(collector, container, secondValue);
+        assertResult(collector, container, consecutiveData(1, 1, 2));
+        // Retract one instance of the second value; we only have two values now.
+        secondRetractor.run();
+        assertResult(collector, container, consecutiveData(1, 2));
+        // Retract final instance of the second value; we only have one value now.
+        thirdRetractor.run();
+        assertResult(collector, container, consecutiveData(2));
+        // Retract last value; there are no values now.
+        firstRetractor.run();
+        assertResult(collector, container, consecutiveData());
+    }
+
+    private ConsecutiveData<Integer> consecutiveData(Integer... data) {
+        ConsecutiveSetTree<Integer> tree = new ConsecutiveSetTree<>(Integer.class, Integer::intValue);
+        for (Integer datum : data) {
+            tree.add(datum);
+        }
+        return tree.getConsecutiveData();
     }
 
     private static <A, B, C, Container_, Result_> Runnable accumulate(
             TriConstraintCollector<A, B, C, Container_, Result_> collector, Object container, A valueA, B valueB,
             C valueC) {
         return collector.accumulator().apply((Container_) container, valueA, valueB, valueC);
+    }
+
+    private static <A, B, C, D, Container_, Result_> Runnable accumulate(
+            QuadConstraintCollector<A, B, C, D, Container_, Result_> collector, Object container, A valueA, B valueB,
+            C valueC, D valueD) {
+        return collector.accumulator().apply((Container_) container, valueA, valueB, valueC, valueD);
     }
 
     private static <A, B, Container_, Result_> Runnable accumulate(
