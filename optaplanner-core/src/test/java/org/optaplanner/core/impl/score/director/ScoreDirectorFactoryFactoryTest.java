@@ -140,16 +140,20 @@ class ScoreDirectorFactoryFactoryTest {
 
     @Test
     void nonExistingDrlResource_throwsException() {
-        ScoreDirectorFactoryConfig config = new ScoreDirectorFactoryConfig().withScoreDrls("nonExisting.drl");
-        assertThatExceptionOfType(IllegalArgumentException.class).isThrownBy(() -> buildTestdataScoreDirectoryFactory(config))
-                .withMessageContaining("scoreDrl");
+        ScoreDirectorFactoryConfig config = new ScoreDirectorFactoryConfig()
+                .withScoreDrls("nonExisting.drl");
+        assertThatExceptionOfType(IllegalStateException.class)
+                .isThrownBy(() -> buildTestdataScoreDirectoryFactory(config))
+                .withMessageContaining("DRL");
     }
 
     @Test
     void nonExistingDrlFile_throwsException() {
-        ScoreDirectorFactoryConfig config = new ScoreDirectorFactoryConfig().withScoreDrlFiles(new File("nonExisting.drl"));
-        assertThatExceptionOfType(IllegalArgumentException.class).isThrownBy(() -> buildTestdataScoreDirectoryFactory(config))
-                .withMessageContaining("scoreDrlFile");
+        ScoreDirectorFactoryConfig config = new ScoreDirectorFactoryConfig()
+                .withScoreDrlFiles(new File("nonExisting.drl"));
+        assertThatExceptionOfType(IllegalStateException.class)
+                .isThrownBy(() -> buildTestdataScoreDirectoryFactory(config))
+                .withMessageContaining("DRL");
     }
 
     private <Score_ extends Score<Score_>> ScoreDirectorFactory<TestdataSolution> buildTestdataScoreDirectoryFactory(
