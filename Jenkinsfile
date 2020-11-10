@@ -37,7 +37,7 @@ pipeline {
         }
         stage('Build OptaPlanner') {
             steps {
-                mavenCleanInstall("optaplanner", false, ["run-code-coverage", "full"])
+                mavenCleanInstall('optaplanner', false, ['run-code-coverage'], '-Dfull')
             }
         }
         stage('Analyze OptaPlanner by SonarCloud') {
