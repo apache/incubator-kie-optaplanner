@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.optaplanner.examples.coachshuttlegathering.solver;
+package org.optaplanner.examples.coachshuttlegathering.optional.solver.score;
 
 import java.util.LinkedHashMap;
 import java.util.List;

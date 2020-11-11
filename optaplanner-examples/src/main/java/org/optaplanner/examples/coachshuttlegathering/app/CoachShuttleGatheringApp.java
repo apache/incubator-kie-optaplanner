@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -29,7 +29,7 @@ import org.optaplanner.persistence.common.api.domain.solution.SolutionFileIO;
 public class CoachShuttleGatheringApp extends CommonApp<CoachShuttleGatheringSolution> {
 
     public static final String SOLVER_CONFIG =
-            "org/optaplanner/examples/coachshuttlegathering/solver/coachShuttleGatheringSolverConfig.xml";
+            "org/optaplanner/examples/coachshuttlegathering/optional/solver/score/coachShuttleGatheringSolverConfig.xml";
 
     public static final String DATA_DIR_NAME = "coachshuttlegathering";
 
