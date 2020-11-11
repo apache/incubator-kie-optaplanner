@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.optaplanner.examples.pas.solver;
+package org.optaplanner.examples.pas.optional.score;
 
 import java.util.function.BiFunction;
 import java.util.stream.Stream;
