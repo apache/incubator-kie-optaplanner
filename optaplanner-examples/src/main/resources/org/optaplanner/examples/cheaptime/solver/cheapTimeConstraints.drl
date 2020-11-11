@@ -30,9 +30,9 @@ import org.optaplanner.examples.cheaptime.domain.Task;
 import org.optaplanner.examples.cheaptime.domain.TaskAssignment;
 import org.optaplanner.examples.cheaptime.domain.TaskRequirement;
 import org.optaplanner.examples.cheaptime.solver.score.CheapTimeCostCalculator;
-import org.optaplanner.examples.cheaptime.optional.solver.drools.IdleCost;
-import org.optaplanner.examples.cheaptime.optional.solver.drools.PeriodWrapper;
-import org.optaplanner.examples.cheaptime.optional.solver.drools.MachinePeriodPart;
+import org.optaplanner.examples.cheaptime.optional.score.drools.IdleCost;
+import org.optaplanner.examples.cheaptime.optional.score.drools.PeriodWrapper;
+import org.optaplanner.examples.cheaptime.optional.score.drools.MachinePeriodPart;
 
 global HardMediumSoftLongScoreHolder scoreHolder;
 

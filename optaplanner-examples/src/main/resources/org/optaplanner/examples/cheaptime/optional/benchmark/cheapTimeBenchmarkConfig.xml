@@ -10,10 +10,10 @@
       <solutionClass>org.optaplanner.examples.cheaptime.domain.CheapTimeSolution</solutionClass>
       <entityClass>org.optaplanner.examples.cheaptime.domain.TaskAssignment</entityClass>
       <scoreDirectorFactory>
-        <incrementalScoreCalculatorClass>org.optaplanner.examples.cheaptime.solver.score.CheapTimeIncrementalScoreCalculator</incrementalScoreCalculatorClass>
+        <incrementalScoreCalculatorClass>org.optaplanner.examples.cheaptime.score.CheapTimeIncrementalScoreCalculator</incrementalScoreCalculatorClass>
         <initializingScoreTrend>ONLY_DOWN</initializingScoreTrend>
         <!--<assertionScoreDirectorFactory>-->
-        <!--<easyScoreCalculatorClass>org.optaplanner.examples.cheaptime.optional.solver.score.CheapTimeEasyScoreCalculator</easyScoreCalculatorClass>-->
+        <!--<easyScoreCalculatorClass>org.optaplanner.examples.cheaptime.optional.score.CheapTimeEasyScoreCalculator</easyScoreCalculatorClass>-->
         <!--</assertionScoreDirectorFactory>-->
       </scoreDirectorFactory>
       <termination>
