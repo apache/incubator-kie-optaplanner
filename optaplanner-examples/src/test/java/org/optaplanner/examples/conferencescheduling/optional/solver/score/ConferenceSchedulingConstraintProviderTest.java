@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.optaplanner.examples.conferencescheduling.optional.score;
+package org.optaplanner.examples.conferencescheduling.optional.solver.score;
 
 import static java.util.Collections.emptySet;
 import static java.util.Collections.singleton;
