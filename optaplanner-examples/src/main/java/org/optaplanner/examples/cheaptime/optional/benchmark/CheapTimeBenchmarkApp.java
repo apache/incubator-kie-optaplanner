@@ -1,5 +1,5 @@
 /*
- * Copyright 2014 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.optaplanner.examples.cheaptime.app;
+package org.optaplanner.examples.cheaptime.optional.benchmark;
 
 import org.optaplanner.examples.common.app.CommonBenchmarkApp;
 
@@ -27,9 +27,9 @@ public class CheapTimeBenchmarkApp extends CommonBenchmarkApp {
     public CheapTimeBenchmarkApp() {
         super(
                 new ArgOption("default",
-                        "org/optaplanner/examples/cheaptime/benchmark/cheapTimeBenchmarkConfig.xml"),
+                        "org/optaplanner/examples/cheaptime/optional/benchmark/cheapTimeBenchmarkConfig.xml"),
                 new ArgOption("template",
-                        "org/optaplanner/examples/cheaptime/benchmark/cheapTimeBenchmarkConfigTemplate.xml.ftl", true));
+                        "org/optaplanner/examples/cheaptime/optional/benchmark/cheapTimeBenchmarkConfigTemplate.xml.ftl", true));
     }
 
 }
