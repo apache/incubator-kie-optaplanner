@@ -35,12 +35,12 @@ public class InvestmentNumericUtil {
     protected static final BigDecimal MICROS_DIVISOR = new BigDecimal(1000000L);
 
     public static String formatMillisAsNumber(long millis) {
-        BigDecimal value = new BigDecimal(millis).divide(MILLIS_DIVISOR, 3,  RoundingMode.HALF_UP);
+        BigDecimal value = new BigDecimal(millis).divide(MILLIS_DIVISOR, 3, RoundingMode.HALF_UP);
         return MILLIS_NUMBER_FORMAT.format(value);
     }
 
     public static String formatMillisAsPercentage(long millis) {
-        BigDecimal value = new BigDecimal(millis).divide(MILLIS_DIVISOR, 3,  RoundingMode.HALF_UP);
+        BigDecimal value = new BigDecimal(millis).divide(MILLIS_DIVISOR, 3, RoundingMode.HALF_UP);
         return MILLIS_PERCENT_FORMAT.format(value);
     }
 
