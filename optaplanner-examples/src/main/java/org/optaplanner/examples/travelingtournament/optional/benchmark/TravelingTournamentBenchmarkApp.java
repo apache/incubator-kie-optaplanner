@@ -1,5 +1,5 @@
 /*
- * Copyright 2010 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.optaplanner.examples.travelingtournament.app;
+package org.optaplanner.examples.travelingtournament.optional.benchmark;
 
 import org.optaplanner.examples.common.app.CommonBenchmarkApp;
 
@@ -27,9 +27,9 @@ public class TravelingTournamentBenchmarkApp extends CommonBenchmarkApp {
     public TravelingTournamentBenchmarkApp() {
         super(
                 new ArgOption("default",
-                        "org/optaplanner/examples/travelingtournament/benchmark/travelingTournamentBenchmarkConfig.xml"),
+                        "org/optaplanner/examples/travelingtournament/optional/benchmark/travelingTournamentBenchmarkConfig.xml"),
                 new ArgOption("stepLimit",
-                        "org/optaplanner/examples/travelingtournament/benchmark/travelingTournamentStepLimitBenchmarkConfig.xml"));
+                        "org/optaplanner/examples/travelingtournament/optional/benchmark/travelingTournamentStepLimitBenchmarkConfig.xml"));
     }
 
 }
