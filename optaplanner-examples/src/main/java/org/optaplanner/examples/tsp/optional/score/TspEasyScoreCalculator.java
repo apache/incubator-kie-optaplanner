@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.optaplanner.examples.tsp.solver.score;
+package org.optaplanner.examples.tsp.optional.score;
 
 import java.util.HashSet;
 import java.util.List;

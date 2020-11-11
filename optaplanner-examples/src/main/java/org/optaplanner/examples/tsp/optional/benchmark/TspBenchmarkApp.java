@@ -1,5 +1,5 @@
 /*
- * Copyright 2012 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.optaplanner.examples.tsp.app;
+package org.optaplanner.examples.tsp.optional.benchmark;
 
 import org.optaplanner.examples.common.app.CommonBenchmarkApp;
 
@@ -27,7 +27,7 @@ public class TspBenchmarkApp extends CommonBenchmarkApp {
     public TspBenchmarkApp() {
         super(
                 new ArgOption("default",
-                        "org/optaplanner/examples/tsp/benchmark/tspBenchmarkConfig.xml"));
+                        "org/optaplanner/examples/tsp/optional/benchmark/tspBenchmarkConfig.xml"));
     }
 
 }

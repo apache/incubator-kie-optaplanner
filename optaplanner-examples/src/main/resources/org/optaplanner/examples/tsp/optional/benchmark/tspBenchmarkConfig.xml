@@ -10,7 +10,7 @@
       <entityClass>org.optaplanner.examples.tsp.domain.Visit</entityClass>
 
       <scoreDirectorFactory>
-        <!--<incrementalScoreCalculatorClass>org.optaplanner.examples.tsp.solver.score.TspIncrementalScoreCalculator</incrementalScoreCalculatorClass>-->
+        <!--<incrementalScoreCalculatorClass>org.optaplanner.examples.tsp.optional.score.TspIncrementalScoreCalculator</incrementalScoreCalculatorClass>-->
         <scoreDrl>org/optaplanner/examples/tsp/solver/tspConstraints.drl</scoreDrl>
         <initializingScoreTrend>ONLY_DOWN</initializingScoreTrend>
       </scoreDirectorFactory>
