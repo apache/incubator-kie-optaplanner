@@ -1,5 +1,5 @@
 /*
- * Copyright 2012 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.optaplanner.examples.vehiclerouting.app;
+package org.optaplanner.examples.vehiclerouting.optional.benchmark;
 
 import org.optaplanner.examples.common.app.CommonBenchmarkApp;
 
@@ -27,13 +27,13 @@ public class VehicleRoutingBenchmarkApp extends CommonBenchmarkApp {
     public VehicleRoutingBenchmarkApp() {
         super(
                 new ArgOption("default",
-                        "org/optaplanner/examples/vehiclerouting/benchmark/vehicleRoutingBenchmarkConfig.xml"),
+                        "org/optaplanner/examples/vehiclerouting/optional/benchmark/vehicleRoutingBenchmarkConfig.xml"),
                 new ArgOption("stepLimit",
-                        "org/optaplanner/examples/vehiclerouting/benchmark/vehicleRoutingStepLimitBenchmarkConfig.xml"),
+                        "org/optaplanner/examples/vehiclerouting/optional/benchmark/vehicleRoutingStepLimitBenchmarkConfig.xml"),
                 new ArgOption("scoreDirector",
-                        "org/optaplanner/examples/vehiclerouting/benchmark/vehicleRoutingScoreDirectorBenchmarkConfig.xml"),
+                        "org/optaplanner/examples/vehiclerouting/optional/benchmark/vehicleRoutingScoreDirectorBenchmarkConfig.xml"),
                 new ArgOption("template",
-                        "org/optaplanner/examples/vehiclerouting/benchmark/vehicleRoutingBenchmarkConfigTemplate.xml.ftl",
+                        "org/optaplanner/examples/vehiclerouting/optional/benchmark/vehicleRoutingBenchmarkConfigTemplate.xml.ftl",
                         true));
     }
 

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.optaplanner.examples.vehiclerouting.solver.solution.initializer;
+package org.optaplanner.examples.vehiclerouting.optional.solver.solution.initializer;
 
 import java.util.ArrayList;
 import java.util.Arrays;

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.optaplanner.examples.vehiclerouting.solver.score;
+package org.optaplanner.examples.vehiclerouting.optional.score;
 
 import java.util.HashMap;
 import java.util.List;

@@ -33,7 +33,7 @@
     <name>Easy java</name>
     <solver>
       <scoreDirectorFactory>
-        <easyScoreCalculatorClass>org.optaplanner.examples.vehiclerouting.solver.score.VehicleRoutingEasyScoreCalculator</easyScoreCalculatorClass>
+        <easyScoreCalculatorClass>org.optaplanner.examples.vehiclerouting.optional.score.VehicleRoutingEasyScoreCalculator</easyScoreCalculatorClass>
       </scoreDirectorFactory>
     </solver>
   </solverBenchmark>
@@ -41,7 +41,7 @@
     <name>Incremental java</name>
     <solver>
       <scoreDirectorFactory>
-        <incrementalScoreCalculatorClass>org.optaplanner.examples.vehiclerouting.solver.score.VehicleRoutingIncrementalScoreCalculator</incrementalScoreCalculatorClass>
+        <incrementalScoreCalculatorClass>org.optaplanner.examples.vehiclerouting.optional.score.VehicleRoutingIncrementalScoreCalculator</incrementalScoreCalculatorClass>
       </scoreDirectorFactory>
     </solver>
   </solverBenchmark>
