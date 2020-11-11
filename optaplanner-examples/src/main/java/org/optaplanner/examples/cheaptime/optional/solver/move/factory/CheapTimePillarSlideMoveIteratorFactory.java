@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.optaplanner.examples.cheaptime.solver.move.factory;
+package org.optaplanner.examples.cheaptime.optional.solver.move.factory;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -29,7 +29,7 @@ import org.optaplanner.examples.cheaptime.domain.CheapTimeSolution;
 import org.optaplanner.examples.cheaptime.domain.Machine;
 import org.optaplanner.examples.cheaptime.domain.Task;
 import org.optaplanner.examples.cheaptime.domain.TaskAssignment;
-import org.optaplanner.examples.cheaptime.solver.move.CheapTimePillarSlideMove;
+import org.optaplanner.examples.cheaptime.optional.solver.move.CheapTimePillarSlideMove;
 
 public class CheapTimePillarSlideMoveIteratorFactory
         implements MoveIteratorFactory<CheapTimeSolution, CheapTimePillarSlideMove> {

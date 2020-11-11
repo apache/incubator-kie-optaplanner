@@ -39,7 +39,7 @@
       </changeMoveSelector>
       <swapMoveSelector/>
       <!--<moveIteratorFactory>-->
-        <!--<moveIteratorFactoryClass>org.optaplanner.examples.cheaptime.solver.move.factory.CheapTimePillarSlideMoveIteratorFactory</moveIteratorFactoryClass>-->
+        <!--<moveIteratorFactoryClass>org.optaplanner.examples.cheaptime.optional.solver.move.factory.CheapTimePillarSlideMoveIteratorFactory</moveIteratorFactoryClass>-->
       <!--</moveIteratorFactory>-->
     </unionMoveSelector>
     <acceptor>

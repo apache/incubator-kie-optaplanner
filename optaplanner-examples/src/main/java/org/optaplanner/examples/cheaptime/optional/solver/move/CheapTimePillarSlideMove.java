@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.optaplanner.examples.cheaptime.solver.move;
+package org.optaplanner.examples.cheaptime.optional.solver.move;
 
 import java.util.ArrayList;
 import java.util.Collection;
