@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.optaplanner.examples.taskassigning.app;
+package org.optaplanner.examples.taskassigning.optional.benchmark;
 
 import org.optaplanner.examples.common.app.CommonBenchmarkApp;
 
@@ -27,9 +27,9 @@ public class TaskAssigningBenchmarkApp extends CommonBenchmarkApp {
     public TaskAssigningBenchmarkApp() {
         super(
                 new ArgOption("default",
-                        "org/optaplanner/examples/taskassigning/benchmark/taskAssigningBenchmarkConfig.xml"),
+                        "org/optaplanner/examples/taskassigning/optional/benchmark/taskAssigningBenchmarkConfig.xml"),
                 new ArgOption("scoreDirector",
-                        "org/optaplanner/examples/taskassigning/benchmark/taskAssigningScoreDirectorBenchmarkConfig.xml"));
+                        "org/optaplanner/examples/taskassigning/optional/benchmark/taskAssigningScoreDirectorBenchmarkConfig.xml"));
     }
 
 }
