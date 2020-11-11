@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.optaplanner.examples.curriculumcourse.optional.score;
+package org.optaplanner.examples.curriculumcourse.optional.solver.score;
 
 import org.junit.jupiter.api.Test;
 import org.optaplanner.examples.curriculumcourse.domain.Course;

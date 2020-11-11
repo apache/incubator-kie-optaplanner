@@ -1,5 +1,5 @@
 /*
- * Copyright 2014 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,6 +18,7 @@ package org.optaplanner.examples.curriculumcourse.app;
 
 import org.optaplanner.examples.common.app.AbstractBenchmarkConfigTest;
 import org.optaplanner.examples.common.app.CommonBenchmarkApp;
+import org.optaplanner.examples.curriculumcourse.optional.benchmark.CurriculumCourseBenchmarkApp;
 
 public class CurriculumCourseBenchmarkConfigTest extends AbstractBenchmarkConfigTest {
 

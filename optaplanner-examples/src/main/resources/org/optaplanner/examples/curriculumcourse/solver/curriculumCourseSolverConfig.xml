@@ -8,7 +8,7 @@
   <entityClass>org.optaplanner.examples.curriculumcourse.domain.Lecture</entityClass>
 
   <scoreDirectorFactory>
-    <!--<constraintProviderClass>org.optaplanner.examples.curriculumcourse.optional.score.CurriculumCourseConstraintProvider</constraintProviderClass>-->
+    <!--<constraintProviderClass>org.optaplanner.examples.curriculumcourse.optional.solver.score.CurriculumCourseConstraintProvider</constraintProviderClass>-->
     <scoreDrl>org/optaplanner/examples/curriculumcourse/solver/curriculumCourseConstraints.drl</scoreDrl>
     <!--<assertionScoreDirectorFactory>-->
       <!--<scoreDrl>org/optaplanner/examples/curriculumcourse/solver/curriculumCourseConstraints.drl</scoreDrl>-->

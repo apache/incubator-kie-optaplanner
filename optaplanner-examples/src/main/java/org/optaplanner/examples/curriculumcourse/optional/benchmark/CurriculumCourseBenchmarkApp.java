@@ -1,5 +1,5 @@
 /*
- * Copyright 2010 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.optaplanner.examples.curriculumcourse.app;
+package org.optaplanner.examples.curriculumcourse.optional.benchmark;
 
 import org.optaplanner.examples.common.app.CommonBenchmarkApp;
 
@@ -27,11 +27,11 @@ public class CurriculumCourseBenchmarkApp extends CommonBenchmarkApp {
     public CurriculumCourseBenchmarkApp() {
         super(
                 new ArgOption("default",
-                        "org/optaplanner/examples/curriculumcourse/benchmark/curriculumCourseBenchmarkConfig.xml"),
+                        "org/optaplanner/examples/curriculumcourse/optional/benchmark/curriculumCourseBenchmarkConfig.xml"),
                 new ArgOption("stepLimit",
-                        "org/optaplanner/examples/curriculumcourse/benchmark/curriculumCourseStepLimitBenchmarkConfig.xml"),
+                        "org/optaplanner/examples/curriculumcourse/optional/benchmark/curriculumCourseStepLimitBenchmarkConfig.xml"),
                 new ArgOption("template",
-                        "org/optaplanner/examples/curriculumcourse/benchmark/curriculumCourseBenchmarkConfigTemplate.xml.ftl",
+                        "org/optaplanner/examples/curriculumcourse/optional/benchmark/curriculumCourseBenchmarkConfigTemplate.xml.ftl",
                         true));
     }
 
