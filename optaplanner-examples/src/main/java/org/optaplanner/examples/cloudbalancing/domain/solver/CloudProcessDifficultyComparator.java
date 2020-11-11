@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.optaplanner.examples.cloudbalancing.optional.domain;
+package org.optaplanner.examples.cloudbalancing.domain.solver;
 
 import java.util.Comparator;
 

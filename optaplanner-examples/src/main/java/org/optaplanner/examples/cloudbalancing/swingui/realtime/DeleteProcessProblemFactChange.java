@@ -14,37 +14,34 @@
  * limitations under the License.
  */
 
-package org.optaplanner.examples.cloudbalancing.optional.realtime;
+package org.optaplanner.examples.cloudbalancing.swingui.realtime;
 
 import org.optaplanner.core.api.score.director.ScoreDirector;
 import org.optaplanner.core.api.solver.ProblemFactChange;
 import org.optaplanner.examples.cloudbalancing.domain.CloudBalance;
 import org.optaplanner.examples.cloudbalancing.domain.CloudProcess;
 
-public class AddProcessProblemFactChange implements ProblemFactChange<CloudBalance> {
+public class DeleteProcessProblemFactChange implements ProblemFactChange<CloudBalance> {
 
     private final CloudProcess process;
 
-    public AddProcessProblemFactChange(CloudProcess process) {
+    public DeleteProcessProblemFactChange(CloudProcess process) {
         this.process = process;
     }
 
     @Override
     public void doChange(ScoreDirector<CloudBalance> scoreDirector) {
         CloudBalance cloudBalance = scoreDirector.getWorkingSolution();
-        // Set a unique id on the new process
-        long nextProcessId = 0L;
-        for (CloudProcess otherProcess : cloudBalance.getProcessList()) {
-            if (nextProcessId <= otherProcess.getId()) {
-                nextProcessId = otherProcess.getId() + 1L;
-            }
-        }
-        process.setId(nextProcessId);
         // A SolutionCloner clones planning entity lists (such as processList), so no need to clone the processList here
-        // Add the planning entity itself
-        scoreDirector.beforeEntityAdded(process);
-        cloudBalance.getProcessList().add(process);
-        scoreDirector.afterEntityAdded(process);
+        CloudProcess workingProcess = scoreDirector.lookUpWorkingObject(process);
+        if (workingProcess == null) {
+            // The process has already been deleted (the UI asked to changed the same process twice), so do nothing
+            return;
+        }
+        // Remove the planning entity itself
+        scoreDirector.beforeEntityRemoved(workingProcess);
+        cloudBalance.getProcessList().remove(workingProcess);
+        scoreDirector.afterEntityRemoved(workingProcess);
         scoreDirector.triggerVariableListeners();
     }
 

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.optaplanner.examples.cloudbalancing.optional.realtime;
+package org.optaplanner.examples.cloudbalancing.swingui.realtime;
 
 import java.util.ArrayList;
 

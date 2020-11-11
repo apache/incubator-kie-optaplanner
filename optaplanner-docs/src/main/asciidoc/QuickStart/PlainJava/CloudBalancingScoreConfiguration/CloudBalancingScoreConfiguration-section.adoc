@@ -23,7 +23,7 @@ One way to define a score function is to implement the interface `EasyScoreCalcu
 [source,xml,options="nowrap"]
 ----
   <scoreDirectorFactory>
-    <easyScoreCalculatorClass>org.optaplanner.examples.cloudbalancing.optional.score.CloudBalancingEasyScoreCalculator</easyScoreCalculatorClass>
+    <easyScoreCalculatorClass>org.optaplanner.examples.cloudbalancing.optional.solver.score.CloudBalancingEasyScoreCalculator</easyScoreCalculatorClass>
   </scoreDirectorFactory>
 ----
 

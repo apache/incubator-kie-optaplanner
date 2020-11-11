@@ -44,7 +44,7 @@
     <name>Easy java (basic)</name>
     <solver>
       <scoreDirectorFactory>
-        <easyScoreCalculatorClass>org.optaplanner.examples.cloudbalancing.optional.score.CloudBalancingEasyScoreCalculator</easyScoreCalculatorClass>
+        <easyScoreCalculatorClass>org.optaplanner.examples.cloudbalancing.optional.solver.score.CloudBalancingEasyScoreCalculator</easyScoreCalculatorClass>
       </scoreDirectorFactory>
     </solver>
   </solverBenchmark>
@@ -52,7 +52,7 @@
     <name>Easy java (advanced)</name>
     <solver>
       <scoreDirectorFactory>
-        <easyScoreCalculatorClass>org.optaplanner.examples.cloudbalancing.optional.score.CloudBalancingMapBasedEasyScoreCalculator</easyScoreCalculatorClass>
+        <easyScoreCalculatorClass>org.optaplanner.examples.cloudbalancing.optional.solver.score.CloudBalancingMapBasedEasyScoreCalculator</easyScoreCalculatorClass>
       </scoreDirectorFactory>
     </solver>
   </solverBenchmark>
@@ -60,7 +60,7 @@
     <name>Incremental java</name>
     <solver>
       <scoreDirectorFactory>
-        <incrementalScoreCalculatorClass>org.optaplanner.examples.cloudbalancing.optional.score.CloudBalancingIncrementalScoreCalculator</incrementalScoreCalculatorClass>
+        <incrementalScoreCalculatorClass>org.optaplanner.examples.cloudbalancing.optional.solver.score.CloudBalancingIncrementalScoreCalculator</incrementalScoreCalculatorClass>
       </scoreDirectorFactory>
     </solver>
   </solverBenchmark>
@@ -68,7 +68,7 @@
     <name>ConstraintStreams (Drools)</name>
     <solver>
       <scoreDirectorFactory>
-        <constraintProviderClass>org.optaplanner.examples.cloudbalancing.optional.score.CloudBalancingConstraintProvider</constraintProviderClass>
+        <constraintProviderClass>org.optaplanner.examples.cloudbalancing.optional.solver.score.CloudBalancingConstraintProvider</constraintProviderClass>
       </scoreDirectorFactory>
     </solver>
   </solverBenchmark>
@@ -78,7 +78,7 @@
     <solver>
       <scoreDirectorFactory>
         <constraintStreamImplType>BAVET</constraintStreamImplType>
-        <constraintProviderClass>org.optaplanner.examples.cloudbalancing.optional.score.CloudBalancingConstraintProvider</constraintProviderClass>
+        <constraintProviderClass>org.optaplanner.examples.cloudbalancing.optional.solver.score.CloudBalancingConstraintProvider</constraintProviderClass>
       </scoreDirectorFactory>
     </solver>
   </solverBenchmark>

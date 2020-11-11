@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.optaplanner.examples.cloudbalancing.optional.score;
+package org.optaplanner.examples.cloudbalancing.optional.solver.score;
 
 import java.util.HashMap;
 import java.util.Map;
