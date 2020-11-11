@@ -1,5 +1,5 @@
 /*
- * Copyright 2010 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.optaplanner.examples.nqueens.solver.move.factory;
+package org.optaplanner.examples.nqueens.optional.solver.move.factory;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,7 +23,7 @@ import org.optaplanner.core.impl.heuristic.selector.move.factory.MoveListFactory
 import org.optaplanner.examples.nqueens.domain.NQueens;
 import org.optaplanner.examples.nqueens.domain.Queen;
 import org.optaplanner.examples.nqueens.domain.Row;
-import org.optaplanner.examples.nqueens.solver.move.RowChangeMove;
+import org.optaplanner.examples.nqueens.optional.solver.move.RowChangeMove;
 
 public class RowChangeMoveFactory implements MoveListFactory<NQueens> {
 

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.optaplanner.examples.nqueens.solver.solution;
+package org.optaplanner.examples.nqueens.optional.solver.solution;
 
 import java.util.List;
 

@@ -40,7 +40,7 @@
     <name>Easy java (basic)</name>
     <solver>
       <scoreDirectorFactory>
-        <easyScoreCalculatorClass>org.optaplanner.examples.nqueens.solver.score.NQueensEasyScoreCalculator</easyScoreCalculatorClass>
+        <easyScoreCalculatorClass>org.optaplanner.examples.nqueens.optional.score.NQueensEasyScoreCalculator</easyScoreCalculatorClass>
       </scoreDirectorFactory>
     </solver>
   </solverBenchmark>
@@ -48,7 +48,7 @@
     <name>Easy java (advanced)</name>
     <solver>
       <scoreDirectorFactory>
-        <easyScoreCalculatorClass>org.optaplanner.examples.nqueens.solver.score.NQueensMapBasedEasyScoreCalculator</easyScoreCalculatorClass>
+        <easyScoreCalculatorClass>org.optaplanner.examples.nqueens.optional.score.NQueensMapBasedEasyScoreCalculator</easyScoreCalculatorClass>
       </scoreDirectorFactory>
     </solver>
   </solverBenchmark>
@@ -56,7 +56,7 @@
     <name>Incremental java (basic)</name>
     <solver>
       <scoreDirectorFactory>
-        <incrementalScoreCalculatorClass>org.optaplanner.examples.nqueens.solver.score.NQueensBasicIncrementalScoreCalculator</incrementalScoreCalculatorClass>
+        <incrementalScoreCalculatorClass>org.optaplanner.examples.nqueens.optional.score.NQueensBasicIncrementalScoreCalculator</incrementalScoreCalculatorClass>
       </scoreDirectorFactory>
     </solver>
   </solverBenchmark>
@@ -64,7 +64,7 @@
     <name>Incremental java (advanced)</name>
     <solver>
       <scoreDirectorFactory>
-        <incrementalScoreCalculatorClass>org.optaplanner.examples.nqueens.solver.score.NQueensAdvancedIncrementalScoreCalculator</incrementalScoreCalculatorClass>
+        <incrementalScoreCalculatorClass>org.optaplanner.examples.nqueens.optional.score.NQueensAdvancedIncrementalScoreCalculator</incrementalScoreCalculatorClass>
       </scoreDirectorFactory>
     </solver>
   </solverBenchmark>
@@ -72,7 +72,7 @@
     <name>ConstraintStreams (Drools)</name>
     <solver>
       <scoreDirectorFactory>
-        <constraintProviderClass>org.optaplanner.examples.nqueens.solver.score.NQueensConstraintProvider</constraintProviderClass>
+        <constraintProviderClass>org.optaplanner.examples.nqueens.optional.score.NQueensConstraintProvider</constraintProviderClass>
       </scoreDirectorFactory>
     </solver>
   </solverBenchmark>
@@ -80,7 +80,7 @@
     <name>ConstraintStreams (Bavet)</name>
     <solver>
       <scoreDirectorFactory>
-        <constraintProviderClass>org.optaplanner.examples.nqueens.solver.score.NQueensConstraintProvider</constraintProviderClass>
+        <constraintProviderClass>org.optaplanner.examples.nqueens.optional.score.NQueensConstraintProvider</constraintProviderClass>
         <constraintStreamImplType>BAVET</constraintStreamImplType>
       </scoreDirectorFactory>
     </solver>

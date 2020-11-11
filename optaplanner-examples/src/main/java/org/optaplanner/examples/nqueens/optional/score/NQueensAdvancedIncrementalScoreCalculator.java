@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.optaplanner.examples.nqueens.solver.score;
+package org.optaplanner.examples.nqueens.optional.score;
 
 import java.util.ArrayList;
 import java.util.HashMap;

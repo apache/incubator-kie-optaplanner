@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,24 +14,17 @@
  * limitations under the License.
  */
 
-package org.optaplanner.examples.nqueens.solver.tracking;
+package org.optaplanner.examples.nqueens.optional.solver.tracking;
 
-public class NQueensStepTracking {
+import org.optaplanner.examples.nqueens.domain.NQueens;
 
-    private final int columnIndex;
-    private final int rowIndex;
+public class NQueensSolutionInitializer {
 
-    public NQueensStepTracking(int columnIndex, int rowIndex) {
-        this.columnIndex = columnIndex;
-        this.rowIndex = rowIndex;
-    }
-
-    public int getColumnIndex() {
-        return columnIndex;
-    }
-
-    public int getRowIndex() {
-        return rowIndex;
+    public static NQueens initialize(NQueens solution) {
+        for (int i = 0; i < solution.getQueenList().size(); i++) {
+            solution.getQueenList().get(i).setRow(solution.getRowList().get(0));
+        }
+        return solution;
     }
 
 }

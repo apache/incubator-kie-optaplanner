@@ -1,5 +1,5 @@
 /*
- * Copyright 2010 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.optaplanner.examples.nqueens.app;
+package org.optaplanner.examples.nqueens.optional.benchmark;
 
 import org.optaplanner.examples.common.app.CommonBenchmarkApp;
 
@@ -27,11 +27,11 @@ public class NQueensBenchmarkApp extends CommonBenchmarkApp {
     public NQueensBenchmarkApp() {
         super(
                 new ArgOption("default",
-                        "org/optaplanner/examples/nqueens/benchmark/nqueensBenchmarkConfig.xml"),
+                        "org/optaplanner/examples/nqueens/optional/benchmark/nqueensBenchmarkConfig.xml"),
                 new ArgOption("stepLimit",
-                        "org/optaplanner/examples/nqueens/benchmark/nqueensStepLimitBenchmarkConfig.xml"),
+                        "org/optaplanner/examples/nqueens/optional/benchmark/nqueensStepLimitBenchmarkConfig.xml"),
                 new ArgOption("scoreDirector",
-                        "org/optaplanner/examples/nqueens/benchmark/nqueensScoreDirectorBenchmarkConfig.xml"));
+                        "org/optaplanner/examples/nqueens/optional/benchmark/nqueensScoreDirectorBenchmarkConfig.xml"));
     }
 
 }

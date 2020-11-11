@@ -14,16 +14,19 @@
  * limitations under the License.
  */
 
-package org.optaplanner.examples.nqueens.app;
+package org.optaplanner.examples.nqueens.optional.solver.tracking;
 
-import org.optaplanner.examples.common.app.AbstractBenchmarkConfigTest;
-import org.optaplanner.examples.common.app.CommonBenchmarkApp;
-import org.optaplanner.examples.nqueens.optional.benchmark.NQueensBenchmarkApp;
+import static org.assertj.core.api.Assertions.assertThat;
 
-public class NQueensBenchmarkConfigTest extends AbstractBenchmarkConfigTest {
+import java.util.List;
 
-    @Override
-    protected CommonBenchmarkApp getBenchmarkApp() {
-        return new NQueensBenchmarkApp();
+public abstract class NQueensAbstractTrackingTest {
+
+    protected void assertTrackingList(List<NQueensStepTracking> expected, List<NQueensStepTracking> recorded) {
+        for (int i = 0; i < expected.size(); i++) {
+            assertThat(recorded.get(i).getColumnIndex()).isEqualTo(expected.get(i).getColumnIndex());
+            assertThat(recorded.get(i).getRowIndex()).isEqualTo(expected.get(i).getRowIndex());
+        }
     }
+
 }

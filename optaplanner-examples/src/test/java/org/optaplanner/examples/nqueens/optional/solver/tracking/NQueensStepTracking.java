@@ -14,19 +14,24 @@
  * limitations under the License.
  */
 
-package org.optaplanner.examples.nqueens.solver.tracking;
+package org.optaplanner.examples.nqueens.optional.solver.tracking;
 
-import static org.assertj.core.api.Assertions.assertThat;
+public class NQueensStepTracking {
 
-import java.util.List;
+    private final int columnIndex;
+    private final int rowIndex;
 
-public abstract class NQueensAbstractTrackingTest {
+    public NQueensStepTracking(int columnIndex, int rowIndex) {
+        this.columnIndex = columnIndex;
+        this.rowIndex = rowIndex;
+    }
 
-    protected void assertTrackingList(List<NQueensStepTracking> expected, List<NQueensStepTracking> recorded) {
-        for (int i = 0; i < expected.size(); i++) {
-            assertThat(recorded.get(i).getColumnIndex()).isEqualTo(expected.get(i).getColumnIndex());
-            assertThat(recorded.get(i).getRowIndex()).isEqualTo(expected.get(i).getRowIndex());
-        }
+    public int getColumnIndex() {
+        return columnIndex;
+    }
+
+    public int getRowIndex() {
+        return rowIndex;
     }
 
 }

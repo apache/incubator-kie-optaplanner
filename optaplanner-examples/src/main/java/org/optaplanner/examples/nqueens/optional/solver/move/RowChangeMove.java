@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.optaplanner.examples.nqueens.solver.move;
+package org.optaplanner.examples.nqueens.optional.solver.move;
 
 import java.util.Collection;
 import java.util.Collections;
