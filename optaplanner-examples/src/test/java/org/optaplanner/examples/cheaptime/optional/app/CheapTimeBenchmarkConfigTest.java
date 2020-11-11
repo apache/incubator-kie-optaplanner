@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.optaplanner.examples.cheaptime.app;
+package org.optaplanner.examples.cheaptime.optional.app;
 
 import org.optaplanner.examples.cheaptime.optional.benchmark.CheapTimeBenchmarkApp;
 import org.optaplanner.examples.common.app.AbstractBenchmarkConfigTest;
