@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.optaplanner.examples.examination.solver.score;
+package org.optaplanner.examples.examination.optional.solver.score;
 
 import java.util.Arrays;
 

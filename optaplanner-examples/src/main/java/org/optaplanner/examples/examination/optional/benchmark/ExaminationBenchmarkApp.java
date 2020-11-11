@@ -1,5 +1,5 @@
 /*
- * Copyright 2010 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.optaplanner.examples.examination.app;
+package org.optaplanner.examples.examination.optional.benchmark;
 
 import org.optaplanner.examples.common.app.CommonBenchmarkApp;
 
@@ -27,9 +27,9 @@ public class ExaminationBenchmarkApp extends CommonBenchmarkApp {
     public ExaminationBenchmarkApp() {
         super(
                 new ArgOption("default",
-                        "org/optaplanner/examples/examination/benchmark/examinationBenchmarkConfig.xml"),
+                        "org/optaplanner/examples/examination/optional/benchmark/examinationBenchmarkConfig.xml"),
                 new ArgOption("stepLimit",
-                        "org/optaplanner/examples/examination/benchmark/examinationStepLimitBenchmarkConfig.xml"));
+                        "org/optaplanner/examples/examination/optional/benchmark/examinationStepLimitBenchmarkConfig.xml"));
     }
 
 }
