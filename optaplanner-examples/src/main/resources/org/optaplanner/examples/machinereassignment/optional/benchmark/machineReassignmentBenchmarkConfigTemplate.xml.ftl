@@ -36,7 +36,7 @@
       <entityClass>org.optaplanner.examples.machinereassignment.domain.MrProcessAssignment</entityClass>
 
       <scoreDirectorFactory>
-        <incrementalScoreCalculatorClass>org.optaplanner.examples.machinereassignment.solver.score.MachineReassignmentIncrementalScoreCalculator</incrementalScoreCalculatorClass>
+        <incrementalScoreCalculatorClass>org.optaplanner.examples.machinereassignment.score.MachineReassignmentIncrementalScoreCalculator</incrementalScoreCalculatorClass>
         <!--<scoreDrl>org/optaplanner/examples/machinereassignment/solver/machineReassignmentConstraints.drl</scoreDrl>-->
       </scoreDirectorFactory>
       <termination>

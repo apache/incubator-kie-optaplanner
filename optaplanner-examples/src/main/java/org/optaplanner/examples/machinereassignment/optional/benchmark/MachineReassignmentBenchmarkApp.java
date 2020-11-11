@@ -1,5 +1,5 @@
 /*
- * Copyright 2011 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.optaplanner.examples.machinereassignment.app;
+package org.optaplanner.examples.machinereassignment.optional.benchmark;
 
 import org.optaplanner.examples.common.app.CommonBenchmarkApp;
 
@@ -27,13 +27,13 @@ public class MachineReassignmentBenchmarkApp extends CommonBenchmarkApp {
     public MachineReassignmentBenchmarkApp() {
         super(
                 new ArgOption("default",
-                        "org/optaplanner/examples/machinereassignment/benchmark/machineReassignmentBenchmarkConfig.xml"),
+                        "org/optaplanner/examples/machinereassignment/optional/benchmark/machineReassignmentBenchmarkConfig.xml"),
                 new ArgOption("stepLimit",
-                        "org/optaplanner/examples/machinereassignment/benchmark/machineReassignmentStepLimitBenchmarkConfig.xml"),
+                        "org/optaplanner/examples/machinereassignment/optional/benchmark/machineReassignmentStepLimitBenchmarkConfig.xml"),
                 new ArgOption("scoreDirector",
-                        "org/optaplanner/examples/machinereassignment/benchmark/machineReassignmentScoreDirectorBenchmarkConfig.xml"),
+                        "org/optaplanner/examples/machinereassignment/optional/benchmark/machineReassignmentScoreDirectorBenchmarkConfig.xml"),
                 new ArgOption("template",
-                        "org/optaplanner/examples/machinereassignment/benchmark/machineReassignmentBenchmarkConfigTemplate.xml.ftl",
+                        "org/optaplanner/examples/machinereassignment/optional/benchmark/machineReassignmentBenchmarkConfigTemplate.xml.ftl",
                         true));
     }
 

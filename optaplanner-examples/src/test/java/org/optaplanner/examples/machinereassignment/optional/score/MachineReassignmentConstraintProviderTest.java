@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.optaplanner.examples.machinereassignment.solver.score;
+package org.optaplanner.examples.machinereassignment.optional.score;
 
 import java.io.IOException;
 import java.io.InputStream;

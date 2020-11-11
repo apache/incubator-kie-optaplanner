@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.optaplanner.examples.machinereassignment.solver.score;
+package org.optaplanner.examples.machinereassignment.score;
 
 import java.util.ArrayList;
 import java.util.Arrays;

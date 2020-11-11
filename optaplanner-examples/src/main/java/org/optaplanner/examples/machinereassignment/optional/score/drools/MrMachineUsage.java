@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.optaplanner.examples.machinereassignment.solver.drools;
+package org.optaplanner.examples.machinereassignment.optional.score.drools;
 
 import static java.util.Comparator.comparing;
 import static java.util.Comparator.comparingLong;
