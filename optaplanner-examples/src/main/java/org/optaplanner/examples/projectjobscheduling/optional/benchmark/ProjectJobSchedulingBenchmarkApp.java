@@ -1,5 +1,5 @@
 /*
- * Copyright 2010 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.optaplanner.examples.projectjobscheduling.app;
+package org.optaplanner.examples.projectjobscheduling.optional.benchmark;
 
 import org.optaplanner.examples.common.app.CommonBenchmarkApp;
 
@@ -27,7 +27,7 @@ public class ProjectJobSchedulingBenchmarkApp extends CommonBenchmarkApp {
     public ProjectJobSchedulingBenchmarkApp() {
         super(
                 new ArgOption("template",
-                        "org/optaplanner/examples/projectjobscheduling/benchmark/projectJobSchedulingBenchmarkConfigTemplate.xml.ftl",
+                        "org/optaplanner/examples/projectjobscheduling/optional/benchmark/projectJobSchedulingBenchmarkConfigTemplate.xml.ftl",
                         true));
     }
 

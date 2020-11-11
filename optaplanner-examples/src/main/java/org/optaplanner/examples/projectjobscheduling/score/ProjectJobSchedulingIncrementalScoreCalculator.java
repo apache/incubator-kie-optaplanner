@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.optaplanner.examples.projectjobscheduling.solver.score;
+package org.optaplanner.examples.projectjobscheduling.score;
 
 import java.util.HashMap;
 import java.util.List;
@@ -29,9 +29,9 @@ import org.optaplanner.examples.projectjobscheduling.domain.Project;
 import org.optaplanner.examples.projectjobscheduling.domain.ResourceRequirement;
 import org.optaplanner.examples.projectjobscheduling.domain.Schedule;
 import org.optaplanner.examples.projectjobscheduling.domain.resource.Resource;
-import org.optaplanner.examples.projectjobscheduling.solver.score.capacity.NonrenewableResourceCapacityTracker;
-import org.optaplanner.examples.projectjobscheduling.solver.score.capacity.RenewableResourceCapacityTracker;
-import org.optaplanner.examples.projectjobscheduling.solver.score.capacity.ResourceCapacityTracker;
+import org.optaplanner.examples.projectjobscheduling.score.capacity.NonrenewableResourceCapacityTracker;
+import org.optaplanner.examples.projectjobscheduling.score.capacity.RenewableResourceCapacityTracker;
+import org.optaplanner.examples.projectjobscheduling.score.capacity.ResourceCapacityTracker;
 
 public class ProjectJobSchedulingIncrementalScoreCalculator
         implements IncrementalScoreCalculator<Schedule, BendableScore> {

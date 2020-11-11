@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.optaplanner.examples.projectjobscheduling.solver.score.drools;
+package org.optaplanner.examples.projectjobscheduling.optional.score.drools;
 
 import java.util.Objects;
 
