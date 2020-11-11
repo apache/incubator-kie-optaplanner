@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.optaplanner.examples.cheaptime.solver.score;
+package org.optaplanner.examples.cheaptime.optional.solver.score;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -29,7 +29,7 @@ import org.optaplanner.examples.cheaptime.domain.PeriodPowerPrice;
 import org.optaplanner.examples.cheaptime.domain.Task;
 import org.optaplanner.examples.cheaptime.domain.TaskAssignment;
 import org.optaplanner.examples.cheaptime.domain.TaskRequirement;
-import org.optaplanner.examples.cheaptime.solver.CheapTimeCostCalculator;
+import org.optaplanner.examples.cheaptime.solver.score.CheapTimeCostCalculator;
 
 public class CheapTimeEasyScoreCalculator implements EasyScoreCalculator<CheapTimeSolution, HardMediumSoftLongScore> {
 

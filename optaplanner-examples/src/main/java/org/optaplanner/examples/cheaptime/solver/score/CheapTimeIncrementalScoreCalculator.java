@@ -36,7 +36,6 @@ import org.optaplanner.examples.cheaptime.domain.Resource;
 import org.optaplanner.examples.cheaptime.domain.Task;
 import org.optaplanner.examples.cheaptime.domain.TaskAssignment;
 import org.optaplanner.examples.cheaptime.domain.TaskRequirement;
-import org.optaplanner.examples.cheaptime.solver.CheapTimeCostCalculator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

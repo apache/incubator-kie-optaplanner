@@ -13,7 +13,7 @@
         <incrementalScoreCalculatorClass>org.optaplanner.examples.cheaptime.solver.score.CheapTimeIncrementalScoreCalculator</incrementalScoreCalculatorClass>
         <initializingScoreTrend>ONLY_DOWN</initializingScoreTrend>
         <!--<assertionScoreDirectorFactory>-->
-        <!--<easyScoreCalculatorClass>org.optaplanner.examples.cheaptime.solver.score.CheapTimeEasyScoreCalculator</easyScoreCalculatorClass>-->
+        <!--<easyScoreCalculatorClass>org.optaplanner.examples.cheaptime.optional.solver.score.CheapTimeEasyScoreCalculator</easyScoreCalculatorClass>-->
         <!--</assertionScoreDirectorFactory>-->
       </scoreDirectorFactory>
       <termination>
