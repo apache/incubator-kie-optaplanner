@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.optaplanner.examples.nurserostering.solver.drools;
+package org.optaplanner.examples.nurserostering.score.drools;
 
 import java.time.DayOfWeek;
 import java.util.Comparator;

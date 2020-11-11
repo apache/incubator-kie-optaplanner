@@ -1,5 +1,5 @@
 /*
- * Copyright 2010 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.optaplanner.examples.nurserostering.app;
+package org.optaplanner.examples.nurserostering.optional.benchmark;
 
 import org.optaplanner.examples.common.app.CommonBenchmarkApp;
 
@@ -27,13 +27,13 @@ public class NurseRosteringBenchmarkApp extends CommonBenchmarkApp {
     public NurseRosteringBenchmarkApp() {
         super(
                 new ArgOption("sprint",
-                        "org/optaplanner/examples/nurserostering/benchmark/nurseRosteringSprintBenchmarkConfig.xml"),
+                        "org/optaplanner/examples/nurserostering/optional/benchmark/nurseRosteringSprintBenchmarkConfig.xml"),
                 new ArgOption("medium",
-                        "org/optaplanner/examples/nurserostering/benchmark/nurseRosteringMediumBenchmarkConfig.xml"),
+                        "org/optaplanner/examples/nurserostering/optional/benchmark/nurseRosteringMediumBenchmarkConfig.xml"),
                 new ArgOption("long",
-                        "org/optaplanner/examples/nurserostering/benchmark/nurseRosteringLongBenchmarkConfig.xml"),
+                        "org/optaplanner/examples/nurserostering/optional/benchmark/nurseRosteringLongBenchmarkConfig.xml"),
                 new ArgOption("stepLimit",
-                        "org/optaplanner/examples/nurserostering/benchmark/nurseRosteringStepLimitBenchmarkConfig.xml"));
+                        "org/optaplanner/examples/nurserostering/optional/benchmark/nurseRosteringStepLimitBenchmarkConfig.xml"));
     }
 
 }
