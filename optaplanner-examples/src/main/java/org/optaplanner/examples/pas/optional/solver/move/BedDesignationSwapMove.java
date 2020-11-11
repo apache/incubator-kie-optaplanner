@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.optaplanner.examples.pas.solver.move;
+package org.optaplanner.examples.pas.optional.solver.move;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -25,6 +25,7 @@ import org.optaplanner.core.impl.heuristic.move.AbstractMove;
 import org.optaplanner.examples.pas.domain.Bed;
 import org.optaplanner.examples.pas.domain.BedDesignation;
 import org.optaplanner.examples.pas.domain.PatientAdmissionSchedule;
+import org.optaplanner.examples.pas.solver.move.PatientAdmissionMoveHelper;
 
 public class BedDesignationSwapMove extends AbstractMove<PatientAdmissionSchedule> {
 
