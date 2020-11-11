@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.optaplanner.examples.investment.solver.score;
+package org.optaplanner.examples.investment.optional.score;
 
 import java.util.Map;
 
