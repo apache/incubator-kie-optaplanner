@@ -20,6 +20,7 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Timeout;
 import org.optaplanner.core.api.solver.SolverStatus;
@@ -37,6 +38,7 @@ public class TimeTableControllerTest {
     @Autowired
     private TimeTableController timeTableController;
 
+    @Disabled("PLANNER-2254")
     @Test
     @Timeout(600_000)
     public void solveDemoDataUntilFeasible() throws InterruptedException {
