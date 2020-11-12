@@ -54,6 +54,8 @@
 
     <maven.min.version>3.6.2</maven.min.version>
     <maven.compiler.release>11</maven.compiler.release>
+    <maven.compiler.target>${maven.compiler.release}</maven.compiler.target>
+    <maven.compiler.source>${maven.compiler.release}</maven.compiler.source>
     <!-- The first version that supports analysis of classes compiled by Java 11. -->
     <version.dependency.plugin>3.1.2</version.dependency.plugin>
     <version.surefire.plugin>2.22.2</version.surefire.plugin>
@@ -1203,7 +1205,6 @@
         <sonar.organization>kiegroup</sonar.organization>
         <!--suppress UnresolvedMavenProperty -->
         <sonar.login>${env.SONARCLOUD_TOKEN}</sonar.login>
-        <sonar.java.source>${maven.compiler.release}</sonar.java.source>
       </properties>
       <build>
         <plugins>
