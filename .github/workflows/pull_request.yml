@@ -31,6 +31,6 @@ jobs:
         id: build-chain
         uses: kiegroup/github-action-build-chain@v2.1
         with:
-          definition-file: https://raw.githubusercontent.com/${GROUP}/droolsjbpm-build-bootstrap/${BRANCH}/.ci/pull-request-config.yaml
+          definition-file: https://raw.githubusercontent.com/${GROUP}/droolsjbpm-build-bootstrap/master/.ci/pull-request-config.yaml
         env:
           GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
