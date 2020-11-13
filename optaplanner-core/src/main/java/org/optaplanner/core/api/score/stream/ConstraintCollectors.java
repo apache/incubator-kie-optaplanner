@@ -74,7 +74,7 @@ public final class ConstraintCollectors {
     // ************************************************************************
 
     /**
-     * Returns a collector that counts a number of elements in a group.
+     * Returns a collector that counts the number of elements that are being grouped.
      * <p>
      * For example, {@code [Ann(age = 20), Beth(age = 25), Cathy(age = 30), David(age = 30), Eric(age = 20)]} with
      * {@code .groupBy(count())} returns {@code 5}.
