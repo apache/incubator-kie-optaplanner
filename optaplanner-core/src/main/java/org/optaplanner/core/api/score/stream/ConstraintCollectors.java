@@ -196,7 +196,7 @@ public final class ConstraintCollectors {
 
     /**
      * Returns a collector that counts a number of unique elements in a group.
-     * Uniqueness is determined by equality (see {@link #equals(Object)}).
+     * Uniqueness is determined by {@link #equals(Object) equality}.
      * <p>
      * For example, {@code [Ann(age = 20), Beth(age = 25), Cathy(age = 30), David(age = 30), Eric(age = 20)]} with
      * {@code .groupBy(countDistinct(Person::getAge))} returns {@code 3}, one for age 20, 25 and 30 each.
