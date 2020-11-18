@@ -87,7 +87,7 @@ the value of the property `version.org.kie.kogito` in the optaplanner-build-pare
 
 . Update the version of the project and its parent pom.xml to the release version.
 . Build both projects to get the distribution and documentation (required for the next step).
-. Upload the documentation and distribution.zip to the filemgmt.jboss.org using either sftp, scp or rsync.
+. Upload the documentation and `distribution.zip` to the `filemgmt.jboss.org` using either SFTP, SCP or `rsync`.
 Make sure to update the latest and latestFinal symlinks. See the https://github.com/kiegroup/optaplanner/blob/master/build/release/upload_distribution.sh[script]
 which takes care of this step for the OptaPlanner project.
 . Create a commit and a tag for the release. Push the tag.
