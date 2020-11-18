@@ -69,41 +69,41 @@ OptaPlanner is released as a part of the Kogito release pipeline. Thus, a person
 Make sure you agree with this person on setting the correct OptaPlanner version before running the pipeline.
 
 ==== Actions covered by the Kogito release pipeline:
-* Create a release branch and update the project to the release version.
+* Create a release branch and upgrade the project to the release version.
 * Build the project and deploy maven artefacts into a staging repository on JBoss Nexus.
 * Promote maven artefacts from the staging repository to the Maven Central.
-* Update version to the next bugfix snapshot on the release branch.
+* Upgrade version to the next bugfix snapshot on the release branch.
 
-=== 3. Update versions to the next snapshot
+=== 3. Upgrade versions to the next snapshot
 *_This step is yet to be automated._*
 
-After the pipeline finishes, update the version on the `master` branch of OptaPlanner to the next minor snapshot version,
-e.g. 8.0.0.Final -> 8.1.0-SNAPSHOT. Update also the version of Kogito by editing
+After the pipeline finishes, upgrade the version on the `master` branch of OptaPlanner to the next minor snapshot version,
+e.g. 8.0.0.Final -> 8.1.0-SNAPSHOT. Upgrade also the version of Kogito by editing
 the value of the property `version.org.kie.kogito` in the `optaplanner-build-parent`.
 
 === 4. Release OptaPlanner Quickstarts
 *_This step is yet to be automated._*
 
 . Create a release branch from the `development` branch.
-. Update the OptaPlanner version in the `parent` section of the `pom.xml` and via the `version.org.optaplanner`
+. Upgrade the OptaPlanner version in the `parent` section of the `pom.xml` and via the `version.org.optaplanner`
 property in all quickstarts, including Gradle build files, to the release version.
 . https://issues.redhat.com/browse/PLANNER-2230[Sync-up the stable branch from the release branch.]
 . Open a PR to the `stable` branch.
 . Create and push a tag for the release.
-. Update the version to the next patch snapshot version on the release branch.
+. Upgrade the version to the next patch snapshot version on the release branch.
 .. Make sure the project builds.
 . Push the release branch.
-. Update the version of the project to the next minor snapshot version via a PR to the `development` branch.
+. Upgrade the version of the project to the next minor snapshot version via a PR to the `development` branch.
 
 === 5. Release Optawebs
 *_This step is yet to be automated. Follow the recipe below for both the Optaweb projects._*
 
 . Create a release branch from the `master` branch.
-. Update the version of the project and its parent `pom.xml` to the release version on the release branch.
+. Upgrade the version of the project and its parent `pom.xml` to the release version on the release branch.
 . Build both projects to get the distribution and documentation (required for the next step).
 . Upload the documentation and Distribution Zip to the `filemgmt.jboss.org` using the `build/release/upload_distribution.sh` script.
 . Create a commit and a tag for the release. Push the tag.
-. Update the version to the next patch snapshot version via PR to the release branch.
+. Upgrade the version to the next patch snapshot version via PR to the release branch.
 .. Make sure the project builds.
 . Push the release branch.
-. Update the version of the project to the next minor snapshot version via a PR to the `master` branch.
+. Upgrade the version of the project to the next minor snapshot version via a PR to the `master` branch.
