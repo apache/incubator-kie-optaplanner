@@ -77,7 +77,7 @@ the value of the property `version.org.kie.kogito` in the optaplanner-build-pare
 *_This step is yet to be automated._*
 
 . https://issues.redhat.com/browse/PLANNER-2230[Sync-up the stable branch from the development.]
-. Open a PR to the stable branch
+. Open a PR to the stable branch.
 . Create and push a tag for the release.
 . Update the project version on the development branch to the next minor snapshot. Update the optaplanner version via the version.org.optaplanner property in all quickstarts, including gradle build files.
 . Open a PR to the development branch.
