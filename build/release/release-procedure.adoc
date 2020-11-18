@@ -2,7 +2,7 @@
 
 == Projects and Artifacts
 Following sections describe what projects are part of the OptaPlanner release procedure and their resulting
-release artefacts.
+release artifacts.
 
 === OptaPlanner
 
