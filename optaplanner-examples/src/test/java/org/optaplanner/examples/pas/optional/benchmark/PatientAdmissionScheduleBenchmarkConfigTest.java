@@ -14,16 +14,15 @@
  * limitations under the License.
  */
 
-package org.optaplanner.examples.travelingtournament.app;
+package org.optaplanner.examples.pas.optional.benchmark;
 
 import org.optaplanner.examples.common.app.AbstractBenchmarkConfigTest;
 import org.optaplanner.examples.common.app.CommonBenchmarkApp;
-import org.optaplanner.examples.travelingtournament.optional.benchmark.TravelingTournamentBenchmarkApp;
 
-public class TravelingTournamentBenchmarkConfigTest extends AbstractBenchmarkConfigTest {
+public class PatientAdmissionScheduleBenchmarkConfigTest extends AbstractBenchmarkConfigTest {
 
     @Override
     protected CommonBenchmarkApp getBenchmarkApp() {
-        return new TravelingTournamentBenchmarkApp();
+        return new PatientAdmissionScheduleBenchmarkApp();
     }
 }

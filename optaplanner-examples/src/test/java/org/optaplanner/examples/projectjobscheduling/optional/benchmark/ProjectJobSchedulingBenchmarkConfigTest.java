@@ -14,16 +14,15 @@
  * limitations under the License.
  */
 
-package org.optaplanner.examples.machinereassignment.app;
+package org.optaplanner.examples.projectjobscheduling.optional.benchmark;
 
 import org.optaplanner.examples.common.app.AbstractBenchmarkConfigTest;
 import org.optaplanner.examples.common.app.CommonBenchmarkApp;
-import org.optaplanner.examples.machinereassignment.optional.benchmark.MachineReassignmentBenchmarkApp;
 
-public class MachineReassignmentBenchmarkConfigTest extends AbstractBenchmarkConfigTest {
+public class ProjectJobSchedulingBenchmarkConfigTest extends AbstractBenchmarkConfigTest {
 
     @Override
     protected CommonBenchmarkApp getBenchmarkApp() {
-        return new MachineReassignmentBenchmarkApp();
+        return new ProjectJobSchedulingBenchmarkApp();
     }
 }

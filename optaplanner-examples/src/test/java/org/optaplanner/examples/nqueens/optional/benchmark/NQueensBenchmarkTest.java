@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.optaplanner.examples.nqueens.app;
+package org.optaplanner.examples.nqueens.optional.benchmark;
 
 import java.io.File;
 import java.util.Arrays;
@@ -29,6 +29,7 @@ import org.optaplanner.benchmark.config.statistic.ProblemStatisticType;
 import org.optaplanner.benchmark.config.statistic.SingleStatisticType;
 import org.optaplanner.benchmark.impl.DefaultPlannerBenchmark;
 import org.optaplanner.examples.common.app.PlannerBenchmarkTest;
+import org.optaplanner.examples.nqueens.app.NQueensApp;
 import org.optaplanner.examples.nqueens.domain.NQueens;
 import org.optaplanner.persistence.xstream.impl.domain.solution.XStreamSolutionFileIO;
 

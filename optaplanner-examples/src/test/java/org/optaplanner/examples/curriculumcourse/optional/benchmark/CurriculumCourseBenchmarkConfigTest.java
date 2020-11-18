@@ -14,16 +14,15 @@
  * limitations under the License.
  */
 
-package org.optaplanner.examples.nurserostering.app;
+package org.optaplanner.examples.curriculumcourse.optional.benchmark;
 
 import org.optaplanner.examples.common.app.AbstractBenchmarkConfigTest;
 import org.optaplanner.examples.common.app.CommonBenchmarkApp;
-import org.optaplanner.examples.nurserostering.optional.benchmark.NurseRosteringBenchmarkApp;
 
-public class NurseRosteringBenchmarkConfigTest extends AbstractBenchmarkConfigTest {
+public class CurriculumCourseBenchmarkConfigTest extends AbstractBenchmarkConfigTest {
 
     @Override
     protected CommonBenchmarkApp getBenchmarkApp() {
-        return new NurseRosteringBenchmarkApp();
+        return new CurriculumCourseBenchmarkApp();
     }
 }

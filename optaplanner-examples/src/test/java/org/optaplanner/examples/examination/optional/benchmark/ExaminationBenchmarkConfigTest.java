@@ -14,11 +14,10 @@
  * limitations under the License.
  */
 
-package org.optaplanner.examples.examination.app;
+package org.optaplanner.examples.examination.optional.benchmark;
 
 import org.optaplanner.examples.common.app.AbstractBenchmarkConfigTest;
 import org.optaplanner.examples.common.app.CommonBenchmarkApp;
-import org.optaplanner.examples.examination.optional.benchmark.ExaminationBenchmarkApp;
 
 public class ExaminationBenchmarkConfigTest extends AbstractBenchmarkConfigTest {
 

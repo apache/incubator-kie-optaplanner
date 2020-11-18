@@ -14,16 +14,15 @@
  * limitations under the License.
  */
 
-package org.optaplanner.examples.projectjobscheduling.app;
+package org.optaplanner.examples.vehiclerouting.optional.benchmark;
 
 import org.optaplanner.examples.common.app.AbstractBenchmarkConfigTest;
 import org.optaplanner.examples.common.app.CommonBenchmarkApp;
-import org.optaplanner.examples.projectjobscheduling.optional.benchmark.ProjectJobSchedulingBenchmarkApp;
 
-public class ProjectJobSchedulingBenchmarkConfigTest extends AbstractBenchmarkConfigTest {
+public class VehicleRoutingBenchmarkConfigTest extends AbstractBenchmarkConfigTest {
 
     @Override
     protected CommonBenchmarkApp getBenchmarkApp() {
-        return new ProjectJobSchedulingBenchmarkApp();
+        return new VehicleRoutingBenchmarkApp();
     }
 }

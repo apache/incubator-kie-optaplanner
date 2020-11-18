@@ -14,16 +14,15 @@
  * limitations under the License.
  */
 
-package org.optaplanner.examples.tsp.app;
+package org.optaplanner.examples.nurserostering.optional.benchmark;
 
 import org.optaplanner.examples.common.app.AbstractBenchmarkConfigTest;
 import org.optaplanner.examples.common.app.CommonBenchmarkApp;
-import org.optaplanner.examples.tsp.optional.benchmark.TspBenchmarkApp;
 
-public class TspBenchmarkConfigTest extends AbstractBenchmarkConfigTest {
+public class NurseRosteringBenchmarkConfigTest extends AbstractBenchmarkConfigTest {
 
     @Override
     protected CommonBenchmarkApp getBenchmarkApp() {
-        return new TspBenchmarkApp();
+        return new NurseRosteringBenchmarkApp();
     }
 }

@@ -14,16 +14,15 @@
  * limitations under the License.
  */
 
-package org.optaplanner.examples.nqueens.app;
+package org.optaplanner.examples.travelingtournament.optional.benchmark;
 
 import org.optaplanner.examples.common.app.AbstractBenchmarkConfigTest;
 import org.optaplanner.examples.common.app.CommonBenchmarkApp;
-import org.optaplanner.examples.nqueens.optional.benchmark.NQueensBenchmarkApp;
 
-public class NQueensBenchmarkConfigTest extends AbstractBenchmarkConfigTest {
+public class TravelingTournamentBenchmarkConfigTest extends AbstractBenchmarkConfigTest {
 
     @Override
     protected CommonBenchmarkApp getBenchmarkApp() {
-        return new NQueensBenchmarkApp();
+        return new TravelingTournamentBenchmarkApp();
     }
 }

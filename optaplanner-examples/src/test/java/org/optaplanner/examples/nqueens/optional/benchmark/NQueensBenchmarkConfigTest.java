@@ -14,16 +14,15 @@
  * limitations under the License.
  */
 
-package org.optaplanner.examples.curriculumcourse.app;
+package org.optaplanner.examples.nqueens.optional.benchmark;
 
 import org.optaplanner.examples.common.app.AbstractBenchmarkConfigTest;
 import org.optaplanner.examples.common.app.CommonBenchmarkApp;
-import org.optaplanner.examples.curriculumcourse.optional.benchmark.CurriculumCourseBenchmarkApp;
 
-public class CurriculumCourseBenchmarkConfigTest extends AbstractBenchmarkConfigTest {
+public class NQueensBenchmarkConfigTest extends AbstractBenchmarkConfigTest {
 
     @Override
     protected CommonBenchmarkApp getBenchmarkApp() {
-        return new CurriculumCourseBenchmarkApp();
+        return new NQueensBenchmarkApp();
     }
 }

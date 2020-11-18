@@ -14,16 +14,15 @@
  * limitations under the License.
  */
 
-package org.optaplanner.examples.vehiclerouting.app;
+package org.optaplanner.examples.machinereassignment.optional.benchmark;
 
 import org.optaplanner.examples.common.app.AbstractBenchmarkConfigTest;
 import org.optaplanner.examples.common.app.CommonBenchmarkApp;
-import org.optaplanner.examples.vehiclerouting.optional.benchmark.VehicleRoutingBenchmarkApp;
 
-public class VehicleRoutingBenchmarkConfigTest extends AbstractBenchmarkConfigTest {
+public class MachineReassignmentBenchmarkConfigTest extends AbstractBenchmarkConfigTest {
 
     @Override
     protected CommonBenchmarkApp getBenchmarkApp() {
-        return new VehicleRoutingBenchmarkApp();
+        return new MachineReassignmentBenchmarkApp();
     }
 }

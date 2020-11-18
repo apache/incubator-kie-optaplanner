@@ -14,16 +14,15 @@
  * limitations under the License.
  */
 
-package org.optaplanner.examples.pas.app;
+package org.optaplanner.examples.tsp.optional.benchmark;
 
 import org.optaplanner.examples.common.app.AbstractBenchmarkConfigTest;
 import org.optaplanner.examples.common.app.CommonBenchmarkApp;
-import org.optaplanner.examples.pas.optional.benchmark.PatientAdmissionScheduleBenchmarkApp;
 
-public class PatientAdmissionScheduleBenchmarkConfigTest extends AbstractBenchmarkConfigTest {
+public class TspBenchmarkConfigTest extends AbstractBenchmarkConfigTest {
 
     @Override
     protected CommonBenchmarkApp getBenchmarkApp() {
-        return new PatientAdmissionScheduleBenchmarkApp();
+        return new TspBenchmarkApp();
     }
 }
