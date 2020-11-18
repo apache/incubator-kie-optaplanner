@@ -57,7 +57,7 @@ find the version to be released and pick “Release” from the Actions.
 
 === 2. Run kogito-release-pipeline
 
-OptaPlanner is released as a part of the Kogito release pipeline. Thus, a person releasing the Kogito triggers the pipeline.
+OptaPlanner is released as a part of the Kogito release pipeline. Thus, a person releasing Kogito triggers the pipeline.
 Make sure you agree with this person on setting the correct OptaPlanner version before running the pipeline.
 
 ==== Actions covered by the Kogito release pipeline:
