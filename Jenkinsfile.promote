@@ -22,43 +22,16 @@ pipeline {
     }
 
     options {
-        buildDiscarder logRotator(artifactDaysToKeepStr: '', artifactNumToKeepStr: '', daysToKeepStr: '', numToKeepStr: '10')
         timeout(time: 120, unit: 'MINUTES')
     }
 
-    parameters {
-        string(name: 'DISPLAY_NAME', defaultValue: '', description: 'Setup a specific build display name')
-
-        // Deploy job url to retrieve deployment.properties
-        string(name: 'DEPLOY_BUILD_URL', defaultValue: '', description: 'URL to jenkins deploy build to retrieve the `deployment.properties` file. If base parameters are defined, they will override the `deployment.properties` information')
-
-        // Git information which can override `deployment.properties`
-        string(name: 'BUILD_BRANCH_NAME', defaultValue: '', description: 'Override `deployment.properties`. Which branch to build? Set if you are not on a multibranch pipeline.')
-        string(name: 'GIT_AUTHOR', defaultValue: '', description: 'Override `deployment.properties`. Which Git author repository ?')
-
-        // Build&Deploy information for next snapshots
-        string(name: 'MAVEN_SETTINGS_CONFIG_FILE_ID', defaultValue: 'kogito_release_settings', description: 'Maven settings configfile to use in pipeline for Maven commands')
-        string(name: 'MAVEN_DEPENDENCIES_REPOSITORY', defaultValue: '', description: 'Maven repository where to find dependencies if those are not in the default Jboss repository.')
-        string(name: 'MAVEN_DEPLOY_REPOSITORY', defaultValue: '', description: 'Specify a Maven repository to deploy the artifacts.')
-
-        // Release information which can override `deployment.properties`
-        booleanParam(name: 'RELEASE', defaultValue: false, description: 'Override `deployment.properties`. Is this build for a release?')
-
-        string(name: 'PROJECT_VERSION', defaultValue: '', description: 'Override `deployment.properties`. Optional if not RELEASE. If RELEASE, cannot be empty.')
-        string(name: 'KOGITO_VERSION', defaultValue: '', description: 'Optional if not RELEASE. If RELEASE, cannot be empty.')
-
-        string(name: 'STAGING_REPO_URL', defaultValue: '', description: 'Override `deployment.properties`.')
-        string(name: 'GIT_TAG', defaultValue: '', description: 'Git tag to set, if different from PROJECT_VERSION')
-
-        // Bot author information. Set as params for easy testing.
-        string(name: 'BOT_CREDENTIALS_ID', defaultValue: 'bsig-gh-bot', description: 'Credentials for PR creation')
-
-        // Main author creds
-        string(name: 'AUTHOR_CREDS_ID', defaultValue: 'kie-ci', description: 'Credentials for PR merge')
-        string(name: 'GITHUB_TOKEN_CREDS_ID', defaultValue: 'kie-ci2-token', description: 'GH token to be used with GH CLI')
-    }
+    // parameters {
+    // For parameters, check into ./dsl/jobs.groovy file
+    // }
 
     environment {
+        // Some generated env is also defined into ./dsl/jobs.groovy file
+        
         PROPERTIES_FILE_NAME = 'deployment.properties'
         BOT_BRANCH_HASH = "${util.generateHash(10)}"
         GITHUB_CLI_VERSION = '0.11.1'
@@ -184,35 +157,35 @@ pipeline {
             }
         }
 
-        stage('Update OptaPlanner website') {
-            when {
-                expression { return isRelease() }
-            }
-            steps {
-                script {
-                    final String websiteRepository = 'optaplanner-website'
-                    String prLink = null
-                    dir("$websiteRepository-bot") {
-                        String prBranchName = createWebsitePrBranch(websiteRepository)
+        // stage('Update OptaPlanner website') {
+        //     when {
+        //         expression { return isRelease() }
+        //     }
+        //     steps {
+        //         script {
+        //             final String websiteRepository = 'optaplanner-website'
+        //             String prLink = null
+        //             dir("$websiteRepository-bot") {
+        //                 String prBranchName = createWebsitePrBranch(websiteRepository)
 
-                        // Update versions in links on the website.
-                        sh "./build/update-versions.sh ${getProjectVersion()} ${getNextMinorSnapshotVersion(getProjectVersion())}"
+        //                 // Update versions in links on the website.
+        //                 sh "./build/update-versions.sh ${getProjectVersion()} ${getNextMinorSnapshotVersion(getProjectVersion())}"
 
-                        // Update the XSDs. OptaPlanner must be cloned and build with the full profile before.
-                        String optaplannerRoot = "$WORKSPACE/optaplanner"
-                        sh "cp $optaplannerRoot/optaplanner-core/target/classes/solver.xsd xsd/solver/solver-8.xsd"
-                        sh "cp $optaplannerRoot/optaplanner-benchmark/target/classes/benchmark.xsd xsd/benchmark/benchmark-8.xsd"
+        //                 // Update the XSDs. OptaPlanner must be cloned and build with the full profile before.
+        //                 String optaplannerRoot = "$WORKSPACE/optaplanner"
+        //                 sh "cp $optaplannerRoot/optaplanner-core/target/classes/solver.xsd xsd/solver/solver-8.xsd"
+        //                 sh "cp $optaplannerRoot/optaplanner-benchmark/target/classes/benchmark.xsd xsd/benchmark/benchmark-8.xsd"
 
-                        // Add changed files, commit, open and merge PR
-                        prLink = commitAndCreatePR("Release OptaPlanner ${getProjectVersion()}", { sh 'git add xsd/\\*.xsd _config/pom.yml' }, prBranchName, 'master')
-                    }
-                    dir(websiteRepository) {
-                        checkoutRepo(websiteRepository, 'master')
-                        mergeAndPush(prLink, 'master')
-                    }
-                }
-            }
-        }
+        //                 // Add changed files, commit, open and merge PR
+        //                 prLink = commitAndCreatePR("Release OptaPlanner ${getProjectVersion()}", { sh 'git add xsd/\\*.xsd _config/pom.yml' }, prBranchName, 'master')
+        //             }
+        //             dir(websiteRepository) {
+        //                 checkoutRepo(websiteRepository, 'master')
+        //                 mergeAndPush(prLink, 'master')
+        //             }
+        //         }
+        //     }
+        // }
 
         stage('Set OptaPlanner next snapshot version') {
             when {
@@ -228,11 +201,11 @@ pipeline {
                         maven.mvnVersionsSet(getMavenCommand(), nextSnapshotVersion, true)
                         maven.mvnSetVersionProperty(getMavenCommand(), 'version.org.kie.kogito', getNextMicroSnapshotVersion(getKogitoVersion()))
 
-                        String prLink = commitAndCreatePR("[${getBuildBranch()}] Update snapshot version to ${nextMicroSnapshotVersion}")
+                        String prLink = commitAndCreatePR("[${getGitBranch()}] Update snapshot version to ${nextMicroSnapshotVersion}")
                         setPipelinePrLink(optaplannerRepository, prLink)
                     }
                     dir(optaplannerRepository) {
-                        sh "git checkout ${getBuildBranch()}"
+                        sh "git checkout ${getGitBranch()}"
                         mergeAndPush(getPipelinePrLink(optaplannerRepository))
                         runMavenDeploy(getMavenCommand())
                     }
@@ -251,11 +224,11 @@ pipeline {
                         prepareForPR(vehicleRoutingRepository)
                         maven.mvnVersionsUpdateParentAndChildModules(nextMicroSnapshotVersion, true)
 
-                        String prLink = commitAndCreatePR("[${getBuildBranch()}] Update snapshot version to ${nextMicroSnapshotVersion}")
+                        String prLink = commitAndCreatePR("[${getGitBranch()}] Update snapshot version to ${nextMicroSnapshotVersion}")
                         setPipelinePrLink(vehicleRoutingRepository, prLink)
                     }
                     dir(vehicleRoutingRepository) {
-                        sh "git checkout ${getBuildBranch()}"
+                        sh "git checkout ${getGitBranch()}"
                         mergeAndPush(getPipelinePrLink(vehicleRoutingRepository))
                         runMavenDeploy(getMavenCommand())
                     }
@@ -274,11 +247,11 @@ pipeline {
                         prepareForPR(employeeRosteringRepository)
                         maven.mvnVersionsUpdateParentAndChildModules(nextMicroSnapshotVersion, true)
 
-                        String prLink = commitAndCreatePR("[${getBuildBranch()}] Update snapshot version to ${nextMicroSnapshotVersion}")
+                        String prLink = commitAndCreatePR("[${getGitBranch()}] Update snapshot version to ${nextMicroSnapshotVersion}")
                         setPipelinePrLink(employeeRosteringRepository, prLink)
                     }
                     dir(employeeRosteringRepository) {
-                        sh "git checkout ${getBuildBranch()}"
+                        sh "git checkout ${getGitBranch()}"
                         mergeAndPush(getPipelinePrLink(employeeRosteringRepository))
                         runMavenDeploy(getMavenCommand())
                     }
@@ -298,11 +271,11 @@ pipeline {
                         prepareForPR(quickstartsRepository)
                         updateQuickstartsVersions(nextMicroSnapshotVersion)
 
-                        String prLink = commitAndCreatePR(("[${getBuildBranch()}] Update snapshot version to ${nextMicroSnapshotVersion}"));
+                        String prLink = commitAndCreatePR(("[${getGitBranch()}] Update snapshot version to ${nextMicroSnapshotVersion}"));
                         setPipelinePrLink(quickstartsRepository, prLink)
                     }
                     dir(quickstartsRepository) {
-                        sh "git checkout ${getBuildBranch()}"
+                        sh "git checkout ${getGitBranch()}"
                         mergeAndPush(getPipelinePrLink(quickstartsRepository))
                     }
                 }
@@ -356,7 +329,7 @@ String getParamOrDeployProperty(String paramKey, String deployPropertyKey){
 //////////////////////////////////////////////////////////////////////////////
 
 boolean isRelease() {
-    return params.RELEASE || (getDeployProperty('release') == 'true')
+    return env.RELEASE.toBoolean()
 }
 
 String getProjectVersion() {
@@ -379,24 +352,20 @@ String getGitTag() {
     return params.GIT_TAG != '' ? params.GIT_TAG : getProjectVersion()
 }
 
-String getBuildBranch() {
-    return getParamOrDeployProperty('BUILD_BRANCH_NAME', 'git.branch')
+String getGitBranch() {
+    return params.BUILD_BRANCH_NAME
 }
 
 String getGitAuthor() {
-    return getParamOrDeployProperty('GIT_AUTHOR', 'git.author')
+    return env.GIT_AUTHOR
 }
 
 String getGitAuthorCredsID(){
-    return params.AUTHOR_CREDS_ID
+    return env.AUTHOR_CREDS_ID
 }
 
 String getBotAuthorCredsID(){
-    return params.BOT_CREDENTIALS_ID
-}
-
-String getStagingRepoUrl(){
-    return getParamOrDeployProperty('STAGING_REPO_URL', 'staging-repo.url')
+    return env.BOT_CREDENTIALS_ID
 }
 
 String getDeployPrLink(String repo){
@@ -427,7 +396,7 @@ void checkoutRepo(String repo, String branch) {
 }
 
 void checkoutRepo(String repo) {
-    checkoutRepo(repo, getBuildBranch())
+    checkoutRepo(repo, getGitBranch())
 }
 
 void mergeAndPush(String prLink, String targetBranch) {
@@ -438,7 +407,7 @@ void mergeAndPush(String prLink, String targetBranch) {
 }
 
 void mergeAndPush(String prLink) {
-    mergeAndPush(prLink, getBuildBranch())
+    mergeAndPush(prLink, getGitBranch())
 }
 
 void tagLatest() {
@@ -466,7 +435,7 @@ String commitAndCreatePR(String commitMsg) {
     return commitAndCreatePR(commitMsg, {
         githubscm.findAndStageNotIgnoredFiles('pom.xml')
         githubscm.findAndStageNotIgnoredFiles('build.gradle')
-    }, getSnapshotBranch(), getBuildBranch())
+    }, getSnapshotBranch(), getGitBranch())
 }
 
 String createWebsitePrBranch(String websiteRepository) {
@@ -487,30 +456,31 @@ void installGithubCLI() {
 }
 
 void uploadDistribution(String directory) {
-    dir(directory) {
-        echo "uploadDistribution for ${directory}"
-        withCredentials(bindings: [sshUserPrivateKey(credentialsId: 'optaplanner-filemgmt',
-                keyFileVariable: 'SSH_KEY_JBOSS_FILEMGMT')]) {
-            // For testing, simulate connection via SSH:
-            // sh "ssh -i $SSH_KEY_JBOSS_FILEMGMT -oKexAlgorithms=+diffie-hellman-group1-sha1 optaplanner@filemgmt.jboss.org"
-            sh "./build/release/upload_distribution.sh ${getProjectVersion()} $SSH_KEY_JBOSS_FILEMGMT"
-        }
-    }
+    echo "uploadDistribution for ${directory}"
+    // TODO set back
+    // dir(directory) {
+    //     withCredentials(bindings: [sshUserPrivateKey(credentialsId: 'optaplanner-filemgmt',
+    //             keyFileVariable: 'SSH_KEY_JBOSS_FILEMGMT')]) {
+    //         // For testing, simulate connection via SSH:
+    //         // sh "ssh -i $SSH_KEY_JBOSS_FILEMGMT -oKexAlgorithms=+diffie-hellman-group1-sha1 optaplanner@filemgmt.jboss.org"
+    //         sh "./build/release/upload_distribution.sh ${getProjectVersion()} $SSH_KEY_JBOSS_FILEMGMT"
+    //     }
+    // }
 }
 
 MavenCommand getMavenCommand() {
     mvnCmd = new MavenCommand(this, ['-fae'])
-                    .withSettingsXmlId(params.MAVEN_SETTINGS_CONFIG_FILE_ID)
-    if (params.MAVEN_DEPENDENCIES_REPOSITORY) {
-        mvnCmd.withDependencyRepositoryInSettings('deps-repo', params.MAVEN_DEPENDENCIES_REPOSITORY)
+                    .withSettingsXmlId(env.MAVEN_SETTINGS_CONFIG_FILE_ID)
+    if (env.MAVEN_DEPENDENCIES_REPOSITORY) {
+        mvnCmd.withDependencyRepositoryInSettings('deps-repo', env.MAVEN_DEPENDENCIES_REPOSITORY)
     }
     return mvnCmd
 }
 
 void runMavenDeploy(MavenCommand mvnCmd) {
     mvnCmd = mvnCmd.clone()
-    if(params.MAVEN_DEPLOY_REPOSITORY){
-        mvnCmd.withDeployRepository(params.MAVEN_DEPLOY_REPOSITORY)
+    if(env.MAVEN_DEPLOY_REPOSITORY){
+        mvnCmd.withDeployRepository(env.MAVEN_DEPLOY_REPOSITORY)
     }
     mvnCmd.skipTests(true).run('clean deploy')
 }
@@ -520,7 +490,7 @@ def updateAndResetBranch(String repo, String branchToReset) {
 
     removeJbossNexusFromMavenAndGradle()
 
-    githubscm.commitChanges("[${getBuildBranch()}] Update ${branchToReset} to ${getProjectVersion()}", {
+    githubscm.commitChanges("[${getGitBranch()}] Update ${branchToReset} to ${getProjectVersion()}", {
         githubscm.findAndStageNotIgnoredFiles('pom.xml')
         githubscm.findAndStageNotIgnoredFiles('build.gradle')
     })
