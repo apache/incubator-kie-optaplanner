@@ -85,7 +85,7 @@ pipeline {
                 script {
                     dir('optaplanner') {
                         checkoutRepo('optaplanner')
-                        mergeAndPush('optaplanner', getDeployPrLink('optaplanner'))
+                        mergeAndPush(getDeployPrLink('optaplanner'))
                         tagLatest()
                     }
                 }
@@ -118,7 +118,8 @@ pipeline {
             steps {
                 script {
                     final String websiteRepository = 'optaplanner-website'
-                    dir(websiteRepository) {
+                    String prLink = null
+                    dir("$websiteRepository-bot") {
                         String prBranchName = createWebsitePrBranch(websiteRepository)
 
                         // Update versions in links on the website.
@@ -131,8 +132,11 @@ pipeline {
 
                         // Add changed files, commit, open and merge PR
                         sh 'git add xsd/\\*.xsd _config/pom.yml'
-                        String prLink = commitAndCreatePR("Release OptaPlanner ${getProjectVersion()}", prBranchName, 'master')
-                        mergeAndPush(websiteRepository, prLink)
+                        prLink = commitAndCreatePR("Release OptaPlanner ${getProjectVersion()}", prBranchName, 'master')
+                    }
+                    dir(websiteRepository) {
+                        checkoutRepo(websiteRepository, 'master')
+                        mergeAndPush(prLink, 'master')
                     }
                 }
             }
@@ -157,7 +161,7 @@ pipeline {
                     }
                     dir('optaplanner') {
                         sh "git checkout ${getBuildBranch()}"
-                        mergeAndPush('optaplanner', getPipelinePrLink('optaplanner'))
+                        mergeAndPush(getPipelinePrLink('optaplanner'))
                         setupMavenConfig()
                         deployArtifacts()
                     }
@@ -286,10 +290,10 @@ void checkoutRepo(String repo) {
     checkoutRepo(repo, getBuildBranch())
 }
 
-void mergeAndPush(String repo, String prLink) {
+void mergeAndPush(String prLink, String targetBranch = getBuildBranch()) {
     if (prLink != '') {
         githubscm.mergePR(prLink, getGitAuthorCredsID())
-        githubscm.pushObject('origin', getBuildBranch(), getGitAuthorCredsID())
+        githubscm.pushObject('origin', targetBranch, getGitAuthorCredsID())
     }
 }
 
