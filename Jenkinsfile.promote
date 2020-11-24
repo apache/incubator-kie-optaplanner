@@ -290,11 +290,15 @@ void checkoutRepo(String repo) {
     checkoutRepo(repo, getBuildBranch())
 }
 
-void mergeAndPush(String prLink, String targetBranch = getBuildBranch()) {
+void mergeAndPush(String prLink, String targetBranch) {
     if (prLink != '') {
         githubscm.mergePR(prLink, getGitAuthorCredsID())
         githubscm.pushObject('origin', targetBranch, getGitAuthorCredsID())
     }
+}
+
+void mergeAndPush(String prLink) {
+    mergeAndPush(prLink, getBuildBranch())
 }
 
 void tagLatest() {
