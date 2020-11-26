@@ -74,6 +74,8 @@
     <!-- Latest release to be used by api-compatibility-check to check backwards compatibility of the API. -->
     <revapi.oldKieVersion>7.39.0.Final</revapi.oldKieVersion>
     <revapi.newKieVersion>${project.version}</revapi.newKieVersion>
+    <!-- Runs only in the fullProfile. -->
+    <revapi.skip>true</revapi.skip>
     <!--suppress UnresolvedMavenProperty-->
     <project.root.dir>${maven.multiModuleProjectDirectory}</project.root.dir>
 
@@ -617,6 +619,14 @@
             </analysisConfigurationFiles>
             <failSeverity>potentiallyBreaking</failSeverity>
           </configuration>
+          <executions>
+            <execution>
+              <id>check</id>
+              <goals>
+                <goal>check</goal>
+              </goals>
+            </execution>
+          </executions>
         </plugin>
 
         <plugin>
@@ -1088,6 +1098,9 @@
           <name>full</name>
         </property>
       </activation>
+      <properties>
+        <revapi.skip>false</revapi.skip>
+      </properties>
       <build>
         <plugins>
           <plugin> <!-- Make sure the build fails-fast on Javadoc issues. -->
@@ -1098,18 +1111,6 @@
                 <phase>package</phase>
                 <goals>
                   <goal>javadoc-no-fork</goal>
-                </goals>
-              </execution>
-            </executions>
-          </plugin>
-          <plugin>
-            <groupId>org.revapi</groupId>
-            <artifactId>revapi-maven-plugin</artifactId>
-            <executions>
-              <execution>
-                <id>check</id>
-                <goals>
-                  <goal>check</goal>
                 </goals>
               </execution>
             </executions>
