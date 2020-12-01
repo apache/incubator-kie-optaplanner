@@ -25,6 +25,7 @@ import static org.optaplanner.core.api.score.stream.ConstraintCollectors.toMap;
 import static org.optaplanner.core.api.score.stream.ConstraintCollectors.toSet;
 import static org.optaplanner.core.api.score.stream.Joiners.equal;
 import static org.optaplanner.core.api.score.stream.Joiners.filtering;
+import static org.optaplanner.core.api.score.stream.Joiners.greaterThanOrEqual;
 import static org.optaplanner.core.impl.testdata.util.PlannerTestUtils.asMap;
 import static org.optaplanner.core.impl.testdata.util.PlannerTestUtils.asSet;
 
@@ -34,6 +35,7 @@ import java.util.function.Function;
 import java.util.stream.Stream;
 
 import org.apache.commons.lang3.tuple.ImmutablePair;
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.TestTemplate;
 import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
 import org.optaplanner.core.impl.score.director.InnerScoreDirector;
@@ -551,4 +553,21 @@ public class AdvancedGroupByConstraintStreamTest extends AbstractConstraintStrea
         scoreDirector.afterProblemFactRemoved(entity3);
         assertScore(scoreDirector);
     }
+
+    @TestTemplate
+    public void groupByThenJoinThenGroupBy() { // PLANNER-2270
+        assumeDrools();
+        Assertions.assertThatCode(() -> buildScoreDirector((factory) -> {
+            return factory.from(TestdataLavishEntity.class)
+                    .groupBy(TestdataLavishEntity::getEntityGroup, TestdataLavishEntity::getValue)
+                    .join(TestdataLavishEntity.class,
+                            equal((group, value) -> group, e -> e.getEntityGroup()),
+                            greaterThanOrEqual((group, value) -> 1, e -> 1))
+                    .groupBy((group, value, entity) -> group,
+                            (group, value, entity) -> entity,
+                            sum((group, count, entity) -> 1))
+                    .penalize(TEST_CONSTRAINT_NAME, SimpleScore.ONE);
+        })).doesNotThrowAnyException();
+    }
+
 }
