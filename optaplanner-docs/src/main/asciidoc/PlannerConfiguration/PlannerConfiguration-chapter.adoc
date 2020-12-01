@@ -1754,7 +1754,7 @@ A `SolverManager` is a facade for one or more `Solver` instances
 to simplify solving planning problems in REST and other enterprise services.
 Its `solve(...)` methods differ from the normal `Solver.solve(...)` method:
 
-* *`SolverManager.solve(...)` returns immediately*: it schedules a problem for asynchronous solving without blocking the calling thread.
+* *`Solver.solve(...)` returns immediately*: it schedules a problem for asynchronous solving without blocking the calling thread.
 This avoids timeout issues of HTTP and other technologies.
 * *`SolverManager.solve(...)` solves multiple planning problems* of the same domain, in parallel.
 
