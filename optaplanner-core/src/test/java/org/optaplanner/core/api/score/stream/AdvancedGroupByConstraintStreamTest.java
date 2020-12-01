@@ -16,6 +16,7 @@
 
 package org.optaplanner.core.api.score.stream;
 
+import static org.assertj.core.api.Assertions.*;
 import static org.optaplanner.core.api.score.stream.ConstraintCollectors.count;
 import static org.optaplanner.core.api.score.stream.ConstraintCollectors.countBi;
 import static org.optaplanner.core.api.score.stream.ConstraintCollectors.countQuad;
@@ -557,12 +558,10 @@ public class AdvancedGroupByConstraintStreamTest extends AbstractConstraintStrea
     @TestTemplate
     public void groupByThenJoinThenGroupBy() { // PLANNER-2270
         assumeDrools();
-        Assertions.assertThatCode(() -> buildScoreDirector((factory) -> {
+        assertThatCode(() -> buildScoreDirector((factory) -> {
             return factory.from(TestdataLavishEntity.class)
                     .groupBy(TestdataLavishEntity::getEntityGroup, TestdataLavishEntity::getValue)
-                    .join(TestdataLavishEntity.class,
-                            equal((group, value) -> group, e -> e.getEntityGroup()),
-                            greaterThanOrEqual((group, value) -> 1, e -> 1))
+                    .join(TestdataLavishEntity.class)
                     .groupBy((group, value, entity) -> group,
                             (group, value, entity) -> entity,
                             sum((group, count, entity) -> 1))
