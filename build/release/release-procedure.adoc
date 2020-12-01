@@ -68,12 +68,6 @@ find the version to be released and pick “Release” from the Actions.
 OptaPlanner is released as a part of the Kogito release pipeline. Thus, a person releasing Kogito triggers the pipeline.
 Make sure you agree with this person on setting the correct OptaPlanner version before running the pipeline.
 
-==== Actions covered by the Kogito release pipeline:
-* Create a release branch and upgrade the project to the release version.
-* Build the project and deploy maven artefacts into a staging repository on JBoss Nexus.
-* Promote maven artefacts from the staging repository to the Maven Central.
-* Upgrade version to the next bugfix snapshot on the release branch.
-
 === 3. Upgrade versions to the next snapshot
 *_This step is yet to be automated._*
 
@@ -95,15 +89,19 @@ property in all quickstarts, including Gradle build files, to the release versio
 . Push the release branch.
 . Upgrade the version of the project to the next minor snapshot version via a PR to the `development` branch.
 
-=== 5. Release Optawebs
-*_This step is yet to be automated. Follow the recipe below for both the Optaweb projects._*
+== Kogito Release Pipeline
 
-. Create a release branch from the `master` branch.
-. Upgrade the version of the project and its parent `pom.xml` to the release version on the release branch.
-. Build both projects to get the distribution and documentation (required for the next step).
-. Upload the documentation and Distribution Zip to the `filemgmt.jboss.org` using the `build/release/upload_distribution.sh` script.
-. Create a commit and a tag for the release. Push the tag.
-. Upgrade the version to the next patch snapshot version via PR to the release branch.
-.. Make sure the project builds.
-. Push the release branch.
-. Upgrade the version of the project to the next minor snapshot version via a PR to the `master` branch.
+The `kogito-release-pipeline` is a Jenkins pipeline that covers releases of the Kogito and the OptaPlanner projects
+together. As both projects consist of several Github repositories, the top-level `kogito-release-pipeline` orchestrates
+multiple pipelines that operate on the project, or the repository level.
+
+Please refer to the https://github.com/kiegroup/kogito-pipelines/blob/master/docs/nightly_and_release.md[Kogito release pipeline documentation]
+for more details.
+
+=== Actions covered by the Kogito release pipeline
+* Create releases branches and upgrade the projects to the release version.
+* Build the projects and deploy maven artefacts into a staging repository on JBoss Nexus.
+* Promote maven artifacts from the staging repository to a public one and later release this repository to Maven Central.
+* Upload the documentation and the distribution of all projects to the `filemgmt.jboss.org`.
+* Update links in the optaplanner-website to point to the released artifacts.
+* Upgrade version to the next bugfix snapshot on the release branch.
