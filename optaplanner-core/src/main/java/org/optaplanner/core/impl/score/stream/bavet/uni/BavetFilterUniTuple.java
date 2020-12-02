@@ -27,11 +27,6 @@ public final class BavetFilterUniTuple<A> extends BavetAbstractUniTuple<A> {
     }
 
     @Override
-    public void refresh() {
-        node.refresh(this);
-    }
-
-    @Override
     public String toString() {
         return "Filter(" + getFactsString() + ") with " + childTupleSet.size() + " children";
     }

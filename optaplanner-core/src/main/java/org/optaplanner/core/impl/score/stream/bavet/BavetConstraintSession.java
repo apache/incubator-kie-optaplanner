@@ -95,7 +95,7 @@ public final class BavetConstraintSession<Solution_, Score_ extends Score<Score_
     }
 
     private static void refreshTuple(BavetAbstractTuple tuple) {
-        tuple.refresh();
+        ((BavetAbstractNode)tuple.getNode()).refresh(tuple);
         switch (tuple.getState()) {
             case CREATING:
             case UPDATING:

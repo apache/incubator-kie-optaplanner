@@ -39,11 +39,6 @@ public final class BavetGroupBiTuple<GroupKey_, ResultContainer_, Result_> exten
         result = null;
     }
 
-    @Override
-    public void refresh() {
-        node.refresh(this);
-    }
-
     public int increaseParentCount() {
         parentCount++;
         return parentCount;

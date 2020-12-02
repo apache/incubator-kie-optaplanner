@@ -35,11 +35,6 @@ public final class BavetJoinTriTuple<A, B, C> extends BavetAbstractTriTuple<A, B
     }
 
     @Override
-    public void refresh() {
-        node.refresh(this);
-    }
-
-    @Override
     public String toString() {
         return "Join(" + getFactsString() + ")";
     }

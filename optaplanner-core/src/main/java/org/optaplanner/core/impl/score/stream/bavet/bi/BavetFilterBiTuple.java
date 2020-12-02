@@ -27,11 +27,6 @@ public final class BavetFilterBiTuple<A, B> extends BavetAbstractBiTuple<A, B> {
     }
 
     @Override
-    public void refresh() {
-        node.refresh(this);
-    }
-
-    @Override
     public String toString() {
         return "Filter(" + getFactsString() + ") with " + childTupleSet.size() + " children";
     }

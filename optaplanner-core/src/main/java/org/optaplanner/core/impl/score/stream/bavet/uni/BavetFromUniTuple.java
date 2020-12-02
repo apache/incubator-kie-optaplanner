@@ -27,11 +27,6 @@ public final class BavetFromUniTuple<A> extends BavetAbstractUniTuple<A> {
     }
 
     @Override
-    public void refresh() {
-        node.refresh(this);
-    }
-
-    @Override
     public String toString() {
         return "From(" + getFactsString() + ") with " + childTupleSet.size() + " children";
     }

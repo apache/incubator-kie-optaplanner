@@ -34,11 +34,6 @@ public final class BavetJoinBiTuple<A, B> extends BavetAbstractBiTuple<A, B>
     }
 
     @Override
-    public void refresh() {
-        node.refresh(this);
-    }
-
-    @Override
     public String toString() {
         return "Join(" + getFactsString() + ")";
     }

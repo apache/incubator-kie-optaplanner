@@ -33,11 +33,6 @@ public final class BavetJoinBridgeUniTuple<A> extends BavetAbstractUniTuple<A>
     }
 
     @Override
-    public void refresh() {
-        node.refresh(this);
-    }
-
-    @Override
     public String toString() {
         return "JoinBridge(" + getFactsString() + ") with " + childTupleSet.size() + " children";
     }

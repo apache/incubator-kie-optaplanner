@@ -24,8 +24,6 @@ public abstract class BavetAbstractTuple implements BavetTuple {
     protected BavetTupleState state = BavetTupleState.NEW;
     protected final Set<BavetAbstractTuple> childTupleSet = new LinkedHashSet<>(0); // TODO initial capacity
 
-    public abstract void refresh();
-
     public boolean isDirty() {
         return state.isDirty();
     }
