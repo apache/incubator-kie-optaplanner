@@ -20,9 +20,11 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 import java.util.function.BiPredicate;
 
 import org.optaplanner.core.impl.score.stream.bavet.BavetConstraintSession;
+import org.optaplanner.core.impl.score.stream.bavet.common.BavetAbstractTuple;
 import org.optaplanner.core.impl.score.stream.bavet.common.BavetTupleState;
 
 public final class BavetFilterBiNode<A, B> extends BavetAbstractBiNode<A, B> {
@@ -84,16 +86,16 @@ public final class BavetFilterBiNode<A, B> extends BavetAbstractBiNode<A, B> {
     public void refresh(BavetFilterBiTuple<A, B> tuple) {
         A a = tuple.getFactA();
         B b = tuple.getFactB();
-        List<BavetAbstractBiTuple<A, B>> childTupleList = tuple.getChildTupleList();
-        for (BavetAbstractBiTuple<A, B> childTuple : childTupleList) {
+        Set<BavetAbstractTuple> childTupleSet = tuple.getChildTupleSet();
+        for (BavetAbstractTuple childTuple : childTupleSet) {
             session.transitionTuple(childTuple, BavetTupleState.DYING);
         }
-        childTupleList.clear();
+        childTupleSet.clear();
         if (tuple.isActive()) {
             if (predicate.test(a, b)) {
                 for (BavetAbstractBiNode<A, B> childNode : childNodeList) {
                     BavetAbstractBiTuple<A, B> childTuple = childNode.createTuple(tuple);
-                    childTupleList.add(childTuple);
+                    childTupleSet.add(childTuple);
                     session.transitionTuple(childTuple, BavetTupleState.CREATING);
                 }
             }

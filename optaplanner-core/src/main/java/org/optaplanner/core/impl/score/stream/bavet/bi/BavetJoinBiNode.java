@@ -22,8 +22,8 @@ import java.util.List;
 import java.util.Set;
 
 import org.optaplanner.core.impl.score.stream.bavet.BavetConstraintSession;
+import org.optaplanner.core.impl.score.stream.bavet.common.BavetAbstractTuple;
 import org.optaplanner.core.impl.score.stream.bavet.common.BavetJoinNode;
-import org.optaplanner.core.impl.score.stream.bavet.common.BavetJoinTuple;
 import org.optaplanner.core.impl.score.stream.bavet.common.BavetTupleState;
 import org.optaplanner.core.impl.score.stream.bavet.common.index.BavetIndex;
 import org.optaplanner.core.impl.score.stream.bavet.uni.BavetJoinBridgeUniNode;
@@ -75,23 +75,23 @@ public final class BavetJoinBiNode<A, B> extends BavetAbstractBiNode<A, B> imple
     }
 
     public void refresh(BavetJoinBiTuple<A, B> tuple) {
-        List<BavetAbstractBiTuple<A, B>> childTupleList = tuple.getChildTupleList();
-        for (BavetAbstractBiTuple<A, B> childTuple : childTupleList) {
+        Set<BavetAbstractTuple> childTupleSet = tuple.getChildTupleSet();
+        for (BavetAbstractTuple childTuple : childTupleSet) {
             session.transitionTuple(childTuple, BavetTupleState.DYING);
         }
-        childTupleList.clear();
+        childTupleSet.clear();
         if (tuple.isActive()) {
             for (BavetAbstractBiNode<A, B> childNode : childNodeList) {
                 BavetAbstractBiTuple<A, B> childTuple = childNode.createTuple(tuple);
-                childTupleList.add(childTuple);
+                childTupleSet.add(childTuple);
                 session.transitionTuple(childTuple, BavetTupleState.CREATING);
             }
         }
     }
 
     public void refreshChildTuplesLeft(BavetJoinBridgeUniTuple<A> leftParentTuple) {
-        Set<BavetJoinTuple> leftTupleSet = leftParentTuple.getChildTupleSet();
-        for (BavetJoinTuple tuple_ : leftTupleSet) {
+        Set<BavetAbstractTuple> leftTupleSet = leftParentTuple.getChildTupleSet();
+        for (BavetAbstractTuple tuple_ : leftTupleSet) {
             BavetJoinBiTuple<A, B> tuple = (BavetJoinBiTuple<A, B>) tuple_;
             boolean removed = tuple.getBTuple().getChildTupleSet().remove(tuple);
             if (!removed) {
@@ -116,8 +116,8 @@ public final class BavetJoinBiNode<A, B> extends BavetAbstractBiNode<A, B> imple
     }
 
     public void refreshChildTuplesRight(BavetJoinBridgeUniTuple<B> rightParentTuple) {
-        Set<BavetJoinTuple> rightTupleSet = rightParentTuple.getChildTupleSet();
-        for (BavetJoinTuple uncastTuple : rightTupleSet) {
+        Set<BavetAbstractTuple> rightTupleSet = rightParentTuple.getChildTupleSet();
+        for (BavetAbstractTuple uncastTuple : rightTupleSet) {
             BavetJoinBiTuple<A, B> tuple = (BavetJoinBiTuple<A, B>) uncastTuple;
             boolean removed = tuple.getATuple().getChildTupleSet().remove(tuple);
             if (!removed) {

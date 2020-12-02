@@ -20,9 +20,11 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 
 import org.optaplanner.core.api.function.TriPredicate;
 import org.optaplanner.core.impl.score.stream.bavet.BavetConstraintSession;
+import org.optaplanner.core.impl.score.stream.bavet.common.BavetAbstractTuple;
 import org.optaplanner.core.impl.score.stream.bavet.common.BavetTupleState;
 
 public final class BavetFilterTriNode<A, B, C> extends BavetAbstractTriNode<A, B, C> {
@@ -85,16 +87,16 @@ public final class BavetFilterTriNode<A, B, C> extends BavetAbstractTriNode<A, B
         A a = tuple.getFactA();
         B b = tuple.getFactB();
         C c = tuple.getFactC();
-        List<BavetAbstractTriTuple<A, B, C>> childTupleList = tuple.getChildTupleList();
-        for (BavetAbstractTriTuple<A, B, C> childTuple : childTupleList) {
+        Set<BavetAbstractTuple> childTupleSet = tuple.getChildTupleSet();
+        for (BavetAbstractTuple childTuple : childTupleSet) {
             session.transitionTuple(childTuple, BavetTupleState.DYING);
         }
-        childTupleList.clear();
+        childTupleSet.clear();
         if (tuple.isActive()) {
             if (predicate.test(a, b, c)) {
                 for (BavetAbstractTriNode<A, B, C> childNode : childNodeList) {
                     BavetAbstractTriTuple<A, B, C> childTuple = childNode.createTuple(tuple);
-                    childTupleList.add(childTuple);
+                    childTupleSet.add(childTuple);
                     session.transitionTuple(childTuple, BavetTupleState.CREATING);
                 }
             }

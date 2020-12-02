@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,20 +16,14 @@
 
 package org.optaplanner.core.impl.score.stream.bavet.bi;
 
-import java.util.ArrayList;
-import java.util.List;
-
 public final class BavetFilterBiTuple<A, B> extends BavetAbstractBiTuple<A, B> {
 
     private final BavetFilterBiNode<A, B> node;
     private final BavetAbstractBiTuple<A, B> parentTuple;
 
-    protected List<BavetAbstractBiTuple<A, B>> childTupleList = null;
-
     public BavetFilterBiTuple(BavetFilterBiNode<A, B> node, BavetAbstractBiTuple<A, B> parentTuple) {
         this.node = node;
         this.parentTuple = parentTuple;
-        childTupleList = new ArrayList<>();
     }
 
     @Override
@@ -39,7 +33,7 @@ public final class BavetFilterBiTuple<A, B> extends BavetAbstractBiTuple<A, B> {
 
     @Override
     public String toString() {
-        return "Filter(" + getFactsString() + ") with " + childTupleList.size() + " children";
+        return "Filter(" + getFactsString() + ") with " + childTupleSet.size() + " children";
     }
 
     // ************************************************************************
@@ -59,10 +53,6 @@ public final class BavetFilterBiTuple<A, B> extends BavetAbstractBiTuple<A, B> {
     @Override
     public B getFactB() {
         return parentTuple.getFactB();
-    }
-
-    public List<BavetAbstractBiTuple<A, B>> getChildTupleList() {
-        return childTupleList;
     }
 
 }

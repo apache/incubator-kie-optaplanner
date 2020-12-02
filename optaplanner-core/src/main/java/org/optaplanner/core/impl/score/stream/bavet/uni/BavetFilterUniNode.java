@@ -20,9 +20,11 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 import java.util.function.Predicate;
 
 import org.optaplanner.core.impl.score.stream.bavet.BavetConstraintSession;
+import org.optaplanner.core.impl.score.stream.bavet.common.BavetAbstractTuple;
 import org.optaplanner.core.impl.score.stream.bavet.common.BavetTupleState;
 
 public final class BavetFilterUniNode<A> extends BavetAbstractUniNode<A> {
@@ -83,16 +85,16 @@ public final class BavetFilterUniNode<A> extends BavetAbstractUniNode<A> {
 
     public void refresh(BavetFilterUniTuple<A> tuple) {
         A a = tuple.getFactA();
-        List<BavetAbstractUniTuple<A>> childTupleList = tuple.getChildTupleList();
-        for (BavetAbstractUniTuple<A> childTuple : childTupleList) {
+        Set<BavetAbstractTuple> childTupleSet = tuple.getChildTupleSet();
+        for (BavetAbstractTuple childTuple : childTupleSet) {
             session.transitionTuple(childTuple, BavetTupleState.DYING);
         }
-        childTupleList.clear();
+        childTupleSet.clear();
         if (tuple.isActive()) {
             if (predicate.test(a)) {
                 for (BavetAbstractUniNode<A> childNode : childNodeList) {
                     BavetAbstractUniTuple<A> childTuple = childNode.createTuple(tuple);
-                    childTupleList.add(childTuple);
+                    childTupleSet.add(childTuple);
                     session.transitionTuple(childTuple, BavetTupleState.CREATING);
                 }
             }

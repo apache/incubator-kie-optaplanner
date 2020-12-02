@@ -19,9 +19,11 @@ package org.optaplanner.core.impl.score.stream.bavet.bi;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 import java.util.function.Function;
 
 import org.optaplanner.core.impl.score.stream.bavet.BavetConstraintSession;
+import org.optaplanner.core.impl.score.stream.bavet.common.BavetAbstractTuple;
 import org.optaplanner.core.impl.score.stream.bavet.common.BavetTupleState;
 
 public final class BavetGroupBiNode<GroupKey_, ResultContainer_, Result_> extends BavetAbstractBiNode<GroupKey_, Result_> {
@@ -69,16 +71,16 @@ public final class BavetGroupBiNode<GroupKey_, ResultContainer_, Result_> extend
     }
 
     public void refresh(BavetGroupBiTuple<GroupKey_, ResultContainer_, Result_> tuple) {
-        List<BavetAbstractBiTuple<GroupKey_, Result_>> childTupleList = tuple.getChildTupleList();
-        for (BavetAbstractBiTuple<GroupKey_, Result_> childTuple : childTupleList) {
+        Set<BavetAbstractTuple> childTupleSet = tuple.getChildTupleSet();
+        for (BavetAbstractTuple childTuple : childTupleSet) {
             session.transitionTuple(childTuple, BavetTupleState.DYING);
         }
-        childTupleList.clear();
+        childTupleSet.clear();
         if (tuple.isActive()) {
             tuple.updateResult(finisher);
             for (BavetAbstractBiNode<GroupKey_, Result_> childNode : childNodeList) {
                 BavetAbstractBiTuple<GroupKey_, Result_> childTuple = childNode.createTuple(tuple);
-                childTupleList.add(childTuple);
+                childTupleSet.add(childTuple);
                 session.transitionTuple(childTuple, BavetTupleState.CREATING);
             }
         }

@@ -19,8 +19,10 @@ package org.optaplanner.core.impl.score.stream.bavet.uni;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 
 import org.optaplanner.core.impl.score.stream.bavet.BavetConstraintSession;
+import org.optaplanner.core.impl.score.stream.bavet.common.BavetAbstractTuple;
 import org.optaplanner.core.impl.score.stream.bavet.common.BavetTupleState;
 
 public final class BavetFromUniNode<A> extends BavetAbstractUniNode<A> {
@@ -81,17 +83,17 @@ public final class BavetFromUniNode<A> extends BavetAbstractUniNode<A> {
     }
 
     public void refresh(BavetFromUniTuple<A> tuple) {
-        List<BavetAbstractUniTuple<A>> childTupleList = tuple.getChildTupleList();
-        for (BavetAbstractUniTuple<A> childTuple : childTupleList) {
+        Set<BavetAbstractTuple> childTupleSet = tuple.getChildTupleSet();
+        for (BavetAbstractTuple childTuple : childTupleSet) {
             // TODO the entire FromUniNode isn't really doing anything
             // so the destruction/construction is just an update op unless it's CREATING or DYING
             session.transitionTuple(childTuple, BavetTupleState.DYING);
         }
-        childTupleList.clear();
+        childTupleSet.clear();
         if (tuple.isActive()) {
             for (BavetAbstractUniNode<A> childNode : childNodeList) {
                 BavetAbstractUniTuple<A> childTuple = childNode.createTuple(tuple);
-                childTupleList.add(childTuple);
+                childTupleSet.add(childTuple);
                 session.transitionTuple(childTuple, BavetTupleState.CREATING);
             }
         }
