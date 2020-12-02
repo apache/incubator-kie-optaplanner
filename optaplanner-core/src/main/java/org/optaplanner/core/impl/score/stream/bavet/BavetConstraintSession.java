@@ -56,7 +56,7 @@ public final class BavetConstraintSession<Solution_, Score_ extends Score<Score_
 
     private final Map<Class<?>, List<BavetFromUniNode<Object>>> effectiveClassToNodeListMap;
 
-    private final List<Queue<BavetAbstractTuple>> nodeIndexedQueueList;
+    private final List<Queue<BavetAbstractTuple>> nodeIndexToDirtyTupleQueueMap;
     private final Map<Object, List<BavetFromUniTuple<Object>>> fromTupleListMap;
 
     public BavetConstraintSession(boolean constraintMatchEnabled, ScoreDefinition<Score_> scoreDefinition,
@@ -73,9 +73,9 @@ public final class BavetConstraintSession<Solution_, Score_ extends Score<Score_
         nodeCount = nodeIndexedNodeMap.size();
         constraintIdToScoringNodeMap = buildPolicy.getConstraintIdToScoringNodeMap();
         effectiveClassToNodeListMap = new HashMap<>(declaredClassToNodeMap.size());
-        nodeIndexedQueueList = new ArrayList<>(nodeCount);
+        nodeIndexToDirtyTupleQueueMap = new ArrayList<>(nodeCount);
         for (int i = 0; i < nodeCount; i++) {
-            nodeIndexedQueueList.add(new ArrayDeque<>(1000));
+            nodeIndexToDirtyTupleQueueMap.add(new ArrayDeque<>(1000));
         }
         fromTupleListMap = new IdentityHashMap<>(1000);
     }
@@ -155,13 +155,13 @@ public final class BavetConstraintSession<Solution_, Score_ extends Score<Score_
             return;
         }
         tuple.setState(newState);
-        nodeIndexedQueueList.get(tuple.getNodeIndex()).add(tuple);
+        nodeIndexToDirtyTupleQueueMap.get(tuple.getNodeIndex()).add(tuple);
     }
 
     @Override
     public Score_ calculateScore(int initScore) {
         for (int i = 0; i < nodeCount; i++) {
-            Queue<BavetAbstractTuple> queue = nodeIndexedQueueList.get(i);
+            Queue<BavetAbstractTuple> queue = nodeIndexToDirtyTupleQueueMap.get(i);
             BavetAbstractTuple tuple = queue.poll();
             while (tuple != null) {
                 tuple.refresh();
@@ -173,8 +173,8 @@ public final class BavetConstraintSession<Solution_, Score_ extends Score<Score_
 
     @Override
     public Map<String, ConstraintMatchTotal<Score_>> getConstraintMatchTotalMap() {
-        Map<String, ConstraintMatchTotal<Score_>> constraintMatchTotalMap = new LinkedHashMap<>(
-                constraintIdToScoringNodeMap.size());
+        Map<String, ConstraintMatchTotal<Score_>> constraintMatchTotalMap =
+                new LinkedHashMap<>(constraintIdToScoringNodeMap.size());
         constraintIdToScoringNodeMap.forEach((constraintId, scoringNode) -> {
             ConstraintMatchTotal<Score_> constraintMatchTotal = scoringNode.buildConstraintMatchTotal(zeroScore);
             constraintMatchTotalMap.put(constraintId, constraintMatchTotal);
