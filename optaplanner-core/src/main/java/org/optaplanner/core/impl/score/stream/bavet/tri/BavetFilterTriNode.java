@@ -17,6 +17,7 @@
 package org.optaplanner.core.impl.score.stream.bavet.tri;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
@@ -41,6 +42,11 @@ public final class BavetFilterTriNode<A, B, C> extends BavetAbstractTriNode<A, B
     @Override
     public void addChildNode(BavetAbstractTriNode<A, B, C> childNode) {
         childNodeList.add(childNode);
+    }
+
+    @Override
+    public List<BavetAbstractTriNode<A, B, C>> getChildNodes() {
+        return Collections.unmodifiableList(childNodeList);
     }
 
     // ************************************************************************

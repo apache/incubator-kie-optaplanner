@@ -17,6 +17,7 @@
 package org.optaplanner.core.impl.score.stream.bavet.bi;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
@@ -45,6 +46,11 @@ public final class BavetJoinBiNode<A, B> extends BavetAbstractBiNode<A, B> imple
     @Override
     public void addChildNode(BavetAbstractBiNode<A, B> childNode) {
         childNodeList.add(childNode);
+    }
+
+    @Override
+    public List<BavetAbstractBiNode<A, B>> getChildNodes() {
+        return Collections.unmodifiableList(childNodeList);
     }
 
     // ************************************************************************

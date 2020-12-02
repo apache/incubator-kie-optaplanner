@@ -25,6 +25,8 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Queue;
+import java.util.SortedSet;
+import java.util.TreeSet;
 
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.constraint.ConstraintMatch;
@@ -34,11 +36,15 @@ import org.optaplanner.core.impl.score.constraint.DefaultIndictment;
 import org.optaplanner.core.impl.score.definition.ScoreDefinition;
 import org.optaplanner.core.impl.score.inliner.ScoreInliner;
 import org.optaplanner.core.impl.score.stream.ConstraintSession;
+import org.optaplanner.core.impl.score.stream.bavet.bi.BavetAbstractBiNode;
+import org.optaplanner.core.impl.score.stream.bavet.common.BavetAbstractNode;
 import org.optaplanner.core.impl.score.stream.bavet.common.BavetAbstractTuple;
 import org.optaplanner.core.impl.score.stream.bavet.common.BavetNode;
 import org.optaplanner.core.impl.score.stream.bavet.common.BavetNodeBuildPolicy;
 import org.optaplanner.core.impl.score.stream.bavet.common.BavetScoringNode;
 import org.optaplanner.core.impl.score.stream.bavet.common.BavetTupleState;
+import org.optaplanner.core.impl.score.stream.bavet.tri.BavetAbstractTriNode;
+import org.optaplanner.core.impl.score.stream.bavet.uni.BavetAbstractUniNode;
 import org.optaplanner.core.impl.score.stream.bavet.uni.BavetFromUniNode;
 import org.optaplanner.core.impl.score.stream.bavet.uni.BavetFromUniTuple;
 
@@ -62,8 +68,8 @@ public final class BavetConstraintSession<Solution_, Score_ extends Score<Score_
     public BavetConstraintSession(boolean constraintMatchEnabled, ScoreDefinition<Score_> scoreDefinition,
             Map<BavetConstraint<Solution_>, Score_> constraintToWeightMap) {
         this.constraintMatchEnabled = constraintMatchEnabled;
-        this.zeroScore = scoreDefinition.getZeroScore();
-        this.scoreInliner = scoreDefinition.buildScoreInliner(constraintMatchEnabled);
+        zeroScore = scoreDefinition.getZeroScore();
+        scoreInliner = scoreDefinition.buildScoreInliner(constraintMatchEnabled);
         declaredClassToNodeMap = new HashMap<>(50);
         BavetNodeBuildPolicy<Solution_> buildPolicy = new BavetNodeBuildPolicy<>(this, constraintToWeightMap.size());
         constraintToWeightMap.forEach((constraint, constraintWeight) -> {

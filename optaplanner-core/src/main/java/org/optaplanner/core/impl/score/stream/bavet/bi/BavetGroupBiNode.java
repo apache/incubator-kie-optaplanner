@@ -17,6 +17,7 @@
 package org.optaplanner.core.impl.score.stream.bavet.bi;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.function.Function;
 
@@ -38,6 +39,11 @@ public final class BavetGroupBiNode<GroupKey_, ResultContainer_, Result_> extend
     @Override
     public void addChildNode(BavetAbstractBiNode<GroupKey_, Result_> childNode) {
         childNodeList.add(childNode);
+    }
+
+    @Override
+    public List<BavetAbstractBiNode<GroupKey_, Result_>> getChildNodes() {
+        return Collections.unmodifiableList(childNodeList);
     }
 
     // ************************************************************************
