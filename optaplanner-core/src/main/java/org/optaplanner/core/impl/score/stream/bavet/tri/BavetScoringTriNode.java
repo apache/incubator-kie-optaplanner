@@ -95,7 +95,6 @@ public final class BavetScoringTriNode<A, B, C> extends BavetAbstractTriNode<A, 
         } else {
             tuple.setUndoScoreImpacter(null);
         }
-        tuple.refreshed();
     }
 
     @Override

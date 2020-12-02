@@ -60,7 +60,6 @@ public final class BavetJoinBridgeBiNode<A, B> extends BavetAbstractBiNode<A, B>
             index.put(indexProperties, tuple);
         }
         childTupleRefresher.accept(tuple);
-        tuple.refreshed();
     }
 
     @Override

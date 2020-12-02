@@ -30,24 +30,6 @@ public abstract class BavetAbstractTuple implements BavetTuple {
         return state.isActive();
     }
 
-    public void refreshed() {
-        switch (state) {
-            case CREATING:
-                state = BavetTupleState.OK;
-                break;
-            case UPDATING:
-                state = BavetTupleState.OK;
-                break;
-            case DYING:
-            case ABORTING:
-                state = BavetTupleState.DEAD;
-                break;
-            case DEAD:
-                throw new IllegalStateException("The tuple (" + this
-                        + ") is already in the dead state (" + state + ").");
-        }
-    }
-
     // ************************************************************************
     // Getters/setters
     // ************************************************************************

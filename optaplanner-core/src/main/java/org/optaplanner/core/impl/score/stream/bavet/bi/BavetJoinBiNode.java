@@ -81,7 +81,6 @@ public final class BavetJoinBiNode<A, B> extends BavetAbstractBiNode<A, B> imple
                 session.transitionTuple(childTuple, BavetTupleState.CREATING);
             }
         }
-        tuple.refreshed();
     }
 
     public void refreshChildTuplesLeft(BavetJoinBridgeUniTuple<A> leftParentTuple) {

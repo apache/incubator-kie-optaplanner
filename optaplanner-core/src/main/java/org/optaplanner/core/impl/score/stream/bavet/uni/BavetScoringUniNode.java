@@ -101,7 +101,6 @@ public final class BavetScoringUniNode<A> extends BavetAbstractUniNode<A> implem
         } else {
             tuple.setUndoScoreImpacter(null);
         }
-        tuple.refreshed();
     }
 
     @Override

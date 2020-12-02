@@ -92,7 +92,6 @@ public final class BavetFilterBiNode<A, B> extends BavetAbstractBiNode<A, B> {
                 }
             }
         }
-        tuple.refreshed();
     }
 
     @Override

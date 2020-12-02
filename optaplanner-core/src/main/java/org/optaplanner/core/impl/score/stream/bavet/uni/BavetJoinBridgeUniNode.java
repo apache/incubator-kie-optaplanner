@@ -66,7 +66,6 @@ public final class BavetJoinBridgeUniNode<A> extends BavetAbstractUniNode<A>
             index.put(indexProperties, tuple);
         }
         childTupleRefresher.accept(tuple);
-        tuple.refreshed();
     }
 
     @Override

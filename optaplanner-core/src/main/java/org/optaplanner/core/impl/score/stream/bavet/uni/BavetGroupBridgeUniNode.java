@@ -100,7 +100,6 @@ public final class BavetGroupBridgeUniNode<A, NewA, ResultContainer_, NewB> exte
                 }
             }
         }
-        tuple.refreshed();
     }
 
     @Override

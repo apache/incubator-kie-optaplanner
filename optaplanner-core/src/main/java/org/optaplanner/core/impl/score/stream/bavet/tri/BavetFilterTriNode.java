@@ -93,7 +93,6 @@ public final class BavetFilterTriNode<A, B, C> extends BavetAbstractTriNode<A, B
                 }
             }
         }
-        tuple.refreshed();
     }
 
     @Override

@@ -88,6 +88,23 @@ public final class BavetConstraintSession<Solution_, Score_ extends Score<Score_
         return nodeIndexedNodeMap;
     }
 
+    private static void refreshTuple(BavetAbstractTuple tuple) {
+        tuple.refresh();
+        switch (tuple.getState()) {
+            case CREATING:
+            case UPDATING:
+                tuple.setState(BavetTupleState.OK);
+                return;
+            case DYING:
+            case ABORTING:
+                tuple.setState(BavetTupleState.DEAD);
+                return;
+            case DEAD:
+                throw new IllegalStateException(
+                        "The tuple (" + tuple + ") is already in the dead state (" + tuple.getState() + ").");
+        }
+    }
+
     public List<BavetFromUniNode<Object>> findFromNodeList(Class<?> factClass) {
         return effectiveClassToNodeListMap.computeIfAbsent(factClass, key -> {
             List<BavetFromUniNode<Object>> nodeList = new ArrayList<>();
@@ -164,7 +181,7 @@ public final class BavetConstraintSession<Solution_, Score_ extends Score<Score_
             Queue<BavetAbstractTuple> queue = nodeIndexToDirtyTupleQueueMap.get(i);
             BavetAbstractTuple tuple = queue.poll();
             while (tuple != null) {
-                tuple.refresh();
+                refreshTuple(tuple);
                 tuple = queue.poll();
             }
         }

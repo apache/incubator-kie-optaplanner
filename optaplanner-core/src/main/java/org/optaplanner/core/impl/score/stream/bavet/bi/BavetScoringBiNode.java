@@ -94,7 +94,6 @@ public final class BavetScoringBiNode<A, B> extends BavetAbstractBiNode<A, B> im
         } else {
             tuple.setUndoScoreImpacter(null);
         }
-        tuple.refreshed();
     }
 
     @Override

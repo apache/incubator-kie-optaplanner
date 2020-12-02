@@ -76,7 +76,6 @@ public final class BavetGroupBiNode<GroupKey_, ResultContainer_, Result_> extend
                 session.transitionTuple(childTuple, BavetTupleState.CREATING);
             }
         }
-        tuple.refreshed();
     }
 
     @Override

@@ -97,7 +97,6 @@ public final class BavetFilterUniNode<A> extends BavetAbstractUniNode<A> {
                 }
             }
         }
-        tuple.refreshed();
     }
 
     @Override

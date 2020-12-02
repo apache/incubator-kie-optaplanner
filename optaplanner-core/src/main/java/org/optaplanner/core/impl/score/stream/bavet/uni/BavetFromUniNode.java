@@ -95,7 +95,6 @@ public final class BavetFromUniNode<A> extends BavetAbstractUniNode<A> {
                 session.transitionTuple(childTuple, BavetTupleState.CREATING);
             }
         }
-        tuple.refreshed();
     }
 
     @Override

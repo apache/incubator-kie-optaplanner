@@ -83,7 +83,6 @@ public final class BavetJoinTriNode<A, B, C> extends BavetAbstractTriNode<A, B, 
                 session.transitionTuple(childTuple, BavetTupleState.CREATING);
             }
         }
-        tuple.refreshed();
     }
 
     public void refreshChildTuplesLeft(BavetJoinBridgeBiTuple<A, B> leftParentTuple) {
