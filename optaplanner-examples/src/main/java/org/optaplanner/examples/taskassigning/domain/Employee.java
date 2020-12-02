@@ -18,20 +18,33 @@ package org.optaplanner.examples.taskassigning.domain;
 
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.optaplanner.core.api.domain.entity.PlanningEntity;
+import org.optaplanner.core.api.domain.variable.CollectionPlanningVariable;
+import org.optaplanner.examples.common.domain.AbstractPersistable;
 import org.optaplanner.examples.common.swingui.components.Labeled;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 
+@PlanningEntity
 @XStreamAlias("TaEmployee")
-public class Employee extends TaskOrEmployee implements Labeled {
+public class Employee extends AbstractPersistable implements Labeled {
 
     private String fullName;
 
     private Set<Skill> skillSet;
     private Map<Customer, Affinity> affinityMap;
+
+    // TODO maybe needs graphType=DISJOINT_LIST(_ORDERED)
+    // - disjoint because otherwise the inverse relation shadow variable would be a collection
+    // - ordered because otherwise index shadow variable is not possible
+    @CollectionPlanningVariable(valueRangeProviderRefs = "taskRange")
+    private List<Task> tasks;
+
+    // TODO pinning
 
     public Employee() {
     }
@@ -67,19 +80,17 @@ public class Employee extends TaskOrEmployee implements Labeled {
         this.affinityMap = affinityMap;
     }
 
+    public List<Task> getTasks() {
+        return tasks;
+    }
+
+    public void setTasks(List<Task> tasks) {
+        this.tasks = tasks;
+    }
+
     // ************************************************************************
     // Complex methods
     // ************************************************************************
-
-    @Override
-    public Employee getEmployee() {
-        return this;
-    }
-
-    @Override
-    public Integer getEndTime() {
-        return 0;
-    }
 
     /**
      * @param customer never null

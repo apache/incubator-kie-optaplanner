@@ -48,7 +48,6 @@ import org.optaplanner.examples.taskassigning.domain.Employee;
 import org.optaplanner.examples.taskassigning.domain.Skill;
 import org.optaplanner.examples.taskassigning.domain.Task;
 import org.optaplanner.examples.taskassigning.domain.TaskAssigningSolution;
-import org.optaplanner.examples.taskassigning.domain.TaskOrEmployee;
 import org.optaplanner.swing.impl.SwingUtils;
 import org.optaplanner.swing.impl.TangoColorFactory;
 
@@ -181,20 +180,20 @@ public class TaskOverviewPanel extends JPanel implements Scrollable {
         @Override
         public void actionPerformed(ActionEvent e) {
             JPanel listFieldsPanel = new JPanel(new GridLayout(2, 1));
-            List<TaskOrEmployee> taskOrEmployeeList = new ArrayList<>();
+            List<Object> taskOrEmployeeList = new ArrayList<>();
             taskOrEmployeeList.addAll(taskAssigningPanel.getSolution().getEmployeeList());
             taskOrEmployeeList.addAll(taskAssigningPanel.getSolution().getTaskList());
             // Add 1 to array size to add null, which makes the entity unassigned
             JComboBox TaskOrEmployeeListField = new JComboBox(
                     taskOrEmployeeList.toArray(new Object[taskOrEmployeeList.size() + 1]));
             LabeledComboBoxRenderer.applyToComboBox(TaskOrEmployeeListField);
-            TaskOrEmployeeListField.setSelectedItem(task.getPreviousTaskOrEmployee());
+            TaskOrEmployeeListField.setSelectedItem(task.getPreviousTask());
             listFieldsPanel.add(TaskOrEmployeeListField);
             int result = JOptionPane.showConfirmDialog(TaskOverviewPanel.this.getRootPane(),
                     listFieldsPanel, "Select previous task or employee for " + task.getLabel(),
                     JOptionPane.OK_CANCEL_OPTION);
             if (result == JOptionPane.OK_OPTION) {
-                TaskOrEmployee toTaskOrEmployee = (TaskOrEmployee) TaskOrEmployeeListField.getSelectedItem();
+                Object toTaskOrEmployee = TaskOrEmployeeListField.getSelectedItem();
                 taskAssigningPanel.getSolutionBusiness().doChangeMove(task, "previousTaskOrEmployee", toTaskOrEmployee);
                 taskAssigningPanel.getSolverAndPersistenceFrame().resetScreen();
             }

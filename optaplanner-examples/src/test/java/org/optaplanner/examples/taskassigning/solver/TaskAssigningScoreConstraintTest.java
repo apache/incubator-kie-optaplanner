@@ -27,7 +27,6 @@ import org.optaplanner.examples.taskassigning.domain.Priority;
 import org.optaplanner.examples.taskassigning.domain.Skill;
 import org.optaplanner.examples.taskassigning.domain.Task;
 import org.optaplanner.examples.taskassigning.domain.TaskAssigningSolution;
-import org.optaplanner.examples.taskassigning.domain.TaskOrEmployee;
 import org.optaplanner.examples.taskassigning.domain.TaskType;
 import org.optaplanner.test.impl.score.buildin.bendable.BendableScoreVerifier;
 
@@ -56,19 +55,20 @@ public class TaskAssigningScoreConstraintTest {
                 Arrays.asList(e1, e2, e3),
                 Arrays.asList(t1, t2, t3));
         scoreVerifier.assertHardWeight("Skill requirements", 0, 0, solution);
-        setPreviousAndShadows(t1, e1);
+        //setPreviousAndShadows(t1, e1);
         scoreVerifier.assertHardWeight("Skill requirements", 0, -1, solution);
-        setPreviousAndShadows(t2, t1);
+        //setPreviousAndShadows(t2, t1);
         scoreVerifier.assertHardWeight("Skill requirements", 0, -2, solution);
-        setPreviousAndShadows(t3, e1);
+        //setPreviousAndShadows(t3, e1);
         scoreVerifier.assertHardWeight("Skill requirements", 0, -2, solution);
     }
 
-    private static void setPreviousAndShadows(Task task, TaskOrEmployee previous) {
-        task.setPreviousTaskOrEmployee(previous);
-        task.setEmployee(previous.getEmployee());
-        previous.setNextTask(task);
-        task.setStartTime(previous.getEndTime());
+    // FIXME how to set previous task manually?
+    private static void setPreviousAndShadows(Task task, Task previous) {
+        //task.setPreviousTask(previous);
+        //task.setEmployee(previous.getEmployee());
+        //previous.setNextTask(task);
+        //task.setStartTime(previous.getEndTime());
     }
 
 }
