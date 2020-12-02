@@ -70,7 +70,10 @@ public final class BavetGroupBiNode<GroupKey_, ResultContainer_, Result_> extend
         return new BavetGroupBiTuple<>(this, groupKey, resultContainer);
     }
 
-    public void refresh(BavetGroupBiTuple<GroupKey_, ResultContainer_, Result_> tuple) {
+    @Override
+    public void refresh(BavetAbstractTuple uncastTuple) {
+        BavetGroupBiTuple<GroupKey_, ResultContainer_, Result_> tuple =
+                (BavetGroupBiTuple<GroupKey_, ResultContainer_, Result_>) uncastTuple;
         Set<BavetAbstractTuple> childTupleSet = tuple.getChildTupleSet();
         for (BavetAbstractTuple childTuple : childTupleSet) {
             session.transitionTuple(childTuple, BavetTupleState.DYING);

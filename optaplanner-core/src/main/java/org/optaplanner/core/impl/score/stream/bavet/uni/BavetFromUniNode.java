@@ -82,7 +82,9 @@ public final class BavetFromUniNode<A> extends BavetAbstractUniNode<A> {
                 + ") can't have a parentTuple (" + parentTuple + ");");
     }
 
-    public void refresh(BavetFromUniTuple<A> tuple) {
+    @Override
+    public void refresh(BavetAbstractTuple uncastTuple) {
+        BavetFromUniTuple<A> tuple = (BavetFromUniTuple<A>) uncastTuple;
         Set<BavetAbstractTuple> childTupleSet = tuple.getChildTupleSet();
         for (BavetAbstractTuple childTuple : childTupleSet) {
             // TODO the entire FromUniNode isn't really doing anything

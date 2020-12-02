@@ -83,7 +83,9 @@ public final class BavetFilterTriNode<A, B, C> extends BavetAbstractTriNode<A, B
         return new BavetFilterTriTuple<>(this, parentTuple);
     }
 
-    public void refresh(BavetFilterTriTuple<A, B, C> tuple) {
+    @Override
+    public void refresh(BavetAbstractTuple uncastTuple) {
+        BavetFilterTriTuple<A, B, C> tuple = (BavetFilterTriTuple<A, B, C>) uncastTuple;
         A a = tuple.getFactA();
         B b = tuple.getFactB();
         C c = tuple.getFactC();

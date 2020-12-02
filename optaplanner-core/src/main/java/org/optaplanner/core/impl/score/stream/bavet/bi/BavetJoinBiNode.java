@@ -74,7 +74,9 @@ public final class BavetJoinBiNode<A, B> extends BavetAbstractBiNode<A, B> imple
         return new BavetJoinBiTuple<>(this, aTuple, bTuple);
     }
 
-    public void refresh(BavetJoinBiTuple<A, B> tuple) {
+    @Override
+    public void refresh(BavetAbstractTuple uncastTuple) {
+        BavetJoinBiTuple<A, B> tuple = (BavetJoinBiTuple<A, B>) uncastTuple;
         Set<BavetAbstractTuple> childTupleSet = tuple.getChildTupleSet();
         for (BavetAbstractTuple childTuple : childTupleSet) {
             session.transitionTuple(childTuple, BavetTupleState.DYING);

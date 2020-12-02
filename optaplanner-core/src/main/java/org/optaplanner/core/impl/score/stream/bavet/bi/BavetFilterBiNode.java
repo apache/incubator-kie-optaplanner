@@ -83,7 +83,9 @@ public final class BavetFilterBiNode<A, B> extends BavetAbstractBiNode<A, B> {
         return new BavetFilterBiTuple<>(this, parentTuple);
     }
 
-    public void refresh(BavetFilterBiTuple<A, B> tuple) {
+    @Override
+    public void refresh(BavetAbstractTuple uncastTuple) {
+        BavetFilterBiTuple<A, B> tuple = (BavetFilterBiTuple<A, B>) uncastTuple;
         A a = tuple.getFactA();
         B b = tuple.getFactB();
         Set<BavetAbstractTuple> childTupleSet = tuple.getChildTupleSet();

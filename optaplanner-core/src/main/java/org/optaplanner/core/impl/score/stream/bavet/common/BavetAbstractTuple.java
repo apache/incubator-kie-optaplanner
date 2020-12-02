@@ -22,7 +22,7 @@ import java.util.Set;
 public abstract class BavetAbstractTuple implements BavetTuple {
 
     protected BavetTupleState state = BavetTupleState.NEW;
-    protected final Set<BavetAbstractTuple> childTupleSet = new LinkedHashSet<>(0);
+    protected final Set<BavetAbstractTuple> childTupleSet = new LinkedHashSet<>(0); // TODO initial capacity
 
     public abstract void refresh();
 

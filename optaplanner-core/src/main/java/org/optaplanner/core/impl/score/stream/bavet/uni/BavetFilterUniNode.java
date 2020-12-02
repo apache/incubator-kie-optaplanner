@@ -83,7 +83,9 @@ public final class BavetFilterUniNode<A> extends BavetAbstractUniNode<A> {
         return new BavetFilterUniTuple<>(this, parentTuple);
     }
 
-    public void refresh(BavetFilterUniTuple<A> tuple) {
+    @Override
+    public void refresh(BavetAbstractTuple uncastTuple) {
+        BavetFilterUniTuple<A> tuple = (BavetFilterUniTuple<A>) uncastTuple;
         A a = tuple.getFactA();
         Set<BavetAbstractTuple> childTupleSet = tuple.getChildTupleSet();
         for (BavetAbstractTuple childTuple : childTupleSet) {
