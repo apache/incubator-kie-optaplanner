@@ -286,15 +286,11 @@ public abstract class BavetAbstractBiConstraintStream<Solution_, A, B> extends B
 
     protected BavetAbstractBiNode<A, B> processNode(BavetNodeBuildPolicy<Solution_> buildPolicy,
             BavetAbstractBiNode<A, B> parentNode, BavetAbstractBiNode<A, B> node) {
-        buildPolicy.updateNodeIndexMaximum(node.getNodeIndex());
         BavetAbstractBiNode<A, B> sharedNode = buildPolicy.retrieveSharedNode(node);
-        if (sharedNode != node) {
-            // Share node
-            node = sharedNode;
-        } else {
-            if (parentNode != null) { // TODO remove null check and don't go through this code like this for from and joins
-                parentNode.addChildNode(node);
-            }
+        if (sharedNode != node) { // Share node
+            return sharedNode;
+        } else if (parentNode != null) { // TODO remove null check and don't go through this for from and joins
+            parentNode.addChildNode(node);
         }
         return node;
     }

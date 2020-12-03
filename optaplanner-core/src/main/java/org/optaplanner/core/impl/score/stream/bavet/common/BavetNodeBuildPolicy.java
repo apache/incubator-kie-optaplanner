@@ -37,18 +37,11 @@ public class BavetNodeBuildPolicy<Solution_> {
         constraintIdToScoringNodeMap = new LinkedHashMap<>(constraintCount);
     }
 
-    public void updateNodeIndexMaximum(int nodeIndex) {
-        if (nodeIndexMaximum < nodeIndex) {
-            nodeIndexMaximum = nodeIndex;
-        }
-    }
-
     public <Node_ extends BavetAbstractNode> Node_ retrieveSharedNode(Node_ node) {
         Node_ sharedNode = (Node_) sharableNodeMap.computeIfAbsent(node, k -> node);
-        if (node.getNodeIndex() != sharedNode.getNodeIndex()) {
-            throw new IllegalStateException("Impossible state: the node (" + node
-                    + ")'s nodeIndex (" + node.getNodeIndex() + ") differs from the sharedNode (" + sharedNode
-                    + ")'s nodeIndex (" + sharedNode.getNodeIndex() + ").");
+        int nodeIndex = sharedNode.getNodeIndex();
+        if (nodeIndexMaximum < nodeIndex) {
+            nodeIndexMaximum = nodeIndex;
         }
         return sharedNode;
     }

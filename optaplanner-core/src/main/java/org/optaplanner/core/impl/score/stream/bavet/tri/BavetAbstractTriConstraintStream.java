@@ -248,15 +248,11 @@ public abstract class BavetAbstractTriConstraintStream<Solution_, A, B, C> exten
 
     protected BavetAbstractTriNode<A, B, C> processNode(BavetNodeBuildPolicy<Solution_> buildPolicy,
             BavetAbstractTriNode<A, B, C> parentNode, BavetAbstractTriNode<A, B, C> node) {
-        buildPolicy.updateNodeIndexMaximum(node.getNodeIndex());
         BavetAbstractTriNode<A, B, C> sharedNode = buildPolicy.retrieveSharedNode(node);
-        if (sharedNode != node) {
-            // Share node
-            node = sharedNode;
-        } else {
-            if (parentNode != null) { // TODO remove null check and don't go through this code like this for from and joins
-                parentNode.addChildNode(node);
-            }
+        if (sharedNode != node) { // Share node
+            return sharedNode;
+        } else if (parentNode != null) { // TODO remove null check and don't go through this for from and joins
+            parentNode.addChildNode(node);
         }
         return node;
     }
