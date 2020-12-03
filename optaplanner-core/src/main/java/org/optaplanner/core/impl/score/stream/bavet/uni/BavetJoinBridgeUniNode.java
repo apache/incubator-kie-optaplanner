@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -35,9 +35,9 @@ public final class BavetJoinBridgeUniNode<A> extends BavetAbstractUniNode<A>
 
     private final BavetIndex<BavetJoinBridgeUniTuple<A>> index;
 
-    public BavetJoinBridgeUniNode(BavetConstraintSession session, int nodeOrder, BavetAbstractUniNode<A> parentNode,
+    public BavetJoinBridgeUniNode(BavetConstraintSession session, int nodeIndex, BavetAbstractUniNode<A> parentNode,
             Function<A, Object[]> mapping, BavetIndex<BavetJoinBridgeUniTuple<A>> index) {
-        super(session, nodeOrder);
+        super(session, nodeIndex);
         this.parentNode = parentNode;
         this.mapping = mapping;
         this.index = index;

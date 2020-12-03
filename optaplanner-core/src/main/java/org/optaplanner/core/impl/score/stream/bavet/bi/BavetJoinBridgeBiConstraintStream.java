@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -64,15 +64,15 @@ public final class BavetJoinBridgeBiConstraintStream<Solution_, A, B>
 
     @Override
     protected BavetJoinBridgeBiNode<A, B> createNode(BavetNodeBuildPolicy<Solution_> buildPolicy,
-            Score<?> constraintWeight, int nodeOrder, BavetAbstractBiNode<A, B> parentNode) {
+            Score<?> constraintWeight, int nodeIndex, BavetAbstractBiNode<A, B> parentNode) {
         BavetJoinBridgeBiNode<A, B> node = new BavetJoinBridgeBiNode<>(buildPolicy.getSession(),
-                nodeOrder, parentNode, mapping, indexFactory.buildIndex(isLeftBridge));
+                nodeIndex, parentNode, mapping, indexFactory.buildIndex(isLeftBridge));
         return node;
     }
 
     @Override
     protected void createChildNodeChains(BavetNodeBuildPolicy<Solution_> buildPolicy, Score<?> constraintWeight,
-            int nodeOrder, BavetAbstractBiNode<A, B> uncastedNode) {
+            int nodeIndex, BavetAbstractBiNode<A, B> uncastedNode) {
         if (!childStreamList.isEmpty()) {
             throw new IllegalStateException("Impossible state: the stream (" + this
                     + ") has an non-empty childStreamList (" + childStreamList + ") but it's a join bridge.");
@@ -84,8 +84,8 @@ public final class BavetJoinBridgeBiConstraintStream<Solution_, A, B>
         } else {
             BavetJoinBridgeNode leftNode = isLeftBridge ? node : otherBridgeNode;
             BavetJoinBridgeNode rightNode = isLeftBridge ? otherBridgeNode : node;
-            int maxNodeOrder = Math.max(leftNode.getNodeOrder(), rightNode.getNodeOrder());
-            joinStream.createNodeChain(buildPolicy, constraintWeight, maxNodeOrder + 1, leftNode, rightNode);
+            int maxNodeIndex = Math.max(leftNode.getNodeIndex(), rightNode.getNodeIndex());
+            joinStream.createNodeChain(buildPolicy, constraintWeight, maxNodeIndex + 1, leftNode, rightNode);
         }
     }
 

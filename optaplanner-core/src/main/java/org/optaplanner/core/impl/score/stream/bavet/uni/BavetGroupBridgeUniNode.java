@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -35,10 +35,10 @@ public final class BavetGroupBridgeUniNode<A, NewA, ResultContainer_, NewB> exte
 
     private final Map<NewA, BavetGroupBiTuple<NewA, ResultContainer_, NewB>> tupleMap;
 
-    public BavetGroupBridgeUniNode(BavetConstraintSession session, int nodeOrder, BavetAbstractUniNode<A> parentNode,
+    public BavetGroupBridgeUniNode(BavetConstraintSession session, int nodeIndex, BavetAbstractUniNode<A> parentNode,
             Function<A, NewA> groupKeyMapping, UniConstraintCollector<A, ResultContainer_, NewB> collector,
             BavetGroupBiNode<NewA, ResultContainer_, NewB> groupNode) {
-        super(session, nodeOrder);
+        super(session, nodeIndex);
         this.parentNode = parentNode;
         this.groupKeyMapping = groupKeyMapping;
         this.collector = collector;
@@ -82,7 +82,7 @@ public final class BavetGroupBridgeUniNode<A, NewA, ResultContainer_, NewB> exte
             if (parentCount == 1) {
                 session.transitionTuple(childTuple, BavetTupleState.CREATING);
             } else {
-                // It might have just been created by an earlier tuple in the same nodeOrder
+                // It might have just been created by an earlier tuple in the same nodeIndex
                 if (childTuple.getState() != BavetTupleState.CREATING) {
                     session.transitionTuple(childTuple, BavetTupleState.UPDATING);
                 }

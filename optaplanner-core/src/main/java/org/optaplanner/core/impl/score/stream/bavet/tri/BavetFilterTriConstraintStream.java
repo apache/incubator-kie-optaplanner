@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -52,8 +52,8 @@ public final class BavetFilterTriConstraintStream<Solution_, A, B, C>
 
     @Override
     protected BavetFilterTriNode<A, B, C> createNode(BavetNodeBuildPolicy<Solution_> buildPolicy,
-            Score<?> constraintWeight, int nodeOrder, BavetAbstractTriNode<A, B, C> parentNode) {
-        return new BavetFilterTriNode<>(buildPolicy.getSession(), nodeOrder, parentNode, predicate);
+            Score<?> constraintWeight, int nodeIndex, BavetAbstractTriNode<A, B, C> parentNode) {
+        return new BavetFilterTriNode<>(buildPolicy.getSession(), nodeIndex, parentNode, predicate);
     }
 
     @Override

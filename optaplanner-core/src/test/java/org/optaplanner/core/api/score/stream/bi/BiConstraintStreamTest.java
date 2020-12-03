@@ -1082,7 +1082,7 @@ public class BiConstraintStreamTest extends AbstractConstraintStreamTest {
 
     @TestTemplate
     @Disabled("Not yet implemented") // TODO
-    public void globalNodeOrder() {
+    public void globalNodeIndex() {
 
     }
 

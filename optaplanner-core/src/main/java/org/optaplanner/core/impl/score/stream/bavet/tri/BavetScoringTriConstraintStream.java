@@ -105,7 +105,7 @@ public final class BavetScoringTriConstraintStream<Solution_, A, B, C>
 
     @Override
     protected BavetScoringTriNode<A, B, C> createNode(BavetNodeBuildPolicy<Solution_> buildPolicy,
-            Score<?> constraintWeight, int nodeOrder, BavetAbstractTriNode<A, B, C> parentNode) {
+            Score<?> constraintWeight, int nodeIndex, BavetAbstractTriNode<A, B, C> parentNode) {
         ScoreInliner scoreInliner = buildPolicy.getSession().getScoreInliner();
         WeightedScoreImpacter weightedScoreImpacter = scoreInliner.buildWeightedScoreImpacter(constraintWeight);
         QuadFunction<A, B, C, Consumer<Score<?>>, UndoScoreImpacter> scoreImpacter;
@@ -161,7 +161,7 @@ public final class BavetScoringTriConstraintStream<Solution_, A, B, C>
         } else {
             throw new IllegalStateException("Unsupported weightedScoreImpacter (" + weightedScoreImpacter + ").");
         }
-        BavetScoringTriNode<A, B, C> node = new BavetScoringTriNode<>(buildPolicy.getSession(), nodeOrder,
+        BavetScoringTriNode<A, B, C> node = new BavetScoringTriNode<>(buildPolicy.getSession(), nodeIndex,
                 constraint.getConstraintPackage(), constraint.getConstraintName(),
                 constraintWeight, scoreImpacter);
         buildPolicy.addScoringNode(node);
@@ -169,7 +169,7 @@ public final class BavetScoringTriConstraintStream<Solution_, A, B, C>
     }
 
     @Override
-    protected void createChildNodeChains(BavetNodeBuildPolicy<Solution_> buildPolicy, Score<?> constraintWeight, int nodeOrder,
+    protected void createChildNodeChains(BavetNodeBuildPolicy<Solution_> buildPolicy, Score<?> constraintWeight, int nodeIndex,
             BavetAbstractTriNode<A, B, C> node) {
         if (!childStreamList.isEmpty()) {
             throw new IllegalStateException("Impossible state: the stream (" + this

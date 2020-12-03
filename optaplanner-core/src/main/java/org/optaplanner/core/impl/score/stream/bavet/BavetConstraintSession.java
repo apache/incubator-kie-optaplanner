@@ -48,12 +48,12 @@ public final class BavetConstraintSession<Solution_, Score_ extends Score<Score_
     private final ScoreInliner<Score_> scoreInliner;
 
     private final Map<Class<?>, BavetFromUniNode<Object>> declaredClassToNodeMap;
-    private final int nodeOrderSize;
+    private final int nodeIndexSize;
     private final Map<String, BavetScoringNode> constraintIdToScoringNodeMap;
 
     private final Map<Class<?>, List<BavetFromUniNode<Object>>> effectiveClassToNodeListMap;
 
-    private final List<Queue<BavetAbstractTuple>> nodeOrderedQueueList;
+    private final List<Queue<BavetAbstractTuple>> nodeIndexedQueueList;
     private final Map<Object, List<BavetFromUniTuple<Object>>> fromTupleListMap;
 
     public BavetConstraintSession(boolean constraintMatchEnabled, ScoreDefinition<Score_> scoreDefinition,
@@ -66,12 +66,12 @@ public final class BavetConstraintSession<Solution_, Score_ extends Score<Score_
         constraintToWeightMap.forEach((constraint, constraintWeight) -> {
             constraint.createNodes(buildPolicy, declaredClassToNodeMap, constraintWeight);
         });
-        this.nodeOrderSize = buildPolicy.getNodeOrderMaximum() + 1;
+        this.nodeIndexSize = buildPolicy.getNodeIndexMaximum() + 1;
         constraintIdToScoringNodeMap = buildPolicy.getConstraintIdToScoringNodeMap();
         effectiveClassToNodeListMap = new HashMap<>(declaredClassToNodeMap.size());
-        nodeOrderedQueueList = new ArrayList<>(nodeOrderSize);
-        for (int i = 0; i < nodeOrderSize; i++) {
-            nodeOrderedQueueList.add(new ArrayDeque<>(1000));
+        nodeIndexedQueueList = new ArrayList<>(nodeIndexSize);
+        for (int i = 0; i < nodeIndexSize; i++) {
+            nodeIndexedQueueList.add(new ArrayDeque<>(1000));
         }
         fromTupleListMap = new IdentityHashMap<>(1000);
     }
@@ -143,13 +143,13 @@ public final class BavetConstraintSession<Solution_, Score_ extends Score<Score_
             return;
         }
         tuple.setState(newState);
-        nodeOrderedQueueList.get(tuple.getNodeOrder()).add(tuple);
+        nodeIndexedQueueList.get(tuple.getNodeIndex()).add(tuple);
     }
 
     @Override
     public Score_ calculateScore(int initScore) {
-        for (int i = 0; i < nodeOrderSize; i++) {
-            Queue<BavetAbstractTuple> queue = nodeOrderedQueueList.get(i);
+        for (int i = 0; i < nodeIndexSize; i++) {
+            Queue<BavetAbstractTuple> queue = nodeIndexedQueueList.get(i);
             BavetAbstractTuple tuple = queue.poll();
             while (tuple != null) {
                 tuple.refresh();

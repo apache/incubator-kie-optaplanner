@@ -40,10 +40,10 @@ public final class BavetScoringUniNode<A> extends BavetAbstractUniNode<A> implem
     private final boolean constraintMatchEnabled;
     private final Set<BavetScoringUniTuple<A>> tupleSet;
 
-    public BavetScoringUniNode(BavetConstraintSession session, int nodeOrder, BavetAbstractUniNode<A> parentNode,
+    public BavetScoringUniNode(BavetConstraintSession session, int nodeIndex, BavetAbstractUniNode<A> parentNode,
             String constraintPackage, String constraintName, Score<?> constraintWeight,
             BiFunction<A, Consumer<Score<?>>, UndoScoreImpacter> scoreImpacter) {
-        super(session, nodeOrder);
+        super(session, nodeIndex);
         this.parentNode = parentNode;
         this.constraintPackage = constraintPackage;
         this.constraintName = constraintName;

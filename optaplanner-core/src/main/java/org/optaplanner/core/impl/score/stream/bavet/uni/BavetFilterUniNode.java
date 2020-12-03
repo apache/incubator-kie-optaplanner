@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -31,9 +31,9 @@ public final class BavetFilterUniNode<A> extends BavetAbstractUniNode<A> {
 
     private List<BavetAbstractUniNode<A>> childNodeList = new ArrayList<>();
 
-    public BavetFilterUniNode(BavetConstraintSession session, int nodeOrder,
+    public BavetFilterUniNode(BavetConstraintSession session, int nodeIndex,
             BavetAbstractUniNode<A> parentNode, Predicate<A> predicate) {
-        super(session, nodeOrder);
+        super(session, nodeIndex);
         this.parentNode = parentNode;
         this.predicate = predicate;
     }

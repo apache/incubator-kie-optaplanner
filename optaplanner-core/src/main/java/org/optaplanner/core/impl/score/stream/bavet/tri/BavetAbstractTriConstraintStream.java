@@ -239,16 +239,16 @@ public abstract class BavetAbstractTriConstraintStream<Solution_, A, B, C> exten
     // ************************************************************************
 
     public BavetAbstractTriNode<A, B, C> createNodeChain(BavetNodeBuildPolicy<Solution_> buildPolicy,
-            Score<?> constraintWeight, int nodeOrder, BavetAbstractTriNode<A, B, C> parentNode) {
-        BavetAbstractTriNode<A, B, C> node = createNode(buildPolicy, constraintWeight, nodeOrder, parentNode);
-        node = processNode(buildPolicy, nodeOrder, parentNode, node);
-        createChildNodeChains(buildPolicy, constraintWeight, nodeOrder, node);
+            Score<?> constraintWeight, int nodeIndex, BavetAbstractTriNode<A, B, C> parentNode) {
+        BavetAbstractTriNode<A, B, C> node = createNode(buildPolicy, constraintWeight, nodeIndex, parentNode);
+        node = processNode(buildPolicy, nodeIndex, parentNode, node);
+        createChildNodeChains(buildPolicy, constraintWeight, nodeIndex, node);
         return node;
     }
 
-    protected BavetAbstractTriNode<A, B, C> processNode(BavetNodeBuildPolicy<Solution_> buildPolicy, int nodeOrder,
+    protected BavetAbstractTriNode<A, B, C> processNode(BavetNodeBuildPolicy<Solution_> buildPolicy, int nodeIndex,
             BavetAbstractTriNode<A, B, C> parentNode, BavetAbstractTriNode<A, B, C> node) {
-        buildPolicy.updateNodeOrderMaximum(nodeOrder);
+        buildPolicy.updateNodeIndexMaximum(nodeIndex);
         BavetAbstractTriNode<A, B, C> sharedNode = buildPolicy.retrieveSharedNode(node);
         if (sharedNode != node) {
             // Share node
@@ -261,18 +261,18 @@ public abstract class BavetAbstractTriConstraintStream<Solution_, A, B, C> exten
         return node;
     }
 
-    protected void createChildNodeChains(BavetNodeBuildPolicy<Solution_> buildPolicy, Score<?> constraintWeight, int nodeOrder,
+    protected void createChildNodeChains(BavetNodeBuildPolicy<Solution_> buildPolicy, Score<?> constraintWeight, int nodeIndex,
             BavetAbstractTriNode<A, B, C> node) {
         if (childStreamList.isEmpty()) {
             throw new IllegalStateException("The stream (" + this + ") leads to nowhere.\n"
                     + "Maybe don't create it.");
         }
         for (BavetAbstractTriConstraintStream<Solution_, A, B, C> childStream : childStreamList) {
-            childStream.createNodeChain(buildPolicy, constraintWeight, nodeOrder + 1, node);
+            childStream.createNodeChain(buildPolicy, constraintWeight, nodeIndex + 1, node);
         }
     }
 
     protected abstract BavetAbstractTriNode<A, B, C> createNode(BavetNodeBuildPolicy<Solution_> buildPolicy,
-            Score<?> constraintWeight, int nodeOrder, BavetAbstractTriNode<A, B, C> parentNode);
+            Score<?> constraintWeight, int nodeIndex, BavetAbstractTriNode<A, B, C> parentNode);
 
 }

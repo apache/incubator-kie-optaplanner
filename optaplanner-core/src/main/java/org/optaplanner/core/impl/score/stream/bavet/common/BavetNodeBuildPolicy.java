@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,7 +26,7 @@ public class BavetNodeBuildPolicy<Solution_> {
 
     private final BavetConstraintSession session;
 
-    private int nodeOrderMaximum = 0;
+    private int nodeIndexMaximum = 0;
     private Map<String, BavetScoringNode> constraintIdToScoringNodeMap;
     private Map<BavetJoinConstraintStream<Solution_>, BavetJoinBridgeNode> joinConstraintStreamToJoinBridgeNodeMap =
             new HashMap<>();
@@ -37,18 +37,18 @@ public class BavetNodeBuildPolicy<Solution_> {
         constraintIdToScoringNodeMap = new LinkedHashMap<>(constraintCount);
     }
 
-    public void updateNodeOrderMaximum(int nodeOrder) {
-        if (nodeOrderMaximum < nodeOrder) {
-            nodeOrderMaximum = nodeOrder;
+    public void updateNodeIndexMaximum(int nodeIndex) {
+        if (nodeIndexMaximum < nodeIndex) {
+            nodeIndexMaximum = nodeIndex;
         }
     }
 
     public <Node_ extends BavetAbstractNode> Node_ retrieveSharedNode(Node_ node) {
         Node_ sharedNode = (Node_) sharableNodeMap.computeIfAbsent(node, k -> node);
-        if (node.getNodeOrder() != sharedNode.getNodeOrder()) {
+        if (node.getNodeIndex() != sharedNode.getNodeIndex()) {
             throw new IllegalStateException("Impossible state: the node (" + node
-                    + ")'s nodeOrder (" + node.getNodeOrder() + ") differs from the sharedNode (" + sharedNode
-                    + ")'s nodeOrder (" + sharedNode.getNodeOrder() + ").");
+                    + ")'s nodeIndex (" + node.getNodeIndex() + ") differs from the sharedNode (" + sharedNode
+                    + ")'s nodeIndex (" + sharedNode.getNodeIndex() + ").");
         }
         return sharedNode;
     }
@@ -65,8 +65,8 @@ public class BavetNodeBuildPolicy<Solution_> {
         return session;
     }
 
-    public int getNodeOrderMaximum() {
-        return nodeOrderMaximum;
+    public int getNodeIndexMaximum() {
+        return nodeIndexMaximum;
     }
 
     public Map<String, BavetScoringNode> getConstraintIdToScoringNodeMap() {
