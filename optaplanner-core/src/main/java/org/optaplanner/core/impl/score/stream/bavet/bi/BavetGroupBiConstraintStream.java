@@ -62,7 +62,7 @@ public final class BavetGroupBiConstraintStream<Solution_, GroupKey_, ResultCont
             throw new IllegalStateException("Impossible state: the stream (" + this
                     + ") cannot have a parentNode (" + parentNode + ").");
         }
-        // GroupBridgeNodes are created before GroupNodes, so increment by 2 to create room for the bridge inbetween.
+        // GroupBridgeNodes are created after GroupNodes, so increment by 2 to create room for the bridge inbetween.
         return new BavetGroupBiNode<>(buildPolicy.getSession(), buildPolicy.getNodeIndexMaximum() + 2, finisher);
     }
 
