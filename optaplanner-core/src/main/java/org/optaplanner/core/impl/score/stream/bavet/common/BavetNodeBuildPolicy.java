@@ -40,7 +40,6 @@ public class BavetNodeBuildPolicy<Solution_> {
     public <Node_ extends BavetAbstractNode> Node_ retrieveSharedNode(Node_ node) {
         Node_ sharedNode = (Node_) sharableNodeMap.computeIfAbsent(node, k -> node);
         int nodeIndex = sharedNode.getNodeIndex();
-        System.out.println(nodeIndex + ": " + node);
         if (nodeIndexMaximum < nodeIndex) {
             nodeIndexMaximum = nodeIndex;
         }

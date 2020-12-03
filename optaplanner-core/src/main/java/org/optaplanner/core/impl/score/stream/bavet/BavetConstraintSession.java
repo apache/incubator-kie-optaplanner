@@ -18,6 +18,7 @@ package org.optaplanner.core.impl.score.stream.bavet;
 
 import java.util.ArrayDeque;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.IdentityHashMap;
 import java.util.LinkedHashMap;
@@ -74,6 +75,10 @@ public final class BavetConstraintSession<Solution_, Score_ extends Score<Score_
             nodeIndexedQueueList.add(new ArrayDeque<>(1000));
         }
         fromTupleListMap = new IdentityHashMap<>(1000);
+    }
+
+    public Collection<BavetScoringNode> getScoringNodes() {
+        return constraintIdToScoringNodeMap.values();
     }
 
     public List<BavetFromUniNode<Object>> findFromNodeList(Class<?> factClass) {

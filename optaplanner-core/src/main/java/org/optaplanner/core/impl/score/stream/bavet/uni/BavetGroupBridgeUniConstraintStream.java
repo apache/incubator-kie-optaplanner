@@ -60,7 +60,6 @@ public final class BavetGroupBridgeUniConstraintStream<Solution_, A, NewA, Resul
     protected BavetGroupBridgeUniNode<A, NewA, ResultContainer_, NewB> createNode(BavetNodeBuildPolicy<Solution_> buildPolicy,
             Score<?> constraintWeight, BavetAbstractUniNode<A> parentNode) {
         // TODO create bridge first. Move this to createChildNodeChains
-        int nextNodeIndex = buildPolicy.getNodeIndexMaximum() + 1;
         BavetGroupBiNode<NewA, ResultContainer_, NewB> groupNode = groupStream.createNodeChain(buildPolicy,
                 constraintWeight, null);
         // GroupNode was already created, so use the previous node index.

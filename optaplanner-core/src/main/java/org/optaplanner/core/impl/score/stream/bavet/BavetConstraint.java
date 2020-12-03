@@ -48,7 +48,6 @@ public final class BavetConstraint<Solution_> extends AbstractConstraint<Solutio
             Map<Class<?>, BavetFromUniNode<Object>> declaredClassToNodeMap,
             Score<?> constraintWeight) {
         for (BavetFromUniConstraintStream<Solution_, Object> fromStream : fromStreamList) {
-            int nodeIndex = 0;
             BavetFromUniNode<Object> node = fromStream.createNodeChain(buildPolicy, constraintWeight, null);
             BavetFromUniNode<Object> oldNode = declaredClassToNodeMap.putIfAbsent(fromStream.getFromClass(), node);
             if (oldNode != null && oldNode != node) {

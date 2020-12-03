@@ -20,7 +20,7 @@ import org.optaplanner.core.api.score.Score;
 
 public interface BavetJoinConstraintStream<Solution_> {
 
-    BavetJoinNode createNodeChain(BavetNodeBuildPolicy<Solution_> buildPolicy, Score<?> constraintWeight, int nodeIndex,
+    BavetJoinNode createNodeChain(BavetNodeBuildPolicy<Solution_> buildPolicy, Score<?> constraintWeight,
             BavetJoinBridgeNode leftNode, BavetJoinBridgeNode rightNode);
 
 }

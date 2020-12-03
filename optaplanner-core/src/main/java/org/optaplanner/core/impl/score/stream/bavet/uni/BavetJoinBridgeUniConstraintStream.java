@@ -84,7 +84,7 @@ public final class BavetJoinBridgeUniConstraintStream<Solution_, A>
             BavetJoinBridgeNode leftNode = isLeftBridge ? node : otherBridgeNode;
             BavetJoinBridgeNode rightNode = isLeftBridge ? otherBridgeNode : node;
             int maxNodeIndex = Math.max(leftNode.getNodeIndex(), rightNode.getNodeIndex());
-            joinStream.createNodeChain(buildPolicy, constraintWeight, maxNodeIndex + 1, leftNode, rightNode);
+            joinStream.createNodeChain(buildPolicy, constraintWeight, leftNode, rightNode);
         }
     }
 

@@ -19,6 +19,7 @@ package org.optaplanner.core.impl.score.stream.bavet;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.optaplanner.core.api.score.stream.Joiners.equal;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Function;
 
@@ -31,6 +32,8 @@ import org.optaplanner.core.api.score.stream.ConstraintFactory;
 import org.optaplanner.core.api.score.stream.ConstraintStreamImplType;
 import org.optaplanner.core.impl.score.director.stream.ConstraintStreamScoreDirector;
 import org.optaplanner.core.impl.score.director.stream.ConstraintStreamScoreDirectorFactory;
+import org.optaplanner.core.impl.score.stream.bavet.common.BavetScoringNode;
+import org.optaplanner.core.impl.score.stream.bavet.tri.BavetScoringTriNode;
 import org.optaplanner.core.impl.score.stream.bavet.uni.BavetAbstractUniNode;
 import org.optaplanner.core.impl.score.stream.bavet.uni.BavetFilterUniNode;
 import org.optaplanner.core.impl.score.stream.bavet.uni.BavetFromUniNode;
@@ -104,6 +107,40 @@ public class BavetConstraintStreamNodeOrderingTest {
         assertThat(rightJoinBridgeNode.getNodeIndex())
                 .as("Right JoinBridge is the fourth node of the constraint stream.")
                 .isEqualTo(3);
+    }
+
+    @Test
+    void secondJoin() {
+        List<BavetFromUniNode<Object>> lavishValueGroupFromNodeList = session.findFromNodeList(TestdataLavishValueGroup.class);
+
+        BavetFromUniNode<Object> fromNode = lavishValueGroupFromNodeList.get(0);
+        assertThat(fromNode.getNodeIndex())
+                .as("Second fromNode follows the join (4), group (6), filter (7), left join bridge (8).")
+                .isEqualTo(9);
+
+        List<BavetAbstractUniNode<Object>> fromNodeChildNodes = fromNode.getChildNodes();
+        assertThat(fromNodeChildNodes)
+                .as("Second fromNode has a single child, the right JoinBridge.")
+                .hasSize(1);
+
+        BavetJoinBridgeUniNode<Object> rightJoinBridgeNode = (BavetJoinBridgeUniNode<Object>) fromNodeChildNodes.get(0);
+        assertThat(rightJoinBridgeNode.getNodeIndex())
+                .as("Right JoinBridge is the eleventh node of the constraint stream.")
+                .isEqualTo(10);
+    }
+
+    @Test
+    void scoring() {
+        List<BavetScoringNode> scoringNodeCollection = new ArrayList<>(session.getScoringNodes());
+        assertThat(scoringNodeCollection).hasSize(1);
+        assertThat(scoringNodeCollection)
+                .first()
+                .isInstanceOf(BavetScoringTriNode.class);
+        BavetScoringTriNode<Object, Object, Object> scoringNode =
+                (BavetScoringTriNode<Object, Object, Object>) scoringNodeCollection.get(0);
+        assertThat(scoringNode.getNodeIndex())
+                .as("Single scoring node follows final join (11) and filter (12).")
+                .isEqualTo(13);
     }
 
     protected ConstraintStreamScoreDirector<TestdataLavishSolution, SimpleScore> buildScoreDirector(
