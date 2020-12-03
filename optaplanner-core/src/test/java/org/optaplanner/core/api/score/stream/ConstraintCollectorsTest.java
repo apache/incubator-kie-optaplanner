@@ -2119,7 +2119,7 @@ public class ConstraintCollectorsTest {
     }
 
     @Test
-    public void toBiMap() {
+    public void toMapBi() {
         BiConstraintCollector<Integer, Integer, ?, Map<Integer, Set<Integer>>> collector = ConstraintCollectors
                 .toMap(Integer::sum, Integer::sum);
         Object container = collector.supplier().get();
@@ -2143,6 +2143,35 @@ public class ConstraintCollectorsTest {
         thirdRetractor.run();
         assertResult(collector, container, asMap(2, singleton(2)));
         // Retract last value; there are no values now.
+        firstRetractor.run();
+        assertResult(collector, container, emptyMap());
+    }
+
+    @Test
+    public void toMapBiDuplicates() { // PLANNER-2271
+        BiConstraintCollector<String, Integer, ?, Map<String, Set<Integer>>> collector =
+                ConstraintCollectors.toMap((a, b) -> a, (a, b) -> b);
+        Object container = collector.supplier().get();
+
+        assertResult(collector, container, emptyMap());
+        // Add first value, we have one now.
+        String firstValue = "A";
+        Runnable firstRetractor = accumulate(collector, container, firstValue, 1);
+        assertResult(collector, container, asMap("A", singleton(1)));
+        // Add second value, we have two now.
+        String secondValue = "B";
+        Runnable secondRetractor = accumulate(collector, container, secondValue, 1);
+        assertResult(collector, container, asMap("A", singleton(1), "B", singleton(1)));
+        // Add third value, different from the second. We now have three values, two of which map to the same key.
+        Runnable thirdRetractor = accumulate(collector, container, secondValue, 2);
+        assertResult(collector, container, asMap("A", singleton(1), "B", asSet(1, 2)));
+        // Retract one instance from the second key; we only have one there now, but still two keys.
+        secondRetractor.run();
+        assertResult(collector, container, asMap("A", singleton(1), "B", singleton(2)));
+        // Retract final instance of the second value; we only have one key now.
+        thirdRetractor.run();
+        assertResult(collector, container, asMap("A", singleton(1)));
+        // Retract last value; there are no keys now.
         firstRetractor.run();
         assertResult(collector, container, emptyMap());
     }
@@ -2524,44 +2553,44 @@ public class ConstraintCollectorsTest {
         assertResult(collector, container, emptySortedMap());
     }
 
-    private static <A, B, C, D> Runnable accumulate(QuadConstraintCollector<A, A, A, A, B, C> collector, Object container,
-            A valueA, A valueB, A valueC, A valueD) {
-        return collector.accumulator().apply((B) container, valueA, valueB, valueC, valueD);
+    private static <A, B, C, D, E, F> Runnable accumulate(QuadConstraintCollector<A, B, C, D, E, F> collector,
+            Object container, A valueA, B valueB, C valueC, D valueD) {
+        return collector.accumulator().apply((E) container, valueA, valueB, valueC, valueD);
     }
 
-    private static <A, B, C> Runnable accumulate(TriConstraintCollector<A, A, A, B, C> collector, Object container,
-            A valueA, A valueB, A valueC) {
-        return collector.accumulator().apply((B) container, valueA, valueB, valueC);
+    private static <A, B, C, D, E> Runnable accumulate(TriConstraintCollector<A, B, C, D, E> collector,
+            Object container, A valueA, B valueB, C valueC) {
+        return collector.accumulator().apply((D) container, valueA, valueB, valueC);
     }
 
-    private static <A, B, C> Runnable accumulate(BiConstraintCollector<A, A, B, C> collector, Object container,
-            A valueA, A valueB) {
-        return collector.accumulator().apply((B) container, valueA, valueB);
+    private static <A, B, C, D> Runnable accumulate(BiConstraintCollector<A, B, C, D> collector, Object container,
+            A valueA, B valueB) {
+        return collector.accumulator().apply((C) container, valueA, valueB);
     }
 
     private static <A, B, C> Runnable accumulate(UniConstraintCollector<A, B, C> collector, Object container, A value) {
         return collector.accumulator().apply((B) container, value);
     }
 
-    private static <A, B, C> void assertResult(QuadConstraintCollector<A, A, A, A, B, C> collector, Object container,
-            C expectedResult) {
-        C actualResult = collector.finisher().apply((B) container);
+    private static <A, B, C, D, E, F> void assertResult(QuadConstraintCollector<A, B, C, D, E, F> collector,
+            Object container, F expectedResult) {
+        F actualResult = collector.finisher().apply((E) container);
         assertThat(actualResult)
                 .as("Collector (" + collector + ") did not produce expected result.")
                 .isEqualTo(expectedResult);
     }
 
-    private static <A, B, C> void assertResult(TriConstraintCollector<A, A, A, B, C> collector, Object container,
-            C expectedResult) {
-        C actualResult = collector.finisher().apply((B) container);
+    private static <A, B, C, D, E> void assertResult(TriConstraintCollector<A, B, C, D, E> collector, Object container,
+            E expectedResult) {
+        E actualResult = collector.finisher().apply((D) container);
         assertThat(actualResult)
                 .as("Collector (" + collector + ") did not produce expected result.")
                 .isEqualTo(expectedResult);
     }
 
-    private static <A, B, C> void assertResult(BiConstraintCollector<A, A, B, C> collector, Object container,
-            C expectedResult) {
-        C actualResult = collector.finisher().apply((B) container);
+    private static <A, B, C, D> void assertResult(BiConstraintCollector<A, B, C, D> collector, Object container,
+            D expectedResult) {
+        D actualResult = collector.finisher().apply((C) container);
         assertThat(actualResult)
                 .as("Collector (" + collector + ") did not produce expected result.")
                 .isEqualTo(expectedResult);
