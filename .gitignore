@@ -11,14 +11,6 @@
 /*.ipr
 /*.iws
 /*.iml
-.classpath
-.project
-.settings
-.factorypath
 
 # Repository wide ignore mac DS_Store files
 .DS_Store
-
-# Jenkins
-!.jenkins
-/.jenkins/tests/target
