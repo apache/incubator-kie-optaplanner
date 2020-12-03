@@ -210,7 +210,6 @@ pipeline {
                         maven.mvnVersionsSet(getMavenCommand(), nextSnapshotVersion, true)
                         maven.mvnSetVersionProperty(getMavenCommand(), 'version.org.kie.kogito', getNextMicroSnapshotVersion(getKogitoVersion()))
 
-                        addNotIgnoredPoms()
                         String prLink = commitAndCreatePR("Update snapshot version to ${nextMicroSnapshotVersion}")
                         setPipelinePrLink(optaplannerRepository, prLink)
                     }
@@ -233,7 +232,7 @@ pipeline {
                     dir("$vehicleRoutingRepository-bot") {
                         prepareForPR(vehicleRoutingRepository)
                         maven.mvnVersionsUpdateParentAndChildModules(nextMicroSnapshotVersion, true)
-                        addNotIgnoredPoms()
+                        
                         String prLink = commitAndCreatePR("Update snapshot version to ${nextMicroSnapshotVersion}")
                         setPipelinePrLink(vehicleRoutingRepository, prLink)
                     }
@@ -256,7 +255,7 @@ pipeline {
                     dir("$employeeRosteringRepository-bot") {
                         prepareForPR(employeeRosteringRepository)
                         maven.mvnVersionsUpdateParentAndChildModules(nextMicroSnapshotVersion, true)
-                        addNotIgnoredPoms()
+                        
                         String prLink = commitAndCreatePR("Update snapshot version to ${nextMicroSnapshotVersion}")
                         setPipelinePrLink(employeeRosteringRepository, prLink)
                     }
