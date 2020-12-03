@@ -25,7 +25,7 @@ import org.optaplanner.core.impl.score.stream.bavet.BavetConstraintSession;
 import org.optaplanner.core.impl.score.stream.bavet.common.BavetTupleState;
 
 public class BavetGroupBridgeBiNode<A, B, NewA, ResultContainer_, NewB> extends BavetAbstractBiNode<A, B> {
-    private final BavetAbstractBiNode<A, B> parentNode;
+
     private final BiFunction<A, B, NewA> groupKeyMapping;
     private final BiConstraintCollector<A, B, ResultContainer_, NewB> collector;
     private final BavetGroupBiNode<NewA, ResultContainer_, NewB> groupNode;
@@ -36,7 +36,6 @@ public class BavetGroupBridgeBiNode<A, B, NewA, ResultContainer_, NewB> extends 
             BiFunction<A, B, NewA> groupKeyMapping, BiConstraintCollector<A, B, ResultContainer_, NewB> collector,
             BavetGroupBiNode<NewA, ResultContainer_, NewB> groupNode) {
         super(session, groupNode.getNodeIndex() - 1);
-        this.parentNode = parentNode;
         this.groupKeyMapping = groupKeyMapping;
         this.collector = collector;
         this.groupNode = groupNode;

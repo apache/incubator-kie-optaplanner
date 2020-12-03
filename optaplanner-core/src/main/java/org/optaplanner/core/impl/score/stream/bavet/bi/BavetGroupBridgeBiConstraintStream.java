@@ -58,13 +58,10 @@ public final class BavetGroupBridgeBiConstraintStream<Solution_, A, B, NewA, Res
     @Override
     protected BavetAbstractBiNode<A, B> createNode(BavetNodeBuildPolicy<Solution_> buildPolicy,
             Score<?> constraintWeight, BavetAbstractBiNode<A, B> parentNode) {
-        BavetGroupBiNode<NewA, ResultContainer_, NewB> groupNode =
-                groupStream.createNodeChain(buildPolicy, constraintWeight, null);
-        // GroupNode was already created, so use the previous node index.
-        BavetGroupBridgeBiNode<A, B, NewA, ResultContainer_, NewB> node = new BavetGroupBridgeBiNode<>(
-                buildPolicy.getSession(), parentNode, groupKeyMapping, collector,
+        BavetGroupBiNode<NewA, ResultContainer_, NewB> groupNode = groupStream.createNodeChain(buildPolicy,
+                constraintWeight, null);
+        return new BavetGroupBridgeBiNode<>(buildPolicy.getSession(), parentNode, groupKeyMapping, collector,
                 groupNode);
-        return node;
     }
 
     @Override
