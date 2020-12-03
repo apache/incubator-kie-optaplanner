@@ -105,7 +105,7 @@ public final class BavetScoringBiConstraintStream<Solution_, A, B>
 
     @Override
     protected BavetScoringBiNode<A, B> createNode(BavetNodeBuildPolicy<Solution_> buildPolicy,
-            Score<?> constraintWeight, int nodeIndex, BavetAbstractBiNode<A, B> parentNode) {
+            Score<?> constraintWeight, BavetAbstractBiNode<A, B> parentNode) {
         ScoreInliner scoreInliner = buildPolicy.getSession().getScoreInliner();
         WeightedScoreImpacter weightedScoreImpacter = scoreInliner.buildWeightedScoreImpacter(constraintWeight);
         TriFunction<A, B, Consumer<Score<?>>, UndoScoreImpacter> scoreImpacter;
@@ -161,8 +161,8 @@ public final class BavetScoringBiConstraintStream<Solution_, A, B>
         } else {
             throw new IllegalStateException("Unsupported weightedScoreImpacter (" + weightedScoreImpacter + ").");
         }
-        BavetScoringBiNode<A, B> node = new BavetScoringBiNode<>(buildPolicy.getSession(), nodeIndex,
-                constraint.getConstraintPackage(), constraint.getConstraintName(),
+        BavetScoringBiNode<A, B> node = new BavetScoringBiNode<>(buildPolicy.getSession(),
+                buildPolicy.getNodeIndexMaximum() + 1, constraint.getConstraintPackage(), constraint.getConstraintName(),
                 constraintWeight, scoreImpacter);
         buildPolicy.addScoringNode(node);
         return node;

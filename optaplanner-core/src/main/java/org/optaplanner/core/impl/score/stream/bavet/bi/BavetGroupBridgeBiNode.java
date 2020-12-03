@@ -32,10 +32,10 @@ public class BavetGroupBridgeBiNode<A, B, NewA, ResultContainer_, NewB> extends 
 
     private final Map<NewA, BavetGroupBiTuple<NewA, ResultContainer_, NewB>> tupleMap;
 
-    public BavetGroupBridgeBiNode(BavetConstraintSession session, int nodeIndex, BavetAbstractBiNode<A, B> parentNode,
+    public BavetGroupBridgeBiNode(BavetConstraintSession session, BavetAbstractBiNode<A, B> parentNode,
             BiFunction<A, B, NewA> groupKeyMapping, BiConstraintCollector<A, B, ResultContainer_, NewB> collector,
             BavetGroupBiNode<NewA, ResultContainer_, NewB> groupNode) {
-        super(session, nodeIndex);
+        super(session, groupNode.getNodeIndex() - 1);
         this.parentNode = parentNode;
         this.groupKeyMapping = groupKeyMapping;
         this.collector = collector;

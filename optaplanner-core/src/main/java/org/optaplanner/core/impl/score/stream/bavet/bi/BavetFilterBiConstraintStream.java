@@ -51,8 +51,8 @@ public final class BavetFilterBiConstraintStream<Solution_, A, B> extends BavetA
 
     @Override
     protected BavetFilterBiNode<A, B> createNode(BavetNodeBuildPolicy<Solution_> buildPolicy,
-            Score<?> constraintWeight, int nodeIndex, BavetAbstractBiNode<A, B> parentNode) {
-        return new BavetFilterBiNode<>(buildPolicy.getSession(), nodeIndex, parentNode, predicate);
+            Score<?> constraintWeight, BavetAbstractBiNode<A, B> parentNode) {
+        return new BavetFilterBiNode<>(buildPolicy.getSession(), buildPolicy.getNodeIndexMaximum() + 1, parentNode, predicate);
     }
 
     @Override

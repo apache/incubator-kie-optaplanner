@@ -57,12 +57,13 @@ public final class BavetGroupBiConstraintStream<Solution_, GroupKey_, ResultCont
 
     @Override
     protected BavetGroupBiNode<GroupKey_, ResultContainer_, Result_> createNode(BavetNodeBuildPolicy<Solution_> buildPolicy,
-            Score<?> constraintWeight, int nodeIndex, BavetAbstractBiNode<GroupKey_, Result_> parentNode) {
+            Score<?> constraintWeight, BavetAbstractBiNode<GroupKey_, Result_> parentNode) {
         if (parentNode != null) {
             throw new IllegalStateException("Impossible state: the stream (" + this
                     + ") cannot have a parentNode (" + parentNode + ").");
         }
-        return new BavetGroupBiNode<>(buildPolicy.getSession(), nodeIndex, finisher);
+        // GroupBridgeNodes are created before GroupNodes, so increment by 2 to create room for the bridge inbetween.
+        return new BavetGroupBiNode<>(buildPolicy.getSession(), buildPolicy.getNodeIndexMaximum() + 2, finisher);
     }
 
     @Override

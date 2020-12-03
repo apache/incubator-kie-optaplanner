@@ -26,6 +26,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
 import org.optaplanner.core.api.score.stream.Constraint;
+import org.optaplanner.core.api.score.stream.ConstraintCollectors;
 import org.optaplanner.core.api.score.stream.ConstraintFactory;
 import org.optaplanner.core.api.score.stream.ConstraintStreamImplType;
 import org.optaplanner.core.impl.score.director.stream.ConstraintStreamScoreDirector;
@@ -44,7 +45,8 @@ public class BavetConstraintStreamNodeOrderingTest {
     private final Function<ConstraintFactory, Constraint> constraintProvider =
             factory -> factory.fromUniquePair(TestdataLavishEntity.class,
                     equal(TestdataLavishEntity::getEntityGroup))
-                    .filter((a, b) -> !a.equals(b))
+                    .groupBy((a, b) -> a, ConstraintCollectors.countBi())
+                    .filter((a, count) -> count > 0)
                     .join(TestdataLavishValueGroup.class)
                     .filter((a, b, valueGroup) -> false)
                     .penalize("Some constraint", SimpleScore.ONE);
@@ -101,7 +103,7 @@ public class BavetConstraintStreamNodeOrderingTest {
         BavetJoinBridgeUniNode<Object> rightJoinBridgeNode = (BavetJoinBridgeUniNode<Object>) filterChildNodes.get(1);
         assertThat(rightJoinBridgeNode.getNodeIndex())
                 .as("Right JoinBridge is the fourth node of the constraint stream.")
-                .isEqualTo(2); // TODO needs to be 3
+                .isEqualTo(3);
     }
 
     protected ConstraintStreamScoreDirector<TestdataLavishSolution, SimpleScore> buildScoreDirector(

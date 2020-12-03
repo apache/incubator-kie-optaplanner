@@ -52,12 +52,12 @@ public final class BavetFromUniConstraintStream<Solution_, A> extends BavetAbstr
 
     @Override
     protected BavetFromUniNode<A> createNode(BavetNodeBuildPolicy<Solution_> buildPolicy, Score<?> constraintWeight,
-            int nodeIndex, BavetAbstractUniNode<A> parentNode) {
+            BavetAbstractUniNode<A> parentNode) {
         if (parentNode != null) {
             throw new IllegalStateException("Impossible state: the stream (" + this
                     + ") cannot have a parentNode (" + parentNode + ").");
         }
-        return new BavetFromUniNode<>(buildPolicy.getSession(), nodeIndex, fromClass);
+        return new BavetFromUniNode<>(buildPolicy.getSession(), buildPolicy.getNodeIndexMaximum() + 1, fromClass);
     }
 
     @Override

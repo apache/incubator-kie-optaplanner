@@ -69,7 +69,7 @@ public final class BavetJoinBiConstraintStream<Solution_, A, B> extends BavetAbs
 
     @Override
     protected BavetJoinBiNode<A, B> createNode(BavetNodeBuildPolicy<Solution_> buildPolicy,
-            Score<?> constraintWeight, int nodeIndex, BavetAbstractBiNode<A, B> parentNode) {
+            Score<?> constraintWeight, BavetAbstractBiNode<A, B> parentNode) {
         throw new IllegalStateException("Impossible state: this code is never called.");
     }
 

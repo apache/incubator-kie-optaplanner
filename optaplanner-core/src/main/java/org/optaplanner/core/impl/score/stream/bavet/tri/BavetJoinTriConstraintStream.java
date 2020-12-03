@@ -70,7 +70,7 @@ public final class BavetJoinTriConstraintStream<Solution_, A, B, C> extends Bave
 
     @Override
     protected BavetJoinTriNode<A, B, C> createNode(BavetNodeBuildPolicy<Solution_> buildPolicy,
-            Score<?> constraintWeight, int nodeIndex, BavetAbstractTriNode<A, B, C> parentNode) {
+            Score<?> constraintWeight, BavetAbstractTriNode<A, B, C> parentNode) {
         throw new IllegalStateException("Impossible state: this code is never called.");
     }
 

@@ -21,12 +21,14 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 import org.optaplanner.core.impl.score.stream.bavet.BavetConstraintSession;
+import org.optaplanner.core.impl.score.stream.bavet.bi.BavetGroupBridgeBiNode;
+import org.optaplanner.core.impl.score.stream.bavet.uni.BavetGroupBridgeUniNode;
 
 public class BavetNodeBuildPolicy<Solution_> {
 
     private final BavetConstraintSession session;
 
-    private int nodeIndexMaximum = 0;
+    private int nodeIndexMaximum = -1; // So that the first node starts at 0 when it increments.
     private Map<String, BavetScoringNode> constraintIdToScoringNodeMap;
     private Map<BavetJoinConstraintStream<Solution_>, BavetJoinBridgeNode> joinConstraintStreamToJoinBridgeNodeMap =
             new HashMap<>();
@@ -40,6 +42,7 @@ public class BavetNodeBuildPolicy<Solution_> {
     public <Node_ extends BavetAbstractNode> Node_ retrieveSharedNode(Node_ node) {
         Node_ sharedNode = (Node_) sharableNodeMap.computeIfAbsent(node, k -> node);
         int nodeIndex = sharedNode.getNodeIndex();
+        System.out.println(nodeIndex + ": " + node);
         if (nodeIndexMaximum < nodeIndex) {
             nodeIndexMaximum = nodeIndex;
         }

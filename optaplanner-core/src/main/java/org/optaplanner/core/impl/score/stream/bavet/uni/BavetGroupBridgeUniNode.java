@@ -37,10 +37,10 @@ public final class BavetGroupBridgeUniNode<A, NewA, ResultContainer_, NewB> exte
 
     private final Map<NewA, BavetGroupBiTuple<NewA, ResultContainer_, NewB>> tupleMap;
 
-    public BavetGroupBridgeUniNode(BavetConstraintSession session, int nodeIndex, BavetAbstractUniNode<A> parentNode,
+    public BavetGroupBridgeUniNode(BavetConstraintSession session, BavetAbstractUniNode<A> parentNode,
             Function<A, NewA> groupKeyMapping, UniConstraintCollector<A, ResultContainer_, NewB> collector,
             BavetGroupBiNode<NewA, ResultContainer_, NewB> groupNode) {
-        super(session, nodeIndex);
+        super(session, groupNode.getNodeIndex() - 1);
         this.parentNode = parentNode;
         this.groupKeyMapping = groupKeyMapping;
         this.collector = collector;

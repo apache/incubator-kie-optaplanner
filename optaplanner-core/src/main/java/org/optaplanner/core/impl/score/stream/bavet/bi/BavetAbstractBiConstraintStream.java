@@ -278,7 +278,7 @@ public abstract class BavetAbstractBiConstraintStream<Solution_, A, B> extends B
 
     public BavetAbstractBiNode<A, B> createNodeChain(BavetNodeBuildPolicy<Solution_> buildPolicy,
             Score<?> constraintWeight, int nodeIndex, BavetAbstractBiNode<A, B> parentNode) {
-        BavetAbstractBiNode<A, B> node = createNode(buildPolicy, constraintWeight, nodeIndex, parentNode);
+        BavetAbstractBiNode<A, B> node = createNode(buildPolicy, constraintWeight, parentNode);
         node = processNode(buildPolicy, parentNode, node);
         createChildNodeChains(buildPolicy, constraintWeight, nodeIndex, node);
         return node;
@@ -307,5 +307,5 @@ public abstract class BavetAbstractBiConstraintStream<Solution_, A, B> extends B
     }
 
     protected abstract BavetAbstractBiNode<A, B> createNode(BavetNodeBuildPolicy<Solution_> buildPolicy,
-            Score<?> constraintWeight, int nodeIndex, BavetAbstractBiNode<A, B> parentNode);
+            Score<?> constraintWeight, BavetAbstractBiNode<A, B> parentNode);
 }

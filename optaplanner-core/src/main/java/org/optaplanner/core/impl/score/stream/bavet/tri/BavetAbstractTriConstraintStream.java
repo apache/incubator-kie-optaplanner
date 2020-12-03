@@ -240,7 +240,7 @@ public abstract class BavetAbstractTriConstraintStream<Solution_, A, B, C> exten
 
     public BavetAbstractTriNode<A, B, C> createNodeChain(BavetNodeBuildPolicy<Solution_> buildPolicy,
             Score<?> constraintWeight, int nodeIndex, BavetAbstractTriNode<A, B, C> parentNode) {
-        BavetAbstractTriNode<A, B, C> node = createNode(buildPolicy, constraintWeight, nodeIndex, parentNode);
+        BavetAbstractTriNode<A, B, C> node = createNode(buildPolicy, constraintWeight, parentNode);
         node = processNode(buildPolicy, parentNode, node);
         createChildNodeChains(buildPolicy, constraintWeight, nodeIndex, node);
         return node;
@@ -269,6 +269,6 @@ public abstract class BavetAbstractTriConstraintStream<Solution_, A, B, C> exten
     }
 
     protected abstract BavetAbstractTriNode<A, B, C> createNode(BavetNodeBuildPolicy<Solution_> buildPolicy,
-            Score<?> constraintWeight, int nodeIndex, BavetAbstractTriNode<A, B, C> parentNode);
+            Score<?> constraintWeight, BavetAbstractTriNode<A, B, C> parentNode);
 
 }

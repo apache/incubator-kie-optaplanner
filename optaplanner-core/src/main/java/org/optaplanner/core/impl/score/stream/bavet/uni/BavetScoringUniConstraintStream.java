@@ -103,7 +103,7 @@ public final class BavetScoringUniConstraintStream<Solution_, A> extends BavetAb
 
     @Override
     protected BavetScoringUniNode<A> createNode(BavetNodeBuildPolicy<Solution_> buildPolicy,
-            Score<?> constraintWeight, int nodeIndex, BavetAbstractUniNode<A> parentNode) {
+            Score<?> constraintWeight, BavetAbstractUniNode<A> parentNode) {
         ScoreInliner scoreInliner = buildPolicy.getSession().getScoreInliner();
         WeightedScoreImpacter weightedScoreImpacter = scoreInliner.buildWeightedScoreImpacter(constraintWeight);
         BiFunction<A, Consumer<Score<?>>, UndoScoreImpacter> scoreImpacter;
@@ -159,9 +159,9 @@ public final class BavetScoringUniConstraintStream<Solution_, A> extends BavetAb
         } else {
             throw new IllegalStateException("Unsupported weightedScoreImpacter (" + weightedScoreImpacter + ").");
         }
-        BavetScoringUniNode<A> node = new BavetScoringUniNode<>(buildPolicy.getSession(), nodeIndex, parentNode,
-                constraint.getConstraintPackage(), constraint.getConstraintName(),
-                constraintWeight, scoreImpacter);
+        BavetScoringUniNode<A> node = new BavetScoringUniNode<>(buildPolicy.getSession(),
+                buildPolicy.getNodeIndexMaximum() + 1, parentNode, constraint.getConstraintPackage(),
+                constraint.getConstraintName(), constraintWeight, scoreImpacter);
         buildPolicy.addScoringNode(node);
         return node;
     }
