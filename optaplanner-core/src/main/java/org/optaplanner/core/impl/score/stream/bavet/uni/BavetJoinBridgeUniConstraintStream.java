@@ -70,7 +70,7 @@ public final class BavetJoinBridgeUniConstraintStream<Solution_, A>
     }
 
     @Override
-    protected void createChildNodeChains(BavetNodeBuildPolicy<Solution_> buildPolicy, Score<?> constraintWeight, int nodeIndex,
+    protected void createChildNodeChains(BavetNodeBuildPolicy<Solution_> buildPolicy, Score<?> constraintWeight,
             BavetAbstractUniNode<A> uncastedNode) {
         if (!childStreamList.isEmpty()) {
             throw new IllegalStateException("Impossible state: the stream (" + this

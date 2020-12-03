@@ -21,8 +21,6 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 import org.optaplanner.core.impl.score.stream.bavet.BavetConstraintSession;
-import org.optaplanner.core.impl.score.stream.bavet.bi.BavetGroupBridgeBiNode;
-import org.optaplanner.core.impl.score.stream.bavet.uni.BavetGroupBridgeUniNode;
 
 public class BavetNodeBuildPolicy<Solution_> {
 

@@ -72,7 +72,7 @@ public final class BavetJoinBridgeBiConstraintStream<Solution_, A, B>
 
     @Override
     protected void createChildNodeChains(BavetNodeBuildPolicy<Solution_> buildPolicy, Score<?> constraintWeight,
-            int nodeIndex, BavetAbstractBiNode<A, B> uncastedNode) {
+            BavetAbstractBiNode<A, B> uncastedNode) {
         if (!childStreamList.isEmpty()) {
             throw new IllegalStateException("Impossible state: the stream (" + this
                     + ") has an non-empty childStreamList (" + childStreamList + ") but it's a join bridge.");

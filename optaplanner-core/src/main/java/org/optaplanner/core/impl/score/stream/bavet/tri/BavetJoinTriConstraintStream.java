@@ -64,7 +64,7 @@ public final class BavetJoinTriConstraintStream<Solution_, A, B, C> extends Bave
         leftNode.setChildTupleRefresher(node::refreshChildTuplesLeft); // TODO don't register if shared
         rightNode.setChildTupleRefresher(node::refreshChildTuplesRight);
         node = (BavetJoinTriNode<A, B, C>) processNode(buildPolicy, null, node); // TODO Sharing never happens
-        createChildNodeChains(buildPolicy, constraintWeight, nodeIndex, node);
+        createChildNodeChains(buildPolicy, constraintWeight, node);
         return node;
     }
 

@@ -63,7 +63,7 @@ public final class BavetJoinBiConstraintStream<Solution_, A, B> extends BavetAbs
         leftNode.setChildTupleRefresher(node::refreshChildTuplesLeft); // TODO don't register if shared
         rightNode.setChildTupleRefresher(node::refreshChildTuplesRight);
         node = (BavetJoinBiNode<A, B>) processNode(buildPolicy, null, node); // TODO Sharing never happens
-        createChildNodeChains(buildPolicy, constraintWeight, nodeIndex, node);
+        createChildNodeChains(buildPolicy, constraintWeight, node);
         return node;
     }
 

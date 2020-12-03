@@ -277,10 +277,10 @@ public abstract class BavetAbstractBiConstraintStream<Solution_, A, B> extends B
     // ************************************************************************
 
     public BavetAbstractBiNode<A, B> createNodeChain(BavetNodeBuildPolicy<Solution_> buildPolicy,
-            Score<?> constraintWeight, int nodeIndex, BavetAbstractBiNode<A, B> parentNode) {
+            Score<?> constraintWeight, BavetAbstractBiNode<A, B> parentNode) {
         BavetAbstractBiNode<A, B> node = createNode(buildPolicy, constraintWeight, parentNode);
         node = processNode(buildPolicy, parentNode, node);
-        createChildNodeChains(buildPolicy, constraintWeight, nodeIndex, node);
+        createChildNodeChains(buildPolicy, constraintWeight, node);
         return node;
     }
 
@@ -296,13 +296,13 @@ public abstract class BavetAbstractBiConstraintStream<Solution_, A, B> extends B
     }
 
     protected void createChildNodeChains(BavetNodeBuildPolicy<Solution_> buildPolicy, Score<?> constraintWeight,
-            int nodeIndex, BavetAbstractBiNode<A, B> node) {
+            BavetAbstractBiNode<A, B> node) {
         if (childStreamList.isEmpty()) {
             throw new IllegalStateException("The stream (" + this + ") leads to nowhere.\n"
                     + "Maybe don't create it.");
         }
         for (BavetAbstractBiConstraintStream<Solution_, A, B> childStream : childStreamList) {
-            childStream.createNodeChain(buildPolicy, constraintWeight, nodeIndex + 1, node);
+            childStream.createNodeChain(buildPolicy, constraintWeight, node);
         }
     }
 

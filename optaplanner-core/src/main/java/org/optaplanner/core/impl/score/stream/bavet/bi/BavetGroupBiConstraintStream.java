@@ -50,9 +50,9 @@ public final class BavetGroupBiConstraintStream<Solution_, GroupKey_, ResultCont
 
     @Override
     public BavetGroupBiNode<GroupKey_, ResultContainer_, Result_> createNodeChain(BavetNodeBuildPolicy<Solution_> buildPolicy,
-            Score<?> constraintWeight, int nodeIndex, BavetAbstractBiNode<GroupKey_, Result_> parentNode) {
+            Score<?> constraintWeight, BavetAbstractBiNode<GroupKey_, Result_> parentNode) {
         return (BavetGroupBiNode<GroupKey_, ResultContainer_, Result_>) super.createNodeChain(buildPolicy, constraintWeight,
-                nodeIndex, parentNode);
+                parentNode);
     }
 
     @Override

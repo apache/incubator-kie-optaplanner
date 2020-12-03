@@ -46,8 +46,8 @@ public final class BavetFromUniConstraintStream<Solution_, A> extends BavetAbstr
 
     @Override
     public BavetFromUniNode<A> createNodeChain(BavetNodeBuildPolicy<Solution_> buildPolicy, Score<?> constraintWeight,
-            int nodeIndex, BavetAbstractUniNode<A> parentNode) {
-        return (BavetFromUniNode<A>) super.createNodeChain(buildPolicy, constraintWeight, nodeIndex, parentNode);
+            BavetAbstractUniNode<A> parentNode) {
+        return (BavetFromUniNode<A>) super.createNodeChain(buildPolicy, constraintWeight, parentNode);
     }
 
     @Override
