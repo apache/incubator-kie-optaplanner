@@ -62,7 +62,7 @@ public final class BavetJoinBiConstraintStream<Solution_, A, B> extends BavetAbs
         BavetJoinBiNode<A, B> node = new BavetJoinBiNode<>(buildPolicy.getSession(), nodeIndex, leftNode, rightNode);
         leftNode.setChildTupleRefresher(node::refreshChildTuplesLeft); // TODO don't register if shared
         rightNode.setChildTupleRefresher(node::refreshChildTuplesRight);
-        node = (BavetJoinBiNode<A, B>) processNode(buildPolicy, nodeIndex, null, node); // TODO Sharing never happens
+        node = (BavetJoinBiNode<A, B>) processNode(buildPolicy, null, node); // TODO Sharing never happens
         createChildNodeChains(buildPolicy, constraintWeight, nodeIndex, node);
         return node;
     }

@@ -279,14 +279,14 @@ public abstract class BavetAbstractBiConstraintStream<Solution_, A, B> extends B
     public BavetAbstractBiNode<A, B> createNodeChain(BavetNodeBuildPolicy<Solution_> buildPolicy,
             Score<?> constraintWeight, int nodeIndex, BavetAbstractBiNode<A, B> parentNode) {
         BavetAbstractBiNode<A, B> node = createNode(buildPolicy, constraintWeight, nodeIndex, parentNode);
-        node = processNode(buildPolicy, nodeIndex, parentNode, node);
+        node = processNode(buildPolicy, parentNode, node);
         createChildNodeChains(buildPolicy, constraintWeight, nodeIndex, node);
         return node;
     }
 
-    protected BavetAbstractBiNode<A, B> processNode(BavetNodeBuildPolicy<Solution_> buildPolicy, int nodeIndex,
+    protected BavetAbstractBiNode<A, B> processNode(BavetNodeBuildPolicy<Solution_> buildPolicy,
             BavetAbstractBiNode<A, B> parentNode, BavetAbstractBiNode<A, B> node) {
-        buildPolicy.updateNodeIndexMaximum(nodeIndex);
+        buildPolicy.updateNodeIndexMaximum(node.getNodeIndex());
         BavetAbstractBiNode<A, B> sharedNode = buildPolicy.retrieveSharedNode(node);
         if (sharedNode != node) {
             // Share node

@@ -241,14 +241,14 @@ public abstract class BavetAbstractTriConstraintStream<Solution_, A, B, C> exten
     public BavetAbstractTriNode<A, B, C> createNodeChain(BavetNodeBuildPolicy<Solution_> buildPolicy,
             Score<?> constraintWeight, int nodeIndex, BavetAbstractTriNode<A, B, C> parentNode) {
         BavetAbstractTriNode<A, B, C> node = createNode(buildPolicy, constraintWeight, nodeIndex, parentNode);
-        node = processNode(buildPolicy, nodeIndex, parentNode, node);
+        node = processNode(buildPolicy, parentNode, node);
         createChildNodeChains(buildPolicy, constraintWeight, nodeIndex, node);
         return node;
     }
 
-    protected BavetAbstractTriNode<A, B, C> processNode(BavetNodeBuildPolicy<Solution_> buildPolicy, int nodeIndex,
+    protected BavetAbstractTriNode<A, B, C> processNode(BavetNodeBuildPolicy<Solution_> buildPolicy,
             BavetAbstractTriNode<A, B, C> parentNode, BavetAbstractTriNode<A, B, C> node) {
-        buildPolicy.updateNodeIndexMaximum(nodeIndex);
+        buildPolicy.updateNodeIndexMaximum(node.getNodeIndex());
         BavetAbstractTriNode<A, B, C> sharedNode = buildPolicy.retrieveSharedNode(node);
         if (sharedNode != node) {
             // Share node
