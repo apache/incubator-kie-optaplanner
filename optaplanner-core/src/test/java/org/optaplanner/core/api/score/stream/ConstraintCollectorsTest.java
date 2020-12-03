@@ -2553,52 +2553,56 @@ public class ConstraintCollectorsTest {
         assertResult(collector, container, emptySortedMap());
     }
 
-    private static <A, B, C, D, E, F> Runnable accumulate(QuadConstraintCollector<A, B, C, D, E, F> collector,
-            Object container, A valueA, B valueB, C valueC, D valueD) {
-        return collector.accumulator().apply((E) container, valueA, valueB, valueC, valueD);
+    private static <A, B, C, D, Container_, Result_> Runnable accumulate(
+            QuadConstraintCollector<A, B, C, D, Container_, Result_> collector, Object container, A valueA, B valueB,
+            C valueC, D valueD) {
+        return collector.accumulator().apply((Container_) container, valueA, valueB, valueC, valueD);
     }
 
-    private static <A, B, C, D, E> Runnable accumulate(TriConstraintCollector<A, B, C, D, E> collector,
-            Object container, A valueA, B valueB, C valueC) {
-        return collector.accumulator().apply((D) container, valueA, valueB, valueC);
+    private static <A, B, C, Container_, Result_> Runnable accumulate(
+            TriConstraintCollector<A, B, C, Container_, Result_> collector, Object container, A valueA, B valueB,
+            C valueC) {
+        return collector.accumulator().apply((Container_) container, valueA, valueB, valueC);
     }
 
-    private static <A, B, C, D> Runnable accumulate(BiConstraintCollector<A, B, C, D> collector, Object container,
-            A valueA, B valueB) {
-        return collector.accumulator().apply((C) container, valueA, valueB);
+    private static <A, B, Container_, Result_> Runnable accumulate(
+            BiConstraintCollector<A, B, Container_, Result_> collector, Object container, A valueA, B valueB) {
+        return collector.accumulator().apply((Container_) container, valueA, valueB);
     }
 
-    private static <A, B, C> Runnable accumulate(UniConstraintCollector<A, B, C> collector, Object container, A value) {
-        return collector.accumulator().apply((B) container, value);
+    private static <A, Container_, Result_> Runnable accumulate(
+            UniConstraintCollector<A, Container_, Result_> collector, Object container, A value) {
+        return collector.accumulator().apply((Container_) container, value);
     }
 
-    private static <A, B, C, D, E, F> void assertResult(QuadConstraintCollector<A, B, C, D, E, F> collector,
-            Object container, F expectedResult) {
-        F actualResult = collector.finisher().apply((E) container);
+    private static <A, B, C, D, Container_, Result_> void assertResult(
+            QuadConstraintCollector<A, B, C, D, Container_, Result_> collector, Object container,
+            Result_ expectedResult) {
+        Result_ actualResult = collector.finisher().apply((Container_) container);
         assertThat(actualResult)
                 .as("Collector (" + collector + ") did not produce expected result.")
                 .isEqualTo(expectedResult);
     }
 
-    private static <A, B, C, D, E> void assertResult(TriConstraintCollector<A, B, C, D, E> collector, Object container,
-            E expectedResult) {
-        E actualResult = collector.finisher().apply((D) container);
+    private static <A, B, C, Container_, Result_> void assertResult(
+            TriConstraintCollector<A, B, C, Container_, Result_> collector, Object container, Result_ expectedResult) {
+        Result_ actualResult = collector.finisher().apply((Container_) container);
         assertThat(actualResult)
                 .as("Collector (" + collector + ") did not produce expected result.")
                 .isEqualTo(expectedResult);
     }
 
-    private static <A, B, C, D> void assertResult(BiConstraintCollector<A, B, C, D> collector, Object container,
-            D expectedResult) {
-        D actualResult = collector.finisher().apply((C) container);
+    private static <A, B, Container_, Result_> void assertResult(
+            BiConstraintCollector<A, B, Container_, Result_> collector, Object container, Result_ expectedResult) {
+        Result_ actualResult = collector.finisher().apply((Container_) container);
         assertThat(actualResult)
                 .as("Collector (" + collector + ") did not produce expected result.")
                 .isEqualTo(expectedResult);
     }
 
-    private static <A, B, C> void assertResult(UniConstraintCollector<A, B, C> collector, Object container,
-            C expectedResult) {
-        C actualResult = collector.finisher().apply((B) container);
+    private static <A, Container_, Result_> void assertResult(
+            UniConstraintCollector<A, Container_, Result_> collector, Object container, Result_ expectedResult) {
+        Result_ actualResult = collector.finisher().apply((Container_) container);
         assertThat(actualResult)
                 .as("Collector (" + collector + ") did not produce expected result.")
                 .isEqualTo(expectedResult);
