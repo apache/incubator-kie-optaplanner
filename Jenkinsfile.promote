@@ -165,36 +165,35 @@ pipeline {
             }
         }
 
-        // TODO set back before merging
-        // stage('Update OptaPlanner website') {
-        //     when {
-        //         expression { return isRelease() }
-        //     }
-        //     steps {
-        //         script {
-        //             final String websiteRepository = 'optaplanner-website'
-        //             String prLink = null
-        //             dir("$websiteRepository-bot") {
-        //                 String prBranchName = createWebsitePrBranch(websiteRepository)
+        stage('Update OptaPlanner website') {
+            when {
+                expression { return isRelease() }
+            }
+            steps {
+                script {
+                    final String websiteRepository = 'optaplanner-website'
+                    String prLink = null
+                    dir("$websiteRepository-bot") {
+                        String prBranchName = createWebsitePrBranch(websiteRepository)
 
-        //                 // Update versions in links on the website.
-        //                 sh "./build/update-versions.sh ${getProjectVersion()} ${getNextMinorSnapshotVersion(getProjectVersion())}"
+                        // Update versions in links on the website.
+                        sh "./build/update-versions.sh ${getProjectVersion()} ${getNextMinorSnapshotVersion(getProjectVersion())}"
 
-        //                 // Update the XSDs. OptaPlanner must be cloned and build with the full profile before.
-        //                 String optaplannerRoot = "$WORKSPACE/optaplanner"
-        //                 sh "cp $optaplannerRoot/optaplanner-core/target/classes/solver.xsd xsd/solver/solver-8.xsd"
-        //                 sh "cp $optaplannerRoot/optaplanner-benchmark/target/classes/benchmark.xsd xsd/benchmark/benchmark-8.xsd"
+                        // Update the XSDs. OptaPlanner must be cloned and build with the full profile before.
+                        String optaplannerRoot = "$WORKSPACE/optaplanner"
+                        sh "cp $optaplannerRoot/optaplanner-core/target/classes/solver.xsd xsd/solver/solver-8.xsd"
+                        sh "cp $optaplannerRoot/optaplanner-benchmark/target/classes/benchmark.xsd xsd/benchmark/benchmark-8.xsd"
 
-        //                 // Add changed files, commit, open and merge PR
-        //                 prLink = commitAndCreatePR("Release OptaPlanner ${getProjectVersion()}", { sh 'git add xsd/\\*.xsd _config/pom.yml' }, prBranchName, 'master')
-        //             }
-        //             dir(websiteRepository) {
-        //                 checkoutRepo(websiteRepository, 'master')
-        //                 mergeAndPush(prLink, 'master')
-        //             }
-        //         }
-        //     }
-        // }
+                        // Add changed files, commit, open and merge PR
+                        prLink = commitAndCreatePR("Release OptaPlanner ${getProjectVersion()}", { sh 'git add xsd/\\*.xsd _config/pom.yml' }, prBranchName, 'master')
+                    }
+                    dir(websiteRepository) {
+                        checkoutRepo(websiteRepository, 'master')
+                        mergeAndPush(prLink, 'master')
+                    }
+                }
+            }
+        }
 
         stage('Set OptaPlanner next snapshot version') {
             when {
@@ -445,13 +444,12 @@ void installGithubCLI() {
 void uploadDistribution(String directory) {
     dir(directory) {
         echo "uploadDistribution for ${directory}"
-        // TODO set back after testing
-        // withCredentials(bindings: [sshUserPrivateKey(credentialsId: 'optaplanner-filemgmt',
-        //         keyFileVariable: 'SSH_KEY_JBOSS_FILEMGMT')]) {
-        //     // For testing, simulate connection via SSH:
-        //     // sh "ssh -i $SSH_KEY_JBOSS_FILEMGMT -oKexAlgorithms=+diffie-hellman-group1-sha1 optaplanner@filemgmt.jboss.org"
-        //     sh "./build/release/upload_distribution.sh ${getProjectVersion()} $SSH_KEY_JBOSS_FILEMGMT"
-        // }
+        withCredentials(bindings: [sshUserPrivateKey(credentialsId: 'optaplanner-filemgmt',
+                keyFileVariable: 'SSH_KEY_JBOSS_FILEMGMT')]) {
+            // For testing, simulate connection via SSH:
+            // sh "ssh -i $SSH_KEY_JBOSS_FILEMGMT -oKexAlgorithms=+diffie-hellman-group1-sha1 optaplanner@filemgmt.jboss.org"
+            sh "./build/release/upload_distribution.sh ${getProjectVersion()} $SSH_KEY_JBOSS_FILEMGMT"
+        }
     }
 }
 
