@@ -16,6 +16,8 @@
 
 package org.optaplanner.core.impl.score.stream.bavet.uni;
 
+import java.util.Collections;
+import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
@@ -41,6 +43,11 @@ public final class BavetJoinBridgeUniNode<A> extends BavetAbstractUniNode<A>
         this.parentNode = parentNode;
         this.mapping = mapping;
         this.index = index;
+    }
+
+    @Override
+    public List<BavetAbstractUniNode<A>> getChildNodes() {
+        return Collections.emptyList();
     }
 
     @Override

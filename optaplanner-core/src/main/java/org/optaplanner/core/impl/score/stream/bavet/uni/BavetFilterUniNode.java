@@ -17,8 +17,10 @@
 package org.optaplanner.core.impl.score.stream.bavet.uni;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 import java.util.function.Predicate;
 
 import org.optaplanner.core.impl.score.stream.bavet.BavetConstraintSession;
@@ -41,6 +43,11 @@ public final class BavetFilterUniNode<A> extends BavetAbstractUniNode<A> {
     @Override
     public void addChildNode(BavetAbstractUniNode<A> childNode) {
         childNodeList.add(childNode);
+    }
+
+    @Override
+    public List<BavetAbstractUniNode<A>> getChildNodes() {
+        return Collections.unmodifiableList(childNodeList);
     }
 
     // ************************************************************************

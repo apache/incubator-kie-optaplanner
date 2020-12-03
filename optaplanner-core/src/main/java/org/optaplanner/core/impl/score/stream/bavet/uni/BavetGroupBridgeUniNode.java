@@ -16,7 +16,9 @@
 
 package org.optaplanner.core.impl.score.stream.bavet.uni;
 
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 
@@ -44,6 +46,11 @@ public final class BavetGroupBridgeUniNode<A, NewA, ResultContainer_, NewB> exte
         this.collector = collector;
         this.groupNode = groupNode;
         tupleMap = new HashMap<>();
+    }
+
+    @Override
+    public List<BavetAbstractUniNode<A>> getChildNodes() {
+        return Collections.emptyList();
     }
 
     @Override
