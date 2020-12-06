@@ -25,6 +25,14 @@
     <dependency>
       <groupId>org.optaplanner</groupId>
       <artifactId>optaplanner-quarkus</artifactId>
+      <exclusions>
+        <!-- The constraints.drl requires this dependency to be excluded, otherwise the quarkus-maven-plugin
+             downloads it at runtime. -->
+        <exclusion>
+          <groupId>org.kie.kogito</groupId>
+          <artifactId>drools-core-static</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
 
     <dependency>
@@ -64,6 +72,12 @@
           <artifactId>org.apache.sling.javax.activation</artifactId>
         </exclusion>
       </exclusions>
+      <scope>test</scope>
+    </dependency>
+    <!-- Required to test Quarkus with constraints DRL. -->
+    <dependency>
+      <groupId>org.kie.kogito</groupId>
+      <artifactId>drools-core-dynamic</artifactId>
       <scope>test</scope>
     </dependency>
   </dependencies>

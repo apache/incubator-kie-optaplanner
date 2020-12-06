@@ -17,11 +17,7 @@
 package org.optaplanner.spring.boot.autoconfigure;
 
 import java.lang.annotation.Annotation;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import org.optaplanner.core.api.domain.entity.PlanningEntity;
@@ -201,32 +197,68 @@ public class OptaPlannerAutoConfiguration implements BeanClassLoaderAware {
     }
 
     private void applyScoreDirectorFactoryProperties(SolverConfig solverConfig) {
+        Optional<String> constraintsDrlFromProperty = constraintsDrl();
+        Optional<String> defaultConstraintsDrl = defaultConstraintsDrl();
+        Optional<String> effectiveConstraintsDrl = constraintsDrlFromProperty.map(Optional::of).orElse(defaultConstraintsDrl);
         if (solverConfig.getScoreDirectorFactoryConfig() == null) {
-            ScoreDirectorFactoryConfig scoreDirectorFactoryConfig = new ScoreDirectorFactoryConfig();
-            scoreDirectorFactoryConfig.setEasyScoreCalculatorClass(findImplementingClass(EasyScoreCalculator.class));
-            scoreDirectorFactoryConfig.setConstraintProviderClass(findImplementingClass(ConstraintProvider.class));
-            scoreDirectorFactoryConfig
-                    .setIncrementalScoreCalculatorClass(findImplementingClass(IncrementalScoreCalculator.class));
-            if (beanClassLoader.getResource(SolverProperties.DEFAULT_SCORE_DRL_URL) != null) {
-                scoreDirectorFactoryConfig.setScoreDrlList(Collections.singletonList(
-                        SolverProperties.DEFAULT_SCORE_DRL_URL));
+            solverConfig.setScoreDirectorFactoryConfig(defaultScoreDirectoryFactoryConfig(effectiveConstraintsDrl));
+        } else {
+            ScoreDirectorFactoryConfig scoreDirectorFactoryConfig = solverConfig.getScoreDirectorFactoryConfig();
+            if (constraintsDrlFromProperty.isPresent()) {
+                scoreDirectorFactoryConfig.setScoreDrlList(Collections.singletonList(constraintsDrlFromProperty.get()));
+            } else {
+                if (scoreDirectorFactoryConfig.getScoreDrlList() == null) {
+                    defaultConstraintsDrl.ifPresent((resolvedConstraintsDrl) -> scoreDirectorFactoryConfig
+                            .setScoreDrlList(Collections.singletonList(resolvedConstraintsDrl)));
+                }
             }
-            if (scoreDirectorFactoryConfig.getEasyScoreCalculatorClass() == null
-                    && scoreDirectorFactoryConfig.getConstraintProviderClass() == null
-                    && scoreDirectorFactoryConfig.getIncrementalScoreCalculatorClass() == null
-                    && scoreDirectorFactoryConfig.getScoreDrlList() == null) {
-                throw new IllegalStateException("No classes found that implement "
-                        + EasyScoreCalculator.class.getSimpleName() + ", "
-                        + ConstraintProvider.class.getSimpleName() + " or "
-                        + IncrementalScoreCalculator.class.getSimpleName() + ", nor a "
-                        + SolverProperties.DEFAULT_SCORE_DRL_URL + " resource.\n"
-                        + "Maybe your @" + ConstraintProvider.class.getSimpleName() + " annotated class "
-                        + " is not in a subpackage of your @" + SpringBootApplication.class.getSimpleName()
-                        + " annotated class's package.\n"
-                        + "Maybe move your constraint provider class to your application class's (sub)package.");
-            }
-            solverConfig.setScoreDirectorFactoryConfig(scoreDirectorFactoryConfig);
         }
+    }
+
+    private Optional<String> constraintsDrl() {
+        String constraintsDrl = optaPlannerProperties.getScoreDrl();
+
+        if (constraintsDrl != null) {
+            if (beanClassLoader.getResource(constraintsDrl) == null) {
+                throw new IllegalStateException("Invalid " + OptaPlannerProperties.SCORE_DRL_PROPERTY
+                        + " property (" + constraintsDrl + "): that classpath resource does not exist.");
+            }
+            return Optional.of(constraintsDrl);
+        } else {
+            return Optional.empty();
+        }
+    }
+
+    private Optional<String> defaultConstraintsDrl() {
+        return beanClassLoader.getResource(OptaPlannerProperties.DEFAULT_CONSTRAINTS_DRL_URL) != null
+                ? Optional.of(OptaPlannerProperties.DEFAULT_CONSTRAINTS_DRL_URL)
+                : Optional.empty();
+    }
+
+    private ScoreDirectorFactoryConfig defaultScoreDirectoryFactoryConfig(Optional<String> constraintsDrl) {
+        ScoreDirectorFactoryConfig scoreDirectorFactoryConfig = new ScoreDirectorFactoryConfig();
+        scoreDirectorFactoryConfig.setEasyScoreCalculatorClass(findImplementingClass(EasyScoreCalculator.class));
+        scoreDirectorFactoryConfig.setConstraintProviderClass(findImplementingClass(ConstraintProvider.class));
+        scoreDirectorFactoryConfig
+                .setIncrementalScoreCalculatorClass(findImplementingClass(IncrementalScoreCalculator.class));
+        constraintsDrl.ifPresent((value) -> scoreDirectorFactoryConfig.setScoreDrlList(Collections.singletonList(value)));
+
+        if (scoreDirectorFactoryConfig.getEasyScoreCalculatorClass() == null
+                && scoreDirectorFactoryConfig.getConstraintProviderClass() == null
+                && scoreDirectorFactoryConfig.getIncrementalScoreCalculatorClass() == null
+                && scoreDirectorFactoryConfig.getScoreDrlList() == null) {
+            throw new IllegalStateException("No classes found that implement "
+                    + EasyScoreCalculator.class.getSimpleName() + ", "
+                    + ConstraintProvider.class.getSimpleName() + " or "
+                    + IncrementalScoreCalculator.class.getSimpleName() + ".\n"
+                    + "Neither was a property " + OptaPlannerProperties.SCORE_DRL_PROPERTY + " defined, nor a "
+                    + OptaPlannerProperties.DEFAULT_CONSTRAINTS_DRL_URL + " resource found.\n"
+                    + "Maybe your @" + ConstraintProvider.class.getSimpleName() + " annotated class "
+                    + " is not in a subpackage of your @" + SpringBootApplication.class.getSimpleName()
+                    + " annotated class's package.\n"
+                    + "Maybe move your constraint provider class to your application class's (sub)package.");
+        }
+        return scoreDirectorFactoryConfig;
     }
 
     private <T> Class<? extends T> findImplementingClass(Class<T> targetClass) {

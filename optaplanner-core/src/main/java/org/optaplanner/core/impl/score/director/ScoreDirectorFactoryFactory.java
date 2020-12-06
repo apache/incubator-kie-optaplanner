@@ -23,6 +23,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.drools.core.io.impl.ClassPathResource;
@@ -108,16 +109,27 @@ public class ScoreDirectorFactoryFactory<Solution_, Score_ extends Score<Score_>
                 .filter(Objects::nonNull).count() > 1) {
             List<String> scoreDirectorFactoryPropertyList = new ArrayList<>(4);
             if (easyScoreDirectorFactory != null) {
-                scoreDirectorFactoryPropertyList.add("an easyScoreCalculatorClass");
+                scoreDirectorFactoryPropertyList
+                        .add("an easyScoreCalculatorClass (" + config.getEasyScoreCalculatorClass().getName() + ")");
             }
             if (constraintStreamScoreDirectorFactory != null) {
-                scoreDirectorFactoryPropertyList.add("a constraintProviderClass");
+                scoreDirectorFactoryPropertyList
+                        .add("a constraintProviderClass (" + config.getConstraintProviderClass().getName() + ")");
             }
             if (incrementalScoreDirectorFactory != null) {
-                scoreDirectorFactoryPropertyList.add("an incrementalScoreCalculatorClass");
+                scoreDirectorFactoryPropertyList.add(
+                        "an incrementalScoreCalculatorClass (" + config.getIncrementalScoreCalculatorClass().getName() + ")");
             }
             if (droolsScoreDirectorFactory != null) {
-                scoreDirectorFactoryPropertyList.add("a droolsScoreDirectorFactory");
+                String abbreviatedScoreDrlList = ConfigUtils.abbreviate(config.getScoreDrlList());
+                String abbreviatedScoreDrlFileList = config.getScoreDrlFileList() == null ? ""
+                        : ConfigUtils.abbreviate(config.getScoreDrlFileList()
+                                .stream()
+                                .map(File::getName)
+                                .collect(Collectors.toList()));
+                scoreDirectorFactoryPropertyList
+                        .add("a scoreDrlList (" + abbreviatedScoreDrlList + ") or a scoreDrlFileList ("
+                                + abbreviatedScoreDrlFileList + ")");
             }
             throw new IllegalArgumentException("The scoreDirectorFactory cannot have "
                     + String.join(" and ", scoreDirectorFactoryPropertyList) + " together.");
