@@ -305,7 +305,8 @@ public abstract class BavetAbstractUniConstraintStream<Solution_, A> extends Bav
         BavetAbstractUniNode<A> sharedNode = buildPolicy.retrieveSharedNode(node);
         if (sharedNode != node) { // Share node
             return sharedNode;
-        } else if (parentNode != null) { // TODO remove null check and don't go through this for from and joins
+        }
+        if (parentNode != null) { // TODO remove null check and don't go through this for from and joins
             parentNode.addChildNode(node);
         }
         return node;
