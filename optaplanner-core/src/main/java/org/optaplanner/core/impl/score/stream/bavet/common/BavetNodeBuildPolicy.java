@@ -22,6 +22,11 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.SortedMap;
+import java.util.TreeMap;
+import java.util.function.Function;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.optaplanner.core.impl.score.stream.bavet.BavetConstraintSession;
 
@@ -33,7 +38,7 @@ public class BavetNodeBuildPolicy<Solution_> {
     private Map<String, BavetScoringNode> constraintIdToScoringNodeMap;
     private Map<BavetJoinConstraintStream<Solution_>, BavetJoinBridgeNode> joinConstraintStreamToJoinBridgeNodeMap =
             new HashMap<>();
-    private Map<BavetAbstractNode, BavetAbstractNode> sharableNodeMap = new HashMap<>(0);
+    private Map<BavetAbstractNode, BavetAbstractNode> sharableNodeMap = new LinkedHashMap<>(0);
     private List<BavetNode> createdNodes = new ArrayList<>(0);
 
     public BavetNodeBuildPolicy(BavetConstraintSession session, int constraintCount) {
@@ -82,7 +87,21 @@ public class BavetNodeBuildPolicy<Solution_> {
     }
 
     public List<BavetNode> getCreatedNodes() {
-        return Collections.unmodifiableList(createdNodes);
+        // Make a sequential list of unique nodes.
+        SortedMap<Integer, BavetNode> nodeIndexToNodeMap = Stream.concat(sharableNodeMap.keySet().stream(),
+                constraintIdToScoringNodeMap.values().stream())
+                .distinct()
+                .collect(Collectors.toMap(k -> k.getNodeIndex(), Function.identity(), (a, b) -> {
+                    throw new IllegalStateException("Impossible state: nodes (" + a + ") and (" + b + ") share index.");
+                }, TreeMap::new));
+        // Ensure there are no gaps in that list.
+        int maxNodeIndex = nodeIndexToNodeMap.lastKey();
+        int expectedMaxNodeIndex = nodeIndexToNodeMap.size() - 1;
+        if (maxNodeIndex != expectedMaxNodeIndex) {
+            throw new IllegalStateException("Impossible state: maximum node index (" + maxNodeIndex +
+                    ") does not match the expected maximum node count (" + expectedMaxNodeIndex + ").");
+        }
+        return Collections.unmodifiableList(new ArrayList<>(nodeIndexToNodeMap.values()));
     }
 
 }
