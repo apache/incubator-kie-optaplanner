@@ -37,8 +37,4 @@ public class BavetAbstractNode implements BavetNode {
         return nodeIndex;
     }
 
-    @Override
-    public int compareTo(BavetNode o) {
-        return Integer.compare(this.nodeIndex, o.getNodeIndex());
-    }
 }

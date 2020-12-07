@@ -16,7 +16,7 @@
 
 package org.optaplanner.core.impl.score.stream.bavet.common;
 
-public interface BavetNode extends Comparable<BavetNode> {
+public interface BavetNode {
 
     int getNodeIndex();
 
