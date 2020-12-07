@@ -1024,12 +1024,6 @@ public class TriConstraintStreamTest extends AbstractConstraintStreamTest {
     // ************************************************************************
 
     @TestTemplate
-    @Disabled("Not yet implemented") // TODO
-    public void globalNodeIndex() {
-
-    }
-
-    @TestTemplate
     @Disabled("Not yet supported") // TODO
     public void nodeSharing() {
 
