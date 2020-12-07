@@ -57,7 +57,7 @@ public final class BavetFromUniConstraintStream<Solution_, A> extends BavetAbstr
             throw new IllegalStateException("Impossible state: the stream (" + this
                     + ") cannot have a parentNode (" + parentNode + ").");
         }
-        return new BavetFromUniNode<>(buildPolicy.getSession(), buildPolicy.getNodeIndexMaximum() + 1, fromClass);
+        return new BavetFromUniNode<>(buildPolicy.getSession(), buildPolicy.nextNodeIndex(), fromClass);
     }
 
     @Override

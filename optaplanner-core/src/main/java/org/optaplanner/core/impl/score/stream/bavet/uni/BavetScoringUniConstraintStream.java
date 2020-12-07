@@ -159,9 +159,9 @@ public final class BavetScoringUniConstraintStream<Solution_, A> extends BavetAb
         } else {
             throw new IllegalStateException("Unsupported weightedScoreImpacter (" + weightedScoreImpacter + ").");
         }
-        BavetScoringUniNode<A> node = new BavetScoringUniNode<>(buildPolicy.getSession(),
-                buildPolicy.getNodeIndexMaximum() + 1, parentNode, constraint.getConstraintPackage(),
-                constraint.getConstraintName(), constraintWeight, scoreImpacter);
+        BavetScoringUniNode<A> node = new BavetScoringUniNode<>(buildPolicy.getSession(), buildPolicy.nextNodeIndex(),
+                parentNode, constraint.getConstraintPackage(), constraint.getConstraintName(), constraintWeight,
+                scoreImpacter);
         buildPolicy.addScoringNode(node);
         return node;
     }

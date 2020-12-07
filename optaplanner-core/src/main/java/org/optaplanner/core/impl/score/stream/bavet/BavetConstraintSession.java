@@ -67,7 +67,7 @@ public final class BavetConstraintSession<Solution_, Score_ extends Score<Score_
         constraintToWeightMap.forEach((constraint, constraintWeight) -> {
             constraint.createNodes(buildPolicy, declaredClassToNodeMap, constraintWeight);
         });
-        this.nodeIndexSize = buildPolicy.getNodeIndexMaximum() + 1;
+        this.nodeIndexSize = buildPolicy.nextNodeIndex(); // FIXME this modifies state
         constraintIdToScoringNodeMap = buildPolicy.getConstraintIdToScoringNodeMap();
         effectiveClassToNodeListMap = new HashMap<>(declaredClassToNodeMap.size());
         nodeIndexedQueueList = new ArrayList<>(nodeIndexSize);

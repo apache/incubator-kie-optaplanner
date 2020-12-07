@@ -26,7 +26,7 @@ public class BavetNodeBuildPolicy<Solution_> {
 
     private final BavetConstraintSession session;
 
-    private int nodeIndexMaximum = -1; // So that the first node starts at 0 when it increments.
+    private int nextNodeIndex = 0;
     private Map<String, BavetScoringNode> constraintIdToScoringNodeMap;
     private Map<BavetJoinConstraintStream<Solution_>, BavetJoinBridgeNode> joinConstraintStreamToJoinBridgeNodeMap =
             new HashMap<>();
@@ -39,10 +39,8 @@ public class BavetNodeBuildPolicy<Solution_> {
 
     public <Node_ extends BavetAbstractNode> Node_ retrieveSharedNode(Node_ node) {
         Node_ sharedNode = (Node_) sharableNodeMap.computeIfAbsent(node, k -> node);
-        System.out.println(sharedNode.getNodeIndex() + " " + sharedNode);
-        int nodeIndex = sharedNode.getNodeIndex();
-        if (nodeIndexMaximum < nodeIndex) {
-            nodeIndexMaximum = nodeIndex;
+        if (sharedNode != node) { // We are throwing away the new instance; throw away the new index, too.
+            nextNodeIndex--;
         }
         return sharedNode;
     }
@@ -59,8 +57,8 @@ public class BavetNodeBuildPolicy<Solution_> {
         return session;
     }
 
-    public int getNodeIndexMaximum() {
-        return nodeIndexMaximum;
+    public int nextNodeIndex() {
+        return nextNodeIndex++;
     }
 
     public Map<String, BavetScoringNode> getConstraintIdToScoringNodeMap() {

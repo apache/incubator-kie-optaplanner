@@ -59,8 +59,8 @@ public final class BavetGroupBridgeUniConstraintStream<Solution_, A, NewA, Resul
     @Override
     protected BavetGroupBridgeUniNode<A, NewA, ResultContainer_, NewB> createNode(BavetNodeBuildPolicy<Solution_> buildPolicy,
             Score<?> constraintWeight, BavetAbstractUniNode<A> parentNode) {
-        return new BavetGroupBridgeUniNode<>(buildPolicy.getSession(), buildPolicy.getNodeIndexMaximum() + 1,
-                parentNode, groupKeyMapping, collector);
+        return new BavetGroupBridgeUniNode<>(buildPolicy.getSession(), buildPolicy.nextNodeIndex(), parentNode,
+                groupKeyMapping, collector);
     }
 
     @Override

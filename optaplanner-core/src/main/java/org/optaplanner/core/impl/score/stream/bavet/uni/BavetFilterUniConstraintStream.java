@@ -51,7 +51,7 @@ public final class BavetFilterUniConstraintStream<Solution_, A> extends BavetAbs
     @Override
     protected BavetAbstractUniNode<A> createNode(BavetNodeBuildPolicy<Solution_> buildPolicy,
             Score<?> constraintWeight, BavetAbstractUniNode<A> parentNode) {
-        return new BavetFilterUniNode<>(buildPolicy.getSession(), buildPolicy.getNodeIndexMaximum() + 1, parentNode, predicate);
+        return new BavetFilterUniNode<>(buildPolicy.getSession(), buildPolicy.nextNodeIndex(), parentNode, predicate);
     }
 
     @Override

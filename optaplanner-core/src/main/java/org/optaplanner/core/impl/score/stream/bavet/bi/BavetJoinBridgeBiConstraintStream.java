@@ -65,9 +65,8 @@ public final class BavetJoinBridgeBiConstraintStream<Solution_, A, B>
     @Override
     protected BavetJoinBridgeBiNode<A, B> createNode(BavetNodeBuildPolicy<Solution_> buildPolicy,
             Score<?> constraintWeight, BavetAbstractBiNode<A, B> parentNode) {
-        BavetJoinBridgeBiNode<A, B> node = new BavetJoinBridgeBiNode<>(buildPolicy.getSession(),
-                buildPolicy.getNodeIndexMaximum() + 1, parentNode, mapping, indexFactory.buildIndex(isLeftBridge));
-        return node;
+        return new BavetJoinBridgeBiNode<>(buildPolicy.getSession(), buildPolicy.nextNodeIndex(), parentNode, mapping,
+                indexFactory.buildIndex(isLeftBridge));
     }
 
     @Override

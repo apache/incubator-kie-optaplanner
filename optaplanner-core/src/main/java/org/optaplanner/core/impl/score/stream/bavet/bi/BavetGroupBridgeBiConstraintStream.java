@@ -58,8 +58,8 @@ public final class BavetGroupBridgeBiConstraintStream<Solution_, A, B, NewA, Res
     @Override
     protected BavetAbstractBiNode<A, B> createNode(BavetNodeBuildPolicy<Solution_> buildPolicy,
             Score<?> constraintWeight, BavetAbstractBiNode<A, B> parentNode) {
-        return new BavetGroupBridgeBiNode<>(buildPolicy.getSession(), buildPolicy.getNodeIndexMaximum() + 1,
-                parentNode, groupKeyMapping, collector);
+        return new BavetGroupBridgeBiNode<>(buildPolicy.getSession(), buildPolicy.nextNodeIndex(), parentNode,
+                groupKeyMapping, collector);
     }
 
     @Override

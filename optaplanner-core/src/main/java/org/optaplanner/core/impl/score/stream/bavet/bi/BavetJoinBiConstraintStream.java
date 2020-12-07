@@ -59,8 +59,8 @@ public final class BavetJoinBiConstraintStream<Solution_, A, B> extends BavetAbs
             Score<?> constraintWeight, BavetJoinBridgeNode leftNode_, BavetJoinBridgeNode rightNode_) {
         BavetJoinBridgeUniNode<A> leftNode = (BavetJoinBridgeUniNode<A>) leftNode_;
         BavetJoinBridgeUniNode<B> rightNode = (BavetJoinBridgeUniNode<B>) rightNode_;
-        BavetJoinBiNode<A, B> node = new BavetJoinBiNode<>(buildPolicy.getSession(),
-                buildPolicy.getNodeIndexMaximum() + 1, leftNode, rightNode);
+        BavetJoinBiNode<A, B> node = new BavetJoinBiNode<>(buildPolicy.getSession(), buildPolicy.nextNodeIndex(),
+                leftNode, rightNode);
         leftNode.setChildTupleRefresher(node::refreshChildTuplesLeft); // TODO don't register if shared
         rightNode.setChildTupleRefresher(node::refreshChildTuplesRight);
         node = (BavetJoinBiNode<A, B>) processNode(buildPolicy, null, node); // TODO Sharing never happens

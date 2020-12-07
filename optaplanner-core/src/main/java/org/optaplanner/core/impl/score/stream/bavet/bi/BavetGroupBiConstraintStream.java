@@ -62,7 +62,7 @@ public final class BavetGroupBiConstraintStream<Solution_, GroupKey_, ResultCont
             throw new IllegalStateException("Impossible state: the stream (" + this
                     + ") cannot have a parentNode (" + parentNode + ").");
         }
-        return new BavetGroupBiNode<>(buildPolicy.getSession(), buildPolicy.getNodeIndexMaximum() + 1, finisher);
+        return new BavetGroupBiNode<>(buildPolicy.getSession(), buildPolicy.nextNodeIndex(), finisher);
     }
 
     @Override
