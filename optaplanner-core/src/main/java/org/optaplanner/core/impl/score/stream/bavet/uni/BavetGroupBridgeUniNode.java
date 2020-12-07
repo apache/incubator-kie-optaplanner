@@ -33,18 +33,15 @@ public final class BavetGroupBridgeUniNode<A, NewA, ResultContainer_, NewB> exte
     private final BavetAbstractUniNode<A> parentNode;
     private final Function<A, NewA> groupKeyMapping;
     private final UniConstraintCollector<A, ResultContainer_, NewB> collector;
-    private final BavetGroupBiNode<NewA, ResultContainer_, NewB> groupNode;
-
     private final Map<NewA, BavetGroupBiTuple<NewA, ResultContainer_, NewB>> tupleMap;
+    private BavetGroupBiNode<NewA, ResultContainer_, NewB> groupNode;
 
-    public BavetGroupBridgeUniNode(BavetConstraintSession session, BavetAbstractUniNode<A> parentNode,
-            Function<A, NewA> groupKeyMapping, UniConstraintCollector<A, ResultContainer_, NewB> collector,
-            BavetGroupBiNode<NewA, ResultContainer_, NewB> groupNode) {
-        super(session, groupNode.getNodeIndex() - 1);
+    public BavetGroupBridgeUniNode(BavetConstraintSession session, int nodeIndex, BavetAbstractUniNode<A> parentNode,
+            Function<A, NewA> groupKeyMapping, UniConstraintCollector<A, ResultContainer_, NewB> collector) {
+        super(session, nodeIndex);
         this.parentNode = parentNode;
         this.groupKeyMapping = groupKeyMapping;
         this.collector = collector;
-        this.groupNode = groupNode;
         tupleMap = new HashMap<>();
     }
 
@@ -58,7 +55,15 @@ public final class BavetGroupBridgeUniNode<A, NewA, ResultContainer_, NewB> exte
         return new BavetGroupBridgeUniTuple<>(this, parentTuple);
     }
 
+    public void setGroupNode(BavetGroupBiNode<NewA, ResultContainer_, NewB> groupNode) {
+        this.groupNode = groupNode;
+    }
+
     public void refresh(BavetGroupBridgeUniTuple<A, NewA, ResultContainer_, NewB> tuple) {
+        if (groupNode == null) {
+            throw new IllegalStateException("Impossible state: GroupBridgeNode (" + this +
+                    ") has no child GroupNode (" + groupNode + ").");
+        }
         if (tuple.getChildTuple() != null) {
             BavetGroupBiTuple<NewA, ResultContainer_, NewB> childTuple = tuple.getChildTuple();
             NewA oldGroupKey = childTuple.getGroupKey();

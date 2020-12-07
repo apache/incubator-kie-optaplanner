@@ -58,10 +58,8 @@ public final class BavetGroupBridgeBiConstraintStream<Solution_, A, B, NewA, Res
     @Override
     protected BavetAbstractBiNode<A, B> createNode(BavetNodeBuildPolicy<Solution_> buildPolicy,
             Score<?> constraintWeight, BavetAbstractBiNode<A, B> parentNode) {
-        BavetGroupBiNode<NewA, ResultContainer_, NewB> groupNode = groupStream.createNodeChain(buildPolicy,
-                constraintWeight, null);
-        return new BavetGroupBridgeBiNode<>(buildPolicy.getSession(), parentNode, groupKeyMapping, collector,
-                groupNode);
+        return new BavetGroupBridgeBiNode<>(buildPolicy.getSession(), buildPolicy.getNodeIndexMaximum() + 1,
+                parentNode, groupKeyMapping, collector);
     }
 
     @Override
@@ -71,5 +69,11 @@ public final class BavetGroupBridgeBiConstraintStream<Solution_, A, B, NewA, Res
             throw new IllegalStateException("Impossible state: the stream (" + this
                     + ") has an non-empty childStreamList (" + childStreamList + ") but it's a groupBy bridge.");
         }
+        BavetGroupBiNode<NewA, ResultContainer_, NewB> groupNode = groupStream.createNodeChain(buildPolicy,
+                constraintWeight, null);
+        BavetGroupBridgeBiNode<A, B, NewA, ResultContainer_, NewB> groupBridgeNode =
+                (BavetGroupBridgeBiNode<A, B, NewA, ResultContainer_, NewB>) node;
+        groupBridgeNode.setGroupNode(groupNode);
+
     }
 }
