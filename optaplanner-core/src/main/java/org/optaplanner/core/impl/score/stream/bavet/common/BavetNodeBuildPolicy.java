@@ -38,8 +38,7 @@ public class BavetNodeBuildPolicy<Solution_> {
     private Map<String, BavetScoringNode> constraintIdToScoringNodeMap;
     private Map<BavetJoinConstraintStream<Solution_>, BavetJoinBridgeNode> joinConstraintStreamToJoinBridgeNodeMap =
             new HashMap<>();
-    private Map<BavetAbstractNode, BavetAbstractNode> sharableNodeMap = new LinkedHashMap<>(0);
-    private List<BavetNode> createdNodes = new ArrayList<>(0);
+    private Map<BavetAbstractNode, BavetAbstractNode> sharableNodeMap = new HashMap<>(0);
 
     public BavetNodeBuildPolicy(BavetConstraintSession session, int constraintCount) {
         this.session = session;
@@ -50,14 +49,6 @@ public class BavetNodeBuildPolicy<Solution_> {
         Node_ sharedNode = (Node_) sharableNodeMap.computeIfAbsent(node, k -> node);
         if (sharedNode != node) { // We are throwing away the new instance; throw away the new index, too.
             nextNodeIndex--;
-        } else { // Node indexes must be an uninterrupted sequence, starting at zero.
-            int newNodeIndex = node.getNodeIndex();
-            int expectedNodeIndex = createdNodes.size();
-            if (newNodeIndex != expectedNodeIndex) {
-                throw new IllegalStateException("Impossible state: node index (" + newNodeIndex + ") of node (" + node +
-                        ") is out of sync with expected node index (" + expectedNodeIndex + ").");
-            }
-            createdNodes.add(node.getNodeIndex(), node);
         }
         return sharedNode;
     }
