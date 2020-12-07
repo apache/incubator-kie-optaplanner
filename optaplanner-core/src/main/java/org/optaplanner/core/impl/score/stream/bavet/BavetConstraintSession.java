@@ -25,8 +25,6 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Queue;
-import java.util.SortedSet;
-import java.util.TreeSet;
 
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.constraint.ConstraintMatch;
@@ -36,15 +34,12 @@ import org.optaplanner.core.impl.score.constraint.DefaultIndictment;
 import org.optaplanner.core.impl.score.definition.ScoreDefinition;
 import org.optaplanner.core.impl.score.inliner.ScoreInliner;
 import org.optaplanner.core.impl.score.stream.ConstraintSession;
-import org.optaplanner.core.impl.score.stream.bavet.bi.BavetAbstractBiNode;
 import org.optaplanner.core.impl.score.stream.bavet.common.BavetAbstractNode;
 import org.optaplanner.core.impl.score.stream.bavet.common.BavetAbstractTuple;
 import org.optaplanner.core.impl.score.stream.bavet.common.BavetNode;
 import org.optaplanner.core.impl.score.stream.bavet.common.BavetNodeBuildPolicy;
 import org.optaplanner.core.impl.score.stream.bavet.common.BavetScoringNode;
 import org.optaplanner.core.impl.score.stream.bavet.common.BavetTupleState;
-import org.optaplanner.core.impl.score.stream.bavet.tri.BavetAbstractTriNode;
-import org.optaplanner.core.impl.score.stream.bavet.uni.BavetAbstractUniNode;
 import org.optaplanner.core.impl.score.stream.bavet.uni.BavetFromUniNode;
 import org.optaplanner.core.impl.score.stream.bavet.uni.BavetFromUniTuple;
 
