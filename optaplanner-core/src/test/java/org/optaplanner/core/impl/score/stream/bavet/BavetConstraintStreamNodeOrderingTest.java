@@ -17,6 +17,7 @@
 package org.optaplanner.core.impl.score.stream.bavet;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.SoftAssertions.assertSoftly;
 import static org.optaplanner.core.api.score.stream.Joiners.equal;
 
 import java.util.ArrayList;
@@ -32,6 +33,9 @@ import org.optaplanner.core.api.score.stream.ConstraintFactory;
 import org.optaplanner.core.api.score.stream.ConstraintStreamImplType;
 import org.optaplanner.core.impl.score.director.stream.ConstraintStreamScoreDirector;
 import org.optaplanner.core.impl.score.director.stream.ConstraintStreamScoreDirectorFactory;
+import org.optaplanner.core.impl.score.stream.bavet.bi.BavetGroupBiNode;
+import org.optaplanner.core.impl.score.stream.bavet.bi.BavetGroupBridgeBiNode;
+import org.optaplanner.core.impl.score.stream.bavet.common.BavetNode;
 import org.optaplanner.core.impl.score.stream.bavet.common.BavetScoringNode;
 import org.optaplanner.core.impl.score.stream.bavet.tri.BavetScoringTriNode;
 import org.optaplanner.core.impl.score.stream.bavet.uni.BavetAbstractUniNode;
@@ -76,9 +80,9 @@ public class BavetConstraintStreamNodeOrderingTest {
 
     @Test
     void fromUniquePair() {
-        List<BavetFromUniNode<Object>> lavishEntityFromNodeList = session.findFromNodeList(TestdataLavishEntity.class);
+        List<BavetNode> nodeList = session.getNodes();
 
-        BavetFromUniNode<Object> fromNode = lavishEntityFromNodeList.get(0);
+        BavetFromUniNode<Object> fromNode = (BavetFromUniNode<Object>) nodeList.get(0);
         assertThat(fromNode.getNodeIndex())
                 .as("fromNode is the first node of the constraint stream.")
                 .isEqualTo(0);
@@ -111,9 +115,9 @@ public class BavetConstraintStreamNodeOrderingTest {
 
     @Test
     void secondJoin() {
-        List<BavetFromUniNode<Object>> lavishValueGroupFromNodeList = session.findFromNodeList(TestdataLavishValueGroup.class);
+        List<BavetNode> nodeList = session.getNodes();
 
-        BavetFromUniNode<Object> fromNode = lavishValueGroupFromNodeList.get(0);
+        BavetFromUniNode<Object> fromNode = (BavetFromUniNode<Object>) nodeList.get(9);
         assertThat(fromNode.getNodeIndex())
                 .as("Second fromNode follows the join (4), group (6), filter (7), left join bridge (8).")
                 .isEqualTo(9);
@@ -127,6 +131,20 @@ public class BavetConstraintStreamNodeOrderingTest {
         assertThat(rightJoinBridgeNode.getNodeIndex())
                 .as("Right JoinBridge is the eleventh node of the constraint stream.")
                 .isEqualTo(10);
+    }
+
+    @Test
+    void groupByAndBridge() {
+        List<BavetNode> nodeList = session.getNodes();
+
+        assertSoftly(softly -> {
+            softly.assertThat(nodeList)
+                    .element(5)
+                    .isInstanceOf(BavetGroupBridgeBiNode.class);
+            softly.assertThat(nodeList)
+                    .element(6)
+                    .isInstanceOf(BavetGroupBiNode.class);
+        });
     }
 
     @Test
