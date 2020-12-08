@@ -26,7 +26,6 @@ import java.util.SortedMap;
 import java.util.TreeMap;
 import java.util.function.Function;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import org.optaplanner.core.impl.score.stream.bavet.BavetConstraintSession;
 
@@ -47,8 +46,9 @@ public class BavetNodeBuildPolicy<Solution_> {
 
     public <Node_ extends BavetAbstractNode> Node_ retrieveSharedNode(Node_ node) {
         Node_ sharedNode = (Node_) sharableNodeMap.computeIfAbsent(node, k -> node);
-        if (sharedNode != node) { // We are throwing away the new instance; throw away the new index, too.
-            nextNodeIndex--;
+        if (sharedNode != node) {
+            // We are throwing away the new instance; throw away the new index, too.
+            nextNodeIndex = node.getNodeIndex();
         }
         return sharedNode;
     }
@@ -79,17 +79,17 @@ public class BavetNodeBuildPolicy<Solution_> {
 
     public List<BavetNode> getCreatedNodes() {
         // Make a sequential list of unique nodes.
-        SortedMap<Integer, BavetNode> nodeIndexToNodeMap = Stream.concat(sharableNodeMap.keySet().stream(),
-                constraintIdToScoringNodeMap.values().stream())
+        SortedMap<Integer, BavetNode> nodeIndexToNodeMap = sharableNodeMap.keySet().stream()
                 .collect(Collectors.toMap(k -> k.getNodeIndex(), Function.identity(), (a, b) -> {
-                    throw new IllegalStateException("Impossible state: 2 nodes (" + a + ", " + b + ") share the same index (" + a.getNodeIndex() + ").");
+                    throw new IllegalStateException("Impossible state: 2 nodes (" + a + ", " + b +
+                            ") share the same index (" + a.getNodeIndex() + ").");
                 }, TreeMap::new));
         // Ensure there are no gaps in that list.
         int maxNodeIndex = nodeIndexToNodeMap.lastKey();
         int expectedMaxNodeIndex = nodeIndexToNodeMap.size() - 1;
         if (maxNodeIndex != expectedMaxNodeIndex) {
             throw new IllegalStateException("Impossible state: maximum node index (" + maxNodeIndex +
-                    ") does not match the expected maximum node count (" + expectedMaxNodeIndex + ").");
+                    ") does not match the expected maximum node index (" + expectedMaxNodeIndex + ").");
         }
         return Collections.unmodifiableList(new ArrayList<>(nodeIndexToNodeMap.values()));
     }
