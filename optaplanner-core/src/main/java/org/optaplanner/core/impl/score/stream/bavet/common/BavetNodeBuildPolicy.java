@@ -83,7 +83,7 @@ public class BavetNodeBuildPolicy<Solution_> {
                 constraintIdToScoringNodeMap.values().stream())
                 .distinct()
                 .collect(Collectors.toMap(k -> k.getNodeIndex(), Function.identity(), (a, b) -> {
-                    throw new IllegalStateException("Impossible state: nodes (" + a + ") and (" + b + ") share index.");
+                    throw new IllegalStateException("Impossible state: 2 nodes (" + a + ", " + b + ") share the same index (" + a.getNodeIndex() + ").");
                 }, TreeMap::new));
         // Ensure there are no gaps in that list.
         int maxNodeIndex = nodeIndexToNodeMap.lastKey();
