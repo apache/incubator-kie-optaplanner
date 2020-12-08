@@ -1182,6 +1182,10 @@ public final class ConstraintCollectors {
             return counts.keySet();
         }
 
+        public boolean isEmpty() {
+            return counts.isEmpty();
+        }
+
     }
 
     private static final class Tuple<Key, Value> {
@@ -1207,8 +1211,8 @@ public final class ConstraintCollectors {
 
         public void remove(Key key, Value value) {
             ToMapPerKeyCounter<Value> counter = valueCounts.get(key);
-            long remainingCount = counter.remove(value);
-            if (remainingCount < 1) {
+            counter.remove(value);
+            if (counter.isEmpty()) {
                 valueCounts.remove(key);
             }
         }
