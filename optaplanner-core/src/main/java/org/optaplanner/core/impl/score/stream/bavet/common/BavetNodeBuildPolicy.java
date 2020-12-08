@@ -38,7 +38,7 @@ public class BavetNodeBuildPolicy<Solution_> {
     private Map<String, BavetScoringNode> constraintIdToScoringNodeMap;
     private Map<BavetJoinConstraintStream<Solution_>, BavetJoinBridgeNode> joinConstraintStreamToJoinBridgeNodeMap =
             new HashMap<>();
-    private Map<BavetAbstractNode, BavetAbstractNode> sharableNodeMap = new HashMap<>(0);
+    private Map<BavetAbstractNode, BavetAbstractNode> sharableNodeMap = new HashMap<>();
 
     public BavetNodeBuildPolicy(BavetConstraintSession session, int constraintCount) {
         this.session = session;
@@ -81,7 +81,6 @@ public class BavetNodeBuildPolicy<Solution_> {
         // Make a sequential list of unique nodes.
         SortedMap<Integer, BavetNode> nodeIndexToNodeMap = Stream.concat(sharableNodeMap.keySet().stream(),
                 constraintIdToScoringNodeMap.values().stream())
-                .distinct()
                 .collect(Collectors.toMap(k -> k.getNodeIndex(), Function.identity(), (a, b) -> {
                     throw new IllegalStateException("Impossible state: 2 nodes (" + a + ", " + b + ") share the same index (" + a.getNodeIndex() + ").");
                 }, TreeMap::new));
