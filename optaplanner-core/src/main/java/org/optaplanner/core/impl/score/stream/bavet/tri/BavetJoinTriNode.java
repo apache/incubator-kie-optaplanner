@@ -79,25 +79,25 @@ public final class BavetJoinTriNode<A, B, C> extends BavetAbstractTriNode<A, B, 
     @Override
     public void refresh(BavetAbstractTuple uncastTuple) {
         BavetJoinTriTuple<A, B, C> tuple = (BavetJoinTriTuple<A, B, C>) uncastTuple;
-        Set<BavetAbstractTuple> childTupleSet = tuple.getChildTupleSet();
-        for (BavetAbstractTuple childTuple : childTupleSet) {
+        List<BavetAbstractTuple> childTupleList = tuple.getChildTupleList();
+        for (BavetAbstractTuple childTuple : childTupleList) {
             session.transitionTuple(childTuple, BavetTupleState.DYING);
         }
-        childTupleSet.clear();
+        childTupleList.clear();
         if (tuple.isActive()) {
             for (BavetAbstractTriNode<A, B, C> childNode : childNodeList) {
                 BavetAbstractTriTuple<A, B, C> childTuple = childNode.createTuple(tuple);
-                childTupleSet.add(childTuple);
+                childTupleList.add(childTuple);
                 session.transitionTuple(childTuple, BavetTupleState.CREATING);
             }
         }
     }
 
     public void refreshChildTuplesLeft(BavetJoinBridgeBiTuple<A, B> leftParentTuple) {
-        Set<BavetAbstractTuple> leftTupleSet = leftParentTuple.getChildTupleSet();
+        List<BavetAbstractTuple> leftTupleSet = leftParentTuple.getChildTupleList();
         for (BavetAbstractTuple tuple_ : leftTupleSet) {
             BavetJoinTriTuple<A, B, C> tuple = (BavetJoinTriTuple<A, B, C>) tuple_;
-            boolean removed = tuple.getCTuple().getChildTupleSet().remove(tuple);
+            boolean removed = tuple.getCTuple().getChildTupleList().remove(tuple);
             if (!removed) {
                 throw new IllegalStateException("Impossible state: the facts (" + tuple.getFactA() + ", " + tuple.getFactB()
                         + ")'s tuple cannot be removed from the other fact (" + tuple.getFactC()
@@ -112,7 +112,7 @@ public final class BavetJoinTriNode<A, B, C> extends BavetAbstractTriNode<A, B, 
                 if (!rightParentTuple.isDirty()) {
                     BavetJoinTriTuple<A, B, C> childTuple = createTuple(leftParentTuple, rightParentTuple);
                     leftTupleSet.add(childTuple);
-                    rightParentTuple.getChildTupleSet().add(childTuple);
+                    rightParentTuple.getChildTupleList().add(childTuple);
                     session.transitionTuple(childTuple, BavetTupleState.CREATING);
                 }
             }
@@ -120,10 +120,10 @@ public final class BavetJoinTriNode<A, B, C> extends BavetAbstractTriNode<A, B, 
     }
 
     public void refreshChildTuplesRight(BavetJoinBridgeUniTuple<C> rightParentTuple) {
-        Set<BavetAbstractTuple> rightTupleSet = rightParentTuple.getChildTupleSet();
+        List<BavetAbstractTuple> rightTupleSet = rightParentTuple.getChildTupleList();
         for (BavetAbstractTuple uncastTuple : rightTupleSet) {
             BavetJoinTriTuple<A, B, C> tuple = (BavetJoinTriTuple<A, B, C>) uncastTuple;
-            boolean removed = tuple.getAbTuple().getChildTupleSet().remove(tuple);
+            boolean removed = tuple.getAbTuple().getChildTupleList().remove(tuple);
             if (!removed) {
                 throw new IllegalStateException("Impossible state: the fact (" + tuple.getFactC()
                         + ")'s tuple cannot be removed from the other facts (" + tuple.getFactA() + ", " + tuple.getFactB()
@@ -137,7 +137,7 @@ public final class BavetJoinTriNode<A, B, C> extends BavetAbstractTriNode<A, B, 
             for (BavetJoinBridgeBiTuple<A, B> leftParentTuple : leftParentTupleList) {
                 if (!leftParentTuple.isDirty()) {
                     BavetJoinTriTuple<A, B, C> childTuple = createTuple(leftParentTuple, rightParentTuple);
-                    leftParentTuple.getChildTupleSet().add(childTuple);
+                    leftParentTuple.getChildTupleList().add(childTuple);
                     rightTupleSet.add(childTuple);
                     session.transitionTuple(childTuple, BavetTupleState.CREATING);
                 }

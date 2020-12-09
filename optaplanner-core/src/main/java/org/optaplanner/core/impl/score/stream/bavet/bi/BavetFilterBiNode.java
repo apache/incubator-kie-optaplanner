@@ -88,16 +88,16 @@ public final class BavetFilterBiNode<A, B> extends BavetAbstractBiNode<A, B> {
         BavetFilterBiTuple<A, B> tuple = (BavetFilterBiTuple<A, B>) uncastTuple;
         A a = tuple.getFactA();
         B b = tuple.getFactB();
-        Set<BavetAbstractTuple> childTupleSet = tuple.getChildTupleSet();
-        for (BavetAbstractTuple childTuple : childTupleSet) {
+        List<BavetAbstractTuple> childTupleList = tuple.getChildTupleList();
+        for (BavetAbstractTuple childTuple : childTupleList) {
             session.transitionTuple(childTuple, BavetTupleState.DYING);
         }
-        childTupleSet.clear();
+        childTupleList.clear();
         if (tuple.isActive()) {
             if (predicate.test(a, b)) {
                 for (BavetAbstractBiNode<A, B> childNode : childNodeList) {
                     BavetAbstractBiTuple<A, B> childTuple = childNode.createTuple(tuple);
-                    childTupleSet.add(childTuple);
+                    childTupleList.add(childTuple);
                     session.transitionTuple(childTuple, BavetTupleState.CREATING);
                 }
             }

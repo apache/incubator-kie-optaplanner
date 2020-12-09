@@ -16,13 +16,13 @@
 
 package org.optaplanner.core.impl.score.stream.bavet.common;
 
-import java.util.LinkedHashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 
 public abstract class BavetAbstractTuple implements BavetTuple {
 
     protected BavetTupleState state = BavetTupleState.NEW;
-    protected final Set<BavetAbstractTuple> childTupleSet = new LinkedHashSet<>(); // TODO initial capacity
+    protected final List<BavetAbstractTuple> childTupleList = new ArrayList<>(); // TODO initial capacity
 
     public boolean isDirty() {
         return state.isDirty();
@@ -48,8 +48,8 @@ public abstract class BavetAbstractTuple implements BavetTuple {
         this.state = state;
     }
 
-    public final Set<BavetAbstractTuple> getChildTupleSet() {
-        return childTupleSet;
+    public final List<BavetAbstractTuple> getChildTupleList() {
+        return childTupleList;
     }
 
 }

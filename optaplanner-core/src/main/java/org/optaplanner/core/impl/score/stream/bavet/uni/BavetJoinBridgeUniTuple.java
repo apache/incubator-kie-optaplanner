@@ -34,7 +34,7 @@ public final class BavetJoinBridgeUniTuple<A> extends BavetAbstractUniTuple<A>
 
     @Override
     public String toString() {
-        return "JoinBridge(" + getFactsString() + ") with " + childTupleSet.size() + " children";
+        return "JoinBridge(" + getFactsString() + ") with " + childTupleList.size() + " children";
     }
 
     // ************************************************************************
