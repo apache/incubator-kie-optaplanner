@@ -56,7 +56,7 @@ public class Task extends AbstractPersistable implements Labeled {
     @CustomShadowVariable(variableListenerClass = StartTimeUpdatingVariableListener.class,
             // Arguable, to adhere to API specs (although this works), nextTask and employee should also be a source,
             // because this shadow must be triggered after nextTask and employee (but there is no need to be triggered by those)
-            sources = { @PlanningVariableReference(variableName = "tasks") })
+            sources = { @PlanningVariableReference(entityClass = Employee.class, variableName = "tasks") })
     private Integer startTime; // In minutes
 
     public Task() {
