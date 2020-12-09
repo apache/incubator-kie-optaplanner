@@ -141,7 +141,7 @@ public class EntityDescriptor<Solution_> {
             processPlanningPinAnnotation(descriptorPolicy, member);
         }
         if (declaredGenuineVariableDescriptorMap.isEmpty() && declaredShadowVariableDescriptorMap.isEmpty()) {
-            logger.error("The entityClass (" + entityClass
+            throw new IllegalStateException("The entityClass (" + entityClass
                     + ") should have at least 1 getter method or 1 field with a "
                     + PlanningVariable.class.getSimpleName() + " annotation or a shadow variable annotation.");
         }
