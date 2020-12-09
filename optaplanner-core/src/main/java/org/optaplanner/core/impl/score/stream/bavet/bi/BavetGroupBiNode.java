@@ -19,7 +19,6 @@ package org.optaplanner.core.impl.score.stream.bavet.bi;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Set;
 import java.util.function.Function;
 
 import org.optaplanner.core.impl.score.stream.bavet.BavetConstraintSession;
