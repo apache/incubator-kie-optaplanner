@@ -79,6 +79,9 @@ public class GenuineVariableDescriptor<Solution_> extends VariableDescriptor<Sol
 
     private void processPropertyAnnotations(DescriptorPolicy descriptorPolicy) {
         PlanningVariable planningVariableAnnotation = variableMemberAccessor.getAnnotation(PlanningVariable.class);
+        if (planningVariableAnnotation == null) {
+            return;
+        }
         processNullable(descriptorPolicy, planningVariableAnnotation);
         processChained(descriptorPolicy, planningVariableAnnotation);
         processValueRangeRefs(descriptorPolicy, planningVariableAnnotation);

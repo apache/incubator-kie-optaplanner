@@ -37,6 +37,7 @@ import org.optaplanner.core.api.domain.entity.PlanningPin;
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.domain.valuerange.ValueRangeProvider;
 import org.optaplanner.core.api.domain.variable.AnchorShadowVariable;
+import org.optaplanner.core.api.domain.variable.CollectionPlanningVariable;
 import org.optaplanner.core.api.domain.variable.CustomShadowVariable;
 import org.optaplanner.core.api.domain.variable.InverseRelationShadowVariable;
 import org.optaplanner.core.api.domain.variable.PlanningVariable;
@@ -70,7 +71,7 @@ import org.slf4j.LoggerFactory;
 public class EntityDescriptor<Solution_> {
 
     private static final Class[] VARIABLE_ANNOTATION_CLASSES = {
-            PlanningVariable.class,
+            PlanningVariable.class, CollectionPlanningVariable.class,
             InverseRelationShadowVariable.class, AnchorShadowVariable.class,
             CustomShadowVariable.class };
 
@@ -246,6 +247,10 @@ public class EntityDescriptor<Solution_> {
                     + "Maybe the annotation is defined on both the field and its getter.");
         }
         if (variableAnnotationClass.equals(PlanningVariable.class)) {
+            GenuineVariableDescriptor<Solution_> variableDescriptor = new GenuineVariableDescriptor<>(this,
+                    memberAccessor);
+            declaredGenuineVariableDescriptorMap.put(memberName, variableDescriptor);
+        } else if (variableAnnotationClass.equals(CollectionPlanningVariable.class)) {
             GenuineVariableDescriptor<Solution_> variableDescriptor = new GenuineVariableDescriptor<>(this,
                     memberAccessor);
             declaredGenuineVariableDescriptorMap.put(memberName, variableDescriptor);
