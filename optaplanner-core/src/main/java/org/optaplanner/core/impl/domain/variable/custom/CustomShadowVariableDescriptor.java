@@ -33,6 +33,8 @@ import org.optaplanner.core.impl.domain.variable.descriptor.ShadowVariableDescri
 import org.optaplanner.core.impl.domain.variable.descriptor.VariableDescriptor;
 import org.optaplanner.core.impl.domain.variable.supply.Demand;
 import org.optaplanner.core.impl.score.director.InnerScoreDirector;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
@@ -174,19 +176,22 @@ public class CustomShadowVariableDescriptor<Solution_> extends ShadowVariableDes
                 VariableDescriptor<Solution_> sourceVariableDescriptor = sourceEntityDescriptor.getVariableDescriptor(
                         sourceVariableName);
                 if (sourceVariableDescriptor == null) {
-                    throw new IllegalArgumentException("The entityClass (" + entityDescriptor.getEntityClass()
+                    logger.error("The entityClass (" + entityDescriptor.getEntityClass()
                             + ") has a " + CustomShadowVariable.class.getSimpleName()
                             + " annotated property (" + variableMemberAccessor.getName()
                             + ") with sourceVariableName (" + sourceVariableName
                             + ") which is not a valid planning variable on entityClass ("
                             + sourceEntityDescriptor.getEntityClass() + ").\n"
                             + sourceEntityDescriptor.buildInvalidVariableNameExceptionMessage(sourceVariableName));
+                    return;
                 }
                 sourceVariableDescriptor.registerSinkVariableDescriptor(this);
                 sourceVariableDescriptorList.add(sourceVariableDescriptor);
             }
         }
     }
+
+    private static final Logger logger = LoggerFactory.getLogger(CustomShadowVariableDescriptor.class);
 
     @Override
     public List<VariableDescriptor<Solution_>> getSourceVariableDescriptorList() {
