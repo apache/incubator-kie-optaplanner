@@ -26,6 +26,7 @@ import org.apache.commons.lang3.ArrayUtils;
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.domain.valuerange.CountableValueRange;
 import org.optaplanner.core.api.domain.valuerange.ValueRangeProvider;
+import org.optaplanner.core.api.domain.variable.CollectionPlanningVariable;
 import org.optaplanner.core.api.domain.variable.PlanningVariable;
 import org.optaplanner.core.api.domain.variable.PlanningVariableGraphType;
 import org.optaplanner.core.api.score.director.ScoreDirector;
@@ -80,6 +81,8 @@ public class GenuineVariableDescriptor<Solution_> extends VariableDescriptor<Sol
     private void processPropertyAnnotations(DescriptorPolicy descriptorPolicy) {
         PlanningVariable planningVariableAnnotation = variableMemberAccessor.getAnnotation(PlanningVariable.class);
         if (planningVariableAnnotation == null) {
+            // TODO create and move this to GenuineCollectionVariableDescriptor
+            processValueRangeRefs(descriptorPolicy, variableMemberAccessor.getAnnotation(CollectionPlanningVariable.class));
             return;
         }
         processNullable(descriptorPolicy, planningVariableAnnotation);
@@ -119,7 +122,15 @@ public class GenuineVariableDescriptor<Solution_> extends VariableDescriptor<Sol
     }
 
     private void processValueRangeRefs(DescriptorPolicy descriptorPolicy, PlanningVariable planningVariableAnnotation) {
-        String[] valueRangeProviderRefs = planningVariableAnnotation.valueRangeProviderRefs();
+        processValueRangeRefs(descriptorPolicy, planningVariableAnnotation.valueRangeProviderRefs());
+    }
+
+    private void processValueRangeRefs(DescriptorPolicy descriptorPolicy,
+            CollectionPlanningVariable planningVariableAnnotation) {
+        processValueRangeRefs(descriptorPolicy, planningVariableAnnotation.valueRangeProviderRefs());
+    }
+
+    private void processValueRangeRefs(DescriptorPolicy descriptorPolicy, String[] valueRangeProviderRefs) {
         if (ArrayUtils.isEmpty(valueRangeProviderRefs)) {
             throw new IllegalArgumentException("The entityClass (" + entityDescriptor.getEntityClass()
                     + ") has a " + PlanningVariable.class.getSimpleName()
