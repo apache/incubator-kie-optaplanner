@@ -47,7 +47,7 @@ public final class BavetGroupBridgeUniNode<A, NewA, ResultContainer_, NewB> exte
     }
 
     @Override
-    public List<BavetAbstractUniNode<A>> getChildNodes() {
+    public List<BavetAbstractUniNode<A>> getChildNodeList() {
         return Collections.emptyList();
     }
 

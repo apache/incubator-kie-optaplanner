@@ -50,7 +50,7 @@ public final class BavetJoinBiNode<A, B> extends BavetAbstractBiNode<A, B> imple
 
     @Override
     public List<BavetAbstractBiNode<A, B>> getChildNodes() {
-        return Collections.unmodifiableList(childNodeList);
+        return childNodeList;
     }
 
     // ************************************************************************

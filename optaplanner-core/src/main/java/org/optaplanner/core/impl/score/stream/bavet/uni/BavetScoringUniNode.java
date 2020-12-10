@@ -66,7 +66,7 @@ public final class BavetScoringUniNode<A> extends BavetAbstractUniNode<A> implem
     // ************************************************************************
 
     @Override
-    public List<BavetAbstractUniNode<A>> getChildNodes() {
+    public List<BavetAbstractUniNode<A>> getChildNodeList() {
         return Collections.emptyList();
     }
 

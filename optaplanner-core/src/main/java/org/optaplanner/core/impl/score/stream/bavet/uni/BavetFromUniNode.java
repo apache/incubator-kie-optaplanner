@@ -42,8 +42,8 @@ public final class BavetFromUniNode<A> extends BavetAbstractUniNode<A> {
     }
 
     @Override
-    public List<BavetAbstractUniNode<A>> getChildNodes() {
-        return Collections.unmodifiableList(childNodeList);
+    public List<BavetAbstractUniNode<A>> getChildNodeList() {
+        return childNodeList;
     }
 
     // ************************************************************************

@@ -47,7 +47,7 @@ public final class BavetFilterTriNode<A, B, C> extends BavetAbstractTriNode<A, B
 
     @Override
     public List<BavetAbstractTriNode<A, B, C>> getChildNodes() {
-        return Collections.unmodifiableList(childNodeList);
+        return childNodeList;
     }
 
     // ************************************************************************

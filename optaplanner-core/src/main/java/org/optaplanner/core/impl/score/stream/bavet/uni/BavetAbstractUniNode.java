@@ -33,7 +33,7 @@ public abstract class BavetAbstractUniNode<A> extends BavetAbstractNode {
                 + ") cannot handle a childNode (" + childNode + ").");
     }
 
-    public List<BavetAbstractUniNode<A>> getChildNodes() {
+    public List<BavetAbstractUniNode<A>> getChildNodeList() {
         return Collections.emptyList();
     }
 

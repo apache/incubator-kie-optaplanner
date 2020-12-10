@@ -47,7 +47,7 @@ public final class BavetJoinBridgeUniNode<A> extends BavetAbstractUniNode<A>
     }
 
     @Override
-    public List<BavetAbstractUniNode<A>> getChildNodes() {
+    public List<BavetAbstractUniNode<A>> getChildNodeList() {
         return Collections.emptyList();
     }
 
