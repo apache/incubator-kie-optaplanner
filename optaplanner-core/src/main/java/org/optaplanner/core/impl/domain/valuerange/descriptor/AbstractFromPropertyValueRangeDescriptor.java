@@ -33,6 +33,8 @@ import org.optaplanner.core.impl.domain.common.accessor.MemberAccessor;
 import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
 import org.optaplanner.core.impl.domain.valuerange.buildin.collection.ListValueRange;
 import org.optaplanner.core.impl.domain.variable.descriptor.GenuineVariableDescriptor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
@@ -126,7 +128,7 @@ public abstract class AbstractFromPropertyValueRangeDescriptor<Solution_>
             Class<?> collectionElementClass = ((Class) typeArgument);
             Class<?> variablePropertyType = variableDescriptor.getVariablePropertyType();
             if (!variablePropertyType.isAssignableFrom(collectionElementClass)) {
-                throw new IllegalArgumentException("The entityClass (" + entityDescriptor.getEntityClass()
+                logger.error("The entityClass (" + entityDescriptor.getEntityClass()
                         + ") has a " + PlanningVariable.class.getSimpleName()
                         + " annotated property (" + variableDescriptor.getVariableName()
                         + ") that refers to a " + ValueRangeProvider.class.getSimpleName()
@@ -152,6 +154,8 @@ public abstract class AbstractFromPropertyValueRangeDescriptor<Solution_>
         }
         countable = collectionWrapping || arrayWrapping || CountableValueRange.class.isAssignableFrom(type);
     }
+
+    private static final Logger logger = LoggerFactory.getLogger(AbstractFromPropertyValueRangeDescriptor.class);
 
     // ************************************************************************
     // Worker methods
