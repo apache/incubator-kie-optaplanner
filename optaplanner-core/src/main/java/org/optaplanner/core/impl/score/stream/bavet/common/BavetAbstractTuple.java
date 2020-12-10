@@ -36,6 +36,9 @@ public abstract class BavetAbstractTuple implements BavetTuple {
     // Getters/setters
     // ************************************************************************
 
+    @Override
+    public abstract BavetAbstractNode getNode();
+
     public int getNodeIndex() {
         return getNode().getNodeIndex();
     }
