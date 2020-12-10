@@ -18,9 +18,12 @@ package org.optaplanner.spring.boot.autoconfigure;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.*;
 
 import java.time.Duration;
 import java.util.Collections;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -30,6 +33,7 @@ import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
 import org.optaplanner.core.api.solver.SolverFactory;
 import org.optaplanner.core.api.solver.SolverJob;
 import org.optaplanner.core.api.solver.SolverManager;
+import org.optaplanner.core.config.score.director.ScoreDirectorFactoryConfig;
 import org.optaplanner.core.config.solver.EnvironmentMode;
 import org.optaplanner.core.config.solver.SolverConfig;
 import org.optaplanner.core.config.solver.termination.TerminationConfig;
@@ -291,5 +295,52 @@ public class OptaPlannerAutoConfigurationTest {
                                     + TestdataSpringConstraintProvider.class.getName() + ") and a scoreDrlList ("
                                     + constraintsUrl + ")");
                 });
+    }
+
+    @Test
+    void customScoreDrl_overrides_solverConfig() {
+        ScoreDirectorFactoryConfig scoreDirectorFactoryConfig = new ScoreDirectorFactoryConfig()
+                .withScoreDrls("config_constraints.drl");
+        SolverConfig solverConfig = new SolverConfig().withScoreDirectorFactory(scoreDirectorFactoryConfig);
+        OptaPlannerAutoConfiguration autoConfiguration = mockAutoConfiguration();
+        when(autoConfiguration.constraintsDrl()).thenReturn(Optional.of("some.drl"));
+
+        autoConfiguration.applyScoreDirectorFactoryProperties(solverConfig);
+        assertThat(scoreDirectorFactoryConfig.getScoreDrlList()).containsExactly("some.drl");
+    }
+
+    @Test
+    void defaultScoreDrl_does_not_override_solverConfig() {
+        ScoreDirectorFactoryConfig scoreDirectorFactoryConfig = new ScoreDirectorFactoryConfig()
+                .withScoreDrls("config_constraints.drl");
+        SolverConfig solverConfig = new SolverConfig().withScoreDirectorFactory(scoreDirectorFactoryConfig);
+        OptaPlannerAutoConfiguration autoConfiguration = mockAutoConfiguration();
+        when(autoConfiguration.constraintsDrl()).thenReturn(Optional.empty());
+        when(autoConfiguration.defaultConstraintsDrl())
+                .thenReturn(Optional.of(OptaPlannerProperties.DEFAULT_CONSTRAINTS_DRL_URL));
+
+        autoConfiguration.applyScoreDirectorFactoryProperties(solverConfig);
+        assertThat(scoreDirectorFactoryConfig.getScoreDrlList())
+                .containsExactly("config_constraints.drl");
+    }
+
+    @Test
+    void defaultScoreDrl_applies_if_solverConfig_does_not_define_scoreDrl() {
+        ScoreDirectorFactoryConfig scoreDirectorFactoryConfig = new ScoreDirectorFactoryConfig();
+        SolverConfig solverConfig = new SolverConfig().withScoreDirectorFactory(scoreDirectorFactoryConfig);
+        OptaPlannerAutoConfiguration autoConfiguration = mockAutoConfiguration();
+        when(autoConfiguration.constraintsDrl()).thenReturn(Optional.empty());
+        when(autoConfiguration.defaultConstraintsDrl())
+                .thenReturn(Optional.of(OptaPlannerProperties.DEFAULT_CONSTRAINTS_DRL_URL));
+
+        autoConfiguration.applyScoreDirectorFactoryProperties(solverConfig);
+        assertThat(scoreDirectorFactoryConfig.getScoreDrlList())
+                .containsExactly(OptaPlannerProperties.DEFAULT_CONSTRAINTS_DRL_URL);
+    }
+
+    private OptaPlannerAutoConfiguration mockAutoConfiguration() {
+        OptaPlannerAutoConfiguration autoConfiguration = mock(OptaPlannerAutoConfiguration.class);
+        doCallRealMethod().when(autoConfiguration).applyScoreDirectorFactoryProperties(any());
+        return autoConfiguration;
     }
 }

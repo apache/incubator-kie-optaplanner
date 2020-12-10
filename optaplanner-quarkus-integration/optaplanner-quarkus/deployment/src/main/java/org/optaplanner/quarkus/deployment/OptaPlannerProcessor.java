@@ -213,7 +213,7 @@ class OptaPlannerProcessor {
                 .collect(Collectors.toList());
     }
 
-    private void applyScoreDirectorFactoryProperties(IndexView indexView, SolverConfig solverConfig) {
+    protected void applyScoreDirectorFactoryProperties(IndexView indexView, SolverConfig solverConfig) {
         Optional<String> constraintsDrlFromProperty = constraintsDrl();
         Optional<String> defaultConstraintsDrl = defaultConstraintsDrl();
         Optional<String> effectiveConstraintsDrl = constraintsDrlFromProperty.map(Optional::of).orElse(defaultConstraintsDrl);
@@ -227,7 +227,7 @@ class OptaPlannerProcessor {
                 scoreDirectorFactoryConfig.setScoreDrlList(Collections.singletonList(constraintsDrlFromProperty.get()));
             } else {
                 if (scoreDirectorFactoryConfig.getScoreDrlList() == null) {
-                    defaultConstraintsDrl.ifPresent((resolvedConstraintsDrl) -> scoreDirectorFactoryConfig
+                    defaultConstraintsDrl.ifPresent(resolvedConstraintsDrl -> scoreDirectorFactoryConfig
                             .setScoreDrlList(Collections.singletonList(resolvedConstraintsDrl)));
                 }
             }
@@ -262,7 +262,7 @@ class OptaPlannerProcessor {
         }
     }
 
-    private Optional<String> constraintsDrl() {
+    protected Optional<String> constraintsDrl() {
         if (optaPlannerBuildTimeConfig.scoreDrl.isPresent()) {
             String constraintsDrl = optaPlannerBuildTimeConfig.scoreDrl.get();
             ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
@@ -274,7 +274,7 @@ class OptaPlannerProcessor {
         return optaPlannerBuildTimeConfig.scoreDrl;
     }
 
-    private Optional<String> defaultConstraintsDrl() {
+    protected Optional<String> defaultConstraintsDrl() {
         ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
         return classLoader.getResource(OptaPlannerBuildTimeConfig.DEFAULT_CONSTRAINTS_DRL_URL) != null
                 ? Optional.of(OptaPlannerBuildTimeConfig.DEFAULT_CONSTRAINTS_DRL_URL)

@@ -17,7 +17,12 @@
 package org.optaplanner.spring.boot.autoconfigure;
 
 import java.lang.annotation.Annotation;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.optaplanner.core.api.domain.entity.PlanningEntity;
@@ -196,7 +201,7 @@ public class OptaPlannerAutoConfiguration implements BeanClassLoaderAware {
         return new ArrayList<>(entityClassSet);
     }
 
-    private void applyScoreDirectorFactoryProperties(SolverConfig solverConfig) {
+    protected void applyScoreDirectorFactoryProperties(SolverConfig solverConfig) {
         Optional<String> constraintsDrlFromProperty = constraintsDrl();
         Optional<String> defaultConstraintsDrl = defaultConstraintsDrl();
         Optional<String> effectiveConstraintsDrl = constraintsDrlFromProperty.map(Optional::of).orElse(defaultConstraintsDrl);
@@ -208,14 +213,14 @@ public class OptaPlannerAutoConfiguration implements BeanClassLoaderAware {
                 scoreDirectorFactoryConfig.setScoreDrlList(Collections.singletonList(constraintsDrlFromProperty.get()));
             } else {
                 if (scoreDirectorFactoryConfig.getScoreDrlList() == null) {
-                    defaultConstraintsDrl.ifPresent((resolvedConstraintsDrl) -> scoreDirectorFactoryConfig
+                    defaultConstraintsDrl.ifPresent(resolvedConstraintsDrl -> scoreDirectorFactoryConfig
                             .setScoreDrlList(Collections.singletonList(resolvedConstraintsDrl)));
                 }
             }
         }
     }
 
-    private Optional<String> constraintsDrl() {
+    protected Optional<String> constraintsDrl() {
         String constraintsDrl = optaPlannerProperties.getScoreDrl();
 
         if (constraintsDrl != null) {
@@ -229,7 +234,7 @@ public class OptaPlannerAutoConfiguration implements BeanClassLoaderAware {
         }
     }
 
-    private Optional<String> defaultConstraintsDrl() {
+    protected Optional<String> defaultConstraintsDrl() {
         return beanClassLoader.getResource(OptaPlannerProperties.DEFAULT_CONSTRAINTS_DRL_URL) != null
                 ? Optional.of(OptaPlannerProperties.DEFAULT_CONSTRAINTS_DRL_URL)
                 : Optional.empty();

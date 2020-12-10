@@ -50,13 +50,10 @@ import org.optaplanner.core.impl.score.director.easy.EasyScoreDirectorFactory;
 import org.optaplanner.core.impl.score.director.incremental.IncrementalScoreDirectorFactory;
 import org.optaplanner.core.impl.score.director.stream.ConstraintStreamScoreDirectorFactory;
 import org.optaplanner.core.impl.score.trend.InitializingScoreTrend;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class ScoreDirectorFactoryFactory<Solution_, Score_ extends Score<Score_>> {
 
     private static final String GENERATE_DROOLS_TEST_ON_ERROR_PROPERTY_NAME = "optaplanner.drools.generateTestOnError";
-    private static final Logger logger = LoggerFactory.getLogger(ScoreDirectorFactoryFactory.class);
 
     private final ScoreDirectorFactoryConfig config;
 
@@ -96,14 +93,39 @@ public class ScoreDirectorFactoryFactory<Solution_, Score_ extends Score<Score_>
 
     protected AbstractScoreDirectorFactory<Solution_, Score_> decideMultipleScoreDirectorFactories(
             ClassLoader classLoader, SolutionDescriptor<Solution_> solutionDescriptor) {
-        AbstractScoreDirectorFactory<Solution_, Score_> easyScoreDirectorFactory =
+        EasyScoreDirectorFactory<Solution_, Score_> easyScoreDirectorFactory =
                 buildEasyScoreDirectorFactory(solutionDescriptor);
-        AbstractScoreDirectorFactory<Solution_, Score_> constraintStreamScoreDirectorFactory =
+        ConstraintStreamScoreDirectorFactory<Solution_, Score_> constraintStreamScoreDirectorFactory =
                 buildConstraintStreamScoreDirectorFactory(solutionDescriptor);
-        AbstractScoreDirectorFactory<Solution_, Score_> incrementalScoreDirectorFactory =
+        IncrementalScoreDirectorFactory<Solution_, Score_> incrementalScoreDirectorFactory =
                 buildIncrementalScoreDirectorFactory(solutionDescriptor);
-        AbstractScoreDirectorFactory<Solution_, Score_> droolsScoreDirectorFactory = buildDroolsScoreDirectorFactory(
+        DroolsScoreDirectorFactory<Solution_, Score_> droolsScoreDirectorFactory = buildDroolsScoreDirectorFactory(
                 classLoader, solutionDescriptor);
+
+        checkMultipleScoreDirectorFactoryTypes(easyScoreDirectorFactory, constraintStreamScoreDirectorFactory,
+                incrementalScoreDirectorFactory, droolsScoreDirectorFactory);
+
+        AbstractScoreDirectorFactory<Solution_, Score_> scoreDirectorFactory;
+        if (easyScoreDirectorFactory != null) {
+            scoreDirectorFactory = easyScoreDirectorFactory;
+        } else if (constraintStreamScoreDirectorFactory != null) {
+            scoreDirectorFactory = constraintStreamScoreDirectorFactory;
+        } else if (incrementalScoreDirectorFactory != null) {
+            scoreDirectorFactory = incrementalScoreDirectorFactory;
+        } else if (droolsScoreDirectorFactory != null) {
+            scoreDirectorFactory = droolsScoreDirectorFactory;
+        } else {
+            throw new IllegalArgumentException("The scoreDirectorFactory lacks a configuration for an "
+                    + "easyScoreCalculatorClass, a constraintProviderClass, an incrementalScoreCalculatorClass or a droolsScoreDirectorFactory.");
+        }
+
+        return scoreDirectorFactory;
+    }
+
+    private void checkMultipleScoreDirectorFactoryTypes(EasyScoreDirectorFactory easyScoreDirectorFactory,
+            ConstraintStreamScoreDirectorFactory constraintStreamScoreDirectorFactory,
+            IncrementalScoreDirectorFactory incrementalScoreDirectorFactory,
+            DroolsScoreDirectorFactory droolsScoreDirectorFactory) {
         if (Stream.of(easyScoreDirectorFactory, constraintStreamScoreDirectorFactory,
                 incrementalScoreDirectorFactory, droolsScoreDirectorFactory)
                 .filter(Objects::nonNull).count() > 1) {
@@ -134,21 +156,6 @@ public class ScoreDirectorFactoryFactory<Solution_, Score_ extends Score<Score_>
             throw new IllegalArgumentException("The scoreDirectorFactory cannot have "
                     + String.join(" and ", scoreDirectorFactoryPropertyList) + " together.");
         }
-        AbstractScoreDirectorFactory<Solution_, Score_> scoreDirectorFactory;
-        if (easyScoreDirectorFactory != null) {
-            scoreDirectorFactory = easyScoreDirectorFactory;
-        } else if (constraintStreamScoreDirectorFactory != null) {
-            scoreDirectorFactory = constraintStreamScoreDirectorFactory;
-        } else if (incrementalScoreDirectorFactory != null) {
-            scoreDirectorFactory = incrementalScoreDirectorFactory;
-        } else if (droolsScoreDirectorFactory != null) {
-            scoreDirectorFactory = droolsScoreDirectorFactory;
-        } else {
-            throw new IllegalArgumentException("The scoreDirectorFactory lacks a configuration for an "
-                    + "easyScoreCalculatorClass, a constraintProviderClass, an incrementalScoreCalculatorClass or a droolsScoreDirectorFactory.");
-        }
-
-        return scoreDirectorFactory;
     }
 
     protected EasyScoreDirectorFactory<Solution_, Score_> buildEasyScoreDirectorFactory(
