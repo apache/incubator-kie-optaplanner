@@ -45,7 +45,7 @@ public final class BavetFilterBiNode<A, B> extends BavetAbstractBiNode<A, B> {
     }
 
     @Override
-    public List<BavetAbstractBiNode<A, B>> getChildNodes() {
+    public List<BavetAbstractBiNode<A, B>> getChildNodeList() {
         return childNodeList;
     }
 

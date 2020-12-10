@@ -42,7 +42,7 @@ public final class BavetGroupBiNode<GroupKey_, ResultContainer_, Result_> extend
     }
 
     @Override
-    public List<BavetAbstractBiNode<GroupKey_, Result_>> getChildNodes() {
+    public List<BavetAbstractBiNode<GroupKey_, Result_>> getChildNodeList() {
         return childNodeList;
     }
 
