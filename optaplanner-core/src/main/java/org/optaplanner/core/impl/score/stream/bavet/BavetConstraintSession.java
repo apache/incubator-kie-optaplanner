@@ -34,7 +34,6 @@ import org.optaplanner.core.impl.score.constraint.DefaultIndictment;
 import org.optaplanner.core.impl.score.definition.ScoreDefinition;
 import org.optaplanner.core.impl.score.inliner.ScoreInliner;
 import org.optaplanner.core.impl.score.stream.ConstraintSession;
-import org.optaplanner.core.impl.score.stream.bavet.common.BavetAbstractNode;
 import org.optaplanner.core.impl.score.stream.bavet.common.BavetAbstractTuple;
 import org.optaplanner.core.impl.score.stream.bavet.common.BavetNode;
 import org.optaplanner.core.impl.score.stream.bavet.common.BavetNodeBuildPolicy;
@@ -81,14 +80,6 @@ public final class BavetConstraintSession<Solution_, Score_ extends Score<Score_
         fromTupleListMap = new IdentityHashMap<>(1000);
     }
 
-    public Collection<BavetScoringNode> getScoringNodes() {
-        return constraintIdToScoringNodeMap.values();
-    }
-
-    public List<BavetNode> getNodes() {
-        return nodeIndexedNodeMap;
-    }
-
     private static void refreshTuple(BavetAbstractTuple tuple) {
         tuple.getNode().refresh(tuple);
         switch (tuple.getState()) {
@@ -101,9 +92,20 @@ public final class BavetConstraintSession<Solution_, Score_ extends Score<Score_
                 tuple.setState(BavetTupleState.DEAD);
                 return;
             case DEAD:
-                throw new IllegalStateException(
-                        "The tuple (" + tuple + ") is already in the dead state (" + tuple.getState() + ").");
+                throw new IllegalStateException("Impossible state: The tuple (" + tuple + ") in node (" +
+                        tuple.getNode() + ") is already in the dead state (" + tuple.getState() + ").");
+            default:
+                throw new IllegalStateException("Impossible state: Tuple (" + tuple + ") in node (" +
+                        tuple.getNode() + ") is in an unexpected state (" + tuple.getState() + ").");
         }
+    }
+
+    public Collection<BavetScoringNode> getScoringNodes() {
+        return constraintIdToScoringNodeMap.values();
+    }
+
+    public List<BavetNode> getNodes() {
+        return nodeIndexedNodeMap;
     }
 
     public List<BavetFromUniNode<Object>> findFromNodeList(Class<?> factClass) {
