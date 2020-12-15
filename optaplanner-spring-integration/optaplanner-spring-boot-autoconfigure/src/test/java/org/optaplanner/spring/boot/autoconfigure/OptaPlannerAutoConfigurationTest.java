@@ -23,7 +23,6 @@ import static org.mockito.Mockito.*;
 
 import java.time.Duration;
 import java.util.Collections;
-import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -303,7 +302,7 @@ public class OptaPlannerAutoConfigurationTest {
                 .withScoreDrls("config_constraints.drl");
         SolverConfig solverConfig = new SolverConfig().withScoreDirectorFactory(scoreDirectorFactoryConfig);
         OptaPlannerAutoConfiguration autoConfiguration = mockAutoConfiguration();
-        when(autoConfiguration.constraintsDrl()).thenReturn(Optional.of("some.drl"));
+        when(autoConfiguration.constraintsDrl()).thenReturn("some.drl");
 
         autoConfiguration.applyScoreDirectorFactoryProperties(solverConfig);
         assertThat(scoreDirectorFactoryConfig.getScoreDrlList()).containsExactly("some.drl");
@@ -315,9 +314,9 @@ public class OptaPlannerAutoConfigurationTest {
                 .withScoreDrls("config_constraints.drl");
         SolverConfig solverConfig = new SolverConfig().withScoreDirectorFactory(scoreDirectorFactoryConfig);
         OptaPlannerAutoConfiguration autoConfiguration = mockAutoConfiguration();
-        when(autoConfiguration.constraintsDrl()).thenReturn(Optional.empty());
+        when(autoConfiguration.constraintsDrl()).thenReturn(null);
         when(autoConfiguration.defaultConstraintsDrl())
-                .thenReturn(Optional.of(OptaPlannerProperties.DEFAULT_CONSTRAINTS_DRL_URL));
+                .thenReturn(OptaPlannerProperties.DEFAULT_CONSTRAINTS_DRL_URL);
 
         autoConfiguration.applyScoreDirectorFactoryProperties(solverConfig);
         assertThat(scoreDirectorFactoryConfig.getScoreDrlList())
@@ -329,9 +328,9 @@ public class OptaPlannerAutoConfigurationTest {
         ScoreDirectorFactoryConfig scoreDirectorFactoryConfig = new ScoreDirectorFactoryConfig();
         SolverConfig solverConfig = new SolverConfig().withScoreDirectorFactory(scoreDirectorFactoryConfig);
         OptaPlannerAutoConfiguration autoConfiguration = mockAutoConfiguration();
-        when(autoConfiguration.constraintsDrl()).thenReturn(Optional.empty());
+        when(autoConfiguration.constraintsDrl()).thenReturn(null);
         when(autoConfiguration.defaultConstraintsDrl())
-                .thenReturn(Optional.of(OptaPlannerProperties.DEFAULT_CONSTRAINTS_DRL_URL));
+                .thenReturn(OptaPlannerProperties.DEFAULT_CONSTRAINTS_DRL_URL);
 
         autoConfiguration.applyScoreDirectorFactoryProperties(solverConfig);
         assertThat(scoreDirectorFactoryConfig.getScoreDrlList())

@@ -21,7 +21,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -202,25 +201,25 @@ public class OptaPlannerAutoConfiguration implements BeanClassLoaderAware {
     }
 
     protected void applyScoreDirectorFactoryProperties(SolverConfig solverConfig) {
-        Optional<String> constraintsDrlFromProperty = constraintsDrl();
-        Optional<String> defaultConstraintsDrl = defaultConstraintsDrl();
-        Optional<String> effectiveConstraintsDrl = constraintsDrlFromProperty.map(Optional::of).orElse(defaultConstraintsDrl);
+        String constraintsDrlFromProperty = constraintsDrl();
+        String defaultConstraintsDrl = defaultConstraintsDrl();
+        String effectiveConstraintsDrl =
+                constraintsDrlFromProperty != null ? constraintsDrlFromProperty : defaultConstraintsDrl;
         if (solverConfig.getScoreDirectorFactoryConfig() == null) {
             solverConfig.setScoreDirectorFactoryConfig(defaultScoreDirectoryFactoryConfig(effectiveConstraintsDrl));
         } else {
             ScoreDirectorFactoryConfig scoreDirectorFactoryConfig = solverConfig.getScoreDirectorFactoryConfig();
-            if (constraintsDrlFromProperty.isPresent()) {
-                scoreDirectorFactoryConfig.setScoreDrlList(Collections.singletonList(constraintsDrlFromProperty.get()));
+            if (constraintsDrlFromProperty != null) {
+                scoreDirectorFactoryConfig.setScoreDrlList(Collections.singletonList(constraintsDrlFromProperty));
             } else {
-                if (scoreDirectorFactoryConfig.getScoreDrlList() == null) {
-                    defaultConstraintsDrl.ifPresent(resolvedConstraintsDrl -> scoreDirectorFactoryConfig
-                            .setScoreDrlList(Collections.singletonList(resolvedConstraintsDrl)));
+                if (scoreDirectorFactoryConfig.getScoreDrlList() == null && defaultConstraintsDrl != null) {
+                    scoreDirectorFactoryConfig.setScoreDrlList(Collections.singletonList(defaultConstraintsDrl));
                 }
             }
         }
     }
 
-    protected Optional<String> constraintsDrl() {
+    protected String constraintsDrl() {
         String constraintsDrl = optaPlannerProperties.getScoreDrl();
 
         if (constraintsDrl != null) {
@@ -228,25 +227,25 @@ public class OptaPlannerAutoConfiguration implements BeanClassLoaderAware {
                 throw new IllegalStateException("Invalid " + OptaPlannerProperties.SCORE_DRL_PROPERTY
                         + " property (" + constraintsDrl + "): that classpath resource does not exist.");
             }
-            return Optional.of(constraintsDrl);
-        } else {
-            return Optional.empty();
         }
+        return constraintsDrl;
     }
 
-    protected Optional<String> defaultConstraintsDrl() {
+    protected String defaultConstraintsDrl() {
         return beanClassLoader.getResource(OptaPlannerProperties.DEFAULT_CONSTRAINTS_DRL_URL) != null
-                ? Optional.of(OptaPlannerProperties.DEFAULT_CONSTRAINTS_DRL_URL)
-                : Optional.empty();
+                ? OptaPlannerProperties.DEFAULT_CONSTRAINTS_DRL_URL
+                : null;
     }
 
-    private ScoreDirectorFactoryConfig defaultScoreDirectoryFactoryConfig(Optional<String> constraintsDrl) {
+    private ScoreDirectorFactoryConfig defaultScoreDirectoryFactoryConfig(String constraintsDrl) {
         ScoreDirectorFactoryConfig scoreDirectorFactoryConfig = new ScoreDirectorFactoryConfig();
         scoreDirectorFactoryConfig.setEasyScoreCalculatorClass(findImplementingClass(EasyScoreCalculator.class));
         scoreDirectorFactoryConfig.setConstraintProviderClass(findImplementingClass(ConstraintProvider.class));
         scoreDirectorFactoryConfig
                 .setIncrementalScoreCalculatorClass(findImplementingClass(IncrementalScoreCalculator.class));
-        constraintsDrl.ifPresent((value) -> scoreDirectorFactoryConfig.setScoreDrlList(Collections.singletonList(value)));
+        if (constraintsDrl != null) {
+            scoreDirectorFactoryConfig.setScoreDrlList(Collections.singletonList(constraintsDrl));
+        }
 
         if (scoreDirectorFactoryConfig.getEasyScoreCalculatorClass() == null
                 && scoreDirectorFactoryConfig.getConstraintProviderClass() == null

@@ -25,14 +25,6 @@
     <dependency>
       <groupId>org.optaplanner</groupId>
       <artifactId>optaplanner-quarkus</artifactId>
-      <exclusions>
-        <!-- The constraints.drl requires this dependency to be excluded, otherwise the quarkus-maven-plugin
-             downloads it at runtime. -->
-        <exclusion>
-          <groupId>org.kie.kogito</groupId>
-          <artifactId>drools-core-static</artifactId>
-        </exclusion>
-      </exclusions>
     </dependency>
 
     <dependency>

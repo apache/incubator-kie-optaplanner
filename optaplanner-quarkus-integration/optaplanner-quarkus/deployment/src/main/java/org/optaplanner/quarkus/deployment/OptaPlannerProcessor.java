@@ -235,20 +235,12 @@ class OptaPlannerProcessor {
 
         if (solverConfig.getScoreDirectorFactoryConfig().getScoreDrlList() != null) {
             boolean isDroolsDynamicPresent = isClassDefined("org.drools.dynamic.DynamicServiceRegistrySupplier");
-            boolean isDroolsStaticPresent = isClassDefined("org.drools.statics.StaticServiceRegistrySupplier");
-
             if (!isDroolsDynamicPresent) {
                 throw new IllegalStateException(
                         "Using scoreDRL in Quarkus, but the dependency drools-core-dynamic is not on the classpath.\n"
                                 + "Maybe add the dependency org.kie.kogito:drools-core-dynamic and exclude the dependency"
                                 + " org.kie.kogito:drools-core-static."
-                                + "\nOr instead, maybe use a " + ConstraintProvider.class.getSimpleName() + " instead of scoreDRL.");
-            }
-            if (isDroolsStaticPresent) {
-                throw new IllegalStateException(
-                        "Using scoreDRL in Quarkus, but the dependency drools-core-static was found on the classpath.\n"
-                                + "Maybe add the dependency org.kie.kogito:drools-core-dynamic and exclude the dependency"
-                                + " org.kie.kogito:drools-core-static. Use a ConstraintProvider for a native compilation.");
+                                + "\nOr maybe use a " + ConstraintProvider.class.getSimpleName() + " instead of the scoreDRL.");
             }
         }
     }
