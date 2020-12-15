@@ -241,7 +241,8 @@ class OptaPlannerProcessor {
                 throw new IllegalStateException(
                         "Using scoreDRL in Quarkus, but the dependency drools-core-dynamic is not on the classpath.\n"
                                 + "Maybe add the dependency org.kie.kogito:drools-core-dynamic and exclude the dependency"
-                                + " org.kie.kogito:drools-core-static. Use a ConstraintProvider for a native compilation.");
+                                + " org.kie.kogito:drools-core-static."
+                                + "\nOr instead, maybe use a " + ConstraintProvider.class.getSimpleName() + " instead of scoreDRL.");
             }
             if (isDroolsStaticPresent) {
                 throw new IllegalStateException(
