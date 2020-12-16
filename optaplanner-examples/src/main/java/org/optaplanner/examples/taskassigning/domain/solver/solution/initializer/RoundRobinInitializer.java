@@ -41,6 +41,8 @@ public class RoundRobinInitializer implements CustomPhaseCommand<TaskAssigningSo
             // Update shadow variables
             task.setEmployee(employee);
             task.setIndex(employee.getTasks().size() - 1);
+            Integer previousEndTime = task.getPreviousTask() == null ? 0 : task.getPreviousTask().getEndTime();
+            task.setStartTime(previousEndTime);
         }
     }
 }

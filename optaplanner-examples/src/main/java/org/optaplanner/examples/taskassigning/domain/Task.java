@@ -140,12 +140,24 @@ public class Task extends AbstractPersistable implements Labeled {
 
     // TODO return Optional
     public Task getNextTask() {
-        throw new UnsupportedOperationException("Not yet implemented.");
+        if (employee == null) {
+            throw new IllegalStateException("The task is not assigned or the variable listener is broken.");
+        }
+        if (index == employee.getTasks().size() - 1) {
+            return null;
+        }
+        return employee.getTasks().get(index + 1);
     }
 
     // TODO return Optional
     public Task getPreviousTask() {
-        throw new UnsupportedOperationException("Not yet implemented.");
+        if (employee == null) {
+            throw new IllegalStateException("The task is not assigned or the variable listener is broken.");
+        }
+        if (index == 0) {
+            return null;
+        }
+        return employee.getTasks().get(index - 1);
     }
 
     public int getMissingSkillCount() {
