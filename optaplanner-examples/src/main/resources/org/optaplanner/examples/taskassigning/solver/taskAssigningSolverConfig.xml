@@ -15,16 +15,7 @@
   <!--<termination>-->
     <!--<minutesSpentLimit>5</minutesSpentLimit>-->
   <!--</termination>-->
-  <constructionHeuristic>
-    <queuedEntityPlacer>
-      <entitySelector id="x">
-        <entityClass>org.optaplanner.examples.taskassigning.domain.Employee</entityClass>
-        <cacheType>PHASE</cacheType>
-      </entitySelector>
-      <moveListFactory>
-        <cacheType>PHASE</cacheType>
-        <moveListFactoryClass>org.optaplanner.examples.taskassigning.domain.solver.move.factory.ListAppendMoveFactory</moveListFactoryClass>
-      </moveListFactory>
-    </queuedEntityPlacer>
-  </constructionHeuristic>
+  <customPhase>
+    <customPhaseCommandClass>org.optaplanner.examples.taskassigning.domain.solver.solution.initializer.RoundRobinInitializer</customPhaseCommandClass>
+  </customPhase>
 </solver>
