@@ -25,7 +25,7 @@ pipeline {
                 script {
                     mailer.buildLogScriptPR()
 
-                    checkoutRepo('kogito-runtimes')
+                    checkoutRepo('kogito-runtimes', getKogitoTargetBranch())
                     checkoutRepo('optaplanner')
                     String quickstartsRepo = 'optaplanner-quickstarts'
                     dir(quickstartsRepo) {
@@ -83,9 +83,10 @@ pipeline {
     }
 }
 
-void checkoutRepo(String repo, String dirName=repo) {
-    dir(dirName) {
-        githubscm.checkoutIfExists(repo, changeAuthor, changeBranch, 'kiegroup', changeTarget, true)
+void checkoutRepo(String repo, String targetBranch = '') {
+    targetBranch = targetBranch ?: changeTarget
+    dir(repo) {
+        githubscm.checkoutIfExists(repo, changeAuthor, changeBranch, 'kiegroup', targetBranch, true)
     }
 }
 
@@ -104,4 +105,23 @@ void runMaven(String command, String directory, boolean skipTests = false, List 
     dir(directory) {
         maven.runMavenWithSubmarineSettings(mvnCmd, skipTests)
     }
+}
+
+String getKogitoTargetBranch() {
+    String kogitoTargetBranch = changeTarget
+    if (kogitoTargetBranch != 'master') {
+        /* Release branch ?
+            The Kogito major version is shifted minus 7 from the Optaplanner major version:
+            OptaPlanner 8.x.y -> Kogito 1.x.y. */
+        try {
+            int majorVersionShift = 7
+            String [] buildBranchSplit = kogitoTargetBranch.split("\\.")
+            assert buildBranchSplit.length == 3
+            Integer kogitoMajorVersion = Integer.parseInt(buildBranchSplit[0]) - majorVersionShift
+            kogitoTargetBranch = "${kogitoMajorVersion}.${buildBranchSplit[1]}.${buildBranchSplit[2]}" 
+        } catch (err) {
+            println "[WARN] Targeting a non release branch (${changeTarget})"
+        }
+    }
+    return kogitoTargetBranch
 }
