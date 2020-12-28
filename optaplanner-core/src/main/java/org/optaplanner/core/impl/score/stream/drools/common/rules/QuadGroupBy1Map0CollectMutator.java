@@ -16,18 +16,31 @@
 
 package org.optaplanner.core.impl.score.stream.drools.common.rules;
 
+import static org.drools.model.PatternDSL.from;
+import static org.drools.model.PatternDSL.groupBy;
+
+import org.drools.model.Variable;
+import org.drools.model.view.ViewItem;
 import org.optaplanner.core.api.function.QuadFunction;
 
-final class QuadGroupBy1Map0CollectMutator<A, B, C, D, NewA>
-        extends QuadGroupBy1Map1CollectMutator<A, B, C, D, NewA, Void> {
+final class QuadGroupBy1Map0CollectMutator<A, B, C, D, NewA> extends AbstractQuadGroupByMutator {
 
-    public QuadGroupBy1Map0CollectMutator(QuadFunction<A, B, C, D, NewA> groupKeyMappingA) {
-        super(groupKeyMappingA, null);
+    private final QuadFunction<A, B, C, D, NewA> groupKeyMapping;
+
+    public QuadGroupBy1Map0CollectMutator(QuadFunction<A, B, C, D, NewA> groupKeyMapping) {
+        this.groupKeyMapping = groupKeyMapping;
     }
 
     @Override
     public AbstractRuleAssembler apply(AbstractRuleAssembler ruleAssembler) {
-        BiRuleAssembler newRuleAssembler = (BiRuleAssembler) super.apply(ruleAssembler);
-        return downgrade(newRuleAssembler);
+        Variable<A> inputA = ruleAssembler.getVariable(0);
+        Variable<B> inputB = ruleAssembler.getVariable(1);
+        Variable<C> inputC = ruleAssembler.getVariable(2);
+        Variable<D> inputD = ruleAssembler.getVariable(3);
+        Variable<NewA> groupKey = ruleAssembler.createVariable("groupKey");
+        ViewItem groupByPattern = groupBy(getInnerAccumulatePattern(ruleAssembler), inputA, inputB, inputC, inputD,
+                groupKey, groupKeyMapping::apply);
+        Variable<NewA> newA = ruleAssembler.createVariable("newA", from(groupKey));
+        return toUni(ruleAssembler, groupByPattern, newA);
     }
 }

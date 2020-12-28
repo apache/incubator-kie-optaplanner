@@ -16,17 +16,30 @@
 
 package org.optaplanner.core.impl.score.stream.drools.common.rules;
 
+import static org.drools.model.PatternDSL.from;
+import static org.drools.model.PatternDSL.groupBy;
+
 import java.util.function.BiFunction;
 
-final class BiGroupBy1Map0CollectMutator<A, B, NewA> extends BiGroupBy1Map1CollectMutator<A, B, NewA, Void> {
+import org.drools.model.Variable;
+import org.drools.model.view.ViewItem;
 
-    public BiGroupBy1Map0CollectMutator(BiFunction<A, B, NewA> groupKeyMappingA) {
-        super(groupKeyMappingA, null);
+class BiGroupBy1Map0CollectMutator<A, B, NewA> extends AbstractBiGroupByMutator {
+
+    private final BiFunction<A, B, NewA> groupKeyMapping;
+
+    public BiGroupBy1Map0CollectMutator(BiFunction<A, B, NewA> groupKeyMapping) {
+        this.groupKeyMapping = groupKeyMapping;
     }
 
     @Override
     public AbstractRuleAssembler apply(AbstractRuleAssembler ruleAssembler) {
-        BiRuleAssembler newRuleAssembler = (BiRuleAssembler) super.apply(ruleAssembler);
-        return downgrade(newRuleAssembler);
+        Variable<A> inputA = ruleAssembler.getVariable(0);
+        Variable<B> inputB = ruleAssembler.getVariable(1);
+        Variable<NewA> groupKey = ruleAssembler.createVariable("groupKey");
+        ViewItem groupByPattern = groupBy(getInnerAccumulatePattern(ruleAssembler), inputA, inputB, groupKey,
+                groupKeyMapping::apply);
+        Variable<NewA> newA = ruleAssembler.createVariable("newB", from(groupKey));
+        return toUni(ruleAssembler, groupByPattern, newA);
     }
 }

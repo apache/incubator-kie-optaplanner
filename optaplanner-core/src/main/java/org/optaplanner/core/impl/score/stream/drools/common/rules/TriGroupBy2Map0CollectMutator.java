@@ -16,19 +16,35 @@
 
 package org.optaplanner.core.impl.score.stream.drools.common.rules;
 
-import org.optaplanner.core.api.function.TriFunction;
+import static org.drools.model.PatternDSL.from;
+import static org.drools.model.PatternDSL.groupBy;
 
-final class TriGroupBy2Map0CollectMutator<A, B, C, NewA, NewB>
-        extends TriGroupBy2Map1CollectMutator<A, B, C, NewA, NewB, Void> {
+import org.drools.model.Variable;
+import org.drools.model.view.ViewItem;
+import org.optaplanner.core.api.function.TriFunction;
+import org.optaplanner.core.impl.score.stream.drools.common.BiTuple;
+
+final class TriGroupBy2Map0CollectMutator<A, B, C, NewA, NewB> extends AbstractTriGroupByMutator {
+
+    private final TriFunction<A, B, C, NewA> groupKeyMappingA;
+    private final TriFunction<A, B, C, NewB> groupKeyMappingB;
 
     public TriGroupBy2Map0CollectMutator(TriFunction<A, B, C, NewA> groupKeyMappingA,
             TriFunction<A, B, C, NewB> groupKeyMappingB) {
-        super(groupKeyMappingA, groupKeyMappingB, null);
+        this.groupKeyMappingA = groupKeyMappingA;
+        this.groupKeyMappingB = groupKeyMappingB;
     }
 
     @Override
     public AbstractRuleAssembler apply(AbstractRuleAssembler ruleAssembler) {
-        TriRuleAssembler newRuleAssembler = (TriRuleAssembler) super.apply(ruleAssembler);
-        return downgrade(newRuleAssembler);
+        Variable<A> inputA = ruleAssembler.getVariable(0);
+        Variable<B> inputB = ruleAssembler.getVariable(1);
+        Variable<C> inputC = ruleAssembler.getVariable(2);
+        Variable<BiTuple<NewA, NewB>> groupKey = ruleAssembler.createVariable(BiTuple.class, "groupKey");
+        ViewItem groupByPattern = groupBy(getInnerAccumulatePattern(ruleAssembler), inputA, inputB, inputC, groupKey,
+                (a, b, c) -> new BiTuple<>(groupKeyMappingA.apply(a, b, c), groupKeyMappingB.apply(a, b, c)));
+        Variable<NewA> newA = ruleAssembler.createVariable("newA", from(groupKey, k -> k.a));
+        Variable<NewB> newB = ruleAssembler.createVariable("newB", from(groupKey, k -> k.b));
+        return toBi(ruleAssembler, groupByPattern, newA, newB);
     }
 }

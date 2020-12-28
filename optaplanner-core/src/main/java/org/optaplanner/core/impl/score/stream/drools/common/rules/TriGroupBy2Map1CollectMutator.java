@@ -16,11 +16,19 @@
 
 package org.optaplanner.core.impl.score.stream.drools.common.rules;
 
+import static org.drools.model.DSL.accFunction;
+import static org.drools.model.PatternDSL.from;
+import static org.drools.model.PatternDSL.groupBy;
+
+import org.drools.model.Variable;
+import org.drools.model.view.ViewItem;
 import org.optaplanner.core.api.function.TriFunction;
 import org.optaplanner.core.api.score.stream.tri.TriConstraintCollector;
-import org.optaplanner.core.impl.score.stream.drools.tri.DroolsTriGroupByAccumulator;
+import org.optaplanner.core.impl.score.stream.drools.common.BiTuple;
+import org.optaplanner.core.impl.score.stream.drools.common.TriTuple;
+import org.optaplanner.core.impl.score.stream.drools.tri.DroolsTriAccumulateFunction;
 
-class TriGroupBy2Map1CollectMutator<A, B, C, NewA, NewB, NewC> extends AbstractTriGroupByMutator {
+final class TriGroupBy2Map1CollectMutator<A, B, C, NewA, NewB, NewC> extends AbstractTriGroupByMutator {
 
     private final TriFunction<A, B, C, NewA> groupKeyMappingA;
     private final TriFunction<A, B, C, NewB> groupKeyMappingB;
@@ -35,8 +43,20 @@ class TriGroupBy2Map1CollectMutator<A, B, C, NewA, NewB, NewC> extends AbstractT
 
     @Override
     public AbstractRuleAssembler apply(AbstractRuleAssembler ruleAssembler) {
-        return groupBiWithCollect(ruleAssembler, () -> new DroolsTriGroupByAccumulator<>(groupKeyMappingA,
-                groupKeyMappingB, collectorC, ruleAssembler.getVariable(0), ruleAssembler.getVariable(1),
-                ruleAssembler.getVariable(2)));
+        Variable<A> inputA = ruleAssembler.getVariable(0);
+        Variable<B> inputB = ruleAssembler.getVariable(1);
+        Variable<C> inputC = ruleAssembler.getVariable(2);
+        Variable<TriTuple<A, B, C>> accumulateSource = ruleAssembler.createVariable(TriTuple.class, "source");
+        ruleAssembler.getLastPrimaryPattern()
+                .bind(accumulateSource, inputA, inputB, (c, a, b) -> new TriTuple<>(a, b, c));
+        Variable<BiTuple<NewA, NewB>> groupKey = ruleAssembler.createVariable(BiTuple.class, "groupKey");
+        Variable<NewC> output = ruleAssembler.createVariable("output");
+        ViewItem groupByPattern = groupBy(getInnerAccumulatePattern(ruleAssembler), inputA, inputB, inputC, groupKey,
+                (a, b, c) -> new BiTuple<>(groupKeyMappingA.apply(a, b, c), groupKeyMappingB.apply(a, b, c)),
+                accFunction(() -> new DroolsTriAccumulateFunction<>(collectorC), accumulateSource).as(output));
+        Variable<NewA> newA = ruleAssembler.createVariable("newA", from(groupKey, k -> k.a));
+        Variable<NewB> newB = ruleAssembler.createVariable("newB", from(groupKey, k -> k.b));
+        Variable<NewC> newC = ruleAssembler.createVariable("newC", from(output));
+        return toTri(ruleAssembler, groupByPattern, newA, newB, newC);
     }
 }

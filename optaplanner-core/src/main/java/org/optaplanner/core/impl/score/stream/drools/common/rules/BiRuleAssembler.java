@@ -78,53 +78,31 @@ final class BiRuleAssembler extends AbstractRuleAssembler<BiPredicate> {
 
     @Override
     protected AbstractGroupByMutator new1Map0CollectGroupByMutator(Object mapping) {
-        if (getExpectedGroupByCount() == 1) {
-            return new BiGroupBy1Map0CollectFastMutator<>((BiFunction) mapping);
-        } else {
-            return new BiGroupBy1Map0CollectMutator<>((BiFunction) mapping);
-        }
+        return new BiGroupBy1Map0CollectMutator<>((BiFunction) mapping);
     }
 
     @Override
     protected AbstractGroupByMutator new1Map1CollectGroupByMutator(Object mapping, Object collector) {
-        if (getExpectedGroupByCount() == 1) {
-            return new BiGroupBy1Map1CollectFastMutator<>((BiFunction) mapping, (BiConstraintCollector) collector);
-        } else {
-            return new BiGroupBy1Map1CollectMutator<>((BiFunction) mapping, (BiConstraintCollector) collector);
-        }
+        return new BiGroupBy1Map1CollectMutator<>((BiFunction) mapping, (BiConstraintCollector) collector);
     }
 
     @Override
     protected AbstractGroupByMutator new2Map0CollectGroupByMutator(Object mappingA, Object mappingB) {
-        if (getExpectedGroupByCount() == 1) {
-            return new BiGroupBy2Map0CollectFastMutator<>((BiFunction) mappingA, (BiFunction) mappingB);
-        } else {
-            return new BiGroupBy2Map0CollectMutator<>((BiFunction) mappingA, (BiFunction) mappingB);
-        }
+        return new BiGroupBy2Map0CollectMutator<>((BiFunction) mappingA, (BiFunction) mappingB);
     }
 
     @Override
     protected AbstractGroupByMutator new2Map1CollectGroupByMutator(Object mappingA, Object mappingB,
             Object collectorC) {
-        if (getExpectedGroupByCount() == 1) {
-            return new BiGroupBy2Map1CollectFastMutator<>((BiFunction) mappingA, (BiFunction) mappingB,
-                    (BiConstraintCollector) collectorC);
-        } else {
-            return new BiGroupBy2Map1CollectMutator<>((BiFunction) mappingA, (BiFunction) mappingB,
-                    (BiConstraintCollector) collectorC);
-        }
+        return new BiGroupBy2Map1CollectMutator<>((BiFunction) mappingA, (BiFunction) mappingB,
+                (BiConstraintCollector) collectorC);
     }
 
     @Override
     protected AbstractGroupByMutator new2Map2CollectGroupByMutator(Object mappingA, Object mappingB, Object collectorC,
             Object collectorD) {
-        if (getExpectedGroupByCount() == 1) {
-            return new BiGroupBy2Map2CollectFastMutator<>((BiFunction) mappingA, (BiFunction) mappingB,
-                    (BiConstraintCollector) collectorC, (BiConstraintCollector) collectorD);
-        } else {
-            return new BiGroupBy2Map2CollectMutator<>((BiFunction) mappingA, (BiFunction) mappingB,
-                    (BiConstraintCollector) collectorC, (BiConstraintCollector) collectorD);
-        }
+        return new BiGroupBy2Map2CollectMutator<>((BiFunction) mappingA, (BiFunction) mappingB,
+                (BiConstraintCollector) collectorC, (BiConstraintCollector) collectorD);
     }
 
     @Override

@@ -16,10 +16,16 @@
 
 package org.optaplanner.core.impl.score.stream.drools.common.rules;
 
+import static org.drools.model.DSL.accFunction;
+import static org.drools.model.PatternDSL.from;
+import static org.drools.model.PatternDSL.groupBy;
+
 import java.util.function.Function;
 
+import org.drools.model.Variable;
+import org.drools.model.view.ViewItem;
 import org.optaplanner.core.api.score.stream.uni.UniConstraintCollector;
-import org.optaplanner.core.impl.score.stream.drools.uni.DroolsUniToBiGroupByAccumulator;
+import org.optaplanner.core.impl.score.stream.drools.uni.DroolsUniAccumulateFunction;
 
 final class UniGroupBy1Map1CollectMutator<A, NewA, NewB> extends AbstractUniGroupByMutator {
 
@@ -34,7 +40,14 @@ final class UniGroupBy1Map1CollectMutator<A, NewA, NewB> extends AbstractUniGrou
 
     @Override
     public AbstractRuleAssembler apply(AbstractRuleAssembler ruleAssembler) {
-        return groupWithCollect(ruleAssembler, () -> new DroolsUniToBiGroupByAccumulator<>(groupKeyMappingA, collectorB,
-                ruleAssembler.getVariable(0)));
+        Variable<A> input = ruleAssembler.getVariable(0);
+        Variable<NewA> groupKey = ruleAssembler.createVariable("groupKey");
+        Variable<NewB> output = ruleAssembler.createVariable("output");
+        ViewItem groupByPattern = groupBy(getInnerAccumulatePattern(ruleAssembler), input, groupKey,
+                groupKeyMappingA::apply,
+                accFunction(() -> new DroolsUniAccumulateFunction<>(collectorB), input).as(output));
+        Variable<NewA> newA = ruleAssembler.createVariable("newA", from(groupKey));
+        Variable<NewB> newB = ruleAssembler.createVariable("newB", from(output));
+        return toBi(ruleAssembler, groupByPattern, newA, newB);
     }
 }

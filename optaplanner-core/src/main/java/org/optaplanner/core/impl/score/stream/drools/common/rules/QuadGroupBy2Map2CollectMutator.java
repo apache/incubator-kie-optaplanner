@@ -16,12 +16,19 @@
 
 package org.optaplanner.core.impl.score.stream.drools.common.rules;
 
+import static org.drools.model.DSL.accFunction;
+import static org.drools.model.DSL.from;
+import static org.drools.model.DSL.groupBy;
+
+import org.drools.model.Variable;
+import org.drools.model.view.ViewItem;
 import org.optaplanner.core.api.function.QuadFunction;
 import org.optaplanner.core.api.score.stream.quad.QuadConstraintCollector;
-import org.optaplanner.core.impl.score.stream.drools.quad.DroolsQuadGroupByAccumulator;
+import org.optaplanner.core.impl.score.stream.drools.common.BiTuple;
+import org.optaplanner.core.impl.score.stream.drools.common.QuadTuple;
+import org.optaplanner.core.impl.score.stream.drools.quad.DroolsQuadAccumulateFunction;
 
-final class QuadGroupBy2Map2CollectMutator<A, B, C, D, NewA, NewB, NewC, NewD>
-        extends AbstractQuadGroupByMutator {
+final class QuadGroupBy2Map2CollectMutator<A, B, C, D, NewA, NewB, NewC, NewD> extends AbstractQuadGroupByMutator {
 
     private final QuadFunction<A, B, C, D, NewA> groupKeyMappingA;
     private final QuadFunction<A, B, C, D, NewB> groupKeyMappingB;
@@ -39,8 +46,25 @@ final class QuadGroupBy2Map2CollectMutator<A, B, C, D, NewA, NewB, NewC, NewD>
 
     @Override
     public AbstractRuleAssembler apply(AbstractRuleAssembler ruleAssembler) {
-        return groupBiWithCollectBi(ruleAssembler, () -> new DroolsQuadGroupByAccumulator<>(groupKeyMappingA,
-                groupKeyMappingB, collectorC, collectorD, ruleAssembler.getVariable(0), ruleAssembler.getVariable(1),
-                ruleAssembler.getVariable(2), ruleAssembler.getVariable(3)));
+        Variable<A> inputA = ruleAssembler.getVariable(0);
+        Variable<B> inputB = ruleAssembler.getVariable(1);
+        Variable<C> inputC = ruleAssembler.getVariable(2);
+        Variable<D> inputD = ruleAssembler.getVariable(3);
+        Variable<QuadTuple<A, B, C, D>> accumulateSource = ruleAssembler.createVariable(QuadTuple.class, "source");
+        ruleAssembler.getLastPrimaryPattern()
+                .bind(accumulateSource, inputA, inputB, inputC, (d, a, b, c) -> new QuadTuple<>(a, b, c, d));
+        Variable<BiTuple<NewA, NewB>> groupKey = ruleAssembler.createVariable(BiTuple.class, "groupKey");
+        Variable<NewC> outputC = ruleAssembler.createVariable("outputC");
+        Variable<NewD> outputD = ruleAssembler.createVariable("outputD");
+        ViewItem groupByPattern = groupBy(getInnerAccumulatePattern(ruleAssembler), inputA, inputB, inputC, inputD,
+                groupKey, (a, b, c, d) -> new BiTuple<>(groupKeyMappingA.apply(a, b, c, d),
+                        groupKeyMappingB.apply(a, b, c, d)),
+                accFunction(() -> new DroolsQuadAccumulateFunction<>(collectorC), accumulateSource).as(outputC),
+                accFunction(() -> new DroolsQuadAccumulateFunction<>(collectorD), accumulateSource).as(outputD));
+        Variable<NewA> newA = ruleAssembler.createVariable("newA", from(groupKey, k -> k.a));
+        Variable<NewB> newB = ruleAssembler.createVariable("newB", from(groupKey, k -> k.b));
+        Variable<NewC> newC = ruleAssembler.createVariable("newC", from(outputC));
+        Variable<NewD> newD = ruleAssembler.createVariable("newD", from(outputD));
+        return toQuad(ruleAssembler, groupByPattern, newA, newB, newC, newD);
     }
 }

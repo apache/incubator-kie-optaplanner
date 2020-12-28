@@ -16,10 +16,17 @@
 
 package org.optaplanner.core.impl.score.stream.drools.common.rules;
 
+import static org.drools.model.DSL.accFunction;
+import static org.drools.model.PatternDSL.from;
+import static org.drools.model.PatternDSL.groupBy;
+
 import java.util.function.Function;
 
+import org.drools.model.Variable;
+import org.drools.model.view.ViewItem;
 import org.optaplanner.core.api.score.stream.uni.UniConstraintCollector;
-import org.optaplanner.core.impl.score.stream.drools.uni.DroolsUniToTriGroupByAccumulator;
+import org.optaplanner.core.impl.score.stream.drools.common.BiTuple;
+import org.optaplanner.core.impl.score.stream.drools.uni.DroolsUniAccumulateFunction;
 
 final class UniGroupBy2Map1CollectMutator<A, NewA, NewB, NewC> extends AbstractUniGroupByMutator {
 
@@ -36,7 +43,15 @@ final class UniGroupBy2Map1CollectMutator<A, NewA, NewB, NewC> extends AbstractU
 
     @Override
     public AbstractRuleAssembler apply(AbstractRuleAssembler ruleAssembler) {
-        return groupBiWithCollect(ruleAssembler, () -> new DroolsUniToTriGroupByAccumulator<>(groupKeyMappingA,
-                groupKeyMappingB, collectorC, ruleAssembler.getVariable(0)));
+        Variable<A> input = ruleAssembler.getVariable(0);
+        Variable<BiTuple<NewA, NewB>> groupKey = ruleAssembler.createVariable(BiTuple.class, "groupKey");
+        Variable<NewC> output = ruleAssembler.createVariable("output");
+        ViewItem groupByPattern = groupBy(getInnerAccumulatePattern(ruleAssembler), input, groupKey,
+                a -> new BiTuple<>(groupKeyMappingA.apply(a), groupKeyMappingB.apply(a)),
+                accFunction(() -> new DroolsUniAccumulateFunction<>(collectorC), input).as(output));
+        Variable<NewA> newA = ruleAssembler.createVariable("newA", from(groupKey, k -> k.a));
+        Variable<NewB> newB = ruleAssembler.createVariable("newB", from(groupKey, k -> k.b));
+        Variable<NewC> newC = ruleAssembler.createVariable("newC", from(output));
+        return toTri(ruleAssembler, groupByPattern, newA, newB, newC);
     }
 }

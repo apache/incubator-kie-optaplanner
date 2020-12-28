@@ -83,53 +83,31 @@ final class UniRuleAssembler extends AbstractRuleAssembler<Predicate> {
 
     @Override
     protected AbstractGroupByMutator new1Map0CollectGroupByMutator(Object mapping) {
-        if (getExpectedGroupByCount() == 1) {
-            return new UniGroupBy1Map0CollectFastMutator<>((Function) mapping);
-        } else {
-            return new UniGroupBy1Map0CollectMutator<>((Function) mapping);
-        }
+        return new UniGroupBy1Map0CollectMutator<>((Function) mapping);
     }
 
     @Override
     protected AbstractGroupByMutator new1Map1CollectGroupByMutator(Object mapping, Object collector) {
-        if (getExpectedGroupByCount() == 1) {
-            return new UniGroupBy1Map1CollectFastMutator<>((Function) mapping, (UniConstraintCollector) collector);
-        } else {
-            return new UniGroupBy1Map1CollectMutator<>((Function) mapping, (UniConstraintCollector) collector);
-        }
+        return new UniGroupBy1Map1CollectMutator<>((Function) mapping, (UniConstraintCollector) collector);
     }
 
     @Override
     protected AbstractGroupByMutator new2Map0CollectGroupByMutator(Object mappingA, Object mappingB) {
-        if (getExpectedGroupByCount() == 1) {
-            return new UniGroupBy2Map0CollectFastMutator<>((Function) mappingA, (Function) mappingB);
-        } else {
-            return new UniGroupBy2Map0CollectMutator<>((Function) mappingA, (Function) mappingB);
-        }
+        return new UniGroupBy2Map0CollectMutator<>((Function) mappingA, (Function) mappingB);
     }
 
     @Override
     protected AbstractGroupByMutator new2Map1CollectGroupByMutator(Object mappingA, Object mappingB,
             Object collectorC) {
-        if (getExpectedGroupByCount() == 1) {
-            return new UniGroupBy2Map1CollectFastMutator<>((Function) mappingA, (Function) mappingB,
-                    (UniConstraintCollector) collectorC);
-        } else {
-            return new UniGroupBy2Map1CollectMutator<>((Function) mappingA, (Function) mappingB,
-                    (UniConstraintCollector) collectorC);
-        }
+        return new UniGroupBy2Map1CollectMutator<>((Function) mappingA, (Function) mappingB,
+                (UniConstraintCollector) collectorC);
     }
 
     @Override
     protected AbstractGroupByMutator new2Map2CollectGroupByMutator(Object mappingA, Object mappingB, Object collectorC,
             Object collectorD) {
-        if (getExpectedGroupByCount() == 1) {
-            return new UniGroupBy2Map2CollectFastMutator<>((Function) mappingA, (Function) mappingB,
-                    (UniConstraintCollector) collectorC, (UniConstraintCollector) collectorD);
-        } else {
-            return new UniGroupBy2Map2CollectMutator<>((Function) mappingA, (Function) mappingB,
-                    (UniConstraintCollector) collectorC, (UniConstraintCollector) collectorD);
-        }
+        return new UniGroupBy2Map2CollectMutator<>((Function) mappingA, (Function) mappingB,
+                (UniConstraintCollector) collectorC, (UniConstraintCollector) collectorD);
     }
 
     @Override

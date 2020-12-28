@@ -16,12 +16,13 @@
 
 package org.optaplanner.core.impl.score.stream.drools.common.rules;
 
-import static org.drools.model.PatternDSL.PatternDef;
+import static org.drools.model.DSL.groupBy;
+import static org.drools.modelcompiler.dsl.flow.D.from;
 
-import java.util.function.BiConsumer;
 import java.util.function.Function;
 
 import org.drools.model.Variable;
+import org.drools.model.view.ViewItem;
 
 final class UniGroupBy1Map0CollectMutator<A, NewA> extends AbstractUniGroupByMutator {
 
@@ -33,9 +34,11 @@ final class UniGroupBy1Map0CollectMutator<A, NewA> extends AbstractUniGroupByMut
 
     @Override
     public AbstractRuleAssembler apply(AbstractRuleAssembler ruleAssembler) {
-        BiConsumer<PatternDef, Variable<NewA>> binder =
-                (pattern, tuple) -> pattern.bind(tuple, a -> groupKeyMapping.apply((A) a));
-        return universalGroup(ruleAssembler, binder,
-                (var, pattern, accumulate) -> regroup(ruleAssembler, var, pattern, accumulate));
+        Variable<A> input = ruleAssembler.getVariable(0);
+        Variable<NewA> groupKey = ruleAssembler.createVariable("groupKey");
+        ViewItem groupByPattern = groupBy(getInnerAccumulatePattern(ruleAssembler), input, groupKey,
+                groupKeyMapping::apply);
+        Variable<NewA> newA = ruleAssembler.createVariable("newA", from(groupKey));
+        return toUni(ruleAssembler, groupByPattern, newA);
     }
 }
