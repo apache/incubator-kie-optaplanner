@@ -35,6 +35,7 @@ import org.drools.model.functions.accumulate.GroupKey;
 import org.drools.model.impl.ModelImpl;
 import org.drools.modelcompiler.builder.KieBaseBuilder;
 import org.kie.api.KieBase;
+import org.kie.api.conf.KieBaseMutabilityOption;
 import org.kie.api.definition.rule.Rule;
 import org.kie.api.runtime.KieSession;
 import org.kie.internal.event.rule.RuleEventManager;
@@ -67,7 +68,7 @@ public final class DroolsConstraintSessionFactory<Solution_, Score_ extends Scor
             DroolsConstraint<Solution_>... constraints) {
         this.solutionDescriptor = solutionDescriptor;
         this.originalModel = model;
-        this.originalKieBase = KieBaseBuilder.createKieBaseFromModel(model);
+        this.originalKieBase = buildKieBaseFromModel(model);
         this.currentKieBase = originalKieBase;
         this.compiledRuleToConstraintMap = Arrays.stream(constraints)
                 .collect(toMap(constraint -> currentKieBase.getRule(constraint.getConstraintPackage(),
@@ -85,6 +86,10 @@ public final class DroolsConstraintSessionFactory<Solution_, Score_ extends Scor
                     org.drools.model.Rule modelRule = constraintToModelRuleMap.get(constraint.getConstraintId());
                     return modelRuleToExpectedTypesMap.get(modelRule);
                 }));
+    }
+
+    private static KieBase buildKieBaseFromModel(Model model) {
+        return KieBaseBuilder.createKieBaseFromModel(model, KieBaseMutabilityOption.DISABLED);
     }
 
     /**
@@ -219,7 +224,7 @@ public final class DroolsConstraintSessionFactory<Solution_, Score_ extends Scor
                 }
                 model.addRule(modelRule);
             });
-            currentKieBase = KieBaseBuilder.createKieBaseFromModel(model);
+            currentKieBase = buildKieBaseFromModel(model);
             currentlyDisabledConstraintIdSet = disabledConstraintIdSet;
         }
         // Create the session itself.
