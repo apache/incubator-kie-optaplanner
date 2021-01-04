@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2021 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -44,10 +44,10 @@ final class BiRuleAssembler extends AbstractRuleAssembler<BiPredicate> {
 
     private BiPredicate filterToApplyToLastPrimaryPattern = null;
 
-    public BiRuleAssembler(DroolsVariableFactory variableFactory, int expectedGroupByCount,
-            List<ViewItem> finishedExpressions, Variable aVariable, Variable bVariable, List<PatternDef> primaryPatterns,
-            Map<Integer, List<ViewItem>> dependentExpressionMap) {
-        super(variableFactory, expectedGroupByCount, finishedExpressions, primaryPatterns, dependentExpressionMap,
+    public BiRuleAssembler(DroolsVariableFactory variableFactory,
+                           List<ViewItem> finishedExpressions, Variable aVariable, Variable bVariable, List<PatternDef> primaryPatterns,
+                           Map<Integer, List<ViewItem>> dependentExpressionMap) {
+        super(variableFactory, finishedExpressions, primaryPatterns, dependentExpressionMap,
                 aVariable, bVariable);
     }
 

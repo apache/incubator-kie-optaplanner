@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2021 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -76,8 +76,7 @@ abstract class AbstractGroupByMutator implements Mutator {
         List<ViewItem> newFinishedExpressions = new ArrayList<>(ruleAssembler.getFinishedExpressions());
         newFinishedExpressions.add(accumulatePattern); // The last pattern is added here.
         PatternDef<NewA> newPrimaryPattern = pattern(newA);
-        return new UniRuleAssembler(ruleAssembler, ruleAssembler.getExpectedGroupByCount(), newFinishedExpressions,
-                newA, singletonList(newPrimaryPattern), emptyMap());
+        return new UniRuleAssembler(ruleAssembler, newFinishedExpressions, newA, singletonList(newPrimaryPattern), emptyMap());
     }
 
     protected <NewA> UniRuleAssembler toUni(AbstractRuleAssembler ruleAssembler, ViewItem groupBy,
@@ -85,7 +84,7 @@ abstract class AbstractGroupByMutator implements Mutator {
         List<ViewItem> newFinishedExpressions = new ArrayList<>(ruleAssembler.getFinishedExpressions());
         newFinishedExpressions.add(groupBy); // The last pattern is added here.
         PatternDSL.PatternDef<NewA> newPrimaryPattern = pattern(aVariable);
-        return new UniRuleAssembler(ruleAssembler, ruleAssembler.getExpectedGroupByCount(), newFinishedExpressions,
+        return new UniRuleAssembler(ruleAssembler, newFinishedExpressions,
                 aVariable, singletonList(newPrimaryPattern), emptyMap());
     }
 
@@ -96,8 +95,8 @@ abstract class AbstractGroupByMutator implements Mutator {
         PatternDSL.PatternDef<NewA> newAPattern = pattern(aVariable);
         newFinishedExpressions.add(newAPattern);
         PatternDSL.PatternDef<NewB> newPrimaryPattern = pattern(bVariable);
-        return new BiRuleAssembler(ruleAssembler, ruleAssembler.getExpectedGroupByCount(), newFinishedExpressions,
-                aVariable, bVariable, singletonList(newPrimaryPattern), emptyMap());
+        return new BiRuleAssembler(ruleAssembler, newFinishedExpressions, aVariable, bVariable,
+                singletonList(newPrimaryPattern), emptyMap());
     }
 
     protected <NewA, NewB, NewC> TriRuleAssembler toTri(AbstractRuleAssembler ruleAssembler, ViewItem groupBy,
@@ -109,8 +108,8 @@ abstract class AbstractGroupByMutator implements Mutator {
         PatternDSL.PatternDef<NewB> newBPattern = pattern(bVariable);
         newFinishedExpressions.add(newBPattern);
         PatternDSL.PatternDef<NewC> newPrimaryPattern = pattern(cVariable);
-        return new TriRuleAssembler(ruleAssembler, ruleAssembler.getExpectedGroupByCount(), newFinishedExpressions,
-                aVariable, bVariable, cVariable, singletonList(newPrimaryPattern), emptyMap());
+        return new TriRuleAssembler(ruleAssembler, newFinishedExpressions, aVariable, bVariable, cVariable,
+                singletonList(newPrimaryPattern), emptyMap());
     }
 
     protected <NewA, NewB, NewC, NewD> QuadRuleAssembler toQuad(AbstractRuleAssembler ruleAssembler, ViewItem groupBy,
@@ -124,8 +123,8 @@ abstract class AbstractGroupByMutator implements Mutator {
         PatternDSL.PatternDef<NewC> newCPattern = pattern(cVariable);
         newFinishedExpressions.add(newCPattern);
         PatternDSL.PatternDef<NewD> newPrimaryPattern = pattern(dVariable);
-        return new QuadRuleAssembler(ruleAssembler, ruleAssembler.getExpectedGroupByCount(), newFinishedExpressions,
-                aVariable, bVariable, cVariable, dVariable, singletonList(newPrimaryPattern), emptyMap());
+        return new QuadRuleAssembler(ruleAssembler, newFinishedExpressions, aVariable, bVariable, cVariable, dVariable,
+                singletonList(newPrimaryPattern), emptyMap());
     }
 
 }

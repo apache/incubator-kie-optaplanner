@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2021 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -60,24 +60,20 @@ abstract class AbstractRuleAssembler<Predicate_> implements RuleAssembler,
         DroolsVariableFactory {
 
     private final DroolsVariableFactory variableFactory;
-    private final int expectedGroupByCount;
     private final List<Variable> variables;
     private final List<ViewItem> finishedExpressions;
     private final List<PatternDef> primaryPatterns;
     private final Map<Integer, List<ViewItem>> dependentExpressionMap;
 
-    protected AbstractRuleAssembler(DroolsVariableFactory variableFactory, ConstraintGraphNode fromNode,
-            int expectedGroupByCount) {
-        this(variableFactory, expectedGroupByCount, emptyList(), emptyList(), emptyMap());
+    protected AbstractRuleAssembler(DroolsVariableFactory variableFactory, ConstraintGraphNode fromNode) {
+        this(variableFactory, emptyList(), emptyList(), emptyMap());
         variables.add(createVariable(((FromNode) fromNode).getFactType(), "var"));
         primaryPatterns.add(pattern(variables.get(0)));
     }
 
-    protected AbstractRuleAssembler(DroolsVariableFactory variableFactory, int expectedGroupByCount,
-            List<ViewItem> finishedExpressions, List<PatternDef> primaryPatterns,
-            Map<Integer, List<ViewItem>> dependentExpressionMap, Variable... variables) {
+    protected AbstractRuleAssembler(DroolsVariableFactory variableFactory, List<ViewItem> finishedExpressions,
+            List<PatternDef> primaryPatterns, Map<Integer, List<ViewItem>> dependentExpressionMap, Variable... variables) {
         this.variableFactory = variableFactory;
-        this.expectedGroupByCount = expectedGroupByCount;
         this.finishedExpressions = new ArrayList<>(finishedExpressions);
         this.variables = Arrays.stream(variables)
                 .collect(Collectors.toList());
@@ -109,10 +105,6 @@ abstract class AbstractRuleAssembler<Predicate_> implements RuleAssembler,
         RuleContext kcontext = (RuleContext) drools;
         constraint.assertCorrectImpact(impact);
         scoreHolder.impactScore(kcontext, impact);
-    }
-
-    int getExpectedGroupByCount() {
-        return expectedGroupByCount;
     }
 
     List<Variable> getVariables() {
@@ -191,10 +183,6 @@ abstract class AbstractRuleAssembler<Predicate_> implements RuleAssembler,
             boolean shouldExist);
 
     protected final AbstractRuleAssembler andThenGroupBy(AbstractConstraintModelGroupingNode groupingNode) {
-        if (expectedGroupByCount < 1) {
-            throw new IllegalStateException("Impossible state: expectedGroupByCount (" + expectedGroupByCount +
-                    ") is less than 1 when already grouping.");
-        }
         List<Function> mappings = groupingNode.getMappings();
         int mappingCount = mappings.size();
         List<UniConstraintCollector> collectors = groupingNode.getCollectors();

@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2021 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -44,8 +44,7 @@ final class QuadJoinMutator<A, B, C, D> implements JoinMutator<TriRuleAssembler,
     public QuadRuleAssembler newRuleAssembler(TriRuleAssembler leftRuleAssembler, UniRuleAssembler rightRuleAssembler,
             List<ViewItem> finishedExpressions, List<Variable> variables, List<PatternDef> primaryPatterns,
             Map<Integer, List<ViewItem>> dependentExpressionMap) {
-        return new QuadRuleAssembler(leftRuleAssembler, Math.max(leftRuleAssembler.getExpectedGroupByCount(),
-                rightRuleAssembler.getExpectedGroupByCount()), finishedExpressions, variables.get(0), variables.get(1),
+        return new QuadRuleAssembler(leftRuleAssembler, finishedExpressions, variables.get(0), variables.get(1),
                 variables.get(2), variables.get(3), primaryPatterns, dependentExpressionMap);
     }
 

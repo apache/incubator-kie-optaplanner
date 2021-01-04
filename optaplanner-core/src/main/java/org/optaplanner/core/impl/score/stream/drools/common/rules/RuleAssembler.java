@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2021 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,9 +24,8 @@ import org.optaplanner.core.impl.score.stream.drools.common.nodes.ConstraintGrap
 
 public interface RuleAssembler {
 
-    static RuleAssembler from(DroolsVariableFactory variableFactory, ConstraintGraphNode node,
-            int expectedGroupByCount) {
-        return new UniRuleAssembler(variableFactory, node, expectedGroupByCount);
+    static RuleAssembler from(DroolsVariableFactory variableFactory, ConstraintGraphNode node) {
+        return new UniRuleAssembler(variableFactory, node);
     }
 
     RuleAssembler andThen(ConstraintGraphNode node);

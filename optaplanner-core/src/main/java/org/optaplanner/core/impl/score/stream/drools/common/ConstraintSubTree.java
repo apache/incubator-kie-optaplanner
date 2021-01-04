@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2021 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -73,24 +73,8 @@ final class ConstraintSubTree {
         }
     }
 
-    public int getGroupByCount() {
-        long groupByCount = nodeList.stream()
-                .filter(n -> n.getType() == GROUPBY_COLLECTING_ONLY || n.getType() == GROUPBY_MAPPING_ONLY ||
-                        n.getType() == GROUPBY_MAPPING_AND_COLLECTING)
-                .count();
-        if (isJoin) {
-            groupByCount = groupByCount + leftSubTree.getGroupByCount();
-            groupByCount = groupByCount + rightSubTree.getGroupByCount();
-        }
-        return (int) groupByCount;
-    }
-
     public RuleAssembler getRuleAssembler() {
-        return this.getRuleAssembler(getGroupByCount());
-    }
-
-    public RuleAssembler getRuleAssembler(int totalExpectedGroupByCount) {
-        RuleAssembler assembler = getRuleAssemblerForFirstNode(totalExpectedGroupByCount);
+        RuleAssembler assembler = getRuleAssemblerForFirstNode();
         for (int i = 1; i < nodeList.size(); i++) {
             ConstraintGraphNode nextNode = nodeList.get(i);
             assembler = assembler.andThen(nextNode);
@@ -98,14 +82,14 @@ final class ConstraintSubTree {
         return assembler;
     }
 
-    private RuleAssembler getRuleAssemblerForFirstNode(int totalExpectedGroupByCount) {
+    private RuleAssembler getRuleAssemblerForFirstNode() {
         ConstraintGraphNode firstNode = nodeList.get(0);
         if (isJoin) {
-            RuleAssembler left = leftSubTree.getRuleAssembler(totalExpectedGroupByCount);
-            RuleAssembler right = rightSubTree.getRuleAssembler(totalExpectedGroupByCount);
+            RuleAssembler left = leftSubTree.getRuleAssembler();
+            RuleAssembler right = rightSubTree.getRuleAssembler();
             return left.join(right, firstNode);
         } else {
-            return RuleAssembler.from(variableFactory, firstNode, totalExpectedGroupByCount);
+            return RuleAssembler.from(variableFactory, firstNode);
         }
     }
 }

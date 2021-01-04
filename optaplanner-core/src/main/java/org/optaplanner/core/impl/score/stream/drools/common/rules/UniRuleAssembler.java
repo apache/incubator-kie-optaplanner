@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2021 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -44,15 +44,14 @@ final class UniRuleAssembler extends AbstractRuleAssembler<Predicate> {
 
     private Predicate filterToApplyToLastPrimaryPattern = null;
 
-    public UniRuleAssembler(DroolsVariableFactory variableFactory, ConstraintGraphNode previousNode,
-            int expectedGroupByCount) {
-        super(variableFactory, previousNode, expectedGroupByCount);
+    public UniRuleAssembler(DroolsVariableFactory variableFactory, ConstraintGraphNode previousNode) {
+        super(variableFactory, previousNode);
     }
 
-    public UniRuleAssembler(DroolsVariableFactory variableFactory, int expectedGroupByCount,
-            List<ViewItem> finishedExpressions, Variable aVariable, List<PatternDef> primaryPatterns,
-            Map<Integer, List<ViewItem>> dependentExpressionMap) {
-        super(variableFactory, expectedGroupByCount, finishedExpressions, primaryPatterns, dependentExpressionMap,
+    public UniRuleAssembler(DroolsVariableFactory variableFactory,
+                            List<ViewItem> finishedExpressions, Variable aVariable, List<PatternDef> primaryPatterns,
+                            Map<Integer, List<ViewItem>> dependentExpressionMap) {
+        super(variableFactory, finishedExpressions, primaryPatterns, dependentExpressionMap,
                 aVariable);
     }
 

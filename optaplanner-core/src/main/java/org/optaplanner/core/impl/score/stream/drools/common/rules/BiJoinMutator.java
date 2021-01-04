@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2021 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -75,8 +75,7 @@ final class BiJoinMutator<A, B> implements JoinMutator<UniRuleAssembler, BiRuleA
     public BiRuleAssembler newRuleAssembler(UniRuleAssembler leftRuleAssembler, UniRuleAssembler rightRuleAssembler,
             List<ViewItem> finishedExpressions, List<Variable> variables, List<PatternDef> primaryPatterns,
             Map<Integer, List<ViewItem>> dependentExpressionMap) {
-        return new BiRuleAssembler(leftRuleAssembler, Math.max(leftRuleAssembler.getExpectedGroupByCount(),
-                rightRuleAssembler.getExpectedGroupByCount()), finishedExpressions, variables.get(0), variables.get(1),
+        return new BiRuleAssembler(leftRuleAssembler, finishedExpressions, variables.get(0), variables.get(1),
                 primaryPatterns, dependentExpressionMap);
     }
 
