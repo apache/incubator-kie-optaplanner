@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2021 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -92,12 +92,13 @@ public abstract class DroolsAbstractGroupByAccumulator<InTuple> implements Accum
     }
 
     @Override
-    public void accumulate(Object workingMemoryContext, Object context, Tuple tuple, InternalFactHandle handle,
+    public Object accumulate(Object workingMemoryContext, Object context, Tuple tuple, InternalFactHandle handle,
             Declaration[] declarations, Declaration[] innerDeclarations, final WorkingMemory workingMemory) {
         InternalWorkingMemory internalWorkingMemory = (InternalWorkingMemory) workingMemory;
         Object handleObject = handle.getObject();
         InTuple input = createInput(var -> getValue(var, internalWorkingMemory, handleObject, innerDeclarations));
         castContext(context).accumulate(handle, input);
+        return handleObject;
     }
 
     private DroolsAbstractGroupBy<InTuple, ?> castContext(Object context) {
@@ -105,8 +106,8 @@ public abstract class DroolsAbstractGroupByAccumulator<InTuple> implements Accum
     }
 
     @Override
-    public void reverse(Object workingMemoryContext, Object context, Tuple tuple, InternalFactHandle handle,
-            Declaration[] declarations, Declaration[] innerDeclarations, WorkingMemory workingMemory) {
+    public void reverse(Object workingMemoryContext, Object context, Tuple leftTuple, InternalFactHandle handle, Object value,
+            Declaration[] declarations, Declaration[] innerDeclarations, WorkingMemory workingMemory) throws Exception {
         castContext(context).reverse(handle);
     }
 
