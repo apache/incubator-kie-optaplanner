@@ -18,4 +18,12 @@
   <customPhase>
     <customPhaseCommandClass>org.optaplanner.examples.taskassigning.domain.solver.solution.initializer.RoundRobinInitializer</customPhaseCommandClass>
   </customPhase>
+  <localSearch>
+    <moveListFactory>
+      <moveListFactoryClass>org.optaplanner.examples.taskassigning.domain.solver.move.factory.TaskListSwapMoveFactory</moveListFactoryClass>
+    </moveListFactory>
+    <forager>
+      <acceptedCountLimit>100</acceptedCountLimit>
+    </forager>
+  </localSearch>
 </solver>
