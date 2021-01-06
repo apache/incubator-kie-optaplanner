@@ -118,6 +118,7 @@ pipeline {
                 prepareForPR(optaplannerRepository)
                 prepareForPR(vehicleRoutingRepository)
                 prepareForPR(employeeRosteringRepository)
+                prepareForPR(quickstartsRepository)
             }
         }
 
@@ -134,117 +135,44 @@ pipeline {
 
                     maven.mvnVersionsUpdateParentAndChildModules(getOptawebVehicleRoutingMavenCommand(), getProjectVersion())
                     maven.mvnVersionsUpdateParentAndChildModules(getOptawebEmployeeRosteringMavenCommand(), getProjectVersion())
+
+                    updateQuickstartsVersions()
+                    //TODO remove after testing pipeline
+                    commitAndCreatePR(quickstartsRepository, getQuickStartsTarget())
                 }
             }
         }
-
-        stage('Build OptaPlanner') {
-            steps {
-                script {
-                    getOptaplannerMavenCommand().skipTests(params.SKIP_TESTS).run('clean install')
-                }
-            }
-            post {
-                always {
-                    saveReports(params.SKIP_TESTS)
-                }
-            }
-        }
-
-        stage('Build Quickstarts') {
-            steps {
-                script {
-                    getOptaplannerQuickstartsMavenCommand().skipTests(params.SKIP_TESTS).run('clean install')
-                }
-            }
-            post {
-                always {
-                    saveReports(params.SKIP_TESTS)
-                }
-            }
-        }
-
-        stage("Build Vehicle Routing") {
-            steps {
-                script {
-                    getOptawebVehicleRoutingMavenCommand().skipTests(params.SKIP_TESTS).run('clean install')
-                }
-            }
-            post {
-                always {
-                    saveReports(params.SKIP_TESTS)
-                    // TODO: Enable together with the profile "integration-tests" once dockerhub pull limit is resolved.
-                    // archiveArtifacts(allowEmptyArchive: true, artifacts: "**/cypress/screenshots/**,**/cypress/videos/**", fingerprint: false)
-                }
-            }
-        }
-
-        stage("Build Employee Rostering") {
-            steps {
-                script {
-                    getOptawebEmployeeRosteringMavenCommand().skipTests(params.SKIP_TESTS).run('clean install')
-                }
-            }
-            post {
-                always {
-                    saveReports(params.SKIP_TESTS)
-                    // TODO: Enable together with the profile "integration-tests" once dockerhub pull limit is resolved.
-                    // archiveArtifacts(allowEmptyArchive: true, artifacts: "**/cypress/screenshots/**,**/cypress/videos/**", fingerprint: false)
-                }
-            }
-        }
-
-        stage('Deploy artifacts') {
-            steps {
-                script {
-                    deployMavenArtifacts(getOptaplannerMavenCommand(), optaplannerRepository)
-                    deployMavenArtifacts(getOptawebVehicleRoutingMavenCommand(), vehicleRoutingRepository)
-                    deployMavenArtifacts(getOptawebEmployeeRosteringMavenCommand(), employeeRosteringRepository)
-                }
-            }
-        }
-
-        stage('Create PRs'){
-            when {
-                expression { return isRelease() }
-            }
-            steps {
-                commitAndCreatePR(optaplannerRepository)
-                commitAndCreatePRIgnoringNpmRegistry(vehicleRoutingRepository)
-                commitAndCreatePRIgnoringNpmRegistry(employeeRosteringRepository)
-            }
-            post {
-                success {
-                    script {
-                        setDeployPropertyIfNeeded("${optaplannerRepository}.pr.source.uri", "https://github.com/${getBotAuthor()}/${optaplannerRepository}")
-                        setDeployPropertyIfNeeded("${optaplannerRepository}.pr.source.ref", getBotBranch())
-                        setDeployPropertyIfNeeded("${optaplannerRepository}.pr.target.uri", "https://github.com/${getGitAuthor()}/${optaplannerRepository}")
-                        setDeployPropertyIfNeeded("${optaplannerRepository}.pr.target.ref", getBuildBranch())
-
-                        setDeployPropertyIfNeeded("${vehicleRoutingRepository}.pr.source.uri", "https://github.com/${getBotAuthor()}/${vehicleRoutingRepository}")
-                        setDeployPropertyIfNeeded("${vehicleRoutingRepository}.pr.source.ref", getBotBranch())
-                        setDeployPropertyIfNeeded("${vehicleRoutingRepository}.pr.target.uri", "https://github.com/${getGitAuthor()}/${vehicleRoutingRepository}")
-                        setDeployPropertyIfNeeded("${vehicleRoutingRepository}.pr.target.ref", getBuildBranch())
-
-                        setDeployPropertyIfNeeded("${employeeRosteringRepository}.pr.source.uri", "https://github.com/${getBotAuthor()}/${employeeRosteringRepository}")
-                        setDeployPropertyIfNeeded("${employeeRosteringRepository}.pr.source.ref", getBotBranch())
-                        setDeployPropertyIfNeeded("${employeeRosteringRepository}.pr.target.uri", "https://github.com/${getGitAuthor()}/${employeeRosteringRepository}")
-                        setDeployPropertyIfNeeded("${employeeRosteringRepository}.pr.target.ref", getBuildBranch())
-                    }
-                }
-            }
-        }
-
     }
-    post {
-        always {
-            script {
-                def propertiesStr = deployProperties.collect{ entry ->  "${entry.key}=${entry.value}" }.join("\n")
-                writeFile(text: propertiesStr, file: 'deployment.properties')
-                archiveArtifacts(artifacts: 'deployment.properties')
-            }
-            cleanWs()
-        }
+}
+
+void updateQuickstartsVersions(){
+    maven.mvnSetVersionProperty(getOptaplannerQuickstartsMavenCommand(),"version.org.optaplanner",getProjectVersion())
+    maven.mvnVersionsUpdateParentAndChildModules(getOptaplannerQuickstartsMavenCommand(), getProjectVersion())
+    gradleVersionsUpdate(quickstartsRepository,getProjectVersion())
+    removeJbossNexusFromMavenAndGradle(quickstartsRepository)
+
+    dir(quickstartsRepository) {
+        def snapshots = sh (script: 'grep -Rn "SNAPSHOT" --include={pom.xml,build.gradle}| grep -v -e "0.1.0-SNAPSHOT" -e ">1.0-SNAPSHOT"|cat'
+                , allowEmptyResults: true, returnStdout: true)
+        assert !snapshots
+        assert !sh (script: 'grep -Rnq "repository.jboss.org" --include={pom.xml,build.gradle}|cat'
+                , allowEmptyResults: true, returnStdout: true)
+    }
+}
+
+void removeJbossNexusFromMavenAndGradle(String repo) {
+    dir(repo){
+        sh '''
+            sed -i \':a;N;$!ba;s/\\n *<repositories>.*<\\/repositories>//g\' */pom.xml
+            sed -i \':a;N;$!ba;s/\\n *<repositories>.*<\\/repositories>//g\' pom.xml
+            sed -i \':a;N;$!ba;s/\\n *\\/\\/ To get snapshots during development[^{}]*maven {[^{}]*mavenContent {[^{}]*snapshotsOnly[^{}]*}[^{}]*}//g\' */build.gradle
+        '''
+    }
+}
+
+void gradleVersionsUpdate(String repo, String newVersion){
+    dir(repo) {
+        sh '''sed -i -E 's/def optaplannerVersion = \"[^\"\\s]+\"/def optaplannerVersion = \"'''${newVersion}'''\"/' */build.gradle'''
     }
 }
 
@@ -285,15 +213,15 @@ void prepareForPR(String repo) {
         githubscm.createBranch(getBotBranch())
     }
 }
-
-void commitAndCreatePR(String repo) {
+//TODO: remove target after testing pipeline
+void commitAndCreatePR(String repo, String target = getBuildBranch()) {
     dir(repo) {
         def commitMsg = "[${getBuildBranch()}] Update project version to ${getProjectVersion()} for release"
         def prBody = "Generated by build ${BUILD_TAG}: ${BUILD_URL}.\nPlease do not merge, it will be merged automatically after testing."
 
         githubscm.commitChanges(commitMsg, { githubscm.findAndStageNotIgnoredFiles('pom.xml') })
         githubscm.pushObject('origin', getBotBranch(), getBotAuthorCredsID())
-        deployProperties["${repo}.pr.link"] = githubscm.createPR(commitMsg, prBody, getBuildBranch(), getBotAuthorCredsID())
+        deployProperties["${repo}.pr.link"] = githubscm.createPR(commitMsg, prBody, target, getBotAuthorCredsID())
     }
 }
 
@@ -433,4 +361,8 @@ void setDeployPropertyIfNeeded(String key, def value) {
 
 String getQuickStartsBranch(String quickStartsBranch = 'development'){
     return quickStartsBranch
+}
+//TODO: remove after testing pipeline
+String getQuickStartsTarget(String quickStartsTarget = 'stable'){
+    return quickStartsTarget
 }
