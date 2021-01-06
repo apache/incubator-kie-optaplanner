@@ -138,6 +138,71 @@ pipeline {
                 }
             }
         }
+        stage('Build OptaPlanner') {
+            steps {
+                script {
+                    getOptaplannerMavenCommand().skipTests(params.SKIP_TESTS).run('clean install')
+                }
+            }
+            post {
+                always {
+                    saveReports(params.SKIP_TESTS)
+                }
+            }
+        }
+
+        stage('Build Quickstarts') {
+            steps {
+                script {
+                    getOptaplannerQuickstartsMavenCommand().skipTests(params.SKIP_TESTS).run('clean install')
+                }
+            }
+            post {
+                always {
+                    saveReports(params.SKIP_TESTS)
+                }
+            }
+        }
+
+        stage("Build Vehicle Routing") {
+            steps {
+                script {
+                    getOptawebVehicleRoutingMavenCommand().skipTests(params.SKIP_TESTS).run('clean install')
+                }
+            }
+            post {
+                always {
+                    saveReports(params.SKIP_TESTS)
+                    // TODO: Enable together with the profile "integration-tests" once dockerhub pull limit is resolved.
+                    // archiveArtifacts(allowEmptyArchive: true, artifacts: "**/cypress/screenshots/**,**/cypress/videos/**", fingerprint: false)
+                }
+            }
+        }
+
+        stage("Build Employee Rostering") {
+            steps {
+                script {
+                    getOptawebEmployeeRosteringMavenCommand().skipTests(params.SKIP_TESTS).run('clean install')
+                }
+            }
+            post {
+                always {
+                    saveReports(params.SKIP_TESTS)
+                    // TODO: Enable together with the profile "integration-tests" once dockerhub pull limit is resolved.
+                    // archiveArtifacts(allowEmptyArchive: true, artifacts: "**/cypress/screenshots/**,**/cypress/videos/**", fingerprint: false)
+                }
+            }
+        }
+    }
+    post {
+        always {
+            script {
+                def propertiesStr = deployProperties.collect{ entry ->  "${entry.key}=${entry.value}" }.join("\n")
+                writeFile(text: propertiesStr, file: 'deployment.properties')
+                archiveArtifacts(artifacts: 'deployment.properties')
+            }
+            cleanWs()
+        }
     }
 }
 
@@ -148,9 +213,8 @@ void updateQuickstartsVersions(){
     removeJbossNexusFromMavenAndGradle(quickstartsRepository)
 
     dir(quickstartsRepository) {
-        def snapshots = sh (script: 'grep -Rn "SNAPSHOT" --include={pom.xml,build.gradle}| grep -v -e "0.1.0-SNAPSHOT" -e ">1.0-SNAPSHOT"|cat'
+        assert !sh (script: 'grep -Rn "SNAPSHOT" --include={pom.xml,build.gradle}| grep -v -e "0.1.0-SNAPSHOT" -e ">1.0-SNAPSHOT"|cat'
                 , allowEmptyResults: true, returnStdout: true)
-        assert !snapshots
         assert !sh (script: 'grep -Rn "repository.jboss.org" --include={pom.xml,build.gradle}|cat'
                 , allowEmptyResults: true, returnStdout: true)
     }
