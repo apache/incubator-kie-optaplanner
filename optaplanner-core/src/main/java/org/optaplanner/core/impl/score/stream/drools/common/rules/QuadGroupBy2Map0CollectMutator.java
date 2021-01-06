@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2021 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,13 +16,7 @@
 
 package org.optaplanner.core.impl.score.stream.drools.common.rules;
 
-import static org.drools.model.PatternDSL.from;
-import static org.drools.model.PatternDSL.groupBy;
-
-import org.drools.model.Variable;
-import org.drools.model.view.ViewItem;
 import org.optaplanner.core.api.function.QuadFunction;
-import org.optaplanner.core.impl.score.stream.drools.common.BiTuple;
 
 final class QuadGroupBy2Map0CollectMutator<A, B, C, D, NewA, NewB> extends AbstractQuadGroupByMutator {
 
@@ -37,16 +31,7 @@ final class QuadGroupBy2Map0CollectMutator<A, B, C, D, NewA, NewB> extends Abstr
 
     @Override
     public AbstractRuleAssembler apply(AbstractRuleAssembler ruleAssembler) {
-        Variable<A> inputA = ruleAssembler.getVariable(0);
-        Variable<B> inputB = ruleAssembler.getVariable(1);
-        Variable<C> inputC = ruleAssembler.getVariable(2);
-        Variable<D> inputD = ruleAssembler.getVariable(3);
-        Variable<BiTuple<NewA, NewB>> groupKey = ruleAssembler.createVariable(BiTuple.class, "groupKey");
-        ViewItem groupByPattern = groupBy(getInnerAccumulatePattern(ruleAssembler), inputA, inputB, inputC, inputD,
-                groupKey, (a, b, c, d) -> new BiTuple<>(groupKeyMappingA.apply(a, b, c, d),
-                        groupKeyMappingB.apply(a, b, c, d)));
-        Variable<NewA> newA = ruleAssembler.createVariable("newA", from(groupKey, k -> k.a));
-        Variable<NewB> newB = ruleAssembler.createVariable("newB", from(groupKey, k -> k.b));
-        return toBi(ruleAssembler, groupByPattern, newA, newB);
+        QuadRuleAssembler quadRuleAssembler = ((QuadRuleAssembler) ruleAssembler);
+        return new BiRuleAssembler(quadRuleAssembler.leftHandSide.groupBy(groupKeyMappingA, groupKeyMappingB));
     }
 }

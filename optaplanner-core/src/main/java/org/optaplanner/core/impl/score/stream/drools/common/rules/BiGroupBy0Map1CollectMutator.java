@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2021 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -29,7 +29,7 @@ final class BiGroupBy0Map1CollectMutator<A, B, NewA> extends AbstractBiGroupByMu
 
     @Override
     public AbstractRuleAssembler apply(AbstractRuleAssembler ruleAssembler) {
-        DroolsBiAccumulateFunction<A, B, ?, NewA> bridge = new DroolsBiAccumulateFunction<>(collector);
-        return collect(ruleAssembler, bridge);
+        BiRuleAssembler biRuleAssembler = ((BiRuleAssembler) ruleAssembler);
+        return new UniRuleAssembler(biRuleAssembler.leftHandSide.groupBy(new DroolsBiAccumulateFunction<>(collector)));
     }
 }

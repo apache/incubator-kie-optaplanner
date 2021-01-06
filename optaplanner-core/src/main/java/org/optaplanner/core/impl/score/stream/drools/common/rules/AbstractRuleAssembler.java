@@ -16,69 +16,33 @@
 
 package org.optaplanner.core.impl.score.stream.drools.common.rules;
 
-import static java.util.Collections.emptyList;
-import static java.util.Collections.emptyMap;
-import static java.util.Collections.unmodifiableList;
-import static java.util.Collections.unmodifiableMap;
-import static org.drools.model.PatternDSL.pattern;
 import static org.drools.model.PatternDSL.rule;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.function.Function;
-import java.util.function.Supplier;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import org.drools.model.Argument;
-import org.drools.model.DeclarationSource;
-import org.drools.model.Drools;
-import org.drools.model.Global;
-import org.drools.model.PatternDSL.PatternDef;
-import org.drools.model.Rule;
-import org.drools.model.RuleItemBuilder;
-import org.drools.model.Variable;
+import org.drools.model.*;
 import org.drools.model.consequences.ConsequenceBuilder;
-import org.drools.model.view.ViewItem;
 import org.kie.api.runtime.rule.RuleContext;
 import org.optaplanner.core.api.score.stream.uni.UniConstraintCollector;
 import org.optaplanner.core.impl.score.holder.AbstractScoreHolder;
 import org.optaplanner.core.impl.score.stream.drools.DroolsConstraint;
-import org.optaplanner.core.impl.score.stream.drools.common.DroolsVariableFactory;
 import org.optaplanner.core.impl.score.stream.drools.common.FactTuple;
 import org.optaplanner.core.impl.score.stream.drools.common.nodes.AbstractConstraintModelGroupingNode;
 import org.optaplanner.core.impl.score.stream.drools.common.nodes.AbstractConstraintModelJoiningNode;
 import org.optaplanner.core.impl.score.stream.drools.common.nodes.ConstraintGraphNode;
 import org.optaplanner.core.impl.score.stream.drools.common.nodes.ConstraintGraphNodeType;
-import org.optaplanner.core.impl.score.stream.drools.common.nodes.FromNode;
 
-abstract class AbstractRuleAssembler<Predicate_> implements RuleAssembler,
-        DroolsVariableFactory {
+abstract class AbstractRuleAssembler<LeftHandSide_ extends AbstractLeftHandSide> implements RuleAssembler {
 
-    private final DroolsVariableFactory variableFactory;
-    private final List<Variable> variables;
-    private final List<ViewItem> finishedExpressions;
-    private final List<PatternDef> primaryPatterns;
-    private final Map<Integer, List<ViewItem>> dependentExpressionMap;
+    protected final LeftHandSide_ leftHandSide;
 
-    protected AbstractRuleAssembler(DroolsVariableFactory variableFactory, ConstraintGraphNode fromNode) {
-        this(variableFactory, emptyList(), emptyList(), emptyMap());
-        variables.add(createVariable(((FromNode) fromNode).getFactType(), "var"));
-        primaryPatterns.add(pattern(variables.get(0)));
-    }
-
-    protected AbstractRuleAssembler(DroolsVariableFactory variableFactory, List<ViewItem> finishedExpressions,
-            List<PatternDef> primaryPatterns, Map<Integer, List<ViewItem>> dependentExpressionMap, Variable... variables) {
-        this.variableFactory = variableFactory;
-        this.finishedExpressions = new ArrayList<>(finishedExpressions);
-        this.variables = Arrays.stream(variables)
-                .collect(Collectors.toList());
-        this.primaryPatterns = new ArrayList<>(primaryPatterns);
-        this.dependentExpressionMap = new HashMap<>(dependentExpressionMap);
+    protected AbstractRuleAssembler(LeftHandSide_ leftHandSide) {
+        this.leftHandSide = leftHandSide;
     }
 
     protected static void impactScore(Drools drools, AbstractScoreHolder scoreHolder) {
@@ -105,41 +69,6 @@ abstract class AbstractRuleAssembler<Predicate_> implements RuleAssembler,
         RuleContext kcontext = (RuleContext) drools;
         constraint.assertCorrectImpact(impact);
         scoreHolder.impactScore(kcontext, impact);
-    }
-
-    List<Variable> getVariables() {
-        return unmodifiableList(variables);
-    }
-
-    Variable getVariable(int index) {
-        return variables.get(index);
-    }
-
-    List<PatternDef> getPrimaryPatterns() {
-        return unmodifiableList(primaryPatterns);
-    }
-
-    PatternDef getLastPrimaryPattern() {
-        return primaryPatterns.get(primaryPatterns.size() - 1);
-    }
-
-    protected abstract void addFilterToLastPrimaryPattern(Predicate_ predicate);
-
-    protected abstract void applyFilterToLastPrimaryPattern();
-
-    Map<Integer, List<ViewItem>> getDependentExpressionMap() {
-        return unmodifiableMap(dependentExpressionMap);
-    }
-
-    void addDependentExpressionToLastPattern(ViewItem expression) {
-        int lastPatternId = primaryPatterns.size() - 1;
-        dependentExpressionMap
-                .computeIfAbsent(lastPatternId, key -> new ArrayList<>(1))
-                .add(expression);
-    }
-
-    List<ViewItem> getFinishedExpressions() {
-        return unmodifiableList(finishedExpressions);
     }
 
     @Override
@@ -173,11 +102,7 @@ abstract class AbstractRuleAssembler<Predicate_> implements RuleAssembler,
 
     protected abstract AbstractRuleAssembler join(UniRuleAssembler ruleAssembler, ConstraintGraphNode joinNode);
 
-    protected final AbstractRuleAssembler andThenFilter(ConstraintGraphNode filterNode) {
-        Predicate_ predicate = ((Supplier<Predicate_>) filterNode).get();
-        addFilterToLastPrimaryPattern(predicate);
-        return this;
-    }
+    protected abstract AbstractRuleAssembler andThenFilter(ConstraintGraphNode filterNode);
 
     protected abstract AbstractRuleAssembler andThenExists(AbstractConstraintModelJoiningNode joiningNode,
             boolean shouldExist);
@@ -242,15 +167,9 @@ abstract class AbstractRuleAssembler<Predicate_> implements RuleAssembler,
             Global<? extends AbstractScoreHolder<?>> scoreHolderGlobal, Variable... variables);
 
     public RuleAssembly assemble(Global<? extends AbstractScoreHolder<?>> scoreHolderGlobal, DroolsConstraint constraint) {
-        applyFilterToLastPrimaryPattern();
-        List<RuleItemBuilder> ruleItemBuilderList = new ArrayList<>(0);
-        ruleItemBuilderList.addAll(finishedExpressions);
-        for (int i = 0; i < primaryPatterns.size(); i++) {
-            ruleItemBuilderList.add(primaryPatterns.get(i));
-            ruleItemBuilderList.addAll(dependentExpressionMap.getOrDefault(i, emptyList()));
-        }
+        List<RuleItemBuilder<?>> ruleItemBuilderList = new ArrayList<>(leftHandSide.get());
         ConsequenceBuilder.ValidBuilder consequence = buildConsequence(constraint, scoreHolderGlobal,
-                variables.toArray(new Variable[0]));
+                leftHandSide.getVariables());
         ruleItemBuilderList.add(consequence);
         Rule rule = rule(constraint.getConstraintPackage(), constraint.getConstraintName())
                 .build(ruleItemBuilderList.toArray(new RuleItemBuilder[0]));
@@ -258,30 +177,16 @@ abstract class AbstractRuleAssembler<Predicate_> implements RuleAssembler,
     }
 
     private Stream<Class> getExpectedJustificationTypes() {
-        PatternDef pattern = primaryPatterns.get(primaryPatterns.size() - 1);
-        Class type = pattern.getFirstVariable().getType();
+        Variable<?>[] variables = leftHandSide.getVariables();
+        Variable<?> lastVariable = variables[variables.length - 1];
+        Class<?> type = lastVariable.getType();
         if (FactTuple.class.isAssignableFrom(type)) {
             // There is one expected constraint justification, and that is of the tuple type.
             return Stream.of(type);
         }
         // There are plenty expected constraint justifications, one for each variable.
-        return variables.stream()
+        return Arrays.stream(variables)
                 .map(Argument::getType);
-    }
-
-    @Override
-    public <X> Variable<? extends X> createVariable(Class<X> clz, String baseName) {
-        return variableFactory.createVariable(clz, baseName);
-    }
-
-    @Override
-    public <X> Variable<? extends X> createVariable(String baseName, DeclarationSource source) {
-        return variableFactory.createVariable(baseName, source);
-    }
-
-    @Override
-    public <X> Variable<? extends X> createVariable(Class<X> clz, String baseName, DeclarationSource source) {
-        return variableFactory.createVariable(clz, baseName, source);
     }
 
 }

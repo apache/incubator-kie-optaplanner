@@ -17,53 +17,36 @@
 package org.optaplanner.core.impl.score.stream.drools.common.rules;
 
 import java.math.BigDecimal;
-import java.util.List;
-import java.util.Map;
-import java.util.function.BiFunction;
-import java.util.function.BiPredicate;
-import java.util.function.Supplier;
-import java.util.function.ToIntBiFunction;
-import java.util.function.ToLongBiFunction;
+import java.util.function.*;
 
 import org.drools.model.DSL;
 import org.drools.model.Drools;
 import org.drools.model.Global;
-import org.drools.model.PatternDSL.PatternDef;
 import org.drools.model.Variable;
 import org.drools.model.consequences.ConsequenceBuilder;
-import org.drools.model.view.ViewItem;
 import org.optaplanner.core.api.score.stream.bi.BiConstraintCollector;
 import org.optaplanner.core.impl.score.holder.AbstractScoreHolder;
 import org.optaplanner.core.impl.score.stream.drools.DroolsConstraint;
-import org.optaplanner.core.impl.score.stream.drools.common.DroolsVariableFactory;
 import org.optaplanner.core.impl.score.stream.drools.common.consequences.ConstraintConsequence;
 import org.optaplanner.core.impl.score.stream.drools.common.nodes.AbstractConstraintModelJoiningNode;
 import org.optaplanner.core.impl.score.stream.drools.common.nodes.ConstraintGraphNode;
 
-final class BiRuleAssembler extends AbstractRuleAssembler<BiPredicate> {
+final class BiRuleAssembler extends AbstractRuleAssembler<BiLeftHandSide> {
 
-    private BiPredicate filterToApplyToLastPrimaryPattern = null;
-
-    public BiRuleAssembler(DroolsVariableFactory variableFactory,
-                           List<ViewItem> finishedExpressions, Variable aVariable, Variable bVariable, List<PatternDef> primaryPatterns,
-                           Map<Integer, List<ViewItem>> dependentExpressionMap) {
-        super(variableFactory, finishedExpressions, primaryPatterns, dependentExpressionMap,
-                aVariable, bVariable);
-    }
-
-    @Override
-    protected void addFilterToLastPrimaryPattern(BiPredicate biPredicate) {
-        if (filterToApplyToLastPrimaryPattern == null) {
-            filterToApplyToLastPrimaryPattern = biPredicate;
-        } else {
-            filterToApplyToLastPrimaryPattern = filterToApplyToLastPrimaryPattern.and(biPredicate);
-        }
+    public BiRuleAssembler(BiLeftHandSide leftHandSide) {
+        super(leftHandSide);
     }
 
     @Override
     protected AbstractRuleAssembler join(UniRuleAssembler ruleAssembler, ConstraintGraphNode joinNode) {
         return new TriJoinMutator<>((AbstractConstraintModelJoiningNode) joinNode)
                 .apply(this, ruleAssembler);
+    }
+
+    @Override
+    protected AbstractRuleAssembler andThenFilter(ConstraintGraphNode filterNode) {
+        BiPredicate predicate = ((Supplier<BiPredicate>) filterNode).get();
+        return new BiRuleAssembler(leftHandSide.filter(predicate));
     }
 
     @Override
@@ -132,18 +115,6 @@ final class BiRuleAssembler extends AbstractRuleAssembler<BiPredicate> {
             default:
                 throw new UnsupportedOperationException(consequence.getMatchWeightType().toString());
         }
-    }
-
-    @Override
-    protected void applyFilterToLastPrimaryPattern() {
-        if (filterToApplyToLastPrimaryPattern == null) {
-            return;
-        }
-        BiPredicate predicate = filterToApplyToLastPrimaryPattern;
-        getLastPrimaryPattern()
-                .expr("Filter using " + predicate, getVariable(0), getVariable(1),
-                        (fact, a, b) -> predicate.test(a, b));
-        filterToApplyToLastPrimaryPattern = null;
     }
 
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2021 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,13 +16,7 @@
 
 package org.optaplanner.core.impl.score.stream.drools.common.rules;
 
-import static org.drools.model.DSL.groupBy;
-import static org.drools.modelcompiler.dsl.flow.D.from;
-
 import java.util.function.Function;
-
-import org.drools.model.Variable;
-import org.drools.model.view.ViewItem;
 
 final class UniGroupBy1Map0CollectMutator<A, NewA> extends AbstractUniGroupByMutator {
 
@@ -34,11 +28,7 @@ final class UniGroupBy1Map0CollectMutator<A, NewA> extends AbstractUniGroupByMut
 
     @Override
     public AbstractRuleAssembler apply(AbstractRuleAssembler ruleAssembler) {
-        Variable<A> input = ruleAssembler.getVariable(0);
-        Variable<NewA> groupKey = ruleAssembler.createVariable("groupKey");
-        ViewItem groupByPattern = groupBy(getInnerAccumulatePattern(ruleAssembler), input, groupKey,
-                groupKeyMapping::apply);
-        Variable<NewA> newA = ruleAssembler.createVariable("newA", from(groupKey));
-        return toUni(ruleAssembler, groupByPattern, newA);
+        UniRuleAssembler uniRuleAssembler = ((UniRuleAssembler) ruleAssembler);
+        return new UniRuleAssembler(uniRuleAssembler.leftHandSide.groupBy(groupKeyMapping));
     }
 }

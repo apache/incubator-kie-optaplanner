@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2021 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,17 +16,10 @@
 
 package org.optaplanner.core.impl.score.stream.drools.common.rules;
 
-import static org.drools.model.DSL.accFunction;
-import static org.drools.model.PatternDSL.from;
-import static org.drools.model.PatternDSL.groupBy;
-
 import java.util.function.BiFunction;
 
-import org.drools.model.Variable;
-import org.drools.model.view.ViewItem;
 import org.optaplanner.core.api.score.stream.bi.BiConstraintCollector;
 import org.optaplanner.core.impl.score.stream.drools.bi.DroolsBiAccumulateFunction;
-import org.optaplanner.core.impl.score.stream.drools.common.BiTuple;
 
 class BiGroupBy1Map1CollectMutator<A, B, NewA, NewB> extends AbstractBiGroupByMutator {
 
@@ -41,18 +34,8 @@ class BiGroupBy1Map1CollectMutator<A, B, NewA, NewB> extends AbstractBiGroupByMu
 
     @Override
     public AbstractRuleAssembler apply(AbstractRuleAssembler ruleAssembler) {
-        Variable<A> inputA = ruleAssembler.getVariable(0);
-        Variable<B> inputB = ruleAssembler.getVariable(1);
-        Variable<BiTuple<A, B>> accumulateSource = ruleAssembler.createVariable(BiTuple.class, "source");
-        ruleAssembler.getLastPrimaryPattern()
-                .bind(accumulateSource, inputA, (b, a) -> new BiTuple<>(a, b));
-        Variable<NewA> groupKey = ruleAssembler.createVariable("groupKey");
-        Variable<NewB> output = ruleAssembler.createVariable("output");
-        ViewItem groupByPattern = groupBy(getInnerAccumulatePattern(ruleAssembler), inputA, inputB, groupKey,
-                groupKeyMappingA::apply,
-                accFunction(() -> new DroolsBiAccumulateFunction<>(collectorB), accumulateSource).as(output));
-        Variable<NewA> newA = ruleAssembler.createVariable("newA", from(groupKey));
-        Variable<NewB> newB = ruleAssembler.createVariable("newB", from(output));
-        return toBi(ruleAssembler, groupByPattern, newA, newB);
+        BiRuleAssembler biRuleAssembler = ((BiRuleAssembler) ruleAssembler);
+        return new BiRuleAssembler(
+                biRuleAssembler.leftHandSide.groupBy(groupKeyMappingA, new DroolsBiAccumulateFunction<>(collectorB)));
     }
 }

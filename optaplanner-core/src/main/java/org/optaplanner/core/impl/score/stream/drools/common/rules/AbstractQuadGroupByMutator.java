@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2021 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,18 +16,6 @@
 
 package org.optaplanner.core.impl.score.stream.drools.common.rules;
 
-import static org.drools.model.PatternDSL.PatternDef;
-
-import org.drools.model.Variable;
-import org.optaplanner.core.impl.score.stream.drools.common.QuadTuple;
-
 abstract class AbstractQuadGroupByMutator extends AbstractGroupByMutator {
-
-    @Override
-    protected <InTuple> PatternDef bindTupleVariableOnFirstGrouping(AbstractRuleAssembler ruleAssembler, PatternDef pattern,
-            Variable<InTuple> inTupleVariable) {
-        return pattern.bind(inTupleVariable, ruleAssembler.getVariable(0), ruleAssembler.getVariable(1),
-                ruleAssembler.getVariable(2), (d, a, b, c) -> new QuadTuple<>(a, b, c, d));
-    }
 
 }

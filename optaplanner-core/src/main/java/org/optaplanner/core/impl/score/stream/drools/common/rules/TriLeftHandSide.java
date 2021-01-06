@@ -16,6 +16,15 @@
 
 package org.optaplanner.core.impl.score.stream.drools.common.rules;
 
+import static java.util.Collections.singletonList;
+import static org.drools.model.DSL.*;
+import static org.drools.model.PatternDSL.pattern;
+
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
 import org.drools.model.PatternDSL;
 import org.drools.model.Variable;
 import org.drools.model.view.ViewItem;
@@ -30,15 +39,6 @@ import org.optaplanner.core.impl.score.stream.quad.AbstractQuadJoiner;
 import org.optaplanner.core.impl.score.stream.quad.FilteringQuadJoiner;
 import org.optaplanner.core.impl.score.stream.quad.NoneQuadJoiner;
 import org.optaplanner.core.impl.score.stream.tri.NoneTriJoiner;
-
-import java.util.Arrays;
-import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
-
-import static java.util.Collections.singletonList;
-import static org.drools.model.DSL.*;
-import static org.drools.model.PatternDSL.pattern;
 
 final class TriLeftHandSide<A, B, C> extends AbstractLeftHandSide {
 
@@ -129,11 +129,11 @@ final class TriLeftHandSide<A, B, C> extends AbstractLeftHandSide {
         return applyJoiners(dClass, finalJoiner, finalFilter, shouldExist);
     }
 
-    private <D> TriLeftHandSide<A, B, C> exists(Class<D> dClass, AbstractQuadJoiner<A, B, C, D>[] joiners) {
+    public <D> TriLeftHandSide<A, B, C> exists(Class<D> dClass, AbstractQuadJoiner<A, B, C, D>[] joiners) {
         return existsOrNot(dClass, joiners, true);
     }
 
-    private <D> TriLeftHandSide<A, B, C> notExists(Class<D> dClass, AbstractQuadJoiner<A, B, C, D>[] joiners) {
+    public <D> TriLeftHandSide<A, B, C> notExists(Class<D> dClass, AbstractQuadJoiner<A, B, C, D>[] joiners) {
         return existsOrNot(dClass, joiners, false);
     }
 
@@ -150,7 +150,7 @@ final class TriLeftHandSide<A, B, C> extends AbstractLeftHandSide {
         Variable<B> inputB = patternVariableB.getPrimaryVariable();
         Variable<C> inputC = patternVariableC.getPrimaryVariable();
         Variable<NewA> groupKey = variableFactory.createVariable("groupKey");
-        ViewItem<?> innerGroupByPattern = joinViewItemsWithLogicalAnd(patternVariableA, patternVariableB);
+        ViewItem<?> innerGroupByPattern = joinViewItemsWithLogicalAnd(patternVariableA, patternVariableB, patternVariableC);
         ViewItem<?> groupByPattern = PatternDSL.groupBy(innerGroupByPattern, inputA, inputB, inputC, groupKey,
                 keyMapping::apply);
         Variable<NewA> newA = (Variable<NewA>) variableFactory.createVariable("newA", from(groupKey));
@@ -179,7 +179,7 @@ final class TriLeftHandSide<A, B, C> extends AbstractLeftHandSide {
         Variable<C> inputC = patternVariableC.getPrimaryVariable();
         Variable<BiTuple<NewA, NewB>> groupKey =
                 (Variable<BiTuple<NewA, NewB>>) variableFactory.createVariable(BiTuple.class, "groupKey");
-        ViewItem<?> innerGroupByPattern = joinViewItemsWithLogicalAnd(patternVariableA, patternVariableB);
+        ViewItem<?> innerGroupByPattern = joinViewItemsWithLogicalAnd(patternVariableA, patternVariableB, patternVariableC);
         ViewItem<?> groupByPattern = PatternDSL.groupBy(innerGroupByPattern, inputA, inputB, inputC, groupKey,
                 (a, b, c) -> new BiTuple<>(keyMappingA.apply(a, b, c), keyMappingB.apply(a, b, c)));
         Variable<NewA> newA =

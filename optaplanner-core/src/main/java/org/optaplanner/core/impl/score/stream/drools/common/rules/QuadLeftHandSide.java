@@ -16,6 +16,15 @@
 
 package org.optaplanner.core.impl.score.stream.drools.common.rules;
 
+import static java.util.Collections.singletonList;
+import static org.drools.model.DSL.*;
+import static org.drools.model.PatternDSL.pattern;
+
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
 import org.drools.model.PatternDSL;
 import org.drools.model.Variable;
 import org.drools.model.view.ViewItem;
@@ -30,15 +39,6 @@ import org.optaplanner.core.impl.score.stream.penta.AbstractPentaJoiner;
 import org.optaplanner.core.impl.score.stream.penta.FilteringPentaJoiner;
 import org.optaplanner.core.impl.score.stream.penta.NonePentaJoiner;
 import org.optaplanner.core.impl.score.stream.tri.NoneTriJoiner;
-
-import java.util.Arrays;
-import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
-
-import static java.util.Collections.singletonList;
-import static org.drools.model.DSL.*;
-import static org.drools.model.PatternDSL.pattern;
 
 final class QuadLeftHandSide<A, B, C, D> extends AbstractLeftHandSide {
 
@@ -121,11 +121,11 @@ final class QuadLeftHandSide<A, B, C, D> extends AbstractLeftHandSide {
         return applyJoiners(dClass, finalJoiner, finalFilter, shouldExist);
     }
 
-    private <E> QuadLeftHandSide<A, B, C, D> exists(Class<E> dClass, AbstractPentaJoiner<A, B, C, D, E>[] joiners) {
+    public <E> QuadLeftHandSide<A, B, C, D> exists(Class<E> dClass, AbstractPentaJoiner<A, B, C, D, E>[] joiners) {
         return existsOrNot(dClass, joiners, true);
     }
 
-    private <E> QuadLeftHandSide<A, B, C, D> notExists(Class<E> dClass, AbstractPentaJoiner<A, B, C, D, E>[] joiners) {
+    public <E> QuadLeftHandSide<A, B, C, D> notExists(Class<E> dClass, AbstractPentaJoiner<A, B, C, D, E>[] joiners) {
         return existsOrNot(dClass, joiners, false);
     }
 

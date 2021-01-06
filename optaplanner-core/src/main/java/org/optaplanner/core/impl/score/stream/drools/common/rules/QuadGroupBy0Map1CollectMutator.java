@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2021 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -29,7 +29,7 @@ final class QuadGroupBy0Map1CollectMutator<A, B, C, D, NewA> extends AbstractQua
 
     @Override
     public AbstractRuleAssembler apply(AbstractRuleAssembler ruleAssembler) {
-        DroolsQuadAccumulateFunction<A, B, C, D, ?, NewA> bridge = new DroolsQuadAccumulateFunction<>(collector);
-        return collect(ruleAssembler, bridge);
+        QuadRuleAssembler quadRuleAssembler = ((QuadRuleAssembler) ruleAssembler);
+        return new UniRuleAssembler(quadRuleAssembler.leftHandSide.groupBy(new DroolsQuadAccumulateFunction<>(collector)));
     }
 }

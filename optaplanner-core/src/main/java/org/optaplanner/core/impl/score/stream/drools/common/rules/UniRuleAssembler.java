@@ -17,21 +17,13 @@
 package org.optaplanner.core.impl.score.stream.drools.common.rules;
 
 import java.math.BigDecimal;
-import java.util.List;
-import java.util.Map;
-import java.util.function.Function;
-import java.util.function.Predicate;
-import java.util.function.Supplier;
-import java.util.function.ToIntFunction;
-import java.util.function.ToLongFunction;
+import java.util.function.*;
 
 import org.drools.model.DSL;
 import org.drools.model.Drools;
 import org.drools.model.Global;
-import org.drools.model.PatternDSL.PatternDef;
 import org.drools.model.Variable;
 import org.drools.model.consequences.ConsequenceBuilder;
-import org.drools.model.view.ViewItem;
 import org.optaplanner.core.api.score.stream.uni.UniConstraintCollector;
 import org.optaplanner.core.impl.score.holder.AbstractScoreHolder;
 import org.optaplanner.core.impl.score.stream.drools.DroolsConstraint;
@@ -39,35 +31,28 @@ import org.optaplanner.core.impl.score.stream.drools.common.DroolsVariableFactor
 import org.optaplanner.core.impl.score.stream.drools.common.consequences.ConstraintConsequence;
 import org.optaplanner.core.impl.score.stream.drools.common.nodes.AbstractConstraintModelJoiningNode;
 import org.optaplanner.core.impl.score.stream.drools.common.nodes.ConstraintGraphNode;
+import org.optaplanner.core.impl.score.stream.drools.common.nodes.FromNode;
 
-final class UniRuleAssembler extends AbstractRuleAssembler<Predicate> {
-
-    private Predicate filterToApplyToLastPrimaryPattern = null;
+final class UniRuleAssembler extends AbstractRuleAssembler<UniLeftHandSide> {
 
     public UniRuleAssembler(DroolsVariableFactory variableFactory, ConstraintGraphNode previousNode) {
-        super(variableFactory, previousNode);
+        super(AbstractLeftHandSide.forVariable(((FromNode) previousNode).getFactType(), variableFactory));
     }
 
-    public UniRuleAssembler(DroolsVariableFactory variableFactory,
-                            List<ViewItem> finishedExpressions, Variable aVariable, List<PatternDef> primaryPatterns,
-                            Map<Integer, List<ViewItem>> dependentExpressionMap) {
-        super(variableFactory, finishedExpressions, primaryPatterns, dependentExpressionMap,
-                aVariable);
-    }
-
-    @Override
-    protected void addFilterToLastPrimaryPattern(Predicate predicate) {
-        if (filterToApplyToLastPrimaryPattern == null) {
-            filterToApplyToLastPrimaryPattern = predicate;
-        } else {
-            filterToApplyToLastPrimaryPattern = filterToApplyToLastPrimaryPattern.and(predicate);
-        }
+    public UniRuleAssembler(UniLeftHandSide leftHandSide) {
+        super(leftHandSide);
     }
 
     @Override
     protected AbstractRuleAssembler join(UniRuleAssembler ruleAssembler, ConstraintGraphNode joinNode) {
         return new BiJoinMutator<>((AbstractConstraintModelJoiningNode) joinNode)
                 .apply(this, ruleAssembler);
+    }
+
+    @Override
+    protected AbstractRuleAssembler andThenFilter(ConstraintGraphNode filterNode) {
+        Predicate predicate = ((Supplier<Predicate>) filterNode).get();
+        return new UniRuleAssembler(leftHandSide.filter(predicate));
     }
 
     @Override
@@ -136,17 +121,6 @@ final class UniRuleAssembler extends AbstractRuleAssembler<Predicate> {
             default:
                 throw new UnsupportedOperationException(consequence.getMatchWeightType().toString());
         }
-    }
-
-    @Override
-    protected void applyFilterToLastPrimaryPattern() {
-        if (filterToApplyToLastPrimaryPattern == null) {
-            return;
-        }
-        Predicate predicate = filterToApplyToLastPrimaryPattern;
-        getLastPrimaryPattern()
-                .expr("Filter using " + predicate, getVariable(0), (fact, a) -> predicate.test(a));
-        filterToApplyToLastPrimaryPattern = null;
     }
 
 }

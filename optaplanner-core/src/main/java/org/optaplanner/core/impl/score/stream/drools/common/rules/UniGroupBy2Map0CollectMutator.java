@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2021 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,14 +16,7 @@
 
 package org.optaplanner.core.impl.score.stream.drools.common.rules;
 
-import static org.drools.model.PatternDSL.groupBy;
-import static org.drools.modelcompiler.dsl.flow.D.from;
-
 import java.util.function.Function;
-
-import org.drools.model.Variable;
-import org.drools.model.view.ViewItem;
-import org.optaplanner.core.impl.score.stream.drools.common.BiTuple;
 
 final class UniGroupBy2Map0CollectMutator<A, NewA, NewB> extends AbstractUniGroupByMutator {
 
@@ -37,12 +30,7 @@ final class UniGroupBy2Map0CollectMutator<A, NewA, NewB> extends AbstractUniGrou
 
     @Override
     public AbstractRuleAssembler apply(AbstractRuleAssembler ruleAssembler) {
-        Variable<A> input = ruleAssembler.getVariable(0);
-        Variable<BiTuple<NewA, NewB>> groupKey = ruleAssembler.createVariable(BiTuple.class, "groupKey");
-        ViewItem groupByPattern = groupBy(getInnerAccumulatePattern(ruleAssembler), input, groupKey,
-                a -> new BiTuple<>(groupKeyMappingA.apply(a), groupKeyMappingB.apply(a)));
-        Variable<NewA> newA = ruleAssembler.createVariable("newA", from(groupKey, k -> k.a));
-        Variable<NewA> newB = ruleAssembler.createVariable("newB", from(groupKey, k -> k.b));
-        return toBi(ruleAssembler, groupByPattern, newA, newB);
+        UniRuleAssembler uniRuleAssembler = ((UniRuleAssembler) ruleAssembler);
+        return new BiRuleAssembler(uniRuleAssembler.leftHandSide.groupBy(groupKeyMappingA, groupKeyMappingB));
     }
 }

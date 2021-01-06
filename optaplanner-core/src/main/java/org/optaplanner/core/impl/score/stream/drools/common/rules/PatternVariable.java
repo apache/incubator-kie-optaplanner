@@ -16,6 +16,15 @@
 
 package org.optaplanner.core.impl.score.stream.drools.common.rules;
 
+import static org.drools.model.PatternDSL.alphaIndexedBy;
+import static org.drools.model.PatternDSL.betaIndexedBy;
+
+import java.util.Collections;
+import java.util.List;
+import java.util.function.*;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
 import org.drools.model.*;
 import org.drools.model.functions.Function1;
 import org.drools.model.functions.Predicate2;
@@ -26,15 +35,6 @@ import org.optaplanner.core.api.function.TriFunction;
 import org.optaplanner.core.api.function.TriPredicate;
 import org.optaplanner.core.impl.score.stream.bi.AbstractBiJoiner;
 import org.optaplanner.core.impl.score.stream.common.JoinerType;
-
-import java.util.Collections;
-import java.util.List;
-import java.util.function.*;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
-
-import static org.drools.model.PatternDSL.alphaIndexedBy;
-import static org.drools.model.PatternDSL.betaIndexedBy;
 
 class PatternVariable<A> {
 

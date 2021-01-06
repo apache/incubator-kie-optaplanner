@@ -16,23 +16,21 @@
 
 package org.optaplanner.core.impl.score.stream.drools.common.rules;
 
+import static org.drools.model.DSL.and;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.function.Supplier;
 
-import org.drools.model.Drools;
-import org.drools.model.PatternDSL;
 import org.drools.model.Variable;
 import org.drools.model.view.ViewItem;
 import org.optaplanner.core.impl.score.stream.drools.common.DroolsVariableFactory;
 
-import static org.drools.model.DSL.and;
-
 abstract class AbstractLeftHandSide implements Supplier<List<ViewItem<?>>> {
 
-    public static <A> UniLeftHandSide<A> forVariable(Variable<A> variable, DroolsVariableFactory variableFactory) {
-        return new UniLeftHandSide<>(variable, variableFactory);
+    public static <A> UniLeftHandSide<A> forVariable(Class<A> aClass, DroolsVariableFactory variableFactory) {
+        return new UniLeftHandSide<>(aClass, variableFactory);
     }
 
     protected final DroolsVariableFactory variableFactory;

@@ -17,17 +17,13 @@
 package org.optaplanner.core.impl.score.stream.drools.common.rules;
 
 import java.math.BigDecimal;
-import java.util.List;
-import java.util.Map;
 import java.util.function.Supplier;
 
 import org.drools.model.DSL;
 import org.drools.model.Drools;
 import org.drools.model.Global;
-import org.drools.model.PatternDSL.PatternDef;
 import org.drools.model.Variable;
 import org.drools.model.consequences.ConsequenceBuilder;
-import org.drools.model.view.ViewItem;
 import org.optaplanner.core.api.function.ToIntTriFunction;
 import org.optaplanner.core.api.function.ToLongTriFunction;
 import org.optaplanner.core.api.function.TriFunction;
@@ -35,35 +31,26 @@ import org.optaplanner.core.api.function.TriPredicate;
 import org.optaplanner.core.api.score.stream.tri.TriConstraintCollector;
 import org.optaplanner.core.impl.score.holder.AbstractScoreHolder;
 import org.optaplanner.core.impl.score.stream.drools.DroolsConstraint;
-import org.optaplanner.core.impl.score.stream.drools.common.DroolsVariableFactory;
 import org.optaplanner.core.impl.score.stream.drools.common.consequences.ConstraintConsequence;
 import org.optaplanner.core.impl.score.stream.drools.common.nodes.AbstractConstraintModelJoiningNode;
 import org.optaplanner.core.impl.score.stream.drools.common.nodes.ConstraintGraphNode;
 
-final class TriRuleAssembler extends AbstractRuleAssembler<TriPredicate> {
+final class TriRuleAssembler extends AbstractRuleAssembler<TriLeftHandSide> {
 
-    private TriPredicate filterToApplyToLastPrimaryPattern = null;
-
-    public TriRuleAssembler(DroolsVariableFactory variableFactory,
-                            List<ViewItem> finishedExpressions, Variable aVariable, Variable bVariable, Variable cVariable,
-                            List<PatternDef> primaryPatterns, Map<Integer, List<ViewItem>> dependentExpressionMap) {
-        super(variableFactory, finishedExpressions, primaryPatterns, dependentExpressionMap,
-                aVariable, bVariable, cVariable);
-    }
-
-    @Override
-    protected void addFilterToLastPrimaryPattern(TriPredicate triPredicate) {
-        if (filterToApplyToLastPrimaryPattern == null) {
-            filterToApplyToLastPrimaryPattern = triPredicate;
-        } else {
-            filterToApplyToLastPrimaryPattern = filterToApplyToLastPrimaryPattern.and(triPredicate);
-        }
+    public TriRuleAssembler(TriLeftHandSide leftHandSide) {
+        super(leftHandSide);
     }
 
     @Override
     protected AbstractRuleAssembler join(UniRuleAssembler ruleAssembler, ConstraintGraphNode joinNode) {
         return new QuadJoinMutator<>((AbstractConstraintModelJoiningNode) joinNode)
                 .apply(this, ruleAssembler);
+    }
+
+    @Override
+    protected AbstractRuleAssembler andThenFilter(ConstraintGraphNode filterNode) {
+        TriPredicate predicate = ((Supplier<TriPredicate>) filterNode).get();
+        return new TriRuleAssembler(leftHandSide.filter(predicate));
     }
 
     @Override
@@ -132,18 +119,6 @@ final class TriRuleAssembler extends AbstractRuleAssembler<TriPredicate> {
             default:
                 throw new UnsupportedOperationException(consequence.getMatchWeightType().toString());
         }
-    }
-
-    @Override
-    protected void applyFilterToLastPrimaryPattern() {
-        if (filterToApplyToLastPrimaryPattern == null) {
-            return;
-        }
-        TriPredicate predicate = filterToApplyToLastPrimaryPattern;
-        getLastPrimaryPattern()
-                .expr("Filter using " + predicate, getVariable(0), getVariable(1), getVariable(2),
-                        (fact, a, b, c) -> predicate.test(a, b, c));
-        filterToApplyToLastPrimaryPattern = null;
     }
 
 }

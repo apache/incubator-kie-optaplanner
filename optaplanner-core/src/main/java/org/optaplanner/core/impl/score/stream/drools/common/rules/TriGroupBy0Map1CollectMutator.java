@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2021 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -29,7 +29,7 @@ class TriGroupBy0Map1CollectMutator<A, B, C, NewA> extends AbstractTriGroupByMut
 
     @Override
     public AbstractRuleAssembler apply(AbstractRuleAssembler ruleAssembler) {
-        DroolsTriAccumulateFunction<A, B, C, ?, NewA> bridge = new DroolsTriAccumulateFunction<>(collector);
-        return collect(ruleAssembler, bridge);
+        TriRuleAssembler triRuleAssembler = ((TriRuleAssembler) ruleAssembler);
+        return new UniRuleAssembler(triRuleAssembler.leftHandSide.groupBy(new DroolsTriAccumulateFunction<>(collector)));
     }
 }

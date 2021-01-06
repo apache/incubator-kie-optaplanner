@@ -16,12 +16,6 @@
 
 package org.optaplanner.core.impl.score.stream.drools.common.rules;
 
-import java.util.List;
-import java.util.Map;
-
-import org.drools.model.PatternDSL.PatternDef;
-import org.drools.model.Variable;
-import org.drools.model.view.ViewItem;
 import org.optaplanner.core.impl.score.stream.drools.common.nodes.AbstractConstraintModelJoiningNode;
 import org.optaplanner.core.impl.score.stream.tri.AbstractTriJoiner;
 
@@ -35,17 +29,7 @@ final class TriJoinMutator<A, B, C> implements JoinMutator<BiRuleAssembler, TriR
 
     @Override
     public TriRuleAssembler apply(BiRuleAssembler leftRuleAssembler, UniRuleAssembler rightRuleAssembler) {
-        TriRuleAssembler triRuleAssembler = merge(leftRuleAssembler, rightRuleAssembler);
-        triRuleAssembler.addFilterToLastPrimaryPattern((a, b, c) -> joiner.matches((A) a, (B) b, (C) c));
-        return triRuleAssembler;
-    }
-
-    @Override
-    public TriRuleAssembler newRuleAssembler(BiRuleAssembler leftRuleAssembler, UniRuleAssembler rightRuleAssembler,
-            List<ViewItem> finishedExpressions, List<Variable> variables, List<PatternDef> primaryPatterns,
-            Map<Integer, List<ViewItem>> dependentExpressionMap) {
-        return new TriRuleAssembler(leftRuleAssembler, finishedExpressions, variables.get(0), variables.get(1),
-                variables.get(2), primaryPatterns, dependentExpressionMap);
+        return new TriRuleAssembler(leftRuleAssembler.leftHandSide.join(rightRuleAssembler.leftHandSide, joiner));
     }
 
 }

@@ -17,17 +17,13 @@
 package org.optaplanner.core.impl.score.stream.drools.common.rules;
 
 import java.math.BigDecimal;
-import java.util.List;
-import java.util.Map;
 import java.util.function.Supplier;
 
 import org.drools.model.DSL;
 import org.drools.model.Drools;
 import org.drools.model.Global;
-import org.drools.model.PatternDSL.PatternDef;
 import org.drools.model.Variable;
 import org.drools.model.consequences.ConsequenceBuilder;
-import org.drools.model.view.ViewItem;
 import org.optaplanner.core.api.function.QuadFunction;
 import org.optaplanner.core.api.function.QuadPredicate;
 import org.optaplanner.core.api.function.ToIntQuadFunction;
@@ -35,34 +31,25 @@ import org.optaplanner.core.api.function.ToLongQuadFunction;
 import org.optaplanner.core.api.score.stream.quad.QuadConstraintCollector;
 import org.optaplanner.core.impl.score.holder.AbstractScoreHolder;
 import org.optaplanner.core.impl.score.stream.drools.DroolsConstraint;
-import org.optaplanner.core.impl.score.stream.drools.common.DroolsVariableFactory;
 import org.optaplanner.core.impl.score.stream.drools.common.consequences.ConstraintConsequence;
 import org.optaplanner.core.impl.score.stream.drools.common.nodes.AbstractConstraintModelJoiningNode;
 import org.optaplanner.core.impl.score.stream.drools.common.nodes.ConstraintGraphNode;
 
-final class QuadRuleAssembler extends AbstractRuleAssembler<QuadPredicate> {
+final class QuadRuleAssembler extends AbstractRuleAssembler<QuadLeftHandSide> {
 
-    private QuadPredicate filterToApplyToLastPrimaryPattern = null;
-
-    public QuadRuleAssembler(DroolsVariableFactory variableFactory,
-                             List<ViewItem> finishedExpressions, Variable aVariable, Variable bVariable, Variable cVariable,
-                             Variable dVariable, List<PatternDef> primaryPatterns, Map<Integer, List<ViewItem>> dependentExpressionMap) {
-        super(variableFactory, finishedExpressions, primaryPatterns, dependentExpressionMap,
-                aVariable, bVariable, cVariable, dVariable);
-    }
-
-    @Override
-    protected void addFilterToLastPrimaryPattern(QuadPredicate quadPredicate) {
-        if (filterToApplyToLastPrimaryPattern == null) {
-            filterToApplyToLastPrimaryPattern = quadPredicate;
-        } else {
-            filterToApplyToLastPrimaryPattern = filterToApplyToLastPrimaryPattern.and(quadPredicate);
-        }
+    public QuadRuleAssembler(QuadLeftHandSide leftHandSide) {
+        super(leftHandSide);
     }
 
     @Override
     protected AbstractRuleAssembler join(UniRuleAssembler ruleAssembler, ConstraintGraphNode joinNode) {
         throw new UnsupportedOperationException("Impossible state: Penta streams are not supported.");
+    }
+
+    @Override
+    protected AbstractRuleAssembler andThenFilter(ConstraintGraphNode filterNode) {
+        QuadPredicate predicate = ((Supplier<QuadPredicate>) filterNode).get();
+        return new QuadRuleAssembler(leftHandSide.filter(predicate));
     }
 
     @Override
@@ -131,18 +118,6 @@ final class QuadRuleAssembler extends AbstractRuleAssembler<QuadPredicate> {
             default:
                 throw new UnsupportedOperationException(consequence.getMatchWeightType().toString());
         }
-    }
-
-    @Override
-    protected void applyFilterToLastPrimaryPattern() {
-        if (filterToApplyToLastPrimaryPattern == null) {
-            return;
-        }
-        QuadPredicate predicate = filterToApplyToLastPrimaryPattern;
-        getLastPrimaryPattern()
-                .expr("Filter using " + predicate, getVariable(0), getVariable(1), getVariable(2), getVariable(3),
-                        (fact, a, b, c, d) -> predicate.test(a, b, c, d));
-        filterToApplyToLastPrimaryPattern = null;
     }
 
 }
