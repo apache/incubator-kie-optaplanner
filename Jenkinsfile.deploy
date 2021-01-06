@@ -191,15 +191,57 @@ pipeline {
                 }
             }
         }
-    }
-    post {
-        always {
-            script {
-                def propertiesStr = deployProperties.collect{ entry ->  "${entry.key}=${entry.value}" }.join("\n")
-                writeFile(text: propertiesStr, file: 'deployment.properties')
-                archiveArtifacts(artifacts: 'deployment.properties')
+
+
+        stage('Deploy artifacts') {
+            steps {
+                script {
+                    deployMavenArtifacts(getOptaplannerMavenCommand(), optaplannerRepository)
+                    deployMavenArtifacts(getOptawebVehicleRoutingMavenCommand(), vehicleRoutingRepository)
+                    deployMavenArtifacts(getOptawebEmployeeRosteringMavenCommand(), employeeRosteringRepository)
+                }
             }
-            cleanWs()
+        }
+
+        stage('Create PRs') {
+            when {
+                expression { return isRelease() }
+            }
+            steps {
+                commitAndCreatePR(optaplannerRepository)
+                commitAndCreatePRIgnoringNpmRegistry(vehicleRoutingRepository)
+                commitAndCreatePRIgnoringNpmRegistry(employeeRosteringRepository)
+            }
+            post {
+                success {
+                    script {
+                        setDeployPropertyIfNeeded("${optaplannerRepository}.pr.source.uri", "https://github.com/${getBotAuthor()}/${optaplannerRepository}")
+                        setDeployPropertyIfNeeded("${optaplannerRepository}.pr.source.ref", getBotBranch())
+                        setDeployPropertyIfNeeded("${optaplannerRepository}.pr.target.uri", "https://github.com/${getGitAuthor()}/${optaplannerRepository}")
+                        setDeployPropertyIfNeeded("${optaplannerRepository}.pr.target.ref", getBuildBranch())
+
+                        setDeployPropertyIfNeeded("${vehicleRoutingRepository}.pr.source.uri", "https://github.com/${getBotAuthor()}/${vehicleRoutingRepository}")
+                        setDeployPropertyIfNeeded("${vehicleRoutingRepository}.pr.source.ref", getBotBranch())
+                        setDeployPropertyIfNeeded("${vehicleRoutingRepository}.pr.target.uri", "https://github.com/${getGitAuthor()}/${vehicleRoutingRepository}")
+                        setDeployPropertyIfNeeded("${vehicleRoutingRepository}.pr.target.ref", getBuildBranch())
+
+                        setDeployPropertyIfNeeded("${employeeRosteringRepository}.pr.source.uri", "https://github.com/${getBotAuthor()}/${employeeRosteringRepository}")
+                        setDeployPropertyIfNeeded("${employeeRosteringRepository}.pr.source.ref", getBotBranch())
+                        setDeployPropertyIfNeeded("${employeeRosteringRepository}.pr.target.uri", "https://github.com/${getGitAuthor()}/${employeeRosteringRepository}")
+                        setDeployPropertyIfNeeded("${employeeRosteringRepository}.pr.target.ref", getBuildBranch())
+                    }
+                }
+            }
+        }
+        post {
+            always {
+                script {
+                    def propertiesStr = deployProperties.collect { entry -> "${entry.key}=${entry.value}" }.join("\n")
+                    writeFile(text: propertiesStr, file: 'deployment.properties')
+                    archiveArtifacts(artifacts: 'deployment.properties')
+                }
+                cleanWs()
+            }
         }
     }
 }
