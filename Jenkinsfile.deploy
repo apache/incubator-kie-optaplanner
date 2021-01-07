@@ -250,12 +250,9 @@ void updateQuickstartsVersions(){
     maven.mvnSetVersionProperty(getOptaplannerQuickstartsMavenCommand(), "version.org.optaplanner", getProjectVersion())
     maven.mvnVersionsUpdateParentAndChildModules(getOptaplannerQuickstartsMavenCommand(), getProjectVersion())
     gradleVersionsUpdate(quickstartsRepository,getProjectVersion())
-    removeJbossNexusFromMavenAndGradle(quickstartsRepository)
 
     dir(quickstartsRepository) {
         assert !sh (script: 'grep -Rn "SNAPSHOT" --include={pom.xml,build.gradle}| grep -v -e "0.1.0-SNAPSHOT" -e ">1.0-SNAPSHOT"|cat'
-                , allowEmptyResults: true, returnStdout: true)
-        assert !sh (script: 'grep -Rn "repository.jboss.org" --include={pom.xml,build.gradle}|cat'
                 , allowEmptyResults: true, returnStdout: true)
     }
 }
@@ -267,6 +264,8 @@ void removeJbossNexusFromMavenAndGradle(String repo) {
             sed -i \':a;N;$!ba;s/\\n *<repositories>.*<\\/repositories>//g\' pom.xml
             sed -i \':a;N;$!ba;s/\\n *\\/\\/ To get snapshots during development[^{}]*maven {[^{}]*mavenContent {[^{}]*snapshotsOnly[^{}]*}[^{}]*}//g\' */build.gradle
         '''
+        assert !sh (script: 'grep -Rn "repository.jboss.org" --include={pom.xml,build.gradle}|cat'
+                , allowEmptyResults: true, returnStdout: true)
     }
 }
 
