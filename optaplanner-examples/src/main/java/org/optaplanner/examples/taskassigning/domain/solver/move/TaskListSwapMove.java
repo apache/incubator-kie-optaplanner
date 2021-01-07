@@ -39,9 +39,8 @@ public class TaskListSwapMove extends AbstractMove<TaskAssigningSolution> {
 
     @Override
     protected void doMoveOnGenuineVariables(ScoreDirector<TaskAssigningSolution> scoreDirector) {
-        // TODO lookup might not be necessary
-        Employee leftEmployee = scoreDirector.lookUpWorkingObject(leftTask.getEmployee());
-        Employee rightEmployee = scoreDirector.lookUpWorkingObject(rightTask.getEmployee());
+        Employee leftEmployee = leftTask.getEmployee();
+        Employee rightEmployee = rightTask.getEmployee();
 
         scoreDirector.beforeVariableChanged(leftEmployee, "tasks");
         leftEmployee.getTasks().set(leftTask.getIndex(), rightTask);
@@ -68,14 +67,11 @@ public class TaskListSwapMove extends AbstractMove<TaskAssigningSolution> {
         scoreDirector.beforeProblemPropertyChanged(rightTask);
         rightTask.setIndex(leftTaskIndex);
         scoreDirector.afterProblemPropertyChanged(rightTask);
-
-        scoreDirector.triggerVariableListeners();
     }
 
     @Override
     public boolean isMoveDoable(ScoreDirector<TaskAssigningSolution> scoreDirector) {
-        return scoreDirector.lookUpWorkingObject(leftTask).getEmployee() != null
-                && scoreDirector.lookUpWorkingObject(rightTask).getEmployee() != null;
+        return leftTask.getEmployee() != null && rightTask.getEmployee() != null;
     }
 
     @Override
