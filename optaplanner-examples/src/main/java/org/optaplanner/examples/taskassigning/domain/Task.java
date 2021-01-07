@@ -24,6 +24,7 @@ import org.optaplanner.core.api.domain.variable.IndexShadowVariable;
 import org.optaplanner.core.api.domain.variable.PlanningVariableReference;
 import org.optaplanner.examples.common.domain.AbstractPersistable;
 import org.optaplanner.examples.common.swingui.components.Labeled;
+import org.optaplanner.examples.taskassigning.domain.solver.CustomCollectionInverseRelationShadowVariableListener;
 import org.optaplanner.examples.taskassigning.domain.solver.StartTimeUpdatingVariableListener;
 import org.optaplanner.examples.taskassigning.domain.solver.TaskDifficultyComparator;
 
@@ -48,11 +49,17 @@ public class Task extends AbstractPersistable implements Labeled {
     // depending on whether the genuine `@PlanningVariable List<Task> tasks` is disjoint or not (for task assignment it
     // is disjoint, for other domains it may not be).
     // TODO unify this with @InverseRelationshipShadowVariable
-    @CollectionInverseRelationShadowVariable(sourceVariableName = "tasks")
+    @CollectionInverseRelationShadowVariable(sourceVariableName = "tasks") // TODO Strawman API, to be implemented
+    // FIXME temporary custom shadow variable listener, will be replaced by a generic one
+    @CustomShadowVariable(
+            variableListenerClass = CustomCollectionInverseRelationShadowVariableListener.class,
+            sources = @PlanningVariableReference(entityClass = Employee.class, variableName = "tasks"))
     // TODO the entity (Employee) or just the collection variable (List<Task>)?
     private Employee employee;
-    @IndexShadowVariable(sourceVariableName = "tasks")
-    private int index;
+    @IndexShadowVariable(sourceVariableName = "tasks") // TODO Strawman API, to be implemented
+    // FIXME temporary custom shadow variable listener, will be replaced by a generic one
+    @CustomShadowVariable(variableListenerRef = @PlanningVariableReference(variableName = "employee"))
+    private Integer index;
     @CustomShadowVariable(variableListenerClass = StartTimeUpdatingVariableListener.class,
             // Arguable, to adhere to API specs (although this works), nextTask and employee should also be a source,
             // because this shadow must be triggered after nextTask and employee (but there is no need to be triggered by those)

@@ -41,11 +41,6 @@ public class RoundRobinInitializer implements CustomPhaseCommand<TaskAssigningSo
             employee.getTasks().add(task);
             scoreDirector.afterVariableChanged(employee, "tasks");
             scoreDirector.triggerVariableListeners();
-
-            // Update shadow variables
-            // FIXME remove this once variable listeners are implemented
-            task.setEmployee(employee);
-            task.setIndex(employee.getTasks().size() - 1);
         }
     }
 }

@@ -49,24 +49,6 @@ public class TaskListSwapMove extends AbstractMove<TaskAssigningSolution> {
         scoreDirector.beforeVariableChanged(rightEmployee, "tasks");
         rightEmployee.getTasks().set(rightTask.getIndex(), leftTask);
         scoreDirector.afterVariableChanged(rightEmployee, "tasks");
-
-        // HACK: mimic variable listeners
-        scoreDirector.beforeProblemPropertyChanged(leftTask);
-        leftTask.setEmployee(rightEmployee);
-        scoreDirector.afterProblemPropertyChanged(leftTask);
-
-        scoreDirector.beforeProblemPropertyChanged(rightTask);
-        rightTask.setEmployee(leftEmployee);
-        scoreDirector.afterProblemPropertyChanged(rightTask);
-
-        int leftTaskIndex = leftTask.getIndex();
-        scoreDirector.beforeProblemPropertyChanged(leftTask);
-        leftTask.setIndex(rightTask.getIndex());
-        scoreDirector.afterProblemPropertyChanged(leftTask);
-
-        scoreDirector.beforeProblemPropertyChanged(rightTask);
-        rightTask.setIndex(leftTaskIndex);
-        scoreDirector.afterProblemPropertyChanged(rightTask);
     }
 
     @Override
