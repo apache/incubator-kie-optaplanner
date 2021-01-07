@@ -20,9 +20,14 @@
     <customPhaseCommandClass>org.optaplanner.examples.taskassigning.domain.solver.solution.initializer.RoundRobinInitializer</customPhaseCommandClass>
   </customPhase>
   <localSearch>
-    <moveListFactory>
-      <moveListFactoryClass>org.optaplanner.examples.taskassigning.domain.solver.move.factory.TaskListSwapMoveFactory</moveListFactoryClass>
-    </moveListFactory>
+    <unionMoveSelector>
+      <moveListFactory>
+        <moveListFactoryClass>org.optaplanner.examples.taskassigning.domain.solver.move.factory.TaskListChangeMoveFactory</moveListFactoryClass>
+      </moveListFactory>
+      <moveListFactory>
+        <moveListFactoryClass>org.optaplanner.examples.taskassigning.domain.solver.move.factory.TaskListSwapMoveFactory</moveListFactoryClass>
+      </moveListFactory>
+    </unionMoveSelector>
     <forager>
       <acceptedCountLimit>100</acceptedCountLimit>
     </forager>
