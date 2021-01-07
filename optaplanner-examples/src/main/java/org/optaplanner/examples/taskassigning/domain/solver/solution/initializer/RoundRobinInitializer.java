@@ -46,8 +46,6 @@ public class RoundRobinInitializer implements CustomPhaseCommand<TaskAssigningSo
             // FIXME remove this once variable listeners are implemented
             task.setEmployee(employee);
             task.setIndex(employee.getTasks().size() - 1);
-            Integer previousEndTime = task.getPreviousTask() == null ? 0 : task.getPreviousTask().getEndTime();
-            task.setStartTime(previousEndTime);
         }
     }
 }

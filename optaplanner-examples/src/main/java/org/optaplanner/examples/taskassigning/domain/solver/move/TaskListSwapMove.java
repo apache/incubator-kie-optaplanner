@@ -69,20 +69,7 @@ public class TaskListSwapMove extends AbstractMove<TaskAssigningSolution> {
         rightTask.setIndex(leftTaskIndex);
         scoreDirector.afterProblemPropertyChanged(rightTask);
 
-        updateStartTime(scoreDirector, leftTask);
-        updateStartTime(scoreDirector, rightTask);
-
         scoreDirector.triggerVariableListeners();
-    }
-
-    private void updateStartTime(ScoreDirector<TaskAssigningSolution> scoreDirector, Task inputTask) {
-        Task updatedTask = inputTask;
-        while (updatedTask != null) {
-            scoreDirector.beforeProblemPropertyChanged(updatedTask);
-            updatedTask.setStartTime(updatedTask.getPreviousTask() == null ? 0 : updatedTask.getPreviousTask().getEndTime());
-            scoreDirector.afterProblemPropertyChanged(updatedTask);
-            updatedTask = updatedTask.getNextTask();
-        }
     }
 
     @Override
