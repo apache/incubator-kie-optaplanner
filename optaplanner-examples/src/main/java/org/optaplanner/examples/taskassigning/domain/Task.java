@@ -16,15 +16,21 @@
 
 package org.optaplanner.examples.taskassigning.domain;
 
+import org.optaplanner.core.api.domain.entity.PlanningEntity;
 import org.optaplanner.core.api.domain.entity.PlanningPin;
 import org.optaplanner.core.api.domain.variable.CollectionInverseRelationShadowVariable;
+import org.optaplanner.core.api.domain.variable.CustomShadowVariable;
 import org.optaplanner.core.api.domain.variable.IndexShadowVariable;
+import org.optaplanner.core.api.domain.variable.PlanningVariableReference;
 import org.optaplanner.examples.common.domain.AbstractPersistable;
 import org.optaplanner.examples.common.swingui.components.Labeled;
+import org.optaplanner.examples.taskassigning.domain.solver.StartTimeUpdatingVariableListener;
+import org.optaplanner.examples.taskassigning.domain.solver.TaskDifficultyComparator;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 
 // TODO convert entity difficulty to value strength
+@PlanningEntity(difficultyComparatorClass = TaskDifficultyComparator.class)
 @XStreamAlias("TaTask")
 public class Task extends AbstractPersistable implements Labeled {
 
@@ -47,6 +53,10 @@ public class Task extends AbstractPersistable implements Labeled {
     private Employee employee;
     @IndexShadowVariable(sourceVariableName = "tasks")
     private int index;
+    @CustomShadowVariable(variableListenerClass = StartTimeUpdatingVariableListener.class,
+            // Arguable, to adhere to API specs (although this works), nextTask and employee should also be a source,
+            // because this shadow must be triggered after nextTask and employee (but there is no need to be triggered by those)
+            sources = { @PlanningVariableReference(entityClass = Employee.class, variableName = "tasks") })
     private Integer startTime; // In minutes
 
     public Task() {
