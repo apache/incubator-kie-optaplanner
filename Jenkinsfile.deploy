@@ -247,7 +247,7 @@ pipeline {
 }
 
 void updateQuickstartsVersions(){
-    maven.mvnSetVersionProperty(getOptaplannerQuickstartsMavenCommand(),"version.org.optaplanner",getProjectVersion())
+    maven.mvnSetVersionProperty(getOptaplannerQuickstartsMavenCommand(), "version.org.optaplanner", getProjectVersion())
     maven.mvnVersionsUpdateParentAndChildModules(getOptaplannerQuickstartsMavenCommand(), getProjectVersion())
     gradleVersionsUpdate(quickstartsRepository,getProjectVersion())
     removeJbossNexusFromMavenAndGradle(quickstartsRepository)
