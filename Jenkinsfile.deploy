@@ -209,7 +209,7 @@ pipeline {
             }
             steps {
                 commitAndCreatePR(optaplannerRepository)
-                commitAndCreatePRIgnoringNpmRegistry(vehicleRoutingRepository)
+                //commitAndCreatePRIgnoringNpmRegistry(vehicleRoutingRepository)
                 commitAndCreatePRIgnoringNpmRegistry(employeeRosteringRepository)
                 commitAndCreatePR(quickstartsRepository)
             }
