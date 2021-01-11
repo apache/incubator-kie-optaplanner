@@ -31,8 +31,11 @@
     <version.com.h2database>1.3.173</version.com.h2database>
     <version.com.thoughtworks.xstream>1.4.15</version.com.thoughtworks.xstream>
     <version.io.quarkus>1.10.0.Final</version.io.quarkus>
+    <version.io.quarkus.gizmo>1.0.4.Final</version.io.quarkus.gizmo>
+    <version.org.jboss.jandex>2.1.3.Final</version.org.jboss.jandex>
     <version.jakarta.json.bind>1.0.2</version.jakarta.json.bind>
     <version.jakarta.xml.bind>2.3.3</version.jakarta.xml.bind>
+    <version.jakarta.ws.rs>2.1.6</version.jakarta.ws.rs>
     <version.org.apache.commons.lang3>3.9</version.org.apache.commons.lang3>
     <version.org.apache.commons.math3>3.4.1</version.org.apache.commons.math3>
     <version.org.apache.poi>4.1.2</version.org.apache.poi>
@@ -217,6 +220,11 @@
         <version>${version.com.thoughtworks.xstream}</version>
       </dependency>
       <dependency>
+        <groupId>io.quarkus.gizmo</groupId>
+        <artifactId>gizmo</artifactId>
+        <version>${version.io.quarkus.gizmo}</version>
+      </dependency>
+      <dependency>
         <groupId>jakarta.json.bind</groupId>
         <artifactId>jakarta.json.bind-api</artifactId>
         <version>${version.jakarta.json.bind}</version>
@@ -225,6 +233,11 @@
         <groupId>jakarta.xml.bind</groupId>
         <artifactId>jakarta.xml.bind-api</artifactId>
         <version>${version.jakarta.xml.bind}</version>
+      </dependency>
+      <dependency>
+        <groupId>jakarta.ws.rs</groupId>
+        <artifactId>jakarta.ws.rs-api</artifactId>
+        <version>${version.jakarta.ws.rs}</version>
       </dependency>
       <dependency>
         <groupId>org.apache.commons</groupId>
@@ -282,6 +295,11 @@
         <groupId>org.hibernate</groupId>
         <artifactId>hibernate-entitymanager</artifactId>
         <version>${version.org.hibernate}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.jboss</groupId>
+        <artifactId>jandex</artifactId>
+        <version>${version.org.jboss.jandex}</version>
       </dependency>
       <dependency>
         <groupId>org.jdom</groupId>

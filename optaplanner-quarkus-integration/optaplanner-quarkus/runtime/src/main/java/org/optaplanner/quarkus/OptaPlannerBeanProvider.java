@@ -36,6 +36,8 @@ import org.optaplanner.core.api.solver.SolverFactory;
 import org.optaplanner.core.api.solver.SolverManager;
 import org.optaplanner.core.config.solver.SolverConfig;
 import org.optaplanner.core.config.solver.SolverManagerConfig;
+import org.optaplanner.quarkus.remote.repository.InMemorySolutionRepository;
+import org.optaplanner.quarkus.remote.repository.SolutionRepository;
 
 import io.quarkus.arc.DefaultBean;
 
@@ -71,6 +73,14 @@ public class OptaPlannerBeanProvider {
     @Produces
     <Solution_> ScoreManager<Solution_, SimpleScore> scoreManager_workaroundSimpleScore(
             SolverFactory<Solution_> solverFactory) {
+        return ScoreManager.create(solverFactory);
+    }
+
+    // TODO: Replace with a generic solution (ASM does not seem to write type parameters correctly).
+    @DefaultBean
+    @Singleton
+    @Produces
+    ScoreManager scoreManager_object(SolverFactory solverFactory) {
         return ScoreManager.create(solverFactory);
     }
 
@@ -162,4 +172,11 @@ public class OptaPlannerBeanProvider {
         return ScoreManager.create(solverFactory);
     }
 
+    // TODO Temporary solution that needs to be replaced by some kind of persistence or messaging.
+    @DefaultBean
+    @Singleton
+    @Produces
+    <Solution_, ProblemId_> SolutionRepository<Solution_, ProblemId_> solutionRepository() {
+        return new InMemorySolutionRepository<>();
+    }
 }

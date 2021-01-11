@@ -22,6 +22,7 @@ import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.score.calculator.EasyScoreCalculator;
 import org.optaplanner.core.api.score.calculator.IncrementalScoreCalculator;
 import org.optaplanner.core.api.score.stream.ConstraintProvider;
+import org.optaplanner.quarkus.remote.rest.SolverResource;
 
 public final class DotNames {
 
@@ -31,6 +32,7 @@ public final class DotNames {
     static final DotName CONSTRAINT_PROVIDER = DotName.createSimple(ConstraintProvider.class.getName());
     static final DotName INCREMENTAL_SCORE_CALCULATOR =
             DotName.createSimple(IncrementalScoreCalculator.class.getName());
+    static final DotName SOLVER_RESOURCE = DotName.createSimple(SolverResource.class.getName());
 
     private DotNames() {
     }

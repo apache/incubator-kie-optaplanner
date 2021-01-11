@@ -18,6 +18,7 @@ package org.optaplanner.quarkus.deployment;
 
 import static io.quarkus.deployment.annotations.ExecutionTime.STATIC_INIT;
 
+import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -30,6 +31,7 @@ import javax.inject.Singleton;
 import org.jboss.jandex.AnnotationInstance;
 import org.jboss.jandex.AnnotationTarget;
 import org.jboss.jandex.ClassInfo;
+import org.jboss.jandex.ClassType;
 import org.jboss.jandex.DotName;
 import org.jboss.jandex.IndexView;
 import org.jboss.jandex.Type;
@@ -45,8 +47,13 @@ import org.optaplanner.core.config.solver.SolverManagerConfig;
 import org.optaplanner.core.config.solver.termination.TerminationConfig;
 import org.optaplanner.quarkus.OptaPlannerBeanProvider;
 import org.optaplanner.quarkus.OptaPlannerRecorder;
+import org.optaplanner.quarkus.deployment.rest.SolverResourceBuildItem;
+import org.optaplanner.quarkus.deployment.rest.SolverResourceInfo;
+import org.optaplanner.quarkus.deployment.rest.gizmo.SolverResourceGizmoImplementor;
 
 import io.quarkus.arc.deployment.AdditionalBeanBuildItem;
+import io.quarkus.arc.deployment.GeneratedBeanBuildItem;
+import io.quarkus.arc.deployment.GeneratedBeanGizmoAdaptor;
 import io.quarkus.arc.deployment.SyntheticBeanBuildItem;
 import io.quarkus.deployment.annotations.BuildProducer;
 import io.quarkus.deployment.annotations.BuildStep;
@@ -57,6 +64,7 @@ import io.quarkus.deployment.builditem.HotDeploymentWatchedFileBuildItem;
 import io.quarkus.deployment.builditem.nativeimage.ReflectiveClassBuildItem;
 import io.quarkus.deployment.builditem.nativeimage.ReflectiveHierarchyBuildItem;
 import io.quarkus.deployment.recording.RecorderContext;
+import io.quarkus.gizmo.ClassOutput;
 import io.quarkus.runtime.configuration.ConfigurationException;
 
 class OptaPlannerProcessor {
@@ -161,6 +169,45 @@ class OptaPlannerProcessor {
                 .defaultBean()
                 .supplier(recorder.solverManagerConfig(solverManagerConfig)).done());
         additionalBeans.produce(new AdditionalBeanBuildItem(OptaPlannerBeanProvider.class));
+    }
+
+    @BuildStep
+    void findOptaPlannerResources(CombinedIndexBuildItem index,
+            BuildProducer<SolverResourceBuildItem> restDataResourceProducer) {
+        for (ClassInfo classInfo : index.getIndex().getKnownDirectImplementors(DotNames.SOLVER_RESOURCE)) {
+            if (!Modifier.isInterface(classInfo.flags())) {
+                throw new IllegalStateException(classInfo.name() + " has to be an interface");
+            }
+
+            List<Type> generics = getGenericTypes(classInfo);
+            Class<?> resourceInterface = convertClassInfoToClass(classInfo);
+            Class<?> solutionType = convertDotNameToClass(generics.get(0).name());
+            Class<?> problemIdType = convertDotNameToClass(generics.get(1).name());
+            SolverResourceInfo solverResourceInfo = new SolverResourceInfo(resourceInterface, solutionType, problemIdType);
+            SolverResourceBuildItem solverResourceBuildItem = new SolverResourceBuildItem(solverResourceInfo);
+            restDataResourceProducer.produce(solverResourceBuildItem);
+        }
+    }
+
+    private List<Type> getGenericTypes(ClassInfo classInfo) {
+        return classInfo.interfaceTypes()
+                .stream()
+                .findFirst()
+                .orElseThrow(() -> new IllegalStateException(
+                        "The interface " + classInfo.toString() + " does not declare any generic types."))
+                .asParameterizedType()
+                .arguments();
+    }
+
+    @BuildStep
+    void implementResources(BuildProducer<GeneratedBeanBuildItem> implementationsProducer,
+            List<SolverResourceBuildItem> resourceBuildItems) {
+
+        if (!resourceBuildItems.isEmpty()) {
+            ClassOutput classOutput = new GeneratedBeanGizmoAdaptor(implementationsProducer);
+            SolverResourceGizmoImplementor solverResourceGizmoImplementor = new SolverResourceGizmoImplementor(classOutput);
+            solverResourceGizmoImplementor.implementSolverResource(resourceBuildItems.get(0).getSolverResourceInfo());
+        }
     }
 
     private void applySolverProperties(RecorderContext recorderContext,
@@ -333,7 +380,15 @@ class OptaPlannerProcessor {
     }
 
     private <T> Class<? extends T> convertClassInfoToClass(ClassInfo classInfo) {
-        String className = classInfo.name().toString();
+        return convertDotNameToClass(classInfo.name());
+    }
+
+    private <T> Class<? extends T> convertClassTypeToClass(ClassType classType) {
+        return convertDotNameToClass(classType.name());
+    }
+
+    private <T> Class<? extends T> convertDotNameToClass(DotName dotName) {
+        String className = dotName.toString();
         ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
         try {
             return (Class<? extends T>) classLoader.loadClass(className);
@@ -342,5 +397,4 @@ class OptaPlannerProcessor {
                     + ") cannot be created during deployment.", e);
         }
     }
-
 }
