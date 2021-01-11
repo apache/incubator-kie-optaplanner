@@ -16,16 +16,9 @@
 
 package org.optaplanner.core.impl.score.stream.drools.common.rules;
 
-import static org.drools.model.PatternDSL.alphaIndexedBy;
-import static org.drools.model.PatternDSL.betaIndexedBy;
-
-import java.util.Collections;
-import java.util.List;
-import java.util.function.*;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
-
-import org.drools.model.*;
+import org.drools.model.BetaIndex;
+import org.drools.model.PatternDSL;
+import org.drools.model.Variable;
 import org.drools.model.functions.Function1;
 import org.drools.model.functions.Predicate2;
 import org.drools.model.view.ViewItem;
@@ -35,6 +28,14 @@ import org.optaplanner.core.api.function.TriFunction;
 import org.optaplanner.core.api.function.TriPredicate;
 import org.optaplanner.core.impl.score.stream.bi.AbstractBiJoiner;
 import org.optaplanner.core.impl.score.stream.common.JoinerType;
+
+import java.util.Collections;
+import java.util.List;
+import java.util.function.*;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
+import static org.drools.model.PatternDSL.betaIndexedBy;
 
 class PatternVariable<A> {
 
@@ -78,11 +79,7 @@ class PatternVariable<A> {
     }
 
     public PatternVariable<A> filter(Predicate<A> predicate) {
-        return new PatternVariable<>(this, p -> {
-            AlphaIndex<A, Boolean> index =
-                    alphaIndexedBy(Boolean.class, Index.ConstraintType.EQUAL, 0, predicate::test, Boolean.TRUE);
-            return p.expr("Filter using " + predicate, predicate::test, index);
-        });
+        return new PatternVariable<>(this, p -> p.expr("Filter using " + predicate, predicate::test));
     }
 
     public <LeftJoinVar_> PatternVariable<A> filter(BiPredicate<LeftJoinVar_, A> predicate,
