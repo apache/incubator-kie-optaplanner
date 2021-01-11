@@ -208,10 +208,10 @@ pipeline {
                 expression { return isRelease() }
             }
             steps {
-                commitAndCreatePR(optaplannerRepository)
-                //commitAndCreatePRIgnoringNpmRegistry(vehicleRoutingRepository)
-                commitAndCreatePRIgnoringNpmRegistry(employeeRosteringRepository)
-                commitAndCreatePR(quickstartsRepository)
+                commitAndCreatePR(optaplannerRepository, getBuildBranch())
+                commitAndCreatePRIgnoringNpmRegistry(vehicleRoutingRepository, getBuildBranch())
+                commitAndCreatePRIgnoringNpmRegistry(employeeRosteringRepository, getBuildBranch())
+                commitAndCreatePR(quickstartsRepository, getQuickStartsBranch())
             }
             post {
                 success {
