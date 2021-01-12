@@ -71,7 +71,8 @@ final class UniRuleAssembler extends AbstractRuleAssembler<UniLeftHandSide> {
 
     @Override
     protected UniRuleAssembler andThenGroupBy0Map1Collect(Object collector) {
-        return new UniRuleAssembler(this.leftHandSide.groupBy(new DroolsUniAccumulateFunction<>((UniConstraintCollector) collector)));
+        return new UniRuleAssembler(
+                this.leftHandSide.groupBy(new DroolsUniAccumulateFunction<>((UniConstraintCollector) collector)));
     }
 
     @Override
@@ -81,7 +82,8 @@ final class UniRuleAssembler extends AbstractRuleAssembler<UniLeftHandSide> {
 
     @Override
     protected BiRuleAssembler andThenGroupBy1Map1Collect(Object mapping, Object collector) {
-        return new BiRuleAssembler(this.leftHandSide.groupBy((Function) mapping, new DroolsUniAccumulateFunction<>((UniConstraintCollector) collector)));
+        return new BiRuleAssembler(this.leftHandSide.groupBy((Function) mapping,
+                new DroolsUniAccumulateFunction<>((UniConstraintCollector) collector)));
     }
 
     @Override
@@ -90,15 +92,14 @@ final class UniRuleAssembler extends AbstractRuleAssembler<UniLeftHandSide> {
     }
 
     @Override
-    protected TriRuleAssembler andThenGroupBy2Map1Collect(Object mappingA, Object mappingB,
-                                                        Object collectorC) {
-        return (TriRuleAssembler) new UniGroupBy2Map1CollectMutator<>((Function) mappingA, (Function) mappingB,
-                (UniConstraintCollector) collectorC).apply(this);
+    protected TriRuleAssembler andThenGroupBy2Map1Collect(Object mappingA, Object mappingB, Object collectorC) {
+        return new TriRuleAssembler(this.leftHandSide.groupBy((Function) mappingA, (Function) mappingB,
+                new DroolsUniAccumulateFunction<>((UniConstraintCollector) collectorC)));
     }
 
     @Override
     protected QuadRuleAssembler andThenGroupBy2Map2Collect(Object mappingA, Object mappingB, Object collectorC,
-                                                        Object collectorD) {
+            Object collectorD) {
         return (QuadRuleAssembler) new UniGroupBy2Map2CollectMutator<>((Function) mappingA, (Function) mappingB,
                 (UniConstraintCollector) collectorC, (UniConstraintCollector) collectorD).apply(this);
     }

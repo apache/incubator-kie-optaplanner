@@ -87,10 +87,9 @@ final class QuadRuleAssembler extends AbstractRuleAssembler<QuadLeftHandSide> {
     }
 
     @Override
-    protected TriRuleAssembler andThenGroupBy2Map1Collect(Object mappingA, Object mappingB,
-                                                        Object collectorC) {
-        return (TriRuleAssembler) new QuadGroupBy2Map1CollectMutator<>((QuadFunction) mappingA, (QuadFunction) mappingB,
-                (QuadConstraintCollector) collectorC).apply(this);
+    protected TriRuleAssembler andThenGroupBy2Map1Collect(Object mappingA, Object mappingB, Object collectorC) {
+        return new TriRuleAssembler(this.leftHandSide.groupBy((QuadFunction) mappingA, (QuadFunction) mappingB,
+                new DroolsQuadAccumulateFunction<>((QuadConstraintCollector) collectorC)));
     }
 
     @Override
