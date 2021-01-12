@@ -83,7 +83,7 @@ final class QuadRuleAssembler extends AbstractRuleAssembler<QuadLeftHandSide> {
 
     @Override
     protected BiRuleAssembler andThenGroupBy2Map0Collect(Object mappingA, Object mappingB) {
-        return (BiRuleAssembler) new QuadGroupBy2Map0CollectMutator<>((QuadFunction) mappingA, (QuadFunction) mappingB).apply(this);
+        return new BiRuleAssembler(this.leftHandSide.groupBy((QuadFunction) mappingA, (QuadFunction) mappingB));
     }
 
     @Override

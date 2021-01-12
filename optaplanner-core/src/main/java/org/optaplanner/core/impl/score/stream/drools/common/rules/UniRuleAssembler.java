@@ -86,7 +86,7 @@ final class UniRuleAssembler extends AbstractRuleAssembler<UniLeftHandSide> {
 
     @Override
     protected BiRuleAssembler andThenGroupBy2Map0Collect(Object mappingA, Object mappingB) {
-        return (BiRuleAssembler) new UniGroupBy2Map0CollectMutator<>((Function) mappingA, (Function) mappingB).apply(this);
+        return new BiRuleAssembler(this.leftHandSide.groupBy((Function) mappingA, (Function) mappingB));
     }
 
     @Override
