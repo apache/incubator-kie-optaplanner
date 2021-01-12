@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2021 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -30,11 +30,11 @@ import org.optaplanner.core.api.function.ToIntTriFunction;
 import org.optaplanner.core.api.function.ToLongQuadFunction;
 import org.optaplanner.core.api.function.ToLongTriFunction;
 import org.optaplanner.core.api.function.TriFunction;
-import org.optaplanner.core.impl.score.stream.drools.common.nodes.BiConstraintGraphNode;
-import org.optaplanner.core.impl.score.stream.drools.common.nodes.ConstraintGraphNode;
-import org.optaplanner.core.impl.score.stream.drools.common.nodes.QuadConstraintGraphNode;
-import org.optaplanner.core.impl.score.stream.drools.common.nodes.TriConstraintGraphNode;
-import org.optaplanner.core.impl.score.stream.drools.common.nodes.UniConstraintGraphNode;
+import org.optaplanner.core.impl.score.stream.drools.common.rules.BiConstraintGraphNode;
+import org.optaplanner.core.impl.score.stream.drools.common.rules.ConstraintGraphNode;
+import org.optaplanner.core.impl.score.stream.drools.common.rules.QuadConstraintGraphNode;
+import org.optaplanner.core.impl.score.stream.drools.common.rules.TriConstraintGraphNode;
+import org.optaplanner.core.impl.score.stream.drools.common.rules.UniConstraintGraphNode;
 
 public interface ConstraintConsequence<Node_ extends ConstraintGraphNode> {
 

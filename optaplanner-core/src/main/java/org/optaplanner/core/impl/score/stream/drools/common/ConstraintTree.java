@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2021 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,9 +23,9 @@ import java.util.Deque;
 import java.util.List;
 
 import org.optaplanner.core.impl.score.stream.drools.common.consequences.ConstraintConsequence;
-import org.optaplanner.core.impl.score.stream.drools.common.nodes.ChildNode;
-import org.optaplanner.core.impl.score.stream.drools.common.nodes.ConstraintGraphNode;
-import org.optaplanner.core.impl.score.stream.drools.common.nodes.ConstraintGraphNodeType;
+import org.optaplanner.core.impl.score.stream.drools.common.rules.ChildNode;
+import org.optaplanner.core.impl.score.stream.drools.common.rules.ConstraintGraphNode;
+import org.optaplanner.core.impl.score.stream.drools.common.rules.ConstraintGraphNodeType;
 
 final class ConstraintTree<Node_ extends ConstraintGraphNode, Consequence_ extends ConstraintConsequence<Node_>> {
 

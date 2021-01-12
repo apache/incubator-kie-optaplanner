@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2021 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,7 +21,7 @@ import java.util.function.BiFunction;
 import java.util.function.ToIntBiFunction;
 import java.util.function.ToLongBiFunction;
 
-import org.optaplanner.core.impl.score.stream.drools.common.nodes.BiConstraintGraphNode;
+import org.optaplanner.core.impl.score.stream.drools.common.rules.BiConstraintGraphNode;
 
 public interface BiConstraintConsequence extends ConstraintConsequence<BiConstraintGraphNode> {
 

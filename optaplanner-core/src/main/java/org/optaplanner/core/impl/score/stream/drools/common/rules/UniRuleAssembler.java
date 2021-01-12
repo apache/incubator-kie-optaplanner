@@ -30,9 +30,6 @@ import org.optaplanner.core.impl.score.stream.bi.AbstractBiJoiner;
 import org.optaplanner.core.impl.score.stream.drools.DroolsConstraint;
 import org.optaplanner.core.impl.score.stream.drools.common.DroolsVariableFactory;
 import org.optaplanner.core.impl.score.stream.drools.common.consequences.ConstraintConsequence;
-import org.optaplanner.core.impl.score.stream.drools.common.nodes.AbstractConstraintModelJoiningNode;
-import org.optaplanner.core.impl.score.stream.drools.common.nodes.ConstraintGraphNode;
-import org.optaplanner.core.impl.score.stream.drools.common.nodes.FromNode;
 import org.optaplanner.core.impl.score.stream.drools.uni.DroolsUniAccumulateFunction;
 
 final class UniRuleAssembler extends AbstractRuleAssembler<UniLeftHandSide> {

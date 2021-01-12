@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2021 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,7 +21,7 @@ import static java.util.Objects.requireNonNull;
 import java.util.function.Supplier;
 
 import org.optaplanner.core.api.function.ToIntQuadFunction;
-import org.optaplanner.core.impl.score.stream.drools.common.nodes.QuadConstraintGraphNode;
+import org.optaplanner.core.impl.score.stream.drools.common.rules.QuadConstraintGraphNode;
 
 final class QuadConstraintIntConsequence<A, B, C, D> implements QuadConstraintConsequence,
         Supplier<ToIntQuadFunction<A, B, C, D>> {

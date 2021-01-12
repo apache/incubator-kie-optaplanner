@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2021 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,7 +22,7 @@ import java.math.BigDecimal;
 import java.util.function.Supplier;
 
 import org.optaplanner.core.api.function.QuadFunction;
-import org.optaplanner.core.impl.score.stream.drools.common.nodes.QuadConstraintGraphNode;
+import org.optaplanner.core.impl.score.stream.drools.common.rules.QuadConstraintGraphNode;
 
 final class QuadConstraintBigDecimalConsequence<A, B, C, D> implements QuadConstraintConsequence,
         Supplier<QuadFunction<A, B, C, D, BigDecimal>> {

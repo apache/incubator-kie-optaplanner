@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2021 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -60,16 +60,16 @@ import org.optaplanner.core.impl.score.stream.drools.common.consequences.Constra
 import org.optaplanner.core.impl.score.stream.drools.common.consequences.QuadConstraintConsequence;
 import org.optaplanner.core.impl.score.stream.drools.common.consequences.TriConstraintConsequence;
 import org.optaplanner.core.impl.score.stream.drools.common.consequences.UniConstraintConsequence;
-import org.optaplanner.core.impl.score.stream.drools.common.nodes.AbstractConstraintModelChildNode;
-import org.optaplanner.core.impl.score.stream.drools.common.nodes.AbstractConstraintModelNode;
-import org.optaplanner.core.impl.score.stream.drools.common.nodes.BiConstraintGraphNode;
-import org.optaplanner.core.impl.score.stream.drools.common.nodes.ChildNode;
-import org.optaplanner.core.impl.score.stream.drools.common.nodes.ConstraintGraphNode;
-import org.optaplanner.core.impl.score.stream.drools.common.nodes.FromNode;
-import org.optaplanner.core.impl.score.stream.drools.common.nodes.QuadConstraintGraphNode;
-import org.optaplanner.core.impl.score.stream.drools.common.nodes.TriConstraintGraphNode;
-import org.optaplanner.core.impl.score.stream.drools.common.nodes.UniConstraintGraphChildNode;
-import org.optaplanner.core.impl.score.stream.drools.common.nodes.UniConstraintGraphNode;
+import org.optaplanner.core.impl.score.stream.drools.common.rules.AbstractConstraintModelChildNode;
+import org.optaplanner.core.impl.score.stream.drools.common.rules.AbstractConstraintModelNode;
+import org.optaplanner.core.impl.score.stream.drools.common.rules.BiConstraintGraphNode;
+import org.optaplanner.core.impl.score.stream.drools.common.rules.ChildNode;
+import org.optaplanner.core.impl.score.stream.drools.common.rules.ConstraintGraphNode;
+import org.optaplanner.core.impl.score.stream.drools.common.rules.FromNode;
+import org.optaplanner.core.impl.score.stream.drools.common.rules.QuadConstraintGraphNode;
+import org.optaplanner.core.impl.score.stream.drools.common.rules.TriConstraintGraphNode;
+import org.optaplanner.core.impl.score.stream.drools.common.rules.UniConstraintGraphChildNode;
+import org.optaplanner.core.impl.score.stream.drools.common.rules.UniConstraintGraphNode;
 import org.optaplanner.core.impl.score.stream.drools.common.rules.RuleAssembler;
 import org.optaplanner.core.impl.score.stream.drools.common.rules.RuleAssembly;
 

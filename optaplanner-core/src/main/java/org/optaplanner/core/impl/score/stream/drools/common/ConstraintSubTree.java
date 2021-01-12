@@ -16,15 +16,15 @@
 
 package org.optaplanner.core.impl.score.stream.drools.common;
 
-import static org.optaplanner.core.impl.score.stream.drools.common.nodes.ConstraintGraphNodeType.FROM;
-import static org.optaplanner.core.impl.score.stream.drools.common.nodes.ConstraintGraphNodeType.JOIN;
+import static org.optaplanner.core.impl.score.stream.drools.common.rules.ConstraintGraphNodeType.FROM;
+import static org.optaplanner.core.impl.score.stream.drools.common.rules.ConstraintGraphNodeType.JOIN;
 
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
-import org.optaplanner.core.impl.score.stream.drools.common.nodes.ConstraintGraphNode;
-import org.optaplanner.core.impl.score.stream.drools.common.nodes.ConstraintGraphNodeType;
+import org.optaplanner.core.impl.score.stream.drools.common.rules.ConstraintGraphNode;
+import org.optaplanner.core.impl.score.stream.drools.common.rules.ConstraintGraphNodeType;
 import org.optaplanner.core.impl.score.stream.drools.common.rules.RuleAssembler;
 
 final class ConstraintSubTree {
