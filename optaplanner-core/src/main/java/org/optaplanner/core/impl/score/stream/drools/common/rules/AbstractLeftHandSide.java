@@ -16,16 +16,18 @@
 
 package org.optaplanner.core.impl.score.stream.drools.common.rules;
 
-import static org.drools.model.DSL.and;
+import org.drools.model.Index;
+import org.drools.model.Variable;
+import org.drools.model.view.ViewItem;
+import org.optaplanner.core.impl.score.stream.common.JoinerType;
+import org.optaplanner.core.impl.score.stream.drools.common.DroolsVariableFactory;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.function.Supplier;
 
-import org.drools.model.Variable;
-import org.drools.model.view.ViewItem;
-import org.optaplanner.core.impl.score.stream.drools.common.DroolsVariableFactory;
+import static org.drools.model.DSL.and;
 
 abstract class AbstractLeftHandSide implements Supplier<List<ViewItem<?>>> {
 
@@ -39,7 +41,24 @@ abstract class AbstractLeftHandSide implements Supplier<List<ViewItem<?>>> {
         this.variableFactory = Objects.requireNonNull(variableFactory);
     }
 
-    protected static <A> ViewItem<?> joinViewItemsWithLogicalAnd(PatternVariable<?>... patternVariables) {
+    protected static Index.ConstraintType getConstraintType(JoinerType type) {
+        switch (type) {
+            case EQUAL:
+                return Index.ConstraintType.EQUAL;
+            case LESS_THAN:
+                return Index.ConstraintType.LESS_THAN;
+            case LESS_THAN_OR_EQUAL:
+                return Index.ConstraintType.LESS_OR_EQUAL;
+            case GREATER_THAN:
+                return Index.ConstraintType.GREATER_THAN;
+            case GREATER_THAN_OR_EQUAL:
+                return Index.ConstraintType.GREATER_OR_EQUAL;
+            default:
+                throw new IllegalStateException("Unsupported joiner type (" + type + ").");
+        }
+    }
+
+    static ViewItem<?> joinViewItemsWithLogicalAnd(PatternVariable<?>... patternVariables) {
         List<ViewItem<?>> viewItemList = new ArrayList<>();
         for (PatternVariable<?> patternVariable : patternVariables) {
             viewItemList.addAll(patternVariable.build());

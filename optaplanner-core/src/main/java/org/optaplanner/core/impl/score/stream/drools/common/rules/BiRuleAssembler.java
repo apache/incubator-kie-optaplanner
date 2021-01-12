@@ -93,8 +93,9 @@ final class BiRuleAssembler extends AbstractRuleAssembler<BiLeftHandSide> {
     @Override
     protected QuadRuleAssembler andThenGroupBy2Map2Collect(Object mappingA, Object mappingB, Object collectorC,
                                                         Object collectorD) {
-        return (QuadRuleAssembler) new BiGroupBy2Map2CollectMutator<>((BiFunction) mappingA, (BiFunction) mappingB,
-                (BiConstraintCollector) collectorC, (BiConstraintCollector) collectorD).apply(this);
+        return new QuadRuleAssembler(this.leftHandSide.groupBy((BiFunction) mappingA, (BiFunction) mappingB,
+                new DroolsBiAccumulateFunction<>((BiConstraintCollector) collectorC),
+                new DroolsBiAccumulateFunction<>((BiConstraintCollector) collectorD)));
     }
 
     @Override

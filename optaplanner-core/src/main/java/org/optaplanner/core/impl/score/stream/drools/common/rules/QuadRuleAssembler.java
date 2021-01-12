@@ -95,8 +95,9 @@ final class QuadRuleAssembler extends AbstractRuleAssembler<QuadLeftHandSide> {
     @Override
     protected QuadRuleAssembler andThenGroupBy2Map2Collect(Object mappingA, Object mappingB, Object collectorC,
                                                         Object collectorD) {
-        return (QuadRuleAssembler) new QuadGroupBy2Map2CollectMutator<>((QuadFunction) mappingA, (QuadFunction) mappingB,
-                (QuadConstraintCollector) collectorC, (QuadConstraintCollector) collectorD).apply(this);
+        return new QuadRuleAssembler(this.leftHandSide.groupBy((QuadFunction) mappingA, (QuadFunction) mappingB,
+                new DroolsQuadAccumulateFunction<>((QuadConstraintCollector) collectorC),
+                new DroolsQuadAccumulateFunction<>((QuadConstraintCollector) collectorD)));
     }
 
     @Override

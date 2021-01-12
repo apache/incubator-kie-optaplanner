@@ -97,8 +97,9 @@ final class TriRuleAssembler extends AbstractRuleAssembler<TriLeftHandSide> {
     @Override
     protected QuadRuleAssembler andThenGroupBy2Map2Collect(Object mappingA, Object mappingB, Object collectorC,
                                                         Object collectorD) {
-        return (QuadRuleAssembler) new TriGroupBy2Map2CollectMutator<>((TriFunction) mappingA, (TriFunction) mappingB,
-                (TriConstraintCollector) collectorC, (TriConstraintCollector) collectorD).apply(this);
+        return new QuadRuleAssembler(this.leftHandSide.groupBy((TriFunction) mappingA, (TriFunction) mappingB,
+                new DroolsTriAccumulateFunction<>((TriConstraintCollector) collectorC),
+                new DroolsTriAccumulateFunction<>((TriConstraintCollector) collectorD)));
     }
 
     @Override

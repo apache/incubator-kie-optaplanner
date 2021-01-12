@@ -16,14 +16,6 @@
 
 package org.optaplanner.core.impl.score.stream.drools.common.rules;
 
-import static org.drools.model.PatternDSL.betaIndexedBy;
-
-import java.util.Collections;
-import java.util.List;
-import java.util.function.*;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
-
 import org.drools.model.BetaIndex;
 import org.drools.model.PatternDSL;
 import org.drools.model.Variable;
@@ -36,6 +28,14 @@ import org.optaplanner.core.api.function.TriFunction;
 import org.optaplanner.core.api.function.TriPredicate;
 import org.optaplanner.core.impl.score.stream.bi.AbstractBiJoiner;
 import org.optaplanner.core.impl.score.stream.common.JoinerType;
+
+import java.util.Collections;
+import java.util.List;
+import java.util.function.*;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
+import static org.drools.model.PatternDSL.betaIndexedBy;
 
 class PatternVariable<A> {
 
@@ -114,8 +114,9 @@ class PatternVariable<A> {
         // Only extract B; A is coming from a pre-bound join var.
         Predicate2<A, LeftJoinVar_> predicate = (b, a) -> joinerType.matches(a, rightExtractor.apply(b));
         return new PatternVariable<>(this, p -> {
-            BetaIndex<A, LeftJoinVar_, Object> index = betaIndexedBy(Object.class, Mutator.getConstraintType(joinerType),
-                    mappingIndex, rightExtractor, leftMapping::apply);
+            BetaIndex<A, LeftJoinVar_, Object> index = betaIndexedBy(Object.class,
+                    AbstractLeftHandSide.getConstraintType(joinerType), mappingIndex, rightExtractor,
+                    leftMapping::apply);
             return p.expr("Join using joiner #" + mappingIndex + " in " + joiner, leftJoinVar, predicate, index);
         });
     }

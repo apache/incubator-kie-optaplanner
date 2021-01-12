@@ -100,8 +100,9 @@ final class UniRuleAssembler extends AbstractRuleAssembler<UniLeftHandSide> {
     @Override
     protected QuadRuleAssembler andThenGroupBy2Map2Collect(Object mappingA, Object mappingB, Object collectorC,
             Object collectorD) {
-        return (QuadRuleAssembler) new UniGroupBy2Map2CollectMutator<>((Function) mappingA, (Function) mappingB,
-                (UniConstraintCollector) collectorC, (UniConstraintCollector) collectorD).apply(this);
+        return new QuadRuleAssembler(this.leftHandSide.groupBy((Function) mappingA, (Function) mappingB,
+                new DroolsUniAccumulateFunction<>((UniConstraintCollector) collectorC),
+                new DroolsUniAccumulateFunction<>((UniConstraintCollector) collectorD)));
     }
 
     @Override
