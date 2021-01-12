@@ -532,7 +532,7 @@ the _OptaPlanner AI constraint solver_ extension before generating your applicat
 DRL score calculation is currently incompatible with the `quarkus:dev` mode.
 ====
 
-Following properties are supported in Quarkus `application.properties`:
+Following properties are supported in the Quarkus `application.properties`:
 
 quarkus.optaplanner.solver-manager.parallel-solver-count::
 {property-optaplanner-solver-manager-parallel-solver-count}
