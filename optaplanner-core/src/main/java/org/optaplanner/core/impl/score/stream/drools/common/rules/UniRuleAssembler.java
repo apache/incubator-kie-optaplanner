@@ -30,6 +30,7 @@ import org.optaplanner.core.impl.score.stream.drools.common.consequences.Constra
 import org.optaplanner.core.impl.score.stream.drools.common.nodes.AbstractConstraintModelJoiningNode;
 import org.optaplanner.core.impl.score.stream.drools.common.nodes.ConstraintGraphNode;
 import org.optaplanner.core.impl.score.stream.drools.common.nodes.FromNode;
+import org.optaplanner.core.impl.score.stream.drools.uni.DroolsUniAccumulateFunction;
 
 import java.math.BigDecimal;
 import java.util.function.*;
@@ -70,7 +71,7 @@ final class UniRuleAssembler extends AbstractRuleAssembler<UniLeftHandSide> {
 
     @Override
     protected UniRuleAssembler andThenGroupBy0Map1Collect(Object collector) {
-        return (UniRuleAssembler) new UniGroupBy0Map1CollectMutator<>((UniConstraintCollector) collector).apply(this);
+        return new UniRuleAssembler(this.leftHandSide.groupBy(new DroolsUniAccumulateFunction<>((UniConstraintCollector) collector)));
     }
 
     @Override

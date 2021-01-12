@@ -31,6 +31,7 @@ import org.optaplanner.core.impl.score.stream.drools.DroolsConstraint;
 import org.optaplanner.core.impl.score.stream.drools.common.consequences.ConstraintConsequence;
 import org.optaplanner.core.impl.score.stream.drools.common.nodes.AbstractConstraintModelJoiningNode;
 import org.optaplanner.core.impl.score.stream.drools.common.nodes.ConstraintGraphNode;
+import org.optaplanner.core.impl.score.stream.drools.tri.DroolsTriAccumulateFunction;
 import org.optaplanner.core.impl.score.stream.quad.AbstractQuadJoiner;
 
 import java.math.BigDecimal;
@@ -69,7 +70,7 @@ final class TriRuleAssembler extends AbstractRuleAssembler<TriLeftHandSide> {
 
     @Override
     protected UniRuleAssembler andThenGroupBy0Map1Collect(Object collector) {
-        return (UniRuleAssembler) new TriGroupBy0Map1CollectMutator<>((TriConstraintCollector) collector).apply(this);
+        return new UniRuleAssembler(this.leftHandSide.groupBy(new DroolsTriAccumulateFunction<>((TriConstraintCollector) collector)));
     }
 
     @Override

@@ -24,6 +24,7 @@ import org.drools.model.consequences.ConsequenceBuilder;
 import org.optaplanner.core.api.score.stream.bi.BiConstraintCollector;
 import org.optaplanner.core.impl.score.holder.AbstractScoreHolder;
 import org.optaplanner.core.impl.score.stream.drools.DroolsConstraint;
+import org.optaplanner.core.impl.score.stream.drools.bi.DroolsBiAccumulateFunction;
 import org.optaplanner.core.impl.score.stream.drools.common.consequences.ConstraintConsequence;
 import org.optaplanner.core.impl.score.stream.drools.common.nodes.AbstractConstraintModelJoiningNode;
 import org.optaplanner.core.impl.score.stream.drools.common.nodes.ConstraintGraphNode;
@@ -65,7 +66,7 @@ final class BiRuleAssembler extends AbstractRuleAssembler<BiLeftHandSide> {
 
     @Override
     protected UniRuleAssembler andThenGroupBy0Map1Collect(Object collector) {
-        return (UniRuleAssembler) new BiGroupBy0Map1CollectMutator<>((BiConstraintCollector) collector).apply(this);
+        return new UniRuleAssembler(this.leftHandSide.groupBy(new DroolsBiAccumulateFunction<>((BiConstraintCollector) collector)));
     }
 
     @Override
