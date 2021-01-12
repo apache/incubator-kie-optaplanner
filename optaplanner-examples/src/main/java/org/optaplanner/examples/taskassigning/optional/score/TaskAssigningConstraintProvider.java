@@ -66,7 +66,7 @@ public final class TaskAssigningConstraintProvider implements ConstraintProvider
 
     private Constraint minimizeMakespan(ConstraintFactory constraintFactory) {
         return constraintFactory.from(Task.class)
-                .filter(task -> task.getNextTask() == null)
+                .filter(Task::isLast)
                 .penalize("Minimize makespan, latest ending employee first",
                         BendableScore.ofSoft(BENDABLE_SCORE_HARD_LEVELS_SIZE, BENDABLE_SCORE_SOFT_LEVELS_SIZE, 1, 1),
                         task -> task.getEndTime() * task.getEndTime());

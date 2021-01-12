@@ -155,26 +155,11 @@ public class Task extends AbstractPersistable implements Labeled {
     // Complex methods
     // ************************************************************************
 
-    // TODO return Optional
-    public Task getNextTask() {
-        if (employee == null) {
+    public boolean isLast() {
+        if (employee == null || index == null) {
             throw new IllegalStateException("The task is not assigned or the variable listener is broken.");
         }
-        if (index == employee.getTasks().size() - 1) {
-            return null;
-        }
-        return employee.getTasks().get(index + 1);
-    }
-
-    // TODO return Optional
-    public Task getPreviousTask() {
-        if (employee == null) {
-            throw new IllegalStateException("The task is not assigned or the variable listener is broken.");
-        }
-        if (index == 0) {
-            return null;
-        }
-        return employee.getTasks().get(index - 1);
+        return index == employee.getTasks().size() - 1;
     }
 
     public int getMissingSkillCount() {
