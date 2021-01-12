@@ -16,23 +16,23 @@
 
 package org.optaplanner.core.impl.score.stream.drools.common.rules;
 
-import static java.util.Collections.emptyList;
-import static java.util.Collections.singletonList;
+import org.optaplanner.core.api.score.stream.bi.BiConstraintCollector;
 
 import java.util.function.BiFunction;
 
-import org.optaplanner.core.api.score.stream.bi.BiConstraintCollector;
+import static java.util.Collections.emptyList;
+import static java.util.Collections.singletonList;
 
 final class BiToUniGroupingNode<A, B, NewA>
-        extends AbstractConstraintModelGroupingNode<BiFunction<A, B, NewA>, BiConstraintCollector<A, B, ?, NewA>>
+        extends AbstractConstraintModelGroupingNode<BiLeftHandSide<A, B>, BiFunction<A, B, NewA>, BiConstraintCollector<A, B, ?, NewA>>
         implements UniConstraintGraphChildNode {
 
-    BiToUniGroupingNode(BiFunction<A, B, NewA> mapping) {
-        super(singletonList(mapping), emptyList());
+    BiToUniGroupingNode(BiLeftHandSide<A, B> leftHandSide, BiFunction<A, B, NewA> mapping) {
+        super(leftHandSide, singletonList(mapping), emptyList());
     }
 
-    BiToUniGroupingNode(BiConstraintCollector<A, B, ?, NewA> collector) {
-        super(emptyList(), singletonList(collector));
+    BiToUniGroupingNode(BiLeftHandSide<A, B> leftHandSide, BiConstraintCollector<A, B, ?, NewA> collector) {
+        super(leftHandSide, emptyList(), singletonList(collector));
     }
 
 }

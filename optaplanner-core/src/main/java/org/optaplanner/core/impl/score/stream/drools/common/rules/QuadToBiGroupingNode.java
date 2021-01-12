@@ -16,24 +16,23 @@
 
 package org.optaplanner.core.impl.score.stream.drools.common.rules;
 
+import org.optaplanner.core.api.function.QuadFunction;
+import org.optaplanner.core.api.score.stream.quad.QuadConstraintCollector;
+
 import static java.util.Arrays.asList;
 import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
 
-import org.optaplanner.core.api.function.QuadFunction;
-import org.optaplanner.core.api.score.stream.quad.QuadConstraintCollector;
-
 final class QuadToBiGroupingNode<A, B, C, D, NewA, NewB>
-        extends AbstractConstraintModelGroupingNode<QuadFunction<A, B, C, D, ?>, QuadConstraintCollector<A, B, C, D, ?, ?>>
+        extends AbstractConstraintModelGroupingNode<QuadLeftHandSide<A, B, C, D>, QuadFunction<A, B, C, D, ?>, QuadConstraintCollector<A, B, C, D, ?, ?>>
         implements BiConstraintGraphNode {
 
-    QuadToBiGroupingNode(QuadFunction<A, B, C, D, NewA> aMapping, QuadFunction<A, B, C, D, NewB> bMapping) {
-        super(asList(aMapping, bMapping), emptyList());
+    QuadToBiGroupingNode(QuadLeftHandSide<A, B, C, D> leftHandSide, QuadFunction<A, B, C, D, NewA> aMapping, QuadFunction<A, B, C, D, NewB> bMapping) {
+        super(leftHandSide, asList(aMapping, bMapping), emptyList());
     }
 
-    QuadToBiGroupingNode(QuadFunction<A, B, C, D, NewA> mapping,
-            QuadConstraintCollector<A, B, C, D, ?, NewB> collector) {
-        super(singletonList(mapping), singletonList(collector));
+    QuadToBiGroupingNode(QuadLeftHandSide<A, B, C, D> leftHandSide, QuadFunction<A, B, C, D, NewA> mapping, QuadConstraintCollector<A, B, C, D, ?, NewB> collector) {
+        super(leftHandSide, singletonList(mapping), singletonList(collector));
     }
 
 }

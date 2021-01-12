@@ -20,13 +20,13 @@ import java.util.Objects;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 
-final class UniFilterNode<A> extends AbstractConstraintModelChildNode
+final class UniFilterNode<A> extends AbstractConstraintModelChildNode<UniLeftHandSide<A>>
         implements UniConstraintGraphChildNode, Supplier<Predicate<A>> {
 
     private final Predicate<A> predicate;
 
-    UniFilterNode(Predicate<A> predicate) {
-        super(ConstraintGraphNodeType.FILTER);
+    UniFilterNode(UniLeftHandSide<A> leftHandSide, Predicate<A> predicate) {
+        super(leftHandSide);
         this.predicate = Objects.requireNonNull(predicate);
     }
 

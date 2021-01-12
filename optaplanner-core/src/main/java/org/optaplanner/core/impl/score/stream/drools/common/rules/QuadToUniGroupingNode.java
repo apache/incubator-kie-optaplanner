@@ -16,23 +16,22 @@
 
 package org.optaplanner.core.impl.score.stream.drools.common.rules;
 
-import static java.util.Collections.emptyList;
-import static java.util.Collections.singletonList;
-
 import org.optaplanner.core.api.function.QuadFunction;
 import org.optaplanner.core.api.score.stream.quad.QuadConstraintCollector;
 
+import static java.util.Collections.emptyList;
+import static java.util.Collections.singletonList;
+
 final class QuadToUniGroupingNode<A, B, C, D, NewA>
-        extends
-        AbstractConstraintModelGroupingNode<QuadFunction<A, B, C, D, NewA>, QuadConstraintCollector<A, B, C, D, ?, NewA>>
+        extends AbstractConstraintModelGroupingNode<QuadLeftHandSide<A, B, C, D>, QuadFunction<A, B, C, D, NewA>, QuadConstraintCollector<A, B, C, D, ?, NewA>>
         implements UniConstraintGraphChildNode {
 
-    QuadToUniGroupingNode(QuadFunction<A, B, C, D, NewA> mapping) {
-        super(singletonList(mapping), emptyList());
+    QuadToUniGroupingNode(QuadLeftHandSide<A, B, C, D> leftHandSide, QuadFunction<A, B, C, D, NewA> mapping) {
+        super(leftHandSide, singletonList(mapping), emptyList());
     }
 
-    QuadToUniGroupingNode(QuadConstraintCollector<A, B, C, D, ?, NewA> collector) {
-        super(emptyList(), singletonList(collector));
+    QuadToUniGroupingNode(QuadLeftHandSide<A, B, C, D> leftHandSide, QuadConstraintCollector<A, B, C, D, ?, NewA> collector) {
+        super(leftHandSide, emptyList(), singletonList(collector));
     }
 
 }

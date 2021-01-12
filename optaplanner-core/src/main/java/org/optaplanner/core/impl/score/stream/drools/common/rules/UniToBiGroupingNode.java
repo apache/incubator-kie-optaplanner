@@ -16,24 +16,24 @@
 
 package org.optaplanner.core.impl.score.stream.drools.common.rules;
 
+import org.optaplanner.core.api.score.stream.uni.UniConstraintCollector;
+
+import java.util.function.Function;
+
 import static java.util.Arrays.asList;
 import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
 
-import java.util.function.Function;
-
-import org.optaplanner.core.api.score.stream.uni.UniConstraintCollector;
-
 final class UniToBiGroupingNode<A, NewA, NewB>
-        extends AbstractConstraintModelGroupingNode<Function<A, ?>, UniConstraintCollector<A, ?, ?>>
+        extends AbstractConstraintModelGroupingNode<UniLeftHandSide<A>, Function<A, ?>, UniConstraintCollector<A, ?, ?>>
         implements BiConstraintGraphNode {
 
-    UniToBiGroupingNode(Function<A, NewA> aMapping, Function<A, NewB> bMapping) {
-        super(asList(aMapping, bMapping), emptyList());
+    UniToBiGroupingNode(UniLeftHandSide<A> leftHandSide, Function<A, NewA> aMapping, Function<A, NewB> bMapping) {
+        super(leftHandSide, asList(aMapping, bMapping), emptyList());
     }
 
-    UniToBiGroupingNode(Function<A, NewA> mapping, UniConstraintCollector<A, ?, NewB> collector) {
-        super(singletonList(mapping), singletonList(collector));
+    UniToBiGroupingNode(UniLeftHandSide<A> leftHandSide, Function<A, NewA> mapping, UniConstraintCollector<A, ?, NewB> collector) {
+        super(leftHandSide, singletonList(mapping), singletonList(collector));
     }
 
 }

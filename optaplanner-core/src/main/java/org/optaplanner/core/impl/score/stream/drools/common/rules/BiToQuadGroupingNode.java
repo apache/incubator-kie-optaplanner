@@ -23,12 +23,12 @@ import java.util.function.BiFunction;
 import static java.util.Arrays.asList;
 
 final class BiToQuadGroupingNode<A, B, NewA, NewB, NewC, NewD>
-        extends AbstractConstraintModelGroupingNode<BiFunction<A, B, ?>, BiConstraintCollector<A, B, ?, ?>>
+        extends AbstractConstraintModelGroupingNode<BiLeftHandSide<A, B>, BiFunction<A, B, ?>, BiConstraintCollector<A, B, ?, ?>>
         implements QuadConstraintGraphNode {
 
-    BiToQuadGroupingNode(BiFunction<A, B, NewA> aMapping, BiFunction<A, B, NewB> bMapping,
+    BiToQuadGroupingNode(BiLeftHandSide<A, B> leftHandSide, BiFunction<A, B, NewA> aMapping, BiFunction<A, B, NewB> bMapping,
             BiConstraintCollector<A, B, ?, NewC> cCollector, BiConstraintCollector<A, B, ?, NewD> dCollector) {
-        super(asList(aMapping, bMapping), asList(cCollector, dCollector));
+        super(leftHandSide, asList(aMapping, bMapping), asList(cCollector, dCollector));
     }
 
 }

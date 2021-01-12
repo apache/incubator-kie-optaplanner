@@ -16,17 +16,17 @@
 
 package org.optaplanner.core.impl.score.stream.drools.common.rules;
 
+import org.optaplanner.core.api.score.stream.penta.PentaJoiner;
+
 import static org.optaplanner.core.impl.score.stream.drools.common.rules.ConstraintGraphNodeType.IF_EXISTS;
 import static org.optaplanner.core.impl.score.stream.drools.common.rules.ConstraintGraphNodeType.IF_NOT_EXISTS;
 
-import org.optaplanner.core.api.score.stream.penta.PentaJoiner;
-
 final class QuadExistenceNode<A, B, C, D, E>
-        extends AbstractConstraintModelJoiningNode<E, PentaJoiner<A, B, C, D, E>>
+        extends AbstractConstraintModelJoiningNode<QuadLeftHandSide<A, B, C, D>, E, PentaJoiner<A, B, C, D, E>>
         implements QuadConstraintGraphNode {
 
-    QuadExistenceNode(boolean expectExistence, Class<E> otherFactType, PentaJoiner<A, B, C, D, E>... joiners) {
-        super(otherFactType, expectExistence ? IF_EXISTS : IF_NOT_EXISTS, joiners);
+    QuadExistenceNode(QuadLeftHandSide<A, B, C, D> leftHandSide, boolean expectExistence, Class<E> otherFactType, PentaJoiner<A, B, C, D, E>... joiners) {
+        super(leftHandSide, otherFactType, expectExistence ? IF_EXISTS : IF_NOT_EXISTS, joiners);
     }
 
 }

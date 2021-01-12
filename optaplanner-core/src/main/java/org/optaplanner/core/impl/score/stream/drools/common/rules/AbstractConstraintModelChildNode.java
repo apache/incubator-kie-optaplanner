@@ -22,13 +22,13 @@ import java.util.List;
 
 import static java.util.Objects.requireNonNull;
 
-public abstract class AbstractConstraintModelChildNode
-        extends AbstractConstraintModelNode implements ChildNode {
+public abstract class AbstractConstraintModelChildNode<LeftHandSide_ extends AbstractLeftHandSide>
+        extends AbstractConstraintModelNode<LeftHandSide_> implements ChildNode {
 
     private final List<ConstraintGraphNode> parentNodeList = new ArrayList<>(0);
 
-    AbstractConstraintModelChildNode(ConstraintGraphNodeType type) {
-        super(type);
+    AbstractConstraintModelChildNode(LeftHandSide_ leftHandSide) {
+        super(leftHandSide);
     }
 
     public final void addParentNode(ConstraintGraphNode node) {

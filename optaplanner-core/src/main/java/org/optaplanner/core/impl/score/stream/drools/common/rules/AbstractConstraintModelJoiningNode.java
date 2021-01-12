@@ -16,22 +16,22 @@
 
 package org.optaplanner.core.impl.score.stream.drools.common.rules;
 
-import static java.util.Objects.requireNonNull;
-
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.function.Supplier;
 
-public abstract class AbstractConstraintModelJoiningNode<OtherFactType_, JoinerType_>
-        extends AbstractConstraintModelChildNode implements Supplier<List<JoinerType_>> {
+import static java.util.Objects.requireNonNull;
+
+public abstract class AbstractConstraintModelJoiningNode<LeftHandSide_ extends AbstractLeftHandSide, OtherFactType_, JoinerType_>
+        extends AbstractConstraintModelChildNode<LeftHandSide_> implements Supplier<List<JoinerType_>> {
 
     private final Class<OtherFactType_> otherFactType;
     private final List<JoinerType_> joiner;
 
-    AbstractConstraintModelJoiningNode(Class<OtherFactType_> otherFactType, ConstraintGraphNodeType type,
-            JoinerType_... joiner) {
-        super(type);
+    AbstractConstraintModelJoiningNode(LeftHandSide_ leftHandSide, Class<OtherFactType_> otherFactType,
+                                       ConstraintGraphNodeType type, JoinerType_... joiner) {
+        super(leftHandSide);
         if (type != ConstraintGraphNodeType.IF_EXISTS && type != ConstraintGraphNodeType.IF_NOT_EXISTS &&
                 type != ConstraintGraphNodeType.JOIN) {
             throw new IllegalStateException("Impossible state: Given node type (" + type +

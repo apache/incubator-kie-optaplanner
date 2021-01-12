@@ -16,18 +16,17 @@
 
 package org.optaplanner.core.impl.score.stream.drools.common.rules;
 
-import static java.util.Arrays.asList;
-
 import org.optaplanner.core.api.function.TriFunction;
 import org.optaplanner.core.api.score.stream.tri.TriConstraintCollector;
 
+import static java.util.Arrays.asList;
+
 final class TriToQuadGroupingNode<A, B, C, NewA, NewB, NewC, NewD>
-        extends AbstractConstraintModelGroupingNode<TriFunction<A, B, C, ?>, TriConstraintCollector<A, B, C, ?, ?>>
+        extends AbstractConstraintModelGroupingNode<TriLeftHandSide<A, B, C>, TriFunction<A, B, C, ?>, TriConstraintCollector<A, B, C, ?, ?>>
         implements QuadConstraintGraphNode {
 
-    TriToQuadGroupingNode(TriFunction<A, B, C, NewA> aMapping, TriFunction<A, B, C, NewB> bMapping,
-            TriConstraintCollector<A, B, C, ?, NewC> cCollector, TriConstraintCollector<A, B, C, ?, NewD> dCollector) {
-        super(asList(aMapping, bMapping), asList(cCollector, dCollector));
+    TriToQuadGroupingNode(TriLeftHandSide<A, B, C> leftHandSide, TriFunction<A, B, C, NewA> aMapping, TriFunction<A, B, C, NewB> bMapping, TriConstraintCollector<A, B, C, ?, NewC> cCollector, TriConstraintCollector<A, B, C, ?, NewD> dCollector) {
+        super(leftHandSide, asList(aMapping, bMapping), asList(cCollector, dCollector));
     }
 
 }

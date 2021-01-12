@@ -16,18 +16,18 @@
 
 package org.optaplanner.core.impl.score.stream.drools.common.rules;
 
+import org.optaplanner.core.api.function.TriPredicate;
+
 import java.util.Objects;
 import java.util.function.Supplier;
 
-import org.optaplanner.core.api.function.TriPredicate;
-
-final class TriFilterNode<A, B, C> extends AbstractConstraintModelChildNode
+final class TriFilterNode<A, B, C> extends AbstractConstraintModelChildNode<TriLeftHandSide<A, B, C>>
         implements TriConstraintGraphNode, Supplier<TriPredicate<A, B, C>> {
 
     private final TriPredicate<A, B, C> predicate;
 
-    TriFilterNode(TriPredicate<A, B, C> predicate) {
-        super(ConstraintGraphNodeType.FILTER);
+    TriFilterNode(TriLeftHandSide<A, B, C> leftHandSide, TriPredicate<A, B, C> predicate) {
+        super(leftHandSide);
         this.predicate = Objects.requireNonNull(predicate);
     }
 

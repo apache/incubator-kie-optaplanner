@@ -16,20 +16,20 @@
 
 package org.optaplanner.core.impl.score.stream.drools.common.rules;
 
-import static java.util.Arrays.asList;
-import static java.util.Collections.singletonList;
+import org.optaplanner.core.api.score.stream.uni.UniConstraintCollector;
 
 import java.util.function.Function;
 
-import org.optaplanner.core.api.score.stream.uni.UniConstraintCollector;
+import static java.util.Arrays.asList;
+import static java.util.Collections.singletonList;
 
 final class UniToTriGroupingNode<A, NewA, NewB, NewC>
-        extends AbstractConstraintModelGroupingNode<Function<A, ?>, UniConstraintCollector<A, ?, ?>>
+        extends AbstractConstraintModelGroupingNode<UniLeftHandSide<A>, Function<A, ?>, UniConstraintCollector<A, ?, ?>>
         implements TriConstraintGraphNode {
 
-    UniToTriGroupingNode(Function<A, NewA> aMapping, Function<A, NewB> bMapping,
+    UniToTriGroupingNode(UniLeftHandSide<A> leftHandSide, Function<A, NewA> aMapping, Function<A, NewB> bMapping,
             UniConstraintCollector<A, ?, NewC> collector) {
-        super(asList(aMapping, bMapping), singletonList(collector));
+        super(leftHandSide, asList(aMapping, bMapping), singletonList(collector));
     }
 
 }

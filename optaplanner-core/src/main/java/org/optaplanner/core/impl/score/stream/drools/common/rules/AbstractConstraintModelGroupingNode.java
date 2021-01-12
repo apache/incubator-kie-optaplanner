@@ -19,30 +19,17 @@ package org.optaplanner.core.impl.score.stream.drools.common.rules;
 import java.util.Collections;
 import java.util.List;
 
-public abstract class AbstractConstraintModelGroupingNode<FunctionType_, CollectorType_>
-        extends AbstractConstraintModelChildNode {
+public abstract class AbstractConstraintModelGroupingNode<LeftHandSide_ extends AbstractLeftHandSide,
+        FunctionType_, CollectorType_>
+        extends AbstractConstraintModelChildNode<LeftHandSide_> {
 
     private final List<FunctionType_> mappings;
     private final List<CollectorType_> collectors;
 
-    AbstractConstraintModelGroupingNode(List<FunctionType_> mappings, List<CollectorType_> collectors) {
-        super(determineType(mappings, collectors));
+    AbstractConstraintModelGroupingNode(LeftHandSide_ leftHandSide, List<FunctionType_> mappings, List<CollectorType_> collectors) {
+        super(leftHandSide);
         this.mappings = mappings.isEmpty() ? Collections.emptyList() : Collections.unmodifiableList(mappings);
         this.collectors = collectors.isEmpty() ? Collections.emptyList() : Collections.unmodifiableList(collectors);
-    }
-
-    private static ConstraintGraphNodeType determineType(List mappings, List collectors) {
-        if (mappings.isEmpty()) {
-            if (collectors.isEmpty()) {
-                throw new IllegalStateException("Impossible state: Grouping node has no mappings or collectors.");
-            } else {
-                return ConstraintGraphNodeType.GROUPBY_COLLECTING_ONLY;
-            }
-        } else if (collectors.isEmpty()) {
-            return ConstraintGraphNodeType.GROUPBY_MAPPING_ONLY;
-        } else {
-            return ConstraintGraphNodeType.GROUPBY_MAPPING_AND_COLLECTING;
-        }
     }
 
     public List<FunctionType_> getMappings() {

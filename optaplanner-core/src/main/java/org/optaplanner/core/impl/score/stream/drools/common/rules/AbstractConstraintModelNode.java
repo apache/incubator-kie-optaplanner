@@ -16,23 +16,24 @@
 
 package org.optaplanner.core.impl.score.stream.drools.common.rules;
 
-import static java.util.Objects.requireNonNull;
+import org.optaplanner.core.impl.score.stream.drools.common.consequences.ConstraintConsequence;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
-import org.optaplanner.core.impl.score.stream.drools.common.consequences.ConstraintConsequence;
+import static java.util.Objects.requireNonNull;
 
-public abstract class AbstractConstraintModelNode implements ConstraintGraphNode {
+public abstract class AbstractConstraintModelNode<LeftHandSide_ extends AbstractLeftHandSide>
+        implements ConstraintGraphNode {
 
+    protected final LeftHandSide_ leftHandSide;
     private final List<ConstraintGraphNode> childNodeList = new ArrayList<>(0);
     private final List<ConstraintConsequence> consequenceList = new ArrayList<>(0);
-    private final ConstraintGraphNodeType type;
 
-    AbstractConstraintModelNode(ConstraintGraphNodeType type) {
-        this.type = Objects.requireNonNull(type);
+    AbstractConstraintModelNode(LeftHandSide_ leftHandSide) {
+        this.leftHandSide = Objects.requireNonNull(leftHandSide);
     }
 
     public final void addChildNode(ConstraintGraphNode node) {
@@ -63,6 +64,6 @@ public abstract class AbstractConstraintModelNode implements ConstraintGraphNode
 
     @Override
     public final ConstraintGraphNodeType getType() {
-        return type;
+        return null;
     }
 }

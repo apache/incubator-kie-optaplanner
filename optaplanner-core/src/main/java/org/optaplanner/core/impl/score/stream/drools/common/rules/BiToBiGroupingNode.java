@@ -16,24 +16,24 @@
 
 package org.optaplanner.core.impl.score.stream.drools.common.rules;
 
+import org.optaplanner.core.api.score.stream.bi.BiConstraintCollector;
+
+import java.util.function.BiFunction;
+
 import static java.util.Arrays.asList;
 import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
 
-import java.util.function.BiFunction;
-
-import org.optaplanner.core.api.score.stream.bi.BiConstraintCollector;
-
 final class BiToBiGroupingNode<A, B, NewA, NewB>
-        extends AbstractConstraintModelGroupingNode<BiFunction<A, B, ?>, BiConstraintCollector<A, B, ?, ?>>
+        extends AbstractConstraintModelGroupingNode<BiLeftHandSide<A, B>, BiFunction<A, B, ?>, BiConstraintCollector<A, B, ?, ?>>
         implements BiConstraintGraphNode {
 
-    BiToBiGroupingNode(BiFunction<A, B, NewA> aMapping, BiFunction<A, B, NewB> bMapping) {
-        super(asList(aMapping, bMapping), emptyList());
+    BiToBiGroupingNode(BiLeftHandSide<A, B> leftHandSide, BiFunction<A, B, NewA> aMapping, BiFunction<A, B, NewB> bMapping) {
+        super(leftHandSide, asList(aMapping, bMapping), emptyList());
     }
 
-    BiToBiGroupingNode(BiFunction<A, B, NewA> mapping, BiConstraintCollector<A, B, ?, NewB> collector) {
-        super(singletonList(mapping), singletonList(collector));
+    BiToBiGroupingNode(BiLeftHandSide<A, B> leftHandSide, BiFunction<A, B, NewA> mapping, BiConstraintCollector<A, B, ?, NewB> collector) {
+        super(leftHandSide, singletonList(mapping), singletonList(collector));
     }
 
 }

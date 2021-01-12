@@ -16,19 +16,20 @@
 
 package org.optaplanner.core.impl.score.stream.drools.common.rules;
 
-import static java.util.Arrays.asList;
-
 import org.optaplanner.core.api.function.QuadFunction;
 import org.optaplanner.core.api.score.stream.quad.QuadConstraintCollector;
 
+import static java.util.Arrays.asList;
+
 final class QuadToQuadGroupingNode<A, B, C, D, NewA, NewB, NewC, NewD>
-        extends AbstractConstraintModelGroupingNode<QuadFunction<A, B, C, D, ?>, QuadConstraintCollector<A, B, C, D, ?, ?>>
+        extends
+        AbstractConstraintModelGroupingNode<QuadLeftHandSide<A, B, C, D>, QuadFunction<A, B, C, D, ?>, QuadConstraintCollector<A, B, C, D, ?, ?>>
         implements QuadConstraintGraphNode {
 
-    QuadToQuadGroupingNode(QuadFunction<A, B, C, D, NewA> aMapping, QuadFunction<A, B, C, D, NewB> bMapping,
-            QuadConstraintCollector<A, B, C, D, ?, NewC> cCollector,
+    QuadToQuadGroupingNode(QuadLeftHandSide<A, B, C, D> leftHandSide, QuadFunction<A, B, C, D, NewA> aMapping,
+            QuadFunction<A, B, C, D, NewB> bMapping, QuadConstraintCollector<A, B, C, D, ?, NewC> cCollector,
             QuadConstraintCollector<A, B, C, D, ?, NewD> dCollector) {
-        super(asList(aMapping, bMapping), asList(cCollector, dCollector));
+        super(leftHandSide, asList(aMapping, bMapping), asList(cCollector, dCollector));
     }
 
 }

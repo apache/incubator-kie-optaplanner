@@ -25,8 +25,8 @@ final class BiFilterNode<A, B> extends AbstractConstraintModelChildNode
 
     private final BiPredicate<A, B> predicate;
 
-    BiFilterNode(BiPredicate<A, B> predicate) {
-        super(ConstraintGraphNodeType.FILTER);
+    BiFilterNode(BiLeftHandSide<A, B> leftHandSide, BiPredicate<A, B> predicate) {
+        super(leftHandSide);
         this.predicate = Objects.requireNonNull(predicate);
     }
 

@@ -16,20 +16,20 @@
 
 package org.optaplanner.core.impl.score.stream.drools.common.rules;
 
-import static java.util.Arrays.asList;
-import static java.util.Collections.singletonList;
+import org.optaplanner.core.api.score.stream.bi.BiConstraintCollector;
 
 import java.util.function.BiFunction;
 
-import org.optaplanner.core.api.score.stream.bi.BiConstraintCollector;
+import static java.util.Arrays.asList;
+import static java.util.Collections.singletonList;
 
 final class BiToTriGroupingNode<A, B, NewA, NewB, NewC>
-        extends AbstractConstraintModelGroupingNode<BiFunction<A, B, ?>, BiConstraintCollector<A, B, ?, ?>>
+        extends AbstractConstraintModelGroupingNode<BiLeftHandSide<A, B>, BiFunction<A, B, ?>, BiConstraintCollector<A, B, ?, ?>>
         implements TriConstraintGraphNode {
 
-    BiToTriGroupingNode(BiFunction<A, B, NewA> aMapping, BiFunction<A, B, NewB> bMapping,
+    BiToTriGroupingNode(BiLeftHandSide<A, B> leftHandSide, BiFunction<A, B, NewA> aMapping, BiFunction<A, B, NewB> bMapping,
             BiConstraintCollector<A, B, ?, NewC> collector) {
-        super(asList(aMapping, bMapping), singletonList(collector));
+        super(leftHandSide, asList(aMapping, bMapping), singletonList(collector));
     }
 
 }

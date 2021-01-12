@@ -16,23 +16,23 @@
 
 package org.optaplanner.core.impl.score.stream.drools.common.rules;
 
+import org.optaplanner.core.api.function.TriFunction;
+import org.optaplanner.core.api.score.stream.tri.TriConstraintCollector;
+
 import static java.util.Arrays.asList;
 import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
 
-import org.optaplanner.core.api.function.TriFunction;
-import org.optaplanner.core.api.score.stream.tri.TriConstraintCollector;
-
 final class TriToBiGroupingNode<A, B, C, NewA, NewB>
-        extends AbstractConstraintModelGroupingNode<TriFunction<A, B, C, ?>, TriConstraintCollector<A, B, C, ?, ?>>
+        extends AbstractConstraintModelGroupingNode<TriLeftHandSide<A, B, C>, TriFunction<A, B, C, ?>, TriConstraintCollector<A, B, C, ?, ?>>
         implements BiConstraintGraphNode {
 
-    TriToBiGroupingNode(TriFunction<A, B, C, NewA> aMapping, TriFunction<A, B, C, NewB> bMapping) {
-        super(asList(aMapping, bMapping), emptyList());
+    TriToBiGroupingNode(TriLeftHandSide<A, B, C> leftHandSide, TriFunction<A, B, C, NewA> aMapping, TriFunction<A, B, C, NewB> bMapping) {
+        super(leftHandSide, asList(aMapping, bMapping), emptyList());
     }
 
-    TriToBiGroupingNode(TriFunction<A, B, C, NewA> mapping, TriConstraintCollector<A, B, C, ?, NewB> collector) {
-        super(singletonList(mapping), singletonList(collector));
+    TriToBiGroupingNode(TriLeftHandSide<A, B, C> leftHandSide, TriFunction<A, B, C, NewA> mapping, TriConstraintCollector<A, B, C, ?, NewB> collector) {
+        super(leftHandSide, singletonList(mapping), singletonList(collector));
     }
 
 }

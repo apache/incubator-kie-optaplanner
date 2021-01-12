@@ -16,23 +16,23 @@
 
 package org.optaplanner.core.impl.score.stream.drools.common.rules;
 
-import static java.util.Collections.emptyList;
-import static java.util.Collections.singletonList;
+import org.optaplanner.core.api.score.stream.uni.UniConstraintCollector;
 
 import java.util.function.Function;
 
-import org.optaplanner.core.api.score.stream.uni.UniConstraintCollector;
+import static java.util.Collections.emptyList;
+import static java.util.Collections.singletonList;
 
 final class UniToUniGroupingNode<A, NewA>
-        extends AbstractConstraintModelGroupingNode<Function<A, NewA>, UniConstraintCollector<A, ?, NewA>>
+        extends AbstractConstraintModelGroupingNode<UniLeftHandSide<A>, Function<A, NewA>, UniConstraintCollector<A, ?, NewA>>
         implements UniConstraintGraphChildNode {
 
-    UniToUniGroupingNode(Function<A, NewA> mapping) {
-        super(singletonList(mapping), emptyList());
+    UniToUniGroupingNode(UniLeftHandSide<A> leftHandSide, Function<A, NewA> mapping) {
+        super(leftHandSide, singletonList(mapping), emptyList());
     }
 
-    UniToUniGroupingNode(UniConstraintCollector<A, ?, NewA> collector) {
-        super(emptyList(), singletonList(collector));
+    UniToUniGroupingNode(UniLeftHandSide<A> leftHandSide, UniConstraintCollector<A, ?, NewA> collector) {
+        super(leftHandSide, emptyList(), singletonList(collector));
     }
 
 }

@@ -16,19 +16,19 @@
 
 package org.optaplanner.core.impl.score.stream.drools.common.rules;
 
-import static java.util.Arrays.asList;
+import org.optaplanner.core.api.score.stream.uni.UniConstraintCollector;
 
 import java.util.function.Function;
 
-import org.optaplanner.core.api.score.stream.uni.UniConstraintCollector;
+import static java.util.Arrays.asList;
 
 final class UniToQuadGroupingNode<A, NewA, NewB, NewC, NewD>
-        extends AbstractConstraintModelGroupingNode<Function<A, ?>, UniConstraintCollector<A, ?, ?>>
+        extends AbstractConstraintModelGroupingNode<UniLeftHandSide<A>, Function<A, ?>, UniConstraintCollector<A, ?, ?>>
         implements QuadConstraintGraphNode {
 
-    UniToQuadGroupingNode(Function<A, NewA> aMapping, Function<A, NewB> bMapping,
+    UniToQuadGroupingNode(UniLeftHandSide<A> leftHandSide, Function<A, NewA> aMapping, Function<A, NewB> bMapping,
             UniConstraintCollector<A, ?, NewC> cCollector, UniConstraintCollector<A, ?, NewD> dCollector) {
-        super(asList(aMapping, bMapping), asList(cCollector, dCollector));
+        super(leftHandSide, asList(aMapping, bMapping), asList(cCollector, dCollector));
     }
 
 }
