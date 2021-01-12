@@ -40,8 +40,9 @@ final class BiRuleAssembler extends AbstractRuleAssembler<BiLeftHandSide> {
 
     @Override
     protected AbstractRuleAssembler join(UniRuleAssembler ruleAssembler, ConstraintGraphNode joinNode) {
-        return new TriJoinMutator<>((AbstractConstraintModelJoiningNode) joinNode)
-                .apply(this, ruleAssembler);
+        AbstractTriJoiner<?, ?, ?> joiner =
+                (AbstractTriJoiner<?, ?, ?>) ((AbstractConstraintModelJoiningNode) joinNode).get().get(0);
+        return new TriRuleAssembler(this.leftHandSide.join(ruleAssembler.leftHandSide, joiner));
     }
 
     @Override
@@ -52,7 +53,7 @@ final class BiRuleAssembler extends AbstractRuleAssembler<BiLeftHandSide> {
 
     @Override
     protected AbstractRuleAssembler andThenExists(AbstractConstraintModelJoiningNode joiningNode, boolean shouldExist) {
-        Class<?> otherFactType =  joiningNode.getOtherFactType();
+        Class<?> otherFactType = joiningNode.getOtherFactType();
         AbstractTriJoiner<?, ?, ?>[] joiners = (AbstractTriJoiner<?, ?, ?>[]) joiningNode.get().stream()
                 .toArray(AbstractTriJoiner[]::new);
         if (shouldExist) {

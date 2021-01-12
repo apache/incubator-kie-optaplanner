@@ -44,8 +44,9 @@ final class TriRuleAssembler extends AbstractRuleAssembler<TriLeftHandSide> {
 
     @Override
     protected AbstractRuleAssembler join(UniRuleAssembler ruleAssembler, ConstraintGraphNode joinNode) {
-        return new QuadJoinMutator<>((AbstractConstraintModelJoiningNode) joinNode)
-                .apply(this, ruleAssembler);
+        AbstractQuadJoiner<?, ?, ?, ?> joiner =
+                (AbstractQuadJoiner<?, ?, ?, ?>) ((AbstractConstraintModelJoiningNode) joinNode).get().get(0);
+        return new QuadRuleAssembler(this.leftHandSide.join(ruleAssembler.leftHandSide, joiner));
     }
 
     @Override

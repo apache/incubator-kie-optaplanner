@@ -46,8 +46,8 @@ final class UniRuleAssembler extends AbstractRuleAssembler<UniLeftHandSide> {
 
     @Override
     protected AbstractRuleAssembler join(UniRuleAssembler ruleAssembler, ConstraintGraphNode joinNode) {
-        return new BiJoinMutator<>((AbstractConstraintModelJoiningNode) joinNode)
-                .apply(this, ruleAssembler);
+        AbstractBiJoiner<?, ?> joiner = (AbstractBiJoiner<?, ?>) ((AbstractConstraintModelJoiningNode) joinNode).get().get(0);
+        return new BiRuleAssembler(this.leftHandSide.join(ruleAssembler.leftHandSide, joiner));
     }
 
     @Override
@@ -58,7 +58,7 @@ final class UniRuleAssembler extends AbstractRuleAssembler<UniLeftHandSide> {
 
     @Override
     protected AbstractRuleAssembler andThenExists(AbstractConstraintModelJoiningNode joiningNode, boolean shouldExist) {
-        Class<?> otherFactType =  joiningNode.getOtherFactType();
+        Class<?> otherFactType = joiningNode.getOtherFactType();
         AbstractBiJoiner<?, ?>[] joiners = (AbstractBiJoiner<?, ?>[]) joiningNode.get().stream()
                 .toArray(AbstractBiJoiner[]::new);
         if (shouldExist) {
