@@ -18,6 +18,7 @@ package org.optaplanner.examples.common.app;
 
 import java.awt.Component;
 import java.io.File;
+import java.util.Collections;
 import java.util.Set;
 import java.util.function.BiConsumer;
 
@@ -158,7 +159,7 @@ public abstract class CommonApp<Solution_> extends LoggingMain {
     }
 
     protected Set<AbstractSolutionExporter> createSolutionExporters() {
-        return null;
+        return Collections.emptySet();
     }
 
     public interface ExtraAction<Solution_> {

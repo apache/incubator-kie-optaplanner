@@ -25,13 +25,13 @@ import org.optaplanner.examples.tsp.domain.Standstill;
 import org.optaplanner.examples.tsp.domain.TspSolution;
 import org.optaplanner.examples.tsp.domain.location.Location;
 
-public class SvgTspExporter extends AbstractTxtSolutionExporter<TspSolution> {
+public class SvgTspLineAndCircleExporter extends AbstractTxtSolutionExporter<TspSolution> {
 
-    public static final String OUTPUT_FILE_SUFFIX = "path.svg";
+    public static final String OUTPUT_FILE_SUFFIX = "line.svg";
 
     public static void main(String[] args) {
         SolutionConverter<TspSolution> converter = SolutionConverter.createExportConverter(
-                TspApp.DATA_DIR_NAME, TspSolution.class, new SvgTspExporter());
+                TspApp.DATA_DIR_NAME, TspSolution.class, new SvgTspLineAndCircleExporter());
         converter.convertAll();
     }
 
@@ -53,23 +53,30 @@ public class SvgTspExporter extends AbstractTxtSolutionExporter<TspSolution> {
             determineSizeAndOffset(solution);
 
             writeSvgHeader();
-            bufferedWriter.write("<path style='stroke:#ff0000;stroke-width:1;fill:none'\n");
-            bufferedWriter.write("d='M 0,0\n");
+
+            bufferedWriter.write("<g stroke='black' stroke-width='1'>\n");
+
+            double oldLat = 0;
+            double oldLong = 0;
+
             Standstill standstill = solution.getDomicile();
             Location home = standstill.getLocation();
-
             while (standstill != null) {
-                bufferedWriter.write("L ");
+                bufferedWriter.write("  <line x1='" + (oldLat + offsetX) + "' y1='" + (oldLong + offsetY) + "' ");
                 Location location = standstill.getLocation();
-                bufferedWriter.write((location.getLatitude() + offsetX) + ",");
-                bufferedWriter.write((location.getLongitude() + offsetY) + "\n");
+                bufferedWriter.write("x2='" + (location.getLatitude() + offsetX) + "' y2='"
+                        + (location.getLongitude() + offsetY) + "' />\n");
+                bufferedWriter.write("    <circle r='3' ");
+                bufferedWriter.write("cx='" + (location.getLatitude() + offsetX) + "' cy='"
+                        + (location.getLongitude() + offsetY) + "' />\n");
+                oldLat = location.getLatitude();
+                oldLong = location.getLongitude();
                 standstill = findNextVisit(standstill);
             }
-            // Now return home
-            bufferedWriter.write("L ");
-            bufferedWriter.write((home.getLatitude() + offsetX) + ",");
-            bufferedWriter.write((home.getLongitude() + offsetY) + "\n");
-            bufferedWriter.write("'/>");
+            bufferedWriter.write("  <line x1='" + (oldLat + offsetX) + "' y1='" + (oldLong + offsetY) + "' ");
+            bufferedWriter
+                    .write("x2='" + (home.getLatitude() + offsetX) + "' y2='" + (home.getLongitude() + offsetY) + "' />n");
+            bufferedWriter.write("</g>\n");
             bufferedWriter.write("</svg>\n");
         }
 

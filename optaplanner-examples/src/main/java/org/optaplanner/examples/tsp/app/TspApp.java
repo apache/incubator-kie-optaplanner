@@ -23,8 +23,8 @@ import org.optaplanner.examples.common.app.CommonApp;
 import org.optaplanner.examples.common.persistence.AbstractSolutionExporter;
 import org.optaplanner.examples.common.persistence.AbstractSolutionImporter;
 import org.optaplanner.examples.tsp.domain.TspSolution;
-import org.optaplanner.examples.tsp.persistence.SvgTspExporter;
-import org.optaplanner.examples.tsp.persistence.SvgTspExporter2;
+import org.optaplanner.examples.tsp.persistence.SvgTspLineAndCircleExporter;
+import org.optaplanner.examples.tsp.persistence.SvgTspPathExporter;
 import org.optaplanner.examples.tsp.persistence.TspExporter;
 import org.optaplanner.examples.tsp.persistence.TspImageStipplerImporter;
 import org.optaplanner.examples.tsp.persistence.TspImporter;
@@ -74,8 +74,8 @@ public class TspApp extends CommonApp<TspSolution> {
     protected Set<AbstractSolutionExporter> createSolutionExporters() {
         Set<AbstractSolutionExporter> exporters = new HashSet<>();
         exporters.add(new TspExporter());
-        exporters.add(new SvgTspExporter());
-        exporters.add(new SvgTspExporter2());
+        exporters.add(new SvgTspPathExporter());
+        exporters.add(new SvgTspLineAndCircleExporter());
 
         return exporters;
     }

@@ -20,7 +20,6 @@ import static java.util.stream.Collectors.toList;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -129,20 +128,17 @@ public class SolutionBusiness<Solution_, Score_ extends Score<Score_>> {
     }
 
     public void setExporters(Set<AbstractSolutionExporter> exporters) {
+        if (exporters == null) {
+            throw new IllegalArgumentException("Passed exporters must not be null");
+        }
         this.exporters = exporters;
     }
 
     public void addExporter(AbstractSolutionExporter<Solution_> exporter) {
-        if (this.exporters == null) {
-            this.exporters = new HashSet<>();
-        }
         this.exporters.add(exporter);
     }
 
     public Set<AbstractSolutionExporter> getExporters() {
-        if (this.exporters == null) {
-            return new HashSet<>();
-        }
         return this.exporters;
     }
 
@@ -195,14 +191,6 @@ public class SolutionBusiness<Solution_, Score_ extends Score<Score_>> {
 
     public File getExportDataDir() {
         return exportDataDir;
-    }
-
-    public Set<String> getExportFileSuffix() {
-        Set<String> suffixes = new HashSet<>(exporters.size());
-        for (AbstractSolutionExporter<Solution_> exporter : exporters) {
-            suffixes.add(exporter.getOutputFileSuffix());
-        }
-        return suffixes;
     }
 
     public void setSolver(SolverFactory<Solution_> solverFactory) {
