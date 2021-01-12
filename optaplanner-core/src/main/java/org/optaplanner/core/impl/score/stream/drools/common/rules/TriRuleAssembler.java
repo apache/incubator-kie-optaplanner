@@ -16,6 +16,9 @@
 
 package org.optaplanner.core.impl.score.stream.drools.common.rules;
 
+import java.math.BigDecimal;
+import java.util.function.Supplier;
+
 import org.drools.model.DSL;
 import org.drools.model.Drools;
 import org.drools.model.Global;
@@ -33,9 +36,6 @@ import org.optaplanner.core.impl.score.stream.drools.common.nodes.AbstractConstr
 import org.optaplanner.core.impl.score.stream.drools.common.nodes.ConstraintGraphNode;
 import org.optaplanner.core.impl.score.stream.drools.tri.DroolsTriAccumulateFunction;
 import org.optaplanner.core.impl.score.stream.quad.AbstractQuadJoiner;
-
-import java.math.BigDecimal;
-import java.util.function.Supplier;
 
 final class TriRuleAssembler extends AbstractRuleAssembler<TriLeftHandSide> {
 
@@ -58,7 +58,7 @@ final class TriRuleAssembler extends AbstractRuleAssembler<TriLeftHandSide> {
 
     @Override
     protected AbstractRuleAssembler andThenExists(AbstractConstraintModelJoiningNode joiningNode, boolean shouldExist) {
-        Class<?> otherFactType =  joiningNode.getOtherFactType();
+        Class<?> otherFactType = joiningNode.getOtherFactType();
         AbstractQuadJoiner<?, ?, ?, ?>[] joiners = (AbstractQuadJoiner<?, ?, ?, ?>[]) joiningNode.get().stream()
                 .toArray(AbstractQuadJoiner[]::new);
         if (shouldExist) {
@@ -70,7 +70,8 @@ final class TriRuleAssembler extends AbstractRuleAssembler<TriLeftHandSide> {
 
     @Override
     protected UniRuleAssembler andThenGroupBy0Map1Collect(Object collector) {
-        return new UniRuleAssembler(this.leftHandSide.groupBy(new DroolsTriAccumulateFunction<>((TriConstraintCollector) collector)));
+        return new UniRuleAssembler(
+                this.leftHandSide.groupBy(new DroolsTriAccumulateFunction<>((TriConstraintCollector) collector)));
     }
 
     @Override
@@ -80,7 +81,8 @@ final class TriRuleAssembler extends AbstractRuleAssembler<TriLeftHandSide> {
 
     @Override
     protected BiRuleAssembler andThenGroupBy1Map1Collect(Object mapping, Object collector) {
-        return new BiRuleAssembler(this.leftHandSide.groupBy((TriFunction) mapping, new DroolsTriAccumulateFunction<>((TriConstraintCollector) collector)));
+        return new BiRuleAssembler(this.leftHandSide.groupBy((TriFunction) mapping,
+                new DroolsTriAccumulateFunction<>((TriConstraintCollector) collector)));
     }
 
     @Override
@@ -96,7 +98,7 @@ final class TriRuleAssembler extends AbstractRuleAssembler<TriLeftHandSide> {
 
     @Override
     protected QuadRuleAssembler andThenGroupBy2Map2Collect(Object mappingA, Object mappingB, Object collectorC,
-                                                        Object collectorD) {
+            Object collectorD) {
         return new QuadRuleAssembler(this.leftHandSide.groupBy((TriFunction) mappingA, (TriFunction) mappingB,
                 new DroolsTriAccumulateFunction<>((TriConstraintCollector) collectorC),
                 new DroolsTriAccumulateFunction<>((TriConstraintCollector) collectorD)));

@@ -16,6 +16,9 @@
 
 package org.optaplanner.core.impl.score.stream.drools.common.rules;
 
+import java.math.BigDecimal;
+import java.util.function.*;
+
 import org.drools.model.DSL;
 import org.drools.model.Drools;
 import org.drools.model.Global;
@@ -31,9 +34,6 @@ import org.optaplanner.core.impl.score.stream.drools.common.nodes.AbstractConstr
 import org.optaplanner.core.impl.score.stream.drools.common.nodes.ConstraintGraphNode;
 import org.optaplanner.core.impl.score.stream.drools.common.nodes.FromNode;
 import org.optaplanner.core.impl.score.stream.drools.uni.DroolsUniAccumulateFunction;
-
-import java.math.BigDecimal;
-import java.util.function.*;
 
 final class UniRuleAssembler extends AbstractRuleAssembler<UniLeftHandSide> {
 

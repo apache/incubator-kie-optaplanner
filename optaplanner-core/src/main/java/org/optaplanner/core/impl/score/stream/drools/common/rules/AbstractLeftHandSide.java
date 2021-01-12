@@ -16,18 +16,18 @@
 
 package org.optaplanner.core.impl.score.stream.drools.common.rules;
 
-import org.drools.model.Index;
-import org.drools.model.Variable;
-import org.drools.model.view.ViewItem;
-import org.optaplanner.core.impl.score.stream.common.JoinerType;
-import org.optaplanner.core.impl.score.stream.drools.common.DroolsVariableFactory;
+import static org.drools.model.DSL.and;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.function.Supplier;
 
-import static org.drools.model.DSL.and;
+import org.drools.model.Index;
+import org.drools.model.Variable;
+import org.drools.model.view.ViewItem;
+import org.optaplanner.core.impl.score.stream.common.JoinerType;
+import org.optaplanner.core.impl.score.stream.drools.common.DroolsVariableFactory;
 
 abstract class AbstractLeftHandSide implements Supplier<List<ViewItem<?>>> {
 

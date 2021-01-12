@@ -16,6 +16,9 @@
 
 package org.optaplanner.core.impl.score.stream.drools.common.rules;
 
+import java.math.BigDecimal;
+import java.util.function.Supplier;
+
 import org.drools.model.DSL;
 import org.drools.model.Drools;
 import org.drools.model.Global;
@@ -33,9 +36,6 @@ import org.optaplanner.core.impl.score.stream.drools.common.nodes.AbstractConstr
 import org.optaplanner.core.impl.score.stream.drools.common.nodes.ConstraintGraphNode;
 import org.optaplanner.core.impl.score.stream.drools.quad.DroolsQuadAccumulateFunction;
 import org.optaplanner.core.impl.score.stream.penta.AbstractPentaJoiner;
-
-import java.math.BigDecimal;
-import java.util.function.Supplier;
 
 final class QuadRuleAssembler extends AbstractRuleAssembler<QuadLeftHandSide> {
 
@@ -56,7 +56,7 @@ final class QuadRuleAssembler extends AbstractRuleAssembler<QuadLeftHandSide> {
 
     @Override
     protected AbstractRuleAssembler andThenExists(AbstractConstraintModelJoiningNode joiningNode, boolean shouldExist) {
-        Class<?> otherFactType =  joiningNode.getOtherFactType();
+        Class<?> otherFactType = joiningNode.getOtherFactType();
         AbstractPentaJoiner<?, ?, ?, ?, ?>[] joiners = (AbstractPentaJoiner<?, ?, ?, ?, ?>[]) joiningNode.get().stream()
                 .toArray(AbstractPentaJoiner[]::new);
         if (shouldExist) {
@@ -68,7 +68,8 @@ final class QuadRuleAssembler extends AbstractRuleAssembler<QuadLeftHandSide> {
 
     @Override
     protected UniRuleAssembler andThenGroupBy0Map1Collect(Object collector) {
-        return new UniRuleAssembler(this.leftHandSide.groupBy(new DroolsQuadAccumulateFunction<>((QuadConstraintCollector) collector)));
+        return new UniRuleAssembler(
+                this.leftHandSide.groupBy(new DroolsQuadAccumulateFunction<>((QuadConstraintCollector) collector)));
     }
 
     @Override
@@ -78,7 +79,8 @@ final class QuadRuleAssembler extends AbstractRuleAssembler<QuadLeftHandSide> {
 
     @Override
     protected BiRuleAssembler andThenGroupBy1Map1Collect(Object mapping, Object collector) {
-        return new BiRuleAssembler(this.leftHandSide.groupBy((QuadFunction) mapping, new DroolsQuadAccumulateFunction<>((QuadConstraintCollector) collector)));
+        return new BiRuleAssembler(this.leftHandSide.groupBy((QuadFunction) mapping,
+                new DroolsQuadAccumulateFunction<>((QuadConstraintCollector) collector)));
     }
 
     @Override
@@ -94,7 +96,7 @@ final class QuadRuleAssembler extends AbstractRuleAssembler<QuadLeftHandSide> {
 
     @Override
     protected QuadRuleAssembler andThenGroupBy2Map2Collect(Object mappingA, Object mappingB, Object collectorC,
-                                                        Object collectorD) {
+            Object collectorD) {
         return new QuadRuleAssembler(this.leftHandSide.groupBy((QuadFunction) mappingA, (QuadFunction) mappingB,
                 new DroolsQuadAccumulateFunction<>((QuadConstraintCollector) collectorC),
                 new DroolsQuadAccumulateFunction<>((QuadConstraintCollector) collectorD)));

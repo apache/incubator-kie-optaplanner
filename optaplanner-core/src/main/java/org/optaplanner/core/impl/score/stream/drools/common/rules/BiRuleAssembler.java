@@ -16,6 +16,9 @@
 
 package org.optaplanner.core.impl.score.stream.drools.common.rules;
 
+import java.math.BigDecimal;
+import java.util.function.*;
+
 import org.drools.model.DSL;
 import org.drools.model.Drools;
 import org.drools.model.Global;
@@ -29,9 +32,6 @@ import org.optaplanner.core.impl.score.stream.drools.common.consequences.Constra
 import org.optaplanner.core.impl.score.stream.drools.common.nodes.AbstractConstraintModelJoiningNode;
 import org.optaplanner.core.impl.score.stream.drools.common.nodes.ConstraintGraphNode;
 import org.optaplanner.core.impl.score.stream.tri.AbstractTriJoiner;
-
-import java.math.BigDecimal;
-import java.util.function.*;
 
 final class BiRuleAssembler extends AbstractRuleAssembler<BiLeftHandSide> {
 
@@ -66,7 +66,8 @@ final class BiRuleAssembler extends AbstractRuleAssembler<BiLeftHandSide> {
 
     @Override
     protected UniRuleAssembler andThenGroupBy0Map1Collect(Object collector) {
-        return new UniRuleAssembler(this.leftHandSide.groupBy(new DroolsBiAccumulateFunction<>((BiConstraintCollector) collector)));
+        return new UniRuleAssembler(
+                this.leftHandSide.groupBy(new DroolsBiAccumulateFunction<>((BiConstraintCollector) collector)));
     }
 
     @Override
@@ -76,7 +77,8 @@ final class BiRuleAssembler extends AbstractRuleAssembler<BiLeftHandSide> {
 
     @Override
     protected BiRuleAssembler andThenGroupBy1Map1Collect(Object mapping, Object collector) {
-        return new BiRuleAssembler(this.leftHandSide.groupBy((BiFunction) mapping, new DroolsBiAccumulateFunction<>((BiConstraintCollector) collector)));
+        return new BiRuleAssembler(this.leftHandSide.groupBy((BiFunction) mapping,
+                new DroolsBiAccumulateFunction<>((BiConstraintCollector) collector)));
     }
 
     @Override
@@ -92,7 +94,7 @@ final class BiRuleAssembler extends AbstractRuleAssembler<BiLeftHandSide> {
 
     @Override
     protected QuadRuleAssembler andThenGroupBy2Map2Collect(Object mappingA, Object mappingB, Object collectorC,
-                                                        Object collectorD) {
+            Object collectorD) {
         return new QuadRuleAssembler(this.leftHandSide.groupBy((BiFunction) mappingA, (BiFunction) mappingB,
                 new DroolsBiAccumulateFunction<>((BiConstraintCollector) collectorC),
                 new DroolsBiAccumulateFunction<>((BiConstraintCollector) collectorD)));
