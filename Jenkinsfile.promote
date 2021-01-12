@@ -9,6 +9,7 @@ pipelineProperties = [:]
 String optaplannerRepository = 'optaplanner'
 String vehicleRoutingRepository = 'optaweb-vehicle-routing'
 String employeeRosteringRepository = 'optaweb-employee-rostering'
+String quickstartsRepository = 'optaplanner-quickstarts'
 
 pipeline {
     agent {
@@ -125,6 +126,23 @@ pipeline {
                         checkoutRepo(employeeRosteringRepository)
                         mergeAndPush(getDeployPrLink(employeeRosteringRepository))
                         tagLatest()
+                    }
+                }
+            }
+        }
+
+        stage('Merge Quickstarts PR, tag and reset stage') {
+            when {
+                expression { return isRelease() }
+            }
+            steps{
+                script {
+                    dir(quickstartsRepository) {
+                        checkoutRepo(quickstartsRepository)
+                        mergeAndPush(getDeployPrLink(quickstartsRepository))
+                        tagLatest()
+
+                        updateAndResetStableBranch(quickstartsRepository)
                     }
                 }
             }
@@ -469,4 +487,27 @@ void runMavenDeploy(MavenCommand mvnCmd) {
         mvnCmd.withDeployRepository(params.MAVEN_DEPLOY_REPOSITORY)
     }
     mvnCmd.skipTests(true).run('clean deploy')
+}
+def updateAndResetStableBranch(String repo){
+    githubscm.createBranch('stable')
+
+    removeJbossNexusFromMavenAndGradle(repo)
+    githubscm.commitChanges("[stable] Remove JBoss nexus repositories", {
+        githubscm.findAndStageNotIgnoredFiles('pom.xml')
+        githubscm.findAndStageNotIgnoredFiles('build.gradle')
+    })
+
+    githubscm.forcePushProtectedBranch(repo, 'stable', getBuildBranch(), getGitAuthor(), getGitAuthorCredsID())
+}
+
+void removeJbossNexusFromMavenAndGradle(String repo) {
+    dir(repo){
+        sh '''
+            sed -i \':a;N;$!ba;s/\\n *<repositories>.*<\\/repositories>//g\' */pom.xml
+            sed -i \':a;N;$!ba;s/\\n *<repositories>.*<\\/repositories>//g\' pom.xml
+            sed -i \':a;N;$!ba;s/\\n *\\/\\/ To get snapshots during development[^{}]*maven {[^{}]*mavenContent {[^{}]*snapshotsOnly[^{}]*}[^{}]*}//g\' */build.gradle
+        '''
+        assert !sh (script: 'grep -Rn "repository.jboss.org" --include={pom.xml,build.gradle}|cat'
+                , allowEmptyResults: true, returnStdout: true)
+    }
 }
