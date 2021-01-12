@@ -27,6 +27,7 @@ import org.optaplanner.core.impl.score.stream.drools.DroolsConstraint;
 import org.optaplanner.core.impl.score.stream.drools.common.consequences.ConstraintConsequence;
 import org.optaplanner.core.impl.score.stream.drools.common.nodes.AbstractConstraintModelJoiningNode;
 import org.optaplanner.core.impl.score.stream.drools.common.nodes.ConstraintGraphNode;
+import org.optaplanner.core.impl.score.stream.tri.AbstractTriJoiner;
 
 import java.math.BigDecimal;
 import java.util.function.*;
@@ -51,7 +52,14 @@ final class BiRuleAssembler extends AbstractRuleAssembler<BiLeftHandSide> {
 
     @Override
     protected AbstractRuleAssembler andThenExists(AbstractConstraintModelJoiningNode joiningNode, boolean shouldExist) {
-        return new BiExistenceMutator(joiningNode, shouldExist).apply(this);
+        Class<?> otherFactType =  joiningNode.getOtherFactType();
+        AbstractTriJoiner<?, ?, ?>[] joiners = (AbstractTriJoiner<?, ?, ?>[]) joiningNode.get().stream()
+                .toArray(AbstractTriJoiner[]::new);
+        if (shouldExist) {
+            return new BiRuleAssembler(this.leftHandSide.exists(otherFactType, joiners));
+        } else {
+            return new BiRuleAssembler(this.leftHandSide.notExists(otherFactType, joiners));
+        }
     }
 
     @Override

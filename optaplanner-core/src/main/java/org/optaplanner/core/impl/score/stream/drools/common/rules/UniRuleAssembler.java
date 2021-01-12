@@ -23,6 +23,7 @@ import org.drools.model.Variable;
 import org.drools.model.consequences.ConsequenceBuilder;
 import org.optaplanner.core.api.score.stream.uni.UniConstraintCollector;
 import org.optaplanner.core.impl.score.holder.AbstractScoreHolder;
+import org.optaplanner.core.impl.score.stream.bi.AbstractBiJoiner;
 import org.optaplanner.core.impl.score.stream.drools.DroolsConstraint;
 import org.optaplanner.core.impl.score.stream.drools.common.DroolsVariableFactory;
 import org.optaplanner.core.impl.score.stream.drools.common.consequences.ConstraintConsequence;
@@ -57,7 +58,14 @@ final class UniRuleAssembler extends AbstractRuleAssembler<UniLeftHandSide> {
 
     @Override
     protected AbstractRuleAssembler andThenExists(AbstractConstraintModelJoiningNode joiningNode, boolean shouldExist) {
-        return new UniExistenceMutator(joiningNode, shouldExist).apply(this);
+        Class<?> otherFactType =  joiningNode.getOtherFactType();
+        AbstractBiJoiner<?, ?>[] joiners = (AbstractBiJoiner<?, ?>[]) joiningNode.get().stream()
+                .toArray(AbstractBiJoiner[]::new);
+        if (shouldExist) {
+            return new UniRuleAssembler(this.leftHandSide.exists(otherFactType, joiners));
+        } else {
+            return new UniRuleAssembler(this.leftHandSide.notExists(otherFactType, joiners));
+        }
     }
 
     @Override

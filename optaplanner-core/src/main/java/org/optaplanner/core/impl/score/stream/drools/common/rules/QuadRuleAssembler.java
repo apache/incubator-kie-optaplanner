@@ -31,6 +31,7 @@ import org.optaplanner.core.impl.score.stream.drools.DroolsConstraint;
 import org.optaplanner.core.impl.score.stream.drools.common.consequences.ConstraintConsequence;
 import org.optaplanner.core.impl.score.stream.drools.common.nodes.AbstractConstraintModelJoiningNode;
 import org.optaplanner.core.impl.score.stream.drools.common.nodes.ConstraintGraphNode;
+import org.optaplanner.core.impl.score.stream.penta.AbstractPentaJoiner;
 
 import java.math.BigDecimal;
 import java.util.function.Supplier;
@@ -54,7 +55,14 @@ final class QuadRuleAssembler extends AbstractRuleAssembler<QuadLeftHandSide> {
 
     @Override
     protected AbstractRuleAssembler andThenExists(AbstractConstraintModelJoiningNode joiningNode, boolean shouldExist) {
-        return new QuadExistenceMutator(joiningNode, shouldExist).apply(this);
+        Class<?> otherFactType =  joiningNode.getOtherFactType();
+        AbstractPentaJoiner<?, ?, ?, ?, ?>[] joiners = (AbstractPentaJoiner<?, ?, ?, ?, ?>[]) joiningNode.get().stream()
+                .toArray(AbstractPentaJoiner[]::new);
+        if (shouldExist) {
+            return new QuadRuleAssembler(this.leftHandSide.exists(otherFactType, joiners));
+        } else {
+            return new QuadRuleAssembler(this.leftHandSide.notExists(otherFactType, joiners));
+        }
     }
 
     @Override
