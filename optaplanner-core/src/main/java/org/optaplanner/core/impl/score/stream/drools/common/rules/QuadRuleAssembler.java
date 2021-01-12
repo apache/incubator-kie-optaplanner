@@ -73,7 +73,7 @@ final class QuadRuleAssembler extends AbstractRuleAssembler<QuadLeftHandSide> {
 
     @Override
     protected UniRuleAssembler andThenGroupBy1Map0Collect(Object mapping) {
-        return (UniRuleAssembler) new QuadGroupBy1Map0CollectMutator<>((QuadFunction) mapping).apply(this);
+        return new UniRuleAssembler(this.leftHandSide.groupBy((QuadFunction) mapping));
     }
 
     @Override

@@ -75,7 +75,7 @@ final class TriRuleAssembler extends AbstractRuleAssembler<TriLeftHandSide> {
 
     @Override
     protected UniRuleAssembler andThenGroupBy1Map0Collect(Object mapping) {
-        return (UniRuleAssembler) new TriGroupBy1Map0CollectMutator<>((TriFunction) mapping).apply(this);
+        return new UniRuleAssembler(this.leftHandSide.groupBy((TriFunction) mapping));
     }
 
     @Override

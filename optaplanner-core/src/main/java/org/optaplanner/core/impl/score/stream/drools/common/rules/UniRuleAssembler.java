@@ -76,7 +76,7 @@ final class UniRuleAssembler extends AbstractRuleAssembler<UniLeftHandSide> {
 
     @Override
     protected UniRuleAssembler andThenGroupBy1Map0Collect(Object mapping) {
-        return (UniRuleAssembler) new UniGroupBy1Map0CollectMutator<>((Function) mapping).apply(this);
+        return new UniRuleAssembler(this.leftHandSide.groupBy((Function) mapping));
     }
 
     @Override
