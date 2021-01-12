@@ -16,6 +16,6 @@
 
 package org.optaplanner.core.impl.score.stream.drools.common.rules;
 
-abstract class AbstractTriGroupByMutator extends AbstractGroupByMutator {
+abstract class AbstractTriGroupByMutator implements GroupByMutator {
 
 }

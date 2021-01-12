@@ -16,15 +16,6 @@
 
 package org.optaplanner.core.impl.score.stream.drools.common.rules;
 
-import static org.drools.model.PatternDSL.rule;
-
-import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.function.Function;
-import java.util.stream.Stream;
-
 import org.drools.model.*;
 import org.drools.model.consequences.ConsequenceBuilder;
 import org.kie.api.runtime.rule.RuleContext;
@@ -36,6 +27,15 @@ import org.optaplanner.core.impl.score.stream.drools.common.nodes.AbstractConstr
 import org.optaplanner.core.impl.score.stream.drools.common.nodes.AbstractConstraintModelJoiningNode;
 import org.optaplanner.core.impl.score.stream.drools.common.nodes.ConstraintGraphNode;
 import org.optaplanner.core.impl.score.stream.drools.common.nodes.ConstraintGraphNodeType;
+
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.function.Function;
+import java.util.stream.Stream;
+
+import static org.drools.model.PatternDSL.rule;
 
 abstract class AbstractRuleAssembler<LeftHandSide_ extends AbstractLeftHandSide> implements RuleAssembler {
 
@@ -149,18 +149,18 @@ abstract class AbstractRuleAssembler<LeftHandSide_ extends AbstractLeftHandSide>
         }
     }
 
-    protected abstract AbstractGroupByMutator new0Map1CollectGroupByMutator(Object collector);
+    protected abstract GroupByMutator new0Map1CollectGroupByMutator(Object collector);
 
-    protected abstract AbstractGroupByMutator new1Map0CollectGroupByMutator(Object mapping);
+    protected abstract GroupByMutator new1Map0CollectGroupByMutator(Object mapping);
 
-    protected abstract AbstractGroupByMutator new1Map1CollectGroupByMutator(Object mapping, Object collector);
+    protected abstract GroupByMutator new1Map1CollectGroupByMutator(Object mapping, Object collector);
 
-    protected abstract AbstractGroupByMutator new2Map0CollectGroupByMutator(Object mappingA, Object mappingB);
+    protected abstract GroupByMutator new2Map0CollectGroupByMutator(Object mappingA, Object mappingB);
 
-    protected abstract AbstractGroupByMutator new2Map1CollectGroupByMutator(Object mappingA, Object mappingB,
+    protected abstract GroupByMutator new2Map1CollectGroupByMutator(Object mappingA, Object mappingB,
             Object collectorC);
 
-    protected abstract AbstractGroupByMutator new2Map2CollectGroupByMutator(Object mappingA, Object mappingB,
+    protected abstract GroupByMutator new2Map2CollectGroupByMutator(Object mappingA, Object mappingB,
             Object collectorC, Object collectorD);
 
     protected abstract ConsequenceBuilder.ValidBuilder buildConsequence(DroolsConstraint constraint,

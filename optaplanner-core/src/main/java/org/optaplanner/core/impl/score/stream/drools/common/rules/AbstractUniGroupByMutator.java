@@ -16,6 +16,6 @@
 
 package org.optaplanner.core.impl.score.stream.drools.common.rules;
 
-abstract class AbstractUniGroupByMutator extends AbstractGroupByMutator {
+abstract class AbstractUniGroupByMutator implements GroupByMutator {
 
 }

@@ -16,9 +16,6 @@
 
 package org.optaplanner.core.impl.score.stream.drools.common.rules;
 
-import java.math.BigDecimal;
-import java.util.function.Supplier;
-
 import org.drools.model.DSL;
 import org.drools.model.Drools;
 import org.drools.model.Global;
@@ -34,6 +31,9 @@ import org.optaplanner.core.impl.score.stream.drools.DroolsConstraint;
 import org.optaplanner.core.impl.score.stream.drools.common.consequences.ConstraintConsequence;
 import org.optaplanner.core.impl.score.stream.drools.common.nodes.AbstractConstraintModelJoiningNode;
 import org.optaplanner.core.impl.score.stream.drools.common.nodes.ConstraintGraphNode;
+
+import java.math.BigDecimal;
+import java.util.function.Supplier;
 
 final class QuadRuleAssembler extends AbstractRuleAssembler<QuadLeftHandSide> {
 
@@ -58,34 +58,34 @@ final class QuadRuleAssembler extends AbstractRuleAssembler<QuadLeftHandSide> {
     }
 
     @Override
-    protected AbstractGroupByMutator new0Map1CollectGroupByMutator(Object collector) {
+    protected GroupByMutator new0Map1CollectGroupByMutator(Object collector) {
         return new QuadGroupBy0Map1CollectMutator<>((QuadConstraintCollector) collector);
     }
 
     @Override
-    protected AbstractGroupByMutator new1Map0CollectGroupByMutator(Object mapping) {
+    protected GroupByMutator new1Map0CollectGroupByMutator(Object mapping) {
         return new QuadGroupBy1Map0CollectMutator<>((QuadFunction) mapping);
     }
 
     @Override
-    protected AbstractGroupByMutator new1Map1CollectGroupByMutator(Object mapping, Object collector) {
+    protected GroupByMutator new1Map1CollectGroupByMutator(Object mapping, Object collector) {
         return new QuadGroupBy1Map1CollectMutator<>((QuadFunction) mapping, (QuadConstraintCollector) collector);
     }
 
     @Override
-    protected AbstractGroupByMutator new2Map0CollectGroupByMutator(Object mappingA, Object mappingB) {
+    protected GroupByMutator new2Map0CollectGroupByMutator(Object mappingA, Object mappingB) {
         return new QuadGroupBy2Map0CollectMutator<>((QuadFunction) mappingA, (QuadFunction) mappingB);
     }
 
     @Override
-    protected AbstractGroupByMutator new2Map1CollectGroupByMutator(Object mappingA, Object mappingB,
+    protected GroupByMutator new2Map1CollectGroupByMutator(Object mappingA, Object mappingB,
             Object collectorC) {
         return new QuadGroupBy2Map1CollectMutator<>((QuadFunction) mappingA, (QuadFunction) mappingB,
                 (QuadConstraintCollector) collectorC);
     }
 
     @Override
-    protected AbstractGroupByMutator new2Map2CollectGroupByMutator(Object mappingA, Object mappingB, Object collectorC,
+    protected GroupByMutator new2Map2CollectGroupByMutator(Object mappingA, Object mappingB, Object collectorC,
             Object collectorD) {
         return new QuadGroupBy2Map2CollectMutator<>((QuadFunction) mappingA, (QuadFunction) mappingB,
                 (QuadConstraintCollector) collectorC, (QuadConstraintCollector) collectorD);

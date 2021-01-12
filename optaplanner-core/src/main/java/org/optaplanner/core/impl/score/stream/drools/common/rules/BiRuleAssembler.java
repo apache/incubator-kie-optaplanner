@@ -16,9 +16,6 @@
 
 package org.optaplanner.core.impl.score.stream.drools.common.rules;
 
-import java.math.BigDecimal;
-import java.util.function.*;
-
 import org.drools.model.DSL;
 import org.drools.model.Drools;
 import org.drools.model.Global;
@@ -30,6 +27,9 @@ import org.optaplanner.core.impl.score.stream.drools.DroolsConstraint;
 import org.optaplanner.core.impl.score.stream.drools.common.consequences.ConstraintConsequence;
 import org.optaplanner.core.impl.score.stream.drools.common.nodes.AbstractConstraintModelJoiningNode;
 import org.optaplanner.core.impl.score.stream.drools.common.nodes.ConstraintGraphNode;
+
+import java.math.BigDecimal;
+import java.util.function.*;
 
 final class BiRuleAssembler extends AbstractRuleAssembler<BiLeftHandSide> {
 
@@ -55,34 +55,34 @@ final class BiRuleAssembler extends AbstractRuleAssembler<BiLeftHandSide> {
     }
 
     @Override
-    protected AbstractGroupByMutator new0Map1CollectGroupByMutator(Object collector) {
+    protected GroupByMutator new0Map1CollectGroupByMutator(Object collector) {
         return new BiGroupBy0Map1CollectMutator<>((BiConstraintCollector) collector);
     }
 
     @Override
-    protected AbstractGroupByMutator new1Map0CollectGroupByMutator(Object mapping) {
+    protected GroupByMutator new1Map0CollectGroupByMutator(Object mapping) {
         return new BiGroupBy1Map0CollectMutator<>((BiFunction) mapping);
     }
 
     @Override
-    protected AbstractGroupByMutator new1Map1CollectGroupByMutator(Object mapping, Object collector) {
+    protected GroupByMutator new1Map1CollectGroupByMutator(Object mapping, Object collector) {
         return new BiGroupBy1Map1CollectMutator<>((BiFunction) mapping, (BiConstraintCollector) collector);
     }
 
     @Override
-    protected AbstractGroupByMutator new2Map0CollectGroupByMutator(Object mappingA, Object mappingB) {
+    protected GroupByMutator new2Map0CollectGroupByMutator(Object mappingA, Object mappingB) {
         return new BiGroupBy2Map0CollectMutator<>((BiFunction) mappingA, (BiFunction) mappingB);
     }
 
     @Override
-    protected AbstractGroupByMutator new2Map1CollectGroupByMutator(Object mappingA, Object mappingB,
+    protected GroupByMutator new2Map1CollectGroupByMutator(Object mappingA, Object mappingB,
             Object collectorC) {
         return new BiGroupBy2Map1CollectMutator<>((BiFunction) mappingA, (BiFunction) mappingB,
                 (BiConstraintCollector) collectorC);
     }
 
     @Override
-    protected AbstractGroupByMutator new2Map2CollectGroupByMutator(Object mappingA, Object mappingB, Object collectorC,
+    protected GroupByMutator new2Map2CollectGroupByMutator(Object mappingA, Object mappingB, Object collectorC,
             Object collectorD) {
         return new BiGroupBy2Map2CollectMutator<>((BiFunction) mappingA, (BiFunction) mappingB,
                 (BiConstraintCollector) collectorC, (BiConstraintCollector) collectorD);

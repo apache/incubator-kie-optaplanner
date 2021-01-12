@@ -16,9 +16,6 @@
 
 package org.optaplanner.core.impl.score.stream.drools.common.rules;
 
-import java.math.BigDecimal;
-import java.util.function.Supplier;
-
 import org.drools.model.DSL;
 import org.drools.model.Drools;
 import org.drools.model.Global;
@@ -34,6 +31,9 @@ import org.optaplanner.core.impl.score.stream.drools.DroolsConstraint;
 import org.optaplanner.core.impl.score.stream.drools.common.consequences.ConstraintConsequence;
 import org.optaplanner.core.impl.score.stream.drools.common.nodes.AbstractConstraintModelJoiningNode;
 import org.optaplanner.core.impl.score.stream.drools.common.nodes.ConstraintGraphNode;
+
+import java.math.BigDecimal;
+import java.util.function.Supplier;
 
 final class TriRuleAssembler extends AbstractRuleAssembler<TriLeftHandSide> {
 
@@ -59,34 +59,34 @@ final class TriRuleAssembler extends AbstractRuleAssembler<TriLeftHandSide> {
     }
 
     @Override
-    protected AbstractGroupByMutator new0Map1CollectGroupByMutator(Object collector) {
+    protected GroupByMutator new0Map1CollectGroupByMutator(Object collector) {
         return new TriGroupBy0Map1CollectMutator<>((TriConstraintCollector) collector);
     }
 
     @Override
-    protected AbstractGroupByMutator new1Map0CollectGroupByMutator(Object mapping) {
+    protected GroupByMutator new1Map0CollectGroupByMutator(Object mapping) {
         return new TriGroupBy1Map0CollectMutator<>((TriFunction) mapping);
     }
 
     @Override
-    protected AbstractGroupByMutator new1Map1CollectGroupByMutator(Object mapping, Object collector) {
+    protected GroupByMutator new1Map1CollectGroupByMutator(Object mapping, Object collector) {
         return new TriGroupBy1Map1CollectMutator<>((TriFunction) mapping, (TriConstraintCollector) collector);
     }
 
     @Override
-    protected AbstractGroupByMutator new2Map0CollectGroupByMutator(Object mappingA, Object mappingB) {
+    protected GroupByMutator new2Map0CollectGroupByMutator(Object mappingA, Object mappingB) {
         return new TriGroupBy2Map0CollectMutator<>((TriFunction) mappingA, (TriFunction) mappingB);
     }
 
     @Override
-    protected AbstractGroupByMutator new2Map1CollectGroupByMutator(Object mappingA, Object mappingB,
+    protected GroupByMutator new2Map1CollectGroupByMutator(Object mappingA, Object mappingB,
             Object collectorC) {
         return new TriGroupBy2Map1CollectMutator<>((TriFunction) mappingA, (TriFunction) mappingB,
                 (TriConstraintCollector) collectorC);
     }
 
     @Override
-    protected AbstractGroupByMutator new2Map2CollectGroupByMutator(Object mappingA, Object mappingB, Object collectorC,
+    protected GroupByMutator new2Map2CollectGroupByMutator(Object mappingA, Object mappingB, Object collectorC,
             Object collectorD) {
         return new TriGroupBy2Map2CollectMutator<>((TriFunction) mappingA, (TriFunction) mappingB,
                 (TriConstraintCollector) collectorC, (TriConstraintCollector) collectorD);

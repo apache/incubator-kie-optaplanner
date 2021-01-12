@@ -16,6 +16,5 @@
 
 package org.optaplanner.core.impl.score.stream.drools.common.rules;
 
-abstract class AbstractGroupByMutator implements Mutator {
-
+public interface GroupByMutator extends Mutator {
 }

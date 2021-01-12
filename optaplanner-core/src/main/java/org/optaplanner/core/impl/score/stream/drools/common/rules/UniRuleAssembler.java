@@ -16,9 +16,6 @@
 
 package org.optaplanner.core.impl.score.stream.drools.common.rules;
 
-import java.math.BigDecimal;
-import java.util.function.*;
-
 import org.drools.model.DSL;
 import org.drools.model.Drools;
 import org.drools.model.Global;
@@ -32,6 +29,9 @@ import org.optaplanner.core.impl.score.stream.drools.common.consequences.Constra
 import org.optaplanner.core.impl.score.stream.drools.common.nodes.AbstractConstraintModelJoiningNode;
 import org.optaplanner.core.impl.score.stream.drools.common.nodes.ConstraintGraphNode;
 import org.optaplanner.core.impl.score.stream.drools.common.nodes.FromNode;
+
+import java.math.BigDecimal;
+import java.util.function.*;
 
 final class UniRuleAssembler extends AbstractRuleAssembler<UniLeftHandSide> {
 
@@ -61,34 +61,34 @@ final class UniRuleAssembler extends AbstractRuleAssembler<UniLeftHandSide> {
     }
 
     @Override
-    protected AbstractGroupByMutator new0Map1CollectGroupByMutator(Object collector) {
+    protected GroupByMutator new0Map1CollectGroupByMutator(Object collector) {
         return new UniGroupBy0Map1CollectMutator<>((UniConstraintCollector) collector);
     }
 
     @Override
-    protected AbstractGroupByMutator new1Map0CollectGroupByMutator(Object mapping) {
+    protected GroupByMutator new1Map0CollectGroupByMutator(Object mapping) {
         return new UniGroupBy1Map0CollectMutator<>((Function) mapping);
     }
 
     @Override
-    protected AbstractGroupByMutator new1Map1CollectGroupByMutator(Object mapping, Object collector) {
+    protected GroupByMutator new1Map1CollectGroupByMutator(Object mapping, Object collector) {
         return new UniGroupBy1Map1CollectMutator<>((Function) mapping, (UniConstraintCollector) collector);
     }
 
     @Override
-    protected AbstractGroupByMutator new2Map0CollectGroupByMutator(Object mappingA, Object mappingB) {
+    protected GroupByMutator new2Map0CollectGroupByMutator(Object mappingA, Object mappingB) {
         return new UniGroupBy2Map0CollectMutator<>((Function) mappingA, (Function) mappingB);
     }
 
     @Override
-    protected AbstractGroupByMutator new2Map1CollectGroupByMutator(Object mappingA, Object mappingB,
+    protected GroupByMutator new2Map1CollectGroupByMutator(Object mappingA, Object mappingB,
             Object collectorC) {
         return new UniGroupBy2Map1CollectMutator<>((Function) mappingA, (Function) mappingB,
                 (UniConstraintCollector) collectorC);
     }
 
     @Override
-    protected AbstractGroupByMutator new2Map2CollectGroupByMutator(Object mappingA, Object mappingB, Object collectorC,
+    protected GroupByMutator new2Map2CollectGroupByMutator(Object mappingA, Object mappingB, Object collectorC,
             Object collectorD) {
         return new UniGroupBy2Map2CollectMutator<>((Function) mappingA, (Function) mappingB,
                 (UniConstraintCollector) collectorC, (UniConstraintCollector) collectorD);

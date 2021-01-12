@@ -16,6 +16,6 @@
 
 package org.optaplanner.core.impl.score.stream.drools.common.rules;
 
-abstract class AbstractQuadGroupByMutator extends AbstractGroupByMutator {
+abstract class AbstractQuadGroupByMutator implements GroupByMutator {
 
 }
