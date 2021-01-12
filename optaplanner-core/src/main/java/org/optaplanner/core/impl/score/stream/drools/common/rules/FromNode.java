@@ -16,8 +16,6 @@
 
 package org.optaplanner.core.impl.score.stream.drools.common.rules;
 
-import org.optaplanner.core.impl.score.stream.drools.common.ConstraintGraph;
-
 import java.util.Objects;
 
 public final class FromNode<A> extends AbstractConstraintModelNode<UniLeftHandSide<A>> implements UniConstraintGraphNode {

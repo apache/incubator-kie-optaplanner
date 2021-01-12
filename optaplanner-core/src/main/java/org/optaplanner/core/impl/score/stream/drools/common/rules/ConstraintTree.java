@@ -14,18 +14,11 @@
  * limitations under the License.
  */
 
-package org.optaplanner.core.impl.score.stream.drools.common;
-
-import java.util.ArrayDeque;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Deque;
-import java.util.List;
+package org.optaplanner.core.impl.score.stream.drools.common.rules;
 
 import org.optaplanner.core.impl.score.stream.drools.common.consequences.ConstraintConsequence;
-import org.optaplanner.core.impl.score.stream.drools.common.rules.ChildNode;
-import org.optaplanner.core.impl.score.stream.drools.common.rules.ConstraintGraphNode;
-import org.optaplanner.core.impl.score.stream.drools.common.rules.ConstraintGraphNodeType;
+
+import java.util.*;
 
 final class ConstraintTree<Node_ extends ConstraintGraphNode, Consequence_ extends ConstraintConsequence<Node_>> {
 

@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2021 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,14 +16,6 @@
 
 package org.optaplanner.core.impl.score.stream.drools;
 
-import static org.drools.model.DSL.globalOf;
-
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
 import org.drools.model.Global;
 import org.drools.model.Rule;
 import org.drools.model.impl.ModelImpl;
@@ -35,8 +27,12 @@ import org.optaplanner.core.impl.score.director.drools.DroolsScoreDirector;
 import org.optaplanner.core.impl.score.holder.AbstractScoreHolder;
 import org.optaplanner.core.impl.score.stream.ConstraintSessionFactory;
 import org.optaplanner.core.impl.score.stream.InnerConstraintFactory;
-import org.optaplanner.core.impl.score.stream.drools.common.ConstraintGraph;
+import org.optaplanner.core.impl.score.stream.drools.common.rules.ConstraintGraph;
 import org.optaplanner.core.impl.score.stream.drools.uni.DroolsFromUniConstraintStream;
+
+import java.util.*;
+
+import static org.drools.model.DSL.globalOf;
 
 public final class DroolsConstraintFactory<Solution_> extends InnerConstraintFactory<Solution_> {
 

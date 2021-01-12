@@ -14,18 +14,14 @@
  * limitations under the License.
  */
 
-package org.optaplanner.core.impl.score.stream.drools.common;
-
-import static org.optaplanner.core.impl.score.stream.drools.common.rules.ConstraintGraphNodeType.FROM;
-import static org.optaplanner.core.impl.score.stream.drools.common.rules.ConstraintGraphNodeType.JOIN;
+package org.optaplanner.core.impl.score.stream.drools.common.rules;
 
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
-import org.optaplanner.core.impl.score.stream.drools.common.rules.ConstraintGraphNode;
-import org.optaplanner.core.impl.score.stream.drools.common.rules.ConstraintGraphNodeType;
-import org.optaplanner.core.impl.score.stream.drools.common.rules.RuleAssembler;
+import static org.optaplanner.core.impl.score.stream.drools.common.rules.ConstraintGraphNodeType.FROM;
+import static org.optaplanner.core.impl.score.stream.drools.common.rules.ConstraintGraphNodeType.JOIN;
 
 final class ConstraintSubTree {
 
