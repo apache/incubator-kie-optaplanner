@@ -202,7 +202,6 @@ pipeline {
                     deployMavenArtifacts(getOptaplannerMavenCommand(), optaplannerRepository)
                     deployMavenArtifacts(getOptawebVehicleRoutingMavenCommand(), vehicleRoutingRepository)
                     deployMavenArtifacts(getOptawebEmployeeRosteringMavenCommand(), employeeRosteringRepository)
-                    deployMavenArtifacts(getOptaplannerQuickstartsMavenCommand(), quickstartsRepository)
                 }
             }
         }
@@ -234,12 +233,6 @@ pipeline {
                         setDeployPropertyIfNeeded("${employeeRosteringRepository}.pr.source.ref", getBotBranch())
                         setDeployPropertyIfNeeded("${employeeRosteringRepository}.pr.target.uri", "https://github.com/${getGitAuthor()}/${employeeRosteringRepository}")
                         setDeployPropertyIfNeeded("${employeeRosteringRepository}.pr.target.ref", getBuildBranch())
-
-                        setDeployPropertyIfNeeded("${quickstartsRepository}.pr.source.uri", "https://github.com/${getBotAuthor()}/${quickstartsRepository}")
-                        setDeployPropertyIfNeeded("${quickstartsRepository}.pr.source.ref", getBotBranch())
-                        setDeployPropertyIfNeeded("${quickstartsRepository}.pr.target.uri", "https://github.com/${getGitAuthor()}/${quickstartsRepository}")
-                        setDeployPropertyIfNeeded("${quickstartsRepository}.pr.target.ref", getQuickStartsBranch())
-
                     }
                 }
             }
@@ -260,7 +253,7 @@ pipeline {
 void updateQuickstartsVersions(){
     maven.mvnSetVersionProperty(getOptaplannerQuickstartsMavenCommand(), "version.org.optaplanner", getProjectVersion())
     maven.mvnVersionsUpdateParentAndChildModules(getOptaplannerQuickstartsMavenCommand(), getProjectVersion())
-    gradleVersionsUpdate(quickstartsRepository,getProjectVersion())
+    gradleVersionsUpdate(quickstartsRepository, getProjectVersion())
 
     dir(quickstartsRepository) {
         assert !sh (script: 'grep -Rn "SNAPSHOT" --include={pom.xml,build.gradle}| grep -v -e "0.1.0-SNAPSHOT" -e ">1.0-SNAPSHOT"|cat'
