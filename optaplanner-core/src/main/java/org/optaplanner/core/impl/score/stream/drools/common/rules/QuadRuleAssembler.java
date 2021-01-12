@@ -66,37 +66,37 @@ final class QuadRuleAssembler extends AbstractRuleAssembler<QuadLeftHandSide> {
     }
 
     @Override
-    protected GroupByMutator new0Map1CollectGroupByMutator(Object collector) {
-        return new QuadGroupBy0Map1CollectMutator<>((QuadConstraintCollector) collector);
+    protected UniRuleAssembler andThenGroupBy0Map1Collect(Object collector) {
+        return (UniRuleAssembler) new QuadGroupBy0Map1CollectMutator<>((QuadConstraintCollector) collector).apply(this);
     }
 
     @Override
-    protected GroupByMutator new1Map0CollectGroupByMutator(Object mapping) {
-        return new QuadGroupBy1Map0CollectMutator<>((QuadFunction) mapping);
+    protected UniRuleAssembler andThenGroupBy1Map0Collect(Object mapping) {
+        return (UniRuleAssembler) new QuadGroupBy1Map0CollectMutator<>((QuadFunction) mapping).apply(this);
     }
 
     @Override
-    protected GroupByMutator new1Map1CollectGroupByMutator(Object mapping, Object collector) {
-        return new QuadGroupBy1Map1CollectMutator<>((QuadFunction) mapping, (QuadConstraintCollector) collector);
+    protected BiRuleAssembler andThenGroupBy1Map1Collect(Object mapping, Object collector) {
+        return (BiRuleAssembler) new QuadGroupBy1Map1CollectMutator<>((QuadFunction) mapping, (QuadConstraintCollector) collector).apply(this);
     }
 
     @Override
-    protected GroupByMutator new2Map0CollectGroupByMutator(Object mappingA, Object mappingB) {
-        return new QuadGroupBy2Map0CollectMutator<>((QuadFunction) mappingA, (QuadFunction) mappingB);
+    protected BiRuleAssembler andThenGroupBy2Map0Collect(Object mappingA, Object mappingB) {
+        return (BiRuleAssembler) new QuadGroupBy2Map0CollectMutator<>((QuadFunction) mappingA, (QuadFunction) mappingB).apply(this);
     }
 
     @Override
-    protected GroupByMutator new2Map1CollectGroupByMutator(Object mappingA, Object mappingB,
-            Object collectorC) {
-        return new QuadGroupBy2Map1CollectMutator<>((QuadFunction) mappingA, (QuadFunction) mappingB,
-                (QuadConstraintCollector) collectorC);
+    protected TriRuleAssembler andThenGroupBy2Map1Collect(Object mappingA, Object mappingB,
+                                                        Object collectorC) {
+        return (TriRuleAssembler) new QuadGroupBy2Map1CollectMutator<>((QuadFunction) mappingA, (QuadFunction) mappingB,
+                (QuadConstraintCollector) collectorC).apply(this);
     }
 
     @Override
-    protected GroupByMutator new2Map2CollectGroupByMutator(Object mappingA, Object mappingB, Object collectorC,
-            Object collectorD) {
-        return new QuadGroupBy2Map2CollectMutator<>((QuadFunction) mappingA, (QuadFunction) mappingB,
-                (QuadConstraintCollector) collectorC, (QuadConstraintCollector) collectorD);
+    protected QuadRuleAssembler andThenGroupBy2Map2Collect(Object mappingA, Object mappingB, Object collectorC,
+                                                        Object collectorD) {
+        return (QuadRuleAssembler) new QuadGroupBy2Map2CollectMutator<>((QuadFunction) mappingA, (QuadFunction) mappingB,
+                (QuadConstraintCollector) collectorC, (QuadConstraintCollector) collectorD).apply(this);
     }
 
     @Override

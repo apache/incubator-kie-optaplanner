@@ -68,37 +68,37 @@ final class TriRuleAssembler extends AbstractRuleAssembler<TriLeftHandSide> {
     }
 
     @Override
-    protected GroupByMutator new0Map1CollectGroupByMutator(Object collector) {
-        return new TriGroupBy0Map1CollectMutator<>((TriConstraintCollector) collector);
+    protected UniRuleAssembler andThenGroupBy0Map1Collect(Object collector) {
+        return (UniRuleAssembler) new TriGroupBy0Map1CollectMutator<>((TriConstraintCollector) collector).apply(this);
     }
 
     @Override
-    protected GroupByMutator new1Map0CollectGroupByMutator(Object mapping) {
-        return new TriGroupBy1Map0CollectMutator<>((TriFunction) mapping);
+    protected UniRuleAssembler andThenGroupBy1Map0Collect(Object mapping) {
+        return (UniRuleAssembler) new TriGroupBy1Map0CollectMutator<>((TriFunction) mapping).apply(this);
     }
 
     @Override
-    protected GroupByMutator new1Map1CollectGroupByMutator(Object mapping, Object collector) {
-        return new TriGroupBy1Map1CollectMutator<>((TriFunction) mapping, (TriConstraintCollector) collector);
+    protected BiRuleAssembler andThenGroupBy1Map1Collect(Object mapping, Object collector) {
+        return (BiRuleAssembler) new TriGroupBy1Map1CollectMutator<>((TriFunction) mapping, (TriConstraintCollector) collector).apply(this);
     }
 
     @Override
-    protected GroupByMutator new2Map0CollectGroupByMutator(Object mappingA, Object mappingB) {
-        return new TriGroupBy2Map0CollectMutator<>((TriFunction) mappingA, (TriFunction) mappingB);
+    protected BiRuleAssembler andThenGroupBy2Map0Collect(Object mappingA, Object mappingB) {
+        return (BiRuleAssembler) new TriGroupBy2Map0CollectMutator<>((TriFunction) mappingA, (TriFunction) mappingB).apply(this);
     }
 
     @Override
-    protected GroupByMutator new2Map1CollectGroupByMutator(Object mappingA, Object mappingB,
-            Object collectorC) {
-        return new TriGroupBy2Map1CollectMutator<>((TriFunction) mappingA, (TriFunction) mappingB,
-                (TriConstraintCollector) collectorC);
+    protected TriRuleAssembler andThenGroupBy2Map1Collect(Object mappingA, Object mappingB,
+                                                        Object collectorC) {
+        return (TriRuleAssembler) new TriGroupBy2Map1CollectMutator<>((TriFunction) mappingA, (TriFunction) mappingB,
+                (TriConstraintCollector) collectorC).apply(this);
     }
 
     @Override
-    protected GroupByMutator new2Map2CollectGroupByMutator(Object mappingA, Object mappingB, Object collectorC,
-            Object collectorD) {
-        return new TriGroupBy2Map2CollectMutator<>((TriFunction) mappingA, (TriFunction) mappingB,
-                (TriConstraintCollector) collectorC, (TriConstraintCollector) collectorD);
+    protected QuadRuleAssembler andThenGroupBy2Map2Collect(Object mappingA, Object mappingB, Object collectorC,
+                                                        Object collectorD) {
+        return (QuadRuleAssembler) new TriGroupBy2Map2CollectMutator<>((TriFunction) mappingA, (TriFunction) mappingB,
+                (TriConstraintCollector) collectorC, (TriConstraintCollector) collectorD).apply(this);
     }
 
     @Override
