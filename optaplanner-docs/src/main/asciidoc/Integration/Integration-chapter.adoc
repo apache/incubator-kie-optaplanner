@@ -557,7 +557,7 @@ quarkus.optaplanner.solver.termination.best-score-limit::
 == Spring Boot
 
 To use OptaPlanner on Spring Boot, add the `optaplanner-spring-boot-starter` dependency
-and read the Spring guide _Constraint solving AI with OptaPlanner_.
+and read the <<springBootJavaQuickStart, Spring Boot Java quick start>>.
 
 [WARNING]
 ====
