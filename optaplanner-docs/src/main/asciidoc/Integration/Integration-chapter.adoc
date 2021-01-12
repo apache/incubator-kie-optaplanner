@@ -483,7 +483,7 @@ This generates:
 == Quarkus
 ////
 Quarkus and Spring Boot support similar configuration properties.
-We define them as attributes and use these in both sections.
+Define each properties as an adoc attribute and use it in both sections.
 ////
 :property-optaplanner-solver-manager-parallel-solver-count: The number of solvers that run in parallel. \
 This directly influences CPU consumption. \
