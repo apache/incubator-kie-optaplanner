@@ -80,7 +80,7 @@ final class TriRuleAssembler extends AbstractRuleAssembler<TriLeftHandSide> {
 
     @Override
     protected BiRuleAssembler andThenGroupBy1Map1Collect(Object mapping, Object collector) {
-        return (BiRuleAssembler) new TriGroupBy1Map1CollectMutator<>((TriFunction) mapping, (TriConstraintCollector) collector).apply(this);
+        return new BiRuleAssembler(this.leftHandSide.groupBy((TriFunction) mapping, new DroolsTriAccumulateFunction<>((TriConstraintCollector) collector)));
     }
 
     @Override

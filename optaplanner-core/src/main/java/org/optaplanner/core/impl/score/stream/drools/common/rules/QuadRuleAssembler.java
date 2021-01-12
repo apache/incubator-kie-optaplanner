@@ -78,7 +78,7 @@ final class QuadRuleAssembler extends AbstractRuleAssembler<QuadLeftHandSide> {
 
     @Override
     protected BiRuleAssembler andThenGroupBy1Map1Collect(Object mapping, Object collector) {
-        return (BiRuleAssembler) new QuadGroupBy1Map1CollectMutator<>((QuadFunction) mapping, (QuadConstraintCollector) collector).apply(this);
+        return new BiRuleAssembler(this.leftHandSide.groupBy((QuadFunction) mapping, new DroolsQuadAccumulateFunction<>((QuadConstraintCollector) collector)));
     }
 
     @Override
