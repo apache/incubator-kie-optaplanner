@@ -28,7 +28,7 @@ public final class DroolsFilterUniConstraintStream<Solution_, A> extends DroolsA
     public DroolsFilterUniConstraintStream(DroolsConstraintFactory<Solution_> constraintFactory,
             DroolsAbstractUniConstraintStream<Solution_, A> parent, Predicate<A> predicate) {
         super(constraintFactory);
-        this.leftHandSide = parent.getLeftHandSide().filter(predicate);
+        this.leftHandSide = parent.getLeftHandSide().andFilter(predicate);
     }
 
     // ************************************************************************

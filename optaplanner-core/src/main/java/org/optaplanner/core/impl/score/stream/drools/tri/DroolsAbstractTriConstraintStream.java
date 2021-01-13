@@ -176,56 +176,56 @@ public abstract class DroolsAbstractTriConstraintStream<Solution_, A, B, C>
     @Override
     protected Constraint impactScore(String constraintPackage, String constraintName, Score<?> constraintWeight,
             ScoreImpactType impactType) {
-        AbstractConstraintConsequence<TriLeftHandSide<A, B, C>> consequence = getLeftHandSide().impact();
+        AbstractConstraintConsequence<TriLeftHandSide<A, B, C>> consequence = getLeftHandSide().andImpact();
         return buildConstraint(constraintPackage, constraintName, constraintWeight, impactType, consequence);
     }
 
     @Override
     public Constraint impactScore(String constraintPackage, String constraintName, Score<?> constraintWeight,
             ToIntTriFunction<A, B, C> matchWeigher, ScoreImpactType impactType) {
-        AbstractConstraintConsequence<TriLeftHandSide<A, B, C>> consequence = getLeftHandSide().impact(matchWeigher);
+        AbstractConstraintConsequence<TriLeftHandSide<A, B, C>> consequence = getLeftHandSide().andImpact(matchWeigher);
         return buildConstraint(constraintPackage, constraintName, constraintWeight, impactType, consequence);
     }
 
     @Override
     public Constraint impactScoreLong(String constraintPackage, String constraintName, Score<?> constraintWeight,
             ToLongTriFunction<A, B, C> matchWeigher, ScoreImpactType impactType) {
-        AbstractConstraintConsequence<TriLeftHandSide<A, B, C>> consequence = getLeftHandSide().impact(matchWeigher);
+        AbstractConstraintConsequence<TriLeftHandSide<A, B, C>> consequence = getLeftHandSide().andImpact(matchWeigher);
         return buildConstraint(constraintPackage, constraintName, constraintWeight, impactType, consequence);
     }
 
     @Override
     public Constraint impactScoreBigDecimal(String constraintPackage, String constraintName, Score<?> constraintWeight,
             TriFunction<A, B, C, BigDecimal> matchWeigher, ScoreImpactType impactType) {
-        AbstractConstraintConsequence<TriLeftHandSide<A, B, C>> consequence = getLeftHandSide().impact(matchWeigher);
+        AbstractConstraintConsequence<TriLeftHandSide<A, B, C>> consequence = getLeftHandSide().andImpact(matchWeigher);
         return buildConstraint(constraintPackage, constraintName, constraintWeight, impactType, consequence);
     }
 
     @Override
     protected Constraint impactScoreConfigurable(String constraintPackage, String constraintName,
             ScoreImpactType impactType) {
-        AbstractConstraintConsequence<TriLeftHandSide<A, B, C>> consequence = getLeftHandSide().impact();
+        AbstractConstraintConsequence<TriLeftHandSide<A, B, C>> consequence = getLeftHandSide().andImpact();
         return buildConstraintConfigurable(constraintPackage, constraintName, impactType, consequence);
     }
 
     @Override
     public Constraint impactScoreConfigurable(String constraintPackage, String constraintName,
             ToIntTriFunction<A, B, C> matchWeigher, ScoreImpactType impactType) {
-        AbstractConstraintConsequence<TriLeftHandSide<A, B, C>> consequence = getLeftHandSide().impact(matchWeigher);
+        AbstractConstraintConsequence<TriLeftHandSide<A, B, C>> consequence = getLeftHandSide().andImpact(matchWeigher);
         return buildConstraintConfigurable(constraintPackage, constraintName, impactType, consequence);
     }
 
     @Override
     public Constraint impactScoreConfigurableLong(String constraintPackage, String constraintName,
             ToLongTriFunction<A, B, C> matchWeigher, ScoreImpactType impactType) {
-        AbstractConstraintConsequence<TriLeftHandSide<A, B, C>> consequence = getLeftHandSide().impact(matchWeigher);
+        AbstractConstraintConsequence<TriLeftHandSide<A, B, C>> consequence = getLeftHandSide().andImpact(matchWeigher);
         return buildConstraintConfigurable(constraintPackage, constraintName, impactType, consequence);
     }
 
     @Override
     public Constraint impactScoreConfigurableBigDecimal(String constraintPackage, String constraintName,
             TriFunction<A, B, C, BigDecimal> matchWeigher, ScoreImpactType impactType) {
-        AbstractConstraintConsequence<TriLeftHandSide<A, B, C>> consequence = getLeftHandSide().impact(matchWeigher);
+        AbstractConstraintConsequence<TriLeftHandSide<A, B, C>> consequence = getLeftHandSide().andImpact(matchWeigher);
         return buildConstraintConfigurable(constraintPackage, constraintName, impactType, consequence);
     }
 

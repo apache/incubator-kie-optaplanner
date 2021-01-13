@@ -31,7 +31,7 @@ public final class DroolsJoinTriConstraintStream<Solution_, A, B, C>
             DroolsAbstractBiConstraintStream<Solution_, A, B> parent,
             DroolsAbstractUniConstraintStream<Solution_, C> otherStream, TriJoiner<A, B, C> joiner) {
         super(constraintFactory);
-        this.leftHandSide = parent.getLeftHandSide().join(otherStream.getLeftHandSide(), joiner);
+        this.leftHandSide = parent.getLeftHandSide().andJoin(otherStream.getLeftHandSide(), joiner);
     }
 
     // ************************************************************************

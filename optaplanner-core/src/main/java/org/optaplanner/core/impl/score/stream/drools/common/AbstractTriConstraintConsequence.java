@@ -32,6 +32,7 @@ import org.optaplanner.core.impl.score.stream.drools.DroolsConstraint;
 
 abstract class AbstractTriConstraintConsequence<A, B, C>
         extends AbstractConstraintConsequence<TriLeftHandSide<A, B, C>> {
+
     @Override
     public int getCardinality() {
         return 2;

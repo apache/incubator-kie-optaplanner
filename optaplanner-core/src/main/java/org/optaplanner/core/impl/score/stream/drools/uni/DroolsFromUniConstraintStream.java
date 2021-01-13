@@ -27,7 +27,7 @@ public final class DroolsFromUniConstraintStream<Solution_, A> extends DroolsAbs
     public DroolsFromUniConstraintStream(DroolsConstraintFactory<Solution_> constraintFactory, Class<A> fromClass) {
         super(constraintFactory);
         this.fromClass = fromClass;
-        this.leftHandSide = UniLeftHandSide.forVariable(fromClass, constraintFactory.getVariableFactory());
+        this.leftHandSide = new UniLeftHandSide<>(fromClass, constraintFactory.getVariableFactory());
     }
 
     // ************************************************************************

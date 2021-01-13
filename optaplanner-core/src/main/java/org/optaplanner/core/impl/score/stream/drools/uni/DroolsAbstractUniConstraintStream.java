@@ -182,56 +182,56 @@ public abstract class DroolsAbstractUniConstraintStream<Solution_, A> extends Dr
     @Override
     public final Constraint impactScore(String constraintPackage, String constraintName, Score<?> constraintWeight,
             ScoreImpactType impactType) {
-        AbstractConstraintConsequence<UniLeftHandSide<A>> consequence = getLeftHandSide().impact();
+        AbstractConstraintConsequence<UniLeftHandSide<A>> consequence = getLeftHandSide().andImpact();
         return buildConstraint(constraintPackage, constraintName, constraintWeight, impactType, consequence);
     }
 
     @Override
     public final Constraint impactScore(String constraintPackage, String constraintName, Score<?> constraintWeight,
             ToIntFunction<A> matchWeigher, ScoreImpactType impactType) {
-        AbstractConstraintConsequence<UniLeftHandSide<A>> consequence = getLeftHandSide().impact(matchWeigher);
+        AbstractConstraintConsequence<UniLeftHandSide<A>> consequence = getLeftHandSide().andImpact(matchWeigher);
         return buildConstraint(constraintPackage, constraintName, constraintWeight, impactType, consequence);
     }
 
     @Override
     public final Constraint impactScoreLong(String constraintPackage, String constraintName,
             Score<?> constraintWeight, ToLongFunction<A> matchWeigher, ScoreImpactType impactType) {
-        AbstractConstraintConsequence<UniLeftHandSide<A>> consequence = getLeftHandSide().impact(matchWeigher);
+        AbstractConstraintConsequence<UniLeftHandSide<A>> consequence = getLeftHandSide().andImpact(matchWeigher);
         return buildConstraint(constraintPackage, constraintName, constraintWeight, impactType, consequence);
     }
 
     @Override
     public final Constraint impactScoreBigDecimal(String constraintPackage, String constraintName,
             Score<?> constraintWeight, Function<A, BigDecimal> matchWeigher, ScoreImpactType impactType) {
-        AbstractConstraintConsequence<UniLeftHandSide<A>> consequence = getLeftHandSide().impact(matchWeigher);
+        AbstractConstraintConsequence<UniLeftHandSide<A>> consequence = getLeftHandSide().andImpact(matchWeigher);
         return buildConstraint(constraintPackage, constraintName, constraintWeight, impactType, consequence);
     }
 
     @Override
     public final Constraint impactScoreConfigurable(String constraintPackage, String constraintName,
             ScoreImpactType impactType) {
-        AbstractConstraintConsequence<UniLeftHandSide<A>> consequence = getLeftHandSide().impact();
+        AbstractConstraintConsequence<UniLeftHandSide<A>> consequence = getLeftHandSide().andImpact();
         return buildConstraintConfigurable(constraintPackage, constraintName, impactType, consequence);
     }
 
     @Override
     public final Constraint impactScoreConfigurable(String constraintPackage, String constraintName,
             ToIntFunction<A> matchWeigher, ScoreImpactType impactType) {
-        AbstractConstraintConsequence<UniLeftHandSide<A>> consequence = getLeftHandSide().impact(matchWeigher);
+        AbstractConstraintConsequence<UniLeftHandSide<A>> consequence = getLeftHandSide().andImpact(matchWeigher);
         return buildConstraintConfigurable(constraintPackage, constraintName, impactType, consequence);
     }
 
     @Override
     public final Constraint impactScoreConfigurableLong(String constraintPackage, String constraintName,
             ToLongFunction<A> matchWeigher, ScoreImpactType impactType) {
-        AbstractConstraintConsequence<UniLeftHandSide<A>> consequence = getLeftHandSide().impact(matchWeigher);
+        AbstractConstraintConsequence<UniLeftHandSide<A>> consequence = getLeftHandSide().andImpact(matchWeigher);
         return buildConstraintConfigurable(constraintPackage, constraintName, impactType, consequence);
     }
 
     @Override
     public final Constraint impactScoreConfigurableBigDecimal(String constraintPackage, String constraintName,
             Function<A, BigDecimal> matchWeigher, ScoreImpactType impactType) {
-        AbstractConstraintConsequence<UniLeftHandSide<A>> consequence = getLeftHandSide().impact(matchWeigher);
+        AbstractConstraintConsequence<UniLeftHandSide<A>> consequence = getLeftHandSide().andImpact(matchWeigher);
         return buildConstraintConfigurable(constraintPackage, constraintName, impactType, consequence);
     }
 

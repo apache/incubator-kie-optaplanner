@@ -31,7 +31,7 @@ public final class DroolsJoinQuadConstraintStream<Solution_, A, B, C, D>
             DroolsAbstractTriConstraintStream<Solution_, A, B, C> parent,
             DroolsAbstractUniConstraintStream<Solution_, D> otherStream, QuadJoiner<A, B, C, D> joiner) {
         super(constraintFactory);
-        this.leftHandSide = parent.getLeftHandSide().join(otherStream.getLeftHandSide(), joiner);
+        this.leftHandSide = parent.getLeftHandSide().andJoin(otherStream.getLeftHandSide(), joiner);
     }
 
     // ************************************************************************

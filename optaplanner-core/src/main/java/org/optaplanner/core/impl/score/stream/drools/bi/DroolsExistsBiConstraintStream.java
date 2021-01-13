@@ -31,8 +31,8 @@ public final class DroolsExistsBiConstraintStream<Solution_, A, B>
             TriJoiner<A, B, C>... joiners) {
         super(constraintFactory);
         this.leftHandSide = shouldExist
-                ? parent.getLeftHandSide().exists(otherClass, joiners)
-                : parent.getLeftHandSide().notExists(otherClass, joiners);
+                ? parent.getLeftHandSide().andExists(otherClass, joiners)
+                : parent.getLeftHandSide().andNotExists(otherClass, joiners);
         this.streamName = shouldExist ? "BiIfExists()" : "BiIfNotExists()";
     }
 

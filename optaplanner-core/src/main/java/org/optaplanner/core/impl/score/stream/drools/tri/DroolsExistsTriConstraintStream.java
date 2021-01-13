@@ -31,8 +31,8 @@ public final class DroolsExistsTriConstraintStream<Solution_, A, B, C>
             QuadJoiner<A, B, C, D>... joiners) {
         super(constraintFactory);
         this.leftHandSide = shouldExist
-                ? parent.getLeftHandSide().exists(otherClass, joiners)
-                : parent.getLeftHandSide().notExists(otherClass, joiners);
+                ? parent.getLeftHandSide().andExists(otherClass, joiners)
+                : parent.getLeftHandSide().andNotExists(otherClass, joiners);
         this.streamName = shouldExist ? "TriIfExists()" : "TriIfNotExists()";
     }
 

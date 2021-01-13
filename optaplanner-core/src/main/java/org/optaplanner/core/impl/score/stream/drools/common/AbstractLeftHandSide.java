@@ -31,10 +31,6 @@ import org.optaplanner.core.impl.score.stream.drools.DroolsVariableFactory;
 
 abstract class AbstractLeftHandSide implements Supplier<List<ViewItem<?>>> {
 
-    public static <A> UniLeftHandSide<A> forVariable(Class<A> aClass, DroolsVariableFactory variableFactory) {
-        return new UniLeftHandSide<>(aClass, variableFactory);
-    }
-
     protected final DroolsVariableFactory variableFactory;
 
     protected AbstractLeftHandSide(DroolsVariableFactory variableFactory) {
@@ -58,7 +54,7 @@ abstract class AbstractLeftHandSide implements Supplier<List<ViewItem<?>>> {
         }
     }
 
-    static ViewItem<?> joinViewItemsWithLogicalAnd(PatternVariable<?>... patternVariables) {
+    protected static ViewItem<?> joinViewItemsWithLogicalAnd(PatternVariable<?>... patternVariables) {
         List<ViewItem<?>> viewItemList = new ArrayList<>();
         for (PatternVariable<?> patternVariable : patternVariables) {
             viewItemList.addAll(patternVariable.build());
@@ -73,6 +69,6 @@ abstract class AbstractLeftHandSide implements Supplier<List<ViewItem<?>>> {
         return and(firstPattern, remainingPatternArray);
     }
 
-    abstract public Variable[] getVariables();
+    public abstract Variable[] getVariables();
 
 }

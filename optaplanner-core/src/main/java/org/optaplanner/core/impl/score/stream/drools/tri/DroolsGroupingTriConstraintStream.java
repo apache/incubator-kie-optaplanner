@@ -40,7 +40,7 @@ public final class DroolsGroupingTriConstraintStream<Solution_, NewA, NewB, NewC
             DroolsAbstractUniConstraintStream<Solution_, A> parent, Function<A, NewA> groupKeyAMapping,
             Function<A, NewB> groupKeyBMapping, UniConstraintCollector<A, ResultContainer_, NewC> collector) {
         super(constraintFactory);
-        this.leftHandSide = parent.getLeftHandSide().groupBy(groupKeyAMapping, groupKeyBMapping, collector);
+        this.leftHandSide = parent.getLeftHandSide().andGroupBy(groupKeyAMapping, groupKeyBMapping, collector);
     }
 
     public <A, B, ResultContainer_> DroolsGroupingTriConstraintStream(
@@ -48,7 +48,7 @@ public final class DroolsGroupingTriConstraintStream<Solution_, NewA, NewB, NewC
             DroolsAbstractBiConstraintStream<Solution_, A, B> parent, BiFunction<A, B, NewA> groupKeyAMapping,
             BiFunction<A, B, NewB> groupKeyBMapping, BiConstraintCollector<A, B, ResultContainer_, NewC> collector) {
         super(constraintFactory);
-        this.leftHandSide = parent.getLeftHandSide().groupBy(groupKeyAMapping, groupKeyBMapping, collector);
+        this.leftHandSide = parent.getLeftHandSide().andGroupBy(groupKeyAMapping, groupKeyBMapping, collector);
     }
 
     public <A, B, C, ResultContainer_> DroolsGroupingTriConstraintStream(
@@ -57,7 +57,7 @@ public final class DroolsGroupingTriConstraintStream<Solution_, NewA, NewB, NewC
             TriFunction<A, B, C, NewB> groupKeyBMapping,
             TriConstraintCollector<A, B, C, ResultContainer_, NewC> collector) {
         super(constraintFactory);
-        this.leftHandSide = parent.getLeftHandSide().groupBy(groupKeyAMapping, groupKeyBMapping, collector);
+        this.leftHandSide = parent.getLeftHandSide().andGroupBy(groupKeyAMapping, groupKeyBMapping, collector);
     }
 
     public <A, B, C, D, ResultContainer_> DroolsGroupingTriConstraintStream(
@@ -66,7 +66,7 @@ public final class DroolsGroupingTriConstraintStream<Solution_, NewA, NewB, NewC
             QuadFunction<A, B, C, D, NewA> groupKeyAMapping, QuadFunction<A, B, C, D, NewB> groupKeyBMapping,
             QuadConstraintCollector<A, B, C, D, ResultContainer_, NewC> collector) {
         super(constraintFactory);
-        this.leftHandSide = parent.getLeftHandSide().groupBy(groupKeyAMapping, groupKeyBMapping, collector);
+        this.leftHandSide = parent.getLeftHandSide().andGroupBy(groupKeyAMapping, groupKeyBMapping, collector);
     }
 
     // ************************************************************************

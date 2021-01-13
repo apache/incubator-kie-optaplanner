@@ -32,6 +32,11 @@ import org.optaplanner.core.impl.score.stream.drools.DroolsConstraint;
 
 abstract class AbstractBiConstraintConsequence<A, B> extends AbstractConstraintConsequence<BiLeftHandSide<A, B>> {
 
+    @Override
+    public int getCardinality() {
+        return 2;
+    }
+
     /**
      * {@inheritDoc}
      *
@@ -45,11 +50,6 @@ abstract class AbstractBiConstraintConsequence<A, B> extends AbstractConstraintC
      */
     @Override
     public abstract ConsequenceMatchWeightType getMatchWeightType();
-
-    @Override
-    public int getCardinality() {
-        return 2;
-    }
 
     @Override
     protected final ConsequenceBuilder.ValidBuilder buildConsequence(DroolsConstraint constraint,

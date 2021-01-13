@@ -23,7 +23,10 @@ import static org.drools.model.PatternDSL.pattern;
 import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
-import java.util.function.*;
+import java.util.function.BiFunction;
+import java.util.function.BiPredicate;
+import java.util.function.ToIntBiFunction;
+import java.util.function.ToLongBiFunction;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -63,7 +66,7 @@ public final class BiLeftHandSide<A, B> extends AbstractLeftHandSide {
         return patternVariableB;
     }
 
-    public BiLeftHandSide<A, B> filter(BiPredicate<A, B> filter) {
+    public BiLeftHandSide<A, B> andFilter(BiPredicate<A, B> filter) {
         return new BiLeftHandSide<>(this, patternVariableA,
                 patternVariableB.filter(filter, patternVariableA.getPrimaryVariable()));
     }
@@ -87,7 +90,7 @@ public final class BiLeftHandSide<A, B> extends AbstractLeftHandSide {
         PatternDSL.PatternDef<C> possiblyFilteredExistencePattern = predicate == null ? existencePattern
                 : existencePattern.expr("Filter using " + predicate, patternVariableA.getPrimaryVariable(),
                         patternVariableB.getPrimaryVariable(), (c, a, b) -> predicate.test(a, b, c));
-        ViewItem<?> existenceExpression = PatternDSL.exists(possiblyFilteredExistencePattern);
+        ViewItem<?> existenceExpression = exists(possiblyFilteredExistencePattern);
         if (!shouldExist) {
             existenceExpression = not(possiblyFilteredExistencePattern);
         }
@@ -123,15 +126,15 @@ public final class BiLeftHandSide<A, B> extends AbstractLeftHandSide {
         return applyJoiners(cClass, finalJoiner, finalFilter, shouldExist);
     }
 
-    public <C> BiLeftHandSide<A, B> exists(Class<C> cClass, TriJoiner<A, B, C>[] joiners) {
+    public <C> BiLeftHandSide<A, B> andExists(Class<C> cClass, TriJoiner<A, B, C>[] joiners) {
         return existsOrNot(cClass, joiners, true);
     }
 
-    public <C> BiLeftHandSide<A, B> notExists(Class<C> cClass, TriJoiner<A, B, C>[] joiners) {
+    public <C> BiLeftHandSide<A, B> andNotExists(Class<C> cClass, TriJoiner<A, B, C>[] joiners) {
         return existsOrNot(cClass, joiners, false);
     }
 
-    public <C> TriLeftHandSide<A, B, C> join(UniLeftHandSide<C> right, TriJoiner<A, B, C> joiner) {
+    public <C> TriLeftHandSide<A, B, C> andJoin(UniLeftHandSide<C> right, TriJoiner<A, B, C> joiner) {
         AbstractTriJoiner<A, B, C> castJoiner = (AbstractTriJoiner<A, B, C>) joiner;
         PatternVariable<C> filteredRight = right.getPatternVariableA()
                 .filter(castJoiner::matches, patternVariableA.getPrimaryVariable(),
@@ -139,38 +142,38 @@ public final class BiLeftHandSide<A, B> extends AbstractLeftHandSide {
         return new TriLeftHandSide<>(patternVariableA, patternVariableB, filteredRight, variableFactory);
     }
 
-    public <NewA> UniLeftHandSide<NewA> groupBy(BiFunction<A, B, NewA> keyMapping) {
+    public <NewA> UniLeftHandSide<NewA> andGroupBy(BiFunction<A, B, NewA> keyMapping) {
         Variable<A> inputA = patternVariableA.getPrimaryVariable();
         Variable<B> inputB = patternVariableB.getPrimaryVariable();
         Variable<NewA> groupKey = variableFactory.createVariable("groupKey");
         ViewItem<?> innerGroupByPattern = joinViewItemsWithLogicalAnd(patternVariableA, patternVariableB);
-        ViewItem<?> groupByPattern = PatternDSL.groupBy(innerGroupByPattern, inputA, inputB, groupKey,
+        ViewItem<?> groupByPattern = groupBy(innerGroupByPattern, inputA, inputB, groupKey,
                 keyMapping::apply);
         Variable<NewA> newA = (Variable<NewA>) variableFactory.createVariable("newA", from(groupKey));
         return new UniLeftHandSide<>(new PatternVariable<>(newA, singletonList(groupByPattern)), variableFactory);
     }
 
-    public <NewA> UniLeftHandSide<NewA> groupBy(BiConstraintCollector<A, B, ?, NewA> collector) {
+    public <NewA> UniLeftHandSide<NewA> andGroupBy(BiConstraintCollector<A, B, ?, NewA> collector) {
         Variable<BiTuple<A, B>> accumulateSource =
                 (Variable<BiTuple<A, B>>) variableFactory.createVariable(BiTuple.class, "source");
         PatternVariable<B> newPatternVariableB = patternVariableB.bind(accumulateSource,
                 patternVariableA.getPrimaryVariable(), (b, a) -> new BiTuple<>(a, b));
         Variable<NewA> outputVariable = variableFactory.createVariable("collected");
         ViewItem<?> innerAccumulatePattern = joinViewItemsWithLogicalAnd(patternVariableA, newPatternVariableB);
-        ViewItem<?> outerAccumulatePattern = PatternDSL.accumulate(innerAccumulatePattern,
+        ViewItem<?> outerAccumulatePattern = accumulate(innerAccumulatePattern,
                 accFunction(() -> new DroolsBiAccumulateFunction<>(collector), accumulateSource).as(outputVariable));
         return new UniLeftHandSide<>(new PatternVariable<>(outputVariable, singletonList(outerAccumulatePattern)),
                 variableFactory);
     }
 
-    public <NewA, NewB> BiLeftHandSide<NewA, NewB> groupBy(BiFunction<A, B, NewA> keyMappingA,
+    public <NewA, NewB> BiLeftHandSide<NewA, NewB> andGroupBy(BiFunction<A, B, NewA> keyMappingA,
             BiFunction<A, B, NewB> keyMappingB) {
         Variable<A> inputA = patternVariableA.getPrimaryVariable();
         Variable<B> inputB = patternVariableB.getPrimaryVariable();
         Variable<BiTuple<NewA, NewB>> groupKey =
                 (Variable<BiTuple<NewA, NewB>>) variableFactory.createVariable(BiTuple.class, "groupKey");
         ViewItem<?> innerGroupByPattern = joinViewItemsWithLogicalAnd(patternVariableA, patternVariableB);
-        ViewItem<?> groupByPattern = PatternDSL.groupBy(innerGroupByPattern, inputA, inputB, groupKey,
+        ViewItem<?> groupByPattern = groupBy(innerGroupByPattern, inputA, inputB, groupKey,
                 (a, b) -> new BiTuple<>(keyMappingA.apply(a, b), keyMappingB.apply(a, b)));
         Variable<NewA> newA =
                 (Variable<NewA>) variableFactory.createVariable("newA", from(groupKey, k -> k.a));
@@ -180,7 +183,7 @@ public final class BiLeftHandSide<A, B> extends AbstractLeftHandSide {
                 new PatternVariable<>(newB), variableFactory);
     }
 
-    public <NewA, NewB> BiLeftHandSide<NewA, NewB> groupBy(BiFunction<A, B, NewA> keyMappingA,
+    public <NewA, NewB> BiLeftHandSide<NewA, NewB> andGroupBy(BiFunction<A, B, NewA> keyMappingA,
             BiConstraintCollector<A, B, ?, NewB> collectorB) {
         Variable<A> inputA = patternVariableA.getPrimaryVariable();
         Variable<B> inputB = patternVariableB.getPrimaryVariable();
@@ -191,7 +194,7 @@ public final class BiLeftHandSide<A, B> extends AbstractLeftHandSide {
         Variable<NewA> groupKey = variableFactory.createVariable("groupKey");
         Variable<NewB> output = variableFactory.createVariable("output");
         ViewItem<?> innerGroupByPattern = joinViewItemsWithLogicalAnd(patternVariableA, newPatternVariableB);
-        ViewItem<?> groupByPattern = PatternDSL.groupBy(innerGroupByPattern, inputA, inputB, groupKey,
+        ViewItem<?> groupByPattern = groupBy(innerGroupByPattern, inputA, inputB, groupKey,
                 keyMappingA::apply,
                 accFunction(() -> new DroolsBiAccumulateFunction<>(collectorB), accumulateSource).as(output));
         Variable<NewA> newA = (Variable<NewA>) variableFactory.createVariable("newA", from(groupKey));
@@ -200,7 +203,7 @@ public final class BiLeftHandSide<A, B> extends AbstractLeftHandSide {
                 new PatternVariable<>(newB), variableFactory);
     }
 
-    public <NewA, NewB, NewC> TriLeftHandSide<NewA, NewB, NewC> groupBy(BiFunction<A, B, NewA> keyMappingA,
+    public <NewA, NewB, NewC> TriLeftHandSide<NewA, NewB, NewC> andGroupBy(BiFunction<A, B, NewA> keyMappingA,
             BiFunction<A, B, NewB> keyMappingB, BiConstraintCollector<A, B, ?, NewC> collectorC) {
         Variable<A> inputA = patternVariableA.getPrimaryVariable();
         Variable<B> inputB = patternVariableB.getPrimaryVariable();
@@ -212,7 +215,7 @@ public final class BiLeftHandSide<A, B> extends AbstractLeftHandSide {
                 (Variable<BiTuple<NewA, NewB>>) variableFactory.createVariable(BiTuple.class, "groupKey");
         Variable<NewC> output = variableFactory.createVariable("output");
         ViewItem<?> innerGroupByPattern = joinViewItemsWithLogicalAnd(patternVariableA, newPatternVariableB);
-        ViewItem<?> groupByPattern = PatternDSL.groupBy(innerGroupByPattern, inputA, inputB, groupKey,
+        ViewItem<?> groupByPattern = groupBy(innerGroupByPattern, inputA, inputB, groupKey,
                 (a, b) -> new BiTuple<>(keyMappingA.apply(a, b), keyMappingB.apply(a, b)),
                 accFunction(() -> new DroolsBiAccumulateFunction<>(collectorC), accumulateSource).as(output));
         Variable<NewA> newA =
@@ -224,7 +227,7 @@ public final class BiLeftHandSide<A, B> extends AbstractLeftHandSide {
                 new PatternVariable<>(newB), new PatternVariable<>(newC), variableFactory);
     }
 
-    public <NewA, NewB, NewC, NewD> QuadLeftHandSide<NewA, NewB, NewC, NewD> groupBy(BiFunction<A, B, NewA> keyMappingA,
+    public <NewA, NewB, NewC, NewD> QuadLeftHandSide<NewA, NewB, NewC, NewD> andGroupBy(BiFunction<A, B, NewA> keyMappingA,
             BiFunction<A, B, NewB> keyMappingB, BiConstraintCollector<A, B, ?, NewC> collectorC,
             BiConstraintCollector<A, B, ?, NewD> collectorD) {
         Variable<A> inputA = patternVariableA.getPrimaryVariable();
@@ -238,7 +241,7 @@ public final class BiLeftHandSide<A, B> extends AbstractLeftHandSide {
         Variable<NewC> outputC = variableFactory.createVariable("outputC");
         Variable<NewD> outputD = variableFactory.createVariable("outputD");
         ViewItem<?> innerGroupByPattern = joinViewItemsWithLogicalAnd(patternVariableA, newPatternVariableB);
-        ViewItem<?> groupByPattern = PatternDSL.groupBy(innerGroupByPattern, inputA, inputB, groupKey,
+        ViewItem<?> groupByPattern = groupBy(innerGroupByPattern, inputA, inputB, groupKey,
                 (a, b) -> new BiTuple<>(keyMappingA.apply(a, b), keyMappingB.apply(a, b)),
                 accFunction(() -> new DroolsBiAccumulateFunction<>(collectorC), accumulateSource).as(outputC),
                 accFunction(() -> new DroolsBiAccumulateFunction<>(collectorD), accumulateSource).as(outputD));
@@ -252,19 +255,19 @@ public final class BiLeftHandSide<A, B> extends AbstractLeftHandSide {
                 new PatternVariable<>(newB), new PatternVariable<>(newC), new PatternVariable<>(newD), variableFactory);
     }
 
-    public AbstractBiConstraintConsequence<A, B> impact() {
+    public AbstractBiConstraintConsequence<A, B> andImpact() {
         return new BiConstraintDefaultConsequence<>(this);
     }
 
-    public AbstractBiConstraintConsequence<A, B> impact(ToIntBiFunction<A, B> matchWeighter) {
+    public AbstractBiConstraintConsequence<A, B> andImpact(ToIntBiFunction<A, B> matchWeighter) {
         return new BiConstraintIntConsequence<>(this, matchWeighter);
     }
 
-    public AbstractBiConstraintConsequence<A, B> impact(ToLongBiFunction<A, B> matchWeighter) {
+    public AbstractBiConstraintConsequence<A, B> andImpact(ToLongBiFunction<A, B> matchWeighter) {
         return new BiConstraintLongConsequence<>(this, matchWeighter);
     }
 
-    public AbstractBiConstraintConsequence<A, B> impact(BiFunction<A, B, BigDecimal> matchWeighter) {
+    public AbstractBiConstraintConsequence<A, B> andImpact(BiFunction<A, B, BigDecimal> matchWeighter) {
         return new BiConstraintBigDecimalConsequence<>(this, matchWeighter);
     }
 

@@ -17,6 +17,7 @@
 package org.optaplanner.core.impl.score.stream.drools.common;
 
 import static org.drools.model.PatternDSL.betaIndexedBy;
+import static org.drools.model.PatternDSL.pattern;
 
 import java.util.Collections;
 import java.util.List;
@@ -53,7 +54,7 @@ class PatternVariable<A> {
 
     PatternVariable(Variable<A> aVariable, List<ViewItem<?>> prerequisiteExpressions) {
         this.primaryVariable = aVariable;
-        this.patternSupplier = () -> PatternDSL.pattern(aVariable);
+        this.patternSupplier = () -> pattern(aVariable);
         this.prerequisiteExpressions = prerequisiteExpressions;
         this.dependentExpressions = Collections.emptyList();
     }

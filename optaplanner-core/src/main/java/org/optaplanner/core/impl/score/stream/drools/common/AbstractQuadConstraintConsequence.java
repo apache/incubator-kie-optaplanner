@@ -32,6 +32,7 @@ import org.optaplanner.core.impl.score.stream.drools.DroolsConstraint;
 
 abstract class AbstractQuadConstraintConsequence<A, B, C, D>
         extends AbstractConstraintConsequence<QuadLeftHandSide<A, B, C, D>> {
+
     @Override
     public int getCardinality() {
         return 4;
@@ -49,7 +50,7 @@ abstract class AbstractQuadConstraintConsequence<A, B, C, D>
      *         guaranteed to implement {@link QuadFunction} to {@link BigDecimal}.
      */
     @Override
-    abstract protected ConsequenceMatchWeightType getMatchWeightType();
+    protected abstract ConsequenceMatchWeightType getMatchWeightType();
 
     @Override
     protected final ConsequenceBuilder.ValidBuilder buildConsequence(DroolsConstraint constraint,
