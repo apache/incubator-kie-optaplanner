@@ -16,18 +16,18 @@
 
 package org.optaplanner.core.impl.score.stream.drools.uni;
 
-import static java.util.Objects.requireNonNull;
-
 import org.optaplanner.core.impl.score.stream.drools.DroolsConstraintFactory;
-import org.optaplanner.core.impl.score.stream.drools.common.rules.UniConstraintGraphNode;
+import org.optaplanner.core.impl.score.stream.drools.common.rules.UniLeftHandSide;
 
 public final class DroolsFromUniConstraintStream<Solution_, A> extends DroolsAbstractUniConstraintStream<Solution_, A> {
 
-    private final UniConstraintGraphNode node;
+    private final Class<A> fromClass;
+    private final UniLeftHandSide<A> leftHandSide;
 
     public DroolsFromUniConstraintStream(DroolsConstraintFactory<Solution_> constraintFactory, Class<A> fromClass) {
         super(constraintFactory);
-        this.node = constraintFactory.getConstraintGraph().from(requireNonNull(fromClass));
+        this.fromClass = fromClass;
+        this.leftHandSide = UniLeftHandSide.forVariable(fromClass, constraintFactory.getVariableFactory());
     }
 
     // ************************************************************************
@@ -35,8 +35,8 @@ public final class DroolsFromUniConstraintStream<Solution_, A> extends DroolsAbs
     // ************************************************************************
 
     @Override
-    public UniConstraintGraphNode getConstraintGraphNode() {
-        return node;
+    public UniLeftHandSide<A> getLeftHandSide() {
+        return leftHandSide;
     }
 
     // ************************************************************************
@@ -45,7 +45,7 @@ public final class DroolsFromUniConstraintStream<Solution_, A> extends DroolsAbs
 
     @Override
     public String toString() {
-        return "From(" + node.getFactType().getSimpleName() + ") with " + getChildStreams().size() + " children";
+        return "From(" + fromClass.getSimpleName() + ") with " + getChildStreams().size() + " children";
     }
 
 }

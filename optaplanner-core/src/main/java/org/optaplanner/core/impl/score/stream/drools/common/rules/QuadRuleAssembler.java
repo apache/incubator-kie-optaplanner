@@ -32,7 +32,7 @@ import org.optaplanner.core.api.score.stream.quad.QuadConstraintCollector;
 import org.optaplanner.core.impl.score.holder.AbstractScoreHolder;
 import org.optaplanner.core.impl.score.stream.drools.DroolsConstraint;
 import org.optaplanner.core.impl.score.stream.drools.common.consequences.ConstraintConsequence;
-import org.optaplanner.core.impl.score.stream.drools.quad.DroolsQuadAccumulateFunction;
+import org.optaplanner.core.impl.score.stream.drools.common.DroolsQuadAccumulateFunction;
 import org.optaplanner.core.impl.score.stream.penta.AbstractPentaJoiner;
 
 final class QuadRuleAssembler extends AbstractRuleAssembler<QuadLeftHandSide> {

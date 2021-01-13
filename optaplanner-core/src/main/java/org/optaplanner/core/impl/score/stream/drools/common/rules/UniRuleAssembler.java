@@ -28,8 +28,9 @@ import org.optaplanner.core.api.score.stream.uni.UniConstraintCollector;
 import org.optaplanner.core.impl.score.holder.AbstractScoreHolder;
 import org.optaplanner.core.impl.score.stream.bi.AbstractBiJoiner;
 import org.optaplanner.core.impl.score.stream.drools.DroolsConstraint;
+import org.optaplanner.core.impl.score.stream.drools.DroolsVariableFactory;
 import org.optaplanner.core.impl.score.stream.drools.common.consequences.ConstraintConsequence;
-import org.optaplanner.core.impl.score.stream.drools.uni.DroolsUniAccumulateFunction;
+import org.optaplanner.core.impl.score.stream.drools.common.DroolsUniAccumulateFunction;
 
 final class UniRuleAssembler extends AbstractRuleAssembler<UniLeftHandSide> {
 

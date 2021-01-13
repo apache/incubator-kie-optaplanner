@@ -39,6 +39,7 @@ import org.optaplanner.core.impl.score.stream.drools.bi.DroolsJoinBiConstraintSt
 import org.optaplanner.core.impl.score.stream.drools.common.DroolsAbstractConstraintStream;
 import org.optaplanner.core.impl.score.stream.drools.common.consequences.ConstraintConsequence;
 import org.optaplanner.core.impl.score.stream.drools.common.rules.UniConstraintGraphNode;
+import org.optaplanner.core.impl.score.stream.drools.common.rules.UniLeftHandSide;
 import org.optaplanner.core.impl.score.stream.drools.quad.DroolsGroupingQuadConstraintStream;
 import org.optaplanner.core.impl.score.stream.drools.tri.DroolsGroupingTriConstraintStream;
 import org.optaplanner.core.impl.score.stream.uni.InnerUniConstraintStream;
@@ -183,7 +184,7 @@ public abstract class DroolsAbstractUniConstraintStream<Solution_, A> extends Dr
     public final Constraint impactScore(String constraintPackage, String constraintName, Score<?> constraintWeight,
             ScoreImpactType impactType) {
         ConstraintConsequence<UniConstraintGraphNode> consequence =
-                constraintFactory.getConstraintGraph().impact(getConstraintGraphNode());
+                constraintFactory.getConstraintGraph().impact(getLeftHandSide());
         return buildConstraint(constraintPackage, constraintName, constraintWeight, impactType, consequence);
     }
 
@@ -191,7 +192,7 @@ public abstract class DroolsAbstractUniConstraintStream<Solution_, A> extends Dr
     public final Constraint impactScore(String constraintPackage, String constraintName, Score<?> constraintWeight,
             ToIntFunction<A> matchWeigher, ScoreImpactType impactType) {
         ConstraintConsequence<UniConstraintGraphNode> consequence =
-                constraintFactory.getConstraintGraph().impact(getConstraintGraphNode(), matchWeigher);
+                constraintFactory.getConstraintGraph().impact(getLeftHandSide(), matchWeigher);
         return buildConstraint(constraintPackage, constraintName, constraintWeight, impactType, consequence);
     }
 
@@ -199,7 +200,7 @@ public abstract class DroolsAbstractUniConstraintStream<Solution_, A> extends Dr
     public final Constraint impactScoreLong(String constraintPackage, String constraintName,
             Score<?> constraintWeight, ToLongFunction<A> matchWeigher, ScoreImpactType impactType) {
         ConstraintConsequence<UniConstraintGraphNode> consequence =
-                constraintFactory.getConstraintGraph().impact(getConstraintGraphNode(), matchWeigher);
+                constraintFactory.getConstraintGraph().impact(getLeftHandSide(), matchWeigher);
         return buildConstraint(constraintPackage, constraintName, constraintWeight, impactType, consequence);
     }
 
@@ -207,7 +208,7 @@ public abstract class DroolsAbstractUniConstraintStream<Solution_, A> extends Dr
     public final Constraint impactScoreBigDecimal(String constraintPackage, String constraintName,
             Score<?> constraintWeight, Function<A, BigDecimal> matchWeigher, ScoreImpactType impactType) {
         ConstraintConsequence<UniConstraintGraphNode> consequence =
-                constraintFactory.getConstraintGraph().impact(getConstraintGraphNode(), matchWeigher);
+                constraintFactory.getConstraintGraph().impact(getLeftHandSide(), matchWeigher);
         return buildConstraint(constraintPackage, constraintName, constraintWeight, impactType, consequence);
     }
 
@@ -215,7 +216,7 @@ public abstract class DroolsAbstractUniConstraintStream<Solution_, A> extends Dr
     public final Constraint impactScoreConfigurable(String constraintPackage, String constraintName,
             ScoreImpactType impactType) {
         ConstraintConsequence<UniConstraintGraphNode> consequence =
-                constraintFactory.getConstraintGraph().impact(getConstraintGraphNode());
+                constraintFactory.getConstraintGraph().impact(getLeftHandSide());
         return buildConstraintConfigurable(constraintPackage, constraintName, impactType, consequence);
     }
 
@@ -223,7 +224,7 @@ public abstract class DroolsAbstractUniConstraintStream<Solution_, A> extends Dr
     public final Constraint impactScoreConfigurable(String constraintPackage, String constraintName,
             ToIntFunction<A> matchWeigher, ScoreImpactType impactType) {
         ConstraintConsequence<UniConstraintGraphNode> consequence =
-                constraintFactory.getConstraintGraph().impact(getConstraintGraphNode(), matchWeigher);
+                constraintFactory.getConstraintGraph().impact(getLeftHandSide(), matchWeigher);
         return buildConstraintConfigurable(constraintPackage, constraintName, impactType, consequence);
     }
 
@@ -231,7 +232,7 @@ public abstract class DroolsAbstractUniConstraintStream<Solution_, A> extends Dr
     public final Constraint impactScoreConfigurableLong(String constraintPackage, String constraintName,
             ToLongFunction<A> matchWeigher, ScoreImpactType impactType) {
         ConstraintConsequence<UniConstraintGraphNode> consequence =
-                constraintFactory.getConstraintGraph().impact(getConstraintGraphNode(), matchWeigher);
+                constraintFactory.getConstraintGraph().impact(getLeftHandSide(), matchWeigher);
         return buildConstraintConfigurable(constraintPackage, constraintName, impactType, consequence);
     }
 
@@ -239,7 +240,7 @@ public abstract class DroolsAbstractUniConstraintStream<Solution_, A> extends Dr
     public final Constraint impactScoreConfigurableBigDecimal(String constraintPackage, String constraintName,
             Function<A, BigDecimal> matchWeigher, ScoreImpactType impactType) {
         ConstraintConsequence<UniConstraintGraphNode> consequence =
-                constraintFactory.getConstraintGraph().impact(getConstraintGraphNode(), matchWeigher);
+                constraintFactory.getConstraintGraph().impact(getLeftHandSide(), matchWeigher);
         return buildConstraintConfigurable(constraintPackage, constraintName, impactType, consequence);
     }
 
@@ -247,6 +248,6 @@ public abstract class DroolsAbstractUniConstraintStream<Solution_, A> extends Dr
     // Pattern creation
     // ************************************************************************
 
-    public abstract UniConstraintGraphNode getConstraintGraphNode();
+    public abstract UniLeftHandSide<A> getLeftHandSide();
 
 }

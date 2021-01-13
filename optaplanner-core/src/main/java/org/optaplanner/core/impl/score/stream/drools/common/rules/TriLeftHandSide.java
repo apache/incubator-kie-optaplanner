@@ -16,30 +16,33 @@
 
 package org.optaplanner.core.impl.score.stream.drools.common.rules;
 
-import static java.util.Collections.singletonList;
-import static org.drools.model.DSL.*;
-import static org.drools.model.PatternDSL.pattern;
-
-import java.util.Arrays;
-import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
-
 import org.drools.model.PatternDSL;
 import org.drools.model.Variable;
 import org.drools.model.view.ViewItem;
 import org.optaplanner.core.api.function.QuadPredicate;
 import org.optaplanner.core.api.function.TriFunction;
 import org.optaplanner.core.api.function.TriPredicate;
+import org.optaplanner.core.api.score.stream.quad.QuadJoiner;
+import org.optaplanner.core.api.score.stream.tri.TriConstraintCollector;
+import org.optaplanner.core.impl.score.stream.drools.DroolsVariableFactory;
 import org.optaplanner.core.impl.score.stream.drools.common.BiTuple;
+import org.optaplanner.core.impl.score.stream.drools.common.DroolsTriAccumulateFunction;
 import org.optaplanner.core.impl.score.stream.drools.common.TriTuple;
-import org.optaplanner.core.impl.score.stream.drools.tri.DroolsTriAccumulateFunction;
 import org.optaplanner.core.impl.score.stream.quad.AbstractQuadJoiner;
 import org.optaplanner.core.impl.score.stream.quad.FilteringQuadJoiner;
 import org.optaplanner.core.impl.score.stream.quad.NoneQuadJoiner;
 import org.optaplanner.core.impl.score.stream.tri.NoneTriJoiner;
 
-final class TriLeftHandSide<A, B, C> extends AbstractLeftHandSide {
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
+import static java.util.Collections.singletonList;
+import static org.drools.model.DSL.*;
+import static org.drools.model.PatternDSL.pattern;
+
+public final class TriLeftHandSide<A, B, C> extends AbstractLeftHandSide {
 
     private final PatternVariable<A> patternVariableA;
     private final PatternVariable<B> patternVariableB;
@@ -98,14 +101,14 @@ final class TriLeftHandSide<A, B, C> extends AbstractLeftHandSide {
                 patternVariableC.addDependentExpression(existenceExpression), variableFactory);
     }
 
-    private <D> TriLeftHandSide<A, B, C> existsOrNot(Class<D> dClass, AbstractQuadJoiner<A, B, C, D>[] joiners,
+    private <D> TriLeftHandSide<A, B, C> existsOrNot(Class<D> dClass, QuadJoiner<A, B, C, D>[] joiners,
             boolean shouldExist) {
         int indexOfFirstFilter = -1;
         // Prepare the joiner and filter that will be used in the pattern
         AbstractQuadJoiner<A, B, C, D> finalJoiner = null;
         QuadPredicate<A, B, C, D> finalFilter = null;
         for (int i = 0; i < joiners.length; i++) {
-            AbstractQuadJoiner<A, B, C, D> joiner = joiners[i];
+            AbstractQuadJoiner<A, B, C, D> joiner = (AbstractQuadJoiner<A, B, C, D>) joiners[i];
             boolean hasAFilter = indexOfFirstFilter >= 0;
             if (joiner instanceof NoneQuadJoiner && joiners.length > 1) {
                 throw new IllegalStateException("If present, " + NoneTriJoiner.class + " must be the only joiner, got "
@@ -128,17 +131,18 @@ final class TriLeftHandSide<A, B, C> extends AbstractLeftHandSide {
         return applyJoiners(dClass, finalJoiner, finalFilter, shouldExist);
     }
 
-    public <D> TriLeftHandSide<A, B, C> exists(Class<D> dClass, AbstractQuadJoiner<A, B, C, D>[] joiners) {
+    public <D> TriLeftHandSide<A, B, C> exists(Class<D> dClass, QuadJoiner<A, B, C, D>[] joiners) {
         return existsOrNot(dClass, joiners, true);
     }
 
-    public <D> TriLeftHandSide<A, B, C> notExists(Class<D> dClass, AbstractQuadJoiner<A, B, C, D>[] joiners) {
+    public <D> TriLeftHandSide<A, B, C> notExists(Class<D> dClass, QuadJoiner<A, B, C, D>[] joiners) {
         return existsOrNot(dClass, joiners, false);
     }
 
-    public <D> QuadLeftHandSide<A, B, C, D> join(UniLeftHandSide<D> right, AbstractQuadJoiner<A, B, C, D> joiner) {
+    public <D> QuadLeftHandSide<A, B, C, D> join(UniLeftHandSide<D> right, QuadJoiner<A, B, C, D> joiner) {
+        AbstractQuadJoiner<A, B, C, D> castJoiner = (AbstractQuadJoiner<A, B, C, D>) joiner;
         PatternVariable<D> filteredRight = right.getPatternVariableA()
-                .filter(joiner::matches, patternVariableA.getPrimaryVariable(),
+                .filter(castJoiner::matches, patternVariableA.getPrimaryVariable(),
                         patternVariableB.getPrimaryVariable(), patternVariableC.getPrimaryVariable());
         return new QuadLeftHandSide<>(patternVariableA, patternVariableB, patternVariableC, filteredRight,
                 variableFactory);
@@ -156,7 +160,7 @@ final class TriLeftHandSide<A, B, C> extends AbstractLeftHandSide {
         return new UniLeftHandSide<>(new PatternVariable<>(newA, singletonList(groupByPattern)), variableFactory);
     }
 
-    public <NewA> UniLeftHandSide<NewA> groupBy(DroolsTriAccumulateFunction<A, B, C, ?, NewA> accFunction) {
+    public <NewA> UniLeftHandSide<NewA> groupBy(TriConstraintCollector<A, B, C, ?, NewA> collector) {
         Variable<TriTuple<A, B, C>> accumulateSource =
                 (Variable<TriTuple<A, B, C>>) variableFactory.createVariable(TriTuple.class, "source");
         PatternVariable<C> newPatternVariableC = patternVariableC.bind(accumulateSource,
@@ -166,7 +170,7 @@ final class TriLeftHandSide<A, B, C> extends AbstractLeftHandSide {
         ViewItem<?> innerAccumulatePattern =
                 joinViewItemsWithLogicalAnd(patternVariableA, patternVariableB, newPatternVariableC);
         ViewItem<?> outerAccumulatePattern = PatternDSL.accumulate(innerAccumulatePattern,
-                accFunction(() -> accFunction, accumulateSource).as(outputVariable));
+                accFunction(() -> new DroolsTriAccumulateFunction<>(collector), accumulateSource).as(outputVariable));
         return new UniLeftHandSide<>(new PatternVariable<>(outputVariable, singletonList(outerAccumulatePattern)),
                 variableFactory);
     }
@@ -190,7 +194,7 @@ final class TriLeftHandSide<A, B, C> extends AbstractLeftHandSide {
     }
 
     public <NewA, NewB> BiLeftHandSide<NewA, NewB> groupBy(TriFunction<A, B, C, NewA> keyMappingA,
-            DroolsTriAccumulateFunction<A, B, C, ?, NewB> accFunctionB) {
+            TriConstraintCollector<A, B, C, ?, NewB> collectorB) {
         Variable<A> inputA = patternVariableA.getPrimaryVariable();
         Variable<B> inputB = patternVariableB.getPrimaryVariable();
         Variable<C> inputC = patternVariableC.getPrimaryVariable();
@@ -203,7 +207,8 @@ final class TriLeftHandSide<A, B, C> extends AbstractLeftHandSide {
         Variable<NewB> output = variableFactory.createVariable("output");
         ViewItem<?> innerGroupByPattern = joinViewItemsWithLogicalAnd(patternVariableA, patternVariableB, newPatternVariableC);
         ViewItem<?> groupByPattern = PatternDSL.groupBy(innerGroupByPattern, inputA, inputB, inputC, groupKey,
-                keyMappingA::apply, accFunction(() -> accFunctionB, accumulateSource).as(output));
+                keyMappingA::apply,
+                accFunction(() -> new DroolsTriAccumulateFunction<>(collectorB), accumulateSource).as(output));
         Variable<NewA> newA = (Variable<NewA>) variableFactory.createVariable("newA", from(groupKey));
         Variable<NewB> newB = (Variable<NewB>) variableFactory.createVariable("newB", from(output));
         return new BiLeftHandSide<>(new PatternVariable<>(newA, singletonList(groupByPattern)),
@@ -211,7 +216,7 @@ final class TriLeftHandSide<A, B, C> extends AbstractLeftHandSide {
     }
 
     public <NewA, NewB, NewC> TriLeftHandSide<NewA, NewB, NewC> groupBy(TriFunction<A, B, C, NewA> keyMappingA,
-            TriFunction<A, B, C, NewB> keyMappingB, DroolsTriAccumulateFunction<A, B, C, ?, NewC> accFunctionC) {
+            TriFunction<A, B, C, NewB> keyMappingB, TriConstraintCollector<A, B, C, ?, NewC> collectorC) {
         Variable<A> inputA = patternVariableA.getPrimaryVariable();
         Variable<B> inputB = patternVariableB.getPrimaryVariable();
         Variable<C> inputC = patternVariableC.getPrimaryVariable();
@@ -226,7 +231,7 @@ final class TriLeftHandSide<A, B, C> extends AbstractLeftHandSide {
         ViewItem<?> innerGroupByPattern = joinViewItemsWithLogicalAnd(patternVariableA, patternVariableB, newPatternVariableC);
         ViewItem<?> groupByPattern = PatternDSL.groupBy(innerGroupByPattern, inputA, inputB, inputC, groupKey,
                 (a, b, c) -> new BiTuple<>(keyMappingA.apply(a, b, c), keyMappingB.apply(a, b, c)),
-                accFunction(() -> accFunctionC, accumulateSource).as(output));
+                accFunction(() -> new DroolsTriAccumulateFunction<>(collectorC), accumulateSource).as(output));
         Variable<NewA> newA =
                 (Variable<NewA>) variableFactory.createVariable("newA", from(groupKey, k -> k.a));
         Variable<NewB> newB =
@@ -238,8 +243,7 @@ final class TriLeftHandSide<A, B, C> extends AbstractLeftHandSide {
 
     public <NewA, NewB, NewC, NewD> QuadLeftHandSide<NewA, NewB, NewC, NewD> groupBy(
             TriFunction<A, B, C, NewA> keyMappingA, TriFunction<A, B, C, NewB> keyMappingB,
-            DroolsTriAccumulateFunction<A, B, C, ?, NewC> accFunctionC,
-            DroolsTriAccumulateFunction<A, B, C, ?, NewD> accFunctionD) {
+            TriConstraintCollector<A, B, C, ?, NewC> collectorC, TriConstraintCollector<A, B, C, ?, NewD> collectorD) {
         Variable<A> inputA = patternVariableA.getPrimaryVariable();
         Variable<B> inputB = patternVariableB.getPrimaryVariable();
         Variable<C> inputC = patternVariableC.getPrimaryVariable();
@@ -255,8 +259,8 @@ final class TriLeftHandSide<A, B, C> extends AbstractLeftHandSide {
         ViewItem<?> innerGroupByPattern = joinViewItemsWithLogicalAnd(patternVariableA, patternVariableB, newPatternVariableC);
         ViewItem<?> groupByPattern = PatternDSL.groupBy(innerGroupByPattern, inputA, inputB, inputC, groupKey,
                 (a, b, c) -> new BiTuple<>(keyMappingA.apply(a, b, c), keyMappingB.apply(a, b, c)),
-                accFunction(() -> accFunctionC, accumulateSource).as(outputC),
-                accFunction(() -> accFunctionD, accumulateSource).as(outputD));
+                accFunction(() -> new DroolsTriAccumulateFunction<>(collectorC), accumulateSource).as(outputC),
+                accFunction(() -> new DroolsTriAccumulateFunction<>(collectorD), accumulateSource).as(outputD));
         Variable<NewA> newA =
                 (Variable<NewA>) variableFactory.createVariable("newA", from(groupKey, k -> k.a));
         Variable<NewB> newB =

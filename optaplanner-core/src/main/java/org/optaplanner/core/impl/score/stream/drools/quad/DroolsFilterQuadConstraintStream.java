@@ -18,17 +18,17 @@ package org.optaplanner.core.impl.score.stream.drools.quad;
 
 import org.optaplanner.core.api.function.QuadPredicate;
 import org.optaplanner.core.impl.score.stream.drools.DroolsConstraintFactory;
-import org.optaplanner.core.impl.score.stream.drools.common.rules.QuadConstraintGraphNode;
+import org.optaplanner.core.impl.score.stream.drools.common.rules.QuadLeftHandSide;
 
 public final class DroolsFilterQuadConstraintStream<Solution_, A, B, C, D>
         extends DroolsAbstractQuadConstraintStream<Solution_, A, B, C, D> {
 
-    private final QuadConstraintGraphNode node;
+    private final QuadLeftHandSide<A, B, C, D> leftHandSide;
 
     public DroolsFilterQuadConstraintStream(DroolsConstraintFactory<Solution_> constraintFactory,
             DroolsAbstractQuadConstraintStream<Solution_, A, B, C, D> parent, QuadPredicate<A, B, C, D> predicate) {
         super(constraintFactory);
-        this.node = constraintFactory.getConstraintGraph().filter(parent.getConstraintGraphNode(), predicate);
+        this.leftHandSide = parent.getLeftHandSide().filter(predicate);
     }
 
     // ************************************************************************
@@ -36,8 +36,8 @@ public final class DroolsFilterQuadConstraintStream<Solution_, A, B, C, D>
     // ************************************************************************
 
     @Override
-    public QuadConstraintGraphNode getConstraintGraphNode() {
-        return node;
+    public QuadLeftHandSide<A, B, C, D> getLeftHandSide() {
+        return leftHandSide;
     }
 
     @Override

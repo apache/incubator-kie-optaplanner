@@ -35,6 +35,7 @@ import org.optaplanner.core.impl.score.stream.drools.DroolsConstraintFactory;
 import org.optaplanner.core.impl.score.stream.drools.common.DroolsAbstractConstraintStream;
 import org.optaplanner.core.impl.score.stream.drools.common.consequences.ConstraintConsequence;
 import org.optaplanner.core.impl.score.stream.drools.common.rules.BiConstraintGraphNode;
+import org.optaplanner.core.impl.score.stream.drools.common.rules.BiLeftHandSide;
 import org.optaplanner.core.impl.score.stream.drools.quad.DroolsGroupingQuadConstraintStream;
 import org.optaplanner.core.impl.score.stream.drools.tri.DroolsAbstractTriConstraintStream;
 import org.optaplanner.core.impl.score.stream.drools.tri.DroolsGroupingTriConstraintStream;
@@ -174,7 +175,7 @@ public abstract class DroolsAbstractBiConstraintStream<Solution_, A, B>
     public final Constraint impactScore(String constraintPackage, String constraintName, Score<?> constraintWeight,
             ScoreImpactType impactType) {
         ConstraintConsequence<BiConstraintGraphNode> consequence =
-                constraintFactory.getConstraintGraph().impact(getConstraintGraphNode());
+                constraintFactory.getConstraintGraph().impact(getLeftHandSide());
         return buildConstraint(constraintPackage, constraintName, constraintWeight, impactType, consequence);
     }
 
@@ -182,7 +183,7 @@ public abstract class DroolsAbstractBiConstraintStream<Solution_, A, B>
     public final Constraint impactScore(String constraintPackage, String constraintName,
             Score<?> constraintWeight, ToIntBiFunction<A, B> matchWeigher, ScoreImpactType impactType) {
         ConstraintConsequence<BiConstraintGraphNode> consequence =
-                constraintFactory.getConstraintGraph().impact(getConstraintGraphNode(), matchWeigher);
+                constraintFactory.getConstraintGraph().impact(getLeftHandSide(), matchWeigher);
         return buildConstraint(constraintPackage, constraintName, constraintWeight, impactType, consequence);
     }
 
@@ -190,7 +191,7 @@ public abstract class DroolsAbstractBiConstraintStream<Solution_, A, B>
     public final Constraint impactScoreLong(String constraintPackage, String constraintName,
             Score<?> constraintWeight, ToLongBiFunction<A, B> matchWeigher, ScoreImpactType impactType) {
         ConstraintConsequence<BiConstraintGraphNode> consequence =
-                constraintFactory.getConstraintGraph().impact(getConstraintGraphNode(), matchWeigher);
+                constraintFactory.getConstraintGraph().impact(getLeftHandSide(), matchWeigher);
         return buildConstraint(constraintPackage, constraintName, constraintWeight, impactType, consequence);
     }
 
@@ -198,7 +199,7 @@ public abstract class DroolsAbstractBiConstraintStream<Solution_, A, B>
     public final Constraint impactScoreBigDecimal(String constraintPackage, String constraintName,
             Score<?> constraintWeight, BiFunction<A, B, BigDecimal> matchWeigher, ScoreImpactType impactType) {
         ConstraintConsequence<BiConstraintGraphNode> consequence =
-                constraintFactory.getConstraintGraph().impact(getConstraintGraphNode(), matchWeigher);
+                constraintFactory.getConstraintGraph().impact(getLeftHandSide(), matchWeigher);
         return buildConstraint(constraintPackage, constraintName, constraintWeight, impactType, consequence);
     }
 
@@ -206,7 +207,7 @@ public abstract class DroolsAbstractBiConstraintStream<Solution_, A, B>
     public final Constraint impactScoreConfigurable(String constraintPackage, String constraintName,
             ScoreImpactType impactType) {
         ConstraintConsequence<BiConstraintGraphNode> consequence =
-                constraintFactory.getConstraintGraph().impact(getConstraintGraphNode());
+                constraintFactory.getConstraintGraph().impact(getLeftHandSide());
         return buildConstraintConfigurable(constraintPackage, constraintName, impactType, consequence);
     }
 
@@ -214,7 +215,7 @@ public abstract class DroolsAbstractBiConstraintStream<Solution_, A, B>
     public final Constraint impactScoreConfigurable(String constraintPackage, String constraintName,
             ToIntBiFunction<A, B> matchWeigher, ScoreImpactType impactType) {
         ConstraintConsequence<BiConstraintGraphNode> consequence =
-                constraintFactory.getConstraintGraph().impact(getConstraintGraphNode(), matchWeigher);
+                constraintFactory.getConstraintGraph().impact(getLeftHandSide(), matchWeigher);
         return buildConstraintConfigurable(constraintPackage, constraintName, impactType, consequence);
     }
 
@@ -222,7 +223,7 @@ public abstract class DroolsAbstractBiConstraintStream<Solution_, A, B>
     public final Constraint impactScoreConfigurableLong(String constraintPackage, String constraintName,
             ToLongBiFunction<A, B> matchWeigher, ScoreImpactType impactType) {
         ConstraintConsequence<BiConstraintGraphNode> consequence =
-                constraintFactory.getConstraintGraph().impact(getConstraintGraphNode(), matchWeigher);
+                constraintFactory.getConstraintGraph().impact(getLeftHandSide(), matchWeigher);
         return buildConstraintConfigurable(constraintPackage, constraintName, impactType, consequence);
     }
 
@@ -230,7 +231,7 @@ public abstract class DroolsAbstractBiConstraintStream<Solution_, A, B>
     public final Constraint impactScoreConfigurableBigDecimal(String constraintPackage, String constraintName,
             BiFunction<A, B, BigDecimal> matchWeigher, ScoreImpactType impactType) {
         ConstraintConsequence<BiConstraintGraphNode> consequence =
-                constraintFactory.getConstraintGraph().impact(getConstraintGraphNode(), matchWeigher);
+                constraintFactory.getConstraintGraph().impact(getLeftHandSide(), matchWeigher);
         return buildConstraintConfigurable(constraintPackage, constraintName, impactType, consequence);
     }
 
@@ -238,6 +239,6 @@ public abstract class DroolsAbstractBiConstraintStream<Solution_, A, B>
     // Pattern creation
     // ************************************************************************
 
-    public abstract BiConstraintGraphNode getConstraintGraphNode();
+    public abstract BiLeftHandSide<A, B> getLeftHandSide();
 
 }

@@ -16,9 +16,6 @@
 
 package org.optaplanner.core.impl.score.stream.drools.bi;
 
-import java.util.function.BiFunction;
-import java.util.function.Function;
-
 import org.optaplanner.core.api.function.QuadFunction;
 import org.optaplanner.core.api.function.TriFunction;
 import org.optaplanner.core.api.score.stream.bi.BiConstraintCollector;
@@ -26,79 +23,78 @@ import org.optaplanner.core.api.score.stream.quad.QuadConstraintCollector;
 import org.optaplanner.core.api.score.stream.tri.TriConstraintCollector;
 import org.optaplanner.core.api.score.stream.uni.UniConstraintCollector;
 import org.optaplanner.core.impl.score.stream.drools.DroolsConstraintFactory;
-import org.optaplanner.core.impl.score.stream.drools.common.rules.BiConstraintGraphNode;
+import org.optaplanner.core.impl.score.stream.drools.common.rules.BiLeftHandSide;
 import org.optaplanner.core.impl.score.stream.drools.quad.DroolsAbstractQuadConstraintStream;
 import org.optaplanner.core.impl.score.stream.drools.tri.DroolsAbstractTriConstraintStream;
 import org.optaplanner.core.impl.score.stream.drools.uni.DroolsAbstractUniConstraintStream;
 
+import java.util.function.BiFunction;
+import java.util.function.Function;
+
 public class DroolsGroupingBiConstraintStream<Solution_, NewA, NewB>
         extends DroolsAbstractBiConstraintStream<Solution_, NewA, NewB> {
 
-    private final BiConstraintGraphNode node;
+    private final BiLeftHandSide<NewA, NewB> leftHandSide;
 
     public <A> DroolsGroupingBiConstraintStream(DroolsConstraintFactory<Solution_> constraintFactory,
             DroolsAbstractUniConstraintStream<Solution_, A> parent, Function<A, NewA> groupKeyAMapping,
             Function<A, NewB> groupKeyBMapping) {
         super(constraintFactory);
-        this.node = constraintFactory.getConstraintGraph().groupBy(parent.getConstraintGraphNode(), groupKeyAMapping,
-                groupKeyBMapping);
+        this.leftHandSide = parent.getLeftHandSide().groupBy(groupKeyAMapping, groupKeyBMapping);
     }
 
     public <A, __> DroolsGroupingBiConstraintStream(DroolsConstraintFactory<Solution_> constraintFactory,
             DroolsAbstractUniConstraintStream<Solution_, A> parent, Function<A, NewA> groupKeyMapping,
             UniConstraintCollector<A, __, NewB> collector) {
         super(constraintFactory);
-        this.node = constraintFactory.getConstraintGraph().groupBy(parent.getConstraintGraphNode(), groupKeyMapping, collector);
+        this.leftHandSide = parent.getLeftHandSide().groupBy(groupKeyMapping, collector);
     }
 
     public <A, B, __> DroolsGroupingBiConstraintStream(DroolsConstraintFactory<Solution_> constraintFactory,
             DroolsAbstractBiConstraintStream<Solution_, A, B> parent, BiFunction<A, B, NewA> groupKeyMapping,
             BiConstraintCollector<A, B, __, NewB> collector) {
         super(constraintFactory);
-        this.node = constraintFactory.getConstraintGraph().groupBy(parent.getConstraintGraphNode(), groupKeyMapping, collector);
+        this.leftHandSide = parent.getLeftHandSide().groupBy(groupKeyMapping, collector);
     }
 
     public <A, B, __> DroolsGroupingBiConstraintStream(DroolsConstraintFactory<Solution_> constraintFactory,
             DroolsAbstractBiConstraintStream<Solution_, A, B> parent, BiFunction<A, B, NewA> groupKeyAMapping,
             BiFunction<A, B, NewB> groupKeyBMapping) {
         super(constraintFactory);
-        this.node = constraintFactory.getConstraintGraph().groupBy(parent.getConstraintGraphNode(), groupKeyAMapping,
-                groupKeyBMapping);
+        this.leftHandSide = parent.getLeftHandSide().groupBy(groupKeyAMapping, groupKeyBMapping);
     }
 
     public <A, B, C, __> DroolsGroupingBiConstraintStream(DroolsConstraintFactory<Solution_> constraintFactory,
             DroolsAbstractTriConstraintStream<Solution_, A, B, C> parent, TriFunction<A, B, C, NewA> groupKeyMapping,
             TriConstraintCollector<A, B, C, __, NewB> collector) {
         super(constraintFactory);
-        this.node = constraintFactory.getConstraintGraph().groupBy(parent.getConstraintGraphNode(), groupKeyMapping, collector);
+        this.leftHandSide = parent.getLeftHandSide().groupBy(groupKeyMapping, collector);
     }
 
     public <A, B, C, __> DroolsGroupingBiConstraintStream(DroolsConstraintFactory<Solution_> constraintFactory,
             DroolsAbstractTriConstraintStream<Solution_, A, B, C> parent, TriFunction<A, B, C, NewA> groupKeyAMapping,
             TriFunction<A, B, C, NewB> groupKeyBMapping) {
         super(constraintFactory);
-        this.node = constraintFactory.getConstraintGraph().groupBy(parent.getConstraintGraphNode(), groupKeyAMapping,
-                groupKeyBMapping);
+        this.leftHandSide = parent.getLeftHandSide().groupBy(groupKeyAMapping, groupKeyBMapping);
     }
 
     public <A, B, C, D, __> DroolsGroupingBiConstraintStream(DroolsConstraintFactory<Solution_> constraintFactory,
             DroolsAbstractQuadConstraintStream<Solution_, A, B, C, D> parent,
             QuadFunction<A, B, C, D, NewA> groupKeyMapping, QuadConstraintCollector<A, B, C, D, __, NewB> collector) {
         super(constraintFactory);
-        this.node = constraintFactory.getConstraintGraph().groupBy(parent.getConstraintGraphNode(), groupKeyMapping, collector);
+        this.leftHandSide = parent.getLeftHandSide().groupBy(groupKeyMapping, collector);
     }
 
     public <A, B, C, D, __> DroolsGroupingBiConstraintStream(DroolsConstraintFactory<Solution_> constraintFactory,
             DroolsAbstractQuadConstraintStream<Solution_, A, B, C, D> parent,
             QuadFunction<A, B, C, D, NewA> groupKeyAMapping, QuadFunction<A, B, C, D, NewB> groupKeyBMapping) {
         super(constraintFactory);
-        this.node = constraintFactory.getConstraintGraph().groupBy(parent.getConstraintGraphNode(), groupKeyAMapping,
-                groupKeyBMapping);
+        this.leftHandSide = parent.getLeftHandSide().groupBy(groupKeyAMapping, groupKeyBMapping);
     }
 
     @Override
-    public BiConstraintGraphNode getConstraintGraphNode() {
-        return node;
+    public BiLeftHandSide<NewA, NewB> getLeftHandSide() {
+        return leftHandSide;
     }
 
     @Override

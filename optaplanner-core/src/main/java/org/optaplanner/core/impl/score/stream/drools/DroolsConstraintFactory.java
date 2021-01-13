@@ -39,6 +39,7 @@ public final class DroolsConstraintFactory<Solution_> extends InnerConstraintFac
     private final SolutionDescriptor<Solution_> solutionDescriptor;
     private final String defaultConstraintPackage;
     private final ConstraintGraph constraintGraph = new ConstraintGraph();
+    private final DroolsVariableFactory variableFactory = new DroolsVariableFactoryImpl();
 
     public DroolsConstraintFactory(SolutionDescriptor<Solution_> solutionDescriptor) {
         this.solutionDescriptor = solutionDescriptor;
@@ -111,6 +112,10 @@ public final class DroolsConstraintFactory<Solution_> extends InnerConstraintFac
 
     public ConstraintGraph getConstraintGraph() {
         return constraintGraph;
+    }
+
+    public DroolsVariableFactory getVariableFactory() {
+        return variableFactory;
     }
 
     @Override

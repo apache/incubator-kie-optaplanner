@@ -18,21 +18,21 @@ package org.optaplanner.core.impl.score.stream.drools.bi;
 
 import org.optaplanner.core.api.score.stream.tri.TriJoiner;
 import org.optaplanner.core.impl.score.stream.drools.DroolsConstraintFactory;
-import org.optaplanner.core.impl.score.stream.drools.common.rules.BiConstraintGraphNode;
+import org.optaplanner.core.impl.score.stream.drools.common.rules.BiLeftHandSide;
 
 public final class DroolsExistsBiConstraintStream<Solution_, A, B>
         extends DroolsAbstractBiConstraintStream<Solution_, A, B> {
 
-    private final BiConstraintGraphNode node;
+    private final BiLeftHandSide<A, B> leftHandSide;
     private final String streamName;
 
     public <C> DroolsExistsBiConstraintStream(DroolsConstraintFactory<Solution_> constraintFactory,
             DroolsAbstractBiConstraintStream<Solution_, A, B> parent, boolean shouldExist, Class<C> otherClass,
             TriJoiner<A, B, C>... joiners) {
         super(constraintFactory);
-        this.node = shouldExist
-                ? constraintFactory.getConstraintGraph().ifExists(parent.getConstraintGraphNode(), otherClass, joiners)
-                : constraintFactory.getConstraintGraph().ifNotExists(parent.getConstraintGraphNode(), otherClass, joiners);
+        this.leftHandSide = shouldExist
+                ? parent.getLeftHandSide().exists(otherClass, joiners)
+                : parent.getLeftHandSide().notExists(otherClass, joiners);
         this.streamName = shouldExist ? "BiIfExists()" : "BiIfNotExists()";
     }
 
@@ -41,8 +41,8 @@ public final class DroolsExistsBiConstraintStream<Solution_, A, B>
     // ************************************************************************
 
     @Override
-    public BiConstraintGraphNode getConstraintGraphNode() {
-        return node;
+    public BiLeftHandSide<A, B> getLeftHandSide() {
+        return leftHandSide;
     }
 
     @Override

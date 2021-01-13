@@ -16,20 +16,19 @@
 
 package org.optaplanner.core.impl.score.stream.drools.uni;
 
-import java.util.function.Predicate;
-
 import org.optaplanner.core.impl.score.stream.drools.DroolsConstraintFactory;
-import org.optaplanner.core.impl.score.stream.drools.common.rules.UniConstraintGraphChildNode;
-import org.optaplanner.core.impl.score.stream.drools.common.rules.UniConstraintGraphNode;
+import org.optaplanner.core.impl.score.stream.drools.common.rules.UniLeftHandSide;
+
+import java.util.function.Predicate;
 
 public final class DroolsFilterUniConstraintStream<Solution_, A> extends DroolsAbstractUniConstraintStream<Solution_, A> {
 
-    private final UniConstraintGraphChildNode node;
+    private final UniLeftHandSide<A> leftHandSide;
 
     public DroolsFilterUniConstraintStream(DroolsConstraintFactory<Solution_> constraintFactory,
             DroolsAbstractUniConstraintStream<Solution_, A> parent, Predicate<A> predicate) {
         super(constraintFactory);
-        this.node = constraintFactory.getConstraintGraph().filter(parent.getConstraintGraphNode(), predicate);
+        this.leftHandSide = parent.getLeftHandSide().filter(predicate);
     }
 
     // ************************************************************************
@@ -37,8 +36,8 @@ public final class DroolsFilterUniConstraintStream<Solution_, A> extends DroolsA
     // ************************************************************************
 
     @Override
-    public UniConstraintGraphNode getConstraintGraphNode() {
-        return node;
+    public UniLeftHandSide<A> getLeftHandSide() {
+        return leftHandSide;
     }
 
     @Override

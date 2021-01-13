@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2021 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,30 +14,28 @@
  * limitations under the License.
  */
 
-package org.optaplanner.core.impl.score.stream.drools.tri;
+package org.optaplanner.core.impl.score.stream.drools.common;
+
+import org.optaplanner.core.api.function.TriFunction;
+import org.optaplanner.core.api.score.stream.bi.BiConstraintCollector;
 
 import java.util.function.Function;
 import java.util.function.Supplier;
 
-import org.optaplanner.core.api.function.QuadFunction;
-import org.optaplanner.core.api.score.stream.tri.TriConstraintCollector;
-import org.optaplanner.core.impl.score.stream.drools.common.DroolsAbstractAccumulateFunction;
-import org.optaplanner.core.impl.score.stream.drools.common.TriTuple;
-
-public final class DroolsTriAccumulateFunction<A, B, C, ResultContainer_, NewA>
-        extends DroolsAbstractAccumulateFunction<ResultContainer_, TriTuple<A, B, C>, NewA> {
+public final class DroolsBiAccumulateFunction<A, B, ResultContainer_, NewA>
+        extends DroolsAbstractAccumulateFunction<ResultContainer_, BiTuple<A, B>, NewA> {
 
     private final Supplier<ResultContainer_> supplier;
-    private final QuadFunction<ResultContainer_, A, B, C, Runnable> accumulator;
+    private final TriFunction<ResultContainer_, A, B, Runnable> accumulator;
     private final Function<ResultContainer_, NewA> finisher;
 
-    public DroolsTriAccumulateFunction(TriConstraintCollector<A, B, C, ResultContainer_, NewA> collector) {
+    public DroolsBiAccumulateFunction(BiConstraintCollector<A, B, ResultContainer_, NewA> collector) {
         this.supplier = collector.supplier();
         this.accumulator = collector.accumulator();
         this.finisher = collector.finisher();
     }
 
-    public DroolsTriAccumulateFunction() {
+    public DroolsBiAccumulateFunction() {
         throw new UnsupportedOperationException("Serialization is not supported.");
     }
 
@@ -47,8 +45,8 @@ public final class DroolsTriAccumulateFunction<A, B, C, ResultContainer_, NewA>
     }
 
     @Override
-    protected Runnable accumulate(ResultContainer_ container, TriTuple<A, B, C> tuple) {
-        return accumulator.apply(container, tuple.a, tuple.b, tuple.c);
+    protected Runnable accumulate(ResultContainer_ container, BiTuple<A, B> tuple) {
+        return accumulator.apply(container, tuple.a, tuple.b);
     }
 
     @Override

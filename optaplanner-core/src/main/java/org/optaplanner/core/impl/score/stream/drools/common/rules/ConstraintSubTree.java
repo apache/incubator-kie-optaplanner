@@ -16,6 +16,8 @@
 
 package org.optaplanner.core.impl.score.stream.drools.common.rules;
 
+import org.optaplanner.core.impl.score.stream.drools.DroolsVariableFactory;
+
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;

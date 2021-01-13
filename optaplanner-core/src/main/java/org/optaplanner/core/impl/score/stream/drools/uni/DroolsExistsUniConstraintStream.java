@@ -18,21 +18,20 @@ package org.optaplanner.core.impl.score.stream.drools.uni;
 
 import org.optaplanner.core.api.score.stream.bi.BiJoiner;
 import org.optaplanner.core.impl.score.stream.drools.DroolsConstraintFactory;
-import org.optaplanner.core.impl.score.stream.drools.common.rules.UniConstraintGraphChildNode;
-import org.optaplanner.core.impl.score.stream.drools.common.rules.UniConstraintGraphNode;
+import org.optaplanner.core.impl.score.stream.drools.common.rules.UniLeftHandSide;
 
 public final class DroolsExistsUniConstraintStream<Solution_, A> extends DroolsAbstractUniConstraintStream<Solution_, A> {
 
-    private final UniConstraintGraphChildNode node;
+    private final UniLeftHandSide<A> leftHandSide;
     private final String streamName;
 
     public <B> DroolsExistsUniConstraintStream(DroolsConstraintFactory<Solution_> constraintFactory,
             DroolsAbstractUniConstraintStream<Solution_, A> parent, boolean shouldExist, Class<B> otherClass,
             BiJoiner<A, B>... joiners) {
         super(constraintFactory);
-        this.node = shouldExist
-                ? constraintFactory.getConstraintGraph().ifExists(parent.getConstraintGraphNode(), otherClass, joiners)
-                : constraintFactory.getConstraintGraph().ifNotExists(parent.getConstraintGraphNode(), otherClass, joiners);
+        this.leftHandSide = shouldExist
+                ? parent.getLeftHandSide().exists(otherClass, joiners)
+                : parent.getLeftHandSide().notExists(otherClass, joiners);
         this.streamName = shouldExist ? "IfExists()" : "IfNotExists()";
     }
 
@@ -41,8 +40,8 @@ public final class DroolsExistsUniConstraintStream<Solution_, A> extends DroolsA
     // ************************************************************************
 
     @Override
-    public UniConstraintGraphNode getConstraintGraphNode() {
-        return node;
+    public UniLeftHandSide<A> getLeftHandSide() {
+        return leftHandSide;
     }
 
     @Override

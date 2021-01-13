@@ -36,6 +36,7 @@ import org.optaplanner.core.impl.score.stream.drools.bi.DroolsGroupingBiConstrai
 import org.optaplanner.core.impl.score.stream.drools.common.DroolsAbstractConstraintStream;
 import org.optaplanner.core.impl.score.stream.drools.common.consequences.ConstraintConsequence;
 import org.optaplanner.core.impl.score.stream.drools.common.rules.TriConstraintGraphNode;
+import org.optaplanner.core.impl.score.stream.drools.common.rules.TriLeftHandSide;
 import org.optaplanner.core.impl.score.stream.drools.quad.DroolsAbstractQuadConstraintStream;
 import org.optaplanner.core.impl.score.stream.drools.quad.DroolsGroupingQuadConstraintStream;
 import org.optaplanner.core.impl.score.stream.drools.quad.DroolsJoinQuadConstraintStream;
@@ -177,7 +178,7 @@ public abstract class DroolsAbstractTriConstraintStream<Solution_, A, B, C>
     protected Constraint impactScore(String constraintPackage, String constraintName, Score<?> constraintWeight,
             ScoreImpactType impactType) {
         ConstraintConsequence<TriConstraintGraphNode> consequence =
-                constraintFactory.getConstraintGraph().impact(getConstraintGraphNode());
+                constraintFactory.getConstraintGraph().impact(getLeftHandSide());
         return buildConstraint(constraintPackage, constraintName, constraintWeight, impactType, consequence);
     }
 
@@ -185,7 +186,7 @@ public abstract class DroolsAbstractTriConstraintStream<Solution_, A, B, C>
     public Constraint impactScore(String constraintPackage, String constraintName, Score<?> constraintWeight,
             ToIntTriFunction<A, B, C> matchWeigher, ScoreImpactType impactType) {
         ConstraintConsequence<TriConstraintGraphNode> consequence =
-                constraintFactory.getConstraintGraph().impact(getConstraintGraphNode(), matchWeigher);
+                constraintFactory.getConstraintGraph().impact(getLeftHandSide(), matchWeigher);
         return buildConstraint(constraintPackage, constraintName, constraintWeight, impactType, consequence);
     }
 
@@ -193,7 +194,7 @@ public abstract class DroolsAbstractTriConstraintStream<Solution_, A, B, C>
     public Constraint impactScoreLong(String constraintPackage, String constraintName, Score<?> constraintWeight,
             ToLongTriFunction<A, B, C> matchWeigher, ScoreImpactType impactType) {
         ConstraintConsequence<TriConstraintGraphNode> consequence =
-                constraintFactory.getConstraintGraph().impact(getConstraintGraphNode(), matchWeigher);
+                constraintFactory.getConstraintGraph().impact(getLeftHandSide(), matchWeigher);
         return buildConstraint(constraintPackage, constraintName, constraintWeight, impactType, consequence);
     }
 
@@ -201,7 +202,7 @@ public abstract class DroolsAbstractTriConstraintStream<Solution_, A, B, C>
     public Constraint impactScoreBigDecimal(String constraintPackage, String constraintName, Score<?> constraintWeight,
             TriFunction<A, B, C, BigDecimal> matchWeigher, ScoreImpactType impactType) {
         ConstraintConsequence<TriConstraintGraphNode> consequence =
-                constraintFactory.getConstraintGraph().impact(getConstraintGraphNode(), matchWeigher);
+                constraintFactory.getConstraintGraph().impact(getLeftHandSide(), matchWeigher);
         return buildConstraint(constraintPackage, constraintName, constraintWeight, impactType, consequence);
     }
 
@@ -209,7 +210,7 @@ public abstract class DroolsAbstractTriConstraintStream<Solution_, A, B, C>
     protected Constraint impactScoreConfigurable(String constraintPackage, String constraintName,
             ScoreImpactType impactType) {
         ConstraintConsequence<TriConstraintGraphNode> consequence =
-                constraintFactory.getConstraintGraph().impact(getConstraintGraphNode());
+                constraintFactory.getConstraintGraph().impact(getLeftHandSide());
         return buildConstraintConfigurable(constraintPackage, constraintName, impactType, consequence);
     }
 
@@ -217,7 +218,7 @@ public abstract class DroolsAbstractTriConstraintStream<Solution_, A, B, C>
     public Constraint impactScoreConfigurable(String constraintPackage, String constraintName,
             ToIntTriFunction<A, B, C> matchWeigher, ScoreImpactType impactType) {
         ConstraintConsequence<TriConstraintGraphNode> consequence =
-                constraintFactory.getConstraintGraph().impact(getConstraintGraphNode(), matchWeigher);
+                constraintFactory.getConstraintGraph().impact(getLeftHandSide(), matchWeigher);
         return buildConstraintConfigurable(constraintPackage, constraintName, impactType, consequence);
     }
 
@@ -225,7 +226,7 @@ public abstract class DroolsAbstractTriConstraintStream<Solution_, A, B, C>
     public Constraint impactScoreConfigurableLong(String constraintPackage, String constraintName,
             ToLongTriFunction<A, B, C> matchWeigher, ScoreImpactType impactType) {
         ConstraintConsequence<TriConstraintGraphNode> consequence =
-                constraintFactory.getConstraintGraph().impact(getConstraintGraphNode(), matchWeigher);
+                constraintFactory.getConstraintGraph().impact(getLeftHandSide(), matchWeigher);
         return buildConstraintConfigurable(constraintPackage, constraintName, impactType, consequence);
     }
 
@@ -233,7 +234,7 @@ public abstract class DroolsAbstractTriConstraintStream<Solution_, A, B, C>
     public Constraint impactScoreConfigurableBigDecimal(String constraintPackage, String constraintName,
             TriFunction<A, B, C, BigDecimal> matchWeigher, ScoreImpactType impactType) {
         ConstraintConsequence<TriConstraintGraphNode> consequence =
-                constraintFactory.getConstraintGraph().impact(getConstraintGraphNode(), matchWeigher);
+                constraintFactory.getConstraintGraph().impact(getLeftHandSide(), matchWeigher);
         return buildConstraintConfigurable(constraintPackage, constraintName, impactType, consequence);
     }
 
@@ -241,6 +242,6 @@ public abstract class DroolsAbstractTriConstraintStream<Solution_, A, B, C>
     // Pattern creation
     // ************************************************************************
 
-    public abstract TriConstraintGraphNode getConstraintGraphNode();
+    public abstract TriLeftHandSide<A, B, C> getLeftHandSide();
 
 }

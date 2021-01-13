@@ -19,6 +19,7 @@ package org.optaplanner.core.impl.score.stream.drools.common.rules;
 import org.drools.model.Global;
 import org.optaplanner.core.impl.score.holder.AbstractScoreHolder;
 import org.optaplanner.core.impl.score.stream.drools.DroolsConstraint;
+import org.optaplanner.core.impl.score.stream.drools.DroolsVariableFactory;
 
 public interface RuleAssembler {
 

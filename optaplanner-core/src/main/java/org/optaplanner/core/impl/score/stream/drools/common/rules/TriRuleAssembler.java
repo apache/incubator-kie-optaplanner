@@ -32,7 +32,7 @@ import org.optaplanner.core.api.score.stream.tri.TriConstraintCollector;
 import org.optaplanner.core.impl.score.holder.AbstractScoreHolder;
 import org.optaplanner.core.impl.score.stream.drools.DroolsConstraint;
 import org.optaplanner.core.impl.score.stream.drools.common.consequences.ConstraintConsequence;
-import org.optaplanner.core.impl.score.stream.drools.tri.DroolsTriAccumulateFunction;
+import org.optaplanner.core.impl.score.stream.drools.common.DroolsTriAccumulateFunction;
 import org.optaplanner.core.impl.score.stream.quad.AbstractQuadJoiner;
 
 final class TriRuleAssembler extends AbstractRuleAssembler<TriLeftHandSide> {

@@ -16,6 +16,8 @@
 
 package org.optaplanner.core.impl.score.stream.drools.common.rules;
 
+import org.optaplanner.core.impl.score.stream.drools.DroolsVariableFactory;
+import org.optaplanner.core.impl.score.stream.drools.DroolsVariableFactoryImpl;
 import org.optaplanner.core.impl.score.stream.drools.common.consequences.ConstraintConsequence;
 
 import java.util.*;
