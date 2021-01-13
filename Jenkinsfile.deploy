@@ -172,11 +172,43 @@ pipeline {
         }
 
         stage('Deploy artifacts') {
+            when {
+                expression { return env.MAVEN_DEPLOY_REPOSITORY || (!isRelease() && isNotTestingBuild()) }
+            }
             steps {
                 script {
-                    deployMavenArtifacts(getOptaplannerMavenCommand(), optaplannerRepository)
-                    deployMavenArtifacts(getOptawebVehicleRoutingMavenCommand(), vehicleRoutingRepository)
-                    deployMavenArtifacts(getOptawebEmployeeRosteringMavenCommand(), employeeRosteringRepository)
+                    if (env.MAVEN_DEPLOY_REPOSITORY && env.MAVEN_REPO_CREDS_ID) {
+                        // Deploy to specific repository with credentials
+                        runMavenDeployLocally(getOptaplannerMavenCommand(), optaplannerRepository)
+                        runMavenDeployLocally(getOptawebVehicleRoutingMavenCommand(), vehicleRoutingRepository)
+                        runMavenDeployLocally(getOptawebEmployeeRosteringMavenCommand(), employeeRosteringRepository)
+
+                        maven.uploadLocalArtifacts(env.MAVEN_REPO_CREDS_ID, getLocalDeploymentFolder(optaplannerRepository), getMavenRepoZipUrl())
+                        maven.uploadLocalArtifacts(env.MAVEN_REPO_CREDS_ID, getLocalDeploymentFolder(vehicleRoutingRepository), getMavenRepoZipUrl())
+                        maven.uploadLocalArtifacts(env.MAVEN_REPO_CREDS_ID, getLocalDeploymentFolder(employeeRosteringRepository), getMavenRepoZipUrl())
+                    } else {
+                        // Normal deploy
+                        runMavenDeploy(getOptaplannerMavenCommand())
+                        runMavenDeploy(getOptawebVehicleRoutingMavenCommand())
+                        runMavenDeploy(getOptawebEmployeeRosteringMavenCommand())
+                    }
+                }
+            }
+        }
+        stage('Stage artifacts for release') {
+            when {
+                expression { return  !env.MAVEN_DEPLOY_REPOSITORY && isRelease() }
+            }
+            steps {
+                script {
+                    // Deploy locally and then to staging
+                    runMavenDeployLocally(getOptaplannerMavenCommand(), optaplannerRepository)
+                    runMavenDeployLocally(getOptawebVehicleRoutingMavenCommand(), vehicleRoutingRepository)
+                    runMavenDeployLocally(getOptawebEmployeeRosteringMavenCommand(), employeeRosteringRepository)
+
+                    runMavenStage(getOptaplannerMavenCommand(), optaplannerRepository)
+                    runMavenStage(getOptawebVehicleRoutingMavenCommand(), vehicleRoutingRepository)
+                    runMavenStage(getOptawebEmployeeRosteringMavenCommand(), employeeRosteringRepository)
                 }
             }
         }
@@ -268,7 +300,7 @@ void updateQuickstartsVersions(){
                     'grep -v -e "${getProjectVersion()}" | ' +
                     'cat', returnStdout: true)
         }
-   }
+    }
 }
 
 void gradleVersionsUpdate(String repo, String newVersion) {
@@ -332,7 +364,7 @@ void commitAndCreatePR(String repo, String buildBranch) {
             githubscm.findAndStageNotIgnoredFiles('build.gradle')
         })
         githubscm.pushObject('origin', getBotBranch(), getBotAuthorCredsID())
-        deployProperties["${repo}.pr.link"] = isRelease() ? 
+        deployProperties["${repo}.pr.link"] = isRelease() ?
                                                 githubscm.createPRWithLabels(commitMsg, prBody, buildBranch, ['DO_NOT_MERGE'] as String[], getBotAuthorCredsID()) :
                                                 githubscm.createPR(commitMsg, prBody, buildBranch, getBotAuthorCredsID())
     }
@@ -378,21 +410,6 @@ void mavenCleanInstallOptaPlannerParents() {
         .skipTests(true)
         .withOptions(['-U', '-pl org.optaplanner:optaplanner-build-parent,org.optaplanner:optaplanner-bom', '-am'])
         .run('clean install')
-}
-
-void deployMavenArtifacts(MavenCommand mvnCmd, String localDeployId) {
-    if (env.MAVEN_DEPLOY_REPOSITORY && env.MAVEN_REPO_CREDS_ID) {
-        // Deploy to specific repository with credentials
-        runMavenDeployLocally(mvnCmd, localDeployId)
-        maven.uploadLocalArtifacts(env.MAVEN_REPO_CREDS_ID, getLocalDeploymentFolder(localDeployId), getMavenRepoZipUrl())
-    } else if (!isRelease() || env.MAVEN_DEPLOY_REPOSITORY) {
-        // Normal deploy
-        runMavenDeploy(mvnCmd)
-    } else {
-        // Deploy locally and then to staging
-        runMavenDeployLocally(mvnCmd, localDeployId)
-        runMavenStage(mvnCmd, localDeployId)
-    }
 }
 
 void runMavenDeploy(MavenCommand mvnCmd) {
@@ -446,7 +463,6 @@ boolean skipUnitTests(){
     return params.SKIP_TESTS;
 }
 
-
 boolean skipIntegrationTests(){
     return params.SKIP_INTEGRATION_TESTS;
 }
@@ -478,6 +494,10 @@ String getBotAuthor() {
 
 String getBotAuthorCredsID() {
     return env.BOT_CREDENTIALS_ID
+}
+
+boolean isNotTestingBuild(){
+    return getGitAuthor() == 'kiegroup'
 }
 
 void setDeployPropertyIfNeeded(String key, def value) {
