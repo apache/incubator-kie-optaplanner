@@ -18,7 +18,7 @@ package org.optaplanner.core.impl.score.stream.drools.quad;
 
 import org.optaplanner.core.api.function.QuadPredicate;
 import org.optaplanner.core.impl.score.stream.drools.DroolsConstraintFactory;
-import org.optaplanner.core.impl.score.stream.drools.common.rules.QuadLeftHandSide;
+import org.optaplanner.core.impl.score.stream.drools.common.QuadLeftHandSide;
 
 public final class DroolsFilterQuadConstraintStream<Solution_, A, B, C, D>
         extends DroolsAbstractQuadConstraintStream<Solution_, A, B, C, D> {

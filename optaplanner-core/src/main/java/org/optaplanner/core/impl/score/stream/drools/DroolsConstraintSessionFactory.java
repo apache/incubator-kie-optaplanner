@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2021 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,13 +18,7 @@ package org.optaplanner.core.impl.score.stream.drools;
 
 import static java.util.stream.Collectors.toMap;
 
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
@@ -49,7 +43,7 @@ import org.optaplanner.core.impl.score.holder.AbstractScoreHolder;
 import org.optaplanner.core.impl.score.stream.ConstraintSession;
 import org.optaplanner.core.impl.score.stream.ConstraintSessionFactory;
 import org.optaplanner.core.impl.score.stream.drools.common.FactTuple;
-import org.optaplanner.core.impl.score.stream.drools.common.rules.RuleAssembly;
+import org.optaplanner.core.impl.score.stream.drools.common.RuleAssembly;
 
 public final class DroolsConstraintSessionFactory<Solution_, Score_ extends Score<Score_>>
         implements ConstraintSessionFactory<Solution_, Score_> {
@@ -199,7 +193,7 @@ public final class DroolsConstraintSessionFactory<Solution_, Score_ extends Scor
                     DroolsConstraint<Solution_> constraint = compiledRuleToConstraintMap.get(rule);
                     Class[] expectedTypes = compiledRuleToExpectedTypesMap.get(rule);
                     return matchJustificationsToOutput(justificationList,
-                            constraint.getConsequence().getTerminalNode().getCardinality(), expectedTypes);
+                            constraint.getConsequence().getCardinality(), expectedTypes);
                 });
         // Determine which rules to enable based on the fact that their constraints carry weight.
         Score_ zeroScore = scoreDefinition.getZeroScore();

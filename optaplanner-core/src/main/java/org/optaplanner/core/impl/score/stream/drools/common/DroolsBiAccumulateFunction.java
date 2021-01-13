@@ -16,11 +16,11 @@
 
 package org.optaplanner.core.impl.score.stream.drools.common;
 
-import org.optaplanner.core.api.function.TriFunction;
-import org.optaplanner.core.api.score.stream.bi.BiConstraintCollector;
-
 import java.util.function.Function;
 import java.util.function.Supplier;
+
+import org.optaplanner.core.api.function.TriFunction;
+import org.optaplanner.core.api.score.stream.bi.BiConstraintCollector;
 
 public final class DroolsBiAccumulateFunction<A, B, ResultContainer_, NewA>
         extends DroolsAbstractAccumulateFunction<ResultContainer_, BiTuple<A, B>, NewA> {

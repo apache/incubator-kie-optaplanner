@@ -21,7 +21,6 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 
 import org.optaplanner.core.api.score.stream.uni.UniConstraintCollector;
-import org.optaplanner.core.impl.score.stream.drools.common.DroolsAbstractAccumulateFunction;
 
 public final class DroolsUniAccumulateFunction<A, ResultContainer_, NewA>
         extends DroolsAbstractAccumulateFunction<ResultContainer_, A, NewA> {

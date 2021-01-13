@@ -21,8 +21,6 @@ import java.util.function.Supplier;
 
 import org.optaplanner.core.api.function.PentaFunction;
 import org.optaplanner.core.api.score.stream.quad.QuadConstraintCollector;
-import org.optaplanner.core.impl.score.stream.drools.common.DroolsAbstractAccumulateFunction;
-import org.optaplanner.core.impl.score.stream.drools.common.QuadTuple;
 
 public final class DroolsQuadAccumulateFunction<A, B, C, D, ResultContainer_, NewA>
         extends DroolsAbstractAccumulateFunction<ResultContainer_, QuadTuple<A, B, C, D>, NewA> {

@@ -16,6 +16,11 @@
 
 package org.optaplanner.core.impl.score.stream.drools;
 
+import static org.drools.model.DSL.globalOf;
+
+import java.util.*;
+import java.util.stream.Collectors;
+
 import org.drools.model.Global;
 import org.drools.model.Rule;
 import org.drools.model.impl.ModelImpl;
@@ -27,18 +32,13 @@ import org.optaplanner.core.impl.score.director.drools.DroolsScoreDirector;
 import org.optaplanner.core.impl.score.holder.AbstractScoreHolder;
 import org.optaplanner.core.impl.score.stream.ConstraintSessionFactory;
 import org.optaplanner.core.impl.score.stream.InnerConstraintFactory;
-import org.optaplanner.core.impl.score.stream.drools.common.rules.ConstraintGraph;
+import org.optaplanner.core.impl.score.stream.drools.common.RuleAssembly;
 import org.optaplanner.core.impl.score.stream.drools.uni.DroolsFromUniConstraintStream;
-
-import java.util.*;
-
-import static org.drools.model.DSL.globalOf;
 
 public final class DroolsConstraintFactory<Solution_> extends InnerConstraintFactory<Solution_> {
 
     private final SolutionDescriptor<Solution_> solutionDescriptor;
     private final String defaultConstraintPackage;
-    private final ConstraintGraph constraintGraph = new ConstraintGraph();
     private final DroolsVariableFactory variableFactory = new DroolsVariableFactoryImpl();
 
     public DroolsConstraintFactory(SolutionDescriptor<Solution_> solutionDescriptor) {
@@ -94,12 +94,27 @@ public final class DroolsConstraintFactory<Solution_> extends InnerConstraintFac
             droolsConstraintList.add(droolsConstraint);
         }
         DroolsConstraint<Solution_>[] constraintArray = droolsConstraintList.toArray(new DroolsConstraint[0]);
-        Map<Rule, Class[]> ruleToExpectedJustificationTypesMap =
-                constraintGraph.generateRule(scoreHolderGlobal, constraintArray);
+        Map<Rule, Class[]> ruleToExpectedJustificationTypesMap = generateRules(scoreHolderGlobal, constraintArray);
         ruleToExpectedJustificationTypesMap.keySet()
                 .forEach(model::addRule);
         return new DroolsConstraintSessionFactory<>(solutionDescriptor, model, ruleToExpectedJustificationTypesMap,
                 constraintArray);
+    }
+
+    private static Map<Rule, Class[]> generateRules(Global<? extends AbstractScoreHolder<?>> scoreHolderGlobal,
+            DroolsConstraint... constraints) {
+        /*
+         * This treats every constraint individually, and therefore can not support CS-level node sharing.
+         * TODO Optimize CS-level node sharing.
+         */
+        return Arrays.stream(constraints)
+                .map(constraint -> generateRule(scoreHolderGlobal, constraint))
+                .collect(Collectors.toMap(RuleAssembly::getRule, RuleAssembly::getExpectedJustificationTypes));
+    }
+
+    private static RuleAssembly generateRule(Global<? extends AbstractScoreHolder<?>> scoreHolderGlobal,
+            DroolsConstraint constraint) {
+        return constraint.getConsequence().assemble(scoreHolderGlobal, constraint);
     }
 
     // ************************************************************************
@@ -108,10 +123,6 @@ public final class DroolsConstraintFactory<Solution_> extends InnerConstraintFac
 
     public SolutionDescriptor<Solution_> getSolutionDescriptor() {
         return solutionDescriptor;
-    }
-
-    public ConstraintGraph getConstraintGraph() {
-        return constraintGraph;
     }
 
     public DroolsVariableFactory getVariableFactory() {

@@ -33,10 +33,9 @@ import org.optaplanner.core.api.score.stream.uni.UniConstraintStream;
 import org.optaplanner.core.impl.score.stream.common.ScoreImpactType;
 import org.optaplanner.core.impl.score.stream.drools.DroolsConstraintFactory;
 import org.optaplanner.core.impl.score.stream.drools.bi.DroolsGroupingBiConstraintStream;
+import org.optaplanner.core.impl.score.stream.drools.common.AbstractConstraintConsequence;
 import org.optaplanner.core.impl.score.stream.drools.common.DroolsAbstractConstraintStream;
-import org.optaplanner.core.impl.score.stream.drools.common.consequences.ConstraintConsequence;
-import org.optaplanner.core.impl.score.stream.drools.common.rules.TriConstraintGraphNode;
-import org.optaplanner.core.impl.score.stream.drools.common.rules.TriLeftHandSide;
+import org.optaplanner.core.impl.score.stream.drools.common.TriLeftHandSide;
 import org.optaplanner.core.impl.score.stream.drools.quad.DroolsAbstractQuadConstraintStream;
 import org.optaplanner.core.impl.score.stream.drools.quad.DroolsGroupingQuadConstraintStream;
 import org.optaplanner.core.impl.score.stream.drools.quad.DroolsJoinQuadConstraintStream;
@@ -177,64 +176,56 @@ public abstract class DroolsAbstractTriConstraintStream<Solution_, A, B, C>
     @Override
     protected Constraint impactScore(String constraintPackage, String constraintName, Score<?> constraintWeight,
             ScoreImpactType impactType) {
-        ConstraintConsequence<TriConstraintGraphNode> consequence =
-                constraintFactory.getConstraintGraph().impact(getLeftHandSide());
+        AbstractConstraintConsequence<TriLeftHandSide<A, B, C>> consequence = getLeftHandSide().impact();
         return buildConstraint(constraintPackage, constraintName, constraintWeight, impactType, consequence);
     }
 
     @Override
     public Constraint impactScore(String constraintPackage, String constraintName, Score<?> constraintWeight,
             ToIntTriFunction<A, B, C> matchWeigher, ScoreImpactType impactType) {
-        ConstraintConsequence<TriConstraintGraphNode> consequence =
-                constraintFactory.getConstraintGraph().impact(getLeftHandSide(), matchWeigher);
+        AbstractConstraintConsequence<TriLeftHandSide<A, B, C>> consequence = getLeftHandSide().impact(matchWeigher);
         return buildConstraint(constraintPackage, constraintName, constraintWeight, impactType, consequence);
     }
 
     @Override
     public Constraint impactScoreLong(String constraintPackage, String constraintName, Score<?> constraintWeight,
             ToLongTriFunction<A, B, C> matchWeigher, ScoreImpactType impactType) {
-        ConstraintConsequence<TriConstraintGraphNode> consequence =
-                constraintFactory.getConstraintGraph().impact(getLeftHandSide(), matchWeigher);
+        AbstractConstraintConsequence<TriLeftHandSide<A, B, C>> consequence = getLeftHandSide().impact(matchWeigher);
         return buildConstraint(constraintPackage, constraintName, constraintWeight, impactType, consequence);
     }
 
     @Override
     public Constraint impactScoreBigDecimal(String constraintPackage, String constraintName, Score<?> constraintWeight,
             TriFunction<A, B, C, BigDecimal> matchWeigher, ScoreImpactType impactType) {
-        ConstraintConsequence<TriConstraintGraphNode> consequence =
-                constraintFactory.getConstraintGraph().impact(getLeftHandSide(), matchWeigher);
+        AbstractConstraintConsequence<TriLeftHandSide<A, B, C>> consequence = getLeftHandSide().impact(matchWeigher);
         return buildConstraint(constraintPackage, constraintName, constraintWeight, impactType, consequence);
     }
 
     @Override
     protected Constraint impactScoreConfigurable(String constraintPackage, String constraintName,
             ScoreImpactType impactType) {
-        ConstraintConsequence<TriConstraintGraphNode> consequence =
-                constraintFactory.getConstraintGraph().impact(getLeftHandSide());
+        AbstractConstraintConsequence<TriLeftHandSide<A, B, C>> consequence = getLeftHandSide().impact();
         return buildConstraintConfigurable(constraintPackage, constraintName, impactType, consequence);
     }
 
     @Override
     public Constraint impactScoreConfigurable(String constraintPackage, String constraintName,
             ToIntTriFunction<A, B, C> matchWeigher, ScoreImpactType impactType) {
-        ConstraintConsequence<TriConstraintGraphNode> consequence =
-                constraintFactory.getConstraintGraph().impact(getLeftHandSide(), matchWeigher);
+        AbstractConstraintConsequence<TriLeftHandSide<A, B, C>> consequence = getLeftHandSide().impact(matchWeigher);
         return buildConstraintConfigurable(constraintPackage, constraintName, impactType, consequence);
     }
 
     @Override
     public Constraint impactScoreConfigurableLong(String constraintPackage, String constraintName,
             ToLongTriFunction<A, B, C> matchWeigher, ScoreImpactType impactType) {
-        ConstraintConsequence<TriConstraintGraphNode> consequence =
-                constraintFactory.getConstraintGraph().impact(getLeftHandSide(), matchWeigher);
+        AbstractConstraintConsequence<TriLeftHandSide<A, B, C>> consequence = getLeftHandSide().impact(matchWeigher);
         return buildConstraintConfigurable(constraintPackage, constraintName, impactType, consequence);
     }
 
     @Override
     public Constraint impactScoreConfigurableBigDecimal(String constraintPackage, String constraintName,
             TriFunction<A, B, C, BigDecimal> matchWeigher, ScoreImpactType impactType) {
-        ConstraintConsequence<TriConstraintGraphNode> consequence =
-                constraintFactory.getConstraintGraph().impact(getLeftHandSide(), matchWeigher);
+        AbstractConstraintConsequence<TriLeftHandSide<A, B, C>> consequence = getLeftHandSide().impact(matchWeigher);
         return buildConstraintConfigurable(constraintPackage, constraintName, impactType, consequence);
     }
 

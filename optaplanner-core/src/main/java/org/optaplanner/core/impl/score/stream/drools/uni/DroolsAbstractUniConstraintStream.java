@@ -36,10 +36,9 @@ import org.optaplanner.core.impl.score.stream.drools.DroolsConstraintFactory;
 import org.optaplanner.core.impl.score.stream.drools.bi.DroolsAbstractBiConstraintStream;
 import org.optaplanner.core.impl.score.stream.drools.bi.DroolsGroupingBiConstraintStream;
 import org.optaplanner.core.impl.score.stream.drools.bi.DroolsJoinBiConstraintStream;
+import org.optaplanner.core.impl.score.stream.drools.common.AbstractConstraintConsequence;
 import org.optaplanner.core.impl.score.stream.drools.common.DroolsAbstractConstraintStream;
-import org.optaplanner.core.impl.score.stream.drools.common.consequences.ConstraintConsequence;
-import org.optaplanner.core.impl.score.stream.drools.common.rules.UniConstraintGraphNode;
-import org.optaplanner.core.impl.score.stream.drools.common.rules.UniLeftHandSide;
+import org.optaplanner.core.impl.score.stream.drools.common.UniLeftHandSide;
 import org.optaplanner.core.impl.score.stream.drools.quad.DroolsGroupingQuadConstraintStream;
 import org.optaplanner.core.impl.score.stream.drools.tri.DroolsGroupingTriConstraintStream;
 import org.optaplanner.core.impl.score.stream.uni.InnerUniConstraintStream;
@@ -183,64 +182,56 @@ public abstract class DroolsAbstractUniConstraintStream<Solution_, A> extends Dr
     @Override
     public final Constraint impactScore(String constraintPackage, String constraintName, Score<?> constraintWeight,
             ScoreImpactType impactType) {
-        ConstraintConsequence<UniConstraintGraphNode> consequence =
-                constraintFactory.getConstraintGraph().impact(getLeftHandSide());
+        AbstractConstraintConsequence<UniLeftHandSide<A>> consequence = getLeftHandSide().impact();
         return buildConstraint(constraintPackage, constraintName, constraintWeight, impactType, consequence);
     }
 
     @Override
     public final Constraint impactScore(String constraintPackage, String constraintName, Score<?> constraintWeight,
             ToIntFunction<A> matchWeigher, ScoreImpactType impactType) {
-        ConstraintConsequence<UniConstraintGraphNode> consequence =
-                constraintFactory.getConstraintGraph().impact(getLeftHandSide(), matchWeigher);
+        AbstractConstraintConsequence<UniLeftHandSide<A>> consequence = getLeftHandSide().impact(matchWeigher);
         return buildConstraint(constraintPackage, constraintName, constraintWeight, impactType, consequence);
     }
 
     @Override
     public final Constraint impactScoreLong(String constraintPackage, String constraintName,
             Score<?> constraintWeight, ToLongFunction<A> matchWeigher, ScoreImpactType impactType) {
-        ConstraintConsequence<UniConstraintGraphNode> consequence =
-                constraintFactory.getConstraintGraph().impact(getLeftHandSide(), matchWeigher);
+        AbstractConstraintConsequence<UniLeftHandSide<A>> consequence = getLeftHandSide().impact(matchWeigher);
         return buildConstraint(constraintPackage, constraintName, constraintWeight, impactType, consequence);
     }
 
     @Override
     public final Constraint impactScoreBigDecimal(String constraintPackage, String constraintName,
             Score<?> constraintWeight, Function<A, BigDecimal> matchWeigher, ScoreImpactType impactType) {
-        ConstraintConsequence<UniConstraintGraphNode> consequence =
-                constraintFactory.getConstraintGraph().impact(getLeftHandSide(), matchWeigher);
+        AbstractConstraintConsequence<UniLeftHandSide<A>> consequence = getLeftHandSide().impact(matchWeigher);
         return buildConstraint(constraintPackage, constraintName, constraintWeight, impactType, consequence);
     }
 
     @Override
     public final Constraint impactScoreConfigurable(String constraintPackage, String constraintName,
             ScoreImpactType impactType) {
-        ConstraintConsequence<UniConstraintGraphNode> consequence =
-                constraintFactory.getConstraintGraph().impact(getLeftHandSide());
+        AbstractConstraintConsequence<UniLeftHandSide<A>> consequence = getLeftHandSide().impact();
         return buildConstraintConfigurable(constraintPackage, constraintName, impactType, consequence);
     }
 
     @Override
     public final Constraint impactScoreConfigurable(String constraintPackage, String constraintName,
             ToIntFunction<A> matchWeigher, ScoreImpactType impactType) {
-        ConstraintConsequence<UniConstraintGraphNode> consequence =
-                constraintFactory.getConstraintGraph().impact(getLeftHandSide(), matchWeigher);
+        AbstractConstraintConsequence<UniLeftHandSide<A>> consequence = getLeftHandSide().impact(matchWeigher);
         return buildConstraintConfigurable(constraintPackage, constraintName, impactType, consequence);
     }
 
     @Override
     public final Constraint impactScoreConfigurableLong(String constraintPackage, String constraintName,
             ToLongFunction<A> matchWeigher, ScoreImpactType impactType) {
-        ConstraintConsequence<UniConstraintGraphNode> consequence =
-                constraintFactory.getConstraintGraph().impact(getLeftHandSide(), matchWeigher);
+        AbstractConstraintConsequence<UniLeftHandSide<A>> consequence = getLeftHandSide().impact(matchWeigher);
         return buildConstraintConfigurable(constraintPackage, constraintName, impactType, consequence);
     }
 
     @Override
     public final Constraint impactScoreConfigurableBigDecimal(String constraintPackage, String constraintName,
             Function<A, BigDecimal> matchWeigher, ScoreImpactType impactType) {
-        ConstraintConsequence<UniConstraintGraphNode> consequence =
-                constraintFactory.getConstraintGraph().impact(getLeftHandSide(), matchWeigher);
+        AbstractConstraintConsequence<UniLeftHandSide<A>> consequence = getLeftHandSide().impact(matchWeigher);
         return buildConstraintConfigurable(constraintPackage, constraintName, impactType, consequence);
     }
 

@@ -21,8 +21,6 @@ import java.util.function.Supplier;
 
 import org.optaplanner.core.api.function.QuadFunction;
 import org.optaplanner.core.api.score.stream.tri.TriConstraintCollector;
-import org.optaplanner.core.impl.score.stream.drools.common.DroolsAbstractAccumulateFunction;
-import org.optaplanner.core.impl.score.stream.drools.common.TriTuple;
 
 public final class DroolsTriAccumulateFunction<A, B, C, ResultContainer_, NewA>
         extends DroolsAbstractAccumulateFunction<ResultContainer_, TriTuple<A, B, C>, NewA> {

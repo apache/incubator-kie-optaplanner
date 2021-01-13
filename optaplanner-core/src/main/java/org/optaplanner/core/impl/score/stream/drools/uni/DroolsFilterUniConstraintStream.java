@@ -16,10 +16,10 @@
 
 package org.optaplanner.core.impl.score.stream.drools.uni;
 
-import org.optaplanner.core.impl.score.stream.drools.DroolsConstraintFactory;
-import org.optaplanner.core.impl.score.stream.drools.common.rules.UniLeftHandSide;
-
 import java.util.function.Predicate;
+
+import org.optaplanner.core.impl.score.stream.drools.DroolsConstraintFactory;
+import org.optaplanner.core.impl.score.stream.drools.common.UniLeftHandSide;
 
 public final class DroolsFilterUniConstraintStream<Solution_, A> extends DroolsAbstractUniConstraintStream<Solution_, A> {
 

@@ -17,7 +17,7 @@ package org.optaplanner.core.impl.score.stream.drools.bi;
 
 import org.optaplanner.core.api.score.stream.bi.BiJoiner;
 import org.optaplanner.core.impl.score.stream.drools.DroolsConstraintFactory;
-import org.optaplanner.core.impl.score.stream.drools.common.rules.BiLeftHandSide;
+import org.optaplanner.core.impl.score.stream.drools.common.BiLeftHandSide;
 import org.optaplanner.core.impl.score.stream.drools.uni.DroolsAbstractUniConstraintStream;
 
 public class DroolsJoinBiConstraintStream<Solution_, A, B> extends DroolsAbstractBiConstraintStream<Solution_, A, B> {

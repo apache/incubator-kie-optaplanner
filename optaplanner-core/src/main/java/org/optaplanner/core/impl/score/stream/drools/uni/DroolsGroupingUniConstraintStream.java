@@ -16,6 +16,9 @@
 
 package org.optaplanner.core.impl.score.stream.drools.uni;
 
+import java.util.function.BiFunction;
+import java.util.function.Function;
+
 import org.optaplanner.core.api.function.QuadFunction;
 import org.optaplanner.core.api.function.TriFunction;
 import org.optaplanner.core.api.score.stream.bi.BiConstraintCollector;
@@ -24,12 +27,9 @@ import org.optaplanner.core.api.score.stream.tri.TriConstraintCollector;
 import org.optaplanner.core.api.score.stream.uni.UniConstraintCollector;
 import org.optaplanner.core.impl.score.stream.drools.DroolsConstraintFactory;
 import org.optaplanner.core.impl.score.stream.drools.bi.DroolsAbstractBiConstraintStream;
-import org.optaplanner.core.impl.score.stream.drools.common.rules.UniLeftHandSide;
+import org.optaplanner.core.impl.score.stream.drools.common.UniLeftHandSide;
 import org.optaplanner.core.impl.score.stream.drools.quad.DroolsAbstractQuadConstraintStream;
 import org.optaplanner.core.impl.score.stream.drools.tri.DroolsAbstractTriConstraintStream;
-
-import java.util.function.BiFunction;
-import java.util.function.Function;
 
 public final class DroolsGroupingUniConstraintStream<Solution_, NewA>
         extends DroolsAbstractUniConstraintStream<Solution_, NewA> {
