@@ -22,7 +22,7 @@ import java.util.function.Supplier;
 import org.optaplanner.core.api.function.PentaFunction;
 import org.optaplanner.core.api.score.stream.quad.QuadConstraintCollector;
 
-public final class DroolsQuadAccumulateFunction<A, B, C, D, ResultContainer_, NewA>
+final class DroolsQuadAccumulateFunction<A, B, C, D, ResultContainer_, NewA>
         extends DroolsAbstractAccumulateFunction<ResultContainer_, QuadTuple<A, B, C, D>, NewA> {
 
     private final Supplier<ResultContainer_> supplier;

@@ -29,7 +29,7 @@ import org.drools.model.view.ViewItem;
 import org.optaplanner.core.impl.score.stream.common.JoinerType;
 import org.optaplanner.core.impl.score.stream.drools.DroolsVariableFactory;
 
-public abstract class AbstractLeftHandSide implements Supplier<List<ViewItem<?>>> {
+abstract class AbstractLeftHandSide implements Supplier<List<ViewItem<?>>> {
 
     public static <A> UniLeftHandSide<A> forVariable(Class<A> aClass, DroolsVariableFactory variableFactory) {
         return new UniLeftHandSide<>(aClass, variableFactory);

@@ -30,7 +30,7 @@ import org.optaplanner.core.api.function.ToLongQuadFunction;
 import org.optaplanner.core.impl.score.holder.AbstractScoreHolder;
 import org.optaplanner.core.impl.score.stream.drools.DroolsConstraint;
 
-public abstract class AbstractQuadConstraintConsequence<A, B, C, D>
+abstract class AbstractQuadConstraintConsequence<A, B, C, D>
         extends AbstractConstraintConsequence<QuadLeftHandSide<A, B, C, D>> {
     @Override
     public int getCardinality() {
@@ -41,11 +41,11 @@ public abstract class AbstractQuadConstraintConsequence<A, B, C, D>
      * {@inheritDoc}
      *
      * @return Never null.
-     *         When this method returns {@link ConsequenceMatchWeightType#INTEGER}, implementations of this interface
-     *         are guaranteed to implement {@link ToIntQuadFunction}.
-     *         When this method returns {@link ConsequenceMatchWeightType#LONG}, implementations of this interface are
-     *         guaranteed to implement {@link ToLongQuadFunction}.
-     *         When this method returns {@link ConsequenceMatchWeightType#BIG_DECIMAL}, implementations of this interface are
+     *         When this method returns {@link ConsequenceMatchWeightType#INTEGER}, children of this class are
+     *         guaranteed to implement {@link ToIntQuadFunction}.
+     *         When this method returns {@link ConsequenceMatchWeightType#LONG}, children of this class are guaranteed
+     *         to implement {@link ToLongQuadFunction}.
+     *         When this method returns {@link ConsequenceMatchWeightType#BIG_DECIMAL}, children of this class are
      *         guaranteed to implement {@link QuadFunction} to {@link BigDecimal}.
      */
     @Override

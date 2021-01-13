@@ -16,7 +16,7 @@
 
 package org.optaplanner.core.impl.score.stream.drools.common;
 
-public enum ConsequenceMatchWeightType {
+enum ConsequenceMatchWeightType {
 
     INTEGER,
     LONG,

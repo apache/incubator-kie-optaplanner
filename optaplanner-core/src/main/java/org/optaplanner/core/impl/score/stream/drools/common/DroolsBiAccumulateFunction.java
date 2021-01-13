@@ -22,7 +22,7 @@ import java.util.function.Supplier;
 import org.optaplanner.core.api.function.TriFunction;
 import org.optaplanner.core.api.score.stream.bi.BiConstraintCollector;
 
-public final class DroolsBiAccumulateFunction<A, B, ResultContainer_, NewA>
+final class DroolsBiAccumulateFunction<A, B, ResultContainer_, NewA>
         extends DroolsAbstractAccumulateFunction<ResultContainer_, BiTuple<A, B>, NewA> {
 
     private final Supplier<ResultContainer_> supplier;

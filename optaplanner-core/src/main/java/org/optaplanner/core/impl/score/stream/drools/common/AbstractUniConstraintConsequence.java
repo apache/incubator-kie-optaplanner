@@ -30,7 +30,7 @@ import org.drools.model.consequences.ConsequenceBuilder;
 import org.optaplanner.core.impl.score.holder.AbstractScoreHolder;
 import org.optaplanner.core.impl.score.stream.drools.DroolsConstraint;
 
-public abstract class AbstractUniConstraintConsequence<A> extends AbstractConstraintConsequence<UniLeftHandSide<A>> {
+abstract class AbstractUniConstraintConsequence<A> extends AbstractConstraintConsequence<UniLeftHandSide<A>> {
     @Override
     public int getCardinality() {
         return 1;

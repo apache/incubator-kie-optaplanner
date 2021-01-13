@@ -58,8 +58,8 @@ public final class DroolsConstraintSessionFactory<Solution_, Score_ extends Scor
     private Set<String> currentlyDisabledConstraintIdSet = null;
 
     public DroolsConstraintSessionFactory(SolutionDescriptor<Solution_> solutionDescriptor, Model model,
-            Map<org.drools.model.Rule, Class[]> modelRuleToExpectedTypesMap,
-            DroolsConstraint<Solution_>... constraints) {
+            Map<org.drools.model.Rule, Class<?>[]> modelRuleToExpectedTypesMap,
+            DroolsConstraint<Solution_>[] constraints) {
         this.solutionDescriptor = solutionDescriptor;
         this.originalModel = model;
         this.originalKieBase = buildKieBaseFromModel(model);

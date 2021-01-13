@@ -24,7 +24,7 @@ import org.optaplanner.core.api.score.stream.bi.BiConstraintStream;
 public final class RuleAssembly {
 
     private final Rule rule;
-    private final Class[] expectedJustificationTypes;
+    private final Class<?>[] expectedJustificationTypes;
 
     RuleAssembly(Rule rule, Class... expectedJustificationTypes) {
         this.rule = Objects.requireNonNull(rule);
@@ -52,7 +52,7 @@ public final class RuleAssembly {
      *
      * @return never null
      */
-    public Class[] getExpectedJustificationTypes() {
+    public Class<?>[] getExpectedJustificationTypes() {
         return expectedJustificationTypes;
     }
 }

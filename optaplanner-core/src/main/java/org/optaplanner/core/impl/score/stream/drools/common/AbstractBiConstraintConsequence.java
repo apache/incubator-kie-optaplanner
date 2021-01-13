@@ -30,7 +30,7 @@ import org.drools.model.consequences.ConsequenceBuilder;
 import org.optaplanner.core.impl.score.holder.AbstractScoreHolder;
 import org.optaplanner.core.impl.score.stream.drools.DroolsConstraint;
 
-public abstract class AbstractBiConstraintConsequence<A, B> extends AbstractConstraintConsequence<BiLeftHandSide<A, B>> {
+abstract class AbstractBiConstraintConsequence<A, B> extends AbstractConstraintConsequence<BiLeftHandSide<A, B>> {
 
     /**
      * {@inheritDoc}

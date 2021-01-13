@@ -65,8 +65,8 @@ public abstract class AbstractConstraintConsequence<LeftHandSide_ extends Abstra
                 .map(Argument::getType);
     }
 
-    public final RuleAssembly assemble(Global<? extends AbstractScoreHolder<?>> scoreHolderGlobal,
-            DroolsConstraint constraint) {
+    public final <Solution_> RuleAssembly assemble(Global<? extends AbstractScoreHolder<?>> scoreHolderGlobal,
+            DroolsConstraint<Solution_> constraint) {
         LeftHandSide_ leftHandSide = getLeftHandSide();
         List<RuleItemBuilder<?>> ruleItemBuilderList = new ArrayList<>(leftHandSide.get());
         ConsequenceBuilder.ValidBuilder consequence = buildConsequence(constraint, scoreHolderGlobal,

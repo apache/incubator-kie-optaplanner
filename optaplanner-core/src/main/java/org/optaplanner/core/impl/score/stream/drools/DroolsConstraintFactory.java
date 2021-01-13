@@ -94,27 +94,13 @@ public final class DroolsConstraintFactory<Solution_> extends InnerConstraintFac
             droolsConstraintList.add(droolsConstraint);
         }
         DroolsConstraint<Solution_>[] constraintArray = droolsConstraintList.toArray(new DroolsConstraint[0]);
-        Map<Rule, Class[]> ruleToExpectedJustificationTypesMap = generateRules(scoreHolderGlobal, constraintArray);
+        Map<Rule, Class<?>[]> ruleToExpectedJustificationTypesMap = Arrays.stream(constraintArray)
+                .map(constraint -> constraint.getConsequence().assemble(scoreHolderGlobal, constraint))
+                .collect(Collectors.toMap(RuleAssembly::getRule, RuleAssembly::getExpectedJustificationTypes));
         ruleToExpectedJustificationTypesMap.keySet()
                 .forEach(model::addRule);
         return new DroolsConstraintSessionFactory<>(solutionDescriptor, model, ruleToExpectedJustificationTypesMap,
                 constraintArray);
-    }
-
-    private static Map<Rule, Class[]> generateRules(Global<? extends AbstractScoreHolder<?>> scoreHolderGlobal,
-            DroolsConstraint... constraints) {
-        /*
-         * This treats every constraint individually, and therefore can not support CS-level node sharing.
-         * TODO Optimize CS-level node sharing.
-         */
-        return Arrays.stream(constraints)
-                .map(constraint -> generateRule(scoreHolderGlobal, constraint))
-                .collect(Collectors.toMap(RuleAssembly::getRule, RuleAssembly::getExpectedJustificationTypes));
-    }
-
-    private static RuleAssembly generateRule(Global<? extends AbstractScoreHolder<?>> scoreHolderGlobal,
-            DroolsConstraint constraint) {
-        return constraint.getConsequence().assemble(scoreHolderGlobal, constraint);
     }
 
     // ************************************************************************
