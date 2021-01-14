@@ -27,6 +27,7 @@ import org.optaplanner.core.impl.domain.common.accessor.MemberAccessor;
 public class ClassAndPlanningIdComparator implements Comparator<Object> {
 
     private boolean failFastIfNoPlanningId;
+    private Map<Class, MemberAccessor> decisionCache = new HashMap<>();
 
     public ClassAndPlanningIdComparator() {
         this(true);
@@ -35,8 +36,6 @@ public class ClassAndPlanningIdComparator implements Comparator<Object> {
     public ClassAndPlanningIdComparator(boolean failFastIfNoPlanningId) {
         this.failFastIfNoPlanningId = failFastIfNoPlanningId;
     }
-
-    private Map<Class, MemberAccessor> decisionCache = new HashMap<>();
 
     @Override
     public int compare(Object a, Object b) {
