@@ -496,7 +496,7 @@ String getBotAuthorCredsID() {
     return env.BOT_CREDENTIALS_ID
 }
 
-boolean isNotTestingBuild(){
+boolean isNotTestingBuild() {
     return getGitAuthor() == 'kiegroup'
 }
 
