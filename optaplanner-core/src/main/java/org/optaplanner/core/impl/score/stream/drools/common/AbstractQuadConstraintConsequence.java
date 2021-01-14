@@ -20,7 +20,6 @@ import java.math.BigDecimal;
 import java.util.function.Supplier;
 
 import org.drools.model.DSL;
-import org.drools.model.Drools;
 import org.drools.model.Global;
 import org.drools.model.Variable;
 import org.drools.model.consequences.ConsequenceBuilder;
@@ -53,29 +52,28 @@ abstract class AbstractQuadConstraintConsequence<A, B, C, D>
     protected abstract ConsequenceMatchWeightType getMatchWeightType();
 
     @Override
-    protected final ConsequenceBuilder.ValidBuilder buildConsequence(DroolsConstraint constraint,
-            Global<? extends AbstractScoreHolder<?>> scoreHolderGlobal, Variable... variables) {
-        AbstractConstraintConsequence consequence = constraint.getConsequence();
+    protected final ConsequenceBuilder.ValidBuilder buildConsequence(DroolsConstraint<?> constraint,
+            Global<? extends AbstractScoreHolder<?>> scoreHolderGlobal, Variable<?>... variables) {
+        AbstractConstraintConsequence<QuadLeftHandSide<A, B, C, D>> consequence = constraint.getConsequence();
         switch (consequence.getMatchWeightType()) {
             case INTEGER:
                 ToIntQuadFunction intMatchWeighter = ((Supplier<ToIntQuadFunction>) consequence).get();
                 return DSL.on(scoreHolderGlobal, variables[0], variables[1], variables[2], variables[3])
-                        .execute((drools, scoreHolder, a, b, c, d) -> impactScore(constraint, (Drools) drools,
-                                (AbstractScoreHolder) scoreHolder, intMatchWeighter.applyAsInt(a, b, c, d)));
+                        .execute((drools, scoreHolder, a, b, c, d) -> impactScore(constraint, drools, scoreHolder,
+                                intMatchWeighter.applyAsInt(a, b, c, d)));
             case LONG:
                 ToLongQuadFunction longMatchWeighter = ((Supplier<ToLongQuadFunction>) consequence).get();
                 return DSL.on(scoreHolderGlobal, variables[0], variables[1], variables[2], variables[3])
-                        .execute((drools, scoreHolder, a, b, c, d) -> impactScore(constraint, (Drools) drools,
-                                (AbstractScoreHolder) scoreHolder, longMatchWeighter.applyAsLong(a, b, c, d)));
+                        .execute((drools, scoreHolder, a, b, c, d) -> impactScore(constraint, drools, scoreHolder,
+                                longMatchWeighter.applyAsLong(a, b, c, d)));
             case BIG_DECIMAL:
                 QuadFunction bigDecimalMatchWeighter = ((Supplier<QuadFunction>) consequence).get();
                 return DSL.on(scoreHolderGlobal, variables[0], variables[1], variables[2], variables[3])
-                        .execute((drools, scoreHolder, a, b, c, d) -> impactScore(constraint, (Drools) drools,
-                                (AbstractScoreHolder) scoreHolder, (BigDecimal) bigDecimalMatchWeighter.apply(a, b, c, d)));
+                        .execute((drools, scoreHolder, a, b, c, d) -> impactScore(constraint, drools, scoreHolder,
+                                (BigDecimal) bigDecimalMatchWeighter.apply(a, b, c, d)));
             case DEFAULT:
-                return DSL.on(scoreHolderGlobal, variables[0], variables[1], variables[2], variables[3])
-                        .execute((drools, scoreHolder, a, b, c, d) -> impactScore((Drools) drools,
-                                (AbstractScoreHolder) scoreHolder));
+                return DSL.on(scoreHolderGlobal)
+                        .execute(AbstractConstraintConsequence::impactScore);
             default:
                 throw new UnsupportedOperationException(consequence.getMatchWeightType().toString());
         }

@@ -23,7 +23,6 @@ import java.util.function.ToIntBiFunction;
 import java.util.function.ToLongBiFunction;
 
 import org.drools.model.DSL;
-import org.drools.model.Drools;
 import org.drools.model.Global;
 import org.drools.model.Variable;
 import org.drools.model.consequences.ConsequenceBuilder;
@@ -52,29 +51,28 @@ abstract class AbstractBiConstraintConsequence<A, B> extends AbstractConstraintC
     public abstract ConsequenceMatchWeightType getMatchWeightType();
 
     @Override
-    protected final ConsequenceBuilder.ValidBuilder buildConsequence(DroolsConstraint constraint,
-            Global<? extends AbstractScoreHolder<?>> scoreHolderGlobal, Variable... variables) {
-        AbstractConstraintConsequence consequence = constraint.getConsequence();
+    protected final ConsequenceBuilder.ValidBuilder buildConsequence(DroolsConstraint<?> constraint,
+            Global<? extends AbstractScoreHolder<?>> scoreHolderGlobal, Variable<?>... variables) {
+        AbstractConstraintConsequence<BiLeftHandSide<A, B>> consequence = constraint.getConsequence();
         switch (consequence.getMatchWeightType()) {
             case INTEGER:
                 ToIntBiFunction intMatchWeighter = ((Supplier<ToIntBiFunction>) consequence).get();
                 return DSL.on(scoreHolderGlobal, variables[0], variables[1])
-                        .execute((drools, scoreHolder, a, b) -> impactScore(constraint, (Drools) drools,
-                                (AbstractScoreHolder) scoreHolder, intMatchWeighter.applyAsInt(a, b)));
+                        .execute((drools, scoreHolder, a, b) -> impactScore(constraint, drools, scoreHolder,
+                                intMatchWeighter.applyAsInt(a, b)));
             case LONG:
                 ToLongBiFunction longMatchWeighter = ((Supplier<ToLongBiFunction>) consequence).get();
                 return DSL.on(scoreHolderGlobal, variables[0], variables[1])
-                        .execute((drools, scoreHolder, a, b) -> impactScore(constraint, (Drools) drools,
-                                (AbstractScoreHolder) scoreHolder, longMatchWeighter.applyAsLong(a, b)));
+                        .execute((drools, scoreHolder, a, b) -> impactScore(constraint, drools, scoreHolder,
+                                longMatchWeighter.applyAsLong(a, b)));
             case BIG_DECIMAL:
                 BiFunction bigDecimalMatchWeighter = ((Supplier<BiFunction>) consequence).get();
                 return DSL.on(scoreHolderGlobal, variables[0], variables[1])
-                        .execute((drools, scoreHolder, a, b) -> impactScore(constraint, (Drools) drools,
-                                (AbstractScoreHolder) scoreHolder, (BigDecimal) bigDecimalMatchWeighter.apply(a, b)));
+                        .execute((drools, scoreHolder, a, b) -> impactScore(constraint, drools, scoreHolder,
+                                (BigDecimal) bigDecimalMatchWeighter.apply(a, b)));
             case DEFAULT:
-                return DSL.on(scoreHolderGlobal, variables[0], variables[1])
-                        .execute((drools, scoreHolder, a, b) -> impactScore((Drools) drools,
-                                (AbstractScoreHolder) scoreHolder));
+                return DSL.on(scoreHolderGlobal)
+                        .execute(AbstractConstraintConsequence::impactScore);
             default:
                 throw new UnsupportedOperationException(consequence.getMatchWeightType().toString());
         }

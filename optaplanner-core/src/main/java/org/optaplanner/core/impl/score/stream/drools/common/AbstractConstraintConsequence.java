@@ -16,6 +16,14 @@
 
 package org.optaplanner.core.impl.score.stream.drools.common;
 
+import static org.drools.model.PatternDSL.rule;
+
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Stream;
+
 import org.drools.model.Argument;
 import org.drools.model.Drools;
 import org.drools.model.Global;
@@ -26,14 +34,6 @@ import org.drools.model.consequences.ConsequenceBuilder;
 import org.kie.api.runtime.rule.RuleContext;
 import org.optaplanner.core.impl.score.holder.AbstractScoreHolder;
 import org.optaplanner.core.impl.score.stream.drools.DroolsConstraint;
-
-import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.stream.Stream;
-
-import static org.drools.model.PatternDSL.rule;
 
 public abstract class AbstractConstraintConsequence<LeftHandSide_ extends AbstractLeftHandSide> {
 
@@ -54,10 +54,10 @@ public abstract class AbstractConstraintConsequence<LeftHandSide_ extends Abstra
 
     public abstract int getCardinality();
 
-    protected abstract ConsequenceBuilder.ValidBuilder buildConsequence(DroolsConstraint constraint,
-            Global<? extends AbstractScoreHolder<?>> scoreHolderGlobal, Variable... variables);
+    protected abstract ConsequenceBuilder.ValidBuilder buildConsequence(DroolsConstraint<?> constraint,
+            Global<? extends AbstractScoreHolder<?>> scoreHolderGlobal, Variable<?>... variables);
 
-    protected final Stream<Class> getExpectedJustificationTypes() {
+    protected final Stream<Class<?>> getExpectedJustificationTypes() {
         Variable<?>[] variables = getLeftHandSide().getVariables();
         Variable<?> lastVariable = variables[variables.length - 1];
         Class<?> type = lastVariable.getType();
@@ -73,39 +73,42 @@ public abstract class AbstractConstraintConsequence<LeftHandSide_ extends Abstra
     public final <Solution_> RuleAssembly assemble(Global<? extends AbstractScoreHolder<?>> scoreHolderGlobal,
             DroolsConstraint<Solution_> constraint) {
         LeftHandSide_ leftHandSide = getLeftHandSide();
+        Variable<?>[] variables = leftHandSide.getVariables();
+        int expectedVariableCount = getCardinality();
+        int actualVariableCount = variables.length;
+        if (variables.length != getCardinality()) {
+            throw new IllegalStateException("Impossible state: Constraint (" + constraint.getConstraintId() +
+                    ") expects (" + expectedVariableCount + ") variables but got (" + actualVariableCount + "): ("
+                    + Arrays.toString(variables) + ").");
+        }
+        ConsequenceBuilder.ValidBuilder consequence = buildConsequence(constraint, scoreHolderGlobal, variables);
         List<RuleItemBuilder<?>> ruleItemBuilderList = new ArrayList<>(leftHandSide.get());
-        ConsequenceBuilder.ValidBuilder consequence = buildConsequence(constraint, scoreHolderGlobal,
-                leftHandSide.getVariables());
         ruleItemBuilderList.add(consequence);
         Rule rule = rule(constraint.getConstraintPackage(), constraint.getConstraintName())
                 .build(ruleItemBuilderList.toArray(new RuleItemBuilder[0]));
         return new RuleAssembly(rule, getExpectedJustificationTypes().toArray(Class[]::new));
     }
 
-    protected static void impactScore(Drools drools, AbstractScoreHolder scoreHolder) {
-        RuleContext kcontext = (RuleContext) drools;
-        scoreHolder.impactScore(kcontext);
+    protected static void impactScore(Drools drools, AbstractScoreHolder<?> scoreHolder) {
+        scoreHolder.impactScore((RuleContext) drools);
     }
 
-    protected static void impactScore(DroolsConstraint constraint, Drools drools, AbstractScoreHolder scoreHolder,
+    protected static void impactScore(DroolsConstraint<?> constraint, Drools drools, AbstractScoreHolder<?> scoreHolder,
             int impact) {
-        RuleContext kcontext = (RuleContext) drools;
         constraint.assertCorrectImpact(impact);
-        scoreHolder.impactScore(kcontext, impact);
+        scoreHolder.impactScore((RuleContext) drools, impact);
     }
 
-    protected static void impactScore(DroolsConstraint constraint, Drools drools, AbstractScoreHolder scoreHolder,
+    protected static void impactScore(DroolsConstraint<?> constraint, Drools drools, AbstractScoreHolder<?> scoreHolder,
             long impact) {
-        RuleContext kcontext = (RuleContext) drools;
         constraint.assertCorrectImpact(impact);
-        scoreHolder.impactScore(kcontext, impact);
+        scoreHolder.impactScore((RuleContext) drools, impact);
     }
 
-    protected static void impactScore(DroolsConstraint constraint, Drools drools, AbstractScoreHolder scoreHolder,
+    protected static void impactScore(DroolsConstraint<?> constraint, Drools drools, AbstractScoreHolder<?> scoreHolder,
             BigDecimal impact) {
-        RuleContext kcontext = (RuleContext) drools;
         constraint.assertCorrectImpact(impact);
-        scoreHolder.impactScore(kcontext, impact);
+        scoreHolder.impactScore((RuleContext) drools, impact);
     }
 
 }

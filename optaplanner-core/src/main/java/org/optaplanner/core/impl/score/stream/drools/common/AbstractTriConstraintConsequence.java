@@ -20,7 +20,6 @@ import java.math.BigDecimal;
 import java.util.function.Supplier;
 
 import org.drools.model.DSL;
-import org.drools.model.Drools;
 import org.drools.model.Global;
 import org.drools.model.Variable;
 import org.drools.model.consequences.ConsequenceBuilder;
@@ -35,7 +34,7 @@ abstract class AbstractTriConstraintConsequence<A, B, C>
 
     @Override
     public int getCardinality() {
-        return 2;
+        return 3;
     }
 
     /**
@@ -53,29 +52,28 @@ abstract class AbstractTriConstraintConsequence<A, B, C>
     protected abstract ConsequenceMatchWeightType getMatchWeightType();
 
     @Override
-    protected final ConsequenceBuilder.ValidBuilder buildConsequence(DroolsConstraint constraint,
-            Global<? extends AbstractScoreHolder<?>> scoreHolderGlobal, Variable... variables) {
-        AbstractConstraintConsequence consequence = constraint.getConsequence();
+    protected final ConsequenceBuilder.ValidBuilder buildConsequence(DroolsConstraint<?> constraint,
+            Global<? extends AbstractScoreHolder<?>> scoreHolderGlobal, Variable<?>... variables) {
+        AbstractConstraintConsequence<TriLeftHandSide<A, B, C>> consequence = constraint.getConsequence();
         switch (consequence.getMatchWeightType()) {
             case INTEGER:
                 ToIntTriFunction intMatchWeighter = ((Supplier<ToIntTriFunction>) consequence).get();
                 return DSL.on(scoreHolderGlobal, variables[0], variables[1], variables[2])
-                        .execute((drools, scoreHolder, a, b, c) -> impactScore(constraint, (Drools) drools,
-                                (AbstractScoreHolder) scoreHolder, intMatchWeighter.applyAsInt(a, b, c)));
+                        .execute((drools, scoreHolder, a, b, c) -> impactScore(constraint, drools, scoreHolder,
+                                intMatchWeighter.applyAsInt(a, b, c)));
             case LONG:
                 ToLongTriFunction longMatchWeighter = ((Supplier<ToLongTriFunction>) consequence).get();
                 return DSL.on(scoreHolderGlobal, variables[0], variables[1], variables[2])
-                        .execute((drools, scoreHolder, a, b, c) -> impactScore(constraint, (Drools) drools,
-                                (AbstractScoreHolder) scoreHolder, longMatchWeighter.applyAsLong(a, b, c)));
+                        .execute((drools, scoreHolder, a, b, c) -> impactScore(constraint, drools, scoreHolder,
+                                longMatchWeighter.applyAsLong(a, b, c)));
             case BIG_DECIMAL:
                 TriFunction bigDecimalMatchWeighter = ((Supplier<TriFunction>) consequence).get();
                 return DSL.on(scoreHolderGlobal, variables[0], variables[1], variables[2])
-                        .execute((drools, scoreHolder, a, b, c) -> impactScore(constraint, (Drools) drools,
-                                (AbstractScoreHolder) scoreHolder, (BigDecimal) bigDecimalMatchWeighter.apply(a, b, c)));
+                        .execute((drools, scoreHolder, a, b, c) -> impactScore(constraint, drools, scoreHolder,
+                                (BigDecimal) bigDecimalMatchWeighter.apply(a, b, c)));
             case DEFAULT:
-                return DSL.on(scoreHolderGlobal, variables[0], variables[1], variables[2])
-                        .execute((drools, scoreHolder, a, b, c) -> impactScore((Drools) drools,
-                                (AbstractScoreHolder) scoreHolder));
+                return DSL.on(scoreHolderGlobal)
+                        .execute(AbstractConstraintConsequence::impactScore);
             default:
                 throw new UnsupportedOperationException(consequence.getMatchWeightType().toString());
         }
