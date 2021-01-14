@@ -18,7 +18,12 @@ package org.optaplanner.core.impl.score.stream.drools;
 
 import static org.drools.model.DSL.globalOf;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.drools.model.Global;

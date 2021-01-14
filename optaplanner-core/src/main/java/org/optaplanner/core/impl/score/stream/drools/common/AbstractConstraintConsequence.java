@@ -16,7 +16,16 @@
 
 package org.optaplanner.core.impl.score.stream.drools.common;
 
-import static org.drools.model.PatternDSL.rule;
+import org.drools.model.Argument;
+import org.drools.model.Drools;
+import org.drools.model.Global;
+import org.drools.model.Rule;
+import org.drools.model.RuleItemBuilder;
+import org.drools.model.Variable;
+import org.drools.model.consequences.ConsequenceBuilder;
+import org.kie.api.runtime.rule.RuleContext;
+import org.optaplanner.core.impl.score.holder.AbstractScoreHolder;
+import org.optaplanner.core.impl.score.stream.drools.DroolsConstraint;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -24,11 +33,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Stream;
 
-import org.drools.model.*;
-import org.drools.model.consequences.ConsequenceBuilder;
-import org.kie.api.runtime.rule.RuleContext;
-import org.optaplanner.core.impl.score.holder.AbstractScoreHolder;
-import org.optaplanner.core.impl.score.stream.drools.DroolsConstraint;
+import static org.drools.model.PatternDSL.rule;
 
 public abstract class AbstractConstraintConsequence<LeftHandSide_ extends AbstractLeftHandSide> {
 

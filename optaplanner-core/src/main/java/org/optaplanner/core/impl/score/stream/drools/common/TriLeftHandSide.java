@@ -17,7 +17,12 @@
 package org.optaplanner.core.impl.score.stream.drools.common;
 
 import static java.util.Collections.singletonList;
-import static org.drools.model.DSL.*;
+import static org.drools.model.DSL.accFunction;
+import static org.drools.model.DSL.accumulate;
+import static org.drools.model.DSL.exists;
+import static org.drools.model.DSL.from;
+import static org.drools.model.DSL.groupBy;
+import static org.drools.model.DSL.not;
 import static org.drools.model.PatternDSL.pattern;
 
 import java.math.BigDecimal;
@@ -29,7 +34,11 @@ import java.util.stream.Stream;
 import org.drools.model.PatternDSL;
 import org.drools.model.Variable;
 import org.drools.model.view.ViewItem;
-import org.optaplanner.core.api.function.*;
+import org.optaplanner.core.api.function.QuadPredicate;
+import org.optaplanner.core.api.function.ToIntTriFunction;
+import org.optaplanner.core.api.function.ToLongTriFunction;
+import org.optaplanner.core.api.function.TriFunction;
+import org.optaplanner.core.api.function.TriPredicate;
 import org.optaplanner.core.api.score.stream.quad.QuadJoiner;
 import org.optaplanner.core.api.score.stream.tri.TriConstraintCollector;
 import org.optaplanner.core.impl.score.stream.drools.DroolsVariableFactory;

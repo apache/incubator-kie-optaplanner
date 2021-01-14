@@ -17,7 +17,12 @@
 package org.optaplanner.core.impl.score.stream.drools.common;
 
 import static java.util.Collections.singletonList;
-import static org.drools.model.DSL.*;
+import static org.drools.model.DSL.accFunction;
+import static org.drools.model.DSL.accumulate;
+import static org.drools.model.DSL.exists;
+import static org.drools.model.DSL.from;
+import static org.drools.model.DSL.groupBy;
+import static org.drools.model.DSL.not;
 import static org.drools.model.PatternDSL.pattern;
 
 import java.math.BigDecimal;
