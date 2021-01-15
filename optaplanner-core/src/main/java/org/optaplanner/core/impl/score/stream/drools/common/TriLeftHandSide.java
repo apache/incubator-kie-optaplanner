@@ -16,6 +16,20 @@
 
 package org.optaplanner.core.impl.score.stream.drools.common;
 
+import static java.util.Collections.singletonList;
+import static org.drools.model.DSL.accFunction;
+import static org.drools.model.DSL.accumulate;
+import static org.drools.model.DSL.exists;
+import static org.drools.model.DSL.groupBy;
+import static org.drools.model.DSL.not;
+import static org.drools.model.PatternDSL.pattern;
+
+import java.math.BigDecimal;
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
 import org.drools.model.PatternDSL;
 import org.drools.model.Variable;
 import org.drools.model.functions.Function3;
@@ -34,20 +48,14 @@ import org.optaplanner.core.impl.score.stream.quad.FilteringQuadJoiner;
 import org.optaplanner.core.impl.score.stream.quad.NoneQuadJoiner;
 import org.optaplanner.core.impl.score.stream.tri.NoneTriJoiner;
 
-import java.math.BigDecimal;
-import java.util.Arrays;
-import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
-
-import static java.util.Collections.singletonList;
-import static org.drools.model.DSL.accFunction;
-import static org.drools.model.DSL.accumulate;
-import static org.drools.model.DSL.exists;
-import static org.drools.model.DSL.groupBy;
-import static org.drools.model.DSL.not;
-import static org.drools.model.PatternDSL.pattern;
-
+/**
+ * Represents the left hand side of a Drools rule, the result of which are three variables.
+ * For more, see {@link UniLeftHandSide} and {@link BiLeftHandSide}.
+ *
+ * @param <A> generic type of the first resulting variable
+ * @param <B> generic type of the second resulting variable
+ * @param <C> generic type of the third resulting variable
+ */
 public final class TriLeftHandSide<A, B, C> extends AbstractLeftHandSide {
 
     private final PatternVariable<A> patternVariableA;
@@ -294,7 +302,7 @@ public final class TriLeftHandSide<A, B, C> extends AbstractLeftHandSide {
                 createCompositeBiGroupKey(keyMappingA, keyMappingB),
                 createAccumulateFunction(collectorC, accumulateSource, accumulateOutputC),
                 createAccumulateFunction(collectorD, accumulateSource, accumulateOutputD));
-        Variable<NewA> newA = variableFactory.createVariable("newA",groupKey, k -> k.a);
+        Variable<NewA> newA = variableFactory.createVariable("newA", groupKey, k -> k.a);
         Variable<NewB> newB = variableFactory.createVariable("newB", groupKey, k -> k.b);
         Variable<NewC> newC = variableFactory.createVariable("newC", accumulateOutputC);
         Variable<NewD> newD = variableFactory.createVariable("newD", accumulateOutputD);

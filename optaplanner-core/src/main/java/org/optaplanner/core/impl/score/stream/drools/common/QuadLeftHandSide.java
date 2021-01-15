@@ -16,6 +16,20 @@
 
 package org.optaplanner.core.impl.score.stream.drools.common;
 
+import static java.util.Collections.singletonList;
+import static org.drools.model.DSL.accFunction;
+import static org.drools.model.DSL.accumulate;
+import static org.drools.model.DSL.exists;
+import static org.drools.model.DSL.groupBy;
+import static org.drools.model.DSL.not;
+import static org.drools.model.PatternDSL.pattern;
+
+import java.math.BigDecimal;
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
 import org.drools.model.PatternDSL;
 import org.drools.model.Variable;
 import org.drools.model.functions.Function4;
@@ -34,20 +48,15 @@ import org.optaplanner.core.impl.score.stream.penta.FilteringPentaJoiner;
 import org.optaplanner.core.impl.score.stream.penta.NonePentaJoiner;
 import org.optaplanner.core.impl.score.stream.tri.NoneTriJoiner;
 
-import java.math.BigDecimal;
-import java.util.Arrays;
-import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
-
-import static java.util.Collections.singletonList;
-import static org.drools.model.DSL.accFunction;
-import static org.drools.model.DSL.accumulate;
-import static org.drools.model.DSL.exists;
-import static org.drools.model.DSL.groupBy;
-import static org.drools.model.DSL.not;
-import static org.drools.model.PatternDSL.pattern;
-
+/**
+ * Represents the left hand side of a Drools rule, the result of which are four variables.
+ * For more, see {@link UniLeftHandSide} and {@link BiLeftHandSide}.
+ *
+ * @param <A> generic type of the first resulting variable
+ * @param <B> generic type of the second resulting variable
+ * @param <C> generic type of the third resulting variable
+ * @param <D> generic type of the fourth resulting variable
+ */
 public final class QuadLeftHandSide<A, B, C, D> extends AbstractLeftHandSide {
 
     private final PatternVariable<A> patternVariableA;

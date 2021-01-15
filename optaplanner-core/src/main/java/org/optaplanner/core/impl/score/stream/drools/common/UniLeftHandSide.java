@@ -16,6 +16,24 @@
 
 package org.optaplanner.core.impl.score.stream.drools.common;
 
+import static java.util.Collections.singletonList;
+import static org.drools.model.DSL.accFunction;
+import static org.drools.model.DSL.accumulate;
+import static org.drools.model.DSL.exists;
+import static org.drools.model.DSL.groupBy;
+import static org.drools.model.DSL.not;
+import static org.drools.model.PatternDSL.betaIndexedBy;
+import static org.drools.model.PatternDSL.pattern;
+
+import java.math.BigDecimal;
+import java.util.Arrays;
+import java.util.List;
+import java.util.function.BiPredicate;
+import java.util.function.Function;
+import java.util.function.Predicate;
+import java.util.function.ToIntFunction;
+import java.util.function.ToLongFunction;
+
 import org.drools.model.BetaIndex;
 import org.drools.model.PatternDSL;
 import org.drools.model.Variable;
@@ -30,24 +48,52 @@ import org.optaplanner.core.impl.score.stream.bi.NoneBiJoiner;
 import org.optaplanner.core.impl.score.stream.common.JoinerType;
 import org.optaplanner.core.impl.score.stream.drools.DroolsVariableFactory;
 
-import java.math.BigDecimal;
-import java.util.Arrays;
-import java.util.List;
-import java.util.function.BiPredicate;
-import java.util.function.Function;
-import java.util.function.Predicate;
-import java.util.function.ToIntFunction;
-import java.util.function.ToLongFunction;
-
-import static java.util.Collections.singletonList;
-import static org.drools.model.DSL.accFunction;
-import static org.drools.model.DSL.accumulate;
-import static org.drools.model.DSL.exists;
-import static org.drools.model.DSL.groupBy;
-import static org.drools.model.DSL.not;
-import static org.drools.model.PatternDSL.betaIndexedBy;
-import static org.drools.model.PatternDSL.pattern;
-
+/**
+ * Represents the left-hand side of a Drools rule, the result of which is a single variable.
+ * The simplest variant of such rule, with no filters or groupBys applied, would look like this in equivalent DRL:
+ *
+ * <pre>
+ * {@code
+ *  rule "Simplest univariate rule"
+ *  when
+ *      $a: Something()
+ *  then
+ *      // Do something with the $a variable.
+ *  end
+ * }
+ * </pre>
+ *
+ * Left-hand side is that part of the rule between the "when" and "then" keywords.
+ * The part between the "then" and "end" keywords is called the consequence of the rule, and this class does not represent it.
+ * It can be created by calling {@link #andImpact()}.
+ *
+ * There are also more complex variants of rules that still result in just one variable:
+ *
+ * <pre>
+ * {@code
+ *  rule "Complex univariate rule"
+ *  when
+ *      $accumulateResult: Collection() from accumulate(
+ *          ...
+ *      )
+ *      $a: Object() from $accumulateResult
+ *      exists Something()
+ *  then
+ *      // Do something with the $a variable.
+ *  end
+ * }
+ * </pre>
+ *
+ * To create the simplest possible variant, call {@link #UniLeftHandSide(Class, DroolsVariableFactory)}.
+ * Further specializations can be introduced by calling builder methods such as {@link #andFilter(Predicate)}.
+ *
+ * These builder methods will always return a new instance of {@link AbstractLeftHandSide}, as these are immutable.
+ * Some builder methods, such as {@link #andJoin(UniLeftHandSide, BiJoiner)}, will return an instance of
+ * {@link BiLeftHandSide} ({@link TriLeftHandSide}, ...), as that particular operation will increase the cardinality
+ * of the parent constraint stream.
+ *
+ * @param <A> generic type of the resulting variable
+ */
 public final class UniLeftHandSide<A> extends AbstractLeftHandSide {
 
     private final PatternVariable<A> patternVariable;

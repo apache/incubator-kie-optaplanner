@@ -16,6 +16,24 @@
 
 package org.optaplanner.core.impl.score.stream.drools.common;
 
+import static java.util.Collections.singletonList;
+import static org.drools.model.DSL.accFunction;
+import static org.drools.model.DSL.accumulate;
+import static org.drools.model.DSL.exists;
+import static org.drools.model.DSL.groupBy;
+import static org.drools.model.DSL.not;
+import static org.drools.model.PatternDSL.pattern;
+
+import java.math.BigDecimal;
+import java.util.Arrays;
+import java.util.List;
+import java.util.function.BiFunction;
+import java.util.function.BiPredicate;
+import java.util.function.ToIntBiFunction;
+import java.util.function.ToLongBiFunction;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
 import org.drools.model.PatternDSL;
 import org.drools.model.Variable;
 import org.drools.model.functions.Function2;
@@ -29,24 +47,41 @@ import org.optaplanner.core.impl.score.stream.tri.AbstractTriJoiner;
 import org.optaplanner.core.impl.score.stream.tri.FilteringTriJoiner;
 import org.optaplanner.core.impl.score.stream.tri.NoneTriJoiner;
 
-import java.math.BigDecimal;
-import java.util.Arrays;
-import java.util.List;
-import java.util.function.BiFunction;
-import java.util.function.BiPredicate;
-import java.util.function.ToIntBiFunction;
-import java.util.function.ToLongBiFunction;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
-
-import static java.util.Collections.singletonList;
-import static org.drools.model.DSL.accFunction;
-import static org.drools.model.DSL.accumulate;
-import static org.drools.model.DSL.exists;
-import static org.drools.model.DSL.groupBy;
-import static org.drools.model.DSL.not;
-import static org.drools.model.PatternDSL.pattern;
-
+/**
+ * Represents the left hand side of a Drools rule, the result of which are two variables.
+ * The simplest variant of such rule, with no filters or groupBys applied, would look like this in equivalent DRL:
+ *
+ * <pre>
+ * {@code
+ *  rule "Simplest bivariate rule"
+ *  when
+ *      $a: Something()
+ *      $b: SomethingElse()
+ *  then
+ *      // Do something with the $a and $b variables.
+ *  end
+ * }
+ * </pre>
+ *
+ * Usually though, there would be a joiner between the two, limiting the cartesian product:
+ *
+ * <pre>
+ * {@code
+ *  rule "Bivariate join rule"
+ *  when
+ *      $a: Something($leftJoin: someValue)
+ *      $b: SomethingElse(someOtherValue == $leftJoin)
+ *  then
+ *      // Do something with the $a and $b variables.
+ *  end
+ * }
+ * </pre>
+ *
+ * For more, see {@link UniLeftHandSide}.
+ *
+ * @param <A> generic type of the first resulting variable
+ * @param <B> generic type of the second resulting variable
+ */
 public final class BiLeftHandSide<A, B> extends AbstractLeftHandSide {
 
     private final PatternVariable<A> patternVariableA;
@@ -195,7 +230,7 @@ public final class BiLeftHandSide<A, B> extends AbstractLeftHandSide {
                 (Variable<BiTuple<NewA, NewB>>) variableFactory.createVariable(BiTuple.class, "groupKey");
         ViewItem<?> innerGroupByPattern = joinViewItemsWithLogicalAnd(patternVariableA, patternVariableB);
         ViewItem<?> groupByPattern = groupBy(innerGroupByPattern, inputA, inputB, groupKey,
-               createCompositeBiGroupKey(keyMappingA, keyMappingB));
+                createCompositeBiGroupKey(keyMappingA, keyMappingB));
         Variable<NewA> newA = variableFactory.createVariable("newA", groupKey, k -> k.a);
         Variable<NewB> newB = variableFactory.createVariable("newB", groupKey, k -> k.b);
         return new BiLeftHandSide<>(new PatternVariable<>(newA, singletonList(groupByPattern)),

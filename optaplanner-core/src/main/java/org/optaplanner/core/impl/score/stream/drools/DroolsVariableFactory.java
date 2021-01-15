@@ -16,10 +16,10 @@
 
 package org.optaplanner.core.impl.score.stream.drools;
 
+import java.util.function.Function;
+
 import org.drools.model.DSL;
 import org.drools.model.Variable;
-
-import java.util.function.Function;
 
 /**
  * Creates {@link Variable}s with unique names, by adding numeric suffixes to the user-provided names.
