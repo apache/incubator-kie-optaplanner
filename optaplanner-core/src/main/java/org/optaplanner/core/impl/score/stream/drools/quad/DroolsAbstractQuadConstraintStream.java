@@ -162,56 +162,56 @@ public abstract class DroolsAbstractQuadConstraintStream<Solution_, A, B, C, D>
     @Override
     protected Constraint impactScore(String constraintPackage, String constraintName, Score<?> constraintWeight,
             ScoreImpactType impactType) {
-        AbstractConstraintConsequence<QuadLeftHandSide<A, B, C, D>> consequence = getLeftHandSide().andImpact();
+        AbstractConstraintConsequence<QuadLeftHandSide<A, B, C, D>> consequence = getLeftHandSide().andTerminate();
         return buildConstraint(constraintPackage, constraintName, constraintWeight, impactType, consequence);
     }
 
     @Override
     public Constraint impactScore(String constraintPackage, String constraintName, Score<?> constraintWeight,
             ToIntQuadFunction<A, B, C, D> matchWeigher, ScoreImpactType impactType) {
-        AbstractConstraintConsequence<QuadLeftHandSide<A, B, C, D>> consequence = getLeftHandSide().andImpact(matchWeigher);
+        AbstractConstraintConsequence<QuadLeftHandSide<A, B, C, D>> consequence = getLeftHandSide().andTerminate(matchWeigher);
         return buildConstraint(constraintPackage, constraintName, constraintWeight, impactType, consequence);
     }
 
     @Override
     public Constraint impactScoreLong(String constraintPackage, String constraintName, Score<?> constraintWeight,
             ToLongQuadFunction<A, B, C, D> matchWeigher, ScoreImpactType impactType) {
-        AbstractConstraintConsequence<QuadLeftHandSide<A, B, C, D>> consequence = getLeftHandSide().andImpact(matchWeigher);
+        AbstractConstraintConsequence<QuadLeftHandSide<A, B, C, D>> consequence = getLeftHandSide().andTerminate(matchWeigher);
         return buildConstraint(constraintPackage, constraintName, constraintWeight, impactType, consequence);
     }
 
     @Override
     public Constraint impactScoreBigDecimal(String constraintPackage, String constraintName, Score<?> constraintWeight,
             QuadFunction<A, B, C, D, BigDecimal> matchWeigher, ScoreImpactType impactType) {
-        AbstractConstraintConsequence<QuadLeftHandSide<A, B, C, D>> consequence = getLeftHandSide().andImpact(matchWeigher);
+        AbstractConstraintConsequence<QuadLeftHandSide<A, B, C, D>> consequence = getLeftHandSide().andTerminate(matchWeigher);
         return buildConstraint(constraintPackage, constraintName, constraintWeight, impactType, consequence);
     }
 
     @Override
     protected Constraint impactScoreConfigurable(String constraintPackage, String constraintName,
             ScoreImpactType impactType) {
-        AbstractConstraintConsequence<QuadLeftHandSide<A, B, C, D>> consequence = getLeftHandSide().andImpact();
+        AbstractConstraintConsequence<QuadLeftHandSide<A, B, C, D>> consequence = getLeftHandSide().andTerminate();
         return buildConstraintConfigurable(constraintPackage, constraintName, impactType, consequence);
     }
 
     @Override
     public Constraint impactScoreConfigurable(String constraintPackage, String constraintName,
             ToIntQuadFunction<A, B, C, D> matchWeigher, ScoreImpactType impactType) {
-        AbstractConstraintConsequence<QuadLeftHandSide<A, B, C, D>> consequence = getLeftHandSide().andImpact(matchWeigher);
+        AbstractConstraintConsequence<QuadLeftHandSide<A, B, C, D>> consequence = getLeftHandSide().andTerminate(matchWeigher);
         return buildConstraintConfigurable(constraintPackage, constraintName, impactType, consequence);
     }
 
     @Override
     public Constraint impactScoreConfigurableLong(String constraintPackage, String constraintName,
             ToLongQuadFunction<A, B, C, D> matchWeigher, ScoreImpactType impactType) {
-        AbstractConstraintConsequence<QuadLeftHandSide<A, B, C, D>> consequence = getLeftHandSide().andImpact(matchWeigher);
+        AbstractConstraintConsequence<QuadLeftHandSide<A, B, C, D>> consequence = getLeftHandSide().andTerminate(matchWeigher);
         return buildConstraintConfigurable(constraintPackage, constraintName, impactType, consequence);
     }
 
     @Override
     public Constraint impactScoreConfigurableBigDecimal(String constraintPackage, String constraintName,
             QuadFunction<A, B, C, D, BigDecimal> matchWeigher, ScoreImpactType impactType) {
-        AbstractConstraintConsequence<QuadLeftHandSide<A, B, C, D>> consequence = getLeftHandSide().andImpact(matchWeigher);
+        AbstractConstraintConsequence<QuadLeftHandSide<A, B, C, D>> consequence = getLeftHandSide().andTerminate(matchWeigher);
         return buildConstraintConfigurable(constraintPackage, constraintName, impactType, consequence);
     }
 

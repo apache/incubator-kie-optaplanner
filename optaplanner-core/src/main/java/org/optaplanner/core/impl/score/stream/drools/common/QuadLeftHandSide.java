@@ -306,19 +306,19 @@ public final class QuadLeftHandSide<A, B, C, D> extends AbstractLeftHandSide {
                 new PatternVariable<>(newB), new PatternVariable<>(newC), new PatternVariable<>(newD), variableFactory);
     }
 
-    public AbstractQuadConstraintConsequence<A, B, C, D> andImpact() {
+    public AbstractQuadConstraintConsequence<A, B, C, D> andTerminate() {
         return new QuadConstraintDefaultConsequence<>(this);
     }
 
-    public AbstractQuadConstraintConsequence<A, B, C, D> andImpact(ToIntQuadFunction<A, B, C, D> matchWeighter) {
+    public AbstractQuadConstraintConsequence<A, B, C, D> andTerminate(ToIntQuadFunction<A, B, C, D> matchWeighter) {
         return new QuadConstraintIntConsequence<>(this, matchWeighter);
     }
 
-    public AbstractQuadConstraintConsequence<A, B, C, D> andImpact(ToLongQuadFunction<A, B, C, D> matchWeighter) {
+    public AbstractQuadConstraintConsequence<A, B, C, D> andTerminate(ToLongQuadFunction<A, B, C, D> matchWeighter) {
         return new QuadConstraintLongConsequence<>(this, matchWeighter);
     }
 
-    public AbstractQuadConstraintConsequence<A, B, C, D> andImpact(QuadFunction<A, B, C, D, BigDecimal> matchWeighter) {
+    public AbstractQuadConstraintConsequence<A, B, C, D> andTerminate(QuadFunction<A, B, C, D, BigDecimal> matchWeighter) {
         return new QuadConstraintBigDecimalConsequence<>(this, matchWeighter);
     }
 

@@ -321,19 +321,19 @@ public final class BiLeftHandSide<A, B> extends AbstractLeftHandSide {
                 new PatternVariable<>(newB), new PatternVariable<>(newC), new PatternVariable<>(newD), variableFactory);
     }
 
-    public AbstractBiConstraintConsequence<A, B> andImpact() {
+    public AbstractBiConstraintConsequence<A, B> andTerminate() {
         return new BiConstraintDefaultConsequence<>(this);
     }
 
-    public AbstractBiConstraintConsequence<A, B> andImpact(ToIntBiFunction<A, B> matchWeighter) {
+    public AbstractBiConstraintConsequence<A, B> andTerminate(ToIntBiFunction<A, B> matchWeighter) {
         return new BiConstraintIntConsequence<>(this, matchWeighter);
     }
 
-    public AbstractBiConstraintConsequence<A, B> andImpact(ToLongBiFunction<A, B> matchWeighter) {
+    public AbstractBiConstraintConsequence<A, B> andTerminate(ToLongBiFunction<A, B> matchWeighter) {
         return new BiConstraintLongConsequence<>(this, matchWeighter);
     }
 
-    public AbstractBiConstraintConsequence<A, B> andImpact(BiFunction<A, B, BigDecimal> matchWeighter) {
+    public AbstractBiConstraintConsequence<A, B> andTerminate(BiFunction<A, B, BigDecimal> matchWeighter) {
         return new BiConstraintBigDecimalConsequence<>(this, matchWeighter);
     }
 

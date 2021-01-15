@@ -310,19 +310,19 @@ public final class TriLeftHandSide<A, B, C> extends AbstractLeftHandSide {
                 new PatternVariable<>(newB), new PatternVariable<>(newC), new PatternVariable<>(newD), variableFactory);
     }
 
-    public AbstractTriConstraintConsequence<A, B, C> andImpact() {
+    public AbstractTriConstraintConsequence<A, B, C> andTerminate() {
         return new TriConstraintDefaultConsequence<>(this);
     }
 
-    public AbstractTriConstraintConsequence<A, B, C> andImpact(ToIntTriFunction<A, B, C> matchWeighter) {
+    public AbstractTriConstraintConsequence<A, B, C> andTerminate(ToIntTriFunction<A, B, C> matchWeighter) {
         return new TriConstraintIntConsequence<>(this, matchWeighter);
     }
 
-    public AbstractTriConstraintConsequence<A, B, C> andImpact(ToLongTriFunction<A, B, C> matchWeighter) {
+    public AbstractTriConstraintConsequence<A, B, C> andTerminate(ToLongTriFunction<A, B, C> matchWeighter) {
         return new TriConstraintLongConsequence<>(this, matchWeighter);
     }
 
-    public AbstractTriConstraintConsequence<A, B, C> andImpact(TriFunction<A, B, C, BigDecimal> matchWeighter) {
+    public AbstractTriConstraintConsequence<A, B, C> andTerminate(TriFunction<A, B, C, BigDecimal> matchWeighter) {
         return new TriConstraintBigDecimalConsequence<>(this, matchWeighter);
     }
 

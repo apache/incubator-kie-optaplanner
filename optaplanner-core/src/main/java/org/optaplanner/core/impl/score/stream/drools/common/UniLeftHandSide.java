@@ -65,7 +65,7 @@ import org.optaplanner.core.impl.score.stream.drools.DroolsVariableFactory;
  *
  * Left-hand side is that part of the rule between the "when" and "then" keywords.
  * The part between the "then" and "end" keywords is called the consequence of the rule, and this class does not represent it.
- * It can be created by calling {@link #andImpact()}.
+ * It can be created by calling {@link #andTerminate()}.
  *
  * There are also more complex variants of rules that still result in just one variable:
  *
@@ -324,19 +324,19 @@ public final class UniLeftHandSide<A> extends AbstractLeftHandSide {
                 new PatternVariable<>(newB), new PatternVariable<>(newC), new PatternVariable<>(newD), variableFactory);
     }
 
-    public AbstractUniConstraintConsequence<A> andImpact() {
+    public AbstractUniConstraintConsequence<A> andTerminate() {
         return new UniConstraintDefaultConsequence(this);
     }
 
-    public AbstractUniConstraintConsequence<A> andImpact(ToIntFunction<A> matchWeighter) {
+    public AbstractUniConstraintConsequence<A> andTerminate(ToIntFunction<A> matchWeighter) {
         return new UniConstraintIntConsequence<>(this, matchWeighter);
     }
 
-    public AbstractUniConstraintConsequence<A> andImpact(ToLongFunction<A> matchWeighter) {
+    public AbstractUniConstraintConsequence<A> andTerminate(ToLongFunction<A> matchWeighter) {
         return new UniConstraintLongConsequence<>(this, matchWeighter);
     }
 
-    public AbstractUniConstraintConsequence<A> andImpact(Function<A, BigDecimal> matchWeighter) {
+    public AbstractUniConstraintConsequence<A> andTerminate(Function<A, BigDecimal> matchWeighter) {
         return new UniConstraintBigDecimalConsequence<>(this, matchWeighter);
     }
 
