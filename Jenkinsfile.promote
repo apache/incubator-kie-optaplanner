@@ -285,11 +285,46 @@ pipeline {
                 }
             }
         }
+
+        stage('Set Quickstarts next snapshot version') {
+            when {
+                expression { return isRelease() }
+            }
+            steps {
+                script {
+                    prNextSnapshotVersion(quickstartsRepository, getSnapshotBranch(), getBuildBranch());
+                    prNextSnapshotVersion(quickstartsRepository, "development", "development");
+                }
+            }
+        }
     }
     post {
         always {
             cleanWs()
         }
+    }
+}
+
+void prNextSnapshotVersion(String repo, String sourceBranch, String targetBranch){
+    String nextMicroSnapshotVersion = getNextMicroSnapshotVersion(getProjectVersion())
+    dir("$repo-bot") {
+        prepareForPR(repo, sourceBranch)
+
+        maven.mvnSetVersionProperty("version.org.optaplanner", nextMicroSnapshotVersion)
+        maven.mvnVersionsUpdateParentAndChildModules(nextMicroSnapshotVersion, true)
+        gradleVersionsUpdate(repo, nextMicroSnapshotVersion)
+
+        String prLink = commitAndCreatePR("[${sourceBranch}] Update snapshot version to ${nextMicroSnapshotVersion}",
+                {
+                    githubscm.findAndStageNotIgnoredFiles('pom.xml')
+                    githubscm.findAndStageNotIgnoredFiles('build.gradle')
+                }, sourceBranch, targetBranch)
+
+        setPipelinePrLink(repo, prLink)
+    }
+    dir(repo) {
+        sh "git checkout ${targetBranch}"
+        mergeAndPush(getPipelinePrLink(repo))
     }
 }
 
@@ -425,10 +460,10 @@ void tagLatest() {
     }
 }
 
-void prepareForPR(String repo) {
+void prepareForPR(String repo, String localBranch = getSnapshotBranch()) {
     checkoutRepo(repo)
     githubscm.forkRepo(getBotAuthorCredsID())
-    githubscm.createBranch(getSnapshotBranch())
+    githubscm.createBranch(localBranch)
 }
 
 String commitAndCreatePR(String commitMsg, Closure precommit, String localBranch, String targetBranch) {
@@ -488,6 +523,7 @@ void runMavenDeploy(MavenCommand mvnCmd) {
     }
     mvnCmd.skipTests(true).run('clean deploy')
 }
+
 def updateAndResetStableBranch(String repo){
     githubscm.createBranch('stable')
 
@@ -497,7 +533,7 @@ def updateAndResetStableBranch(String repo){
         githubscm.findAndStageNotIgnoredFiles('build.gradle')
     })
 
-    githubscm.forcePushProtectedBranch(repo, 'stable', getBuildBranch(), getGitAuthor(), getGitAuthorCredsID())
+    forcePushProtectedBranch(repo, 'stable', getBuildBranch(), getGitAuthor(), getGitAuthorCredsID())
 }
 
 void removeJbossNexusFromMavenAndGradle(String repo) {
@@ -509,5 +545,37 @@ void removeJbossNexusFromMavenAndGradle(String repo) {
         '''
         assert !sh (script: 'grep -Rn "repository.jboss.org" --include={pom.xml,build.gradle}|cat'
                 , allowEmptyResults: true, returnStdout: true)
+    }
+}
+
+//TODO remove after testing
+def setDefaultBranch(String repo, String defaultBranch, String author, String credentialId = 'kie-ci', String ghPath = "../gh") {
+    cleanHubAuth()
+    withCredentials([usernamePassword(credentialsId: credentialId, usernameVariable: 'GITHUB_USER', passwordVariable: 'GITHUB_TOKEN')]) {
+        sh "[ ! -x $ghPath ] &&  echo 'gh was not found at $ghPath' && exit 1"
+        // gh command from https://github.com/cli/cli/issues/929#issuecomment-629253585
+        def newDefaultBranch = sh(script: "${ghPath} api -XPATCH 'repos/${author}/${repo}' -f default_branch=${defaultBranch} | jq '.default_branch'", returnStdout: true).trim()
+        if (newDefaultBranch == "${defaultBranch}") {
+            echo "[INFO] ${author}/${repo}'s default branch has been updated to ${newDefaultBranch}."
+        } else {
+            error 'Couldn\'t update default branch.'
+        }
+    }
+}
+
+def forcePushProtectedBranch(String repo, String defaultBranch, String tempBranch, String author, String credentialId = 'kie-ci') {
+    cleanHubAuth()
+    setDefaultBranch(repo, tempBranch, author, credentialId)
+    withCredentials([usernamePassword(credentialsId: credentialId, usernameVariable: 'GITHUB_USER', passwordVariable: 'GITHUB_TOKEN')]) {
+        sh "git config --local credential.helper '!f() { echo username=$GITHUB_USER; echo password=$GITHUB_TOKEN; }; f'"
+        sh "git push --delete origin ${defaultBranch}"
+        sh "git push origin ${defaultBranch}"
+    }
+    setDefaultBranch(repo, defaultBranch, author, credentialId)
+}
+
+void gradleVersionsUpdate(String repo, String newVersion){
+    dir(repo) {
+        sh "sed -i -E 's/def optaplannerVersion = \"[^\"\\s]+\"/def optaplannerVersion = \"${newVersion}\"/' */build.gradle"
     }
 }
