@@ -16,23 +16,9 @@
 
 package org.optaplanner.core.impl.score.stream.drools.common;
 
-import static java.util.Collections.singletonList;
-import static org.drools.model.DSL.accFunction;
-import static org.drools.model.DSL.accumulate;
-import static org.drools.model.DSL.exists;
-import static org.drools.model.DSL.from;
-import static org.drools.model.DSL.groupBy;
-import static org.drools.model.DSL.not;
-import static org.drools.model.PatternDSL.pattern;
-
-import java.math.BigDecimal;
-import java.util.Arrays;
-import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
-
 import org.drools.model.PatternDSL;
 import org.drools.model.Variable;
+import org.drools.model.functions.accumulate.AccumulateFunction;
 import org.drools.model.view.ViewItem;
 import org.optaplanner.core.api.function.PentaPredicate;
 import org.optaplanner.core.api.function.QuadFunction;
@@ -46,6 +32,21 @@ import org.optaplanner.core.impl.score.stream.penta.AbstractPentaJoiner;
 import org.optaplanner.core.impl.score.stream.penta.FilteringPentaJoiner;
 import org.optaplanner.core.impl.score.stream.penta.NonePentaJoiner;
 import org.optaplanner.core.impl.score.stream.tri.NoneTriJoiner;
+
+import java.math.BigDecimal;
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
+import static java.util.Collections.singletonList;
+import static org.drools.model.DSL.accFunction;
+import static org.drools.model.DSL.accumulate;
+import static org.drools.model.DSL.exists;
+import static org.drools.model.DSL.from;
+import static org.drools.model.DSL.groupBy;
+import static org.drools.model.DSL.not;
+import static org.drools.model.PatternDSL.pattern;
 
 public final class QuadLeftHandSide<A, B, C, D> extends AbstractLeftHandSide {
 
@@ -157,13 +158,28 @@ public final class QuadLeftHandSide<A, B, C, D> extends AbstractLeftHandSide {
         PatternVariable<D> newPatternVariableD = patternVariableD.bind(accumulateSource,
                 patternVariableA.getPrimaryVariable(), patternVariableB.getPrimaryVariable(),
                 patternVariableC.getPrimaryVariable(), (d, a, b, c) -> new QuadTuple<>(a, b, c, d));
-        Variable<NewA> outputVariable = variableFactory.createVariable("collected");
+        Variable<NewA> accumulateOutput = variableFactory.createVariable("collected");
         ViewItem<?> innerAccumulatePattern =
                 joinViewItemsWithLogicalAnd(patternVariableA, patternVariableB, patternVariableC, newPatternVariableD);
         ViewItem<?> outerAccumulatePattern = accumulate(innerAccumulatePattern,
-                accFunction(() -> new DroolsQuadAccumulateFunction<>(collector), accumulateSource).as(outputVariable));
-        return new UniLeftHandSide<>(new PatternVariable<>(outputVariable, singletonList(outerAccumulatePattern)),
+                createAccumulateFunction(collector, accumulateSource, accumulateOutput));
+        return new UniLeftHandSide<>(new PatternVariable<>(accumulateOutput, singletonList(outerAccumulatePattern)),
                 variableFactory);
+    }
+
+    /**
+     * Creates a Drools accumulate function based on a given collector. The accumulate function will take one
+     * {@link Variable} as input and return its result into another {@link Variable}.
+     *
+     * @param collector collector to use in the accumulate function
+     * @param in variable to use as accumulate input
+     * @param out variable in which to store accumulate result
+     * @param <Out> type of the accumulate result
+     * @return Drools accumulate function
+     */
+    private <Out> AccumulateFunction createAccumulateFunction(QuadConstraintCollector<A, B, C, D, ?, Out> collector,
+            Variable<QuadTuple<A, B, C, D>> in, Variable<Out> out) {
+        return accFunction(() -> new DroolsQuadAccumulateFunction<>(collector), in).as(out);
     }
 
     public <NewA, NewB> BiLeftHandSide<NewA, NewB> andGroupBy(QuadFunction<A, B, C, D, NewA> keyMappingA,
@@ -198,14 +214,14 @@ public final class QuadLeftHandSide<A, B, C, D> extends AbstractLeftHandSide {
                 patternVariableA.getPrimaryVariable(), patternVariableB.getPrimaryVariable(),
                 patternVariableC.getPrimaryVariable(), (d, a, b, c) -> new QuadTuple<>(a, b, c, d));
         Variable<NewA> groupKey = variableFactory.createVariable("groupKey");
-        Variable<NewB> output = variableFactory.createVariable("output");
+        Variable<NewB> accumulateOutput = variableFactory.createVariable("output");
         ViewItem<?> innerGroupByPattern =
                 joinViewItemsWithLogicalAnd(patternVariableA, patternVariableB, patternVariableC, newPatternVariableD);
         ViewItem<?> groupByPattern = groupBy(innerGroupByPattern, inputA, inputB, inputC, inputD, groupKey,
                 keyMappingA::apply,
-                accFunction(() -> new DroolsQuadAccumulateFunction<>(collectorB), accumulateSource).as(output));
+                createAccumulateFunction(collectorB, accumulateSource, accumulateOutput));
         Variable<NewA> newA = (Variable<NewA>) variableFactory.createVariable("newA", from(groupKey));
-        Variable<NewB> newB = (Variable<NewB>) variableFactory.createVariable("newB", from(output));
+        Variable<NewB> newB = (Variable<NewB>) variableFactory.createVariable("newB", from(accumulateOutput));
         return new BiLeftHandSide<>(new PatternVariable<>(newA, singletonList(groupByPattern)),
                 new PatternVariable<>(newB), variableFactory);
     }
@@ -223,17 +239,17 @@ public final class QuadLeftHandSide<A, B, C, D> extends AbstractLeftHandSide {
                 patternVariableC.getPrimaryVariable(), (d, a, b, c) -> new QuadTuple<>(a, b, c, d));
         Variable<BiTuple<NewA, NewB>> groupKey =
                 (Variable<BiTuple<NewA, NewB>>) variableFactory.createVariable(BiTuple.class, "groupKey");
-        Variable<NewC> output = variableFactory.createVariable("output");
+        Variable<NewC> accumulateOutput = variableFactory.createVariable("output");
         ViewItem<?> innerGroupByPattern =
                 joinViewItemsWithLogicalAnd(patternVariableA, patternVariableB, patternVariableC, newPatternVariableD);
         ViewItem<?> groupByPattern = groupBy(innerGroupByPattern, inputA, inputB, inputC, inputD, groupKey,
                 (a, b, c, d) -> new BiTuple<>(keyMappingA.apply(a, b, c, d), keyMappingB.apply(a, b, c, d)),
-                accFunction(() -> new DroolsQuadAccumulateFunction<>(collectorC), accumulateSource).as(output));
+                createAccumulateFunction(collectorC, accumulateSource, accumulateOutput));
         Variable<NewA> newA =
                 (Variable<NewA>) variableFactory.createVariable("newA", from(groupKey, k -> k.a));
         Variable<NewB> newB =
                 (Variable<NewB>) variableFactory.createVariable("newB", from(groupKey, k -> k.b));
-        Variable<NewC> newC = (Variable<NewC>) variableFactory.createVariable("newC", from(output));
+        Variable<NewC> newC = (Variable<NewC>) variableFactory.createVariable("newC", from(accumulateOutput));
         return new TriLeftHandSide<>(new PatternVariable<>(newA, singletonList(groupByPattern)),
                 new PatternVariable<>(newB), new PatternVariable<>(newC), variableFactory);
     }
@@ -253,20 +269,20 @@ public final class QuadLeftHandSide<A, B, C, D> extends AbstractLeftHandSide {
                 patternVariableC.getPrimaryVariable(), (d, a, b, c) -> new QuadTuple<>(a, b, c, d));
         Variable<BiTuple<NewA, NewB>> groupKey =
                 (Variable<BiTuple<NewA, NewB>>) variableFactory.createVariable(BiTuple.class, "groupKey");
-        Variable<NewC> outputC = variableFactory.createVariable("outputC");
-        Variable<NewD> outputD = variableFactory.createVariable("outputD");
+        Variable<NewC> accumulateOutputC = variableFactory.createVariable("outputC");
+        Variable<NewD> accumulateOutputD = variableFactory.createVariable("outputD");
         ViewItem<?> innerGroupByPattern =
                 joinViewItemsWithLogicalAnd(patternVariableA, patternVariableB, patternVariableC, newPatternVariableD);
         ViewItem<?> groupByPattern = groupBy(innerGroupByPattern, inputA, inputB, inputC, inputD, groupKey,
                 (a, b, c, d) -> new BiTuple<>(keyMappingA.apply(a, b, c, d), keyMappingB.apply(a, b, c, d)),
-                accFunction(() -> new DroolsQuadAccumulateFunction<>(collectorC), accumulateSource).as(outputC),
-                accFunction(() -> new DroolsQuadAccumulateFunction<>(collectorD), accumulateSource).as(outputD));
+                createAccumulateFunction(collectorC, accumulateSource, accumulateOutputC),
+                createAccumulateFunction(collectorD, accumulateSource, accumulateOutputD));
         Variable<NewA> newA =
                 (Variable<NewA>) variableFactory.createVariable("newA", from(groupKey, k -> k.a));
         Variable<NewB> newB =
                 (Variable<NewB>) variableFactory.createVariable("newB", from(groupKey, k -> k.b));
-        Variable<NewC> newC = (Variable<NewC>) variableFactory.createVariable("newC", from(outputC));
-        Variable<NewD> newD = (Variable<NewD>) variableFactory.createVariable("newD", from(outputD));
+        Variable<NewC> newC = (Variable<NewC>) variableFactory.createVariable("newC", from(accumulateOutputC));
+        Variable<NewD> newD = (Variable<NewD>) variableFactory.createVariable("newD", from(accumulateOutputD));
         return new QuadLeftHandSide<>(new PatternVariable<>(newA, singletonList(groupByPattern)),
                 new PatternVariable<>(newB), new PatternVariable<>(newC), new PatternVariable<>(newD), variableFactory);
     }

@@ -16,20 +16,6 @@
 
 package org.optaplanner.core.impl.score.stream.drools.common;
 
-import static org.drools.model.PatternDSL.betaIndexedBy;
-import static org.drools.model.PatternDSL.pattern;
-
-import java.util.Collections;
-import java.util.List;
-import java.util.function.BiFunction;
-import java.util.function.BiPredicate;
-import java.util.function.Function;
-import java.util.function.Predicate;
-import java.util.function.Supplier;
-import java.util.function.UnaryOperator;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
-
 import org.drools.model.BetaIndex;
 import org.drools.model.PatternDSL;
 import org.drools.model.Variable;
@@ -43,10 +29,24 @@ import org.optaplanner.core.api.function.TriPredicate;
 import org.optaplanner.core.impl.score.stream.bi.AbstractBiJoiner;
 import org.optaplanner.core.impl.score.stream.common.JoinerType;
 
+import java.util.Collections;
+import java.util.List;
+import java.util.function.BiFunction;
+import java.util.function.BiPredicate;
+import java.util.function.Function;
+import java.util.function.Predicate;
+import java.util.function.Supplier;
+import java.util.function.UnaryOperator;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
+import static org.drools.model.PatternDSL.betaIndexedBy;
+import static org.drools.model.PatternDSL.pattern;
+
 class PatternVariable<A> {
 
     private final Variable<A> primaryVariable;
-    // Patterns in Drools are mutable, yet we need want to share them. Therefore we need to create them on-demand.
+    // Patterns in Drools are mutable, yet we need to share them. Therefore we need to create them on-demand.
     private final Supplier<PatternDSL.PatternDef<A>> patternSupplier;
     // Expressions that are required before the current pattern in order to be able to reach it, such as groupBy().
     private final List<ViewItem<?>> prerequisiteExpressions;
