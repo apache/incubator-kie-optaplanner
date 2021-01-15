@@ -17,8 +17,9 @@
 package org.optaplanner.core.impl.score.stream.drools;
 
 import org.drools.model.DSL;
-import org.drools.model.DeclarationSource;
 import org.drools.model.Variable;
+
+import java.util.function.Function;
 
 /**
  * Creates {@link Variable}s with unique names, by adding numeric suffixes to the user-provided names.
@@ -30,49 +31,47 @@ import org.drools.model.Variable;
 public interface DroolsVariableFactory {
 
     /**
-     * Declare a new {@link Variable} with a given name and no declared source. Delegates to
-     * {@link DSL#declarationOf(Class, String)}.
+     * Declare a new {@link Variable} with a given name and no declared source.
+     * Delegates to {@link DSL#declarationOf(Class, String)}.
      *
      * @param clz type of the variable. Using {@link Object} will work in all cases, but Drools will spend unnecessary
      *        amount of time looking up applicable instances of that variable, as it has to traverse instances of all
      *        types in the working memory. Therefore, it is desirable to be as specific as possible.
      * @param baseName name of the variable, mostly useful for debugging purposes. Will be decorated by a numeric
      *        identifier to prevent multiple variables of the same name to exist within left-hand side of a single rule.
-     * @param <X> Generic type of the variable.
+     * @param <X> generic type of the variable
      * @return new variable declaration, not yet bound to anything
      */
     <X> Variable<? extends X> createVariable(Class<X> clz, String baseName);
 
     /**
-     * Declare a new {@link Variable} with a given name and a declaration source.
-     * Delegates to {@link DSL#declarationOf(Class, String, DeclarationSource)}.
+     * Declare a new {@link Variable} with a given name, the contents of which will be identical to the source variable.
+     * Delegates to {@link DSL#declarationOf(Class, String, org.drools.model.DeclarationSource)}.
      *
      * @param baseName name of the variable, mostly useful for debugging purposes. Will be decorated by a numeric
      *        identifier to prevent multiple variables of the same name to exist within left-hand side of a single rule.
-     * @param source declaration source of the variable
-     * @param <X> Generic type of the variable.
+     * @param source source of the variable
+     * @param <X> generic type of the variable
      * @return new variable declaration, not yet bound to anything
      */
-    <X> Variable<? extends X> createVariable(String baseName, DeclarationSource source);
+    <X> Variable<X> createVariable(String baseName, Variable<X> source);
 
     /**
-     * Declare a new {@link Variable} with a given name and a declaration source.
-     * Delegates to {@link DSL#declarationOf(Class, String, DeclarationSource)}.
+     * Declare a new {@link Variable} with a given name, the contents of which will be derived from the source variable.
+     * Delegates to {@link DSL#declarationOf(Class, String, org.drools.model.DeclarationSource)}.
      *
-     * @param clz type of the variable. Using {@link Object} will work in all cases, but Drools will spend unnecessary
-     *        amount of time looking up applicable instances of that variable, as it has to traverse instances of all
-     *        types in the working memory. Therefore, it is desirable to be as specific as possible.
      * @param baseName name of the variable, mostly useful for debugging purposes. Will be decorated by a numeric
      *        identifier to prevent multiple variables of the same name to exist within left-hand side of a single rule.
-     * @param source declaration source of the variable
-     * @param <X> Generic type of the variable.
+     * @param source source of the variable
+     * @param extractor function to apply on the source variable to receive the value for the new variable
+     * @param <In> generic type of the source variable
+     * @param <Out> generic type of the new variable
      * @return new variable declaration, not yet bound to anything
      */
-    <X> Variable<? extends X> createVariable(Class<X> clz, String baseName, DeclarationSource source);
+    <In, Out> Variable<Out> createVariable(String baseName, Variable<In> source, Function<In, Out> extractor);
 
     /**
-     * Declares a new {@link Object}-typed variable, see {@link #createVariable(Class, String, DeclarationSource)} for
-     * details.
+     * Declares a new {@link Object}-typed variable, see {@link #createVariable(Class, String)} for details.
      */
     default <X> Variable<X> createVariable(String baseName) {
         return (Variable<X>) createVariable(Object.class, baseName);

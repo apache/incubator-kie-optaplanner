@@ -16,11 +16,13 @@
 
 package org.optaplanner.core.impl.score.stream.drools;
 
-import java.util.concurrent.atomic.AtomicLong;
-
-import org.drools.model.DSL;
-import org.drools.model.DeclarationSource;
 import org.drools.model.Variable;
+
+import java.util.concurrent.atomic.AtomicLong;
+import java.util.function.Function;
+
+import static org.drools.model.DSL.declarationOf;
+import static org.drools.model.DSL.from;
 
 final class DroolsVariableFactoryImpl implements DroolsVariableFactory {
 
@@ -34,16 +36,20 @@ final class DroolsVariableFactoryImpl implements DroolsVariableFactory {
         return baseName + "_" + counter.incrementAndGet();
     }
 
+    @Override
     public <X> Variable<? extends X> createVariable(Class<X> clz, String baseName) {
-        return DSL.declarationOf(clz, generateUniqueId(baseName));
+        return declarationOf(clz, generateUniqueId(baseName));
     }
 
-    public <X> Variable<? extends X> createVariable(String baseName, DeclarationSource source) {
-        return (Variable<X>) DSL.declarationOf(Object.class, generateUniqueId(baseName), source);
+    @Override
+    public <X> Variable<X> createVariable(String baseName, Variable<X> source) {
+        return declarationOf(source.getType(), generateUniqueId(baseName), from(source));
     }
 
-    public <X> Variable<? extends X> createVariable(Class<X> clz, String baseName, DeclarationSource source) {
-        return DSL.declarationOf(clz, generateUniqueId(baseName), source);
+    @Override
+    public <In, Out> Variable<Out> createVariable(String baseName, Variable<In> source, Function<In, Out> extractor) {
+        return (Variable<Out>) declarationOf(Object.class, generateUniqueId(baseName),
+                from(source, in -> extractor.apply(in)));
     }
 
 }
