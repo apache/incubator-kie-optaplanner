@@ -48,8 +48,7 @@ final class DroolsVariableFactoryImpl implements DroolsVariableFactory {
 
     @Override
     public <In, Out> Variable<Out> createVariable(String baseName, Variable<In> source, Function<In, Out> extractor) {
-        return (Variable<Out>) declarationOf(Object.class, generateUniqueId(baseName),
-                from(source, in -> extractor.apply(in)));
+        return (Variable<Out>) declarationOf(Object.class, generateUniqueId(baseName), from(source, extractor::apply));
     }
 
 }
