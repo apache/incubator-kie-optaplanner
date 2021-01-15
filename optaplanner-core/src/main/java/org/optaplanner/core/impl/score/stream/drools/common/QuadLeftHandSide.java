@@ -64,9 +64,9 @@ public final class QuadLeftHandSide<A, B, C, D> extends AbstractLeftHandSide {
         this.patternVariableD = patternVariableD;
     }
 
-    public QuadLeftHandSide<A, B, C, D> andFilter(QuadPredicate<A, B, C, D> filter) {
+    public QuadLeftHandSide<A, B, C, D> andFilter(QuadPredicate<A, B, C, D> predicate) {
         return new QuadLeftHandSide<>(patternVariableA, patternVariableB, patternVariableC,
-                patternVariableD.filter(filter, patternVariableA.getPrimaryVariable(),
+                patternVariableD.filter(predicate, patternVariableA.getPrimaryVariable(),
                         patternVariableB.getPrimaryVariable(), patternVariableC.getPrimaryVariable()),
                 variableFactory);
     }

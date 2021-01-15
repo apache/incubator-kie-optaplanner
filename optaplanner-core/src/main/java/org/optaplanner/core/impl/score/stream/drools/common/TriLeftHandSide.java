@@ -74,8 +74,8 @@ public final class TriLeftHandSide<A, B, C> extends AbstractLeftHandSide {
         return patternVariableC;
     }
 
-    public TriLeftHandSide<A, B, C> andFilter(TriPredicate<A, B, C> filter) {
-        return new TriLeftHandSide<>(patternVariableA, patternVariableB, patternVariableC.filter(filter,
+    public TriLeftHandSide<A, B, C> andFilter(TriPredicate<A, B, C> predicate) {
+        return new TriLeftHandSide<>(patternVariableA, patternVariableB, patternVariableC.filter(predicate,
                 patternVariableA.getPrimaryVariable(), patternVariableB.getPrimaryVariable()), variableFactory);
     }
 

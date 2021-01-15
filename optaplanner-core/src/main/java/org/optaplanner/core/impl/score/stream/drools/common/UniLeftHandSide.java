@@ -71,8 +71,8 @@ public final class UniLeftHandSide<A> extends AbstractLeftHandSide {
         return patternVariable;
     }
 
-    public UniLeftHandSide<A> andFilter(Predicate<A> filter) {
-        return new UniLeftHandSide<>(this, patternVariable.filter(filter));
+    public UniLeftHandSide<A> andFilter(Predicate<A> predicate) {
+        return new UniLeftHandSide<>(this, patternVariable.filter(predicate));
     }
 
     private <B> UniLeftHandSide<A> applyJoiners(Class<B> bClass, AbstractBiJoiner<A, B> joiner,

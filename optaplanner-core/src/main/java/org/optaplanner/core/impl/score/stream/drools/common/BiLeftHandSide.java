@@ -72,9 +72,9 @@ public final class BiLeftHandSide<A, B> extends AbstractLeftHandSide {
         return patternVariableB;
     }
 
-    public BiLeftHandSide<A, B> andFilter(BiPredicate<A, B> filter) {
+    public BiLeftHandSide<A, B> andFilter(BiPredicate<A, B> predicate) {
         return new BiLeftHandSide<>(this, patternVariableA,
-                patternVariableB.filter(filter, patternVariableA.getPrimaryVariable()));
+                patternVariableB.filter(predicate, patternVariableA.getPrimaryVariable()));
     }
 
     private <C> BiLeftHandSide<A, B> applyJoiners(Class<C> otherFactType, AbstractTriJoiner<A, B, C> joiner,
