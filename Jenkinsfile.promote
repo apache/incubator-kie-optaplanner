@@ -439,7 +439,7 @@ void checkoutRepo(String repo, String branch) {
 }
 
 void checkoutRepo(String repo) {
-    checkoutRepo(repo, getBuildBranch())
+    checkoutRepo(repo, getBuildBranch() )
 }
 
 void mergeAndPush(String prLink, String targetBranch) {
@@ -527,7 +527,7 @@ void runMavenDeploy(MavenCommand mvnCmd) {
 def updateAndResetStableBranch(String repo){
     githubscm.createBranch('stable')
 
-    removeJbossNexusFromMavenAndGradle(repo)
+    removeJbossNexusFromMavenAndGradle()
     githubscm.commitChanges("[stable] Remove JBoss nexus repositories", {
         githubscm.findAndStageNotIgnoredFiles('pom.xml')
         githubscm.findAndStageNotIgnoredFiles('build.gradle')
@@ -536,8 +536,7 @@ def updateAndResetStableBranch(String repo){
     forcePushProtectedBranch(repo, 'stable', getBuildBranch(), getGitAuthor(), getGitAuthorCredsID())
 }
 
-void removeJbossNexusFromMavenAndGradle(String repo) {
-    dir(repo){
+void removeJbossNexusFromMavenAndGradle() {
         sh '''
             sed -i \':a;N;$!ba;s/\\n *<repositories>.*<\\/repositories>//g\' */pom.xml
             sed -i \':a;N;$!ba;s/\\n *<repositories>.*<\\/repositories>//g\' pom.xml
@@ -545,7 +544,6 @@ void removeJbossNexusFromMavenAndGradle(String repo) {
         '''
         assert !sh (script: 'grep -Rn "repository.jboss.org" --include={pom.xml,build.gradle}|cat'
                 , allowEmptyResults: true, returnStdout: true)
-    }
 }
 
 //TODO remove after testing
