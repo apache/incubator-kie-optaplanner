@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2021 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,27 +16,6 @@
 
 package org.optaplanner.examples.app;
 
-import java.awt.BorderLayout;
-import java.awt.Component;
-import java.awt.Container;
-import java.awt.Graphics;
-import java.awt.GridLayout;
-import java.awt.event.ActionEvent;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-
-import javax.swing.AbstractAction;
-import javax.swing.Action;
-import javax.swing.BorderFactory;
-import javax.swing.Icon;
-import javax.swing.ImageIcon;
-import javax.swing.JButton;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JTextArea;
-
 import org.optaplanner.examples.cheaptime.app.CheapTimeApp;
 import org.optaplanner.examples.cloudbalancing.app.CloudBalancingApp;
 import org.optaplanner.examples.coachshuttlegathering.app.CoachShuttleGatheringApp;
@@ -45,7 +24,6 @@ import org.optaplanner.examples.common.swingui.OpenBrowserAction;
 import org.optaplanner.examples.common.swingui.SolverAndPersistenceFrame;
 import org.optaplanner.examples.conferencescheduling.app.ConferenceSchedulingApp;
 import org.optaplanner.examples.curriculumcourse.app.CurriculumCourseApp;
-import org.optaplanner.examples.dinnerparty.app.DinnerPartyApp;
 import org.optaplanner.examples.examination.app.ExaminationApp;
 import org.optaplanner.examples.flightcrewscheduling.app.FlightCrewSchedulingApp;
 import org.optaplanner.examples.investment.app.InvestmentApp;
@@ -61,6 +39,12 @@ import org.optaplanner.examples.tennis.app.TennisApp;
 import org.optaplanner.examples.travelingtournament.app.TravelingTournamentApp;
 import org.optaplanner.examples.tsp.app.TspApp;
 import org.optaplanner.examples.vehiclerouting.app.VehicleRoutingApp;
+
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 
 public class OptaPlannerExamplesApp extends JFrame {
 
@@ -138,7 +122,6 @@ public class OptaPlannerExamplesApp extends JFrame {
         panel.add(createExampleButton(new MeetingSchedulingApp()));
         panel.add(createExampleButton(new TravelingTournamentApp()));
         panel.add(createExampleButton(new InvestmentApp()));
-        panel.add(createExampleButton(new DinnerPartyApp()));
 
         panel.add(createExampleButton(new TennisApp()));
         panel.add(createExampleButton(new FlightCrewSchedulingApp()));
