@@ -63,13 +63,21 @@ import io.quarkus.gizmo.ResultHandle;
 
 public class GizmoMemberAccessorEntityEnhancer {
 
-    private static Set<FieldInfo> visitedFields = new HashSet<>();
+    private static Set<Field> visitedFields = new HashSet<>();
     private static Set<MethodInfo> visitedMethods = new HashSet<>();
 
     public static void addVirtualFieldGetter(ClassInfo classInfo, FieldInfo fieldInfo,
+            BuildProducer<BytecodeTransformerBuildItem> transformers) throws ClassNotFoundException, NoSuchFieldException {
+        Class<?> clazz = Class.forName(classInfo.name().toString(), false,
+                Thread.currentThread().getContextClassLoader());
+        Field field = clazz.getDeclaredField(fieldInfo.name());
+        addVirtualFieldGetter(clazz, field, transformers);
+    }
+
+    public static void addVirtualFieldGetter(Class<?> classInfo, Field fieldInfo,
             BuildProducer<BytecodeTransformerBuildItem> transformers) {
         if (!visitedFields.contains(fieldInfo)) {
-            transformers.produce(new BytecodeTransformerBuildItem(classInfo.name().toString(),
+            transformers.produce(new BytecodeTransformerBuildItem(classInfo.getName(),
                     (className, classVisitor) -> new OptaPlannerFieldEnhancingClassVisitor(classInfo, classVisitor,
                             fieldInfo)));
             visitedFields.add(fieldInfo);
@@ -86,16 +94,16 @@ public class GizmoMemberAccessorEntityEnhancer {
             visitedMethods.add(methodInfo);
         }
         return setterDescriptor.map(md -> MethodDescriptor
-                .ofMethod(classInfo.name().toString(), getVirtualSetterName(name),
+                .ofMethod(classInfo.name().toString(), getVirtualSetterName(false, name),
                         md.getReturnType(), md.getParameterTypes()));
     }
 
-    public static String getVirtualGetterName(String name) {
-        return "$get$optaplanner$__" + name;
+    public static String getVirtualGetterName(boolean isField, String name) {
+        return "$get$optaplanner$__" + ((isField) ? "field$__" : "method$__") + name;
     }
 
-    public static String getVirtualSetterName(String name) {
-        return "$set$optaplanner$__" + name;
+    public static String getVirtualSetterName(boolean isField, String name) {
+        return "$set$optaplanner$__" + ((isField) ? "field$__" : "method$__") + name;
     }
 
     /**
@@ -112,7 +120,8 @@ public class GizmoMemberAccessorEntityEnhancer {
      */
     public static String generateFieldAccessor(AnnotationInstance annotationInstance, IndexView indexView,
             ClassOutput classOutput, ClassInfo classInfo,
-            FieldInfo fieldInfo, BuildProducer<BytecodeTransformerBuildItem> transformers) throws ClassNotFoundException {
+            FieldInfo fieldInfo, BuildProducer<BytecodeTransformerBuildItem> transformers)
+            throws ClassNotFoundException, NoSuchFieldException {
         String generatedClassName = classInfo.name().prefix().toString() + ".$optaplanner$__"
                 + classInfo.name().withoutPackagePrefix() + "$__" + fieldInfo.name();
         try (ClassCreator classCreator = ClassCreator
@@ -131,13 +140,13 @@ public class GizmoMemberAccessorEntityEnhancer {
             if (Modifier.isPublic(fieldInfo.flags())) {
                 member = new GizmoMemberDescriptor(name, memberDescriptor, memberDescriptor, declaringClass);
             } else {
-                addVirtualFieldGetter(classInfo, fieldInfo, transformers);
+                addVirtualFieldGetter(true, classInfo, fieldInfo, transformers);
                 String methodName = getVirtualGetterName(fieldInfo.name());
                 MethodDescriptor getterDescriptor = MethodDescriptor.ofMethod(fieldInfo.declaringClass().name().toString(),
                         methodName,
                         fieldInfo.type().name().toString());
                 MethodDescriptor setterDescriptor = MethodDescriptor.ofMethod(fieldInfo.declaringClass().name().toString(),
-                        getVirtualSetterName(fieldInfo.name()),
+                        getVirtualSetterName(true, fieldInfo.name()),
                         "void",
                         fieldInfo.type().name().toString());
                 member = new GizmoMemberDescriptor(name, getterDescriptor, memberDescriptor, declaringClass, setterDescriptor);
@@ -212,7 +221,7 @@ public class GizmoMemberAccessorEntityEnhancer {
                         setterDescriptor.orElse(null));
             } else {
                 setterDescriptor = addVirtualMethodGetter(classInfo, methodInfo, name, setterDescriptor, transformers);
-                String methodName = getVirtualGetterName(name);
+                String methodName = getVirtualGetterName(false, name);
                 MethodDescriptor newMethodDescriptor =
                         MethodDescriptor.ofMethod(declaringClass, methodName, memberDescriptor.getReturnType());
                 member = new GizmoMemberDescriptor(name, newMethodDescriptor, memberDescriptor, declaringClass,
@@ -223,6 +232,54 @@ public class GizmoMemberAccessorEntityEnhancer {
                             Thread.currentThread().getContextClassLoader()));
         }
         return generatedClassName;
+    }
+
+    public static String generateSolutionCloner(SolutionDescriptor solutionDescriptor,
+            ClassOutput classOutput,
+            BuildProducer<BytecodeTransformerBuildItem> transformers) throws ClassNotFoundException, NoSuchFieldException {
+        String generatedClassName = GizmoSolutionClonerFactory.getGeneratedClassName(solutionDescriptor);
+        ClassCreator classCreator = ClassCreator
+                .builder()
+                .className(generatedClassName)
+                .interfaces(SolutionCloner.class)
+                .classOutput(classOutput)
+                .build();
+
+        classCreator.addAnnotation(ApplicationScoped.class);
+        classCreator.addAnnotation(Named.class).addValue("value", generatedClassName);
+
+        Map<Class<?>, GizmoSolutionOrEntityDescriptor> memoizedGizmoSolutionOrEntityDescriptorForClassMap = new HashMap<>();
+
+        GizmoSolutionOrEntityDescriptor gizmoSolutionDescriptor =
+                getGizmoSolutionOrEntityDescriptorForEntity(solutionDescriptor,
+                        solutionDescriptor.getSolutionClass(),
+                        memoizedGizmoSolutionOrEntityDescriptorForClassMap,
+                        transformers);
+
+        // IDEA gave error on entityClass being a Class...
+        for (Object entityClass : solutionDescriptor.getEntityClassSet()) {
+            getGizmoSolutionOrEntityDescriptorForEntity(solutionDescriptor,
+                    (Class<?>) entityClass,
+                    memoizedGizmoSolutionOrEntityDescriptorForClassMap,
+                    transformers);
+        }
+
+        GizmoSolutionClonerImplementor.defineClonerFor(classCreator, gizmoSolutionDescriptor);
+        classCreator.close();
+
+        return generatedClassName;
+    }
+
+    private static String getTypeDescriptor(java.lang.reflect.Type type) throws ClassNotFoundException {
+        String typeName = type.getTypeName();
+        int genericStart = typeName.indexOf('<');
+        boolean isGeneric = genericStart != -1;
+        if (isGeneric) {
+            int genericEnd = typeName.lastIndexOf('>');
+            return Type.getDescriptor(Class.forName(typeName.substring(0, genericStart) + typeName.substring(genericEnd + 1)));
+        } else {
+            return Type.getDescriptor(Class.forName(typeName));
+        }
     }
 
     public static String generateGizmoInitializer(ClassOutput classOutput, Set<String> generatedClassNames) {
@@ -257,20 +314,16 @@ public class GizmoMemberAccessorEntityEnhancer {
     }
 
     private static class OptaPlannerFieldEnhancingClassVisitor extends ClassVisitor {
-        private final FieldInfo fieldInfo;
+        private final Field fieldInfo;
         private final Class<?> clazz;
         private final String fieldTypeDescriptor;
 
-        public OptaPlannerFieldEnhancingClassVisitor(ClassInfo classInfo, ClassVisitor outputClassVisitor,
-                FieldInfo fieldInfo) {
+        public OptaPlannerFieldEnhancingClassVisitor(Class<?> classInfo, ClassVisitor outputClassVisitor,
+                Field fieldInfo) {
             super(Gizmo.ASM_API_VERSION, outputClassVisitor);
             this.fieldInfo = fieldInfo;
-            try {
-                clazz = Class.forName(classInfo.name().toString(), false, Thread.currentThread().getContextClassLoader());
-                fieldTypeDescriptor = DescriptorUtils.typeToString(fieldInfo.type());
-            } catch (ClassNotFoundException e) {
-                throw new IllegalStateException(e);
-            }
+            clazz = classInfo;
+            fieldTypeDescriptor = Type.getDescriptor(fieldInfo.getType());
         }
 
         @Override
@@ -281,24 +334,24 @@ public class GizmoMemberAccessorEntityEnhancer {
         }
 
         private void addSetter(ClassVisitor classWriter) {
-            String methodName = getVirtualSetterName(fieldInfo.name());
+            String methodName = getVirtualSetterName(true, fieldInfo.getName());
             MethodVisitor mv;
             mv = classWriter.visitMethod(ACC_PUBLIC, methodName, "(" + fieldTypeDescriptor + ")V",
                     null, null);
             mv.visitVarInsn(ALOAD, 0);
             mv.visitVarInsn(Type.getType(fieldTypeDescriptor).getOpcode(ILOAD), 1);
-            mv.visitFieldInsn(PUTFIELD, Type.getInternalName(clazz), fieldInfo.name(), fieldTypeDescriptor);
+            mv.visitFieldInsn(PUTFIELD, Type.getInternalName(clazz), fieldInfo.getName(), fieldTypeDescriptor);
             mv.visitInsn(RETURN);
             mv.visitMaxs(0, 0);
         }
 
         private void addGetter(ClassVisitor classWriter) {
-            String methodName = getVirtualGetterName(fieldInfo.name());
+            String methodName = getVirtualGetterName(true, fieldInfo.getName());
             MethodVisitor mv;
             mv = classWriter.visitMethod(ACC_PUBLIC, methodName, "()" + fieldTypeDescriptor,
                     null, null);
             mv.visitVarInsn(ALOAD, 0);
-            mv.visitFieldInsn(GETFIELD, Type.getInternalName(clazz), fieldInfo.name(), fieldTypeDescriptor);
+            mv.visitFieldInsn(GETFIELD, Type.getInternalName(clazz), fieldInfo.getName(), fieldTypeDescriptor);
             mv.visitInsn(Type.getType(fieldTypeDescriptor).getOpcode(IRETURN));
             mv.visitMaxs(0, 0);
         }
@@ -335,7 +388,7 @@ public class GizmoMemberAccessorEntityEnhancer {
         }
 
         private void addGetter(ClassVisitor classWriter) {
-            String methodName = getVirtualGetterName(name);
+            String methodName = getVirtualGetterName(false, name);
             MethodVisitor mv;
             mv = classWriter.visitMethod(ACC_PUBLIC, methodName, "()" + returnTypeDescriptor,
                     null, null);
@@ -351,7 +404,7 @@ public class GizmoMemberAccessorEntityEnhancer {
                 return;
             }
             MethodDescriptor setter = maybeSetter.get();
-            String methodName = getVirtualSetterName(name);
+            String methodName = getVirtualSetterName(false, name);
             MethodVisitor mv;
             mv = classWriter.visitMethod(ACC_PUBLIC, methodName, setter.getDescriptor(),
                     null, null);

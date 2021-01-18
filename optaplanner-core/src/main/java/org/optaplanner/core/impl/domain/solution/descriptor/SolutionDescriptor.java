@@ -83,6 +83,7 @@ import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
 import org.optaplanner.core.impl.domain.lookup.LookUpStrategyResolver;
 import org.optaplanner.core.impl.domain.policy.DescriptorPolicy;
 import org.optaplanner.core.impl.domain.solution.cloner.FieldAccessingSolutionCloner;
+import org.optaplanner.core.impl.domain.solution.cloner.gizmo.GizmoSolutionClonerFactory;
 import org.optaplanner.core.impl.domain.variable.descriptor.GenuineVariableDescriptor;
 import org.optaplanner.core.impl.domain.variable.descriptor.ShadowVariableDescriptor;
 import org.optaplanner.core.impl.domain.variable.descriptor.VariableDescriptor;
@@ -303,7 +304,11 @@ public class SolutionDescriptor<Solution_> {
         if (solutionClonerClass != null) {
             solutionCloner = ConfigUtils.newInstance(this, "solutionClonerClass", solutionClonerClass);
         } else {
-            solutionCloner = new FieldAccessingSolutionCloner<>(this);
+            if (descriptorPolicy.getDomainAccessType() == DomainAccessType.GIZMO) {
+                solutionCloner = GizmoSolutionClonerFactory.build(this);
+            } else {
+                solutionCloner = new FieldAccessingSolutionCloner<>(this);
+            }
         }
     }
 

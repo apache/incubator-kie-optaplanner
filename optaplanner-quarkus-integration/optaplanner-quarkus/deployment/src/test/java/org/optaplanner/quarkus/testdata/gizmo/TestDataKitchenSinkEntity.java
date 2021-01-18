@@ -39,7 +39,7 @@ public class TestDataKitchenSinkEntity {
         return intVariable;
     }
 
-    private void setIntVariable(Integer val) {
+    public void setIntVariable(Integer val) {
         intVariable = val;
     }
 

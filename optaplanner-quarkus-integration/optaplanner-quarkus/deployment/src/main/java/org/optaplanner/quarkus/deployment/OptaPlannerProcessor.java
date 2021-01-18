@@ -19,6 +19,7 @@ package org.optaplanner.quarkus.deployment;
 import static io.quarkus.deployment.annotations.ExecutionTime.STATIC_INIT;
 
 import java.io.IOException;
+import java.lang.reflect.AnnotatedElement;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -26,7 +27,9 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -52,9 +55,11 @@ import org.optaplanner.core.config.score.director.ScoreDirectorFactoryConfig;
 import org.optaplanner.core.config.solver.SolverConfig;
 import org.optaplanner.core.config.solver.SolverManagerConfig;
 import org.optaplanner.core.config.solver.termination.TerminationConfig;
+import org.optaplanner.core.impl.domain.common.accessor.gizmo.GizmoMemberAccessorFactory;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.quarkus.OptaPlannerBeanProvider;
 import org.optaplanner.quarkus.OptaPlannerRecorder;
+import org.optaplanner.quarkus.gizmo.OptaPlannerGizmoInfo;
 
 import io.quarkus.arc.deployment.AdditionalBeanBuildItem;
 import io.quarkus.arc.deployment.GeneratedBeanBuildItem;
@@ -492,6 +497,21 @@ class OptaPlannerProcessor {
         }
         GizmoMemberAccessorEntityEnhancer.generateGizmoInitializer(beanClassOutput, generatedClassSet);
 
+        Set<String> gizmoSolutionClonerClassNameSet = new HashSet<>();
+
+        // Using REFLECTION domain access type so OptaPlanner doesn't try to generate GIZMO code
+        SolutionDescriptor solutionDescriptor = SolutionDescriptor.buildSolutionDescriptor(DomainAccessType.REFLECTION,
+                solverConfig.getSolutionClass(), solverConfig.getEntityClassList());
+        try {
+            gizmoSolutionClonerClassNameSet.add(GizmoMemberAccessorEntityEnhancer.generateSolutionCloner(solutionDescriptor,
+                    debuggableClassOutput,
+                    transformers));
+        } catch (ClassNotFoundException | NoSuchFieldException e) {
+            throw new IllegalStateException("Error generating SolutionCloner.", e);
+        }
+        return new OptaPlannerGizmoInfo(gizmoMemberAccessorNameToGenericType,
+                gizmoMemberAccessorNameToAnnotatedElement,
+                gizmoSolutionClonerClassNameSet);
     }
 
     private boolean shouldIgnoreMember(ClassInfo declaringClass) {
