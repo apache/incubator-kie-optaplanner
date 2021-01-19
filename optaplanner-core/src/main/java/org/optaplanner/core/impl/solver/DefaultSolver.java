@@ -182,8 +182,8 @@ public class DefaultSolver<Solution_> extends AbstractSolver<Solution_> {
         super.solvingStarted(solverScope);
         int startingSolverCount = solverScope.getStartingSolverCount() + 1;
         solverScope.setStartingSolverCount(startingSolverCount);
-        logger.info("Solving {}: time spent ({}), best score ({}), move thread count ({}), " +
-                "environment mode ({}), random ({}).",
+        logger.info("Solving {}: time spent ({}), best score ({}), environment mode ({}), "
+                + "move thread count ({}), random ({}).",
                 (startingSolverCount == 1 ? "started" : "restarted"),
                 solverScope.calculateTimeMillisSpentUpToNow(),
                 solverScope.getBestScore(),
@@ -201,14 +201,14 @@ public class DefaultSolver<Solution_> extends AbstractSolver<Solution_> {
     public void outerSolvingEnded(SolverScope<Solution_> solverScope) {
         // Must be kept open for doProblemFactChange
         solverScope.getScoreDirector().close();
-        logger.info("Solving ended: time spent ({}), best score ({}), score calculation speed ({}/sec),"
-                + " phase total ({}), move thread count ({}), environment mode ({}).",
+        logger.info("Solving ended: time spent ({}), best score ({}), score calculation speed ({}/sec), "
+                + "phase total ({}), environment mode ({}), move thread count ({}).",
                 solverScope.getTimeMillisSpent(),
                 solverScope.getBestScore(),
                 solverScope.getScoreCalculationSpeed(),
                 phaseList.size(),
-                moveThreadCountDescription,
-                environmentMode.name());
+                environmentMode.name(),
+                moveThreadCountDescription);
         solving.set(false);
     }
 
