@@ -18,7 +18,7 @@ package org.optaplanner.examples.taskassigning.app;
 
 import org.optaplanner.examples.common.app.CommonApp;
 import org.optaplanner.examples.taskassigning.domain.TaskAssigningSolution;
-import org.optaplanner.examples.taskassigning.persistence.TaskAssigningXmlSolutionFileIO;
+import org.optaplanner.examples.taskassigning.persistence.orig.BridgeTaskAssigningXmlSolutionFileIO;
 import org.optaplanner.examples.taskassigning.swingui.TaskAssigningPanel;
 import org.optaplanner.persistence.common.api.domain.solution.SolutionFileIO;
 
@@ -50,7 +50,7 @@ public class TaskAssigningApp extends CommonApp<TaskAssigningSolution> {
 
     @Override
     public SolutionFileIO<TaskAssigningSolution> createSolutionFileIO() {
-        return new TaskAssigningXmlSolutionFileIO();
+        return new BridgeTaskAssigningXmlSolutionFileIO();
     }
 
 }
