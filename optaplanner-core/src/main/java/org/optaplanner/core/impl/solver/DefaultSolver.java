@@ -52,7 +52,7 @@ public class DefaultSolver<Solution_> extends AbstractSolver<Solution_> {
 
     protected final SolverScope<Solution_> solverScope;
 
-    private final int moveThreadCount;
+    private final String moveThreadCountDescription;
 
     // ************************************************************************
     // Constructors and simple getters/setters
@@ -67,7 +67,7 @@ public class DefaultSolver<Solution_> extends AbstractSolver<Solution_> {
         this.randomFactory = randomFactory;
         this.basicPlumbingTermination = basicPlumbingTermination;
         this.solverScope = solverScope;
-        this.moveThreadCount = moveThreadCount;
+        this.moveThreadCountDescription = moveThreadCount == 0 ? "NONE" : Integer.toString(moveThreadCount);
     }
 
     public EnvironmentMode getEnvironmentMode() {
@@ -188,7 +188,7 @@ public class DefaultSolver<Solution_> extends AbstractSolver<Solution_> {
                 solverScope.calculateTimeMillisSpentUpToNow(),
                 solverScope.getBestScore(),
                 environmentMode.name(),
-                moveThreadCount == 0 ? "NONE" : moveThreadCount,
+                moveThreadCountDescription,
                 (randomFactory != null ? randomFactory : "not fixed"));
     }
 
@@ -202,11 +202,12 @@ public class DefaultSolver<Solution_> extends AbstractSolver<Solution_> {
         // Must be kept open for doProblemFactChange
         solverScope.getScoreDirector().close();
         logger.info("Solving ended: time spent ({}), best score ({}), score calculation speed ({}/sec),"
-                + " phase total ({}), environment mode ({}).",
+                + " phase total ({}), move thread count ({}), environment mode ({}).",
                 solverScope.getTimeMillisSpent(),
                 solverScope.getBestScore(),
                 solverScope.getScoreCalculationSpeed(),
                 phaseList.size(),
+                moveThreadCountDescription,
                 environmentMode.name());
         solving.set(false);
     }
