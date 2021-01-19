@@ -61,13 +61,13 @@ public class DefaultSolver<Solution_> extends AbstractSolver<Solution_> {
     public DefaultSolver(EnvironmentMode environmentMode, RandomFactory randomFactory,
             BestSolutionRecaller<Solution_> bestSolutionRecaller,
             BasicPlumbingTermination<Solution_> basicPlumbingTermination, Termination<Solution_> termination,
-            List<Phase<Solution_>> phaseList, SolverScope<Solution_> solverScope, int moveThreadCount) {
+            List<Phase<Solution_>> phaseList, SolverScope<Solution_> solverScope, String moveThreadCountDescription) {
         super(bestSolutionRecaller, termination, phaseList);
         this.environmentMode = environmentMode;
         this.randomFactory = randomFactory;
         this.basicPlumbingTermination = basicPlumbingTermination;
         this.solverScope = solverScope;
-        this.moveThreadCountDescription = moveThreadCount == 0 ? "NONE" : Integer.toString(moveThreadCount);
+        this.moveThreadCountDescription = moveThreadCountDescription;
     }
 
     public EnvironmentMode getEnvironmentMode() {
