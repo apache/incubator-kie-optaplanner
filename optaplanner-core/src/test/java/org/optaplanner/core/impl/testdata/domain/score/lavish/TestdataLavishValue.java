@@ -20,7 +20,7 @@ import org.optaplanner.core.impl.testdata.domain.TestdataObject;
 
 public class TestdataLavishValue extends TestdataObject {
 
-    private TestdataLavishValueGroup valueGroup;
+    public TestdataLavishValueGroup valueGroup;
 
     public TestdataLavishValue() {
     }

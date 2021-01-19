@@ -56,10 +56,10 @@ public class TestdataSolution extends TestdataObject {
         return solution;
     }
 
-    private List<TestdataValue> valueList;
-    private List<TestdataEntity> entityList;
+    public List<TestdataValue> valueList;
+    public List<TestdataEntity> entityList;
 
-    private SimpleScore score;
+    public SimpleScore score;
 
     public TestdataSolution() {
     }

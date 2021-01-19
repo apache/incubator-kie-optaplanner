@@ -21,7 +21,7 @@ import org.optaplanner.core.impl.testdata.domain.TestdataObject;
 public class TestdataShadowingChainedAnchor extends TestdataObject implements TestdataShadowingChainedObject {
 
     // Shadow variables
-    private TestdataShadowingChainedEntity nextEntity;
+    public TestdataShadowingChainedEntity nextEntity;
 
     public TestdataShadowingChainedAnchor() {
     }

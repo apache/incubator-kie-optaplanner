@@ -39,14 +39,14 @@ public class TestdataFieldAnnotatedDeepCloningSolution extends TestdataObject {
 
     @ValueRangeProvider(id = "valueRange")
     @ProblemFactCollectionProperty
-    private List<TestdataValue> valueList;
+    public List<TestdataValue> valueList;
     @PlanningEntityCollectionProperty
-    private List<TestdataFieldAnnotatedDeepCloningEntity> entityList;
+    public List<TestdataFieldAnnotatedDeepCloningEntity> entityList;
     @DeepPlanningClone
-    private List<String> generalShadowVariableList;
+    public List<String> generalShadowVariableList;
 
     @PlanningScore
-    private SimpleScore score;
+    public SimpleScore score;
 
     public TestdataFieldAnnotatedDeepCloningSolution() {
     }

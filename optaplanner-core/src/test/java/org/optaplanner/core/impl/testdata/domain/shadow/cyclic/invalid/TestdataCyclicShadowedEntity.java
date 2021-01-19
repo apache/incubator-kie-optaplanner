@@ -45,10 +45,10 @@ public class TestdataCyclicShadowedEntity extends TestdataObject {
         return entityDescriptor.getGenuineVariableDescriptor("value");
     }
 
-    private TestdataValue value;
-    private String rockShadow;
-    private String paperShadow;
-    private String scissorsShadow;
+    public TestdataValue value;
+    public String rockShadow;
+    public String paperShadow;
+    public String scissorsShadow;
 
     public TestdataCyclicShadowedEntity() {
     }

@@ -35,11 +35,11 @@ public class TestdataChainedSolution extends TestdataObject {
         return SolutionDescriptor.buildSolutionDescriptor(TestdataChainedSolution.class, TestdataChainedEntity.class);
     }
 
-    private List<TestdataChainedAnchor> chainedAnchorList;
-    private List<TestdataChainedEntity> chainedEntityList;
-    private List<TestdataValue> unchainedValueList;
+    public List<TestdataChainedAnchor> chainedAnchorList;
+    public List<TestdataChainedEntity> chainedEntityList;
+    public List<TestdataValue> unchainedValueList;
 
-    private SimpleScore score;
+    public SimpleScore score;
 
     public TestdataChainedSolution() {
     }

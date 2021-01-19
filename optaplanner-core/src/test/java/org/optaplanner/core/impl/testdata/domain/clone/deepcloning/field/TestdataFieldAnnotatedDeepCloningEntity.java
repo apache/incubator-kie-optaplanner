@@ -49,15 +49,15 @@ public class TestdataFieldAnnotatedDeepCloningEntity extends TestdataObject {
     }
 
     @PlanningVariable(valueRangeProviderRefs = "valueRange")
-    private TestdataValue value;
+    public TestdataValue value;
     @DeepPlanningClone
     @CustomShadowVariable(sources = {
             @PlanningVariableReference(variableName = "value") }, variableListenerClass = DummyVariableListener.class)
-    private List<String> shadowVariableList;
+    public List<String> shadowVariableList;
     @DeepPlanningClone
     @CustomShadowVariable(sources = {
             @PlanningVariableReference(variableName = "value") }, variableListenerClass = DummyVariableListener.class)
-    private Map<String, String> shadowVariableMap;
+    public Map<String, String> shadowVariableMap;
 
     public TestdataFieldAnnotatedDeepCloningEntity() {
     }

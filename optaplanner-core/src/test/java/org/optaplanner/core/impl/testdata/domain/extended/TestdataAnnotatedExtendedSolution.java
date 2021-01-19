@@ -35,9 +35,9 @@ public class TestdataAnnotatedExtendedSolution extends TestdataSolution {
                 TestdataEntity.class, TestdataAnnotatedExtendedEntity.class);
     }
 
-    private List<TestdataValue> subValueList;
+    public List<TestdataValue> subValueList;
 
-    private List<TestdataAnnotatedExtendedEntity> subEntityList;
+    public List<TestdataAnnotatedExtendedEntity> subEntityList;
 
     public TestdataAnnotatedExtendedSolution() {
     }

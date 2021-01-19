@@ -36,11 +36,11 @@ public class TestdataWildcardSolution extends TestdataObject {
         return SolutionDescriptor.buildSolutionDescriptor(TestdataWildcardSolution.class, TestdataEntity.class);
     }
 
-    private List<? extends TestdataValue> extendsValueList;
-    private List<? super TestdataValue> supersValueList;
-    private List<? extends TestdataEntity> extendsEntityList;
+    public List<? extends TestdataValue> extendsValueList;
+    public List<? super TestdataValue> supersValueList;
+    public List<? extends TestdataEntity> extendsEntityList;
 
-    private SimpleScore score;
+    public SimpleScore score;
 
     public TestdataWildcardSolution() {
     }

@@ -36,11 +36,11 @@ public class TestdataDeepCloningSolution extends TestdataObject {
         return SolutionDescriptor.buildSolutionDescriptor(TestdataDeepCloningSolution.class, TestdataDeepCloningEntity.class);
     }
 
-    private List<TestdataValue> valueList;
-    private List<TestdataDeepCloningEntity> entityList;
-    private List<String> generalShadowVariableList;
+    public List<TestdataValue> valueList;
+    public List<TestdataDeepCloningEntity> entityList;
+    public List<String> generalShadowVariableList;
 
-    private SimpleScore score;
+    public SimpleScore score;
 
     public TestdataDeepCloningSolution() {
     }

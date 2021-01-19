@@ -30,7 +30,7 @@ public class TestdataExtendedConstraintConfigurationSolution extends TestdataSol
                 TestdataEntity.class);
     }
 
-    private TestdataExtendedConstraintConfiguration constraintConfiguration;
+    public TestdataExtendedConstraintConfiguration constraintConfiguration;
 
     public TestdataExtendedConstraintConfigurationSolution() {
     }

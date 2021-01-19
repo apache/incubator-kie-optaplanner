@@ -35,13 +35,13 @@ public class TestdataEntityCollectionPropertyEntity extends TestdataObject {
         return solutionDescriptor.findEntityDescriptorOrFail(TestdataEntityCollectionPropertyEntity.class);
     }
 
-    private List<TestdataEntityCollectionPropertyEntity> entityList;
-    private Set<TestdataEntityCollectionPropertyEntity> entitySet;
-    private Map<String, TestdataEntityCollectionPropertyEntity> stringToEntityMap;
-    private Map<TestdataEntityCollectionPropertyEntity, String> entityToStringMap;
-    private Map<String, List<TestdataEntityCollectionPropertyEntity>> stringToEntityListMap;
+    public List<TestdataEntityCollectionPropertyEntity> entityList;
+    public Set<TestdataEntityCollectionPropertyEntity> entitySet;
+    public Map<String, TestdataEntityCollectionPropertyEntity> stringToEntityMap;
+    public Map<TestdataEntityCollectionPropertyEntity, String> entityToStringMap;
+    public Map<String, List<TestdataEntityCollectionPropertyEntity>> stringToEntityListMap;
 
-    private TestdataValue value;
+    public TestdataValue value;
 
     public TestdataEntityCollectionPropertyEntity() {
     }

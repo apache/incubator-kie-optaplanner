@@ -37,10 +37,10 @@ public class TestdataProblemFactIsPlanningEntityCollectionPropertySolution exten
                 TestdataProblemFactIsPlanningEntityCollectionPropertySolution.class, TestdataEntity.class);
     }
 
-    private List<TestdataValue> valueList;
-    private List<TestdataEntity> entityList;
+    public List<TestdataValue> valueList;
+    public List<TestdataEntity> entityList;
 
-    private SimpleScore score;
+    public SimpleScore score;
 
     public TestdataProblemFactIsPlanningEntityCollectionPropertySolution() {
     }

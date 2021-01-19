@@ -34,7 +34,7 @@ public class TestdataExtendedShadowedChildEntity extends TestdataExtendedShadowe
         return solutionDescriptor.findEntityDescriptorOrFail(TestdataExtendedShadowedChildEntity.class);
     }
 
-    private String secondShadow;
+    public String secondShadow;
 
     public TestdataExtendedShadowedChildEntity() {
     }

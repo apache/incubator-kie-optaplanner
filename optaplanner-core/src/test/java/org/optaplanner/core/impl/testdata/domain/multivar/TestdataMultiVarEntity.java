@@ -53,10 +53,10 @@ public class TestdataMultiVarEntity extends TestdataObject {
         return entityDescriptor.getGenuineVariableDescriptor("tertiaryNullableValue");
     }
 
-    private TestdataValue primaryValue;
-    private TestdataValue secondaryValue;
+    public TestdataValue primaryValue;
+    public TestdataValue secondaryValue;
 
-    private TestdataOtherValue tertiaryNullableValue;
+    public TestdataOtherValue tertiaryNullableValue;
 
     public TestdataMultiVarEntity() {
     }

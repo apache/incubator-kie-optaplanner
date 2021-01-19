@@ -25,7 +25,7 @@ public class TestdataDifficultyComparingEntity extends TestdataObject {
         return entityDescriptor.getGenuineVariableDescriptor("value");
     }
 
-    private TestdataValue value;
+    public TestdataValue value;
 
     public TestdataDifficultyComparingEntity() {
     }

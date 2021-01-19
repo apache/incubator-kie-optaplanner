@@ -35,15 +35,15 @@ public class TestdataAutoDiscoverFieldSolution extends TestdataObject {
         return SolutionDescriptor.buildSolutionDescriptor(TestdataAutoDiscoverFieldSolution.class, TestdataEntity.class);
     }
 
-    private TestdataConstraintConfiguration constraintConfiguration;
-    private TestdataObject singleProblemFact;
+    public TestdataConstraintConfiguration constraintConfiguration;
+    public TestdataObject singleProblemFact;
     @ValueRangeProvider(id = "valueRange")
-    private List<TestdataValue> problemFactList;
+    public List<TestdataValue> problemFactList;
 
-    private List<TestdataEntity> entityList;
-    private TestdataEntity otherEntity;
+    public List<TestdataEntity> entityList;
+    public TestdataEntity otherEntity;
 
-    private SimpleScore score;
+    public SimpleScore score;
 
     public TestdataAutoDiscoverFieldSolution() {
     }

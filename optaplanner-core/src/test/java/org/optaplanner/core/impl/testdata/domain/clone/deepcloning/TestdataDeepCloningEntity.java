@@ -48,9 +48,9 @@ public class TestdataDeepCloningEntity extends TestdataObject {
         return entityDescriptor.getGenuineVariableDescriptor("value");
     }
 
-    private TestdataValue value;
-    private List<String> shadowVariableList;
-    private Map<String, String> shadowVariableMap;
+    public TestdataValue value;
+    public List<String> shadowVariableList;
+    public Map<String, String> shadowVariableMap;
 
     public TestdataDeepCloningEntity() {
     }

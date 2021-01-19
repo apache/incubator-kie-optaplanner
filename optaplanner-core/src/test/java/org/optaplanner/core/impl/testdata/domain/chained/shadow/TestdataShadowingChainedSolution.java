@@ -35,10 +35,10 @@ public class TestdataShadowingChainedSolution extends TestdataObject {
                 TestdataShadowingChainedObject.class, TestdataShadowingChainedEntity.class);
     }
 
-    private List<TestdataShadowingChainedAnchor> chainedAnchorList;
-    private List<TestdataShadowingChainedEntity> chainedEntityList;
+    public List<TestdataShadowingChainedAnchor> chainedAnchorList;
+    public List<TestdataShadowingChainedEntity> chainedEntityList;
 
-    private SimpleScore score;
+    public SimpleScore score;
 
     public TestdataShadowingChainedSolution() {
     }

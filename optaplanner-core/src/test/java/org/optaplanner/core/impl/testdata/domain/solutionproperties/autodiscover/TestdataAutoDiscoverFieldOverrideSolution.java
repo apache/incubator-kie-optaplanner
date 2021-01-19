@@ -35,16 +35,16 @@ public class TestdataAutoDiscoverFieldOverrideSolution extends TestdataObject {
                 TestdataEntity.class);
     }
 
-    private TestdataObject singleProblemFact;
+    public TestdataObject singleProblemFact;
     @ValueRangeProvider(id = "valueRange")
-    private List<TestdataValue> problemFactList;
+    public List<TestdataValue> problemFactList;
     @ProblemFactProperty // would have been autodiscovered as @ProblemFactCollectionProperty
-    private List<String> listProblemFact;
+    public List<String> listProblemFact;
 
-    private List<TestdataEntity> entityList;
-    private TestdataEntity otherEntity;
+    public List<TestdataEntity> entityList;
+    public TestdataEntity otherEntity;
 
-    private SimpleScore score;
+    public SimpleScore score;
 
     public TestdataAutoDiscoverFieldOverrideSolution() {
     }

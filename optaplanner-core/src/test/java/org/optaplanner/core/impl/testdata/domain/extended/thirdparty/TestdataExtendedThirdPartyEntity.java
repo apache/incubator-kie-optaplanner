@@ -37,7 +37,7 @@ public class TestdataExtendedThirdPartyEntity extends TestdataThirdPartyEntityPo
         return entityDescriptor.getGenuineVariableDescriptor("value");
     }
 
-    private Object extraObject;
+    public Object extraObject;
 
     public TestdataExtendedThirdPartyEntity() {
     }

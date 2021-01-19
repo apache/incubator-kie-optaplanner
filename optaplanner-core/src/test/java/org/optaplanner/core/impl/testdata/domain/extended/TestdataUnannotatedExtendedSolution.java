@@ -20,7 +20,7 @@ import org.optaplanner.core.impl.testdata.domain.TestdataSolution;
 
 public class TestdataUnannotatedExtendedSolution extends TestdataSolution {
 
-    private Object extraObject;
+    public Object extraObject;
 
     public TestdataUnannotatedExtendedSolution() {
     }

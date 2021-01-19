@@ -45,9 +45,9 @@ public class TestdataCyclicReferencedShadowedEntity extends TestdataObject {
         return entityDescriptor.getGenuineVariableDescriptor("value");
     }
 
-    private TestdataValue value;
-    private boolean barber;
-    private boolean cutsOwnHair;
+    public TestdataValue value;
+    public boolean barber;
+    public boolean cutsOwnHair;
 
     public TestdataCyclicReferencedShadowedEntity() {
     }

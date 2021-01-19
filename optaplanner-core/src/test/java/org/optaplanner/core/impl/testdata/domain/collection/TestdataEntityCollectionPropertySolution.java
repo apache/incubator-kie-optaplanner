@@ -36,11 +36,11 @@ public class TestdataEntityCollectionPropertySolution extends TestdataObject {
                 TestdataEntityCollectionPropertyEntity.class);
     }
 
-    private List<TestdataValue> valueList;
-    private List<TestdataEntityCollectionPropertyEntity> entityList;
+    public List<TestdataValue> valueList;
+    public List<TestdataEntityCollectionPropertyEntity> entityList;
 
     @PlanningScore
-    private SimpleScore score;
+    public SimpleScore score;
 
     public TestdataEntityCollectionPropertySolution() {
     }

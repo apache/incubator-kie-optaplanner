@@ -30,7 +30,7 @@ public class TestdataHerdEntity extends TestdataObject {
         return solutionDescriptor.findEntityDescriptorOrFail(TestdataHerdEntity.class);
     }
 
-    private TestdataLeadEntity leadEntity;
+    public TestdataLeadEntity leadEntity;
 
     public TestdataHerdEntity() {
     }

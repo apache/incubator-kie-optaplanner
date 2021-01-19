@@ -36,10 +36,10 @@ public class TestdataCyclicReferencedShadowedSolution extends TestdataObject {
                 TestdataCyclicReferencedShadowedEntity.class);
     }
 
-    private List<TestdataValue> valueList;
-    private List<TestdataCyclicReferencedShadowedEntity> entityList;
+    public List<TestdataValue> valueList;
+    public List<TestdataCyclicReferencedShadowedEntity> entityList;
 
-    private SimpleScore score;
+    public SimpleScore score;
 
     public TestdataCyclicReferencedShadowedSolution() {
     }

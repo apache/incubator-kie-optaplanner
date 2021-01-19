@@ -31,9 +31,9 @@ public class TestdataArrayBasedEntity extends TestdataObject {
         return solutionDescriptor.findEntityDescriptorOrFail(TestdataArrayBasedEntity.class);
     }
 
-    private TestdataArrayBasedEntity[] entities;
+    public TestdataArrayBasedEntity[] entities;
 
-    private TestdataValue value;
+    public TestdataValue value;
 
     public TestdataArrayBasedEntity() {
     }

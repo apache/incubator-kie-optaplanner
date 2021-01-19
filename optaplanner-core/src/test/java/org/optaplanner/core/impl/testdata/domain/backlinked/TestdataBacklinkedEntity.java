@@ -41,8 +41,8 @@ public class TestdataBacklinkedEntity extends TestdataObject {
         return entityDescriptor.getGenuineVariableDescriptor("value");
     }
 
-    private TestdataBacklinkedSolution solution;
-    private TestdataValue value;
+    public TestdataBacklinkedSolution solution;
+    public TestdataValue value;
 
     public TestdataBacklinkedEntity() {
     }

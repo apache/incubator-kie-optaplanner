@@ -32,11 +32,11 @@ public class TestdataShadowingChainedEntity extends TestdataObject implements Te
         return solutionDescriptor.findEntityDescriptorOrFail(TestdataShadowingChainedEntity.class);
     }
 
-    private TestdataShadowingChainedObject chainedObject;
+    public TestdataShadowingChainedObject chainedObject;
 
     // Shadow variables
-    private TestdataShadowingChainedEntity nextEntity;
-    private TestdataShadowingChainedAnchor anchor;
+    public TestdataShadowingChainedEntity nextEntity;
+    public TestdataShadowingChainedAnchor anchor;
 
     public TestdataShadowingChainedEntity() {
     }

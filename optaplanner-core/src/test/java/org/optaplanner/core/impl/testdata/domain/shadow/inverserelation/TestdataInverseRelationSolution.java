@@ -35,10 +35,10 @@ public class TestdataInverseRelationSolution extends TestdataObject {
                 TestdataInverseRelationEntity.class, TestdataInverseRelationValue.class);
     }
 
-    private List<TestdataInverseRelationValue> valueList;
-    private List<TestdataInverseRelationEntity> entityList;
+    public List<TestdataInverseRelationValue> valueList;
+    public List<TestdataInverseRelationEntity> entityList;
 
-    private SimpleScore score;
+    public SimpleScore score;
 
     public TestdataInverseRelationSolution() {
     }

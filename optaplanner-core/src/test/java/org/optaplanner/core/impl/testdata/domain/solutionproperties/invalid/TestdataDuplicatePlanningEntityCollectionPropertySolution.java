@@ -37,11 +37,11 @@ public class TestdataDuplicatePlanningEntityCollectionPropertySolution extends T
                 TestdataDuplicatePlanningEntityCollectionPropertySolution.class, TestdataEntity.class);
     }
 
-    private List<TestdataValue> valueList;
+    public List<TestdataValue> valueList;
     @PlanningEntityCollectionProperty // Duplicate
-    private List<TestdataEntity> entityList;
+    public List<TestdataEntity> entityList;
 
-    private SimpleScore score;
+    public SimpleScore score;
 
     public TestdataDuplicatePlanningEntityCollectionPropertySolution() {
     }

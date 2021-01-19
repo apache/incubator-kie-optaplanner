@@ -35,10 +35,10 @@ public class TestdataPinnedSolution extends TestdataObject {
         return SolutionDescriptor.buildSolutionDescriptor(TestdataPinnedSolution.class, TestdataPinnedEntity.class);
     }
 
-    private List<TestdataValue> valueList;
-    private List<TestdataPinnedEntity> entityList;
+    public List<TestdataValue> valueList;
+    public List<TestdataPinnedEntity> entityList;
 
-    private SimpleScore score;
+    public SimpleScore score;
 
     public TestdataPinnedSolution() {
     }

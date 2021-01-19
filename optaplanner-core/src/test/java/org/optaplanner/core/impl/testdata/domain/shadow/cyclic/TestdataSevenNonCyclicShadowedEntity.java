@@ -42,15 +42,15 @@ public class TestdataSevenNonCyclicShadowedEntity extends TestdataObject {
         return entityDescriptor.getGenuineVariableDescriptor("value");
     }
 
-    private TestdataValue value;
+    public TestdataValue value;
     // Intentionally out of order
-    private String thirdShadow;
-    private String fifthShadow;
-    private String firstShadow;
-    private String fourthShadow;
-    private String secondShadow;
-    private String seventhShadow;
-    private String sixthShadow;
+    public String thirdShadow;
+    public String fifthShadow;
+    public String firstShadow;
+    public String fourthShadow;
+    public String secondShadow;
+    public String seventhShadow;
+    public String sixthShadow;
 
     public TestdataSevenNonCyclicShadowedEntity() {
     }

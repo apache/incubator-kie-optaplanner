@@ -37,7 +37,7 @@ public class TestdataEntity extends TestdataObject {
         return entityDescriptor.getGenuineVariableDescriptor("value");
     }
 
-    private TestdataValue value;
+    public TestdataValue value;
 
     public TestdataEntity() {
     }

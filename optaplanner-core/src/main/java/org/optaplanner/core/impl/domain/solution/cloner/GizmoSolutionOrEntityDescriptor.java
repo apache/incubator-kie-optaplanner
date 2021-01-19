@@ -29,7 +29,7 @@ public class GizmoSolutionOrEntityDescriptor {
         // Methods for determining what fields are deep cloned are not static :(
         FieldAccessingSolutionCloner cloner = new FieldAccessingSolutionCloner(solutionDescriptor);
         for (Field field : solutionFieldToMemberDescriptorMap.keySet()) {
-            if (cloner.retrieveDeepCloneDecision(field, field.getType(), field.getType())) {
+            if (cloner.retrieveDeepCloneDecision(field, field.getDeclaringClass(), field.getType())) {
                 deepClonedFields.add(field);
             } else {
                 shallowlyClonedFields.add(field);
@@ -49,7 +49,7 @@ public class GizmoSolutionOrEntityDescriptor {
         // Methods for determining what fields are deep cloned are not static :(
         FieldAccessingSolutionCloner cloner = new FieldAccessingSolutionCloner(solutionDescriptor);
         for (Field field : solutionFieldToMemberDescriptorMap.keySet()) {
-            if (cloner.retrieveDeepCloneDecision(field, field.getType(), field.getType())) {
+            if (cloner.retrieveDeepCloneDecision(field, field.getDeclaringClass(), field.getType())) {
                 deepClonedFields.add(field);
             } else {
                 shallowlyClonedFields.add(field);
@@ -70,7 +70,7 @@ public class GizmoSolutionOrEntityDescriptor {
         // Methods for determining what fields are deep cloned are not static :(
         FieldAccessingSolutionCloner cloner = new FieldAccessingSolutionCloner(solutionDescriptor);
         for (Field field : solutionFieldToMemberDescriptorMap.keySet()) {
-            if (cloner.retrieveDeepCloneDecision(field, field.getType(), field.getType())) {
+            if (cloner.retrieveDeepCloneDecision(field, field.getDeclaringClass(), field.getType())) {
                 deepClonedFields.add(field);
             } else {
                 shallowlyClonedFields.add(field);

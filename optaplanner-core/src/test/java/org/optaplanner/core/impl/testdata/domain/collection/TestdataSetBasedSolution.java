@@ -35,10 +35,10 @@ public class TestdataSetBasedSolution extends TestdataObject {
         return SolutionDescriptor.buildSolutionDescriptor(TestdataSetBasedSolution.class, TestdataSetBasedEntity.class);
     }
 
-    private Set<TestdataValue> valueSet;
-    private Set<TestdataSetBasedEntity> entitySet;
+    public Set<TestdataValue> valueSet;
+    public Set<TestdataSetBasedEntity> entitySet;
 
-    private SimpleScore score;
+    public SimpleScore score;
 
     public TestdataSetBasedSolution() {
     }

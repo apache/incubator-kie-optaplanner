@@ -36,10 +36,10 @@ public class TestdataUnsupportedWildcardSolution extends TestdataObject {
                 TestdataEntity.class);
     }
 
-    private List<TestdataValue> valueList;
-    private List<? super TestdataEntity> supersEntityList;
+    public List<TestdataValue> valueList;
+    public List<? super TestdataEntity> supersEntityList;
 
-    private SimpleScore score;
+    public SimpleScore score;
 
     public TestdataUnsupportedWildcardSolution() {
     }

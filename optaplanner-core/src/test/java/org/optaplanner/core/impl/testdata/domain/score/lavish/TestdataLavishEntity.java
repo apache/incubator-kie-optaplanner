@@ -41,15 +41,15 @@ public class TestdataLavishEntity extends TestdataObject {
         return entityDescriptor.getGenuineVariableDescriptor("value");
     }
 
-    private TestdataLavishEntityGroup entityGroup;
+    public TestdataLavishEntityGroup entityGroup;
     @PlanningVariable(valueRangeProviderRefs = "valueRange")
-    private TestdataLavishValue value;
+    public TestdataLavishValue value;
 
-    private String stringProperty = "";
-    private Integer integerProperty = 1;
-    private Long longProperty = 1L;
-    private BigInteger bigIntegerProperty = BigInteger.ONE;
-    private BigDecimal bigDecimalProperty = BigDecimal.ONE;
+    public String stringProperty = "";
+    public Integer integerProperty = 1;
+    public Long longProperty = 1L;
+    public BigInteger bigIntegerProperty = BigInteger.ONE;
+    public BigDecimal bigDecimalProperty = BigDecimal.ONE;
 
     public TestdataLavishEntity() {
     }

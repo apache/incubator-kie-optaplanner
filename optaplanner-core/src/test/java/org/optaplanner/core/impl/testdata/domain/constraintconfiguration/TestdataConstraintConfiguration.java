@@ -24,8 +24,8 @@ import org.optaplanner.core.impl.testdata.domain.TestdataObject;
 @ConstraintConfiguration
 public class TestdataConstraintConfiguration extends TestdataObject {
 
-    private SimpleScore firstWeight = SimpleScore.of(1);
-    private SimpleScore secondWeight = SimpleScore.of(20);
+    public SimpleScore firstWeight = SimpleScore.of(1);
+    public SimpleScore secondWeight = SimpleScore.of(20);
 
     public TestdataConstraintConfiguration() {
         super();

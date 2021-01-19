@@ -35,14 +35,14 @@ public class TestdataAutoDiscoverGetterSolution extends TestdataObject {
         return SolutionDescriptor.buildSolutionDescriptor(TestdataAutoDiscoverGetterSolution.class, TestdataEntity.class);
     }
 
-    private TestdataConstraintConfiguration constraintConfiguration;
-    private TestdataObject singleProblemFactField;
-    private List<TestdataValue> problemFactListField;
+    public TestdataConstraintConfiguration constraintConfiguration;
+    public TestdataObject singleProblemFactField;
+    public List<TestdataValue> problemFactListField;
 
-    private List<TestdataEntity> entityListField;
-    private TestdataEntity otherEntityField;
+    public List<TestdataEntity> entityListField;
+    public TestdataEntity otherEntityField;
 
-    private SimpleScore score;
+    public SimpleScore score;
 
     public TestdataAutoDiscoverGetterSolution() {
     }

@@ -78,19 +78,19 @@ public class TestdataLavishSolution extends TestdataObject {
     }
 
     @ProblemFactCollectionProperty
-    private List<TestdataLavishValueGroup> valueGroupList;
+    public List<TestdataLavishValueGroup> valueGroupList;
     @ValueRangeProvider(id = "valueRange")
     @ProblemFactCollectionProperty
-    private List<TestdataLavishValue> valueList;
+    public List<TestdataLavishValue> valueList;
     @ProblemFactCollectionProperty
-    private List<TestdataLavishExtra> extraList;
+    public List<TestdataLavishExtra> extraList;
     @ProblemFactCollectionProperty
-    private List<TestdataLavishEntityGroup> entityGroupList;
+    public List<TestdataLavishEntityGroup> entityGroupList;
     @PlanningEntityCollectionProperty
-    private List<TestdataLavishEntity> entityList;
+    public List<TestdataLavishEntity> entityList;
 
     @PlanningScore
-    private SimpleScore score;
+    public SimpleScore score;
 
     public TestdataLavishSolution() {
     }

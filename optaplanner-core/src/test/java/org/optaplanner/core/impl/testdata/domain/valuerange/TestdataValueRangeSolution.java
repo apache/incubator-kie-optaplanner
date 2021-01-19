@@ -42,9 +42,9 @@ public class TestdataValueRangeSolution extends TestdataObject {
         return SolutionDescriptor.buildSolutionDescriptor(TestdataValueRangeSolution.class, TestdataValueRangeEntity.class);
     }
 
-    private List<TestdataValueRangeEntity> entityList;
+    public List<TestdataValueRangeEntity> entityList;
 
-    private SimpleScore score;
+    public SimpleScore score;
 
     public TestdataValueRangeSolution() {
     }

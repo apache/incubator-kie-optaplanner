@@ -39,8 +39,8 @@ public class TestdataPinnedChainedEntity extends TestdataObject implements Testd
         return entityDescriptor.getGenuineVariableDescriptor("chainedObject");
     }
 
-    private TestdataChainedObject chainedObject;
-    private boolean pinned;
+    public TestdataChainedObject chainedObject;
+    public boolean pinned;
 
     public TestdataPinnedChainedEntity() {
     }

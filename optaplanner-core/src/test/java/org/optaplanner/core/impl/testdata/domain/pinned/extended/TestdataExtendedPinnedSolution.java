@@ -37,11 +37,11 @@ public class TestdataExtendedPinnedSolution extends TestdataObject {
                 TestdataPinnedEntity.class, TestdataExtendedPinnedEntity.class);
     }
 
-    private List<TestdataValue> valueList;
-    private List<TestdataValue> subValueList;
-    private List<TestdataPinnedEntity> entityList;
+    public List<TestdataValue> valueList;
+    public List<TestdataValue> subValueList;
+    public List<TestdataPinnedEntity> entityList;
 
-    private SimpleScore score;
+    public SimpleScore score;
 
     public TestdataExtendedPinnedSolution() {
     }
