@@ -16,12 +16,6 @@
 
 package org.optaplanner.core.impl.solver;
 
-import static org.apache.commons.lang3.ObjectUtils.defaultIfNull;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.solver.Solver;
 import org.optaplanner.core.api.solver.SolverFactory;
@@ -50,6 +44,12 @@ import org.optaplanner.core.impl.solver.termination.Termination;
 import org.optaplanner.core.impl.solver.termination.TerminationFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
+import static org.apache.commons.lang3.ObjectUtils.defaultIfNull;
 
 /**
  * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
@@ -98,7 +98,7 @@ public final class DefaultSolverFactory<Solution_> implements SolverFactory<Solu
                 .buildTermination(configPolicy, basicPlumbingTermination);
         List<Phase<Solution_>> phaseList = buildPhaseList(configPolicy, bestSolutionRecaller, termination);
         return new DefaultSolver<>(environmentMode_, randomFactory, bestSolutionRecaller, basicPlumbingTermination,
-                termination, phaseList, solverScope, moveThreadCount_ == null ? 1 : moveThreadCount_);
+                termination, phaseList, solverScope, moveThreadCount_ == null ? 0 : moveThreadCount_);
     }
 
     /**
