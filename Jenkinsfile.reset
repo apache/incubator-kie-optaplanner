@@ -324,7 +324,7 @@ void removeJbossNexusFromMavenAndGradle() {
 
 //TODO remove after testing
 def setDefaultBranch(String repo, String defaultBranch, String author, String credentialId = 'kie-ci', String ghPath = "../gh") {
-    withCredentials([usernamePassword(credentialsId: credentialId, usernameVariable: 'GITHUB_USER', passwordVariable: 'GITHUB_TOKEN')]) {
+    withCredentials([string(credentialsId: params.GITHUB_TOKEN_CREDS_ID, variable: 'GITHUB_TOKEN')]) {
         sh "if [ -x $ghPath ]; then echo 'gh found at $ghPath'; else echo 'gh not found at $ghPath' && exit 1; fi"
         // gh command from https://github.com/cli/cli/issues/929#issuecomment-629253585
         def newDefaultBranch = sh(script: "${ghPath} api -XPATCH 'repos/${author}/${repo}' -f default_branch=${defaultBranch} | jq '.default_branch'", returnStdout: true).trim()
