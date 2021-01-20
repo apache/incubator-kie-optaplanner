@@ -40,12 +40,14 @@
     <solver>
       <localSearch>
         <unionMoveSelector>
-          <moveListFactory>
-            <moveListFactoryClass>org.optaplanner.examples.taskassigning.domain.solver.move.factory.TaskListChangeMoveFactory</moveListFactoryClass>
-          </moveListFactory>
           <moveIteratorFactory>
-            <cacheType>PHASE</cacheType>
-            <selectionOrder>ORIGINAL</selectionOrder>
+            <cacheType>JUST_IN_TIME</cacheType>
+            <selectionOrder>RANDOM</selectionOrder>
+            <moveIteratorFactoryClass>org.optaplanner.examples.taskassigning.domain.solver.move.factory.TaskListChangeMoveIteratorFactory</moveIteratorFactoryClass>
+          </moveIteratorFactory>
+          <moveIteratorFactory>
+            <cacheType>JUST_IN_TIME</cacheType>
+            <selectionOrder>RANDOM</selectionOrder>
             <moveIteratorFactoryClass>org.optaplanner.examples.taskassigning.domain.solver.move.factory.TaskListSwapMoveIteratorFactory</moveIteratorFactoryClass>
           </moveIteratorFactory>
         </unionMoveSelector>

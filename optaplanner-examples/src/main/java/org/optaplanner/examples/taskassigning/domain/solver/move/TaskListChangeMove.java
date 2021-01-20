@@ -53,7 +53,7 @@ public class TaskListChangeMove extends AbstractMove<TaskAssigningSolution> {
 
     @Override
     public boolean isMoveDoable(ScoreDirector<TaskAssigningSolution> scoreDirector) {
-        return true;
+        return !task.getEmployee().equals(toEmployee);
     }
 
     @Override
