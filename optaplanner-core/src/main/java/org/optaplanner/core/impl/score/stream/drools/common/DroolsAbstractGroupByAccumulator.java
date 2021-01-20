@@ -86,9 +86,10 @@ public abstract class DroolsAbstractGroupByAccumulator<InTuple> implements Accum
     }
 
     @Override
-    public void init(Object workingMemoryContext, Object context, Tuple tuple, Declaration[] declarations,
+    public Object init(Object workingMemoryContext, Object context, Tuple tuple, Declaration[] declarations,
             WorkingMemory workingMemory) {
         castContext(context).init();
+        return context;
     }
 
     @Override
@@ -107,8 +108,7 @@ public abstract class DroolsAbstractGroupByAccumulator<InTuple> implements Accum
 
     @Override
     public boolean tryReverse(Object workingMemoryContext, Object context, Tuple leftTuple, InternalFactHandle handle,
-            Object value, Declaration[] declarations, Declaration[] innerDeclarations, WorkingMemory workingMemory)
-            throws Exception {
+            Object value, Declaration[] declarations, Declaration[] innerDeclarations, WorkingMemory workingMemory) {
         castContext(context).reverse(handle);
         return true;
     }
