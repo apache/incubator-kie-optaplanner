@@ -16,6 +16,8 @@
 
 package org.optaplanner.examples.taskassigning.domain.solver;
 
+import java.util.Objects;
+
 import org.optaplanner.core.api.domain.variable.VariableListener;
 import org.optaplanner.core.api.score.director.ScoreDirector;
 import org.optaplanner.examples.taskassigning.domain.Employee;
@@ -60,9 +62,12 @@ public class StartTimeUpdatingVariableListener implements VariableListener<TaskA
         }
         int previousStartTime = 0;
         for (Task task : sourceEmployee.getTasks()) {
-            scoreDirector.beforeVariableChanged(task, "startTime");
-            task.setStartTime(Math.max(task.getReadyTime(), previousStartTime));
-            scoreDirector.afterVariableChanged(task, "startTime");
+            int startTime = Math.max(task.getReadyTime(), previousStartTime);
+            if (!Objects.equals(task.getStartTime(), startTime)) {
+                scoreDirector.beforeVariableChanged(task, "startTime");
+                task.setStartTime(startTime);
+                scoreDirector.afterVariableChanged(task, "startTime");
+            }
             previousStartTime = task.getEndTime();
         }
     }

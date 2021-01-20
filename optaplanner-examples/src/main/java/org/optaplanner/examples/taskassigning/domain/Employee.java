@@ -105,6 +105,10 @@ public class Employee extends AbstractPersistable implements Labeled {
         return affinity;
     }
 
+    public Integer getEndTime() {
+        return tasks.isEmpty() ? 0 : tasks.get(tasks.size() - 1).getEndTime();
+    }
+
     @Override
     public String getLabel() {
         return fullName;

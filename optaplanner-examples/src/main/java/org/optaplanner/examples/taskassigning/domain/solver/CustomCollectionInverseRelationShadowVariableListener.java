@@ -16,6 +16,8 @@
 
 package org.optaplanner.examples.taskassigning.domain.solver;
 
+import java.util.Objects;
+
 import org.optaplanner.core.api.domain.variable.VariableListener;
 import org.optaplanner.core.api.score.director.ScoreDirector;
 import org.optaplanner.examples.taskassigning.domain.Employee;
@@ -61,13 +63,16 @@ public class CustomCollectionInverseRelationShadowVariableListener
         }
         int index = 0;
         for (Task task : employee.getTasks()) {
-            // TODO maybe only notify scoreDirector if there's a difference between old and new employee/index
-            scoreDirector.beforeVariableChanged(task, "employee");
-            task.setEmployee(employee);
-            scoreDirector.afterVariableChanged(task, "employee");
-            scoreDirector.beforeVariableChanged(task, "index");
-            task.setIndex(index);
-            scoreDirector.afterVariableChanged(task, "index");
+            if (!Objects.equals(task.getEmployee(), employee)) {
+                scoreDirector.beforeVariableChanged(task, "employee");
+                task.setEmployee(employee);
+                scoreDirector.afterVariableChanged(task, "employee");
+            }
+            if (!Objects.equals(task.getIndex(), index)) {
+                scoreDirector.beforeVariableChanged(task, "index");
+                task.setIndex(index);
+                scoreDirector.afterVariableChanged(task, "index");
+            }
             index++;
         }
     }
