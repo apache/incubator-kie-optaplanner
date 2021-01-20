@@ -24,9 +24,11 @@
       <moveListFactory>
         <moveListFactoryClass>org.optaplanner.examples.taskassigning.domain.solver.move.factory.TaskListChangeMoveFactory</moveListFactoryClass>
       </moveListFactory>
-      <moveListFactory>
-        <moveListFactoryClass>org.optaplanner.examples.taskassigning.domain.solver.move.factory.TaskListSwapMoveFactory</moveListFactoryClass>
-      </moveListFactory>
+      <moveIteratorFactory>
+        <cacheType>PHASE</cacheType>
+        <selectionOrder>ORIGINAL</selectionOrder>
+        <moveIteratorFactoryClass>org.optaplanner.examples.taskassigning.domain.solver.move.factory.TaskListSwapMoveIteratorFactory</moveIteratorFactoryClass>
+      </moveIteratorFactory>
     </unionMoveSelector>
     <forager>
       <acceptedCountLimit>100</acceptedCountLimit>
