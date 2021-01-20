@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2021 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,32 +16,13 @@
 
 package org.optaplanner.core.api.score.stream.uni;
 
-import static java.util.Comparator.comparing;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatIllegalStateException;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.optaplanner.core.api.score.stream.ConstraintCollectors.count;
-import static org.optaplanner.core.api.score.stream.ConstraintCollectors.countDistinct;
-import static org.optaplanner.core.api.score.stream.ConstraintCollectors.max;
-import static org.optaplanner.core.api.score.stream.ConstraintCollectors.min;
-import static org.optaplanner.core.api.score.stream.Joiners.equal;
-import static org.optaplanner.core.api.score.stream.Joiners.filtering;
-
-import java.math.BigDecimal;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Objects;
-import java.util.concurrent.atomic.AtomicLong;
-import java.util.function.Function;
-import java.util.function.Predicate;
-import java.util.stream.Stream;
-
 import org.junit.jupiter.api.TestTemplate;
 import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
 import org.optaplanner.core.api.score.buildin.simplebigdecimal.SimpleBigDecimalScore;
 import org.optaplanner.core.api.score.buildin.simplelong.SimpleLongScore;
 import org.optaplanner.core.api.score.stream.AbstractConstraintStreamTest;
 import org.optaplanner.core.api.score.stream.Constraint;
+import org.optaplanner.core.api.score.stream.ConstraintCollectors;
 import org.optaplanner.core.api.score.stream.ConstraintProvider;
 import org.optaplanner.core.api.score.stream.ConstraintStreamImplType;
 import org.optaplanner.core.impl.score.director.InnerScoreDirector;
@@ -56,6 +37,27 @@ import org.optaplanner.core.impl.testdata.domain.score.lavish.TestdataLavishEnti
 import org.optaplanner.core.impl.testdata.domain.score.lavish.TestdataLavishSolution;
 import org.optaplanner.core.impl.testdata.domain.score.lavish.TestdataLavishValue;
 import org.optaplanner.core.impl.testdata.domain.score.lavish.TestdataLavishValueGroup;
+
+import java.math.BigDecimal;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.LinkedHashSet;
+import java.util.Objects;
+import java.util.concurrent.atomic.AtomicLong;
+import java.util.function.Function;
+import java.util.function.Predicate;
+import java.util.stream.Stream;
+
+import static java.util.Comparator.comparing;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatIllegalStateException;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.optaplanner.core.api.score.stream.ConstraintCollectors.count;
+import static org.optaplanner.core.api.score.stream.ConstraintCollectors.countDistinct;
+import static org.optaplanner.core.api.score.stream.ConstraintCollectors.max;
+import static org.optaplanner.core.api.score.stream.ConstraintCollectors.min;
+import static org.optaplanner.core.api.score.stream.Joiners.equal;
+import static org.optaplanner.core.api.score.stream.Joiners.filtering;
 
 public class UniConstraintStreamTest extends AbstractConstraintStreamTest {
 
@@ -906,6 +908,20 @@ public class UniConstraintStreamTest extends AbstractConstraintStreamTest {
         solution.getEntityList().remove(entity3);
         scoreDirector.afterEntityRemoved(entity3);
         assertScore(scoreDirector, assertMatchWithScore(-1, entity2));
+    }
+
+    @TestTemplate
+    public void groupBy_0Mapping1Collector_toSet() {
+        assumeDrools();
+        TestdataLavishSolution solution = TestdataLavishSolution.generateSolution(2, 2);
+        InnerScoreDirector<TestdataLavishSolution, SimpleScore> scoreDirector = buildScoreDirector((factory) -> {
+            return factory.from(TestdataLavishEntity.class)
+                    .groupBy(ConstraintCollectors.toSet())
+                    .penalize(TEST_CONSTRAINT_NAME, SimpleScore.ONE);
+        });
+
+        scoreDirector.setWorkingSolution(solution);
+        assertScore(scoreDirector, assertMatchWithScore(-1, new LinkedHashSet<>(solution.getEntityList())));
     }
 
     @TestTemplate
