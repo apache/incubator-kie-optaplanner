@@ -322,12 +322,11 @@ void removeJbossNexusFromMavenAndGradle() {
                 , allowEmptyResults: true, returnStdout: true)
 }
 
-//TODO remove after testing
-def setDefaultBranch(String repo, String defaultBranch, String author, String credentialId = 'kie-ci', String ghPath = "../gh") {
-    withCredentials([string(credentialsId: params.GITHUB_TOKEN_CREDS_ID, variable: 'GITHUB_TOKEN')]) {
+def setDefaultBranch(String repo, String defaultBranch, String ghPath = "../gh") {
+    withCredentials([string(credentialsId: getGhCredsID(), variable: 'GITHUB_TOKEN')]) {
         sh "if [ -x $ghPath ]; then echo 'gh found at $ghPath'; else echo 'gh not found at $ghPath' && exit 1; fi"
         // gh command from https://github.com/cli/cli/issues/929#issuecomment-629253585
-        def newDefaultBranch = sh(script: "${ghPath} api -XPATCH 'repos/${author}/${repo}' -f default_branch=${defaultBranch} | jq '.default_branch'", returnStdout: true).trim()
+        def newDefaultBranch = sh(script: "${ghPath} api -XPATCH 'repos/${getGitAuthor()}/${repo}' -f default_branch=${defaultBranch} | jq '.default_branch'", returnStdout: true).trim()
         if (newDefaultBranch == "${defaultBranch}") {
             echo "[INFO] ${author}/${repo}'s default branch has been updated to ${newDefaultBranch}."
         } else {
@@ -336,14 +335,14 @@ def setDefaultBranch(String repo, String defaultBranch, String author, String cr
     }
 }
 
-def forcePushProtectedBranch(String repo, String defaultBranch, String tempBranch, String author, String credentialId = 'kie-ci') {
-    setDefaultBranch(repo, tempBranch, author, credentialId)
-    withCredentials([usernamePassword(credentialsId: credentialId, usernameVariable: 'GITHUB_USER', passwordVariable: 'GITHUB_TOKEN')]) {
-        sh "git config --local credential.helper '!f() { echo username=${author}; echo password=${credentialId}; }; f'"
+def forcePushProtectedBranch(String repo, String defaultBranch, String tempBranch) {
+    setDefaultBranch(repo, tempBranch)
+    withCredentials([usernamePassword(credentialsId: getGitAuthorCredsID(), usernameVariable: 'GITHUB_USER', passwordVariable: 'GITHUB_TOKEN')]) {
+        sh "git config --local credential.helper '!f() { echo username=${getGitAuthor()}; echo password=${getGitAuthorCredsID()}; }; f'"
         sh "git push --delete origin ${defaultBranch}"
         sh "git push origin ${defaultBranch}"
     }
-    setDefaultBranch(repo, defaultBranch, author, credentialId)
+    setDefaultBranch(repo, defaultBranch)
 }
 
 void gradleVersionsUpdate(String repo, String newVersion){
