@@ -44,17 +44,4 @@ public class GizmoSolutionClonerTest extends AbstractSolutionClonerTest {
     public void cloneExtendedSolution() {
         super.cloneExtendedSolution();
     }
-
-    // TODO: Fix these
-    @Override
-    @Disabled("FIXME: Need to detect set type at runtime...")
-    public void cloneSetBasedSolution() {
-        super.cloneSetBasedSolution();
-    }
-
-    @Override
-    @Disabled("FIXME: It appears superclasses' fields are shallow copied, investigate")
-    public void cloneExtendedThirdPartySolution() {
-        super.cloneExtendedThirdPartySolution();
-    }
 }

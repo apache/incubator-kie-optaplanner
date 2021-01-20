@@ -26,6 +26,7 @@ import static org.objectweb.asm.Opcodes.PUTFIELD;
 import static org.objectweb.asm.Opcodes.RETURN;
 
 import java.lang.annotation.Annotation;
+import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Modifier;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -35,6 +36,7 @@ import java.util.Optional;
 import java.util.Set;
 
 import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Named;
 
 import org.jboss.jandex.AnnotationInstance;
 import org.jboss.jandex.ClassInfo;
@@ -48,6 +50,8 @@ import org.optaplanner.core.impl.domain.common.accessor.MemberAccessor;
 import org.optaplanner.core.impl.domain.common.accessor.gizmo.GizmoMemberAccessorFactory;
 import org.optaplanner.core.impl.domain.common.accessor.gizmo.GizmoMemberAccessorImplementor;
 import org.optaplanner.core.impl.domain.common.accessor.gizmo.GizmoMemberDescriptor;
+import org.optaplanner.quarkus.gizmo.annotations.QuarkusRecordableAnnotatedElement;
+import org.optaplanner.quarkus.gizmo.types.QuarkusRecordableTypes;
 import org.optaplanner.quarkus.gizmo.OptaPlannerGizmoInitializer;
 
 import io.quarkus.deployment.annotations.BuildProducer;
@@ -311,6 +315,57 @@ public class GizmoMemberAccessorEntityEnhancer {
             methodCreator.returnValue(null);
         }
         return generatedClassName;
+    }
+
+    private static GizmoSolutionOrEntityDescriptor getGizmoSolutionOrEntityDescriptorForEntity(
+            SolutionDescriptor solutionDescriptor,
+            Class<?> entityClass,
+            Map<Class<?>, GizmoSolutionOrEntityDescriptor> memoizedMap,
+            BuildProducer<BytecodeTransformerBuildItem> transformers) throws NoSuchFieldException, ClassNotFoundException {
+        Map<Field, GizmoMemberDescriptor> solutionFieldToMemberDescriptor = new HashMap<>();
+
+        for (Field field : entityClass.getDeclaredFields()) {
+            GizmoMemberDescriptor member;
+            Class<?> declaringClass = field.getDeclaringClass();
+            FieldDescriptor memberDescriptor = FieldDescriptor.of(field);
+            String name = field.getName();
+
+            // Not being recorded, so can use Type and annotated element directly
+            if (Modifier.isPublic(field.getModifiers())) {
+                member = new GizmoMemberDescriptor(name, memberDescriptor, declaringClass,
+                        field, field.getGenericType());
+            } else {
+                addVirtualFieldGetter(declaringClass, field, transformers);
+                String methodName = getVirtualGetterName(true, field.getName());
+                MethodDescriptor getterDescriptor = MethodDescriptor.ofMethod(field.getDeclaringClass().getName(),
+                        methodName,
+                        field.getType());
+                MethodDescriptor setterDescriptor = MethodDescriptor.ofMethod(field.getDeclaringClass().getName(),
+                        getVirtualSetterName(true, field.getName()),
+                        "void",
+                        field.getType());
+                member = new GizmoMemberDescriptor(name, getterDescriptor, declaringClass,
+                        field, field.getGenericType(), setterDescriptor);
+            }
+            solutionFieldToMemberDescriptor.put(field, member);
+        }
+        GizmoSolutionOrEntityDescriptor out =
+                new GizmoSolutionOrEntityDescriptor(entityClass, solutionDescriptor, solutionFieldToMemberDescriptor,
+                        memoizedMap);
+        memoizedMap.put(entityClass, out);
+        return out;
+    }
+
+    private static String getTypeDescriptor(java.lang.reflect.Type type) throws ClassNotFoundException {
+        String typeName = type.getTypeName();
+        int genericStart = typeName.indexOf('<');
+        boolean isGeneric = genericStart != -1;
+        if (isGeneric) {
+            int genericEnd = typeName.lastIndexOf('>');
+            return Type.getDescriptor(Class.forName(typeName.substring(0, genericStart) + typeName.substring(genericEnd + 1)));
+        } else {
+            return Type.getDescriptor(Class.forName(typeName));
+        }
     }
 
     private static class OptaPlannerFieldEnhancingClassVisitor extends ClassVisitor {

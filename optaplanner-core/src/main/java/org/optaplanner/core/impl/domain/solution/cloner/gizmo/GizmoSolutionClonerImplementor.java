@@ -83,6 +83,7 @@ public class GizmoSolutionClonerImplementor {
     public static void defineClonerFor(ClassCreator classCreator, GizmoSolutionOrEntityDescriptor solutionDescriptor) {
         createConstructor(classCreator);
         createCloneSolution(classCreator, solutionDescriptor);
+        createCloneSolutionRun(classCreator, solutionDescriptor);
         for (Class<?> entityClass : solutionDescriptor.getSolutionDescriptor().getEntityClassSet()) {
             createEntityHelperMethod(classCreator, entityClass, solutionDescriptor);
         }
@@ -159,15 +160,42 @@ public class GizmoSolutionClonerImplementor {
 
         ResultHandle thisObj = methodCreator.getMethodParam(0);
 
-        ResultHandle clone = methodCreator.newInstance(MethodDescriptor.ofConstructor(solutionClass));
-        ResultHandle createdCloneMap = methodCreator.newInstance(MethodDescriptor.ofConstructor(HashMap.class));
+        ResultHandle clone = methodCreator.invokeStaticMethod(
+                MethodDescriptor.ofMethod(
+                        GizmoSolutionClonerFactory.getGeneratedClassName(solutionInfo.getSolutionDescriptor()),
+                        "cloneSolutionRun", solutionClass, solutionClass, Map.class),
+                thisObj,
+                methodCreator.newInstance(MethodDescriptor.ofConstructor(HashMap.class)));
+        methodCreator.returnValue(clone);
+    }
 
-        methodCreator.invokeInterfaceMethod(
+    private static void createCloneSolutionRun(ClassCreator classCreator, GizmoSolutionOrEntityDescriptor solutionInfo) {
+        Class<?> solutionClass = solutionInfo.getSolutionDescriptor().getSolutionClass();
+        MethodCreator methodCreator =
+                classCreator.getMethodCreator("cloneSolutionRun", solutionClass, solutionClass, Map.class);
+        methodCreator.setModifiers(Modifier.STATIC | Modifier.PRIVATE);
+
+        ResultHandle thisObj = methodCreator.getMethodParam(0);
+        ResultHandle createdCloneMap = methodCreator.getMethodParam(1);
+
+        ResultHandle hasClone = methodCreator.invokeInterfaceMethod(
+                MethodDescriptor.ofMethod(Map.class, "containsKey", boolean.class, Object.class), createdCloneMap, thisObj);
+        BranchResult hasCloneBranchResult = methodCreator.ifTrue(hasClone);
+        BytecodeCreator hasCloneBranch = hasCloneBranchResult.trueBranch();
+        ResultHandle getClone = hasCloneBranch
+                .invokeInterfaceMethod(MethodDescriptor.ofMethod(Map.class, "get", Object.class, Object.class), createdCloneMap,
+                        thisObj);
+        hasCloneBranch.returnValue(getClone);
+
+        BytecodeCreator noCloneBranch = hasCloneBranchResult.falseBranch();
+        ResultHandle clone = noCloneBranch.newInstance(MethodDescriptor.ofConstructor(solutionClass));
+
+        noCloneBranch.invokeInterfaceMethod(
                 MethodDescriptor.ofMethod(Map.class, "put", Object.class, Object.class, Object.class),
                 createdCloneMap, thisObj, clone);
 
         for (GizmoMemberDescriptor shallowlyClonedField : solutionInfo.getShallowClonedMemberDescriptors()) {
-            writeShallowCloneInstructions(solutionInfo, methodCreator, shallowlyClonedField, thisObj, clone, createdCloneMap);
+            writeShallowCloneInstructions(solutionInfo, noCloneBranch, shallowlyClonedField, thisObj, clone, createdCloneMap);
         }
 
         for (Field deeplyClonedField : solutionInfo.getDeepClonedFields()) {
@@ -175,20 +203,20 @@ public class GizmoSolutionClonerImplementor {
             final ResultHandle[] resultHandleHolder = new ResultHandle[1];
 
             gizmoMemberDescriptor.whenIsMethod(md -> {
-                resultHandleHolder[0] = gizmoMemberDescriptor.invokeMemberMethod(methodCreator, md, thisObj);
+                resultHandleHolder[0] = gizmoMemberDescriptor.invokeMemberMethod(noCloneBranch, md, thisObj);
             });
 
             gizmoMemberDescriptor.whenIsField(fd -> {
-                resultHandleHolder[0] = methodCreator.readInstanceField(fd, thisObj);
+                resultHandleHolder[0] = noCloneBranch.readInstanceField(fd, thisObj);
             });
 
             ResultHandle fieldValue = resultHandleHolder[0];
-            AssignableResultHandle cloneValue = methodCreator.createVariable(deeplyClonedField.getType());
-            writeDeepCloneInstructions(methodCreator, solutionInfo,
+            AssignableResultHandle cloneValue = noCloneBranch.createVariable(deeplyClonedField.getType());
+            writeDeepCloneInstructions(noCloneBranch, solutionInfo,
                     deeplyClonedField.getType(), gizmoMemberDescriptor.getType(), fieldValue, cloneValue, createdCloneMap);
 
             gizmoMemberDescriptor.whenIsField(fd -> {
-                methodCreator.writeInstanceField(fd, clone, cloneValue);
+                noCloneBranch.writeInstanceField(fd, clone, cloneValue);
             });
             gizmoMemberDescriptor.whenIsMethod(md -> {
                 Optional<MethodDescriptor> maybeSetter = gizmoMemberDescriptor.getSetter();
@@ -196,10 +224,10 @@ public class GizmoSolutionClonerImplementor {
                     throw new IllegalStateException("Field (" + gizmoMemberDescriptor.getName() + ") of class (" +
                             gizmoMemberDescriptor.getDeclaringClassName() + ") does not have a setter.");
                 }
-                gizmoMemberDescriptor.invokeMemberMethod(methodCreator, maybeSetter.get(), clone, cloneValue);
+                gizmoMemberDescriptor.invokeMemberMethod(noCloneBranch, maybeSetter.get(), clone, cloneValue);
             });
         }
-        methodCreator.returnValue(clone);
+        noCloneBranch.returnValue(clone);
     }
 
     /**
@@ -335,18 +363,14 @@ public class GizmoSolutionClonerImplementor {
         BytecodeCreator isNotNullBranch = isNull.falseBranch();
 
         if (solutionDescriptor.getSolutionDescriptor().getSolutionClass().isAssignableFrom(deeplyClonedFieldClass)) {
-            ResultHandle hasClone = isNotNullBranch.invokeInterfaceMethod(
-                    MethodDescriptor.ofMethod(Map.class, "containsKey", boolean.class, Object.class), createdCloneMap, toClone);
-            BranchResult hasCloneBranchResult = isNotNullBranch.ifTrue(hasClone);
-            BytecodeCreator hasCloneBranch = hasCloneBranchResult.trueBranch();
-            ResultHandle getClone = hasCloneBranch
-                    .invokeInterfaceMethod(MethodDescriptor.ofMethod(Map.class, "get", Object.class, Object.class),
-                            createdCloneMap,
-                            toClone);
-            hasCloneBranch.assign(cloneResultHolder, getClone);
-
-            BytecodeCreator noCloneBranch = hasCloneBranchResult.falseBranch();
-            noCloneBranch.assign(cloneResultHolder, toClone);
+            ResultHandle clone = isNotNullBranch.invokeStaticMethod(
+                    MethodDescriptor.ofMethod(
+                            GizmoSolutionClonerFactory.getGeneratedClassName(solutionDescriptor.getSolutionDescriptor()),
+                            "cloneSolutionRun", solutionDescriptor.getSolutionDescriptor().getSolutionClass(),
+                            solutionDescriptor.getSolutionDescriptor().getSolutionClass(), Map.class),
+                    toClone,
+                    createdCloneMap);
+            isNotNullBranch.assign(cloneResultHolder, clone);
         } else if (Collection.class.isAssignableFrom(deeplyClonedFieldClass)) {
             // Clone collection
             writeDeepCloneCollectionInstructions(isNotNullBranch, solutionDescriptor, deeplyClonedFieldClass, type,
@@ -386,46 +410,52 @@ public class GizmoSolutionClonerImplementor {
             Class<?> deeplyClonedFieldClass, java.lang.reflect.Type type, ResultHandle toClone,
             AssignableResultHandle cloneResultHolder, ResultHandle createdCloneMap) {
         // Clone collection
-        Class<?> holderClass = deeplyClonedFieldClass;
+        AssignableResultHandle cloneCollection = bytecodeCreator.createVariable(deeplyClonedFieldClass);
         Optional<ResultHandle> maybeComparator = Optional.empty();
-        try {
-            holderClass.getConstructor();
-        } catch (NoSuchMethodException e) {
-            if (List.class.isAssignableFrom(holderClass)) {
-                holderClass = ArrayList.class;
-            } else if (Set.class.isAssignableFrom(holderClass)) {
-                if (SortedSet.class.isAssignableFrom(holderClass)) {
-                    ResultHandle setComparator = bytecodeCreator
-                            .invokeInterfaceMethod(MethodDescriptor.ofMethod(SortedSet.class,
-                                    "comparator",
-                                    Comparator.class), toClone);
-                    maybeComparator = Optional.of(setComparator);
-                    holderClass = TreeSet.class;
-                } else { // Default Set
-                    holderClass = LinkedHashSet.class;
-                }
-            } else {
-                // Default to ArrayList
-                holderClass = ArrayList.class;
-            }
-        }
 
-        ResultHandle cloneCollection;
         ResultHandle size = bytecodeCreator
                 .invokeInterfaceMethod(MethodDescriptor.ofMethod(Collection.class, "size", int.class), toClone);
+
+        if (List.class.isAssignableFrom(deeplyClonedFieldClass)) {
+            bytecodeCreator.assign(cloneCollection,
+                    bytecodeCreator.newInstance(MethodDescriptor.ofConstructor(ArrayList.class, int.class), size));
+        } else if (Set.class.isAssignableFrom(deeplyClonedFieldClass)) {
+            ResultHandle isSortedSet = bytecodeCreator.instanceOf(toClone, SortedSet.class);
+            BranchResult isSortedSetBranchResult = bytecodeCreator.ifTrue(isSortedSet);
+            BytecodeCreator isSortedSetBranch = isSortedSetBranchResult.trueBranch();
+            ResultHandle setComparator = isSortedSetBranch
+                    .invokeInterfaceMethod(MethodDescriptor.ofMethod(SortedSet.class,
+                            "comparator", Comparator.class), toClone);
+            isSortedSetBranch.assign(cloneCollection,
+                    isSortedSetBranch.newInstance(MethodDescriptor.ofConstructor(TreeSet.class, Comparator.class),
+                            setComparator));
+            BytecodeCreator isNotSortedSetBranch = isSortedSetBranchResult.falseBranch();
+            isNotSortedSetBranch.assign(cloneCollection,
+                    isNotSortedSetBranch.newInstance(MethodDescriptor.ofConstructor(LinkedHashSet.class, int.class), size));
+        } else {
+            // field is probably of type collection
+            ResultHandle isSet = bytecodeCreator.instanceOf(toClone, Set.class);
+            BranchResult isSetBranchResult = bytecodeCreator.ifTrue(isSet);
+            BytecodeCreator isSetBranch = isSetBranchResult.trueBranch();
+            ResultHandle isSortedSet = isSetBranch.instanceOf(toClone, SortedSet.class);
+            BranchResult isSortedSetBranchResult = isSetBranch.ifTrue(isSortedSet);
+            BytecodeCreator isSortedSetBranch = isSortedSetBranchResult.trueBranch();
+            ResultHandle setComparator = isSortedSetBranch
+                    .invokeInterfaceMethod(MethodDescriptor.ofMethod(SortedSet.class,
+                            "comparator", Comparator.class), toClone);
+            isSortedSetBranch.assign(cloneCollection,
+                    isSortedSetBranch.newInstance(MethodDescriptor.ofConstructor(TreeSet.class, Comparator.class),
+                            setComparator));
+            BytecodeCreator isNotSortedSetBranch = isSortedSetBranchResult.falseBranch();
+            isNotSortedSetBranch.assign(cloneCollection,
+                    isNotSortedSetBranch.newInstance(MethodDescriptor.ofConstructor(LinkedHashSet.class, int.class), size));
+            // Default to ArrayList
+            BytecodeCreator isNotSetBranch = isSetBranchResult.falseBranch();
+            isNotSetBranch.assign(cloneCollection,
+                    isNotSetBranch.newInstance(MethodDescriptor.ofConstructor(ArrayList.class, int.class), size));
+        }
         ResultHandle iterator = bytecodeCreator
                 .invokeInterfaceMethod(MethodDescriptor.ofMethod(Iterable.class, "iterator", Iterator.class), toClone);
-
-        if (!maybeComparator.isPresent()) {
-            try {
-                holderClass.getConstructor(int.class);
-                cloneCollection = bytecodeCreator.newInstance(MethodDescriptor.ofConstructor(holderClass, int.class), size);
-            } catch (NoSuchMethodException e) {
-                cloneCollection = bytecodeCreator.newInstance(MethodDescriptor.ofConstructor(holderClass));
-            }
-        } else {
-            cloneCollection = bytecodeCreator.newInstance(MethodDescriptor.ofConstructor(holderClass, maybeComparator.get()));
-        }
 
         BytecodeCreator whileLoopBlock = bytecodeCreator.whileLoop(conditionBytecode -> {
             ResultHandle hasNext = conditionBytecode

@@ -29,7 +29,7 @@ public class GizmoSolutionOrEntityDescriptor {
         // Methods for determining what fields are deep cloned are not static :(
         FieldAccessingSolutionCloner cloner = new FieldAccessingSolutionCloner(solutionDescriptor);
         for (Field field : solutionFieldToMemberDescriptorMap.keySet()) {
-            if (cloner.retrieveDeepCloneDecision(field, field.getDeclaringClass(), field.getType())) {
+            if (cloner.retrieveDeepCloneDecision(field, solutionDescriptor.getSolutionClass(), field.getType())) {
                 deepClonedFields.add(field);
             } else {
                 shallowlyClonedFields.add(field);
@@ -49,7 +49,7 @@ public class GizmoSolutionOrEntityDescriptor {
         // Methods for determining what fields are deep cloned are not static :(
         FieldAccessingSolutionCloner cloner = new FieldAccessingSolutionCloner(solutionDescriptor);
         for (Field field : solutionFieldToMemberDescriptorMap.keySet()) {
-            if (cloner.retrieveDeepCloneDecision(field, field.getDeclaringClass(), field.getType())) {
+            if (cloner.retrieveDeepCloneDecision(field, entityClass, field.getType())) {
                 deepClonedFields.add(field);
             } else {
                 shallowlyClonedFields.add(field);
@@ -59,7 +59,7 @@ public class GizmoSolutionOrEntityDescriptor {
         memoizedGizmoSolutionOrEntityDescriptorForClassMap = new HashMap<>();
     }
 
-    public GizmoSolutionOrEntityDescriptor(SolutionDescriptor<?> solutionDescriptor,
+    public GizmoSolutionOrEntityDescriptor(Class<?> holderClass, SolutionDescriptor<?> solutionDescriptor,
             Map<Field, GizmoMemberDescriptor> solutionFieldToMemberDescriptorMap,
             Map<Class<?>, GizmoSolutionOrEntityDescriptor> memoizedGizmoSolutionOrEntityDescriptorForClassMap) {
         this.solutionDescriptor = solutionDescriptor;
@@ -70,7 +70,7 @@ public class GizmoSolutionOrEntityDescriptor {
         // Methods for determining what fields are deep cloned are not static :(
         FieldAccessingSolutionCloner cloner = new FieldAccessingSolutionCloner(solutionDescriptor);
         for (Field field : solutionFieldToMemberDescriptorMap.keySet()) {
-            if (cloner.retrieveDeepCloneDecision(field, field.getDeclaringClass(), field.getType())) {
+            if (cloner.retrieveDeepCloneDecision(field, holderClass, field.getType())) {
                 deepClonedFields.add(field);
             } else {
                 shallowlyClonedFields.add(field);
