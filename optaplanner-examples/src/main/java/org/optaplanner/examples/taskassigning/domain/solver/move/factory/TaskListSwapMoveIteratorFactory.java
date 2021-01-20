@@ -66,6 +66,22 @@ public class TaskListSwapMoveIteratorFactory implements MoveIteratorFactory<Task
     @Override
     public Iterator<TaskListSwapMove> createRandomMoveIterator(ScoreDirector<TaskAssigningSolution> scoreDirector,
             Random workingRandom) {
-        throw new UnsupportedOperationException("Not yet implemented.");
+        List<Task> taskList = scoreDirector.getWorkingSolution().getTaskList();
+        return new Iterator<TaskListSwapMove>() {
+            @Override
+            public boolean hasNext() {
+                return taskList.size() > 1;
+            }
+
+            @Override
+            public TaskListSwapMove next() {
+                int leftTask = workingRandom.nextInt(taskList.size());
+                int rightTask = leftTask;
+                while (rightTask == leftTask) {
+                    rightTask = workingRandom.nextInt(taskList.size());
+                }
+                return new TaskListSwapMove(taskList.get(leftTask), taskList.get(rightTask));
+            }
+        };
     }
 }
