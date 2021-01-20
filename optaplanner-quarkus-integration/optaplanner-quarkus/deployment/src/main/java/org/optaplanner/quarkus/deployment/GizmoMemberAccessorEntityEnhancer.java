@@ -325,29 +325,31 @@ public class GizmoMemberAccessorEntityEnhancer {
         Map<Field, GizmoMemberDescriptor> solutionFieldToMemberDescriptor = new HashMap<>();
 
         for (Field field : entityClass.getDeclaredFields()) {
-            GizmoMemberDescriptor member;
-            Class<?> declaringClass = field.getDeclaringClass();
-            FieldDescriptor memberDescriptor = FieldDescriptor.of(field);
-            String name = field.getName();
+            if (!Modifier.isStatic(field.getModifiers())) {
+                GizmoMemberDescriptor member;
+                Class<?> declaringClass = field.getDeclaringClass();
+                FieldDescriptor memberDescriptor = FieldDescriptor.of(field);
+                String name = field.getName();
 
-            // Not being recorded, so can use Type and annotated element directly
-            if (Modifier.isPublic(field.getModifiers())) {
-                member = new GizmoMemberDescriptor(name, memberDescriptor, declaringClass,
-                        field, field.getGenericType());
-            } else {
-                addVirtualFieldGetter(declaringClass, field, transformers);
-                String methodName = getVirtualGetterName(true, field.getName());
-                MethodDescriptor getterDescriptor = MethodDescriptor.ofMethod(field.getDeclaringClass().getName(),
-                        methodName,
-                        field.getType());
-                MethodDescriptor setterDescriptor = MethodDescriptor.ofMethod(field.getDeclaringClass().getName(),
-                        getVirtualSetterName(true, field.getName()),
-                        "void",
-                        field.getType());
-                member = new GizmoMemberDescriptor(name, getterDescriptor, declaringClass,
-                        field, field.getGenericType(), setterDescriptor);
+                // Not being recorded, so can use Type and annotated element directly
+                if (Modifier.isPublic(field.getModifiers())) {
+                    member = new GizmoMemberDescriptor(name, memberDescriptor, declaringClass,
+                            field, field.getGenericType());
+                } else {
+                    addVirtualFieldGetter(declaringClass, field, transformers);
+                    String methodName = getVirtualGetterName(true, field.getName());
+                    MethodDescriptor getterDescriptor = MethodDescriptor.ofMethod(field.getDeclaringClass().getName(),
+                            methodName,
+                            field.getType());
+                    MethodDescriptor setterDescriptor = MethodDescriptor.ofMethod(field.getDeclaringClass().getName(),
+                            getVirtualSetterName(true, field.getName()),
+                            "void",
+                            field.getType());
+                    member = new GizmoMemberDescriptor(name, getterDescriptor, declaringClass,
+                            field, field.getGenericType(), setterDescriptor);
+                }
+                solutionFieldToMemberDescriptor.put(field, member);
             }
-            solutionFieldToMemberDescriptor.put(field, member);
         }
         GizmoSolutionOrEntityDescriptor out =
                 new GizmoSolutionOrEntityDescriptor(entityClass, solutionDescriptor, solutionFieldToMemberDescriptor,
