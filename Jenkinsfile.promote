@@ -551,7 +551,7 @@ def setDefaultBranch(String repo, String defaultBranch, String ghPath = "../gh")
         // gh command from https://github.com/cli/cli/issues/929#issuecomment-629253585
         def newDefaultBranch = sh(script: "${ghPath} api -XPATCH 'repos/${getGitAuthor()}/${repo}' -f default_branch=${defaultBranch} | jq '.default_branch'", returnStdout: true).trim()
         if (newDefaultBranch == "\"${defaultBranch}\"") {
-            echo "[INFO] ${author}/${repo}'s default branch has been updated to ${newDefaultBranch}."
+            echo "[INFO] ${getGitAuthor()}/${repo}'s default branch has been updated to ${newDefaultBranch}."
         } else {
             error 'Couldn\'t update default branch.'
         }
