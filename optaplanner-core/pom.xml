@@ -134,6 +134,33 @@
           </ignoredUnusedDeclaredDependencies>
         </configuration>
       </plugin>
+
+      <plugin>
+        <artifactId>maven-resources-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>add-annotation-processor-service</id>
+            <phase>prepare-package</phase>
+            <goals>
+              <goal>copy-resources</goal>
+            </goals>
+            <configuration>
+              <outputDirectory>${basedir}/target/classes/META-INF/services</outputDirectory>
+              <!-- Cannot put this file into resources since it will try to look for
+                   a class that is compiled during the build -->
+              <resources>
+                <resource>
+                  <directory>src/build</directory>
+                  <includes>
+                      <include>javax.annotation.processing.Processor</include>
+                  </includes>
+                </resource>
+              </resources>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+
       <plugin>
         <groupId>org.revapi</groupId>
         <artifactId>revapi-maven-plugin</artifactId>
