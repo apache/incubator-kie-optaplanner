@@ -16,6 +16,18 @@
 
 package org.optaplanner.core.api.score.stream.quad;
 
+import static java.util.function.Function.identity;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.optaplanner.core.api.score.stream.ConstraintCollectors.countQuad;
+import static org.optaplanner.core.api.score.stream.Joiners.equal;
+import static org.optaplanner.core.api.score.stream.Joiners.filtering;
+
+import java.math.BigDecimal;
+import java.util.Arrays;
+import java.util.LinkedHashSet;
+import java.util.Objects;
+
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.TestTemplate;
 import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
@@ -38,18 +50,6 @@ import org.optaplanner.core.impl.testdata.domain.score.lavish.TestdataLavishExtr
 import org.optaplanner.core.impl.testdata.domain.score.lavish.TestdataLavishSolution;
 import org.optaplanner.core.impl.testdata.domain.score.lavish.TestdataLavishValue;
 import org.optaplanner.core.impl.testdata.domain.score.lavish.TestdataLavishValueGroup;
-
-import java.math.BigDecimal;
-import java.util.Arrays;
-import java.util.LinkedHashSet;
-import java.util.Objects;
-
-import static java.util.function.Function.identity;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.optaplanner.core.api.score.stream.ConstraintCollectors.countQuad;
-import static org.optaplanner.core.api.score.stream.Joiners.equal;
-import static org.optaplanner.core.api.score.stream.Joiners.filtering;
 
 public class QuadConstraintStreamTest extends AbstractConstraintStreamTest {
 
