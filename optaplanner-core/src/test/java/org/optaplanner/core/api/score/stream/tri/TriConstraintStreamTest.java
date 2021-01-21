@@ -16,6 +16,19 @@
 
 package org.optaplanner.core.api.score.stream.tri;
 
+import static java.util.function.Function.identity;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.optaplanner.core.api.score.stream.ConstraintCollectors.countTri;
+import static org.optaplanner.core.api.score.stream.Joiners.equal;
+import static org.optaplanner.core.api.score.stream.Joiners.filtering;
+
+import java.math.BigDecimal;
+import java.util.Arrays;
+import java.util.LinkedHashSet;
+import java.util.Objects;
+import java.util.stream.Stream;
+
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.TestTemplate;
 import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
@@ -39,19 +52,6 @@ import org.optaplanner.core.impl.testdata.domain.score.lavish.TestdataLavishExtr
 import org.optaplanner.core.impl.testdata.domain.score.lavish.TestdataLavishSolution;
 import org.optaplanner.core.impl.testdata.domain.score.lavish.TestdataLavishValue;
 import org.optaplanner.core.impl.testdata.domain.score.lavish.TestdataLavishValueGroup;
-
-import java.math.BigDecimal;
-import java.util.Arrays;
-import java.util.LinkedHashSet;
-import java.util.Objects;
-import java.util.stream.Stream;
-
-import static java.util.function.Function.identity;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.optaplanner.core.api.score.stream.ConstraintCollectors.countTri;
-import static org.optaplanner.core.api.score.stream.Joiners.equal;
-import static org.optaplanner.core.api.score.stream.Joiners.filtering;
 
 public class TriConstraintStreamTest extends AbstractConstraintStreamTest {
 
@@ -653,7 +653,7 @@ public class TriConstraintStreamTest extends AbstractConstraintStreamTest {
         TestdataLavishSolution solution = TestdataLavishSolution.generateSolution(2, 3);
         InnerScoreDirector<TestdataLavishSolution, SimpleScore> scoreDirector = buildScoreDirector((factory) -> {
             return factory.fromUniquePair(TestdataLavishEntity.class)
-                    .join(TestdataLavishEntityGroup. class)
+                    .join(TestdataLavishEntityGroup.class)
                     .filter((a, b, c) -> Objects.equals(a.getEntityGroup(), c) || Objects.equals(b.getEntityGroup(), c))
                     .groupBy(ConstraintCollectors.toSet((a, b, c) -> c))
                     .penalize(TEST_CONSTRAINT_NAME, SimpleScore.ONE);
@@ -723,7 +723,7 @@ public class TriConstraintStreamTest extends AbstractConstraintStreamTest {
         TestdataLavishSolution solution = TestdataLavishSolution.generateSolution(2, 2);
         InnerScoreDirector<TestdataLavishSolution, SimpleScore> scoreDirector = buildScoreDirector((factory) -> {
             return factory.fromUniquePair(TestdataLavishEntity.class)
-                    .join(TestdataLavishEntityGroup. class)
+                    .join(TestdataLavishEntityGroup.class)
                     .filter((a, b, c) -> Objects.equals(a.getEntityGroup(), c) || Objects.equals(b.getEntityGroup(), c))
                     .groupBy((a, b, c) -> a.getEntityGroup(), ConstraintCollectors.toSet((a, b, c) -> c))
                     .penalize(TEST_CONSTRAINT_NAME, SimpleScore.ONE);

@@ -506,9 +506,9 @@ public class QuadConstraintStreamTest extends AbstractConstraintStreamTest {
         TestdataLavishSolution solution = TestdataLavishSolution.generateSolution(2, 4);
         InnerScoreDirector<TestdataLavishSolution, SimpleScore> scoreDirector = buildScoreDirector((factory) -> {
             return factory.fromUniquePair(TestdataLavishEntity.class)
-                    .join(TestdataLavishEntityGroup. class)
+                    .join(TestdataLavishEntityGroup.class)
                     .filter((a, b, c) -> Objects.equals(a.getEntityGroup(), c) || Objects.equals(b.getEntityGroup(), c))
-                    .join(TestdataLavishEntityGroup. class)
+                    .join(TestdataLavishEntityGroup.class)
                     .filter((a, b, c, d) -> !Objects.equals(c, d))
                     .groupBy(ConstraintCollectors.toSet((a, b, c, d) -> c))
                     .penalize(TEST_CONSTRAINT_NAME, SimpleScore.ONE);
@@ -582,9 +582,9 @@ public class QuadConstraintStreamTest extends AbstractConstraintStreamTest {
         TestdataLavishSolution solution = TestdataLavishSolution.generateSolution(2, 2);
         InnerScoreDirector<TestdataLavishSolution, SimpleScore> scoreDirector = buildScoreDirector((factory) -> {
             return factory.fromUniquePair(TestdataLavishEntity.class)
-                    .join(TestdataLavishEntityGroup. class)
+                    .join(TestdataLavishEntityGroup.class)
                     .filter((a, b, c) -> Objects.equals(a.getEntityGroup(), c) || Objects.equals(b.getEntityGroup(), c))
-                    .join(TestdataLavishEntityGroup. class)
+                    .join(TestdataLavishEntityGroup.class)
                     .filter((a, b, c, d) -> !Objects.equals(c, d))
                     .groupBy((a, b, c, d) -> a.getEntityGroup(), ConstraintCollectors.toSet((a, b, c, d) -> c))
                     .penalize(TEST_CONSTRAINT_NAME, SimpleScore.ONE);
@@ -595,8 +595,6 @@ public class QuadConstraintStreamTest extends AbstractConstraintStreamTest {
                 assertMatchWithScore(-1, solution.getEntityGroupList().get(0),
                         new LinkedHashSet<>(solution.getEntityGroupList().subList(0, 2))));
     }
-
-
 
     @TestTemplate
     public void groupBy_2Mapping0Collector() {

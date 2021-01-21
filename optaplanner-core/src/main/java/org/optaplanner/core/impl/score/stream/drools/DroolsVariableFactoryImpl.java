@@ -16,14 +16,14 @@
 
 package org.optaplanner.core.impl.score.stream.drools;
 
-import org.drools.model.Variable;
+import static org.drools.model.DSL.declarationOf;
+import static org.drools.model.DSL.from;
 
 import java.util.Collections;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.function.Function;
 
-import static org.drools.model.DSL.declarationOf;
-import static org.drools.model.DSL.from;
+import org.drools.model.Variable;
 
 final class DroolsVariableFactoryImpl implements DroolsVariableFactory {
 
