@@ -751,6 +751,20 @@ public class BiConstraintStreamTest extends AbstractConstraintStreamTest {
     }
 
     @TestTemplate
+    public void groupBy_0Mapping1Collector_toSet() {
+        assumeDrools();
+        TestdataLavishSolution solution = TestdataLavishSolution.generateSolution(2, 2);
+        InnerScoreDirector<TestdataLavishSolution, SimpleScore> scoreDirector = buildScoreDirector((factory) -> {
+            return factory.fromUniquePair(TestdataLavishEntity.class)
+                    .groupBy(ConstraintCollectors.toSet((a, b) -> a.getEntityGroup()))
+                    .penalize(TEST_CONSTRAINT_NAME, SimpleScore.ONE);
+        });
+
+        scoreDirector.setWorkingSolution(solution);
+        assertScore(scoreDirector, assertMatchWithScore(-1, Collections.singleton(solution.getEntityGroupList().get(0))));
+    }
+
+    @TestTemplate
     public void groupBy_1Mapping1Collector_count() {
         TestdataLavishSolution solution = TestdataLavishSolution.generateSolution(2, 5, 3, 7);
 
@@ -777,17 +791,19 @@ public class BiConstraintStreamTest extends AbstractConstraintStreamTest {
     }
 
     @TestTemplate
-    public void groupBy_0Mapping1Collector_toSet() {
+    public void groupBy_1Mapping1Collector_toSet() {
         assumeDrools();
         TestdataLavishSolution solution = TestdataLavishSolution.generateSolution(2, 2);
         InnerScoreDirector<TestdataLavishSolution, SimpleScore> scoreDirector = buildScoreDirector((factory) -> {
             return factory.fromUniquePair(TestdataLavishEntity.class)
-                    .groupBy(ConstraintCollectors.toSet((a, b) -> a.getEntityGroup()))
+                    .groupBy((entityA, entityB) -> entityA.getEntityGroup(), ConstraintCollectors.toSet((a, b) -> a))
                     .penalize(TEST_CONSTRAINT_NAME, SimpleScore.ONE);
         });
 
         scoreDirector.setWorkingSolution(solution);
-        assertScore(scoreDirector, assertMatchWithScore(-1, Collections.singleton(solution.getEntityGroupList().get(0))));
+        assertScore(scoreDirector,
+                assertMatchWithScore(-1, solution.getEntityGroupList().get(0),
+                        Collections.singleton(solution.getEntityList().get(0))));
     }
 
     @TestTemplate

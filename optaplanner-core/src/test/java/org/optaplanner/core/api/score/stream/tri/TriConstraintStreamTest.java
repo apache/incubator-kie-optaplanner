@@ -648,6 +648,22 @@ public class TriConstraintStreamTest extends AbstractConstraintStreamTest {
     }
 
     @TestTemplate
+    public void groupBy_0Mapping1Collector_toSet() {
+        assumeDrools();
+        TestdataLavishSolution solution = TestdataLavishSolution.generateSolution(2, 3);
+        InnerScoreDirector<TestdataLavishSolution, SimpleScore> scoreDirector = buildScoreDirector((factory) -> {
+            return factory.fromUniquePair(TestdataLavishEntity.class)
+                    .join(TestdataLavishEntityGroup. class)
+                    .filter((a, b, c) -> Objects.equals(a.getEntityGroup(), c) || Objects.equals(b.getEntityGroup(), c))
+                    .groupBy(ConstraintCollectors.toSet((a, b, c) -> c))
+                    .penalize(TEST_CONSTRAINT_NAME, SimpleScore.ONE);
+        });
+
+        scoreDirector.setWorkingSolution(solution);
+        assertScore(scoreDirector, assertMatchWithScore(-1, new LinkedHashSet<>(solution.getEntityGroupList())));
+    }
+
+    @TestTemplate
     public void groupBy_1Mapping0Collector() {
         assumeDrools();
         TestdataLavishSolution solution = TestdataLavishSolution.generateSolution(1, 2, 2, 3);
@@ -702,19 +718,21 @@ public class TriConstraintStreamTest extends AbstractConstraintStreamTest {
     }
 
     @TestTemplate
-    public void groupBy_0Mapping1Collector_toSet() {
+    public void groupBy_1Mapping1Collector_toSet() {
         assumeDrools();
-        TestdataLavishSolution solution = TestdataLavishSolution.generateSolution(2, 3);
+        TestdataLavishSolution solution = TestdataLavishSolution.generateSolution(2, 2);
         InnerScoreDirector<TestdataLavishSolution, SimpleScore> scoreDirector = buildScoreDirector((factory) -> {
             return factory.fromUniquePair(TestdataLavishEntity.class)
                     .join(TestdataLavishEntityGroup. class)
                     .filter((a, b, c) -> Objects.equals(a.getEntityGroup(), c) || Objects.equals(b.getEntityGroup(), c))
-                    .groupBy(ConstraintCollectors.toSet((a, b, c) -> c))
+                    .groupBy((a, b, c) -> a.getEntityGroup(), ConstraintCollectors.toSet((a, b, c) -> c))
                     .penalize(TEST_CONSTRAINT_NAME, SimpleScore.ONE);
         });
 
         scoreDirector.setWorkingSolution(solution);
-        assertScore(scoreDirector, assertMatchWithScore(-1, new LinkedHashSet<>(solution.getEntityGroupList())));
+        assertScore(scoreDirector,
+                assertMatchWithScore(-1, solution.getEntityGroupList().get(0),
+                        new LinkedHashSet<>(solution.getEntityGroupList().subList(0, 2))));
     }
 
     @TestTemplate

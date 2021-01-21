@@ -18,7 +18,6 @@ package org.optaplanner.core.impl.score.stream.drools;
 
 import org.drools.model.Variable;
 
-import java.util.Collection;
 import java.util.Collections;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.function.Function;
@@ -52,14 +51,14 @@ final class DroolsVariableFactoryImpl implements DroolsVariableFactory {
     /**
      * When using {@link org.drools.model.DSL#from(Variable)}, Drools has two behaviors.
      * If the variable is a simple object, it returns that.
-     * If the variable is a {@link Collection}, it will iterate over its elements and return them individually.
+     * If the variable is a {@link Iterable}, it will iterate over its elements and return them individually.
      * The second behavior is not acceptable for CS-D, and therefore we apply this workaround.
      * 
      * @param value the value to protect against iterative from(...)
      * @return never null
      */
     private static Object sanitize(Object value) {
-        if (value instanceof Collection) {
+        if (value instanceof Iterable) {
             return Collections.singleton(value);
         }
         return value;

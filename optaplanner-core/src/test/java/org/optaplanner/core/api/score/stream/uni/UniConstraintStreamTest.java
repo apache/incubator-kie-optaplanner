@@ -1064,6 +1064,24 @@ public class UniConstraintStreamTest extends AbstractConstraintStreamTest {
     }
 
     @TestTemplate
+    public void groupBy_1Mapping1Collector_toSet() {
+        assumeDrools();
+        TestdataLavishSolution solution = TestdataLavishSolution.generateSolution(2, 2);
+        InnerScoreDirector<TestdataLavishSolution, SimpleScore> scoreDirector = buildScoreDirector((factory) -> {
+            return factory.from(TestdataLavishEntity.class)
+                    .groupBy(TestdataLavishEntity::getEntityGroup, ConstraintCollectors.toSet())
+                    .penalize(TEST_CONSTRAINT_NAME, SimpleScore.ONE);
+        });
+
+        scoreDirector.setWorkingSolution(solution);
+        assertScore(scoreDirector,
+                assertMatchWithScore(-1, solution.getEntityGroupList().get(0),
+                        Collections.singleton(solution.getEntityList().get(0))),
+                assertMatchWithScore(-1, solution.getEntityGroupList().get(1),
+                        Collections.singleton(solution.getEntityList().get(1))));
+    }
+
+    @TestTemplate
     public void groupBy_1Mapping1Collector_groupingOnPrimitives() {
         TestdataLavishSolution solution = TestdataLavishSolution.generateSolution(2, 5, 1, 7);
         TestdataLavishEntityGroup entityGroup1 = new TestdataLavishEntityGroup("MyEntityGroup");
