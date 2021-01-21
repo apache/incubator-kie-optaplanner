@@ -16,14 +16,14 @@
 
 package org.optaplanner.core.impl.score.stream.drools;
 
-import static org.drools.model.DSL.declarationOf;
-import static org.drools.model.DSL.from;
+import org.drools.model.Variable;
 
 import java.util.Collections;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.function.Function;
 
-import org.drools.model.Variable;
+import static org.drools.model.DSL.declarationOf;
+import static org.drools.model.DSL.from;
 
 final class DroolsVariableFactoryImpl implements DroolsVariableFactory {
 
@@ -45,7 +45,7 @@ final class DroolsVariableFactoryImpl implements DroolsVariableFactory {
     @Override
     public <X> Variable<X> createVariable(String baseName, Variable<X> source) {
         return declarationOf(source.getType(), generateUniqueId(baseName),
-                from(source, DroolsVariableFactoryImpl::sanitize));
+                from(source, x -> sanitize(x)));
     }
 
     /**
@@ -57,7 +57,7 @@ final class DroolsVariableFactoryImpl implements DroolsVariableFactory {
      * @param value the value to protect against iterative from(...)
      * @return never null
      */
-    private static Object sanitize(Object value) {
+    public Object sanitize(Object value) {
         if (value instanceof Iterable) {
             return Collections.singleton(value);
         }
