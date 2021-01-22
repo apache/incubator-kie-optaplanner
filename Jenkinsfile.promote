@@ -147,7 +147,7 @@ pipeline {
                 }
             }
         }
-
+/*
         stage('Upload OptaPlanner documentation and distribution') {
             when {
                 expression { return isRelease() }
@@ -285,7 +285,7 @@ pipeline {
                 }
             }
         }
-
+*/
         stage('Set Quickstarts next snapshot version') {
             when {
                 expression { return isRelease() }
