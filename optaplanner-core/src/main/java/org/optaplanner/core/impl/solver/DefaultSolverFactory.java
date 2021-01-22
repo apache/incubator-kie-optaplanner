@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2021 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -97,8 +97,9 @@ public final class DefaultSolverFactory<Solution_> implements SolverFactory<Solu
         Termination<Solution_> termination = TerminationFactory.<Solution_> create(terminationConfig_)
                 .buildTermination(configPolicy, basicPlumbingTermination);
         List<Phase<Solution_>> phaseList = buildPhaseList(configPolicy, bestSolutionRecaller, termination);
-        return new DefaultSolver<>(environmentMode_, randomFactory,
-                bestSolutionRecaller, basicPlumbingTermination, termination, phaseList, solverScope);
+        return new DefaultSolver<>(environmentMode_, randomFactory, bestSolutionRecaller, basicPlumbingTermination,
+                termination, phaseList, solverScope,
+                moveThreadCount_ == null ? SolverConfig.MOVE_THREAD_COUNT_NONE : Integer.toString(moveThreadCount_));
     }
 
     /**
@@ -131,7 +132,8 @@ public final class DefaultSolverFactory<Solution_> implements SolverFactory<Solu
                     solverConfig.getEntityClassList() + "). If you're using the Quarkus extension or Spring Boot starter, " +
                     "it should have been filled in already.");
         }
-        return SolutionDescriptor.buildSolutionDescriptor((Class<Solution_>) solverConfig.getSolutionClass(),
+        return SolutionDescriptor.buildSolutionDescriptor(solverConfig.determineDomainAccessType(),
+                (Class<Solution_>) solverConfig.getSolutionClass(),
                 solverConfig.getEntityClassList());
     }
 

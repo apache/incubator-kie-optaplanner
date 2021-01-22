@@ -20,6 +20,7 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.optaplanner.core.api.domain.common.DomainAccessType;
 import org.optaplanner.core.api.domain.lookup.PlanningId;
 import org.optaplanner.core.config.util.ConfigUtils;
 import org.optaplanner.core.impl.domain.common.accessor.MemberAccessor;
@@ -27,13 +28,21 @@ import org.optaplanner.core.impl.domain.common.accessor.MemberAccessor;
 public class ClassAndPlanningIdComparator implements Comparator<Object> {
 
     private boolean failFastIfNoPlanningId;
+    private DomainAccessType domainAccessType;
     private Map<Class, MemberAccessor> decisionCache = new HashMap<>();
 
     public ClassAndPlanningIdComparator() {
-        this(true);
+        // TODO This will break Quarkus once we don't open up the domain hierarchy for reflection any more
+        this(DomainAccessType.REFLECTION, true);
     }
 
     public ClassAndPlanningIdComparator(boolean failFastIfNoPlanningId) {
+        // TODO This will break Quarkus once we don't open up the domain hierarchy for reflection any more
+        this(DomainAccessType.REFLECTION, failFastIfNoPlanningId);
+    }
+
+    public ClassAndPlanningIdComparator(DomainAccessType domainAccessType, boolean failFastIfNoPlanningId) {
+        this.domainAccessType = domainAccessType;
         this.failFastIfNoPlanningId = failFastIfNoPlanningId;
     }
 
@@ -50,9 +59,9 @@ public class ClassAndPlanningIdComparator implements Comparator<Object> {
             return aClass.getName().compareTo(bClass.getName());
         }
         MemberAccessor aMemberAccessor = decisionCache.computeIfAbsent(aClass,
-                ConfigUtils::findPlanningIdMemberAccessor);
+                clazz -> ConfigUtils.findPlanningIdMemberAccessor(clazz, domainAccessType));
         MemberAccessor bMemberAccessor = decisionCache.computeIfAbsent(bClass,
-                ConfigUtils::findPlanningIdMemberAccessor);
+                clazz -> ConfigUtils.findPlanningIdMemberAccessor(clazz, domainAccessType));
         if (failFastIfNoPlanningId) {
             if (aMemberAccessor == null) {
                 throw new IllegalArgumentException("The class (" + aClass

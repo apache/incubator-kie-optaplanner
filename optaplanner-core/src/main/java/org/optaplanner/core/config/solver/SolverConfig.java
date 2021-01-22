@@ -27,6 +27,7 @@ import java.io.InputStreamReader;
 import java.io.Reader;
 import java.io.UnsupportedEncodingException;
 import java.nio.charset.StandardCharsets;
+import java.time.Duration;
 import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.ThreadFactory;
@@ -37,6 +38,9 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.XmlType;
 
+import org.optaplanner.core.api.domain.common.DomainAccessType;
+import org.optaplanner.core.api.score.calculator.EasyScoreCalculator;
+import org.optaplanner.core.api.score.stream.ConstraintProvider;
 import org.optaplanner.core.api.solver.Solver;
 import org.optaplanner.core.api.solver.SolverFactory;
 import org.optaplanner.core.config.AbstractConfig;
@@ -71,6 +75,7 @@ import org.optaplanner.core.impl.solver.random.RandomFactory;
         "threadFactoryClass",
         "solutionClass",
         "entityClassList",
+        "domainAccessType",
         "scoreDirectorFactoryConfig",
         "terminationConfig",
         "phaseConfigList"
@@ -235,8 +240,10 @@ public class SolverConfig extends AbstractConfig<SolverConfig> {
     protected Class<? extends ThreadFactory> threadFactoryClass = null;
 
     protected Class<?> solutionClass = null;
+
     @XmlElement(name = "entityClass")
     protected List<Class<?>> entityClassList = null;
+    protected DomainAccessType domainAccessType = null;
 
     @XmlElement(name = "scoreDirectorFactory")
     protected ScoreDirectorFactoryConfig scoreDirectorFactoryConfig = null;
@@ -372,6 +379,14 @@ public class SolverConfig extends AbstractConfig<SolverConfig> {
         this.entityClassList = entityClassList;
     }
 
+    public DomainAccessType getDomainAccessType() {
+        return domainAccessType;
+    }
+
+    public void setDomainAccessType(DomainAccessType domainAccessType) {
+        this.domainAccessType = domainAccessType;
+    }
+
     public ScoreDirectorFactoryConfig getScoreDirectorFactoryConfig() {
         return scoreDirectorFactoryConfig;
     }
@@ -455,13 +470,60 @@ public class SolverConfig extends AbstractConfig<SolverConfig> {
         return this;
     }
 
+    public SolverConfig withDomainAccessType(DomainAccessType domainAccessType) {
+        this.domainAccessType = domainAccessType;
+        return this;
+    }
+
     public SolverConfig withScoreDirectorFactory(ScoreDirectorFactoryConfig scoreDirectorFactoryConfig) {
         this.scoreDirectorFactoryConfig = scoreDirectorFactoryConfig;
         return this;
     }
 
+    /**
+     * As defined by {@link ScoreDirectorFactoryConfig#withEasyScoreCalculatorClass(Class)}, but returns this.
+     * 
+     * @param easyScoreCalculatorClass sometimes null
+     * @return this, never null
+     */
+    public SolverConfig withEasyScoreCalculatorClass(Class<? extends EasyScoreCalculator> easyScoreCalculatorClass) {
+        if (scoreDirectorFactoryConfig == null) {
+            scoreDirectorFactoryConfig = new ScoreDirectorFactoryConfig();
+        }
+        scoreDirectorFactoryConfig.setEasyScoreCalculatorClass(easyScoreCalculatorClass);
+        return this;
+    }
+
+    /**
+     * As defined by {@link ScoreDirectorFactoryConfig#withConstraintProviderClass(Class)}, but returns this.
+     * 
+     * @param constraintProviderClass sometimes null
+     * @return this, never null
+     */
+    public SolverConfig withConstraintProviderClass(Class<? extends ConstraintProvider> constraintProviderClass) {
+        if (scoreDirectorFactoryConfig == null) {
+            scoreDirectorFactoryConfig = new ScoreDirectorFactoryConfig();
+        }
+        scoreDirectorFactoryConfig.setConstraintProviderClass(constraintProviderClass);
+        return this;
+    }
+
     public SolverConfig withTerminationConfig(TerminationConfig terminationConfig) {
         this.terminationConfig = terminationConfig;
+        return this;
+    }
+
+    /**
+     * As defined by {@link TerminationConfig#withSpentLimit(Duration)}, but returns this.
+     * 
+     * @param spentLimit sometimes null
+     * @return this, never null
+     */
+    public SolverConfig withTerminationSpentLimit(Duration spentLimit) {
+        if (terminationConfig == null) {
+            terminationConfig = new TerminationConfig();
+        }
+        terminationConfig.setSpentLimit(spentLimit);
         return this;
     }
 
@@ -481,6 +543,10 @@ public class SolverConfig extends AbstractConfig<SolverConfig> {
 
     public EnvironmentMode determineEnvironmentMode() {
         return defaultIfNull(environmentMode, EnvironmentMode.REPRODUCIBLE);
+    }
+
+    public DomainAccessType determineDomainAccessType() {
+        return defaultIfNull(domainAccessType, DomainAccessType.REFLECTION);
     }
 
     // ************************************************************************
@@ -519,6 +585,7 @@ public class SolverConfig extends AbstractConfig<SolverConfig> {
         solutionClass = ConfigUtils.inheritOverwritableProperty(solutionClass, inheritedConfig.getSolutionClass());
         entityClassList = ConfigUtils.inheritMergeableListProperty(entityClassList,
                 inheritedConfig.getEntityClassList());
+        domainAccessType = ConfigUtils.inheritOverwritableProperty(domainAccessType, inheritedConfig.getDomainAccessType());
         scoreDirectorFactoryConfig = ConfigUtils.inheritConfig(scoreDirectorFactoryConfig,
                 inheritedConfig.getScoreDirectorFactoryConfig());
         terminationConfig = ConfigUtils.inheritConfig(terminationConfig, inheritedConfig.getTerminationConfig());
