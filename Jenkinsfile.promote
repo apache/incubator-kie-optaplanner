@@ -293,19 +293,12 @@ pipeline {
             steps {
                 script {
                     String nextMicroSnapshotVersion = getNextMicroSnapshotVersion(getProjectVersion())
-                    dir("${quickstartsRepository}-bot") {
-                        prepareForPR(quickstartsRepository, getSnapshotBranch())
+                    String botQuickstartsRepository = "${quickstartsRepository}-bot"
+                    dir(botQuickstartsRepository) {
+                        prepareForPR(quickstartsRepository)
+                        updateQuickstartsVersions(botQuickstartsRepository, nextMicroSnapshotVersion)
 
-                        maven.mvnSetVersionProperty("version.org.optaplanner", nextMicroSnapshotVersion)
-                        maven.mvnVersionsUpdateParentAndChildModules(nextMicroSnapshotVersion, true)
-                        gradleVersionsUpdate(quickstartsRepository, nextMicroSnapshotVersion)
-
-                        String prLink = commitAndCreatePR("[${getSnapshotBranch()}] Update snapshot version to ${nextMicroSnapshotVersion}",
-                                {
-                                    githubscm.findAndStageNotIgnoredFiles('pom.xml')
-                                    githubscm.findAndStageNotIgnoredFiles('build.gradle')
-                                }, getSnapshotBranch(),  getBuildBranch())
-
+                        String prLink = commitAndCreatePR(("[${getBuildBranch()}] Update snapshot version to ${nextMicroSnapshotVersion}"));
                         setPipelinePrLink(quickstartsRepository, prLink)
                     }
                     dir(quickstartsRepository) {
@@ -470,7 +463,10 @@ String commitAndCreatePR(String commitMsg, Closure precommit, String localBranch
 }
 
 String commitAndCreatePR(String commitMsg) {
-    return commitAndCreatePR(commitMsg, { githubscm.findAndStageNotIgnoredFiles('pom.xml') }, getSnapshotBranch(), getBuildBranch())
+    return commitAndCreatePR(commitMsg, {
+        githubscm.findAndStageNotIgnoredFiles('pom.xml')
+        githubscm.findAndStageNotIgnoredFiles('build.gradle')
+    }, getSnapshotBranch(), getBuildBranch())
 }
 
 String createWebsitePrBranch(String websiteRepository) {
@@ -579,5 +575,16 @@ def forcePushProtectedBranch(String repo, String protectedBranch){
 void gradleVersionsUpdate(String repo, String newVersion){
     dir(repo) {
         sh "sed -i -E 's/def optaplannerVersion = \"[^\"\\s]+\"/def optaplannerVersion = \"${newVersion}\"/' */build.gradle"
+    }
+}
+
+void updateQuickstartsVersions(String repo, String version) {
+    maven.mvnSetVersionProperty("version.org.optaplanner", version)
+    maven.mvnVersionsUpdateParentAndChildModules(version, true)
+    gradleVersionsUpdate(repo, version)
+
+    dir(quickstartsRepository) {
+        assert !sh(script: "grep -Rn \"${getProjectVersion()}\" --include={pom.xml,build.gradle}|cat"
+                , allowEmptyResults: true, returnStdout: true)
     }
 }
