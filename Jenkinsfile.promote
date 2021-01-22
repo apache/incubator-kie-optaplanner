@@ -520,7 +520,7 @@ def updateAndResetBranch(String repo, String branchToReset){
 
     removeJbossNexusFromMavenAndGradle()
 
-    githubscm.commitChanges("[${getBuildBranch()}] Remove JBoss nexus repositories", {
+    githubscm.commitChanges("[${getBuildBranch()}] Update ${branchToReset} to ${getProjectVersion()}", {
         githubscm.findAndStageNotIgnoredFiles('pom.xml')
         githubscm.findAndStageNotIgnoredFiles('build.gradle')
     })
