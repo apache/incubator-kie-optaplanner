@@ -545,18 +545,6 @@ String getGhCredsID(){
     return params.GITHUB_TOKEN_CREDS_ID;
 }
 
-def setDefaultBranch(String repo, String defaultBranch, String ghPath = "../gh") {
-    withCredentials([string(credentialsId: getGhCredsID(), variable: 'GITHUB_TOKEN')]) {
-        sh "if [ -x $ghPath ]; then echo 'gh found at $ghPath'; else echo 'gh not found at $ghPath' && exit 1; fi"
-        // gh command from https://github.com/cli/cli/issues/929#issuecomment-629253585
-        def newDefaultBranch = sh(script: "${ghPath} api -XPATCH 'repos/${getGitAuthor()}/${repo}' -f default_branch=${defaultBranch} | jq '.default_branch'", returnStdout: true).trim()
-        if (newDefaultBranch == "\"${defaultBranch}\"") {
-            echo "[INFO] ${getGitAuthor()}/${repo}'s default branch has been updated to ${newDefaultBranch}."
-        } else {
-            error 'Couldn\'t update default branch.'
-        }
-    }
-}
 def enableForcePushes(String repo, String protectedBranch) {
     setAllowForcePushes(repo, protectedBranch, "true");
 }
@@ -569,7 +557,7 @@ def setAllowForcePushes(String repo, String protectedBranch, String enabled, Str
     sh "if [ -x $ghPath ]; then echo 'gh found at $ghPath'; else echo 'gh not found at $ghPath' && exit 1; fi"
     withCredentials([string(credentialsId: getGhCredsID(), variable: 'GITHUB_TOKEN')]) {
         def allowForcePushEnabled = sh(script: "${ghPath} api -XPUT 'repos/${getGitAuthor()}/${repo}/branches/${protectedBranch}/protection' -F required_status_checks=null -F enforce_admins=null -F required_pull_request_reviews=null -F restrictions=null -F allow_force_pushes=${enabled}| jq '.allow_force_pushes.enabled'", returnStdout: true).trim();
-        if ("true" == allowForcePushEnabled) {
+        if (enabled == allowForcePushEnabled) {
             echo "[INFO] ${getGitAuthor()}/${repo}'s ${protectedBranch} force push enabled."
         } else {
             error "Couldn\'t change protection on ${protectedBranch}."
