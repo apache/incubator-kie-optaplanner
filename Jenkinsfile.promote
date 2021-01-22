@@ -296,7 +296,7 @@ pipeline {
                     String botQuickstartsRepository = "${quickstartsRepository}-bot"
                     dir(botQuickstartsRepository) {
                         prepareForPR(quickstartsRepository)
-                        updateQuickstartsVersions(botQuickstartsRepository, nextMicroSnapshotVersion)
+                        updateQuickstartsVersions(nextMicroSnapshotVersion)
 
                         String prLink = commitAndCreatePR(("[${getBuildBranch()}] Update snapshot version to ${nextMicroSnapshotVersion}"));
                         setPipelinePrLink(quickstartsRepository, prLink)
@@ -576,13 +576,11 @@ void gradleVersionsUpdate(String newVersion){
     sh "sed -i -E 's/def optaplannerVersion = \"[^\"\\s]+\"/def optaplannerVersion = \"${newVersion}\"/' */build.gradle"
 }
 
-void updateQuickstartsVersions(String repo, String version) {
-    maven.mvnSetVersionProperty("version.org.optaplanner", version)
-    maven.mvnVersionsUpdateParentAndChildModules(version, true)
-    gradleVersionsUpdate(repo, version)
+void updateQuickstartsVersions(String newVersion) {
+    maven.mvnSetVersionProperty("version.org.optaplanner", newVersion)
+    maven.mvnVersionsUpdateParentAndChildModules(newVersion, true)
+    gradleVersionsUpdate(newVersion)
 
-    dir(quickstartsRepository) {
-        assert !sh(script: "grep -Rn \"${getProjectVersion()}\" --include={pom.xml,build.gradle}|cat"
-                , allowEmptyResults: true, returnStdout: true)
-    }
+    assert !sh(script: "grep -Rn \"${getProjectVersion()}\" --include={pom.xml,build.gradle}|cat"
+            , allowEmptyResults: true, returnStdout: true)
 }
