@@ -448,10 +448,10 @@ void tagLatest() {
     }
 }
 
-void prepareForPR(String repo, String localBranch = getSnapshotBranch()) {
+void prepareForPR(String repo) {
     checkoutRepo(repo)
     githubscm.forkRepo(getBotAuthorCredsID())
-    githubscm.createBranch(localBranch)
+    githubscm.createBranch(getSnapshotBranch())
 }
 
 String commitAndCreatePR(String commitMsg, Closure precommit, String localBranch, String targetBranch) {
