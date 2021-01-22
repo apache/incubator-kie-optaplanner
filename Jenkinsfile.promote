@@ -572,10 +572,8 @@ def forcePushProtectedBranch(String repo, String protectedBranch){
     disableForcePushes(repo, protectedBranch)
 }
 
-void gradleVersionsUpdate(String repo, String newVersion){
-    dir(repo) {
-        sh "sed -i -E 's/def optaplannerVersion = \"[^\"\\s]+\"/def optaplannerVersion = \"${newVersion}\"/' */build.gradle"
-    }
+void gradleVersionsUpdate(String newVersion){
+    sh "sed -i -E 's/def optaplannerVersion = \"[^\"\\s]+\"/def optaplannerVersion = \"${newVersion}\"/' */build.gradle"
 }
 
 void updateQuickstartsVersions(String repo, String version) {
