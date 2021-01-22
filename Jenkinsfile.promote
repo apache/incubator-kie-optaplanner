@@ -142,7 +142,7 @@ pipeline {
                         mergeAndPush(getDeployPrLink(quickstartsRepository))
                         tagLatest()
 
-                        updateAndResetStableBranch(quickstartsRepository)
+                        updateAndResetBranch(quickstartsRepository,'stable')
                     }
                 }
             }
@@ -519,16 +519,16 @@ void runMavenDeploy(MavenCommand mvnCmd) {
     mvnCmd.skipTests(true).run('clean deploy')
 }
 
-def updateAndResetStableBranch(String repo){
-    githubscm.createBranch('stable')
+def updateAndResetBranch(String repo, String branchToReset){
+    githubscm.createBranch(branchToReset)
 
     removeJbossNexusFromMavenAndGradle()
+
     githubscm.commitChanges("[${getBuildBranch()}] Remove JBoss nexus repositories", {
         githubscm.findAndStageNotIgnoredFiles('pom.xml')
         githubscm.findAndStageNotIgnoredFiles('build.gradle')
     })
-
-    forcePushProtectedBranch(repo, 'stable', getBuildBranch())
+    forcePushProtectedBranch(repo, branchToReset)
 }
 
 void removeJbossNexusFromMavenAndGradle() {
@@ -557,17 +557,35 @@ def setDefaultBranch(String repo, String defaultBranch, String ghPath = "../gh")
         }
     }
 }
+def enableForcePushes(String repo, String protectedBranch) {
+    setAllowForcePushes(repo, protectedBranch, "true");
+}
 
-def forcePushProtectedBranch(String repo, String defaultBranch, String tempBranch) {
-    setDefaultBranch(repo, tempBranch)
+def disableForcePushes(String repo, String protectedBranch) {
+    setAllowForcePushes(repo, protectedBranch, "false");
+}
+
+def setAllowForcePushes(String repo, String protectedBranch, String enabled, String ghPath = "../gh") {
+    sh "if [ -x $ghPath ]; then echo 'gh found at $ghPath'; else echo 'gh not found at $ghPath' && exit 1; fi"
+    withCredentials([string(credentialsId: getGhCredsID(), variable: 'GITHUB_TOKEN')]) {
+        def allowForcePushEnabled = sh(script: "${ghPath} api -XPUT 'repos/${getGitAuthor()}/${repo}/branches/${protectedBranch}/protection' -F required_status_checks=null -F enforce_admins=null -F required_pull_request_reviews=null -F restrictions=null -F allow_force_pushes=${enabled}| jq '.allow_force_pushes.enabled'", returnStdout: true).trim();
+        if ("true" == allowForcePushEnabled) {
+            echo "[INFO] ${getGitAuthor()}/${repo}'s ${protectedBranch} force push enabled."
+        } else {
+            error "Couldn\'t change protection on ${protectedBranch}."
+        }
+    }
+}
+
+def forcePushProtectedBranch(String repo, String protectedBranch){
+    enableForcePushes(repo, protectedBranch)
     withCredentials([usernamePassword(credentialsId: getGitAuthorCredsID(), usernameVariable: 'GIT_USERNAME', passwordVariable: 'GIT_PASSWORD')]) {
         sh """
         git config --local credential.helper \"!f() { echo username=\\$GIT_USERNAME; echo password=\\$GIT_PASSWORD; }; f\"
-        git push --delete origin ${defaultBranch}
-        git push origin ${defaultBranch}
+        git push origin ${protectedBranch} --force
         """
     }
-    setDefaultBranch(repo, defaultBranch)
+    disableForcePushes(repo, protectedBranch)
 }
 
 void gradleVersionsUpdate(String repo, String newVersion){
