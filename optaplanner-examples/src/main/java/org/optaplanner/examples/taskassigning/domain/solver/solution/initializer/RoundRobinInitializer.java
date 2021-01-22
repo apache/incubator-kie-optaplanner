@@ -23,24 +23,41 @@ import org.optaplanner.core.impl.phase.custom.CustomPhaseCommand;
 import org.optaplanner.examples.taskassigning.domain.Employee;
 import org.optaplanner.examples.taskassigning.domain.Task;
 import org.optaplanner.examples.taskassigning.domain.TaskAssigningSolution;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class RoundRobinInitializer implements CustomPhaseCommand<TaskAssigningSolution> {
+
+    private static final Logger logger = LoggerFactory.getLogger(RoundRobinInitializer.class);
 
     @Override
     public void changeWorkingSolution(ScoreDirector<TaskAssigningSolution> scoreDirector) {
         TaskAssigningSolution solution = scoreDirector.getWorkingSolution();
 
-        solution.getEmployeeList().forEach(employee -> employee.setTasks(new ArrayList<>()));
+        solution.getEmployeeList().stream()
+                .filter(employee -> employee.getTasks() == null)
+                .forEach(employee -> employee.setTasks(new ArrayList<>()));
 
         int employeeListSize = solution.getEmployeeList().size();
+        int tasksAssigned = 0;
 
         for (int i = 0; i < solution.getTaskList().size(); i++) {
             Task task = solution.getTaskList().get(i);
-            Employee employee = solution.getEmployeeList().get(i % employeeListSize);
-            scoreDirector.beforeVariableChanged(employee, "tasks");
-            employee.getTasks().add(task);
-            scoreDirector.afterVariableChanged(employee, "tasks");
-            scoreDirector.triggerVariableListeners();
+            if (task.getEmployee() == null) {
+                Employee employee = solution.getEmployeeList().get(i % employeeListSize);
+                scoreDirector.beforeVariableChanged(employee, "tasks");
+                employee.getTasks().add(task);
+                scoreDirector.afterVariableChanged(employee, "tasks");
+                scoreDirector.triggerVariableListeners();
+                tasksAssigned++;
+            }
+        }
+
+        if (logger.isDebugEnabled()) {
+            logger.debug("    {} task{} ha{} been assigned.",
+                    tasksAssigned,
+                    tasksAssigned == 1 ? "" : "s",
+                    tasksAssigned == 1 ? "s" : "ve");
         }
     }
 }
