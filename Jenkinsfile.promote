@@ -557,7 +557,7 @@ def setAllowForcePushes(String repo, String protectedBranch, String enabled, Str
     sh "if [ -x $ghPath ]; then echo 'gh found at $ghPath'; else echo 'gh not found at $ghPath' && exit 1; fi"
     withCredentials([string(credentialsId: getGhCredsID(), variable: 'GITHUB_TOKEN')]) {
 
-        sh("${ghPath} api 'repos/${getGitAuthor()}/${repo}/branches/${protectedBranch}/protection' | jq \"${getProtectionMapScript()}\" jq \". + {\"allow_force_pushes\":${enabled}}\" > protection.json");
+        sh("${ghPath} api 'repos/${getGitAuthor()}/${repo}/branches/${protectedBranch}/protection' | jq \"${getProtectionMapScript()}\" | jq \". + {\"allow_force_pushes\":${enabled}}\" > protection.json");
         def allowForcePushEnabled = sh(script: "${ghPath} api -XPUT 'repos/${getGitAuthor()}/${repo}/branches/${protectedBranch}/protection' --input protection.json | jq '.allow_force_pushes.enabled'", returnStdout: true).trim();
         sh "rm -r protection.json"
         if (enabled == allowForcePushEnabled) {
