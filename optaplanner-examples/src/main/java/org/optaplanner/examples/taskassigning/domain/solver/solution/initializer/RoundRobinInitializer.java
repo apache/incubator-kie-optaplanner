@@ -48,7 +48,6 @@ public class RoundRobinInitializer implements CustomPhaseCommand<TaskAssigningSo
                 scoreDirector.beforeVariableChanged(employee, "tasks");
                 employee.getTasks().add(task);
                 scoreDirector.afterVariableChanged(employee, "tasks");
-                scoreDirector.triggerVariableListeners();
                 tasksAssigned++;
             }
         }
@@ -59,5 +58,7 @@ public class RoundRobinInitializer implements CustomPhaseCommand<TaskAssigningSo
                     tasksAssigned == 1 ? "" : "s",
                     tasksAssigned == 1 ? "s" : "ve");
         }
+
+        scoreDirector.triggerVariableListeners();
     }
 }
