@@ -155,13 +155,6 @@ public class Task extends AbstractPersistable implements Labeled {
     // Complex methods
     // ************************************************************************
 
-    public boolean isLast() {
-        if (employee == null || index == null) {
-            throw new IllegalStateException("The task is not assigned or the variable listener is broken.");
-        }
-        return index == employee.getTasks().size() - 1;
-    }
-
     public int getMissingSkillCount() {
         if (employee == null) {
             return 0;

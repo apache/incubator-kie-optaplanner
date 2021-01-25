@@ -21,6 +21,7 @@ import org.optaplanner.core.api.score.stream.Constraint;
 import org.optaplanner.core.api.score.stream.ConstraintFactory;
 import org.optaplanner.core.api.score.stream.ConstraintProvider;
 import org.optaplanner.core.api.score.stream.uni.UniConstraintStream;
+import org.optaplanner.examples.taskassigning.domain.Employee;
 import org.optaplanner.examples.taskassigning.domain.Priority;
 import org.optaplanner.examples.taskassigning.domain.Task;
 
@@ -65,11 +66,10 @@ public final class TaskAssigningConstraintProvider implements ConstraintProvider
     }
 
     private Constraint minimizeMakespan(ConstraintFactory constraintFactory) {
-        return constraintFactory.from(Task.class)
-                .filter(Task::isLast)
+        return constraintFactory.from(Employee.class)
                 .penalize("Minimize makespan, latest ending employee first",
                         BendableScore.ofSoft(BENDABLE_SCORE_HARD_LEVELS_SIZE, BENDABLE_SCORE_SOFT_LEVELS_SIZE, 1, 1),
-                        task -> task.getEndTime() * task.getEndTime());
+                        employee -> employee.getEndTime() * employee.getEndTime());
     }
 
     private Constraint majorPriorityTaskEndTime(ConstraintFactory constraintFactory) {
