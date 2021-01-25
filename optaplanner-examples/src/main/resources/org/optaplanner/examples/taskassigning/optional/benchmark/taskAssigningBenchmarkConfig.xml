@@ -19,10 +19,10 @@
     </solver>
     <problemBenchmarks>
       <solutionFileIOClass>org.optaplanner.examples.taskassigning.persistence.orig.BridgeTaskAssigningXmlSolutionFileIO</solutionFileIOClass>
-      <inputSolutionFile>data/taskassigning/solved/tmp-orig-24tasks-8employees.xml</inputSolutionFile>
-      <inputSolutionFile>data/taskassigning/solved/tmp-orig-50tasks-5employees.xml</inputSolutionFile>
-      <inputSolutionFile>data/taskassigning/solved/tmp-orig-100tasks-5employees.xml</inputSolutionFile>
-      <inputSolutionFile>data/taskassigning/solved/tmp-orig-500tasks-20employees.xml</inputSolutionFile>
+      <inputSolutionFile>data/taskassigning/solved/orig-24tasks-8employees.xml</inputSolutionFile>
+      <inputSolutionFile>data/taskassigning/solved/orig-50tasks-5employees.xml</inputSolutionFile>
+      <inputSolutionFile>data/taskassigning/solved/orig-100tasks-5employees.xml</inputSolutionFile>
+      <inputSolutionFile>data/taskassigning/solved/orig-500tasks-20employees.xml</inputSolutionFile>
       <!--<problemStatisticType>BEST_SCORE</problemStatisticType>-->
       <!--<problemStatisticType>STEP_SCORE</problemStatisticType>-->
       <!--<problemStatisticType>SCORE_CALCULATION_SPEED</problemStatisticType>-->
