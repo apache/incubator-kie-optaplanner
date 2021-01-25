@@ -541,6 +541,10 @@ String getGhCredsID(){
     return params.GITHUB_TOKEN_CREDS_ID;
 }
 
+String getProtectionMapScript(){
+    return "if .restrictions == null then . + {\"restrictions_used\":null}  else . + {\"restrictions_used\":{\"users\":[.restrictions.users[].login], \"team\":[.restrictions.users[].slug]}} end | {\"required_status_checks\": .required_status_checks,  \"required_pull_request_reviews\": {\"dismiss_stale_reviews\":.required_pull_request_reviews.dismiss_stale_reviews, \"require_code_owner_reviews\":.required_pull_request_reviews.require_code_owner_reviews}, \"enforce_admins\":.enforce_admins.enabled, \"restrictions\":.restrictions_used}";
+}
+
 def enableForcePushes(String repo, String protectedBranch) {
     setAllowForcePushes(repo, protectedBranch, "true");
 }
@@ -552,7 +556,10 @@ def disableForcePushes(String repo, String protectedBranch) {
 def setAllowForcePushes(String repo, String protectedBranch, String enabled, String ghPath = "../gh") {
     sh "if [ -x $ghPath ]; then echo 'gh found at $ghPath'; else echo 'gh not found at $ghPath' && exit 1; fi"
     withCredentials([string(credentialsId: getGhCredsID(), variable: 'GITHUB_TOKEN')]) {
-        def allowForcePushEnabled = sh(script: "${ghPath} api -XPUT 'repos/${getGitAuthor()}/${repo}/branches/${protectedBranch}/protection' -F required_status_checks=null -F enforce_admins=null -F required_pull_request_reviews=null -F restrictions=null -F allow_force_pushes=${enabled}| jq '.allow_force_pushes.enabled'", returnStdout: true).trim();
+
+        sh("${ghPath} api'repos/${getGitAuthor()}/${repo}/branches/${protectedBranch}/protection' | jq  -f ${getProtectionMapScript()} | jq \". + {\"allow_force_pushes\":${enabled}}\" > protection.json");
+        def allowForcePushEnabled = sh(script: "${ghPath} api -XPUT 'repos/${getGitAuthor()}/${repo}/branches/${protectedBranch}/protection' --input protection.json | jq '.allow_force_pushes.enabled'", returnStdout: true).trim();
+        sh "rm -r protection.json"
         if (enabled == allowForcePushEnabled) {
             echo "[INFO] ${getGitAuthor()}/${repo}'s ${protectedBranch} force push enabled."
         } else {
