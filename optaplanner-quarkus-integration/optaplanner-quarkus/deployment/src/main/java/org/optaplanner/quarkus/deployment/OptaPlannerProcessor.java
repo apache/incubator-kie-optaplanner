@@ -422,36 +422,34 @@ class OptaPlannerProcessor {
                 case FIELD: {
                     FieldInfo fieldInfo = annotatedMember.target().asField();
                     ClassInfo classInfo = fieldInfo.declaringClass();
-                    // SolutionDescriptor PLANNING_SCORE is also picked up as a candidate, which cause problems
-                    if (classInfo.name().toString().startsWith(SolutionDescriptor.class.getName())) {
-                        continue;
-                    }
-                    try {
-                        GizmoMemberAccessorEntityEnhancer.generateFieldAccessor(annotatedMember, indexView,
-                                debuggableClassOutput,
-                                classInfo, fieldInfo, transformers);
-                    } catch (ClassNotFoundException e) {
-                        throw new IllegalStateException("Fail to generate member accessor for field (" +
-                                fieldInfo.name() + ") of class " +
-                                classInfo.name().toString() + ".", e);
+
+                    if (!shouldIgnoreMember(classInfo)) {
+                        try {
+                            GizmoMemberAccessorEntityEnhancer.generateFieldAccessor(annotatedMember, indexView,
+                                    debuggableClassOutput,
+                                    classInfo, fieldInfo, transformers);
+                        } catch (ClassNotFoundException e) {
+                            throw new IllegalStateException("Fail to generate member accessor for field (" +
+                                    fieldInfo.name() + ") of class " +
+                                    classInfo.name().toString() + ".", e);
+                        }
                     }
                     break;
                 }
                 case METHOD: {
                     MethodInfo methodInfo = annotatedMember.target().asMethod();
                     ClassInfo classInfo = methodInfo.declaringClass();
-                    // SolutionDescriptor PLANNING_SCORE is also picked up as a candidate, which cause problems
-                    if (classInfo.name().toString().startsWith(SolutionDescriptor.class.getName())) {
-                        continue;
-                    }
-                    try {
-                        GizmoMemberAccessorEntityEnhancer.generateMethodAccessor(annotatedMember, indexView,
-                                debuggableClassOutput,
-                                classInfo, methodInfo, transformers);
-                    } catch (ClassNotFoundException e) {
-                        throw new IllegalStateException("Fail to generate member accessor for method (" +
-                                methodInfo.name() + ") of class " +
-                                classInfo.name().toString() + ".", e);
+
+                    if (!shouldIgnoreMember(classInfo)) {
+                        try {
+                            GizmoMemberAccessorEntityEnhancer.generateMethodAccessor(annotatedMember, indexView,
+                                    debuggableClassOutput,
+                                    classInfo, methodInfo, transformers);
+                        } catch (ClassNotFoundException e) {
+                            throw new IllegalStateException("Fail to generate member accessor for method (" +
+                                    methodInfo.name() + ") of class " +
+                                    classInfo.name().toString() + ".", e);
+                        }
                     }
                     break;
                 }
@@ -462,6 +460,11 @@ class OptaPlannerProcessor {
         }
         return new OptaPlannerGizmoInfo(gizmoMemberAccessorNameToGenericType,
                 gizmoMemberAccessorNameToAnnotatedElement);
+    }
+
+    private boolean shouldIgnoreMember(ClassInfo declaringClass) {
+        // SolutionDescriptor PLANNING_SCORE is also picked up as a candidate, which cause problems
+        return declaringClass.name().toString().startsWith(SolutionDescriptor.class.getName());
     }
 
 }
