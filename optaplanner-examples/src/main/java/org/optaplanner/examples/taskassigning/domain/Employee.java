@@ -20,7 +20,6 @@ import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Set;
 
 import org.optaplanner.core.api.domain.entity.PlanningEntity;
@@ -123,32 +122,6 @@ public class Employee extends AbstractPersistable implements Labeled {
         }
         toolText.append("</center></html>");
         return toolText.toString();
-    }
-
-    // equals & hashCode added because the UI needs to find and match employees from solution's employeeList and Task's
-    // employee shadow variable when building and using the employeeIndexMap in TaskOverviewPanel.
-    //
-    // This a quick workaround.
-    //
-    // Solution's employeeList and Task's employee contain different Employee clones, which I think is unexpected.
-    // This issue might be fixed by correctly implementing variable listener for Task's employee or by updating
-    // the solution cloner.
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
-        Employee employee = (Employee) o;
-        return Objects.equals(id, employee.id);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(id);
     }
 
     @Override
