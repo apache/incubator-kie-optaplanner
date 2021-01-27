@@ -16,12 +16,12 @@
 
 package org.optaplanner.core.impl.score.stream.bavet.bi;
 
+import org.optaplanner.core.impl.score.stream.bavet.common.BavetAbstractTuple;
+import org.optaplanner.core.impl.score.stream.bavet.common.BavetGroupTuple;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Function;
-
-import org.optaplanner.core.impl.score.stream.bavet.common.BavetAbstractTuple;
-import org.optaplanner.core.impl.score.stream.bavet.common.BavetGroupTuple;
 
 public final class BavetGroupBiTuple<GroupKey_, ResultContainer_, Result_> extends BavetAbstractBiTuple<GroupKey_, Result_>
         implements BavetGroupTuple {
@@ -32,7 +32,7 @@ public final class BavetGroupBiTuple<GroupKey_, ResultContainer_, Result_> exten
     private int parentCount;
     private ResultContainer_ resultContainer;
     private Result_ result;
-    private final List<BavetAbstractTuple> childTupleList = new ArrayList<>();
+    private final List<BavetAbstractTuple> childTupleList = new ArrayList<>(1);
 
     public BavetGroupBiTuple(BavetGroupBiNode<GroupKey_, ResultContainer_, Result_> node,
             GroupKey_ groupKey, ResultContainer_ resultContainer) {
