@@ -19,7 +19,6 @@ package org.optaplanner.quarkus.deployment;
 import static io.quarkus.deployment.annotations.ExecutionTime.STATIC_INIT;
 
 import java.io.IOException;
-import java.lang.reflect.AnnotatedElement;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -27,9 +26,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -55,11 +52,9 @@ import org.optaplanner.core.config.score.director.ScoreDirectorFactoryConfig;
 import org.optaplanner.core.config.solver.SolverConfig;
 import org.optaplanner.core.config.solver.SolverManagerConfig;
 import org.optaplanner.core.config.solver.termination.TerminationConfig;
-import org.optaplanner.core.impl.domain.common.accessor.gizmo.GizmoMemberAccessorFactory;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.quarkus.OptaPlannerBeanProvider;
 import org.optaplanner.quarkus.OptaPlannerRecorder;
-import org.optaplanner.quarkus.gizmo.OptaPlannerGizmoInfo;
 
 import io.quarkus.arc.deployment.AdditionalBeanBuildItem;
 import io.quarkus.arc.deployment.GeneratedBeanBuildItem;
@@ -154,7 +149,7 @@ class OptaPlannerProcessor {
         applySolverProperties(recorderContext, indexView, solverConfig);
         assertNoMemberAnnotationWithoutClassAnnotation(indexView);
 
-        if (solverConfig.getSolutionClass() != null) {
+        if (solverConfig.getSolutionClass() != null && solverConfig.getDomainAccessType() != DomainAccessType.GIZMO) {
             Type jandexType = Type.create(DotName.createSimple(solverConfig.getSolutionClass().getName()), Type.Kind.CLASS);
             reflectiveHierarchyClass.produce(new ReflectiveHierarchyBuildItem.Builder()
                     .type(jandexType)
@@ -442,7 +437,9 @@ class OptaPlannerProcessor {
             }
             classOutput.write(className, bytes);
         };
-        Set<String> generatedClassSet = new HashSet<>();
+
+        Set<String> generatedMemberAccessorsClassNameSet = new HashSet<>();
+        Set<String> gizmoSolutionClonerClassNameSet = new HashSet<>();
 
         if (solverConfig.getDomainAccessType() == DomainAccessType.GIZMO) {
             Collection<AnnotationInstance> membersToGeneratedAccessorsFor = new ArrayList<>();
@@ -459,11 +456,11 @@ class OptaPlannerProcessor {
 
                         if (!shouldIgnoreMember(classInfo)) {
                             try {
-                                generatedClassSet
+                                generatedMemberAccessorsClassNameSet
                                         .add(GizmoMemberAccessorEntityEnhancer.generateFieldAccessor(annotatedMember, indexView,
                                                 debuggableClassOutput,
                                                 classInfo, fieldInfo, transformers));
-                            } catch (ClassNotFoundException e) {
+                            } catch (ClassNotFoundException | NoSuchFieldException e) {
                                 throw new IllegalStateException("Fail to generate member accessor for field (" +
                                         fieldInfo.name() + ") of class " +
                                         classInfo.name().toString() + ".", e);
@@ -477,7 +474,7 @@ class OptaPlannerProcessor {
 
                         if (!shouldIgnoreMember(classInfo)) {
                             try {
-                                generatedClassSet.add(
+                                generatedMemberAccessorsClassNameSet.add(
                                         GizmoMemberAccessorEntityEnhancer.generateMethodAccessor(annotatedMember, indexView,
                                                 debuggableClassOutput,
                                                 classInfo, methodInfo, transformers));
@@ -494,23 +491,19 @@ class OptaPlannerProcessor {
                     }
                 }
             }
+            // Using REFLECTION domain access type so OptaPlanner doesn't try to generate GIZMO code
+            SolutionDescriptor solutionDescriptor = SolutionDescriptor.buildSolutionDescriptor(DomainAccessType.REFLECTION,
+                    solverConfig.getSolutionClass(), solverConfig.getEntityClassList());
+            try {
+                gizmoSolutionClonerClassNameSet.add(GizmoMemberAccessorEntityEnhancer.generateSolutionCloner(solutionDescriptor,
+                        debuggableClassOutput,
+                        transformers));
+            } catch (ClassNotFoundException | NoSuchFieldException e) {
+                throw new IllegalStateException("Error generating SolutionCloner.", e);
+            }
         }
-        GizmoMemberAccessorEntityEnhancer.generateGizmoInitializer(beanClassOutput, generatedClassSet);
 
-        Set<String> gizmoSolutionClonerClassNameSet = new HashSet<>();
-
-        // Using REFLECTION domain access type so OptaPlanner doesn't try to generate GIZMO code
-        SolutionDescriptor solutionDescriptor = SolutionDescriptor.buildSolutionDescriptor(DomainAccessType.REFLECTION,
-                solverConfig.getSolutionClass(), solverConfig.getEntityClassList());
-        try {
-            gizmoSolutionClonerClassNameSet.add(GizmoMemberAccessorEntityEnhancer.generateSolutionCloner(solutionDescriptor,
-                    debuggableClassOutput,
-                    transformers));
-        } catch (ClassNotFoundException | NoSuchFieldException e) {
-            throw new IllegalStateException("Error generating SolutionCloner.", e);
-        }
-        return new OptaPlannerGizmoInfo(gizmoMemberAccessorNameToGenericType,
-                gizmoMemberAccessorNameToAnnotatedElement,
+        GizmoMemberAccessorEntityEnhancer.generateGizmoInitializer(beanClassOutput, generatedMemberAccessorsClassNameSet,
                 gizmoSolutionClonerClassNameSet);
     }
 

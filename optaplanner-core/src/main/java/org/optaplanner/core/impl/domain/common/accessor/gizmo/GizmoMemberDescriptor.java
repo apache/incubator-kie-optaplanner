@@ -19,6 +19,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Member;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
+import java.lang.reflect.Type;
 import java.util.Optional;
 import java.util.function.Consumer;
 
@@ -240,6 +241,30 @@ public class GizmoMemberDescriptor {
         });
 
         return Type.getType(holder[0]).getClassName();
+    }
+
+    public Type getType() {
+        Type[] out = new Type[1];
+
+        whenMetadataIsOnField(fd -> {
+            try {
+                out[0] = declaringClass.getDeclaredField(fd.getName()).getGenericType();
+            } catch (NoSuchFieldException e) {
+                throw new IllegalStateException("Cannot find field (" + fd.getName() + ") on class (" + declaringClass + ").",
+                        e);
+            }
+        });
+
+        whenMetadataIsOnMethod(md -> {
+            try {
+                out[0] = declaringClass.getDeclaredMethod(md.getName()).getGenericReturnType();
+            } catch (NoSuchMethodException e) {
+                throw new IllegalStateException("Cannot find method (" + md.getName() + ") on class (" + declaringClass + ").",
+                        e);
+            }
+        });
+
+        return out[0];
     }
 
     @Override

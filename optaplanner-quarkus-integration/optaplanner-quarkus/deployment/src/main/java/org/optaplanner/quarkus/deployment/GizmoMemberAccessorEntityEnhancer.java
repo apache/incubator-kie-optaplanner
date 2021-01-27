@@ -26,7 +26,7 @@ import static org.objectweb.asm.Opcodes.PUTFIELD;
 import static org.objectweb.asm.Opcodes.RETURN;
 
 import java.lang.annotation.Annotation;
-import java.lang.reflect.AnnotatedElement;
+import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -36,7 +36,6 @@ import java.util.Optional;
 import java.util.Set;
 
 import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Named;
 
 import org.jboss.jandex.AnnotationInstance;
 import org.jboss.jandex.ClassInfo;
@@ -46,12 +45,15 @@ import org.jboss.jandex.MethodInfo;
 import org.objectweb.asm.ClassVisitor;
 import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Type;
+import org.optaplanner.core.api.domain.solution.cloner.SolutionCloner;
 import org.optaplanner.core.impl.domain.common.accessor.MemberAccessor;
 import org.optaplanner.core.impl.domain.common.accessor.gizmo.GizmoMemberAccessorFactory;
 import org.optaplanner.core.impl.domain.common.accessor.gizmo.GizmoMemberAccessorImplementor;
 import org.optaplanner.core.impl.domain.common.accessor.gizmo.GizmoMemberDescriptor;
-import org.optaplanner.quarkus.gizmo.annotations.QuarkusRecordableAnnotatedElement;
-import org.optaplanner.quarkus.gizmo.types.QuarkusRecordableTypes;
+import org.optaplanner.core.impl.domain.solution.cloner.GizmoSolutionOrEntityDescriptor;
+import org.optaplanner.core.impl.domain.solution.cloner.gizmo.GizmoSolutionClonerFactory;
+import org.optaplanner.core.impl.domain.solution.cloner.gizmo.GizmoSolutionClonerImplementor;
+import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.quarkus.gizmo.OptaPlannerGizmoInitializer;
 
 import io.quarkus.deployment.annotations.BuildProducer;
@@ -249,9 +251,6 @@ public class GizmoMemberAccessorEntityEnhancer {
                 .classOutput(classOutput)
                 .build();
 
-        classCreator.addAnnotation(ApplicationScoped.class);
-        classCreator.addAnnotation(Named.class).addValue("value", generatedClassName);
-
         Map<Class<?>, GizmoSolutionOrEntityDescriptor> memoizedGizmoSolutionOrEntityDescriptorForClassMap = new HashMap<>();
 
         GizmoSolutionOrEntityDescriptor gizmoSolutionDescriptor =
@@ -274,49 +273,6 @@ public class GizmoMemberAccessorEntityEnhancer {
         return generatedClassName;
     }
 
-    private static String getTypeDescriptor(java.lang.reflect.Type type) throws ClassNotFoundException {
-        String typeName = type.getTypeName();
-        int genericStart = typeName.indexOf('<');
-        boolean isGeneric = genericStart != -1;
-        if (isGeneric) {
-            int genericEnd = typeName.lastIndexOf('>');
-            return Type.getDescriptor(Class.forName(typeName.substring(0, genericStart) + typeName.substring(genericEnd + 1)));
-        } else {
-            return Type.getDescriptor(Class.forName(typeName));
-        }
-    }
-
-    public static String generateGizmoInitializer(ClassOutput classOutput, Set<String> generatedClassNames) {
-        String generatedClassName = OptaPlannerGizmoInitializer.class.getName() + "$Implementation";
-        try (ClassCreator classCreator = ClassCreator
-                .builder()
-                .className(generatedClassName)
-                .interfaces(OptaPlannerGizmoInitializer.class)
-                .classOutput(classOutput)
-                .build()) {
-
-            classCreator.addAnnotation(ApplicationScoped.class);
-            MethodCreator methodCreator =
-                    classCreator.getMethodCreator(MethodDescriptor.ofMethod(OptaPlannerGizmoInitializer.class,
-                            "setup", void.class));
-            ResultHandle memberAccessorMap = methodCreator.newInstance(MethodDescriptor.ofConstructor(HashMap.class));
-            for (String generatedMemberAccessor : generatedClassNames) {
-                ResultHandle generatedMemberAccessorResultHandle = methodCreator.load(generatedMemberAccessor);
-                ResultHandle memberAccessorInstance =
-                        methodCreator.newInstance(MethodDescriptor.ofConstructor(generatedMemberAccessor));
-                methodCreator.invokeInterfaceMethod(
-                        MethodDescriptor.ofMethod(Map.class, "put", Object.class, Object.class, Object.class),
-                        memberAccessorMap, generatedMemberAccessorResultHandle, memberAccessorInstance);
-            }
-            methodCreator.invokeStaticMethod(
-                    MethodDescriptor.ofMethod(GizmoMemberAccessorFactory.class, "usePregeneratedMemberAccessorMap",
-                            void.class, Map.class),
-                    memberAccessorMap);
-            methodCreator.returnValue(null);
-        }
-        return generatedClassName;
-    }
-
     private static GizmoSolutionOrEntityDescriptor getGizmoSolutionOrEntityDescriptorForEntity(
             SolutionDescriptor solutionDescriptor,
             Class<?> entityClass,
@@ -333,8 +289,7 @@ public class GizmoMemberAccessorEntityEnhancer {
 
                 // Not being recorded, so can use Type and annotated element directly
                 if (Modifier.isPublic(field.getModifiers())) {
-                    member = new GizmoMemberDescriptor(name, memberDescriptor, declaringClass,
-                            field, field.getGenericType());
+                    member = new GizmoMemberDescriptor(name, memberDescriptor, memberDescriptor, declaringClass);
                 } else {
                     addVirtualFieldGetter(declaringClass, field, transformers);
                     String methodName = getVirtualGetterName(true, field.getName());
@@ -345,8 +300,8 @@ public class GizmoMemberAccessorEntityEnhancer {
                             getVirtualSetterName(true, field.getName()),
                             "void",
                             field.getType());
-                    member = new GizmoMemberDescriptor(name, getterDescriptor, declaringClass,
-                            field, field.getGenericType(), setterDescriptor);
+                    member = new GizmoMemberDescriptor(name, getterDescriptor, memberDescriptor, declaringClass,
+                            setterDescriptor);
                 }
                 solutionFieldToMemberDescriptor.put(field, member);
             }
@@ -358,16 +313,51 @@ public class GizmoMemberAccessorEntityEnhancer {
         return out;
     }
 
-    private static String getTypeDescriptor(java.lang.reflect.Type type) throws ClassNotFoundException {
-        String typeName = type.getTypeName();
-        int genericStart = typeName.indexOf('<');
-        boolean isGeneric = genericStart != -1;
-        if (isGeneric) {
-            int genericEnd = typeName.lastIndexOf('>');
-            return Type.getDescriptor(Class.forName(typeName.substring(0, genericStart) + typeName.substring(genericEnd + 1)));
-        } else {
-            return Type.getDescriptor(Class.forName(typeName));
+    public static String generateGizmoInitializer(ClassOutput classOutput, Set<String> generatedMemberAccessorsClassNames,
+            Set<String> generatedSolutionClonersClassNames) {
+        String generatedClassName = OptaPlannerGizmoInitializer.class.getName() + "$Implementation";
+        ClassCreator classCreator = ClassCreator
+                .builder()
+                .className(generatedClassName)
+                .interfaces(OptaPlannerGizmoInitializer.class)
+                .classOutput(classOutput)
+                .build();
+
+        classCreator.addAnnotation(ApplicationScoped.class);
+        MethodCreator methodCreator = classCreator.getMethodCreator(MethodDescriptor.ofMethod(OptaPlannerGizmoInitializer.class,
+                "setup", void.class));
+        ResultHandle memberAccessorMap = methodCreator.newInstance(MethodDescriptor.ofConstructor(HashMap.class));
+        for (String generatedMemberAccessor : generatedMemberAccessorsClassNames) {
+            ResultHandle generatedMemberAccessorResultHandle = methodCreator.load(generatedMemberAccessor);
+            ResultHandle memberAccessorInstance =
+                    methodCreator.newInstance(MethodDescriptor.ofConstructor(generatedMemberAccessor));
+            methodCreator.invokeInterfaceMethod(
+                    MethodDescriptor.ofMethod(Map.class, "put", Object.class, Object.class, Object.class),
+                    memberAccessorMap, generatedMemberAccessorResultHandle, memberAccessorInstance);
         }
+        methodCreator.invokeStaticMethod(
+                MethodDescriptor.ofMethod(GizmoMemberAccessorFactory.class, "usePregeneratedMemberAccessorMap",
+                        void.class, Map.class),
+                memberAccessorMap);
+
+        ResultHandle solutionClonerMap = methodCreator.newInstance(MethodDescriptor.ofConstructor(HashMap.class));
+        for (String generatedSolutionCloner : generatedSolutionClonersClassNames) {
+            ResultHandle generatedMemberAccessorResultHandle = methodCreator.load(generatedSolutionCloner);
+            ResultHandle memberAccessorInstance =
+                    methodCreator.newInstance(MethodDescriptor.ofConstructor(generatedSolutionCloner));
+            methodCreator.invokeInterfaceMethod(
+                    MethodDescriptor.ofMethod(Map.class, "put", Object.class, Object.class, Object.class),
+                    solutionClonerMap, generatedMemberAccessorResultHandle, memberAccessorInstance);
+        }
+
+        methodCreator.invokeStaticMethod(
+                MethodDescriptor.ofMethod(GizmoSolutionClonerFactory.class, "useSolutionClonerMap",
+                        void.class, Map.class),
+                solutionClonerMap);
+        methodCreator.returnValue(null);
+
+        classCreator.close();
+        return generatedClassName;
     }
 
     private static class OptaPlannerFieldEnhancingClassVisitor extends ClassVisitor {
