@@ -40,13 +40,13 @@ public class TimeTableResourceTest {
     @Timeout(600_000)
     public void solveDemoDataUntilFeasible() throws InterruptedException {
         timeTableResource.solve();
-        TimeTable timeTable = timeTableResource.getTimeTable();
-        while (timeTable.getSolverStatus() != SolverStatus.NOT_SOLVING) {
+        TimeTable timeTable;
+        do { // Use do-while to give the solver some time and avoid retrieving an early infeasible solution.
             // Quick polling (not a Test Thread Sleep anti-pattern)
             // Test is still fast on fast machines and doesn't randomly fail on slow machines.
             Thread.sleep(20L);
             timeTable = timeTableResource.getTimeTable();
-        }
+        } while (timeTable.getSolverStatus() != SolverStatus.NOT_SOLVING);
         assertFalse(timeTable.getLessonList().isEmpty());
         for (Lesson lesson : timeTable.getLessonList()) {
             assertNotNull(lesson.getTimeslot());
