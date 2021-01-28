@@ -27,6 +27,8 @@ import static org.objectweb.asm.Opcodes.RETURN;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
+import java.lang.reflect.Member;
+import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -46,6 +48,7 @@ import org.objectweb.asm.ClassVisitor;
 import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Type;
 import org.optaplanner.core.api.domain.solution.cloner.SolutionCloner;
+import org.optaplanner.core.impl.domain.common.ReflectionHelper;
 import org.optaplanner.core.impl.domain.common.accessor.MemberAccessor;
 import org.optaplanner.core.impl.domain.common.accessor.gizmo.GizmoMemberAccessorFactory;
 import org.optaplanner.core.impl.domain.common.accessor.gizmo.GizmoMemberAccessorImplementor;
@@ -128,8 +131,10 @@ public class GizmoMemberAccessorEntityEnhancer {
             ClassOutput classOutput, ClassInfo classInfo,
             FieldInfo fieldInfo, BuildProducer<BytecodeTransformerBuildItem> transformers)
             throws ClassNotFoundException, NoSuchFieldException {
-        String generatedClassName = classInfo.name().prefix().toString() + ".$optaplanner$__"
-                + classInfo.name().withoutPackagePrefix() + "$__" + fieldInfo.name();
+        Class<?> declaringClass = Class.forName(fieldInfo.declaringClass().name().toString(), false,
+                Thread.currentThread().getContextClassLoader());
+        Field fieldMember = declaringClass.getDeclaredField(fieldInfo.name());
+        String generatedClassName = GizmoMemberAccessorFactory.getGeneratedClassName(fieldMember);
         try (ClassCreator classCreator = ClassCreator
                 .builder()
                 .className(generatedClassName)
@@ -138,8 +143,7 @@ public class GizmoMemberAccessorEntityEnhancer {
                 .build()) {
 
             GizmoMemberDescriptor member;
-            Class<?> declaringClass = Class.forName(fieldInfo.declaringClass().name().toString(), false,
-                    Thread.currentThread().getContextClassLoader());
+
             FieldDescriptor memberDescriptor = FieldDescriptor.of(fieldInfo);
             String name = fieldInfo.name();
 
@@ -164,14 +168,9 @@ public class GizmoMemberAccessorEntityEnhancer {
         return generatedClassName;
     }
 
-    private static String getMemberName(MethodInfo methodInfo) {
-        if (methodInfo.name().startsWith("get")) { // Case 1: Getter method
-            return methodInfo.name().substring(3, 4).toLowerCase(Locale.ROOT) + methodInfo.name().substring(4);
-        } else if (methodInfo.name().startsWith("is")) { // Case 2: Getter method for boolean
-            return methodInfo.name().substring(2, 3).toLowerCase(Locale.ROOT) + methodInfo.name().substring(3);
-        } else { // Case 3: Read method
-            return methodInfo.name();
-        }
+    private static String getMemberName(Member member) {
+        return Optional.ofNullable(ReflectionHelper.getGetterPropertyName(member))
+                .orElse(member.getName());
     }
 
     private static Optional<MethodDescriptor> getSetterDescriptor(ClassInfo classInfo, MethodInfo methodInfo, String name) {
@@ -204,9 +203,12 @@ public class GizmoMemberAccessorEntityEnhancer {
      */
     public static String generateMethodAccessor(AnnotationInstance annotationInstance, IndexView indexView,
             ClassOutput classOutput, ClassInfo classInfo,
-            MethodInfo methodInfo, BuildProducer<BytecodeTransformerBuildItem> transformers) throws ClassNotFoundException {
-        String generatedClassName = classInfo.name().prefix().toString() + ".$optaplanner$__"
-                + classInfo.name().withoutPackagePrefix() + "$__" + methodInfo.name();
+            MethodInfo methodInfo, BuildProducer<BytecodeTransformerBuildItem> transformers)
+            throws ClassNotFoundException, NoSuchMethodException {
+        Class<?> declaringClass = Class.forName(methodInfo.declaringClass().name().toString(), false,
+                Thread.currentThread().getContextClassLoader());
+        Method methodMember = declaringClass.getDeclaredMethod(methodInfo.name());
+        String generatedClassName = GizmoMemberAccessorFactory.getGeneratedClassName(methodMember);
         try (ClassCreator classCreator = ClassCreator
                 .builder()
                 .className(generatedClassName)
@@ -215,11 +217,9 @@ public class GizmoMemberAccessorEntityEnhancer {
                 .build()) {
 
             GizmoMemberDescriptor member;
-            String name = getMemberName(methodInfo);
+            String name = getMemberName(methodMember);
             Optional<MethodDescriptor> setterDescriptor = getSetterDescriptor(classInfo, methodInfo, name);
 
-            Class<?> declaringClass = Class.forName(methodInfo.declaringClass().name().toString(), false,
-                    Thread.currentThread().getContextClassLoader());
             MethodDescriptor memberDescriptor = MethodDescriptor.of(methodInfo);
 
             if (Modifier.isPublic(methodInfo.flags())) {

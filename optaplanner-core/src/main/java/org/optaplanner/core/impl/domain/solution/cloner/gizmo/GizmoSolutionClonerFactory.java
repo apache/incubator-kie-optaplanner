@@ -20,8 +20,7 @@ public class GizmoSolutionClonerFactory {
      * @return The generated class name for solutionDescriptor
      */
     public static String getGeneratedClassName(SolutionDescriptor<?> solutionDescriptor) {
-        return solutionDescriptor.getSolutionClass().getPackage().getName() + ".$optaplanner$__"
-                + solutionDescriptor.getSolutionClass().getSimpleName();
+        return solutionDescriptor.getSolutionClass().getName() + "$OptaPlanner$SolutionCloner";
     }
 
     public static void useSolutionClonerMap(Map<String, SolutionCloner> theSolutionClonerMap) {

@@ -16,11 +16,14 @@
 package org.optaplanner.core.impl.domain.common.accessor.gizmo;
 
 import java.lang.annotation.Annotation;
+import java.lang.reflect.Field;
 import java.lang.reflect.Member;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 import org.optaplanner.core.api.domain.common.DomainAccessType;
+import org.optaplanner.core.impl.domain.common.ReflectionHelper;
 import org.optaplanner.core.impl.domain.common.accessor.MemberAccessor;
 
 public class GizmoMemberAccessorFactory {
@@ -36,8 +39,11 @@ public class GizmoMemberAccessorFactory {
      * @return The generated class name for member
      */
     public static String getGeneratedClassName(Member member) {
-        return member.getDeclaringClass().getPackage().getName() + ".$optaplanner$__"
-                + member.getDeclaringClass().getSimpleName() + "$__" + member.getName();
+        String memberName = Optional.ofNullable(ReflectionHelper.getGetterPropertyName(member))
+                .orElse(member.getName());
+        String memberType = (member instanceof Field) ? "Field" : "Method";
+
+        return member.getDeclaringClass().getName() + "$OptaPlanner$MemberAccessor$" + memberType + "$" + memberName;
     }
 
     public static void usePregeneratedMemberAccessorMap(Map<String, MemberAccessor> memberAccessorMap) {

@@ -478,7 +478,7 @@ class OptaPlannerProcessor {
                                         GizmoMemberAccessorEntityEnhancer.generateMethodAccessor(annotatedMember, indexView,
                                                 debuggableClassOutput,
                                                 classInfo, methodInfo, transformers));
-                            } catch (ClassNotFoundException e) {
+                            } catch (ClassNotFoundException | NoSuchMethodException e) {
                                 throw new IllegalStateException("Failed to generate member accessor for the method (" +
                                         methodInfo.name() + ") of the class (" +
                                         classInfo.name() + ").", e);
