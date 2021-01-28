@@ -116,6 +116,7 @@ public class GizmoSolutionClonerImplementor {
                 .interfaces(SolutionCloner.class)
                 .superClass(Object.class)
                 .classOutput(classOutput)
+                .setFinal(true)
                 .build();
 
         defineClonerFor(classCreator, new GizmoSolutionOrEntityDescriptor(solutionDescriptor));

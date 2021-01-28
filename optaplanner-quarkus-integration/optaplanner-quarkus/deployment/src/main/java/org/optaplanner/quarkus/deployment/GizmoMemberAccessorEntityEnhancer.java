@@ -140,6 +140,7 @@ public class GizmoMemberAccessorEntityEnhancer {
                 .className(generatedClassName)
                 .interfaces(MemberAccessor.class)
                 .classOutput(classOutput)
+                .setFinal(true)
                 .build()) {
 
             GizmoMemberDescriptor member;
@@ -214,6 +215,7 @@ public class GizmoMemberAccessorEntityEnhancer {
                 .className(generatedClassName)
                 .interfaces(MemberAccessor.class)
                 .classOutput(classOutput)
+                .setFinal(true)
                 .build()) {
 
             GizmoMemberDescriptor member;
@@ -249,6 +251,7 @@ public class GizmoMemberAccessorEntityEnhancer {
                 .className(generatedClassName)
                 .interfaces(SolutionCloner.class)
                 .classOutput(classOutput)
+                .setFinal(true)
                 .build()) {
 
             Map<Class<?>, GizmoSolutionOrEntityDescriptor> memoizedGizmoSolutionOrEntityDescriptorForClassMap = new HashMap<>();

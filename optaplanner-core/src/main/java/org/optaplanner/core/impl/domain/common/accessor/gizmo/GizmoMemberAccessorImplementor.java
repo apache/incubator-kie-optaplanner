@@ -143,6 +143,7 @@ public class GizmoMemberAccessorImplementor {
                 .interfaces(MemberAccessor.class)
                 .superClass(Object.class)
                 .classOutput(classOutput)
+                .setFinal(true)
                 .build()) {
 
             GizmoMemberDescriptor memberDescriptor = new GizmoMemberDescriptor(member);
