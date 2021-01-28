@@ -131,7 +131,7 @@ pipeline {
             }
         }
 
-        stage('Merge Quickstarts PR, tag and reset stage') {
+        stage('Merge Quickstarts PR, tag and reset the stable branch') {
             when {
                 expression { return isRelease() }
             }
@@ -427,7 +427,7 @@ void checkoutRepo(String repo, String branch) {
 }
 
 void checkoutRepo(String repo) {
-    checkoutRepo(repo, getBuildBranch() )
+    checkoutRepo(repo, getBuildBranch())
 }
 
 void mergeAndPush(String prLink, String targetBranch) {
@@ -515,7 +515,7 @@ void runMavenDeploy(MavenCommand mvnCmd) {
     mvnCmd.skipTests(true).run('clean deploy')
 }
 
-def updateAndResetBranch(String repo, String branchToReset){
+def updateAndResetBranch(String repo, String branchToReset) {
     githubscm.createBranch(branchToReset)
 
     removeJbossNexusFromMavenAndGradle()
@@ -538,12 +538,12 @@ void removeJbossNexusFromMavenAndGradle() {
             'cat', returnStdout: true)
 }
 
-String getGhCredsID(){
+String getGhCredsID() {
     return params.GITHUB_TOKEN_CREDS_ID;
 }
 
 //maps git branch protection response json into update request body to rewrite branch protection
-String getProtectionMapScript(){
+String getProtectionMapScript() {
     return "if .restrictions == null then . + {\"restrictions_used\":null}  " + //upd user set restrictions if not empty
             "else . + {\"restrictions_used\":{\"users\":[.restrictions.users[].login], \"team\":[.restrictions.users[].slug]}} end |" +
             " {" +
@@ -599,7 +599,7 @@ def setAllowForcePushes(String repo, String protectedBranch, String enabled, Str
     }
 }
 
-def forcePushProtectedBranch(String repo, String protectedBranch){
+def forcePushProtectedBranch(String repo, String protectedBranch) {
     enableForcePushes(repo, protectedBranch)
     withCredentials([usernamePassword(credentialsId: getGitAuthorCredsID(), usernameVariable: 'GIT_USERNAME', passwordVariable: 'GIT_PASSWORD')]) {
         sh """
@@ -610,7 +610,7 @@ def forcePushProtectedBranch(String repo, String protectedBranch){
     disableForcePushes(repo, protectedBranch)
 }
 
-void gradleVersionsUpdate(String newVersion){
+void gradleVersionsUpdate(String newVersion) {
     sh "sed -i -E 's/def optaplannerVersion = \"[^\"\\s]+\"/def optaplannerVersion = \"${newVersion}\"/' */build.gradle"
 }
 

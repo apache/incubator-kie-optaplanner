@@ -459,5 +459,5 @@ void setDeployPropertyIfNeeded(String key, def value) {
 }
 
 String getQuickStartsBranch(){
-    return isRelease()?getBuildBranch():params.QUICKSTARTS_BUILD_BRANCH_NAME
+    return isRelease() ? getBuildBranch() : params.QUICKSTARTS_BUILD_BRANCH_NAME
 }
