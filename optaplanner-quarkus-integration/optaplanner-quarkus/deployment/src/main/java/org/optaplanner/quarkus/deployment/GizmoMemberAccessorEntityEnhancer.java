@@ -146,8 +146,8 @@ public class GizmoMemberAccessorEntityEnhancer {
             if (Modifier.isPublic(fieldInfo.flags())) {
                 member = new GizmoMemberDescriptor(name, memberDescriptor, memberDescriptor, declaringClass);
             } else {
-                addVirtualFieldGetter(true, classInfo, fieldInfo, transformers);
-                String methodName = getVirtualGetterName(fieldInfo.name());
+                addVirtualFieldGetter(classInfo, fieldInfo, transformers);
+                String methodName = getVirtualGetterName(true, fieldInfo.name());
                 MethodDescriptor getterDescriptor = MethodDescriptor.ofMethod(fieldInfo.declaringClass().name().toString(),
                         methodName,
                         fieldInfo.type().name().toString());
@@ -244,31 +244,31 @@ public class GizmoMemberAccessorEntityEnhancer {
             ClassOutput classOutput,
             BuildProducer<BytecodeTransformerBuildItem> transformers) throws ClassNotFoundException, NoSuchFieldException {
         String generatedClassName = GizmoSolutionClonerFactory.getGeneratedClassName(solutionDescriptor);
-        ClassCreator classCreator = ClassCreator
+        try (ClassCreator classCreator = ClassCreator
                 .builder()
                 .className(generatedClassName)
                 .interfaces(SolutionCloner.class)
                 .classOutput(classOutput)
-                .build();
+                .build()) {
 
-        Map<Class<?>, GizmoSolutionOrEntityDescriptor> memoizedGizmoSolutionOrEntityDescriptorForClassMap = new HashMap<>();
+            Map<Class<?>, GizmoSolutionOrEntityDescriptor> memoizedGizmoSolutionOrEntityDescriptorForClassMap = new HashMap<>();
 
-        GizmoSolutionOrEntityDescriptor gizmoSolutionDescriptor =
+            GizmoSolutionOrEntityDescriptor gizmoSolutionDescriptor =
+                    getGizmoSolutionOrEntityDescriptorForEntity(solutionDescriptor,
+                            solutionDescriptor.getSolutionClass(),
+                            memoizedGizmoSolutionOrEntityDescriptorForClassMap,
+                            transformers);
+
+            // IDEA gave error on entityClass being a Class...
+            for (Object entityClass : solutionDescriptor.getEntityClassSet()) {
                 getGizmoSolutionOrEntityDescriptorForEntity(solutionDescriptor,
-                        solutionDescriptor.getSolutionClass(),
+                        (Class<?>) entityClass,
                         memoizedGizmoSolutionOrEntityDescriptorForClassMap,
                         transformers);
+            }
 
-        // IDEA gave error on entityClass being a Class...
-        for (Object entityClass : solutionDescriptor.getEntityClassSet()) {
-            getGizmoSolutionOrEntityDescriptorForEntity(solutionDescriptor,
-                    (Class<?>) entityClass,
-                    memoizedGizmoSolutionOrEntityDescriptorForClassMap,
-                    transformers);
+            GizmoSolutionClonerImplementor.defineClonerFor(classCreator, gizmoSolutionDescriptor);
         }
-
-        GizmoSolutionClonerImplementor.defineClonerFor(classCreator, gizmoSolutionDescriptor);
-        classCreator.close();
 
         return generatedClassName;
     }

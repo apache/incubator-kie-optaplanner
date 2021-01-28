@@ -23,7 +23,6 @@ import java.lang.reflect.Type;
 import java.util.Optional;
 import java.util.function.Consumer;
 
-import org.objectweb.asm.Type;
 import org.optaplanner.core.impl.domain.common.ReflectionHelper;
 
 import io.quarkus.gizmo.BytecodeCreator;
@@ -240,7 +239,7 @@ public class GizmoMemberDescriptor {
             holder[0] = md.getReturnType();
         });
 
-        return Type.getType(holder[0]).getClassName();
+        return org.objectweb.asm.Type.getType(holder[0]).getClassName();
     }
 
     public Type getType() {
