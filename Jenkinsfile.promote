@@ -567,7 +567,8 @@ def disableForcePushes(String repo, String protectedBranch) {
 }
 
 def setAllowForcePushes(String repo, String protectedBranch, String enabled, String ghPath = "../gh") {
-    sh "if [ -x $ghPath ]; then echo 'gh found at $ghPath'; else echo 'gh not found at $ghPath' && exit 1; fi"
+    assertGithubCLI(ghPath)
+
     //Use separate admin token credentials
     withCredentials([string(credentialsId: getGhCredsID(), variable: 'GITHUB_TOKEN')]) {
         //get current branch protection and remove allow force push
@@ -589,6 +590,8 @@ def setAllowForcePushes(String repo, String protectedBranch, String enabled, Str
         sh "${ghPath} api 'repos/${getGitAuthor()}/${repo}/branches/${protectedBranch}/protection' | " +
                 "jq 'del(.allow_force_pushes)' > protectionAfter.json";
         assert !sh (script: "diff protectionBefore.json protectionAfter.json", returnStdout: true)
+
+        //cleanup workspace
         sh "rm -f protectionParameters.json protectionBefore.json protectionAfter.json"
 
         if (enabled == allowForcePushEnabled) {
@@ -622,4 +625,8 @@ void updateQuickstartsVersions(String newVersion) {
     assert !sh(script:
             "grep -Rn \"${getProjectVersion()}\" --include={pom.xml,build.gradle} | " +
              "cat", returnStdout: true)
+}
+
+void assertGithubCLI(String ghPath) {
+    sh "if [ -x $ghPath ]; then echo 'gh found at $ghPath'; else echo 'gh not found at $ghPath' && exit 1; fi"
 }
