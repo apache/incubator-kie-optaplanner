@@ -568,16 +568,14 @@ def disableForcePushes(String repo, String protectedBranch) {
 
 def setAllowForcePushes(String repo, String protectedBranch, String enabled, String ghPath = "../gh") {
     assertGithubCLI(ghPath)
-
     //Use separate admin token credentials
     withCredentials([string(credentialsId: getGhCredsID(), variable: 'GITHUB_TOKEN')]) {
         //get current branch protection and remove allow force push
         sh "${ghPath} api 'repos/${getGitAuthor()}/${repo}/branches/${protectedBranch}/protection' | " +
-                "jq 'del(.allow_force_pushes)' > protectionBefore.json";
+           "jq 'del(.allow_force_pushes)' > protectionBefore.json";
 
         //create new json based on current protection mapped as parameters
-        sh "jq . protectionBefore.json | " +
-           "jq \"${getProtectionMapScript()}\" | " +
+        sh "jq \"${getProtectionMapScript()}\" protectionBefore.json | " +
            "jq \". + {\"allow_force_pushes\":${enabled}}\" > protectionParameters.json";
 
         //update protection on git
@@ -585,20 +583,26 @@ def setAllowForcePushes(String repo, String protectedBranch, String enabled, Str
                 "${ghPath} api -XPUT 'repos/${getGitAuthor()}/${repo}/branches/${protectedBranch}/protection' " +
                         "--input protectionParameters.json |" +
                         " jq '.allow_force_pushes.enabled'", returnStdout: true).trim();
+        assert allowForcePushEnabled == enabled
 
         //check that protection didn't changed except for allow_force_pushes
         sh "${ghPath} api 'repos/${getGitAuthor()}/${repo}/branches/${protectedBranch}/protection' | " +
                 "jq 'del(.allow_force_pushes)' > protectionAfter.json";
-        assert !sh (script: "diff protectionBefore.json protectionAfter.json", returnStdout: true)
-
+        def differences = sh (script: "diff protectionBefore.json protectionAfter.json | cat", returnStdout: true)
+        if (differences) {
+            error "Protection settings lost"+
+                    "\nBefore: "+
+                    "\n${readFile 'protectionBefore.json'} " +
+                    "\nAfter: "+
+                    "\n${readFile 'protectionAfter.json'} " +
+                    "\nDifferences: " +
+                    "\n${differences} " +
+                    "\nProtection parameters: " +
+                    "\n${readFile 'protectionParameters.json'} " +
+                    "Please rollback to Before state and update getProtectionMapScript"
+        }
         //cleanup workspace
         sh "rm -f protectionParameters.json protectionBefore.json protectionAfter.json"
-
-        if (enabled == allowForcePushEnabled) {
-            echo "[INFO] ${getGitAuthor()}/${repo}'s ${protectedBranch} force push enabled."
-        } else {
-            error "Couldn\'t change protection on ${protectedBranch}."
-        }
     }
 }
 
@@ -628,5 +632,8 @@ void updateQuickstartsVersions(String newVersion) {
 }
 
 void assertGithubCLI(String ghPath) {
-    sh "if [ -x $ghPath ]; then echo 'gh found at $ghPath'; else echo 'gh not found at $ghPath' && exit 1; fi"
+    if (fileExists(ghPath))
+        echo "[INFO] gh found at $ghPath"
+    else
+        error "gh not found at $ghPath"
 }
