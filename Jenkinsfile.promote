@@ -26,15 +26,13 @@ pipeline {
     }
 
     // parameters {
-    // For parameters, check into ./dsl/jobs.groovy file
+    // For parameters, check into .jenkins/dsl/jobs.groovy file
     // }
 
     environment {
-        // Some generated env is also defined into ./dsl/jobs.groovy file
-        
-        PROPERTIES_FILE_NAME = 'deployment.properties'
+        // Some generated env is also defined into .jenkins/dsl/jobs.groovy file
+
         BOT_BRANCH_HASH = "${util.generateHash(10)}"
-        GITHUB_CLI_VERSION = '0.11.1'
     }
 
     stages {
@@ -43,15 +41,18 @@ pipeline {
                 script {
                     cleanWs()
 
-                    if (params.DISPLAY_NAME != '') {
+                    if (params.DISPLAY_NAME) {
                         currentBuild.displayName = params.DISPLAY_NAME
                     }
 
                     readDeployProperties()
 
                     if (isRelease()) {
-                        assert getProjectVersion() != ''
-                        assert getKogitoVersion() != ''
+                        // Verify version is set and if on right release branch
+                        assert getProjectVersion()
+                        assert getKogitoVersion()
+
+                        assert getBuildBranch() == util.getReleaseBranchFromVersion(getProjectVersion())
                     }
 
                     installGithubCLI()
@@ -115,7 +116,7 @@ pipeline {
                         mergeAndPush(getDeployPrLink(quickstartsRepository))
                         tagLatest()
 
-                        updateAndResetBranch(quickstartsRepository,'stable')
+                        updateAndResetBranch(quickstartsRepository, 'stable')
                     }
                 }
             }
@@ -157,35 +158,35 @@ pipeline {
             }
         }
 
-        // stage('Update OptaPlanner website') {
-        //     when {
-        //         expression { return isRelease() }
-        //     }
-        //     steps {
-        //         script {
-        //             final String websiteRepository = 'optaplanner-website'
-        //             String prLink = null
-        //             dir("$websiteRepository-bot") {
-        //                 String prBranchName = createWebsitePrBranch(websiteRepository)
+        stage('Update OptaPlanner website') {
+            when {
+                expression { return isRelease() }
+            }
+            steps {
+                script {
+                    final String websiteRepository = 'optaplanner-website'
+                    String prLink = null
+                    dir("$websiteRepository-bot") {
+                        String prBranchName = createWebsitePrBranch(websiteRepository)
 
-        //                 // Update versions in links on the website.
-        //                 sh "./build/update-versions.sh ${getProjectVersion()} ${getNextMinorSnapshotVersion(getProjectVersion())}"
+                        // Update versions in links on the website.
+                        sh "./build/update-versions.sh ${getProjectVersion()} ${getNextMinorSnapshotVersion(getProjectVersion())}"
 
-        //                 // Update the XSDs. OptaPlanner must be cloned and build with the full profile before.
-        //                 String optaplannerRoot = "$WORKSPACE/optaplanner"
-        //                 sh "cp $optaplannerRoot/optaplanner-core/target/classes/solver.xsd xsd/solver/solver-8.xsd"
-        //                 sh "cp $optaplannerRoot/optaplanner-benchmark/target/classes/benchmark.xsd xsd/benchmark/benchmark-8.xsd"
+                        // Update the XSDs. OptaPlanner must be cloned and build with the full profile before.
+                        String optaplannerRoot = "$WORKSPACE/optaplanner"
+                        sh "cp $optaplannerRoot/optaplanner-core/target/classes/solver.xsd xsd/solver/solver-8.xsd"
+                        sh "cp $optaplannerRoot/optaplanner-benchmark/target/classes/benchmark.xsd xsd/benchmark/benchmark-8.xsd"
 
-        //                 // Add changed files, commit, open and merge PR
-        //                 prLink = commitAndCreatePR("Release OptaPlanner ${getProjectVersion()}", { sh 'git add xsd/\\*.xsd _config/pom.yml' }, prBranchName, 'master')
-        //             }
-        //             dir(websiteRepository) {
-        //                 checkoutRepo(websiteRepository, 'master')
-        //                 mergeAndPush(prLink, 'master')
-        //             }
-        //         }
-        //     }
-        // }
+                        // Add changed files, commit, open and merge PR
+                        prLink = commitAndCreatePR("Release OptaPlanner ${getProjectVersion()}", { sh 'git add xsd/\\*.xsd _config/pom.yml' }, prBranchName, 'master')
+                    }
+                    dir(websiteRepository) {
+                        checkoutRepo(websiteRepository, 'master')
+                        mergeAndPush(prLink, 'master')
+                    }
+                }
+            }
+        }
 
         stage('Set OptaPlanner next snapshot version') {
             when {
@@ -201,11 +202,11 @@ pipeline {
                         maven.mvnVersionsSet(getMavenCommand(), nextSnapshotVersion, true)
                         maven.mvnSetVersionProperty(getMavenCommand(), 'version.org.kie.kogito', getNextMicroSnapshotVersion(getKogitoVersion()))
 
-                        String prLink = commitAndCreatePR("[${getGitBranch()}] Update snapshot version to ${nextMicroSnapshotVersion}")
+                        String prLink = commitAndCreatePR("[${getBuildBranch()}] Update snapshot version to ${nextMicroSnapshotVersion}")
                         setPipelinePrLink(optaplannerRepository, prLink)
                     }
                     dir(optaplannerRepository) {
-                        sh "git checkout ${getGitBranch()}"
+                        sh "git checkout ${getBuildBranch()}"
                         mergeAndPush(getPipelinePrLink(optaplannerRepository))
                         runMavenDeploy(getMavenCommand())
                     }
@@ -224,11 +225,11 @@ pipeline {
                         prepareForPR(vehicleRoutingRepository)
                         maven.mvnVersionsUpdateParentAndChildModules(nextMicroSnapshotVersion, true)
 
-                        String prLink = commitAndCreatePR("[${getGitBranch()}] Update snapshot version to ${nextMicroSnapshotVersion}")
+                        String prLink = commitAndCreatePR("[${getBuildBranch()}] Update snapshot version to ${nextMicroSnapshotVersion}")
                         setPipelinePrLink(vehicleRoutingRepository, prLink)
                     }
                     dir(vehicleRoutingRepository) {
-                        sh "git checkout ${getGitBranch()}"
+                        sh "git checkout ${getBuildBranch()}"
                         mergeAndPush(getPipelinePrLink(vehicleRoutingRepository))
                         runMavenDeploy(getMavenCommand())
                     }
@@ -247,11 +248,11 @@ pipeline {
                         prepareForPR(employeeRosteringRepository)
                         maven.mvnVersionsUpdateParentAndChildModules(nextMicroSnapshotVersion, true)
 
-                        String prLink = commitAndCreatePR("[${getGitBranch()}] Update snapshot version to ${nextMicroSnapshotVersion}")
+                        String prLink = commitAndCreatePR("[${getBuildBranch()}] Update snapshot version to ${nextMicroSnapshotVersion}")
                         setPipelinePrLink(employeeRosteringRepository, prLink)
                     }
                     dir(employeeRosteringRepository) {
-                        sh "git checkout ${getGitBranch()}"
+                        sh "git checkout ${getBuildBranch()}"
                         mergeAndPush(getPipelinePrLink(employeeRosteringRepository))
                         runMavenDeploy(getMavenCommand())
                     }
@@ -271,11 +272,11 @@ pipeline {
                         prepareForPR(quickstartsRepository)
                         updateQuickstartsVersions(nextMicroSnapshotVersion)
 
-                        String prLink = commitAndCreatePR(("[${getGitBranch()}] Update snapshot version to ${nextMicroSnapshotVersion}"));
+                        String prLink = commitAndCreatePR(("[${getBuildBranch()}] Update snapshot version to ${nextMicroSnapshotVersion}"));
                         setPipelinePrLink(quickstartsRepository, prLink)
                     }
                     dir(quickstartsRepository) {
-                        sh "git checkout ${getGitBranch()}"
+                        sh "git checkout ${getBuildBranch()}"
                         mergeAndPush(getPipelinePrLink(quickstartsRepository))
                     }
                 }
@@ -352,7 +353,7 @@ String getGitTag() {
     return params.GIT_TAG != '' ? params.GIT_TAG : getProjectVersion()
 }
 
-String getGitBranch() {
+String getBuildBranch() {
     return params.BUILD_BRANCH_NAME
 }
 
@@ -396,7 +397,7 @@ void checkoutRepo(String repo, String branch) {
 }
 
 void checkoutRepo(String repo) {
-    checkoutRepo(repo, getGitBranch())
+    checkoutRepo(repo, getBuildBranch())
 }
 
 void mergeAndPush(String prLink, String targetBranch) {
@@ -407,7 +408,7 @@ void mergeAndPush(String prLink, String targetBranch) {
 }
 
 void mergeAndPush(String prLink) {
-    mergeAndPush(prLink, getGitBranch())
+    mergeAndPush(prLink, getBuildBranch())
 }
 
 void tagLatest() {
@@ -435,7 +436,7 @@ String commitAndCreatePR(String commitMsg) {
     return commitAndCreatePR(commitMsg, {
         githubscm.findAndStageNotIgnoredFiles('pom.xml')
         githubscm.findAndStageNotIgnoredFiles('build.gradle')
-    }, getSnapshotBranch(), getGitBranch())
+    }, getSnapshotBranch(), getBuildBranch())
 }
 
 String createWebsitePrBranch(String websiteRepository) {
@@ -490,7 +491,7 @@ def updateAndResetBranch(String repo, String branchToReset) {
 
     removeJbossNexusFromMavenAndGradle()
 
-    githubscm.commitChanges("[${getGitBranch()}] Update ${branchToReset} to ${getProjectVersion()}", {
+    githubscm.commitChanges("[${getBuildBranch()}] Update ${branchToReset} to ${getProjectVersion()}", {
         githubscm.findAndStageNotIgnoredFiles('pom.xml')
         githubscm.findAndStageNotIgnoredFiles('build.gradle')
     })
@@ -509,7 +510,7 @@ void removeJbossNexusFromMavenAndGradle() {
 }
 
 String getGhCredsID() {
-    return params.GITHUB_TOKEN_CREDS_ID;
+    return env.GITHUB_TOKEN_CREDS_ID
 }
 
 //maps git branch protection response json into update request body to rewrite branch protection
@@ -529,11 +530,25 @@ String getProtectionMapScript() {
 }
 
 def enableForcePushes(String repo, String protectedBranch) {
-    setAllowForcePushes(repo, protectedBranch, "true");
+    if (isBranchProtected(repo, protectedBranch)) {
+        setAllowForcePushes(repo, protectedBranch, "true")
+    }
 }
 
 def disableForcePushes(String repo, String protectedBranch) {
-    setAllowForcePushes(repo, protectedBranch, "false");
+    if (isBranchProtected(repo, protectedBranch)) {
+        setAllowForcePushes(repo, protectedBranch, "false")
+    }
+}
+
+boolean isBranchProtected(String repo, String protectedBranch, String ghPath = "../gh") {
+    boolean isProtected = true // Suppose it is protected by default
+    withCredentials([string(credentialsId: getGhCredsID(), variable: 'GITHUB_TOKEN')]) {
+        //get current branch protection and remove allow force push
+        int status = sh (script: "${ghPath} api 'repos/${getGitAuthor()}/${repo}/branches/${protectedBranch}/protection'", returnStatus: true)
+        isProtected = status == 0
+    }
+    return isProtected
 }
 
 def setAllowForcePushes(String repo, String protectedBranch, String enabled, String ghPath = "../gh") {
@@ -542,17 +557,17 @@ def setAllowForcePushes(String repo, String protectedBranch, String enabled, Str
     withCredentials([string(credentialsId: getGhCredsID(), variable: 'GITHUB_TOKEN')]) {
         //get current branch protection and remove allow force push
         sh "${ghPath} api 'repos/${getGitAuthor()}/${repo}/branches/${protectedBranch}/protection' | " +
-           "jq 'del(.allow_force_pushes)' > protectionBefore.json";
+           "jq 'del(.allow_force_pushes)' > protectionBefore.json"
 
         //create new json based on current protection mapped as parameters
         sh "jq \"${getProtectionMapScript()}\" protectionBefore.json | " +
-           "jq \". + {\"allow_force_pushes\":${enabled}}\" > protectionParameters.json";
+           "jq \". + {\"allow_force_pushes\":${enabled}}\" > protectionParameters.json"
 
         //update protection on git
         def allowForcePushEnabled = sh(script:
                 "${ghPath} api -XPUT 'repos/${getGitAuthor()}/${repo}/branches/${protectedBranch}/protection' " +
                         "--input protectionParameters.json |" +
-                        " jq '.allow_force_pushes.enabled'", returnStdout: true).trim();
+                        " jq '.allow_force_pushes.enabled'", returnStdout: true).trim()
         assert allowForcePushEnabled == enabled
 
         //check that protection didn't changed except for allow_force_pushes

@@ -182,6 +182,9 @@ void setupPromoteJob(String jobFolder, KogitoJobType jobType) {
             env('MAVEN_SETTINGS_CONFIG_FILE_ID', "${MAVEN_SETTINGS_FILE_ID}")
             env('MAVEN_DEPENDENCIES_REPOSITORY', "${MAVEN_ARTIFACTS_REPOSITORY}")
             env('MAVEN_DEPLOY_REPOSITORY', "${MAVEN_ARTIFACTS_REPOSITORY}")
+
+            env('PROPERTIES_FILE_NAME', 'deployment.properties')
+            env('GITHUB_CLI_VERSION', '0.11.1')
         }
     }
 }
