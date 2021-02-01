@@ -1,0 +1,240 @@
+import org.jenkinsci.plugins.workflow.libs.Library
+@Library('jenkins-pipeline-shared-libraries')_
+
+import org.kie.jenkins.MavenCommand
+import org.kie.jenkins.MavenStagingHelper
+
+deployProperties = [:]
+optaplannerRepository = 'optaplanner'
+quickstartsRepository = "optaplanner-quickstarts"
+vehicleRoutingRepository = 'optaweb-vehicle-routing'
+employeeRosteringRepository = 'optaweb-employee-rostering'
+kogitoExamplesRepository = 'kogito-examples'
+kogitoAppsRepository = 'kogito-apps'
+
+pipeline {
+    agent {
+        label 'kie-rhel7 && kie-mem16g'
+    }
+    tools {
+        maven 'kie-maven-3.6.2'
+        jdk 'kie-jdk11'
+    }
+    options {
+        buildDiscarder logRotator(artifactDaysToKeepStr: '', artifactNumToKeepStr: '', daysToKeepStr: '', numToKeepStr: '5')
+        timeout(time: 120, unit: 'MINUTES')
+    }
+    environment {
+        MAVEN_OPTS = '-Xms1024m -Xmx4g'
+
+        // creates a hash for the PR branch name
+        BOT_BRANCH_HASH = "${util.generateHash(10)}"
+    }
+    parameters {
+        // GIT-INFORMATION
+        string(name: 'BUILD_BRANCH_NAME', defaultValue: 'master', description: 'Which branch to build? Set if you are not on a multibranch pipeline.')
+        string(name: 'BUILD_BRANCH_NAME_QUICKSTARTS', defaultValue: 'development', description: 'Which branch to build? Set if you are not on a multibranch pipeline.')
+        string(name: 'GIT_AUTHOR', defaultValue: 'kiegroup', description: 'Which Git author repository ?')
+
+        // RELEASE INFORMATION
+        booleanParam(name: 'RELEASE', defaultValue: true, description: 'Is this build for a release?')
+
+        // VERSION UPDATE INFORMATION
+        string(name: 'NEW_SNAPSHOT_VERSION', defaultValue: '', description: 'Setup a specific build display name')
+        string(name: 'MAVEN_DEPENDENCIES_REPOSITORY', defaultValue: '', description: 'Maven repository where to find dependencies if those are not in the default JBoss repository.')
+        string(name: 'MAVEN_SETTINGS_CONFIG_FILE_ID', defaultValue: 'kogito_release_settings', description: 'Maven settings configfile to use in pipeline for Maven commands')
+        string(name: 'KOGITO_VERSION', defaultValue: '', description: 'Optional if not RELEASE. If RELEASE, cannot be empty.')
+
+        // PULLREQUEST INFORMATION - Bot author information. Set as params for easy testing.
+        string(name: 'GIT_AUTHOR_BOT', defaultValue: 'bsig-gh-bot', description: 'From which author should the PR be created ?')
+        string(name: 'BOT_CREDENTIALS_ID', defaultValue: 'bsig-gh-bot', description: 'Credentials for PR creation')
+    }
+
+    stages {
+        stage('Clean workspace') {
+            steps {
+                cleanWs()
+            }
+        }
+        stage('Checkout repositories') {
+            steps {
+                checkoutRepo(optaplannerRepository, getBuildBranch())
+                checkoutRepo(quickstartsRepository, getQuickstartsBuildBranch())
+                checkoutRepo(vehicleRoutingRepository, getBuildBranch())
+                checkoutRepo(employeeRosteringRepository, getBuildBranch())
+                checkoutRepo(kogitoExamplesRepository, getBuildBranch())
+                checkoutRepo(kogitoAppsRepository, getBuildBranch())
+            }
+        }
+        stage('Prepare for PR') {
+            steps {
+                prepareForPR(optaplannerRepository)
+                prepareForPR(quickstartsRepository)
+                prepareForPR(vehicleRoutingRepository)
+                prepareForPR(employeeRosteringRepository)
+                prepareForPR(kogitoExamplesRepository)
+                prepareForPR(kogitoAppsRepository)
+            }
+        }
+        stage('Update to next SNAPSHOT version') {
+            when {
+                expression { return getProjectVersion() != '' }
+            }
+            steps {
+                script {
+                    maven.mvnVersionsSet(getOptaplannerMavenCommand(), getProjectVersion(), true)
+                    maven.mvnSetVersionProperty(getOptaplannerMavenCommand(), 'version.org.kie.kogito', getKogitoVersion())
+                    mavenCleanInstallOptaPlannerParents()
+                    maven.mvnVersionsUpdateParentAndChildModules(getOptaplannerQuickstartsMavenCommand(), getProjectVersion(), true)
+                    // Update Optaplanner version
+                    maven.mvnSetVersionProperty(getOptaplannerQuickstartsMavenCommand(), 'version.org.optaplanner', getProjectVersion())
+                    maven.mvnVersionsUpdateParentAndChildModules(getOptawebVehicleRoutingMavenCommand(), getProjectVersion(), true)
+                    maven.mvnVersionsUpdateParentAndChildModules(getOptawebEmployeeRosteringMavenCommand(), getProjectVersion(), true)
+                }
+            }
+        }
+        stage('Update version.org.optaplanner') {
+            when {
+                expression { return getProjectVersion() != '' }
+            }
+            steps{
+                updateOptaplannerSnapshot('version.org.optaplanner', getProjectVersion(), kogitoExamplesRepository)
+                updateOptaplannerSnapshot('version.org.optaplanner', getProjectVersion(), kogitoAppsRepository)
+                updateQuickstartsSnapshot(getProjectVersion(), quickstartsRepository)
+            }
+        }
+        stage('Create PRs'){
+            when {
+                expression { return isRelease() }
+            }
+            steps {
+                commitAndCreatePR(optaplannerRepository)
+                commitAndCreatePR_II(quickstartsRepository)
+                commitAndCreatePRIgnoringNpmRegistry(vehicleRoutingRepository)
+                commitAndCreatePRIgnoringNpmRegistry(employeeRosteringRepository)
+                commitAndCreatePR(kogitoAppsRepository)
+                commitAndCreatePR(kogitoExamplesRepository)
+            }
+        }
+    }
+}
+
+// ****** GETTERS AND SETTERS PARAMS/PROPERTIES ******
+
+String getProjectVersion(){
+    return params.NEW_SNAPSHOT_VERSION
+}
+String getGitAuthor() {
+    return params.GIT_AUTHOR
+}
+String getKogitoVersion() {
+    return params.KOGITO_VERSION
+}
+String getBuildBranch() {
+    return params.BUILD_BRANCH_NAME
+}
+String getQuickstartsBuildBranch() {
+    return params.BUILD_BRANCH_NAME_QUICKSTARTS
+}
+boolean isRelease() {
+    return params.RELEASE
+}
+String getBotAuthorCredsID(){
+    return params.BOT_CREDENTIALS_ID
+}
+String getBotBranch(){
+    return "${getProjectVersion()}-${env.BOT_BRANCH_HASH}"
+}
+
+// ******  CHECKOUT REPOSITORIES ******
+void checkoutRepo(String repo, String branch, String dirName=repo) {
+    dir(dirName) {
+        deleteDir()
+        checkout(githubscm.resolveRepository(repo, getGitAuthor(), branch, false))
+    }
+}
+// ****** UPDATE VERSIONS ******
+/**
+ * Builds the parent modules and the BOM so that project depending on these artifacts can resolve.
+ */
+void mavenCleanInstallOptaPlannerParents() {
+    getOptaplannerMavenCommand()
+        .skipTests(true)
+        .withOptions(['-U', '-pl org.optaplanner:optaplanner-build-parent,org.optaplanner:optaplanner-bom', '-am'])
+        .run('clean install')
+}
+void updateOptaplannerSnapshot(String optaString, String optaVersion, String repo, String dirName=repo) {
+    dir(dirName) {
+        maven.mvnSetVersionProperty(optaString, optaVersion)
+    }
+}
+
+void updateQuickstartsSnapshot(String quickstartVersion, String repo, String dirName=repo) {
+    dir(dirName) {
+        sh "sed -i -E 's/def optaplannerVersion = \"[^\"\\s]+\"/def optaplannerVersion = \"${quickstartVersion}\"/' */build.gradle"
+        sh "git add */build.gradle"
+    }
+}
+
+// ****** PULL REQUESTS ******
+void prepareForPR(String repo) {
+    dir(repo) {
+        githubscm.forkRepo(getBotAuthorCredsID())
+        githubscm.createBranch(getBotBranch())
+    }
+}
+void commitAndCreatePR(String repo) {
+    dir(repo) {
+        def commitMsg = "[${getBuildBranch()}] Update to next ${getProjectVersion()} version"
+        def prBody = "Generated by build ${BUILD_TAG}: ${BUILD_URL}.\nPlease do not merge, it will be merged automatically after testing."
+
+        githubscm.commitChanges(commitMsg, { githubscm.findAndStageNotIgnoredFiles('pom.xml') })
+        githubscm.pushObject('origin', getBotBranch(), getBotAuthorCredsID())
+        deployProperties["${repo}.pr.link"] = githubscm.createPR(commitMsg, prBody, getBuildBranch(), getBotAuthorCredsID())
+    }
+}
+
+void commitAndCreatePR_II(String repo) {
+    dir(repo) {
+        def commitMsg = "[${getQuickstartsBuildBranch()}] Update to next ${getProjectVersion()} version"
+        def prBody = "Generated by build ${BUILD_TAG}: ${BUILD_URL}.\nPlease do not merge, it will be merged automatically after testing."
+
+        githubscm.commitChanges(commitMsg, { githubscm.findAndStageNotIgnoredFiles('pom.xml') })
+        githubscm.pushObject('origin', getBotBranch(), getBotAuthorCredsID())
+        deployProperties["${repo}.pr.link"] = githubscm.createPR(commitMsg, prBody, getQuickstartsBuildBranch(), getBotAuthorCredsID())
+    }
+}
+
+void commitAndCreatePRIgnoringNpmRegistry(String repo) {
+    dir(repo) {
+        sh 'sed \'s;repository.engineering.redhat.com/nexus/repository/;;\' -i */package-lock.json'
+        sh 'git add */package-lock.json'
+    }
+    commitAndCreatePR(repo)
+}
+
+// ****** MAVEN COMMANDS ******
+MavenCommand getMavenDefaultCommand(){
+    MavenCommand mvnCmd = new MavenCommand(this, ['-fae']).withSettingsXmlId(params.MAVEN_SETTINGS_CONFIG_FILE_ID)
+    if (params.MAVEN_DEPENDENCIES_REPOSITORY) {
+        mvnCmd.withDependencyRepositoryInSettings('deps-repo', params.MAVEN_DEPENDENCIES_REPOSITORY)
+    }
+    return mvnCmd
+}
+MavenCommand getOptaplannerMavenCommand(){
+    return getMavenDefaultCommand().inDirectory(optaplannerRepository).withProperty('full')
+}
+
+MavenCommand getOptaplannerQuickstartsMavenCommand(){
+    return getMavenDefaultCommand().inDirectory(quickstartsRepository).withProperty('full')
+}
+
+MavenCommand getOptawebVehicleRoutingMavenCommand(){
+    return getMavenDefaultCommand().inDirectory(vehicleRoutingRepository)
+}
+
+MavenCommand getOptawebEmployeeRosteringMavenCommand(){
+    return getMavenDefaultCommand().inDirectory(employeeRosteringRepository)
+}
+
+
