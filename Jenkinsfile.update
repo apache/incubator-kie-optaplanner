@@ -104,9 +104,6 @@ pipeline {
             }
         }
         stage('Create PRs'){
-            when {
-                expression { return isRelease() }
-            }
             steps {
                 commitAndCreatePR(optaplannerRepository)
                 commitAndCreatePR_II(quickstartsRepository)
