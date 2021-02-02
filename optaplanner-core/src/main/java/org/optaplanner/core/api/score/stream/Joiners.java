@@ -16,6 +16,10 @@
 
 package org.optaplanner.core.api.score.stream;
 
+import java.util.function.BiFunction;
+import java.util.function.BiPredicate;
+import java.util.function.Function;
+
 import org.optaplanner.core.api.function.PentaPredicate;
 import org.optaplanner.core.api.function.QuadFunction;
 import org.optaplanner.core.api.function.QuadPredicate;
@@ -40,10 +44,6 @@ import org.optaplanner.core.impl.score.stream.quad.SingleQuadJoiner;
 import org.optaplanner.core.impl.score.stream.tri.AbstractTriJoiner;
 import org.optaplanner.core.impl.score.stream.tri.FilteringTriJoiner;
 import org.optaplanner.core.impl.score.stream.tri.SingleTriJoiner;
-
-import java.util.function.BiFunction;
-import java.util.function.BiPredicate;
-import java.util.function.Function;
 
 /**
  * Creates an {@link BiJoiner}, {@link TriJoiner}, ... instance
