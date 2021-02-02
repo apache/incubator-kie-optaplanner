@@ -43,8 +43,9 @@ import org.optaplanner.core.impl.score.stream.quad.InnerQuadConstraintStream;
 public abstract class DroolsAbstractQuadConstraintStream<Solution_, A, B, C, D>
         extends DroolsAbstractConstraintStream<Solution_> implements InnerQuadConstraintStream<A, B, C, D> {
 
-    public DroolsAbstractQuadConstraintStream(DroolsConstraintFactory<Solution_> constraintFactory) {
-        super(constraintFactory);
+    public DroolsAbstractQuadConstraintStream(DroolsConstraintFactory<Solution_> constraintFactory,
+            DroolsAbstractConstraintStream<Solution_> parent) {
+        super(constraintFactory, parent);
     }
 
     @Override

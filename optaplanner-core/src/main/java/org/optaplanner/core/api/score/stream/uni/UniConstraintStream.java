@@ -742,6 +742,23 @@ public interface UniConstraintStream<A> extends ConstraintStream {
                     UniConstraintCollector<A, ResultContainerD_, ResultD_> collectorD);
 
     // ************************************************************************
+    // Map
+    // ************************************************************************
+
+    /**
+     * Convert this stream into a {@link UniConstraintStream} where the new tuples will be created by calling the
+     * mappingFunction on the tuples from this stream.
+     * If the mapping function returns the same result for two distinct tuples, the resulting
+     * {@link UniConstraintStream} will contain the tuple twice, regardless of whether they
+     * {@link Object#equals(Object)} one another or not.
+     *
+     * @param mappingFunction never null, function to convert the original tuple into a new tuple
+     * @param <NewA> the type of the first and only fact in the destination {@link UniConstraintStream}'s tuple
+     * @return never null
+     */
+    <NewA> UniConstraintStream<NewA> map(Function<A, NewA> mappingFunction);
+
+    // ************************************************************************
     // Penalize/reward
     // ************************************************************************
 

@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2021 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -37,7 +37,7 @@ public final class BavetGroupBridgeUniConstraintStream<Solution_, A, NewA, Resul
     public BavetGroupBridgeUniConstraintStream(BavetConstraintFactory<Solution_> constraintFactory,
             BavetAbstractUniConstraintStream<Solution_, A> parent,
             Function<A, NewA> groupKeyMapping, UniConstraintCollector<A, ResultContainer_, NewB> collector) {
-        super(constraintFactory);
+        super(constraintFactory, parent);
         this.parent = parent;
         this.groupKeyMapping = groupKeyMapping;
         this.collector = collector;
@@ -45,6 +45,11 @@ public final class BavetGroupBridgeUniConstraintStream<Solution_, A, NewA, Resul
 
     public void setGroupStream(BavetGroupBiConstraintStream<Solution_, NewA, ResultContainer_, NewB> groupStream) {
         this.groupStream = groupStream;
+    }
+
+    @Override
+    public boolean guaranteesDistinctTuples() {
+        return true; // GroupBy() always produces a unique set of tuples.
     }
 
     @Override

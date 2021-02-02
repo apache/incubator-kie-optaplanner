@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2021 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -31,7 +31,23 @@ import org.optaplanner.core.impl.score.stream.InnerConstraintFactory;
 
 public abstract class AbstractConstraintStream<Solution_> implements ConstraintStream {
 
+    private final AbstractConstraintStream<Solution_> parent;
+
+    protected AbstractConstraintStream(AbstractConstraintStream<Solution_> parent) {
+        this.parent = parent; // Will be null for from() streams.
+    }
+
     public abstract int getCardinality();
+
+    /**
+     * Whether or not this constraint stream gives a guarantee to its children that the tuples coming through it will
+     * always be distinct.
+     * 
+     * @return true if the guarantee is given
+     */
+    public boolean guaranteesDistinctTuples() {
+        return parent.guaranteesDistinctTuples(); // Will be overriden in children which set or change the behavior.
+    }
 
     // ************************************************************************
     // Penalize/reward

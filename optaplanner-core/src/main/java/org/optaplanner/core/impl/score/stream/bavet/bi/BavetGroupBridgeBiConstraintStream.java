@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2021 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -34,12 +34,17 @@ public final class BavetGroupBridgeBiConstraintStream<Solution_, A, B, NewA, Res
     private BavetGroupBiConstraintStream<Solution_, NewA, ResultContainer_, NewB> groupStream;
 
     public BavetGroupBridgeBiConstraintStream(BavetConstraintFactory<Solution_> constraintFactory,
-            BavetAbstractBiConstraintStream<Solution_, A, B> parent,
-            BiFunction<A, B, NewA> groupKeyMapping, BiConstraintCollector<A, B, ResultContainer_, NewB> collector) {
-        super(constraintFactory);
+            BavetAbstractBiConstraintStream<Solution_, A, B> parent, BiFunction<A, B, NewA> groupKeyMapping,
+            BiConstraintCollector<A, B, ResultContainer_, NewB> collector) {
+        super(constraintFactory, parent);
         this.parent = parent;
         this.groupKeyMapping = groupKeyMapping;
         this.collector = collector;
+    }
+
+    @Override
+    public boolean guaranteesDistinctTuples() {
+        return true; // GroupBy() always produces a unique set of tuples.
     }
 
     public void setGroupStream(BavetGroupBiConstraintStream<Solution_, NewA, ResultContainer_, NewB> groupStream) {

@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2021 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -28,11 +28,16 @@ public final class BavetFromUniConstraintStream<Solution_, A> extends BavetAbstr
     private final Class<A> fromClass;
 
     public BavetFromUniConstraintStream(BavetConstraintFactory<Solution_> constraintFactory, Class<A> fromClass) {
-        super(constraintFactory);
+        super(constraintFactory, null);
         this.fromClass = fromClass;
         if (fromClass == null) {
             throw new IllegalArgumentException("The fromClass (null) cannot be null.");
         }
+    }
+
+    @Override
+    public boolean guaranteesDistinctTuples() {
+        return true;
     }
 
     @Override

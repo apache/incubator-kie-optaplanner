@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2021 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -32,9 +32,8 @@ public final class BavetGroupBiConstraintStream<Solution_, GroupKey_, ResultCont
     private final Function<ResultContainer_, Result_> finisher;
 
     public BavetGroupBiConstraintStream(BavetConstraintFactory<Solution_> constraintFactory,
-            BavetAbstractConstraintStream<Solution_> parent,
-            Function<ResultContainer_, Result_> finisher) {
-        super(constraintFactory);
+            BavetAbstractConstraintStream<Solution_> parent, Function<ResultContainer_, Result_> finisher) {
+        super(constraintFactory, parent);
         this.parent = parent;
         this.finisher = finisher;
     }

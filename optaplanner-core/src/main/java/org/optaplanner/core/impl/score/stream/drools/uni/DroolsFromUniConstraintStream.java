@@ -25,9 +25,14 @@ public final class DroolsFromUniConstraintStream<Solution_, A> extends DroolsAbs
     private final UniLeftHandSide<A> leftHandSide;
 
     public DroolsFromUniConstraintStream(DroolsConstraintFactory<Solution_> constraintFactory, Class<A> fromClass) {
-        super(constraintFactory);
+        super(constraintFactory, null);
         this.fromClass = fromClass;
         this.leftHandSide = new UniLeftHandSide<>(fromClass, constraintFactory.getVariableFactory());
+    }
+
+    @Override
+    public boolean guaranteesDistinctTuples() {
+        return true;
     }
 
     // ************************************************************************

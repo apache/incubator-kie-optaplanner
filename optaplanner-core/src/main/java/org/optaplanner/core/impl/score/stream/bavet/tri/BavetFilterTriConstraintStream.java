@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2021 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -33,7 +33,7 @@ public final class BavetFilterTriConstraintStream<Solution_, A, B, C>
     public BavetFilterTriConstraintStream(BavetConstraintFactory<Solution_> constraintFactory,
             BavetAbstractTriConstraintStream<Solution_, A, B, C> parent,
             TriPredicate<A, B, C> predicate) {
-        super(constraintFactory);
+        super(constraintFactory, parent);
         this.parent = parent;
         this.predicate = predicate;
         if (predicate == null) {

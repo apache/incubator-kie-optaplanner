@@ -47,8 +47,9 @@ public abstract class DroolsAbstractBiConstraintStream<Solution_, A, B>
         extends DroolsAbstractConstraintStream<Solution_>
         implements InnerBiConstraintStream<A, B> {
 
-    public DroolsAbstractBiConstraintStream(DroolsConstraintFactory<Solution_> constraintFactory) {
-        super(constraintFactory);
+    public DroolsAbstractBiConstraintStream(DroolsConstraintFactory<Solution_> constraintFactory,
+            DroolsAbstractConstraintStream<Solution_> parent) {
+        super(constraintFactory, parent);
     }
 
     @Override

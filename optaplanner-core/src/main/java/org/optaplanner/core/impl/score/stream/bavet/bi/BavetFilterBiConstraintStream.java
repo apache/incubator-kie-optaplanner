@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2021 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -30,9 +30,8 @@ public final class BavetFilterBiConstraintStream<Solution_, A, B> extends BavetA
     private final BiPredicate<A, B> predicate;
 
     public BavetFilterBiConstraintStream(BavetConstraintFactory<Solution_> constraintFactory,
-            BavetAbstractBiConstraintStream<Solution_, A, B> parent,
-            BiPredicate<A, B> predicate) {
-        super(constraintFactory);
+            BavetAbstractBiConstraintStream<Solution_, A, B> parent, BiPredicate<A, B> predicate) {
+        super(constraintFactory, parent);
         this.parent = parent;
         this.predicate = predicate;
         if (predicate == null) {

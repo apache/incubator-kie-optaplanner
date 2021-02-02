@@ -46,8 +46,9 @@ import org.optaplanner.core.impl.score.stream.uni.InnerUniConstraintStream;
 public abstract class DroolsAbstractUniConstraintStream<Solution_, A> extends DroolsAbstractConstraintStream<Solution_>
         implements InnerUniConstraintStream<A> {
 
-    public DroolsAbstractUniConstraintStream(DroolsConstraintFactory<Solution_> constraintFactory) {
-        super(constraintFactory);
+    public DroolsAbstractUniConstraintStream(DroolsConstraintFactory<Solution_> constraintFactory,
+            DroolsAbstractConstraintStream<Solution_> parent) {
+        super(constraintFactory, parent);
     }
 
     @Override
@@ -171,6 +172,18 @@ public abstract class DroolsAbstractUniConstraintStream<Solution_, A> extends Dr
         DroolsGroupingQuadConstraintStream<Solution_, GroupKeyA_, GroupKeyB_, ResultC_, ResultD_> stream =
                 new DroolsGroupingQuadConstraintStream<>(constraintFactory, this, groupKeyAMapping, groupKeyBMapping,
                         collectorC, collectorD);
+        addChildStream(stream);
+        return stream;
+    }
+
+    // ************************************************************************
+    // Map
+    // ************************************************************************
+
+    @Override
+    public <NewA> UniConstraintStream<NewA> map(Function<A, NewA> mappingFunction) {
+        DroolsMappingUniConstraintStream<Solution_, NewA> stream =
+                new DroolsMappingUniConstraintStream<>(constraintFactory, this, mappingFunction);
         addChildStream(stream);
         return stream;
     }

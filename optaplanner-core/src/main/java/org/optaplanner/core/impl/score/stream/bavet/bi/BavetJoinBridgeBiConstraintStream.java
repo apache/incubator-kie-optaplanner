@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2021 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -39,10 +39,9 @@ public final class BavetJoinBridgeBiConstraintStream<Solution_, A, B>
     private final BavetIndexFactory indexFactory;
 
     public BavetJoinBridgeBiConstraintStream(BavetConstraintFactory<Solution_> constraintFactory,
-            BavetAbstractBiConstraintStream<Solution_, A, B> parent,
-            boolean isLeftBridge,
+            BavetAbstractBiConstraintStream<Solution_, A, B> parent, boolean isLeftBridge,
             BiFunction<A, B, Object[]> mapping, BavetIndexFactory indexFactory) {
-        super(constraintFactory);
+        super(constraintFactory, parent);
         this.parent = parent;
         this.isLeftBridge = isLeftBridge;
         this.mapping = mapping;

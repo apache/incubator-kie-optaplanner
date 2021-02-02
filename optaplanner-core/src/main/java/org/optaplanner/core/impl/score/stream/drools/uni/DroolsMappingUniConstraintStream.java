@@ -16,19 +16,20 @@
 
 package org.optaplanner.core.impl.score.stream.drools.uni;
 
-import java.util.function.Predicate;
+import java.util.function.Function;
 
 import org.optaplanner.core.impl.score.stream.drools.DroolsConstraintFactory;
 import org.optaplanner.core.impl.score.stream.drools.common.UniLeftHandSide;
 
-public final class DroolsFilterUniConstraintStream<Solution_, A> extends DroolsAbstractUniConstraintStream<Solution_, A> {
+public final class DroolsMappingUniConstraintStream<Solution_, NewA>
+        extends DroolsAbstractUniConstraintStream<Solution_, NewA> {
 
-    private final UniLeftHandSide<A> leftHandSide;
+    private final UniLeftHandSide<NewA> leftHandSide;
 
-    public DroolsFilterUniConstraintStream(DroolsConstraintFactory<Solution_> constraintFactory,
-            DroolsAbstractUniConstraintStream<Solution_, A> parent, Predicate<A> predicate) {
+    public <A> DroolsMappingUniConstraintStream(DroolsConstraintFactory<Solution_> constraintFactory,
+            DroolsAbstractUniConstraintStream<Solution_, A> parent, Function<A, NewA> mappingFunction) {
         super(constraintFactory, parent);
-        this.leftHandSide = parent.getLeftHandSide().andFilter(predicate);
+        this.leftHandSide = parent.getLeftHandSide().andMap(mappingFunction);
     }
 
     // ************************************************************************
@@ -36,13 +37,13 @@ public final class DroolsFilterUniConstraintStream<Solution_, A> extends DroolsA
     // ************************************************************************
 
     @Override
-    public UniLeftHandSide<A> getLeftHandSide() {
+    public UniLeftHandSide<NewA> getLeftHandSide() {
         return leftHandSide;
     }
 
     @Override
     public String toString() {
-        return "Filter() with " + getChildStreams().size() + " children";
+        return "Map() with " + getChildStreams().size() + " children";
     }
 
 }

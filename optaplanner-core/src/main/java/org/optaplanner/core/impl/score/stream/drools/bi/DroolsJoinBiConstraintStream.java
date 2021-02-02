@@ -23,12 +23,19 @@ import org.optaplanner.core.impl.score.stream.drools.uni.DroolsAbstractUniConstr
 public class DroolsJoinBiConstraintStream<Solution_, A, B> extends DroolsAbstractBiConstraintStream<Solution_, A, B> {
 
     private final BiLeftHandSide<A, B> leftHandSide;
+    private final boolean guaranteesDistinctTuples;
 
     public DroolsJoinBiConstraintStream(DroolsConstraintFactory<Solution_> constraintFactory,
             DroolsAbstractUniConstraintStream<Solution_, A> parent,
             DroolsAbstractUniConstraintStream<Solution_, B> otherStream, BiJoiner<A, B> biJoiner) {
-        super(constraintFactory);
+        super(constraintFactory, parent);
         this.leftHandSide = parent.getLeftHandSide().andJoin(otherStream.getLeftHandSide(), biJoiner);
+        this.guaranteesDistinctTuples = parent.guaranteesDistinctTuples() && otherStream.guaranteesDistinctTuples();
+    }
+
+    @Override
+    public boolean guaranteesDistinctTuples() {
+        return guaranteesDistinctTuples;
     }
 
     @Override

@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2021 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -29,9 +29,8 @@ public final class BavetFilterUniConstraintStream<Solution_, A> extends BavetAbs
     private final Predicate<A> predicate;
 
     public BavetFilterUniConstraintStream(BavetConstraintFactory<Solution_> constraintFactory,
-            BavetAbstractUniConstraintStream<Solution_, A> parent,
-            Predicate<A> predicate) {
-        super(constraintFactory);
+            BavetAbstractUniConstraintStream<Solution_, A> parent, Predicate<A> predicate) {
+        super(constraintFactory, parent);
         this.parent = parent;
         this.predicate = predicate;
         if (predicate == null) {

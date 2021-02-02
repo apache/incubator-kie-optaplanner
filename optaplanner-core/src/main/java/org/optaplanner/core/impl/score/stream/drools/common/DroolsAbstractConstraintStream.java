@@ -34,7 +34,9 @@ public abstract class DroolsAbstractConstraintStream<Solution_> extends Abstract
     protected final DroolsConstraintFactory<Solution_> constraintFactory;
     private final List<DroolsAbstractConstraintStream<Solution_>> childStreamList = new ArrayList<>(2);
 
-    public DroolsAbstractConstraintStream(DroolsConstraintFactory<Solution_> constraintFactory) {
+    public DroolsAbstractConstraintStream(DroolsConstraintFactory<Solution_> constraintFactory,
+            DroolsAbstractConstraintStream<Solution_> parent) {
+        super(parent);
         this.constraintFactory = Objects.requireNonNull(constraintFactory);
     }
 

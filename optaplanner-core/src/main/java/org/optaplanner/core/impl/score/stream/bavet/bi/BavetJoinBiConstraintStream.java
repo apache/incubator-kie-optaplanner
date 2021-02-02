@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2021 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -36,11 +36,15 @@ public final class BavetJoinBiConstraintStream<Solution_, A, B> extends BavetAbs
     private final BavetAbstractConstraintStream<Solution_> rightParent;
 
     public BavetJoinBiConstraintStream(BavetConstraintFactory<Solution_> constraintFactory,
-            BavetAbstractConstraintStream<Solution_> leftParent,
-            BavetAbstractConstraintStream<Solution_> rightParent) {
-        super(constraintFactory);
+            BavetAbstractConstraintStream<Solution_> leftParent, BavetAbstractConstraintStream<Solution_> rightParent) {
+        super(constraintFactory, null);
         this.leftParent = leftParent;
         this.rightParent = rightParent;
+    }
+
+    @Override
+    public boolean guaranteesDistinctTuples() {
+        return leftParent.guaranteesDistinctTuples() && rightParent.guaranteesDistinctTuples();
     }
 
     @Override

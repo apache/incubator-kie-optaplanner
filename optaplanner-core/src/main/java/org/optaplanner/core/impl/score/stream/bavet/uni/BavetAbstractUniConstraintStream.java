@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2021 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -51,8 +51,9 @@ public abstract class BavetAbstractUniConstraintStream<Solution_, A> extends Bav
 
     protected final List<BavetAbstractUniConstraintStream<Solution_, A>> childStreamList = new ArrayList<>(2);
 
-    public BavetAbstractUniConstraintStream(BavetConstraintFactory<Solution_> constraintFactory) {
-        super(constraintFactory);
+    public BavetAbstractUniConstraintStream(BavetConstraintFactory<Solution_> constraintFactory,
+            BavetAbstractConstraintStream<Solution_> parent) {
+        super(constraintFactory, parent);
     }
 
     // ************************************************************************
@@ -193,6 +194,15 @@ public abstract class BavetAbstractUniConstraintStream<Solution_, A> extends Bav
                     Function<A, GroupKeyA_> groupKeyAMapping,
                     Function<A, GroupKeyB_> groupKeyBMapping, UniConstraintCollector<A, ResultContainerC_, ResultC_> collectorC,
                     UniConstraintCollector<A, ResultContainerD_, ResultD_> collectorD) {
+        throw new UnsupportedOperationException(); // TODO
+    }
+
+    // ************************************************************************
+    // Group by
+    // ************************************************************************
+
+    @Override
+    public <NewA> UniConstraintStream<NewA> map(Function<A, NewA> mappingFunction) {
         throw new UnsupportedOperationException(); // TODO
     }
 

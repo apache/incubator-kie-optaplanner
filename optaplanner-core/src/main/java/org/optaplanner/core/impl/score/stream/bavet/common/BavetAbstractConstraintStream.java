@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2021 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -30,8 +30,15 @@ public abstract class BavetAbstractConstraintStream<Solution_> extends AbstractC
 
     protected final BavetConstraintFactory<Solution_> constraintFactory;
 
-    public BavetAbstractConstraintStream(BavetConstraintFactory<Solution_> constraintFactory) {
+    public BavetAbstractConstraintStream(BavetConstraintFactory<Solution_> constraintFactory,
+            BavetAbstractConstraintStream<Solution_> parent) {
+        super(parent);
         this.constraintFactory = constraintFactory;
+    }
+
+    @Override
+    public boolean guaranteesDistinctTuples() {
+        return true; // Always true in Bavet; map() is not implemented.
     }
 
     // ************************************************************************

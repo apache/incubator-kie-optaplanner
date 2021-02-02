@@ -47,8 +47,9 @@ import org.optaplanner.core.impl.score.stream.tri.InnerTriConstraintStream;
 public abstract class DroolsAbstractTriConstraintStream<Solution_, A, B, C>
         extends DroolsAbstractConstraintStream<Solution_> implements InnerTriConstraintStream<A, B, C> {
 
-    public DroolsAbstractTriConstraintStream(DroolsConstraintFactory<Solution_> constraintFactory) {
-        super(constraintFactory);
+    public DroolsAbstractTriConstraintStream(DroolsConstraintFactory<Solution_> constraintFactory,
+            DroolsAbstractConstraintStream<Solution_> parent) {
+        super(constraintFactory, parent);
     }
 
     @Override

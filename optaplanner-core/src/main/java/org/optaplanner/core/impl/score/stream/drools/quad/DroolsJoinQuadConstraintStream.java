@@ -26,12 +26,19 @@ public final class DroolsJoinQuadConstraintStream<Solution_, A, B, C, D>
         extends DroolsAbstractQuadConstraintStream<Solution_, A, B, C, D> {
 
     private final QuadLeftHandSide<A, B, C, D> leftHandSide;
+    private final boolean guaranteesDistinctTuples;
 
     public DroolsJoinQuadConstraintStream(DroolsConstraintFactory<Solution_> constraintFactory,
             DroolsAbstractTriConstraintStream<Solution_, A, B, C> parent,
             DroolsAbstractUniConstraintStream<Solution_, D> otherStream, QuadJoiner<A, B, C, D> joiner) {
-        super(constraintFactory);
+        super(constraintFactory, parent);
         this.leftHandSide = parent.getLeftHandSide().andJoin(otherStream.getLeftHandSide(), joiner);
+        this.guaranteesDistinctTuples = parent.guaranteesDistinctTuples() && otherStream.guaranteesDistinctTuples();
+    }
+
+    @Override
+    public boolean guaranteesDistinctTuples() {
+        return guaranteesDistinctTuples;
     }
 
     // ************************************************************************

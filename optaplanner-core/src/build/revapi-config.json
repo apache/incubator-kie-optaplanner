@@ -10026,6 +10026,15 @@
           "classSimpleName": "SolverConfig",
           "elementKind": "class",
           "justification": "domainAccessType less important than entityClassList, so it should be after entityClassList."
+        },
+        {
+          "code": "java.method.addedToInterface",
+          "new": "method <NewA> org.optaplanner.core.api.score.stream.uni.UniConstraintStream<NewA> org.optaplanner.core.api.score.stream.uni.UniConstraintStream<A>::map(java.util.function.Function<A, NewA>)",
+          "package": "org.optaplanner.core.api.score.stream.uni",
+          "classSimpleName": "UniConstraintStream",
+          "methodName": "map",
+          "elementKind": "method",
+          "justification": "The API gets new functionality."
         }
       ]
     }

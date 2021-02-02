@@ -27,7 +27,7 @@ public final class DroolsFilterTriConstraintStream<Solution_, A, B, C>
 
     public DroolsFilterTriConstraintStream(DroolsConstraintFactory<Solution_> constraintFactory,
             DroolsAbstractTriConstraintStream<Solution_, A, B, C> parent, TriPredicate<A, B, C> triPredicate) {
-        super(constraintFactory);
+        super(constraintFactory, parent);
         this.leftHandSide = parent.getLeftHandSide().andFilter(triPredicate);
     }
 

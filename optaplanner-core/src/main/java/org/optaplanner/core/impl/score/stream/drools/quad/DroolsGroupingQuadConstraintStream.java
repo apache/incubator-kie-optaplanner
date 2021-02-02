@@ -41,7 +41,7 @@ public final class DroolsGroupingQuadConstraintStream<Solution_, NewA, NewB, New
             DroolsAbstractUniConstraintStream<Solution_, A> parent, Function<A, NewA> groupKeyAMapping,
             Function<A, NewB> groupKeyBMapping, UniConstraintCollector<A, ResultContainerC, NewC> collectorC,
             UniConstraintCollector<A, ResultContainerD, NewD> collectorD) {
-        super(constraintFactory);
+        super(constraintFactory, parent);
         this.leftHandSide = parent.getLeftHandSide().andGroupBy(groupKeyAMapping, groupKeyBMapping, collectorC, collectorD);
     }
 
@@ -50,7 +50,7 @@ public final class DroolsGroupingQuadConstraintStream<Solution_, NewA, NewB, New
             DroolsAbstractBiConstraintStream<Solution_, A, B> parent, BiFunction<A, B, NewA> groupKeyAMapping,
             BiFunction<A, B, NewB> groupKeyBMapping, BiConstraintCollector<A, B, ResultContainerC, NewC> collectorC,
             BiConstraintCollector<A, B, ResultContainerD, NewD> collectorD) {
-        super(constraintFactory);
+        super(constraintFactory, parent);
         this.leftHandSide = parent.getLeftHandSide().andGroupBy(groupKeyAMapping, groupKeyBMapping, collectorC, collectorD);
     }
 
@@ -60,7 +60,7 @@ public final class DroolsGroupingQuadConstraintStream<Solution_, NewA, NewB, New
             TriFunction<A, B, C, NewB> groupKeyBMapping,
             TriConstraintCollector<A, B, C, ResultContainerC, NewC> collectorC,
             TriConstraintCollector<A, B, C, ResultContainerD, NewD> collectorD) {
-        super(constraintFactory);
+        super(constraintFactory, parent);
         this.leftHandSide = parent.getLeftHandSide().andGroupBy(groupKeyAMapping, groupKeyBMapping, collectorC, collectorD);
     }
 
@@ -71,8 +71,13 @@ public final class DroolsGroupingQuadConstraintStream<Solution_, NewA, NewB, New
             QuadFunction<A, B, C, D, NewB> groupKeyBMapping,
             QuadConstraintCollector<A, B, C, D, ResultContainerC, NewC> collectorC,
             QuadConstraintCollector<A, B, C, D, ResultContainerD, NewD> collectorD) {
-        super(constraintFactory);
+        super(constraintFactory, parent);
         this.leftHandSide = parent.getLeftHandSide().andGroupBy(groupKeyAMapping, groupKeyBMapping, collectorC, collectorD);
+    }
+
+    @Override
+    public boolean guaranteesDistinctTuples() {
+        return true; // GroupBy() always produces a unique set of tuples.
     }
 
     // ************************************************************************

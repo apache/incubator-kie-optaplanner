@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2021 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -38,10 +38,9 @@ public final class BavetJoinBridgeUniConstraintStream<Solution_, A>
     private final BavetIndexFactory indexFactory;
 
     public BavetJoinBridgeUniConstraintStream(BavetConstraintFactory<Solution_> constraintFactory,
-            BavetAbstractUniConstraintStream<Solution_, A> parent,
-            boolean isLeftBridge,
-            Function<A, Object[]> mapping, BavetIndexFactory indexFactory) {
-        super(constraintFactory);
+            BavetAbstractUniConstraintStream<Solution_, A> parent, boolean isLeftBridge, Function<A, Object[]> mapping,
+            BavetIndexFactory indexFactory) {
+        super(constraintFactory, parent);
         this.parent = parent;
         this.isLeftBridge = isLeftBridge;
         this.mapping = mapping;

@@ -26,12 +26,19 @@ public final class DroolsJoinTriConstraintStream<Solution_, A, B, C>
         extends DroolsAbstractTriConstraintStream<Solution_, A, B, C> {
 
     private final TriLeftHandSide<A, B, C> leftHandSide;
+    private final boolean guaranteesDistinctTuples;
 
     public DroolsJoinTriConstraintStream(DroolsConstraintFactory<Solution_> constraintFactory,
             DroolsAbstractBiConstraintStream<Solution_, A, B> parent,
             DroolsAbstractUniConstraintStream<Solution_, C> otherStream, TriJoiner<A, B, C> joiner) {
-        super(constraintFactory);
+        super(constraintFactory, parent);
         this.leftHandSide = parent.getLeftHandSide().andJoin(otherStream.getLeftHandSide(), joiner);
+        this.guaranteesDistinctTuples = parent.guaranteesDistinctTuples() && otherStream.guaranteesDistinctTuples();
+    }
+
+    @Override
+    public boolean guaranteesDistinctTuples() {
+        return guaranteesDistinctTuples;
     }
 
     // ************************************************************************
