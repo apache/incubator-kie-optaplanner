@@ -16,10 +16,6 @@
 
 package org.optaplanner.core.api.score.stream;
 
-import java.util.function.BiFunction;
-import java.util.function.BiPredicate;
-import java.util.function.Function;
-
 import org.optaplanner.core.api.function.PentaPredicate;
 import org.optaplanner.core.api.function.QuadFunction;
 import org.optaplanner.core.api.function.QuadPredicate;
@@ -45,6 +41,10 @@ import org.optaplanner.core.impl.score.stream.tri.AbstractTriJoiner;
 import org.optaplanner.core.impl.score.stream.tri.FilteringTriJoiner;
 import org.optaplanner.core.impl.score.stream.tri.SingleTriJoiner;
 
+import java.util.function.BiFunction;
+import java.util.function.BiPredicate;
+import java.util.function.Function;
+
 /**
  * Creates an {@link BiJoiner}, {@link TriJoiner}, ... instance
  * for use in {@link UniConstraintStream#join(Class, BiJoiner)}, ...
@@ -52,6 +52,7 @@ import org.optaplanner.core.impl.score.stream.tri.SingleTriJoiner;
 public final class Joiners {
 
     // TODO Support using non-natural comparators, such as lessThan(leftMapping, rightMapping, comparator).
+    // TODO Support collection-based joiners, such as containing(), intersecting() and disjoint().
 
     // ************************************************************************
     // BiJoiner
@@ -61,8 +62,7 @@ public final class Joiners {
      * As defined by {@link #equal(Function)} with {@link Function#identity()} as the argument.
      *
      * @param <A> the type of both objects
-     * @return never null, a joiner that filters the constraint stream to only include elements (A,B) where A and B
-     *         are equal
+     * @return never null
      */
     public static <A> BiJoiner<A, A> equal() {
         return equal(Function.identity());
@@ -74,8 +74,7 @@ public final class Joiners {
      * @param <A> the type of both objects
      * @param <Property_> the type of the property to compare
      * @param mapping mapping function to apply to both A and B
-     * @return never null, a joiner that filters the constraint stream to only include elements (A,B) where the same
-     *         property of A and B is equal
+     * @return never null
      */
     public static <A, Property_> BiJoiner<A, A> equal(Function<A, Property_> mapping) {
         return equal(mapping, mapping);
@@ -93,8 +92,7 @@ public final class Joiners {
      * @param <Property_> the type of the property to compare
      * @param leftMapping mapping function to apply to A
      * @param rightMapping mapping function to apply to B
-     * @return never null, a joiner that filters the constraint stream to only include elements (A,B) where a property
-     *         of A equals that of B
+     * @return never null
      */
     public static <A, B, Property_> BiJoiner<A, B> equal(Function<A, Property_> leftMapping,
             Function<B, Property_> rightMapping) {
@@ -107,8 +105,7 @@ public final class Joiners {
      * @param mapping mapping function to apply
      * @param <A> the type of both objects
      * @param <Property_> the type of the property to compare
-     * @return never null, a joiner that filters the constraint stream to only include elements (A,B) where a property
-     *         of A is less than that of B
+     * @return never null
      */
     public static <A, Property_ extends Comparable<Property_>> BiJoiner<A, A> lessThan(Function<A, Property_> mapping) {
         return lessThan(mapping, mapping);
@@ -127,8 +124,7 @@ public final class Joiners {
      * @param <A> the type of object on the left
      * @param <B> the type of object on the right
      * @param <Property_> the type of the property to compare
-     * @return never null, a joiner that filters the constraint stream to only include elements (A,B) where a property
-     *         of A is less than a property of B
+     * @return never null
      */
     public static <A, B, Property_ extends Comparable<Property_>> BiJoiner<A, B> lessThan(
             Function<A, Property_> leftMapping, Function<B, Property_> rightMapping) {
@@ -141,8 +137,7 @@ public final class Joiners {
      * @param mapping mapping function to apply
      * @param <A> the type of both objects
      * @param <Property_> the type of the property to compare
-     * @return never null, a joiner that filters the constraint stream to only include elements (A,B) where a property
-     *         of A is less than or equal to that of B
+     * @return never null
      */
     public static <A, Property_ extends Comparable<Property_>> BiJoiner<A, A> lessThanOrEqual(
             Function<A, Property_> mapping) {
@@ -163,8 +158,7 @@ public final class Joiners {
      * @param <A> the type of object on the left
      * @param <B> the type of object on the right
      * @param <Property_> the type of the property to compare
-     * @return never null, a joiner that filters the constraint stream to only include elements (A,B) where a property
-     *         of A is less than or equal to a property of B
+     * @return never null
      */
     public static <A, B, Property_ extends Comparable<Property_>> BiJoiner<A, B> lessThanOrEqual(
             Function<A, Property_> leftMapping, Function<B, Property_> rightMapping) {
@@ -177,8 +171,7 @@ public final class Joiners {
      * @param mapping mapping function to apply
      * @param <A> the type of both objects
      * @param <Property_> the type of the property to compare
-     * @return never null, a joiner that filters the constraint stream to only include elements (A,B) where a property
-     *         of A is greater than that of B
+     * @return never null
      */
     public static <A, Property_ extends Comparable<Property_>> BiJoiner<A, A> greaterThan(
             Function<A, Property_> mapping) {
@@ -198,8 +191,7 @@ public final class Joiners {
      * @param <A> the type of object on the left
      * @param <B> the type of object on the right
      * @param <Property_> the type of the property to compare
-     * @return never null, a joiner that filters the constraint stream to only include elements (A,B) where a property
-     *         of A is greater than a property of B
+     * @return never null
      */
     public static <A, B, Property_ extends Comparable<Property_>> BiJoiner<A, B> greaterThan(
             Function<A, Property_> leftMapping, Function<B, Property_> rightMapping) {
@@ -212,8 +204,7 @@ public final class Joiners {
      * @param mapping mapping function to apply
      * @param <A> the type of both objects
      * @param <Property_> the type of the property to compare
-     * @return never null, a joiner that filters the constraint stream to only include elements (A,B) where a property
-     *         of A is greater than or equal to that of B
+     * @return never null
      */
     public static <A, Property_ extends Comparable<Property_>> BiJoiner<A, A> greaterThanOrEqual(
             Function<A, Property_> mapping) {
@@ -234,8 +225,7 @@ public final class Joiners {
      * @param <A> the type of object on the left
      * @param <B> the type of object on the right
      * @param <Property_> the type of the property to compare
-     * @return never null, a joiner that filters the constraint stream to only include elements (A,B) where a property
-     *         of A is greater than or equal to a property of B
+     * @return never null
      */
     public static <A, B, Property_ extends Comparable<Property_>> BiJoiner<A, B> greaterThanOrEqual(
             Function<A, Property_> leftMapping, Function<B, Property_> rightMapping) {
@@ -272,8 +262,7 @@ public final class Joiners {
      * @param endMapping maps the argument to the end point of its interval (exclusive)
      * @param <A> the type of both the first and second argument
      * @param <Property_> the type used to define the interval, comparable
-     * @return never null, a joiner that filters the constraint stream to only include elements (A,B) where A's and B's
-     *         intervals (as defined by the function mapping) overlap
+     * @return never null
      */
     public static <A, Property_ extends Comparable<Property_>> BiJoiner<A, A> overlapping(
             Function<A, Property_> startMapping,
@@ -291,8 +280,7 @@ public final class Joiners {
      * @param <A> the type of the first argument
      * @param <B> the type of the second argument
      * @param <Property_> the type used to define the interval, comparable
-     * @return never null, a joiner that filters the constraint stream to only include elements (A,B) where A's and B's
-     *         intervals (as defined by the function mapping) overlap
+     * @return never null
      */
     public static <A, B, Property_ extends Comparable<Property_>> BiJoiner<A, B> overlapping(
             Function<A, Property_> leftStartMapping,
@@ -316,8 +304,7 @@ public final class Joiners {
      * @param <Property_> the type of the property to compare
      * @param leftMapping mapping function to apply to (A,B)
      * @param rightMapping mapping function to apply to C
-     * @return never null, a joiner that filters the constraint stream to only include elements (A,B,C) where a property
-     *         of (A,B) equals that of C
+     * @return never null
      */
     public static <A, B, C, Property_> TriJoiner<A, B, C> equal(BiFunction<A, B, Property_> leftMapping,
             Function<C, Property_> rightMapping) {
@@ -333,8 +320,7 @@ public final class Joiners {
      * @param <B> the type of the second object on the left
      * @param <C> the type of object on the right
      * @param <Property_> the type of the property to compare
-     * @return never null, a joiner that filters the constraint stream to only include elements (A,B,C)
-     *         where a property of (A,B) is less than a property of C
+     * @return never null
      */
     public static <A, B, C, Property_ extends Comparable<Property_>> TriJoiner<A, B, C> lessThan(
             BiFunction<A, B, Property_> leftMapping, Function<C, Property_> rightMapping) {
@@ -350,8 +336,7 @@ public final class Joiners {
      * @param <B> the type of the second object on the left
      * @param <C> the type of object on the right
      * @param <Property_> the type of the property to compare
-     * @return never null, a joiner that filters the constraint stream to only include elements (A,B,C)
-     *         where a property of (A,B) is less than or equal to a property of C
+     * @return never null
      */
     public static <A, B, C, Property_ extends Comparable<Property_>> TriJoiner<A, B, C> lessThanOrEqual(
             BiFunction<A, B, Property_> leftMapping, Function<C, Property_> rightMapping) {
@@ -367,8 +352,7 @@ public final class Joiners {
      * @param <B> the type of the second object on the left
      * @param <C> the type of object on the right
      * @param <Property_> the type of the property to compare
-     * @return never null, a joiner that filters the constraint stream to only include elements (A,B,C)
-     *         where a property of (A,B) is greater than a property of C
+     * @return never null
      */
     public static <A, B, C, Property_ extends Comparable<Property_>> TriJoiner<A, B, C> greaterThan(
             BiFunction<A, B, Property_> leftMapping, Function<C, Property_> rightMapping) {
@@ -384,8 +368,7 @@ public final class Joiners {
      * @param <B> the type of the second object on the left
      * @param <C> the type of object on the right
      * @param <Property_> the type of the property to compare
-     * @return never null, a joiner that filters the constraint stream to only include elements (A,B,C)
-     *         where a property of (A,B) is greater than or equal to a property of C
+     * @return never null
      */
     public static <A, B, C, Property_ extends Comparable<Property_>> TriJoiner<A, B, C> greaterThanOrEqual(
             BiFunction<A, B, Property_> leftMapping, Function<C, Property_> rightMapping) {
@@ -416,8 +399,7 @@ public final class Joiners {
      * @param <B> the type of the second argument
      * @param <C> the type of the third argument
      * @param <Property_> the type used to define the interval, comparable
-     * @return never null, a joiner that filters the constraint stream to only include elements (A,B,C) where (A,B)'s
-     *         and C's intervals (as defined by the function mapping) overlap
+     * @return never null
      */
     public static <A, B, C, Property_ extends Comparable<Property_>> TriJoiner<A, B, C> overlapping(
             BiFunction<A, B, Property_> leftStartMapping,
@@ -442,8 +424,7 @@ public final class Joiners {
      * @param <Property_> the type of the property to compare
      * @param leftMapping mapping function to apply to (A, B, C)
      * @param rightMapping mapping function to apply to D
-     * @return never null, a joiner that filters the constraint stream to only include elements (A,B,C,D) where a
-     *         property of (A,B,C) equals that of D
+     * @return never null
      */
     public static <A, B, C, D, Property_> QuadJoiner<A, B, C, D> equal(
             TriFunction<A, B, C, Property_> leftMapping, Function<D, Property_> rightMapping) {
@@ -460,8 +441,7 @@ public final class Joiners {
      * @param <C> the type of the third object on the left
      * @param <D> the type of object on the right
      * @param <Property_> the type of the property to compare
-     * @return never null, a joiner that filters the constraint stream to only include elements (A,B,C,D)
-     *         where a property of (A,B,C) is less than a property of D
+     * @return never null
      */
     public static <A, B, C, D, Property_ extends Comparable<Property_>> QuadJoiner<A, B, C, D> lessThan(
             TriFunction<A, B, C, Property_> leftMapping, Function<D, Property_> rightMapping) {
@@ -478,8 +458,7 @@ public final class Joiners {
      * @param <C> the type of the third object on the left
      * @param <D> the type of object on the right
      * @param <Property_> the type of the property to compare
-     * @return never null, a joiner that filters the constraint stream to only include elements (A,B,C,D)
-     *         where a property of (A,B,C) is less than or equal to a property of D
+     * @return never null
      */
     public static <A, B, C, D, Property_ extends Comparable<Property_>> QuadJoiner<A, B, C, D> lessThanOrEqual(
             TriFunction<A, B, C, Property_> leftMapping, Function<D, Property_> rightMapping) {
@@ -496,8 +475,7 @@ public final class Joiners {
      * @param <C> the type of the third object on the left
      * @param <D> the type of object on the right
      * @param <Property_> the type of the property to compare
-     * @return never null, a joiner that filters the constraint stream to only include elements (A,B,C,D)
-     *         where a property of (A,B,C) is greater than a property of D
+     * @return never null
      */
     public static <A, B, C, D, Property_ extends Comparable<Property_>> QuadJoiner<A, B, C, D> greaterThan(
             TriFunction<A, B, C, Property_> leftMapping, Function<D, Property_> rightMapping) {
@@ -514,8 +492,7 @@ public final class Joiners {
      * @param <C> the type of the third object on the left
      * @param <D> the type of object on the right
      * @param <Property_> the type of the property to compare
-     * @return never null, a joiner that filters the constraint stream to only include elements (A,B,C,D)
-     *         where a property of (A,B,C) is greater than or equal to a property of D
+     * @return never null
      */
     public static <A, B, C, D, Property_ extends Comparable<Property_>> QuadJoiner<A, B, C, D> greaterThanOrEqual(
             TriFunction<A, B, C, Property_> leftMapping, Function<D, Property_> rightMapping) {
@@ -548,8 +525,7 @@ public final class Joiners {
      * @param <C> the type of the third argument
      * @param <D> the type of the fourth argument
      * @param <Property_> the type used to define the interval, comparable
-     * @return never null, a joiner that filters the constraint stream to only include elements (A,B,C,D)
-     *         where (A,B,C)'s and D's intervals (as defined by the function mapping) overlap
+     * @return never null
      */
     public static <A, B, C, D, Property_ extends Comparable<Property_>> QuadJoiner<A, B, C, D> overlapping(
             TriFunction<A, B, C, Property_> leftStartMapping,
@@ -575,8 +551,7 @@ public final class Joiners {
      * @param <Property_> the type of the property to compare
      * @param leftMapping mapping function to apply to (A,B,C,D)
      * @param rightMapping mapping function to apply to E
-     * @return never null, a joiner that filters the constraint stream to only include elements (A,B,C,D,E) where a
-     *         property of (A,B,C,D) equals that of E
+     * @return never null
      */
     public static <A, B, C, D, E, Property_> PentaJoiner<A, B, C, D, E> equal(
             QuadFunction<A, B, C, D, Property_> leftMapping, Function<E, Property_> rightMapping) {
@@ -594,8 +569,7 @@ public final class Joiners {
      * @param <D> the type of the fourth object on the left
      * @param <E> the type of object on the right
      * @param <Property_> the type of the property to compare
-     * @return never null, a joiner that filters the constraint stream to only include elements (A,B,C,D,E)
-     *         where a property of (A,B,C,D) is less than a property of E
+     * @return never null
      */
     public static <A, B, C, D, E, Property_ extends Comparable<Property_>> PentaJoiner<A, B, C, D, E> lessThan(
             QuadFunction<A, B, C, D, Property_> leftMapping, Function<E, Property_> rightMapping) {
@@ -613,8 +587,7 @@ public final class Joiners {
      * @param <D> the type of the fourth object on the left
      * @param <E> the type of object on the right
      * @param <Property_> the type of the property to compare
-     * @return never null, a joiner that filters the constraint stream to only include elements (A,B,C,D,E)
-     *         where a property of (A,B,C,D) is less than or equal to a property of E
+     * @return never null
      */
     public static <A, B, C, D, E, Property_ extends Comparable<Property_>> PentaJoiner<A, B, C, D, E> lessThanOrEqual(
             QuadFunction<A, B, C, D, Property_> leftMapping, Function<E, Property_> rightMapping) {
@@ -632,8 +605,7 @@ public final class Joiners {
      * @param <D> the type of the fourth object on the left
      * @param <E> the type of object on the right
      * @param <Property_> the type of the property to compare
-     * @return never null, a joiner that filters the constraint stream to only include elements (A,B,C,D,E)
-     *         where a property of (A,B,C,D) is greater than a property of E
+     * @return never null
      */
     public static <A, B, C, D, E, Property_ extends Comparable<Property_>> PentaJoiner<A, B, C, D, E> greaterThan(
             QuadFunction<A, B, C, D, Property_> leftMapping, Function<E, Property_> rightMapping) {
@@ -651,8 +623,7 @@ public final class Joiners {
      * @param <D> the type of the fourth object on the left
      * @param <E> the type of object on the right
      * @param <Property_> the type of the property to compare
-     * @return never null, a joiner that filters the constraint stream to only include elements (A,B,C,D,E)
-     *         where a property of (A,B,C,D) is greater than or equal to a property of E
+     * @return never null
      */
     public static <A, B, C, D, E, Property_ extends Comparable<Property_>> PentaJoiner<A, B, C, D, E> greaterThanOrEqual(
             QuadFunction<A, B, C, D, Property_> leftMapping, Function<E, Property_> rightMapping) {
@@ -687,8 +658,7 @@ public final class Joiners {
      * @param <D> the type of the fourth argument
      * @param <E> the type of the fifth argument
      * @param <Property_> the type used to define the interval, comparable
-     * @return never null, a joiner that filters the constraint stream to only include elements (A,B,C,D,E)
-     *         where (A,B,C,D)'s and E's intervals (as defined by the function mapping) overlap
+     * @return never null
      */
     public static <A, B, C, D, E, Property_ extends Comparable<Property_>> PentaJoiner<A, B, C, D, E> overlapping(
             QuadFunction<A, B, C, D, Property_> leftStartMapping,
