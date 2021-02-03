@@ -326,11 +326,12 @@ public final class UniLeftHandSide<A> extends AbstractLeftHandSide {
     }
 
     public <NewA> UniLeftHandSide<NewA> andMap(Function<A, NewA> mappingFunction) {
-        return null;
+        Variable<NewA> newAVariable = variableFactory.createVariable("mappedNewA");
+        return new UniLeftHandSide<>(patternVariable.map(newAVariable, mappingFunction), variableFactory);
     }
 
     public AbstractUniConstraintConsequence<A> andTerminate() {
-        return new UniConstraintDefaultConsequence(this);
+        return new UniConstraintDefaultConsequence<>(this);
     }
 
     public AbstractUniConstraintConsequence<A> andTerminate(ToIntFunction<A> matchWeighter) {

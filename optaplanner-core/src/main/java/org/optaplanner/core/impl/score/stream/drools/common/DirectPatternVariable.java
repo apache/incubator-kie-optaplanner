@@ -141,12 +141,26 @@ class DirectPatternVariable<A> implements PatternVariable<A, A, DirectPatternVar
         this.prerequisiteExpressions = patternCreator.prerequisiteExpressions;
         this.dependentExpressions = Stream.concat(patternCreator.dependentExpressions.stream(), Stream.of(dependentExpression))
                 .collect(Collectors.toList());
-
     }
 
     @Override
     public Variable<A> getPrimaryVariable() {
         return primaryVariable;
+    }
+
+    @Override
+    public Supplier<PatternDSL.PatternDef<A>> getPatternSupplier() {
+        return patternSupplier;
+    }
+
+    @Override
+    public List<ViewItem<?>> getPrerequisiteExpressions() {
+        return prerequisiteExpressions;
+    }
+
+    @Override
+    public List<ViewItem<?>> getDependentExpressions() {
+        return dependentExpressions;
     }
 
     @Override
@@ -225,6 +239,15 @@ class DirectPatternVariable<A> implements PatternVariable<A, A, DirectPatternVar
         return new DirectPatternVariable<>(this,
                 p -> p.bind(boundVariable, leftJoinVariableA, leftJoinVariableB, leftJoinVariableC,
                         bindingFunction::apply));
+    }
+
+    @Override
+    public <NewA> IndirectPatternVariable<NewA, A> map(Variable<NewA> boundVariable,
+            Function<A, NewA> mappingFunction) {
+        // Previous pattern variable - $a: Something()
+        // New pattern variable - $a: Something($newA: mappingFunction($a))
+        DirectPatternVariable<A> intermediate = this.bind(boundVariable, mappingFunction);
+        return new IndirectPatternVariable<>(intermediate, boundVariable, mappingFunction);
     }
 
     @Override

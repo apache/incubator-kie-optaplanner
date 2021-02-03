@@ -1213,6 +1213,35 @@ public class UniConstraintStreamTest extends AbstractConstraintStreamTest {
     }
 
     @TestTemplate
+    public void mapWithoutDuplicateTuples() {
+        assumeDrools();
+        TestdataLavishSolution solution = TestdataLavishSolution.generateSolution(2, 2);
+
+        InnerScoreDirector<TestdataLavishSolution, SimpleScore> scoreDirector = buildScoreDirector((factory) -> {
+            return factory.from(TestdataLavishEntity.class)
+                    .map(TestdataLavishEntity::getValue)
+                    .penalize(TEST_CONSTRAINT_NAME, SimpleScore.ONE, a -> {
+                        System.out.println("IN CONSTRAINT: " + a);
+                        return 1;
+                    });
+        });
+
+        // From scratch
+        scoreDirector.setWorkingSolution(solution);
+        assertScore(scoreDirector,
+                assertMatchWithScore(-1, solution.getFirstEntity().getValue()),
+                assertMatchWithScore(-1, solution.getEntityList().get(1).getValue()));
+
+        // Incremental
+        TestdataLavishEntity entity = solution.getFirstEntity();
+        scoreDirector.beforeEntityRemoved(entity);
+        solution.getEntityList().remove(entity);
+        scoreDirector.afterEntityRemoved(entity);
+        assertScore(scoreDirector,
+                assertMatchWithScore(-1, solution.getFirstEntity().getValue()));
+    }
+
+    @TestTemplate
     public void groupBy_2Mapping2Collector() {
         assumeDrools();
         TestdataLavishSolution solution = TestdataLavishSolution.generateSolution(1, 1, 1, 7);

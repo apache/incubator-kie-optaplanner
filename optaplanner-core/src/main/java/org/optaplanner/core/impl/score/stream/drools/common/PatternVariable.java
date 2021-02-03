@@ -21,7 +21,9 @@ import java.util.function.BiFunction;
 import java.util.function.BiPredicate;
 import java.util.function.Function;
 import java.util.function.Predicate;
+import java.util.function.Supplier;
 
+import org.drools.model.PatternDSL;
 import org.drools.model.Variable;
 import org.drools.model.view.ViewItem;
 import org.optaplanner.core.api.function.QuadFunction;
@@ -32,7 +34,14 @@ import org.optaplanner.core.impl.score.stream.bi.AbstractBiJoiner;
 import org.optaplanner.core.impl.score.stream.common.JoinerType;
 
 public interface PatternVariable<A, PatternVar_, Child_ extends PatternVariable<A, PatternVar_, Child_>> {
+
     Variable<A> getPrimaryVariable();
+
+    Supplier<PatternDSL.PatternDef<PatternVar_>> getPatternSupplier();
+
+    List<ViewItem<?>> getPrerequisiteExpressions();
+
+    List<ViewItem<?>> getDependentExpressions();
 
     Child_ filter(Predicate<A> predicate);
 
@@ -65,6 +74,9 @@ public interface PatternVariable<A, PatternVar_, Child_ extends PatternVariable<
             Variable<BoundVar_> boundVariable, Variable<LeftJoinVarA_> leftJoinVariableA,
             Variable<LeftJoinVarB_> leftJoinVariableB, Variable<LeftJoinVarC_> leftJoinVariableC,
             QuadFunction<A, LeftJoinVarA_, LeftJoinVarB_, LeftJoinVarC_, BoundVar_> bindingFunction);
+
+    <NewA> IndirectPatternVariable<NewA, PatternVar_> map(Variable<NewA> boundVariable,
+            Function<A, NewA> mappingFunction);
 
     Child_ addDependentExpression(ViewItem<?> expression);
 
