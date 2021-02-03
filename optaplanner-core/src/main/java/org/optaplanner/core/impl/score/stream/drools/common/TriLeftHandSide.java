@@ -58,27 +58,27 @@ import org.optaplanner.core.impl.score.stream.tri.NoneTriJoiner;
  */
 public final class TriLeftHandSide<A, B, C> extends AbstractLeftHandSide {
 
-    private final PatternVariable<A> patternVariableA;
-    private final PatternVariable<B> patternVariableB;
-    private final PatternVariable<C> patternVariableC;
+    private final PatternVariable<A, ?, ?> patternVariableA;
+    private final PatternVariable<B, ?, ?> patternVariableB;
+    private final PatternVariable<C, ?, ?> patternVariableC;
 
-    protected TriLeftHandSide(PatternVariable<A> patternVariableA, PatternVariable<B> patternVariableB,
-            PatternVariable<C> patternVariableC, DroolsVariableFactory variableFactory) {
+    protected TriLeftHandSide(PatternVariable<A, ?, ?> patternVariableA, PatternVariable<B, ?, ?> patternVariableB,
+            PatternVariable<C, ?, ?> patternVariableC, DroolsVariableFactory variableFactory) {
         super(variableFactory);
         this.patternVariableA = patternVariableA;
         this.patternVariableB = patternVariableB;
         this.patternVariableC = patternVariableC;
     }
 
-    protected PatternVariable<A> getPatternVariableA() {
+    protected PatternVariable<A, ?, ?> getPatternVariableA() {
         return patternVariableA;
     }
 
-    protected PatternVariable<B> getPatternVariableB() {
+    protected PatternVariable<B, ?, ?> getPatternVariableB() {
         return patternVariableB;
     }
 
-    protected PatternVariable<C> getPatternVariableC() {
+    protected PatternVariable<C, ?, ?> getPatternVariableC() {
         return patternVariableC;
     }
 
@@ -155,7 +155,7 @@ public final class TriLeftHandSide<A, B, C> extends AbstractLeftHandSide {
 
     public <D> QuadLeftHandSide<A, B, C, D> andJoin(UniLeftHandSide<D> right, QuadJoiner<A, B, C, D> joiner) {
         AbstractQuadJoiner<A, B, C, D> castJoiner = (AbstractQuadJoiner<A, B, C, D>) joiner;
-        PatternVariable<D> filteredRight = right.getPatternVariableA()
+        PatternVariable<D, ?, ?> filteredRight = right.getPatternVariableA()
                 .filter(castJoiner::matches, patternVariableA.getPrimaryVariable(),
                         patternVariableB.getPrimaryVariable(), patternVariableC.getPrimaryVariable());
         return new QuadLeftHandSide<>(patternVariableA, patternVariableB, patternVariableC, filteredRight,
@@ -171,13 +171,13 @@ public final class TriLeftHandSide<A, B, C> extends AbstractLeftHandSide {
         ViewItem<?> groupByPattern = groupBy(innerGroupByPattern, inputA, inputB, inputC, groupKey,
                 keyMapping::apply);
         Variable<NewA> newA = variableFactory.createVariable("newA", groupKey);
-        return new UniLeftHandSide<>(new PatternVariable<>(newA, singletonList(groupByPattern)), variableFactory);
+        return new UniLeftHandSide<>(new DirectPatternVariable<>(newA, singletonList(groupByPattern)), variableFactory);
     }
 
     public <NewA> UniLeftHandSide<NewA> andGroupBy(TriConstraintCollector<A, B, C, ?, NewA> collector) {
         Variable<TriTuple<A, B, C>> accumulateSource =
                 (Variable<TriTuple<A, B, C>>) variableFactory.createVariable(TriTuple.class, "source");
-        PatternVariable<C> newPatternVariableC = patternVariableC.bind(accumulateSource,
+        PatternVariable<C, ?, ?> newPatternVariableC = patternVariableC.bind(accumulateSource,
                 patternVariableA.getPrimaryVariable(), patternVariableB.getPrimaryVariable(),
                 (c, a, b) -> new TriTuple<>(a, b, c));
         Variable<NewA> accumulateOutput = variableFactory.createVariable("collected");
@@ -185,7 +185,7 @@ public final class TriLeftHandSide<A, B, C> extends AbstractLeftHandSide {
                 joinViewItemsWithLogicalAnd(patternVariableA, patternVariableB, newPatternVariableC);
         ViewItem<?> outerAccumulatePattern = accumulate(innerAccumulatePattern,
                 createAccumulateFunction(collector, accumulateSource, accumulateOutput));
-        return new UniLeftHandSide<>(new PatternVariable<>(accumulateOutput, singletonList(outerAccumulatePattern)),
+        return new UniLeftHandSide<>(new DirectPatternVariable<>(accumulateOutput, singletonList(outerAccumulatePattern)),
                 variableFactory);
     }
 
@@ -216,8 +216,8 @@ public final class TriLeftHandSide<A, B, C> extends AbstractLeftHandSide {
                 createCompositeBiGroupKey(keyMappingA, keyMappingB));
         Variable<NewA> newA = variableFactory.createVariable("newA", groupKey, k -> k.a);
         Variable<NewB> newB = variableFactory.createVariable("newB", groupKey, k -> k.b);
-        return new BiLeftHandSide<>(new PatternVariable<>(newA, singletonList(groupByPattern)),
-                new PatternVariable<>(newB), variableFactory);
+        return new BiLeftHandSide<>(new DirectPatternVariable<>(newA, singletonList(groupByPattern)),
+                new DirectPatternVariable<>(newB), variableFactory);
     }
 
     /**
@@ -243,7 +243,7 @@ public final class TriLeftHandSide<A, B, C> extends AbstractLeftHandSide {
         Variable<C> inputC = patternVariableC.getPrimaryVariable();
         Variable<TriTuple<A, B, C>> accumulateSource =
                 (Variable<TriTuple<A, B, C>>) variableFactory.createVariable(TriTuple.class, "source");
-        PatternVariable<C> newPatternVariableC = patternVariableC.bind(accumulateSource,
+        PatternVariable<C, ?, ?> newPatternVariableC = patternVariableC.bind(accumulateSource,
                 patternVariableA.getPrimaryVariable(), patternVariableB.getPrimaryVariable(),
                 (c, a, b) -> new TriTuple<>(a, b, c));
         Variable<NewA> groupKey = variableFactory.createVariable("groupKey");
@@ -254,8 +254,8 @@ public final class TriLeftHandSide<A, B, C> extends AbstractLeftHandSide {
                 createAccumulateFunction(collectorB, accumulateSource, accumulateOutput));
         Variable<NewA> newA = variableFactory.createVariable("newA", groupKey);
         Variable<NewB> newB = variableFactory.createVariable("newB", accumulateOutput);
-        return new BiLeftHandSide<>(new PatternVariable<>(newA, singletonList(groupByPattern)),
-                new PatternVariable<>(newB), variableFactory);
+        return new BiLeftHandSide<>(new DirectPatternVariable<>(newA, singletonList(groupByPattern)),
+                new DirectPatternVariable<>(newB), variableFactory);
     }
 
     public <NewA, NewB, NewC> TriLeftHandSide<NewA, NewB, NewC> andGroupBy(TriFunction<A, B, C, NewA> keyMappingA,
@@ -265,7 +265,7 @@ public final class TriLeftHandSide<A, B, C> extends AbstractLeftHandSide {
         Variable<C> inputC = patternVariableC.getPrimaryVariable();
         Variable<TriTuple<A, B, C>> accumulateSource =
                 (Variable<TriTuple<A, B, C>>) variableFactory.createVariable(TriTuple.class, "source");
-        PatternVariable<C> newPatternVariableC = patternVariableC.bind(accumulateSource,
+        PatternVariable<C, ?, ?> newPatternVariableC = patternVariableC.bind(accumulateSource,
                 patternVariableA.getPrimaryVariable(), patternVariableB.getPrimaryVariable(),
                 (c, a, b) -> new TriTuple<>(a, b, c));
         Variable<BiTuple<NewA, NewB>> groupKey =
@@ -278,8 +278,8 @@ public final class TriLeftHandSide<A, B, C> extends AbstractLeftHandSide {
         Variable<NewA> newA = variableFactory.createVariable("newA", groupKey, k -> k.a);
         Variable<NewB> newB = variableFactory.createVariable("newB", groupKey, k -> k.b);
         Variable<NewC> newC = variableFactory.createVariable("newC", accumulateOutput);
-        return new TriLeftHandSide<>(new PatternVariable<>(newA, singletonList(groupByPattern)),
-                new PatternVariable<>(newB), new PatternVariable<>(newC), variableFactory);
+        return new TriLeftHandSide<>(new DirectPatternVariable<>(newA, singletonList(groupByPattern)),
+                new DirectPatternVariable<>(newB), new DirectPatternVariable<>(newC), variableFactory);
     }
 
     public <NewA, NewB, NewC, NewD> QuadLeftHandSide<NewA, NewB, NewC, NewD> andGroupBy(
@@ -290,7 +290,7 @@ public final class TriLeftHandSide<A, B, C> extends AbstractLeftHandSide {
         Variable<C> inputC = patternVariableC.getPrimaryVariable();
         Variable<TriTuple<A, B, C>> accumulateSource =
                 (Variable<TriTuple<A, B, C>>) variableFactory.createVariable(TriTuple.class, "source");
-        PatternVariable<C> newPatternVariableC = patternVariableC.bind(accumulateSource,
+        PatternVariable<C, ?, ?> newPatternVariableC = patternVariableC.bind(accumulateSource,
                 patternVariableA.getPrimaryVariable(), patternVariableB.getPrimaryVariable(),
                 (c, a, b) -> new TriTuple<>(a, b, c));
         Variable<BiTuple<NewA, NewB>> groupKey =
@@ -306,8 +306,9 @@ public final class TriLeftHandSide<A, B, C> extends AbstractLeftHandSide {
         Variable<NewB> newB = variableFactory.createVariable("newB", groupKey, k -> k.b);
         Variable<NewC> newC = variableFactory.createVariable("newC", accumulateOutputC);
         Variable<NewD> newD = variableFactory.createVariable("newD", accumulateOutputD);
-        return new QuadLeftHandSide<>(new PatternVariable<>(newA, singletonList(groupByPattern)),
-                new PatternVariable<>(newB), new PatternVariable<>(newC), new PatternVariable<>(newD), variableFactory);
+        return new QuadLeftHandSide<>(new DirectPatternVariable<>(newA, singletonList(groupByPattern)),
+                new DirectPatternVariable<>(newB), new DirectPatternVariable<>(newC), new DirectPatternVariable<>(newD),
+                variableFactory);
     }
 
     public AbstractTriConstraintConsequence<A, B, C> andTerminate() {

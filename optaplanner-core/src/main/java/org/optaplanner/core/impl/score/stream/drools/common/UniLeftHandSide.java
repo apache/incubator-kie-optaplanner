@@ -16,6 +16,24 @@
 
 package org.optaplanner.core.impl.score.stream.drools.common;
 
+import static java.util.Collections.singletonList;
+import static org.drools.model.DSL.accFunction;
+import static org.drools.model.DSL.accumulate;
+import static org.drools.model.DSL.exists;
+import static org.drools.model.DSL.groupBy;
+import static org.drools.model.DSL.not;
+import static org.drools.model.PatternDSL.betaIndexedBy;
+import static org.drools.model.PatternDSL.pattern;
+
+import java.math.BigDecimal;
+import java.util.Arrays;
+import java.util.List;
+import java.util.function.BiPredicate;
+import java.util.function.Function;
+import java.util.function.Predicate;
+import java.util.function.ToIntFunction;
+import java.util.function.ToLongFunction;
+
 import org.drools.model.BetaIndex;
 import org.drools.model.PatternDSL;
 import org.drools.model.Variable;
@@ -29,24 +47,6 @@ import org.optaplanner.core.impl.score.stream.bi.FilteringBiJoiner;
 import org.optaplanner.core.impl.score.stream.bi.NoneBiJoiner;
 import org.optaplanner.core.impl.score.stream.common.JoinerType;
 import org.optaplanner.core.impl.score.stream.drools.DroolsVariableFactory;
-
-import java.math.BigDecimal;
-import java.util.Arrays;
-import java.util.List;
-import java.util.function.BiPredicate;
-import java.util.function.Function;
-import java.util.function.Predicate;
-import java.util.function.ToIntFunction;
-import java.util.function.ToLongFunction;
-
-import static java.util.Collections.singletonList;
-import static org.drools.model.DSL.accFunction;
-import static org.drools.model.DSL.accumulate;
-import static org.drools.model.DSL.exists;
-import static org.drools.model.DSL.groupBy;
-import static org.drools.model.DSL.not;
-import static org.drools.model.PatternDSL.betaIndexedBy;
-import static org.drools.model.PatternDSL.pattern;
 
 /**
  * Represents the left-hand side of a Drools rule, the result of which is a single variable.
@@ -96,24 +96,24 @@ import static org.drools.model.PatternDSL.pattern;
  */
 public final class UniLeftHandSide<A> extends AbstractLeftHandSide {
 
-    private final PatternVariable<A> patternVariable;
+    private final PatternVariable<A, ?, ?> patternVariable;
 
     public UniLeftHandSide(Class<A> aClass, DroolsVariableFactory variableFactory) {
         super(variableFactory);
-        this.patternVariable = new PatternVariable<>((Variable<A>) variableFactory.createVariable(aClass, "var"));
+        this.patternVariable = new DirectPatternVariable<>((Variable<A>) variableFactory.createVariable(aClass, "var"));
     }
 
-    protected UniLeftHandSide(UniLeftHandSide<A> leftHandSide, PatternVariable<A> patternVariable) {
+    protected UniLeftHandSide(UniLeftHandSide<A> leftHandSide, PatternVariable<A, ?, ?> patternVariable) {
         super(leftHandSide.variableFactory);
         this.patternVariable = patternVariable;
     }
 
-    protected UniLeftHandSide(PatternVariable<A> patternVariable, DroolsVariableFactory variableFactory) {
+    protected UniLeftHandSide(PatternVariable<A, ?, ?> patternVariable, DroolsVariableFactory variableFactory) {
         super(variableFactory);
         this.patternVariable = patternVariable;
     }
 
-    protected PatternVariable<A> getPatternVariableA() {
+    protected PatternVariable<A, ?, ?> getPatternVariableA() {
         return patternVariable;
     }
 
@@ -128,7 +128,7 @@ public final class UniLeftHandSide<A> extends AbstractLeftHandSide {
         if (joiner == null) {
             return applyFilters(patternVariable, existencePattern, predicate, shouldExist);
         }
-        PatternVariable<A> newPatternVariable = patternVariable;
+        PatternVariable<A, ?, ?> newPatternVariable = patternVariable;
         JoinerType[] joinerTypes = joiner.getJoinerTypes();
         // Rebuild the A pattern, binding variables for left parts of the joins.
         Variable[] joinVars = new Variable[joinerTypes.length];
@@ -156,7 +156,7 @@ public final class UniLeftHandSide<A> extends AbstractLeftHandSide {
         return applyFilters(newPatternVariable, existencePattern, predicate, shouldExist);
     }
 
-    private <B> UniLeftHandSide<A> applyFilters(PatternVariable<A> newPatternVariable,
+    private <B> UniLeftHandSide<A> applyFilters(PatternVariable<A, ?, ?> newPatternVariable,
             PatternDSL.PatternDef<B> existencePattern, BiPredicate<A, B> biPredicate, boolean shouldExist) {
         PatternDSL.PatternDef<B> possiblyFilteredExistencePattern = biPredicate == null ? existencePattern
                 : existencePattern.expr("Filter using " + biPredicate, newPatternVariable.getPrimaryVariable(),
@@ -209,7 +209,7 @@ public final class UniLeftHandSide<A> extends AbstractLeftHandSide {
         AbstractBiJoiner<A, B> castJoiner = (AbstractBiJoiner<A, B>) joiner;
         JoinerType[] joinerTypes = castJoiner.getJoinerTypes();
         // Rebuild the A pattern, binding variables for left parts of the joins.
-        PatternVariable<A> newLeft = patternVariable;
+        PatternVariable<A, ?, ?> newLeft = patternVariable;
         Variable[] joinVars = new Variable[joinerTypes.length];
         for (int mappingIndex = 0; mappingIndex < joinerTypes.length; mappingIndex++) {
             // For each mapping, bind one join variable.
@@ -217,7 +217,7 @@ public final class UniLeftHandSide<A> extends AbstractLeftHandSide {
             newLeft = newLeft.bind(joinVar, castJoiner.getLeftMapping(mappingIndex));
             joinVars[mappingIndex] = joinVar;
         }
-        PatternVariable<B> newRight = right.patternVariable;
+        PatternVariable<B, ?, ?> newRight = right.patternVariable;
         for (int mappingIndex = 0; mappingIndex < joinerTypes.length; mappingIndex++) {
             JoinerType joinerType = joinerTypes[mappingIndex];
             newRight = newRight.filterOnJoinVar(joinVars[mappingIndex], castJoiner, joinerType, mappingIndex);
@@ -231,7 +231,7 @@ public final class UniLeftHandSide<A> extends AbstractLeftHandSide {
         ViewItem<?> innerGroupByPattern = joinViewItemsWithLogicalAnd(patternVariable);
         ViewItem<?> groupByPattern = groupBy(innerGroupByPattern, input, groupKey, keyMapping::apply);
         Variable<NewA> newA = variableFactory.createVariable("newA", groupKey);
-        return new UniLeftHandSide<>(new PatternVariable<>(newA, singletonList(groupByPattern)), variableFactory);
+        return new UniLeftHandSide<>(new DirectPatternVariable<>(newA, singletonList(groupByPattern)), variableFactory);
     }
 
     public <NewA> UniLeftHandSide<NewA> andGroupBy(UniConstraintCollector<A, ?, NewA> collector) {
@@ -239,13 +239,13 @@ public final class UniLeftHandSide<A> extends AbstractLeftHandSide {
         ViewItem<?> innerAccumulatePattern = joinViewItemsWithLogicalAnd(patternVariable);
         ViewItem<?> outerAccumulatePattern = accumulate(innerAccumulatePattern,
                 createAccumulateFunction(collector, accumulateOutput));
-        return new UniLeftHandSide<>(new PatternVariable<>(accumulateOutput, singletonList(outerAccumulatePattern)),
+        return new UniLeftHandSide<>(new DirectPatternVariable<>(accumulateOutput, singletonList(outerAccumulatePattern)),
                 variableFactory);
     }
 
     /**
      * Creates a Drools accumulate function based on a given collector. The accumulate function will take
-     * {@link PatternVariable}'s primary variable as input and return its result into another {@link Variable}.
+     * {@link DirectPatternVariable}'s primary variable as input and return its result into another {@link Variable}.
      *
      * @param collector collector to use in the accumulate function
      * @param out variable in which to store accumulate result
@@ -268,8 +268,8 @@ public final class UniLeftHandSide<A> extends AbstractLeftHandSide {
                 a -> new BiTuple<>(keyMappingA.apply(a), keyMappingB.apply(a)));
         Variable<NewA> newA = variableFactory.createVariable("newA", groupKey, k -> k.a);
         Variable<NewB> newB = variableFactory.createVariable("newB", groupKey, k -> k.b);
-        return new BiLeftHandSide<>(new PatternVariable<>(newA, singletonList(groupByPattern)),
-                new PatternVariable<>(newB), variableFactory);
+        return new BiLeftHandSide<>(new DirectPatternVariable<>(newA, singletonList(groupByPattern)),
+                new DirectPatternVariable<>(newB), variableFactory);
     }
 
     public <NewA, NewB> BiLeftHandSide<NewA, NewB> andGroupBy(Function<A, NewA> keyMappingA,
@@ -282,8 +282,8 @@ public final class UniLeftHandSide<A> extends AbstractLeftHandSide {
                 createAccumulateFunction(collectorB, accumulateOutput));
         Variable<NewA> newA = variableFactory.createVariable("newA", groupKey);
         Variable<NewB> newB = variableFactory.createVariable("newB", accumulateOutput);
-        return new BiLeftHandSide<>(new PatternVariable<>(newA, singletonList(groupByPattern)),
-                new PatternVariable<>(newB), variableFactory);
+        return new BiLeftHandSide<>(new DirectPatternVariable<>(newA, singletonList(groupByPattern)),
+                new DirectPatternVariable<>(newB), variableFactory);
     }
 
     public <NewA, NewB, NewC> TriLeftHandSide<NewA, NewB, NewC> andGroupBy(Function<A, NewA> keyMappingA,
@@ -299,8 +299,8 @@ public final class UniLeftHandSide<A> extends AbstractLeftHandSide {
         Variable<NewA> newA = variableFactory.createVariable("newA", groupKey, k -> k.a);
         Variable<NewB> newB = variableFactory.createVariable("newB", groupKey, k -> k.b);
         Variable<NewC> newC = variableFactory.createVariable("newC", accumulateOutput);
-        return new TriLeftHandSide<>(new PatternVariable<>(newA, singletonList(groupByPattern)),
-                new PatternVariable<>(newB), new PatternVariable<>(newC), variableFactory);
+        return new TriLeftHandSide<>(new DirectPatternVariable<>(newA, singletonList(groupByPattern)),
+                new DirectPatternVariable<>(newB), new DirectPatternVariable<>(newC), variableFactory);
     }
 
     public <NewA, NewB, NewC, NewD> QuadLeftHandSide<NewA, NewB, NewC, NewD> andGroupBy(Function<A, NewA> keyMappingA,
@@ -320,8 +320,9 @@ public final class UniLeftHandSide<A> extends AbstractLeftHandSide {
         Variable<NewB> newB = variableFactory.createVariable("newB", groupKey, k -> k.b);
         Variable<NewC> newC = variableFactory.createVariable("newC", accumulateOutputC);
         Variable<NewD> newD = variableFactory.createVariable("newD", accumulateOutputD);
-        return new QuadLeftHandSide<>(new PatternVariable<>(newA, singletonList(groupByPattern)),
-                new PatternVariable<>(newB), new PatternVariable<>(newC), new PatternVariable<>(newD), variableFactory);
+        return new QuadLeftHandSide<>(new DirectPatternVariable<>(newA, singletonList(groupByPattern)),
+                new DirectPatternVariable<>(newB), new DirectPatternVariable<>(newC), new DirectPatternVariable<>(newD),
+                variableFactory);
     }
 
     public <NewA> UniLeftHandSide<NewA> andMap(Function<A, NewA> mappingFunction) {
