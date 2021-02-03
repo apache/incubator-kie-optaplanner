@@ -32,6 +32,11 @@ public final class DroolsMappingUniConstraintStream<Solution_, NewA>
         this.leftHandSide = parent.getLeftHandSide().andMap(mappingFunction);
     }
 
+    @Override
+    public boolean guaranteesDistinctTuples() {
+        return false;
+    }
+
     // ************************************************************************
     // Pattern creation
     // ************************************************************************
