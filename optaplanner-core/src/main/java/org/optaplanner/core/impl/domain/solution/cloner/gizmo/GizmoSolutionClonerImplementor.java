@@ -13,6 +13,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.IdentityHashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
@@ -166,7 +167,7 @@ public class GizmoSolutionClonerImplementor {
                         GizmoSolutionClonerFactory.getGeneratedClassName(solutionInfo.getSolutionDescriptor()),
                         "cloneSolutionRun", solutionClass, solutionClass, Map.class),
                 thisObj,
-                methodCreator.newInstance(MethodDescriptor.ofConstructor(HashMap.class)));
+                methodCreator.newInstance(MethodDescriptor.ofConstructor(IdentityHashMap.class)));
         methodCreator.returnValue(clone);
     }
 
