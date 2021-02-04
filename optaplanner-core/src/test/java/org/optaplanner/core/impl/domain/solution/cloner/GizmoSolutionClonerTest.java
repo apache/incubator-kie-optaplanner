@@ -15,7 +15,6 @@
  */
 package org.optaplanner.core.impl.domain.solution.cloner;
 
-import org.junit.jupiter.api.Disabled;
 import org.optaplanner.core.api.domain.solution.cloner.SolutionCloner;
 import org.optaplanner.core.impl.domain.solution.cloner.gizmo.GizmoSolutionClonerFactory;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
@@ -25,23 +24,5 @@ public class GizmoSolutionClonerTest extends AbstractSolutionClonerTest {
     @Override
     protected <Solution_> SolutionCloner<Solution_> createSolutionCloner(SolutionDescriptor<Solution_> solutionDescriptor) {
         return GizmoSolutionClonerFactory.build(solutionDescriptor);
-    }
-
-    @Override
-    @Disabled("Gizmo cannot use reflection")
-    public void cloneAccessModifierSolution() {
-        super.cloneAccessModifierSolution();
-    }
-
-    @Override
-    @Disabled("Gizmo cannot use reflection")
-    public void cloneFieldAnnotatedSolution() {
-        super.cloneFieldAnnotatedSolution();
-    }
-
-    @Override
-    @Disabled("Gizmo cannot handle subclasses of the class annotated with @PlanningSolution")
-    public void cloneExtendedSolution() {
-        super.cloneExtendedSolution();
     }
 }
