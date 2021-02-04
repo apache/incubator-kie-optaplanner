@@ -16,13 +16,13 @@
 
 package org.optaplanner.core.api.score.constraint;
 
-import org.optaplanner.core.api.score.Score;
-import org.optaplanner.core.impl.domain.lookup.ClassAndPlanningIdComparator;
+import static java.util.Objects.requireNonNull;
 
 import java.util.Comparator;
 import java.util.List;
 
-import static java.util.Objects.requireNonNull;
+import org.optaplanner.core.api.score.Score;
+import org.optaplanner.core.impl.domain.lookup.ClassAndPlanningIdComparator;
 
 /**
  * Retrievable from {@link ConstraintMatchTotal#getConstraintMatchSet()}
