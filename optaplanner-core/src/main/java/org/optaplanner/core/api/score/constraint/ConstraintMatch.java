@@ -27,6 +27,16 @@ import org.optaplanner.core.impl.domain.lookup.ClassAndPlanningIdComparator;
 /**
  * Retrievable from {@link ConstraintMatchTotal#getConstraintMatchSet()}
  * and {@link Indictment#getConstraintMatchSet()}.
+ *
+ * <p>
+ * Note: this class has a {@link #compareTo(ConstraintMatch)} method which is inconsistent with equals.
+ * (See {@link Comparable}.)
+ * Two different {@link ConstraintMatch} instances ({@code (a == b) == false}) must never {@link #equals(Object)},
+ * or else it would be impossible for two matches with the same justifications to coexist.
+ * (This functionality is being relied upon in the Constraint Streams API.)
+ * Yet two instances may {@link #compareTo(ConstraintMatch)} equal in case they come from the same constraint and their
+ * justifications are equal.
+ * This is so that we get consistent ordering of constraint matches in visualizations.
  * 
  * @param <Score_> the actual score type
  */
