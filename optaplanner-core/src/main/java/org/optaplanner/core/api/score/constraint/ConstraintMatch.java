@@ -102,7 +102,7 @@ public final class ConstraintMatch<Score_ extends Score<Score_>> implements Comp
              *
              * We reuse the comparator from here, since it internally caches some reflection that we don't want to be
              * performing over and over again.
-             * However, there are possibly thousands of instances of this class, and each will get its own comparator.
+             * However, there are possibly thousands of instances of this class, and each gets its own comparator.
              * Therefore, the caching is only partially effective.
              */
             Comparator<Object> comparator = new ClassAndPlanningIdComparator(false);
