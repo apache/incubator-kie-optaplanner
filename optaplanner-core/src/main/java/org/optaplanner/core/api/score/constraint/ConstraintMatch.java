@@ -16,24 +16,24 @@
 
 package org.optaplanner.core.api.score.constraint;
 
-import static java.util.Objects.requireNonNull;
+import org.optaplanner.core.api.score.Score;
+import org.optaplanner.core.impl.domain.lookup.ClassAndPlanningIdComparator;
 
 import java.util.Comparator;
 import java.util.List;
 
-import org.optaplanner.core.api.score.Score;
-import org.optaplanner.core.impl.domain.lookup.ClassAndPlanningIdComparator;
+import static java.util.Objects.requireNonNull;
 
 /**
  * Retrievable from {@link ConstraintMatchTotal#getConstraintMatchSet()}
  * and {@link Indictment#getConstraintMatchSet()}.
  *
  * <p>
- * Note: this class has a {@link #compareTo(ConstraintMatch)} method which is inconsistent with equals.
+ * This class has a {@link #compareTo(ConstraintMatch)} method which is inconsistent with equals.
  * (See {@link Comparable}.)
- * Two different {@link ConstraintMatch} instances ({@code (a == b) == false}) must never {@link #equals(Object)},
- * or else it would be impossible for two matches with the same justifications to coexist.
- * (This functionality is being relied upon in the Constraint Streams API.)
+ * Two different {@link ConstraintMatch} instances with the same justification list aren't
+ * {@link Object#equals(Object) equal} because some ConstraintStream API methods can result in duplicate facts,
+ * which are treated as independent matches.
  * Yet two instances may {@link #compareTo(ConstraintMatch)} equal in case they come from the same constraint and their
  * justifications are equal.
  * This is for consistent ordering of constraint matches in visualizations.
@@ -100,8 +100,7 @@ public final class ConstraintMatch<Score_ extends Score<Score_>> implements Comp
             /*
              * TODO Come up with a better cache.
              *
-             * We reuse the comparator from here, since it internally caches some reflection that we don't want to be
-             * performing over and over again.
+             * Reuse the comparator to internally caches reflection for performance benefits.
              * However, there are possibly thousands of instances of this class, and each gets its own comparator.
              * Therefore, the caching is only partially effective.
              */
