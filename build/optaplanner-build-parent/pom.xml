@@ -874,6 +874,7 @@
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-failsafe-plugin</artifactId>
       </plugin>
+      <!-- Do not move to full profile. Otherwise upstream Kogito dependency changes can break our build without Kogito CI catching it. -->
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-dependency-plugin</artifactId>
