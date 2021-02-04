@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2021 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,14 +16,6 @@
 
 package org.optaplanner.core.impl.score.holder;
 
-import java.math.BigDecimal;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.function.BiFunction;
-import java.util.function.Supplier;
-import java.util.stream.Collectors;
-
 import org.drools.core.common.AgendaItem;
 import org.drools.core.spi.Activation;
 import org.kie.api.definition.rule.Rule;
@@ -39,6 +31,16 @@ import org.optaplanner.core.impl.score.constraint.DefaultIndictment;
 import org.optaplanner.core.impl.score.director.drools.DroolsScoreDirector;
 import org.optaplanner.core.impl.score.director.drools.OptaPlannerRuleEventListener;
 
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.function.Supplier;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
 /**
  * Abstract superclass for {@link ScoreHolder}.
  *
@@ -50,7 +52,6 @@ public abstract class AbstractScoreHolder<Score_ extends Score<Score_>> implemen
     protected final Map<String, ConstraintMatchTotal<Score_>> constraintMatchTotalMap;
     protected final Map<Object, Indictment<Score_>> indictmentMap;
     protected final Score_ zeroScore;
-    private BiFunction<List<Object>, Rule, List<Object>> justificationListConverter = null;
 
     protected AbstractScoreHolder(boolean constraintMatchEnabled, Score_ zeroScore) {
         this.constraintMatchEnabled = constraintMatchEnabled;
@@ -106,15 +107,18 @@ public abstract class AbstractScoreHolder<Score_ extends Score<Score_>> implemen
      * @param kcontext The rule for which to register the match.
      * @param constraintUndoListener The operation to run to undo the match.
      * @param scoreSupplier The score change to be undone when constraint justification enabled.
+     * @param justifications the primary arguments(s) that the CS penalizes/rewards, not used outside of CS-D
      */
-    protected void registerConstraintMatch(RuleContext kcontext,
-            final Runnable constraintUndoListener, Supplier<Score_> scoreSupplier) {
-        AgendaItem<?> agendaItem = (AgendaItem) kcontext.getMatch();
+    protected void registerConstraintMatch(RuleContext kcontext, Runnable constraintUndoListener,
+                                           Supplier<Score_> scoreSupplier, Object... justifications) {
+        AgendaItem<?> agendaItem = (AgendaItem<?>) kcontext.getMatch();
         ConstraintActivationUnMatchListener constraintActivationUnMatchListener = new ConstraintActivationUnMatchListener(
                 constraintUndoListener);
         agendaItem.setCallback(constraintActivationUnMatchListener);
         if (constraintMatchEnabled) {
-            List<Object> justificationList = extractJustificationList(kcontext);
+            List<Object> justificationList =
+                    Stream.concat(Arrays.stream(justifications), extractJustificationList(kcontext).stream())
+                            .collect(Collectors.toList());
             // Not needed in fast code: Add ConstraintMatch
             constraintActivationUnMatchListener.constraintMatchTotal = findConstraintMatchTotal(kcontext);
             ConstraintMatch<Score_> constraintMatch = constraintActivationUnMatchListener.constraintMatchTotal
@@ -182,12 +186,7 @@ public abstract class AbstractScoreHolder<Score_ extends Score<Score_>> implemen
     protected List<Object> extractJustificationList(RuleContext kcontext) {
         // Unlike kcontext.getMatch().getObjects(), this includes the matches of accumulate and exists
         Activation activation = (Activation) kcontext.getMatch();
-        List<Object> objects = activation.getObjectsDeep();
-        if (justificationListConverter == null) {
-            return objects;
-        } else {
-            return justificationListConverter.apply(objects, kcontext.getRule());
-        }
+        return new ArrayList<>(activation.getObjectsDeep());
     }
 
     public class ConstraintActivationUnMatchListener implements Runnable {
@@ -218,7 +217,4 @@ public abstract class AbstractScoreHolder<Score_ extends Score<Score_>> implemen
         }
     }
 
-    public void setJustificationListConverter(BiFunction<List<Object>, Rule, List<Object>> converter) {
-        this.justificationListConverter = converter;
-    }
 }

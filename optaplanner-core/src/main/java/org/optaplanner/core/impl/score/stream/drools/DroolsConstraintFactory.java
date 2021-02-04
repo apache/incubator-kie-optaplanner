@@ -16,18 +16,7 @@
 
 package org.optaplanner.core.impl.score.stream.drools;
 
-import static org.drools.model.DSL.globalOf;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.stream.Collectors;
-
 import org.drools.model.Global;
-import org.drools.model.Rule;
 import org.drools.model.impl.ModelImpl;
 import org.optaplanner.core.api.score.stream.Constraint;
 import org.optaplanner.core.api.score.stream.uni.UniConstraintStream;
@@ -39,6 +28,14 @@ import org.optaplanner.core.impl.score.stream.ConstraintSessionFactory;
 import org.optaplanner.core.impl.score.stream.InnerConstraintFactory;
 import org.optaplanner.core.impl.score.stream.drools.common.RuleAssembly;
 import org.optaplanner.core.impl.score.stream.drools.uni.DroolsFromUniConstraintStream;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
+import static org.drools.model.DSL.globalOf;
 
 public final class DroolsConstraintFactory<Solution_> extends InnerConstraintFactory<Solution_> {
 
@@ -95,17 +92,15 @@ public final class DroolsConstraintFactory<Solution_> extends InnerConstraintFac
                         "There are 2 constraints with the same constraintName (" + constraint.getConstraintName()
                                 + ") in the same constraintPackage (" + constraint.getConstraintPackage() + ").");
             }
-            DroolsConstraint<Solution_> droolsConstraint = (DroolsConstraint) constraint;
+            DroolsConstraint<Solution_> droolsConstraint = (DroolsConstraint<Solution_>) constraint;
             droolsConstraintList.add(droolsConstraint);
         }
         DroolsConstraint<Solution_>[] constraintArray = droolsConstraintList.toArray(new DroolsConstraint[0]);
-        Map<Rule, Class<?>[]> ruleToExpectedJustificationTypesMap = Arrays.stream(constraintArray)
+        Arrays.stream(constraintArray)
                 .map(constraint -> constraint.getConsequence().assemble(scoreHolderGlobal, constraint))
-                .collect(Collectors.toMap(RuleAssembly::getRule, RuleAssembly::getExpectedJustificationTypes));
-        ruleToExpectedJustificationTypesMap.keySet()
+                .map(RuleAssembly::getRule)
                 .forEach(model::addRule);
-        return new DroolsConstraintSessionFactory<>(solutionDescriptor, model, ruleToExpectedJustificationTypesMap,
-                constraintArray);
+        return new DroolsConstraintSessionFactory<>(solutionDescriptor, model, constraintArray);
     }
 
     // ************************************************************************
