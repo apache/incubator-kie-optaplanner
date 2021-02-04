@@ -36,7 +36,7 @@ import org.optaplanner.core.impl.domain.lookup.ClassAndPlanningIdComparator;
  * (This functionality is being relied upon in the Constraint Streams API.)
  * Yet two instances may {@link #compareTo(ConstraintMatch)} equal in case they come from the same constraint and their
  * justifications are equal.
- * This is so that we get consistent ordering of constraint matches in visualizations.
+ * This is for consistent ordering of constraint matches in visualizations.
  * 
  * @param <Score_> the actual score type
  */
