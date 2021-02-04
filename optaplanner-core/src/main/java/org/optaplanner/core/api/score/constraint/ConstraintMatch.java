@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2021 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,7 +16,6 @@
 
 package org.optaplanner.core.api.score.constraint;
 
-import static java.util.Objects.hash;
 import static java.util.Objects.requireNonNull;
 
 import java.util.Comparator;
@@ -91,9 +90,10 @@ public final class ConstraintMatch<Score_ extends Score<Score_>> implements Comp
             /*
              * TODO Come up with a better cache.
              *
-             * We reuse the comparator from here, since it internally caches some reflection that we don't want to be performing
-             * over and over again. However, there are possibly thousands of instances of this class, and each will get its own
-             * comparator. Therefore, the caching is only partially effective.
+             * We reuse the comparator from here, since it internally caches some reflection that we don't want to be
+             * performing over and over again.
+             * However, there are possibly thousands of instances of this class, and each will get its own comparator.
+             * Therefore, the caching is only partially effective.
              */
             Comparator<Object> comparator = new ClassAndPlanningIdComparator(false);
             for (int i = 0; i < justificationList.size() && i < other.justificationList.size(); i++) {
@@ -110,25 +110,6 @@ public final class ConstraintMatch<Score_ extends Score<Score_>> implements Comp
                 return 0;
             }
         }
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        } else if (o instanceof ConstraintMatch) {
-            ConstraintMatch<Score_> other = (ConstraintMatch<Score_>) o;
-            return constraintPackage.equals(other.constraintPackage)
-                    && constraintName.equals(other.constraintName)
-                    && justificationList.equals(other.justificationList);
-        } else {
-            return false;
-        }
-    }
-
-    @Override
-    public int hashCode() {
-        return hash(constraintPackage, constraintName, justificationList);
     }
 
     @Override
