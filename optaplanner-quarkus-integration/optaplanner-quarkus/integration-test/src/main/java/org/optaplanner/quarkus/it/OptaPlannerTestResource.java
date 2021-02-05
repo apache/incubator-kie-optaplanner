@@ -20,7 +20,6 @@ import java.util.Arrays;
 import java.util.concurrent.ExecutionException;
 
 import javax.inject.Inject;
-import javax.ws.rs.Consumes;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
@@ -40,8 +39,7 @@ public class OptaPlannerTestResource {
     @POST
     @Path("/solver-factory")
     @Produces(MediaType.TEXT_PLAIN)
-    @Consumes(MediaType.APPLICATION_JSON)
-    public String solveWithSolverFactory(ITestdataPlanningSolution problem) {
+    public String solveWithSolverFactory() {
         ITestdataPlanningSolution planningProblem = new ITestdataPlanningSolution();
         planningProblem.setEntityList(Arrays.asList(
                 new ITestdataPlanningEntity(),

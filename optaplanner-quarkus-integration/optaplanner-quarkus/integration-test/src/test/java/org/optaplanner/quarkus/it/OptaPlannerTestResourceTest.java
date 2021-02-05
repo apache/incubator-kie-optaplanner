@@ -37,7 +37,6 @@ public class OptaPlannerTestResourceTest {
         RestAssured.given()
                 .header("Content-Type", "application/json")
                 .when()
-                .body("{\"valueList\":[\"a\",\"bb\",\"ccc\"],\"entityList\":[{},{}]}")
                 .post("/optaplanner/test/solver-factory")
                 .then()
                 .body(is(

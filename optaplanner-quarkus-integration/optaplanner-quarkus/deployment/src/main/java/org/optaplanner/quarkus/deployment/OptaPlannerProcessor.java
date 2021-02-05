@@ -149,13 +149,19 @@ class OptaPlannerProcessor {
         applySolverProperties(recorderContext, indexView, solverConfig);
         assertNoMemberAnnotationWithoutClassAnnotation(indexView);
 
-        if (solverConfig.getSolutionClass() != null && solverConfig.getDomainAccessType() != DomainAccessType.GIZMO) {
+        if (solverConfig.getSolutionClass() != null) {
+            // Need to register even when using GIZMO so annotations are preserved
             Type jandexType = Type.create(DotName.createSimple(solverConfig.getSolutionClass().getName()), Type.Kind.CLASS);
             reflectiveHierarchyClass.produce(new ReflectiveHierarchyBuildItem.Builder()
                     .type(jandexType)
+                    // Ignore only the packages from optaplanner-core
+                    // (Can cause a hard to diagnoise issue when creating a test/example
+                    // in the package "org.optaplanner").
                     .ignoreTypePredicate(
                             dotName -> ReflectiveHierarchyBuildItem.DefaultIgnoreTypePredicate.INSTANCE.test(dotName)
-                                    || dotName.toString().startsWith("org.optaplanner"))
+                                    || dotName.toString().startsWith("org.optaplanner.api")
+                                    || dotName.toString().startsWith("org.optaplanner.config")
+                                    || dotName.toString().startsWith("org.optaplanner.impl"))
                     .build());
         }
 
