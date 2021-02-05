@@ -431,6 +431,6 @@ void setDeployPropertyIfNeeded(String key, def value) {
     }
 }
 
-String getQuickStartsBranch(String quickStartsBranch = 'development'){
-    return quickStartsBranch
+String getQuickStartsBranch() {
+    return getBuildBranch() == 'master' ? 'development' : getBuildBranch()
 }
