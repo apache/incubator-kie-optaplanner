@@ -28,7 +28,6 @@ import java.util.stream.Collectors;
 
 import org.optaplanner.core.api.domain.solution.cloner.SolutionCloner;
 import org.optaplanner.core.impl.domain.common.accessor.gizmo.GizmoMemberDescriptor;
-import org.optaplanner.core.impl.domain.solution.cloner.GizmoSolutionOrEntityDescriptor;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 
 import io.quarkus.gizmo.AssignableResultHandle;
@@ -180,14 +179,11 @@ public class GizmoSolutionClonerImplementor {
         ResultHandle thisObj = methodCreator.getMethodParam(0);
         ResultHandle createdCloneMap = methodCreator.getMethodParam(1);
 
-        ResultHandle hasClone = methodCreator.invokeInterfaceMethod(
-                MethodDescriptor.ofMethod(Map.class, "containsKey", boolean.class, Object.class), createdCloneMap, thisObj);
-        BranchResult hasCloneBranchResult = methodCreator.ifTrue(hasClone);
+        ResultHandle maybeClone = methodCreator.invokeInterfaceMethod(
+                MethodDescriptor.ofMethod(Map.class, "get", Object.class, Object.class), createdCloneMap, thisObj);
+        BranchResult hasCloneBranchResult = methodCreator.ifNotNull(maybeClone);
         BytecodeCreator hasCloneBranch = hasCloneBranchResult.trueBranch();
-        ResultHandle getClone = hasCloneBranch
-                .invokeInterfaceMethod(MethodDescriptor.ofMethod(Map.class, "get", Object.class, Object.class), createdCloneMap,
-                        thisObj);
-        hasCloneBranch.returnValue(getClone);
+        hasCloneBranch.returnValue(maybeClone);
 
         BytecodeCreator noCloneBranch = hasCloneBranchResult.falseBranch();
         ResultHandle clone = noCloneBranch.newInstance(MethodDescriptor.ofConstructor(solutionClass));
@@ -413,7 +409,6 @@ public class GizmoSolutionClonerImplementor {
             AssignableResultHandle cloneResultHolder, ResultHandle createdCloneMap) {
         // Clone collection
         AssignableResultHandle cloneCollection = bytecodeCreator.createVariable(deeplyClonedFieldClass);
-        Optional<ResultHandle> maybeComparator = Optional.empty();
 
         ResultHandle size = bytecodeCreator
                 .invokeInterfaceMethod(MethodDescriptor.ofMethod(Collection.class, "size", int.class), toClone);
@@ -456,49 +451,6 @@ public class GizmoSolutionClonerImplementor {
             isNotSetBranch.assign(cloneCollection,
                     isNotSetBranch.newInstance(MethodDescriptor.ofConstructor(ArrayList.class, int.class), size));
         }
-        ResultHandle iterator = bytecodeCreator
-                .invokeInterfaceMethod(MethodDescriptor.ofMethod(Iterable.class, "iterator", Iterator.class), toClone);
-
-        BytecodeCreator whileLoopBlock = bytecodeCreator.whileLoop(conditionBytecode -> {
-            ResultHandle hasNext = conditionBytecode
-                    .invokeInterfaceMethod(MethodDescriptor.ofMethod(Iterator.class, "hasNext", boolean.class), iterator);
-            return conditionBytecode.ifTrue(hasNext);
-        }).block();
-
-        Class<?> elementClass;
-        java.lang.reflect.Type elementClassType;
-        if (type instanceof ParameterizedType) {
-            // Assume Collection follow Collection<T> convention of first type argument = element class
-            elementClassType = ((ParameterizedType) type).getActualTypeArguments()[0];
-            if (elementClassType instanceof Class) {
-                elementClass = (Class<?>) elementClassType;
-            } else if (elementClassType instanceof ParameterizedType) {
-                elementClass = (Class<?>) ((ParameterizedType) elementClassType).getRawType();
-            } else {
-                throw new IllegalStateException("Unhandled type " + elementClassType + ".");
-            }
-        } else {
-            throw new IllegalStateException("Cannot infer element type for Collection type (" + type + ").");
-        }
-
-        // Odd case of member get and set being on different classes; will work as we only
-        // use get on the original and set on the clone.
-        ResultHandle next =
-                whileLoopBlock.invokeInterfaceMethod(MethodDescriptor.ofMethod(Iterator.class, "next", Object.class), iterator);
-        final AssignableResultHandle clonedElement = whileLoopBlock.createVariable(elementClass);
-        writeDeepCloneInstructions(whileLoopBlock, solutionDescriptor,
-                elementClass, elementClassType, next, clonedElement, createdCloneMap);
-        whileLoopBlock.invokeInterfaceMethod(MethodDescriptor.ofMethod(Collection.class, "add", boolean.class, Object.class),
-                cloneCollection,
-                clonedElement);
-        bytecodeCreator.assign(cloneResultHolder, cloneCollection);
-    }
-
-    private static void writeDeepCloneCollectionInnerInstructions(ResultHandle cloneCollection, BytecodeCreator bytecodeCreator,
-            GizmoSolutionOrEntityDescriptor solutionDescriptor,
-            java.lang.reflect.Type type, ResultHandle toClone,
-            AssignableResultHandle cloneResultHolder, ResultHandle createdCloneMap) {
-
         ResultHandle iterator = bytecodeCreator
                 .invokeInterfaceMethod(MethodDescriptor.ofMethod(Iterable.class, "iterator", Iterator.class), toClone);
 
@@ -754,14 +706,11 @@ public class GizmoSolutionClonerImplementor {
 
         ResultHandle toClone = methodCreator.getMethodParam(0);
         ResultHandle cloneMap = methodCreator.getMethodParam(1);
-        ResultHandle hasClone = methodCreator.invokeInterfaceMethod(
-                MethodDescriptor.ofMethod(Map.class, "containsKey", boolean.class, Object.class), cloneMap, toClone);
-        BranchResult hasCloneBranchResult = methodCreator.ifTrue(hasClone);
+        ResultHandle maybeClone = methodCreator.invokeInterfaceMethod(
+                MethodDescriptor.ofMethod(Map.class, "get", Object.class, Object.class), cloneMap, toClone);
+        BranchResult hasCloneBranchResult = methodCreator.ifNotNull(maybeClone);
         BytecodeCreator hasCloneBranch = hasCloneBranchResult.trueBranch();
-        ResultHandle getClone = hasCloneBranch
-                .invokeInterfaceMethod(MethodDescriptor.ofMethod(Map.class, "get", Object.class, Object.class), cloneMap,
-                        toClone);
-        hasCloneBranch.returnValue(getClone);
+        hasCloneBranch.returnValue(maybeClone);
 
         BytecodeCreator noCloneBranch = hasCloneBranchResult.falseBranch();
 

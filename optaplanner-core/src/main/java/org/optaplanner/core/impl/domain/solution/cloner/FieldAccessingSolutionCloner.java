@@ -19,10 +19,7 @@ package org.optaplanner.core.impl.domain.solution.cloner;
 import java.lang.reflect.Array;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
-import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
-import java.lang.reflect.ParameterizedType;
-import java.lang.reflect.Type;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -49,7 +46,6 @@ import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.domain.solution.cloner.DeepPlanningClone;
 import org.optaplanner.core.api.domain.solution.cloner.SolutionCloner;
 import org.optaplanner.core.impl.domain.common.ConcurrentMemoization;
-import org.optaplanner.core.impl.domain.common.ReflectionHelper;
 import org.optaplanner.core.impl.domain.common.accessor.MemberAccessor;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 
@@ -132,81 +128,8 @@ public class FieldAccessingSolutionCloner<Solution_> implements SolutionCloner<S
     protected boolean retrieveDeepCloneDecision(Field field, Class<?> fieldInstanceClass, Class<?> actualValueClass) {
         Pair<Field, Class<?>> pair = Pair.of(field, fieldInstanceClass);
         Boolean deepCloneDecision = fieldDeepClonedMemoization.computeIfAbsent(pair,
-                key -> isFieldDeepCloned(field, fieldInstanceClass));
+                key -> DeepCloningUtils.isFieldDeepCloned(solutionDescriptor, field, fieldInstanceClass));
         return deepCloneDecision || retrieveDeepCloneDecisionForActualValueClass(actualValueClass);
-    }
-
-    private boolean isFieldDeepCloned(Field field, Class<?> fieldInstanceClass) {
-        if (field.getType().isEnum()) {
-            return false;
-        }
-        return isFieldAnEntityPropertyOnSolution(field, fieldInstanceClass)
-                || isFieldAnEntityOrSolution(field, fieldInstanceClass)
-                || isFieldADeepCloneProperty(field, fieldInstanceClass);
-    }
-
-    protected boolean isFieldAnEntityPropertyOnSolution(Field field, Class<?> fieldInstanceClass) {
-        // field.getDeclaringClass() is a superclass of or equal to the fieldInstanceClass
-        if (solutionDescriptor.getSolutionClass().isAssignableFrom(fieldInstanceClass)) {
-            String fieldName = field.getName();
-            // This assumes we're dealing with a simple getter/setter.
-            // If that assumption is false, validateCloneSolution(...) fails-fast.
-            if (solutionDescriptor.getEntityMemberAccessorMap().get(fieldName) != null) {
-                return true;
-            }
-            // This assumes we're dealing with a simple getter/setter.
-            // If that assumption is false, validateCloneSolution(...) fails-fast.
-            if (solutionDescriptor.getEntityCollectionMemberAccessorMap().get(fieldName) != null) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    protected boolean isFieldAnEntityOrSolution(Field field, Class<?> fieldInstanceClass) {
-        Class<?> type = field.getType();
-        if (isClassDeepCloned(type)) {
-            return true;
-        }
-        if (Collection.class.isAssignableFrom(type) || Map.class.isAssignableFrom(type)) {
-            if (isTypeArgumentDeepCloned(field.getGenericType())) {
-                return true;
-            }
-        } else if (type.isArray()) {
-            if (isClassDeepCloned(type.getComponentType())) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    private boolean isTypeArgumentDeepCloned(Type genericType) {
-        // Check the generic type arguments of the field.
-        // Yes, it is possible for fields and methods, but not instances!
-        if (genericType instanceof ParameterizedType) {
-            ParameterizedType parameterizedType = (ParameterizedType) genericType;
-            for (Type actualTypeArgument : parameterizedType.getActualTypeArguments()) {
-                if (actualTypeArgument instanceof Class
-                        && isClassDeepCloned((Class) actualTypeArgument)) {
-                    return true;
-                }
-                if (isTypeArgumentDeepCloned(actualTypeArgument)) {
-                    return true;
-                }
-            }
-        }
-        return false;
-    }
-
-    private boolean isFieldADeepCloneProperty(Field field, Class<?> fieldInstanceClass) {
-        if (field.isAnnotationPresent(DeepPlanningClone.class)) {
-            return true;
-        }
-        Method getterMethod = ReflectionHelper.getGetterMethod(fieldInstanceClass, field.getName());
-        if (getterMethod != null && getterMethod.isAnnotationPresent(DeepPlanningClone.class)) {
-            return true;
-        }
-        return false;
     }
 
     /**
@@ -288,7 +211,9 @@ public class FieldAccessingSolutionCloner<Solution_> implements SolutionCloner<S
             if (originalValue == null) {
                 return false;
             }
-            return retrieveDeepCloneDecision(field, fieldInstanceClass, originalValue.getClass());
+            return DeepCloningUtils.getMemorizedDeepCloneDecision(solutionDescriptor, field, fieldInstanceClass,
+                    originalValue.getClass(), fieldDeepClonedMemoization,
+                    actualValueClassDeepClonedMemoization);
         }
 
         protected void processQueue() {
@@ -422,7 +347,7 @@ public class FieldAccessingSolutionCloner<Solution_> implements SolutionCloner<S
         }
 
         /**
-         * Fails fast if {@link #isFieldAnEntityPropertyOnSolution} assumptions were wrong.
+         * Fails fast if {@link DeepCloningUtils#isFieldAnEntityPropertyOnSolution} assumptions were wrong.
          *
          * @param originalSolution never null
          * @param cloneSolution never null
