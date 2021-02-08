@@ -19,7 +19,6 @@ package org.optaplanner.core.impl.score.buildin.simple;
 import java.math.BigDecimal;
 import java.util.LinkedHashMap;
 import java.util.Map;
-import java.util.function.BiConsumer;
 
 import org.kie.api.definition.rule.Rule;
 import org.kie.api.runtime.rule.RuleContext;
@@ -34,7 +33,7 @@ import org.optaplanner.core.impl.score.holder.AbstractScoreHolder;
  */
 public final class SimpleScoreHolderImpl extends AbstractScoreHolder<SimpleScore> implements SimpleScoreHolder {
 
-    protected final Map<Rule, BiConsumer<RuleContext, Integer>> matchExecutorByNumberMap = new LinkedHashMap<>();
+    protected final Map<Rule, IntMatchExecutor> matchExecutorByNumberMap = new LinkedHashMap<>();
 
     protected int score;
 
@@ -53,13 +52,13 @@ public final class SimpleScoreHolderImpl extends AbstractScoreHolder<SimpleScore
     @Override
     public void configureConstraintWeight(Rule rule, SimpleScore constraintWeight) {
         super.configureConstraintWeight(rule, constraintWeight);
-        BiConsumer<RuleContext, Integer> matchExecutor;
+        IntMatchExecutor matchExecutor;
         if (constraintWeight.equals(SimpleScore.ZERO)) {
-            matchExecutor = (RuleContext kcontext, Integer matchWeight) -> {
+            matchExecutor = (RuleContext kcontext, int matchWeight, Object... justifications) -> {
             };
         } else {
-            matchExecutor = (RuleContext kcontext, Integer matchWeight) -> addConstraintMatch(kcontext,
-                    constraintWeight.getScore() * matchWeight);
+            matchExecutor = (RuleContext kcontext, int matchWeight, Object... justifications) -> addConstraintMatch(kcontext,
+                    constraintWeight.getScore() * matchWeight, justifications);
         }
         matchExecutorByNumberMap.put(rule, matchExecutor);
     }
@@ -96,13 +95,13 @@ public final class SimpleScoreHolderImpl extends AbstractScoreHolder<SimpleScore
     @Override
     public void impactScore(RuleContext kcontext, int weightMultiplier, Object... justifications) {
         Rule rule = kcontext.getRule();
-        BiConsumer<RuleContext, Integer> matchExecutor = matchExecutorByNumberMap.get(rule);
+        IntMatchExecutor matchExecutor = matchExecutorByNumberMap.get(rule);
         if (matchExecutor == null) {
             throw new IllegalStateException("The DRL rule (" + rule.getPackageName() + ":" + rule.getName()
                     + ") does not match a @" + ConstraintWeight.class.getSimpleName() + " on the @"
                     + ConstraintConfiguration.class.getSimpleName() + " annotated class.");
         }
-        matchExecutor.accept(kcontext, weightMultiplier);
+        matchExecutor.accept(kcontext, weightMultiplier, justifications);
     }
 
     @Override
@@ -127,10 +126,12 @@ public final class SimpleScoreHolderImpl extends AbstractScoreHolder<SimpleScore
 
     @Override
     public void addConstraintMatch(RuleContext kcontext, int weight) {
+        addConstraintMatch(kcontext, weight, EMPTY_OBJECT_ARRAY);
+    }
+
+    private void addConstraintMatch(RuleContext kcontext, int weight, Object... justifications) {
         score += weight;
-        registerConstraintMatch(kcontext,
-                () -> score -= weight,
-                () -> SimpleScore.of(weight));
+        registerConstraintMatch(kcontext, () -> score -= weight, () -> SimpleScore.of(weight), justifications);
     }
 
     @Override

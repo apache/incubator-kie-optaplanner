@@ -31,6 +31,7 @@ import org.drools.core.spi.Activation;
 import org.kie.api.definition.rule.Rule;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.RuleContext;
+import org.optaplanner.core.api.score.AbstractScore;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.constraint.ConstraintMatch;
 import org.optaplanner.core.api.score.constraint.ConstraintMatchTotal;
@@ -48,7 +49,7 @@ import org.optaplanner.core.impl.score.director.drools.OptaPlannerRuleEventListe
  */
 public abstract class AbstractScoreHolder<Score_ extends Score<Score_>> implements ScoreHolder<Score_> {
 
-    static final Object[] EMPTY_OBJECT_ARRAY = new Object[0];
+    protected static final Object[] EMPTY_OBJECT_ARRAY = new Object[0];
 
     protected final boolean constraintMatchEnabled;
     protected final Map<String, ConstraintMatchTotal<Score_>> constraintMatchTotalMap;
@@ -132,14 +133,17 @@ public abstract class AbstractScoreHolder<Score_ extends Score<Score_>> implemen
                 constraintUndoListener);
         agendaItem.setCallback(constraintActivationUnMatchListener);
         if (constraintMatchEnabled) {
-            List<Object> justificationList =
-                    Stream.concat(Arrays.stream(justifications), extractJustificationList(kcontext).stream())
+            List<Object> extractedJustifications = extractJustificationList(kcontext);
+            // If we have justifications coming from CS-D directly, put them first.
+            List<Object> completeJustificationList = justifications.length == 0 ? extractedJustifications
+                    : Stream.concat(Arrays.stream(justifications), extractedJustifications.stream())
                             .collect(Collectors.toList());
             // Not needed in fast code: Add ConstraintMatch
             constraintActivationUnMatchListener.constraintMatchTotal = findConstraintMatchTotal(kcontext);
             ConstraintMatch<Score_> constraintMatch = constraintActivationUnMatchListener.constraintMatchTotal
-                    .addConstraintMatch(justificationList, scoreSupplier.get());
-            List<DefaultIndictment<Score_>> indictmentList = justificationList.stream()
+                    .addConstraintMatch(completeJustificationList, scoreSupplier.get());
+            List<DefaultIndictment<Score_>> indictmentList = completeJustificationList.stream()
+                    .distinct() // One match might have the same justification twice
                     .map(justification -> {
                         DefaultIndictment<Score_> indictment =
                                 (DefaultIndictment<Score_>) indictmentMap.computeIfAbsent(justification,
@@ -273,6 +277,34 @@ public abstract class AbstractScoreHolder<Score_ extends Score<Score_>> implemen
                 }
             }
         }
+    }
+
+    @FunctionalInterface
+    protected interface IntMatchExecutor {
+
+        void accept(RuleContext kcontext, int matchWeight, Object... justifications);
+
+    }
+
+    @FunctionalInterface
+    protected interface LongMatchExecutor {
+
+        void accept(RuleContext kcontext, long matchWeight, Object... justifications);
+
+    }
+
+    @FunctionalInterface
+    protected interface BigDecimalMatchExecutor {
+
+        void accept(RuleContext kcontext, BigDecimal matchWeight, Object... justifications);
+
+    }
+
+    @FunctionalInterface
+    protected interface ScoreMatchExecutor<Score_ extends AbstractScore<Score_>> {
+
+        void accept(RuleContext kcontext, Score_ matchWeight);
+
     }
 
 }
