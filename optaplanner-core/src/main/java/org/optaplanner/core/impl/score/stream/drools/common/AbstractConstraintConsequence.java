@@ -16,14 +16,6 @@
 
 package org.optaplanner.core.impl.score.stream.drools.common;
 
-import static org.drools.model.PatternDSL.rule;
-
-import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.stream.Stream;
-
 import org.drools.model.Argument;
 import org.drools.model.Drools;
 import org.drools.model.Global;
@@ -34,6 +26,14 @@ import org.drools.model.consequences.ConsequenceBuilder;
 import org.kie.api.runtime.rule.RuleContext;
 import org.optaplanner.core.impl.score.holder.AbstractScoreHolder;
 import org.optaplanner.core.impl.score.stream.drools.DroolsConstraint;
+
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Stream;
+
+import static org.drools.model.PatternDSL.rule;
 
 public abstract class AbstractConstraintConsequence<LeftHandSide_ extends AbstractLeftHandSide> {
 
@@ -90,25 +90,25 @@ public abstract class AbstractConstraintConsequence<LeftHandSide_ extends Abstra
     }
 
     protected static void impactScore(Drools drools, AbstractScoreHolder<?> scoreHolder, Object... justifications) {
-        scoreHolder.impactScore((RuleContext) drools);
+        scoreHolder.impactScore((RuleContext) drools, justifications);
     }
 
     protected static void impactScore(DroolsConstraint<?> constraint, Drools drools, AbstractScoreHolder<?> scoreHolder,
             int impact, Object... justifications) {
         constraint.assertCorrectImpact(impact);
-        scoreHolder.impactScore((RuleContext) drools, impact);
+        scoreHolder.impactScore((RuleContext) drools, impact, justifications);
     }
 
     protected static void impactScore(DroolsConstraint<?> constraint, Drools drools, AbstractScoreHolder<?> scoreHolder,
             long impact, Object... justifications) {
         constraint.assertCorrectImpact(impact);
-        scoreHolder.impactScore((RuleContext) drools, impact);
+        scoreHolder.impactScore((RuleContext) drools, impact, justifications);
     }
 
     protected static void impactScore(DroolsConstraint<?> constraint, Drools drools, AbstractScoreHolder<?> scoreHolder,
             BigDecimal impact, Object... justifications) {
         constraint.assertCorrectImpact(impact);
-        scoreHolder.impactScore((RuleContext) drools, impact);
+        scoreHolder.impactScore((RuleContext) drools, impact, justifications);
     }
 
 }

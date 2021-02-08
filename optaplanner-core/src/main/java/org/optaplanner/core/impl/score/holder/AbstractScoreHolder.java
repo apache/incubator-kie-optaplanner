@@ -16,6 +16,16 @@
 
 package org.optaplanner.core.impl.score.holder;
 
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.function.Supplier;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
 import org.drools.core.common.AgendaItem;
 import org.drools.core.spi.Activation;
 import org.kie.api.definition.rule.Rule;
@@ -31,22 +41,14 @@ import org.optaplanner.core.impl.score.constraint.DefaultIndictment;
 import org.optaplanner.core.impl.score.director.drools.DroolsScoreDirector;
 import org.optaplanner.core.impl.score.director.drools.OptaPlannerRuleEventListener;
 
-import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.function.Supplier;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
-
 /**
  * Abstract superclass for {@link ScoreHolder}.
  *
  * @param <Score_> the {@link Score} type
  */
 public abstract class AbstractScoreHolder<Score_ extends Score<Score_>> implements ScoreHolder<Score_> {
+
+    static final Object[] EMPTY_OBJECT_ARRAY = new Object[0];
 
     protected final boolean constraintMatchEnabled;
     protected final Map<String, ConstraintMatchTotal<Score_>> constraintMatchTotalMap;
@@ -107,10 +109,24 @@ public abstract class AbstractScoreHolder<Score_ extends Score<Score_>> implemen
      * @param kcontext The rule for which to register the match.
      * @param constraintUndoListener The operation to run to undo the match.
      * @param scoreSupplier The score change to be undone when constraint justification enabled.
+     */
+    protected void registerConstraintMatch(RuleContext kcontext, Runnable constraintUndoListener,
+            Supplier<Score_> scoreSupplier) {
+        registerConstraintMatch(kcontext, constraintUndoListener, scoreSupplier, EMPTY_OBJECT_ARRAY);
+    }
+
+    /**
+     * Requires @{@link OptaPlannerRuleEventListener} to be added as event listener on {@link KieSession}, otherwise the
+     * score changes caused by the constraint matches would not be undone. See
+     * {@link DroolsScoreDirector#resetKieSession()} for an example.
+     *
+     * @param kcontext The rule for which to register the match.
+     * @param constraintUndoListener The operation to run to undo the match.
+     * @param scoreSupplier The score change to be undone when constraint justification enabled.
      * @param justifications the primary arguments(s) that the CS penalizes/rewards, not used outside of CS-D
      */
     protected void registerConstraintMatch(RuleContext kcontext, Runnable constraintUndoListener,
-                                           Supplier<Score_> scoreSupplier, Object... justifications) {
+            Supplier<Score_> scoreSupplier, Object... justifications) {
         AgendaItem<?> agendaItem = (AgendaItem<?>) kcontext.getMatch();
         ConstraintActivationUnMatchListener constraintActivationUnMatchListener = new ConstraintActivationUnMatchListener(
                 constraintUndoListener);
@@ -124,7 +140,6 @@ public abstract class AbstractScoreHolder<Score_ extends Score<Score_>> implemen
             ConstraintMatch<Score_> constraintMatch = constraintActivationUnMatchListener.constraintMatchTotal
                     .addConstraintMatch(justificationList, scoreSupplier.get());
             List<DefaultIndictment<Score_>> indictmentList = justificationList.stream()
-                    .distinct() // One match might have the same justification twice
                     .map(justification -> {
                         DefaultIndictment<Score_> indictment =
                                 (DefaultIndictment<Score_>) indictmentMap.computeIfAbsent(justification,
@@ -151,7 +166,17 @@ public abstract class AbstractScoreHolder<Score_ extends Score<Score_>> implemen
      *
      * @param kcontext never null
      */
-    public void impactScore(RuleContext kcontext) {
+    public final void impactScore(RuleContext kcontext) {
+        impactScore(kcontext, EMPTY_OBJECT_ARRAY);
+    }
+
+    /**
+     * For internal use only, use penalize() or reward() instead.
+     *
+     * @param kcontext never null
+     * @param justifications the primary arguments(s) that the CS penalizes/rewards, not used outside of CS-D
+     */
+    public void impactScore(RuleContext kcontext, Object... justifications) {
         throw new UnsupportedOperationException("In the rule (" + kcontext.getRule().getName()
                 + "), the scoreHolder class (" + getClass()
                 + ") requires a weightMultiplier.");
@@ -163,7 +188,18 @@ public abstract class AbstractScoreHolder<Score_ extends Score<Score_>> implemen
      * @param kcontext never null
      * @param weightMultiplier any
      */
-    public abstract void impactScore(RuleContext kcontext, int weightMultiplier);
+    public final void impactScore(RuleContext kcontext, int weightMultiplier) {
+        impactScore(kcontext, weightMultiplier, EMPTY_OBJECT_ARRAY);
+    }
+
+    /**
+     * For internal use only, use penalize() or reward() instead.
+     *
+     * @param kcontext never null
+     * @param weightMultiplier any
+     * @param justifications the primary arguments(s) that the CS penalizes/rewards, not used outside of CS-D
+     */
+    public abstract void impactScore(RuleContext kcontext, int weightMultiplier, Object... justifications);
 
     /**
      * For internal use only, use penalize() or reward() instead.
@@ -171,7 +207,18 @@ public abstract class AbstractScoreHolder<Score_ extends Score<Score_>> implemen
      * @param kcontext never null
      * @param weightMultiplier any
      */
-    public abstract void impactScore(RuleContext kcontext, long weightMultiplier);
+    public final void impactScore(RuleContext kcontext, long weightMultiplier) {
+        impactScore(kcontext, weightMultiplier, EMPTY_OBJECT_ARRAY);
+    }
+
+    /**
+     * For internal use only, use penalize() or reward() instead.
+     *
+     * @param kcontext never null
+     * @param weightMultiplier any
+     * @param justifications the primary arguments(s) that the CS penalizes/rewards, not used outside of CS-D
+     */
+    public abstract void impactScore(RuleContext kcontext, long weightMultiplier, Object... justifications);
 
     /**
      * For internal use only, use penalize() or reward() instead.
@@ -179,7 +226,18 @@ public abstract class AbstractScoreHolder<Score_ extends Score<Score_>> implemen
      * @param kcontext never null
      * @param weightMultiplier any
      */
-    public abstract void impactScore(RuleContext kcontext, BigDecimal weightMultiplier);
+    public final void impactScore(RuleContext kcontext, BigDecimal weightMultiplier) {
+        impactScore(kcontext, weightMultiplier, EMPTY_OBJECT_ARRAY);
+    }
+
+    /**
+     * For internal use only, use penalize() or reward() instead.
+     *
+     * @param kcontext never null
+     * @param weightMultiplier any
+     * @param justifications the primary arguments(s) that the CS penalizes/rewards, not used outside of CS-D
+     */
+    public abstract void impactScore(RuleContext kcontext, BigDecimal weightMultiplier, Object... justifications);
 
     public abstract Score_ extractScore(int initScore);
 

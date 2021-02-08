@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2021 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -178,22 +178,22 @@ public final class BendableBigDecimalScoreHolderImpl extends AbstractScoreHolder
     }
 
     @Override
-    public void impactScore(RuleContext kcontext) {
-        impactScore(kcontext, BigDecimal.ONE);
+    public void impactScore(RuleContext kcontext, Object... justifications) {
+        impactScore(kcontext, BigDecimal.ONE, justifications);
     }
 
     @Override
-    public void impactScore(RuleContext kcontext, int weightMultiplier) {
-        impactScore(kcontext, BigDecimal.valueOf(weightMultiplier));
+    public void impactScore(RuleContext kcontext, int weightMultiplier, Object... justifications) {
+        impactScore(kcontext, BigDecimal.valueOf(weightMultiplier), justifications);
     }
 
     @Override
-    public void impactScore(RuleContext kcontext, long weightMultiplier) {
-        impactScore(kcontext, BigDecimal.valueOf(weightMultiplier));
+    public void impactScore(RuleContext kcontext, long weightMultiplier, Object... justifications) {
+        impactScore(kcontext, BigDecimal.valueOf(weightMultiplier), justifications);
     }
 
     @Override
-    public void impactScore(RuleContext kcontext, BigDecimal weightMultiplier) {
+    public void impactScore(RuleContext kcontext, BigDecimal weightMultiplier, Object... justifications) {
         Rule rule = kcontext.getRule();
         BiConsumer<RuleContext, BigDecimal> matchExecutor = matchExecutorByNumberMap.get(rule);
         if (matchExecutor == null) {
