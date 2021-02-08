@@ -186,7 +186,7 @@ public final class HardMediumSoftBigDecimalScoreHolderImpl extends AbstractScore
     private void addHardConstraintMatch(RuleContext kcontext, BigDecimal hardWeight, Object... justifications) {
         hardScore = hardScore.add(hardWeight);
         registerConstraintMatch(kcontext, () -> hardScore = hardScore.subtract(hardWeight),
-                () -> HardMediumSoftBigDecimalScore.of(hardWeight, BigDecimal.ZERO, BigDecimal.ZERO), justifications);
+                () -> HardMediumSoftBigDecimalScore.ofHard(hardWeight), justifications);
     }
 
     @Override
@@ -197,7 +197,7 @@ public final class HardMediumSoftBigDecimalScoreHolderImpl extends AbstractScore
     private void addMediumConstraintMatch(RuleContext kcontext, BigDecimal mediumWeight, Object... justifications) {
         mediumScore = mediumScore.add(mediumWeight);
         registerConstraintMatch(kcontext, () -> mediumScore = mediumScore.subtract(mediumWeight),
-                () -> HardMediumSoftBigDecimalScore.of(BigDecimal.ZERO, mediumWeight, BigDecimal.ZERO), justifications);
+                () -> HardMediumSoftBigDecimalScore.ofMedium(mediumWeight), justifications);
     }
 
     @Override
@@ -208,7 +208,7 @@ public final class HardMediumSoftBigDecimalScoreHolderImpl extends AbstractScore
     private void addSoftConstraintMatch(RuleContext kcontext, BigDecimal softWeight, Object... justifications) {
         softScore = softScore.add(softWeight);
         registerConstraintMatch(kcontext, () -> softScore = softScore.subtract(softWeight),
-                () -> HardMediumSoftBigDecimalScore.of(BigDecimal.ZERO, BigDecimal.ZERO, softWeight), justifications);
+                () -> HardMediumSoftBigDecimalScore.ofSoft(softWeight), justifications);
     }
 
     @Override

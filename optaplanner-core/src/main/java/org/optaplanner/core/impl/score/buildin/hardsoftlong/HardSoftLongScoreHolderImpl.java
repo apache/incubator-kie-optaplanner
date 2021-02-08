@@ -171,7 +171,7 @@ public final class HardSoftLongScoreHolderImpl extends AbstractScoreHolder<HardS
 
     private void addHardConstraintMatch(RuleContext kcontext, long hardWeight, Object... justifications) {
         hardScore += hardWeight;
-        registerConstraintMatch(kcontext, () -> hardScore -= hardWeight, () -> HardSoftLongScore.of(hardWeight, 0L),
+        registerConstraintMatch(kcontext, () -> hardScore -= hardWeight, () -> HardSoftLongScore.ofHard(hardWeight),
                 justifications);
     }
 
@@ -182,7 +182,7 @@ public final class HardSoftLongScoreHolderImpl extends AbstractScoreHolder<HardS
 
     private void addSoftConstraintMatch(RuleContext kcontext, long softWeight, Object... justifications) {
         softScore += softWeight;
-        registerConstraintMatch(kcontext, () -> softScore -= softWeight, () -> HardSoftLongScore.of(0L, softWeight),
+        registerConstraintMatch(kcontext, () -> softScore -= softWeight, () -> HardSoftLongScore.ofSoft(softWeight),
                 justifications);
     }
 

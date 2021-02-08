@@ -168,7 +168,7 @@ public final class HardSoftBigDecimalScoreHolderImpl extends AbstractScoreHolder
     private void addHardConstraintMatch(RuleContext kcontext, BigDecimal hardWeight, Object... justifications) {
         hardScore = hardScore.add(hardWeight);
         registerConstraintMatch(kcontext, () -> hardScore = hardScore.subtract(hardWeight),
-                () -> HardSoftBigDecimalScore.of(hardWeight, BigDecimal.ZERO), justifications);
+                () -> HardSoftBigDecimalScore.ofHard(hardWeight), justifications);
     }
 
     @Override
@@ -179,7 +179,7 @@ public final class HardSoftBigDecimalScoreHolderImpl extends AbstractScoreHolder
     private void addSoftConstraintMatch(RuleContext kcontext, BigDecimal softWeight, Object... justifications) {
         softScore = softScore.add(softWeight);
         registerConstraintMatch(kcontext, () -> softScore = softScore.subtract(softWeight),
-                () -> HardSoftBigDecimalScore.of(BigDecimal.ZERO, softWeight), justifications);
+                () -> HardSoftBigDecimalScore.ofSoft(softWeight), justifications);
     }
 
     @Override
