@@ -24,7 +24,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import org.drools.core.common.AgendaItem;
 import org.drools.core.spi.Activation;
@@ -133,11 +132,9 @@ public abstract class AbstractScoreHolder<Score_ extends Score<Score_>> implemen
                 constraintUndoListener);
         agendaItem.setCallback(constraintActivationUnMatchListener);
         if (constraintMatchEnabled) {
-            List<Object> extractedJustifications = extractJustificationList(kcontext);
-            // If we have justifications coming from CS-D directly, put them first.
-            List<Object> completeJustificationList = justifications.length == 0 ? extractedJustifications
-                    : Stream.concat(Arrays.stream(justifications), extractedJustifications.stream())
-                            .collect(Collectors.toList());
+            // If we have justifications coming from CS-D directly, use them exclusively.
+            List<Object> completeJustificationList =
+                    justifications.length == 0 ? extractJustificationList(kcontext) : Arrays.asList(justifications);
             // Not needed in fast code: Add ConstraintMatch
             constraintActivationUnMatchListener.constraintMatchTotal = findConstraintMatchTotal(kcontext);
             ConstraintMatch<Score_> constraintMatch = constraintActivationUnMatchListener.constraintMatchTotal
