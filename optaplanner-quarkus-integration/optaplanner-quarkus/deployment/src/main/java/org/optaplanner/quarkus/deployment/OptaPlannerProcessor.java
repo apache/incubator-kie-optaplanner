@@ -497,6 +497,7 @@ class OptaPlannerProcessor {
             try {
                 gizmoSolutionClonerClassNameSet.add(GizmoMemberAccessorEntityEnhancer.generateSolutionCloner(solutionDescriptor,
                         debuggableClassOutput,
+                        indexView,
                         transformers));
             } catch (ClassNotFoundException | NoSuchFieldException e) {
                 throw new IllegalStateException("Error generating SolutionCloner.", e);

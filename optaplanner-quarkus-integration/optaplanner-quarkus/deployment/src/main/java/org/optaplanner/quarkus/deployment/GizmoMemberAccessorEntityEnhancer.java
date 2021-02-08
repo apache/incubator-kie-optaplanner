@@ -30,17 +30,21 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Member;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import javax.enterprise.context.ApplicationScoped;
 
 import org.jboss.jandex.AnnotationInstance;
 import org.jboss.jandex.ClassInfo;
+import org.jboss.jandex.DotName;
 import org.jboss.jandex.FieldInfo;
 import org.jboss.jandex.IndexView;
 import org.jboss.jandex.MethodInfo;
@@ -244,6 +248,7 @@ public class GizmoMemberAccessorEntityEnhancer {
 
     public static String generateSolutionCloner(SolutionDescriptor solutionDescriptor,
             ClassOutput classOutput,
+            IndexView indexView,
             BuildProducer<BytecodeTransformerBuildItem> transformers) throws ClassNotFoundException, NoSuchFieldException {
         String generatedClassName = GizmoSolutionClonerFactory.getGeneratedClassName(solutionDescriptor);
         try (ClassCreator classCreator = ClassCreator
@@ -256,11 +261,26 @@ public class GizmoMemberAccessorEntityEnhancer {
 
             Map<Class<?>, GizmoSolutionOrEntityDescriptor> memoizedGizmoSolutionOrEntityDescriptorForClassMap = new HashMap<>();
 
-            GizmoSolutionOrEntityDescriptor gizmoSolutionDescriptor =
-                    getGizmoSolutionOrEntityDescriptorForEntity(solutionDescriptor,
-                            solutionDescriptor.getSolutionClass(),
-                            memoizedGizmoSolutionOrEntityDescriptorForClassMap,
-                            transformers);
+            List<Class<?>> solutionSubclasses =
+                    indexView.getAllKnownSubclasses(DotName.createSimple(solutionDescriptor.getSolutionClass().getName()))
+                            .stream().map(classInfo -> {
+                                try {
+                                    return Class.forName(classInfo.name().toString(), false,
+                                            Thread.currentThread().getContextClassLoader());
+                                } catch (ClassNotFoundException e) {
+                                    throw new IllegalStateException("Unable to find class (" + classInfo.name() +
+                                            "), which is a known subclass of the solution class (" +
+                                            solutionDescriptor.getSolutionClass() + ").", e);
+                                }
+                            }).collect(Collectors.toCollection(ArrayList::new));
+            solutionSubclasses.add(solutionDescriptor.getSolutionClass());
+
+            for (Class<?> solutionSubclass : solutionSubclasses) {
+                getGizmoSolutionOrEntityDescriptorForEntity(solutionDescriptor,
+                        solutionSubclass,
+                        memoizedGizmoSolutionOrEntityDescriptorForClassMap,
+                        transformers);
+            }
 
             // IDEA gave error on entityClass being a Class...
             for (Object entityClass : solutionDescriptor.getEntityClassSet()) {
@@ -270,7 +290,8 @@ public class GizmoMemberAccessorEntityEnhancer {
                         transformers);
             }
 
-            GizmoSolutionClonerImplementor.defineClonerFor(classCreator, gizmoSolutionDescriptor);
+            GizmoSolutionClonerImplementor.defineClonerFor(classCreator, solutionDescriptor, solutionSubclasses,
+                    memoizedGizmoSolutionOrEntityDescriptorForClassMap);
         }
 
         return generatedClassName;
@@ -283,31 +304,35 @@ public class GizmoMemberAccessorEntityEnhancer {
             BuildProducer<BytecodeTransformerBuildItem> transformers) throws NoSuchFieldException, ClassNotFoundException {
         Map<Field, GizmoMemberDescriptor> solutionFieldToMemberDescriptor = new HashMap<>();
 
-        for (Field field : entityClass.getDeclaredFields()) {
-            if (!Modifier.isStatic(field.getModifiers())) {
-                GizmoMemberDescriptor member;
-                Class<?> declaringClass = field.getDeclaringClass();
-                FieldDescriptor memberDescriptor = FieldDescriptor.of(field);
-                String name = field.getName();
+        Class<?> currentClass = entityClass;
+        while (currentClass != null) {
+            for (Field field : currentClass.getDeclaredFields()) {
+                if (!Modifier.isStatic(field.getModifiers())) {
+                    GizmoMemberDescriptor member;
+                    Class<?> declaringClass = field.getDeclaringClass();
+                    FieldDescriptor memberDescriptor = FieldDescriptor.of(field);
+                    String name = field.getName();
 
-                // Not being recorded, so can use Type and annotated element directly
-                if (Modifier.isPublic(field.getModifiers())) {
-                    member = new GizmoMemberDescriptor(name, memberDescriptor, memberDescriptor, declaringClass);
-                } else {
-                    addVirtualFieldGetter(declaringClass, field, transformers);
-                    String methodName = getVirtualGetterName(true, field.getName());
-                    MethodDescriptor getterDescriptor = MethodDescriptor.ofMethod(field.getDeclaringClass().getName(),
-                            methodName,
-                            field.getType());
-                    MethodDescriptor setterDescriptor = MethodDescriptor.ofMethod(field.getDeclaringClass().getName(),
-                            getVirtualSetterName(true, field.getName()),
-                            "void",
-                            field.getType());
-                    member = new GizmoMemberDescriptor(name, getterDescriptor, memberDescriptor, declaringClass,
-                            setterDescriptor);
+                    // Not being recorded, so can use Type and annotated element directly
+                    if (Modifier.isPublic(field.getModifiers())) {
+                        member = new GizmoMemberDescriptor(name, memberDescriptor, memberDescriptor, declaringClass);
+                    } else {
+                        addVirtualFieldGetter(declaringClass, field, transformers);
+                        String methodName = getVirtualGetterName(true, field.getName());
+                        MethodDescriptor getterDescriptor = MethodDescriptor.ofMethod(field.getDeclaringClass().getName(),
+                                methodName,
+                                field.getType());
+                        MethodDescriptor setterDescriptor = MethodDescriptor.ofMethod(field.getDeclaringClass().getName(),
+                                getVirtualSetterName(true, field.getName()),
+                                "void",
+                                field.getType());
+                        member = new GizmoMemberDescriptor(name, getterDescriptor, memberDescriptor, declaringClass,
+                                setterDescriptor);
+                    }
+                    solutionFieldToMemberDescriptor.put(field, member);
                 }
-                solutionFieldToMemberDescriptor.put(field, member);
             }
+            currentClass = currentClass.getSuperclass();
         }
         GizmoSolutionOrEntityDescriptor out =
                 new GizmoSolutionOrEntityDescriptor(entityClass, solutionDescriptor, solutionFieldToMemberDescriptor,

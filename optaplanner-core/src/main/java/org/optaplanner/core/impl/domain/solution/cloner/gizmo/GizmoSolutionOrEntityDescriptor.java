@@ -31,7 +31,6 @@ import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 public class GizmoSolutionOrEntityDescriptor {
     SolutionDescriptor<?> solutionDescriptor;
     Map<Field, GizmoMemberDescriptor> solutionFieldToMemberDescriptorMap;
-    final Map<Class<?>, GizmoSolutionOrEntityDescriptor> memoizedGizmoSolutionOrEntityDescriptorForClassMap;
     Set<Field> deepClonedFields;
     Set<Field> shallowlyClonedFields;
 
@@ -51,8 +50,6 @@ public class GizmoSolutionOrEntityDescriptor {
                 shallowlyClonedFields.add(field);
             }
         }
-
-        memoizedGizmoSolutionOrEntityDescriptorForClassMap = new HashMap<>();
     }
 
     public GizmoSolutionOrEntityDescriptor(SolutionDescriptor<?> solutionDescriptor, Class<?> entityClass) {
@@ -69,8 +66,6 @@ public class GizmoSolutionOrEntityDescriptor {
                 shallowlyClonedFields.add(field);
             }
         }
-
-        memoizedGizmoSolutionOrEntityDescriptorForClassMap = new HashMap<>();
     }
 
     public GizmoSolutionOrEntityDescriptor(Class<?> holderClass, SolutionDescriptor<?> solutionDescriptor,
@@ -88,7 +83,6 @@ public class GizmoSolutionOrEntityDescriptor {
                 shallowlyClonedFields.add(field);
             }
         }
-        this.memoizedGizmoSolutionOrEntityDescriptorForClassMap = memoizedGizmoSolutionOrEntityDescriptorForClassMap;
     }
 
     private static void addFieldsToSolutionFieldToMemberDescriptorMap(Class<?> clazz,
@@ -119,12 +113,6 @@ public class GizmoSolutionOrEntityDescriptor {
 
     public GizmoMemberDescriptor getMemberDescriptorForField(Field field) {
         return solutionFieldToMemberDescriptorMap.get(field);
-    }
-
-    public GizmoSolutionOrEntityDescriptor getSolutionOrEntityDescriptorForClass(Class<?> clazz) {
-        return memoizedGizmoSolutionOrEntityDescriptorForClassMap
-                .computeIfAbsent(clazz,
-                        theClass -> new GizmoSolutionOrEntityDescriptor(solutionDescriptor, theClass));
     }
 
 }
