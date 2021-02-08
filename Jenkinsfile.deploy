@@ -38,6 +38,7 @@ pipeline {
         string(name: 'MAVEN_DEPENDENCIES_REPOSITORY', defaultValue: '', description: 'Maven repository where to find dependencies if those are not in the default JBoss repository.')
         string(name: 'MAVEN_REPO_CREDS_ID', defaultValue: '', description: 'Credentials for Maven repository to deploy the artifacts.')
         booleanParam(name: 'SKIP_TESTS', defaultValue: false, description: 'Skip tests')
+        booleanParam(name: 'SKIP_INTEGRATION_TESTS', defaultValue: false, description: 'Skip big integration tests')
         string(name: 'MAVEN_SETTINGS_CONFIG_FILE_ID', defaultValue: 'kogito_release_settings', description: 'Maven settings configfile to use in pipeline for Maven commands')
 
         // Deploy information
@@ -172,14 +173,14 @@ pipeline {
         stage("Build Vehicle Routing") {
             steps {
                 script {
-                    getOptawebVehicleRoutingMavenCommand().skipTests(params.SKIP_TESTS).run('clean install')
+                    getOptawebVehicleRoutingMavenCommand().skipTests(params.SKIP_TESTS)
+                            .withProfiles(getIntegrationTestProfiles()).run('clean install')
                 }
             }
             post {
                 always {
                     saveReports(params.SKIP_TESTS)
-                    // TODO: Enable together with the profile "integration-tests" once dockerhub pull limit is resolved.
-                    // archiveArtifacts(allowEmptyArchive: true, artifacts: "**/cypress/screenshots/**,**/cypress/videos/**", fingerprint: false)
+                    saveArtifacts(params.SKIP_INTEGRATION_TESTS)
                 }
             }
         }
@@ -187,14 +188,14 @@ pipeline {
         stage("Build Employee Rostering") {
             steps {
                 script {
-                    getOptawebEmployeeRosteringMavenCommand().skipTests(params.SKIP_TESTS).run('clean install')
+                    getOptawebEmployeeRosteringMavenCommand().skipTests(params.SKIP_TESTS)
+                            .withProfiles(getIntegrationTestProfiles()).run('clean install')
                 }
             }
             post {
                 always {
                     saveReports(params.SKIP_TESTS)
-                    // TODO: Enable together with the profile "integration-tests" once dockerhub pull limit is resolved.
-                    // archiveArtifacts(allowEmptyArchive: true, artifacts: "**/cypress/screenshots/**,**/cypress/videos/**", fingerprint: false)
+                    saveArtifacts(params.SKIP_INTEGRATION_TESTS)
                 }
             }
         }
@@ -251,6 +252,20 @@ pipeline {
             cleanWs()
         }
     }
+}
+
+void saveArtifacts(boolean skipIntegrationTests=false) {
+    if (!skipIntegrationTests) {
+        archiveArtifacts(allowEmptyArchive: true, artifacts: "**/cypress/screenshots/**,**/cypress/videos/**", fingerprint: false)
+    }
+}
+
+List getIntegrationTestProfiles(){
+    integrationTestProfiles = []
+    if (!params.SKIP_INTEGRATION_TESTS) {
+        integrationTestProfiles.add('integration-tests')
+    }
+    return integrationTestProfiles
 }
 
 void updateQuickstartsVersions(){
