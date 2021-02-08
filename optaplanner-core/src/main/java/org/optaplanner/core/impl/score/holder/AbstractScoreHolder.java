@@ -43,11 +43,20 @@ import org.optaplanner.core.impl.score.director.drools.OptaPlannerRuleEventListe
 
 /**
  * Abstract superclass for {@link ScoreHolder}.
+ * Instances of this class are used both in DRL and in CS-D.
+ * CS-D uses the {@code impactScore(..., Object... justifications)} overloads, passing in the justifications that CS-D
+ * is already aware of.
+ * DRL uses the overloads that do not allow to pass justifications from the outside, therefore inferring them from the
+ * Drools working memory in {@link #registerConstraintMatch(RuleContext, Runnable, Supplier, Object...)}.
  *
  * @param <Score_> the {@link Score} type
  */
 public abstract class AbstractScoreHolder<Score_ extends Score<Score_>> implements ScoreHolder<Score_> {
 
+    /**
+     * Exists to improve performance.
+     * Otherwise a call from method() to method(Object...) would always create a new array.
+     */
     protected static final Object[] EMPTY_OBJECT_ARRAY = new Object[0];
 
     protected final boolean constraintMatchEnabled;
@@ -109,21 +118,7 @@ public abstract class AbstractScoreHolder<Score_ extends Score<Score_>> implemen
      * @param kcontext The rule for which to register the match.
      * @param constraintUndoListener The operation to run to undo the match.
      * @param scoreSupplier The score change to be undone when constraint justification enabled.
-     */
-    protected void registerConstraintMatch(RuleContext kcontext, Runnable constraintUndoListener,
-            Supplier<Score_> scoreSupplier) {
-        registerConstraintMatch(kcontext, constraintUndoListener, scoreSupplier, EMPTY_OBJECT_ARRAY);
-    }
-
-    /**
-     * Requires @{@link OptaPlannerRuleEventListener} to be added as event listener on {@link KieSession}, otherwise the
-     * score changes caused by the constraint matches would not be undone. See
-     * {@link DroolsScoreDirector#resetKieSession()} for an example.
-     *
-     * @param kcontext The rule for which to register the match.
-     * @param constraintUndoListener The operation to run to undo the match.
-     * @param scoreSupplier The score change to be undone when constraint justification enabled.
-     * @param justifications the primary arguments(s) that the CS penalizes/rewards, not used outside of CS-D
+     * @param justifications the primary arguments(s) that the CS penalizes/rewards, empty when not called by CS-D
      */
     protected void registerConstraintMatch(RuleContext kcontext, Runnable constraintUndoListener,
             Supplier<Score_> scoreSupplier, Object... justifications) {
