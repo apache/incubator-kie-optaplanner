@@ -180,7 +180,7 @@ class PatternVariable<A> {
                                 leftJoinVarC, a)));
     }
 
-    public <LeftJoinVar_> PatternVariable<A> filterOnJoinVar(Variable<LeftJoinVar_> leftJoinVar,
+    public <LeftJoinVar_> PatternVariable<A> filterForJoin(Variable<LeftJoinVar_> leftJoinVar,
             AbstractBiJoiner<LeftJoinVar_, A> joiner, JoinerType joinerType, int mappingIndex) {
         Function<LeftJoinVar_, Object> leftMapping = joiner.getLeftMapping(mappingIndex);
         Function<A, Object> rightMapping = joiner.getRightMapping(mappingIndex);
@@ -192,7 +192,7 @@ class PatternVariable<A> {
         });
     }
 
-    public <LeftJoinVarA_, LeftJoinVarB_> PatternVariable<A> filterOnJoinVar(Variable<LeftJoinVarA_> leftJoinVarA,
+    public <LeftJoinVarA_, LeftJoinVarB_> PatternVariable<A> filterForJoin(Variable<LeftJoinVarA_> leftJoinVarA,
             Variable<LeftJoinVarB_> leftJoinVarB, AbstractTriJoiner<LeftJoinVarA_, LeftJoinVarB_, A> joiner,
             JoinerType joinerType, int mappingIndex) {
         BiFunction<LeftJoinVarA_, LeftJoinVarB_, Object> leftMapping = joiner.getLeftMapping(mappingIndex);
@@ -207,9 +207,8 @@ class PatternVariable<A> {
         });
     }
 
-    public <LeftJoinVarA_, LeftJoinVarB_, LeftJoinVarC_> PatternVariable<A> filterOnJoinVar(
-            Variable<LeftJoinVarA_> leftJoinVarA, Variable<LeftJoinVarB_> leftJoinVarB,
-            Variable<LeftJoinVarC_> leftJoinVarC,
+    public <LeftJoinVarA_, LeftJoinVarB_, LeftJoinVarC_> PatternVariable<A> filterForJoin(
+            Variable<LeftJoinVarA_> leftJoinVarA, Variable<LeftJoinVarB_> leftJoinVarB, Variable<LeftJoinVarC_> leftJoinVarC,
             AbstractQuadJoiner<LeftJoinVarA_, LeftJoinVarB_, LeftJoinVarC_, A> joiner, JoinerType joinerType,
             int mappingIndex) {
         TriFunction<LeftJoinVarA_, LeftJoinVarB_, LeftJoinVarC_, Object> leftMapping =

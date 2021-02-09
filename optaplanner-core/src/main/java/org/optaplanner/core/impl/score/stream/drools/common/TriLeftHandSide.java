@@ -179,7 +179,7 @@ public final class TriLeftHandSide<A, B, C> extends AbstractLeftHandSide {
         PatternVariable<D> newRight = right.getPatternVariableA();
         for (int mappingIndex = 0; mappingIndex < joinerTypes.length; mappingIndex++) {
             JoinerType joinerType = joinerTypes[mappingIndex];
-            newRight = newRight.filterOnJoinVar(patternVariableA.getPrimaryVariable(), patternVariableB.getPrimaryVariable(),
+            newRight = newRight.filterForJoin(patternVariableA.getPrimaryVariable(), patternVariableB.getPrimaryVariable(),
                     patternVariableC.getPrimaryVariable(), castJoiner, joinerType, mappingIndex);
         }
         return new QuadLeftHandSide<>(patternVariableA, patternVariableB, patternVariableC, newRight, variableFactory);

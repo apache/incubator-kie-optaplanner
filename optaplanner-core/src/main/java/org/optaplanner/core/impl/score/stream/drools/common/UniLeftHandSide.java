@@ -197,7 +197,7 @@ public final class UniLeftHandSide<A> extends AbstractLeftHandSide {
         PatternVariable<B> newRight = right.patternVariable;
         for (int mappingIndex = 0; mappingIndex < joinerTypes.length; mappingIndex++) {
             JoinerType joinerType = joinerTypes[mappingIndex];
-            newRight = newRight.filterOnJoinVar(patternVariable.getPrimaryVariable(), castJoiner, joinerType, mappingIndex);
+            newRight = newRight.filterForJoin(patternVariable.getPrimaryVariable(), castJoiner, joinerType, mappingIndex);
         }
         return new BiLeftHandSide<>(patternVariable, newRight, variableFactory);
     }
