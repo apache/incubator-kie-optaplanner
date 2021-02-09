@@ -38,11 +38,3 @@ for file in */pom.xml ; do
     exit 1
   fi
 done
-for file in */build.gradle ; do
-  echo Updating $file to $newVersion...
-  sed -i "s/def optaplannerVersion = \".*\"/def optaplannerVersion = \"$newVersion\"/g" $file
-  if [ `grep "def optaplannerVersion = \"$newVersion\"" $file | wc -l` != 1 ]; then
-    echo "ERROR updating $file"
-    exit 1
-  fi
-done
