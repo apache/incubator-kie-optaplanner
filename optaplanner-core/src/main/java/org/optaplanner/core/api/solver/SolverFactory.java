@@ -16,6 +16,11 @@
 
 package org.optaplanner.core.api.solver;
 
+import java.io.File;
+import java.io.InputStream;
+import java.io.Reader;
+import java.util.Objects;
+
 import org.kie.api.KieServices;
 import org.kie.api.builder.ReleaseId;
 import org.kie.api.runtime.KieContainer;
@@ -27,11 +32,6 @@ import org.optaplanner.core.config.SolverConfigContext;
 import org.optaplanner.core.config.solver.SolverConfig;
 import org.optaplanner.core.impl.score.director.ScoreDirectorFactory;
 import org.optaplanner.core.impl.solver.DefaultSolverFactory;
-
-import java.io.File;
-import java.io.InputStream;
-import java.io.Reader;
-import java.util.Objects;
 
 /**
  * Creates {@link Solver} instances.

@@ -16,10 +16,6 @@
 
 package org.optaplanner.core.config.domain;
 
-import com.google.common.collect.Sets;
-import org.reflections.Reflections;
-import org.reflections.util.ClasspathHelper;
-
 import java.io.File;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
@@ -33,6 +29,11 @@ import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import org.reflections.Reflections;
+import org.reflections.util.ClasspathHelper;
+
+import com.google.common.collect.Sets;
 
 /**
  * Workaround for bug in {@link ClasspathHelper}.
