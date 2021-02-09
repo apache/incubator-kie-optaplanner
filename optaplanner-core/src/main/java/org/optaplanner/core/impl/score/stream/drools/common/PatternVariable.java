@@ -17,10 +17,13 @@
 package org.optaplanner.core.impl.score.stream.drools.common;
 
 import org.drools.model.BetaIndex1;
+import org.drools.model.BetaIndex2;
 import org.drools.model.PatternDSL;
 import org.drools.model.Variable;
 import org.drools.model.functions.Function1;
+import org.drools.model.functions.Function2;
 import org.drools.model.functions.Predicate2;
+import org.drools.model.functions.Predicate3;
 import org.drools.model.view.ViewItem;
 import org.optaplanner.core.api.function.QuadFunction;
 import org.optaplanner.core.api.function.QuadPredicate;
@@ -28,6 +31,7 @@ import org.optaplanner.core.api.function.TriFunction;
 import org.optaplanner.core.api.function.TriPredicate;
 import org.optaplanner.core.impl.score.stream.bi.AbstractBiJoiner;
 import org.optaplanner.core.impl.score.stream.common.JoinerType;
+import org.optaplanner.core.impl.score.stream.tri.AbstractTriJoiner;
 
 import java.util.Collections;
 import java.util.List;
@@ -186,6 +190,23 @@ class PatternVariable<A> {
             BetaIndex1<A, LeftJoinVar_, Object> index = betaIndexedBy(Object.class,
                     AbstractLeftHandSide.getConstraintType(joinerType), mappingIndex, rightExtractor, leftExtractor);
             return p.expr("Join using joiner #" + mappingIndex + " in " + joiner, leftJoinVar, predicate, index);
+        });
+    }
+
+    public <LeftJoinVarA_, LeftJoinVarB_> PatternVariable<A> filterOnJoinVar(Variable<LeftJoinVarA_> leftJoinVarA,
+            Variable<LeftJoinVarB_> leftJoinVarB, AbstractTriJoiner<LeftJoinVarA_, LeftJoinVarB_, A> joiner,
+            JoinerType joinerType, int mappingIndex) {
+        BiFunction<LeftJoinVarA_, LeftJoinVarB_, Object> leftMapping = joiner.getLeftMapping(mappingIndex);
+        Function2<LeftJoinVarA_, LeftJoinVarB_, Object> leftExtractor = leftMapping::apply;
+        Function<A, Object> rightMapping = joiner.getRightMapping(mappingIndex);
+        Function1<A, Object> rightExtractor = rightMapping::apply;
+        Predicate3<A, LeftJoinVarA_, LeftJoinVarB_> predicate =
+                (c, a, b) -> joinerType.matches(leftExtractor.apply(a, b), rightExtractor.apply(c));
+        return new PatternVariable<>(this, p -> {
+            BetaIndex2<A, LeftJoinVarA_, LeftJoinVarB_, Object> index =
+                    betaIndexedBy(Object.class, AbstractLeftHandSide.getConstraintType(joinerType), mappingIndex,
+                            rightExtractor, leftExtractor, Object.class);
+            return p.expr("Join using joiner #" + mappingIndex + " in " + joiner, leftJoinVarA, leftJoinVarB, predicate, index);
         });
     }
 
