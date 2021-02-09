@@ -49,7 +49,7 @@ public final class DeepCloningUtils {
      * @param actualValueClassDeepClonedMemoization memoization maps for actualValueClass decisions
      * @return true iff the field should be deep cloned with a particular value.
      */
-    public static boolean getMemorizedDeepCloneDecision(final SolutionDescriptor<?> solutionDescriptor,
+    public static boolean getMemorizedDeepCloneDecision(SolutionDescriptor<?> solutionDescriptor,
             Field field, Class<?> owningClass,
             Class<?> actualValueClass,
             ConcurrentMap<Pair<Field, Class<?>>, Boolean> fieldDeepClonedMemoization,
@@ -74,7 +74,7 @@ public final class DeepCloningUtils {
      *        class might be ArrayList).
      * @return True iff the field should be deep cloned with a particular value.
      */
-    public static boolean getDeepCloneDecision(final SolutionDescriptor<?> solutionDescriptor,
+    public static boolean getDeepCloneDecision(SolutionDescriptor<?> solutionDescriptor,
             Field field, Class<?> owningClass,
             Class<?> actualValueClass) {
         return isFieldDeepCloned(solutionDescriptor, field, owningClass) || isClassDeepCloned(solutionDescriptor,
@@ -90,7 +90,7 @@ public final class DeepCloningUtils {
      *        from the field's declaring class (ex: subclass).
      * @return True iff the field should always be deep cloned (regardless of value).
      */
-    public static boolean isFieldDeepCloned(final SolutionDescriptor<?> solutionDescriptor,
+    public static boolean isFieldDeepCloned(SolutionDescriptor<?> solutionDescriptor,
             Field field, Class<?> owningClass) {
         if (field.getType().isEnum()) {
             return false;
@@ -112,7 +112,7 @@ public final class DeepCloningUtils {
      * @return True only if the field is an entity property on the solution class.
      *         May return false if the field getter/setter is complex.
      */
-    public static boolean isFieldAnEntityPropertyOnSolution(final SolutionDescriptor<?> solutionDescriptor,
+    public static boolean isFieldAnEntityPropertyOnSolution(SolutionDescriptor<?> solutionDescriptor,
             Field field, Class<?> owningClass) {
         // field.getDeclaringClass() is a superclass of or equal to the owningClass
         if (solutionDescriptor.getSolutionClass().isAssignableFrom(owningClass)) {
@@ -139,7 +139,7 @@ public final class DeepCloningUtils {
      * @param field The field to get the deep cloning decision of
      * @return True only if the field represents or contains a PlanningEntity or PlanningSolution
      */
-    public static boolean isFieldAnEntityOrSolution(final SolutionDescriptor<?> solutionDescriptor,
+    public static boolean isFieldAnEntityOrSolution(SolutionDescriptor<?> solutionDescriptor,
             Field field) {
         Class<?> type = field.getType();
         if (isClassDeepCloned(solutionDescriptor, type)) {
@@ -157,14 +157,14 @@ public final class DeepCloningUtils {
         return false;
     }
 
-    public static boolean isClassDeepCloned(final SolutionDescriptor<?> solutionDescriptor,
+    public static boolean isClassDeepCloned(SolutionDescriptor<?> solutionDescriptor,
             Class<?> type) {
         return solutionDescriptor.hasEntityDescriptor(type)
                 || solutionDescriptor.getSolutionClass().isAssignableFrom(type)
                 || type.isAnnotationPresent(DeepPlanningClone.class);
     }
 
-    public static boolean isTypeArgumentDeepCloned(final SolutionDescriptor<?> solutionDescriptor,
+    public static boolean isTypeArgumentDeepCloned(SolutionDescriptor<?> solutionDescriptor,
             Type genericType) {
         // Check the generic type arguments of the field.
         // Yes, it is possible for fields and methods, but not instances!
