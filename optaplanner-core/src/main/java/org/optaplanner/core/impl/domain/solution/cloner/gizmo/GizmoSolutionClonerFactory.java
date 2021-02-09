@@ -7,7 +7,7 @@ import org.optaplanner.core.api.domain.common.DomainAccessType;
 import org.optaplanner.core.api.domain.solution.cloner.SolutionCloner;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 
-public class GizmoSolutionClonerFactory {
+public final class GizmoSolutionClonerFactory {
     // GizmoSolutionCloner are stateless, and thus can be safely reused across multiple instances
     private static Map<String, SolutionCloner> solutionClonerMap = new ConcurrentHashMap<>();
 
@@ -47,6 +47,10 @@ public class GizmoSolutionClonerFactory {
             return cloner;
         }
     }
+
+    // ************************************************************************
+    // Private constructor
+    // ************************************************************************
 
     private GizmoSolutionClonerFactory() {
     }

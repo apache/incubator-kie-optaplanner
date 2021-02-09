@@ -29,10 +29,7 @@ import org.optaplanner.core.api.domain.solution.cloner.DeepPlanningClone;
 import org.optaplanner.core.impl.domain.common.ReflectionHelper;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 
-public class DeepCloningUtils {
-    private DeepCloningUtils() {
-    }
-
+public final class DeepCloningUtils {
     // owningClass != declaringClass
     // owningClass refers to the actual instance class, which may be a subclass of the declaring class
 
@@ -40,17 +37,17 @@ public class DeepCloningUtils {
      * Gets the memoized deep cloning decision from the provided
      * memoization maps, computing them if neccessary.
      *
-     * @param solutionDescriptor The solution descriptor for the solution class
-     * @param field The field to get the deep cloning decision of
-     * @param owningClass The class that owns the field; can be different
-     *        from the field's declaring class (ex: subclass).
-     * @param actualValueClass The class of the value that is currently assigned
+     * @param solutionDescriptor the solution descriptor for the solution class
+     * @param field the field to get the deep cloning decision of
+     * @param owningClass the class that owns the field; can be different
+     *        from the field's declaring class (ex: subclass)
+     * @param actualValueClass the class of the value that is currently assigned
      *        to the field; can be different from the field type
      *        (ex: for the field "List myList", the actual value
      *        class might be ArrayList).
-     * @param fieldDeepClonedMemoization Memoization map for (field, owningClass) decisions.
-     * @param actualValueClassDeepClonedMemoization Memoization maps for actualValueClass decisions.
-     * @return True iff the field should be deep cloned with a particular value.
+     * @param fieldDeepClonedMemoization memoization map for (field, owningClass) decisions
+     * @param actualValueClassDeepClonedMemoization memoization maps for actualValueClass decisions
+     * @return true iff the field should be deep cloned with a particular value.
      */
     public static boolean getMemorizedDeepCloneDecision(final SolutionDescriptor<?> solutionDescriptor,
             Field field, Class<?> owningClass,
@@ -197,4 +194,10 @@ public class DeepCloningUtils {
         return false;
     }
 
+    // ************************************************************************
+    // Private constructor
+    // ************************************************************************
+
+    private DeepCloningUtils() {
+    }
 }

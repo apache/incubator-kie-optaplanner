@@ -26,7 +26,6 @@ import java.lang.reflect.Type;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Optional;
 
 import org.optaplanner.core.impl.domain.common.accessor.MemberAccessor;
 
@@ -374,17 +373,7 @@ public class GizmoMemberAccessorImplementor {
     private static void createExecuteGetter(ClassCreator classCreator, GizmoMemberInfo memberInfo) {
         MethodCreator methodCreator = getMethodCreator(classCreator, "executeGetter", Object.class);
         ResultHandle bean = methodCreator.getMethodParam(0);
-
-        memberInfo.getDescriptor().whenIsMethod(method -> {
-            assertIsGoodMethod(method, memberInfo.getAnnotationClass());
-            ResultHandle out = memberInfo.getDescriptor().invokeMemberMethod(methodCreator, method, bean);
-            methodCreator.returnValue(out);
-        });
-
-        memberInfo.getDescriptor().whenIsField(field -> {
-            ResultHandle out = methodCreator.readInstanceField(field, bean);
-            methodCreator.returnValue(out);
-        });
+        methodCreator.returnValue(memberInfo.getDescriptor().readMemberValue(methodCreator, bean));
     }
 
     /**
@@ -450,24 +439,14 @@ public class GizmoMemberAccessorImplementor {
         MethodCreator methodCreator = getMethodCreator(classCreator, "executeSetter", Object.class,
                 Object.class);
 
-        memberInfo.getDescriptor().whenIsMethod(method -> {
-            Optional<MethodDescriptor> setter = memberInfo.getDescriptor().getSetter();
-            if (setter.isPresent()) {
-                ResultHandle bean = methodCreator.getMethodParam(0);
-                ResultHandle value = methodCreator.getMethodParam(1);
-                memberInfo.getDescriptor().invokeMemberMethod(methodCreator, setter.get(), bean, value);
-                methodCreator.returnValue(null);
-            } else {
-                methodCreator.throwException(UnsupportedOperationException.class, "Setter not supported");
-            }
-        });
-
-        memberInfo.getDescriptor().whenIsField(field -> {
-            ResultHandle bean = methodCreator.getMethodParam(0);
-            ResultHandle value = methodCreator.getMethodParam(1);
-            methodCreator.writeInstanceField(field, bean, value);
+        ResultHandle bean = methodCreator.getMethodParam(0);
+        ResultHandle value = methodCreator.getMethodParam(1);
+        if (memberInfo.getDescriptor().writeMemberValue(methodCreator, bean, value)) {
+            // we are here only if the write is successful
             methodCreator.returnValue(null);
-        });
+        } else {
+            methodCreator.throwException(UnsupportedOperationException.class, "Setter not supported");
+        }
     }
 
     /**

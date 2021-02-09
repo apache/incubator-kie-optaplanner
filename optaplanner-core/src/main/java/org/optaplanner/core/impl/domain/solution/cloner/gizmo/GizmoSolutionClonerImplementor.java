@@ -20,7 +20,6 @@ import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
@@ -251,32 +250,17 @@ public class GizmoSolutionClonerImplementor {
             for (Field deeplyClonedField : solutionSubclassDescriptor.getDeepClonedFields()) {
                 GizmoMemberDescriptor gizmoMemberDescriptor =
                         solutionSubclassDescriptor.getMemberDescriptorForField(deeplyClonedField);
-                final ResultHandle[] resultHandleHolder = new ResultHandle[1];
 
-                gizmoMemberDescriptor.whenIsMethod(md -> {
-                    resultHandleHolder[0] = gizmoMemberDescriptor.invokeMemberMethod(isSubclassBranch, md, thisObj);
-                });
-
-                gizmoMemberDescriptor.whenIsField(fd -> {
-                    resultHandleHolder[0] = isSubclassBranch.readInstanceField(fd, thisObj);
-                });
-
-                ResultHandle fieldValue = resultHandleHolder[0];
+                ResultHandle fieldValue = gizmoMemberDescriptor.readMemberValue(isSubclassBranch, thisObj);
                 AssignableResultHandle cloneValue = isSubclassBranch.createVariable(deeplyClonedField.getType());
                 writeDeepCloneInstructions(isSubclassBranch, solutionSubclassDescriptor,
                         deeplyClonedField.getType(), gizmoMemberDescriptor.getType(), fieldValue, cloneValue, createdCloneMap);
 
-                gizmoMemberDescriptor.whenIsField(fd -> {
-                    isSubclassBranch.writeInstanceField(fd, clone, cloneValue);
-                });
-                gizmoMemberDescriptor.whenIsMethod(md -> {
-                    Optional<MethodDescriptor> maybeSetter = gizmoMemberDescriptor.getSetter();
-                    if (!maybeSetter.isPresent()) {
-                        throw new IllegalStateException("Field (" + gizmoMemberDescriptor.getName() + ") of class (" +
-                                gizmoMemberDescriptor.getDeclaringClassName() + ") does not have a setter.");
-                    }
-                    gizmoMemberDescriptor.invokeMemberMethod(isSubclassBranch, maybeSetter.get(), clone, cloneValue);
-                });
+                if (!gizmoMemberDescriptor.writeMemberValue(isSubclassBranch, clone, cloneValue)) {
+                    throw new IllegalStateException("The member (" + gizmoMemberDescriptor.getName() + ") of class (" +
+                            gizmoMemberDescriptor.getDeclaringClassName() +
+                            ") does not have a setter.");
+                }
             }
             isSubclassBranch.returnValue(clone);
 
@@ -335,36 +319,18 @@ public class GizmoSolutionClonerImplementor {
                         .filter(type::isAssignableFrom).sorted(instanceOfComparator).collect(Collectors.toList());
             }
 
-            final List<Class<?>> finalEntitySubclasses = entitySubclasses;
-            final Class<?> finalType = type;
-            shallowlyClonedField.whenIsField(fd -> {
-                ResultHandle fieldValue = methodCreator.readInstanceField(fd, thisObj);
-                if (!finalEntitySubclasses.isEmpty()) {
-                    AssignableResultHandle cloneResultHolder = methodCreator.createVariable(finalType);
-                    writeDeepCloneEntityInstructions(methodCreator, solutionInfo, finalType,
-                            fieldValue, cloneResultHolder, createdCloneMap);
-                    methodCreator.writeInstanceField(fd, clone, cloneResultHolder);
-                } else {
-                    methodCreator.writeInstanceField(fd, clone, fieldValue);
-                }
-            });
-            shallowlyClonedField.whenIsMethod(md -> {
-                Optional<MethodDescriptor> maybeSetter = shallowlyClonedField.getSetter();
-                if (!maybeSetter.isPresent()) {
-                    throw new IllegalStateException("Field (" + shallowlyClonedField.getName() + ") of class (" +
-                            shallowlyClonedField.getDeclaringClassName() + ") does not have a setter.");
-                }
-                ResultHandle fieldValue = shallowlyClonedField.invokeMemberMethod(methodCreator, md, thisObj);
-
-                if (!finalEntitySubclasses.isEmpty()) {
-                    AssignableResultHandle cloneResultHolder = methodCreator.createVariable(finalType);
-                    writeDeepCloneEntityInstructions(methodCreator, solutionInfo, finalType,
-                            fieldValue, cloneResultHolder, createdCloneMap);
-                    shallowlyClonedField.invokeMemberMethod(methodCreator, maybeSetter.get(), clone, cloneResultHolder);
-                } else {
-                    shallowlyClonedField.invokeMemberMethod(methodCreator, maybeSetter.get(), clone, fieldValue);
-                }
-            });
+            ResultHandle fieldValue = shallowlyClonedField.readMemberValue(methodCreator, thisObj);
+            if (!entitySubclasses.isEmpty()) {
+                AssignableResultHandle cloneResultHolder = methodCreator.createVariable(type);
+                writeDeepCloneEntityInstructions(methodCreator, solutionInfo, type,
+                        fieldValue, cloneResultHolder, createdCloneMap);
+                fieldValue = cloneResultHolder;
+            }
+            if (!shallowlyClonedField.writeMemberValue(methodCreator, clone, fieldValue)) {
+                throw new IllegalStateException("Field (" + shallowlyClonedField.getName() + ") of class (" +
+                        shallowlyClonedField.getDeclaringClassName() +
+                        ") does not have a setter.");
+            }
         } catch (ClassNotFoundException e) {
             throw new IllegalStateException("Error creating Gizmo Solution Cloner", e);
         }
@@ -798,37 +764,24 @@ public class GizmoSolutionClonerImplementor {
         for (Field deeplyClonedField : entityDescriptor.getDeepClonedFields()) {
             GizmoMemberDescriptor gizmoMemberDescriptor =
                     entityDescriptor.getMemberDescriptorForField(deeplyClonedField);
-            final ResultHandle[] resultHandleHolder = new ResultHandle[1];
-
-            gizmoMemberDescriptor.whenIsMethod(md -> {
-                resultHandleHolder[0] = gizmoMemberDescriptor.invokeMemberMethod(noCloneBranch, md, toClone);
-            });
-
-            gizmoMemberDescriptor.whenIsField(fd -> {
-                resultHandleHolder[0] = noCloneBranch.readInstanceField(fd, toClone);
-            });
-
-            ResultHandle subfieldValue = resultHandleHolder[0];
+            ResultHandle subfieldValue = gizmoMemberDescriptor.readMemberValue(noCloneBranch, toClone);
 
             AssignableResultHandle cloneValue = noCloneBranch.createVariable(deeplyClonedField.getType());
             writeDeepCloneInstructions(noCloneBranch, entityDescriptor,
                     deeplyClonedField.getType(), gizmoMemberDescriptor.getType(), subfieldValue, cloneValue, cloneMap);
 
-            gizmoMemberDescriptor.whenIsField(fd -> {
-                noCloneBranch.writeInstanceField(fd, cloneObj, cloneValue);
-            });
-            gizmoMemberDescriptor.whenIsMethod(md -> {
-                Optional<MethodDescriptor> maybeSetter = gizmoMemberDescriptor.getSetter();
-                if (!maybeSetter.isPresent()) {
-                    throw new IllegalStateException("Field (" + gizmoMemberDescriptor.getName() + ") of class (" +
-                            gizmoMemberDescriptor.getDeclaringClassName() + ") does not have a setter.");
-                }
-                gizmoMemberDescriptor.invokeMemberMethod(noCloneBranch, maybeSetter.get(), cloneObj, cloneValue);
-            });
+            if (!gizmoMemberDescriptor.writeMemberValue(noCloneBranch, cloneObj, cloneValue)) {
+                throw new IllegalStateException("The member (" + gizmoMemberDescriptor.getName() + ") of class (" +
+                        gizmoMemberDescriptor.getDeclaringClassName() + ") does not have a setter.");
+            }
         }
 
         noCloneBranch.returnValue(cloneObj);
     }
+
+    // ************************************************************************
+    // Private constructor
+    // ************************************************************************
 
     private GizmoSolutionClonerImplementor() {
 
