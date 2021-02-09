@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2021 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -236,8 +236,7 @@ public class SolverConfig extends AbstractConfig<SolverConfig> {
     protected Class<? extends ThreadFactory> threadFactoryClass = null;
 
     /**
-     * @deprecated in favor of the Quarkus extension or Spring Boot starter which handle annotation scanning more
-     *             efficiently.
+     * @deprecated in favor of the Quarkus integration in OptaPlanner 8 or Spring Boot starter.
      */
     @XStreamAlias("scanAnnotatedClasses")
     @Deprecated(/* forRemoval = true */)
@@ -360,8 +359,7 @@ public class SolverConfig extends AbstractConfig<SolverConfig> {
     }
 
     /**
-     * @deprecated in favor of the Quarkus extension or Spring Boot starter which handle annotation scanning more
-     *             efficiently.
+     * @deprecated in favor of the Quarkus integration in OptaPlanner 8 or Spring Boot starter..
      */
     @Deprecated(/* forRemoval = true */)
     public ScanAnnotatedClassesConfig getScanAnnotatedClassesConfig() {
@@ -369,8 +367,7 @@ public class SolverConfig extends AbstractConfig<SolverConfig> {
     }
 
     /**
-     * @deprecated in favor of the Quarkus extension or Spring Boot starter which handle annotation scanning more
-     *             efficiently.
+     * @deprecated in favor of the Quarkus integration in OptaPlanner 8 or Spring Boot starter..
      */
     @Deprecated(/* forRemoval = true */)
     public void setScanAnnotatedClassesConfig(ScanAnnotatedClassesConfig scanAnnotatedClassesConfig) {

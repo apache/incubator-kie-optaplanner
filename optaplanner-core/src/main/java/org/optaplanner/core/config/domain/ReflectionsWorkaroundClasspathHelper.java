@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2021 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -39,7 +39,7 @@ import com.google.common.collect.Sets;
  * Workaround for bug in {@link ClasspathHelper}.
  * This workaround expires once https://github.com/ronmamo/reflections/pull/118 is fixed.
  * 
- * @deprecated in favor of Quarkus extension or Spring Boot starter.
+ * @deprecated in favor of Quarkus integration in OptaPlanner 8 or Spring Boot starter.
  */
 @Deprecated(/* forRemoval = true */)
 public abstract class ReflectionsWorkaroundClasspathHelper {

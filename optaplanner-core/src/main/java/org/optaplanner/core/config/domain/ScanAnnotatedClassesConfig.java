@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2021 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -38,8 +38,7 @@ import com.thoughtworks.xstream.annotations.XStreamAlias;
 import com.thoughtworks.xstream.annotations.XStreamImplicit;
 
 /**
- * @deprecated in favor of the Quarkus extension or Spring Boot starter which handle annotation scanning more
- *             efficiently.
+ * @deprecated in favor of the Quarkus integration in OptaPlanner 8 or Spring Boot starter.
  */
 @XStreamAlias("scanAnnotatedClasses")
 @Deprecated(/* forRemoval = true */)

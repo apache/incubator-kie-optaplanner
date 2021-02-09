@@ -481,12 +481,6 @@ This generates:
 ----
 
 
-[[integrationWithQuarkus]]
-== Quarkus
-
-The Quarkus extension for OptaPlanner and its guide is coming soon.
-
-
 [[integrationWithSpringBoot]]
 == Spring Boot
 

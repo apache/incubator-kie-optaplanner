@@ -1,5 +1,5 @@
 /*
- * Copyright 2013 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2021 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -508,8 +508,6 @@ public abstract class PlannerBenchmarkFactory {
     // ************************************************************************
     // Static creation methods: KieContainer
     // ************************************************************************
-
-    // TODO Deprecate KieContainer methods in favor of Quarkus, Kogito and Spring Boot
 
     /**
      * Creates a new {@link PlannerBenchmarkFactory} that uses {@link KieServices#getKieClasspathContainer()}.

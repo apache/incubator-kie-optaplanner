@@ -128,19 +128,6 @@
       </modules>
     </profile>
     <profile>
-      <id>notProductizedProfile</id>
-      <activation>
-        <property>
-          <name>!productized</name>
-        </property>
-      </activation>
-      <modules>
-        <!-- Until Kogito is productized, neither can optaplanner-quarkus be productized. -->
-        <module>optaplanner-quarkus-integration</module>
-        <module>optaplanner-quickstarts/quarkus-school-timetabling</module>
-      </modules>
-    </profile>
-    <profile>
       <id>run-code-coverage</id>
       <build>
         <pluginManagement>
