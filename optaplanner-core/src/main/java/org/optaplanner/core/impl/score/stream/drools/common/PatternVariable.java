@@ -16,6 +16,20 @@
 
 package org.optaplanner.core.impl.score.stream.drools.common;
 
+import static org.drools.model.PatternDSL.betaIndexedBy;
+import static org.drools.model.PatternDSL.pattern;
+
+import java.util.Collections;
+import java.util.List;
+import java.util.function.BiFunction;
+import java.util.function.BiPredicate;
+import java.util.function.Function;
+import java.util.function.Predicate;
+import java.util.function.Supplier;
+import java.util.function.UnaryOperator;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
 import org.drools.model.BetaIndex1;
 import org.drools.model.BetaIndex2;
 import org.drools.model.BetaIndex3;
@@ -36,20 +50,6 @@ import org.optaplanner.core.impl.score.stream.bi.AbstractBiJoiner;
 import org.optaplanner.core.impl.score.stream.common.JoinerType;
 import org.optaplanner.core.impl.score.stream.quad.AbstractQuadJoiner;
 import org.optaplanner.core.impl.score.stream.tri.AbstractTriJoiner;
-
-import java.util.Collections;
-import java.util.List;
-import java.util.function.BiFunction;
-import java.util.function.BiPredicate;
-import java.util.function.Function;
-import java.util.function.Predicate;
-import java.util.function.Supplier;
-import java.util.function.UnaryOperator;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
-
-import static org.drools.model.PatternDSL.betaIndexedBy;
-import static org.drools.model.PatternDSL.pattern;
 
 /**
  * Represents a single variable with all of its patterns in the left hand side of a Drools rule.
