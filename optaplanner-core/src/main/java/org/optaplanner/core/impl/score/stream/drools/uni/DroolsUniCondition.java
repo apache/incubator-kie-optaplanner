@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2021 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -36,7 +36,7 @@ import java.util.function.ToLongFunction;
 import java.util.function.UnaryOperator;
 
 import org.drools.core.base.accumulators.CollectSetAccumulateFunction;
-import org.drools.model.BetaIndex;
+import org.drools.model.BetaIndex1;
 import org.drools.model.DSL;
 import org.drools.model.Drools;
 import org.drools.model.Global;
@@ -198,41 +198,26 @@ public final class DroolsUniCondition<A, PatternVar>
     public <B, BPatternVar> DroolsBiCondition<A, B, BPatternVar> andJoin(DroolsUniCondition<B, BPatternVar> bCondition,
             AbstractBiJoiner<A, B> biJoiner) {
         JoinerType[] joinerTypes = biJoiner.getJoinerTypes();
-        // We rebuild the A pattern, binding variables for left parts of the joins.
-        Function<PatternDef<PatternVar>, PatternDef<PatternVar>> aJoiner = UnaryOperator.identity();
-        Variable[] joinVars = new Variable[joinerTypes.length];
-        for (int mappingIndex = 0; mappingIndex < joinerTypes.length; mappingIndex++) {
-            // For each mapping, bind one join variable.
-            int currentMappingIndex = mappingIndex;
-            Variable<Object> joinVar = ruleStructure.createVariable("joinVar" + currentMappingIndex);
-            Function<A, Object> leftMapping = biJoiner.getLeftMapping(currentMappingIndex);
-            aJoiner = aJoiner.andThen(p -> p.bind(joinVar, a -> leftMapping.apply((A) a)));
-            joinVars[currentMappingIndex] = joinVar;
-        }
-        DroolsUniRuleStructure<A, PatternVar> newARuleStructure = ruleStructure.amend(aJoiner::apply);
-        // We rebuild the B pattern, joining with the new A pattern using its freshly bound join variables.
         Function<PatternDef<BPatternVar>, PatternDef<BPatternVar>> bJoiner = UnaryOperator.identity();
         for (int mappingIndex = 0; mappingIndex < joinerTypes.length; mappingIndex++) {
-            // For each mapping, bind a join variable from A to B and index the binding.
             int currentMappingIndex = mappingIndex;
             JoinerType joinerType = joinerTypes[currentMappingIndex];
             Function<A, Object> leftMapping = biJoiner.getLeftMapping(currentMappingIndex);
+            Function1<A, Object> leftExtractor = leftMapping::apply;
             Function<B, Object> rightMapping = biJoiner.getRightMapping(currentMappingIndex);
             Function1<BPatternVar, Object> rightExtractor = b -> rightMapping.apply((B) b);
-            Predicate2<BPatternVar, A> predicate = (b, a) -> { // We only extract B; A is coming from a pre-bound join var.
-                return joinerType.matches(a, rightExtractor.apply(b));
-            };
+            Predicate2<BPatternVar, A> predicate =
+                    (b, a) -> joinerType.matches(leftExtractor.apply(a), rightExtractor.apply(b));
             bJoiner = bJoiner.andThen(p -> {
-                BetaIndex<BPatternVar, A, Object> index = betaIndexedBy(Object.class, getConstraintType(joinerType),
-                        currentMappingIndex, rightExtractor, leftMapping::apply);
-                return p.expr("Join using joiner #" + currentMappingIndex + " in " + biJoiner,
-                        joinVars[currentMappingIndex], predicate, index);
+                BetaIndex1<BPatternVar, A, Object> index = betaIndexedBy(Object.class, getConstraintType(joinerType),
+                        currentMappingIndex, rightExtractor, leftExtractor);
+                return p.expr("Join using joiner #" + currentMappingIndex + " in " + biJoiner, ruleStructure.getA(),
+                        predicate, index);
             });
         }
         DroolsUniRuleStructure<B, BPatternVar> newBRuleStructure = bCondition.ruleStructure.amend(bJoiner::apply);
-        // And finally we return the new condition that is based on the new A and B patterns.
-        return new DroolsBiCondition<>(new DroolsBiRuleStructure<>(newARuleStructure, newBRuleStructure,
-                ruleStructure.getVariableIdSupplier()));
+        return new DroolsBiCondition<>(
+                new DroolsBiRuleStructure<>(ruleStructure, newBRuleStructure, ruleStructure.getVariableIdSupplier()));
     }
 
     @SafeVarargs
@@ -285,35 +270,17 @@ public final class DroolsUniCondition<A, PatternVar>
             return applyFilters(ruleStructure, existencePattern, biPredicate, shouldExist);
         }
         JoinerType[] joinerTypes = biJoiner.getJoinerTypes();
-        // We rebuild the A pattern, binding variables for left parts of the joins.
-        Function<PatternDef<PatternVar>, PatternDef<PatternVar>> aJoiner = UnaryOperator.identity();
-        Variable[] joinVars = new Variable[joinerTypes.length];
         for (int mappingIndex = 0; mappingIndex < joinerTypes.length; mappingIndex++) {
-            // For each mapping, bind one join variable.
-            int currentMappingIndex = mappingIndex;
-            Variable<Object> joinVar = ruleStructure.createVariable("joinVar" + currentMappingIndex);
-            Function<A, Object> leftMapping = biJoiner.getLeftMapping(currentMappingIndex);
-            aJoiner = aJoiner.andThen(p -> p.bind(joinVar, a -> leftMapping.apply((A) a)));
-            joinVars[currentMappingIndex] = joinVar;
+            JoinerType joinerType = joinerTypes[mappingIndex];
+            Function<A, Object> leftMapping = biJoiner.getLeftMapping(mappingIndex);
+            Function<B, Object> rightMapping = biJoiner.getRightMapping(mappingIndex);
+            Predicate2<B, A> predicate = (b, a) -> joinerType.matches(leftMapping.apply(a), rightMapping.apply(b));
+            BetaIndex1<B, A, Object> index = betaIndexedBy(Object.class, getConstraintType(joinerType),
+                    mappingIndex, rightMapping::apply, leftMapping::apply);
+            existencePattern = existencePattern.expr("Join using joiner #" + mappingIndex + " in " + biJoiner,
+                    ruleStructure.getA(), predicate, index);
         }
-        DroolsUniRuleStructure<A, PatternVar> newARuleStructure = ruleStructure.amend(aJoiner::apply);
-        // We create the B pattern, joining with the new A pattern using its freshly bound join variables.
-        for (int mappingIndex = 0; mappingIndex < joinerTypes.length; mappingIndex++) {
-            // For each mapping, bind a join variable from A to B and index the binding.
-            int currentMappingIndex = mappingIndex;
-            JoinerType joinerType = joinerTypes[currentMappingIndex];
-            Function<A, Object> leftMapping = biJoiner.getLeftMapping(currentMappingIndex);
-            Function<B, Object> rightMapping = biJoiner.getRightMapping(currentMappingIndex);
-            Predicate2<B, A> predicate = (b, a) -> { // We only extract B; A is coming from a pre-bound join var.
-                return joinerType.matches(a, rightMapping.apply(b));
-            };
-            BetaIndex<B, A, ?> index = betaIndexedBy(Object.class, getConstraintType(joinerType),
-                    currentMappingIndex, rightMapping::apply, leftMapping::apply);
-            existencePattern = existencePattern.expr("Join using joiner #" + currentMappingIndex + " in " + biJoiner,
-                    joinVars[currentMappingIndex], predicate, index);
-        }
-        // And finally we add the filter to the B pattern
-        return applyFilters(newARuleStructure, existencePattern, biPredicate, shouldExist);
+        return applyFilters(ruleStructure, existencePattern, biPredicate, shouldExist);
     }
 
     private <B> DroolsUniCondition<A, PatternVar> applyFilters(
