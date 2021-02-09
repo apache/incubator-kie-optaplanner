@@ -16,25 +16,7 @@
 
 package org.optaplanner.core.impl.score.stream.drools.common;
 
-import static java.util.Collections.singletonList;
-import static org.drools.model.DSL.accFunction;
-import static org.drools.model.DSL.accumulate;
-import static org.drools.model.DSL.exists;
-import static org.drools.model.DSL.groupBy;
-import static org.drools.model.DSL.not;
-import static org.drools.model.PatternDSL.betaIndexedBy;
-import static org.drools.model.PatternDSL.pattern;
-
-import java.math.BigDecimal;
-import java.util.Arrays;
-import java.util.List;
-import java.util.function.BiPredicate;
-import java.util.function.Function;
-import java.util.function.Predicate;
-import java.util.function.ToIntFunction;
-import java.util.function.ToLongFunction;
-
-import org.drools.model.BetaIndex;
+import org.drools.model.BetaIndex1;
 import org.drools.model.PatternDSL;
 import org.drools.model.Variable;
 import org.drools.model.functions.Predicate2;
@@ -47,6 +29,24 @@ import org.optaplanner.core.impl.score.stream.bi.FilteringBiJoiner;
 import org.optaplanner.core.impl.score.stream.bi.NoneBiJoiner;
 import org.optaplanner.core.impl.score.stream.common.JoinerType;
 import org.optaplanner.core.impl.score.stream.drools.DroolsVariableFactory;
+
+import java.math.BigDecimal;
+import java.util.Arrays;
+import java.util.List;
+import java.util.function.BiPredicate;
+import java.util.function.Function;
+import java.util.function.Predicate;
+import java.util.function.ToIntFunction;
+import java.util.function.ToLongFunction;
+
+import static java.util.Collections.singletonList;
+import static org.drools.model.DSL.accFunction;
+import static org.drools.model.DSL.accumulate;
+import static org.drools.model.DSL.exists;
+import static org.drools.model.DSL.groupBy;
+import static org.drools.model.DSL.not;
+import static org.drools.model.PatternDSL.betaIndexedBy;
+import static org.drools.model.PatternDSL.pattern;
 
 /**
  * Represents the left-hand side of a Drools rule, the result of which is a single variable.
@@ -128,32 +128,18 @@ public final class UniLeftHandSide<A> extends AbstractLeftHandSide {
         if (joiner == null) {
             return applyFilters(patternVariable, existencePattern, predicate, shouldExist);
         }
-        PatternVariable<A> newPatternVariable = patternVariable;
         JoinerType[] joinerTypes = joiner.getJoinerTypes();
-        // Rebuild the A pattern, binding variables for left parts of the joins.
-        Variable[] joinVars = new Variable[joinerTypes.length];
         for (int mappingIndex = 0; mappingIndex < joinerTypes.length; mappingIndex++) {
-            // For each mapping, bind one join variable.
-            Variable<Object> joinVar = variableFactory.createVariable("joinVar");
-            Function<A, Object> leftMapping = joiner.getLeftMapping(mappingIndex);
-            newPatternVariable = newPatternVariable.bind(joinVar, leftMapping);
-            joinVars[mappingIndex] = joinVar;
-        }
-        // Create the B pattern, joining with the new A pattern using its freshly bound join variables.
-        for (int mappingIndex = 0; mappingIndex < joinerTypes.length; mappingIndex++) {
-            // For each mapping, bind a join variable from A to B and index the binding.
             JoinerType joinerType = joinerTypes[mappingIndex];
             Function<A, Object> leftMapping = joiner.getLeftMapping(mappingIndex);
             Function<B, Object> rightMapping = joiner.getRightMapping(mappingIndex);
-            // Only extract B; A is coming from a pre-bound join var.
-            Predicate2<B, A> joinPredicate = (b, a) -> joinerType.matches(a, rightMapping.apply(b));
-            BetaIndex<B, A, ?> index = betaIndexedBy(Object.class, getConstraintType(joinerType), mappingIndex,
+            Predicate2<B, A> joinPredicate = (b, a) -> joinerType.matches(leftMapping.apply(a), rightMapping.apply(b));
+            BetaIndex1<B, A, ?> index = betaIndexedBy(Object.class, getConstraintType(joinerType), mappingIndex,
                     rightMapping::apply, leftMapping::apply);
             existencePattern = existencePattern.expr("Join using joiner #" + mappingIndex + " in " + joiner,
-                    joinVars[mappingIndex], joinPredicate, index);
+                    patternVariable.getPrimaryVariable(), joinPredicate, index);
         }
-        // And finally add the filter to the B pattern.
-        return applyFilters(newPatternVariable, existencePattern, predicate, shouldExist);
+        return applyFilters(patternVariable, existencePattern, predicate, shouldExist);
     }
 
     private <B> UniLeftHandSide<A> applyFilters(PatternVariable<A> newPatternVariable,
@@ -208,21 +194,12 @@ public final class UniLeftHandSide<A> extends AbstractLeftHandSide {
     public <B> BiLeftHandSide<A, B> andJoin(UniLeftHandSide<B> right, BiJoiner<A, B> joiner) {
         AbstractBiJoiner<A, B> castJoiner = (AbstractBiJoiner<A, B>) joiner;
         JoinerType[] joinerTypes = castJoiner.getJoinerTypes();
-        // Rebuild the A pattern, binding variables for left parts of the joins.
-        PatternVariable<A> newLeft = patternVariable;
-        Variable[] joinVars = new Variable[joinerTypes.length];
-        for (int mappingIndex = 0; mappingIndex < joinerTypes.length; mappingIndex++) {
-            // For each mapping, bind one join variable.
-            Variable<Object> joinVar = variableFactory.createVariable("joinVar" + mappingIndex);
-            newLeft = newLeft.bind(joinVar, castJoiner.getLeftMapping(mappingIndex));
-            joinVars[mappingIndex] = joinVar;
-        }
         PatternVariable<B> newRight = right.patternVariable;
         for (int mappingIndex = 0; mappingIndex < joinerTypes.length; mappingIndex++) {
             JoinerType joinerType = joinerTypes[mappingIndex];
-            newRight = newRight.filterOnJoinVar(joinVars[mappingIndex], castJoiner, joinerType, mappingIndex);
+            newRight = newRight.filterOnJoinVar(patternVariable.getPrimaryVariable(), castJoiner, joinerType, mappingIndex);
         }
-        return new BiLeftHandSide<>(newLeft, newRight, variableFactory);
+        return new BiLeftHandSide<>(patternVariable, newRight, variableFactory);
     }
 
     public <NewA> UniLeftHandSide<NewA> andGroupBy(Function<A, NewA> keyMapping) {

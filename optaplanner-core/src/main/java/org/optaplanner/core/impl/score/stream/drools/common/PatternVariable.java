@@ -16,8 +16,18 @@
 
 package org.optaplanner.core.impl.score.stream.drools.common;
 
-import static org.drools.model.PatternDSL.betaIndexedBy;
-import static org.drools.model.PatternDSL.pattern;
+import org.drools.model.BetaIndex1;
+import org.drools.model.PatternDSL;
+import org.drools.model.Variable;
+import org.drools.model.functions.Function1;
+import org.drools.model.functions.Predicate2;
+import org.drools.model.view.ViewItem;
+import org.optaplanner.core.api.function.QuadFunction;
+import org.optaplanner.core.api.function.QuadPredicate;
+import org.optaplanner.core.api.function.TriFunction;
+import org.optaplanner.core.api.function.TriPredicate;
+import org.optaplanner.core.impl.score.stream.bi.AbstractBiJoiner;
+import org.optaplanner.core.impl.score.stream.common.JoinerType;
 
 import java.util.Collections;
 import java.util.List;
@@ -30,18 +40,8 @@ import java.util.function.UnaryOperator;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import org.drools.model.BetaIndex;
-import org.drools.model.PatternDSL;
-import org.drools.model.Variable;
-import org.drools.model.functions.Function1;
-import org.drools.model.functions.Predicate2;
-import org.drools.model.view.ViewItem;
-import org.optaplanner.core.api.function.QuadFunction;
-import org.optaplanner.core.api.function.QuadPredicate;
-import org.optaplanner.core.api.function.TriFunction;
-import org.optaplanner.core.api.function.TriPredicate;
-import org.optaplanner.core.impl.score.stream.bi.AbstractBiJoiner;
-import org.optaplanner.core.impl.score.stream.common.JoinerType;
+import static org.drools.model.PatternDSL.betaIndexedBy;
+import static org.drools.model.PatternDSL.pattern;
 
 /**
  * Represents a single variable with all of its patterns in the left hand side of a Drools rule.
@@ -177,16 +177,14 @@ class PatternVariable<A> {
 
     public <LeftJoinVar_> PatternVariable<A> filterOnJoinVar(Variable<LeftJoinVar_> leftJoinVar,
             AbstractBiJoiner<LeftJoinVar_, A> joiner, JoinerType joinerType, int mappingIndex) {
-        // For each mapping, bind a join variable from A to B and index the binding.
         Function<LeftJoinVar_, Object> leftMapping = joiner.getLeftMapping(mappingIndex);
+        Function1<LeftJoinVar_, Object> leftExtractor = leftMapping::apply;
         Function<A, Object> rightMapping = joiner.getRightMapping(mappingIndex);
         Function1<A, Object> rightExtractor = rightMapping::apply;
-        // Only extract B; A is coming from a pre-bound join var.
-        Predicate2<A, LeftJoinVar_> predicate = (b, a) -> joinerType.matches(a, rightExtractor.apply(b));
+        Predicate2<A, LeftJoinVar_> predicate = (b, a) -> joinerType.matches(leftExtractor.apply(a), rightExtractor.apply(b));
         return new PatternVariable<>(this, p -> {
-            BetaIndex<A, LeftJoinVar_, Object> index = betaIndexedBy(Object.class,
-                    AbstractLeftHandSide.getConstraintType(joinerType), mappingIndex, rightExtractor,
-                    leftMapping::apply);
+            BetaIndex1<A, LeftJoinVar_, Object> index = betaIndexedBy(Object.class,
+                    AbstractLeftHandSide.getConstraintType(joinerType), mappingIndex, rightExtractor, leftExtractor);
             return p.expr("Join using joiner #" + mappingIndex + " in " + joiner, leftJoinVar, predicate, index);
         });
     }
