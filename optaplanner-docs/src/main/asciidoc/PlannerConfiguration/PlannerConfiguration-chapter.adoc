@@ -1748,7 +1748,7 @@ This avoids timeout issues of HTTP and other technologies.
 Internally a `SolverManager` manages a thread pool of solver threads, which call `Solver.solve(...)`,
 and a thread pool of consumer threads, which handle best solution changed events.
 
-In <<integrationWithQuarkus,Quarkus>> and <<integrationWithSpringBoot,Spring Boot>>,
+In <<integrationWithSpringBoot,Spring Boot>>,
 the `SolverManager` instance is automatically injected in your code.
 Otherwise, build a `SolverManager` instance with the `create(...)` method:
 

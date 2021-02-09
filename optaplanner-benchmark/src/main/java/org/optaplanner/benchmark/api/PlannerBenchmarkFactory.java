@@ -1,5 +1,5 @@
 /*
- * Copyright 2013 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2021 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,11 +16,6 @@
 
 package org.optaplanner.benchmark.api;
 
-import java.io.File;
-import java.io.InputStream;
-import java.io.Reader;
-import java.util.List;
-
 import org.kie.api.KieServices;
 import org.kie.api.builder.KieModule;
 import org.kie.api.builder.ReleaseId;
@@ -32,6 +27,11 @@ import org.optaplanner.core.api.solver.SolverFactory;
 import org.optaplanner.core.config.SolverConfigContext;
 import org.optaplanner.core.config.solver.SolverConfig;
 import org.optaplanner.core.impl.solver.DefaultSolverFactory;
+
+import java.io.File;
+import java.io.InputStream;
+import java.io.Reader;
+import java.util.List;
 
 /**
  * Builds {@link PlannerBenchmark} instances.
@@ -508,8 +508,6 @@ public abstract class PlannerBenchmarkFactory {
     // ************************************************************************
     // Static creation methods: KieContainer
     // ************************************************************************
-
-    // TODO Deprecate KieContainer methods in favor of Quarkus, Kogito and Spring Boot
 
     /**
      * Creates a new {@link PlannerBenchmarkFactory} that uses {@link KieServices#getKieClasspathContainer()}.

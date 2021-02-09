@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2021 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,11 +16,8 @@
 
 package org.optaplanner.core.config.domain;
 
-import java.lang.annotation.Annotation;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
-
+import com.thoughtworks.xstream.annotations.XStreamAlias;
+import com.thoughtworks.xstream.annotations.XStreamImplicit;
 import org.apache.commons.lang3.StringUtils;
 import org.optaplanner.core.api.domain.entity.PlanningEntity;
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
@@ -34,12 +31,13 @@ import org.reflections.Reflections;
 import org.reflections.util.ConfigurationBuilder;
 import org.reflections.util.FilterBuilder;
 
-import com.thoughtworks.xstream.annotations.XStreamAlias;
-import com.thoughtworks.xstream.annotations.XStreamImplicit;
+import java.lang.annotation.Annotation;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
 
 /**
- * @deprecated in favor of the Quarkus extension or Spring Boot starter which handle annotation scanning more
- *             efficiently.
+ * @deprecated in favor of the Quarkus integration in OptaPlanner 8 or Spring Boot starter.
  */
 @XStreamAlias("scanAnnotatedClasses")
 @Deprecated(/* forRemoval = true */)

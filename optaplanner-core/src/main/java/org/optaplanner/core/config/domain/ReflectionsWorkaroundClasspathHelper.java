@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2021 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,6 +16,10 @@
 
 package org.optaplanner.core.config.domain;
 
+import com.google.common.collect.Sets;
+import org.reflections.Reflections;
+import org.reflections.util.ClasspathHelper;
+
 import java.io.File;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
@@ -30,16 +34,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.reflections.Reflections;
-import org.reflections.util.ClasspathHelper;
-
-import com.google.common.collect.Sets;
-
 /**
  * Workaround for bug in {@link ClasspathHelper}.
  * This workaround expires once https://github.com/ronmamo/reflections/pull/118 is fixed.
  * 
- * @deprecated in favor of Quarkus extension or Spring Boot starter.
+ * @deprecated in favor of Quarkus integration in OptaPlanner 8 or Spring Boot starter.
  */
 @Deprecated(/* forRemoval = true */)
 public abstract class ReflectionsWorkaroundClasspathHelper {

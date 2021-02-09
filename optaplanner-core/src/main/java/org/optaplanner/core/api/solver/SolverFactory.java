@@ -1,5 +1,5 @@
 /*
- * Copyright 2012 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2021 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,11 +16,6 @@
 
 package org.optaplanner.core.api.solver;
 
-import java.io.File;
-import java.io.InputStream;
-import java.io.Reader;
-import java.util.Objects;
-
 import org.kie.api.KieServices;
 import org.kie.api.builder.ReleaseId;
 import org.kie.api.runtime.KieContainer;
@@ -32,6 +27,11 @@ import org.optaplanner.core.config.SolverConfigContext;
 import org.optaplanner.core.config.solver.SolverConfig;
 import org.optaplanner.core.impl.score.director.ScoreDirectorFactory;
 import org.optaplanner.core.impl.solver.DefaultSolverFactory;
+
+import java.io.File;
+import java.io.InputStream;
+import java.io.Reader;
+import java.util.Objects;
 
 /**
  * Creates {@link Solver} instances.
@@ -225,8 +225,6 @@ public abstract class SolverFactory<Solution_> {
     // ************************************************************************
     // Static creation methods: KieContainer
     // ************************************************************************
-
-    // TODO Deprecate KieContainer methods in favor of Quarkus, Kogito and Spring Boot
 
     /**
      * Uses {@link KieServices#getKieClasspathContainer()}.
