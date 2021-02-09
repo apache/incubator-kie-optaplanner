@@ -36,7 +36,7 @@ import java.util.function.ToLongFunction;
 import java.util.function.UnaryOperator;
 
 import org.drools.core.base.accumulators.CollectSetAccumulateFunction;
-import org.drools.model.BetaIndex1;
+import org.drools.model.BetaIndex;
 import org.drools.model.DSL;
 import org.drools.model.Drools;
 import org.drools.model.Global;
@@ -209,7 +209,7 @@ public final class DroolsUniCondition<A, PatternVar>
             Predicate2<BPatternVar, A> predicate =
                     (b, a) -> joinerType.matches(leftExtractor.apply(a), rightExtractor.apply(b));
             bJoiner = bJoiner.andThen(p -> {
-                BetaIndex1<BPatternVar, A, Object> index = betaIndexedBy(Object.class, getConstraintType(joinerType),
+                BetaIndex<BPatternVar, A, Object> index = betaIndexedBy(Object.class, getConstraintType(joinerType),
                         currentMappingIndex, rightExtractor, leftExtractor);
                 return p.expr("Join using joiner #" + currentMappingIndex + " in " + biJoiner, ruleStructure.getA(),
                         predicate, index);
@@ -275,7 +275,7 @@ public final class DroolsUniCondition<A, PatternVar>
             Function<A, Object> leftMapping = biJoiner.getLeftMapping(mappingIndex);
             Function<B, Object> rightMapping = biJoiner.getRightMapping(mappingIndex);
             Predicate2<B, A> predicate = (b, a) -> joinerType.matches(leftMapping.apply(a), rightMapping.apply(b));
-            BetaIndex1<B, A, Object> index = betaIndexedBy(Object.class, getConstraintType(joinerType),
+            BetaIndex<B, A, Object> index = betaIndexedBy(Object.class, getConstraintType(joinerType),
                     mappingIndex, rightMapping::apply, leftMapping::apply);
             existencePattern = existencePattern.expr("Join using joiner #" + mappingIndex + " in " + biJoiner,
                     ruleStructure.getA(), predicate, index);
