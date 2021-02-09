@@ -34,7 +34,7 @@ import java.util.function.Predicate;
 import java.util.function.ToIntFunction;
 import java.util.function.ToLongFunction;
 
-import org.drools.model.BetaIndex1;
+import org.drools.model.BetaIndex;
 import org.drools.model.PatternDSL;
 import org.drools.model.Variable;
 import org.drools.model.functions.Predicate2;
@@ -121,12 +121,12 @@ public final class UniLeftHandSide<A> extends AbstractLeftHandSide {
         return new UniLeftHandSide<>(this, patternVariable.filter(predicate));
     }
 
-    private <B> UniLeftHandSide<A> applyJoiners(Class<B> bClass, AbstractBiJoiner<A, B> joiner,
+    private <B> UniLeftHandSide<A> applyJoiners(Class<B> otherFactType, AbstractBiJoiner<A, B> joiner,
             BiPredicate<A, B> predicate, boolean shouldExist) {
-        Variable<B> toExist = (Variable<B>) variableFactory.createVariable(bClass, "toExist");
+        Variable<B> toExist = (Variable<B>) variableFactory.createVariable(otherFactType, "toExist");
         PatternDSL.PatternDef<B> existencePattern = pattern(toExist);
         if (joiner == null) {
-            return applyFilters(patternVariable, existencePattern, predicate, shouldExist);
+            return applyFilters(existencePattern, predicate, shouldExist);
         }
         JoinerType[] joinerTypes = joiner.getJoinerTypes();
         for (int mappingIndex = 0; mappingIndex < joinerTypes.length; mappingIndex++) {
@@ -134,24 +134,24 @@ public final class UniLeftHandSide<A> extends AbstractLeftHandSide {
             Function<A, Object> leftMapping = joiner.getLeftMapping(mappingIndex);
             Function<B, Object> rightMapping = joiner.getRightMapping(mappingIndex);
             Predicate2<B, A> joinPredicate = (b, a) -> joinerType.matches(leftMapping.apply(a), rightMapping.apply(b));
-            BetaIndex1<B, A, ?> index = betaIndexedBy(Object.class, getConstraintType(joinerType), mappingIndex,
+            BetaIndex<B, A, ?> index = betaIndexedBy(Object.class, getConstraintType(joinerType), mappingIndex,
                     rightMapping::apply, leftMapping::apply);
             existencePattern = existencePattern.expr("Join using joiner #" + mappingIndex + " in " + joiner,
                     patternVariable.getPrimaryVariable(), joinPredicate, index);
         }
-        return applyFilters(patternVariable, existencePattern, predicate, shouldExist);
+        return applyFilters(existencePattern, predicate, shouldExist);
     }
 
-    private <B> UniLeftHandSide<A> applyFilters(PatternVariable<A> newPatternVariable,
-            PatternDSL.PatternDef<B> existencePattern, BiPredicate<A, B> biPredicate, boolean shouldExist) {
-        PatternDSL.PatternDef<B> possiblyFilteredExistencePattern = biPredicate == null ? existencePattern
-                : existencePattern.expr("Filter using " + biPredicate, newPatternVariable.getPrimaryVariable(),
-                        (b, a) -> biPredicate.test(a, b));
+    private <B> UniLeftHandSide<A> applyFilters(PatternDSL.PatternDef<B> existencePattern, BiPredicate<A, B> predicate,
+            boolean shouldExist) {
+        PatternDSL.PatternDef<B> possiblyFilteredExistencePattern = predicate == null ? existencePattern
+                : existencePattern.expr("Filter using " + predicate, patternVariable.getPrimaryVariable(),
+                        (b, a) -> predicate.test(a, b));
         ViewItem<?> existenceExpression = exists(possiblyFilteredExistencePattern);
         if (!shouldExist) {
             existenceExpression = not(possiblyFilteredExistencePattern);
         }
-        return new UniLeftHandSide<>(this, newPatternVariable.addDependentExpression(existenceExpression));
+        return new UniLeftHandSide<>(this, patternVariable.addDependentExpression(existenceExpression));
     }
 
     private <B> UniLeftHandSide<A> existsOrNot(Class<B> bClass, BiJoiner<A, B>[] joiners, boolean shouldExist) {

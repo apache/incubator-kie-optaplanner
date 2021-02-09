@@ -30,7 +30,7 @@ import java.util.function.UnaryOperator;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import org.drools.model.BetaIndex1;
+import org.drools.model.BetaIndex;
 import org.drools.model.BetaIndex2;
 import org.drools.model.BetaIndex3;
 import org.drools.model.PatternDSL;
@@ -191,7 +191,7 @@ class PatternVariable<A> {
         Function1<A, Object> rightExtractor = rightMapping::apply;
         Predicate2<A, LeftJoinVar_> predicate = (b, a) -> joinerType.matches(leftExtractor.apply(a), rightExtractor.apply(b));
         return new PatternVariable<>(this, p -> {
-            BetaIndex1<A, LeftJoinVar_, Object> index = betaIndexedBy(Object.class,
+            BetaIndex<A, LeftJoinVar_, Object> index = betaIndexedBy(Object.class,
                     AbstractLeftHandSide.getConstraintType(joinerType), mappingIndex, rightExtractor, leftExtractor);
             return p.expr("Join using joiner #" + mappingIndex + " in " + joiner, leftJoinVar, predicate, index);
         });

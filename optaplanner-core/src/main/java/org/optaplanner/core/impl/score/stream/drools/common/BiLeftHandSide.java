@@ -128,7 +128,7 @@ public final class BiLeftHandSide<A, B> extends AbstractLeftHandSide {
         Variable<C> toExist = (Variable<C>) variableFactory.createVariable(otherFactType, "toExist");
         PatternDSL.PatternDef<C> existencePattern = pattern(toExist);
         if (joiner == null) {
-            return applyFilters(patternVariableA, patternVariableB, existencePattern, predicate, shouldExist);
+            return applyFilters(existencePattern, predicate, shouldExist);
         }
         JoinerType[] joinerTypes = joiner.getJoinerTypes();
         for (int mappingIndex = 0; mappingIndex < joinerTypes.length; mappingIndex++) {
@@ -142,20 +142,19 @@ public final class BiLeftHandSide<A, B> extends AbstractLeftHandSide {
             existencePattern = existencePattern.expr("Join using joiner #" + mappingIndex + " in " + joiner,
                     patternVariableA.getPrimaryVariable(), patternVariableB.getPrimaryVariable(), joinPredicate, index);
         }
-        return applyFilters(patternVariableA, patternVariableB, existencePattern, predicate, shouldExist);
+        return applyFilters(existencePattern, predicate, shouldExist);
     }
 
-    private <C> BiLeftHandSide<A, B> applyFilters(PatternVariable<A> aPatternVariable,
-            PatternVariable<B> bPatternVariable, PatternDSL.PatternDef<C> existencePattern,
-            TriPredicate<A, B, C> triPredicate, boolean shouldExist) {
-        PatternDSL.PatternDef<C> possiblyFilteredExistencePattern = triPredicate == null ? existencePattern
-                : existencePattern.expr("Filter using " + triPredicate, aPatternVariable.getPrimaryVariable(),
-                        bPatternVariable.getPrimaryVariable(), (c, a, b) -> triPredicate.test(a, b, c));
+    private <C> BiLeftHandSide<A, B> applyFilters(PatternDSL.PatternDef<C> existencePattern, TriPredicate<A, B, C> predicate,
+            boolean shouldExist) {
+        PatternDSL.PatternDef<C> possiblyFilteredExistencePattern = predicate == null ? existencePattern
+                : existencePattern.expr("Filter using " + predicate, patternVariableA.getPrimaryVariable(),
+                        patternVariableB.getPrimaryVariable(), (c, a, b) -> predicate.test(a, b, c));
         ViewItem<?> existenceExpression = exists(possiblyFilteredExistencePattern);
         if (!shouldExist) {
             existenceExpression = not(possiblyFilteredExistencePattern);
         }
-        return new BiLeftHandSide<>(this, bPatternVariable.addDependentExpression(existenceExpression));
+        return new BiLeftHandSide<>(this, patternVariableB.addDependentExpression(existenceExpression));
     }
 
     private <C> BiLeftHandSide<A, B> existsOrNot(Class<C> cClass, TriJoiner<A, B, C>[] joiners, boolean shouldExist) {

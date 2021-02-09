@@ -16,6 +16,12 @@
 
 package org.optaplanner.examples.machinereassignment.optional.score;
 
+import static org.optaplanner.core.api.score.stream.ConstraintCollectors.sumLong;
+import static org.optaplanner.core.api.score.stream.Joiners.equal;
+import static org.optaplanner.core.api.score.stream.Joiners.filtering;
+
+import java.util.function.BiFunction;
+
 import org.optaplanner.core.api.score.buildin.hardsoftlong.HardSoftLongScore;
 import org.optaplanner.core.api.score.stream.Constraint;
 import org.optaplanner.core.api.score.stream.ConstraintCollectors;
@@ -30,12 +36,6 @@ import org.optaplanner.examples.machinereassignment.domain.MrProcessAssignment;
 import org.optaplanner.examples.machinereassignment.domain.MrService;
 import org.optaplanner.examples.machinereassignment.domain.solver.MrServiceDependency;
 import org.optaplanner.examples.machinereassignment.score.MrConstraints;
-
-import java.util.function.BiFunction;
-
-import static org.optaplanner.core.api.score.stream.ConstraintCollectors.sumLong;
-import static org.optaplanner.core.api.score.stream.Joiners.equal;
-import static org.optaplanner.core.api.score.stream.Joiners.filtering;
 
 public class MachineReassignmentConstraintProvider implements ConstraintProvider {
 
