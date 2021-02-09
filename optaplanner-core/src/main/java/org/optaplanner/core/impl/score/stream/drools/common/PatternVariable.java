@@ -35,9 +35,6 @@ import org.drools.model.BetaIndex2;
 import org.drools.model.BetaIndex3;
 import org.drools.model.PatternDSL;
 import org.drools.model.Variable;
-import org.drools.model.functions.Function1;
-import org.drools.model.functions.Function2;
-import org.drools.model.functions.Function3;
 import org.drools.model.functions.Predicate2;
 import org.drools.model.functions.Predicate3;
 import org.drools.model.functions.Predicate4;
@@ -186,13 +183,11 @@ class PatternVariable<A> {
     public <LeftJoinVar_> PatternVariable<A> filterOnJoinVar(Variable<LeftJoinVar_> leftJoinVar,
             AbstractBiJoiner<LeftJoinVar_, A> joiner, JoinerType joinerType, int mappingIndex) {
         Function<LeftJoinVar_, Object> leftMapping = joiner.getLeftMapping(mappingIndex);
-        Function1<LeftJoinVar_, Object> leftExtractor = leftMapping::apply;
         Function<A, Object> rightMapping = joiner.getRightMapping(mappingIndex);
-        Function1<A, Object> rightExtractor = rightMapping::apply;
-        Predicate2<A, LeftJoinVar_> predicate = (b, a) -> joinerType.matches(leftExtractor.apply(a), rightExtractor.apply(b));
+        Predicate2<A, LeftJoinVar_> predicate = (b, a) -> joinerType.matches(leftMapping.apply(a), rightMapping.apply(b));
         return new PatternVariable<>(this, p -> {
             BetaIndex<A, LeftJoinVar_, Object> index = betaIndexedBy(Object.class,
-                    AbstractLeftHandSide.getConstraintType(joinerType), mappingIndex, rightExtractor, leftExtractor);
+                    AbstractLeftHandSide.getConstraintType(joinerType), mappingIndex, rightMapping::apply, leftMapping::apply);
             return p.expr("Join using joiner #" + mappingIndex + " in " + joiner, leftJoinVar, predicate, index);
         });
     }
@@ -201,15 +196,13 @@ class PatternVariable<A> {
             Variable<LeftJoinVarB_> leftJoinVarB, AbstractTriJoiner<LeftJoinVarA_, LeftJoinVarB_, A> joiner,
             JoinerType joinerType, int mappingIndex) {
         BiFunction<LeftJoinVarA_, LeftJoinVarB_, Object> leftMapping = joiner.getLeftMapping(mappingIndex);
-        Function2<LeftJoinVarA_, LeftJoinVarB_, Object> leftExtractor = leftMapping::apply;
         Function<A, Object> rightMapping = joiner.getRightMapping(mappingIndex);
-        Function1<A, Object> rightExtractor = rightMapping::apply;
         Predicate3<A, LeftJoinVarA_, LeftJoinVarB_> predicate =
-                (c, a, b) -> joinerType.matches(leftExtractor.apply(a, b), rightExtractor.apply(c));
+                (c, a, b) -> joinerType.matches(leftMapping.apply(a, b), rightMapping.apply(c));
         return new PatternVariable<>(this, p -> {
             BetaIndex2<A, LeftJoinVarA_, LeftJoinVarB_, Object> index =
                     betaIndexedBy(Object.class, AbstractLeftHandSide.getConstraintType(joinerType), mappingIndex,
-                            rightExtractor, leftExtractor, Object.class);
+                            rightMapping::apply, leftMapping::apply, Object.class);
             return p.expr("Join using joiner #" + mappingIndex + " in " + joiner, leftJoinVarA, leftJoinVarB, predicate, index);
         });
     }
@@ -221,15 +214,13 @@ class PatternVariable<A> {
             int mappingIndex) {
         TriFunction<LeftJoinVarA_, LeftJoinVarB_, LeftJoinVarC_, Object> leftMapping =
                 joiner.getLeftMapping(mappingIndex);
-        Function3<LeftJoinVarA_, LeftJoinVarB_, LeftJoinVarC_, Object> leftExtractor = leftMapping::apply;
         Function<A, Object> rightMapping = joiner.getRightMapping(mappingIndex);
-        Function1<A, Object> rightExtractor = rightMapping::apply;
         Predicate4<A, LeftJoinVarA_, LeftJoinVarB_, LeftJoinVarC_> predicate =
-                (d, a, b, c) -> joinerType.matches(leftExtractor.apply(a, b, c), rightExtractor.apply(d));
+                (d, a, b, c) -> joinerType.matches(leftMapping.apply(a, b, c), rightMapping.apply(d));
         return new PatternVariable<>(this, p -> {
             BetaIndex3<A, LeftJoinVarA_, LeftJoinVarB_, LeftJoinVarC_, Object> index =
                     betaIndexedBy(Object.class, AbstractLeftHandSide.getConstraintType(joinerType), mappingIndex,
-                            rightExtractor, leftExtractor, Object.class);
+                            rightMapping::apply, leftMapping::apply, Object.class);
             return p.expr("Join using joiner #" + mappingIndex + " in " + joiner, leftJoinVarA, leftJoinVarB,
                     leftJoinVarC, predicate, index);
         });
