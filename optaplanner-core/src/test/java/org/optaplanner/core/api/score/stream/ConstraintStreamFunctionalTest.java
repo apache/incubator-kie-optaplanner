@@ -84,17 +84,15 @@ public interface ConstraintStreamFunctionalTest {
 
     void groupBy_1Mapping1Collector();
 
+    void groupBy_1Mapping1Collector_toSet();
+
     void groupBy_1Mapping2Collector();
 
     void groupBy_1Mapping3Collector();
 
-    void groupBy_1Mapping1Collector_count();
-
-    void groupBy_1Mapping1Collector_toSet();
-
     void groupBy_2Mapping0Collector();
 
-    void groupBy_2Mapping1Collector_count();
+    void groupBy_2Mapping1Collector();
 
     void groupBy_2Mapping2Collector();
 

@@ -16,19 +16,6 @@
 
 package org.optaplanner.core.api.score.stream.tri;
 
-import static java.util.function.Function.identity;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.optaplanner.core.api.score.stream.ConstraintCollectors.countTri;
-import static org.optaplanner.core.api.score.stream.Joiners.equal;
-import static org.optaplanner.core.api.score.stream.Joiners.filtering;
-
-import java.math.BigDecimal;
-import java.util.Arrays;
-import java.util.LinkedHashSet;
-import java.util.Objects;
-import java.util.stream.Stream;
-
 import org.junit.jupiter.api.TestTemplate;
 import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
 import org.optaplanner.core.api.score.buildin.simplebigdecimal.SimpleBigDecimalScore;
@@ -52,6 +39,19 @@ import org.optaplanner.core.impl.testdata.domain.score.lavish.TestdataLavishExtr
 import org.optaplanner.core.impl.testdata.domain.score.lavish.TestdataLavishSolution;
 import org.optaplanner.core.impl.testdata.domain.score.lavish.TestdataLavishValue;
 import org.optaplanner.core.impl.testdata.domain.score.lavish.TestdataLavishValueGroup;
+
+import java.math.BigDecimal;
+import java.util.Arrays;
+import java.util.LinkedHashSet;
+import java.util.Objects;
+import java.util.stream.Stream;
+
+import static java.util.function.Function.identity;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.optaplanner.core.api.score.stream.ConstraintCollectors.countTri;
+import static org.optaplanner.core.api.score.stream.Joiners.equal;
+import static org.optaplanner.core.api.score.stream.Joiners.filtering;
 
 public class TriConstraintStreamTest extends AbstractConstraintStreamTest implements ConstraintStreamFunctionalTest {
 
@@ -719,23 +719,8 @@ public class TriConstraintStreamTest extends AbstractConstraintStreamTest implem
     }
 
     @Override
-    public void groupBy_1Mapping1Collector() {
-
-    }
-
-    @Override
-    public void groupBy_1Mapping2Collector() {
-
-    }
-
-    @Override
-    public void groupBy_1Mapping3Collector() {
-
-    }
-
-    @Override
     @TestTemplate
-    public void groupBy_1Mapping1Collector_count() {
+    public void groupBy_1Mapping1Collector() {
         assumeDrools();
         TestdataLavishSolution solution = TestdataLavishSolution.generateSolution(1, 2, 2, 3);
 
@@ -786,6 +771,16 @@ public class TriConstraintStreamTest extends AbstractConstraintStreamTest implem
     }
 
     @Override
+    public void groupBy_1Mapping2Collector() {
+
+    }
+
+    @Override
+    public void groupBy_1Mapping3Collector() {
+
+    }
+
+    @Override
     @TestTemplate
     public void groupBy_2Mapping0Collector() {
         assumeDrools();
@@ -821,7 +816,7 @@ public class TriConstraintStreamTest extends AbstractConstraintStreamTest implem
 
     @Override
     @TestTemplate
-    public void groupBy_2Mapping1Collector_count() {
+    public void groupBy_2Mapping1Collector() {
         assumeDrools();
         TestdataLavishSolution solution = TestdataLavishSolution.generateSolution(1, 2, 2, 3);
 
