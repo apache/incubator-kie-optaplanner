@@ -30,13 +30,13 @@ import java.util.Objects;
 import java.util.stream.Stream;
 
 import org.junit.jupiter.api.TestTemplate;
-import org.optaplanner.core.api.score.stream.ConstraintStreamFunctionalTest;
 import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
 import org.optaplanner.core.api.score.buildin.simplebigdecimal.SimpleBigDecimalScore;
 import org.optaplanner.core.api.score.buildin.simplelong.SimpleLongScore;
 import org.optaplanner.core.api.score.stream.AbstractConstraintStreamTest;
 import org.optaplanner.core.api.score.stream.Constraint;
 import org.optaplanner.core.api.score.stream.ConstraintCollectors;
+import org.optaplanner.core.api.score.stream.ConstraintStreamFunctionalTest;
 import org.optaplanner.core.api.score.stream.ConstraintStreamImplType;
 import org.optaplanner.core.impl.score.director.InnerScoreDirector;
 import org.optaplanner.core.impl.score.director.stream.ConstraintStreamScoreDirectorFactory;
@@ -637,7 +637,7 @@ public class TriConstraintStreamTest extends AbstractConstraintStreamTest implem
 
     @Override
     @TestTemplate
-    public void groupBy_0Mapping1Collector_count() {
+    public void groupBy_0Mapping1Collector() {
         assumeDrools();
         TestdataLavishSolution solution = TestdataLavishSolution.generateSolution(1, 2, 2, 3);
 
@@ -681,6 +681,21 @@ public class TriConstraintStreamTest extends AbstractConstraintStreamTest implem
     }
 
     @Override
+    public void groupBy_0Mapping2Collector() {
+
+    }
+
+    @Override
+    public void groupBy_0Mapping3Collector() {
+
+    }
+
+    @Override
+    public void groupBy_0Mapping4Collector() {
+
+    }
+
+    @Override
     @TestTemplate
     public void groupBy_1Mapping0Collector() {
         assumeDrools();
@@ -701,6 +716,21 @@ public class TriConstraintStreamTest extends AbstractConstraintStreamTest implem
         assertScore(scoreDirector,
                 assertMatchWithScore(-1, value2),
                 assertMatchWithScore(-1, value1));
+    }
+
+    @Override
+    public void groupBy_1Mapping1Collector() {
+
+    }
+
+    @Override
+    public void groupBy_1Mapping2Collector() {
+
+    }
+
+    @Override
+    public void groupBy_1Mapping3Collector() {
+
     }
 
     @Override

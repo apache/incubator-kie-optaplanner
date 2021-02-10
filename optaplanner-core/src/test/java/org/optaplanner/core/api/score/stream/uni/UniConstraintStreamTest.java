@@ -38,7 +38,6 @@ import java.util.function.Predicate;
 import java.util.stream.Stream;
 
 import org.junit.jupiter.api.TestTemplate;
-import org.optaplanner.core.api.score.stream.ConstraintStreamFunctionalTest;
 import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
 import org.optaplanner.core.api.score.buildin.simplebigdecimal.SimpleBigDecimalScore;
 import org.optaplanner.core.api.score.buildin.simplelong.SimpleLongScore;
@@ -46,6 +45,7 @@ import org.optaplanner.core.api.score.stream.AbstractConstraintStreamTest;
 import org.optaplanner.core.api.score.stream.Constraint;
 import org.optaplanner.core.api.score.stream.ConstraintCollectors;
 import org.optaplanner.core.api.score.stream.ConstraintProvider;
+import org.optaplanner.core.api.score.stream.ConstraintStreamFunctionalTest;
 import org.optaplanner.core.api.score.stream.ConstraintStreamImplType;
 import org.optaplanner.core.impl.score.director.InnerScoreDirector;
 import org.optaplanner.core.impl.score.director.stream.ConstraintStreamScoreDirectorFactory;
@@ -863,8 +863,53 @@ public class UniConstraintStreamTest extends AbstractConstraintStreamTest implem
     }
 
     @Override
+    public void groupBy_1Mapping1Collector() {
+        assumeDrools();
+        TestdataLavishSolution solution = TestdataLavishSolution.generateSolution(2, 5, 1, 7);
+        TestdataLavishEntityGroup entityGroup1 = new TestdataLavishEntityGroup("MyEntityGroup");
+        solution.getEntityGroupList().add(entityGroup1);
+        TestdataLavishEntity entity1 = new TestdataLavishEntity("MyEntity 1", entityGroup1, solution.getFirstValue());
+        solution.getEntityList().add(entity1);
+        TestdataLavishEntity entity2 = new TestdataLavishEntity("MyEntity 2", entityGroup1, solution.getFirstValue());
+        solution.getEntityList().add(entity2);
+        TestdataLavishEntity entity3 = new TestdataLavishEntity("MyEntity 3", solution.getFirstEntityGroup(),
+                solution.getFirstValue());
+        solution.getEntityList().add(entity3);
+
+        InnerScoreDirector<TestdataLavishSolution, SimpleScore> scoreDirector = buildScoreDirector((factory) -> {
+            return factory.from(TestdataLavishEntity.class)
+                    .groupBy(TestdataLavishEntity::getEntityGroup, ConstraintCollectors.count())
+                    .penalize(TEST_CONSTRAINT_NAME, SimpleScore.ONE);
+        });
+
+        // From scratch
+        scoreDirector.setWorkingSolution(solution);
+        assertScore(scoreDirector,
+                assertMatchWithScore(-1, solution.getFirstEntityGroup()),
+                assertMatchWithScore(-1, entityGroup1));
+
+        // Incremental
+        Stream.of(entity1, entity2).forEach(entity -> {
+            scoreDirector.beforeEntityRemoved(entity);
+            solution.getEntityList().remove(entity);
+            scoreDirector.afterEntityRemoved(entity);
+        });
+        assertScore(scoreDirector, assertMatchWithScore(-1, solution.getFirstEntityGroup()));
+    }
+
+    @Override
+    public void groupBy_1Mapping2Collector() {
+
+    }
+
+    @Override
+    public void groupBy_1Mapping3Collector() {
+
+    }
+
+    @Override
     @TestTemplate
-    public void groupBy_0Mapping1Collector_count() {
+    public void groupBy_0Mapping1Collector() {
         assumeDrools();
         TestdataLavishSolution solution = TestdataLavishSolution.generateSolution(2, 5, 1, 7);
         TestdataLavishEntityGroup entityGroup1 = new TestdataLavishEntityGroup("MyEntityGroup");
@@ -941,6 +986,21 @@ public class UniConstraintStreamTest extends AbstractConstraintStreamTest implem
 
         scoreDirector.setWorkingSolution(solution);
         assertScore(scoreDirector, assertMatchWithScore(-1, new LinkedHashSet<>(solution.getEntityList())));
+    }
+
+    @Override
+    public void groupBy_0Mapping2Collector() {
+
+    }
+
+    @Override
+    public void groupBy_0Mapping3Collector() {
+
+    }
+
+    @Override
+    public void groupBy_0Mapping4Collector() {
+
     }
 
     @Override
