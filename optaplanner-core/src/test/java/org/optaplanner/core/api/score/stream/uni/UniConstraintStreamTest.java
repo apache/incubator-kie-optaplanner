@@ -863,19 +863,10 @@ public class UniConstraintStreamTest extends AbstractConstraintStreamTest implem
     }
 
     @Override
+    @TestTemplate
     public void groupBy_1Mapping1Collector() {
         assumeDrools();
-        TestdataLavishSolution solution = TestdataLavishSolution.generateSolution(2, 5, 1, 7);
-        TestdataLavishEntityGroup entityGroup1 = new TestdataLavishEntityGroup("MyEntityGroup");
-        solution.getEntityGroupList().add(entityGroup1);
-        TestdataLavishEntity entity1 = new TestdataLavishEntity("MyEntity 1", entityGroup1, solution.getFirstValue());
-        solution.getEntityList().add(entity1);
-        TestdataLavishEntity entity2 = new TestdataLavishEntity("MyEntity 2", entityGroup1, solution.getFirstValue());
-        solution.getEntityList().add(entity2);
-        TestdataLavishEntity entity3 = new TestdataLavishEntity("MyEntity 3", solution.getFirstEntityGroup(),
-                solution.getFirstValue());
-        solution.getEntityList().add(entity3);
-
+        TestdataLavishSolution solution = TestdataLavishSolution.generateSolution(1, 1, 2, 3);
         InnerScoreDirector<TestdataLavishSolution, SimpleScore> scoreDirector = buildScoreDirector((factory) -> {
             return factory.from(TestdataLavishEntity.class)
                     .groupBy(TestdataLavishEntity::getEntityGroup, ConstraintCollectors.count())
@@ -885,26 +876,82 @@ public class UniConstraintStreamTest extends AbstractConstraintStreamTest implem
         // From scratch
         scoreDirector.setWorkingSolution(solution);
         assertScore(scoreDirector,
-                assertMatchWithScore(-1, solution.getFirstEntityGroup()),
-                assertMatchWithScore(-1, entityGroup1));
+                assertMatchWithScore(-1, solution.getFirstEntityGroup(), 2),
+                assertMatchWithScore(-1, solution.getEntityGroupList().get(1), 1));
 
         // Incremental
-        Stream.of(entity1, entity2).forEach(entity -> {
-            scoreDirector.beforeEntityRemoved(entity);
-            solution.getEntityList().remove(entity);
-            scoreDirector.afterEntityRemoved(entity);
-        });
-        assertScore(scoreDirector, assertMatchWithScore(-1, solution.getFirstEntityGroup()));
+        Stream.of(solution.getEntityList().get(0), solution.getEntityList().get(1))
+                .forEach(entity -> {
+                    scoreDirector.beforeEntityRemoved(entity);
+                    solution.getEntityList().remove(entity);
+                    scoreDirector.afterEntityRemoved(entity);
+                });
+        assertScore(scoreDirector,
+                assertMatchWithScore(-1, solution.getFirstEntityGroup(), 1));
     }
 
     @Override
+    @TestTemplate
     public void groupBy_1Mapping2Collector() {
+        assumeDrools();
+        TestdataLavishSolution solution = TestdataLavishSolution.generateSolution(1, 1, 2, 3);
+        InnerScoreDirector<TestdataLavishSolution, SimpleScore> scoreDirector = buildScoreDirector((factory) -> {
+            return factory.from(TestdataLavishEntity.class)
+                    .groupBy(TestdataLavishEntity::getEntityGroup,
+                            ConstraintCollectors.count(),
+                            ConstraintCollectors.toSet())
+                    .penalize(TEST_CONSTRAINT_NAME, SimpleScore.ONE);
+        });
 
+        TestdataLavishEntity entity1 = solution.getFirstEntity();
+        TestdataLavishEntity entity2 = solution.getEntityList().get(1);
+        TestdataLavishEntity entity3 = solution.getEntityList().get(2);
+
+        // From scratch
+        scoreDirector.setWorkingSolution(solution);
+        assertScore(scoreDirector,
+                assertMatchWithScore(-1, solution.getFirstEntityGroup(), 2, asSet(entity1, entity3)),
+                assertMatchWithScore(-1, solution.getEntityGroupList().get(1), 1, Collections.singleton(entity2)));
+
+        // Incremental
+        scoreDirector.beforeEntityRemoved(entity1);
+        solution.getEntityList().remove(entity1);
+        scoreDirector.afterEntityRemoved(entity1);
+        assertScore(scoreDirector,
+                assertMatchWithScore(-1, solution.getFirstEntityGroup(), 1, Collections.singleton(entity3)),
+                assertMatchWithScore(-1, solution.getEntityGroupList().get(1), 1, Collections.singleton(entity2)));
     }
 
     @Override
     public void groupBy_1Mapping3Collector() {
+        assumeDrools();
+        TestdataLavishSolution solution = TestdataLavishSolution.generateSolution(1, 1, 2, 3);
+        InnerScoreDirector<TestdataLavishSolution, SimpleScore> scoreDirector = buildScoreDirector((factory) -> {
+            return factory.from(TestdataLavishEntity.class)
+                    .groupBy(TestdataLavishEntity::getEntityGroup,
+                            ConstraintCollectors.count(),
+                            ConstraintCollectors.countDistinct(),
+                            ConstraintCollectors.toSet())
+                    .penalize(TEST_CONSTRAINT_NAME, SimpleScore.ONE);
+        });
 
+        TestdataLavishEntity entity1 = solution.getFirstEntity();
+        TestdataLavishEntity entity2 = solution.getEntityList().get(1);
+        TestdataLavishEntity entity3 = solution.getEntityList().get(2);
+
+        // From scratch
+        scoreDirector.setWorkingSolution(solution);
+        assertScore(scoreDirector,
+                assertMatchWithScore(-1, solution.getFirstEntityGroup(), 2, 2, asSet(entity1, entity3)),
+                assertMatchWithScore(-1, solution.getEntityGroupList().get(1), 1, 1, Collections.singleton(entity2)));
+
+        // Incremental
+        scoreDirector.beforeEntityRemoved(entity1);
+        solution.getEntityList().remove(entity1);
+        scoreDirector.afterEntityRemoved(entity1);
+        assertScore(scoreDirector,
+                assertMatchWithScore(-1, solution.getFirstEntityGroup(), 1, 1, Collections.singleton(entity3)),
+                assertMatchWithScore(-1, solution.getEntityGroupList().get(1), 1, 1, Collections.singleton(entity2)));
     }
 
     @Override
@@ -990,17 +1037,98 @@ public class UniConstraintStreamTest extends AbstractConstraintStreamTest implem
 
     @Override
     public void groupBy_0Mapping2Collector() {
+        assumeDrools();
+        TestdataLavishSolution solution = TestdataLavishSolution.generateSolution(1, 1, 2, 3);
+        InnerScoreDirector<TestdataLavishSolution, SimpleScore> scoreDirector = buildScoreDirector((factory) -> {
+            return factory.from(TestdataLavishEntity.class)
+                    .groupBy(ConstraintCollectors.count(),
+                            ConstraintCollectors.countDistinct())
+                    .penalize(TEST_CONSTRAINT_NAME, SimpleScore.ONE);
+        });
+
+        TestdataLavishEntity entity1 = solution.getFirstEntity();
+
+        // From scratch
+        scoreDirector.setWorkingSolution(solution);
+        assertScore(scoreDirector,
+                assertMatchWithScore(-1, solution.getFirstEntityGroup(), 2, 2),
+                assertMatchWithScore(-1, solution.getEntityGroupList().get(1), 1, 1));
+
+        // Incremental
+        scoreDirector.beforeEntityRemoved(entity1);
+        solution.getEntityList().remove(entity1);
+        scoreDirector.afterEntityRemoved(entity1);
+        assertScore(scoreDirector,
+                assertMatchWithScore(-1, solution.getFirstEntityGroup(), 1, 1),
+                assertMatchWithScore(-1, solution.getEntityGroupList().get(1), 1, 1));
 
     }
 
     @Override
+    @TestTemplate
     public void groupBy_0Mapping3Collector() {
+        assumeDrools();
+        TestdataLavishSolution solution = TestdataLavishSolution.generateSolution(1, 1, 2, 3);
+        InnerScoreDirector<TestdataLavishSolution, SimpleScore> scoreDirector = buildScoreDirector((factory) -> {
+            return factory.from(TestdataLavishEntity.class)
+                    .groupBy(ConstraintCollectors.count(),
+                            ConstraintCollectors.min(TestdataLavishEntity::getIntegerProperty),
+                            ConstraintCollectors.max(TestdataLavishEntity::getIntegerProperty))
+                    .penalize(TEST_CONSTRAINT_NAME, SimpleScore.ONE);
+        });
 
+        TestdataLavishEntity entity1 = solution.getFirstEntity();
+        entity1.setIntegerProperty(0);
+        TestdataLavishEntity entity2 = solution.getEntityList().get(1);
+        entity2.setIntegerProperty(1);
+        TestdataLavishEntity entity3 = solution.getEntityList().get(2);
+        entity3.setIntegerProperty(2);
+
+        // From scratch
+        scoreDirector.setWorkingSolution(solution);
+        assertScore(scoreDirector,
+                assertMatchWithScore(-1, 3, 0, 2));
+
+        // Incremental
+        scoreDirector.beforeEntityRemoved(entity1);
+        solution.getEntityList().remove(entity1);
+        scoreDirector.afterEntityRemoved(entity1);
+        assertScore(scoreDirector,
+                assertMatchWithScore(-1, 2, 1, 2));
     }
 
     @Override
+    @TestTemplate
     public void groupBy_0Mapping4Collector() {
+        assumeDrools();
+        TestdataLavishSolution solution = TestdataLavishSolution.generateSolution(1, 1, 2, 3);
+        InnerScoreDirector<TestdataLavishSolution, SimpleScore> scoreDirector = buildScoreDirector((factory) -> {
+            return factory.from(TestdataLavishEntity.class)
+                    .groupBy(ConstraintCollectors.count(),
+                            ConstraintCollectors.min(TestdataLavishEntity::getIntegerProperty),
+                            ConstraintCollectors.max(TestdataLavishEntity::getIntegerProperty),
+                            ConstraintCollectors.toSet())
+                    .penalize(TEST_CONSTRAINT_NAME, SimpleScore.ONE);
+        });
 
+        TestdataLavishEntity entity1 = solution.getFirstEntity();
+        entity1.setIntegerProperty(0);
+        TestdataLavishEntity entity2 = solution.getEntityList().get(1);
+        entity2.setIntegerProperty(1);
+        TestdataLavishEntity entity3 = solution.getEntityList().get(2);
+        entity3.setIntegerProperty(2);
+
+        // From scratch
+        scoreDirector.setWorkingSolution(solution);
+        assertScore(scoreDirector,
+                assertMatchWithScore(-1, 3, 0, 2, asSet(entity1, entity2, entity3)));
+
+        // Incremental
+        scoreDirector.beforeEntityRemoved(entity1);
+        solution.getEntityList().remove(entity1);
+        scoreDirector.afterEntityRemoved(entity1);
+        assertScore(scoreDirector,
+                assertMatchWithScore(-1, 2, 1, 2, asSet(entity2, entity3)));
     }
 
     @Override
