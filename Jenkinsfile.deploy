@@ -255,9 +255,7 @@ pipeline {
 }
 
 void saveArtifacts(boolean skipIntegrationTests=false) {
-    if (!skipIntegrationTests) {
-        archiveArtifacts(allowEmptyArchive: true, artifacts: "**/cypress/screenshots/**,**/cypress/videos/**", fingerprint: false)
-    }
+        archiveArtifacts(allowEmptyArchive: skipIntegrationTests, artifacts: "**/cypress/screenshots/**,**/cypress/videos/**", fingerprint: false)
 }
 
 List getIntegrationTestProfiles(){
