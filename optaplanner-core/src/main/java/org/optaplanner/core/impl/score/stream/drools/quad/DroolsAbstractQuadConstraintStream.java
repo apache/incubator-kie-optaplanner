@@ -102,6 +102,32 @@ public abstract class DroolsAbstractQuadConstraintStream<Solution_, A, B, C, D>
     }
 
     @Override
+    public <ResultContainerA_, ResultA_, ResultContainerB_, ResultB_> BiConstraintStream<ResultA_, ResultB_> groupBy(
+            QuadConstraintCollector<A, B, C, D, ResultContainerA_, ResultA_> collectorA,
+            QuadConstraintCollector<A, B, C, D, ResultContainerB_, ResultB_> collectorB) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public <ResultContainerA_, ResultA_, ResultContainerB_, ResultB_, ResultContainerC_, ResultC_>
+            TriConstraintStream<ResultA_, ResultB_, ResultC_>
+            groupBy(QuadConstraintCollector<A, B, C, D, ResultContainerA_, ResultA_> collectorA,
+                    QuadConstraintCollector<A, B, C, D, ResultContainerB_, ResultB_> collectorB,
+                    QuadConstraintCollector<A, B, C, D, ResultContainerC_, ResultC_> collectorC) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public <ResultContainerA_, ResultA_, ResultContainerB_, ResultB_, ResultContainerC_, ResultC_, ResultContainerD_, ResultD_>
+            QuadConstraintStream<ResultA_, ResultB_, ResultC_, ResultD_>
+            groupBy(QuadConstraintCollector<A, B, C, D, ResultContainerA_, ResultA_> collectorA,
+                    QuadConstraintCollector<A, B, C, D, ResultContainerB_, ResultB_> collectorB,
+                    QuadConstraintCollector<A, B, C, D, ResultContainerC_, ResultC_> collectorC,
+                    QuadConstraintCollector<A, B, C, D, ResultContainerD_, ResultD_> collectorD) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
     public <GroupKey_> UniConstraintStream<GroupKey_> groupBy(QuadFunction<A, B, C, D, GroupKey_> groupKeyMapping) {
         DroolsGroupingUniConstraintStream<Solution_, GroupKey_> stream = new DroolsGroupingUniConstraintStream<>(
                 constraintFactory, this, groupKeyMapping);
@@ -117,6 +143,24 @@ public abstract class DroolsAbstractQuadConstraintStream<Solution_, A, B, C, D>
                 constraintFactory, this, groupKeyMapping, collector);
         addChildStream(stream);
         return stream;
+    }
+
+    @Override
+    public <GroupKey_, ResultContainerB_, ResultB_, ResultContainerC_, ResultC_>
+            TriConstraintStream<GroupKey_, ResultB_, ResultC_> groupBy(QuadFunction<A, B, C, D, GroupKey_> groupKeyMapping,
+                    QuadConstraintCollector<A, B, C, D, ResultContainerB_, ResultB_> collectorB,
+                    QuadConstraintCollector<A, B, C, D, ResultContainerC_, ResultC_> collectorC) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public <GroupKey_, ResultContainerB_, ResultB_, ResultContainerC_, ResultC_, ResultContainerD_, ResultD_>
+            QuadConstraintStream<GroupKey_, ResultB_, ResultC_, ResultD_>
+            groupBy(QuadFunction<A, B, C, D, GroupKey_> groupKeyMapping,
+                    QuadConstraintCollector<A, B, C, D, ResultContainerB_, ResultB_> collectorB,
+                    QuadConstraintCollector<A, B, C, D, ResultContainerC_, ResultC_> collectorC,
+                    QuadConstraintCollector<A, B, C, D, ResultContainerD_, ResultD_> collectorD) {
+        throw new UnsupportedOperationException();
     }
 
     @Override

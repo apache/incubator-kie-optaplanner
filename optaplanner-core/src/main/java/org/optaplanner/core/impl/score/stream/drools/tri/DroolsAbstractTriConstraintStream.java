@@ -118,11 +118,55 @@ public abstract class DroolsAbstractTriConstraintStream<Solution_, A, B, C>
     }
 
     @Override
+    public <ResultContainerA_, ResultA_, ResultContainerB_, ResultB_> BiConstraintStream<ResultA_, ResultB_> groupBy(
+            TriConstraintCollector<A, B, C, ResultContainerA_, ResultA_> collectorA,
+            TriConstraintCollector<A, B, C, ResultContainerB_, ResultB_> collectorB) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public <ResultContainerA_, ResultA_, ResultContainerB_, ResultB_, ResultContainerC_, ResultC_>
+            TriConstraintStream<ResultA_, ResultB_, ResultC_>
+            groupBy(TriConstraintCollector<A, B, C, ResultContainerA_, ResultA_> collectorA,
+                    TriConstraintCollector<A, B, C, ResultContainerB_, ResultB_> collectorB,
+                    TriConstraintCollector<A, B, C, ResultContainerC_, ResultC_> collectorC) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public <ResultContainerA_, ResultA_, ResultContainerB_, ResultB_, ResultContainerC_, ResultC_, ResultContainerD_, ResultD_>
+            QuadConstraintStream<ResultA_, ResultB_, ResultC_, ResultD_>
+            groupBy(TriConstraintCollector<A, B, C, ResultContainerA_, ResultA_> collectorA,
+                    TriConstraintCollector<A, B, C, ResultContainerB_, ResultB_> collectorB,
+                    TriConstraintCollector<A, B, C, ResultContainerC_, ResultC_> collectorC,
+                    TriConstraintCollector<A, B, C, ResultContainerD_, ResultD_> collectorD) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
     public <GroupKey_> UniConstraintStream<GroupKey_> groupBy(TriFunction<A, B, C, GroupKey_> groupKeyMapping) {
         DroolsGroupingUniConstraintStream<Solution_, GroupKey_> stream = new DroolsGroupingUniConstraintStream<>(
                 constraintFactory, this, groupKeyMapping);
         addChildStream(stream);
         return stream;
+    }
+
+    @Override
+    public <GroupKey_, ResultContainerB_, ResultB_, ResultContainerC_, ResultC_>
+            TriConstraintStream<GroupKey_, ResultB_, ResultC_> groupBy(TriFunction<A, B, C, GroupKey_> groupKeyMapping,
+                    TriConstraintCollector<A, B, C, ResultContainerB_, ResultB_> collectorB,
+                    TriConstraintCollector<A, B, C, ResultContainerC_, ResultC_> collectorC) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public <GroupKey_, ResultContainerB_, ResultB_, ResultContainerC_, ResultC_, ResultContainerD_, ResultD_>
+            QuadConstraintStream<GroupKey_, ResultB_, ResultC_, ResultD_>
+            groupBy(TriFunction<A, B, C, GroupKey_> groupKeyMapping,
+                    TriConstraintCollector<A, B, C, ResultContainerB_, ResultB_> collectorB,
+                    TriConstraintCollector<A, B, C, ResultContainerC_, ResultC_> collectorC,
+                    TriConstraintCollector<A, B, C, ResultContainerD_, ResultD_> collectorD) {
+        throw new UnsupportedOperationException();
     }
 
     @Override

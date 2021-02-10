@@ -126,11 +126,54 @@ public abstract class DroolsAbstractUniConstraintStream<Solution_, A> extends Dr
     }
 
     @Override
+    public <ResultContainerA_, ResultA_, ResultContainerB_, ResultB_> BiConstraintStream<ResultA_, ResultB_> groupBy(
+            UniConstraintCollector<A, ResultContainerA_, ResultA_> collectorA,
+            UniConstraintCollector<A, ResultContainerB_, ResultB_> collectorB) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public <ResultContainerA_, ResultA_, ResultContainerB_, ResultB_, ResultContainerC_, ResultC_>
+            TriConstraintStream<ResultA_, ResultB_, ResultC_>
+            groupBy(UniConstraintCollector<A, ResultContainerA_, ResultA_> collectorA,
+                    UniConstraintCollector<A, ResultContainerB_, ResultB_> collectorB,
+                    UniConstraintCollector<A, ResultContainerC_, ResultC_> collectorC) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public <ResultContainerA_, ResultA_, ResultContainerB_, ResultB_, ResultContainerC_, ResultC_, ResultContainerD_, ResultD_>
+            QuadConstraintStream<ResultA_, ResultB_, ResultC_, ResultD_>
+            groupBy(UniConstraintCollector<A, ResultContainerA_, ResultA_> collectorA,
+                    UniConstraintCollector<A, ResultContainerB_, ResultB_> collectorB,
+                    UniConstraintCollector<A, ResultContainerC_, ResultC_> collectorC,
+                    UniConstraintCollector<A, ResultContainerD_, ResultD_> collectorD) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
     public <GroupKey_> UniConstraintStream<GroupKey_> groupBy(Function<A, GroupKey_> groupKeyMapping) {
         DroolsGroupingUniConstraintStream<Solution_, GroupKey_> stream = new DroolsGroupingUniConstraintStream<>(
                 constraintFactory, this, groupKeyMapping);
         addChildStream(stream);
         return stream;
+    }
+
+    @Override
+    public <GroupKey_, ResultContainerB_, ResultB_, ResultContainerC_, ResultC_>
+            TriConstraintStream<GroupKey_, ResultB_, ResultC_> groupBy(Function<A, GroupKey_> groupKeyMapping,
+                    UniConstraintCollector<A, ResultContainerB_, ResultB_> collectorB,
+                    UniConstraintCollector<A, ResultContainerC_, ResultC_> collectorC) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public <GroupKey_, ResultContainerB_, ResultB_, ResultContainerC_, ResultC_, ResultContainerD_, ResultD_>
+            QuadConstraintStream<GroupKey_, ResultB_, ResultC_, ResultD_>
+            groupBy(Function<A, GroupKey_> groupKeyMapping, UniConstraintCollector<A, ResultContainerB_, ResultB_> collectorB,
+                    UniConstraintCollector<A, ResultContainerC_, ResultC_> collectorC,
+                    UniConstraintCollector<A, ResultContainerD_, ResultD_> collectorD) {
+        throw new UnsupportedOperationException();
     }
 
     @Override
