@@ -4,12 +4,11 @@ import java.util.Comparator;
 
 public class DelayStrengthComparator implements Comparator<Long> {
 
-	public int compare(Long a, Long b) 
-    {
-		if ((a !=null) && (b != null)){	
-			return b.compareTo(a);
-		} 
+    public int compare(Long a, Long b) {
+        if ((a != null) && (b != null)) {
+            return b.compareTo(a);
+        }
 
-		return 0;
+        return 0;
     }
 }
