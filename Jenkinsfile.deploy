@@ -195,7 +195,6 @@ pipeline {
             }
             post {
                 always {
-                    saveReports(params.SKIP_TESTS)
                     saveArtifacts(params.SKIP_INTEGRATION_TESTS)
                 }
             }
@@ -226,7 +225,6 @@ pipeline {
             }
             post {
                 always {
-                    saveReports(params.SKIP_TESTS)
                     saveArtifacts(params.SKIP_INTEGRATION_TESTS)
                 }
             }
