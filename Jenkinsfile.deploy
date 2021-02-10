@@ -261,11 +261,7 @@ void saveArtifacts(boolean skipIntegrationTests=false) {
 }
 
 List getIntegrationTestProfiles(){
-    integrationTestProfiles = []
-    if (!params.SKIP_INTEGRATION_TESTS) {
-        integrationTestProfiles.add('integration-tests')
-    }
-    return integrationTestProfiles
+    return params.SKIP_INTEGRATION_TESTS ? [] : ['integration-tests']
 }
 
 void updateQuickstartsVersions(){
