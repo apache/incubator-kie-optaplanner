@@ -129,7 +129,10 @@ public abstract class DroolsAbstractUniConstraintStream<Solution_, A> extends Dr
     public <ResultContainerA_, ResultA_, ResultContainerB_, ResultB_> BiConstraintStream<ResultA_, ResultB_> groupBy(
             UniConstraintCollector<A, ResultContainerA_, ResultA_> collectorA,
             UniConstraintCollector<A, ResultContainerB_, ResultB_> collectorB) {
-        throw new UnsupportedOperationException();
+        DroolsGroupingBiConstraintStream<Solution_, ResultA_, ResultB_> stream =
+                new DroolsGroupingBiConstraintStream<>(constraintFactory, this, collectorA, collectorB);
+        addChildStream(stream);
+        return stream;
     }
 
     @Override
@@ -138,7 +141,10 @@ public abstract class DroolsAbstractUniConstraintStream<Solution_, A> extends Dr
             groupBy(UniConstraintCollector<A, ResultContainerA_, ResultA_> collectorA,
                     UniConstraintCollector<A, ResultContainerB_, ResultB_> collectorB,
                     UniConstraintCollector<A, ResultContainerC_, ResultC_> collectorC) {
-        throw new UnsupportedOperationException();
+        DroolsGroupingTriConstraintStream<Solution_, ResultA_, ResultB_, ResultC_> stream =
+                new DroolsGroupingTriConstraintStream<>(constraintFactory, this, collectorA, collectorB, collectorC);
+        addChildStream(stream);
+        return stream;
     }
 
     @Override
@@ -148,7 +154,11 @@ public abstract class DroolsAbstractUniConstraintStream<Solution_, A> extends Dr
                     UniConstraintCollector<A, ResultContainerB_, ResultB_> collectorB,
                     UniConstraintCollector<A, ResultContainerC_, ResultC_> collectorC,
                     UniConstraintCollector<A, ResultContainerD_, ResultD_> collectorD) {
-        throw new UnsupportedOperationException();
+        DroolsGroupingQuadConstraintStream<Solution_, ResultA_, ResultB_, ResultC_, ResultD_> stream =
+                new DroolsGroupingQuadConstraintStream<>(constraintFactory, this, collectorA, collectorB, collectorC,
+                        collectorD);
+        addChildStream(stream);
+        return stream;
     }
 
     @Override
@@ -160,11 +170,23 @@ public abstract class DroolsAbstractUniConstraintStream<Solution_, A> extends Dr
     }
 
     @Override
+    public <GroupKey_, ResultContainer_, Result_> BiConstraintStream<GroupKey_, Result_> groupBy(
+            Function<A, GroupKey_> groupKeyMapping, UniConstraintCollector<A, ResultContainer_, Result_> collector) {
+        DroolsGroupingBiConstraintStream<Solution_, GroupKey_, Result_> stream = new DroolsGroupingBiConstraintStream<>(
+                constraintFactory, this, groupKeyMapping, collector);
+        addChildStream(stream);
+        return stream;
+    }
+
+    @Override
     public <GroupKey_, ResultContainerB_, ResultB_, ResultContainerC_, ResultC_>
             TriConstraintStream<GroupKey_, ResultB_, ResultC_> groupBy(Function<A, GroupKey_> groupKeyMapping,
                     UniConstraintCollector<A, ResultContainerB_, ResultB_> collectorB,
                     UniConstraintCollector<A, ResultContainerC_, ResultC_> collectorC) {
-        throw new UnsupportedOperationException();
+        DroolsGroupingTriConstraintStream<Solution_, GroupKey_, ResultB_, ResultC_> stream =
+                new DroolsGroupingTriConstraintStream<>(constraintFactory, this, groupKeyMapping, collectorB, collectorC);
+        addChildStream(stream);
+        return stream;
     }
 
     @Override
@@ -173,14 +195,9 @@ public abstract class DroolsAbstractUniConstraintStream<Solution_, A> extends Dr
             groupBy(Function<A, GroupKey_> groupKeyMapping, UniConstraintCollector<A, ResultContainerB_, ResultB_> collectorB,
                     UniConstraintCollector<A, ResultContainerC_, ResultC_> collectorC,
                     UniConstraintCollector<A, ResultContainerD_, ResultD_> collectorD) {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public <GroupKey_, ResultContainer_, Result_> BiConstraintStream<GroupKey_, Result_> groupBy(
-            Function<A, GroupKey_> groupKeyMapping, UniConstraintCollector<A, ResultContainer_, Result_> collector) {
-        DroolsGroupingBiConstraintStream<Solution_, GroupKey_, Result_> stream = new DroolsGroupingBiConstraintStream<>(
-                constraintFactory, this, groupKeyMapping, collector);
+        DroolsGroupingQuadConstraintStream<Solution_, GroupKey_, ResultB_, ResultC_, ResultD_> stream =
+                new DroolsGroupingQuadConstraintStream<>(constraintFactory, this, groupKeyMapping, collectorB, collectorC,
+                        collectorD);
         addChildStream(stream);
         return stream;
     }
