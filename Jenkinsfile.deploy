@@ -173,8 +173,24 @@ pipeline {
         stage("Build Vehicle Routing") {
             steps {
                 script {
-                    getOptawebVehicleRoutingMavenCommand().skipTests(params.SKIP_TESTS)
-                            .withProfiles(getIntegrationTestProfiles()).run('clean install')
+                    getOptawebVehicleRoutingMavenCommand().skipTests(params.SKIP_TESTS).run('clean install')
+                }
+            }
+            post {
+                always {
+                    saveReports(params.SKIP_TESTS)
+                }
+            }
+        }
+
+        stage("Run integration tests Vehicle Routing") {
+            when {
+                expression { return !isRelease() }
+            }
+            steps {
+                script {
+                    getOptawebVehicleRoutingMavenCommand().skipTests(true)
+                            .withProfiles(getIntegrationTestProfiles()).run('verify')
                 }
             }
             post {
@@ -188,8 +204,24 @@ pipeline {
         stage("Build Employee Rostering") {
             steps {
                 script {
-                    getOptawebEmployeeRosteringMavenCommand().skipTests(params.SKIP_TESTS)
-                            .withProfiles(getIntegrationTestProfiles()).run('clean install')
+                    getOptawebEmployeeRosteringMavenCommand().skipTests(params.SKIP_TESTS).run('clean install')
+                }
+            }
+            post {
+                always {
+                    saveReports(params.SKIP_TESTS)
+                }
+            }
+        }
+
+        stage("Run integration tests Employee Rostering") {
+            when {
+                expression { return !isRelease() }
+            }
+            steps {
+                script {
+                    getOptawebEmployeeRosteringMavenCommand().skipTests(true)
+                            .withProfiles(getIntegrationTestProfiles()).run('verify')
                 }
             }
             post {
