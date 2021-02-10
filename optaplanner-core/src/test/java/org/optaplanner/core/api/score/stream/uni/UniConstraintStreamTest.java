@@ -38,6 +38,7 @@ import java.util.function.Predicate;
 import java.util.stream.Stream;
 
 import org.junit.jupiter.api.TestTemplate;
+import org.optaplanner.core.api.score.stream.ConstraintStreamFunctionalTest;
 import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
 import org.optaplanner.core.api.score.buildin.simplebigdecimal.SimpleBigDecimalScore;
 import org.optaplanner.core.api.score.buildin.simplelong.SimpleLongScore;
@@ -59,7 +60,7 @@ import org.optaplanner.core.impl.testdata.domain.score.lavish.TestdataLavishSolu
 import org.optaplanner.core.impl.testdata.domain.score.lavish.TestdataLavishValue;
 import org.optaplanner.core.impl.testdata.domain.score.lavish.TestdataLavishValueGroup;
 
-public class UniConstraintStreamTest extends AbstractConstraintStreamTest {
+public class UniConstraintStreamTest extends AbstractConstraintStreamTest implements ConstraintStreamFunctionalTest {
 
     public UniConstraintStreamTest(boolean constraintMatchEnabled, ConstraintStreamImplType constraintStreamImplType) {
         super(constraintMatchEnabled, constraintStreamImplType);
@@ -97,6 +98,7 @@ public class UniConstraintStreamTest extends AbstractConstraintStreamTest {
                 assertMatch(valueGroup2));
     }
 
+    @Override
     @TestTemplate
     public void filter_entity() {
         TestdataLavishSolution solution = TestdataLavishSolution.generateSolution();
@@ -149,8 +151,9 @@ public class UniConstraintStreamTest extends AbstractConstraintStreamTest {
                 assertMatch(entity3));
     }
 
+    @Override
     @TestTemplate
-    public void filterConsecutive() {
+    public void filter_consecutive() {
         TestdataLavishSolution solution = TestdataLavishSolution.generateSolution(4, 4);
         TestdataLavishEntity entity1 = solution.getEntityList().get(0);
         TestdataLavishEntity entity2 = solution.getEntityList().get(1);
@@ -191,6 +194,7 @@ public class UniConstraintStreamTest extends AbstractConstraintStreamTest {
                 .hasMessageContaining("assignable from");
     }
 
+    @Override
     @TestTemplate
     public void join_0() {
         TestdataLavishSolution solution = TestdataLavishSolution.generateSolution(1, 1, 1, 1);
@@ -222,6 +226,7 @@ public class UniConstraintStreamTest extends AbstractConstraintStreamTest {
                 assertMatch(valueGroup, solution.getFirstEntityGroup()));
     }
 
+    @Override
     @TestTemplate
     public void join_1Equal() {
         TestdataLavishSolution solution = TestdataLavishSolution.generateSolution(2, 5, 1, 1);
@@ -261,6 +266,7 @@ public class UniConstraintStreamTest extends AbstractConstraintStreamTest {
                 assertMatch(entity2, entity2));
     }
 
+    @Override
     @TestTemplate
     public void join_2Equal() {
         TestdataLavishSolution solution = TestdataLavishSolution.generateSolution(2, 5, 1, 1);
@@ -311,6 +317,7 @@ public class UniConstraintStreamTest extends AbstractConstraintStreamTest {
     // If (not) exists
     // ************************************************************************
 
+    @Override
     @TestTemplate
     public void ifExists_unknownClass() {
         assumeDrools();
@@ -323,6 +330,7 @@ public class UniConstraintStreamTest extends AbstractConstraintStreamTest {
                 .hasMessageContaining("assignable from");
     }
 
+    @Override
     @TestTemplate
     public void ifExists_0Joiner0Filter() {
         assumeDrools();
@@ -353,6 +361,7 @@ public class UniConstraintStreamTest extends AbstractConstraintStreamTest {
                 assertMatch(valueGroup));
     }
 
+    @Override
     @TestTemplate
     public void ifExists_0Join1Filter() {
         assumeDrools();
@@ -388,6 +397,7 @@ public class UniConstraintStreamTest extends AbstractConstraintStreamTest {
                 assertMatch(entity2));
     }
 
+    @Override
     @TestTemplate
     public void ifExists_1Join0Filter() {
         assumeDrools();
@@ -422,6 +432,7 @@ public class UniConstraintStreamTest extends AbstractConstraintStreamTest {
                 assertMatch(entity2));
     }
 
+    @Override
     @TestTemplate
     public void ifExists_1Join1Filter() {
         assumeDrools();
@@ -490,6 +501,7 @@ public class UniConstraintStreamTest extends AbstractConstraintStreamTest {
                 assertMatch(entity2));
     }
 
+    @Override
     @TestTemplate
     public void ifNotExists_unknownClass() {
         assumeDrools();
@@ -502,6 +514,7 @@ public class UniConstraintStreamTest extends AbstractConstraintStreamTest {
                 .hasMessageContaining("assignable from");
     }
 
+    @Override
     @TestTemplate
     public void ifNotExists_0Joiner0Filter() {
         assumeDrools();
@@ -528,6 +541,7 @@ public class UniConstraintStreamTest extends AbstractConstraintStreamTest {
         assertScore(scoreDirector);
     }
 
+    @Override
     @TestTemplate
     public void ifNotExists_0Join1Filter() {
         assumeDrools();
@@ -559,6 +573,7 @@ public class UniConstraintStreamTest extends AbstractConstraintStreamTest {
                 assertMatch(entity1));
     }
 
+    @Override
     @TestTemplate
     public void ifNotExists_1Join0Filter() {
         assumeDrools();
@@ -590,6 +605,7 @@ public class UniConstraintStreamTest extends AbstractConstraintStreamTest {
                 assertMatch(entity1));
     }
 
+    @Override
     @TestTemplate
     public void ifNotExists_1Join1Filter() {
         assumeDrools();
@@ -810,6 +826,7 @@ public class UniConstraintStreamTest extends AbstractConstraintStreamTest {
                 assertMatchWithScore(-1, entityGroup1, entity2));
     }
 
+    @Override
     @TestTemplate
     public void groupBy_1Mapping0Collector() {
         assumeDrools();
@@ -845,6 +862,7 @@ public class UniConstraintStreamTest extends AbstractConstraintStreamTest {
         assertScore(scoreDirector, assertMatchWithScore(-1, solution.getFirstEntityGroup()));
     }
 
+    @Override
     @TestTemplate
     public void groupBy_0Mapping1Collector_count() {
         assumeDrools();
@@ -910,6 +928,7 @@ public class UniConstraintStreamTest extends AbstractConstraintStreamTest {
         assertScore(scoreDirector, assertMatchWithScore(-1, entity2));
     }
 
+    @Override
     @TestTemplate
     public void groupBy_0Mapping1Collector_toSet() {
         assumeDrools();
@@ -924,6 +943,7 @@ public class UniConstraintStreamTest extends AbstractConstraintStreamTest {
         assertScore(scoreDirector, assertMatchWithScore(-1, new LinkedHashSet<>(solution.getEntityList())));
     }
 
+    @Override
     @TestTemplate
     public void groupBy_1Mapping1Collector_count() {
         TestdataLavishSolution solution = TestdataLavishSolution.generateSolution(2, 5, 1, 7);
@@ -1063,6 +1083,7 @@ public class UniConstraintStreamTest extends AbstractConstraintStreamTest {
         assertScore(scoreDirector);
     }
 
+    @Override
     @TestTemplate
     public void groupBy_1Mapping1Collector_toSet() {
         assumeDrools();
@@ -1119,6 +1140,7 @@ public class UniConstraintStreamTest extends AbstractConstraintStreamTest {
                 assertMatchWithScore(-1, 2, 1));
     }
 
+    @Override
     @TestTemplate
     public void groupBy_2Mapping0Collector() {
         assumeDrools();
@@ -1175,6 +1197,7 @@ public class UniConstraintStreamTest extends AbstractConstraintStreamTest {
                 assertMatchWithScore(-1, solution.getFirstEntityGroup(), solution.getValueList().get(4)));
     }
 
+    @Override
     @TestTemplate
     public void groupBy_2Mapping1Collector_count() {
         assumeDrools();
@@ -1212,6 +1235,7 @@ public class UniConstraintStreamTest extends AbstractConstraintStreamTest {
                 assertMatchWithScore(-2, entityGroup1, value1, 2));
     }
 
+    @Override
     @TestTemplate
     public void groupBy_2Mapping2Collector() {
         assumeDrools();
@@ -1253,6 +1277,7 @@ public class UniConstraintStreamTest extends AbstractConstraintStreamTest {
     // Penalize/reward
     // ************************************************************************
 
+    @Override
     @TestTemplate
     public void penalize_Int() {
         TestdataSolution solution = new TestdataSolution();
@@ -1277,6 +1302,7 @@ public class UniConstraintStreamTest extends AbstractConstraintStreamTest {
         assertThat(scoreDirector.calculateScore()).isEqualTo(SimpleScore.of(-42));
     }
 
+    @Override
     @TestTemplate
     public void penalize_Long() {
         TestdataSimpleLongScoreSolution solution = new TestdataSimpleLongScoreSolution();
@@ -1301,6 +1327,7 @@ public class UniConstraintStreamTest extends AbstractConstraintStreamTest {
         assertThat(scoreDirector.calculateScore()).isEqualTo(SimpleLongScore.of(-42L));
     }
 
+    @Override
     @TestTemplate
     public void penalize_BigDecimal() {
         TestdataSimpleBigDecimalScoreSolution solution = new TestdataSimpleBigDecimalScoreSolution();
@@ -1327,6 +1354,7 @@ public class UniConstraintStreamTest extends AbstractConstraintStreamTest {
                 .isEqualTo(SimpleBigDecimalScore.of(new BigDecimal("-2.4")));
     }
 
+    @Override
     @TestTemplate
     public void penalize_negative() {
         TestdataLavishSolution solution = TestdataLavishSolution.generateSolution(1, 1, 1, 1);
@@ -1345,6 +1373,7 @@ public class UniConstraintStreamTest extends AbstractConstraintStreamTest {
         assertThatThrownBy(scoreDirector::calculateScore).hasMessageContaining(constraintName);
     }
 
+    @Override
     @TestTemplate
     public void reward_Int() {
         TestdataSolution solution = new TestdataSolution();
@@ -1369,6 +1398,7 @@ public class UniConstraintStreamTest extends AbstractConstraintStreamTest {
         assertThat(scoreDirector.calculateScore()).isEqualTo(SimpleScore.of(42));
     }
 
+    @Override
     @TestTemplate
     public void reward_Long() {
         TestdataSimpleLongScoreSolution solution = new TestdataSimpleLongScoreSolution();
@@ -1393,6 +1423,7 @@ public class UniConstraintStreamTest extends AbstractConstraintStreamTest {
         assertThat(scoreDirector.calculateScore()).isEqualTo(SimpleLongScore.of(42L));
     }
 
+    @Override
     @TestTemplate
     public void reward_BigDecimal() {
         TestdataSimpleBigDecimalScoreSolution solution = new TestdataSimpleBigDecimalScoreSolution();
@@ -1419,6 +1450,7 @@ public class UniConstraintStreamTest extends AbstractConstraintStreamTest {
                 .isEqualTo(SimpleBigDecimalScore.of(new BigDecimal("2.4")));
     }
 
+    @Override
     @TestTemplate
     public void reward_negative() {
         TestdataLavishSolution solution = TestdataLavishSolution.generateSolution(1, 1, 1, 1);

@@ -28,8 +28,8 @@ import java.util.Arrays;
 import java.util.LinkedHashSet;
 import java.util.Objects;
 
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.TestTemplate;
+import org.optaplanner.core.api.score.stream.ConstraintStreamFunctionalTest;
 import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
 import org.optaplanner.core.api.score.buildin.simplebigdecimal.SimpleBigDecimalScore;
 import org.optaplanner.core.api.score.buildin.simplelong.SimpleLongScore;
@@ -51,7 +51,7 @@ import org.optaplanner.core.impl.testdata.domain.score.lavish.TestdataLavishSolu
 import org.optaplanner.core.impl.testdata.domain.score.lavish.TestdataLavishValue;
 import org.optaplanner.core.impl.testdata.domain.score.lavish.TestdataLavishValueGroup;
 
-public class QuadConstraintStreamTest extends AbstractConstraintStreamTest {
+public class QuadConstraintStreamTest extends AbstractConstraintStreamTest implements ConstraintStreamFunctionalTest {
 
     public QuadConstraintStreamTest(boolean constraintMatchEnabled, ConstraintStreamImplType constraintStreamImplType) {
         super(constraintMatchEnabled, constraintStreamImplType);
@@ -61,6 +61,7 @@ public class QuadConstraintStreamTest extends AbstractConstraintStreamTest {
     // Filter
     // ************************************************************************
 
+    @Override
     @TestTemplate
     public void filter_entity() {
         assumeDrools();
@@ -113,8 +114,9 @@ public class QuadConstraintStreamTest extends AbstractConstraintStreamTest {
                 assertMatch(entity2, entity3, value1, extra1));
     }
 
+    @Override
     @TestTemplate
-    public void filterConsecutive() {
+    public void filter_consecutive() {
         assumeDrools();
         TestdataLavishSolution solution = TestdataLavishSolution.generateSolution(5, 5);
         TestdataLavishEntity entity1 = solution.getEntityList().get(0);
@@ -146,15 +148,10 @@ public class QuadConstraintStreamTest extends AbstractConstraintStreamTest {
     }
 
     // ************************************************************************
-    // Join
-    // ************************************************************************
-
-    // TODO
-
-    // ************************************************************************
     // If (not) exists
     // ************************************************************************
 
+    @Override
     @TestTemplate
     public void ifExists_unknownClass() {
         assumeDrools();
@@ -172,6 +169,7 @@ public class QuadConstraintStreamTest extends AbstractConstraintStreamTest {
 
     }
 
+    @Override
     @TestTemplate
     public void ifExists_0Joiner0Filter() {
         assumeDrools();
@@ -201,6 +199,7 @@ public class QuadConstraintStreamTest extends AbstractConstraintStreamTest {
         assertScore(scoreDirector);
     }
 
+    @Override
     @TestTemplate
     public void ifExists_0Join1Filter() {
         assumeDrools();
@@ -238,6 +237,7 @@ public class QuadConstraintStreamTest extends AbstractConstraintStreamTest {
         assertScore(scoreDirector);
     }
 
+    @Override
     @TestTemplate
     public void ifExists_1Join0Filter() {
         assumeDrools();
@@ -275,6 +275,7 @@ public class QuadConstraintStreamTest extends AbstractConstraintStreamTest {
                 assertMatch(entity1, solution.getFirstEntity(), solution.getFirstEntityGroup(), solution.getFirstValue()));
     }
 
+    @Override
     @TestTemplate
     public void ifExists_1Join1Filter() {
         assumeDrools();
@@ -310,6 +311,7 @@ public class QuadConstraintStreamTest extends AbstractConstraintStreamTest {
         assertScore(scoreDirector);
     }
 
+    @Override
     @TestTemplate
     public void ifNotExists_unknownClass() {
         assumeDrools();
@@ -327,6 +329,7 @@ public class QuadConstraintStreamTest extends AbstractConstraintStreamTest {
 
     }
 
+    @Override
     @TestTemplate
     public void ifNotExists_0Joiner0Filter() {
         assumeDrools();
@@ -356,6 +359,7 @@ public class QuadConstraintStreamTest extends AbstractConstraintStreamTest {
                         solution.getFirstEntity()));
     }
 
+    @Override
     @TestTemplate
     public void ifNotExists_0Join1Filter() {
         assumeDrools();
@@ -393,6 +397,7 @@ public class QuadConstraintStreamTest extends AbstractConstraintStreamTest {
                 assertMatch(entity1, solution.getFirstEntity(), solution.getFirstEntityGroup(), solution.getFirstValue()));
     }
 
+    @Override
     @TestTemplate
     public void ifNotExists_1Join0Filter() {
         assumeDrools();
@@ -426,6 +431,7 @@ public class QuadConstraintStreamTest extends AbstractConstraintStreamTest {
                 assertMatch(entity1, solution.getFirstEntity(), solution.getFirstEntityGroup(), solution.getFirstValue()));
     }
 
+    @Override
     @TestTemplate
     public void ifNotExists_1Join1Filter() {
         assumeDrools();
@@ -466,6 +472,7 @@ public class QuadConstraintStreamTest extends AbstractConstraintStreamTest {
     // Group by
     // ************************************************************************
 
+    @Override
     @TestTemplate
     public void groupBy_0Mapping1Collector_count() {
         assumeDrools();
@@ -500,6 +507,7 @@ public class QuadConstraintStreamTest extends AbstractConstraintStreamTest {
                 assertMatchWithScore(-2, 2)); // E2 G2 V2 E2, E3 G1 V1 E3
     }
 
+    @Override
     @TestTemplate
     public void groupBy_0Mapping1Collector_toSet() {
         assumeDrools();
@@ -518,6 +526,7 @@ public class QuadConstraintStreamTest extends AbstractConstraintStreamTest {
         assertScore(scoreDirector, assertMatchWithScore(-1, new LinkedHashSet<>(solution.getEntityGroupList())));
     }
 
+    @Override
     @TestTemplate
     public void groupBy_1Mapping0Collector() {
         assumeDrools();
@@ -542,6 +551,7 @@ public class QuadConstraintStreamTest extends AbstractConstraintStreamTest {
                 assertMatchWithScore(-1, value1));
     }
 
+    @Override
     @TestTemplate
     public void groupBy_1Mapping1Collector_count() {
         assumeDrools();
@@ -576,6 +586,7 @@ public class QuadConstraintStreamTest extends AbstractConstraintStreamTest {
                 assertMatchWithScore(-1, value1, 1));
     }
 
+    @Override
     @TestTemplate
     public void groupBy_1Mapping1Collector_toSet() {
         assumeDrools();
@@ -596,6 +607,7 @@ public class QuadConstraintStreamTest extends AbstractConstraintStreamTest {
                         new LinkedHashSet<>(solution.getEntityGroupList().subList(0, 2))));
     }
 
+    @Override
     @TestTemplate
     public void groupBy_2Mapping0Collector() {
         assumeDrools();
@@ -631,6 +643,7 @@ public class QuadConstraintStreamTest extends AbstractConstraintStreamTest {
                 assertMatchWithScore(-1, group1, value1));
     }
 
+    @Override
     @TestTemplate
     public void groupBy_2Mapping1Collector_count() {
         assumeDrools();
@@ -668,6 +681,7 @@ public class QuadConstraintStreamTest extends AbstractConstraintStreamTest {
                 assertMatchWithScore(-1, group1, value1, 1));
     }
 
+    @Override
     @TestTemplate
     public void groupBy_2Mapping2Collector() {
         assumeDrools();
@@ -709,6 +723,7 @@ public class QuadConstraintStreamTest extends AbstractConstraintStreamTest {
     // Penalize/reward
     // ************************************************************************
 
+    @Override
     @TestTemplate
     public void penalize_Int() {
         assumeDrools();
@@ -738,6 +753,7 @@ public class QuadConstraintStreamTest extends AbstractConstraintStreamTest {
         assertThat(scoreDirector.calculateScore()).isEqualTo(SimpleScore.of(-21));
     }
 
+    @Override
     @TestTemplate
     public void penalize_Long() {
         assumeDrools();
@@ -769,6 +785,7 @@ public class QuadConstraintStreamTest extends AbstractConstraintStreamTest {
         assertThat(scoreDirector.calculateScore()).isEqualTo(SimpleLongScore.of(-21L));
     }
 
+    @Override
     @TestTemplate
     public void penalize_BigDecimal() {
         assumeDrools();
@@ -800,6 +817,7 @@ public class QuadConstraintStreamTest extends AbstractConstraintStreamTest {
                 .isEqualTo(SimpleBigDecimalScore.of(new BigDecimal("-1.2")));
     }
 
+    @Override
     @TestTemplate
     public void penalize_negative() {
         assumeDrools();
@@ -822,6 +840,7 @@ public class QuadConstraintStreamTest extends AbstractConstraintStreamTest {
         assertThatThrownBy(scoreDirector::calculateScore).hasMessageContaining(constraintName);
     }
 
+    @Override
     @TestTemplate
     public void reward_Int() {
         assumeDrools();
@@ -851,6 +870,7 @@ public class QuadConstraintStreamTest extends AbstractConstraintStreamTest {
         assertThat(scoreDirector.calculateScore()).isEqualTo(SimpleScore.of(21));
     }
 
+    @Override
     @TestTemplate
     public void reward_Long() {
         assumeDrools();
@@ -881,6 +901,7 @@ public class QuadConstraintStreamTest extends AbstractConstraintStreamTest {
         assertThat(scoreDirector.calculateScore()).isEqualTo(SimpleLongScore.of(21L));
     }
 
+    @Override
     @TestTemplate
     public void reward_BigDecimal() {
         assumeDrools();
@@ -912,6 +933,7 @@ public class QuadConstraintStreamTest extends AbstractConstraintStreamTest {
                 .isEqualTo(SimpleBigDecimalScore.of(new BigDecimal("1.2")));
     }
 
+    @Override
     @TestTemplate
     public void reward_negative() {
         assumeDrools();
@@ -934,13 +956,4 @@ public class QuadConstraintStreamTest extends AbstractConstraintStreamTest {
         assertThatThrownBy(scoreDirector::calculateScore).hasMessageContaining(constraintName);
     }
 
-    // ************************************************************************
-    // Combinations
-    // ************************************************************************
-
-    @TestTemplate
-    @Disabled("Not yet supported") // TODO
-    public void nodeSharing() {
-
-    }
 }

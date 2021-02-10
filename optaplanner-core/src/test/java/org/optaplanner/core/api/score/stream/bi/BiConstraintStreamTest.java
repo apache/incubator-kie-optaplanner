@@ -29,8 +29,8 @@ import java.util.Objects;
 import java.util.function.Function;
 import java.util.stream.Stream;
 
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.TestTemplate;
+import org.optaplanner.core.api.score.stream.ConstraintStreamFunctionalTest;
 import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
 import org.optaplanner.core.api.score.buildin.simplebigdecimal.SimpleBigDecimalScore;
 import org.optaplanner.core.api.score.buildin.simplelong.SimpleLongScore;
@@ -52,7 +52,7 @@ import org.optaplanner.core.impl.testdata.domain.score.lavish.TestdataLavishSolu
 import org.optaplanner.core.impl.testdata.domain.score.lavish.TestdataLavishValue;
 import org.optaplanner.core.impl.testdata.domain.score.lavish.TestdataLavishValueGroup;
 
-public class BiConstraintStreamTest extends AbstractConstraintStreamTest {
+public class BiConstraintStreamTest extends AbstractConstraintStreamTest implements ConstraintStreamFunctionalTest {
 
     public BiConstraintStreamTest(boolean constraintMatchEnabled, ConstraintStreamImplType constraintStreamImplType) {
         super(constraintMatchEnabled, constraintStreamImplType);
@@ -62,6 +62,7 @@ public class BiConstraintStreamTest extends AbstractConstraintStreamTest {
     // Filter
     // ************************************************************************
 
+    @Override
     @TestTemplate
     public void filter_entity() {
         TestdataLavishSolution solution = TestdataLavishSolution.generateSolution(1, 0, 1, 0);
@@ -105,8 +106,9 @@ public class BiConstraintStreamTest extends AbstractConstraintStreamTest {
                 assertMatch(entity2, value1));
     }
 
+    @Override
     @TestTemplate
-    public void filterConsecutive() {
+    public void filter_consecutive() {
         TestdataLavishSolution solution = TestdataLavishSolution.generateSolution(5, 5);
         TestdataLavishEntity entity1 = solution.getEntityList().get(0);
         TestdataLavishEntity entity2 = solution.getEntityList().get(1);
@@ -137,6 +139,7 @@ public class BiConstraintStreamTest extends AbstractConstraintStreamTest {
     // Join
     // ************************************************************************
 
+    @Override
     @TestTemplate
     public void join_0() {
         TestdataLavishSolution solution = TestdataLavishSolution.generateSolution(1, 0, 1, 0);
@@ -188,6 +191,7 @@ public class BiConstraintStreamTest extends AbstractConstraintStreamTest {
         assertScore(scoreDirector);
     }
 
+    @Override
     @TestTemplate
     public void join_1Equal() {
         TestdataLavishSolution solution = TestdataLavishSolution.generateSolution(1, 0, 1, 0);
@@ -294,6 +298,7 @@ public class BiConstraintStreamTest extends AbstractConstraintStreamTest {
         assertScore(scoreDirector);
     }
 
+    @Override
     @TestTemplate
     public void join_2Equal() {
         TestdataLavishSolution solution = TestdataLavishSolution.generateSolution(1, 0, 1, 0);
@@ -406,6 +411,7 @@ public class BiConstraintStreamTest extends AbstractConstraintStreamTest {
     // If (not) exists
     // ************************************************************************
 
+    @Override
     @TestTemplate
     public void ifExists_unknownClass() {
         assumeDrools();
@@ -418,6 +424,7 @@ public class BiConstraintStreamTest extends AbstractConstraintStreamTest {
                 .hasMessageContaining("assignable from");
     }
 
+    @Override
     @TestTemplate
     public void ifExists_0Joiner0Filter() {
         assumeDrools();
@@ -444,6 +451,7 @@ public class BiConstraintStreamTest extends AbstractConstraintStreamTest {
         assertScore(scoreDirector);
     }
 
+    @Override
     @TestTemplate
     public void ifExists_0Join1Filter() {
         assumeDrools();
@@ -477,6 +485,7 @@ public class BiConstraintStreamTest extends AbstractConstraintStreamTest {
         assertScore(scoreDirector);
     }
 
+    @Override
     @TestTemplate
     public void ifExists_1Join0Filter() {
         assumeDrools();
@@ -512,6 +521,7 @@ public class BiConstraintStreamTest extends AbstractConstraintStreamTest {
                 assertMatch(solution.getFirstEntity(), entity2));
     }
 
+    @Override
     @TestTemplate
     public void ifExists_1Join1Filter() {
         assumeDrools();
@@ -545,6 +555,7 @@ public class BiConstraintStreamTest extends AbstractConstraintStreamTest {
         assertScore(scoreDirector);
     }
 
+    @Override
     @TestTemplate
     public void ifNotExists_unknownClass() {
         assumeDrools();
@@ -557,6 +568,7 @@ public class BiConstraintStreamTest extends AbstractConstraintStreamTest {
                 .hasMessageContaining("assignable from");
     }
 
+    @Override
     @TestTemplate
     public void ifNotExists_0Joiner0Filter() {
         assumeDrools();
@@ -583,6 +595,7 @@ public class BiConstraintStreamTest extends AbstractConstraintStreamTest {
                 assertMatch(valueGroup, solution.getFirstValueGroup()));
     }
 
+    @Override
     @TestTemplate
     public void ifNotExists_0Join1Filter() {
         assumeDrools();
@@ -620,6 +633,7 @@ public class BiConstraintStreamTest extends AbstractConstraintStreamTest {
                 assertMatch(entity1, entity2));
     }
 
+    @Override
     @TestTemplate
     public void ifNotExists_1Join0Filter() {
         assumeDrools();
@@ -651,6 +665,7 @@ public class BiConstraintStreamTest extends AbstractConstraintStreamTest {
                 assertMatch(entity1, entity2));
     }
 
+    @Override
     @TestTemplate
     public void ifNotExists_1Join1Filter() {
         assumeDrools();
@@ -692,6 +707,7 @@ public class BiConstraintStreamTest extends AbstractConstraintStreamTest {
     // Group by
     // ************************************************************************
 
+    @Override
     @TestTemplate
     public void groupBy_1Mapping0Collector() {
         assumeDrools();
@@ -727,8 +743,9 @@ public class BiConstraintStreamTest extends AbstractConstraintStreamTest {
         assertScore(scoreDirector, assertMatchWithScore(-1, solution.getFirstEntityGroup()));
     }
 
+    @Override
     @TestTemplate
-    public void groupBy_0Mapping1Collector() {
+    public void groupBy_0Mapping1Collector_count() {
         assumeDrools();
         TestdataLavishSolution solution = TestdataLavishSolution.generateSolution(2, 5, 2, 3);
 
@@ -750,6 +767,7 @@ public class BiConstraintStreamTest extends AbstractConstraintStreamTest {
         assertScore(scoreDirector, assertMatchWithScore(-1, 1));
     }
 
+    @Override
     @TestTemplate
     public void groupBy_0Mapping1Collector_toSet() {
         assumeDrools();
@@ -764,6 +782,7 @@ public class BiConstraintStreamTest extends AbstractConstraintStreamTest {
         assertScore(scoreDirector, assertMatchWithScore(-1, Collections.singleton(solution.getEntityGroupList().get(0))));
     }
 
+    @Override
     @TestTemplate
     public void groupBy_1Mapping1Collector_count() {
         TestdataLavishSolution solution = TestdataLavishSolution.generateSolution(2, 5, 3, 7);
@@ -790,6 +809,7 @@ public class BiConstraintStreamTest extends AbstractConstraintStreamTest {
                 assertMatchWithScore(-1, TEST_CONSTRAINT_NAME, solution.getFirstEntity().toString(), 5));
     }
 
+    @Override
     @TestTemplate
     public void groupBy_1Mapping1Collector_toSet() {
         assumeDrools();
@@ -806,6 +826,7 @@ public class BiConstraintStreamTest extends AbstractConstraintStreamTest {
                         Collections.singleton(solution.getEntityList().get(0))));
     }
 
+    @Override
     @TestTemplate
     public void groupBy_2Mapping0Collector() {
         assumeDrools();
@@ -836,6 +857,7 @@ public class BiConstraintStreamTest extends AbstractConstraintStreamTest {
                 assertMatchWithScore(-1, group2, group3));
     }
 
+    @Override
     @TestTemplate
     public void groupBy_2Mapping1Collector_count() {
         assumeDrools();
@@ -869,6 +891,7 @@ public class BiConstraintStreamTest extends AbstractConstraintStreamTest {
                 assertMatchWithScore(-1, group2, group1, 1));
     }
 
+    @Override
     @TestTemplate
     public void groupBy_2Mapping2Collector() {
         assumeDrools();
@@ -907,6 +930,7 @@ public class BiConstraintStreamTest extends AbstractConstraintStreamTest {
     // Penalize/reward
     // ************************************************************************
 
+    @Override
     @TestTemplate
     public void penalize_Int() {
         TestdataSolution solution = new TestdataSolution();
@@ -933,6 +957,7 @@ public class BiConstraintStreamTest extends AbstractConstraintStreamTest {
         assertThat(scoreDirector.calculateScore()).isEqualTo(SimpleScore.of(-42));
     }
 
+    @Override
     @TestTemplate
     public void penalize_Long() {
         TestdataSimpleLongScoreSolution solution = new TestdataSimpleLongScoreSolution();
@@ -959,6 +984,7 @@ public class BiConstraintStreamTest extends AbstractConstraintStreamTest {
         assertThat(scoreDirector.calculateScore()).isEqualTo(SimpleLongScore.of(-42L));
     }
 
+    @Override
     @TestTemplate
     public void penalize_BigDecimal() {
         TestdataSimpleBigDecimalScoreSolution solution = new TestdataSimpleBigDecimalScoreSolution();
@@ -987,6 +1013,7 @@ public class BiConstraintStreamTest extends AbstractConstraintStreamTest {
                 .isEqualTo(SimpleBigDecimalScore.of(new BigDecimal("-2.4")));
     }
 
+    @Override
     @TestTemplate
     public void penalize_negative() {
         TestdataLavishSolution solution = TestdataLavishSolution.generateSolution(1, 1, 1, 1);
@@ -1007,6 +1034,7 @@ public class BiConstraintStreamTest extends AbstractConstraintStreamTest {
         assertThatThrownBy(scoreDirector::calculateScore).hasMessageContaining(constraintName);
     }
 
+    @Override
     @TestTemplate
     public void reward_Int() {
         TestdataSolution solution = new TestdataSolution();
@@ -1033,6 +1061,7 @@ public class BiConstraintStreamTest extends AbstractConstraintStreamTest {
         assertThat(scoreDirector.calculateScore()).isEqualTo(SimpleScore.of(42));
     }
 
+    @Override
     @TestTemplate
     public void reward_Long() {
         TestdataSimpleLongScoreSolution solution = new TestdataSimpleLongScoreSolution();
@@ -1059,6 +1088,7 @@ public class BiConstraintStreamTest extends AbstractConstraintStreamTest {
         assertThat(scoreDirector.calculateScore()).isEqualTo(SimpleLongScore.of(42L));
     }
 
+    @Override
     @TestTemplate
     public void reward_BigDecimal() {
         TestdataSimpleBigDecimalScoreSolution solution = new TestdataSimpleBigDecimalScoreSolution();
@@ -1087,6 +1117,7 @@ public class BiConstraintStreamTest extends AbstractConstraintStreamTest {
                 .isEqualTo(SimpleBigDecimalScore.of(new BigDecimal("2.4")));
     }
 
+    @Override
     @TestTemplate
     public void reward_negative() {
         TestdataLavishSolution solution = TestdataLavishSolution.generateSolution(1, 1, 1, 1);
@@ -1110,12 +1141,6 @@ public class BiConstraintStreamTest extends AbstractConstraintStreamTest {
     // ************************************************************************
     // Combinations
     // ************************************************************************
-
-    @TestTemplate
-    @Disabled("Not yet supported") // TODO
-    public void nodeSharing() {
-
-    }
 
     @TestTemplate
     public void joinerEqualsAndSameness() {
