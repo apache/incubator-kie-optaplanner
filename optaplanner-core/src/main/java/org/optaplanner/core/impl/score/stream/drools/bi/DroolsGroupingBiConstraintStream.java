@@ -97,7 +97,7 @@ public class DroolsGroupingBiConstraintStream<Solution_, NewA, NewB>
             UniConstraintCollector<A, __, NewA> collectorA,
             UniConstraintCollector<A, ___, NewB> collectorB) {
         super(constraintFactory);
-        throw new UnsupportedOperationException();
+        this.leftHandSide = parent.getLeftHandSide().andGroupBy(collectorA, collectorB);
     }
 
     public <A, B, __, ___> DroolsGroupingBiConstraintStream(DroolsConstraintFactory<Solution_> constraintFactory,
@@ -105,7 +105,7 @@ public class DroolsGroupingBiConstraintStream<Solution_, NewA, NewB>
             BiConstraintCollector<A, B, __, NewA> collectorA,
             BiConstraintCollector<A, B, ___, NewB> collectorB) {
         super(constraintFactory);
-        throw new UnsupportedOperationException();
+        this.leftHandSide = parent.getLeftHandSide().andGroupBy(collectorA, collectorB);
     }
 
     public <A, B, C, __, ___> DroolsGroupingBiConstraintStream(DroolsConstraintFactory<Solution_> constraintFactory,
@@ -113,7 +113,7 @@ public class DroolsGroupingBiConstraintStream<Solution_, NewA, NewB>
             TriConstraintCollector<A, B, C, __, NewA> collectorA,
             TriConstraintCollector<A, B, C, ___, NewB> collectorB) {
         super(constraintFactory);
-        throw new UnsupportedOperationException();
+        this.leftHandSide = parent.getLeftHandSide().andGroupBy(collectorA, collectorB);
     }
 
     public <A, B, C, D, __, ___> DroolsGroupingBiConstraintStream(DroolsConstraintFactory<Solution_> constraintFactory,
@@ -121,7 +121,7 @@ public class DroolsGroupingBiConstraintStream<Solution_, NewA, NewB>
             QuadConstraintCollector<A, B, C, D, __, NewA> collectorA,
             QuadConstraintCollector<A, B, C, D, ___, NewB> collectorB) {
         super(constraintFactory);
-        throw new UnsupportedOperationException();
+        this.leftHandSide = parent.getLeftHandSide().andGroupBy(collectorA, collectorB);
     }
 
     @Override

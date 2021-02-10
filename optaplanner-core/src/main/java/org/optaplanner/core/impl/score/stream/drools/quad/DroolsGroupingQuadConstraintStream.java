@@ -41,7 +41,7 @@ public final class DroolsGroupingQuadConstraintStream<Solution_, NewA, NewB, New
             UniConstraintCollector<A, __, NewB> collectorB, UniConstraintCollector<A, ___, NewC> collectorC,
             UniConstraintCollector<A, ____, NewD> collectorD) {
         super(constraintFactory);
-        throw new UnsupportedOperationException();
+        this.leftHandSide = parent.getLeftHandSide().andGroupBy(groupKeyAMapping, collectorB, collectorC, collectorD);
     }
 
     public <A, B, __, ___, ____> DroolsGroupingQuadConstraintStream(
@@ -50,7 +50,7 @@ public final class DroolsGroupingQuadConstraintStream<Solution_, NewA, NewB, New
             BiConstraintCollector<A, B, __, NewB> collectorB, BiConstraintCollector<A, B, ___, NewC> collectorC,
             BiConstraintCollector<A, B, ____, NewD> collectorD) {
         super(constraintFactory);
-        throw new UnsupportedOperationException();
+        this.leftHandSide = parent.getLeftHandSide().andGroupBy(groupKeyAMapping, collectorB, collectorC, collectorD);
     }
 
     public <A, B, C, __, ___, ____> DroolsGroupingQuadConstraintStream(
@@ -59,7 +59,7 @@ public final class DroolsGroupingQuadConstraintStream<Solution_, NewA, NewB, New
             TriConstraintCollector<A, B, C, __, NewB> collectorB, TriConstraintCollector<A, B, C, ___, NewC> collectorC,
             TriConstraintCollector<A, B, C, ____, NewD> collectorD) {
         super(constraintFactory);
-        throw new UnsupportedOperationException();
+        this.leftHandSide = parent.getLeftHandSide().andGroupBy(groupKeyAMapping, collectorB, collectorC, collectorD);
     }
 
     public <A, B, C, D, __, ___, ____> DroolsGroupingQuadConstraintStream(
@@ -69,7 +69,7 @@ public final class DroolsGroupingQuadConstraintStream<Solution_, NewA, NewB, New
             QuadConstraintCollector<A, B, C, D, ___, NewC> collectorC,
             QuadConstraintCollector<A, B, C, D, ____, NewD> collectorD) {
         super(constraintFactory);
-        throw new UnsupportedOperationException();
+        this.leftHandSide = parent.getLeftHandSide().andGroupBy(groupKeyAMapping, collectorB, collectorC, collectorD);
     }
 
     public <A, __, ___> DroolsGroupingQuadConstraintStream(DroolsConstraintFactory<Solution_> constraintFactory,
@@ -113,7 +113,7 @@ public final class DroolsGroupingQuadConstraintStream<Solution_, NewA, NewB, New
             UniConstraintCollector<A, ___, NewB> collectorB, UniConstraintCollector<A, ____, NewC> collectorC,
             UniConstraintCollector<A, _____, NewD> collectorD) {
         super(constraintFactory);
-        throw new UnsupportedOperationException();
+        this.leftHandSide = parent.getLeftHandSide().andGroupBy(collectorA, collectorB, collectorC, collectorD);
     }
 
     public <A, B, __, ___, ____, _____> DroolsGroupingQuadConstraintStream(
@@ -122,7 +122,7 @@ public final class DroolsGroupingQuadConstraintStream<Solution_, NewA, NewB, New
             BiConstraintCollector<A, B, __, NewA> collectorA, BiConstraintCollector<A, B, ___, NewB> collectorB,
             BiConstraintCollector<A, B, ____, NewC> collectorC, BiConstraintCollector<A, B, _____, NewD> collectorD) {
         super(constraintFactory);
-        throw new UnsupportedOperationException();
+        this.leftHandSide = parent.getLeftHandSide().andGroupBy(collectorA, collectorB, collectorC, collectorD);
     }
 
     public <A, B, C, __, ___, ____, _____> DroolsGroupingQuadConstraintStream(
@@ -132,7 +132,7 @@ public final class DroolsGroupingQuadConstraintStream<Solution_, NewA, NewB, New
             TriConstraintCollector<A, B, C, ____, NewC> collectorC,
             TriConstraintCollector<A, B, C, _____, NewD> collectorD) {
         super(constraintFactory);
-        throw new UnsupportedOperationException();
+        this.leftHandSide = parent.getLeftHandSide().andGroupBy(collectorA, collectorB, collectorC, collectorD);
     }
 
     public <A, B, C, D, __, ___, ____, _____> DroolsGroupingQuadConstraintStream(
@@ -143,7 +143,7 @@ public final class DroolsGroupingQuadConstraintStream<Solution_, NewA, NewB, New
             QuadConstraintCollector<A, B, C, D, ____, NewC> collectorC,
             QuadConstraintCollector<A, B, C, D, _____, NewD> collectorD) {
         super(constraintFactory);
-        throw new UnsupportedOperationException();
+        this.leftHandSide = parent.getLeftHandSide().andGroupBy(collectorA, collectorB, collectorC, collectorD);
     }
 
     // ************************************************************************
