@@ -458,15 +458,14 @@ void installGithubCLI() {
 
 void uploadDistribution(String directory) {
     echo "uploadDistribution for ${directory}"
-    // TODO set back
-    // dir(directory) {
-    //     withCredentials(bindings: [sshUserPrivateKey(credentialsId: 'optaplanner-filemgmt',
-    //             keyFileVariable: 'SSH_KEY_JBOSS_FILEMGMT')]) {
-    //         // For testing, simulate connection via SSH:
-    //         // sh "ssh -i $SSH_KEY_JBOSS_FILEMGMT -oKexAlgorithms=+diffie-hellman-group1-sha1 optaplanner@filemgmt.jboss.org"
-    //         sh "./build/release/upload_distribution.sh ${getProjectVersion()} $SSH_KEY_JBOSS_FILEMGMT"
-    //     }
-    // }
+    dir(directory) {
+        withCredentials(bindings: [sshUserPrivateKey(credentialsId: 'optaplanner-filemgmt',
+                keyFileVariable: 'SSH_KEY_JBOSS_FILEMGMT')]) {
+            // For testing, simulate connection via SSH:
+            // sh "ssh -i $SSH_KEY_JBOSS_FILEMGMT -oKexAlgorithms=+diffie-hellman-group1-sha1 optaplanner@filemgmt.jboss.org"
+            sh "./build/release/upload_distribution.sh ${getProjectVersion()} $SSH_KEY_JBOSS_FILEMGMT"
+        }
+    }
 }
 
 MavenCommand getMavenCommand() {
