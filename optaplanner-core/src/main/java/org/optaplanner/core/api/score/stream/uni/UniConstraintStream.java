@@ -731,7 +731,7 @@ public interface UniConstraintStream<A> extends ConstraintStream {
      * Convert the {@link UniConstraintStream} to a {@link BiConstraintStream}, consisting of unique tuples with two
      * facts.
      * <p>
-     * The first fact is the return value of the first group key mapping function, applied on the incoming tuple.
+     * The first fact is the return value of the group key mapping function, applied on the incoming tuple.
      * The second fact is the return value of a given {@link UniConstraintCollector} applied on all incoming tuples with
      * the same first fact.
      *
@@ -751,7 +751,7 @@ public interface UniConstraintStream<A> extends ConstraintStream {
      * Convert the {@link UniConstraintStream} to a {@link TriConstraintStream}, consisting of unique tuples with three
      * facts.
      * <p>
-     * The first fact is the return value of the first group key mapping function, applied on the incoming tuple.
+     * The first fact is the return value of the group key mapping function, applied on the incoming tuple.
      * The remaining facts are the return value of the respective {@link UniConstraintCollector} applied on all
      * incoming tuples with the same first fact.
      *
@@ -776,7 +776,7 @@ public interface UniConstraintStream<A> extends ConstraintStream {
      * Convert the {@link UniConstraintStream} to a {@link QuadConstraintStream}, consisting of unique tuples with four
      * facts.
      * <p>
-     * The first fact is the return value of the first group key mapping function, applied on the incoming tuple.
+     * The first fact is the return value of the group key mapping function, applied on the incoming tuple.
      * The remaining facts are the return value of the respective {@link UniConstraintCollector} applied on all
      * incoming tuples with the same first fact.
      *

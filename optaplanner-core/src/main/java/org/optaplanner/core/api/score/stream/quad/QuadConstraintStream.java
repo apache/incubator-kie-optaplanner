@@ -343,7 +343,7 @@ public interface QuadConstraintStream<A, B, C, D> extends ConstraintStream {
     /**
      * Convert the {@link QuadConstraintStream} to a {@link BiConstraintStream}, consisting of unique tuples.
      * <p>
-     * The first fact is the return value of the first group key mapping function, applied on the incoming tuple.
+     * The first fact is the return value of the group key mapping function, applied on the incoming tuple.
      * The second fact is the return value of a given {@link QuadConstraintCollector} applied on all incoming tuples
      * with the same first fact.
      *
@@ -363,7 +363,7 @@ public interface QuadConstraintStream<A, B, C, D> extends ConstraintStream {
      * Convert the {@link QuadConstraintStream} to a {@link TriConstraintStream}, consisting of unique tuples with three
      * facts.
      * <p>
-     * The first fact is the return value of the first group key mapping function, applied on the incoming tuple.
+     * The first fact is the return value of the group key mapping function, applied on the incoming tuple.
      * The remaining facts are the return value of the respective {@link QuadConstraintCollector} applied on all
      * incoming tuples with the same first fact.
      *
@@ -389,7 +389,7 @@ public interface QuadConstraintStream<A, B, C, D> extends ConstraintStream {
      * Convert the {@link QuadConstraintStream} to a {@link QuadConstraintStream}, consisting of unique tuples with four
      * facts.
      * <p>
-     * The first fact is the return value of the first group key mapping function, applied on the incoming tuple.
+     * The first fact is the return value of the group key mapping function, applied on the incoming tuple.
      * The remaining facts are the return value of the respective {@link QuadConstraintCollector} applied on all
      * incoming tuples with the same first fact.
      *
