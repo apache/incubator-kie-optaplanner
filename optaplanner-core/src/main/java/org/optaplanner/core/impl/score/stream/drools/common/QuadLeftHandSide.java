@@ -356,7 +356,7 @@ public final class QuadLeftHandSide<A, B, C, D> extends AbstractLeftHandSide {
         Variable<NewA> newA = variableFactory.createVariable("newA", groupKey);
         Variable<NewB> newB = variableFactory.createVariable("newB", accumulateOutputB);
         Variable<NewC> newC = variableFactory.createVariable("newC", accumulateOutputC);
-        Variable<NewD> newD = variableFactory.createVariable("newC", accumulateOutputD);
+        Variable<NewD> newD = variableFactory.createVariable("newD", accumulateOutputD);
         return new QuadLeftHandSide<>(new PatternVariable<>(newA, singletonList(groupByPattern)),
                 new PatternVariable<>(newB), new PatternVariable<>(newC), new PatternVariable<>(newD), variableFactory);
     }
