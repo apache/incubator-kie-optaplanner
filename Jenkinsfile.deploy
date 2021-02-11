@@ -218,8 +218,8 @@ pipeline {
         always {
             script {
                 def propertiesStr = deployProperties.collect { entry ->  "${entry.key}=${entry.value}" }.join('\n')
-                writeFile(text: propertiesStr, file: 'deployment.properties')
-                archiveArtifacts(artifacts: 'deployment.properties')
+                writeFile(text: propertiesStr, file: env.PROPERTIES_FILE_NAME)
+                archiveArtifacts(artifacts: env.PROPERTIES_FILE_NAME)
             }
             cleanWs()
         }

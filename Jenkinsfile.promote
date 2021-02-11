@@ -300,8 +300,8 @@ void readDeployProperties(){
         if(!deployUrl.endsWith('/')){
             deployUrl += '/'
         }
-        sh "wget ${deployUrl}artifact/${PROPERTIES_FILE_NAME} -O ${PROPERTIES_FILE_NAME}"
-        deployProperties = readProperties file: PROPERTIES_FILE_NAME
+        sh "wget ${deployUrl}artifact/${env.PROPERTIES_FILE_NAME} -O ${env.PROPERTIES_FILE_NAME}"
+        deployProperties = readProperties file: env.PROPERTIES_FILE_NAME
         // echo all properties
         echo deployProperties.collect{ entry -> "${entry.key}=${entry.value}" }.join('\n')
     }
@@ -544,7 +544,7 @@ def disableForcePushes(String repo, String protectedBranch) {
 boolean isBranchProtected(String repo, String protectedBranch, String ghPath = "../gh") {
     boolean isProtected = true // Suppose it is protected by default
     withCredentials([string(credentialsId: getGhCredsID(), variable: 'GITHUB_TOKEN')]) {
-        //get current branch protection and remove allow force push
+        // get current branch protection
         int status = sh (script: "${ghPath} api 'repos/${getGitAuthor()}/${repo}/branches/${protectedBranch}/protection'", returnStatus: true)
         isProtected = status == 0
     }

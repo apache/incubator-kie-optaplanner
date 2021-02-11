@@ -121,6 +121,8 @@ void setupDeployJob(String jobFolder, KogitoJobType jobType) {
         }
 
         environmentVariables {
+            env('PROPERTIES_FILE_NAME', 'deployment.properties')
+
             env('RELEASE', jobType == KogitoJobType.RELEASE)
             env('JENKINS_EMAIL_CREDS_ID', "${JENKINS_EMAIL_CREDS_ID}")
             env('MAVEN_SETTINGS_CONFIG_FILE_ID', "${MAVEN_SETTINGS_FILE_ID}")
