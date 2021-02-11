@@ -921,6 +921,7 @@ public class UniConstraintStreamTest extends AbstractConstraintStreamTest implem
     }
 
     @Override
+    @TestTemplate
     public void groupBy_1Mapping3Collector() {
         assumeDrools();
         TestdataLavishSolution solution = TestdataLavishSolution.generateSolution(1, 1, 2, 3);
