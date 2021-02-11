@@ -69,8 +69,7 @@ public class GizmoSolutionOrEntityDescriptor {
     }
 
     public GizmoSolutionOrEntityDescriptor(Class<?> holderClass, SolutionDescriptor<?> solutionDescriptor,
-            Map<Field, GizmoMemberDescriptor> solutionFieldToMemberDescriptorMap,
-            Map<Class<?>, GizmoSolutionOrEntityDescriptor> memoizedGizmoSolutionOrEntityDescriptorForClassMap) {
+            Map<Field, GizmoMemberDescriptor> solutionFieldToMemberDescriptorMap) {
         this.solutionDescriptor = solutionDescriptor;
         this.solutionFieldToMemberDescriptorMap = solutionFieldToMemberDescriptorMap;
         deepClonedFields = new HashSet<>();
