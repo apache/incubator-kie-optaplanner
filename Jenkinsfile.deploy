@@ -173,28 +173,12 @@ pipeline {
         stage("Build Vehicle Routing") {
             steps {
                 script {
-                    getOptawebVehicleRoutingMavenCommand().skipTests(params.SKIP_TESTS).run('clean install')
+                    buildOptaweb(getOptawebVehicleRoutingMavenCommand())
                 }
             }
             post {
                 always {
                     saveReports(params.SKIP_TESTS)
-                }
-            }
-        }
-
-        stage("Run integration tests Vehicle Routing") {
-            when {
-                expression { return !isRelease() }
-            }
-            steps {
-                script {
-                    getOptawebVehicleRoutingMavenCommand().skipTests(true)
-                            .withProfiles(getIntegrationTestProfiles()).run('verify')
-                }
-            }
-            post {
-                always {
                     saveArtifacts(params.SKIP_INTEGRATION_TESTS)
                 }
             }
@@ -203,28 +187,12 @@ pipeline {
         stage("Build Employee Rostering") {
             steps {
                 script {
-                    getOptawebEmployeeRosteringMavenCommand().skipTests(params.SKIP_TESTS).run('clean install')
+                    buildOptaweb(getOptawebEmployeeRosteringMavenCommand())
                 }
             }
             post {
                 always {
                     saveReports(params.SKIP_TESTS)
-                }
-            }
-        }
-
-        stage("Run integration tests Employee Rostering") {
-            when {
-                expression { return !isRelease() }
-            }
-            steps {
-                script {
-                    getOptawebEmployeeRosteringMavenCommand().skipTests(true)
-                            .withProfiles(getIntegrationTestProfiles()).run('verify')
-                }
-            }
-            post {
-                always {
                     saveArtifacts(params.SKIP_INTEGRATION_TESTS)
                 }
             }
@@ -282,6 +250,14 @@ pipeline {
             cleanWs()
         }
     }
+}
+
+void buildOptaweb(MavenCommand optawebCommand){
+    MavenCommand buildCommand = optawebCommand
+    if (!isRelease()) {
+        buildCommand = buildCommand.withProfiles(getIntegrationTestProfiles())
+    }
+    buildCommand.skipTests(params.SKIP_TESTS).run('clean install')
 }
 
 void saveArtifacts(boolean skipIntegrationTests=false) {
