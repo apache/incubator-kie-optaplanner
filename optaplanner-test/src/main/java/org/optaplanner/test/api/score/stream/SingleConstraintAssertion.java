@@ -16,10 +16,10 @@
 
 package org.optaplanner.test.api.score.stream;
 
+import java.math.BigDecimal;
+
 import org.optaplanner.core.api.score.buildin.hardsoftlong.HardSoftLongScore;
 import org.optaplanner.core.api.score.stream.Constraint;
-
-import java.math.BigDecimal;
 
 public interface SingleConstraintAssertion {
 
@@ -234,6 +234,5 @@ public interface SingleConstraintAssertion {
      * @throws AssertionError when there are no rewards
      */
     void rewards(String message);
-
 
 }

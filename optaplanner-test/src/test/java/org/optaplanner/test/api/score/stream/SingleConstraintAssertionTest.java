@@ -16,12 +16,12 @@
 
 package org.optaplanner.test.api.score.stream;
 
+import static org.assertj.core.api.Assertions.assertThatCode;
+
 import org.junit.jupiter.api.Test;
 import org.optaplanner.test.api.score.stream.testdata.TestdataConstraintProvider;
 import org.optaplanner.test.api.score.stream.testdata.domain.TestdataEntity;
 import org.optaplanner.test.api.score.stream.testdata.domain.TestdataSolution;
-
-import static org.assertj.core.api.Assertions.assertThatCode;
 
 public class SingleConstraintAssertionTest {
 

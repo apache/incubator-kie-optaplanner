@@ -16,15 +16,7 @@
 
 package org.optaplanner.test.impl.score.stream;
 
-import org.optaplanner.core.api.score.Score;
-import org.optaplanner.core.api.score.constraint.ConstraintMatchTotal;
-import org.optaplanner.core.api.score.constraint.Indictment;
-import org.optaplanner.core.impl.score.DefaultScoreExplanation;
-import org.optaplanner.core.impl.score.definition.ScoreDefinition;
-import org.optaplanner.core.impl.score.director.stream.ConstraintStreamScoreDirectorFactory;
-import org.optaplanner.core.impl.score.stream.common.AbstractConstraint;
-import org.optaplanner.core.impl.score.stream.common.ScoreImpactType;
-import org.optaplanner.test.api.score.stream.SingleConstraintAssertion;
+import static java.util.Objects.requireNonNull;
 
 import java.math.BigDecimal;
 import java.util.Arrays;
@@ -34,7 +26,15 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
-import static java.util.Objects.requireNonNull;
+import org.optaplanner.core.api.score.Score;
+import org.optaplanner.core.api.score.constraint.ConstraintMatchTotal;
+import org.optaplanner.core.api.score.constraint.Indictment;
+import org.optaplanner.core.impl.score.DefaultScoreExplanation;
+import org.optaplanner.core.impl.score.definition.ScoreDefinition;
+import org.optaplanner.core.impl.score.director.stream.ConstraintStreamScoreDirectorFactory;
+import org.optaplanner.core.impl.score.stream.common.AbstractConstraint;
+import org.optaplanner.core.impl.score.stream.common.ScoreImpactType;
+import org.optaplanner.test.api.score.stream.SingleConstraintAssertion;
 
 public final class DefaultSingleConstraintAssertion<Solution_, Score_ extends Score<Score_>>
         implements SingleConstraintAssertion {
@@ -74,12 +74,12 @@ public final class DefaultSingleConstraintAssertion<Solution_, Score_ extends Sc
 
     @Override
     public void penalizes(long times, String message) {
-        assertImpact(ScoreImpactType.PENALTY, times, message);
+        assertMatchCount(ScoreImpactType.PENALTY, times, message);
     }
 
     @Override
     public void penalizes(String message) {
-        assertImpact(ScoreImpactType.PENALTY, message);
+        assertMatch(ScoreImpactType.PENALTY, message);
     }
 
     @Override
@@ -102,12 +102,12 @@ public final class DefaultSingleConstraintAssertion<Solution_, Score_ extends Sc
 
     @Override
     public void rewards(long times, String message) {
-        assertImpact(ScoreImpactType.REWARD, times, message);
+        assertMatchCount(ScoreImpactType.REWARD, times, message);
     }
 
     @Override
     public void rewards(String message) {
-        assertImpact(ScoreImpactType.REWARD, message);
+        assertMatch(ScoreImpactType.REWARD, message);
     }
 
     private void validateMatchWeighTotal(Number matchWeightTotal) {
@@ -161,7 +161,7 @@ public final class DefaultSingleConstraintAssertion<Solution_, Score_ extends Sc
         return matchWeightsFound.get(0);
     }
 
-    private void assertImpact(ScoreImpactType scoreImpactType, long expectedMatchCount, String message) {
+    private void assertMatchCount(ScoreImpactType scoreImpactType, long expectedMatchCount, String message) {
         long actualMatchCount = determineMatchCount(scoreImpactType);
         if (actualMatchCount == expectedMatchCount) {
             return;
@@ -174,7 +174,7 @@ public final class DefaultSingleConstraintAssertion<Solution_, Score_ extends Sc
         throw new AssertionError(assertionMessage);
     }
 
-    private void assertImpact(ScoreImpactType scoreImpactType, String message) {
+    private void assertMatch(ScoreImpactType scoreImpactType, String message) {
         if (determineMatchCount(scoreImpactType) > 0) {
             return;
         }
