@@ -100,7 +100,7 @@ public interface SingleConstraintAssertion {
     }
 
     /**
-     * As defined by {@link #penalizes(int)}.
+     * As defined by {@link #penalizes(long)}.
      *
      * @param times at least 0, expected number of times that the constraint will penalize
      * @param message sometimes null, description of the scenario being asserted
@@ -206,7 +206,7 @@ public interface SingleConstraintAssertion {
     }
 
     /**
-     * As defined by {@link #rewards(int)}.
+     * As defined by {@link #rewards(long)}.
      *
      * @param times at least 0, expected number of times that the constraint will reward
      * @param message sometimes null, description of the scenario being asserted
