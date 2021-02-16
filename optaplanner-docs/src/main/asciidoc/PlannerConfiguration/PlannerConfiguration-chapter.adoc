@@ -397,7 +397,7 @@ If historic data needs to be considered too, then create problem fact to hold th
 
 [NOTE]
 ====
-Do not use auto-generated `hashCode` (Java records, Kotlin data classes, etc) for planning entity classes. `hashCode` should not contain planning variables.
+Planning entity `hashCode()` implementations must never change their return values. Therefore entity `hashCode()` must not depend on any planning variables. Pay special attention when using data structures with auto-generated `hashCode()` as entities, such as Java records or Kotlin data classes. ```
 ====
 
 [[planningEntityDifficulty]]
