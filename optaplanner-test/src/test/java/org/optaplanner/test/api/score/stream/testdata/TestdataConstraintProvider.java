@@ -20,7 +20,7 @@ import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
 import org.optaplanner.core.api.score.stream.Constraint;
 import org.optaplanner.core.api.score.stream.ConstraintFactory;
 import org.optaplanner.core.api.score.stream.ConstraintProvider;
-import org.optaplanner.test.api.score.stream.testdata.domain.TestdataEntity;
+import org.optaplanner.core.impl.testdata.domain.TestdataEntity;
 
 public class TestdataConstraintProvider implements ConstraintProvider {
     @Override

@@ -19,9 +19,9 @@ package org.optaplanner.test.api.score.stream;
 import static org.assertj.core.api.Assertions.assertThatCode;
 
 import org.junit.jupiter.api.Test;
+import org.optaplanner.core.impl.testdata.domain.TestdataEntity;
+import org.optaplanner.core.impl.testdata.domain.TestdataSolution;
 import org.optaplanner.test.api.score.stream.testdata.TestdataConstraintProvider;
-import org.optaplanner.test.api.score.stream.testdata.domain.TestdataEntity;
-import org.optaplanner.test.api.score.stream.testdata.domain.TestdataSolution;
 
 public class SingleConstraintAssertionTest {
 
@@ -30,7 +30,7 @@ public class SingleConstraintAssertionTest {
 
     @Test
     void penalizesAndDoesNotReward() {
-        TestdataSolution solution = TestdataSolution.generateSolution();
+        TestdataSolution solution = TestdataSolution.generateSolution(2, 3);
 
         assertThatCode(() -> {
             constraintVerifier.verifyThat(TestdataConstraintProvider::penalizeEveryEntity)
@@ -47,7 +47,7 @@ public class SingleConstraintAssertionTest {
 
     @Test
     void rewardsButDoesNotPenalize() {
-        TestdataSolution solution = TestdataSolution.generateSolution();
+        TestdataSolution solution = TestdataSolution.generateSolution(2, 3);
 
         assertThatCode(() -> {
             constraintVerifier.verifyThat(TestdataConstraintProvider::rewardEveryEntity)
@@ -64,7 +64,7 @@ public class SingleConstraintAssertionTest {
 
     @Test
     void penalizesByCountAndDoesNotReward() {
-        TestdataSolution solution = TestdataSolution.generateSolution();
+        TestdataSolution solution = TestdataSolution.generateSolution(2, 3);
 
         assertThatCode(() -> {
             constraintVerifier.verifyThat(TestdataConstraintProvider::penalizeEveryEntity)
@@ -81,7 +81,7 @@ public class SingleConstraintAssertionTest {
 
     @Test
     void rewardsByCountButDoesNotPenalize() {
-        TestdataSolution solution = TestdataSolution.generateSolution();
+        TestdataSolution solution = TestdataSolution.generateSolution(2, 3);
 
         assertThatCode(() -> {
             constraintVerifier.verifyThat(TestdataConstraintProvider::rewardEveryEntity)
