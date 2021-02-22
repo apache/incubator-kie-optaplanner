@@ -13,7 +13,7 @@ public class RoutePath extends AbstractPersistable {
     private Batch batch;
     private String path;
     private List<Segment> segmentList;
-    
+
     public String getPath() {
         return path;
     }

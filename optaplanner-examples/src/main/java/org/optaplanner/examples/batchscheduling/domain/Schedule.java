@@ -18,7 +18,7 @@ import com.thoughtworks.xstream.annotations.XStreamConverter;
 @PlanningSolution
 @XStreamAlias("PipeSchedule")
 public class Schedule extends AbstractPersistable {
-	
+
     private List<Batch> batchList;
 
     private List<Allocation> allocationList;
