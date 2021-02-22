@@ -7,7 +7,7 @@ import org.optaplanner.core.api.domain.valuerange.ValueRangeProvider;
 import org.optaplanner.core.api.domain.variable.CustomShadowVariable;
 import org.optaplanner.core.api.domain.variable.PlanningVariable;
 import org.optaplanner.core.api.domain.variable.PlanningVariableReference;
-import org.optaplanner.examples.batchscheduling.domain.solver.DelayStrengthComparator;
+import org.optaplanner.examples.batchscheduling.app.BatchSchedulingApp;
 import org.optaplanner.examples.batchscheduling.domain.solver.PredecessorsDoneDateUpdatingVariableListener;
 import org.optaplanner.examples.common.domain.AbstractPersistable;
 
@@ -17,196 +17,185 @@ import com.thoughtworks.xstream.annotations.XStreamAlias;
 @XStreamAlias("PipeAllocation")
 public class Allocation extends AbstractPersistable {
 
-    // Determines rounding logic. If fractional value is more than specified number (i.e. 20), then the value is rounded off to next higher value.
-    // Minimum value is 0 and maximum 100
-    public static final Integer FRACTIONAL_VOLUME_PERCENTAGE = 20;
+	private Batch batch;
+	private RoutePath routePath;
+	private Segment segment;
+	private Allocation predecessorAllocation;
+	private Allocation successorAllocation;
 
-    // Scaling parameter. Lower value indicates more processing time but accurate result.
-    // Minimum value 1. No  Maximum defined but it depends on the volume present in the batches.
-    // Note: This is an example of process manufacturing (not discrete manufacturing). As such, variables (i.e. batch volume) needs to be split into quantifiable unit. 
-    public static final Integer PERIODINTERVAL_IN_MINUTES = 5;
+	// Planning variables, changes during planning, between score calculation
+	private Long delay;
 
-    private Batch batch;
-    private RoutePath routePath;
-    private Segment segment;
-    private Allocation predecessorAllocation;
-    private Allocation successorAllocation;
+	// Shadow variables
+	private Long predecessorsDoneDate;
 
-    // Planning variables: changes during planning, between score calculations.
-    private Long delay;
+	public Batch getBatch() {
+		return batch;
+	}
 
-    // Shadow variables
-    private Long predecessorsDoneDate;
+	public void setBatch(Batch batch) {
+		this.batch = batch;
+	}
 
-    public Batch getBatch() {
-        return batch;
-    }
+	public RoutePath getRoutePath() {
+		return routePath;
+	}
 
-    public void setBatch(Batch batch) {
-        this.batch = batch;
-    }
+	public void setRoutePath(RoutePath routePath) {
+		this.routePath = routePath;
+	}
 
-    public RoutePath getRoutePath() {
-        return routePath;
-    }
+	public Segment getSegment() {
+		return segment;
+	}
 
-    public void setRoutePath(RoutePath routePath) {
-        this.routePath = routePath;
-    }
+	public void setSegment(Segment segment) {
+		this.segment = segment;
+	}
 
-    public Segment getSegment() {
-        return segment;
-    }
+	public Allocation getPredecessorAllocation() {
+		return predecessorAllocation;
+	}
 
-    public void setSegment(Segment segment) {
-        this.segment = segment;
-    }
+	public void setPredecessorAllocation(Allocation predecessorAllocation) {
+		this.predecessorAllocation = predecessorAllocation;
+	}
 
-    public Allocation getPredecessorAllocation() {
-        return predecessorAllocation;
-    }
+	public Allocation getSuccessorAllocation() {
+		return successorAllocation;
+	}
 
-    public void setPredecessorAllocation(Allocation predecessorAllocation) {
-        this.predecessorAllocation = predecessorAllocation;
-    }
+	public void setSuccessorAllocation(Allocation successorAllocation) {
+		this.successorAllocation = successorAllocation;
+	}
 
-    public Allocation getSuccessorAllocation() {
-        return successorAllocation;
-    }
+	public void setDelay(Long delay) {
+		this.delay = delay;
+	}
 
-    public void setSuccessorAllocation(Allocation successorAllocation) {
-        this.successorAllocation = successorAllocation;
-    }
+	public void setPredecessorsDoneDate(Long predecessorsDoneDate) {
+		this.predecessorsDoneDate = predecessorsDoneDate;
+	}
 
-    public void setDelay(Long delay) {
-        this.delay = delay;
-    }
+	// Start of Injection is start of injection time of Batch Head
+	public Long getStartInjectionTime() {
+		if (delay == null) {
+			return null;
+		}
 
-    public void setPredecessorsDoneDate(Long predecessorsDoneDate) {
-        this.predecessorsDoneDate = predecessorsDoneDate;
-    }
+		if (predecessorAllocation != null) {
+			if (!(predecessorsDoneDate == null)) {
+				return (delay + predecessorsDoneDate);
+			}
+		} else {
+			return delay;
+		}
 
-    // Start of Injection
-    public Long getStartInjectionTime() {
-        if (delay == null) {
-            return null;
-        }
+		return null;
+	}
 
-        if (predecessorAllocation != null) {
-            if (!(predecessorsDoneDate == null)) {
-                return (delay + predecessorsDoneDate);
-            }
-        } else {
-            return delay;
-        }
+	// End of Injection is end of injection time of Batch Tail
+	public Long getEndInjectionTime() {
+		if (getStartInjectionTime() == null) {
+			return null;
+		}
 
-        return null;
-    }
+		// Injection Time
+		Double tempInjectionDouble = Double.valueOf((getBatch().getVolume() / (getSegment().getFlowRate() * BatchSchedulingApp.PERIODINTERVAL_IN_MINUTES)));
+		
+		Long tempInjectionLong = tempInjectionDouble.longValue();
+		int fractionalInjectionInt = (int) Math.round((tempInjectionDouble - tempInjectionLong) * 100);
 
-    // End of Injection
-    public Long getEndInjectionTime() {
-        if (getStartInjectionTime() == null) {
-            return null;
-        }
+		if (fractionalInjectionInt >= BatchSchedulingApp.FRACTIONAL_VOLUME_PERCENTAGE) {
+			return getStartInjectionTime() + tempInjectionLong + 1;
+		} else {
+			return getStartInjectionTime() + tempInjectionLong;
+		}
+	}
 
-        //Injection Time
-        Double tempInjectionDouble =
-                new Double((getBatch().getVolume() / (getSegment().getFlowRate() * Allocation.PERIODINTERVAL_IN_MINUTES)));
-        Long tempInjectionLong = tempInjectionDouble.longValue();
-        int fractionalInjectionInt = (int) Math.round((tempInjectionDouble - tempInjectionLong) * 100);
+	// Start of Delivery is Start of Injection Time + Travel Time through Pipeline of Batch Head
+	public Long getStartDeliveryTime() {
+		if (getStartInjectionTime() == null) {
+			return null;
+		}
 
-        if (fractionalInjectionInt >= Allocation.FRACTIONAL_VOLUME_PERCENTAGE) {
-            return getStartInjectionTime() + tempInjectionLong + 1;
-        } else {
-            return getStartInjectionTime() + tempInjectionLong;
-        }
-    }
+		// Travel Time
+		Double tempTravelDouble = Double.valueOf(((getSegment().getLength() * getSegment().getCrossSectionArea())
+				/ (getSegment().getFlowRate() * BatchSchedulingApp.PERIODINTERVAL_IN_MINUTES)));
+		Long tempTravelLong = tempTravelDouble.longValue();
+		int fractionalTravelInt = (int) Math.round((tempTravelDouble - tempTravelLong) * 100);
 
-    // Start of Delivery
-    // Start of Delivery is Start of Injection Time + Travel Time
-    public Long getStartDeliveryTime() {
-        if (getStartInjectionTime() == null) {
-            return null;
-        }
+		if (fractionalTravelInt >= BatchSchedulingApp.FRACTIONAL_VOLUME_PERCENTAGE) {
+			return getStartInjectionTime() + tempTravelLong + 1;
+		} else {
+			return getStartInjectionTime() + tempTravelLong;
+		}
+	}
 
-        //Travel Time
-        Double tempTravelDouble = new Double(((getSegment().getLength() * getSegment().getCrossSectionArea())
-                / (getSegment().getFlowRate() * Allocation.PERIODINTERVAL_IN_MINUTES)));
-        Long tempTravelLong = tempTravelDouble.longValue();
-        int fractionalTravelInt = (int) Math.round((tempTravelDouble - tempTravelLong) * 100);
+	// End of Delivery is End of Injection Time + Travel Time through Pipeline of Batch Tail
+	public Long getEndDeliveryTime() {
 
-        if (fractionalTravelInt >= Allocation.FRACTIONAL_VOLUME_PERCENTAGE) {
-            return getStartInjectionTime() + tempTravelLong + 1;
-        } else {
-            return getStartInjectionTime() + tempTravelLong;
-        }
-    }
+		if (getStartInjectionTime() == null) {
+			return null;
+		}
 
-    // End of Delivery
-    // End of Delivery is End of Injection Time + Travel Time
-    public Long getEndDeliveryTime() {
+		// Travel Time
+		Double tempTravelDouble = Double.valueOf(((getSegment().getLength() * getSegment().getCrossSectionArea())
+				/ (getSegment().getFlowRate() * BatchSchedulingApp.PERIODINTERVAL_IN_MINUTES)));
+		Long tempTravelLong = tempTravelDouble.longValue();
+		
+		int fractionalTravelInt = (int) Math.round((tempTravelDouble - tempTravelLong) * 100);
 
-        if (getStartInjectionTime() == null) {
-            return null;
-        }
+		if (fractionalTravelInt >= BatchSchedulingApp.FRACTIONAL_VOLUME_PERCENTAGE) {
+			tempTravelLong = getStartInjectionTime() + tempTravelLong + 1;
+		} else {
+			tempTravelLong = getStartInjectionTime() + tempTravelLong;
+		}
 
-        //Travel Time
-        Double tempTravelDouble = new Double(((getSegment().getLength() * getSegment().getCrossSectionArea())
-                / (getSegment().getFlowRate() * Allocation.PERIODINTERVAL_IN_MINUTES)));
-        Long tempTravelLong = tempTravelDouble.longValue();
-        int fractionalTravelInt = (int) Math.round((tempTravelDouble - tempTravelLong) * 100);
+		// Injection Time
+		Double tempDeliveryDouble = Double.valueOf(
+				(getBatch().getVolume() / (getSegment().getFlowRate() * BatchSchedulingApp.PERIODINTERVAL_IN_MINUTES)));
+		Long tempDeliveryLong = tempDeliveryDouble.longValue();
+		int fractionalDeliveryInt = (int) Math.round((tempDeliveryDouble - tempDeliveryLong) * 100);
 
-        if (fractionalTravelInt >= Allocation.FRACTIONAL_VOLUME_PERCENTAGE) {
-            tempTravelLong = getStartInjectionTime() + tempTravelLong + 1;
-        } else {
-            tempTravelLong = getStartInjectionTime() + tempTravelLong;
-        }
+		if (fractionalDeliveryInt >= BatchSchedulingApp.FRACTIONAL_VOLUME_PERCENTAGE) {
+			return tempTravelLong + tempDeliveryLong + 1;
+		} else {
+			return tempTravelLong + tempDeliveryLong;
+		}
+	}
 
-        //Injection Time
-        Double tempDeliveryDouble =
-                new Double((getBatch().getVolume() / (getSegment().getFlowRate() * Allocation.PERIODINTERVAL_IN_MINUTES)));
-        Long tempDeliveryLong = tempDeliveryDouble.longValue();
-        int fractionalDeliveryInt = (int) Math.round((tempDeliveryDouble - tempDeliveryLong) * 100);
+	public String getLabel() {
+		return "Label:: " + batch.getName() + " " + routePath.getPath() + " " + segment.getName();
+	}
 
-        if (fractionalDeliveryInt >= Allocation.FRACTIONAL_VOLUME_PERCENTAGE) {
-            return tempTravelLong + tempDeliveryLong + 1;
-        } else {
-            return tempTravelLong + tempDeliveryLong;
-        }
-    }
+	public Boolean isFirst() {
+		if (predecessorAllocation != null) {
+			return Boolean.FALSE;
+		} else {
+			return Boolean.TRUE;
+		}
+	}
 
-    public String getLabel() {
-        return "Label:: " + batch.getName() + " " + routePath.getPath() + " " + segment.getName();
-    }
+	@PlanningVariable(nullable = true, valueRangeProviderRefs = { "delayRange" })
+	public Long getDelay() {
+		return delay;
+	}
 
-    public Boolean isFirst() {
-        if (predecessorAllocation != null) {
-            return new Boolean(false);
-        } else {
-            return new Boolean(true);
-        }
-    }
+	@CustomShadowVariable(variableListenerClass = PredecessorsDoneDateUpdatingVariableListener.class, sources = {
+			@PlanningVariableReference(variableName = "delay") })
+	public Long getPredecessorsDoneDate() {
+		return predecessorsDoneDate;
+	}
 
-    @PlanningVariable(nullable = true, valueRangeProviderRefs = { "delayRange" },
-            strengthComparatorClass = DelayStrengthComparator.class)
-    public Long getDelay() {
-        return delay;
-    }
-
-    @CustomShadowVariable(variableListenerClass = PredecessorsDoneDateUpdatingVariableListener.class,
-            sources = { @PlanningVariableReference(variableName = "delay") })
-    public Long getPredecessorsDoneDate() {
-        return predecessorsDoneDate;
-    }
-
-    @ValueRangeProvider(id = "delayRange")
-    public CountableValueRange<Long> getDelayRange() {
-        // Delay Range
-        if (getBatch().getDelayRangeValue() != null) {
-            return ValueRangeFactory.createLongValueRange(0, getBatch().getDelayRangeValue());
-        } else {
-            return ValueRangeFactory.createLongValueRange(0, 2000);
-        }
-    }
+	@ValueRangeProvider(id = "delayRange")
+	public CountableValueRange<Long> getDelayRange() {
+		// Delay Range
+		if (getBatch().getDelayRangeValue() != null) {
+			return ValueRangeFactory.createLongValueRange(0, getBatch().getDelayRangeValue());
+		} else {
+			return ValueRangeFactory.createLongValueRange(0, 2000);
+		}
+	}
 
 }

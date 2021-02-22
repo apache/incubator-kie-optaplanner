@@ -18,10 +18,8 @@ import com.thoughtworks.xstream.annotations.XStreamConverter;
 @PlanningSolution
 @XStreamAlias("PipeSchedule")
 public class Schedule extends AbstractPersistable {
-
+	
     private List<Batch> batchList;
-    private List<RoutePath> routePathList;
-    private List<Segment> segmentList;
 
     private List<Allocation> allocationList;
     private List<AllocationPath> allocationPathList;
@@ -32,18 +30,6 @@ public class Schedule extends AbstractPersistable {
     @ProblemFactCollectionProperty
     public List<Batch> getBatchList() {
         return batchList;
-    }
-
-    public List<Segment> getSegmentList() {
-        return segmentList;
-    }
-
-    public void setSegment(List<Segment> segmentList) {
-        this.segmentList = segmentList;
-    }
-
-    public List<RoutePath> getRoutePathList() {
-        return routePathList;
     }
 
     public void setBatchList(List<Batch> batchList) {
@@ -68,7 +54,7 @@ public class Schedule extends AbstractPersistable {
         this.allocationPathList = allocationPathList;
     }
 
-    @PlanningScore(bendableHardLevelsSize = 3, bendableSoftLevelsSize = 3)
+    @PlanningScore(bendableHardLevelsSize = 3, bendableSoftLevelsSize = 2)
     public BendableLongScore getScore() {
         return score;
     }

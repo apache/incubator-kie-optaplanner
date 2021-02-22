@@ -15,7 +15,7 @@
 						<PipeSegment id="6">
 							<id>6</id>
 							<name>S11---S12</name>
-							<flowRate>4.00</flowRate>
+							<flowRate>1.00</flowRate>
 							<length>200.0</length>
 							<crossSectionArea>1.00</crossSectionArea>
 							<batch reference="2"/>
@@ -49,7 +49,7 @@
 						<PipeSegment id="11">
 							<id>11</id>
 							<name>S21---S22</name>
-							<flowRate>4.00</flowRate>
+							<flowRate>1.00</flowRate>
 							<length>200.0</length>
 							<crossSectionArea>1.00</crossSectionArea>
 							<batch reference="2"/>

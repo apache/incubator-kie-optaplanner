@@ -15,7 +15,7 @@
 						<PipeSegment id="6">
 							<id>6</id>
 							<name>S11---S12</name>
-							<flowRate>4.00</flowRate>
+							<flowRate>1.00</flowRate>
 							<length>200.0</length>
 							<crossSectionArea>1.00</crossSectionArea>
 							<batch reference="2"/>
@@ -24,7 +24,7 @@
 						<PipeSegment id="7">
 							<id>7</id>
 							<name>S12---S13</name>
-							<flowRate>4.00</flowRate>
+							<flowRate>1.00</flowRate>
 							<length>200.0</length>
 							<crossSectionArea>1.00</crossSectionArea>
 							<batch reference="2"/>
@@ -49,7 +49,7 @@
 						<PipeSegment id="11">
 							<id>11</id>
 							<name>S11---S12</name>
-							<flowRate>4.00</flowRate>
+							<flowRate>1.00</flowRate>
 							<length>200.0</length>
 							<crossSectionArea>1.00</crossSectionArea>
 							<batch reference="2"/>
@@ -67,7 +67,7 @@
 						<PipeSegment id="13">
 							<id>13</id>
 							<name>S22---S23</name>
-							<flowRate>4.00</flowRate>
+							<flowRate>1.00</flowRate>
 							<length>200.0</length>
 							<crossSectionArea>1.00</crossSectionArea>
 							<batch reference="2"/>
@@ -92,7 +92,7 @@
 						<PipeSegment id="17">
 							<id>17</id>
 							<name>S21---S22</name>
-							<flowRate>4.00</flowRate>
+							<flowRate>1.00</flowRate>
 							<length>200.0</length>
 							<crossSectionArea>1.00</crossSectionArea>
 							<batch reference="2"/>
@@ -101,7 +101,7 @@
 						<PipeSegment id="18">
 							<id>18</id>
 							<name>S22---S23</name>
-							<flowRate>4.00</flowRate>
+							<flowRate>1.00</flowRate>
 							<length>200.0</length>
 							<crossSectionArea>1.00</crossSectionArea>
 							<batch reference="2"/>
@@ -125,7 +125,7 @@
 						<PipeSegment id="23">
 							<id>23</id>
 							<name>S11---S12</name>
-							<flowRate>4.00</flowRate>
+							<flowRate>1.00</flowRate>
 							<length>200.0</length>
 							<crossSectionArea>1.00</crossSectionArea>
 							<batch reference="19"/>
@@ -134,7 +134,7 @@
 						<PipeSegment id="24">
 							<id>24</id>
 							<name>S12---S13</name>
-							<flowRate>4.00</flowRate>
+							<flowRate>1.00</flowRate>
 							<length>200.0</length>
 							<crossSectionArea>1.00</crossSectionArea>
 							<batch reference="19"/>
@@ -159,7 +159,7 @@
 						<PipeSegment id="28">
 							<id>28</id>
 							<name>S11---S12</name>
-							<flowRate>4.00</flowRate>
+							<flowRate>1.00</flowRate>
 							<length>200.0</length>
 							<crossSectionArea>1.00</crossSectionArea>
 							<batch reference="19"/>
@@ -177,7 +177,7 @@
 						<PipeSegment id="30">
 							<id>30</id>
 							<name>S22---S23</name>
-							<flowRate>4.00</flowRate>
+							<flowRate>1.00</flowRate>
 							<length>200.0</length>
 							<crossSectionArea>1.00</crossSectionArea>
 							<batch reference="19"/>
@@ -202,7 +202,7 @@
 						<PipeSegment id="34">
 							<id>34</id>
 							<name>S21---S22</name>
-							<flowRate>4.00</flowRate>
+							<flowRate>1.00</flowRate>
 							<length>200.0</length>
 							<crossSectionArea>1.00</crossSectionArea>
 							<batch reference="19"/>
@@ -211,7 +211,7 @@
 						<PipeSegment id="35">
 							<id>35</id>
 							<name>S22---S23</name>
-							<flowRate>4.00</flowRate>
+							<flowRate>1.00</flowRate>
 							<length>200.0</length>
 							<crossSectionArea>1.00</crossSectionArea>
 							<batch reference="19"/>
@@ -235,7 +235,7 @@
 						<PipeSegment id="40">
 							<id>40</id>
 							<name>S11---S12</name>
-							<flowRate>4.00</flowRate>
+							<flowRate>1.00</flowRate>
 							<length>200.0</length>
 							<crossSectionArea>1.00</crossSectionArea>
 							<batch reference="36"/>
@@ -244,7 +244,7 @@
 						<PipeSegment id="41">
 							<id>41</id>
 							<name>S12---S13</name>
-							<flowRate>4.00</flowRate>
+							<flowRate>1.00</flowRate>
 							<length>200.0</length>
 							<crossSectionArea>1.00</crossSectionArea>
 							<batch reference="36"/>
@@ -269,7 +269,7 @@
 						<PipeSegment id="45">
 							<id>45</id>
 							<name>S11---S12</name>
-							<flowRate>4.00</flowRate>
+							<flowRate>1.00</flowRate>
 							<length>200.0</length>
 							<crossSectionArea>1.00</crossSectionArea>
 							<batch reference="36"/>
@@ -287,7 +287,7 @@
 						<PipeSegment id="47">
 							<id>47</id>
 							<name>S22---S23</name>
-							<flowRate>4.00</flowRate>
+							<flowRate>1.00</flowRate>
 							<length>200.0</length>
 							<crossSectionArea>1.00</crossSectionArea>
 							<batch reference="36"/>
@@ -312,7 +312,7 @@
 						<PipeSegment id="51">
 							<id>51</id>
 							<name>S21---S22</name>
-							<flowRate>4.00</flowRate>
+							<flowRate>1.00</flowRate>
 							<length>200.0</length>
 							<crossSectionArea>1.00</crossSectionArea>
 							<batch reference="36"/>
@@ -321,7 +321,7 @@
 						<PipeSegment id="52">
 							<id>52</id>
 							<name>S22---S23</name>
-							<flowRate>4.00</flowRate>
+							<flowRate>1.00</flowRate>
 							<length>200.0</length>
 							<crossSectionArea>1.00</crossSectionArea>
 							<batch reference="36"/>
@@ -345,7 +345,7 @@
 						<PipeSegment id="57">
 							<id>57</id>
 							<name>S11---S12</name>
-							<flowRate>4.00</flowRate>
+							<flowRate>1.00</flowRate>
 							<length>200.0</length>
 							<crossSectionArea>1.00</crossSectionArea>
 							<batch reference="53"/>
@@ -354,7 +354,7 @@
 						<PipeSegment id="58">
 							<id>58</id>
 							<name>S12---S13</name>
-							<flowRate>4.00</flowRate>
+							<flowRate>1.00</flowRate>
 							<length>200.0</length>
 							<crossSectionArea>1.00</crossSectionArea>
 							<batch reference="53"/>
@@ -379,7 +379,7 @@
 						<PipeSegment id="62">
 							<id>62</id>
 							<name>S11---S12</name>
-							<flowRate>4.00</flowRate>
+							<flowRate>1.00</flowRate>
 							<length>200.0</length>
 							<crossSectionArea>1.00</crossSectionArea>
 							<batch reference="53"/>
@@ -397,7 +397,7 @@
 						<PipeSegment id="64">
 							<id>64</id>
 							<name>S22---S23</name>
-							<flowRate>4.00</flowRate>
+							<flowRate>1.00</flowRate>
 							<length>200.0</length>
 							<crossSectionArea>1.00</crossSectionArea>
 							<batch reference="53"/>
@@ -422,7 +422,7 @@
 						<PipeSegment id="68">
 							<id>68</id>
 							<name>S21---S22</name>
-							<flowRate>4.00</flowRate>
+							<flowRate>1.00</flowRate>
 							<length>200.0</length>
 							<crossSectionArea>1.00</crossSectionArea>
 							<batch reference="53"/>
@@ -431,7 +431,7 @@
 						<PipeSegment id="69">
 							<id>69</id>
 							<name>S22---S23</name>
-							<flowRate>4.00</flowRate>
+							<flowRate>1.00</flowRate>
 							<length>200.0</length>
 							<crossSectionArea>1.00</crossSectionArea>
 							<batch reference="53"/>
@@ -455,7 +455,7 @@
 						<PipeSegment id="74">
 							<id>74</id>
 							<name>S11---S12</name>
-							<flowRate>4.00</flowRate>
+							<flowRate>1.00</flowRate>
 							<length>200.0</length>
 							<crossSectionArea>1.00</crossSectionArea>
 							<batch reference="70"/>
@@ -464,7 +464,7 @@
 						<PipeSegment id="75">
 							<id>75</id>
 							<name>S12---S13</name>
-							<flowRate>4.00</flowRate>
+							<flowRate>1.00</flowRate>
 							<length>200.0</length>
 							<crossSectionArea>1.00</crossSectionArea>
 							<batch reference="70"/>
@@ -489,7 +489,7 @@
 						<PipeSegment id="79">
 							<id>79</id>
 							<name>S11---S12</name>
-							<flowRate>4.00</flowRate>
+							<flowRate>1.00</flowRate>
 							<length>200.0</length>
 							<crossSectionArea>1.00</crossSectionArea>
 							<batch reference="70"/>
@@ -507,7 +507,7 @@
 						<PipeSegment id="81">
 							<id>81</id>
 							<name>S22---S23</name>
-							<flowRate>4.00</flowRate>
+							<flowRate>1.00</flowRate>
 							<length>200.0</length>
 							<crossSectionArea>1.00</crossSectionArea>
 							<batch reference="70"/>
@@ -532,7 +532,7 @@
 						<PipeSegment id="85">
 							<id>85</id>
 							<name>S21---S22</name>
-							<flowRate>4.00</flowRate>
+							<flowRate>1.00</flowRate>
 							<length>200.0</length>
 							<crossSectionArea>1.00</crossSectionArea>
 							<batch reference="70"/>
@@ -541,7 +541,7 @@
 						<PipeSegment id="86">
 							<id>86</id>
 							<name>S22---S23</name>
-							<flowRate>4.00</flowRate>
+							<flowRate>1.00</flowRate>
 							<length>200.0</length>
 							<crossSectionArea>1.00</crossSectionArea>
 							<batch reference="70"/>
@@ -565,7 +565,7 @@
 						<PipeSegment id="91">
 							<id>91</id>
 							<name>S11---S12</name>
-							<flowRate>4.00</flowRate>
+							<flowRate>1.00</flowRate>
 							<length>200.0</length>
 							<crossSectionArea>1.00</crossSectionArea>
 							<batch reference="87"/>
@@ -574,7 +574,7 @@
 						<PipeSegment id="92">
 							<id>92</id>
 							<name>S12---S13</name>
-							<flowRate>4.00</flowRate>
+							<flowRate>1.00</flowRate>
 							<length>200.0</length>
 							<crossSectionArea>1.00</crossSectionArea>
 							<batch reference="87"/>
@@ -599,7 +599,7 @@
 						<PipeSegment id="96">
 							<id>96</id>
 							<name>S11---S12</name>
-							<flowRate>4.00</flowRate>
+							<flowRate>1.00</flowRate>
 							<length>200.0</length>
 							<crossSectionArea>1.00</crossSectionArea>
 							<batch reference="87"/>
@@ -617,7 +617,7 @@
 						<PipeSegment id="98">
 							<id>98</id>
 							<name>S22---S23</name>
-							<flowRate>4.00</flowRate>
+							<flowRate>1.00</flowRate>
 							<length>200.0</length>
 							<crossSectionArea>1.00</crossSectionArea>
 							<batch reference="87"/>
@@ -642,7 +642,7 @@
 						<PipeSegment id="102">
 							<id>102</id>
 							<name>S21---S22</name>
-							<flowRate>4.00</flowRate>
+							<flowRate>1.00</flowRate>
 							<length>200.0</length>
 							<crossSectionArea>1.00</crossSectionArea>
 							<batch reference="87"/>
@@ -651,7 +651,7 @@
 						<PipeSegment id="103">
 							<id>103</id>
 							<name>S22---S23</name>
-							<flowRate>4.00</flowRate>
+							<flowRate>1.00</flowRate>
 							<length>200.0</length>
 							<crossSectionArea>1.00</crossSectionArea>
 							<batch reference="87"/>
@@ -675,7 +675,7 @@
 						<PipeSegment id="108">
 							<id>108</id>
 							<name>S11---S12</name>
-							<flowRate>4.00</flowRate>
+							<flowRate>1.00</flowRate>
 							<length>200.0</length>
 							<crossSectionArea>1.00</crossSectionArea>
 							<batch reference="104"/>
@@ -684,7 +684,7 @@
 						<PipeSegment id="109">
 							<id>109</id>
 							<name>S12---S13</name>
-							<flowRate>4.00</flowRate>
+							<flowRate>1.00</flowRate>
 							<length>200.0</length>
 							<crossSectionArea>1.00</crossSectionArea>
 							<batch reference="104"/>
@@ -709,7 +709,7 @@
 						<PipeSegment id="113">
 							<id>113</id>
 							<name>S11---S12</name>
-							<flowRate>4.00</flowRate>
+							<flowRate>1.00</flowRate>
 							<length>200.0</length>
 							<crossSectionArea>1.00</crossSectionArea>
 							<batch reference="104"/>
@@ -727,7 +727,7 @@
 						<PipeSegment id="115">
 							<id>115</id>
 							<name>S22---S23</name>
-							<flowRate>4.00</flowRate>
+							<flowRate>1.00</flowRate>
 							<length>200.0</length>
 							<crossSectionArea>1.00</crossSectionArea>
 							<batch reference="104"/>
@@ -752,7 +752,7 @@
 						<PipeSegment id="119">
 							<id>119</id>
 							<name>S21---S22</name>
-							<flowRate>4.00</flowRate>
+							<flowRate>1.00</flowRate>
 							<length>200.0</length>
 							<crossSectionArea>1.00</crossSectionArea>
 							<batch reference="104"/>
@@ -761,7 +761,7 @@
 						<PipeSegment id="120">
 							<id>120</id>
 							<name>S22---S23</name>
-							<flowRate>4.00</flowRate>
+							<flowRate>1.00</flowRate>
 							<length>200.0</length>
 							<crossSectionArea>1.00</crossSectionArea>
 							<batch reference="104"/>
@@ -785,7 +785,7 @@
 						<PipeSegment id="125">
 							<id>125</id>
 							<name>S11---S12</name>
-							<flowRate>4.00</flowRate>
+							<flowRate>1.00</flowRate>
 							<length>200.0</length>
 							<crossSectionArea>1.00</crossSectionArea>
 							<batch reference="121"/>
@@ -794,7 +794,7 @@
 						<PipeSegment id="126">
 							<id>126</id>
 							<name>S12---S13</name>
-							<flowRate>4.00</flowRate>
+							<flowRate>1.00</flowRate>
 							<length>200.0</length>
 							<crossSectionArea>1.00</crossSectionArea>
 							<batch reference="121"/>
@@ -819,7 +819,7 @@
 						<PipeSegment id="130">
 							<id>130</id>
 							<name>S11---S12</name>
-							<flowRate>4.00</flowRate>
+							<flowRate>1.00</flowRate>
 							<length>200.0</length>
 							<crossSectionArea>1.00</crossSectionArea>
 							<batch reference="121"/>
@@ -837,7 +837,7 @@
 						<PipeSegment id="132">
 							<id>132</id>
 							<name>S22---S23</name>
-							<flowRate>4.00</flowRate>
+							<flowRate>1.00</flowRate>
 							<length>200.0</length>
 							<crossSectionArea>1.00</crossSectionArea>
 							<batch reference="121"/>
@@ -862,7 +862,7 @@
 						<PipeSegment id="136">
 							<id>136</id>
 							<name>S21---S22</name>
-							<flowRate>4.00</flowRate>
+							<flowRate>1.00</flowRate>
 							<length>200.0</length>
 							<crossSectionArea>1.00</crossSectionArea>
 							<batch reference="121"/>
@@ -871,7 +871,7 @@
 						<PipeSegment id="137">
 							<id>137</id>
 							<name>S22---S23</name>
-							<flowRate>4.00</flowRate>
+							<flowRate>1.00</flowRate>
 							<length>200.0</length>
 							<crossSectionArea>1.00</crossSectionArea>
 							<batch reference="121"/>
@@ -895,7 +895,7 @@
 						<PipeSegment id="142">
 							<id>142</id>
 							<name>S11---S12</name>
-							<flowRate>4.00</flowRate>
+							<flowRate>1.00</flowRate>
 							<length>200.0</length>
 							<crossSectionArea>1.00</crossSectionArea>
 							<batch reference="138"/>
@@ -904,7 +904,7 @@
 						<PipeSegment id="143">
 							<id>143</id>
 							<name>S12---S13</name>
-							<flowRate>4.00</flowRate>
+							<flowRate>1.00</flowRate>
 							<length>200.0</length>
 							<crossSectionArea>1.00</crossSectionArea>
 							<batch reference="138"/>
@@ -929,7 +929,7 @@
 						<PipeSegment id="147">
 							<id>147</id>
 							<name>S11---S12</name>
-							<flowRate>4.00</flowRate>
+							<flowRate>1.00</flowRate>
 							<length>200.0</length>
 							<crossSectionArea>1.00</crossSectionArea>
 							<batch reference="138"/>
@@ -947,7 +947,7 @@
 						<PipeSegment id="149">
 							<id>149</id>
 							<name>S22---S23</name>
-							<flowRate>4.00</flowRate>
+							<flowRate>1.00</flowRate>
 							<length>200.0</length>
 							<crossSectionArea>1.00</crossSectionArea>
 							<batch reference="138"/>
@@ -972,7 +972,7 @@
 						<PipeSegment id="153">
 							<id>153</id>
 							<name>S21---S22</name>
-							<flowRate>4.00</flowRate>
+							<flowRate>1.00</flowRate>
 							<length>200.0</length>
 							<crossSectionArea>1.00</crossSectionArea>
 							<batch reference="138"/>
@@ -981,7 +981,7 @@
 						<PipeSegment id="154">
 							<id>154</id>
 							<name>S22---S23</name>
-							<flowRate>4.00</flowRate>
+							<flowRate>1.00</flowRate>
 							<length>200.0</length>
 							<crossSectionArea>1.00</crossSectionArea>
 							<batch reference="138"/>
@@ -1005,7 +1005,7 @@
 						<PipeSegment id="159">
 							<id>159</id>
 							<name>S11---S12</name>
-							<flowRate>4.00</flowRate>
+							<flowRate>1.00</flowRate>
 							<length>200.0</length>
 							<crossSectionArea>1.00</crossSectionArea>
 							<batch reference="155"/>
@@ -1014,7 +1014,7 @@
 						<PipeSegment id="160">
 							<id>160</id>
 							<name>S12---S13</name>
-							<flowRate>4.00</flowRate>
+							<flowRate>1.00</flowRate>
 							<length>200.0</length>
 							<crossSectionArea>1.00</crossSectionArea>
 							<batch reference="155"/>
@@ -1039,7 +1039,7 @@
 						<PipeSegment id="164">
 							<id>164</id>
 							<name>S11---S12</name>
-							<flowRate>4.00</flowRate>
+							<flowRate>1.00</flowRate>
 							<length>200.0</length>
 							<crossSectionArea>1.00</crossSectionArea>
 							<batch reference="155"/>
@@ -1057,7 +1057,7 @@
 						<PipeSegment id="166">
 							<id>166</id>
 							<name>S22---S23</name>
-							<flowRate>4.00</flowRate>
+							<flowRate>1.00</flowRate>
 							<length>200.0</length>
 							<crossSectionArea>1.00</crossSectionArea>
 							<batch reference="155"/>
@@ -1082,7 +1082,7 @@
 						<PipeSegment id="170">
 							<id>170</id>
 							<name>S21---S22</name>
-							<flowRate>4.00</flowRate>
+							<flowRate>1.00</flowRate>
 							<length>200.0</length>
 							<crossSectionArea>1.00</crossSectionArea>
 							<batch reference="155"/>
@@ -1091,7 +1091,7 @@
 						<PipeSegment id="171">
 							<id>171</id>
 							<name>S22---S23</name>
-							<flowRate>4.00</flowRate>
+							<flowRate>1.00</flowRate>
 							<length>200.0</length>
 							<crossSectionArea>1.00</crossSectionArea>
 							<batch reference="155"/>

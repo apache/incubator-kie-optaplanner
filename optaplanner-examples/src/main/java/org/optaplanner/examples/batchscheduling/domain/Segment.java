@@ -10,21 +10,12 @@ public class Segment extends AbstractPersistable {
     private Batch batch;
     private RoutePath routePath;
     private String name;
-    private Integer sequence;
 
-    //flowRate is in m3/minute
+    //flowRate is in m3/minute (i.e. meter cube per minute)
     private float flowRate;
 
     private float length;
     private float crossSectionArea;
-
-    public Integer getSequence() {
-        return sequence;
-    }
-
-    public void setSequence(Integer sequence) {
-        this.sequence = sequence;
-    }
 
     public Batch getBatch() {
         return batch;
@@ -73,5 +64,4 @@ public class Segment extends AbstractPersistable {
     public void setCrossSectionArea(float crossSectionArea) {
         this.crossSectionArea = crossSectionArea;
     }
-
 }

@@ -5,19 +5,18 @@ import java.util.List;
 import org.optaplanner.core.api.domain.entity.PlanningEntity;
 import org.optaplanner.core.api.domain.valuerange.ValueRangeProvider;
 import org.optaplanner.core.api.domain.variable.PlanningVariable;
-import org.optaplanner.examples.batchscheduling.domain.solver.RoutePathStrengthWeightFactory;
 import org.optaplanner.examples.common.domain.AbstractPersistable;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 
-@PlanningEntity(difficultyComparatorClass = RoutePathStrengthWeightFactory.class)
+@PlanningEntity
 @XStreamAlias("PipeAllocationPath")
 public class AllocationPath extends AbstractPersistable {
 
     private Batch batch;
     private List<RoutePath> routePathList;
 
-    // Planning variables: changes during planning, between score calculations.
+    // Planning variable, changes during planning, between score calculation
     private RoutePath routePath;
 
     public Batch getBatch() {

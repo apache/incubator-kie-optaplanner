@@ -5,240 +5,234 @@ import java.util.Map;
 
 import org.optaplanner.core.api.score.buildin.bendablelong.BendableLongScore;
 import org.optaplanner.core.api.score.calculator.EasyScoreCalculator;
+import org.optaplanner.examples.batchscheduling.app.BatchSchedulingApp;
 import org.optaplanner.examples.batchscheduling.domain.Allocation;
 import org.optaplanner.examples.batchscheduling.domain.AllocationPath;
+import org.optaplanner.examples.batchscheduling.domain.RoutePath;
 import org.optaplanner.examples.batchscheduling.domain.Schedule;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class BatchSchedulingEasyScoreCalculator implements EasyScoreCalculator<Schedule, BendableLongScore> {
 
-    final Logger logger = LoggerFactory.getLogger(BatchSchedulingEasyScoreCalculator.class);
-    public static final String ROUTE_PATH_SEPERATOR = "---";
-    private static final int OTHER_ALLOCATION_PENALTY = 1;
-    private static final int CURRENT_ALLOCATION_PENALTY = 1;
-    private static final boolean COMPUTE_hard1Score = true;
-    private static final boolean COMPUTE_soft2Score = true;
+	final Logger logger = LoggerFactory.getLogger(BatchSchedulingEasyScoreCalculator.class);
 
-    public BendableLongScore calculateScore(Schedule schedule) {
+	// Refer to IncrementalScoreCalculator for comments
+	public BendableLongScore calculateScore(Schedule schedule) {
 
-        //Refer to IncrementalScoreCalculator for description 
-        long hard0Score = 0;
-        long hard1Score = 0;
-        long hard2Score = 0;
-        long soft0Score = 0;
-        long soft1Score = 0;
-        long soft2Score = 0;
+		long hard0Score = 0;
+		long hard1Score = 0;
+		long hard2Score = 0;
+		long soft0Score = 0;
+		long soft1Score = 0;
 
-        Map<Long, String> batchRoutePathMap = new HashMap<Long, String>();
-        Map<Long, Long> batchOtherPenaltyValueMap = new HashMap<Long, Long>();
-        Map<Long, Long> batchCurrentPenaltyValueMap = new HashMap<Long, Long>();
-        Map<String, Long> segmentOverlapMap = new HashMap<String, Long>();
+		Map<Long, String> batchRoutePathMap = new HashMap<Long, String>();
+		Map<Long, Long> batchOtherPenaltyValueMap = new HashMap<Long, Long>();
+		Map<Long, Long> batchCurrentPenaltyValueMap = new HashMap<Long, Long>();
+		Map<String, Long> segmentOverlapMap = new HashMap<String, Long>();
 
-        if (schedule.getAllocationPathList() != null) {
-            for (AllocationPath allocationPath : schedule.getAllocationPathList()) {
-                if (allocationPath.getRoutePath() != null) {
-                    batchRoutePathMap.put(allocationPath.getBatch().getId(), allocationPath.getRoutePath().getPath());
+		for (AllocationPath allocationPath : schedule.getAllocationPathList()) {
 
-                    String[] array1 = getSegmentArray(allocationPath.getRoutePath().getPath());
+			batchOtherPenaltyValueMap.put(allocationPath.getBatch().getId(), 0L);
+			batchCurrentPenaltyValueMap.put(allocationPath.getBatch().getId(), 0L);
 
-                    for (AllocationPath allocationPath2 : schedule.getAllocationPathList()) {
-                        if ((allocationPath2.getRoutePath() != null)
-                                && (!(allocationPath.getBatch().equals(allocationPath2.getBatch())))) {
-                            for (String str2 : getSegmentArray(allocationPath2.getRoutePath().getPath())) {
-                                for (String str1 : array1) {
-                                    if (str2.equals(str1)) {
-                                        soft2Score += 1;
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
+			if (allocationPath.getRoutePath() == null) {
+				continue;
+			}
 
-                batchOtherPenaltyValueMap.put(allocationPath.getBatch().getId(), 0L);
-                batchCurrentPenaltyValueMap.put(allocationPath.getBatch().getId(), 0L);
-            }
-        }
+			batchRoutePathMap.put(allocationPath.getBatch().getId(), allocationPath.getRoutePath().getPath());
 
-        if (schedule.getAllocationList() != null) {
-            for (Allocation allocation : schedule.getAllocationList()) {
-                if (batchRoutePathMap.get(allocation.getBatch().getId()) != null) {
-                    if (allocation.getRoutePath().getPath().equals(batchRoutePathMap.get(allocation.getBatch().getId()))) {
-                        if (allocation.getDelay() == null) {
-                            batchCurrentPenaltyValueMap.put(allocation.getBatch().getId(),
-                                    batchCurrentPenaltyValueMap.get(allocation.getBatch().getId()) + 1);
-                        } else if (allocation.getStartInjectionTime() != null) {
-                            for (Allocation allocation2 : schedule.getAllocationList()) {
-                                if ((allocation2.getDelay() != null)
-                                        && (allocation2.getBatch().getId() != allocation.getBatch().getId())
-                                        && (batchRoutePathMap.get(allocation2.getBatch().getId()) != null)
-                                        && (allocation2.getRoutePath().getPath()
-                                                .equals(batchRoutePathMap.get(allocation2.getBatch().getId())))
-                                        && (allocation2.getSegment().getName().equals(allocation.getSegment().getName()))) {
-                                    Long newOverlapPenaltyValue = 0L;
+		}
 
-                                    if ((allocation2.getStartInjectionTime() != null)
-                                            && (allocation2.getEndInjectionTime() != null)) {
-                                        if ((allocation2.getStartInjectionTime() <= allocation.getStartInjectionTime())
-                                                && (allocation2.getEndInjectionTime() >= allocation.getEndInjectionTime())) {
-                                            newOverlapPenaltyValue =
-                                                    allocation.getEndInjectionTime() - allocation.getStartInjectionTime();
-                                        } else if ((allocation2.getStartInjectionTime() >= allocation.getStartInjectionTime())
-                                                && (allocation2.getEndInjectionTime() <= allocation.getEndInjectionTime())) {
-                                            newOverlapPenaltyValue =
-                                                    allocation2.getEndInjectionTime() - allocation2.getStartInjectionTime();
-                                        } else if ((allocation2.getStartInjectionTime() <= allocation.getStartInjectionTime())
-                                                && (allocation2.getEndInjectionTime() > allocation.getStartInjectionTime())) {
-                                            newOverlapPenaltyValue =
-                                                    allocation2.getEndInjectionTime() - allocation.getStartInjectionTime();
-                                        } else if ((allocation2.getStartInjectionTime() < allocation.getEndInjectionTime())
-                                                && (allocation2.getEndInjectionTime() >= allocation.getEndInjectionTime())) {
-                                            newOverlapPenaltyValue =
-                                                    allocation.getEndInjectionTime() - allocation2.getStartInjectionTime();
-                                        }
+		for (Allocation allocation : schedule.getAllocationList()) {
 
-                                        if ((allocation2.getStartDeliveryTime() <= allocation.getStartDeliveryTime())
-                                                && (allocation2.getEndDeliveryTime() >= allocation.getEndDeliveryTime())) {
-                                            newOverlapPenaltyValue +=
-                                                    allocation.getEndDeliveryTime() - allocation.getStartDeliveryTime();
-                                        } else if ((allocation2.getStartDeliveryTime() >= allocation.getStartDeliveryTime())
-                                                && (allocation2.getEndDeliveryTime() <= allocation.getEndDeliveryTime())) {
-                                            newOverlapPenaltyValue +=
-                                                    allocation2.getEndDeliveryTime() - allocation2.getStartDeliveryTime();
-                                        } else if ((allocation2.getStartDeliveryTime() <= allocation.getStartDeliveryTime())
-                                                && (allocation2.getEndDeliveryTime() > allocation.getStartDeliveryTime())) {
-                                            newOverlapPenaltyValue +=
-                                                    allocation2.getEndDeliveryTime() - allocation.getStartDeliveryTime();
-                                        } else if ((allocation2.getStartDeliveryTime() < allocation.getEndDeliveryTime())
-                                                && (allocation2.getEndDeliveryTime() >= allocation.getEndDeliveryTime())) {
-                                            newOverlapPenaltyValue +=
-                                                    allocation.getEndDeliveryTime() - allocation2.getStartDeliveryTime();
-                                        }
+			if (batchRoutePathMap.get(allocation.getBatch().getId()) == null) {
+				batchCurrentPenaltyValueMap.put(allocation.getBatch().getId(),
+						batchCurrentPenaltyValueMap.get(allocation.getBatch().getId()) + 1);
+				continue;
+			}
 
-                                        if ((allocation2.getStartInjectionTime() >= allocation.getStartInjectionTime())
-                                                && (allocation2.getEndDeliveryTime() <= allocation.getEndDeliveryTime())) {
-                                            newOverlapPenaltyValue +=
-                                                    allocation.getEndDeliveryTime() - allocation2.getEndDeliveryTime();
-                                        }
+			if (!(allocation.getRoutePath().getPath().equals(batchRoutePathMap.get(allocation.getBatch().getId())))) {
 
-                                        if ((allocation2.getStartInjectionTime() <= allocation.getStartInjectionTime())
-                                                && (allocation2.getEndDeliveryTime() >= allocation.getEndDeliveryTime())) {
-                                            newOverlapPenaltyValue +=
-                                                    allocation2.getEndDeliveryTime() - allocation.getEndDeliveryTime();
-                                        }
+				if (allocation.getDelay() != null) {
+					batchOtherPenaltyValueMap.put(allocation.getBatch().getId(),
+							batchOtherPenaltyValueMap.get(allocation.getBatch().getId()) + 1);
+				}
+				continue;
+			}
 
-                                        if (newOverlapPenaltyValue > 0L) {
-                                            segmentOverlapMap.put(
-                                                    generateCompositeKey(allocation.getSegment().getId().toString(),
-                                                            allocation2.getSegment().getId().toString()),
-                                                    newOverlapPenaltyValue);
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    } else {
-                        if (allocation.getDelay() != null) {
-                            batchOtherPenaltyValueMap.put(allocation.getBatch().getId(),
-                                    batchOtherPenaltyValueMap.get(allocation.getBatch().getId()) + 1);
-                        }
-                    }
-                } else {
-                    batchCurrentPenaltyValueMap.put(allocation.getBatch().getId(),
-                            batchCurrentPenaltyValueMap.get(allocation.getBatch().getId()) + 1);
-                }
-            }
-        }
+			if (allocation.getDelay() == null) {
+				batchCurrentPenaltyValueMap.put(allocation.getBatch().getId(),
+						batchCurrentPenaltyValueMap.get(allocation.getBatch().getId()) + 1);
+				continue;
+			}
 
-        for (Map.Entry<Long, Long> entry : batchCurrentPenaltyValueMap.entrySet()) {
-            if ((entry.getValue() > 0) || (batchRoutePathMap.get(entry.getKey()) == null)) {
-                hard0Score -= CURRENT_ALLOCATION_PENALTY;
+			Long allocationStartInjectionTime = allocation.getStartInjectionTime(); 
 
-                if (COMPUTE_hard1Score) {
-                    hard1Score -= entry.getValue();
-                }
-            }
-        }
+			if (allocationStartInjectionTime == null) {
+				continue;
+			}
 
-        for (Map.Entry<Long, Long> entry : batchOtherPenaltyValueMap.entrySet()) {
-            if ((entry.getValue() > 0) && (batchRoutePathMap.get(entry.getKey()) != null)) {
-                hard0Score -= OTHER_ALLOCATION_PENALTY;
+			Long allocationEndInjectionTime = allocation.getEndInjectionTime();
+			Long allocationStartDeliveryTime = allocation.getStartDeliveryTime(); 
+			Long allocationEndDeliveryTime = allocation.getEndDeliveryTime();
 
-                if (COMPUTE_hard1Score) {
-                    hard1Score -= entry.getValue();
-                }
-            }
-        }
+			for (Allocation allocation2 : schedule.getAllocationList()) {
 
-        for (Map.Entry<String, Long> entry : segmentOverlapMap.entrySet()) {
-            hard2Score -= entry.getValue();
-        }
 
-        for (Allocation allocation : schedule.getAllocationList()) {
-            if (batchRoutePathMap.get(allocation.getBatch().getId()) != null) {
-                if (allocation.getRoutePath().getPath().equals(batchRoutePathMap.get(allocation.getBatch().getId()))) {
-                    if ((allocation.getEndInjectionTime() != null) && (allocation.getEndInjectionTime() > soft0Score)) {
-                        soft0Score = allocation.getEndInjectionTime();
-                    }
-                }
-            }
-        }
+				if (allocation2.getDelay() == null) {
+					continue;
+				}
 
-        soft0Score = -soft0Score;
+				if (allocation2.getBatch().getId() == allocation.getBatch().getId()) {
+					continue;
+				}
 
-        Map<Long, Long> map1 = new HashMap<Long, Long>();
+				if (batchRoutePathMap.get(allocation2.getBatch().getId()) == null) {
+					continue;
+				}
 
-        for (Allocation allocation : schedule.getAllocationList()) {
+				if (!(allocation2.getRoutePath().getPath()
+						.equals(batchRoutePathMap.get(allocation2.getBatch().getId())))) {
+					continue;
+				}
 
-            if (batchRoutePathMap.get(allocation.getBatch().getId()) != null) {
-                if (allocation.getRoutePath().getPath().equals(batchRoutePathMap.get(allocation.getBatch().getId()))) {
-                    if ((allocation.getEndInjectionTime() != null)) {
-                        if (map1.get(allocation.getBatch().getId()) != null) {
-                            if (allocation.getEndInjectionTime() > map1.get(allocation.getBatch().getId())) {
-                                map1.put(allocation.getBatch().getId(), allocation.getEndInjectionTime());
-                            }
-                        } else {
-                            map1.put(allocation.getBatch().getId(), allocation.getEndInjectionTime());
-                        }
-                    }
-                }
-            }
-        }
+				if (!(allocation2.getSegment().getName().equals(allocation.getSegment().getName()))) {
+					continue;
+				}
 
-        for (Map.Entry<Long, Long> entry : map1.entrySet()) {
-            soft1Score -= entry.getValue();
-        }
+				Long allocation2StartInjectionTime = allocation2.getStartInjectionTime(); 
 
-        if (COMPUTE_soft2Score) {
-            soft2Score = -soft2Score;
-        } else {
-            soft2Score = 0;
-        }
+				if (allocation2StartInjectionTime == null) {
+					continue;
+				}
 
-        return BendableLongScore.of(new long[] { hard0Score, hard1Score, hard2Score },
-                new long[] { soft0Score, soft1Score, soft2Score });
-    }
+				Long allocation2EndInjectionTime = allocation2.getEndInjectionTime();
+				Long allocation2StartDeliveryTime = allocation2.getStartDeliveryTime(); 
+				Long allocation2EndDeliveryTime = allocation2.getEndDeliveryTime();
 
-    public String generateCompositeKey(String key1, String key2) {
-        return key1 + "#" + key2;
-    }
+				Long newOverlapPenaltyValue = 0L;
 
-    public String generateKey(Allocation allocation) {
-        return allocation.getBatch().getName() + ":" + allocation.getRoutePath().getPath() + ":"
-                + allocation.getSegment().getName();
-    }
+				if ((allocation2StartInjectionTime <= allocation.getStartInjectionTime())
+						&& (allocation2EndInjectionTime >= allocationEndInjectionTime)) {
+					newOverlapPenaltyValue = allocationEndInjectionTime - allocation.getStartInjectionTime();
+				} else if ((allocation2StartInjectionTime >= allocation.getStartInjectionTime())
+						&& (allocation2EndInjectionTime <= allocationEndInjectionTime)) {
+					newOverlapPenaltyValue = allocation2EndInjectionTime - allocation2StartInjectionTime;
+				} else if ((allocation2StartInjectionTime <= allocation.getStartInjectionTime())
+						&& (allocation2EndInjectionTime > allocation.getStartInjectionTime())) {
+					newOverlapPenaltyValue = allocation2EndInjectionTime - allocation.getStartInjectionTime();
+				} else if ((allocation2StartInjectionTime < allocationEndInjectionTime)
+						&& (allocation2EndInjectionTime >= allocationEndInjectionTime)) {
+					newOverlapPenaltyValue = allocationEndInjectionTime - allocation2StartInjectionTime;
+				}
 
-    public String[] getSegmentArray(String routePath) {
-        String[] array1 = routePath.split(ROUTE_PATH_SEPERATOR);
+				if ((allocation2StartDeliveryTime <= allocationStartDeliveryTime)
+						&& (allocation2EndDeliveryTime >= allocationEndDeliveryTime)) {
+					newOverlapPenaltyValue += allocationEndDeliveryTime - allocationStartDeliveryTime;
+				} else if ((allocation2StartDeliveryTime >= allocationStartDeliveryTime)
+						&& (allocation2EndDeliveryTime <= allocationEndDeliveryTime)) {
+					newOverlapPenaltyValue += allocation2EndDeliveryTime - allocation2StartDeliveryTime;
+				} else if ((allocation2StartDeliveryTime <= allocationStartDeliveryTime)
+						&& (allocation2EndDeliveryTime > allocationStartDeliveryTime)) {
+					newOverlapPenaltyValue += allocation2EndDeliveryTime - allocationStartDeliveryTime;
+				} else if ((allocation2StartDeliveryTime < allocationEndDeliveryTime)
+						&& (allocation2EndDeliveryTime >= allocationEndDeliveryTime)) {
+					newOverlapPenaltyValue += allocationEndDeliveryTime - allocation2StartDeliveryTime;
+				}
 
-        String[] array2 = new String[array1.length - 1];
+				if ((allocation2StartInjectionTime >= allocation.getStartInjectionTime())
+						&& (allocation2EndDeliveryTime <= allocationEndDeliveryTime)) {
+					newOverlapPenaltyValue += allocationEndDeliveryTime - allocation2EndDeliveryTime;
+				}
 
-        for (int i = 0; i < array2.length; i++) {
-            array2[i] = array1[i] + ROUTE_PATH_SEPERATOR + array1[i + 1];
-        }
+				if ((allocation2StartInjectionTime <= allocation.getStartInjectionTime())
+						&& (allocation2EndDeliveryTime >= allocationEndDeliveryTime)) {
+					newOverlapPenaltyValue += allocation2EndDeliveryTime - allocationEndDeliveryTime;
+				}
 
-        return array2;
-    }
+				if (newOverlapPenaltyValue > 0L) {
+					segmentOverlapMap.put(allocation.getSegment().getId().toString() + "#"
+							+ allocation2.getSegment().getId().toString(), newOverlapPenaltyValue);
+				}
+			}
+		}
+
+		for (Map.Entry<Long, Long> entry : batchCurrentPenaltyValueMap.entrySet()) {
+
+			if ((entry.getValue() > 0) || (batchRoutePathMap.get(entry.getKey()) == null)) {
+				hard0Score -= BatchSchedulingApp.SELECTED_ROUTEPATH_NON_ALLOCATION_PENALTY;
+				hard1Score -= entry.getValue();
+			}
+		}
+
+		for (Map.Entry<Long, Long> entry : batchOtherPenaltyValueMap.entrySet()) {
+
+			if (batchRoutePathMap.get(entry.getKey()) == null) {
+				continue;
+			}
+
+			if (entry.getValue() > 0) {
+				hard0Score -= BatchSchedulingApp.NON_SELECTED_ROUTEPATH_ALLOCATION_PENALTY;
+				hard1Score -= entry.getValue();
+			}
+		}
+
+		for (Map.Entry<String, Long> entry : segmentOverlapMap.entrySet()) {
+			hard2Score -= entry.getValue();
+		}
+
+		for (Allocation allocation : schedule.getAllocationList()) {
+			if (batchRoutePathMap.get(allocation.getBatch().getId()) == null) {
+				continue;
+			}
+
+			if (allocation.getEndDeliveryTime() == null) {
+				continue;
+			}
+
+			if (!(allocation.getRoutePath().getPath().equals(batchRoutePathMap.get(allocation.getBatch().getId())))) {
+				continue;
+			}
+
+			long longEndDeliverytime = allocation.getEndDeliveryTime();
+
+			if (longEndDeliverytime <= soft0Score) {
+				continue;
+			}
+
+			soft0Score = longEndDeliverytime;
+		}
+
+		long segmentCount = 0L;
+
+		Map<String, Boolean> segmentMapCount = new HashMap<String, Boolean>();
+
+		for (Allocation allocation : schedule.getAllocationList()) {
+			segmentMapCount.put(allocation.getSegment().getName(), true);
+		}
+
+		segmentCount = segmentMapCount.size();
+
+		Map<String, Boolean> segmentMap = new HashMap<String, Boolean>();
+
+		for (AllocationPath allocationPath : schedule.getAllocationPathList()) {
+			if (allocationPath.getRoutePath() == null) {
+				continue;
+			}
+
+			for (String s : RoutePath.getSegmentArray(allocationPath.getRoutePath().getPath())) {
+				segmentMap.put(s, true);
+			}
+		}
+
+		soft0Score = -soft0Score;
+		soft1Score = segmentMap.size() - segmentCount;
+
+		logger.debug(String.format("%-" + 50 + "." + 50 + "s", "Basic") + ":: " + hard0Score + " " + hard1Score + " " + hard2Score + " / " + soft0Score + " " + soft1Score);
+
+		return BendableLongScore.of(new long[] { hard0Score, hard1Score, hard2Score },
+				new long[] { soft0Score, soft1Score });
+	}
 
 }

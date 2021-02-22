@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<solver>
-	<!--  <environmentMode>FULL_ASSERT</environmentMode>  -->
+<solver xmlns="https://www.optaplanner.org/xsd/solver" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="https://www.optaplanner.org/xsd/solver https://www.optaplanner.org/xsd/solver/solver.xsd">
+    <!--<environmentMode>FULL_ASSERT</environmentMode>-->
 	<solutionClass>org.optaplanner.examples.batchscheduling.domain.Schedule</solutionClass>
 	<entityClass>org.optaplanner.examples.batchscheduling.domain.Allocation</entityClass>
 	<entityClass>org.optaplanner.examples.batchscheduling.domain.AllocationPath</entityClass>
@@ -10,29 +11,29 @@
 		<!--<initializingScoreTrend>ANY</initializingScoreTrend> -->
 		<!--<assertionScoreDirectorFactory> -->
 		<!--<easyScoreCalculatorClass>org.optaplanner.examples.batchscheduling.solver.score.BatchSchedulingEasyScoreCalculator</easyScoreCalculatorClass> -->
-		<!--</assertionScoreDirectorFactory>-->
+		<!--</assertionScoreDirectorFactory> -->
 	</scoreDirectorFactory>
 	<termination>
-		<minutesSpentLimit>12</minutesSpentLimit>
+		<minutesSpentLimit>20</minutesSpentLimit>
 	</termination>
 	<constructionHeuristic>
 		<queuedEntityPlacer>
 			<entitySelector id="placerEntitySelector">
+				<entityClass>org.optaplanner.examples.batchscheduling.domain.AllocationPath</entityClass>
 				<cacheType>PHASE</cacheType>
 				<selectionOrder>ORIGINAL</selectionOrder>
-				<entityClass>org.optaplanner.examples.batchscheduling.domain.AllocationPath</entityClass>
 			</entitySelector>
 			<changeMoveSelector>
 				<entitySelector	mimicSelectorRef="placerEntitySelector"/>
 			</changeMoveSelector>
 		</queuedEntityPlacer>
 	</constructionHeuristic>
-	<constructionHeuristic>"src/main/resources/org/optaplanner/examples/batchscheduling/solver/batchSchedulingSolverConfig.xml"
+	<constructionHeuristic>
 		<queuedEntityPlacer>
 			<entitySelector id="placerEntitySelector">
+				<entityClass>org.optaplanner.examples.batchscheduling.domain.Allocation</entityClass>
 				<cacheType>PHASE</cacheType>
 				<selectionOrder>ORIGINAL</selectionOrder>
-				<entityClass>org.optaplanner.examples.batchscheduling.domain.Allocation</entityClass>
 			</entitySelector>
 			<changeMoveSelector>
 				<entitySelector mimicSelectorRef="placerEntitySelector"/>
@@ -43,33 +44,20 @@
 		<unionMoveSelector>
 			<changeMoveSelector>
 				<entitySelector>
+					<entityClass>org.optaplanner.examples.batchscheduling.domain.AllocationPath</entityClass>
 					<cacheType>PHASE</cacheType>
 					<selectionOrder>ORIGINAL</selectionOrder>
-					<entityClass>org.optaplanner.examples.batchscheduling.domain.AllocationPath</entityClass>
 				</entitySelector>
-				<valueSelector>
-					<variableName>routePath</variableName>
-				</valueSelector>
+				<valueSelector variableName="routePath"/>
 			</changeMoveSelector>
 			<changeMoveSelector>
 				<entitySelector>
+					<entityClass>org.optaplanner.examples.batchscheduling.domain.Allocation</entityClass>
 					<cacheType>PHASE</cacheType>
 					<selectionOrder>ORIGINAL</selectionOrder>
-					<entityClass>org.optaplanner.examples.batchscheduling.domain.Allocation</entityClass>
 				</entitySelector>
-				<valueSelector>
-					<variableName>delay</variableName>
-					<!-- <cacheType>PHASE</cacheType> <selectionOrder>SORTED</selectionOrder> 
-						<sorterManner>DECREASING_STRENGTH</sorterManner> -->
-				</valueSelector>
+				<valueSelector variableName="delay"/>
 			</changeMoveSelector>
 		</unionMoveSelector>
-		<acceptor>
-			<entityTabuRatio>0.9</entityTabuRatio>
-			<lateAcceptanceSize>200</lateAcceptanceSize>
-		</acceptor>
-		<forager>
-			<acceptedCountLimit>1</acceptedCountLimit>
-		</forager>
 	</localSearch>
 </solver>
