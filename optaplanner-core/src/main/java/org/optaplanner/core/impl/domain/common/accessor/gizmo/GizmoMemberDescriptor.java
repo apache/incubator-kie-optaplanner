@@ -273,16 +273,14 @@ public class GizmoMemberDescriptor {
      * The name does not include generic infomation.
      */
     public String getTypeName() {
-        String[] holder = new String[1];
-        whenMetadataIsOnField(fd -> {
-            holder[0] = fd.getType();
-        });
-
-        whenMetadataIsOnMethod(md -> {
-            holder[0] = md.getReturnType();
-        });
-
-        return org.objectweb.asm.Type.getType(holder[0]).getClassName();
+        String typeName;
+        if (metadataDescriptor instanceof FieldDescriptor) {
+            typeName = ((FieldDescriptor) metadataDescriptor).getType();
+        } else {
+            // Must be a method descriptor if it not a field descriptor
+            typeName = ((MethodDescriptor) metadataDescriptor).getReturnType();
+        }
+        return org.objectweb.asm.Type.getType(typeName).getClassName();
     }
 
     public Type getType() {
