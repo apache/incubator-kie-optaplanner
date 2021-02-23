@@ -141,7 +141,7 @@ public class GizmoSolutionClonerTest extends AbstractSolutionClonerTest {
             currentClass = currentClass.getSuperclass();
         }
         GizmoSolutionOrEntityDescriptor out =
-                new GizmoSolutionOrEntityDescriptor(entityClass, solutionDescriptor, solutionFieldToMemberDescriptor);
+                new GizmoSolutionOrEntityDescriptor(solutionDescriptor, entityClass, solutionFieldToMemberDescriptor);
         return out;
     }
 

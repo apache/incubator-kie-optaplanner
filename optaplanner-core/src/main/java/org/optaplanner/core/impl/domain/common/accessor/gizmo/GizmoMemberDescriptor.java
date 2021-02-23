@@ -286,27 +286,26 @@ public class GizmoMemberDescriptor {
     }
 
     public Type getType() {
-        Type[] out = new Type[1];
-
-        whenMetadataIsOnField(fd -> {
+        if (metadataDescriptor instanceof FieldDescriptor) {
+            FieldDescriptor fieldDescriptor = (FieldDescriptor) metadataDescriptor;
             try {
-                out[0] = declaringClass.getDeclaredField(fd.getName()).getGenericType();
+                return declaringClass.getDeclaredField(fieldDescriptor.getName()).getGenericType();
             } catch (NoSuchFieldException e) {
-                throw new IllegalStateException("Cannot find field (" + fd.getName() + ") on class (" + declaringClass + ").",
+                throw new IllegalStateException(
+                        "Cannot find field (" + fieldDescriptor.getName() + ") on class (" + declaringClass + ").",
                         e);
             }
-        });
-
-        whenMetadataIsOnMethod(md -> {
+        } else {
+            // Must be a method descriptor if it not a field descriptor
+            MethodDescriptor methodDescriptor = (MethodDescriptor) metadataDescriptor;
             try {
-                out[0] = declaringClass.getDeclaredMethod(md.getName()).getGenericReturnType();
+                return declaringClass.getDeclaredMethod(methodDescriptor.getName()).getGenericReturnType();
             } catch (NoSuchMethodException e) {
-                throw new IllegalStateException("Cannot find method (" + md.getName() + ") on class (" + declaringClass + ").",
+                throw new IllegalStateException(
+                        "Cannot find method (" + methodDescriptor.getName() + ") on class (" + declaringClass + ").",
                         e);
             }
-        });
-
-        return out[0];
+        }
     }
 
     @Override

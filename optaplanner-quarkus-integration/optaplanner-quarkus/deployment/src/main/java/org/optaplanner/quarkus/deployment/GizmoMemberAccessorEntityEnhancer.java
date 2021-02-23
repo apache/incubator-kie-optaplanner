@@ -335,7 +335,7 @@ public class GizmoMemberAccessorEntityEnhancer {
             currentClass = currentClass.getSuperclass();
         }
         GizmoSolutionOrEntityDescriptor out =
-                new GizmoSolutionOrEntityDescriptor(entityClass, solutionDescriptor, solutionFieldToMemberDescriptor);
+                new GizmoSolutionOrEntityDescriptor(solutionDescriptor, entityClass, solutionFieldToMemberDescriptor);
         memoizedMap.put(entityClass, out);
         return out;
     }
