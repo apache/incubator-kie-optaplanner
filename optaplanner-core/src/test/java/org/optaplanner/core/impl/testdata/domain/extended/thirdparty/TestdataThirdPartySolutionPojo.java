@@ -27,8 +27,8 @@ import org.optaplanner.core.impl.testdata.domain.TestdataValue;
  */
 public class TestdataThirdPartySolutionPojo extends TestdataObject {
 
-    public List<TestdataValue> valueList;
-    public List<TestdataThirdPartyEntityPojo> entityList;
+    private List<TestdataValue> valueList;
+    private List<TestdataThirdPartyEntityPojo> entityList;
 
     public TestdataThirdPartySolutionPojo() {
     }

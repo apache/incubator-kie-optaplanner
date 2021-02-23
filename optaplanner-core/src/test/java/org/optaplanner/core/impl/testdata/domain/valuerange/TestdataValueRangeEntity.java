@@ -44,14 +44,14 @@ public class TestdataValueRangeEntity extends TestdataObject {
         return entityDescriptor.getGenuineVariableDescriptor("value");
     }
 
-    public Integer integerValue;
-    public Long longValue;
-    public BigInteger bigIntegerValue;
-    public BigDecimal bigDecimalValue;
-    public LocalDate localDateValue;
-    public LocalTime localTimeValue;
-    public LocalDateTime localDateTimeValue;
-    public Year yearValue;
+    private Integer integerValue;
+    private Long longValue;
+    private BigInteger bigIntegerValue;
+    private BigDecimal bigDecimalValue;
+    private LocalDate localDateValue;
+    private LocalTime localTimeValue;
+    private LocalDateTime localDateTimeValue;
+    private Year yearValue;
 
     public TestdataValueRangeEntity() {
     }

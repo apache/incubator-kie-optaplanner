@@ -35,10 +35,10 @@ public class TestdataNullableSolution extends TestdataObject {
         return SolutionDescriptor.buildSolutionDescriptor(TestdataNullableSolution.class, TestdataNullableEntity.class);
     }
 
-    public List<TestdataValue> valueList;
-    public List<TestdataNullableEntity> entityList;
+    private List<TestdataValue> valueList;
+    private List<TestdataNullableEntity> entityList;
 
-    public SimpleScore score;
+    private SimpleScore score;
 
     public TestdataNullableSolution() {
     }

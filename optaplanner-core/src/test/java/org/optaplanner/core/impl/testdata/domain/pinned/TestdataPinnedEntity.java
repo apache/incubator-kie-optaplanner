@@ -32,9 +32,9 @@ public class TestdataPinnedEntity extends TestdataObject {
         return solutionDescriptor.findEntityDescriptorOrFail(TestdataPinnedEntity.class);
     }
 
-    public TestdataValue value;
-    public boolean locked;
-    public boolean pinned;
+    private TestdataValue value;
+    private boolean locked;
+    private boolean pinned;
 
     public TestdataPinnedEntity() {
     }

@@ -35,11 +35,11 @@ public class TestdataMultiVarSolution extends TestdataObject {
         return SolutionDescriptor.buildSolutionDescriptor(TestdataMultiVarSolution.class, TestdataMultiVarEntity.class);
     }
 
-    public List<TestdataValue> valueList;
-    public List<TestdataOtherValue> otherValueList;
-    public List<TestdataMultiVarEntity> multiVarEntityList;
+    private List<TestdataValue> valueList;
+    private List<TestdataOtherValue> otherValueList;
+    private List<TestdataMultiVarEntity> multiVarEntityList;
 
-    public SimpleScore score;
+    private SimpleScore score;
 
     public TestdataMultiVarSolution() {
     }

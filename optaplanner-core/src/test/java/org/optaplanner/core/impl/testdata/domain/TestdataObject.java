@@ -22,7 +22,7 @@ import org.optaplanner.core.impl.testdata.util.CodeAssertable;
 public class TestdataObject implements CodeAssertable {
 
     @PlanningId
-    public String code;
+    protected String code;
 
     public TestdataObject() {
     }

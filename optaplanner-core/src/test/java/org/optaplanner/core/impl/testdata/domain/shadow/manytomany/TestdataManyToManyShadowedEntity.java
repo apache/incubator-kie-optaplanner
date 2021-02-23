@@ -36,10 +36,10 @@ public class TestdataManyToManyShadowedEntity extends TestdataObject {
         return solutionDescriptor.findEntityDescriptorOrFail(TestdataManyToManyShadowedEntity.class);
     }
 
-    public TestdataValue primaryValue;
-    public TestdataValue secondaryValue;
-    public String composedCode;
-    public String reverseComposedCode;
+    private TestdataValue primaryValue;
+    private TestdataValue secondaryValue;
+    private String composedCode;
+    private String reverseComposedCode;
 
     public TestdataManyToManyShadowedEntity() {
     }

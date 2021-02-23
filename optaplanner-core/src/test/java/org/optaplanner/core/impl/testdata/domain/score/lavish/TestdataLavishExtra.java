@@ -23,11 +23,11 @@ import org.optaplanner.core.impl.testdata.domain.TestdataObject;
 
 public class TestdataLavishExtra extends TestdataObject {
 
-    public String stringProperty = "";
-    public Integer integerProperty = 1;
-    public Long longProperty = 1L;
-    public BigInteger bigIntegerProperty = BigInteger.ONE;
-    public BigDecimal bigDecimalProperty = BigDecimal.ONE;
+    private String stringProperty = "";
+    private Integer integerProperty = 1;
+    private Long longProperty = 1L;
+    private BigInteger bigIntegerProperty = BigInteger.ONE;
+    private BigDecimal bigDecimalProperty = BigDecimal.ONE;
 
     public TestdataLavishExtra() {
     }

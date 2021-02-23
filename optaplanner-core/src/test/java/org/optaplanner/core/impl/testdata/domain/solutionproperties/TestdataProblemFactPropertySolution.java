@@ -37,12 +37,12 @@ public class TestdataProblemFactPropertySolution extends TestdataObject {
         return SolutionDescriptor.buildSolutionDescriptor(TestdataProblemFactPropertySolution.class, TestdataEntity.class);
     }
 
-    public List<TestdataValue> valueList;
-    public List<Object> otherProblemFactList;
-    public Object extraObject;
-    public List<TestdataEntity> entityList;
+    private List<TestdataValue> valueList;
+    private List<Object> otherProblemFactList;
+    private Object extraObject;
+    private List<TestdataEntity> entityList;
 
-    public SimpleScore score;
+    private SimpleScore score;
 
     public TestdataProblemFactPropertySolution() {
     }

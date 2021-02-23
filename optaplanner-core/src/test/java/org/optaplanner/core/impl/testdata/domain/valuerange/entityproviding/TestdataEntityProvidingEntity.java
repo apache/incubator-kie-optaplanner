@@ -44,9 +44,9 @@ public class TestdataEntityProvidingEntity extends TestdataObject {
         return entityDescriptor.getGenuineVariableDescriptor("value");
     }
 
-    public final List<TestdataValue> valueRange;
+    private final List<TestdataValue> valueRange;
 
-    public TestdataValue value;
+    private TestdataValue value;
 
     public TestdataEntityProvidingEntity(String code, List<TestdataValue> valueRange) {
         this(code, valueRange, null);

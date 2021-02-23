@@ -17,7 +17,7 @@ package org.optaplanner.core.impl.testdata.domain.testgen;
 
 public class TestdataGetterSetterTypeMismatch {
 
-    public String description;
+    private String description;
 
     public CharSequence getDescription() {
         return description;

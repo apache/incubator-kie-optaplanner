@@ -24,7 +24,7 @@ import org.optaplanner.core.impl.testdata.domain.constraintconfiguration.Testdat
 @ConstraintConfiguration
 public class TestdataExtendedConstraintConfiguration extends TestdataConstraintConfiguration {
 
-    public SimpleScore thirdWeight = SimpleScore.of(300);
+    private SimpleScore thirdWeight = SimpleScore.of(300);
 
     public TestdataExtendedConstraintConfiguration() {
         super();

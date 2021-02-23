@@ -36,10 +36,10 @@ public class TestdataDifficultyComparingSolution extends TestdataObject {
                 TestdataDifficultyComparingEntity.class);
     }
 
-    public List<TestdataValue> valueList;
-    public List<TestdataDifficultyComparingEntity> entityList;
+    private List<TestdataValue> valueList;
+    private List<TestdataDifficultyComparingEntity> entityList;
 
-    public SimpleScore score;
+    private SimpleScore score;
 
     public TestdataDifficultyComparingSolution() {
     }

@@ -58,10 +58,10 @@ public class TestdataBacklinkedSolution extends TestdataObject {
         return solution;
     }
 
-    public List<TestdataValue> valueList;
-    public List<TestdataBacklinkedEntity> entityList;
+    private List<TestdataValue> valueList;
+    private List<TestdataBacklinkedEntity> entityList;
 
-    public SimpleScore score;
+    private SimpleScore score;
 
     public TestdataBacklinkedSolution() {
     }

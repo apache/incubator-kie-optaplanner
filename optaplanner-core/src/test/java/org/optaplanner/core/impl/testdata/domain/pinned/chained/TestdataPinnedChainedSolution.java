@@ -36,10 +36,10 @@ public class TestdataPinnedChainedSolution extends TestdataObject {
                 TestdataPinnedChainedEntity.class);
     }
 
-    public List<TestdataChainedAnchor> chainedAnchorList;
-    public List<TestdataPinnedChainedEntity> chainedEntityList;
+    private List<TestdataChainedAnchor> chainedAnchorList;
+    private List<TestdataPinnedChainedEntity> chainedEntityList;
 
-    public SimpleScore score;
+    private SimpleScore score;
 
     public TestdataPinnedChainedSolution() {
     }

@@ -25,7 +25,7 @@ import org.optaplanner.core.impl.testdata.domain.TestdataValue;
  */
 public class TestdataThirdPartyEntityPojo extends TestdataObject {
 
-    public TestdataValue value;
+    private TestdataValue value;
 
     public TestdataThirdPartyEntityPojo() {
     }

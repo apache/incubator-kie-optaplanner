@@ -34,11 +34,11 @@ public class TestdataExtendedAutoDiscoverGetterSolution extends TestdataAutoDisc
                 TestdataEntity.class);
     }
 
-    public TestdataObject singleProblemFactFieldOverride;
-    public List<TestdataValue> problemFactListFieldOverride;
+    private TestdataObject singleProblemFactFieldOverride;
+    private List<TestdataValue> problemFactListFieldOverride;
 
-    public List<TestdataEntity> entityListFieldOverride;
-    public TestdataEntity otherEntityFieldOverride;
+    private List<TestdataEntity> entityListFieldOverride;
+    private TestdataEntity otherEntityFieldOverride;
 
     public TestdataExtendedAutoDiscoverGetterSolution() {
     }

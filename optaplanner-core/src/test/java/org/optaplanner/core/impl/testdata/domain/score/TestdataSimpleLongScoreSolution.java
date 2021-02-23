@@ -59,10 +59,10 @@ public class TestdataSimpleLongScoreSolution extends TestdataObject {
         return solution;
     }
 
-    public List<TestdataValue> valueList;
-    public List<TestdataEntity> entityList;
+    private List<TestdataValue> valueList;
+    private List<TestdataEntity> entityList;
 
-    public SimpleLongScore score;
+    private SimpleLongScore score;
 
     public TestdataSimpleLongScoreSolution() {
     }

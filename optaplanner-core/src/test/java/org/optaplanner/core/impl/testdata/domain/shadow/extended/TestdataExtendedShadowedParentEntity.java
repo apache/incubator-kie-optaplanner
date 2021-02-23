@@ -46,9 +46,9 @@ public class TestdataExtendedShadowedParentEntity extends TestdataObject {
         return entityDescriptor.getGenuineVariableDescriptor("value");
     }
 
-    public TestdataValue value;
-    public String firstShadow;
-    public String thirdShadow;
+    private TestdataValue value;
+    private String firstShadow;
+    private String thirdShadow;
 
     public TestdataExtendedShadowedParentEntity() {
     }

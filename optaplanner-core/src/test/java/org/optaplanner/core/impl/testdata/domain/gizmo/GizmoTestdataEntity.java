@@ -12,7 +12,7 @@ import org.optaplanner.core.impl.testdata.domain.TestdataValue;
 @PlanningEntity
 public class GizmoTestdataEntity {
 
-    public String id;
+    private String id;
 
     @PlanningVariable
     public TestdataValue value;

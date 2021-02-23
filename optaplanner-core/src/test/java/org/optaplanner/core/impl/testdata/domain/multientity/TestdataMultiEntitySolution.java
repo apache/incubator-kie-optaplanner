@@ -36,11 +36,11 @@ public class TestdataMultiEntitySolution extends TestdataObject {
                 TestdataLeadEntity.class, TestdataHerdEntity.class);
     }
 
-    public List<TestdataValue> valueList;
-    public List<TestdataLeadEntity> leadEntityList;
-    public List<TestdataHerdEntity> herdEntityList;
+    private List<TestdataValue> valueList;
+    private List<TestdataLeadEntity> leadEntityList;
+    private List<TestdataHerdEntity> herdEntityList;
 
-    public SimpleScore score;
+    private SimpleScore score;
 
     public TestdataMultiEntitySolution() {
     }

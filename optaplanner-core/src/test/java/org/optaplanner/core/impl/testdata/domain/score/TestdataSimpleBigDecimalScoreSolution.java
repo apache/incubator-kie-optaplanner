@@ -59,10 +59,10 @@ public class TestdataSimpleBigDecimalScoreSolution extends TestdataObject {
         return solution;
     }
 
-    public List<TestdataValue> valueList;
-    public List<TestdataEntity> entityList;
+    private List<TestdataValue> valueList;
+    private List<TestdataEntity> entityList;
 
-    public SimpleBigDecimalScore score;
+    private SimpleBigDecimalScore score;
 
     public TestdataSimpleBigDecimalScoreSolution() {
     }

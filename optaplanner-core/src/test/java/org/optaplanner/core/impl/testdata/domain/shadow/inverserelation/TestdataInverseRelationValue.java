@@ -26,7 +26,7 @@ import org.optaplanner.core.impl.testdata.domain.TestdataObject;
 @PlanningEntity
 public class TestdataInverseRelationValue extends TestdataObject {
 
-    public Collection<TestdataInverseRelationEntity> entities = new ArrayList<>();
+    private Collection<TestdataInverseRelationEntity> entities = new ArrayList<>();
 
     public TestdataInverseRelationValue() {
     }

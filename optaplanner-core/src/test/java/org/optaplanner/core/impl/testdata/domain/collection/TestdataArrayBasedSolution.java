@@ -33,10 +33,10 @@ public class TestdataArrayBasedSolution extends TestdataObject {
         return SolutionDescriptor.buildSolutionDescriptor(TestdataArrayBasedSolution.class, TestdataArrayBasedEntity.class);
     }
 
-    public TestdataValue[] values;
-    public TestdataArrayBasedEntity[] entities;
+    private TestdataValue[] values;
+    private TestdataArrayBasedEntity[] entities;
 
-    public SimpleScore score;
+    private SimpleScore score;
 
     public TestdataArrayBasedSolution() {
     }

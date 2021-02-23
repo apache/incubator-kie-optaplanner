@@ -37,7 +37,7 @@ public class TestdataInverseRelationEntity extends TestdataObject {
         return entityDescriptor.getGenuineVariableDescriptor("value");
     }
 
-    public TestdataInverseRelationValue value;
+    private TestdataInverseRelationValue value;
 
     public TestdataInverseRelationEntity() {
     }

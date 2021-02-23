@@ -35,11 +35,11 @@ public class TestdataUnknownFactTypeSolution extends TestdataObject {
                 TestdataEntity.class);
     }
 
-    public List<TestdataValue> valueList;
-    public List<TestdataEntity> entityList;
-    public SimpleScore score;
+    private List<TestdataValue> valueList;
+    private List<TestdataEntity> entityList;
+    private SimpleScore score;
     // this can't work with autodiscovery because it's difficult/impossible to resolve the type of collection elements
-    public MyStringCollection facts;
+    private MyStringCollection facts;
 
     public TestdataUnknownFactTypeSolution() {
     }

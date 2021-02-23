@@ -47,8 +47,8 @@ public class TestdataChainedEntity extends TestdataObject implements TestdataCha
         return entityDescriptor.getGenuineVariableDescriptor("unchainedValue");
     }
 
-    public TestdataChainedObject chainedObject;
-    public TestdataValue unchainedValue;
+    private TestdataChainedObject chainedObject;
+    private TestdataValue unchainedValue;
 
     public TestdataChainedEntity() {
     }

@@ -37,11 +37,11 @@ public class TestdataConstraintConfigurationSolution extends TestdataObject {
         return SolutionDescriptor.buildSolutionDescriptor(TestdataConstraintConfigurationSolution.class, TestdataEntity.class);
     }
 
-    public TestdataConstraintConfiguration constraintConfiguration;
-    public List<TestdataValue> valueList;
-    public List<TestdataEntity> entityList;
+    private TestdataConstraintConfiguration constraintConfiguration;
+    private List<TestdataValue> valueList;
+    private List<TestdataEntity> entityList;
 
-    public SimpleScore score;
+    private SimpleScore score;
 
     public TestdataConstraintConfigurationSolution() {
     }

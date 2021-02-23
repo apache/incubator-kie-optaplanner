@@ -21,7 +21,7 @@ import org.optaplanner.core.impl.testdata.domain.TestdataValue;
 
 public class TestdataUnannotatedExtendedEntity extends TestdataEntity {
 
-    public Object extraObject;
+    private Object extraObject;
 
     public TestdataUnannotatedExtendedEntity() {
     }

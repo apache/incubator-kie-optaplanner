@@ -35,14 +35,14 @@ public class TestdataAutoDiscoverGetterOverrideSolution extends TestdataObject {
                 TestdataAutoDiscoverGetterOverrideSolution.class, TestdataEntity.class);
     }
 
-    public TestdataObject singleProblemFactField;
-    public List<TestdataValue> problemFactListField;
-    public List<String> listProblemFactField;
+    private TestdataObject singleProblemFactField;
+    private List<TestdataValue> problemFactListField;
+    private List<String> listProblemFactField;
 
-    public List<TestdataEntity> entityListField;
-    public TestdataEntity otherEntityField;
+    private List<TestdataEntity> entityListField;
+    private TestdataEntity otherEntityField;
 
-    public SimpleScore score;
+    private SimpleScore score;
 
     public TestdataAutoDiscoverGetterOverrideSolution() {
     }

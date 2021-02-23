@@ -38,9 +38,9 @@ public class TestdataEntityProvidingSolution extends TestdataObject {
                 TestdataEntityProvidingEntity.class);
     }
 
-    public List<TestdataEntityProvidingEntity> entityList;
+    private List<TestdataEntityProvidingEntity> entityList;
 
-    public SimpleScore score;
+    private SimpleScore score;
 
     public TestdataEntityProvidingSolution() {
     }

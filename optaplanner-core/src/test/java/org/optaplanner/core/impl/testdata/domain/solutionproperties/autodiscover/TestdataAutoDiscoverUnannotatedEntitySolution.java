@@ -35,13 +35,13 @@ public class TestdataAutoDiscoverUnannotatedEntitySolution extends TestdataObjec
                 TestdataAutoDiscoverUnannotatedEntitySolution.class, TestdataEntity.class);
     }
 
-    public TestdataObject singleProblemFactField;
-    public List<TestdataValue> problemFactListField;
+    private TestdataObject singleProblemFactField;
+    private List<TestdataValue> problemFactListField;
 
-    public List<TestdataUnannotatedExtendedEntity> entityListField;
-    public TestdataUnannotatedExtendedEntity otherEntityField;
+    private List<TestdataUnannotatedExtendedEntity> entityListField;
+    private TestdataUnannotatedExtendedEntity otherEntityField;
 
-    public SimpleScore score;
+    private SimpleScore score;
 
     public TestdataAutoDiscoverUnannotatedEntitySolution() {
     }

@@ -36,10 +36,10 @@ public class TestdataManyToManyShadowedSolution extends TestdataObject {
                 TestdataManyToManyShadowedEntity.class);
     }
 
-    public List<TestdataValue> valueList;
-    public List<TestdataManyToManyShadowedEntity> entityList;
+    private List<TestdataValue> valueList;
+    private List<TestdataManyToManyShadowedEntity> entityList;
 
-    public SimpleScore score;
+    private SimpleScore score;
 
     public TestdataManyToManyShadowedSolution() {
     }

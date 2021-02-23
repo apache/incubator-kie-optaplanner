@@ -24,7 +24,7 @@ import org.optaplanner.core.impl.testdata.domain.TestdataValue;
 @PlanningEntity
 public class TestdataAnnotatedExtendedEntity extends TestdataEntity {
 
-    public TestdataValue subValue;
+    private TestdataValue subValue;
 
     public TestdataAnnotatedExtendedEntity() {
     }

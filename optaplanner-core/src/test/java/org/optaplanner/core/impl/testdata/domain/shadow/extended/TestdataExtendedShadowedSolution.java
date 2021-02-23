@@ -36,10 +36,10 @@ public class TestdataExtendedShadowedSolution extends TestdataObject {
                 TestdataExtendedShadowedParentEntity.class, TestdataExtendedShadowedChildEntity.class);
     }
 
-    public List<TestdataValue> valueList;
-    public List<TestdataExtendedShadowedParentEntity> entityList;
+    private List<TestdataValue> valueList;
+    private List<TestdataExtendedShadowedParentEntity> entityList;
 
-    public SimpleScore score;
+    private SimpleScore score;
 
     public TestdataExtendedShadowedSolution() {
     }

@@ -31,7 +31,7 @@ public class TestdataLeadEntity extends TestdataObject {
         return solutionDescriptor.findEntityDescriptorOrFail(TestdataLeadEntity.class);
     }
 
-    public TestdataValue value;
+    private TestdataValue value;
 
     public TestdataLeadEntity() {
     }

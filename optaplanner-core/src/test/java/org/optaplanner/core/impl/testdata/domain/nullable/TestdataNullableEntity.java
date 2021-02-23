@@ -31,7 +31,7 @@ public class TestdataNullableEntity extends TestdataObject {
         return solutionDescriptor.findEntityDescriptorOrFail(TestdataNullableEntity.class);
     }
 
-    public TestdataValue value;
+    private TestdataValue value;
 
     public TestdataNullableEntity() {
     }

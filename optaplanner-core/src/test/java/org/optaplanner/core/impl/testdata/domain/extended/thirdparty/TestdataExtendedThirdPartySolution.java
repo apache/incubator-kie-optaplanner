@@ -35,9 +35,9 @@ public class TestdataExtendedThirdPartySolution extends TestdataThirdPartySoluti
                 TestdataExtendedThirdPartyEntity.class);
     }
 
-    public Object extraObject;
+    private Object extraObject;
 
-    public SimpleScore score;
+    private SimpleScore score;
 
     public TestdataExtendedThirdPartySolution() {
     }
