@@ -15,14 +15,14 @@
  */
 package org.optaplanner.core.impl.domain.common.accessor.gizmo;
 
-import org.optaplanner.core.api.domain.common.DomainAccessType;
-import org.optaplanner.core.config.util.ConfigUtils;
-import org.optaplanner.core.impl.domain.common.accessor.MemberAccessor;
-
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Member;
 import java.util.HashMap;
 import java.util.Map;
+
+import org.optaplanner.core.api.domain.common.DomainAccessType;
+import org.optaplanner.core.config.util.ConfigUtils;
+import org.optaplanner.core.impl.domain.common.accessor.MemberAccessor;
 
 public class GizmoMemberAccessorFactory {
     // GizmoMemberAccessors are stateless, and thus can be safely reused across multiple instances
