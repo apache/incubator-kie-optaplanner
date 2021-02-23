@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2021 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,13 +15,14 @@
  */
 package org.optaplanner.core.impl.domain.common.accessor.gizmo;
 
+import org.optaplanner.core.api.domain.common.DomainAccessType;
+import org.optaplanner.core.config.util.ConfigUtils;
+import org.optaplanner.core.impl.domain.common.accessor.MemberAccessor;
+
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Member;
 import java.util.HashMap;
 import java.util.Map;
-
-import org.optaplanner.core.api.domain.common.DomainAccessType;
-import org.optaplanner.core.impl.domain.common.accessor.MemberAccessor;
 
 public class GizmoMemberAccessorFactory {
     // GizmoMemberAccessors are stateless, and thus can be safely reused across multiple instances
@@ -47,11 +48,7 @@ public class GizmoMemberAccessorFactory {
     public static MemberAccessor buildGizmoMemberAccessor(Member member, Class<? extends Annotation> annotationClass) {
         String gizmoMemberAccessorClassName = getGeneratedClassName(member);
         return memberAccessorMap.computeIfAbsent(gizmoMemberAccessorClassName, key -> {
-            try {
-                // Check if Gizmo on the classpath by verifying we can access one of its classes
-                Class.forName("io.quarkus.gizmo.ClassCreator", false,
-                        Thread.currentThread().getContextClassLoader());
-            } catch (ClassNotFoundException e) {
+            if (!ConfigUtils.isGizmoOnClasspath()) {
                 throw new IllegalStateException("When using the domainAccessType (" +
                         DomainAccessType.GIZMO +
                         ") the classpath or modulepath must contain io.quarkus.gizmo:gizmo.\n" +

@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2021 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,7 +16,13 @@
 
 package org.optaplanner.core.config.util;
 
-import static org.optaplanner.core.impl.domain.common.accessor.MemberAccessorFactory.MemberAccessorType.FIELD_OR_READ_METHOD;
+import org.optaplanner.core.api.domain.common.DomainAccessType;
+import org.optaplanner.core.api.domain.lookup.PlanningId;
+import org.optaplanner.core.config.AbstractConfig;
+import org.optaplanner.core.impl.domain.common.AlphabeticMemberComparator;
+import org.optaplanner.core.impl.domain.common.ReflectionHelper;
+import org.optaplanner.core.impl.domain.common.accessor.MemberAccessor;
+import org.optaplanner.core.impl.domain.common.accessor.MemberAccessorFactory;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.AnnotatedElement;
@@ -40,13 +46,7 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import org.optaplanner.core.api.domain.common.DomainAccessType;
-import org.optaplanner.core.api.domain.lookup.PlanningId;
-import org.optaplanner.core.config.AbstractConfig;
-import org.optaplanner.core.impl.domain.common.AlphabeticMemberComparator;
-import org.optaplanner.core.impl.domain.common.ReflectionHelper;
-import org.optaplanner.core.impl.domain.common.accessor.MemberAccessor;
-import org.optaplanner.core.impl.domain.common.accessor.MemberAccessorFactory;
+import static org.optaplanner.core.impl.domain.common.accessor.MemberAccessorFactory.MemberAccessorType.FIELD_OR_READ_METHOD;
 
 public class ConfigUtils {
 
@@ -413,6 +413,33 @@ public class ConfigUtils {
                     + " or " + String.class.getSimpleName() + " type instead.");
         }
         return memberAccessor;
+    }
+
+    /**
+     * Returns true if the application is currently running in the context of Quarkus.
+     * 
+     * @return true if on Quarkus
+     */
+    public static boolean isInQuarkus() {
+        return Arrays.stream(Thread.currentThread().getStackTrace())
+                .anyMatch(clz -> clz.getClassName().contains("io.quarkus"));
+    }
+
+    /**
+     * Returns true if Gizmo is on the classpath.
+     * 
+     * @return true if Gizmo on classpath
+     */
+    public static boolean isGizmoOnClasspath() {
+        try {
+            // Check if Gizmo on the classpath by verifying we can access one of its classes.
+            Class.forName("io.quarkus.gizmo.ClassCreator", false,
+                    Thread.currentThread().getContextClassLoader());
+            return true;
+        } catch (ClassNotFoundException e) {
+            return false;
+        }
+
     }
 
     public static String abbreviate(List<String> list, int limit) {
