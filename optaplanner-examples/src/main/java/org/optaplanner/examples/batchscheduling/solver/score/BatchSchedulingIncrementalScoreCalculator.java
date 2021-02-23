@@ -214,11 +214,6 @@ public class BatchSchedulingIncrementalScoreCalculator
         for (Map.Entry<Long, Segment> entry1 : segmentMap.entrySet()) {
 
             Segment mainSegment = entry1.getValue();
-            Long mainDelay = allocationDelayMap.get(entry1.getKey());
-            Long mainStartTime1 = allocationStartInjectionTime.get(entry1.getKey());
-            Long mainEndTime1 = allocationEndInjectionTimeMap.get(entry1.getKey());
-            Long mainStartTime2 = allocationStartDeliveryTimeMap.get(entry1.getKey());
-            Long mainEndTime2 = allocationEndDeliveryTimeMap.get(entry1.getKey());
 
             // Continue if Segment Batch is not same as the Input Parameter Batch
             if (mainSegment.getBatch().getId() != allocationPath.getBatch().getId()) {
@@ -235,130 +230,22 @@ public class BatchSchedulingIncrementalScoreCalculator
             if (mainSegment.getRoutePath().getId() != allocationPath.getRoutePath().getId()) {
 
                 // Same Batch Different RoutePath from the Preferred RoutePath
-                if (mainDelay != null) {
+                if (allocationDelayMap.get(entry1.getKey()) != null) {
                     newOtherPenaltyValue += 1;
                 }
                 continue;
             }
 
-            if (mainDelay == null) {
+            if (allocationDelayMap.get(entry1.getKey()) == null) {
                 newCurrentPenaltyValue += 1;
                 continue;
             }
 
-            if (mainStartTime1 == null) {
-                continue;
-            }
-
-            for (Map.Entry<Long, Segment> entry2 : segmentMap.entrySet()) {
-
-                // Continue if Segment delay is not set
-                if (allocationDelayMap.get(entry2.getKey()) == null) {
-                    continue;
-                }
-
-                // Continue if Segment Batch is not same as the Input Parameter Batch
-                if (entry2.getValue().getBatch().getId() == allocationPath.getBatch().getId()) {
-                    continue;
-                }
-
-                // Continue if RoutePath has not been selected for the Batch
-                if (batchRoutePathMap.get(entry2.getValue().getBatch().getId()) == null) {
-                    continue;
-                }
-
-                // Continue if Segment is not part of the selectedRoutepath
-                if (!(entry2.getValue().getRoutePath().getPath()
-                        .equals(batchRoutePathMap.get(entry2.getValue().getBatch().getId())))) {
-                    continue;
-                }
-
-                // Continue if Inner Segment Name is not same as the Outer Segment Name
-                // Note that comparison is made using Segment Name and not Segment Id as same
-                // Segment Name may be part of different RoutePath (hence different Segment Id)
-                if (!(entry2.getValue().getName().equals(mainSegment.getName()))) {
-                    continue;
-                }
-
-                // Continue if Start Injection time is not set
-                if (allocationStartInjectionTime.get(entry1.getKey()) == null) {
-                    continue;
-                }
-
-                Long newOverlapPenaltyValue = 0L;
-
-                // Check for following 4 conditions for Injection:
-                // Condition 1) If inner segment injection start time is less than outer segment
-                // injection start time and inner segment injection end date is more than outer
-                // segment injection end time
-                // Condition 2) If inner segment injection start time is more than outer segment
-                // injection start time and inner segment injection end date is less than outer
-                // segment injection end time
-                // Condition 3) If inner segment injection start time is less than outer segment
-                // injection start time and inner segment injection end date is more than outer
-                // segment injection start time
-                // Condition 4) If inner segment injection start time is less than outer segment
-                // injection end time and inner segment injection end date is more than outer
-                // segment injection end time
-                if ((allocationStartInjectionTime.get(entry2.getKey()) <= mainStartTime1)
-                        && (allocationEndInjectionTimeMap.get(entry2.getKey()) >= mainEndTime1)) {
-                    newOverlapPenaltyValue = mainEndTime1 - mainStartTime1;
-                } else if ((allocationStartInjectionTime.get(entry2.getKey()) >= mainStartTime1)
-                        && (allocationEndInjectionTimeMap.get(entry2.getKey()) <= mainEndTime1)) {
-                    newOverlapPenaltyValue = allocationEndInjectionTimeMap.get(entry2.getKey())
-                            - allocationStartInjectionTime.get(entry2.getKey());
-                } else if ((allocationStartInjectionTime.get(entry2.getKey()) <= mainStartTime1)
-                        && (allocationEndInjectionTimeMap.get(entry2.getKey()) > mainStartTime1)) {
-                    newOverlapPenaltyValue = allocationEndInjectionTimeMap.get(entry2.getKey()) - mainStartTime1;
-                } else if ((allocationStartInjectionTime.get(entry2.getKey()) < mainEndTime1)
-                        && (allocationEndInjectionTimeMap.get(entry2.getKey()) >= mainEndTime1)) {
-                    newOverlapPenaltyValue = mainEndTime1 - allocationStartInjectionTime.get(entry2.getKey());
-                }
-
-                // Check for 4 overlap conditions for Delivery
-                if ((allocationStartDeliveryTimeMap.get(entry2.getKey()) <= mainStartTime2)
-                        && (allocationEndDeliveryTimeMap.get(entry2.getKey()) >= mainEndTime2)) {
-                    newOverlapPenaltyValue += mainEndTime2 - mainStartTime2;
-                } else if ((allocationStartDeliveryTimeMap.get(entry2.getKey()) >= mainStartTime2)
-                        && (allocationEndDeliveryTimeMap.get(entry2.getKey()) <= mainEndTime2)) {
-                    newOverlapPenaltyValue += allocationEndDeliveryTimeMap.get(entry2.getKey())
-                            - allocationStartDeliveryTimeMap.get(entry2.getKey());
-                } else if ((allocationStartDeliveryTimeMap.get(entry2.getKey()) <= mainStartTime2)
-                        && (allocationEndDeliveryTimeMap.get(entry2.getKey()) > mainStartTime2)) {
-                    newOverlapPenaltyValue += allocationEndDeliveryTimeMap.get(entry2.getKey()) - mainStartTime2;
-                } else if ((allocationStartDeliveryTimeMap.get(entry2.getKey()) < mainEndTime2)
-                        && (allocationEndDeliveryTimeMap.get(entry2.getKey()) >= mainEndTime2)) {
-                    newOverlapPenaltyValue += mainEndTime2 - allocationStartDeliveryTimeMap.get(entry2.getKey());
-                }
-
-                // Check for overlap scenario where inner segment Injection start time is more
-                // than outer segment Injection start time and inner segment delivery end time
-                // is less than outer segment Delivery end time and
-                if ((allocationStartInjectionTime.get(entry2.getKey()) >= mainStartTime1)
-                        && (allocationEndDeliveryTimeMap.get(entry2.getKey()) <= mainEndTime2)) {
-                    newOverlapPenaltyValue += mainEndTime2 - allocationEndDeliveryTimeMap.get(entry2.getKey());
-                }
-
-                // Check for overlap scenario where inner segment Injection start time is less
-                // than outer segment Injection start time and inner segment delivery end time
-                // is more than outer segment Delivery end time and
-                if ((allocationStartInjectionTime.get(entry2.getKey()) <= mainStartTime1)
-                        && (allocationEndDeliveryTimeMap.get(entry2.getKey()) >= mainEndTime2)) {
-                    newOverlapPenaltyValue += allocationEndDeliveryTimeMap.get(entry2.getKey()) - mainEndTime2;
-                }
-                // End of compute overlap
-
-                // If overlap exists then add overlap time in the segmentOverlapMap hashmap
-                // Notice the multiplication factor of 2 because if A overlaps B, then B also
-                // overlaps A
-                if (newOverlapPenaltyValue > 0L) {
-                    hard2Score -= (2 * newOverlapPenaltyValue);
-                    segmentOverlapMap.put(generateCompositeKey(entry1.getKey().toString(), entry2.getKey().toString()),
-                            newOverlapPenaltyValue);
-                    segmentOverlapMap.put(generateCompositeKey(entry2.getKey().toString(), entry1.getKey().toString()),
-                            newOverlapPenaltyValue);
-                }
-            }
+            computeOverlap(allocationPath.getBatch().getId(), entry1.getKey(), entry1.getValue().getName(),
+                    allocationStartInjectionTime.get(entry1.getKey()),
+                    allocationEndInjectionTimeMap.get(entry1.getKey()),
+                    allocationStartDeliveryTimeMap.get(entry1.getKey()),
+                    allocationEndDeliveryTimeMap.get(entry1.getKey()));
         }
 
         // Apply new penalty if any segment in nonSelectedRoutePath has delay assigned
@@ -522,10 +409,6 @@ public class BatchSchedulingIncrementalScoreCalculator
         Long newCurrentPenaltyValue = oldCurrentPenaltyValue;
         Long oldOtherPenaltyValue = batchOtherPenaltyValueMap.get(allocation.getBatch().getId());
         Long newOtherPenaltyValue = oldOtherPenaltyValue;
-        Long mainStartTime1 = allocation.getStartInjectionTime();
-        Long mainEndTime1 = allocation.getEndInjectionTime();
-        Long mainStartTime2 = allocation.getStartDeliveryTime();
-        Long mainEndTime2 = allocation.getEndDeliveryTime();
 
         // If input segment is not part of the selectedRoutePath, then compare previous
         // delay value with new delay value.
@@ -565,7 +448,7 @@ public class BatchSchedulingIncrementalScoreCalculator
         // delay and Injection start time are not null
         if (allocation.getRoutePath().getPath().equals(batchRoutePathMap.get(allocation.getBatch().getId()))) {
             if ((allocation.getDelay() != null) && (allocationDelayMap.get(allocation.getSegment().getId()) == null)) {
-                if (mainStartTime1 != null) {
+                if (allocation.getStartInjectionTime() != null) {
                     computeOverLap = true;
                 }
             }
@@ -573,103 +456,10 @@ public class BatchSchedulingIncrementalScoreCalculator
 
         // Start of compute overlap
         if (computeOverLap) {
-
-            for (Map.Entry<Long, Segment> entry2 : segmentMap.entrySet()) {
-
-                // Continue if Segment Delay is null
-                if (allocationDelayMap.get(entry2.getKey()) == null) {
-                    continue;
-                }
-
-                // Continue if Segment Batch is not same as the Input Parameter Batch
-                if (entry2.getValue().getBatch().getId() == allocation.getBatch().getId()) {
-                    continue;
-                }
-
-                // Continue if RoutePath has not been selected for the Segment Batch
-                if (batchRoutePathMap.get(entry2.getValue().getBatch().getId()) == null) {
-                    continue;
-                }
-
-                // Continue if Segment is not part of the selectedRoutepath
-                if (!(entry2.getValue().getRoutePath().getPath()
-                        .equals(batchRoutePathMap.get(entry2.getValue().getBatch().getId())))) {
-                    continue;
-                }
-
-                // Continue if Segment Name is not same as the Input parameter Segment Name
-                // Note that comparison is made using Segment Name and not Segment Id as same
-                // Segment Name may be part of different RoutePath (hence different Segment Id)
-                if (!(entry2.getValue().getName().equals(allocation.getSegment().getName()))) {
-                    continue;
-                }
-
-                // Continue if Injection Time is not set
-                if (allocationStartInjectionTime.get(entry2.getKey()) == null) {
-                    continue;
-                }
-
-                Long newOverlapPenaltyValue = 0L;
-
-                // Check for 4 overlap conditions for Injection
-                if ((allocationStartInjectionTime.get(entry2.getKey()) <= mainStartTime1)
-                        && (allocationEndInjectionTimeMap.get(entry2.getKey()) >= mainEndTime1)) {
-                    newOverlapPenaltyValue = mainEndTime1 - mainStartTime1;
-                } else if ((allocationStartInjectionTime.get(entry2.getKey()) >= mainStartTime1)
-                        && (allocationEndInjectionTimeMap.get(entry2.getKey()) <= mainEndTime1)) {
-                    newOverlapPenaltyValue = allocationEndInjectionTimeMap.get(entry2.getKey())
-                            - allocationStartInjectionTime.get(entry2.getKey());
-                } else if ((allocationStartInjectionTime.get(entry2.getKey()) <= mainStartTime1)
-                        && (allocationEndInjectionTimeMap.get(entry2.getKey()) > mainStartTime1)) {
-                    newOverlapPenaltyValue = allocationEndInjectionTimeMap.get(entry2.getKey()) - mainStartTime1;
-                } else if ((allocationStartInjectionTime.get(entry2.getKey()) < mainEndTime1)
-                        && (allocationEndInjectionTimeMap.get(entry2.getKey()) >= mainEndTime1)) {
-                    newOverlapPenaltyValue = mainEndTime1 - allocationStartInjectionTime.get(entry2.getKey());
-                }
-
-                // Check for 4 overlap conditions for Delivery
-                if ((allocationStartDeliveryTimeMap.get(entry2.getKey()) <= mainStartTime2)
-                        && (allocationEndDeliveryTimeMap.get(entry2.getKey()) >= mainEndTime2)) {
-                    newOverlapPenaltyValue += mainEndTime2 - mainStartTime2;
-                } else if ((allocationStartDeliveryTimeMap.get(entry2.getKey()) >= mainStartTime2)
-                        && (allocationEndDeliveryTimeMap.get(entry2.getKey()) <= mainEndTime2)) {
-                    newOverlapPenaltyValue += allocationEndDeliveryTimeMap.get(entry2.getKey())
-                            - allocationStartDeliveryTimeMap.get(entry2.getKey());
-                } else if ((allocationStartDeliveryTimeMap.get(entry2.getKey()) <= mainStartTime2)
-                        && (allocationEndDeliveryTimeMap.get(entry2.getKey()) > mainStartTime2)) {
-                    newOverlapPenaltyValue += allocationEndDeliveryTimeMap.get(entry2.getKey()) - mainStartTime2;
-                } else if ((allocationStartDeliveryTimeMap.get(entry2.getKey()) < mainEndTime2)
-                        && (allocationEndDeliveryTimeMap.get(entry2.getKey()) >= mainEndTime2)) {
-                    newOverlapPenaltyValue += mainEndTime2 - allocationStartDeliveryTimeMap.get(entry2.getKey());
-                }
-
-                // Check for overlap scenario where inner segment Injection start time is more
-                // than outer segment Injection start time and inner segment delivery end time
-                // is less than outer segment Delivery end time and
-                if ((allocationStartInjectionTime.get(entry2.getKey()) >= mainStartTime1)
-                        && (allocationEndDeliveryTimeMap.get(entry2.getKey()) <= mainEndTime2)) {
-                    newOverlapPenaltyValue += mainEndTime2 - allocationEndDeliveryTimeMap.get(entry2.getKey());
-                }
-
-                // Check for overlap scenario where inner segment Injection start time is less
-                // than outer segment Injection start time and inner segment delivery end time
-                // is more than outer segment Delivery end time and
-                if ((allocationStartInjectionTime.get(entry2.getKey()) <= mainStartTime1)
-                        && (allocationEndDeliveryTimeMap.get(entry2.getKey()) >= mainEndTime2)) {
-                    newOverlapPenaltyValue += allocationEndDeliveryTimeMap.get(entry2.getKey()) - mainEndTime2;
-                }
-
-                // If overlap exists then add overlap time in the segmentOverlapMap hashmap
-                // Notice the multiplication factor of 2 because if A overlaps B, then B also
-                // overlaps A
-                if (newOverlapPenaltyValue > 0L) {
-                    hard2Score -= (2 * newOverlapPenaltyValue);
-                    segmentOverlapMap.put(generateCompositeKey(allocation.getSegment().getId().toString(),
-                            entry2.getKey().toString()), newOverlapPenaltyValue);
-                    segmentOverlapMap.put(generateCompositeKey(entry2.getKey().toString(),
-                            allocation.getSegment().getId().toString()), newOverlapPenaltyValue);
-                }
-            }
+            computeOverlap(allocation.getBatch().getId(), allocation.getSegment().getId(),
+                    allocation.getSegment().getName(), allocation.getStartInjectionTime(),
+                    allocation.getEndInjectionTime(), allocation.getStartDeliveryTime(),
+                    allocation.getEndDeliveryTime());
         }
         // End of compute overlap
 
@@ -719,6 +509,115 @@ public class BatchSchedulingIncrementalScoreCalculator
         printScore("Insert End Allocation");
     }
 
+    private void computeOverlap(Long batchId, Long segmentId, String segmentName, Long mainStartTime1,
+            Long mainEndTime1, Long mainStartTime2, Long mainEndTime2) {
+
+        for (Map.Entry<Long, Segment> entry2 : segmentMap.entrySet()) {
+
+            // Continue if Segment Delay is null
+            if (allocationDelayMap.get(entry2.getKey()) == null) {
+                continue;
+            }
+
+            // Continue if Segment Batch is not same as the Input Parameter Batch
+            if (entry2.getValue().getBatch().getId() == batchId) {
+                continue;
+            }
+
+            // Continue if RoutePath has not been selected for the Segment Batch
+            if (batchRoutePathMap.get(entry2.getValue().getBatch().getId()) == null) {
+                continue;
+            }
+
+            // Continue if Segment is not part of the selectedRoutepath
+            if (!(entry2.getValue().getRoutePath().getPath()
+                    .equals(batchRoutePathMap.get(entry2.getValue().getBatch().getId())))) {
+                continue;
+            }
+
+            // Continue if Segment Name is not same as the Input parameter Segment Name
+            // Note that comparison is made using Segment Name and not Segment Id as same
+            // Segment Name may be part of different RoutePath (hence different Segment Id)
+            if (!(entry2.getValue().getName().equals(segmentName))) {
+                continue;
+            }
+
+            Long newOverlapPenaltyValue = 0L;
+
+            // Check for following 4 conditions for Injection:
+            // Condition 1) If inner segment injection start time is less than outer segment
+            // injection start time and inner segment injection end date is more than outer
+            // segment injection end time
+            // Condition 2) If inner segment injection start time is more than outer segment
+            // injection start time and inner segment injection end date is less than outer
+            // segment injection end time
+            // Condition 3) If inner segment injection start time is less than outer segment
+            // injection start time and inner segment injection end date is more than outer
+            // segment injection start time
+            // Condition 4) If inner segment injection start time is less than outer segment
+            // injection end time and inner segment injection end date is more than outer
+            // segment injection end time
+
+            if ((allocationStartInjectionTime.get(entry2.getKey()) <= mainStartTime1)
+                    && (allocationEndInjectionTimeMap.get(entry2.getKey()) >= mainEndTime1)) {
+                newOverlapPenaltyValue = mainEndTime1 - mainStartTime1;
+            } else if ((allocationStartInjectionTime.get(entry2.getKey()) >= mainStartTime1)
+                    && (allocationEndInjectionTimeMap.get(entry2.getKey()) <= mainEndTime1)) {
+                newOverlapPenaltyValue = allocationEndInjectionTimeMap.get(entry2.getKey())
+                        - allocationStartInjectionTime.get(entry2.getKey());
+            } else if ((allocationStartInjectionTime.get(entry2.getKey()) <= mainStartTime1)
+                    && (allocationEndInjectionTimeMap.get(entry2.getKey()) > mainStartTime1)) {
+                newOverlapPenaltyValue = allocationEndInjectionTimeMap.get(entry2.getKey()) - mainStartTime1;
+            } else if ((allocationStartInjectionTime.get(entry2.getKey()) < mainEndTime1)
+                    && (allocationEndInjectionTimeMap.get(entry2.getKey()) >= mainEndTime1)) {
+                newOverlapPenaltyValue = mainEndTime1 - allocationStartInjectionTime.get(entry2.getKey());
+            }
+
+            // Check for 4 overlap conditions for Delivery
+            if ((allocationStartDeliveryTimeMap.get(entry2.getKey()) <= mainStartTime2)
+                    && (allocationEndDeliveryTimeMap.get(entry2.getKey()) >= mainEndTime2)) {
+                newOverlapPenaltyValue += mainEndTime2 - mainStartTime2;
+            } else if ((allocationStartDeliveryTimeMap.get(entry2.getKey()) >= mainStartTime2)
+                    && (allocationEndDeliveryTimeMap.get(entry2.getKey()) <= mainEndTime2)) {
+                newOverlapPenaltyValue += allocationEndDeliveryTimeMap.get(entry2.getKey())
+                        - allocationStartDeliveryTimeMap.get(entry2.getKey());
+            } else if ((allocationStartDeliveryTimeMap.get(entry2.getKey()) <= mainStartTime2)
+                    && (allocationEndDeliveryTimeMap.get(entry2.getKey()) > mainStartTime2)) {
+                newOverlapPenaltyValue += allocationEndDeliveryTimeMap.get(entry2.getKey()) - mainStartTime2;
+            } else if ((allocationStartDeliveryTimeMap.get(entry2.getKey()) < mainEndTime2)
+                    && (allocationEndDeliveryTimeMap.get(entry2.getKey()) >= mainEndTime2)) {
+                newOverlapPenaltyValue += mainEndTime2 - allocationStartDeliveryTimeMap.get(entry2.getKey());
+            }
+
+            // Check for overlap scenario where inner segment Injection start time is more
+            // than outer segment Injection start time and inner segment delivery end time
+            // is less than outer segment Delivery end time and
+            if ((allocationStartInjectionTime.get(entry2.getKey()) >= mainStartTime1)
+                    && (allocationEndDeliveryTimeMap.get(entry2.getKey()) <= mainEndTime2)) {
+                newOverlapPenaltyValue += mainEndTime2 - allocationEndDeliveryTimeMap.get(entry2.getKey());
+            }
+
+            // Check for overlap scenario where inner segment Injection start time is less
+            // than outer segment Injection start time and inner segment delivery end time
+            // is more than outer segment Delivery end time and
+            if ((allocationStartInjectionTime.get(entry2.getKey()) <= mainStartTime1)
+                    && (allocationEndDeliveryTimeMap.get(entry2.getKey()) >= mainEndTime2)) {
+                newOverlapPenaltyValue += allocationEndDeliveryTimeMap.get(entry2.getKey()) - mainEndTime2;
+            }
+
+            // If overlap exists then add overlap time in the segmentOverlapMap hashmap
+            // Notice the multiplication factor of 2 because if A overlaps B, then B also
+            // overlaps A
+            if (newOverlapPenaltyValue > 0L) {
+                hard2Score -= (2 * newOverlapPenaltyValue);
+                segmentOverlapMap.put(generateCompositeKey(segmentId.toString(), entry2.getKey().toString()),
+                        newOverlapPenaltyValue);
+                segmentOverlapMap.put(generateCompositeKey(entry2.getKey().toString(), segmentId.toString()),
+                        newOverlapPenaltyValue);
+            }
+        }
+    }
+
     // Compute Overlap and softScore0. Other Scores (i.e. hardScore0, hardScore1 and
     // softScore1 are not computed)
     private void insertPredecessorDate(Allocation allocation) {
@@ -750,107 +649,10 @@ public class BatchSchedulingIncrementalScoreCalculator
 
         // Start of compute overlap
         if (computeOverlap) {
-            Long mainStartTime1 = allocation.getStartInjectionTime();
-            Long mainEndTime1 = allocation.getEndInjectionTime();
-            Long mainStartTime2 = allocation.getStartDeliveryTime();
-            Long mainEndTime2 = allocation.getEndDeliveryTime();
-
-            for (Map.Entry<Long, Segment> entry2 : segmentMap.entrySet()) {
-
-                // Continue if Segment Delay is null
-                if (allocationDelayMap.get(entry2.getKey()) == null) {
-                    continue;
-                }
-
-                // Continue if Segment Batch is not same as the Input Parameter Batch
-                if (entry2.getValue().getBatch().getId() == allocation.getBatch().getId()) {
-                    continue;
-                }
-
-                // Continue if RoutePath has not been selected for the Segment Batch
-                if (batchRoutePathMap.get(entry2.getValue().getBatch().getId()) == null) {
-                    continue;
-                }
-
-                // Continue if Segment is not part of the selectedRoutepath
-                if (!(entry2.getValue().getRoutePath().getPath()
-                        .equals(batchRoutePathMap.get(entry2.getValue().getBatch().getId())))) {
-                    continue;
-                }
-
-                // Continue if Segment Name is not same as the Input parameter Segment Name
-                // Note that comparison is made using Segment Name and not Segment Id as same
-                // Segment Name may be part of different RoutePath (hence different Segment Id)
-                if (!(entry2.getValue().getName().equals(allocation.getSegment().getName()))) {
-                    continue;
-                }
-
-                // Continue if Injection Time is not set
-                if (allocationStartInjectionTime.get(entry2.getKey()) == null) {
-                    continue;
-                }
-
-                Long newOverlapPenaltyValue = 0L;
-
-                // Check for 4 overlap conditions for Injection
-                if ((allocationStartInjectionTime.get(entry2.getKey()) <= mainStartTime1)
-                        && (allocationEndInjectionTimeMap.get(entry2.getKey()) >= mainEndTime1)) {
-                    newOverlapPenaltyValue = mainEndTime1 - mainStartTime1;
-                } else if ((allocationStartInjectionTime.get(entry2.getKey()) >= mainStartTime1)
-                        && (allocationEndInjectionTimeMap.get(entry2.getKey()) <= mainEndTime1)) {
-                    newOverlapPenaltyValue = allocationEndInjectionTimeMap.get(entry2.getKey())
-                            - allocationStartInjectionTime.get(entry2.getKey());
-                } else if ((allocationStartInjectionTime.get(entry2.getKey()) <= mainStartTime1)
-                        && (allocationEndInjectionTimeMap.get(entry2.getKey()) > mainStartTime1)) {
-                    newOverlapPenaltyValue = allocationEndInjectionTimeMap.get(entry2.getKey()) - mainStartTime1;
-                } else if ((allocationStartInjectionTime.get(entry2.getKey()) < mainEndTime1)
-                        && (allocationEndInjectionTimeMap.get(entry2.getKey()) >= mainEndTime1)) {
-                    newOverlapPenaltyValue = mainEndTime1 - allocationStartInjectionTime.get(entry2.getKey());
-                }
-
-                // Check for 4 overlap conditions for Delivery
-                if ((allocationStartDeliveryTimeMap.get(entry2.getKey()) <= mainStartTime2)
-                        && (allocationEndDeliveryTimeMap.get(entry2.getKey()) >= mainEndTime2)) {
-                    newOverlapPenaltyValue += mainEndTime2 - mainStartTime2;
-                } else if ((allocationStartDeliveryTimeMap.get(entry2.getKey()) >= mainStartTime2)
-                        && (allocationEndDeliveryTimeMap.get(entry2.getKey()) <= mainEndTime2)) {
-                    newOverlapPenaltyValue += allocationEndDeliveryTimeMap.get(entry2.getKey())
-                            - allocationStartDeliveryTimeMap.get(entry2.getKey());
-                } else if ((allocationStartDeliveryTimeMap.get(entry2.getKey()) <= mainStartTime2)
-                        && (allocationEndDeliveryTimeMap.get(entry2.getKey()) > mainStartTime2)) {
-                    newOverlapPenaltyValue += allocationEndDeliveryTimeMap.get(entry2.getKey()) - mainStartTime2;
-                } else if ((allocationStartDeliveryTimeMap.get(entry2.getKey()) < mainEndTime2)
-                        && (allocationEndDeliveryTimeMap.get(entry2.getKey()) >= mainEndTime2)) {
-                    newOverlapPenaltyValue += mainEndTime2 - allocationStartDeliveryTimeMap.get(entry2.getKey());
-                }
-
-                // Check for overlap scenario where inner segment Injection start time is more
-                // than outer segment Injection start time and inner segment delivery end time
-                // is less than outer segment Delivery end time and
-                if ((allocationStartInjectionTime.get(entry2.getKey()) >= mainStartTime1)
-                        && (allocationEndDeliveryTimeMap.get(entry2.getKey()) <= mainEndTime2)) {
-                    newOverlapPenaltyValue += mainEndTime2 - allocationEndDeliveryTimeMap.get(entry2.getKey());
-                }
-
-                // Check for overlap scenario where inner segment Injection start time is less
-                // than outer segment Injection start time and inner segment delivery end time
-                // is more than outer segment Delivery end time and
-                if ((allocationStartInjectionTime.get(entry2.getKey()) <= mainStartTime1)
-                        && (allocationEndDeliveryTimeMap.get(entry2.getKey()) >= mainEndTime2)) {
-                    newOverlapPenaltyValue += allocationEndDeliveryTimeMap.get(entry2.getKey()) - mainEndTime2;
-                }
-
-                // If overlap exists then add overlap time in the segmentOverlapMap hashmap
-                // Notice the multiplication factor of 2 because if A overlaps B, then B also
-                // overlaps A
-                if (newOverlapPenaltyValue > 0L) {
-                    hard2Score -= (2 * newOverlapPenaltyValue);
-                    segmentOverlapMap.put(generateCompositeKey(allocation.getSegment().getId().toString(),
-                            entry2.getKey().toString()), newOverlapPenaltyValue);
-                    segmentOverlapMap.put(generateCompositeKey(entry2.getKey().toString(),
-                            allocation.getSegment().getId().toString()), newOverlapPenaltyValue);
-                }
-            }
+            computeOverlap(allocation.getBatch().getId(), allocation.getSegment().getId(),
+                    allocation.getSegment().getName(), allocation.getStartInjectionTime(),
+                    allocation.getEndInjectionTime(), allocation.getStartDeliveryTime(),
+                    allocation.getEndDeliveryTime());
         }
         // End of compute overlap
 

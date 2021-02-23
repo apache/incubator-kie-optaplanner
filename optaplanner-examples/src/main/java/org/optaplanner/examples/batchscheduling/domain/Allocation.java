@@ -83,15 +83,12 @@ public class Allocation extends AbstractPersistable {
             return null;
         }
 
-        if (predecessorAllocation != null) {
-            if (!(predecessorsDoneDate == null)) {
-                return (delay + predecessorsDoneDate);
-            }
+        if ((predecessorAllocation != null) && (predecessorsDoneDate != null)) {
+            return (delay + predecessorsDoneDate);
         } else {
             return delay;
         }
 
-        return null;
     }
 
     // End of Injection is end of injection time of Batch Tail
@@ -114,7 +111,8 @@ public class Allocation extends AbstractPersistable {
         }
     }
 
-    // Start of Delivery is Start of Injection Time + Travel Time through Pipeline of Batch Head
+    // Start of Delivery is Start of Injection Time + Travel Time through Pipeline
+    // of Batch Head
     public Long getStartDeliveryTime() {
         if (getStartInjectionTime() == null) {
             return null;
@@ -133,7 +131,8 @@ public class Allocation extends AbstractPersistable {
         }
     }
 
-    // End of Delivery is End of Injection Time + Travel Time through Pipeline of Batch Tail
+    // End of Delivery is End of Injection Time + Travel Time through Pipeline of
+    // Batch Tail
     public Long getEndDeliveryTime() {
 
         if (getStartInjectionTime() == null) {
