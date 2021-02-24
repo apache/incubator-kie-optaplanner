@@ -882,28 +882,22 @@ public class BatchSchedulingIncrementalScoreCalculator
         batchEndTimeMap.put(allocation.getBatch().getId(), maxEndTime);
     }
 
-    // Computes Maximum Delivery End Date across all the batches
+    // Computes Maximum Delivery End Date across all the batches.
     public long getMaxEndTime() {
         long maxEndTime = 0L;
-
-        for (Map.Entry<Long, Long> entry : batchEndTimeMap.entrySet()) {
-
-            if (entry.getValue() == null) {
+        for (Long endTime : batchEndTimeMap.values()) {
+            if (endTime == null) {
                 continue;
             }
-
-            if ((Long) (entry.getValue()) <= maxEndTime) {
+            if (endTime <= maxEndTime) {
                 continue;
             }
-
-            maxEndTime = (Long) entry.getValue();
+            maxEndTime = endTime;
         }
-
         return maxEndTime;
     }
 
-    // Method to compute softScore2
-    // Return value of 0 indicates that all segments have been utilized
+    // Method to compute softScore2. Return value of 0 indicates that all segments have been utilized.
     private long computeRoutePathSegmentOverlap() {
         Set<String> segmentSet = new HashSet<>();
         for (String segments : batchRoutePathMap.values()) {
