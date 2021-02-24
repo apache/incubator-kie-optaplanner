@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2021 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,14 +16,6 @@
 
 package org.optaplanner.examples.conferencescheduling.optional.score;
 
-import static java.util.Collections.emptySet;
-import static java.util.Collections.singleton;
-import static java.util.Collections.singletonList;
-
-import java.time.LocalDateTime;
-import java.util.Arrays;
-import java.util.HashSet;
-
 import org.junit.jupiter.api.Test;
 import org.optaplanner.examples.conferencescheduling.domain.ConferenceConstraintConfiguration;
 import org.optaplanner.examples.conferencescheduling.domain.ConferenceSolution;
@@ -32,6 +24,14 @@ import org.optaplanner.examples.conferencescheduling.domain.Speaker;
 import org.optaplanner.examples.conferencescheduling.domain.Talk;
 import org.optaplanner.examples.conferencescheduling.domain.Timeslot;
 import org.optaplanner.test.api.score.stream.ConstraintVerifier;
+
+import java.time.LocalDateTime;
+import java.util.Arrays;
+import java.util.HashSet;
+
+import static java.util.Collections.emptySet;
+import static java.util.Collections.singleton;
+import static java.util.Collections.singletonList;
 
 public class ConferenceSchedulingConstraintProviderTest {
 
@@ -463,7 +463,7 @@ public class ConferenceSchedulingConstraintProviderTest {
                 .withRoom(room)
                 .withThemeTrackTagSet(singleton("b"))
                 .withTimeslot(MONDAY_9_TO_10);
-        Talk talk4 = new Talk(3)
+        Talk talk4 = new Talk(4)
                 .withRoom(room)
                 .withThemeTrackTagSet(singleton("a"))
                 .withTimeslot(MONDAY_10_TO_11);
