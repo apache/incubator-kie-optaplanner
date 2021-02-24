@@ -16,8 +16,12 @@
 
 package org.optaplanner.examples.batchscheduling.solver.score;
 
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
+
 import org.optaplanner.core.api.score.buildin.bendablelong.BendableLongScore;
 import org.optaplanner.core.api.score.calculator.IncrementalScoreCalculator;
 import org.optaplanner.examples.batchscheduling.app.BatchSchedulingApp;
@@ -901,20 +905,15 @@ public class BatchSchedulingIncrementalScoreCalculator
     // Method to compute softScore2
     // Return value of 0 indicates that all segments have been utilized
     private long computeRoutePathSegmentOverlap() {
-        Map<String, Boolean> segmentMap1 = new HashMap<String, Boolean>();
-
-        for (Map.Entry<Long, String> allocationPath : batchRoutePathMap.entrySet()) {
-
-            if (allocationPath.getValue() == null) {
+        Set<String> segmentSet = new HashSet<>();
+        for (String segments : batchRoutePathMap.values()) {
+            if (segments == null) {
                 continue;
             }
-
-            for (String s : RoutePath.getSegmentArray(allocationPath.getValue())) {
-                segmentMap1.put(s, true);
-            }
+            segmentSet.addAll(Arrays.asList(RoutePath.getSegmentArray(segments)));
         }
 
-        return segmentStringMap.size() - segmentMap1.size();
+        return segmentStringMap.size() - segmentSet.size();
     }
 
     public BendableLongScore calculateScore() {
