@@ -114,7 +114,8 @@ public class Allocation extends AbstractPersistable {
         }
 
         // Injection Time
-        Double tempInjectionDouble = (getBatch().getVolume() / (getSegment().getFlowRate() * BatchSchedulingApp.PERIODINTERVAL_IN_MINUTES));
+        Double tempInjectionDouble =
+                (getBatch().getVolume() / (getSegment().getFlowRate() * BatchSchedulingApp.PERIODINTERVAL_IN_MINUTES));
 
         Long tempInjectionLong = tempInjectionDouble.longValue();
         int fractionalInjectionInt = (int) Math.round((tempInjectionDouble - tempInjectionLong) * 100);
@@ -168,7 +169,8 @@ public class Allocation extends AbstractPersistable {
         }
 
         // Injection Time
-        Double tempDeliveryDouble = (getBatch().getVolume() / (getSegment().getFlowRate() * BatchSchedulingApp.PERIODINTERVAL_IN_MINUTES));
+        Double tempDeliveryDouble =
+                (getBatch().getVolume() / (getSegment().getFlowRate() * BatchSchedulingApp.PERIODINTERVAL_IN_MINUTES));
         Long tempDeliveryLong = tempDeliveryDouble.longValue();
         int fractionalDeliveryInt = (int) Math.round((tempDeliveryDouble - tempDeliveryLong) * 100);
 

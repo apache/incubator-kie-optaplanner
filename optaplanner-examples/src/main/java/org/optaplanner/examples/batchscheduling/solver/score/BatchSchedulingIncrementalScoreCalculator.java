@@ -19,6 +19,7 @@ package org.optaplanner.examples.batchscheduling.solver.score;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
+
 import org.optaplanner.core.api.score.buildin.bendablelong.BendableLongScore;
 import org.optaplanner.core.api.score.calculator.IncrementalScoreCalculator;
 import org.optaplanner.examples.batchscheduling.app.BatchSchedulingApp;
