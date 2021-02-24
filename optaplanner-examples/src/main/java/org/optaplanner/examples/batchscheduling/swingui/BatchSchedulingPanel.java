@@ -16,13 +16,15 @@
 
 package org.optaplanner.examples.batchscheduling.swingui;
 
-import java.awt.*;
+import java.awt.BorderLayout;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import javax.swing.*;
+import javax.swing.JScrollPane;
+import javax.swing.JTabbedPane;
+import javax.swing.JTable;
 
 import org.optaplanner.examples.batchscheduling.domain.Allocation;
 import org.optaplanner.examples.batchscheduling.domain.AllocationPath;
@@ -175,8 +177,8 @@ public class BatchSchedulingPanel extends SolutionPanel<BatchSchedule> {
                                         && (allocation.getRoutePath().getPath().equals(routePath.getPath()))
                                         && (allocation.getSegment().getName().equals(segment.getName()))) {
                                     if (allocation.getSegment() != null) {
-                                        strLength = Float.valueOf(allocation.getSegment().getLength()).toString();
-                                        strFlowRate = Float.valueOf(allocation.getSegment().getFlowRate()).toString();
+                                        strLength = Float.toString(allocation.getSegment().getLength());
+                                        strFlowRate = Float.toString(allocation.getSegment().getFlowRate());
                                     } else {
                                         strLength = "";
                                         strFlowRate = "";
@@ -285,8 +287,8 @@ public class BatchSchedulingPanel extends SolutionPanel<BatchSchedule> {
                                         && (allocation.getRoutePath().getPath().equals(routePath.getPath()))
                                         && (allocation.getSegment().getName().equals(segment.getName()))) {
                                     if (allocation.getSegment() != null) {
-                                        strLength = Float.valueOf(allocation.getSegment().getLength()).toString();
-                                        strFlowRate = Float.valueOf(allocation.getSegment().getFlowRate()).toString();
+                                        strLength = Float.toString(allocation.getSegment().getLength());
+                                        strFlowRate = Float.toString(allocation.getSegment().getFlowRate());
                                     } else {
                                         strLength = "";
                                         strFlowRate = "";
@@ -333,8 +335,8 @@ public class BatchSchedulingPanel extends SolutionPanel<BatchSchedule> {
                         }
                     }
 
-                    if (!((strDelay.equals("") && strStartTime1.equals("") && strEndTime1.equals("")
-                            && strPEndTime.equals("")))) {
+                    if (!(strDelay.equals("") && strStartTime1.equals("") && strEndTime1.equals("")
+                            && strPEndTime.equals(""))) {
                         rowData.add(strLength);
                         rowData.add(strFlowRate);
                         rowData.add(strDelay);

@@ -399,16 +399,17 @@ public class BatchSchedulingIncrementalScoreCalculator
 
         // If input segment is not part of the selectedRoutePath, then compare previous
         // delay value with new delay value.
-        // If previous value is null but new value is not null, then add penalty for
-        // that segment
-        // else if previous value is not null but new value is null, then remove penalty
-        // for that segment
+        // If previous value is null but new value is not null, then add penalty for that segment
+        // else if previous value is not null but new value is null, then remove penalty for that segment.
+        boolean hasDelay = allocation.getDelay() != null;
         if (!(allocation.getRoutePath().getPath().equals(batchRoutePathMap.get(allocation.getBatch().getId())))) {
-            if ((allocation.getDelay() != null) && (allocationDelayMap.get(allocation.getSegment().getId()) == null)) {
-                newOtherPenaltyValue = newOtherPenaltyValue + 1;
-            } else if ((allocation.getDelay() != null)
-                    && (allocationDelayMap.get(allocation.getSegment().getId()) == null)) {
-                newOtherPenaltyValue = newOtherPenaltyValue - 1;
+            if (hasDelay) {
+                Long allocationDelay = allocationDelayMap.get(allocation.getSegment().getId());
+                if (allocationDelay == null) {
+                    newOtherPenaltyValue = newOtherPenaltyValue + 1;
+                } else {
+                    newOtherPenaltyValue = newOtherPenaltyValue - 1;
+                }
             }
         }
 
@@ -419,13 +420,15 @@ public class BatchSchedulingIncrementalScoreCalculator
         // else if previous value is null but new value is not null, then remove penalty
         // for that segment
         if (allocation.getRoutePath().getPath().equals(batchRoutePathMap.get(allocation.getBatch().getId()))) {
-            if ((allocation.getDelay() != null) && (allocationDelayMap.get(allocation.getSegment().getId()) == null)) {
-                newCurrentPenaltyValue = newCurrentPenaltyValue - 1;
-            } else if ((allocation.getDelay() == null)
-                    && (allocationDelayMap.get(allocation.getSegment().getId()) != null)) {
-                newCurrentPenaltyValue = newCurrentPenaltyValue + 1;
-            }
+            if (hasDelay) {
+                Long allocationDelay = allocationDelayMap.get(allocation.getSegment().getId());
+                if (allocationDelay == null) {
+                    newCurrentPenaltyValue = newCurrentPenaltyValue - 1;
+                } else {
+                    newCurrentPenaltyValue = newCurrentPenaltyValue + 1;
+                }
 
+            }
         }
 
         boolean computeOverLap = false;
@@ -434,7 +437,7 @@ public class BatchSchedulingIncrementalScoreCalculator
         // Overlap is computed if input segment is part of the selectedRoutePath and
         // delay and Injection start time are not null
         if (allocation.getRoutePath().getPath().equals(batchRoutePathMap.get(allocation.getBatch().getId()))) {
-            if ((allocation.getDelay() != null) && (allocationDelayMap.get(allocation.getSegment().getId()) == null)) {
+            if (hasDelay && (allocationDelayMap.get(allocation.getSegment().getId()) == null)) {
                 if (allocation.getStartInjectionTime() != null) {
                     computeOverLap = true;
                 }
@@ -891,20 +894,12 @@ public class BatchSchedulingIncrementalScoreCalculator
     // Method to compute softScore2
     // Return value of 0 indicates that all segments have been utilized
     private long computeRoutePathSegmentOverlap() {
-        Map<String, Boolean> segmentMap1 = new HashMap<>();
-
-        for (Map.Entry<Long, String> allocationPath : batchRoutePathMap.entrySet()) {
-
-            if (allocationPath.getValue() == null) {
-                continue;
-            }
-
-            for (String s : RoutePath.getSegmentArray(allocationPath.getValue())) {
-                segmentMap1.put(s, true);
-            }
-        }
-
-        return segmentStringMap.size() - segmentMap1.size();
+        long utilizedSegmentCount = batchRoutePathMap.values().stream()
+                .filter(Objects::nonNull)
+                .map(RoutePath::getSegmentArray)
+                .distinct()
+                .count();
+        return segmentStringMap.size() - utilizedSegmentCount;
     }
 
     public BendableLongScore calculateScore() {
