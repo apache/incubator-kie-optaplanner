@@ -19,7 +19,6 @@ package org.optaplanner.examples.batchscheduling.solver.score;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
-
 import org.optaplanner.core.api.score.buildin.bendablelong.BendableLongScore;
 import org.optaplanner.core.api.score.calculator.IncrementalScoreCalculator;
 import org.optaplanner.examples.batchscheduling.app.BatchSchedulingApp;
@@ -397,50 +396,34 @@ public class BatchSchedulingIncrementalScoreCalculator
         Long oldOtherPenaltyValue = batchOtherPenaltyValueMap.get(allocation.getBatch().getId());
         Long newOtherPenaltyValue = oldOtherPenaltyValue;
 
-        // If input segment is not part of the selectedRoutePath, then compare previous
-        // delay value with new delay value.
-        // If previous value is null but new value is not null, then add penalty for that segment
-        // else if previous value is not null but new value is null, then remove penalty for that segment.
-        boolean hasDelay = allocation.getDelay() != null;
-        if (!(allocation.getRoutePath().getPath().equals(batchRoutePathMap.get(allocation.getBatch().getId())))) {
-            if (hasDelay) {
-                Long allocationDelay = allocationDelayMap.get(allocation.getSegment().getId());
-                if (allocationDelay == null) {
-                    newOtherPenaltyValue = newOtherPenaltyValue + 1;
-                } else {
-                    newOtherPenaltyValue = newOtherPenaltyValue - 1;
-                }
-            }
-        }
-
-        // If input segment is part of the selectedRoutePath, then compare previous
-        // delay value with new delay value.
-        // If previous value is not null but new value is null, then add penalty for
-        // that segment
-        // else if previous value is null but new value is not null, then remove penalty
-        // for that segment
-        if (allocation.getRoutePath().getPath().equals(batchRoutePathMap.get(allocation.getBatch().getId()))) {
-            if (hasDelay) {
-                Long allocationDelay = allocationDelayMap.get(allocation.getSegment().getId());
-                if (allocationDelay == null) {
-                    newCurrentPenaltyValue = newCurrentPenaltyValue - 1;
-                } else {
-                    newCurrentPenaltyValue = newCurrentPenaltyValue + 1;
-                }
-
-            }
-        }
-
         boolean computeOverLap = false;
-
-        // Determine if overlap needs to be computed.
-        // Overlap is computed if input segment is part of the selectedRoutePath and
-        // delay and Injection start time are not null
-        if (allocation.getRoutePath().getPath().equals(batchRoutePathMap.get(allocation.getBatch().getId()))) {
-            if (hasDelay && (allocationDelayMap.get(allocation.getSegment().getId()) == null)) {
-                if (allocation.getStartInjectionTime() != null) {
-                    computeOverLap = true;
-                }
+        boolean hadDelay = allocation.getDelay() != null;
+        boolean segmentPartOfRoutePath = allocation.getRoutePath().getPath()
+                .equals(batchRoutePathMap.get(allocation.getBatch().getId()));
+        Long allocationDelay = allocationDelayMap.get(allocation.getSegment().getId());
+        boolean hasDelay = allocationDelay != null;
+        if (segmentPartOfRoutePath) {
+            // If input segment is part of the selectedRoutePath, then compare previous delay value with new delay value.
+            // If previous value is not null but new value is null, then add penalty for that segment
+            // else if previous value is null but new value is not null, then remove penalty for that segment.
+            if (hadDelay && !hasDelay) {
+                newCurrentPenaltyValue = newCurrentPenaltyValue + 1;
+            } else if (!hadDelay && hasDelay) {
+                newCurrentPenaltyValue = newCurrentPenaltyValue - 1;
+            }
+            // Overlap is computed if input segment is part of the selectedRoutePath and
+            // delay and Injection start time are not null
+            if (hadDelay && allocation.getStartInjectionTime() != null) {
+                computeOverLap = true;
+            }
+        } else {
+            // If input segment is not part of the selectedRoutePath, then compare previous delay value with new delay value.
+            // If previous value is null but new value is not null, then add penalty for that segment
+            // else if previous value is not null but new value is null, then remove penalty for that segment.
+            if (!hadDelay && hasDelay) {
+                newOtherPenaltyValue = newOtherPenaltyValue + 1;
+            } else if (hadDelay && !hasDelay){
+                newOtherPenaltyValue = newOtherPenaltyValue - 1;
             }
         }
 
@@ -894,12 +877,20 @@ public class BatchSchedulingIncrementalScoreCalculator
     // Method to compute softScore2
     // Return value of 0 indicates that all segments have been utilized
     private long computeRoutePathSegmentOverlap() {
-        long utilizedSegmentCount = batchRoutePathMap.values().stream()
-                .filter(Objects::nonNull)
-                .map(RoutePath::getSegmentArray)
-                .distinct()
-                .count();
-        return segmentStringMap.size() - utilizedSegmentCount;
+        Map<String, Boolean> segmentMap1 = new HashMap<>();
+
+        for (Map.Entry<Long, String> allocationPath : batchRoutePathMap.entrySet()) {
+
+            if (allocationPath.getValue() == null) {
+                continue;
+            }
+
+            for (String s : RoutePath.getSegmentArray(allocationPath.getValue())) {
+                segmentMap1.put(s, true);
+            }
+        }
+
+        return segmentStringMap.size() - segmentMap1.size();
     }
 
     public BendableLongScore calculateScore() {
