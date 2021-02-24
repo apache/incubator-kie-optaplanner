@@ -805,81 +805,68 @@ public class BatchSchedulingIncrementalScoreCalculator
 
     // This method updates MaxTime (i.e. Delivery End Time) for the Batch.
     public void updateBatchEndDate(AllocationPath allocationPath) {
-        Long maxEndTime = 0L;
-
-        for (Map.Entry<Long, Segment> entry2 : segmentMap.entrySet()) {
-
-            // Continue if Segment Delay is null
-            if (allocationEndDeliveryTimeMap.get(entry2.getKey()) == null) {
+        long maxEndTime = 0L;
+        Long pathBatchId = allocationPath.getBatch().getId();
+        for (Map.Entry<Long, Segment> segmentEntry : segmentMap.entrySet()) {
+            Long allocationEndDeliveryTime = allocationEndDeliveryTimeMap.get(segmentEntry.getKey());
+            // Continue if Segment Delay is null.
+            if (allocationEndDeliveryTime == null) {
                 continue;
             }
-
-            // Continue if RoutePath has not been selected for the Segment Batch
-            if (batchRoutePathMap.get(entry2.getValue().getBatch().getId()) == null) {
+            Long batchId = segmentEntry.getValue().getBatch().getId();
+            String batchRoute = batchRoutePathMap.get(batchId);
+            // Continue if RoutePath has not been selected for the Segment Batch.
+            if (batchRoute == null) {
                 continue;
             }
-
-            // Continue if Segment Batch is not same as the Input Parameter Batch
-            if (entry2.getValue().getBatch().getId() != allocationPath.getBatch().getId()) {
+            // Continue if Segment Batch is not same as the Input Parameter Batch.
+            if (!batchId.equals(pathBatchId)) {
                 continue;
             }
-
-            // Continue if Segment is not part of the selectedRoutepath
-            if (!(entry2.getValue().getRoutePath().getPath()
-                    .equals(batchRoutePathMap.get(entry2.getValue().getBatch().getId())))) {
+            // Continue if Segment is not part of the selectedRoutepath.
+            if (!(segmentEntry.getValue().getRoutePath().getPath().equals(batchRoute))) {
                 continue;
             }
-
             // Check if Max End time is the maximum. If not then, no need to update.
-            if ((Long) (allocationEndDeliveryTimeMap.get(entry2.getKey())) <= maxEndTime) {
+            if (allocationEndDeliveryTime <= maxEndTime) {
                 continue;
             }
-
-            maxEndTime = (Long) (allocationEndDeliveryTimeMap.get(entry2.getKey()));
-
+            maxEndTime = allocationEndDeliveryTime;
         }
-
-        batchEndTimeMap.put(allocationPath.getBatch().getId(), maxEndTime);
+        batchEndTimeMap.put(pathBatchId, maxEndTime);
     }
 
     // This method updates MaxTime (i.e. Delivery End Time) for the Batch.
     public void updateBatchEndDate(Allocation allocation) {
-
-        Long maxEndTime = 0L;
-
-        for (Map.Entry<Long, Segment> entry2 : segmentMap.entrySet()) {
-
-            // Continue if Segment Delay is null
-            if (allocationEndDeliveryTimeMap.get(entry2.getKey()) == null) {
+        long maxEndTime = 0L;
+        Long allocationBatchId = allocation.getBatch().getId();
+        for (Map.Entry<Long, Segment> segmentEntry : segmentMap.entrySet()) {
+            Long allocationEndDeliveryTime = allocationEndDeliveryTimeMap.get(segmentEntry.getKey());
+            // Continue if Segment Delay is null.
+            if (allocationEndDeliveryTime == null) {
                 continue;
             }
-
-            // Continue if RoutePath has not been selected for the Segment Batch
-            if (batchRoutePathMap.get(entry2.getValue().getBatch().getId()) == null) {
+            Long batchId = segmentEntry.getValue().getBatch().getId();
+            String batchRoute = batchRoutePathMap.get(batchId);
+            // Continue if RoutePath has not been selected for the Segment Batch.
+            if (batchRoute == null) {
                 continue;
             }
-
-            // Continue if Segment Batch is not same as the Input Parameter Batch
-            if (entry2.getValue().getBatch().getId() != allocation.getBatch().getId()) {
+            // Continue if Segment Batch is not same as the Input Parameter Batch.
+            if (!batchId.equals(allocationBatchId)) {
                 continue;
             }
-
-            // Continue if Segment is not part of the selectedRoutepath
-            if (!(entry2.getValue().getRoutePath().getPath()
-                    .equals(batchRoutePathMap.get(entry2.getValue().getBatch().getId())))) {
+            // Continue if Segment is not part of the selectedRoutepath.
+            if (!segmentEntry.getValue().getRoutePath().getPath().equals(batchRoute)) {
                 continue;
             }
-
             // Check if Max End time is the maximum. If not then, no need to update.
-            if ((Long) (allocationEndDeliveryTimeMap.get(entry2.getKey())) <= maxEndTime) {
+            if (allocationEndDeliveryTime <= maxEndTime) {
                 continue;
             }
-
-            maxEndTime = (Long) (allocationEndDeliveryTimeMap.get(entry2.getKey()));
-
+            maxEndTime = allocationEndDeliveryTime;
         }
-
-        batchEndTimeMap.put(allocation.getBatch().getId(), maxEndTime);
+        batchEndTimeMap.put(allocationBatchId, maxEndTime);
     }
 
     // Computes Maximum Delivery End Date across all the batches.
