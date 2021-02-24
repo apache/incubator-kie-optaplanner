@@ -19,8 +19,6 @@ package org.optaplanner.examples.batchscheduling.solver.score;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
-
 import org.optaplanner.core.api.score.buildin.bendablelong.BendableLongScore;
 import org.optaplanner.core.api.score.calculator.EasyScoreCalculator;
 import org.optaplanner.examples.batchscheduling.app.BatchSchedulingApp;
@@ -32,18 +30,21 @@ import org.optaplanner.examples.batchscheduling.domain.RoutePath;
 public class BatchSchedulingEasyScoreCalculator implements EasyScoreCalculator<BatchSchedule, BendableLongScore> {
 
     public BendableLongScore calculateScore(BatchSchedule schedule) {
+
         // Refer to incremental score calculator for comments on hard and soft scores
         long hard0Score = 0;
         long hard1Score = 0;
         long hard2Score = 0;
         long soft0Score = 0;
+        long soft1Score = 0;
 
-        Map<Long, Long> batchOtherPenaltyValueMap = new HashMap<>();
-        Map<Long, Long> batchCurrentPenaltyValueMap = new HashMap<>();
-        Map<Long, String> batchRoutePathMap = new HashMap<>();
-        Map<String, Long> segmentOverlapMap = new HashMap<>();
+        Map<Long, Long> batchOtherPenaltyValueMap = new HashMap<Long, Long>();
+        Map<Long, Long> batchCurrentPenaltyValueMap = new HashMap<Long, Long>();
+        Map<Long, String> batchRoutePathMap = new HashMap<Long, String>();
+        Map<String, Long> segmentOverlapMap = new HashMap<String, Long>();
 
         for (AllocationPath allocationPath : schedule.getAllocationPathList()) {
+
             batchOtherPenaltyValueMap.put(allocationPath.getBatch().getId(), 0L);
             batchCurrentPenaltyValueMap.put(allocationPath.getBatch().getId(), 0L);
 
@@ -53,9 +54,11 @@ public class BatchSchedulingEasyScoreCalculator implements EasyScoreCalculator<B
 
             // update batchRoutePathMap, if RoutePath is set for the Batch
             batchRoutePathMap.put(allocationPath.getBatch().getId(), allocationPath.getRoutePath().getPath());
+
         }
 
         for (Allocation allocation : schedule.getAllocationList()) {
+
             // If RoutePath is not set, then compute currentPenalty by adding all segments
             // for the Batch
             if (batchRoutePathMap.get(allocation.getBatch().getId()) == null) {
@@ -67,6 +70,7 @@ public class BatchSchedulingEasyScoreCalculator implements EasyScoreCalculator<B
             // If Segment is not part of the selected RoutePath and delay value is not null,
             // then increment otherPenalty
             if (!(allocation.getRoutePath().getPath().equals(batchRoutePathMap.get(allocation.getBatch().getId())))) {
+
                 if (allocation.getDelay() != null) {
                     batchOtherPenaltyValueMap.put(allocation.getBatch().getId(),
                             batchOtherPenaltyValueMap.get(allocation.getBatch().getId()) + 1);
@@ -86,6 +90,7 @@ public class BatchSchedulingEasyScoreCalculator implements EasyScoreCalculator<B
         }
 
         for (Map.Entry<Long, Long> entry : batchCurrentPenaltyValueMap.entrySet()) {
+
             if ((entry.getValue() > 0) || (batchRoutePathMap.get(entry.getKey()) == null)) {
                 hard0Score -= BatchSchedulingApp.SELECTED_ROUTEPATH_NON_ALLOCATION_PENALTY;
                 hard1Score -= entry.getValue();
@@ -93,6 +98,7 @@ public class BatchSchedulingEasyScoreCalculator implements EasyScoreCalculator<B
         }
 
         for (Map.Entry<Long, Long> entry : batchOtherPenaltyValueMap.entrySet()) {
+
             if (batchRoutePathMap.get(entry.getKey()) == null) {
                 continue;
             }
@@ -108,6 +114,7 @@ public class BatchSchedulingEasyScoreCalculator implements EasyScoreCalculator<B
         }
 
         for (Allocation allocation : schedule.getAllocationList()) {
+
             if (allocation.getDelay() == null) {
                 continue;
             }
@@ -129,13 +136,18 @@ public class BatchSchedulingEasyScoreCalculator implements EasyScoreCalculator<B
             soft0Score = longEndDeliverytime;
         }
 
-        Map<String, Boolean> segmentMapCount = new HashMap<>();
+        long segmentCount = 0L;
+
+        Map<String, Boolean> segmentMapCount = new HashMap<String, Boolean>();
+
         for (Allocation allocation : schedule.getAllocationList()) {
             segmentMapCount.put(allocation.getSegment().getName(), true);
         }
 
-        long segmentCount = segmentMapCount.size();
-        Map<String, Boolean> segmentMap = new HashMap<>();
+        segmentCount = segmentMapCount.size();
+
+        Map<String, Boolean> segmentMap = new HashMap<String, Boolean>();
+
         for (AllocationPath allocationPath : schedule.getAllocationPathList()) {
             if (allocationPath.getRoutePath() == null) {
                 continue;
@@ -147,7 +159,7 @@ public class BatchSchedulingEasyScoreCalculator implements EasyScoreCalculator<B
         }
 
         soft0Score = -soft0Score;
-        long soft1Score = segmentMap.size() - segmentCount;
+        soft1Score = segmentMap.size() - segmentCount;
 
         return BendableLongScore.of(new long[] { hard0Score, hard1Score, hard2Score },
                 new long[] { soft0Score, soft1Score });
@@ -155,19 +167,21 @@ public class BatchSchedulingEasyScoreCalculator implements EasyScoreCalculator<B
 
     private void computeOverlap(List<Allocation> allocationList, Allocation allocation,
             Map<Long, String> batchRoutePathMap, Map<String, Long> segmentOverlapMap) {
+
         Long allocationStartInjectionTime = allocation.getStartInjectionTime();
         Long allocationEndInjectionTime = allocation.getEndInjectionTime();
         Long allocationStartDeliveryTime = allocation.getStartDeliveryTime();
         Long allocationEndDeliveryTime = allocation.getEndDeliveryTime();
 
         for (Allocation allocation2 : allocationList) {
+
             // Continue if Segment Delay is null
             if (allocation2.getDelay() == null) {
                 continue;
             }
 
             // Continue if Segment Batch is not same as the Input Parameter Batch
-            if (Objects.equals(allocation2.getBatch().getId(), allocation.getBatch().getId())) {
+            if (allocation2.getBatch().getId() == allocation.getBatch().getId()) {
                 continue;
             }
 
@@ -193,7 +207,7 @@ public class BatchSchedulingEasyScoreCalculator implements EasyScoreCalculator<B
             Long allocation2StartDeliveryTime = allocation2.getStartDeliveryTime();
             Long allocation2EndDeliveryTime = allocation2.getEndDeliveryTime();
 
-            long newOverlapPenaltyValue = 0L;
+            Long newOverlapPenaltyValue = 0L;
 
             // Check for 4 conditions for Injection:
             if ((allocation2StartInjectionTime <= allocationStartInjectionTime)
