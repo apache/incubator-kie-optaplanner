@@ -16,6 +16,9 @@
 
 package org.optaplanner.examples.meetingscheduling.optional.score;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.junit.jupiter.api.Test;
 import org.optaplanner.examples.meetingscheduling.domain.Day;
 import org.optaplanner.examples.meetingscheduling.domain.Meeting;
@@ -27,9 +30,6 @@ import org.optaplanner.examples.meetingscheduling.domain.RequiredAttendance;
 import org.optaplanner.examples.meetingscheduling.domain.Room;
 import org.optaplanner.examples.meetingscheduling.domain.TimeGrain;
 import org.optaplanner.test.api.score.stream.ConstraintVerifier;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class MeetingSchedulingConstraintProviderTest {
 

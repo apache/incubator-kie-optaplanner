@@ -16,6 +16,9 @@
 
 package org.optaplanner.examples.pas.optional.score;
 
+import java.util.function.BiFunction;
+import java.util.stream.Stream;
+
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -40,9 +43,6 @@ import org.optaplanner.examples.pas.domain.RoomEquipment;
 import org.optaplanner.examples.pas.domain.RoomSpecialism;
 import org.optaplanner.examples.pas.domain.Specialism;
 import org.optaplanner.test.api.score.stream.ConstraintVerifier;
-
-import java.util.function.BiFunction;
-import java.util.stream.Stream;
 
 public class PatientAdmissionScheduleConstraintProviderTest {
 
