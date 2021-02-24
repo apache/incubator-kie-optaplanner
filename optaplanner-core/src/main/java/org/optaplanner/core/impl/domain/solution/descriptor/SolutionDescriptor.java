@@ -121,11 +121,7 @@ public class SolutionDescriptor<Solution_> {
 
     public static <Solution_> SolutionDescriptor<Solution_> buildSolutionDescriptor(Class<Solution_> solutionClass,
             List<Class<?>> entityClassList) {
-        // Auto-detect if we should be using Gizmo, as the user did not specify a preference.
-        DomainAccessType domainAccessType =
-                (ConfigUtils.isInQuarkus() && ConfigUtils.isGizmoOnClasspath()) ? DomainAccessType.GIZMO
-                        : DomainAccessType.REFLECTION;
-        return buildSolutionDescriptor(domainAccessType, solutionClass, entityClassList);
+        return buildSolutionDescriptor(DomainAccessType.REFLECTION, solutionClass, entityClassList);
     }
 
     public static <Solution_> SolutionDescriptor<Solution_> buildSolutionDescriptor(DomainAccessType domainAccessType,

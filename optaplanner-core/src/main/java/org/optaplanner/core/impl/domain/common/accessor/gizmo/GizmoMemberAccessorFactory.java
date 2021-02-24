@@ -21,7 +21,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.optaplanner.core.api.domain.common.DomainAccessType;
-import org.optaplanner.core.config.util.ConfigUtils;
 import org.optaplanner.core.impl.domain.common.accessor.MemberAccessor;
 
 public class GizmoMemberAccessorFactory {
@@ -48,7 +47,11 @@ public class GizmoMemberAccessorFactory {
     public static MemberAccessor buildGizmoMemberAccessor(Member member, Class<? extends Annotation> annotationClass) {
         String gizmoMemberAccessorClassName = getGeneratedClassName(member);
         return memberAccessorMap.computeIfAbsent(gizmoMemberAccessorClassName, key -> {
-            if (!ConfigUtils.isGizmoOnClasspath()) {
+            try {
+                // Check if Gizmo on the classpath by verifying we can access one of its classes
+                Class.forName("io.quarkus.gizmo.ClassCreator", false,
+                        Thread.currentThread().getContextClassLoader());
+            } catch (ClassNotFoundException e) {
                 throw new IllegalStateException("When using the domainAccessType (" +
                         DomainAccessType.GIZMO +
                         ") the classpath or modulepath must contain io.quarkus.gizmo:gizmo.\n" +

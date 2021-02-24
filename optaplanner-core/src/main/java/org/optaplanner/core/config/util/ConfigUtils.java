@@ -415,33 +415,6 @@ public class ConfigUtils {
         return memberAccessor;
     }
 
-    /**
-     * Returns true if the application is currently running in the context of Quarkus.
-     * 
-     * @return true if on Quarkus
-     */
-    public static boolean isInQuarkus() {
-        return Arrays.stream(Thread.currentThread().getStackTrace())
-                .anyMatch(clz -> clz.getClassName().contains("io.quarkus"));
-    }
-
-    /**
-     * Returns true if Gizmo is on the classpath.
-     * 
-     * @return true if Gizmo on classpath
-     */
-    public static boolean isGizmoOnClasspath() {
-        try {
-            // Check if Gizmo on the classpath by verifying we can access one of its classes.
-            Class.forName("io.quarkus.gizmo.ClassCreator", false,
-                    Thread.currentThread().getContextClassLoader());
-            return true;
-        } catch (ClassNotFoundException e) {
-            return false;
-        }
-
-    }
-
     public static String abbreviate(List<String> list, int limit) {
         String abbreviation = "";
         if (list != null) {
