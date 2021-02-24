@@ -36,69 +36,62 @@ import org.optaplanner.examples.batchscheduling.domain.Segment;
 public class BatchSchedulingIncrementalScoreCalculator
         implements IncrementalScoreCalculator<BatchSchedule, BendableLongScore> {
 
-    // hard0Score is sum of penalties for all the Batches. It is computed at Batch
-    // level. There are 2 types of Penalties.
+    // hard0Score is sum of penalties for all the Batches. It is computed at Batch level.
+    // There are 2 types of Penalties.
     //
     // a) SELECTED_ROUTEPATH_NON_ALLOCATION_PENALTY:
-    // a1) Applicable if RoutePath is selected for a Batch but delay is not set for
-    // one or more segments present in the RoutePath
-    // OR
-    // a2) if RoutePath is not set for a Batch
+    // a1) Applicable if RoutePath is selected for a Batch but delay is not set for one or more segments present in the
+    // RoutePath OR
+    // a2) if RoutePath is not set for a Batch.
     //
     // b) NON_SELECTED_ROUTEPATH_ALLOCATION_PENALTY:
-    // Set if RoutePath is not the selected RoutePath but delay is set for a segment
-    // in the RoutePath
+    // Set if RoutePath is not the selected RoutePath but delay is set for a segment in the RoutePath.
     private long hard0Score = 0;
 
-    // hard1Score is computed at segment level (i.e. not at Batch level). It helps
-    // arriving at result faster because it operates at segment level.
+    // hard1Score is computed at segment level (i.e. not at Batch level).
+    // It helps arriving at result faster because it operates at segment level.
     //
-    // a) For scenarios where RoutePath is selected, it is computed by adding
-    // following 2 segment counts:
+    // a) For scenarios where RoutePath is selected, it is computed by adding following 2 segment counts:
     // a1) Count of segments which are part of RoutePath but delay is not set and
     // a2) Count of segments which are not part of RoutePath but delay is set
     //
-    // b) For scenarios where RoutePath is not selected for a Batch, it is the count
-    // of all segments across all the RoutePaths for the given Batch.
+    // b) For scenarios where RoutePath is not selected for a Batch, it is the count of all segments across all the
+    // RoutePaths for the given Batch.
     private long hard1Score = 0;
 
-    // hard2score computes overlap (i.e. time overlap) across batches (i.e. No two
-    // bathes should be present in the same segment at the same time)
+    // hard2score computes overlap (i.e. time overlap) across batches
+    // (i.e. No two batches should be present in the same segment at the same time).
     private long hard2Score = 0;
 
-    // soft0Score is the time taken to inject first Batch till delivery of last
-    // batch
+    // soft0Score is the time taken to inject first Batch till delivery of last batch.
     private long soft0Score = 0;
 
     // Count of segments through which commodity has not traversed.
-    // Ideal value is 0 (i.e. All segments have been utilized)
+    // Ideal value is 0 (i.e. All segments have been utilized).
     // This soft score helps all routePaths to be utilized.
     private long soft1Score = 0;
 
-    // Map to store BatchId and selectedRoutePath for that Batch
+    // Map to store BatchId and selectedRoutePath for that Batch.
     private Map<Long, String> batchRoutePathMap;
 
-    // Map to store BatchId and count of segments that are part of selectedRoutePath
-    // but don't have delay assigned
+    // Map to store BatchId and count of segments that are part of selectedRoutePath but don't have delay assigned.
     private Map<Long, Long> batchCurrentPenaltyValueMap;
 
-    // Map to store BatchId and count of segments that are not part of
-    // selectedRoutePath but have delay assigned
+    // Map to store BatchId and count of segments that are not part of selectedRoutePath but have delay assigned.
     private Map<Long, Long> batchOtherPenaltyValueMap;
 
-    // Map to store Maximum EndTime for every batch
+    // Map to store Maximum EndTime for every batch.
     private Map<Long, Long> batchEndTimeMap;
 
-    // Stores mapping between segmentId and Delay value
+    // Stores mapping between segmentId and Delay value.
     private Map<Long, Long> allocationDelayMap;
 
-    // For calculating hardscore2
-    // This map will always contain even number of entries (i.e. If Segment A
-    // overlaps B, then B also overlaps A)
+    // For calculating hardscore2.
+    // This map will always contain even number of entries (i.e. If Segment A overlaps B, then B also overlaps A).
     private Map<String, Long> segmentOverlapMap;
 
-    // Following 4 Maps contain mapping between SegmentId and different timings
-    // Used for determining overlap values
+    // Following 4 Maps contain mapping between SegmentId and different timings.
+    // Used for determining overlap values.
     private Map<Long, Long> allocationStartInjectionTimeMap;
     private Map<Long, Long> allocationEndInjectionTimeMap;
     private Map<Long, Long> allocationStartDeliveryTimeMap;
@@ -106,30 +99,27 @@ public class BatchSchedulingIncrementalScoreCalculator
 
     private Map<Long, Segment> segmentMap;
 
-    // List to store unique segmentString (not segmentId). Boolean field is not
-    // used.
+    // List to store unique segmentString (not segmentId). Boolean field is not used.
     private Map<String, Boolean> segmentStringMap;
 
-    public static String generateCompositeKey(String key1, String key2) {
+    private static String generateCompositeKey(String key1, String key2) {
         return key1 + "#" + key2;
     }
 
     @Override
     public void resetWorkingSolution(BatchSchedule schedule) {
-
-        batchRoutePathMap = new HashMap<Long, String>();
-        segmentMap = new HashMap<Long, Segment>();
-        segmentStringMap = new HashMap<String, Boolean>();
-        batchOtherPenaltyValueMap = new HashMap<Long, Long>();
-        batchCurrentPenaltyValueMap = new HashMap<Long, Long>();
-        batchEndTimeMap = new HashMap<Long, Long>();
-        segmentOverlapMap = new HashMap<String, Long>();
-
-        allocationDelayMap = new HashMap<Long, Long>();
-        allocationStartInjectionTimeMap = new HashMap<Long, Long>();
-        allocationEndInjectionTimeMap = new HashMap<Long, Long>();
-        allocationStartDeliveryTimeMap = new HashMap<Long, Long>();
-        allocationEndDeliveryTimeMap = new HashMap<Long, Long>();
+        batchRoutePathMap = new HashMap<>();
+        segmentMap = new HashMap<>();
+        segmentStringMap = new HashMap<>();
+        batchOtherPenaltyValueMap = new HashMap<>();
+        batchCurrentPenaltyValueMap = new HashMap<>();
+        batchEndTimeMap = new HashMap<>();
+        segmentOverlapMap = new HashMap<>();
+        allocationDelayMap = new HashMap<>();
+        allocationStartInjectionTimeMap = new HashMap<>();
+        allocationEndInjectionTimeMap = new HashMap<>();
+        allocationStartDeliveryTimeMap = new HashMap<>();
+        allocationEndDeliveryTimeMap = new HashMap<>();
 
         hard0Score = 0L;
         hard1Score = 0L;
@@ -302,8 +292,7 @@ public class BatchSchedulingIncrementalScoreCalculator
         soft1Score = -computeRoutePathSegmentOverlap();
     }
 
-    // Compute Penalties (i.e. hardScore0 and hardScore1), Overlaps (i.e.
-    // hardScore2), softScore0 and softScore1
+    // Compute Penalties (i.e. hardScore0 and hardScore1), Overlaps (i.e. hardScore2), softScore0 and softScore1.
     private void retract(AllocationPath allocationPath) {
         // Get existing current and other penalty values for the batch
         Long oldOtherPenaltyValue = batchOtherPenaltyValueMap.get(allocationPath.getBatch().getId());
@@ -312,10 +301,10 @@ public class BatchSchedulingIncrementalScoreCalculator
         Long newCurrentPenaltyValue = 0L;
 
         // Start of compute overlap
-        for (Map.Entry<Long, Segment> entry1 : segmentMap.entrySet()) {
+        for (Map.Entry<Long, Segment> segmentEntry : segmentMap.entrySet()) {
 
             // Continue if Segment Batch is not same as the Input Parameter Batch
-            if (entry1.getValue().getBatch().getId() != allocationPath.getBatch().getId()) {
+            if (segmentEntry.getValue().getBatch().getId() != allocationPath.getBatch().getId()) {
                 continue;
             }
 
@@ -329,13 +318,13 @@ public class BatchSchedulingIncrementalScoreCalculator
                 }
 
                 // Continue if Inner Segment Name is same as the Outer Segment Name
-                if (!(entry2.getValue().getName().equals(entry1.getValue().getName()))) {
+                if (!(entry2.getValue().getName().equals(segmentEntry.getValue().getName()))) {
                     continue;
                 }
 
                 // Check if overlap exists in the map. If no overlap exists then continue.
                 if (segmentOverlapMap
-                        .get(generateCompositeKey(entry1.getKey().toString(), entry2.getKey().toString())) == null) {
+                        .get(generateCompositeKey(segmentEntry.getKey().toString(), entry2.getKey().toString())) == null) {
                     continue;
                 }
 
@@ -344,9 +333,9 @@ public class BatchSchedulingIncrementalScoreCalculator
                 // Notice the multiplication factor of 2 because if A overlaps B, then B also
                 // overlaps A
                 hard2Score += (2 * segmentOverlapMap
-                        .get(generateCompositeKey(entry1.getKey().toString(), entry2.getKey().toString())));
-                segmentOverlapMap.remove(generateCompositeKey(entry1.getKey().toString(), entry2.getKey().toString()));
-                segmentOverlapMap.remove(generateCompositeKey(entry2.getKey().toString(), entry1.getKey().toString()));
+                        .get(generateCompositeKey(segmentEntry.getKey().toString(), entry2.getKey().toString())));
+                segmentOverlapMap.remove(generateCompositeKey(segmentEntry.getKey().toString(), entry2.getKey().toString()));
+                segmentOverlapMap.remove(generateCompositeKey(entry2.getKey().toString(), segmentEntry.getKey().toString()));
             }
         }
         // End of compute overlap
