@@ -20,6 +20,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 
 import org.optaplanner.core.api.score.buildin.bendablelong.BendableLongScore;
@@ -659,147 +660,137 @@ public class BatchSchedulingIncrementalScoreCalculator
         soft0Score = -getMaxEndTime();
     }
 
-    // Compute Penalties (i.e. hardScore0 and hardScore1), Overlaps (i.e.
-    // hardScore2), softScore0 and softScore1
+    // Compute Penalties (i.e. hardScore0 and hardScore1), Overlaps (i.e. hardScore2), softScore0 and softScore1.
     private void retract(Allocation allocation) {
-        for (Map.Entry<Long, Segment> entry2 : segmentMap.entrySet()) {
-
+        Long allocationBatchId = allocation.getBatch().getId();
+        Long allocationSegmentId = allocation.getSegment().getId();
+        for (Map.Entry<Long, Segment> segmentEntry : segmentMap.entrySet()) {
             // Continue if Segment Batch is not same as the Input Parameter Batch
-            if (entry2.getValue().getBatch().getId() == allocation.getBatch().getId()) {
+            if (Objects.equals(segmentEntry.getValue().getBatch().getId(), allocationBatchId)) {
                 continue;
             }
 
-            // Continue if Segment Name is not same as the Input Parameter Segment Name
-            // Note that comparison is made using Segment Name and not Segment Id as same
-            // Segment Name may be part of different RoutePath (hence different Segment Id)
-            if (!(entry2.getValue().getName().equals(allocation.getSegment().getName()))) {
+            // Continue if Segment Name is not same as the Input Parameter Segment Name.
+            // Note that comparison is made using Segment Name and not Segment Id
+            // as same Segment Name may be part of different RoutePath (hence different Segment Id).
+            if (!segmentEntry.getValue().getName().equals(allocation.getSegment().getName())) {
                 continue;
             }
 
             // Check if overlap exists in the map. If no overlap exists then continue.
-            if ((segmentOverlapMap.get(generateCompositeKey(allocation.getSegment().getId().toString(),
-                    entry2.getKey().toString())) == null)) {
+            String allocationSegmentIdString = allocationSegmentId.toString();
+            String subkey = segmentEntry.getKey().toString();
+            String compositeKey = generateCompositeKey(allocationSegmentIdString, subkey);
+            Long segmentOverlap = segmentOverlapMap.get(compositeKey);
+            if (segmentOverlap == null) {
                 continue;
             }
 
-            // If overlap exists then remove the overlap score from hard2score. Also remove
-            // the overlap from the Map.
-            // Notice the multiplication factor of 2 because if A overlaps B, then B also
-            // overlaps A
-            hard2Score += (2 * segmentOverlapMap
-                    .get(generateCompositeKey(allocation.getSegment().getId().toString(), entry2.getKey().toString())));
-            segmentOverlapMap.remove(
-                    generateCompositeKey(allocation.getSegment().getId().toString(), entry2.getKey().toString()));
-            segmentOverlapMap.remove(
-                    generateCompositeKey(entry2.getKey().toString(), allocation.getSegment().getId().toString()));
+            // If overlap exists then remove the overlap score from hard2score. Also remove the overlap from the Map.
+            // Notice the multiplication factor of 2 because if A overlaps B, then B also overlaps A.
+            hard2Score += 2 * segmentOverlap;
+            segmentOverlapMap.remove(compositeKey);
+            segmentOverlapMap.remove(generateCompositeKey(subkey, allocationSegmentIdString));
         }
 
-        if (batchRoutePathMap.get(allocation.getBatch().getId()) == null) {
-            allocationDelayMap.remove(allocation.getSegment().getId());
-            allocationStartInjectionTime.remove(allocation.getSegment().getId());
-            allocationEndInjectionTimeMap.remove(allocation.getSegment().getId());
-            allocationStartDeliveryTimeMap.remove(allocation.getSegment().getId());
-            allocationEndDeliveryTimeMap.remove(allocation.getSegment().getId());
+        if (batchRoutePathMap.get(allocationBatchId) == null) {
+            allocationDelayMap.remove(allocationSegmentId);
+            allocationStartInjectionTime.remove(allocationSegmentId);
+            allocationEndInjectionTimeMap.remove(allocationSegmentId);
+            allocationStartDeliveryTimeMap.remove(allocationSegmentId);
+            allocationEndDeliveryTimeMap.remove(allocationSegmentId);
             return;
         }
 
-        Long oldCurrentPenaltyValue = batchCurrentPenaltyValueMap.get(allocation.getBatch().getId());
+        Long oldCurrentPenaltyValue = batchCurrentPenaltyValueMap.get(allocationBatchId);
         Long newCurrentPenaltyValue = oldCurrentPenaltyValue;
-        Long oldOtherPenaltyValue = batchOtherPenaltyValueMap.get(allocation.getBatch().getId());
+        Long oldOtherPenaltyValue = batchOtherPenaltyValueMap.get(allocationBatchId);
         Long newOtherPenaltyValue = oldOtherPenaltyValue;
 
-        if (allocation.getRoutePath().getPath().equals(batchRoutePathMap.get(allocation.getBatch().getId()))) {
-            if ((allocation.getDelay() != null) && (allocationDelayMap.get(allocation.getSegment().getId()) != null)) {
+        boolean hadDelay = allocation.getDelay() != null;
+        if (allocation.getRoutePath().getPath().equals(batchRoutePathMap.get(allocationBatchId))) {
+            if (hadDelay && (allocationDelayMap.get(allocationSegmentId)) != null) {
                 newCurrentPenaltyValue = newCurrentPenaltyValue + 1;
             }
         } else {
-            if ((allocation.getDelay() != null) && (allocationDelayMap.get(allocation.getSegment().getId()) != null)) {
+            if (hadDelay && (allocationDelayMap.get(allocationSegmentId) != null)) {
                 newOtherPenaltyValue = newOtherPenaltyValue - 1;
             }
         }
 
-        // Apply new penalty if any segment in nonSelectedRoutePath has delay assigned
-        // Applicable if no NON_SELECTED_ROUTEPATH_ALLOCATION_PENALTY exists (for the
-        // batch)
+        // Apply new penalty if any segment in nonSelectedRoutePath has delay assigned.
+        // Applicable if no NON_SELECTED_ROUTEPATH_ALLOCATION_PENALTY exists (for the batch).
         if ((oldOtherPenaltyValue == 0) && (newOtherPenaltyValue > 0)) {
             hard0Score -= BatchSchedulingApp.NON_SELECTED_ROUTEPATH_ALLOCATION_PENALTY;
         }
 
-        // Remove existing penalty if any segment in nonSelectedRoutePath has delay
-        // assigned
-        // Applicable only if NON_SELECTED_ROUTEPATH_ALLOCATION_PENALTY exists (for the
-        // batch)
+        // Remove existing penalty if any segment in nonSelectedRoutePath has delay assigned.
+        // Applicable only if NON_SELECTED_ROUTEPATH_ALLOCATION_PENALTY exists (for the batch).
         if ((oldOtherPenaltyValue > 0) && (newOtherPenaltyValue == 0)) {
             hard0Score += BatchSchedulingApp.NON_SELECTED_ROUTEPATH_ALLOCATION_PENALTY;
         }
 
-        // Apply penalty if any segment in selectedRoutePath has delay not assigned
-        // Applicable if no SELECTED_ROUTEPATH_NON_ALLOCATION_PENALTY exists (for the
-        // batch)
+        // Apply penalty if any segment in selectedRoutePath has delay not assigned.
+        // Applicable if no SELECTED_ROUTEPATH_NON_ALLOCATION_PENALTY exists (for the batch).
         if ((oldCurrentPenaltyValue == 0) && (newCurrentPenaltyValue > 0)) {
             hard0Score -= BatchSchedulingApp.SELECTED_ROUTEPATH_NON_ALLOCATION_PENALTY;
         }
 
-        // Remove penalty if all segments in selectedRoutePath have delay assigned
-        // Applicable only if SELECTED_ROUTEPATH_NON_ALLOCATION_PENALTY exists (for the
-        // batch)
+        // Remove penalty if all segments in selectedRoutePath have delay assigned.
+        // Applicable only if SELECTED_ROUTEPATH_NON_ALLOCATION_PENALTY exists (for the batch).
         if ((oldCurrentPenaltyValue > 0) && (newCurrentPenaltyValue == 0)) {
             hard0Score += BatchSchedulingApp.SELECTED_ROUTEPATH_NON_ALLOCATION_PENALTY;
         }
 
-        batchOtherPenaltyValueMap.put(allocation.getBatch().getId(), newOtherPenaltyValue);
-        batchCurrentPenaltyValueMap.put(allocation.getBatch().getId(), newCurrentPenaltyValue);
+        batchOtherPenaltyValueMap.put(allocationBatchId, newOtherPenaltyValue);
+        batchCurrentPenaltyValueMap.put(allocationBatchId, newCurrentPenaltyValue);
 
-        allocationDelayMap.remove(allocation.getSegment().getId());
-        allocationStartInjectionTime.remove(allocation.getSegment().getId());
-        allocationEndInjectionTimeMap.remove(allocation.getSegment().getId());
-        allocationStartDeliveryTimeMap.remove(allocation.getSegment().getId());
-        allocationEndDeliveryTimeMap.remove(allocation.getSegment().getId());
+        allocationDelayMap.remove(allocationSegmentId);
+        allocationStartInjectionTime.remove(allocationSegmentId);
+        allocationEndInjectionTimeMap.remove(allocationSegmentId);
+        allocationStartDeliveryTimeMap.remove(allocationSegmentId);
+        allocationEndDeliveryTimeMap.remove(allocationSegmentId);
         hard1Score = hard1Score - newOtherPenaltyValue - newCurrentPenaltyValue + oldOtherPenaltyValue
                 + oldCurrentPenaltyValue;
     }
 
-    // Compute Overlap and softScore0. Other Scores (i.e. hardScore0, hardScore1 and
-    // softScore1 are not computed)
+    // Compute Overlap and softScore0. Other Scores (i.e. hardScore0, hardScore1 and softScore1 are not computed).
     private void retractPredecessorDate(Allocation allocation) {
-        for (Map.Entry<Long, Segment> entry2 : segmentMap.entrySet()) {
-
-            // Continue if Segment Batch is not same as the Input Parameter Batch
-            if (entry2.getValue().getBatch().getId() == allocation.getBatch().getId()) {
+        Long allocationSegmentId = allocation.getSegment().getId();
+        for (Map.Entry<Long, Segment> segmentEntry : segmentMap.entrySet()) {
+            // Continue if Segment Batch is not same as the Input Parameter Batch.
+            if (Objects.equals(segmentEntry.getValue().getBatch().getId(), allocation.getBatch().getId())) {
                 continue;
             }
 
-            // Continue if Segment Name is not same as the Input Parameter Segment Name
-            // Note that comparison is made using Segment Name and not Segment Id as same
-            // Segment Name may be part of different RoutePath (hence different Segment Id)
-            if (!(entry2.getValue().getName().equals(allocation.getSegment().getName()))) {
+            // Continue if Segment Name is not same as the Input Parameter Segment Name.
+            // Note that comparison is made using Segment Name and not Segment Id
+            // as same Segment Name may be part of different RoutePath (hence different Segment Id).
+            if (!segmentEntry.getValue().getName().equals(allocation.getSegment().getName())) {
                 continue;
             }
 
             // Check if overlap exists in the map. If no overlap exists then continue.
-            if (segmentOverlapMap.get(generateCompositeKey(allocation.getSegment().getId().toString(),
-                    entry2.getKey().toString())) == null) {
+            String allocationSegmentIdString = allocationSegmentId.toString();
+            String subkey = segmentEntry.getKey().toString();
+            String compositeKey = generateCompositeKey(allocationSegmentIdString, subkey);
+            Long segmentOverlap = segmentOverlapMap.get(compositeKey);
+            if (segmentOverlap == null) {
                 continue;
             }
 
-            // If overlap exists then remove the overlap score from hard2score. Also remove
-            // the overlap from the Map.
-            // Notice the multiplication factor of 2 because if A overlaps B, then B also
-            // overlaps A
-            hard2Score += (2 * segmentOverlapMap
-                    .get(generateCompositeKey(allocation.getSegment().getId().toString(), entry2.getKey().toString())));
-            segmentOverlapMap.remove(
-                    generateCompositeKey(allocation.getSegment().getId().toString(), entry2.getKey().toString()));
-            segmentOverlapMap.remove(
-                    generateCompositeKey(entry2.getKey().toString(), allocation.getSegment().getId().toString()));
-
+            // If overlap exists then remove the overlap score from hard2score. Also remove the overlap from the Map.
+            // Notice the multiplication factor of 2 because if A overlaps B, then B also overlaps A.
+            hard2Score += 2 * segmentOverlap;
+            segmentOverlapMap.remove(compositeKey);
+            segmentOverlapMap.remove(generateCompositeKey(subkey, allocationSegmentIdString));
         }
 
-        allocationDelayMap.remove(allocation.getSegment().getId());
-        allocationStartInjectionTime.remove(allocation.getSegment().getId());
-        allocationEndInjectionTimeMap.remove(allocation.getSegment().getId());
-        allocationStartDeliveryTimeMap.remove(allocation.getSegment().getId());
-        allocationEndDeliveryTimeMap.remove(allocation.getSegment().getId());
+        allocationDelayMap.remove(allocationSegmentId);
+        allocationStartInjectionTime.remove(allocationSegmentId);
+        allocationEndInjectionTimeMap.remove(allocationSegmentId);
+        allocationStartDeliveryTimeMap.remove(allocationSegmentId);
+        allocationEndDeliveryTimeMap.remove(allocationSegmentId);
 
     }
 
