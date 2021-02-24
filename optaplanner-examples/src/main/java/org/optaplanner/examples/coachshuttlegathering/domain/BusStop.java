@@ -16,7 +16,8 @@
 
 package org.optaplanner.examples.coachshuttlegathering.domain;
 
-import com.thoughtworks.xstream.annotations.XStreamAlias;
+import java.util.List;
+
 import org.optaplanner.core.api.domain.entity.PlanningEntity;
 import org.optaplanner.core.api.domain.variable.AnchorShadowVariable;
 import org.optaplanner.core.api.domain.variable.CustomShadowVariable;
@@ -28,7 +29,7 @@ import org.optaplanner.examples.coachshuttlegathering.domain.solver.DepotAngleBu
 import org.optaplanner.examples.coachshuttlegathering.domain.solver.TransportTimeToHubUpdatingVariableListener;
 import org.optaplanner.examples.common.domain.AbstractPersistable;
 
-import java.util.List;
+import com.thoughtworks.xstream.annotations.XStreamAlias;
 
 @PlanningEntity(difficultyWeightFactoryClass = DepotAngleBusStopDifficultyWeightFactory.class)
 @XStreamAlias("CsgBusStop")
