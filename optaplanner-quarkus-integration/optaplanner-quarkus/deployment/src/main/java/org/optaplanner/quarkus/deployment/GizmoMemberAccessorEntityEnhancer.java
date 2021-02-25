@@ -42,6 +42,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
 
 import org.apache.commons.lang3.ObjectUtils;
 import org.jboss.jandex.AnnotationInstance;
@@ -50,9 +51,13 @@ import org.jboss.jandex.DotName;
 import org.jboss.jandex.FieldInfo;
 import org.jboss.jandex.IndexView;
 import org.jboss.jandex.MethodInfo;
+import org.kie.api.KieBase;
+import org.kie.kogito.rules.KieRuntimeBuilder;
 import org.objectweb.asm.ClassVisitor;
 import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Type;
+import org.optaplanner.core.config.score.director.ScoreDirectorFactoryConfig;
+import org.optaplanner.core.config.util.ConfigUtils;
 import org.optaplanner.core.api.domain.solution.cloner.SolutionCloner;
 import org.optaplanner.core.impl.domain.common.ReflectionHelper;
 import org.optaplanner.core.impl.domain.common.accessor.MemberAccessor;
@@ -65,6 +70,8 @@ import org.optaplanner.core.impl.domain.solution.cloner.gizmo.GizmoSolutionClone
 import org.optaplanner.core.impl.domain.solution.cloner.gizmo.GizmoSolutionOrEntityDescriptor;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.quarkus.gizmo.OptaPlannerGizmoBeanFactory;
+import org.optaplanner.core.impl.score.director.drools.KieBaseExtractor;
+import org.optaplanner.quarkus.gizmo.OptaPlannerDroolsInitializer;
 import org.optaplanner.quarkus.gizmo.OptaPlannerGizmoInitializer;
 
 import io.quarkus.deployment.annotations.BuildProducer;
@@ -74,6 +81,7 @@ import io.quarkus.gizmo.BytecodeCreator;
 import io.quarkus.gizmo.ClassCreator;
 import io.quarkus.gizmo.ClassOutput;
 import io.quarkus.gizmo.DescriptorUtils;
+import io.quarkus.gizmo.FieldCreator;
 import io.quarkus.gizmo.FieldDescriptor;
 import io.quarkus.gizmo.Gizmo;
 import io.quarkus.gizmo.MethodCreator;
@@ -454,6 +462,54 @@ public class GizmoMemberAccessorEntityEnhancer {
         currentBranch.returnValue(currentBranch.loadNull());
 
         classCreator.close();
+        return generatedClassName;
+    }
+
+    public static String generateKieRuntimeBuilder(ClassOutput classOutput, ScoreDirectorFactoryConfig config) {
+        String generatedClassName = OptaPlannerDroolsInitializer.class.getName() + "$Implementation";
+        try (ClassCreator classCreator = ClassCreator
+                .builder()
+                .className(generatedClassName)
+                .interfaces(OptaPlannerDroolsInitializer.class)
+                .classOutput(classOutput)
+                .build()) {
+
+            classCreator.addAnnotation(ApplicationScoped.class);
+
+            if (!ConfigUtils.isEmptyCollection(config.getScoreDrlList()) ||
+                    !ConfigUtils.isEmptyCollection(config.getScoreDrlFileList())) {
+                FieldCreator fieldCreator = classCreator.getFieldCreator("kieRuntimeBuilder", KieRuntimeBuilder.class);
+                fieldCreator.addAnnotation(Inject.class);
+
+                MethodCreator methodCreator =
+                        classCreator.getMethodCreator(MethodDescriptor.ofMethod(OptaPlannerDroolsInitializer.class,
+                                "setup", void.class));
+
+                ResultHandle thisObj = methodCreator.getThis();
+                ResultHandle kieRuntimeBuilder = methodCreator.readInstanceField(fieldCreator.getFieldDescriptor(), thisObj);
+                ResultHandle kieBase = methodCreator.invokeInterfaceMethod(
+                        MethodDescriptor.ofMethod(KieRuntimeBuilder.class, "getKieBase", KieBase.class),
+                        kieRuntimeBuilder);
+                ResultHandle scoreDrlListToKieBaseMap =
+                        methodCreator.newInstance(MethodDescriptor.ofConstructor(HashMap.class));
+                ResultHandle key = methodCreator.load(KieBaseExtractor.getKieBaseKey(config));
+                methodCreator.invokeInterfaceMethod(
+                        MethodDescriptor.ofMethod(Map.class, "put", Object.class, Object.class, Object.class),
+                        scoreDrlListToKieBaseMap,
+                        key, kieBase);
+
+                methodCreator.invokeStaticMethod(
+                        MethodDescriptor.ofMethod(KieBaseExtractor.class, "useScoreDrlListToKieBaseMap",
+                                void.class, Map.class),
+                        scoreDrlListToKieBaseMap);
+                methodCreator.returnValue(null);
+            } else {
+                MethodCreator methodCreator =
+                        classCreator.getMethodCreator(MethodDescriptor.ofMethod(OptaPlannerDroolsInitializer.class,
+                                "setup", void.class));
+                methodCreator.returnValue(null);
+            }
+        }
         return generatedClassName;
     }
 

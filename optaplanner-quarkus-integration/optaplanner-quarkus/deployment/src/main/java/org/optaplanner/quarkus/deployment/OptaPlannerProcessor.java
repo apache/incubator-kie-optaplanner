@@ -418,7 +418,7 @@ class OptaPlannerProcessor {
 
         if (solverConfig.getScoreDirectorFactoryConfig().getScoreDrlList() != null) {
             boolean isDroolsDynamicPresent = isClassDefined("org.drools.dynamic.DynamicServiceRegistrySupplier");
-            if (!isDroolsDynamicPresent) {
+            if (!isDroolsDynamicPresent && false) {
                 throw new IllegalStateException(
                         "Using scoreDRL in Quarkus, but the dependency drools-core-dynamic is not on the classpath.\n"
                                 + "Maybe add the dependency org.kie.kogito:drools-core-dynamic and exclude the dependency"
@@ -595,10 +595,13 @@ class OptaPlannerProcessor {
                     indexView,
                     transformers));
         }
+        GizmoMemberAccessorEntityEnhancer.generateGizmoInitializer(beanClassOutput, generatedClassSet);
 
         GizmoMemberAccessorEntityEnhancer.generateGizmoInitializer(beanClassOutput, generatedMemberAccessorsClassNameSet,
                 gizmoSolutionClonerClassNameSet);
         GizmoMemberAccessorEntityEnhancer.generateGizmoBeanFactory(beanClassOutput, reflectiveClassSet);
+        GizmoMemberAccessorEntityEnhancer.generateKieRuntimeBuilder(beanClassOutput,
+                solverConfig.getScoreDirectorFactoryConfig());
     }
 
     private boolean shouldIgnoreMember(ClassInfo declaringClass) {
