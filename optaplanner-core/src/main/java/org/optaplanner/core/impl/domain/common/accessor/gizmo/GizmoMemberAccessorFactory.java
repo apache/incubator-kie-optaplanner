@@ -20,8 +20,8 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Member;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Optional;
 
+import org.apache.commons.lang3.ObjectUtils;
 import org.optaplanner.core.api.domain.common.DomainAccessType;
 import org.optaplanner.core.impl.domain.common.ReflectionHelper;
 import org.optaplanner.core.impl.domain.common.accessor.MemberAccessor;
@@ -39,8 +39,7 @@ public class GizmoMemberAccessorFactory {
      * @return The generated class name for member
      */
     public static String getGeneratedClassName(Member member) {
-        String memberName = Optional.ofNullable(ReflectionHelper.getGetterPropertyName(member))
-                .orElse(member.getName());
+        String memberName = ObjectUtils.defaultIfNull(ReflectionHelper.getGetterPropertyName(member), member.getName());
         String memberType = (member instanceof Field) ? "Field" : "Method";
 
         return member.getDeclaringClass().getName() + "$OptaPlanner$MemberAccessor$" + memberType + "$" + memberName;

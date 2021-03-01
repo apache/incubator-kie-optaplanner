@@ -304,10 +304,18 @@ public class SolutionDescriptor<Solution_> {
         if (solutionClonerClass != null) {
             solutionCloner = ConfigUtils.newInstance(this, "solutionClonerClass", solutionClonerClass);
         } else {
-            if (descriptorPolicy.getDomainAccessType() == DomainAccessType.GIZMO) {
-                solutionCloner = GizmoSolutionClonerFactory.build(this);
-            } else {
-                solutionCloner = new FieldAccessingSolutionCloner<>(this);
+            switch (descriptorPolicy.getDomainAccessType()) {
+                case GIZMO:
+                    solutionCloner = GizmoSolutionClonerFactory.build(this);
+                    break;
+
+                case REFLECTION:
+                    solutionCloner = new FieldAccessingSolutionCloner<>(this);
+                    break;
+
+                default:
+                    throw new IllegalStateException("The descriptorPolicy.getDomainAccessType() (" +
+                            domainAccessType + ") is not implemented.");
             }
         }
     }

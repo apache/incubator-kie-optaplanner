@@ -41,7 +41,6 @@ import java.util.TreeMap;
 import java.util.TreeSet;
 import java.util.concurrent.ConcurrentMap;
 
-import org.apache.commons.lang3.tuple.Pair;
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.domain.solution.cloner.DeepPlanningClone;
 import org.optaplanner.core.api.domain.solution.cloner.SolutionCloner;
@@ -58,11 +57,11 @@ public class FieldAccessingSolutionCloner<Solution_> implements SolutionCloner<S
 
     protected final ConcurrentMap<Class<?>, Constructor<?>> constructorMemoization = new ConcurrentMemoization<>();
     protected final ConcurrentMap<Class<?>, List<Field>> fieldListMemoization = new ConcurrentMemoization<>();
-    protected final ConcurrentMap<Pair<Field, Class<?>>, Boolean> fieldDeepClonedMemoization = new ConcurrentMemoization<>();
-    protected final ConcurrentMap<Class<?>, Boolean> actualValueClassDeepClonedMemoization = new ConcurrentMemoization<>();
+    protected final DeepCloningUtils deepCloningUtils;
 
     public FieldAccessingSolutionCloner(SolutionDescriptor<Solution_> solutionDescriptor) {
         this.solutionDescriptor = solutionDescriptor;
+        deepCloningUtils = new DeepCloningUtils(solutionDescriptor);
     }
 
     // ************************************************************************
@@ -115,32 +114,6 @@ public class FieldAccessingSolutionCloner<Solution_> implements SolutionCloner<S
             }
             return fieldList;
         });
-    }
-
-    /**
-     * This method is thread-safe.
-     *
-     * @param field never null
-     * @param fieldInstanceClass never null
-     * @param actualValueClass never null
-     * @return never null
-     */
-    protected boolean retrieveDeepCloneDecision(Field field, Class<?> fieldInstanceClass, Class<?> actualValueClass) {
-        Pair<Field, Class<?>> pair = Pair.of(field, fieldInstanceClass);
-        Boolean deepCloneDecision = fieldDeepClonedMemoization.computeIfAbsent(pair,
-                key -> DeepCloningUtils.isFieldDeepCloned(solutionDescriptor, field, fieldInstanceClass));
-        return deepCloneDecision || retrieveDeepCloneDecisionForActualValueClass(actualValueClass);
-    }
-
-    /**
-     * This method is thread-safe.
-     *
-     * @param actualValueClass never null
-     * @return never null
-     */
-    protected boolean retrieveDeepCloneDecisionForActualValueClass(Class<?> actualValueClass) {
-        return actualValueClassDeepClonedMemoization.computeIfAbsent(actualValueClass,
-                key -> isClassDeepCloned(actualValueClass));
     }
 
     protected boolean isClassDeepCloned(Class<?> type) {
@@ -211,9 +184,8 @@ public class FieldAccessingSolutionCloner<Solution_> implements SolutionCloner<S
             if (originalValue == null) {
                 return false;
             }
-            return DeepCloningUtils.getMemorizedDeepCloneDecision(solutionDescriptor, field, fieldInstanceClass,
-                    originalValue.getClass(), fieldDeepClonedMemoization,
-                    actualValueClassDeepClonedMemoization);
+            return deepCloningUtils.getDeepCloneDecision(field, fieldInstanceClass,
+                    originalValue.getClass());
         }
 
         protected void processQueue() {
@@ -339,7 +311,7 @@ public class FieldAccessingSolutionCloner<Solution_> implements SolutionCloner<S
             } else if (original.getClass().isArray()) {
                 return (C) cloneArray(original.getClass(), original);
             }
-            if (retrieveDeepCloneDecisionForActualValueClass(original.getClass())) {
+            if (deepCloningUtils.retrieveDeepCloneDecisionForActualValueClass(original.getClass())) {
                 return clone(original);
             } else {
                 return original;

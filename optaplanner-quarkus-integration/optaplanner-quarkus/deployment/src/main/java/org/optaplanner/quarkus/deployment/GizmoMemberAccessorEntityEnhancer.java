@@ -42,6 +42,7 @@ import java.util.stream.Collectors;
 
 import javax.enterprise.context.ApplicationScoped;
 
+import org.apache.commons.lang3.ObjectUtils;
 import org.jboss.jandex.AnnotationInstance;
 import org.jboss.jandex.ClassInfo;
 import org.jboss.jandex.DotName;
@@ -174,8 +175,8 @@ public class GizmoMemberAccessorEntityEnhancer {
     }
 
     private static String getMemberName(Member member) {
-        return Optional.ofNullable(ReflectionHelper.getGetterPropertyName(member))
-                .orElse(member.getName());
+        return ObjectUtils.defaultIfNull(ReflectionHelper.getGetterPropertyName(member),
+                member.getName());
     }
 
     private static Optional<MethodDescriptor> getSetterDescriptor(ClassInfo classInfo, MethodInfo methodInfo, String name) {

@@ -46,8 +46,9 @@ public class GizmoSolutionOrEntityDescriptor {
         deepClonedFields = new HashSet<>();
         shallowlyClonedFields = new HashSet<>();
 
+        DeepCloningUtils deepCloningUtils = new DeepCloningUtils(solutionDescriptor);
         for (Field field : solutionFieldToMemberDescriptorMap.keySet()) {
-            if (DeepCloningUtils.getDeepCloneDecision(solutionDescriptor, field, entityOrSolutionClass, field.getType())) {
+            if (deepCloningUtils.getDeepCloneDecision(field, entityOrSolutionClass, field.getType())) {
                 deepClonedFields.add(field);
             } else {
                 shallowlyClonedFields.add(field);
