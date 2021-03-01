@@ -253,6 +253,8 @@ public class GizmoMemberAccessorImplementor {
      * @param annotationClass Used in exception message
      */
     private static void assertIsGoodMethod(MethodDescriptor method, Class<? extends Annotation> annotationClass) {
+        // V = void return type
+        // Z = primitive boolean return type
         String methodName = method.getName();
         if (method.getParameterTypes().length != 0) {
             // not read or getter method
@@ -266,7 +268,7 @@ public class GizmoMemberAccessorImplementor {
                         + annotationClass.getSimpleName() + " annotation must have a non-void return type.");
             }
         } else if (methodName.startsWith("is")) {
-            if (!method.getReturnType().equals("boolean")) {
+            if (!method.getReturnType().equals("Z")) {
                 throw new IllegalStateException("The getterMethod (" + methodName + ") with a "
                         + annotationClass.getSimpleName()
                         + " annotation must have a primitive boolean return type but returns ("
