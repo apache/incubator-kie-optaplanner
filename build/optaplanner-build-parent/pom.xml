@@ -6,7 +6,7 @@
   <parent>
     <groupId>org.optaplanner</groupId>
     <artifactId>optaplanner-parent</artifactId>
-    <version>8.3.0.Final</version>
+    <version>8.3.1-SNAPSHOT</version>
     <relativePath>../../pom.xml</relativePath>
   </parent>
 
@@ -21,7 +21,7 @@
     <!-- ************************************************************************ -->
 
     <!-- SNAPSHOT and KIE dependency versions -->
-    <version.org.kie.kogito>1.3.0.Final</version.org.kie.kogito>
+    <version.org.kie.kogito>1.3.1-SNAPSHOT</version.org.kie.kogito>
 
     <!-- Normal dependency versions -->
     <!-- TODO Do we want import the quarkus-bom instead of defining these ourselves? -->
