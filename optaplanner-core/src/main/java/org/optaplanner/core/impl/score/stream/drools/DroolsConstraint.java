@@ -16,36 +16,32 @@
 
 package org.optaplanner.core.impl.score.stream.drools;
 
-import java.util.Objects;
 import java.util.function.Function;
 
-import org.drools.model.Global;
-import org.drools.model.Rule;
 import org.optaplanner.core.api.score.Score;
-import org.optaplanner.core.impl.score.holder.AbstractScoreHolder;
 import org.optaplanner.core.impl.score.stream.common.AbstractConstraint;
 import org.optaplanner.core.impl.score.stream.common.ScoreImpactType;
-import org.optaplanner.core.impl.score.stream.drools.common.RuleBuilder;
+import org.optaplanner.core.impl.score.stream.drools.common.AbstractConstraintConsequence;
 
 public class DroolsConstraint<Solution_> extends AbstractConstraint<Solution_, DroolsConstraintFactory<Solution_>> {
 
-    private final RuleBuilder<Solution_> ruleBuilder;
+    private final AbstractConstraintConsequence consequence;
 
     public DroolsConstraint(DroolsConstraintFactory<Solution_> constraintFactory, String constraintPackage,
             String constraintName, Function<Solution_, Score<?>> constraintWeightExtractor,
             ScoreImpactType scoreImpactType, boolean isConstraintWeightConfigurable,
-            RuleBuilder<Solution_> ruleBuilder) {
+            AbstractConstraintConsequence constraintConsequence) {
         super(constraintFactory, constraintPackage, constraintName, constraintWeightExtractor, scoreImpactType,
                 isConstraintWeightConfigurable);
-        this.ruleBuilder = Objects.requireNonNull(ruleBuilder);
+        this.consequence = constraintConsequence;
     }
 
     // ************************************************************************
     // Getters/setters
     // ************************************************************************
 
-    public Rule buildRule(Global<? extends AbstractScoreHolder<?>> scoreHolderGlobal) {
-        return ruleBuilder.apply(this, scoreHolderGlobal);
+    public AbstractConstraintConsequence getConsequence() {
+        return consequence;
     }
 
     @Override

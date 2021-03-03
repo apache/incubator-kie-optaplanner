@@ -16,14 +16,24 @@
 
 package org.optaplanner.core.impl.score.stream.drools.common;
 
-import java.util.function.BiFunction;
+import static java.util.Objects.requireNonNull;
 
-import org.drools.model.Global;
-import org.drools.model.Rule;
-import org.optaplanner.core.impl.score.holder.AbstractScoreHolder;
-import org.optaplanner.core.impl.score.stream.drools.DroolsConstraint;
+final class TriConstraintDefaultConsequence<A, B, C> extends AbstractTriConstraintConsequence<A, B, C> {
 
-@FunctionalInterface
-public interface RuleBuilder<Solution_>
-        extends BiFunction<DroolsConstraint<Solution_>, Global<? extends AbstractScoreHolder<?>>, Rule> {
+    private final TriLeftHandSide<A, B, C> leftHandSide;
+
+    TriConstraintDefaultConsequence(TriLeftHandSide<A, B, C> leftHandSide) {
+        this.leftHandSide = requireNonNull(leftHandSide);
+    }
+
+    @Override
+    protected TriLeftHandSide<A, B, C> getLeftHandSide() {
+        return leftHandSide;
+    }
+
+    @Override
+    public ConsequenceMatchWeightType getMatchWeightType() {
+        return ConsequenceMatchWeightType.DEFAULT;
+    }
+
 }

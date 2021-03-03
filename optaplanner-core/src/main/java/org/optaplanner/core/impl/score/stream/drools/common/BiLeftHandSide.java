@@ -28,12 +28,12 @@ import static org.drools.model.PatternDSL.pattern;
 import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Objects;
 import java.util.function.BiFunction;
 import java.util.function.BiPredicate;
 import java.util.function.Function;
 import java.util.function.ToIntBiFunction;
 import java.util.function.ToLongBiFunction;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.drools.model.BetaIndex2;
@@ -89,58 +89,32 @@ import org.optaplanner.core.impl.score.stream.tri.NoneTriJoiner;
  */
 public final class BiLeftHandSide<A, B> extends AbstractLeftHandSide {
 
-    private final PatternVariable<A, ?, ?> patternVariableA;
-    private final PatternVariable<B, ?, ?> patternVariableB;
-    private final BiRuleContext<A, B> ruleContext;
+    private final PatternVariable<A> patternVariableA;
+    private final PatternVariable<B> patternVariableB;
 
-    protected BiLeftHandSide(PatternVariable<A, ?, ?> left, PatternVariable<B, ?, ?> right,
-            DroolsVariableFactory variableFactory) {
+    protected BiLeftHandSide(PatternVariable<A> left, PatternVariable<B> right, DroolsVariableFactory variableFactory) {
         super(variableFactory);
         this.patternVariableA = left;
         this.patternVariableB = right;
-        // This LHS will use the same variable access both for direct consequence and for subsequent operations.
-        this.ruleContext = buildDefaultRuleContext();
     }
 
-    protected BiLeftHandSide(BiRuleContext<A, B> ruleContext, PatternVariable<A, ?, ?> left,
-            PatternVariable<B, ?, ?> right, DroolsVariableFactory variableFactory) {
-        super(variableFactory);
-        this.patternVariableA = left;
-        this.patternVariableB = right;
-        // This LHS allows for quicker access to variables, if consequence directly follows.
-        this.ruleContext = Objects.requireNonNull(ruleContext);
-    }
-
-    protected BiLeftHandSide(BiLeftHandSide<A, B> leftHandSide, PatternVariable<B, ?, ?> patternVariable) {
+    protected BiLeftHandSide(BiLeftHandSide<A, B> leftHandSide, PatternVariable<B> patternVariable) {
         super(leftHandSide.variableFactory);
         this.patternVariableA = leftHandSide.patternVariableA;
         this.patternVariableB = patternVariable;
-        // This LHS will use the same variable access both for direct consequence and for subsequent operations.
-        this.ruleContext = buildDefaultRuleContext();
     }
 
-    protected BiLeftHandSide(BiLeftHandSide<A, B> leftHandSide, PatternVariable<A, ?, ?> left,
-            PatternVariable<B, ?, ?> right) {
+    protected BiLeftHandSide(BiLeftHandSide<A, B> leftHandSide, PatternVariable<A> left, PatternVariable<B> right) {
         super(leftHandSide.variableFactory);
         this.patternVariableA = left;
         this.patternVariableB = right;
-        // This LHS will use the same variable access both for direct consequence and for subsequent operations.
-        this.ruleContext = buildDefaultRuleContext();
     }
 
-    private BiRuleContext<A, B> buildDefaultRuleContext() {
-        ViewItem<?>[] viewItems = Stream.of(patternVariableA, patternVariableB)
-                .flatMap(variable -> variable.build().stream())
-                .toArray(size -> new ViewItem<?>[size]);
-        return new BiRuleContext<>(patternVariableA.getPrimaryVariable(), patternVariableB.getPrimaryVariable(),
-                viewItems);
-    }
-
-    protected PatternVariable<A, ?, ?> getPatternVariableA() {
+    protected PatternVariable<A> getPatternVariableA() {
         return patternVariableA;
     }
 
-    protected PatternVariable<B, ?, ?> getPatternVariableB() {
+    protected PatternVariable<B> getPatternVariableB() {
         return patternVariableB;
     }
 
@@ -223,7 +197,7 @@ public final class BiLeftHandSide<A, B> extends AbstractLeftHandSide {
     public <C> TriLeftHandSide<A, B, C> andJoin(UniLeftHandSide<C> right, TriJoiner<A, B, C> joiner) {
         AbstractTriJoiner<A, B, C> castJoiner = (AbstractTriJoiner<A, B, C>) joiner;
         JoinerType[] joinerTypes = castJoiner.getJoinerTypes();
-        PatternVariable<C, ?, ?> newRight = right.getPatternVariableA();
+        PatternVariable<C> newRight = right.getPatternVariableA();
         for (int mappingIndex = 0; mappingIndex < joinerTypes.length; mappingIndex++) {
             JoinerType joinerType = joinerTypes[mappingIndex];
             newRight = newRight.filterForJoin(patternVariableA.getPrimaryVariable(),
@@ -232,25 +206,35 @@ public final class BiLeftHandSide<A, B> extends AbstractLeftHandSide {
         return new TriLeftHandSide<>(patternVariableA, patternVariableB, newRight, variableFactory);
     }
 
+    public <NewA> UniLeftHandSide<NewA> andGroupBy(BiFunction<A, B, NewA> keyMapping) {
+        Variable<A> inputA = patternVariableA.getPrimaryVariable();
+        Variable<B> inputB = patternVariableB.getPrimaryVariable();
+        Variable<NewA> groupKey = variableFactory.createVariable("groupKey");
+        ViewItem<?> innerGroupByPattern = joinViewItemsWithLogicalAnd(patternVariableA, patternVariableB);
+        ViewItem<?> groupByPattern = groupBy(innerGroupByPattern, inputA, inputB, groupKey,
+                keyMapping::apply);
+        Variable<NewA> newA = variableFactory.createVariable("newA", groupKey);
+        return new UniLeftHandSide<>(new PatternVariable<>(newA, singletonList(groupByPattern)), variableFactory);
+    }
+
     public <NewA> UniLeftHandSide<NewA> andGroupBy(BiConstraintCollector<A, B, ?, NewA> collector) {
         Variable<BiTuple<A, B>> accumulateSource =
                 (Variable<BiTuple<A, B>>) variableFactory.createVariable(BiTuple.class, "source");
-        PatternVariable<B, ?, ?> newPatternVariableB = patternVariableB.bind(accumulateSource,
+        PatternVariable<B> newPatternVariableB = patternVariableB.bind(accumulateSource,
                 patternVariableA.getPrimaryVariable(), (b, a) -> new BiTuple<>(a, b));
         Variable<NewA> accumulateOutput = variableFactory.createVariable("collected");
         ViewItem<?> innerAccumulatePattern = joinViewItemsWithLogicalAnd(patternVariableA, newPatternVariableB);
         ViewItem<?> outerAccumulatePattern = accumulate(innerAccumulatePattern,
                 createAccumulateFunction(collector, accumulateSource, accumulateOutput));
-        UniRuleContext<NewA> simpleRuleContext = new UniRuleContext<>(accumulateOutput, outerAccumulatePattern);
-        return new UniLeftHandSide<>(simpleRuleContext,
-                new DirectPatternVariable<>(accumulateOutput, singletonList(outerAccumulatePattern)), variableFactory);
+        return new UniLeftHandSide<>(new PatternVariable<>(accumulateOutput, singletonList(outerAccumulatePattern)),
+                variableFactory);
     }
 
     public <NewA, NewB> BiLeftHandSide<NewA, NewB> andGroupBy(BiConstraintCollector<A, B, ?, NewA> collectorA,
             BiConstraintCollector<A, B, ?, NewB> collectorB) {
         Variable<BiTuple<A, B>> accumulateSource =
                 (Variable<BiTuple<A, B>>) variableFactory.createVariable(BiTuple.class, "source");
-        PatternVariable<B, ?, ?> newPatternVariableB = patternVariableB.bind(accumulateSource,
+        PatternVariable<B> newPatternVariableB = patternVariableB.bind(accumulateSource,
                 patternVariableA.getPrimaryVariable(), (b, a) -> new BiTuple<>(a, b));
         Variable<NewA> accumulateOutputA = variableFactory.createVariable("collectedA");
         Variable<NewB> accumulateOutputB = variableFactory.createVariable("collectedB");
@@ -258,10 +242,8 @@ public final class BiLeftHandSide<A, B> extends AbstractLeftHandSide {
         ViewItem<?> outerAccumulatePattern = accumulate(innerAccumulatePattern,
                 createAccumulateFunction(collectorA, accumulateSource, accumulateOutputA),
                 createAccumulateFunction(collectorB, accumulateSource, accumulateOutputB));
-        BiRuleContext<NewA, NewB> simpleRuleContext = new BiRuleContext<>(accumulateOutputA, accumulateOutputB,
-                outerAccumulatePattern);
-        return new BiLeftHandSide<>(simpleRuleContext, new DetachedPatternVariable<>(accumulateOutputA),
-                new DirectPatternVariable<>(accumulateOutputB, singletonList(outerAccumulatePattern)), variableFactory);
+        return new BiLeftHandSide<>(new PatternVariable<>(accumulateOutputA, singletonList(outerAccumulatePattern)),
+                new PatternVariable<>(accumulateOutputB), variableFactory);
     }
 
     public <NewA, NewB, NewC> TriLeftHandSide<NewA, NewB, NewC> andGroupBy(
@@ -269,7 +251,7 @@ public final class BiLeftHandSide<A, B> extends AbstractLeftHandSide {
             BiConstraintCollector<A, B, ?, NewC> collectorC) {
         Variable<BiTuple<A, B>> accumulateSource =
                 (Variable<BiTuple<A, B>>) variableFactory.createVariable(BiTuple.class, "source");
-        PatternVariable<B, ?, ?> newPatternVariableB = patternVariableB.bind(accumulateSource,
+        PatternVariable<B> newPatternVariableB = patternVariableB.bind(accumulateSource,
                 patternVariableA.getPrimaryVariable(), (b, a) -> new BiTuple<>(a, b));
         Variable<NewA> accumulateOutputA = variableFactory.createVariable("collectedA");
         Variable<NewB> accumulateOutputB = variableFactory.createVariable("collectedB");
@@ -279,12 +261,8 @@ public final class BiLeftHandSide<A, B> extends AbstractLeftHandSide {
                 createAccumulateFunction(collectorA, accumulateSource, accumulateOutputA),
                 createAccumulateFunction(collectorB, accumulateSource, accumulateOutputB),
                 createAccumulateFunction(collectorC, accumulateSource, accumulateOutputC));
-        TriRuleContext<NewA, NewB, NewC> simpleRuleContext = new TriRuleContext<>(accumulateOutputA, accumulateOutputB,
-                accumulateOutputC, outerAccumulatePattern);
-        return new TriLeftHandSide<>(simpleRuleContext, new DetachedPatternVariable<>(accumulateOutputA),
-                new DetachedPatternVariable<>(accumulateOutputB),
-                new DirectPatternVariable<>(accumulateOutputC, singletonList(outerAccumulatePattern)),
-                variableFactory);
+        return new TriLeftHandSide<>(new PatternVariable<>(accumulateOutputA, singletonList(outerAccumulatePattern)),
+                new PatternVariable<>(accumulateOutputB), new PatternVariable<>(accumulateOutputC), variableFactory);
     }
 
     public <NewA, NewB, NewC, NewD> QuadLeftHandSide<NewA, NewB, NewC, NewD> andGroupBy(
@@ -292,7 +270,7 @@ public final class BiLeftHandSide<A, B> extends AbstractLeftHandSide {
             BiConstraintCollector<A, B, ?, NewC> collectorC, BiConstraintCollector<A, B, ?, NewD> collectorD) {
         Variable<BiTuple<A, B>> accumulateSource =
                 (Variable<BiTuple<A, B>>) variableFactory.createVariable(BiTuple.class, "source");
-        PatternVariable<B, ?, ?> newPatternVariableB = patternVariableB.bind(accumulateSource,
+        PatternVariable<B> newPatternVariableB = patternVariableB.bind(accumulateSource,
                 patternVariableA.getPrimaryVariable(), (b, a) -> new BiTuple<>(a, b));
         Variable<NewA> accumulateOutputA = variableFactory.createVariable("collectedA");
         Variable<NewB> accumulateOutputB = variableFactory.createVariable("collectedB");
@@ -304,11 +282,9 @@ public final class BiLeftHandSide<A, B> extends AbstractLeftHandSide {
                 createAccumulateFunction(collectorB, accumulateSource, accumulateOutputB),
                 createAccumulateFunction(collectorC, accumulateSource, accumulateOutputC),
                 createAccumulateFunction(collectorD, accumulateSource, accumulateOutputD));
-        QuadRuleContext<NewA, NewB, NewC, NewD> simpleRuleContext = new QuadRuleContext<>(accumulateOutputA,
-                accumulateOutputB, accumulateOutputC, accumulateOutputD, outerAccumulatePattern);
-        return new QuadLeftHandSide<>(simpleRuleContext, new DetachedPatternVariable<>(accumulateOutputA),
-                new DetachedPatternVariable<>(accumulateOutputB), new DetachedPatternVariable<>(accumulateOutputC),
-                new DirectPatternVariable<>(accumulateOutputD, singletonList(outerAccumulatePattern)), variableFactory);
+        return new QuadLeftHandSide<>(new PatternVariable<>(accumulateOutputA, singletonList(outerAccumulatePattern)),
+                new PatternVariable<>(accumulateOutputB), new PatternVariable<>(accumulateOutputC),
+                new PatternVariable<>(accumulateOutputD), variableFactory);
     }
 
     /**
@@ -326,16 +302,19 @@ public final class BiLeftHandSide<A, B> extends AbstractLeftHandSide {
         return accFunction(() -> new DroolsBiAccumulateFunction<>(collector), in).as(out);
     }
 
-    public <NewA> UniLeftHandSide<NewA> andGroupBy(BiFunction<A, B, NewA> keyMapping) {
+    public <NewA, NewB> BiLeftHandSide<NewA, NewB> andGroupBy(BiFunction<A, B, NewA> keyMappingA,
+            BiFunction<A, B, NewB> keyMappingB) {
         Variable<A> inputA = patternVariableA.getPrimaryVariable();
         Variable<B> inputB = patternVariableB.getPrimaryVariable();
-        Variable<NewA> groupKey = variableFactory.createVariable("groupKey");
+        Variable<BiTuple<NewA, NewB>> groupKey =
+                (Variable<BiTuple<NewA, NewB>>) variableFactory.createVariable(BiTuple.class, "groupKey");
         ViewItem<?> innerGroupByPattern = joinViewItemsWithLogicalAnd(patternVariableA, patternVariableB);
         ViewItem<?> groupByPattern = groupBy(innerGroupByPattern, inputA, inputB, groupKey,
-                keyMapping::apply);
-        UniRuleContext<NewA> simpleRuleContext = new UniRuleContext<>(groupKey, groupByPattern);
-        return new UniLeftHandSide<>(simpleRuleContext,
-                new DirectPatternVariable<>(groupKey, singletonList(groupByPattern)), variableFactory);
+                createCompositeBiGroupKey(keyMappingA, keyMappingB));
+        Variable<NewA> newA = variableFactory.createVariable("newA", groupKey, k -> k.a);
+        Variable<NewB> newB = variableFactory.createVariable("newB", groupKey, k -> k.b);
+        return new BiLeftHandSide<>(new PatternVariable<>(newA, singletonList(groupByPattern)),
+                new PatternVariable<>(newB), variableFactory);
     }
 
     public <NewA, NewB> BiLeftHandSide<NewA, NewB> andGroupBy(BiFunction<A, B, NewA> keyMappingA,
@@ -344,16 +323,17 @@ public final class BiLeftHandSide<A, B> extends AbstractLeftHandSide {
         Variable<B> inputB = patternVariableB.getPrimaryVariable();
         Variable<BiTuple<A, B>> accumulateSource =
                 (Variable<BiTuple<A, B>>) variableFactory.createVariable(BiTuple.class, "source");
-        PatternVariable<B, ?, ?> newPatternVariableB = patternVariableB.bind(accumulateSource, inputA,
+        PatternVariable<B> newPatternVariableB = patternVariableB.bind(accumulateSource, inputA,
                 (b, a) -> new BiTuple<>(a, b));
         Variable<NewA> groupKey = variableFactory.createVariable("groupKey");
         Variable<NewB> accumulateOutput = variableFactory.createVariable("output");
         ViewItem<?> innerGroupByPattern = joinViewItemsWithLogicalAnd(patternVariableA, newPatternVariableB);
         ViewItem<?> groupByPattern = groupBy(innerGroupByPattern, inputA, inputB, groupKey, keyMappingA::apply,
                 createAccumulateFunction(collectorB, accumulateSource, accumulateOutput));
-        BiRuleContext<NewA, NewB> simpleRuleContext = new BiRuleContext<>(groupKey, accumulateOutput, groupByPattern);
-        return new BiLeftHandSide<>(simpleRuleContext, new DetachedPatternVariable<>(groupKey),
-                new DirectPatternVariable<>(accumulateOutput, singletonList(groupByPattern)), variableFactory);
+        Variable<NewA> newA = variableFactory.createVariable("newA", groupKey);
+        Variable<NewB> newB = variableFactory.createVariable("newB", accumulateOutput);
+        return new BiLeftHandSide<>(new PatternVariable<>(newA, singletonList(groupByPattern)),
+                new PatternVariable<>(newB), variableFactory);
     }
 
     public <NewA, NewB, NewC> TriLeftHandSide<NewA, NewB, NewC> andGroupBy(BiFunction<A, B, NewA> keyMappingA,
@@ -362,7 +342,7 @@ public final class BiLeftHandSide<A, B> extends AbstractLeftHandSide {
         Variable<B> inputB = patternVariableB.getPrimaryVariable();
         Variable<BiTuple<A, B>> accumulateSource =
                 (Variable<BiTuple<A, B>>) variableFactory.createVariable(BiTuple.class, "source");
-        PatternVariable<B, ?, ?> newPatternVariableB = patternVariableB.bind(accumulateSource, inputA,
+        PatternVariable<B> newPatternVariableB = patternVariableB.bind(accumulateSource, inputA,
                 (b, a) -> new BiTuple<>(a, b));
         Variable<NewA> groupKey = variableFactory.createVariable("groupKey");
         Variable<NewB> accumulateOutputB = variableFactory.createVariable("outputB");
@@ -371,11 +351,11 @@ public final class BiLeftHandSide<A, B> extends AbstractLeftHandSide {
         ViewItem<?> groupByPattern = groupBy(innerGroupByPattern, inputA, inputB, groupKey, keyMappingA::apply,
                 createAccumulateFunction(collectorB, accumulateSource, accumulateOutputB),
                 createAccumulateFunction(collectorC, accumulateSource, accumulateOutputC));
-        TriRuleContext<NewA, NewB, NewC> simpleRuleContext = new TriRuleContext<>(groupKey, accumulateOutputB,
-                accumulateOutputC, groupByPattern);
-        return new TriLeftHandSide<>(simpleRuleContext, new DetachedPatternVariable<>(groupKey),
-                new DetachedPatternVariable<>(accumulateOutputB),
-                new DirectPatternVariable<>(accumulateOutputC, singletonList(groupByPattern)), variableFactory);
+        Variable<NewA> newA = variableFactory.createVariable("newA", groupKey);
+        Variable<NewB> newB = variableFactory.createVariable("newB", accumulateOutputB);
+        Variable<NewC> newC = variableFactory.createVariable("newC", accumulateOutputC);
+        return new TriLeftHandSide<>(new PatternVariable<>(newA, singletonList(groupByPattern)),
+                new PatternVariable<>(newB), new PatternVariable<>(newC), variableFactory);
     }
 
     public <NewA, NewB, NewC, NewD> QuadLeftHandSide<NewA, NewB, NewC, NewD> andGroupBy(
@@ -385,7 +365,7 @@ public final class BiLeftHandSide<A, B> extends AbstractLeftHandSide {
         Variable<B> inputB = patternVariableB.getPrimaryVariable();
         Variable<BiTuple<A, B>> accumulateSource =
                 (Variable<BiTuple<A, B>>) variableFactory.createVariable(BiTuple.class, "source");
-        PatternVariable<B, ?, ?> newPatternVariableB = patternVariableB.bind(accumulateSource, inputA,
+        PatternVariable<B> newPatternVariableB = patternVariableB.bind(accumulateSource, inputA,
                 (b, a) -> new BiTuple<>(a, b));
         Variable<NewA> groupKey = variableFactory.createVariable("groupKey");
         Variable<NewB> accumulateOutputB = variableFactory.createVariable("outputB");
@@ -396,11 +376,12 @@ public final class BiLeftHandSide<A, B> extends AbstractLeftHandSide {
                 createAccumulateFunction(collectorB, accumulateSource, accumulateOutputB),
                 createAccumulateFunction(collectorC, accumulateSource, accumulateOutputC),
                 createAccumulateFunction(collectorD, accumulateSource, accumulateOutputD));
-        QuadRuleContext<NewA, NewB, NewC, NewD> simpleRuleContext = new QuadRuleContext<>(groupKey, accumulateOutputB,
-                accumulateOutputC, accumulateOutputD, groupByPattern);
-        return new QuadLeftHandSide<>(simpleRuleContext, new DetachedPatternVariable<>(groupKey),
-                new DetachedPatternVariable<>(accumulateOutputB), new DetachedPatternVariable<>(accumulateOutputC),
-                new DirectPatternVariable<>(accumulateOutputD, singletonList(groupByPattern)), variableFactory);
+        Variable<NewA> newA = variableFactory.createVariable("newA", groupKey);
+        Variable<NewB> newB = variableFactory.createVariable("newB", accumulateOutputB);
+        Variable<NewC> newC = variableFactory.createVariable("newC", accumulateOutputC);
+        Variable<NewD> newD = variableFactory.createVariable("newD", accumulateOutputD);
+        return new QuadLeftHandSide<>(new PatternVariable<>(newA, singletonList(groupByPattern)),
+                new PatternVariable<>(newB), new PatternVariable<>(newC), new PatternVariable<>(newD), variableFactory);
     }
 
     /**
@@ -419,34 +400,13 @@ public final class BiLeftHandSide<A, B> extends AbstractLeftHandSide {
         return (a, b) -> new BiTuple<>(keyMappingA.apply(a, b), keyMappingB.apply(a, b));
     }
 
-    public <NewA, NewB> BiLeftHandSide<NewA, NewB> andGroupBy(BiFunction<A, B, NewA> keyMappingA,
-            BiFunction<A, B, NewB> keyMappingB) {
-        Variable<A> inputA = patternVariableA.getPrimaryVariable();
-        Variable<B> inputB = patternVariableB.getPrimaryVariable();
-        Variable<BiTuple<NewA, NewB>> groupKey =
-                (Variable<BiTuple<NewA, NewB>>) variableFactory.createVariable(BiTuple.class, "groupKey");
-        ViewItem<?> innerGroupByPattern = joinViewItemsWithLogicalAnd(patternVariableA, patternVariableB);
-        ViewItem<?> groupByPattern = groupBy(innerGroupByPattern, inputA, inputB, groupKey,
-                createCompositeBiGroupKey(keyMappingA, keyMappingB));
-        Variable<NewA> newA = variableFactory.createVariable("newA");
-        Variable<NewB> newB = variableFactory.createVariable("newB");
-        DirectPatternVariable<BiTuple<NewA, NewB>> groupKeyPatternVar =
-                new DirectPatternVariable<>(groupKey, singletonList(groupByPattern))
-                        .bind(newA, tuple -> tuple.a)
-                        .bind(newB, tuple -> tuple.b);
-        PatternVariable<NewB, BiTuple<NewA, NewB>, ?> bPatternVar =
-                new IndirectPatternVariable<>(groupKeyPatternVar, newB, tuple -> tuple.b);
-        // No simple context; due to the need to decompose the group key, the pattern variables are required.
-        return new BiLeftHandSide<>(new DetachedPatternVariable<>(newA), bPatternVar, variableFactory);
-    }
-
     public <NewA, NewB, NewC> TriLeftHandSide<NewA, NewB, NewC> andGroupBy(BiFunction<A, B, NewA> keyMappingA,
             BiFunction<A, B, NewB> keyMappingB, BiConstraintCollector<A, B, ?, NewC> collectorC) {
         Variable<A> inputA = patternVariableA.getPrimaryVariable();
         Variable<B> inputB = patternVariableB.getPrimaryVariable();
         Variable<BiTuple<A, B>> accumulateSource =
                 (Variable<BiTuple<A, B>>) variableFactory.createVariable(BiTuple.class, "source");
-        PatternVariable<B, ?, ?> newPatternVariableB = patternVariableB.bind(accumulateSource, inputA,
+        PatternVariable<B> newPatternVariableB = patternVariableB.bind(accumulateSource, inputA,
                 (b, a) -> new BiTuple<>(a, b));
         Variable<BiTuple<NewA, NewB>> groupKey =
                 (Variable<BiTuple<NewA, NewB>>) variableFactory.createVariable(BiTuple.class, "groupKey");
@@ -455,16 +415,11 @@ public final class BiLeftHandSide<A, B> extends AbstractLeftHandSide {
         ViewItem<?> groupByPattern = groupBy(innerGroupByPattern, inputA, inputB, groupKey,
                 createCompositeBiGroupKey(keyMappingA, keyMappingB),
                 createAccumulateFunction(collectorC, accumulateSource, accumulateOutput));
-        Variable<NewA> newA = variableFactory.createVariable("newA");
-        Variable<NewB> newB = variableFactory.createVariable("newB");
-        DirectPatternVariable<BiTuple<NewA, NewB>> directPatternVariable =
-                new DirectPatternVariable<>(groupKey, singletonList(groupByPattern))
-                        .bind(newA, tuple -> tuple.a)
-                        .bind(newB, tuple -> tuple.b);
-        List<ViewItem<?>> prerequisites = directPatternVariable.build();
-        // No simple context; due to the need to decompose the group key, the pattern variables are required.
-        return new TriLeftHandSide<>(new DetachedPatternVariable<>(newA), new DetachedPatternVariable<>(newB),
-                new DirectPatternVariable<>(accumulateOutput, prerequisites), variableFactory);
+        Variable<NewA> newA = variableFactory.createVariable("newA", groupKey, k -> k.a);
+        Variable<NewB> newB = variableFactory.createVariable("newB", groupKey, k -> k.b);
+        Variable<NewC> newC = variableFactory.createVariable("newC", accumulateOutput);
+        return new TriLeftHandSide<>(new PatternVariable<>(newA, singletonList(groupByPattern)),
+                new PatternVariable<>(newB), new PatternVariable<>(newC), variableFactory);
     }
 
     public <NewA, NewB, NewC, NewD> QuadLeftHandSide<NewA, NewB, NewC, NewD> andGroupBy(BiFunction<A, B, NewA> keyMappingA,
@@ -474,7 +429,7 @@ public final class BiLeftHandSide<A, B> extends AbstractLeftHandSide {
         Variable<B> inputB = patternVariableB.getPrimaryVariable();
         Variable<BiTuple<A, B>> accumulateSource =
                 (Variable<BiTuple<A, B>>) variableFactory.createVariable(BiTuple.class, "source");
-        PatternVariable<B, ?, ?> newPatternVariableB = patternVariableB.bind(accumulateSource, inputA,
+        PatternVariable<B> newPatternVariableB = patternVariableB.bind(accumulateSource, inputA,
                 (b, a) -> new BiTuple<>(a, b));
         Variable<BiTuple<NewA, NewB>> groupKey =
                 (Variable<BiTuple<NewA, NewB>>) variableFactory.createVariable(BiTuple.class, "groupKey");
@@ -485,33 +440,41 @@ public final class BiLeftHandSide<A, B> extends AbstractLeftHandSide {
                 createCompositeBiGroupKey(keyMappingA, keyMappingB),
                 createAccumulateFunction(collectorC, accumulateSource, accumulateOutputC),
                 createAccumulateFunction(collectorD, accumulateSource, accumulateOutputD));
-        Variable<NewA> newA = variableFactory.createVariable("newA");
-        Variable<NewB> newB = variableFactory.createVariable("newB");
-        DirectPatternVariable<BiTuple<NewA, NewB>> directPatternVariable =
-                new DirectPatternVariable<>(groupKey, singletonList(groupByPattern))
-                        .bind(newA, tuple -> tuple.a)
-                        .bind(newB, tuple -> tuple.b);
-        List<ViewItem<?>> prerequisites = directPatternVariable.build();
-        // No simple context; due to the need to decompose the group key, the pattern variables are required.
-        return new QuadLeftHandSide<>(new DetachedPatternVariable<>(newA), new DetachedPatternVariable<>(newB),
-                new DetachedPatternVariable<>(accumulateOutputC),
-                new DirectPatternVariable<>(accumulateOutputD, prerequisites), variableFactory);
+        Variable<NewA> newA = variableFactory.createVariable("newA", groupKey, k -> k.a);
+        Variable<NewB> newB = variableFactory.createVariable("newB", groupKey, k -> k.b);
+        Variable<NewC> newC = variableFactory.createVariable("newC", accumulateOutputC);
+        Variable<NewD> newD = variableFactory.createVariable("newD", accumulateOutputD);
+        return new QuadLeftHandSide<>(new PatternVariable<>(newA, singletonList(groupByPattern)),
+                new PatternVariable<>(newB), new PatternVariable<>(newC), new PatternVariable<>(newD), variableFactory);
     }
 
-    public <Solution_> RuleBuilder<Solution_> andTerminate() {
-        return ruleContext.newRuleBuilder();
+    public AbstractBiConstraintConsequence<A, B> andTerminate() {
+        return new BiConstraintDefaultConsequence<>(this);
     }
 
-    public <Solution_> RuleBuilder<Solution_> andTerminate(ToIntBiFunction<A, B> matchWeighter) {
-        return ruleContext.newRuleBuilder(matchWeighter);
+    public AbstractBiConstraintConsequence<A, B> andTerminate(ToIntBiFunction<A, B> matchWeighter) {
+        return new BiConstraintIntConsequence<>(this, matchWeighter);
     }
 
-    public <Solution_> RuleBuilder<Solution_> andTerminate(ToLongBiFunction<A, B> matchWeighter) {
-        return ruleContext.newRuleBuilder(matchWeighter);
+    public AbstractBiConstraintConsequence<A, B> andTerminate(ToLongBiFunction<A, B> matchWeighter) {
+        return new BiConstraintLongConsequence<>(this, matchWeighter);
     }
 
-    public <Solution_> RuleBuilder<Solution_> andTerminate(BiFunction<A, B, BigDecimal> matchWeighter) {
-        return ruleContext.newRuleBuilder(matchWeighter);
+    public AbstractBiConstraintConsequence<A, B> andTerminate(BiFunction<A, B, BigDecimal> matchWeighter) {
+        return new BiConstraintBigDecimalConsequence<>(this, matchWeighter);
     }
 
+    @Override
+    public List<ViewItem<?>> get() {
+        return Stream.of(patternVariableA, patternVariableB)
+                .flatMap(variable -> variable.build().stream())
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public Variable[] getVariables() {
+        return Stream.of(patternVariableA, patternVariableB)
+                .map(PatternVariable::getPrimaryVariable)
+                .toArray(Variable[]::new);
+    }
 }

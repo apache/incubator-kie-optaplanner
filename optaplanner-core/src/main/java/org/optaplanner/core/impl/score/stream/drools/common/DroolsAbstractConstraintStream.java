@@ -43,19 +43,19 @@ public abstract class DroolsAbstractConstraintStream<Solution_> extends Abstract
     // ************************************************************************
 
     protected DroolsConstraint<Solution_> buildConstraint(String constraintPackage, String constraintName,
-            Score<?> constraintWeight, ScoreImpactType impactType, RuleBuilder<Solution_> ruleBuilder) {
+            Score<?> constraintWeight, ScoreImpactType impactType, AbstractConstraintConsequence consequence) {
         Function<Solution_, Score<?>> constraintWeightExtractor = buildConstraintWeightExtractor(constraintPackage,
                 constraintName, constraintWeight);
         return new DroolsConstraint<>(constraintFactory, constraintPackage, constraintName, constraintWeightExtractor,
-                impactType, false, ruleBuilder);
+                impactType, false, consequence);
     }
 
     protected DroolsConstraint<Solution_> buildConstraintConfigurable(String constraintPackage, String constraintName,
-            ScoreImpactType impactType, RuleBuilder<Solution_> ruleBuilder) {
+            ScoreImpactType impactType, AbstractConstraintConsequence constraintConsequence) {
         Function<Solution_, Score<?>> constraintWeightExtractor = buildConstraintWeightExtractor(constraintPackage,
                 constraintName);
         return new DroolsConstraint<>(constraintFactory, constraintPackage, constraintName, constraintWeightExtractor,
-                impactType, true, ruleBuilder);
+                impactType, true, constraintConsequence);
     }
 
     // ************************************************************************

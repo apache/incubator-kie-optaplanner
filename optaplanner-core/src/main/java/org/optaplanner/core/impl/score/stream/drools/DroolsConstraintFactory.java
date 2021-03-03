@@ -19,6 +19,7 @@ package org.optaplanner.core.impl.score.stream.drools;
 import static org.drools.model.DSL.globalOf;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -33,6 +34,7 @@ import org.optaplanner.core.impl.score.director.drools.DroolsScoreDirector;
 import org.optaplanner.core.impl.score.holder.AbstractScoreHolder;
 import org.optaplanner.core.impl.score.stream.ConstraintSessionFactory;
 import org.optaplanner.core.impl.score.stream.InnerConstraintFactory;
+import org.optaplanner.core.impl.score.stream.drools.common.RuleAssembly;
 import org.optaplanner.core.impl.score.stream.drools.uni.DroolsFromUniConstraintStream;
 
 public final class DroolsConstraintFactory<Solution_> extends InnerConstraintFactory<Solution_> {
@@ -84,17 +86,21 @@ public final class DroolsConstraintFactory<Solution_> extends InnerConstraintFac
                 throw new IllegalStateException("The constraint (" + constraint.getConstraintId()
                         + ") must be created from the same constraintFactory.");
             }
-            DroolsConstraint<Solution_> droolsConstraint = (DroolsConstraint<Solution_>) constraint;
-            boolean added = constraintIdSet.add(droolsConstraint.getConstraintId());
+            boolean added = constraintIdSet.add(constraint.getConstraintId());
             if (!added) {
                 throw new IllegalStateException(
-                        "There are 2 constraints with the same constraintName (" + droolsConstraint.getConstraintName()
-                                + ") in the same constraintPackage (" + droolsConstraint.getConstraintPackage() + ").");
+                        "There are 2 constraints with the same constraintName (" + constraint.getConstraintName()
+                                + ") in the same constraintPackage (" + constraint.getConstraintPackage() + ").");
             }
+            DroolsConstraint<Solution_> droolsConstraint = (DroolsConstraint<Solution_>) constraint;
             droolsConstraintList.add(droolsConstraint);
-            model.addRule(droolsConstraint.buildRule(scoreHolderGlobal));
         }
-        return new DroolsConstraintSessionFactory<>(solutionDescriptor, model, droolsConstraintList);
+        DroolsConstraint<Solution_>[] constraintArray = droolsConstraintList.toArray(new DroolsConstraint[0]);
+        Arrays.stream(constraintArray)
+                .map(constraint -> constraint.getConsequence().assemble(scoreHolderGlobal, constraint))
+                .map(RuleAssembly::getRule)
+                .forEach(model::addRule);
+        return new DroolsConstraintSessionFactory<>(solutionDescriptor, model, constraintArray);
     }
 
     // ************************************************************************

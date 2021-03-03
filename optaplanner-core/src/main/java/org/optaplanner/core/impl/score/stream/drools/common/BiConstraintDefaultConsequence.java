@@ -16,14 +16,24 @@
 
 package org.optaplanner.core.impl.score.stream.drools.common;
 
-import java.util.function.BiFunction;
+import static java.util.Objects.requireNonNull;
 
-import org.drools.model.Global;
-import org.drools.model.consequences.ConsequenceBuilder.ValidBuilder;
-import org.optaplanner.core.impl.score.holder.AbstractScoreHolder;
-import org.optaplanner.core.impl.score.stream.drools.DroolsConstraint;
+final class BiConstraintDefaultConsequence<A, B> extends AbstractBiConstraintConsequence<A, B> {
 
-@FunctionalInterface
-interface ConsequenceBuilder<Solution_>
-        extends BiFunction<DroolsConstraint<Solution_>, Global<? extends AbstractScoreHolder<?>>, ValidBuilder> {
+    private final BiLeftHandSide<A, B> leftHandSide;
+
+    BiConstraintDefaultConsequence(BiLeftHandSide<A, B> leftHandSide) {
+        this.leftHandSide = requireNonNull(leftHandSide);
+    }
+
+    @Override
+    protected BiLeftHandSide<A, B> getLeftHandSide() {
+        return leftHandSide;
+    }
+
+    @Override
+    public ConsequenceMatchWeightType getMatchWeightType() {
+        return ConsequenceMatchWeightType.DEFAULT;
+    }
+
 }
