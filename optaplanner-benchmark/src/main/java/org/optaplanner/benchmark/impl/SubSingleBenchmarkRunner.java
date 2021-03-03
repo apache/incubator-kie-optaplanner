@@ -125,7 +125,7 @@ public class SubSingleBenchmarkRunner<Solution_> implements Callable<SubSingleBe
 
             ScoreManager<Solution_, ?> scoreManager = ScoreManager.create(solverFactory);
             boolean isConstraintMatchEnabled = solver.getSolverScope().getScoreDirector().isConstraintMatchEnabled();
-            if (isConstraintMatchEnabled) { // Easy calculator will throw otherwise.
+            if (isConstraintMatchEnabled) { // Easy calculator fails otherwise.
                 subSingleBenchmarkResult.setScoreExplanationSummary(scoreManager.getSummary(solution));
             }
 
