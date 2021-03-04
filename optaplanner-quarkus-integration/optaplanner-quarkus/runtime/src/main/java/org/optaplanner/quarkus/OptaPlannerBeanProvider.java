@@ -50,7 +50,7 @@ public class OptaPlannerBeanProvider {
             OptaPlannerGizmoBeanFactory gizmoBeanFactory,
             SolverConfig solverConfig) {
         gizmoInitializer.setup();
-        OptaPlannerGizmoBeanFactory.INSTANCE.setReference(gizmoBeanFactory);
+        OptaPlannerGizmoBeanFactory.INSTANCE.setInstance(gizmoBeanFactory);
         return SolverFactory.create(solverConfig);
     }
 

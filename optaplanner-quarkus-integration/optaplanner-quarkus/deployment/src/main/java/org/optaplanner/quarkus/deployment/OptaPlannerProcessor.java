@@ -300,7 +300,7 @@ class OptaPlannerProcessor {
                 for (String parameterName : beanDefiningAnnotation.getParameterNames()) {
                     AnnotationValue value = annotationInstance.value(parameterName);
 
-                    // We don't care about the default/null type
+                    // We don't care about the default/null type.
                     if (value != null) {
                         Type type = value.asClass();
                         try {

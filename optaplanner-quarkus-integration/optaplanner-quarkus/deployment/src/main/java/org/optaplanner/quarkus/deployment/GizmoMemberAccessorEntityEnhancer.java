@@ -305,7 +305,7 @@ public class GizmoMemberAccessorEntityEnhancer {
             SolutionDescriptor solutionDescriptor,
             Class<?> entityClass,
             Map<Class<?>, GizmoSolutionOrEntityDescriptor> memoizedMap,
-            BuildProducer<BytecodeTransformerBuildItem> transformers) throws NoSuchFieldException, ClassNotFoundException {
+            BuildProducer<BytecodeTransformerBuildItem> transformers) {
         Map<Field, GizmoMemberDescriptor> solutionFieldToMemberDescriptor = new HashMap<>();
 
         Class<?> currentClass = entityClass;

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.optaplanner.quarkus.it.domain;
+package org.optaplanner.quarkus.testdata.domain;
 
 import java.util.List;
 
@@ -25,12 +25,12 @@ import org.optaplanner.core.api.domain.valuerange.ValueRangeProvider;
 import org.optaplanner.core.api.score.buildin.hardsoft.HardSoftScore;
 
 @PlanningSolution
-public class ITestdataPlanningSolution {
+public class TestdataStringLengthShadowSolution {
 
     @ValueRangeProvider(id = "valueRange")
     private List<String> valueList;
     @PlanningEntityCollectionProperty
-    private List<ITestdataPlanningEntity> entityList;
+    private List<TestdataStringLengthShadowEntity> entityList;
 
     @PlanningScore
     private HardSoftScore score;
@@ -47,11 +47,11 @@ public class ITestdataPlanningSolution {
         this.valueList = valueList;
     }
 
-    public List<ITestdataPlanningEntity> getEntityList() {
+    public List<TestdataStringLengthShadowEntity> getEntityList() {
         return entityList;
     }
 
-    public void setEntityList(List<ITestdataPlanningEntity> entityList) {
+    public void setEntityList(List<TestdataStringLengthShadowEntity> entityList) {
         this.entityList = entityList;
     }
 

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.optaplanner.quarkus.it.domain;
+package org.optaplanner.quarkus.testdata.domain;
 
 import org.optaplanner.core.api.domain.entity.PlanningEntity;
 import org.optaplanner.core.api.domain.variable.CustomShadowVariable;
@@ -22,14 +22,14 @@ import org.optaplanner.core.api.domain.variable.PlanningVariable;
 import org.optaplanner.core.api.domain.variable.PlanningVariableReference;
 
 @PlanningEntity
-public class ITestdataPlanningEntity {
+public class TestdataStringLengthShadowEntity {
 
     @PlanningVariable(valueRangeProviderRefs = "valueRange")
     private String value;
 
     @CustomShadowVariable(variableListenerClass = StringLengthVariableListener.class,
             sources = {
-                    @PlanningVariableReference(entityClass = ITestdataPlanningEntity.class,
+                    @PlanningVariableReference(entityClass = TestdataStringLengthShadowEntity.class,
                             variableName = "value")
             })
     private Integer length;

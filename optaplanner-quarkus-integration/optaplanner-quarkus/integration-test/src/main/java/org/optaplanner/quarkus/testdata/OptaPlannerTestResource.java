@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.optaplanner.quarkus.it;
+package org.optaplanner.quarkus.testdata;
 
 import java.util.Arrays;
 import java.util.concurrent.ExecutionException;
@@ -27,25 +27,25 @@ import javax.ws.rs.core.MediaType;
 
 import org.optaplanner.core.api.solver.SolverJob;
 import org.optaplanner.core.api.solver.SolverManager;
-import org.optaplanner.quarkus.it.domain.ITestdataPlanningEntity;
-import org.optaplanner.quarkus.it.domain.ITestdataPlanningSolution;
+import org.optaplanner.quarkus.testdata.domain.TestdataStringLengthShadowEntity;
+import org.optaplanner.quarkus.testdata.domain.TestdataStringLengthShadowSolution;
 
 @Path("/optaplanner/test")
 public class OptaPlannerTestResource {
 
     @Inject
-    SolverManager<ITestdataPlanningSolution, Long> solverManager;
+    SolverManager<TestdataStringLengthShadowSolution, Long> solverManager;
 
     @POST
     @Path("/solver-factory")
     @Produces(MediaType.TEXT_PLAIN)
     public String solveWithSolverFactory() {
-        ITestdataPlanningSolution planningProblem = new ITestdataPlanningSolution();
+        TestdataStringLengthShadowSolution planningProblem = new TestdataStringLengthShadowSolution();
         planningProblem.setEntityList(Arrays.asList(
-                new ITestdataPlanningEntity(),
-                new ITestdataPlanningEntity()));
+                new TestdataStringLengthShadowEntity(),
+                new TestdataStringLengthShadowEntity()));
         planningProblem.setValueList(Arrays.asList("a", "bb", "ccc"));
-        SolverJob<ITestdataPlanningSolution, Long> solverJob = solverManager.solve(1L, planningProblem);
+        SolverJob<TestdataStringLengthShadowSolution, Long> solverJob = solverManager.solve(1L, planningProblem);
         try {
             return solverJob.getFinalBestSolution().getScore().toString();
         } catch (InterruptedException | ExecutionException e) {

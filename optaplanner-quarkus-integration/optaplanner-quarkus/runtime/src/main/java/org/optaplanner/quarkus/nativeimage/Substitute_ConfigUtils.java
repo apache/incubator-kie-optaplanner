@@ -16,8 +16,6 @@
 
 package org.optaplanner.quarkus.nativeimage;
 
-import java.lang.reflect.Modifier;
-
 import org.optaplanner.quarkus.gizmo.OptaPlannerGizmoBeanFactory;
 
 import com.oracle.svm.core.annotate.Substitute;
@@ -28,15 +26,12 @@ public final class Substitute_ConfigUtils {
 
     @Substitute
     public static <T> T newInstance(Object bean, String propertyName, Class<T> clazz) {
-        T out = OptaPlannerGizmoBeanFactory.INSTANCE.getReference().newInstance(clazz);
+        T out = OptaPlannerGizmoBeanFactory.INSTANCE.getInstance().newInstance(clazz);
         if (out != null) {
             return out;
         } else {
-            throw new IllegalArgumentException("The " + bean.getClass().getSimpleName() + "'s " + propertyName + " ("
-                    + clazz.getName() + ") does not have a public no-arg constructor"
-                    // Inner classes include local, anonymous and non-static member classes
-                    + ((clazz.isLocalClass() || clazz.isAnonymousClass() || clazz.isMemberClass())
-                            && !Modifier.isStatic(clazz.getModifiers()) ? " because it is an inner class." : "."));
+            throw new IllegalArgumentException("Impossible State: could not find the " + bean.getClass().getSimpleName() +
+                    "'s " + propertyName + " (" + clazz.getName() + ") generated Gizmo supplier.");
         }
     }
 }

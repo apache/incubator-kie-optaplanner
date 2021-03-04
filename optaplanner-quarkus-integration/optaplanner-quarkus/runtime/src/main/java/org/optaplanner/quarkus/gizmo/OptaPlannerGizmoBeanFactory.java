@@ -22,14 +22,14 @@ public interface OptaPlannerGizmoBeanFactory {
     <T> T newInstance(Class<T> clazz);
 
     class Reference {
-        OptaPlannerGizmoBeanFactory reference;
+        OptaPlannerGizmoBeanFactory instance;
 
-        public OptaPlannerGizmoBeanFactory getReference() {
-            return reference;
+        public OptaPlannerGizmoBeanFactory getInstance() {
+            return instance;
         }
 
-        public void setReference(OptaPlannerGizmoBeanFactory reference) {
-            this.reference = reference;
+        public void setInstance(OptaPlannerGizmoBeanFactory instance) {
+            this.instance = instance;
         }
     }
 }
