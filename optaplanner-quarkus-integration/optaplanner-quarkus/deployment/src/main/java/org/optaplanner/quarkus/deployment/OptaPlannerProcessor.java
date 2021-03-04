@@ -523,14 +523,10 @@ class OptaPlannerProcessor {
             // Using REFLECTION domain access type so OptaPlanner doesn't try to generate GIZMO code
             SolutionDescriptor solutionDescriptor = SolutionDescriptor.buildSolutionDescriptor(DomainAccessType.REFLECTION,
                     solverConfig.getSolutionClass(), solverConfig.getEntityClassList());
-            try {
-                gizmoSolutionClonerClassNameSet.add(GizmoMemberAccessorEntityEnhancer.generateSolutionCloner(solutionDescriptor,
-                        debuggableClassOutput,
-                        indexView,
-                        transformers));
-            } catch (ClassNotFoundException | NoSuchFieldException e) {
-                throw new IllegalStateException("Error generating SolutionCloner.", e);
-            }
+            gizmoSolutionClonerClassNameSet.add(GizmoMemberAccessorEntityEnhancer.generateSolutionCloner(solutionDescriptor,
+                    debuggableClassOutput,
+                    indexView,
+                    transformers));
         }
 
         GizmoMemberAccessorEntityEnhancer.generateGizmoInitializer(beanClassOutput, generatedMemberAccessorsClassNameSet,

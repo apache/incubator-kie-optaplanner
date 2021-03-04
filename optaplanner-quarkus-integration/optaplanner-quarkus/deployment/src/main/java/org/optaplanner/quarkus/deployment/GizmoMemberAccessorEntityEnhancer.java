@@ -253,7 +253,7 @@ public class GizmoMemberAccessorEntityEnhancer {
     public static String generateSolutionCloner(SolutionDescriptor solutionDescriptor,
             ClassOutput classOutput,
             IndexView indexView,
-            BuildProducer<BytecodeTransformerBuildItem> transformers) throws ClassNotFoundException, NoSuchFieldException {
+            BuildProducer<BytecodeTransformerBuildItem> transformers) {
         String generatedClassName = GizmoSolutionClonerFactory.getGeneratedClassName(solutionDescriptor);
         try (ClassCreator classCreator = ClassCreator
                 .builder()
