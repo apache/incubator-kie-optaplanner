@@ -30,7 +30,7 @@ public final class Substitute_ConfigUtils {
         if (out != null) {
             return out;
         } else {
-            throw new IllegalArgumentException("Impossible State: could not find the " + bean.getClass().getSimpleName() +
+            throw new IllegalArgumentException("Impossible state: could not find the " + bean.getClass().getSimpleName() +
                     "'s " + propertyName + " (" + clazz.getName() + ") generated Gizmo supplier.");
         }
     }
