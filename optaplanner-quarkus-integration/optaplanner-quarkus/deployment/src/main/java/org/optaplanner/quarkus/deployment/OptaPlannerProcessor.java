@@ -417,12 +417,11 @@ class OptaPlannerProcessor {
         }
 
         if (solverConfig.getScoreDirectorFactoryConfig().getScoreDrlList() != null) {
-            boolean isDroolsDynamicPresent = isClassDefined("org.drools.dynamic.DynamicServiceRegistrySupplier");
-            if (!isDroolsDynamicPresent && false) {
+            boolean isKogitoExtensionPresent = isClassDefined("org.kie.kogito.quarkus.rules.deployment.RulesAssetsProcessor");
+            if (!isKogitoExtensionPresent) {
                 throw new IllegalStateException(
-                        "Using scoreDRL in Quarkus, but the dependency drools-core-dynamic is not on the classpath.\n"
-                                + "Maybe add the dependency org.kie.kogito:drools-core-dynamic and exclude the dependency"
-                                + " org.kie.kogito:drools-core-static."
+                        "Using scoreDRL in Quarkus, but the dependency org.kie.kogito:kogito-quarkus-rules is not on the classpath.\n"
+                                + "Maybe add the dependency org.kie.kogito:kogito-quarkus-rules"
                                 + "\nOr maybe use a " + ConstraintProvider.class.getSimpleName() + " instead of the scoreDRL.");
             }
         }
@@ -595,7 +594,6 @@ class OptaPlannerProcessor {
                     indexView,
                     transformers));
         }
-        GizmoMemberAccessorEntityEnhancer.generateGizmoInitializer(beanClassOutput, generatedClassSet);
 
         GizmoMemberAccessorEntityEnhancer.generateGizmoInitializer(beanClassOutput, generatedMemberAccessorsClassNameSet,
                 gizmoSolutionClonerClassNameSet);

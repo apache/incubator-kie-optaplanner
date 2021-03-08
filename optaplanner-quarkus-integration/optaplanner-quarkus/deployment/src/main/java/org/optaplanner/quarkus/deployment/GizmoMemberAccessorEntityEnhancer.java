@@ -56,9 +56,9 @@ import org.kie.kogito.rules.KieRuntimeBuilder;
 import org.objectweb.asm.ClassVisitor;
 import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Type;
+import org.optaplanner.core.api.domain.solution.cloner.SolutionCloner;
 import org.optaplanner.core.config.score.director.ScoreDirectorFactoryConfig;
 import org.optaplanner.core.config.util.ConfigUtils;
-import org.optaplanner.core.api.domain.solution.cloner.SolutionCloner;
 import org.optaplanner.core.impl.domain.common.ReflectionHelper;
 import org.optaplanner.core.impl.domain.common.accessor.MemberAccessor;
 import org.optaplanner.core.impl.domain.common.accessor.gizmo.GizmoMemberAccessorFactory;
@@ -69,9 +69,9 @@ import org.optaplanner.core.impl.domain.solution.cloner.gizmo.GizmoSolutionClone
 import org.optaplanner.core.impl.domain.solution.cloner.gizmo.GizmoSolutionClonerImplementor;
 import org.optaplanner.core.impl.domain.solution.cloner.gizmo.GizmoSolutionOrEntityDescriptor;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
-import org.optaplanner.quarkus.gizmo.OptaPlannerGizmoBeanFactory;
 import org.optaplanner.core.impl.score.director.drools.KieBaseExtractor;
 import org.optaplanner.quarkus.gizmo.OptaPlannerDroolsInitializer;
+import org.optaplanner.quarkus.gizmo.OptaPlannerGizmoBeanFactory;
 import org.optaplanner.quarkus.gizmo.OptaPlannerGizmoInitializer;
 
 import io.quarkus.deployment.annotations.BuildProducer;
@@ -480,6 +480,7 @@ public class GizmoMemberAccessorEntityEnhancer {
                     !ConfigUtils.isEmptyCollection(config.getScoreDrlFileList())) {
                 FieldCreator fieldCreator = classCreator.getFieldCreator("kieRuntimeBuilder", KieRuntimeBuilder.class);
                 fieldCreator.addAnnotation(Inject.class);
+                fieldCreator.setModifiers(Modifier.PUBLIC);
 
                 MethodCreator methodCreator =
                         classCreator.getMethodCreator(MethodDescriptor.ofMethod(OptaPlannerDroolsInitializer.class,
