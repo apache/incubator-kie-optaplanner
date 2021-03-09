@@ -57,6 +57,5 @@ public class OptaPlannerConstraintVerifierTest {
 
         entityB.setValue("B");
         constraintVerifier.verifyThat().givenSolution(solution).scores(SimpleScore.ZERO);
-
     }
 }

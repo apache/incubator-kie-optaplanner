@@ -35,6 +35,7 @@ import java.util.stream.Collectors;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Singleton;
 
+import org.apache.commons.lang3.ObjectUtils;
 import org.jboss.jandex.AnnotationInstance;
 import org.jboss.jandex.AnnotationTarget;
 import org.jboss.jandex.AnnotationValue;
@@ -52,6 +53,7 @@ import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.score.calculator.EasyScoreCalculator;
 import org.optaplanner.core.api.score.calculator.IncrementalScoreCalculator;
 import org.optaplanner.core.api.score.stream.ConstraintProvider;
+import org.optaplanner.core.api.score.stream.ConstraintStreamImplType;
 import org.optaplanner.core.config.score.director.ScoreDirectorFactoryConfig;
 import org.optaplanner.core.config.solver.SolverConfig;
 import org.optaplanner.core.config.solver.SolverManagerConfig;
@@ -211,6 +213,9 @@ class OptaPlannerProcessor {
             final Class<?> constraintProviderClass = solverConfig.getScoreDirectorFactoryConfig().getConstraintProviderClass();
             final Class<?> planningSolutionClass = solverConfig.getSolutionClass();
             final List<Class<?>> planningEntityClasses = solverConfig.getEntityClassList();
+            final ConstraintStreamImplType constraintStreamImplType =
+                    ObjectUtils.defaultIfNull(solverConfig.getScoreDirectorFactoryConfig().getConstraintStreamImplType(),
+                            ConstraintStreamImplType.DROOLS);
             syntheticBeanBuildItemBuildProducer.produce(SyntheticBeanBuildItem.configure(DotNames.CONSTRAINT_VERIFIER)
                     .scope(ApplicationScoped.class)
                     .creator(methodCreator -> {
@@ -227,7 +232,7 @@ class OptaPlannerProcessor {
                                     planningEntityClassResultHandle);
                         }
 
-                        // Got incompatiable class change error when trying to invoke static method on
+                        // Got incompatible class change error when trying to invoke static method on
                         // ConstraintVerifier.build(ConstraintProvider, Class, Class...)
                         ResultHandle solutionDescriptorResultHandle = methodCreator.invokeStaticMethod(
                                 MethodDescriptor.ofMethod(SolutionDescriptor.class, "buildSolutionDescriptor",
@@ -238,6 +243,14 @@ class OptaPlannerProcessor {
                                         "org.optaplanner.test.impl.score.stream.DefaultConstraintVerifier",
                                         ConstraintProvider.class, SolutionDescriptor.class),
                                 constraintProviderResultHandle, solutionDescriptorResultHandle);
+
+                        ResultHandle constraintStreamImplTypeResultHandle = methodCreator.load(constraintStreamImplType);
+                        constraintVerifierResultHandle = methodCreator.invokeInterfaceMethod(
+                                MethodDescriptor.ofMethod(DotNames.CONSTRAINT_VERIFIER.toString(),
+                                        "withConstraintStreamImplType",
+                                        DotNames.CONSTRAINT_VERIFIER.toString(),
+                                        ConstraintStreamImplType.class),
+                                constraintVerifierResultHandle, constraintStreamImplTypeResultHandle);
                         methodCreator.returnValue(constraintVerifierResultHandle);
                     })
                     .addType(ParameterizedType.create(DotNames.CONSTRAINT_VERIFIER,
