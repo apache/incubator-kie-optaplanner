@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.optaplanner.quarkus.testdata;
+package org.optaplanner.quarkus.it;
 
 import io.quarkus.test.junit.NativeImageTest;
 
