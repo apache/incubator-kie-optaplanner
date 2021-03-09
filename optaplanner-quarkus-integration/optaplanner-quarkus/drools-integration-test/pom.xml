@@ -95,8 +95,7 @@
     </plugins>
   </build>
 
-  <!-- Native build doesn't won't with drools -->
-  <!-- <profiles>
+  <profiles>
     <profile>
       <id>native</id>
       <activation>
@@ -131,5 +130,5 @@
         <quarkus.package.type>native</quarkus.package.type>
       </properties>
     </profile>
-  </profiles> -->
+  </profiles>
 </project>
