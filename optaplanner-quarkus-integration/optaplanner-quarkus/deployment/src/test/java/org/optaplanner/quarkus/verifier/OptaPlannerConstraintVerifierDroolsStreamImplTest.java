@@ -22,17 +22,20 @@ import javax.inject.Inject;
 
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.RegisterExtension;
 import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
+import org.optaplanner.core.api.score.stream.ConstraintStreamImplType;
 import org.optaplanner.quarkus.testdata.normal.constraints.TestdataQuarkusConstraintProvider;
 import org.optaplanner.quarkus.testdata.normal.domain.TestdataQuarkusEntity;
 import org.optaplanner.quarkus.testdata.normal.domain.TestdataQuarkusSolution;
 import org.optaplanner.test.api.score.stream.ConstraintVerifier;
+import org.optaplanner.test.impl.score.stream.DefaultConstraintVerifier;
 
 import io.quarkus.test.QuarkusUnitTest;
 
-public class OptaPlannerConstraintVerifierTest {
+public class OptaPlannerConstraintVerifierDroolsStreamImplTest {
     @RegisterExtension
     static final QuarkusUnitTest config = new QuarkusUnitTest()
             .setArchiveProducer(() -> ShrinkWrap.create(JavaArchive.class)
@@ -43,7 +46,10 @@ public class OptaPlannerConstraintVerifierTest {
     ConstraintVerifier<TestdataQuarkusConstraintProvider, TestdataQuarkusSolution> constraintVerifier;
 
     @Test
-    public void constraintVerifier() {
+    public void constraintVerifierDroolsStreamImpl() {
+        Assertions.assertEquals(ConstraintStreamImplType.DROOLS,
+                ((DefaultConstraintVerifier<?, ?, ?>) constraintVerifier)
+                        .getConstraintStreamImplType());
         TestdataQuarkusSolution solution = new TestdataQuarkusSolution();
         TestdataQuarkusEntity entityA = new TestdataQuarkusEntity();
         TestdataQuarkusEntity entityB = new TestdataQuarkusEntity();

@@ -32,7 +32,6 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Singleton;
 
 import org.apache.commons.lang3.ObjectUtils;
@@ -217,7 +216,7 @@ class OptaPlannerProcessor {
                     ObjectUtils.defaultIfNull(solverConfig.getScoreDirectorFactoryConfig().getConstraintStreamImplType(),
                             ConstraintStreamImplType.DROOLS);
             syntheticBeanBuildItemBuildProducer.produce(SyntheticBeanBuildItem.configure(DotNames.CONSTRAINT_VERIFIER)
-                    .scope(ApplicationScoped.class)
+                    .scope(Singleton.class)
                     .creator(methodCreator -> {
                         ResultHandle constraintProviderResultHandle =
                                 methodCreator.newInstance(MethodDescriptor.ofConstructor(constraintProviderClass));
