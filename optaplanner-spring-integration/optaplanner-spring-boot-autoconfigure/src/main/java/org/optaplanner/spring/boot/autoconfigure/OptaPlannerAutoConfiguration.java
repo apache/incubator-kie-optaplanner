@@ -145,7 +145,8 @@ public class OptaPlannerAutoConfiguration implements BeanClassLoaderAware {
     @ConditionalOnClass({ ConstraintVerifier.class })
     @ConditionalOnMissingBean({ ConstraintVerifier.class })
     @SuppressWarnings("unchecked")
-    public <ConstraintProvider_ extends ConstraintProvider, SolutionClass_> ConstraintVerifier<ConstraintProvider_, SolutionClass_> constraintVerifier(SolverConfig solverConfig) {
+    public <ConstraintProvider_ extends ConstraintProvider, SolutionClass_>
+            ConstraintVerifier<ConstraintProvider_, SolutionClass_> constraintVerifier(SolverConfig solverConfig) {
         if (solverConfig.getScoreDirectorFactoryConfig().getConstraintProviderClass() == null) {
             // Return a mock ConstraintVerifier so not having ConstraintProvider doesn't crash tests
             // (Cannot create custom condition that checks SolverConfig, since that
@@ -153,12 +154,14 @@ public class OptaPlannerAutoConfiguration implements BeanClassLoaderAware {
             final String noConstraintProviderErrorMsg = "ConstraintVerifier is only supported for ConstraintProviders";
             return new ConstraintVerifier<ConstraintProvider_, SolutionClass_>() {
                 @Override
-                public ConstraintVerifier<ConstraintProvider_, SolutionClass_> withConstraintStreamImplType(ConstraintStreamImplType constraintStreamImplType) {
+                public ConstraintVerifier<ConstraintProvider_, SolutionClass_>
+                        withConstraintStreamImplType(ConstraintStreamImplType constraintStreamImplType) {
                     throw new UnsupportedOperationException(noConstraintProviderErrorMsg);
                 }
 
                 @Override
-                public SingleConstraintVerification<SolutionClass_> verifyThat(BiFunction<ConstraintProvider_, ConstraintFactory, Constraint> constraintFunction) {
+                public SingleConstraintVerification<SolutionClass_>
+                        verifyThat(BiFunction<ConstraintProvider_, ConstraintFactory, Constraint> constraintFunction) {
                     throw new UnsupportedOperationException(noConstraintProviderErrorMsg);
                 }
 
@@ -169,11 +172,15 @@ public class OptaPlannerAutoConfiguration implements BeanClassLoaderAware {
             };
         }
         ConstraintProvider_ constraintProvider = ConfigUtils.newInstance(this, "constraintProvider",
-                                                                         (Class<ConstraintProvider_>) solverConfig.getScoreDirectorFactoryConfig().getConstraintProviderClass());
-        Class<?>[] entityClasses =  solverConfig.getEntityClassList().toArray(new Class<?>[0]);
+                (Class<ConstraintProvider_>) solverConfig.getScoreDirectorFactoryConfig().getConstraintProviderClass());
+        Class<?>[] entityClasses = solverConfig.getEntityClassList().toArray(new Class<?>[0]);
+        ConstraintStreamImplType constraintStreamImplType =
+                solverConfig.getScoreDirectorFactoryConfig().getConstraintStreamImplType();
+
         return (ConstraintVerifier<ConstraintProvider_, SolutionClass_>) ConstraintVerifier.build(constraintProvider,
-                                                                                                  solverConfig.getSolutionClass(),
-                                                                                                  entityClasses);
+                solverConfig.getSolutionClass(),
+                entityClasses).withConstraintStreamImplType(
+                        (constraintStreamImplType != null) ? constraintStreamImplType : ConstraintStreamImplType.DROOLS);
     }
 
     private void applySolverProperties(SolverConfig solverConfig) {

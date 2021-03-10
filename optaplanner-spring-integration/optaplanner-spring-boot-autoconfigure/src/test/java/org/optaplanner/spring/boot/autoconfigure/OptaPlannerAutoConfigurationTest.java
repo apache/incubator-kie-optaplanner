@@ -32,6 +32,7 @@ import org.junit.jupiter.api.Test;
 import org.optaplanner.core.api.domain.common.DomainAccessType;
 import org.optaplanner.core.api.score.ScoreManager;
 import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
+import org.optaplanner.core.api.score.stream.ConstraintStreamImplType;
 import org.optaplanner.core.api.solver.SolverFactory;
 import org.optaplanner.core.api.solver.SolverJob;
 import org.optaplanner.core.api.solver.SolverManager;
@@ -52,6 +53,7 @@ import org.optaplanner.spring.boot.autoconfigure.normal.constraints.TestdataSpri
 import org.optaplanner.spring.boot.autoconfigure.normal.domain.TestdataSpringEntity;
 import org.optaplanner.spring.boot.autoconfigure.normal.domain.TestdataSpringSolution;
 import org.optaplanner.test.api.score.stream.ConstraintVerifier;
+import org.optaplanner.test.impl.score.stream.DefaultConstraintVerifier;
 import org.springframework.boot.autoconfigure.AutoConfigurations;
 import org.springframework.boot.test.context.FilteredClassLoader;
 import org.springframework.boot.test.context.runner.ApplicationContextRunner;
@@ -83,10 +85,13 @@ public class OptaPlannerAutoConfigurationTest {
                 .withUserConfiguration(ChainedSpringTestConfiguration.class);
         allDefaultsFilteredClassLoader =
                 new FilteredClassLoader(FilteredClassLoader.PackageFilter.of("org.optaplanner.test"),
-                                        FilteredClassLoader.ClassPathResourceFilter.of(new ClassPathResource(OptaPlannerProperties.DEFAULT_SOLVER_CONFIG_URL)),
-                                        FilteredClassLoader.ClassPathResourceFilter.of(new ClassPathResource(OptaPlannerProperties.DEFAULT_CONSTRAINTS_DRL_URL)));
-        testFilteredClassLoader = new FilteredClassLoader(new ClassPathResource(OptaPlannerProperties.DEFAULT_SOLVER_CONFIG_URL),
-                                        new ClassPathResource(OptaPlannerProperties.DEFAULT_CONSTRAINTS_DRL_URL));
+                        FilteredClassLoader.ClassPathResourceFilter
+                                .of(new ClassPathResource(OptaPlannerProperties.DEFAULT_SOLVER_CONFIG_URL)),
+                        FilteredClassLoader.ClassPathResourceFilter
+                                .of(new ClassPathResource(OptaPlannerProperties.DEFAULT_CONSTRAINTS_DRL_URL)));
+        testFilteredClassLoader =
+                new FilteredClassLoader(new ClassPathResource(OptaPlannerProperties.DEFAULT_SOLVER_CONFIG_URL),
+                        new ClassPathResource(OptaPlannerProperties.DEFAULT_CONSTRAINTS_DRL_URL));
         defaultConstraintsDrlFilteredClassLoader =
                 new FilteredClassLoader(new ClassPathResource(OptaPlannerProperties.DEFAULT_CONSTRAINTS_DRL_URL));
         noGizmoFilteredClassLoader = new FilteredClassLoader(FilteredClassLoader.PackageFilter.of("io.quarkus.gizmo"),
@@ -266,14 +271,47 @@ public class OptaPlannerAutoConfigurationTest {
         contextRunner
                 .withClassLoader(testFilteredClassLoader)
                 .run(context -> {
-                    ConstraintVerifier<TestdataSpringConstraintProvider, TestdataSpringSolution> constraintVerifier = context.getBean(ConstraintVerifier.class);
+                    ConstraintVerifier<TestdataSpringConstraintProvider, TestdataSpringSolution> constraintVerifier =
+                            context.getBean(ConstraintVerifier.class);
+
+                    assertThat(((DefaultConstraintVerifier) constraintVerifier).getConstraintStreamImplType())
+                            .isEqualTo(ConstraintStreamImplType.DROOLS);
                     TestdataSpringSolution problem = new TestdataSpringSolution();
                     problem.setValueList(IntStream.range(1, 3)
-                                                 .mapToObj(i -> "v" + i)
-                                                 .collect(Collectors.toList()));
+                            .mapToObj(i -> "v" + i)
+                            .collect(Collectors.toList()));
                     problem.setEntityList(IntStream.range(1, 3)
-                                                  .mapToObj(i -> new TestdataSpringEntity())
-                                                  .collect(Collectors.toList()));
+                            .mapToObj(i -> new TestdataSpringEntity())
+                            .collect(Collectors.toList()));
+
+                    problem.getEntityList().get(0).setValue("v1");
+                    problem.getEntityList().get(1).setValue("v1");
+                    constraintVerifier.verifyThat().givenSolution(problem).scores(SimpleScore.of(-2));
+
+                    problem.getEntityList().get(1).setValue("v2");
+                    constraintVerifier.verifyThat().givenSolution(problem).scores(SimpleScore.of(0));
+                });
+    }
+
+    @Test
+    public void constraintVerifierBavet() {
+        contextRunner
+                .withClassLoader(testFilteredClassLoader)
+                .withPropertyValues(
+                        "optaplanner.solver-config-xml=org/optaplanner/spring/boot/autoconfigure/bavetSolverConfig.xml")
+                .run(context -> {
+                    ConstraintVerifier<TestdataSpringConstraintProvider, TestdataSpringSolution> constraintVerifier =
+                            context.getBean(ConstraintVerifier.class);
+                    assertThat(((DefaultConstraintVerifier) constraintVerifier).getConstraintStreamImplType())
+                            .isEqualTo(ConstraintStreamImplType.BAVET);
+
+                    TestdataSpringSolution problem = new TestdataSpringSolution();
+                    problem.setValueList(IntStream.range(1, 3)
+                            .mapToObj(i -> "v" + i)
+                            .collect(Collectors.toList()));
+                    problem.setEntityList(IntStream.range(1, 3)
+                            .mapToObj(i -> new TestdataSpringEntity())
+                            .collect(Collectors.toList()));
 
                     problem.getEntityList().get(0).setValue("v1");
                     problem.getEntityList().get(1).setValue("v1");
@@ -291,8 +329,10 @@ public class OptaPlannerAutoConfigurationTest {
                 .withPropertyValues(OptaPlannerProperties.SCORE_DRL_PROPERTY + "=" + constraintsUrl)
                 .withClassLoader(testFilteredClassLoader)
                 .run(context -> {
-                    assertThatCode(() -> { context.getBean(ConstraintVerifier.class).verifyThat(); })
-                        .hasMessage("ConstraintVerifier is only supported for ConstraintProviders");
+                    assertThatCode(() -> {
+                        context.getBean(ConstraintVerifier.class).verifyThat();
+                    })
+                            .hasMessage("ConstraintVerifier is only supported for ConstraintProviders");
                 });
     }
 
