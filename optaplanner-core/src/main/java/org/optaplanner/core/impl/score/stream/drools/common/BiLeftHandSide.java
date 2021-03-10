@@ -16,15 +16,6 @@
 
 package org.optaplanner.core.impl.score.stream.drools.common;
 
-import static java.util.Collections.singletonList;
-import static org.drools.model.DSL.accFunction;
-import static org.drools.model.DSL.accumulate;
-import static org.drools.model.DSL.exists;
-import static org.drools.model.DSL.groupBy;
-import static org.drools.model.DSL.not;
-import static org.drools.model.PatternDSL.betaIndexedBy;
-import static org.drools.model.PatternDSL.pattern;
-
 import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
@@ -35,7 +26,6 @@ import java.util.function.Function;
 import java.util.function.ToIntBiFunction;
 import java.util.function.ToLongBiFunction;
 import java.util.stream.Stream;
-
 import org.drools.model.BetaIndex2;
 import org.drools.model.PatternDSL;
 import org.drools.model.Variable;
@@ -51,6 +41,15 @@ import org.optaplanner.core.impl.score.stream.drools.DroolsVariableFactory;
 import org.optaplanner.core.impl.score.stream.tri.AbstractTriJoiner;
 import org.optaplanner.core.impl.score.stream.tri.FilteringTriJoiner;
 import org.optaplanner.core.impl.score.stream.tri.NoneTriJoiner;
+
+import static java.util.Collections.singletonList;
+import static org.drools.model.DSL.accFunction;
+import static org.drools.model.DSL.accumulate;
+import static org.drools.model.DSL.exists;
+import static org.drools.model.DSL.groupBy;
+import static org.drools.model.DSL.not;
+import static org.drools.model.PatternDSL.betaIndexedBy;
+import static org.drools.model.PatternDSL.pattern;
 
 /**
  * Represents the left hand side of a Drools rule, the result of which are two variables.
@@ -496,6 +495,128 @@ public final class BiLeftHandSide<A, B> extends AbstractLeftHandSide {
         return new QuadLeftHandSide<>(new DetachedPatternVariable<>(newA), new DetachedPatternVariable<>(newB),
                 new DetachedPatternVariable<>(accumulateOutputC),
                 new DirectPatternVariable<>(accumulateOutputD, prerequisites), variableFactory);
+    }
+
+    /**
+     * Takes group key mappings and merges them in such a way that the result is a single composite key.
+     * This is necessary because Drools groupBy can only take a single key - therefore multiple variables need to be
+     * converted into a singular composite variable.
+     *
+     * @param keyMappingA mapping for the first variable
+     * @param keyMappingB mapping for the second variable
+     * @param keyMappingC mapping for the third variable
+     * @param <NewA> generic type of the first variable
+     * @param <NewB> generic type of the second variable
+     * @param <NewC> generic type of the third variable
+     * @return never null, Drools function to convert the keys to a singular composite key
+     */
+    private <NewA, NewB, NewC> Function2<A, B, TriTuple<NewA, NewB, NewC>> createCompositeTriGroupKey(
+            BiFunction<A, B, NewA> keyMappingA, BiFunction<A, B, NewB> keyMappingB,
+            BiFunction<A, B, NewC> keyMappingC) {
+        return (a, b) -> new TriTuple<>(keyMappingA.apply(a, b), keyMappingB.apply(a, b), keyMappingC.apply(a, b));
+    }
+
+    public <NewA, NewB, NewC> TriLeftHandSide<NewA, NewB, NewC> andGroupBy(BiFunction<A, B, NewA> keyMappingA,
+            BiFunction<A, B, NewB> keyMappingB, BiFunction<A, B, NewC> keyMappingC) {
+        Variable<A> inputA = patternVariableA.getPrimaryVariable();
+        Variable<B> inputB = patternVariableB.getPrimaryVariable();
+        Variable<TriTuple<NewA, NewB, NewC>> groupKey =
+                (Variable<TriTuple<NewA, NewB, NewC>>) variableFactory.createVariable(TriTuple.class, "groupKey");
+        ViewItem<?> innerGroupByPattern = joinViewItemsWithLogicalAnd(patternVariableA, patternVariableB);
+        ViewItem<?> groupByPattern = groupBy(innerGroupByPattern, inputA, inputB, groupKey,
+                createCompositeTriGroupKey(keyMappingA, keyMappingB, keyMappingC));
+        Variable<NewA> newA = variableFactory.createVariable("newA");
+        Variable<NewB> newB = variableFactory.createVariable("newB");
+        Variable<NewC> newC = variableFactory.createVariable("newC");
+        DirectPatternVariable<TriTuple<NewA, NewB, NewC>> groupKeyPatternVar =
+                new DirectPatternVariable<>(groupKey, singletonList(groupByPattern))
+                        .bind(newA, tuple -> tuple.a)
+                        .bind(newB, tuple -> tuple.b)
+                        .bind(newC, tuple -> tuple.c);
+        PatternVariable<NewC, TriTuple<NewA, NewB, NewC>, ?> cPatternVar =
+                new IndirectPatternVariable<>(groupKeyPatternVar, newC, tuple -> tuple.c);
+        // No simple context; due to the need to decompose the group key, the pattern variables are required.
+        return new TriLeftHandSide<>(new DetachedPatternVariable<>(newA), new DetachedPatternVariable<>(newB),
+                cPatternVar, variableFactory);
+    }
+
+    public <NewA, NewB, NewC, NewD> QuadLeftHandSide<NewA, NewB, NewC, NewD> andGroupBy(
+            BiFunction<A, B, NewA> keyMappingA, BiFunction<A, B, NewB> keyMappingB,
+            BiFunction<A, B, NewC> keyMappingC, BiConstraintCollector<A, B, ?, NewD> collectorD) {
+        Variable<A> inputA = patternVariableA.getPrimaryVariable();
+        Variable<B> inputB = patternVariableB.getPrimaryVariable();
+        Variable<BiTuple<A, B>> accumulateSource =
+                (Variable<BiTuple<A, B>>) variableFactory.createVariable(BiTuple.class, "source");
+        PatternVariable<B, ?, ?> newPatternVariableD = patternVariableB.bind(accumulateSource,
+                patternVariableA.getPrimaryVariable(), (b, a) -> new BiTuple<>(a, b));
+        Variable<TriTuple<NewA, NewB, NewC>> groupKey =
+                (Variable<TriTuple<NewA, NewB, NewC>>) variableFactory.createVariable(TriTuple.class, "groupKey");
+        Variable<NewD> accumulateOutputD = variableFactory.createVariable("outputD");
+        ViewItem<?> innerGroupByPattern =
+                joinViewItemsWithLogicalAnd(patternVariableA, patternVariableB, newPatternVariableD);
+        ViewItem<?> groupByPattern = groupBy(innerGroupByPattern, inputA, inputB, groupKey,
+                createCompositeTriGroupKey(keyMappingA, keyMappingB, keyMappingC),
+                createAccumulateFunction(collectorD, accumulateSource, accumulateOutputD));
+        Variable<NewA> newA = variableFactory.createVariable("newA");
+        Variable<NewB> newB = variableFactory.createVariable("newB");
+        Variable<NewC> newC = variableFactory.createVariable("newC");
+        DirectPatternVariable<TriTuple<NewA, NewB, NewC>> directPatternVariable =
+                new DirectPatternVariable<>(groupKey, singletonList(groupByPattern))
+                        .bind(newA, tuple -> tuple.a)
+                        .bind(newB, tuple -> tuple.b)
+                        .bind(newC, tuple -> tuple.c);
+        List<ViewItem<?>> prerequisites = directPatternVariable.build();
+        // No simple context; due to the need to decompose the group key, the pattern variables are required.
+        return new QuadLeftHandSide<>(new DetachedPatternVariable<>(newA), new DetachedPatternVariable<>(newB),
+                new DetachedPatternVariable<>(newC),
+                new DirectPatternVariable<>(accumulateOutputD, prerequisites), variableFactory);
+    }
+
+    /**
+     * Takes group key mappings and merges them in such a way that the result is a single composite key.
+     * This is necessary because Drools groupBy can only take a single key - therefore multiple variables need to be
+     * converted into a singular composite variable.
+     *
+     * @param keyMappingA mapping for the first variable
+     * @param keyMappingB mapping for the second variable
+     * @param keyMappingC mapping for the third variable
+     * @param <NewA> generic type of the first variable
+     * @param <NewB> generic type of the second variable
+     * @param <NewC> generic type of the third variable
+     * @return never null, Drools function to convert the keys to a singular composite key
+     */
+    private <NewA, NewB, NewC, NewD> Function2<A, B, QuadTuple<NewA, NewB, NewC, NewD>>
+            createCompositeQuadGroupKey(BiFunction<A, B, NewA> keyMappingA, BiFunction<A, B, NewB> keyMappingB,
+                    BiFunction<A, B, NewC> keyMappingC, BiFunction<A, B, NewD> keyMappingD) {
+        return (a, b) -> new QuadTuple<>(keyMappingA.apply(a, b), keyMappingB.apply(a, b), keyMappingC.apply(a, b),
+                keyMappingD.apply(a, b));
+    }
+
+    public <NewA, NewB, NewC, NewD> QuadLeftHandSide<NewA, NewB, NewC, NewD> andGroupBy(
+            BiFunction<A, B, NewA> keyMappingA, BiFunction<A, B, NewB> keyMappingB, BiFunction<A, B, NewC> keyMappingC,
+            BiFunction<A, B, NewD> keyMappingD) {
+        Variable<A> inputA = patternVariableA.getPrimaryVariable();
+        Variable<B> inputB = patternVariableB.getPrimaryVariable();
+        Variable<QuadTuple<NewA, NewB, NewC, NewD>> groupKey =
+                (Variable<QuadTuple<NewA, NewB, NewC, NewD>>) variableFactory.createVariable(QuadTuple.class, "groupKey");
+        ViewItem<?> innerGroupByPattern = joinViewItemsWithLogicalAnd(patternVariableA, patternVariableB);
+        ViewItem<?> groupByPattern = groupBy(innerGroupByPattern, inputA, inputB, groupKey,
+                createCompositeQuadGroupKey(keyMappingA, keyMappingB, keyMappingC, keyMappingD));
+        Variable<NewA> newA = variableFactory.createVariable("newA");
+        Variable<NewB> newB = variableFactory.createVariable("newB");
+        Variable<NewC> newC = variableFactory.createVariable("newC");
+        Variable<NewD> newD = variableFactory.createVariable("newD");
+        DirectPatternVariable<QuadTuple<NewA, NewB, NewC, NewD>> groupKeyPatternVar =
+                new DirectPatternVariable<>(groupKey, singletonList(groupByPattern))
+                        .bind(newA, tuple -> tuple.a)
+                        .bind(newB, tuple -> tuple.b)
+                        .bind(newC, tuple -> tuple.c)
+                        .bind(newD, tuple -> tuple.d);
+        PatternVariable<NewD, QuadTuple<NewA, NewB, NewC, NewD>, ?> dPatternVar =
+                new IndirectPatternVariable<>(groupKeyPatternVar, newD, tuple -> tuple.d);
+        // No simple context; due to the need to decompose the group key, the pattern variables are required.
+        return new QuadLeftHandSide<>(new DetachedPatternVariable<>(newA), new DetachedPatternVariable<>(newB),
+                new DetachedPatternVariable<>(newC), dPatternVar, variableFactory);
     }
 
     public <Solution_> RuleBuilder<Solution_> andTerminate() {

@@ -16,15 +16,6 @@
 
 package org.optaplanner.core.impl.score.stream.drools.common;
 
-import static java.util.Collections.singletonList;
-import static org.drools.model.DSL.accFunction;
-import static org.drools.model.DSL.accumulate;
-import static org.drools.model.DSL.exists;
-import static org.drools.model.DSL.groupBy;
-import static org.drools.model.DSL.not;
-import static org.drools.model.PatternDSL.betaIndexedBy;
-import static org.drools.model.PatternDSL.pattern;
-
 import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
@@ -34,7 +25,6 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.ToIntFunction;
 import java.util.function.ToLongFunction;
-
 import org.drools.model.BetaIndex;
 import org.drools.model.PatternDSL;
 import org.drools.model.Variable;
@@ -48,6 +38,15 @@ import org.optaplanner.core.impl.score.stream.bi.FilteringBiJoiner;
 import org.optaplanner.core.impl.score.stream.bi.NoneBiJoiner;
 import org.optaplanner.core.impl.score.stream.common.JoinerType;
 import org.optaplanner.core.impl.score.stream.drools.DroolsVariableFactory;
+
+import static java.util.Collections.singletonList;
+import static org.drools.model.DSL.accFunction;
+import static org.drools.model.DSL.accumulate;
+import static org.drools.model.DSL.exists;
+import static org.drools.model.DSL.groupBy;
+import static org.drools.model.DSL.not;
+import static org.drools.model.PatternDSL.betaIndexedBy;
+import static org.drools.model.PatternDSL.pattern;
 
 /**
  * Represents the left-hand side of a Drools rule, the result of which is a single variable.
@@ -422,6 +421,81 @@ public final class UniLeftHandSide<A> extends AbstractLeftHandSide {
                 new DetachedPatternVariable<>(accumulateOutputC),
                 new DirectPatternVariable<>(accumulateOutputD, prerequisites),
                 variableFactory);
+    }
+
+    public <NewA, NewB, NewC> TriLeftHandSide<NewA, NewB, NewC> andGroupBy(Function<A, NewA> keyMappingA,
+            Function<A, NewB> keyMappingB, Function<A, NewC> keyMappingC) {
+        Variable<A> input = patternVariable.getPrimaryVariable();
+        Variable<TriTuple<NewA, NewB, NewC>> groupKey =
+                (Variable<TriTuple<NewA, NewB, NewC>>) variableFactory.createVariable(TriTuple.class, "groupKey");
+        ViewItem<?> innerGroupByPattern = joinViewItemsWithLogicalAnd(patternVariable);
+        ViewItem<?> groupByPattern = groupBy(innerGroupByPattern, input, groupKey,
+                a -> new TriTuple<>(keyMappingA.apply(a), keyMappingB.apply(a), keyMappingC.apply(a)));
+        Variable<NewA> newA = variableFactory.createVariable("newA");
+        Variable<NewB> newB = variableFactory.createVariable("newB");
+        Variable<NewC> newC = variableFactory.createVariable("newC");
+        DirectPatternVariable<TriTuple<NewA, NewB, NewC>> groupKeyPatternVar =
+                new DirectPatternVariable<>(groupKey, singletonList(groupByPattern))
+                        .bind(newA, tuple -> tuple.a)
+                        .bind(newB, tuple -> tuple.b)
+                        .bind(newC, tuple -> tuple.c);
+        PatternVariable<NewC, TriTuple<NewA, NewB, NewC>, ?> cPatternVar =
+                new IndirectPatternVariable<>(groupKeyPatternVar, newC, tuple -> tuple.c);
+        // No simple context; due to the need to decompose the group key, the pattern variables are required.
+        return new TriLeftHandSide<>(new DetachedPatternVariable<>(newA), new DetachedPatternVariable<>(newB), cPatternVar,
+                variableFactory);
+    }
+
+    public <NewA, NewB, NewC, NewD> QuadLeftHandSide<NewA, NewB, NewC, NewD> andGroupBy(Function<A, NewA> keyMappingA,
+            Function<A, NewB> keyMappingB, Function<A, NewC> keyMappingC,
+            UniConstraintCollector<A, ?, NewD> collectorD) {
+        Variable<A> input = patternVariable.getPrimaryVariable();
+        Variable<TriTuple<NewA, NewB, NewC>> groupKey =
+                (Variable<TriTuple<NewA, NewB, NewC>>) variableFactory.createVariable(TriTuple.class, "groupKey");
+        Variable<NewD> accumulateOutputD = variableFactory.createVariable("outputD");
+        ViewItem<?> innerGroupByPattern = joinViewItemsWithLogicalAnd(patternVariable);
+        ViewItem<?> groupByPattern = groupBy(innerGroupByPattern, input, groupKey,
+                a -> new TriTuple<>(keyMappingA.apply(a), keyMappingB.apply(a), keyMappingC.apply(a)),
+                createAccumulateFunction(collectorD, accumulateOutputD));
+        Variable<NewA> newA = variableFactory.createVariable("newA");
+        Variable<NewB> newB = variableFactory.createVariable("newB");
+        Variable<NewC> newC = variableFactory.createVariable("newC");
+        DirectPatternVariable<TriTuple<NewA, NewB, NewC>> directPatternVariable =
+                new DirectPatternVariable<>(groupKey, singletonList(groupByPattern))
+                        .bind(newA, tuple -> tuple.a)
+                        .bind(newB, tuple -> tuple.b)
+                        .bind(newC, tuple -> tuple.c);
+        List<ViewItem<?>> prerequisites = directPatternVariable.build();
+        // No simple context; due to the need to decompose the group key, the pattern variables are required.
+        return new QuadLeftHandSide<>(new DetachedPatternVariable<>(newA), new DetachedPatternVariable<>(newB),
+                new DetachedPatternVariable<>(newC), new DirectPatternVariable<>(accumulateOutputD, prerequisites),
+                variableFactory);
+    }
+
+    public <NewA, NewB, NewC, NewD> QuadLeftHandSide<NewA, NewB, NewC, NewD> andGroupBy(Function<A, NewA> keyMappingA,
+            Function<A, NewB> keyMappingB, Function<A, NewC> keyMappingC, Function<A, NewD> keyMappingD) {
+        Variable<A> input = patternVariable.getPrimaryVariable();
+        Variable<QuadTuple<NewA, NewB, NewC, NewD>> groupKey =
+                (Variable<QuadTuple<NewA, NewB, NewC, NewD>>) variableFactory.createVariable(QuadTuple.class, "groupKey");
+        ViewItem<?> innerGroupByPattern = joinViewItemsWithLogicalAnd(patternVariable);
+        ViewItem<?> groupByPattern = groupBy(innerGroupByPattern, input, groupKey,
+                a -> new QuadTuple<>(keyMappingA.apply(a), keyMappingB.apply(a), keyMappingC.apply(a),
+                        keyMappingD.apply(a)));
+        Variable<NewA> newA = variableFactory.createVariable("newA");
+        Variable<NewB> newB = variableFactory.createVariable("newB");
+        Variable<NewC> newC = variableFactory.createVariable("newC");
+        Variable<NewD> newD = variableFactory.createVariable("newD");
+        DirectPatternVariable<QuadTuple<NewA, NewB, NewC, NewD>> groupKeyPatternVar =
+                new DirectPatternVariable<>(groupKey, singletonList(groupByPattern))
+                        .bind(newA, tuple -> tuple.a)
+                        .bind(newB, tuple -> tuple.b)
+                        .bind(newC, tuple -> tuple.c)
+                        .bind(newD, tuple -> tuple.d);
+        PatternVariable<NewD, QuadTuple<NewA, NewB, NewC, NewD>, ?> dPatternVar =
+                new IndirectPatternVariable<>(groupKeyPatternVar, newD, tuple -> tuple.d);
+        // No simple context; due to the need to decompose the group key, the pattern variables are required.
+        return new QuadLeftHandSide<>(new DetachedPatternVariable<>(newA), new DetachedPatternVariable<>(newB),
+                new DetachedPatternVariable<>(newC), dPatternVar, variableFactory);
     }
 
     public <Solution_> RuleBuilder<Solution_> andTerminate() {
