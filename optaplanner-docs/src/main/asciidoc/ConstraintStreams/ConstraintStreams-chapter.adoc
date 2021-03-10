@@ -712,7 +712,7 @@ remains consistent as your code base evolves.
 [[constraintStreamsTestingQuarkus]]
 === Testing in Quarkus
 
-If you are using the `optaplanner-quarkus` extension, you can inject the ConstraintVerifier in your tests.
+If you are using the `optaplanner-quarkus` extension, you can inject the `ConstraintVerifier` in your tests.
 
 [source,java,options="nowrap"]
 ----
@@ -726,7 +726,7 @@ public class MyConstraintProviderTest {
 [[constraintStreamsTestingSpringBoot]]
 === Testing in Spring Boot
 
-If you are using the `optaplanner-spring-boot-starter`, you can autowire the ConstraintVerifier in your tests.
+If you are using the `optaplanner-spring-boot-starter` module, you can autowire the `ConstraintVerifier` in your tests.
 
 [source,java,options="nowrap"]
 ----
