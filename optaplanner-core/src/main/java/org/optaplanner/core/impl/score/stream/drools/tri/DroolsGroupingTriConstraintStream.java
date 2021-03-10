@@ -125,6 +125,11 @@ public final class DroolsGroupingTriConstraintStream<Solution_, NewA, NewB, NewC
         this.leftHandSide = parent.getLeftHandSide().andGroupBy(groupKeyAMapping, groupKeyBMapping, collector);
     }
 
+    @Override
+    public boolean guaranteesDistinct() {
+        return true;
+    }
+
     // ************************************************************************
     // Pattern creation
     // ************************************************************************

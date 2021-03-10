@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2021 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,12 +15,7 @@
  */
 package org.optaplanner.core.impl.score.stream.quad;
 
-import static org.optaplanner.core.impl.score.stream.common.ScoreImpactType.MIXED;
-import static org.optaplanner.core.impl.score.stream.common.ScoreImpactType.PENALTY;
-import static org.optaplanner.core.impl.score.stream.common.ScoreImpactType.REWARD;
-
 import java.math.BigDecimal;
-
 import org.optaplanner.core.api.function.QuadFunction;
 import org.optaplanner.core.api.function.ToIntQuadFunction;
 import org.optaplanner.core.api.function.ToLongQuadFunction;
@@ -29,7 +24,28 @@ import org.optaplanner.core.api.score.stream.Constraint;
 import org.optaplanner.core.api.score.stream.quad.QuadConstraintStream;
 import org.optaplanner.core.impl.score.stream.common.ScoreImpactType;
 
+import static org.optaplanner.core.impl.score.stream.common.ScoreImpactType.MIXED;
+import static org.optaplanner.core.impl.score.stream.common.ScoreImpactType.PENALTY;
+import static org.optaplanner.core.impl.score.stream.common.ScoreImpactType.REWARD;
+
 public interface InnerQuadConstraintStream<A, B, C, D> extends QuadConstraintStream<A, B, C, D> {
+
+    /**
+     * This method will return true if the constraint stream is guaranteed to only produce distinct tuples.
+     * See {@link #distinct()} for details.
+     *
+     * @return true if the guarantee of distinct tuples is provided
+     */
+    boolean guaranteesDistinct();
+
+    @Override
+    default QuadConstraintStream<A, B, C, D> distinct() {
+        if (guaranteesDistinct()) {
+            return this;
+        } else {
+            return groupBy((a, b, c, d) -> a, (a, b, c, d) -> b, (a, b, c, d) -> c, (a, b, c, d) -> d);
+        }
+    }
 
     @Override
     default Constraint penalize(String constraintPackage, String constraintName, Score<?> constraintWeight,

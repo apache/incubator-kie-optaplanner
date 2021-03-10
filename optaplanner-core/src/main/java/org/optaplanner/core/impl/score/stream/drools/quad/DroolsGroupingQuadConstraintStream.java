@@ -137,6 +137,11 @@ public final class DroolsGroupingQuadConstraintStream<Solution_, NewA, NewB, New
         this.leftHandSide = parent.getLeftHandSide().andGroupBy(collectorA, collectorB, collectorC, collectorD);
     }
 
+    @Override
+    public boolean guaranteesDistinct() {
+        return true;
+    }
+
     // ************************************************************************
     // Pattern creation
     // ************************************************************************

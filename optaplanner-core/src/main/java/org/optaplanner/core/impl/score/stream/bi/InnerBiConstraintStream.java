@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2021 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,21 +15,37 @@
  */
 package org.optaplanner.core.impl.score.stream.bi;
 
-import static org.optaplanner.core.impl.score.stream.common.ScoreImpactType.MIXED;
-import static org.optaplanner.core.impl.score.stream.common.ScoreImpactType.PENALTY;
-import static org.optaplanner.core.impl.score.stream.common.ScoreImpactType.REWARD;
-
 import java.math.BigDecimal;
 import java.util.function.BiFunction;
 import java.util.function.ToIntBiFunction;
 import java.util.function.ToLongBiFunction;
-
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.stream.Constraint;
 import org.optaplanner.core.api.score.stream.bi.BiConstraintStream;
 import org.optaplanner.core.impl.score.stream.common.ScoreImpactType;
 
+import static org.optaplanner.core.impl.score.stream.common.ScoreImpactType.MIXED;
+import static org.optaplanner.core.impl.score.stream.common.ScoreImpactType.PENALTY;
+import static org.optaplanner.core.impl.score.stream.common.ScoreImpactType.REWARD;
+
 public interface InnerBiConstraintStream<A, B> extends BiConstraintStream<A, B> {
+
+    /**
+     * This method will return true if the constraint stream is guaranteed to only produce distinct tuples.
+     * See {@link #distinct()} for details.
+     *
+     * @return true if the guarantee of distinct tuples is provided
+     */
+    boolean guaranteesDistinct();
+
+    @Override
+    default BiConstraintStream<A, B> distinct() {
+        if (guaranteesDistinct()) {
+            return this;
+        } else {
+            return groupBy((a, b) -> a, (a, b) -> b);
+        }
+    }
 
     @Override
     default Constraint penalize(String constraintPackage, String constraintName, Score<?> constraintWeight,
