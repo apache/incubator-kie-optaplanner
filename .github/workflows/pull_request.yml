@@ -1,3 +1,4 @@
+
 name: Build Chain
 
 on: [pull_request]
@@ -6,26 +7,26 @@ jobs:
   build-chain:
     strategy:
       matrix:
-        os: [ubuntu-latest, windows-latest]
         java-version: [8, 11]
       fail-fast: false
-    runs-on: ${{ matrix.os }}
+    runs-on: ubuntu-latest
     name: Maven Build
     steps:
       - name: Set up JDK
         uses: actions/setup-java@v1
         with:
           java-version: ${{ matrix.java-version }}
+      # See https://docs.github.com/en/actions/guides/building-and-testing-java-with-maven#caching-dependencies
+      - name: Cache Maven packages
+        uses: actions/cache@v2
+        with:
+          path: ~/.m2
+          key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
+          restore-keys: ${{ runner.os }}-m2
       - name: Build Chain ${{ matrix.java-version }}
         id: build-chain
-        uses: kiegroup/github-action-build-chain@v1.4
+        uses: kiegroup/github-action-build-chain@v2.2
         with:
-          parent-dependencies: 'drools@7.x:master'
-          child-dependencies: 'jbpm@7.x:master'
-          build-command: 'mvn -e install -nsu -Prun-code-coverage,wildfly -Dfull  -Dintegration-tests=true -Dmaven.test.failure.ignore=true'
-          build-command-upstream: |
-            mvn -e install -DskipTests -Dgwt.compiler.skip=true -Dgwt.skipCompilation=true -Denforcer.skip=true -Dcheckstyle.skip=true -Dspotbugs.skip=true -Drevapi.skip=true
-            rm -rf ./*
-          workflow-file-name: "pull_request.yml"
+          definition-file: https://raw.githubusercontent.com/${GROUP}/droolsjbpm-build-bootstrap/master/.ci/pull-request-config.yaml
         env:
           GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
