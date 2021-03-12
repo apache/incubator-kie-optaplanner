@@ -32,7 +32,10 @@ import org.optaplanner.core.impl.testdata.domain.TestdataValue;
 public class TestdataChainedSolution extends TestdataObject {
 
     public static SolutionDescriptor<TestdataChainedSolution> buildSolutionDescriptor() {
-        return SolutionDescriptor.buildSolutionDescriptor(TestdataChainedSolution.class, TestdataChainedEntity.class);
+        return SolutionDescriptor.buildSolutionDescriptor(TestdataChainedSolution.class,
+                                                          TestdataChainedAnchor.class,
+                                                          TestdataChainedEntity.class,
+                                                          TestdataChainedObject.class);
     }
 
     private List<TestdataChainedAnchor> chainedAnchorList;

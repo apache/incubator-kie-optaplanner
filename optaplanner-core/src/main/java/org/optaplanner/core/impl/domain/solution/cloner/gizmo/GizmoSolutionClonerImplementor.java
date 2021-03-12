@@ -26,6 +26,7 @@ import java.util.TreeSet;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Function;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.optaplanner.core.api.domain.solution.cloner.SolutionCloner;
 import org.optaplanner.core.impl.domain.common.accessor.gizmo.GizmoMemberDescriptor;
@@ -54,9 +55,9 @@ public class GizmoSolutionClonerImplementor {
     private static final Comparator<Class<?>> instanceOfComparator =
             Comparator.<Class<?>, Class<?>> comparing(Function.identity(), (a, b) -> {
                 if (a.isAssignableFrom(b)) {
-                    return -1;
-                } else if (b.isAssignableFrom(a)) {
                     return 1;
+                } else if (b.isAssignableFrom(a)) {
+                    return -1;
                 } else {
                     return 0;
                 }
@@ -107,7 +108,7 @@ public class GizmoSolutionClonerImplementor {
         createCloneSolution(classCreator, solutionDescriptor);
         createCloneSolutionRun(classCreator, solutionDescriptor, solutionClassList, memoizedSolutionOrEntityDescriptorMap);
 
-        for (Class<?> entityClass : solutionDescriptor.getEntityClassSet()) {
+        for (Class<?> entityClass : getEntityClassList(solutionDescriptor)) {
             createEntityHelperMethod(classCreator, entityClass, solutionDescriptor, memoizedSolutionOrEntityDescriptorMap);
         }
     }
@@ -315,8 +316,8 @@ public class GizmoSolutionClonerImplementor {
             }
 
             if (type != null && !isArray) {
-                entitySubclasses = solutionInfo.getSolutionDescriptor().getEntityClassSet().stream()
-                        .filter(type::isAssignableFrom).sorted(instanceOfComparator).collect(Collectors.toList());
+                entitySubclasses = getEntityClassList(solutionInfo.getSolutionDescriptor())
+                        .stream().filter(type::isAssignableFrom).collect(Collectors.toList());
             }
 
             ResultHandle fieldValue = shallowlyClonedField.readMemberValue(methodCreator, thisObj);
@@ -607,7 +608,7 @@ public class GizmoSolutionClonerImplementor {
             throw new IllegalStateException("Cannot infer element type for Map type (" + type + ").");
         }
 
-        List<Class<?>> entitySubclasses = solutionDescriptor.getSolutionDescriptor().getEntityClassSet().stream()
+        List<Class<?>> entitySubclasses = getEntityClassList(solutionDescriptor.getSolutionDescriptor()).stream()
                 .filter(keyClass::isAssignableFrom).collect(Collectors.toList());
         ResultHandle entry = whileLoopBlock
                 .invokeInterfaceMethod(MethodDescriptor.ofMethod(Iterator.class, "next", Object.class), iterator);
@@ -700,7 +701,7 @@ public class GizmoSolutionClonerImplementor {
             Class<?> deeplyClonedFieldClass, ResultHandle toClone, AssignableResultHandle cloneResultHolder,
             ResultHandle createdCloneMap) {
         // Clone entity
-        List<Class<?>> entitySubclasses = solutionDescriptor.getSolutionDescriptor().getEntityClassSet().stream()
+        List<Class<?>> entitySubclasses = getEntityClassList(solutionDescriptor.getSolutionDescriptor()).stream()
                 .filter(deeplyClonedFieldClass::isAssignableFrom).collect(Collectors.toList());
         if (entitySubclasses.isEmpty()) {
             // Not an entity, can shallow copy
@@ -777,6 +778,17 @@ public class GizmoSolutionClonerImplementor {
         }
 
         noCloneBranch.returnValue(cloneObj);
+    }
+
+    /**
+     * @return The list of classes that are not interfaces in abstract in solutionDescriptor.getEntityClassSet()
+     */
+    private static List<Class<?>> getEntityClassList(SolutionDescriptor<?> solutionDescriptor) {
+        return solutionDescriptor.getEntityClassSet()
+                .stream()
+                .filter(clazz -> !clazz.isInterface() && !Modifier.isAbstract(clazz.getModifiers()))
+                .sorted(instanceOfComparator)
+                .collect(Collectors.toList());
     }
 
     // ************************************************************************

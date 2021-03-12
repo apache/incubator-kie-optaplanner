@@ -23,10 +23,12 @@ import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.core.impl.domain.variable.descriptor.GenuineVariableDescriptor;
 import org.optaplanner.core.impl.testdata.domain.TestdataObject;
+import org.optaplanner.core.impl.testdata.domain.chained.TestdataChainedEntity;
 import org.optaplanner.core.impl.testdata.domain.chained.TestdataChainedObject;
 
 @PlanningEntity(pinningFilter = TestdataChainedEntityPinningFilter.class)
 public class TestdataPinnedChainedEntity extends TestdataObject implements TestdataChainedObject {
+    private TestdataChainedEntity nextChainedEntity;
 
     public static EntityDescriptor buildEntityDescriptor() {
         SolutionDescriptor solutionDescriptor = TestdataPinnedChainedSolution.buildSolutionDescriptor();
@@ -77,6 +79,14 @@ public class TestdataPinnedChainedEntity extends TestdataObject implements Testd
         this.pinned = pinned;
     }
 
+    @Override
+    public TestdataChainedEntity getNextChainedEntity() {
+        return nextChainedEntity;
+    }
+
+    public void setNextChainedEntity(TestdataChainedEntity nextChainedEntity) {
+        this.nextChainedEntity = nextChainedEntity;
+    }
     // ************************************************************************
     // Complex methods
     // ************************************************************************

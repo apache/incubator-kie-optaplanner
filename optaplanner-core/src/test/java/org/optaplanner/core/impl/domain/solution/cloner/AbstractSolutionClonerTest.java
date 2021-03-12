@@ -362,8 +362,16 @@ public abstract class AbstractSolutionClonerTest {
         TestdataChainedEntity a2 = new TestdataChainedEntity("a2", a1);
         TestdataChainedEntity a3 = new TestdataChainedEntity("a3", a2);
 
+        a0.setNextChainedEntity(a1);
+        a1.setNextChainedEntity(a2);
+        a2.setNextChainedEntity(a3);
+        a3.setNextChainedEntity(null);
+
         TestdataChainedAnchor b0 = new TestdataChainedAnchor("b0");
         TestdataChainedEntity b1 = new TestdataChainedEntity("b1", b0);
+
+        b0.setNextChainedEntity(b1);
+        b1.setNextChainedEntity(null);
 
         TestdataChainedSolution original = new TestdataChainedSolution("solution");
         List<TestdataChainedAnchor> anchorList = Arrays.asList(a0, b0);
@@ -374,20 +382,30 @@ public abstract class AbstractSolutionClonerTest {
         TestdataChainedSolution clone = cloner.cloneSolution(original);
         assertThat(clone).isNotSameAs(original);
         assertCode("solution", clone);
-        assertThat(clone.getChainedAnchorList()).isSameAs(anchorList);
         assertThat(clone.getScore()).isEqualTo(original.getScore());
 
         List<TestdataChainedEntity> cloneEntityList = clone.getChainedEntityList();
         assertThat(cloneEntityList).isNotSameAs(originalEntityList);
         assertThat(cloneEntityList.size()).isEqualTo(4);
+
+        List<TestdataChainedAnchor> cloneAnchorList = clone.getChainedAnchorList();
+        assertThat(cloneAnchorList).isNotSameAs(anchorList);
+        assertThat(cloneAnchorList.size()).isEqualTo(2);
+
+        TestdataChainedAnchor cloneA0 = cloneAnchorList.get(0);
+        TestdataChainedAnchor cloneB0 = cloneAnchorList.get(1);
+
         TestdataChainedEntity cloneA1 = cloneEntityList.get(0);
         TestdataChainedEntity cloneA2 = cloneEntityList.get(1);
         TestdataChainedEntity cloneA3 = cloneEntityList.get(2);
         TestdataChainedEntity cloneB1 = cloneEntityList.get(3);
-        assertChainedEntityClone(a1, cloneA1, "a1", a0);
-        assertChainedEntityClone(a2, cloneA2, "a2", cloneA1);
-        assertChainedEntityClone(a3, cloneA3, "a3", cloneA2);
-        assertChainedEntityClone(b1, cloneB1, "b1", b0);
+
+        assertChainedAnchorClone(a0, cloneA0, "a0", cloneA1);
+        assertChainedEntityClone(a1, cloneA1, "a1", cloneA0, cloneA2);
+        assertChainedEntityClone(a2, cloneA2, "a2", cloneA1, cloneA3);
+        assertChainedEntityClone(a3, cloneA3, "a3", cloneA2, null);
+        assertChainedAnchorClone(b0, cloneB0, "b0", cloneB1);
+        assertChainedEntityClone(b1, cloneB1, "b1", cloneB0, null);
 
         a3.setChainedObject(b1);
         assertCode("b1", a3.getChainedObject());
@@ -396,11 +414,19 @@ public abstract class AbstractSolutionClonerTest {
     }
 
     private void assertChainedEntityClone(TestdataChainedEntity originalEntity, TestdataChainedEntity cloneEntity,
-            String entityCode, TestdataChainedObject value) {
+            String entityCode, TestdataChainedObject value, TestdataChainedObject nextValue) {
         assertThat(cloneEntity).isNotSameAs(originalEntity);
         assertCode(entityCode, originalEntity);
         assertCode(entityCode, cloneEntity);
         assertThat(cloneEntity.getChainedObject()).isSameAs(value);
+    }
+
+    private void assertChainedAnchorClone(TestdataChainedAnchor originalEntity, TestdataChainedAnchor cloneEntity,
+                                          String entityCode, TestdataChainedObject nextValue) {
+        assertThat(cloneEntity).isNotSameAs(originalEntity);
+        assertCode(entityCode, originalEntity);
+        assertCode(entityCode, cloneEntity);
+        assertThat(cloneEntity.getNextChainedEntity()).isSameAs(nextValue);
     }
 
     @Test
