@@ -16,13 +16,9 @@
 
 package org.optaplanner.core.impl.testdata.domain.chained;
 
-import org.optaplanner.core.api.domain.entity.PlanningEntity;
-import org.optaplanner.core.api.domain.variable.InverseRelationShadowVariable;
 import org.optaplanner.core.impl.testdata.domain.TestdataObject;
 
-@PlanningEntity
 public class TestdataChainedAnchor extends TestdataObject implements TestdataChainedObject {
-    private TestdataChainedEntity nextChainedEntity;
 
     public TestdataChainedAnchor() {
     }
@@ -31,17 +27,8 @@ public class TestdataChainedAnchor extends TestdataObject implements TestdataCha
         super(code);
     }
 
-    @Override
-    @InverseRelationShadowVariable(sourceVariableName = "chainedObject")
-    public TestdataChainedEntity getNextChainedEntity() {
-        return nextChainedEntity;
-    }
-
-    public void setNextChainedEntity(TestdataChainedEntity nextChainedEntity) {
-        this.nextChainedEntity = nextChainedEntity;
-    }
-
     // ************************************************************************
     // Complex methods
     // ************************************************************************
+
 }

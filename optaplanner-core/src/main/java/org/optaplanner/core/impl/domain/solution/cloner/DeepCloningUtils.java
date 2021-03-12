@@ -21,8 +21,14 @@ import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.ConcurrentMap;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.apache.commons.lang3.tuple.Pair;
 import org.optaplanner.core.api.domain.solution.cloner.DeepPlanningClone;
@@ -180,5 +186,47 @@ public final class DeepCloningUtils {
             return true;
         }
         return false;
+    }
+
+    /**
+     * @return never null
+     */
+    public Set<Class<?>> getDeepClonedTypeArguments(Type genericType) {
+        // Check the generic type arguments of the field.
+        // Yes, it is possible for fields and methods, but not instances!
+        if (genericType instanceof ParameterizedType) {
+            Set<Class<?>> deepClonedTypeArguments = new HashSet<>();
+            ParameterizedType parameterizedType = (ParameterizedType) genericType;
+            for (Type actualTypeArgument : parameterizedType.getActualTypeArguments()) {
+                if (actualTypeArgument instanceof Class
+                        && isClassDeepCloned((Class) actualTypeArgument)) {
+                    deepClonedTypeArguments.add((Class) actualTypeArgument);
+                }
+                deepClonedTypeArguments.addAll(getDeepClonedTypeArguments(actualTypeArgument));
+            }
+            return deepClonedTypeArguments;
+        }
+        return Collections.emptySet();
+    }
+
+    public Set<Class<?>> getDeepClonedClasses(List<Class<?>> solutionClassList) {
+        Set<Class<?>> deepClonedClassSet = new HashSet<>();
+        for (Class<?> clazz : solutionClassList) {
+            for (Field field : getAllFields(clazz)) {
+                deepClonedClassSet.addAll(getDeepClonedTypeArguments(field.getGenericType()));
+            }
+        }
+        return deepClonedClassSet;
+    }
+
+    private static List<Field> getAllFields(Class<?> baseClass) {
+        Class<?> clazz = baseClass;
+        Stream<Field> memberStream = Stream.empty();
+        while (clazz != null) {
+            Stream<Field> fieldStream = Stream.of(clazz.getDeclaredFields());
+            memberStream = Stream.concat(memberStream, fieldStream);
+            clazz = clazz.getSuperclass();
+        }
+        return memberStream.collect(Collectors.toList());
     }
 }

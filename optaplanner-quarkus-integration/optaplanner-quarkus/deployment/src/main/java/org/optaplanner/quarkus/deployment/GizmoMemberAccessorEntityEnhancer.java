@@ -58,6 +58,7 @@ import org.optaplanner.core.impl.domain.common.accessor.MemberAccessor;
 import org.optaplanner.core.impl.domain.common.accessor.gizmo.GizmoMemberAccessorFactory;
 import org.optaplanner.core.impl.domain.common.accessor.gizmo.GizmoMemberAccessorImplementor;
 import org.optaplanner.core.impl.domain.common.accessor.gizmo.GizmoMemberDescriptor;
+import org.optaplanner.core.impl.domain.solution.cloner.DeepCloningUtils;
 import org.optaplanner.core.impl.domain.solution.cloner.gizmo.GizmoSolutionClonerFactory;
 import org.optaplanner.core.impl.domain.solution.cloner.gizmo.GizmoSolutionClonerImplementor;
 import org.optaplanner.core.impl.domain.solution.cloner.gizmo.GizmoSolutionOrEntityDescriptor;
@@ -292,6 +293,16 @@ public class GizmoMemberAccessorEntityEnhancer {
                         (Class<?>) entityClass,
                         memoizedGizmoSolutionOrEntityDescriptorForClassMap,
                         transformers);
+            }
+
+            DeepCloningUtils deepCloningUtils = new DeepCloningUtils(solutionDescriptor);
+            for (Class<?> deepCloningClass : deepCloningUtils.getDeepClonedClasses(solutionSubclasses)) {
+                if (!memoizedGizmoSolutionOrEntityDescriptorForClassMap.containsKey(deepCloningClass)) {
+                    getGizmoSolutionOrEntityDescriptorForEntity(solutionDescriptor,
+                            deepCloningClass,
+                            memoizedGizmoSolutionOrEntityDescriptorForClassMap,
+                            transformers);
+                }
             }
 
             GizmoSolutionClonerImplementor.defineClonerFor(classCreator, solutionDescriptor, solutionSubclasses,

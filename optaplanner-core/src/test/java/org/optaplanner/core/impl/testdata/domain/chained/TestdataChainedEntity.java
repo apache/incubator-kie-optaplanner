@@ -27,7 +27,6 @@ import org.optaplanner.core.impl.testdata.domain.TestdataValue;
 
 @PlanningEntity
 public class TestdataChainedEntity extends TestdataObject implements TestdataChainedObject {
-    private TestdataChainedEntity nextChainedEntity;
 
     public static EntityDescriptor<TestdataChainedSolution> buildEntityDescriptor() {
         SolutionDescriptor<TestdataChainedSolution> solutionDescriptor = TestdataChainedSolution.buildSolutionDescriptor();
@@ -84,15 +83,6 @@ public class TestdataChainedEntity extends TestdataObject implements TestdataCha
 
     public void getUnchainedObject(TestdataChainedObject chainedObject) {
         this.chainedObject = chainedObject;
-    }
-
-    @Override
-    public TestdataChainedEntity getNextChainedEntity() {
-        return nextChainedEntity;
-    }
-
-    public void setNextChainedEntity(TestdataChainedEntity nextChainedEntity) {
-        this.nextChainedEntity = nextChainedEntity;
     }
 
     // ************************************************************************

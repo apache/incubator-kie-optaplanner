@@ -21,6 +21,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -64,8 +65,12 @@ public class GizmoSolutionClonerTest extends AbstractSolutionClonerTest {
 
         Map<Class<?>, GizmoSolutionOrEntityDescriptor> memoizedSolutionOrEntityDescriptorMap = new HashMap<>();
 
+        DeepCloningUtils deepCloningUtils = new DeepCloningUtils(solutionDescriptor);
         Stream.concat(Stream.of(solutionDescriptor.getSolutionClass()),
-                solutionDescriptor.getEntityClassSet().stream()).forEach(clazz -> {
+                Stream.concat(solutionDescriptor.getEntityClassSet().stream(),
+                        deepCloningUtils.getDeepClonedClasses(
+                                Collections.singletonList(solutionDescriptor.getSolutionClass())).stream()))
+                .forEach(clazz -> {
                     memoizedSolutionOrEntityDescriptorMap.put(clazz,
                             generateGizmoSolutionOrEntityDescriptor(solutionDescriptor, clazz));
                 });
