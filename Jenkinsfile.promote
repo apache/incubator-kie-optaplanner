@@ -70,7 +70,7 @@ pipeline {
                     dir(optaplannerRepository) {
                         checkoutRepo(optaplannerRepository)
                         mergeAndPush(getDeployPrLink(optaplannerRepository))
-                        tagLatest(optaplannerRepository)
+                        tagLatest()
                     }
                 }
             }
@@ -85,7 +85,7 @@ pipeline {
                     dir(vehicleRoutingRepository) {
                         checkoutRepo(vehicleRoutingRepository)
                         mergeAndPush(getDeployPrLink(vehicleRoutingRepository))
-                        tagLatest(vehicleRoutingRepository)
+                        tagLatest()
                     }
                 }
             }
@@ -100,7 +100,7 @@ pipeline {
                     dir(employeeRosteringRepository) {
                         checkoutRepo(employeeRosteringRepository)
                         mergeAndPush(getDeployPrLink(employeeRosteringRepository))
-                        tagLatest(employeeRosteringRepository)
+                        tagLatest()
                     }
                 }
             }
@@ -115,7 +115,7 @@ pipeline {
                     dir(quickstartsRepository) {
                         checkoutRepo(quickstartsRepository)
                         mergeAndPush(getDeployPrLink(quickstartsRepository))
-                        tagLatest(quickstartsRepository)
+                        tagLatest()
                     }
                 }
             }
@@ -435,7 +435,7 @@ void mergeAndPush(String prLink) {
     mergeAndPush(prLink, getBuildBranch())
 }
 
-void tagLatest(String repo) {
+void tagLatest() {
     if (getGitTag() != '') {
         githubscm.tagLocalAndRemoteRepository('origin', getGitTag(), getGitAuthorCredsID(), env.BUILD_TAG, true)
     }
