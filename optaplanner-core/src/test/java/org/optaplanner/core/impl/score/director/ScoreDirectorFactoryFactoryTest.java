@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2021 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,16 +16,9 @@
 
 package org.optaplanner.core.impl.score.director;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
-
 import java.io.File;
 import java.util.HashMap;
-import java.util.Map;
-
 import org.junit.jupiter.api.Test;
-import org.kie.api.KieBaseConfiguration;
-import org.kie.api.KieServices;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
 import org.optaplanner.core.api.score.calculator.EasyScoreCalculator;
@@ -38,6 +31,9 @@ import org.optaplanner.core.config.solver.EnvironmentMode;
 import org.optaplanner.core.impl.score.director.easy.EasyScoreDirector;
 import org.optaplanner.core.impl.score.director.incremental.IncrementalScoreDirector;
 import org.optaplanner.core.impl.testdata.domain.TestdataSolution;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
 class ScoreDirectorFactoryFactoryTest {
 
@@ -101,29 +97,6 @@ class ScoreDirectorFactoryFactoryTest {
         assertThat(assertionScoreCalculator)
                 .isNotNull()
                 .isExactlyInstanceOf(TestCustomPropertiesIncrementalScoreCalculator.class);
-    }
-
-    @Test
-    void buildKieBaseConfigurationWithProperties() {
-        ScoreDirectorFactoryConfig config = new ScoreDirectorFactoryConfig()
-                .withScoreDrls(getClass().getPackage().getName().replace('.', '/') + "/dummyDroolsConstraints.drl");
-
-        final String firstPropertyName = "drools.sequential.agenda";
-        final String firstPropertyValue = "dynamic";
-        final String secondPropertyName = "drools.removeIdentities";
-        final String secondPropertyValue = "true";
-        Map<String, String> kieBaseConfigurationProperties = new HashMap<>();
-        kieBaseConfigurationProperties.put(firstPropertyName, firstPropertyValue);
-        kieBaseConfigurationProperties.put(secondPropertyName, secondPropertyValue);
-
-        config.setKieBaseConfigurationProperties(kieBaseConfigurationProperties);
-        ScoreDirectorFactoryFactory<TestdataSolution, ?> scoreDirectorFactoryFactory =
-                new ScoreDirectorFactoryFactory<>(config);
-        KieBaseConfiguration kieBaseConfiguration =
-                scoreDirectorFactoryFactory.buildKieBaseConfiguration(KieServices.Factory.get());
-
-        assertThat(kieBaseConfiguration.getProperty(firstPropertyName)).isEqualTo(firstPropertyValue);
-        assertThat(kieBaseConfiguration.getProperty(secondPropertyName)).isEqualTo(secondPropertyValue);
     }
 
     @Test

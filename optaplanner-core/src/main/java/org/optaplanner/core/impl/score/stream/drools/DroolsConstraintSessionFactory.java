@@ -77,8 +77,7 @@ public final class DroolsConstraintSessionFactory<Solution_, Score_ extends Scor
     }
 
     private static KieBase buildKieBaseFromModel(Model model) {
-        KieBase kieBase = KieBaseBuilder.createKieBaseFromModel(model,
-                KieBaseMutabilityOption.DISABLED); // For performance; applicable to DRL too.
+        KieBase kieBase = KieBaseBuilder.createKieBaseFromModel(model, KieBaseMutabilityOption.DISABLED);
         KieBaseUpdaterANC.generateAndSetInMemoryANC(kieBase);
         return kieBase;
     }
