@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2021 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,6 +26,7 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import org.drools.ancompiler.KieBaseUpdaterANC;
 import org.drools.core.io.impl.ClassPathResource;
 import org.drools.core.io.impl.FileSystemResource;
 import org.drools.modelcompiler.ExecutableModelProject;
@@ -270,6 +271,7 @@ public class ScoreDirectorFactoryFactory<Solution_, Score_ extends Score<Score_>
 
         try {
             KieBase kieBase = kieHelper.build(ExecutableModelProject.class, KieBaseMutabilityOption.DISABLED);
+            KieBaseUpdaterANC.generateAndSetInMemoryANC(kieBase);
             if (generateDroolsTestOnError) {
                 return new TestGenDroolsScoreDirectorFactory<>(solutionDescriptor, kieBase, config.getScoreDrlList(),
                         config.getScoreDrlFileList());

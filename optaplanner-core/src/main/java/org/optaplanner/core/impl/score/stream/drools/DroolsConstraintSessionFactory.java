@@ -25,6 +25,7 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.function.Function;
 
+import org.drools.ancompiler.KieBaseUpdaterANC;
 import org.drools.model.Model;
 import org.drools.model.impl.ModelImpl;
 import org.drools.modelcompiler.builder.KieBaseBuilder;
@@ -73,7 +74,10 @@ public final class DroolsConstraintSessionFactory<Solution_, Score_ extends Scor
     }
 
     private static KieBase buildKieBaseFromModel(Model model) {
-        return KieBaseBuilder.createKieBaseFromModel(model, KieBaseMutabilityOption.DISABLED);
+        KieBase kieBase = KieBaseBuilder.createKieBaseFromModel(model, KieBaseMutabilityOption.DISABLED);
+        KieBaseUpdaterANC.generateAndSetInMemoryANC(kieBase);
+        return kieBase;
+
     }
 
     @Override
