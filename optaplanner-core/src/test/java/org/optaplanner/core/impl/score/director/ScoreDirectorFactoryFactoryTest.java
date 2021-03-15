@@ -16,8 +16,12 @@
 
 package org.optaplanner.core.impl.score.director;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
+
 import java.io.File;
 import java.util.HashMap;
+
 import org.junit.jupiter.api.Test;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
@@ -31,9 +35,6 @@ import org.optaplanner.core.config.solver.EnvironmentMode;
 import org.optaplanner.core.impl.score.director.easy.EasyScoreDirector;
 import org.optaplanner.core.impl.score.director.incremental.IncrementalScoreDirector;
 import org.optaplanner.core.impl.testdata.domain.TestdataSolution;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
 class ScoreDirectorFactoryFactoryTest {
 
