@@ -437,7 +437,7 @@ void mergeAndPush(String prLink) {
 
 void tagLatest(String repo) {
     if (getGitTag() != '') {
-        githubscm.tagLocalAndRemoteRepository(repo, getGitTag(), getGitAuthorCredsID(), env.BUILD_TAG, true)
+        githubscm.tagLocalAndRemoteRepository('origin', getGitTag(), getGitAuthorCredsID(), env.BUILD_TAG, true)
     }
 }
 
