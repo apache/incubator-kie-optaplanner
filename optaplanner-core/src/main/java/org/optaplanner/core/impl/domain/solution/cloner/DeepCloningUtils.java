@@ -209,11 +209,21 @@ public final class DeepCloningUtils {
         return Collections.emptySet();
     }
 
-    public Set<Class<?>> getDeepClonedClasses(List<Class<?>> solutionClassList) {
+    public Set<Class<?>> getDeepClonedClasses(Collection<Class<?>> entitySubclasses) {
         Set<Class<?>> deepClonedClassSet = new HashSet<>();
-        for (Class<?> clazz : solutionClassList) {
+        Set<Class<?>> toSearch = new HashSet<>();
+
+        toSearch.add(solutionDescriptor.getSolutionClass());
+        toSearch.addAll(solutionDescriptor.getEntityClassSet());
+        toSearch.addAll(entitySubclasses);
+
+        for (Class<?> clazz : toSearch) {
+            deepClonedClassSet.add(clazz);
             for (Field field : getAllFields(clazz)) {
                 deepClonedClassSet.addAll(getDeepClonedTypeArguments(field.getGenericType()));
+                if (isClassDeepCloned(field.getType())) {
+                    deepClonedClassSet.add(field.getType());
+                }
             }
         }
         return deepClonedClassSet;

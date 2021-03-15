@@ -3,7 +3,6 @@ package org.optaplanner.core.impl.domain.solution.cloner.gizmo;
 import java.io.IOException;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Member;
 import java.lang.reflect.Modifier;
 import java.lang.reflect.ParameterizedType;
 import java.nio.file.Files;
@@ -27,7 +26,6 @@ import java.util.TreeSet;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Function;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import org.optaplanner.core.api.domain.solution.cloner.SolutionCloner;
 import org.optaplanner.core.impl.domain.common.accessor.gizmo.GizmoMemberDescriptor;
@@ -105,12 +103,10 @@ public class GizmoSolutionClonerImplementor {
      */
     public static void defineClonerFor(ClassCreator classCreator, SolutionDescriptor<?> solutionDescriptor,
             List<Class<?>> solutionClassList,
-            Map<Class<?>, GizmoSolutionOrEntityDescriptor> memoizedSolutionOrEntityDescriptorMap) {
-        DeepCloningUtils deepCloningUtils = new DeepCloningUtils(solutionDescriptor);
-        Set<Class<?>> deepClonedClassSet = deepCloningUtils.getDeepClonedClasses(solutionClassList);
-
-        List<Class<?>> entityClassAndSubclassList =
-                Stream.concat(solutionDescriptor.getEntityClassSet().stream(), deepClonedClassSet.stream())
+            Map<Class<?>, GizmoSolutionOrEntityDescriptor> memoizedSolutionOrEntityDescriptorMap,
+            Set<Class<?>> deepClonedClassSet) {
+        List<Class<?>> deepCloneClassesThatAreNotSolutionList =
+                deepClonedClassSet.stream()
                         .filter(clazz -> !solutionClassList.contains(clazz))
                         .filter(clazz -> !clazz.isInterface() && !Modifier.isAbstract(clazz.getModifiers()))
                         .sorted(instanceOfComparator)
@@ -120,11 +116,12 @@ public class GizmoSolutionClonerImplementor {
         createConstructor(classCreator);
         createCloneSolution(classCreator, solutionDescriptor);
         createCloneSolutionRun(classCreator, solutionDescriptor, solutionClassList, memoizedSolutionOrEntityDescriptorMap,
-                entityClassAndSubclassList);
+                deepCloneClassesThatAreNotSolutionList);
 
-        for (Class<?> entityClass : entityClassAndSubclassList) {
-            createEntityHelperMethod(classCreator, entityClass, solutionDescriptor, memoizedSolutionOrEntityDescriptorMap,
-                    entityClassAndSubclassList);
+        for (Class<?> deepClonedClass : deepCloneClassesThatAreNotSolutionList) {
+            createDeepCloneHelperMethod(classCreator, deepClonedClass, solutionDescriptor,
+                    memoizedSolutionOrEntityDescriptorMap,
+                    deepCloneClassesThatAreNotSolutionList);
         }
     }
 
@@ -158,9 +155,12 @@ public class GizmoSolutionClonerImplementor {
                 .setFinal(true)
                 .build();
 
+        DeepCloningUtils deepCloningUtils = new DeepCloningUtils(solutionDescriptor);
+        Set<Class<?>> deepClonedClassSet = deepCloningUtils.getDeepClonedClasses(Collections.emptyList());
+
         defineClonerFor(classCreator, solutionDescriptor,
                 Arrays.asList(solutionDescriptor.getSolutionClass()),
-                new HashMap<>());
+                new HashMap<>(), deepClonedClassSet);
 
         classCreator.close();
         byte[] classBytecode = classBytecodeHolder[0];
@@ -754,7 +754,7 @@ public class GizmoSolutionClonerImplementor {
     }
 
     // To prevent stack overflow on chained models
-    private static void createEntityHelperMethod(ClassCreator classCreator,
+    private static void createDeepCloneHelperMethod(ClassCreator classCreator,
             Class<?> entityClass,
             SolutionDescriptor<?> solutionDescriptor,
             Map<Class<?>, GizmoSolutionOrEntityDescriptor> memoizedSolutionOrEntityDescriptorMap,

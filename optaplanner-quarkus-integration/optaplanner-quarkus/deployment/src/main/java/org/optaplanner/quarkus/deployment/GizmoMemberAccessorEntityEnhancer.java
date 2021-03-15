@@ -31,6 +31,7 @@ import java.lang.reflect.Member;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -296,7 +297,26 @@ public class GizmoMemberAccessorEntityEnhancer {
             }
 
             DeepCloningUtils deepCloningUtils = new DeepCloningUtils(solutionDescriptor);
-            for (Class<?> deepCloningClass : deepCloningUtils.getDeepClonedClasses(solutionSubclasses)) {
+
+            Set<Class<?>> solutionAndEntitySubclassSet = new HashSet<>(solutionSubclasses);
+            for (Object entityClassObject : solutionDescriptor.getEntityClassSet()) {
+                Class<?> entityClass = (Class<?>) entityClassObject;
+                Collection<ClassInfo> classInfoCollection =
+                        indexView.getAllKnownSubclasses(DotName.createSimple(entityClass.getName()));
+                classInfoCollection.stream().map(classInfo -> {
+                    try {
+                        return Class.forName(classInfo.name().toString(), false,
+                                Thread.currentThread().getContextClassLoader());
+                    } catch (ClassNotFoundException e) {
+                        throw new IllegalStateException("Unable to find class (" + classInfo.name() +
+                                "), which is a known subclass of the entity class (" +
+                                entityClass + ").", e);
+                    }
+                }).forEach(solutionAndEntitySubclassSet::add);
+            }
+            Set<Class<?>> deepClonedClassSet = deepCloningUtils.getDeepClonedClasses(solutionAndEntitySubclassSet);
+
+            for (Class<?> deepCloningClass : deepClonedClassSet) {
                 if (!memoizedGizmoSolutionOrEntityDescriptorForClassMap.containsKey(deepCloningClass)) {
                     getGizmoSolutionOrEntityDescriptorForEntity(solutionDescriptor,
                             deepCloningClass,
@@ -306,7 +326,7 @@ public class GizmoMemberAccessorEntityEnhancer {
             }
 
             GizmoSolutionClonerImplementor.defineClonerFor(classCreator, solutionDescriptor, solutionSubclasses,
-                    memoizedGizmoSolutionOrEntityDescriptorForClassMap);
+                    memoizedGizmoSolutionOrEntityDescriptorForClassMap, deepClonedClassSet);
         }
 
         return generatedClassName;

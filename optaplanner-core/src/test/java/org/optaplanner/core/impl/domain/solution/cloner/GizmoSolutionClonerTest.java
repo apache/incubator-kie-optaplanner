@@ -25,6 +25,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.stream.Stream;
 
 import org.junit.jupiter.api.Test;
@@ -66,10 +67,10 @@ public class GizmoSolutionClonerTest extends AbstractSolutionClonerTest {
         Map<Class<?>, GizmoSolutionOrEntityDescriptor> memoizedSolutionOrEntityDescriptorMap = new HashMap<>();
 
         DeepCloningUtils deepCloningUtils = new DeepCloningUtils(solutionDescriptor);
+        Set<Class<?>> deepClonedClassSet = deepCloningUtils.getDeepClonedClasses(Collections.emptyList());
         Stream.concat(Stream.of(solutionDescriptor.getSolutionClass()),
                 Stream.concat(solutionDescriptor.getEntityClassSet().stream(),
-                        deepCloningUtils.getDeepClonedClasses(
-                                Collections.singletonList(solutionDescriptor.getSolutionClass())).stream()))
+                        deepClonedClassSet.stream()))
                 .forEach(clazz -> {
                     memoizedSolutionOrEntityDescriptorMap.put(clazz,
                             generateGizmoSolutionOrEntityDescriptor(solutionDescriptor, clazz));
@@ -77,7 +78,7 @@ public class GizmoSolutionClonerTest extends AbstractSolutionClonerTest {
 
         GizmoSolutionClonerImplementor.defineClonerFor(classCreator, solutionDescriptor,
                 Arrays.asList(solutionDescriptor.getSolutionClass()),
-                memoizedSolutionOrEntityDescriptorMap);
+                memoizedSolutionOrEntityDescriptorMap, deepClonedClassSet);
         classCreator.close();
         final byte[] byteCode = classBytecodeHolder[0];
 
