@@ -16,23 +16,24 @@
 
 package org.optaplanner.core.impl.score.stream.drools;
 
-import static java.util.stream.Collectors.toMap;
-
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import java.util.function.Function;
-
 import org.drools.ancompiler.KieBaseUpdaterANC;
 import org.drools.model.Model;
 import org.drools.model.impl.ModelImpl;
 import org.drools.modelcompiler.builder.KieBaseBuilder;
 import org.kie.api.KieBase;
+import org.kie.api.KieServices;
 import org.kie.api.conf.KieBaseMutabilityOption;
 import org.kie.api.definition.rule.Rule;
+import org.kie.api.runtime.Environment;
 import org.kie.api.runtime.KieSession;
+import org.kie.api.runtime.KieSessionConfiguration;
+import org.kie.api.runtime.conf.DirectFiringOption;
 import org.kie.internal.event.rule.RuleEventManager;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.stream.Constraint;
@@ -43,6 +44,8 @@ import org.optaplanner.core.impl.score.director.drools.OptaPlannerRuleEventListe
 import org.optaplanner.core.impl.score.holder.AbstractScoreHolder;
 import org.optaplanner.core.impl.score.stream.ConstraintSession;
 import org.optaplanner.core.impl.score.stream.ConstraintSessionFactory;
+
+import static java.util.stream.Collectors.toMap;
 
 public final class DroolsConstraintSessionFactory<Solution_, Score_ extends Score<Score_>>
         implements ConstraintSessionFactory<Solution_, Score_> {
@@ -74,10 +77,17 @@ public final class DroolsConstraintSessionFactory<Solution_, Score_ extends Scor
     }
 
     private static KieBase buildKieBaseFromModel(Model model) {
-        KieBase kieBase = KieBaseBuilder.createKieBaseFromModel(model, KieBaseMutabilityOption.DISABLED);
+        KieBase kieBase = KieBaseBuilder.createKieBaseFromModel(model,
+                KieBaseMutabilityOption.DISABLED); // For performance; applicable to DRL too.
         KieBaseUpdaterANC.generateAndSetInMemoryANC(kieBase);
         return kieBase;
+    }
 
+    private static KieSession buildKieSessionFromKieBase(KieBase kieBase) {
+        KieSessionConfiguration config = KieServices.get().newKieSessionConfiguration();
+        config.setOption(DirectFiringOption.YES); // For performance; not applicable to DRL.
+        Environment environment = KieServices.get().newEnvironment();
+        return kieBase.newKieSession(config, environment);
     }
 
     @Override
@@ -111,7 +121,7 @@ public final class DroolsConstraintSessionFactory<Solution_, Score_ extends Scor
             currentlyDisabledConstraintIdSet = disabledConstraintIdSet;
         }
         // Create the session itself.
-        KieSession kieSession = currentKieBase.newKieSession();
+        KieSession kieSession = buildKieSessionFromKieBase(currentKieBase);
         ((RuleEventManager) kieSession).addEventListener(new OptaPlannerRuleEventListener()); // Enables undo in rules.
         kieSession.setGlobal(DroolsScoreDirector.GLOBAL_SCORE_HOLDER_KEY, scoreHolder);
         return new DroolsConstraintSession<>(solutionDescriptor, kieSession, scoreHolder);
