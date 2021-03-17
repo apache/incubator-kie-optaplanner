@@ -460,7 +460,13 @@ void commitAndForcePushProtectedBranch(String repo, String branch){
         githubscm.findAndStageNotIgnoredFiles('pom.xml')
         githubscm.findAndStageNotIgnoredFiles('build.gradle')
     })
-    forcePushProtectedBranch(repo, branch)
+    try {
+        forcePushProtectedBranch(repo, branch)
+    }
+    catch (exception){
+        println "[ERROR] Force push branch: ${branch} from repo : ${repo} failed with exception: ${exception}"
+        currentBuild.result = 'UNSTABLE'
+    }
 }
 
 String commitAndCreatePR(String commitMsg) {
@@ -568,7 +574,6 @@ boolean isBranchProtected(String repo, String protectedBranch, String ghPath = "
 
 def setAllowForcePushes(String repo, String protectedBranch, String enabled, String ghPath = "../gh") {
     assertGithubCLI(ghPath)
-    try {
         //Use separate admin token credentials
         withCredentials([string(credentialsId: getGhCredsID(), variable: 'GITHUB_TOKEN')]) {
             //get current branch protection and remove allow force push
@@ -605,11 +610,6 @@ def setAllowForcePushes(String repo, String protectedBranch, String enabled, Str
             //cleanup workspace
             sh "rm -f protectionParameters.json protectionBefore.json protectionAfter.json"
         }
-    }
-    catch (exception){
-        println "[ERROR] Failed to update Allow force pushes for ${repo}: ${exception}"
-        currentBuild.result = 'UNSTABLE'
-    }
 }
 
 def forcePushProtectedBranch(String repo, String protectedBranch) {
