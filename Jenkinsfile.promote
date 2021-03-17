@@ -538,11 +538,7 @@ String getProtectionMapScript() {
             "else . + {\"restrictions_used\":{\"users\":[.restrictions.users[].login], \"team\":[.restrictions.users[].slug]}} end |" +
             " {" +
                 "\"required_status_checks\": .required_status_checks," +
-                "\"required_pull_request_reviews\": " +
-                    "{" +
-                        "\"dismiss_stale_reviews\":(.required_pull_request_reviews.dismiss_stale_reviews//false), " +
-                        "\"require_code_owner_reviews\":(.required_pull_request_reviews.require_code_owner_reviews//false)" +
-                    "}, " +
+                "\"required_pull_request_reviews\": .required_pull_request_reviews," +
                 "\"enforce_admins\":(.enforce_admins.enabled)," +
                 " \"restrictions\":.restrictions_used" +
             "}";
