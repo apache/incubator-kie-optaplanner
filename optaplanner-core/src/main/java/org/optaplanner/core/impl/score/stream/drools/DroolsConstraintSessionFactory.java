@@ -16,12 +16,15 @@
 
 package org.optaplanner.core.impl.score.stream.drools;
 
+import static java.util.stream.Collectors.toMap;
+
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import java.util.function.Function;
+
 import org.drools.ancompiler.KieBaseUpdaterANC;
 import org.drools.model.Model;
 import org.drools.model.impl.ModelImpl;
@@ -47,8 +50,6 @@ import org.optaplanner.core.impl.score.director.drools.OptaPlannerRuleEventListe
 import org.optaplanner.core.impl.score.holder.AbstractScoreHolder;
 import org.optaplanner.core.impl.score.stream.ConstraintSession;
 import org.optaplanner.core.impl.score.stream.ConstraintSessionFactory;
-
-import static java.util.stream.Collectors.toMap;
 
 public final class DroolsConstraintSessionFactory<Solution_, Score_ extends Score<Score_>>
         implements ConstraintSessionFactory<Solution_, Score_> {
