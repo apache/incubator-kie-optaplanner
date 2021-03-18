@@ -22,7 +22,7 @@
 
     <!-- SNAPSHOT and KIE dependency versions -->
     <version.org.kie.kogito>2.0.0-SNAPSHOT</version.org.kie.kogito>
-    <version.org.drools>7.52.0-SNAPSHOT</version.org.drools> <!-- Must match version.org.kie.kogito -->
+    <version.org.drools>7.52.0-SNAPSHOT</version.org.drools> <!-- Must match version used by Kogito. -->
 
     <!-- Normal dependency versions -->
     <!-- TODO Do we want import the quarkus-bom instead of defining these ourselves? -->
