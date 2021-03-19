@@ -20,20 +20,29 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.function.Function;
+import java.util.function.ToIntFunction;
 
 public final class NearbyDistanceMatrix {
 
     private final NearbyDistanceMeter nearbyDistanceMeter;
     private final Map<Object, Object[]> originToDestinationsMap;
+    private final Function<Object, Iterator<Object>> destinationIteratorProvider;
+    private final ToIntFunction<Object> destinationSizeFunction;
 
-    public NearbyDistanceMatrix(NearbyDistanceMeter nearbyDistanceMeter, int originSize) {
+    public NearbyDistanceMatrix(NearbyDistanceMeter nearbyDistanceMeter, int originSize,
+            Function<Object, Iterator<Object>> destinationIteratorProvider, ToIntFunction<Object> destinationSizeFunction) {
         this.nearbyDistanceMeter = nearbyDistanceMeter;
         originToDestinationsMap = new HashMap<>(originSize);
+        this.destinationIteratorProvider = destinationIteratorProvider;
+        this.destinationSizeFunction = destinationSizeFunction;
     }
 
-    public void addAllDestinations(Object origin, Iterator<Object> destinationIterator, int destinationSize) {
+    public void addAllDestinations(Object origin) {
+        int destinationSize = destinationSizeFunction.applyAsInt(origin);
         Object[] destinations = new Object[destinationSize];
         double[] distances = new double[destinationSize];
+        Iterator<Object> destinationIterator = destinationIteratorProvider.apply(origin);
         int size = 0;
         Double highestDistance = Double.MAX_VALUE;
         while (destinationIterator.hasNext()) {
@@ -69,6 +78,14 @@ public final class NearbyDistanceMatrix {
 
     public Object getDestination(Object origin, int nearbyIndex) {
         Object[] destinations = originToDestinationsMap.get(origin);
+        if (destinations == null) {
+            /*
+             * The item may be missing in the distance matrix due to an underlying filtering selector.
+             * In such a case, the distance matrix needs to be updated.
+             */
+            addAllDestinations(origin);
+            destinations = originToDestinationsMap.get(origin);
+        }
         return destinations[nearbyIndex];
     }
 

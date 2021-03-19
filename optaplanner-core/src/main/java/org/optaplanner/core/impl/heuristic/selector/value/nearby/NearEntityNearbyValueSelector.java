@@ -78,28 +78,33 @@ public final class NearEntityNearbyValueSelector<Solution_> extends AbstractValu
                     + ") has an entitySize (" + originSize
                     + ") which is higher than Integer.MAX_VALUE.");
         }
-        nearbyDistanceMatrix = new NearbyDistanceMatrix(nearbyDistanceMeter, (int) originSize);
+        nearbyDistanceMatrix = new NearbyDistanceMatrix(nearbyDistanceMeter, (int) originSize,
+                origin -> childValueSelector.endingIterator(origin), this::computeDestinationSize);
         for (Iterator<Object> originIt = replayingOriginEntitySelector.endingIterator(); originIt.hasNext();) {
             final Object origin = originIt.next();
-            long childSize = childValueSelector.getSize(origin);
-            if (childSize > (long) Integer.MAX_VALUE) {
-                throw new IllegalStateException("The childEntitySelector (" + childValueSelector
-                        + ") has an entitySize (" + childSize
-                        + ") which is higher than Integer.MAX_VALUE.");
-            }
-            int destinationSize = (int) childSize;
-            if (randomSelection) {
-                // Reduce RAM memory usage by reducing destinationSize if nearbyRandom will never select a higher value
-                int overallSizeMaximum = nearbyRandom.getOverallSizeMaximum();
-                if (discardNearbyIndexZero && overallSizeMaximum < Integer.MAX_VALUE) {
-                    overallSizeMaximum++;
-                }
-                if (destinationSize > overallSizeMaximum) {
-                    destinationSize = overallSizeMaximum;
-                }
-            }
-            nearbyDistanceMatrix.addAllDestinations(origin, childValueSelector.endingIterator(origin), destinationSize);
+            nearbyDistanceMatrix.addAllDestinations(origin);
         }
+    }
+
+    private int computeDestinationSize(Object origin) {
+        long childSize = childValueSelector.getSize(origin);
+        if (childSize > (long) Integer.MAX_VALUE) {
+            throw new IllegalStateException("The childEntitySelector (" + childValueSelector
+                    + ") has an entitySize (" + childSize
+                    + ") which is higher than Integer.MAX_VALUE.");
+        }
+        int destinationSize = (int) childSize;
+        if (randomSelection) {
+            // Reduce RAM memory usage by reducing destinationSize if nearbyRandom will never select a higher value
+            int overallSizeMaximum = nearbyRandom.getOverallSizeMaximum();
+            if (discardNearbyIndexZero && overallSizeMaximum < Integer.MAX_VALUE) {
+                overallSizeMaximum++;
+            }
+            if (destinationSize > overallSizeMaximum) {
+                destinationSize = overallSizeMaximum;
+            }
+        }
+        return destinationSize;
     }
 
     @Override
