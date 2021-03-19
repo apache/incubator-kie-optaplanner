@@ -79,11 +79,9 @@ public final class NearEntityNearbyValueSelector<Solution_> extends AbstractValu
                     + ") which is higher than Integer.MAX_VALUE.");
         }
         nearbyDistanceMatrix = new NearbyDistanceMatrix(nearbyDistanceMeter, (int) originSize,
-                origin -> childValueSelector.endingIterator(origin), this::computeDestinationSize);
-        for (Iterator<Object> originIt = replayingOriginEntitySelector.endingIterator(); originIt.hasNext();) {
-            final Object origin = originIt.next();
-            nearbyDistanceMatrix.addAllDestinations(origin);
-        }
+                childValueSelector::endingIterator, this::computeDestinationSize);
+        replayingOriginEntitySelector.endingIterator()
+                .forEachRemaining(origin -> nearbyDistanceMatrix.addAllDestinations(origin));
     }
 
     private int computeDestinationSize(Object origin) {

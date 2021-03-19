@@ -89,10 +89,8 @@ public final class NearEntityNearbyEntitySelector<Solution_> extends AbstractEnt
 
         nearbyDistanceMatrix = new NearbyDistanceMatrix(nearbyDistanceMeter, (int) originSize,
                 origin -> childEntitySelector.endingIterator(), origin -> computeDestinationSize(childSize));
-        for (Iterator<Object> originIt = replayingOriginEntitySelector.endingIterator(); originIt.hasNext();) {
-            final Object origin = originIt.next();
-            nearbyDistanceMatrix.addAllDestinations(origin);
-        }
+        replayingOriginEntitySelector.endingIterator()
+                .forEachRemaining(origin -> nearbyDistanceMatrix.addAllDestinations(origin));
     }
 
     private int computeDestinationSize(long childSize) {
