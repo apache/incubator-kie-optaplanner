@@ -267,7 +267,7 @@ public class GizmoMemberAccessorEntityEnhancer {
 
             Map<Class<?>, GizmoSolutionOrEntityDescriptor> memoizedGizmoSolutionOrEntityDescriptorForClassMap = new HashMap<>();
 
-            List<Class<?>> solutionSubclasses =
+            List<Class<?>> solutionSubclassesList =
                     indexView.getAllKnownSubclasses(DotName.createSimple(solutionDescriptor.getSolutionClass().getName()))
                             .stream().map(classInfo -> {
                                 try {
@@ -279,9 +279,9 @@ public class GizmoMemberAccessorEntityEnhancer {
                                             solutionDescriptor.getSolutionClass() + ").", e);
                                 }
                             }).collect(Collectors.toCollection(ArrayList::new));
-            solutionSubclasses.add(solutionDescriptor.getSolutionClass());
+            solutionSubclassesList.add(solutionDescriptor.getSolutionClass());
 
-            for (Class<?> solutionSubclass : solutionSubclasses) {
+            for (Class<?> solutionSubclass : solutionSubclassesList) {
                 getGizmoSolutionOrEntityDescriptorForEntity(solutionDescriptor,
                         solutionSubclass,
                         memoizedGizmoSolutionOrEntityDescriptorForClassMap,
@@ -298,7 +298,7 @@ public class GizmoMemberAccessorEntityEnhancer {
 
             DeepCloningUtils deepCloningUtils = new DeepCloningUtils(solutionDescriptor);
 
-            Set<Class<?>> solutionAndEntitySubclassSet = new HashSet<>(solutionSubclasses);
+            Set<Class<?>> solutionAndEntitySubclassSet = new HashSet<>(solutionSubclassesList);
             for (Object entityClassObject : solutionDescriptor.getEntityClassSet()) {
                 Class<?> entityClass = (Class<?>) entityClassObject;
                 Collection<ClassInfo> classInfoCollection =
@@ -325,7 +325,7 @@ public class GizmoMemberAccessorEntityEnhancer {
                 }
             }
 
-            GizmoSolutionClonerImplementor.defineClonerFor(classCreator, solutionDescriptor, solutionSubclasses,
+            GizmoSolutionClonerImplementor.defineClonerFor(classCreator, solutionDescriptor, solutionSubclassesList,
                     memoizedGizmoSolutionOrEntityDescriptorForClassMap, deepClonedClassSet);
         }
 

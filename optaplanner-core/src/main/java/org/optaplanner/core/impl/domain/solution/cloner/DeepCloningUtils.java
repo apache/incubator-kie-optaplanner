@@ -161,7 +161,7 @@ public final class DeepCloningUtils {
 
     public boolean isTypeArgumentDeepCloned(Type genericType) {
         // Check the generic type arguments of the field.
-        // Yes, it is possible for fields and methods, but not instances!
+        // It is possible for fields and methods, but not instances.
         if (genericType instanceof ParameterizedType) {
             ParameterizedType parameterizedType = (ParameterizedType) genericType;
             for (Type actualTypeArgument : parameterizedType.getActualTypeArguments()) {
@@ -193,39 +193,40 @@ public final class DeepCloningUtils {
      */
     public Set<Class<?>> getDeepClonedTypeArguments(Type genericType) {
         // Check the generic type arguments of the field.
-        // Yes, it is possible for fields and methods, but not instances!
-        if (genericType instanceof ParameterizedType) {
-            Set<Class<?>> deepClonedTypeArguments = new HashSet<>();
-            ParameterizedType parameterizedType = (ParameterizedType) genericType;
-            for (Type actualTypeArgument : parameterizedType.getActualTypeArguments()) {
-                if (actualTypeArgument instanceof Class
-                        && isClassDeepCloned((Class) actualTypeArgument)) {
-                    deepClonedTypeArguments.add((Class) actualTypeArgument);
-                }
-                deepClonedTypeArguments.addAll(getDeepClonedTypeArguments(actualTypeArgument));
-            }
-            return deepClonedTypeArguments;
+        // It is possible for fields and methods, but not instances.
+        if (!(genericType instanceof ParameterizedType)) {
+            return Collections.emptySet();
         }
-        return Collections.emptySet();
+
+        Set<Class<?>> deepClonedTypeArguments = new HashSet<>();
+        ParameterizedType parameterizedType = (ParameterizedType) genericType;
+        for (Type actualTypeArgument : parameterizedType.getActualTypeArguments()) {
+            if (actualTypeArgument instanceof Class
+                    && isClassDeepCloned((Class) actualTypeArgument)) {
+                deepClonedTypeArguments.add((Class) actualTypeArgument);
+            }
+            deepClonedTypeArguments.addAll(getDeepClonedTypeArguments(actualTypeArgument));
+        }
+        return deepClonedTypeArguments;
     }
 
     public Set<Class<?>> getDeepClonedClasses(Collection<Class<?>> entitySubclasses) {
         Set<Class<?>> deepClonedClassSet = new HashSet<>();
-        Set<Class<?>> toSearch = new HashSet<>();
 
-        toSearch.add(solutionDescriptor.getSolutionClass());
-        toSearch.addAll(solutionDescriptor.getEntityClassSet());
-        toSearch.addAll(entitySubclasses);
+        Stream.of(Stream.of(solutionDescriptor.getSolutionClass()),
+                solutionDescriptor.getEntityClassSet().stream(),
+                entitySubclasses.stream())
+                .flatMap(classStream -> classStream)
+                .forEach(clazz -> {
+                    deepClonedClassSet.add(clazz);
+                    for (Field field : getAllFields(clazz)) {
+                        deepClonedClassSet.addAll(getDeepClonedTypeArguments(field.getGenericType()));
+                        if (isClassDeepCloned(field.getType())) {
+                            deepClonedClassSet.add(field.getType());
+                        }
+                    }
+                });
 
-        for (Class<?> clazz : toSearch) {
-            deepClonedClassSet.add(clazz);
-            for (Field field : getAllFields(clazz)) {
-                deepClonedClassSet.addAll(getDeepClonedTypeArguments(field.getGenericType()));
-                if (isClassDeepCloned(field.getType())) {
-                    deepClonedClassSet.add(field.getType());
-                }
-            }
-        }
         return deepClonedClassSet;
     }
 

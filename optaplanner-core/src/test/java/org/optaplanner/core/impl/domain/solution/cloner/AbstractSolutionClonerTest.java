@@ -462,7 +462,7 @@ public abstract class AbstractSolutionClonerTest {
 
         a3.setChainedObject(b1);
         assertCode("b1", a3.getChainedObject());
-        // Clone remains unchanged
+        // Clone remains unchanged.
         assertCode("a2", cloneA3.getChainedObject());
     }
 
