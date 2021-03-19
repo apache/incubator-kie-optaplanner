@@ -88,7 +88,7 @@ public class GizmoSolutionClonerImplementor {
      *
      * @param deepClonedClassSet The set of classes to generate a comparator for
      * @return A comparator that sorts classes from deepClonedClassSet such that
-     *         x < y if x is assignable from y.
+     *         x &lt; y if x is assignable from y.
      */
     public static Comparator<Class<?>> getInstanceOfComparator(Set<Class<?>> deepClonedClassSet) {
         Map<Class<?>, Integer> classToSubclassLevel = new HashMap<>();
