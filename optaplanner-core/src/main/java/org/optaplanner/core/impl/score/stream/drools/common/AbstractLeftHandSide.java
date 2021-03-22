@@ -16,15 +16,16 @@
 
 package org.optaplanner.core.impl.score.stream.drools.common;
 
+import static org.drools.model.DSL.and;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+
 import org.drools.model.Index;
 import org.drools.model.view.ViewItem;
 import org.optaplanner.core.impl.score.stream.common.JoinerType;
 import org.optaplanner.core.impl.score.stream.drools.DroolsVariableFactory;
-
-import static org.drools.model.DSL.and;
 
 abstract class AbstractLeftHandSide {
 

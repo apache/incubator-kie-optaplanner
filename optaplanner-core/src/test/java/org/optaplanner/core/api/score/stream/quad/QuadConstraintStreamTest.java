@@ -979,6 +979,40 @@ public class QuadConstraintStreamTest extends AbstractConstraintStreamTest imple
     }
 
     // ************************************************************************
+    // Map/distinct
+    // ************************************************************************
+
+    @Override
+    @TestTemplate
+    public void distinct() {
+        assumeDrools();
+    }
+
+    @Override
+    @TestTemplate
+    public void mapWithDuplicates() {
+        assumeDrools();
+    }
+
+    @Override
+    @TestTemplate
+    public void mapWithoutDuplicates() {
+        assumeDrools();
+    }
+
+    @Override
+    @TestTemplate
+    public void mapAndDistinctWithDuplicates() {
+        assumeDrools();
+    }
+
+    @Override
+    @TestTemplate
+    public void mapAndDistinctWithoutDuplicates() {
+        assumeDrools();
+    }
+
+    // ************************************************************************
     // Penalize/reward
     // ************************************************************************
 
