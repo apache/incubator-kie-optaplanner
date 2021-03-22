@@ -242,19 +242,6 @@ public abstract class BavetAbstractBiConstraintStream<Solution_, A, B> extends B
     }
 
     // ************************************************************************
-    // Operations w/ duplicate tuple possibility
-    // ************************************************************************
-
-    @Override
-    public BiConstraintStream<A, B> distinct() {
-        if (guaranteesDistinct()) {
-            return this;
-        } else {
-            return groupBy((a, b) -> a, (a, b) -> b);
-        }
-    }
-
-    // ************************************************************************
     // Penalize/reward
     // ************************************************************************
 
