@@ -41,6 +41,7 @@ import org.optaplanner.core.impl.score.stream.drools.tri.DroolsGroupingTriConstr
 import org.optaplanner.core.impl.score.stream.drools.tri.DroolsJoinTriConstraintStream;
 import org.optaplanner.core.impl.score.stream.drools.uni.DroolsAbstractUniConstraintStream;
 import org.optaplanner.core.impl.score.stream.drools.uni.DroolsGroupingUniConstraintStream;
+import org.optaplanner.core.impl.score.stream.drools.uni.DroolsMappingUniConstraintStream;
 import org.optaplanner.core.impl.score.stream.tri.FilteringTriJoiner;
 
 public abstract class DroolsAbstractBiConstraintStream<Solution_, A, B>
@@ -262,7 +263,10 @@ public abstract class DroolsAbstractBiConstraintStream<Solution_, A, B>
 
     @Override
     public <ResultA_> UniConstraintStream<ResultA_> map(BiFunction<A, B, ResultA_> mapping) {
-        throw new UnsupportedOperationException();
+        DroolsMappingUniConstraintStream<Solution_, ResultA_> stream =
+                new DroolsMappingUniConstraintStream<>(constraintFactory, this, mapping);
+        addChildStream(stream);
+        return stream;
     }
 
     // ************************************************************************

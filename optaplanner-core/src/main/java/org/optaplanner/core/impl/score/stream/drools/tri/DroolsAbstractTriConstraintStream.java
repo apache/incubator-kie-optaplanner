@@ -41,6 +41,7 @@ import org.optaplanner.core.impl.score.stream.drools.quad.DroolsGroupingQuadCons
 import org.optaplanner.core.impl.score.stream.drools.quad.DroolsJoinQuadConstraintStream;
 import org.optaplanner.core.impl.score.stream.drools.uni.DroolsAbstractUniConstraintStream;
 import org.optaplanner.core.impl.score.stream.drools.uni.DroolsGroupingUniConstraintStream;
+import org.optaplanner.core.impl.score.stream.drools.uni.DroolsMappingUniConstraintStream;
 import org.optaplanner.core.impl.score.stream.quad.FilteringQuadJoiner;
 import org.optaplanner.core.impl.score.stream.tri.InnerTriConstraintStream;
 
@@ -266,7 +267,10 @@ public abstract class DroolsAbstractTriConstraintStream<Solution_, A, B, C>
 
     @Override
     public <ResultA_> UniConstraintStream<ResultA_> map(TriFunction<A, B, C, ResultA_> mapping) {
-        throw new UnsupportedOperationException();
+        DroolsMappingUniConstraintStream<Solution_, ResultA_> stream =
+                new DroolsMappingUniConstraintStream<>(constraintFactory, this, mapping);
+        addChildStream(stream);
+        return stream;
     }
 
     // ************************************************************************

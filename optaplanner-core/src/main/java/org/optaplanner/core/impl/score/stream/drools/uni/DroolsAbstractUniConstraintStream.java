@@ -270,7 +270,10 @@ public abstract class DroolsAbstractUniConstraintStream<Solution_, A> extends Dr
 
     @Override
     public <ResultA_> UniConstraintStream<ResultA_> map(Function<A, ResultA_> mapping) {
-        throw new UnsupportedOperationException();
+        DroolsMappingUniConstraintStream<Solution_, ResultA_> stream =
+                new DroolsMappingUniConstraintStream<>(constraintFactory, this, mapping);
+        addChildStream(stream);
+        return stream;
     }
 
     // ************************************************************************
