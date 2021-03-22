@@ -17,6 +17,7 @@
 package org.optaplanner.core.impl.score.stream.common;
 
 import java.util.function.Function;
+
 import org.optaplanner.core.api.domain.constraintweight.ConstraintConfiguration;
 import org.optaplanner.core.api.domain.constraintweight.ConstraintConfigurationProvider;
 import org.optaplanner.core.api.domain.constraintweight.ConstraintWeight;

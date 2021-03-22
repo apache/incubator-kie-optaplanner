@@ -23,6 +23,7 @@ import java.util.function.BiPredicate;
 import java.util.function.Function;
 import java.util.function.ToIntBiFunction;
 import java.util.function.ToLongBiFunction;
+
 import org.optaplanner.core.api.domain.constraintweight.ConstraintConfiguration;
 import org.optaplanner.core.api.domain.constraintweight.ConstraintWeight;
 import org.optaplanner.core.api.function.TriFunction;
@@ -725,10 +726,10 @@ public interface BiConstraintStream<A, B> extends ConstraintStream {
      * @return never null
      */
     <GroupKeyA_, GroupKeyB_, GroupKeyC_, ResultContainerD_, ResultD_>
-    QuadConstraintStream<GroupKeyA_, GroupKeyB_, GroupKeyC_, ResultD_> groupBy(
-            BiFunction<A, B, GroupKeyA_> groupKeyAMapping, BiFunction<A, B, GroupKeyB_> groupKeyBMapping,
-            BiFunction<A, B, GroupKeyC_> groupKeyCMapping,
-            BiConstraintCollector<A, B, ResultContainerD_, ResultD_> collectorD);
+            QuadConstraintStream<GroupKeyA_, GroupKeyB_, GroupKeyC_, ResultD_> groupBy(
+                    BiFunction<A, B, GroupKeyA_> groupKeyAMapping, BiFunction<A, B, GroupKeyB_> groupKeyBMapping,
+                    BiFunction<A, B, GroupKeyC_> groupKeyCMapping,
+                    BiConstraintCollector<A, B, ResultContainerD_, ResultD_> collectorD);
 
     /**
      * Convert the {@link BiConstraintStream} to a {@link QuadConstraintStream}, consisting of unique tuples with four
@@ -753,9 +754,9 @@ public interface BiConstraintStream<A, B> extends ConstraintStream {
      * @return never null
      */
     <GroupKeyA_, GroupKeyB_, GroupKeyC_, GroupKeyD_>
-    QuadConstraintStream<GroupKeyA_, GroupKeyB_, GroupKeyC_, GroupKeyD_> groupBy(
-            BiFunction<A, B, GroupKeyA_> groupKeyAMapping, BiFunction<A, B, GroupKeyB_> groupKeyBMapping,
-            BiFunction<A, B, GroupKeyC_> groupKeyCMapping, BiFunction<A, B, GroupKeyD_> groupKeyDMapping);
+            QuadConstraintStream<GroupKeyA_, GroupKeyB_, GroupKeyC_, GroupKeyD_> groupBy(
+                    BiFunction<A, B, GroupKeyA_> groupKeyAMapping, BiFunction<A, B, GroupKeyB_> groupKeyBMapping,
+                    BiFunction<A, B, GroupKeyC_> groupKeyCMapping, BiFunction<A, B, GroupKeyD_> groupKeyDMapping);
 
     // ************************************************************************
     // Operations w/ duplicate tuple possibility
