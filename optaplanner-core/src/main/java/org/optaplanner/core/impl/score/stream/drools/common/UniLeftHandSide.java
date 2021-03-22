@@ -106,7 +106,7 @@ public final class UniLeftHandSide<A> extends AbstractLeftHandSide {
         this.ruleContext = buildDefaultRuleContext();
     }
 
-    protected UniLeftHandSide(UniLeftHandSide<A> leftHandSide, PatternVariable<A, ?, ?> patternVariable) {
+    protected UniLeftHandSide(AbstractLeftHandSide leftHandSide, PatternVariable<A, ?, ?> patternVariable) {
         super(leftHandSide.variableFactory);
         this.patternVariable = patternVariable;
         // This LHS will use the same variable access both for direct consequence and for subsequent operations.
@@ -499,7 +499,19 @@ public final class UniLeftHandSide<A> extends AbstractLeftHandSide {
     }
 
     public <NewA> UniLeftHandSide<NewA> andMap(Function<A, NewA> mapping) {
-        throw new UnsupportedOperationException();
+        Variable<NewA> newA = variableFactory.createVariable("mapped");
+        PatternVariable<A, ?, ?> mappedVariable = getPatternVariableA()
+                .bind(newA, mapping);
+        IndirectPatternVariable<NewA, ?> newPatternVariableA;
+        if (mappedVariable instanceof DirectPatternVariable) {
+            newPatternVariableA = new IndirectPatternVariable<>((DirectPatternVariable<A>) mappedVariable, newA, mapping);
+        } else if (mappedVariable instanceof IndirectPatternVariable) {
+            newPatternVariableA = new IndirectPatternVariable<>((IndirectPatternVariable<A, ?>) mappedVariable, newA, mapping);
+        } else {
+            throw new IllegalStateException(
+                    "Impossible state: Pattern variable is neither direct nor indirect: " + patternVariable);
+        }
+        return new UniLeftHandSide<>(this, newPatternVariableA);
     }
 
     public <Solution_> RuleBuilder<Solution_> andTerminate() {

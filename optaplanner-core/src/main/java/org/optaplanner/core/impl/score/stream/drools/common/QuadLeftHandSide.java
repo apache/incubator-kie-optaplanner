@@ -634,7 +634,13 @@ public final class QuadLeftHandSide<A, B, C, D> extends AbstractLeftHandSide {
     }
 
     public <NewA> UniLeftHandSide<NewA> andMap(QuadFunction<A, B, C, D, NewA> mapping) {
-        throw new UnsupportedOperationException();
+        Variable<NewA> newA = variableFactory.createVariable("mapped", patternVariableA.getPrimaryVariable(),
+                patternVariableB.getPrimaryVariable(), patternVariableC.getPrimaryVariable(),
+                patternVariableD.getPrimaryVariable(), mapping);
+        List<ViewItem<?>> allPrerequisites = mergeViewItems(patternVariableA, patternVariableB, patternVariableC,
+                patternVariableD);
+        DirectPatternVariable<NewA> newPatternVariableA = new DirectPatternVariable<>(newA, allPrerequisites);
+        return new UniLeftHandSide<>(this, newPatternVariableA);
     }
 
     public <Solution_> RuleBuilder<Solution_> andTerminate() {

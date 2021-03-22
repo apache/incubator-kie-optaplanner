@@ -925,8 +925,8 @@ public interface UniConstraintStream<A> extends ConstraintStream {
      * The fourth fact is the return value of the fourth group key mapping function, applied on all incoming tuples with
      * the same first fact.
      *
-     * @param groupKeyAMapping      * calling {@code map(Person::getAge)} on such stream will produce a stream of {@link Integer}s
-     *      * {@code [20, 25, 30]},
+     * @param groupKeyAMapping * calling {@code map(Person::getAge)} on such stream will produce a stream of {@link Integer}s
+     *        * {@code [20, 25, 30]},
      * @param groupKeyBMapping never null, function to convert the original tuple into a second fact
      * @param groupKeyCMapping never null, function to convert the original tuple into a third fact
      * @param groupKeyDMapping never null, function to convert the original tuple into a fourth fact
@@ -953,25 +953,25 @@ public interface UniConstraintStream<A> extends ConstraintStream {
      * There are several recommendations for implementing the mapping function:
      *
      * <ul>
-     *     <li>Purity.
-     *     The mapping function should only depend on its input.
-     *     That is, given the same input, it always returns the same output.
-     *     </li>
-     *     <li>Simplicity.
-     *     The function should only take the argument and return another simple value,
-     *     without performing any significant computation.
-     *     Not following this recommendation may result in performance loss,
-     *     as the function may be called frequently.</li>
-     *     <li>Returns plain data carriers.
-     *     The tuples returned by the mapping function should be identified by their contents and nothing else.
-     *     If two tuples carry objects which {@link #equals(Object) equal} one another, those two tuples should likewise
-     *     {@link #equals(Object) equal} and preferably be the same instance.
-     *     Java Records are the ideal tool for this particular use case.
-     *     </li>
-     *     <li>Bijectivity.
-     *     No two input tuples should map to the same output tuple, or to tuples that are {@link #equals(Object) equal}.
-     *     Not following this recommendation will create a constraint stream with duplicate tuples,
-     *     and may force you to use {@link #distinct()} later.</li>
+     * <li>Purity.
+     * The mapping function should only depend on its input.
+     * That is, given the same input, it always returns the same output.
+     * </li>
+     * <li>Simplicity.
+     * The function should only take the argument and return another simple value,
+     * without performing any significant computation.
+     * Not following this recommendation may result in performance loss,
+     * as the function may be called frequently.</li>
+     * <li>Returns plain data carriers.
+     * The tuples returned by the mapping function should be identified by their contents and nothing else.
+     * If two tuples carry objects which {@link #equals(Object) equal} one another, those two tuples should likewise
+     * {@link #equals(Object) equal} and preferably be the same instance.
+     * Java Records are the ideal tool for this particular use case.
+     * </li>
+     * <li>Bijectivity.
+     * No two input tuples should map to the same output tuple, or to tuples that are {@link #equals(Object) equal}.
+     * Not following this recommendation will create a constraint stream with duplicate tuples,
+     * and may force you to use {@link #distinct()} later.</li>
      * </ul>
      *
      * <p>

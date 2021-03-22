@@ -626,7 +626,11 @@ public final class TriLeftHandSide<A, B, C> extends AbstractLeftHandSide {
     }
 
     public <NewA> UniLeftHandSide<NewA> andMap(TriFunction<A, B, C, NewA> mapping) {
-        throw new UnsupportedOperationException();
+        Variable<NewA> newA = variableFactory.createVariable("mapped", patternVariableA.getPrimaryVariable(),
+                patternVariableB.getPrimaryVariable(), patternVariableC.getPrimaryVariable(), mapping);
+        List<ViewItem<?>> allPrerequisites = mergeViewItems(patternVariableA, patternVariableB, patternVariableC);
+        DirectPatternVariable<NewA> newPatternVariableA = new DirectPatternVariable<>(newA, allPrerequisites);
+        return new UniLeftHandSide<>(this, newPatternVariableA);
     }
 
     public <Solution_> RuleBuilder<Solution_> andTerminate() {

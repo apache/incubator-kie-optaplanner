@@ -620,7 +620,11 @@ public final class BiLeftHandSide<A, B> extends AbstractLeftHandSide {
     }
 
     public <NewA> UniLeftHandSide<NewA> andMap(BiFunction<A, B, NewA> mapping) {
-        throw new UnsupportedOperationException();
+        Variable<NewA> newA = variableFactory.createVariable("mapped", patternVariableA.getPrimaryVariable(),
+                patternVariableB.getPrimaryVariable(), mapping);
+        List<ViewItem<?>> allPrerequisites = mergeViewItems(patternVariableA, patternVariableB);
+        DirectPatternVariable<NewA> newPatternVariableA = new DirectPatternVariable<>(newA, allPrerequisites);
+        return new UniLeftHandSide<>(this, newPatternVariableA);
     }
 
     public <Solution_> RuleBuilder<Solution_> andTerminate() {
