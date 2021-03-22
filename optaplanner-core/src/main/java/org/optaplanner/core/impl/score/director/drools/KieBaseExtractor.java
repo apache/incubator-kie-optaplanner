@@ -17,13 +17,6 @@
 package org.optaplanner.core.impl.score.director.drools;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
 
 import org.drools.core.io.impl.ClassPathResource;
 import org.drools.core.io.impl.FileSystemResource;
@@ -32,31 +25,22 @@ import org.kie.api.KieBase;
 import org.kie.api.conf.KieBaseMutabilityOption;
 import org.kie.internal.builder.conf.PropertySpecificOption;
 import org.kie.internal.utils.KieHelper;
+import org.kie.kogito.rules.KieRuntimeBuilder;
 import org.optaplanner.core.config.score.director.ScoreDirectorFactoryConfig;
 import org.optaplanner.core.config.util.ConfigUtils;
 
 public class KieBaseExtractor {
 
-    private static Map<String, KieBase> scoreDrlListToKieBaseMap = new HashMap<>();
+    private static KieRuntimeBuilder kieRuntimeBuilder;
 
-    public static void useScoreDrlListToKieBaseMap(Map<String, KieBase> map) {
-        scoreDrlListToKieBaseMap = map;
-    }
-
-    public static String getKieBaseKey(ScoreDirectorFactoryConfig config) {
-        List<String> kieBaseKey =
-                new ArrayList<>(Optional.ofNullable(config.getScoreDrlList()).map(Collection::size).orElse(0) +
-                        Optional.ofNullable(config.getScoreDrlFileList()).map(Collection::size).orElse(0));
-        kieBaseKey.addAll(Optional.ofNullable(config.getScoreDrlList()).orElse(Collections.emptyList()));
-        for (File resource : Optional.ofNullable(config.getScoreDrlFileList()).orElse(Collections.emptyList())) {
-            kieBaseKey.add(resource.getAbsolutePath());
-        }
-
-        return String.join(":", kieBaseKey);
+    public static void useKieRuntimeBuilder(KieRuntimeBuilder theKieRuntimeBuilder) {
+        kieRuntimeBuilder = theKieRuntimeBuilder;
     }
 
     public static KieBase extractKieBase(ScoreDirectorFactoryConfig config, ClassLoader classLoader) {
-        return scoreDrlListToKieBaseMap.computeIfAbsent(getKieBaseKey(config), (key) -> {
+        if (kieRuntimeBuilder != null) {
+            return kieRuntimeBuilder.getKieBase();
+        } else {
             KieHelper kieHelper = new KieHelper(PropertySpecificOption.ALLOWED)
                     .setClassLoader(classLoader);
             if (!ConfigUtils.isEmptyCollection(config.getScoreDrlList())) {
@@ -78,7 +62,7 @@ public class KieBaseExtractor {
             } catch (Exception ex) {
                 throw new IllegalStateException("There is an error in a scoreDrl or scoreDrlFile.", ex);
             }
-        });
+        }
     }
 
     private KieBaseExtractor() {

@@ -422,7 +422,7 @@ class OptaPlannerProcessor {
                 throw new IllegalStateException(
                         "Using scoreDRL in Quarkus, but the dependency org.kie.kogito:kogito-quarkus-rules is not on the classpath.\n"
                                 + "Maybe add the dependency org.kie.kogito:kogito-quarkus-rules"
-                                + "\nOr maybe use a " + ConstraintProvider.class.getSimpleName() + " instead of the scoreDRL.");
+                                + "\nMaybe use a " + ConstraintProvider.class.getSimpleName() + " instead of the scoreDRL.");
             }
         }
     }

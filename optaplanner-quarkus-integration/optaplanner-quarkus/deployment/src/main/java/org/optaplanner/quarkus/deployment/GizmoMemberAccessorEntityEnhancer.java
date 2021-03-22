@@ -51,7 +51,6 @@ import org.jboss.jandex.DotName;
 import org.jboss.jandex.FieldInfo;
 import org.jboss.jandex.IndexView;
 import org.jboss.jandex.MethodInfo;
-import org.kie.api.KieBase;
 import org.kie.kogito.rules.KieRuntimeBuilder;
 import org.objectweb.asm.ClassVisitor;
 import org.objectweb.asm.MethodVisitor;
@@ -488,21 +487,11 @@ public class GizmoMemberAccessorEntityEnhancer {
 
                 ResultHandle thisObj = methodCreator.getThis();
                 ResultHandle kieRuntimeBuilder = methodCreator.readInstanceField(fieldCreator.getFieldDescriptor(), thisObj);
-                ResultHandle kieBase = methodCreator.invokeInterfaceMethod(
-                        MethodDescriptor.ofMethod(KieRuntimeBuilder.class, "getKieBase", KieBase.class),
-                        kieRuntimeBuilder);
-                ResultHandle scoreDrlListToKieBaseMap =
-                        methodCreator.newInstance(MethodDescriptor.ofConstructor(HashMap.class));
-                ResultHandle key = methodCreator.load(KieBaseExtractor.getKieBaseKey(config));
-                methodCreator.invokeInterfaceMethod(
-                        MethodDescriptor.ofMethod(Map.class, "put", Object.class, Object.class, Object.class),
-                        scoreDrlListToKieBaseMap,
-                        key, kieBase);
 
                 methodCreator.invokeStaticMethod(
-                        MethodDescriptor.ofMethod(KieBaseExtractor.class, "useScoreDrlListToKieBaseMap",
-                                void.class, Map.class),
-                        scoreDrlListToKieBaseMap);
+                        MethodDescriptor.ofMethod(KieBaseExtractor.class, "useKieRuntimeBuilder",
+                                void.class, KieRuntimeBuilder.class),
+                        kieRuntimeBuilder);
                 methodCreator.returnValue(null);
             } else {
                 MethodCreator methodCreator =
