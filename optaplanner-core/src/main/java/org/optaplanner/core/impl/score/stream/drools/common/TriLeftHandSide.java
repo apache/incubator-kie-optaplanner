@@ -550,14 +550,14 @@ public final class TriLeftHandSide<A, B, C> extends AbstractLeftHandSide {
         Variable<C> inputC = patternVariableC.getPrimaryVariable();
         Variable<TriTuple<A, B, C>> accumulateSource =
                 (Variable<TriTuple<A, B, C>>) variableFactory.createVariable(TriTuple.class, "source");
-        PatternVariable<C, ?, ?> newPatternVariableD = patternVariableC.bind(accumulateSource,
+        PatternVariable<C, ?, ?> newPatternVariableC = patternVariableC.bind(accumulateSource,
                 patternVariableA.getPrimaryVariable(), patternVariableB.getPrimaryVariable(),
                 (c, a, b) -> new TriTuple<>(a, b, c));
         Variable<TriTuple<NewA, NewB, NewC>> groupKey =
                 (Variable<TriTuple<NewA, NewB, NewC>>) variableFactory.createVariable(TriTuple.class, "groupKey");
         Variable<NewD> accumulateOutputD = variableFactory.createVariable("outputD");
         ViewItem<?> innerGroupByPattern =
-                joinViewItemsWithLogicalAnd(patternVariableA, patternVariableB, patternVariableC, newPatternVariableD);
+                joinViewItemsWithLogicalAnd(patternVariableA, patternVariableB, newPatternVariableC);
         ViewItem<?> groupByPattern = groupBy(innerGroupByPattern, inputA, inputB, inputC, groupKey,
                 createCompositeTriGroupKey(keyMappingA, keyMappingB, keyMappingC),
                 createAccumulateFunction(collectorD, accumulateSource, accumulateOutputD));

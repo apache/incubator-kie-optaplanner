@@ -27,6 +27,7 @@ import org.optaplanner.core.api.score.buildin.simplebigdecimal.SimpleBigDecimalS
 import org.optaplanner.core.api.score.buildin.simplelong.SimpleLongScore;
 import org.optaplanner.core.api.score.stream.AbstractConstraintStreamTest;
 import org.optaplanner.core.api.score.stream.Constraint;
+import org.optaplanner.core.api.score.stream.ConstraintCollectors;
 import org.optaplanner.core.api.score.stream.ConstraintStreamFunctionalTest;
 import org.optaplanner.core.api.score.stream.ConstraintStreamImplType;
 import org.optaplanner.core.impl.score.director.InnerScoreDirector;
@@ -1004,18 +1005,100 @@ public class TriConstraintStreamTest extends AbstractConstraintStreamTest implem
     @TestTemplate
     public void groupBy_3Mapping0Collector() {
         assumeDrools();
+        TestdataLavishSolution solution = TestdataLavishSolution.generateSolution(2, 2, 3, 3);
+        InnerScoreDirector<TestdataLavishSolution, SimpleScore> scoreDirector = buildScoreDirector((factory) -> {
+            return factory.fromUniquePair(TestdataLavishEntity.class)
+                    .join(TestdataLavishEntity.class,
+                            filtering((a, b, c) -> a != c && b != c))
+                    .groupBy((a, b, c) -> a.getEntityGroup(), (a, b, c) -> b.getEntityGroup(), (a, b, c) -> c.getEntityGroup())
+                    .penalize(TEST_CONSTRAINT_NAME, SimpleScore.ONE);
+        });
+
+        TestdataLavishEntityGroup group1 = solution.getEntityGroupList().get(0);
+        TestdataLavishEntityGroup group2 = solution.getEntityGroupList().get(1);
+        TestdataLavishEntityGroup group3 = solution.getEntityGroupList().get(2);
+
+        // From scratch
+        scoreDirector.setWorkingSolution(solution);
+        assertScore(scoreDirector,
+                assertMatchWithScore(-1, group1, group2, group3),
+                assertMatchWithScore(-1, group1, group3, group2),
+                assertMatchWithScore(-1, group2, group3, group1));
+
+        // Incremental
+        TestdataLavishEntity entity = solution.getFirstEntity();
+        scoreDirector.beforeEntityRemoved(entity);
+        solution.getEntityList().remove(entity);
+        scoreDirector.afterEntityRemoved(entity);
+        assertScore(scoreDirector);
     }
 
     @Override
     @TestTemplate
     public void groupBy_3Mapping1Collector() {
         assumeDrools();
+        TestdataLavishSolution solution = TestdataLavishSolution.generateSolution(2, 2, 3, 3);
+        InnerScoreDirector<TestdataLavishSolution, SimpleScore> scoreDirector = buildScoreDirector((factory) -> {
+            return factory.fromUniquePair(TestdataLavishEntity.class)
+                    .join(TestdataLavishEntity.class,
+                            filtering((a, b, c) -> a != c && b != c))
+                    .groupBy((a, b, c) -> a.getEntityGroup(), (a, b, c) -> b.getEntityGroup(), (a, b, c) -> c.getEntityGroup(),
+                            ConstraintCollectors.countTri())
+                    .penalize(TEST_CONSTRAINT_NAME, SimpleScore.ONE);
+        });
+
+        TestdataLavishEntityGroup group1 = solution.getEntityGroupList().get(0);
+        TestdataLavishEntityGroup group2 = solution.getEntityGroupList().get(1);
+        TestdataLavishEntityGroup group3 = solution.getEntityGroupList().get(2);
+
+        // From scratch
+        scoreDirector.setWorkingSolution(solution);
+        assertScore(scoreDirector,
+                assertMatchWithScore(-1, group1, group2, group3, 1),
+                assertMatchWithScore(-1, group1, group3, group2, 1),
+                assertMatchWithScore(-1, group2, group3, group1, 1));
+
+        // Incremental
+        TestdataLavishEntity entity = solution.getFirstEntity();
+        scoreDirector.beforeEntityRemoved(entity);
+        solution.getEntityList().remove(entity);
+        scoreDirector.afterEntityRemoved(entity);
+        assertScore(scoreDirector);
     }
 
     @Override
     @TestTemplate
     public void groupBy_4Mapping0Collector() {
         assumeDrools();
+        TestdataLavishSolution solution = TestdataLavishSolution.generateSolution(2, 2, 3, 3);
+        InnerScoreDirector<TestdataLavishSolution, SimpleScore> scoreDirector = buildScoreDirector((factory) -> {
+            return factory.fromUniquePair(TestdataLavishEntity.class)
+                    .join(TestdataLavishEntity.class,
+                            filtering((a, b, c) -> a != c && b != c))
+                    .groupBy((a, b, c) -> a.getEntityGroup(), (a, b, c) -> b.getEntityGroup(), (a, b, c) -> c.getEntityGroup(),
+                            (a, b, c) -> a.getValue())
+                    .penalize(TEST_CONSTRAINT_NAME, SimpleScore.ONE);
+        });
+
+        TestdataLavishEntityGroup group1 = solution.getEntityGroupList().get(0);
+        TestdataLavishEntityGroup group2 = solution.getEntityGroupList().get(1);
+        TestdataLavishEntityGroup group3 = solution.getEntityGroupList().get(2);
+        TestdataLavishValue value1 = solution.getValueList().get(0);
+        TestdataLavishValue value2 = solution.getValueList().get(1);
+
+        // From scratch
+        scoreDirector.setWorkingSolution(solution);
+        assertScore(scoreDirector,
+                assertMatchWithScore(-1, group1, group2, group3, value1),
+                assertMatchWithScore(-1, group1, group3, group2, value2),
+                assertMatchWithScore(-1, group2, group3, group1, value1));
+
+        // Incremental
+        TestdataLavishEntity entity = solution.getFirstEntity();
+        scoreDirector.beforeEntityRemoved(entity);
+        solution.getEntityList().remove(entity);
+        scoreDirector.afterEntityRemoved(entity);
+        assertScore(scoreDirector);
     }
 
     // ************************************************************************
