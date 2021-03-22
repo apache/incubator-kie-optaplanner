@@ -953,15 +953,16 @@ public interface UniConstraintStream<A> extends ConstraintStream {
      * There are several recommendations for implementing the mapping function:
      *
      * <ul>
+     *     <li>Purity.
+     *     The mapping function should only depend on its input.
+     *     That is, given the same input, it always returns the same output.
+     *     </li>
      *     <li>Simplicity.
      *     The function should only take the argument and return another simple value,
-     *     without performing any computation.
+     *     without performing any significant computation.
      *     Not following this recommendation may result in performance loss,
-     *     as the function will be called fairly frequently.</li>
-     *     <li>Statelessness.
-     *     The function should be self-contained and should not read or modify any external state.
-     *     Not following this recommendation may result in score corruptions.</li>
-     *     <li>Plain data carriers.
+     *     as the function may be called frequently.</li>
+     *     <li>Returns plain data carriers.
      *     The tuples returned by the mapping function should be identified by their contents and nothing else.
      *     If two tuples carry objects which {@link #equals(Object) equal} one another, those two tuples should likewise
      *     {@link #equals(Object) equal} and preferably be the same instance.
