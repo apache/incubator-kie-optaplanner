@@ -261,6 +261,15 @@ public abstract class DroolsAbstractTriConstraintStream<Solution_, A, B, C>
     }
 
     // ************************************************************************
+    // Operations w/ duplicate tuple possibility
+    // ************************************************************************
+
+    @Override
+    public <ResultA_> UniConstraintStream<ResultA_> map(TriFunction<A, B, C, ResultA_> mapping) {
+        throw new UnsupportedOperationException();
+    }
+
+    // ************************************************************************
     // Penalize/reward
     // ************************************************************************
 

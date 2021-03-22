@@ -925,7 +925,8 @@ public interface UniConstraintStream<A> extends ConstraintStream {
      * The fourth fact is the return value of the fourth group key mapping function, applied on all incoming tuples with
      * the same first fact.
      *
-     * @param groupKeyAMapping never null, function to convert the original tuple into a first fact
+     * @param groupKeyAMapping      * calling {@code map(Person::getAge)} on such stream will produce a stream of {@link Integer}s
+     *      * {@code [20, 25, 30]},
      * @param groupKeyBMapping never null, function to convert the original tuple into a second fact
      * @param groupKeyCMapping never null, function to convert the original tuple into a third fact
      * @param groupKeyDMapping never null, function to convert the original tuple into a fourth fact
@@ -945,12 +946,58 @@ public interface UniConstraintStream<A> extends ConstraintStream {
     // ************************************************************************
 
     /**
+     * Transforms the stream in such a way that tuples will be remapped using the given function.
+     * This may produce a stream with duplicate tuples.
+     * See {@link #distinct()} for details.
+     *
+     * There are several recommendations for implementing the mapping function:
+     *
+     * <ul>
+     *     <li>Simplicity.
+     *     The function should only take the argument and return another simple value,
+     *     without performing any computation.
+     *     Not following this recommendation may result in performance loss,
+     *     as the function will be called fairly frequently.</li>
+     *     <li>Statelessness.
+     *     The function should be self-contained and should not read or modify any external state.
+     *     Not following this recommendation may result in score corruptions.</li>
+     *     <li>Plain data carriers.
+     *     The tuples returned by the mapping function should be identified by their contents and nothing else.
+     *     If two tuples carry objects which {@link #equals(Object) equal} one another, those two tuples should likewise
+     *     {@link #equals(Object) equal} and preferably be the same instance.
+     *     Java Records are the ideal tool for this particular use case.
+     *     </li>
+     *     <li>Bijectivity.
+     *     No two input tuples should map to the same output tuple, or to tuples that are {@link #equals(Object) equal}.
+     *     Not following this recommendation will create a constraint stream with duplicate tuples,
+     *     and may force you to use {@link #distinct()} later.</li>
+     * </ul>
+     *
+     * <p>
+     * Simple example: assuming a constraint stream of tuple of {@code Person}s
+     * {@code [Ann(age = 20), Beth(age = 25), Cathy(age = 30)]},
+     * calling {@code map(Person::getAge)} on such stream will produce a stream of {@link Integer}s
+     * {@code [20, 25, 30]},
+     *
+     * <p>
+     * Example with a non-bijective mapping function: assuming a constraint stream of tuple of {@code Person}s
+     * {@code [Ann(age = 20), Beth(age = 25), Cathy(age = 30), David(age = 30), Eric(age = 20)]},
+     * calling {@code map(Person::getAge)} on such stream will produce a stream of {@link Integer}s
+     * {@code [20, 25, 30, 30, 20]}.
+     *
+     * @param mapping never null, function to convert the original tuple into the new tuple
+     * @param <ResultA_> the type of the only fact in the resulting {@link UniConstraintStream}'s tuple
+     * @return never null
+     */
+    <ResultA_> UniConstraintStream<ResultA_> map(Function<A, ResultA_> mapping);
+
+    /**
      * Transforms the stream in such a way that all the tuples going through it are distinct.
      * (No two tuples will {@link Object#equals(Object) equal}.)
      *
      * <p>
      * By default, tuples going through a constraint stream are distinct.
-     * However, certain operations (such as map()) may create a stream which breaks that promise.
+     * However, operations such as {@link #map(Function)} may create a stream which breaks that promise.
      * By calling this method on such a stream,
      * duplicate copies of the same tuple will be omitted at a performance cost.
      *

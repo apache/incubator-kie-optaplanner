@@ -19,7 +19,6 @@ package org.optaplanner.core.impl.score.stream.bavet.tri;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
-
 import org.optaplanner.core.api.function.ToIntTriFunction;
 import org.optaplanner.core.api.function.ToLongTriFunction;
 import org.optaplanner.core.api.function.TriFunction;
@@ -201,6 +200,15 @@ public abstract class BavetAbstractTriConstraintStream<Solution_, A, B, C> exten
     public <GroupKeyA_, GroupKeyB_, GroupKeyC_, GroupKeyD_> QuadConstraintStream<GroupKeyA_, GroupKeyB_, GroupKeyC_, GroupKeyD_>
             groupBy(TriFunction<A, B, C, GroupKeyA_> groupKeyAMapping, TriFunction<A, B, C, GroupKeyB_> groupKeyBMapping,
                     TriFunction<A, B, C, GroupKeyC_> groupKeyCMapping, TriFunction<A, B, C, GroupKeyD_> groupKeyDMapping) {
+        throw new UnsupportedOperationException();
+    }
+
+    // ************************************************************************
+    // Operations w/ duplicate tuple possibility
+    // ************************************************************************
+
+    @Override
+    public <ResultA_> UniConstraintStream<ResultA_> map(TriFunction<A, B, C, ResultA_> mapping) {
         throw new UnsupportedOperationException();
     }
 

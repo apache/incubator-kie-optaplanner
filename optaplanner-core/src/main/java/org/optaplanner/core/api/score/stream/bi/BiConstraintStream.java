@@ -763,12 +763,21 @@ public interface BiConstraintStream<A, B> extends ConstraintStream {
     // ************************************************************************
 
     /**
+     * As defined by {@link UniConstraintStream#map(Function)}.
+     *
+     * @param mapping never null, function to convert the original tuple into the new tuple
+     * @param <ResultA_> the type of the only fact in the resulting {@link UniConstraintStream}'s tuple
+     * @return never null
+     */
+    <ResultA_> UniConstraintStream<ResultA_> map(BiFunction<A, B, ResultA_> mapping);
+
+    /**
      * Transforms the stream in such a way that all the tuples going through it are distinct.
      * (No two tuples will {@link Object#equals(Object) equal}.)
      *
      * <p>
      * By default, tuples going through a constraint stream are distinct.
-     * However, certain operations (such as map()) may create a stream which breaks that promise.
+     * However, operations such as {@link #map(BiFunction)} may create a stream which breaks that promise.
      * By calling this method on such a stream,
      * duplicate copies of the same tuple will be omitted at a performance cost.
      *

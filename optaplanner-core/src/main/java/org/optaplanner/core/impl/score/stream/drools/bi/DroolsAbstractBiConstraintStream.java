@@ -257,6 +257,15 @@ public abstract class DroolsAbstractBiConstraintStream<Solution_, A, B>
     }
 
     // ************************************************************************
+    // Operations w/ duplicate tuple possibility
+    // ************************************************************************
+
+    @Override
+    public <ResultA_> UniConstraintStream<ResultA_> map(BiFunction<A, B, ResultA_> mapping) {
+        throw new UnsupportedOperationException();
+    }
+
+    // ************************************************************************
     // Penalize/reward
     // ************************************************************************
 

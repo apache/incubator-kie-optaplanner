@@ -17,7 +17,6 @@
 package org.optaplanner.core.impl.score.stream.drools.quad;
 
 import java.math.BigDecimal;
-
 import org.optaplanner.core.api.function.QuadFunction;
 import org.optaplanner.core.api.function.QuadPredicate;
 import org.optaplanner.core.api.function.ToIntQuadFunction;
@@ -247,6 +246,15 @@ public abstract class DroolsAbstractQuadConstraintStream<Solution_, A, B, C, D>
                         groupKeyCMapping, groupKeyDMapping);
         addChildStream(stream);
         return stream;
+    }
+
+    // ************************************************************************
+    // Operations w/ duplicate tuple possibility
+    // ************************************************************************
+
+    @Override
+    public <ResultA_> UniConstraintStream<ResultA_> map(QuadFunction<A, B, C, D, ResultA_> mapping) {
+        throw new UnsupportedOperationException();
     }
 
     // ************************************************************************

@@ -265,6 +265,15 @@ public abstract class DroolsAbstractUniConstraintStream<Solution_, A> extends Dr
     }
 
     // ************************************************************************
+    // Operations w/ duplicate tuple possibility
+    // ************************************************************************
+
+    @Override
+    public <ResultA_> UniConstraintStream<ResultA_> map(Function<A, ResultA_> mapping) {
+        throw new UnsupportedOperationException();
+    }
+
+    // ************************************************************************
     // Penalize/reward
     // ************************************************************************
 

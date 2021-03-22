@@ -257,6 +257,15 @@ public abstract class BavetAbstractUniConstraintStream<Solution_, A> extends Bav
     }
 
     // ************************************************************************
+    // Operations w/ duplicate tuple possibility
+    // ************************************************************************
+
+    @Override
+    public <ResultA_> UniConstraintStream<ResultA_> map(Function<A, ResultA_> mapping) {
+        throw new UnsupportedOperationException(); // TODO
+    }
+
+    // ************************************************************************
     // Penalize/reward
     // ************************************************************************
 
