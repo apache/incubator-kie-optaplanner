@@ -51,32 +51,6 @@ final class DroolsVariableFactoryImpl implements DroolsVariableFactory {
     }
 
     @Override
-    public <U, Result_> Variable<Result_> createVariable(String baseName, Variable<U> source, Function<U, Result_> mapping) {
-        return (Variable<Result_>) declarationOf(source.getType(), generateUniqueId(baseName), from(source, mapping::apply));
-    }
-
-    @Override
-    public <U, V, Result_> Variable<Result_> createVariable(String baseName, Variable<U> source1, Variable<V> source2,
-            BiFunction<U, V, Result_> mapping) {
-        return (Variable<Result_>) declarationOf(Object.class, generateUniqueId(baseName),
-                from(source1, source2, mapping::apply));
-    }
-
-    @Override
-    public <U, V, W, Result_> Variable<Result_> createVariable(String baseName, Variable<U> source1, Variable<V> source2,
-            Variable<W> source3, TriFunction<U, V, W, Result_> mapping) {
-        return (Variable<Result_>) declarationOf(Object.class, generateUniqueId(baseName),
-                from(source1, source2, source3, mapping::apply));
-    }
-
-    @Override
-    public <U, V, W, Y, Result_> Variable<Result_> createVariable(String baseName, Variable<U> source1, Variable<V> source2,
-            Variable<W> source3, Variable<Y> source4, QuadFunction<U, V, W, Y, Result_> mapping) {
-        return (Variable<Result_>) declarationOf(Object.class, generateUniqueId(baseName),
-                from(source1, source2, source3, source4, mapping::apply));
-    }
-
-    @Override
     public <U> Variable<U> createVariable(String baseName, Variable<U> source, boolean flatten) {
         if (flatten) {
             return declarationOf(source.getType(), generateUniqueId(baseName), from(source));
