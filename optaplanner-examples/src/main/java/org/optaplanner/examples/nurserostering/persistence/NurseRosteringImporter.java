@@ -16,6 +16,8 @@
 
 package org.optaplanner.examples.nurserostering.persistence;
 
+import static java.time.temporal.ChronoUnit.DAYS;
+
 import java.io.IOException;
 import java.math.BigInteger;
 import java.time.DayOfWeek;
@@ -26,6 +28,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 import org.apache.commons.lang3.tuple.Pair;
 import org.jdom.DataConversionException;
 import org.jdom.Element;
@@ -59,8 +62,6 @@ import org.optaplanner.examples.nurserostering.domain.request.DayOffRequest;
 import org.optaplanner.examples.nurserostering.domain.request.DayOnRequest;
 import org.optaplanner.examples.nurserostering.domain.request.ShiftOffRequest;
 import org.optaplanner.examples.nurserostering.domain.request.ShiftOnRequest;
-
-import static java.time.temporal.ChronoUnit.DAYS;
 
 public class NurseRosteringImporter extends AbstractXmlSolutionImporter<NurseRoster> {
 
