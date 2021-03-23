@@ -16,15 +16,6 @@
 
 package org.optaplanner.core.impl.score.stream.drools.common;
 
-import static java.util.Collections.singletonList;
-import static org.drools.model.DSL.accFunction;
-import static org.drools.model.DSL.accumulate;
-import static org.drools.model.DSL.exists;
-import static org.drools.model.DSL.groupBy;
-import static org.drools.model.DSL.not;
-import static org.drools.model.PatternDSL.betaIndexedBy;
-import static org.drools.model.PatternDSL.pattern;
-
 import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
@@ -35,7 +26,6 @@ import java.util.function.Function;
 import java.util.function.ToIntBiFunction;
 import java.util.function.ToLongBiFunction;
 import java.util.stream.Stream;
-
 import org.drools.model.BetaIndex2;
 import org.drools.model.PatternDSL;
 import org.drools.model.Variable;
@@ -51,6 +41,15 @@ import org.optaplanner.core.impl.score.stream.drools.DroolsVariableFactory;
 import org.optaplanner.core.impl.score.stream.tri.AbstractTriJoiner;
 import org.optaplanner.core.impl.score.stream.tri.FilteringTriJoiner;
 import org.optaplanner.core.impl.score.stream.tri.NoneTriJoiner;
+
+import static java.util.Collections.singletonList;
+import static org.drools.model.DSL.accFunction;
+import static org.drools.model.DSL.accumulate;
+import static org.drools.model.DSL.exists;
+import static org.drools.model.DSL.groupBy;
+import static org.drools.model.DSL.not;
+import static org.drools.model.PatternDSL.betaIndexedBy;
+import static org.drools.model.PatternDSL.pattern;
 
 /**
  * Represents the left hand side of a Drools rule, the result of which are two variables.
@@ -430,12 +429,9 @@ public final class BiLeftHandSide<A, B> extends AbstractLeftHandSide {
                 createCompositeBiGroupKey(keyMappingA, keyMappingB));
         Variable<NewA> newA = variableFactory.createVariable("newA");
         Variable<NewB> newB = variableFactory.createVariable("newB");
-        DirectPatternVariable<BiTuple<NewA, NewB>> groupKeyPatternVar =
-                new DirectPatternVariable<>(groupKey, singletonList(groupByPattern))
-                        .bind(newA, tuple -> tuple.a)
-                        .bind(newB, tuple -> tuple.b);
+        DirectPatternVariable<BiTuple<NewA, NewB>> tuplePatternVar = decompose(groupKey, groupByPattern, newA, newB);
         PatternVariable<NewB, BiTuple<NewA, NewB>, ?> bPatternVar =
-                new IndirectPatternVariable<>(groupKeyPatternVar, newB, tuple -> tuple.b);
+                new IndirectPatternVariable<>(tuplePatternVar, newB, tuple -> tuple.b);
         // No simple context; due to the need to decompose the group key, the pattern variables are required.
         return new BiLeftHandSide<>(new DetachedPatternVariable<>(newA), bPatternVar, variableFactory);
     }
@@ -457,11 +453,8 @@ public final class BiLeftHandSide<A, B> extends AbstractLeftHandSide {
                 createAccumulateFunction(collectorC, accumulateSource, accumulateOutput));
         Variable<NewA> newA = variableFactory.createVariable("newA");
         Variable<NewB> newB = variableFactory.createVariable("newB");
-        DirectPatternVariable<BiTuple<NewA, NewB>> directPatternVariable =
-                new DirectPatternVariable<>(groupKey, singletonList(groupByPattern))
-                        .bind(newA, tuple -> tuple.a)
-                        .bind(newB, tuple -> tuple.b);
-        List<ViewItem<?>> prerequisites = directPatternVariable.build();
+        DirectPatternVariable<BiTuple<NewA, NewB>> tuplePatternVar = decompose(groupKey, groupByPattern, newA, newB);
+        List<ViewItem<?>> prerequisites = tuplePatternVar.build();
         // No simple context; due to the need to decompose the group key, the pattern variables are required.
         return new TriLeftHandSide<>(new DetachedPatternVariable<>(newA), new DetachedPatternVariable<>(newB),
                 new DirectPatternVariable<>(accumulateOutput, prerequisites), variableFactory);
@@ -487,11 +480,8 @@ public final class BiLeftHandSide<A, B> extends AbstractLeftHandSide {
                 createAccumulateFunction(collectorD, accumulateSource, accumulateOutputD));
         Variable<NewA> newA = variableFactory.createVariable("newA");
         Variable<NewB> newB = variableFactory.createVariable("newB");
-        DirectPatternVariable<BiTuple<NewA, NewB>> directPatternVariable =
-                new DirectPatternVariable<>(groupKey, singletonList(groupByPattern))
-                        .bind(newA, tuple -> tuple.a)
-                        .bind(newB, tuple -> tuple.b);
-        List<ViewItem<?>> prerequisites = directPatternVariable.build();
+        DirectPatternVariable<BiTuple<NewA, NewB>> tuplePatternVar = decompose(groupKey, groupByPattern, newA, newB);
+        List<ViewItem<?>> prerequisites = tuplePatternVar.build();
         // No simple context; due to the need to decompose the group key, the pattern variables are required.
         return new QuadLeftHandSide<>(new DetachedPatternVariable<>(newA), new DetachedPatternVariable<>(newB),
                 new DetachedPatternVariable<>(accumulateOutputC),
@@ -529,13 +519,10 @@ public final class BiLeftHandSide<A, B> extends AbstractLeftHandSide {
         Variable<NewA> newA = variableFactory.createVariable("newA");
         Variable<NewB> newB = variableFactory.createVariable("newB");
         Variable<NewC> newC = variableFactory.createVariable("newC");
-        DirectPatternVariable<TriTuple<NewA, NewB, NewC>> groupKeyPatternVar =
-                new DirectPatternVariable<>(groupKey, singletonList(groupByPattern))
-                        .bind(newA, tuple -> tuple.a)
-                        .bind(newB, tuple -> tuple.b)
-                        .bind(newC, tuple -> tuple.c);
+        DirectPatternVariable<TriTuple<NewA, NewB, NewC>> tuplePatternVar =
+                decompose(groupKey, groupByPattern, newA, newB, newC);
         PatternVariable<NewC, TriTuple<NewA, NewB, NewC>, ?> cPatternVar =
-                new IndirectPatternVariable<>(groupKeyPatternVar, newC, tuple -> tuple.c);
+                new IndirectPatternVariable<>(tuplePatternVar, newC, tuple -> tuple.c);
         // No simple context; due to the need to decompose the group key, the pattern variables are required.
         return new TriLeftHandSide<>(new DetachedPatternVariable<>(newA), new DetachedPatternVariable<>(newB),
                 cPatternVar, variableFactory);
@@ -561,12 +548,9 @@ public final class BiLeftHandSide<A, B> extends AbstractLeftHandSide {
         Variable<NewA> newA = variableFactory.createVariable("newA");
         Variable<NewB> newB = variableFactory.createVariable("newB");
         Variable<NewC> newC = variableFactory.createVariable("newC");
-        DirectPatternVariable<TriTuple<NewA, NewB, NewC>> directPatternVariable =
-                new DirectPatternVariable<>(groupKey, singletonList(groupByPattern))
-                        .bind(newA, tuple -> tuple.a)
-                        .bind(newB, tuple -> tuple.b)
-                        .bind(newC, tuple -> tuple.c);
-        List<ViewItem<?>> prerequisites = directPatternVariable.build();
+        DirectPatternVariable<TriTuple<NewA, NewB, NewC>> tuplePatternVar =
+                decompose(groupKey, groupByPattern, newA, newB, newC);
+        List<ViewItem<?>> prerequisites = tuplePatternVar.build();
         // No simple context; due to the need to decompose the group key, the pattern variables are required.
         return new QuadLeftHandSide<>(new DetachedPatternVariable<>(newA), new DetachedPatternVariable<>(newB),
                 new DetachedPatternVariable<>(newC),
@@ -607,14 +591,10 @@ public final class BiLeftHandSide<A, B> extends AbstractLeftHandSide {
         Variable<NewB> newB = variableFactory.createVariable("newB");
         Variable<NewC> newC = variableFactory.createVariable("newC");
         Variable<NewD> newD = variableFactory.createVariable("newD");
-        DirectPatternVariable<QuadTuple<NewA, NewB, NewC, NewD>> groupKeyPatternVar =
-                new DirectPatternVariable<>(groupKey, singletonList(groupByPattern))
-                        .bind(newA, tuple -> tuple.a)
-                        .bind(newB, tuple -> tuple.b)
-                        .bind(newC, tuple -> tuple.c)
-                        .bind(newD, tuple -> tuple.d);
+        DirectPatternVariable<QuadTuple<NewA, NewB, NewC, NewD>> tuplePatternVar =
+                decompose(groupKey, groupByPattern, newA, newB, newC, newD);
         PatternVariable<NewD, QuadTuple<NewA, NewB, NewC, NewD>, ?> dPatternVar =
-                new IndirectPatternVariable<>(groupKeyPatternVar, newD, tuple -> tuple.d);
+                new IndirectPatternVariable<>(tuplePatternVar, newD, tuple -> tuple.d);
         // No simple context; due to the need to decompose the group key, the pattern variables are required.
         return new QuadLeftHandSide<>(new DetachedPatternVariable<>(newA), new DetachedPatternVariable<>(newB),
                 new DetachedPatternVariable<>(newC), dPatternVar, variableFactory);
