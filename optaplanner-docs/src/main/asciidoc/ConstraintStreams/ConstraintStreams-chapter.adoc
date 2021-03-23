@@ -625,6 +625,13 @@ The result of such mapping is `UniConstraintStream` of the mapped tuples.
     }
 ----
 
+[NOTE]
+====
+In the example above, the mapping function produces duplicate tuples if two different `CloudProcess`es share a single `CloudComputer`.
+That is, such `CloudComputer` will appear in the resulting constraint stream twice.
+See <<constraintStreamsDistinct,`distinct()`>> for how to deal with duplicate tuples.
+====
+
 [[constraintStreamsMappingFunction]]
 ==== Designing the mapping function
 
