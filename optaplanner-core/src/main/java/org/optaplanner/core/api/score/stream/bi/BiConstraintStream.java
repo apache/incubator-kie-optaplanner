@@ -779,7 +779,7 @@ public interface BiConstraintStream<A, B> extends ConstraintStream {
      * By default, tuples going through a constraint stream are distinct.
      * However, operations such as {@link #map(BiFunction)} may create a stream which breaks that promise.
      * By calling this method on such a stream,
-     * duplicate copies of the same tuple will be omitted at a performance cost.
+     * duplicate copies of the same tuple are omitted at a performance cost.
      *
      * @return never null
      */
