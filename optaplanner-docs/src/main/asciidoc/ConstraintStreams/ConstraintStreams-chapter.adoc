@@ -635,7 +635,7 @@ See <<constraintStreamsDistinct,`distinct()`>> for how to deal with duplicate tu
 [[constraintStreamsMappingFunction]]
 ==== Designing the mapping function
 
-When designing the mapping function, we recommend you follow these guidelines for optimal performance:
+When designing the mapping function, follow these guidelines for optimal performance:
 
 * Keep the function pure.
   The mapping function should only depend on its input.
