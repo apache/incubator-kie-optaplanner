@@ -966,7 +966,7 @@ public interface UniConstraintStream<A> extends ConstraintStream {
      * No two input tuples should map to the same output tuple,
      * or to tuples that are {@link Object#equals(Object) equal}.
      * Not following this recommendation creates a constraint stream with duplicate tuples,
-     * and may force you to use {@link #distinct()} later.</li>
+     * and may force you to use {@link #distinct()} later, which comes with a performance cost.</li>
      * <li>Immutable data carriers.
      * The tuples returned by the mapping function should be identified by their contents and nothing else.
      * They should also be immutable, meaning their contents should not be allowed to change.
