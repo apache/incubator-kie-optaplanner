@@ -773,7 +773,7 @@ public interface BiConstraintStream<A, B> extends ConstraintStream {
 
     /**
      * Transforms the stream in such a way that all the tuples going through it are distinct.
-     * (No two tuples will {@link Object#equals(Object) equal}.)
+     * (No two result tuples are {@link Object#equals(Object) equal}.)
      *
      * <p>
      * By default, tuples going through a constraint stream are distinct.
