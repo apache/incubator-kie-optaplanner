@@ -17,6 +17,7 @@
 package org.optaplanner.core.impl.score.stream.drools.uni;
 
 import java.math.BigDecimal;
+import java.util.Objects;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.ToIntFunction;
@@ -271,7 +272,7 @@ public abstract class DroolsAbstractUniConstraintStream<Solution_, A> extends Dr
     @Override
     public <ResultA_> UniConstraintStream<ResultA_> map(Function<A, ResultA_> mapping) {
         DroolsMappingUniConstraintStream<Solution_, ResultA_> stream =
-                new DroolsMappingUniConstraintStream<>(constraintFactory, this, mapping);
+                new DroolsMappingUniConstraintStream<>(constraintFactory, this, Objects.requireNonNull(mapping));
         addChildStream(stream);
         return stream;
     }

@@ -16,6 +16,7 @@
 package org.optaplanner.core.impl.score.stream.drools.bi;
 
 import java.math.BigDecimal;
+import java.util.Objects;
 import java.util.function.BiFunction;
 import java.util.function.BiPredicate;
 import java.util.function.ToIntBiFunction;
@@ -264,7 +265,7 @@ public abstract class DroolsAbstractBiConstraintStream<Solution_, A, B>
     @Override
     public <ResultA_> UniConstraintStream<ResultA_> map(BiFunction<A, B, ResultA_> mapping) {
         DroolsMappingUniConstraintStream<Solution_, ResultA_> stream =
-                new DroolsMappingUniConstraintStream<>(constraintFactory, this, mapping);
+                new DroolsMappingUniConstraintStream<>(constraintFactory, this, Objects.requireNonNull(mapping));
         addChildStream(stream);
         return stream;
     }

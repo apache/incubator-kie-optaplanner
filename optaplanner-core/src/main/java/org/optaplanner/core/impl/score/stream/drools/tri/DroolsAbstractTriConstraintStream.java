@@ -17,6 +17,7 @@
 package org.optaplanner.core.impl.score.stream.drools.tri;
 
 import java.math.BigDecimal;
+import java.util.Objects;
 
 import org.optaplanner.core.api.function.ToIntTriFunction;
 import org.optaplanner.core.api.function.ToLongTriFunction;
@@ -268,7 +269,7 @@ public abstract class DroolsAbstractTriConstraintStream<Solution_, A, B, C>
     @Override
     public <ResultA_> UniConstraintStream<ResultA_> map(TriFunction<A, B, C, ResultA_> mapping) {
         DroolsMappingUniConstraintStream<Solution_, ResultA_> stream =
-                new DroolsMappingUniConstraintStream<>(constraintFactory, this, mapping);
+                new DroolsMappingUniConstraintStream<>(constraintFactory, this, Objects.requireNonNull(mapping));
         addChildStream(stream);
         return stream;
     }

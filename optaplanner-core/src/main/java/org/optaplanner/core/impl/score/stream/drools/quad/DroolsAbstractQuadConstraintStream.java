@@ -17,6 +17,7 @@
 package org.optaplanner.core.impl.score.stream.drools.quad;
 
 import java.math.BigDecimal;
+import java.util.Objects;
 
 import org.optaplanner.core.api.function.QuadFunction;
 import org.optaplanner.core.api.function.QuadPredicate;
@@ -257,7 +258,7 @@ public abstract class DroolsAbstractQuadConstraintStream<Solution_, A, B, C, D>
     @Override
     public <ResultA_> UniConstraintStream<ResultA_> map(QuadFunction<A, B, C, D, ResultA_> mapping) {
         DroolsMappingUniConstraintStream<Solution_, ResultA_> stream =
-                new DroolsMappingUniConstraintStream<>(constraintFactory, this, mapping);
+                new DroolsMappingUniConstraintStream<>(constraintFactory, this, Objects.requireNonNull(mapping));
         addChildStream(stream);
         return stream;
     }
