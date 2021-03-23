@@ -730,7 +730,14 @@
           <configuration>
             <author>false</author>
             <failOnError>true</failOnError>
-            <failOnWarnings>true</failOnWarnings>
+            <!--
+                 Disabled to workaround the following issue on JDK 16+:
+                 Warning:  javadoc: warning - The -footer option is no longer supported and will be ignored.
+
+                 Since we do not add the footer ourselves, it must be the plugin itself.
+                 Therefore until a new Javadoc plugin version is released, there is no better workaround.
+            -->
+            <!-- <failOnWarnings>true</failOnWarnings>-->
             <quiet>true</quiet>
           </configuration>
         </plugin>
