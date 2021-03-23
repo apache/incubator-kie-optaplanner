@@ -679,7 +679,7 @@ to have the duplicate copies eliminated.
 [NOTE]
 ====
 There is a performance cost to `distinct()`.
-For optimal performance, make sure that your constraint streams never produce duplicate tuples.
+For optimal performance, don't use constraint stream operations that produce duplicate tuples, to avoid the need to call `distinct()`.
 ====
 
 [[constraintStreamsTesting]]
