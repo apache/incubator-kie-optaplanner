@@ -962,17 +962,17 @@ public interface UniConstraintStream<A> extends ConstraintStream {
      * without performing any significant computation.
      * Not following this recommendation may result in performance loss,
      * as the function may be called frequently.</li>
-     * <li>Returns plain data carriers.
-     * The tuples returned by the mapping function should be identified by their contents and nothing else.
-     * If two tuples carry objects which {@link Object#equals(Object) equal} one another,
-     * those two tuples should likewise {@link Object#equals(Object) equal} and preferably be the same instance.
-     * Java Records are the ideal tool for this particular use case.
-     * </li>
      * <li>Bijectivity.
      * No two input tuples should map to the same output tuple,
      * or to tuples that are {@link Object#equals(Object) equal}.
      * Not following this recommendation will create a constraint stream with duplicate tuples,
      * and may force you to use {@link #distinct()} later.</li>
+     * <li>Immutable data carriers.
+     * The tuples returned by the mapping function should be identified by their contents and nothing else.
+     * They should also be immutable, meaning their contents should not be allowed to change.
+     * If two tuples carry objects which {@link Object#equals(Object) equal} one another,
+     * those two tuples should likewise {@link Object#equals(Object) equal} and preferably be the same instance.
+     * Java Records are the ideal tool for this particular use case.</li>
      * </ul>
      *
      * <p>
