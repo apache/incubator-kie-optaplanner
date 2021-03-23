@@ -31,13 +31,17 @@ import org.optaplanner.core.config.util.ConfigUtils;
 
 public class KieBaseExtractor {
 
-    private static KieRuntimeBuilder kieRuntimeBuilder;
+    private final KieRuntimeBuilder kieRuntimeBuilder;
 
-    public static void useKieRuntimeBuilder(KieRuntimeBuilder theKieRuntimeBuilder) {
-        kieRuntimeBuilder = theKieRuntimeBuilder;
+    public KieBaseExtractor() {
+        kieRuntimeBuilder = null;
     }
 
-    public static KieBase extractKieBase(ScoreDirectorFactoryConfig config, ClassLoader classLoader) {
+    public KieBaseExtractor(KieRuntimeBuilder kieRuntimeBuilder) {
+        this.kieRuntimeBuilder = kieRuntimeBuilder;
+    }
+
+    public KieBase extractKieBase(ScoreDirectorFactoryConfig config, ClassLoader classLoader) {
         if (kieRuntimeBuilder != null) {
             return kieRuntimeBuilder.getKieBase();
         } else {
@@ -63,8 +67,5 @@ public class KieBaseExtractor {
                 throw new IllegalStateException("There is an error in a scoreDrl or scoreDrlFile.", ex);
             }
         }
-    }
-
-    private KieBaseExtractor() {
     }
 }

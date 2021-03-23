@@ -36,6 +36,7 @@ import org.optaplanner.core.api.solver.SolverFactory;
 import org.optaplanner.core.api.solver.SolverManager;
 import org.optaplanner.core.config.solver.SolverConfig;
 import org.optaplanner.core.config.solver.SolverManagerConfig;
+import org.optaplanner.core.impl.solver.DefaultSolverFactory;
 import org.optaplanner.core.config.solver.termination.TerminationConfig;
 import org.optaplanner.quarkus.config.OptaPlannerRuntimeConfig;
 import org.optaplanner.quarkus.gizmo.OptaPlannerDroolsInitializer;
@@ -70,7 +71,9 @@ public class OptaPlannerBeanProvider {
         gizmoInitializer.setup();
         droolsInitializer.setup();
         OptaPlannerGizmoBeanFactory.INSTANCE.setInstance(gizmoBeanFactory);
-        return SolverFactory.create(solverConfig);
+        SolverFactory<Solution_> solverFactory = SolverFactory.create(solverConfig);
+        droolsInitializer.setup((DefaultSolverFactory) solverFactory);
+        return solverFactory;
     }
 
     @DefaultBean

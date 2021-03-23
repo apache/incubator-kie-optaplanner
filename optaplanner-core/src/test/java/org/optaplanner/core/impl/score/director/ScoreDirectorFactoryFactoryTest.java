@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -33,6 +33,7 @@ import org.optaplanner.core.api.score.stream.ConstraintProvider;
 import org.optaplanner.core.api.score.stream.ConstraintStreamImplType;
 import org.optaplanner.core.config.score.director.ScoreDirectorFactoryConfig;
 import org.optaplanner.core.config.solver.EnvironmentMode;
+import org.optaplanner.core.impl.score.director.drools.KieBaseExtractor;
 import org.optaplanner.core.impl.score.director.easy.EasyScoreDirector;
 import org.optaplanner.core.impl.score.director.incremental.IncrementalScoreDirector;
 import org.optaplanner.core.impl.score.director.stream.AbstractConstraintStreamScoreDirectorFactory;
@@ -190,7 +191,7 @@ class ScoreDirectorFactoryFactoryTest {
 
     private <Score_ extends Score<Score_>> ScoreDirectorFactory<TestdataSolution> buildTestdataScoreDirectoryFactory(
             ScoreDirectorFactoryConfig config, EnvironmentMode environmentMode) {
-        return new ScoreDirectorFactoryFactory<TestdataSolution, Score_>(config)
+        return new ScoreDirectorFactoryFactory<TestdataSolution, Score_>(config, new KieBaseExtractor())
                 .buildScoreDirectorFactory(getClass().getClassLoader(), environmentMode,
                         TestdataSolution.buildSolutionDescriptor());
     }

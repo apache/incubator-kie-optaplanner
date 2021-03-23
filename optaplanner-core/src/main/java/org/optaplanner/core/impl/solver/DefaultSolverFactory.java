@@ -40,6 +40,7 @@ import org.optaplanner.core.impl.phase.Phase;
 import org.optaplanner.core.impl.phase.PhaseFactory;
 import org.optaplanner.core.impl.score.director.InnerScoreDirectorFactory;
 import org.optaplanner.core.impl.score.director.ScoreDirectorFactoryFactory;
+import org.optaplanner.core.impl.score.director.drools.KieBaseExtractor;
 import org.optaplanner.core.impl.solver.random.DefaultRandomFactory;
 import org.optaplanner.core.impl.solver.random.RandomFactory;
 import org.optaplanner.core.impl.solver.recaller.BestSolutionRecaller;
@@ -61,6 +62,7 @@ public final class DefaultSolverFactory<Solution_> implements SolverFactory<Solu
     private static final long DEFAULT_RANDOM_SEED = 0L;
 
     private final SolverConfig solverConfig;
+    private KieBaseExtractor kieBaseExtractor = new KieBaseExtractor();
 
     public DefaultSolverFactory(SolverConfig solverConfig) {
         if (solverConfig == null) {
@@ -112,7 +114,7 @@ public final class DefaultSolverFactory<Solution_> implements SolverFactory<Solu
                 ? new ScoreDirectorFactoryConfig()
                 : solverConfig.getScoreDirectorFactoryConfig();
         ScoreDirectorFactoryFactory<Solution_, ?> scoreDirectorFactoryFactory =
-                new ScoreDirectorFactoryFactory<>(scoreDirectorFactoryConfig_);
+                new ScoreDirectorFactoryFactory<>(scoreDirectorFactoryConfig_, kieBaseExtractor);
         return scoreDirectorFactoryFactory.buildScoreDirectorFactory(solverConfig.getClassLoader(), environmentMode,
                 solutionDescriptor);
     }
@@ -179,6 +181,11 @@ public final class DefaultSolverFactory<Solution_> implements SolverFactory<Solu
             phaseIndex++;
         }
         return phaseList;
+    }
+
+    // required so we can set KieRuntimeBuilder in Quarkus
+    public void setKieBaseExtractor(KieBaseExtractor kieBaseExtractor) {
+        this.kieBaseExtractor = kieBaseExtractor;
     }
 
     // Required for testability as final classes cannot be mocked.

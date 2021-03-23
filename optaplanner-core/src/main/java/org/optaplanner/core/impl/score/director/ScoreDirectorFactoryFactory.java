@@ -59,8 +59,11 @@ public class ScoreDirectorFactoryFactory<Solution_, Score_ extends Score<Score_>
 
     private final ScoreDirectorFactoryConfig config;
 
-    public ScoreDirectorFactoryFactory(ScoreDirectorFactoryConfig config) {
+    private final KieBaseExtractor kieBaseExtractor;
+
+    public ScoreDirectorFactoryFactory(ScoreDirectorFactoryConfig config, KieBaseExtractor kieBaseExtractor) {
         this.config = config;
+        this.kieBaseExtractor = kieBaseExtractor;
     }
 
     public InnerScoreDirectorFactory<Solution_, Score_> buildScoreDirectorFactory(ClassLoader classLoader,
@@ -79,7 +82,7 @@ public class ScoreDirectorFactoryFactory<Solution_, Score_ extends Score<Score_>
                         + environmentMode + ") of " + EnvironmentMode.FAST_ASSERT + " or lower.");
             }
             ScoreDirectorFactoryFactory<Solution_, Score_> assertionScoreDirectorFactoryFactory =
-                    new ScoreDirectorFactoryFactory<>(config.getAssertionScoreDirectorFactory());
+                    new ScoreDirectorFactoryFactory<>(config.getAssertionScoreDirectorFactory(), kieBaseExtractor);
             scoreDirectorFactory.setAssertionScoreDirectorFactory(assertionScoreDirectorFactoryFactory
                     .buildScoreDirectorFactory(classLoader, EnvironmentMode.NON_REPRODUCIBLE, solutionDescriptor));
         }
@@ -277,7 +280,7 @@ public class ScoreDirectorFactoryFactory<Solution_, Score_ extends Score<Score_>
         }
 
         try {
-            KieBase kieBase = KieBaseExtractor.extractKieBase(config, classLoader);
+            KieBase kieBase = kieBaseExtractor.extractKieBase(config, classLoader);
             if (config.isDroolsAlphaNetworkCompilationEnabled()) {
                 KieBaseUpdaterANC.generateAndSetInMemoryANC(kieBase); // Enable Alpha Network Compiler for performance.
             }

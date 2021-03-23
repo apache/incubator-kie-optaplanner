@@ -16,6 +16,8 @@
 
 package org.optaplanner.quarkus.gizmo;
 
+import org.optaplanner.core.impl.solver.DefaultSolverFactory;
+
 public interface OptaPlannerDroolsInitializer {
-    void setup();
+    void setup(DefaultSolverFactory solverFactory);
 }

@@ -69,6 +69,7 @@ import org.optaplanner.core.impl.domain.solution.cloner.gizmo.GizmoSolutionClone
 import org.optaplanner.core.impl.domain.solution.cloner.gizmo.GizmoSolutionOrEntityDescriptor;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.core.impl.score.director.drools.KieBaseExtractor;
+import org.optaplanner.core.impl.solver.DefaultSolverFactory;
 import org.optaplanner.quarkus.gizmo.OptaPlannerDroolsInitializer;
 import org.optaplanner.quarkus.gizmo.OptaPlannerGizmoBeanFactory;
 import org.optaplanner.quarkus.gizmo.OptaPlannerGizmoInitializer;
@@ -483,20 +484,22 @@ public class GizmoMemberAccessorEntityEnhancer {
 
                 MethodCreator methodCreator =
                         classCreator.getMethodCreator(MethodDescriptor.ofMethod(OptaPlannerDroolsInitializer.class,
-                                "setup", void.class));
+                                "setup", void.class, DefaultSolverFactory.class));
 
                 ResultHandle thisObj = methodCreator.getThis();
                 ResultHandle kieRuntimeBuilder = methodCreator.readInstanceField(fieldCreator.getFieldDescriptor(), thisObj);
+                ResultHandle kieBaseExtractor = methodCreator.newInstance(
+                        MethodDescriptor.ofConstructor(KieBaseExtractor.class, KieRuntimeBuilder.class), kieRuntimeBuilder);
+                methodCreator.invokeVirtualMethod(
+                        MethodDescriptor.ofMethod(DefaultSolverFactory.class, "setKieBaseExtractor", void.class,
+                                KieBaseExtractor.class),
+                        methodCreator.getMethodParam(0), kieBaseExtractor);
 
-                methodCreator.invokeStaticMethod(
-                        MethodDescriptor.ofMethod(KieBaseExtractor.class, "useKieRuntimeBuilder",
-                                void.class, KieRuntimeBuilder.class),
-                        kieRuntimeBuilder);
                 methodCreator.returnValue(null);
             } else {
                 MethodCreator methodCreator =
                         classCreator.getMethodCreator(MethodDescriptor.ofMethod(OptaPlannerDroolsInitializer.class,
-                                "setup", void.class));
+                                "setup", void.class, DefaultSolverFactory.class));
                 methodCreator.returnValue(null);
             }
         }
