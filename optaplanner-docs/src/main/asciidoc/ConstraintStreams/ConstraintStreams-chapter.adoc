@@ -198,7 +198,7 @@ However, with <<constraintStreamsMappingTuples,tuple mapping>> it is easy to ach
 [NOTE]
 ====
 OptaPlanner does not provide any `Tuple` implementations out of the box.
-We recommend using one of the myriad freely available 3rd party implementations.
+It's recommended to use one of the myriad freely available 3rd party implementations.
 Should a custom implementation be necessary, see <<constraintStreamsMappingFunction,guidelines for mapping functions>>.
 ====
 
