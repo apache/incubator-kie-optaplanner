@@ -775,7 +775,7 @@ public interface TriConstraintStream<A, B, C> extends ConstraintStream {
     <ResultA_> UniConstraintStream<ResultA_> map(TriFunction<A, B, C, ResultA_> mapping);
 
     /**
-     * Transforms the stream in such a way that all the tuples going through it are distinct.
+     * Removes duplicate tuples from the stream, according to the tuple's facts {@link Object#equals(Object)equals}/hashcode methods, such that only distinct tuples remain.
      * (No two tuples will {@link Object#equals(Object) equal}.)
      *
      * <p>
