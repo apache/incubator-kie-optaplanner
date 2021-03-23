@@ -61,6 +61,10 @@ public class ScoreDirectorFactoryFactory<Solution_, Score_ extends Score<Score_>
 
     private final KieBaseExtractor kieBaseExtractor;
 
+    public ScoreDirectorFactoryFactory(ScoreDirectorFactoryConfig config) {
+        this(config, new KieBaseExtractor());
+    }
+
     public ScoreDirectorFactoryFactory(ScoreDirectorFactoryConfig config, KieBaseExtractor kieBaseExtractor) {
         this.config = config;
         this.kieBaseExtractor = kieBaseExtractor;

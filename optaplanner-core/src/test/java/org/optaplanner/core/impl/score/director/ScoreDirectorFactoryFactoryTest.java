@@ -33,7 +33,6 @@ import org.optaplanner.core.api.score.stream.ConstraintProvider;
 import org.optaplanner.core.api.score.stream.ConstraintStreamImplType;
 import org.optaplanner.core.config.score.director.ScoreDirectorFactoryConfig;
 import org.optaplanner.core.config.solver.EnvironmentMode;
-import org.optaplanner.core.impl.score.director.drools.KieBaseExtractor;
 import org.optaplanner.core.impl.score.director.easy.EasyScoreDirector;
 import org.optaplanner.core.impl.score.director.incremental.IncrementalScoreDirector;
 import org.optaplanner.core.impl.score.director.stream.AbstractConstraintStreamScoreDirectorFactory;
@@ -191,7 +190,7 @@ class ScoreDirectorFactoryFactoryTest {
 
     private <Score_ extends Score<Score_>> ScoreDirectorFactory<TestdataSolution> buildTestdataScoreDirectoryFactory(
             ScoreDirectorFactoryConfig config, EnvironmentMode environmentMode) {
-        return new ScoreDirectorFactoryFactory<TestdataSolution, Score_>(config, new KieBaseExtractor())
+        return new ScoreDirectorFactoryFactory<TestdataSolution, Score_>(config)
                 .buildScoreDirectorFactory(getClass().getClassLoader(), environmentMode,
                         TestdataSolution.buildSolutionDescriptor());
     }
