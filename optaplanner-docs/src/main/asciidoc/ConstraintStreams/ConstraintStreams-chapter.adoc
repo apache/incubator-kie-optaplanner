@@ -647,7 +647,7 @@ When designing the mapping function, follow these guidelines for optimal perform
   as the function may be called frequently.
 * Keep the function bijective.
   No two input tuples should map to the same output tuple, or to tuples that are equal.
-  Not following this recommendation will create a constraint stream with duplicate tuples,
+  Not following this recommendation creates a constraint stream with duplicate tuples,
   and may force you to use <<constraintStreamsDistinct,`distinct()`>> later.
 * Use immutable data carriers.
   The tuples returned by the mapping function should be immutable and identified by their contents and nothing else.
