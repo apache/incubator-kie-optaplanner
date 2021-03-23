@@ -946,7 +946,7 @@ public interface UniConstraintStream<A> extends ConstraintStream {
     // ************************************************************************
 
     /**
-     * Transforms the stream in such a way that tuples will be remapped using the given function.
+     * Transforms the stream in such a way that tuples are remapped using the given function.
      * This may produce a stream with duplicate tuples.
      * See {@link #distinct()} for details.
      *
