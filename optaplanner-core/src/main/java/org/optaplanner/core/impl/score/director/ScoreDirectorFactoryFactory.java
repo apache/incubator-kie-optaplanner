@@ -26,13 +26,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.drools.ancompiler.KieBaseUpdaterANC;
-import org.drools.core.io.impl.ClassPathResource;
-import org.drools.core.io.impl.FileSystemResource;
-import org.drools.modelcompiler.ExecutableModelProject;
 import org.kie.api.KieBase;
-import org.kie.api.conf.KieBaseMutabilityOption;
-import org.kie.internal.builder.conf.PropertySpecificOption;
-import org.kie.internal.utils.KieHelper;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.calculator.EasyScoreCalculator;
 import org.optaplanner.core.api.score.calculator.IncrementalScoreCalculator;
