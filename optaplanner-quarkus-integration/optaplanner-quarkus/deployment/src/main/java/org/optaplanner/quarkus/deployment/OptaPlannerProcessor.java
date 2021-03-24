@@ -65,6 +65,7 @@ import io.quarkus.arc.deployment.AdditionalBeanBuildItem;
 import io.quarkus.arc.deployment.GeneratedBeanBuildItem;
 import io.quarkus.arc.deployment.GeneratedBeanGizmoAdaptor;
 import io.quarkus.arc.deployment.SyntheticBeanBuildItem;
+import io.quarkus.deployment.Capabilities;
 import io.quarkus.deployment.GeneratedClassGizmoAdaptor;
 import io.quarkus.deployment.annotations.BuildProducer;
 import io.quarkus.deployment.annotations.BuildStep;
@@ -116,7 +117,7 @@ class OptaPlannerProcessor {
     @BuildStep
     @Record(STATIC_INIT)
     void recordAndRegisterBeans(OptaPlannerRecorder recorder, RecorderContext recorderContext,
-            CombinedIndexBuildItem combinedIndex,
+            CombinedIndexBuildItem combinedIndex, Capabilities capabilities,
             BuildProducer<ReflectiveHierarchyBuildItem> reflectiveHierarchyClass,
             BuildProducer<SyntheticBeanBuildItem> syntheticBeanBuildItemBuildProducer,
             BuildProducer<AdditionalBeanBuildItem> additionalBeans,
@@ -155,7 +156,7 @@ class OptaPlannerProcessor {
             solverConfig = new SolverConfig();
         }
 
-        applySolverProperties(recorderContext, indexView, solverConfig);
+        applySolverProperties(recorderContext, indexView, solverConfig, capabilities);
         assertNoMemberAnnotationWithoutClassAnnotation(indexView);
 
         if (solverConfig.getSolutionClass() != null) {
@@ -278,14 +279,14 @@ class OptaPlannerProcessor {
     }
 
     private void applySolverProperties(RecorderContext recorderContext,
-            IndexView indexView, SolverConfig solverConfig) {
+            IndexView indexView, SolverConfig solverConfig, Capabilities capabilities) {
         if (solverConfig.getSolutionClass() == null) {
             solverConfig.setSolutionClass(findSolutionClass(recorderContext, indexView));
         }
         if (solverConfig.getEntityClassList() == null) {
             solverConfig.setEntityClassList(findEntityClassList(recorderContext, indexView));
         }
-        applyScoreDirectorFactoryProperties(indexView, solverConfig);
+        applyScoreDirectorFactoryProperties(indexView, solverConfig, capabilities);
         optaPlannerBuildTimeConfig.solver.environmentMode.ifPresent(solverConfig::setEnvironmentMode);
         optaPlannerBuildTimeConfig.solver.daemon.ifPresent(solverConfig::setDaemon);
         optaPlannerBuildTimeConfig.solver.moveThreadCount.ifPresent(solverConfig::setMoveThreadCount);
@@ -396,7 +397,8 @@ class OptaPlannerProcessor {
         }
     }
 
-    protected void applyScoreDirectorFactoryProperties(IndexView indexView, SolverConfig solverConfig) {
+    protected void applyScoreDirectorFactoryProperties(IndexView indexView, SolverConfig solverConfig,
+            Capabilities capabilities) {
         Optional<String> constraintsDrlFromProperty = constraintsDrl();
         Optional<String> defaultConstraintsDrl = defaultConstraintsDrl();
         Optional<String> effectiveConstraintsDrl = constraintsDrlFromProperty.map(Optional::of).orElse(defaultConstraintsDrl);
@@ -417,7 +419,7 @@ class OptaPlannerProcessor {
         }
 
         if (solverConfig.getScoreDirectorFactoryConfig().getScoreDrlList() != null) {
-            boolean isKogitoExtensionPresent = isClassDefined("org.kie.kogito.quarkus.rules.deployment.RulesAssetsProcessor");
+            boolean isKogitoExtensionPresent = capabilities.isPresent("kogito-rules");
             if (!isKogitoExtensionPresent) {
                 throw new IllegalStateException(
                         "Using scoreDRL in Quarkus, but the dependency org.kie.kogito:kogito-quarkus-rules is not on the classpath.\n"

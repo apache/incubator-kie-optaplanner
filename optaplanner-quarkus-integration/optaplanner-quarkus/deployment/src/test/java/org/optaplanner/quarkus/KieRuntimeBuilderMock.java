@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.kie.kogito.quarkus.rules.deployment;
+package org.optaplanner.quarkus;
 
 import java.util.Collections;
 import java.util.List;
