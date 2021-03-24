@@ -180,7 +180,7 @@ The following constraint stream cardinalities are currently supported:
 === Achieving higher cardinalities
 
 OptaPlanner currently does not support constraint stream cardinalities higher than 4.
-However, with <<constraintStreamsMappingTuples,tuple mapping>> it is easy to achieve effectively infinite cardinality:
+However, with <<constraintStreamsMappingTuples,tuple mapping>> effectively infinite cardinality is possible:
 
 [source,java,options="nowrap"]
 ----
@@ -199,7 +199,7 @@ However, with <<constraintStreamsMappingTuples,tuple mapping>> it is easy to ach
 ====
 OptaPlanner does not provide any `Tuple` implementations out of the box.
 It's recommended to use one of the myriad freely available 3rd party implementations.
-Should a custom implementation be necessary, see <<constraintStreamsMappingFunction,guidelines for mapping functions>>.
+Should a custom implementation be necessary, see <<constraintStreamsDesigningMappingFunction,guidelines for mapping functions>>.
 ====
 
 [[constraintStreamsBuildingBlocks]]
@@ -629,10 +629,10 @@ The result of such mapping is `UniConstraintStream` of the mapped tuples.
 ====
 In the example above, the mapping function produces duplicate tuples if two different `CloudProcess`es share a single `CloudComputer`.
 That is, such `CloudComputer` will appear in the resulting constraint stream twice.
-See <<constraintStreamsDistinct,`distinct()`>> for how to deal with duplicate tuples.
+See <<constraintStreamsDealingWithDuplicateTuplesUsingDistinct,`distinct()`>> for how to deal with duplicate tuples.
 ====
 
-[[constraintStreamsMappingFunction]]
+[[constraintStreamsDesigningMappingFunction]]
 ==== Designing the mapping function
 
 When designing the mapping function, follow these guidelines for optimal performance:
@@ -640,23 +640,17 @@ When designing the mapping function, follow these guidelines for optimal perform
 * Keep the function pure.
   The mapping function should only depend on its input.
   That is, given the same input, it always returns the same output.
-* Keep the function simple.
-  The function should only take the argument and return another simple value,
-  without performing any significant computation.
-  Not following this recommendation may result in performance loss,
-  as the function may be called frequently.
 * Keep the function bijective.
   No two input tuples should map to the same output tuple, or to tuples that are equal.
   Not following this recommendation creates a constraint stream with duplicate tuples,
-  and may force you to use <<constraintStreamsDistinct,`distinct()`>> later.
+  and may force you to use <<constraintStreamsDealingWithDuplicateTuplesUsingDistinct,`distinct()`>> later.
 * Use immutable data carriers.
   The tuples returned by the mapping function should be immutable and identified by their contents and nothing else.
   If two tuples carry objects which equal one another,
   those two tuples should likewise equal and preferably be the same instance.
-  https://openjdk.java.net/jeps/395[Java's Records] are an ideal tool for the purpose.
 
-[[constraintStreamsDistinct]]
-==== Dealing with duplicate tuples
+[[constraintStreamsDealingWithDuplicateTuplesUsingDistinct]]
+==== Dealing with duplicate tuples using `distinct()`
 
 As a general rule, tuples in constraint streams will be distinct.
 That is, no two tuples that equal one another.

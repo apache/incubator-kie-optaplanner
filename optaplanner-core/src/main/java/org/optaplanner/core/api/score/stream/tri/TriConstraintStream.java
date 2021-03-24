@@ -762,7 +762,7 @@ public interface TriConstraintStream<A, B, C> extends ConstraintStream {
                     TriFunction<A, B, C, GroupKeyC_> groupKeyCMapping, TriFunction<A, B, C, GroupKeyD_> groupKeyDMapping);
 
     // ************************************************************************
-    // Operations w/ duplicate tuple possibility
+    // Operations with duplicate tuple possibility
     // ************************************************************************
 
     /**
@@ -775,7 +775,8 @@ public interface TriConstraintStream<A, B, C> extends ConstraintStream {
     <ResultA_> UniConstraintStream<ResultA_> map(TriFunction<A, B, C, ResultA_> mapping);
 
     /**
-     * Removes duplicate tuples from the stream, according to the tuple's facts {@link Object#equals(Object)equals}/hashcode methods, such that only distinct tuples remain.
+     * Removes duplicate tuples from the stream, according to the tuple's facts {@link Object#equals(Object)equals}/hashcode
+     * methods, such that only distinct tuples remain.
      * (No two tuples will {@link Object#equals(Object) equal}.)
      *
      * <p>

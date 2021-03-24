@@ -259,7 +259,7 @@ public abstract class DroolsAbstractBiConstraintStream<Solution_, A, B>
     }
 
     // ************************************************************************
-    // Operations w/ duplicate tuple possibility
+    // Operations with duplicate tuple possibility
     // ************************************************************************
 
     @Override

@@ -242,7 +242,7 @@ public abstract class BavetAbstractBiConstraintStream<Solution_, A, B> extends B
     }
 
     // ************************************************************************
-    // Operations w/ duplicate tuple possibility
+    // Operations with duplicate tuple possibility
     // ************************************************************************
 
     @Override

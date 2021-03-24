@@ -252,7 +252,7 @@ public abstract class DroolsAbstractQuadConstraintStream<Solution_, A, B, C, D>
     }
 
     // ************************************************************************
-    // Operations w/ duplicate tuple possibility
+    // Operations with duplicate tuple possibility
     // ************************************************************************
 
     @Override

@@ -266,7 +266,7 @@ public abstract class DroolsAbstractUniConstraintStream<Solution_, A> extends Dr
     }
 
     // ************************************************************************
-    // Operations w/ duplicate tuple possibility
+    // Operations with duplicate tuple possibility
     // ************************************************************************
 
     @Override

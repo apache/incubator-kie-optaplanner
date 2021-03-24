@@ -263,7 +263,7 @@ public abstract class DroolsAbstractTriConstraintStream<Solution_, A, B, C>
     }
 
     // ************************************************************************
-    // Operations w/ duplicate tuple possibility
+    // Operations with duplicate tuple possibility
     // ************************************************************************
 
     @Override

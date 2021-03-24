@@ -563,7 +563,7 @@ public interface QuadConstraintStream<A, B, C, D> extends ConstraintStream {
                     QuadFunction<A, B, C, D, GroupKeyD_> groupKeyDMapping);
 
     // ************************************************************************
-    // Operations w/ duplicate tuple possibility
+    // Operations with duplicate tuple possibility
     // ************************************************************************
 
     /**
