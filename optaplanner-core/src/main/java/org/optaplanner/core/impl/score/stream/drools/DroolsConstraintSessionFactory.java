@@ -45,6 +45,7 @@ import org.optaplanner.core.api.score.stream.Constraint;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.core.impl.score.definition.ScoreDefinition;
 import org.optaplanner.core.impl.score.director.drools.DroolsScoreDirector;
+import org.optaplanner.core.impl.score.director.drools.KieBaseUtil;
 import org.optaplanner.core.impl.score.director.drools.OptaPlannerRuleEventListener;
 import org.optaplanner.core.impl.score.holder.AbstractScoreHolder;
 import org.optaplanner.core.impl.score.stream.ConstraintSession;
@@ -85,8 +86,7 @@ public final class DroolsConstraintSessionFactory<Solution_, Score_ extends Scor
         kieBaseConfiguration.setProperty(PropertySpecificOption.PROPERTY_NAME,
                 PropertySpecificOption.DISABLED.name()); // Users of CS must not rely on underlying Drools gimmicks.
         KieBase kieBase = KieBaseBuilder.createKieBaseFromModel(model, kieBaseConfiguration);
-        // KieBaseUpdaterANC.generateAndSetInMemoryANC(kieBase); // PLANNER-2375 Enable Alpha Network Compiler for performance.
-        return kieBase;
+        return KieBaseUtil.compileAlphaNetworkIfEnabled(kieBase);
     }
 
     private static KieSession buildKieSessionFromKieBase(KieBase kieBase) {

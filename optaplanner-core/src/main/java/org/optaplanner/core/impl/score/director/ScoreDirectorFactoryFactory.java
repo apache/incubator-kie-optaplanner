@@ -43,6 +43,7 @@ import org.optaplanner.core.config.solver.EnvironmentMode;
 import org.optaplanner.core.config.util.ConfigUtils;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.core.impl.score.director.drools.DroolsScoreDirectorFactory;
+import org.optaplanner.core.impl.score.director.drools.KieBaseUtil;
 import org.optaplanner.core.impl.score.director.drools.testgen.TestGenDroolsScoreDirectorFactory;
 import org.optaplanner.core.impl.score.director.easy.EasyScoreDirectorFactory;
 import org.optaplanner.core.impl.score.director.incremental.IncrementalScoreDirectorFactory;
@@ -267,7 +268,7 @@ public class ScoreDirectorFactoryFactory<Solution_, Score_ extends Score<Score_>
 
         try {
             KieBase kieBase = kieHelper.build(ExecutableModelProject.class, KieBaseMutabilityOption.DISABLED);
-            // KieBaseUpdaterANC.generateAndSetInMemoryANC(kieBase); // PLANNER-2375 Enable Alpha Network Compiler for performance.
+            kieBase = KieBaseUtil.compileAlphaNetworkIfEnabled(kieBase);
             if (generateDroolsTestOnError) {
                 return new TestGenDroolsScoreDirectorFactory<>(solutionDescriptor, kieBase, config.getScoreDrlList(),
                         config.getScoreDrlFileList());
