@@ -7,7 +7,7 @@
   <solutionClass>org.optaplanner.examples.rocktour.domain.RockTourSolution</solutionClass>
   <entityClass>org.optaplanner.examples.rocktour.domain.RockShow</entityClass>
   <entityClass>org.optaplanner.examples.rocktour.domain.RockStandstill</entityClass>
-
+  <domainAccessType>GIZMO_MEMBER</domainAccessType>
   <scoreDirectorFactory>
     <!--<constraintProviderClass>org.optaplanner.examples.rocktour.optional.score.RockTourConstraintProvider</constraintProviderClass>-->
     <scoreDrl>org/optaplanner/examples/rocktour/solver/rockTourConstraints.drl</scoreDrl>

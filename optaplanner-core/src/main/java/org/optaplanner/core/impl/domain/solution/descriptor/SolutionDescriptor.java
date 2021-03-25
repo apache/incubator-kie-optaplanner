@@ -166,6 +166,8 @@ public class SolutionDescriptor<Solution_> {
     // Non-static members
     // ************************************************************************
 
+    protected final transient Logger logger = LoggerFactory.getLogger(getClass());
+
     private final Class<Solution_> solutionClass;
 
     private DomainAccessType domainAccessType;
@@ -735,6 +737,9 @@ public class SolutionDescriptor<Solution_> {
             switch (descriptorPolicy.getDomainAccessType()) {
                 case GIZMO:
                     solutionCloner = GizmoSolutionClonerFactory.build(this);
+                    break;
+                case GIZMO_MEMBER:
+                    solutionCloner = GizmoSolutionClonerFactory.buildDefer(this);
                     break;
                 case REFLECTION:
                     solutionCloner = new FieldAccessingSolutionCloner<>(this);

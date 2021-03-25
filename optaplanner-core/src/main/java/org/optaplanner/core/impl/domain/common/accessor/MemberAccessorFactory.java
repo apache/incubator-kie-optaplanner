@@ -40,6 +40,9 @@ public class MemberAccessorFactory {
             case GIZMO:
                 return GizmoMemberAccessorFactory.buildGizmoMemberAccessor(member, annotationClass);
 
+            case GIZMO_MEMBER:
+                return GizmoMemberAccessorFactory.buildDeferGizmoMemberAccessor(member, annotationClass);
+
             case REFLECTION:
                 return buildReflectiveMemberAccessor(member, memberAccessorType, annotationClass);
 

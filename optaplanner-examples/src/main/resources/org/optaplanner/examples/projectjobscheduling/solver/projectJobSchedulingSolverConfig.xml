@@ -6,7 +6,7 @@
 
   <solutionClass>org.optaplanner.examples.projectjobscheduling.domain.Schedule</solutionClass>
   <entityClass>org.optaplanner.examples.projectjobscheduling.domain.Allocation</entityClass>
-
+  <domainAccessType>GIZMO_MEMBER</domainAccessType>
   <scoreDirectorFactory>
     <incrementalScoreCalculatorClass>org.optaplanner.examples.projectjobscheduling.score.ProjectJobSchedulingIncrementalScoreCalculator</incrementalScoreCalculatorClass>
     <!--<scoreDrl>org/optaplanner/examples/projectjobscheduling/solver/projectJobSchedulingConstraints.drl</scoreDrl>-->

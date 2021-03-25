@@ -48,6 +48,27 @@ public final class GizmoSolutionClonerFactory {
         }
     }
 
+    public static <T> SolutionCloner<T> buildDefer(SolutionDescriptor<T> solutionDescriptor) {
+        String gizmoMemberAccessorClassName = getGeneratedClassName(solutionDescriptor);
+        if (solutionClonerMap.containsKey(gizmoMemberAccessorClassName)) {
+            return (SolutionCloner<T>) solutionClonerMap.get(gizmoMemberAccessorClassName);
+        } else {
+            try {
+                // Check if Gizmo on the classpath by verifying we can access one of its classes
+                Class.forName("io.quarkus.gizmo.ClassCreator", false,
+                        Thread.currentThread().getContextClassLoader());
+            } catch (ClassNotFoundException e) {
+                throw new IllegalStateException("When using the domainAccessType (" +
+                        DomainAccessType.GIZMO +
+                        ") the classpath or modulepath must contain io.quarkus.gizmo:gizmo.\n" +
+                        "Maybe add a dependency to io.quarkus.gizmo:gizmo.");
+            }
+            SolutionCloner<T> cloner = GizmoSolutionClonerImplementor.createDeferClonerFor(solutionDescriptor);
+            solutionClonerMap.put(gizmoMemberAccessorClassName, cloner);
+            return cloner;
+        }
+    }
+
     // ************************************************************************
     // Private constructor
     // ************************************************************************

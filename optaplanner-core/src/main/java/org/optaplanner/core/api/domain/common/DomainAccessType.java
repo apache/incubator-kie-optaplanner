@@ -42,5 +42,6 @@ public enum DomainAccessType {
      * and you must add Gizmo in your classpath or modulepath
      * and use planning annotations on public members only.
      */
-    GIZMO
+    GIZMO,
+    GIZMO_MEMBER;
 }

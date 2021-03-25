@@ -7,7 +7,7 @@
   <!-- Domain model configuration -->
   <solutionClass>org.optaplanner.examples.cheaptime.domain.CheapTimeSolution</solutionClass>
   <entityClass>org.optaplanner.examples.cheaptime.domain.TaskAssignment</entityClass>
-
+  <domainAccessType>GIZMO_MEMBER</domainAccessType>
   <!-- Score configuration -->
   <scoreDirectorFactory>
     <!--<easyScoreCalculatorClass>org.optaplanner.examples.cheaptime.optional.score.CheapTimeEasyScoreCalculator</easyScoreCalculatorClass>-->

@@ -7,7 +7,7 @@
   <solutionClass>org.optaplanner.examples.taskassigning.domain.TaskAssigningSolution</solutionClass>
   <entityClass>org.optaplanner.examples.taskassigning.domain.TaskOrEmployee</entityClass>
   <entityClass>org.optaplanner.examples.taskassigning.domain.Task</entityClass>
-
+  <domainAccessType>GIZMO_MEMBER</domainAccessType>
   <scoreDirectorFactory>
     <!--<constraintProviderClass>org.optaplanner.examples.taskassigning.optional.score.TaskAssigningConstraintProvider</constraintProviderClass>-->
     <scoreDrl>org/optaplanner/examples/taskassigning/solver/taskAssigningConstraints.drl</scoreDrl>

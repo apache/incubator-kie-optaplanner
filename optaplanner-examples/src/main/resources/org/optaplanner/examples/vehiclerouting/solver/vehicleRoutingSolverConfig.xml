@@ -8,7 +8,7 @@
   <entityClass>org.optaplanner.examples.vehiclerouting.domain.Standstill</entityClass>
   <entityClass>org.optaplanner.examples.vehiclerouting.domain.Customer</entityClass>
   <entityClass>org.optaplanner.examples.vehiclerouting.domain.timewindowed.TimeWindowedCustomer</entityClass>
-
+  <domainAccessType>GIZMO_MEMBER</domainAccessType>
   <scoreDirectorFactory>
     <!--<easyScoreCalculatorClass>org.optaplanner.examples.vehiclerouting.optional.score.VehicleRoutingEasyScoreCalculator</easyScoreCalculatorClass>-->
     <!--<constraintProviderClass>org.optaplanner.examples.vehiclerouting.optional.score.VehicleRoutingConstraintProvider</constraintProviderClass>-->

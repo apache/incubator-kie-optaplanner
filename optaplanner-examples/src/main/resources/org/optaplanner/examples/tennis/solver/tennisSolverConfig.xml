@@ -7,7 +7,7 @@
   <!-- Domain model configuration -->
   <solutionClass>org.optaplanner.examples.tennis.domain.TennisSolution</solutionClass>
   <entityClass>org.optaplanner.examples.tennis.domain.TeamAssignment</entityClass>
-
+  <domainAccessType>GIZMO_MEMBER</domainAccessType>
   <!-- Score configuration -->
   <scoreDirectorFactory>
     <!--<constraintProviderClass>org.optaplanner.examples.tennis.optional.score.TennisConstraintProvider</constraintProviderClass>-->

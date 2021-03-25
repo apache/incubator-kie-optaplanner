@@ -27,6 +27,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.optaplanner.core.impl.domain.common.ReflectionHelper;
 import org.optaplanner.core.impl.domain.common.accessor.MemberAccessor;
 
 import io.quarkus.gizmo.ClassCreator;
@@ -147,6 +148,47 @@ public class GizmoMemberAccessorImplementor {
 
             GizmoMemberDescriptor memberDescriptor = new GizmoMemberDescriptor(member);
             defineAccessorFor(classCreator, memberDescriptor, annotationClass);
+        }
+        byte[] classBytecode = classBytecodeHolder[0];
+
+        classNameToBytecode.put(className, classBytecode);
+        return createInstance(className);
+    }
+
+    public static MemberAccessor createDeferAccessorFor(Member member, Class<? extends Annotation> annotationClass) {
+        String className = GizmoMemberAccessorFactory.getGeneratedClassName(member);
+        if (classNameToBytecode.containsKey(className)) {
+            return createInstance(className);
+        }
+        final byte[][] classBytecodeHolder = new byte[1][];
+        ClassOutput classOutput = (path, byteCode) -> {
+            classBytecodeHolder[0] = byteCode;
+        };
+        try (ClassCreator classCreator = ClassCreator.builder()
+                .className(className)
+                .interfaces(MemberAccessor.class)
+                .superClass(Object.class)
+                .classOutput(classOutput)
+                .setFinal(true)
+                .build()) {
+
+            if (Modifier.isPublic(member.getModifiers())) {
+                GizmoMemberDescriptor memberDescriptor = new GizmoMemberDescriptor(member);
+                defineAccessorFor(classCreator, memberDescriptor, annotationClass);
+            } else {
+                if (ReflectionHelper.hasGetterMethod(member.getDeclaringClass(), member.getName())) {
+                    MethodDescriptor getter = MethodDescriptor
+                            .ofMethod(ReflectionHelper.getGetterMethod(member.getDeclaringClass(), member.getName()));
+                    FieldDescriptor metadataDescriptor = FieldDescriptor.of((Field) member);
+                    GizmoMemberDescriptor memberDescriptor =
+                            new GizmoMemberDescriptor(member.getName(), getter, metadataDescriptor,
+                                    member.getDeclaringClass());
+                    defineAccessorFor(classCreator, memberDescriptor, annotationClass);
+                } else {
+                    throw new IllegalStateException("No getter for non-public member (" + member.getName() + ").");
+                }
+            }
+
         }
         byte[] classBytecode = classBytecodeHolder[0];
 

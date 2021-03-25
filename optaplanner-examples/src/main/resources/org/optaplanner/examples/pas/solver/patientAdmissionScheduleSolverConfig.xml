@@ -6,7 +6,7 @@
 
   <solutionClass>org.optaplanner.examples.pas.domain.PatientAdmissionSchedule</solutionClass>
   <entityClass>org.optaplanner.examples.pas.domain.BedDesignation</entityClass>
-
+  <domainAccessType>GIZMO_MEMBER</domainAccessType>
   <scoreDirectorFactory>
     <!--<constraintProviderClass>org.optaplanner.examples.pas.optional.score.PatientAdmissionScheduleConstraintProvider</constraintProviderClass>-->
     <scoreDrl>org/optaplanner/examples/pas/solver/patientAdmissionScheduleConstraints.drl</scoreDrl>

@@ -7,7 +7,7 @@
   <!-- Domain model configuration -->
   <solutionClass>org.optaplanner.examples.investment.domain.InvestmentSolution</solutionClass>
   <entityClass>org.optaplanner.examples.investment.domain.AssetClassAllocation</entityClass>
-
+  <domainAccessType>GIZMO_MEMBER</domainAccessType>
   <!-- Score configuration -->
   <scoreDirectorFactory>
     <!--<easyScoreCalculatorClass>org.optaplanner.examples.investment.optional.score.InvestmentEasyScoreCalculator</easyScoreCalculatorClass>-->

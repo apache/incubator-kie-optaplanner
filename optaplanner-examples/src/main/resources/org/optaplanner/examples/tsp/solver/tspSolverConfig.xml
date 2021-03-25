@@ -6,7 +6,7 @@
 
   <solutionClass>org.optaplanner.examples.tsp.domain.TspSolution</solutionClass>
   <entityClass>org.optaplanner.examples.tsp.domain.Visit</entityClass>
-
+  <domainAccessType>GIZMO_MEMBER</domainAccessType>
   <scoreDirectorFactory>
     <!--<easyScoreCalculatorClass>org.optaplanner.examples.tsp.optional.score.TspEasyScoreCalculator</easyScoreCalculatorClass>-->
     <!--<constraintProviderClass>org.optaplanner.examples.tsp.optional.score.TspConstraintProvider</constraintProviderClass>-->

@@ -7,7 +7,7 @@
   <solutionClass>org.optaplanner.examples.flightcrewscheduling.domain.FlightCrewSolution</solutionClass>
   <entityClass>org.optaplanner.examples.flightcrewscheduling.domain.FlightAssignment</entityClass>
   <entityClass>org.optaplanner.examples.flightcrewscheduling.domain.Employee</entityClass>
-
+  <domainAccessType>GIZMO_MEMBER</domainAccessType>
   <scoreDirectorFactory>
     <!--<constraintProviderClass>org.optaplanner.examples.flightcrewscheduling.optional.score.FlightCrewSchedulingConstraintProvider</constraintProviderClass>-->
     <scoreDrl>org/optaplanner/examples/flightcrewscheduling/solver/flightCrewSchedulingConstraints.drl</scoreDrl>

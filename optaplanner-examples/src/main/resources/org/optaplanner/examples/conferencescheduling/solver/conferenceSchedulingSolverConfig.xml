@@ -6,7 +6,7 @@
 
   <solutionClass>org.optaplanner.examples.conferencescheduling.domain.ConferenceSolution</solutionClass>
   <entityClass>org.optaplanner.examples.conferencescheduling.domain.Talk</entityClass>
-
+  <domainAccessType>GIZMO_MEMBER</domainAccessType>
   <scoreDirectorFactory>
     <!--<constraintProviderClass>org.optaplanner.examples.conferencescheduling.optional.score.ConferenceSchedulingConstraintProvider</constraintProviderClass>-->
     <scoreDrl>org/optaplanner/examples/conferencescheduling/solver/conferenceSchedulingConstraints.drl</scoreDrl>

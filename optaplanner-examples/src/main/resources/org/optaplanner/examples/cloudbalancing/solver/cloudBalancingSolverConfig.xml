@@ -7,6 +7,7 @@
   <!-- Domain model configuration -->
   <solutionClass>org.optaplanner.examples.cloudbalancing.domain.CloudBalance</solutionClass>
   <entityClass>org.optaplanner.examples.cloudbalancing.domain.CloudProcess</entityClass>
+  <domainAccessType>GIZMO_MEMBER</domainAccessType>
 
   <!-- Score configuration -->
   <scoreDirectorFactory>

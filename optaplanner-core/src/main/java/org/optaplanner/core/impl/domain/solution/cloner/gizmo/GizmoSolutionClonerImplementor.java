@@ -3,6 +3,7 @@ package org.optaplanner.core.impl.domain.solution.cloner.gizmo;
 import java.io.IOException;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.lang.reflect.ParameterizedType;
 import java.nio.file.Files;
@@ -26,8 +27,10 @@ import java.util.SortedSet;
 import java.util.TreeSet;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.optaplanner.core.api.domain.solution.cloner.SolutionCloner;
+import org.optaplanner.core.impl.domain.common.ReflectionHelper;
 import org.optaplanner.core.impl.domain.common.accessor.gizmo.GizmoMemberDescriptor;
 import org.optaplanner.core.impl.domain.solution.cloner.DeepCloningUtils;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
@@ -37,6 +40,7 @@ import io.quarkus.gizmo.BranchResult;
 import io.quarkus.gizmo.BytecodeCreator;
 import io.quarkus.gizmo.ClassCreator;
 import io.quarkus.gizmo.ClassOutput;
+import io.quarkus.gizmo.FieldDescriptor;
 import io.quarkus.gizmo.MethodCreator;
 import io.quarkus.gizmo.MethodDescriptor;
 import io.quarkus.gizmo.ResultHandle;
@@ -206,6 +210,86 @@ public class GizmoSolutionClonerImplementor {
 
         classNameToBytecode.put(className, classBytecode);
         return createInstance(className);
+    }
+
+    public static <T> SolutionCloner<T> createDeferClonerFor(SolutionDescriptor<T> solutionDescriptor) {
+        String className = GizmoSolutionClonerFactory.getGeneratedClassName(solutionDescriptor);
+        final byte[][] classBytecodeHolder = new byte[1][];
+        ClassOutput classOutput = (path, byteCode) -> {
+            classBytecodeHolder[0] = byteCode;
+        };
+        ClassCreator classCreator = ClassCreator.builder()
+                .className(className)
+                .interfaces(SolutionCloner.class)
+                .superClass(Object.class)
+                .classOutput(classOutput)
+                .setFinal(true)
+                .build();
+
+        Map<Class<?>, GizmoSolutionOrEntityDescriptor> memoizedSolutionOrEntityDescriptorMap = new HashMap<>();
+
+        DeepCloningUtils deepCloningUtils = new DeepCloningUtils(solutionDescriptor);
+        Set<Class<?>> deepClonedClassSet = deepCloningUtils.getDeepClonedClasses(Collections.emptyList());
+        Stream.concat(Stream.of(solutionDescriptor.getSolutionClass()),
+                Stream.concat(solutionDescriptor.getEntityClassSet().stream(),
+                        deepClonedClassSet.stream()))
+                .forEach(clazz -> {
+                    memoizedSolutionOrEntityDescriptorMap.put(clazz,
+                            generateGizmoSolutionOrEntityDescriptor(solutionDescriptor, clazz));
+                });
+
+        GizmoSolutionClonerImplementor.defineClonerFor(classCreator, solutionDescriptor,
+                Arrays.asList(solutionDescriptor.getSolutionClass()),
+                memoizedSolutionOrEntityDescriptorMap, deepClonedClassSet);
+        classCreator.close();
+        byte[] classBytecode = classBytecodeHolder[0];
+
+        classNameToBytecode.put(className, classBytecode);
+        return createInstance(className);
+    }
+
+    private static GizmoSolutionOrEntityDescriptor generateGizmoSolutionOrEntityDescriptor(
+            SolutionDescriptor solutionDescriptor,
+            Class<?> entityClass) {
+        Map<Field, GizmoMemberDescriptor> solutionFieldToMemberDescriptor = new HashMap<>();
+        Class<?> currentClass = entityClass;
+
+        while (currentClass != null) {
+            for (Field field : currentClass.getDeclaredFields()) {
+                if (!Modifier.isStatic(field.getModifiers())) {
+                    GizmoMemberDescriptor member;
+                    Class<?> declaringClass = field.getDeclaringClass();
+                    FieldDescriptor memberDescriptor = FieldDescriptor.of(field);
+                    String name = field.getName();
+
+                    if (Modifier.isPublic(field.getModifiers())) {
+                        member = new GizmoMemberDescriptor(name, memberDescriptor, memberDescriptor, declaringClass);
+                    } else {
+                        Method getter = ReflectionHelper.getGetterMethod(currentClass, field.getName());
+                        Method setter = ReflectionHelper.getSetterMethod(currentClass, field.getName());
+                        if (getter != null && setter != null) {
+                            MethodDescriptor getterDescriptor = MethodDescriptor.ofMethod(field.getDeclaringClass().getName(),
+                                    getter.getName(),
+                                    field.getType());
+                            MethodDescriptor setterDescriptor = MethodDescriptor.ofMethod(field.getDeclaringClass().getName(),
+                                    setter.getName(),
+                                    setter.getReturnType(),
+                                    field.getType());
+                            member = new GizmoMemberDescriptor(name, getterDescriptor, memberDescriptor, declaringClass,
+                                    setterDescriptor);
+                        } else {
+                            throw new IllegalStateException("Fail to generate GizmoMemberDescriptor for (" + name + "): " +
+                                    "Field is not public and does not have both a getter and a setter.");
+                        }
+                    }
+                    solutionFieldToMemberDescriptor.put(field, member);
+                }
+            }
+            currentClass = currentClass.getSuperclass();
+        }
+        GizmoSolutionOrEntityDescriptor out =
+                new GizmoSolutionOrEntityDescriptor(solutionDescriptor, entityClass, solutionFieldToMemberDescriptor);
+        return out;
     }
 
     private static <T> SolutionCloner<T> createInstance(String className) {

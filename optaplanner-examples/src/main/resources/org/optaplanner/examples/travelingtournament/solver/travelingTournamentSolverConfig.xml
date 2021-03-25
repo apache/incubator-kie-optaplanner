@@ -6,7 +6,7 @@
 
   <solutionClass>org.optaplanner.examples.travelingtournament.domain.TravelingTournament</solutionClass>
   <entityClass>org.optaplanner.examples.travelingtournament.domain.Match</entityClass>
-
+  <domainAccessType>GIZMO_MEMBER</domainAccessType>
   <scoreDirectorFactory>
     <!--<constraintProviderClass>org.optaplanner.examples.travelingtournament.optional.score.TravelingTournamentConstraintProvider</constraintProviderClass>-->
     <scoreDrl>org/optaplanner/examples/travelingtournament/solver/travelingTournamentConstraints.drl</scoreDrl>

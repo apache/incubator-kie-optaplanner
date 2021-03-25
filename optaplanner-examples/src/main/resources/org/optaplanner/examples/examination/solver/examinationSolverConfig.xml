@@ -8,7 +8,7 @@
   <entityClass>org.optaplanner.examples.examination.domain.Exam</entityClass>
   <entityClass>org.optaplanner.examples.examination.domain.LeadingExam</entityClass>
   <entityClass>org.optaplanner.examples.examination.domain.FollowingExam</entityClass>
-
+  <domainAccessType>GIZMO_MEMBER</domainAccessType>
   <scoreDirectorFactory>
     <scoreDrl>org/optaplanner/examples/examination/solver/examinationConstraints.drl</scoreDrl>
     <initializingScoreTrend>ONLY_DOWN</initializingScoreTrend>

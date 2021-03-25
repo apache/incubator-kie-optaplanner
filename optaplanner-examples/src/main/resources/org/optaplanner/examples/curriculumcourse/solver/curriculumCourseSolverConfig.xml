@@ -6,7 +6,7 @@
 
   <solutionClass>org.optaplanner.examples.curriculumcourse.domain.CourseSchedule</solutionClass>
   <entityClass>org.optaplanner.examples.curriculumcourse.domain.Lecture</entityClass>
-
+  <domainAccessType>GIZMO_MEMBER</domainAccessType>
   <scoreDirectorFactory>
     <!--<constraintProviderClass>org.optaplanner.examples.curriculumcourse.optional.score.CurriculumCourseConstraintProvider</constraintProviderClass>-->
     <scoreDrl>org/optaplanner/examples/curriculumcourse/solver/curriculumCourseConstraints.drl</scoreDrl>

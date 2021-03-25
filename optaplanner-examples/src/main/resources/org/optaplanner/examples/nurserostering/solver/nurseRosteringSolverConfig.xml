@@ -6,7 +6,7 @@
 
   <solutionClass>org.optaplanner.examples.nurserostering.domain.NurseRoster</solutionClass>
   <entityClass>org.optaplanner.examples.nurserostering.domain.ShiftAssignment</entityClass>
-
+  <domainAccessType>GIZMO_MEMBER</domainAccessType>
   <scoreDirectorFactory>
     <scoreDrl>org/optaplanner/examples/nurserostering/solver/nurseRosteringConstraints.drl</scoreDrl>
   </scoreDirectorFactory>

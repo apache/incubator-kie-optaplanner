@@ -6,7 +6,7 @@
 
   <solutionClass>org.optaplanner.examples.meetingscheduling.domain.MeetingSchedule</solutionClass>
   <entityClass>org.optaplanner.examples.meetingscheduling.domain.MeetingAssignment</entityClass>
-
+  <domainAccessType>GIZMO_MEMBER</domainAccessType>
   <scoreDirectorFactory>
     <!--<constraintProviderClass>org.optaplanner.examples.meetingscheduling.optional.score.MeetingSchedulingConstraintProvider</constraintProviderClass>-->
     <scoreDrl>org/optaplanner/examples/meetingscheduling/solver/meetingSchedulingConstraints.drl</scoreDrl>

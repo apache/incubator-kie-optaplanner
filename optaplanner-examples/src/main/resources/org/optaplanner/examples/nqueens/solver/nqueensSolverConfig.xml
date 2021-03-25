@@ -6,7 +6,7 @@
 
   <solutionClass>org.optaplanner.examples.nqueens.domain.NQueens</solutionClass>
   <entityClass>org.optaplanner.examples.nqueens.domain.Queen</entityClass>
-
+  <domainAccessType>GIZMO_MEMBER</domainAccessType>
   <scoreDirectorFactory>
     <!--<easyScoreCalculatorClass>org.optaplanner.examples.nqueens.optional.score.NQueensEasyScoreCalculator</easyScoreCalculatorClass>-->
     <!--<easyScoreCalculatorClass>org.optaplanner.examples.nqueens.optional.score.NQueensMapBasedEasyScoreCalculator</easyScoreCalculatorClass>-->
