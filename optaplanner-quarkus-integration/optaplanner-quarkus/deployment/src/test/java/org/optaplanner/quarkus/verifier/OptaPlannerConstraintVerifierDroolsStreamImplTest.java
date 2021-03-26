@@ -16,10 +16,10 @@
 
 package org.optaplanner.quarkus.verifier;
 
-import io.quarkus.test.QuarkusUnitTest;
-
 import java.util.Arrays;
+
 import javax.inject.Inject;
+
 import org.drools.core.base.CoreComponentsBuilder;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
@@ -33,6 +33,8 @@ import org.optaplanner.quarkus.testdata.normal.domain.TestdataQuarkusEntity;
 import org.optaplanner.quarkus.testdata.normal.domain.TestdataQuarkusSolution;
 import org.optaplanner.test.api.score.stream.ConstraintVerifier;
 import org.optaplanner.test.impl.score.stream.DefaultConstraintVerifier;
+
+import io.quarkus.test.QuarkusUnitTest;
 
 public class OptaPlannerConstraintVerifierDroolsStreamImplTest {
     @RegisterExtension
