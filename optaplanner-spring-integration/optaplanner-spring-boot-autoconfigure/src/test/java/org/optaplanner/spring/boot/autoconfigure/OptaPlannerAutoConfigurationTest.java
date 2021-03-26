@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2021 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,17 +16,11 @@
 
 package org.optaplanner.spring.boot.autoconfigure;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatCode;
-import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.*;
-
 import java.time.Duration;
 import java.util.Collections;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
-
+import org.drools.core.base.CoreComponentsBuilder;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.optaplanner.core.api.domain.common.DomainAccessType;
@@ -58,6 +52,14 @@ import org.springframework.boot.autoconfigure.AutoConfigurations;
 import org.springframework.boot.test.context.FilteredClassLoader;
 import org.springframework.boot.test.context.runner.ApplicationContextRunner;
 import org.springframework.core.io.ClassPathResource;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatCode;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.doCallRealMethod;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 public class OptaPlannerAutoConfigurationTest {
 
@@ -276,6 +278,8 @@ public class OptaPlannerAutoConfigurationTest {
 
                     assertThat(((DefaultConstraintVerifier) constraintVerifier).getConstraintStreamImplType())
                             .isEqualTo(ConstraintStreamImplType.DROOLS);
+                    assertThat(((DefaultConstraintVerifier) constraintVerifier).isDroolsAlphaNetworkCompilerEnabled())
+                            .isEqualTo(!CoreComponentsBuilder.isNativeImage());
                     TestdataSpringSolution problem = new TestdataSpringSolution();
                     problem.setValueList(IntStream.range(1, 3)
                             .mapToObj(i -> "v" + i)
@@ -304,6 +308,8 @@ public class OptaPlannerAutoConfigurationTest {
                             context.getBean(ConstraintVerifier.class);
                     assertThat(((DefaultConstraintVerifier) constraintVerifier).getConstraintStreamImplType())
                             .isEqualTo(ConstraintStreamImplType.BAVET);
+                    assertThat(((DefaultConstraintVerifier) constraintVerifier).isDroolsAlphaNetworkCompilerEnabled())
+                            .isFalse();
 
                     TestdataSpringSolution problem = new TestdataSpringSolution();
                     problem.setValueList(IntStream.range(1, 3)

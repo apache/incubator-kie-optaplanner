@@ -1404,12 +1404,9 @@ public class BiConstraintStreamTest extends AbstractConstraintStreamTest impleme
 
         String constraintName = "myConstraint";
         InnerScoreDirector<TestdataLavishSolution, SimpleScore> scoreDirector = buildScoreDirector(
-                TestdataLavishSolution.buildSolutionDescriptor(),
-                factory -> new Constraint[] {
-                        factory.from(TestdataLavishEntity.class)
-                                .join(TestdataLavishValue.class)
-                                .penalize(constraintName, SimpleScore.ONE, (entity, value) -> -1)
-                });
+                factory -> factory.from(TestdataLavishEntity.class)
+                        .join(TestdataLavishValue.class)
+                        .penalize(constraintName, SimpleScore.ONE, (entity, value) -> -1));
 
         scoreDirector.setWorkingSolution(solution);
         assertThatThrownBy(scoreDirector::calculateScore).hasMessageContaining(constraintName);
@@ -1499,12 +1496,9 @@ public class BiConstraintStreamTest extends AbstractConstraintStreamTest impleme
 
         String constraintName = "myConstraint";
         InnerScoreDirector<TestdataLavishSolution, SimpleScore> scoreDirector = buildScoreDirector(
-                TestdataLavishSolution.buildSolutionDescriptor(),
-                factory -> new Constraint[] {
-                        factory.from(TestdataLavishEntity.class)
-                                .join(TestdataLavishValue.class)
-                                .reward(constraintName, SimpleScore.ONE, (entity, value) -> -1)
-                });
+                factory -> factory.from(TestdataLavishEntity.class)
+                        .join(TestdataLavishValue.class)
+                        .reward(constraintName, SimpleScore.ONE, (entity, value) -> -1));
 
         scoreDirector.setWorkingSolution(solution);
         assertThatThrownBy(scoreDirector::calculateScore).hasMessageContaining(constraintName);

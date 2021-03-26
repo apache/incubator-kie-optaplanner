@@ -25,6 +25,7 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlType;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
+import org.apache.commons.lang3.ObjectUtils;
 import org.drools.core.base.CoreComponentsBuilder;
 import org.optaplanner.core.api.score.calculator.EasyScoreCalculator;
 import org.optaplanner.core.api.score.calculator.IncrementalScoreCalculator;
@@ -131,16 +132,6 @@ public class ScoreDirectorFactoryConfig extends AbstractConfig<ScoreDirectorFact
         this.constraintStreamImplType = constraintStreamImplType;
     }
 
-    private boolean isUsingDrools() {
-        if (scoreDrlList != null || scoreDrlFileList != null) { // We know we're in DRL.
-            return true;
-        } else if (constraintProviderClass == null) { // We know we're neither in DRL nor in CS.
-            return false;
-        }
-        // We know we're in CS.
-        return (constraintStreamImplType == null || constraintStreamImplType == ConstraintStreamImplType.DROOLS);
-    }
-
     public Class<? extends IncrementalScoreCalculator> getIncrementalScoreCalculatorClass() {
         return incrementalScoreCalculatorClass;
     }
@@ -180,27 +171,6 @@ public class ScoreDirectorFactoryConfig extends AbstractConfig<ScoreDirectorFact
 
     public void setCompileDroolsAlphaNetwork(Boolean compileDroolsAlphaNetwork) {
         this.compileDroolsAlphaNetwork = compileDroolsAlphaNetwork;
-    }
-
-    public boolean isDroolsAlphaNetworkCompilerEnabled() {
-        if (!isUsingDrools()) {
-            LOGGER.trace("Drools Alpha Network compiler is disabled when not using Drools.");
-            return false;
-        }
-        Boolean ancEnabledValue = getCompileDroolsAlphaNetwork();
-        if (ancEnabledValue == null || ancEnabledValue) {
-            boolean isNativeImage = CoreComponentsBuilder.isNativeImage();
-            if (isNativeImage) { // ANC does not work in native images.
-                LOGGER.trace("Drools Alpha Network compiler is disabled in native images.");
-                return false;
-            } else {
-                LOGGER.trace("Drools Alpha Network compiler is enabled.");
-                return true;
-            }
-        } else {
-            LOGGER.trace("Drools Alpha Network compiler is disabled in solver config.");
-            return false;
-        }
     }
 
     public Map<String, String> getKieBaseConfigurationProperties() {
@@ -341,6 +311,36 @@ public class ScoreDirectorFactoryConfig extends AbstractConfig<ScoreDirectorFact
     @Override
     public ScoreDirectorFactoryConfig copyConfig() {
         return new ScoreDirectorFactoryConfig().inherit(this);
+    }
+
+    private boolean isUsingDrools() {
+        if (scoreDrlList != null || scoreDrlFileList != null) { // We know we're in DRL.
+            return true;
+        } else if (constraintProviderClass == null) { // We know we're neither in DRL nor in CS.
+            return false;
+        }
+        return (constraintStreamImplType == null || constraintStreamImplType == ConstraintStreamImplType.DROOLS);
+    }
+
+    public boolean isDroolsAlphaNetworkCompilerEnabled() {
+        if (!isUsingDrools()) {
+            LOGGER.trace("Drools Alpha Network Compiler is disabled when not using Drools.");
+            return false;
+        }
+        boolean ancEnabledValue = ObjectUtils.defaultIfNull(getCompileDroolsAlphaNetwork(), true);
+        if (ancEnabledValue) {
+            boolean isNativeImage = CoreComponentsBuilder.isNativeImage();
+            if (isNativeImage) { // ANC does not work in native images.
+                LOGGER.trace("Drools Alpha Network Compiler is disabled in native images.");
+                return false;
+            } else {
+                LOGGER.trace("Drools Alpha Network Compiler is enabled.");
+                return true;
+            }
+        } else {
+            LOGGER.trace("Drools Alpha Network Compiler is disabled in solver config.");
+            return false;
+        }
     }
 
 }

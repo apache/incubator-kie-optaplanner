@@ -1218,7 +1218,8 @@ public class QuadConstraintStreamTest extends AbstractConstraintStreamTest imple
 
         InnerScoreDirector<TestdataSimpleBigDecimalScoreSolution, SimpleBigDecimalScore> scoreDirector =
                 buildScoreDirector(
-                        TestdataSimpleBigDecimalScoreSolution.buildSolutionDescriptor(), factory -> {
+                        TestdataSimpleBigDecimalScoreSolution.buildSolutionDescriptor(),
+                        factory -> {
                             QuadConstraintStream<TestdataEntity, TestdataEntity, TestdataValue, TestdataValue> base = factory
                                     .fromUniquePair(TestdataEntity.class)
                                     .join(TestdataValue.class, equal((entity1, entity2) -> e1.getValue(), identity()))
