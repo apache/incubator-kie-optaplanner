@@ -19,7 +19,6 @@ package org.optaplanner.core.impl.score.director.stream;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.stream.ConstraintProvider;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
-import org.optaplanner.core.impl.score.stream.InnerConstraintFactory;
 import org.optaplanner.core.impl.score.stream.bavet.BavetConstraintFactory;
 
 public final class BavetConstraintStreamScoreDirectorFactory<Solution_, Score_ extends Score<Score_>>
@@ -27,12 +26,7 @@ public final class BavetConstraintStreamScoreDirectorFactory<Solution_, Score_ e
 
     public BavetConstraintStreamScoreDirectorFactory(SolutionDescriptor<Solution_> solutionDescriptor,
             ConstraintProvider constraintProvider) {
-        super(solutionDescriptor, constraintProvider);
+        super(solutionDescriptor, constraintProvider, () -> new BavetConstraintFactory<>(solutionDescriptor));
     }
 
-    @Override
-    protected InnerConstraintFactory<Solution_> createConstraintFactory(
-            SolutionDescriptor<Solution_> solutionDescriptor) {
-        return new BavetConstraintFactory<>(solutionDescriptor);
-    }
 }

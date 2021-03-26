@@ -102,6 +102,10 @@ public final class DroolsConstraintSessionFactory<Solution_, Score_ extends Scor
         return kieBase.newKieSession(config, environment);
     }
 
+    public boolean isDroolsAlphaNetworkCompilationEnabled() {
+        return droolsAlphaNetworkCompilationEnabled;
+    }
+
     @Override
     public ConstraintSession<Solution_, Score_> buildSession(boolean constraintMatchEnabled, Solution_ workingSolution) {
         ScoreDefinition<Score_> scoreDefinition = solutionDescriptor.getScoreDefinition();

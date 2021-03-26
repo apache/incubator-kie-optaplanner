@@ -18,6 +18,7 @@ package org.optaplanner.core.impl.score.director.stream;
 
 import java.util.Arrays;
 import java.util.Objects;
+import java.util.function.Supplier;
 
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.score.Score;
@@ -45,9 +46,10 @@ public abstract class AbstractConstraintStreamScoreDirectorFactory<Solution_, Sc
     private final Constraint[] constraints;
 
     protected AbstractConstraintStreamScoreDirectorFactory(SolutionDescriptor<Solution_> solutionDescriptor,
-            ConstraintProvider constraintProvider) {
+            ConstraintProvider constraintProvider,
+            Supplier<InnerConstraintFactory<Solution_>> constraintFactorySupplier) {
         super(solutionDescriptor);
-        InnerConstraintFactory<Solution_> constraintFactory = createConstraintFactory(solutionDescriptor);
+        InnerConstraintFactory<Solution_> constraintFactory = constraintFactorySupplier.get();
         this.constraints = constraintProvider.defineConstraints(constraintFactory);
         if (constraints == null) {
             throw new IllegalStateException("The constraintProvider class (" + constraintProvider.getClass()
@@ -62,9 +64,6 @@ public abstract class AbstractConstraintStreamScoreDirectorFactory<Solution_, Sc
         constraintSessionFactory =
                 (ConstraintSessionFactory<Solution_, Score_>) constraintFactory.buildSessionFactory(constraints);
     }
-
-    protected abstract InnerConstraintFactory<Solution_> createConstraintFactory(
-            SolutionDescriptor<Solution_> solutionDescriptor);
 
     // ************************************************************************
     // Complex methods
@@ -84,6 +83,10 @@ public abstract class AbstractConstraintStreamScoreDirectorFactory<Solution_, Sc
     // ************************************************************************
     // Getters/setters
     // ************************************************************************
+
+    public ConstraintSessionFactory<Solution_, Score_> getConstraintSessionFactory() {
+        return constraintSessionFactory;
+    }
 
     public Constraint[] getConstraints() {
         return constraints;
