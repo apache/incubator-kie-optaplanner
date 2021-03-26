@@ -110,7 +110,7 @@ public class GizmoSolutionClonerTest extends AbstractSolutionClonerTest {
     }
 
     // HACK: use public getters/setters of fields so test domain can remain private
-    // TODO: should this another DomainAccessType? DomainAcessType.GIZMO_RELAXED_ACCESS?
+    // TODO: should this another DomainAccessType? DomainAccessType.GIZMO_RELAXED_ACCESS?
     private GizmoSolutionOrEntityDescriptor generateGizmoSolutionOrEntityDescriptor(SolutionDescriptor solutionDescriptor,
             Class<?> entityClass) {
         Map<Field, GizmoMemberDescriptor> solutionFieldToMemberDescriptor = new HashMap<>();
@@ -130,13 +130,8 @@ public class GizmoSolutionClonerTest extends AbstractSolutionClonerTest {
                         Method getter = ReflectionHelper.getGetterMethod(currentClass, field.getName());
                         Method setter = ReflectionHelper.getSetterMethod(currentClass, field.getName());
                         if (getter != null && setter != null) {
-                            MethodDescriptor getterDescriptor = MethodDescriptor.ofMethod(field.getDeclaringClass().getName(),
-                                    getter.getName(),
-                                    field.getType());
-                            MethodDescriptor setterDescriptor = MethodDescriptor.ofMethod(field.getDeclaringClass().getName(),
-                                    setter.getName(),
-                                    setter.getReturnType(),
-                                    field.getType());
+                            MethodDescriptor getterDescriptor = MethodDescriptor.ofMethod(getter);
+                            MethodDescriptor setterDescriptor = MethodDescriptor.ofMethod(setter);
                             member = new GizmoMemberDescriptor(name, getterDescriptor, memberDescriptor, declaringClass,
                                     setterDescriptor);
                         } else {

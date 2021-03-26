@@ -268,13 +268,8 @@ public class GizmoSolutionClonerImplementor {
                         Method getter = ReflectionHelper.getGetterMethod(currentClass, field.getName());
                         Method setter = ReflectionHelper.getSetterMethod(currentClass, field.getName());
                         if (getter != null && setter != null) {
-                            MethodDescriptor getterDescriptor = MethodDescriptor.ofMethod(field.getDeclaringClass().getName(),
-                                    getter.getName(),
-                                    field.getType());
-                            MethodDescriptor setterDescriptor = MethodDescriptor.ofMethod(field.getDeclaringClass().getName(),
-                                    setter.getName(),
-                                    setter.getReturnType(),
-                                    field.getType());
+                            MethodDescriptor getterDescriptor = MethodDescriptor.ofMethod(getter);
+                            MethodDescriptor setterDescriptor = MethodDescriptor.ofMethod(setter);
                             member = new GizmoMemberDescriptor(name, getterDescriptor, memberDescriptor, declaringClass,
                                     setterDescriptor);
                         } else {
