@@ -47,10 +47,12 @@ public class OptaPlannerConstraintVerifierBavetStreamImplTest {
     ConstraintVerifier<TestdataQuarkusConstraintProvider, TestdataQuarkusSolution> constraintVerifier;
 
     @Test
-    public void constraintVerifierDroolsStreamImpl() {
+    public void constraintVerifierBavetStreamImpl() {
         Assertions.assertEquals(ConstraintStreamImplType.BAVET,
                 ((DefaultConstraintVerifier<?, ?, ?>) constraintVerifier)
                         .getConstraintStreamImplType());
+        Assertions.assertFalse(((DefaultConstraintVerifier<?, ?, ?>) constraintVerifier)
+                .isDroolsAlphaNetworkCompilerEnabled());
         TestdataQuarkusSolution solution = new TestdataQuarkusSolution();
         TestdataQuarkusEntity entityA = new TestdataQuarkusEntity();
         TestdataQuarkusEntity entityB = new TestdataQuarkusEntity();

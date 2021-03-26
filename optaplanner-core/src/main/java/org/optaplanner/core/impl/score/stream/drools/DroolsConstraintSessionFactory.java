@@ -25,6 +25,7 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.function.Function;
 
+import org.drools.ancompiler.KieBaseUpdaterANC;
 import org.drools.model.Model;
 import org.drools.model.impl.ModelImpl;
 import org.drools.modelcompiler.builder.KieBaseBuilder;
@@ -45,7 +46,6 @@ import org.optaplanner.core.api.score.stream.Constraint;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.core.impl.score.definition.ScoreDefinition;
 import org.optaplanner.core.impl.score.director.drools.DroolsScoreDirector;
-import org.optaplanner.core.impl.score.director.drools.KieBaseUtil;
 import org.optaplanner.core.impl.score.director.drools.OptaPlannerRuleEventListener;
 import org.optaplanner.core.impl.score.holder.AbstractScoreHolder;
 import org.optaplanner.core.impl.score.stream.ConstraintSession;
@@ -56,6 +56,7 @@ public final class DroolsConstraintSessionFactory<Solution_, Score_ extends Scor
 
     private final SolutionDescriptor<Solution_> solutionDescriptor;
     private final Model originalModel;
+    private final boolean droolsAlphaNetworkCompilerEnabled;
     private final KieBase originalKieBase;
     private final Map<Rule, DroolsConstraint<Solution_>> compiledRuleToConstraintMap;
     private final Map<String, org.drools.model.Rule> constraintToModelRuleMap;
@@ -63,10 +64,11 @@ public final class DroolsConstraintSessionFactory<Solution_, Score_ extends Scor
     private Set<String> currentlyDisabledConstraintIdSet = null;
 
     public DroolsConstraintSessionFactory(SolutionDescriptor<Solution_> solutionDescriptor, Model model,
-            List<DroolsConstraint<Solution_>> constraints) {
-        this.solutionDescriptor = solutionDescriptor;
-        this.originalModel = model;
-        this.originalKieBase = buildKieBaseFromModel(model);
+            List<DroolsConstraint<Solution_>> constraints, boolean droolsAlphaNetworkCompilerEnabled) {
+        this.solutionDescriptor = Objects.requireNonNull(solutionDescriptor);
+        this.originalModel = Objects.requireNonNull(model);
+        this.droolsAlphaNetworkCompilerEnabled = droolsAlphaNetworkCompilerEnabled;
+        this.originalKieBase = buildKieBaseFromModel(model, droolsAlphaNetworkCompilerEnabled);
         this.currentKieBase = originalKieBase;
         this.compiledRuleToConstraintMap = constraints.stream()
                 .collect(toMap(constraint -> currentKieBase.getRule(constraint.getConstraintPackage(),
@@ -80,13 +82,16 @@ public final class DroolsConstraintSessionFactory<Solution_, Score_ extends Scor
                                 constraint + ") not found."))));
     }
 
-    private static KieBase buildKieBaseFromModel(Model model) {
+    private static KieBase buildKieBaseFromModel(Model model, boolean droolsAlphaNetworkCompilerEnabled) {
         KieBaseConfiguration kieBaseConfiguration = KieServices.get().newKieBaseConfiguration();
         kieBaseConfiguration.setOption(KieBaseMutabilityOption.DISABLED); // For performance; applicable to DRL too.
         kieBaseConfiguration.setProperty(PropertySpecificOption.PROPERTY_NAME,
                 PropertySpecificOption.DISABLED.name()); // Users of CS must not rely on underlying Drools gimmicks.
         KieBase kieBase = KieBaseBuilder.createKieBaseFromModel(model, kieBaseConfiguration);
-        return KieBaseUtil.compileAlphaNetworkIfEnabled(kieBase);
+        if (droolsAlphaNetworkCompilerEnabled) {
+            KieBaseUpdaterANC.generateAndSetInMemoryANC(kieBase); // Enable Alpha Network Compiler for performance.
+        }
+        return kieBase;
     }
 
     private static KieSession buildKieSessionFromKieBase(KieBase kieBase) {
@@ -124,7 +129,7 @@ public final class DroolsConstraintSessionFactory<Solution_, Score_ extends Scor
                 }
                 model.addRule(modelRule);
             });
-            currentKieBase = buildKieBaseFromModel(model);
+            currentKieBase = buildKieBaseFromModel(model, droolsAlphaNetworkCompilerEnabled);
             currentlyDisabledConstraintIdSet = disabledConstraintIdSet;
         }
         // Create the session itself.

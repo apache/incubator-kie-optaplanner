@@ -25,6 +25,7 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import org.drools.ancompiler.KieBaseUpdaterANC;
 import org.drools.core.io.impl.ClassPathResource;
 import org.drools.core.io.impl.FileSystemResource;
 import org.drools.modelcompiler.ExecutableModelProject;
@@ -43,11 +44,12 @@ import org.optaplanner.core.config.solver.EnvironmentMode;
 import org.optaplanner.core.config.util.ConfigUtils;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.core.impl.score.director.drools.DroolsScoreDirectorFactory;
-import org.optaplanner.core.impl.score.director.drools.KieBaseUtil;
 import org.optaplanner.core.impl.score.director.drools.testgen.TestGenDroolsScoreDirectorFactory;
 import org.optaplanner.core.impl.score.director.easy.EasyScoreDirectorFactory;
 import org.optaplanner.core.impl.score.director.incremental.IncrementalScoreDirectorFactory;
-import org.optaplanner.core.impl.score.director.stream.ConstraintStreamScoreDirectorFactory;
+import org.optaplanner.core.impl.score.director.stream.AbstractConstraintStreamScoreDirectorFactory;
+import org.optaplanner.core.impl.score.director.stream.BavetConstraintStreamScoreDirectorFactory;
+import org.optaplanner.core.impl.score.director.stream.DroolsConstraintStreamScoreDirectorFactory;
 import org.optaplanner.core.impl.score.trend.InitializingScoreTrend;
 
 public class ScoreDirectorFactoryFactory<Solution_, Score_ extends Score<Score_>> {
@@ -94,7 +96,7 @@ public class ScoreDirectorFactoryFactory<Solution_, Score_ extends Score<Score_>
             ClassLoader classLoader, SolutionDescriptor<Solution_> solutionDescriptor) {
         EasyScoreDirectorFactory<Solution_, Score_> easyScoreDirectorFactory =
                 buildEasyScoreDirectorFactory(solutionDescriptor);
-        ConstraintStreamScoreDirectorFactory<Solution_, Score_> constraintStreamScoreDirectorFactory =
+        AbstractConstraintStreamScoreDirectorFactory<Solution_, Score_> constraintStreamScoreDirectorFactory =
                 buildConstraintStreamScoreDirectorFactory(solutionDescriptor);
         IncrementalScoreDirectorFactory<Solution_, Score_> incrementalScoreDirectorFactory =
                 buildIncrementalScoreDirectorFactory(solutionDescriptor);
@@ -106,10 +108,15 @@ public class ScoreDirectorFactoryFactory<Solution_, Score_ extends Score<Score_>
 
         AbstractScoreDirectorFactory<Solution_, Score_> scoreDirectorFactory;
         if (easyScoreDirectorFactory != null) {
+            enforceNoAlphaNetworkCompiler();
             scoreDirectorFactory = easyScoreDirectorFactory;
         } else if (constraintStreamScoreDirectorFactory != null) {
+            if (config.getConstraintStreamImplType() == ConstraintStreamImplType.BAVET) {
+                enforceNoAlphaNetworkCompiler();
+            }
             scoreDirectorFactory = constraintStreamScoreDirectorFactory;
         } else if (incrementalScoreDirectorFactory != null) {
+            enforceNoAlphaNetworkCompiler();
             scoreDirectorFactory = incrementalScoreDirectorFactory;
         } else if (droolsScoreDirectorFactory != null) {
             scoreDirectorFactory = droolsScoreDirectorFactory;
@@ -122,7 +129,7 @@ public class ScoreDirectorFactoryFactory<Solution_, Score_ extends Score<Score_>
     }
 
     private void checkMultipleScoreDirectorFactoryTypes(EasyScoreDirectorFactory easyScoreDirectorFactory,
-            ConstraintStreamScoreDirectorFactory constraintStreamScoreDirectorFactory,
+            AbstractConstraintStreamScoreDirectorFactory constraintStreamScoreDirectorFactory,
             IncrementalScoreDirectorFactory incrementalScoreDirectorFactory,
             DroolsScoreDirectorFactory droolsScoreDirectorFactory) {
         if (Stream.of(easyScoreDirectorFactory, constraintStreamScoreDirectorFactory,
@@ -181,7 +188,17 @@ public class ScoreDirectorFactoryFactory<Solution_, Score_ extends Score<Score_>
         }
     }
 
-    protected ConstraintStreamScoreDirectorFactory<Solution_, Score_> buildConstraintStreamScoreDirectorFactory(
+    private void enforceNoAlphaNetworkCompiler() {
+        if (config.getCompileDroolsAlphaNetwork() != null) {
+            throw new IllegalStateException("If there is no scoreDrl (" + config.getScoreDrlList()
+                    + "), scoreDrlFile (" + config.getScoreDrlFileList() + ") or constraintProviderClass ("
+                    + config.getConstraintProviderClass() + ") with " + ConstraintStreamImplType.DROOLS + " impl type ("
+                    + config.getConstraintStreamImplType() + ") then there can be no compileDroolsAlphaNetwork ("
+                    + config.getCompileDroolsAlphaNetwork() + ") either.");
+        }
+    }
+
+    protected AbstractConstraintStreamScoreDirectorFactory<Solution_, Score_> buildConstraintStreamScoreDirectorFactory(
             SolutionDescriptor<Solution_> solutionDescriptor) {
         if (config.getConstraintProviderClass() != null) {
             if (!ConstraintProvider.class.isAssignableFrom(config.getConstraintProviderClass())) {
@@ -195,8 +212,16 @@ public class ScoreDirectorFactoryFactory<Solution_, Score_ extends Score<Score_>
                     config.getConstraintProviderCustomProperties(), "constraintProviderCustomProperties");
             ConstraintStreamImplType constraintStreamImplType_ = defaultIfNull(config.getConstraintStreamImplType(),
                     ConstraintStreamImplType.DROOLS);
-            return new ConstraintStreamScoreDirectorFactory<>(solutionDescriptor, constraintProvider,
-                    constraintStreamImplType_);
+            switch (constraintStreamImplType_) {
+                case BAVET:
+                    return new BavetConstraintStreamScoreDirectorFactory<>(solutionDescriptor, constraintProvider);
+                case DROOLS:
+                    return new DroolsConstraintStreamScoreDirectorFactory<>(solutionDescriptor, constraintProvider,
+                            config.isDroolsAlphaNetworkCompilerEnabled());
+                default:
+                    throw new IllegalStateException(
+                            "The constraintStreamImplType (" + constraintStreamImplType_ + ") is not implemented.");
+            }
         } else {
             if (config.getConstraintProviderCustomProperties() != null) {
                 throw new IllegalStateException("If there is no constraintProviderClass (" + config.getConstraintProviderClass()
@@ -268,7 +293,9 @@ public class ScoreDirectorFactoryFactory<Solution_, Score_ extends Score<Score_>
 
         try {
             KieBase kieBase = kieHelper.build(ExecutableModelProject.class, KieBaseMutabilityOption.DISABLED);
-            kieBase = KieBaseUtil.compileAlphaNetworkIfEnabled(kieBase);
+            if (config.isDroolsAlphaNetworkCompilerEnabled()) {
+                KieBaseUpdaterANC.generateAndSetInMemoryANC(kieBase); // Enable Alpha Network Compiler for performance.
+            }
             if (generateDroolsTestOnError) {
                 return new TestGenDroolsScoreDirectorFactory<>(solutionDescriptor, kieBase, config.getScoreDrlList(),
                         config.getScoreDrlFileList());

@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2021 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,6 +25,7 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlType;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
+import org.drools.core.base.CoreComponentsBuilder;
 import org.optaplanner.core.api.score.calculator.EasyScoreCalculator;
 import org.optaplanner.core.api.score.calculator.IncrementalScoreCalculator;
 import org.optaplanner.core.api.score.stream.ConstraintProvider;
@@ -32,6 +33,8 @@ import org.optaplanner.core.api.score.stream.ConstraintStreamImplType;
 import org.optaplanner.core.config.AbstractConfig;
 import org.optaplanner.core.config.util.ConfigUtils;
 import org.optaplanner.core.impl.io.jaxb.adapter.JaxbCustomPropertiesAdapter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @XmlType(propOrder = {
         "easyScoreCalculatorClass",
@@ -43,11 +46,14 @@ import org.optaplanner.core.impl.io.jaxb.adapter.JaxbCustomPropertiesAdapter;
         "incrementalScoreCalculatorCustomProperties",
         "scoreDrlList",
         "scoreDrlFileList",
+        "compileDroolsAlphaNetwork",
         "kieBaseConfigurationProperties",
         "initializingScoreTrend",
         "assertionScoreDirectorFactory"
 })
 public class ScoreDirectorFactoryConfig extends AbstractConfig<ScoreDirectorFactoryConfig> {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(ScoreDirectorFactoryConfig.class);
 
     protected Class<? extends EasyScoreCalculator> easyScoreCalculatorClass = null;
 
@@ -69,6 +75,8 @@ public class ScoreDirectorFactoryConfig extends AbstractConfig<ScoreDirectorFact
     protected List<String> scoreDrlList = null;
     @XmlElement(name = "scoreDrlFile")
     protected List<File> scoreDrlFileList = null;
+
+    protected Boolean compileDroolsAlphaNetwork = null;
 
     @XmlJavaTypeAdapter(JaxbCustomPropertiesAdapter.class)
     protected Map<String, String> kieBaseConfigurationProperties = null;
@@ -123,6 +131,16 @@ public class ScoreDirectorFactoryConfig extends AbstractConfig<ScoreDirectorFact
         this.constraintStreamImplType = constraintStreamImplType;
     }
 
+    private boolean isUsingDrools() {
+        if (scoreDrlList != null || scoreDrlFileList != null) { // We know we're in DRL.
+            return true;
+        } else if (constraintProviderClass == null) { // We know we're neither in DRL nor in CS.
+            return false;
+        }
+        // We know we're in CS.
+        return (constraintStreamImplType == null || constraintStreamImplType == ConstraintStreamImplType.DROOLS);
+    }
+
     public Class<? extends IncrementalScoreCalculator> getIncrementalScoreCalculatorClass() {
         return incrementalScoreCalculatorClass;
     }
@@ -154,6 +172,35 @@ public class ScoreDirectorFactoryConfig extends AbstractConfig<ScoreDirectorFact
 
     public void setScoreDrlFileList(List<File> scoreDrlFileList) {
         this.scoreDrlFileList = scoreDrlFileList;
+    }
+
+    public Boolean getCompileDroolsAlphaNetwork() {
+        return compileDroolsAlphaNetwork;
+    }
+
+    public void setCompileDroolsAlphaNetwork(Boolean compileDroolsAlphaNetwork) {
+        this.compileDroolsAlphaNetwork = compileDroolsAlphaNetwork;
+    }
+
+    public boolean isDroolsAlphaNetworkCompilerEnabled() {
+        if (!isUsingDrools()) {
+            LOGGER.trace("Drools Alpha Network compiler is disabled when not using Drools.");
+            return false;
+        }
+        Boolean ancEnabledValue = getCompileDroolsAlphaNetwork();
+        if (ancEnabledValue == null || ancEnabledValue) {
+            boolean isNativeImage = CoreComponentsBuilder.isNativeImage();
+            if (isNativeImage) { // ANC does not work in native images.
+                LOGGER.trace("Drools Alpha Network compiler is disabled in native images.");
+                return false;
+            } else {
+                LOGGER.trace("Drools Alpha Network compiler is enabled.");
+                return true;
+            }
+        } else {
+            LOGGER.trace("Drools Alpha Network compiler is disabled in solver config.");
+            return false;
+        }
     }
 
     public Map<String, String> getKieBaseConfigurationProperties() {
@@ -244,6 +291,11 @@ public class ScoreDirectorFactoryConfig extends AbstractConfig<ScoreDirectorFact
         return this;
     }
 
+    public ScoreDirectorFactoryConfig withCompileDroolsAlphaNetworkEnabled(boolean compileDroolsAlphaNetwork) {
+        this.compileDroolsAlphaNetwork = compileDroolsAlphaNetwork;
+        return this;
+    }
+
     public ScoreDirectorFactoryConfig withInitializingScoreTrend(String initializingScoreTrend) {
         this.initializingScoreTrend = initializingScoreTrend;
         return this;
@@ -275,11 +327,12 @@ public class ScoreDirectorFactoryConfig extends AbstractConfig<ScoreDirectorFact
                 scoreDrlList, inheritedConfig.getScoreDrlList());
         scoreDrlFileList = ConfigUtils.inheritMergeableListProperty(
                 scoreDrlFileList, inheritedConfig.getScoreDrlFileList());
+        compileDroolsAlphaNetwork = ConfigUtils.inheritOverwritableProperty(
+                compileDroolsAlphaNetwork, inheritedConfig.getCompileDroolsAlphaNetwork());
         kieBaseConfigurationProperties = ConfigUtils.inheritMergeableMapProperty(
                 kieBaseConfigurationProperties, inheritedConfig.getKieBaseConfigurationProperties());
         initializingScoreTrend = ConfigUtils.inheritOverwritableProperty(
                 initializingScoreTrend, inheritedConfig.getInitializingScoreTrend());
-
         assertionScoreDirectorFactory = ConfigUtils.inheritOverwritableProperty(
                 assertionScoreDirectorFactory, inheritedConfig.getAssertionScoreDirectorFactory());
         return this;
