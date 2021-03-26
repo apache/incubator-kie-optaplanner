@@ -163,8 +163,8 @@ public class OptaPlannerAutoConfiguration implements BeanClassLoaderAware {
                     }
 
                     @Override
-                    public ConstraintVerifier<ConstraintProvider_, SolutionClass_> withDroolsAlphaNetworkCompiler(
-                            boolean droolsAlphaNetworkCompilerEnabled) {
+                    public ConstraintVerifier<ConstraintProvider_, SolutionClass_>
+                            withDroolsAlphaNetworkCompilationEnabled(boolean droolsAlphaNetworkCompilationEnabled) {
                         throw new UnsupportedOperationException(noConstraintProviderErrorMsg);
                     }
 
@@ -185,14 +185,14 @@ public class OptaPlannerAutoConfiguration implements BeanClassLoaderAware {
             Class<?>[] entityClasses = solverConfig.getEntityClassList().toArray(new Class<?>[0]);
             ConstraintStreamImplType constraintStreamImplType =
                     solverConfig.getScoreDirectorFactoryConfig().getConstraintStreamImplType();
-            boolean droolsAlphaNetworkCompilerEnabled =
-                    solverConfig.getScoreDirectorFactoryConfig().isDroolsAlphaNetworkCompilerEnabled();
+            boolean droolsAlphaNetworkCompilationEnabled =
+                    solverConfig.getScoreDirectorFactoryConfig().isDroolsAlphaNetworkCompilationEnabled();
 
             return (ConstraintVerifier<ConstraintProvider_, SolutionClass_>) ConstraintVerifier.build(constraintProvider,
                     solverConfig.getSolutionClass(), entityClasses)
                     .withConstraintStreamImplType(
                             (constraintStreamImplType != null) ? constraintStreamImplType : ConstraintStreamImplType.DROOLS)
-                    .withDroolsAlphaNetworkCompiler(droolsAlphaNetworkCompilerEnabled);
+                    .withDroolsAlphaNetworkCompilationEnabled(droolsAlphaNetworkCompilationEnabled);
         }
     }
 

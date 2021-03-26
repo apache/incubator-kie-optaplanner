@@ -38,7 +38,7 @@ public final class DefaultConstraintVerifier<ConstraintProvider_ extends Constra
     private final ConstraintProvider_ constraintProvider;
     private final SolutionDescriptor<Solution_> solutionDescriptor;
     private ConstraintStreamImplType constraintStreamImplType = ConstraintStreamImplType.DROOLS;
-    private boolean droolsAlphaNetworkCompilerEnabled = !CoreComponentsBuilder.isNativeImage();
+    private boolean droolsAlphaNetworkCompilationEnabled = !CoreComponentsBuilder.isNativeImage();
 
     public DefaultConstraintVerifier(ConstraintProvider_ constraintProvider, SolutionDescriptor<Solution_> solutionDescriptor) {
         this.constraintProvider = constraintProvider;
@@ -56,18 +56,18 @@ public final class DefaultConstraintVerifier<ConstraintProvider_ extends Constra
         return this;
     }
 
-    public boolean isDroolsAlphaNetworkCompilerEnabled() {
-        return droolsAlphaNetworkCompilerEnabled;
+    public boolean isDroolsAlphaNetworkCompilationEnabled() {
+        return droolsAlphaNetworkCompilationEnabled;
     }
 
     @Override
-    public ConstraintVerifier<ConstraintProvider_, Solution_>
-            withDroolsAlphaNetworkCompiler(boolean droolsAlphaNetworkCompilerEnabled) {
-        if (getConstraintStreamImplType() != ConstraintStreamImplType.DROOLS && droolsAlphaNetworkCompilerEnabled) {
+    public ConstraintVerifier<ConstraintProvider_, Solution_> withDroolsAlphaNetworkCompilationEnabled(
+            boolean droolsAlphaNetworkCompilationEnabled) {
+        if (getConstraintStreamImplType() != ConstraintStreamImplType.DROOLS && droolsAlphaNetworkCompilationEnabled) {
             throw new IllegalArgumentException("Constraint stream implementation (" + constraintStreamImplType +
-                    ") does not support Drools alpha network compiler.");
+                    ") does not support Drools alpha network compilation.");
         }
-        this.droolsAlphaNetworkCompilerEnabled = droolsAlphaNetworkCompilerEnabled;
+        this.droolsAlphaNetworkCompilationEnabled = droolsAlphaNetworkCompilationEnabled;
         return this;
     }
 
@@ -97,7 +97,7 @@ public final class DefaultConstraintVerifier<ConstraintProvider_ extends Constra
         switch (constraintStreamImplType) {
             case DROOLS:
                 return new DroolsConstraintStreamScoreDirectorFactory<>(solutionDescriptor, constraintProvider,
-                        droolsAlphaNetworkCompilerEnabled);
+                        droolsAlphaNetworkCompilationEnabled);
             case BAVET:
                 return new BavetConstraintStreamScoreDirectorFactory<>(solutionDescriptor, constraintProvider);
             default:

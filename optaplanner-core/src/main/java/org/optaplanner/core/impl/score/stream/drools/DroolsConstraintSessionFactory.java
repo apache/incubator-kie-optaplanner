@@ -56,7 +56,7 @@ public final class DroolsConstraintSessionFactory<Solution_, Score_ extends Scor
 
     private final SolutionDescriptor<Solution_> solutionDescriptor;
     private final Model originalModel;
-    private final boolean droolsAlphaNetworkCompilerEnabled;
+    private final boolean droolsAlphaNetworkCompilationEnabled;
     private final KieBase originalKieBase;
     private final Map<Rule, DroolsConstraint<Solution_>> compiledRuleToConstraintMap;
     private final Map<String, org.drools.model.Rule> constraintToModelRuleMap;
@@ -64,11 +64,11 @@ public final class DroolsConstraintSessionFactory<Solution_, Score_ extends Scor
     private Set<String> currentlyDisabledConstraintIdSet = null;
 
     public DroolsConstraintSessionFactory(SolutionDescriptor<Solution_> solutionDescriptor, Model model,
-            List<DroolsConstraint<Solution_>> constraints, boolean droolsAlphaNetworkCompilerEnabled) {
+            List<DroolsConstraint<Solution_>> constraints, boolean droolsAlphaNetworkCompilationEnabled) {
         this.solutionDescriptor = Objects.requireNonNull(solutionDescriptor);
         this.originalModel = Objects.requireNonNull(model);
-        this.droolsAlphaNetworkCompilerEnabled = droolsAlphaNetworkCompilerEnabled;
-        this.originalKieBase = buildKieBaseFromModel(model, droolsAlphaNetworkCompilerEnabled);
+        this.droolsAlphaNetworkCompilationEnabled = droolsAlphaNetworkCompilationEnabled;
+        this.originalKieBase = buildKieBaseFromModel(model, droolsAlphaNetworkCompilationEnabled);
         this.currentKieBase = originalKieBase;
         this.compiledRuleToConstraintMap = constraints.stream()
                 .collect(toMap(constraint -> currentKieBase.getRule(constraint.getConstraintPackage(),
@@ -82,13 +82,13 @@ public final class DroolsConstraintSessionFactory<Solution_, Score_ extends Scor
                                 constraint + ") not found."))));
     }
 
-    private static KieBase buildKieBaseFromModel(Model model, boolean droolsAlphaNetworkCompilerEnabled) {
+    private static KieBase buildKieBaseFromModel(Model model, boolean droolsAlphaNetworkCompilationEnabled) {
         KieBaseConfiguration kieBaseConfiguration = KieServices.get().newKieBaseConfiguration();
         kieBaseConfiguration.setOption(KieBaseMutabilityOption.DISABLED); // For performance; applicable to DRL too.
         kieBaseConfiguration.setProperty(PropertySpecificOption.PROPERTY_NAME,
                 PropertySpecificOption.DISABLED.name()); // Users of CS must not rely on underlying Drools gimmicks.
         KieBase kieBase = KieBaseBuilder.createKieBaseFromModel(model, kieBaseConfiguration);
-        if (droolsAlphaNetworkCompilerEnabled) {
+        if (droolsAlphaNetworkCompilationEnabled) {
             KieBaseUpdaterANC.generateAndSetInMemoryANC(kieBase); // Enable Alpha Network Compiler for performance.
         }
         return kieBase;
@@ -129,7 +129,7 @@ public final class DroolsConstraintSessionFactory<Solution_, Score_ extends Scor
                 }
                 model.addRule(modelRule);
             });
-            currentKieBase = buildKieBaseFromModel(model, droolsAlphaNetworkCompilerEnabled);
+            currentKieBase = buildKieBaseFromModel(model, droolsAlphaNetworkCompilationEnabled);
             currentlyDisabledConstraintIdSet = disabledConstraintIdSet;
         }
         // Create the session itself.

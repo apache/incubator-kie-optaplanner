@@ -10416,7 +10416,7 @@
           "old": "class org.optaplanner.core.config.score.director.ScoreDirectorFactoryConfig",
           "new": "class org.optaplanner.core.config.score.director.ScoreDirectorFactoryConfig",
           "annotationType": "javax.xml.bind.annotation.XmlType",
-          "annotation": "@javax.xml.bind.annotation.XmlType(propOrder = {\"easyScoreCalculatorClass\", \"easyScoreCalculatorCustomProperties\", \"constraintProviderClass\", \"constraintProviderCustomProperties\", \"constraintStreamImplType\", \"incrementalScoreCalculatorClass\", \"incrementalScoreCalculatorCustomProperties\", \"scoreDrlList\", \"scoreDrlFileList\", \"compileDroolsAlphaNetwork\", \"kieBaseConfigurationProperties\", \"initializingScoreTrend\", \"assertionScoreDirectorFactory\"})",
+          "annotation": "@javax.xml.bind.annotation.XmlType(propOrder = {\"easyScoreCalculatorClass\", \"easyScoreCalculatorCustomProperties\", \"constraintProviderClass\", \"constraintProviderCustomProperties\", \"constraintStreamImplType\", \"incrementalScoreCalculatorClass\", \"incrementalScoreCalculatorCustomProperties\", \"scoreDrlList\", \"scoreDrlFileList\", \"droolsAlphaNetworkCompilationEnabled\", \"kieBaseConfigurationProperties\", \"initializingScoreTrend\", \"assertionScoreDirectorFactory\"})",
           "package": "org.optaplanner.core.config.score.director",
           "classSimpleName": "ScoreDirectorFactoryConfig",
           "elementKind": "class",

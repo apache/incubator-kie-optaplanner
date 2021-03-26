@@ -25,17 +25,17 @@ import org.optaplanner.core.impl.score.stream.drools.DroolsConstraintFactory;
 public final class DroolsConstraintStreamScoreDirectorFactory<Solution_, Score_ extends Score<Score_>>
         extends AbstractConstraintStreamScoreDirectorFactory<Solution_, Score_> {
 
-    private final boolean droolsAlphaNetworkCompilerEnabled;
+    private final boolean droolsAlphaNetworkCompilationEnabled;
 
     public DroolsConstraintStreamScoreDirectorFactory(SolutionDescriptor<Solution_> solutionDescriptor,
-            ConstraintProvider constraintProvider, boolean droolsAlphaNetworkCompilerEnabled) {
+            ConstraintProvider constraintProvider, boolean droolsAlphaNetworkCompilationEnabled) {
         super(solutionDescriptor, constraintProvider);
-        this.droolsAlphaNetworkCompilerEnabled = droolsAlphaNetworkCompilerEnabled;
+        this.droolsAlphaNetworkCompilationEnabled = droolsAlphaNetworkCompilationEnabled;
     }
 
     @Override
     protected InnerConstraintFactory<Solution_> createConstraintFactory(
             SolutionDescriptor<Solution_> solutionDescriptor) {
-        return new DroolsConstraintFactory<>(solutionDescriptor, droolsAlphaNetworkCompilerEnabled);
+        return new DroolsConstraintFactory<>(solutionDescriptor, droolsAlphaNetworkCompilationEnabled);
     }
 }

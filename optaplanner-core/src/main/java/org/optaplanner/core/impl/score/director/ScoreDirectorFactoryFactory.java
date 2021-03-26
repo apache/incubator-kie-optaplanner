@@ -16,15 +16,12 @@
 
 package org.optaplanner.core.impl.score.director;
 
-import static org.apache.commons.lang3.ObjectUtils.defaultIfNull;
-
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-
 import org.drools.ancompiler.KieBaseUpdaterANC;
 import org.drools.core.io.impl.ClassPathResource;
 import org.drools.core.io.impl.FileSystemResource;
@@ -51,6 +48,8 @@ import org.optaplanner.core.impl.score.director.stream.AbstractConstraintStreamS
 import org.optaplanner.core.impl.score.director.stream.BavetConstraintStreamScoreDirectorFactory;
 import org.optaplanner.core.impl.score.director.stream.DroolsConstraintStreamScoreDirectorFactory;
 import org.optaplanner.core.impl.score.trend.InitializingScoreTrend;
+
+import static org.apache.commons.lang3.ObjectUtils.defaultIfNull;
 
 public class ScoreDirectorFactoryFactory<Solution_, Score_ extends Score<Score_>> {
 
@@ -108,15 +107,15 @@ public class ScoreDirectorFactoryFactory<Solution_, Score_ extends Score<Score_>
 
         AbstractScoreDirectorFactory<Solution_, Score_> scoreDirectorFactory;
         if (easyScoreDirectorFactory != null) {
-            enforceNoAlphaNetworkCompiler();
+            validateNoDroolsAlphaNetworkCompilation();
             scoreDirectorFactory = easyScoreDirectorFactory;
         } else if (constraintStreamScoreDirectorFactory != null) {
             if (config.getConstraintStreamImplType() == ConstraintStreamImplType.BAVET) {
-                enforceNoAlphaNetworkCompiler();
+                validateNoDroolsAlphaNetworkCompilation();
             }
             scoreDirectorFactory = constraintStreamScoreDirectorFactory;
         } else if (incrementalScoreDirectorFactory != null) {
-            enforceNoAlphaNetworkCompiler();
+            validateNoDroolsAlphaNetworkCompilation();
             scoreDirectorFactory = incrementalScoreDirectorFactory;
         } else if (droolsScoreDirectorFactory != null) {
             scoreDirectorFactory = droolsScoreDirectorFactory;
@@ -188,13 +187,13 @@ public class ScoreDirectorFactoryFactory<Solution_, Score_ extends Score<Score_>
         }
     }
 
-    private void enforceNoAlphaNetworkCompiler() {
-        if (config.getCompileDroolsAlphaNetwork() != null) {
+    private void validateNoDroolsAlphaNetworkCompilation() {
+        if (config.getDroolsAlphaNetworkCompilationEnabled() != null) {
             throw new IllegalStateException("If there is no scoreDrl (" + config.getScoreDrlList()
                     + "), scoreDrlFile (" + config.getScoreDrlFileList() + ") or constraintProviderClass ("
                     + config.getConstraintProviderClass() + ") with " + ConstraintStreamImplType.DROOLS + " impl type ("
-                    + config.getConstraintStreamImplType() + ") then there can be no compileDroolsAlphaNetwork ("
-                    + config.getCompileDroolsAlphaNetwork() + ") either.");
+                    + config.getConstraintStreamImplType() + "), there can be no droolsAlphaNetworkCompilationEnabled ("
+                    + config.getDroolsAlphaNetworkCompilationEnabled() + ") either.");
         }
     }
 
@@ -217,7 +216,7 @@ public class ScoreDirectorFactoryFactory<Solution_, Score_ extends Score<Score_>
                     return new BavetConstraintStreamScoreDirectorFactory<>(solutionDescriptor, constraintProvider);
                 case DROOLS:
                     return new DroolsConstraintStreamScoreDirectorFactory<>(solutionDescriptor, constraintProvider,
-                            config.isDroolsAlphaNetworkCompilerEnabled());
+                            config.isDroolsAlphaNetworkCompilationEnabled());
                 default:
                     throw new IllegalStateException(
                             "The constraintStreamImplType (" + constraintStreamImplType_ + ") is not implemented.");
@@ -293,7 +292,7 @@ public class ScoreDirectorFactoryFactory<Solution_, Score_ extends Score<Score_>
 
         try {
             KieBase kieBase = kieHelper.build(ExecutableModelProject.class, KieBaseMutabilityOption.DISABLED);
-            if (config.isDroolsAlphaNetworkCompilerEnabled()) {
+            if (config.isDroolsAlphaNetworkCompilationEnabled()) {
                 KieBaseUpdaterANC.generateAndSetInMemoryANC(kieBase); // Enable Alpha Network Compiler for performance.
             }
             if (generateDroolsTestOnError) {

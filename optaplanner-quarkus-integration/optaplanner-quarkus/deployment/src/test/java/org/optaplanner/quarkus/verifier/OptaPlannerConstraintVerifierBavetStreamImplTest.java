@@ -16,10 +16,10 @@
 
 package org.optaplanner.quarkus.verifier;
 
+import io.quarkus.test.QuarkusUnitTest;
+
 import java.util.Arrays;
-
 import javax.inject.Inject;
-
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.junit.jupiter.api.Assertions;
@@ -32,8 +32,6 @@ import org.optaplanner.quarkus.testdata.normal.domain.TestdataQuarkusEntity;
 import org.optaplanner.quarkus.testdata.normal.domain.TestdataQuarkusSolution;
 import org.optaplanner.test.api.score.stream.ConstraintVerifier;
 import org.optaplanner.test.impl.score.stream.DefaultConstraintVerifier;
-
-import io.quarkus.test.QuarkusUnitTest;
 
 public class OptaPlannerConstraintVerifierBavetStreamImplTest {
     @RegisterExtension
@@ -52,7 +50,7 @@ public class OptaPlannerConstraintVerifierBavetStreamImplTest {
                 ((DefaultConstraintVerifier<?, ?, ?>) constraintVerifier)
                         .getConstraintStreamImplType());
         Assertions.assertFalse(((DefaultConstraintVerifier<?, ?, ?>) constraintVerifier)
-                .isDroolsAlphaNetworkCompilerEnabled());
+                .isDroolsAlphaNetworkCompilationEnabled());
         TestdataQuarkusSolution solution = new TestdataQuarkusSolution();
         TestdataQuarkusEntity entityA = new TestdataQuarkusEntity();
         TestdataQuarkusEntity entityB = new TestdataQuarkusEntity();

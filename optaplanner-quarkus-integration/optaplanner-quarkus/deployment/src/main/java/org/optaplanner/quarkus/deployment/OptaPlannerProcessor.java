@@ -16,7 +16,26 @@
 
 package org.optaplanner.quarkus.deployment;
 
-import static io.quarkus.deployment.annotations.ExecutionTime.STATIC_INIT;
+import io.quarkus.arc.deployment.AdditionalBeanBuildItem;
+import io.quarkus.arc.deployment.GeneratedBeanBuildItem;
+import io.quarkus.arc.deployment.GeneratedBeanGizmoAdaptor;
+import io.quarkus.arc.deployment.SyntheticBeanBuildItem;
+import io.quarkus.deployment.GeneratedClassGizmoAdaptor;
+import io.quarkus.deployment.annotations.BuildProducer;
+import io.quarkus.deployment.annotations.BuildStep;
+import io.quarkus.deployment.annotations.Record;
+import io.quarkus.deployment.builditem.BytecodeTransformerBuildItem;
+import io.quarkus.deployment.builditem.CombinedIndexBuildItem;
+import io.quarkus.deployment.builditem.FeatureBuildItem;
+import io.quarkus.deployment.builditem.GeneratedClassBuildItem;
+import io.quarkus.deployment.builditem.HotDeploymentWatchedFileBuildItem;
+import io.quarkus.deployment.builditem.IndexDependencyBuildItem;
+import io.quarkus.deployment.builditem.nativeimage.ReflectiveHierarchyBuildItem;
+import io.quarkus.deployment.recording.RecorderContext;
+import io.quarkus.gizmo.ClassOutput;
+import io.quarkus.gizmo.MethodDescriptor;
+import io.quarkus.gizmo.ResultHandle;
+import io.quarkus.runtime.configuration.ConfigurationException;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -31,9 +50,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
-
 import javax.inject.Singleton;
-
 import org.apache.commons.lang3.ObjectUtils;
 import org.jboss.jandex.AnnotationInstance;
 import org.jboss.jandex.AnnotationTarget;
@@ -61,26 +78,7 @@ import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.quarkus.OptaPlannerBeanProvider;
 import org.optaplanner.quarkus.OptaPlannerRecorder;
 
-import io.quarkus.arc.deployment.AdditionalBeanBuildItem;
-import io.quarkus.arc.deployment.GeneratedBeanBuildItem;
-import io.quarkus.arc.deployment.GeneratedBeanGizmoAdaptor;
-import io.quarkus.arc.deployment.SyntheticBeanBuildItem;
-import io.quarkus.deployment.GeneratedClassGizmoAdaptor;
-import io.quarkus.deployment.annotations.BuildProducer;
-import io.quarkus.deployment.annotations.BuildStep;
-import io.quarkus.deployment.annotations.Record;
-import io.quarkus.deployment.builditem.BytecodeTransformerBuildItem;
-import io.quarkus.deployment.builditem.CombinedIndexBuildItem;
-import io.quarkus.deployment.builditem.FeatureBuildItem;
-import io.quarkus.deployment.builditem.GeneratedClassBuildItem;
-import io.quarkus.deployment.builditem.HotDeploymentWatchedFileBuildItem;
-import io.quarkus.deployment.builditem.IndexDependencyBuildItem;
-import io.quarkus.deployment.builditem.nativeimage.ReflectiveHierarchyBuildItem;
-import io.quarkus.deployment.recording.RecorderContext;
-import io.quarkus.gizmo.ClassOutput;
-import io.quarkus.gizmo.MethodDescriptor;
-import io.quarkus.gizmo.ResultHandle;
-import io.quarkus.runtime.configuration.ConfigurationException;
+import static io.quarkus.deployment.annotations.ExecutionTime.STATIC_INIT;
 
 class OptaPlannerProcessor {
 
@@ -220,8 +218,8 @@ class OptaPlannerProcessor {
             final ConstraintStreamImplType constraintStreamImplType =
                     ObjectUtils.defaultIfNull(solverConfig.getScoreDirectorFactoryConfig().getConstraintStreamImplType(),
                             ConstraintStreamImplType.DROOLS);
-            final boolean droolsAlphaNetworkCompilerEnabled =
-                    solverConfig.getScoreDirectorFactoryConfig().isDroolsAlphaNetworkCompilerEnabled();
+            final boolean droolsAlphaNetworkCompilationEnabled =
+                    solverConfig.getScoreDirectorFactoryConfig().isDroolsAlphaNetworkCompilationEnabled();
             syntheticBeanBuildItemBuildProducer.produce(SyntheticBeanBuildItem.configure(DotNames.CONSTRAINT_VERIFIER)
                     .scope(Singleton.class)
                     .creator(methodCreator -> {
@@ -260,11 +258,11 @@ class OptaPlannerProcessor {
 
                         constraintVerifierResultHandle = methodCreator.invokeInterfaceMethod(
                                 MethodDescriptor.ofMethod(constraintVerifierClassName,
-                                        "withDroolsAlphaNetworkCompiler",
+                                        "withDroolsAlphaNetworkCompilationEnabled",
                                         constraintVerifierClassName,
                                         boolean.class),
                                 constraintVerifierResultHandle,
-                                methodCreator.load(droolsAlphaNetworkCompilerEnabled));
+                                methodCreator.load(droolsAlphaNetworkCompilationEnabled));
                         methodCreator.returnValue(constraintVerifierResultHandle);
                     })
                     .addType(ParameterizedType.create(DotNames.CONSTRAINT_VERIFIER,

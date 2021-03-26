@@ -34,8 +34,6 @@ import org.optaplanner.core.api.score.stream.ConstraintStreamImplType;
 import org.optaplanner.core.config.AbstractConfig;
 import org.optaplanner.core.config.util.ConfigUtils;
 import org.optaplanner.core.impl.io.jaxb.adapter.JaxbCustomPropertiesAdapter;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 @XmlType(propOrder = {
         "easyScoreCalculatorClass",
@@ -47,14 +45,12 @@ import org.slf4j.LoggerFactory;
         "incrementalScoreCalculatorCustomProperties",
         "scoreDrlList",
         "scoreDrlFileList",
-        "compileDroolsAlphaNetwork",
+        "droolsAlphaNetworkCompilationEnabled",
         "kieBaseConfigurationProperties",
         "initializingScoreTrend",
         "assertionScoreDirectorFactory"
 })
 public class ScoreDirectorFactoryConfig extends AbstractConfig<ScoreDirectorFactoryConfig> {
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(ScoreDirectorFactoryConfig.class);
 
     protected Class<? extends EasyScoreCalculator> easyScoreCalculatorClass = null;
 
@@ -77,7 +73,7 @@ public class ScoreDirectorFactoryConfig extends AbstractConfig<ScoreDirectorFact
     @XmlElement(name = "scoreDrlFile")
     protected List<File> scoreDrlFileList = null;
 
-    protected Boolean compileDroolsAlphaNetwork = null;
+    protected Boolean droolsAlphaNetworkCompilationEnabled = null;
 
     @XmlJavaTypeAdapter(JaxbCustomPropertiesAdapter.class)
     protected Map<String, String> kieBaseConfigurationProperties = null;
@@ -165,12 +161,12 @@ public class ScoreDirectorFactoryConfig extends AbstractConfig<ScoreDirectorFact
         this.scoreDrlFileList = scoreDrlFileList;
     }
 
-    public Boolean getCompileDroolsAlphaNetwork() {
-        return compileDroolsAlphaNetwork;
+    public Boolean getDroolsAlphaNetworkCompilationEnabled() {
+        return droolsAlphaNetworkCompilationEnabled;
     }
 
-    public void setCompileDroolsAlphaNetwork(Boolean compileDroolsAlphaNetwork) {
-        this.compileDroolsAlphaNetwork = compileDroolsAlphaNetwork;
+    public void setDroolsAlphaNetworkCompilationEnabled(Boolean droolsAlphaNetworkCompilationEnabled) {
+        this.droolsAlphaNetworkCompilationEnabled = droolsAlphaNetworkCompilationEnabled;
     }
 
     public Map<String, String> getKieBaseConfigurationProperties() {
@@ -261,8 +257,9 @@ public class ScoreDirectorFactoryConfig extends AbstractConfig<ScoreDirectorFact
         return this;
     }
 
-    public ScoreDirectorFactoryConfig withCompileDroolsAlphaNetworkEnabled(boolean compileDroolsAlphaNetwork) {
-        this.compileDroolsAlphaNetwork = compileDroolsAlphaNetwork;
+    public ScoreDirectorFactoryConfig withDroolsAlphaNetworkCompilationEnabled(
+            boolean droolsAlphaNetworkCompilationEnabled) {
+        this.droolsAlphaNetworkCompilationEnabled = droolsAlphaNetworkCompilationEnabled;
         return this;
     }
 
@@ -297,8 +294,8 @@ public class ScoreDirectorFactoryConfig extends AbstractConfig<ScoreDirectorFact
                 scoreDrlList, inheritedConfig.getScoreDrlList());
         scoreDrlFileList = ConfigUtils.inheritMergeableListProperty(
                 scoreDrlFileList, inheritedConfig.getScoreDrlFileList());
-        compileDroolsAlphaNetwork = ConfigUtils.inheritOverwritableProperty(
-                compileDroolsAlphaNetwork, inheritedConfig.getCompileDroolsAlphaNetwork());
+        droolsAlphaNetworkCompilationEnabled = ConfigUtils.inheritOverwritableProperty(
+                droolsAlphaNetworkCompilationEnabled, inheritedConfig.getDroolsAlphaNetworkCompilationEnabled());
         kieBaseConfigurationProperties = ConfigUtils.inheritMergeableMapProperty(
                 kieBaseConfigurationProperties, inheritedConfig.getKieBaseConfigurationProperties());
         initializingScoreTrend = ConfigUtils.inheritOverwritableProperty(
@@ -322,23 +319,14 @@ public class ScoreDirectorFactoryConfig extends AbstractConfig<ScoreDirectorFact
         return (constraintStreamImplType == null || constraintStreamImplType == ConstraintStreamImplType.DROOLS);
     }
 
-    public boolean isDroolsAlphaNetworkCompilerEnabled() {
+    public boolean isDroolsAlphaNetworkCompilationEnabled() {
         if (!isUsingDrools()) {
-            LOGGER.trace("Drools Alpha Network Compiler is disabled when not using Drools.");
             return false;
         }
-        boolean ancEnabledValue = ObjectUtils.defaultIfNull(getCompileDroolsAlphaNetwork(), true);
-        if (ancEnabledValue) {
-            boolean isNativeImage = CoreComponentsBuilder.isNativeImage();
-            if (isNativeImage) { // ANC does not work in native images.
-                LOGGER.trace("Drools Alpha Network Compiler is disabled in native images.");
-                return false;
-            } else {
-                LOGGER.trace("Drools Alpha Network Compiler is enabled.");
-                return true;
-            }
+        boolean ancEnabledValue = ObjectUtils.defaultIfNull(getDroolsAlphaNetworkCompilationEnabled(), true);
+        if (ancEnabledValue) { // ANC does not work in native images.
+            return !CoreComponentsBuilder.isNativeImage();
         } else {
-            LOGGER.trace("Drools Alpha Network Compiler is disabled in solver config.");
             return false;
         }
     }

@@ -40,10 +40,10 @@ public final class DroolsConstraintFactory<Solution_> extends InnerConstraintFac
     private final SolutionDescriptor<Solution_> solutionDescriptor;
     private final String defaultConstraintPackage;
     private final DroolsVariableFactory variableFactory = new DroolsVariableFactoryImpl();
-    private final boolean droolsAlphaNetworkCompilerEnabled;
+    private final boolean droolsAlphaNetworkCompilationEnabled;
 
     public DroolsConstraintFactory(SolutionDescriptor<Solution_> solutionDescriptor,
-            boolean droolsAlphaNetworkCompilerEnabled) {
+            boolean droolsAlphaNetworkCompilationEnabled) {
         this.solutionDescriptor = solutionDescriptor;
         ConstraintConfigurationDescriptor<Solution_> configurationDescriptor = solutionDescriptor
                 .getConstraintConfigurationDescriptor();
@@ -53,7 +53,7 @@ public final class DroolsConstraintFactory<Solution_> extends InnerConstraintFac
         } else {
             defaultConstraintPackage = configurationDescriptor.getConstraintPackage();
         }
-        this.droolsAlphaNetworkCompilerEnabled = droolsAlphaNetworkCompilerEnabled;
+        this.droolsAlphaNetworkCompilationEnabled = droolsAlphaNetworkCompilationEnabled;
     }
 
     @Override
@@ -98,7 +98,7 @@ public final class DroolsConstraintFactory<Solution_> extends InnerConstraintFac
             model.addRule(droolsConstraint.buildRule(scoreHolderGlobal));
         }
         return new DroolsConstraintSessionFactory<>(solutionDescriptor, model, droolsConstraintList,
-                droolsAlphaNetworkCompilerEnabled);
+                droolsAlphaNetworkCompilationEnabled);
     }
 
     // ************************************************************************

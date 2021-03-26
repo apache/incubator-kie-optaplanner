@@ -64,11 +64,11 @@ public interface ConstraintVerifier<ConstraintProvider_ extends ConstraintProvid
      * Applies only to {@link ConstraintStreamImplType#DROOLS}.
      * Do not enable when running in a native image.
      *
-     * @param droolsAlphaNetworkCompilerEnabled true to enable the alpha network compiler
+     * @param droolsAlphaNetworkCompilationEnabled true to enable the alpha network compiler
      * @return this
      */
-    ConstraintVerifier<ConstraintProvider_, Solution_> withDroolsAlphaNetworkCompiler(
-            boolean droolsAlphaNetworkCompilerEnabled);
+    ConstraintVerifier<ConstraintProvider_, Solution_> withDroolsAlphaNetworkCompilationEnabled(
+            boolean droolsAlphaNetworkCompilationEnabled);
 
     /**
      * Creates a constraint verifier for a given {@link Constraint} of the {@link ConstraintProvider}.
