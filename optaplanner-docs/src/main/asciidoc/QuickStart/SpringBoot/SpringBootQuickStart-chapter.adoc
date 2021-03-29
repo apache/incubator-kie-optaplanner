@@ -881,18 +881,8 @@ This avoids hard coding a solver time, because the unit test might run on arbitr
 This approach ensures that the test runs long enough to find a feasible solution, even on slow machines.
 But it does not run a millisecond longer than it strictly must, even on fast machines.
 
-Additionally, if you use a `ConstraintProvider` and have `org.optaplanner:optaplanner-test` as a dependency in your pom, you can test per constraint using a
+Additionally, if you use a `ConstraintProvider` and have `org.optaplanner:optaplanner-test` as a test dependency, you can test per constraint using a
 `ConstraintVerifier`.
-
-Add the `org.optaplanner:optaplanner-test` dependency to your `pom.xml` dependencies section:
-[source,xml]
-----
-    <dependency>
-      <groupId>org.optaplanner</groupId>
-      <artifactId>optaplanner-test</artifactId>
-      <scope>test</scope>
-    </dependency>
-----
 
 Create the `src/test/java/com/example/solver/TimeTableConstraintProviderTest.java` class:
 [source,java]
