@@ -19,6 +19,7 @@ package org.optaplanner.core.impl.solver.scope;
 import java.util.List;
 import java.util.Random;
 import java.util.concurrent.Semaphore;
+
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.solver.Solver;

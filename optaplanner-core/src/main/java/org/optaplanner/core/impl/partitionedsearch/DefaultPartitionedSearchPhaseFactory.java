@@ -16,9 +16,13 @@
 
 package org.optaplanner.core.impl.partitionedsearch;
 
+import static org.optaplanner.core.config.partitionedsearch.PartitionedSearchPhaseConfig.ACTIVE_THREAD_COUNT_AUTO;
+import static org.optaplanner.core.config.partitionedsearch.PartitionedSearchPhaseConfig.ACTIVE_THREAD_COUNT_UNLIMITED;
+
 import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.ThreadFactory;
+
 import org.optaplanner.core.config.constructionheuristic.ConstructionHeuristicPhaseConfig;
 import org.optaplanner.core.config.localsearch.LocalSearchPhaseConfig;
 import org.optaplanner.core.config.partitionedsearch.PartitionedSearchPhaseConfig;
@@ -33,9 +37,6 @@ import org.optaplanner.core.impl.solver.termination.Termination;
 import org.optaplanner.core.impl.solver.thread.ChildThreadType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import static org.optaplanner.core.config.partitionedsearch.PartitionedSearchPhaseConfig.ACTIVE_THREAD_COUNT_AUTO;
-import static org.optaplanner.core.config.partitionedsearch.PartitionedSearchPhaseConfig.ACTIVE_THREAD_COUNT_UNLIMITED;
 
 public class DefaultPartitionedSearchPhaseFactory<Solution_>
         extends AbstractPhaseFactory<Solution_, PartitionedSearchPhaseConfig> {

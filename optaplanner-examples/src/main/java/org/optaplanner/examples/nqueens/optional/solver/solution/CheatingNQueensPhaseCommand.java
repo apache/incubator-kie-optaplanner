@@ -17,6 +17,7 @@
 package org.optaplanner.examples.nqueens.optional.solver.solution;
 
 import java.util.List;
+
 import org.optaplanner.core.api.score.director.ScoreDirector;
 import org.optaplanner.core.impl.phase.custom.CustomPhaseCommand;
 import org.optaplanner.examples.nqueens.domain.NQueens;

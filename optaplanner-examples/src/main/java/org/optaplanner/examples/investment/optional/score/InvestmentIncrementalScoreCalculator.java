@@ -19,6 +19,7 @@ package org.optaplanner.examples.investment.optional.score;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 import org.optaplanner.core.api.score.buildin.hardsoftlong.HardSoftLongScore;
 import org.optaplanner.core.api.score.calculator.IncrementalScoreCalculator;
 import org.optaplanner.examples.investment.domain.AssetClassAllocation;

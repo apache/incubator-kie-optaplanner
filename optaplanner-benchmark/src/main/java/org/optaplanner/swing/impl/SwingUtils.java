@@ -16,15 +16,6 @@
 
 package org.optaplanner.swing.impl;
 
-import java.awt.Color;
-import java.awt.Insets;
-import javax.swing.JButton;
-import javax.swing.UIDefaults;
-import javax.swing.UIManager;
-import javax.swing.UnsupportedLookAndFeelException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import static org.optaplanner.swing.impl.TangoColorFactory.ALUMINIUM_1;
 import static org.optaplanner.swing.impl.TangoColorFactory.ALUMINIUM_2;
 import static org.optaplanner.swing.impl.TangoColorFactory.ALUMINIUM_3;
@@ -38,6 +29,17 @@ import static org.optaplanner.swing.impl.TangoColorFactory.SCARLET_2;
 import static org.optaplanner.swing.impl.TangoColorFactory.SKY_BLUE_1;
 import static org.optaplanner.swing.impl.TangoColorFactory.SKY_BLUE_2;
 import static org.optaplanner.swing.impl.TangoColorFactory.SKY_BLUE_3;
+
+import java.awt.Color;
+import java.awt.Insets;
+
+import javax.swing.JButton;
+import javax.swing.UIDefaults;
+import javax.swing.UIManager;
+import javax.swing.UnsupportedLookAndFeelException;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class SwingUtils {
 

@@ -16,9 +16,7 @@
 
 package org.optaplanner.benchmark.impl.report;
 
-import freemarker.template.Configuration;
-import freemarker.template.Template;
-import freemarker.template.TemplateException;
+import static java.lang.Double.isFinite;
 
 import java.awt.BasicStroke;
 import java.awt.image.BufferedImage;
@@ -38,7 +36,9 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.NavigableSet;
 import java.util.TreeSet;
+
 import javax.imageio.ImageIO;
+
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.axis.CategoryAxis;
 import org.jfree.chart.axis.LogarithmicAxis;
@@ -74,7 +74,9 @@ import org.optaplanner.core.impl.score.ScoreUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static java.lang.Double.isFinite;
+import freemarker.template.Configuration;
+import freemarker.template.Template;
+import freemarker.template.TemplateException;
 
 public class BenchmarkReport {
 
