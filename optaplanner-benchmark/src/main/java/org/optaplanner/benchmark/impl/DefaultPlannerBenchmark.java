@@ -49,8 +49,8 @@ import org.slf4j.LoggerFactory;
 
 public class DefaultPlannerBenchmark implements PlannerBenchmark {
 
-    private static final transient Logger LOGGER = LoggerFactory.getLogger(DefaultPlannerBenchmark.class);
-    private static final transient Logger SINGLE_BENCHMARK_RUNNER_EXCEPTION_LOGGER =
+    private static final Logger LOGGER = LoggerFactory.getLogger(DefaultPlannerBenchmark.class);
+    private static final Logger SINGLE_BENCHMARK_RUNNER_EXCEPTION_LOGGER =
             LoggerFactory.getLogger(DefaultPlannerBenchmark.class + ".singleBenchmarkRunnerException");
 
     private final PlannerBenchmarkResult plannerBenchmarkResult;
