@@ -56,7 +56,10 @@
           <artifactId>drools-compiler</artifactId>
         </exclusion>
         <exclusion>
-          <!-- Dynamic is not compatible with GraalVM native compilation. -->
+          <!--
+            Dynamic is not compatible with GraalVM native compilation.
+            org.kie.kogito:drools-core brings in static.
+          -->
           <groupId>org.drools</groupId>
           <artifactId>drools-core-dynamic</artifactId>
         </exclusion>
@@ -77,10 +80,6 @@
     <dependency>
       <groupId>org.kie.kogito</groupId>
       <artifactId>drools-compiler</artifactId>
-    </dependency>
-    <dependency> <!-- Static replaces dynamic. -->
-      <groupId>org.kie.kogito</groupId>
-      <artifactId>drools-core-static</artifactId>
     </dependency>
     <dependency>
       <groupId>org.graalvm.nativeimage</groupId>
