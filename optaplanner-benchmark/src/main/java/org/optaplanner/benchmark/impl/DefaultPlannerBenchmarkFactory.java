@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2021 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,8 +16,6 @@
 
 package org.optaplanner.benchmark.impl;
 
-import static org.apache.commons.lang3.ObjectUtils.defaultIfNull;
-
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
@@ -27,7 +25,6 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadFactory;
 import java.util.regex.Pattern;
-
 import org.optaplanner.benchmark.api.PlannerBenchmark;
 import org.optaplanner.benchmark.api.PlannerBenchmarkFactory;
 import org.optaplanner.benchmark.config.PlannerBenchmarkConfig;
@@ -42,13 +39,15 @@ import org.optaplanner.core.impl.solver.thread.DefaultSolverThreadFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import static org.apache.commons.lang3.ObjectUtils.defaultIfNull;
+
 /**
  * @see PlannerBenchmarkFactory
  */
 public class DefaultPlannerBenchmarkFactory extends PlannerBenchmarkFactory {
 
     public static final Pattern VALID_NAME_PATTERN = Pattern.compile("(?U)^[\\w\\d _\\-\\.\\(\\)]+$");
-    private static final Logger logger = LoggerFactory.getLogger(DefaultPlannerBenchmarkFactory.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(DefaultPlannerBenchmarkFactory.class);
 
     protected final PlannerBenchmarkConfig plannerBenchmarkConfig;
 
@@ -201,7 +200,7 @@ public class DefaultPlannerBenchmarkFactory extends PlannerBenchmarkFactory {
                             + ") that is lower than 1.");
         }
         if (resolvedParallelBenchmarkCount > availableProcessorCount) {
-            logger.warn("Because the resolvedParallelBenchmarkCount ({}) is higher "
+            LOGGER.warn("Because the resolvedParallelBenchmarkCount ({}) is higher "
                     + "than the availableProcessorCount ({}), it is reduced to "
                     + "availableProcessorCount.", resolvedParallelBenchmarkCount, availableProcessorCount);
             resolvedParallelBenchmarkCount = availableProcessorCount;
