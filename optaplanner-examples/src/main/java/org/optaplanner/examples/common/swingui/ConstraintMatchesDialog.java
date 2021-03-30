@@ -1,5 +1,5 @@
 /*
- * Copyright 2010 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2021 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,7 +22,6 @@ import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.util.List;
 import java.util.Set;
-
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.BorderFactory;
@@ -38,17 +37,12 @@ import javax.swing.SwingConstants;
 import javax.swing.table.AbstractTableModel;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.TableColumnModel;
-
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.constraint.ConstraintMatch;
 import org.optaplanner.core.api.score.constraint.ConstraintMatchTotal;
 import org.optaplanner.examples.common.business.SolutionBusiness;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class ConstraintMatchesDialog extends JDialog {
-
-    protected final transient Logger logger = LoggerFactory.getLogger(getClass());
 
     protected final SolutionBusiness solutionBusiness;
 

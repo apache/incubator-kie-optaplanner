@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2021 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,7 +22,6 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import org.optaplanner.core.api.score.buildin.hardsoftlong.HardSoftLongScore;
 import org.optaplanner.core.api.score.calculator.ConstraintMatchAwareIncrementalScoreCalculator;
 import org.optaplanner.core.api.score.calculator.IncrementalScoreCalculator;
@@ -39,16 +38,12 @@ import org.optaplanner.examples.machinereassignment.domain.MrNeighborhood;
 import org.optaplanner.examples.machinereassignment.domain.MrProcessAssignment;
 import org.optaplanner.examples.machinereassignment.domain.MrResource;
 import org.optaplanner.examples.machinereassignment.domain.MrService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class MachineReassignmentIncrementalScoreCalculator
         implements ConstraintMatchAwareIncrementalScoreCalculator<MachineReassignment, HardSoftLongScore>,
         IncrementalScoreCalculator<MachineReassignment, HardSoftLongScore> {
 
     protected static final String CONSTRAINT_PACKAGE = "org.optaplanner.examples.machinereassignment.solver";
-
-    protected final transient Logger logger = LoggerFactory.getLogger(getClass());
 
     private MachineReassignment machineReassignment;
     private MrGlobalPenaltyInfo globalPenaltyInfo;

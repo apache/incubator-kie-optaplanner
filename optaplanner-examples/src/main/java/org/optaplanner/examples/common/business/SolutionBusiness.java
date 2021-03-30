@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2021 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,17 +16,13 @@
 
 package org.optaplanner.examples.common.business;
 
-import static java.util.stream.Collectors.toList;
-
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicReference;
-
 import javax.swing.SwingUtilities;
-
 import org.apache.commons.io.FileUtils;
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.score.Score;
@@ -58,6 +54,8 @@ import org.optaplanner.persistence.common.api.domain.solution.SolutionFileIO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import static java.util.stream.Collectors.toList;
+
 /**
  * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
  */
@@ -65,7 +63,7 @@ public class SolutionBusiness<Solution_, Score_ extends Score<Score_>> {
 
     private static final ProblemFileComparator FILE_COMPARATOR = new ProblemFileComparator();
 
-    protected final transient Logger logger = LoggerFactory.getLogger(getClass());
+    private static final Logger LOGGER = LoggerFactory.getLogger(SolutionBusiness.class);
 
     private final CommonApp app;
     private File dataDir;
@@ -301,7 +299,7 @@ public class SolutionBusiness<Solution_, Score_ extends Score<Score_>> {
 
     public void openSolution(File file) {
         Solution_ solution = solutionFileIO.read(file);
-        logger.info("Opened: {}", file);
+        LOGGER.info("Opened: {}", file);
         solutionFileName = file.getName();
         guiScoreDirector.setWorkingSolution(solution);
     }
@@ -309,7 +307,7 @@ public class SolutionBusiness<Solution_, Score_ extends Score<Score_>> {
     public void saveSolution(File file) {
         Solution_ solution = guiScoreDirector.getWorkingSolution();
         solutionFileIO.write(solution, file);
-        logger.info("Saved: {}", file);
+        LOGGER.info("Saved: {}", file);
     }
 
     public void exportSolution(AbstractSolutionExporter<Solution_> exporter, File file) {
@@ -319,14 +317,14 @@ public class SolutionBusiness<Solution_, Score_ extends Score<Score_>> {
 
     public void doMove(Move<Solution_> move) {
         if (solver.isSolving()) {
-            logger.error("Not doing user move ({}) because the solver is solving.", move);
+            LOGGER.error("Not doing user move ({}) because the solver is solving.", move);
             return;
         }
         if (!move.isMoveDoable(guiScoreDirector)) {
-            logger.warn("Not doing user move ({}) because it is not doable.", move);
+            LOGGER.warn("Not doing user move ({}) because it is not doable.", move);
             return;
         }
-        logger.info("Doing user move ({}).", move);
+        LOGGER.info("Doing user move ({}).", move);
         move.doMove(guiScoreDirector);
         guiScoreDirector.calculateScore();
     }
