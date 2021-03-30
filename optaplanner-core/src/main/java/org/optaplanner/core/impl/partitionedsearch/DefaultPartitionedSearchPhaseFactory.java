@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2021 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,13 +16,9 @@
 
 package org.optaplanner.core.impl.partitionedsearch;
 
-import static org.optaplanner.core.config.partitionedsearch.PartitionedSearchPhaseConfig.ACTIVE_THREAD_COUNT_AUTO;
-import static org.optaplanner.core.config.partitionedsearch.PartitionedSearchPhaseConfig.ACTIVE_THREAD_COUNT_UNLIMITED;
-
 import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.ThreadFactory;
-
 import org.optaplanner.core.config.constructionheuristic.ConstructionHeuristicPhaseConfig;
 import org.optaplanner.core.config.localsearch.LocalSearchPhaseConfig;
 import org.optaplanner.core.config.partitionedsearch.PartitionedSearchPhaseConfig;
@@ -38,10 +34,13 @@ import org.optaplanner.core.impl.solver.thread.ChildThreadType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import static org.optaplanner.core.config.partitionedsearch.PartitionedSearchPhaseConfig.ACTIVE_THREAD_COUNT_AUTO;
+import static org.optaplanner.core.config.partitionedsearch.PartitionedSearchPhaseConfig.ACTIVE_THREAD_COUNT_UNLIMITED;
+
 public class DefaultPartitionedSearchPhaseFactory<Solution_>
         extends AbstractPhaseFactory<Solution_, PartitionedSearchPhaseConfig> {
 
-    private static final Logger logger = LoggerFactory.getLogger(DefaultPartitionedSearchPhaseFactory.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(DefaultPartitionedSearchPhaseFactory.class);
 
     public DefaultPartitionedSearchPhaseFactory(PartitionedSearchPhaseConfig phaseConfig) {
         super(phaseConfig);
@@ -113,7 +112,7 @@ public class DefaultPartitionedSearchPhaseFactory<Solution_>
                         + ") that is lower than 1.");
             }
             if (resolvedActiveThreadCount > availableProcessorCount) {
-                logger.debug("The resolvedActiveThreadCount ({}) is higher than "
+                LOGGER.debug("The resolvedActiveThreadCount ({}) is higher than "
                         + "the availableProcessorCount ({}), so the JVM will "
                         + "round-robin the CPU instead.", resolvedActiveThreadCount, availableProcessorCount);
             }

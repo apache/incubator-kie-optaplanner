@@ -16,12 +16,6 @@
 
 package org.optaplanner.core.impl.domain.solution.descriptor;
 
-import static java.util.stream.Collectors.toSet;
-import static java.util.stream.Stream.concat;
-import static org.optaplanner.core.impl.domain.common.accessor.MemberAccessorFactory.MemberAccessorType.FIELD_OR_GETTER_METHOD;
-import static org.optaplanner.core.impl.domain.common.accessor.MemberAccessorFactory.MemberAccessorType.FIELD_OR_GETTER_METHOD_WITH_SETTER;
-import static org.optaplanner.core.impl.domain.common.accessor.MemberAccessorFactory.MemberAccessorType.FIELD_OR_READ_METHOD;
-
 import java.lang.annotation.Annotation;
 import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Field;
@@ -41,7 +35,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentMap;
 import java.util.stream.Stream;
-
 import org.apache.commons.lang3.tuple.MutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 import org.optaplanner.core.api.domain.autodiscover.AutoDiscoverMemberType;
@@ -104,10 +97,18 @@ import org.optaplanner.core.impl.score.definition.ScoreDefinition;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import static java.util.stream.Collectors.toSet;
+import static java.util.stream.Stream.concat;
+import static org.optaplanner.core.impl.domain.common.accessor.MemberAccessorFactory.MemberAccessorType.FIELD_OR_GETTER_METHOD;
+import static org.optaplanner.core.impl.domain.common.accessor.MemberAccessorFactory.MemberAccessorType.FIELD_OR_GETTER_METHOD_WITH_SETTER;
+import static org.optaplanner.core.impl.domain.common.accessor.MemberAccessorFactory.MemberAccessorType.FIELD_OR_READ_METHOD;
+
 /**
  * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
  */
 public class SolutionDescriptor<Solution_> {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(SolutionDescriptor.class);
 
     public static <Solution_> SolutionDescriptor<Solution_> buildSolutionDescriptor(Class<Solution_> solutionClass,
             Class<?>... entityClasses) {
@@ -165,8 +166,6 @@ public class SolutionDescriptor<Solution_> {
     // Non-static members
     // ************************************************************************
 
-    protected final transient Logger logger = LoggerFactory.getLogger(getClass());
-
     private final Class<Solution_> solutionClass;
     private SolutionCloner<Solution_> solutionCloner;
 
@@ -203,7 +202,7 @@ public class SolutionDescriptor<Solution_> {
         reversedEntityClassList = new ArrayList<>();
         domainAccessType = DomainAccessType.REFLECTION;
         if (solutionClass.getPackage() == null) {
-            logger.warn("The solutionClass ({}) should be in a proper java package.", solutionClass);
+            LOGGER.warn("The solutionClass ({}) should be in a proper java package.", solutionClass);
         }
     }
 
@@ -696,13 +695,13 @@ public class SolutionDescriptor<Solution_> {
         }
         problemFactOrEntityClassSet = problemFactOrEntityClassStream.collect(toSet());
         // And finally log the successful completion of processing.
-        if (logger.isTraceEnabled()) {
-            logger.trace("    Model annotations parsed for solution {}:", solutionClass.getSimpleName());
+        if (LOGGER.isTraceEnabled()) {
+            LOGGER.trace("    Model annotations parsed for solution {}:", solutionClass.getSimpleName());
             for (Map.Entry<Class<?>, EntityDescriptor<Solution_>> entry : entityDescriptorMap.entrySet()) {
                 EntityDescriptor<Solution_> entityDescriptor = entry.getValue();
-                logger.trace("        Entity {}:", entityDescriptor.getEntityClass().getSimpleName());
+                LOGGER.trace("        Entity {}:", entityDescriptor.getEntityClass().getSimpleName());
                 for (VariableDescriptor<Solution_> variableDescriptor : entityDescriptor.getDeclaredVariableDescriptors()) {
-                    logger.trace("            {} variable {} ({})",
+                    LOGGER.trace("            {} variable {} ({})",
                             variableDescriptor instanceof GenuineVariableDescriptor ? "Genuine" : "Shadow",
                             variableDescriptor.getVariableName(),
                             variableDescriptor.getMemberAccessorSpeedNote());

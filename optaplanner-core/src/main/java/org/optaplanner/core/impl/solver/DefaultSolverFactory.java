@@ -16,12 +16,9 @@
 
 package org.optaplanner.core.impl.solver;
 
-import static org.apache.commons.lang3.ObjectUtils.defaultIfNull;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.solver.Solver;
 import org.optaplanner.core.api.solver.SolverFactory;
@@ -51,13 +48,15 @@ import org.optaplanner.core.impl.solver.termination.TerminationFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import static org.apache.commons.lang3.ObjectUtils.defaultIfNull;
+
 /**
  * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
  * @see SolverFactory
  */
 public final class DefaultSolverFactory<Solution_> implements SolverFactory<Solution_> {
 
-    private static final Logger logger = LoggerFactory.getLogger(DefaultSolverFactory.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(DefaultSolverFactory.class);
     private static final long DEFAULT_RANDOM_SEED = 0L;
 
     private final SolverConfig solverConfig;
@@ -201,7 +200,7 @@ public final class DefaultSolverFactory<Solution_> implements SolverFactory<Solu
                         + ") that is lower than 1.");
             }
             if (resolvedMoveThreadCount > availableProcessorCount) {
-                logger.warn("The resolvedMoveThreadCount ({}) is higher "
+                LOGGER.warn("The resolvedMoveThreadCount ({}) is higher "
                         + "than the availableProcessorCount ({}), which is counter-efficient.",
                         resolvedMoveThreadCount, availableProcessorCount);
                 // Still allow it, to reproduce issues of a high-end server machine on a low-end developer machine

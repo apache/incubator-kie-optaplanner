@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2021 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,28 +16,26 @@
 
 package org.optaplanner.core.impl.heuristic.thread;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.optaplanner.core.impl.testdata.util.PlannerAssert.assertCode;
-
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
-
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
 import org.optaplanner.core.impl.heuristic.move.DummyMove;
-import org.optaplanner.core.impl.partitionedsearch.queue.PartitionQueueTest;
 import org.optaplanner.core.impl.testdata.domain.TestdataSolution;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.optaplanner.core.impl.testdata.util.PlannerAssert.assertCode;
+
 public class OrderByMoveIndexBlockingQueueTest {
 
-    private static final Logger logger = LoggerFactory.getLogger(PartitionQueueTest.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(OrderByMoveIndexBlockingQueueTest.class);
 
     private final ExecutorService executorService = Executors.newFixedThreadPool(2);
 
@@ -45,7 +43,7 @@ public class OrderByMoveIndexBlockingQueueTest {
     public void tearDown() throws InterruptedException {
         executorService.shutdownNow();
         if (!executorService.awaitTermination(1, TimeUnit.MILLISECONDS)) {
-            logger.warn("Thread pool didn't terminate within the timeout.");
+            LOGGER.warn("Thread pool didn't terminate within the timeout.");
         }
     }
 
