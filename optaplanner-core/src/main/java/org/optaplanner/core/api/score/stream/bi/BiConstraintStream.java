@@ -23,7 +23,6 @@ import java.util.function.BiPredicate;
 import java.util.function.Function;
 import java.util.function.ToIntBiFunction;
 import java.util.function.ToLongBiFunction;
-
 import org.optaplanner.core.api.domain.constraintweight.ConstraintConfiguration;
 import org.optaplanner.core.api.domain.constraintweight.ConstraintWeight;
 import org.optaplanner.core.api.function.TriFunction;
@@ -770,6 +769,28 @@ public interface BiConstraintStream<A, B> extends ConstraintStream {
      * @return never null
      */
     <ResultA_> UniConstraintStream<ResultA_> map(BiFunction<A, B, ResultA_> mapping);
+
+    /**
+     * Takes each tuple and applies a mapping on the last fact, which turns it into {@link Iterable}.
+     * Returns a constraint stream consisting of tuples of the first fact
+     * and the contents of the {@link Iterable} one after another.
+     * This may produce a stream with duplicate tuples.
+     * See {@link #distinct()} for details.
+     *
+     * <p>
+     * In cases where the last fact is already {@link Iterable}, use {@link Function#identity()} as the argument.
+     *
+     * <p>
+     * Simple example: assuming a constraint stream of {@code (PersonName, Person)}
+     * {@code [Ann(roles = [USER, ADMIN]]), Beth(roles = [USER]), Cathy(roles = [ADMIN, AUDITOR])]},
+     * calling {@code flattenLast(Person::getRoles)} on such stream will produce
+     * a stream of {@code [(Ann, USER), (Ann, ADMIN), (Beth, USER), (Cathy, ADMIN), (Cathy, AUDITOR)]}.
+     *
+     * @param mapping never null, function to convert the last fact in the original tuple into {@link Iterable}
+     * @param <ResultB_> the type of the last fact in the resulting tuples
+     * @return never null
+     */
+    <ResultB_> BiConstraintStream<A, ResultB_> flattenLast(Function<B, Iterable<ResultB_>> mapping);
 
     /**
      * Transforms the stream in such a way that all the tuples going through it are distinct.

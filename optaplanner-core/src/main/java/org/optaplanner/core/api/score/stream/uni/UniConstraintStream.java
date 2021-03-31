@@ -25,7 +25,6 @@ import java.util.function.Predicate;
 import java.util.function.ToIntFunction;
 import java.util.function.ToLongFunction;
 import java.util.stream.Stream;
-
 import org.apache.commons.lang3.ObjectUtils;
 import org.optaplanner.core.api.domain.constraintweight.ConstraintConfiguration;
 import org.optaplanner.core.api.domain.constraintweight.ConstraintWeight;
@@ -986,6 +985,28 @@ public interface UniConstraintStream<A> extends ConstraintStream {
      * @return never null
      */
     <ResultA_> UniConstraintStream<ResultA_> map(Function<A, ResultA_> mapping);
+
+    /**
+     * Takes each tuple and applies a mapping on it, which turns the tuple into a {@link Iterable}.
+     * Returns a constraint stream consisting of contents of those iterables.
+     * This may produce a stream with duplicate tuples.
+     * See {@link #distinct()} for details.
+     *
+     * <p>
+     * In cases where the original tuple is already an {@link Iterable},
+     * use {@link Function#identity()} as the argument.
+     *
+     * <p>
+     * Simple example: assuming a constraint stream of tuple of {@code Person}s
+     * {@code [Ann(roles = [USER, ADMIN]]), Beth(roles = [USER]), Cathy(roles = [ADMIN, AUDITOR])]},
+     * calling {@code flattenLast(Person::getRoles)} on such stream will produce
+     * a stream of {@code [USER, ADMIN, USER, ADMIN, AUDITOR]}.
+     *
+     * @param mapping never null, function to convert the original tuple into {@link Iterable}
+     * @param <ResultA_> the type of facts in the resulting tuples
+     * @return never null
+     */
+    <ResultA_> UniConstraintStream<ResultA_> flattenLast(Function<A, Iterable<ResultA_>> mapping);
 
     /**
      * Transforms the stream in such a way that all the tuples going through it are distinct.

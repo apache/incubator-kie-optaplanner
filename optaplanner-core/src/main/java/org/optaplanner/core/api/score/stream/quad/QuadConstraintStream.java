@@ -17,6 +17,7 @@
 package org.optaplanner.core.api.score.stream.quad;
 
 import java.math.BigDecimal;
+import java.util.Collection;
 import java.util.Objects;
 import java.util.function.Function;
 
@@ -574,6 +575,15 @@ public interface QuadConstraintStream<A, B, C, D> extends ConstraintStream {
      * @return never null
      */
     <ResultA_> UniConstraintStream<ResultA_> map(QuadFunction<A, B, C, D, ResultA_> mapping);
+
+    /**
+     * As defined by {@link BiConstraintStream#flattenLast(Function)}.
+     *
+     * @param mapping never null, function to convert the last fact in the original tuple into {@link Iterable}
+     * @param <ResultD_> the type of the last fact in the resulting tuples
+     * @return never null
+     */
+    <ResultD_> QuadConstraintStream<A, B, C, ResultD_> flattenLast(Function<D, Collection<ResultD_>> mapping);
 
     /**
      * Transforms the stream in such a way that all the tuples going through it are distinct.
