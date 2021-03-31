@@ -20,6 +20,7 @@ import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
 import org.optaplanner.core.api.score.stream.Constraint;
 import org.optaplanner.core.api.score.stream.ConstraintFactory;
 import org.optaplanner.core.api.score.stream.ConstraintProvider;
+import org.optaplanner.core.api.score.stream.Joiners;
 import org.optaplanner.core.impl.testdata.domain.TestdataEntity;
 
 public class TestdataConstraintProvider implements ConstraintProvider {
@@ -27,7 +28,8 @@ public class TestdataConstraintProvider implements ConstraintProvider {
     public Constraint[] defineConstraints(ConstraintFactory constraintFactory) {
         return new Constraint[] {
                 penalizeEveryEntity(constraintFactory),
-                rewardEveryEntity(constraintFactory)
+                rewardEveryEntity(constraintFactory),
+                differentStringEntityHaveDifferentValues(constraintFactory),
         };
     }
 
@@ -39,6 +41,12 @@ public class TestdataConstraintProvider implements ConstraintProvider {
     public Constraint rewardEveryEntity(ConstraintFactory constraintFactory) {
         return constraintFactory.from(TestdataEntity.class)
                 .reward("Reward every entity", SimpleScore.ONE);
+    }
+
+    public Constraint differentStringEntityHaveDifferentValues(ConstraintFactory constraintFactory) {
+        return constraintFactory
+                .fromUniquePair(TestdataWithStringPlanningId.class, Joiners.equal(TestdataWithStringPlanningId::getValue))
+                .penalize("Different String Entity Have Different Values", SimpleScore.ONE);
     }
 
 }
