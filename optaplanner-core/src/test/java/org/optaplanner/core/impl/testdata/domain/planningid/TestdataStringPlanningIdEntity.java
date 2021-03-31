@@ -14,25 +14,25 @@
  * limitations under the License.
  */
 
-package org.optaplanner.test.api.score.stream.testdata;
+package org.optaplanner.core.impl.testdata.domain.planningid;
 
 import org.optaplanner.core.api.domain.entity.PlanningEntity;
 import org.optaplanner.core.api.domain.lookup.PlanningId;
 import org.optaplanner.core.api.domain.variable.PlanningVariable;
 
 @PlanningEntity
-public class TestdataWithStringPlanningId {
+public class TestdataStringPlanningIdEntity {
     @PlanningId
     private String planningId;
 
     @PlanningVariable(valueRangeProviderRefs = "stringValueRange")
     private String value;
 
-    public TestdataWithStringPlanningId(String planningId) {
+    public TestdataStringPlanningIdEntity(String planningId) {
         this(planningId, null);
     }
 
-    public TestdataWithStringPlanningId(String planningId, String value) {
+    public TestdataStringPlanningIdEntity(String planningId, String value) {
         this.planningId = planningId;
         this.value = value;
     }

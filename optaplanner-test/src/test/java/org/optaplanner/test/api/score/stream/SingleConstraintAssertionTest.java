@@ -21,15 +21,16 @@ import static org.assertj.core.api.Assertions.assertThatCode;
 import org.junit.jupiter.api.Test;
 import org.optaplanner.core.impl.testdata.domain.TestdataEntity;
 import org.optaplanner.core.impl.testdata.domain.TestdataSolution;
+import org.optaplanner.core.impl.testdata.domain.planningid.TestdataStringPlanningIdEntity;
+import org.optaplanner.core.impl.testdata.domain.planningid.TestdataStringPlanningIdSolution;
 import org.optaplanner.test.api.score.stream.testdata.TestdataConstraintProvider;
-import org.optaplanner.test.api.score.stream.testdata.TestdataStringSolution;
-import org.optaplanner.test.api.score.stream.testdata.TestdataWithStringPlanningId;
 
 public class SingleConstraintAssertionTest {
 
-    private final ConstraintVerifier<TestdataConstraintProvider, TestdataStringSolution> constraintVerifier =
-            ConstraintVerifier.build(new TestdataConstraintProvider(), TestdataStringSolution.class, TestdataEntity.class,
-                    TestdataWithStringPlanningId.class);
+    private final ConstraintVerifier<TestdataConstraintProvider, TestdataStringPlanningIdSolution> constraintVerifier =
+            ConstraintVerifier.build(new TestdataConstraintProvider(), TestdataStringPlanningIdSolution.class,
+                    TestdataEntity.class,
+                    TestdataStringPlanningIdEntity.class);
 
     @Test
     void penalizesAndDoesNotReward() {
@@ -101,19 +102,17 @@ public class SingleConstraintAssertionTest {
 
     @Test
     void uniquePairShouldWorkOnStringPlanningId() {
-        TestdataSolution solution = TestdataSolution.generateSolution(2, 3);
-
         assertThatCode(() -> {
             constraintVerifier.verifyThat(TestdataConstraintProvider::differentStringEntityHaveDifferentValues)
-                    .given(new TestdataWithStringPlanningId("A", "1"),
-                            new TestdataWithStringPlanningId("B", "1"))
+                    .given(new TestdataStringPlanningIdEntity("A", "1"),
+                            new TestdataStringPlanningIdEntity("B", "1"))
                     .penalizes(1, "There should be penalties");
         }).doesNotThrowAnyException();
 
         assertThatCode(() -> {
             constraintVerifier.verifyThat(TestdataConstraintProvider::differentStringEntityHaveDifferentValues)
-                    .given(new TestdataWithStringPlanningId("A", "1"),
-                            new TestdataWithStringPlanningId("B", "1"))
+                    .given(new TestdataStringPlanningIdEntity("A", "1"),
+                            new TestdataStringPlanningIdEntity("B", "1"))
                     .rewards(1, "There should be rewards");
         }).hasMessageContaining("There should be rewards")
                 .hasMessageContaining("Expected reward");

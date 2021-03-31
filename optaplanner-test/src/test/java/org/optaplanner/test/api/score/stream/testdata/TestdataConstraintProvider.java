@@ -22,6 +22,7 @@ import org.optaplanner.core.api.score.stream.ConstraintFactory;
 import org.optaplanner.core.api.score.stream.ConstraintProvider;
 import org.optaplanner.core.api.score.stream.Joiners;
 import org.optaplanner.core.impl.testdata.domain.TestdataEntity;
+import org.optaplanner.core.impl.testdata.domain.planningid.TestdataStringPlanningIdEntity;
 
 public class TestdataConstraintProvider implements ConstraintProvider {
     @Override
@@ -45,7 +46,7 @@ public class TestdataConstraintProvider implements ConstraintProvider {
 
     public Constraint differentStringEntityHaveDifferentValues(ConstraintFactory constraintFactory) {
         return constraintFactory
-                .fromUniquePair(TestdataWithStringPlanningId.class, Joiners.equal(TestdataWithStringPlanningId::getValue))
+                .fromUniquePair(TestdataStringPlanningIdEntity.class, Joiners.equal(TestdataStringPlanningIdEntity::getValue))
                 .penalize("Different String Entity Have Different Values", SimpleScore.ONE);
     }
 
