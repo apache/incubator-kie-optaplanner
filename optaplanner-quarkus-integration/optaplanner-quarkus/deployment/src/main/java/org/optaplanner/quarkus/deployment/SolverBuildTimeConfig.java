@@ -21,13 +21,13 @@ import java.util.Optional;
 import org.optaplanner.core.api.domain.common.DomainAccessType;
 import org.optaplanner.core.config.solver.EnvironmentMode;
 import org.optaplanner.core.config.solver.SolverConfig;
-import org.optaplanner.core.config.solver.termination.TerminationConfig;
 
 import io.quarkus.runtime.annotations.ConfigGroup;
 import io.quarkus.runtime.annotations.ConfigItem;
 
 /**
- * During build time, this is translated into OptaPlanner's {@link SolverConfig}.
+ * During build time, this is translated into OptaPlanner's {@link SolverConfig}
+ * (except for termination properties).
  */
 @ConfigGroup
 public class SolverBuildTimeConfig {
@@ -62,11 +62,5 @@ public class SolverBuildTimeConfig {
      */
     @ConfigItem
     Optional<DomainAccessType> domainAccessType;
-
-    /**
-     * Configuration properties that overwrite OptaPlanner's {@link TerminationConfig}.
-     */
-    @ConfigItem
-    TerminationBuildTimeConfig termination;
 
 }
