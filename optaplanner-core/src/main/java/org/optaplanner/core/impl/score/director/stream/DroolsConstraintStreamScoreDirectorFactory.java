@@ -30,4 +30,9 @@ public final class DroolsConstraintStreamScoreDirectorFactory<Solution_, Score_ 
                 () -> new DroolsConstraintFactory<>(solutionDescriptor, droolsAlphaNetworkCompilationEnabled));
     }
 
+    @Override
+    public DroolsConstraintStreamScoreDirector<Solution_, Score_> buildScoreDirector(boolean lookUpEnabled,
+            boolean constraintMatchEnabledPreference) {
+        return new DroolsConstraintStreamScoreDirector<>(this, lookUpEnabled, constraintMatchEnabledPreference);
+    }
 }

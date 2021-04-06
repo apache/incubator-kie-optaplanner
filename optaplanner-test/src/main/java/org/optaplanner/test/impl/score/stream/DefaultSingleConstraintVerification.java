@@ -23,7 +23,6 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
-
 import org.optaplanner.core.api.domain.entity.PlanningEntity;
 import org.optaplanner.core.api.domain.lookup.PlanningId;
 import org.optaplanner.core.api.score.Score;
@@ -33,7 +32,6 @@ import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.core.impl.score.director.InnerScoreDirector;
 import org.optaplanner.core.impl.score.director.stream.AbstractConstraintStreamScoreDirectorFactory;
-import org.optaplanner.core.impl.score.stream.ConstraintSession;
 import org.optaplanner.test.api.score.stream.SingleConstraintVerification;
 
 public final class DefaultSingleConstraintVerification<Solution_, Score_ extends Score<Score_>>
@@ -93,12 +91,20 @@ public final class DefaultSingleConstraintVerification<Solution_, Score_ extends
     @Override
     public final DefaultSingleConstraintAssertion<Solution_, Score_> given(Object... facts) {
         assertDistinctPlanningIds(scoreDirectorFactory.getSolutionDescriptor(), facts);
-        try (ConstraintSession<Solution_, Score_> constraintSession =
-                scoreDirectorFactory.newConstraintStreamingSession(true, null)) {
-            Arrays.stream(facts).forEach(constraintSession::insert);
-            return new DefaultSingleConstraintAssertion<>(scoreDirectorFactory, constraintSession.calculateScore(0),
-                    constraintSession.getConstraintMatchTotalMap(), constraintSession.getIndictmentMap());
+        InnerScoreDirector<Solution_, Score_> scoreDirector = scoreDirectorFactory.buildScoreDirector(true, true);
+        SolutionDescriptor<Solution_> solutionDescriptor = scoreDirectorFactory.getSolutionDescriptor();
+        for (Object fact : facts) {
+            if (solutionDescriptor.hasEntityDescriptor(fact.getClass())) {
+                scoreDirector.beforeEntityAdded(fact);
+                scoreDirector.afterEntityAdded(fact);
+            } else {
+                scoreDirector.beforeProblemFactAdded(fact);
+                scoreDirector.afterProblemFactAdded(fact);
+            }
         }
+        Score_ score = scoreDirector.calculateScore();
+        return new DefaultSingleConstraintAssertion<>(scoreDirectorFactory, score.withInitScore(0),
+                scoreDirector.getConstraintMatchTotalMap(), scoreDirector.getIndictmentMap());
     }
 
     @Override

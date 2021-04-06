@@ -16,22 +16,17 @@
 
 package org.optaplanner.core.impl.score.stream.bavet;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.SoftAssertions.assertSoftly;
-import static org.optaplanner.core.api.score.stream.Joiners.equal;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Function;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
 import org.optaplanner.core.api.score.stream.Constraint;
 import org.optaplanner.core.api.score.stream.ConstraintCollectors;
 import org.optaplanner.core.api.score.stream.ConstraintFactory;
+import org.optaplanner.core.impl.score.director.stream.BavetConstraintStreamScoreDirector;
 import org.optaplanner.core.impl.score.director.stream.BavetConstraintStreamScoreDirectorFactory;
-import org.optaplanner.core.impl.score.director.stream.ConstraintStreamScoreDirector;
 import org.optaplanner.core.impl.score.stream.bavet.bi.BavetGroupBiNode;
 import org.optaplanner.core.impl.score.stream.bavet.bi.BavetGroupBridgeBiNode;
 import org.optaplanner.core.impl.score.stream.bavet.common.BavetNode;
@@ -45,6 +40,10 @@ import org.optaplanner.core.impl.testdata.domain.score.lavish.TestdataLavishEnti
 import org.optaplanner.core.impl.testdata.domain.score.lavish.TestdataLavishSolution;
 import org.optaplanner.core.impl.testdata.domain.score.lavish.TestdataLavishValue;
 import org.optaplanner.core.impl.testdata.domain.score.lavish.TestdataLavishValueGroup;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.SoftAssertions.assertSoftly;
+import static org.optaplanner.core.api.score.stream.Joiners.equal;
 
 public class BavetConstraintStreamNodeOrderingTest {
 
@@ -60,7 +59,7 @@ public class BavetConstraintStreamNodeOrderingTest {
 
     @BeforeEach
     void initializeSession() {
-        ConstraintStreamScoreDirector<TestdataLavishSolution, SimpleScore> scoreDirector =
+        BavetConstraintStreamScoreDirector<TestdataLavishSolution, SimpleScore> scoreDirector =
                 buildScoreDirector(constraintProvider);
         scoreDirector.setWorkingSolution(TestdataLavishSolution.generateSolution());
         session = (BavetConstraintSession<TestdataLavishSolution, SimpleScore>) scoreDirector.getSession();
@@ -160,7 +159,7 @@ public class BavetConstraintStreamNodeOrderingTest {
                 .isEqualTo(13);
     }
 
-    protected ConstraintStreamScoreDirector<TestdataLavishSolution, SimpleScore> buildScoreDirector(
+    protected BavetConstraintStreamScoreDirector<TestdataLavishSolution, SimpleScore> buildScoreDirector(
             Function<ConstraintFactory, Constraint> function) {
         BavetConstraintStreamScoreDirectorFactory<TestdataLavishSolution, SimpleScore> scoreDirectorFactory =
                 new BavetConstraintStreamScoreDirectorFactory<>(TestdataLavishSolution.buildSolutionDescriptor(),

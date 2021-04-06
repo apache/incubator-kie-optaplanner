@@ -16,15 +16,12 @@
 
 package org.optaplanner.core.impl.score.stream.drools;
 
-import static java.util.stream.Collectors.toMap;
-
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import java.util.function.Function;
-
 import org.drools.ancompiler.KieBaseUpdaterANC;
 import org.drools.model.Model;
 import org.drools.model.impl.ModelImpl;
@@ -47,8 +44,9 @@ import org.optaplanner.core.impl.score.definition.ScoreDefinition;
 import org.optaplanner.core.impl.score.director.drools.DroolsScoreDirector;
 import org.optaplanner.core.impl.score.director.drools.OptaPlannerRuleEventListener;
 import org.optaplanner.core.impl.score.holder.AbstractScoreHolder;
-import org.optaplanner.core.impl.score.stream.ConstraintSession;
 import org.optaplanner.core.impl.score.stream.ConstraintSessionFactory;
+
+import static java.util.stream.Collectors.toMap;
 
 public final class DroolsConstraintSessionFactory<Solution_, Score_ extends Score<Score_>>
         implements ConstraintSessionFactory<Solution_, Score_> {
@@ -105,7 +103,7 @@ public final class DroolsConstraintSessionFactory<Solution_, Score_ extends Scor
     }
 
     @Override
-    public ConstraintSession<Solution_, Score_> buildSession(boolean constraintMatchEnabled, Solution_ workingSolution) {
+    public KieSession buildSession(boolean constraintMatchEnabled, Solution_ workingSolution) {
         ScoreDefinition<Score_> scoreDefinition = solutionDescriptor.getScoreDefinition();
         AbstractScoreHolder<Score_> scoreHolder = scoreDefinition.buildScoreHolder(constraintMatchEnabled);
         // Determine which rules to enable based on the fact that their constraints carry weight.
@@ -138,7 +136,7 @@ public final class DroolsConstraintSessionFactory<Solution_, Score_ extends Scor
         KieSession kieSession = buildKieSessionFromKieBase(currentKieBase);
         ((RuleEventManager) kieSession).addEventListener(new OptaPlannerRuleEventListener()); // Enables undo in rules.
         kieSession.setGlobal(DroolsScoreDirector.GLOBAL_SCORE_HOLDER_KEY, scoreHolder);
-        return new DroolsConstraintSession<>(solutionDescriptor, kieSession, scoreHolder);
+        return kieSession;
     }
 
 }

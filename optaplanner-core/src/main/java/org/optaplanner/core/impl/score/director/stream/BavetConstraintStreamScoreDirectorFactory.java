@@ -29,4 +29,9 @@ public final class BavetConstraintStreamScoreDirectorFactory<Solution_, Score_ e
         super(solutionDescriptor, constraintProvider, () -> new BavetConstraintFactory<>(solutionDescriptor));
     }
 
+    @Override
+    public BavetConstraintStreamScoreDirector<Solution_, Score_> buildScoreDirector(boolean lookUpEnabled,
+            boolean constraintMatchEnabledPreference) {
+        return new BavetConstraintStreamScoreDirector<>(this, lookUpEnabled, constraintMatchEnabledPreference);
+    }
 }

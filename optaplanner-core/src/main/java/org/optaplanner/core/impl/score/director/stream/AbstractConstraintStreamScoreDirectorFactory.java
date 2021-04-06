@@ -19,7 +19,6 @@ package org.optaplanner.core.impl.score.director.stream;
 import java.util.Arrays;
 import java.util.Objects;
 import java.util.function.Supplier;
-
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.stream.Constraint;
@@ -27,7 +26,6 @@ import org.optaplanner.core.api.score.stream.ConstraintProvider;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.core.impl.score.director.AbstractScoreDirectorFactory;
 import org.optaplanner.core.impl.score.director.ScoreDirectorFactory;
-import org.optaplanner.core.impl.score.stream.ConstraintSession;
 import org.optaplanner.core.impl.score.stream.ConstraintSessionFactory;
 import org.optaplanner.core.impl.score.stream.InnerConstraintFactory;
 
@@ -69,14 +67,7 @@ public abstract class AbstractConstraintStreamScoreDirectorFactory<Solution_, Sc
     // Complex methods
     // ************************************************************************
 
-    @Override
-    public ConstraintStreamScoreDirector<Solution_, Score_> buildScoreDirector(boolean lookUpEnabled,
-            boolean constraintMatchEnabledPreference) {
-        return new ConstraintStreamScoreDirector<>(this, lookUpEnabled, constraintMatchEnabledPreference);
-    }
-
-    public ConstraintSession<Solution_, Score_> newConstraintStreamingSession(boolean constraintMatchEnabled,
-            Solution_ workingSolution) {
+    public Object newConstraintStreamingSession(boolean constraintMatchEnabled, Solution_ workingSolution) {
         return constraintSessionFactory.buildSession(constraintMatchEnabled, workingSolution);
     }
 

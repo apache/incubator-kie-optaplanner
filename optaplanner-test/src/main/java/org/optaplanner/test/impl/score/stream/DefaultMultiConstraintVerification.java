@@ -16,14 +16,13 @@
 
 package org.optaplanner.test.impl.score.stream;
 
-import java.util.Arrays;
 import java.util.Objects;
 
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.stream.ConstraintProvider;
+import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.core.impl.score.director.InnerScoreDirector;
 import org.optaplanner.core.impl.score.director.stream.AbstractConstraintStreamScoreDirectorFactory;
-import org.optaplanner.core.impl.score.stream.ConstraintSession;
 import org.optaplanner.test.api.score.stream.MultiConstraintVerification;
 
 public final class DefaultMultiConstraintVerification<Solution_, Score_ extends Score<Score_>>
@@ -41,12 +40,20 @@ public final class DefaultMultiConstraintVerification<Solution_, Score_ extends 
 
     @Override
     public final DefaultMultiConstraintAssertion<Solution_, Score_> given(Object... facts) {
-        try (ConstraintSession<Solution_, Score_> constraintSession =
-                scoreDirectorFactory.newConstraintStreamingSession(true, null)) {
-            Arrays.stream(facts).forEach(constraintSession::insert);
-            return new DefaultMultiConstraintAssertion<>(constraintProvider, constraintSession.calculateScore(0),
-                    constraintSession.getConstraintMatchTotalMap(), constraintSession.getIndictmentMap());
+        InnerScoreDirector<Solution_, Score_> scoreDirector = scoreDirectorFactory.buildScoreDirector(true, true);
+        SolutionDescriptor<Solution_> solutionDescriptor = scoreDirectorFactory.getSolutionDescriptor();
+        for (Object fact : facts) {
+            if (solutionDescriptor.hasEntityDescriptor(fact.getClass())) {
+                scoreDirector.beforeEntityAdded(fact);
+                scoreDirector.afterEntityAdded(fact);
+            } else {
+                scoreDirector.beforeProblemFactAdded(fact);
+                scoreDirector.afterProblemFactAdded(fact);
+            }
         }
+        Score_ score = scoreDirector.calculateScore();
+        return new DefaultMultiConstraintAssertion<>(constraintProvider, score.withInitScore(0),
+                scoreDirector.getConstraintMatchTotalMap(), scoreDirector.getIndictmentMap());
     }
 
     @Override
