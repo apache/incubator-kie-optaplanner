@@ -59,7 +59,7 @@ public final class BavetConstraintStreamScoreDirector<Solution_, Score_ extends 
     }
 
     private void resetConstraintStreamingSession() {
-        session = scoreDirectorFactory.newConstraintStreamingSession(constraintMatchEnabledPreference, workingSolution);
+        session = scoreDirectorFactory.newSession(constraintMatchEnabledPreference, workingSolution);
         Collection<Object> workingFacts = getSolutionDescriptor().getAllFacts(workingSolution);
         for (Object fact : workingFacts) {
             session.insert(fact);

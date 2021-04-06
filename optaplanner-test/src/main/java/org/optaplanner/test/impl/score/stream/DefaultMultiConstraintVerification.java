@@ -20,7 +20,6 @@ import java.util.Objects;
 
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.stream.ConstraintProvider;
-import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.core.impl.score.director.InnerScoreDirector;
 import org.optaplanner.core.impl.score.director.stream.AbstractConstraintStreamScoreDirectorFactory;
 import org.optaplanner.test.api.score.stream.MultiConstraintVerification;
@@ -30,30 +29,19 @@ public final class DefaultMultiConstraintVerification<Solution_, Score_ extends 
 
     private final AbstractConstraintStreamScoreDirectorFactory<Solution_, Score_> scoreDirectorFactory;
     private final ConstraintProvider constraintProvider;
+    private final SessionBasedAssertionBuilder<Solution_, Score_> sessionBasedAssertionBuilder;
 
     protected DefaultMultiConstraintVerification(
             AbstractConstraintStreamScoreDirectorFactory<Solution_, Score_> scoreDirectorFactory,
             ConstraintProvider constraintProvider) {
         this.scoreDirectorFactory = scoreDirectorFactory;
         this.constraintProvider = constraintProvider;
+        this.sessionBasedAssertionBuilder = SessionBasedAssertionBuilder.create(scoreDirectorFactory);
     }
 
     @Override
     public final DefaultMultiConstraintAssertion<Solution_, Score_> given(Object... facts) {
-        InnerScoreDirector<Solution_, Score_> scoreDirector = scoreDirectorFactory.buildScoreDirector(true, true);
-        SolutionDescriptor<Solution_> solutionDescriptor = scoreDirectorFactory.getSolutionDescriptor();
-        for (Object fact : facts) {
-            if (solutionDescriptor.hasEntityDescriptor(fact.getClass())) {
-                scoreDirector.beforeEntityAdded(fact);
-                scoreDirector.afterEntityAdded(fact);
-            } else {
-                scoreDirector.beforeProblemFactAdded(fact);
-                scoreDirector.afterProblemFactAdded(fact);
-            }
-        }
-        Score_ score = scoreDirector.calculateScore();
-        return new DefaultMultiConstraintAssertion<>(constraintProvider, score.withInitScore(0),
-                scoreDirector.getConstraintMatchTotalMap(), scoreDirector.getIndictmentMap());
+        return sessionBasedAssertionBuilder.multiConstraintGiven(constraintProvider, facts);
     }
 
     @Override
