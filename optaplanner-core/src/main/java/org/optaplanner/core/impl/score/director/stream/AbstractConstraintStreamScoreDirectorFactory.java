@@ -19,6 +19,7 @@ package org.optaplanner.core.impl.score.director.stream;
 import java.util.Arrays;
 import java.util.Objects;
 import java.util.function.Supplier;
+
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.stream.Constraint;
@@ -34,7 +35,6 @@ import org.optaplanner.core.impl.score.stream.InnerConstraintFactory;
  *
  * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
  * @param <Score_> the score type to go with the solution
- * @see ConstraintStreamScoreDirector
  * @see ScoreDirectorFactory
  */
 public abstract class AbstractConstraintStreamScoreDirectorFactory<Solution_, Score_ extends Score<Score_>>

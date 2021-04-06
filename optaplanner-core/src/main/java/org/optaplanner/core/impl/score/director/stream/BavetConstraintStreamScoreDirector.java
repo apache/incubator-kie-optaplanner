@@ -27,7 +27,6 @@ import org.optaplanner.core.api.score.director.ScoreDirector;
 import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
 import org.optaplanner.core.impl.domain.variable.descriptor.VariableDescriptor;
 import org.optaplanner.core.impl.score.director.AbstractScoreDirector;
-import org.optaplanner.core.impl.score.stream.ConstraintSession;
 import org.optaplanner.core.impl.score.stream.bavet.BavetConstraintSession;
 
 /**
@@ -41,7 +40,7 @@ import org.optaplanner.core.impl.score.stream.bavet.BavetConstraintSession;
 public class BavetConstraintStreamScoreDirector<Solution_, Score_ extends Score<Score_>>
         extends AbstractScoreDirector<Solution_, Score_, AbstractConstraintStreamScoreDirectorFactory<Solution_, Score_>> {
 
-    protected ConstraintSession<Solution_, Score_> session;
+    protected BavetConstraintSession<Solution_, Score_> session;
 
     public BavetConstraintStreamScoreDirector(
             AbstractConstraintStreamScoreDirectorFactory<Solution_, Score_> scoreDirectorFactory,
@@ -60,9 +59,6 @@ public class BavetConstraintStreamScoreDirector<Solution_, Score_ extends Score<
     }
 
     private void resetConstraintStreamingSession() {
-        if (session != null) {
-            session.close();
-        }
         session = (BavetConstraintSession<Solution_, Score_>) scoreDirectorFactory
                 .newConstraintStreamingSession(constraintMatchEnabledPreference, workingSolution);
         Collection<Object> workingFacts = getSolutionDescriptor().getAllFacts(workingSolution);
@@ -105,7 +101,6 @@ public class BavetConstraintStreamScoreDirector<Solution_, Score_ extends Score<
     @Override
     public void close() {
         super.close();
-        session.close();
         session = null;
     }
 
@@ -179,7 +174,7 @@ public class BavetConstraintStreamScoreDirector<Solution_, Score_ extends Score<
     // Getters/setters
     // ************************************************************************
 
-    public ConstraintSession<Solution_, Score_> getSession() {
+    public BavetConstraintSession<Solution_, Score_> getSession() {
         return session;
     }
 }

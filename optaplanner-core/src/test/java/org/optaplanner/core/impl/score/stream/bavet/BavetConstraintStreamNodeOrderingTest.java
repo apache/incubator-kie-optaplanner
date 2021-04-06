@@ -62,7 +62,7 @@ public class BavetConstraintStreamNodeOrderingTest {
         BavetConstraintStreamScoreDirector<TestdataLavishSolution, SimpleScore> scoreDirector =
                 buildScoreDirector(constraintProvider);
         scoreDirector.setWorkingSolution(TestdataLavishSolution.generateSolution());
-        session = (BavetConstraintSession<TestdataLavishSolution, SimpleScore>) scoreDirector.getSession();
+        session = scoreDirector.getSession();
     }
 
     @Test
