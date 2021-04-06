@@ -30,6 +30,7 @@ import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.core.impl.domain.variable.descriptor.VariableDescriptor;
 import org.optaplanner.core.impl.score.director.AbstractScoreDirector;
+import org.optaplanner.core.impl.score.director.drools.DroolsScoreDirector;
 import org.optaplanner.core.impl.score.holder.AbstractScoreHolder;
 
 /**
@@ -40,8 +41,8 @@ import org.optaplanner.core.impl.score.holder.AbstractScoreHolder;
  * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
  * @see ScoreDirector
  */
-public class DroolsConstraintStreamScoreDirector<Solution_, Score_ extends Score<Score_>>
-        extends AbstractScoreDirector<Solution_, Score_, AbstractConstraintStreamScoreDirectorFactory<Solution_, Score_>> {
+public final class DroolsConstraintStreamScoreDirector<Solution_, Score_ extends Score<Score_>>
+        extends AbstractScoreDirector<Solution_, Score_, DroolsConstraintStreamScoreDirectorFactory<Solution_, Score_>> {
 
     private final SolutionDescriptor<Solution_> solutionDescriptor;
 
@@ -49,7 +50,7 @@ public class DroolsConstraintStreamScoreDirector<Solution_, Score_ extends Score
     protected AbstractScoreHolder<Score_> scoreHolder;
 
     public DroolsConstraintStreamScoreDirector(
-            AbstractConstraintStreamScoreDirectorFactory<Solution_, Score_> scoreDirectorFactory,
+            DroolsConstraintStreamScoreDirectorFactory<Solution_, Score_> scoreDirectorFactory,
             boolean lookUpEnabled, boolean constraintMatchEnabledPreference) {
         super(scoreDirectorFactory, lookUpEnabled, constraintMatchEnabledPreference);
         this.solutionDescriptor = scoreDirectorFactory.getSolutionDescriptor();
@@ -69,9 +70,8 @@ public class DroolsConstraintStreamScoreDirector<Solution_, Score_ extends Score
         if (session != null) {
             session.dispose();
         }
-        session = (KieSession) scoreDirectorFactory.newConstraintStreamingSession(constraintMatchEnabledPreference,
-                workingSolution);
-        scoreHolder = (AbstractScoreHolder<Score_>) session.getGlobal("scoreHolder");
+        session = scoreDirectorFactory.newConstraintStreamingSession(constraintMatchEnabledPreference, workingSolution);
+        scoreHolder = (AbstractScoreHolder<Score_>) session.getGlobal(DroolsScoreDirector.GLOBAL_SCORE_HOLDER_KEY);
         Collection<Object> workingFacts = getSolutionDescriptor().getAllFacts(workingSolution);
         for (Object fact : workingFacts) {
             session.insert(fact);

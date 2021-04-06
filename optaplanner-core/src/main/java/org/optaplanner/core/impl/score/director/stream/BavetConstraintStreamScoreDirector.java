@@ -37,13 +37,13 @@ import org.optaplanner.core.impl.score.stream.bavet.BavetConstraintSession;
  * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
  * @see ScoreDirector
  */
-public class BavetConstraintStreamScoreDirector<Solution_, Score_ extends Score<Score_>>
-        extends AbstractScoreDirector<Solution_, Score_, AbstractConstraintStreamScoreDirectorFactory<Solution_, Score_>> {
+public final class BavetConstraintStreamScoreDirector<Solution_, Score_ extends Score<Score_>>
+        extends AbstractScoreDirector<Solution_, Score_, BavetConstraintStreamScoreDirectorFactory<Solution_, Score_>> {
 
     protected BavetConstraintSession<Solution_, Score_> session;
 
     public BavetConstraintStreamScoreDirector(
-            AbstractConstraintStreamScoreDirectorFactory<Solution_, Score_> scoreDirectorFactory,
+            BavetConstraintStreamScoreDirectorFactory<Solution_, Score_> scoreDirectorFactory,
             boolean lookUpEnabled, boolean constraintMatchEnabledPreference) {
         super(scoreDirectorFactory, lookUpEnabled, constraintMatchEnabledPreference);
     }
@@ -59,8 +59,7 @@ public class BavetConstraintStreamScoreDirector<Solution_, Score_ extends Score<
     }
 
     private void resetConstraintStreamingSession() {
-        session = (BavetConstraintSession<Solution_, Score_>) scoreDirectorFactory
-                .newConstraintStreamingSession(constraintMatchEnabledPreference, workingSolution);
+        session = scoreDirectorFactory.newConstraintStreamingSession(constraintMatchEnabledPreference, workingSolution);
         Collection<Object> workingFacts = getSolutionDescriptor().getAllFacts(workingSolution);
         for (Object fact : workingFacts) {
             session.insert(fact);

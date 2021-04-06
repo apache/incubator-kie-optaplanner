@@ -64,14 +64,6 @@ public abstract class AbstractConstraintStreamScoreDirectorFactory<Solution_, Sc
     }
 
     // ************************************************************************
-    // Complex methods
-    // ************************************************************************
-
-    public Object newConstraintStreamingSession(boolean constraintMatchEnabled, Solution_ workingSolution) {
-        return constraintSessionFactory.buildSession(constraintMatchEnabled, workingSolution);
-    }
-
-    // ************************************************************************
     // Getters/setters
     // ************************************************************************
 
