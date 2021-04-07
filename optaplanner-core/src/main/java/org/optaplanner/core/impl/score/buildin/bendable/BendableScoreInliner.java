@@ -17,9 +17,6 @@
 package org.optaplanner.core.impl.score.buildin.bendable;
 
 import java.util.Arrays;
-import java.util.function.Consumer;
-
-import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.buildin.bendable.BendableScore;
 import org.optaplanner.core.impl.score.inliner.IntWeightedScoreImpacter;
 import org.optaplanner.core.impl.score.inliner.ScoreInliner;
@@ -36,7 +33,8 @@ public class BendableScoreInliner extends ScoreInliner<BendableScore> {
     }
 
     @Override
-    public IntWeightedScoreImpacter buildWeightedScoreImpacter(String constraintPackage, String constraintName, BendableScore constraintWeight) {
+    public IntWeightedScoreImpacter buildWeightedScoreImpacter(String constraintPackage, String constraintName,
+            BendableScore constraintWeight) {
         ensureNonZeroConstraintWeight(constraintWeight);
         Integer singleLevel = null;
         for (int i = 0; i < constraintWeight.getLevelsSize(); i++) {
@@ -52,31 +50,27 @@ public class BendableScoreInliner extends ScoreInliner<BendableScore> {
             int levelWeight = constraintWeight.getHardOrSoftScore(singleLevel);
             if (singleLevel < constraintWeight.getHardLevelsSize()) {
                 int level = singleLevel;
-                return (int matchWeight, Consumer<Score<?>> matchScoreConsumer) -> {
+                return (int matchWeight, Object... justifications) -> {
                     int hardImpact = levelWeight * matchWeight;
                     this.hardScores[level] += hardImpact;
-                    if (constraintMatchEnabled) {
-                        matchScoreConsumer
-                                .accept(BendableScore.ofHard(hardScores.length, softScores.length, level, hardImpact));
-                    }
-                    return () -> this.hardScores[level] -= hardImpact;
+                    return buildUndo(constraintPackage, constraintName,
+                            () -> this.hardScores[level] -= hardImpact,
+                            () -> BendableScore.ofHard(hardScores.length, softScores.length, level, hardImpact),
+                            justifications);
                 };
             } else {
                 int level = singleLevel - constraintWeight.getHardLevelsSize();
-                return (int matchWeight, Consumer<Score<?>> matchScoreConsumer) -> {
+                return (int matchWeight, Object... justifications) -> {
                     int softImpact = levelWeight * matchWeight;
                     this.softScores[level] += softImpact;
-                    if (constraintMatchEnabled) {
-                        matchScoreConsumer
-                                .accept(BendableScore.ofSoft(hardScores.length, softScores.length, level, softImpact));
-                    }
-                    return () -> {
-                        this.softScores[level] -= softImpact;
-                    };
+                    return buildUndo(constraintPackage, constraintName,
+                            () -> this.softScores[level] -= softImpact,
+                            () -> BendableScore.ofSoft(hardScores.length, softScores.length, level, softImpact),
+                            justifications);
                 };
             }
         } else {
-            return (int matchWeight, Consumer<Score<?>> matchScoreConsumer) -> {
+            return (int matchWeight, Object... justifications) -> {
                 int[] hardImpacts = new int[hardScores.length];
                 int[] softImpacts = new int[softScores.length];
                 for (int i = 0; i < hardImpacts.length; i++) {
@@ -87,17 +81,17 @@ public class BendableScoreInliner extends ScoreInliner<BendableScore> {
                     softImpacts[i] = constraintWeight.getSoftScore(i) * matchWeight;
                     this.softScores[i] += softImpacts[i];
                 }
-                if (constraintMatchEnabled) {
-                    matchScoreConsumer.accept(BendableScore.of(hardImpacts, softImpacts));
-                }
-                return () -> {
-                    for (int i = 0; i < hardImpacts.length; i++) {
-                        this.hardScores[i] -= hardImpacts[i];
-                    }
-                    for (int i = 0; i < softImpacts.length; i++) {
-                        this.softScores[i] -= softImpacts[i];
-                    }
-                };
+                return buildUndo(constraintPackage, constraintName,
+                        () -> {
+                            for (int i = 0; i < hardImpacts.length; i++) {
+                                this.hardScores[i] -= hardImpacts[i];
+                            }
+                            for (int i = 0; i < softImpacts.length; i++) {
+                                this.softScores[i] -= softImpacts[i];
+                            }
+                        },
+                        () -> BendableScore.of(hardImpacts, softImpacts),
+                        justifications);
             };
         }
     }

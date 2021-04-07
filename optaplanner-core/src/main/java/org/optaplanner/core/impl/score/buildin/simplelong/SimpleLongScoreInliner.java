@@ -16,9 +16,6 @@
 
 package org.optaplanner.core.impl.score.buildin.simplelong;
 
-import java.util.function.Consumer;
-
-import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.buildin.simplelong.SimpleLongScore;
 import org.optaplanner.core.impl.score.inliner.LongWeightedScoreImpacter;
 import org.optaplanner.core.impl.score.inliner.ScoreInliner;
@@ -32,16 +29,17 @@ public class SimpleLongScoreInliner extends ScoreInliner<SimpleLongScore> {
     }
 
     @Override
-    public LongWeightedScoreImpacter buildWeightedScoreImpacter(String constraintPackage, String constraintName, SimpleLongScore constraintWeight) {
+    public LongWeightedScoreImpacter buildWeightedScoreImpacter(String constraintPackage, String constraintName,
+            SimpleLongScore constraintWeight) {
         ensureNonZeroConstraintWeight(constraintWeight);
         long simpleConstraintWeight = constraintWeight.getScore();
-        return (long matchWeight, Consumer<Score<?>> matchScoreConsumer) -> {
+        return (long matchWeight, Object... justifications) -> {
             long impact = simpleConstraintWeight * matchWeight;
             this.score += impact;
-            if (constraintMatchEnabled) {
-                matchScoreConsumer.accept(SimpleLongScore.of(impact));
-            }
-            return () -> this.score -= impact;
+            return buildUndo(constraintPackage, constraintName,
+                    () -> this.score -= impact,
+                    () -> SimpleLongScore.of(impact),
+                    justifications);
         };
     }
 

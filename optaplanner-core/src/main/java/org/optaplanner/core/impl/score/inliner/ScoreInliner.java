@@ -16,11 +16,12 @@
 
 package org.optaplanner.core.impl.score.inliner;
 
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.LinkedHashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
+import java.util.function.Supplier;
 
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.constraint.ConstraintMatch;
@@ -42,19 +43,21 @@ public abstract class ScoreInliner<Score_ extends Score<Score_>> {
 
     public abstract Score_ extractScore(int initScore);
 
-    public abstract WeightedScoreImpacter buildWeightedScoreImpacter(String constraintPackage, String constraintName, Score_ constraintWeight);
+    public abstract WeightedScoreImpacter buildWeightedScoreImpacter(String constraintPackage, String constraintName,
+            Score_ constraintWeight);
 
-    protected Runnable addConstraintMatch(String constraintPackage, String constraintName,
-            List<Object> justificationList, Score_ score) {
+    protected Runnable addConstraintMatch(String constraintPackage, String constraintName, Score_ score,
+            Object... justifications) {
         String constraintId = ConstraintMatchTotal.composeConstraintId(constraintPackage, constraintName);
         DefaultConstraintMatchTotal<Score_> constraintMatchTotal = constraintMatchTotalMap.computeIfAbsent(constraintId,
                 id -> new DefaultConstraintMatchTotal<>(constraintPackage, constraintName, score));
-        ConstraintMatch<Score_> constraintMatch = constraintMatchTotal.addConstraintMatch(justificationList, score);
+        ConstraintMatch<Score_> constraintMatch =
+                constraintMatchTotal.addConstraintMatch(Arrays.asList(justifications), score);
         return () -> {
-          constraintMatchTotal.removeConstraintMatch(constraintMatch);
-          if (constraintMatchTotal.getConstraintMatchSet().isEmpty()) { // Clean up.
-              constraintMatchTotalMap.remove(constraintId);
-          }
+            constraintMatchTotal.removeConstraintMatch(constraintMatch);
+            if (constraintMatchTotal.getConstraintMatchSet().isEmpty()) { // Clean up.
+                constraintMatchTotalMap.remove(constraintId);
+            }
         };
     }
 
@@ -84,6 +87,19 @@ public abstract class ScoreInliner<Score_ extends Score<Score_>> {
             throw new IllegalArgumentException("The constraintWeight (" + constraintWeight + ") cannot be zero,"
                     + " this constraint should have been culled during node creation.");
         }
+    }
+
+    protected UndoScoreImpacter buildUndo(String constraintPackage, String constraintName,
+            UndoScoreImpacter undoWithoutConstraintMatch, Supplier<Score_> score, Object... justifications) {
+        if (!constraintMatchEnabled) {
+            return undoWithoutConstraintMatch;
+        }
+        Runnable undoWithConstraintMatch =
+                addConstraintMatch(constraintPackage, constraintName, score.get(), justifications);
+        return () -> {
+            undoWithoutConstraintMatch.undoScoreImpact();
+            undoWithConstraintMatch.run();
+        };
     }
 
 }

@@ -17,9 +17,6 @@
 package org.optaplanner.core.impl.score.buildin.hardmediumsoftbigdecimal;
 
 import java.math.BigDecimal;
-import java.util.function.Consumer;
-
-import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.buildin.hardmediumsoftbigdecimal.HardMediumSoftBigDecimalScore;
 import org.optaplanner.core.impl.score.inliner.BigDecimalWeightedScoreImpacter;
 import org.optaplanner.core.impl.score.inliner.ScoreInliner;
@@ -41,48 +38,48 @@ public class HardMediumSoftBigDecimalScoreInliner extends ScoreInliner<HardMediu
         BigDecimal mediumConstraintWeight = constraintWeight.getMediumScore();
         BigDecimal softConstraintWeight = constraintWeight.getSoftScore();
         if (mediumConstraintWeight.equals(BigDecimal.ZERO) && softConstraintWeight.equals(BigDecimal.ZERO)) {
-            return (BigDecimal matchWeight, Consumer<Score<?>> matchScoreConsumer) -> {
+            return (BigDecimal matchWeight, Object... justifications) -> {
                 BigDecimal hardImpact = hardConstraintWeight.multiply(matchWeight);
                 this.hardScore = this.hardScore.add(hardImpact);
-                if (constraintMatchEnabled) {
-                    matchScoreConsumer.accept(HardMediumSoftBigDecimalScore.ofHard(hardImpact));
-                }
-                return () -> this.hardScore = this.hardScore.subtract(hardImpact);
+                return buildUndo(constraintPackage, constraintName,
+                        () -> this.hardScore = this.hardScore.subtract(hardImpact),
+                        () -> HardMediumSoftBigDecimalScore.ofHard(hardImpact),
+                        justifications);
             };
         } else if (hardConstraintWeight.equals(BigDecimal.ZERO) && softConstraintWeight.equals(BigDecimal.ZERO)) {
-            return (BigDecimal matchWeight, Consumer<Score<?>> matchScoreConsumer) -> {
+            return (BigDecimal matchWeight, Object... justifications) -> {
                 BigDecimal mediumImpact = mediumConstraintWeight.multiply(matchWeight);
                 this.mediumScore = this.mediumScore.add(mediumImpact);
-                if (constraintMatchEnabled) {
-                    matchScoreConsumer.accept(HardMediumSoftBigDecimalScore.ofMedium(mediumImpact));
-                }
-                return () -> this.mediumScore = this.mediumScore.subtract(mediumImpact);
+                return buildUndo(constraintPackage, constraintName,
+                        () -> this.mediumScore = this.mediumScore.subtract(mediumImpact),
+                        () -> HardMediumSoftBigDecimalScore.ofMedium(mediumImpact),
+                        justifications);
             };
         } else if (hardConstraintWeight.equals(BigDecimal.ZERO) && mediumConstraintWeight.equals(BigDecimal.ZERO)) {
-            return (BigDecimal matchWeight, Consumer<Score<?>> matchScoreConsumer) -> {
+            return (BigDecimal matchWeight, Object... justifications) -> {
                 BigDecimal softImpact = softConstraintWeight.multiply(matchWeight);
                 this.softScore = this.softScore.add(softImpact);
-                if (constraintMatchEnabled) {
-                    matchScoreConsumer.accept(HardMediumSoftBigDecimalScore.ofSoft(softImpact));
-                }
-                return () -> this.softScore = this.softScore.subtract(softImpact);
+                return buildUndo(constraintPackage, constraintName,
+                        () -> this.softScore = this.softScore.subtract(softImpact),
+                        () -> HardMediumSoftBigDecimalScore.ofSoft(softImpact),
+                        justifications);
             };
         } else {
-            return (BigDecimal matchWeight, Consumer<Score<?>> matchScoreConsumer) -> {
+            return (BigDecimal matchWeight, Object... justifications) -> {
                 BigDecimal hardImpact = hardConstraintWeight.multiply(matchWeight);
                 BigDecimal mediumImpact = mediumConstraintWeight.multiply(matchWeight);
                 BigDecimal softImpact = softConstraintWeight.multiply(matchWeight);
                 this.hardScore = this.hardScore.add(hardImpact);
                 this.mediumScore = this.mediumScore.add(mediumImpact);
                 this.softScore = this.softScore.add(softImpact);
-                if (constraintMatchEnabled) {
-                    matchScoreConsumer.accept(HardMediumSoftBigDecimalScore.of(hardImpact, mediumImpact, softImpact));
-                }
-                return () -> {
-                    this.hardScore = this.hardScore.subtract(hardImpact);
-                    this.mediumScore = this.mediumScore.subtract(mediumImpact);
-                    this.softScore = this.softScore.subtract(softImpact);
-                };
+                return buildUndo(constraintPackage, constraintName,
+                        () -> {
+                            this.hardScore = this.hardScore.subtract(hardImpact);
+                            this.mediumScore = this.mediumScore.subtract(mediumImpact);
+                            this.softScore = this.softScore.subtract(softImpact);
+                        },
+                        () -> HardMediumSoftBigDecimalScore.of(hardImpact, mediumImpact, softImpact),
+                        justifications);
             };
         }
     }
