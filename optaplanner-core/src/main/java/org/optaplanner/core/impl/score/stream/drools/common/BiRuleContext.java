@@ -21,10 +21,12 @@ import java.util.Objects;
 import java.util.function.BiFunction;
 import java.util.function.ToIntBiFunction;
 import java.util.function.ToLongBiFunction;
-
 import org.drools.model.DSL;
 import org.drools.model.Variable;
 import org.drools.model.view.ViewItem;
+import org.optaplanner.core.impl.score.inliner.BigDecimalWeightedScoreImpacter;
+import org.optaplanner.core.impl.score.inliner.IntWeightedScoreImpacter;
+import org.optaplanner.core.impl.score.inliner.LongWeightedScoreImpacter;
 
 final class BiRuleContext<A, B> extends AbstractRuleContext {
 
@@ -39,32 +41,33 @@ final class BiRuleContext<A, B> extends AbstractRuleContext {
 
     public <Solution_> RuleBuilder<Solution_> newRuleBuilder(ToIntBiFunction<A, B> matchWeighter) {
         ConsequenceBuilder<Solution_> consequenceBuilder =
-                (constraint, scoreHolderGlobal) -> DSL.on(scoreHolderGlobal, variableA, variableB)
-                        .execute((drools, scoreHolder, a, b) -> impactScore(constraint, drools, scoreHolder,
-                                matchWeighter.applyAsInt(a, b), a, b));
+                (constraint, scoreImpacter) -> DSL.on(variableA, variableB)
+                        .execute((drools, a, b) -> impactScore(constraint, drools,
+                                (IntWeightedScoreImpacter) scoreImpacter, matchWeighter.applyAsInt(a, b), a, b));
         return assemble(consequenceBuilder);
     }
 
     public <Solution_> RuleBuilder<Solution_> newRuleBuilder(ToLongBiFunction<A, B> matchWeighter) {
         ConsequenceBuilder<Solution_> consequenceBuilder =
-                (constraint, scoreHolderGlobal) -> DSL.on(scoreHolderGlobal, variableA, variableB)
-                        .execute((drools, scoreHolder, a, b) -> impactScore(constraint, drools, scoreHolder,
-                                matchWeighter.applyAsLong(a, b), a, b));
+                (constraint, scoreImpacter) -> DSL.on(variableA, variableB)
+                        .execute((drools, a, b) -> impactScore(constraint, drools,
+                                (LongWeightedScoreImpacter) scoreImpacter, matchWeighter.applyAsLong(a, b), a, b));
         return assemble(consequenceBuilder);
     }
 
     public <Solution_> RuleBuilder<Solution_> newRuleBuilder(BiFunction<A, B, BigDecimal> matchWeighter) {
         ConsequenceBuilder<Solution_> consequenceBuilder =
-                (constraint, scoreHolderGlobal) -> DSL.on(scoreHolderGlobal, variableA, variableB)
-                        .execute((drools, scoreHolder, a, b) -> impactScore(constraint, drools, scoreHolder,
-                                matchWeighter.apply(a, b), a, b));
+                (constraint, scoreImpacter) -> DSL.on(variableA, variableB)
+                        .execute((drools, a, b) -> impactScore(constraint, drools,
+                                (BigDecimalWeightedScoreImpacter) scoreImpacter, matchWeighter.apply(a, b), a, b));
         return assemble(consequenceBuilder);
     }
 
     public <Solution_> RuleBuilder<Solution_> newRuleBuilder() {
         ConsequenceBuilder<Solution_> consequenceBuilder =
-                (constraint, scoreHolderGlobal) -> DSL.on(scoreHolderGlobal, variableA, variableB)
-                        .execute((drools, scoreHolder, a, b) -> impactScore(drools, scoreHolder, a, b));
+                (constraint, scoreImpacter) -> DSL.on(variableA, variableB)
+                        .execute((drools, a, b) -> impactScore(constraint, drools,
+                                (IntWeightedScoreImpacter) scoreImpacter, 1, a, b));
         return assemble(consequenceBuilder);
     }
 

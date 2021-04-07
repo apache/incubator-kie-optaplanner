@@ -25,6 +25,9 @@ import org.drools.model.view.ViewItem;
 import org.optaplanner.core.api.function.ToIntTriFunction;
 import org.optaplanner.core.api.function.ToLongTriFunction;
 import org.optaplanner.core.api.function.TriFunction;
+import org.optaplanner.core.impl.score.inliner.BigDecimalWeightedScoreImpacter;
+import org.optaplanner.core.impl.score.inliner.IntWeightedScoreImpacter;
+import org.optaplanner.core.impl.score.inliner.LongWeightedScoreImpacter;
 
 final class TriRuleContext<A, B, C> extends AbstractRuleContext {
 
@@ -42,32 +45,35 @@ final class TriRuleContext<A, B, C> extends AbstractRuleContext {
 
     public <Solution_> RuleBuilder<Solution_> newRuleBuilder(ToIntTriFunction<A, B, C> matchWeighter) {
         ConsequenceBuilder<Solution_> consequenceBuilder =
-                (constraint, scoreHolderGlobal) -> DSL.on(scoreHolderGlobal, variableA, variableB, variableC)
-                        .execute((drools, scoreHolder, a, b, c) -> impactScore(constraint, drools, scoreHolder,
-                                matchWeighter.applyAsInt(a, b, c), a, b, c));
+                (constraint, scoreImpacter) -> DSL.on(variableA, variableB, variableC)
+                        .execute((drools, a, b, c) -> impactScore(constraint, drools,
+                                (IntWeightedScoreImpacter) scoreImpacter, matchWeighter.applyAsInt(a, b, c), a, b, c));
         return assemble(consequenceBuilder);
     }
 
     public <Solution_> RuleBuilder<Solution_> newRuleBuilder(ToLongTriFunction<A, B, C> matchWeighter) {
         ConsequenceBuilder<Solution_> consequenceBuilder =
-                (constraint, scoreHolderGlobal) -> DSL.on(scoreHolderGlobal, variableA, variableB, variableC)
-                        .execute((drools, scoreHolder, a, b, c) -> impactScore(constraint, drools, scoreHolder,
+                (constraint, scoreImpacter) -> DSL.on(variableA, variableB, variableC)
+                        .execute((drools, a, b, c) -> impactScore(constraint, drools,
+                                (LongWeightedScoreImpacter) scoreImpacter,
                                 matchWeighter.applyAsLong(a, b, c), a, b, c));
         return assemble(consequenceBuilder);
     }
 
     public <Solution_> RuleBuilder<Solution_> newRuleBuilder(TriFunction<A, B, C, BigDecimal> matchWeighter) {
         ConsequenceBuilder<Solution_> consequenceBuilder =
-                (constraint, scoreHolderGlobal) -> DSL.on(scoreHolderGlobal, variableA, variableB, variableC)
-                        .execute((drools, scoreHolder, a, b, c) -> impactScore(constraint, drools, scoreHolder,
+                (constraint, scoreImpacter) -> DSL.on(variableA, variableB, variableC)
+                        .execute((drools, a, b, c) -> impactScore(constraint, drools,
+                                (BigDecimalWeightedScoreImpacter) scoreImpacter,
                                 matchWeighter.apply(a, b, c), a, b, c));
         return assemble(consequenceBuilder);
     }
 
     public <Solution_> RuleBuilder<Solution_> newRuleBuilder() {
         ConsequenceBuilder<Solution_> consequenceBuilder =
-                (constraint, scoreHolderGlobal) -> DSL.on(scoreHolderGlobal, variableA, variableB, variableC)
-                        .execute((drools, scoreHolder, a, b, c) -> impactScore(drools, scoreHolder, a, b, c));
+                (constraint, scoreImpacter) -> DSL.on(variableA, variableB, variableC)
+                        .execute((drools, a, b, c) -> impactScore(constraint, drools,
+                                (IntWeightedScoreImpacter) scoreImpacter, 1, a, b, c));
         return assemble(consequenceBuilder);
     }
 

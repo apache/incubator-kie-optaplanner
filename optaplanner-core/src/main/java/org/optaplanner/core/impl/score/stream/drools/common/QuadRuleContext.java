@@ -18,13 +18,15 @@ package org.optaplanner.core.impl.score.stream.drools.common;
 
 import java.math.BigDecimal;
 import java.util.Objects;
-
 import org.drools.model.DSL;
 import org.drools.model.Variable;
 import org.drools.model.view.ViewItem;
 import org.optaplanner.core.api.function.QuadFunction;
 import org.optaplanner.core.api.function.ToIntQuadFunction;
 import org.optaplanner.core.api.function.ToLongQuadFunction;
+import org.optaplanner.core.impl.score.inliner.BigDecimalWeightedScoreImpacter;
+import org.optaplanner.core.impl.score.inliner.IntWeightedScoreImpacter;
+import org.optaplanner.core.impl.score.inliner.LongWeightedScoreImpacter;
 
 final class QuadRuleContext<A, B, C, D> extends AbstractRuleContext {
 
@@ -44,32 +46,36 @@ final class QuadRuleContext<A, B, C, D> extends AbstractRuleContext {
 
     public <Solution_> RuleBuilder<Solution_> newRuleBuilder(ToIntQuadFunction<A, B, C, D> matchWeighter) {
         ConsequenceBuilder<Solution_> consequenceBuilder =
-                (constraint, scoreHolderGlobal) -> DSL.on(scoreHolderGlobal, variableA, variableB, variableC, variableD)
-                        .execute((drools, scoreHolder, a, b, c, d) -> impactScore(constraint, drools, scoreHolder,
-                                matchWeighter.applyAsInt(a, b, c, d), a, b, c, d));
+                (constraint, scoreImpacter) -> DSL.on(variableA, variableB, variableC, variableD)
+                        .execute((drools, a, b, c, d) -> impactScore(constraint, drools,
+                                (IntWeightedScoreImpacter) scoreImpacter, matchWeighter.applyAsInt(a, b, c, d),
+                                a, b, c, d));
         return assemble(consequenceBuilder);
     }
 
     public <Solution_> RuleBuilder<Solution_> newRuleBuilder(ToLongQuadFunction<A, B, C, D> matchWeighter) {
         ConsequenceBuilder<Solution_> consequenceBuilder =
-                (constraint, scoreHolderGlobal) -> DSL.on(scoreHolderGlobal, variableA, variableB, variableC, variableD)
-                        .execute((drools, scoreHolder, a, b, c, d) -> impactScore(constraint, drools, scoreHolder,
-                                matchWeighter.applyAsLong(a, b, c, d), a, b, c, d));
+                (constraint, scoreImpacter) -> DSL.on(variableA, variableB, variableC, variableD)
+                        .execute((drools, a, b, c, d) -> impactScore(constraint, drools,
+                                (LongWeightedScoreImpacter) scoreImpacter, matchWeighter.applyAsLong(a, b, c, d),
+                                a, b, c, d));
         return assemble(consequenceBuilder);
     }
 
     public <Solution_> RuleBuilder<Solution_> newRuleBuilder(QuadFunction<A, B, C, D, BigDecimal> matchWeighter) {
         ConsequenceBuilder<Solution_> consequenceBuilder =
-                (constraint, scoreHolderGlobal) -> DSL.on(scoreHolderGlobal, variableA, variableB, variableC, variableD)
-                        .execute((drools, scoreHolder, a, b, c, d) -> impactScore(constraint, drools, scoreHolder,
-                                matchWeighter.apply(a, b, c, d), a, b, c, d));
+                (constraint, scoreImpacter) -> DSL.on(variableA, variableB, variableC, variableD)
+                        .execute((drools, a, b, c, d) -> impactScore(constraint, drools,
+                                (BigDecimalWeightedScoreImpacter) scoreImpacter, matchWeighter.apply(a, b, c, d),
+                                a, b, c, d));
         return assemble(consequenceBuilder);
     }
 
     public <Solution_> RuleBuilder<Solution_> newRuleBuilder() {
         ConsequenceBuilder<Solution_> consequenceBuilder =
-                (constraint, scoreHolderGlobal) -> DSL.on(scoreHolderGlobal, variableA, variableB, variableC, variableD)
-                        .execute((drools, scoreHolder, a, b, c, d) -> impactScore(drools, scoreHolder, a, b, c, d));
+                (constraint, scoreImpacter) -> DSL.on(variableA, variableB, variableC, variableD)
+                        .execute((drools, a, b, c, d) -> impactScore(constraint, drools,
+                                (IntWeightedScoreImpacter) scoreImpacter, 1, a, b, c, d));
         return assemble(consequenceBuilder);
     }
 
