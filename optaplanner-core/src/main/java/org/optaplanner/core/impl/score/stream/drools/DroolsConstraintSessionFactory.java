@@ -96,7 +96,9 @@ public final class DroolsConstraintSessionFactory<Solution_, Score_ extends Scor
             if (weight.equals(zeroScore)) { // Disable the rule for this constraint.
                 continue;
             }
-            WeightedScoreImpacter impacter = scoreInliner.buildWeightedScoreImpacter(weight);
+            WeightedScoreImpacter impacter =
+                    scoreInliner.buildWeightedScoreImpacter(droolsConstraint.getConstraintPackage(),
+                            droolsConstraint.getConstraintName(), weight);
             model.addRule(droolsConstraint.buildRule(impacter));
         }
         // Create the session itself.

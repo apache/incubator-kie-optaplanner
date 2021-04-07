@@ -33,7 +33,7 @@ public class SimpleBigDecimalScoreInliner extends ScoreInliner<SimpleBigDecimalS
     }
 
     @Override
-    public BigDecimalWeightedScoreImpacter buildWeightedScoreImpacter(SimpleBigDecimalScore constraintWeight) {
+    public BigDecimalWeightedScoreImpacter buildWeightedScoreImpacter(String constraintPackage, String constraintName, SimpleBigDecimalScore constraintWeight) {
         ensureNonZeroConstraintWeight(constraintWeight);
         BigDecimal simpleConstraintWeight = constraintWeight.getScore();
         return (BigDecimal matchWeight, Consumer<Score<?>> matchScoreConsumer) -> {

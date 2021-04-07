@@ -34,7 +34,7 @@ public class HardMediumSoftLongScoreInliner extends ScoreInliner<HardMediumSoftL
     }
 
     @Override
-    public LongWeightedScoreImpacter buildWeightedScoreImpacter(HardMediumSoftLongScore constraintWeight) {
+    public LongWeightedScoreImpacter buildWeightedScoreImpacter(String constraintPackage, String constraintName, HardMediumSoftLongScore constraintWeight) {
         ensureNonZeroConstraintWeight(constraintWeight);
         long hardConstraintWeight = constraintWeight.getHardScore();
         long mediumConstraintWeight = constraintWeight.getMediumScore();

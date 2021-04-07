@@ -42,7 +42,7 @@ public abstract class ScoreInliner<Score_ extends Score<Score_>> {
 
     public abstract Score_ extractScore(int initScore);
 
-    public abstract WeightedScoreImpacter buildWeightedScoreImpacter(Score_ constraintWeight);
+    public abstract WeightedScoreImpacter buildWeightedScoreImpacter(String constraintPackage, String constraintName, Score_ constraintWeight);
 
     protected Runnable addConstraintMatch(String constraintPackage, String constraintName,
             List<Object> justificationList, Score_ score) {

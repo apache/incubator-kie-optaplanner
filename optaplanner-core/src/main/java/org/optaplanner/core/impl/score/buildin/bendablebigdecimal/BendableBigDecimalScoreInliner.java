@@ -39,7 +39,7 @@ public class BendableBigDecimalScoreInliner extends ScoreInliner<BendableBigDeci
     }
 
     @Override
-    public BigDecimalWeightedScoreImpacter buildWeightedScoreImpacter(BendableBigDecimalScore constraintWeight) {
+    public BigDecimalWeightedScoreImpacter buildWeightedScoreImpacter(String constraintPackage, String constraintName, BendableBigDecimalScore constraintWeight) {
         ensureNonZeroConstraintWeight(constraintWeight);
         Integer singleLevel = null;
         for (int i = 0; i < constraintWeight.getLevelsSize(); i++) {

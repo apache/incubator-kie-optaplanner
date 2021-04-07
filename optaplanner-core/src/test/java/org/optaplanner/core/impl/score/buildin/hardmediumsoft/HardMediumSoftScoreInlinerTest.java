@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2021 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,15 +16,14 @@
 
 package org.optaplanner.core.impl.score.buildin.hardmediumsoft;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
 import java.util.function.Consumer;
-
 import org.junit.jupiter.api.Test;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.buildin.hardmediumsoft.HardMediumSoftScore;
 import org.optaplanner.core.impl.score.inliner.IntWeightedScoreImpacter;
 import org.optaplanner.core.impl.score.inliner.UndoScoreImpacter;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class HardMediumSoftScoreInlinerTest {
 
@@ -36,21 +35,21 @@ public class HardMediumSoftScoreInlinerTest {
         HardMediumSoftScoreInliner scoreInliner = new HardMediumSoftScoreInliner(constraintMatchEnabled);
         assertThat(scoreInliner.extractScore(0)).isEqualTo(HardMediumSoftScore.ZERO);
 
-        IntWeightedScoreImpacter hardImpacter = scoreInliner.buildWeightedScoreImpacter(HardMediumSoftScore.ofHard(-90));
+        IntWeightedScoreImpacter hardImpacter = scoreInliner.buildWeightedScoreImpacter("constraintPackage", "constraintName", HardMediumSoftScore.ofHard(-90));
         UndoScoreImpacter hardUndo = hardImpacter.impactScore(1, scoreConsumer);
         assertThat(scoreInliner.extractScore(0)).isEqualTo(HardMediumSoftScore.of(-90, 0, 0));
-        scoreInliner.buildWeightedScoreImpacter(HardMediumSoftScore.ofHard(-800)).impactScore(1, scoreConsumer);
+        scoreInliner.buildWeightedScoreImpacter("constraintPackage", "constraintName", HardMediumSoftScore.ofHard(-800)).impactScore(1, scoreConsumer);
         assertThat(scoreInliner.extractScore(0)).isEqualTo(HardMediumSoftScore.of(-890, 0, 0));
         hardUndo.undoScoreImpact();
         assertThat(scoreInliner.extractScore(0)).isEqualTo(HardMediumSoftScore.of(-800, 0, 0));
 
-        IntWeightedScoreImpacter mediumImpacter = scoreInliner.buildWeightedScoreImpacter(HardMediumSoftScore.ofMedium(-7));
+        IntWeightedScoreImpacter mediumImpacter = scoreInliner.buildWeightedScoreImpacter("constraintPackage", "constraintName", HardMediumSoftScore.ofMedium(-7));
         UndoScoreImpacter mediumUndo = mediumImpacter.impactScore(1, scoreConsumer);
         assertThat(scoreInliner.extractScore(0)).isEqualTo(HardMediumSoftScore.of(-800, -7, 0));
         mediumUndo.undoScoreImpact();
         assertThat(scoreInliner.extractScore(0)).isEqualTo(HardMediumSoftScore.of(-800, 0, 0));
 
-        IntWeightedScoreImpacter softImpacter = scoreInliner.buildWeightedScoreImpacter(HardMediumSoftScore.ofSoft(-1));
+        IntWeightedScoreImpacter softImpacter = scoreInliner.buildWeightedScoreImpacter("constraintPackage", "constraintName", HardMediumSoftScore.ofSoft(-1));
         UndoScoreImpacter softUndo = softImpacter.impactScore(3, scoreConsumer);
         assertThat(scoreInliner.extractScore(0)).isEqualTo(HardMediumSoftScore.of(-800, 0, -3));
         softImpacter.impactScore(10, scoreConsumer);
@@ -59,7 +58,7 @@ public class HardMediumSoftScoreInlinerTest {
         assertThat(scoreInliner.extractScore(0)).isEqualTo(HardMediumSoftScore.of(-800, 0, -10));
 
         IntWeightedScoreImpacter allLevelsImpacter = scoreInliner
-                .buildWeightedScoreImpacter(HardMediumSoftScore.of(-1000, -2000, -3000));
+                .buildWeightedScoreImpacter("constraintPackage", "constraintName", HardMediumSoftScore.of(-1000, -2000, -3000));
         UndoScoreImpacter allLevelsUndo = allLevelsImpacter.impactScore(1, scoreConsumer);
         assertThat(scoreInliner.extractScore(0)).isEqualTo(HardMediumSoftScore.of(-1800, -2000, -3010));
         allLevelsUndo.undoScoreImpact();

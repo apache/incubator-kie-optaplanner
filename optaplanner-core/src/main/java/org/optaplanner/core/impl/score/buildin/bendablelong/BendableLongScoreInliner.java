@@ -36,7 +36,7 @@ public class BendableLongScoreInliner extends ScoreInliner<BendableLongScore> {
     }
 
     @Override
-    public LongWeightedScoreImpacter buildWeightedScoreImpacter(BendableLongScore constraintWeight) {
+    public LongWeightedScoreImpacter buildWeightedScoreImpacter(String constraintPackage, String constraintName, BendableLongScore constraintWeight) {
         ensureNonZeroConstraintWeight(constraintWeight);
         Integer singleLevel = null;
         for (int i = 0; i < constraintWeight.getLevelsSize(); i++) {

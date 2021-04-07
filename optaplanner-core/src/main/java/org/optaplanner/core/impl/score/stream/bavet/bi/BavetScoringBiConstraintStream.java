@@ -112,7 +112,9 @@ public final class BavetScoringBiConstraintStream<Solution_, A, B>
     protected BavetScoringBiNode<A, B> createNode(BavetNodeBuildPolicy<Solution_> buildPolicy,
             Score<?> constraintWeight, BavetAbstractBiNode<A, B> parentNode) {
         ScoreInliner scoreInliner = buildPolicy.getSession().getScoreInliner();
-        WeightedScoreImpacter weightedScoreImpacter = scoreInliner.buildWeightedScoreImpacter(constraintWeight);
+        WeightedScoreImpacter weightedScoreImpacter =
+                scoreInliner.buildWeightedScoreImpacter(constraint.getConstraintPackage(),
+                        constraint.getConstraintName(), constraintWeight);
         TriFunction<A, B, Consumer<Score<?>>, UndoScoreImpacter> scoreImpacter;
         if (weightedScoreImpacter instanceof IntWeightedScoreImpacter) {
             IntWeightedScoreImpacter castedWeightedScoreImpacter = (IntWeightedScoreImpacter) weightedScoreImpacter;

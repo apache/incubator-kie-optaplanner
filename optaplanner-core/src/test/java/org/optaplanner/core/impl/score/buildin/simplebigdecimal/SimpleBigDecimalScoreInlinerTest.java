@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2021 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -38,17 +38,17 @@ public class SimpleBigDecimalScoreInlinerTest {
         assertThat(scoreInliner.extractScore(0)).isEqualTo(SimpleBigDecimalScore.ZERO);
 
         BigDecimalWeightedScoreImpacter impacter1 = scoreInliner
-                .buildWeightedScoreImpacter(SimpleBigDecimalScore.of(new BigDecimal("90.0")));
+                .buildWeightedScoreImpacter("constraintPackage", "constraintName", SimpleBigDecimalScore.of(new BigDecimal("90.0")));
         UndoScoreImpacter undo1 = impacter1.impactScore(new BigDecimal("1.0"), scoreConsumer);
         assertThat(scoreInliner.extractScore(0)).isEqualTo(SimpleBigDecimalScore.of(new BigDecimal("90.0")));
-        scoreInliner.buildWeightedScoreImpacter(SimpleBigDecimalScore.of(new BigDecimal("800.0")))
+        scoreInliner.buildWeightedScoreImpacter("constraintPackage", "constraintName", SimpleBigDecimalScore.of(new BigDecimal("800.0")))
                 .impactScore(new BigDecimal("1.0"), scoreConsumer);
         assertThat(scoreInliner.extractScore(0)).isEqualTo(SimpleBigDecimalScore.of(new BigDecimal("890.0")));
         undo1.undoScoreImpact();
         assertThat(scoreInliner.extractScore(0)).isEqualTo(SimpleBigDecimalScore.of(new BigDecimal("800.0")));
 
         BigDecimalWeightedScoreImpacter impacter2 = scoreInliner
-                .buildWeightedScoreImpacter(SimpleBigDecimalScore.of(new BigDecimal("1.0")));
+                .buildWeightedScoreImpacter("constraintPackage", "constraintName", SimpleBigDecimalScore.of(new BigDecimal("1.0")));
         UndoScoreImpacter undo2 = impacter2.impactScore(new BigDecimal("3.0"), scoreConsumer);
         assertThat(scoreInliner.extractScore(0)).isEqualTo(SimpleBigDecimalScore.of(new BigDecimal("803.0")));
         impacter2.impactScore(new BigDecimal("10.0"), scoreConsumer);

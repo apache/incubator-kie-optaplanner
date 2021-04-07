@@ -32,7 +32,7 @@ public class SimpleLongScoreInliner extends ScoreInliner<SimpleLongScore> {
     }
 
     @Override
-    public LongWeightedScoreImpacter buildWeightedScoreImpacter(SimpleLongScore constraintWeight) {
+    public LongWeightedScoreImpacter buildWeightedScoreImpacter(String constraintPackage, String constraintName, SimpleLongScore constraintWeight) {
         ensureNonZeroConstraintWeight(constraintWeight);
         long simpleConstraintWeight = constraintWeight.getScore();
         return (long matchWeight, Consumer<Score<?>> matchScoreConsumer) -> {
