@@ -16,6 +16,11 @@
 
 package org.optaplanner.core.impl.score.stream.drools;
 
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+
 import org.optaplanner.core.api.score.stream.Constraint;
 import org.optaplanner.core.api.score.stream.uni.UniConstraintStream;
 import org.optaplanner.core.impl.domain.constraintweight.descriptor.ConstraintConfigurationDescriptor;
@@ -57,6 +62,15 @@ public final class DroolsConstraintFactory<Solution_> extends InnerConstraintFac
 
     @Override
     public ConstraintSessionFactory<Solution_, ?> buildSessionFactory(Constraint[] constraints) {
+        Map<String, List<Constraint>> constraintsPerIdMap = Arrays.stream(constraints)
+                .collect(Collectors.groupingBy(Constraint::getConstraintId));
+        constraintsPerIdMap.forEach((constraintId, constraintList) -> {
+            if (constraintList.size() > 1) {
+                throw new IllegalStateException(
+                        "There are multiple constraints with the same name in a package (" + constraintId + ").");
+            }
+        });
+
         return new DroolsConstraintSessionFactory<>(solutionDescriptor, this, droolsAlphaNetworkCompilationEnabled,
                 constraints);
     }
