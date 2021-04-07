@@ -18,7 +18,6 @@ package org.optaplanner.core.impl.score.director.stream;
 
 import java.util.Collection;
 import java.util.Map;
-
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.FactHandle;
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
@@ -30,8 +29,6 @@ import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.core.impl.domain.variable.descriptor.VariableDescriptor;
 import org.optaplanner.core.impl.score.director.AbstractScoreDirector;
-import org.optaplanner.core.impl.score.director.drools.DroolsScoreDirector;
-import org.optaplanner.core.impl.score.holder.AbstractScoreHolder;
 import org.optaplanner.core.impl.score.inliner.ScoreInliner;
 import org.optaplanner.core.impl.score.stream.drools.DroolsConstraintSessionFactory;
 
@@ -103,7 +100,7 @@ public final class DroolsConstraintStreamScoreDirector<Solution_, Score_ extends
                     "The method setWorkingSolution() must be called before the method getConstraintMatchTotalMap().");
         }
         session.fireAllRules();
-        return scoreInliner.getConstraintMatchTotalMap();
+        return null; // FIXME
     }
 
     @Override
@@ -113,7 +110,7 @@ public final class DroolsConstraintStreamScoreDirector<Solution_, Score_ extends
                     "The method setWorkingSolution() must be called before the method getIndictmentMap().");
         }
         session.fireAllRules();
-        return scoreInliner.getIndictmentMap();
+        return null; // FIXME
     }
 
     @Override

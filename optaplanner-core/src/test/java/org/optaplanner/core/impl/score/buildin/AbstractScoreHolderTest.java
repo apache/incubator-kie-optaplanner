@@ -16,17 +16,11 @@
 
 package org.optaplanner.core.impl.score.buildin;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatIllegalStateException;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
-
 import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
-
 import org.drools.core.beliefsystem.ModedAssertion;
 import org.drools.core.common.AgendaItem;
 import org.drools.core.common.AgendaItemImpl;
@@ -37,6 +31,11 @@ import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
 import org.optaplanner.core.api.score.constraint.ConstraintMatchTotal;
 import org.optaplanner.core.impl.score.holder.AbstractScoreHolder;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatIllegalStateException;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 public abstract class AbstractScoreHolderTest<Score_ extends Score<Score_>> {
 
@@ -137,17 +136,17 @@ public abstract class AbstractScoreHolderTest<Score_ extends Score<Score_>> {
             }
 
             @Override
-            public void impactScore(RuleContext kcontext, int weightMultiplier, Object... justifications) {
+            public void impactScore(RuleContext kcontext, int weightMultiplier) {
                 throw new UnsupportedOperationException();
             }
 
             @Override
-            public void impactScore(RuleContext kcontext, long weightMultiplier, Object... justifications) {
+            public void impactScore(RuleContext kcontext, long weightMultiplier) {
                 throw new UnsupportedOperationException();
             }
 
             @Override
-            public void impactScore(RuleContext kcontext, BigDecimal weightMultiplier, Object... justifications) {
+            public void impactScore(RuleContext kcontext, BigDecimal weightMultiplier) {
                 throw new UnsupportedOperationException();
             }
         };
