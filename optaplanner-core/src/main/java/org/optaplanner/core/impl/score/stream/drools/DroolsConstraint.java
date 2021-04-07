@@ -18,6 +18,7 @@ package org.optaplanner.core.impl.score.stream.drools;
 
 import java.util.Objects;
 import java.util.function.Function;
+
 import org.drools.model.Rule;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.impl.score.inliner.WeightedScoreImpacter;

@@ -17,6 +17,7 @@
 package org.optaplanner.core.impl.score.stream.drools.common;
 
 import java.util.function.BiFunction;
+
 import org.drools.model.Rule;
 import org.optaplanner.core.impl.score.inliner.WeightedScoreImpacter;
 import org.optaplanner.core.impl.score.stream.drools.DroolsConstraint;

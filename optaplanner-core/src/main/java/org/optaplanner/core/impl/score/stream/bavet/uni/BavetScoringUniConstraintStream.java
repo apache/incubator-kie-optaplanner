@@ -21,6 +21,7 @@ import java.util.List;
 import java.util.function.Function;
 import java.util.function.ToIntFunction;
 import java.util.function.ToLongFunction;
+
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.stream.uni.UniConstraintStream;
 import org.optaplanner.core.impl.score.inliner.BigDecimalWeightedScoreImpacter;

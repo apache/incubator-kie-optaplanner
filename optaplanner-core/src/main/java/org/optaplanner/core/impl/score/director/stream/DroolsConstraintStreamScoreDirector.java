@@ -18,6 +18,7 @@ package org.optaplanner.core.impl.score.director.stream;
 
 import java.util.Collection;
 import java.util.Map;
+
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.FactHandle;
 import org.optaplanner.core.api.domain.solution.PlanningSolution;

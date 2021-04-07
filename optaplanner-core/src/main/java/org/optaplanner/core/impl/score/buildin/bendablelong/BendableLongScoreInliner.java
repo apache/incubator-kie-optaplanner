@@ -17,6 +17,7 @@
 package org.optaplanner.core.impl.score.buildin.bendablelong;
 
 import java.util.Arrays;
+
 import org.optaplanner.core.api.score.buildin.bendablelong.BendableLongScore;
 import org.optaplanner.core.impl.score.inliner.LongWeightedScoreImpacter;
 import org.optaplanner.core.impl.score.inliner.ScoreInliner;

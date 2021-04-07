@@ -40,7 +40,8 @@ public class BendableLongScoreInlinerTest {
                 .buildWeightedScoreImpacter("constraintPackage", "constraintName", BendableLongScore.ofHard(1, 2, 0, -90L));
         UndoScoreImpacter hardUndo = hardImpacter.impactScore(1L, scoreConsumer);
         assertThat(scoreInliner.extractScore(0)).isEqualTo(BendableLongScore.of(new long[] { -90L }, new long[] { 0L, 0L }));
-        scoreInliner.buildWeightedScoreImpacter("constraintPackage", "constraintName", BendableLongScore.ofHard(1, 2, 0, -800L)).impactScore(1L, scoreConsumer);
+        scoreInliner.buildWeightedScoreImpacter("constraintPackage", "constraintName", BendableLongScore.ofHard(1, 2, 0, -800L))
+                .impactScore(1L, scoreConsumer);
         assertThat(scoreInliner.extractScore(0)).isEqualTo(BendableLongScore.of(new long[] { -890L }, new long[] { 0L, 0L }));
         hardUndo.undoScoreImpact();
         assertThat(scoreInliner.extractScore(0)).isEqualTo(BendableLongScore.of(new long[] { -800L }, new long[] { 0L, 0L }));
@@ -62,7 +63,8 @@ public class BendableLongScoreInlinerTest {
         assertThat(scoreInliner.extractScore(0)).isEqualTo(BendableLongScore.of(new long[] { -800L }, new long[] { 0L, -10L }));
 
         LongWeightedScoreImpacter allLevelsImpacter = scoreInliner
-                .buildWeightedScoreImpacter("constraintPackage", "constraintName", BendableLongScore.of(new long[] { -1000L }, new long[] { -2000L, -3000L }));
+                .buildWeightedScoreImpacter("constraintPackage", "constraintName",
+                        BendableLongScore.of(new long[] { -1000L }, new long[] { -2000L, -3000L }));
         UndoScoreImpacter allLevelsUndo = allLevelsImpacter.impactScore(1L, scoreConsumer);
         assertThat(scoreInliner.extractScore(0))
                 .isEqualTo(BendableLongScore.of(new long[] { -1800L }, new long[] { -2000L, -3010L }));

@@ -36,15 +36,18 @@ public class SimpleLongScoreInlinerTest {
         SimpleLongScoreInliner scoreInliner = new SimpleLongScoreInliner(constraintMatchEnabled);
         assertThat(scoreInliner.extractScore(0)).isEqualTo(SimpleLongScore.ZERO);
 
-        LongWeightedScoreImpacter impacter1 = scoreInliner.buildWeightedScoreImpacter("constraintPackage", "constraintName", SimpleLongScore.of(-90L));
+        LongWeightedScoreImpacter impacter1 =
+                scoreInliner.buildWeightedScoreImpacter("constraintPackage", "constraintName", SimpleLongScore.of(-90L));
         UndoScoreImpacter undo1 = impacter1.impactScore(1L, scoreConsumer);
         assertThat(scoreInliner.extractScore(0)).isEqualTo(SimpleLongScore.of(-90L));
-        scoreInliner.buildWeightedScoreImpacter("constraintPackage", "constraintName", SimpleLongScore.of(-800L)).impactScore(1L, scoreConsumer);
+        scoreInliner.buildWeightedScoreImpacter("constraintPackage", "constraintName", SimpleLongScore.of(-800L))
+                .impactScore(1L, scoreConsumer);
         assertThat(scoreInliner.extractScore(0)).isEqualTo(SimpleLongScore.of(-890L));
         undo1.undoScoreImpact();
         assertThat(scoreInliner.extractScore(0)).isEqualTo(SimpleLongScore.of(-800L));
 
-        LongWeightedScoreImpacter impacter2 = scoreInliner.buildWeightedScoreImpacter("constraintPackage", "constraintName", SimpleLongScore.of(-1L));
+        LongWeightedScoreImpacter impacter2 =
+                scoreInliner.buildWeightedScoreImpacter("constraintPackage", "constraintName", SimpleLongScore.of(-1L));
         UndoScoreImpacter undo2 = impacter2.impactScore(3L, scoreConsumer);
         assertThat(scoreInliner.extractScore(0)).isEqualTo(SimpleLongScore.of(-803L));
         impacter2.impactScore(10L, scoreConsumer);

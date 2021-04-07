@@ -18,6 +18,7 @@ package org.optaplanner.core.impl.score.stream.drools.common;
 
 import java.math.BigDecimal;
 import java.util.Objects;
+
 import org.drools.model.DSL;
 import org.drools.model.Variable;
 import org.drools.model.view.ViewItem;

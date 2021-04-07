@@ -16,20 +16,24 @@
 
 package org.optaplanner.core.impl.score.stream.drools.common;
 
+import static org.drools.model.PatternDSL.rule;
+
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
+
+import org.drools.core.common.AgendaItem;
 import org.drools.model.Drools;
 import org.drools.model.RuleItemBuilder;
 import org.drools.model.view.ViewItem;
+import org.kie.api.runtime.rule.RuleContext;
 import org.optaplanner.core.impl.score.inliner.BigDecimalWeightedScoreImpacter;
 import org.optaplanner.core.impl.score.inliner.IntWeightedScoreImpacter;
 import org.optaplanner.core.impl.score.inliner.LongWeightedScoreImpacter;
+import org.optaplanner.core.impl.score.inliner.UndoScoreImpacter;
 import org.optaplanner.core.impl.score.stream.drools.DroolsConstraint;
-
-import static org.drools.model.PatternDSL.rule;
 
 /**
  * Used when building a consequence to a rule.
@@ -91,19 +95,25 @@ abstract class AbstractRuleContext {
     protected static void impactScore(DroolsConstraint<?> constraint, Drools drools,
             IntWeightedScoreImpacter scoreImpacter, int impact, Object... justifications) {
         constraint.assertCorrectImpact(impact);
-        // TODO do the actual impact
+        AgendaItem<?> agendaItem = (AgendaItem<?>) ((RuleContext) drools).getMatch();
+        UndoScoreImpacter undo = scoreImpacter.impactScore(impact, justifications);
+        agendaItem.setCallback(undo::undoScoreImpact);
     }
 
     protected static void impactScore(DroolsConstraint<?> constraint, Drools drools,
             LongWeightedScoreImpacter scoreImpacter, long impact, Object... justifications) {
         constraint.assertCorrectImpact(impact);
-        // TODO do the actual impact
+        AgendaItem<?> agendaItem = (AgendaItem<?>) ((RuleContext) drools).getMatch();
+        UndoScoreImpacter undo = scoreImpacter.impactScore(impact, justifications);
+        agendaItem.setCallback(undo::undoScoreImpact);
     }
 
     protected static void impactScore(DroolsConstraint<?> constraint, Drools drools,
             BigDecimalWeightedScoreImpacter scoreImpacter, BigDecimal impact, Object... justifications) {
         constraint.assertCorrectImpact(impact);
-        // TODO do the actual impact
+        AgendaItem<?> agendaItem = (AgendaItem<?>) ((RuleContext) drools).getMatch();
+        UndoScoreImpacter undo = scoreImpacter.impactScore(impact, justifications);
+        agendaItem.setCallback(undo::undoScoreImpact);
     }
 
     protected <Solution_> RuleBuilder<Solution_> assemble(ConsequenceBuilder<Solution_> consequenceBuilder) {

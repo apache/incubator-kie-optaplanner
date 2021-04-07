@@ -38,17 +38,21 @@ public class SimpleBigDecimalScoreInlinerTest {
         assertThat(scoreInliner.extractScore(0)).isEqualTo(SimpleBigDecimalScore.ZERO);
 
         BigDecimalWeightedScoreImpacter impacter1 = scoreInliner
-                .buildWeightedScoreImpacter("constraintPackage", "constraintName", SimpleBigDecimalScore.of(new BigDecimal("90.0")));
+                .buildWeightedScoreImpacter("constraintPackage", "constraintName",
+                        SimpleBigDecimalScore.of(new BigDecimal("90.0")));
         UndoScoreImpacter undo1 = impacter1.impactScore(new BigDecimal("1.0"), scoreConsumer);
         assertThat(scoreInliner.extractScore(0)).isEqualTo(SimpleBigDecimalScore.of(new BigDecimal("90.0")));
-        scoreInliner.buildWeightedScoreImpacter("constraintPackage", "constraintName", SimpleBigDecimalScore.of(new BigDecimal("800.0")))
+        scoreInliner
+                .buildWeightedScoreImpacter("constraintPackage", "constraintName",
+                        SimpleBigDecimalScore.of(new BigDecimal("800.0")))
                 .impactScore(new BigDecimal("1.0"), scoreConsumer);
         assertThat(scoreInliner.extractScore(0)).isEqualTo(SimpleBigDecimalScore.of(new BigDecimal("890.0")));
         undo1.undoScoreImpact();
         assertThat(scoreInliner.extractScore(0)).isEqualTo(SimpleBigDecimalScore.of(new BigDecimal("800.0")));
 
         BigDecimalWeightedScoreImpacter impacter2 = scoreInliner
-                .buildWeightedScoreImpacter("constraintPackage", "constraintName", SimpleBigDecimalScore.of(new BigDecimal("1.0")));
+                .buildWeightedScoreImpacter("constraintPackage", "constraintName",
+                        SimpleBigDecimalScore.of(new BigDecimal("1.0")));
         UndoScoreImpacter undo2 = impacter2.impactScore(new BigDecimal("3.0"), scoreConsumer);
         assertThat(scoreInliner.extractScore(0)).isEqualTo(SimpleBigDecimalScore.of(new BigDecimal("803.0")));
         impacter2.impactScore(new BigDecimal("10.0"), scoreConsumer);

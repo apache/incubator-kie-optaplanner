@@ -18,6 +18,7 @@ package org.optaplanner.core.impl.score.buildin.bendablebigdecimal;
 
 import java.math.BigDecimal;
 import java.util.Arrays;
+
 import org.optaplanner.core.api.score.buildin.bendablebigdecimal.BendableBigDecimalScore;
 import org.optaplanner.core.impl.score.inliner.BigDecimalWeightedScoreImpacter;
 import org.optaplanner.core.impl.score.inliner.ScoreInliner;

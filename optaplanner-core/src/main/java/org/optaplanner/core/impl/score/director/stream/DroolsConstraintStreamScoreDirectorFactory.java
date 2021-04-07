@@ -37,7 +37,8 @@ public final class DroolsConstraintStreamScoreDirectorFactory<Solution_, Score_ 
         return new DroolsConstraintStreamScoreDirector<>(this, lookUpEnabled, constraintMatchEnabledPreference);
     }
 
-    public DroolsConstraintSessionFactory.SessionDescriptor<Score_> newConstraintStreamingSession(boolean constraintMatchEnabled, Solution_ workingSolution) {
+    public DroolsConstraintSessionFactory.SessionDescriptor<Score_>
+            newConstraintStreamingSession(boolean constraintMatchEnabled, Solution_ workingSolution) {
         return (DroolsConstraintSessionFactory.SessionDescriptor<Score_>) getConstraintSessionFactory()
                 .buildSession(constraintMatchEnabled, workingSolution);
     }

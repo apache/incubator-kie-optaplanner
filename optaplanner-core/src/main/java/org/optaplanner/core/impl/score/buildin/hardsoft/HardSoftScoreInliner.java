@@ -30,7 +30,8 @@ public class HardSoftScoreInliner extends ScoreInliner<HardSoftScore> {
     }
 
     @Override
-    public IntWeightedScoreImpacter buildWeightedScoreImpacter(String constraintPackage, String constraintName, HardSoftScore constraintWeight) {
+    public IntWeightedScoreImpacter buildWeightedScoreImpacter(String constraintPackage, String constraintName,
+            HardSoftScore constraintWeight) {
         ensureNonZeroConstraintWeight(constraintWeight);
         int hardConstraintWeight = constraintWeight.getHardScore();
         int softConstraintWeight = constraintWeight.getSoftScore();

@@ -18,6 +18,7 @@ package org.optaplanner.core.impl.score.stream.bavet.tri;
 
 import java.math.BigDecimal;
 import java.util.List;
+
 import org.optaplanner.core.api.function.ToIntTriFunction;
 import org.optaplanner.core.api.function.ToLongTriFunction;
 import org.optaplanner.core.api.function.TriFunction;

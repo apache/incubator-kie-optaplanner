@@ -18,6 +18,7 @@ package org.optaplanner.core.impl.score.stream.bavet.tri;
 
 import java.util.HashSet;
 import java.util.Set;
+
 import org.optaplanner.core.api.function.TriFunction;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.constraint.ConstraintMatchTotal;

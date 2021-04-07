@@ -17,6 +17,7 @@
 package org.optaplanner.core.impl.score.buildin.hardsoftbigdecimal;
 
 import java.math.BigDecimal;
+
 import org.optaplanner.core.api.score.buildin.hardsoftbigdecimal.HardSoftBigDecimalScore;
 import org.optaplanner.core.impl.score.inliner.BigDecimalWeightedScoreImpacter;
 import org.optaplanner.core.impl.score.inliner.ScoreInliner;
@@ -31,7 +32,8 @@ public class HardSoftBigDecimalScoreInliner extends ScoreInliner<HardSoftBigDeci
     }
 
     @Override
-    public BigDecimalWeightedScoreImpacter buildWeightedScoreImpacter(String constraintPackage, String constraintName, HardSoftBigDecimalScore constraintWeight) {
+    public BigDecimalWeightedScoreImpacter buildWeightedScoreImpacter(String constraintPackage, String constraintName,
+            HardSoftBigDecimalScore constraintWeight) {
         ensureNonZeroConstraintWeight(constraintWeight);
         BigDecimal hardConstraintWeight = constraintWeight.getHardScore();
         BigDecimal softConstraintWeight = constraintWeight.getSoftScore();

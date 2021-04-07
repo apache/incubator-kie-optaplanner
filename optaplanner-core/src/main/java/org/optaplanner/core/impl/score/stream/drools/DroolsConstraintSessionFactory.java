@@ -17,6 +17,7 @@
 package org.optaplanner.core.impl.score.stream.drools;
 
 import java.util.Objects;
+
 import org.drools.ancompiler.KieBaseUpdaterANC;
 import org.drools.model.Model;
 import org.drools.model.impl.ModelImpl;

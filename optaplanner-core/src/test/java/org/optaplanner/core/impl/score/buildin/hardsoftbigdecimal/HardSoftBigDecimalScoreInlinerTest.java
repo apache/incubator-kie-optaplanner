@@ -38,10 +38,13 @@ public class HardSoftBigDecimalScoreInlinerTest {
         assertThat(scoreInliner.extractScore(0)).isEqualTo(HardSoftBigDecimalScore.ZERO);
 
         BigDecimalWeightedScoreImpacter hardImpacter = scoreInliner
-                .buildWeightedScoreImpacter("constraintPackage", "constraintName", HardSoftBigDecimalScore.ofHard(new BigDecimal("90.0")));
+                .buildWeightedScoreImpacter("constraintPackage", "constraintName",
+                        HardSoftBigDecimalScore.ofHard(new BigDecimal("90.0")));
         UndoScoreImpacter hardUndo = hardImpacter.impactScore(new BigDecimal("1.0"), scoreConsumer);
         assertThat(scoreInliner.extractScore(0)).isEqualTo(HardSoftBigDecimalScore.of(new BigDecimal("90.0"), BigDecimal.ZERO));
-        scoreInliner.buildWeightedScoreImpacter("constraintPackage", "constraintName", HardSoftBigDecimalScore.ofHard(new BigDecimal("800.0")))
+        scoreInliner
+                .buildWeightedScoreImpacter("constraintPackage", "constraintName",
+                        HardSoftBigDecimalScore.ofHard(new BigDecimal("800.0")))
                 .impactScore(new BigDecimal("1.0"), scoreConsumer);
         assertThat(scoreInliner.extractScore(0))
                 .isEqualTo(HardSoftBigDecimalScore.of(new BigDecimal("890.0"), BigDecimal.ZERO));
@@ -50,7 +53,8 @@ public class HardSoftBigDecimalScoreInlinerTest {
                 .isEqualTo(HardSoftBigDecimalScore.of(new BigDecimal("800.0"), BigDecimal.ZERO));
 
         BigDecimalWeightedScoreImpacter softImpacter = scoreInliner
-                .buildWeightedScoreImpacter("constraintPackage", "constraintName", HardSoftBigDecimalScore.ofSoft(new BigDecimal("1.0")));
+                .buildWeightedScoreImpacter("constraintPackage", "constraintName",
+                        HardSoftBigDecimalScore.ofSoft(new BigDecimal("1.0")));
         UndoScoreImpacter softUndo = softImpacter.impactScore(new BigDecimal("3.0"), scoreConsumer);
         assertThat(scoreInliner.extractScore(0))
                 .isEqualTo(HardSoftBigDecimalScore.of(new BigDecimal("800.0"), new BigDecimal("3.0")));
@@ -62,7 +66,8 @@ public class HardSoftBigDecimalScoreInlinerTest {
                 .isEqualTo(HardSoftBigDecimalScore.of(new BigDecimal("800.0"), new BigDecimal("10.0")));
 
         BigDecimalWeightedScoreImpacter allLevelsImpacter = scoreInliner
-                .buildWeightedScoreImpacter("constraintPackage", "constraintName", HardSoftBigDecimalScore.of(new BigDecimal("1000.0"), new BigDecimal("3000.0")));
+                .buildWeightedScoreImpacter("constraintPackage", "constraintName",
+                        HardSoftBigDecimalScore.of(new BigDecimal("1000.0"), new BigDecimal("3000.0")));
         UndoScoreImpacter allLevelsUndo = allLevelsImpacter.impactScore(new BigDecimal("1.0"), scoreConsumer);
         assertThat(scoreInliner.extractScore(0))
                 .isEqualTo(HardSoftBigDecimalScore.of(new BigDecimal("1800.0"), new BigDecimal("3010.0")));

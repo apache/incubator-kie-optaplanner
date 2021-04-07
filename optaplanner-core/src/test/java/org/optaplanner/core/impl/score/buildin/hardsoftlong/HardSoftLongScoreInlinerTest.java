@@ -36,15 +36,18 @@ public class HardSoftLongScoreInlinerTest {
         HardSoftLongScoreInliner scoreInliner = new HardSoftLongScoreInliner(constraintMatchEnabled);
         assertThat(scoreInliner.extractScore(0)).isEqualTo(HardSoftLongScore.ZERO);
 
-        LongWeightedScoreImpacter hardImpacter = scoreInliner.buildWeightedScoreImpacter("constraintPackage", "constraintName", HardSoftLongScore.ofHard(-90L));
+        LongWeightedScoreImpacter hardImpacter =
+                scoreInliner.buildWeightedScoreImpacter("constraintPackage", "constraintName", HardSoftLongScore.ofHard(-90L));
         UndoScoreImpacter hardUndo = hardImpacter.impactScore(1L, scoreConsumer);
         assertThat(scoreInliner.extractScore(0)).isEqualTo(HardSoftLongScore.of(-90L, 0L));
-        scoreInliner.buildWeightedScoreImpacter("constraintPackage", "constraintName", HardSoftLongScore.ofHard(-800L)).impactScore(1L, scoreConsumer);
+        scoreInliner.buildWeightedScoreImpacter("constraintPackage", "constraintName", HardSoftLongScore.ofHard(-800L))
+                .impactScore(1L, scoreConsumer);
         assertThat(scoreInliner.extractScore(0)).isEqualTo(HardSoftLongScore.of(-890L, 0L));
         hardUndo.undoScoreImpact();
         assertThat(scoreInliner.extractScore(0)).isEqualTo(HardSoftLongScore.of(-800L, 0L));
 
-        LongWeightedScoreImpacter softImpacter = scoreInliner.buildWeightedScoreImpacter("constraintPackage", "constraintName", HardSoftLongScore.ofSoft(-1L));
+        LongWeightedScoreImpacter softImpacter =
+                scoreInliner.buildWeightedScoreImpacter("constraintPackage", "constraintName", HardSoftLongScore.ofSoft(-1L));
         UndoScoreImpacter softUndo = softImpacter.impactScore(3L, scoreConsumer);
         assertThat(scoreInliner.extractScore(0)).isEqualTo(HardSoftLongScore.of(-800L, -3L));
         softImpacter.impactScore(10L, scoreConsumer);

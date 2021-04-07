@@ -23,6 +23,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
+
 import org.drools.core.common.AgendaItem;
 import org.drools.core.spi.Activation;
 import org.kie.api.definition.rule.Rule;

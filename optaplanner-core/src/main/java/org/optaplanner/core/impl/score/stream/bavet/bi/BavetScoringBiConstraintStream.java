@@ -21,6 +21,7 @@ import java.util.List;
 import java.util.function.BiFunction;
 import java.util.function.ToIntBiFunction;
 import java.util.function.ToLongBiFunction;
+
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.stream.bi.BiConstraintStream;
 import org.optaplanner.core.impl.score.inliner.BigDecimalWeightedScoreImpacter;

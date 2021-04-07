@@ -36,15 +36,18 @@ public class HardSoftScoreInlinerTest {
         HardSoftScoreInliner scoreInliner = new HardSoftScoreInliner(constraintMatchEnabled);
         assertThat(scoreInliner.extractScore(0)).isEqualTo(HardSoftScore.ZERO);
 
-        IntWeightedScoreImpacter hardImpacter = scoreInliner.buildWeightedScoreImpacter("constraintPackage", "constraintName", HardSoftScore.ofHard(-90));
+        IntWeightedScoreImpacter hardImpacter =
+                scoreInliner.buildWeightedScoreImpacter("constraintPackage", "constraintName", HardSoftScore.ofHard(-90));
         UndoScoreImpacter hardUndo = hardImpacter.impactScore(1, scoreConsumer);
         assertThat(scoreInliner.extractScore(0)).isEqualTo(HardSoftScore.of(-90, 0));
-        scoreInliner.buildWeightedScoreImpacter("constraintPackage", "constraintName", HardSoftScore.ofHard(-800)).impactScore(1, scoreConsumer);
+        scoreInliner.buildWeightedScoreImpacter("constraintPackage", "constraintName", HardSoftScore.ofHard(-800))
+                .impactScore(1, scoreConsumer);
         assertThat(scoreInliner.extractScore(0)).isEqualTo(HardSoftScore.of(-890, 0));
         hardUndo.undoScoreImpact();
         assertThat(scoreInliner.extractScore(0)).isEqualTo(HardSoftScore.of(-800, 0));
 
-        IntWeightedScoreImpacter softImpacter = scoreInliner.buildWeightedScoreImpacter("constraintPackage", "constraintName", HardSoftScore.ofSoft(-1));
+        IntWeightedScoreImpacter softImpacter =
+                scoreInliner.buildWeightedScoreImpacter("constraintPackage", "constraintName", HardSoftScore.ofSoft(-1));
         UndoScoreImpacter softUndo = softImpacter.impactScore(3, scoreConsumer);
         assertThat(scoreInliner.extractScore(0)).isEqualTo(HardSoftScore.of(-800, -3));
         softImpacter.impactScore(10, scoreConsumer);
@@ -52,7 +55,8 @@ public class HardSoftScoreInlinerTest {
         softUndo.undoScoreImpact();
         assertThat(scoreInliner.extractScore(0)).isEqualTo(HardSoftScore.of(-800, -10));
 
-        IntWeightedScoreImpacter allLevelsImpacter = scoreInliner.buildWeightedScoreImpacter("constraintPackage", "constraintName", HardSoftScore.of(-1000, -3000));
+        IntWeightedScoreImpacter allLevelsImpacter =
+                scoreInliner.buildWeightedScoreImpacter("constraintPackage", "constraintName", HardSoftScore.of(-1000, -3000));
         UndoScoreImpacter allLevelsUndo = allLevelsImpacter.impactScore(1, scoreConsumer);
         assertThat(scoreInliner.extractScore(0)).isEqualTo(HardSoftScore.of(-1800, -3010));
         allLevelsUndo.undoScoreImpact();

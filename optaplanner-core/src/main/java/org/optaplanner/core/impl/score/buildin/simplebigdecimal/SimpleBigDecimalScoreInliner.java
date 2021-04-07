@@ -17,6 +17,7 @@
 package org.optaplanner.core.impl.score.buildin.simplebigdecimal;
 
 import java.math.BigDecimal;
+
 import org.optaplanner.core.api.score.buildin.simplebigdecimal.SimpleBigDecimalScore;
 import org.optaplanner.core.impl.score.inliner.BigDecimalWeightedScoreImpacter;
 import org.optaplanner.core.impl.score.inliner.ScoreInliner;
@@ -30,7 +31,8 @@ public class SimpleBigDecimalScoreInliner extends ScoreInliner<SimpleBigDecimalS
     }
 
     @Override
-    public BigDecimalWeightedScoreImpacter buildWeightedScoreImpacter(String constraintPackage, String constraintName, SimpleBigDecimalScore constraintWeight) {
+    public BigDecimalWeightedScoreImpacter buildWeightedScoreImpacter(String constraintPackage, String constraintName,
+            SimpleBigDecimalScore constraintWeight) {
         ensureNonZeroConstraintWeight(constraintWeight);
         BigDecimal simpleConstraintWeight = constraintWeight.getScore();
         return (BigDecimal matchWeight, Object... justifications) -> {

@@ -16,11 +16,17 @@
 
 package org.optaplanner.core.impl.score.buildin;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatIllegalStateException;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+
 import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
+
 import org.drools.core.beliefsystem.ModedAssertion;
 import org.drools.core.common.AgendaItem;
 import org.drools.core.common.AgendaItemImpl;
@@ -31,11 +37,6 @@ import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
 import org.optaplanner.core.api.score.constraint.ConstraintMatchTotal;
 import org.optaplanner.core.impl.score.holder.AbstractScoreHolder;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatIllegalStateException;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 
 public abstract class AbstractScoreHolderTest<Score_ extends Score<Score_>> {
 
