@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2021 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,15 +16,11 @@
 
 package org.optaplanner.core.impl.score.stream.bavet.tri;
 
-import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
-import java.util.function.Consumer;
-
-import org.optaplanner.core.api.function.QuadFunction;
+import org.optaplanner.core.api.function.TriFunction;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.constraint.ConstraintMatchTotal;
-import org.optaplanner.core.impl.score.constraint.DefaultConstraintMatchTotal;
 import org.optaplanner.core.impl.score.inliner.UndoScoreImpacter;
 import org.optaplanner.core.impl.score.stream.bavet.BavetConstraintSession;
 import org.optaplanner.core.impl.score.stream.bavet.common.BavetAbstractTuple;
@@ -35,14 +31,14 @@ public final class BavetScoringTriNode<A, B, C> extends BavetAbstractTriNode<A, 
     private final String constraintPackage;
     private final String constraintName;
     private final Score<?> constraintWeight;
-    private final QuadFunction<A, B, C, Consumer<Score<?>>, UndoScoreImpacter> scoreImpacter;
+    private final TriFunction<A, B, C, UndoScoreImpacter> scoreImpacter;
 
     private final boolean constraintMatchEnabled;
     private final Set<BavetScoringTriTuple<A, B, C>> tupleSet;
 
     public BavetScoringTriNode(BavetConstraintSession session, int nodeIndex,
             String constraintPackage, String constraintName, Score<?> constraintWeight,
-            QuadFunction<A, B, C, Consumer<Score<?>>, UndoScoreImpacter> scoreImpacter) {
+            TriFunction<A, B, C, UndoScoreImpacter> scoreImpacter) {
         super(session, nodeIndex);
         this.constraintPackage = constraintPackage;
         this.constraintName = constraintName;
@@ -77,7 +73,6 @@ public final class BavetScoringTriNode<A, B, C> extends BavetAbstractTriNode<A, 
         if (oldUndoScoreImpacter != null) {
             oldUndoScoreImpacter.undoScoreImpact();
             if (constraintMatchEnabled) {
-                tuple.setMatchScore(null);
                 boolean removed = tupleSet.remove(tuple);
                 if (!removed) {
                     throw new IllegalStateException("Impossible state: The node with constraintId ("
@@ -86,7 +81,7 @@ public final class BavetScoringTriNode<A, B, C> extends BavetAbstractTriNode<A, 
             }
         }
         if (tuple.isActive()) {
-            UndoScoreImpacter undoScoreImpacter = scoreImpacter.apply(a, b, c, tuple::setMatchScore);
+            UndoScoreImpacter undoScoreImpacter = scoreImpacter.apply(a, b, c);
             tuple.setUndoScoreImpacter(undoScoreImpacter);
             if (constraintMatchEnabled) {
                 boolean added = tupleSet.add(tuple);
@@ -98,17 +93,6 @@ public final class BavetScoringTriNode<A, B, C> extends BavetAbstractTriNode<A, 
         } else {
             tuple.setUndoScoreImpacter(null);
         }
-    }
-
-    @Override
-    public <Score_ extends Score<Score_>> ConstraintMatchTotal<Score_> buildConstraintMatchTotal(Score_ zeroScore) {
-        DefaultConstraintMatchTotal<Score_> constraintMatchTotal = new DefaultConstraintMatchTotal(constraintPackage,
-                constraintName, constraintWeight, zeroScore);
-        for (BavetScoringTriTuple<A, B, C> tuple : tupleSet) {
-            constraintMatchTotal.addConstraintMatch(
-                    Arrays.asList(tuple.getFactA(), tuple.getFactB(), tuple.getFactC()), (Score_) tuple.getMatchScore());
-        }
-        return constraintMatchTotal;
     }
 
     @Override

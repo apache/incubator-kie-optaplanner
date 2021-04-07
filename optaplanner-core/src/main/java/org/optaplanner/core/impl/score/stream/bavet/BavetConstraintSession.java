@@ -21,16 +21,12 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.IdentityHashMap;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Queue;
-
 import org.optaplanner.core.api.score.Score;
-import org.optaplanner.core.api.score.constraint.ConstraintMatch;
 import org.optaplanner.core.api.score.constraint.ConstraintMatchTotal;
 import org.optaplanner.core.api.score.constraint.Indictment;
-import org.optaplanner.core.impl.score.constraint.DefaultIndictment;
 import org.optaplanner.core.impl.score.definition.ScoreDefinition;
 import org.optaplanner.core.impl.score.inliner.ScoreInliner;
 import org.optaplanner.core.impl.score.stream.bavet.common.BavetAbstractTuple;
@@ -44,7 +40,6 @@ import org.optaplanner.core.impl.score.stream.bavet.uni.BavetFromUniTuple;
 public final class BavetConstraintSession<Solution_, Score_ extends Score<Score_>> {
 
     private final boolean constraintMatchEnabled;
-    private final Score_ zeroScore;
     private final ScoreInliner<Score_> scoreInliner;
 
     private final Map<Class<?>, BavetFromUniNode<Object>> declaredClassToNodeMap;
@@ -60,7 +55,6 @@ public final class BavetConstraintSession<Solution_, Score_ extends Score<Score_
     public BavetConstraintSession(boolean constraintMatchEnabled, ScoreDefinition<Score_> scoreDefinition,
             Map<BavetConstraint<Solution_>, Score_> constraintToWeightMap) {
         this.constraintMatchEnabled = constraintMatchEnabled;
-        zeroScore = scoreDefinition.getZeroScore();
         scoreInliner = scoreDefinition.buildScoreInliner(constraintMatchEnabled);
         declaredClassToNodeMap = new HashMap<>(50);
         BavetNodeBuildPolicy<Solution_> buildPolicy = new BavetNodeBuildPolicy<>(this, constraintToWeightMap.size());
@@ -186,32 +180,11 @@ public final class BavetConstraintSession<Solution_, Score_ extends Score<Score_
     }
 
     public Map<String, ConstraintMatchTotal<Score_>> getConstraintMatchTotalMap() {
-        Map<String, ConstraintMatchTotal<Score_>> constraintMatchTotalMap =
-                new LinkedHashMap<>(constraintIdToScoringNodeMap.size());
-        constraintIdToScoringNodeMap.forEach((constraintId, scoringNode) -> {
-            ConstraintMatchTotal<Score_> constraintMatchTotal = scoringNode.buildConstraintMatchTotal(zeroScore);
-            constraintMatchTotalMap.put(constraintId, constraintMatchTotal);
-        });
-        return constraintMatchTotalMap;
+        return scoreInliner.getConstraintMatchTotalMap();
     }
 
     public Map<Object, Indictment<Score_>> getIndictmentMap() {
-        // TODO This is temporary, inefficient code, replace it!
-        Map<Object, Indictment<Score_>> indictmentMap = new LinkedHashMap<>(); // TODO use entitySize
-        Map<String, ConstraintMatchTotal<Score_>> constraintMatchTotalMap = getConstraintMatchTotalMap();
-        for (ConstraintMatchTotal<Score_> constraintMatchTotal : constraintMatchTotalMap.values()) {
-            for (ConstraintMatch<Score_> constraintMatch : constraintMatchTotal.getConstraintMatchSet()) {
-                constraintMatch.getJustificationList().stream()
-                        .distinct() // One match might have the same justification twice
-                        .forEach(justification -> {
-                            DefaultIndictment<Score_> indictment =
-                                    (DefaultIndictment<Score_>) indictmentMap.computeIfAbsent(justification,
-                                            k -> new DefaultIndictment<>(justification, zeroScore));
-                            indictment.addConstraintMatch(constraintMatch);
-                        });
-            }
-        }
-        return indictmentMap;
+        return scoreInliner.getIndictmentMap();
     }
 
     // ************************************************************************

@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2021 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,7 +17,6 @@
 package org.optaplanner.core.impl.score.stream.bavet.common;
 
 import org.optaplanner.core.api.score.Score;
-import org.optaplanner.core.api.score.constraint.ConstraintMatchTotal;
 
 public interface BavetScoringNode extends BavetNode {
 
@@ -40,12 +39,5 @@ public interface BavetScoringNode extends BavetNode {
      * @return never null
      */
     Score<?> getConstraintWeight();
-
-    /**
-     * @param zeroScore never null
-     * @return never null
-     * @param <Score_> the {@link Score} type
-     */
-    <Score_ extends Score<Score_>> ConstraintMatchTotal<Score_> buildConstraintMatchTotal(Score_ zeroScore);
 
 }

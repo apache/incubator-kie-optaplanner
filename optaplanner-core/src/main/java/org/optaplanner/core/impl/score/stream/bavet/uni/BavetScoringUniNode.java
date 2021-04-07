@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2021 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,12 +20,9 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.function.BiFunction;
-import java.util.function.Consumer;
-
+import java.util.function.Function;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.constraint.ConstraintMatchTotal;
-import org.optaplanner.core.impl.score.constraint.DefaultConstraintMatchTotal;
 import org.optaplanner.core.impl.score.inliner.UndoScoreImpacter;
 import org.optaplanner.core.impl.score.stream.bavet.BavetConstraintSession;
 import org.optaplanner.core.impl.score.stream.bavet.common.BavetAbstractTuple;
@@ -37,14 +34,14 @@ public final class BavetScoringUniNode<A> extends BavetAbstractUniNode<A> implem
     private final String constraintPackage;
     private final String constraintName;
     private final Score<?> constraintWeight;
-    private final BiFunction<A, Consumer<Score<?>>, UndoScoreImpacter> scoreImpacter;
+    private final Function<A, UndoScoreImpacter> scoreImpacter;
 
     private final boolean constraintMatchEnabled;
     private final Set<BavetScoringUniTuple<A>> tupleSet;
 
     public BavetScoringUniNode(BavetConstraintSession session, int nodeIndex, BavetAbstractUniNode<A> parentNode,
             String constraintPackage, String constraintName, Score<?> constraintWeight,
-            BiFunction<A, Consumer<Score<?>>, UndoScoreImpacter> scoreImpacter) {
+            Function<A, UndoScoreImpacter> scoreImpacter) {
         super(session, nodeIndex);
         this.parentNode = parentNode;
         this.constraintPackage = constraintPackage;
@@ -83,7 +80,6 @@ public final class BavetScoringUniNode<A> extends BavetAbstractUniNode<A> implem
         if (oldUndoScoreImpacter != null) {
             oldUndoScoreImpacter.undoScoreImpact();
             if (constraintMatchEnabled) {
-                tuple.setMatchScore(null);
                 boolean removed = tupleSet.remove(tuple);
                 if (!removed) {
                     throw new IllegalStateException("Impossible state: The node with constraintId ("
@@ -92,7 +88,7 @@ public final class BavetScoringUniNode<A> extends BavetAbstractUniNode<A> implem
             }
         }
         if (tuple.isActive()) {
-            UndoScoreImpacter undoScoreImpacter = scoreImpacter.apply(a, tuple::setMatchScore);
+            UndoScoreImpacter undoScoreImpacter = scoreImpacter.apply(a);
             tuple.setUndoScoreImpacter(undoScoreImpacter);
             if (constraintMatchEnabled) {
                 boolean added = tupleSet.add(tuple);
@@ -104,17 +100,6 @@ public final class BavetScoringUniNode<A> extends BavetAbstractUniNode<A> implem
         } else {
             tuple.setUndoScoreImpacter(null);
         }
-    }
-
-    @Override
-    public <Score_ extends Score<Score_>> ConstraintMatchTotal<Score_> buildConstraintMatchTotal(Score_ zeroScore) {
-        DefaultConstraintMatchTotal<Score_> constraintMatchTotal = new DefaultConstraintMatchTotal(constraintPackage,
-                constraintName, constraintWeight, zeroScore);
-        for (BavetScoringUniTuple<A> tuple : tupleSet) {
-            constraintMatchTotal.addConstraintMatch(
-                    Collections.singletonList(tuple.getFactA()), (Score_) tuple.getMatchScore());
-        }
-        return constraintMatchTotal;
     }
 
     @Override

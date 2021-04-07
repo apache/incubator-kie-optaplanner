@@ -82,14 +82,4 @@ public final class BavetScoringTriTuple<A, B, C> extends BavetAbstractTriTuple<A
         this.undoScoreImpacter = undoScoreImpacter;
     }
 
-    @Override
-    public Score<?> getMatchScore() {
-        return matchScore;
-    }
-
-    @Override
-    public void setMatchScore(Score<?> matchScore) {
-        this.matchScore = matchScore;
-    }
-
 }
