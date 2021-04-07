@@ -73,10 +73,23 @@ final class QuadRuleContext<A, B, C, D> extends AbstractRuleContext {
     }
 
     public <Solution_> RuleBuilder<Solution_> newRuleBuilder() {
-        ConsequenceBuilder<Solution_> consequenceBuilder =
-                (constraint, scoreImpacter) -> DSL.on(variableA, variableB, variableC, variableD)
+        ConsequenceBuilder<Solution_> consequenceBuilder = (constraint, scoreImpacter) -> {
+            if (scoreImpacter instanceof IntWeightedScoreImpacter) {
+                return DSL.on(variableA, variableB, variableC, variableD)
                         .execute((drools, a, b, c, d) -> impactScore(constraint, drools,
                                 (IntWeightedScoreImpacter) scoreImpacter, 1, a, b, c, d));
+            } else if (scoreImpacter instanceof LongWeightedScoreImpacter) {
+                return DSL.on(variableA, variableB, variableC, variableD)
+                        .execute((drools, a, b, c, d) -> impactScore(constraint, drools,
+                                (LongWeightedScoreImpacter) scoreImpacter, 1L, a, b, c, d));
+            } else if (scoreImpacter instanceof BigDecimalWeightedScoreImpacter) {
+                return DSL.on(variableA, variableB, variableC, variableD)
+                        .execute((drools, a, b, c, d) -> impactScore(constraint, drools,
+                                (BigDecimalWeightedScoreImpacter) scoreImpacter, BigDecimal.ONE, a, b, c, d));
+            }
+            throw new IllegalStateException("Impossible state: unknown score impacter type (" +
+                    scoreImpacter.getClass() + ").");
+        };
         return assemble(consequenceBuilder);
     }
 

@@ -63,10 +63,23 @@ final class UniRuleContext<A> extends AbstractRuleContext {
     }
 
     public <Solution_> RuleBuilder<Solution_> newRuleBuilder() {
-        ConsequenceBuilder<Solution_> consequenceBuilder =
-                (constraint, scoreImpacter) -> DSL.on(variable)
+        ConsequenceBuilder<Solution_> consequenceBuilder = (constraint, scoreImpacter) -> {
+            if (scoreImpacter instanceof IntWeightedScoreImpacter) {
+                return DSL.on(variable)
                         .execute((drools, a) -> impactScore(constraint, drools,
                                 (IntWeightedScoreImpacter) scoreImpacter, 1, a));
+            } else if (scoreImpacter instanceof LongWeightedScoreImpacter) {
+                return DSL.on(variable)
+                        .execute((drools, a) -> impactScore(constraint, drools,
+                                (LongWeightedScoreImpacter) scoreImpacter, 1L, a));
+            } else if (scoreImpacter instanceof BigDecimalWeightedScoreImpacter) {
+                return DSL.on(variable)
+                        .execute((drools, a) -> impactScore(constraint, drools,
+                                (BigDecimalWeightedScoreImpacter) scoreImpacter, BigDecimal.ONE, a));
+            }
+            throw new IllegalStateException("Impossible state: unknown score impacter type (" +
+                    scoreImpacter.getClass() + ").");
+        };
         return assemble(consequenceBuilder);
     }
 

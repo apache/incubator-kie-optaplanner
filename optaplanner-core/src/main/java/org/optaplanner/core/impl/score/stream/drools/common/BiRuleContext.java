@@ -65,10 +65,23 @@ final class BiRuleContext<A, B> extends AbstractRuleContext {
     }
 
     public <Solution_> RuleBuilder<Solution_> newRuleBuilder() {
-        ConsequenceBuilder<Solution_> consequenceBuilder =
-                (constraint, scoreImpacter) -> DSL.on(variableA, variableB)
+        ConsequenceBuilder<Solution_> consequenceBuilder = (constraint, scoreImpacter) -> {
+            if (scoreImpacter instanceof IntWeightedScoreImpacter) {
+                return DSL.on(variableA, variableB)
                         .execute((drools, a, b) -> impactScore(constraint, drools,
                                 (IntWeightedScoreImpacter) scoreImpacter, 1, a, b));
+            } else if (scoreImpacter instanceof LongWeightedScoreImpacter) {
+                return DSL.on(variableA, variableB)
+                        .execute((drools, a, b) -> impactScore(constraint, drools,
+                                (LongWeightedScoreImpacter) scoreImpacter, 1L, a, b));
+            } else if (scoreImpacter instanceof BigDecimalWeightedScoreImpacter) {
+                return DSL.on(variableA, variableB)
+                        .execute((drools, a, b) -> impactScore(constraint, drools,
+                                (BigDecimalWeightedScoreImpacter) scoreImpacter, BigDecimal.ONE, a, b));
+            }
+            throw new IllegalStateException("Impossible state: unknown score impacter type (" +
+                    scoreImpacter.getClass() + ").");
+        };
         return assemble(consequenceBuilder);
     }
 
