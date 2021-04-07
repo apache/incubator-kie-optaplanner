@@ -16,13 +16,12 @@
 
 package org.optaplanner.core.api.score.constraint;
 
-import static java.util.Objects.requireNonNull;
-
 import java.util.Comparator;
 import java.util.List;
-
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.impl.domain.lookup.ClassAndPlanningIdComparator;
+
+import static java.util.Objects.requireNonNull;
 
 /**
  * Retrievable from {@link ConstraintMatchTotal#getConstraintMatchSet()}
@@ -83,7 +82,7 @@ public final class ConstraintMatch<Score_ extends Score<Score_>> implements Comp
     // ************************************************************************
 
     public String getConstraintId() {
-        return constraintPackage + "/" + constraintName;
+        return ConstraintMatchTotal.composeConstraintId(constraintPackage, constraintName);
     }
 
     public String getIdentificationString() {

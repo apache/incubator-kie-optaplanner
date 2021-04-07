@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2021 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,20 +25,17 @@ import org.optaplanner.core.impl.score.inliner.ScoreInliner;
 
 public class HardMediumSoftScoreInliner extends ScoreInliner<HardMediumSoftScore> {
 
-    protected int hardScore;
-    protected int mediumScore;
-    protected int softScore;
+    private int hardScore;
+    private int mediumScore;
+    private int softScore;
 
     protected HardMediumSoftScoreInliner(boolean constraintMatchEnabled) {
-        super(constraintMatchEnabled);
+        super(constraintMatchEnabled, HardMediumSoftScore.ZERO);
     }
 
     @Override
     public IntWeightedScoreImpacter buildWeightedScoreImpacter(HardMediumSoftScore constraintWeight) {
-        if (constraintWeight.equals(HardMediumSoftScore.ZERO)) {
-            throw new IllegalArgumentException("The constraintWeight (" + constraintWeight + ") cannot be zero,"
-                    + " this constraint should have been culled during node creation.");
-        }
+        ensureNonZeroConstraintWeight(constraintWeight);
         int hardConstraintWeight = constraintWeight.getHardScore();
         int mediumConstraintWeight = constraintWeight.getMediumScore();
         int softConstraintWeight = constraintWeight.getSoftScore();

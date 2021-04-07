@@ -100,7 +100,7 @@ public final class DroolsConstraintStreamScoreDirector<Solution_, Score_ extends
                     "The method setWorkingSolution() must be called before the method getConstraintMatchTotalMap().");
         }
         session.fireAllRules();
-        return null; // FIXME
+        return scoreInliner.getConstraintMatchTotalMap();
     }
 
     @Override
@@ -110,7 +110,7 @@ public final class DroolsConstraintStreamScoreDirector<Solution_, Score_ extends
                     "The method setWorkingSolution() must be called before the method getIndictmentMap().");
         }
         session.fireAllRules();
-        return null; // FIXME
+        return scoreInliner.getIndictmentMap();
     }
 
     @Override

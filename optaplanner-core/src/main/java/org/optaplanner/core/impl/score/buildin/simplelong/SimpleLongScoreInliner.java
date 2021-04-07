@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2021 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,18 +25,15 @@ import org.optaplanner.core.impl.score.inliner.ScoreInliner;
 
 public class SimpleLongScoreInliner extends ScoreInliner<SimpleLongScore> {
 
-    protected long score;
+    private long score;
 
     protected SimpleLongScoreInliner(boolean constraintMatchEnabled) {
-        super(constraintMatchEnabled);
+        super(constraintMatchEnabled, SimpleLongScore.ZERO);
     }
 
     @Override
     public LongWeightedScoreImpacter buildWeightedScoreImpacter(SimpleLongScore constraintWeight) {
-        if (constraintWeight.equals(SimpleLongScore.ZERO)) {
-            throw new IllegalArgumentException("The constraintWeight (" + constraintWeight + ") cannot be zero,"
-                    + " this constraint should have been culled during node creation.");
-        }
+        ensureNonZeroConstraintWeight(constraintWeight);
         long simpleConstraintWeight = constraintWeight.getScore();
         return (long matchWeight, Consumer<Score<?>> matchScoreConsumer) -> {
             long impact = simpleConstraintWeight * matchWeight;

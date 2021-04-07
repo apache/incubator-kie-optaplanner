@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2021 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,11 +27,11 @@ import org.optaplanner.core.impl.score.inliner.ScoreInliner;
 
 public class BendableBigDecimalScoreInliner extends ScoreInliner<BendableBigDecimalScore> {
 
-    private BigDecimal[] hardScores;
-    private BigDecimal[] softScores;
+    private final BigDecimal[] hardScores;
+    private final BigDecimal[] softScores;
 
     public BendableBigDecimalScoreInliner(boolean constraintMatchEnabled, int hardLevelsSize, int softLevelsSize) {
-        super(constraintMatchEnabled);
+        super(constraintMatchEnabled, BendableBigDecimalScore.zero(hardLevelsSize, softLevelsSize));
         hardScores = new BigDecimal[hardLevelsSize];
         Arrays.fill(hardScores, BigDecimal.ZERO);
         softScores = new BigDecimal[softLevelsSize];
@@ -40,10 +40,7 @@ public class BendableBigDecimalScoreInliner extends ScoreInliner<BendableBigDeci
 
     @Override
     public BigDecimalWeightedScoreImpacter buildWeightedScoreImpacter(BendableBigDecimalScore constraintWeight) {
-        if (constraintWeight.equals(BendableBigDecimalScore.zero(hardScores.length, softScores.length))) {
-            throw new IllegalArgumentException("The constraintWeight (" + constraintWeight + ") cannot be zero,"
-                    + " this constraint should have been culled during node creation.");
-        }
+        ensureNonZeroConstraintWeight(constraintWeight);
         Integer singleLevel = null;
         for (int i = 0; i < constraintWeight.getLevelsSize(); i++) {
             if (!constraintWeight.getHardOrSoftScore(i).equals(BigDecimal.ZERO)) {

@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2021 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,18 +26,15 @@ import org.optaplanner.core.impl.score.inliner.ScoreInliner;
 
 public class SimpleBigDecimalScoreInliner extends ScoreInliner<SimpleBigDecimalScore> {
 
-    protected BigDecimal score = BigDecimal.ZERO;
+    private BigDecimal score = BigDecimal.ZERO;
 
     protected SimpleBigDecimalScoreInliner(boolean constraintMatchEnabled) {
-        super(constraintMatchEnabled);
+        super(constraintMatchEnabled, SimpleBigDecimalScore.ZERO);
     }
 
     @Override
     public BigDecimalWeightedScoreImpacter buildWeightedScoreImpacter(SimpleBigDecimalScore constraintWeight) {
-        if (constraintWeight.equals(SimpleBigDecimalScore.ZERO)) {
-            throw new IllegalArgumentException("The constraintWeight (" + constraintWeight + ") cannot be zero,"
-                    + " this constraint should have been culled during node creation.");
-        }
+        ensureNonZeroConstraintWeight(constraintWeight);
         BigDecimal simpleConstraintWeight = constraintWeight.getScore();
         return (BigDecimal matchWeight, Consumer<Score<?>> matchScoreConsumer) -> {
             BigDecimal impact = simpleConstraintWeight.multiply(matchWeight);

@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2021 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,21 +26,18 @@ import org.optaplanner.core.impl.score.inliner.ScoreInliner;
 
 public class BendableLongScoreInliner extends ScoreInliner<BendableLongScore> {
 
-    private long[] hardScores;
-    private long[] softScores;
+    private final long[] hardScores;
+    private final long[] softScores;
 
     public BendableLongScoreInliner(boolean constraintMatchEnabled, int hardLevelsSize, int softLevelsSize) {
-        super(constraintMatchEnabled);
+        super(constraintMatchEnabled, BendableLongScore.zero(hardLevelsSize, softLevelsSize));
         hardScores = new long[hardLevelsSize];
         softScores = new long[softLevelsSize];
     }
 
     @Override
     public LongWeightedScoreImpacter buildWeightedScoreImpacter(BendableLongScore constraintWeight) {
-        if (constraintWeight.equals(BendableLongScore.zero(hardScores.length, softScores.length))) {
-            throw new IllegalArgumentException("The constraintWeight (" + constraintWeight + ") cannot be zero,"
-                    + " this constraint should have been culled during node creation.");
-        }
+        ensureNonZeroConstraintWeight(constraintWeight);
         Integer singleLevel = null;
         for (int i = 0; i < constraintWeight.getLevelsSize(); i++) {
             if (constraintWeight.getHardOrSoftScore(i) != 0L) {
