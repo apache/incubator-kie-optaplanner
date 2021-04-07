@@ -16,6 +16,9 @@
 
 package org.optaplanner.core.impl.score.buildin.hardsoftlong;
 
+import java.util.List;
+import java.util.function.Supplier;
+
 import org.optaplanner.core.api.score.buildin.hardsoftlong.HardSoftLongScore;
 import org.optaplanner.core.impl.score.inliner.LongWeightedScoreImpacter;
 import org.optaplanner.core.impl.score.inliner.ScoreInliner;
@@ -36,30 +39,30 @@ public class HardSoftLongScoreInliner extends ScoreInliner<HardSoftLongScore> {
         long hardConstraintWeight = constraintWeight.getHardScore();
         long softConstraintWeight = constraintWeight.getSoftScore();
         if (softConstraintWeight == 0L) {
-            return (long matchWeight, Object... justifications) -> {
+            return (long matchWeight, Supplier<List<Object>> justifications) -> {
                 long hardImpact = hardConstraintWeight * matchWeight;
                 this.hardScore += hardImpact;
-                return buildUndo(constraintPackage, constraintName,
+                return buildUndo(constraintPackage, constraintName, constraintWeight,
                         () -> this.hardScore -= hardImpact,
                         () -> HardSoftLongScore.ofHard(hardImpact),
                         justifications);
             };
         } else if (hardConstraintWeight == 0L) {
-            return (long matchWeight, Object... justifications) -> {
+            return (long matchWeight, Supplier<List<Object>> justifications) -> {
                 long softImpact = softConstraintWeight * matchWeight;
                 this.softScore += softImpact;
-                return buildUndo(constraintPackage, constraintName,
+                return buildUndo(constraintPackage, constraintName, constraintWeight,
                         () -> this.softScore -= softImpact,
                         () -> HardSoftLongScore.ofSoft(softImpact),
                         justifications);
             };
         } else {
-            return (long matchWeight, Object... justifications) -> {
+            return (long matchWeight, Supplier<List<Object>> justifications) -> {
                 long hardImpact = hardConstraintWeight * matchWeight;
                 long softImpact = softConstraintWeight * matchWeight;
                 this.hardScore += hardImpact;
                 this.softScore += softImpact;
-                return buildUndo(constraintPackage, constraintName,
+                return buildUndo(constraintPackage, constraintName, constraintWeight,
                         () -> {
                             this.hardScore -= hardImpact;
                             this.softScore -= softImpact;

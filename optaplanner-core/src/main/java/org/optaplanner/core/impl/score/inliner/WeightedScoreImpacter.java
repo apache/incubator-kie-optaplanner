@@ -18,6 +18,4 @@ package org.optaplanner.core.impl.score.inliner;
 
 public interface WeightedScoreImpacter {
 
-    Object[] EMPTY_ARRAY = new Object[0]; // Perf improvement; don't create this over and over again.
-
 }

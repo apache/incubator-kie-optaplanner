@@ -16,8 +16,6 @@
 
 package org.optaplanner.core.impl.score.stream.bavet.bi;
 
-import java.util.HashSet;
-import java.util.Set;
 import java.util.function.BiFunction;
 
 import org.optaplanner.core.api.score.Score;
@@ -34,9 +32,6 @@ public final class BavetScoringBiNode<A, B> extends BavetAbstractBiNode<A, B> im
     private final Score<?> constraintWeight;
     private final BiFunction<A, B, UndoScoreImpacter> scoreImpacter;
 
-    private final boolean constraintMatchEnabled;
-    private final Set<BavetScoringBiTuple<A, B>> tupleSet;
-
     public BavetScoringBiNode(BavetConstraintSession session, int nodeIndex,
             String constraintPackage, String constraintName, Score<?> constraintWeight,
             BiFunction<A, B, UndoScoreImpacter> scoreImpacter) {
@@ -45,8 +40,6 @@ public final class BavetScoringBiNode<A, B> extends BavetAbstractBiNode<A, B> im
         this.constraintName = constraintName;
         this.constraintWeight = constraintWeight;
         this.scoreImpacter = scoreImpacter;
-        this.constraintMatchEnabled = session.isConstraintMatchEnabled();
-        tupleSet = constraintMatchEnabled ? new HashSet<>() : null;
     }
 
     // ************************************************************************
@@ -72,24 +65,10 @@ public final class BavetScoringBiNode<A, B> extends BavetAbstractBiNode<A, B> im
         UndoScoreImpacter oldUndoScoreImpacter = tuple.getUndoScoreImpacter();
         if (oldUndoScoreImpacter != null) {
             oldUndoScoreImpacter.run();
-            if (constraintMatchEnabled) {
-                boolean removed = tupleSet.remove(tuple);
-                if (!removed) {
-                    throw new IllegalStateException("Impossible state: The node with constraintId ("
-                            + getConstraintId() + ") could not remove the tuple (" + tuple + ") from the tupleSet.");
-                }
-            }
         }
         if (tuple.isActive()) {
             UndoScoreImpacter undoScoreImpacter = scoreImpacter.apply(a, b);
             tuple.setUndoScoreImpacter(undoScoreImpacter);
-            if (constraintMatchEnabled) {
-                boolean added = tupleSet.add(tuple);
-                if (!added) {
-                    throw new IllegalStateException("Impossible state: The node with constraintId ("
-                            + getConstraintId() + ") could not add the tuple (" + tuple + ") to the tupleSet.");
-                }
-            }
         } else {
             tuple.setUndoScoreImpacter(null);
         }

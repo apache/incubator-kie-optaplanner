@@ -1,0 +1,13 @@
+com/example/schooltimetabling/domain/Lesson.class
+com/example/schooltimetabling/persistence/TimeTableRepository.class
+com/example/schooltimetabling/TimeTableSpringBootApp.class
+com/example/schooltimetabling/domain/Timeslot.class
+com/example/schooltimetabling/TimeTableSpringBootApp$DemoData.class
+com/example/schooltimetabling/solver/TimeTableController.class
+com/example/schooltimetabling/persistence/LessonRepository.class
+com/example/schooltimetabling/persistence/RoomRepository.class
+com/example/schooltimetabling/domain/TimeTable.class
+com/example/schooltimetabling/persistence/TimeslotRepository.class
+com/example/schooltimetabling/persistence/ProblemChangedRepositoryEventListener.class
+com/example/schooltimetabling/domain/Room.class
+com/example/schooltimetabling/solver/TimeTableConstraintProvider.class

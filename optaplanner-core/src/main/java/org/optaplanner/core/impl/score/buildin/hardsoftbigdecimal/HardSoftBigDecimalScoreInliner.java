@@ -17,6 +17,8 @@
 package org.optaplanner.core.impl.score.buildin.hardsoftbigdecimal;
 
 import java.math.BigDecimal;
+import java.util.List;
+import java.util.function.Supplier;
 
 import org.optaplanner.core.api.score.buildin.hardsoftbigdecimal.HardSoftBigDecimalScore;
 import org.optaplanner.core.impl.score.inliner.BigDecimalWeightedScoreImpacter;
@@ -38,30 +40,30 @@ public class HardSoftBigDecimalScoreInliner extends ScoreInliner<HardSoftBigDeci
         BigDecimal hardConstraintWeight = constraintWeight.getHardScore();
         BigDecimal softConstraintWeight = constraintWeight.getSoftScore();
         if (softConstraintWeight.equals(BigDecimal.ZERO)) {
-            return (BigDecimal matchWeight, Object... justifications) -> {
+            return (BigDecimal matchWeight, Supplier<List<Object>> justifications) -> {
                 BigDecimal hardImpact = hardConstraintWeight.multiply(matchWeight);
                 this.hardScore = this.hardScore.add(hardImpact);
-                return buildUndo(constraintPackage, constraintName,
+                return buildUndo(constraintPackage, constraintName, constraintWeight,
                         () -> this.hardScore = this.hardScore.subtract(hardImpact),
                         () -> HardSoftBigDecimalScore.ofHard(hardImpact),
                         justifications);
             };
         } else if (hardConstraintWeight.equals(BigDecimal.ZERO)) {
-            return (BigDecimal matchWeight, Object... justifications) -> {
+            return (BigDecimal matchWeight, Supplier<List<Object>> justifications) -> {
                 BigDecimal softImpact = softConstraintWeight.multiply(matchWeight);
                 this.softScore = this.softScore.add(softImpact);
-                return buildUndo(constraintPackage, constraintName,
+                return buildUndo(constraintPackage, constraintName, constraintWeight,
                         () -> this.softScore = this.softScore.subtract(softImpact),
                         () -> HardSoftBigDecimalScore.ofSoft(softImpact),
                         justifications);
             };
         } else {
-            return (BigDecimal matchWeight, Object... justifications) -> {
+            return (BigDecimal matchWeight, Supplier<List<Object>> justifications) -> {
                 BigDecimal hardImpact = hardConstraintWeight.multiply(matchWeight);
                 BigDecimal softImpact = softConstraintWeight.multiply(matchWeight);
                 this.hardScore = this.hardScore.add(hardImpact);
                 this.softScore = this.softScore.add(softImpact);
-                return buildUndo(constraintPackage, constraintName,
+                return buildUndo(constraintPackage, constraintName, constraintWeight,
                         () -> {
                             this.hardScore = this.hardScore.subtract(hardImpact);
                             this.softScore = this.softScore.subtract(softImpact);

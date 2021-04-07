@@ -16,6 +16,9 @@
 
 package org.optaplanner.core.impl.score.buildin.hardmediumsoft;
 
+import java.util.List;
+import java.util.function.Supplier;
+
 import org.optaplanner.core.api.score.buildin.hardmediumsoft.HardMediumSoftScore;
 import org.optaplanner.core.impl.score.inliner.IntWeightedScoreImpacter;
 import org.optaplanner.core.impl.score.inliner.ScoreInliner;
@@ -38,41 +41,41 @@ public class HardMediumSoftScoreInliner extends ScoreInliner<HardMediumSoftScore
         int mediumConstraintWeight = constraintWeight.getMediumScore();
         int softConstraintWeight = constraintWeight.getSoftScore();
         if (mediumConstraintWeight == 0 && softConstraintWeight == 0) {
-            return (int matchWeight, Object... justifications) -> {
+            return (int matchWeight, Supplier<List<Object>> justifications) -> {
                 int hardImpact = hardConstraintWeight * matchWeight;
                 this.hardScore += hardImpact;
-                return buildUndo(constraintPackage, constraintName,
+                return buildUndo(constraintPackage, constraintName, constraintWeight,
                         () -> this.hardScore -= hardImpact,
                         () -> HardMediumSoftScore.ofHard(hardImpact),
                         justifications);
             };
         } else if (hardConstraintWeight == 0 && softConstraintWeight == 0) {
-            return (int matchWeight, Object... justifications) -> {
+            return (int matchWeight, Supplier<List<Object>> justifications) -> {
                 int mediumImpact = mediumConstraintWeight * matchWeight;
                 this.mediumScore += mediumImpact;
-                return buildUndo(constraintPackage, constraintName,
+                return buildUndo(constraintPackage, constraintName, constraintWeight,
                         () -> this.mediumScore -= mediumImpact,
                         () -> HardMediumSoftScore.ofMedium(mediumImpact),
                         justifications);
             };
         } else if (hardConstraintWeight == 0 && mediumConstraintWeight == 0) {
-            return (int matchWeight, Object... justifications) -> {
+            return (int matchWeight, Supplier<List<Object>> justifications) -> {
                 int softImpact = softConstraintWeight * matchWeight;
                 this.softScore += softImpact;
-                return buildUndo(constraintPackage, constraintName,
+                return buildUndo(constraintPackage, constraintName, constraintWeight,
                         () -> this.softScore -= softImpact,
                         () -> HardMediumSoftScore.ofSoft(softImpact),
                         justifications);
             };
         } else {
-            return (int matchWeight, Object... justifications) -> {
+            return (int matchWeight, Supplier<List<Object>> justifications) -> {
                 int hardImpact = hardConstraintWeight * matchWeight;
                 int mediumImpact = mediumConstraintWeight * matchWeight;
                 int softImpact = softConstraintWeight * matchWeight;
                 this.hardScore += hardImpact;
                 this.mediumScore += mediumImpact;
                 this.softScore += softImpact;
-                return buildUndo(constraintPackage, constraintName,
+                return buildUndo(constraintPackage, constraintName, constraintWeight,
                         () -> {
                             this.hardScore -= hardImpact;
                             this.mediumScore -= mediumImpact;

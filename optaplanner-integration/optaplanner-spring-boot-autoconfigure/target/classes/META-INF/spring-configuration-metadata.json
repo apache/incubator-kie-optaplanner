@@ -1,0 +1,78 @@
+{
+  "groups": [
+    {
+      "name": "optaplanner",
+      "type": "org.optaplanner.spring.boot.autoconfigure.OptaPlannerProperties",
+      "sourceType": "org.optaplanner.spring.boot.autoconfigure.OptaPlannerProperties"
+    },
+    {
+      "name": "optaplanner.solver",
+      "type": "org.optaplanner.spring.boot.autoconfigure.SolverProperties",
+      "sourceType": "org.optaplanner.spring.boot.autoconfigure.OptaPlannerProperties",
+      "sourceMethod": "getSolver()"
+    },
+    {
+      "name": "optaplanner.solver-manager",
+      "type": "org.optaplanner.spring.boot.autoconfigure.SolverManagerProperties",
+      "sourceType": "org.optaplanner.spring.boot.autoconfigure.OptaPlannerProperties",
+      "sourceMethod": "getSolverManager()"
+    },
+    {
+      "name": "optaplanner.solver.termination",
+      "type": "org.optaplanner.spring.boot.autoconfigure.TerminationProperties",
+      "sourceType": "org.optaplanner.spring.boot.autoconfigure.SolverProperties",
+      "sourceMethod": "getTermination()"
+    }
+  ],
+  "properties": [
+    {
+      "name": "optaplanner.solver-config-xml",
+      "type": "java.lang.String",
+      "description": "A classpath resource to read the solver configuration XML. Defaults to \"solverConfig.xml\". If this property isn't specified, that solverConfig.xml is optional.",
+      "sourceType": "org.optaplanner.spring.boot.autoconfigure.OptaPlannerProperties"
+    },
+    {
+      "name": "optaplanner.solver-manager.parallel-solver-count",
+      "type": "java.lang.String",
+      "description": "The number of solvers that run in parallel. This directly influences CPU consumption. Defaults to \"AUTO\". Other options include a number or formula based on the available processor count.",
+      "sourceType": "org.optaplanner.spring.boot.autoconfigure.SolverManagerProperties"
+    },
+    {
+      "name": "optaplanner.solver.daemon",
+      "type": "java.lang.Boolean",
+      "description": "Enable daemon mode. In daemon mode, non-early termination pauses the solver instead of stopping it, until the next problem fact change arrives. This is often useful for real-time planning. Defaults to \"false\".",
+      "sourceType": "org.optaplanner.spring.boot.autoconfigure.SolverProperties"
+    },
+    {
+      "name": "optaplanner.solver.environment-mode",
+      "type": "org.optaplanner.core.config.solver.EnvironmentMode",
+      "description": "Enable runtime assertions to detect common bugs in your implementation during development. Defaults to \"REPRODUCIBLE\".",
+      "sourceType": "org.optaplanner.spring.boot.autoconfigure.SolverProperties"
+    },
+    {
+      "name": "optaplanner.solver.move-thread-count",
+      "type": "java.lang.String",
+      "description": "Enable multithreaded solving for a single problem, which increases CPU consumption. Defaults to \"NONE\". Other options include \"AUTO\", a number or formula based on the available processor count.",
+      "sourceType": "org.optaplanner.spring.boot.autoconfigure.SolverProperties"
+    },
+    {
+      "name": "optaplanner.solver.termination.best-score-limit",
+      "type": "java.lang.String",
+      "description": "Terminates the solver when a specific or higher score has been reached. For example: \"0hard\/-1000soft\" terminates when the best score changes from \"0hard\/-1200soft\" to \"0hard\/-900soft\". Wildcards are supported to replace numbers. For example: \"0hard\/*soft\" to terminate when any feasible score is reached.",
+      "sourceType": "org.optaplanner.spring.boot.autoconfigure.TerminationProperties"
+    },
+    {
+      "name": "optaplanner.solver.termination.spent-limit",
+      "type": "java.time.Duration",
+      "description": "How long the solver can run. For example: \"30s\" is 30 seconds. \"5m\" is 5 minutes. \"2h\" is 2 hours. \"1d\" is 1 day. Also supports ISO-8601 format, see java.time.Duration.",
+      "sourceType": "org.optaplanner.spring.boot.autoconfigure.TerminationProperties"
+    },
+    {
+      "name": "optaplanner.solver.termination.unimproved-spent-limit",
+      "type": "java.time.Duration",
+      "description": "How long the solver can run without finding a new best solution after finding a new best solution. For example: \"30s\" is 30 seconds. \"5m\" is 5 minutes. \"2h\" is 2 hours. \"1d\" is 1 day. Also supports ISO-8601 format, see java.time.Duration.",
+      "sourceType": "org.optaplanner.spring.boot.autoconfigure.TerminationProperties"
+    }
+  ],
+  "hints": []
+}

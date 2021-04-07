@@ -16,6 +16,8 @@
 
 package org.optaplanner.core.impl.score.stream.drools.common;
 
+import static java.util.Collections.singletonList;
+
 import java.math.BigDecimal;
 import java.util.Objects;
 import java.util.function.Function;
@@ -25,9 +27,6 @@ import java.util.function.ToLongFunction;
 import org.drools.model.DSL;
 import org.drools.model.Variable;
 import org.drools.model.view.ViewItem;
-import org.optaplanner.core.impl.score.inliner.BigDecimalWeightedScoreImpacter;
-import org.optaplanner.core.impl.score.inliner.IntWeightedScoreImpacter;
-import org.optaplanner.core.impl.score.inliner.LongWeightedScoreImpacter;
 
 final class UniRuleContext<A> extends AbstractRuleContext {
 
@@ -39,46 +38,44 @@ final class UniRuleContext<A> extends AbstractRuleContext {
     }
 
     public <Solution_> RuleBuilder<Solution_> newRuleBuilder(ToIntFunction<A> matchWeighter) {
-        ConsequenceBuilder<Solution_> consequenceBuilder =
-                (constraint, scoreImpacter) -> DSL.on(variable)
-                        .execute((drools, a) -> impactScore(constraint, drools,
-                                (IntWeightedScoreImpacter) scoreImpacter, matchWeighter.applyAsInt(a), a));
+        ConsequenceBuilder<Solution_> consequenceBuilder = (constraint, scoreImpacter) -> {
+            IntImpactExecutor impactExecutor = buildIntImpactExecutor(scoreImpacter);
+            return DSL.on(variable)
+                    .execute((drools, a) -> impactScore(constraint, drools, impactExecutor,
+                            matchWeighter.applyAsInt(a),
+                            () -> singletonList(a)));
+        };
         return assemble(consequenceBuilder);
     }
 
     public <Solution_> RuleBuilder<Solution_> newRuleBuilder(ToLongFunction<A> matchWeighter) {
-        ConsequenceBuilder<Solution_> consequenceBuilder =
-                (constraint, scoreImpacter) -> DSL.on(variable)
-                        .execute((drools, a) -> impactScore(constraint, drools,
-                                (LongWeightedScoreImpacter) scoreImpacter, matchWeighter.applyAsLong(a), a));
+        ConsequenceBuilder<Solution_> consequenceBuilder = (constraint, scoreImpacter) -> {
+            LongImpactExecutor impactExecutor = buildLongImpactExecutor(scoreImpacter);
+            return DSL.on(variable)
+                    .execute((drools, a) -> impactScore(constraint, drools, impactExecutor,
+                            matchWeighter.applyAsLong(a),
+                            () -> singletonList(a)));
+        };
         return assemble(consequenceBuilder);
     }
 
     public <Solution_> RuleBuilder<Solution_> newRuleBuilder(Function<A, BigDecimal> matchWeighter) {
-        ConsequenceBuilder<Solution_> consequenceBuilder =
-                (constraint, scoreImpacter) -> DSL.on(variable)
-                        .execute((drools, a) -> impactScore(constraint, drools,
-                                (BigDecimalWeightedScoreImpacter) scoreImpacter, matchWeighter.apply(a), a));
+        ConsequenceBuilder<Solution_> consequenceBuilder = (constraint, scoreImpacter) -> {
+            BigDecimalImpactExecutor impactExecutor = buildBigDecimalImpactExecutor(scoreImpacter);
+            return DSL.on(variable)
+                    .execute((drools, a) -> impactScore(constraint, drools, impactExecutor,
+                            matchWeighter.apply(a),
+                            () -> singletonList(a)));
+        };
         return assemble(consequenceBuilder);
     }
 
     public <Solution_> RuleBuilder<Solution_> newRuleBuilder() {
         ConsequenceBuilder<Solution_> consequenceBuilder = (constraint, scoreImpacter) -> {
-            if (scoreImpacter instanceof IntWeightedScoreImpacter) {
-                return DSL.on(variable)
-                        .execute((drools, a) -> impactScore(constraint, drools,
-                                (IntWeightedScoreImpacter) scoreImpacter, 1, a));
-            } else if (scoreImpacter instanceof LongWeightedScoreImpacter) {
-                return DSL.on(variable)
-                        .execute((drools, a) -> impactScore(constraint, drools,
-                                (LongWeightedScoreImpacter) scoreImpacter, 1L, a));
-            } else if (scoreImpacter instanceof BigDecimalWeightedScoreImpacter) {
-                return DSL.on(variable)
-                        .execute((drools, a) -> impactScore(constraint, drools,
-                                (BigDecimalWeightedScoreImpacter) scoreImpacter, BigDecimal.ONE, a));
-            }
-            throw new IllegalStateException("Impossible state: unknown score impacter type (" +
-                    scoreImpacter.getClass() + ").");
+            IntImpactExecutor impactExecutor = buildIntImpactExecutor(scoreImpacter);
+            return DSL.on(variable)
+                    .execute((drools, a) -> impactScore(constraint, drools, impactExecutor, 1,
+                            () -> singletonList(a)));
         };
         return assemble(consequenceBuilder);
     }

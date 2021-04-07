@@ -16,9 +16,9 @@
 
 package org.optaplanner.core.impl.score.inliner;
 
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 import java.util.function.Supplier;
@@ -46,13 +46,13 @@ public abstract class ScoreInliner<Score_ extends Score<Score_>> {
     public abstract WeightedScoreImpacter buildWeightedScoreImpacter(String constraintPackage, String constraintName,
             Score_ constraintWeight);
 
-    protected Runnable addConstraintMatch(String constraintPackage, String constraintName, Score_ score,
-            Object... justifications) {
+    protected Runnable addConstraintMatch(String constraintPackage, String constraintName, Score_ constraintWeight,
+            Score_ score, Supplier<List<Object>> justifications) {
         String constraintId = ConstraintMatchTotal.composeConstraintId(constraintPackage, constraintName);
         DefaultConstraintMatchTotal<Score_> constraintMatchTotal = constraintMatchTotalMap.computeIfAbsent(constraintId,
-                id -> new DefaultConstraintMatchTotal<>(constraintPackage, constraintName, score));
+                id -> new DefaultConstraintMatchTotal<>(constraintPackage, constraintName, constraintWeight, zeroScore));
         ConstraintMatch<Score_> constraintMatch =
-                constraintMatchTotal.addConstraintMatch(Arrays.asList(justifications), score);
+                constraintMatchTotal.addConstraintMatch(justifications.get(), score);
         return () -> {
             constraintMatchTotal.removeConstraintMatch(constraintMatch);
             if (constraintMatchTotal.getConstraintMatchSet().isEmpty()) { // Clean up.
@@ -89,13 +89,14 @@ public abstract class ScoreInliner<Score_ extends Score<Score_>> {
         }
     }
 
-    protected UndoScoreImpacter buildUndo(String constraintPackage, String constraintName,
-            UndoScoreImpacter undoWithoutConstraintMatch, Supplier<Score_> score, Object... justifications) {
+    protected UndoScoreImpacter buildUndo(String constraintPackage, String constraintName, Score_ constraintWeight,
+            UndoScoreImpacter undoWithoutConstraintMatch, Supplier<Score_> score,
+            Supplier<List<Object>> justifications) {
         if (!constraintMatchEnabled) {
             return undoWithoutConstraintMatch;
         }
         Runnable undoWithConstraintMatch =
-                addConstraintMatch(constraintPackage, constraintName, score.get(), justifications);
+                addConstraintMatch(constraintPackage, constraintName, constraintWeight, score.get(), justifications);
         return () -> {
             undoWithoutConstraintMatch.run();
             undoWithConstraintMatch.run();

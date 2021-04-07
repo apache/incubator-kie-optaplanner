@@ -17,19 +17,17 @@
 package org.optaplanner.core.impl.score.inliner;
 
 import java.math.BigDecimal;
+import java.util.List;
+import java.util.function.Supplier;
 
 @FunctionalInterface
 public interface BigDecimalWeightedScoreImpacter extends WeightedScoreImpacter {
 
     /**
      * @param matchWeight never null
-     * @param justifications never null
+     * @param justifications never null, supplier only pays the list creation penalty on actual access
      * @return never null
      */
-    UndoScoreImpacter impactScore(BigDecimal matchWeight, Object... justifications);
-
-    default UndoScoreImpacter impactScore(BigDecimal matchWeight) {
-        return impactScore(matchWeight, EMPTY_ARRAY);
-    }
+    UndoScoreImpacter impactScore(BigDecimal matchWeight, Supplier<List<Object>> justifications);
 
 }

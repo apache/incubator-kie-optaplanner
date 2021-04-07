@@ -17,6 +17,8 @@
 package org.optaplanner.core.impl.score.buildin.bendable;
 
 import java.util.Arrays;
+import java.util.List;
+import java.util.function.Supplier;
 
 import org.optaplanner.core.api.score.buildin.bendable.BendableScore;
 import org.optaplanner.core.impl.score.inliner.IntWeightedScoreImpacter;
@@ -51,27 +53,27 @@ public class BendableScoreInliner extends ScoreInliner<BendableScore> {
             int levelWeight = constraintWeight.getHardOrSoftScore(singleLevel);
             if (singleLevel < constraintWeight.getHardLevelsSize()) {
                 int level = singleLevel;
-                return (int matchWeight, Object... justifications) -> {
+                return (int matchWeight, Supplier<List<Object>> justifications) -> {
                     int hardImpact = levelWeight * matchWeight;
                     this.hardScores[level] += hardImpact;
-                    return buildUndo(constraintPackage, constraintName,
+                    return buildUndo(constraintPackage, constraintName, constraintWeight,
                             () -> this.hardScores[level] -= hardImpact,
                             () -> BendableScore.ofHard(hardScores.length, softScores.length, level, hardImpact),
                             justifications);
                 };
             } else {
                 int level = singleLevel - constraintWeight.getHardLevelsSize();
-                return (int matchWeight, Object... justifications) -> {
+                return (int matchWeight, Supplier<List<Object>> justifications) -> {
                     int softImpact = levelWeight * matchWeight;
                     this.softScores[level] += softImpact;
-                    return buildUndo(constraintPackage, constraintName,
+                    return buildUndo(constraintPackage, constraintName, constraintWeight,
                             () -> this.softScores[level] -= softImpact,
                             () -> BendableScore.ofSoft(hardScores.length, softScores.length, level, softImpact),
                             justifications);
                 };
             }
         } else {
-            return (int matchWeight, Object... justifications) -> {
+            return (int matchWeight, Supplier<List<Object>> justifications) -> {
                 int[] hardImpacts = new int[hardScores.length];
                 int[] softImpacts = new int[softScores.length];
                 for (int i = 0; i < hardImpacts.length; i++) {
@@ -82,7 +84,7 @@ public class BendableScoreInliner extends ScoreInliner<BendableScore> {
                     softImpacts[i] = constraintWeight.getSoftScore(i) * matchWeight;
                     this.softScores[i] += softImpacts[i];
                 }
-                return buildUndo(constraintPackage, constraintName,
+                return buildUndo(constraintPackage, constraintName, constraintWeight,
                         () -> {
                             for (int i = 0; i < hardImpacts.length; i++) {
                                 this.hardScores[i] -= hardImpacts[i];

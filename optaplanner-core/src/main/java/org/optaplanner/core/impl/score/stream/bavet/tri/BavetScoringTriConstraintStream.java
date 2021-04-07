@@ -16,6 +16,8 @@
 
 package org.optaplanner.core.impl.score.stream.bavet.tri;
 
+import static java.util.Arrays.asList;
+
 import java.math.BigDecimal;
 import java.util.List;
 
@@ -120,10 +122,10 @@ public final class BavetScoringTriConstraintStream<Solution_, A, B, C>
                 scoreImpacter = (a, b, c) -> {
                     int matchWeight = intMatchWeigher.applyAsInt(a, b, c);
                     constraint.assertCorrectImpact(matchWeight);
-                    return castedWeightedScoreImpacter.impactScore(matchWeight, a, b, c);
+                    return castedWeightedScoreImpacter.impactScore(matchWeight, () -> asList(a, b, c));
                 };
             } else if (noMatchWeigher) {
-                scoreImpacter = (a, b, c) -> castedWeightedScoreImpacter.impactScore(1, a, b, c);
+                scoreImpacter = (a, b, c) -> castedWeightedScoreImpacter.impactScore(1, () -> asList(a, b, c));
             } else {
                 throw new IllegalStateException("The matchWeigher of " + TriConstraintStream.class.getSimpleName()
                         + ".penalize(matchWeigher) of the constraint (" + constraint.getConstraintId()
@@ -136,10 +138,10 @@ public final class BavetScoringTriConstraintStream<Solution_, A, B, C>
                 scoreImpacter = (a, b, c) -> {
                     long matchWeight = longMatchWeigher.applyAsLong(a, b, c);
                     constraint.assertCorrectImpact(matchWeight);
-                    return castedWeightedScoreImpacter.impactScore(matchWeight, a, b, c);
+                    return castedWeightedScoreImpacter.impactScore(matchWeight, () -> asList(a, b, c));
                 };
             } else if (noMatchWeigher) {
-                scoreImpacter = (a, b, c) -> castedWeightedScoreImpacter.impactScore(1L, a, b, c);
+                scoreImpacter = (a, b, c) -> castedWeightedScoreImpacter.impactScore(1L, () -> asList(a, b, c));
             } else {
                 throw new IllegalStateException("The matchWeigher of " + TriConstraintStream.class.getSimpleName()
                         + ".penalize(matchWeigher) of the constraint (" + constraint.getConstraintId()
@@ -153,10 +155,11 @@ public final class BavetScoringTriConstraintStream<Solution_, A, B, C>
                 scoreImpacter = (a, b, c) -> {
                     BigDecimal matchWeight = bigDecimalMatchWeigher.apply(a, b, c);
                     constraint.assertCorrectImpact(matchWeight);
-                    return castedWeightedScoreImpacter.impactScore(matchWeight, a, b, c);
+                    return castedWeightedScoreImpacter.impactScore(matchWeight, () -> asList(a, b, c));
                 };
             } else if (noMatchWeigher) {
-                scoreImpacter = (a, b, c) -> castedWeightedScoreImpacter.impactScore(BigDecimal.ONE, a, b, c);
+                scoreImpacter =
+                        (a, b, c) -> castedWeightedScoreImpacter.impactScore(BigDecimal.ONE, () -> asList(a, b, c));
             } else {
                 throw new IllegalStateException("The matchWeigher of " + TriConstraintStream.class.getSimpleName()
                         + ".penalize(matchWeigher) of the constraint (" + constraint.getConstraintId()

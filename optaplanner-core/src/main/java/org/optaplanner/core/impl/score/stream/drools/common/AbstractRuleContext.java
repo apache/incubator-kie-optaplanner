@@ -16,11 +16,15 @@
 
 package org.optaplanner.core.impl.score.stream.drools.common;
 
+import static org.drools.model.PatternDSL.rule;
+
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
+
 import org.drools.core.common.AgendaItem;
 import org.drools.model.Drools;
 import org.drools.model.RuleItemBuilder;
@@ -30,9 +34,8 @@ import org.optaplanner.core.impl.score.inliner.BigDecimalWeightedScoreImpacter;
 import org.optaplanner.core.impl.score.inliner.IntWeightedScoreImpacter;
 import org.optaplanner.core.impl.score.inliner.LongWeightedScoreImpacter;
 import org.optaplanner.core.impl.score.inliner.UndoScoreImpacter;
+import org.optaplanner.core.impl.score.inliner.WeightedScoreImpacter;
 import org.optaplanner.core.impl.score.stream.drools.DroolsConstraint;
-
-import static org.drools.model.PatternDSL.rule;
 
 /**
  * Used when building a consequence to a rule.
@@ -91,27 +94,27 @@ abstract class AbstractRuleContext {
         this.viewItems = Arrays.stream(viewItems).collect(Collectors.toList());
     }
 
-    protected static void impactScore(DroolsConstraint<?> constraint, Drools drools,
-            IntWeightedScoreImpacter scoreImpacter, int impact, Object... justifications) {
+    protected static void impactScore(DroolsConstraint<?> constraint, Drools drools, IntImpactExecutor impactExecutor,
+            int impact, Supplier<List<Object>> justifications) {
         constraint.assertCorrectImpact(impact);
         AgendaItem<?> agendaItem = (AgendaItem<?>) ((RuleContext) drools).getMatch();
-        UndoScoreImpacter undo = scoreImpacter.impactScore(impact, justifications);
+        UndoScoreImpacter undo = impactExecutor.execute(impact, justifications);
+        agendaItem.setCallback(undo);
+    }
+
+    protected static void impactScore(DroolsConstraint<?> constraint, Drools drools, LongImpactExecutor impactExecutor,
+            long impact, Supplier<List<Object>> justifications) {
+        constraint.assertCorrectImpact(impact);
+        AgendaItem<?> agendaItem = (AgendaItem<?>) ((RuleContext) drools).getMatch();
+        UndoScoreImpacter undo = impactExecutor.execute(impact, justifications);
         agendaItem.setCallback(undo);
     }
 
     protected static void impactScore(DroolsConstraint<?> constraint, Drools drools,
-            LongWeightedScoreImpacter scoreImpacter, long impact, Object... justifications) {
+            BigDecimalImpactExecutor impactExecutor, BigDecimal impact, Supplier<List<Object>> justifications) {
         constraint.assertCorrectImpact(impact);
         AgendaItem<?> agendaItem = (AgendaItem<?>) ((RuleContext) drools).getMatch();
-        UndoScoreImpacter undo = scoreImpacter.impactScore(impact, justifications);
-        agendaItem.setCallback(undo);
-    }
-
-    protected static void impactScore(DroolsConstraint<?> constraint, Drools drools,
-            BigDecimalWeightedScoreImpacter scoreImpacter, BigDecimal impact, Object... justifications) {
-        constraint.assertCorrectImpact(impact);
-        AgendaItem<?> agendaItem = (AgendaItem<?>) ((RuleContext) drools).getMatch();
-        UndoScoreImpacter undo = scoreImpacter.impactScore(impact, justifications);
+        UndoScoreImpacter undo = impactExecutor.execute(impact, justifications);
         agendaItem.setCallback(undo);
     }
 
@@ -122,6 +125,62 @@ abstract class AbstractRuleContext {
             return rule(constraint.getConstraintPackage(), constraint.getConstraintName())
                     .build(ruleItemBuilderList.toArray(new RuleItemBuilder[0]));
         };
+    }
+
+    protected static IntImpactExecutor buildIntImpactExecutor(WeightedScoreImpacter scoreImpacter) {
+        if (scoreImpacter instanceof IntWeightedScoreImpacter) {
+            return (impact, justifications) -> ((IntWeightedScoreImpacter) scoreImpacter).impactScore(impact, justifications);
+        } else if (scoreImpacter instanceof LongWeightedScoreImpacter) {
+            return (impact, justifications) -> ((LongWeightedScoreImpacter) scoreImpacter).impactScore(impact, justifications);
+        } else if (scoreImpacter instanceof BigDecimalWeightedScoreImpacter) {
+            return (impact, justifications) -> ((BigDecimalWeightedScoreImpacter) scoreImpacter)
+                    .impactScore(BigDecimal.valueOf(impact), justifications);
+        } else {
+            throw new IllegalStateException("Impossible state: unsupported score impacter type (" +
+                    scoreImpacter.getClass() + ").");
+        }
+    }
+
+    protected static LongImpactExecutor buildLongImpactExecutor(WeightedScoreImpacter scoreImpacter) {
+        if (scoreImpacter instanceof LongWeightedScoreImpacter) {
+            return (impact, justifications) -> ((LongWeightedScoreImpacter) scoreImpacter).impactScore(impact, justifications);
+        } else if (scoreImpacter instanceof BigDecimalWeightedScoreImpacter) {
+            return (impact, justifications) -> ((BigDecimalWeightedScoreImpacter) scoreImpacter)
+                    .impactScore(BigDecimal.valueOf(impact), justifications);
+        } else {
+            throw new IllegalStateException("Impossible state: unsupported score impacter type (" +
+                    scoreImpacter.getClass() + ").");
+        }
+    }
+
+    protected static BigDecimalImpactExecutor buildBigDecimalImpactExecutor(WeightedScoreImpacter scoreImpacter) {
+        if (scoreImpacter instanceof BigDecimalWeightedScoreImpacter) {
+            return ((BigDecimalWeightedScoreImpacter) scoreImpacter)::impactScore;
+        } else {
+            throw new IllegalStateException("Impossible state: unsupported score impacter type (" +
+                    scoreImpacter.getClass() + ").");
+        }
+    }
+
+    @FunctionalInterface
+    protected interface IntImpactExecutor {
+
+        UndoScoreImpacter execute(int impact, Supplier<List<Object>> justifications);
+
+    }
+
+    @FunctionalInterface
+    protected interface LongImpactExecutor {
+
+        UndoScoreImpacter execute(long impact, Supplier<List<Object>> justifications);
+
+    }
+
+    @FunctionalInterface
+    protected interface BigDecimalImpactExecutor {
+
+        UndoScoreImpacter execute(BigDecimal impact, Supplier<List<Object>> justifications);
+
     }
 
 }
