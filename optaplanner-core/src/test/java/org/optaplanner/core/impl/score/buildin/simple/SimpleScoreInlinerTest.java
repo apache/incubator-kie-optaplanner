@@ -43,7 +43,7 @@ public class SimpleScoreInlinerTest {
         scoreInliner.buildWeightedScoreImpacter("constraintPackage", "constraintName", SimpleScore.of(-800)).impactScore(1,
                 scoreConsumer);
         assertThat(scoreInliner.extractScore(0)).isEqualTo(SimpleScore.of(-890));
-        undo1.undoScoreImpact();
+        undo1.run();
         assertThat(scoreInliner.extractScore(0)).isEqualTo(SimpleScore.of(-800));
 
         IntWeightedScoreImpacter impacter2 =
@@ -52,7 +52,7 @@ public class SimpleScoreInlinerTest {
         assertThat(scoreInliner.extractScore(0)).isEqualTo(SimpleScore.of(-803));
         impacter2.impactScore(10, scoreConsumer);
         assertThat(scoreInliner.extractScore(0)).isEqualTo(SimpleScore.of(-813));
-        undo2.undoScoreImpact();
+        undo2.run();
         assertThat(scoreInliner.extractScore(0)).isEqualTo(SimpleScore.of(-810));
     }
 

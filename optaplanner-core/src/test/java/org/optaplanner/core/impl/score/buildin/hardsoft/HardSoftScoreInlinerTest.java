@@ -43,7 +43,7 @@ public class HardSoftScoreInlinerTest {
         scoreInliner.buildWeightedScoreImpacter("constraintPackage", "constraintName", HardSoftScore.ofHard(-800))
                 .impactScore(1, scoreConsumer);
         assertThat(scoreInliner.extractScore(0)).isEqualTo(HardSoftScore.of(-890, 0));
-        hardUndo.undoScoreImpact();
+        hardUndo.run();
         assertThat(scoreInliner.extractScore(0)).isEqualTo(HardSoftScore.of(-800, 0));
 
         IntWeightedScoreImpacter softImpacter =
@@ -52,14 +52,14 @@ public class HardSoftScoreInlinerTest {
         assertThat(scoreInliner.extractScore(0)).isEqualTo(HardSoftScore.of(-800, -3));
         softImpacter.impactScore(10, scoreConsumer);
         assertThat(scoreInliner.extractScore(0)).isEqualTo(HardSoftScore.of(-800, -13));
-        softUndo.undoScoreImpact();
+        softUndo.run();
         assertThat(scoreInliner.extractScore(0)).isEqualTo(HardSoftScore.of(-800, -10));
 
         IntWeightedScoreImpacter allLevelsImpacter =
                 scoreInliner.buildWeightedScoreImpacter("constraintPackage", "constraintName", HardSoftScore.of(-1000, -3000));
         UndoScoreImpacter allLevelsUndo = allLevelsImpacter.impactScore(1, scoreConsumer);
         assertThat(scoreInliner.extractScore(0)).isEqualTo(HardSoftScore.of(-1800, -3010));
-        allLevelsUndo.undoScoreImpact();
+        allLevelsUndo.run();
         assertThat(scoreInliner.extractScore(0)).isEqualTo(HardSoftScore.of(-800, -10));
     }
 

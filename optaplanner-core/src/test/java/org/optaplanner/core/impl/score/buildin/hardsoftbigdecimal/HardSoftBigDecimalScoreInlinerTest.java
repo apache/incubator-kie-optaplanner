@@ -48,7 +48,7 @@ public class HardSoftBigDecimalScoreInlinerTest {
                 .impactScore(new BigDecimal("1.0"), scoreConsumer);
         assertThat(scoreInliner.extractScore(0))
                 .isEqualTo(HardSoftBigDecimalScore.of(new BigDecimal("890.0"), BigDecimal.ZERO));
-        hardUndo.undoScoreImpact();
+        hardUndo.run();
         assertThat(scoreInliner.extractScore(0))
                 .isEqualTo(HardSoftBigDecimalScore.of(new BigDecimal("800.0"), BigDecimal.ZERO));
 
@@ -61,7 +61,7 @@ public class HardSoftBigDecimalScoreInlinerTest {
         softImpacter.impactScore(new BigDecimal("10.0"), scoreConsumer);
         assertThat(scoreInliner.extractScore(0))
                 .isEqualTo(HardSoftBigDecimalScore.of(new BigDecimal("800.0"), new BigDecimal("13.0")));
-        softUndo.undoScoreImpact();
+        softUndo.run();
         assertThat(scoreInliner.extractScore(0))
                 .isEqualTo(HardSoftBigDecimalScore.of(new BigDecimal("800.0"), new BigDecimal("10.0")));
 
@@ -71,7 +71,7 @@ public class HardSoftBigDecimalScoreInlinerTest {
         UndoScoreImpacter allLevelsUndo = allLevelsImpacter.impactScore(new BigDecimal("1.0"), scoreConsumer);
         assertThat(scoreInliner.extractScore(0))
                 .isEqualTo(HardSoftBigDecimalScore.of(new BigDecimal("1800.0"), new BigDecimal("3010.0")));
-        allLevelsUndo.undoScoreImpact();
+        allLevelsUndo.run();
         assertThat(scoreInliner.extractScore(0))
                 .isEqualTo(HardSoftBigDecimalScore.of(new BigDecimal("800.0"), new BigDecimal("10.0")));
     }

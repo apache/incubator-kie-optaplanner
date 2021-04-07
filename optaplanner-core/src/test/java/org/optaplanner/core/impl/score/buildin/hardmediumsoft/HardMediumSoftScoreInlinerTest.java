@@ -43,14 +43,14 @@ public class HardMediumSoftScoreInlinerTest {
         scoreInliner.buildWeightedScoreImpacter("constraintPackage", "constraintName", HardMediumSoftScore.ofHard(-800))
                 .impactScore(1, scoreConsumer);
         assertThat(scoreInliner.extractScore(0)).isEqualTo(HardMediumSoftScore.of(-890, 0, 0));
-        hardUndo.undoScoreImpact();
+        hardUndo.run();
         assertThat(scoreInliner.extractScore(0)).isEqualTo(HardMediumSoftScore.of(-800, 0, 0));
 
         IntWeightedScoreImpacter mediumImpacter = scoreInliner.buildWeightedScoreImpacter("constraintPackage", "constraintName",
                 HardMediumSoftScore.ofMedium(-7));
         UndoScoreImpacter mediumUndo = mediumImpacter.impactScore(1, scoreConsumer);
         assertThat(scoreInliner.extractScore(0)).isEqualTo(HardMediumSoftScore.of(-800, -7, 0));
-        mediumUndo.undoScoreImpact();
+        mediumUndo.run();
         assertThat(scoreInliner.extractScore(0)).isEqualTo(HardMediumSoftScore.of(-800, 0, 0));
 
         IntWeightedScoreImpacter softImpacter =
@@ -59,14 +59,14 @@ public class HardMediumSoftScoreInlinerTest {
         assertThat(scoreInliner.extractScore(0)).isEqualTo(HardMediumSoftScore.of(-800, 0, -3));
         softImpacter.impactScore(10, scoreConsumer);
         assertThat(scoreInliner.extractScore(0)).isEqualTo(HardMediumSoftScore.of(-800, 0, -13));
-        softUndo.undoScoreImpact();
+        softUndo.run();
         assertThat(scoreInliner.extractScore(0)).isEqualTo(HardMediumSoftScore.of(-800, 0, -10));
 
         IntWeightedScoreImpacter allLevelsImpacter = scoreInliner
                 .buildWeightedScoreImpacter("constraintPackage", "constraintName", HardMediumSoftScore.of(-1000, -2000, -3000));
         UndoScoreImpacter allLevelsUndo = allLevelsImpacter.impactScore(1, scoreConsumer);
         assertThat(scoreInliner.extractScore(0)).isEqualTo(HardMediumSoftScore.of(-1800, -2000, -3010));
-        allLevelsUndo.undoScoreImpact();
+        allLevelsUndo.run();
         assertThat(scoreInliner.extractScore(0)).isEqualTo(HardMediumSoftScore.of(-800, 0, -10));
     }
 

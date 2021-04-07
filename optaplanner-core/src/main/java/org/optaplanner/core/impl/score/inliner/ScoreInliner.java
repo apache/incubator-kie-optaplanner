@@ -97,7 +97,7 @@ public abstract class ScoreInliner<Score_ extends Score<Score_>> {
         Runnable undoWithConstraintMatch =
                 addConstraintMatch(constraintPackage, constraintName, score.get(), justifications);
         return () -> {
-            undoWithoutConstraintMatch.undoScoreImpact();
+            undoWithoutConstraintMatch.run();
             undoWithConstraintMatch.run();
         };
     }

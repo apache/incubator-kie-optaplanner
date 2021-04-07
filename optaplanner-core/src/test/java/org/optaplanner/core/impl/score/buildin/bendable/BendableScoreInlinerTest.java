@@ -43,14 +43,14 @@ public class BendableScoreInlinerTest {
         scoreInliner.buildWeightedScoreImpacter("constraintPackage", "constraintName", BendableScore.ofHard(1, 2, 0, -800))
                 .impactScore(1, scoreConsumer);
         assertThat(scoreInliner.extractScore(0)).isEqualTo(BendableScore.of(new int[] { -890 }, new int[] { 0, 0 }));
-        hardUndo.undoScoreImpact();
+        hardUndo.run();
         assertThat(scoreInliner.extractScore(0)).isEqualTo(BendableScore.of(new int[] { -800 }, new int[] { 0, 0 }));
 
         IntWeightedScoreImpacter mediumImpacter = scoreInliner.buildWeightedScoreImpacter("constraintPackage", "constraintName",
                 BendableScore.ofSoft(1, 2, 0, -7));
         UndoScoreImpacter mediumUndo = mediumImpacter.impactScore(1, scoreConsumer);
         assertThat(scoreInliner.extractScore(0)).isEqualTo(BendableScore.of(new int[] { -800 }, new int[] { -7, 0 }));
-        mediumUndo.undoScoreImpact();
+        mediumUndo.run();
         assertThat(scoreInliner.extractScore(0)).isEqualTo(BendableScore.of(new int[] { -800 }, new int[] { 0, 0 }));
 
         IntWeightedScoreImpacter softImpacter = scoreInliner.buildWeightedScoreImpacter("constraintPackage", "constraintName",
@@ -59,7 +59,7 @@ public class BendableScoreInlinerTest {
         assertThat(scoreInliner.extractScore(0)).isEqualTo(BendableScore.of(new int[] { -800 }, new int[] { 0, -3 }));
         softImpacter.impactScore(10, scoreConsumer);
         assertThat(scoreInliner.extractScore(0)).isEqualTo(BendableScore.of(new int[] { -800 }, new int[] { 0, -13 }));
-        softUndo.undoScoreImpact();
+        softUndo.run();
         assertThat(scoreInliner.extractScore(0)).isEqualTo(BendableScore.of(new int[] { -800 }, new int[] { 0, -10 }));
 
         IntWeightedScoreImpacter allLevelsImpacter = scoreInliner
@@ -67,7 +67,7 @@ public class BendableScoreInlinerTest {
                         BendableScore.of(new int[] { -1000 }, new int[] { -2000, -3000 }));
         UndoScoreImpacter allLevelsUndo = allLevelsImpacter.impactScore(1, scoreConsumer);
         assertThat(scoreInliner.extractScore(0)).isEqualTo(BendableScore.of(new int[] { -1800 }, new int[] { -2000, -3010 }));
-        allLevelsUndo.undoScoreImpact();
+        allLevelsUndo.run();
         assertThat(scoreInliner.extractScore(0)).isEqualTo(BendableScore.of(new int[] { -800 }, new int[] { 0, -10 }));
     }
 

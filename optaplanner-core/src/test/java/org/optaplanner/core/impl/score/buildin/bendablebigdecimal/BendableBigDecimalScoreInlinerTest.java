@@ -51,7 +51,7 @@ public class BendableBigDecimalScoreInlinerTest {
         assertThat(scoreInliner.extractScore(0))
                 .isEqualTo(BendableBigDecimalScore.of(new BigDecimal[] { new BigDecimal("-890") },
                         new BigDecimal[] { new BigDecimal("0"), new BigDecimal("0") }));
-        hardUndo.undoScoreImpact();
+        hardUndo.run();
         assertThat(scoreInliner.extractScore(0))
                 .isEqualTo(BendableBigDecimalScore.of(new BigDecimal[] { new BigDecimal("-800") },
                         new BigDecimal[] { new BigDecimal("0"), new BigDecimal("0") }));
@@ -63,7 +63,7 @@ public class BendableBigDecimalScoreInlinerTest {
         assertThat(scoreInliner.extractScore(0))
                 .isEqualTo(BendableBigDecimalScore.of(new BigDecimal[] { new BigDecimal("-800") },
                         new BigDecimal[] { new BigDecimal("-7"), new BigDecimal("0") }));
-        mediumUndo.undoScoreImpact();
+        mediumUndo.run();
         assertThat(scoreInliner.extractScore(0))
                 .isEqualTo(BendableBigDecimalScore.of(new BigDecimal[] { new BigDecimal("-800") },
                         new BigDecimal[] { new BigDecimal("0"), new BigDecimal("0") }));
@@ -79,7 +79,7 @@ public class BendableBigDecimalScoreInlinerTest {
         assertThat(scoreInliner.extractScore(0))
                 .isEqualTo(BendableBigDecimalScore.of(new BigDecimal[] { new BigDecimal("-800") },
                         new BigDecimal[] { new BigDecimal("0"), new BigDecimal("-13") }));
-        softUndo.undoScoreImpact();
+        softUndo.run();
         assertThat(scoreInliner.extractScore(0))
                 .isEqualTo(BendableBigDecimalScore.of(new BigDecimal[] { new BigDecimal("-800") },
                         new BigDecimal[] { new BigDecimal("0"), new BigDecimal("-10") }));
@@ -92,7 +92,7 @@ public class BendableBigDecimalScoreInlinerTest {
         assertThat(scoreInliner.extractScore(0))
                 .isEqualTo(BendableBigDecimalScore.of(new BigDecimal[] { new BigDecimal("-1800") },
                         new BigDecimal[] { new BigDecimal("-2000"), new BigDecimal("-3010") }));
-        allLevelsUndo.undoScoreImpact();
+        allLevelsUndo.run();
         assertThat(scoreInliner.extractScore(0))
                 .isEqualTo(BendableBigDecimalScore.of(new BigDecimal[] { new BigDecimal("-800") },
                         new BigDecimal[] { new BigDecimal("0"), new BigDecimal("-10") }));

@@ -79,7 +79,7 @@ public final class BavetScoringUniNode<A> extends BavetAbstractUniNode<A> implem
         A a = tuple.getFactA();
         UndoScoreImpacter oldUndoScoreImpacter = tuple.getUndoScoreImpacter();
         if (oldUndoScoreImpacter != null) {
-            oldUndoScoreImpacter.undoScoreImpact();
+            oldUndoScoreImpacter.run();
             if (constraintMatchEnabled) {
                 boolean removed = tupleSet.remove(tuple);
                 if (!removed) {

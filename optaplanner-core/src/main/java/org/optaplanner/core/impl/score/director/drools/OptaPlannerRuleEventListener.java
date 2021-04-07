@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2021 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,6 +20,7 @@ import org.drools.core.common.AgendaItem;
 import org.kie.api.runtime.rule.Match;
 import org.kie.internal.event.rule.RuleEventListener;
 import org.optaplanner.core.impl.score.holder.AbstractScoreHolder;
+import org.optaplanner.core.impl.score.inliner.UndoScoreImpacter;
 
 public final class OptaPlannerRuleEventListener implements RuleEventListener {
 
@@ -35,9 +36,11 @@ public final class OptaPlannerRuleEventListener implements RuleEventListener {
 
     public void undoPreviousMatch(AgendaItem agendaItem) {
         Object callback = agendaItem.getCallback();
-        // Some rules don't have a callback because their RHS doesn't do addConstraintMatch()
-        if (callback instanceof AbstractScoreHolder.ConstraintActivationUnMatchListener) {
+        if (callback instanceof AbstractScoreHolder.ConstraintActivationUnMatchListener) { // DRL.
             ((AbstractScoreHolder.ConstraintActivationUnMatchListener) callback).run();
+            agendaItem.setCallback(null);
+        } else if (callback instanceof UndoScoreImpacter) { // CS-D.
+            ((UndoScoreImpacter) callback).run();
             agendaItem.setCallback(null);
         }
     }

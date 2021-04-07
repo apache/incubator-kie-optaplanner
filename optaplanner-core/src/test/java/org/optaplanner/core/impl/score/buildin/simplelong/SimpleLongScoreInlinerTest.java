@@ -43,7 +43,7 @@ public class SimpleLongScoreInlinerTest {
         scoreInliner.buildWeightedScoreImpacter("constraintPackage", "constraintName", SimpleLongScore.of(-800L))
                 .impactScore(1L, scoreConsumer);
         assertThat(scoreInliner.extractScore(0)).isEqualTo(SimpleLongScore.of(-890L));
-        undo1.undoScoreImpact();
+        undo1.run();
         assertThat(scoreInliner.extractScore(0)).isEqualTo(SimpleLongScore.of(-800L));
 
         LongWeightedScoreImpacter impacter2 =
@@ -52,7 +52,7 @@ public class SimpleLongScoreInlinerTest {
         assertThat(scoreInliner.extractScore(0)).isEqualTo(SimpleLongScore.of(-803L));
         impacter2.impactScore(10L, scoreConsumer);
         assertThat(scoreInliner.extractScore(0)).isEqualTo(SimpleLongScore.of(-813L));
-        undo2.undoScoreImpact();
+        undo2.run();
         assertThat(scoreInliner.extractScore(0)).isEqualTo(SimpleLongScore.of(-810L));
     }
 

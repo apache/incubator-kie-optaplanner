@@ -72,7 +72,7 @@ public final class BavetScoringTriNode<A, B, C> extends BavetAbstractTriNode<A, 
         C c = tuple.getFactC();
         UndoScoreImpacter oldUndoScoreImpacter = tuple.getUndoScoreImpacter();
         if (oldUndoScoreImpacter != null) {
-            oldUndoScoreImpacter.undoScoreImpact();
+            oldUndoScoreImpacter.run();
             if (constraintMatchEnabled) {
                 boolean removed = tupleSet.remove(tuple);
                 if (!removed) {

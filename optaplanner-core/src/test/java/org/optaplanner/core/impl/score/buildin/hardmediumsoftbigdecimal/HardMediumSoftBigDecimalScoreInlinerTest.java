@@ -49,7 +49,7 @@ public class HardMediumSoftBigDecimalScoreInlinerTest {
                 .impactScore(new BigDecimal("1.0"), scoreConsumer);
         assertThat(scoreInliner.extractScore(0))
                 .isEqualTo(HardMediumSoftBigDecimalScore.of(new BigDecimal("890.0"), BigDecimal.ZERO, BigDecimal.ZERO));
-        hardUndo.undoScoreImpact();
+        hardUndo.run();
         assertThat(scoreInliner.extractScore(0))
                 .isEqualTo(HardMediumSoftBigDecimalScore.of(new BigDecimal("800.0"), BigDecimal.ZERO, BigDecimal.ZERO));
 
@@ -59,7 +59,7 @@ public class HardMediumSoftBigDecimalScoreInlinerTest {
         UndoScoreImpacter mediumUndo = mediumImpacter.impactScore(new BigDecimal("1.0"), scoreConsumer);
         assertThat(scoreInliner.extractScore(0))
                 .isEqualTo(HardMediumSoftBigDecimalScore.of(new BigDecimal("800.0"), new BigDecimal("7.0"), BigDecimal.ZERO));
-        mediumUndo.undoScoreImpact();
+        mediumUndo.run();
         assertThat(scoreInliner.extractScore(0))
                 .isEqualTo(HardMediumSoftBigDecimalScore.of(new BigDecimal("800.0"), BigDecimal.ZERO, BigDecimal.ZERO));
 
@@ -72,7 +72,7 @@ public class HardMediumSoftBigDecimalScoreInlinerTest {
         softImpacter.impactScore(new BigDecimal("10.0"), scoreConsumer);
         assertThat(scoreInliner.extractScore(0))
                 .isEqualTo(HardMediumSoftBigDecimalScore.of(new BigDecimal("800.0"), BigDecimal.ZERO, new BigDecimal("13.0")));
-        softUndo.undoScoreImpact();
+        softUndo.run();
         assertThat(scoreInliner.extractScore(0))
                 .isEqualTo(HardMediumSoftBigDecimalScore.of(new BigDecimal("800.0"), BigDecimal.ZERO, new BigDecimal("10.0")));
 
@@ -82,7 +82,7 @@ public class HardMediumSoftBigDecimalScoreInlinerTest {
         UndoScoreImpacter allLevelsUndo = allLevelsImpacter.impactScore(new BigDecimal("1.0"), scoreConsumer);
         assertThat(scoreInliner.extractScore(0)).isEqualTo(
                 HardMediumSoftBigDecimalScore.of(new BigDecimal("1800.0"), new BigDecimal("2000.0"), new BigDecimal("3010.0")));
-        allLevelsUndo.undoScoreImpact();
+        allLevelsUndo.run();
         assertThat(scoreInliner.extractScore(0))
                 .isEqualTo(HardMediumSoftBigDecimalScore.of(new BigDecimal("800.0"), BigDecimal.ZERO, new BigDecimal("10.0")));
     }

@@ -71,7 +71,7 @@ public final class BavetScoringBiNode<A, B> extends BavetAbstractBiNode<A, B> im
         B b = tuple.getFactB();
         UndoScoreImpacter oldUndoScoreImpacter = tuple.getUndoScoreImpacter();
         if (oldUndoScoreImpacter != null) {
-            oldUndoScoreImpacter.undoScoreImpact();
+            oldUndoScoreImpacter.run();
             if (constraintMatchEnabled) {
                 boolean removed = tupleSet.remove(tuple);
                 if (!removed) {

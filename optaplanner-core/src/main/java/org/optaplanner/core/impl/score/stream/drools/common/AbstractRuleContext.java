@@ -16,14 +16,11 @@
 
 package org.optaplanner.core.impl.score.stream.drools.common;
 
-import static org.drools.model.PatternDSL.rule;
-
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
-
 import org.drools.core.common.AgendaItem;
 import org.drools.model.Drools;
 import org.drools.model.RuleItemBuilder;
@@ -34,6 +31,8 @@ import org.optaplanner.core.impl.score.inliner.IntWeightedScoreImpacter;
 import org.optaplanner.core.impl.score.inliner.LongWeightedScoreImpacter;
 import org.optaplanner.core.impl.score.inliner.UndoScoreImpacter;
 import org.optaplanner.core.impl.score.stream.drools.DroolsConstraint;
+
+import static org.drools.model.PatternDSL.rule;
 
 /**
  * Used when building a consequence to a rule.
@@ -97,7 +96,7 @@ abstract class AbstractRuleContext {
         constraint.assertCorrectImpact(impact);
         AgendaItem<?> agendaItem = (AgendaItem<?>) ((RuleContext) drools).getMatch();
         UndoScoreImpacter undo = scoreImpacter.impactScore(impact, justifications);
-        agendaItem.setCallback(undo::undoScoreImpact);
+        agendaItem.setCallback(undo);
     }
 
     protected static void impactScore(DroolsConstraint<?> constraint, Drools drools,
@@ -105,7 +104,7 @@ abstract class AbstractRuleContext {
         constraint.assertCorrectImpact(impact);
         AgendaItem<?> agendaItem = (AgendaItem<?>) ((RuleContext) drools).getMatch();
         UndoScoreImpacter undo = scoreImpacter.impactScore(impact, justifications);
-        agendaItem.setCallback(undo::undoScoreImpact);
+        agendaItem.setCallback(undo);
     }
 
     protected static void impactScore(DroolsConstraint<?> constraint, Drools drools,
@@ -113,7 +112,7 @@ abstract class AbstractRuleContext {
         constraint.assertCorrectImpact(impact);
         AgendaItem<?> agendaItem = (AgendaItem<?>) ((RuleContext) drools).getMatch();
         UndoScoreImpacter undo = scoreImpacter.impactScore(impact, justifications);
-        agendaItem.setCallback(undo::undoScoreImpact);
+        agendaItem.setCallback(undo);
     }
 
     protected <Solution_> RuleBuilder<Solution_> assemble(ConsequenceBuilder<Solution_> consequenceBuilder) {

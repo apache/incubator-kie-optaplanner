@@ -47,7 +47,7 @@ public class SimpleBigDecimalScoreInlinerTest {
                         SimpleBigDecimalScore.of(new BigDecimal("800.0")))
                 .impactScore(new BigDecimal("1.0"), scoreConsumer);
         assertThat(scoreInliner.extractScore(0)).isEqualTo(SimpleBigDecimalScore.of(new BigDecimal("890.0")));
-        undo1.undoScoreImpact();
+        undo1.run();
         assertThat(scoreInliner.extractScore(0)).isEqualTo(SimpleBigDecimalScore.of(new BigDecimal("800.0")));
 
         BigDecimalWeightedScoreImpacter impacter2 = scoreInliner
@@ -57,7 +57,7 @@ public class SimpleBigDecimalScoreInlinerTest {
         assertThat(scoreInliner.extractScore(0)).isEqualTo(SimpleBigDecimalScore.of(new BigDecimal("803.0")));
         impacter2.impactScore(new BigDecimal("10.0"), scoreConsumer);
         assertThat(scoreInliner.extractScore(0)).isEqualTo(SimpleBigDecimalScore.of(new BigDecimal("813.0")));
-        undo2.undoScoreImpact();
+        undo2.run();
         assertThat(scoreInliner.extractScore(0)).isEqualTo(SimpleBigDecimalScore.of(new BigDecimal("810.0")));
     }
 
