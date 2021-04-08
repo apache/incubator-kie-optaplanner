@@ -16,16 +16,17 @@
 
 package org.optaplanner.core.impl.score.stream.drools.common;
 
+import static java.util.Arrays.asList;
+
 import java.math.BigDecimal;
 import java.util.Objects;
 import java.util.function.BiFunction;
 import java.util.function.ToIntBiFunction;
 import java.util.function.ToLongBiFunction;
+
 import org.drools.model.DSL;
 import org.drools.model.Variable;
 import org.drools.model.view.ViewItem;
-
-import static java.util.Arrays.asList;
 
 final class BiRuleContext<A, B> extends AbstractRuleContext {
 
@@ -42,7 +43,7 @@ final class BiRuleContext<A, B> extends AbstractRuleContext {
         ConsequenceBuilder<Solution_> consequenceBuilder = (constraint, scoreImpacter) -> {
             IntImpactExecutor impactExecutor = buildIntImpactExecutor(scoreImpacter);
             return DSL.on(variableA, variableB)
-                    .execute((drools, a, b) -> impactScore(constraint, drools, impactExecutor,
+                    .execute((drools, a, b) -> runConsequence(constraint, drools, impactExecutor,
                             matchWeighter.applyAsInt(a, b),
                             () -> asList(a, b)));
         };
@@ -53,7 +54,7 @@ final class BiRuleContext<A, B> extends AbstractRuleContext {
         ConsequenceBuilder<Solution_> consequenceBuilder = (constraint, scoreImpacter) -> {
             LongImpactExecutor impactExecutor = buildLongImpactExecutor(scoreImpacter);
             return DSL.on(variableA, variableB)
-                    .execute((drools, a, b) -> impactScore(constraint, drools, impactExecutor,
+                    .execute((drools, a, b) -> runConsequence(constraint, drools, impactExecutor,
                             matchWeighter.applyAsLong(a, b),
                             () -> asList(a, b)));
         };
@@ -64,7 +65,7 @@ final class BiRuleContext<A, B> extends AbstractRuleContext {
         ConsequenceBuilder<Solution_> consequenceBuilder = (constraint, scoreImpacter) -> {
             BigDecimalImpactExecutor impactExecutor = buildBigDecimalImpactExecutor(scoreImpacter);
             return DSL.on(variableA, variableB)
-                    .execute((drools, a, b) -> impactScore(constraint, drools, impactExecutor,
+                    .execute((drools, a, b) -> runConsequence(constraint, drools, impactExecutor,
                             matchWeighter.apply(a, b),
                             () -> asList(a, b)));
         };
@@ -72,13 +73,7 @@ final class BiRuleContext<A, B> extends AbstractRuleContext {
     }
 
     public <Solution_> RuleBuilder<Solution_> newRuleBuilder() {
-        ConsequenceBuilder<Solution_> consequenceBuilder = (constraint, scoreImpacter) -> {
-            IntImpactExecutor impactExecutor = buildIntImpactExecutor(scoreImpacter);
-            return DSL.on(variableA, variableB)
-                    .execute((drools, a, b) -> impactScore(constraint, drools, impactExecutor, 1,
-                            () -> asList(a, b)));
-        };
-        return assemble(consequenceBuilder);
+        return newRuleBuilder((ToIntBiFunction<A, B>) (a, b) -> 1);
     }
 
 }

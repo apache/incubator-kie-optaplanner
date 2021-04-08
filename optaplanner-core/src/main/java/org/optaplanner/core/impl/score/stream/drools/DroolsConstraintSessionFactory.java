@@ -16,9 +16,14 @@
 
 package org.optaplanner.core.impl.score.stream.drools;
 
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 import org.drools.ancompiler.KieBaseUpdaterANC;
+import org.drools.core.common.AgendaItem;
 import org.drools.model.Model;
 import org.drools.model.impl.ModelImpl;
 import org.drools.modelcompiler.builder.KieBaseBuilder;
@@ -30,31 +35,39 @@ import org.kie.api.runtime.Environment;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.KieSessionConfiguration;
 import org.kie.api.runtime.conf.DirectFiringOption;
+import org.kie.api.runtime.rule.Match;
 import org.kie.internal.builder.conf.PropertySpecificOption;
+import org.kie.internal.event.rule.RuleEventListener;
 import org.kie.internal.event.rule.RuleEventManager;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.stream.Constraint;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.core.impl.score.definition.ScoreDefinition;
-import org.optaplanner.core.impl.score.director.drools.OptaPlannerRuleEventListener;
 import org.optaplanner.core.impl.score.inliner.ScoreInliner;
-import org.optaplanner.core.impl.score.inliner.WeightedScoreImpacter;
+import org.optaplanner.core.impl.score.inliner.UndoScoreImpacter;
 import org.optaplanner.core.impl.score.stream.ConstraintSessionFactory;
 
 public final class DroolsConstraintSessionFactory<Solution_, Score_ extends Score<Score_>>
         implements ConstraintSessionFactory<Solution_, Score_> {
 
     private final ScoreDefinition<Score_> scoreDefinition;
-    private final DroolsConstraintFactory<Solution_> constraintFactory;
-    private final Constraint[] constraints;
+    private final List<DroolsConstraint<Solution_>> constraintList;
     private final boolean droolsAlphaNetworkCompilationEnabled;
 
+    private KieBaseCache<Solution_, Score_> kieBaseCache = null;
+
     public DroolsConstraintSessionFactory(SolutionDescriptor<Solution_> solutionDescriptor,
-            DroolsConstraintFactory<Solution_> coinstraintFactory, boolean droolsAlphaNetworkCompilationEnabled,
+            DroolsConstraintFactory<Solution_> constraintFactory, boolean droolsAlphaNetworkCompilationEnabled,
             Constraint... constraints) {
         this.scoreDefinition = solutionDescriptor.getScoreDefinition();
-        this.constraintFactory = Objects.requireNonNull(coinstraintFactory);
-        this.constraints = Objects.requireNonNull(constraints);
+        this.constraintList = Arrays.stream(constraints)
+                .map(constraint -> {
+                    if (constraint.getConstraintFactory() != constraintFactory) {
+                        throw new IllegalStateException("Impossible state: The constraint (" +
+                                constraint.getConstraintId() + ") created by the wrong factory.");
+                    }
+                    return (DroolsConstraint<Solution_>) constraint;
+                }).collect(Collectors.toList());
         this.droolsAlphaNetworkCompilationEnabled = droolsAlphaNetworkCompilationEnabled;
     }
 
@@ -82,32 +95,32 @@ public final class DroolsConstraintSessionFactory<Solution_, Score_ extends Scor
     }
 
     @Override
-    public SessionDescriptor buildSession(boolean constraintMatchEnabled, Solution_ workingSolution) {
+    public SessionDescriptor<Score_> buildSession(boolean constraintMatchEnabled, Solution_ workingSolution) {
         Score_ zeroScore = scoreDefinition.getZeroScore();
-        ScoreInliner<Score_> scoreInliner = scoreDefinition.buildScoreInliner(constraintMatchEnabled);
 
-        ModelImpl model = new ModelImpl();
-        for (Constraint constraint : constraints) {
-            if (constraint.getConstraintFactory() != constraintFactory) {
-                throw new IllegalStateException("The constraint (" + constraint.getConstraintId()
-                        + ") must be created from the same constraintFactory.");
-            }
-            DroolsConstraint<Solution_> droolsConstraint = (DroolsConstraint<Solution_>) constraint;
-            Score_ weight = (Score_) droolsConstraint.extractConstraintWeight(workingSolution);
-            if (weight.equals(zeroScore)) { // Disable the rule for this constraint.
-                continue;
-            }
-            WeightedScoreImpacter impacter =
-                    scoreInliner.buildWeightedScoreImpacter(droolsConstraint.getConstraintPackage(),
-                            droolsConstraint.getConstraintName(), weight);
-            model.addRule(droolsConstraint.buildRule(impacter));
+        // Extract constraint weights, excluding constraints where weight is zero.
+        Map<DroolsConstraint<Solution_>, Score_> constraintWeightMap = constraintList.stream()
+                .map(constraint -> {
+                    Object weight = constraint.extractConstraintWeight(workingSolution); // Expensive, only do once.
+                    return new Object[] { constraint, weight };
+                })
+                .filter(constraintAndWeight -> !constraintAndWeight[1].equals(zeroScore)) // Exclude zero-weighted.
+                .collect(Collectors.toMap(c -> (DroolsConstraint<Solution_>) c[0], c -> (Score_) c[1]));
+
+        // Creating KieBase is expensive. Therefore we only do it when there has been a change in constraint weights.
+        if (kieBaseCache == null || !kieBaseCache.isUpToDate(constraintWeightMap)) {
+            ScoreInliner<Score_> scoreInliner = scoreDefinition.buildScoreInliner(constraintMatchEnabled);
+            Model model = constraintWeightMap.entrySet().stream()
+                    .map(entry -> entry.getKey().buildRule(scoreInliner, entry.getValue()))
+                    .reduce(new ModelImpl(), ModelImpl::addRule, (m, __) -> m);
+            KieBase kieBase = buildKieBaseFromModel(model, droolsAlphaNetworkCompilationEnabled);
+            kieBaseCache = new KieBaseCache<>(constraintWeightMap, kieBase, scoreInliner);
         }
+
         // Create the session itself.
-        // TODO expensive; figure out some cache?
-        KieBase kieBase = buildKieBaseFromModel(model, droolsAlphaNetworkCompilationEnabled);
-        KieSession kieSession = buildKieSessionFromKieBase(kieBase);
+        KieSession kieSession = buildKieSessionFromKieBase(kieBaseCache.getKieBase());
         ((RuleEventManager) kieSession).addEventListener(new OptaPlannerRuleEventListener()); // Enables undo in rules.
-        return new SessionDescriptor<>(kieSession, scoreInliner);
+        return new SessionDescriptor<>(kieSession, kieBaseCache.getScoreInliner());
     }
 
     public static final class SessionDescriptor<Score_ extends Score<Score_>> {
@@ -127,6 +140,53 @@ public final class DroolsConstraintSessionFactory<Solution_, Score_ extends Scor
         public ScoreInliner<Score_> getScoreInliner() {
             return scoreInliner;
         }
+    }
+
+    public static final class KieBaseCache<Solution_, Score_ extends Score<Score_>> {
+
+        private final Map<DroolsConstraint<Solution_>, Score_> constraintWeightMap;
+        private final KieBase kieBase;
+        private final ScoreInliner<Score_> scoreInliner;
+
+        public KieBaseCache(Map<DroolsConstraint<Solution_>, Score_> constraintWeightMap, KieBase kieBase,
+                ScoreInliner<Score_> scoreInliner) {
+            this.constraintWeightMap = Objects.requireNonNull(constraintWeightMap);
+            this.kieBase = Objects.requireNonNull(kieBase);
+            this.scoreInliner = Objects.requireNonNull(scoreInliner);
+        }
+
+        public boolean isUpToDate(Map<DroolsConstraint<Solution_>, Score_> currentConstraintWeightMap) {
+            return constraintWeightMap.equals(currentConstraintWeightMap);
+        }
+
+        public KieBase getKieBase() {
+            return kieBase;
+        }
+
+        public ScoreInliner<Score_> getScoreInliner() {
+            return scoreInliner;
+        }
+    }
+
+    private static final class OptaPlannerRuleEventListener implements RuleEventListener {
+
+        @Override
+        public void onUpdateMatch(Match match) {
+            undoPreviousMatch(match);
+        }
+
+        @Override
+        public void onDeleteMatch(Match match) {
+            undoPreviousMatch(match);
+        }
+
+        public void undoPreviousMatch(Match match) {
+            AgendaItem<?> agendaItem = (AgendaItem<?>) match;
+            UndoScoreImpacter callback = (UndoScoreImpacter) agendaItem.getCallback();
+            callback.run();
+            agendaItem.setCallback(null);
+        }
+
     }
 
 }

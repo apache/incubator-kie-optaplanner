@@ -41,7 +41,7 @@ final class UniRuleContext<A> extends AbstractRuleContext {
         ConsequenceBuilder<Solution_> consequenceBuilder = (constraint, scoreImpacter) -> {
             IntImpactExecutor impactExecutor = buildIntImpactExecutor(scoreImpacter);
             return DSL.on(variable)
-                    .execute((drools, a) -> impactScore(constraint, drools, impactExecutor,
+                    .execute((drools, a) -> runConsequence(constraint, drools, impactExecutor,
                             matchWeighter.applyAsInt(a),
                             () -> singletonList(a)));
         };
@@ -52,7 +52,7 @@ final class UniRuleContext<A> extends AbstractRuleContext {
         ConsequenceBuilder<Solution_> consequenceBuilder = (constraint, scoreImpacter) -> {
             LongImpactExecutor impactExecutor = buildLongImpactExecutor(scoreImpacter);
             return DSL.on(variable)
-                    .execute((drools, a) -> impactScore(constraint, drools, impactExecutor,
+                    .execute((drools, a) -> runConsequence(constraint, drools, impactExecutor,
                             matchWeighter.applyAsLong(a),
                             () -> singletonList(a)));
         };
@@ -63,7 +63,7 @@ final class UniRuleContext<A> extends AbstractRuleContext {
         ConsequenceBuilder<Solution_> consequenceBuilder = (constraint, scoreImpacter) -> {
             BigDecimalImpactExecutor impactExecutor = buildBigDecimalImpactExecutor(scoreImpacter);
             return DSL.on(variable)
-                    .execute((drools, a) -> impactScore(constraint, drools, impactExecutor,
+                    .execute((drools, a) -> runConsequence(constraint, drools, impactExecutor,
                             matchWeighter.apply(a),
                             () -> singletonList(a)));
         };
@@ -71,13 +71,7 @@ final class UniRuleContext<A> extends AbstractRuleContext {
     }
 
     public <Solution_> RuleBuilder<Solution_> newRuleBuilder() {
-        ConsequenceBuilder<Solution_> consequenceBuilder = (constraint, scoreImpacter) -> {
-            IntImpactExecutor impactExecutor = buildIntImpactExecutor(scoreImpacter);
-            return DSL.on(variable)
-                    .execute((drools, a) -> impactScore(constraint, drools, impactExecutor, 1,
-                            () -> singletonList(a)));
-        };
-        return assemble(consequenceBuilder);
+        return newRuleBuilder((ToIntFunction<A>) a -> 1);
     }
 
 }

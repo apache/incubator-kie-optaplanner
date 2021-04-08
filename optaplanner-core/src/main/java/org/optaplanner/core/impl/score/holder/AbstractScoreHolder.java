@@ -38,7 +38,6 @@ import org.optaplanner.core.api.score.holder.ScoreHolder;
 import org.optaplanner.core.impl.score.constraint.DefaultConstraintMatchTotal;
 import org.optaplanner.core.impl.score.constraint.DefaultIndictment;
 import org.optaplanner.core.impl.score.director.drools.DroolsScoreDirector;
-import org.optaplanner.core.impl.score.director.drools.OptaPlannerRuleEventListener;
 
 /**
  * Abstract superclass for {@link ScoreHolder}.
@@ -100,9 +99,9 @@ public abstract class AbstractScoreHolder<Score_ extends Score<Score_>> implemen
     }
 
     /**
-     * Requires @{@link OptaPlannerRuleEventListener} to be added as event listener on {@link KieSession}, otherwise the
-     * score changes caused by the constraint matches would not be undone. See
-     * {@link DroolsScoreDirector#resetKieSession()} for an example.
+     * Requires a custom rule event listener to be added as event listener on {@link KieSession},
+     * otherwise the score changes caused by the constraint matches would not be undone.
+     * See {@link DroolsScoreDirector#setWorkingSolution(Object)} for an example.
      *
      * @param kcontext The rule for which to register the match.
      * @param constraintUndoListener The operation to run to undo the match.

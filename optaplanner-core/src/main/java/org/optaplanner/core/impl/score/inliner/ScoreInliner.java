@@ -16,12 +16,11 @@
 
 package org.optaplanner.core.impl.score.inliner;
 
-import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.TreeMap;
 import java.util.function.Supplier;
+import java.util.stream.Collectors;
 
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.constraint.ConstraintMatch;
@@ -34,11 +33,14 @@ public abstract class ScoreInliner<Score_ extends Score<Score_>> {
 
     protected final boolean constraintMatchEnabled;
     private final Score_ zeroScore;
-    private final Map<String, DefaultConstraintMatchTotal<Score_>> constraintMatchTotalMap = new TreeMap<>();
+    private final Map<String, DefaultConstraintMatchTotal<Score_>> constraintMatchTotalMap;
+    private final Map<Object, DefaultIndictment<Score_>> indictmentMap;
 
     protected ScoreInliner(boolean constraintMatchEnabled, Score_ zeroScore) {
         this.constraintMatchEnabled = constraintMatchEnabled;
         this.zeroScore = zeroScore;
+        this.constraintMatchTotalMap = constraintMatchEnabled ? new LinkedHashMap<>() : null;
+        this.indictmentMap = constraintMatchEnabled ? new LinkedHashMap<>() : null;
     }
 
     public abstract Score_ extractScore(int initScore);
@@ -47,39 +49,42 @@ public abstract class ScoreInliner<Score_ extends Score<Score_>> {
             Score_ constraintWeight);
 
     protected Runnable addConstraintMatch(String constraintPackage, String constraintName, Score_ constraintWeight,
-            Score_ score, Supplier<List<Object>> justifications) {
+            Score_ score, List<Object> justifications) {
         String constraintId = ConstraintMatchTotal.composeConstraintId(constraintPackage, constraintName);
         DefaultConstraintMatchTotal<Score_> constraintMatchTotal = constraintMatchTotalMap.computeIfAbsent(constraintId,
-                id -> new DefaultConstraintMatchTotal<>(constraintPackage, constraintName, constraintWeight, zeroScore));
+                __ -> new DefaultConstraintMatchTotal<>(constraintPackage, constraintName, constraintWeight, zeroScore));
         ConstraintMatch<Score_> constraintMatch =
-                constraintMatchTotal.addConstraintMatch(justifications.get(), score);
+                constraintMatchTotal.addConstraintMatch(justifications, score);
+        List<DefaultIndictment<Score_>> indictmentList = justifications.stream()
+                .distinct() // One match might have the same justification twice
+                .map(justification -> {
+                    DefaultIndictment<Score_> indictment = indictmentMap.computeIfAbsent(justification,
+                            __ -> new DefaultIndictment<>(justification, zeroScore));
+                    indictment.addConstraintMatch(constraintMatch);
+                    return indictment;
+                }).collect(Collectors.toList());
         return () -> {
             constraintMatchTotal.removeConstraintMatch(constraintMatch);
-            if (constraintMatchTotal.getConstraintMatchSet().isEmpty()) { // Clean up.
+            if (constraintMatchTotal.getConstraintMatchSet().isEmpty()) {
                 constraintMatchTotalMap.remove(constraintId);
+            }
+            for (DefaultIndictment<Score_> indictment : indictmentList) {
+                indictment.removeConstraintMatch(constraintMatch);
+                if (indictment.getConstraintMatchSet().isEmpty()) {
+                    indictmentMap.remove(indictment.getJustification());
+                }
             }
         };
     }
 
     public Map<String, ConstraintMatchTotal<Score_>> getConstraintMatchTotalMap() {
-        return Collections.unmodifiableMap(constraintMatchTotalMap);
+        // Unchecked assignment necessary as CMT and DefaultCMT incompatible in the Map generics.
+        return (Map) constraintMatchTotalMap;
     }
 
-    public Map<Object, Indictment<Score_>> getIndictmentMap() { // TODO This is temporary, inefficient code, replace it!
-        Map<Object, Indictment<Score_>> indictmentMap = new LinkedHashMap<>(); // TODO use entitySize
-        for (ConstraintMatchTotal<Score_> constraintMatchTotal : constraintMatchTotalMap.values()) {
-            for (ConstraintMatch<Score_> constraintMatch : constraintMatchTotal.getConstraintMatchSet()) {
-                constraintMatch.getJustificationList().stream()
-                        .distinct() // One match might have the same justification twice
-                        .forEach(justification -> {
-                            DefaultIndictment<Score_> indictment =
-                                    (DefaultIndictment<Score_>) indictmentMap.computeIfAbsent(justification,
-                                            k -> new DefaultIndictment<>(justification, zeroScore));
-                            indictment.addConstraintMatch(constraintMatch);
-                        });
-            }
-        }
-        return indictmentMap;
+    public Map<Object, Indictment<Score_>> getIndictmentMap() {
+        // Unchecked assignment necessary as Indictment and DefaultIndictment incompatible in the Map generics.
+        return (Map) indictmentMap;
     }
 
     protected void ensureNonZeroConstraintWeight(Score_ constraintWeight) {
@@ -89,14 +94,28 @@ public abstract class ScoreInliner<Score_ extends Score<Score_>> {
         }
     }
 
+    /**
+     * Runs constraint matching if enabled.
+     *
+     * Returns {@code undoWithoutConstraintMatch} if constraint matching is disabled.
+     * Otherwise adds a constraint match and extends the undo with an operation to remove the newly added match.
+     *
+     * @param constraintPackage never null
+     * @param constraintName never null
+     * @param constraintWeight never null
+     * @param undoWithoutConstraintMatch never null
+     * @param score never null, lazy creation ensures instance only created if constraint matching enabled
+     * @param justifications never null, lazy creation ensures collection only created if constraint matching enabled
+     * @return never null
+     */
     protected UndoScoreImpacter buildUndo(String constraintPackage, String constraintName, Score_ constraintWeight,
             UndoScoreImpacter undoWithoutConstraintMatch, Supplier<Score_> score,
             Supplier<List<Object>> justifications) {
         if (!constraintMatchEnabled) {
             return undoWithoutConstraintMatch;
         }
-        Runnable undoWithConstraintMatch =
-                addConstraintMatch(constraintPackage, constraintName, constraintWeight, score.get(), justifications);
+        Runnable undoWithConstraintMatch = addConstraintMatch(constraintPackage, constraintName, constraintWeight,
+                score.get(), justifications.get());
         return () -> {
             undoWithoutConstraintMatch.run();
             undoWithConstraintMatch.run();

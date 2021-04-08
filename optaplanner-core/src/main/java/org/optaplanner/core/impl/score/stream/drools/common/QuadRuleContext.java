@@ -48,7 +48,7 @@ final class QuadRuleContext<A, B, C, D> extends AbstractRuleContext {
         ConsequenceBuilder<Solution_> consequenceBuilder = (constraint, scoreImpacter) -> {
             IntImpactExecutor impactExecutor = buildIntImpactExecutor(scoreImpacter);
             return DSL.on(variableA, variableB, variableC, variableD)
-                    .execute((drools, a, b, c, d) -> impactScore(constraint, drools, impactExecutor,
+                    .execute((drools, a, b, c, d) -> runConsequence(constraint, drools, impactExecutor,
                             matchWeighter.applyAsInt(a, b, c, d),
                             () -> asList(a, b, c, d)));
         };
@@ -59,7 +59,7 @@ final class QuadRuleContext<A, B, C, D> extends AbstractRuleContext {
         ConsequenceBuilder<Solution_> consequenceBuilder = (constraint, scoreImpacter) -> {
             LongImpactExecutor impactExecutor = buildLongImpactExecutor(scoreImpacter);
             return DSL.on(variableA, variableB, variableC, variableD)
-                    .execute((drools, a, b, c, d) -> impactScore(constraint, drools, impactExecutor,
+                    .execute((drools, a, b, c, d) -> runConsequence(constraint, drools, impactExecutor,
                             matchWeighter.applyAsLong(a, b, c, d),
                             () -> asList(a, b, c, d)));
         };
@@ -70,7 +70,7 @@ final class QuadRuleContext<A, B, C, D> extends AbstractRuleContext {
         ConsequenceBuilder<Solution_> consequenceBuilder = (constraint, scoreImpacter) -> {
             BigDecimalImpactExecutor impactExecutor = buildBigDecimalImpactExecutor(scoreImpacter);
             return DSL.on(variableA, variableB, variableC, variableD)
-                    .execute((drools, a, b, c, d) -> impactScore(constraint, drools, impactExecutor,
+                    .execute((drools, a, b, c, d) -> runConsequence(constraint, drools, impactExecutor,
                             matchWeighter.apply(a, b, c, d),
                             () -> asList(a, b, c, d)));
         };
@@ -78,13 +78,7 @@ final class QuadRuleContext<A, B, C, D> extends AbstractRuleContext {
     }
 
     public <Solution_> RuleBuilder<Solution_> newRuleBuilder() {
-        ConsequenceBuilder<Solution_> consequenceBuilder = (constraint, scoreImpacter) -> {
-            IntImpactExecutor impactExecutor = buildIntImpactExecutor(scoreImpacter);
-            return DSL.on(variableA, variableB, variableC, variableD)
-                    .execute((drools, a, b, c, d) -> impactScore(constraint, drools, impactExecutor, 1,
-                            () -> asList(a, b, c, d)));
-        };
-        return assemble(consequenceBuilder);
+        return newRuleBuilder((ToIntQuadFunction<A, B, C, D>) (a, b, c, d) -> 1);
     }
 
 }

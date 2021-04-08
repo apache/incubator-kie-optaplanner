@@ -21,6 +21,7 @@ import java.util.function.Function;
 
 import org.drools.model.Rule;
 import org.optaplanner.core.api.score.Score;
+import org.optaplanner.core.impl.score.inliner.ScoreInliner;
 import org.optaplanner.core.impl.score.inliner.WeightedScoreImpacter;
 import org.optaplanner.core.impl.score.stream.common.AbstractConstraint;
 import org.optaplanner.core.impl.score.stream.common.ScoreImpactType;
@@ -43,8 +44,10 @@ public class DroolsConstraint<Solution_> extends AbstractConstraint<Solution_, D
     // Getters/setters
     // ************************************************************************
 
-    public Rule buildRule(WeightedScoreImpacter scoreImpacter) {
-        return ruleBuilder.apply(this, scoreImpacter);
+    public <Score_ extends Score<Score_>> Rule buildRule(ScoreInliner<Score_> scoreInliner, Score_ constraintWeight) {
+        WeightedScoreImpacter impacter =
+                scoreInliner.buildWeightedScoreImpacter(getConstraintPackage(), getConstraintName(), constraintWeight);
+        return ruleBuilder.apply(this, impacter);
     }
 
     @Override

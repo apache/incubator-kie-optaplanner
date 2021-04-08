@@ -46,7 +46,7 @@ final class TriRuleContext<A, B, C> extends AbstractRuleContext {
         ConsequenceBuilder<Solution_> consequenceBuilder = (constraint, scoreImpacter) -> {
             IntImpactExecutor impactExecutor = buildIntImpactExecutor(scoreImpacter);
             return DSL.on(variableA, variableB, variableC)
-                    .execute((drools, a, b, c) -> impactScore(constraint, drools, impactExecutor,
+                    .execute((drools, a, b, c) -> runConsequence(constraint, drools, impactExecutor,
                             matchWeighter.applyAsInt(a, b, c),
                             () -> asList(a, b, c)));
         };
@@ -57,7 +57,7 @@ final class TriRuleContext<A, B, C> extends AbstractRuleContext {
         ConsequenceBuilder<Solution_> consequenceBuilder = (constraint, scoreImpacter) -> {
             LongImpactExecutor impactExecutor = buildLongImpactExecutor(scoreImpacter);
             return DSL.on(variableA, variableB, variableC)
-                    .execute((drools, a, b, c) -> impactScore(constraint, drools, impactExecutor,
+                    .execute((drools, a, b, c) -> runConsequence(constraint, drools, impactExecutor,
                             matchWeighter.applyAsLong(a, b, c),
                             () -> asList(a, b, c)));
         };
@@ -68,7 +68,7 @@ final class TriRuleContext<A, B, C> extends AbstractRuleContext {
         ConsequenceBuilder<Solution_> consequenceBuilder = (constraint, scoreImpacter) -> {
             BigDecimalImpactExecutor impactExecutor = buildBigDecimalImpactExecutor(scoreImpacter);
             return DSL.on(variableA, variableB, variableC)
-                    .execute((drools, a, b, c) -> impactScore(constraint, drools, impactExecutor,
+                    .execute((drools, a, b, c) -> runConsequence(constraint, drools, impactExecutor,
                             matchWeighter.apply(a, b, c),
                             () -> asList(a, b, c)));
         };
@@ -76,13 +76,7 @@ final class TriRuleContext<A, B, C> extends AbstractRuleContext {
     }
 
     public <Solution_> RuleBuilder<Solution_> newRuleBuilder() {
-        ConsequenceBuilder<Solution_> consequenceBuilder = (constraint, scoreImpacter) -> {
-            IntImpactExecutor impactExecutor = buildIntImpactExecutor(scoreImpacter);
-            return DSL.on(variableA, variableB, variableC)
-                    .execute((drools, a, b, c) -> impactScore(constraint, drools, impactExecutor, 1,
-                            () -> asList(a, b, c)));
-        };
-        return assemble(consequenceBuilder);
+        return newRuleBuilder((ToIntTriFunction<A, B, C>) (a, b, c) -> 1);
     }
 
 }
