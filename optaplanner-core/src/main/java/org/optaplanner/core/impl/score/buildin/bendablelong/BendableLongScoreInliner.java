@@ -17,10 +17,9 @@
 package org.optaplanner.core.impl.score.buildin.bendablelong;
 
 import java.util.Arrays;
-import java.util.List;
-import java.util.function.Supplier;
 
 import org.optaplanner.core.api.score.buildin.bendablelong.BendableLongScore;
+import org.optaplanner.core.impl.score.inliner.JustificationsSupplier;
 import org.optaplanner.core.impl.score.inliner.LongWeightedScoreImpacter;
 import org.optaplanner.core.impl.score.inliner.ScoreInliner;
 
@@ -38,7 +37,7 @@ public class BendableLongScoreInliner extends ScoreInliner<BendableLongScore> {
     @Override
     public LongWeightedScoreImpacter buildWeightedScoreImpacter(String constraintPackage, String constraintName,
             BendableLongScore constraintWeight) {
-        ensureNonZeroConstraintWeight(constraintWeight);
+        assertNonZeroConstraintWeight(constraintWeight);
         Integer singleLevel = null;
         for (int i = 0; i < constraintWeight.getLevelsSize(); i++) {
             if (constraintWeight.getHardOrSoftScore(i) != 0L) {
@@ -53,27 +52,27 @@ public class BendableLongScoreInliner extends ScoreInliner<BendableLongScore> {
             long levelWeight = constraintWeight.getHardOrSoftScore(singleLevel);
             if (singleLevel < constraintWeight.getHardLevelsSize()) {
                 int level = singleLevel;
-                return (long matchWeight, Supplier<List<Object>> justifications) -> {
+                return (long matchWeight, JustificationsSupplier justificationsSupplier) -> {
                     long hardImpact = levelWeight * matchWeight;
                     this.hardScores[level] += hardImpact;
                     return buildUndo(constraintPackage, constraintName, constraintWeight,
                             () -> this.hardScores[level] -= hardImpact,
                             () -> BendableLongScore.ofHard(hardScores.length, softScores.length, level, hardImpact),
-                            justifications);
+                            justificationsSupplier);
                 };
             } else {
                 int level = singleLevel - constraintWeight.getHardLevelsSize();
-                return (long matchWeight, Supplier<List<Object>> justifications) -> {
+                return (long matchWeight, JustificationsSupplier justificationsSupplier) -> {
                     long softImpact = levelWeight * matchWeight;
                     this.softScores[level] += softImpact;
                     return buildUndo(constraintPackage, constraintName, constraintWeight,
                             () -> this.softScores[level] -= softImpact,
                             () -> BendableLongScore.ofSoft(hardScores.length, softScores.length, level, softImpact),
-                            justifications);
+                            justificationsSupplier);
                 };
             }
         } else {
-            return (long matchWeight, Supplier<List<Object>> justifications) -> {
+            return (long matchWeight, JustificationsSupplier justificationsSupplier) -> {
                 long[] hardImpacts = new long[hardScores.length];
                 long[] softImpacts = new long[softScores.length];
                 for (int i = 0; i < hardImpacts.length; i++) {
@@ -94,7 +93,7 @@ public class BendableLongScoreInliner extends ScoreInliner<BendableLongScore> {
                             }
                         },
                         () -> BendableLongScore.of(hardImpacts, softImpacts),
-                        justifications);
+                        justificationsSupplier);
             };
         }
     }

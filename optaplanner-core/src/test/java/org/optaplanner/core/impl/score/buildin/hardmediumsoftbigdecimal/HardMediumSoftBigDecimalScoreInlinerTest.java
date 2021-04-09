@@ -16,23 +16,21 @@
 
 package org.optaplanner.core.impl.score.buildin.hardmediumsoftbigdecimal;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
 import java.math.BigDecimal;
-import java.util.List;
-import java.util.function.Supplier;
-
 import org.junit.jupiter.api.Test;
 import org.optaplanner.core.api.score.buildin.hardmediumsoftbigdecimal.HardMediumSoftBigDecimalScore;
 import org.optaplanner.core.impl.score.inliner.BigDecimalWeightedScoreImpacter;
+import org.optaplanner.core.impl.score.inliner.JustificationsSupplier;
 import org.optaplanner.core.impl.score.inliner.UndoScoreImpacter;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class HardMediumSoftBigDecimalScoreInlinerTest {
 
     @Test
     public void buildWeightedScoreImpacter() {
         boolean constraintMatchEnabled = false;
-        Supplier<List<Object>> justificationsSupplier = null;
+        JustificationsSupplier justificationsSupplier = null;
 
         HardMediumSoftBigDecimalScoreInliner scoreInliner = new HardMediumSoftBigDecimalScoreInliner(constraintMatchEnabled);
         assertThat(scoreInliner.extractScore(0)).isEqualTo(HardMediumSoftBigDecimalScore.ZERO);

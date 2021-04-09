@@ -17,10 +17,7 @@
 package org.optaplanner.core.impl.score.stream.bavet.tri;
 
 import java.util.List;
-
-import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.impl.score.inliner.UndoScoreImpacter;
-import org.optaplanner.core.impl.score.stream.bavet.BavetConstraintSession;
 import org.optaplanner.core.impl.score.stream.bavet.common.BavetAbstractTuple;
 import org.optaplanner.core.impl.score.stream.bavet.common.BavetScoringTuple;
 
@@ -30,8 +27,6 @@ public final class BavetScoringTriTuple<A, B, C> extends BavetAbstractTriTuple<A
     private final BavetAbstractTriTuple<A, B, C> parentTuple;
 
     private UndoScoreImpacter undoScoreImpacter = null;
-    /** Always null if {@link BavetConstraintSession#constraintMatchEnabled} is false. */
-    private Score<?> matchScore = null;
 
     public BavetScoringTriTuple(BavetScoringTriNode<A, B, C> node, BavetAbstractTriTuple<A, B, C> parentTuple) {
         this.node = node;

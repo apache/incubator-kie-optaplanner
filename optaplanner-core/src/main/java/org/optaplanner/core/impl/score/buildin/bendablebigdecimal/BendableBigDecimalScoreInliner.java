@@ -18,11 +18,10 @@ package org.optaplanner.core.impl.score.buildin.bendablebigdecimal;
 
 import java.math.BigDecimal;
 import java.util.Arrays;
-import java.util.List;
-import java.util.function.Supplier;
 
 import org.optaplanner.core.api.score.buildin.bendablebigdecimal.BendableBigDecimalScore;
 import org.optaplanner.core.impl.score.inliner.BigDecimalWeightedScoreImpacter;
+import org.optaplanner.core.impl.score.inliner.JustificationsSupplier;
 import org.optaplanner.core.impl.score.inliner.ScoreInliner;
 
 public class BendableBigDecimalScoreInliner extends ScoreInliner<BendableBigDecimalScore> {
@@ -41,7 +40,7 @@ public class BendableBigDecimalScoreInliner extends ScoreInliner<BendableBigDeci
     @Override
     public BigDecimalWeightedScoreImpacter buildWeightedScoreImpacter(String constraintPackage, String constraintName,
             BendableBigDecimalScore constraintWeight) {
-        ensureNonZeroConstraintWeight(constraintWeight);
+        assertNonZeroConstraintWeight(constraintWeight);
         Integer singleLevel = null;
         for (int i = 0; i < constraintWeight.getLevelsSize(); i++) {
             if (!constraintWeight.getHardOrSoftScore(i).equals(BigDecimal.ZERO)) {
@@ -56,27 +55,27 @@ public class BendableBigDecimalScoreInliner extends ScoreInliner<BendableBigDeci
             BigDecimal levelWeight = constraintWeight.getHardOrSoftScore(singleLevel);
             if (singleLevel < constraintWeight.getHardLevelsSize()) {
                 int level = singleLevel;
-                return (BigDecimal matchWeight, Supplier<List<Object>> justifications) -> {
+                return (BigDecimal matchWeight, JustificationsSupplier justificationsSupplier) -> {
                     BigDecimal hardImpact = levelWeight.multiply(matchWeight);
                     this.hardScores[level] = this.hardScores[level].add(hardImpact);
                     return buildUndo(constraintPackage, constraintName, constraintWeight,
                             () -> this.hardScores[level] = this.hardScores[level].subtract(hardImpact),
                             () -> BendableBigDecimalScore.ofHard(hardScores.length, softScores.length, level, hardImpact),
-                            justifications);
+                            justificationsSupplier);
                 };
             } else {
                 int level = singleLevel - constraintWeight.getHardLevelsSize();
-                return (BigDecimal matchWeight, Supplier<List<Object>> justifications) -> {
+                return (BigDecimal matchWeight, JustificationsSupplier justificationsSupplier) -> {
                     BigDecimal softImpact = levelWeight.multiply(matchWeight);
                     this.softScores[level] = this.softScores[level].add(softImpact);
                     return buildUndo(constraintPackage, constraintName, constraintWeight,
                             () -> this.softScores[level] = this.softScores[level].subtract(softImpact),
                             () -> BendableBigDecimalScore.ofSoft(hardScores.length, softScores.length, level, softImpact),
-                            justifications);
+                            justificationsSupplier);
                 };
             }
         } else {
-            return (BigDecimal matchWeight, Supplier<List<Object>> justifications) -> {
+            return (BigDecimal matchWeight, JustificationsSupplier justificationsSupplier) -> {
                 BigDecimal[] hardImpacts = new BigDecimal[hardScores.length];
                 BigDecimal[] softImpacts = new BigDecimal[softScores.length];
                 for (int i = 0; i < hardImpacts.length; i++) {
@@ -97,7 +96,7 @@ public class BendableBigDecimalScoreInliner extends ScoreInliner<BendableBigDeci
                             }
                         },
                         () -> BendableBigDecimalScore.of(hardImpacts, softImpacts),
-                        justifications);
+                        justificationsSupplier);
             };
         }
     }

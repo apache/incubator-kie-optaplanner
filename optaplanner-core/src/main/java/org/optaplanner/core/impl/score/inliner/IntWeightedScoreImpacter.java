@@ -16,17 +16,14 @@
 
 package org.optaplanner.core.impl.score.inliner;
 
-import java.util.List;
-import java.util.function.Supplier;
-
 @FunctionalInterface
 public interface IntWeightedScoreImpacter extends WeightedScoreImpacter {
 
     /**
      * @param matchWeight never null
-     * @param justifications never null, supplier only pays the list creation penalty on actual access
+     * @param justificationsSupplier never null, supplier only pays the list creation penalty on actual access
      * @return never null
      */
-    UndoScoreImpacter impactScore(int matchWeight, Supplier<List<Object>> justifications);
+    UndoScoreImpacter impactScore(int matchWeight, JustificationsSupplier justificationsSupplier);
 
 }

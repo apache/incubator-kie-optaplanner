@@ -16,14 +16,17 @@
 
 package org.optaplanner.core.impl.score.inliner;
 
+import java.util.List;
+import java.util.function.Supplier;
+
+/**
+ * This interface exists so that justifications can be created lazily
+ * and that pattern can naturally spread throughout the codebase.
+ *
+ * Justifications must be specifically enabled, and that is usually done outside of the hot path,
+ * as that code is expensive.
+ * Therefore constructing lists of justifications in case they are ever needed is a waste of CPU cycles.
+ */
 @FunctionalInterface
-public interface LongWeightedScoreImpacter extends WeightedScoreImpacter {
-
-    /**
-     * @param matchWeight never null
-     * @param justificationsSupplier never null
-     * @return never null
-     */
-    UndoScoreImpacter impactScore(long matchWeight, JustificationsSupplier justificationsSupplier);
-
+public interface JustificationsSupplier extends Supplier<List<Object>> {
 }

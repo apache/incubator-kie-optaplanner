@@ -16,22 +16,20 @@
 
 package org.optaplanner.core.impl.score.buildin.simple;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
-import java.util.List;
-import java.util.function.Supplier;
-
 import org.junit.jupiter.api.Test;
 import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
 import org.optaplanner.core.impl.score.inliner.IntWeightedScoreImpacter;
+import org.optaplanner.core.impl.score.inliner.JustificationsSupplier;
 import org.optaplanner.core.impl.score.inliner.UndoScoreImpacter;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class SimpleScoreInlinerTest {
 
     @Test
     public void buildIntWeightedScoreImpacter() {
         boolean constraintMatchEnabled = false;
-        Supplier<List<Object>> justificationsSupplier = null;
+        JustificationsSupplier justificationsSupplier = null;
 
         SimpleScoreInliner scoreInliner = new SimpleScoreInliner(constraintMatchEnabled);
         assertThat(scoreInliner.extractScore(0)).isEqualTo(SimpleScore.ZERO);

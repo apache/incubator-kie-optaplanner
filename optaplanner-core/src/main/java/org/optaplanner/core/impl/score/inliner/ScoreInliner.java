@@ -49,13 +49,15 @@ public abstract class ScoreInliner<Score_ extends Score<Score_>> {
             Score_ constraintWeight);
 
     protected Runnable addConstraintMatch(String constraintPackage, String constraintName, Score_ constraintWeight,
-            Score_ score, List<Object> justifications) {
+            Score_ score, List<Object> justificationList) {
         String constraintId = ConstraintMatchTotal.composeConstraintId(constraintPackage, constraintName);
-        DefaultConstraintMatchTotal<Score_> constraintMatchTotal = constraintMatchTotalMap.computeIfAbsent(constraintId,
-                __ -> new DefaultConstraintMatchTotal<>(constraintPackage, constraintName, constraintWeight, zeroScore));
+        DefaultConstraintMatchTotal<Score_> constraintMatchTotal =
+                constraintMatchTotalMap.computeIfAbsent(constraintId,
+                        __ -> new DefaultConstraintMatchTotal<>(constraintPackage, constraintName, constraintWeight,
+                                zeroScore));
         ConstraintMatch<Score_> constraintMatch =
-                constraintMatchTotal.addConstraintMatch(justifications, score);
-        List<DefaultIndictment<Score_>> indictmentList = justifications.stream()
+                constraintMatchTotal.addConstraintMatch(justificationList, score);
+        List<DefaultIndictment<Score_>> indictmentList = justificationList.stream()
                 .distinct() // One match might have the same justification twice
                 .map(justification -> {
                     DefaultIndictment<Score_> indictment = indictmentMap.computeIfAbsent(justification,
@@ -87,10 +89,10 @@ public abstract class ScoreInliner<Score_ extends Score<Score_>> {
         return (Map) indictmentMap;
     }
 
-    protected void ensureNonZeroConstraintWeight(Score_ constraintWeight) {
+    protected void assertNonZeroConstraintWeight(Score_ constraintWeight) {
         if (constraintWeight.equals(zeroScore)) {
-            throw new IllegalArgumentException("The constraintWeight (" + constraintWeight + ") cannot be zero,"
-                    + " this constraint should have been culled during node creation.");
+            throw new IllegalArgumentException("Impossible state: The constraintWeight (" +
+                    constraintWeight + ") cannot be zero, constraint should have been culled during node creation.");
         }
     }
 
@@ -104,18 +106,18 @@ public abstract class ScoreInliner<Score_ extends Score<Score_>> {
      * @param constraintName never null
      * @param constraintWeight never null
      * @param undoWithoutConstraintMatch never null
-     * @param score never null, lazy creation ensures instance only created if constraint matching enabled
-     * @param justifications never null, lazy creation ensures collection only created if constraint matching enabled
+     * @param scoreSupplier never null
+     * @param justificationsSupplier never null
      * @return never null
      */
     protected UndoScoreImpacter buildUndo(String constraintPackage, String constraintName, Score_ constraintWeight,
-            UndoScoreImpacter undoWithoutConstraintMatch, Supplier<Score_> score,
-            Supplier<List<Object>> justifications) {
+            UndoScoreImpacter undoWithoutConstraintMatch, Supplier<Score_> scoreSupplier,
+            JustificationsSupplier justificationsSupplier) {
         if (!constraintMatchEnabled) {
             return undoWithoutConstraintMatch;
         }
         Runnable undoWithConstraintMatch = addConstraintMatch(constraintPackage, constraintName, constraintWeight,
-                score.get(), justifications.get());
+                scoreSupplier.get(), justificationsSupplier.get());
         return () -> {
             undoWithoutConstraintMatch.run();
             undoWithConstraintMatch.run();

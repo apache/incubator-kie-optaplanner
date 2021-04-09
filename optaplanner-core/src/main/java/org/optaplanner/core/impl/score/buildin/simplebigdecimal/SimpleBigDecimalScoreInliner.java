@@ -17,11 +17,10 @@
 package org.optaplanner.core.impl.score.buildin.simplebigdecimal;
 
 import java.math.BigDecimal;
-import java.util.List;
-import java.util.function.Supplier;
 
 import org.optaplanner.core.api.score.buildin.simplebigdecimal.SimpleBigDecimalScore;
 import org.optaplanner.core.impl.score.inliner.BigDecimalWeightedScoreImpacter;
+import org.optaplanner.core.impl.score.inliner.JustificationsSupplier;
 import org.optaplanner.core.impl.score.inliner.ScoreInliner;
 
 public class SimpleBigDecimalScoreInliner extends ScoreInliner<SimpleBigDecimalScore> {
@@ -35,15 +34,15 @@ public class SimpleBigDecimalScoreInliner extends ScoreInliner<SimpleBigDecimalS
     @Override
     public BigDecimalWeightedScoreImpacter buildWeightedScoreImpacter(String constraintPackage, String constraintName,
             SimpleBigDecimalScore constraintWeight) {
-        ensureNonZeroConstraintWeight(constraintWeight);
+        assertNonZeroConstraintWeight(constraintWeight);
         BigDecimal simpleConstraintWeight = constraintWeight.getScore();
-        return (BigDecimal matchWeight, Supplier<List<Object>> justifications) -> {
+        return (BigDecimal matchWeight, JustificationsSupplier justificationsSupplier) -> {
             BigDecimal impact = simpleConstraintWeight.multiply(matchWeight);
             this.score = this.score.add(impact);
             return buildUndo(constraintPackage, constraintName, constraintWeight,
                     () -> this.score = this.score.subtract(impact),
                     () -> SimpleBigDecimalScore.of(impact),
-                    justifications);
+                    justificationsSupplier);
         };
     }
 

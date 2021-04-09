@@ -16,22 +16,20 @@
 
 package org.optaplanner.core.impl.score.buildin.bendablelong;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
-import java.util.List;
-import java.util.function.Supplier;
-
 import org.junit.jupiter.api.Test;
 import org.optaplanner.core.api.score.buildin.bendablelong.BendableLongScore;
+import org.optaplanner.core.impl.score.inliner.JustificationsSupplier;
 import org.optaplanner.core.impl.score.inliner.LongWeightedScoreImpacter;
 import org.optaplanner.core.impl.score.inliner.UndoScoreImpacter;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class BendableLongScoreInlinerTest {
 
     @Test
     public void buildWeightedScoreImpacter() {
         boolean constraintMatchEnabled = false;
-        Supplier<List<Object>> justificationsSupplier = null;
+        JustificationsSupplier justificationsSupplier = null;
 
         BendableLongScoreInliner scoreInliner = new BendableLongScoreInliner(constraintMatchEnabled, 1, 2);
         assertThat(scoreInliner.extractScore(0)).isEqualTo(BendableLongScore.zero(1, 2));

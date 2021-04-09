@@ -16,11 +16,9 @@
 
 package org.optaplanner.core.impl.score.buildin.simple;
 
-import java.util.List;
-import java.util.function.Supplier;
-
 import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
 import org.optaplanner.core.impl.score.inliner.IntWeightedScoreImpacter;
+import org.optaplanner.core.impl.score.inliner.JustificationsSupplier;
 import org.optaplanner.core.impl.score.inliner.ScoreInliner;
 
 public class SimpleScoreInliner extends ScoreInliner<SimpleScore> {
@@ -34,15 +32,15 @@ public class SimpleScoreInliner extends ScoreInliner<SimpleScore> {
     @Override
     public IntWeightedScoreImpacter buildWeightedScoreImpacter(String constraintPackage, String constraintName,
             SimpleScore constraintWeight) {
-        ensureNonZeroConstraintWeight(constraintWeight);
+        assertNonZeroConstraintWeight(constraintWeight);
         int simpleConstraintWeight = constraintWeight.getScore();
-        return (int matchWeight, Supplier<List<Object>> justifications) -> {
+        return (int matchWeight, JustificationsSupplier justificationsSupplier) -> {
             int impact = simpleConstraintWeight * matchWeight;
             this.score += impact;
             return buildUndo(constraintPackage, constraintName, constraintWeight,
                     () -> this.score -= impact,
                     () -> SimpleScore.of(impact),
-                    justifications);
+                    justificationsSupplier);
         };
     }
 
