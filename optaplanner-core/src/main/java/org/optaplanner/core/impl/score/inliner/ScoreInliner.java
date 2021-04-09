@@ -19,7 +19,6 @@ package org.optaplanner.core.impl.score.inliner;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 import org.optaplanner.core.api.score.Score;
@@ -94,34 +93,6 @@ public abstract class ScoreInliner<Score_ extends Score<Score_>> {
             throw new IllegalArgumentException("Impossible state: The constraintWeight (" +
                     constraintWeight + ") cannot be zero, constraint should have been culled during node creation.");
         }
-    }
-
-    /**
-     * Runs constraint matching if enabled.
-     *
-     * Returns {@code undoWithoutConstraintMatch} if constraint matching is disabled.
-     * Otherwise adds a constraint match and extends the undo with an operation to remove the newly added match.
-     *
-     * @param constraintPackage never null
-     * @param constraintName never null
-     * @param constraintWeight never null
-     * @param undoWithoutConstraintMatch never null
-     * @param scoreSupplier never null
-     * @param justificationsSupplier never null
-     * @return never null
-     */
-    protected UndoScoreImpacter buildUndo(String constraintPackage, String constraintName, Score_ constraintWeight,
-            UndoScoreImpacter undoWithoutConstraintMatch, Supplier<Score_> scoreSupplier,
-            JustificationsSupplier justificationsSupplier) {
-        if (!constraintMatchEnabled) {
-            return undoWithoutConstraintMatch;
-        }
-        Runnable undoWithConstraintMatch = addConstraintMatch(constraintPackage, constraintName, constraintWeight,
-                scoreSupplier.get(), justificationsSupplier.get());
-        return () -> {
-            undoWithoutConstraintMatch.run();
-            undoWithConstraintMatch.run();
-        };
     }
 
 }

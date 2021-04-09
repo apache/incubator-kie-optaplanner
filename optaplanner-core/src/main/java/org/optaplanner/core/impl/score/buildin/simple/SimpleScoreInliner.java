@@ -20,6 +20,7 @@ import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
 import org.optaplanner.core.impl.score.inliner.IntWeightedScoreImpacter;
 import org.optaplanner.core.impl.score.inliner.JustificationsSupplier;
 import org.optaplanner.core.impl.score.inliner.ScoreInliner;
+import org.optaplanner.core.impl.score.inliner.UndoScoreImpacter;
 
 public class SimpleScoreInliner extends ScoreInliner<SimpleScore> {
 
@@ -37,10 +38,16 @@ public class SimpleScoreInliner extends ScoreInliner<SimpleScore> {
         return (int matchWeight, JustificationsSupplier justificationsSupplier) -> {
             int impact = simpleConstraintWeight * matchWeight;
             this.score += impact;
-            return buildUndo(constraintPackage, constraintName, constraintWeight,
-                    () -> this.score -= impact,
-                    () -> SimpleScore.of(impact),
-                    justificationsSupplier);
+            UndoScoreImpacter undo = () -> this.score -= impact;
+            if (!constraintMatchEnabled) {
+                return undo;
+            }
+            Runnable undoConstraintMatch = addConstraintMatch(constraintPackage, constraintName, constraintWeight,
+                    SimpleScore.of(impact), justificationsSupplier.get());
+            return () -> {
+                undo.run();
+                undoConstraintMatch.run();
+            };
         };
     }
 

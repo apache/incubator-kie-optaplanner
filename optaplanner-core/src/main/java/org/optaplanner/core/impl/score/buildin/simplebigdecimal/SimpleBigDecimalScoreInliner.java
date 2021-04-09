@@ -22,6 +22,7 @@ import org.optaplanner.core.api.score.buildin.simplebigdecimal.SimpleBigDecimalS
 import org.optaplanner.core.impl.score.inliner.BigDecimalWeightedScoreImpacter;
 import org.optaplanner.core.impl.score.inliner.JustificationsSupplier;
 import org.optaplanner.core.impl.score.inliner.ScoreInliner;
+import org.optaplanner.core.impl.score.inliner.UndoScoreImpacter;
 
 public class SimpleBigDecimalScoreInliner extends ScoreInliner<SimpleBigDecimalScore> {
 
@@ -39,10 +40,16 @@ public class SimpleBigDecimalScoreInliner extends ScoreInliner<SimpleBigDecimalS
         return (BigDecimal matchWeight, JustificationsSupplier justificationsSupplier) -> {
             BigDecimal impact = simpleConstraintWeight.multiply(matchWeight);
             this.score = this.score.add(impact);
-            return buildUndo(constraintPackage, constraintName, constraintWeight,
-                    () -> this.score = this.score.subtract(impact),
-                    () -> SimpleBigDecimalScore.of(impact),
-                    justificationsSupplier);
+            UndoScoreImpacter undo = () -> this.score = this.score.subtract(impact);
+            if (!constraintMatchEnabled) {
+                return undo;
+            }
+            Runnable undoConstraintMatch = addConstraintMatch(constraintPackage, constraintName, constraintWeight,
+                    SimpleBigDecimalScore.of(impact), justificationsSupplier.get());
+            return () -> {
+                undo.run();
+                undoConstraintMatch.run();
+            };
         };
     }
 

@@ -16,13 +16,13 @@
 
 package org.optaplanner.core.impl.score.buildin.bendable;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import org.junit.jupiter.api.Test;
 import org.optaplanner.core.api.score.buildin.bendable.BendableScore;
 import org.optaplanner.core.impl.score.inliner.IntWeightedScoreImpacter;
 import org.optaplanner.core.impl.score.inliner.JustificationsSupplier;
 import org.optaplanner.core.impl.score.inliner.UndoScoreImpacter;
-
-import static org.assertj.core.api.Assertions.assertThat;
 
 public class BendableScoreInlinerTest {
 

@@ -16,13 +16,13 @@
 
 package org.optaplanner.core.impl.score.buildin.hardsoftlong;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import org.junit.jupiter.api.Test;
 import org.optaplanner.core.api.score.buildin.hardsoftlong.HardSoftLongScore;
 import org.optaplanner.core.impl.score.inliner.JustificationsSupplier;
 import org.optaplanner.core.impl.score.inliner.LongWeightedScoreImpacter;
 import org.optaplanner.core.impl.score.inliner.UndoScoreImpacter;
-
-import static org.assertj.core.api.Assertions.assertThat;
 
 public class HardSoftLongScoreInlinerTest {
 

@@ -21,7 +21,7 @@ import java.util.function.Supplier;
 
 /**
  * This interface exists so that justifications can be created lazily
- * and that pattern can naturally spread throughout the codebase.
+ * and for that pattern to naturally spread throughout the codebase.
  *
  * Justifications must be specifically enabled, and that is usually done outside of the hot path,
  * as that code is expensive.

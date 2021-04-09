@@ -17,6 +17,7 @@
 package org.optaplanner.core.impl.score.stream.bavet.tri;
 
 import java.util.List;
+
 import org.optaplanner.core.impl.score.inliner.UndoScoreImpacter;
 import org.optaplanner.core.impl.score.stream.bavet.common.BavetAbstractTuple;
 import org.optaplanner.core.impl.score.stream.bavet.common.BavetScoringTuple;
