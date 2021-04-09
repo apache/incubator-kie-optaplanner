@@ -43,14 +43,14 @@ public class HardMediumSoftLongScoreInliner extends ScoreInliner<HardMediumSoftL
             return (long matchWeight, JustificationsSupplier justificationsSupplier) -> {
                 long hardImpact = hardConstraintWeight * matchWeight;
                 this.hardScore += hardImpact;
-                UndoScoreImpacter undo = () -> this.hardScore -= hardImpact;
+                UndoScoreImpacter undoScoreImpact = () -> this.hardScore -= hardImpact;
                 if (!constraintMatchEnabled) {
-                    return undo;
+                    return undoScoreImpact;
                 }
                 Runnable undoConstraintMatch = addConstraintMatch(constraintPackage, constraintName, constraintWeight,
                         HardMediumSoftLongScore.ofHard(hardImpact), justificationsSupplier.get());
                 return () -> {
-                    undo.run();
+                    undoScoreImpact.run();
                     undoConstraintMatch.run();
                 };
             };
@@ -58,14 +58,14 @@ public class HardMediumSoftLongScoreInliner extends ScoreInliner<HardMediumSoftL
             return (long matchWeight, JustificationsSupplier justificationsSupplier) -> {
                 long mediumImpact = mediumConstraintWeight * matchWeight;
                 this.mediumScore += mediumImpact;
-                UndoScoreImpacter undo = () -> this.mediumScore -= mediumImpact;
+                UndoScoreImpacter undoScoreImpact = () -> this.mediumScore -= mediumImpact;
                 if (!constraintMatchEnabled) {
-                    return undo;
+                    return undoScoreImpact;
                 }
                 Runnable undoConstraintMatch = addConstraintMatch(constraintPackage, constraintName, constraintWeight,
                         HardMediumSoftLongScore.ofMedium(mediumImpact), justificationsSupplier.get());
                 return () -> {
-                    undo.run();
+                    undoScoreImpact.run();
                     undoConstraintMatch.run();
                 };
             };
@@ -73,14 +73,14 @@ public class HardMediumSoftLongScoreInliner extends ScoreInliner<HardMediumSoftL
             return (long matchWeight, JustificationsSupplier justificationsSupplier) -> {
                 long softImpact = softConstraintWeight * matchWeight;
                 this.softScore += softImpact;
-                UndoScoreImpacter undo = () -> this.softScore -= softImpact;
+                UndoScoreImpacter undoScoreImpact = () -> this.softScore -= softImpact;
                 if (!constraintMatchEnabled) {
-                    return undo;
+                    return undoScoreImpact;
                 }
                 Runnable undoConstraintMatch = addConstraintMatch(constraintPackage, constraintName, constraintWeight,
                         HardMediumSoftLongScore.ofSoft(softImpact), justificationsSupplier.get());
                 return () -> {
-                    undo.run();
+                    undoScoreImpact.run();
                     undoConstraintMatch.run();
                 };
             };
@@ -92,18 +92,18 @@ public class HardMediumSoftLongScoreInliner extends ScoreInliner<HardMediumSoftL
                 this.hardScore += hardImpact;
                 this.mediumScore += mediumImpact;
                 this.softScore += softImpact;
-                UndoScoreImpacter undo = () -> {
+                UndoScoreImpacter undoScoreImpact = () -> {
                     this.hardScore -= hardImpact;
                     this.mediumScore -= mediumImpact;
                     this.softScore -= softImpact;
                 };
                 if (!constraintMatchEnabled) {
-                    return undo;
+                    return undoScoreImpact;
                 }
                 Runnable undoConstraintMatch = addConstraintMatch(constraintPackage, constraintName, constraintWeight,
                         HardMediumSoftLongScore.of(hardImpact, mediumImpact, softImpact), justificationsSupplier.get());
                 return () -> {
-                    undo.run();
+                    undoScoreImpact.run();
                     undoConstraintMatch.run();
                 };
             };

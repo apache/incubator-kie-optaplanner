@@ -98,24 +98,24 @@ abstract class AbstractRuleContext {
             IntImpactExecutor impactExecutor, int impact, JustificationsSupplier justificationsSupplier) {
         constraint.assertCorrectImpact(impact);
         AgendaItem<?> agendaItem = (AgendaItem<?>) ((RuleContext) drools).getMatch();
-        UndoScoreImpacter undo = impactExecutor.execute(impact, justificationsSupplier);
-        agendaItem.setCallback(undo);
+        UndoScoreImpacter undoImpact = impactExecutor.execute(impact, justificationsSupplier);
+        agendaItem.setCallback(undoImpact);
     }
 
     protected static void runConsequence(DroolsConstraint<?> constraint, Drools drools,
             LongImpactExecutor impactExecutor, long impact, JustificationsSupplier justificationsSupplier) {
         constraint.assertCorrectImpact(impact);
         AgendaItem<?> agendaItem = (AgendaItem<?>) ((RuleContext) drools).getMatch();
-        UndoScoreImpacter undo = impactExecutor.execute(impact, justificationsSupplier);
-        agendaItem.setCallback(undo);
+        UndoScoreImpacter undoImpact = impactExecutor.execute(impact, justificationsSupplier);
+        agendaItem.setCallback(undoImpact);
     }
 
     protected static void runConsequence(DroolsConstraint<?> constraint, Drools drools,
             BigDecimalImpactExecutor impactExecutor, BigDecimal impact, JustificationsSupplier justificationsSupplier) {
         constraint.assertCorrectImpact(impact);
         AgendaItem<?> agendaItem = (AgendaItem<?>) ((RuleContext) drools).getMatch();
-        UndoScoreImpacter undo = impactExecutor.execute(impact, justificationsSupplier);
-        agendaItem.setCallback(undo);
+        UndoScoreImpacter undoImpact = impactExecutor.execute(impact, justificationsSupplier);
+        agendaItem.setCallback(undoImpact);
     }
 
     protected static IntImpactExecutor buildIntImpactExecutor(WeightedScoreImpacter scoreImpacter) {

@@ -102,7 +102,9 @@ public final class DroolsConstraintSessionFactory<Solution_, Score_ extends Scor
                     return new Object[] { constraint, weight };
                 })
                 .filter(constraintAndWeight -> !constraintAndWeight[1].equals(zeroScore)) // Exclude zero-weighted.
-                .collect(Collectors.toMap(c -> (DroolsConstraint<Solution_>) c[0], c -> (Score_) c[1]));
+                .collect(Collectors.toMap(
+                        constraintAndWeight -> (DroolsConstraint<Solution_>) constraintAndWeight[0],
+                        constraintAndWeight -> (Score_) constraintAndWeight[1]));
 
         // Creating KieBase is expensive. Therefore we only do it when there has been a change in constraint weights.
         if (kieBaseCache == null || !kieBaseCache.isUpToDate(constraintWeightMap)) {

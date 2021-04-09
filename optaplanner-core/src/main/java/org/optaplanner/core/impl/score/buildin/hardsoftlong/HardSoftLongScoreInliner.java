@@ -41,14 +41,14 @@ public class HardSoftLongScoreInliner extends ScoreInliner<HardSoftLongScore> {
             return (long matchWeight, JustificationsSupplier justificationsSupplier) -> {
                 long hardImpact = hardConstraintWeight * matchWeight;
                 this.hardScore += hardImpact;
-                UndoScoreImpacter undo = () -> this.hardScore -= hardImpact;
+                UndoScoreImpacter undoScoreImpact = () -> this.hardScore -= hardImpact;
                 if (!constraintMatchEnabled) {
-                    return undo;
+                    return undoScoreImpact;
                 }
                 Runnable undoConstraintMatch = addConstraintMatch(constraintPackage, constraintName, constraintWeight,
                         HardSoftLongScore.ofHard(hardImpact), justificationsSupplier.get());
                 return () -> {
-                    undo.run();
+                    undoScoreImpact.run();
                     undoConstraintMatch.run();
                 };
             };
@@ -56,14 +56,14 @@ public class HardSoftLongScoreInliner extends ScoreInliner<HardSoftLongScore> {
             return (long matchWeight, JustificationsSupplier justificationsSupplier) -> {
                 long softImpact = softConstraintWeight * matchWeight;
                 this.softScore += softImpact;
-                UndoScoreImpacter undo = () -> this.softScore -= softImpact;
+                UndoScoreImpacter undoScoreImpact = () -> this.softScore -= softImpact;
                 if (!constraintMatchEnabled) {
-                    return undo;
+                    return undoScoreImpact;
                 }
                 Runnable undoConstraintMatch = addConstraintMatch(constraintPackage, constraintName, constraintWeight,
                         HardSoftLongScore.ofSoft(softImpact), justificationsSupplier.get());
                 return () -> {
-                    undo.run();
+                    undoScoreImpact.run();
                     undoConstraintMatch.run();
                 };
             };
@@ -73,17 +73,17 @@ public class HardSoftLongScoreInliner extends ScoreInliner<HardSoftLongScore> {
                 long softImpact = softConstraintWeight * matchWeight;
                 this.hardScore += hardImpact;
                 this.softScore += softImpact;
-                UndoScoreImpacter undo = () -> {
+                UndoScoreImpacter undoScoreImpact = () -> {
                     this.hardScore -= hardImpact;
                     this.softScore -= softImpact;
                 };
                 if (!constraintMatchEnabled) {
-                    return undo;
+                    return undoScoreImpact;
                 }
                 Runnable undoConstraintMatch = addConstraintMatch(constraintPackage, constraintName, constraintWeight,
                         HardSoftLongScore.of(hardImpact, softImpact), justificationsSupplier.get());
                 return () -> {
-                    undo.run();
+                    undoScoreImpact.run();
                     undoConstraintMatch.run();
                 };
             };

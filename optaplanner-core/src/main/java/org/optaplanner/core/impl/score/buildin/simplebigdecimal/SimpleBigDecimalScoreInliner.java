@@ -40,14 +40,14 @@ public class SimpleBigDecimalScoreInliner extends ScoreInliner<SimpleBigDecimalS
         return (BigDecimal matchWeight, JustificationsSupplier justificationsSupplier) -> {
             BigDecimal impact = simpleConstraintWeight.multiply(matchWeight);
             this.score = this.score.add(impact);
-            UndoScoreImpacter undo = () -> this.score = this.score.subtract(impact);
+            UndoScoreImpacter undoScoreImpact = () -> this.score = this.score.subtract(impact);
             if (!constraintMatchEnabled) {
-                return undo;
+                return undoScoreImpact;
             }
             Runnable undoConstraintMatch = addConstraintMatch(constraintPackage, constraintName, constraintWeight,
                     SimpleBigDecimalScore.of(impact), justificationsSupplier.get());
             return () -> {
-                undo.run();
+                undoScoreImpact.run();
                 undoConstraintMatch.run();
             };
         };

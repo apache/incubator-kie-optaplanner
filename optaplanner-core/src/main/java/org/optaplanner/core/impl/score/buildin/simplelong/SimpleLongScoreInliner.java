@@ -38,14 +38,14 @@ public class SimpleLongScoreInliner extends ScoreInliner<SimpleLongScore> {
         return (long matchWeight, JustificationsSupplier justificationsSupplier) -> {
             long impact = simpleConstraintWeight * matchWeight;
             this.score += impact;
-            UndoScoreImpacter undo = () -> this.score -= impact;
+            UndoScoreImpacter undoScoreImpact = () -> this.score -= impact;
             if (!constraintMatchEnabled) {
-                return undo;
+                return undoScoreImpact;
             }
             Runnable undoConstraintMatch = addConstraintMatch(constraintPackage, constraintName, constraintWeight,
                     SimpleLongScore.of(impact), justificationsSupplier.get());
             return () -> {
-                undo.run();
+                undoScoreImpact.run();
                 undoConstraintMatch.run();
             };
         };
