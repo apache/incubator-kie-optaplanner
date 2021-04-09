@@ -17,12 +17,13 @@
 package org.optaplanner.core.impl.score.buildin.simple;
 
 import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
+import org.optaplanner.core.api.score.constraint.ConstraintMatchTotal;
 import org.optaplanner.core.impl.score.inliner.IntWeightedScoreImpacter;
 import org.optaplanner.core.impl.score.inliner.JustificationsSupplier;
 import org.optaplanner.core.impl.score.inliner.ScoreInliner;
 import org.optaplanner.core.impl.score.inliner.UndoScoreImpacter;
 
-public class SimpleScoreInliner extends ScoreInliner<SimpleScore> {
+public final class SimpleScoreInliner extends ScoreInliner<SimpleScore> {
 
     private int score;
 
@@ -34,6 +35,7 @@ public class SimpleScoreInliner extends ScoreInliner<SimpleScore> {
     public IntWeightedScoreImpacter buildWeightedScoreImpacter(String constraintPackage, String constraintName,
             SimpleScore constraintWeight) {
         assertNonZeroConstraintWeight(constraintWeight);
+        String constraintId = ConstraintMatchTotal.composeConstraintId(constraintPackage, constraintName); // Cache.
         int simpleConstraintWeight = constraintWeight.getScore();
         return (int matchWeight, JustificationsSupplier justificationsSupplier) -> {
             int impact = simpleConstraintWeight * matchWeight;
@@ -42,8 +44,8 @@ public class SimpleScoreInliner extends ScoreInliner<SimpleScore> {
             if (!constraintMatchEnabled) {
                 return undoScoreImpact;
             }
-            Runnable undoConstraintMatch = addConstraintMatch(constraintPackage, constraintName, constraintWeight,
-                    SimpleScore.of(impact), justificationsSupplier.get());
+            Runnable undoConstraintMatch = addConstraintMatch(constraintId, constraintPackage, constraintName,
+                    constraintWeight, SimpleScore.of(impact), justificationsSupplier.get());
             return () -> {
                 undoScoreImpact.run();
                 undoConstraintMatch.run();

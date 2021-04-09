@@ -17,12 +17,13 @@
 package org.optaplanner.core.impl.score.buildin.hardmediumsoftlong;
 
 import org.optaplanner.core.api.score.buildin.hardmediumsoftlong.HardMediumSoftLongScore;
+import org.optaplanner.core.api.score.constraint.ConstraintMatchTotal;
 import org.optaplanner.core.impl.score.inliner.JustificationsSupplier;
 import org.optaplanner.core.impl.score.inliner.LongWeightedScoreImpacter;
 import org.optaplanner.core.impl.score.inliner.ScoreInliner;
 import org.optaplanner.core.impl.score.inliner.UndoScoreImpacter;
 
-public class HardMediumSoftLongScoreInliner extends ScoreInliner<HardMediumSoftLongScore> {
+public final class HardMediumSoftLongScoreInliner extends ScoreInliner<HardMediumSoftLongScore> {
 
     private long hardScore;
     private long mediumScore;
@@ -36,6 +37,7 @@ public class HardMediumSoftLongScoreInliner extends ScoreInliner<HardMediumSoftL
     public LongWeightedScoreImpacter buildWeightedScoreImpacter(String constraintPackage, String constraintName,
             HardMediumSoftLongScore constraintWeight) {
         assertNonZeroConstraintWeight(constraintWeight);
+        String constraintId = ConstraintMatchTotal.composeConstraintId(constraintPackage, constraintName); // Cache.
         long hardConstraintWeight = constraintWeight.getHardScore();
         long mediumConstraintWeight = constraintWeight.getMediumScore();
         long softConstraintWeight = constraintWeight.getSoftScore();
@@ -47,8 +49,8 @@ public class HardMediumSoftLongScoreInliner extends ScoreInliner<HardMediumSoftL
                 if (!constraintMatchEnabled) {
                     return undoScoreImpact;
                 }
-                Runnable undoConstraintMatch = addConstraintMatch(constraintPackage, constraintName, constraintWeight,
-                        HardMediumSoftLongScore.ofHard(hardImpact), justificationsSupplier.get());
+                Runnable undoConstraintMatch = addConstraintMatch(constraintId, constraintPackage, constraintName,
+                        constraintWeight, HardMediumSoftLongScore.ofHard(hardImpact), justificationsSupplier.get());
                 return () -> {
                     undoScoreImpact.run();
                     undoConstraintMatch.run();
@@ -62,8 +64,8 @@ public class HardMediumSoftLongScoreInliner extends ScoreInliner<HardMediumSoftL
                 if (!constraintMatchEnabled) {
                     return undoScoreImpact;
                 }
-                Runnable undoConstraintMatch = addConstraintMatch(constraintPackage, constraintName, constraintWeight,
-                        HardMediumSoftLongScore.ofMedium(mediumImpact), justificationsSupplier.get());
+                Runnable undoConstraintMatch = addConstraintMatch(constraintId, constraintPackage, constraintName,
+                        constraintWeight, HardMediumSoftLongScore.ofMedium(mediumImpact), justificationsSupplier.get());
                 return () -> {
                     undoScoreImpact.run();
                     undoConstraintMatch.run();
@@ -77,8 +79,8 @@ public class HardMediumSoftLongScoreInliner extends ScoreInliner<HardMediumSoftL
                 if (!constraintMatchEnabled) {
                     return undoScoreImpact;
                 }
-                Runnable undoConstraintMatch = addConstraintMatch(constraintPackage, constraintName, constraintWeight,
-                        HardMediumSoftLongScore.ofSoft(softImpact), justificationsSupplier.get());
+                Runnable undoConstraintMatch = addConstraintMatch(constraintId, constraintPackage, constraintName,
+                        constraintWeight, HardMediumSoftLongScore.ofSoft(softImpact), justificationsSupplier.get());
                 return () -> {
                     undoScoreImpact.run();
                     undoConstraintMatch.run();
@@ -100,8 +102,9 @@ public class HardMediumSoftLongScoreInliner extends ScoreInliner<HardMediumSoftL
                 if (!constraintMatchEnabled) {
                     return undoScoreImpact;
                 }
-                Runnable undoConstraintMatch = addConstraintMatch(constraintPackage, constraintName, constraintWeight,
-                        HardMediumSoftLongScore.of(hardImpact, mediumImpact, softImpact), justificationsSupplier.get());
+                Runnable undoConstraintMatch = addConstraintMatch(constraintId, constraintPackage, constraintName,
+                        constraintWeight, HardMediumSoftLongScore.of(hardImpact, mediumImpact, softImpact),
+                        justificationsSupplier.get());
                 return () -> {
                     undoScoreImpact.run();
                     undoConstraintMatch.run();

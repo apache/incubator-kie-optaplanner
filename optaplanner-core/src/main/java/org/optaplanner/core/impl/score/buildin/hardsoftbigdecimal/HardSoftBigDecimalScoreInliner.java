@@ -19,12 +19,13 @@ package org.optaplanner.core.impl.score.buildin.hardsoftbigdecimal;
 import java.math.BigDecimal;
 
 import org.optaplanner.core.api.score.buildin.hardsoftbigdecimal.HardSoftBigDecimalScore;
+import org.optaplanner.core.api.score.constraint.ConstraintMatchTotal;
 import org.optaplanner.core.impl.score.inliner.BigDecimalWeightedScoreImpacter;
 import org.optaplanner.core.impl.score.inliner.JustificationsSupplier;
 import org.optaplanner.core.impl.score.inliner.ScoreInliner;
 import org.optaplanner.core.impl.score.inliner.UndoScoreImpacter;
 
-public class HardSoftBigDecimalScoreInliner extends ScoreInliner<HardSoftBigDecimalScore> {
+public final class HardSoftBigDecimalScoreInliner extends ScoreInliner<HardSoftBigDecimalScore> {
 
     private BigDecimal hardScore = BigDecimal.ZERO;
     private BigDecimal softScore = BigDecimal.ZERO;
@@ -39,6 +40,7 @@ public class HardSoftBigDecimalScoreInliner extends ScoreInliner<HardSoftBigDeci
         assertNonZeroConstraintWeight(constraintWeight);
         BigDecimal hardConstraintWeight = constraintWeight.getHardScore();
         BigDecimal softConstraintWeight = constraintWeight.getSoftScore();
+        String constraintId = ConstraintMatchTotal.composeConstraintId(constraintPackage, constraintName); // Cache.
         if (softConstraintWeight.equals(BigDecimal.ZERO)) {
             return (BigDecimal matchWeight, JustificationsSupplier justificationsSupplier) -> {
                 BigDecimal hardImpact = hardConstraintWeight.multiply(matchWeight);
@@ -47,8 +49,8 @@ public class HardSoftBigDecimalScoreInliner extends ScoreInliner<HardSoftBigDeci
                 if (!constraintMatchEnabled) {
                     return undoScoreImpact;
                 }
-                Runnable undoConstraintMatch = addConstraintMatch(constraintPackage, constraintName, constraintWeight,
-                        HardSoftBigDecimalScore.ofHard(hardImpact), justificationsSupplier.get());
+                Runnable undoConstraintMatch = addConstraintMatch(constraintId, constraintPackage, constraintName,
+                        constraintWeight, HardSoftBigDecimalScore.ofHard(hardImpact), justificationsSupplier.get());
                 return () -> {
                     undoScoreImpact.run();
                     undoConstraintMatch.run();
@@ -62,8 +64,8 @@ public class HardSoftBigDecimalScoreInliner extends ScoreInliner<HardSoftBigDeci
                 if (!constraintMatchEnabled) {
                     return undoScoreImpact;
                 }
-                Runnable undoConstraintMatch = addConstraintMatch(constraintPackage, constraintName, constraintWeight,
-                        HardSoftBigDecimalScore.ofSoft(softImpact), justificationsSupplier.get());
+                Runnable undoConstraintMatch = addConstraintMatch(constraintId, constraintPackage, constraintName,
+                        constraintWeight, HardSoftBigDecimalScore.ofSoft(softImpact), justificationsSupplier.get());
                 return () -> {
                     undoScoreImpact.run();
                     undoConstraintMatch.run();
@@ -82,8 +84,9 @@ public class HardSoftBigDecimalScoreInliner extends ScoreInliner<HardSoftBigDeci
                 if (!constraintMatchEnabled) {
                     return undoScoreImpact;
                 }
-                Runnable undoConstraintMatch = addConstraintMatch(constraintPackage, constraintName, constraintWeight,
-                        HardSoftBigDecimalScore.of(hardImpact, softImpact), justificationsSupplier.get());
+                Runnable undoConstraintMatch = addConstraintMatch(constraintId, constraintPackage, constraintName,
+                        constraintWeight, HardSoftBigDecimalScore.of(hardImpact, softImpact),
+                        justificationsSupplier.get());
                 return () -> {
                     undoScoreImpact.run();
                     undoConstraintMatch.run();

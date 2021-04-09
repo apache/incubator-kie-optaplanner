@@ -19,12 +19,13 @@ package org.optaplanner.core.impl.score.buildin.bendablelong;
 import java.util.Arrays;
 
 import org.optaplanner.core.api.score.buildin.bendablelong.BendableLongScore;
+import org.optaplanner.core.api.score.constraint.ConstraintMatchTotal;
 import org.optaplanner.core.impl.score.inliner.JustificationsSupplier;
 import org.optaplanner.core.impl.score.inliner.LongWeightedScoreImpacter;
 import org.optaplanner.core.impl.score.inliner.ScoreInliner;
 import org.optaplanner.core.impl.score.inliner.UndoScoreImpacter;
 
-public class BendableLongScoreInliner extends ScoreInliner<BendableLongScore> {
+public final class BendableLongScoreInliner extends ScoreInliner<BendableLongScore> {
 
     private final long[] hardScores;
     private final long[] softScores;
@@ -49,6 +50,7 @@ public class BendableLongScoreInliner extends ScoreInliner<BendableLongScore> {
                 singleLevel = i;
             }
         }
+        String constraintId = ConstraintMatchTotal.composeConstraintId(constraintPackage, constraintName); // Cache.
         if (singleLevel != null) {
             long levelWeight = constraintWeight.getHardOrSoftScore(singleLevel);
             if (singleLevel < constraintWeight.getHardLevelsSize()) {
@@ -60,7 +62,8 @@ public class BendableLongScoreInliner extends ScoreInliner<BendableLongScore> {
                     if (!constraintMatchEnabled) {
                         return undoScoreImpact;
                     }
-                    Runnable undoConstraintMatch = addConstraintMatch(constraintPackage, constraintName, constraintWeight,
+                    Runnable undoConstraintMatch = addConstraintMatch(constraintId, constraintPackage, constraintName,
+                            constraintWeight,
                             BendableLongScore.ofHard(hardScores.length, softScores.length, level, hardImpact),
                             justificationsSupplier.get());
                     return () -> {
@@ -77,7 +80,8 @@ public class BendableLongScoreInliner extends ScoreInliner<BendableLongScore> {
                     if (!constraintMatchEnabled) {
                         return undoScoreImpact;
                     }
-                    Runnable undoConstraintMatch = addConstraintMatch(constraintPackage, constraintName, constraintWeight,
+                    Runnable undoConstraintMatch = addConstraintMatch(constraintId, constraintPackage, constraintName,
+                            constraintWeight,
                             BendableLongScore.ofSoft(hardScores.length, softScores.length, level, softImpact),
                             justificationsSupplier.get());
                     return () -> {
@@ -109,8 +113,8 @@ public class BendableLongScoreInliner extends ScoreInliner<BendableLongScore> {
                 if (!constraintMatchEnabled) {
                     return undoScoreImpact;
                 }
-                Runnable undoConstraintMatch = addConstraintMatch(constraintPackage, constraintName, constraintWeight,
-                        BendableLongScore.of(hardImpacts, softImpacts), justificationsSupplier.get());
+                Runnable undoConstraintMatch = addConstraintMatch(constraintId, constraintPackage, constraintName,
+                        constraintWeight, BendableLongScore.of(hardImpacts, softImpacts), justificationsSupplier.get());
                 return () -> {
                     undoScoreImpact.run();
                     undoConstraintMatch.run();

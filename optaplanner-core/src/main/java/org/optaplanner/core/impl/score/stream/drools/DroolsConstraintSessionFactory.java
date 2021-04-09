@@ -23,7 +23,6 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 
 import org.drools.ancompiler.KieBaseUpdaterANC;
-import org.drools.core.common.AgendaItem;
 import org.drools.model.Model;
 import org.drools.model.impl.ModelImpl;
 import org.drools.modelcompiler.builder.KieBaseBuilder;
@@ -35,16 +34,13 @@ import org.kie.api.runtime.Environment;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.KieSessionConfiguration;
 import org.kie.api.runtime.conf.DirectFiringOption;
-import org.kie.api.runtime.rule.Match;
 import org.kie.internal.builder.conf.PropertySpecificOption;
-import org.kie.internal.event.rule.RuleEventListener;
 import org.kie.internal.event.rule.RuleEventManager;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.stream.Constraint;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.core.impl.score.definition.ScoreDefinition;
 import org.optaplanner.core.impl.score.inliner.ScoreInliner;
-import org.optaplanner.core.impl.score.inliner.UndoScoreImpacter;
 
 public final class DroolsConstraintSessionFactory<Solution_, Score_ extends Score<Score_>> {
 
@@ -165,27 +161,6 @@ public final class DroolsConstraintSessionFactory<Solution_, Score_ extends Scor
         public ScoreInliner<Score_> getScoreInliner() {
             return scoreInliner;
         }
-    }
-
-    private static final class OptaPlannerRuleEventListener implements RuleEventListener {
-
-        @Override
-        public void onUpdateMatch(Match match) {
-            undoPreviousMatch(match);
-        }
-
-        @Override
-        public void onDeleteMatch(Match match) {
-            undoPreviousMatch(match);
-        }
-
-        public void undoPreviousMatch(Match match) {
-            AgendaItem<?> agendaItem = (AgendaItem<?>) match;
-            UndoScoreImpacter callback = (UndoScoreImpacter) agendaItem.getCallback();
-            callback.run();
-            agendaItem.setCallback(null);
-        }
-
     }
 
 }

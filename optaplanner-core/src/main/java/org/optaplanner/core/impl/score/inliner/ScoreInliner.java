@@ -19,7 +19,6 @@ package org.optaplanner.core.impl.score.inliner;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.constraint.ConstraintMatch;
@@ -47,29 +46,25 @@ public abstract class ScoreInliner<Score_ extends Score<Score_>> {
     public abstract WeightedScoreImpacter buildWeightedScoreImpacter(String constraintPackage, String constraintName,
             Score_ constraintWeight);
 
-    protected Runnable addConstraintMatch(String constraintPackage, String constraintName, Score_ constraintWeight,
-            Score_ score, List<Object> justificationList) {
-        String constraintId = ConstraintMatchTotal.composeConstraintId(constraintPackage, constraintName);
-        DefaultConstraintMatchTotal<Score_> constraintMatchTotal =
-                constraintMatchTotalMap.computeIfAbsent(constraintId,
-                        __ -> new DefaultConstraintMatchTotal<>(constraintPackage, constraintName, constraintWeight,
-                                zeroScore));
-        ConstraintMatch<Score_> constraintMatch =
-                constraintMatchTotal.addConstraintMatch(justificationList, score);
-        List<DefaultIndictment<Score_>> indictmentList = justificationList.stream()
+    protected final Runnable addConstraintMatch(String constraintId, String constraintPackage, String constraintName,
+            Score_ constraintWeight, Score_ score, List<Object> justificationList) {
+        DefaultConstraintMatchTotal<Score_> constraintMatchTotal = constraintMatchTotalMap.computeIfAbsent(constraintId,
+                __ -> new DefaultConstraintMatchTotal<>(constraintPackage, constraintName, constraintWeight, zeroScore));
+        ConstraintMatch<Score_> constraintMatch = constraintMatchTotal.addConstraintMatch(justificationList, score);
+        DefaultIndictment<Score_>[] indictments = justificationList.stream()
                 .distinct() // One match might have the same justification twice
                 .map(justification -> {
                     DefaultIndictment<Score_> indictment = indictmentMap.computeIfAbsent(justification,
                             __ -> new DefaultIndictment<>(justification, zeroScore));
                     indictment.addConstraintMatch(constraintMatch);
                     return indictment;
-                }).collect(Collectors.toList());
+                }).toArray(DefaultIndictment[]::new);
         return () -> {
             constraintMatchTotal.removeConstraintMatch(constraintMatch);
             if (constraintMatchTotal.getConstraintMatchSet().isEmpty()) {
                 constraintMatchTotalMap.remove(constraintId);
             }
-            for (DefaultIndictment<Score_> indictment : indictmentList) {
+            for (DefaultIndictment<Score_> indictment : indictments) {
                 indictment.removeConstraintMatch(constraintMatch);
                 if (indictment.getConstraintMatchSet().isEmpty()) {
                     indictmentMap.remove(indictment.getJustification());
@@ -78,17 +73,17 @@ public abstract class ScoreInliner<Score_ extends Score<Score_>> {
         };
     }
 
-    public Map<String, ConstraintMatchTotal<Score_>> getConstraintMatchTotalMap() {
+    public final Map<String, ConstraintMatchTotal<Score_>> getConstraintMatchTotalMap() {
         // Unchecked assignment necessary as CMT and DefaultCMT incompatible in the Map generics.
         return (Map) constraintMatchTotalMap;
     }
 
-    public Map<Object, Indictment<Score_>> getIndictmentMap() {
+    public final Map<Object, Indictment<Score_>> getIndictmentMap() {
         // Unchecked assignment necessary as Indictment and DefaultIndictment incompatible in the Map generics.
         return (Map) indictmentMap;
     }
 
-    protected void assertNonZeroConstraintWeight(Score_ constraintWeight) {
+    protected final void assertNonZeroConstraintWeight(Score_ constraintWeight) {
         if (constraintWeight.equals(zeroScore)) {
             throw new IllegalArgumentException("Impossible state: The constraintWeight (" +
                     constraintWeight + ") cannot be zero, constraint should have been culled during node creation.");

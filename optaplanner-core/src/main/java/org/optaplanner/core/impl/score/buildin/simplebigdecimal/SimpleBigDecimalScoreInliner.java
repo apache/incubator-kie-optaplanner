@@ -19,12 +19,13 @@ package org.optaplanner.core.impl.score.buildin.simplebigdecimal;
 import java.math.BigDecimal;
 
 import org.optaplanner.core.api.score.buildin.simplebigdecimal.SimpleBigDecimalScore;
+import org.optaplanner.core.api.score.constraint.ConstraintMatchTotal;
 import org.optaplanner.core.impl.score.inliner.BigDecimalWeightedScoreImpacter;
 import org.optaplanner.core.impl.score.inliner.JustificationsSupplier;
 import org.optaplanner.core.impl.score.inliner.ScoreInliner;
 import org.optaplanner.core.impl.score.inliner.UndoScoreImpacter;
 
-public class SimpleBigDecimalScoreInliner extends ScoreInliner<SimpleBigDecimalScore> {
+public final class SimpleBigDecimalScoreInliner extends ScoreInliner<SimpleBigDecimalScore> {
 
     private BigDecimal score = BigDecimal.ZERO;
 
@@ -36,6 +37,7 @@ public class SimpleBigDecimalScoreInliner extends ScoreInliner<SimpleBigDecimalS
     public BigDecimalWeightedScoreImpacter buildWeightedScoreImpacter(String constraintPackage, String constraintName,
             SimpleBigDecimalScore constraintWeight) {
         assertNonZeroConstraintWeight(constraintWeight);
+        String constraintId = ConstraintMatchTotal.composeConstraintId(constraintPackage, constraintName); // Cache.
         BigDecimal simpleConstraintWeight = constraintWeight.getScore();
         return (BigDecimal matchWeight, JustificationsSupplier justificationsSupplier) -> {
             BigDecimal impact = simpleConstraintWeight.multiply(matchWeight);
@@ -44,8 +46,8 @@ public class SimpleBigDecimalScoreInliner extends ScoreInliner<SimpleBigDecimalS
             if (!constraintMatchEnabled) {
                 return undoScoreImpact;
             }
-            Runnable undoConstraintMatch = addConstraintMatch(constraintPackage, constraintName, constraintWeight,
-                    SimpleBigDecimalScore.of(impact), justificationsSupplier.get());
+            Runnable undoConstraintMatch = addConstraintMatch(constraintId, constraintPackage, constraintName,
+                    constraintWeight, SimpleBigDecimalScore.of(impact), justificationsSupplier.get());
             return () -> {
                 undoScoreImpact.run();
                 undoConstraintMatch.run();

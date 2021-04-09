@@ -17,12 +17,13 @@
 package org.optaplanner.core.impl.score.buildin.simplelong;
 
 import org.optaplanner.core.api.score.buildin.simplelong.SimpleLongScore;
+import org.optaplanner.core.api.score.constraint.ConstraintMatchTotal;
 import org.optaplanner.core.impl.score.inliner.JustificationsSupplier;
 import org.optaplanner.core.impl.score.inliner.LongWeightedScoreImpacter;
 import org.optaplanner.core.impl.score.inliner.ScoreInliner;
 import org.optaplanner.core.impl.score.inliner.UndoScoreImpacter;
 
-public class SimpleLongScoreInliner extends ScoreInliner<SimpleLongScore> {
+public final class SimpleLongScoreInliner extends ScoreInliner<SimpleLongScore> {
 
     private long score;
 
@@ -34,6 +35,7 @@ public class SimpleLongScoreInliner extends ScoreInliner<SimpleLongScore> {
     public LongWeightedScoreImpacter buildWeightedScoreImpacter(String constraintPackage, String constraintName,
             SimpleLongScore constraintWeight) {
         assertNonZeroConstraintWeight(constraintWeight);
+        String constraintId = ConstraintMatchTotal.composeConstraintId(constraintPackage, constraintName); // Cache.
         long simpleConstraintWeight = constraintWeight.getScore();
         return (long matchWeight, JustificationsSupplier justificationsSupplier) -> {
             long impact = simpleConstraintWeight * matchWeight;
@@ -42,8 +44,8 @@ public class SimpleLongScoreInliner extends ScoreInliner<SimpleLongScore> {
             if (!constraintMatchEnabled) {
                 return undoScoreImpact;
             }
-            Runnable undoConstraintMatch = addConstraintMatch(constraintPackage, constraintName, constraintWeight,
-                    SimpleLongScore.of(impact), justificationsSupplier.get());
+            Runnable undoConstraintMatch = addConstraintMatch(constraintId, constraintPackage, constraintName,
+                    constraintWeight, SimpleLongScore.of(impact), justificationsSupplier.get());
             return () -> {
                 undoScoreImpact.run();
                 undoConstraintMatch.run();
