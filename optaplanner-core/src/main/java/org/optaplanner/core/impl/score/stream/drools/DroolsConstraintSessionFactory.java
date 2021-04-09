@@ -45,10 +45,8 @@ import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.core.impl.score.definition.ScoreDefinition;
 import org.optaplanner.core.impl.score.inliner.ScoreInliner;
 import org.optaplanner.core.impl.score.inliner.UndoScoreImpacter;
-import org.optaplanner.core.impl.score.stream.ConstraintSessionFactory;
 
-public final class DroolsConstraintSessionFactory<Solution_, Score_ extends Score<Score_>>
-        implements ConstraintSessionFactory<Solution_, Score_> {
+public final class DroolsConstraintSessionFactory<Solution_, Score_ extends Score<Score_>> {
 
     private final ScoreDefinition<Score_> scoreDefinition;
     private final List<DroolsConstraint<Solution_>> constraintList;
@@ -94,7 +92,6 @@ public final class DroolsConstraintSessionFactory<Solution_, Score_ extends Scor
         return droolsAlphaNetworkCompilationEnabled;
     }
 
-    @Override
     public SessionDescriptor<Score_> buildSession(boolean constraintMatchEnabled, Solution_ workingSolution) {
         Score_ zeroScore = scoreDefinition.getZeroScore();
 

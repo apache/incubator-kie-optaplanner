@@ -25,7 +25,6 @@ import org.optaplanner.core.api.score.stream.Constraint;
 import org.optaplanner.core.api.score.stream.uni.UniConstraintStream;
 import org.optaplanner.core.impl.domain.constraintweight.descriptor.ConstraintConfigurationDescriptor;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
-import org.optaplanner.core.impl.score.stream.ConstraintSessionFactory;
 import org.optaplanner.core.impl.score.stream.InnerConstraintFactory;
 import org.optaplanner.core.impl.score.stream.drools.uni.DroolsFromUniConstraintStream;
 
@@ -60,8 +59,7 @@ public final class DroolsConstraintFactory<Solution_> extends InnerConstraintFac
     // SessionFactory creation
     // ************************************************************************
 
-    @Override
-    public ConstraintSessionFactory<Solution_, ?> buildSessionFactory(Constraint[] constraints) {
+    public DroolsConstraintSessionFactory<Solution_, ?> buildSessionFactory(Constraint[] constraints) {
         Map<String, List<Constraint>> constraintsPerIdMap = Arrays.stream(constraints)
                 .collect(Collectors.groupingBy(Constraint::getConstraintId));
         constraintsPerIdMap.forEach((constraintId, constraintList) -> {
