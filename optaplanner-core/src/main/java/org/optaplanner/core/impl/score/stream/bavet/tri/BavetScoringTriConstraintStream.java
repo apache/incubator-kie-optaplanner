@@ -169,11 +169,8 @@ public final class BavetScoringTriConstraintStream<Solution_, A, B, C>
         } else {
             throw new IllegalStateException("Unsupported weightedScoreImpacter (" + weightedScoreImpacter + ").");
         }
-        BavetScoringTriNode<A, B, C> node = new BavetScoringTriNode<>(buildPolicy.getSession(),
-                buildPolicy.nextNodeIndex(), constraint.getConstraintPackage(), constraint.getConstraintName(),
-                constraintWeight, scoreImpacter);
-        buildPolicy.addScoringNode(node);
-        return node;
+        return new BavetScoringTriNode<>(buildPolicy.getSession(), buildPolicy.nextNodeIndex(), constraintWeight,
+                scoreImpacter);
     }
 
     @Override

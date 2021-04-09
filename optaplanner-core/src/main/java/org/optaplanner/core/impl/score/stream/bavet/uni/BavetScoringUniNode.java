@@ -21,7 +21,6 @@ import java.util.List;
 import java.util.function.Function;
 
 import org.optaplanner.core.api.score.Score;
-import org.optaplanner.core.api.score.constraint.ConstraintMatchTotal;
 import org.optaplanner.core.impl.score.inliner.UndoScoreImpacter;
 import org.optaplanner.core.impl.score.stream.bavet.BavetConstraintSession;
 import org.optaplanner.core.impl.score.stream.bavet.common.BavetAbstractTuple;
@@ -29,17 +28,12 @@ import org.optaplanner.core.impl.score.stream.bavet.common.BavetScoringNode;
 
 public final class BavetScoringUniNode<A> extends BavetAbstractUniNode<A> implements BavetScoringNode {
 
-    private final String constraintPackage;
-    private final String constraintName;
     private final Score<?> constraintWeight;
     private final Function<A, UndoScoreImpacter> scoreImpacter;
 
-    public BavetScoringUniNode(BavetConstraintSession session, int nodeIndex,
-            String constraintPackage, String constraintName, Score<?> constraintWeight,
+    public BavetScoringUniNode(BavetConstraintSession session, int nodeIndex, Score<?> constraintWeight,
             Function<A, UndoScoreImpacter> scoreImpacter) {
         super(session, nodeIndex);
-        this.constraintPackage = constraintPackage;
-        this.constraintName = constraintName;
         this.constraintWeight = constraintWeight;
         this.scoreImpacter = scoreImpacter;
     }
@@ -83,30 +77,6 @@ public final class BavetScoringUniNode<A> extends BavetAbstractUniNode<A> implem
     @Override
     public String toString() {
         return "Scoring(" + constraintWeight + ")";
-    }
-
-    // ************************************************************************
-    // Getters/setters
-    // ************************************************************************
-
-    @Override
-    public String getConstraintPackage() {
-        return constraintPackage;
-    }
-
-    @Override
-    public String getConstraintName() {
-        return constraintName;
-    }
-
-    @Override
-    public String getConstraintId() {
-        return ConstraintMatchTotal.composeConstraintId(constraintPackage, constraintName);
-    }
-
-    @Override
-    public Score<?> getConstraintWeight() {
-        return constraintWeight;
     }
 
 }

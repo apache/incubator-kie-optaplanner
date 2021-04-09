@@ -168,10 +168,8 @@ public final class BavetScoringBiConstraintStream<Solution_, A, B>
         } else {
             throw new IllegalStateException("Unsupported weightedScoreImpacter (" + weightedScoreImpacter + ").");
         }
-        BavetScoringBiNode<A, B> node = new BavetScoringBiNode<>(buildPolicy.getSession(), buildPolicy.nextNodeIndex(),
-                constraint.getConstraintPackage(), constraint.getConstraintName(), constraintWeight, scoreImpacter);
-        buildPolicy.addScoringNode(node);
-        return node;
+        return new BavetScoringBiNode<>(buildPolicy.getSession(), buildPolicy.nextNodeIndex(), constraintWeight,
+                scoreImpacter);
     }
 
     @Override

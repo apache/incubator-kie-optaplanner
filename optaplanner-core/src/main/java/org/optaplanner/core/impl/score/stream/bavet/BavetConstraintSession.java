@@ -18,12 +18,12 @@ package org.optaplanner.core.impl.score.stream.bavet;
 
 import java.util.ArrayDeque;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Queue;
+import java.util.stream.Collectors;
 
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.constraint.ConstraintMatchTotal;
@@ -40,32 +40,29 @@ import org.optaplanner.core.impl.score.stream.bavet.uni.BavetFromUniTuple;
 
 public final class BavetConstraintSession<Solution_, Score_ extends Score<Score_>> {
 
-    private final boolean constraintMatchEnabled;
     private final ScoreInliner<Score_> scoreInliner;
-
     private final Map<Class<?>, BavetFromUniNode<Object>> declaredClassToNodeMap;
     private final List<BavetNode> nodeIndexedNodeMap;
-    private final int nodeCount;
-    private final Map<String, BavetScoringNode> constraintIdToScoringNodeMap;
-
+    private final List<BavetScoringNode> scoringNodeList;
     private final Map<Class<?>, List<BavetFromUniNode<Object>>> effectiveClassToNodeListMap;
-
     private final List<Queue<BavetAbstractTuple>> nodeIndexToDirtyTupleQueueMap;
     private final Map<Object, List<BavetFromUniTuple<Object>>> fromTupleListMap;
 
     public BavetConstraintSession(boolean constraintMatchEnabled, ScoreDefinition<Score_> scoreDefinition,
             Map<BavetConstraint<Solution_>, Score_> constraintToWeightMap) {
-        this.constraintMatchEnabled = constraintMatchEnabled;
         scoreInliner = scoreDefinition.buildScoreInliner(constraintMatchEnabled);
         declaredClassToNodeMap = new HashMap<>(50);
-        BavetNodeBuildPolicy<Solution_> buildPolicy = new BavetNodeBuildPolicy<>(this, constraintToWeightMap.size());
+        BavetNodeBuildPolicy<Solution_> buildPolicy = new BavetNodeBuildPolicy<>(this);
         constraintToWeightMap.forEach((constraint, constraintWeight) -> {
             constraint.createNodes(buildPolicy, declaredClassToNodeMap, constraintWeight);
         });
         nodeIndexedNodeMap = buildPolicy.getCreatedNodes();
-        nodeCount = nodeIndexedNodeMap.size();
-        constraintIdToScoringNodeMap = buildPolicy.getConstraintIdToScoringNodeMap();
+        scoringNodeList = nodeIndexedNodeMap.stream()
+                .filter(node -> node instanceof BavetScoringNode)
+                .map(node -> (BavetScoringNode) node)
+                .collect(Collectors.toList());
         effectiveClassToNodeListMap = new HashMap<>(declaredClassToNodeMap.size());
+        int nodeCount = nodeIndexedNodeMap.size();
         nodeIndexToDirtyTupleQueueMap = new ArrayList<>(nodeCount);
         for (int i = 0; i < nodeCount; i++) {
             nodeIndexToDirtyTupleQueueMap.add(new ArrayDeque<>(1000));
@@ -91,14 +88,6 @@ public final class BavetConstraintSession<Solution_, Score_ extends Score<Score_
                 throw new IllegalStateException("Impossible state: Tuple (" + tuple + ") in node (" +
                         tuple.getNode() + ") is in an unexpected state (" + tuple.getState() + ").");
         }
-    }
-
-    public Collection<BavetScoringNode> getScoringNodes() {
-        return constraintIdToScoringNodeMap.values();
-    }
-
-    public List<BavetNode> getNodes() {
-        return nodeIndexedNodeMap;
     }
 
     public List<BavetFromUniNode<Object>> findFromNodeList(Class<?> factClass) {
@@ -169,8 +158,7 @@ public final class BavetConstraintSession<Solution_, Score_ extends Score<Score_
     }
 
     public Score_ calculateScore(int initScore) {
-        for (int i = 0; i < nodeCount; i++) {
-            Queue<BavetAbstractTuple> queue = nodeIndexToDirtyTupleQueueMap.get(i);
+        for (Queue<BavetAbstractTuple> queue : nodeIndexToDirtyTupleQueueMap) {
             BavetAbstractTuple tuple = queue.poll();
             while (tuple != null) {
                 refreshTuple(tuple);
@@ -192,12 +180,16 @@ public final class BavetConstraintSession<Solution_, Score_ extends Score<Score_
     // Getters/setters
     // ************************************************************************
 
-    public boolean isConstraintMatchEnabled() {
-        return constraintMatchEnabled;
-    }
-
     public ScoreInliner<Score_> getScoreInliner() {
         return scoreInliner;
+    }
+
+    public List<BavetNode> getNodes() {
+        return nodeIndexedNodeMap;
+    }
+
+    public List<BavetScoringNode> getScoringNodeList() {
+        return scoringNodeList;
     }
 
 }
