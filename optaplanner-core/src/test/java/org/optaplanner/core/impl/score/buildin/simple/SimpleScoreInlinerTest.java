@@ -18,40 +18,58 @@ package org.optaplanner.core.impl.score.buildin.simple;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.util.Collections;
+
 import org.junit.jupiter.api.Test;
 import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
+import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
+import org.optaplanner.core.impl.score.buildin.AbstractScoreInlinerTest;
 import org.optaplanner.core.impl.score.inliner.IntWeightedScoreImpacter;
 import org.optaplanner.core.impl.score.inliner.JustificationsSupplier;
 import org.optaplanner.core.impl.score.inliner.UndoScoreImpacter;
+import org.optaplanner.core.impl.testdata.domain.TestdataSolution;
 
-public class SimpleScoreInlinerTest {
+public class SimpleScoreInlinerTest
+        extends AbstractScoreInlinerTest<TestdataSolution, SimpleScore> {
+
+    private static final JustificationsSupplier EMPTY_JUSTIFICATIONS_SUPPLIER = Collections::emptyList;
 
     @Test
-    public void buildIntWeightedScoreImpacter() {
-        boolean constraintMatchEnabled = false;
-        JustificationsSupplier justificationsSupplier = null;
-
-        SimpleScoreInliner scoreInliner = new SimpleScoreInliner(constraintMatchEnabled);
+    public void defaultScore() {
+        TestConstraint<TestdataSolution, SimpleScore> constraint =
+                buildConstraint(SimpleScore.ONE);
+        SimpleScoreInliner scoreInliner =
+                new SimpleScoreInliner(getConstaintToWeightMap(constraint), constraintMatchEnabled);
         assertThat(scoreInliner.extractScore(0)).isEqualTo(SimpleScore.ZERO);
-
-        IntWeightedScoreImpacter impacter1 =
-                scoreInliner.buildWeightedScoreImpacter("constraintPackage", "constraintName", SimpleScore.of(-90));
-        UndoScoreImpacter undo1 = impacter1.impactScore(1, justificationsSupplier);
-        assertThat(scoreInliner.extractScore(0)).isEqualTo(SimpleScore.of(-90));
-        scoreInliner.buildWeightedScoreImpacter("constraintPackage", "constraintName", SimpleScore.of(-800)).impactScore(1,
-                justificationsSupplier);
-        assertThat(scoreInliner.extractScore(0)).isEqualTo(SimpleScore.of(-890));
-        undo1.run();
-        assertThat(scoreInliner.extractScore(0)).isEqualTo(SimpleScore.of(-800));
-
-        IntWeightedScoreImpacter impacter2 =
-                scoreInliner.buildWeightedScoreImpacter("constraintPackage", "constraintName", SimpleScore.of(-1));
-        UndoScoreImpacter undo2 = impacter2.impactScore(3, justificationsSupplier);
-        assertThat(scoreInliner.extractScore(0)).isEqualTo(SimpleScore.of(-803));
-        impacter2.impactScore(10, justificationsSupplier);
-        assertThat(scoreInliner.extractScore(0)).isEqualTo(SimpleScore.of(-813));
-        undo2.run();
-        assertThat(scoreInliner.extractScore(0)).isEqualTo(SimpleScore.of(-810));
     }
 
+    @Test
+    public void impact() {
+        TestConstraint<TestdataSolution, SimpleScore> constraint =
+                buildConstraint(SimpleScore.of(10));
+        SimpleScoreInliner scoreInliner =
+                new SimpleScoreInliner(getConstaintToWeightMap(constraint), constraintMatchEnabled);
+
+        IntWeightedScoreImpacter hardImpacter = scoreInliner.buildOrGetWeightedScoreImpacter(constraint);
+        UndoScoreImpacter undo1 = hardImpacter.impactScore(10, EMPTY_JUSTIFICATIONS_SUPPLIER);
+        assertThat(scoreInliner.extractScore(0))
+                .isEqualTo(SimpleScore.of(100));
+
+        UndoScoreImpacter undo2 = hardImpacter.impactScore(20, EMPTY_JUSTIFICATIONS_SUPPLIER);
+        assertThat(scoreInliner.extractScore(0))
+                .isEqualTo(SimpleScore.of(300));
+
+        undo2.run();
+        assertThat(scoreInliner.extractScore(0))
+                .isEqualTo(SimpleScore.of(100));
+
+        undo1.run();
+        assertThat(scoreInliner.extractScore(0))
+                .isEqualTo(SimpleScore.of(0));
+    }
+
+    @Override
+    protected SolutionDescriptor<TestdataSolution> buildSolutionDescriptor() {
+        return TestdataSolution.buildSolutionDescriptor();
+    }
 }

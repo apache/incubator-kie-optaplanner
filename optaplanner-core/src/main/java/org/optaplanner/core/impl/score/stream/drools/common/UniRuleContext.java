@@ -38,35 +38,32 @@ final class UniRuleContext<A> extends AbstractRuleContext {
     }
 
     public <Solution_> RuleBuilder<Solution_> newRuleBuilder(ToIntFunction<A> matchWeighter) {
-        ConsequenceBuilder<Solution_> consequenceBuilder = (constraint, scoreImpacter) -> {
-            IntImpactExecutor impactExecutor = buildIntImpactExecutor(scoreImpacter);
-            return DSL.on(variable)
-                    .execute((drools, a) -> runConsequence(constraint, drools, impactExecutor,
-                            matchWeighter.applyAsInt(a),
-                            () -> singletonList(a)));
-        };
+        ConsequenceBuilder<Solution_> consequenceBuilder =
+                (constraint, scoreInlinerGlobal) -> DSL.on(scoreInlinerGlobal, variable)
+                        .execute((drools, scoreInliner, a) -> runConsequence(constraint, drools,
+                                buildIntImpactExecutor(scoreInliner.buildOrGetWeightedScoreImpacter(constraint)),
+                                matchWeighter.applyAsInt(a),
+                                () -> singletonList(a)));
         return assemble(consequenceBuilder);
     }
 
     public <Solution_> RuleBuilder<Solution_> newRuleBuilder(ToLongFunction<A> matchWeighter) {
-        ConsequenceBuilder<Solution_> consequenceBuilder = (constraint, scoreImpacter) -> {
-            LongImpactExecutor impactExecutor = buildLongImpactExecutor(scoreImpacter);
-            return DSL.on(variable)
-                    .execute((drools, a) -> runConsequence(constraint, drools, impactExecutor,
-                            matchWeighter.applyAsLong(a),
-                            () -> singletonList(a)));
-        };
+        ConsequenceBuilder<Solution_> consequenceBuilder =
+                (constraint, scoreInlinerGlobal) -> DSL.on(scoreInlinerGlobal, variable)
+                        .execute((drools, scoreInliner, a) -> runConsequence(constraint, drools,
+                                buildLongImpactExecutor(scoreInliner.buildOrGetWeightedScoreImpacter(constraint)),
+                                matchWeighter.applyAsLong(a),
+                                () -> singletonList(a)));
         return assemble(consequenceBuilder);
     }
 
     public <Solution_> RuleBuilder<Solution_> newRuleBuilder(Function<A, BigDecimal> matchWeighter) {
-        ConsequenceBuilder<Solution_> consequenceBuilder = (constraint, scoreImpacter) -> {
-            BigDecimalImpactExecutor impactExecutor = buildBigDecimalImpactExecutor(scoreImpacter);
-            return DSL.on(variable)
-                    .execute((drools, a) -> runConsequence(constraint, drools, impactExecutor,
-                            matchWeighter.apply(a),
-                            () -> singletonList(a)));
-        };
+        ConsequenceBuilder<Solution_> consequenceBuilder =
+                (constraint, scoreInlinerGlobal) -> DSL.on(scoreInlinerGlobal, variable)
+                        .execute((drools, scoreInliner, a) -> runConsequence(constraint, drools,
+                                buildBigDecimalImpactExecutor(scoreInliner.buildOrGetWeightedScoreImpacter(constraint)),
+                                matchWeighter.apply(a),
+                                () -> singletonList(a)));
         return assemble(consequenceBuilder);
     }
 

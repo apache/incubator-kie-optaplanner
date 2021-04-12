@@ -16,6 +16,8 @@
 
 package org.optaplanner.core.impl.score.stream.drools;
 
+import static org.drools.model.DSL.globalOf;
+
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -23,6 +25,7 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 
 import org.drools.ancompiler.KieBaseUpdaterANC;
+import org.drools.model.Global;
 import org.drools.model.Model;
 import org.drools.model.impl.ModelImpl;
 import org.drools.modelcompiler.builder.KieBaseBuilder;
@@ -41,10 +44,13 @@ import org.optaplanner.core.api.score.stream.Constraint;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.core.impl.score.definition.ScoreDefinition;
 import org.optaplanner.core.impl.score.inliner.ScoreInliner;
+import org.optaplanner.core.impl.score.stream.InnerConstraintFactory;
 
 public final class DroolsConstraintSessionFactory<Solution_, Score_ extends Score<Score_>> {
 
-    private final ScoreDefinition<Score_> scoreDefinition;
+    private static final String SCORE_INLINER_GLOBAR_VAR_NAME = "scoreInliner";
+
+    private final SolutionDescriptor<Solution_> solutionDescriptor;
     private final List<DroolsConstraint<Solution_>> constraintList;
     private final boolean droolsAlphaNetworkCompilationEnabled;
 
@@ -53,7 +59,7 @@ public final class DroolsConstraintSessionFactory<Solution_, Score_ extends Scor
     public DroolsConstraintSessionFactory(SolutionDescriptor<Solution_> solutionDescriptor,
             DroolsConstraintFactory<Solution_> constraintFactory, boolean droolsAlphaNetworkCompilationEnabled,
             Constraint... constraints) {
-        this.scoreDefinition = solutionDescriptor.getScoreDefinition();
+        this.solutionDescriptor = Objects.requireNonNull(solutionDescriptor);
         this.constraintList = Arrays.stream(constraints)
                 .map(constraint -> {
                     if (constraint.getConstraintFactory() != constraintFactory) {
@@ -89,41 +95,43 @@ public final class DroolsConstraintSessionFactory<Solution_, Score_ extends Scor
     }
 
     public SessionDescriptor<Score_> buildSession(boolean constraintMatchEnabled, Solution_ workingSolution) {
+        ScoreDefinition<Score_> scoreDefinition = solutionDescriptor.getScoreDefinition();
         Score_ zeroScore = scoreDefinition.getZeroScore();
 
         // Extract constraint weights, excluding constraints where weight is zero.
-        Map<DroolsConstraint<Solution_>, Score_> constraintWeightMap = constraintList.stream()
-                .map(constraint -> {
-                    Object weight = constraint.extractConstraintWeight(workingSolution); // Expensive, only do once.
-                    return new Object[] { constraint, weight };
-                })
-                .filter(constraintAndWeight -> !constraintAndWeight[1].equals(zeroScore)) // Exclude zero-weighted.
-                .collect(Collectors.toMap(
-                        constraintAndWeight -> (DroolsConstraint<Solution_>) constraintAndWeight[0],
-                        constraintAndWeight -> (Score_) constraintAndWeight[1]));
+        Map<DroolsConstraint<Solution_>, Score_> constraintToWeightMap =
+                InnerConstraintFactory.extractConstraintToWeightMap(constraintList,
+                        c -> (Score_) c.extractConstraintWeight(workingSolution), zeroScore);
 
         // Creating KieBase is expensive. Therefore we only do it when there has been a change in constraint weights.
-        if (kieBaseCache == null || !kieBaseCache.isUpToDate(constraintWeightMap)) {
-            ScoreInliner<Score_> scoreInliner = scoreDefinition.buildScoreInliner(constraintMatchEnabled);
-            Model model = constraintWeightMap.entrySet().stream()
-                    .map(entry -> entry.getKey().buildRule(scoreInliner, entry.getValue()))
+        if (kieBaseCache == null || !kieBaseCache.isUpToDate(constraintToWeightMap)) {
+            Package pack = solutionDescriptor.getSolutionClass().getPackage();
+            Global<ScoreInliner<?, ?>> scoreInlinerGlobal = (Global) globalOf(ScoreInliner.class,
+                    (pack == null) ? "" : pack.getName(),
+                    SCORE_INLINER_GLOBAR_VAR_NAME);
+            ModelImpl model = constraintToWeightMap.keySet().stream()
+                    .map(constraint -> constraint.buildRule(scoreInlinerGlobal))
                     .reduce(new ModelImpl(), ModelImpl::addRule, (m, __) -> m);
+            model.addGlobal(scoreInlinerGlobal);
             KieBase kieBase = buildKieBaseFromModel(model, droolsAlphaNetworkCompilationEnabled);
-            kieBaseCache = new KieBaseCache<>(constraintWeightMap, kieBase, scoreInliner);
+            kieBaseCache = new KieBaseCache<>(constraintToWeightMap, kieBase);
         }
 
         // Create the session itself.
         KieSession kieSession = buildKieSessionFromKieBase(kieBaseCache.getKieBase());
+        ScoreInliner<Score_, ?> scoreInliner =
+                scoreDefinition.buildScoreInliner((Map) constraintToWeightMap, constraintMatchEnabled);
+        kieSession.setGlobal(SCORE_INLINER_GLOBAR_VAR_NAME, scoreInliner);
         ((RuleEventManager) kieSession).addEventListener(new OptaPlannerRuleEventListener()); // Enables undo in rules.
-        return new SessionDescriptor<>(kieSession, kieBaseCache.getScoreInliner());
+        return new SessionDescriptor<>(kieSession, scoreInliner);
     }
 
     public static final class SessionDescriptor<Score_ extends Score<Score_>> {
 
         private final KieSession session;
-        private final ScoreInliner<Score_> scoreInliner;
+        private final ScoreInliner<Score_, ?> scoreInliner;
 
-        public SessionDescriptor(KieSession session, ScoreInliner<Score_> scoreInliner) {
+        public SessionDescriptor(KieSession session, ScoreInliner<Score_, ?> scoreInliner) {
             this.session = session;
             this.scoreInliner = scoreInliner;
         }
@@ -132,7 +140,7 @@ public final class DroolsConstraintSessionFactory<Solution_, Score_ extends Scor
             return session;
         }
 
-        public ScoreInliner<Score_> getScoreInliner() {
+        public ScoreInliner<Score_, ?> getScoreInliner() {
             return scoreInliner;
         }
     }
@@ -141,13 +149,10 @@ public final class DroolsConstraintSessionFactory<Solution_, Score_ extends Scor
 
         private final Map<DroolsConstraint<Solution_>, Score_> constraintWeightMap;
         private final KieBase kieBase;
-        private final ScoreInliner<Score_> scoreInliner;
 
-        public KieBaseCache(Map<DroolsConstraint<Solution_>, Score_> constraintWeightMap, KieBase kieBase,
-                ScoreInliner<Score_> scoreInliner) {
+        public KieBaseCache(Map<DroolsConstraint<Solution_>, Score_> constraintWeightMap, KieBase kieBase) {
             this.constraintWeightMap = Objects.requireNonNull(constraintWeightMap);
             this.kieBase = Objects.requireNonNull(kieBase);
-            this.scoreInliner = Objects.requireNonNull(scoreInliner);
         }
 
         public boolean isUpToDate(Map<DroolsConstraint<Solution_>, Score_> currentConstraintWeightMap) {
@@ -158,9 +163,6 @@ public final class DroolsConstraintSessionFactory<Solution_, Score_ extends Scor
             return kieBase;
         }
 
-        public ScoreInliner<Score_> getScoreInliner() {
-            return scoreInliner;
-        }
     }
 
 }

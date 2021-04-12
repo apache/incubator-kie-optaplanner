@@ -43,35 +43,32 @@ final class TriRuleContext<A, B, C> extends AbstractRuleContext {
     }
 
     public <Solution_> RuleBuilder<Solution_> newRuleBuilder(ToIntTriFunction<A, B, C> matchWeighter) {
-        ConsequenceBuilder<Solution_> consequenceBuilder = (constraint, scoreImpacter) -> {
-            IntImpactExecutor impactExecutor = buildIntImpactExecutor(scoreImpacter);
-            return DSL.on(variableA, variableB, variableC)
-                    .execute((drools, a, b, c) -> runConsequence(constraint, drools, impactExecutor,
-                            matchWeighter.applyAsInt(a, b, c),
-                            () -> asList(a, b, c)));
-        };
+        ConsequenceBuilder<Solution_> consequenceBuilder =
+                (constraint, scoreInlinerGlobal) -> DSL.on(scoreInlinerGlobal, variableA, variableB, variableC)
+                        .execute((drools, scoreInliner, a, b, c) -> runConsequence(constraint, drools,
+                                buildIntImpactExecutor(scoreInliner.buildOrGetWeightedScoreImpacter(constraint)),
+                                matchWeighter.applyAsInt(a, b, c),
+                                () -> asList(a, b, c)));
         return assemble(consequenceBuilder);
     }
 
     public <Solution_> RuleBuilder<Solution_> newRuleBuilder(ToLongTriFunction<A, B, C> matchWeighter) {
-        ConsequenceBuilder<Solution_> consequenceBuilder = (constraint, scoreImpacter) -> {
-            LongImpactExecutor impactExecutor = buildLongImpactExecutor(scoreImpacter);
-            return DSL.on(variableA, variableB, variableC)
-                    .execute((drools, a, b, c) -> runConsequence(constraint, drools, impactExecutor,
-                            matchWeighter.applyAsLong(a, b, c),
-                            () -> asList(a, b, c)));
-        };
+        ConsequenceBuilder<Solution_> consequenceBuilder =
+                (constraint, scoreInlinerGlobal) -> DSL.on(scoreInlinerGlobal, variableA, variableB, variableC)
+                        .execute((drools, scoreInliner, a, b, c) -> runConsequence(constraint, drools,
+                                buildLongImpactExecutor(scoreInliner.buildOrGetWeightedScoreImpacter(constraint)),
+                                matchWeighter.applyAsLong(a, b, c),
+                                () -> asList(a, b, c)));
         return assemble(consequenceBuilder);
     }
 
     public <Solution_> RuleBuilder<Solution_> newRuleBuilder(TriFunction<A, B, C, BigDecimal> matchWeighter) {
-        ConsequenceBuilder<Solution_> consequenceBuilder = (constraint, scoreImpacter) -> {
-            BigDecimalImpactExecutor impactExecutor = buildBigDecimalImpactExecutor(scoreImpacter);
-            return DSL.on(variableA, variableB, variableC)
-                    .execute((drools, a, b, c) -> runConsequence(constraint, drools, impactExecutor,
-                            matchWeighter.apply(a, b, c),
-                            () -> asList(a, b, c)));
-        };
+        ConsequenceBuilder<Solution_> consequenceBuilder =
+                (constraint, scoreInlinerGlobal) -> DSL.on(scoreInlinerGlobal, variableA, variableB, variableC)
+                        .execute((drools, scoreInliner, a, b, c) -> runConsequence(constraint, drools,
+                                buildBigDecimalImpactExecutor(scoreInliner.buildOrGetWeightedScoreImpacter(constraint)),
+                                matchWeighter.apply(a, b, c),
+                                () -> asList(a, b, c)));
         return assemble(consequenceBuilder);
     }
 

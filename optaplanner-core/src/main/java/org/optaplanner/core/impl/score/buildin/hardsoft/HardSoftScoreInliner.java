@@ -16,27 +16,27 @@
 
 package org.optaplanner.core.impl.score.buildin.hardsoft;
 
+import java.util.Map;
+
 import org.optaplanner.core.api.score.buildin.hardsoft.HardSoftScore;
-import org.optaplanner.core.api.score.constraint.ConstraintMatchTotal;
+import org.optaplanner.core.api.score.stream.Constraint;
 import org.optaplanner.core.impl.score.inliner.IntWeightedScoreImpacter;
 import org.optaplanner.core.impl.score.inliner.JustificationsSupplier;
 import org.optaplanner.core.impl.score.inliner.ScoreInliner;
 import org.optaplanner.core.impl.score.inliner.UndoScoreImpacter;
 
-public final class HardSoftScoreInliner extends ScoreInliner<HardSoftScore> {
+public final class HardSoftScoreInliner extends ScoreInliner<HardSoftScore, IntWeightedScoreImpacter> {
 
     private int hardScore;
     private int softScore;
 
-    protected HardSoftScoreInliner(boolean constraintMatchEnabled) {
-        super(constraintMatchEnabled, HardSoftScore.ZERO);
+    protected HardSoftScoreInliner(Map<Constraint, HardSoftScore> constraintIdToWeightMap, boolean constraintMatchEnabled) {
+        super(constraintIdToWeightMap, constraintMatchEnabled, HardSoftScore.ZERO);
     }
 
     @Override
-    public IntWeightedScoreImpacter buildWeightedScoreImpacter(String constraintPackage, String constraintName,
-            HardSoftScore constraintWeight) {
-        assertNonZeroConstraintWeight(constraintWeight);
-        String constraintId = ConstraintMatchTotal.composeConstraintId(constraintPackage, constraintName); // Cache.
+    public IntWeightedScoreImpacter buildWeightedScoreImpacter(Constraint constraint) {
+        HardSoftScore constraintWeight = getConstraintWeight(constraint);
         int hardConstraintWeight = constraintWeight.getHardScore();
         int softConstraintWeight = constraintWeight.getSoftScore();
         if (softConstraintWeight == 0) {
@@ -47,8 +47,8 @@ public final class HardSoftScoreInliner extends ScoreInliner<HardSoftScore> {
                 if (!constraintMatchEnabled) {
                     return undoScoreImpact;
                 }
-                Runnable undoConstraintMatch = addConstraintMatch(constraintId, constraintPackage, constraintName,
-                        constraintWeight, HardSoftScore.ofHard(hardImpact), justificationsSupplier.get());
+                Runnable undoConstraintMatch = addConstraintMatch(constraint, constraintWeight,
+                        HardSoftScore.ofHard(hardImpact), justificationsSupplier.get());
                 return () -> {
                     undoScoreImpact.run();
                     undoConstraintMatch.run();
@@ -62,8 +62,8 @@ public final class HardSoftScoreInliner extends ScoreInliner<HardSoftScore> {
                 if (!constraintMatchEnabled) {
                     return undoScoreImpact;
                 }
-                Runnable undoConstraintMatch = addConstraintMatch(constraintId, constraintPackage, constraintName,
-                        constraintWeight, HardSoftScore.ofSoft(softImpact), justificationsSupplier.get());
+                Runnable undoConstraintMatch = addConstraintMatch(constraint, constraintWeight,
+                        HardSoftScore.ofSoft(softImpact), justificationsSupplier.get());
                 return () -> {
                     undoScoreImpact.run();
                     undoConstraintMatch.run();
@@ -82,8 +82,8 @@ public final class HardSoftScoreInliner extends ScoreInliner<HardSoftScore> {
                 if (!constraintMatchEnabled) {
                     return undoScoreImpact;
                 }
-                Runnable undoConstraintMatch = addConstraintMatch(constraintId, constraintPackage, constraintName,
-                        constraintWeight, HardSoftScore.of(hardImpact, softImpact), justificationsSupplier.get());
+                Runnable undoConstraintMatch = addConstraintMatch(constraint, constraintWeight,
+                        HardSoftScore.of(hardImpact, softImpact), justificationsSupplier.get());
                 return () -> {
                     undoScoreImpact.run();
                     undoConstraintMatch.run();

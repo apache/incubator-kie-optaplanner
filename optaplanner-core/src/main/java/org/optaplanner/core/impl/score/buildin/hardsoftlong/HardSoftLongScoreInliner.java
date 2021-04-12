@@ -16,27 +16,28 @@
 
 package org.optaplanner.core.impl.score.buildin.hardsoftlong;
 
+import java.util.Map;
+
 import org.optaplanner.core.api.score.buildin.hardsoftlong.HardSoftLongScore;
-import org.optaplanner.core.api.score.constraint.ConstraintMatchTotal;
+import org.optaplanner.core.api.score.stream.Constraint;
 import org.optaplanner.core.impl.score.inliner.JustificationsSupplier;
 import org.optaplanner.core.impl.score.inliner.LongWeightedScoreImpacter;
 import org.optaplanner.core.impl.score.inliner.ScoreInliner;
 import org.optaplanner.core.impl.score.inliner.UndoScoreImpacter;
 
-public final class HardSoftLongScoreInliner extends ScoreInliner<HardSoftLongScore> {
+public final class HardSoftLongScoreInliner extends ScoreInliner<HardSoftLongScore, LongWeightedScoreImpacter> {
 
     private long hardScore;
     private long softScore;
 
-    protected HardSoftLongScoreInliner(boolean constraintMatchEnabled) {
-        super(constraintMatchEnabled, HardSoftLongScore.ZERO);
+    protected HardSoftLongScoreInliner(Map<Constraint, HardSoftLongScore> constraintToWeightMap,
+            boolean constraintMatchEnabled) {
+        super(constraintToWeightMap, constraintMatchEnabled, HardSoftLongScore.ZERO);
     }
 
     @Override
-    public LongWeightedScoreImpacter buildWeightedScoreImpacter(String constraintPackage, String constraintName,
-            HardSoftLongScore constraintWeight) {
-        assertNonZeroConstraintWeight(constraintWeight);
-        String constraintId = ConstraintMatchTotal.composeConstraintId(constraintPackage, constraintName); // Cache.
+    public LongWeightedScoreImpacter buildWeightedScoreImpacter(Constraint constraint) {
+        HardSoftLongScore constraintWeight = getConstraintWeight(constraint);
         long hardConstraintWeight = constraintWeight.getHardScore();
         long softConstraintWeight = constraintWeight.getSoftScore();
         if (softConstraintWeight == 0L) {
@@ -47,8 +48,8 @@ public final class HardSoftLongScoreInliner extends ScoreInliner<HardSoftLongSco
                 if (!constraintMatchEnabled) {
                     return undoScoreImpact;
                 }
-                Runnable undoConstraintMatch = addConstraintMatch(constraintId, constraintPackage, constraintName,
-                        constraintWeight, HardSoftLongScore.ofHard(hardImpact), justificationsSupplier.get());
+                Runnable undoConstraintMatch = addConstraintMatch(constraint, constraintWeight,
+                        HardSoftLongScore.ofHard(hardImpact), justificationsSupplier.get());
                 return () -> {
                     undoScoreImpact.run();
                     undoConstraintMatch.run();
@@ -62,8 +63,8 @@ public final class HardSoftLongScoreInliner extends ScoreInliner<HardSoftLongSco
                 if (!constraintMatchEnabled) {
                     return undoScoreImpact;
                 }
-                Runnable undoConstraintMatch = addConstraintMatch(constraintId, constraintPackage, constraintName,
-                        constraintWeight, HardSoftLongScore.ofSoft(softImpact), justificationsSupplier.get());
+                Runnable undoConstraintMatch = addConstraintMatch(constraint, constraintWeight,
+                        HardSoftLongScore.ofSoft(softImpact), justificationsSupplier.get());
                 return () -> {
                     undoScoreImpact.run();
                     undoConstraintMatch.run();
@@ -82,8 +83,8 @@ public final class HardSoftLongScoreInliner extends ScoreInliner<HardSoftLongSco
                 if (!constraintMatchEnabled) {
                     return undoScoreImpact;
                 }
-                Runnable undoConstraintMatch = addConstraintMatch(constraintId, constraintPackage, constraintName,
-                        constraintWeight, HardSoftLongScore.of(hardImpact, softImpact), justificationsSupplier.get());
+                Runnable undoConstraintMatch = addConstraintMatch(constraint, constraintWeight,
+                        HardSoftLongScore.of(hardImpact, softImpact), justificationsSupplier.get());
                 return () -> {
                     undoScoreImpact.run();
                     undoConstraintMatch.run();

@@ -18,21 +18,25 @@ package org.optaplanner.core.impl.score.buildin.bendablebigdecimal;
 
 import java.math.BigDecimal;
 import java.util.Arrays;
+import java.util.Map;
 
 import org.optaplanner.core.api.score.buildin.bendablebigdecimal.BendableBigDecimalScore;
-import org.optaplanner.core.api.score.constraint.ConstraintMatchTotal;
+import org.optaplanner.core.api.score.stream.Constraint;
 import org.optaplanner.core.impl.score.inliner.BigDecimalWeightedScoreImpacter;
 import org.optaplanner.core.impl.score.inliner.JustificationsSupplier;
 import org.optaplanner.core.impl.score.inliner.ScoreInliner;
 import org.optaplanner.core.impl.score.inliner.UndoScoreImpacter;
 
-public final class BendableBigDecimalScoreInliner extends ScoreInliner<BendableBigDecimalScore> {
+public final class BendableBigDecimalScoreInliner
+        extends ScoreInliner<BendableBigDecimalScore, BigDecimalWeightedScoreImpacter> {
 
     private final BigDecimal[] hardScores;
     private final BigDecimal[] softScores;
 
-    public BendableBigDecimalScoreInliner(boolean constraintMatchEnabled, int hardLevelsSize, int softLevelsSize) {
-        super(constraintMatchEnabled, BendableBigDecimalScore.zero(hardLevelsSize, softLevelsSize));
+    public BendableBigDecimalScoreInliner(Map<Constraint, BendableBigDecimalScore> constraintToWeightMap,
+            boolean constraintMatchEnabled, int hardLevelsSize, int softLevelsSize) {
+        super(constraintToWeightMap, constraintMatchEnabled,
+                BendableBigDecimalScore.zero(hardLevelsSize, softLevelsSize));
         hardScores = new BigDecimal[hardLevelsSize];
         Arrays.fill(hardScores, BigDecimal.ZERO);
         softScores = new BigDecimal[softLevelsSize];
@@ -40,10 +44,9 @@ public final class BendableBigDecimalScoreInliner extends ScoreInliner<BendableB
     }
 
     @Override
-    public BigDecimalWeightedScoreImpacter buildWeightedScoreImpacter(String constraintPackage, String constraintName,
-            BendableBigDecimalScore constraintWeight) {
-        assertNonZeroConstraintWeight(constraintWeight);
+    public BigDecimalWeightedScoreImpacter buildWeightedScoreImpacter(Constraint constraint) {
         Integer singleLevel = null;
+        BendableBigDecimalScore constraintWeight = getConstraintWeight(constraint);
         for (int i = 0; i < constraintWeight.getLevelsSize(); i++) {
             if (!constraintWeight.getHardOrSoftScore(i).equals(BigDecimal.ZERO)) {
                 if (singleLevel != null) {
@@ -53,7 +56,6 @@ public final class BendableBigDecimalScoreInliner extends ScoreInliner<BendableB
                 singleLevel = i;
             }
         }
-        String constraintId = ConstraintMatchTotal.composeConstraintId(constraintPackage, constraintName); // Cache.
         if (singleLevel != null) {
             BigDecimal levelWeight = constraintWeight.getHardOrSoftScore(singleLevel);
             if (singleLevel < constraintWeight.getHardLevelsSize()) {
@@ -66,8 +68,7 @@ public final class BendableBigDecimalScoreInliner extends ScoreInliner<BendableB
                     if (!constraintMatchEnabled) {
                         return undoScoreImpact;
                     }
-                    Runnable undoConstraintMatch = addConstraintMatch(constraintId, constraintPackage, constraintName,
-                            constraintWeight,
+                    Runnable undoConstraintMatch = addConstraintMatch(constraint, constraintWeight,
                             BendableBigDecimalScore.ofHard(hardScores.length, softScores.length, level, hardImpact),
                             justificationsSupplier.get());
                     return () -> {
@@ -85,8 +86,7 @@ public final class BendableBigDecimalScoreInliner extends ScoreInliner<BendableB
                     if (!constraintMatchEnabled) {
                         return undoScoreImpact;
                     }
-                    Runnable undoConstraintMatch = addConstraintMatch(constraintId, constraintPackage, constraintName,
-                            constraintWeight,
+                    Runnable undoConstraintMatch = addConstraintMatch(constraint, constraintWeight,
                             BendableBigDecimalScore.ofSoft(hardScores.length, softScores.length, level, softImpact),
                             justificationsSupplier.get());
                     return () -> {
@@ -118,8 +118,8 @@ public final class BendableBigDecimalScoreInliner extends ScoreInliner<BendableB
                 if (!constraintMatchEnabled) {
                     return undoScoreImpact;
                 }
-                Runnable undoConstraintMatch = addConstraintMatch(constraintId, constraintPackage, constraintName,
-                        constraintWeight, BendableBigDecimalScore.of(hardImpacts, softImpacts),
+                Runnable undoConstraintMatch = addConstraintMatch(constraint, constraintWeight,
+                        BendableBigDecimalScore.of(hardImpacts, softImpacts),
                         justificationsSupplier.get());
                 return () -> {
                     undoScoreImpact.run();

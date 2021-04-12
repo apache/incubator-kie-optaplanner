@@ -45,35 +45,32 @@ final class QuadRuleContext<A, B, C, D> extends AbstractRuleContext {
     }
 
     public <Solution_> RuleBuilder<Solution_> newRuleBuilder(ToIntQuadFunction<A, B, C, D> matchWeighter) {
-        ConsequenceBuilder<Solution_> consequenceBuilder = (constraint, scoreImpacter) -> {
-            IntImpactExecutor impactExecutor = buildIntImpactExecutor(scoreImpacter);
-            return DSL.on(variableA, variableB, variableC, variableD)
-                    .execute((drools, a, b, c, d) -> runConsequence(constraint, drools, impactExecutor,
-                            matchWeighter.applyAsInt(a, b, c, d),
-                            () -> asList(a, b, c, d)));
-        };
+        ConsequenceBuilder<Solution_> consequenceBuilder =
+                (constraint, scoreInlinerGlobal) -> DSL.on(scoreInlinerGlobal, variableA, variableB, variableC, variableD)
+                        .execute((drools, scoreInliner, a, b, c, d) -> runConsequence(constraint, drools,
+                                buildIntImpactExecutor(scoreInliner.buildOrGetWeightedScoreImpacter(constraint)),
+                                matchWeighter.applyAsInt(a, b, c, d),
+                                () -> asList(a, b, c, d)));
         return assemble(consequenceBuilder);
     }
 
     public <Solution_> RuleBuilder<Solution_> newRuleBuilder(ToLongQuadFunction<A, B, C, D> matchWeighter) {
-        ConsequenceBuilder<Solution_> consequenceBuilder = (constraint, scoreImpacter) -> {
-            LongImpactExecutor impactExecutor = buildLongImpactExecutor(scoreImpacter);
-            return DSL.on(variableA, variableB, variableC, variableD)
-                    .execute((drools, a, b, c, d) -> runConsequence(constraint, drools, impactExecutor,
-                            matchWeighter.applyAsLong(a, b, c, d),
-                            () -> asList(a, b, c, d)));
-        };
+        ConsequenceBuilder<Solution_> consequenceBuilder =
+                (constraint, scoreInlinerGlobal) -> DSL.on(scoreInlinerGlobal, variableA, variableB, variableC, variableD)
+                        .execute((drools, scoreInliner, a, b, c, d) -> runConsequence(constraint, drools,
+                                buildLongImpactExecutor(scoreInliner.buildOrGetWeightedScoreImpacter(constraint)),
+                                matchWeighter.applyAsLong(a, b, c, d),
+                                () -> asList(a, b, c, d)));
         return assemble(consequenceBuilder);
     }
 
     public <Solution_> RuleBuilder<Solution_> newRuleBuilder(QuadFunction<A, B, C, D, BigDecimal> matchWeighter) {
-        ConsequenceBuilder<Solution_> consequenceBuilder = (constraint, scoreImpacter) -> {
-            BigDecimalImpactExecutor impactExecutor = buildBigDecimalImpactExecutor(scoreImpacter);
-            return DSL.on(variableA, variableB, variableC, variableD)
-                    .execute((drools, a, b, c, d) -> runConsequence(constraint, drools, impactExecutor,
-                            matchWeighter.apply(a, b, c, d),
-                            () -> asList(a, b, c, d)));
-        };
+        ConsequenceBuilder<Solution_> consequenceBuilder =
+                (constraint, scoreInlinerGlobal) -> DSL.on(scoreInlinerGlobal, variableA, variableB, variableC, variableD)
+                        .execute((drools, scoreInliner, a, b, c, d) -> runConsequence(constraint, drools,
+                                buildBigDecimalImpactExecutor(scoreInliner.buildOrGetWeightedScoreImpacter(constraint)),
+                                matchWeighter.apply(a, b, c, d),
+                                () -> asList(a, b, c, d)));
         return assemble(consequenceBuilder);
     }
 

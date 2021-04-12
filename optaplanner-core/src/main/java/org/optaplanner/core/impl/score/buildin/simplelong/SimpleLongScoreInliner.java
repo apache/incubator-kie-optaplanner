@@ -16,26 +16,27 @@
 
 package org.optaplanner.core.impl.score.buildin.simplelong;
 
+import java.util.Map;
+
 import org.optaplanner.core.api.score.buildin.simplelong.SimpleLongScore;
-import org.optaplanner.core.api.score.constraint.ConstraintMatchTotal;
+import org.optaplanner.core.api.score.stream.Constraint;
 import org.optaplanner.core.impl.score.inliner.JustificationsSupplier;
 import org.optaplanner.core.impl.score.inliner.LongWeightedScoreImpacter;
 import org.optaplanner.core.impl.score.inliner.ScoreInliner;
 import org.optaplanner.core.impl.score.inliner.UndoScoreImpacter;
 
-public final class SimpleLongScoreInliner extends ScoreInliner<SimpleLongScore> {
+public final class SimpleLongScoreInliner extends ScoreInliner<SimpleLongScore, LongWeightedScoreImpacter> {
 
     private long score;
 
-    protected SimpleLongScoreInliner(boolean constraintMatchEnabled) {
-        super(constraintMatchEnabled, SimpleLongScore.ZERO);
+    protected SimpleLongScoreInliner(Map<Constraint, SimpleLongScore> constraintToWeightMap,
+            boolean constraintMatchEnabled) {
+        super(constraintToWeightMap, constraintMatchEnabled, SimpleLongScore.ZERO);
     }
 
     @Override
-    public LongWeightedScoreImpacter buildWeightedScoreImpacter(String constraintPackage, String constraintName,
-            SimpleLongScore constraintWeight) {
-        assertNonZeroConstraintWeight(constraintWeight);
-        String constraintId = ConstraintMatchTotal.composeConstraintId(constraintPackage, constraintName); // Cache.
+    public LongWeightedScoreImpacter buildWeightedScoreImpacter(Constraint constraint) {
+        SimpleLongScore constraintWeight = getConstraintWeight(constraint);
         long simpleConstraintWeight = constraintWeight.getScore();
         return (long matchWeight, JustificationsSupplier justificationsSupplier) -> {
             long impact = simpleConstraintWeight * matchWeight;
@@ -44,8 +45,8 @@ public final class SimpleLongScoreInliner extends ScoreInliner<SimpleLongScore> 
             if (!constraintMatchEnabled) {
                 return undoScoreImpact;
             }
-            Runnable undoConstraintMatch = addConstraintMatch(constraintId, constraintPackage, constraintName,
-                    constraintWeight, SimpleLongScore.of(impact), justificationsSupplier.get());
+            Runnable undoConstraintMatch = addConstraintMatch(constraint, constraintWeight, SimpleLongScore.of(impact),
+                    justificationsSupplier.get());
             return () -> {
                 undoScoreImpact.run();
                 undoConstraintMatch.run();

@@ -40,7 +40,7 @@ import org.optaplanner.core.impl.score.stream.bavet.uni.BavetFromUniTuple;
 
 public final class BavetConstraintSession<Solution_, Score_ extends Score<Score_>> {
 
-    private final ScoreInliner<Score_> scoreInliner;
+    private final ScoreInliner<Score_, ?> scoreInliner;
     private final Map<Class<?>, BavetFromUniNode<Object>> declaredClassToNodeMap;
     private final List<BavetNode> nodeIndexedNodeMap;
     private final List<BavetScoringNode> scoringNodeList;
@@ -50,12 +50,11 @@ public final class BavetConstraintSession<Solution_, Score_ extends Score<Score_
 
     public BavetConstraintSession(boolean constraintMatchEnabled, ScoreDefinition<Score_> scoreDefinition,
             Map<BavetConstraint<Solution_>, Score_> constraintToWeightMap) {
-        scoreInliner = scoreDefinition.buildScoreInliner(constraintMatchEnabled);
+        scoreInliner = scoreDefinition.buildScoreInliner((Map) constraintToWeightMap, constraintMatchEnabled);
         declaredClassToNodeMap = new HashMap<>(50);
         BavetNodeBuildPolicy<Solution_> buildPolicy = new BavetNodeBuildPolicy<>(this);
-        constraintToWeightMap.forEach((constraint, constraintWeight) -> {
-            constraint.createNodes(buildPolicy, declaredClassToNodeMap, constraintWeight);
-        });
+        constraintToWeightMap.forEach((constraint, constraintWeight) -> constraint.createNodes(buildPolicy,
+                declaredClassToNodeMap, constraintWeight));
         nodeIndexedNodeMap = buildPolicy.getCreatedNodes();
         scoringNodeList = nodeIndexedNodeMap.stream()
                 .filter(node -> node instanceof BavetScoringNode)
@@ -180,7 +179,7 @@ public final class BavetConstraintSession<Solution_, Score_ extends Score<Score_
     // Getters/setters
     // ************************************************************************
 
-    public ScoreInliner<Score_> getScoreInliner() {
+    public ScoreInliner<Score_, ?> getScoreInliner() {
         return scoreInliner;
     }
 

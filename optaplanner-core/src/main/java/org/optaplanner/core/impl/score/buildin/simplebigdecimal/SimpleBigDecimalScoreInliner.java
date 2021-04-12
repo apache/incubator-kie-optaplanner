@@ -17,27 +17,28 @@
 package org.optaplanner.core.impl.score.buildin.simplebigdecimal;
 
 import java.math.BigDecimal;
+import java.util.Map;
 
 import org.optaplanner.core.api.score.buildin.simplebigdecimal.SimpleBigDecimalScore;
-import org.optaplanner.core.api.score.constraint.ConstraintMatchTotal;
+import org.optaplanner.core.api.score.stream.Constraint;
 import org.optaplanner.core.impl.score.inliner.BigDecimalWeightedScoreImpacter;
 import org.optaplanner.core.impl.score.inliner.JustificationsSupplier;
 import org.optaplanner.core.impl.score.inliner.ScoreInliner;
 import org.optaplanner.core.impl.score.inliner.UndoScoreImpacter;
 
-public final class SimpleBigDecimalScoreInliner extends ScoreInliner<SimpleBigDecimalScore> {
+public final class SimpleBigDecimalScoreInliner
+        extends ScoreInliner<SimpleBigDecimalScore, BigDecimalWeightedScoreImpacter> {
 
     private BigDecimal score = BigDecimal.ZERO;
 
-    protected SimpleBigDecimalScoreInliner(boolean constraintMatchEnabled) {
-        super(constraintMatchEnabled, SimpleBigDecimalScore.ZERO);
+    protected SimpleBigDecimalScoreInliner(Map<Constraint, SimpleBigDecimalScore> constraintToWeightMap,
+            boolean constraintMatchEnabled) {
+        super(constraintToWeightMap, constraintMatchEnabled, SimpleBigDecimalScore.ZERO);
     }
 
     @Override
-    public BigDecimalWeightedScoreImpacter buildWeightedScoreImpacter(String constraintPackage, String constraintName,
-            SimpleBigDecimalScore constraintWeight) {
-        assertNonZeroConstraintWeight(constraintWeight);
-        String constraintId = ConstraintMatchTotal.composeConstraintId(constraintPackage, constraintName); // Cache.
+    public BigDecimalWeightedScoreImpacter buildWeightedScoreImpacter(Constraint constraint) {
+        SimpleBigDecimalScore constraintWeight = getConstraintWeight(constraint);
         BigDecimal simpleConstraintWeight = constraintWeight.getScore();
         return (BigDecimal matchWeight, JustificationsSupplier justificationsSupplier) -> {
             BigDecimal impact = simpleConstraintWeight.multiply(matchWeight);
@@ -46,8 +47,8 @@ public final class SimpleBigDecimalScoreInliner extends ScoreInliner<SimpleBigDe
             if (!constraintMatchEnabled) {
                 return undoScoreImpact;
             }
-            Runnable undoConstraintMatch = addConstraintMatch(constraintId, constraintPackage, constraintName,
-                    constraintWeight, SimpleBigDecimalScore.of(impact), justificationsSupplier.get());
+            Runnable undoConstraintMatch = addConstraintMatch(constraint, constraintWeight,
+                    SimpleBigDecimalScore.of(impact), justificationsSupplier.get());
             return () -> {
                 undoScoreImpact.run();
                 undoConstraintMatch.run();

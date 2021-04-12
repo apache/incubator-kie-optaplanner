@@ -40,35 +40,32 @@ final class BiRuleContext<A, B> extends AbstractRuleContext {
     }
 
     public <Solution_> RuleBuilder<Solution_> newRuleBuilder(ToIntBiFunction<A, B> matchWeighter) {
-        ConsequenceBuilder<Solution_> consequenceBuilder = (constraint, scoreImpacter) -> {
-            IntImpactExecutor impactExecutor = buildIntImpactExecutor(scoreImpacter);
-            return DSL.on(variableA, variableB)
-                    .execute((drools, a, b) -> runConsequence(constraint, drools, impactExecutor,
-                            matchWeighter.applyAsInt(a, b),
-                            () -> asList(a, b)));
-        };
+        ConsequenceBuilder<Solution_> consequenceBuilder =
+                (constraint, scoreInlinerGlobal) -> DSL.on(scoreInlinerGlobal, variableA, variableB)
+                        .execute((drools, scoreInliner, a, b) -> runConsequence(constraint, drools,
+                                buildIntImpactExecutor(scoreInliner.buildOrGetWeightedScoreImpacter(constraint)),
+                                matchWeighter.applyAsInt(a, b),
+                                () -> asList(a, b)));
         return assemble(consequenceBuilder);
     }
 
     public <Solution_> RuleBuilder<Solution_> newRuleBuilder(ToLongBiFunction<A, B> matchWeighter) {
-        ConsequenceBuilder<Solution_> consequenceBuilder = (constraint, scoreImpacter) -> {
-            LongImpactExecutor impactExecutor = buildLongImpactExecutor(scoreImpacter);
-            return DSL.on(variableA, variableB)
-                    .execute((drools, a, b) -> runConsequence(constraint, drools, impactExecutor,
-                            matchWeighter.applyAsLong(a, b),
-                            () -> asList(a, b)));
-        };
+        ConsequenceBuilder<Solution_> consequenceBuilder =
+                (constraint, scoreInlinerGlobal) -> DSL.on(scoreInlinerGlobal, variableA, variableB)
+                        .execute((drools, scoreInliner, a, b) -> runConsequence(constraint, drools,
+                                buildLongImpactExecutor(scoreInliner.buildOrGetWeightedScoreImpacter(constraint)),
+                                matchWeighter.applyAsLong(a, b),
+                                () -> asList(a, b)));
         return assemble(consequenceBuilder);
     }
 
     public <Solution_> RuleBuilder<Solution_> newRuleBuilder(BiFunction<A, B, BigDecimal> matchWeighter) {
-        ConsequenceBuilder<Solution_> consequenceBuilder = (constraint, scoreImpacter) -> {
-            BigDecimalImpactExecutor impactExecutor = buildBigDecimalImpactExecutor(scoreImpacter);
-            return DSL.on(variableA, variableB)
-                    .execute((drools, a, b) -> runConsequence(constraint, drools, impactExecutor,
-                            matchWeighter.apply(a, b),
-                            () -> asList(a, b)));
-        };
+        ConsequenceBuilder<Solution_> consequenceBuilder =
+                (constraint, scoreInlinerGlobal) -> DSL.on(scoreInlinerGlobal, variableA, variableB)
+                        .execute((drools, scoreInliner, a, b) -> runConsequence(constraint, drools,
+                                buildBigDecimalImpactExecutor(scoreInliner.buildOrGetWeightedScoreImpacter(constraint)),
+                                matchWeighter.apply(a, b),
+                                () -> asList(a, b)));
         return assemble(consequenceBuilder);
     }
 

@@ -20,12 +20,15 @@ import static java.util.stream.Collectors.toList;
 import static org.optaplanner.core.api.score.stream.Joiners.lessThan;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.function.BiPredicate;
 import java.util.function.Function;
 import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 import org.optaplanner.core.api.domain.lookup.PlanningId;
+import org.optaplanner.core.api.score.stream.Constraint;
 import org.optaplanner.core.api.score.stream.ConstraintFactory;
 import org.optaplanner.core.api.score.stream.bi.BiConstraintStream;
 import org.optaplanner.core.api.score.stream.bi.BiJoiner;
@@ -100,6 +103,20 @@ public abstract class InnerConstraintFactory<Solution_> implements ConstraintFac
                     + "annotated on the planning solution (" + solutionDescriptor.getSolutionClass().getCanonicalName()
                     + ").");
         }
+    }
+
+    public static <Constraint_ extends Constraint, Score_> Map<Constraint_, Score_> extractConstraintToWeightMap(
+            List<Constraint_> constraintList, Function<Constraint_, Score_> weightExtractor, Score_ zeroScore) {
+        // Extract constraint weights, excluding constraints where weight is zero.
+        return constraintList.stream()
+                .map(constraint -> {
+                    Object weight = weightExtractor.apply(constraint); // Expensive, only do once.
+                    return new Object[] { constraint, weight };
+                })
+                .filter(constraintAndWeight -> !constraintAndWeight[1].equals(zeroScore)) // Exclude zero-weighted.
+                .collect(Collectors.toMap(
+                        constraintAndWeight -> (Constraint_) constraintAndWeight[0],
+                        constraintAndWeight -> (Score_) constraintAndWeight[1]));
     }
 
     // ************************************************************************
