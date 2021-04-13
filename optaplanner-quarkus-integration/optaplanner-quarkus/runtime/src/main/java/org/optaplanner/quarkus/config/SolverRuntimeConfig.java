@@ -14,20 +14,23 @@
  * limitations under the License.
  */
 
-package org.optaplanner.quarkus;
+package org.optaplanner.quarkus.config;
 
 import org.optaplanner.core.config.solver.SolverConfig;
+import org.optaplanner.core.config.solver.termination.TerminationConfig;
 
+import io.quarkus.runtime.annotations.ConfigGroup;
 import io.quarkus.runtime.annotations.ConfigItem;
-import io.quarkus.runtime.annotations.ConfigPhase;
-import io.quarkus.runtime.annotations.ConfigRoot;
 
-@ConfigRoot(name = "optaplanner", phase = ConfigPhase.RUN_TIME)
-public class OptaPlannerRunTimeConfig {
+/**
+ * During run time, this overrides some of OptaPlanner's {@link SolverConfig}
+ * properties.
+ */
+@ConfigGroup
+public class SolverRuntimeConfig {
     /**
-     * During run time, this is translated into OptaPlanner's {@link SolverConfig}
-     * runtime properties.
+     * Configuration properties that overwrite OptaPlanner's {@link TerminationConfig}.
      */
     @ConfigItem
-    OptaPlannerSolverRunTimeConfig solver;
+    public TerminationRuntimeConfig termination;
 }

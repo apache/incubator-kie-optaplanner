@@ -59,6 +59,7 @@ import org.optaplanner.core.config.solver.SolverManagerConfig;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.quarkus.OptaPlannerBeanProvider;
 import org.optaplanner.quarkus.OptaPlannerRecorder;
+import org.optaplanner.quarkus.deployment.config.OptaPlannerBuildTimeConfig;
 
 import io.quarkus.arc.deployment.AdditionalBeanBuildItem;
 import io.quarkus.arc.deployment.GeneratedBeanBuildItem;
