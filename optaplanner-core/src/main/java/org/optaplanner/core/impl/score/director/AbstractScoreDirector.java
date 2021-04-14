@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2021 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -460,12 +460,20 @@ public abstract class AbstractScoreDirector<Solution_, Score_ extends Score<Scor
 
     @Override
     public void afterProblemPropertyChanged(Object problemFactOrEntity) {
-        variableListenerSupport.resetWorkingSolution(); // TODO do not nuke the variable listeners
+        if (isConstraintConfiguration(problemFactOrEntity)) {
+            setWorkingSolution(workingSolution); // Nuke everything and recalculate, constraint weights have changed.
+        } else {
+            variableListenerSupport.resetWorkingSolution(); // TODO do not nuke the variable listeners
+        }
     }
 
     @Override
     public void beforeProblemFactRemoved(Object problemFact) {
-        // Do nothing
+        if (isConstraintConfiguration(problemFact)) {
+            throw new IllegalStateException("Attempted to remove constraint configuration (" + problemFact +
+                    ") from solution (" + workingSolution + ").\n" +
+                    "Maybe use before/afterProblemPropertyChanged(...) instead.");
+        }
     }
 
     @Override
@@ -774,6 +782,16 @@ public abstract class AbstractScoreDirector<Solution_, Score_ extends Score<Scor
             }
         }
         return constraintMatchMap;
+    }
+
+    protected boolean isConstraintConfiguration(Object problemFactOrEntity) {
+        SolutionDescriptor<Solution_> solutionDescriptor = scoreDirectorFactory.getSolutionDescriptor();
+        MemberAccessor constraintConfigurationAccessor = solutionDescriptor.getConstraintConfigurationMemberAccessor();
+        if (constraintConfigurationAccessor == null) {
+            return false;
+        }
+        Object constraintConfiguration = constraintConfigurationAccessor.executeGetter(workingSolution);
+        return problemFactOrEntity == constraintConfiguration;
     }
 
     @Override
