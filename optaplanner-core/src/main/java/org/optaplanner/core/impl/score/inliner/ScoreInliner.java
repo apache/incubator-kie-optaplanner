@@ -16,7 +16,6 @@
 
 package org.optaplanner.core.impl.score.inliner;
 
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -34,7 +33,6 @@ import org.optaplanner.core.impl.score.constraint.DefaultIndictment;
 public abstract class ScoreInliner<Score_ extends Score<Score_>, Impacter_ extends WeightedScoreImpacter> {
 
     private final Map<String, Score_> constraintIdToWeightMap;
-    private final Map<Constraint, Impacter_> constraintToImpacterMap;
     protected final boolean constraintMatchEnabled;
     private final Score_ zeroScore;
     private final Map<String, DefaultConstraintMatchTotal<Score_>> constraintMatchTotalMap;
@@ -44,7 +42,6 @@ public abstract class ScoreInliner<Score_ extends Score<Score_>, Impacter_ exten
             Score_ zeroScore) {
         this.constraintIdToWeightMap = Objects.requireNonNull(constraintToWeightMap).entrySet().stream()
                 .collect(Collectors.toMap(e -> e.getKey().getConstraintId(), Map.Entry::getValue));
-        this.constraintToImpacterMap = new HashMap<>(constraintToWeightMap.size());
         this.constraintMatchEnabled = constraintMatchEnabled;
         this.zeroScore = zeroScore;
         this.constraintMatchTotalMap = constraintMatchEnabled ? new LinkedHashMap<>() : null;
@@ -59,30 +56,7 @@ public abstract class ScoreInliner<Score_ extends Score<Score_>, Impacter_ exten
      * @param constraint never null
      * @return never null
      */
-    protected abstract Impacter_ buildWeightedScoreImpacter(Constraint constraint);
-
-    /**
-     * There is an impedance mismatch between {@link ScoreInliner} and CS-D.
-     *
-     * {@link WeightedScoreImpacter} is rule-specific, and therefore there needs to be an instance of it for every rule;
-     * rules are created during KieBase creation at build-time.
-     * At the same time, {@link WeightedScoreImpacter} needs to know the constraint weight,
-     * which is only available at runtime from the current working solution.
-     *
-     * These two factors together force us to create the {@link WeightedScoreImpacter} inside the rule consequence,
-     * and cache it so that each rule only creates it once.
-     *
-     * This method facilitates that. On first invocation for a particular {@link Constraint},
-     * it returns a new {@link WeightedScoreImpacter} instance.
-     * All subsequent invocations for that particular {@link Constraint}
-     * return the original {@link WeightedScoreImpacter} instance.
-     *
-     * @param constraint never null
-     * @return never null
-     */
-    public Impacter_ buildOrGetWeightedScoreImpacter(Constraint constraint) {
-        return constraintToImpacterMap.computeIfAbsent(constraint, __ -> buildWeightedScoreImpacter(constraint));
-    }
+    public abstract Impacter_ buildWeightedScoreImpacter(Constraint constraint);
 
     protected final Runnable addConstraintMatch(Constraint constraint, Score_ constraintWeight, Score_ score,
             List<Object> justificationList) {

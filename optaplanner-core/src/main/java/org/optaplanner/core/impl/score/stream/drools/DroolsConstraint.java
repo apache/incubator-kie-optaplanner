@@ -22,7 +22,7 @@ import java.util.function.Function;
 import org.drools.model.Global;
 import org.drools.model.Rule;
 import org.optaplanner.core.api.score.Score;
-import org.optaplanner.core.impl.score.inliner.ScoreInliner;
+import org.optaplanner.core.impl.score.inliner.WeightedScoreImpacter;
 import org.optaplanner.core.impl.score.stream.common.AbstractConstraint;
 import org.optaplanner.core.impl.score.stream.common.ScoreImpactType;
 import org.optaplanner.core.impl.score.stream.drools.common.RuleBuilder;
@@ -40,8 +40,8 @@ public class DroolsConstraint<Solution_> extends AbstractConstraint<Solution_, D
         this.ruleBuilder = Objects.requireNonNull(ruleBuilder);
     }
 
-    public Rule buildRule(Global<ScoreInliner<?, ?>> scoreInlinerGlobal) { // FIXME can we simplify?
-        return ruleBuilder.apply(this, scoreInlinerGlobal);
+    public Rule buildRule(Global<WeightedScoreImpacter> scoreImpacterGlobal) {
+        return ruleBuilder.apply(this, scoreImpacterGlobal);
     }
 
     // ************************************************************************

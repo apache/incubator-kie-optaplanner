@@ -51,7 +51,7 @@ public class SimpleBigDecimalScoreInlinerTest
         SimpleBigDecimalScoreInliner scoreInliner =
                 new SimpleBigDecimalScoreInliner(getConstaintToWeightMap(constraint), constraintMatchEnabled);
 
-        BigDecimalWeightedScoreImpacter hardImpacter = scoreInliner.buildOrGetWeightedScoreImpacter(constraint);
+        BigDecimalWeightedScoreImpacter hardImpacter = scoreInliner.buildWeightedScoreImpacter(constraint);
         UndoScoreImpacter undo1 = hardImpacter.impactScore(BigDecimal.TEN, EMPTY_JUSTIFICATIONS_SUPPLIER);
         assertThat(scoreInliner.extractScore(0))
                 .isEqualTo(SimpleBigDecimalScore.of(BigDecimal.valueOf(100)));

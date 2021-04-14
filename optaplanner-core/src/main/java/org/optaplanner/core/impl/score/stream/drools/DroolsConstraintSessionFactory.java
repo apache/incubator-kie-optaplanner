@@ -22,6 +22,8 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import org.drools.ancompiler.KieBaseUpdaterANC;
@@ -45,6 +47,7 @@ import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.core.impl.score.definition.ScoreDefinition;
 import org.optaplanner.core.impl.score.director.drools.OptaPlannerRuleEventListener;
 import org.optaplanner.core.impl.score.inliner.ScoreInliner;
+import org.optaplanner.core.impl.score.inliner.WeightedScoreImpacter;
 import org.optaplanner.core.impl.score.stream.InnerConstraintFactory;
 
 public final class DroolsConstraintSessionFactory<Solution_, Score_ extends Score<Score_>> {
@@ -107,23 +110,32 @@ public final class DroolsConstraintSessionFactory<Solution_, Score_ extends Scor
         // Creating KieBase is expensive. Therefore we only do it when there has been a change in constraint weights.
         if (kieBaseCache == null || !kieBaseCache.isUpToDate(constraintToWeightMap)) {
             Package pack = solutionDescriptor.getSolutionClass().getPackage();
-            Global<ScoreInliner<?, ?>> scoreInlinerGlobal = (Global) globalOf(ScoreInliner.class,
-                    (pack == null) ? "" : pack.getName(),
-                    SCORE_INLINER_GLOBAR_VAR_NAME);
+            String constraintPackageName = (pack == null) ? "" : pack.getName();
+            // Each constraint gets its own global, in which it will keep its impacter.
+            // Impacters carry constraint weights, and therefore the instances are solution-specific.
+            AtomicInteger idCounter = new AtomicInteger(0);
+            Map<DroolsConstraint<Solution_>, Global<WeightedScoreImpacter>> constraintToGlobalMap =
+                    constraintToWeightMap.keySet().stream()
+                            .collect(Collectors.toMap(Function.identity(),
+                                    c -> globalOf(WeightedScoreImpacter.class, constraintPackageName,
+                                            "scoreImpacter" + idCounter.getAndIncrement())));
             ModelImpl model = constraintToWeightMap.keySet().stream()
-                    .map(constraint -> constraint.buildRule(scoreInlinerGlobal))
+                    .map(constraint -> constraint.buildRule(constraintToGlobalMap.get(constraint)))
                     .reduce(new ModelImpl(), ModelImpl::addRule, (m, __) -> m);
-            model.addGlobal(scoreInlinerGlobal);
+            constraintToGlobalMap.forEach((constraint, global) -> model.addGlobal(global));
             KieBase kieBase = buildKieBaseFromModel(model, droolsAlphaNetworkCompilationEnabled);
-            kieBaseCache = new KieBaseCache<>(constraintToWeightMap, kieBase);
+            kieBaseCache = new KieBaseCache<>(constraintToWeightMap, constraintToGlobalMap, kieBase);
         }
 
         // Create the session itself.
         KieSession kieSession = buildKieSessionFromKieBase(kieBaseCache.getKieBase());
+        ((RuleEventManager) kieSession).addEventListener(new OptaPlannerRuleEventListener()); // Enables undo in rules.
+        // Cache the impacters for each constraint; this locks in the constraint weights.
         ScoreInliner<Score_, ?> scoreInliner =
                 scoreDefinition.buildScoreInliner((Map) constraintToWeightMap, constraintMatchEnabled);
-        kieSession.setGlobal(SCORE_INLINER_GLOBAR_VAR_NAME, scoreInliner);
-        ((RuleEventManager) kieSession).addEventListener(new OptaPlannerRuleEventListener()); // Enables undo in rules.
+        kieBaseCache.getConstraintToGlobalMap().forEach((constraint, global) -> kieSession.setGlobal(global.getName(),
+                scoreInliner.buildWeightedScoreImpacter(constraint)));
+        // Return only the inliner as that holds the work product of the individual impacters.
         return new SessionDescriptor<>(kieSession, scoreInliner);
     }
 
@@ -148,16 +160,25 @@ public final class DroolsConstraintSessionFactory<Solution_, Score_ extends Scor
 
     public static final class KieBaseCache<Solution_, Score_ extends Score<Score_>> {
 
-        private final Map<DroolsConstraint<Solution_>, Score_> constraintWeightMap;
+        private final Map<DroolsConstraint<Solution_>, Score_> constraintToWeightMap;
+        private final Map<DroolsConstraint<Solution_>, Global<WeightedScoreImpacter>> constraintToGlobalMap;
         private final KieBase kieBase;
 
-        public KieBaseCache(Map<DroolsConstraint<Solution_>, Score_> constraintWeightMap, KieBase kieBase) {
-            this.constraintWeightMap = Objects.requireNonNull(constraintWeightMap);
+        public KieBaseCache(Map<DroolsConstraint<Solution_>, Score_> constraintToWeightMap,
+                Map<DroolsConstraint<Solution_>, Global<WeightedScoreImpacter>> constraintToGlobalMap,
+
+                KieBase kieBase) {
+            this.constraintToWeightMap = Objects.requireNonNull(constraintToWeightMap);
+            this.constraintToGlobalMap = Objects.requireNonNull(constraintToGlobalMap);
             this.kieBase = Objects.requireNonNull(kieBase);
         }
 
         public boolean isUpToDate(Map<DroolsConstraint<Solution_>, Score_> currentConstraintWeightMap) {
-            return constraintWeightMap.equals(currentConstraintWeightMap);
+            return constraintToWeightMap.equals(currentConstraintWeightMap);
+        }
+
+        public Map<DroolsConstraint<Solution_>, Global<WeightedScoreImpacter>> getConstraintToGlobalMap() {
+            return constraintToGlobalMap;
         }
 
         public KieBase getKieBase() {

@@ -50,7 +50,7 @@ public class BendableScoreInlinerTest
         BendableScoreInliner scoreInliner =
                 new BendableScoreInliner(getConstaintToWeightMap(constraint), constraintMatchEnabled, 1, 2);
 
-        IntWeightedScoreImpacter hardImpacter = scoreInliner.buildOrGetWeightedScoreImpacter(constraint);
+        IntWeightedScoreImpacter hardImpacter = scoreInliner.buildWeightedScoreImpacter(constraint);
         UndoScoreImpacter undo1 = hardImpacter.impactScore(1, EMPTY_JUSTIFICATIONS_SUPPLIER);
         assertThat(scoreInliner.extractScore(0))
                 .isEqualTo(buildScore(90, 0, 0));
@@ -75,7 +75,7 @@ public class BendableScoreInlinerTest
         BendableScoreInliner scoreInliner =
                 new BendableScoreInliner(getConstaintToWeightMap(constraint), constraintMatchEnabled, 1, 2);
 
-        IntWeightedScoreImpacter hardImpacter = scoreInliner.buildOrGetWeightedScoreImpacter(constraint);
+        IntWeightedScoreImpacter hardImpacter = scoreInliner.buildWeightedScoreImpacter(constraint);
         UndoScoreImpacter undo1 = hardImpacter.impactScore(1, EMPTY_JUSTIFICATIONS_SUPPLIER);
         assertThat(scoreInliner.extractScore(0))
                 .isEqualTo(buildScore(0, 90, 0));
@@ -100,7 +100,7 @@ public class BendableScoreInlinerTest
         BendableScoreInliner scoreInliner =
                 new BendableScoreInliner(getConstaintToWeightMap(constraint), constraintMatchEnabled, 1, 2);
 
-        IntWeightedScoreImpacter hardImpacter = scoreInliner.buildOrGetWeightedScoreImpacter(constraint);
+        IntWeightedScoreImpacter hardImpacter = scoreInliner.buildWeightedScoreImpacter(constraint);
         UndoScoreImpacter undo1 = hardImpacter.impactScore(1, EMPTY_JUSTIFICATIONS_SUPPLIER);
         assertThat(scoreInliner.extractScore(0))
                 .isEqualTo(buildScore(0, 0, 90));
@@ -125,7 +125,7 @@ public class BendableScoreInlinerTest
         BendableScoreInliner scoreInliner =
                 new BendableScoreInliner(getConstaintToWeightMap(constraint), constraintMatchEnabled, 1, 2);
 
-        IntWeightedScoreImpacter hardImpacter = scoreInliner.buildOrGetWeightedScoreImpacter(constraint);
+        IntWeightedScoreImpacter hardImpacter = scoreInliner.buildWeightedScoreImpacter(constraint);
         UndoScoreImpacter undo1 = hardImpacter.impactScore(10, EMPTY_JUSTIFICATIONS_SUPPLIER);
         assertThat(scoreInliner.extractScore(0))
                 .isEqualTo(buildScore(100, 1_000, 10_000));

@@ -51,7 +51,7 @@ public class HardSoftBigDecimalScoreInlinerTest
         HardSoftBigDecimalScoreInliner scoreInliner =
                 new HardSoftBigDecimalScoreInliner(getConstaintToWeightMap(constraint), constraintMatchEnabled);
 
-        BigDecimalWeightedScoreImpacter hardImpacter = scoreInliner.buildOrGetWeightedScoreImpacter(constraint);
+        BigDecimalWeightedScoreImpacter hardImpacter = scoreInliner.buildWeightedScoreImpacter(constraint);
         UndoScoreImpacter undo1 = hardImpacter.impactScore(BigDecimal.ONE, EMPTY_JUSTIFICATIONS_SUPPLIER);
         assertThat(scoreInliner.extractScore(0))
                 .isEqualTo(HardSoftBigDecimalScore.of(BigDecimal.valueOf(90), BigDecimal.ZERO));
@@ -76,7 +76,7 @@ public class HardSoftBigDecimalScoreInlinerTest
         HardSoftBigDecimalScoreInliner scoreInliner =
                 new HardSoftBigDecimalScoreInliner(getConstaintToWeightMap(constraint), constraintMatchEnabled);
 
-        BigDecimalWeightedScoreImpacter hardImpacter = scoreInliner.buildOrGetWeightedScoreImpacter(constraint);
+        BigDecimalWeightedScoreImpacter hardImpacter = scoreInliner.buildWeightedScoreImpacter(constraint);
         UndoScoreImpacter undo1 = hardImpacter.impactScore(BigDecimal.ONE, EMPTY_JUSTIFICATIONS_SUPPLIER);
         assertThat(scoreInliner.extractScore(0))
                 .isEqualTo(HardSoftBigDecimalScore.of(BigDecimal.ZERO, BigDecimal.valueOf(90)));
@@ -101,7 +101,7 @@ public class HardSoftBigDecimalScoreInlinerTest
         HardSoftBigDecimalScoreInliner scoreInliner =
                 new HardSoftBigDecimalScoreInliner(getConstaintToWeightMap(constraint), constraintMatchEnabled);
 
-        BigDecimalWeightedScoreImpacter hardImpacter = scoreInliner.buildOrGetWeightedScoreImpacter(constraint);
+        BigDecimalWeightedScoreImpacter hardImpacter = scoreInliner.buildWeightedScoreImpacter(constraint);
         UndoScoreImpacter undo1 = hardImpacter.impactScore(BigDecimal.TEN, EMPTY_JUSTIFICATIONS_SUPPLIER);
         assertThat(scoreInliner.extractScore(0))
                 .isEqualTo(HardSoftBigDecimalScore.of(BigDecimal.valueOf(100), BigDecimal.valueOf(1000)));

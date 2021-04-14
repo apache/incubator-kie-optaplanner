@@ -159,9 +159,9 @@ abstract class AbstractRuleContext {
     }
 
     protected <Solution_> RuleBuilder<Solution_> assemble(ConsequenceBuilder<Solution_> consequenceBuilder) {
-        return (constraint, scoreInlinerGlobal) -> {
+        return (constraint, scoreImpacterGlobal) -> {
             List<RuleItemBuilder<?>> ruleItemBuilderList = new ArrayList<>(viewItems);
-            ruleItemBuilderList.add(consequenceBuilder.apply(constraint, scoreInlinerGlobal));
+            ruleItemBuilderList.add(consequenceBuilder.apply(constraint, scoreImpacterGlobal));
             return rule(constraint.getConstraintPackage(), constraint.getConstraintName())
                     .build(ruleItemBuilderList.toArray(new RuleItemBuilder[0]));
         };

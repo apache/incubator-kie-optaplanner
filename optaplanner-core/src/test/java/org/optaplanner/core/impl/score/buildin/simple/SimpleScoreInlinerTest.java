@@ -50,7 +50,7 @@ public class SimpleScoreInlinerTest
         SimpleScoreInliner scoreInliner =
                 new SimpleScoreInliner(getConstaintToWeightMap(constraint), constraintMatchEnabled);
 
-        IntWeightedScoreImpacter hardImpacter = scoreInliner.buildOrGetWeightedScoreImpacter(constraint);
+        IntWeightedScoreImpacter hardImpacter = scoreInliner.buildWeightedScoreImpacter(constraint);
         UndoScoreImpacter undo1 = hardImpacter.impactScore(10, EMPTY_JUSTIFICATIONS_SUPPLIER);
         assertThat(scoreInliner.extractScore(0))
                 .isEqualTo(SimpleScore.of(100));
