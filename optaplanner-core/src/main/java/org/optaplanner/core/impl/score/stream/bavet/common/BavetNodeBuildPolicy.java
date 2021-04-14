@@ -78,7 +78,7 @@ public class BavetNodeBuildPolicy<Solution_> {
     }
 
     public List<BavetNode> getCreatedNodes() {
-        if (sharableNodeMap.isEmpty()) { // No constraints have their constraint weights greater than zero.
+        if (sharableNodeMap.isEmpty()) { // No constraints have a constraint weight greater than zero.
             return Collections.emptyList();
         }
         // Make a sequential list of unique nodes.
