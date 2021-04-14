@@ -29,10 +29,7 @@ import org.drools.model.Drools;
 import org.drools.model.RuleItemBuilder;
 import org.drools.model.view.ViewItem;
 import org.kie.api.runtime.rule.RuleContext;
-import org.optaplanner.core.impl.score.inliner.BigDecimalWeightedScoreImpacter;
-import org.optaplanner.core.impl.score.inliner.IntWeightedScoreImpacter;
 import org.optaplanner.core.impl.score.inliner.JustificationsSupplier;
-import org.optaplanner.core.impl.score.inliner.LongWeightedScoreImpacter;
 import org.optaplanner.core.impl.score.inliner.UndoScoreImpacter;
 import org.optaplanner.core.impl.score.inliner.WeightedScoreImpacter;
 import org.optaplanner.core.impl.score.stream.drools.DroolsConstraint;
@@ -97,65 +94,27 @@ abstract class AbstractRuleContext {
     protected static void runConsequence(DroolsConstraint<?> constraint, Drools drools,
             WeightedScoreImpacter scoreImpacter, int impact, JustificationsSupplier justificationsSupplier) {
         constraint.assertCorrectImpact(impact);
-        UndoScoreImpacter undoImpact = runImpact(scoreImpacter, impact, justificationsSupplier);
+        UndoScoreImpacter undoImpact = scoreImpacter.impactScore(impact, justificationsSupplier);
         addUndo(drools, undoImpact);
     }
 
     protected static void runConsequence(DroolsConstraint<?> constraint, Drools drools,
             WeightedScoreImpacter scoreImpacter, long impact, JustificationsSupplier justificationsSupplier) {
         constraint.assertCorrectImpact(impact);
-        UndoScoreImpacter undoImpact = runImpact(scoreImpacter, impact, justificationsSupplier);
+        UndoScoreImpacter undoImpact = scoreImpacter.impactScore(impact, justificationsSupplier);
         addUndo(drools, undoImpact);
     }
 
     protected static void runConsequence(DroolsConstraint<?> constraint, Drools drools,
             WeightedScoreImpacter scoreImpacter, BigDecimal impact, JustificationsSupplier justificationsSupplier) {
         constraint.assertCorrectImpact(impact);
-        UndoScoreImpacter undoImpact = runImpact(scoreImpacter, impact, justificationsSupplier);
+        UndoScoreImpacter undoImpact = scoreImpacter.impactScore(impact, justificationsSupplier);
         addUndo(drools, undoImpact);
     }
 
     private static void addUndo(Drools drools, UndoScoreImpacter undoImpact) {
         AgendaItem<?> agendaItem = (AgendaItem<?>) ((RuleContext) drools).getMatch();
         agendaItem.setCallback(undoImpact);
-    }
-
-    private static UndoScoreImpacter runImpact(WeightedScoreImpacter scoreImpacter, int matchWeight,
-            JustificationsSupplier justificationsSupplier) {
-        if (scoreImpacter instanceof IntWeightedScoreImpacter) {
-            return ((IntWeightedScoreImpacter) scoreImpacter).impactScore(matchWeight, justificationsSupplier);
-        } else if (scoreImpacter instanceof LongWeightedScoreImpacter) {
-            return ((LongWeightedScoreImpacter) scoreImpacter).impactScore(matchWeight, justificationsSupplier);
-        } else if (scoreImpacter instanceof BigDecimalWeightedScoreImpacter) {
-            return ((BigDecimalWeightedScoreImpacter) scoreImpacter)
-                    .impactScore(BigDecimal.valueOf(matchWeight), justificationsSupplier);
-        } else {
-            throw new IllegalStateException("Impossible state: unsupported score impacter type (" +
-                    scoreImpacter.getClass() + ").");
-        }
-    }
-
-    private static UndoScoreImpacter runImpact(WeightedScoreImpacter scoreImpacter, long matchWeight,
-            JustificationsSupplier justificationsSupplier) {
-        if (scoreImpacter instanceof LongWeightedScoreImpacter) {
-            return ((LongWeightedScoreImpacter) scoreImpacter).impactScore(matchWeight, justificationsSupplier);
-        } else if (scoreImpacter instanceof BigDecimalWeightedScoreImpacter) {
-            return ((BigDecimalWeightedScoreImpacter) scoreImpacter)
-                    .impactScore(BigDecimal.valueOf(matchWeight), justificationsSupplier);
-        } else {
-            throw new IllegalStateException("Impossible state: unsupported score impacter type (" +
-                    scoreImpacter.getClass() + ").");
-        }
-    }
-
-    private static UndoScoreImpacter runImpact(WeightedScoreImpacter scoreImpacter, BigDecimal matchWeight,
-            JustificationsSupplier justificationsSupplier) {
-        if (scoreImpacter instanceof BigDecimalWeightedScoreImpacter) {
-            return ((BigDecimalWeightedScoreImpacter) scoreImpacter).impactScore(matchWeight, justificationsSupplier);
-        } else {
-            throw new IllegalStateException("Impossible state: unsupported score impacter type (" +
-                    scoreImpacter.getClass() + ").");
-        }
     }
 
     protected <Solution_> RuleBuilder<Solution_> assemble(ConsequenceBuilder<Solution_> consequenceBuilder) {

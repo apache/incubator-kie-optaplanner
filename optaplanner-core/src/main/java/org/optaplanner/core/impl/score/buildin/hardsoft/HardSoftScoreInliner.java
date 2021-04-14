@@ -40,7 +40,7 @@ public final class HardSoftScoreInliner extends ScoreInliner<HardSoftScore, IntW
         int hardConstraintWeight = constraintWeight.getHardScore();
         int softConstraintWeight = constraintWeight.getSoftScore();
         if (softConstraintWeight == 0) {
-            return (int matchWeight, JustificationsSupplier justificationsSupplier) -> {
+            return new IntWeightedScoreImpacter((int matchWeight, JustificationsSupplier justificationsSupplier) -> {
                 int hardImpact = hardConstraintWeight * matchWeight;
                 this.hardScore += hardImpact;
                 UndoScoreImpacter undoScoreImpact = () -> this.hardScore -= hardImpact;
@@ -53,9 +53,9 @@ public final class HardSoftScoreInliner extends ScoreInliner<HardSoftScore, IntW
                     undoScoreImpact.run();
                     undoConstraintMatch.run();
                 };
-            };
+            });
         } else if (hardConstraintWeight == 0) {
-            return (int matchWeight, JustificationsSupplier justificationsSupplier) -> {
+            return new IntWeightedScoreImpacter((int matchWeight, JustificationsSupplier justificationsSupplier) -> {
                 int softImpact = softConstraintWeight * matchWeight;
                 this.softScore += softImpact;
                 UndoScoreImpacter undoScoreImpact = () -> this.softScore -= softImpact;
@@ -68,9 +68,9 @@ public final class HardSoftScoreInliner extends ScoreInliner<HardSoftScore, IntW
                     undoScoreImpact.run();
                     undoConstraintMatch.run();
                 };
-            };
+            });
         } else {
-            return (int matchWeight, JustificationsSupplier justificationsSupplier) -> {
+            return new IntWeightedScoreImpacter((int matchWeight, JustificationsSupplier justificationsSupplier) -> {
                 int hardImpact = hardConstraintWeight * matchWeight;
                 int softImpact = softConstraintWeight * matchWeight;
                 this.hardScore += hardImpact;
@@ -88,7 +88,7 @@ public final class HardSoftScoreInliner extends ScoreInliner<HardSoftScore, IntW
                     undoScoreImpact.run();
                     undoConstraintMatch.run();
                 };
-            };
+            });
         }
     }
 

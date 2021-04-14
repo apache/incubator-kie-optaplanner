@@ -55,7 +55,7 @@ public final class BendableScoreInliner extends ScoreInliner<BendableScore, IntW
             int levelWeight = constraintWeight.getHardOrSoftScore(singleLevel);
             if (singleLevel < constraintWeight.getHardLevelsSize()) {
                 int level = singleLevel;
-                return (int matchWeight, JustificationsSupplier justificationsSupplier) -> {
+                return new IntWeightedScoreImpacter((int matchWeight, JustificationsSupplier justificationsSupplier) -> {
                     int hardImpact = levelWeight * matchWeight;
                     this.hardScores[level] += hardImpact;
                     UndoScoreImpacter undoScoreImpact = () -> this.hardScores[level] -= hardImpact;
@@ -69,10 +69,10 @@ public final class BendableScoreInliner extends ScoreInliner<BendableScore, IntW
                         undoScoreImpact.run();
                         undoConstraintMatch.run();
                     };
-                };
+                });
             } else {
                 int level = singleLevel - constraintWeight.getHardLevelsSize();
-                return (int matchWeight, JustificationsSupplier justificationsSupplier) -> {
+                return new IntWeightedScoreImpacter((int matchWeight, JustificationsSupplier justificationsSupplier) -> {
                     int softImpact = levelWeight * matchWeight;
                     this.softScores[level] += softImpact;
                     UndoScoreImpacter undoScoreImpact = () -> this.softScores[level] -= softImpact;
@@ -86,10 +86,10 @@ public final class BendableScoreInliner extends ScoreInliner<BendableScore, IntW
                         undoScoreImpact.run();
                         undoConstraintMatch.run();
                     };
-                };
+                });
             }
         } else {
-            return (int matchWeight, JustificationsSupplier justificationsSupplier) -> {
+            return new IntWeightedScoreImpacter((int matchWeight, JustificationsSupplier justificationsSupplier) -> {
                 int[] hardImpacts = new int[hardScores.length];
                 int[] softImpacts = new int[softScores.length];
                 for (int i = 0; i < hardImpacts.length; i++) {
@@ -117,7 +117,7 @@ public final class BendableScoreInliner extends ScoreInliner<BendableScore, IntW
                     undoScoreImpact.run();
                     undoConstraintMatch.run();
                 };
-            };
+            });
         }
     }
 

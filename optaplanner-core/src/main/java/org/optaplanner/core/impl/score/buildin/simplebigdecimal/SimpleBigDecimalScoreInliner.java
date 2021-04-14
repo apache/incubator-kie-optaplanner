@@ -40,20 +40,21 @@ public final class SimpleBigDecimalScoreInliner
     public BigDecimalWeightedScoreImpacter buildWeightedScoreImpacter(Constraint constraint) {
         SimpleBigDecimalScore constraintWeight = getConstraintWeight(constraint);
         BigDecimal simpleConstraintWeight = constraintWeight.getScore();
-        return (BigDecimal matchWeight, JustificationsSupplier justificationsSupplier) -> {
-            BigDecimal impact = simpleConstraintWeight.multiply(matchWeight);
-            this.score = this.score.add(impact);
-            UndoScoreImpacter undoScoreImpact = () -> this.score = this.score.subtract(impact);
-            if (!constraintMatchEnabled) {
-                return undoScoreImpact;
-            }
-            Runnable undoConstraintMatch = addConstraintMatch(constraint, constraintWeight,
-                    SimpleBigDecimalScore.of(impact), justificationsSupplier.get());
-            return () -> {
-                undoScoreImpact.run();
-                undoConstraintMatch.run();
-            };
-        };
+        return new BigDecimalWeightedScoreImpacter(
+                (BigDecimal matchWeight, JustificationsSupplier justificationsSupplier) -> {
+                    BigDecimal impact = simpleConstraintWeight.multiply(matchWeight);
+                    this.score = this.score.add(impact);
+                    UndoScoreImpacter undoScoreImpact = () -> this.score = this.score.subtract(impact);
+                    if (!constraintMatchEnabled) {
+                        return undoScoreImpact;
+                    }
+                    Runnable undoConstraintMatch = addConstraintMatch(constraint, constraintWeight,
+                            SimpleBigDecimalScore.of(impact), justificationsSupplier.get());
+                    return () -> {
+                        undoScoreImpact.run();
+                        undoConstraintMatch.run();
+                    };
+                });
     }
 
     @Override

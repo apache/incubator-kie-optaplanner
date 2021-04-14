@@ -43,7 +43,7 @@ public final class HardMediumSoftScoreInliner extends ScoreInliner<HardMediumSof
         int mediumConstraintWeight = constraintWeight.getMediumScore();
         int softConstraintWeight = constraintWeight.getSoftScore();
         if (mediumConstraintWeight == 0 && softConstraintWeight == 0) {
-            return (int matchWeight, JustificationsSupplier justificationsSupplier) -> {
+            return new IntWeightedScoreImpacter((int matchWeight, JustificationsSupplier justificationsSupplier) -> {
                 int hardImpact = hardConstraintWeight * matchWeight;
                 this.hardScore += hardImpact;
                 UndoScoreImpacter undoScoreImpact = () -> this.hardScore -= hardImpact;
@@ -56,9 +56,9 @@ public final class HardMediumSoftScoreInliner extends ScoreInliner<HardMediumSof
                     undoScoreImpact.run();
                     undoConstraintMatch.run();
                 };
-            };
+            });
         } else if (hardConstraintWeight == 0 && softConstraintWeight == 0) {
-            return (int matchWeight, JustificationsSupplier justificationsSupplier) -> {
+            return new IntWeightedScoreImpacter((int matchWeight, JustificationsSupplier justificationsSupplier) -> {
                 int mediumImpact = mediumConstraintWeight * matchWeight;
                 this.mediumScore += mediumImpact;
                 UndoScoreImpacter undoScoreImpact = () -> this.mediumScore -= mediumImpact;
@@ -71,9 +71,9 @@ public final class HardMediumSoftScoreInliner extends ScoreInliner<HardMediumSof
                     undoScoreImpact.run();
                     undoConstraintMatch.run();
                 };
-            };
+            });
         } else if (hardConstraintWeight == 0 && mediumConstraintWeight == 0) {
-            return (int matchWeight, JustificationsSupplier justificationsSupplier) -> {
+            return new IntWeightedScoreImpacter((int matchWeight, JustificationsSupplier justificationsSupplier) -> {
                 int softImpact = softConstraintWeight * matchWeight;
                 this.softScore += softImpact;
                 UndoScoreImpacter undoScoreImpact = () -> this.softScore -= softImpact;
@@ -86,9 +86,9 @@ public final class HardMediumSoftScoreInliner extends ScoreInliner<HardMediumSof
                     undoScoreImpact.run();
                     undoConstraintMatch.run();
                 };
-            };
+            });
         } else {
-            return (int matchWeight, JustificationsSupplier justificationsSupplier) -> {
+            return new IntWeightedScoreImpacter((int matchWeight, JustificationsSupplier justificationsSupplier) -> {
                 int hardImpact = hardConstraintWeight * matchWeight;
                 int mediumImpact = mediumConstraintWeight * matchWeight;
                 int softImpact = softConstraintWeight * matchWeight;
@@ -110,7 +110,7 @@ public final class HardMediumSoftScoreInliner extends ScoreInliner<HardMediumSof
                     undoScoreImpact.run();
                     undoConstraintMatch.run();
                 };
-            };
+            });
         }
     }
 

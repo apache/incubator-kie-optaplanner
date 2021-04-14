@@ -37,7 +37,7 @@ public final class SimpleScoreInliner extends ScoreInliner<SimpleScore, IntWeigh
     public IntWeightedScoreImpacter buildWeightedScoreImpacter(Constraint constraint) {
         SimpleScore constraintWeight = getConstraintWeight(constraint);
         int simpleConstraintWeight = constraintWeight.getScore();
-        return (int matchWeight, JustificationsSupplier justificationsSupplier) -> {
+        return new IntWeightedScoreImpacter((int matchWeight, JustificationsSupplier justificationsSupplier) -> {
             int impact = simpleConstraintWeight * matchWeight;
             this.score += impact;
             UndoScoreImpacter undoScoreImpact = () -> this.score -= impact;
@@ -50,7 +50,7 @@ public final class SimpleScoreInliner extends ScoreInliner<SimpleScore, IntWeigh
                 undoScoreImpact.run();
                 undoConstraintMatch.run();
             };
-        };
+        });
     }
 
     @Override

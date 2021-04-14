@@ -16,14 +16,37 @@
 
 package org.optaplanner.core.impl.score.inliner;
 
-@FunctionalInterface
-public interface IntWeightedScoreImpacter extends WeightedScoreImpacter {
+import java.math.BigDecimal;
+import java.util.Objects;
 
-    /**
-     * @param matchWeight never null
-     * @param justificationsSupplier never null, supplier only pays the list creation penalty on actual access
-     * @return never null
-     */
-    UndoScoreImpacter impactScore(int matchWeight, JustificationsSupplier justificationsSupplier);
+public final class IntWeightedScoreImpacter implements WeightedScoreImpacter {
+
+    private final ImpactFunction impactFunction;
+
+    public IntWeightedScoreImpacter(ImpactFunction impactFunction) {
+        this.impactFunction = Objects.requireNonNull(impactFunction);
+    }
+
+    @Override
+    public UndoScoreImpacter impactScore(int matchWeight, JustificationsSupplier justificationsSupplier) {
+        return impactFunction.impact(matchWeight, justificationsSupplier);
+    }
+
+    @Override
+    public UndoScoreImpacter impactScore(long matchWeight, JustificationsSupplier justificationsSupplier) {
+        throw new IllegalStateException("Impossible state: passing long into an int impacter.");
+    }
+
+    @Override
+    public UndoScoreImpacter impactScore(BigDecimal matchWeight, JustificationsSupplier justificationsSupplier) {
+        throw new IllegalStateException("Impossible state: passing BigDecimal into an int impacter.");
+    }
+
+    @FunctionalInterface
+    public interface ImpactFunction {
+
+        UndoScoreImpacter impact(int matchWeight, JustificationsSupplier justificationsSupplier);
+
+    }
 
 }

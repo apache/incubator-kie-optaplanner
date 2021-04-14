@@ -17,15 +17,35 @@
 package org.optaplanner.core.impl.score.inliner;
 
 import java.math.BigDecimal;
+import java.util.Objects;
+import java.util.function.BiFunction;
 
-@FunctionalInterface
-public interface BigDecimalWeightedScoreImpacter extends WeightedScoreImpacter {
+public final class BigDecimalWeightedScoreImpacter implements WeightedScoreImpacter {
 
-    /**
-     * @param matchWeight never null
-     * @param justificationsSupplier never null, supplier only pays the list creation penalty on actual access
-     * @return never null
-     */
-    UndoScoreImpacter impactScore(BigDecimal matchWeight, JustificationsSupplier justificationsSupplier);
+    private final ImpactFunction impactFunction;
+
+    public BigDecimalWeightedScoreImpacter(ImpactFunction impactFunction) {
+        this.impactFunction = Objects.requireNonNull(impactFunction);
+    }
+
+    @Override
+    public UndoScoreImpacter impactScore(int matchWeight, JustificationsSupplier justificationsSupplier) {
+        return impactFunction.apply(BigDecimal.valueOf(matchWeight), justificationsSupplier);
+    }
+
+    @Override
+    public UndoScoreImpacter impactScore(long matchWeight, JustificationsSupplier justificationsSupplier) {
+        return impactFunction.apply(BigDecimal.valueOf(matchWeight), justificationsSupplier);
+    }
+
+    @Override
+    public UndoScoreImpacter impactScore(BigDecimal matchWeight, JustificationsSupplier justificationsSupplier) {
+        return impactFunction.apply(matchWeight, justificationsSupplier);
+    }
+
+    @FunctionalInterface
+    public interface ImpactFunction extends BiFunction<BigDecimal, JustificationsSupplier, UndoScoreImpacter> {
+
+    }
 
 }

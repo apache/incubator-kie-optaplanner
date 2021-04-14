@@ -38,7 +38,7 @@ public final class SimpleLongScoreInliner extends ScoreInliner<SimpleLongScore, 
     public LongWeightedScoreImpacter buildWeightedScoreImpacter(Constraint constraint) {
         SimpleLongScore constraintWeight = getConstraintWeight(constraint);
         long simpleConstraintWeight = constraintWeight.getScore();
-        return (long matchWeight, JustificationsSupplier justificationsSupplier) -> {
+        return new LongWeightedScoreImpacter((long matchWeight, JustificationsSupplier justificationsSupplier) -> {
             long impact = simpleConstraintWeight * matchWeight;
             this.score += impact;
             UndoScoreImpacter undoScoreImpact = () -> this.score -= impact;
@@ -51,7 +51,7 @@ public final class SimpleLongScoreInliner extends ScoreInliner<SimpleLongScore, 
                 undoScoreImpact.run();
                 undoConstraintMatch.run();
             };
-        };
+        });
     }
 
     @Override

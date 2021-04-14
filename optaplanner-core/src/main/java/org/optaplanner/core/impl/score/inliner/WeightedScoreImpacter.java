@@ -16,6 +16,46 @@
 
 package org.optaplanner.core.impl.score.inliner;
 
+import java.math.BigDecimal;
+
+/**
+ * There are several valid ways how an impacter could be called from a constraint stream:
+ *
+ * <ul>
+ * <li>{@code .penalize(..., (int) 1)}</li>
+ * <li>{@code .penalizeLong(..., (int) 1)}</li>
+ * <li>{@code .penalizeLong(..., (long) 1)}</li>
+ * <li>{@code .penalizeBigDecimal(..., (int) 1)}</li>
+ * <li>{@code .penalizeBigDecimal(..., (long) 1)}</li>
+ * <li>{@code .penalizeBigDecimal(..., BigDecimal.ONE)}</li>
+ * <li>Plus reward variants of the above.</li>
+ * </ul>
+ *
+ * Implementations of this class need to be able to handle all of these, casting to the appropriate type.
+ * In certain cases, such as when BigDecimal is passed into an int impacter, methods are allowed to throw exceptions.
+ * That state should be considered impossible, ruled out by the CS API itself.
+ */
 public interface WeightedScoreImpacter {
+
+    /**
+     * @param matchWeight never null
+     * @param justificationsSupplier never null
+     * @return never null
+     */
+    UndoScoreImpacter impactScore(int matchWeight, JustificationsSupplier justificationsSupplier);
+
+    /**
+     * @param matchWeight never null
+     * @param justificationsSupplier never null
+     * @return never null
+     */
+    UndoScoreImpacter impactScore(long matchWeight, JustificationsSupplier justificationsSupplier);
+
+    /**
+     * @param matchWeight never null
+     * @param justificationsSupplier never null
+     * @return never null
+     */
+    UndoScoreImpacter impactScore(BigDecimal matchWeight, JustificationsSupplier justificationsSupplier);
 
 }
