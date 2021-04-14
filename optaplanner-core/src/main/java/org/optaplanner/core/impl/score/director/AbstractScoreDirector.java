@@ -16,6 +16,9 @@
 
 package org.optaplanner.core.impl.score.director;
 
+import static java.util.Comparator.comparing;
+import static java.util.Objects.requireNonNull;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -29,6 +32,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.TreeMap;
 import java.util.function.Consumer;
+
 import org.optaplanner.core.api.domain.lookup.PlanningId;
 import org.optaplanner.core.api.domain.solution.cloner.SolutionCloner;
 import org.optaplanner.core.api.domain.variable.VariableListener;
@@ -39,6 +43,7 @@ import org.optaplanner.core.api.score.director.ScoreDirector;
 import org.optaplanner.core.config.solver.EnvironmentMode;
 import org.optaplanner.core.config.util.ConfigUtils;
 import org.optaplanner.core.impl.domain.common.accessor.MemberAccessor;
+import org.optaplanner.core.impl.domain.constraintweight.descriptor.ConstraintConfigurationDescriptor;
 import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
 import org.optaplanner.core.impl.domain.lookup.ClassAndPlanningIdComparator;
 import org.optaplanner.core.impl.domain.lookup.LookUpManager;
@@ -52,9 +57,6 @@ import org.optaplanner.core.impl.score.definition.ScoreDefinition;
 import org.optaplanner.core.impl.solver.thread.ChildThreadType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import static java.util.Comparator.comparing;
-import static java.util.Objects.requireNonNull;
 
 /**
  * Abstract superclass for {@link ScoreDirector}.
@@ -785,12 +787,13 @@ public abstract class AbstractScoreDirector<Solution_, Score_ extends Score<Scor
 
     protected boolean isConstraintConfiguration(Object problemFactOrEntity) {
         SolutionDescriptor<Solution_> solutionDescriptor = scoreDirectorFactory.getSolutionDescriptor();
-        Class<?> constraintConfigurationClass = solutionDescriptor.getConstraintConfigurationDescriptor()
-                .getConstraintConfigurationClass();
-        if (constraintConfigurationClass == null) {
+        ConstraintConfigurationDescriptor<Solution_> constraintConfigurationDescriptor =
+                solutionDescriptor.getConstraintConfigurationDescriptor();
+        if (constraintConfigurationDescriptor == null) {
             return false;
         }
-        return constraintConfigurationClass.isInstance(problemFactOrEntity);
+        return constraintConfigurationDescriptor.getConstraintConfigurationClass()
+                .isInstance(problemFactOrEntity);
     }
 
     @Override

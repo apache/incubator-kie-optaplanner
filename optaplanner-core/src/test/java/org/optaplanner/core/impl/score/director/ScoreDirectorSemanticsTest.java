@@ -16,6 +16,8 @@
 
 package org.optaplanner.core.impl.score.director;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
 import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
@@ -29,8 +31,6 @@ import org.optaplanner.core.impl.testdata.domain.constraintconfiguration.Testdat
 import org.optaplanner.core.impl.testdata.domain.constraintconfiguration.TestdataConstraintWeighIncrementalScoreCalculator;
 import org.optaplanner.core.impl.testdata.domain.constraintconfiguration.TestdataConstraintWeightConstraintProvider;
 import org.optaplanner.core.impl.testdata.domain.constraintconfiguration.TestdataConstraintWeightEasyScoreCalculator;
-
-import static org.assertj.core.api.Assertions.assertThat;
 
 public class ScoreDirectorSemanticsTest {
 
@@ -151,8 +151,8 @@ public class ScoreDirectorSemanticsTest {
         INCREMENTAL(new ScoreDirectorFactoryConfig()
                 .withIncrementalScoreCalculatorClass(TestdataConstraintWeighIncrementalScoreCalculator.class)),
         DRL(new ScoreDirectorFactoryConfig()
-                .withScoreDrls("org/optaplanner/core/impl/score/director/dummyDroolsConstraints.drl",
-                        "org/optaplanner/core/impl/score/director/dummyDroolsConstraints2.drl"));
+                .withScoreDrls("org/optaplanner/core/impl/score/director/scoreDirectorSemanticsDroolsConstraints.drl",
+                        "org/optaplanner/core/impl/score/director/scoreDirectorSemanticsDroolsConstraints2.drl"));
 
         private final ScoreDirectorFactoryConfig scoreDirectorFactoryConfig;
 

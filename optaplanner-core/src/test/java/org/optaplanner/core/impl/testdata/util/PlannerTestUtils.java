@@ -98,7 +98,7 @@ public class PlannerTestUtils {
                 solverConfig.getScoreDirectorFactoryConfig();
         scoreDirectorFactoryConfig.setEasyScoreCalculatorClass(null);
         scoreDirectorFactoryConfig.setScoreDrlList(Collections.singletonList(
-                "org/optaplanner/core/impl/score/director/dummyDroolsConstraints.drl"));
+                "org/optaplanner/core/impl/score/director/dummySimpleScoreDroolsConstraints.drl"));
         return SolverFactory.create(solverConfig);
     }
 
