@@ -14,17 +14,15 @@
  * limitations under the License.
  */
 
-package org.optaplanner.core.impl.score.director;
+package org.optaplanner.core.impl.testdata.domain.constraintconfiguration;
 
 import java.util.ArrayList;
 import java.util.List;
-
 import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
 import org.optaplanner.core.api.score.calculator.IncrementalScoreCalculator;
 import org.optaplanner.core.impl.testdata.domain.TestdataEntity;
-import org.optaplanner.core.impl.testdata.domain.constraintconfiguration.TestdataConstraintConfigurationSolution;
 
-public final class DummyIncrementalScoreCalculator
+public final class TestdataConstraintWeighIncrementalScoreCalculator
         implements IncrementalScoreCalculator<TestdataConstraintConfigurationSolution, SimpleScore> {
 
     private TestdataConstraintConfigurationSolution workingSolution;

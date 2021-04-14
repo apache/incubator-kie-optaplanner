@@ -14,13 +14,12 @@
  * limitations under the License.
  */
 
-package org.optaplanner.core.impl.score.director;
+package org.optaplanner.core.impl.testdata.domain.constraintconfiguration;
 
 import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
 import org.optaplanner.core.api.score.calculator.EasyScoreCalculator;
-import org.optaplanner.core.impl.testdata.domain.constraintconfiguration.TestdataConstraintConfigurationSolution;
 
-public final class DummyEasyScoreCalculator
+public final class TestdataConstraintWeightEasyScoreCalculator
         implements EasyScoreCalculator<TestdataConstraintConfigurationSolution, SimpleScore> {
 
     @Override

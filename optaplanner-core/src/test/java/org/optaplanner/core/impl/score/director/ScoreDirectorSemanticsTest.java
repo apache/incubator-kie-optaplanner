@@ -16,8 +16,6 @@
 
 package org.optaplanner.core.impl.score.director;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
 import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
@@ -28,6 +26,11 @@ import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.core.impl.testdata.domain.TestdataEntity;
 import org.optaplanner.core.impl.testdata.domain.constraintconfiguration.TestdataConstraintConfiguration;
 import org.optaplanner.core.impl.testdata.domain.constraintconfiguration.TestdataConstraintConfigurationSolution;
+import org.optaplanner.core.impl.testdata.domain.constraintconfiguration.TestdataConstraintWeighIncrementalScoreCalculator;
+import org.optaplanner.core.impl.testdata.domain.constraintconfiguration.TestdataConstraintWeightConstraintProvider;
+import org.optaplanner.core.impl.testdata.domain.constraintconfiguration.TestdataConstraintWeightEasyScoreCalculator;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class ScoreDirectorSemanticsTest {
 
@@ -138,15 +141,15 @@ public class ScoreDirectorSemanticsTest {
     enum ScoreDirectorType {
 
         EASY(new ScoreDirectorFactoryConfig()
-                .withEasyScoreCalculatorClass(DummyEasyScoreCalculator.class)),
-        INCREMENTAL(new ScoreDirectorFactoryConfig()
-                .withIncrementalScoreCalculatorClass(DummyIncrementalScoreCalculator.class)),
+                .withEasyScoreCalculatorClass(TestdataConstraintWeightEasyScoreCalculator.class)),
         CS_DROOLS(new ScoreDirectorFactoryConfig()
-                .withConstraintProviderClass(DummyConstraintProvider.class)
+                .withConstraintProviderClass(TestdataConstraintWeightConstraintProvider.class)
                 .withConstraintStreamImplType(ConstraintStreamImplType.DROOLS)),
         CS_BAVET(new ScoreDirectorFactoryConfig()
-                .withConstraintProviderClass(DummyConstraintProvider.class)
+                .withConstraintProviderClass(TestdataConstraintWeightConstraintProvider.class)
                 .withConstraintStreamImplType(ConstraintStreamImplType.BAVET)),
+        INCREMENTAL(new ScoreDirectorFactoryConfig()
+                .withIncrementalScoreCalculatorClass(TestdataConstraintWeighIncrementalScoreCalculator.class)),
         DRL(new ScoreDirectorFactoryConfig()
                 .withScoreDrls("org/optaplanner/core/impl/score/director/dummyDroolsConstraints.drl",
                         "org/optaplanner/core/impl/score/director/dummyDroolsConstraints2.drl"));
