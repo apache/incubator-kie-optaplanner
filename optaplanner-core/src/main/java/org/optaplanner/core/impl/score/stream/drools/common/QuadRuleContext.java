@@ -48,7 +48,7 @@ final class QuadRuleContext<A, B, C, D> extends AbstractRuleContext {
         ConsequenceBuilder<Solution_> consequenceBuilder =
                 (constraint, scoreInlinerGlobal) -> DSL.on(scoreInlinerGlobal, variableA, variableB, variableC, variableD)
                         .execute((drools, scoreInliner, a, b, c, d) -> runConsequence(constraint, drools,
-                                buildIntImpactExecutor(scoreInliner.buildOrGetWeightedScoreImpacter(constraint)),
+                                scoreInliner.buildOrGetWeightedScoreImpacter(constraint),
                                 matchWeighter.applyAsInt(a, b, c, d),
                                 () -> asList(a, b, c, d)));
         return assemble(consequenceBuilder);
@@ -58,7 +58,7 @@ final class QuadRuleContext<A, B, C, D> extends AbstractRuleContext {
         ConsequenceBuilder<Solution_> consequenceBuilder =
                 (constraint, scoreInlinerGlobal) -> DSL.on(scoreInlinerGlobal, variableA, variableB, variableC, variableD)
                         .execute((drools, scoreInliner, a, b, c, d) -> runConsequence(constraint, drools,
-                                buildLongImpactExecutor(scoreInliner.buildOrGetWeightedScoreImpacter(constraint)),
+                                scoreInliner.buildOrGetWeightedScoreImpacter(constraint),
                                 matchWeighter.applyAsLong(a, b, c, d),
                                 () -> asList(a, b, c, d)));
         return assemble(consequenceBuilder);
@@ -68,7 +68,7 @@ final class QuadRuleContext<A, B, C, D> extends AbstractRuleContext {
         ConsequenceBuilder<Solution_> consequenceBuilder =
                 (constraint, scoreInlinerGlobal) -> DSL.on(scoreInlinerGlobal, variableA, variableB, variableC, variableD)
                         .execute((drools, scoreInliner, a, b, c, d) -> runConsequence(constraint, drools,
-                                buildBigDecimalImpactExecutor(scoreInliner.buildOrGetWeightedScoreImpacter(constraint)),
+                                scoreInliner.buildOrGetWeightedScoreImpacter(constraint),
                                 matchWeighter.apply(a, b, c, d),
                                 () -> asList(a, b, c, d)));
         return assemble(consequenceBuilder);

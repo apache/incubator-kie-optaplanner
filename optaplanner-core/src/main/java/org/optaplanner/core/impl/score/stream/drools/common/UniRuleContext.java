@@ -41,7 +41,7 @@ final class UniRuleContext<A> extends AbstractRuleContext {
         ConsequenceBuilder<Solution_> consequenceBuilder =
                 (constraint, scoreInlinerGlobal) -> DSL.on(scoreInlinerGlobal, variable)
                         .execute((drools, scoreInliner, a) -> runConsequence(constraint, drools,
-                                buildIntImpactExecutor(scoreInliner.buildOrGetWeightedScoreImpacter(constraint)),
+                                scoreInliner.buildOrGetWeightedScoreImpacter(constraint),
                                 matchWeighter.applyAsInt(a),
                                 () -> singletonList(a)));
         return assemble(consequenceBuilder);
@@ -51,7 +51,7 @@ final class UniRuleContext<A> extends AbstractRuleContext {
         ConsequenceBuilder<Solution_> consequenceBuilder =
                 (constraint, scoreInlinerGlobal) -> DSL.on(scoreInlinerGlobal, variable)
                         .execute((drools, scoreInliner, a) -> runConsequence(constraint, drools,
-                                buildLongImpactExecutor(scoreInliner.buildOrGetWeightedScoreImpacter(constraint)),
+                                scoreInliner.buildOrGetWeightedScoreImpacter(constraint),
                                 matchWeighter.applyAsLong(a),
                                 () -> singletonList(a)));
         return assemble(consequenceBuilder);
@@ -61,7 +61,7 @@ final class UniRuleContext<A> extends AbstractRuleContext {
         ConsequenceBuilder<Solution_> consequenceBuilder =
                 (constraint, scoreInlinerGlobal) -> DSL.on(scoreInlinerGlobal, variable)
                         .execute((drools, scoreInliner, a) -> runConsequence(constraint, drools,
-                                buildBigDecimalImpactExecutor(scoreInliner.buildOrGetWeightedScoreImpacter(constraint)),
+                                scoreInliner.buildOrGetWeightedScoreImpacter(constraint),
                                 matchWeighter.apply(a),
                                 () -> singletonList(a)));
         return assemble(consequenceBuilder);

@@ -46,7 +46,7 @@ final class TriRuleContext<A, B, C> extends AbstractRuleContext {
         ConsequenceBuilder<Solution_> consequenceBuilder =
                 (constraint, scoreInlinerGlobal) -> DSL.on(scoreInlinerGlobal, variableA, variableB, variableC)
                         .execute((drools, scoreInliner, a, b, c) -> runConsequence(constraint, drools,
-                                buildIntImpactExecutor(scoreInliner.buildOrGetWeightedScoreImpacter(constraint)),
+                                scoreInliner.buildOrGetWeightedScoreImpacter(constraint),
                                 matchWeighter.applyAsInt(a, b, c),
                                 () -> asList(a, b, c)));
         return assemble(consequenceBuilder);
@@ -56,7 +56,7 @@ final class TriRuleContext<A, B, C> extends AbstractRuleContext {
         ConsequenceBuilder<Solution_> consequenceBuilder =
                 (constraint, scoreInlinerGlobal) -> DSL.on(scoreInlinerGlobal, variableA, variableB, variableC)
                         .execute((drools, scoreInliner, a, b, c) -> runConsequence(constraint, drools,
-                                buildLongImpactExecutor(scoreInliner.buildOrGetWeightedScoreImpacter(constraint)),
+                                scoreInliner.buildOrGetWeightedScoreImpacter(constraint),
                                 matchWeighter.applyAsLong(a, b, c),
                                 () -> asList(a, b, c)));
         return assemble(consequenceBuilder);
@@ -66,7 +66,7 @@ final class TriRuleContext<A, B, C> extends AbstractRuleContext {
         ConsequenceBuilder<Solution_> consequenceBuilder =
                 (constraint, scoreInlinerGlobal) -> DSL.on(scoreInlinerGlobal, variableA, variableB, variableC)
                         .execute((drools, scoreInliner, a, b, c) -> runConsequence(constraint, drools,
-                                buildBigDecimalImpactExecutor(scoreInliner.buildOrGetWeightedScoreImpacter(constraint)),
+                                scoreInliner.buildOrGetWeightedScoreImpacter(constraint),
                                 matchWeighter.apply(a, b, c),
                                 () -> asList(a, b, c)));
         return assemble(consequenceBuilder);

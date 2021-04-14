@@ -43,7 +43,7 @@ final class BiRuleContext<A, B> extends AbstractRuleContext {
         ConsequenceBuilder<Solution_> consequenceBuilder =
                 (constraint, scoreInlinerGlobal) -> DSL.on(scoreInlinerGlobal, variableA, variableB)
                         .execute((drools, scoreInliner, a, b) -> runConsequence(constraint, drools,
-                                buildIntImpactExecutor(scoreInliner.buildOrGetWeightedScoreImpacter(constraint)),
+                                scoreInliner.buildOrGetWeightedScoreImpacter(constraint),
                                 matchWeighter.applyAsInt(a, b),
                                 () -> asList(a, b)));
         return assemble(consequenceBuilder);
@@ -53,7 +53,7 @@ final class BiRuleContext<A, B> extends AbstractRuleContext {
         ConsequenceBuilder<Solution_> consequenceBuilder =
                 (constraint, scoreInlinerGlobal) -> DSL.on(scoreInlinerGlobal, variableA, variableB)
                         .execute((drools, scoreInliner, a, b) -> runConsequence(constraint, drools,
-                                buildLongImpactExecutor(scoreInliner.buildOrGetWeightedScoreImpacter(constraint)),
+                                scoreInliner.buildOrGetWeightedScoreImpacter(constraint),
                                 matchWeighter.applyAsLong(a, b),
                                 () -> asList(a, b)));
         return assemble(consequenceBuilder);
@@ -63,7 +63,7 @@ final class BiRuleContext<A, B> extends AbstractRuleContext {
         ConsequenceBuilder<Solution_> consequenceBuilder =
                 (constraint, scoreInlinerGlobal) -> DSL.on(scoreInlinerGlobal, variableA, variableB)
                         .execute((drools, scoreInliner, a, b) -> runConsequence(constraint, drools,
-                                buildBigDecimalImpactExecutor(scoreInliner.buildOrGetWeightedScoreImpacter(constraint)),
+                                scoreInliner.buildOrGetWeightedScoreImpacter(constraint),
                                 matchWeighter.apply(a, b),
                                 () -> asList(a, b)));
         return assemble(consequenceBuilder);
