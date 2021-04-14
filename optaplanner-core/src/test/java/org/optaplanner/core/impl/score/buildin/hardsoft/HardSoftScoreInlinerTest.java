@@ -24,9 +24,9 @@ import org.junit.jupiter.api.Test;
 import org.optaplanner.core.api.score.buildin.hardsoft.HardSoftScore;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.core.impl.score.buildin.AbstractScoreInlinerTest;
-import org.optaplanner.core.impl.score.inliner.IntWeightedScoreImpacter;
 import org.optaplanner.core.impl.score.inliner.JustificationsSupplier;
 import org.optaplanner.core.impl.score.inliner.UndoScoreImpacter;
+import org.optaplanner.core.impl.score.inliner.WeightedScoreImpacter;
 import org.optaplanner.core.impl.testdata.domain.score.TestdataHardSoftScoreSolution;
 
 public class HardSoftScoreInlinerTest
@@ -50,7 +50,7 @@ public class HardSoftScoreInlinerTest
         HardSoftScoreInliner scoreInliner =
                 new HardSoftScoreInliner(getConstaintToWeightMap(constraint), constraintMatchEnabled);
 
-        IntWeightedScoreImpacter hardImpacter = scoreInliner.buildWeightedScoreImpacter(constraint);
+        WeightedScoreImpacter hardImpacter = scoreInliner.buildWeightedScoreImpacter(constraint);
         UndoScoreImpacter undo1 = hardImpacter.impactScore(1, EMPTY_JUSTIFICATIONS_SUPPLIER);
         assertThat(scoreInliner.extractScore(0))
                 .isEqualTo(HardSoftScore.of(90, 0));
@@ -75,7 +75,7 @@ public class HardSoftScoreInlinerTest
         HardSoftScoreInliner scoreInliner =
                 new HardSoftScoreInliner(getConstaintToWeightMap(constraint), constraintMatchEnabled);
 
-        IntWeightedScoreImpacter hardImpacter = scoreInliner.buildWeightedScoreImpacter(constraint);
+        WeightedScoreImpacter hardImpacter = scoreInliner.buildWeightedScoreImpacter(constraint);
         UndoScoreImpacter undo1 = hardImpacter.impactScore(1, EMPTY_JUSTIFICATIONS_SUPPLIER);
         assertThat(scoreInliner.extractScore(0))
                 .isEqualTo(HardSoftScore.of(0, 90));
@@ -100,7 +100,7 @@ public class HardSoftScoreInlinerTest
         HardSoftScoreInliner scoreInliner =
                 new HardSoftScoreInliner(getConstaintToWeightMap(constraint), constraintMatchEnabled);
 
-        IntWeightedScoreImpacter hardImpacter = scoreInliner.buildWeightedScoreImpacter(constraint);
+        WeightedScoreImpacter hardImpacter = scoreInliner.buildWeightedScoreImpacter(constraint);
         UndoScoreImpacter undo1 = hardImpacter.impactScore(10, EMPTY_JUSTIFICATIONS_SUPPLIER);
         assertThat(scoreInliner.extractScore(0))
                 .isEqualTo(HardSoftScore.of(100, 1_000));

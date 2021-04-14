@@ -17,6 +17,7 @@
 package org.optaplanner.core.impl.score.inliner;
 
 import java.math.BigDecimal;
+import java.util.function.BiFunction;
 
 /**
  * There are several valid ways how an impacter could be called from a constraint stream:
@@ -36,6 +37,18 @@ import java.math.BigDecimal;
  * That state should be considered impossible, ruled out by the CS API itself.
  */
 public interface WeightedScoreImpacter {
+
+    static WeightedScoreImpacter of(IntImpactFunction impactFunction) {
+        return new IntWeightedScoreImpacter(impactFunction);
+    }
+
+    static WeightedScoreImpacter of(LongImpactFunction impactFunction) {
+        return new LongWeightedScoreImpacter(impactFunction);
+    }
+
+    static WeightedScoreImpacter of(BigDecimalImpactFunction impactFunction) {
+        return new BigDecimalWeightedScoreImpacter(impactFunction);
+    }
 
     /**
      * @param matchWeight never null
@@ -57,5 +70,26 @@ public interface WeightedScoreImpacter {
      * @return never null
      */
     UndoScoreImpacter impactScore(BigDecimal matchWeight, JustificationsSupplier justificationsSupplier);
+
+    Class<?> getExpectedMatchWeightType();
+
+    @FunctionalInterface
+    interface IntImpactFunction {
+
+        UndoScoreImpacter impact(int matchWeight, JustificationsSupplier justificationsSupplier);
+
+    }
+
+    @FunctionalInterface
+    interface LongImpactFunction {
+
+        UndoScoreImpacter impact(long matchWeight, JustificationsSupplier justificationsSupplier);
+
+    }
+
+    @FunctionalInterface
+    interface BigDecimalImpactFunction extends BiFunction<BigDecimal, JustificationsSupplier, UndoScoreImpacter> {
+
+    }
 
 }

@@ -21,11 +21,11 @@ import java.util.Map;
 import org.optaplanner.core.api.score.buildin.hardsoftlong.HardSoftLongScore;
 import org.optaplanner.core.api.score.stream.Constraint;
 import org.optaplanner.core.impl.score.inliner.JustificationsSupplier;
-import org.optaplanner.core.impl.score.inliner.LongWeightedScoreImpacter;
 import org.optaplanner.core.impl.score.inliner.ScoreInliner;
 import org.optaplanner.core.impl.score.inliner.UndoScoreImpacter;
+import org.optaplanner.core.impl.score.inliner.WeightedScoreImpacter;
 
-public final class HardSoftLongScoreInliner extends ScoreInliner<HardSoftLongScore, LongWeightedScoreImpacter> {
+public final class HardSoftLongScoreInliner extends ScoreInliner<HardSoftLongScore> {
 
     private long hardScore;
     private long softScore;
@@ -36,63 +36,60 @@ public final class HardSoftLongScoreInliner extends ScoreInliner<HardSoftLongSco
     }
 
     @Override
-    public LongWeightedScoreImpacter buildWeightedScoreImpacter(Constraint constraint) {
+    public WeightedScoreImpacter buildWeightedScoreImpacter(Constraint constraint) {
         HardSoftLongScore constraintWeight = getConstraintWeight(constraint);
         long hardConstraintWeight = constraintWeight.getHardScore();
         long softConstraintWeight = constraintWeight.getSoftScore();
         if (softConstraintWeight == 0L) {
-            return new LongWeightedScoreImpacter(
-                    (long matchWeight, JustificationsSupplier justificationsSupplier) -> {
-                        long hardImpact = hardConstraintWeight * matchWeight;
-                        this.hardScore += hardImpact;
-                        UndoScoreImpacter undoScoreImpact = () -> this.hardScore -= hardImpact;
-                        if (!constraintMatchEnabled) {
-                            return undoScoreImpact;
-                        }
-                        Runnable undoConstraintMatch = addConstraintMatch(constraint, constraintWeight,
-                                HardSoftLongScore.ofHard(hardImpact), justificationsSupplier.get());
-                        return () -> {
-                            undoScoreImpact.run();
-                            undoConstraintMatch.run();
-                        };
-                    });
+            return WeightedScoreImpacter.of((long matchWeight, JustificationsSupplier justificationsSupplier) -> {
+                long hardImpact = hardConstraintWeight * matchWeight;
+                this.hardScore += hardImpact;
+                UndoScoreImpacter undoScoreImpact = () -> this.hardScore -= hardImpact;
+                if (!constraintMatchEnabled) {
+                    return undoScoreImpact;
+                }
+                Runnable undoConstraintMatch = addConstraintMatch(constraint, constraintWeight,
+                        HardSoftLongScore.ofHard(hardImpact), justificationsSupplier.get());
+                return () -> {
+                    undoScoreImpact.run();
+                    undoConstraintMatch.run();
+                };
+            });
         } else if (hardConstraintWeight == 0L) {
-            return new LongWeightedScoreImpacter(
-                    (long matchWeight, JustificationsSupplier justificationsSupplier) -> {
-                        long softImpact = softConstraintWeight * matchWeight;
-                        this.softScore += softImpact;
-                        UndoScoreImpacter undoScoreImpact = () -> this.softScore -= softImpact;
-                        if (!constraintMatchEnabled) {
-                            return undoScoreImpact;
-                        }
-                        Runnable undoConstraintMatch = addConstraintMatch(constraint, constraintWeight,
-                                HardSoftLongScore.ofSoft(softImpact), justificationsSupplier.get());
-                        return () -> {
-                            undoScoreImpact.run();
-                            undoConstraintMatch.run();
-                        };
-                    });
+            return WeightedScoreImpacter.of((long matchWeight, JustificationsSupplier justificationsSupplier) -> {
+                long softImpact = softConstraintWeight * matchWeight;
+                this.softScore += softImpact;
+                UndoScoreImpacter undoScoreImpact = () -> this.softScore -= softImpact;
+                if (!constraintMatchEnabled) {
+                    return undoScoreImpact;
+                }
+                Runnable undoConstraintMatch = addConstraintMatch(constraint, constraintWeight,
+                        HardSoftLongScore.ofSoft(softImpact), justificationsSupplier.get());
+                return () -> {
+                    undoScoreImpact.run();
+                    undoConstraintMatch.run();
+                };
+            });
         } else {
-            return new LongWeightedScoreImpacter(
-                    (long matchWeight, JustificationsSupplier justificationsSupplier) -> {
-                        long hardImpact = hardConstraintWeight * matchWeight;
-                        long softImpact = softConstraintWeight * matchWeight;
-                        this.hardScore += hardImpact;
-                        this.softScore += softImpact;
-                        UndoScoreImpacter undoScoreImpact = () -> {
-                            this.hardScore -= hardImpact;
-                            this.softScore -= softImpact;
-                        };
-                        if (!constraintMatchEnabled) {
-                            return undoScoreImpact;
-                        }
-                        Runnable undoConstraintMatch = addConstraintMatch(constraint, constraintWeight,
-                                HardSoftLongScore.of(hardImpact, softImpact), justificationsSupplier.get());
-                        return () -> {
-                            undoScoreImpact.run();
-                            undoConstraintMatch.run();
-                        };
-                    });
+            return WeightedScoreImpacter.of((long matchWeight, JustificationsSupplier justificationsSupplier) -> {
+                long hardImpact = hardConstraintWeight * matchWeight;
+                long softImpact = softConstraintWeight * matchWeight;
+                this.hardScore += hardImpact;
+                this.softScore += softImpact;
+                UndoScoreImpacter undoScoreImpact = () -> {
+                    this.hardScore -= hardImpact;
+                    this.softScore -= softImpact;
+                };
+                if (!constraintMatchEnabled) {
+                    return undoScoreImpact;
+                }
+                Runnable undoConstraintMatch = addConstraintMatch(constraint, constraintWeight,
+                        HardSoftLongScore.of(hardImpact, softImpact), justificationsSupplier.get());
+                return () -> {
+                    undoScoreImpact.run();
+                    undoConstraintMatch.run();
+                };
+            });
         }
     }
 

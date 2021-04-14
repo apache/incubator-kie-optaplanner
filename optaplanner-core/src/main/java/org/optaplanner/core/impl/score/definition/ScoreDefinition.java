@@ -148,7 +148,7 @@ public interface ScoreDefinition<Score_ extends Score<Score_>> {
      * @param constraintMatchEnabled true if {@link InnerScoreDirector#isConstraintMatchEnabled()} should be true
      * @return never null
      */
-    ScoreInliner<Score_, ?> buildScoreInliner(Map<Constraint, Score_> constraintToWeightMap,
+    ScoreInliner<Score_> buildScoreInliner(Map<Constraint, Score_> constraintToWeightMap,
             boolean constraintMatchEnabled);
 
     /**

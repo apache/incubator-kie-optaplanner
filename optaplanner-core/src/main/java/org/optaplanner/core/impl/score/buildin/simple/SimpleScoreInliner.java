@@ -20,12 +20,12 @@ import java.util.Map;
 
 import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
 import org.optaplanner.core.api.score.stream.Constraint;
-import org.optaplanner.core.impl.score.inliner.IntWeightedScoreImpacter;
 import org.optaplanner.core.impl.score.inliner.JustificationsSupplier;
 import org.optaplanner.core.impl.score.inliner.ScoreInliner;
 import org.optaplanner.core.impl.score.inliner.UndoScoreImpacter;
+import org.optaplanner.core.impl.score.inliner.WeightedScoreImpacter;
 
-public final class SimpleScoreInliner extends ScoreInliner<SimpleScore, IntWeightedScoreImpacter> {
+public final class SimpleScoreInliner extends ScoreInliner<SimpleScore> {
 
     private int score;
 
@@ -34,10 +34,10 @@ public final class SimpleScoreInliner extends ScoreInliner<SimpleScore, IntWeigh
     }
 
     @Override
-    public IntWeightedScoreImpacter buildWeightedScoreImpacter(Constraint constraint) {
+    public WeightedScoreImpacter buildWeightedScoreImpacter(Constraint constraint) {
         SimpleScore constraintWeight = getConstraintWeight(constraint);
         int simpleConstraintWeight = constraintWeight.getScore();
-        return new IntWeightedScoreImpacter((int matchWeight, JustificationsSupplier justificationsSupplier) -> {
+        return WeightedScoreImpacter.of((int matchWeight, JustificationsSupplier justificationsSupplier) -> {
             int impact = simpleConstraintWeight * matchWeight;
             this.score += impact;
             UndoScoreImpacter undoScoreImpact = () -> this.score -= impact;

@@ -21,12 +21,12 @@ import java.util.Map;
 
 import org.optaplanner.core.api.score.buildin.bendable.BendableScore;
 import org.optaplanner.core.api.score.stream.Constraint;
-import org.optaplanner.core.impl.score.inliner.IntWeightedScoreImpacter;
 import org.optaplanner.core.impl.score.inliner.JustificationsSupplier;
 import org.optaplanner.core.impl.score.inliner.ScoreInliner;
 import org.optaplanner.core.impl.score.inliner.UndoScoreImpacter;
+import org.optaplanner.core.impl.score.inliner.WeightedScoreImpacter;
 
-public final class BendableScoreInliner extends ScoreInliner<BendableScore, IntWeightedScoreImpacter> {
+public final class BendableScoreInliner extends ScoreInliner<BendableScore> {
 
     private final int[] hardScores;
     private final int[] softScores;
@@ -39,7 +39,7 @@ public final class BendableScoreInliner extends ScoreInliner<BendableScore, IntW
     }
 
     @Override
-    public IntWeightedScoreImpacter buildWeightedScoreImpacter(Constraint constraint) {
+    public WeightedScoreImpacter buildWeightedScoreImpacter(Constraint constraint) {
         BendableScore constraintWeight = getConstraintWeight(constraint);
         Integer singleLevel = null;
         for (int i = 0; i < constraintWeight.getLevelsSize(); i++) {
@@ -55,7 +55,7 @@ public final class BendableScoreInliner extends ScoreInliner<BendableScore, IntW
             int levelWeight = constraintWeight.getHardOrSoftScore(singleLevel);
             if (singleLevel < constraintWeight.getHardLevelsSize()) {
                 int level = singleLevel;
-                return new IntWeightedScoreImpacter((int matchWeight, JustificationsSupplier justificationsSupplier) -> {
+                return WeightedScoreImpacter.of((int matchWeight, JustificationsSupplier justificationsSupplier) -> {
                     int hardImpact = levelWeight * matchWeight;
                     this.hardScores[level] += hardImpact;
                     UndoScoreImpacter undoScoreImpact = () -> this.hardScores[level] -= hardImpact;
@@ -72,7 +72,7 @@ public final class BendableScoreInliner extends ScoreInliner<BendableScore, IntW
                 });
             } else {
                 int level = singleLevel - constraintWeight.getHardLevelsSize();
-                return new IntWeightedScoreImpacter((int matchWeight, JustificationsSupplier justificationsSupplier) -> {
+                return WeightedScoreImpacter.of((int matchWeight, JustificationsSupplier justificationsSupplier) -> {
                     int softImpact = levelWeight * matchWeight;
                     this.softScores[level] += softImpact;
                     UndoScoreImpacter undoScoreImpact = () -> this.softScores[level] -= softImpact;
@@ -89,7 +89,7 @@ public final class BendableScoreInliner extends ScoreInliner<BendableScore, IntW
                 });
             }
         } else {
-            return new IntWeightedScoreImpacter((int matchWeight, JustificationsSupplier justificationsSupplier) -> {
+            return WeightedScoreImpacter.of((int matchWeight, JustificationsSupplier justificationsSupplier) -> {
                 int[] hardImpacts = new int[hardScores.length];
                 int[] softImpacts = new int[softScores.length];
                 for (int i = 0; i < hardImpacts.length; i++) {

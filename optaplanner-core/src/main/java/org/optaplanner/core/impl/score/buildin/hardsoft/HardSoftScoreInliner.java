@@ -20,12 +20,12 @@ import java.util.Map;
 
 import org.optaplanner.core.api.score.buildin.hardsoft.HardSoftScore;
 import org.optaplanner.core.api.score.stream.Constraint;
-import org.optaplanner.core.impl.score.inliner.IntWeightedScoreImpacter;
 import org.optaplanner.core.impl.score.inliner.JustificationsSupplier;
 import org.optaplanner.core.impl.score.inliner.ScoreInliner;
 import org.optaplanner.core.impl.score.inliner.UndoScoreImpacter;
+import org.optaplanner.core.impl.score.inliner.WeightedScoreImpacter;
 
-public final class HardSoftScoreInliner extends ScoreInliner<HardSoftScore, IntWeightedScoreImpacter> {
+public final class HardSoftScoreInliner extends ScoreInliner<HardSoftScore> {
 
     private int hardScore;
     private int softScore;
@@ -35,12 +35,12 @@ public final class HardSoftScoreInliner extends ScoreInliner<HardSoftScore, IntW
     }
 
     @Override
-    public IntWeightedScoreImpacter buildWeightedScoreImpacter(Constraint constraint) {
+    public WeightedScoreImpacter buildWeightedScoreImpacter(Constraint constraint) {
         HardSoftScore constraintWeight = getConstraintWeight(constraint);
         int hardConstraintWeight = constraintWeight.getHardScore();
         int softConstraintWeight = constraintWeight.getSoftScore();
         if (softConstraintWeight == 0) {
-            return new IntWeightedScoreImpacter((int matchWeight, JustificationsSupplier justificationsSupplier) -> {
+            return WeightedScoreImpacter.of((int matchWeight, JustificationsSupplier justificationsSupplier) -> {
                 int hardImpact = hardConstraintWeight * matchWeight;
                 this.hardScore += hardImpact;
                 UndoScoreImpacter undoScoreImpact = () -> this.hardScore -= hardImpact;
@@ -55,7 +55,7 @@ public final class HardSoftScoreInliner extends ScoreInliner<HardSoftScore, IntW
                 };
             });
         } else if (hardConstraintWeight == 0) {
-            return new IntWeightedScoreImpacter((int matchWeight, JustificationsSupplier justificationsSupplier) -> {
+            return WeightedScoreImpacter.of((int matchWeight, JustificationsSupplier justificationsSupplier) -> {
                 int softImpact = softConstraintWeight * matchWeight;
                 this.softScore += softImpact;
                 UndoScoreImpacter undoScoreImpact = () -> this.softScore -= softImpact;
@@ -70,7 +70,7 @@ public final class HardSoftScoreInliner extends ScoreInliner<HardSoftScore, IntW
                 };
             });
         } else {
-            return new IntWeightedScoreImpacter((int matchWeight, JustificationsSupplier justificationsSupplier) -> {
+            return WeightedScoreImpacter.of((int matchWeight, JustificationsSupplier justificationsSupplier) -> {
                 int hardImpact = hardConstraintWeight * matchWeight;
                 int softImpact = softConstraintWeight * matchWeight;
                 this.hardScore += hardImpact;

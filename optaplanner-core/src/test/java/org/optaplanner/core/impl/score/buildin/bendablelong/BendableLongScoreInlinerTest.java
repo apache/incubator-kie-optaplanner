@@ -25,8 +25,8 @@ import org.optaplanner.core.api.score.buildin.bendablelong.BendableLongScore;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.core.impl.score.buildin.AbstractScoreInlinerTest;
 import org.optaplanner.core.impl.score.inliner.JustificationsSupplier;
-import org.optaplanner.core.impl.score.inliner.LongWeightedScoreImpacter;
 import org.optaplanner.core.impl.score.inliner.UndoScoreImpacter;
+import org.optaplanner.core.impl.score.inliner.WeightedScoreImpacter;
 import org.optaplanner.core.impl.testdata.domain.score.TestdataBendableLongScoreSolution;
 
 public class BendableLongScoreInlinerTest
@@ -50,7 +50,7 @@ public class BendableLongScoreInlinerTest
         BendableLongScoreInliner scoreInliner =
                 new BendableLongScoreInliner(getConstaintToWeightMap(constraint), constraintMatchEnabled, 1, 2);
 
-        LongWeightedScoreImpacter hardImpacter = scoreInliner.buildWeightedScoreImpacter(constraint);
+        WeightedScoreImpacter hardImpacter = scoreInliner.buildWeightedScoreImpacter(constraint);
         UndoScoreImpacter undo1 = hardImpacter.impactScore(1, EMPTY_JUSTIFICATIONS_SUPPLIER);
         assertThat(scoreInliner.extractScore(0))
                 .isEqualTo(buildScore(90, 0, 0));
@@ -75,7 +75,7 @@ public class BendableLongScoreInlinerTest
         BendableLongScoreInliner scoreInliner =
                 new BendableLongScoreInliner(getConstaintToWeightMap(constraint), constraintMatchEnabled, 1, 2);
 
-        LongWeightedScoreImpacter hardImpacter = scoreInliner.buildWeightedScoreImpacter(constraint);
+        WeightedScoreImpacter hardImpacter = scoreInliner.buildWeightedScoreImpacter(constraint);
         UndoScoreImpacter undo1 = hardImpacter.impactScore(1, EMPTY_JUSTIFICATIONS_SUPPLIER);
         assertThat(scoreInliner.extractScore(0))
                 .isEqualTo(buildScore(0, 90, 0));
@@ -100,7 +100,7 @@ public class BendableLongScoreInlinerTest
         BendableLongScoreInliner scoreInliner =
                 new BendableLongScoreInliner(getConstaintToWeightMap(constraint), constraintMatchEnabled, 1, 2);
 
-        LongWeightedScoreImpacter hardImpacter = scoreInliner.buildWeightedScoreImpacter(constraint);
+        WeightedScoreImpacter hardImpacter = scoreInliner.buildWeightedScoreImpacter(constraint);
         UndoScoreImpacter undo1 = hardImpacter.impactScore(1, EMPTY_JUSTIFICATIONS_SUPPLIER);
         assertThat(scoreInliner.extractScore(0))
                 .isEqualTo(buildScore(0, 0, 90));
@@ -125,7 +125,7 @@ public class BendableLongScoreInlinerTest
         BendableLongScoreInliner scoreInliner =
                 new BendableLongScoreInliner(getConstaintToWeightMap(constraint), constraintMatchEnabled, 1, 2);
 
-        LongWeightedScoreImpacter hardImpacter = scoreInliner.buildWeightedScoreImpacter(constraint);
+        WeightedScoreImpacter hardImpacter = scoreInliner.buildWeightedScoreImpacter(constraint);
         UndoScoreImpacter undo1 = hardImpacter.impactScore(10, EMPTY_JUSTIFICATIONS_SUPPLIER);
         assertThat(scoreInliner.extractScore(0))
                 .isEqualTo(buildScore(100, 1_000, 10_000));

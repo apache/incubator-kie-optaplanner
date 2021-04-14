@@ -26,9 +26,6 @@ import java.util.function.ToLongFunction;
 
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.stream.uni.UniConstraintStream;
-import org.optaplanner.core.impl.score.inliner.BigDecimalWeightedScoreImpacter;
-import org.optaplanner.core.impl.score.inliner.IntWeightedScoreImpacter;
-import org.optaplanner.core.impl.score.inliner.LongWeightedScoreImpacter;
 import org.optaplanner.core.impl.score.inliner.ScoreInliner;
 import org.optaplanner.core.impl.score.inliner.UndoScoreImpacter;
 import org.optaplanner.core.impl.score.inliner.WeightedScoreImpacter;
@@ -109,60 +106,34 @@ public final class BavetScoringUniConstraintStream<Solution_, A> extends BavetAb
     @Override
     protected BavetScoringUniNode<A> createNode(BavetNodeBuildPolicy<Solution_> buildPolicy,
             Score<?> constraintWeight, BavetAbstractUniNode<A> parentNode) {
-        ScoreInliner<?, ?> scoreInliner = buildPolicy.getSession().getScoreInliner();
+        ScoreInliner<?> scoreInliner = buildPolicy.getSession().getScoreInliner();
         WeightedScoreImpacter weightedScoreImpacter = scoreInliner.buildWeightedScoreImpacter(constraint);
         Function<A, UndoScoreImpacter> scoreImpacter;
-        if (weightedScoreImpacter instanceof IntWeightedScoreImpacter) {
-            IntWeightedScoreImpacter castedWeightedScoreImpacter = (IntWeightedScoreImpacter) weightedScoreImpacter;
-            if (intMatchWeigher != null) {
-                scoreImpacter = a -> {
-                    int matchWeight = intMatchWeigher.applyAsInt(a);
-                    constraint.assertCorrectImpact(matchWeight);
-                    return castedWeightedScoreImpacter.impactScore(matchWeight, () -> singletonList(a));
-                };
-            } else if (noMatchWeigher) {
-                scoreImpacter = a -> castedWeightedScoreImpacter.impactScore(1, () -> singletonList(a));
-            } else {
-                throw new IllegalStateException("The matchWeigher of " + UniConstraintStream.class.getSimpleName()
-                        + ".penalize(matchWeigher) of the constraint (" + constraint.getConstraintId()
-                        + ") must return an int.\n" +
-                        "Maybe switch to penalize() or reward().");
-            }
-        } else if (weightedScoreImpacter instanceof LongWeightedScoreImpacter) {
-            LongWeightedScoreImpacter castedWeightedScoreImpacter = (LongWeightedScoreImpacter) weightedScoreImpacter;
-            if (longMatchWeigher != null) {
-                scoreImpacter = a -> {
-                    long matchWeight = longMatchWeigher.applyAsLong(a);
-                    constraint.assertCorrectImpact(matchWeight);
-                    return castedWeightedScoreImpacter.impactScore(matchWeight, () -> singletonList(a));
-                };
-            } else if (noMatchWeigher) {
-                scoreImpacter = a -> castedWeightedScoreImpacter.impactScore(1L, () -> singletonList(a));
-            } else {
-                throw new IllegalStateException("The matchWeigher of " + UniConstraintStream.class.getSimpleName()
-                        + ".penalize(matchWeigher) of the constraint (" + constraint.getConstraintId()
-                        + ") must return a long.\n" +
-                        "Maybe switch to penalizeLong() or rewardLong().");
-            }
-        } else if (weightedScoreImpacter instanceof BigDecimalWeightedScoreImpacter) {
-            BigDecimalWeightedScoreImpacter castedWeightedScoreImpacter =
-                    (BigDecimalWeightedScoreImpacter) weightedScoreImpacter;
-            if (bigDecimalMatchWeigher != null) {
-                scoreImpacter = a -> {
-                    BigDecimal matchWeight = bigDecimalMatchWeigher.apply(a);
-                    constraint.assertCorrectImpact(matchWeight);
-                    return castedWeightedScoreImpacter.impactScore(matchWeight, () -> singletonList(a));
-                };
-            } else if (noMatchWeigher) {
-                scoreImpacter = a -> castedWeightedScoreImpacter.impactScore(BigDecimal.ONE, () -> singletonList(a));
-            } else {
-                throw new IllegalStateException("The matchWeigher of " + UniConstraintStream.class.getSimpleName()
-                        + ".penalize(matchWeigher) of the constraint (" + constraint.getConstraintId()
-                        + ") must return a " + BigDecimal.class.getSimpleName() + ".\n" +
-                        "Maybe switch to penalizeBigDecimal() or rewardBigDecimal().");
-            }
+        if (intMatchWeigher != null) {
+            scoreImpacter = a -> {
+                int matchWeight = intMatchWeigher.applyAsInt(a);
+                constraint.assertCorrectImpact(matchWeight);
+                return weightedScoreImpacter.impactScore(matchWeight, () -> singletonList(a));
+            };
+        } else if (longMatchWeigher != null) {
+            scoreImpacter = a -> {
+                long matchWeight = longMatchWeigher.applyAsLong(a);
+                constraint.assertCorrectImpact(matchWeight);
+                return weightedScoreImpacter.impactScore(matchWeight, () -> singletonList(a));
+            };
+        } else if (bigDecimalMatchWeigher != null) {
+            scoreImpacter = a -> {
+                BigDecimal matchWeight = bigDecimalMatchWeigher.apply(a);
+                constraint.assertCorrectImpact(matchWeight);
+                return weightedScoreImpacter.impactScore(matchWeight, () -> singletonList(a));
+            };
+        } else if (noMatchWeigher) {
+            scoreImpacter = a -> weightedScoreImpacter.impactScore(1, () -> singletonList(a));
         } else {
-            throw new IllegalStateException("Unsupported weightedScoreImpacter (" + weightedScoreImpacter + ").");
+            throw new IllegalStateException("The matchWeigher of " + UniConstraintStream.class.getSimpleName()
+                    + ".penalize(matchWeigher) of the constraint (" + constraint.getConstraintId()
+                    + ") must return " + weightedScoreImpacter.getExpectedMatchWeightType().getSimpleName() + ".\n" +
+                    "Maybe switch to another type-specific overload of penalize() or reward().");
         }
         return new BavetScoringUniNode<>(buildPolicy.getSession(), buildPolicy.nextNodeIndex(), constraintWeight,
                 scoreImpacter);

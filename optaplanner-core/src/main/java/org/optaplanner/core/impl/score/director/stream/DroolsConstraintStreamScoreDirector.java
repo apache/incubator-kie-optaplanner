@@ -47,7 +47,7 @@ public final class DroolsConstraintStreamScoreDirector<Solution_, Score_ extends
     private final SolutionDescriptor<Solution_> solutionDescriptor;
 
     protected KieSession session;
-    protected ScoreInliner<Score_, ?> scoreInliner;
+    protected ScoreInliner<Score_> scoreInliner;
 
     public DroolsConstraintStreamScoreDirector(
             DroolsConstraintStreamScoreDirectorFactory<Solution_, Score_> scoreDirectorFactory,

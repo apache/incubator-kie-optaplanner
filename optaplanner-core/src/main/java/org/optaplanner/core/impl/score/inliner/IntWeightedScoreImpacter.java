@@ -19,11 +19,11 @@ package org.optaplanner.core.impl.score.inliner;
 import java.math.BigDecimal;
 import java.util.Objects;
 
-public final class IntWeightedScoreImpacter implements WeightedScoreImpacter {
+final class IntWeightedScoreImpacter implements WeightedScoreImpacter {
 
-    private final ImpactFunction impactFunction;
+    private final IntImpactFunction impactFunction;
 
-    public IntWeightedScoreImpacter(ImpactFunction impactFunction) {
+    public IntWeightedScoreImpacter(IntImpactFunction impactFunction) {
         this.impactFunction = Objects.requireNonNull(impactFunction);
     }
 
@@ -42,11 +42,9 @@ public final class IntWeightedScoreImpacter implements WeightedScoreImpacter {
         throw new IllegalStateException("Impossible state: passing BigDecimal into an int impacter.");
     }
 
-    @FunctionalInterface
-    public interface ImpactFunction {
-
-        UndoScoreImpacter impact(int matchWeight, JustificationsSupplier justificationsSupplier);
-
+    @Override
+    public Class<?> getExpectedMatchWeightType() {
+        return int.class;
     }
 
 }

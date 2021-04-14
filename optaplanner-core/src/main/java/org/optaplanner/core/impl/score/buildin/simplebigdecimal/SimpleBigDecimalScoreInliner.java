@@ -21,13 +21,12 @@ import java.util.Map;
 
 import org.optaplanner.core.api.score.buildin.simplebigdecimal.SimpleBigDecimalScore;
 import org.optaplanner.core.api.score.stream.Constraint;
-import org.optaplanner.core.impl.score.inliner.BigDecimalWeightedScoreImpacter;
 import org.optaplanner.core.impl.score.inliner.JustificationsSupplier;
 import org.optaplanner.core.impl.score.inliner.ScoreInliner;
 import org.optaplanner.core.impl.score.inliner.UndoScoreImpacter;
+import org.optaplanner.core.impl.score.inliner.WeightedScoreImpacter;
 
-public final class SimpleBigDecimalScoreInliner
-        extends ScoreInliner<SimpleBigDecimalScore, BigDecimalWeightedScoreImpacter> {
+public final class SimpleBigDecimalScoreInliner extends ScoreInliner<SimpleBigDecimalScore> {
 
     private BigDecimal score = BigDecimal.ZERO;
 
@@ -37,24 +36,23 @@ public final class SimpleBigDecimalScoreInliner
     }
 
     @Override
-    public BigDecimalWeightedScoreImpacter buildWeightedScoreImpacter(Constraint constraint) {
+    public WeightedScoreImpacter buildWeightedScoreImpacter(Constraint constraint) {
         SimpleBigDecimalScore constraintWeight = getConstraintWeight(constraint);
         BigDecimal simpleConstraintWeight = constraintWeight.getScore();
-        return new BigDecimalWeightedScoreImpacter(
-                (BigDecimal matchWeight, JustificationsSupplier justificationsSupplier) -> {
-                    BigDecimal impact = simpleConstraintWeight.multiply(matchWeight);
-                    this.score = this.score.add(impact);
-                    UndoScoreImpacter undoScoreImpact = () -> this.score = this.score.subtract(impact);
-                    if (!constraintMatchEnabled) {
-                        return undoScoreImpact;
-                    }
-                    Runnable undoConstraintMatch = addConstraintMatch(constraint, constraintWeight,
-                            SimpleBigDecimalScore.of(impact), justificationsSupplier.get());
-                    return () -> {
-                        undoScoreImpact.run();
-                        undoConstraintMatch.run();
-                    };
-                });
+        return WeightedScoreImpacter.of((BigDecimal matchWeight, JustificationsSupplier justificationsSupplier) -> {
+            BigDecimal impact = simpleConstraintWeight.multiply(matchWeight);
+            this.score = this.score.add(impact);
+            UndoScoreImpacter undoScoreImpact = () -> this.score = this.score.subtract(impact);
+            if (!constraintMatchEnabled) {
+                return undoScoreImpact;
+            }
+            Runnable undoConstraintMatch = addConstraintMatch(constraint, constraintWeight,
+                    SimpleBigDecimalScore.of(impact), justificationsSupplier.get());
+            return () -> {
+                undoScoreImpact.run();
+                undoConstraintMatch.run();
+            };
+        });
     }
 
     @Override

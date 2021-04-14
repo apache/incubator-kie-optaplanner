@@ -50,7 +50,7 @@ final class DroolsSessionBasedAssertionBuilder<Solution_, Score_ extends Score<S
     @Override
     public DefaultMultiConstraintAssertion<Solution_, Score_> multiConstraintGiven(
             ConstraintProvider constraintProvider, Object... facts) {
-        ScoreInliner<Score_, ?> scoreInliner = runSession(facts);
+        ScoreInliner<Score_> scoreInliner = runSession(facts);
         return new DefaultMultiConstraintAssertion<>(constraintProvider, scoreInliner.extractScore(0),
                 scoreInliner.getConstraintMatchTotalMap(), scoreInliner.getIndictmentMap());
     }
@@ -58,12 +58,12 @@ final class DroolsSessionBasedAssertionBuilder<Solution_, Score_ extends Score<S
     @Override
     public DefaultSingleConstraintAssertion<Solution_, Score_> singleConstraintGiven(Object... facts) {
         assertDistinctPlanningIds(constraintStreamScoreDirectorFactory.getSolutionDescriptor(), facts);
-        ScoreInliner<Score_, ?> scoreInliner = runSession(facts);
+        ScoreInliner<Score_> scoreInliner = runSession(facts);
         return new DefaultSingleConstraintAssertion<>(constraintStreamScoreDirectorFactory, scoreInliner.extractScore(0),
                 scoreInliner.getConstraintMatchTotalMap(), scoreInliner.getIndictmentMap());
     }
 
-    private ScoreInliner<Score_, ?> runSession(Object... facts) {
+    private ScoreInliner<Score_> runSession(Object... facts) {
         DroolsConstraintSessionFactory.SessionDescriptor<Score_> sessionDescriptor =
                 constraintStreamScoreDirectorFactory.newConstraintStreamingSession(true, null);
         KieSession session = sessionDescriptor.getSession();

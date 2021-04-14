@@ -21,11 +21,11 @@ import java.util.Map;
 import org.optaplanner.core.api.score.buildin.simplelong.SimpleLongScore;
 import org.optaplanner.core.api.score.stream.Constraint;
 import org.optaplanner.core.impl.score.inliner.JustificationsSupplier;
-import org.optaplanner.core.impl.score.inliner.LongWeightedScoreImpacter;
 import org.optaplanner.core.impl.score.inliner.ScoreInliner;
 import org.optaplanner.core.impl.score.inliner.UndoScoreImpacter;
+import org.optaplanner.core.impl.score.inliner.WeightedScoreImpacter;
 
-public final class SimpleLongScoreInliner extends ScoreInliner<SimpleLongScore, LongWeightedScoreImpacter> {
+public final class SimpleLongScoreInliner extends ScoreInliner<SimpleLongScore> {
 
     private long score;
 
@@ -35,10 +35,10 @@ public final class SimpleLongScoreInliner extends ScoreInliner<SimpleLongScore, 
     }
 
     @Override
-    public LongWeightedScoreImpacter buildWeightedScoreImpacter(Constraint constraint) {
+    public WeightedScoreImpacter buildWeightedScoreImpacter(Constraint constraint) {
         SimpleLongScore constraintWeight = getConstraintWeight(constraint);
         long simpleConstraintWeight = constraintWeight.getScore();
-        return new LongWeightedScoreImpacter((long matchWeight, JustificationsSupplier justificationsSupplier) -> {
+        return WeightedScoreImpacter.of((long matchWeight, JustificationsSupplier justificationsSupplier) -> {
             long impact = simpleConstraintWeight * matchWeight;
             this.score += impact;
             UndoScoreImpacter undoScoreImpact = () -> this.score -= impact;

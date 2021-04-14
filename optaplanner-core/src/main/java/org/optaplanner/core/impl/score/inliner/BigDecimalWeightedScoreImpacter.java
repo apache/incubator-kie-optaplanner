@@ -18,13 +18,12 @@ package org.optaplanner.core.impl.score.inliner;
 
 import java.math.BigDecimal;
 import java.util.Objects;
-import java.util.function.BiFunction;
 
-public final class BigDecimalWeightedScoreImpacter implements WeightedScoreImpacter {
+final class BigDecimalWeightedScoreImpacter implements WeightedScoreImpacter {
 
-    private final ImpactFunction impactFunction;
+    private final BigDecimalImpactFunction impactFunction;
 
-    public BigDecimalWeightedScoreImpacter(ImpactFunction impactFunction) {
+    public BigDecimalWeightedScoreImpacter(BigDecimalImpactFunction impactFunction) {
         this.impactFunction = Objects.requireNonNull(impactFunction);
     }
 
@@ -43,9 +42,9 @@ public final class BigDecimalWeightedScoreImpacter implements WeightedScoreImpac
         return impactFunction.apply(matchWeight, justificationsSupplier);
     }
 
-    @FunctionalInterface
-    public interface ImpactFunction extends BiFunction<BigDecimal, JustificationsSupplier, UndoScoreImpacter> {
-
+    @Override
+    public Class<?> getExpectedMatchWeightType() {
+        return BigDecimal.class;
     }
 
 }

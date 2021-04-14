@@ -40,7 +40,7 @@ import org.optaplanner.core.impl.score.stream.bavet.uni.BavetFromUniTuple;
 
 public final class BavetConstraintSession<Solution_, Score_ extends Score<Score_>> {
 
-    private final ScoreInliner<Score_, ?> scoreInliner;
+    private final ScoreInliner<Score_> scoreInliner;
     private final Map<Class<?>, BavetFromUniNode<Object>> declaredClassToNodeMap;
     private final List<BavetNode> nodeIndexedNodeMap;
     private final List<BavetScoringNode> scoringNodeList;
@@ -179,7 +179,7 @@ public final class BavetConstraintSession<Solution_, Score_ extends Score<Score_
     // Getters/setters
     // ************************************************************************
 
-    public ScoreInliner<Score_, ?> getScoreInliner() {
+    public ScoreInliner<Score_> getScoreInliner() {
         return scoreInliner;
     }
 

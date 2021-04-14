@@ -30,7 +30,7 @@ import org.optaplanner.core.api.score.stream.Constraint;
 import org.optaplanner.core.impl.score.constraint.DefaultConstraintMatchTotal;
 import org.optaplanner.core.impl.score.constraint.DefaultIndictment;
 
-public abstract class ScoreInliner<Score_ extends Score<Score_>, Impacter_ extends WeightedScoreImpacter> {
+public abstract class ScoreInliner<Score_ extends Score<Score_>> {
 
     private final Map<String, Score_> constraintIdToWeightMap;
     protected final boolean constraintMatchEnabled;
@@ -56,7 +56,7 @@ public abstract class ScoreInliner<Score_ extends Score<Score_>, Impacter_ exten
      * @param constraint never null
      * @return never null
      */
-    public abstract Impacter_ buildWeightedScoreImpacter(Constraint constraint);
+    public abstract WeightedScoreImpacter buildWeightedScoreImpacter(Constraint constraint);
 
     protected final Runnable addConstraintMatch(Constraint constraint, Score_ constraintWeight, Score_ score,
             List<Object> justificationList) {

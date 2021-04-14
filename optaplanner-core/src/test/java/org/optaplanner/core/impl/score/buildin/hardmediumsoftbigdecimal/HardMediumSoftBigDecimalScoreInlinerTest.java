@@ -25,9 +25,9 @@ import org.junit.jupiter.api.Test;
 import org.optaplanner.core.api.score.buildin.hardmediumsoftbigdecimal.HardMediumSoftBigDecimalScore;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.core.impl.score.buildin.AbstractScoreInlinerTest;
-import org.optaplanner.core.impl.score.inliner.BigDecimalWeightedScoreImpacter;
 import org.optaplanner.core.impl.score.inliner.JustificationsSupplier;
 import org.optaplanner.core.impl.score.inliner.UndoScoreImpacter;
+import org.optaplanner.core.impl.score.inliner.WeightedScoreImpacter;
 import org.optaplanner.core.impl.testdata.domain.score.TestdataHardMediumSoftBigDecimalScoreSolution;
 
 public class HardMediumSoftBigDecimalScoreInlinerTest
@@ -51,7 +51,7 @@ public class HardMediumSoftBigDecimalScoreInlinerTest
         HardMediumSoftBigDecimalScoreInliner scoreInliner =
                 new HardMediumSoftBigDecimalScoreInliner(getConstaintToWeightMap(constraint), constraintMatchEnabled);
 
-        BigDecimalWeightedScoreImpacter hardImpacter = scoreInliner.buildWeightedScoreImpacter(constraint);
+        WeightedScoreImpacter hardImpacter = scoreInliner.buildWeightedScoreImpacter(constraint);
         UndoScoreImpacter undo1 = hardImpacter.impactScore(BigDecimal.ONE, EMPTY_JUSTIFICATIONS_SUPPLIER);
         assertThat(scoreInliner.extractScore(0))
                 .isEqualTo(HardMediumSoftBigDecimalScore.of(BigDecimal.valueOf(90), BigDecimal.ZERO, BigDecimal.ZERO));
@@ -76,7 +76,7 @@ public class HardMediumSoftBigDecimalScoreInlinerTest
         HardMediumSoftBigDecimalScoreInliner scoreInliner =
                 new HardMediumSoftBigDecimalScoreInliner(getConstaintToWeightMap(constraint), constraintMatchEnabled);
 
-        BigDecimalWeightedScoreImpacter hardImpacter = scoreInliner.buildWeightedScoreImpacter(constraint);
+        WeightedScoreImpacter hardImpacter = scoreInliner.buildWeightedScoreImpacter(constraint);
         UndoScoreImpacter undo1 = hardImpacter.impactScore(BigDecimal.ONE, EMPTY_JUSTIFICATIONS_SUPPLIER);
         assertThat(scoreInliner.extractScore(0))
                 .isEqualTo(HardMediumSoftBigDecimalScore.of(BigDecimal.ZERO, BigDecimal.valueOf(90), BigDecimal.ZERO));
@@ -101,7 +101,7 @@ public class HardMediumSoftBigDecimalScoreInlinerTest
         HardMediumSoftBigDecimalScoreInliner scoreInliner =
                 new HardMediumSoftBigDecimalScoreInliner(getConstaintToWeightMap(constraint), constraintMatchEnabled);
 
-        BigDecimalWeightedScoreImpacter hardImpacter = scoreInliner.buildWeightedScoreImpacter(constraint);
+        WeightedScoreImpacter hardImpacter = scoreInliner.buildWeightedScoreImpacter(constraint);
         UndoScoreImpacter undo1 = hardImpacter.impactScore(BigDecimal.ONE, EMPTY_JUSTIFICATIONS_SUPPLIER);
         assertThat(scoreInliner.extractScore(0))
                 .isEqualTo(HardMediumSoftBigDecimalScore.of(BigDecimal.ZERO, BigDecimal.ZERO, BigDecimal.valueOf(90)));
@@ -127,7 +127,7 @@ public class HardMediumSoftBigDecimalScoreInlinerTest
         HardMediumSoftBigDecimalScoreInliner scoreInliner =
                 new HardMediumSoftBigDecimalScoreInliner(getConstaintToWeightMap(constraint), constraintMatchEnabled);
 
-        BigDecimalWeightedScoreImpacter hardImpacter = scoreInliner.buildWeightedScoreImpacter(constraint);
+        WeightedScoreImpacter hardImpacter = scoreInliner.buildWeightedScoreImpacter(constraint);
         UndoScoreImpacter undo1 = hardImpacter.impactScore(BigDecimal.TEN, EMPTY_JUSTIFICATIONS_SUPPLIER);
         assertThat(scoreInliner.extractScore(0))
                 .isEqualTo(HardMediumSoftBigDecimalScore.of(BigDecimal.valueOf(100), BigDecimal.valueOf(1_000),

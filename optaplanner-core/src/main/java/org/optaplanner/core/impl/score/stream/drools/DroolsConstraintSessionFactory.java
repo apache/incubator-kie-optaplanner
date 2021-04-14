@@ -131,7 +131,7 @@ public final class DroolsConstraintSessionFactory<Solution_, Score_ extends Scor
         KieSession kieSession = buildKieSessionFromKieBase(kieBaseCache.getKieBase());
         ((RuleEventManager) kieSession).addEventListener(new OptaPlannerRuleEventListener()); // Enables undo in rules.
         // Cache the impacters for each constraint; this locks in the constraint weights.
-        ScoreInliner<Score_, ?> scoreInliner =
+        ScoreInliner<Score_> scoreInliner =
                 scoreDefinition.buildScoreInliner((Map) constraintToWeightMap, constraintMatchEnabled);
         kieBaseCache.getConstraintToGlobalMap().forEach((constraint, global) -> kieSession.setGlobal(global.getName(),
                 scoreInliner.buildWeightedScoreImpacter(constraint)));
@@ -142,9 +142,9 @@ public final class DroolsConstraintSessionFactory<Solution_, Score_ extends Scor
     public static final class SessionDescriptor<Score_ extends Score<Score_>> {
 
         private final KieSession session;
-        private final ScoreInliner<Score_, ?> scoreInliner;
+        private final ScoreInliner<Score_> scoreInliner;
 
-        public SessionDescriptor(KieSession session, ScoreInliner<Score_, ?> scoreInliner) {
+        public SessionDescriptor(KieSession session, ScoreInliner<Score_> scoreInliner) {
             this.session = session;
             this.scoreInliner = scoreInliner;
         }
@@ -153,7 +153,7 @@ public final class DroolsConstraintSessionFactory<Solution_, Score_ extends Scor
             return session;
         }
 
-        public ScoreInliner<Score_, ?> getScoreInliner() {
+        public ScoreInliner<Score_> getScoreInliner() {
             return scoreInliner;
         }
     }
