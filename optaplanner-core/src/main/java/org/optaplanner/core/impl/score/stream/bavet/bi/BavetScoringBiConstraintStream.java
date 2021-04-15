@@ -25,7 +25,6 @@ import java.util.function.ToIntBiFunction;
 import java.util.function.ToLongBiFunction;
 
 import org.optaplanner.core.api.score.Score;
-import org.optaplanner.core.api.score.stream.bi.BiConstraintStream;
 import org.optaplanner.core.impl.score.inliner.ScoreInliner;
 import org.optaplanner.core.impl.score.inliner.UndoScoreImpacter;
 import org.optaplanner.core.impl.score.inliner.WeightedScoreImpacter;
@@ -132,10 +131,7 @@ public final class BavetScoringBiConstraintStream<Solution_, A, B>
         } else if (noMatchWeigher) {
             scoreImpacter = (a, b) -> weightedScoreImpacter.impactScore(1, () -> asList(a, b));
         } else {
-            throw new IllegalStateException("The matchWeigher of " + BiConstraintStream.class.getSimpleName()
-                    + ".penalize(matchWeigher) of the constraint (" + constraint.getConstraintId()
-                    + ") must return " + weightedScoreImpacter.getExpectedMatchWeightType().getSimpleName() + ".\n" +
-                    "Maybe switch to another type-specific overload of penalize() or reward().");
+            throw new IllegalStateException("Impossible state: neither of the supported match weighers provided.");
         }
         return new BavetScoringBiNode<>(buildPolicy.getSession(), buildPolicy.nextNodeIndex(), constraintWeight,
                 scoreImpacter);

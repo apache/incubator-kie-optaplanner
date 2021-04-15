@@ -25,7 +25,6 @@ import java.util.function.ToIntFunction;
 import java.util.function.ToLongFunction;
 
 import org.optaplanner.core.api.score.Score;
-import org.optaplanner.core.api.score.stream.uni.UniConstraintStream;
 import org.optaplanner.core.impl.score.inliner.ScoreInliner;
 import org.optaplanner.core.impl.score.inliner.UndoScoreImpacter;
 import org.optaplanner.core.impl.score.inliner.WeightedScoreImpacter;
@@ -130,10 +129,7 @@ public final class BavetScoringUniConstraintStream<Solution_, A> extends BavetAb
         } else if (noMatchWeigher) {
             scoreImpacter = a -> weightedScoreImpacter.impactScore(1, () -> singletonList(a));
         } else {
-            throw new IllegalStateException("The matchWeigher of " + UniConstraintStream.class.getSimpleName()
-                    + ".penalize(matchWeigher) of the constraint (" + constraint.getConstraintId()
-                    + ") must return " + weightedScoreImpacter.getExpectedMatchWeightType().getSimpleName() + ".\n" +
-                    "Maybe switch to another type-specific overload of penalize() or reward().");
+            throw new IllegalStateException("Impossible state: neither of the supported match weighers provided.");
         }
         return new BavetScoringUniNode<>(buildPolicy.getSession(), buildPolicy.nextNodeIndex(), constraintWeight,
                 scoreImpacter);

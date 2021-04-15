@@ -71,8 +71,6 @@ public interface WeightedScoreImpacter {
      */
     UndoScoreImpacter impactScore(BigDecimal matchWeight, JustificationsSupplier justificationsSupplier);
 
-    Class<?> getExpectedMatchWeightType();
-
     @FunctionalInterface
     interface IntImpactFunction {
 

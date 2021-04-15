@@ -42,9 +42,4 @@ final class BigDecimalWeightedScoreImpacter implements WeightedScoreImpacter {
         return impactFunction.apply(matchWeight, justificationsSupplier);
     }
 
-    @Override
-    public Class<?> getExpectedMatchWeightType() {
-        return BigDecimal.class;
-    }
-
 }

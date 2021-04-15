@@ -42,11 +42,6 @@ final class LongWeightedScoreImpacter implements WeightedScoreImpacter {
         throw new IllegalStateException("Impossible state: passing BigDecimal into a long impacter.");
     }
 
-    @Override
-    public Class<?> getExpectedMatchWeightType() {
-        return long.class;
-    }
-
     @FunctionalInterface
     public interface ImpactFunction {
 

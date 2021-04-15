@@ -25,7 +25,6 @@ import org.optaplanner.core.api.function.ToIntTriFunction;
 import org.optaplanner.core.api.function.ToLongTriFunction;
 import org.optaplanner.core.api.function.TriFunction;
 import org.optaplanner.core.api.score.Score;
-import org.optaplanner.core.api.score.stream.tri.TriConstraintStream;
 import org.optaplanner.core.impl.score.inliner.ScoreInliner;
 import org.optaplanner.core.impl.score.inliner.UndoScoreImpacter;
 import org.optaplanner.core.impl.score.inliner.WeightedScoreImpacter;
@@ -132,10 +131,7 @@ public final class BavetScoringTriConstraintStream<Solution_, A, B, C>
         } else if (noMatchWeigher) {
             scoreImpacter = (a, b, c) -> weightedScoreImpacter.impactScore(1, () -> asList(a, b, c));
         } else {
-            throw new IllegalStateException("The matchWeigher of " + TriConstraintStream.class.getSimpleName()
-                    + ".penalize(matchWeigher) of the constraint (" + constraint.getConstraintId()
-                    + ") must return " + weightedScoreImpacter.getExpectedMatchWeightType().getSimpleName() + ".\n" +
-                    "Maybe switch to another type-specific overload of penalize() or reward().");
+            throw new IllegalStateException("Impossible state: neither of the supported match weighers provided.");
         }
         return new BavetScoringTriNode<>(buildPolicy.getSession(), buildPolicy.nextNodeIndex(), constraintWeight,
                 scoreImpacter);

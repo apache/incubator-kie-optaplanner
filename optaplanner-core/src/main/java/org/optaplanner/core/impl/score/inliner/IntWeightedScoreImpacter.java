@@ -42,9 +42,4 @@ final class IntWeightedScoreImpacter implements WeightedScoreImpacter {
         throw new IllegalStateException("Impossible state: passing BigDecimal into an int impacter.");
     }
 
-    @Override
-    public Class<?> getExpectedMatchWeightType() {
-        return int.class;
-    }
-
 }
