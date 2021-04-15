@@ -6,7 +6,7 @@
   <parent>
     <groupId>org.optaplanner</groupId>
     <artifactId>optaplanner-parent</artifactId>
-    <version>8.5.0.Final</version>
+    <version>8.5.1-SNAPSHOT</version>
     <relativePath>../../pom.xml</relativePath>
   </parent>
 
@@ -21,7 +21,7 @@
     <!-- ************************************************************************ -->
 
     <!-- SNAPSHOT and KIE dependency versions -->
-    <version.org.kie.kogito>1.5.0.Final</version.org.kie.kogito>
+    <version.org.kie.kogito>1.5.1-SNAPSHOT</version.org.kie.kogito>
     <!-- Keep in sync with version.org.kie7 in kogito-runtimes: https://github.com/kiegroup/kogito-runtimes/blob/master/kogito-build-parent/pom.xml#L185 -->
     <version.org.kie7>7.52.0.Final</version.org.kie7>
 
