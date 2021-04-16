@@ -26,7 +26,13 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.drools.ancompiler.KieBaseUpdaterANC;
+import org.drools.core.io.impl.ClassPathResource;
+import org.drools.core.io.impl.FileSystemResource;
+import org.drools.modelcompiler.ExecutableModelProject;
 import org.kie.api.KieBase;
+import org.kie.api.conf.KieBaseMutabilityOption;
+import org.kie.internal.builder.conf.PropertySpecificOption;
+import org.kie.internal.utils.KieHelper;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.calculator.EasyScoreCalculator;
 import org.optaplanner.core.api.score.calculator.IncrementalScoreCalculator;
@@ -53,15 +59,12 @@ public class ScoreDirectorFactoryFactory<Solution_, Score_ extends Score<Score_>
 
     private final ScoreDirectorFactoryConfig config;
 
-    private final KieBaseExtractor kieBaseExtractor;
-
     public ScoreDirectorFactoryFactory(ScoreDirectorFactoryConfig config) {
-        this(config, new KieBaseExtractor());
+        this.config = config;
     }
 
     public ScoreDirectorFactoryFactory(ScoreDirectorFactoryConfig config, KieBaseExtractor kieBaseExtractor) {
         this.config = config;
-        this.kieBaseExtractor = kieBaseExtractor;
     }
 
     public InnerScoreDirectorFactory<Solution_, Score_> buildScoreDirectorFactory(ClassLoader classLoader,
@@ -80,7 +83,7 @@ public class ScoreDirectorFactoryFactory<Solution_, Score_ extends Score<Score_>
                         + environmentMode + ") of " + EnvironmentMode.FAST_ASSERT + " or lower.");
             }
             ScoreDirectorFactoryFactory<Solution_, Score_> assertionScoreDirectorFactoryFactory =
-                    new ScoreDirectorFactoryFactory<>(config.getAssertionScoreDirectorFactory(), kieBaseExtractor);
+                    new ScoreDirectorFactoryFactory<>(config.getAssertionScoreDirectorFactory());
             scoreDirectorFactory.setAssertionScoreDirectorFactory(assertionScoreDirectorFactoryFactory
                     .buildScoreDirectorFactory(classLoader, EnvironmentMode.NON_REPRODUCIBLE, solutionDescriptor));
         }
@@ -278,7 +281,35 @@ public class ScoreDirectorFactoryFactory<Solution_, Score_ extends Score<Score_>
         }
 
         try {
-            KieBase kieBase = kieBaseExtractor.extractKieBase(config, classLoader);
+            KieBase kieBase;
+            if (config.getKieBaseExtractor() != null) {
+                kieBase = config.getKieBaseExtractor().extractKieBase();
+            } else {
+                // Can't put this code in KieBaseExtractor since it reference
+                // KieRuntimeBuilder, which is an optional dependency
+                KieHelper kieHelper = new KieHelper(PropertySpecificOption.ALLOWED)
+                        .setClassLoader(classLoader);
+                if (!ConfigUtils.isEmptyCollection(config.getScoreDrlList())) {
+                    for (String scoreDrl : config.getScoreDrlList()) {
+                        if (scoreDrl == null) {
+                            throw new IllegalArgumentException("The scoreDrl (" + scoreDrl + ") cannot be null.");
+                        }
+                        kieHelper.addResource(new ClassPathResource(scoreDrl, classLoader));
+                    }
+                }
+                if (!ConfigUtils.isEmptyCollection(config.getScoreDrlFileList())) {
+                    for (File scoreDrlFile : config.getScoreDrlFileList()) {
+                        kieHelper.addResource(new FileSystemResource(scoreDrlFile));
+                    }
+                }
+
+                try {
+                    kieBase = kieHelper.build(ExecutableModelProject.class, KieBaseMutabilityOption.DISABLED);
+                } catch (Exception ex) {
+                    throw new IllegalStateException("There is an error in a scoreDrl or scoreDrlFile.", ex);
+                }
+            }
+
             if (config.isDroolsAlphaNetworkCompilationEnabled()) {
                 KieBaseUpdaterANC.generateAndSetInMemoryANC(kieBase); // Enable Alpha Network Compiler for performance.
             }

@@ -16,56 +16,18 @@
 
 package org.optaplanner.core.impl.score.director.drools;
 
-import java.io.File;
-
-import org.drools.core.io.impl.ClassPathResource;
-import org.drools.core.io.impl.FileSystemResource;
-import org.drools.modelcompiler.ExecutableModelProject;
 import org.kie.api.KieBase;
-import org.kie.api.conf.KieBaseMutabilityOption;
-import org.kie.internal.builder.conf.PropertySpecificOption;
-import org.kie.internal.utils.KieHelper;
 import org.kie.kogito.rules.KieRuntimeBuilder;
-import org.optaplanner.core.config.score.director.ScoreDirectorFactoryConfig;
-import org.optaplanner.core.config.util.ConfigUtils;
 
 public class KieBaseExtractor {
 
     private final KieRuntimeBuilder kieRuntimeBuilder;
 
-    public KieBaseExtractor() {
-        kieRuntimeBuilder = null;
-    }
-
     public KieBaseExtractor(KieRuntimeBuilder kieRuntimeBuilder) {
         this.kieRuntimeBuilder = kieRuntimeBuilder;
     }
 
-    public KieBase extractKieBase(ScoreDirectorFactoryConfig config, ClassLoader classLoader) {
-        if (kieRuntimeBuilder != null) {
-            return kieRuntimeBuilder.getKieBase();
-        } else {
-            KieHelper kieHelper = new KieHelper(PropertySpecificOption.ALLOWED)
-                    .setClassLoader(classLoader);
-            if (!ConfigUtils.isEmptyCollection(config.getScoreDrlList())) {
-                for (String scoreDrl : config.getScoreDrlList()) {
-                    if (scoreDrl == null) {
-                        throw new IllegalArgumentException("The scoreDrl (" + scoreDrl + ") cannot be null.");
-                    }
-                    kieHelper.addResource(new ClassPathResource(scoreDrl, classLoader));
-                }
-            }
-            if (!ConfigUtils.isEmptyCollection(config.getScoreDrlFileList())) {
-                for (File scoreDrlFile : config.getScoreDrlFileList()) {
-                    kieHelper.addResource(new FileSystemResource(scoreDrlFile));
-                }
-            }
-
-            try {
-                return kieHelper.build(ExecutableModelProject.class, KieBaseMutabilityOption.DISABLED);
-            } catch (Exception ex) {
-                throw new IllegalStateException("There is an error in a scoreDrl or scoreDrlFile.", ex);
-            }
-        }
+    public KieBase extractKieBase() {
+        return kieRuntimeBuilder.getKieBase();
     }
 }

@@ -35,6 +35,7 @@
     <dependency>
       <groupId>org.kie.kogito</groupId>
       <artifactId>kogito-api</artifactId>
+      <optional>true</optional>
     </dependency>
     <dependency>
       <groupId>org.kie</groupId>

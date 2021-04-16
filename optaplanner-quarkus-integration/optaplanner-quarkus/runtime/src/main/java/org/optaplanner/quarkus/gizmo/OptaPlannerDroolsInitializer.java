@@ -16,8 +16,8 @@
 
 package org.optaplanner.quarkus.gizmo;
 
-import org.optaplanner.core.impl.solver.DefaultSolverFactory;
+import org.optaplanner.core.config.score.director.ScoreDirectorFactoryConfig;
 
 public interface OptaPlannerDroolsInitializer {
-    void setup(DefaultSolverFactory solverFactory);
+    void setup(ScoreDirectorFactoryConfig solverConfig);
 }

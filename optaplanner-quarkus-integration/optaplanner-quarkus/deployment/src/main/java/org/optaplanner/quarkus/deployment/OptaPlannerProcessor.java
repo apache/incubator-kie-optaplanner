@@ -60,11 +60,9 @@ import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.quarkus.OptaPlannerBeanProvider;
 import org.optaplanner.quarkus.OptaPlannerRecorder;
 import org.optaplanner.quarkus.deployment.config.OptaPlannerBuildTimeConfig;
+import org.optaplanner.quarkus.gizmo.OptaPlannerGizmoBeanFactory;
 
-import io.quarkus.arc.deployment.AdditionalBeanBuildItem;
-import io.quarkus.arc.deployment.GeneratedBeanBuildItem;
-import io.quarkus.arc.deployment.GeneratedBeanGizmoAdaptor;
-import io.quarkus.arc.deployment.SyntheticBeanBuildItem;
+import io.quarkus.arc.deployment.*;
 import io.quarkus.deployment.Capabilities;
 import io.quarkus.deployment.GeneratedClassGizmoAdaptor;
 import io.quarkus.deployment.annotations.BuildProducer;
@@ -77,6 +75,7 @@ import io.quarkus.deployment.builditem.GeneratedClassBuildItem;
 import io.quarkus.deployment.builditem.HotDeploymentWatchedFileBuildItem;
 import io.quarkus.deployment.builditem.IndexDependencyBuildItem;
 import io.quarkus.deployment.builditem.nativeimage.ReflectiveHierarchyBuildItem;
+import io.quarkus.deployment.pkg.steps.NativeBuild;
 import io.quarkus.deployment.recording.RecorderContext;
 import io.quarkus.gizmo.ClassOutput;
 import io.quarkus.gizmo.MethodDescriptor;
@@ -114,6 +113,11 @@ class OptaPlannerProcessor {
         return new IndexDependencyBuildItem("org.optaplanner", "optaplanner-core");
     }
 
+    @BuildStep(onlyIf = NativeBuild.class)
+    void makeGizmoBeanFactoryUnremovable(BuildProducer<UnremovableBeanBuildItem> unremovableBeans) {
+        unremovableBeans.produce(UnremovableBeanBuildItem.beanTypes(OptaPlannerGizmoBeanFactory.class));
+    }
+
     @BuildStep
     @Record(STATIC_INIT)
     void recordAndRegisterBeans(OptaPlannerRecorder recorder, RecorderContext recorderContext,
@@ -122,6 +126,7 @@ class OptaPlannerProcessor {
             BuildProducer<SyntheticBeanBuildItem> syntheticBeanBuildItemBuildProducer,
             BuildProducer<AdditionalBeanBuildItem> additionalBeans,
             BuildProducer<GeneratedBeanBuildItem> generatedBeans,
+            BuildProducer<UnremovableBeanBuildItem> unremovableBeans,
             BuildProducer<GeneratedClassBuildItem> generatedClasses,
             BuildProducer<BytecodeTransformerBuildItem> transformers) {
         IndexView indexView = combinedIndex.getIndex();
@@ -192,8 +197,8 @@ class OptaPlannerProcessor {
         registerClassesFromAnnotations(indexView, reflectiveClassSet);
         generateConstraintVerifier(solverConfig, syntheticBeanBuildItemBuildProducer);
         GeneratedGizmoClasses generatedGizmoClasses =
-                generateDomainAccessors(solverConfig, indexView, generatedBeans, generatedClasses, transformers,
-                        reflectiveClassSet);
+                generateDomainAccessors(solverConfig, indexView, generatedBeans, generatedClasses, unremovableBeans,
+                        transformers, reflectiveClassSet);
 
         SolverManagerConfig solverManagerConfig = new SolverManagerConfig();
         optaPlannerBuildTimeConfig.solverManager.parallelSolverCount.ifPresent(solverManagerConfig::setParallelSolverCount);
@@ -205,7 +210,8 @@ class OptaPlannerProcessor {
                         GizmoMemberAccessorEntityEnhancer.getGeneratedGizmoMemberAccessorMap(recorderContext,
                                 generatedGizmoClasses.generatedGizmoMemberAccessorClassSet),
                         GizmoMemberAccessorEntityEnhancer.getGeneratedSolutionClonerMap(recorderContext,
-                                generatedGizmoClasses.generatedGizmoSolutionClonerClassSet)))
+                                generatedGizmoClasses.generatedGizmoSolutionClonerClassSet),
+                        GizmoMemberAccessorEntityEnhancer.getDroolsInitializer(recorderContext)))
                 .done());
 
         syntheticBeanBuildItemBuildProducer.produce(SyntheticBeanBuildItem.configure(SolverManagerConfig.class)
@@ -524,6 +530,7 @@ class OptaPlannerProcessor {
     private GeneratedGizmoClasses generateDomainAccessors(SolverConfig solverConfig, IndexView indexView,
             BuildProducer<GeneratedBeanBuildItem> generatedBeans,
             BuildProducer<GeneratedClassBuildItem> generatedClasses,
+            BuildProducer<UnremovableBeanBuildItem> unremovableBeans,
             BuildProducer<BytecodeTransformerBuildItem> transformers, Set<Class<?>> reflectiveClassSet) {
         ClassOutput classOutput = new GeneratedClassGizmoAdaptor(generatedClasses, true);
         ClassOutput beanClassOutput = new GeneratedBeanGizmoAdaptor(generatedBeans);
@@ -605,7 +612,7 @@ class OptaPlannerProcessor {
 
         GizmoMemberAccessorEntityEnhancer.generateGizmoBeanFactory(beanClassOutput, reflectiveClassSet);
         GizmoMemberAccessorEntityEnhancer.generateKieRuntimeBuilder(beanClassOutput,
-                solverConfig.getScoreDirectorFactoryConfig());
+                solverConfig.getScoreDirectorFactoryConfig(), unremovableBeans);
         return new GeneratedGizmoClasses(generatedMemberAccessorsClassNameSet, gizmoSolutionClonerClassNameSet);
     }
 

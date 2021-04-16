@@ -82,13 +82,6 @@
       <artifactId>drools-compiler</artifactId>
     </dependency>
 
-    <!-- Requires kogito extension to work with DRL files -->
-    <dependency>
-      <groupId>org.kie.kogito</groupId>
-      <artifactId>kogito-quarkus</artifactId>
-      <optional>true</optional>
-    </dependency>
-
     <dependency>
       <groupId>org.graalvm.nativeimage</groupId>
       <artifactId>svm</artifactId>
