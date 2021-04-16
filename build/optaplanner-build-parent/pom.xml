@@ -913,6 +913,11 @@
               <failOnWarning>true</failOnWarning>
               <ignoreNonCompile>true</ignoreNonCompile>
               <verbose>true</verbose>
+              <ignoredDependencies>
+                <!-- Gizmo can be used w/o using any classes from it since it an optional dependency on optaplanner-core -->
+                <!-- TODO: Remove me when testing w/ GIZMO is done -->
+                <ignoredDependency>io.quarkus.gizmo:gizmo</ignoredDependency>
+              </ignoredDependencies>
             </configuration>
           </execution>
         </executions>
