@@ -14,23 +14,14 @@
  * limitations under the License.
  */
 
-package org.optaplanner.quarkus.drools.it.domain;
+package org.optaplanner.quarkus.drl.it;
 
-import org.optaplanner.core.api.domain.entity.PlanningEntity;
-import org.optaplanner.core.api.domain.variable.PlanningVariable;
+import io.quarkus.test.junit.NativeImageTest;
 
-@PlanningEntity
-public class TestdataQuarkusEntity {
-
-    private String value;
-
-    @PlanningVariable(valueRangeProviderRefs = "valueRange")
-    public String getValue() {
-        return value;
-    }
-
-    public void setValue(String value) {
-        this.value = value;
-    }
+/**
+ * Test various OptaPlanner operations running in native mode
+ */
+@NativeImageTest
+public class OptaPlannerTestResourceIT extends OptaPlannerTestResourceTest {
 
 }

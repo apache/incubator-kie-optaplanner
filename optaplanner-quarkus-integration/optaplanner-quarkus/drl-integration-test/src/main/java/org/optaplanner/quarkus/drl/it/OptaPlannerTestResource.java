@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.optaplanner.quarkus.drools.it;
+package org.optaplanner.quarkus.drl.it;
 
 import java.util.Arrays;
 import java.util.concurrent.ExecutionException;
@@ -27,8 +27,8 @@ import javax.ws.rs.core.MediaType;
 
 import org.optaplanner.core.api.solver.SolverJob;
 import org.optaplanner.core.api.solver.SolverManager;
-import org.optaplanner.quarkus.drools.it.domain.TestdataQuarkusEntity;
-import org.optaplanner.quarkus.drools.it.domain.TestdataQuarkusSolution;
+import org.optaplanner.quarkus.drl.it.domain.TestdataQuarkusEntity;
+import org.optaplanner.quarkus.drl.it.domain.TestdataQuarkusSolution;
 
 @Path("/optaplanner/test")
 public class OptaPlannerTestResource {

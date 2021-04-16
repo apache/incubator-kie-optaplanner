@@ -72,10 +72,10 @@ import org.optaplanner.core.impl.score.director.drools.KieBaseExtractor;
 import org.optaplanner.core.impl.solver.DefaultSolverFactory;
 import org.optaplanner.quarkus.gizmo.OptaPlannerDroolsInitializer;
 import org.optaplanner.quarkus.gizmo.OptaPlannerGizmoBeanFactory;
-import org.optaplanner.quarkus.gizmo.OptaPlannerGizmoInitializer;
 
 import io.quarkus.deployment.annotations.BuildProducer;
 import io.quarkus.deployment.builditem.BytecodeTransformerBuildItem;
+import io.quarkus.deployment.recording.RecorderContext;
 import io.quarkus.gizmo.BranchResult;
 import io.quarkus.gizmo.BytecodeCreator;
 import io.quarkus.gizmo.ClassCreator;
@@ -87,6 +87,7 @@ import io.quarkus.gizmo.Gizmo;
 import io.quarkus.gizmo.MethodCreator;
 import io.quarkus.gizmo.MethodDescriptor;
 import io.quarkus.gizmo.ResultHandle;
+import io.quarkus.runtime.RuntimeValue;
 
 public class GizmoMemberAccessorEntityEnhancer {
 
@@ -383,51 +384,22 @@ public class GizmoMemberAccessorEntityEnhancer {
         return out;
     }
 
-    public static String generateGizmoInitializer(ClassOutput classOutput, Set<String> generatedMemberAccessorsClassNames,
+    public static Map<String, RuntimeValue<MemberAccessor>> getGeneratedGizmoMemberAccessorMap(RecorderContext recorderContext,
+            Set<String> generatedMemberAccessorsClassNames) {
+        Map<String, RuntimeValue<MemberAccessor>> generatedGizmoMemberAccessorNameToInstanceMap = new HashMap<>();
+        for (String className : generatedMemberAccessorsClassNames) {
+            generatedGizmoMemberAccessorNameToInstanceMap.put(className, recorderContext.newInstance(className));
+        }
+        return generatedGizmoMemberAccessorNameToInstanceMap;
+    }
+
+    public static Map<String, RuntimeValue<SolutionCloner>> getGeneratedSolutionClonerMap(RecorderContext recorderContext,
             Set<String> generatedSolutionClonersClassNames) {
-        String generatedClassName = OptaPlannerGizmoInitializer.class.getName() + "$Implementation";
-        ClassCreator classCreator = ClassCreator
-                .builder()
-                .className(generatedClassName)
-                .interfaces(OptaPlannerGizmoInitializer.class)
-                .classOutput(classOutput)
-                .build();
-
-        classCreator.addAnnotation(ApplicationScoped.class);
-        MethodCreator methodCreator = classCreator.getMethodCreator(MethodDescriptor.ofMethod(OptaPlannerGizmoInitializer.class,
-                "setup", void.class));
-        ResultHandle memberAccessorMap = methodCreator.newInstance(MethodDescriptor.ofConstructor(HashMap.class));
-        for (String generatedMemberAccessor : generatedMemberAccessorsClassNames) {
-            ResultHandle generatedMemberAccessorResultHandle = methodCreator.load(generatedMemberAccessor);
-            ResultHandle memberAccessorInstance =
-                    methodCreator.newInstance(MethodDescriptor.ofConstructor(generatedMemberAccessor));
-            methodCreator.invokeInterfaceMethod(
-                    MethodDescriptor.ofMethod(Map.class, "put", Object.class, Object.class, Object.class),
-                    memberAccessorMap, generatedMemberAccessorResultHandle, memberAccessorInstance);
+        Map<String, RuntimeValue<SolutionCloner>> generatedGizmoSolutionClonerNameToInstanceMap = new HashMap<>();
+        for (String className : generatedSolutionClonersClassNames) {
+            generatedGizmoSolutionClonerNameToInstanceMap.put(className, recorderContext.newInstance(className));
         }
-        methodCreator.invokeStaticMethod(
-                MethodDescriptor.ofMethod(GizmoMemberAccessorFactory.class, "usePregeneratedMemberAccessorMap",
-                        void.class, Map.class),
-                memberAccessorMap);
-
-        ResultHandle solutionClonerMap = methodCreator.newInstance(MethodDescriptor.ofConstructor(HashMap.class));
-        for (String generatedSolutionCloner : generatedSolutionClonersClassNames) {
-            ResultHandle generatedMemberAccessorResultHandle = methodCreator.load(generatedSolutionCloner);
-            ResultHandle memberAccessorInstance =
-                    methodCreator.newInstance(MethodDescriptor.ofConstructor(generatedSolutionCloner));
-            methodCreator.invokeInterfaceMethod(
-                    MethodDescriptor.ofMethod(Map.class, "put", Object.class, Object.class, Object.class),
-                    solutionClonerMap, generatedMemberAccessorResultHandle, memberAccessorInstance);
-        }
-
-        methodCreator.invokeStaticMethod(
-                MethodDescriptor.ofMethod(GizmoSolutionClonerFactory.class, "useSolutionClonerMap",
-                        void.class, Map.class),
-                solutionClonerMap);
-        methodCreator.returnValue(null);
-
-        classCreator.close();
-        return generatedClassName;
+        return generatedGizmoSolutionClonerNameToInstanceMap;
     }
 
     public static String generateGizmoBeanFactory(ClassOutput classOutput, Set<Class<?>> beanClasses) {

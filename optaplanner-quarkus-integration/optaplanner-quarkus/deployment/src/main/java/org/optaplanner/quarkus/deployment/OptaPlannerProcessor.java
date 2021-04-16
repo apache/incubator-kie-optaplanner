@@ -191,8 +191,9 @@ class OptaPlannerProcessor {
 
         registerClassesFromAnnotations(indexView, reflectiveClassSet);
         generateConstraintVerifier(solverConfig, syntheticBeanBuildItemBuildProducer);
-        generateDomainAccessors(solverConfig, indexView, generatedBeans, generatedClasses, transformers,
-                reflectiveClassSet);
+        GeneratedGizmoClasses generatedGizmoClasses =
+                generateDomainAccessors(solverConfig, indexView, generatedBeans, generatedClasses, transformers,
+                        reflectiveClassSet);
 
         SolverManagerConfig solverManagerConfig = new SolverManagerConfig();
         optaPlannerBuildTimeConfig.solverManager.parallelSolverCount.ifPresent(solverManagerConfig::setParallelSolverCount);
@@ -200,7 +201,12 @@ class OptaPlannerProcessor {
         syntheticBeanBuildItemBuildProducer.produce(SyntheticBeanBuildItem.configure(SolverConfig.class)
                 .scope(Singleton.class)
                 .defaultBean()
-                .supplier(recorder.solverConfigSupplier(solverConfig)).done());
+                .supplier(recorder.solverConfigSupplier(solverConfig,
+                        GizmoMemberAccessorEntityEnhancer.getGeneratedGizmoMemberAccessorMap(recorderContext,
+                                generatedGizmoClasses.generatedGizmoMemberAccessorClassSet),
+                        GizmoMemberAccessorEntityEnhancer.getGeneratedSolutionClonerMap(recorderContext,
+                                generatedGizmoClasses.generatedGizmoSolutionClonerClassSet)))
+                .done());
 
         syntheticBeanBuildItemBuildProducer.produce(SyntheticBeanBuildItem.configure(SolverManagerConfig.class)
                 .scope(Singleton.class)
@@ -515,7 +521,7 @@ class OptaPlannerProcessor {
         }
     }
 
-    private void generateDomainAccessors(SolverConfig solverConfig, IndexView indexView,
+    private GeneratedGizmoClasses generateDomainAccessors(SolverConfig solverConfig, IndexView indexView,
             BuildProducer<GeneratedBeanBuildItem> generatedBeans,
             BuildProducer<GeneratedClassBuildItem> generatedClasses,
             BuildProducer<BytecodeTransformerBuildItem> transformers, Set<Class<?>> reflectiveClassSet) {
@@ -590,18 +596,17 @@ class OptaPlannerProcessor {
             }
             // Using REFLECTION domain access type so OptaPlanner doesn't try to generate GIZMO code
             SolutionDescriptor solutionDescriptor = SolutionDescriptor.buildSolutionDescriptor(DomainAccessType.REFLECTION,
-                    solverConfig.getSolutionClass(), solverConfig.getEntityClassList());
+                    solverConfig.getSolutionClass(), null, null, solverConfig.getEntityClassList());
             gizmoSolutionClonerClassNameSet.add(GizmoMemberAccessorEntityEnhancer.generateSolutionCloner(solutionDescriptor,
                     debuggableClassOutput,
                     indexView,
                     transformers));
         }
 
-        GizmoMemberAccessorEntityEnhancer.generateGizmoInitializer(beanClassOutput, generatedMemberAccessorsClassNameSet,
-                gizmoSolutionClonerClassNameSet);
         GizmoMemberAccessorEntityEnhancer.generateGizmoBeanFactory(beanClassOutput, reflectiveClassSet);
         GizmoMemberAccessorEntityEnhancer.generateKieRuntimeBuilder(beanClassOutput,
                 solverConfig.getScoreDirectorFactoryConfig());
+        return new GeneratedGizmoClasses(generatedMemberAccessorsClassNameSet, gizmoSolutionClonerClassNameSet);
     }
 
     private boolean shouldIgnoreMember(ClassInfo declaringClass) {

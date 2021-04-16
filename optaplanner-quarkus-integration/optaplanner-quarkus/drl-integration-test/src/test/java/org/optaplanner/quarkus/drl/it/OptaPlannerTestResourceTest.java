@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.optaplanner.quarkus.drools.it;
+package org.optaplanner.quarkus.drl.it;
 
 import static org.hamcrest.Matchers.is;
 
