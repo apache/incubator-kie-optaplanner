@@ -20,8 +20,8 @@ import java.util.List;
 import java.util.function.Supplier;
 
 /**
- * This interface exists so that justifications can be created lazily
- * and for that pattern to naturally spread throughout the codebase.
+ * This interface allows to create justifications lazily
+ * if and only if constraint matches are enabled.
  *
  * Justifications must be specifically enabled, and that is usually done outside of the hot path,
  * as that code is expensive.
