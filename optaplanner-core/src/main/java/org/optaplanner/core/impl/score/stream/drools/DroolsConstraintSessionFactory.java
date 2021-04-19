@@ -121,7 +121,7 @@ public final class DroolsConstraintSessionFactory<Solution_, Score_ extends Scor
                                             "scoreImpacter" + idCounter.getAndIncrement())));
             ModelImpl model = constraintToWeightMap.keySet().stream()
                     .map(constraint -> constraint.buildRule(constraintToGlobalMap.get(constraint)))
-                    .reduce(new ModelImpl(), ModelImpl::addRule, (m, __) -> m);
+                    .reduce(new ModelImpl(), ModelImpl::addRule, (m, key) -> m);
             constraintToGlobalMap.forEach((constraint, global) -> model.addGlobal(global));
             KieBase kieBase = buildKieBaseFromModel(model, droolsAlphaNetworkCompilationEnabled);
             kieBaseCache = new KieBaseCache<>(constraintToWeightMap, constraintToGlobalMap, kieBase);

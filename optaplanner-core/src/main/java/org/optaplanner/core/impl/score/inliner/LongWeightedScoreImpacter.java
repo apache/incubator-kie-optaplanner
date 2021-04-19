@@ -39,14 +39,7 @@ final class LongWeightedScoreImpacter implements WeightedScoreImpacter {
 
     @Override
     public UndoScoreImpacter impactScore(BigDecimal matchWeight, JustificationsSupplier justificationsSupplier) {
-        throw new IllegalStateException("Impossible state: passing BigDecimal into a long impacter.");
-    }
-
-    @FunctionalInterface
-    public interface ImpactFunction {
-
-        UndoScoreImpacter impact(long matchWeight, JustificationsSupplier justificationsSupplier);
-
+        throw new UnsupportedOperationException("Impossible state: passing BigDecimal into a long impacter.");
     }
 
 }

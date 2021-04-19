@@ -17,7 +17,6 @@
 package org.optaplanner.core.impl.score.inliner;
 
 import java.math.BigDecimal;
-import java.util.function.BiFunction;
 
 /**
  * There are several valid ways how an impacter could be called from a constraint stream:
@@ -32,8 +31,9 @@ import java.util.function.BiFunction;
  * <li>Plus reward variants of the above.</li>
  * </ul>
  *
- * An implementation of this inferface can throw an UnsupportedOperationException for the method types it doesn't support.
- * The CS API guarantees no types are mixed. For example, a BigDecimal parameter method won't be called on an instance built with an IntImpactFunction.
+ * An implementation of this interface can throw an {@link UnsupportedOperationException}
+ * for the method types it doesn't support. The CS API guarantees no types are mixed. For example,
+ * a {@link BigDecimal} parameter method won't be called on an instance built with an {@link IntImpactFunction}.
  */
 public interface WeightedScoreImpacter {
 
@@ -85,7 +85,9 @@ public interface WeightedScoreImpacter {
     }
 
     @FunctionalInterface
-    interface BigDecimalImpactFunction extends BiFunction<BigDecimal, JustificationsSupplier, UndoScoreImpacter> {
+    interface BigDecimalImpactFunction {
+
+        UndoScoreImpacter impact(BigDecimal matchWeight, JustificationsSupplier justificationsSupplier);
 
     }
 

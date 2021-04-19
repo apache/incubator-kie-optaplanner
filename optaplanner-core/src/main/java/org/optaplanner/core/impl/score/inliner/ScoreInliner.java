@@ -64,13 +64,13 @@ public abstract class ScoreInliner<Score_ extends Score<Score_>> {
         String constraintName = constraint.getConstraintName();
         DefaultConstraintMatchTotal<Score_> constraintMatchTotal = constraintMatchTotalMap.computeIfAbsent(
                 constraint.getConstraintId(),
-                __ -> new DefaultConstraintMatchTotal<>(constraintPackage, constraintName, constraintWeight, zeroScore));
+                key -> new DefaultConstraintMatchTotal<>(constraintPackage, constraintName, constraintWeight, zeroScore));
         ConstraintMatch<Score_> constraintMatch = constraintMatchTotal.addConstraintMatch(justificationList, score);
         DefaultIndictment<Score_>[] indictments = justificationList.stream()
                 .distinct() // One match might have the same justification twice
                 .map(justification -> {
                     DefaultIndictment<Score_> indictment = indictmentMap.computeIfAbsent(justification,
-                            __ -> new DefaultIndictment<>(justification, zeroScore));
+                            key -> new DefaultIndictment<>(justification, zeroScore));
                     indictment.addConstraintMatch(constraintMatch);
                     return indictment;
                 }).toArray(DefaultIndictment[]::new);
