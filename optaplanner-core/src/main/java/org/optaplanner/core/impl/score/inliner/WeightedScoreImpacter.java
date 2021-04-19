@@ -32,9 +32,8 @@ import java.util.function.BiFunction;
  * <li>Plus reward variants of the above.</li>
  * </ul>
  *
- * Implementations of this class need to be able to handle all of these, casting to the appropriate type.
- * In certain cases, such as when BigDecimal is passed into an int impacter, methods are allowed to throw exceptions.
- * That state should be considered impossible, ruled out by the CS API itself.
+ * An implementation of this inferface can throw an UnsupportedOperationException for the method types it doesn't support.
+ * The CS API guarantees no types are mixed. For example, a BigDecimal parameter method won't be called on an instance built with an IntImpactFunction.
  */
 public interface WeightedScoreImpacter {
 
