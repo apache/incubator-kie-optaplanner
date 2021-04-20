@@ -19,6 +19,7 @@ package org.optaplanner.core.impl.score.stream.drools.common;
 import static java.util.Arrays.asList;
 
 import java.math.BigDecimal;
+import java.util.List;
 import java.util.Objects;
 
 import org.drools.model.DSL;
@@ -34,6 +35,11 @@ final class QuadRuleContext<A, B, C, D> extends AbstractRuleContext {
     private final Variable<B> variableB;
     private final Variable<C> variableC;
     private final Variable<D> variableD;
+
+    public QuadRuleContext(Variable<A> variableA, Variable<B> variableB, Variable<C> variableC,
+            Variable<D> variableD, List<ViewItem<?>> viewItems) {
+        this(variableA, variableB, variableC, variableD, viewItems.toArray(new ViewItem[0]));
+    }
 
     public QuadRuleContext(Variable<A> variableA, Variable<B> variableB, Variable<C> variableC,
             Variable<D> variableD, ViewItem<?>... viewItems) {

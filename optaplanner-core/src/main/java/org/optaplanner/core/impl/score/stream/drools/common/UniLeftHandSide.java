@@ -354,8 +354,8 @@ public final class UniLeftHandSide<A> extends AbstractLeftHandSide {
         DirectPatternVariable<BiTuple<NewA, NewB>> tuplePatternVar = decompose(groupKey, groupByPattern, newA, newB);
         PatternVariable<NewB, BiTuple<NewA, NewB>, ?> bPatternVar =
                 new IndirectPatternVariable<>(tuplePatternVar, newB, tuple -> tuple.b);
-        // No simple context; due to the need to decompose the group key, the pattern variables are required.
-        return new BiLeftHandSide<>(new DetachedPatternVariable<>(newA), bPatternVar, variableFactory);
+        BiRuleContext<NewA, NewB> simpleRuleContext = new BiRuleContext<>(newA, newB, tuplePatternVar.build());
+        return new BiLeftHandSide<>(simpleRuleContext, new DetachedPatternVariable<>(newA), bPatternVar, variableFactory);
     }
 
     public <NewA, NewB, NewC> TriLeftHandSide<NewA, NewB, NewC> andGroupBy(Function<A, NewA> keyMappingA,
@@ -370,9 +370,11 @@ public final class UniLeftHandSide<A> extends AbstractLeftHandSide {
         Variable<NewB> newB = variableFactory.createVariable("newB");
         DirectPatternVariable<BiTuple<NewA, NewB>> tuplePatternVar = decompose(groupKey, groupByPattern, newA, newB);
         List<ViewItem<?>> prerequisites = tuplePatternVar.build();
-        // No simple context; due to the need to decompose the group key, the pattern variables are required.
-        return new TriLeftHandSide<>(new DetachedPatternVariable<>(newA), new DetachedPatternVariable<>(newB),
-                new DirectPatternVariable<>(accumulateOutput, prerequisites), variableFactory);
+        TriRuleContext<NewA, NewB, NewC> simpleRuleContext =
+                new TriRuleContext<>(newA, newB, accumulateOutput, prerequisites);
+        return new TriLeftHandSide<>(simpleRuleContext, new DetachedPatternVariable<>(newA),
+                new DetachedPatternVariable<>(newB), new DirectPatternVariable<>(accumulateOutput, prerequisites),
+                variableFactory);
     }
 
     public <NewA, NewB, NewC, NewD> QuadLeftHandSide<NewA, NewB, NewC, NewD> andGroupBy(Function<A, NewA> keyMappingA,
@@ -390,9 +392,10 @@ public final class UniLeftHandSide<A> extends AbstractLeftHandSide {
         Variable<NewB> newB = variableFactory.createVariable("newB");
         DirectPatternVariable<BiTuple<NewA, NewB>> tuplePatternVar = decompose(groupKey, groupByPattern, newA, newB);
         List<ViewItem<?>> prerequisites = tuplePatternVar.build();
-        // No simple context; due to the need to decompose the group key, the pattern variables are required.
-        return new QuadLeftHandSide<>(new DetachedPatternVariable<>(newA), new DetachedPatternVariable<>(newB),
-                new DetachedPatternVariable<>(accumulateOutputC),
+        QuadRuleContext<NewA, NewB, NewC, NewD> simpleRuleContext =
+                new QuadRuleContext<>(newA, newB, accumulateOutputC, accumulateOutputD, prerequisites);
+        return new QuadLeftHandSide<>(simpleRuleContext, new DetachedPatternVariable<>(newA),
+                new DetachedPatternVariable<>(newB), new DetachedPatternVariable<>(accumulateOutputC),
                 new DirectPatternVariable<>(accumulateOutputD, prerequisites),
                 variableFactory);
     }
@@ -410,9 +413,10 @@ public final class UniLeftHandSide<A> extends AbstractLeftHandSide {
                 decompose(groupKey, groupByPattern, newA, newB, newC);
         PatternVariable<NewC, TriTuple<NewA, NewB, NewC>, ?> cPatternVar =
                 new IndirectPatternVariable<>(tuplePatternVar, newC, tuple -> tuple.c);
-        // No simple context; due to the need to decompose the group key, the pattern variables are required.
-        return new TriLeftHandSide<>(new DetachedPatternVariable<>(newA), new DetachedPatternVariable<>(newB), cPatternVar,
-                variableFactory);
+        TriRuleContext<NewA, NewB, NewC> simpleRuleContext =
+                new TriRuleContext<>(newA, newB, newC, tuplePatternVar.build());
+        return new TriLeftHandSide<>(simpleRuleContext, new DetachedPatternVariable<>(newA),
+                new DetachedPatternVariable<>(newB), cPatternVar, variableFactory);
     }
 
     public <NewA, NewB, NewC, NewD> QuadLeftHandSide<NewA, NewB, NewC, NewD> andGroupBy(Function<A, NewA> keyMappingA,
@@ -430,10 +434,11 @@ public final class UniLeftHandSide<A> extends AbstractLeftHandSide {
         DirectPatternVariable<TriTuple<NewA, NewB, NewC>> tuplePatternVar =
                 decompose(groupKey, groupByPattern, newA, newB, newC);
         List<ViewItem<?>> prerequisites = tuplePatternVar.build();
-        // No simple context; due to the need to decompose the group key, the pattern variables are required.
-        return new QuadLeftHandSide<>(new DetachedPatternVariable<>(newA), new DetachedPatternVariable<>(newB),
-                new DetachedPatternVariable<>(newC), new DirectPatternVariable<>(accumulateOutputD, prerequisites),
-                variableFactory);
+        QuadRuleContext<NewA, NewB, NewC, NewD> simpleRuleContext =
+                new QuadRuleContext<>(newA, newB, newC, accumulateOutputD, tuplePatternVar.build());
+        return new QuadLeftHandSide<>(simpleRuleContext, new DetachedPatternVariable<>(newA),
+                new DetachedPatternVariable<>(newB), new DetachedPatternVariable<>(newC),
+                new DirectPatternVariable<>(accumulateOutputD, prerequisites), variableFactory);
     }
 
     public <NewA, NewB, NewC, NewD> QuadLeftHandSide<NewA, NewB, NewC, NewD> andGroupBy(Function<A, NewA> keyMappingA,
@@ -451,9 +456,10 @@ public final class UniLeftHandSide<A> extends AbstractLeftHandSide {
                 decompose(groupKey, groupByPattern, newA, newB, newC, newD);
         PatternVariable<NewD, QuadTuple<NewA, NewB, NewC, NewD>, ?> dPatternVar =
                 new IndirectPatternVariable<>(tuplePatternVar, newD, tuple -> tuple.d);
-        // No simple context; due to the need to decompose the group key, the pattern variables are required.
-        return new QuadLeftHandSide<>(new DetachedPatternVariable<>(newA), new DetachedPatternVariable<>(newB),
-                new DetachedPatternVariable<>(newC), dPatternVar, variableFactory);
+        QuadRuleContext<NewA, NewB, NewC, NewD> simpleRuleContext =
+                new QuadRuleContext<>(newA, newB, newC, newD, tuplePatternVar.build());
+        return new QuadLeftHandSide<>(simpleRuleContext, new DetachedPatternVariable<>(newA),
+                new DetachedPatternVariable<>(newB), new DetachedPatternVariable<>(newC), dPatternVar, variableFactory);
     }
 
     public <NewA> UniLeftHandSide<NewA> andMap(Function<A, NewA> mapping) {

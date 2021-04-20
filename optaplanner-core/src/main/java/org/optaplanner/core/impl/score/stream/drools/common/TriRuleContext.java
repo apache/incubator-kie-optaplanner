@@ -19,6 +19,7 @@ package org.optaplanner.core.impl.score.stream.drools.common;
 import static java.util.Arrays.asList;
 
 import java.math.BigDecimal;
+import java.util.List;
 import java.util.Objects;
 
 import org.drools.model.DSL;
@@ -33,6 +34,11 @@ final class TriRuleContext<A, B, C> extends AbstractRuleContext {
     private final Variable<A> variableA;
     private final Variable<B> variableB;
     private final Variable<C> variableC;
+
+    public TriRuleContext(Variable<A> variableA, Variable<B> variableB, Variable<C> variableC,
+            List<ViewItem<?>> viewItems) {
+        this(variableA, variableB, variableC, viewItems.toArray(new ViewItem[0]));
+    }
 
     public TriRuleContext(Variable<A> variableA, Variable<B> variableB, Variable<C> variableC,
             ViewItem<?>... viewItems) {
