@@ -25,7 +25,6 @@ import static org.drools.model.PatternDSL.pattern;
 import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Objects;
 import java.util.function.Function;
 import java.util.stream.Stream;
 
@@ -72,19 +71,16 @@ public final class TriLeftHandSide<A, B, C> extends AbstractLeftHandSide {
         this.patternVariableA = patternVariableA;
         this.patternVariableB = patternVariableB;
         this.patternVariableC = patternVariableC;
-        // This LHS will use the same variable access both for direct consequence and for subsequent operations.
         this.ruleContext = buildDefaultRuleContext();
     }
 
-    protected TriLeftHandSide(TriRuleContext<A, B, C> ruleContext, PatternVariable<A, ?, ?> patternVariableA,
-            PatternVariable<B, ?, ?> patternVariableB, PatternVariable<C, ?, ?> patternVariableC,
+    protected TriLeftHandSide(Variable<A> variableA, Variable<B> variableB, PatternVariable<C, ?, ?> patternVariableC,
             DroolsVariableFactory variableFactory) {
         super(variableFactory);
-        this.patternVariableA = patternVariableA;
-        this.patternVariableB = patternVariableB;
+        this.patternVariableA = new DetachedPatternVariable<>(variableA);
+        this.patternVariableB = new DetachedPatternVariable<>(variableB);
         this.patternVariableC = patternVariableC;
-        // This LHS allows for quicker access to variables, if consequence directly follows.
-        this.ruleContext = Objects.requireNonNull(ruleContext);
+        this.ruleContext = buildDefaultRuleContext();
     }
 
     protected TriLeftHandSide(TriLeftHandSide<A, B, C> leftHandSide, PatternVariable<C, ?, ?> patternVariable) {
@@ -92,7 +88,6 @@ public final class TriLeftHandSide<A, B, C> extends AbstractLeftHandSide {
         this.patternVariableA = leftHandSide.patternVariableA;
         this.patternVariableB = leftHandSide.patternVariableB;
         this.patternVariableC = patternVariable;
-        // This LHS will use the same variable access both for direct consequence and for subsequent operations.
         this.ruleContext = buildDefaultRuleContext();
     }
 
@@ -241,10 +236,7 @@ public final class TriLeftHandSide<A, B, C> extends AbstractLeftHandSide {
                 createAccumulateFunction(collectorA, accumulateOutputA),
                 createAccumulateFunction(collectorB, accumulateOutputB),
                 createAccumulateFunction(collectorC, accumulateOutputC));
-        TriRuleContext<NewA, NewB, NewC> simpleRuleContext = new TriRuleContext<>(accumulateOutputA, accumulateOutputB,
-                accumulateOutputC, outerAccumulatePattern);
-        return new TriLeftHandSide<>(simpleRuleContext, new DetachedPatternVariable<>(accumulateOutputA),
-                new DetachedPatternVariable<>(accumulateOutputB),
+        return new TriLeftHandSide<>(accumulateOutputA, accumulateOutputB,
                 new DirectPatternVariable<>(accumulateOutputC, singletonList(outerAccumulatePattern)), variableFactory);
     }
 
@@ -312,10 +304,7 @@ public final class TriLeftHandSide<A, B, C> extends AbstractLeftHandSide {
         ViewItem<?> groupByPattern = buildGroupBy(groupKey, keyMappingA::apply,
                 createAccumulateFunction(collectorB, accumulateOutputB),
                 createAccumulateFunction(collectorC, accumulateOutputC));
-        TriRuleContext<NewA, NewB, NewC> simpleRuleContext = new TriRuleContext<>(groupKey, accumulateOutputB,
-                accumulateOutputC, groupByPattern);
-        return new TriLeftHandSide<>(simpleRuleContext, new DetachedPatternVariable<>(groupKey),
-                new DetachedPatternVariable<>(accumulateOutputB),
+        return new TriLeftHandSide<>(groupKey, accumulateOutputB,
                 new DirectPatternVariable<>(accumulateOutputC, singletonList(groupByPattern)), variableFactory);
     }
 
@@ -378,10 +367,7 @@ public final class TriLeftHandSide<A, B, C> extends AbstractLeftHandSide {
         Variable<NewB> newB = variableFactory.createVariable("newB");
         DirectPatternVariable<BiTuple<NewA, NewB>> tuplePatternVar = decompose(groupKey, groupByPattern, newA, newB);
         List<ViewItem<?>> prerequisites = tuplePatternVar.build();
-        TriRuleContext<NewA, NewB, NewC> simpleRuleContext = new TriRuleContext<>(newA, newB, accumulateOutput,
-                prerequisites);
-        return new TriLeftHandSide<>(simpleRuleContext, new DetachedPatternVariable<>(newA),
-                new DetachedPatternVariable<>(newB), new DirectPatternVariable<>(accumulateOutput, prerequisites),
+        return new TriLeftHandSide<>(newA, newB, new DirectPatternVariable<>(accumulateOutput, prerequisites),
                 variableFactory);
     }
 
@@ -440,10 +426,7 @@ public final class TriLeftHandSide<A, B, C> extends AbstractLeftHandSide {
                 decompose(groupKey, groupByPattern, newA, newB, newC);
         PatternVariable<NewC, TriTuple<NewA, NewB, NewC>, ?> cPatternVar =
                 new IndirectPatternVariable<>(tuplePatternVar, newC, tuple -> tuple.c);
-        TriRuleContext<NewA, NewB, NewC> simpleRuleContext =
-                new TriRuleContext<>(newA, newB, newC, tuplePatternVar.build());
-        return new TriLeftHandSide<>(simpleRuleContext, new DetachedPatternVariable<>(newA),
-                new DetachedPatternVariable<>(newB), cPatternVar, variableFactory);
+        return new TriLeftHandSide<>(newA, newB, cPatternVar, variableFactory);
     }
 
     public <NewA, NewB, NewC, NewD> QuadLeftHandSide<NewA, NewB, NewC, NewD> andGroupBy(
