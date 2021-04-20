@@ -16,16 +16,22 @@
 
 package org.optaplanner.core.impl.score.stream.drools.common;
 
+import static java.util.Collections.singletonList;
+import static org.drools.model.DSL.exists;
+import static org.drools.model.DSL.not;
+import static org.drools.model.PatternDSL.betaIndexedBy;
+import static org.drools.model.PatternDSL.pattern;
+
 import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Objects;
 import java.util.function.BiFunction;
 import java.util.function.BiPredicate;
 import java.util.function.Function;
 import java.util.function.ToIntBiFunction;
 import java.util.function.ToLongBiFunction;
 import java.util.stream.Stream;
+
 import org.drools.model.BetaIndex2;
 import org.drools.model.DSL;
 import org.drools.model.PatternDSL;
@@ -42,12 +48,6 @@ import org.optaplanner.core.impl.score.stream.drools.DroolsVariableFactory;
 import org.optaplanner.core.impl.score.stream.tri.AbstractTriJoiner;
 import org.optaplanner.core.impl.score.stream.tri.FilteringTriJoiner;
 import org.optaplanner.core.impl.score.stream.tri.NoneTriJoiner;
-
-import static java.util.Collections.singletonList;
-import static org.drools.model.DSL.exists;
-import static org.drools.model.DSL.not;
-import static org.drools.model.PatternDSL.betaIndexedBy;
-import static org.drools.model.PatternDSL.pattern;
 
 /**
  * Represents the left hand side of a Drools rule, the result of which are two variables.
@@ -99,13 +99,11 @@ public final class BiLeftHandSide<A, B> extends AbstractLeftHandSide {
         this.ruleContext = buildDefaultRuleContext();
     }
 
-    protected BiLeftHandSide(BiRuleContext<A, B> ruleContext, PatternVariable<A, ?, ?> left,
-            PatternVariable<B, ?, ?> right, DroolsVariableFactory variableFactory) {
+    protected BiLeftHandSide(Variable<A> left, PatternVariable<B, ?, ?> right, DroolsVariableFactory variableFactory) {
         super(variableFactory);
-        this.patternVariableA = left;
+        this.patternVariableA = new DetachedPatternVariable<>(left);
         this.patternVariableB = right;
-        // This LHS allows for quicker access to variables, if consequence directly follows.
-        this.ruleContext = Objects.requireNonNull(ruleContext);
+        this.ruleContext = buildDefaultRuleContext();
     }
 
     protected BiLeftHandSide(BiLeftHandSide<A, B> leftHandSide, PatternVariable<B, ?, ?> patternVariable) {
@@ -245,9 +243,7 @@ public final class BiLeftHandSide<A, B> extends AbstractLeftHandSide {
         ViewItem<?> outerAccumulatePattern = buildAccumulate(innerAccumulatePattern,
                 createAccumulateFunction(collectorA, accumulateOutputA),
                 createAccumulateFunction(collectorB, accumulateOutputB));
-        BiRuleContext<NewA, NewB> simpleRuleContext = new BiRuleContext<>(accumulateOutputA, accumulateOutputB,
-                outerAccumulatePattern);
-        return new BiLeftHandSide<>(simpleRuleContext, new DetachedPatternVariable<>(accumulateOutputA),
+        return new BiLeftHandSide<>(accumulateOutputA,
                 new DirectPatternVariable<>(accumulateOutputB, singletonList(outerAccumulatePattern)), variableFactory);
     }
 
@@ -320,8 +316,7 @@ public final class BiLeftHandSide<A, B> extends AbstractLeftHandSide {
         Variable<NewB> accumulateOutput = variableFactory.createVariable("output");
         ViewItem<?> groupByPattern = buildGroupBy(groupKey, keyMappingA::apply,
                 createAccumulateFunction(collectorB, accumulateOutput));
-        BiRuleContext<NewA, NewB> simpleRuleContext = new BiRuleContext<>(groupKey, accumulateOutput, groupByPattern);
-        return new BiLeftHandSide<>(simpleRuleContext, new DetachedPatternVariable<>(groupKey),
+        return new BiLeftHandSide<>(groupKey,
                 new DirectPatternVariable<>(accumulateOutput, singletonList(groupByPattern)), variableFactory);
     }
 
@@ -384,8 +379,7 @@ public final class BiLeftHandSide<A, B> extends AbstractLeftHandSide {
         DirectPatternVariable<BiTuple<NewA, NewB>> tuplePatternVar = decompose(groupKey, groupByPattern, newA, newB);
         PatternVariable<NewB, BiTuple<NewA, NewB>, ?> bPatternVar =
                 new IndirectPatternVariable<>(tuplePatternVar, newB, tuple -> tuple.b);
-        BiRuleContext<NewA, NewB> simpleRuleContext = new BiRuleContext<>(newA, newB, tuplePatternVar.build());
-        return new BiLeftHandSide<>(simpleRuleContext, new DetachedPatternVariable<>(newA), bPatternVar, variableFactory);
+        return new BiLeftHandSide<>(newA, bPatternVar, variableFactory);
     }
 
     public <NewA, NewB, NewC> TriLeftHandSide<NewA, NewB, NewC> andGroupBy(BiFunction<A, B, NewA> keyMappingA,
