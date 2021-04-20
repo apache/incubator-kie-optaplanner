@@ -131,6 +131,10 @@ class DirectPatternVariable<A> implements PatternVariable<A, A, DirectPatternVar
         this(aVariable, Collections.emptyList());
     }
 
+    DirectPatternVariable(Variable<A> aVariable, ViewItem<?> prerequisiteExpression) {
+        this(aVariable, Collections.singletonList(prerequisiteExpression));
+    }
+
     DirectPatternVariable(Variable<A> aVariable, List<ViewItem<?>> prerequisiteExpressions) {
         this.primaryVariable = aVariable;
         this.patternSupplier = () -> pattern(aVariable);
