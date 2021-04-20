@@ -16,22 +16,14 @@
 
 package org.optaplanner.core.impl.score.stream.drools.common;
 
-import static java.util.Collections.singletonList;
-import static org.drools.model.DSL.exists;
-import static org.drools.model.DSL.not;
-import static org.drools.model.PatternDSL.betaIndexedBy;
-import static org.drools.model.PatternDSL.pattern;
-
 import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Objects;
 import java.util.function.BiPredicate;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.ToIntFunction;
 import java.util.function.ToLongFunction;
-
 import org.drools.model.BetaIndex;
 import org.drools.model.DSL;
 import org.drools.model.PatternDSL;
@@ -47,6 +39,12 @@ import org.optaplanner.core.impl.score.stream.bi.FilteringBiJoiner;
 import org.optaplanner.core.impl.score.stream.bi.NoneBiJoiner;
 import org.optaplanner.core.impl.score.stream.common.JoinerType;
 import org.optaplanner.core.impl.score.stream.drools.DroolsVariableFactory;
+
+import static java.util.Collections.singletonList;
+import static org.drools.model.DSL.exists;
+import static org.drools.model.DSL.not;
+import static org.drools.model.PatternDSL.betaIndexedBy;
+import static org.drools.model.PatternDSL.pattern;
 
 /**
  * Represents the left-hand side of a Drools rule, the result of which is a single variable.
@@ -113,12 +111,11 @@ public final class UniLeftHandSide<A> extends AbstractLeftHandSide {
         this.ruleContext = buildDefaultRuleContext();
     }
 
-    protected UniLeftHandSide(UniRuleContext<A> ruleContext, PatternVariable<A, ?, ?> patternVariable,
-            DroolsVariableFactory variableFactory) {
+    protected UniLeftHandSide(Variable<A> variable, List<ViewItem<?>> viewItems, DroolsVariableFactory variableFactory) {
         super(variableFactory);
-        this.patternVariable = patternVariable;
+        this.patternVariable = new DirectPatternVariable<>(variable, viewItems);
         // This LHS allows for quicker access to variables, if consequence directly follows.
-        this.ruleContext = Objects.requireNonNull(ruleContext);
+        this.ruleContext = buildDefaultRuleContext();
     }
 
     private UniRuleContext<A> buildDefaultRuleContext() {
@@ -218,9 +215,7 @@ public final class UniLeftHandSide<A> extends AbstractLeftHandSide {
     public <NewA> UniLeftHandSide<NewA> andGroupBy(UniConstraintCollector<A, ?, NewA> collector) {
         Variable<NewA> accumulateOutput = variableFactory.createVariable("collected");
         ViewItem<?> outerAccumulatePattern = buildAccumulate(createAccumulateFunction(collector, accumulateOutput));
-        UniRuleContext<NewA> simpleRuleContext = new UniRuleContext<>(accumulateOutput, outerAccumulatePattern);
-        return new UniLeftHandSide<>(simpleRuleContext,
-                new DirectPatternVariable<>(accumulateOutput, singletonList(outerAccumulatePattern)), variableFactory);
+        return new UniLeftHandSide<>(accumulateOutput, singletonList(outerAccumulatePattern), variableFactory);
     }
 
     public <NewA, NewB> BiLeftHandSide<NewA, NewB> andGroupBy(UniConstraintCollector<A, ?, NewA> collectorA,
@@ -294,9 +289,7 @@ public final class UniLeftHandSide<A> extends AbstractLeftHandSide {
     public <NewA> UniLeftHandSide<NewA> andGroupBy(Function<A, NewA> keyMapping) {
         Variable<NewA> groupKey = variableFactory.createVariable("groupKey");
         ViewItem<?> groupByPattern = buildGroupBy(groupKey, keyMapping::apply);
-        UniRuleContext<NewA> simpleRuleContext = new UniRuleContext<>(groupKey, groupByPattern);
-        return new UniLeftHandSide<>(simpleRuleContext,
-                new DirectPatternVariable<>(groupKey, singletonList(groupByPattern)), variableFactory);
+        return new UniLeftHandSide<>(groupKey, singletonList(groupByPattern), variableFactory);
     }
 
     public <NewA, NewB> BiLeftHandSide<NewA, NewB> andGroupBy(Function<A, NewA> keyMappingA,
