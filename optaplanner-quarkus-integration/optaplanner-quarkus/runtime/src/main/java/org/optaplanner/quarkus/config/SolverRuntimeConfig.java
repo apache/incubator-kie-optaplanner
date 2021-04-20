@@ -16,6 +16,8 @@
 
 package org.optaplanner.quarkus.config;
 
+import java.util.Optional;
+
 import org.optaplanner.core.config.solver.SolverConfig;
 import org.optaplanner.core.config.solver.termination.TerminationConfig;
 
@@ -33,4 +35,13 @@ public class SolverRuntimeConfig {
      */
     @ConfigItem
     public TerminationRuntimeConfig termination;
+
+    /**
+     * Enable multithreaded solving for a single problem, which increases CPU consumption.
+     * Defaults to {@value SolverConfig#MOVE_THREAD_COUNT_NONE}.
+     * Other options include {@value SolverConfig#MOVE_THREAD_COUNT_AUTO}, a number
+     * or formula based on the available processor count.
+     */
+    @ConfigItem
+    public Optional<String> moveThreadCount;
 }

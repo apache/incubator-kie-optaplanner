@@ -29,9 +29,10 @@ import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.RegisterExtension;
-import org.optaplanner.core.api.solver.SolverFactory;
 import org.optaplanner.core.config.solver.SolverConfig;
+import org.optaplanner.core.config.solver.SolverManagerConfig;
 import org.optaplanner.quarkus.config.OptaPlannerRuntimeConfig;
+import org.optaplanner.quarkus.config.SolverManagerRuntimeConfig;
 import org.optaplanner.quarkus.config.SolverRuntimeConfig;
 import org.optaplanner.quarkus.config.TerminationRuntimeConfig;
 import org.optaplanner.quarkus.testdata.normal.constraints.TestdataQuarkusConstraintProvider;
@@ -40,12 +41,14 @@ import org.optaplanner.quarkus.testdata.normal.domain.TestdataQuarkusSolution;
 
 import io.quarkus.test.QuarkusUnitTest;
 
-public class OptaPlannerProcessorOverrideTerminationAtRuntimeTest {
+public class OptaPlannerProcessorOverridePropertiesAtRuntimeTest {
 
     @RegisterExtension
     static final QuarkusUnitTest config = new QuarkusUnitTest()
-            // We want to check if this is overriden by our runtime alternative
+            // We want to check if these are overridden by our runtime alternative
             .overrideConfigKey("quarkus.optaplanner.solver.termination.best-score-limit", "0")
+            .overrideConfigKey("quarkus.optaplanner.solver.move-thread-count", "4")
+            .overrideConfigKey("quarkus.optaplanner.solver-manager.parallel-solver-count", "1")
             // MyOptaPlannerRuntimeConfig is an alternative for OptaPlannerRuntimeConfig,
             // and simulates setting the values at runtime.
             .overrideConfigKey("quarkus.arc.selected-alternatives", "MyOptaPlannerRuntimeConfig")
@@ -58,14 +61,20 @@ public class OptaPlannerProcessorOverrideTerminationAtRuntimeTest {
     @Inject
     SolverConfig solverConfig;
 
-    // Need to inject SolverFactory so getTerminationConfig is not null (why?)
     @Inject
-    SolverFactory<TestdataQuarkusSolution> solverFactory;
+    SolverManagerConfig solverManagerConfig;
 
     @Test
-    public void bestScoreLimitShouldBeOverwritten() {
+    public void solverConfigPropertiesShouldBeOverwritten() {
         assertNotNull(solverConfig);
         assertEquals("7", solverConfig.getTerminationConfig().getBestScoreLimit());
+        assertEquals("3", solverConfig.getMoveThreadCount());
+    }
+
+    @Test
+    public void solverManagerConfigPropertiesShouldBeOverwritten() {
+        assertNotNull(solverManagerConfig);
+        assertEquals("10", solverManagerConfig.getParallelSolverCount());
     }
 
     @Alternative
@@ -77,6 +86,10 @@ public class OptaPlannerProcessorOverrideTerminationAtRuntimeTest {
             solver.termination.bestScoreLimit = Optional.of("7");
             solver.termination.spentLimit = Optional.empty();
             solver.termination.unimprovedSpentLimit = Optional.empty();
+            solver.moveThreadCount = Optional.of("3");
+
+            solverManager = new SolverManagerRuntimeConfig();
+            solverManager.parallelSolverCount = Optional.of("10");
         }
     }
 
