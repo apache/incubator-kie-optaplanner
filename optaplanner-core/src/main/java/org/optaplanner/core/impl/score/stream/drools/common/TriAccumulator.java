@@ -23,26 +23,30 @@ import org.drools.core.common.InternalFactHandle;
 import org.drools.core.rule.Declaration;
 import org.drools.core.spi.Tuple;
 import org.drools.model.Variable;
-import org.optaplanner.core.api.function.TriFunction;
-import org.optaplanner.core.api.score.stream.bi.BiConstraintCollector;
+import org.optaplanner.core.api.function.QuadFunction;
+import org.optaplanner.core.api.score.stream.tri.TriConstraintCollector;
 
-final class BiAccumulator<A, B, ResultContainer_, Result_> extends AbstractAccumulator<ResultContainer_, Result_> {
+final class TriAccumulator<A, B, C, ResultContainer_, Result_> extends AbstractAccumulator<ResultContainer_, Result_> {
 
     private final String varA;
     private final String varB;
-    private final TriFunction<ResultContainer_, A, B, Runnable> accumulator;
+    private final String varC;
+    private final QuadFunction<ResultContainer_, A, B, C, Runnable> accumulator;
 
     private Declaration declarationA;
     private Declaration declarationB;
+    private Declaration declarationC;
     private int offsetToA;
     private int offsetToB;
+    private int offsetToC;
 
-    public BiAccumulator(Variable<A> varA, Variable<B> varB,
-            BiConstraintCollector<A, B, ResultContainer_, Result_> collector) {
+    public TriAccumulator(Variable<A> varA, Variable<B> varB, Variable<C> varC,
+            TriConstraintCollector<A, B, C, ResultContainer_, Result_> collector) {
         super(collector.supplier(), collector.finisher());
         this.accumulator = Objects.requireNonNull(collector.accumulator());
         this.varA = varA.getName();
         this.varB = varB.getName();
+        this.varC = varC.getName();
     }
 
     @Override
@@ -54,7 +58,8 @@ final class BiAccumulator<A, B, ResultContainer_, Result_> extends AbstractAccum
 
         A a = extractValue(declarationA, offsetToA, leftTuple);
         B b = extractValue(declarationB, offsetToB, leftTuple);
-        return accumulator.apply((ResultContainer_) context, a, b);
+        C c = extractValue(declarationC, offsetToC, leftTuple);
+        return accumulator.apply((ResultContainer_) context, a, b, c);
     }
 
     private void init(Tuple leftTuple, Declaration[] innerDeclarations) {
@@ -63,11 +68,14 @@ final class BiAccumulator<A, B, ResultContainer_, Result_> extends AbstractAccum
                 declarationA = declaration;
             } else if (declaration.getBindingName().equals(varB)) {
                 declarationB = declaration;
+            } else if (declaration.getBindingName().equals(varC)) {
+                declarationC = declaration;
             }
         }
 
         offsetToA = findTupleOffset(declarationA, leftTuple);
         offsetToB = findTupleOffset(declarationB, leftTuple);
+        offsetToC = findTupleOffset(declarationC, leftTuple);
     }
 
 }

@@ -16,60 +16,54 @@
 
 package org.optaplanner.core.impl.score.stream.drools.common;
 
+import java.util.Objects;
+import java.util.function.BiFunction;
+
 import org.drools.core.WorkingMemory;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.reteoo.SubnetworkTuple;
 import org.drools.core.rule.Declaration;
-import org.drools.core.spi.Accumulator;
 import org.drools.core.spi.Tuple;
 import org.drools.model.Variable;
 import org.optaplanner.core.api.score.stream.uni.UniConstraintCollector;
 
-final class UniAccumulator<A, ResultContainer_, Result_> implements Accumulator {
+final class UniAccumulator<A, ResultContainer_, Result_> extends AbstractAccumulator<ResultContainer_, Result_> {
 
     private final String varA;
-    private final UniConstraintCollector<A, ResultContainer_, Result_> collector;
+    private final BiFunction<ResultContainer_, A, Runnable> accumulator;
 
     private boolean subnetwork;
-    private Declaration declrA;
-    private int offsetToA;
+    private Declaration declaration;
+    private int offset;
 
     public UniAccumulator(Variable<A> varA, UniConstraintCollector<A, ResultContainer_, Result_> collector) {
+        super(collector.supplier(), collector.finisher());
         this.varA = varA.getName();
-        this.collector = collector;
+        this.accumulator = Objects.requireNonNull(collector.accumulator());
     }
 
     @Override
-    public Object createWorkingMemoryContext() {
-        return null;
+    public Object accumulate(Object workingMemoryContext, Object context, Tuple leftTuple, InternalFactHandle handle,
+            Declaration[] declarations, Declaration[] innerDeclarations, WorkingMemory workingMemory) {
+        InternalFactHandle factHandle = getFactHandle(leftTuple, handle, innerDeclarations);
+        A a = (A) declaration.getValue(null, factHandle.getObject());
+        return accumulator.apply((ResultContainer_) context, a);
     }
 
-    @Override
-    public Object createContext() {
-        return null; // We always create and init during init(...).
-    }
-
-    @Override
-    public Object init(Object workingMemoryContext, Object context, Tuple leftTuple, Declaration[] declarations,
-            WorkingMemory workingMemory) {
-        return collector.supplier().get();
-    }
-
-    private InternalFactHandle getFactHandle(Tuple leftTuple, InternalFactHandle handle,
-            Declaration[] innerDeclarations) {
-        if (declrA == null) {
+    private InternalFactHandle getFactHandle(Tuple leftTuple, InternalFactHandle handle, Declaration[] innerDeclarations) {
+        if (declaration == null) {
             return init(leftTuple, handle, innerDeclarations);
         } else if (!subnetwork) {
             return handle;
         } else {
-            return AccumulatorUtils.getTuple(offsetToA, leftTuple).getFactHandle();
+            return getTuple(offset, leftTuple).getFactHandle();
         }
     }
 
     private InternalFactHandle init(Tuple leftTuple, InternalFactHandle handle, Declaration[] innerDeclarations) {
-        for (Declaration declr : innerDeclarations) {
-            if (declr.getBindingName().equals(varA)) {
-                declrA = declr;
+        for (Declaration declaration : innerDeclarations) {
+            if (declaration.getBindingName().equals(varA)) {
+                this.declaration = declaration;
                 break;
             }
         }
@@ -78,40 +72,10 @@ final class UniAccumulator<A, ResultContainer_, Result_> implements Accumulator 
         if (!subnetwork) {
             return handle;
         } else {
-            AccumulatorUtils.OffsetHolder holder = new AccumulatorUtils.OffsetHolder();
-            Tuple tuple = leftTuple;
-            tuple = AccumulatorUtils.findTupleAndOffset(tuple, holder, declrA);
-            offsetToA = holder.offset;
-            return tuple.getFactHandle();
+            offset = findTupleOffset(declaration, leftTuple);
+            return getTuple(offset, leftTuple)
+                    .getFactHandle();
         }
     }
 
-    @Override
-    public Object accumulate(Object workingMemoryContext, Object context, Tuple leftTuple, InternalFactHandle handle,
-            Declaration[] declarations, Declaration[] innerDeclarations, WorkingMemory workingMemory) {
-        InternalFactHandle factHandle = getFactHandle(leftTuple, handle, innerDeclarations);
-        A a = (A) declrA.getValue(null, factHandle.getObject());
-        Runnable undo = collector.accumulator().apply((ResultContainer_) context, a);
-        return undo;
-    }
-
-    @Override
-    public boolean supportsReverse() {
-        return true;
-    }
-
-    @Override
-    public boolean tryReverse(Object workingMemoryContext, Object context, Tuple leftTuple, InternalFactHandle handle,
-            Object value, Declaration[] declarations, Declaration[] innerDeclarations, WorkingMemory workingMemory) {
-        if (value != null) {
-            ((Runnable) value).run();
-        }
-        return true;
-    }
-
-    @Override
-    public Object getResult(Object workingMemoryContext, Object context, Tuple leftTuple, Declaration[] declarations,
-            WorkingMemory workingMemory) {
-        return collector.finisher().apply((ResultContainer_) context);
-    }
 }

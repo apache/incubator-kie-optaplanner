@@ -17,7 +17,6 @@
 package org.optaplanner.core.impl.score.stream.drools.common;
 
 import static java.util.Collections.singletonList;
-import static org.drools.model.DSL.accFunction;
 import static org.drools.model.DSL.exists;
 import static org.drools.model.DSL.not;
 import static org.drools.model.PatternDSL.betaIndexedBy;
@@ -209,11 +208,11 @@ public final class TriLeftHandSide<A, B, C> extends AbstractLeftHandSide {
     }
 
     public <NewA> UniLeftHandSide<NewA> andGroupBy(TriConstraintCollector<A, B, C, ?, NewA> collector) {
-        Variable<TriTuple<A, B, C>> accumulateSource =
-                (Variable<TriTuple<A, B, C>>) variableFactory.createVariable(TriTuple.class, "source");
         Variable<NewA> accumulateOutput = variableFactory.createVariable("collected");
-        ViewItem<?> outerAccumulatePattern = buildAccumulate(accumulateSource,
-                createAccumulateFunction(collector, accumulateSource, accumulateOutput));
+        ViewItem<?> innerAccumulatePattern =
+                joinViewItemsWithLogicalAnd(patternVariableA, patternVariableB, patternVariableC);
+        ViewItem<?> outerAccumulatePattern = buildAccumulate(innerAccumulatePattern,
+                createAccumulateFunction(collector, accumulateOutput));
         UniRuleContext<NewA> simpleRuleContext = new UniRuleContext<>(accumulateOutput, outerAccumulatePattern);
         return new UniLeftHandSide<>(simpleRuleContext,
                 new DirectPatternVariable<>(accumulateOutput, singletonList(outerAccumulatePattern)), variableFactory);
@@ -221,13 +220,13 @@ public final class TriLeftHandSide<A, B, C> extends AbstractLeftHandSide {
 
     public <NewA, NewB> BiLeftHandSide<NewA, NewB> andGroupBy(TriConstraintCollector<A, B, C, ?, NewA> collectorA,
             TriConstraintCollector<A, B, C, ?, NewB> collectorB) {
-        Variable<TriTuple<A, B, C>> accumulateSource =
-                (Variable<TriTuple<A, B, C>>) variableFactory.createVariable(TriTuple.class, "source");
         Variable<NewA> accumulateOutputA = variableFactory.createVariable("collectedA");
         Variable<NewB> accumulateOutputB = variableFactory.createVariable("collectedB");
-        ViewItem<?> outerAccumulatePattern = buildAccumulate(accumulateSource,
-                createAccumulateFunction(collectorA, accumulateSource, accumulateOutputA),
-                createAccumulateFunction(collectorB, accumulateSource, accumulateOutputB));
+        ViewItem<?> innerAccumulatePattern =
+                joinViewItemsWithLogicalAnd(patternVariableA, patternVariableB, patternVariableC);
+        ViewItem<?> outerAccumulatePattern = buildAccumulate(innerAccumulatePattern,
+                createAccumulateFunction(collectorA, accumulateOutputA),
+                createAccumulateFunction(collectorB, accumulateOutputB));
         BiRuleContext<NewA, NewB> simpleRuleContext = new BiRuleContext<>(accumulateOutputA, accumulateOutputB,
                 outerAccumulatePattern);
         return new BiLeftHandSide<>(simpleRuleContext, new DetachedPatternVariable<>(accumulateOutputA),
@@ -237,15 +236,15 @@ public final class TriLeftHandSide<A, B, C> extends AbstractLeftHandSide {
     public <NewA, NewB, NewC> TriLeftHandSide<NewA, NewB, NewC> andGroupBy(
             TriConstraintCollector<A, B, C, ?, NewA> collectorA, TriConstraintCollector<A, B, C, ?, NewB> collectorB,
             TriConstraintCollector<A, B, C, ?, NewC> collectorC) {
-        Variable<TriTuple<A, B, C>> accumulateSource =
-                (Variable<TriTuple<A, B, C>>) variableFactory.createVariable(TriTuple.class, "source");
         Variable<NewA> accumulateOutputA = variableFactory.createVariable("collectedA");
         Variable<NewB> accumulateOutputB = variableFactory.createVariable("collectedB");
         Variable<NewC> accumulateOutputC = variableFactory.createVariable("collectedC");
-        ViewItem<?> outerAccumulatePattern = buildAccumulate(accumulateSource,
-                createAccumulateFunction(collectorA, accumulateSource, accumulateOutputA),
-                createAccumulateFunction(collectorB, accumulateSource, accumulateOutputB),
-                createAccumulateFunction(collectorC, accumulateSource, accumulateOutputC));
+        ViewItem<?> innerAccumulatePattern =
+                joinViewItemsWithLogicalAnd(patternVariableA, patternVariableB, patternVariableC);
+        ViewItem<?> outerAccumulatePattern = buildAccumulate(innerAccumulatePattern,
+                createAccumulateFunction(collectorA, accumulateOutputA),
+                createAccumulateFunction(collectorB, accumulateOutputB),
+                createAccumulateFunction(collectorC, accumulateOutputC));
         TriRuleContext<NewA, NewB, NewC> simpleRuleContext = new TriRuleContext<>(accumulateOutputA, accumulateOutputB,
                 accumulateOutputC, outerAccumulatePattern);
         return new TriLeftHandSide<>(simpleRuleContext, new DetachedPatternVariable<>(accumulateOutputA),
@@ -256,17 +255,17 @@ public final class TriLeftHandSide<A, B, C> extends AbstractLeftHandSide {
     public <NewA, NewB, NewC, NewD> QuadLeftHandSide<NewA, NewB, NewC, NewD> andGroupBy(
             TriConstraintCollector<A, B, C, ?, NewA> collectorA, TriConstraintCollector<A, B, C, ?, NewB> collectorB,
             TriConstraintCollector<A, B, C, ?, NewC> collectorC, TriConstraintCollector<A, B, C, ?, NewD> collectorD) {
-        Variable<TriTuple<A, B, C>> accumulateSource =
-                (Variable<TriTuple<A, B, C>>) variableFactory.createVariable(TriTuple.class, "source");
         Variable<NewA> accumulateOutputA = variableFactory.createVariable("collectedA");
         Variable<NewB> accumulateOutputB = variableFactory.createVariable("collectedB");
         Variable<NewC> accumulateOutputC = variableFactory.createVariable("collectedC");
         Variable<NewD> accumulateOutputD = variableFactory.createVariable("collectedD");
-        ViewItem<?> outerAccumulatePattern = buildAccumulate(accumulateSource,
-                createAccumulateFunction(collectorA, accumulateSource, accumulateOutputA),
-                createAccumulateFunction(collectorB, accumulateSource, accumulateOutputB),
-                createAccumulateFunction(collectorC, accumulateSource, accumulateOutputC),
-                createAccumulateFunction(collectorD, accumulateSource, accumulateOutputD));
+        ViewItem<?> innerAccumulatePattern =
+                joinViewItemsWithLogicalAnd(patternVariableA, patternVariableB, patternVariableC);
+        ViewItem<?> outerAccumulatePattern = buildAccumulate(innerAccumulatePattern,
+                createAccumulateFunction(collectorA, accumulateOutputA),
+                createAccumulateFunction(collectorB, accumulateOutputB),
+                createAccumulateFunction(collectorC, accumulateOutputC),
+                createAccumulateFunction(collectorD, accumulateOutputD));
         QuadRuleContext<NewA, NewB, NewC, NewD> simpleRuleContext = new QuadRuleContext<>(accumulateOutputA,
                 accumulateOutputB, accumulateOutputC, accumulateOutputD, outerAccumulatePattern);
         return new QuadLeftHandSide<>(simpleRuleContext, new DetachedPatternVariable<>(accumulateOutputA),
@@ -275,18 +274,22 @@ public final class TriLeftHandSide<A, B, C> extends AbstractLeftHandSide {
     }
 
     /**
-     * Creates a Drools accumulate function based on a given collector. The accumulate function will take one
-     * {@link Variable} as input and return its result into another {@link Variable}.
+     * Creates a Drools accumulate function based on a given collector. The accumulate function will take the pattern
+     * variables as input and return its result into another {@link Variable}.
      *
-     * @param collector collector to use in the accumulate function
-     * @param in variable to use as accumulate input
-     * @param out variable in which to store accumulate result
      * @param <Out> type of the accumulate result
+     * @param collector collector to use in the accumulate function
+     * @param out variable in which to store accumulate result
      * @return Drools accumulate function
      */
     private <Out> AccumulateFunction createAccumulateFunction(TriConstraintCollector<A, B, C, ?, Out> collector,
-            Variable<TriTuple<A, B, C>> in, Variable<Out> out) {
-        return accFunction(() -> new TriAccumulateFunction<>(collector), in).as(out);
+            Variable<Out> out) {
+        Variable<A> variableA = patternVariableA.getPrimaryVariable();
+        Variable<B> variableB = patternVariableB.getPrimaryVariable();
+        Variable<C> variableC = patternVariableC.getPrimaryVariable();
+        return new AccumulateFunction(null, () -> new TriAccumulator<>(variableA, variableB, variableC, collector))
+                .with(variableA, variableB, variableC)
+                .as(out);
     }
 
     public <NewA> UniLeftHandSide<NewA> andGroupBy(TriFunction<A, B, C, NewA> keyMapping) {
@@ -299,12 +302,10 @@ public final class TriLeftHandSide<A, B, C> extends AbstractLeftHandSide {
 
     public <NewA, NewB> BiLeftHandSide<NewA, NewB> andGroupBy(TriFunction<A, B, C, NewA> keyMappingA,
             TriConstraintCollector<A, B, C, ?, NewB> collectorB) {
-        Variable<TriTuple<A, B, C>> accumulateSource =
-                (Variable<TriTuple<A, B, C>>) variableFactory.createVariable(TriTuple.class, "source");
         Variable<NewA> groupKey = variableFactory.createVariable("groupKey");
         Variable<NewB> accumulateOutput = variableFactory.createVariable("output");
-        ViewItem<?> groupByPattern = buildGroupBy(accumulateSource, groupKey, keyMappingA::apply,
-                createAccumulateFunction(collectorB, accumulateSource, accumulateOutput));
+        ViewItem<?> groupByPattern = buildGroupBy(groupKey, keyMappingA::apply,
+                createAccumulateFunction(collectorB, accumulateOutput));
         BiRuleContext<NewA, NewB> simpleRuleContext = new BiRuleContext<>(groupKey, accumulateOutput, groupByPattern);
         return new BiLeftHandSide<>(simpleRuleContext, new DetachedPatternVariable<>(groupKey),
                 new DirectPatternVariable<>(accumulateOutput, singletonList(groupByPattern)), variableFactory);
@@ -312,14 +313,12 @@ public final class TriLeftHandSide<A, B, C> extends AbstractLeftHandSide {
 
     public <NewA, NewB, NewC> TriLeftHandSide<NewA, NewB, NewC> andGroupBy(TriFunction<A, B, C, NewA> keyMappingA,
             TriConstraintCollector<A, B, C, ?, NewB> collectorB, TriConstraintCollector<A, B, C, ?, NewC> collectorC) {
-        Variable<TriTuple<A, B, C>> accumulateSource =
-                (Variable<TriTuple<A, B, C>>) variableFactory.createVariable(TriTuple.class, "source");
         Variable<NewA> groupKey = variableFactory.createVariable("groupKey");
         Variable<NewB> accumulateOutputB = variableFactory.createVariable("outputB");
         Variable<NewC> accumulateOutputC = variableFactory.createVariable("outputC");
-        ViewItem<?> groupByPattern = buildGroupBy(accumulateSource, groupKey, keyMappingA::apply,
-                createAccumulateFunction(collectorB, accumulateSource, accumulateOutputB),
-                createAccumulateFunction(collectorC, accumulateSource, accumulateOutputC));
+        ViewItem<?> groupByPattern = buildGroupBy(groupKey, keyMappingA::apply,
+                createAccumulateFunction(collectorB, accumulateOutputB),
+                createAccumulateFunction(collectorC, accumulateOutputC));
         TriRuleContext<NewA, NewB, NewC> simpleRuleContext = new TriRuleContext<>(groupKey, accumulateOutputB,
                 accumulateOutputC, groupByPattern);
         return new TriLeftHandSide<>(simpleRuleContext, new DetachedPatternVariable<>(groupKey),
@@ -330,16 +329,14 @@ public final class TriLeftHandSide<A, B, C> extends AbstractLeftHandSide {
     public <NewA, NewB, NewC, NewD> QuadLeftHandSide<NewA, NewB, NewC, NewD> andGroupBy(
             TriFunction<A, B, C, NewA> keyMappingA, TriConstraintCollector<A, B, C, ?, NewB> collectorB,
             TriConstraintCollector<A, B, C, ?, NewC> collectorC, TriConstraintCollector<A, B, C, ?, NewD> collectorD) {
-        Variable<TriTuple<A, B, C>> accumulateSource =
-                (Variable<TriTuple<A, B, C>>) variableFactory.createVariable(TriTuple.class, "source");
         Variable<NewA> groupKey = variableFactory.createVariable("groupKey");
         Variable<NewB> accumulateOutputB = variableFactory.createVariable("outputB");
         Variable<NewC> accumulateOutputC = variableFactory.createVariable("outputC");
         Variable<NewD> accumulateOutputD = variableFactory.createVariable("outputD");
-        ViewItem<?> groupByPattern = buildGroupBy(accumulateSource, groupKey, keyMappingA::apply,
-                createAccumulateFunction(collectorB, accumulateSource, accumulateOutputB),
-                createAccumulateFunction(collectorC, accumulateSource, accumulateOutputC),
-                createAccumulateFunction(collectorD, accumulateSource, accumulateOutputD));
+        ViewItem<?> groupByPattern = buildGroupBy(groupKey, keyMappingA::apply,
+                createAccumulateFunction(collectorB, accumulateOutputB),
+                createAccumulateFunction(collectorC, accumulateOutputC),
+                createAccumulateFunction(collectorD, accumulateOutputD));
         QuadRuleContext<NewA, NewB, NewC, NewD> simpleRuleContext = new QuadRuleContext<>(groupKey, accumulateOutputB,
                 accumulateOutputC, accumulateOutputD, groupByPattern);
         return new QuadLeftHandSide<>(simpleRuleContext, new DetachedPatternVariable<>(groupKey),
@@ -379,14 +376,12 @@ public final class TriLeftHandSide<A, B, C> extends AbstractLeftHandSide {
 
     public <NewA, NewB, NewC> TriLeftHandSide<NewA, NewB, NewC> andGroupBy(TriFunction<A, B, C, NewA> keyMappingA,
             TriFunction<A, B, C, NewB> keyMappingB, TriConstraintCollector<A, B, C, ?, NewC> collectorC) {
-        Variable<TriTuple<A, B, C>> accumulateSource =
-                (Variable<TriTuple<A, B, C>>) variableFactory.createVariable(TriTuple.class, "source");
         Variable<BiTuple<NewA, NewB>> groupKey =
                 (Variable<BiTuple<NewA, NewB>>) variableFactory.createVariable(BiTuple.class, "groupKey");
         Variable<NewC> accumulateOutput = variableFactory.createVariable("output");
-        ViewItem<?> groupByPattern = buildGroupBy(accumulateSource, groupKey,
+        ViewItem<?> groupByPattern = buildGroupBy(groupKey,
                 createCompositeBiGroupKey(keyMappingA, keyMappingB),
-                createAccumulateFunction(collectorC, accumulateSource, accumulateOutput));
+                createAccumulateFunction(collectorC, accumulateOutput));
         Variable<NewA> newA = variableFactory.createVariable("newA");
         Variable<NewB> newB = variableFactory.createVariable("newB");
         DirectPatternVariable<BiTuple<NewA, NewB>> tuplePatternVar = decompose(groupKey, groupByPattern, newA, newB);
@@ -399,16 +394,14 @@ public final class TriLeftHandSide<A, B, C> extends AbstractLeftHandSide {
     public <NewA, NewB, NewC, NewD> QuadLeftHandSide<NewA, NewB, NewC, NewD> andGroupBy(
             TriFunction<A, B, C, NewA> keyMappingA, TriFunction<A, B, C, NewB> keyMappingB,
             TriConstraintCollector<A, B, C, ?, NewC> collectorC, TriConstraintCollector<A, B, C, ?, NewD> collectorD) {
-        Variable<TriTuple<A, B, C>> accumulateSource =
-                (Variable<TriTuple<A, B, C>>) variableFactory.createVariable(TriTuple.class, "source");
         Variable<BiTuple<NewA, NewB>> groupKey =
                 (Variable<BiTuple<NewA, NewB>>) variableFactory.createVariable(BiTuple.class, "groupKey");
         Variable<NewC> accumulateOutputC = variableFactory.createVariable("outputC");
         Variable<NewD> accumulateOutputD = variableFactory.createVariable("outputD");
-        ViewItem<?> groupByPattern = buildGroupBy(accumulateSource, groupKey,
+        ViewItem<?> groupByPattern = buildGroupBy(groupKey,
                 createCompositeBiGroupKey(keyMappingA, keyMappingB),
-                createAccumulateFunction(collectorC, accumulateSource, accumulateOutputC),
-                createAccumulateFunction(collectorD, accumulateSource, accumulateOutputD));
+                createAccumulateFunction(collectorC, accumulateOutputC),
+                createAccumulateFunction(collectorD, accumulateOutputD));
         Variable<NewA> newA = variableFactory.createVariable("newA");
         Variable<NewB> newB = variableFactory.createVariable("newB");
         DirectPatternVariable<BiTuple<NewA, NewB>> tuplePatternVar = decompose(groupKey, groupByPattern, newA, newB);
@@ -460,14 +453,12 @@ public final class TriLeftHandSide<A, B, C> extends AbstractLeftHandSide {
     public <NewA, NewB, NewC, NewD> QuadLeftHandSide<NewA, NewB, NewC, NewD> andGroupBy(
             TriFunction<A, B, C, NewA> keyMappingA, TriFunction<A, B, C, NewB> keyMappingB,
             TriFunction<A, B, C, NewC> keyMappingC, TriConstraintCollector<A, B, C, ?, NewD> collectorD) {
-        Variable<TriTuple<A, B, C>> accumulateSource =
-                (Variable<TriTuple<A, B, C>>) variableFactory.createVariable(TriTuple.class, "source");
         Variable<TriTuple<NewA, NewB, NewC>> groupKey =
                 (Variable<TriTuple<NewA, NewB, NewC>>) variableFactory.createVariable(TriTuple.class, "groupKey");
         Variable<NewD> accumulateOutputD = variableFactory.createVariable("outputD");
-        ViewItem<?> groupByPattern = buildGroupBy(accumulateSource, groupKey,
+        ViewItem<?> groupByPattern = buildGroupBy(groupKey,
                 createCompositeTriGroupKey(keyMappingA, keyMappingB, keyMappingC),
-                createAccumulateFunction(collectorD, accumulateSource, accumulateOutputD));
+                createAccumulateFunction(collectorD, accumulateOutputD));
         Variable<NewA> newA = variableFactory.createVariable("newA");
         Variable<NewB> newB = variableFactory.createVariable("newB");
         Variable<NewC> newC = variableFactory.createVariable("newC");
@@ -544,16 +535,6 @@ public final class TriLeftHandSide<A, B, C> extends AbstractLeftHandSide {
         return ruleContext.newRuleBuilder(matchWeighter);
     }
 
-    private ViewItem<?> buildAccumulate(Variable<TriTuple<A, B, C>> accumulateSource,
-            AccumulateFunction... accFunctions) {
-        PatternVariable<C, ?, ?> newPatternVariableC = patternVariableC.bind(accumulateSource,
-                patternVariableA.getPrimaryVariable(), patternVariableB.getPrimaryVariable(),
-                (c, a, b) -> new TriTuple<>(a, b, c));
-        ViewItem<?> innerAccumulatePattern =
-                joinViewItemsWithLogicalAnd(patternVariableA, patternVariableB, newPatternVariableC);
-        return buildAccumulate(innerAccumulatePattern, accFunctions);
-    }
-
     private <GroupKey_> ViewItem<?> buildGroupBy(Variable<GroupKey_> groupKey,
             Function3<A, B, C, GroupKey_> groupKeyExtractor) {
         Variable<A> inputA = patternVariableA.getPrimaryVariable();
@@ -564,16 +545,13 @@ public final class TriLeftHandSide<A, B, C> extends AbstractLeftHandSide {
         return DSL.groupBy(innerGroupByPattern, inputA, inputB, inputC, groupKey, groupKeyExtractor);
     }
 
-    private <GroupKey_> ViewItem<?> buildGroupBy(Variable<TriTuple<A, B, C>> accumulateSource,
-            Variable<GroupKey_> groupKey, Function3<A, B, C, GroupKey_> groupKeyExtractor,
-            AccumulateFunction... accFunctions) {
+    private <GroupKey_> ViewItem<?> buildGroupBy(Variable<GroupKey_> groupKey,
+            Function3<A, B, C, GroupKey_> groupKeyExtractor, AccumulateFunction... accFunctions) {
         Variable<A> inputA = patternVariableA.getPrimaryVariable();
         Variable<B> inputB = patternVariableB.getPrimaryVariable();
         Variable<C> inputC = patternVariableC.getPrimaryVariable();
-        PatternVariable<C, ?, ?> newPatternVariableC = patternVariableC.bind(accumulateSource,
-                inputA, inputB, (c, a, b) -> new TriTuple<>(a, b, c));
         ViewItem<?> innerGroupByPattern =
-                joinViewItemsWithLogicalAnd(patternVariableA, patternVariableB, newPatternVariableC);
+                joinViewItemsWithLogicalAnd(patternVariableA, patternVariableB, patternVariableC);
         return DSL.groupBy(innerGroupByPattern, inputA, inputB, inputC, groupKey, groupKeyExtractor, accFunctions);
     }
 
