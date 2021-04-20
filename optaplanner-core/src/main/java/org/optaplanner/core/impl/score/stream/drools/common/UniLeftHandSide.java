@@ -17,7 +17,6 @@
 package org.optaplanner.core.impl.score.stream.drools.common;
 
 import static java.util.Collections.singletonList;
-import static org.drools.model.DSL.accFunction;
 import static org.drools.model.DSL.exists;
 import static org.drools.model.DSL.not;
 import static org.drools.model.PatternDSL.betaIndexedBy;
@@ -286,7 +285,9 @@ public final class UniLeftHandSide<A> extends AbstractLeftHandSide {
      */
     private <Out> AccumulateFunction createAccumulateFunction(UniConstraintCollector<A, ?, Out> collector,
             Variable<Out> out) {
-        return accFunction(() -> new UniAccumulateFunction<>(collector), patternVariable.getPrimaryVariable())
+        Variable<A> variable = patternVariable.getPrimaryVariable();
+        return new AccumulateFunction(null, () -> new UniAccumulator<>(variable, collector))
+                .with(variable)
                 .as(out);
     }
 
