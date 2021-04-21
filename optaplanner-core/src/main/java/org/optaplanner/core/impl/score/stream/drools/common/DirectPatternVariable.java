@@ -142,14 +142,15 @@ class DirectPatternVariable<A> implements PatternVariable<A, A, DirectPatternVar
         this.dependentExpressions = Collections.emptyList();
     }
 
-    DirectPatternVariable(DirectPatternVariable<A> patternCreator, UnaryOperator<PatternDSL.PatternDef<A>> patternMutator) {
+    private DirectPatternVariable(DirectPatternVariable<A> patternCreator,
+            UnaryOperator<PatternDSL.PatternDef<A>> patternMutator) {
         this.primaryVariable = patternCreator.primaryVariable;
         this.patternSupplier = () -> patternMutator.apply(patternCreator.patternSupplier.get());
         this.prerequisiteExpressions = patternCreator.prerequisiteExpressions;
         this.dependentExpressions = patternCreator.dependentExpressions;
     }
 
-    DirectPatternVariable(DirectPatternVariable<A> patternCreator, ViewItem<?> dependentExpression) {
+    private DirectPatternVariable(DirectPatternVariable<A> patternCreator, ViewItem<?> dependentExpression) {
         this.primaryVariable = patternCreator.primaryVariable;
         this.patternSupplier = patternCreator.patternSupplier;
         this.prerequisiteExpressions = patternCreator.prerequisiteExpressions;
@@ -284,15 +285,6 @@ class DirectPatternVariable<A> implements PatternVariable<A, A, DirectPatternVar
         return new DirectPatternVariable<>(this,
                 p -> p.bind(boundVariable, leftJoinVariableA, leftJoinVariableB, leftJoinVariableC,
                         bindingFunction::apply));
-    }
-
-    @Override
-    public <NewA> IndirectPatternVariable<NewA, A> map(Variable<NewA> boundVariable,
-            Function<A, NewA> mappingFunction) {
-        // Previous pattern variable - $a: Something()
-        // New pattern variable - $a: Something($newA: mappingFunction($a))
-        DirectPatternVariable<A> intermediate = this.bind(boundVariable, mappingFunction);
-        return new IndirectPatternVariable<>(intermediate, boundVariable, mappingFunction);
     }
 
     @Override
