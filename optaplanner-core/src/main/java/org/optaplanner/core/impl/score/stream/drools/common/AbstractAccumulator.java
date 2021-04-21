@@ -38,8 +38,8 @@ abstract class AbstractAccumulator<ResultContainer_, Result_> implements Accumul
     }
 
     protected static <Value_> Value_ extractValue(Declaration declaration, int offset, Tuple leftTuple) {
-        Tuple dTuple = getTuple(offset, leftTuple);
-        return (Value_) declaration.getValue(null, dTuple.getFactHandle().getObject());
+        Tuple tuple = getTuple(offset, leftTuple);
+        return (Value_) declaration.getValue(null, tuple.getFactHandle().getObject());
     }
 
     protected static int findTupleOffset(Declaration declaration, Tuple tuple) {
