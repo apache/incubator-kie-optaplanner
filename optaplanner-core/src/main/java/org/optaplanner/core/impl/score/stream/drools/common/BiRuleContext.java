@@ -19,7 +19,6 @@ package org.optaplanner.core.impl.score.stream.drools.common;
 import static java.util.Arrays.asList;
 
 import java.math.BigDecimal;
-import java.util.List;
 import java.util.Objects;
 import java.util.function.BiFunction;
 import java.util.function.ToIntBiFunction;
@@ -33,10 +32,6 @@ final class BiRuleContext<A, B> extends AbstractRuleContext {
 
     private final Variable<A> variableA;
     private final Variable<B> variableB;
-
-    public BiRuleContext(Variable<A> variableA, Variable<B> variableB, List<ViewItem<?>> viewItems) {
-        this(variableA, variableB, viewItems.toArray(new ViewItem[0]));
-    }
 
     public BiRuleContext(Variable<A> variableA, Variable<B> variableB, ViewItem<?>... viewItems) {
         super(viewItems);
