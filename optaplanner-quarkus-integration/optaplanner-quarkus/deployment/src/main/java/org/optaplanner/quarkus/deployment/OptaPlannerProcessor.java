@@ -60,12 +60,15 @@ import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.quarkus.OptaPlannerBeanProvider;
 import org.optaplanner.quarkus.OptaPlannerRecorder;
 import org.optaplanner.quarkus.deployment.config.OptaPlannerBuildTimeConfig;
+import org.optaplanner.quarkus.devui.SolverConfigDevUIHandlerRecorder;
+import org.optaplanner.quarkus.devui.SolverConfigDevUISupplier;
 
 import io.quarkus.arc.deployment.AdditionalBeanBuildItem;
 import io.quarkus.arc.deployment.GeneratedBeanBuildItem;
 import io.quarkus.arc.deployment.GeneratedBeanGizmoAdaptor;
 import io.quarkus.arc.deployment.SyntheticBeanBuildItem;
 import io.quarkus.deployment.GeneratedClassGizmoAdaptor;
+import io.quarkus.deployment.IsDevelopment;
 import io.quarkus.deployment.annotations.BuildProducer;
 import io.quarkus.deployment.annotations.BuildStep;
 import io.quarkus.deployment.annotations.Record;
@@ -77,6 +80,8 @@ import io.quarkus.deployment.builditem.HotDeploymentWatchedFileBuildItem;
 import io.quarkus.deployment.builditem.IndexDependencyBuildItem;
 import io.quarkus.deployment.builditem.nativeimage.ReflectiveHierarchyBuildItem;
 import io.quarkus.deployment.recording.RecorderContext;
+import io.quarkus.devconsole.spi.DevConsoleRouteBuildItem;
+import io.quarkus.devconsole.spi.DevConsoleRuntimeTemplateInfoBuildItem;
 import io.quarkus.gizmo.ClassOutput;
 import io.quarkus.gizmo.MethodDescriptor;
 import io.quarkus.gizmo.ResultHandle;
@@ -111,6 +116,17 @@ class OptaPlannerProcessor {
     IndexDependencyBuildItem indexDependencyBuildItem() {
         // Add @PlanningEntity and other annotations in the Jandex index for Gizmo
         return new IndexDependencyBuildItem("org.optaplanner", "optaplanner-core");
+    }
+
+    @BuildStep(onlyIf = IsDevelopment.class)
+    public DevConsoleRuntimeTemplateInfoBuildItem getSolverConfig() {
+        return new DevConsoleRuntimeTemplateInfoBuildItem("solverConfigProperties", new SolverConfigDevUISupplier());
+    }
+
+    @BuildStep
+    @Record(value = STATIC_INIT, optional = true)
+    public DevConsoleRouteBuildItem invokeSolverConfigEndpoint(SolverConfigDevUIHandlerRecorder recorder) {
+        return new DevConsoleRouteBuildItem("solverConfig", "POST", recorder.updateSolverPropertiesHandler());
     }
 
     @BuildStep

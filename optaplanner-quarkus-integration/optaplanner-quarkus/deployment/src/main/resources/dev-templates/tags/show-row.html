@@ -1,0 +1,52 @@
+<!--
+  ~ Copyright 2021 Red Hat, Inc. and/or its affiliates.
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~      http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+<tr>
+    <td>{it.name}</td>
+    <td>
+        {it.value}
+        <button data-property="{it.name}" class="btn btn-link editable-property">
+            Edit <i class="fas fa-edit"></i>
+        </button>
+    </td>
+    <td style="display: none;">
+        <form method="post"
+              enctype="application/x-www-form-urlencoded">
+          <input type="hidden" name="name" value="{it.name}">
+          {#when it.valueType}
+            {#is ENUM}
+              <select name="value" class="form-select" aria-label="{it.name}">
+                {#for value in it.enumValueList}
+                  {#if value == it.value}
+                    <option value="{value}" selected>{value}</option>
+                  {#else}
+                    <option value="{value}">{value}</option>
+                  {/if}
+                {/for}
+              </select>
+            {#is NUMBER}
+              <input name="value" type="number" value="{it.value}" />
+            {#is STRING}
+              <input name="value" type="text" value="{it.value}" />
+          {/when}
+          <button type="reset" data-property="{it.name}" class="btn btn-link cancel-edit">
+              Cancel <i class="fas fa-times"></i>
+          </button>
+          <button type="submit" data-property="{it.name}" class="btn btn-link save-edit">
+              Save <i class="fas fa-save"></i>
+          </button>
+        </form>
+      </td>
+</tr>
