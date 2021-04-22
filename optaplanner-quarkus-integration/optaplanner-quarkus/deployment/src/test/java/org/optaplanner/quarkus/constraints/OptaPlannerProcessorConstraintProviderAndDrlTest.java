@@ -77,6 +77,8 @@ public class OptaPlannerProcessorConstraintProviderAndDrlTest {
                         final LocalProject currentProject = mvnCtx.getCurrentProject();
 
                         System.out.println("  current project " + currentProject);
+                        System.out.println("  current project " + mvnCtx.getWorkspace().getProject(currentProject.getGroupId(),
+                                currentProject.getArtifactId()));
 
                         System.out.println("  project pom " + currentProject.getRawModel().getPomFile() + " "
                                 + currentProject.getRawModel().getPomFile().exists());
