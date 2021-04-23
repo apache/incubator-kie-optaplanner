@@ -18,6 +18,27 @@ def getDefaultJobParams(String repoName = 'optaplanner') {
             repository: repoName,
             credentials: "${GIT_AUTHOR_CREDENTIALS_ID}",
             token_credentials: "${GIT_AUTHOR_TOKEN_CREDENTIALS_ID}"
+        ],
+        env: [:],
+        pr: [:]
+    ]
+}
+
+Map getMultijobPRConfig() {
+    return [
+        jobs : [
+            [
+                id: 'Tests',
+                primary: true,
+            ], [
+                id: 'Apps',
+                waitForId: 'Tests',
+                repository: 'kogito-apps'
+            ], [
+                id: 'Examples',
+                waitForId: 'Tests',
+                repository: 'kogito-examples'
+            ]
         ]
     ]
 }
@@ -38,15 +59,20 @@ def nightlyBranchFolder = "${KogitoConstants.KOGITO_DSL_NIGHTLY_FOLDER}/${JOB_BR
 def releaseBranchFolder = "${KogitoConstants.KOGITO_DSL_RELEASE_FOLDER}/${JOB_BRANCH_FOLDER}"
 
 if (isMainBranch()) {
-    folder(KogitoConstants.KOGITO_DSL_PULLREQUEST_FOLDER)
+    // Normal PR checks
+    setupOptaplannerPrJob()
+    setupOptaplannerQuarkusLTSPrJob()
+    setupOptaplannerNativePrJob()
+    setupOptawebEmployeeRosteringPrJob()
+    setupOptawebVehicleRoutingPrJob()
 
-    setupOptaplannerPrJob(KogitoConstants.KOGITO_DSL_PULLREQUEST_FOLDER)
-    setupOptaplannerQuarkusLTSPrJob(KogitoConstants.KOGITO_DSL_PULLREQUEST_FOLDER)
-    setupOptaplannerNativePrJob(KogitoConstants.KOGITO_DSL_PULLREQUEST_FOLDER)
-    setupOptawebEmployeeRosteringPrJob(KogitoConstants.KOGITO_DSL_PULLREQUEST_FOLDER)
-    setupOptawebVehicleRoutingPrJob(KogitoConstants.KOGITO_DSL_PULLREQUEST_FOLDER)
+    // Multijob PR checks
+    setupMultijobPrDefaultChecks()
+    setupMultijobPrNativeChecks()
+    setupMultijobPrLTSChecks()
 
     // For BDD runtimes PR job
+    folder(KogitoConstants.KOGITO_DSL_PULLREQUEST_FOLDER)
     folder(bddRuntimesPrFolder)
 
     setupDeployJob(bddRuntimesPrFolder, KogitoJobType.PR)
@@ -76,39 +102,55 @@ if (isMainBranch()) {
 // Methods
 /////////////////////////////////////////////////////////////////
 
-void setupOptaplannerPrJob(String jobFolder) {
+void setupOptaplannerPrJob() {
     def jobParams = getDefaultJobParams()
-    jobParams.job.folder = jobFolder
-    jobParams.pr = [ blackListTargetBranches: ['7.x'] ]
+    jobParams.pr.ignore_for_labels = [ KogitoConstants.KOGITO_PR_MULTIJOB_LABEL ]
+    jobParams.pr.blackListTargetBranches = ['7.x']
     KogitoJobTemplate.createPRJob(this, jobParams)
 }
 
-void setupOptaplannerQuarkusLTSPrJob(String jobFolder) {
+void setupOptaplannerQuarkusLTSPrJob() {
     def jobParams = getDefaultJobParams()
-    jobParams.job.folder = jobFolder
-    jobParams.pr = [ blackListTargetBranches: ['7.x'] ]
+    jobParams.pr.ignore_for_labels = [ KogitoConstants.KOGITO_PR_MULTIJOB_LABEL ]
+    jobParams.pr.blackListTargetBranches = ['7.x']
     KogitoJobTemplate.createQuarkusLTSPRJob(this, jobParams)
 }
 
-void setupOptaplannerNativePrJob(String jobFolder) {
+void setupOptaplannerNativePrJob() {
     def jobParams = getDefaultJobParams()
-    jobParams.job.folder = jobFolder
-    jobParams.pr = [ blackListTargetBranches: ['7.x'] ]
+    jobParams.pr.ignore_for_labels = [ KogitoConstants.KOGITO_PR_MULTIJOB_LABEL ]
+    jobParams.pr.blackListTargetBranches = ['7.x']
     KogitoJobTemplate.createNativePRJob(this, jobParams)
 }
 
-void setupOptawebEmployeeRosteringPrJob(String jobFolder) {
+void setupOptawebEmployeeRosteringPrJob() {
     def jobParams = getDefaultJobParams('optaweb-employee-rostering')
-    jobParams.job.folder = jobFolder
     jobParams.pr = [ whiteListTargetBranches: ['master'] ]
     KogitoJobTemplate.createPRJob(this, jobParams)
 }
 
-void setupOptawebVehicleRoutingPrJob(String jobFolder) {
+void setupOptawebVehicleRoutingPrJob() {
     def jobParams = getDefaultJobParams('optaweb-vehicle-routing')
-    jobParams.job.folder = jobFolder
     jobParams.pr = [ whiteListTargetBranches: ['master'] ]
     KogitoJobTemplate.createPRJob(this, jobParams)
+}
+
+void setupMultijobPrDefaultChecks() {
+    KogitoJobTemplate.createMultijobPRJobs(this, getMultijobPRConfig()) {
+        return getDefaultJobParams()
+    }
+}
+
+void setupMultijobPrNativeChecks() {
+    KogitoJobTemplate.createMultijobNativePRJobs(this, getMultijobPRConfig()) {
+        return getDefaultJobParams()
+    }
+}
+
+void setupMultijobPrLTSChecks() {
+    KogitoJobTemplate.createMultijobLTSPRJobs(this, getMultijobPRConfig()) {
+        return getDefaultJobParams()
+    }
 }
 
 void setupDeployJob(String jobFolder, KogitoJobType jobType) {

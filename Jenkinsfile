@@ -20,7 +20,8 @@ pipeline {
         jdk 'kie-jdk11'
     }
     options {
-        timeout(time: 120, unit: 'MINUTES')
+        timestamps()
+        timeout(time: getTimeoutValue(), unit: 'MINUTES')
     }
     environment {
         MAVEN_OPTS = '-Xms1024m -Xmx4g'
@@ -182,6 +183,18 @@ boolean isNative() {
     return env['NATIVE'] && env['NATIVE'].toBoolean()
 }
 
+boolean isDownstreamJob() {
+    return env['DOWNSTREAM'] && env['DOWNSTREAM'].toBoolean()
+}
+
 boolean isNormalPRCheck() {
-    return !(getQuarkusBranch() || isNative())
+    return !(isDownstreamJob() || getQuarkusBranch() || isNative())
+}
+
+boolean isMultijobPRCheck() {
+    return env['MULTIJOB_PR_CHECK'] && env['MULTIJOB_PR_CHECK'].toBoolean()
+}
+
+Integer getTimeoutValue() {
+    return isNative() ? 240 : 120
 }
