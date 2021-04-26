@@ -10541,6 +10541,16 @@
           "methodName": "createFromKieContainer",
           "elementKind": "method",
           "justification": "Score, ScoreHolder and ScoreDefinition were refactored."
+        },
+        {
+          "code": "java.method.numberOfParametersChanged",
+          "old": "method org.optaplanner.core.impl.score.inliner.ScoreInliner<S> org.optaplanner.core.impl.score.definition.ScoreDefinition<S extends org.optaplanner.core.api.score.Score<S extends org.optaplanner.core.api.score.Score<S>>>::buildScoreInliner(boolean) @ org.optaplanner.core.api.domain.solution.PlanningScore.NullScoreDefinition",
+          "new": "method org.optaplanner.core.impl.score.inliner.ScoreInliner<Score_> org.optaplanner.core.impl.score.definition.ScoreDefinition<Score_ extends org.optaplanner.core.api.score.Score<Score_ extends org.optaplanner.core.api.score.Score<Score_>>>::buildScoreInliner(java.util.Map<org.optaplanner.core.api.score.stream.Constraint, Score_>, boolean) @ org.optaplanner.core.api.domain.solution.PlanningScore.NullScoreDefinition",
+          "package": "org.optaplanner.core.api.domain.solution",
+          "classSimpleName": "NullScoreDefinition",
+          "methodName": "buildScoreInliner",
+          "elementKind": "method",
+          "justification": "ScoreInliner was refactored."
         }
       ]
     }
