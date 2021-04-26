@@ -51,17 +51,18 @@ public final class DroolsVariableFactory {
      * @param baseName name of the variable, mostly useful for debugging purposes. Will be decorated by a numeric
      *        identifier to prevent multiple variables of the same name to exist within left-hand side of a single rule.
      * @param <U> generic type of the input variable
+     * @param <V> generic type of the output variable
      * @return new variable declaration, not yet bound to anything
      */
-    public <U> Variable<? extends U> createVariable(Class<U> clz, String baseName) {
-        return declarationOf(clz, generateUniqueId(baseName));
+    public <U, V extends U> Variable<V> createVariable(Class<U> clz, String baseName) {
+        return (Variable<V>) declarationOf(clz, generateUniqueId(baseName));
     }
 
     /**
      * Declares a new {@link Object}-typed variable, see {@link #createVariable(Class, String)} for details.
      */
     public <U> Variable<U> createVariable(String baseName) {
-        return (Variable<U>) createVariable(Object.class, baseName);
+        return createVariable(Object.class, baseName);
     }
 
     /**
@@ -137,7 +138,7 @@ public final class DroolsVariableFactory {
     public <U, Result_> Variable<Result_> createFlattenedVariable(String baseName, Variable<U> source,
             Function<U, Iterable<Result_>> mapping) {
         return (Variable<Result_>) declarationOf(Object.class, generateUniqueId(baseName),
-                from(source, (value) -> mapping.apply(value))); // By default, from() flattens.
+                from(source, mapping::apply)); // By default, from() flattens.
     }
 
 }
