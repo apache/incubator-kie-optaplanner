@@ -676,6 +676,42 @@ There is a performance cost to `distinct()`.
 For optimal performance, don't use constraint stream operations that produce duplicate tuples, to avoid the need to call `distinct()`.
 ====
 
+
+[[constraintStreamsFlattening]]
+=== Flattening
+
+Flattening enables you to transform any Java `Iterable` (such as `List` or `Set`)
+into a set of tuples, which will be sent downstream.
+(Similar to Java Stream's `flatMap(...)`.)
+This is done by applying a mapping function to the final element in the source tuple.
+
+[source,java,options="nowrap"]
+----
+    private Constraint computerWithProcesses(ConstraintFactory constraintFactory) {
+        return constraintFactory.from(CloudComputer.class) // UniConstraintStream<CloudComputer>
+                .join(CloudProcess.class,
+                    equal(Function.identity(), CloudProcess::getComputer))
+                                                           // BiConstraintStream<CloudComputer, CloudProcess>
+                .flattenLast(process ->
+                    Arrays.asList(
+                        process.getRequiredCpuPower(),
+                        process.getRequiredMemory()
+                    ))                                     // BiConstraintStream<CloudComputer, Integer>
+                .filter((computer, singleRequirement) -> ...)
+                ...
+    }
+----
+
+[NOTE]
+====
+In the example above, the mapping function produces duplicate tuples
+if `getRequiredCpuPower()` and `getRequiredMemory()` return the same value.
+Assuming that value is `1` for computer `A`,
+the tuple `[A, 1]` will be sent downstream twice.
+See <<constraintStreamsDealingWithDuplicateTuplesUsingDistinct,`distinct()`>> for how to deal with duplicate tuples.
+====
+
+
 [[constraintStreamsTesting]]
 == Testing a constraint stream
 
