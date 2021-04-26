@@ -19,6 +19,7 @@ package org.optaplanner.core.api.score.stream.quad;
 import java.math.BigDecimal;
 import java.util.Objects;
 import java.util.function.Function;
+
 import org.optaplanner.core.api.domain.constraintweight.ConstraintConfiguration;
 import org.optaplanner.core.api.domain.constraintweight.ConstraintWeight;
 import org.optaplanner.core.api.domain.entity.PlanningEntity;

@@ -16,12 +16,19 @@
 
 package org.optaplanner.core.impl.score.stream.drools.common;
 
+import static java.util.Collections.singletonList;
+import static org.drools.model.DSL.exists;
+import static org.drools.model.DSL.not;
+import static org.drools.model.PatternDSL.betaIndexedBy;
+import static org.drools.model.PatternDSL.pattern;
+
 import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 import java.util.function.Function;
 import java.util.stream.Stream;
+
 import org.drools.model.BetaIndex3;
 import org.drools.model.DSL;
 import org.drools.model.PatternDSL;
@@ -44,12 +51,6 @@ import org.optaplanner.core.impl.score.stream.quad.FilteringQuadJoiner;
 import org.optaplanner.core.impl.score.stream.quad.NoneQuadJoiner;
 import org.optaplanner.core.impl.score.stream.tri.NoneTriJoiner;
 
-import static java.util.Collections.singletonList;
-import static org.drools.model.DSL.exists;
-import static org.drools.model.DSL.not;
-import static org.drools.model.PatternDSL.betaIndexedBy;
-import static org.drools.model.PatternDSL.pattern;
-
 /**
  * Represents the left hand side of a Drools rule, the result of which are three variables.
  * For more, see {@link UniLeftHandSide} and {@link BiLeftHandSide}.
@@ -66,13 +67,13 @@ public final class TriLeftHandSide<A, B, C> extends AbstractLeftHandSide {
     private final TriRuleContext<A, B, C> ruleContext;
 
     protected TriLeftHandSide(Variable<A> variableA, Variable<B> variableB, PatternVariable<C, ?, ?> patternVariableC,
-                              DroolsVariableFactory variableFactory) {
+            DroolsVariableFactory variableFactory) {
         this(new DetachedPatternVariable<>(variableA), new DetachedPatternVariable<>(variableB), patternVariableC,
                 variableFactory);
     }
 
     protected TriLeftHandSide(PatternVariable<A, ?, ?> patternVariableA, PatternVariable<B, ?, ?> patternVariableB,
-                              PatternVariable<C, ?, ?> patternVariableC, DroolsVariableFactory variableFactory) {
+            PatternVariable<C, ?, ?> patternVariableC, DroolsVariableFactory variableFactory) {
         super(variableFactory);
         this.patternVariableA = Objects.requireNonNull(patternVariableA);
         this.patternVariableB = Objects.requireNonNull(patternVariableB);

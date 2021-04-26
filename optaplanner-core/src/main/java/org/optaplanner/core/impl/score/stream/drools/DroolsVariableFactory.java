@@ -16,17 +16,18 @@
 
 package org.optaplanner.core.impl.score.stream.drools;
 
+import static org.drools.model.DSL.declarationOf;
+import static org.drools.model.DSL.from;
+
 import java.util.Collections;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.function.BiFunction;
 import java.util.function.Function;
+
 import org.drools.model.DSL;
 import org.drools.model.Variable;
 import org.optaplanner.core.api.function.QuadFunction;
 import org.optaplanner.core.api.function.TriFunction;
-
-import static org.drools.model.DSL.declarationOf;
-import static org.drools.model.DSL.from;
 
 public final class DroolsVariableFactory {
 

@@ -20,6 +20,7 @@ import java.math.BigDecimal;
 import java.util.Objects;
 import java.util.function.BiFunction;
 import java.util.function.Function;
+
 import org.optaplanner.core.api.domain.constraintweight.ConstraintConfiguration;
 import org.optaplanner.core.api.domain.constraintweight.ConstraintWeight;
 import org.optaplanner.core.api.function.QuadPredicate;
