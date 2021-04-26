@@ -454,7 +454,13 @@ public final class QuadLeftHandSide<A, B, C, D> extends AbstractLeftHandSide {
     }
 
     public <NewD> QuadLeftHandSide<A, B, C, NewD> andFlattenLast(Function<D, Iterable<NewD>> mapping) {
-        throw new UnsupportedOperationException();
+        Variable<D> source = patternVariableD.getPrimaryVariable();
+        Variable<NewD> newD = variableFactory.createFlattenedVariable("flattened", source, mapping);
+        List<ViewItem<?>> allPrerequisites = mergeViewItems(patternVariableA, patternVariableB, patternVariableC,
+                patternVariableD);
+        PatternVariable<NewD, ?, ?> newPatternVariableD = new DirectPatternVariable<>(newD, allPrerequisites);
+        return new QuadLeftHandSide<>(patternVariableA.getPrimaryVariable(), patternVariableB.getPrimaryVariable(),
+                patternVariableC.getPrimaryVariable(), newPatternVariableD, variableFactory);
     }
 
     public <Solution_> RuleBuilder<Solution_> andTerminate() {

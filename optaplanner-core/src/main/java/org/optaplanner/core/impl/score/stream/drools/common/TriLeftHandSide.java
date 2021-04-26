@@ -66,13 +66,13 @@ public final class TriLeftHandSide<A, B, C> extends AbstractLeftHandSide {
     private final TriRuleContext<A, B, C> ruleContext;
 
     protected TriLeftHandSide(Variable<A> variableA, Variable<B> variableB, PatternVariable<C, ?, ?> patternVariableC,
-            DroolsVariableFactory variableFactory) {
+                              DroolsVariableFactory variableFactory) {
         this(new DetachedPatternVariable<>(variableA), new DetachedPatternVariable<>(variableB), patternVariableC,
                 variableFactory);
     }
 
     protected TriLeftHandSide(PatternVariable<A, ?, ?> patternVariableA, PatternVariable<B, ?, ?> patternVariableB,
-            PatternVariable<C, ?, ?> patternVariableC, DroolsVariableFactory variableFactory) {
+                              PatternVariable<C, ?, ?> patternVariableC, DroolsVariableFactory variableFactory) {
         super(variableFactory);
         this.patternVariableA = Objects.requireNonNull(patternVariableA);
         this.patternVariableB = Objects.requireNonNull(patternVariableB);
@@ -461,7 +461,12 @@ public final class TriLeftHandSide<A, B, C> extends AbstractLeftHandSide {
     }
 
     public <NewC> TriLeftHandSide<A, B, NewC> andFlattenLast(Function<C, Iterable<NewC>> mapping) {
-        throw new UnsupportedOperationException();
+        Variable<C> source = patternVariableC.getPrimaryVariable();
+        Variable<NewC> newC = variableFactory.createFlattenedVariable("flattened", source, mapping);
+        List<ViewItem<?>> allPrerequisites = mergeViewItems(patternVariableA, patternVariableB, patternVariableC);
+        PatternVariable<NewC, ?, ?> newPatternVariableC = new DirectPatternVariable<>(newC, allPrerequisites);
+        return new TriLeftHandSide<>(patternVariableA.getPrimaryVariable(), patternVariableB.getPrimaryVariable(),
+                newPatternVariableC, variableFactory);
     }
 
     public <Solution_> RuleBuilder<Solution_> andTerminate() {

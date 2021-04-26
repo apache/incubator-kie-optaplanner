@@ -427,7 +427,10 @@ public final class UniLeftHandSide<A> extends AbstractLeftHandSide {
     }
 
     public <NewA> UniLeftHandSide<NewA> andFlattenLast(Function<A, Iterable<NewA>> mapping) {
-        throw new UnsupportedOperationException();
+        Variable<A> source = patternVariable.getPrimaryVariable();
+        Variable<NewA> newA = variableFactory.createFlattenedVariable("flattened", source, mapping);
+        PatternVariable<NewA, ?, ?> newPatternVariableA = new DirectPatternVariable<>(newA, patternVariable.build());
+        return new UniLeftHandSide<>(newPatternVariableA, variableFactory);
     }
 
     public <Solution_> RuleBuilder<Solution_> andTerminate() {

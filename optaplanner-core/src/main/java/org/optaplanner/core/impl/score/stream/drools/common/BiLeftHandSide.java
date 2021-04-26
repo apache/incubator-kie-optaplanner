@@ -95,7 +95,7 @@ public final class BiLeftHandSide<A, B> extends AbstractLeftHandSide {
     }
 
     protected BiLeftHandSide(PatternVariable<A, ?, ?> left, PatternVariable<B, ?, ?> right,
-            DroolsVariableFactory variableFactory) {
+                             DroolsVariableFactory variableFactory) {
         super(variableFactory);
         this.patternVariableA = Objects.requireNonNull(left);
         this.patternVariableB = Objects.requireNonNull(right);
@@ -475,7 +475,11 @@ public final class BiLeftHandSide<A, B> extends AbstractLeftHandSide {
     }
 
     public <NewB> BiLeftHandSide<A, NewB> andFlattenLast(Function<B, Iterable<NewB>> mapping) {
-        throw new UnsupportedOperationException();
+        Variable<B> source = patternVariableB.getPrimaryVariable();
+        Variable<NewB> newB = variableFactory.createFlattenedVariable("flattened", source, mapping);
+        List<ViewItem<?>> allPrerequisites = mergeViewItems(patternVariableA, patternVariableB);
+        PatternVariable<NewB, ?, ?> newPatternVariableB = new DirectPatternVariable<>(newB, allPrerequisites);
+        return new BiLeftHandSide<>(patternVariableA.getPrimaryVariable(), newPatternVariableB, variableFactory);
     }
 
     public <Solution_> RuleBuilder<Solution_> andTerminate() {
