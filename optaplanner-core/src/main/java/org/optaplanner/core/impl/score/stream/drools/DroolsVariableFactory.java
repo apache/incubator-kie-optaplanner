@@ -50,7 +50,7 @@ public final class DroolsVariableFactory {
      *        types in the working memory. Therefore, it is desirable to be as specific as possible.
      * @param baseName name of the variable, mostly useful for debugging purposes. Will be decorated by a numeric
      *        identifier to prevent multiple variables of the same name to exist within left-hand side of a single rule.
-     * @param <U> generic type of the variable
+     * @param <U> generic type of the input variable
      * @return new variable declaration, not yet bound to anything
      */
     public <U> Variable<? extends U> createVariable(Class<U> clz, String baseName) {
@@ -64,6 +64,20 @@ public final class DroolsVariableFactory {
         return (Variable<U>) createVariable(Object.class, baseName);
     }
 
+    /**
+     * Declare a new {@link Variable} with a given name, which will hold the result of applying a given mapping
+     * function on values of the provided variables.
+     *
+     * @param baseName name of the variable, mostly useful for debugging purposes. Will be decorated by a numeric
+     *        identifier to prevent multiple variables of the same name to exist within left-hand side of a single rule.
+     * @param source1 never null; value of this is passed to the mapping function
+     * @param source2 never null; value of this is passed to the mapping function
+     * @param mapping never null
+     * @param <U> generic type of the first input variable
+     * @param <V> generic type of the second input variable
+     * @param <Result_> generic type of the new variable
+     * @return never null
+     */
     public <U, V, Result_> Variable<Result_> createVariable(String baseName, Variable<U> source1, Variable<V> source2,
             BiFunction<U, V, Result_> mapping) {
         return (Variable<Result_>) declarationOf(Object.class, generateUniqueId(baseName),
@@ -76,6 +90,9 @@ public final class DroolsVariableFactory {
                 }));
     }
 
+    /**
+     * As defined by {@link #createVariable(String, Variable, Variable, BiFunction)}.
+     */
     public <U, V, W, Result_> Variable<Result_> createVariable(String baseName, Variable<U> source1, Variable<V> source2,
             Variable<W> source3, TriFunction<U, V, W, Result_> mapping) {
         return (Variable<Result_>) declarationOf(Object.class, generateUniqueId(baseName),
@@ -88,6 +105,9 @@ public final class DroolsVariableFactory {
                 }));
     }
 
+    /**
+     * As defined by {@link #createVariable(String, Variable, Variable, BiFunction)}.
+     */
     public <U, V, W, Y, Result_> Variable<Result_> createVariable(String baseName, Variable<U> source1, Variable<V> source2,
             Variable<W> source3, Variable<Y> source4, QuadFunction<U, V, W, Y, Result_> mapping) {
         return (Variable<Result_>) declarationOf(Object.class, generateUniqueId(baseName),
@@ -100,10 +120,24 @@ public final class DroolsVariableFactory {
                 }));
     }
 
-    public <U, Result_> Variable<Result_> createFlattenedVariable(String baseName, Variable<U> source1,
+    /**
+     * Declare a new {@link Variable} with a given name, which will hold the individual results of applying the given
+     * mapping function on the value of the provided variable.
+     * Each such result will trigger a single rule firing.
+     * (Default behavior of Drools' From node.)
+     *
+     * @param baseName name of the variable, mostly useful for debugging purposes. Will be decorated by a numeric
+     *        identifier to prevent multiple variables of the same name to exist within left-hand side of a single rule.
+     * @param source never null; value of this is passed to the mapping function
+     * @param mapping never null
+     * @param <U> generic type of the input variable
+     * @param <Result_> generic type of the new variable
+     * @return
+     */
+    public <U, Result_> Variable<Result_> createFlattenedVariable(String baseName, Variable<U> source,
             Function<U, Iterable<Result_>> mapping) {
         return (Variable<Result_>) declarationOf(Object.class, generateUniqueId(baseName),
-                from(source1, (value) -> mapping.apply(value))); // By default, from() flattens.
+                from(source, (value) -> mapping.apply(value))); // By default, from() flattens.
     }
 
 }
