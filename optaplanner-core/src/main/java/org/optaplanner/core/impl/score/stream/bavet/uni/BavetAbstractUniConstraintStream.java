@@ -265,6 +265,11 @@ public abstract class BavetAbstractUniConstraintStream<Solution_, A> extends Bav
         throw new UnsupportedOperationException(); // TODO
     }
 
+    @Override
+    public <ResultA_> UniConstraintStream<ResultA_> flattenLast(Function<A, Iterable<ResultA_>> mapping) {
+        throw new UnsupportedOperationException(); // TODO
+    }
+
     // ************************************************************************
     // Penalize/reward
     // ************************************************************************
