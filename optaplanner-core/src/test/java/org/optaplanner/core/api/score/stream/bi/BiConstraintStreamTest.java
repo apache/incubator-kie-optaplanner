@@ -16,10 +16,23 @@
 
 package org.optaplanner.core.api.score.stream.bi;
 
+import static java.util.Arrays.asList;
+import static java.util.Collections.singleton;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.optaplanner.core.api.score.stream.ConstraintCollectors.countBi;
+import static org.optaplanner.core.api.score.stream.ConstraintCollectors.countDistinct;
+import static org.optaplanner.core.api.score.stream.ConstraintCollectors.max;
+import static org.optaplanner.core.api.score.stream.ConstraintCollectors.min;
+import static org.optaplanner.core.api.score.stream.ConstraintCollectors.toSet;
+import static org.optaplanner.core.api.score.stream.Joiners.equal;
+import static org.optaplanner.core.api.score.stream.Joiners.filtering;
+
 import java.math.BigDecimal;
 import java.util.Objects;
 import java.util.function.Function;
 import java.util.stream.Stream;
+
 import org.junit.jupiter.api.TestTemplate;
 import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
 import org.optaplanner.core.api.score.buildin.simplebigdecimal.SimpleBigDecimalScore;
@@ -41,18 +54,6 @@ import org.optaplanner.core.impl.testdata.domain.score.lavish.TestdataLavishExtr
 import org.optaplanner.core.impl.testdata.domain.score.lavish.TestdataLavishSolution;
 import org.optaplanner.core.impl.testdata.domain.score.lavish.TestdataLavishValue;
 import org.optaplanner.core.impl.testdata.domain.score.lavish.TestdataLavishValueGroup;
-
-import static java.util.Arrays.asList;
-import static java.util.Collections.singleton;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.optaplanner.core.api.score.stream.ConstraintCollectors.countBi;
-import static org.optaplanner.core.api.score.stream.ConstraintCollectors.countDistinct;
-import static org.optaplanner.core.api.score.stream.ConstraintCollectors.max;
-import static org.optaplanner.core.api.score.stream.ConstraintCollectors.min;
-import static org.optaplanner.core.api.score.stream.ConstraintCollectors.toSet;
-import static org.optaplanner.core.api.score.stream.Joiners.equal;
-import static org.optaplanner.core.api.score.stream.Joiners.filtering;
 
 public class BiConstraintStreamTest extends AbstractConstraintStreamTest implements ConstraintStreamFunctionalTest {
 
