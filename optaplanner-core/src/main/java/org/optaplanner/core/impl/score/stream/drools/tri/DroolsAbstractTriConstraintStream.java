@@ -17,7 +17,6 @@
 package org.optaplanner.core.impl.score.stream.drools.tri;
 
 import java.math.BigDecimal;
-import java.util.Collection;
 import java.util.Objects;
 import java.util.function.Function;
 
@@ -277,8 +276,11 @@ public abstract class DroolsAbstractTriConstraintStream<Solution_, A, B, C>
     }
 
     @Override
-    public <ResultC_> TriConstraintStream<A, B, ResultC_> flattenLast(Function<C, Collection<ResultC_>> mapping) {
-        throw new UnsupportedOperationException();
+    public <ResultC_> TriConstraintStream<A, B, ResultC_> flattenLast(Function<C, Iterable<ResultC_>> mapping) {
+        DroolsFlatteningTriConstraintStream<Solution_, A, B, ResultC_> stream =
+                new DroolsFlatteningTriConstraintStream<>(constraintFactory, this, Objects.requireNonNull(mapping));
+        addChildStream(stream);
+        return stream;
     }
 
     // ************************************************************************

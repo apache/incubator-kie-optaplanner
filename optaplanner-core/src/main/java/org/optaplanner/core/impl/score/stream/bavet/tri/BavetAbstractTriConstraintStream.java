@@ -18,7 +18,6 @@ package org.optaplanner.core.impl.score.stream.bavet.tri;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 import java.util.function.Function;
 
@@ -216,7 +215,7 @@ public abstract class BavetAbstractTriConstraintStream<Solution_, A, B, C> exten
     }
 
     @Override
-    public <ResultC_> TriConstraintStream<A, B, ResultC_> flattenLast(Function<C, Collection<ResultC_>> mapping) {
+    public <ResultC_> TriConstraintStream<A, B, ResultC_> flattenLast(Function<C, Iterable<ResultC_>> mapping) {
         throw new UnsupportedOperationException();
     }
 

@@ -22,7 +22,6 @@ import java.util.function.BiPredicate;
 import java.util.function.Function;
 import java.util.function.ToIntBiFunction;
 import java.util.function.ToLongBiFunction;
-
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.stream.Constraint;
 import org.optaplanner.core.api.score.stream.bi.BiConstraintCollector;
@@ -273,7 +272,10 @@ public abstract class DroolsAbstractBiConstraintStream<Solution_, A, B>
 
     @Override
     public <ResultB_> BiConstraintStream<A, ResultB_> flattenLast(Function<B, Iterable<ResultB_>> mapping) {
-        throw new UnsupportedOperationException();
+        DroolsFlatteningBiConstraintStream<Solution_, A, ResultB_> stream =
+                new DroolsFlatteningBiConstraintStream<>(constraintFactory, this, Objects.requireNonNull(mapping));
+        addChildStream(stream);
+        return stream;
     }
 
     // ************************************************************************
