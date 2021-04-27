@@ -960,6 +960,9 @@ public final class ConstraintCollectors {
         return resultContainer.isEmpty() ? null : keySupplier.apply(resultContainer);
     }
 
+    /**
+     * @deprecated in favor of {@link #toList()}, {@link #toSet()} or {@link #toSortedSet()}
+     */
     @Deprecated(/* forRemoval = true */)
     public static <A, Result extends Collection<A>> UniConstraintCollector<A, ?, Result> toCollection(
             IntFunction<Result> collectionFunction) {
@@ -1014,11 +1017,14 @@ public final class ConstraintCollectors {
         return toList(Function.identity());
     }
 
+    /**
+     * @deprecated in favor of {@link #toList(Function)}, {@link #toSet(Function)} or {@link #toSortedSet(Function)}
+     */
     @Deprecated(/* forRemoval = true */)
     public static <A, Mapped, Result extends Collection<Mapped>> UniConstraintCollector<A, ?, Result> toCollection(
             Function<A, Mapped> groupValueMapping, IntFunction<Result> collectionFunction) {
         return new DefaultUniConstraintCollector<>(
-                ((Supplier<List<Mapped>>) ArrayList::new),
+                (Supplier<List<Mapped>>) ArrayList::new,
                 (resultContainer, a) -> {
                     Mapped mapped = groupValueMapping.apply(a);
                     resultContainer.add(mapped);
@@ -1109,6 +1115,10 @@ public final class ConstraintCollectors {
                 Function.identity());
     }
 
+    /**
+     * @deprecated in favor of {@link #toList(BiFunction)}, {@link #toSet(BiFunction)}
+     *             or {@link #toSortedSet(BiFunction)}
+     */
     @Deprecated(/* forRemoval = true */)
     public static <A, B, Mapped, Result extends Collection<Mapped>> BiConstraintCollector<A, B, ?, Result> toCollection(
             BiFunction<A, B, Mapped> groupValueMapping, IntFunction<Result> collectionFunction) {
@@ -1185,6 +1195,10 @@ public final class ConstraintCollectors {
                 Function.identity());
     }
 
+    /**
+     * @deprecated in favor of {@link #toList(TriFunction)}, {@link #toSet(TriFunction)}
+     *             or {@link #toSortedSet(TriFunction)}
+     */
     @Deprecated(/* forRemoval = true */)
     public static <A, B, C, Mapped, Result extends Collection<Mapped>> TriConstraintCollector<A, B, C, ?, Result> toCollection(
             TriFunction<A, B, C, Mapped> groupValueMapping, IntFunction<Result> collectionFunction) {
@@ -1264,6 +1278,10 @@ public final class ConstraintCollectors {
                 Function.identity());
     }
 
+    /**
+     * @deprecated in favor of {@link #toList(QuadFunction)}, {@link #toSet(QuadFunction)}
+     *             or {@link #toSortedSet(QuadFunction)}
+     */
     @Deprecated(/* forRemoval = true */)
     public static <A, B, C, D, Mapped, Result extends Collection<Mapped>> QuadConstraintCollector<A, B, C, D, ?, Result>
             toCollection(QuadFunction<A, B, C, D, Mapped> groupValueMapping, IntFunction<Result> collectionFunction) {
