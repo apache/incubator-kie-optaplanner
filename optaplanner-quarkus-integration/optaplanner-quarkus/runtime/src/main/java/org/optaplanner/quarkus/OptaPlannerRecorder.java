@@ -46,8 +46,8 @@ public class OptaPlannerRecorder {
                 generatedGizmoSolutionClonerMap
                         .forEach((className, runtimeValue) -> solutionClonerMap.put(className, runtimeValue.getValue()));
 
-                solverConfig.setMemberAccessorMap(memberAccessorMap);
-                solverConfig.setSolutionClonerMap(solutionClonerMap);
+                solverConfig.setGizmoMemberAccessorMap(memberAccessorMap);
+                solverConfig.setGizmoSolutionClonerMap(solutionClonerMap);
                 droolsInitializer.getValue().setup(solverConfig.getScoreDirectorFactoryConfig());
                 return solverConfig;
             }

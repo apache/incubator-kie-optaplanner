@@ -248,9 +248,9 @@ public class SolverConfig extends AbstractConfig<SolverConfig> {
     protected List<Class<?>> entityClassList = null;
     protected DomainAccessType domainAccessType = null;
     @XmlTransient
-    protected Map<String, MemberAccessor> memberAccessorMap = null;
+    protected Map<String, MemberAccessor> gizmoMemberAccessorMap = null;
     @XmlTransient
-    protected Map<String, SolutionCloner> solutionClonerMap = null;
+    protected Map<String, SolutionCloner> gizmoSolutionClonerMap = null;
 
     @XmlElement(name = "scoreDirectorFactory")
     protected ScoreDirectorFactoryConfig scoreDirectorFactoryConfig = null;
@@ -394,20 +394,20 @@ public class SolverConfig extends AbstractConfig<SolverConfig> {
         this.domainAccessType = domainAccessType;
     }
 
-    public Map<String, MemberAccessor> getMemberAccessorMap() {
-        return memberAccessorMap;
+    public Map<String, MemberAccessor> getGizmoMemberAccessorMap() {
+        return gizmoMemberAccessorMap;
     }
 
-    public void setMemberAccessorMap(Map<String, MemberAccessor> memberAccessorMap) {
-        this.memberAccessorMap = memberAccessorMap;
+    public void setGizmoMemberAccessorMap(Map<String, MemberAccessor> gizmoMemberAccessorMap) {
+        this.gizmoMemberAccessorMap = gizmoMemberAccessorMap;
     }
 
-    public Map<String, SolutionCloner> getSolutionClonerMap() {
-        return solutionClonerMap;
+    public Map<String, SolutionCloner> getGizmoSolutionClonerMap() {
+        return gizmoSolutionClonerMap;
     }
 
-    public void setSolutionClonerMap(Map<String, SolutionCloner> solutionClonerMap) {
-        this.solutionClonerMap = solutionClonerMap;
+    public void setGizmoSolutionClonerMap(Map<String, SolutionCloner> gizmoSolutionClonerMap) {
+        this.gizmoSolutionClonerMap = gizmoSolutionClonerMap;
     }
 
     public ScoreDirectorFactoryConfig getScoreDirectorFactoryConfig() {
@@ -498,8 +498,13 @@ public class SolverConfig extends AbstractConfig<SolverConfig> {
         return this;
     }
 
-    public SolverConfig withMemberAccessorMap(Map<String, MemberAccessor> memberAccessorMap) {
-        this.memberAccessorMap = memberAccessorMap;
+    public SolverConfig withGizmoMemberAccessorMap(Map<String, MemberAccessor> memberAccessorMap) {
+        this.gizmoMemberAccessorMap = memberAccessorMap;
+        return this;
+    }
+
+    public SolverConfig withGizmoSolutionClonerMap(Map<String, SolutionCloner> solutionClonerMap) {
+        this.gizmoSolutionClonerMap = solutionClonerMap;
         return this;
     }
 
@@ -614,8 +619,10 @@ public class SolverConfig extends AbstractConfig<SolverConfig> {
         entityClassList = ConfigUtils.inheritMergeableListProperty(entityClassList,
                 inheritedConfig.getEntityClassList());
         domainAccessType = ConfigUtils.inheritOverwritableProperty(domainAccessType, inheritedConfig.getDomainAccessType());
-        memberAccessorMap = ConfigUtils.inheritMergeableMapProperty(memberAccessorMap, inheritedConfig.getMemberAccessorMap());
-        solutionClonerMap = ConfigUtils.inheritMergeableMapProperty(solutionClonerMap, inheritedConfig.getSolutionClonerMap());
+        gizmoMemberAccessorMap = ConfigUtils.inheritMergeableMapProperty(
+                gizmoMemberAccessorMap, inheritedConfig.getGizmoMemberAccessorMap());
+        gizmoSolutionClonerMap = ConfigUtils.inheritMergeableMapProperty(
+                gizmoSolutionClonerMap, inheritedConfig.getGizmoSolutionClonerMap());
 
         scoreDirectorFactoryConfig = ConfigUtils.inheritConfig(scoreDirectorFactoryConfig,
                 inheritedConfig.getScoreDirectorFactoryConfig());
