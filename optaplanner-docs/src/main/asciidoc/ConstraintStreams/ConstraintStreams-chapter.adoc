@@ -687,17 +687,12 @@ This is done by applying a mapping function to the final element in the source t
 
 [source,java,options="nowrap"]
 ----
-    private Constraint computerWithProcesses(ConstraintFactory constraintFactory) {
-        return constraintFactory.from(CloudComputer.class) // UniConstraintStream<CloudComputer>
-                .join(CloudProcess.class,
-                    equal(Function.identity(), CloudProcess::getComputer))
-                                                           // BiConstraintStream<CloudComputer, CloudProcess>
-                .flattenLast(process ->
-                    Arrays.asList(
-                        process.getRequiredCpuPower(),
-                        process.getRequiredMemory()
-                    ))                                     // BiConstraintStream<CloudComputer, Integer>
-                .filter((computer, singleRequirement) -> ...)
+    private Constraint requiredJobRoles(ConstraintFactory constraintFactory) {
+        return constraintFactory.from(Person.class)                 // UniConstraintStream<Person>
+                .join(Job.class,
+                    equal(Function.identity(), Job::getAssignee))   // BiConstraintStream<Person, Job>
+                .flattenLast(Job::getRequiredRoles)                 // BiConstraintStream<Person, Role>
+                .filter((person, requiredRole) -> ...)
                 ...
     }
 ----
@@ -705,9 +700,9 @@ This is done by applying a mapping function to the final element in the source t
 [NOTE]
 ====
 In the example above, the mapping function produces duplicate tuples
-if `getRequiredCpuPower()` and `getRequiredMemory()` return the same value.
-Assuming that value is `1` for computer `A`,
-the tuple `[A, 1]` will be sent downstream twice.
+if `Job.getRequiredRoles()` contains duplicate values.
+Assuming that the function returns `[USER, USER, ADMIN]`,
+the tuple `(SomePerson, USER)` will be sent downstream twice.
 See <<constraintStreamsDealingWithDuplicateTuplesUsingDistinct,`distinct()`>> for how to deal with duplicate tuples.
 ====
 
