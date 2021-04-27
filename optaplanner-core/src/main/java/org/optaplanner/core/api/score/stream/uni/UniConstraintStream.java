@@ -970,13 +970,13 @@ public interface UniConstraintStream<A> extends ConstraintStream {
      * </ul>
      *
      * <p>
-     * Simple example: assuming a constraint stream of tuple of {@code Person}s
+     * Simple example: assuming a constraint stream of tuples of {@code Person}s
      * {@code [Ann(age = 20), Beth(age = 25), Cathy(age = 30)]},
      * calling {@code map(Person::getAge)} on such stream will produce a stream of {@link Integer}s
      * {@code [20, 25, 30]},
      *
      * <p>
-     * Example with a non-bijective mapping function: assuming a constraint stream of tuple of {@code Person}s
+     * Example with a non-bijective mapping function: assuming a constraint stream of tuples of {@code Person}s
      * {@code [Ann(age = 20), Beth(age = 25), Cathy(age = 30), David(age = 30), Eric(age = 20)]},
      * calling {@code map(Person::getAge)} on such stream will produce a stream of {@link Integer}s
      * {@code [20, 25, 30, 30, 20]}.
@@ -998,7 +998,7 @@ public interface UniConstraintStream<A> extends ConstraintStream {
      * use {@link Function#identity()} as the argument.
      *
      * <p>
-     * Simple example: assuming a constraint stream of tuple of {@code Person}s
+     * Simple example: assuming a constraint stream of tuples of {@code Person}s
      * {@code [Ann(roles = [USER, ADMIN]]), Beth(roles = [USER]), Cathy(roles = [ADMIN, AUDITOR])]},
      * calling {@code flattenLast(Person::getRoles)} on such stream will produce
      * a stream of {@code [USER, ADMIN, USER, ADMIN, AUDITOR]}.

@@ -783,9 +783,10 @@ public interface BiConstraintStream<A, B> extends ConstraintStream {
      *
      * <p>
      * Simple example: assuming a constraint stream of {@code (PersonName, Person)}
-     * {@code [Ann(roles = [USER, ADMIN]]), Beth(roles = [USER]), Cathy(roles = [ADMIN, AUDITOR])]},
-     * calling {@code flattenLast(Person::getRoles)} on such stream will produce
-     * a stream of {@code [(Ann, USER), (Ann, ADMIN), (Beth, USER), (Cathy, ADMIN), (Cathy, AUDITOR)]}.
+     * {@code [(Ann, (name = Ann, roles = [USER, ADMIN])), (Beth, (name = Beth, roles = [USER])),
+     * (Cathy, (name = Cathy, roles = [ADMIN, AUDITOR]))]},
+     * calling {@code flattenLast(Person::getRoles)} on such stream will produce a stream of
+     * {@code [(Ann, USER), (Ann, ADMIN), (Beth, USER), (Cathy, ADMIN), (Cathy, AUDITOR)]}.
      *
      * @param mapping never null, function to convert the last fact in the original tuple into {@link Iterable}
      * @param <ResultB_> the type of the last fact in the resulting tuples
