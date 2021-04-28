@@ -977,10 +977,7 @@ public final class ConstraintCollectors {
      * Creates constraint collector that returns {@link Set} of the same element type as the {@link ConstraintStream}.
      * Makes no guarantees on iteration order.
      * For stable iteration order, use {@link #toSortedSet()}.
-     * <p>
-     * The contents of the collection will be changing during {@link org.optaplanner.core.api.solver.Solver} lifetime,
-     * they must therefore never be modified nor stored without making a defensive copy first.
-     * 
+     *
      * @param <A> type of the matched fact
      * @return never null
      */
@@ -991,9 +988,6 @@ public final class ConstraintCollectors {
     /**
      * Creates constraint collector that returns {@link SortedSet} of the same element type as the
      * {@link ConstraintStream}.
-     * <p>
-     * The contents of the collection will be changing during {@link org.optaplanner.core.api.solver.Solver} lifetime,
-     * they must therefore never be modified nor stored without making a defensive copy first.
      *
      * @param <A> type of the matched fact
      * @return never null
@@ -1006,9 +1000,6 @@ public final class ConstraintCollectors {
      * Creates constraint collector that returns {@link List} of the same element type as the {@link ConstraintStream}.
      * Makes no guarantees on iteration order.
      * For stable iteration order, use {@link #toSortedSet()}.
-     * <p>
-     * The contents of the collection will be changing during {@link org.optaplanner.core.api.solver.Solver} lifetime,
-     * they must therefore never be modified nor stored without making a defensive copy first.
      *
      * @param <A> type of the matched fact
      * @return never null
@@ -1047,9 +1038,6 @@ public final class ConstraintCollectors {
      * Creates constraint collector that returns {@link Set} of the same element type as the {@link ConstraintStream}.
      * Makes no guarantees on iteration order.
      * For stable iteration order, use {@link #toSortedSet()}.
-     * <p>
-     * The contents of the collection will be changing during {@link org.optaplanner.core.api.solver.Solver} lifetime,
-     * they must therefore never be modified nor stored without making a defensive copy first.
      *
      * @param groupValueMapping never null, converts matched facts to elements of the resulting set
      * @param <A> type of the matched fact
@@ -1070,9 +1058,6 @@ public final class ConstraintCollectors {
     /**
      * Creates constraint collector that returns {@link SortedSet} of the same element type as the
      * {@link ConstraintStream}.
-     * <p>
-     * The contents of the collection will be changing during {@link org.optaplanner.core.api.solver.Solver} lifetime,
-     * they must therefore never be modified nor stored without making a defensive copy first.
      *
      * @param groupValueMapping never null, converts matched facts to elements of the resulting set
      * @param <A> type of the matched fact
@@ -1095,9 +1080,6 @@ public final class ConstraintCollectors {
      * Creates constraint collector that returns {@link List} of the given element type.
      * Makes no guarantees on iteration order.
      * For stable iteration order, use {@link #toSortedSet(Function)}.
-     * <p>
-     * The contents of the collection will be changing during {@link org.optaplanner.core.api.solver.Solver} lifetime,
-     * they must therefore never be modified nor stored without making a defensive copy first.
      *
      * @param groupValueMapping never null, converts matched facts to elements of the resulting collection
      * @param <A> type of the matched fact
