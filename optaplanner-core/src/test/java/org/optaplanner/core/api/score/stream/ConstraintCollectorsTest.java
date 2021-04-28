@@ -2559,7 +2559,7 @@ public class ConstraintCollectorsTest {
     public void consecutive() {
         // Do a basic test w/o edge cases; edge cases are covered in
         // ConsecutiveSetTreeTest
-        UniConstraintCollector<Integer, ?, ConsecutiveData<Integer>> collector =
+        UniConstraintCollector<Integer, ?, ConsecutiveData<Integer, Integer>> collector =
                 ConstraintCollectors.consecutive(Integer::intValue);
         Object container = collector.supplier().get();
         // Add first value, sequence is [2]
@@ -2584,11 +2584,10 @@ public class ConstraintCollectorsTest {
         assertResult(collector, container, consecutiveData());
     }
 
-    private ConsecutiveData<Integer> consecutiveData(Integer... data) {
-        ConsecutiveSetTree<Integer> tree = new ConsecutiveSetTree<>(Integer.class, Integer::intValue);
-        for (Integer datum : data) {
-            tree.add(datum);
-        }
+    private ConsecutiveData<Integer, Integer> consecutiveData(Integer... data) {
+        ConsecutiveSetTree<Integer, Integer, Integer> tree =
+                new ConsecutiveSetTree<>(Integer.class, Integer::intValue, (a, b) -> b - a, 1, 0);
+        asList(data).forEach(tree::add);
         return tree.getConsecutiveData();
     }
 

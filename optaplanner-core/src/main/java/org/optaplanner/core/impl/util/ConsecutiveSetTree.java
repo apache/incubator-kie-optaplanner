@@ -3,111 +3,170 @@ package org.optaplanner.core.impl.util;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.TreeMap;
-import java.util.function.ToIntFunction;
+import java.util.function.BiFunction;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-public class ConsecutiveSetTree<T> implements Collection<T> {
-    ToIntFunction<T> getIndex;
-    TreeMap<T, TreeMap<T, Integer>> startItemToList;
+public class ConsecutiveSetTree<T, I extends Comparable<I>, D extends Comparable<D>> implements Collection<T> {
+    Function<T, I> indexFunction;
+    BiFunction<I, I, D> differenceFunction;
+    D maxDifference;
+    D zeroDifference;
+    TreeMap<T, Sequence<T>> startItemToSequence;
     Class<? extends T> typeClass;
     Comparator<T> comparator;
 
-    public ConsecutiveSetTree(Class<? extends T> typeClass, ToIntFunction<T> getIndex) {
-        this.getIndex = getIndex;
+    TreeMapValueList<T, Sequence<T>> sequenceList;
+    ConsecutiveData<T, D> consecutiveData;
+
+    public ConsecutiveSetTree(Class<? extends T> typeClass, Function<T, I> indexFunction,
+            BiFunction<I, I, D> differenceFunction, D maxDifference, D zeroDifference) {
+        this.indexFunction = indexFunction;
+        this.differenceFunction = differenceFunction;
+        this.maxDifference = maxDifference;
+        this.zeroDifference = zeroDifference;
         this.typeClass = typeClass;
         // Hashcode for duplicate protection
         // Ex: two different games on the same time slot
-        comparator = Comparator.comparingInt(getIndex).thenComparingInt(Objects::hashCode);
-        startItemToList = new TreeMap<>(comparator);
+        comparator = Comparator.comparing(indexFunction).thenComparingInt(System::identityHashCode);
+        startItemToSequence = new TreeMap<>(comparator);
+        consecutiveData = new ConsecutiveData<>(this);
+        sequenceList = new TreeMapValueList<>(startItemToSequence);
     }
 
-    public ConsecutiveData<T> getConsecutiveData() {
-        return new ConsecutiveData<>(this);
+    public List<Sequence<T>> getConsecutiveSequences() {
+        return sequenceList;
     }
 
-    protected TreeMap<T, TreeMap<T, Integer>> getStartItemToList() {
-        return startItemToList;
+    public List<D> getBreaks() {
+        return startItemToSequence.keySet().stream().flatMap(startItem -> {
+            T nextStartItem = startItemToSequence.higherKey(startItem);
+            if (nextStartItem == null) {
+                return Stream.empty();
+            }
+            return Stream.of(differenceFunction.apply(indexFunction.apply(startItemToSequence.get(startItem).getItems().last()),
+                    indexFunction.apply(nextStartItem)));
+        }).collect(Collectors.toList());
     }
 
-    public int getEndIndex(T key) {
-        return getIndex.applyAsInt(startItemToList.get(key).lastKey());
+    public List<D> getConsecutiveLengths() {
+        return getConsecutiveSequences().stream()
+                .map(sequence -> differenceFunction.apply(indexFunction.apply(sequence.getItems().first()),
+                        indexFunction.apply(sequence.getItems().last())))
+                .collect(Collectors.toList());
+    }
+
+    public Optional<D> getBreakBefore(Sequence<T> sequence) {
+        T startItem = sequence.getItems().first();
+        T prevStartItem = startItemToSequence.lowerKey(startItem);
+        if (prevStartItem == null) {
+            return Optional.empty();
+        }
+        return Optional
+                .of(differenceFunction.apply(indexFunction.apply(startItemToSequence.get(prevStartItem).getItems().last()),
+                        indexFunction.apply(startItem)));
+    }
+
+    public Optional<D> getBreakAfter(Sequence<T> sequence) {
+        T endItem = sequence.getItems().last();
+        T nextStartItem = startItemToSequence.higherKey(endItem);
+        if (nextStartItem == null) {
+            return Optional.empty();
+        }
+        return Optional.of(differenceFunction.apply(indexFunction.apply(endItem),
+                indexFunction.apply(nextStartItem)));
+    }
+
+    public ConsecutiveData<T, D> getConsecutiveData() {
+        return consecutiveData;
+    }
+
+    public I getEndIndex(T key) {
+        return indexFunction.apply(startItemToSequence.get(key).getItems().last());
+    }
+
+    private boolean isSecondSuccessorOfFirst(I first, I second) {
+        D difference = differenceFunction.apply(second, first);
+        return !(difference.compareTo(maxDifference) > 0 || difference.compareTo(zeroDifference) < 0);
     }
 
     @Override
     public boolean add(T item) {
-        T firstBeforeItem = startItemToList.floorKey(item);
-        int itemIndex = getIndex.applyAsInt(item);
+        T firstBeforeItem = startItemToSequence.floorKey(item);
+        I itemIndex = indexFunction.apply(item);
         if (firstBeforeItem != null) {
-            int endIndex = getEndIndex(firstBeforeItem);
-            if (itemIndex <= endIndex) {
+            I endIndex = getEndIndex(firstBeforeItem);
+            if (itemIndex.compareTo(endIndex) <= 0) {
                 // Item is already in the bag; increase it count
-                startItemToList.get(firstBeforeItem).merge(item, 1, (oldVal, newVal) -> oldVal + 1);
+                startItemToSequence.get(firstBeforeItem).add(item);
             } else {
                 // Item is outside the bag
-                T firstAfterItem = startItemToList.higherKey(item);
+                T firstAfterItem = startItemToSequence.higherKey(item);
                 if (firstAfterItem != null) {
-                    int afterStartIndex = getIndex.applyAsInt(firstAfterItem);
-                    if (itemIndex == endIndex + 1) {
+                    I afterStartIndex = indexFunction.apply(firstAfterItem);
+                    if (isSecondSuccessorOfFirst(itemIndex, endIndex)) {
                         // We need to extend the first bag
-                        TreeMap<T, Integer> prevBag = startItemToList.get(firstBeforeItem);
-                        if (itemIndex == afterStartIndex - 1) {
+                        Sequence<T> prevBag = startItemToSequence.get(firstBeforeItem);
+                        if (isSecondSuccessorOfFirst(afterStartIndex, itemIndex)) {
                             // We need to merge the two bags
-                            TreeMap<T, Integer> afterBag = startItemToList.remove(firstAfterItem);
+                            Sequence<T> afterBag = startItemToSequence.remove(firstAfterItem);
                             prevBag.putAll(afterBag);
                         }
-                        prevBag.put(item, 1);
+                        prevBag.add(item);
                     } else {
                         // Don't need to extend the first bag
-                        if (itemIndex == afterStartIndex - 1) {
+                        if (isSecondSuccessorOfFirst(afterStartIndex, itemIndex)) {
                             // We need to move the after bag to use item as key
-                            TreeMap<T, Integer> afterBag = startItemToList.remove(firstAfterItem);
-                            afterBag.put(item, 1);
-                            startItemToList.put(item, afterBag);
+                            Sequence<T> afterBag = startItemToSequence.remove(firstAfterItem);
+                            afterBag.add(item);
+                            startItemToSequence.put(item, afterBag);
                         } else {
                             // Start a new bag of consecutive items
-                            TreeMap<T, Integer> newBag = new TreeMap<>(comparator);
-                            newBag.put(item, 1);
-                            startItemToList.put(item, newBag);
+                            Sequence<T> newBag = new Sequence<>(this);
+                            newBag.add(item);
+                            startItemToSequence.put(item, newBag);
                         }
                     }
                 } else {
-                    if (itemIndex == endIndex + 1) {
+                    if (isSecondSuccessorOfFirst(itemIndex, endIndex)) {
                         // We need to extend the first bag
-                        TreeMap<T, Integer> prevBag = startItemToList.get(firstBeforeItem);
-                        prevBag.put(item, 1);
+                        Sequence<T> prevBag = startItemToSequence.get(firstBeforeItem);
+                        prevBag.add(item);
                     } else {
                         // Start a new bag of consecutive items
-                        TreeMap<T, Integer> newBag = new TreeMap<>(comparator);
-                        newBag.put(item, 1);
-                        startItemToList.put(item, newBag);
+                        Sequence<T> newBag = new Sequence<>(this);
+                        newBag.add(item);
+                        startItemToSequence.put(item, newBag);
                     }
                 }
             }
         } else {
             // No items before it
-            T firstAfterItem = startItemToList.higherKey(item);
+            T firstAfterItem = startItemToSequence.higherKey(item);
             if (firstAfterItem != null) {
-                int afterStartIndex = getIndex.applyAsInt(firstAfterItem);
+                I afterStartIndex = indexFunction.apply(firstAfterItem);
 
-                if (itemIndex == afterStartIndex - 1) {
+                if (isSecondSuccessorOfFirst(afterStartIndex, itemIndex)) {
                     // We need to move the after bag to use item as key
-                    TreeMap<T, Integer> afterBag = startItemToList.remove(firstAfterItem);
-                    afterBag.put(item, 1);
-                    startItemToList.put(item, afterBag);
+                    Sequence<T> afterBag = startItemToSequence.remove(firstAfterItem);
+                    afterBag.add(item);
+                    startItemToSequence.put(item, afterBag);
                 } else {
                     // Start a new bag of consecutive items
-                    TreeMap<T, Integer> newBag = new TreeMap<>(comparator);
-                    newBag.put(item, 1);
-                    startItemToList.put(item, newBag);
+                    Sequence<T> newBag = new Sequence<>(this);
+                    newBag.add(item);
+                    startItemToSequence.put(item, newBag);
                 }
             } else {
                 // Start a new bag of consecutive items
-                TreeMap<T, Integer> newBag = new TreeMap<>(comparator);
-                newBag.put(item, 1);
-                startItemToList.put(item, newBag);
+                Sequence<T> newBag = new Sequence<>(this);
+                newBag.add(item);
+                startItemToSequence.put(item, newBag);
             }
         }
         return true;
@@ -119,34 +178,33 @@ public class ConsecutiveSetTree<T> implements Collection<T> {
             return false;
         } else {
             T item = typeClass.cast(o);
-            T firstBeforeItem = startItemToList.floorKey(item);
-            int itemIndex = getIndex.applyAsInt(item);
-            int endIndex = getEndIndex(firstBeforeItem);
+            T firstBeforeItem = startItemToSequence.floorKey(item);
+            I itemIndex = indexFunction.apply(item);
+            I endIndex = getEndIndex(firstBeforeItem);
 
-            if (itemIndex > endIndex) {
+            if (itemIndex.compareTo(endIndex) > 0) {
                 // Item not in bag
                 return false;
             }
 
-            TreeMap<T, Integer> bag = startItemToList.get(firstBeforeItem);
-            bag.merge(item, 0, (oldVal, newVal) -> oldVal - 1);
-            if (!bag.get(item).equals(0)) {
+            Sequence<T> bag = startItemToSequence.get(firstBeforeItem);
+            T endItem = bag.getItems().last();
+            boolean isRemoved = bag.remove(item);
+            if (!isRemoved) {
                 return true;
             }
 
             // Count of item in bag is 0
-            T endItem = bag.lastKey();
-            bag.remove(item);
             if (bag.isEmpty()) {
-                startItemToList.remove(firstBeforeItem);
+                startItemToSequence.remove(firstBeforeItem);
                 return true;
             }
 
             // Bag is not empty
             if (item.equals(firstBeforeItem)) {
                 // Change start key to the item after this one
-                startItemToList.remove(firstBeforeItem);
-                startItemToList.put(bag.firstKey(), bag);
+                startItemToSequence.remove(firstBeforeItem);
+                startItemToSequence.put(bag.getItems().first(), bag);
                 return true;
             }
             if (item.equals(endItem)) {
@@ -157,14 +215,8 @@ public class ConsecutiveSetTree<T> implements Collection<T> {
 
             // Need to split bag into two halves
             // Both halves are not empty as the item was not an endpoint
-            TreeMap<T, Integer> firstBag = new TreeMap<>(bag.subMap(firstBeforeItem, true,
-                    item, false));
-
-            TreeMap<T, Integer> secondBag = new TreeMap<>(bag.subMap(item, true,
-                    endItem, true));
-
-            startItemToList.put(firstBeforeItem, firstBag);
-            startItemToList.put(secondBag.firstKey(), secondBag);
+            Sequence<T> splitBag = bag.split(item);
+            startItemToSequence.put(splitBag.getItems().first(), splitBag);
             return true;
         }
     }
@@ -176,77 +228,70 @@ public class ConsecutiveSetTree<T> implements Collection<T> {
 
     @Override
     public boolean addAll(Collection<? extends T> c) {
-        return c.stream().map(this::add).count() > 0;
+        int oldSize = size();
+        c.forEach(this::add);
+        return size() > oldSize;
     }
 
     @Override
     public boolean removeAll(Collection<?> c) {
-        return c.stream().map(this::remove).count() > 0;
+        int oldSize = size();
+        c.forEach(this::remove);
+        return size() < oldSize;
     }
 
     @Override
     public boolean retainAll(Collection<?> c) {
-        return stream().filter(item -> !c.contains(item)).map(this::remove)
-                .count() > 0;
+        int oldSize = size();
+        stream().filter(item -> !c.contains(item)).forEach(this::remove);
+        return size() < oldSize;
     }
 
     @Override
     public void clear() {
-        startItemToList.clear();
+        startItemToSequence.clear();
     }
 
     @Override
     public int size() {
-        return startItemToList.values().stream().map(bag -> bag.values().stream()
-                .reduce(0, Integer::sum))
+        return startItemToSequence.values().stream().map(Sequence::getCountIncludingDuplicates)
                 .reduce(0, Integer::sum);
     }
 
     @Override
     public boolean isEmpty() {
-        return startItemToList.isEmpty();
+        return startItemToSequence.isEmpty();
     }
 
     @Override
     public boolean contains(Object o) {
-        if (startItemToList.isEmpty()) {
+        if (startItemToSequence.isEmpty()) {
             return false;
         }
         if (typeClass.isInstance(o)) {
             T item = typeClass.cast(o);
-            T flooredKey = startItemToList.floorKey(item);
-            int endIndex = getEndIndex(flooredKey);
-            return getIndex.applyAsInt(item) <= endIndex;
+            T flooredKey = startItemToSequence.floorKey(item);
+            I endIndex = getEndIndex(flooredKey);
+            return indexFunction.apply(item).compareTo(endIndex) <= 0;
         } else {
             return false;
         }
     }
 
-    public static <T> Stream<T> repeatTime(T item, int times) {
-        Stream<T> out = Stream.empty();
-        for (int i = 0; i < times; i++) {
-            out = Stream.concat(Stream.of(item), out);
-        }
-        return out;
-    }
-
     @Override
     public Iterator<T> iterator() {
-        return startItemToList.values().stream().flatMap(bag -> bag.keySet().stream()
-                .flatMap(key -> repeatTime(key, bag.get(key)))).iterator();
+        return startItemToSequence.values().stream().flatMap(Sequence::getDuplicatedStream).iterator();
     }
 
     @Override
     public Object[] toArray() {
-        return startItemToList.values().stream().flatMap(bag -> bag.keySet().stream()
-                .flatMap(key -> repeatTime(key, bag.get(key))))
+        return startItemToSequence.values().stream().flatMap(Sequence::getDuplicatedStream)
                 .toArray();
     }
 
     @Override
     public <T1> T1[] toArray(T1[] a) {
-        return startItemToList.values().stream().flatMap(bag -> bag.keySet().stream()
-                .flatMap(key -> repeatTime(key, bag.get(key))))
+        return startItemToSequence.values().stream().flatMap(Sequence::getDuplicatedStream)
                 .collect(Collectors.toList()).toArray(a);
     }
 
@@ -258,12 +303,12 @@ public class ConsecutiveSetTree<T> implements Collection<T> {
         if (o == null || getClass() != o.getClass()) {
             return false;
         }
-        ConsecutiveSetTree<?> that = (ConsecutiveSetTree<?>) o;
-        return startItemToList.equals(that.startItemToList);
+        ConsecutiveSetTree<?, ?, ?> that = (ConsecutiveSetTree<?, ?, ?>) o;
+        return startItemToSequence.equals(that.startItemToSequence);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(startItemToList);
+        return Objects.hash(startItemToSequence);
     }
 }
