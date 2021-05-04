@@ -37,7 +37,9 @@ class ListChangeMoveTest {
         TestdataListEntity e2 = new TestdataListEntity("e2", v3);
 
         ScoreDirector<TestdataSolution> scoreDirector = mock(ScoreDirector.class);
-        DefaultListVariableDescriptor<?> variableDescriptor = TestdataListEntity.buildVariableDescriptorForValueList();
+        DefaultListVariableDescriptor<TestdataSolution> variableDescriptor =
+                TestdataListEntity.buildVariableDescriptorForValueList();
+
         ListChangeMove<TestdataSolution> move = new ListChangeMove<>(e1, 1, e2, 1, variableDescriptor);
 
         AbstractMove<TestdataSolution> undoMove = move.doMove(scoreDirector);
@@ -60,16 +62,16 @@ class ListChangeMoveTest {
         TestdataListEntity e2 = new TestdataListEntity("e2", v3);
 
         ScoreDirector<TestdataSolution> scoreDirector = mock(ScoreDirector.class);
-        DefaultListVariableDescriptor<?> variableDescriptor = TestdataListEntity.buildVariableDescriptorForValueList();
+        DefaultListVariableDescriptor<TestdataSolution> variableDescriptor =
+                TestdataListEntity.buildVariableDescriptorForValueList();
 
         // same entity, same index => not doable because the move doesn't change anything
-        assertThat(new ListChangeMove<TestdataSolution>(e1, 1, e1, 1, variableDescriptor).isMoveDoable(scoreDirector))
-                .isFalse();
+        assertThat(new ListChangeMove<>(e1, 1, e1, 1, variableDescriptor).isMoveDoable(scoreDirector)).isFalse();
         // same entity, different index => doable
-        assertThat(new ListChangeMove<TestdataSolution>(e1, 0, e1, 1, variableDescriptor).isMoveDoable(scoreDirector))
-                .isTrue();
+        assertThat(new ListChangeMove<>(e1, 0, e1, 1, variableDescriptor).isMoveDoable(scoreDirector)).isTrue();
+        // same entity, index == list size => not doable because the element is first removed (list size is reduced by 1)
+        assertThat(new ListChangeMove<>(e1, 0, e1, 2, variableDescriptor).isMoveDoable(scoreDirector)).isFalse();
         // different entity => doable
-        assertThat(new ListChangeMove<TestdataSolution>(e1, 0, e2, 0, variableDescriptor).isMoveDoable(scoreDirector))
-                .isTrue();
+        assertThat(new ListChangeMove<>(e1, 0, e2, 0, variableDescriptor).isMoveDoable(scoreDirector)).isTrue();
     }
 }

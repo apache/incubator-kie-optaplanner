@@ -21,6 +21,7 @@ import static org.optaplanner.core.impl.testdata.util.PlannerAssert.assertAllCod
 import org.junit.jupiter.api.Test;
 import org.optaplanner.core.impl.heuristic.selector.SelectorTestUtils;
 import org.optaplanner.core.impl.heuristic.selector.entity.EntitySelector;
+import org.optaplanner.core.impl.heuristic.selector.value.ValueSelector;
 import org.optaplanner.core.impl.testdata.domain.TestdataValue;
 import org.optaplanner.core.impl.testdata.domain.list.TestdataListEntity;
 
@@ -35,12 +36,33 @@ class ListChangeMoveSelectorTest {
                 TestdataListEntity.class,
                 new TestdataListEntity("A", v1, v2),
                 new TestdataListEntity("B", v3));
-        ListChangeMoveSelector<Solution_> moveSelector =
-                new ListChangeMoveSelector<>(entitySelector, TestdataListEntity.buildVariableDescriptorForValueList());
+        ValueSelector<Solution_> valueSelector = SelectorTestUtils.mockValueSelector(
+                TestdataListEntity.class, "valueList", v1, v2, v3);
+
+        ListChangeMoveSelector<Solution_> moveSelector = new ListChangeMoveSelector<>(
+                TestdataListEntity.buildVariableDescriptorForValueList(),
+                entitySelector,
+                valueSelector);
 
         assertAllCodesOfMoveSelector(moveSelector,
-                "A[0]->A[0]", "A[0]->A[1]", "A[0]->B[0]",
-                "A[1]->A[0]", "A[1]->A[1]", "A[1]->B[0]",
-                "B[0]->A[0]", "B[0]->A[1]", "B[0]->B[0]");
+                // moving A[0]
+                "A[0]->A[0]", // undoable
+                "A[0]->A[1]",
+                "A[0]->A[2]", // undoable
+                "A[0]->B[0]",
+                "A[0]->B[1]",
+                // moving A[1]
+                "A[1]->A[0]",
+                "A[1]->A[1]", // undoable
+                "A[1]->A[2]", // undoable
+                "A[1]->B[0]",
+                "A[1]->B[1]",
+                // moving B[0]
+                "B[0]->A[0]",
+                "B[0]->A[1]",
+                "B[0]->A[2]",
+                "B[0]->B[0]", // undoable
+                "B[0]->B[1]" // undoable
+        );
     }
 }

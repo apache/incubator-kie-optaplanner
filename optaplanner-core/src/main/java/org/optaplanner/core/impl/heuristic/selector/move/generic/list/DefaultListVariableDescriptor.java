@@ -23,7 +23,7 @@ import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
 import org.optaplanner.core.impl.domain.policy.DescriptorPolicy;
 import org.optaplanner.core.impl.domain.variable.descriptor.VariableDescriptor;
 
-public class DefaultListVariableDescriptor<Solution_> extends VariableDescriptor<Solution_> implements ListVariableMutator {
+public class DefaultListVariableDescriptor<Solution_> extends VariableDescriptor<Solution_> {
 
     public DefaultListVariableDescriptor(EntityDescriptor<Solution_> entityDescriptor, MemberAccessor variableMemberAccessor) {
         super(entityDescriptor, variableMemberAccessor);
@@ -39,13 +39,11 @@ public class DefaultListVariableDescriptor<Solution_> extends VariableDescriptor
         throw new UnsupportedOperationException("Not yet implemented.");
     }
 
-    @Override
     public Object removeElement(Object entity, int index) {
         List<?> listVariable = (List<?>) getValue(entity);
         return listVariable.remove(index);
     }
 
-    @Override
     public void addElement(Object entity, int index, Object element) {
         List<Object> listVariable = (List<Object>) getValue(entity);
         listVariable.add(index, element);
