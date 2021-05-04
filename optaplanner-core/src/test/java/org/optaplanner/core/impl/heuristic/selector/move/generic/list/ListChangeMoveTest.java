@@ -17,19 +17,10 @@
 package org.optaplanner.core.impl.heuristic.selector.move.generic.list;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.fail;
 import static org.mockito.Mockito.mock;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-
 import org.junit.jupiter.api.Test;
-import org.optaplanner.core.api.domain.common.DomainAccessType;
 import org.optaplanner.core.api.score.director.ScoreDirector;
-import org.optaplanner.core.impl.domain.common.accessor.MemberAccessor;
-import org.optaplanner.core.impl.domain.common.accessor.MemberAccessorFactory;
 import org.optaplanner.core.impl.heuristic.move.AbstractMove;
 import org.optaplanner.core.impl.testdata.domain.TestdataSolution;
 import org.optaplanner.core.impl.testdata.domain.TestdataValue;
@@ -42,11 +33,11 @@ class ListChangeMoveTest {
         TestdataValue v1 = new TestdataValue("1");
         TestdataValue v2 = new TestdataValue("2");
         TestdataValue v3 = new TestdataValue("3");
-        TestdataListEntity e1 = new TestdataListEntity(asList(v1, v2));
-        TestdataListEntity e2 = new TestdataListEntity(asList(v3));
+        TestdataListEntity e1 = new TestdataListEntity("e1", v1, v2);
+        TestdataListEntity e2 = new TestdataListEntity("e2", v3);
 
         ScoreDirector<TestdataSolution> scoreDirector = mock(ScoreDirector.class);
-        DefaultListVariableDescriptor<?> variableDescriptor = buildVariableDescriptor();
+        DefaultListVariableDescriptor<?> variableDescriptor = TestdataListEntity.buildVariableDescriptorForValueList();
         ListChangeMove<TestdataSolution> move = new ListChangeMove<>(e1, 1, e2, 1, variableDescriptor);
 
         AbstractMove<TestdataSolution> undoMove = move.doMove(scoreDirector);
@@ -65,11 +56,11 @@ class ListChangeMoveTest {
         TestdataValue v1 = new TestdataValue("1");
         TestdataValue v2 = new TestdataValue("2");
         TestdataValue v3 = new TestdataValue("3");
-        TestdataListEntity e1 = new TestdataListEntity(asList(v1, v2));
-        TestdataListEntity e2 = new TestdataListEntity(asList(v3));
+        TestdataListEntity e1 = new TestdataListEntity("e1", v1, v2);
+        TestdataListEntity e2 = new TestdataListEntity("e2", v3);
 
         ScoreDirector<TestdataSolution> scoreDirector = mock(ScoreDirector.class);
-        DefaultListVariableDescriptor<?> variableDescriptor = buildVariableDescriptor();
+        DefaultListVariableDescriptor<?> variableDescriptor = TestdataListEntity.buildVariableDescriptorForValueList();
 
         // same entity, same index => not doable because the move doesn't change anything
         assertThat(new ListChangeMove<TestdataSolution>(e1, 1, e1, 1, variableDescriptor).isMoveDoable(scoreDirector))
@@ -80,25 +71,5 @@ class ListChangeMoveTest {
         // different entity => doable
         assertThat(new ListChangeMove<TestdataSolution>(e1, 0, e2, 0, variableDescriptor).isMoveDoable(scoreDirector))
                 .isTrue();
-    }
-
-    // TODO replace this with TestdataListEntity.buildEntityDescriptor()
-    private static DefaultListVariableDescriptor<?> buildVariableDescriptor() {
-        MemberAccessor memberAccessor = null;
-        try {
-            memberAccessor = MemberAccessorFactory.buildMemberAccessor(
-                    TestdataListEntity.class.getDeclaredField("valueList"),
-                    MemberAccessorFactory.MemberAccessorType.FIELD_OR_GETTER_METHOD,
-                    null, // @PlanningCollectionVariable
-                    DomainAccessType.REFLECTION,
-                    Collections.emptyMap());
-        } catch (NoSuchFieldException e) {
-            fail("No such field", e);
-        }
-        return new DefaultListVariableDescriptor<>(null, memberAccessor);
-    }
-
-    private static List<TestdataValue> asList(TestdataValue... values) {
-        return new ArrayList<>(Arrays.asList(values));
     }
 }
