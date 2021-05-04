@@ -16,43 +16,73 @@
 
 package org.optaplanner.core.impl.heuristic.selector.move.generic.list;
 
+import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.score.director.ScoreDirector;
 import org.optaplanner.core.impl.heuristic.move.AbstractMove;
 
+/**
+ * Moves an element of a list planning variable. The moved element is identified by an entity instance and a position
+ * in that entity's list variable. The element is inserted at the given index in the given destination entity's list
+ * variable.
+ * <p>
+ * The move can be undone by simply flipping the source and destination entity+index
+ *
+ * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
+ */
 public class ListChangeMove<Solution_> extends AbstractMove<Solution_> {
 
-    private final Object entity;
-    private final int index;
-    private final Object toEntity;
-    private final int toIndex;
+    private final Object sourceEntity;
+    private final int sourceIndex;
+    private final Object destinationEntity;
+    private final int destinationIndex;
 
     private final ListVariableMutator variableDescriptor; // Employee::getTaskList()
 
     public ListChangeMove(
-            Object entity, int index,
-            Object toEntity, int toIndex,
+            Object sourceEntity, int sourceIndex,
+            Object destinationEntity, int destinationIndex,
             ListVariableMutator variableDescriptor) {
-        this.entity = entity; //= anchorSupply.get(entityElement)
-        this.index = index; //= indexSupply.get(entityElement)
-        this.toEntity = toEntity;
-        this.toIndex = toIndex;
+        this.sourceEntity = sourceEntity; //= anchorSupply.get(entityElement)
+        this.sourceIndex = sourceIndex; //= indexSupply.get(entityElement)
+        this.destinationEntity = destinationEntity;
+        this.destinationIndex = destinationIndex;
         this.variableDescriptor = variableDescriptor;
     }
 
     @Override
     protected AbstractMove<Solution_> createUndoMove(ScoreDirector<Solution_> scoreDirector) {
-        return new ListChangeMove<>(toEntity, toIndex, entity, index, variableDescriptor);
+        return new ListChangeMove<>(destinationEntity, destinationIndex, sourceEntity, sourceIndex, variableDescriptor);
     }
 
     @Override
     protected void doMoveOnGenuineVariables(ScoreDirector<Solution_> scoreDirector) {
-        Object element = variableDescriptor.removeElement(entity, index);
-        variableDescriptor.addElement(toEntity, toIndex, element);
+        Object element = variableDescriptor.removeElement(sourceEntity, sourceIndex);
+        variableDescriptor.addElement(destinationEntity, destinationIndex, element);
     }
 
     @Override
     public boolean isMoveDoable(ScoreDirector<Solution_> scoreDirector) {
         // TODO maybe remove this because no such move should be generated
-        return !entity.equals(toEntity) || index != toIndex;
+        return !sourceEntity.equals(destinationEntity) || sourceIndex != destinationIndex;
+    }
+
+    // ************************************************************************
+    // Testing methods
+    // ************************************************************************
+
+    public Object getSourceEntity() {
+        return sourceEntity;
+    }
+
+    public int getSourceIndex() {
+        return sourceIndex;
+    }
+
+    public Object getDestinationEntity() {
+        return destinationEntity;
+    }
+
+    public int getDestinationIndex() {
+        return destinationIndex;
     }
 }
