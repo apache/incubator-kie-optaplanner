@@ -36,12 +36,12 @@ public class ListChangeMove<Solution_> extends AbstractMove<Solution_> {
     private final Object destinationEntity;
     private final int destinationIndex;
 
-    private final ListVariableMutator variableDescriptor; // Employee::getTaskList()
+    private final DefaultListVariableDescriptor<Solution_> variableDescriptor; // Employee::getTaskList()
 
     public ListChangeMove(
             Object sourceEntity, int sourceIndex,
             Object destinationEntity, int destinationIndex,
-            ListVariableMutator variableDescriptor) {
+            DefaultListVariableDescriptor<Solution_> variableDescriptor) {
         this.sourceEntity = sourceEntity; //= anchorSupply.get(entityElement)
         this.sourceIndex = sourceIndex; //= indexSupply.get(entityElement)
         this.destinationEntity = destinationEntity;
@@ -63,7 +63,8 @@ public class ListChangeMove<Solution_> extends AbstractMove<Solution_> {
     @Override
     public boolean isMoveDoable(ScoreDirector<Solution_> scoreDirector) {
         // TODO maybe remove this because no such move should be generated
-        return !sourceEntity.equals(destinationEntity) || sourceIndex != destinationIndex;
+        return !destinationEntity.equals(sourceEntity)
+                || (destinationIndex != sourceIndex && destinationIndex != variableDescriptor.getListSize(sourceEntity));
     }
 
     // ************************************************************************

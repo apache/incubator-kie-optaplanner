@@ -19,6 +19,7 @@ package org.optaplanner.core.impl.heuristic.selector.move.generic.list;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.PrimitiveIterator;
+import java.util.function.BiFunction;
 import java.util.stream.IntStream;
 
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
@@ -65,13 +66,13 @@ public class NaiveListChangeIterator<Solution_> extends UpcomingSelectionIterato
                         return noUpcomingSelection();
                     }
                     upcomingFromEntity = fromEntityIterator.next();
-                    fromIndexIterator = listIndexIterator(upcomingFromEntity);
+                    fromIndexIterator = listIndexIterator(upcomingFromEntity, IntStream::range);
                 }
                 upcomingFromIndex = fromIndexIterator.nextInt();
                 toEntityIterator = entitySelector.iterator();
             }
             upcomingToEntity = toEntityIterator.next();
-            toIndexIterator = listIndexIterator(upcomingToEntity);
+            toIndexIterator = listIndexIterator(upcomingToEntity, IntStream::rangeClosed);
         }
 
         return new ListChangeMove<>(
@@ -82,7 +83,7 @@ public class NaiveListChangeIterator<Solution_> extends UpcomingSelectionIterato
                 listVariableDescriptor);
     }
 
-    private PrimitiveIterator.OfInt listIndexIterator(Object entity) {
-        return IntStream.range(0, listVariableDescriptor.getListSize(entity)).iterator();
+    private PrimitiveIterator.OfInt listIndexIterator(Object entity, BiFunction<Integer, Integer, IntStream> rangeType) {
+        return rangeType.apply(0, listVariableDescriptor.getListSize(entity)).iterator();
     }
 }

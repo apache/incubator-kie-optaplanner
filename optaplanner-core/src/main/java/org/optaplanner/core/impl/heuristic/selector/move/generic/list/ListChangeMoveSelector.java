@@ -21,23 +21,28 @@ import java.util.Iterator;
 import org.optaplanner.core.impl.heuristic.move.Move;
 import org.optaplanner.core.impl.heuristic.selector.entity.EntitySelector;
 import org.optaplanner.core.impl.heuristic.selector.move.generic.GenericMoveSelector;
+import org.optaplanner.core.impl.heuristic.selector.value.ValueSelector;
 
 public class ListChangeMoveSelector<Solution_> extends GenericMoveSelector<Solution_> {
 
-    private final EntitySelector<Solution_> entitySelector;
     private final DefaultListVariableDescriptor<Solution_> listVariableDescriptor;
+    private final EntitySelector<Solution_> entitySelector;
+    private final ValueSelector<Solution_> valueSelector;
 
     public ListChangeMoveSelector(
+            DefaultListVariableDescriptor<Solution_> listVariableDescriptor,
             EntitySelector<Solution_> entitySelector,
-            DefaultListVariableDescriptor<Solution_> listVariableDescriptor) {
-        this.entitySelector = entitySelector;
+            ValueSelector<Solution_> valueSelector) {
         this.listVariableDescriptor = listVariableDescriptor;
+        this.entitySelector = entitySelector;
+        this.valueSelector = valueSelector;
     }
 
     @Override
     public long getSize() {
-        // TODO value count * (value count + entity count - 2)
-        return 9;
+        long entityCount = entitySelector.getSize();
+        long valueCount = valueSelector.getSize(null);
+        return valueCount * (valueCount + entityCount);
     }
 
     @Override
