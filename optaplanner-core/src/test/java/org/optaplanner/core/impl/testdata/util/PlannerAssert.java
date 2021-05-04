@@ -40,6 +40,7 @@ import org.optaplanner.core.impl.heuristic.selector.entity.pillar.PillarSelector
 import org.optaplanner.core.impl.heuristic.selector.move.MoveSelector;
 import org.optaplanner.core.impl.heuristic.selector.move.generic.ChangeMove;
 import org.optaplanner.core.impl.heuristic.selector.move.generic.SwapMove;
+import org.optaplanner.core.impl.heuristic.selector.move.generic.list.ListChangeMove;
 import org.optaplanner.core.impl.heuristic.selector.value.EntityIndependentValueSelector;
 import org.optaplanner.core.impl.heuristic.selector.value.ValueSelector;
 import org.optaplanner.core.impl.heuristic.selector.value.chained.SubChain;
@@ -245,6 +246,12 @@ public final class PlannerAssert {
             }
             final String code = codeBuilder.substring(1);
             return () -> code;
+        } else if (o instanceof ListChangeMove) {
+            ListChangeMove<?> listChangeMove = (ListChangeMove<?>) o;
+            return () -> convertToCodeAssertable(listChangeMove.getSourceEntity())
+                    + "[" + listChangeMove.getSourceIndex() + "]->"
+                    + convertToCodeAssertable(listChangeMove.getDestinationEntity())
+                    + "[" + listChangeMove.getDestinationIndex() + "]";
         } else if (o instanceof List) {
             List<?> list = (List) o;
             StringBuilder codeBuilder = new StringBuilder("[");

@@ -50,4 +50,8 @@ public class DefaultListVariableDescriptor<Solution_> extends VariableDescriptor
         List<Object> listVariable = (List<Object>) getValue(entity);
         listVariable.add(index, element);
     }
+
+    public int getListSize(Object entity) {
+        return ((List<?>) getValue(entity)).size();
+    }
 }
