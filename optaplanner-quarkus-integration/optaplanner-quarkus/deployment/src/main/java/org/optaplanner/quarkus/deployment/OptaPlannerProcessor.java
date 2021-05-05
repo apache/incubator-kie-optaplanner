@@ -202,7 +202,6 @@ class OptaPlannerProcessor {
                         transformers, reflectiveClassSet);
 
         SolverManagerConfig solverManagerConfig = new SolverManagerConfig();
-        optaPlannerBuildTimeConfig.solverManager.parallelSolverCount.ifPresent(solverManagerConfig::setParallelSolverCount);
 
         syntheticBeanBuildItemBuildProducer.produce(SyntheticBeanBuildItem.configure(SolverConfig.class)
                 .scope(Singleton.class)

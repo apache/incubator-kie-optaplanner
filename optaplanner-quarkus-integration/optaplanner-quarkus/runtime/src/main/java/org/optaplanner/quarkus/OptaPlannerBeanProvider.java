@@ -36,7 +36,6 @@ import org.optaplanner.core.api.solver.SolverFactory;
 import org.optaplanner.core.api.solver.SolverManager;
 import org.optaplanner.core.config.solver.SolverConfig;
 import org.optaplanner.core.config.solver.SolverManagerConfig;
-import org.optaplanner.core.config.solver.termination.TerminationConfig;
 import org.optaplanner.quarkus.config.OptaPlannerRuntimeConfig;
 
 import io.quarkus.arc.DefaultBean;

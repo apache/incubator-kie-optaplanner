@@ -24,8 +24,8 @@ import org.optaplanner.core.api.domain.solution.cloner.SolutionCloner;
 import org.optaplanner.core.config.solver.SolverConfig;
 import org.optaplanner.core.config.solver.SolverManagerConfig;
 import org.optaplanner.core.config.solver.termination.TerminationConfig;
-import org.optaplanner.quarkus.config.OptaPlannerRuntimeConfig;
 import org.optaplanner.core.impl.domain.common.accessor.MemberAccessor;
+import org.optaplanner.quarkus.config.OptaPlannerRuntimeConfig;
 import org.optaplanner.quarkus.gizmo.OptaPlannerDroolsInitializer;
 
 import io.quarkus.arc.Arc;
@@ -35,7 +35,10 @@ import io.quarkus.runtime.annotations.Recorder;
 @Recorder
 public class OptaPlannerRecorder {
 
-    public Supplier<SolverConfig> solverConfigSupplier(final SolverConfig solverConfig) {
+    public Supplier<SolverConfig> solverConfigSupplier(final SolverConfig solverConfig,
+            Map<String, RuntimeValue<MemberAccessor>> generatedGizmoMemberAccessorMap,
+            Map<String, RuntimeValue<SolutionCloner>> generatedGizmoSolutionClonerMap,
+            RuntimeValue<OptaPlannerDroolsInitializer> droolsInitializer) {
         return new Supplier<SolverConfig>() {
             @Override
             public SolverConfig get() {
