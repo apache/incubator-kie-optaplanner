@@ -422,7 +422,7 @@ In the previous example, `filter()` and all subsequent operations no longer have
 There are several collectors available out of the box. You can also provide your own collectors by implementing the
 `org.optaplanner.core.api.score.stream.uni.UniConstraintCollector` interface, or its `Bi...`, `Tri...` counterparts.
 
-[collectorsOutOfTheBox]
+[[collectorsOutOfTheBox]]
 ==== Out-of-the-box collectors
 
 The following collectors are provided out of the box:
@@ -434,7 +434,7 @@ The following collectors are provided out of the box:
 * <<collectorsCollection,`toList()`, `toSet()` and `toMap()`>>
 
 
-[collectorsCount]
+[[collectorsCount]]
 ===== `count()` collector
 
 The `ConstraintCollectors.count(...)` counts all elements per group. For example, the following use of the collector
@@ -459,7 +459,7 @@ The count is collected in an `int`. Variants of this collector:
 To count a bi, tri or quad stream, use `countBi()`, `countTri()` or `countQuad()` respectively,
 because - unlike the other build-in collectors - they aren't overloaded methods due to Java's generics erasure.
 
-[collectorsCountDistinct]
+[[collectorsCountDistinct]]
 ===== `countDistinct()` collector
 
 The `ConstraintCollectors.countDistinct(...)` counts any element per group once, regardless of how many times it
@@ -481,7 +481,7 @@ The distinct count is collected in an `int`. Variants of this collector:
 * `countDistinctLong()` collects a `long` value instead of an `int` value.
 
 
-[collectorsSum]
+[[collectorsSum]]
 ===== `sum()` collector
 
 To sum the values of a particular property of all elements per group, use the `ConstraintCollectors.sum(...)`
@@ -509,7 +509,7 @@ The sum is collected in an `int`. Variants of this collector:
 * a generic `sum()` variant for summing up custom types
 
 
-[collectorsMinMax]
+[[collectorsMinMax]]
 ===== `min()` and `max()` collectors
 
 To extract the minimum or maximum per group, use the `ConstraintCollectors.min(...)` and
@@ -539,7 +539,7 @@ See https://docs.oracle.com/javase/8/docs/api/java/lang/Comparable.html[Javadoc 
 ====
 
 
-[collectorsCollection]
+[[collectorsCollection]]
 ===== `toList()`, `toSet()` and `toMap()` collectors
 
 To extract all elements per group into a collection, use the `ConstraintCollectors.toList(...)`.
