@@ -272,6 +272,7 @@ class OptaPlannerProcessor {
                                     Type.create(DotName.createSimple(constraintProviderClass.getName()), Type.Kind.CLASS),
                                     Type.create(DotName.createSimple(planningSolutionClass.getName()), Type.Kind.CLASS)
                             }, null))
+                    .forceApplicationClass()
                     .defaultBean()
                     .done());
         }
