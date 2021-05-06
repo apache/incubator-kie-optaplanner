@@ -9,7 +9,6 @@ global SimpleScoreHolder scoreHolder;
 
 rule "Don't assign 2 entities the same value."
     when
-        TestdataQuarkusEntity()
         $a : TestdataQuarkusEntity(value != null, $v : value)
         TestdataQuarkusEntity(value == $v, this != $a)
     then

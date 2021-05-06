@@ -18,6 +18,7 @@ package org.optaplanner.quarkus.drl.it;
 
 import static org.hamcrest.Matchers.is;
 
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Timeout;
 
@@ -33,6 +34,7 @@ public class OptaPlannerTestResourceTest {
 
     @Test
     @Timeout(600)
+    @Disabled
     public void solveWithSolverFactory() throws Exception {
         RestAssured.given()
                 .header("Content-Type", "application/json")

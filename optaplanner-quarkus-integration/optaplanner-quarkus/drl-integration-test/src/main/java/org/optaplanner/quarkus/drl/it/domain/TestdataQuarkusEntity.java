@@ -33,4 +33,8 @@ public class TestdataQuarkusEntity {
         this.value = value;
     }
 
+    @Override
+    public String toString() {
+        return "TestdataQuarkusEntity{value=" + value + "}";
+    }
 }

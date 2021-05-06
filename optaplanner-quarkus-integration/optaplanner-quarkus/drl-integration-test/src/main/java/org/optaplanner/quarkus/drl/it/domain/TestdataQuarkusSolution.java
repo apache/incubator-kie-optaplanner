@@ -61,4 +61,12 @@ public class TestdataQuarkusSolution {
         this.score = score;
     }
 
+    @Override
+    public String toString() {
+        return "TestdataQuarkusSolution{" +
+                "valueList=" + valueList +
+                ", entityList=" + entityList +
+                ", score=" + score +
+                '}';
+    }
 }
