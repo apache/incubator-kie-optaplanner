@@ -44,10 +44,17 @@ public class OptaPlannerTestResource {
         planningProblem.setEntityList(Arrays.asList(
                 new TestdataQuarkusEntity(),
                 new TestdataQuarkusEntity()));
-        planningProblem.setValueList(Arrays.asList("a", "b", "c"));
+        planningProblem.setLeftValueList(Arrays.asList("a", "b", "c"));
+        planningProblem.setRightValueList(Arrays.asList("1", "2", "3"));
         SolverJob<TestdataQuarkusSolution, Long> solverJob = solverManager.solve(1L, planningProblem);
         try {
-            return solverJob.getFinalBestSolution().getScore().toString();
+            TestdataQuarkusSolution sol = solverJob.getFinalBestSolution();
+            StringBuilder out = new StringBuilder();
+            out.append("score=").append(sol.getScore()).append('\n');
+            for (int i = 0; i < sol.getEntityList().size(); i++) {
+                out.append("entity." + i + ".fullValue=").append(sol.getEntityList().get(i).getFullValue()).append('\n');
+            }
+            return out.toString();
         } catch (InterruptedException | ExecutionException e) {
             throw new IllegalStateException("Solving failed.", e);
         }
