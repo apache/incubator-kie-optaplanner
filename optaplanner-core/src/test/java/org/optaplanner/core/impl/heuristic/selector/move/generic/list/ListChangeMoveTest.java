@@ -21,10 +21,11 @@ import static org.mockito.Mockito.mock;
 
 import org.junit.jupiter.api.Test;
 import org.optaplanner.core.api.score.director.ScoreDirector;
+import org.optaplanner.core.impl.domain.variable.descriptor.ListVariableDescriptor;
 import org.optaplanner.core.impl.heuristic.move.AbstractMove;
-import org.optaplanner.core.impl.testdata.domain.TestdataSolution;
 import org.optaplanner.core.impl.testdata.domain.TestdataValue;
 import org.optaplanner.core.impl.testdata.domain.list.TestdataListEntity;
+import org.optaplanner.core.impl.testdata.domain.list.TestdataListSolution;
 
 class ListChangeMoveTest {
 
@@ -36,13 +37,13 @@ class ListChangeMoveTest {
         TestdataListEntity e1 = new TestdataListEntity("e1", v1, v2);
         TestdataListEntity e2 = new TestdataListEntity("e2", v3);
 
-        ScoreDirector<TestdataSolution> scoreDirector = mock(ScoreDirector.class);
-        DefaultListVariableDescriptor<TestdataSolution> variableDescriptor =
+        ScoreDirector<TestdataListSolution> scoreDirector = mock(ScoreDirector.class);
+        ListVariableDescriptor<TestdataListSolution> variableDescriptor =
                 TestdataListEntity.buildVariableDescriptorForValueList();
 
-        ListChangeMove<TestdataSolution> move = new ListChangeMove<>(e1, 1, e2, 1, variableDescriptor);
+        ListChangeMove<TestdataListSolution> move = new ListChangeMove<>(e1, 1, e2, 1, variableDescriptor);
 
-        AbstractMove<TestdataSolution> undoMove = move.doMove(scoreDirector);
+        AbstractMove<TestdataListSolution> undoMove = move.doMove(scoreDirector);
 
         assertThat(e1.getValueList()).containsExactly(v1);
         assertThat(e2.getValueList()).containsExactly(v3, v2);
@@ -61,8 +62,8 @@ class ListChangeMoveTest {
         TestdataListEntity e1 = new TestdataListEntity("e1", v1, v2);
         TestdataListEntity e2 = new TestdataListEntity("e2", v3);
 
-        ScoreDirector<TestdataSolution> scoreDirector = mock(ScoreDirector.class);
-        DefaultListVariableDescriptor<TestdataSolution> variableDescriptor =
+        ScoreDirector<TestdataListSolution> scoreDirector = mock(ScoreDirector.class);
+        ListVariableDescriptor<TestdataListSolution> variableDescriptor =
                 TestdataListEntity.buildVariableDescriptorForValueList();
 
         // same entity, same index => not doable because the move doesn't change anything

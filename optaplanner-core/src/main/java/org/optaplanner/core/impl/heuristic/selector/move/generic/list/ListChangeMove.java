@@ -18,6 +18,7 @@ package org.optaplanner.core.impl.heuristic.selector.move.generic.list;
 
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.score.director.ScoreDirector;
+import org.optaplanner.core.impl.domain.variable.descriptor.ListVariableDescriptor;
 import org.optaplanner.core.impl.heuristic.move.AbstractMove;
 
 /**
@@ -36,12 +37,12 @@ public class ListChangeMove<Solution_> extends AbstractMove<Solution_> {
     private final Object destinationEntity;
     private final int destinationIndex;
 
-    private final DefaultListVariableDescriptor<Solution_> variableDescriptor; // Employee::getTaskList()
+    private final ListVariableDescriptor<Solution_> variableDescriptor; // Employee::getTaskList()
 
     public ListChangeMove(
             Object sourceEntity, int sourceIndex,
             Object destinationEntity, int destinationIndex,
-            DefaultListVariableDescriptor<Solution_> variableDescriptor) {
+            ListVariableDescriptor<Solution_> variableDescriptor) {
         this.sourceEntity = sourceEntity; //= anchorSupply.get(entityElement)
         this.sourceIndex = sourceIndex; //= indexSupply.get(entityElement)
         this.destinationEntity = destinationEntity;

@@ -14,29 +14,48 @@
  * limitations under the License.
  */
 
-package org.optaplanner.core.impl.heuristic.selector.move.generic.list;
+package org.optaplanner.core.impl.domain.variable.descriptor;
 
 import java.util.List;
 
+import org.optaplanner.core.api.domain.variable.PlanningCollectionVariable;
 import org.optaplanner.core.impl.domain.common.accessor.MemberAccessor;
 import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
 import org.optaplanner.core.impl.domain.policy.DescriptorPolicy;
-import org.optaplanner.core.impl.domain.variable.descriptor.VariableDescriptor;
 
-public class DefaultListVariableDescriptor<Solution_> extends VariableDescriptor<Solution_> {
+public class ListVariableDescriptor<Solution_> extends GenuineVariableDescriptor<Solution_> {
 
-    public DefaultListVariableDescriptor(EntityDescriptor<Solution_> entityDescriptor, MemberAccessor variableMemberAccessor) {
+    public ListVariableDescriptor(EntityDescriptor<Solution_> entityDescriptor, MemberAccessor variableMemberAccessor) {
         super(entityDescriptor, variableMemberAccessor);
     }
 
     @Override
-    public void linkVariableDescriptors(DescriptorPolicy descriptorPolicy) {
-        throw new UnsupportedOperationException("Not yet implemented.");
+    protected void processPropertyAnnotations(DescriptorPolicy descriptorPolicy) {
+        PlanningCollectionVariable planningVariableAnnotation =
+                variableMemberAccessor.getAnnotation(PlanningCollectionVariable.class);
+        processValueRangeRefs(descriptorPolicy, planningVariableAnnotation::valueRangeProviderRefs);
+        // TODO process strength
+        //processStrength(descriptorPolicy, planningVariableAnnotation);
     }
 
     @Override
-    public boolean isGenuineAndUninitialized(Object entity) {
-        throw new UnsupportedOperationException("Not yet implemented.");
+    public boolean isListVariable() {
+        return true;
+    }
+
+    @Override
+    public boolean isChained() {
+        return false;
+    }
+
+    @Override
+    public boolean isNullable() {
+        return false;
+    }
+
+    @Override
+    public boolean isInitialized(Object entity) {
+        return true;
     }
 
     public Object removeElement(Object entity, int index) {
