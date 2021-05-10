@@ -24,22 +24,23 @@ import org.optaplanner.core.impl.heuristic.selector.entity.EntitySelector;
 import org.optaplanner.core.impl.heuristic.selector.value.ValueSelector;
 import org.optaplanner.core.impl.testdata.domain.TestdataValue;
 import org.optaplanner.core.impl.testdata.domain.list.TestdataListEntity;
+import org.optaplanner.core.impl.testdata.domain.list.TestdataListSolution;
 
 class ListChangeMoveSelectorTest {
 
     @Test
-    <Solution_> void naive() {
+    void naive() {
         TestdataValue v1 = new TestdataValue("1");
         TestdataValue v2 = new TestdataValue("2");
         TestdataValue v3 = new TestdataValue("3");
-        EntitySelector<Solution_> entitySelector = SelectorTestUtils.mockEntitySelector(
+        EntitySelector<TestdataListSolution> entitySelector = SelectorTestUtils.mockEntitySelector(
                 TestdataListEntity.class,
                 new TestdataListEntity("A", v1, v2),
                 new TestdataListEntity("B", v3));
-        ValueSelector<Solution_> valueSelector = SelectorTestUtils.mockValueSelector(
+        ValueSelector<TestdataListSolution> valueSelector = SelectorTestUtils.mockValueSelector(
                 TestdataListEntity.class, "valueList", v1, v2, v3);
 
-        ListChangeMoveSelector<Solution_> moveSelector = new ListChangeMoveSelector<>(
+        ListChangeMoveSelector<TestdataListSolution> moveSelector = new ListChangeMoveSelector<>(
                 TestdataListEntity.buildVariableDescriptorForValueList(),
                 entitySelector,
                 valueSelector);

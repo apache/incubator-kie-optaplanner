@@ -23,6 +23,7 @@ import java.util.function.BiFunction;
 import java.util.stream.IntStream;
 
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
+import org.optaplanner.core.impl.domain.variable.descriptor.ListVariableDescriptor;
 import org.optaplanner.core.impl.heuristic.move.Move;
 import org.optaplanner.core.impl.heuristic.selector.common.iterator.UpcomingSelectionIterator;
 import org.optaplanner.core.impl.heuristic.selector.entity.EntitySelector;
@@ -40,7 +41,7 @@ public class NaiveListChangeIterator<Solution_> extends UpcomingSelectionIterato
     private PrimitiveIterator.OfInt fromIndexIterator;
     private Iterator<Object> toEntityIterator;
     private PrimitiveIterator.OfInt toIndexIterator;
-    private final DefaultListVariableDescriptor<Solution_> listVariableDescriptor;
+    private final ListVariableDescriptor<Solution_> listVariableDescriptor;
 
     private Object upcomingFromEntity;
     private Object upcomingToEntity;
@@ -48,7 +49,7 @@ public class NaiveListChangeIterator<Solution_> extends UpcomingSelectionIterato
 
     public NaiveListChangeIterator(
             EntitySelector<Solution_> entitySelector,
-            DefaultListVariableDescriptor<Solution_> listVariableDescriptor) {
+            ListVariableDescriptor<Solution_> listVariableDescriptor) {
         this.entitySelector = entitySelector;
         this.fromEntityIterator = entitySelector.iterator();
         this.toEntityIterator = Collections.emptyIterator();

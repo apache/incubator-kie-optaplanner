@@ -18,6 +18,7 @@ package org.optaplanner.core.impl.heuristic.selector.move.generic.list;
 
 import java.util.Iterator;
 
+import org.optaplanner.core.impl.domain.variable.descriptor.ListVariableDescriptor;
 import org.optaplanner.core.impl.heuristic.move.Move;
 import org.optaplanner.core.impl.heuristic.selector.entity.EntitySelector;
 import org.optaplanner.core.impl.heuristic.selector.move.generic.GenericMoveSelector;
@@ -25,12 +26,12 @@ import org.optaplanner.core.impl.heuristic.selector.value.ValueSelector;
 
 public class ListChangeMoveSelector<Solution_> extends GenericMoveSelector<Solution_> {
 
-    private final DefaultListVariableDescriptor<Solution_> listVariableDescriptor;
+    private final ListVariableDescriptor<Solution_> listVariableDescriptor;
     private final EntitySelector<Solution_> entitySelector;
     private final ValueSelector<Solution_> valueSelector;
 
     public ListChangeMoveSelector(
-            DefaultListVariableDescriptor<Solution_> listVariableDescriptor,
+            ListVariableDescriptor<Solution_> listVariableDescriptor,
             EntitySelector<Solution_> entitySelector,
             ValueSelector<Solution_> valueSelector) {
         this.listVariableDescriptor = listVariableDescriptor;
