@@ -39,7 +39,7 @@ public class OptaPlannerTestResource {
     @POST
     @Path("/solver-factory")
     @Produces(MediaType.TEXT_PLAIN)
-    public String solveWithSolverFactory() {
+    public String solveWithSolverFactory() throws InterruptedException {
         TestdataQuarkusSolution planningProblem = new TestdataQuarkusSolution();
         planningProblem.setEntityList(Arrays.asList(
                 new TestdataQuarkusEntity(),
@@ -55,7 +55,7 @@ public class OptaPlannerTestResource {
                 out.append("entity." + i + ".fullValue=").append(sol.getEntityList().get(i).getFullValue()).append('\n');
             }
             return out.toString();
-        } catch (InterruptedException | ExecutionException e) {
+        } catch (ExecutionException e) {
             throw new IllegalStateException("Solving failed.", e);
         }
     }
