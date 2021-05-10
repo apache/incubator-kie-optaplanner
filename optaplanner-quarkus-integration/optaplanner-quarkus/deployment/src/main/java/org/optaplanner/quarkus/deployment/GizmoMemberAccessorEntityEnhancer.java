@@ -486,6 +486,7 @@ public class GizmoMemberAccessorEntityEnhancer {
                                 KieBaseExtractor.class),
                         methodCreator.getMethodParam(0), kieBaseExtractor);
 
+                // Workaround for https://issues.redhat.com/browse/KOGITO-5101
                 transformers.produce(new BytecodeTransformerBuildItem(config.getSolutionClass().getName(),
                         (className, classVisitor) -> new OptaPlannerDroolsReactiveClassVisitor(config.getSolutionClass(),
                                 classVisitor)));

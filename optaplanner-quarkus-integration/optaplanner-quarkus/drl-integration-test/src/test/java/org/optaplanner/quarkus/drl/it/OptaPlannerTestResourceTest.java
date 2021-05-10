@@ -36,8 +36,7 @@ public class OptaPlannerTestResourceTest {
 
     @Test
     @Timeout(600)
-    @Disabled("There an issue where enabling ANC twice on same KieBase causes rules not to fire" +
-            " which will cause this test to fail. Enable this test once that issue is resolved.")
+    @Disabled("Enable when https://issues.redhat.com/browse/DROOLS-6336 is fixed")
     public void solveWithSolverFactory() throws Exception {
         Properties result = new Properties();
         result.load(new StringReader(RestAssured.given()
