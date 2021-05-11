@@ -31,12 +31,6 @@ import io.quarkus.runtime.annotations.ConfigItem;
 @ConfigGroup
 public class SolverRuntimeConfig {
     /**
-     * Configuration properties that overwrite OptaPlanner's {@link TerminationConfig}.
-     */
-    @ConfigItem
-    public TerminationRuntimeConfig termination;
-
-    /**
      * Enable multithreaded solving for a single problem, which increases CPU consumption.
      * Defaults to {@value SolverConfig#MOVE_THREAD_COUNT_NONE}.
      * Other options include {@value SolverConfig#MOVE_THREAD_COUNT_AUTO}, a number
@@ -44,4 +38,10 @@ public class SolverRuntimeConfig {
      */
     @ConfigItem
     public Optional<String> moveThreadCount;
+
+    /**
+     * Configuration properties that overwrite OptaPlanner's {@link TerminationConfig}.
+     */
+    @ConfigItem
+    public TerminationRuntimeConfig termination;
 }

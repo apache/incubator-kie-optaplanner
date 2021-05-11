@@ -63,7 +63,11 @@ import org.optaplanner.quarkus.config.OptaPlannerRuntimeConfig;
 import org.optaplanner.quarkus.deployment.config.OptaPlannerBuildTimeConfig;
 import org.optaplanner.quarkus.gizmo.OptaPlannerGizmoBeanFactory;
 
-import io.quarkus.arc.deployment.*;
+import io.quarkus.arc.deployment.AdditionalBeanBuildItem;
+import io.quarkus.arc.deployment.GeneratedBeanBuildItem;
+import io.quarkus.arc.deployment.GeneratedBeanGizmoAdaptor;
+import io.quarkus.arc.deployment.SyntheticBeanBuildItem;
+import io.quarkus.arc.deployment.UnremovableBeanBuildItem;
 import io.quarkus.deployment.Capabilities;
 import io.quarkus.deployment.GeneratedClassGizmoAdaptor;
 import io.quarkus.deployment.annotations.BuildProducer;
