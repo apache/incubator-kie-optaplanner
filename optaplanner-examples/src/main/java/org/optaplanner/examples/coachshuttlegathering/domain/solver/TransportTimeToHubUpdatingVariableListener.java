@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2021 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -111,9 +111,11 @@ public class TransportTimeToHubUpdatingVariableListener implements VariableListe
         for (BusOrStop busOrStop = sourceStop.getPreviousBusOrStop(); busOrStop instanceof BusStop;) {
             BusStop stop = (BusStop) busOrStop;
             transportTimeToHub = addTransportTime(transportTimeToHub, stop, toStop);
-            scoreDirector.beforeVariableChanged(stop, "transportTimeToHub");
-            stop.setTransportTimeToHub(transportTimeToHub);
-            scoreDirector.afterVariableChanged(stop, "transportTimeToHub");
+            if (!Objects.equals(transportTimeToHub, stop.getTransportTimeToHub())) {
+                scoreDirector.beforeVariableChanged(stop, "transportTimeToHub");
+                stop.setTransportTimeToHub(transportTimeToHub);
+                scoreDirector.afterVariableChanged(stop, "transportTimeToHub");
+            }
             updateTransportTimeForTransferShuttleList(scoreDirector, stop, bus);
             toStop = stop;
             busOrStop = stop.getPreviousBusOrStop();
