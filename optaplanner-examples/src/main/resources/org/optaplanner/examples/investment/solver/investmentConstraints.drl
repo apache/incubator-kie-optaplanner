@@ -34,7 +34,7 @@ global HardSoftLongScoreHolder scoreHolder;
 
 rule "Standard deviation maximum"
     when
-        InvestmentParametrization($squaredStandardDeviationFemtosMaximum : calculateSquaredStandardDeviationFemtosMaximum())
+        InvestmentParametrization($squaredStandardDeviationFemtosMaximum : squaredStandardDeviationFemtosMaximum)
         accumulate(
             $a : AssetClassAllocation() and $b : AssetClassAllocation();
             $squaredStandardDeviationFemtos : sum(AssetClassAllocation.calculateSquaredStandardDeviationFemtosFromTo($a, $b));

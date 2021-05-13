@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2021 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,6 +27,7 @@ import com.thoughtworks.xstream.annotations.XStreamAlias;
 public class InvestmentParametrization extends AbstractPersistable {
 
     private long standardDeviationMillisMaximum; // In millis (so multiplied by 1000)
+    private long squaredStandardDeviationFemtosMaximum;
 
     public long getStandardDeviationMillisMaximum() {
         return standardDeviationMillisMaximum;
@@ -34,15 +35,16 @@ public class InvestmentParametrization extends AbstractPersistable {
 
     public void setStandardDeviationMillisMaximum(long standardDeviationMillisMaximum) {
         this.standardDeviationMillisMaximum = standardDeviationMillisMaximum;
+        this.squaredStandardDeviationFemtosMaximum = standardDeviationMillisMaximum * standardDeviationMillisMaximum
+                * 1000L * 1000L * 1000L;
     }
 
     // ************************************************************************
     // Complex methods
     // ************************************************************************
 
-    public long calculateSquaredStandardDeviationFemtosMaximum() {
-        return standardDeviationMillisMaximum * standardDeviationMillisMaximum
-                * 1000L * 1000L * 1000L;
+    public long getSquaredStandardDeviationFemtosMaximum() {
+        return squaredStandardDeviationFemtosMaximum;
     }
 
 }

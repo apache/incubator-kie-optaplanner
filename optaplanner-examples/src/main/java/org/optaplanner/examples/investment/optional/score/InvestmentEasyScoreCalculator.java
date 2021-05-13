@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2021 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -30,7 +30,7 @@ public class InvestmentEasyScoreCalculator implements EasyScoreCalculator<Invest
     public HardSoftLongScore calculateScore(InvestmentSolution solution) {
         long hardScore = 0L;
         long softScore = 0L;
-        long squaredFemtosMaximum = solution.getParametrization().calculateSquaredStandardDeviationFemtosMaximum();
+        long squaredFemtosMaximum = solution.getParametrization().getSquaredStandardDeviationFemtosMaximum();
         long squaredFemtos = solution.calculateStandardDeviationSquaredFemtos();
         // Standard deviation maximum
         if (squaredFemtos > squaredFemtosMaximum) {
