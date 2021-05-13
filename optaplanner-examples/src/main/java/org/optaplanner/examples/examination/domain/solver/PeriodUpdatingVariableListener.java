@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2021 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,6 +15,8 @@
  */
 
 package org.optaplanner.examples.examination.domain.solver;
+
+import java.util.Objects;
 
 import org.optaplanner.core.api.domain.variable.VariableListener;
 import org.optaplanner.core.api.score.director.ScoreDirector;
@@ -58,6 +60,9 @@ public class PeriodUpdatingVariableListener implements VariableListener<Examinat
     protected void updatePeriod(ScoreDirector<Examination> scoreDirector, LeadingExam leadingExam) {
         Period period = leadingExam.getPeriod();
         for (FollowingExam followingExam : leadingExam.getFollowingExamList()) {
+            if (Objects.equals(period, followingExam.getPeriod())) {
+                continue;
+            }
             scoreDirector.beforeVariableChanged(followingExam, "period");
             followingExam.setPeriod(period);
             scoreDirector.afterVariableChanged(followingExam, "period");

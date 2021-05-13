@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2021 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -66,23 +66,35 @@ public class RockShowVariableListener implements VariableListener<RockTourSoluti
         RockStandstill previousStandstill = sourceShow.getPreviousStandstill();
         Arrival arrival = calculateArrival(solution, sourceShow, previousStandstill);
         RockShow shadowShow = sourceShow;
-        while (shadowShow != null
-                && !(Objects.equals(shadowShow.getDate(), arrival.date)
-                        && Objects.equals(shadowShow.getTimeOfDay(), arrival.timeOfDay)
-                        && shadowShow.getHosWeekStart() == arrival.hosWeekStart
-                        && Objects.equals(shadowShow.getHosWeekDrivingSecondsTotal(), arrival.hosWeekDrivingSecondsTotal))) {
-            scoreDirector.beforeVariableChanged(shadowShow, "date");
-            shadowShow.setDate(arrival.date);
-            scoreDirector.afterVariableChanged(shadowShow, "date");
-            scoreDirector.beforeVariableChanged(shadowShow, "timeOfDay");
-            shadowShow.setTimeOfDay(arrival.timeOfDay);
-            scoreDirector.afterVariableChanged(shadowShow, "timeOfDay");
-            scoreDirector.beforeVariableChanged(shadowShow, "hosWeekStart");
-            shadowShow.setHosWeekStart(arrival.hosWeekStart);
-            scoreDirector.afterVariableChanged(shadowShow, "hosWeekStart");
-            scoreDirector.beforeVariableChanged(shadowShow, "hosWeekDrivingSecondsTotal");
-            shadowShow.setHosWeekDrivingSecondsTotal(arrival.hosWeekDrivingSecondsTotal);
-            scoreDirector.afterVariableChanged(shadowShow, "hosWeekDrivingSecondsTotal");
+        while (shadowShow != null) {
+            boolean equalDate = Objects.equals(shadowShow.getDate(), arrival.date);
+            boolean equalTimeOfDay = Objects.equals(shadowShow.getTimeOfDay(), arrival.timeOfDay);
+            boolean equalHosWeekStart = shadowShow.getHosWeekStart() == arrival.hosWeekStart;
+            boolean equalHosWeekDrivingSecondsTotal = Objects.equals(shadowShow.getHosWeekDrivingSecondsTotal(),
+                    arrival.hosWeekDrivingSecondsTotal);
+            if (equalDate && equalTimeOfDay && equalHosWeekStart && equalHosWeekDrivingSecondsTotal) {
+                return; // No change from previous show means no change to any subsequent either.
+            }
+            if (!equalDate) {
+                scoreDirector.beforeVariableChanged(shadowShow, "date");
+                shadowShow.setDate(arrival.date);
+                scoreDirector.afterVariableChanged(shadowShow, "date");
+            }
+            if (!equalTimeOfDay) {
+                scoreDirector.beforeVariableChanged(shadowShow, "timeOfDay");
+                shadowShow.setTimeOfDay(arrival.timeOfDay);
+                scoreDirector.afterVariableChanged(shadowShow, "timeOfDay");
+            }
+            if (!equalHosWeekStart) {
+                scoreDirector.beforeVariableChanged(shadowShow, "hosWeekStart");
+                shadowShow.setHosWeekStart(arrival.hosWeekStart);
+                scoreDirector.afterVariableChanged(shadowShow, "hosWeekStart");
+            }
+            if (!equalHosWeekDrivingSecondsTotal) {
+                scoreDirector.beforeVariableChanged(shadowShow, "hosWeekDrivingSecondsTotal");
+                shadowShow.setHosWeekDrivingSecondsTotal(arrival.hosWeekDrivingSecondsTotal);
+                scoreDirector.afterVariableChanged(shadowShow, "hosWeekDrivingSecondsTotal");
+            }
 
             RockShow previousShow = shadowShow;
             shadowShow = shadowShow.getNextShow();

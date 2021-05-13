@@ -17,6 +17,7 @@
 package org.optaplanner.examples.investment.optional.score;
 
 import java.util.function.Function;
+
 import org.optaplanner.core.api.score.buildin.hardsoftlong.HardSoftLongScore;
 import org.optaplanner.core.api.score.stream.Constraint;
 import org.optaplanner.core.api.score.stream.ConstraintCollectors;
