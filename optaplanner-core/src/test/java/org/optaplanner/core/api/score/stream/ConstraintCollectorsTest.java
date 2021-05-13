@@ -53,8 +53,6 @@ import org.optaplanner.core.api.score.stream.bi.BiConstraintCollector;
 import org.optaplanner.core.api.score.stream.quad.QuadConstraintCollector;
 import org.optaplanner.core.api.score.stream.tri.TriConstraintCollector;
 import org.optaplanner.core.api.score.stream.uni.UniConstraintCollector;
-import org.optaplanner.core.impl.util.ConsecutiveData;
-import org.optaplanner.core.impl.util.ConsecutiveSetTree;
 
 public class ConstraintCollectorsTest {
 

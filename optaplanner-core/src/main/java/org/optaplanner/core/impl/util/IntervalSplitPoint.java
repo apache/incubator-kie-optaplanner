@@ -24,12 +24,13 @@ import java.util.Objects;
 import java.util.TreeSet;
 import java.util.stream.IntStream;
 
-public class IntervalSplitPoint<_IntervalValue,_PointValue extends Comparable<_PointValue>> implements Comparable<IntervalSplitPoint<_IntervalValue,_PointValue>> {
+public class IntervalSplitPoint<_IntervalValue, _PointValue extends Comparable<_PointValue>>
+        implements Comparable<IntervalSplitPoint<_IntervalValue, _PointValue>> {
     final _PointValue splitPoint;
     Map<_IntervalValue, Integer> startIntervalToCountMap;
     Map<_IntervalValue, Integer> endIntervalToCountMap;
-    TreeSet<Interval<_IntervalValue,_PointValue>> intervalsStartingAtSplitPointSet;
-    TreeSet<Interval<_IntervalValue,_PointValue>> intervalsEndingAtSplitPointSet;
+    TreeSet<Interval<_IntervalValue, _PointValue>> intervalsStartingAtSplitPointSet;
+    TreeSet<Interval<_IntervalValue, _PointValue>> intervalsEndingAtSplitPointSet;
 
     public IntervalSplitPoint(_PointValue splitPoint) {
         this.splitPoint = splitPoint;
@@ -39,19 +40,19 @@ public class IntervalSplitPoint<_IntervalValue,_PointValue extends Comparable<_P
         startIntervalToCountMap = new IdentityHashMap<>();
         endIntervalToCountMap = new IdentityHashMap<>();
         intervalsStartingAtSplitPointSet = new TreeSet<>(
-                Comparator.<Interval<_IntervalValue,_PointValue>,_PointValue>comparing(Interval::getEnd)
+                Comparator.<Interval<_IntervalValue, _PointValue>, _PointValue> comparing(Interval::getEnd)
                         .thenComparingInt(interval -> System.identityHashCode(interval.value)));
         intervalsEndingAtSplitPointSet = new TreeSet<>(
-                Comparator.<Interval<_IntervalValue,_PointValue>,_PointValue>comparing(Interval::getStart)
+                Comparator.<Interval<_IntervalValue, _PointValue>, _PointValue> comparing(Interval::getStart)
                         .thenComparingInt(interval -> System.identityHashCode(interval.value)));
     }
 
-    public boolean addIntervalStartingAtSplitPoint(Interval<_IntervalValue,_PointValue> interval) {
+    public boolean addIntervalStartingAtSplitPoint(Interval<_IntervalValue, _PointValue> interval) {
         startIntervalToCountMap.merge(interval.value, 1, Integer::sum);
         return intervalsStartingAtSplitPointSet.add(interval);
     }
 
-    public void removeIntervalStartingAtSplitPoint(Interval<_IntervalValue,_PointValue> interval) {
+    public void removeIntervalStartingAtSplitPoint(Interval<_IntervalValue, _PointValue> interval) {
         Integer newCount = startIntervalToCountMap.computeIfPresent(interval.value, (key, count) -> {
             if (count > 1) {
                 return count - 1;
@@ -63,12 +64,12 @@ public class IntervalSplitPoint<_IntervalValue,_PointValue extends Comparable<_P
         }
     }
 
-    public boolean addIntervalEndingAtSplitPoint(Interval<_IntervalValue,_PointValue> interval) {
+    public boolean addIntervalEndingAtSplitPoint(Interval<_IntervalValue, _PointValue> interval) {
         endIntervalToCountMap.merge(interval.value, 1, Integer::sum);
         return intervalsEndingAtSplitPointSet.add(interval);
     }
 
-    public void removeIntervalEndingAtSplitPoint(Interval<_IntervalValue,_PointValue> interval) {
+    public void removeIntervalEndingAtSplitPoint(Interval<_IntervalValue, _PointValue> interval) {
         Integer newCount = endIntervalToCountMap.computeIfPresent(interval.value, (key, count) -> {
             if (count > 1) {
                 return count - 1;
@@ -80,17 +81,18 @@ public class IntervalSplitPoint<_IntervalValue,_PointValue extends Comparable<_P
         }
     }
 
-    public boolean containsIntervalStarting(Interval<_IntervalValue,_PointValue> interval) {
+    public boolean containsIntervalStarting(Interval<_IntervalValue, _PointValue> interval) {
         return intervalsStartingAtSplitPointSet.contains(interval);
     }
 
-    public boolean containsIntervalEnding(Interval<_IntervalValue,_PointValue> interval) {
+    public boolean containsIntervalEnding(Interval<_IntervalValue, _PointValue> interval) {
         return intervalsEndingAtSplitPointSet.contains(interval);
     }
 
     public Iterator<_IntervalValue> getValuesStartingFromSplitPointIterator() {
         return intervalsStartingAtSplitPointSet.stream()
-                .flatMap(interval -> IntStream.range(0,startIntervalToCountMap.get(interval.value)).mapToObj((index) -> interval.value))
+                .flatMap(interval -> IntStream.range(0, startIntervalToCountMap.get(interval.value))
+                        .mapToObj((index) -> interval.value))
                 .iterator();
     }
 
@@ -104,7 +106,7 @@ public class IntervalSplitPoint<_IntervalValue,_PointValue extends Comparable<_P
             return true;
         if (o == null || getClass() != o.getClass())
             return false;
-        IntervalSplitPoint<?,?> that = (IntervalSplitPoint<?,?>) o;
+        IntervalSplitPoint<?, ?> that = (IntervalSplitPoint<?, ?>) o;
         return splitPoint.equals(that.splitPoint);
     }
 
@@ -114,7 +116,7 @@ public class IntervalSplitPoint<_IntervalValue,_PointValue extends Comparable<_P
     }
 
     @Override
-    public int compareTo(IntervalSplitPoint<_IntervalValue,_PointValue> other) {
+    public int compareTo(IntervalSplitPoint<_IntervalValue, _PointValue> other) {
         return splitPoint.compareTo(other.splitPoint);
     }
 

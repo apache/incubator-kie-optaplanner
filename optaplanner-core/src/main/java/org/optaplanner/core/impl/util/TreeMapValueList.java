@@ -211,7 +211,8 @@ public class TreeMapValueList<I, T> implements List<T> {
         return Objects.hash(sourceMap);
     }
 
-    @Override public String toString() {
+    @Override
+    public String toString() {
         return "TreeMapValueList{" +
                 "sourceMap=" + sourceMap +
                 '}';

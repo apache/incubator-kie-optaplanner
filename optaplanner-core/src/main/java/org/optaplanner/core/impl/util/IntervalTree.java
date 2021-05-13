@@ -21,13 +21,13 @@ import java.util.TreeSet;
 import java.util.function.Function;
 
 public class IntervalTree<_IntervalValue, _PointValue extends Comparable<_PointValue>> {
-    final TreeSet<IntervalSplitPoint<_IntervalValue,_PointValue>> splitPointSet;
+    final TreeSet<IntervalSplitPoint<_IntervalValue, _PointValue>> splitPointSet;
     final Function<_IntervalValue, _PointValue> startMapping;
     final Function<_IntervalValue, _PointValue> endMapping;
-    final ConsecutiveIntervalData<_IntervalValue,_PointValue> consecutiveIntervalData;
+    final ConsecutiveIntervalData<_IntervalValue, _PointValue> consecutiveIntervalData;
 
     public IntervalTree(Function<_IntervalValue, _PointValue> startMapping,
-                        Function<_IntervalValue, _PointValue> endMapping) {
+            Function<_IntervalValue, _PointValue> endMapping) {
         this.startMapping = startMapping;
         this.endMapping = endMapping;
         splitPointSet = new TreeSet<>();
@@ -46,8 +46,9 @@ public class IntervalTree<_IntervalValue, _PointValue extends Comparable<_PointV
         if (null == o || splitPointSet.isEmpty()) {
             return false;
         }
-        Interval<_IntervalValue,_PointValue> interval = getInterval(o);
-        IntervalSplitPoint<_IntervalValue,_PointValue> floorStartSplitPoint = splitPointSet.floor(interval.getStartSplitPoint());
+        Interval<_IntervalValue, _PointValue> interval = getInterval(o);
+        IntervalSplitPoint<_IntervalValue, _PointValue> floorStartSplitPoint =
+                splitPointSet.floor(interval.getStartSplitPoint());
         if (floorStartSplitPoint == null) {
             return false;
         }
@@ -60,12 +61,12 @@ public class IntervalTree<_IntervalValue, _PointValue extends Comparable<_PointV
 
     public boolean add(_IntervalValue o) {
         Interval<_IntervalValue, _PointValue> interval = getInterval(o);
-        IntervalSplitPoint<_IntervalValue,_PointValue> startSplitPoint = interval.getStartSplitPoint();
-        IntervalSplitPoint<_IntervalValue,_PointValue> endSplitPoint = interval.getEndSplitPoint();
+        IntervalSplitPoint<_IntervalValue, _PointValue> startSplitPoint = interval.getStartSplitPoint();
+        IntervalSplitPoint<_IntervalValue, _PointValue> endSplitPoint = interval.getEndSplitPoint();
         boolean isChanged;
 
-        IntervalSplitPoint<_IntervalValue,_PointValue> flooredStartSplitPoint = splitPointSet.floor(startSplitPoint);
-        IntervalSplitPoint<_IntervalValue,_PointValue> ceilingEndSplitPoint = splitPointSet.ceiling(endSplitPoint);
+        IntervalSplitPoint<_IntervalValue, _PointValue> flooredStartSplitPoint = splitPointSet.floor(startSplitPoint);
+        IntervalSplitPoint<_IntervalValue, _PointValue> ceilingEndSplitPoint = splitPointSet.ceiling(endSplitPoint);
         if (flooredStartSplitPoint == null || !flooredStartSplitPoint.equals(startSplitPoint)) {
             splitPointSet.add(startSplitPoint);
             startSplitPoint.createCollections();
@@ -92,11 +93,11 @@ public class IntervalTree<_IntervalValue, _PointValue extends Comparable<_PointV
         if (null == o) {
             return false;
         }
-        Interval<_IntervalValue,_PointValue> interval = getInterval(o);
-        IntervalSplitPoint<_IntervalValue,_PointValue> startSplitPoint = interval.getStartSplitPoint();
-        IntervalSplitPoint<_IntervalValue,_PointValue> endSplitPoint = interval.getEndSplitPoint();
+        Interval<_IntervalValue, _PointValue> interval = getInterval(o);
+        IntervalSplitPoint<_IntervalValue, _PointValue> startSplitPoint = interval.getStartSplitPoint();
+        IntervalSplitPoint<_IntervalValue, _PointValue> endSplitPoint = interval.getEndSplitPoint();
 
-        IntervalSplitPoint<_IntervalValue,_PointValue> flooredStartSplitPoint = splitPointSet.floor(startSplitPoint);
+        IntervalSplitPoint<_IntervalValue, _PointValue> flooredStartSplitPoint = splitPointSet.floor(startSplitPoint);
         if (flooredStartSplitPoint == null || !flooredStartSplitPoint.containsIntervalStarting(interval)) {
             return false;
         }
@@ -106,7 +107,7 @@ public class IntervalTree<_IntervalValue, _PointValue extends Comparable<_PointV
             splitPointSet.remove(flooredStartSplitPoint);
         }
 
-        IntervalSplitPoint<_IntervalValue,_PointValue> ceilEndSplitPoint = splitPointSet.ceiling(endSplitPoint);
+        IntervalSplitPoint<_IntervalValue, _PointValue> ceilEndSplitPoint = splitPointSet.ceiling(endSplitPoint);
         // Not null since the start point contained the interval
         ceilEndSplitPoint.removeIntervalEndingAtSplitPoint(interval);
         if (ceilEndSplitPoint.isEmpty()) {
@@ -117,7 +118,7 @@ public class IntervalTree<_IntervalValue, _PointValue extends Comparable<_PointV
         return true;
     }
 
-    public ConsecutiveIntervalData<_IntervalValue,_PointValue> getConsecutiveIntervalData() {
+    public ConsecutiveIntervalData<_IntervalValue, _PointValue> getConsecutiveIntervalData() {
         return consecutiveIntervalData;
     }
 }

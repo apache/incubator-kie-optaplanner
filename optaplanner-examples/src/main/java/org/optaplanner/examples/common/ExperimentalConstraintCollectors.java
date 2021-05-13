@@ -16,6 +16,10 @@
 
 package org.optaplanner.examples.common;
 
+import java.util.function.BiFunction;
+import java.util.function.Function;
+import java.util.function.ToIntFunction;
+
 import org.optaplanner.core.api.function.QuadFunction;
 import org.optaplanner.core.api.function.TriFunction;
 import org.optaplanner.core.api.score.stream.bi.BiConstraintCollector;
@@ -30,10 +34,6 @@ import org.optaplanner.core.impl.util.ConsecutiveData;
 import org.optaplanner.core.impl.util.ConsecutiveIntervalData;
 import org.optaplanner.core.impl.util.ConsecutiveSetTree;
 import org.optaplanner.core.impl.util.IntervalTree;
-
-import java.util.function.BiFunction;
-import java.util.function.Function;
-import java.util.function.ToIntFunction;
 
 /**
  * A collection of experimental constraint collectors
@@ -58,7 +58,7 @@ public class ExperimentalConstraintCollectors {
      * @return never null
      */
     public static <A> UniConstraintCollector<A, ConsecutiveSetTree<A, Integer, Integer>, ConsecutiveData<A, Integer>>
-    consecutive(ToIntFunction<A> indexMap) {
+            consecutive(ToIntFunction<A> indexMap) {
         return new DefaultUniConstraintCollector<>(
                 () -> new ConsecutiveSetTree<A, Integer, Integer>((Class<? extends A>) Object.class,
                         indexMap::applyAsInt,
@@ -83,8 +83,8 @@ public class ExperimentalConstraintCollectors {
      * @return never null
      */
     public static <A, B, Result>
-    BiConstraintCollector<A, B, ConsecutiveSetTree<Result, Integer, Integer>, ConsecutiveData<Result, Integer>>
-    consecutive(BiFunction<A, B, Result> resultMap, ToIntFunction<Result> indexMap) {
+            BiConstraintCollector<A, B, ConsecutiveSetTree<Result, Integer, Integer>, ConsecutiveData<Result, Integer>>
+            consecutive(BiFunction<A, B, Result> resultMap, ToIntFunction<Result> indexMap) {
         return new DefaultBiConstraintCollector<>(() -> new ConsecutiveSetTree<>((Class<? extends Result>) Object.class,
                 indexMap::applyAsInt,
                 (Integer a, Integer b) -> b - a, 1, 0),
@@ -110,8 +110,8 @@ public class ExperimentalConstraintCollectors {
      * @return never null
      */
     public static <A, B, C, Result>
-    TriConstraintCollector<A, B, C, ConsecutiveSetTree<Result, Integer, Integer>, ConsecutiveData<Result, Integer>>
-    consecutive(TriFunction<A, B, C, Result> resultMap, ToIntFunction<Result> indexMap) {
+            TriConstraintCollector<A, B, C, ConsecutiveSetTree<Result, Integer, Integer>, ConsecutiveData<Result, Integer>>
+            consecutive(TriFunction<A, B, C, Result> resultMap, ToIntFunction<Result> indexMap) {
         return new DefaultTriConstraintCollector<>(() -> new ConsecutiveSetTree<>((Class<? extends Result>) Object.class,
                 indexMap::applyAsInt,
                 (Integer a, Integer b) -> b - a, 1, 0),
@@ -138,8 +138,8 @@ public class ExperimentalConstraintCollectors {
      * @return never null
      */
     public static <A, B, C, D, Result>
-    QuadConstraintCollector<A, B, C, D, ConsecutiveSetTree<Result, Integer, Integer>, ConsecutiveData<Result, Integer>>
-    consecutive(QuadFunction<A, B, C, D, Result> resultMap, ToIntFunction<Result> indexMap) {
+            QuadConstraintCollector<A, B, C, D, ConsecutiveSetTree<Result, Integer, Integer>, ConsecutiveData<Result, Integer>>
+            consecutive(QuadFunction<A, B, C, D, Result> resultMap, ToIntFunction<Result> indexMap) {
         return new DefaultQuadConstraintCollector<>(() -> new ConsecutiveSetTree<>((Class<? extends Result>) Object.class,
                 indexMap::applyAsInt,
                 (Integer a, Integer b) -> b - a, 1, 0),
@@ -152,7 +152,6 @@ public class ExperimentalConstraintCollectors {
                 },
                 ConsecutiveSetTree::getConsecutiveData);
     }
-
 
     /**
      * Creates a constraint collector that returns {@link ConsecutiveIntervalData} about the first
@@ -172,7 +171,7 @@ public class ExperimentalConstraintCollectors {
      * @return never null
      */
     public static <A, C extends Comparable<C>> UniConstraintCollector<A, IntervalTree<A, C>, ConsecutiveIntervalData<A, C>>
-    consecutiveIntervals(Function<A,C> startMap, Function<A,C> endMap) {
+            consecutiveIntervals(Function<A, C> startMap, Function<A, C> endMap) {
         return new DefaultUniConstraintCollector<>(
                 () -> new IntervalTree<>(
                         startMap,
@@ -197,14 +196,15 @@ public class ExperimentalConstraintCollectors {
      * @param <C> type of the item endpoints
      * @return never null
      */
-    public static <A, B, T, C extends Comparable<C>> BiConstraintCollector<A, B, IntervalTree<T, C>, ConsecutiveIntervalData<T, C>>
-    consecutiveIntervals(BiFunction<A,B,T> intervalMap, Function<T,C> startMap, Function<T,C> endMap) {
+    public static <A, B, T, C extends Comparable<C>>
+            BiConstraintCollector<A, B, IntervalTree<T, C>, ConsecutiveIntervalData<T, C>>
+            consecutiveIntervals(BiFunction<A, B, T> intervalMap, Function<T, C> startMap, Function<T, C> endMap) {
         return new DefaultBiConstraintCollector<>(
                 () -> new IntervalTree<>(
                         startMap,
                         endMap),
                 (acc, a, b) -> {
-                    T interval = intervalMap.apply(a,b);
+                    T interval = intervalMap.apply(a, b);
                     acc.add(interval);
                     return () -> {
                         acc.remove(interval);
@@ -225,14 +225,15 @@ public class ExperimentalConstraintCollectors {
      * @param <I> type of the item endpoints
      * @return never null
      */
-    public static <A, B, C, T, I extends Comparable<I>> TriConstraintCollector<A, B, C, IntervalTree<T, I>, ConsecutiveIntervalData<T, I>>
-    consecutiveIntervals(TriFunction<A,B,C,T> intervalMap, Function<T,I> startMap, Function<T,I> endMap) {
+    public static <A, B, C, T, I extends Comparable<I>>
+            TriConstraintCollector<A, B, C, IntervalTree<T, I>, ConsecutiveIntervalData<T, I>>
+            consecutiveIntervals(TriFunction<A, B, C, T> intervalMap, Function<T, I> startMap, Function<T, I> endMap) {
         return new DefaultTriConstraintCollector<>(
                 () -> new IntervalTree<>(
                         startMap,
                         endMap),
                 (acc, a, b, c) -> {
-                    T interval = intervalMap.apply(a,b,c);
+                    T interval = intervalMap.apply(a, b, c);
                     acc.add(interval);
                     return () -> {
                         acc.remove(interval);
@@ -254,14 +255,15 @@ public class ExperimentalConstraintCollectors {
      * @param <I> type of the item endpoints
      * @return never null
      */
-    public static <A, B, C, D, T, I extends Comparable<I>> QuadConstraintCollector<A, B, C, D, IntervalTree<T, I>, ConsecutiveIntervalData<T, I>>
-    consecutiveIntervals(QuadFunction<A,B,C,D,T> intervalMap, Function<T,I> startMap, Function<T,I> endMap) {
+    public static <A, B, C, D, T, I extends Comparable<I>>
+            QuadConstraintCollector<A, B, C, D, IntervalTree<T, I>, ConsecutiveIntervalData<T, I>>
+            consecutiveIntervals(QuadFunction<A, B, C, D, T> intervalMap, Function<T, I> startMap, Function<T, I> endMap) {
         return new DefaultQuadConstraintCollector<>(
                 () -> new IntervalTree<>(
                         startMap,
                         endMap),
                 (acc, a, b, c, d) -> {
-                    T interval = intervalMap.apply(a,b,c,d);
+                    T interval = intervalMap.apply(a, b, c, d);
                     acc.add(interval);
                     return () -> {
                         acc.remove(interval);

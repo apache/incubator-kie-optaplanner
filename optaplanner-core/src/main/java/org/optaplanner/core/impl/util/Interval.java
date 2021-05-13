@@ -23,7 +23,8 @@ public class Interval<_IntervalValue, _PointValue extends Comparable<_PointValue
     final IntervalSplitPoint<_IntervalValue, _PointValue> startSplitPoint;
     final IntervalSplitPoint<_IntervalValue, _PointValue> endSplitPoint;
 
-    public Interval(_IntervalValue value, Function<_IntervalValue, _PointValue> startMapping, Function<_IntervalValue, _PointValue> endMapping) {
+    public Interval(_IntervalValue value, Function<_IntervalValue, _PointValue> startMapping,
+            Function<_IntervalValue, _PointValue> endMapping) {
         this.value = value;
         this.startSplitPoint = new IntervalSplitPoint<>(startMapping.apply(value));
         this.endSplitPoint = new IntervalSplitPoint<>(endMapping.apply(value));
@@ -41,11 +42,11 @@ public class Interval<_IntervalValue, _PointValue extends Comparable<_PointValue
         return endSplitPoint.splitPoint;
     }
 
-    public IntervalSplitPoint<_IntervalValue,_PointValue> getStartSplitPoint() {
+    public IntervalSplitPoint<_IntervalValue, _PointValue> getStartSplitPoint() {
         return startSplitPoint;
     }
 
-    public IntervalSplitPoint<_IntervalValue,_PointValue> getEndSplitPoint() {
+    public IntervalSplitPoint<_IntervalValue, _PointValue> getEndSplitPoint() {
         return endSplitPoint;
     }
 
@@ -55,7 +56,7 @@ public class Interval<_IntervalValue, _PointValue extends Comparable<_PointValue
             return true;
         if (o == null || getClass() != o.getClass())
             return false;
-        Interval<?,?> that = (Interval<?,?>) o;
+        Interval<?, ?> that = (Interval<?, ?>) o;
         return value == that.value;
     }
 
@@ -64,7 +65,8 @@ public class Interval<_IntervalValue, _PointValue extends Comparable<_PointValue
         return System.identityHashCode(value);
     }
 
-    @Override public String toString() {
+    @Override
+    public String toString() {
         return "Interval{" +
                 "value=" + value +
                 ", start=" + getStart() +

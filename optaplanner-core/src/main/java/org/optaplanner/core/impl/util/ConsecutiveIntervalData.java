@@ -16,8 +16,6 @@
 
 package org.optaplanner.core.impl.util;
 
-import org.apache.commons.lang3.ObjectUtils;
-
 import java.util.List;
 import java.util.Map;
 import java.util.NavigableMap;
@@ -25,38 +23,45 @@ import java.util.Objects;
 import java.util.TreeMap;
 import java.util.TreeSet;
 
-public class ConsecutiveIntervalData<_IntervalValue, _PointValue extends Comparable<_PointValue>> {
-    private final TreeMap<IntervalSplitPoint<_IntervalValue,_PointValue>, IntervalCluster<_IntervalValue,_PointValue>> clusterStartSplitPointToCluster;
-    private final TreeSet<IntervalSplitPoint<_IntervalValue,_PointValue>> splitPointSet;
-    private final List<IntervalCluster<_IntervalValue,_PointValue>> valueList;
+import org.apache.commons.lang3.ObjectUtils;
 
-    public ConsecutiveIntervalData(TreeSet<IntervalSplitPoint<_IntervalValue,_PointValue>> splitPointSet) {
+public class ConsecutiveIntervalData<_IntervalValue, _PointValue extends Comparable<_PointValue>> {
+    private final TreeMap<IntervalSplitPoint<_IntervalValue, _PointValue>, IntervalCluster<_IntervalValue, _PointValue>> clusterStartSplitPointToCluster;
+    private final TreeSet<IntervalSplitPoint<_IntervalValue, _PointValue>> splitPointSet;
+    private final List<IntervalCluster<_IntervalValue, _PointValue>> valueList;
+
+    public ConsecutiveIntervalData(TreeSet<IntervalSplitPoint<_IntervalValue, _PointValue>> splitPointSet) {
         clusterStartSplitPointToCluster = new TreeMap<>();
         valueList = new TreeMapValueList<>(clusterStartSplitPointToCluster);
         this.splitPointSet = splitPointSet;
     }
 
-    protected void addInterval(Interval<_IntervalValue,_PointValue> interval) {
-        NavigableMap<IntervalSplitPoint<_IntervalValue,_PointValue>,IntervalCluster<_IntervalValue,_PointValue>>
-                intersectedIntervalClusterMap = clusterStartSplitPointToCluster.subMap(
+    protected void addInterval(Interval<_IntervalValue, _PointValue> interval) {
+        NavigableMap<IntervalSplitPoint<_IntervalValue, _PointValue>, IntervalCluster<_IntervalValue, _PointValue>> intersectedIntervalClusterMap =
+                clusterStartSplitPointToCluster.subMap(
                         ObjectUtils.defaultIfNull(clusterStartSplitPointToCluster.floorKey(interval.getStartSplitPoint()),
                                 interval.getStartSplitPoint()),
-                true, interval.getEndSplitPoint(), true);
+                        true, interval.getEndSplitPoint(), true);
 
         // Case: the interval cluster before this interval does not intersect this interval
-        if (!intersectedIntervalClusterMap.isEmpty() && intersectedIntervalClusterMap.get(intersectedIntervalClusterMap.firstKey()).getEndSplitPoint().compareTo(interval.getStartSplitPoint()) < 0) {
-            intersectedIntervalClusterMap = intersectedIntervalClusterMap.subMap(intersectedIntervalClusterMap.firstKey(), false, intersectedIntervalClusterMap.lastKey(), true);
+        if (!intersectedIntervalClusterMap.isEmpty()
+                && intersectedIntervalClusterMap.get(intersectedIntervalClusterMap.firstKey()).getEndSplitPoint()
+                        .compareTo(interval.getStartSplitPoint()) < 0) {
+            intersectedIntervalClusterMap = intersectedIntervalClusterMap.subMap(intersectedIntervalClusterMap.firstKey(),
+                    false, intersectedIntervalClusterMap.lastKey(), true);
         }
 
         if (intersectedIntervalClusterMap.isEmpty()) {
-            IntervalSplitPoint<_IntervalValue,_PointValue> start = splitPointSet.floor(interval.getStartSplitPoint());
+            IntervalSplitPoint<_IntervalValue, _PointValue> start = splitPointSet.floor(interval.getStartSplitPoint());
             clusterStartSplitPointToCluster.put(start, new IntervalCluster<>(splitPointSet, start));
             return;
         }
-        IntervalCluster<_IntervalValue,_PointValue> intervalCluster = intersectedIntervalClusterMap.get(intersectedIntervalClusterMap.firstKey());
-        IntervalSplitPoint<_IntervalValue,_PointValue> oldStart = intervalCluster.getStartSplitPoint();
+        IntervalCluster<_IntervalValue, _PointValue> intervalCluster =
+                intersectedIntervalClusterMap.get(intersectedIntervalClusterMap.firstKey());
+        IntervalSplitPoint<_IntervalValue, _PointValue> oldStart = intervalCluster.getStartSplitPoint();
         intervalCluster.addInterval(interval);
-        intersectedIntervalClusterMap.tailMap(intersectedIntervalClusterMap.firstKey(), false).values().forEach(intervalCluster::mergeIntervalCluster);
+        intersectedIntervalClusterMap.tailMap(intersectedIntervalClusterMap.firstKey(), false).values()
+                .forEach(intervalCluster::mergeIntervalCluster);
         intersectedIntervalClusterMap.tailMap(intersectedIntervalClusterMap.firstKey(), false).clear();
         if (oldStart.compareTo(intervalCluster.getStartSplitPoint()) > 0) {
             clusterStartSplitPointToCluster.remove(oldStart);
@@ -64,16 +69,17 @@ public class ConsecutiveIntervalData<_IntervalValue, _PointValue extends Compara
         }
     }
 
-    protected void removalInterval(Interval<_IntervalValue,_PointValue> interval) {
-        Map.Entry<IntervalSplitPoint<_IntervalValue,_PointValue>, IntervalCluster<_IntervalValue,_PointValue>> intervalClusterEntry = clusterStartSplitPointToCluster.floorEntry(interval.getStartSplitPoint());
-        IntervalCluster<_IntervalValue,_PointValue> intervalCluster = intervalClusterEntry.getValue();
+    protected void removalInterval(Interval<_IntervalValue, _PointValue> interval) {
+        Map.Entry<IntervalSplitPoint<_IntervalValue, _PointValue>, IntervalCluster<_IntervalValue, _PointValue>> intervalClusterEntry =
+                clusterStartSplitPointToCluster.floorEntry(interval.getStartSplitPoint());
+        IntervalCluster<_IntervalValue, _PointValue> intervalCluster = intervalClusterEntry.getValue();
         clusterStartSplitPointToCluster.remove(intervalClusterEntry.getKey());
-        for (IntervalCluster<_IntervalValue,_PointValue> newIntervalCluster : intervalCluster.removeInterval(interval)) {
+        for (IntervalCluster<_IntervalValue, _PointValue> newIntervalCluster : intervalCluster.removeInterval(interval)) {
             clusterStartSplitPointToCluster.put(newIntervalCluster.getStartSplitPoint(), newIntervalCluster);
         }
     }
 
-    public List<IntervalCluster<_IntervalValue,_PointValue>> getIntervalClusters() {
+    public List<IntervalCluster<_IntervalValue, _PointValue>> getIntervalClusters() {
         return valueList;
     }
 
@@ -92,7 +98,8 @@ public class ConsecutiveIntervalData<_IntervalValue, _PointValue extends Compara
         return Objects.hash(valueList);
     }
 
-    @Override public String toString() {
+    @Override
+    public String toString() {
         return "ConsecutiveIntervalData{" +
                 "valueList=" + valueList +
                 '}';

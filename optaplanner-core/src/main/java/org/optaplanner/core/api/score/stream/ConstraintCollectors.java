@@ -61,8 +61,6 @@ import org.optaplanner.core.impl.score.stream.bi.DefaultBiConstraintCollector;
 import org.optaplanner.core.impl.score.stream.quad.DefaultQuadConstraintCollector;
 import org.optaplanner.core.impl.score.stream.tri.DefaultTriConstraintCollector;
 import org.optaplanner.core.impl.score.stream.uni.DefaultUniConstraintCollector;
-import org.optaplanner.core.impl.util.ConsecutiveData;
-import org.optaplanner.core.impl.util.ConsecutiveSetTree;
 
 /**
  * Creates an {@link UniConstraintCollector}, {@link BiConstraintCollector}, ... instance

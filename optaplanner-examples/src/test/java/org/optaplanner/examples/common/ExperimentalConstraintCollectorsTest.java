@@ -16,6 +16,11 @@
 
 package org.optaplanner.examples.common;
 
+import static java.util.Arrays.asList;
+import static org.assertj.core.api.Assertions.assertThat;
+
+import java.util.Objects;
+
 import org.junit.jupiter.api.Test;
 import org.optaplanner.core.api.score.stream.bi.BiConstraintCollector;
 import org.optaplanner.core.api.score.stream.quad.QuadConstraintCollector;
@@ -25,11 +30,6 @@ import org.optaplanner.core.impl.util.ConsecutiveData;
 import org.optaplanner.core.impl.util.ConsecutiveIntervalData;
 import org.optaplanner.core.impl.util.ConsecutiveSetTree;
 import org.optaplanner.core.impl.util.IntervalTree;
-
-import java.util.Objects;
-
-import static java.util.Arrays.asList;
-import static org.assertj.core.api.Assertions.assertThat;
 
 public class ExperimentalConstraintCollectorsTest {
     @Test
@@ -102,19 +102,19 @@ public class ExperimentalConstraintCollectorsTest {
                 ExperimentalConstraintCollectors.consecutiveIntervals(Interval::getStart, Interval::getEnd);
         Object container = collector.supplier().get();
         // Add first value, sequence is [(1,3)]
-        Interval firstValue = new Interval(1,3);
+        Interval firstValue = new Interval(1, 3);
         Runnable firstRetractor = accumulate(collector, container, firstValue);
         assertResult(collector, container, consecutiveIntervalData(firstValue));
         // Add second value, sequence is [(1,3),(2,4)]
-        Interval secondValue = new Interval(2,4);
+        Interval secondValue = new Interval(2, 4);
         Runnable secondRetractor = accumulate(collector, container, secondValue);
-        assertResult(collector, container, consecutiveIntervalData(firstValue,secondValue));
+        assertResult(collector, container, consecutiveIntervalData(firstValue, secondValue));
         // Add third value, same as the second. Sequence is [{1,1},2}]
         Runnable thirdRetractor = accumulate(collector, container, secondValue);
-        assertResult(collector, container, consecutiveIntervalData(firstValue,secondValue,secondValue));
+        assertResult(collector, container, consecutiveIntervalData(firstValue, secondValue, secondValue));
         // Retract one instance of the second value; we only have two values now.
         secondRetractor.run();
-        assertResult(collector, container, consecutiveIntervalData(firstValue,secondValue));
+        assertResult(collector, container, consecutiveIntervalData(firstValue, secondValue));
         // Retract final instance of the second value; we only have one value now.
         thirdRetractor.run();
         assertResult(collector, container, consecutiveIntervalData(firstValue));
@@ -158,7 +158,6 @@ public class ExperimentalConstraintCollectorsTest {
             UniConstraintCollector<A, Container_, Result_> collector, Object container, A value) {
         return collector.accumulator().apply((Container_) container, value);
     }
-
 
     private static <A, B, C, D, Container_, Result_> void assertResult(
             QuadConstraintCollector<A, B, C, D, Container_, Result_> collector, Object container,

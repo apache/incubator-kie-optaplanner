@@ -16,12 +16,12 @@
 
 package org.optaplanner.core.impl.util;
 
-import org.junit.jupiter.api.Test;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.List;
 import java.util.Objects;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import org.junit.jupiter.api.Test;
 
 public class IntervalTreeTest {
     private static class Interval {
@@ -69,53 +69,53 @@ public class IntervalTreeTest {
     @Test
     public void testNonConsecutiveIntervals() {
         IntervalTree<Interval, Integer> tree = getIntegerIntervalTree();
-        tree.add(new Interval(0,2));
-        tree.add(new Interval(3,4));
-        tree.add(new Interval(5,7));
+        tree.add(new Interval(0, 2));
+        tree.add(new Interval(3, 4));
+        tree.add(new Interval(5, 7));
 
         List<IntervalCluster<Interval, Integer>> clusterList = tree.getConsecutiveIntervalData().getIntervalClusters();
         assertThat(clusterList).hasSize(3);
-        assertThat(clusterList.get(0)).containsExactly(new Interval(0,2));
+        assertThat(clusterList.get(0)).containsExactly(new Interval(0, 2));
         assertThat(clusterList.get(0).hasOverlap()).isFalse();
-        assertThat(clusterList.get(1)).containsExactly(new Interval(3,4));
+        assertThat(clusterList.get(1)).containsExactly(new Interval(3, 4));
         assertThat(clusterList.get(1).hasOverlap()).isFalse();
-        assertThat(clusterList.get(2)).containsExactly(new Interval(5,7));
+        assertThat(clusterList.get(2)).containsExactly(new Interval(5, 7));
         assertThat(clusterList.get(2).hasOverlap()).isFalse();
     }
 
     @Test
     public void testConsecutiveIntervals() {
         IntervalTree<Interval, Integer> tree = getIntegerIntervalTree();
-        tree.add(new Interval(0,2));
-        tree.add(new Interval(2,4));
-        tree.add(new Interval(4,7));
+        tree.add(new Interval(0, 2));
+        tree.add(new Interval(2, 4));
+        tree.add(new Interval(4, 7));
 
         List<IntervalCluster<Interval, Integer>> clusterList = tree.getConsecutiveIntervalData().getIntervalClusters();
         assertThat(clusterList).hasSize(1);
-        assertThat(clusterList.get(0)).containsExactly(new Interval(0,2), new Interval(2,4), new Interval(4,7));
+        assertThat(clusterList.get(0)).containsExactly(new Interval(0, 2), new Interval(2, 4), new Interval(4, 7));
     }
 
     @Test
     public void testDuplicateIntervals() {
         IntervalTree<Interval, Integer> tree = getIntegerIntervalTree();
-        Interval a = new Interval(0,2);
-        Interval b = new Interval(4,7);
+        Interval a = new Interval(0, 2);
+        Interval b = new Interval(4, 7);
         tree.add(a);
         tree.add(a);
         tree.add(b);
 
         List<IntervalCluster<Interval, Integer>> clusterList = tree.getConsecutiveIntervalData().getIntervalClusters();
         assertThat(clusterList).hasSize(2);
-        assertThat(clusterList.get(0)).containsExactly(a,a);
+        assertThat(clusterList.get(0)).containsExactly(a, a);
         assertThat(clusterList.get(1)).containsExactly(b);
     }
 
     @Test
     public void testIntervalRemoval() {
         IntervalTree<Interval, Integer> tree = getIntegerIntervalTree();
-        Interval a = new Interval(0,2);
-        Interval b = new Interval(2,4);
-        Interval c = new Interval(4,7);
+        Interval a = new Interval(0, 2);
+        Interval b = new Interval(2, 4);
+        Interval c = new Interval(4, 7);
         tree.add(a);
         tree.add(b);
         tree.add(c);
@@ -124,21 +124,21 @@ public class IntervalTreeTest {
 
         List<IntervalCluster<Interval, Integer>> clusterList = tree.getConsecutiveIntervalData().getIntervalClusters();
         assertThat(clusterList).hasSize(2);
-        assertThat(clusterList.get(0)).containsExactly(new Interval(0,2));
-        assertThat(clusterList.get(1)).containsExactly(new Interval(4,7));
+        assertThat(clusterList.get(0)).containsExactly(new Interval(0, 2));
+        assertThat(clusterList.get(1)).containsExactly(new Interval(4, 7));
     }
 
     @Test
     public void testOverlappingInterval() {
         IntervalTree<Interval, Integer> tree = getIntegerIntervalTree();
-        Interval a = new Interval(0,2);
-        Interval b = new Interval(1,3);
-        Interval c = new Interval(2,4);
+        Interval a = new Interval(0, 2);
+        Interval b = new Interval(1, 3);
+        Interval c = new Interval(2, 4);
 
-        Interval d = new Interval(5,6);
+        Interval d = new Interval(5, 6);
 
-        Interval e = new Interval(7,9);
-        Interval f = new Interval(7,9);
+        Interval e = new Interval(7, 9);
+        Interval f = new Interval(7, 9);
 
         tree.add(a);
         tree.add(b);
@@ -149,40 +149,40 @@ public class IntervalTreeTest {
 
         List<IntervalCluster<Interval, Integer>> clusterList = tree.getConsecutiveIntervalData().getIntervalClusters();
         assertThat(clusterList).hasSize(3);
-        assertThat(clusterList.get(0)).containsExactly(a,b,c);
+        assertThat(clusterList.get(0)).containsExactly(a, b, c);
         assertThat(clusterList.get(0).hasOverlap()).isTrue();
         assertThat(clusterList.get(1)).containsExactly(d);
         assertThat(clusterList.get(1).hasOverlap()).isFalse();
-        assertThat(clusterList.get(2)).containsExactly(e,f);
+        assertThat(clusterList.get(2)).containsExactly(e, f);
         assertThat(clusterList.get(2).hasOverlap()).isTrue();
 
         tree.remove(b);
         clusterList = tree.getConsecutiveIntervalData().getIntervalClusters();
         assertThat(clusterList).hasSize(3);
-        assertThat(clusterList.get(0)).containsExactly(a,c);
+        assertThat(clusterList.get(0)).containsExactly(a, c);
         assertThat(clusterList.get(0).hasOverlap()).isFalse();
         assertThat(clusterList.get(1)).containsExactly(d);
         assertThat(clusterList.get(1).hasOverlap()).isFalse();
-        assertThat(clusterList.get(2)).containsExactly(e,f);
+        assertThat(clusterList.get(2)).containsExactly(e, f);
         assertThat(clusterList.get(2).hasOverlap()).isTrue();
 
         tree.remove(f);
         clusterList = tree.getConsecutiveIntervalData().getIntervalClusters();
         assertThat(clusterList).hasSize(3);
-        assertThat(clusterList.get(0)).containsExactly(a,c);
+        assertThat(clusterList.get(0)).containsExactly(a, c);
         assertThat(clusterList.get(0).hasOverlap()).isFalse();
         assertThat(clusterList.get(1)).containsExactly(d);
         assertThat(clusterList.get(1).hasOverlap()).isFalse();
         assertThat(clusterList.get(2)).containsExactly(e);
         assertThat(clusterList.get(2).hasOverlap()).isFalse();
 
-        Interval g = new Interval(6,7);
+        Interval g = new Interval(6, 7);
         tree.add(g);
         clusterList = tree.getConsecutiveIntervalData().getIntervalClusters();
         assertThat(clusterList).hasSize(2);
-        assertThat(clusterList.get(0)).containsExactly(a,c);
+        assertThat(clusterList.get(0)).containsExactly(a, c);
         assertThat(clusterList.get(0).hasOverlap()).isFalse();
-        assertThat(clusterList.get(1)).containsExactly(d,g,e);
+        assertThat(clusterList.get(1)).containsExactly(d, g, e);
         assertThat(clusterList.get(1).hasOverlap()).isFalse();
     }
 
