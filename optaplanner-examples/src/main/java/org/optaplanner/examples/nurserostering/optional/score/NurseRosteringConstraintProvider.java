@@ -27,6 +27,7 @@ import org.optaplanner.core.api.score.stream.bi.BiConstraintStream;
 import org.optaplanner.core.api.score.stream.uni.UniConstraintStream;
 import org.optaplanner.core.impl.util.ConsecutiveData;
 import org.optaplanner.core.impl.util.Sequence;
+import org.optaplanner.examples.common.ExperimentalConstraintCollectors;
 import org.optaplanner.examples.nurserostering.domain.Employee;
 import org.optaplanner.examples.nurserostering.domain.ShiftAssignment;
 import org.optaplanner.examples.nurserostering.domain.contract.ContractLineType;
@@ -39,7 +40,7 @@ public class NurseRosteringConstraintProvider implements ConstraintProvider {
         return constraintStream.join(Employee.class, Joiners.equal(MinMaxContractLine::getContract, Employee::getContract))
                 .join(ShiftAssignment.class, Joiners.equal((contract, employee) -> employee, ShiftAssignment::getEmployee))
                 .groupBy((contract, employee, shift) -> ImmutablePair.of(employee, contract),
-                        ConstraintCollectors.consecutive((contract, employee, shift) -> shift,
+                        ExperimentalConstraintCollectors.consecutive((contract, employee, shift) -> shift,
                                 ShiftAssignment::getShiftDateDayIndex))
                 .flattenLast(ConsecutiveData::getConsecutiveSequences);
     }

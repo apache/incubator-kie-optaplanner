@@ -22,6 +22,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.NoSuchElementException;
+import java.util.Objects;
 import java.util.TreeMap;
 
 public class TreeMapValueList<I, T> implements List<T> {
@@ -193,6 +194,27 @@ public class TreeMapValueList<I, T> implements List<T> {
         }
 
         return new TreeMapValueList<I, T>(new TreeMap<>(sourceMap.subMap(fromKey, toKey)));
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o)
+            return true;
+        if (o == null || getClass() != o.getClass())
+            return false;
+        TreeMapValueList<?, ?> that = (TreeMapValueList<?, ?>) o;
+        return sourceMap.equals(that.sourceMap);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(sourceMap);
+    }
+
+    @Override public String toString() {
+        return "TreeMapValueList{" +
+                "sourceMap=" + sourceMap +
+                '}';
     }
 
     private static class TreeMapValueListIterator<I, T> implements ListIterator<T> {
