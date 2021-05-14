@@ -18,8 +18,14 @@ package org.optaplanner.core.impl.util;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
+import java.util.Random;
+import java.util.TreeSet;
+import java.util.function.Function;
 
 import org.junit.jupiter.api.Test;
 
@@ -184,6 +190,65 @@ public class IntervalTreeTest {
         assertThat(clusterList.get(0).hasOverlap()).isFalse();
         assertThat(clusterList.get(1)).containsExactly(d, g, e);
         assertThat(clusterList.get(1).hasOverlap()).isFalse();
+    }
+
+    // Compare the mutable version with the recompute version
+    @Test
+    public void testRandomIntervals() {
+        Random random = new Random(1);
+        Map<Interval, Interval> intervalToInstanceMap = new HashMap<>();
+        TreeSet<IntervalSplitPoint<Interval, Integer>> splitPoints = new TreeSet<>();
+        IntervalTree<Interval, Integer> tree = new IntervalTree<>(Interval::getStart, Interval::getEnd);
+        for (int i = 0; i < 10000; i++) {
+            // Create a random interval
+            int from = random.nextInt(50);
+            int to = from + random.nextInt(50);
+            Interval interval = intervalToInstanceMap.computeIfAbsent(new Interval(from, to), Function.identity());
+            org.optaplanner.core.impl.util.Interval<Interval, Integer> treeInterval =
+                    new org.optaplanner.core.impl.util.Interval<>(interval, Interval::getStart, Interval::getEnd);
+            splitPoints.add(treeInterval.getStartSplitPoint());
+            splitPoints.add(treeInterval.getEndSplitPoint());
+
+            // Get the split points from the set (since those split points have collections)
+            IntervalSplitPoint<Interval, Integer> startSplitPoint = splitPoints.floor(treeInterval.getStartSplitPoint());
+            IntervalSplitPoint<Interval, Integer> endSplitPoint = splitPoints.floor(treeInterval.getEndSplitPoint());
+
+            // Create the collections if they do not exist
+            if (startSplitPoint.startIntervalToCountMap == null) {
+                startSplitPoint.createCollections();
+            }
+            if (endSplitPoint.endIntervalToCountMap == null) {
+                endSplitPoint.createCollections();
+            }
+
+            // Either add or remove the interval
+            if (startSplitPoint.containsIntervalStarting(treeInterval) && random.nextBoolean()) {
+                startSplitPoint.removeIntervalStartingAtSplitPoint(treeInterval);
+                endSplitPoint.removeIntervalEndingAtSplitPoint(treeInterval);
+                if (startSplitPoint.isEmpty()) {
+                    splitPoints.remove(startSplitPoint);
+                }
+                if (endSplitPoint.isEmpty()) {
+                    splitPoints.remove(endSplitPoint);
+                }
+                tree.remove(interval);
+            } else {
+                startSplitPoint.addIntervalStartingAtSplitPoint(treeInterval);
+                endSplitPoint.addIntervalEndingAtSplitPoint(treeInterval);
+                tree.add(interval);
+            }
+
+            // Recompute all interval clusters
+            IntervalSplitPoint<Interval, Integer> current = splitPoints.first();
+            List<IntervalCluster<Interval, Integer>> intervalClusterList = new ArrayList<>();
+            while (current != null) {
+                intervalClusterList.add(new IntervalCluster<>(splitPoints, current));
+                current = splitPoints.higher(intervalClusterList.get(intervalClusterList.size() - 1).getEndSplitPoint());
+            }
+
+            // Verify the mutable version matches the recompute version
+            assertThat(tree.getConsecutiveIntervalData().getIntervalClusters()).containsExactlyElementsOf(intervalClusterList);
+        }
     }
 
 }
