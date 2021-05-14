@@ -50,6 +50,7 @@ import org.optaplanner.core.impl.testdata.domain.solutionproperties.autodiscover
 import org.optaplanner.core.impl.testdata.domain.solutionproperties.invalid.TestdataDuplicatePlanningEntityCollectionPropertySolution;
 import org.optaplanner.core.impl.testdata.domain.solutionproperties.invalid.TestdataDuplicatePlanningScorePropertySolution;
 import org.optaplanner.core.impl.testdata.domain.solutionproperties.invalid.TestdataDuplicateProblemFactCollectionPropertySolution;
+import org.optaplanner.core.impl.testdata.domain.solutionproperties.invalid.TestdataMissingScorePropertySolution;
 import org.optaplanner.core.impl.testdata.domain.solutionproperties.invalid.TestdataProblemFactCollectionPropertyWithArgumentSolution;
 import org.optaplanner.core.impl.testdata.domain.solutionproperties.invalid.TestdataProblemFactIsPlanningEntityCollectionPropertySolution;
 import org.optaplanner.core.impl.testdata.domain.solutionproperties.invalid.TestdataUnknownFactTypeSolution;
@@ -103,6 +104,12 @@ public class SolutionDescriptorTest {
     public void duplicatePlanningScorePropertyProperty() {
         assertThatIllegalStateException().isThrownBy(
                 TestdataDuplicatePlanningScorePropertySolution::buildSolutionDescriptor);
+    }
+
+    @Test
+    public void missingPlanningScorePropertyProperty() {
+        assertThatIllegalStateException().isThrownBy(
+                TestdataMissingScorePropertySolution::buildSolutionDescriptor);
     }
 
     @Test
@@ -247,7 +254,7 @@ public class SolutionDescriptorTest {
     }
 
     @Test
-    public void autoDiscoverFieldsFactCollectionOverridenToSingleProperty() {
+    public void autoDiscoverFieldsFactCollectionOverriddenToSingleProperty() {
         SolutionDescriptor<TestdataAutoDiscoverFieldOverrideSolution> solutionDescriptor =
                 TestdataAutoDiscoverFieldOverrideSolution.buildSolutionDescriptor();
         assertThat(solutionDescriptor.getProblemFactMemberAccessorMap()).containsOnlyKeys("singleProblemFact",
@@ -269,7 +276,7 @@ public class SolutionDescriptorTest {
     }
 
     @Test
-    public void autoDiscoverGettersFactCollectionOverridenToSingleProperty() {
+    public void autoDiscoverGettersFactCollectionOverriddenToSingleProperty() {
         SolutionDescriptor<TestdataAutoDiscoverGetterOverrideSolution> solutionDescriptor =
                 TestdataAutoDiscoverGetterOverrideSolution.buildSolutionDescriptor();
         assertThat(solutionDescriptor.getProblemFactMemberAccessorMap()).containsOnlyKeys("singleProblemFact",
