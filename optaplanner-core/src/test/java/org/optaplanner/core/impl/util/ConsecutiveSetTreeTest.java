@@ -25,8 +25,8 @@ public class ConsecutiveSetTreeTest {
         assertThat(consecutiveData.getConsecutiveSequences()).hasSize(3);
         assertThat(consecutiveData.getConsecutiveSequences()).allMatch(seq -> seq.getLength() == 1);
         assertThat(consecutiveData.getBreaks()).hasSize(2);
-        assertThat(consecutiveData.getBreaks().get(0)).isEqualTo(2);
-        assertThat(consecutiveData.getBreaks().get(1)).isEqualTo(4);
+        assertThat(consecutiveData.getBreaks().get(0)).isEqualTo(new Break<>(3,1,2));
+        assertThat(consecutiveData.getBreaks().get(1)).isEqualTo(new Break<>(7,3,4));
     }
 
     @Test
@@ -46,7 +46,7 @@ public class ConsecutiveSetTreeTest {
         assertThat(consecutiveData.getConsecutiveSequences().get(0).getLength()).isEqualTo(3);
         assertThat(consecutiveData.getConsecutiveSequences().get(1).getLength()).isEqualTo(4);
         assertThat(consecutiveData.getBreaks()).hasSize(1);
-        assertThat(consecutiveData.getBreaks().get(0)).isEqualTo(2);
+        assertThat(consecutiveData.getBreaks().get(0)).isEqualTo(new Break<>(5,3,2));
     }
 
     @Test
@@ -99,7 +99,7 @@ public class ConsecutiveSetTreeTest {
         assertThat(consecutiveData.getConsecutiveSequences().get(0).getLength()).isEqualTo(3);
         assertThat(consecutiveData.getConsecutiveSequences().get(1).getLength()).isEqualTo(4);
         assertThat(consecutiveData.getBreaks()).hasSize(1);
-        assertThat(consecutiveData.getBreaks().get(0)).isEqualTo(2);
+        assertThat(consecutiveData.getBreaks().get(0)).isEqualTo(new Break<>(5,3,2));
     }
 
     @Test
@@ -140,7 +140,7 @@ public class ConsecutiveSetTreeTest {
         assertThat(consecutiveData.getConsecutiveSequences().get(0).getLength()).isEqualTo(3);
         assertThat(consecutiveData.getConsecutiveSequences().get(1).getLength()).isEqualTo(3);
         assertThat(consecutiveData.getBreaks()).hasSize(1);
-        assertThat(consecutiveData.getBreaks().get(0)).isEqualTo(2);
+        assertThat(consecutiveData.getBreaks().get(0)).isEqualTo(new Break<>(5,3,2));
     }
 
     @Test
@@ -224,6 +224,6 @@ public class ConsecutiveSetTreeTest {
         assertThat(consecutiveData.getConsecutiveSequences().get(1).getItems()).containsExactly(t3, t4, t5);
 
         assertThat(consecutiveData.getBreaks().size()).isEqualTo(1);
-        assertThat(consecutiveData.getBreaks().get(0)).isEqualTo(Duration.ofDays(2));
+        assertThat(consecutiveData.getBreaks().get(0)).isEqualTo(new Break<>(t3,t2,Duration.ofDays(2)));
     }
 }

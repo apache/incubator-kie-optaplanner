@@ -49,8 +49,9 @@ public class ConsecutiveSetTree<T, I extends Comparable<I>, D extends Comparable
             if (nextStartItem == null) {
                 return Stream.empty();
             }
-            return Stream.of(new Break<>(nextStartItem, startItem,
-                    differenceFunction.apply(indexFunction.apply(startItemToSequence.get(startItem).getItems().last()),
+            T endOfCurrentSequence = startItemToSequence.get(startItem).getItems().last();
+            return Stream.of(new Break<>(nextStartItem, endOfCurrentSequence,
+                    differenceFunction.apply(indexFunction.apply(endOfCurrentSequence),
                             indexFunction.apply(nextStartItem))));
         }).collect(Collectors.toList());
     }
