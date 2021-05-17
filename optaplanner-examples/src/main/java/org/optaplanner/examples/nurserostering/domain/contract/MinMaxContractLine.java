@@ -30,13 +30,7 @@ public class MinMaxContractLine extends ContractLine {
     private int maximumWeight;
 
     public boolean isViolated(int count) {
-        if (minimumEnabled && count < minimumValue) {
-            return true;
-        } else if (maximumEnabled && count > maximumValue) {
-            return true;
-        } else {
-            return false;
-        }
+        return getViolationAmount(count) != 0;
     }
 
     public int getViolationAmount(int count) {

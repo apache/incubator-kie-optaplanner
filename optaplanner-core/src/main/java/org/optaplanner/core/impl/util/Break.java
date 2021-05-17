@@ -16,23 +16,29 @@
 
 package org.optaplanner.core.impl.util;
 
-import java.util.List;
 import java.util.Objects;
-import java.util.stream.Collectors;
 
-public class ConsecutiveData<T, D extends Comparable<D>> {
-    private final ConsecutiveSetTree<T, ?, D> sourceTree;
+public class Break<I, D> {
+    final I beforeItem;
+    final I afterItem;
+    final D breakLength;
 
-    protected ConsecutiveData(ConsecutiveSetTree<T, ?, D> sourceTree) {
-        this.sourceTree = sourceTree;
+    public Break(I beforeItem, I afterItem, D breakLength) {
+        this.beforeItem = beforeItem;
+        this.afterItem = afterItem;
+        this.breakLength = breakLength;
     }
 
-    public List<Sequence<T>> getConsecutiveSequences() {
-        return sourceTree.getConsecutiveSequences();
+    public I getBeforeItem() {
+        return beforeItem;
     }
 
-    public List<Break<T, D>> getBreaks() {
-        return sourceTree.getBreaks();
+    public I getAfterItem() {
+        return afterItem;
+    }
+
+    public D getBreakLength() {
+        return breakLength;
     }
 
     @Override
@@ -41,17 +47,22 @@ public class ConsecutiveData<T, D extends Comparable<D>> {
             return true;
         if (o == null || getClass() != o.getClass())
             return false;
-        ConsecutiveData<?, ?> that = (ConsecutiveData<?, ?>) o;
-        return Objects.equals(sourceTree, that.sourceTree);
+        Break<?, ?> aBreak = (Break<?, ?>) o;
+        return Objects.equals(beforeItem, aBreak.beforeItem) && Objects.equals(afterItem, aBreak.afterItem)
+                && Objects.equals(breakLength, aBreak.breakLength);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(sourceTree);
+        return Objects.hash(beforeItem, afterItem, breakLength);
     }
 
+    @Override
     public String toString() {
-        return getConsecutiveSequences().stream().map(Sequence::toString)
-                .collect(Collectors.joining("; ", "ConsecutiveData [", "]"));
+        return "Break{" +
+                "beforeItem=" + beforeItem +
+                ", afterItem=" + afterItem +
+                ", breakLength=" + breakLength +
+                '}';
     }
 }

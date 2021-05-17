@@ -43,14 +43,15 @@ public class ConsecutiveSetTree<T, I extends Comparable<I>, D extends Comparable
         return sequenceList;
     }
 
-    public List<D> getBreaks() {
+    public List<Break<T, D>> getBreaks() {
         return startItemToSequence.keySet().stream().flatMap(startItem -> {
             T nextStartItem = startItemToSequence.higherKey(startItem);
             if (nextStartItem == null) {
                 return Stream.empty();
             }
-            return Stream.of(differenceFunction.apply(indexFunction.apply(startItemToSequence.get(startItem).getItems().last()),
-                    indexFunction.apply(nextStartItem)));
+            return Stream.of(new Break<>(nextStartItem, startItem,
+                    differenceFunction.apply(indexFunction.apply(startItemToSequence.get(startItem).getItems().last()),
+                            indexFunction.apply(nextStartItem))));
         }).collect(Collectors.toList());
     }
 

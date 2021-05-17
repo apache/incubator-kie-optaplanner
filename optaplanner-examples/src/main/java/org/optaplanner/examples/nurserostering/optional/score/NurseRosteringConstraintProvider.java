@@ -28,6 +28,7 @@ import org.optaplanner.core.api.score.stream.Joiners;
 import org.optaplanner.core.api.score.stream.bi.BiConstraintStream;
 import org.optaplanner.core.api.score.stream.uni.UniConstraintStream;
 import org.optaplanner.core.impl.score.stream.drools.common.QuadTuple;
+import org.optaplanner.core.impl.util.Break;
 import org.optaplanner.core.impl.util.ConsecutiveData;
 import org.optaplanner.core.impl.util.Sequence;
 import org.optaplanner.examples.common.ExperimentalConstraintCollectors;
@@ -54,34 +55,34 @@ import org.optaplanner.examples.nurserostering.score.drools.EmployeeConsecutiveA
 
 public class NurseRosteringConstraintProvider implements ConstraintProvider {
 
-    public <C extends ContractLine> BiConstraintStream<ImmutablePair<Employee, C>, Sequence<ShiftAssignment>>
+    public <C extends ContractLine> BiConstraintStream<ImmutablePair<Employee, C>, Sequence<ShiftDate>>
             getConsecutiveShifts(UniConstraintStream<C> constraintStream) {
         return constraintStream.join(Employee.class, Joiners.equal(ContractLine::getContract, Employee::getContract))
                 .join(ShiftAssignment.class, Joiners.equal((contract, employee) -> employee, ShiftAssignment::getEmployee))
                 .groupBy((contract, employee, shift) -> ImmutablePair.of(employee, contract),
-                        ExperimentalConstraintCollectors.consecutive((contract, employee, shift) -> shift,
-                                ShiftAssignment::getShiftDateDayIndex))
+                        ExperimentalConstraintCollectors.consecutive((contract, employee, shift) -> shift.getShiftDate(),
+                                ShiftDate::getDayIndex))
                 .flattenLast(ConsecutiveData::getConsecutiveSequences);
     }
 
-    public BiConstraintStream<ImmutablePair<Employee, MinMaxContractLine>, Integer>
+    public BiConstraintStream<ImmutablePair<Employee, MinMaxContractLine>, Break<ShiftDate, Integer>>
             getBreaks(UniConstraintStream<MinMaxContractLine> constraintStream) {
         return constraintStream.join(Employee.class, Joiners.equal(MinMaxContractLine::getContract, Employee::getContract))
                 .join(ShiftAssignment.class, Joiners.equal((contract, employee) -> employee, ShiftAssignment::getEmployee))
                 .groupBy((contract, employee, shift) -> ImmutablePair.of(employee, contract),
-                        ExperimentalConstraintCollectors.consecutive((contract, employee, shift) -> shift,
-                                ShiftAssignment::getShiftDateDayIndex))
+                        ExperimentalConstraintCollectors.consecutive((contract, employee, shift) -> shift.getShiftDate(),
+                                ShiftDate::getDayIndex))
                 .flattenLast(ConsecutiveData::getBreaks);
     }
 
-    public BiConstraintStream<ImmutablePair<Employee, MinMaxContractLine>, Sequence<ShiftAssignment>>
+    public BiConstraintStream<ImmutablePair<Employee, MinMaxContractLine>, Sequence<ShiftDate>>
             getConsecutiveWorkingWeekends(UniConstraintStream<MinMaxContractLine> constraintStream) {
         return constraintStream.join(Employee.class, Joiners.equal(MinMaxContractLine::getContract, Employee::getContract))
                 .join(ShiftAssignment.class, Joiners.equal((contract, employee) -> employee, ShiftAssignment::getEmployee),
                         Joiners.filtering((c, e, s) -> s.isWeekend()))
                 .groupBy((contract, employee, shift) -> ImmutablePair.of(employee, contract),
-                        ExperimentalConstraintCollectors.consecutive((contract, employee, shift) -> shift,
-                                ShiftAssignment::getWeekendSundayIndex))
+                        ExperimentalConstraintCollectors.consecutive((contract, employee, shift) -> shift.getShiftDate(),
+                                ShiftDate::getWeekendSundayIndex))
                 .flattenLast(ConsecutiveData::getConsecutiveSequences);
     }
 
@@ -120,7 +121,7 @@ public class NurseRosteringConstraintProvider implements ConstraintProvider {
         return constraintFactory
                 .fromUniquePair(ShiftAssignment.class,
                         Joiners.equal(ShiftAssignment::getEmployee, ShiftAssignment::getShiftDate))
-                .penalize("oneShiftPerDay", HardSoftScore.ONE_HARD);
+                .penalize("org.optaplanner.examples.nurserostering.solver", "oneShiftPerDay", HardSoftScore.ONE_HARD);
     }
 
     // ############################################################################
@@ -136,7 +137,8 @@ public class NurseRosteringConstraintProvider implements ConstraintProvider {
                         Joiners.equal((contractLine, employee) -> employee, ShiftAssignment::getEmployee))
                 .groupBy((line, employee, shift) -> ImmutablePair.of(employee, line), ConstraintCollectors.countTri())
                 .filter((employeeContractPair, shiftCount) -> employeeContractPair.getRight().isViolated(shiftCount))
-                .penalize("Minimum and maximum number of assignments", HardSoftScore.ONE_SOFT,
+                .penalize("org.optaplanner.examples.nurserostering.solver", "Minimum and maximum number of assignments",
+                        HardSoftScore.ONE_SOFT,
                         (employeeContractPair, shiftCount) -> employeeContractPair.getRight().getViolationAmount(shiftCount));
     }
 
@@ -149,7 +151,8 @@ public class NurseRosteringConstraintProvider implements ConstraintProvider {
                 .ifNotExists(ShiftAssignment.class,
                         Joiners.equal((contractLine, employee) -> employee, ShiftAssignment::getEmployee))
                 .filter((contract, employee) -> contract.isViolated(0))
-                .penalize("Minimum and maximum number of assignments (no assignments)", HardSoftScore.ONE_SOFT,
+                .penalize("org.optaplanner.examples.nurserostering.solver",
+                        "Minimum and maximum number of assignments (no assignments)", HardSoftScore.ONE_SOFT,
                         (contract, employee) -> contract.getViolationAmount(0));
     }
 
@@ -161,7 +164,8 @@ public class NurseRosteringConstraintProvider implements ConstraintProvider {
                         minMaxContractLine.isMinimumEnabled()))
                                 .filter((employeeContractPair,
                                         shiftList) -> shiftList.getLength() < employeeContractPair.getRight().getMinimumValue())
-                                .penalize("minimumConsecutiveWorkingDays", HardSoftScore.ONE_SOFT,
+                                .penalize("org.optaplanner.examples.nurserostering.solver", "minimumConsecutiveWorkingDays",
+                                        HardSoftScore.ONE_SOFT,
                                         (employeeContractPair, shiftList) -> employeeContractPair.getRight()
                                                 .getViolationAmount(shiftList.getLength()));
     }
@@ -173,7 +177,8 @@ public class NurseRosteringConstraintProvider implements ConstraintProvider {
                         minMaxContractLine.isMaximumEnabled()))
                                 .filter((employeeContractPair,
                                         shiftList) -> shiftList.getLength() > employeeContractPair.getRight().getMaximumValue())
-                                .penalize("maximumConsecutiveWorkingDays", HardSoftScore.ONE_SOFT,
+                                .penalize("org.optaplanner.examples.nurserostering.solver", "maximumConsecutiveWorkingDays",
+                                        HardSoftScore.ONE_SOFT,
                                         (employeeContractPair, shiftList) -> employeeContractPair.getRight()
                                                 .getViolationAmount(shiftList.getLength()));
     }
@@ -185,10 +190,12 @@ public class NurseRosteringConstraintProvider implements ConstraintProvider {
                         .getContractLineType() == ContractLineType.CONSECUTIVE_FREE_DAYS &&
                         minMaxContractLine.isMinimumEnabled()))
                                 .filter((employeeContractPair,
-                                        breakLength) -> breakLength < employeeContractPair.getRight().getMinimumValue())
-                                .penalize("minimumConsecutiveFreeDays", HardSoftScore.ONE_SOFT,
-                                        (employeeContractPair, breakLength) -> employeeContractPair.getRight()
-                                                .getViolationAmount(breakLength));
+                                        breakInfo) -> breakInfo.getBreakLength() < employeeContractPair.getRight()
+                                                .getMinimumValue())
+                                .penalize("org.optaplanner.examples.nurserostering.solver", "minimumConsecutiveFreeDays",
+                                        HardSoftScore.ONE_SOFT,
+                                        (employeeContractPair, breakInfo) -> employeeContractPair.getRight()
+                                                .getViolationAmount(breakInfo.getBreakLength()));
     }
 
     Constraint maximumConsecutiveFreeDays(ConstraintFactory constraintFactory) {
@@ -197,10 +204,12 @@ public class NurseRosteringConstraintProvider implements ConstraintProvider {
                         .getContractLineType() == ContractLineType.CONSECUTIVE_FREE_DAYS &&
                         minMaxContractLine.isMaximumEnabled()))
                                 .filter((employeeContractPair,
-                                        breakLength) -> breakLength > employeeContractPair.getRight().getMaximumValue())
-                                .penalize("maximumConsecutiveFreeDays", HardSoftScore.ONE_SOFT,
-                                        (employeeContractPair, breakLength) -> employeeContractPair.getRight()
-                                                .getViolationAmount(breakLength));
+                                        breakInfo) -> breakInfo.getBreakLength() > employeeContractPair.getRight()
+                                                .getMaximumValue())
+                                .penalize("org.optaplanner.examples.nurserostering.solver", "maximumConsecutiveFreeDays",
+                                        HardSoftScore.ONE_SOFT,
+                                        (employeeContractPair, breakInfo) -> employeeContractPair.getRight()
+                                                .getViolationAmount(breakInfo.getBreakLength()));
     }
 
     // Min/Max consecutive working weekends
@@ -211,7 +220,8 @@ public class NurseRosteringConstraintProvider implements ConstraintProvider {
                         minMaxContractLine.isMinimumEnabled()))
                                 .filter((employeeContractPair,
                                         shiftList) -> shiftList.getLength() < employeeContractPair.getRight().getMinimumValue())
-                                .penalize("minimumConsecutiveWorkingWeekends", HardSoftScore.ONE_SOFT,
+                                .penalize("org.optaplanner.examples.nurserostering.solver", "minimumConsecutiveWorkingWeekends",
+                                        HardSoftScore.ONE_SOFT,
                                         (employeeContractPair, shiftList) -> employeeContractPair.getRight()
                                                 .getViolationAmount(shiftList.getLength()));
     }
@@ -223,7 +233,8 @@ public class NurseRosteringConstraintProvider implements ConstraintProvider {
                         minMaxContractLine.isMaximumEnabled()))
                                 .filter((employeeContractPair,
                                         shiftList) -> shiftList.getLength() > employeeContractPair.getRight().getMaximumValue())
-                                .penalize("maximumConsecutiveWorkingWeekends", HardSoftScore.ONE_SOFT,
+                                .penalize("org.optaplanner.examples.nurserostering.solver", "maximumConsecutiveWorkingWeekends",
+                                        HardSoftScore.ONE_SOFT,
                                         (employeeContractPair, shiftList) -> employeeContractPair.getRight()
                                                 .getViolationAmount(shiftList.getLength()));
     }
@@ -236,11 +247,12 @@ public class NurseRosteringConstraintProvider implements ConstraintProvider {
                         minMaxContractLine.isEnabled()))
                                 .filter((employeeContractPair,
                                         shiftList) -> new EmployeeConsecutiveAssignmentStart(
-                                                employeeContractPair.getLeft(), shiftList.getItems().first().getShiftDate())
+                                                employeeContractPair.getLeft(), shiftList.getItems().first())
                                                         .isWeekendAndNotFirstDayOfWeekend())
-                                .penalize("startOnNotFirstDayOfWeekend", HardSoftScore.ONE_SOFT,
+                                .penalize("org.optaplanner.examples.nurserostering.solver", "startOnNotFirstDayOfWeekend",
+                                        HardSoftScore.ONE_SOFT,
                                         (employeeContractPair, shiftList) -> new EmployeeConsecutiveAssignmentStart(
-                                                employeeContractPair.getLeft(), shiftList.getItems().first().getShiftDate())
+                                                employeeContractPair.getLeft(), shiftList.getItems().first())
                                                         .getDistanceToFirstDayOfWeekend()
                                                 * employeeContractPair.getRight().getWeight());
     }
@@ -252,11 +264,12 @@ public class NurseRosteringConstraintProvider implements ConstraintProvider {
                         minMaxContractLine.isEnabled()))
                                 .filter((employeeContractPair,
                                         shiftList) -> new EmployeeConsecutiveAssignmentEnd(
-                                                employeeContractPair.getLeft(), shiftList.getItems().last().getShiftDate())
+                                                employeeContractPair.getLeft(), shiftList.getItems().last())
                                                         .isWeekendAndNotLastDayOfWeekend())
-                                .penalize("endOnNotLastDayOfWeekend", HardSoftScore.ONE_SOFT,
+                                .penalize("org.optaplanner.examples.nurserostering.solver", "endOnNotLastDayOfWeekend",
+                                        HardSoftScore.ONE_SOFT,
                                         (employeeContractPair, shiftList) -> new EmployeeConsecutiveAssignmentEnd(
-                                                employeeContractPair.getLeft(), shiftList.getItems().last().getShiftDate())
+                                                employeeContractPair.getLeft(), shiftList.getItems().last())
                                                         .getDistanceToLastDayOfWeekend()
                                                 * employeeContractPair.getRight().getWeight());
     }
@@ -278,7 +291,8 @@ public class NurseRosteringConstraintProvider implements ConstraintProvider {
                         Joiners.filtering((t, shift) -> shift.isWeekend()))
                 .groupBy((tuple, sa) -> tuple, ConstraintCollectors.countBi())
                 .filter((tuple, count) -> count < tuple.b.getWeekendLength())
-                .penalize("identicalShiftTypesDuringWeekend", HardSoftScore.ONE_SOFT,
+                .penalize("org.optaplanner.examples.nurserostering.solver", "identicalShiftTypesDuringWeekend",
+                        HardSoftScore.ONE_SOFT,
                         (tuple, count) -> (tuple.b.getWeekendLength() - count) * tuple.a.getWeight());
     }
 
@@ -287,7 +301,7 @@ public class NurseRosteringConstraintProvider implements ConstraintProvider {
         return constraintFactory.from(DayOffRequest.class)
                 .join(ShiftAssignment.class, Joiners.equal(DayOffRequest::getEmployee, ShiftAssignment::getEmployee),
                         Joiners.equal(DayOffRequest::getShiftDate, ShiftAssignment::getShiftDate))
-                .penalize("dayOffRequest", HardSoftScore.ONE_SOFT,
+                .penalize("org.optaplanner.examples.nurserostering.solver", "dayOffRequest", HardSoftScore.ONE_SOFT,
                         (dayOffRequest, shiftAssignment) -> dayOffRequest.getWeight());
     }
 
@@ -295,7 +309,8 @@ public class NurseRosteringConstraintProvider implements ConstraintProvider {
         return constraintFactory.from(DayOnRequest.class)
                 .ifNotExists(ShiftAssignment.class, Joiners.equal(DayOnRequest::getEmployee, ShiftAssignment::getEmployee),
                         Joiners.equal(DayOnRequest::getShiftDate, ShiftAssignment::getShiftDate))
-                .penalize("dayOnRequest", HardSoftScore.ONE_SOFT, DayOnRequest::getWeight);
+                .penalize("org.optaplanner.examples.nurserostering.solver", "dayOnRequest", HardSoftScore.ONE_SOFT,
+                        DayOnRequest::getWeight);
     }
 
     // Requested shift on/off
@@ -303,7 +318,7 @@ public class NurseRosteringConstraintProvider implements ConstraintProvider {
         return constraintFactory.from(ShiftOffRequest.class)
                 .join(ShiftAssignment.class, Joiners.equal(ShiftOffRequest::getEmployee, ShiftAssignment::getEmployee),
                         Joiners.equal(ShiftOffRequest::getShift, ShiftAssignment::getShift))
-                .penalize("shiftOffRequest", HardSoftScore.ONE_SOFT,
+                .penalize("org.optaplanner.examples.nurserostering.solver", "shiftOffRequest", HardSoftScore.ONE_SOFT,
                         (shiftOffRequest, shiftAssignment) -> shiftOffRequest.getWeight());
     }
 
@@ -311,7 +326,8 @@ public class NurseRosteringConstraintProvider implements ConstraintProvider {
         return constraintFactory.from(ShiftOnRequest.class)
                 .ifNotExists(ShiftAssignment.class, Joiners.equal(ShiftOnRequest::getEmployee, ShiftAssignment::getEmployee),
                         Joiners.equal(ShiftOnRequest::getShift, ShiftAssignment::getShift))
-                .penalize("shiftOnRequest", HardSoftScore.ONE_SOFT, ShiftOnRequest::getWeight);
+                .penalize("org.optaplanner.examples.nurserostering.solver", "shiftOnRequest", HardSoftScore.ONE_SOFT,
+                        ShiftOnRequest::getWeight);
     }
 
     // Alternative skill
@@ -325,7 +341,7 @@ public class NurseRosteringConstraintProvider implements ConstraintProvider {
                 .ifNotExists(SkillProficiency.class,
                         Joiners.equal((contract, sa, stsr) -> sa.getEmployee(), SkillProficiency::getEmployee),
                         Joiners.equal((contract, sa, stsr) -> stsr.getSkill(), SkillProficiency::getSkill))
-                .penalize("alternativeSkill", HardSoftScore.ONE_SOFT,
+                .penalize("org.optaplanner.examples.nurserostering.solver", "alternativeSkill", HardSoftScore.ONE_SOFT,
                         (contractLine, sa, stsr) -> contractLine.getWeight());
     }
 
@@ -347,7 +363,8 @@ public class NurseRosteringConstraintProvider implements ConstraintProvider {
                         Joiners.filtering((pattern, contractLine, date, employee,
                                 shift) -> shift.getShiftDateDayIndex() == (date.getDayIndex() + 1)
                                         || shift.getShiftDateDayIndex() == (date.getDayIndex() + 2)))
-                .penalize("unwantedPatternFreeBefore2DaysWithAWorkDayPattern", HardSoftScore.ONE_SOFT,
+                .penalize("org.optaplanner.examples.nurserostering.solver", "unwantedPatternFreeBefore2DaysWithAWorkDayPattern",
+                        HardSoftScore.ONE_SOFT,
                         (pattern, contractLine, date, employee) -> pattern.getWeight());
     }
 
@@ -364,7 +381,8 @@ public class NurseRosteringConstraintProvider implements ConstraintProvider {
                                 ShiftAssignment::getShiftDateDayIndex),
                         Joiners.filtering((pattern, contractLine, shift1, shift2) -> pattern.getDayIndex1ShiftType() == null
                                 || shift2.getShiftType() == pattern.getDayIndex1ShiftType()))
-                .penalize("unwantedPatternShiftType2DaysPattern", HardSoftScore.ONE_SOFT,
+                .penalize("org.optaplanner.examples.nurserostering.solver", "unwantedPatternShiftType2DaysPattern",
+                        HardSoftScore.ONE_SOFT,
                         (pattern, contractLine, shift1, shift2) -> pattern.getWeight());
     }
 
@@ -387,7 +405,8 @@ public class NurseRosteringConstraintProvider implements ConstraintProvider {
                                 ShiftAssignment::getShiftDateDayIndex),
                         Joiners.equal((pattern, contractLine, shift) -> pattern.getDayIndex2ShiftType(),
                                 ShiftAssignment::getShiftType))
-                .penalize("unwantedPatternShiftType3DaysPattern", HardSoftScore.ONE_SOFT,
+                .penalize("org.optaplanner.examples.nurserostering.solver", "unwantedPatternShiftType3DaysPattern",
+                        HardSoftScore.ONE_SOFT,
                         (pattern, contractLine, shift1) -> pattern.getWeight());
     }
 }
