@@ -49,7 +49,7 @@ public class InvestmentIncrementalScoreCalculator
     public void resetWorkingSolution(InvestmentSolution solution) {
         this.solution = solution;
         squaredStandardDeviationFemtosMaximum = solution.getParametrization()
-                .getSquaredStandardDeviationFemtosMaximum();
+                .calculateSquaredStandardDeviationFemtosMaximum();
         squaredStandardDeviationFemtos = 0L;
         List<Region> regionList = solution.getRegionList();
         regionQuantityTotalMap = new HashMap<>();

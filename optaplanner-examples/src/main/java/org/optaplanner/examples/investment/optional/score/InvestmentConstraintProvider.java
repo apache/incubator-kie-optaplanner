@@ -1,19 +1,3 @@
-/*
- * Copyright 2021 Red Hat, Inc. and/or its affiliates.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
 package org.optaplanner.examples.investment.optional.score;
 
 import java.util.function.Function;
@@ -26,6 +10,8 @@ import org.optaplanner.core.api.score.stream.ConstraintProvider;
 import org.optaplanner.core.api.score.stream.Joiners;
 import org.optaplanner.examples.investment.domain.AssetClassAllocation;
 import org.optaplanner.examples.investment.domain.InvestmentParametrization;
+import org.optaplanner.examples.investment.domain.Region;
+import org.optaplanner.examples.investment.domain.Sector;
 
 public class InvestmentConstraintProvider implements ConstraintProvider {
 
@@ -45,26 +31,26 @@ public class InvestmentConstraintProvider implements ConstraintProvider {
         return cf.from(AssetClassAllocation.class)
                 .join(AssetClassAllocation.class)
                 .groupBy(ConstraintCollectors.sumLong(AssetClassAllocation::calculateSquaredStandardDeviationFemtosFromTo))
-                .join(InvestmentParametrization.class,
-                        Joiners.greaterThan(Function.identity(),
-                                InvestmentParametrization::getSquaredStandardDeviationFemtosMaximum))
+                .join(InvestmentParametrization.class)
+                .filter((deviation,
+                        parametrization) -> deviation > parametrization.calculateSquaredStandardDeviationFemtosMaximum())
                 .penalizeLong(CONSTRAINT_PACKAGE, "Standard deviation maximum", HardSoftLongScore.ONE_HARD, (deviation,
-                        parametrization) -> deviation - parametrization.getSquaredStandardDeviationFemtosMaximum());
+                        parametrization) -> deviation - parametrization.calculateSquaredStandardDeviationFemtosMaximum());
     }
 
     private Constraint regionQuantityGreaterThanMaximumPenalty(ConstraintFactory cf) {
-        return cf.from(AssetClassAllocation.class)
-                .groupBy(AssetClassAllocation::getRegion,
-                        ConstraintCollectors.sumLong(AssetClassAllocation::getQuantityMillis))
+        return cf.from(Region.class)
+                .join(AssetClassAllocation.class, Joiners.equal(Function.identity(), AssetClassAllocation::getRegion))
+                .groupBy((region, asset) -> region, ConstraintCollectors.sumLong((region, asset) -> asset.getQuantityMillis()))
                 .filter((region, totalQuantity) -> totalQuantity > region.getQuantityMillisMaximum())
                 .penalizeLong(CONSTRAINT_PACKAGE, "Region quantity maximum", HardSoftLongScore.ONE_HARD,
                         (region, totalQuantity) -> totalQuantity - region.getQuantityMillisMaximum());
     }
 
     private Constraint sectorQuantityGreaterThanMaximumPenalty(ConstraintFactory cf) {
-        return cf.from(AssetClassAllocation.class)
-                .groupBy(AssetClassAllocation::getSector,
-                        ConstraintCollectors.sumLong(AssetClassAllocation::getQuantityMillis))
+        return cf.from(Sector.class)
+                .join(AssetClassAllocation.class, Joiners.equal(Function.identity(), AssetClassAllocation::getSector))
+                .groupBy((sector, asset) -> sector, ConstraintCollectors.sumLong((sector, asset) -> asset.getQuantityMillis()))
                 .filter((sector, totalQuantity) -> totalQuantity > sector.getQuantityMillisMaximum())
                 .penalizeLong(CONSTRAINT_PACKAGE, "Sector quantity maximum", HardSoftLongScore.ONE_HARD,
                         (sector, totalQuantity) -> totalQuantity - sector.getQuantityMillisMaximum());
