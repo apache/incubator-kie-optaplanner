@@ -16,6 +16,24 @@
 
 package org.optaplanner.core.api.score.stream;
 
+import java.math.BigDecimal;
+import java.math.BigInteger;
+import java.time.Duration;
+import java.time.Period;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.SortedMap;
+import java.util.SortedSet;
+import java.util.function.BiFunction;
+import java.util.function.Function;
+import org.junit.jupiter.api.Test;
+import org.optaplanner.core.api.score.stream.bi.BiConstraintCollector;
+import org.optaplanner.core.api.score.stream.quad.QuadConstraintCollector;
+import org.optaplanner.core.api.score.stream.tri.TriConstraintCollector;
+import org.optaplanner.core.api.score.stream.uni.UniConstraintCollector;
+
 import static java.util.Arrays.asList;
 import static java.util.Collections.emptyList;
 import static java.util.Collections.emptyMap;
@@ -34,25 +52,6 @@ import static org.optaplanner.core.impl.testdata.util.PlannerTestUtils.asMap;
 import static org.optaplanner.core.impl.testdata.util.PlannerTestUtils.asSet;
 import static org.optaplanner.core.impl.testdata.util.PlannerTestUtils.asSortedMap;
 import static org.optaplanner.core.impl.testdata.util.PlannerTestUtils.asSortedSet;
-
-import java.math.BigDecimal;
-import java.math.BigInteger;
-import java.time.Duration;
-import java.time.Period;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.SortedMap;
-import java.util.SortedSet;
-import java.util.function.BiFunction;
-import java.util.function.Function;
-
-import org.junit.jupiter.api.Test;
-import org.optaplanner.core.api.score.stream.bi.BiConstraintCollector;
-import org.optaplanner.core.api.score.stream.quad.QuadConstraintCollector;
-import org.optaplanner.core.api.score.stream.tri.TriConstraintCollector;
-import org.optaplanner.core.api.score.stream.uni.UniConstraintCollector;
 
 public class ConstraintCollectorsTest {
 
@@ -1813,8 +1812,8 @@ public class ConstraintCollectorsTest {
 
     @Test
     public void toSortedSetBi() {
-        BiConstraintCollector<Integer, Integer, ?, SortedSet<Integer>> collector = ConstraintCollectors
-                .toSortedSet(Integer::sum);
+        BiConstraintCollector<Integer, Integer, ?, SortedSet<Integer>> collector =
+                ConstraintCollectors.toSortedSet((BiFunction<Integer, Integer, Integer>) Integer::sum);
         Object container = collector.supplier().get();
         // Add first value, we have one now.
         int firstValueA = 2;
