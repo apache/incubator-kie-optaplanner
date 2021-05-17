@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -69,11 +69,7 @@ public abstract class BusPassengerCountTotalUpdatingVariableListener
         if (!isCorrectBusInstance(bus)) {
             return;
         }
-        int passengerQuantity = busStop.getPassengerQuantity();
-        if (passengerQuantity == 0) {
-            return;
-        }
-        int difference = increase ? passengerQuantity : -passengerQuantity;
+        int difference = increase ? busStop.getPassengerQuantity() : -busStop.getPassengerQuantity();
         scoreDirector.beforeVariableChanged(bus, "passengerQuantityTotal");
         bus.setPassengerQuantityTotal(bus.getPassengerQuantityTotal() + difference);
         scoreDirector.afterVariableChanged(bus, "passengerQuantityTotal");
