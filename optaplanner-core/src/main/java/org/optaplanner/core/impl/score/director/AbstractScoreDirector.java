@@ -22,14 +22,17 @@ import static java.util.Objects.requireNonNull;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.IdentityHashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
 import java.util.TreeMap;
 import java.util.function.Consumer;
 
@@ -699,15 +702,53 @@ public abstract class AbstractScoreDirector<Solution_, Score_ extends Score<Scor
         }
 
         Map<String, ConstraintMatchTotal<Score_>> constraintMatchTotalMap = getConstraintMatchTotalMap();
-        Map<List<Object>, ConstraintMatch<Score_>> corruptedMap =
+        Map<Object, Set<ConstraintMatch<Score_>>> corruptedMap =
                 createConstraintMatchMap(constraintMatchTotalMap.values());
-        Map<List<Object>, ConstraintMatch<Score_>> excessMap = new LinkedHashMap<>(corruptedMap);
         Map<String, ConstraintMatchTotal<Score_>> uncorruptedConstraintMatchTotalMap =
                 uncorruptedScoreDirector.getConstraintMatchTotalMap();
-        Map<List<Object>, ConstraintMatch<Score_>> missingMap =
+        Map<Object, Set<ConstraintMatch<Score_>>> uncorruptedMap =
                 createConstraintMatchMap(uncorruptedConstraintMatchTotalMap.values());
-        excessMap.keySet().removeAll(missingMap.keySet()); // missingMap == uncorruptedMap
-        missingMap.keySet().removeAll(corruptedMap.keySet());
+
+        Set<ConstraintMatch<Score_>> excessSet = new LinkedHashSet<>();
+        Set<ConstraintMatch<Score_>> missingSet = new LinkedHashSet<>();
+
+        uncorruptedMap.forEach((key, uncorruptedMatches) -> {
+            Set<ConstraintMatch<Score_>> corruptedMatches = corruptedMap.getOrDefault(key, Collections.emptySet());
+            if (corruptedMatches.isEmpty()) {
+                missingSet.addAll(uncorruptedMatches);
+                return;
+            }
+            int uncorruptedMatchCount = uncorruptedMatches.size();
+            int corruptedMatchCount = corruptedMatches.size();
+            if (corruptedMatchCount > uncorruptedMatchCount) {
+                corruptedMatches.stream()
+                        .limit(corruptedMatchCount - uncorruptedMatchCount)
+                        .forEach(excessSet::add);
+            } else if (corruptedMatchCount < uncorruptedMatchCount) {
+                uncorruptedMatches.stream()
+                        .limit(uncorruptedMatchCount - corruptedMatchCount)
+                        .forEach(missingSet::add);
+            }
+        });
+
+        corruptedMap.forEach((key, corruptedMatches) -> {
+            Set<ConstraintMatch<Score_>> uncorruptedMatches = uncorruptedMap.getOrDefault(key, Collections.emptySet());
+            if (uncorruptedMatches.isEmpty()) {
+                excessSet.addAll(corruptedMatches);
+                return;
+            }
+            int uncorruptedMatchCount = uncorruptedMatches.size();
+            int corruptedMatchCount = corruptedMatches.size();
+            if (corruptedMatchCount > uncorruptedMatchCount) {
+                corruptedMatches.stream()
+                        .limit(corruptedMatchCount - uncorruptedMatchCount)
+                        .forEach(excessSet::add);
+            } else if (corruptedMatchCount < uncorruptedMatchCount) {
+                uncorruptedMatches.stream()
+                        .limit(uncorruptedMatchCount - corruptedMatchCount)
+                        .forEach(missingSet::add);
+            }
+        });
 
         final int CONSTRAINT_MATCH_DISPLAY_LIMIT = 8;
         StringBuilder analysis = new StringBuilder();
@@ -715,33 +756,33 @@ public abstract class AbstractScoreDirector<Solution_, Score_ extends Score<Scor
         // If predicted, the score calculation might have happened on another thread, so a different ScoreDirector
         // so there is no guarantee that the working ScoreDirector is the corrupted ScoreDirector
         String workingLabel = predicted ? "working" : "corrupted";
-        if (excessMap.isEmpty()) {
+        if (excessSet.isEmpty()) {
             analysis.append("  The ").append(workingLabel)
                     .append(" scoreDirector has no ConstraintMatch(s) which are in excess.\n");
         } else {
-            analysis.append("  The ").append(workingLabel).append(" scoreDirector has ").append(excessMap.size())
+            analysis.append("  The ").append(workingLabel).append(" scoreDirector has ").append(excessSet.size())
                     .append(" ConstraintMatch(s) which are in excess (and should not be there):\n");
-            excessMap.values().stream().sorted().limit(CONSTRAINT_MATCH_DISPLAY_LIMIT)
+            excessSet.stream().sorted().limit(CONSTRAINT_MATCH_DISPLAY_LIMIT)
                     .forEach(constraintMatch -> analysis.append("    ").append(constraintMatch).append("\n"));
-            if (excessMap.size() >= CONSTRAINT_MATCH_DISPLAY_LIMIT) {
-                analysis.append("    ... ").append(excessMap.size() - CONSTRAINT_MATCH_DISPLAY_LIMIT)
+            if (excessSet.size() >= CONSTRAINT_MATCH_DISPLAY_LIMIT) {
+                analysis.append("    ... ").append(excessSet.size() - CONSTRAINT_MATCH_DISPLAY_LIMIT)
                         .append(" more\n");
             }
         }
-        if (missingMap.isEmpty()) {
+        if (missingSet.isEmpty()) {
             analysis.append("  The ").append(workingLabel)
                     .append(" scoreDirector has no ConstraintMatch(s) which are missing.\n");
         } else {
-            analysis.append("  The ").append(workingLabel).append(" scoreDirector has ").append(missingMap.size())
+            analysis.append("  The ").append(workingLabel).append(" scoreDirector has ").append(missingSet.size())
                     .append(" ConstraintMatch(s) which are missing:\n");
-            missingMap.values().stream().sorted().limit(CONSTRAINT_MATCH_DISPLAY_LIMIT)
+            missingSet.stream().sorted().limit(CONSTRAINT_MATCH_DISPLAY_LIMIT)
                     .forEach(constraintMatch -> analysis.append("    ").append(constraintMatch).append("\n"));
-            if (missingMap.size() >= CONSTRAINT_MATCH_DISPLAY_LIMIT) {
-                analysis.append("    ... ").append(missingMap.size() - CONSTRAINT_MATCH_DISPLAY_LIMIT)
+            if (missingSet.size() >= CONSTRAINT_MATCH_DISPLAY_LIMIT) {
+                analysis.append("    ... ").append(missingSet.size() - CONSTRAINT_MATCH_DISPLAY_LIMIT)
                         .append(" more\n");
             }
         }
-        if (!excessMap.isEmpty() || !missingMap.isEmpty()) {
+        if (!missingSet.isEmpty() || !excessSet.isEmpty()) {
             analysis.append("  Maybe there is a bug in the score constraints of those ConstraintMatch(s).\n");
             analysis.append(
                     "  Maybe a score constraint doesn't select all the entities it depends on, but finds some through a reference in a selected entity."
@@ -762,22 +803,25 @@ public abstract class AbstractScoreDirector<Solution_, Score_ extends Score<Scor
         return analysis.toString();
     }
 
-    private Map<List<Object>, ConstraintMatch<Score_>> createConstraintMatchMap(
+    private Map<Object, Set<ConstraintMatch<Score_>>> createConstraintMatchMap(
             Collection<ConstraintMatchTotal<Score_>> constraintMatchTotals) {
         Comparator<Object> comparator = new ClassAndPlanningIdComparator(getSolutionDescriptor().getDomainAccessType(),
                 getSolutionDescriptor().getGeneratedMemberAccessorMap(),
                 false);
-        Map<List<Object>, ConstraintMatch<Score_>> constraintMatchMap = new LinkedHashMap<>(constraintMatchTotals.size() * 16);
+        Map<Object, Set<ConstraintMatch<Score_>>> constraintMatchMap =
+                new LinkedHashMap<>(constraintMatchTotals.size() * 16);
         for (ConstraintMatchTotal<Score_> constraintMatchTotal : constraintMatchTotals) {
+            String constraintId = constraintMatchTotal.getConstraintId();
             for (ConstraintMatch<Score_> constraintMatch : constraintMatchTotal.getConstraintMatchSet()) {
                 // The order of justificationLists for constraints that include accumulates isn't stable, so we make it.
                 List<Object> justificationList = new ArrayList<>(constraintMatch.getJustificationList());
                 justificationList.sort(comparator);
                 // And now we store the reference to the constraint match.
-                List<Object> key = Arrays.asList(constraintMatchTotal.getConstraintPackage(),
-                        constraintMatchTotal.getConstraintName(), justificationList, constraintMatch.getScore());
-                ConstraintMatch<Score_> previousConstraintMatch = constraintMatchMap.put(key, constraintMatch);
-                if (previousConstraintMatch != null) {
+                // Constraint Streams with indistinct tuples may produce two different match instances for the same key.
+                Object key = Arrays.asList(constraintId, justificationList, constraintMatch.getScore());
+                boolean added = constraintMatchMap.computeIfAbsent(key, k -> new LinkedHashSet<>(0))
+                        .add(constraintMatch);
+                if (!added) {
                     throw new IllegalStateException("Score corruption because the constraintMatch (" + constraintMatch
                             + ") was added twice for constraintMatchTotal (" + constraintMatchTotal
                             + ") without removal.");
