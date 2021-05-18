@@ -1,17 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <solver xmlns="https://www.optaplanner.org/xsd/solver" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="https://www.optaplanner.org/xsd/solver https://www.optaplanner.org/xsd/solver/solver.xsd">
-  <environmentMode>FULL_ASSERT</environmentMode><!-- To slowly prove there are no bugs in this code -->
+  <!--<environmentMode>FULL_ASSERT</environmentMode>--><!-- To slowly prove there are no bugs in this code -->
   <!--<moveThreadCount>AUTO</moveThreadCount>--><!-- To solve faster by saturating multiple CPU cores -->
 
   <solutionClass>org.optaplanner.examples.nurserostering.domain.NurseRoster</solutionClass>
   <entityClass>org.optaplanner.examples.nurserostering.domain.ShiftAssignment</entityClass>
 
   <scoreDirectorFactory>
-    <constraintProviderClass>org.optaplanner.examples.nurserostering.optional.score.NurseRosteringConstraintProvider</constraintProviderClass>
-    <assertionScoreDirectorFactory>
-      <scoreDrl>org/optaplanner/examples/nurserostering/solver/nurseRosteringConstraints.drl</scoreDrl>
-    </assertionScoreDirectorFactory>
+    <scoreDrl>org/optaplanner/examples/nurserostering/solver/nurseRosteringConstraints.drl</scoreDrl>
+    <!--<constraintProviderClass>org.optaplanner.examples.nurserostering.optional.score.NurseRosteringConstraintProvider</constraintProviderClass>-->
   </scoreDirectorFactory>
 
   <termination>
