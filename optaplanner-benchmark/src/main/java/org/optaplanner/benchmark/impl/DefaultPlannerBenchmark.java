@@ -19,6 +19,7 @@ package org.optaplanner.benchmark.impl;
 import java.awt.Desktop;
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Path;
 import java.time.OffsetDateTime;
 import java.util.Collections;
 import java.util.HashMap;
@@ -93,11 +94,12 @@ public class DefaultPlannerBenchmark implements PlannerBenchmark {
     // ************************************************************************
 
     @Override
-    public void benchmark() {
+    public Path benchmark() {
         benchmarkingStarted();
         warmUp();
         runSingleBenchmarks();
         benchmarkingEnded();
+        return getBenchmarkDirectory().toPath();
     }
 
     public void benchmarkingStarted() {
@@ -419,9 +421,10 @@ public class DefaultPlannerBenchmark implements PlannerBenchmark {
     }
 
     @Override
-    public void benchmarkAndShowReportInBrowser() {
-        benchmark();
+    public Path benchmarkAndShowReportInBrowser() {
+        Path benchmarkDirectoryPath = benchmark();
         showReportInBrowser();
+        return benchmarkDirectoryPath;
     }
 
     private void showReportInBrowser() {
