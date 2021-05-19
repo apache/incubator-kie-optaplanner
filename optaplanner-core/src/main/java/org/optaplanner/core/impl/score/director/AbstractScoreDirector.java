@@ -718,17 +718,7 @@ public abstract class AbstractScoreDirector<Solution_, Score_ extends Score<Scor
                 missingSet.addAll(uncorruptedMatches);
                 return;
             }
-            int uncorruptedMatchCount = uncorruptedMatches.size();
-            int corruptedMatchCount = corruptedMatches.size();
-            if (corruptedMatchCount > uncorruptedMatchCount) {
-                corruptedMatches.stream()
-                        .limit(corruptedMatchCount - uncorruptedMatchCount)
-                        .forEach(excessSet::add);
-            } else if (corruptedMatchCount < uncorruptedMatchCount) {
-                uncorruptedMatches.stream()
-                        .limit(uncorruptedMatchCount - corruptedMatchCount)
-                        .forEach(missingSet::add);
-            }
+            updateExcessAndMissingConstraintMatches(uncorruptedMatches, corruptedMatches, excessSet, missingSet);
         });
 
         corruptedMap.forEach((key, corruptedMatches) -> {
@@ -737,17 +727,7 @@ public abstract class AbstractScoreDirector<Solution_, Score_ extends Score<Scor
                 excessSet.addAll(corruptedMatches);
                 return;
             }
-            int uncorruptedMatchCount = uncorruptedMatches.size();
-            int corruptedMatchCount = corruptedMatches.size();
-            if (corruptedMatchCount > uncorruptedMatchCount) {
-                corruptedMatches.stream()
-                        .limit(corruptedMatchCount - uncorruptedMatchCount)
-                        .forEach(excessSet::add);
-            } else if (corruptedMatchCount < uncorruptedMatchCount) {
-                uncorruptedMatches.stream()
-                        .limit(uncorruptedMatchCount - corruptedMatchCount)
-                        .forEach(missingSet::add);
-            }
+            updateExcessAndMissingConstraintMatches(uncorruptedMatches, corruptedMatches, excessSet, missingSet);
         });
 
         final int CONSTRAINT_MATCH_DISPLAY_LIMIT = 8;
@@ -801,6 +781,34 @@ public abstract class AbstractScoreDirector<Solution_, Score_ extends Score<Scor
             }
         }
         return analysis.toString();
+    }
+
+    private void updateExcessAndMissingConstraintMatches(Set<ConstraintMatch<Score_>> uncorruptedSet,
+            Set<ConstraintMatch<Score_>> corruptedSet, Set<ConstraintMatch<Score_>> excessSet,
+            Set<ConstraintMatch<Score_>> missingSet) {
+        int uncorruptedMatchCount = uncorruptedSet.size();
+        int corruptedMatchCount = corruptedSet.size();
+        /*
+         * The corrupted and uncorrupted sets contain 1+ constraint matches which are the same.
+         * (= They have the same constraint, same justifications and the same score.)
+         * This is perfectly fine and happens when a constraint stream produces duplicate tuples.
+         *
+         * It is expected that the number of these matches would be the same between the two sets.
+         * When it is not, it is a sign of score corruption.
+         * In that case, for visualization purposes, we need to take the excess and/or missing constraint matches,
+         * and print them to the user.
+         * It does not matter which ones we pick, because they are all the same.
+         * So we just use the limit() below to pick the first ones.
+         */
+        if (corruptedMatchCount > uncorruptedMatchCount) {
+            corruptedSet.stream()
+                    .limit(corruptedMatchCount - uncorruptedMatchCount)
+                    .forEach(excessSet::add);
+        } else if (corruptedMatchCount < uncorruptedMatchCount) {
+            uncorruptedSet.stream()
+                    .limit(uncorruptedMatchCount - corruptedMatchCount)
+                    .forEach(missingSet::add);
+        }
     }
 
     private Map<Object, Set<ConstraintMatch<Score_>>> createConstraintMatchMap(
