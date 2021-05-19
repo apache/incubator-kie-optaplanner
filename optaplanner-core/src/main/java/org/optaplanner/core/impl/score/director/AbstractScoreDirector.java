@@ -20,7 +20,6 @@ import static java.util.Comparator.comparing;
 import static java.util.Objects.requireNonNull;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
@@ -35,6 +34,8 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.TreeMap;
 import java.util.function.Consumer;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.optaplanner.core.api.domain.lookup.PlanningId;
 import org.optaplanner.core.api.domain.solution.cloner.SolutionCloner;
@@ -821,12 +822,17 @@ public abstract class AbstractScoreDirector<Solution_, Score_ extends Score<Scor
         for (ConstraintMatchTotal<Score_> constraintMatchTotal : constraintMatchTotals) {
             String constraintId = constraintMatchTotal.getConstraintId();
             for (ConstraintMatch<Score_> constraintMatch : constraintMatchTotal.getConstraintMatchSet()) {
+                Stream.Builder<Object> keyStream = Stream.builder().add(constraintId);
                 // The order of justificationLists for constraints that include accumulates isn't stable, so we make it.
-                List<Object> justificationList = new ArrayList<>(constraintMatch.getJustificationList());
-                justificationList.sort(comparator);
+                constraintMatch.getJustificationList()
+                        .stream()
+                        .sorted(comparator)
+                        .forEach(keyStream);
                 // And now we store the reference to the constraint match.
                 // Constraint Streams with indistinct tuples may produce two different match instances for the same key.
-                Object key = Arrays.asList(constraintId, justificationList, constraintMatch.getScore());
+                Object key = keyStream.add(constraintMatch.getScore())
+                        .build()
+                        .collect(Collectors.toList());
                 boolean added = constraintMatchMap.computeIfAbsent(key, k -> new LinkedHashSet<>(0))
                         .add(constraintMatch);
                 if (!added) {
