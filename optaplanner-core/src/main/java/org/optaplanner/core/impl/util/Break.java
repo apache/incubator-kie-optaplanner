@@ -18,27 +18,27 @@ package org.optaplanner.core.impl.util;
 
 import java.util.Objects;
 
-public class Break<I, D> {
-    final I beforeItem;
-    final I afterItem;
-    final D breakLength;
+public class Break<PointType_, DifferenceType_> {
+    final PointType_ beforeItem;
+    final PointType_ afterItem;
+    final DifferenceType_ length;
 
-    public Break(I beforeItem, I afterItem, D breakLength) {
+    public Break(PointType_ beforeItem, PointType_ afterItem, DifferenceType_ length) {
         this.beforeItem = beforeItem;
         this.afterItem = afterItem;
-        this.breakLength = breakLength;
+        this.length = length;
     }
 
-    public I getBeforeItem() {
+    public PointType_ getBeforeItem() {
         return beforeItem;
     }
 
-    public I getAfterItem() {
+    public PointType_ getAfterItem() {
         return afterItem;
     }
 
-    public D getBreakLength() {
-        return breakLength;
+    public DifferenceType_ getLength() {
+        return length;
     }
 
     @Override
@@ -49,12 +49,12 @@ public class Break<I, D> {
             return false;
         Break<?, ?> aBreak = (Break<?, ?>) o;
         return Objects.equals(beforeItem, aBreak.beforeItem) && Objects.equals(afterItem, aBreak.afterItem)
-                && Objects.equals(breakLength, aBreak.breakLength);
+                && Objects.equals(length, aBreak.length);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(beforeItem, afterItem, breakLength);
+        return Objects.hash(beforeItem, afterItem, length);
     }
 
     @Override
@@ -62,7 +62,7 @@ public class Break<I, D> {
         return "Break{" +
                 "beforeItem=" + beforeItem +
                 ", afterItem=" + afterItem +
-                ", breakLength=" + breakLength +
+                ", length=" + length +
                 '}';
     }
 }

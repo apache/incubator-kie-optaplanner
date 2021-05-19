@@ -197,12 +197,12 @@ public class NurseRosteringConstraintProvider implements ConstraintProvider {
                         .getContractLineType() == ContractLineType.CONSECUTIVE_FREE_DAYS &&
                         minMaxContractLine.isMinimumEnabled()))
                                 .filter((employeeContractPair,
-                                        breakInfo) -> breakInfo.getBreakLength() - 1 < employeeContractPair.getRight()
+                                        breakInfo) -> breakInfo.getLength() - 1 < employeeContractPair.getRight()
                                                 .getMinimumValue())
                                 .penalize("org.optaplanner.examples.nurserostering.solver", "minimumConsecutiveFreeDays",
                                         HardSoftScore.ONE_SOFT,
                                         (employeeContractPair, breakInfo) -> employeeContractPair.getRight()
-                                                .getViolationAmount(breakInfo.getBreakLength() - 1));
+                                                .getViolationAmount(breakInfo.getLength() - 1));
     }
 
     Constraint maximumConsecutiveFreeDays(ConstraintFactory constraintFactory) {
@@ -211,12 +211,12 @@ public class NurseRosteringConstraintProvider implements ConstraintProvider {
                         .getContractLineType() == ContractLineType.CONSECUTIVE_FREE_DAYS &&
                         minMaxContractLine.isMaximumEnabled()))
                                 .filter((employeeContractPair,
-                                        breakInfo) -> breakInfo.getBreakLength() - 1 > employeeContractPair.getRight()
+                                        breakInfo) -> breakInfo.getLength() - 1 > employeeContractPair.getRight()
                                                 .getMaximumValue())
                                 .penalize("org.optaplanner.examples.nurserostering.solver", "maximumConsecutiveFreeDays",
                                         HardSoftScore.ONE_SOFT,
                                         (employeeContractPair, breakInfo) -> employeeContractPair.getRight()
-                                                .getViolationAmount(breakInfo.getBreakLength() - 1));
+                                                .getViolationAmount(breakInfo.getLength() - 1));
     }
 
     Constraint maximumConsecutiveFreeDaysNoAssignments(ConstraintFactory constraintFactory) {

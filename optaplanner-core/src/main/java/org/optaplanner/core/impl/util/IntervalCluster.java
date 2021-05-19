@@ -20,16 +20,16 @@ import java.util.Iterator;
 import java.util.Objects;
 import java.util.TreeSet;
 
-public class IntervalCluster<_IntervalValue, _PointValue extends Comparable<_PointValue>> implements Iterable<_IntervalValue> {
-    IntervalSplitPoint<_IntervalValue, _PointValue> startSplitPoint;
-    IntervalSplitPoint<_IntervalValue, _PointValue> endSplitPoint;
+public class IntervalCluster<IntervalValue_, PointValue_ extends Comparable<PointValue_>> implements Iterable<IntervalValue_> {
+    IntervalSplitPoint<IntervalValue_, PointValue_> startSplitPoint;
+    IntervalSplitPoint<IntervalValue_, PointValue_> endSplitPoint;
 
     int count;
     boolean hasOverlap;
-    final TreeSet<IntervalSplitPoint<_IntervalValue, _PointValue>> splitPointSet;
+    final TreeSet<IntervalSplitPoint<IntervalValue_, PointValue_>> splitPointSet;
 
-    public IntervalCluster(TreeSet<IntervalSplitPoint<_IntervalValue, _PointValue>> splitPointSet,
-            IntervalSplitPoint<_IntervalValue, _PointValue> start) {
+    public IntervalCluster(TreeSet<IntervalSplitPoint<IntervalValue_, PointValue_>> splitPointSet,
+            IntervalSplitPoint<IntervalValue_, PointValue_> start) {
         if (start == null) {
             throw new IllegalArgumentException("start (" + start + ") is null");
         }
@@ -38,7 +38,7 @@ public class IntervalCluster<_IntervalValue, _PointValue extends Comparable<_Poi
         int activeIntervals = 0;
         count = 0;
         boolean anyOverlap = false;
-        IntervalSplitPoint<_IntervalValue, _PointValue> current = start;
+        IntervalSplitPoint<IntervalValue_, PointValue_> current = start;
         do {
             count += current.intervalsStartingAtSplitPointSet.size();
             activeIntervals += current.intervalsStartingAtSplitPointSet.size() - current.intervalsEndingAtSplitPointSet.size();
@@ -56,9 +56,9 @@ public class IntervalCluster<_IntervalValue, _PointValue extends Comparable<_Poi
         }
     }
 
-    public IntervalCluster(TreeSet<IntervalSplitPoint<_IntervalValue, _PointValue>> splitPointSet,
-            IntervalSplitPoint<_IntervalValue, _PointValue> start,
-            IntervalSplitPoint<_IntervalValue, _PointValue> end, int count, boolean hasOverlap) {
+    public IntervalCluster(TreeSet<IntervalSplitPoint<IntervalValue_, PointValue_>> splitPointSet,
+            IntervalSplitPoint<IntervalValue_, PointValue_> start,
+            IntervalSplitPoint<IntervalValue_, PointValue_> end, int count, boolean hasOverlap) {
         this.splitPointSet = splitPointSet;
         this.startSplitPoint = start;
         this.endSplitPoint = end;
@@ -66,15 +66,15 @@ public class IntervalCluster<_IntervalValue, _PointValue extends Comparable<_Poi
         this.hasOverlap = hasOverlap;
     }
 
-    public IntervalSplitPoint<_IntervalValue, _PointValue> getStartSplitPoint() {
+    public IntervalSplitPoint<IntervalValue_, PointValue_> getStartSplitPoint() {
         return startSplitPoint;
     }
 
-    public IntervalSplitPoint<_IntervalValue, _PointValue> getEndSplitPoint() {
+    public IntervalSplitPoint<IntervalValue_, PointValue_> getEndSplitPoint() {
         return endSplitPoint;
     }
 
-    public void addInterval(Interval<_IntervalValue, _PointValue> interval) {
+    public void addInterval(Interval<IntervalValue_, PointValue_> interval) {
         if (interval.getEndSplitPoint().compareTo(getStartSplitPoint()) > 0
                 && interval.getStartSplitPoint().compareTo(getEndSplitPoint()) < 0) {
             hasOverlap = true;
@@ -88,11 +88,11 @@ public class IntervalCluster<_IntervalValue, _PointValue extends Comparable<_Poi
         count++;
     }
 
-    public Iterable<IntervalCluster<_IntervalValue, _PointValue>>
-            removeInterval(Interval<_IntervalValue, _PointValue> interval) {
-        return () -> new Iterator<IntervalCluster<_IntervalValue, _PointValue>>() {
+    public Iterable<IntervalCluster<IntervalValue_, PointValue_>>
+            removeInterval(Interval<IntervalValue_, PointValue_> interval) {
+        return () -> new Iterator<IntervalCluster<IntervalValue_, PointValue_>>() {
 
-            IntervalSplitPoint<_IntervalValue, _PointValue> current = startSplitPoint;
+            IntervalSplitPoint<IntervalValue_, PointValue_> current = startSplitPoint;
 
             @Override
             public boolean hasNext() {
@@ -100,9 +100,9 @@ public class IntervalCluster<_IntervalValue, _PointValue extends Comparable<_Poi
             }
 
             @Override
-            public IntervalCluster<_IntervalValue, _PointValue> next() {
-                IntervalSplitPoint<_IntervalValue, _PointValue> start = current;
-                IntervalSplitPoint<_IntervalValue, _PointValue> end;
+            public IntervalCluster<IntervalValue_, PointValue_> next() {
+                IntervalSplitPoint<IntervalValue_, PointValue_> start = current;
+                IntervalSplitPoint<IntervalValue_, PointValue_> end;
                 int activeIntervals = 0;
                 count = 0;
                 boolean anyOverlap = false;
@@ -127,13 +127,13 @@ public class IntervalCluster<_IntervalValue, _PointValue extends Comparable<_Poi
         };
     }
 
-    public void mergeIntervalCluster(IntervalCluster<_IntervalValue, _PointValue> laterIntervalCluster) {
+    public void mergeIntervalCluster(IntervalCluster<IntervalValue_, PointValue_> laterIntervalCluster) {
         count += laterIntervalCluster.count;
         endSplitPoint = laterIntervalCluster.endSplitPoint;
         hasOverlap |= laterIntervalCluster.hasOverlap;
     }
 
-    public Iterator<_IntervalValue> iterator() {
+    public Iterator<IntervalValue_> iterator() {
         return new IntervalTreeIterator<>(splitPointSet.subSet(startSplitPoint, true, endSplitPoint, true));
     }
 

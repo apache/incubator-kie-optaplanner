@@ -12,20 +12,22 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-public class ConsecutiveSetTree<T, I extends Comparable<I>, D extends Comparable<D>> implements Collection<T> {
-    Function<T, I> indexFunction;
-    BiFunction<I, I, D> differenceFunction;
-    D maxDifference;
-    D zeroDifference;
-    TreeMap<T, Sequence<T>> startItemToSequence;
-    Class<? extends T> typeClass;
-    Comparator<T> comparator;
+public class ConsecutiveSetTree<ValueType_, PointType_ extends Comparable<PointType_>, DifferenceType_ extends Comparable<DifferenceType_>>
+        implements Collection<ValueType_> {
+    Function<ValueType_, PointType_> indexFunction;
+    BiFunction<PointType_, PointType_, DifferenceType_> differenceFunction;
+    DifferenceType_ maxDifference;
+    DifferenceType_ zeroDifference;
+    TreeMap<ValueType_, Sequence<ValueType_>> startItemToSequence;
+    Class<? extends ValueType_> typeClass;
+    Comparator<ValueType_> comparator;
 
-    TreeMapValueList<T, Sequence<T>> sequenceList;
-    ConsecutiveData<T, D> consecutiveData;
+    TreeMapValueList<ValueType_, Sequence<ValueType_>> sequenceList;
+    ConsecutiveData<ValueType_, DifferenceType_> consecutiveData;
 
-    public ConsecutiveSetTree(Class<? extends T> typeClass, Function<T, I> indexFunction,
-            BiFunction<I, I, D> differenceFunction, D maxDifference, D zeroDifference) {
+    public ConsecutiveSetTree(Class<? extends ValueType_> typeClass, Function<ValueType_, PointType_> indexFunction,
+            BiFunction<PointType_, PointType_, DifferenceType_> differenceFunction, DifferenceType_ maxDifference,
+            DifferenceType_ zeroDifference) {
         this.indexFunction = indexFunction;
         this.differenceFunction = differenceFunction;
         this.maxDifference = maxDifference;
@@ -39,33 +41,33 @@ public class ConsecutiveSetTree<T, I extends Comparable<I>, D extends Comparable
         sequenceList = new TreeMapValueList<>(startItemToSequence);
     }
 
-    public List<Sequence<T>> getConsecutiveSequences() {
+    public List<Sequence<ValueType_>> getConsecutiveSequences() {
         return sequenceList;
     }
 
-    public List<Break<T, D>> getBreaks() {
+    public List<Break<ValueType_, DifferenceType_>> getBreaks() {
         return startItemToSequence.keySet().stream().flatMap(startItem -> {
-            T nextStartItem = startItemToSequence.higherKey(startItem);
+            ValueType_ nextStartItem = startItemToSequence.higherKey(startItem);
             if (nextStartItem == null) {
                 return Stream.empty();
             }
-            T endOfCurrentSequence = startItemToSequence.get(startItem).getItems().last();
+            ValueType_ endOfCurrentSequence = startItemToSequence.get(startItem).getItems().last();
             return Stream.of(new Break<>(nextStartItem, endOfCurrentSequence,
                     differenceFunction.apply(indexFunction.apply(endOfCurrentSequence),
                             indexFunction.apply(nextStartItem))));
         }).collect(Collectors.toList());
     }
 
-    public List<D> getConsecutiveLengths() {
+    public List<DifferenceType_> getConsecutiveLengths() {
         return getConsecutiveSequences().stream()
                 .map(sequence -> differenceFunction.apply(indexFunction.apply(sequence.getItems().first()),
                         indexFunction.apply(sequence.getItems().last())))
                 .collect(Collectors.toList());
     }
 
-    public Optional<D> getBreakBefore(Sequence<T> sequence) {
-        T startItem = sequence.getItems().first();
-        T prevStartItem = startItemToSequence.lowerKey(startItem);
+    public Optional<DifferenceType_> getBreakBefore(Sequence<ValueType_> sequence) {
+        ValueType_ startItem = sequence.getItems().first();
+        ValueType_ prevStartItem = startItemToSequence.lowerKey(startItem);
         if (prevStartItem == null) {
             return Optional.empty();
         }
@@ -74,9 +76,9 @@ public class ConsecutiveSetTree<T, I extends Comparable<I>, D extends Comparable
                         indexFunction.apply(startItem)));
     }
 
-    public Optional<D> getBreakAfter(Sequence<T> sequence) {
-        T endItem = sequence.getItems().last();
-        T nextStartItem = startItemToSequence.higherKey(endItem);
+    public Optional<DifferenceType_> getBreakAfter(Sequence<ValueType_> sequence) {
+        ValueType_ endItem = sequence.getItems().last();
+        ValueType_ nextStartItem = startItemToSequence.higherKey(endItem);
         if (nextStartItem == null) {
             return Optional.empty();
         }
@@ -84,39 +86,39 @@ public class ConsecutiveSetTree<T, I extends Comparable<I>, D extends Comparable
                 indexFunction.apply(nextStartItem)));
     }
 
-    public ConsecutiveData<T, D> getConsecutiveData() {
+    public ConsecutiveData<ValueType_, DifferenceType_> getConsecutiveData() {
         return consecutiveData;
     }
 
-    public I getEndIndex(T key) {
+    public PointType_ getEndIndex(ValueType_ key) {
         return indexFunction.apply(startItemToSequence.get(key).getItems().last());
     }
 
-    private boolean isSecondSuccessorOfFirst(I first, I second) {
-        D difference = differenceFunction.apply(second, first);
+    private boolean isSecondSuccessorOfFirst(PointType_ first, PointType_ second) {
+        DifferenceType_ difference = differenceFunction.apply(second, first);
         return !(difference.compareTo(maxDifference) > 0 || difference.compareTo(zeroDifference) < 0);
     }
 
     @Override
-    public boolean add(T item) {
-        T firstBeforeItem = startItemToSequence.floorKey(item);
-        I itemIndex = indexFunction.apply(item);
+    public boolean add(ValueType_ item) {
+        ValueType_ firstBeforeItem = startItemToSequence.floorKey(item);
+        PointType_ itemIndex = indexFunction.apply(item);
         if (firstBeforeItem != null) {
-            I endIndex = getEndIndex(firstBeforeItem);
+            PointType_ endIndex = getEndIndex(firstBeforeItem);
             if (itemIndex.compareTo(endIndex) <= 0) {
                 // Item is already in the bag; increase it count
                 startItemToSequence.get(firstBeforeItem).add(item);
             } else {
                 // Item is outside the bag
-                T firstAfterItem = startItemToSequence.higherKey(item);
+                ValueType_ firstAfterItem = startItemToSequence.higherKey(item);
                 if (firstAfterItem != null) {
-                    I afterStartIndex = indexFunction.apply(firstAfterItem);
+                    PointType_ afterStartIndex = indexFunction.apply(firstAfterItem);
                     if (isSecondSuccessorOfFirst(itemIndex, endIndex)) {
                         // We need to extend the first bag
-                        Sequence<T> prevBag = startItemToSequence.get(firstBeforeItem);
+                        Sequence<ValueType_> prevBag = startItemToSequence.get(firstBeforeItem);
                         if (isSecondSuccessorOfFirst(afterStartIndex, itemIndex)) {
                             // We need to merge the two bags
-                            Sequence<T> afterBag = startItemToSequence.remove(firstAfterItem);
+                            Sequence<ValueType_> afterBag = startItemToSequence.remove(firstAfterItem);
                             prevBag.putAll(afterBag);
                         }
                         prevBag.add(item);
@@ -124,12 +126,12 @@ public class ConsecutiveSetTree<T, I extends Comparable<I>, D extends Comparable
                         // Don't need to extend the first bag
                         if (isSecondSuccessorOfFirst(afterStartIndex, itemIndex)) {
                             // We need to move the after bag to use item as key
-                            Sequence<T> afterBag = startItemToSequence.remove(firstAfterItem);
+                            Sequence<ValueType_> afterBag = startItemToSequence.remove(firstAfterItem);
                             afterBag.add(item);
                             startItemToSequence.put(item, afterBag);
                         } else {
                             // Start a new bag of consecutive items
-                            Sequence<T> newBag = new Sequence<>(this);
+                            Sequence<ValueType_> newBag = new Sequence<>(this);
                             newBag.add(item);
                             startItemToSequence.put(item, newBag);
                         }
@@ -137,11 +139,11 @@ public class ConsecutiveSetTree<T, I extends Comparable<I>, D extends Comparable
                 } else {
                     if (isSecondSuccessorOfFirst(itemIndex, endIndex)) {
                         // We need to extend the first bag
-                        Sequence<T> prevBag = startItemToSequence.get(firstBeforeItem);
+                        Sequence<ValueType_> prevBag = startItemToSequence.get(firstBeforeItem);
                         prevBag.add(item);
                     } else {
                         // Start a new bag of consecutive items
-                        Sequence<T> newBag = new Sequence<>(this);
+                        Sequence<ValueType_> newBag = new Sequence<>(this);
                         newBag.add(item);
                         startItemToSequence.put(item, newBag);
                     }
@@ -149,24 +151,24 @@ public class ConsecutiveSetTree<T, I extends Comparable<I>, D extends Comparable
             }
         } else {
             // No items before it
-            T firstAfterItem = startItemToSequence.higherKey(item);
+            ValueType_ firstAfterItem = startItemToSequence.higherKey(item);
             if (firstAfterItem != null) {
-                I afterStartIndex = indexFunction.apply(firstAfterItem);
+                PointType_ afterStartIndex = indexFunction.apply(firstAfterItem);
 
                 if (isSecondSuccessorOfFirst(afterStartIndex, itemIndex)) {
                     // We need to move the after bag to use item as key
-                    Sequence<T> afterBag = startItemToSequence.remove(firstAfterItem);
+                    Sequence<ValueType_> afterBag = startItemToSequence.remove(firstAfterItem);
                     afterBag.add(item);
                     startItemToSequence.put(item, afterBag);
                 } else {
                     // Start a new bag of consecutive items
-                    Sequence<T> newBag = new Sequence<>(this);
+                    Sequence<ValueType_> newBag = new Sequence<>(this);
                     newBag.add(item);
                     startItemToSequence.put(item, newBag);
                 }
             } else {
                 // Start a new bag of consecutive items
-                Sequence<T> newBag = new Sequence<>(this);
+                Sequence<ValueType_> newBag = new Sequence<>(this);
                 newBag.add(item);
                 startItemToSequence.put(item, newBag);
             }
@@ -179,18 +181,18 @@ public class ConsecutiveSetTree<T, I extends Comparable<I>, D extends Comparable
         if (!typeClass.isInstance(o)) {
             return false;
         } else {
-            T item = typeClass.cast(o);
-            T firstBeforeItem = startItemToSequence.floorKey(item);
-            I itemIndex = indexFunction.apply(item);
-            I endIndex = getEndIndex(firstBeforeItem);
+            ValueType_ item = typeClass.cast(o);
+            ValueType_ firstBeforeItem = startItemToSequence.floorKey(item);
+            PointType_ itemIndex = indexFunction.apply(item);
+            PointType_ endIndex = getEndIndex(firstBeforeItem);
 
             if (itemIndex.compareTo(endIndex) > 0) {
                 // Item not in bag
                 return false;
             }
 
-            Sequence<T> bag = startItemToSequence.get(firstBeforeItem);
-            T endItem = bag.getItems().last();
+            Sequence<ValueType_> bag = startItemToSequence.get(firstBeforeItem);
+            ValueType_ endItem = bag.getItems().last();
             boolean isRemoved = bag.remove(item);
             if (!isRemoved) {
                 return true;
@@ -217,7 +219,7 @@ public class ConsecutiveSetTree<T, I extends Comparable<I>, D extends Comparable
 
             // Need to split bag into two halves
             // Both halves are not empty as the item was not an endpoint
-            Sequence<T> splitBag = bag.split(item);
+            Sequence<ValueType_> splitBag = bag.split(item);
             startItemToSequence.put(splitBag.getItems().first(), splitBag);
             return true;
         }
@@ -229,7 +231,7 @@ public class ConsecutiveSetTree<T, I extends Comparable<I>, D extends Comparable
     }
 
     @Override
-    public boolean addAll(Collection<? extends T> c) {
+    public boolean addAll(Collection<? extends ValueType_> c) {
         int oldSize = size();
         c.forEach(this::add);
         return size() > oldSize;
@@ -271,9 +273,9 @@ public class ConsecutiveSetTree<T, I extends Comparable<I>, D extends Comparable
             return false;
         }
         if (typeClass.isInstance(o)) {
-            T item = typeClass.cast(o);
-            T flooredKey = startItemToSequence.floorKey(item);
-            I endIndex = getEndIndex(flooredKey);
+            ValueType_ item = typeClass.cast(o);
+            ValueType_ flooredKey = startItemToSequence.floorKey(item);
+            PointType_ endIndex = getEndIndex(flooredKey);
             return indexFunction.apply(item).compareTo(endIndex) <= 0;
         } else {
             return false;
@@ -281,7 +283,7 @@ public class ConsecutiveSetTree<T, I extends Comparable<I>, D extends Comparable
     }
 
     @Override
-    public Iterator<T> iterator() {
+    public Iterator<ValueType_> iterator() {
         return startItemToSequence.values().stream().flatMap(Sequence::getDuplicatedStream).iterator();
     }
 

@@ -18,12 +18,12 @@ package org.optaplanner.core.impl.util;
 
 import java.util.Iterator;
 
-public class IntervalTreeIterator<_IntervalValue, _PointValue extends Comparable<_PointValue>>
-        implements Iterator<_IntervalValue> {
-    final Iterator<IntervalSplitPoint<_IntervalValue, _PointValue>> splitPointSetIterator;
-    Iterator<_IntervalValue> splitPointValueIterator;
+public class IntervalTreeIterator<IntervalValue_, PointValue_ extends Comparable<PointValue_>>
+        implements Iterator<IntervalValue_> {
+    final Iterator<IntervalSplitPoint<IntervalValue_, PointValue_>> splitPointSetIterator;
+    Iterator<IntervalValue_> splitPointValueIterator;
 
-    public IntervalTreeIterator(Iterable<IntervalSplitPoint<_IntervalValue, _PointValue>> splitPointSet) {
+    public IntervalTreeIterator(Iterable<IntervalSplitPoint<IntervalValue_, PointValue_>> splitPointSet) {
         this.splitPointSetIterator = splitPointSet.iterator();
         if (splitPointSetIterator.hasNext()) {
             splitPointValueIterator = splitPointSetIterator.next().getValuesStartingFromSplitPointIterator();
@@ -36,8 +36,8 @@ public class IntervalTreeIterator<_IntervalValue, _PointValue extends Comparable
     }
 
     @Override
-    public _IntervalValue next() {
-        _IntervalValue next = splitPointValueIterator.next();
+    public IntervalValue_ next() {
+        IntervalValue_ next = splitPointValueIterator.next();
 
         while (!splitPointValueIterator.hasNext() && splitPointSetIterator.hasNext()) {
             splitPointValueIterator = splitPointSetIterator.next().getValuesStartingFromSplitPointIterator();

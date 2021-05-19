@@ -24,22 +24,23 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
-public class Sequence<T> {
-    private final TreeSet<T> consecutiveItemsSet;
-    private final Map<T, Integer> count;
-    private final ConsecutiveSetTree<T, ?, ?> sourceTree;
+public class Sequence<ValueType_> {
+    private final TreeSet<ValueType_> consecutiveItemsSet;
+    private final Map<ValueType_, Integer> count;
+    private final ConsecutiveSetTree<ValueType_, ?, ?> sourceTree;
 
-    protected Sequence(ConsecutiveSetTree<T, ?, ?> sourceTree) {
+    protected Sequence(ConsecutiveSetTree<ValueType_, ?, ?> sourceTree) {
         this(sourceTree, new TreeSet<>(sourceTree.comparator), new IdentityHashMap<>());
     }
 
-    protected Sequence(ConsecutiveSetTree<T, ?, ?> sourceTree, TreeSet<T> consecutiveItemsSet, Map<T, Integer> count) {
+    protected Sequence(ConsecutiveSetTree<ValueType_, ?, ?> sourceTree, TreeSet<ValueType_> consecutiveItemsSet,
+            Map<ValueType_, Integer> count) {
         this.sourceTree = sourceTree;
         this.consecutiveItemsSet = consecutiveItemsSet;
         this.count = count;
     }
 
-    public TreeSet<T> getItems() {
+    public TreeSet<ValueType_> getItems() {
         return consecutiveItemsSet;
     }
 
@@ -55,21 +56,21 @@ public class Sequence<T> {
         return count.values().stream().reduce(Integer::sum).orElse(0);
     }
 
-    protected Stream<T> getDuplicatedStream() {
+    protected Stream<ValueType_> getDuplicatedStream() {
         return consecutiveItemsSet.stream()
                 .flatMap(item -> IntStream.range(0, count.get(item)).mapToObj(index -> item));
     }
 
-    protected void add(T item) {
+    protected void add(ValueType_ item) {
         if (!count.containsKey(item)) {
             consecutiveItemsSet.add(item);
         }
         count.merge(item, 1, Integer::sum);
     }
 
-    protected Sequence<T> split(T fromElement) {
-        TreeSet<T> splitConsecutiveItemsSet = new TreeSet<>(consecutiveItemsSet.tailSet(fromElement));
-        Map<T, Integer> newCountMap = new IdentityHashMap<>();
+    protected Sequence<ValueType_> split(ValueType_ fromElement) {
+        TreeSet<ValueType_> splitConsecutiveItemsSet = new TreeSet<>(consecutiveItemsSet.tailSet(fromElement));
+        Map<ValueType_, Integer> newCountMap = new IdentityHashMap<>();
         splitConsecutiveItemsSet.forEach(item -> {
             newCountMap.put(item, count.remove(item));
             consecutiveItemsSet.remove(item);
@@ -77,7 +78,7 @@ public class Sequence<T> {
         return new Sequence<>(sourceTree, splitConsecutiveItemsSet, newCountMap);
     }
 
-    protected boolean remove(T item) {
+    protected boolean remove(ValueType_ item) {
         if (!count.containsKey(item)) {
             return true;
         }
@@ -95,7 +96,7 @@ public class Sequence<T> {
         return false;
     }
 
-    protected void putAll(Sequence<T> other) {
+    protected void putAll(Sequence<ValueType_> other) {
         other.getItems().forEach(item -> {
             consecutiveItemsSet.add(item);
             count.merge(item, other.count.get(item), Integer::sum);

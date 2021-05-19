@@ -25,10 +25,10 @@ import java.util.NoSuchElementException;
 import java.util.Objects;
 import java.util.TreeMap;
 
-public class TreeMapValueList<I, T> implements List<T> {
-    private final TreeMap<I, T> sourceMap;
+public class TreeMapValueList<KeyType_, ValueType_> implements List<ValueType_> {
+    private final TreeMap<KeyType_, ValueType_> sourceMap;
 
-    public TreeMapValueList(TreeMap<I, T> sourceMap) {
+    public TreeMapValueList(TreeMap<KeyType_, ValueType_> sourceMap) {
         this.sourceMap = sourceMap;
     }
 
@@ -44,11 +44,11 @@ public class TreeMapValueList<I, T> implements List<T> {
 
     @Override
     public boolean contains(Object o) {
-        return sourceMap.values().contains(o);
+        return sourceMap.containsValue(o);
     }
 
     @Override
-    public Iterator<T> iterator() {
+    public Iterator<ValueType_> iterator() {
         return sourceMap.values().iterator();
     }
 
@@ -63,7 +63,7 @@ public class TreeMapValueList<I, T> implements List<T> {
     }
 
     @Override
-    public boolean add(T t) {
+    public boolean add(ValueType_ t) {
         throw new UnsupportedOperationException();
     }
 
@@ -78,12 +78,12 @@ public class TreeMapValueList<I, T> implements List<T> {
     }
 
     @Override
-    public boolean addAll(Collection<? extends T> c) {
+    public boolean addAll(Collection<? extends ValueType_> c) {
         throw new UnsupportedOperationException();
     }
 
     @Override
-    public boolean addAll(int index, Collection<? extends T> c) {
+    public boolean addAll(int index, Collection<? extends ValueType_> c) {
         throw new UnsupportedOperationException();
     }
 
@@ -103,11 +103,11 @@ public class TreeMapValueList<I, T> implements List<T> {
     }
 
     @Override
-    public T get(int index) {
+    public ValueType_ get(int index) {
         if (index < 0 || index >= sourceMap.size()) {
             throw new IndexOutOfBoundsException();
         }
-        I currentKey = sourceMap.firstKey();
+        KeyType_ currentKey = sourceMap.firstKey();
         while (index > 0) {
             currentKey = sourceMap.higherKey(currentKey);
             index--;
@@ -116,17 +116,17 @@ public class TreeMapValueList<I, T> implements List<T> {
     }
 
     @Override
-    public T set(int index, T element) {
+    public ValueType_ set(int index, ValueType_ element) {
         throw new UnsupportedOperationException();
     }
 
     @Override
-    public void add(int index, T element) {
+    public void add(int index, ValueType_ element) {
         throw new UnsupportedOperationException();
     }
 
     @Override
-    public T remove(int index) {
+    public ValueType_ remove(int index) {
         throw new UnsupportedOperationException();
     }
 
@@ -135,7 +135,7 @@ public class TreeMapValueList<I, T> implements List<T> {
         if (sourceMap.isEmpty()) {
             return -1;
         }
-        I currentKey = sourceMap.firstKey();
+        KeyType_ currentKey = sourceMap.firstKey();
         int index = 0;
         while (currentKey != null) {
             if (sourceMap.get(currentKey).equals(o)) {
@@ -152,7 +152,7 @@ public class TreeMapValueList<I, T> implements List<T> {
         if (sourceMap.isEmpty()) {
             return -1;
         }
-        I currentKey = sourceMap.lastKey();
+        KeyType_ currentKey = sourceMap.lastKey();
         int index = sourceMap.size() - 1;
         while (currentKey != null) {
             if (sourceMap.get(currentKey).equals(o)) {
@@ -165,17 +165,17 @@ public class TreeMapValueList<I, T> implements List<T> {
     }
 
     @Override
-    public ListIterator<T> listIterator() {
-        return new TreeMapValueListIterator<I, T>(this);
+    public ListIterator<ValueType_> listIterator() {
+        return new TreeMapValueListIterator<>(this);
     }
 
     @Override
-    public ListIterator<T> listIterator(int index) {
-        return new TreeMapValueListIterator<I, T>(this, index);
+    public ListIterator<ValueType_> listIterator(int index) {
+        return new TreeMapValueListIterator<>(this, index);
     }
 
     @Override
-    public List<T> subList(int fromIndex, int toIndex) {
+    public List<ValueType_> subList(int fromIndex, int toIndex) {
         if (fromIndex < 0 || toIndex > sourceMap.size() || fromIndex > toIndex) {
             throw new IndexOutOfBoundsException();
         }
@@ -183,8 +183,8 @@ public class TreeMapValueList<I, T> implements List<T> {
             return Collections.emptyList();
         }
 
-        I fromKey = sourceMap.firstKey();
-        I toKey = sourceMap.firstKey();
+        KeyType_ fromKey = sourceMap.firstKey();
+        KeyType_ toKey = sourceMap.firstKey();
         for (int i = 0; i < fromIndex; i++) {
             fromKey = sourceMap.higherKey(fromKey);
         }
@@ -193,7 +193,7 @@ public class TreeMapValueList<I, T> implements List<T> {
             toKey = sourceMap.higherKey(toKey);
         }
 
-        return new TreeMapValueList<I, T>(new TreeMap<>(sourceMap.subMap(fromKey, toKey)));
+        return new TreeMapValueList<>(new TreeMap<>(sourceMap.subMap(fromKey, toKey)));
     }
 
     @Override
@@ -218,18 +218,18 @@ public class TreeMapValueList<I, T> implements List<T> {
                 '}';
     }
 
-    private static class TreeMapValueListIterator<I, T> implements ListIterator<T> {
+    private static class TreeMapValueListIterator<KeyType_, ValueType_> implements ListIterator<ValueType_> {
         int index;
-        I currentKey;
-        TreeMap<I, T> sourceMap;
+        KeyType_ currentKey;
+        TreeMap<KeyType_, ValueType_> sourceMap;
 
-        public TreeMapValueListIterator(TreeMapValueList<I, T> sourceList) {
+        public TreeMapValueListIterator(TreeMapValueList<KeyType_, ValueType_> sourceList) {
             index = 0;
             currentKey = null;
             this.sourceMap = sourceList.sourceMap;
         }
 
-        public TreeMapValueListIterator(TreeMapValueList<I, T> sourceList, int index) {
+        public TreeMapValueListIterator(TreeMapValueList<KeyType_, ValueType_> sourceList, int index) {
             this(sourceList);
             for (int i = 0; i < index; i++) {
                 next();
@@ -242,7 +242,7 @@ public class TreeMapValueList<I, T> implements List<T> {
         }
 
         @Override
-        public T next() {
+        public ValueType_ next() {
             if (index == 0) {
                 currentKey = sourceMap.firstKey();
             } else if (index == sourceMap.size()) {
@@ -260,7 +260,7 @@ public class TreeMapValueList<I, T> implements List<T> {
         }
 
         @Override
-        public T previous() {
+        public ValueType_ previous() {
             if (index == 0) {
                 throw new NoSuchElementException();
             } else if (index == sourceMap.size()) {
@@ -288,12 +288,12 @@ public class TreeMapValueList<I, T> implements List<T> {
         }
 
         @Override
-        public void set(T t) {
+        public void set(ValueType_ valueKeyType) {
             throw new UnsupportedOperationException();
         }
 
         @Override
-        public void add(T t) {
+        public void add(ValueType_ valueKeyType) {
             throw new UnsupportedOperationException();
         }
     }

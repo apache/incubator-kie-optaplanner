@@ -20,18 +20,18 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
-public class ConsecutiveData<T, D extends Comparable<D>> {
-    private final ConsecutiveSetTree<T, ?, D> sourceTree;
+public class ConsecutiveData<PointType_, DifferenceType_ extends Comparable<DifferenceType_>> {
+    private final ConsecutiveSetTree<PointType_, ?, DifferenceType_> sourceTree;
 
-    protected ConsecutiveData(ConsecutiveSetTree<T, ?, D> sourceTree) {
+    protected ConsecutiveData(ConsecutiveSetTree<PointType_, ?, DifferenceType_> sourceTree) {
         this.sourceTree = sourceTree;
     }
 
-    public List<Sequence<T>> getConsecutiveSequences() {
+    public List<Sequence<PointType_>> getConsecutiveSequences() {
         return sourceTree.getConsecutiveSequences();
     }
 
-    public List<Break<T, D>> getBreaks() {
+    public List<Break<PointType_, DifferenceType_>> getBreaks() {
         return sourceTree.getBreaks();
     }
 

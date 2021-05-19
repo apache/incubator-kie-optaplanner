@@ -18,35 +18,35 @@ package org.optaplanner.core.impl.util;
 
 import java.util.function.Function;
 
-public class Interval<_IntervalValue, _PointValue extends Comparable<_PointValue>> {
-    final _IntervalValue value;
-    final IntervalSplitPoint<_IntervalValue, _PointValue> startSplitPoint;
-    final IntervalSplitPoint<_IntervalValue, _PointValue> endSplitPoint;
+public class Interval<IntervalValue_, PointValue_ extends Comparable<PointValue_>> {
+    final IntervalValue_ value;
+    final IntervalSplitPoint<IntervalValue_, PointValue_> startSplitPoint;
+    final IntervalSplitPoint<IntervalValue_, PointValue_> endSplitPoint;
 
-    public Interval(_IntervalValue value, Function<_IntervalValue, _PointValue> startMapping,
-            Function<_IntervalValue, _PointValue> endMapping) {
+    public Interval(IntervalValue_ value, Function<IntervalValue_, PointValue_> startMapping,
+            Function<IntervalValue_, PointValue_> endMapping) {
         this.value = value;
         this.startSplitPoint = new IntervalSplitPoint<>(startMapping.apply(value));
         this.endSplitPoint = new IntervalSplitPoint<>(endMapping.apply(value));
     }
 
-    public _IntervalValue getValue() {
+    public IntervalValue_ getValue() {
         return value;
     }
 
-    public _PointValue getStart() {
+    public PointValue_ getStart() {
         return startSplitPoint.splitPoint;
     }
 
-    public _PointValue getEnd() {
+    public PointValue_ getEnd() {
         return endSplitPoint.splitPoint;
     }
 
-    public IntervalSplitPoint<_IntervalValue, _PointValue> getStartSplitPoint() {
+    public IntervalSplitPoint<IntervalValue_, PointValue_> getStartSplitPoint() {
         return startSplitPoint;
     }
 
-    public IntervalSplitPoint<_IntervalValue, _PointValue> getEndSplitPoint() {
+    public IntervalSplitPoint<IntervalValue_, PointValue_> getEndSplitPoint() {
         return endSplitPoint;
     }
 
