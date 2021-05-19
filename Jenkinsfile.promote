@@ -347,6 +347,14 @@ String getParamOrDeployProperty(String paramKey, String deployPropertyKey) {
 // Getter / Setter
 //////////////////////////////////////////////////////////////////////////////
 
+boolean shouldDeployToRepository() {
+    return env.MAVEN_DEPLOY_REPOSITORY || isNotTestingBuild()
+}
+
+boolean isNotTestingBuild() {
+    return getGitAuthor() == 'kiegroup'
+}
+
 boolean isRelease() {
     return env.RELEASE.toBoolean()
 }
@@ -401,10 +409,6 @@ void setPipelinePrLink(String repo, String value) {
 
 String getSnapshotBranch() {
     return "${getNextMicroSnapshotVersion(getProjectVersion()).toLowerCase()}-${env.BOT_BRANCH_HASH}"
-}
-
-boolean isNotTestingBuild() {
-    return getGitAuthor() == 'kiegroup'
 }
 
 //////////////////////////////////////////////////////////////////////////////
@@ -499,14 +503,18 @@ void installGithubCLI() {
 }
 
 void uploadDistribution(String directory) {
-    echo "uploadDistribution for ${directory}"
-    dir(directory) {
-        withCredentials(bindings: [sshUserPrivateKey(credentialsId: 'optaplanner-filemgmt',
-                keyFileVariable: 'SSH_KEY_JBOSS_FILEMGMT')]) {
-            // For testing, simulate connection via SSH:
-            // sh "ssh -i $SSH_KEY_JBOSS_FILEMGMT -oKexAlgorithms=+diffie-hellman-group1-sha1 optaplanner@filemgmt.jboss.org"
-            sh "./build/release/upload_distribution.sh ${getProjectVersion()} $SSH_KEY_JBOSS_FILEMGMT"
-                }
+    if (isNotTestingBuild()) {
+        echo "uploadDistribution for ${directory}"
+        dir(directory) {
+            withCredentials(bindings: [sshUserPrivateKey(credentialsId: 'optaplanner-filemgmt',
+                    keyFileVariable: 'SSH_KEY_JBOSS_FILEMGMT')]) {
+                // For testing, simulate connection via SSH:
+                // sh "ssh -i $SSH_KEY_JBOSS_FILEMGMT -oKexAlgorithms=+diffie-hellman-group1-sha1 optaplanner@filemgmt.jboss.org"
+                sh "./build/release/upload_distribution.sh ${getProjectVersion()} $SSH_KEY_JBOSS_FILEMGMT"
+                    }
+        }
+    } else {
+        echo 'No uploadDistribution due to testing build'
     }
 }
 
@@ -520,12 +528,14 @@ MavenCommand getMavenCommand() {
 }
 
 void runMavenDeploy(MavenCommand mvnCmd) {
-    if (isNotTestingBuild() || env.MAVEN_DEPLOY_REPOSITORY) {
+    if (shouldDeployToRepository()) {
         mvnCmd = mvnCmd.clone()
         if (env.MAVEN_DEPLOY_REPOSITORY) {
             mvnCmd.withDeployRepository(env.MAVEN_DEPLOY_REPOSITORY)
         }
         mvnCmd.skipTests(true).run('clean deploy')
+    } else {
+        echo 'Testing environment and no specific deploy repository given => no deployment'
     }
 }
 
