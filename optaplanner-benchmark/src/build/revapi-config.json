@@ -33,9 +33,9 @@
         {
           "code": "java.method.returnTypeChanged",
           "old": "method void org.optaplanner.benchmark.api.PlannerBenchmark::benchmark()",
-          "new": "method java.nio.file.Path org.optaplanner.benchmark.api.PlannerBenchmark::benchmark()",
+          "new": "method java.io.File org.optaplanner.benchmark.api.PlannerBenchmark::benchmark()",
           "oldType": "void",
-          "newType": "java.nio.file.Path",
+          "newType": "java.io.File",
           "package": "org.optaplanner.benchmark.api",
           "classSimpleName": "PlannerBenchmark",
           "methodName": "benchmark",
@@ -45,9 +45,9 @@
         {
           "code": "java.method.returnTypeChanged",
           "old": "method void org.optaplanner.benchmark.api.PlannerBenchmark::benchmarkAndShowReportInBrowser()",
-          "new": "method java.nio.file.Path org.optaplanner.benchmark.api.PlannerBenchmark::benchmarkAndShowReportInBrowser()",
+          "new": "method java.io.File org.optaplanner.benchmark.api.PlannerBenchmark::benchmarkAndShowReportInBrowser()",
           "oldType": "void",
-          "newType": "java.nio.file.Path",
+          "newType": "java.io.File",
           "package": "org.optaplanner.benchmark.api",
           "classSimpleName": "PlannerBenchmark",
           "methodName": "benchmarkAndShowReportInBrowser",

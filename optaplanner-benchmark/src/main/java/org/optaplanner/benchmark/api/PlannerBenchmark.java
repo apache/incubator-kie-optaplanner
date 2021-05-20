@@ -16,7 +16,7 @@
 
 package org.optaplanner.benchmark.api;
 
-import java.nio.file.Path;
+import java.io.File;
 
 /**
  * A planner benchmark that runs a number of single benchmarks.
@@ -28,16 +28,16 @@ public interface PlannerBenchmark {
     /**
      * Run all the single benchmarks and create an overview report.
      *
-     * @return never null, path to the directory in which the benchmark results are stored
+     * @return never null, the directory in which the benchmark results are stored
      */
-    Path benchmark();
+    File benchmark();
 
     /**
      * Run all the single benchmarks, create an overview report
      * and show it in the default browser.
      *
-     * @return never null, path to the directory in which the benchmark results are stored
+     * @return never null, the directory in which the benchmark results are stored
      */
-    Path benchmarkAndShowReportInBrowser();
+    File benchmarkAndShowReportInBrowser();
 
 }
