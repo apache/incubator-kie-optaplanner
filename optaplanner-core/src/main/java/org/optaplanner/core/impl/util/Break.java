@@ -18,27 +18,39 @@ package org.optaplanner.core.impl.util;
 
 import java.util.Objects;
 
-public class Break<PointType_, DifferenceType_> {
-    final PointType_ beforeItem;
-    final PointType_ afterItem;
-    final DifferenceType_ length;
+public class Break<ValueType_, DifferenceType_> {
+    private ValueType_ beforeItem;
+    private ValueType_ afterItem;
+    private DifferenceType_ length;
 
-    public Break(PointType_ beforeItem, PointType_ afterItem, DifferenceType_ length) {
+    public Break(ValueType_ beforeItem, ValueType_ afterItem, DifferenceType_ length) {
         this.beforeItem = beforeItem;
         this.afterItem = afterItem;
         this.length = length;
     }
 
-    public PointType_ getBeforeItem() {
+    public ValueType_ getBeforeItem() {
         return beforeItem;
     }
 
-    public PointType_ getAfterItem() {
+    public ValueType_ getAfterItem() {
         return afterItem;
     }
 
     public DifferenceType_ getLength() {
         return length;
+    }
+
+    public void setBeforeItem(ValueType_ beforeItem) {
+        this.beforeItem = beforeItem;
+    }
+
+    public void setAfterItem(ValueType_ afterItem) {
+        this.afterItem = afterItem;
+    }
+
+    public void setLength(DifferenceType_ length) {
+        this.length = length;
     }
 
     @Override

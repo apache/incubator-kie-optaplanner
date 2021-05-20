@@ -30,7 +30,7 @@ public class Sequence<ValueType_> {
     private final ConsecutiveSetTree<ValueType_, ?, ?> sourceTree;
 
     protected Sequence(ConsecutiveSetTree<ValueType_, ?, ?> sourceTree) {
-        this(sourceTree, new TreeSet<>(sourceTree.comparator), new IdentityHashMap<>());
+        this(sourceTree, new TreeSet<>(sourceTree.getComparator()), new IdentityHashMap<>());
     }
 
     protected Sequence(ConsecutiveSetTree<ValueType_, ?, ?> sourceTree, TreeSet<ValueType_> consecutiveItemsSet,

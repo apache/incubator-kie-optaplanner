@@ -60,7 +60,7 @@ public class ExperimentalConstraintCollectors {
     public static <A> UniConstraintCollector<A, ConsecutiveSetTree<A, Integer, Integer>, ConsecutiveData<A, Integer>>
             consecutive(ToIntFunction<A> indexMap) {
         return new DefaultUniConstraintCollector<>(
-                () -> new ConsecutiveSetTree<A, Integer, Integer>((Class<? extends A>) Object.class,
+                () -> new ConsecutiveSetTree<A, Integer, Integer>(
                         indexMap::applyAsInt,
                         (Integer a, Integer b) -> b - a, 1, 0),
                 (acc, a) -> {
@@ -85,7 +85,7 @@ public class ExperimentalConstraintCollectors {
     public static <A, B, Result>
             BiConstraintCollector<A, B, ConsecutiveSetTree<Result, Integer, Integer>, ConsecutiveData<Result, Integer>>
             consecutive(BiFunction<A, B, Result> resultMap, ToIntFunction<Result> indexMap) {
-        return new DefaultBiConstraintCollector<>(() -> new ConsecutiveSetTree<>((Class<? extends Result>) Object.class,
+        return new DefaultBiConstraintCollector<>(() -> new ConsecutiveSetTree<>(
                 indexMap::applyAsInt,
                 (Integer a, Integer b) -> b - a, 1, 0),
                 (acc, a, b) -> {
@@ -112,7 +112,7 @@ public class ExperimentalConstraintCollectors {
     public static <A, B, C, Result>
             TriConstraintCollector<A, B, C, ConsecutiveSetTree<Result, Integer, Integer>, ConsecutiveData<Result, Integer>>
             consecutive(TriFunction<A, B, C, Result> resultMap, ToIntFunction<Result> indexMap) {
-        return new DefaultTriConstraintCollector<>(() -> new ConsecutiveSetTree<>((Class<? extends Result>) Object.class,
+        return new DefaultTriConstraintCollector<>(() -> new ConsecutiveSetTree<>(
                 indexMap::applyAsInt,
                 (Integer a, Integer b) -> b - a, 1, 0),
                 (acc, a, b, c) -> {
@@ -140,7 +140,7 @@ public class ExperimentalConstraintCollectors {
     public static <A, B, C, D, Result>
             QuadConstraintCollector<A, B, C, D, ConsecutiveSetTree<Result, Integer, Integer>, ConsecutiveData<Result, Integer>>
             consecutive(QuadFunction<A, B, C, D, Result> resultMap, ToIntFunction<Result> indexMap) {
-        return new DefaultQuadConstraintCollector<>(() -> new ConsecutiveSetTree<>((Class<? extends Result>) Object.class,
+        return new DefaultQuadConstraintCollector<>(() -> new ConsecutiveSetTree<>(
                 indexMap::applyAsInt,
                 (Integer a, Integer b) -> b - a, 1, 0),
                 (acc, a, b, c, d) -> {

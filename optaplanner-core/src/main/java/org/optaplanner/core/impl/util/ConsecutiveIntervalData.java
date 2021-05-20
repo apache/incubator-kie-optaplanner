@@ -16,7 +16,6 @@
 
 package org.optaplanner.core.impl.util;
 
-import java.util.List;
 import java.util.Map;
 import java.util.NavigableMap;
 import java.util.Objects;
@@ -28,7 +27,7 @@ import org.apache.commons.lang3.ObjectUtils;
 public class ConsecutiveIntervalData<IntervalValue_, PointValue_ extends Comparable<PointValue_>> {
     private final TreeMap<IntervalSplitPoint<IntervalValue_, PointValue_>, IntervalCluster<IntervalValue_, PointValue_>> clusterStartSplitPointToCluster;
     private final TreeSet<IntervalSplitPoint<IntervalValue_, PointValue_>> splitPointSet;
-    private final List<IntervalCluster<IntervalValue_, PointValue_>> valueList;
+    private final Iterable<IntervalCluster<IntervalValue_, PointValue_>> valueList;
 
     public ConsecutiveIntervalData(TreeSet<IntervalSplitPoint<IntervalValue_, PointValue_>> splitPointSet) {
         clusterStartSplitPointToCluster = new TreeMap<>();
@@ -79,7 +78,7 @@ public class ConsecutiveIntervalData<IntervalValue_, PointValue_ extends Compara
         }
     }
 
-    public List<IntervalCluster<IntervalValue_, PointValue_>> getIntervalClusters() {
+    public Iterable<IntervalCluster<IntervalValue_, PointValue_>> getIntervalClusters() {
         return valueList;
     }
 

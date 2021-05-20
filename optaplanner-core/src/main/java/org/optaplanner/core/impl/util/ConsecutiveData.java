@@ -16,9 +16,9 @@
 
 package org.optaplanner.core.impl.util;
 
-import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class ConsecutiveData<PointType_, DifferenceType_ extends Comparable<DifferenceType_>> {
     private final ConsecutiveSetTree<PointType_, ?, DifferenceType_> sourceTree;
@@ -27,11 +27,11 @@ public class ConsecutiveData<PointType_, DifferenceType_ extends Comparable<Diff
         this.sourceTree = sourceTree;
     }
 
-    public List<Sequence<PointType_>> getConsecutiveSequences() {
+    public Iterable<Sequence<PointType_>> getConsecutiveSequences() {
         return sourceTree.getConsecutiveSequences();
     }
 
-    public List<Break<PointType_, DifferenceType_>> getBreaks() {
+    public Iterable<Break<PointType_, DifferenceType_>> getBreaks() {
         return sourceTree.getBreaks();
     }
 
@@ -51,7 +51,12 @@ public class ConsecutiveData<PointType_, DifferenceType_ extends Comparable<Diff
     }
 
     public String toString() {
-        return getConsecutiveSequences().stream().map(Sequence::toString)
+        Stream.Builder<Sequence<PointType_>> streamBuilder = Stream.builder();
+        for (Sequence<PointType_> sequence : getConsecutiveSequences()) {
+            streamBuilder.add(sequence);
+        }
+
+        return streamBuilder.build().map(Sequence::toString)
                 .collect(Collectors.joining("; ", "ConsecutiveData [", "]"));
     }
 }
