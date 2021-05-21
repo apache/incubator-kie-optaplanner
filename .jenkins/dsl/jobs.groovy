@@ -60,17 +60,14 @@ def nightlyBranchFolder = "${KogitoConstants.KOGITO_DSL_NIGHTLY_FOLDER}/${JOB_BR
 def releaseBranchFolder = "${KogitoConstants.KOGITO_DSL_RELEASE_FOLDER}/${JOB_BRANCH_FOLDER}"
 
 if (isMainBranch()) {
-    // Normal PR checks
-    setupOptaplannerPrJob()
-    setupOptaplannerQuarkusLTSPrJob()
-    setupOptaplannerNativePrJob()
-    setupOptawebEmployeeRosteringPrJob()
-    setupOptawebVehicleRoutingPrJob()
-
-    // Multijob PR checks
+    // Optaplanner PR checks
     setupMultijobPrDefaultChecks()
     setupMultijobPrNativeChecks()
     setupMultijobPrLTSChecks()
+
+    // Optaweb PR checks
+    setupOptawebEmployeeRosteringPrJob()
+    setupOptawebVehicleRoutingPrJob()
 
     // For BDD runtimes PR job
     folder(KogitoConstants.KOGITO_DSL_PULLREQUEST_FOLDER)
@@ -96,33 +93,12 @@ if (!isMainBranch()) {
 def otherFolder = KogitoConstants.KOGITO_DSL_OTHER_FOLDER
 if (isMainBranch()) {
     folder(otherFolder)
-    setupOptaPlannerTurtleTestsJob(otherFolder);
+    setupOptaPlannerTurtleTestsJob(otherFolder)
 }
 
 /////////////////////////////////////////////////////////////////
 // Methods
 /////////////////////////////////////////////////////////////////
-
-void setupOptaplannerPrJob() {
-    def jobParams = getDefaultJobParams()
-    jobParams.pr.ignore_for_labels = [ KogitoConstants.KOGITO_PR_MULTIJOB_LABEL ]
-    jobParams.pr.blackListTargetBranches = ['7.x']
-    KogitoJobTemplate.createPRJob(this, jobParams)
-}
-
-void setupOptaplannerQuarkusLTSPrJob() {
-    def jobParams = getDefaultJobParams()
-    jobParams.pr.ignore_for_labels = [ KogitoConstants.KOGITO_PR_MULTIJOB_LABEL ]
-    jobParams.pr.blackListTargetBranches = ['7.x']
-    KogitoJobTemplate.createQuarkusLTSPRJob(this, jobParams)
-}
-
-void setupOptaplannerNativePrJob() {
-    def jobParams = getDefaultJobParams()
-    jobParams.pr.ignore_for_labels = [ KogitoConstants.KOGITO_PR_MULTIJOB_LABEL ]
-    jobParams.pr.blackListTargetBranches = ['7.x']
-    KogitoJobTemplate.createNativePRJob(this, jobParams)
-}
 
 void setupOptawebEmployeeRosteringPrJob() {
     def jobParams = getDefaultJobParams('optaweb-employee-rostering')
@@ -138,19 +114,25 @@ void setupOptawebVehicleRoutingPrJob() {
 
 void setupMultijobPrDefaultChecks() {
     KogitoJobTemplate.createMultijobPRJobs(this, getMultijobPRConfig()) {
-        return getDefaultJobParams()
+        def jobParams = getDefaultJobParams()
+        jobParams.pr.blackListTargetBranches = ['7.x']
+        return jobParams
     }
 }
 
 void setupMultijobPrNativeChecks() {
     KogitoJobTemplate.createMultijobNativePRJobs(this, getMultijobPRConfig()) {
-        return getDefaultJobParams()
+        def jobParams = getDefaultJobParams()
+        jobParams.pr.blackListTargetBranches = ['7.x']
+        return jobParams
     }
 }
 
 void setupMultijobPrLTSChecks() {
     KogitoJobTemplate.createMultijobLTSPRJobs(this, getMultijobPRConfig()) {
-        return getDefaultJobParams()
+        def jobParams = getDefaultJobParams()
+        jobParams.pr.blackListTargetBranches = ['7.x']
+        return jobParams
     }
 }
 
@@ -269,7 +251,7 @@ void setupOptaPlannerTurtleTestsJob(String jobFolder) {
                 }
             }
         }
-        
+
         parameters {
             stringParam('BUILD_BRANCH_NAME', "${GIT_BRANCH}", 'Git branch to checkout')
             stringParam('GIT_AUTHOR', "${GIT_AUTHOR_NAME}", 'Git author or an organization.')
