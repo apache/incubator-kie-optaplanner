@@ -37,6 +37,8 @@ public class ListChangeMoveSelector<Solution_> extends GenericMoveSelector<Solut
         this.listVariableDescriptor = listVariableDescriptor;
         this.entitySelector = entitySelector;
         this.valueSelector = valueSelector;
+        phaseLifecycleSupport.addEventListener(entitySelector);
+        phaseLifecycleSupport.addEventListener(valueSelector);
     }
 
     @Override
