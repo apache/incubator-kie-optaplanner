@@ -36,7 +36,7 @@ pipeline {
                     checkoutOptaplannerRepo()
                     dir(quickstartsRepo) {
                         // If the PR to OptaPlanner targets the 'master' branch, we assume the branch 'development' for quickstarts.
-                        String quickstartsChangeTarget = changeTarget == 'master' ? 'development' : changeTarget
+                        String quickstartsChangeTarget = changeTarget == 'master' ? 'development' : getOptaplannerTargetBranch()
                         githubscm.checkoutIfExists(quickstartsRepo, changeAuthor, changeBranch, 'kiegroup', quickstartsChangeTarget, true)
                     }
                 }
