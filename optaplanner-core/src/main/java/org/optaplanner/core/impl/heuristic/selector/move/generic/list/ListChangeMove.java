@@ -87,4 +87,9 @@ public class ListChangeMove<Solution_> extends AbstractMove<Solution_> {
     public int getDestinationIndex() {
         return destinationIndex;
     }
+
+    @Override
+    public String toString() {
+        return String.format("%s[%d]->%s[%d]", sourceEntity, sourceIndex, destinationEntity, destinationIndex);
+    }
 }
