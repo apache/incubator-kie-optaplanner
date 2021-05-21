@@ -669,6 +669,10 @@ class OptaPlannerProcessor {
     }
 
     private void registerPhaseConfigForReflection(PhaseConfig<?> phaseConfig, Set<Class<?>> reflectiveClassSet) {
+        if (phaseConfig == null) {
+            return;
+        }
+
         registerTerminationConfig(phaseConfig.getTerminationConfig(), reflectiveClassSet);
         if (phaseConfig instanceof CustomPhaseConfig) {
             CustomPhaseConfig customPhaseConfig = (CustomPhaseConfig) phaseConfig;
@@ -676,7 +680,7 @@ class OptaPlannerProcessor {
         } else if (phaseConfig instanceof ConstructionHeuristicPhaseConfig) {
             ConstructionHeuristicPhaseConfig chPhaseConfig = (ConstructionHeuristicPhaseConfig) phaseConfig;
             if (chPhaseConfig.getMoveSelectorConfigList() != null) {
-                for (MoveSelectorConfig moveSelectorConfig : chPhaseConfig.getMoveSelectorConfigList()) {
+                for (MoveSelectorConfig<?> moveSelectorConfig : chPhaseConfig.getMoveSelectorConfigList()) {
                     registerMoveSelectorConfig(moveSelectorConfig, reflectiveClassSet);
                 }
             }
@@ -702,6 +706,10 @@ class OptaPlannerProcessor {
     }
 
     private void registerMoveSelectorConfig(MoveSelectorConfig<?> moveSelectorConfig, Set<Class<?>> reflectiveClassSet) {
+        if (moveSelectorConfig == null) {
+            return;
+        }
+
         registerClassForReflection(moveSelectorConfig.getFilterClass(), reflectiveClassSet);
         registerClassForReflection(moveSelectorConfig.getSorterClass(), reflectiveClassSet);
         registerClassForReflection(moveSelectorConfig.getSorterComparatorClass(), reflectiveClassSet);
@@ -732,8 +740,10 @@ class OptaPlannerProcessor {
             }
         } else if (moveSelectorConfig instanceof CartesianProductMoveSelectorConfig) {
             CartesianProductMoveSelectorConfig cpMoveSelectorConfig = (CartesianProductMoveSelectorConfig) moveSelectorConfig;
-            cpMoveSelectorConfig.getMoveSelectorConfigList()
-                    .forEach(msc -> registerMoveSelectorConfig(msc, reflectiveClassSet));
+            if (cpMoveSelectorConfig.getMoveSelectorConfigList() != null) {
+                cpMoveSelectorConfig.getMoveSelectorConfigList()
+                        .forEach(msc -> registerMoveSelectorConfig(msc, reflectiveClassSet));
+            }
         } else if (moveSelectorConfig instanceof ChangeMoveSelectorConfig) {
             ChangeMoveSelectorConfig changeMoveSelectorConfig = (ChangeMoveSelectorConfig) moveSelectorConfig;
             registerEntitySelectorConfig(changeMoveSelectorConfig.getEntitySelectorConfig(), reflectiveClassSet);
@@ -779,8 +789,10 @@ class OptaPlannerProcessor {
             registerValueSelectorConfig(tailChainSwapMoveSelectorConfig.getValueSelectorConfig(), reflectiveClassSet);
         } else if (moveSelectorConfig instanceof UnionMoveSelectorConfig) {
             UnionMoveSelectorConfig unionMoveSelectorConfig = (UnionMoveSelectorConfig) moveSelectorConfig;
-            unionMoveSelectorConfig.getMoveSelectorConfigList()
-                    .forEach(msc -> registerMoveSelectorConfig(msc, reflectiveClassSet));
+            if (unionMoveSelectorConfig.getMoveSelectorConfigList() != null) {
+                unionMoveSelectorConfig.getMoveSelectorConfigList()
+                        .forEach(msc -> registerMoveSelectorConfig(msc, reflectiveClassSet));
+            }
             registerClassForReflection(unionMoveSelectorConfig.getSelectorProbabilityWeightFactoryClass(), reflectiveClassSet);
         } else {
             throw new IllegalStateException("Unhandled move selector config class (" + moveSelectorConfig.getClass() + ").");
@@ -842,16 +854,17 @@ class OptaPlannerProcessor {
     }
 
     private void registerTerminationConfig(TerminationConfig terminationConfig, Set<Class<?>> reflectiveClassSet) {
-        if (terminationConfig != null) {
-            Stack<TerminationConfig> toProcess = new Stack<>();
-            toProcess.push(terminationConfig);
-            while (!toProcess.empty()) {
-                TerminationConfig current = toProcess.pop();
-                registerClassForReflection(current.getTerminationClass(), reflectiveClassSet);
-                if (current.getTerminationConfigList() != null) {
-                    for (TerminationConfig subConfig : current.getTerminationConfigList()) {
-                        toProcess.push(subConfig);
-                    }
+        if (terminationConfig == null) {
+            return;
+        }
+        Stack<TerminationConfig> toProcess = new Stack<>();
+        toProcess.push(terminationConfig);
+        while (!toProcess.empty()) {
+            TerminationConfig current = toProcess.pop();
+            registerClassForReflection(current.getTerminationClass(), reflectiveClassSet);
+            if (current.getTerminationConfigList() != null) {
+                for (TerminationConfig subConfig : current.getTerminationConfigList()) {
+                    toProcess.push(subConfig);
                 }
             }
         }
