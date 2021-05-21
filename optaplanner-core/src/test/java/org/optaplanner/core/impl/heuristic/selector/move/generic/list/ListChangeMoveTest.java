@@ -20,9 +20,11 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 
 import org.junit.jupiter.api.Test;
+import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
 import org.optaplanner.core.api.score.director.ScoreDirector;
 import org.optaplanner.core.impl.domain.variable.descriptor.ListVariableDescriptor;
 import org.optaplanner.core.impl.heuristic.move.AbstractMove;
+import org.optaplanner.core.impl.score.director.InnerScoreDirector;
 import org.optaplanner.core.impl.testdata.domain.TestdataValue;
 import org.optaplanner.core.impl.testdata.domain.list.TestdataListEntity;
 import org.optaplanner.core.impl.testdata.domain.list.TestdataListSolution;
@@ -37,7 +39,7 @@ class ListChangeMoveTest {
         TestdataListEntity e1 = new TestdataListEntity("e1", v1, v2);
         TestdataListEntity e2 = new TestdataListEntity("e2", v3);
 
-        ScoreDirector<TestdataListSolution> scoreDirector = mock(ScoreDirector.class);
+        InnerScoreDirector<TestdataListSolution, SimpleScore> scoreDirector = mock(InnerScoreDirector.class);
         ListVariableDescriptor<TestdataListSolution> variableDescriptor =
                 TestdataListEntity.buildVariableDescriptorForValueList();
 
