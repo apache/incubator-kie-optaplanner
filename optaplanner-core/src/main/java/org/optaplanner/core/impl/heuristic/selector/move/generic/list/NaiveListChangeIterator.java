@@ -62,7 +62,7 @@ public class NaiveListChangeIterator<Solution_> extends UpcomingSelectionIterato
     protected Move<Solution_> createUpcomingSelection() {
         if (!toIndexIterator.hasNext()) {
             if (!toEntityIterator.hasNext()) {
-                if (!fromIndexIterator.hasNext()) {
+                while (!fromIndexIterator.hasNext()) {
                     if (!fromEntityIterator.hasNext()) {
                         return noUpcomingSelection();
                     }
