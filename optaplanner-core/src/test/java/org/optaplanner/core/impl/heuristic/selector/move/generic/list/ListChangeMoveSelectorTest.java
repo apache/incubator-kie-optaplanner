@@ -36,7 +36,8 @@ class ListChangeMoveSelectorTest {
         EntitySelector<TestdataListSolution> entitySelector = SelectorTestUtils.mockEntitySelector(
                 TestdataListEntity.class,
                 new TestdataListEntity("A", v1, v2),
-                new TestdataListEntity("B", v3));
+                new TestdataListEntity("B"),
+                new TestdataListEntity("C", v3));
         ValueSelector<TestdataListSolution> valueSelector = SelectorTestUtils.mockValueSelector(
                 TestdataListEntity.class, "valueList", v1, v2, v3);
 
@@ -51,19 +52,23 @@ class ListChangeMoveSelectorTest {
                 "A[0]->A[1]",
                 "A[0]->A[2]", // undoable
                 "A[0]->B[0]",
-                "A[0]->B[1]",
+                "A[0]->C[0]",
+                "A[0]->C[1]",
                 // moving A[1]
                 "A[1]->A[0]",
                 "A[1]->A[1]", // undoable
                 "A[1]->A[2]", // undoable
                 "A[1]->B[0]",
-                "A[1]->B[1]",
-                // moving B[0]
-                "B[0]->A[0]",
-                "B[0]->A[1]",
-                "B[0]->A[2]",
-                "B[0]->B[0]", // undoable
-                "B[0]->B[1]" // undoable
+                "A[1]->C[0]",
+                "A[1]->C[1]",
+                // B has no elements, so no moves
+                // moving C[0]
+                "C[0]->A[0]",
+                "C[0]->A[1]",
+                "C[0]->A[2]",
+                "C[0]->B[0]",
+                "C[0]->C[0]", // undoable
+                "C[0]->C[1]" // undoable
         );
     }
 }
