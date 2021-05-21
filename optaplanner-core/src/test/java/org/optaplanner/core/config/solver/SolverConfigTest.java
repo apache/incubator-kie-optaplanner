@@ -51,7 +51,7 @@ import org.optaplanner.core.impl.testdata.domain.TestdataEntity;
 import org.optaplanner.core.impl.testdata.domain.TestdataSolution;
 import org.optaplanner.core.impl.testdata.domain.TestdataValue;
 
-class SolverConfigTest {
+public class SolverConfigTest {
 
     private static final String TEST_SOLVER_CONFIG_WITH_NAMESPACE = "testSolverConfigWithNamespace.xml";
     private static final String TEST_SOLVER_CONFIG_WITHOUT_NAMESPACE = "testSolverConfigWithoutNamespace.xml";
@@ -167,34 +167,34 @@ class SolverConfigTest {
 
     /* Dummy classes below are referenced from the testSolverConfig.xml used in this test case. */
 
-    private static abstract class DummySolutionPartitioner implements SolutionPartitioner<TestdataSolution> {
+    public static abstract class DummySolutionPartitioner implements SolutionPartitioner<TestdataSolution> {
     }
 
-    private static abstract class DummyEasyScoreCalculator
+    public static abstract class DummyEasyScoreCalculator
             implements EasyScoreCalculator<TestdataSolution, SimpleScore> {
     }
 
-    private static abstract class DummyIncrementalScoreCalculator
+    public static abstract class DummyIncrementalScoreCalculator
             implements IncrementalScoreCalculator<TestdataSolution, SimpleScore> {
     }
 
-    private static abstract class DummyConstraintProvider implements ConstraintProvider {
+    public static abstract class DummyConstraintProvider implements ConstraintProvider {
     }
 
-    private abstract class DummyValueFilter implements SelectionFilter<TestdataSolution, TestdataValue> {
+    public abstract class DummyValueFilter implements SelectionFilter<TestdataSolution, TestdataValue> {
     }
 
-    private abstract class DummyEntityFilter implements SelectionFilter<TestdataSolution, TestdataEntity> {
+    public abstract class DummyEntityFilter implements SelectionFilter<TestdataSolution, TestdataEntity> {
     }
 
-    private abstract class DummyChangeMoveFilter
+    public abstract class DummyChangeMoveFilter
             implements SelectionFilter<TestdataSolution, ChangeMove<TestdataSolution>> {
     }
 
-    private abstract class DummyMoveIteratorFactory implements MoveIteratorFactory<TestdataSolution, DummyMove> {
+    public abstract class DummyMoveIteratorFactory implements MoveIteratorFactory<TestdataSolution, DummyMove> {
     }
 
-    private abstract class DummyMoveListFactory implements MoveListFactory<TestdataSolution> {
+    public abstract class DummyMoveListFactory implements MoveListFactory<TestdataSolution> {
     }
 
 }

@@ -55,6 +55,10 @@ import org.optaplanner.core.api.score.calculator.IncrementalScoreCalculator;
 import org.optaplanner.core.api.score.stream.ConstraintProvider;
 import org.optaplanner.core.api.score.stream.ConstraintStreamImplType;
 import org.optaplanner.core.config.constructionheuristic.ConstructionHeuristicPhaseConfig;
+import org.optaplanner.core.config.constructionheuristic.placer.EntityPlacerConfig;
+import org.optaplanner.core.config.constructionheuristic.placer.PooledEntityPlacerConfig;
+import org.optaplanner.core.config.constructionheuristic.placer.QueuedEntityPlacerConfig;
+import org.optaplanner.core.config.constructionheuristic.placer.QueuedValuePlacerConfig;
 import org.optaplanner.core.config.exhaustivesearch.ExhaustiveSearchPhaseConfig;
 import org.optaplanner.core.config.heuristic.selector.entity.EntitySelectorConfig;
 import org.optaplanner.core.config.heuristic.selector.move.MoveSelectorConfig;
@@ -671,9 +675,12 @@ class OptaPlannerProcessor {
             reflectiveClassSet.addAll(customPhaseConfig.getCustomPhaseCommandClassList());
         } else if (phaseConfig instanceof ConstructionHeuristicPhaseConfig) {
             ConstructionHeuristicPhaseConfig chPhaseConfig = (ConstructionHeuristicPhaseConfig) phaseConfig;
-            for (MoveSelectorConfig moveSelectorConfig : chPhaseConfig.getMoveSelectorConfigList()) {
-                registerMoveSelectorConfig(moveSelectorConfig, reflectiveClassSet);
+            if (chPhaseConfig.getMoveSelectorConfigList() != null) {
+                for (MoveSelectorConfig moveSelectorConfig : chPhaseConfig.getMoveSelectorConfigList()) {
+                    registerMoveSelectorConfig(moveSelectorConfig, reflectiveClassSet);
+                }
             }
+            registerEntityPlacerConfig(chPhaseConfig.getEntityPlacerConfig(), reflectiveClassSet);
         } else if (phaseConfig instanceof LocalSearchPhaseConfig) {
             LocalSearchPhaseConfig lsPhaseConfig = (LocalSearchPhaseConfig) phaseConfig;
             registerMoveSelectorConfig(lsPhaseConfig.getMoveSelectorConfig(), reflectiveClassSet);
@@ -704,8 +711,10 @@ class OptaPlannerProcessor {
         if (moveSelectorConfig instanceof AbstractPillarMoveSelectorConfig) {
             AbstractPillarMoveSelectorConfig<?> apMoveSelectorConfig = (AbstractPillarMoveSelectorConfig<?>) moveSelectorConfig;
             registerClassForReflection(apMoveSelectorConfig.getSubPillarSequenceComparatorClass(), reflectiveClassSet);
-            registerEntitySelectorConfig(apMoveSelectorConfig.getPillarSelectorConfig().getEntitySelectorConfig(),
-                    reflectiveClassSet);
+            if (apMoveSelectorConfig.getPillarSelectorConfig() != null) {
+                registerEntitySelectorConfig(apMoveSelectorConfig.getPillarSelectorConfig().getEntitySelectorConfig(),
+                        reflectiveClassSet);
+            }
 
             if (apMoveSelectorConfig instanceof PillarChangeMoveSelectorConfig) {
                 PillarChangeMoveSelectorConfig pcMoveSelectorConfig = (PillarChangeMoveSelectorConfig) apMoveSelectorConfig;
@@ -775,6 +784,30 @@ class OptaPlannerProcessor {
             registerClassForReflection(unionMoveSelectorConfig.getSelectorProbabilityWeightFactoryClass(), reflectiveClassSet);
         } else {
             throw new IllegalStateException("Unhandled move selector config class (" + moveSelectorConfig.getClass() + ").");
+        }
+    }
+
+    private void registerEntityPlacerConfig(EntityPlacerConfig<?> entityPlacerConfig, Set<Class<?>> reflectiveClassSet) {
+        if (entityPlacerConfig == null) {
+            return;
+        }
+
+        if (entityPlacerConfig instanceof PooledEntityPlacerConfig) {
+            PooledEntityPlacerConfig pooledEntityPlacerConfig = (PooledEntityPlacerConfig) entityPlacerConfig;
+            registerMoveSelectorConfig(pooledEntityPlacerConfig.getMoveSelectorConfig(), reflectiveClassSet);
+        } else if (entityPlacerConfig instanceof QueuedEntityPlacerConfig) {
+            QueuedEntityPlacerConfig queuedEntityPlacerConfig = (QueuedEntityPlacerConfig) entityPlacerConfig;
+            registerEntitySelectorConfig(queuedEntityPlacerConfig.getEntitySelectorConfig(), reflectiveClassSet);
+            if (queuedEntityPlacerConfig.getMoveSelectorConfigList() != null) {
+                queuedEntityPlacerConfig.getMoveSelectorConfigList()
+                        .forEach(msc -> registerMoveSelectorConfig(msc, reflectiveClassSet));
+            }
+        } else if (entityPlacerConfig instanceof QueuedValuePlacerConfig) {
+            QueuedValuePlacerConfig queuedValuePlacerConfig = (QueuedValuePlacerConfig) entityPlacerConfig;
+            registerValueSelectorConfig(queuedValuePlacerConfig.getValueSelectorConfig(), reflectiveClassSet);
+            registerMoveSelectorConfig(queuedValuePlacerConfig.getMoveSelectorConfig(), reflectiveClassSet);
+        } else {
+            throw new IllegalStateException("Unhandled entity placer config class (" + entityPlacerConfig.getClass() + ").");
         }
     }
 
