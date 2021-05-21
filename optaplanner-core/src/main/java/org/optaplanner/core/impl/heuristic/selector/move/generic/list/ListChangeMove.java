@@ -20,6 +20,7 @@ import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.score.director.ScoreDirector;
 import org.optaplanner.core.impl.domain.variable.descriptor.ListVariableDescriptor;
 import org.optaplanner.core.impl.heuristic.move.AbstractMove;
+import org.optaplanner.core.impl.score.director.InnerScoreDirector;
 
 /**
  * Moves an element of a list planning variable. The moved element is identified by an entity instance and a position
@@ -57,8 +58,15 @@ public class ListChangeMove<Solution_> extends AbstractMove<Solution_> {
 
     @Override
     protected void doMoveOnGenuineVariables(ScoreDirector<Solution_> scoreDirector) {
+        InnerScoreDirector<Solution_, ?> innerScoreDirector = (InnerScoreDirector<Solution_, ?>) scoreDirector;
+        // Remove element from the source entity.
+        innerScoreDirector.beforeVariableChanged(variableDescriptor, sourceEntity);
         Object element = variableDescriptor.removeElement(sourceEntity, sourceIndex);
+        innerScoreDirector.afterVariableChanged(variableDescriptor, sourceEntity);
+        // Add element to the destination entity.
+        innerScoreDirector.beforeVariableChanged(variableDescriptor, destinationEntity);
         variableDescriptor.addElement(destinationEntity, destinationIndex, element);
+        innerScoreDirector.afterVariableChanged(variableDescriptor, destinationEntity);
     }
 
     @Override
