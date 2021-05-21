@@ -26,18 +26,19 @@ def getDefaultJobParams(String repoName = 'optaplanner') {
 
 Map getMultijobPRConfig() {
     return [
+        parallel: true,
         jobs : [
             [
-                id: 'Tests',
+                id: 'Optaplanner',
                 primary: true,
             ], [
                 id: 'Apps',
-                waitForId: 'Tests',
-                repository: 'kogito-apps'
+                repository: 'kogito-apps',
+                dependsOn: 'Optaplanner',
             ], [
                 id: 'Examples',
-                waitForId: 'Tests',
-                repository: 'kogito-examples'
+                repository: 'kogito-examples',
+                dependsOn: 'Optaplanner',
             ]
         ]
     ]

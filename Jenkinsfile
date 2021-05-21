@@ -33,7 +33,7 @@ pipeline {
                     mailer.buildLogScriptPR()
 
                     checkoutRuntimesRepo()
-                    checkoutRepo(optaplannerRepo)
+                    checkoutOptaplannerRepo()
                     dir(quickstartsRepo) {
                         // If the PR to OptaPlanner targets the 'master' branch, we assume the branch 'development' for quickstarts.
                         String quickstartsChangeTarget = changeTarget == 'master' ? 'development' : changeTarget
@@ -70,7 +70,7 @@ pipeline {
                 script {
                     mvnCmd = getMavenCommand(optaplannerRepo, true, true)
                         .withProperty('full')
-                    if(isNormalPRCheck()) {
+                    if (isNormalPRCheck()) {
                         mvnCmd.withProfiles(['run-code-coverage'])
                     }
                     mvnCmd.run('clean install')
@@ -131,25 +131,55 @@ pipeline {
     }
 }
 
-void checkoutRepo(String repo, String dirName=repo) {
+void checkoutOptaplannerRepo() {
     dir(dirName) {
-        githubscm.checkoutIfExists(repo, changeAuthor, changeBranch, 'kiegroup', changeTarget, true)
+        githubscm.checkoutIfExists('optaplanner', changeAuthor, changeBranch, 'kiegroup', changeTarget, true)
     }
 }
 
-void checkoutRuntimesRepo() {
+String getKogitoTargetBranch() {
     String targetBranch = changeTarget
-    String [] versionSplit = targetBranch.split("\\.")
-    if (versionSplit.length == 3
-        && versionSplit[0].isNumber()
-        && versionSplit[1].isNumber()
-       && versionSplit[2] == 'x') {
-        targetBranch = "${Integer.parseInt(versionSplit[0]) - 7}.${versionSplit[1]}.x"
-    } else {
-        echo "Cannot parse changeTarget as release branch so going further with current value: ${changeTarget}"
-       }
+    if (!isUpstreamKogitoProject()) {
+        // If PR check started by a change on this repository and on a release branch, calculate the Kogito release branch
+        String [] versionSplit = targetBranch.split("\\.")
+        if (versionSplit.length == 3
+            && versionSplit[0].isNumber()
+            && versionSplit[1].isNumber()
+            && versionSplit[2] == 'x') {
+            targetBranch = "${Integer.parseInt(versionSplit[0]) - 7}.${versionSplit[1]}.x"
+        } else {
+            echo "Cannot parse changeTarget as release branch so going further with current value: ${changeTarget}"
+        }
+    }
+    return targetBranch
+}
+
+String getOptaplannerTargetBranch() {
+    String targetBranch = changeTarget
+    if (isUpstreamKogitoProject()) {
+        // If PR check started by a change on an upstream kogito project and on a release branch, calculate the Kogito release branch
+        String [] versionSplit = targetBranch.split("\\.")
+        if (versionSplit.length == 3
+            && versionSplit[0].isNumber()
+            && versionSplit[1].isNumber()
+            && versionSplit[2] == 'x') {
+            targetBranch = "${Integer.parseInt(versionSplit[0]) + 7}.${versionSplit[1]}.x"
+        } else {
+            echo "Cannot parse changeTarget as release branch so going further with current value: ${changeTarget}"
+        }
+    }
+    return targetBranch
+}
+
+void checkoutRuntimesRepo() {
     dir(kogitoRuntimesRepo) {
-        githubscm.checkoutIfExists(kogitoRuntimesRepo, changeAuthor, changeBranch, 'kiegroup', targetBranch, true)
+        githubscm.checkoutIfExists(kogitoRuntimesRepo, changeAuthor, changeBranch, 'kiegroup', getKogitoTargetBranch(), true)
+    }
+}
+
+void checkoutOptaplannerRepo() {
+    dir('optaplanner') {
+        githubscm.checkoutIfExists('optaplanner', changeAuthor, changeBranch, 'kiegroup', getOptaplannerTargetBranch(), true)
     }
 }
 
@@ -162,11 +192,13 @@ void checkoutQuarkusRepo() {
 MavenCommand getMavenCommand(String directory, boolean addQuarkusVersion=true, boolean canNative = false) {
     mvnCmd = new MavenCommand(this, ['-fae'])
                 .withSettingsXmlId('kogito_release_settings')
+                .withSnapshotsDisabledInSettings()
+                .withProperty('java.net.preferIPv4Stack', true)
                 .inDirectory(directory)
     if (addQuarkusVersion && getQuarkusBranch()) {
         mvnCmd.withProperty('version.io.quarkus', '999-SNAPSHOT')
     }
-    if(canNative && isNative()) {
+    if (canNative && isNative()) {
         mvnCmd.withProfiles(['native'])
             .withProperty('quarkus.native.container-build', true)
             .withProperty('quarkus.native.container-runtime', 'docker')
@@ -184,15 +216,19 @@ boolean isNative() {
 }
 
 boolean isDownstreamJob() {
-    return env['DOWNSTREAM'] && env['DOWNSTREAM'].toBoolean()
+    return env['DOWNSTREAM_BUILD'] && env['DOWNSTREAM_BUILD'].toBoolean()
+}
+
+String getUpstreamTriggerProject() {
+    return env['UPSTREAM_TRIGGER_PROJECT']
 }
 
 boolean isNormalPRCheck() {
     return !(isDownstreamJob() || getQuarkusBranch() || isNative())
 }
 
-boolean isMultijobPRCheck() {
-    return env['MULTIJOB_PR_CHECK'] && env['MULTIJOB_PR_CHECK'].toBoolean()
+boolean isUpstreamKogitoProject() {
+    return getUpstreamTriggerProject() && getUpstreamTriggerProject.startsWith('kogito')
 }
 
 Integer getTimeoutValue() {
