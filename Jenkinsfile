@@ -210,11 +210,11 @@ boolean isNormalPRCheck() {
 }
 
 boolean isUpstreamKogitoProject() {
-    return getUpstreamTriggerProject() && getUpstreamTriggerProject.startsWith('kogito')
+    return getUpstreamTriggerProject() && getUpstreamTriggerProject().startsWith('kogito')
 }
 
 boolean isUpstreamOptaplannerProject() {
-    return getUpstreamTriggerProject() && getUpstreamTriggerProject.startsWith('opta')
+    return getUpstreamTriggerProject() && getUpstreamTriggerProject().startsWith('opta')
 }
 
 Integer getTimeoutValue() {
