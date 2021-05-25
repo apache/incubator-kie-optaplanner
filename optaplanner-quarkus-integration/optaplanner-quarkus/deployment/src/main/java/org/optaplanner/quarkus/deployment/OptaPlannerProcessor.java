@@ -30,7 +30,6 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
-import java.util.Stack;
 import java.util.stream.Collectors;
 
 import javax.inject.Singleton;
@@ -54,37 +53,9 @@ import org.optaplanner.core.api.score.calculator.EasyScoreCalculator;
 import org.optaplanner.core.api.score.calculator.IncrementalScoreCalculator;
 import org.optaplanner.core.api.score.stream.ConstraintProvider;
 import org.optaplanner.core.api.score.stream.ConstraintStreamImplType;
-import org.optaplanner.core.config.constructionheuristic.ConstructionHeuristicPhaseConfig;
-import org.optaplanner.core.config.constructionheuristic.placer.EntityPlacerConfig;
-import org.optaplanner.core.config.constructionheuristic.placer.PooledEntityPlacerConfig;
-import org.optaplanner.core.config.constructionheuristic.placer.QueuedEntityPlacerConfig;
-import org.optaplanner.core.config.constructionheuristic.placer.QueuedValuePlacerConfig;
-import org.optaplanner.core.config.exhaustivesearch.ExhaustiveSearchPhaseConfig;
-import org.optaplanner.core.config.heuristic.selector.entity.EntitySelectorConfig;
-import org.optaplanner.core.config.heuristic.selector.move.MoveSelectorConfig;
-import org.optaplanner.core.config.heuristic.selector.move.composite.CartesianProductMoveSelectorConfig;
-import org.optaplanner.core.config.heuristic.selector.move.composite.UnionMoveSelectorConfig;
-import org.optaplanner.core.config.heuristic.selector.move.factory.MoveIteratorFactoryConfig;
-import org.optaplanner.core.config.heuristic.selector.move.factory.MoveListFactoryConfig;
-import org.optaplanner.core.config.heuristic.selector.move.generic.AbstractPillarMoveSelectorConfig;
-import org.optaplanner.core.config.heuristic.selector.move.generic.ChangeMoveSelectorConfig;
-import org.optaplanner.core.config.heuristic.selector.move.generic.PillarChangeMoveSelectorConfig;
-import org.optaplanner.core.config.heuristic.selector.move.generic.PillarSwapMoveSelectorConfig;
-import org.optaplanner.core.config.heuristic.selector.move.generic.SwapMoveSelectorConfig;
-import org.optaplanner.core.config.heuristic.selector.move.generic.chained.KOptMoveSelectorConfig;
-import org.optaplanner.core.config.heuristic.selector.move.generic.chained.SubChainChangeMoveSelectorConfig;
-import org.optaplanner.core.config.heuristic.selector.move.generic.chained.SubChainSwapMoveSelectorConfig;
-import org.optaplanner.core.config.heuristic.selector.move.generic.chained.TailChainSwapMoveSelectorConfig;
-import org.optaplanner.core.config.heuristic.selector.value.ValueSelectorConfig;
-import org.optaplanner.core.config.localsearch.LocalSearchPhaseConfig;
-import org.optaplanner.core.config.partitionedsearch.PartitionedSearchPhaseConfig;
-import org.optaplanner.core.config.phase.NoChangePhaseConfig;
-import org.optaplanner.core.config.phase.PhaseConfig;
-import org.optaplanner.core.config.phase.custom.CustomPhaseConfig;
 import org.optaplanner.core.config.score.director.ScoreDirectorFactoryConfig;
 import org.optaplanner.core.config.solver.SolverConfig;
 import org.optaplanner.core.config.solver.SolverManagerConfig;
-import org.optaplanner.core.config.solver.termination.TerminationConfig;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.quarkus.OptaPlannerBeanProvider;
 import org.optaplanner.quarkus.OptaPlannerRecorder;
@@ -644,230 +615,11 @@ class OptaPlannerProcessor {
     }
 
     private void registerCustomClassesFromSolverConfig(SolverConfig solverConfig, Set<Class<?>> reflectiveClassSet) {
-        ScoreDirectorFactoryConfig scoreDirectorFactoryConfig = solverConfig.getScoreDirectorFactoryConfig();
-        while (scoreDirectorFactoryConfig != null) {
-            registerClassForReflection(scoreDirectorFactoryConfig.getEasyScoreCalculatorClass(), reflectiveClassSet);
-            registerClassForReflection(scoreDirectorFactoryConfig.getConstraintProviderClass(), reflectiveClassSet);
-            registerClassForReflection(scoreDirectorFactoryConfig.getIncrementalScoreCalculatorClass(), reflectiveClassSet);
-            scoreDirectorFactoryConfig = scoreDirectorFactoryConfig.getAssertionScoreDirectorFactory();
-        }
-
-        if (solverConfig.getPhaseConfigList() != null) {
-            for (PhaseConfig<?> phaseConfig : solverConfig.getPhaseConfigList()) {
-                registerPhaseConfigForReflection(phaseConfig, reflectiveClassSet);
+        solverConfig.visitReferencedClasses(clazz -> {
+            if (clazz != null) {
+                reflectiveClassSet.add(clazz);
             }
-        }
-
-        registerClassForReflection(solverConfig.getRandomFactoryClass(), reflectiveClassSet);
-        registerTerminationConfig(solverConfig.getTerminationConfig(), reflectiveClassSet);
-    }
-
-    private void registerClassForReflection(Class<?> clazz, Set<Class<?>> reflectiveClassSet) {
-        if (clazz != null) {
-            reflectiveClassSet.add(clazz);
-        }
-    }
-
-    private void registerPhaseConfigForReflection(PhaseConfig<?> phaseConfig, Set<Class<?>> reflectiveClassSet) {
-        if (phaseConfig == null) {
-            return;
-        }
-
-        registerTerminationConfig(phaseConfig.getTerminationConfig(), reflectiveClassSet);
-        if (phaseConfig instanceof CustomPhaseConfig) {
-            CustomPhaseConfig customPhaseConfig = (CustomPhaseConfig) phaseConfig;
-            reflectiveClassSet.addAll(customPhaseConfig.getCustomPhaseCommandClassList());
-        } else if (phaseConfig instanceof ConstructionHeuristicPhaseConfig) {
-            ConstructionHeuristicPhaseConfig chPhaseConfig = (ConstructionHeuristicPhaseConfig) phaseConfig;
-            if (chPhaseConfig.getMoveSelectorConfigList() != null) {
-                for (MoveSelectorConfig<?> moveSelectorConfig : chPhaseConfig.getMoveSelectorConfigList()) {
-                    registerMoveSelectorConfig(moveSelectorConfig, reflectiveClassSet);
-                }
-            }
-            registerEntityPlacerConfig(chPhaseConfig.getEntityPlacerConfig(), reflectiveClassSet);
-        } else if (phaseConfig instanceof LocalSearchPhaseConfig) {
-            LocalSearchPhaseConfig lsPhaseConfig = (LocalSearchPhaseConfig) phaseConfig;
-            registerMoveSelectorConfig(lsPhaseConfig.getMoveSelectorConfig(), reflectiveClassSet);
-        } else if (phaseConfig instanceof ExhaustiveSearchPhaseConfig) {
-            ExhaustiveSearchPhaseConfig esPhaseConfig = (ExhaustiveSearchPhaseConfig) phaseConfig;
-            registerMoveSelectorConfig(esPhaseConfig.getMoveSelectorConfig(), reflectiveClassSet);
-            registerEntitySelectorConfig(esPhaseConfig.getEntitySelectorConfig(), reflectiveClassSet);
-        } else if (phaseConfig instanceof PartitionedSearchPhaseConfig) {
-            PartitionedSearchPhaseConfig psPhaseConfig = (PartitionedSearchPhaseConfig) phaseConfig;
-            registerClassForReflection(psPhaseConfig.getSolutionPartitionerClass(), reflectiveClassSet);
-            if (psPhaseConfig.getPhaseConfigList() != null) {
-                psPhaseConfig.getPhaseConfigList().forEach(pc -> registerPhaseConfigForReflection(pc, reflectiveClassSet));
-            }
-        } else if (phaseConfig instanceof NoChangePhaseConfig) {
-            // Need to do nothing, since termination config is registered above
-        } else {
-            throw new IllegalStateException("Unhandled phase config class (" + phaseConfig.getClass() + ").");
-        }
-    }
-
-    private void registerMoveSelectorConfig(MoveSelectorConfig<?> moveSelectorConfig, Set<Class<?>> reflectiveClassSet) {
-        if (moveSelectorConfig == null) {
-            return;
-        }
-
-        registerClassForReflection(moveSelectorConfig.getFilterClass(), reflectiveClassSet);
-        registerClassForReflection(moveSelectorConfig.getSorterClass(), reflectiveClassSet);
-        registerClassForReflection(moveSelectorConfig.getSorterComparatorClass(), reflectiveClassSet);
-        registerClassForReflection(moveSelectorConfig.getSorterWeightFactoryClass(), reflectiveClassSet);
-        registerClassForReflection(moveSelectorConfig.getProbabilityWeightFactoryClass(), reflectiveClassSet);
-
-        if (moveSelectorConfig instanceof AbstractPillarMoveSelectorConfig) {
-            AbstractPillarMoveSelectorConfig<?> apMoveSelectorConfig = (AbstractPillarMoveSelectorConfig<?>) moveSelectorConfig;
-            registerClassForReflection(apMoveSelectorConfig.getSubPillarSequenceComparatorClass(), reflectiveClassSet);
-            if (apMoveSelectorConfig.getPillarSelectorConfig() != null) {
-                registerEntitySelectorConfig(apMoveSelectorConfig.getPillarSelectorConfig().getEntitySelectorConfig(),
-                        reflectiveClassSet);
-            }
-
-            if (apMoveSelectorConfig instanceof PillarChangeMoveSelectorConfig) {
-                PillarChangeMoveSelectorConfig pcMoveSelectorConfig = (PillarChangeMoveSelectorConfig) apMoveSelectorConfig;
-                registerValueSelectorConfig(pcMoveSelectorConfig.getValueSelectorConfig(), reflectiveClassSet);
-            } else if (apMoveSelectorConfig instanceof PillarSwapMoveSelectorConfig) {
-                PillarSwapMoveSelectorConfig psMoveSelectorConfig = (PillarSwapMoveSelectorConfig) apMoveSelectorConfig;
-                if (psMoveSelectorConfig.getSecondaryPillarSelectorConfig() != null) {
-                    registerEntitySelectorConfig(
-                            psMoveSelectorConfig.getSecondaryPillarSelectorConfig().getEntitySelectorConfig(),
-                            reflectiveClassSet);
-                }
-            } else {
-                throw new IllegalStateException(
-                        "Unhandled pillar move selector config class (" + apMoveSelectorConfig.getClass() + ").");
-            }
-        } else if (moveSelectorConfig instanceof CartesianProductMoveSelectorConfig) {
-            CartesianProductMoveSelectorConfig cpMoveSelectorConfig = (CartesianProductMoveSelectorConfig) moveSelectorConfig;
-            if (cpMoveSelectorConfig.getMoveSelectorConfigList() != null) {
-                cpMoveSelectorConfig.getMoveSelectorConfigList()
-                        .forEach(msc -> registerMoveSelectorConfig(msc, reflectiveClassSet));
-            }
-        } else if (moveSelectorConfig instanceof ChangeMoveSelectorConfig) {
-            ChangeMoveSelectorConfig changeMoveSelectorConfig = (ChangeMoveSelectorConfig) moveSelectorConfig;
-            registerEntitySelectorConfig(changeMoveSelectorConfig.getEntitySelectorConfig(), reflectiveClassSet);
-            registerValueSelectorConfig(changeMoveSelectorConfig.getValueSelectorConfig(), reflectiveClassSet);
-        } else if (moveSelectorConfig instanceof KOptMoveSelectorConfig) {
-            KOptMoveSelectorConfig kOptMoveSelectorConfig = (KOptMoveSelectorConfig) moveSelectorConfig;
-            registerEntitySelectorConfig(kOptMoveSelectorConfig.getEntitySelectorConfig(), reflectiveClassSet);
-            registerValueSelectorConfig(kOptMoveSelectorConfig.getValueSelectorConfig(), reflectiveClassSet);
-        } else if (moveSelectorConfig instanceof MoveIteratorFactoryConfig) {
-            MoveIteratorFactoryConfig moveIteratorFactoryConfig = (MoveIteratorFactoryConfig) moveSelectorConfig;
-            registerClassForReflection(moveIteratorFactoryConfig.getMoveIteratorFactoryClass(), reflectiveClassSet);
-        } else if (moveSelectorConfig instanceof MoveListFactoryConfig) {
-            MoveListFactoryConfig moveListFactoryConfig = (MoveListFactoryConfig) moveSelectorConfig;
-            registerClassForReflection(moveListFactoryConfig.getMoveListFactoryClass(), reflectiveClassSet);
-        } else if (moveSelectorConfig instanceof SubChainChangeMoveSelectorConfig) {
-            SubChainChangeMoveSelectorConfig subChainChangeMoveSelectorConfig =
-                    (SubChainChangeMoveSelectorConfig) moveSelectorConfig;
-            registerValueSelectorConfig(subChainChangeMoveSelectorConfig.getValueSelectorConfig(), reflectiveClassSet);
-            if (subChainChangeMoveSelectorConfig.getSubChainSelectorConfig() != null) {
-                registerValueSelectorConfig(
-                        subChainChangeMoveSelectorConfig.getSubChainSelectorConfig().getValueSelectorConfig(),
-                        reflectiveClassSet);
-            }
-        } else if (moveSelectorConfig instanceof SubChainSwapMoveSelectorConfig) {
-            SubChainSwapMoveSelectorConfig subChainSwapMoveSelectorConfig = (SubChainSwapMoveSelectorConfig) moveSelectorConfig;
-            if (subChainSwapMoveSelectorConfig.getSubChainSelectorConfig() != null) {
-                registerValueSelectorConfig(subChainSwapMoveSelectorConfig.getSubChainSelectorConfig().getValueSelectorConfig(),
-                        reflectiveClassSet);
-            }
-            if (subChainSwapMoveSelectorConfig.getSecondarySubChainSelectorConfig() != null) {
-                registerValueSelectorConfig(
-                        subChainSwapMoveSelectorConfig.getSecondarySubChainSelectorConfig().getValueSelectorConfig(),
-                        reflectiveClassSet);
-            }
-        } else if (moveSelectorConfig instanceof SwapMoveSelectorConfig) {
-            SwapMoveSelectorConfig swapMoveSelectorConfig = (SwapMoveSelectorConfig) moveSelectorConfig;
-            registerEntitySelectorConfig(swapMoveSelectorConfig.getEntitySelectorConfig(), reflectiveClassSet);
-            registerEntitySelectorConfig(swapMoveSelectorConfig.getSecondaryEntitySelectorConfig(), reflectiveClassSet);
-        } else if (moveSelectorConfig instanceof TailChainSwapMoveSelectorConfig) {
-            TailChainSwapMoveSelectorConfig tailChainSwapMoveSelectorConfig =
-                    (TailChainSwapMoveSelectorConfig) moveSelectorConfig;
-            registerEntitySelectorConfig(tailChainSwapMoveSelectorConfig.getEntitySelectorConfig(), reflectiveClassSet);
-            registerValueSelectorConfig(tailChainSwapMoveSelectorConfig.getValueSelectorConfig(), reflectiveClassSet);
-        } else if (moveSelectorConfig instanceof UnionMoveSelectorConfig) {
-            UnionMoveSelectorConfig unionMoveSelectorConfig = (UnionMoveSelectorConfig) moveSelectorConfig;
-            if (unionMoveSelectorConfig.getMoveSelectorConfigList() != null) {
-                unionMoveSelectorConfig.getMoveSelectorConfigList()
-                        .forEach(msc -> registerMoveSelectorConfig(msc, reflectiveClassSet));
-            }
-            registerClassForReflection(unionMoveSelectorConfig.getSelectorProbabilityWeightFactoryClass(), reflectiveClassSet);
-        } else {
-            throw new IllegalStateException("Unhandled move selector config class (" + moveSelectorConfig.getClass() + ").");
-        }
-    }
-
-    private void registerEntityPlacerConfig(EntityPlacerConfig<?> entityPlacerConfig, Set<Class<?>> reflectiveClassSet) {
-        if (entityPlacerConfig == null) {
-            return;
-        }
-
-        if (entityPlacerConfig instanceof PooledEntityPlacerConfig) {
-            PooledEntityPlacerConfig pooledEntityPlacerConfig = (PooledEntityPlacerConfig) entityPlacerConfig;
-            registerMoveSelectorConfig(pooledEntityPlacerConfig.getMoveSelectorConfig(), reflectiveClassSet);
-        } else if (entityPlacerConfig instanceof QueuedEntityPlacerConfig) {
-            QueuedEntityPlacerConfig queuedEntityPlacerConfig = (QueuedEntityPlacerConfig) entityPlacerConfig;
-            registerEntitySelectorConfig(queuedEntityPlacerConfig.getEntitySelectorConfig(), reflectiveClassSet);
-            if (queuedEntityPlacerConfig.getMoveSelectorConfigList() != null) {
-                queuedEntityPlacerConfig.getMoveSelectorConfigList()
-                        .forEach(msc -> registerMoveSelectorConfig(msc, reflectiveClassSet));
-            }
-        } else if (entityPlacerConfig instanceof QueuedValuePlacerConfig) {
-            QueuedValuePlacerConfig queuedValuePlacerConfig = (QueuedValuePlacerConfig) entityPlacerConfig;
-            registerValueSelectorConfig(queuedValuePlacerConfig.getValueSelectorConfig(), reflectiveClassSet);
-            registerMoveSelectorConfig(queuedValuePlacerConfig.getMoveSelectorConfig(), reflectiveClassSet);
-        } else {
-            throw new IllegalStateException("Unhandled entity placer config class (" + entityPlacerConfig.getClass() + ").");
-        }
-    }
-
-    private void registerEntitySelectorConfig(EntitySelectorConfig entitySelectorConfig, Set<Class<?>> reflectiveClassSet) {
-        if (entitySelectorConfig == null) {
-            return;
-        }
-        registerClassForReflection(entitySelectorConfig.getFilterClass(), reflectiveClassSet);
-        registerClassForReflection(entitySelectorConfig.getSorterClass(), reflectiveClassSet);
-        registerClassForReflection(entitySelectorConfig.getSorterComparatorClass(), reflectiveClassSet);
-        registerClassForReflection(entitySelectorConfig.getSorterWeightFactoryClass(), reflectiveClassSet);
-        registerClassForReflection(entitySelectorConfig.getProbabilityWeightFactoryClass(), reflectiveClassSet);
-        if (entitySelectorConfig.getNearbySelectionConfig() != null) {
-            registerClassForReflection(entitySelectorConfig.getNearbySelectionConfig().getNearbyDistanceMeterClass(),
-                    reflectiveClassSet);
-        }
-    }
-
-    private void registerValueSelectorConfig(ValueSelectorConfig valueSelectorConfig, Set<Class<?>> reflectiveClassSet) {
-        if (valueSelectorConfig == null) {
-            return;
-        }
-        registerClassForReflection(valueSelectorConfig.getFilterClass(), reflectiveClassSet);
-        registerClassForReflection(valueSelectorConfig.getSorterClass(), reflectiveClassSet);
-        registerClassForReflection(valueSelectorConfig.getSorterComparatorClass(), reflectiveClassSet);
-        registerClassForReflection(valueSelectorConfig.getSorterWeightFactoryClass(), reflectiveClassSet);
-        registerClassForReflection(valueSelectorConfig.getProbabilityWeightFactoryClass(), reflectiveClassSet);
-        if (valueSelectorConfig.getNearbySelectionConfig() != null) {
-            registerClassForReflection(valueSelectorConfig.getNearbySelectionConfig().getNearbyDistanceMeterClass(),
-                    reflectiveClassSet);
-        }
-    }
-
-    private void registerTerminationConfig(TerminationConfig terminationConfig, Set<Class<?>> reflectiveClassSet) {
-        if (terminationConfig == null) {
-            return;
-        }
-        Stack<TerminationConfig> toProcess = new Stack<>();
-        toProcess.push(terminationConfig);
-        while (!toProcess.empty()) {
-            TerminationConfig current = toProcess.pop();
-            registerClassForReflection(current.getTerminationClass(), reflectiveClassSet);
-            if (current.getTerminationConfigList() != null) {
-                for (TerminationConfig subConfig : current.getTerminationConfigList()) {
-                    toProcess.push(subConfig);
-                }
-            }
-        }
+        });
     }
 
 }
