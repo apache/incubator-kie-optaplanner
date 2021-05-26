@@ -25,12 +25,7 @@ import org.optaplanner.core.api.score.stream.ConstraintCollectors;
 import org.optaplanner.core.api.score.stream.ConstraintFactory;
 import org.optaplanner.core.api.score.stream.ConstraintProvider;
 import org.optaplanner.core.api.score.stream.Joiners;
-import org.optaplanner.core.api.score.stream.tri.TriConstraintStream;
-import org.optaplanner.core.api.score.stream.uni.UniConstraintStream;
-import org.optaplanner.core.impl.score.stream.drools.common.QuadTuple;
-import org.optaplanner.core.impl.util.Break;
 import org.optaplanner.core.impl.util.ConsecutiveData;
-import org.optaplanner.core.impl.util.Sequence;
 import org.optaplanner.examples.common.ExperimentalConstraintCollectors;
 import org.optaplanner.examples.nurserostering.domain.Employee;
 import org.optaplanner.examples.nurserostering.domain.NurseRosterParametrization;
@@ -54,37 +49,6 @@ import org.optaplanner.examples.nurserostering.score.drools.EmployeeConsecutiveA
 import org.optaplanner.examples.nurserostering.score.drools.EmployeeConsecutiveAssignmentStart;
 
 public class NurseRosteringConstraintProvider implements ConstraintProvider {
-
-    public <C extends ContractLine> TriConstraintStream<Employee, C, Sequence<ShiftDate>>
-            getConsecutiveShifts(UniConstraintStream<C> constraintStream) {
-        return constraintStream
-                .join(ShiftAssignment.class, Joiners.equal(ContractLine::getContract, ShiftAssignment::getContract))
-                .groupBy((contract, shift) -> shift.getEmployee(), (contract, shift) -> contract,
-                        ExperimentalConstraintCollectors.consecutive((contract, shift) -> shift.getShiftDate(),
-                                ShiftDate::getDayIndex))
-                .flattenLast(ConsecutiveData::getConsecutiveSequences);
-    }
-
-    public TriConstraintStream<Employee, MinMaxContractLine, Break<ShiftDate, Integer>>
-            getBreaks(UniConstraintStream<MinMaxContractLine> constraintStream) {
-        return constraintStream
-                .join(ShiftAssignment.class, Joiners.equal(ContractLine::getContract, ShiftAssignment::getContract))
-                .groupBy((contract, shift) -> shift.getEmployee(), (contract, shift) -> contract,
-                        ExperimentalConstraintCollectors.consecutive((contract, shift) -> shift.getShiftDate(),
-                                ShiftDate::getDayIndex))
-                .flattenLast(ConsecutiveData::getBreaks);
-    }
-
-    public TriConstraintStream<Employee, MinMaxContractLine, Sequence<ShiftDate>>
-            getConsecutiveWorkingWeekends(ConstraintFactory constraintFactory,
-                    UniConstraintStream<MinMaxContractLine> constraintStream) {
-        return constraintStream.join(constraintFactory.from(ShiftAssignment.class).filter(ShiftAssignment::isWeekend),
-                Joiners.equal(ContractLine::getContract, ShiftAssignment::getContract))
-                .groupBy((contract, shift) -> shift.getEmployee(), (contract, shift) -> contract,
-                        ExperimentalConstraintCollectors.consecutive((contract, shift) -> shift.getShiftDate(),
-                                ShiftDate::getWeekendSundayIndex))
-                .flattenLast(ConsecutiveData::getConsecutiveSequences);
-    }
 
     @Override
     public Constraint[] defineConstraints(ConstraintFactory constraintFactory) {
@@ -155,25 +119,35 @@ public class NurseRosteringConstraintProvider implements ConstraintProvider {
     // Min/Max consecutive working days
     // These Min/Max constraints are implemented as two constraints for consistency with DRL
     Constraint consecutiveWorkingDays(ConstraintFactory constraintFactory) {
-        return getConsecutiveShifts(constraintFactory.from(MinMaxContractLine.class)
+        return constraintFactory.from(MinMaxContractLine.class)
                 .filter(minMaxContractLine -> minMaxContractLine
                         .getContractLineType() == ContractLineType.CONSECUTIVE_WORKING_DAYS &&
-                        minMaxContractLine.isEnabled()))
-                                .filter((employee, contract, shiftList) -> contract.isViolated(shiftList.getLength()))
-                                .penalize("consecutiveWorkingDays", HardSoftScore.ONE_SOFT,
-                                        (employee, contract, shiftList) -> contract.getViolationAmount(shiftList.getLength()));
+                        minMaxContractLine.isEnabled())
+                .join(ShiftAssignment.class, Joiners.equal(ContractLine::getContract, ShiftAssignment::getContract))
+                .groupBy((contract, shift) -> shift.getEmployee(), (contract, shift) -> contract,
+                        ExperimentalConstraintCollectors.consecutive((contract, shift) -> shift.getShiftDate(),
+                                ShiftDate::getDayIndex))
+                .flattenLast(ConsecutiveData::getConsecutiveSequences)
+                .filter((employee, contract, shiftList) -> contract.isViolated(shiftList.getLength()))
+                .penalize("consecutiveWorkingDays", HardSoftScore.ONE_SOFT,
+                        (employee, contract, shiftList) -> contract.getViolationAmount(shiftList.getLength()));
     }
 
     // Min/Max consecutive free days
     Constraint consecutiveFreeDays(ConstraintFactory constraintFactory) {
-        return getBreaks(constraintFactory.from(MinMaxContractLine.class)
+        return constraintFactory.from(MinMaxContractLine.class)
                 .filter(minMaxContractLine -> minMaxContractLine
                         .getContractLineType() == ContractLineType.CONSECUTIVE_FREE_DAYS &&
-                        minMaxContractLine.isEnabled()))
-                                .filter((employee, contract, breakInfo) -> contract.isViolated(breakInfo.getLength() - 1))
-                                .penalize("consecutiveFreeDays", HardSoftScore.ONE_SOFT,
-                                        (employee, contract, breakInfo) -> contract
-                                                .getViolationAmount(breakInfo.getLength() - 1));
+                        minMaxContractLine.isEnabled())
+                .join(ShiftAssignment.class, Joiners.equal(ContractLine::getContract, ShiftAssignment::getContract))
+                .groupBy((contract, shift) -> shift.getEmployee(), (contract, shift) -> contract,
+                        ExperimentalConstraintCollectors.consecutive((contract, shift) -> shift.getShiftDate(),
+                                ShiftDate::getDayIndex))
+                .flattenLast(ConsecutiveData::getBreaks)
+                .filter((employee, contract, breakInfo) -> contract.isViolated(breakInfo.getLength() - 1))
+                .penalize("consecutiveFreeDays", HardSoftScore.ONE_SOFT,
+                        (employee, contract, breakInfo) -> contract
+                                .getViolationAmount(breakInfo.getLength() - 1));
     }
 
     Constraint maximumConsecutiveFreeDaysNoAssignments(ConstraintFactory constraintFactory) {
@@ -236,45 +210,54 @@ public class NurseRosteringConstraintProvider implements ConstraintProvider {
 
     // Min/Max consecutive working weekends
     Constraint consecutiveWorkingWeekends(ConstraintFactory constraintFactory) {
-        return getConsecutiveWorkingWeekends(constraintFactory,
-                constraintFactory.from(MinMaxContractLine.class)
-                        .filter(minMaxContractLine -> minMaxContractLine
-                                .getContractLineType() == ContractLineType.CONSECUTIVE_WORKING_WEEKENDS &&
-                                minMaxContractLine.isEnabled()))
-                                        .filter((employee, contract, shiftList) -> contract.isViolated(shiftList.getLength()))
-                                        .penalize("consecutiveWorkingWeekends", HardSoftScore.ONE_SOFT,
-                                                (employee, contract, shiftList) -> contract
-                                                        .getViolationAmount(shiftList.getLength()));
+        return constraintFactory.from(MinMaxContractLine.class)
+                .filter(minMaxContractLine -> minMaxContractLine
+                        .getContractLineType() == ContractLineType.CONSECUTIVE_WORKING_WEEKENDS &&
+                        minMaxContractLine.isEnabled())
+                .join(constraintFactory.from(ShiftAssignment.class).filter(ShiftAssignment::isWeekend),
+                        Joiners.equal(ContractLine::getContract, ShiftAssignment::getContract))
+                .groupBy((contract, shift) -> shift.getEmployee(), (contract, shift) -> contract,
+                        ExperimentalConstraintCollectors.consecutive((contract, shift) -> shift.getShiftDate(),
+                                ShiftDate::getWeekendSundayIndex))
+                .flattenLast(ConsecutiveData::getConsecutiveSequences)
+                .filter((employee, contract, shiftList) -> contract.isViolated(shiftList.getLength()))
+                .penalize("consecutiveWorkingWeekends", HardSoftScore.ONE_SOFT,
+                        (employee, contract, shiftList) -> contract.getViolationAmount(shiftList.getLength()));
     }
 
     // Complete Weekends
     Constraint startOnNotFirstDayOfWeekend(ConstraintFactory constraintFactory) {
-        return getConsecutiveShifts(constraintFactory.from(BooleanContractLine.class)
-                .filter(minMaxContractLine -> minMaxContractLine
-                        .getContractLineType() == ContractLineType.COMPLETE_WEEKENDS &&
-                        minMaxContractLine.isEnabled()))
-                                .filter((employee, contract, shiftList) -> new EmployeeConsecutiveAssignmentStart(
-                                        employee, shiftList.getItems().first())
-                                                .isWeekendAndNotFirstDayOfWeekend())
-                                .penalize("startOnNotFirstDayOfWeekend", HardSoftScore.ONE_SOFT,
-                                        (employee, contract, shiftList) -> new EmployeeConsecutiveAssignmentStart(employee,
-                                                shiftList.getItems().first()).getDistanceToFirstDayOfWeekend()
-                                                * contract.getWeight());
+        return constraintFactory.from(BooleanContractLine.class)
+                .filter(minMaxContractLine -> minMaxContractLine.getContractLineType() == ContractLineType.COMPLETE_WEEKENDS &&
+                        minMaxContractLine.isEnabled())
+                .join(ShiftAssignment.class, Joiners.equal(ContractLine::getContract, ShiftAssignment::getContract))
+                .groupBy((contract, shift) -> shift.getEmployee(), (contract, shift) -> contract,
+                        ExperimentalConstraintCollectors.consecutive((contract, shift) -> shift.getShiftDate(),
+                                ShiftDate::getDayIndex))
+                .flattenLast(ConsecutiveData::getConsecutiveSequences)
+                .filter((employee, contract, shiftList) -> new EmployeeConsecutiveAssignmentStart(
+                        employee, shiftList.getItems().first()).isWeekendAndNotFirstDayOfWeekend())
+                .penalize("startOnNotFirstDayOfWeekend", HardSoftScore.ONE_SOFT,
+                        (employee, contract,
+                                shiftList) -> new EmployeeConsecutiveAssignmentStart(employee, shiftList.getItems().first())
+                                        .getDistanceToFirstDayOfWeekend() * contract.getWeight());
     }
 
     Constraint endOnNotLastDayOfWeekend(ConstraintFactory constraintFactory) {
-        return getConsecutiveShifts(constraintFactory.from(BooleanContractLine.class)
+        return constraintFactory.from(BooleanContractLine.class)
                 .filter(minMaxContractLine -> minMaxContractLine
                         .getContractLineType() == ContractLineType.COMPLETE_WEEKENDS &&
-                        minMaxContractLine.isEnabled()))
-                                .filter((employee, contract,
-                                        shiftList) -> new EmployeeConsecutiveAssignmentEnd(employee,
-                                                shiftList.getItems().last())
-                                                        .isWeekendAndNotLastDayOfWeekend())
-                                .penalize("endOnNotLastDayOfWeekend", HardSoftScore.ONE_SOFT,
-                                        (employee, contract, shiftList) -> new EmployeeConsecutiveAssignmentEnd(employee,
-                                                shiftList.getItems().last()).getDistanceToLastDayOfWeekend()
-                                                * contract.getWeight());
+                        minMaxContractLine.isEnabled())
+                .join(ShiftAssignment.class, Joiners.equal(ContractLine::getContract, ShiftAssignment::getContract))
+                .groupBy((contract, shift) -> shift.getEmployee(), (contract, shift) -> contract,
+                        ExperimentalConstraintCollectors.consecutive((contract, shift) -> shift.getShiftDate(),
+                                ShiftDate::getDayIndex))
+                .flattenLast(ConsecutiveData::getConsecutiveSequences)
+                .filter((employee, contract, shiftList) -> new EmployeeConsecutiveAssignmentEnd(employee,
+                        shiftList.getItems().last()).isWeekendAndNotLastDayOfWeekend())
+                .penalize("endOnNotLastDayOfWeekend", HardSoftScore.ONE_SOFT,
+                        (employee, contract, shiftList) -> new EmployeeConsecutiveAssignmentEnd(employee,
+                                shiftList.getItems().last()).getDistanceToLastDayOfWeekend() * contract.getWeight());
     }
 
     // Identical shiftTypes during a weekend
@@ -351,66 +334,76 @@ public class NurseRosteringConstraintProvider implements ConstraintProvider {
 
     // Unwanted patterns
     Constraint unwantedPatternFreeBefore2DaysWithAWorkDayPattern(ConstraintFactory constraintFactory) {
-        return constraintFactory.from(FreeBefore2DaysWithAWorkDayPattern.class)
-                .join(PatternContractLine.class, Joiners.equal(p -> p, PatternContractLine::getPattern))
+        return constraintFactory.from(PatternContractLine.class)
+                .filter(patternContractLine -> patternContractLine.getPattern() instanceof FreeBefore2DaysWithAWorkDayPattern)
                 .join(ShiftDate.class,
-                        Joiners.equal((pattern, contract) -> pattern.getFreeDayOfWeek(), ShiftDate::getDayOfWeek))
+                        Joiners.equal(
+                                contract -> ((FreeBefore2DaysWithAWorkDayPattern) contract.getPattern()).getFreeDayOfWeek(),
+                                ShiftDate::getDayOfWeek))
                 .join(Employee.class,
-                        Joiners.equal((pattern, contractLine, date) -> contractLine.getContract(), Employee::getContract))
+                        Joiners.equal((contractLine, date) -> contractLine.getContract(), Employee::getContract))
                 .ifNotExists(ShiftAssignment.class,
-                        Joiners.equal((pattern, contractLine, date, employee) -> employee, ShiftAssignment::getEmployee),
-                        Joiners.equal((pattern, contractLine, date, employee) -> date.getDayIndex(),
+                        Joiners.equal((contractLine, date, employee) -> employee, ShiftAssignment::getEmployee),
+                        Joiners.equal((contractLine, date, employee) -> date.getDayIndex(),
                                 ShiftAssignment::getShiftDateDayIndex))
                 .ifExists(ShiftAssignment.class,
-                        Joiners.equal((pattern, contractLine, date, employee) -> employee, ShiftAssignment::getEmployee),
-                        // TODO: Replace with pair of greaterThan/lessThan joiners?
-                        Joiners.filtering((pattern, contractLine, date, employee,
-                                shift) -> shift.getShiftDateDayIndex() == (date.getDayIndex() + 1)
-                                        || shift.getShiftDateDayIndex() == (date.getDayIndex() + 2)))
+                        Joiners.equal((contractLine, date, employee) -> employee, ShiftAssignment::getEmployee),
+                        Joiners.lessThanOrEqual((contractLine, date, employee) -> date.getDayIndex() + 1,
+                                ShiftAssignment::getShiftDateDayIndex),
+                        Joiners.greaterThanOrEqual((contractLine, date, employee) -> date.getDayIndex() + 2,
+                                ShiftAssignment::getShiftDateDayIndex))
                 .penalize("unwantedPatternFreeBefore2DaysWithAWorkDayPattern", HardSoftScore.ONE_SOFT,
-                        (pattern, contractLine, date, employee) -> pattern.getWeight());
+                        (contractLine, date, employee) -> contractLine.getPattern().getWeight());
     }
 
     Constraint unwantedPatternShiftType2DaysPattern(ConstraintFactory constraintFactory) {
-        return constraintFactory.from(ShiftType2DaysPattern.class)
-                .join(PatternContractLine.class, Joiners.equal(p -> p, PatternContractLine::getPattern))
+        return constraintFactory.from(PatternContractLine.class)
+                .filter(patternContractLine -> patternContractLine.getPattern() instanceof ShiftType2DaysPattern)
                 .join(ShiftAssignment.class,
-                        Joiners.equal((pattern, contractLine) -> pattern.getDayIndex0ShiftType(),
+                        Joiners.equal(
+                                contractLine -> ((ShiftType2DaysPattern) contractLine.getPattern()).getDayIndex0ShiftType(),
                                 ShiftAssignment::getShiftType),
-                        Joiners.equal((pattern, contractLine) -> contractLine.getContract(), ShiftAssignment::getContract))
+                        Joiners.equal(PatternContractLine::getContract, ShiftAssignment::getContract))
                 .join(ShiftAssignment.class,
-                        Joiners.equal((pattern, contractLine, shift) -> shift.getEmployee(), ShiftAssignment::getEmployee),
-                        Joiners.equal((pattern, contractLine, shift) -> shift.getShiftDateDayIndex() + 1,
+                        Joiners.equal((contractLine, shift) -> shift.getEmployee(), ShiftAssignment::getEmployee),
+                        Joiners.equal((contractLine, shift) -> shift.getShiftDateDayIndex() + 1,
                                 ShiftAssignment::getShiftDateDayIndex),
-                        Joiners.filtering((pattern, contractLine, shift1, shift2) -> pattern.getDayIndex1ShiftType() == null
-                                || shift2.getShiftType() == pattern.getDayIndex1ShiftType()))
+                        Joiners.filtering((contractLine, shift1, shift2) -> {
+                            ShiftType2DaysPattern pattern = (ShiftType2DaysPattern) contractLine.getPattern();
+                            return pattern.getDayIndex1ShiftType() == null
+                                    || shift2.getShiftType() == pattern.getDayIndex1ShiftType();
+                        }))
                 .penalize("unwantedPatternShiftType2DaysPattern", HardSoftScore.ONE_SOFT,
-                        (pattern, contractLine, shift1, shift2) -> pattern.getWeight());
+                        (contractLine, shift1, shift2) -> contractLine.getPattern().getWeight());
     }
 
     Constraint unwantedPatternShiftType3DaysPattern(ConstraintFactory constraintFactory) {
-        return constraintFactory.from(ShiftType3DaysPattern.class)
-                .join(PatternContractLine.class, Joiners.equal(p -> p, PatternContractLine::getPattern))
+        return constraintFactory.from(PatternContractLine.class) // ShiftType3DaysPattern
+                .filter(patternContractLine -> patternContractLine.getPattern() instanceof ShiftType3DaysPattern)
                 .join(ShiftAssignment.class,
-                        Joiners.equal((pattern, contractLine) -> pattern.getDayIndex0ShiftType(),
+                        Joiners.equal(
+                                (contractLine) -> ((ShiftType3DaysPattern) contractLine.getPattern()).getDayIndex0ShiftType(),
                                 ShiftAssignment::getShiftType),
-                        Joiners.equal((pattern, contractLine) -> contractLine.getContract(), ShiftAssignment::getContract))
+                        Joiners.equal(PatternContractLine::getContract, ShiftAssignment::getContract))
                 // Join and not if exist for consistency with DRL
                 .join(ShiftAssignment.class,
-                        Joiners.equal((pattern, contractLine, shift) -> shift.getEmployee(), ShiftAssignment::getEmployee),
-                        Joiners.equal((pattern, contractLine, shift) -> shift.getShiftDateDayIndex() + 1,
+                        Joiners.equal((contractLine, shift) -> shift.getEmployee(), ShiftAssignment::getEmployee),
+                        Joiners.equal((contractLine, shift) -> shift.getShiftDateDayIndex() + 1,
                                 ShiftAssignment::getShiftDateDayIndex),
-                        Joiners.equal((pattern, contractLine, shift) -> pattern.getDayIndex1ShiftType(),
+                        Joiners.equal(
+                                (contractLine, shift) -> ((ShiftType3DaysPattern) contractLine.getPattern())
+                                        .getDayIndex1ShiftType(),
                                 ShiftAssignment::getShiftType))
-                .map(QuadTuple::new)
                 .join(ShiftAssignment.class,
-                        Joiners.equal(q -> q.c.getEmployee(),
+                        Joiners.equal((contractLine, shift1, shift2) -> shift1.getEmployee(),
                                 ShiftAssignment::getEmployee),
-                        Joiners.equal(q -> q.c.getShiftDateDayIndex() + 2,
+                        Joiners.equal((contractLine, shift1, shift2) -> shift1.getShiftDateDayIndex() + 2,
                                 ShiftAssignment::getShiftDateDayIndex),
-                        Joiners.equal(q -> q.a.getDayIndex2ShiftType(),
+                        Joiners.equal(
+                                (contractLine, shift1, shift2) -> ((ShiftType3DaysPattern) contractLine.getPattern())
+                                        .getDayIndex2ShiftType(),
                                 ShiftAssignment::getShiftType))
                 .penalize("unwantedPatternShiftType3DaysPattern", HardSoftScore.ONE_SOFT,
-                        (q, shift3) -> q.a.getWeight());
+                        (contractLine, shift1, shift2, shift3) -> contractLine.getPattern().getWeight());
     }
 }
