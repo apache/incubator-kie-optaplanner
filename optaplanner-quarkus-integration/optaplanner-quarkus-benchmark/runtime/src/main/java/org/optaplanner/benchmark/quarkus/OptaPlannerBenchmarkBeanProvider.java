@@ -36,23 +36,35 @@ public class OptaPlannerBenchmarkBeanProvider {
     @DefaultBean
     @Singleton
     @Produces
-    PlannerBenchmarkFactory benchmarkFactory(OptaPlannerBenchmarkRuntimeConfig benchmarkRuntimeConfig,
+    PlannerBenchmarkFactory benchmarkFactory(PlannerBenchmarkConfig plannerBenchmarkConfig,
+            OptaPlannerBenchmarkRuntimeConfig benchmarkRuntimeConfig,
             SolverConfig solverConfig) {
-        ProblemBenchmarksConfig problemBenchmarksConfig = new ProblemBenchmarksConfig();
-        problemBenchmarksConfig.setWriteOutputSolutionEnabled(false);
+        if (plannerBenchmarkConfig.getInheritedSolverBenchmarkConfig() == null) {
+            ProblemBenchmarksConfig problemBenchmarksConfig = new ProblemBenchmarksConfig();
+            SolverBenchmarkConfig solverBenchmarkConfig = new SolverBenchmarkConfig();
+            SolverConfig benchmarkSolverConfig = new SolverConfig();
+            benchmarkSolverConfig.inherit(solverConfig);
 
-        SolverBenchmarkConfig solverBenchmarkConfig = new SolverBenchmarkConfig();
-        SolverConfig benchmarkSolverConfig = new SolverConfig();
-        benchmarkSolverConfig.inherit(solverConfig);
-        benchmarkSolverConfig.setTerminationConfig(new TerminationConfig()
-                .withSpentLimit(benchmarkRuntimeConfig.terminationBuildTimeConfig.spentLimit));
+            solverBenchmarkConfig.setSolverConfig(benchmarkSolverConfig);
+            solverBenchmarkConfig.setProblemBenchmarksConfig(problemBenchmarksConfig);
 
-        solverBenchmarkConfig.setSolverConfig(benchmarkSolverConfig);
-        solverBenchmarkConfig.setProblemBenchmarksConfig(problemBenchmarksConfig);
+            plannerBenchmarkConfig.setBenchmarkDirectory(new File(benchmarkRuntimeConfig.resultDirectory));
+            plannerBenchmarkConfig.setInheritedSolverBenchmarkConfig(solverBenchmarkConfig);
+        }
 
-        PlannerBenchmarkConfig plannerBenchmarkConfig = new PlannerBenchmarkConfig();
-        plannerBenchmarkConfig.setBenchmarkDirectory(new File(benchmarkRuntimeConfig.resultDirectory));
-        plannerBenchmarkConfig.setSolverBenchmarkConfigList(Collections.singletonList(solverBenchmarkConfig));
+        if (plannerBenchmarkConfig.getInheritedSolverBenchmarkConfig().getSolverConfig().getTerminationConfig() == null
+                || benchmarkRuntimeConfig.terminationBuildTimeConfig.spentLimit.isPresent()) {
+            plannerBenchmarkConfig.getInheritedSolverBenchmarkConfig().getSolverConfig()
+                    .setTerminationConfig(new TerminationConfig()
+                            .withSpentLimit(benchmarkRuntimeConfig.terminationBuildTimeConfig.spentLimit
+                                    .orElseThrow(() -> new IllegalStateException(
+                                            "Property quarkus.optaplanner.benchmark.solver.termination.spent-limit is required if the inherited solver config does not have termination configured."))));
+        }
+
+        if (plannerBenchmarkConfig.getSolverBenchmarkConfigList() == null
+                && plannerBenchmarkConfig.getSolverBenchmarkBluePrintConfigList() == null) {
+            plannerBenchmarkConfig.setSolverBenchmarkConfigList(Collections.singletonList(new SolverBenchmarkConfig()));
+        }
 
         return PlannerBenchmarkFactory.create(plannerBenchmarkConfig);
     }

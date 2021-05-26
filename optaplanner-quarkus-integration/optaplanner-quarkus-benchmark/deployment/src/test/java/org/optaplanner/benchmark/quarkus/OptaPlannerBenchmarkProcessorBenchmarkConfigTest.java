@@ -33,12 +33,13 @@ import org.optaplanner.benchmark.quarkus.testdata.normal.domain.TestdataQuarkusS
 
 import io.quarkus.test.QuarkusUnitTest;
 
-public class OptaPlannerProcessorSolveTest {
+public class OptaPlannerBenchmarkProcessorBenchmarkConfigTest {
 
     @RegisterExtension
     static final QuarkusUnitTest config = new QuarkusUnitTest()
             .overrideConfigKey("quarkus.optaplanner.benchmark.solver.termination.spent-limit", "5s")
             .setArchiveProducer(() -> ShrinkWrap.create(JavaArchive.class)
+                    .addAsResource("solverBenchmarkConfig.xml")
                     .addClasses(TestdataQuarkusEntity.class,
                             TestdataQuarkusSolution.class, TestdataQuarkusConstraintProvider.class));
 
@@ -46,7 +47,7 @@ public class OptaPlannerProcessorSolveTest {
     PlannerBenchmarkFactory benchmarkFactory;
 
     @Test
-    public void solve() throws ExecutionException, InterruptedException {
+    public void benchmark() throws ExecutionException, InterruptedException {
         TestdataQuarkusSolution problem = new TestdataQuarkusSolution();
         problem.setValueList(IntStream.range(1, 3)
                 .mapToObj(i -> "v" + i)

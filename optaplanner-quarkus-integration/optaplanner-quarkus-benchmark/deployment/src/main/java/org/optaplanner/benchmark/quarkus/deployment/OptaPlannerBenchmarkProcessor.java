@@ -17,19 +17,25 @@
 package org.optaplanner.benchmark.quarkus.deployment;
 
 import org.jboss.logging.Logger;
+import org.optaplanner.benchmark.config.PlannerBenchmarkConfig;
 import org.optaplanner.benchmark.quarkus.OptaPlannerBenchmarkBeanProvider;
+import org.optaplanner.benchmark.quarkus.OptaPlannerBenchmarkRecorder;
 
 import io.quarkus.arc.deployment.AdditionalBeanBuildItem;
+import io.quarkus.arc.deployment.SyntheticBeanBuildItem;
 import io.quarkus.deployment.annotations.BuildProducer;
 import io.quarkus.deployment.annotations.BuildStep;
+import io.quarkus.deployment.annotations.ExecutionTime;
+import io.quarkus.deployment.annotations.Record;
 import io.quarkus.deployment.builditem.FeatureBuildItem;
 import io.quarkus.deployment.builditem.HotDeploymentWatchedFileBuildItem;
+import io.quarkus.runtime.configuration.ConfigurationException;
 
 class OptaPlannerBenchmarkProcessor {
 
     private static final Logger log = Logger.getLogger(OptaPlannerBenchmarkProcessor.class.getName());
 
-    OptaPlannerBenchmarkBuildTimeConfig optaPlannerBuildTimeConfig;
+    OptaPlannerBenchmarkBuildTimeConfig optaPlannerBenchmarkBuildTimeConfig;
 
     @BuildStep
     FeatureBuildItem feature() {
@@ -38,23 +44,34 @@ class OptaPlannerBenchmarkProcessor {
 
     @BuildStep
     HotDeploymentWatchedFileBuildItem watchSolverBenchmarkConfigXml() {
-        String solverConfigXML = optaPlannerBuildTimeConfig.solverBenchmarkConfigXml
+        String solverBenchmarkConfigXML = optaPlannerBenchmarkBuildTimeConfig.solverBenchmarkConfigXml
                 .orElse(OptaPlannerBenchmarkBuildTimeConfig.DEFAULT_SOLVER_BENCHMARK_CONFIG_URL);
-        return new HotDeploymentWatchedFileBuildItem(solverConfigXML);
+        return new HotDeploymentWatchedFileBuildItem(solverBenchmarkConfigXML);
     }
 
     @BuildStep
-    void registerAdditionalBeans(BuildProducer<AdditionalBeanBuildItem> additionalBeans) {
-        additionalBeans.produce(new AdditionalBeanBuildItem(OptaPlannerBenchmarkBeanProvider.class));
-    }
-
-    private boolean isClassDefined(String className) {
+    @Record(ExecutionTime.STATIC_INIT)
+    void registerAdditionalBeans(BuildProducer<AdditionalBeanBuildItem> additionalBeans,
+            BuildProducer<SyntheticBeanBuildItem> syntheticBeans,
+            OptaPlannerBenchmarkRecorder recorder) {
+        PlannerBenchmarkConfig benchmarkConfig;
         ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
-        try {
-            Class.forName(className, false, classLoader);
-            return true;
-        } catch (ClassNotFoundException e) {
-            return false;
+        if (optaPlannerBenchmarkBuildTimeConfig.solverBenchmarkConfigXml.isPresent()) {
+            String solverBenchmarkConfigXML = optaPlannerBenchmarkBuildTimeConfig.solverBenchmarkConfigXml.get();
+            if (classLoader.getResource(solverBenchmarkConfigXML) == null) {
+                throw new ConfigurationException("Invalid quarkus.optaplanner.benchmark.solver-benchmark-config-xml property ("
+                        + solverBenchmarkConfigXML + "): that classpath resource does not exist.");
+            }
+            benchmarkConfig = PlannerBenchmarkConfig.createFromXmlResource(solverBenchmarkConfigXML);
+        } else if (classLoader.getResource(OptaPlannerBenchmarkBuildTimeConfig.DEFAULT_SOLVER_BENCHMARK_CONFIG_URL) != null) {
+            benchmarkConfig = PlannerBenchmarkConfig.createFromXmlResource(
+                    OptaPlannerBenchmarkBuildTimeConfig.DEFAULT_SOLVER_BENCHMARK_CONFIG_URL);
+        } else {
+            benchmarkConfig = new PlannerBenchmarkConfig();
         }
+        syntheticBeans.produce(SyntheticBeanBuildItem.configure(PlannerBenchmarkConfig.class)
+                .supplier(recorder.benchmarkConfigSupplier(benchmarkConfig))
+                .done());
+        additionalBeans.produce(new AdditionalBeanBuildItem(OptaPlannerBenchmarkBeanProvider.class));
     }
 }

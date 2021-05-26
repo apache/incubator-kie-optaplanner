@@ -16,24 +16,15 @@
 
 package org.optaplanner.benchmark.quarkus;
 
-import java.time.Duration;
-import java.util.Optional;
+import java.util.function.Supplier;
 
-import org.optaplanner.core.config.solver.termination.TerminationConfig;
+import org.optaplanner.benchmark.config.PlannerBenchmarkConfig;
 
-import io.quarkus.runtime.annotations.ConfigGroup;
+import io.quarkus.runtime.annotations.Recorder;
 
-/**
- * During build time, this is translated into OptaPlanner's {@link TerminationConfig}.
- */
-@ConfigGroup
-public class TerminationBuildTimeConfig {
-
-    /**
-     * How long solver should be run in a benchmark run.
-     * For example: "30s" is 30 seconds. "5m" is 5 minutes. "2h" is 2 hours. "1d" is 1 day.
-     * Also supports ISO-8601 format, see {@link Duration}.
-     */
-    public Optional<Duration> spentLimit;
-
+@Recorder
+public class OptaPlannerBenchmarkRecorder {
+    public Supplier<PlannerBenchmarkConfig> benchmarkConfigSupplier(PlannerBenchmarkConfig benchmarkConfig) {
+        return () -> benchmarkConfig;
+    }
 }

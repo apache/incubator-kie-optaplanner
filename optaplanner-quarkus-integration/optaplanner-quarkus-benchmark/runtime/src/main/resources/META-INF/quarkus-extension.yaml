@@ -1,15 +1,12 @@
 ---
-name: "OptaPlanner AI constraint solver"
+name: "OptaPlanner AI constraint solver benchmark"
 metadata:
   keywords:
     - "optaplanner"
-    - "kogito"
-    - "constraint-solver"
-    - "artificial-intelligence"
-    - "employee-rostering"
-    - "vehicle-routing-problem"
-    - "maintenance-scheduling"
-    - "timetabling"
+    - "benchmark"
+    - "performance"
+    - "scaling"
+    - "tweaking"
   guide: "https://quarkus.io/guides/optaplanner"
   categories:
     - "business-automation"
