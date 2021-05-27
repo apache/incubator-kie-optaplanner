@@ -52,7 +52,8 @@ public class OptaPlannerBenchmarkBeanProvider {
             plannerBenchmarkConfig.setInheritedSolverBenchmarkConfig(solverBenchmarkConfig);
         }
 
-        if (plannerBenchmarkConfig.getInheritedSolverBenchmarkConfig().getSolverConfig().getTerminationConfig().getTerminationClass() == null
+        if (plannerBenchmarkConfig.getInheritedSolverBenchmarkConfig().getSolverConfig().getTerminationConfig()
+                .getTerminationClass() == null
                 || benchmarkRuntimeConfig.terminationBuildTimeConfig.spentLimit.isPresent()) {
             plannerBenchmarkConfig.getInheritedSolverBenchmarkConfig().getSolverConfig()
                     .setTerminationConfig(new TerminationConfig()

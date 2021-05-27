@@ -16,25 +16,22 @@
 
 package org.optaplanner.benchmark.quarkus;
 
-import io.quarkus.arc.Arc;
-import io.quarkus.test.QuarkusUnitTest;
+import java.util.concurrent.ExecutionException;
+
+import javax.inject.Inject;
+
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.Timeout;
 import org.junit.jupiter.api.extension.RegisterExtension;
-import org.optaplanner.benchmark.api.PlannerBenchmarkFactory;
 import org.optaplanner.benchmark.config.PlannerBenchmarkConfig;
 import org.optaplanner.benchmark.quarkus.testdata.normal.constraints.TestdataQuarkusConstraintProvider;
 import org.optaplanner.benchmark.quarkus.testdata.normal.domain.TestdataQuarkusEntity;
 import org.optaplanner.benchmark.quarkus.testdata.normal.domain.TestdataQuarkusSolution;
 import org.optaplanner.core.config.solver.SolverConfig;
 
-import javax.inject.Inject;
-import java.util.concurrent.ExecutionException;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
+import io.quarkus.test.QuarkusUnitTest;
 
 public class OptaPlannerBenchmarkProcessorMissingSpentLimitTest {
 
@@ -44,8 +41,10 @@ public class OptaPlannerBenchmarkProcessorMissingSpentLimitTest {
                     .addClasses(TestdataQuarkusEntity.class,
                             TestdataQuarkusSolution.class, TestdataQuarkusConstraintProvider.class));
 
-    @Inject SolverConfig solverConfig;
-    @Inject OptaPlannerBenchmarkRuntimeConfig runtimeConfig;
+    @Inject
+    SolverConfig solverConfig;
+    @Inject
+    OptaPlannerBenchmarkRuntimeConfig runtimeConfig;
 
     @Test
     public void benchmark() throws ExecutionException, InterruptedException {
