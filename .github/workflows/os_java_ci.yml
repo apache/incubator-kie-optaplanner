@@ -26,18 +26,21 @@ jobs:
     timeout-minutes: 120
     steps:
       - name: Disk space report before modification
+        if: ${{ matrix.os == 'ubuntu-latest' }}
         shell: bash
         run: |
           echo "Available storage:"
           df -h
       # Inspired to maximize-build-space action https://github.com/easimon/maximize-build-space
       - name: Free disk space (remove dotnet, android and haskell)
+        if: ${{ matrix.os == 'ubuntu-latest' }}
         shell: bash
         run: |
           sudo rm -rf /usr/share/dotnet
           sudo rm -rf /usr/local/lib/android
           sudo rm -rf /opt/ghc
       - name: Disk space report after modification
+        if: ${{ matrix.os == 'ubuntu-latest' }}
         shell: bash
         run: |
           echo "Available storage:"
@@ -45,7 +48,7 @@ jobs:
       - name: Set up JDK
         uses: actions/setup-java@v1
         with:
-          java-version: ${{ matrix.java-version }}
+          java-version: ${{ matrix.java }}
       # See https://docs.github.com/en/actions/guides/building-and-testing-java-with-maven#caching-dependencies
       - name: Cache Maven packages
         uses: actions/cache@v2
