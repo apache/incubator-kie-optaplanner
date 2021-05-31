@@ -49,7 +49,8 @@ public class OptaPlannerProcessorConstraintProviderAndDrlTest {
                     .addAsResource("org/optaplanner/quarkus/constraints/defaultConstraints.drl", CONSTRAINTS_DRL))
             .overrideConfigKey(OptaPlannerBuildTimeConfig.CONSTRAINTS_DRL_PROPERTY, CONSTRAINTS_DRL)
             .addBuildChainCustomizer(buildChainBuilder -> buildChainBuilder.addBuildStep(context -> {
-                context.produce(CapabilityBuildItem.class, new CapabilityBuildItem("kogito-rules"));
+                context.produce(CapabilityBuildItem.class, new CapabilityBuildItem("kogito-rules",
+                        OptaPlannerProcessorConstraintProviderAndDrlTest.class.getName()));
             }).produces(CapabilityBuildItem.class).build());
 
     @Inject
