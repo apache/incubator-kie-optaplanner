@@ -14,10 +14,11 @@
  * limitations under the License.
  */
 
-package org.optaplanner.core.impl.util;
+package org.optaplanner.examples.common.experimental;
 
 import java.util.IdentityHashMap;
 import java.util.Map;
+import java.util.NavigableSet;
 import java.util.Objects;
 import java.util.TreeSet;
 import java.util.stream.Collectors;
@@ -25,7 +26,7 @@ import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 public class Sequence<ValueType_> {
-    private final TreeSet<ValueType_> consecutiveItemsSet;
+    private final NavigableSet<ValueType_> consecutiveItemsSet;
     private final Map<ValueType_, Integer> count;
     private final ConsecutiveSetTree<ValueType_, ?, ?> sourceTree;
 
@@ -33,14 +34,14 @@ public class Sequence<ValueType_> {
         this(sourceTree, new TreeSet<>(sourceTree.getComparator()), new IdentityHashMap<>());
     }
 
-    protected Sequence(ConsecutiveSetTree<ValueType_, ?, ?> sourceTree, TreeSet<ValueType_> consecutiveItemsSet,
+    protected Sequence(ConsecutiveSetTree<ValueType_, ?, ?> sourceTree, NavigableSet<ValueType_> consecutiveItemsSet,
             Map<ValueType_, Integer> count) {
         this.sourceTree = sourceTree;
         this.consecutiveItemsSet = consecutiveItemsSet;
         this.count = count;
     }
 
-    public TreeSet<ValueType_> getItems() {
+    public NavigableSet<ValueType_> getItems() {
         return consecutiveItemsSet;
     }
 

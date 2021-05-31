@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.optaplanner.core.impl.util;
+package org.optaplanner.examples.common.experimental;
 
 import java.util.function.Function;
 

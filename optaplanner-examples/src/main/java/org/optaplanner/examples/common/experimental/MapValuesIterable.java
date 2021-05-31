@@ -14,15 +14,15 @@
  * limitations under the License.
  */
 
-package org.optaplanner.core.impl.util;
+package org.optaplanner.examples.common.experimental;
 
 import java.util.Iterator;
-import java.util.TreeMap;
+import java.util.Map;
 
-public class TreeMapValueList<KeyType_, ValueType_> implements Iterable<ValueType_> {
-    private final TreeMap<KeyType_, ValueType_> sourceMap;
+public class MapValuesIterable<KeyType_, ValueType_> implements Iterable<ValueType_> {
+    private final Map<KeyType_, ValueType_> sourceMap;
 
-    public TreeMapValueList(TreeMap<KeyType_, ValueType_> sourceMap) {
+    public MapValuesIterable(Map<KeyType_, ValueType_> sourceMap) {
         this.sourceMap = sourceMap;
     }
 
@@ -33,7 +33,7 @@ public class TreeMapValueList<KeyType_, ValueType_> implements Iterable<ValueTyp
 
     @Override
     public String toString() {
-        return "TreeMapValueList{" +
+        return "MapValuesIterable{" +
                 "sourceMap=" + sourceMap +
                 '}';
     }

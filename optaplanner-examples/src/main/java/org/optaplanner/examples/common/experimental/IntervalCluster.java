@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 
-package org.optaplanner.core.impl.util;
+package org.optaplanner.examples.common.experimental;
 
 import java.util.Iterator;
+import java.util.NavigableSet;
 import java.util.Objects;
-import java.util.TreeSet;
 
 public class IntervalCluster<IntervalValue_, PointValue_ extends Comparable<PointValue_>> implements Iterable<IntervalValue_> {
     IntervalSplitPoint<IntervalValue_, PointValue_> startSplitPoint;
@@ -26,9 +26,9 @@ public class IntervalCluster<IntervalValue_, PointValue_ extends Comparable<Poin
 
     int count;
     boolean hasOverlap;
-    final TreeSet<IntervalSplitPoint<IntervalValue_, PointValue_>> splitPointSet;
+    final NavigableSet<IntervalSplitPoint<IntervalValue_, PointValue_>> splitPointSet;
 
-    public IntervalCluster(TreeSet<IntervalSplitPoint<IntervalValue_, PointValue_>> splitPointSet,
+    public IntervalCluster(NavigableSet<IntervalSplitPoint<IntervalValue_, PointValue_>> splitPointSet,
             IntervalSplitPoint<IntervalValue_, PointValue_> start) {
         if (start == null) {
             throw new IllegalArgumentException("start (" + start + ") is null");
@@ -56,7 +56,7 @@ public class IntervalCluster<IntervalValue_, PointValue_ extends Comparable<Poin
         }
     }
 
-    public IntervalCluster(TreeSet<IntervalSplitPoint<IntervalValue_, PointValue_>> splitPointSet,
+    public IntervalCluster(NavigableSet<IntervalSplitPoint<IntervalValue_, PointValue_>> splitPointSet,
             IntervalSplitPoint<IntervalValue_, PointValue_> start,
             IntervalSplitPoint<IntervalValue_, PointValue_> end, int count, boolean hasOverlap) {
         this.splitPointSet = splitPointSet;
@@ -90,6 +90,8 @@ public class IntervalCluster<IntervalValue_, PointValue_ extends Comparable<Poin
 
     public Iterable<IntervalCluster<IntervalValue_, PointValue_>>
             removeInterval(Interval<IntervalValue_, PointValue_> interval) {
+        // TODO: Make this incremental by only checking between the interval's
+        //       start and end points
         return () -> new Iterator<IntervalCluster<IntervalValue_, PointValue_>>() {
 
             IntervalSplitPoint<IntervalValue_, PointValue_> current = startSplitPoint;

@@ -14,23 +14,24 @@
  * limitations under the License.
  */
 
-package org.optaplanner.core.impl.util;
+package org.optaplanner.examples.common.experimental;
 
 import java.util.Map;
 import java.util.NavigableMap;
+import java.util.NavigableSet;
 import java.util.TreeMap;
 import java.util.TreeSet;
 
 import org.apache.commons.lang3.ObjectUtils;
 
 public class ConsecutiveIntervalData<IntervalValue_, PointValue_ extends Comparable<PointValue_>> {
-    private final TreeMap<IntervalSplitPoint<IntervalValue_, PointValue_>, IntervalCluster<IntervalValue_, PointValue_>> clusterStartSplitPointToCluster;
-    private final TreeSet<IntervalSplitPoint<IntervalValue_, PointValue_>> splitPointSet;
+    private final NavigableMap<IntervalSplitPoint<IntervalValue_, PointValue_>, IntervalCluster<IntervalValue_, PointValue_>> clusterStartSplitPointToCluster;
+    private final NavigableSet<IntervalSplitPoint<IntervalValue_, PointValue_>> splitPointSet;
     private final Iterable<IntervalCluster<IntervalValue_, PointValue_>> valueList;
 
     public ConsecutiveIntervalData(TreeSet<IntervalSplitPoint<IntervalValue_, PointValue_>> splitPointSet) {
         clusterStartSplitPointToCluster = new TreeMap<>();
-        valueList = new TreeMapValueList<>(clusterStartSplitPointToCluster);
+        valueList = new MapValuesIterable<>(clusterStartSplitPointToCluster);
         this.splitPointSet = splitPointSet;
     }
 

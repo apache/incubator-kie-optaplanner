@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.optaplanner.examples.common;
+package org.optaplanner.examples.common.experimental;
 
 import java.util.function.BiFunction;
 import java.util.function.Function;
@@ -30,10 +30,6 @@ import org.optaplanner.core.impl.score.stream.bi.DefaultBiConstraintCollector;
 import org.optaplanner.core.impl.score.stream.quad.DefaultQuadConstraintCollector;
 import org.optaplanner.core.impl.score.stream.tri.DefaultTriConstraintCollector;
 import org.optaplanner.core.impl.score.stream.uni.DefaultUniConstraintCollector;
-import org.optaplanner.core.impl.util.ConsecutiveData;
-import org.optaplanner.core.impl.util.ConsecutiveIntervalData;
-import org.optaplanner.core.impl.util.ConsecutiveSetTree;
-import org.optaplanner.core.impl.util.IntervalTree;
 
 /**
  * A collection of experimental constraint collectors
@@ -60,14 +56,12 @@ public class ExperimentalConstraintCollectors {
     public static <A> UniConstraintCollector<A, ConsecutiveSetTree<A, Integer, Integer>, ConsecutiveData<A, Integer>>
             consecutive(ToIntFunction<A> indexMap) {
         return new DefaultUniConstraintCollector<>(
-                () -> new ConsecutiveSetTree<A, Integer, Integer>(
+                () -> new ConsecutiveSetTree<>(
                         indexMap::applyAsInt,
                         (Integer a, Integer b) -> b - a, 1, 0),
                 (acc, a) -> {
                     acc.add(a);
-                    return () -> {
-                        acc.remove(a);
-                    };
+                    return () -> acc.remove(a);
                 },
                 ConsecutiveSetTree::getConsecutiveData);
     }
@@ -91,9 +85,7 @@ public class ExperimentalConstraintCollectors {
                 (acc, a, b) -> {
                     Result result = resultMap.apply(a, b);
                     acc.add(result);
-                    return () -> {
-                        acc.remove(result);
-                    };
+                    return () -> acc.remove(result);
                 },
                 ConsecutiveSetTree::getConsecutiveData);
     }
@@ -118,9 +110,7 @@ public class ExperimentalConstraintCollectors {
                 (acc, a, b, c) -> {
                     Result result = resultMap.apply(a, b, c);
                     acc.add(result);
-                    return () -> {
-                        acc.remove(result);
-                    };
+                    return () -> acc.remove(result);
                 },
                 ConsecutiveSetTree::getConsecutiveData);
     }
@@ -146,9 +136,7 @@ public class ExperimentalConstraintCollectors {
                 (acc, a, b, c, d) -> {
                     Result result = resultMap.apply(a, b, c, d);
                     acc.add(result);
-                    return () -> {
-                        acc.remove(result);
-                    };
+                    return () -> acc.remove(result);
                 },
                 ConsecutiveSetTree::getConsecutiveData);
     }
@@ -178,9 +166,7 @@ public class ExperimentalConstraintCollectors {
                         endMap),
                 (acc, a) -> {
                     acc.add(a);
-                    return () -> {
-                        acc.remove(a);
-                    };
+                    return () -> acc.remove(a);
                 },
                 IntervalTree::getConsecutiveIntervalData);
     }
@@ -206,9 +192,7 @@ public class ExperimentalConstraintCollectors {
                 (acc, a, b) -> {
                     T interval = intervalMap.apply(a, b);
                     acc.add(interval);
-                    return () -> {
-                        acc.remove(interval);
-                    };
+                    return () -> acc.remove(interval);
                 },
                 IntervalTree::getConsecutiveIntervalData);
     }
@@ -235,9 +219,7 @@ public class ExperimentalConstraintCollectors {
                 (acc, a, b, c) -> {
                     T interval = intervalMap.apply(a, b, c);
                     acc.add(interval);
-                    return () -> {
-                        acc.remove(interval);
-                    };
+                    return () -> acc.remove(interval);
                 },
                 IntervalTree::getConsecutiveIntervalData);
     }
@@ -265,10 +247,12 @@ public class ExperimentalConstraintCollectors {
                 (acc, a, b, c, d) -> {
                     T interval = intervalMap.apply(a, b, c, d);
                     acc.add(interval);
-                    return () -> {
-                        acc.remove(interval);
-                    };
+                    return () -> acc.remove(interval);
                 },
                 IntervalTree::getConsecutiveIntervalData);
+    }
+
+    // Hide constructor since this is a factory class
+    private ExperimentalConstraintCollectors() {
     }
 }

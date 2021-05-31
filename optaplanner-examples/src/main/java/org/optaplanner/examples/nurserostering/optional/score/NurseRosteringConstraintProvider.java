@@ -25,8 +25,8 @@ import org.optaplanner.core.api.score.stream.ConstraintCollectors;
 import org.optaplanner.core.api.score.stream.ConstraintFactory;
 import org.optaplanner.core.api.score.stream.ConstraintProvider;
 import org.optaplanner.core.api.score.stream.Joiners;
-import org.optaplanner.core.impl.util.ConsecutiveData;
-import org.optaplanner.examples.common.ExperimentalConstraintCollectors;
+import org.optaplanner.examples.common.experimental.ConsecutiveData;
+import org.optaplanner.examples.common.experimental.ExperimentalConstraintCollectors;
 import org.optaplanner.examples.nurserostering.domain.Employee;
 import org.optaplanner.examples.nurserostering.domain.NurseRosterParametrization;
 import org.optaplanner.examples.nurserostering.domain.ShiftAssignment;
@@ -382,7 +382,7 @@ public class NurseRosteringConstraintProvider implements ConstraintProvider {
                 .filter(patternContractLine -> patternContractLine.getPattern() instanceof ShiftType3DaysPattern)
                 .join(ShiftAssignment.class,
                         Joiners.equal(
-                                (contractLine) -> ((ShiftType3DaysPattern) contractLine.getPattern()).getDayIndex0ShiftType(),
+                                contractLine -> ((ShiftType3DaysPattern) contractLine.getPattern()).getDayIndex0ShiftType(),
                                 ShiftAssignment::getShiftType),
                         Joiners.equal(PatternContractLine::getContract, ShiftAssignment::getContract))
                 // Join and not if exist for consistency with DRL

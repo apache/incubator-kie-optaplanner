@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.optaplanner.core.impl.util;
+package org.optaplanner.examples.common.experimental;
 
 import java.util.Comparator;
 import java.util.IdentityHashMap;
@@ -92,7 +92,7 @@ public class IntervalSplitPoint<IntervalValue_, PointValue_ extends Comparable<P
     public Iterator<IntervalValue_> getValuesStartingFromSplitPointIterator() {
         return intervalsStartingAtSplitPointSet.stream()
                 .flatMap(interval -> IntStream.range(0, startIntervalToCountMap.get(interval.value))
-                        .mapToObj((index) -> interval.value))
+                        .mapToObj(index -> interval.value))
                 .iterator();
     }
 
