@@ -150,7 +150,7 @@ void checkoutQuarkusRepo() {
 }
 
 String getKogitoTargetBranch() {
-    return getTargetBranch(isUpstreamOptaplannerProject() ? -7 : 0)
+    return getTargetBranch(isUpstreamKogitoProject() ? 0 : -7)
 }
 
 String getOptaplannerTargetBranch() {
