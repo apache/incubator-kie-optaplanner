@@ -117,7 +117,6 @@ public class NurseRosteringConstraintProvider implements ConstraintProvider {
     }
 
     // Min/Max consecutive working days
-    // These Min/Max constraints are implemented as two constraints for consistency with DRL
     Constraint consecutiveWorkingDays(ConstraintFactory constraintFactory) {
         return constraintFactory.from(MinMaxContractLine.class)
                 .filter(minMaxContractLine -> minMaxContractLine
@@ -218,7 +217,7 @@ public class NurseRosteringConstraintProvider implements ConstraintProvider {
                         Joiners.equal(ContractLine::getContract, ShiftAssignment::getContract))
                 .groupBy((contract, shift) -> shift.getEmployee(), (contract, shift) -> contract,
                         ExperimentalConstraintCollectors.consecutive((contract, shift) -> shift.getShiftDate(),
-                                ShiftDate::getWeekendSundayIndex))
+                                shiftDate -> shiftDate.getWeekendSundayIndex() / 7))
                 .flattenLast(ConsecutiveData::getConsecutiveSequences)
                 .filter((employee, contract, shiftList) -> contract.isViolated(shiftList.getLength()))
                 .penalize("consecutiveWorkingWeekends", HardSoftScore.ONE_SOFT,
@@ -228,8 +227,9 @@ public class NurseRosteringConstraintProvider implements ConstraintProvider {
     // Complete Weekends
     Constraint startOnNotFirstDayOfWeekend(ConstraintFactory constraintFactory) {
         return constraintFactory.from(BooleanContractLine.class)
-                .filter(minMaxContractLine -> minMaxContractLine.getContractLineType() == ContractLineType.COMPLETE_WEEKENDS &&
-                        minMaxContractLine.isEnabled())
+                .filter(booleanContractLine -> booleanContractLine.getContractLineType() == ContractLineType.COMPLETE_WEEKENDS
+                        &&
+                        booleanContractLine.isEnabled())
                 .join(ShiftAssignment.class, Joiners.equal(ContractLine::getContract, ShiftAssignment::getContract))
                 .groupBy((contract, shift) -> shift.getEmployee(), (contract, shift) -> contract,
                         ExperimentalConstraintCollectors.consecutive((contract, shift) -> shift.getShiftDate(),
@@ -245,9 +245,9 @@ public class NurseRosteringConstraintProvider implements ConstraintProvider {
 
     Constraint endOnNotLastDayOfWeekend(ConstraintFactory constraintFactory) {
         return constraintFactory.from(BooleanContractLine.class)
-                .filter(minMaxContractLine -> minMaxContractLine
+                .filter(booleanContractLine -> booleanContractLine
                         .getContractLineType() == ContractLineType.COMPLETE_WEEKENDS &&
-                        minMaxContractLine.isEnabled())
+                        booleanContractLine.isEnabled())
                 .join(ShiftAssignment.class, Joiners.equal(ContractLine::getContract, ShiftAssignment::getContract))
                 .groupBy((contract, shift) -> shift.getEmployee(), (contract, shift) -> contract,
                         ExperimentalConstraintCollectors.consecutive((contract, shift) -> shift.getShiftDate(),
@@ -263,9 +263,9 @@ public class NurseRosteringConstraintProvider implements ConstraintProvider {
     // Identical shiftTypes during a weekend
     Constraint identicalShiftTypesDuringWeekend(ConstraintFactory constraintFactory) {
         return constraintFactory.from(BooleanContractLine.class)
-                .filter(minMaxContractLine -> minMaxContractLine
+                .filter(booleanContractLine -> booleanContractLine
                         .getContractLineType() == ContractLineType.IDENTICAL_SHIFT_TYPES_DURING_WEEKEND &&
-                        minMaxContractLine.isEnabled())
+                        booleanContractLine.isEnabled())
                 .join(constraintFactory.from(ShiftDate.class)
                         .filter(date -> date.getDayOfWeek() == DayOfWeek.SUNDAY))
                 .join(constraintFactory.from(ShiftAssignment.class).filter(ShiftAssignment::isWeekend),
