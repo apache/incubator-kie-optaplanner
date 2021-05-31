@@ -16,7 +16,6 @@
 
 package org.optaplanner.core.impl.util;
 
-import java.util.Objects;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -33,21 +32,6 @@ public class ConsecutiveData<PointType_, DifferenceType_ extends Comparable<Diff
 
     public Iterable<Break<PointType_, DifferenceType_>> getBreaks() {
         return sourceTree.getBreaks();
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o)
-            return true;
-        if (o == null || getClass() != o.getClass())
-            return false;
-        ConsecutiveData<?, ?> that = (ConsecutiveData<?, ?>) o;
-        return Objects.equals(sourceTree, that.sourceTree);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(sourceTree);
     }
 
     public String toString() {

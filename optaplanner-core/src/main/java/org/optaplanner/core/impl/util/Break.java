@@ -16,8 +16,6 @@
 
 package org.optaplanner.core.impl.util;
 
-import java.util.Objects;
-
 public class Break<ValueType_, DifferenceType_> {
     private ValueType_ beforeItem;
     private ValueType_ afterItem;
@@ -51,22 +49,6 @@ public class Break<ValueType_, DifferenceType_> {
 
     public void setLength(DifferenceType_ length) {
         this.length = length;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o)
-            return true;
-        if (o == null || getClass() != o.getClass())
-            return false;
-        Break<?, ?> aBreak = (Break<?, ?>) o;
-        return Objects.equals(beforeItem, aBreak.beforeItem) && Objects.equals(afterItem, aBreak.afterItem)
-                && Objects.equals(length, aBreak.length);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(beforeItem, afterItem, length);
     }
 
     @Override

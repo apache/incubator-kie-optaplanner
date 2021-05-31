@@ -104,21 +104,6 @@ public class Sequence<ValueType_> {
     }
 
     @Override
-    public boolean equals(Object o) {
-        if (this == o)
-            return true;
-        if (o == null || getClass() != o.getClass())
-            return false;
-        Sequence<?> sequence = (Sequence<?>) o;
-        return consecutiveItemsSet.equals(sequence.consecutiveItemsSet) && count.equals(sequence.count);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(consecutiveItemsSet, count);
-    }
-
-    @Override
     public String toString() {
         return consecutiveItemsSet.stream().map(Objects::toString).collect(Collectors.joining(", ", "Sequence [", "]"));
     }

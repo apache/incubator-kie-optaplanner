@@ -17,7 +17,6 @@
 package org.optaplanner.core.impl.util;
 
 import java.util.Iterator;
-import java.util.Objects;
 import java.util.TreeMap;
 
 public class TreeMapValueList<KeyType_, ValueType_> implements Iterable<ValueType_> {
@@ -30,22 +29,6 @@ public class TreeMapValueList<KeyType_, ValueType_> implements Iterable<ValueTyp
     @Override
     public Iterator<ValueType_> iterator() {
         return sourceMap.values().iterator();
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o)
-            return true;
-        if (o == null || getClass() != o.getClass())
-            return false;
-        TreeMapValueList<?, ?> that = (TreeMapValueList<?, ?>) o;
-        return sourceMap.values().containsAll(that.sourceMap.values())
-                && that.sourceMap.values().containsAll(sourceMap.values());
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(sourceMap.values());
     }
 
     @Override

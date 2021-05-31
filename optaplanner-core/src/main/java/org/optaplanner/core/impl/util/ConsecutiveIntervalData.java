@@ -18,7 +18,6 @@ package org.optaplanner.core.impl.util;
 
 import java.util.Map;
 import java.util.NavigableMap;
-import java.util.Objects;
 import java.util.TreeMap;
 import java.util.TreeSet;
 
@@ -80,21 +79,6 @@ public class ConsecutiveIntervalData<IntervalValue_, PointValue_ extends Compara
 
     public Iterable<IntervalCluster<IntervalValue_, PointValue_>> getIntervalClusters() {
         return valueList;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o)
-            return true;
-        if (o == null || getClass() != o.getClass())
-            return false;
-        ConsecutiveIntervalData<?, ?> that = (ConsecutiveIntervalData<?, ?>) o;
-        return valueList.equals(that.valueList);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(valueList);
     }
 
     @Override

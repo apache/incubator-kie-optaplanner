@@ -189,6 +189,8 @@ public class ExperimentalConstraintCollectorsTest {
         Result_ actualResult = collector.finisher().apply((Container_) container);
         assertThat(actualResult)
                 .as("Collector (" + collector + ") did not produce expected result.")
+                .usingRecursiveComparison()
+                .ignoringFields("sourceTree")
                 .isEqualTo(expectedResult);
     }
 }

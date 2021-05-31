@@ -37,10 +37,10 @@ public class ConsecutiveSetTreeTest {
         assertThat(breakList).hasSize(2);
 
         assertThat(consecutiveData.getConsecutiveSequences()).allMatch(seq -> seq.getLength() == 1);
-        assertThat(theBreak).isEqualTo(new Break<>(3, 1, 2));
+        assertThat(theBreak).usingRecursiveComparison().isEqualTo(new Break<>(3, 1, 2));
 
         theBreak = breakIterator.next();
-        assertThat(theBreak).isEqualTo(new Break<>(7, 3, 4));
+        assertThat(theBreak).usingRecursiveComparison().isEqualTo(new Break<>(7, 3, 4));
     }
 
     @Test
@@ -65,7 +65,7 @@ public class ConsecutiveSetTreeTest {
 
         assertThat(sequenceIterator.next().getLength()).isEqualTo(3);
         assertThat(sequenceIterator.next().getLength()).isEqualTo(4);
-        assertThat(breakIterator.next()).isEqualTo(new Break<>(5, 3, 2));
+        assertThat(breakIterator.next()).usingRecursiveComparison().isEqualTo(new Break<>(5, 3, 2));
     }
 
     @Test
@@ -126,7 +126,7 @@ public class ConsecutiveSetTreeTest {
 
         assertThat(sequenceIterator.next().getLength()).isEqualTo(3);
         assertThat(sequenceIterator.next().getLength()).isEqualTo(4);
-        assertThat(breakIterator.next()).isEqualTo(new Break<>(5, 3, 2));
+        assertThat(breakIterator.next()).usingRecursiveComparison().isEqualTo(new Break<>(5, 3, 2));
     }
 
     @Test
@@ -177,7 +177,7 @@ public class ConsecutiveSetTreeTest {
         assertThat(sequenceIterator.next().getLength()).isEqualTo(3);
         assertThat(sequenceIterator.next().getLength()).isEqualTo(3);
         assertThat(breakList).hasSize(1);
-        assertThat(breakIterator.next()).isEqualTo(new Break<>(5, 3, 2));
+        assertThat(breakIterator.next()).usingRecursiveComparison().isEqualTo(new Break<>(5, 3, 2));
     }
 
     @Test
@@ -238,9 +238,8 @@ public class ConsecutiveSetTreeTest {
 
         // Tree we are testing is at most difference 2
         ConsecutiveSetTree<Integer, Integer, Integer> tree = new ConsecutiveSetTree<>(i -> i, (a, b) -> b - a, 2, 0);
-        ;
 
-        for (int i = 0; i < 10000; i++) {
+        for (int i = 0; i < 1000; i++) {
             int value = random.nextInt(64);
             String op;
             if (valueToCountMap.containsKey(value) && random.nextDouble() < 0.75) {
@@ -257,13 +256,17 @@ public class ConsecutiveSetTreeTest {
 
             ConsecutiveSetTree<Integer, Integer, Integer> freshTree =
                     new ConsecutiveSetTree<>(val -> val, (a, b) -> b - a, 2, 0);
-            ;
             for (Map.Entry<Integer, Integer> entry : valueToCountMap.entrySet()) {
                 IntStream.range(0, entry.getValue()).map(index -> entry.getKey()).forEach(freshTree::add);
             }
+
             assertThat(tree.getConsecutiveSequences()).as("Mismatched Sequence: " + op)
+                    .usingRecursiveComparison()
+                    .ignoringFields("sourceTree")
                     .isEqualTo(freshTree.getConsecutiveSequences());
-            assertThat(tree.getBreaks()).as("Mismatched Break: " + op).isEqualTo(freshTree.getBreaks());
+            assertThat(tree.getBreaks()).as("Mismatched Break: " + op)
+                    .usingRecursiveComparison()
+                    .isEqualTo(freshTree.getBreaks());
         }
     }
 
@@ -309,6 +312,6 @@ public class ConsecutiveSetTreeTest {
         assertThat(sequenceIterator.next().getItems()).containsExactly(t3, t4, t5);
 
         assertThat(breakList).hasSize(1);
-        assertThat(breakIterator.next()).isEqualTo(new Break<>(t3, t2, Duration.ofDays(2)));
+        assertThat(breakIterator.next()).usingRecursiveComparison().isEqualTo(new Break<>(t3, t2, Duration.ofDays(2)));
     }
 }
