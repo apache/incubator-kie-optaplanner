@@ -37,6 +37,10 @@ public class OptaPlannerProcessorGeneratedGizmoSupplierTest {
 
     @RegisterExtension
     static final QuarkusUnitTest config = new QuarkusUnitTest()
+            // Use Reflection since this SolverConfig is invalid
+            // (solution class should be TestdataAnnotatedExtendedSolution,
+            //  but is TestdataSolution in the xml)
+            .overrideConfigKey("quarkus.optaplanner.solver.domain-access-type", "REFLECTION")
             .setArchiveProducer(() -> ShrinkWrap.create(JavaArchive.class)
                     .addAsResource("org/optaplanner/core/config/solver/testSolverConfigWithoutNamespace.xml",
                             "solverConfig.xml")
