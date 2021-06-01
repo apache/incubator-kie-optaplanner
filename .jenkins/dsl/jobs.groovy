@@ -60,6 +60,11 @@ def nightlyBranchFolder = "${KogitoConstants.KOGITO_DSL_NIGHTLY_FOLDER}/${JOB_BR
 def releaseBranchFolder = "${KogitoConstants.KOGITO_DSL_RELEASE_FOLDER}/${JOB_BRANCH_FOLDER}"
 
 if (isMainBranch()) {
+    // Old PR checks. To be removed once supported release branches (<= 8.7.x) are no more there.
+    setupOptaplannerPrJob()
+    setupOptaplannerQuarkusLTSPrJob()
+    setupOptaplannerNativePrJob()
+
     // Optaplanner PR checks
     setupMultijobPrDefaultChecks()
     setupMultijobPrNativeChecks()
@@ -100,6 +105,24 @@ if (isMainBranch()) {
 // Methods
 /////////////////////////////////////////////////////////////////
 
+void setupOptaplannerPrJob() {
+    def jobParams = getDefaultJobParams()
+    jobParams.pr.whiteListTargetBranches = ['8.5.x', '8.7.x']
+    KogitoJobTemplate.createPRJob(this, jobParams)
+}
+
+void setupOptaplannerQuarkusLTSPrJob() {
+    def jobParams = getDefaultJobParams()
+    jobParams.pr.whiteListTargetBranches = ['8.5.x', '8.7.x']
+    KogitoJobTemplate.createQuarkusLTSPRJob(this, jobParams)
+}
+
+void setupOptaplannerNativePrJob() {
+    def jobParams = getDefaultJobParams()
+    jobParams.pr.whiteListTargetBranches = ['8.5.x', '8.7.x']
+    KogitoJobTemplate.createNativePRJob(this, jobParams)
+}
+
 void setupOptawebEmployeeRosteringPrJob() {
     def jobParams = getDefaultJobParams('optaweb-employee-rostering')
     jobParams.pr = [ whiteListTargetBranches: ['master'] ]
@@ -115,7 +138,7 @@ void setupOptawebVehicleRoutingPrJob() {
 void setupMultijobPrDefaultChecks() {
     KogitoJobTemplate.createMultijobPRJobs(this, getMultijobPRConfig()) {
         def jobParams = getDefaultJobParams()
-        jobParams.pr.blackListTargetBranches = ['7.x']
+        jobParams.pr.blackListTargetBranches = ['7.x', '8.5.x', '8.7.x']
         return jobParams
     }
 }
@@ -123,7 +146,7 @@ void setupMultijobPrDefaultChecks() {
 void setupMultijobPrNativeChecks() {
     KogitoJobTemplate.createMultijobNativePRJobs(this, getMultijobPRConfig()) {
         def jobParams = getDefaultJobParams()
-        jobParams.pr.blackListTargetBranches = ['7.x']
+        jobParams.pr.blackListTargetBranches = ['7.x', '8.5.x', '8.7.x']
         return jobParams
     }
 }
@@ -131,7 +154,7 @@ void setupMultijobPrNativeChecks() {
 void setupMultijobPrLTSChecks() {
     KogitoJobTemplate.createMultijobLTSPRJobs(this, getMultijobPRConfig()) {
         def jobParams = getDefaultJobParams()
-        jobParams.pr.blackListTargetBranches = ['7.x']
+        jobParams.pr.blackListTargetBranches = ['7.x', '8.5.x', '8.7.x']
         return jobParams
     }
 }
