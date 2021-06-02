@@ -58,17 +58,27 @@ public class ListVariableDescriptor<Solution_> extends GenuineVariableDescriptor
         return true;
     }
 
+    private List<Object> listVariable(Object entity) {
+        return (List<Object>) getValue(entity);
+    }
+
     public Object removeElement(Object entity, int index) {
-        List<?> listVariable = (List<?>) getValue(entity);
-        return listVariable.remove(index);
+        return listVariable(entity).remove(index);
     }
 
     public void addElement(Object entity, int index, Object element) {
-        List<Object> listVariable = (List<Object>) getValue(entity);
-        listVariable.add(index, element);
+        listVariable(entity).add(index, element);
+    }
+
+    public Object getElement(Object entity, int index) {
+        return listVariable(entity).get(index);
+    }
+
+    public Object setElement(Object entity, int index, Object element) {
+        return listVariable(entity).set(index, element);
     }
 
     public int getListSize(Object entity) {
-        return ((List<?>) getValue(entity)).size();
+        return listVariable(entity).size();
     }
 }
