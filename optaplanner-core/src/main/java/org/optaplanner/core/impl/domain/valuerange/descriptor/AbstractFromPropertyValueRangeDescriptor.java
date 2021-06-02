@@ -125,7 +125,7 @@ public abstract class AbstractFromPropertyValueRangeDescriptor<Solution_>
             }
             Class<?> collectionElementClass = ((Class) typeArgument);
             Class<?> variablePropertyType = variableDescriptor.getVariablePropertyType();
-            if (!variablePropertyType.isAssignableFrom(collectionElementClass)) {
+            if (!variablePropertyType.isAssignableFrom(collectionElementClass) && false) {
                 throw new IllegalArgumentException("The entityClass (" + entityDescriptor.getEntityClass()
                         + ") has a @" + PlanningVariable.class.getSimpleName()
                         + " annotated property (" + variableDescriptor.getVariableName()
