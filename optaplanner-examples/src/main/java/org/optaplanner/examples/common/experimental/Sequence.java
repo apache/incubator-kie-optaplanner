@@ -16,29 +16,22 @@
 
 package org.optaplanner.examples.common.experimental;
 
-import java.util.IdentityHashMap;
-import java.util.Map;
 import java.util.NavigableSet;
 import java.util.Objects;
-import java.util.TreeSet;
 import java.util.stream.Collectors;
-import java.util.stream.IntStream;
-import java.util.stream.Stream;
 
 public class Sequence<ValueType_> {
-    private final NavigableSet<ValueType_> consecutiveItemsSet;
-    private final Map<ValueType_, Integer> count;
+    private NavigableSet<ValueType_> consecutiveItemsSet;
     private final ConsecutiveSetTree<ValueType_, ?, ?> sourceTree;
 
-    protected Sequence(ConsecutiveSetTree<ValueType_, ?, ?> sourceTree) {
-        this(sourceTree, new TreeSet<>(sourceTree.getComparator()), new IdentityHashMap<>());
+    protected Sequence(ConsecutiveSetTree<ValueType_, ?, ?> sourceTree, ValueType_ item) {
+        this.sourceTree = sourceTree;
+        this.consecutiveItemsSet = sourceTree.getItemSet().subSet(item, true, item, true);
     }
 
-    protected Sequence(ConsecutiveSetTree<ValueType_, ?, ?> sourceTree, NavigableSet<ValueType_> consecutiveItemsSet,
-            Map<ValueType_, Integer> count) {
+    protected Sequence(ConsecutiveSetTree<ValueType_, ?, ?> sourceTree, NavigableSet<ValueType_> consecutiveItemsSet) {
         this.sourceTree = sourceTree;
         this.consecutiveItemsSet = consecutiveItemsSet;
-        this.count = count;
     }
 
     public NavigableSet<ValueType_> getItems() {
@@ -53,55 +46,34 @@ public class Sequence<ValueType_> {
         return consecutiveItemsSet.isEmpty();
     }
 
-    protected int getCountIncludingDuplicates() {
-        return count.values().stream().reduce(Integer::sum).orElse(0);
+    protected void addBeforeStart(ValueType_ item) {
+        consecutiveItemsSet = sourceTree.getItemSet().subSet(item, true, consecutiveItemsSet.last(), true);
     }
 
-    protected Stream<ValueType_> getDuplicatedStream() {
-        return consecutiveItemsSet.stream()
-                .flatMap(item -> IntStream.range(0, count.get(item)).mapToObj(index -> item));
+    protected void addAfterEnd(ValueType_ item) {
+        consecutiveItemsSet = sourceTree.getItemSet().subSet(consecutiveItemsSet.first(), true, item, true);
     }
 
-    protected void add(ValueType_ item) {
-        if (!count.containsKey(item)) {
-            consecutiveItemsSet.add(item);
-        }
-        count.merge(item, 1, Integer::sum);
+    // Called when start or end are removed; since the set
+    // is backed by the underlying set that already have the
+    // point removed, consecutiveItemsSet.first()/consecutiveItemsSet.last()
+    // change to reflect that, and we update the bounds
+    protected void updateEndpoints() {
+        consecutiveItemsSet = consecutiveItemsSet.subSet(consecutiveItemsSet.first(), true, consecutiveItemsSet.last(), true);
     }
 
     protected Sequence<ValueType_> split(ValueType_ fromElement) {
-        TreeSet<ValueType_> splitConsecutiveItemsSet = new TreeSet<>(consecutiveItemsSet.tailSet(fromElement));
-        Map<ValueType_, Integer> newCountMap = new IdentityHashMap<>();
-        splitConsecutiveItemsSet.forEach(item -> {
-            newCountMap.put(item, count.remove(item));
-            consecutiveItemsSet.remove(item);
-        });
-        return new Sequence<>(sourceTree, splitConsecutiveItemsSet, newCountMap);
+        NavigableSet<ValueType_> newSequenceConsecutiveItemSet = consecutiveItemsSet.subSet(
+                consecutiveItemsSet.higher(fromElement), true,
+                consecutiveItemsSet.last(), true);
+        consecutiveItemsSet = consecutiveItemsSet.subSet(consecutiveItemsSet.first(), true,
+                consecutiveItemsSet.lower(fromElement), true);
+        return new Sequence<>(sourceTree, newSequenceConsecutiveItemSet);
     }
 
-    protected boolean remove(ValueType_ item) {
-        if (!count.containsKey(item)) {
-            return true;
-        }
-        Integer newCount = count.merge(item, -1, (a, b) -> {
-            int out = a + b;
-            if (out == 0) {
-                return null;
-            }
-            return out;
-        });
-        if (newCount == null) {
-            consecutiveItemsSet.remove(item);
-            return true;
-        }
-        return false;
-    }
-
-    protected void putAll(Sequence<ValueType_> other) {
-        other.getItems().forEach(item -> {
-            consecutiveItemsSet.add(item);
-            count.merge(item, other.count.get(item), Integer::sum);
-        });
+    protected void merge(Sequence<ValueType_> other) {
+        consecutiveItemsSet =
+                sourceTree.getItemSet().subSet(consecutiveItemsSet.first(), true, other.consecutiveItemsSet.last(), true);
     }
 
     @Override
