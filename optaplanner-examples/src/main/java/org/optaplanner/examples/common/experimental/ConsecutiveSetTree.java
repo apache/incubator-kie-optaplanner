@@ -94,7 +94,7 @@ public class ConsecutiveSetTree<ValueType_, PointType_ extends Comparable<PointT
     }
 
     public PointType_ getEndIndex(ValueType_ key) {
-        return indexFunction.apply(getEndItem(key));
+        return indexFunction.apply(startItemToSequence.get(key).getItems().last());
     }
 
     private boolean isSecondSuccessorOfFirst(PointType_ first, PointType_ second) {
@@ -253,12 +253,11 @@ public class ConsecutiveSetTree<ValueType_, PointType_ extends Comparable<PointT
             // Change start key to the item after this one
             startItemToSequence.remove(firstBeforeItem);
             Break<ValueType_, DifferenceType_> extendedBreak = startItemToPreviousBreak.remove(firstBeforeItem);
-            ValueType_ firstBagItem = bag.getItems().first();
-            startItemToSequence.put(firstBagItem, bag);
+            startItemToSequence.put(bag.getItems().first(), bag);
             if (extendedBreak != null) {
-                extendedBreak.setBeforeItem(firstBagItem);
+                extendedBreak.setBeforeItem(bag.getItems().first());
                 updateLengthOfBreak(extendedBreak);
-                startItemToPreviousBreak.put(firstBagItem, extendedBreak);
+                startItemToPreviousBreak.put(bag.getItems().first(), extendedBreak);
             }
             return true;
         }
@@ -285,11 +284,10 @@ public class ConsecutiveSetTree<ValueType_, PointType_ extends Comparable<PointT
         // Additional, the breaks before and after the broken sequence
         // are not affected since an endpoint was not removed
         Sequence<ValueType_> splitBag = bag.split(item);
-        ValueType_ firstSplitBagItem = splitBag.getItems().first();
-        startItemToSequence.put(firstSplitBagItem, splitBag);
-        ValueType_ lastBagItem = bag.getItems().last();
-        startItemToPreviousBreak.put(firstSplitBagItem, new Break<>(firstSplitBagItem, lastBagItem,
-                getBreakLengthBetween(lastBagItem, firstSplitBagItem)));
+        startItemToSequence.put(splitBag.getItems().first(), splitBag);
+        startItemToPreviousBreak.put(splitBag.getItems().first(), new Break<>(
+                splitBag.getItems().first(), bag.getItems().last(),
+                getBreakLengthBetween(bag.getItems().last(), splitBag.getItems().first())));
         return true;
     }
 
