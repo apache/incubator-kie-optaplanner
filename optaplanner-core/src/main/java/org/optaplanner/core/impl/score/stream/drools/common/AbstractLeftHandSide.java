@@ -16,13 +16,10 @@
 
 package org.optaplanner.core.impl.score.stream.drools.common;
 
-import static org.drools.model.DSL.and;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
-
 import org.drools.model.DSL;
 import org.drools.model.Index;
 import org.drools.model.Variable;
@@ -30,6 +27,8 @@ import org.drools.model.functions.accumulate.AccumulateFunction;
 import org.drools.model.view.ViewItem;
 import org.optaplanner.core.impl.score.stream.common.JoinerType;
 import org.optaplanner.core.impl.score.stream.drools.DroolsVariableFactory;
+
+import static org.drools.model.DSL.and;
 
 abstract class AbstractLeftHandSide {
 
@@ -117,7 +116,7 @@ abstract class AbstractLeftHandSide {
     }
 
     /**
-     * Create a {@link DirectPatternVariable} on {@link QuadTuple} with pre-made bindings for its components variables.
+     * Create an {@link IndirectPatternVariable} on {@link QuadTuple} with pre-made bindings for its components variables.
      *
      * @param primaryVariable never null
      * @param prerequisitePattern never null, pattern required to construct the variable
@@ -131,14 +130,15 @@ abstract class AbstractLeftHandSide {
      * @param <D> generic type of the fourth bound variable
      * @return never null
      */
-    protected static <A, B, C, D> DirectPatternVariable<QuadTuple<A, B, C, D>> decompose(
+    protected static <A, B, C, D> IndirectPatternVariable<D, QuadTuple<A, B, C, D>> decompose(
             Variable<QuadTuple<A, B, C, D>> primaryVariable, ViewItem<?> prerequisitePattern, Variable<A> boundVarA,
             Variable<B> boundVarB, Variable<C> boundVarC, Variable<D> boundVarD) {
-        return new DirectPatternVariable<>(primaryVariable, prerequisitePattern)
-                .bind(boundVarA, tuple -> tuple.a)
-                .bind(boundVarB, tuple -> tuple.b)
-                .bind(boundVarC, tuple -> tuple.c)
-                .bind(boundVarD, tuple -> tuple.d);
+        DirectPatternVariable<QuadTuple<A, B, C, D>> tuplePatternVar =
+                new DirectPatternVariable<>(primaryVariable, prerequisitePattern)
+                        .bind(boundVarA, tuple -> tuple.a)
+                        .bind(boundVarB, tuple -> tuple.b)
+                        .bind(boundVarC, tuple -> tuple.c);
+        return new IndirectPatternVariable<>(tuplePatternVar, boundVarD, tuple -> tuple.d);
     }
 
     protected static ViewItem<?> buildAccumulate(ViewItem<?> innerAccumulatePattern,

@@ -16,19 +16,12 @@
 
 package org.optaplanner.core.impl.score.stream.drools.common;
 
-import static java.util.Collections.singletonList;
-import static org.drools.model.DSL.exists;
-import static org.drools.model.DSL.not;
-import static org.drools.model.PatternDSL.betaIndexedBy;
-import static org.drools.model.PatternDSL.pattern;
-
 import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 import java.util.function.Function;
 import java.util.stream.Stream;
-
 import org.drools.model.BetaIndex3;
 import org.drools.model.DSL;
 import org.drools.model.PatternDSL;
@@ -50,6 +43,12 @@ import org.optaplanner.core.impl.score.stream.quad.AbstractQuadJoiner;
 import org.optaplanner.core.impl.score.stream.quad.FilteringQuadJoiner;
 import org.optaplanner.core.impl.score.stream.quad.NoneQuadJoiner;
 import org.optaplanner.core.impl.score.stream.tri.NoneTriJoiner;
+
+import static java.util.Collections.singletonList;
+import static org.drools.model.DSL.exists;
+import static org.drools.model.DSL.not;
+import static org.drools.model.PatternDSL.betaIndexedBy;
+import static org.drools.model.PatternDSL.pattern;
 
 /**
  * Represents the left hand side of a Drools rule, the result of which are three variables.
@@ -440,10 +439,8 @@ public final class TriLeftHandSide<A, B, C> extends AbstractLeftHandSide {
         Variable<NewB> newB = variableFactory.createVariable("newB");
         Variable<NewC> newC = variableFactory.createVariable("newC");
         Variable<NewD> newD = variableFactory.createVariable("newD");
-        DirectPatternVariable<QuadTuple<NewA, NewB, NewC, NewD>> tuplePatternVar =
+        IndirectPatternVariable<NewD, QuadTuple<NewA, NewB, NewC, NewD>> dPatternVar =
                 decompose(groupKey, groupByPattern, newA, newB, newC, newD);
-        PatternVariable<NewD, QuadTuple<NewA, NewB, NewC, NewD>, ?> dPatternVar =
-                new IndirectPatternVariable<>(tuplePatternVar, newD, tuple -> tuple.d);
         return new QuadLeftHandSide<>(newA, newB, newC, dPatternVar, variableFactory);
     }
 
