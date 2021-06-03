@@ -16,7 +16,13 @@
 
 package org.optaplanner.examples.nurserostering.optional.score;
 
+import static org.optaplanner.examples.nurserostering.score.drools.EmployeeConsecutiveAssignmentEnd.getDistanceToLastDayOfWeekend;
+import static org.optaplanner.examples.nurserostering.score.drools.EmployeeConsecutiveAssignmentEnd.isWeekendAndNotLastDayOfWeekend;
+import static org.optaplanner.examples.nurserostering.score.drools.EmployeeConsecutiveAssignmentStart.getDistanceToFirstDayOfWeekend;
+import static org.optaplanner.examples.nurserostering.score.drools.EmployeeConsecutiveAssignmentStart.isWeekendAndNotFirstDayOfWeekend;
+
 import java.time.DayOfWeek;
+
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.optaplanner.core.api.score.buildin.hardsoft.HardSoftScore;
 import org.optaplanner.core.api.score.stream.Constraint;
@@ -44,11 +50,6 @@ import org.optaplanner.examples.nurserostering.domain.request.DayOffRequest;
 import org.optaplanner.examples.nurserostering.domain.request.DayOnRequest;
 import org.optaplanner.examples.nurserostering.domain.request.ShiftOffRequest;
 import org.optaplanner.examples.nurserostering.domain.request.ShiftOnRequest;
-
-import static org.optaplanner.examples.nurserostering.score.drools.EmployeeConsecutiveAssignmentEnd.getDistanceToLastDayOfWeekend;
-import static org.optaplanner.examples.nurserostering.score.drools.EmployeeConsecutiveAssignmentEnd.isWeekendAndNotLastDayOfWeekend;
-import static org.optaplanner.examples.nurserostering.score.drools.EmployeeConsecutiveAssignmentStart.getDistanceToFirstDayOfWeekend;
-import static org.optaplanner.examples.nurserostering.score.drools.EmployeeConsecutiveAssignmentStart.isWeekendAndNotFirstDayOfWeekend;
 
 public class NurseRosteringConstraintProvider implements ConstraintProvider {
 
@@ -251,10 +252,10 @@ public class NurseRosteringConstraintProvider implements ConstraintProvider {
                                 ShiftDate::getDayIndex))
                 .flattenLast(ConsecutiveData::getConsecutiveSequences)
                 .filter((employee, contract, shiftList) -> isWeekendAndNotFirstDayOfWeekend(employee,
-                        shiftList.getItems().first()))
+                        shiftList.getFirstItem()))
                 .penalize("startOnNotFirstDayOfWeekend", HardSoftScore.ONE_SOFT,
                         (employee, contract,
-                                shiftList) -> getDistanceToFirstDayOfWeekend(employee, shiftList.getItems().first())
+                                shiftList) -> getDistanceToFirstDayOfWeekend(employee, shiftList.getFirstItem())
                                         * contract.getWeight());
     }
 
@@ -271,9 +272,9 @@ public class NurseRosteringConstraintProvider implements ConstraintProvider {
                                 ShiftDate::getDayIndex))
                 .flattenLast(ConsecutiveData::getConsecutiveSequences)
                 .filter((employee, contract, shiftList) -> isWeekendAndNotLastDayOfWeekend(employee,
-                        shiftList.getItems().last()))
+                        shiftList.getLastItem()))
                 .penalize("endOnNotLastDayOfWeekend", HardSoftScore.ONE_SOFT,
-                        (employee, contract, shiftList) -> getDistanceToLastDayOfWeekend(employee, shiftList.getItems().last())
+                        (employee, contract, shiftList) -> getDistanceToLastDayOfWeekend(employee, shiftList.getLastItem())
                                 * contract.getWeight());
     }
 

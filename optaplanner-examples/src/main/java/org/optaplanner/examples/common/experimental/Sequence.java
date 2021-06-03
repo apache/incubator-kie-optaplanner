@@ -16,6 +16,7 @@
 
 package org.optaplanner.examples.common.experimental;
 
+import java.util.Collection;
 import java.util.IdentityHashMap;
 import java.util.Map;
 import java.util.NavigableSet;
@@ -30,6 +31,9 @@ public class Sequence<ValueType_> {
     private final Map<ValueType_, Integer> count;
     private final ConsecutiveSetTree<ValueType_, ?, ?> sourceTree;
 
+    private ValueType_ firstItem;
+    private ValueType_ lastItem;
+
     protected Sequence(ConsecutiveSetTree<ValueType_, ?, ?> sourceTree) {
         this(sourceTree, new TreeSet<>(sourceTree.getComparator()), new IdentityHashMap<>());
     }
@@ -41,8 +45,30 @@ public class Sequence<ValueType_> {
         this.count = count;
     }
 
-    public NavigableSet<ValueType_> getItems() {
+    public Collection<ValueType_> getItems() {
         return consecutiveItemsSet;
+    }
+
+    public ValueType_ getFirstItem() {
+        if (firstItem == null) {
+            firstItem = consecutiveItemsSet.first();
+        }
+        return firstItem;
+    }
+
+    public ValueType_ getLastItem() {
+        if (lastItem == null) {
+            lastItem = consecutiveItemsSet.last();
+        }
+        return lastItem;
+    }
+
+    public ValueType_ getItemBefore(ValueType_ item) {
+        return consecutiveItemsSet.lower(item);
+    }
+
+    public ValueType_ getItemAfter(ValueType_ item) {
+        return consecutiveItemsSet.higher(item);
     }
 
     public int getLength() {
@@ -75,6 +101,12 @@ public class Sequence<ValueType_> {
         splitConsecutiveItemsSet.forEach(item -> {
             newCountMap.put(item, count.remove(item));
             consecutiveItemsSet.remove(item);
+            // Make sure first/last item cache is always correct.
+            if (item == lastItem) {
+                lastItem = null;
+            } else if (item == firstItem) {
+                firstItem = null;
+            }
         });
         return new Sequence<>(sourceTree, splitConsecutiveItemsSet, newCountMap);
     }

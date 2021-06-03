@@ -19,6 +19,7 @@ package org.optaplanner.examples.nurserostering.score.drools;
 import java.time.DayOfWeek;
 import java.util.Comparator;
 import java.util.Objects;
+
 import org.optaplanner.examples.nurserostering.domain.Employee;
 import org.optaplanner.examples.nurserostering.domain.ShiftDate;
 import org.optaplanner.examples.nurserostering.domain.WeekendDefinition;
