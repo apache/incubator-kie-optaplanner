@@ -16,13 +16,11 @@
 
 package org.optaplanner.core.impl.score.stream.drools.common;
 
-import static org.drools.model.DSL.and;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
-
+import java.util.function.Function;
 import org.drools.model.DSL;
 import org.drools.model.Index;
 import org.drools.model.Variable;
@@ -30,6 +28,8 @@ import org.drools.model.functions.accumulate.AccumulateFunction;
 import org.drools.model.view.ViewItem;
 import org.optaplanner.core.impl.score.stream.common.JoinerType;
 import org.optaplanner.core.impl.score.stream.drools.DroolsVariableFactory;
+
+import static org.drools.model.DSL.and;
 
 abstract class AbstractLeftHandSide {
 
@@ -89,10 +89,12 @@ abstract class AbstractLeftHandSide {
      */
     protected static <A, B> IndirectPatternVariable<B, BiTuple<A, B>> decompose(Variable<BiTuple<A, B>> primaryVariable,
             ViewItem<?> prerequisitePattern, Variable<A> boundVarA, Variable<B> boundVarB) {
+        Function<BiTuple<A, B>, B> bExtractor = tuple -> tuple.b;
         DirectPatternVariable<BiTuple<A, B>> tuplePatternVar =
                 new DirectPatternVariable<>(primaryVariable, prerequisitePattern)
-                        .bind(boundVarA, tuple -> tuple.a);
-        return new IndirectPatternVariable<>(tuplePatternVar, boundVarB, tuple -> tuple.b);
+                        .bind(boundVarA, tuple -> tuple.a)
+                        .bind(boundVarB, bExtractor);
+        return new IndirectPatternVariable<>(tuplePatternVar, boundVarB, bExtractor);
     }
 
     /**
@@ -135,11 +137,13 @@ abstract class AbstractLeftHandSide {
     protected static <A, B, C> IndirectPatternVariable<C, TriTuple<A, B, C>> decompose(
             Variable<TriTuple<A, B, C>> primaryVariable, ViewItem<?> prerequisitePattern, Variable<A> boundVarA,
             Variable<B> boundVarB, Variable<C> boundVarC) {
+        Function<TriTuple<A, B, C>, C> cExtractor = tuple -> tuple.c;
         DirectPatternVariable<TriTuple<A, B, C>> tuplePatternVar =
                 new DirectPatternVariable<>(primaryVariable, prerequisitePattern)
                         .bind(boundVarA, tuple -> tuple.a)
-                        .bind(boundVarB, tuple -> tuple.b);
-        return new IndirectPatternVariable<>(tuplePatternVar, boundVarC, tuple -> tuple.c);
+                        .bind(boundVarB, tuple -> tuple.b)
+                        .bind(boundVarC, cExtractor);
+        return new IndirectPatternVariable<>(tuplePatternVar, boundVarC, cExtractor);
     }
 
     /**
@@ -160,12 +164,14 @@ abstract class AbstractLeftHandSide {
     protected static <A, B, C, D> IndirectPatternVariable<D, QuadTuple<A, B, C, D>> decompose(
             Variable<QuadTuple<A, B, C, D>> primaryVariable, ViewItem<?> prerequisitePattern, Variable<A> boundVarA,
             Variable<B> boundVarB, Variable<C> boundVarC, Variable<D> boundVarD) {
+        Function<QuadTuple<A, B, C, D>, D> dExtractor = tuple -> tuple.d;
         DirectPatternVariable<QuadTuple<A, B, C, D>> tuplePatternVar =
                 new DirectPatternVariable<>(primaryVariable, prerequisitePattern)
                         .bind(boundVarA, tuple -> tuple.a)
                         .bind(boundVarB, tuple -> tuple.b)
-                        .bind(boundVarC, tuple -> tuple.c);
-        return new IndirectPatternVariable<>(tuplePatternVar, boundVarD, tuple -> tuple.d);
+                        .bind(boundVarC, tuple -> tuple.c)
+                        .bind(boundVarD, dExtractor);
+        return new IndirectPatternVariable<>(tuplePatternVar, boundVarD, dExtractor);
     }
 
     /**
