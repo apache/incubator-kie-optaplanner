@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2021 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,6 +26,23 @@ import org.optaplanner.examples.nurserostering.domain.WeekendDefinition;
 import org.optaplanner.examples.nurserostering.domain.contract.Contract;
 
 public class EmployeeConsecutiveAssignmentEnd implements Comparable<EmployeeConsecutiveAssignmentEnd> {
+
+    public static boolean isWeekendAndNotLastDayOfWeekend(Employee employee, ShiftDate shiftDate) {
+        WeekendDefinition weekendDefinition = employee.getContract().getWeekendDefinition();
+        DayOfWeek dayOfWeek = shiftDate.getDayOfWeek();
+        return weekendDefinition.isWeekend(dayOfWeek) && weekendDefinition.getLastDayOfWeekend() != dayOfWeek;
+    }
+
+    public static int getDistanceToLastDayOfWeekend(Employee employee, ShiftDate shiftDate) {
+        WeekendDefinition weekendDefinition = employee.getContract().getWeekendDefinition();
+        DayOfWeek dayOfWeek = shiftDate.getDayOfWeek();
+        DayOfWeek lastDayOfWeekend = weekendDefinition.getLastDayOfWeekend();
+        int distance = lastDayOfWeekend.getValue() - dayOfWeek.getValue();
+        if (distance < 0) {
+            distance += 7;
+        }
+        return distance;
+    }
 
     private static final Comparator<EmployeeConsecutiveAssignmentEnd> COMPARATOR = Comparator
             .comparing(EmployeeConsecutiveAssignmentEnd::getEmployee)
@@ -92,20 +109,11 @@ public class EmployeeConsecutiveAssignmentEnd implements Comparable<EmployeeCons
     }
 
     public boolean isWeekendAndNotLastDayOfWeekend() {
-        WeekendDefinition weekendDefinition = employee.getContract().getWeekendDefinition();
-        DayOfWeek dayOfWeek = shiftDate.getDayOfWeek();
-        return weekendDefinition.isWeekend(dayOfWeek) && weekendDefinition.getLastDayOfWeekend() != dayOfWeek;
+        return isWeekendAndNotLastDayOfWeekend(employee, shiftDate);
     }
 
     public int getDistanceToLastDayOfWeekend() {
-        WeekendDefinition weekendDefinition = employee.getContract().getWeekendDefinition();
-        DayOfWeek dayOfWeek = shiftDate.getDayOfWeek();
-        DayOfWeek lastDayOfWeekend = weekendDefinition.getLastDayOfWeekend();
-        int distance = lastDayOfWeekend.getValue() - dayOfWeek.getValue();
-        if (distance < 0) {
-            distance += 7;
-        }
-        return distance;
+        return getDistanceToLastDayOfWeekend(employee, shiftDate);
     }
 
 }

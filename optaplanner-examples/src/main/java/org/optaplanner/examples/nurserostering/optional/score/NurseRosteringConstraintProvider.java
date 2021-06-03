@@ -17,7 +17,6 @@
 package org.optaplanner.examples.nurserostering.optional.score;
 
 import java.time.DayOfWeek;
-
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.optaplanner.core.api.score.buildin.hardsoft.HardSoftScore;
 import org.optaplanner.core.api.score.stream.Constraint;
@@ -45,8 +44,11 @@ import org.optaplanner.examples.nurserostering.domain.request.DayOffRequest;
 import org.optaplanner.examples.nurserostering.domain.request.DayOnRequest;
 import org.optaplanner.examples.nurserostering.domain.request.ShiftOffRequest;
 import org.optaplanner.examples.nurserostering.domain.request.ShiftOnRequest;
-import org.optaplanner.examples.nurserostering.score.drools.EmployeeConsecutiveAssignmentEnd;
-import org.optaplanner.examples.nurserostering.score.drools.EmployeeConsecutiveAssignmentStart;
+
+import static org.optaplanner.examples.nurserostering.score.drools.EmployeeConsecutiveAssignmentEnd.getDistanceToLastDayOfWeekend;
+import static org.optaplanner.examples.nurserostering.score.drools.EmployeeConsecutiveAssignmentEnd.isWeekendAndNotLastDayOfWeekend;
+import static org.optaplanner.examples.nurserostering.score.drools.EmployeeConsecutiveAssignmentStart.getDistanceToFirstDayOfWeekend;
+import static org.optaplanner.examples.nurserostering.score.drools.EmployeeConsecutiveAssignmentStart.isWeekendAndNotFirstDayOfWeekend;
 
 public class NurseRosteringConstraintProvider implements ConstraintProvider {
 
@@ -96,9 +98,13 @@ public class NurseRosteringConstraintProvider implements ConstraintProvider {
         return constraintFactory.from(MinMaxContractLine.class)
                 .filter(minMaxContractLine -> minMaxContractLine.getContractLineType() == ContractLineType.TOTAL_ASSIGNMENTS &&
                         minMaxContractLine.isEnabled())
-                .join(ShiftAssignment.class, Joiners.equal(ContractLine::getContract, ShiftAssignment::getContract))
-                .groupBy((line, shift) -> shift.getEmployee(), (line, shift) -> line, ConstraintCollectors.countBi())
-                .filter((employee, contract, shiftCount) -> employee != null && contract.isViolated(shiftCount))
+                .join(constraintFactory.from(ShiftAssignment.class)
+                        .filter(shift -> shift.getEmployee() != null),
+                        Joiners.equal(ContractLine::getContract, ShiftAssignment::getContract))
+                .groupBy((line, shift) -> shift.getEmployee(),
+                        (line, shift) -> line,
+                        ConstraintCollectors.countBi())
+                .filter((employee, contract, shiftCount) -> contract.isViolated(shiftCount))
                 .penalize("Minimum and maximum number of assignments", HardSoftScore.ONE_SOFT,
                         (employee, contract, shiftCount) -> contract.getViolationAmount(shiftCount));
     }
@@ -122,8 +128,10 @@ public class NurseRosteringConstraintProvider implements ConstraintProvider {
                 .filter(minMaxContractLine -> minMaxContractLine
                         .getContractLineType() == ContractLineType.CONSECUTIVE_WORKING_DAYS &&
                         minMaxContractLine.isEnabled())
-                .join(ShiftAssignment.class, Joiners.equal(ContractLine::getContract, ShiftAssignment::getContract))
-                .groupBy((contract, shift) -> shift.getEmployee(), (contract, shift) -> contract,
+                .join(ShiftAssignment.class,
+                        Joiners.equal(ContractLine::getContract, ShiftAssignment::getContract))
+                .groupBy((contract, shift) -> shift.getEmployee(),
+                        (contract, shift) -> contract,
                         ExperimentalConstraintCollectors.consecutive((contract, shift) -> shift.getShiftDate(),
                                 ShiftDate::getDayIndex))
                 .flattenLast(ConsecutiveData::getConsecutiveSequences)
@@ -138,8 +146,10 @@ public class NurseRosteringConstraintProvider implements ConstraintProvider {
                 .filter(minMaxContractLine -> minMaxContractLine
                         .getContractLineType() == ContractLineType.CONSECUTIVE_FREE_DAYS &&
                         minMaxContractLine.isEnabled())
-                .join(ShiftAssignment.class, Joiners.equal(ContractLine::getContract, ShiftAssignment::getContract))
-                .groupBy((contract, shift) -> shift.getEmployee(), (contract, shift) -> contract,
+                .join(ShiftAssignment.class,
+                        Joiners.equal(ContractLine::getContract, ShiftAssignment::getContract))
+                .groupBy((contract, shift) -> shift.getEmployee(),
+                        (contract, shift) -> contract,
                         ExperimentalConstraintCollectors.consecutive((contract, shift) -> shift.getShiftDate(),
                                 ShiftDate::getDayIndex))
                 .flattenLast(ConsecutiveData::getBreaks)
@@ -154,11 +164,13 @@ public class NurseRosteringConstraintProvider implements ConstraintProvider {
                 .filter(minMaxContractLine -> minMaxContractLine
                         .getContractLineType() == ContractLineType.CONSECUTIVE_FREE_DAYS &&
                         minMaxContractLine.isMaximumEnabled())
-                .join(Employee.class, Joiners.equal(MinMaxContractLine::getContract, Employee::getContract))
+                .join(Employee.class,
+                        Joiners.equal(MinMaxContractLine::getContract, Employee::getContract))
                 .ifNotExists(ShiftAssignment.class,
                         Joiners.equal((contract, employee) -> employee, ShiftAssignment::getEmployee))
-                .join(NurseRosterParametrization.class, Joiners.lessThan((contract, employee) -> contract.getMaximumValue(),
-                        nrp -> nrp.getLastShiftDateDayIndex() - nrp.getFirstShiftDateDayIndex() + 1))
+                .join(NurseRosterParametrization.class,
+                        Joiners.lessThan((contract, employee) -> contract.getMaximumValue(),
+                                nrp -> nrp.getLastShiftDateDayIndex() - nrp.getFirstShiftDateDayIndex() + 1))
                 .penalize("maximumConsecutiveFreeDays (no shifts)", HardSoftScore.ONE_SOFT,
                         (contract, employee, nrp) -> contract
                                 .getViolationAmount(nrp.getLastShiftDateDayIndex() - nrp.getFirstShiftDateDayIndex() + 1));
@@ -213,9 +225,11 @@ public class NurseRosteringConstraintProvider implements ConstraintProvider {
                 .filter(minMaxContractLine -> minMaxContractLine
                         .getContractLineType() == ContractLineType.CONSECUTIVE_WORKING_WEEKENDS &&
                         minMaxContractLine.isEnabled())
-                .join(constraintFactory.from(ShiftAssignment.class).filter(ShiftAssignment::isWeekend),
+                .join(constraintFactory.from(ShiftAssignment.class)
+                        .filter(ShiftAssignment::isWeekend),
                         Joiners.equal(ContractLine::getContract, ShiftAssignment::getContract))
-                .groupBy((contract, shift) -> shift.getEmployee(), (contract, shift) -> contract,
+                .groupBy((contract, shift) -> shift.getEmployee(),
+                        (contract, shift) -> contract,
                         ExperimentalConstraintCollectors.consecutive((contract, shift) -> shift.getShiftDate(),
                                 shiftDate -> shiftDate.getWeekendSundayIndex() / 7))
                 .flattenLast(ConsecutiveData::getConsecutiveSequences)
@@ -228,19 +242,20 @@ public class NurseRosteringConstraintProvider implements ConstraintProvider {
     Constraint startOnNotFirstDayOfWeekend(ConstraintFactory constraintFactory) {
         return constraintFactory.from(BooleanContractLine.class)
                 .filter(booleanContractLine -> booleanContractLine.getContractLineType() == ContractLineType.COMPLETE_WEEKENDS
-                        &&
-                        booleanContractLine.isEnabled())
-                .join(ShiftAssignment.class, Joiners.equal(ContractLine::getContract, ShiftAssignment::getContract))
-                .groupBy((contract, shift) -> shift.getEmployee(), (contract, shift) -> contract,
+                        && booleanContractLine.isEnabled())
+                .join(ShiftAssignment.class,
+                        Joiners.equal(ContractLine::getContract, ShiftAssignment::getContract))
+                .groupBy((contract, shift) -> shift.getEmployee(),
+                        (contract, shift) -> contract,
                         ExperimentalConstraintCollectors.consecutive((contract, shift) -> shift.getShiftDate(),
                                 ShiftDate::getDayIndex))
                 .flattenLast(ConsecutiveData::getConsecutiveSequences)
-                .filter((employee, contract, shiftList) -> new EmployeeConsecutiveAssignmentStart(
-                        employee, shiftList.getItems().first()).isWeekendAndNotFirstDayOfWeekend())
+                .filter((employee, contract, shiftList) -> isWeekendAndNotFirstDayOfWeekend(employee,
+                        shiftList.getItems().first()))
                 .penalize("startOnNotFirstDayOfWeekend", HardSoftScore.ONE_SOFT,
                         (employee, contract,
-                                shiftList) -> new EmployeeConsecutiveAssignmentStart(employee, shiftList.getItems().first())
-                                        .getDistanceToFirstDayOfWeekend() * contract.getWeight());
+                                shiftList) -> getDistanceToFirstDayOfWeekend(employee, shiftList.getItems().first())
+                                        * contract.getWeight());
     }
 
     Constraint endOnNotLastDayOfWeekend(ConstraintFactory constraintFactory) {
@@ -248,16 +263,18 @@ public class NurseRosteringConstraintProvider implements ConstraintProvider {
                 .filter(booleanContractLine -> booleanContractLine
                         .getContractLineType() == ContractLineType.COMPLETE_WEEKENDS &&
                         booleanContractLine.isEnabled())
-                .join(ShiftAssignment.class, Joiners.equal(ContractLine::getContract, ShiftAssignment::getContract))
-                .groupBy((contract, shift) -> shift.getEmployee(), (contract, shift) -> contract,
+                .join(ShiftAssignment.class,
+                        Joiners.equal(ContractLine::getContract, ShiftAssignment::getContract))
+                .groupBy((contract, shift) -> shift.getEmployee(),
+                        (contract, shift) -> contract,
                         ExperimentalConstraintCollectors.consecutive((contract, shift) -> shift.getShiftDate(),
                                 ShiftDate::getDayIndex))
                 .flattenLast(ConsecutiveData::getConsecutiveSequences)
-                .filter((employee, contract, shiftList) -> new EmployeeConsecutiveAssignmentEnd(employee,
-                        shiftList.getItems().last()).isWeekendAndNotLastDayOfWeekend())
+                .filter((employee, contract, shiftList) -> isWeekendAndNotLastDayOfWeekend(employee,
+                        shiftList.getItems().last()))
                 .penalize("endOnNotLastDayOfWeekend", HardSoftScore.ONE_SOFT,
-                        (employee, contract, shiftList) -> new EmployeeConsecutiveAssignmentEnd(employee,
-                                shiftList.getItems().last()).getDistanceToLastDayOfWeekend() * contract.getWeight());
+                        (employee, contract, shiftList) -> getDistanceToLastDayOfWeekend(employee, shiftList.getItems().last())
+                                * contract.getWeight());
     }
 
     // Identical shiftTypes during a weekend
@@ -268,7 +285,8 @@ public class NurseRosteringConstraintProvider implements ConstraintProvider {
                         booleanContractLine.isEnabled())
                 .join(constraintFactory.from(ShiftDate.class)
                         .filter(date -> date.getDayOfWeek() == DayOfWeek.SUNDAY))
-                .join(constraintFactory.from(ShiftAssignment.class).filter(ShiftAssignment::isWeekend),
+                .join(constraintFactory.from(ShiftAssignment.class)
+                        .filter(ShiftAssignment::isWeekend),
                         Joiners.equal((contract, date) -> date.getWeekendSundayIndex(), ShiftAssignment::getWeekendSundayIndex),
                         Joiners.equal((contract, date) -> contract.getContract(), ShiftAssignment::getContract))
                 .groupBy((contract, date, sa) -> contract,
@@ -283,7 +301,8 @@ public class NurseRosteringConstraintProvider implements ConstraintProvider {
     // Requested day on/off
     Constraint dayOffRequest(ConstraintFactory constraintFactory) {
         return constraintFactory.from(DayOffRequest.class)
-                .join(ShiftAssignment.class, Joiners.equal(DayOffRequest::getEmployee, ShiftAssignment::getEmployee),
+                .join(ShiftAssignment.class,
+                        Joiners.equal(DayOffRequest::getEmployee, ShiftAssignment::getEmployee),
                         Joiners.equal(DayOffRequest::getShiftDate, ShiftAssignment::getShiftDate))
                 .penalize("dayOffRequest", HardSoftScore.ONE_SOFT,
                         (dayOffRequest, shiftAssignment) -> dayOffRequest.getWeight());
@@ -291,7 +310,8 @@ public class NurseRosteringConstraintProvider implements ConstraintProvider {
 
     Constraint dayOnRequest(ConstraintFactory constraintFactory) {
         return constraintFactory.from(DayOnRequest.class)
-                .ifNotExists(ShiftAssignment.class, Joiners.equal(DayOnRequest::getEmployee, ShiftAssignment::getEmployee),
+                .ifNotExists(ShiftAssignment.class,
+                        Joiners.equal(DayOnRequest::getEmployee, ShiftAssignment::getEmployee),
                         Joiners.equal(DayOnRequest::getShiftDate, ShiftAssignment::getShiftDate))
                 .penalize("dayOnRequest", HardSoftScore.ONE_SOFT,
                         DayOnRequest::getWeight);
@@ -300,7 +320,8 @@ public class NurseRosteringConstraintProvider implements ConstraintProvider {
     // Requested shift on/off
     Constraint shiftOffRequest(ConstraintFactory constraintFactory) {
         return constraintFactory.from(ShiftOffRequest.class)
-                .join(ShiftAssignment.class, Joiners.equal(ShiftOffRequest::getEmployee, ShiftAssignment::getEmployee),
+                .join(ShiftAssignment.class,
+                        Joiners.equal(ShiftOffRequest::getEmployee, ShiftAssignment::getEmployee),
                         Joiners.equal(ShiftOffRequest::getShift, ShiftAssignment::getShift))
                 .penalize("shiftOffRequest", HardSoftScore.ONE_SOFT,
                         (shiftOffRequest, shiftAssignment) -> shiftOffRequest.getWeight());
@@ -308,7 +329,8 @@ public class NurseRosteringConstraintProvider implements ConstraintProvider {
 
     Constraint shiftOnRequest(ConstraintFactory constraintFactory) {
         return constraintFactory.from(ShiftOnRequest.class)
-                .ifNotExists(ShiftAssignment.class, Joiners.equal(ShiftOnRequest::getEmployee, ShiftAssignment::getEmployee),
+                .ifNotExists(ShiftAssignment.class,
+                        Joiners.equal(ShiftOnRequest::getEmployee, ShiftAssignment::getEmployee),
                         Joiners.equal(ShiftOnRequest::getShift, ShiftAssignment::getShift))
                 .penalize("shiftOnRequest", HardSoftScore.ONE_SOFT,
                         ShiftOnRequest::getWeight);
@@ -317,9 +339,10 @@ public class NurseRosteringConstraintProvider implements ConstraintProvider {
     // Alternative skill
     Constraint alternativeSkill(ConstraintFactory constraintFactory) {
         return constraintFactory.from(BooleanContractLine.class)
-                .filter(booleanContractLine -> booleanContractLine.getContractLineType()
-                        .equals(ContractLineType.ALTERNATIVE_SKILL_CATEGORY))
-                .join(ShiftAssignment.class, Joiners.equal(BooleanContractLine::getContract, ShiftAssignment::getContract))
+                .filter(booleanContractLine -> booleanContractLine
+                        .getContractLineType() == ContractLineType.ALTERNATIVE_SKILL_CATEGORY)
+                .join(ShiftAssignment.class,
+                        Joiners.equal(BooleanContractLine::getContract, ShiftAssignment::getContract))
                 .join(ShiftTypeSkillRequirement.class,
                         Joiners.equal((contract, shiftAssignment) -> shiftAssignment.getShiftType(),
                                 ShiftTypeSkillRequirement::getShiftType))
