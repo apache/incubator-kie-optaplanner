@@ -21,6 +21,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import java.time.Duration;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
+import java.util.Comparator;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Random;
@@ -272,6 +273,46 @@ public class ConsecutiveSetTreeTest {
 
             ConsecutiveSetTree<Integer, Integer, Integer> freshTree =
                     new ConsecutiveSetTree<>(val -> val, (a, b) -> b - a, 2, 0);
+            for (Map.Entry<Integer, Integer> entry : valueToCountMap.entrySet()) {
+                IntStream.range(0, entry.getValue()).map(index -> entry.getKey()).forEach(freshTree::add);
+            }
+
+            assertThat(tree.getConsecutiveSequences()).as("Mismatched Sequence: " + op)
+                    .usingRecursiveComparison()
+                    .ignoringFields("sourceTree")
+                    .isEqualTo(freshTree.getConsecutiveSequences());
+            assertThat(tree.getBreaks()).as("Mismatched Break: " + op)
+                    .usingRecursiveComparison()
+                    .isEqualTo(freshTree.getBreaks());
+        }
+    }
+
+    @Test
+    public void testRandomSequencesWithDuplicates() {
+        Random random = new Random(1);
+        TreeMap<Integer, Integer> valueToCountMap =
+                new TreeMap<>(Comparator.<Integer, Integer> comparing(Math::abs).thenComparing(System::identityHashCode));
+
+        // Tree we are absolute value consecutive
+        ConsecutiveSetTree<Integer, Integer, Integer> tree = new ConsecutiveSetTree<>(Math::abs, (a, b) -> b - a, 2, 0);
+
+        for (int i = 0; i < 1000; i++) {
+            int value = random.nextInt(64) - 32;
+            String op;
+            if (valueToCountMap.containsKey(value) && random.nextDouble() < 0.75) {
+                op = valueToCountMap.keySet().stream().map(Object::toString)
+                        .collect(Collectors.joining(", ", "Removing " + value + " from [", "]"));
+                valueToCountMap.computeIfPresent(value, (key, count) -> (count == 1) ? null : count - 1);
+                tree.remove(value);
+            } else {
+                op = valueToCountMap.keySet().stream().map(Object::toString)
+                        .collect(Collectors.joining(", ", "Adding " + value + " to [", "]"));
+                valueToCountMap.merge(value, 1, Integer::sum);
+                tree.add(value);
+            }
+
+            ConsecutiveSetTree<Integer, Integer, Integer> freshTree =
+                    new ConsecutiveSetTree<>(Math::abs, (a, b) -> b - a, 2, 0);
             for (Map.Entry<Integer, Integer> entry : valueToCountMap.entrySet()) {
                 IntStream.range(0, entry.getValue()).map(index -> entry.getKey()).forEach(freshTree::add);
             }
