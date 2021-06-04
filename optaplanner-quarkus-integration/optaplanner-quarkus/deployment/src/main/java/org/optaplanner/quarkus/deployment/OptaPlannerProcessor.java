@@ -56,6 +56,7 @@ import org.optaplanner.core.api.score.stream.ConstraintStreamImplType;
 import org.optaplanner.core.config.score.director.ScoreDirectorFactoryConfig;
 import org.optaplanner.core.config.solver.SolverConfig;
 import org.optaplanner.core.config.solver.SolverManagerConfig;
+import org.optaplanner.core.impl.domain.score.descriptor.ScoreDescriptor;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.quarkus.OptaPlannerBeanProvider;
 import org.optaplanner.quarkus.OptaPlannerRecorder;
@@ -611,8 +612,10 @@ class OptaPlannerProcessor {
     }
 
     private boolean shouldIgnoreMember(ClassInfo declaringClass) {
-        // SolutionDescriptor PLANNING_SCORE is also picked up as a candidate, which cause problems
-        return declaringClass.name().toString().startsWith(SolutionDescriptor.class.getName());
+        // SolutionDescriptor/ScoreDescriptor PLANNING_SCORE is also picked up as a candidate, which cause problems
+        return declaringClass.name().toString().startsWith(SolutionDescriptor.class.getName())
+                || declaringClass.name().toString().startsWith(
+                        ScoreDescriptor.class.getName());
     }
 
     private void registerCustomClassesFromSolverConfig(SolverConfig solverConfig, Set<Class<?>> reflectiveClassSet) {
