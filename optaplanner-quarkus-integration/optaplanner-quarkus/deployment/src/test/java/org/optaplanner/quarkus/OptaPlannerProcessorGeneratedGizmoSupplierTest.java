@@ -37,6 +37,7 @@ public class OptaPlannerProcessorGeneratedGizmoSupplierTest {
 
     @RegisterExtension
     static final QuarkusUnitTest config = new QuarkusUnitTest()
+            .overrideConfigKey("quarkus.test.flat-class-path", "true")
             .setArchiveProducer(() -> ShrinkWrap.create(JavaArchive.class)
                     .addAsResource("org/optaplanner/core/config/solver/testSolverConfigWithoutNamespace.xml",
                             "solverConfig.xml")
@@ -54,8 +55,7 @@ public class OptaPlannerProcessorGeneratedGizmoSupplierTest {
                             SolverConfigTest.DummySolutionPartitioner.class,
                             SolverConfigTest.DummyValueFilter.class))
             .addBuildChainCustomizer(buildChainBuilder -> buildChainBuilder.addBuildStep(context -> {
-                context.produce(CapabilityBuildItem.class, new CapabilityBuildItem("kogito-rules",
-                        OptaPlannerProcessorGeneratedGizmoSupplierTest.class.getName()));
+                context.produce(CapabilityBuildItem.class, new CapabilityBuildItem("kogito-rules"));
             }).produces(CapabilityBuildItem.class).build());
 
     @Inject
