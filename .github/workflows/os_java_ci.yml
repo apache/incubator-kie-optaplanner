@@ -68,7 +68,7 @@ jobs:
         with:
           fail_on_test_failures: true
           fail_if_no_tests: false
-          skip_publishing: true.
+          skip_publishing: true
           report_paths: '**/*-reports/TEST-*.xml'
 
   # Early feedback on a compatibility with the newest Java version.
@@ -118,5 +118,5 @@ jobs:
         with:
           fail_on_test_failures: true
           fail_if_no_tests: false
-          skip_publishing: true.
+          skip_publishing: true
           report_paths: '**/*-reports/TEST-*.xml'
