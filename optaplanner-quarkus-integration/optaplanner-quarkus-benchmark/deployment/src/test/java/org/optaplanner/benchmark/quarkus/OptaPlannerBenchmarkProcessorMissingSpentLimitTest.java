@@ -36,7 +36,8 @@ import io.quarkus.test.QuarkusUnitTest;
 public class OptaPlannerBenchmarkProcessorMissingSpentLimitTest {
 
     @RegisterExtension
-    static final QuarkusUnitTest config = new QuarkusUnitTest().setFlatClassPath(true)
+    static final QuarkusUnitTest config = new QuarkusUnitTest()
+            .overrideConfigKey("quarkus.test.flat-class-path", "true")
             .setArchiveProducer(() -> ShrinkWrap.create(JavaArchive.class)
                     .addClasses(TestdataQuarkusEntity.class,
                             TestdataQuarkusSolution.class, TestdataQuarkusConstraintProvider.class));
