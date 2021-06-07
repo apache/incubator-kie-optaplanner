@@ -29,16 +29,16 @@ Map getMultijobPRConfig() {
         parallel: true,
         jobs : [
             [
-                id: 'Optaplanner',
+                id: 'optaplanner',
                 primary: true,
             ], [
-                id: 'Apps',
+                id: 'apps',
                 repository: 'kogito-apps',
-                dependsOn: 'Optaplanner',
+                dependsOn: 'optaplanner',
             ], [
-                id: 'Examples',
+                id: 'examples',
                 repository: 'kogito-examples',
-                dependsOn: 'Optaplanner',
+                dependsOn: 'optaplanner',
             ]
         ]
     ]

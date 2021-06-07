@@ -214,7 +214,7 @@ boolean isUpstreamKogitoProject() {
 }
 
 boolean isUpstreamOptaplannerProject() {
-    return getUpstreamTriggerProject() && getUpstreamTriggerProject().startsWith('opta')
+    return getUpstreamTriggerProject() && getUpstreamTriggerProject() == 'optaplanner'
 }
 
 Integer getTimeoutValue() {
