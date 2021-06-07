@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2021 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,6 +26,7 @@ import org.optaplanner.core.impl.localsearch.scope.LocalSearchStepScope;
 import org.optaplanner.core.impl.phase.event.PhaseLifecycleListenerAdapter;
 import org.optaplanner.core.impl.phase.scope.AbstractStepScope;
 import org.optaplanner.core.impl.score.definition.ScoreDefinition;
+import org.optaplanner.core.impl.solver.AbstractSolver;
 import org.optaplanner.core.impl.solver.DefaultSolver;
 
 public class MoveCountPerStepSubSingleStatistic<Solution_>
@@ -44,12 +45,12 @@ public class MoveCountPerStepSubSingleStatistic<Solution_>
 
     @Override
     public void open(Solver<Solution_> solver) {
-        ((DefaultSolver<Solution_>) solver).addPhaseLifecycleListener(listener);
+        ((AbstractSolver<Solution_>) solver).addPhaseLifecycleListener(listener);
     }
 
     @Override
     public void close(Solver<Solution_> solver) {
-        ((DefaultSolver<Solution_>) solver).removePhaseLifecycleListener(listener);
+        ((AbstractSolver<Solution_>) solver).removePhaseLifecycleListener(listener);
     }
 
     private class MoveCountPerStepSubSingleStatisticListener extends PhaseLifecycleListenerAdapter<Solution_> {
