@@ -116,7 +116,7 @@ public class CheapTimeEasyScoreCalculator implements EasyScoreCalculator<CheapTi
         ACTIVE;
     }
 
-    private class MachinePeriodPart {
+    private static final class MachinePeriodPart {
 
         private final Machine machine;
         private final int period;

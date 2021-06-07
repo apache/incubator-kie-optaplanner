@@ -354,7 +354,7 @@ public class ConstraintCollectorsTest {
 
     @Test
     public void countDistinctBi() {
-        BiConstraintCollector<Integer, Integer, ?, Integer> collector = ConstraintCollectors.countDistinct((a, b) -> a + b);
+        BiConstraintCollector<Integer, Integer, ?, Integer> collector = ConstraintCollectors.countDistinct(Integer::sum);
         Object container = collector.supplier().get();
         // Add first value, we have one now.
         int firstValueA = 2;
@@ -382,7 +382,7 @@ public class ConstraintCollectorsTest {
 
     @Test
     public void countDistinctBiLong() {
-        BiConstraintCollector<Integer, Integer, ?, Long> collector = ConstraintCollectors.countDistinctLong((a, b) -> a + b);
+        BiConstraintCollector<Integer, Integer, ?, Long> collector = ConstraintCollectors.countDistinctLong(Integer::sum);
         Object container = collector.supplier().get();
         // Add first value, we have one now.
         int firstValueA = 2;

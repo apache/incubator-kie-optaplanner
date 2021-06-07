@@ -498,7 +498,8 @@ public class MeetingSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<Meet
         }
     }
 
-    private class MeetingSchedulingXlsxWriter extends AbstractXlsxWriter<MeetingSchedule, HardMediumSoftScore> {
+    private static final class MeetingSchedulingXlsxWriter
+            extends AbstractXlsxWriter<MeetingSchedule, HardMediumSoftScore> {
 
         MeetingSchedulingXlsxWriter(MeetingSchedule solution) {
             super(solution, MeetingSchedulingApp.SOLVER_CONFIG);
@@ -519,7 +520,7 @@ public class MeetingSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<Meet
             writePrintedFormView();
             writeScoreView(justificationList -> justificationList.stream()
                     .filter(o -> o instanceof MeetingAssignment)
-                    .map(o -> o.toString())
+                    .map(Object::toString)
                     .collect(joining(", ")));
             return workbook;
         }
@@ -929,7 +930,7 @@ public class MeetingSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<Meet
                     // Filter out filtered constraints
                     .filter(constraintMatch -> filteredConstraintNames == null
                             || filteredConstraintNames.contains(constraintMatch.getConstraintName()))
-                    .map(constraintMatch -> constraintMatch.getScore())
+                    .map(ConstraintMatch::getScore)
                     // Filter out positive constraints
                     .filter(indictmentScore -> !(indictmentScore.getHardScore() >= 0 && indictmentScore.getSoftScore() >= 0))
                     .reduce(HardMediumSoftScore::add).orElse(HardMediumSoftScore.ZERO);
@@ -974,7 +975,7 @@ public class MeetingSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<Meet
                                 .filter(constraintMatch -> constraintMatch.getConstraintName().equals(constraintName))
                                 .collect(toList());
                         HardMediumSoftScore sum = filteredConstraintMatchList.stream()
-                                .map(constraintMatch -> constraintMatch.getScore())
+                                .map(ConstraintMatch::getScore)
                                 .reduce(HardMediumSoftScore::add)
                                 .orElse(HardMediumSoftScore.ZERO);
                         String justificationTalkCodes = filteredConstraintMatchList.stream()

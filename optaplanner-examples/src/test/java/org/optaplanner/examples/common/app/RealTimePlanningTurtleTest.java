@@ -46,7 +46,7 @@ public abstract class RealTimePlanningTurtleTest<Solution_> {
         solver = solverFactory.buildSolver();
         ExecutorService executorService = Executors.newFixedThreadPool(2);
         Future<?> solveFuture = executorService.submit(() -> runSolve(solver, problem));
-        Future<?> changesFuture = executorService.submit(() -> runChanges());
+        Future<?> changesFuture = executorService.submit(this::runChanges);
         solveFuture.get();
         changesFuture.get();
     }

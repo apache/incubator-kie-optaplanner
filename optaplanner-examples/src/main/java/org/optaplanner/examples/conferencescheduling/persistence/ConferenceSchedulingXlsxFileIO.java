@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2021 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -1654,7 +1654,7 @@ public class ConferenceSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<C
                             || filteredConstraintNameList.contains(constraintMatch.getConstraintName()))
                     .filter(constraintMatch -> isValidJustificationList == null
                             || isValidJustificationList.test(constraintMatch.getJustificationList()))
-                    .map(constraintMatch -> constraintMatch.getScore())
+                    .map(ConstraintMatch::getScore)
                     // Filter out positive constraints
                     .filter(indictmentScore -> !(indictmentScore.getHardScore() >= 0 && indictmentScore.getMediumScore() >= 0
                             && indictmentScore.getSoftScore() >= 0))

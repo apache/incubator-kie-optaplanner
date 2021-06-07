@@ -468,7 +468,7 @@ public class ConferenceSchedulingCfpDevoxxImporter {
                     .collect(Collectors.toSet()));
         }
 
-        timeslotList.sort(Comparator.comparing(timeslot -> timeslot.getStartDateTime()));
+        timeslotList.sort(Comparator.comparing(Timeslot::getStartDateTime));
         solution.setTimeslotList(timeslotList);
     }
 
