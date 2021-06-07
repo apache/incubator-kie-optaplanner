@@ -57,16 +57,16 @@ jobs:
           key: ${{ runner.os }}-${{ matrix.java-version }}-m2-${{ hashFiles('**/pom.xml') }}
           restore-keys: ${{ runner.os }}-m2
       - name: Set FLOW_TYPE to pull-request
-        if: github.event == 'pull_request'
+        if: github.event_name == 'pull_request'
         run: echo "FLOW_TYPE=pull-request" >> $GITHUB_ENV
       - name: Set FLOW_TYPE to branch
-        if: github.event == 'push'
+        if: github.event_name == 'push'
         run: echo "FLOW_TYPE=branch" >> $GITHUB_ENV
       - name: Build Chain ${{ matrix.java-version }}
         id: build-chain
-        uses: kiegroup/github-action-build-chain@feature/branch_flow
+        uses: kiegroup/github-action-build-chain@v2.6
         with:
-          definition-file: https://raw.githubusercontent.com/Ginxo/kogito-pipelines/fix/branch_flow/.ci/pull-request-config.yaml
+          definition-file: https://raw.githubusercontent.com/${GROUP}/kogito-pipelines/${BRANCH}/.ci/pull-request-config.yaml
           starting-project: kiegroup/optaplanner
           flow-type: ${{ env.FLOW_TYPE }}
       - name: Check Surefire Report
@@ -114,16 +114,16 @@ jobs:
           key: ${{ runner.os }}-16-m2-${{ hashFiles('**/pom.xml') }}
           restore-keys: ${{ runner.os }}-m2
       - name: Set FLOW_TYPE to pull-request
-        if: github.event == 'pull_request'
+        if: github.event_name == 'pull_request'
         run: echo "FLOW_TYPE=pull-request" >> $GITHUB_ENV
       - name: Set FLOW_TYPE to branch
-        if: github.event == 'push'
+        if: github.event_name == 'push'
         run: echo "FLOW_TYPE=branch" >> $GITHUB_ENV
       - name: Build Chain 16
         id: build-chain
-        uses: kiegroup/github-action-build-chain@feature/branch_flow
+        uses: kiegroup/github-action-build-chain@v2.6
         with:
-          definition-file: https://raw.githubusercontent.com/Ginxo/kogito-pipelines/fix/branch_flow/.ci/pull-request-config.yaml
+          definition-file: https://raw.githubusercontent.com/${GROUP}/kogito-pipelines/${BRANCH}/.ci/pull-request-config.yaml
           starting-project: kiegroup/optaplanner
           flow-type: ${{ env.FLOW_TYPE }}
       - name: Check Surefire Report
