@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2021 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -117,7 +117,7 @@ public abstract class AbstractXlsxSolutionFileIO<Solution_> implements SolutionF
                             + ") for constraint (" + name + ") must be a number and the cell type must be numeric.");
                 }
                 double value = weightCell.getNumericCellValue();
-                if (((double) ((int) value)) != value) {
+                if (((int) value) != value) {
                     throw new IllegalArgumentException(currentPosition() + ": The value (" + value
                             + ") for constraint (" + name + ") must be an integer.");
                 }
@@ -144,7 +144,7 @@ public abstract class AbstractXlsxSolutionFileIO<Solution_> implements SolutionF
                             + ") for constraint (" + name + ") must be a number and the cell type must be numeric.");
                 }
                 double value = weightCell.getNumericCellValue();
-                if (((double) ((long) value)) != value) {
+                if (((long) value) != value) {
                     throw new IllegalArgumentException(currentPosition() + ": The value (" + value
                             + ") for constraint (" + name + ") must be a (long) integer.");
                 }

@@ -119,7 +119,7 @@ public class DefaultSubChainSelector<Solution_> extends AbstractSelector<Solutio
         GenuineVariableDescriptor<Solution_> variableDescriptor = valueSelector.getVariableDescriptor();
         long valueSize = valueSelector.getSize();
         // Fail-fast when anchorTrailingChainList.size() could ever be too big
-        if (valueSize > (long) Integer.MAX_VALUE) {
+        if (valueSize > Integer.MAX_VALUE) {
             throw new IllegalStateException("The selector (" + this
                     + ") has a valueSelector (" + valueSelector
                     + ") with valueSize (" + valueSize
