@@ -65,9 +65,8 @@ public class SwapMoveSelectorFactory<Solution_>
             return new ListSwapMoveSelector<>(
                     (ListVariableDescriptor<Solution_>) variableDescriptorList.get(0),
                     leftEntitySelector,
-                    rightEntitySelector
-            // TODO randomSelection
-            );
+                    rightEntitySelector,
+                    randomSelection);
         }
         return new SwapMoveSelector<>(leftEntitySelector, rightEntitySelector, variableDescriptorList,
                 randomSelection);
