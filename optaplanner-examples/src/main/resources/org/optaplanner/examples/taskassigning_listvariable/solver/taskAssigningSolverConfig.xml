@@ -25,18 +25,18 @@
       <changeMoveSelector>
         <!--      <cacheType>STEP</cacheType>-->
         <!--      <selectionOrder>ORIGINAL</selectionOrder>-->
-        <entitySelector>
-          <cacheType>STEP</cacheType>
-          <selectionOrder>SHUFFLED</selectionOrder>
-        </entitySelector>
+<!--        <entitySelector>-->
+<!--          <cacheType>STEP</cacheType>-->
+<!--          <selectionOrder>SHUFFLED</selectionOrder>-->
+<!--        </entitySelector>-->
       </changeMoveSelector>
       <swapMoveSelector>
         <!--      <cacheType>STEP</cacheType>-->
         <!--      <selectionOrder>ORIGINAL</selectionOrder>-->
-        <entitySelector>
-          <cacheType>STEP</cacheType>
-          <selectionOrder>SHUFFLED</selectionOrder>
-        </entitySelector>
+<!--        <entitySelector>-->
+<!--          <cacheType>STEP</cacheType>-->
+<!--          <selectionOrder>SHUFFLED</selectionOrder>-->
+<!--        </entitySelector>-->
       </swapMoveSelector>
     </unionMoveSelector>
 <!--    <forager>-->

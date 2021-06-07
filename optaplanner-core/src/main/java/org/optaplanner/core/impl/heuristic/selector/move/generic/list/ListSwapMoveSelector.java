@@ -17,6 +17,7 @@
 package org.optaplanner.core.impl.heuristic.selector.move.generic.list;
 
 import java.util.Iterator;
+import java.util.stream.StreamSupport;
 
 import org.optaplanner.core.impl.domain.variable.descriptor.ListVariableDescriptor;
 import org.optaplanner.core.impl.heuristic.move.Move;
@@ -28,14 +29,17 @@ public class ListSwapMoveSelector<Solution_> extends GenericMoveSelector<Solutio
     private final ListVariableDescriptor<Solution_> listVariableDescriptor;
     private final EntitySelector<Solution_> leftEntitySelector;
     private final EntitySelector<Solution_> rightEntitySelector;
+    private final boolean randomSelection;
 
     public ListSwapMoveSelector(
             ListVariableDescriptor<Solution_> listVariableDescriptor,
             EntitySelector<Solution_> leftEntitySelector,
-            EntitySelector<Solution_> rightEntitySelector) {
+            EntitySelector<Solution_> rightEntitySelector,
+            boolean randomSelection) {
         this.listVariableDescriptor = listVariableDescriptor;
         this.leftEntitySelector = leftEntitySelector;
         this.rightEntitySelector = rightEntitySelector;
+        this.randomSelection = randomSelection;
         phaseLifecycleSupport.addEventListener(leftEntitySelector);
         if (leftEntitySelector != rightEntitySelector) {
             phaseLifecycleSupport.addEventListener(rightEntitySelector);
@@ -43,22 +47,30 @@ public class ListSwapMoveSelector<Solution_> extends GenericMoveSelector<Solutio
     }
 
     @Override
-    public long getSize() {
-        return 0;
-    }
-
-    @Override
     public Iterator<Move<Solution_>> iterator() {
-        return new NaiveListSwapIterator<>(leftEntitySelector, rightEntitySelector, listVariableDescriptor);
+        if (randomSelection) {
+            return new RandomListSwapIterator<>(leftEntitySelector, rightEntitySelector, listVariableDescriptor, workingRandom);
+        } else {
+            return new NaiveListSwapIterator<>(leftEntitySelector, rightEntitySelector, listVariableDescriptor);
+        }
     }
 
     @Override
     public boolean isCountable() {
-        return false;
+        return leftEntitySelector.isCountable() && rightEntitySelector.isCountable();
     }
 
     @Override
     public boolean isNeverEnding() {
-        return false;
+        return randomSelection || leftEntitySelector.isNeverEnding() || rightEntitySelector.isNeverEnding();
+    }
+
+    @Override
+    public long getSize() {
+        Iterable<?> i = leftEntitySelector::endingIterator;
+        int valueCount = StreamSupport.stream(i.spliterator(), false)
+                .mapToInt(listVariableDescriptor::getListSize)
+                .sum();
+        return (long) valueCount * valueCount;
     }
 }
