@@ -71,7 +71,8 @@ public class ChangeMoveSelectorFactory<Solution_>
             return new ListChangeMoveSelector<>(
                     (ListVariableDescriptor<Solution_>) valueSelector.getVariableDescriptor(),
                     entitySelector,
-                    valueSelector);
+                    valueSelector,
+                    randomSelection);
         }
         return new ChangeMoveSelector<>(entitySelector, valueSelector, randomSelection);
     }

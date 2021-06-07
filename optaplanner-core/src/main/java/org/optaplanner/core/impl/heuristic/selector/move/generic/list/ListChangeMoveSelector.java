@@ -29,14 +29,17 @@ public class ListChangeMoveSelector<Solution_> extends GenericMoveSelector<Solut
     private final ListVariableDescriptor<Solution_> listVariableDescriptor;
     private final EntitySelector<Solution_> entitySelector;
     private final ValueSelector<Solution_> valueSelector;
+    private final boolean randomSelection;
 
     public ListChangeMoveSelector(
             ListVariableDescriptor<Solution_> listVariableDescriptor,
             EntitySelector<Solution_> entitySelector,
-            ValueSelector<Solution_> valueSelector) {
+            ValueSelector<Solution_> valueSelector,
+            boolean randomSelection) {
         this.listVariableDescriptor = listVariableDescriptor;
         this.entitySelector = entitySelector;
         this.valueSelector = valueSelector;
+        this.randomSelection = randomSelection;
         phaseLifecycleSupport.addEventListener(entitySelector);
         phaseLifecycleSupport.addEventListener(valueSelector);
     }
@@ -50,16 +53,20 @@ public class ListChangeMoveSelector<Solution_> extends GenericMoveSelector<Solut
 
     @Override
     public Iterator<Move<Solution_>> iterator() {
-        return new NaiveListChangeIterator<>(entitySelector, listVariableDescriptor);
+        if (randomSelection) {
+            return new RandomListChangeIterator<>(entitySelector, entitySelector, listVariableDescriptor, workingRandom);
+        } else {
+            return new NaiveListChangeIterator<>(entitySelector, listVariableDescriptor);
+        }
     }
 
     @Override
     public boolean isCountable() {
-        return true;
+        return entitySelector.isCountable() && valueSelector.isCountable();
     }
 
     @Override
     public boolean isNeverEnding() {
-        return false;
+        return randomSelection || entitySelector.isNeverEnding() || valueSelector.isNeverEnding();
     }
 }

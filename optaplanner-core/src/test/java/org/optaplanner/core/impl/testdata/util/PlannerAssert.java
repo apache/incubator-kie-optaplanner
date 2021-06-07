@@ -41,6 +41,7 @@ import org.optaplanner.core.impl.heuristic.selector.move.MoveSelector;
 import org.optaplanner.core.impl.heuristic.selector.move.generic.ChangeMove;
 import org.optaplanner.core.impl.heuristic.selector.move.generic.SwapMove;
 import org.optaplanner.core.impl.heuristic.selector.move.generic.list.ListChangeMove;
+import org.optaplanner.core.impl.heuristic.selector.move.generic.list.ListSwapMove;
 import org.optaplanner.core.impl.heuristic.selector.value.EntityIndependentValueSelector;
 import org.optaplanner.core.impl.heuristic.selector.value.ValueSelector;
 import org.optaplanner.core.impl.heuristic.selector.value.chained.SubChain;
@@ -252,6 +253,12 @@ public final class PlannerAssert {
                     + "[" + listChangeMove.getSourceIndex() + "]->"
                     + convertToCodeAssertable(listChangeMove.getDestinationEntity())
                     + "[" + listChangeMove.getDestinationIndex() + "]";
+        } else if (o instanceof ListSwapMove) {
+            ListSwapMove<?> listSwapMove = (ListSwapMove<?>) o;
+            return () -> convertToCodeAssertable(listSwapMove.getLeftEntity())
+                    + "[" + listSwapMove.getLeftIndex() + "]<->"
+                    + convertToCodeAssertable(listSwapMove.getRightEntity())
+                    + "[" + listSwapMove.getRightIndex() + "]";
         } else if (o instanceof List) {
             List<?> list = (List) o;
             StringBuilder codeBuilder = new StringBuilder("[");
