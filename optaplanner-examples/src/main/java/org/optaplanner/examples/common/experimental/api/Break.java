@@ -14,27 +14,12 @@
  * limitations under the License.
  */
 
-package org.optaplanner.examples.common.experimental;
+package org.optaplanner.examples.common.experimental.api;
 
-import java.util.Iterator;
-import java.util.Map;
+public interface Break<ValueType_, DifferenceType_ extends Comparable<DifferenceType_>> {
+    ValueType_ getAfterItem();
 
-public class MapValuesIterable<KeyType_, ValueType_> implements Iterable<ValueType_> {
-    private final Map<KeyType_, ValueType_> sourceMap;
+    ValueType_ getBeforeItem();
 
-    public MapValuesIterable(Map<KeyType_, ValueType_> sourceMap) {
-        this.sourceMap = sourceMap;
-    }
-
-    @Override
-    public Iterator<ValueType_> iterator() {
-        return sourceMap.values().iterator();
-    }
-
-    @Override
-    public String toString() {
-        return "MapValuesIterable{" +
-                "sourceMap=" + sourceMap +
-                '}';
-    }
+    DifferenceType_ getLength();
 }

@@ -25,8 +25,8 @@ import org.optaplanner.core.api.score.stream.ConstraintCollectors;
 import org.optaplanner.core.api.score.stream.ConstraintFactory;
 import org.optaplanner.core.api.score.stream.ConstraintProvider;
 import org.optaplanner.core.api.score.stream.Joiners;
-import org.optaplanner.examples.common.experimental.ConsecutiveData;
 import org.optaplanner.examples.common.experimental.ExperimentalConstraintCollectors;
+import org.optaplanner.examples.common.experimental.api.ConsecutiveInfo;
 import org.optaplanner.examples.nurserostering.domain.Employee;
 import org.optaplanner.examples.nurserostering.domain.NurseRosterParametrization;
 import org.optaplanner.examples.nurserostering.domain.ShiftAssignment;
@@ -126,7 +126,7 @@ public class NurseRosteringConstraintProvider implements ConstraintProvider {
                 .groupBy((contract, shift) -> shift.getEmployee(), (contract, shift) -> contract,
                         ExperimentalConstraintCollectors.consecutive((contract, shift) -> shift.getShiftDate(),
                                 ShiftDate::getDayIndex))
-                .flattenLast(ConsecutiveData::getConsecutiveSequences)
+                .flattenLast(ConsecutiveInfo::getConsecutiveSequences)
                 .filter((employee, contract, shiftList) -> contract.isViolated(shiftList.getLength()))
                 .penalize("consecutiveWorkingDays", HardSoftScore.ONE_SOFT,
                         (employee, contract, shiftList) -> contract.getViolationAmount(shiftList.getLength()));
@@ -142,7 +142,7 @@ public class NurseRosteringConstraintProvider implements ConstraintProvider {
                 .groupBy((contract, shift) -> shift.getEmployee(), (contract, shift) -> contract,
                         ExperimentalConstraintCollectors.consecutive((contract, shift) -> shift.getShiftDate(),
                                 ShiftDate::getDayIndex))
-                .flattenLast(ConsecutiveData::getBreaks)
+                .flattenLast(ConsecutiveInfo::getBreaks)
                 .filter((employee, contract, breakInfo) -> contract.isViolated(breakInfo.getLength() - 1))
                 .penalize("consecutiveFreeDays", HardSoftScore.ONE_SOFT,
                         (employee, contract, breakInfo) -> contract
@@ -218,10 +218,10 @@ public class NurseRosteringConstraintProvider implements ConstraintProvider {
                 .groupBy((contract, shift) -> shift.getEmployee(), (contract, shift) -> contract,
                         ExperimentalConstraintCollectors.consecutive((contract, shift) -> shift.getShiftDate(),
                                 shiftDate -> shiftDate.getWeekendSundayIndex() / 7))
-                .flattenLast(ConsecutiveData::getConsecutiveSequences)
-                .filter((employee, contract, shiftList) -> contract.isViolated(shiftList.getLength()))
+                .flattenLast(ConsecutiveInfo::getConsecutiveSequences)
+                .filter((employee, contract, shiftList) -> contract.isViolated(shiftList.getCount()))
                 .penalize("consecutiveWorkingWeekends", HardSoftScore.ONE_SOFT,
-                        (employee, contract, shiftList) -> contract.getViolationAmount(shiftList.getLength()));
+                        (employee, contract, shiftList) -> contract.getViolationAmount(shiftList.getCount()));
     }
 
     // Complete Weekends
@@ -234,12 +234,12 @@ public class NurseRosteringConstraintProvider implements ConstraintProvider {
                 .groupBy((contract, shift) -> shift.getEmployee(), (contract, shift) -> contract,
                         ExperimentalConstraintCollectors.consecutive((contract, shift) -> shift.getShiftDate(),
                                 ShiftDate::getDayIndex))
-                .flattenLast(ConsecutiveData::getConsecutiveSequences)
+                .flattenLast(ConsecutiveInfo::getConsecutiveSequences)
                 .filter((employee, contract, shiftList) -> new EmployeeConsecutiveAssignmentStart(
-                        employee, shiftList.getItems().first()).isWeekendAndNotFirstDayOfWeekend())
+                        employee, shiftList.getFirstItem()).isWeekendAndNotFirstDayOfWeekend())
                 .penalize("startOnNotFirstDayOfWeekend", HardSoftScore.ONE_SOFT,
                         (employee, contract,
-                                shiftList) -> new EmployeeConsecutiveAssignmentStart(employee, shiftList.getItems().first())
+                                shiftList) -> new EmployeeConsecutiveAssignmentStart(employee, shiftList.getFirstItem())
                                         .getDistanceToFirstDayOfWeekend() * contract.getWeight());
     }
 
@@ -252,12 +252,12 @@ public class NurseRosteringConstraintProvider implements ConstraintProvider {
                 .groupBy((contract, shift) -> shift.getEmployee(), (contract, shift) -> contract,
                         ExperimentalConstraintCollectors.consecutive((contract, shift) -> shift.getShiftDate(),
                                 ShiftDate::getDayIndex))
-                .flattenLast(ConsecutiveData::getConsecutiveSequences)
+                .flattenLast(ConsecutiveInfo::getConsecutiveSequences)
                 .filter((employee, contract, shiftList) -> new EmployeeConsecutiveAssignmentEnd(employee,
-                        shiftList.getItems().last()).isWeekendAndNotLastDayOfWeekend())
+                        shiftList.getLastItem()).isWeekendAndNotLastDayOfWeekend())
                 .penalize("endOnNotLastDayOfWeekend", HardSoftScore.ONE_SOFT,
                         (employee, contract, shiftList) -> new EmployeeConsecutiveAssignmentEnd(employee,
-                                shiftList.getItems().last()).getDistanceToLastDayOfWeekend() * contract.getWeight());
+                                shiftList.getLastItem()).getDistanceToLastDayOfWeekend() * contract.getWeight());
     }
 
     // Identical shiftTypes during a weekend

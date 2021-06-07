@@ -14,27 +14,33 @@
  * limitations under the License.
  */
 
-package org.optaplanner.examples.common.experimental;
+package org.optaplanner.examples.common.experimental.impl;
 
-public class Break<ValueType_, DifferenceType_> {
+import org.optaplanner.examples.common.experimental.api.Break;
+
+public class BreakImpl<ValueType_, DifferenceType_ extends Comparable<DifferenceType_>>
+        implements Break<ValueType_, DifferenceType_> {
     private ValueType_ beforeItem;
     private ValueType_ afterItem;
     private DifferenceType_ length;
 
-    public Break(ValueType_ beforeItem, ValueType_ afterItem, DifferenceType_ length) {
+    public BreakImpl(ValueType_ beforeItem, ValueType_ afterItem, DifferenceType_ length) {
         this.beforeItem = beforeItem;
         this.afterItem = afterItem;
         this.length = length;
     }
 
+    @Override
     public ValueType_ getBeforeItem() {
         return beforeItem;
     }
 
+    @Override
     public ValueType_ getAfterItem() {
         return afterItem;
     }
 
+    @Override
     public DifferenceType_ getLength() {
         return length;
     }
