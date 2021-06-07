@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2021 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -518,7 +518,8 @@ public class MeetingSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<Meet
             writePersonsView();
             writePrintedFormView();
             writeScoreView(justificationList -> justificationList.stream()
-                    .filter(o -> o instanceof MeetingAssignment).map(o -> ((MeetingAssignment) o).toString())
+                    .filter(o -> o instanceof MeetingAssignment)
+                    .map(o -> o.toString())
                     .collect(joining(", ")));
             return workbook;
         }

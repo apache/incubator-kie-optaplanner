@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2021 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -1356,7 +1356,7 @@ public class ConstraintCollectorsTest {
 
     @Test
     public void minNotComparableBi() {
-        BiConstraintCollector<String, String, ?, String> collector = min((a, b) -> a, Comparator.comparing(o -> (String) o));
+        BiConstraintCollector<String, String, ?, String> collector = min((a, b) -> a, Comparator.comparing(o -> o));
         Object container = collector.supplier().get();
         // add first value, which becomes the min
         String firstValue = "b";
@@ -1409,7 +1409,7 @@ public class ConstraintCollectorsTest {
     @Test
     public void minNotComparableTri() {
         TriConstraintCollector<String, String, String, ?, String> collector = min((a, b, c) -> a,
-                Comparator.comparing(o -> (String) o));
+                Comparator.comparing(o -> o));
         Object container = collector.supplier().get();
         // add first value, which becomes the min
         String firstValue = "b";
@@ -1462,7 +1462,7 @@ public class ConstraintCollectorsTest {
     @Test
     public void minNotComparableQuad() {
         QuadConstraintCollector<String, String, String, String, ?, String> collector = min((a, b, c, d) -> a,
-                Comparator.comparing(o -> (String) o));
+                Comparator.comparing(o -> o));
         Object container = collector.supplier().get();
         // add first value, which becomes the min
         String firstValue = "b";
@@ -1518,7 +1518,7 @@ public class ConstraintCollectorsTest {
 
     @Test
     public void maxNotComparable() {
-        UniConstraintCollector<String, ?, String> collector = max(Comparator.comparing(o -> (String) o));
+        UniConstraintCollector<String, ?, String> collector = max(Comparator.comparing(o -> o));
         Object container = collector.supplier().get();
         // add first value, which becomes the max
         String firstValue = "b";
@@ -1571,7 +1571,7 @@ public class ConstraintCollectorsTest {
 
     @Test
     public void maxNotComparableBi() {
-        BiConstraintCollector<String, String, ?, String> collector = max((a, b) -> a, Comparator.comparing(o -> (String) o));
+        BiConstraintCollector<String, String, ?, String> collector = max((a, b) -> a, Comparator.comparing(o -> o));
         Object container = collector.supplier().get();
         // add first value, which becomes the max
         String firstValue = "b";
@@ -1624,7 +1624,7 @@ public class ConstraintCollectorsTest {
     @Test
     public void maxNotComparableTri() {
         TriConstraintCollector<String, String, String, ?, String> collector = max((a, b, c) -> a,
-                Comparator.comparing(o -> (String) o));
+                Comparator.comparing(o -> o));
         Object container = collector.supplier().get();
         // add first value, which becomes the max
         String firstValue = "b";
@@ -1677,7 +1677,7 @@ public class ConstraintCollectorsTest {
     @Test
     public void maxNotComparableQuad() {
         QuadConstraintCollector<String, String, String, String, ?, String> collector = max((a, b, c, d) -> a,
-                Comparator.comparing(o -> (String) o));
+                Comparator.comparing(o -> o));
         Object container = collector.supplier().get();
         // add first value, which becomes the max
         String firstValue = "b";
