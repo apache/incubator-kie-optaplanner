@@ -258,8 +258,8 @@ public class CloudComputerPanel extends JPanel {
             int offsetValue = 0;
             int colorIndex = 0;
             for (int processValue : processValues) {
-                int offset = (int) ((double) offsetValue * pixelsPerValue);
-                int processWidth = (int) ((double) processValue * pixelsPerValue) + 1;
+                int offset = (int) (offsetValue * pixelsPerValue);
+                int processWidth = (int) (processValue * pixelsPerValue) + 1;
                 processWidth = Math.max(processWidth, 1);
                 g.setColor(TangoColorFactory.SEQUENCE_1.get(colorIndex));
                 g.fillRect(offset, 0, processWidth, size.height);

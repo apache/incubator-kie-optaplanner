@@ -646,8 +646,8 @@ public class MeetingSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<Meet
                                 : endMinuteOfDay;
                     }
                 }
-                LocalTime startTime = LocalTime.ofSecondOfDay(startMinuteOfDay * 60);
-                LocalTime endTime = LocalTime.ofSecondOfDay(endMinuteOfDay * 60);
+                LocalTime startTime = LocalTime.ofSecondOfDay(startMinuteOfDay * 60L);
+                LocalTime endTime = LocalTime.ofSecondOfDay(endMinuteOfDay * 60L);
                 LocalTime lunchHourStartTime = LocalTime.ofSecondOfDay(12 * 60 * 60); // 12pm
 
                 nextCell().setCellValue(DAY_FORMATTER.format(date));
@@ -810,7 +810,7 @@ public class MeetingSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<Meet
         }
 
         private String getTimeString(int minuteOfDay) {
-            return TIME_FORMATTER.format(LocalTime.ofSecondOfDay(minuteOfDay * 60));
+            return TIME_FORMATTER.format(LocalTime.ofSecondOfDay(minuteOfDay * 60L));
         }
 
         private void writeMeetingAssignmentList(List<MeetingAssignment> meetingAssignmentList) {
@@ -894,7 +894,7 @@ public class MeetingSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<Meet
 
         private void writeTimeGrainHoursHeaders() {
             for (TimeGrain timeGrain : solution.getTimeGrainList()) {
-                LocalTime startTime = LocalTime.ofSecondOfDay(timeGrain.getStartingMinuteOfDay() * 60);
+                LocalTime startTime = LocalTime.ofSecondOfDay(timeGrain.getStartingMinuteOfDay() * 60L);
                 nextHeaderCell(TIME_FORMATTER.format(startTime));
             }
         }
