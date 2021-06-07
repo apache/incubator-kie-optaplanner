@@ -61,6 +61,7 @@ def releaseBranchFolder = "${KogitoConstants.KOGITO_DSL_RELEASE_FOLDER}/${JOB_BR
 
 if (isMainBranch()) {
     // Old PR checks. To be removed once supported release branches (<= 8.7.x) are no more there.
+    // TODO remove method calls once 8.5.x and 8.7.x are no more supported
     setupOptaplannerPrJob()
     setupOptaplannerQuarkusLTSPrJob()
     setupOptaplannerNativePrJob()
@@ -105,18 +106,21 @@ if (isMainBranch()) {
 // Methods
 /////////////////////////////////////////////////////////////////
 
+// TODO remove method once 8.5.x and 8.7.x are no more supported
 void setupOptaplannerPrJob() {
     def jobParams = getDefaultJobParams()
     jobParams.pr.whiteListTargetBranches = ['8.5.x', '8.7.x']
     KogitoJobTemplate.createPRJob(this, jobParams)
 }
 
+// TODO remove method once 8.5.x and 8.7.x are no more supported
 void setupOptaplannerQuarkusLTSPrJob() {
     def jobParams = getDefaultJobParams()
     jobParams.pr.whiteListTargetBranches = ['8.5.x', '8.7.x']
     KogitoJobTemplate.createQuarkusLTSPRJob(this, jobParams)
 }
 
+// TODO remove method once 8.5.x and 8.7.x are no more supported
 void setupOptaplannerNativePrJob() {
     def jobParams = getDefaultJobParams()
     jobParams.pr.whiteListTargetBranches = ['8.5.x', '8.7.x']
@@ -138,6 +142,7 @@ void setupOptawebVehicleRoutingPrJob() {
 void setupMultijobPrDefaultChecks() {
     KogitoJobTemplate.createMultijobPRJobs(this, getMultijobPRConfig()) {
         def jobParams = getDefaultJobParams()
+        // TODO remove 8.* branches once 8.5.x and 8.7.x are no more supported
         jobParams.pr.blackListTargetBranches = ['7.x', '8.5.x', '8.7.x']
         return jobParams
     }
@@ -146,6 +151,7 @@ void setupMultijobPrDefaultChecks() {
 void setupMultijobPrNativeChecks() {
     KogitoJobTemplate.createMultijobNativePRJobs(this, getMultijobPRConfig()) {
         def jobParams = getDefaultJobParams()
+        // TODO remove 8.* branches once 8.5.x and 8.7.x are no more supported
         jobParams.pr.blackListTargetBranches = ['7.x', '8.5.x', '8.7.x']
         return jobParams
     }
@@ -154,6 +160,7 @@ void setupMultijobPrNativeChecks() {
 void setupMultijobPrLTSChecks() {
     KogitoJobTemplate.createMultijobLTSPRJobs(this, getMultijobPRConfig()) {
         def jobParams = getDefaultJobParams()
+        // TODO remove 8.* branches once 8.5.x and 8.7.x are no more supported
         jobParams.pr.blackListTargetBranches = ['7.x', '8.5.x', '8.7.x']
         return jobParams
     }
