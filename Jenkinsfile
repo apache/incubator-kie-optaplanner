@@ -138,8 +138,8 @@ void checkoutRuntimesRepo() {
 }
 
 void checkoutOptaplannerRepo() {
-    dir('optaplanner') {
-        githubscm.checkoutIfExists('optaplanner', changeAuthor, changeBranch, 'kiegroup', getOptaplannerTargetBranch(), true)
+    dir(optaplannerRepo) {
+        githubscm.checkoutIfExists(optaplannerRepo, changeAuthor, changeBranch, 'kiegroup', getOptaplannerTargetBranch(), true)
     }
 }
 
