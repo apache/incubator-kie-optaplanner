@@ -18,6 +18,7 @@ package org.optaplanner.quarkus.deployment;
 
 import static io.quarkus.deployment.annotations.ExecutionTime.STATIC_INIT;
 
+import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -593,20 +594,15 @@ class OptaPlannerProcessor {
     }
 
     private boolean shouldIgnoreMember(AnnotationInstance annotationInstance) {
-        ClassInfo declaringClass;
         switch (annotationInstance.target().kind()) {
             case FIELD:
-                declaringClass = annotationInstance.target().asField().declaringClass();
-                break;
+                return (annotationInstance.target().asField().flags() & Modifier.STATIC) != 0;
             case METHOD:
-                declaringClass = annotationInstance.target().asMethod().declaringClass();
-                break;
+                return (annotationInstance.target().asMethod().flags() & Modifier.STATIC) != 0;
             default:
                 throw new IllegalArgumentException(
                         "Annotation (" + annotationInstance.name() + ") can only be applied to methods and fields.");
         }
-        return !declaringClass.annotations().containsKey(DotNames.PLANNING_SOLUTION) &&
-                !declaringClass.annotations().containsKey(DotNames.PLANNING_ENTITY);
     }
 
     private void registerCustomClassesFromSolverConfig(SolverConfig solverConfig, Set<Class<?>> reflectiveClassSet) {
