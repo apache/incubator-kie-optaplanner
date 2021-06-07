@@ -26,7 +26,6 @@ import org.optaplanner.core.impl.phase.event.PhaseLifecycleListenerAdapter;
 import org.optaplanner.core.impl.phase.scope.AbstractStepScope;
 import org.optaplanner.core.impl.score.definition.ScoreDefinition;
 import org.optaplanner.core.impl.solver.AbstractSolver;
-import org.optaplanner.core.impl.solver.DefaultSolver;
 import org.optaplanner.core.impl.solver.scope.SolverScope;
 
 public class ScoreCalculationSpeedSubSingleStatistic<Solution_>

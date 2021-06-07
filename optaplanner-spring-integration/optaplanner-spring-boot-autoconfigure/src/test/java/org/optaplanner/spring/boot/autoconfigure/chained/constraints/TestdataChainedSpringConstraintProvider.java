@@ -23,7 +23,6 @@ import org.optaplanner.core.api.score.stream.ConstraintProvider;
 import org.optaplanner.core.api.score.stream.Joiners;
 import org.optaplanner.spring.boot.autoconfigure.chained.domain.TestdataChainedSpringAnchor;
 import org.optaplanner.spring.boot.autoconfigure.chained.domain.TestdataChainedSpringEntity;
-import org.optaplanner.spring.boot.autoconfigure.chained.domain.TestdataChainedSpringObject;
 
 public class TestdataChainedSpringConstraintProvider implements ConstraintProvider {
 

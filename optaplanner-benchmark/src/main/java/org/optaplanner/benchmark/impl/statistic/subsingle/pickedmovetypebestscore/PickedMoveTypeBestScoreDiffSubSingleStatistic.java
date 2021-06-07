@@ -49,7 +49,6 @@ import org.optaplanner.core.impl.phase.scope.AbstractStepScope;
 import org.optaplanner.core.impl.score.ScoreUtils;
 import org.optaplanner.core.impl.score.definition.ScoreDefinition;
 import org.optaplanner.core.impl.solver.AbstractSolver;
-import org.optaplanner.core.impl.solver.DefaultSolver;
 
 public class PickedMoveTypeBestScoreDiffSubSingleStatistic<Solution_>
         extends PureSubSingleStatistic<Solution_, PickedMoveTypeBestScoreDiffStatisticPoint> {

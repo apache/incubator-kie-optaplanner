@@ -26,7 +26,6 @@ import org.optaplanner.core.impl.phase.event.PhaseLifecycleListenerAdapter;
 import org.optaplanner.core.impl.phase.scope.AbstractStepScope;
 import org.optaplanner.core.impl.score.definition.ScoreDefinition;
 import org.optaplanner.core.impl.solver.AbstractSolver;
-import org.optaplanner.core.impl.solver.DefaultSolver;
 
 public class MemoryUseSubSingleStatistic<Solution_>
         extends ProblemBasedSubSingleStatistic<Solution_, MemoryUseStatisticPoint> {

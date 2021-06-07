@@ -544,11 +544,13 @@ public class MachineReassignmentIncrementalScoreCalculator
                 processMoveCostMatchTotal.addConstraintMatch(
                         Arrays.asList(processAssignment),
                         HardSoftLongScore.of(0,
-                                -((long) processAssignment.getProcessMoveCost() * globalPenaltyInfo.getProcessMoveCostWeight())));
+                                -((long) processAssignment.getProcessMoveCost()
+                                        * globalPenaltyInfo.getProcessMoveCostWeight())));
                 machineMoveCostMatchTotal.addConstraintMatch(
                         Arrays.asList(processAssignment),
                         HardSoftLongScore.of(0,
-                                -((long) processAssignment.getMachineMoveCost() * globalPenaltyInfo.getMachineMoveCostWeight())));
+                                -((long) processAssignment.getMachineMoveCost()
+                                        * globalPenaltyInfo.getMachineMoveCostWeight())));
             }
         }
         for (int i = 0; i < serviceMoveCost; i++) {

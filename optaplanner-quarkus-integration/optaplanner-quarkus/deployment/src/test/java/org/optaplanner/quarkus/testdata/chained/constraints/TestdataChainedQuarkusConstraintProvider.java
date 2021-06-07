@@ -23,7 +23,6 @@ import org.optaplanner.core.api.score.stream.ConstraintProvider;
 import org.optaplanner.core.api.score.stream.Joiners;
 import org.optaplanner.quarkus.testdata.chained.domain.TestdataChainedQuarkusAnchor;
 import org.optaplanner.quarkus.testdata.chained.domain.TestdataChainedQuarkusEntity;
-import org.optaplanner.quarkus.testdata.chained.domain.TestdataChainedQuarkusObject;
 
 public class TestdataChainedQuarkusConstraintProvider implements ConstraintProvider {
 
