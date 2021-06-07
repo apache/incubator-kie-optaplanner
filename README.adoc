@@ -2,7 +2,7 @@
 :sonarBadge: image:https://sonarcloud.io/api/project_badges/measure?project={projectKey}
 :sonarLink: link="https://sonarcloud.io/dashboard?id={projectKey}"
 
-= OptaPlanner
+= OptaPlanner 
 
 https://www.optaplanner.org/[www.optaplanner.org]
 
