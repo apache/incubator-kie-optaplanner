@@ -167,12 +167,11 @@ public class ConsecutiveSetTree<ValueType_, PointType_ extends Comparable<PointT
     }
 
     public boolean add(ValueType_ item) {
-        if (itemToCountMap.containsKey(item)) {
-            itemToCountMap.merge(item, 1, Integer::sum);
+        int newCount = itemToCountMap.compute(item, (key, count) -> count == null ? 1 : count + 1);
+        if (newCount > 1) { // Item already in bag.
             return true;
         }
         itemSet.add(item);
-        itemToCountMap.put(item, 1);
         ValueType_ firstBeforeItem = startItemToSequence.floorKey(item);
         PointType_ itemIndex = indexFunction.apply(item);
         if (firstBeforeItem != null) {
@@ -236,20 +235,21 @@ public class ConsecutiveSetTree<ValueType_, PointType_ extends Comparable<PointT
     }
 
     public boolean remove(ValueType_ item) {
-        if (!itemToCountMap.containsKey(item)) {
-            // Item not in bag
+        Integer currentCount = itemToCountMap.get(item);
+        if (currentCount == null) { // Item not in bag.
             return false;
         }
-        itemToCountMap.computeIfPresent(item, (key, count) -> (count > 1) ? count - 1 : null);
-        if (itemToCountMap.containsKey(item)) {
-            // Item still in bag
+        if (currentCount == 1) {
+            itemToCountMap.remove(item);
+        } else { // Item still in bag.
+            itemToCountMap.put(item, currentCount - 1);
             return true;
         }
 
         // Item is removed from bag
         ValueType_ firstBeforeItem = startItemToSequence.floorKey(item);
         SequenceImpl<ValueType_, DifferenceType_> bag = startItemToSequence.get(firstBeforeItem);
-        ValueType_ endItem = bag.getItems().last();
+        ValueType_ endItem = bag.getLastItem();
         itemSet.remove(item);
 
         // Count of item in bag is 0
@@ -281,11 +281,12 @@ public class ConsecutiveSetTree<ValueType_, PointType_ extends Comparable<PointT
             bag.updateEndpoints();
             startItemToSequence.remove(sequenceStart);
             BreakImpl<ValueType_, DifferenceType_> extendedBreak = startItemToPreviousBreak.remove(sequenceStart);
-            startItemToSequence.put(bag.getItems().first(), bag);
+            ValueType_ firstItem = bag.getFirstItem();
+            startItemToSequence.put(firstItem, bag);
             if (extendedBreak != null) {
-                extendedBreak.setBeforeItem(bag.getItems().first());
+                extendedBreak.setBeforeItem(firstItem);
                 updateLengthOfBreak(extendedBreak);
-                startItemToPreviousBreak.put(bag.getItems().first(), extendedBreak);
+                startItemToPreviousBreak.put(firstItem, extendedBreak);
             }
             return true;
         }
@@ -296,7 +297,7 @@ public class ConsecutiveSetTree<ValueType_, PointType_ extends Comparable<PointT
                     startItemToPreviousBreak.higherEntry(item);
             if (extendedBreakEntry != null) {
                 BreakImpl<ValueType_, DifferenceType_> extendedBreak = extendedBreakEntry.getValue();
-                extendedBreak.setAfterItem(bag.getItems().last());
+                extendedBreak.setAfterItem(bag.getLastItem());
                 updateLengthOfBreak(extendedBreak);
             }
             return true;
@@ -317,10 +318,11 @@ public class ConsecutiveSetTree<ValueType_, PointType_ extends Comparable<PointT
         // Additional, the breaks before and after the broken sequence
         // are not affected since an endpoint was not removed
         SequenceImpl<ValueType_, DifferenceType_> splitBag = bag.split(item);
-        startItemToSequence.put(splitBag.getItems().first(), splitBag);
-        startItemToPreviousBreak.put(splitBag.getItems().first(), new BreakImpl<>(
-                splitBag.getItems().first(), bag.getItems().last(),
-                getBreakLengthBetween(bag.getItems().last(), splitBag.getItems().first())));
+        ValueType_ firstSplitItem = splitBag.getFirstItem();
+        ValueType_ lastOriginalItem = bag.getLastItem();
+        startItemToSequence.put(firstSplitItem, splitBag);
+        startItemToPreviousBreak.put(firstSplitItem,
+                new BreakImpl<>(firstSplitItem, lastOriginalItem, getBreakLengthBetween(lastOriginalItem, firstSplitItem)));
         return true;
     }
 
