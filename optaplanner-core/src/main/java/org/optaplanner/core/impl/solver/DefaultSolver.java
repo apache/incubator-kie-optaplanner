@@ -34,6 +34,9 @@ import org.optaplanner.core.impl.solver.scope.SolverScope;
 import org.optaplanner.core.impl.solver.termination.BasicPlumbingTermination;
 import org.optaplanner.core.impl.solver.termination.Termination;
 
+import io.micrometer.core.instrument.LongTaskTimer;
+import io.micrometer.core.instrument.Metrics;
+
 /**
  * Default implementation for {@link Solver}.
  *
@@ -54,6 +57,9 @@ public class DefaultSolver<Solution_> extends AbstractSolver<Solution_> {
 
     private final String moveThreadCountDescription;
 
+    // Metrics
+    private LongTaskTimer solveLengthTimer;
+
     // ************************************************************************
     // Constructors and simple getters/setters
     // ************************************************************************
@@ -68,6 +74,7 @@ public class DefaultSolver<Solution_> extends AbstractSolver<Solution_> {
         this.basicPlumbingTermination = basicPlumbingTermination;
         this.solverScope = solverScope;
         this.moveThreadCountDescription = moveThreadCountDescription;
+        this.solveLengthTimer = Metrics.more().longTaskTimer("optaplanner.solver.solve-length");
     }
 
     public EnvironmentMode getEnvironmentMode() {
@@ -160,9 +167,24 @@ public class DefaultSolver<Solution_> extends AbstractSolver<Solution_> {
         boolean restartSolver = true;
         while (restartSolver) {
             solvingStarted(solverScope);
-            runPhases(solverScope);
-            solvingEnded(solverScope);
-            restartSolver = checkProblemFactChanges();
+            LongTaskTimer.Sample sample = solveLengthTimer.start();
+            try {
+                runPhases(solverScope);
+
+                solvingEnded(solverScope);
+                sample.stop();
+
+                restartSolver = checkProblemFactChanges();
+            } catch (Exception e) {
+                // Can't store this in a local field; don't know in advance
+                // if we'll have an exception, and what kind of exception
+                // it is
+                sample.stop();
+                Metrics.counter("optaplanner.solver.errors",
+                        "exceptionClass", e.getClass().getSimpleName(),
+                        "message", e.getMessage());
+                throw e;
+            }
         }
         outerSolvingEnded(solverScope);
         return solverScope.getBestSolution();
