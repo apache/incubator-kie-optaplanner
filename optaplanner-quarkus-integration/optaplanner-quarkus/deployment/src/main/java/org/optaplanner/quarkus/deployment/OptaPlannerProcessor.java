@@ -552,8 +552,8 @@ class OptaPlannerProcessor {
                                             classInfo, fieldInfo, transformers));
                         } catch (ClassNotFoundException | NoSuchFieldException e) {
                             throw new IllegalStateException("Fail to generate member accessor for field (" +
-                                    fieldInfo.name() + ") of class " +
-                                    classInfo.name().toString() + ".", e);
+                                    fieldInfo.name() + ") of the class( " +
+                                    classInfo.name().toString() + ").", e);
                         }
                         break;
                     }
