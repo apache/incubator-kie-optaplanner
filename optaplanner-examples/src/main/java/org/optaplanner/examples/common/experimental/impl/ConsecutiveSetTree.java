@@ -284,7 +284,6 @@ public class ConsecutiveSetTree<ValueType_, PointType_ extends Comparable<PointT
             ValueType_ sequenceEnd) {
         if (item.equals(sequenceStart)) {
             // Change start key to the item after this one
-            bag.invalidate();
             bag.setStart(itemSet.higher(item));
             startItemToSequence.remove(sequenceStart);
             BreakImpl<ValueType_, DifferenceType_> extendedBreak = startItemToPreviousBreak.remove(sequenceStart);
@@ -298,8 +297,7 @@ public class ConsecutiveSetTree<ValueType_, PointType_ extends Comparable<PointT
             return true;
         }
         if (item.equals(sequenceEnd)) {
-            // Need to update break information
-            bag.invalidate();
+            // Set end key to the item before this one
             bag.setEnd(itemSet.lower(item));
             Map.Entry<ValueType_, BreakImpl<ValueType_, DifferenceType_>> extendedBreakEntry =
                     startItemToPreviousBreak.higherEntry(item);
