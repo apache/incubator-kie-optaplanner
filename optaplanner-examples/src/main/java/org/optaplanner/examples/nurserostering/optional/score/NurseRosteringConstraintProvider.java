@@ -32,7 +32,6 @@ import org.optaplanner.core.api.score.stream.ConstraintProvider;
 import org.optaplanner.core.api.score.stream.Joiners;
 import org.optaplanner.examples.common.experimental.ExperimentalConstraintCollectors;
 import org.optaplanner.examples.common.experimental.api.ConsecutiveInfo;
-import org.optaplanner.examples.common.experimental.api.Sequence;
 import org.optaplanner.examples.nurserostering.domain.Employee;
 import org.optaplanner.examples.nurserostering.domain.NurseRosterParametrization;
 import org.optaplanner.examples.nurserostering.domain.ShiftAssignment;
@@ -221,11 +220,6 @@ public class NurseRosteringConstraintProvider implements ConstraintProvider {
                                 .getViolationAmount(nrp.getLastShiftDateDayIndex() - shiftAssignment.getShiftDateDayIndex()));
     }
 
-    private static int getWeekendLength(Sequence<ShiftDate, ?> weekendSequence) {
-        return ((weekendSequence.getLastItem().getWeekendSundayIndex() - weekendSequence.getFirstItem().getWeekendSundayIndex())
-                / 7) + 1;
-    }
-
     // Min/Max consecutive working weekends
     Constraint consecutiveWorkingWeekends(ConstraintFactory constraintFactory) {
         return constraintFactory.from(MinMaxContractLine.class)
@@ -240,9 +234,9 @@ public class NurseRosteringConstraintProvider implements ConstraintProvider {
                         ExperimentalConstraintCollectors.consecutive((contract, shift) -> shift.getShiftDate(),
                                 shiftDate -> shiftDate.getWeekendSundayIndex() / 7))
                 .flattenLast(ConsecutiveInfo::getConsecutiveSequences)
-                .filter((employee, contract, shiftList) -> contract.isViolated(getWeekendLength(shiftList)))
+                .filter((employee, contract, shiftList) -> contract.isViolated(shiftList.getLength()))
                 .penalize("consecutiveWorkingWeekends", HardSoftScore.ONE_SOFT,
-                        (employee, contract, shiftList) -> contract.getViolationAmount(getWeekendLength(shiftList)));
+                        (employee, contract, shiftList) -> contract.getViolationAmount(shiftList.getLength()));
     }
 
     // Complete Weekends
