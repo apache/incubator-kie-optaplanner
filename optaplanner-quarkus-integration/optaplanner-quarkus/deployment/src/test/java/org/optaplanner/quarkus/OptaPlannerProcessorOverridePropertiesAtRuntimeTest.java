@@ -52,7 +52,7 @@ public class OptaPlannerProcessorOverridePropertiesAtRuntimeTest {
     private static String getRequiredProperty(String name) {
         final String v = System.getProperty(name);
         if (v == null || v.isEmpty()) {
-            throw new IllegalStateException("System property " + name + " has not been set");
+            throw new IllegalStateException("The system property (" + name + ") has not been set.");
         }
         return v;
     }
