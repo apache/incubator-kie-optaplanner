@@ -864,12 +864,12 @@ public final class ConstraintCollectors {
                 () -> new TreeMap<>(comparator),
                 (resultContainer, a) -> {
                     Mapped mapped = groupValueMapping.apply(a);
-                    return itemCountAccumulator(resultContainer, mapped);
+                    return valueCountAccumulator(resultContainer, mapped);
                 },
                 getMinOrMaxFinisher(min));
     }
 
-    private static <Value_> Runnable itemCountAccumulator(Map<Value_, Long> resultContainer, Value_ value) {
+    private static <Value_> Runnable valueCountAccumulator(Map<Value_, Long> resultContainer, Value_ value) {
         resultContainer.compute(value, (key, count) -> count == null ? 1L : count + 1L);
         return () -> resultContainer.compute(value, (key, count) -> count == 1L ? null : count - 1L);
     }
@@ -904,7 +904,7 @@ public final class ConstraintCollectors {
                 () -> new TreeMap<>(comparator),
                 (resultContainer, a, b) -> {
                     Mapped mapped = groupValueMapping.apply(a, b);
-                    return itemCountAccumulator(resultContainer, mapped);
+                    return valueCountAccumulator(resultContainer, mapped);
                 },
                 getMinOrMaxFinisher(min));
     }
@@ -931,7 +931,7 @@ public final class ConstraintCollectors {
                 () -> new TreeMap<>(comparator),
                 (resultContainer, a, b, c) -> {
                     Mapped mapped = groupValueMapping.apply(a, b, c);
-                    return itemCountAccumulator(resultContainer, mapped);
+                    return valueCountAccumulator(resultContainer, mapped);
                 },
                 getMinOrMaxFinisher(min));
     }
@@ -958,7 +958,7 @@ public final class ConstraintCollectors {
                 () -> new TreeMap<>(comparator),
                 (resultContainer, a, b, c, d) -> {
                     Mapped mapped = groupValueMapping.apply(a, b, c, d);
-                    return itemCountAccumulator(resultContainer, mapped);
+                    return valueCountAccumulator(resultContainer, mapped);
                 },
                 getMinOrMaxFinisher(min));
     }
@@ -1059,7 +1059,7 @@ public final class ConstraintCollectors {
                 (Supplier<HashMap<Mapped, Long>>) HashMap::new,
                 (resultContainer, a) -> {
                     Mapped mapped = groupValueMapping.apply(a);
-                    return itemCountAccumulator(resultContainer, mapped);
+                    return valueCountAccumulator(resultContainer, mapped);
                 },
                 HashMap::keySet);
     }
@@ -1087,7 +1087,7 @@ public final class ConstraintCollectors {
                 () -> new TreeMap<>(comparator),
                 (resultContainer, a) -> {
                     Mapped mapped = groupValueMapping.apply(a);
-                    return itemCountAccumulator(resultContainer, mapped);
+                    return valueCountAccumulator(resultContainer, mapped);
                 },
                 TreeMap::navigableKeySet);
     }
@@ -1145,7 +1145,7 @@ public final class ConstraintCollectors {
                 (Supplier<HashMap<Mapped, Long>>) HashMap::new,
                 (resultContainer, a, b) -> {
                     Mapped mapped = groupValueMapping.apply(a, b);
-                    return itemCountAccumulator(resultContainer, mapped);
+                    return valueCountAccumulator(resultContainer, mapped);
                 },
                 HashMap::keySet);
     }
@@ -1173,7 +1173,7 @@ public final class ConstraintCollectors {
                 () -> new TreeMap<>(comparator),
                 (resultContainer, a, b) -> {
                     Mapped mapped = groupValueMapping.apply(a, b);
-                    return itemCountAccumulator(resultContainer, mapped);
+                    return valueCountAccumulator(resultContainer, mapped);
                 },
                 TreeMap::navigableKeySet);
     }
@@ -1232,7 +1232,7 @@ public final class ConstraintCollectors {
                 (Supplier<HashMap<Mapped, Long>>) HashMap::new,
                 (resultContainer, a, b, c) -> {
                     Mapped mapped = groupValueMapping.apply(a, b, c);
-                    return itemCountAccumulator(resultContainer, mapped);
+                    return valueCountAccumulator(resultContainer, mapped);
                 },
                 HashMap::keySet);
     }
@@ -1261,7 +1261,7 @@ public final class ConstraintCollectors {
                 () -> new TreeMap<>(comparator),
                 (resultContainer, a, b, c) -> {
                     Mapped mapped = groupValueMapping.apply(a, b, c);
-                    return itemCountAccumulator(resultContainer, mapped);
+                    return valueCountAccumulator(resultContainer, mapped);
                 },
                 TreeMap::navigableKeySet);
     }
@@ -1322,7 +1322,7 @@ public final class ConstraintCollectors {
                 (Supplier<HashMap<Mapped, Long>>) HashMap::new,
                 (resultContainer, a, b, c, d) -> {
                     Mapped mapped = groupValueMapping.apply(a, b, c, d);
-                    return itemCountAccumulator(resultContainer, mapped);
+                    return valueCountAccumulator(resultContainer, mapped);
                 },
                 HashMap::keySet);
     }
@@ -1352,7 +1352,7 @@ public final class ConstraintCollectors {
                 () -> new TreeMap<>(comparator),
                 (resultContainer, a, b, c, d) -> {
                     Mapped mapped = groupValueMapping.apply(a, b, c, d);
-                    return itemCountAccumulator(resultContainer, mapped);
+                    return valueCountAccumulator(resultContainer, mapped);
                 },
                 TreeMap::navigableKeySet);
     }
