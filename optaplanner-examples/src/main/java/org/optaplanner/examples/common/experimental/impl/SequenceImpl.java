@@ -22,26 +22,28 @@ import java.util.stream.Collectors;
 
 import org.optaplanner.examples.common.experimental.api.Sequence;
 
-public class SequenceImpl<ValueType_, DifferenceType_ extends Comparable<DifferenceType_>>
+class SequenceImpl<ValueType_, DifferenceType_ extends Comparable<DifferenceType_>>
         implements Sequence<ValueType_, DifferenceType_> {
-    private NavigableSet<ValueType_> consecutiveItemsSet;
+
+    private final ConsecutiveSetTree<ValueType_, ?, DifferenceType_> sourceTree;
     private ValueType_ firstItem;
     private ValueType_ lastItem;
-    private final ConsecutiveSetTree<ValueType_, ?, DifferenceType_> sourceTree;
+
+    // Memorized calculations
+    private DifferenceType_ length;
+    private NavigableSet<ValueType_> items;
 
     protected SequenceImpl(ConsecutiveSetTree<ValueType_, ?, DifferenceType_> sourceTree, ValueType_ item) {
-        this.sourceTree = sourceTree;
-        this.consecutiveItemsSet = sourceTree.getItemSet().subSet(item, true, item, true);
-        this.firstItem = item;
-        this.lastItem = item;
+        this(sourceTree, item, item);
     }
 
     protected SequenceImpl(ConsecutiveSetTree<ValueType_, ?, DifferenceType_> sourceTree,
-            NavigableSet<ValueType_> consecutiveItemsSet) {
+            ValueType_ firstItem, ValueType_ lastItem) {
         this.sourceTree = sourceTree;
-        this.consecutiveItemsSet = consecutiveItemsSet;
-        this.firstItem = consecutiveItemsSet.first();
-        this.lastItem = consecutiveItemsSet.last();
+        this.firstItem = firstItem;
+        this.lastItem = lastItem;
+        length = null;
+        items = null;
     }
 
     @Override
@@ -56,62 +58,62 @@ public class SequenceImpl<ValueType_, DifferenceType_ extends Comparable<Differe
 
     @Override
     public NavigableSet<ValueType_> getItems() {
-        return consecutiveItemsSet;
+        if (items == null) {
+            return items = sourceTree.getItemSet()
+                    .subSet(firstItem, true, lastItem, true);
+        }
+        return items;
     }
 
     @Override
     public int getCount() {
-        return consecutiveItemsSet.size();
+        return getItems().size();
     }
 
     @Override
     public DifferenceType_ getLength() {
-        return sourceTree.getSequenceLength(this);
+        if (length == null) {
+            // memoize length for later calls
+            // (assignment returns the right hand side)
+            return length = sourceTree.getSequenceLength(this);
+        }
+        return length;
     }
 
-    protected boolean isEmpty() {
-        return consecutiveItemsSet.isEmpty();
-    }
-
-    protected void addBeforeStart(ValueType_ item) {
+    protected void setStart(ValueType_ item) {
         firstItem = item;
-        consecutiveItemsSet = sourceTree.getItemSet().subSet(item, true, lastItem, true);
+        invalidate();
     }
 
-    protected void addAfterEnd(ValueType_ item) {
+    protected void setEnd(ValueType_ item) {
         lastItem = item;
-        consecutiveItemsSet = sourceTree.getItemSet().subSet(firstItem, true, item, true);
+        invalidate();
     }
 
-    // Called when start or end are removed; since the set
-    // is backed by the underlying set that already have the
-    // point removed, consecutiveItemsSet.first()/consecutiveItemsSet.last()
-    // change to reflect that, and we update the bounds
-    protected void updateEndpoints() {
-        firstItem = consecutiveItemsSet.first();
-        lastItem = consecutiveItemsSet.last();
-        consecutiveItemsSet = consecutiveItemsSet.subSet(firstItem, true, lastItem, true);
+    // Called when start or end are removed; length
+    // need to be invalidated
+    protected void invalidate() {
+        length = null;
+        items = null;
     }
 
     protected SequenceImpl<ValueType_, DifferenceType_> split(ValueType_ fromElement) {
-        NavigableSet<ValueType_> newSequenceConsecutiveItemSet = consecutiveItemsSet.subSet(
-                consecutiveItemsSet.higher(fromElement), true,
-                lastItem, true);
-        lastItem = consecutiveItemsSet.lower(fromElement);
-        consecutiveItemsSet = consecutiveItemsSet.subSet(firstItem, true,
-                lastItem, true);
-        return new SequenceImpl<>(sourceTree, newSequenceConsecutiveItemSet);
+        ValueType_ newSequenceStart = sourceTree.getItemSet().higher(fromElement);
+        ValueType_ newSequenceEnd = lastItem;
+
+        lastItem = sourceTree.getItemSet().lower(fromElement);
+        invalidate();
+        return new SequenceImpl<>(sourceTree, newSequenceStart, newSequenceEnd);
     }
 
     // This Sequence is ALWAYS before other Sequence
     protected void merge(SequenceImpl<ValueType_, DifferenceType_> other) {
         lastItem = other.lastItem;
-        consecutiveItemsSet =
-                sourceTree.getItemSet().subSet(firstItem, true, other.lastItem, true);
+        invalidate();
     }
 
     @Override
     public String toString() {
-        return consecutiveItemsSet.stream().map(Objects::toString).collect(Collectors.joining(", ", "Sequence [", "]"));
+        return getItems().stream().map(Objects::toString).collect(Collectors.joining(", ", "Sequence [", "]"));
     }
 }

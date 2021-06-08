@@ -16,41 +16,36 @@
 
 package org.optaplanner.examples.common.experimental.api;
 
+/**
+ * A Sequence is a series of consecutive values. For instance,
+ * the list [1,2,4,5,6,10] has three sequences: [1,2], [4,5,6], and [10].
+ *
+ * @param <ValueType_> The type of value in the sequence
+ * @param <DifferenceType_> The type of difference between values in the sequence
+ */
 public interface Sequence<ValueType_, DifferenceType_ extends Comparable<DifferenceType_>> {
     /**
-     * Returns the first item in the sequence
-     * 
-     * @return Never null, the first item in the sequence
+     * @return never null, the first item in the sequence
      */
     ValueType_ getFirstItem();
 
     /**
-     * Returns the last item in the sequence
-     * 
-     * @return Never null, the last item in the sequence
+     * @return never null, the last item in the sequence
      */
     ValueType_ getLastItem();
 
     /**
-     * Returns an iterable that iterates through
-     * the items in this sequence in ascending order
-     * 
-     * @return Never null, an iterable that can iterate through this sequence
+     * @return never null, an iterable that can iterate through this sequence
      */
     Iterable<ValueType_> getItems();
 
     /**
-     * Return the number of items in this sequence
-     * 
-     * @return The number of items in this sequence
+     * @return the number of items in this sequence
      */
     int getCount();
 
     /**
-     * Return the difference between the last item and the first item
-     * in the sequence
-     * 
-     * @return Never null, the difference between the last item and
+     * @return never null, the difference between the last item and
      *         first item in this sequence
      */
     DifferenceType_ getLength();

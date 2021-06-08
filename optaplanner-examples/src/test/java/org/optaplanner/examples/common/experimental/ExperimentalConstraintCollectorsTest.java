@@ -27,7 +27,6 @@ import org.optaplanner.core.api.score.stream.quad.QuadConstraintCollector;
 import org.optaplanner.core.api.score.stream.tri.TriConstraintCollector;
 import org.optaplanner.core.api.score.stream.uni.UniConstraintCollector;
 import org.optaplanner.examples.common.experimental.api.ConsecutiveInfo;
-import org.optaplanner.examples.common.experimental.impl.ConsecutiveDataImpl;
 import org.optaplanner.examples.common.experimental.impl.ConsecutiveIntervalDataImpl;
 import org.optaplanner.examples.common.experimental.impl.ConsecutiveSetTree;
 import org.optaplanner.examples.common.experimental.impl.IntervalTree;
@@ -124,7 +123,7 @@ public class ExperimentalConstraintCollectorsTest {
         assertResult(collector, container, consecutiveIntervalData());
     }
 
-    private ConsecutiveDataImpl<Integer, Integer> consecutiveData(Integer... data) {
+    private ConsecutiveInfo<Integer, Integer> consecutiveData(Integer... data) {
         ConsecutiveSetTree<Integer, Integer, Integer> tree =
                 new ConsecutiveSetTree<>(Integer::intValue, (a, b) -> b - a, Integer::sum, 1, 0);
         asList(data).forEach(tree::add);

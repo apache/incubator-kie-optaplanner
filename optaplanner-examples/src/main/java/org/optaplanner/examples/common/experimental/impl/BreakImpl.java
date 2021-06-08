@@ -18,7 +18,7 @@ package org.optaplanner.examples.common.experimental.impl;
 
 import org.optaplanner.examples.common.experimental.api.Break;
 
-public class BreakImpl<ValueType_, DifferenceType_ extends Comparable<DifferenceType_>>
+class BreakImpl<ValueType_, DifferenceType_ extends Comparable<DifferenceType_>>
         implements Break<ValueType_, DifferenceType_> {
     private ValueType_ beforeItem;
     private ValueType_ afterItem;

@@ -31,7 +31,6 @@ import org.optaplanner.core.impl.score.stream.quad.DefaultQuadConstraintCollecto
 import org.optaplanner.core.impl.score.stream.tri.DefaultTriConstraintCollector;
 import org.optaplanner.core.impl.score.stream.uni.DefaultUniConstraintCollector;
 import org.optaplanner.examples.common.experimental.api.ConsecutiveInfo;
-import org.optaplanner.examples.common.experimental.impl.ConsecutiveDataImpl;
 import org.optaplanner.examples.common.experimental.impl.ConsecutiveIntervalDataImpl;
 import org.optaplanner.examples.common.experimental.impl.ConsecutiveSetTree;
 import org.optaplanner.examples.common.experimental.impl.IntervalTree;
@@ -42,7 +41,7 @@ import org.optaplanner.examples.common.experimental.impl.IntervalTree;
  */
 public class ExperimentalConstraintCollectors {
     /**
-     * Creates a constraint collector that returns {@link ConsecutiveDataImpl} about the first
+     * Creates a constraint collector that returns {@link ConsecutiveInfo} about the first
      * fact.
      *
      * For instance ${@code [Shift slot=1] [Shift slot=2] [Shift slot=4] [Shift slot=6]}

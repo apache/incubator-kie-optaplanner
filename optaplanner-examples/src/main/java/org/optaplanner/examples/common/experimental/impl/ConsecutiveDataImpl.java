@@ -23,7 +23,7 @@ import org.optaplanner.examples.common.experimental.api.Break;
 import org.optaplanner.examples.common.experimental.api.ConsecutiveInfo;
 import org.optaplanner.examples.common.experimental.api.Sequence;
 
-public class ConsecutiveDataImpl<ValueType_, DifferenceType_ extends Comparable<DifferenceType_>> implements
+class ConsecutiveDataImpl<ValueType_, DifferenceType_ extends Comparable<DifferenceType_>> implements
         ConsecutiveInfo<ValueType_, DifferenceType_> {
     private final ConsecutiveSetTree<ValueType_, ?, DifferenceType_> sourceTree;
 
