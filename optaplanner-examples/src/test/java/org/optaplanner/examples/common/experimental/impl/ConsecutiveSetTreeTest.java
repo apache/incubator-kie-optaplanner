@@ -31,6 +31,7 @@ import java.util.stream.IntStream;
 
 import org.junit.jupiter.api.Test;
 import org.optaplanner.examples.common.experimental.api.Break;
+import org.optaplanner.examples.common.experimental.api.ConsecutiveInfo;
 import org.optaplanner.examples.common.experimental.api.Sequence;
 
 public class ConsecutiveSetTreeTest {
@@ -46,7 +47,7 @@ public class ConsecutiveSetTreeTest {
         tree.add(3);
         tree.add(7);
 
-        ConsecutiveDataImpl<Integer, Integer> consecutiveData = tree.getConsecutiveData();
+        ConsecutiveInfo<Integer, Integer> consecutiveData = tree.getConsecutiveData();
 
         Iterable<Sequence<Integer, Integer>> sequenceList = consecutiveData.getConsecutiveSequences();
         assertThat(sequenceList).hasSize(3);
@@ -74,7 +75,7 @@ public class ConsecutiveSetTreeTest {
         tree.add(7);
         tree.add(8);
 
-        ConsecutiveDataImpl<Integer, Integer> consecutiveData = tree.getConsecutiveData();
+        ConsecutiveInfo<Integer, Integer> consecutiveData = tree.getConsecutiveData();
         Iterable<Sequence<Integer, Integer>> sequenceList = consecutiveData.getConsecutiveSequences();
         assertThat(sequenceList).hasSize(2);
         Iterator<Sequence<Integer, Integer>> sequenceIterator = sequenceList.iterator();
@@ -96,7 +97,7 @@ public class ConsecutiveSetTreeTest {
         tree.add(3);
         tree.add(3);
 
-        ConsecutiveDataImpl<Integer, Integer> consecutiveData = tree.getConsecutiveData();
+        ConsecutiveInfo<Integer, Integer> consecutiveData = tree.getConsecutiveData();
         Iterable<Sequence<Integer, Integer>> sequenceList = consecutiveData.getConsecutiveSequences();
         assertThat(sequenceList).hasSize(1);
         Iterator<Sequence<Integer, Integer>> sequenceIterator = sequenceList.iterator();
@@ -135,7 +136,7 @@ public class ConsecutiveSetTreeTest {
         tree.add(6);
         tree.add(5);
 
-        ConsecutiveDataImpl<Integer, Integer> consecutiveData = tree.getConsecutiveData();
+        ConsecutiveInfo<Integer, Integer> consecutiveData = tree.getConsecutiveData();
         Iterable<Sequence<Integer, Integer>> sequenceList = consecutiveData.getConsecutiveSequences();
         assertThat(sequenceList).hasSize(2);
         Iterator<Sequence<Integer, Integer>> sequenceIterator = sequenceList.iterator();
@@ -162,7 +163,7 @@ public class ConsecutiveSetTreeTest {
 
         tree.add(4);
 
-        ConsecutiveDataImpl<Integer, Integer> consecutiveData = tree.getConsecutiveData();
+        ConsecutiveInfo<Integer, Integer> consecutiveData = tree.getConsecutiveData();
         Iterable<Sequence<Integer, Integer>> sequenceList = consecutiveData.getConsecutiveSequences();
         Iterator<Sequence<Integer, Integer>> sequenceIterator = sequenceList.iterator();
 
@@ -184,7 +185,7 @@ public class ConsecutiveSetTreeTest {
 
         tree.remove(4);
 
-        ConsecutiveDataImpl<Integer, Integer> consecutiveData = tree.getConsecutiveData();
+        ConsecutiveInfo<Integer, Integer> consecutiveData = tree.getConsecutiveData();
         Iterable<Sequence<Integer, Integer>> sequenceList = consecutiveData.getConsecutiveSequences();
         assertThat(sequenceList).hasSize(2);
         Iterator<Sequence<Integer, Integer>> sequenceIterator = sequenceList.iterator();
@@ -214,7 +215,7 @@ public class ConsecutiveSetTreeTest {
         tree.remove(1);
         tree.remove(3);
 
-        ConsecutiveDataImpl<Integer, Integer> consecutiveData = tree.getConsecutiveData();
+        ConsecutiveInfo<Integer, Integer> consecutiveData = tree.getConsecutiveData();
         Iterable<Sequence<Integer, Integer>> sequenceList = consecutiveData.getConsecutiveSequences();
         assertThat(sequenceList).hasSize(1);
         Iterator<Sequence<Integer, Integer>> sequenceIterator = sequenceList.iterator();
@@ -236,7 +237,7 @@ public class ConsecutiveSetTreeTest {
 
         tree.remove(7);
 
-        ConsecutiveDataImpl<Integer, Integer> consecutiveData = tree.getConsecutiveData();
+        ConsecutiveInfo<Integer, Integer> consecutiveData = tree.getConsecutiveData();
         Iterable<Sequence<Integer, Integer>> sequenceList = consecutiveData.getConsecutiveSequences();
         Iterator<Sequence<Integer, Integer>> sequenceIterator = sequenceList.iterator();
 
@@ -360,7 +361,7 @@ public class ConsecutiveSetTreeTest {
         tree.add(t1);
         tree.add(t5);
 
-        ConsecutiveDataImpl<Timeslot, Duration> consecutiveData = tree.getConsecutiveData();
+        ConsecutiveInfo<Timeslot, Duration> consecutiveData = tree.getConsecutiveData();
         Iterable<Sequence<Timeslot, Duration>> sequenceList = consecutiveData.getConsecutiveSequences();
         assertThat(sequenceList).hasSize(2);
         Iterator<Sequence<Timeslot, Duration>> sequenceIterator = sequenceList.iterator();

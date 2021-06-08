@@ -28,6 +28,7 @@ public interface Break<ValueType_, DifferenceType_ extends Comparable<Difference
     /**
      * Return the item this break is directly after. For the
      * break between 6 and 10, this will return 6.
+     * 
      * @return never null, the item this break is directly after
      */
     ValueType_ getAfterItem();
@@ -35,7 +36,8 @@ public interface Break<ValueType_, DifferenceType_ extends Comparable<Difference
     /**
      * Return the item this break is directly before. For the
      * break between 6 and 10, this will return 10.
-     * @return never null,  the item this break is directly before
+     * 
+     * @return never null, the item this break is directly before
      */
     ValueType_ getBeforeItem();
 
@@ -43,6 +45,7 @@ public interface Break<ValueType_, DifferenceType_ extends Comparable<Difference
      * Return the length of the break, which is the difference
      * between {@link #getBeforeItem()} and {@link #getAfterItem()}. For the
      * break between 6 and 10, this will return 4.
+     * 
      * @return never null, the length of this break.
      */
     DifferenceType_ getLength();

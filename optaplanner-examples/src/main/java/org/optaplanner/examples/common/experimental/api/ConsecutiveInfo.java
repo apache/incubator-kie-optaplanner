@@ -26,13 +26,13 @@ package org.optaplanner.examples.common.experimental.api;
 public interface ConsecutiveInfo<ValueType_, DifferenceType_ extends Comparable<DifferenceType_>> {
     /**
      * @return never null, an iterable that iterates through the sequences contained in
-     * the collection in ascending order
+     *         the collection in ascending order
      */
     Iterable<Sequence<ValueType_, DifferenceType_>> getConsecutiveSequences();
 
     /**
      * @return never null, an iterable that iterates through the breaks contained in
-     * the collection in ascending order
+     *         the collection in ascending order
      */
     Iterable<Break<ValueType_, DifferenceType_>> getBreaks();
 }
