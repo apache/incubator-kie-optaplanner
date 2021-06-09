@@ -192,7 +192,7 @@ pipeline {
                         sh "cp $optaplannerRoot/optaplanner-benchmark/target/classes/benchmark.xsd content/xsd/benchmark/benchmark-8.xsd"
 
                         // Add changed files, commit, open and merge PR
-                        prLink = commitAndCreatePR("Release OptaPlanner ${getProjectVersion()}", { sh 'git add content/xsd/\\*.xsd _config/pom.yml' }, prBranchName, 'master')
+                        prLink = commitAndCreatePR("Release OptaPlanner ${getProjectVersion()}", { sh 'git add content/xsd/\\*.xsd data/pom.yml' }, prBranchName, 'master')
                     }
                     dir(websiteRepository) {
                         checkoutRepo(websiteRepository, 'master')
