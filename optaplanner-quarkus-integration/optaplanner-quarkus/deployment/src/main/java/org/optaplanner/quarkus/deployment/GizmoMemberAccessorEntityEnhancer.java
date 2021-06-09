@@ -425,6 +425,9 @@ public class GizmoMemberAccessorEntityEnhancer {
         BytecodeCreator currentBranch = methodCreator;
 
         for (Class<?> beanClass : beanClasses) {
+            if (beanClass.isInterface() || Modifier.isAbstract(beanClass.getModifiers())) {
+                continue;
+            }
             ResultHandle beanClassHandle = currentBranch.loadClass(beanClass);
             ResultHandle isTarget = currentBranch.invokeVirtualMethod(
                     MethodDescriptor.ofMethod(Object.class, "equals", boolean.class, Object.class),

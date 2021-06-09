@@ -16,6 +16,7 @@
 
 package org.optaplanner.quarkus;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatCode;
 
 import javax.inject.Inject;
@@ -67,17 +68,26 @@ public class OptaPlannerProcessorGeneratedGizmoSupplierTest {
                 .isInstanceOf(InstantiationError.class).hasMessage(clazz.getName());
     }
 
+    private void assertFactoryNotContains(Class<?> clazz) {
+        // All the classes are abstract, so they throw Instantiation Error,
+        // yet you can still call new on them in bytecode
+        assertThat(gizmoBeanFactory.newInstance(clazz)).isNull();
+    }
+
     @Test
     public void gizmoFactoryContainClassesReferencedInSolverConfig() {
-        assertFactoryContains(SolverConfigTest.DummyChangeMoveFilter.class);
-        assertFactoryContains(SolverConfigTest.DummyConstraintProvider.class);
-        assertFactoryContains(SolverConfigTest.DummyEasyScoreCalculator.class);
-        assertFactoryContains(SolverConfigTest.DummyEntityFilter.class);
-        assertFactoryContains(SolverConfigTest.DummyIncrementalScoreCalculator.class);
-        assertFactoryContains(SolverConfigTest.DummyMoveIteratorFactory.class);
-        assertFactoryContains(SolverConfigTest.DummyMoveListFactory.class);
-        assertFactoryContains(SolverConfigTest.DummySolutionPartitioner.class);
-        assertFactoryContains(SolverConfigTest.DummyValueFilter.class);
+        // TODO: Create a org/optaplanner/core/config/solver/testSolverConfigWithoutNamespace.xml
+        //       that does not use abstract classes (since they cause issues in native
+        //       compilation).
+        assertFactoryNotContains(SolverConfigTest.DummyChangeMoveFilter.class);
+        assertFactoryNotContains(SolverConfigTest.DummyConstraintProvider.class);
+        assertFactoryNotContains(SolverConfigTest.DummyEasyScoreCalculator.class);
+        assertFactoryNotContains(SolverConfigTest.DummyEntityFilter.class);
+        assertFactoryNotContains(SolverConfigTest.DummyIncrementalScoreCalculator.class);
+        assertFactoryNotContains(SolverConfigTest.DummyMoveIteratorFactory.class);
+        assertFactoryNotContains(SolverConfigTest.DummyMoveListFactory.class);
+        assertFactoryNotContains(SolverConfigTest.DummySolutionPartitioner.class);
+        assertFactoryNotContains(SolverConfigTest.DummyValueFilter.class);
     }
 
 }
