@@ -19,6 +19,7 @@ package org.optaplanner.core.impl.domain.variable.descriptor;
 import java.util.List;
 
 import org.optaplanner.core.api.domain.variable.PlanningCollectionVariable;
+import org.optaplanner.core.config.util.ConfigUtils;
 import org.optaplanner.core.impl.domain.common.accessor.MemberAccessor;
 import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
 import org.optaplanner.core.impl.domain.policy.DescriptorPolicy;
@@ -51,6 +52,15 @@ public class ListVariableDescriptor<Solution_> extends GenuineVariableDescriptor
     @Override
     public boolean isNullable() {
         return false;
+    }
+
+    @Override
+    public boolean acceptsValueType(Class<?> valueType) {
+        Class<?> variableTypeArgument = ConfigUtils.extractCollectionGenericTypeParameterStrictly(
+                "entityClass", entityDescriptor.getEntityClass(),
+                variableMemberAccessor.getType(), variableMemberAccessor.getGenericType(),
+                PlanningCollectionVariable.class, variableMemberAccessor.getName());
+        return variableTypeArgument.isAssignableFrom(valueType);
     }
 
     @Override
