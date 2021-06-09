@@ -180,6 +180,8 @@ public abstract class GenuineVariableDescriptor<Solution_> extends VariableDescr
 
     public abstract boolean isNullable();
 
+    public abstract boolean acceptsValueType(Class<?> valueType);
+
     public boolean hasMovableChainedTrailingValueFilter() {
         return movableChainedTrailingValueFilter != null;
     }

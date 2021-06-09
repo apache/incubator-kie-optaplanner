@@ -56,6 +56,11 @@ public class BasicVariableDescriptor<Solution_> extends GenuineVariableDescripto
         return nullable;
     }
 
+    @Override
+    public boolean acceptsValueType(Class<?> valueType) {
+        return getVariablePropertyType().isAssignableFrom(valueType);
+    }
+
     // ************************************************************************
     // Lifecycle methods
     // ************************************************************************
