@@ -587,7 +587,7 @@ class OptaPlannerProcessor {
                     transformers));
         }
 
-        GizmoMemberAccessorEntityEnhancer.generateGizmoBeanFactory(beanClassOutput, reflectiveClassSet);
+        GizmoMemberAccessorEntityEnhancer.generateGizmoBeanFactory(beanClassOutput, reflectiveClassSet, transformers);
         GizmoMemberAccessorEntityEnhancer.generateKieRuntimeBuilder(beanClassOutput,
                 solverConfig, unremovableBeans, transformers);
         return new GeneratedGizmoClasses(generatedMemberAccessorsClassNameSet, gizmoSolutionClonerClassNameSet);
