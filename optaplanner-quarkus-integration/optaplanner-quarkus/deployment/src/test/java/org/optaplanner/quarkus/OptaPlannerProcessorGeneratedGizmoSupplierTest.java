@@ -62,15 +62,10 @@ public class OptaPlannerProcessorGeneratedGizmoSupplierTest {
     OptaPlannerGizmoBeanFactory gizmoBeanFactory;
 
     private void assertFactoryContains(Class<?> clazz) {
-        // All the classes are abstract, so they throw Instantiation Error,
-        // yet you can still call new on them in bytecode
-        assertThatCode(() -> gizmoBeanFactory.newInstance(clazz))
-                .isInstanceOf(InstantiationError.class).hasMessage(clazz.getName());
+        assertThat(gizmoBeanFactory.newInstance(clazz)).isNotNull();
     }
 
     private void assertFactoryNotContains(Class<?> clazz) {
-        // All the classes are abstract, so they throw Instantiation Error,
-        // yet you can still call new on them in bytecode
         assertThat(gizmoBeanFactory.newInstance(clazz)).isNull();
     }
 
