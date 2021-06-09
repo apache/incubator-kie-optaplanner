@@ -114,7 +114,7 @@ public class GizmoMemberAccessorEntityEnhancer {
             }
         } catch (NoSuchMethodException e) {
             throw new IllegalStateException(
-                    "Class (" + clazz + ") must have a no-args constructor so it can be constructed by OptaPlanner.");
+                    "Class (" + clazz.getName() + ") must have a no-args constructor so it can be constructed by OptaPlanner.");
         }
     }
 
