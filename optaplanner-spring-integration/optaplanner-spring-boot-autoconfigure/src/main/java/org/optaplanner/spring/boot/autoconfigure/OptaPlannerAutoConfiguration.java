@@ -148,7 +148,7 @@ public class OptaPlannerAutoConfiguration implements BeanClassLoaderAware {
                 // (Cannot create custom condition that checks SolverConfig, since that
                 //  requires OptaPlannerAutoConfiguration to have a no-args constructor)
                 final String noConstraintProviderErrorMsg =
-                        "Cannot provision a ConstraintVerifier because there is ConstraintProvider class.";
+                        "Cannot provision a ConstraintVerifier because there is no ConstraintProvider class.";
                 return new ConstraintVerifier<ConstraintProvider_, SolutionClass_>() {
                     @Override
                     public ConstraintVerifier<ConstraintProvider_, SolutionClass_>

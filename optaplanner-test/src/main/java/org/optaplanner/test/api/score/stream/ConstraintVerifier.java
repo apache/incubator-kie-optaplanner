@@ -64,8 +64,7 @@ public interface ConstraintVerifier<ConstraintProvider_ extends ConstraintProvid
      * @return never null
      */
     static <ConstraintProvider_ extends ConstraintProvider, Solution_> ConstraintVerifier<ConstraintProvider_, Solution_>
-            create(
-                    SolverConfig solverConfig) {
+            create(SolverConfig solverConfig) {
         requireNonNull(solverConfig);
         SolutionDescriptor<Solution_> solutionDescriptor = SolutionDescriptor
                 .buildSolutionDescriptor(requireNonNull((Class<Solution_>) solverConfig.getSolutionClass()),

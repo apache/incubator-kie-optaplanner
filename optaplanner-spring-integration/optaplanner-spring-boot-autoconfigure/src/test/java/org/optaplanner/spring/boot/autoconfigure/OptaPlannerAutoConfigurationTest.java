@@ -363,7 +363,7 @@ public class OptaPlannerAutoConfigurationTest {
                     assertThatCode(() -> {
                         context.getBean(ConstraintVerifier.class).verifyThat();
                     })
-                            .hasMessage("Cannot provision a ConstraintVerifier because there is ConstraintProvider class.");
+                            .hasMessage("Cannot provision a ConstraintVerifier because there is no ConstraintProvider class.");
                 });
     }
 
