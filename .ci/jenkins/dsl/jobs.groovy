@@ -117,14 +117,14 @@ void setupOptaplannerNativePrJob() {
 
 void setupOptawebEmployeeRosteringPrJob() {
     def jobParams = getDefaultJobParams('optaweb-employee-rostering')
-    jobParams.pr.run_only_for_branches = ['master']
+    jobParams.pr.run_only_for_branches = ['main']
     jobParams.jenkinsfile = OPTAPLANNER_JENKINSFILE_PATH
     KogitoJobTemplate.createPRJob(this, jobParams)
 }
 
 void setupOptawebVehicleRoutingPrJob() {
     def jobParams = getDefaultJobParams('optaweb-vehicle-routing')
-    jobParams.pr.run_only_for_branches = ['master']
+    jobParams.pr.run_only_for_branches = ['main']
     jobParams.jenkinsfile = OPTAPLANNER_JENKINSFILE_PATH
     KogitoJobTemplate.createPRJob(this, jobParams)
 }
