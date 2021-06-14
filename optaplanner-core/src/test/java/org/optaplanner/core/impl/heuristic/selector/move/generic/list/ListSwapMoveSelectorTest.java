@@ -35,7 +35,7 @@ import org.optaplanner.core.impl.testdata.domain.list.TestdataListSolution;
 class ListSwapMoveSelectorTest {
 
     @Test
-    void naive() {
+    void original() {
         TestdataValue v1 = new TestdataValue("1");
         TestdataValue v2 = new TestdataValue("2");
         TestdataValue v3 = new TestdataValue("3");
