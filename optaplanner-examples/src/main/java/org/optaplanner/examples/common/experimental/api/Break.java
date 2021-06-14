@@ -31,10 +31,7 @@ public interface Break<ValueType_, DifferenceType_ extends Comparable<Difference
     Sequence<ValueType_, DifferenceType_> getPreviousSequence();
 
     /**
-     * Return the start of the sequence after this break. For the
-     * break between 6 and 10, this will return 10.
-     *
-     * @return never null, the item this break is directly before
+     * @return never null, the sequence immediately following this
      */
     Sequence<ValueType_, DifferenceType_> getNextSequence();
 
