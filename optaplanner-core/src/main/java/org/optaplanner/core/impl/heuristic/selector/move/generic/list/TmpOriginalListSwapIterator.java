@@ -34,7 +34,7 @@ import org.optaplanner.core.impl.heuristic.selector.entity.EntitySelector;
  *
  * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
  */
-public class NaiveListSwapIterator<Solution_> extends UpcomingSelectionIterator<Move<Solution_>> {
+public class TmpOriginalListSwapIterator<Solution_> extends UpcomingSelectionIterator<Move<Solution_>> {
 
     private final EntitySelector<Solution_> leftEntitySelector;
     private final Iterator<Object> leftEntityIterator;
@@ -48,7 +48,7 @@ public class NaiveListSwapIterator<Solution_> extends UpcomingSelectionIterator<
     private Object upcomingRightEntity;
     private int upcomingLeftIndex = 0;
 
-    public NaiveListSwapIterator(
+    public TmpOriginalListSwapIterator(
             EntitySelector<Solution_> leftEntitySelector,
             EntitySelector<Solution_> rightEntitySelector,
             ListVariableDescriptor<Solution_> listVariableDescriptor) {
