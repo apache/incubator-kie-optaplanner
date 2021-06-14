@@ -173,16 +173,14 @@ public class DefaultSolver<Solution_> extends AbstractSolver<Solution_> {
             try {
                 solvingStarted(solverScope);
                 runPhases(solverScope);
-
                 solvingEnded(solverScope);
-                sample.stop();
-
-                restartSolver = checkProblemFactChanges();
             } catch (Exception e) {
-                sample.stop();
                 errorCounter.increment();
                 throw e;
+            } finally {
+                sample.stop();
             }
+            restartSolver = checkProblemFactChanges();
         }
         outerSolvingEnded(solverScope);
         return solverScope.getBestSolution();
