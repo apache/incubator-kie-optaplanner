@@ -267,7 +267,7 @@ class OptaPlannerProcessor {
                                 MethodDescriptor.ofMethod(constraintVerifierClassName,
                                         "withDroolsAlphaNetworkCompilationEnabled",
                                         constraintVerifierClassName,
-                                        Boolean.class),
+                                        boolean.class),
                                 constraintVerifierResultHandle,
                                 methodCreator.load(droolsAlphaNetworkCompilationEnabled));
                         methodCreator.returnValue(constraintVerifierResultHandle);

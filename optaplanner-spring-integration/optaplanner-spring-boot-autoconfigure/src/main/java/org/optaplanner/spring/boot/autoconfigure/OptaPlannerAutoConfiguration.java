@@ -158,7 +158,7 @@ public class OptaPlannerAutoConfiguration implements BeanClassLoaderAware {
 
                     @Override
                     public ConstraintVerifier<ConstraintProvider_, SolutionClass_>
-                            withDroolsAlphaNetworkCompilationEnabled(Boolean droolsAlphaNetworkCompilationEnabled) {
+                            withDroolsAlphaNetworkCompilationEnabled(boolean droolsAlphaNetworkCompilationEnabled) {
                         throw new UnsupportedOperationException(noConstraintProviderErrorMsg);
                     }
 

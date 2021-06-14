@@ -75,14 +75,22 @@ public interface ConstraintVerifier<ConstraintProvider_ extends ConstraintProvid
         ConfigUtils.applyCustomProperties(constraintProvider, "constraintProviderClass",
                 scoreDirectorFactoryConfig.getConstraintProviderCustomProperties(), "constraintProviderCustomProperties");
 
-        return new DefaultConstraintVerifier<>(constraintProvider, solutionDescriptor)
-                .withConstraintStreamImplType(scoreDirectorFactoryConfig.getConstraintStreamImplType())
-                .withDroolsAlphaNetworkCompilationEnabled(scoreDirectorFactoryConfig.getDroolsAlphaNetworkCompilationEnabled());
+        DefaultConstraintVerifier<ConstraintProvider_, Solution_, ?> constraintVerifier =
+                new DefaultConstraintVerifier<>(constraintProvider, solutionDescriptor);
+        if (scoreDirectorFactoryConfig.getConstraintStreamImplType() != null) {
+            constraintVerifier.withConstraintStreamImplType(
+                    scoreDirectorFactoryConfig.getConstraintStreamImplType());
+        }
+        if (scoreDirectorFactoryConfig.getDroolsAlphaNetworkCompilationEnabled() != null) {
+            constraintVerifier.withDroolsAlphaNetworkCompilationEnabled(
+                    scoreDirectorFactoryConfig.getDroolsAlphaNetworkCompilationEnabled());
+        }
+        return constraintVerifier;
     }
 
     /**
      * All subsequent calls to {@link #verifyThat(BiFunction)} and {@link #verifyThat()}
-     * will use the given {@link ConstraintStreamImplType}.
+     * use the given {@link ConstraintStreamImplType}.
      *
      * @param constraintStreamImplType never null
      * @return this
@@ -98,7 +106,7 @@ public interface ConstraintVerifier<ConstraintProvider_ extends ConstraintProvid
      * @return this
      */
     ConstraintVerifier<ConstraintProvider_, Solution_> withDroolsAlphaNetworkCompilationEnabled(
-            Boolean droolsAlphaNetworkCompilationEnabled);
+            boolean droolsAlphaNetworkCompilationEnabled);
 
     /**
      * Creates a constraint verifier for a given {@link Constraint} of the {@link ConstraintProvider}.

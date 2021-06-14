@@ -48,23 +48,24 @@ public final class DefaultConstraintVerifier<ConstraintProvider_ extends Constra
     }
 
     public ConstraintStreamImplType getConstraintStreamImplType() {
-        return constraintStreamImplType;
+        return defaultIfNull(constraintStreamImplType, ConstraintStreamImplType.DROOLS);
     }
 
     @Override
     public ConstraintVerifier<ConstraintProvider_, Solution_> withConstraintStreamImplType(
             ConstraintStreamImplType constraintStreamImplType) {
+        requireNonNull(constraintStreamImplType);
         this.constraintStreamImplType = constraintStreamImplType;
         return this;
     }
 
-    public Boolean isDroolsAlphaNetworkCompilationEnabled() {
-        return droolsAlphaNetworkCompilationEnabled;
+    public boolean isDroolsAlphaNetworkCompilationEnabled() {
+        return defaultIfNull(droolsAlphaNetworkCompilationEnabled, !CoreComponentsBuilder.isNativeImage());
     }
 
     @Override
     public ConstraintVerifier<ConstraintProvider_, Solution_> withDroolsAlphaNetworkCompilationEnabled(
-            Boolean droolsAlphaNetworkCompilationEnabled) {
+            boolean droolsAlphaNetworkCompilationEnabled) {
         this.droolsAlphaNetworkCompilationEnabled = droolsAlphaNetworkCompilationEnabled;
         return this;
     }
@@ -92,24 +93,21 @@ public final class DefaultConstraintVerifier<ConstraintProvider_ extends Constra
 
     private AbstractConstraintStreamScoreDirectorFactory<Solution_, Score_> createScoreDirectorFactory(
             ConstraintProvider constraintProvider) {
-        ConstraintStreamImplType constraintStreamImplType_ =
-                defaultIfNull(constraintStreamImplType, ConstraintStreamImplType.DROOLS);
+        ConstraintStreamImplType constraintStreamImplType_ = getConstraintStreamImplType();
         switch (constraintStreamImplType_) {
             case DROOLS:
-                boolean droolsAlphaNetworkCompilationEnabled_ =
-                        defaultIfNull(droolsAlphaNetworkCompilationEnabled, !CoreComponentsBuilder.isNativeImage());
                 return new DroolsConstraintStreamScoreDirectorFactory<>(solutionDescriptor, constraintProvider,
-                        droolsAlphaNetworkCompilationEnabled_);
+                        isDroolsAlphaNetworkCompilationEnabled());
             case BAVET:
                 if (BooleanUtils.isTrue(droolsAlphaNetworkCompilationEnabled)) {
                     throw new IllegalArgumentException("Constraint stream implementation (" + constraintStreamImplType_ +
-                            ") does not support droolsAlphaNetworkCompilationEnabled (" + droolsAlphaNetworkCompilationEnabled
-                            + ").");
+                            ") does not support droolsAlphaNetworkCompilationEnabled ("
+                            + droolsAlphaNetworkCompilationEnabled + ").");
                 }
                 return new BavetConstraintStreamScoreDirectorFactory<>(solutionDescriptor, constraintProvider);
             default:
                 throw new UnsupportedOperationException("Unsupported constraintStreamImplType ("
-                        + constraintStreamImplType + ").");
+                        + this.constraintStreamImplType + ").");
         }
     }
 
