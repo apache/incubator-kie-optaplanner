@@ -34,6 +34,7 @@ import org.optaplanner.core.impl.solver.scope.SolverScope;
 import org.optaplanner.core.impl.solver.termination.BasicPlumbingTermination;
 import org.optaplanner.core.impl.solver.termination.Termination;
 
+import io.micrometer.core.instrument.Counter;
 import io.micrometer.core.instrument.LongTaskTimer;
 import io.micrometer.core.instrument.Metrics;
 
@@ -59,6 +60,7 @@ public class DefaultSolver<Solution_> extends AbstractSolver<Solution_> {
 
     // Metrics
     private LongTaskTimer solveLengthTimer;
+    private Counter errorCounter;
 
     // ************************************************************************
     // Constructors and simple getters/setters
@@ -75,6 +77,7 @@ public class DefaultSolver<Solution_> extends AbstractSolver<Solution_> {
         this.solverScope = solverScope;
         this.moveThreadCountDescription = moveThreadCountDescription;
         this.solveLengthTimer = Metrics.more().longTaskTimer("optaplanner.solver.solve-length");
+        this.errorCounter = Metrics.counter("optaplanner.solver.errors");
     }
 
     public EnvironmentMode getEnvironmentMode() {
@@ -166,9 +169,9 @@ public class DefaultSolver<Solution_> extends AbstractSolver<Solution_> {
         outerSolvingStarted(solverScope);
         boolean restartSolver = true;
         while (restartSolver) {
-            solvingStarted(solverScope);
             LongTaskTimer.Sample sample = solveLengthTimer.start();
             try {
+                solvingStarted(solverScope);
                 runPhases(solverScope);
 
                 solvingEnded(solverScope);
@@ -176,13 +179,8 @@ public class DefaultSolver<Solution_> extends AbstractSolver<Solution_> {
 
                 restartSolver = checkProblemFactChanges();
             } catch (Exception e) {
-                // Can't store this in a local field; don't know in advance
-                // if we'll have an exception, and what kind of exception
-                // it is
                 sample.stop();
-                Metrics.counter("optaplanner.solver.errors",
-                        "exceptionClass", e.getClass().getSimpleName(),
-                        "message", e.getMessage());
+                errorCounter.increment();
                 throw e;
             }
         }
