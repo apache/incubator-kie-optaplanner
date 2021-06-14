@@ -66,7 +66,7 @@ public interface Break<ValueType_, DifferenceType_ extends Comparable<Difference
      * between {@link #getNextSequenceStart()} and {@link #getPreviousSequenceEnd()}. For the
      * break between 6 and 10, this will return 4.
      * 
-     * @return never null, the length of this break.
+     * @return never null, the length of this break
      */
     DifferenceType_ getLength();
 }
