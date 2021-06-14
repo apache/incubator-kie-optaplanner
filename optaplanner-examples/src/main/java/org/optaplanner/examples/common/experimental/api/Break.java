@@ -26,24 +26,44 @@ package org.optaplanner.examples.common.experimental.api;
  */
 public interface Break<ValueType_, DifferenceType_ extends Comparable<DifferenceType_>> {
     /**
-     * Return the item this break is directly after. For the
+     * Return the end of the sequence before this break. For the
+     * break between 6 and 10, this will return 6.
+     *
+     * @return never null, the item this break is directly after
+     */
+    Sequence<ValueType_, DifferenceType_> getPreviousSequence();
+
+    /**
+     * Return the start of the sequence after this break. For the
+     * break between 6 and 10, this will return 10.
+     *
+     * @return never null, the item this break is directly before
+     */
+    Sequence<ValueType_, DifferenceType_> getNextSequence();
+
+    /**
+     * Return the end of the sequence before this break. For the
      * break between 6 and 10, this will return 6.
      * 
      * @return never null, the item this break is directly after
      */
-    ValueType_ getAfterItem();
+    default ValueType_ getPreviousSequenceEnd() {
+        return getPreviousSequence().getLastItem();
+    };
 
     /**
-     * Return the item this break is directly before. For the
+     * Return the start of the sequence after this break. For the
      * break between 6 and 10, this will return 10.
      * 
      * @return never null, the item this break is directly before
      */
-    ValueType_ getBeforeItem();
+    default ValueType_ getNextSequenceStart() {
+        return getNextSequence().getFirstItem();
+    }
 
     /**
      * Return the length of the break, which is the difference
-     * between {@link #getBeforeItem()} and {@link #getAfterItem()}. For the
+     * between {@link #getNextSequenceStart()} and {@link #getPreviousSequenceEnd()}. For the
      * break between 6 and 10, this will return 4.
      * 
      * @return never null, the length of this break.

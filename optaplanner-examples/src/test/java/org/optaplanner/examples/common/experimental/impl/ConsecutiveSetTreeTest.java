@@ -40,6 +40,27 @@ public class ConsecutiveSetTreeTest {
         return new ConsecutiveSetTree<>(i -> i, (a, b) -> b - a, Integer::sum, 1, 0);
     }
 
+    private <ValueType_, DifferenceType_ extends Comparable<DifferenceType_>> Break<ValueType_, DifferenceType_> getBreak(
+            ConsecutiveInfo<ValueType_, DifferenceType_> consecutiveData, ValueType_ start, ValueType_ end,
+            DifferenceType_ length) {
+        Sequence<ValueType_, DifferenceType_> previousSequence = null;
+        Sequence<ValueType_, DifferenceType_> nextSequence = null;
+        for (Sequence<ValueType_, DifferenceType_> sequence : consecutiveData.getConsecutiveSequences()) {
+            if (sequence.getLastItem().equals(start)) {
+                previousSequence = sequence;
+            }
+            if (sequence.getFirstItem().equals(end)) {
+                nextSequence = sequence;
+            }
+        }
+
+        if (previousSequence == null || nextSequence == null) {
+            throw new IllegalStateException("Unable to find sequence with provided start/end points in ("
+                    + consecutiveData.getConsecutiveSequences() + ")");
+        }
+        return new BreakImpl<>(previousSequence, nextSequence, length);
+    }
+
     @Test
     public void testNonconsecutiveNumbers() {
         ConsecutiveSetTree<Integer, Integer, Integer> tree = getIntegerConsecutiveSetTree();
@@ -57,10 +78,10 @@ public class ConsecutiveSetTreeTest {
         assertThat(breakList).hasSize(2);
 
         assertThat(consecutiveData.getConsecutiveSequences()).allMatch(seq -> seq.getCount() == 1);
-        assertThat(theBreak).usingRecursiveComparison().isEqualTo(new BreakImpl<>(3, 1, 2));
+        assertThat(theBreak).usingRecursiveComparison().isEqualTo(getBreak(consecutiveData, 1, 3, 2));
 
         theBreak = breakIterator.next();
-        assertThat(theBreak).usingRecursiveComparison().isEqualTo(new BreakImpl<>(7, 3, 4));
+        assertThat(theBreak).usingRecursiveComparison().isEqualTo(getBreak(consecutiveData, 3, 7, 4));
     }
 
     @Test
@@ -85,7 +106,7 @@ public class ConsecutiveSetTreeTest {
 
         assertThat(sequenceIterator.next().getCount()).isEqualTo(3);
         assertThat(sequenceIterator.next().getCount()).isEqualTo(4);
-        assertThat(breakIterator.next()).usingRecursiveComparison().isEqualTo(new BreakImpl<>(5, 3, 2));
+        assertThat(breakIterator.next()).usingRecursiveComparison().isEqualTo(getBreak(consecutiveData, 3, 5, 2));
     }
 
     @Test
@@ -146,7 +167,7 @@ public class ConsecutiveSetTreeTest {
 
         assertThat(sequenceIterator.next().getCount()).isEqualTo(3);
         assertThat(sequenceIterator.next().getCount()).isEqualTo(4);
-        assertThat(breakIterator.next()).usingRecursiveComparison().isEqualTo(new BreakImpl<>(5, 3, 2));
+        assertThat(breakIterator.next()).usingRecursiveComparison().isEqualTo(getBreak(consecutiveData, 3, 5, 2));
     }
 
     @Test
@@ -197,7 +218,7 @@ public class ConsecutiveSetTreeTest {
         assertThat(sequenceIterator.next().getCount()).isEqualTo(3);
         assertThat(sequenceIterator.next().getCount()).isEqualTo(3);
         assertThat(breakList).hasSize(1);
-        assertThat(breakIterator.next()).usingRecursiveComparison().isEqualTo(new BreakImpl<>(5, 3, 2));
+        assertThat(breakIterator.next()).usingRecursiveComparison().isEqualTo(getBreak(consecutiveData, 3, 5, 2));
     }
 
     @Test
@@ -374,6 +395,7 @@ public class ConsecutiveSetTreeTest {
         assertThat(sequenceIterator.next().getItems()).containsExactly(t3, t4, t5);
 
         assertThat(breakList).hasSize(1);
-        assertThat(breakIterator.next()).usingRecursiveComparison().isEqualTo(new BreakImpl<>(t3, t2, Duration.ofDays(2)));
+        assertThat(breakIterator.next()).usingRecursiveComparison()
+                .isEqualTo(getBreak(consecutiveData, t2, t3, Duration.ofDays(2)));
     }
 }

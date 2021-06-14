@@ -17,27 +17,29 @@
 package org.optaplanner.examples.common.experimental.impl;
 
 import org.optaplanner.examples.common.experimental.api.Break;
+import org.optaplanner.examples.common.experimental.api.Sequence;
 
 class BreakImpl<ValueType_, DifferenceType_ extends Comparable<DifferenceType_>>
         implements Break<ValueType_, DifferenceType_> {
-    private ValueType_ beforeItem;
-    private ValueType_ afterItem;
+    private Sequence<ValueType_, DifferenceType_> previousSequence;
+    private Sequence<ValueType_, DifferenceType_> nextSequence;
     private DifferenceType_ length;
 
-    public BreakImpl(ValueType_ beforeItem, ValueType_ afterItem, DifferenceType_ length) {
-        this.beforeItem = beforeItem;
-        this.afterItem = afterItem;
+    public BreakImpl(Sequence<ValueType_, DifferenceType_> previousSequence, Sequence<ValueType_, DifferenceType_> nextSequence,
+            DifferenceType_ length) {
+        this.previousSequence = previousSequence;
+        this.nextSequence = nextSequence;
         this.length = length;
     }
 
     @Override
-    public ValueType_ getBeforeItem() {
-        return beforeItem;
+    public Sequence<ValueType_, DifferenceType_> getPreviousSequence() {
+        return previousSequence;
     }
 
     @Override
-    public ValueType_ getAfterItem() {
-        return afterItem;
+    public Sequence<ValueType_, DifferenceType_> getNextSequence() {
+        return nextSequence;
     }
 
     @Override
@@ -45,12 +47,12 @@ class BreakImpl<ValueType_, DifferenceType_ extends Comparable<DifferenceType_>>
         return length;
     }
 
-    public void setBeforeItem(ValueType_ beforeItem) {
-        this.beforeItem = beforeItem;
+    public void setPreviousSequence(Sequence<ValueType_, DifferenceType_> previousSequence) {
+        this.previousSequence = previousSequence;
     }
 
-    public void setAfterItem(ValueType_ afterItem) {
-        this.afterItem = afterItem;
+    public void setNextSequence(Sequence<ValueType_, DifferenceType_> nextSequence) {
+        this.nextSequence = nextSequence;
     }
 
     public void setLength(DifferenceType_ length) {
@@ -60,8 +62,8 @@ class BreakImpl<ValueType_, DifferenceType_ extends Comparable<DifferenceType_>>
     @Override
     public String toString() {
         return "Break{" +
-                "beforeItem=" + beforeItem +
-                ", afterItem=" + afterItem +
+                "previousSequence=" + previousSequence +
+                ", nextSequence=" + nextSequence +
                 ", length=" + length +
                 '}';
     }
