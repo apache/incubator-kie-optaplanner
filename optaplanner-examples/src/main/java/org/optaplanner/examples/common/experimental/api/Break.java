@@ -26,10 +26,7 @@ package org.optaplanner.examples.common.experimental.api;
  */
 public interface Break<ValueType_, DifferenceType_ extends Comparable<DifferenceType_>> {
     /**
-     * Return the end of the sequence before this break. For the
-     * break between 6 and 10, this will return 6.
-     *
-     * @return never null, the item this break is directly after
+     * @return never null, the sequence leading directly into this
      */
     Sequence<ValueType_, DifferenceType_> getPreviousSequence();
 
