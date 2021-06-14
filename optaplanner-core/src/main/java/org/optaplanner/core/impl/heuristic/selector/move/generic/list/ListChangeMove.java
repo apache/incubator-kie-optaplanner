@@ -27,7 +27,7 @@ import org.optaplanner.core.impl.score.director.InnerScoreDirector;
  * in that entity's list variable. The element is inserted at the given index in the given destination entity's list
  * variable.
  * <p>
- * The move can be undone by simply flipping the source and destination entity+index
+ * The move can be undone by simply flipping the source and destination entity+index.
  *
  * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
  */
@@ -38,14 +38,14 @@ public class ListChangeMove<Solution_> extends AbstractMove<Solution_> {
     private final Object destinationEntity;
     private final int destinationIndex;
 
-    private final ListVariableDescriptor<Solution_> variableDescriptor; // Employee::getTaskList()
+    private final ListVariableDescriptor<Solution_> variableDescriptor;
 
     public ListChangeMove(
             Object sourceEntity, int sourceIndex,
             Object destinationEntity, int destinationIndex,
             ListVariableDescriptor<Solution_> variableDescriptor) {
-        this.sourceEntity = sourceEntity; //= anchorSupply.get(entityElement)
-        this.sourceIndex = sourceIndex; //= indexSupply.get(entityElement)
+        this.sourceEntity = sourceEntity;
+        this.sourceIndex = sourceIndex;
         this.destinationEntity = destinationEntity;
         this.destinationIndex = destinationIndex;
         this.variableDescriptor = variableDescriptor;
