@@ -34,7 +34,7 @@ import org.optaplanner.core.impl.heuristic.selector.entity.EntitySelector;
  *
  * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
  */
-public class NaiveListChangeIterator<Solution_> extends UpcomingSelectionIterator<Move<Solution_>> {
+public class TmpOriginalListChangeIterator<Solution_> extends UpcomingSelectionIterator<Move<Solution_>> {
 
     private final EntitySelector<Solution_> entitySelector;
     private final Iterator<Object> fromEntityIterator;
@@ -47,7 +47,7 @@ public class NaiveListChangeIterator<Solution_> extends UpcomingSelectionIterato
     private Object upcomingToEntity;
     private int upcomingFromIndex = 0;
 
-    public NaiveListChangeIterator(
+    public TmpOriginalListChangeIterator(
             EntitySelector<Solution_> entitySelector,
             ListVariableDescriptor<Solution_> listVariableDescriptor) {
         this.entitySelector = entitySelector;
