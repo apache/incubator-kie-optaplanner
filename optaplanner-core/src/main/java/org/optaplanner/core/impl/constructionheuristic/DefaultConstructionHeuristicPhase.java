@@ -16,8 +16,6 @@
 
 package org.optaplanner.core.impl.constructionheuristic;
 
-import java.util.concurrent.atomic.AtomicInteger;
-
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.impl.constructionheuristic.decider.ConstructionHeuristicDecider;
 import org.optaplanner.core.impl.constructionheuristic.placer.EntityPlacer;
@@ -26,6 +24,7 @@ import org.optaplanner.core.impl.constructionheuristic.scope.ConstructionHeurist
 import org.optaplanner.core.impl.constructionheuristic.scope.ConstructionHeuristicStepScope;
 import org.optaplanner.core.impl.heuristic.move.Move;
 import org.optaplanner.core.impl.phase.AbstractPhase;
+import org.optaplanner.core.impl.phase.PhaseCounter;
 import org.optaplanner.core.impl.solver.recaller.BestSolutionRecaller;
 import org.optaplanner.core.impl.solver.scope.SolverScope;
 import org.optaplanner.core.impl.solver.termination.Termination;
@@ -44,9 +43,9 @@ public class DefaultConstructionHeuristicPhase<Solution_> extends AbstractPhase<
     // TODO make this configurable or make it constant
     protected final boolean skipBestSolutionCloningInSteps = true;
 
-    public DefaultConstructionHeuristicPhase(AtomicInteger phaseIndexCounter, String logIndentation,
+    public DefaultConstructionHeuristicPhase(PhaseCounter<Solution_> phaseCounter, String logIndentation,
             BestSolutionRecaller<Solution_> bestSolutionRecaller, Termination<Solution_> termination) {
-        super(phaseIndexCounter, logIndentation, bestSolutionRecaller, termination);
+        super(phaseCounter, logIndentation, bestSolutionRecaller, termination);
     }
 
     public void setEntityPlacer(EntityPlacer<Solution_> entityPlacer) {

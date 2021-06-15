@@ -21,7 +21,6 @@ import static org.apache.commons.lang3.ObjectUtils.defaultIfNull;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicInteger;
 
 import org.optaplanner.core.config.exhaustivesearch.ExhaustiveSearchPhaseConfig;
 import org.optaplanner.core.config.exhaustivesearch.ExhaustiveSearchType;
@@ -47,6 +46,7 @@ import org.optaplanner.core.impl.heuristic.selector.entity.mimic.ManualEntityMim
 import org.optaplanner.core.impl.heuristic.selector.move.MoveSelector;
 import org.optaplanner.core.impl.heuristic.selector.move.MoveSelectorFactory;
 import org.optaplanner.core.impl.phase.AbstractPhaseFactory;
+import org.optaplanner.core.impl.phase.PhaseCounter;
 import org.optaplanner.core.impl.solver.recaller.BestSolutionRecaller;
 import org.optaplanner.core.impl.solver.termination.Termination;
 
@@ -58,7 +58,7 @@ public class DefaultExhaustiveSearchPhaseFactory<Solution_>
     }
 
     @Override
-    public ExhaustiveSearchPhase<Solution_> buildPhase(AtomicInteger phaseIndexCounter,
+    public ExhaustiveSearchPhase<Solution_> buildPhase(PhaseCounter<Solution_> phaseCounter,
             HeuristicConfigPolicy<Solution_> solverConfigPolicy, BestSolutionRecaller<Solution_> bestSolutionRecaller,
             Termination<Solution_> solverTermination) {
         HeuristicConfigPolicy<Solution_> phaseConfigPolicy = solverConfigPolicy.createFilteredPhaseConfigPolicy();
@@ -71,7 +71,7 @@ public class DefaultExhaustiveSearchPhaseFactory<Solution_>
         phaseConfigPolicy.setValueSorterManner(phaseConfig.getValueSorterManner() != null ? phaseConfig.getValueSorterManner()
                 : exhaustiveSearchType_.getDefaultValueSorterManner());
         DefaultExhaustiveSearchPhase<Solution_> phase =
-                new DefaultExhaustiveSearchPhase<>(phaseIndexCounter, solverConfigPolicy.getLogIndentation(),
+                new DefaultExhaustiveSearchPhase<>(phaseCounter, solverConfigPolicy.getLogIndentation(),
                         bestSolutionRecaller, buildPhaseTermination(phaseConfigPolicy, solverTermination));
         boolean scoreBounderEnabled = exhaustiveSearchType_.isScoreBounderEnabled();
         NodeExplorationType nodeExplorationType_;

@@ -16,8 +16,6 @@
 
 package org.optaplanner.core.impl.localsearch;
 
-import java.util.concurrent.atomic.AtomicInteger;
-
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.impl.heuristic.move.Move;
 import org.optaplanner.core.impl.localsearch.decider.LocalSearchDecider;
@@ -25,6 +23,7 @@ import org.optaplanner.core.impl.localsearch.event.LocalSearchPhaseLifecycleList
 import org.optaplanner.core.impl.localsearch.scope.LocalSearchPhaseScope;
 import org.optaplanner.core.impl.localsearch.scope.LocalSearchStepScope;
 import org.optaplanner.core.impl.phase.AbstractPhase;
+import org.optaplanner.core.impl.phase.PhaseCounter;
 import org.optaplanner.core.impl.solver.recaller.BestSolutionRecaller;
 import org.optaplanner.core.impl.solver.scope.SolverScope;
 import org.optaplanner.core.impl.solver.termination.Termination;
@@ -39,9 +38,9 @@ public class DefaultLocalSearchPhase<Solution_> extends AbstractPhase<Solution_>
 
     protected LocalSearchDecider<Solution_> decider;
 
-    public DefaultLocalSearchPhase(AtomicInteger phaseIndexCounter, String logIndentation,
+    public DefaultLocalSearchPhase(PhaseCounter<Solution_> phaseCounter, String logIndentation,
             BestSolutionRecaller<Solution_> bestSolutionRecaller, Termination<Solution_> termination) {
-        super(phaseIndexCounter, logIndentation, bestSolutionRecaller, termination);
+        super(phaseCounter, logIndentation, bestSolutionRecaller, termination);
     }
 
     public LocalSearchDecider<Solution_> getDecider() {

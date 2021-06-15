@@ -21,7 +21,6 @@ import static org.apache.commons.lang3.ObjectUtils.defaultIfNull;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.concurrent.ThreadFactory;
-import java.util.concurrent.atomic.AtomicInteger;
 
 import org.optaplanner.core.config.heuristic.selector.common.SelectionCacheType;
 import org.optaplanner.core.config.heuristic.selector.common.SelectionOrder;
@@ -46,6 +45,7 @@ import org.optaplanner.core.impl.localsearch.decider.acceptor.AcceptorFactory;
 import org.optaplanner.core.impl.localsearch.decider.forager.LocalSearchForager;
 import org.optaplanner.core.impl.localsearch.decider.forager.LocalSearchForagerFactory;
 import org.optaplanner.core.impl.phase.AbstractPhaseFactory;
+import org.optaplanner.core.impl.phase.PhaseCounter;
 import org.optaplanner.core.impl.solver.recaller.BestSolutionRecaller;
 import org.optaplanner.core.impl.solver.termination.Termination;
 import org.optaplanner.core.impl.solver.thread.ChildThreadType;
@@ -58,12 +58,12 @@ public class DefaultLocalSearchPhaseFactory<Solution_>
     }
 
     @Override
-    public LocalSearchPhase<Solution_> buildPhase(AtomicInteger phaseIndexCounter,
+    public LocalSearchPhase<Solution_> buildPhase(PhaseCounter<Solution_> phaseCounter,
             HeuristicConfigPolicy<Solution_> solverConfigPolicy, BestSolutionRecaller<Solution_> bestSolutionRecaller,
             Termination<Solution_> solverTermination) {
         HeuristicConfigPolicy<Solution_> phaseConfigPolicy = solverConfigPolicy.createPhaseConfigPolicy();
         DefaultLocalSearchPhase<Solution_> phase =
-                new DefaultLocalSearchPhase<>(phaseIndexCounter, solverConfigPolicy.getLogIndentation(),
+                new DefaultLocalSearchPhase<>(phaseCounter, solverConfigPolicy.getLogIndentation(),
                         bestSolutionRecaller, buildPhaseTermination(phaseConfigPolicy, solverTermination));
         phase.setDecider(buildDecider(phaseConfigPolicy,
                 phase.getTermination()));

@@ -22,7 +22,6 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.SortedSet;
 import java.util.TreeSet;
-import java.util.concurrent.atomic.AtomicInteger;
 
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.score.Score;
@@ -35,6 +34,7 @@ import org.optaplanner.core.impl.exhaustivesearch.scope.ExhaustiveSearchStepScop
 import org.optaplanner.core.impl.heuristic.move.Move;
 import org.optaplanner.core.impl.heuristic.selector.entity.EntitySelector;
 import org.optaplanner.core.impl.phase.AbstractPhase;
+import org.optaplanner.core.impl.phase.PhaseCounter;
 import org.optaplanner.core.impl.score.director.InnerScoreDirector;
 import org.optaplanner.core.impl.solver.recaller.BestSolutionRecaller;
 import org.optaplanner.core.impl.solver.scope.SolverScope;
@@ -55,9 +55,9 @@ public class DefaultExhaustiveSearchPhase<Solution_> extends AbstractPhase<Solut
     protected boolean assertWorkingSolutionScoreFromScratch = false;
     protected boolean assertExpectedWorkingSolutionScore = false;
 
-    public DefaultExhaustiveSearchPhase(AtomicInteger phaseIndexCounter, String logIndentation,
+    public DefaultExhaustiveSearchPhase(PhaseCounter<Solution_> phaseCounter, String logIndentation,
             BestSolutionRecaller<Solution_> bestSolutionRecaller, Termination<Solution_> termination) {
-        super(phaseIndexCounter, logIndentation, bestSolutionRecaller, termination);
+        super(phaseCounter, logIndentation, bestSolutionRecaller, termination);
     }
 
     public Comparator<ExhaustiveSearchNode> getNodeComparator() {

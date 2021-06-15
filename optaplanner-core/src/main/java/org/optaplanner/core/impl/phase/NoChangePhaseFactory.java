@@ -16,8 +16,6 @@
 
 package org.optaplanner.core.impl.phase;
 
-import java.util.concurrent.atomic.AtomicInteger;
-
 import org.optaplanner.core.config.phase.NoChangePhaseConfig;
 import org.optaplanner.core.impl.heuristic.HeuristicConfigPolicy;
 import org.optaplanner.core.impl.solver.recaller.BestSolutionRecaller;
@@ -30,11 +28,11 @@ public class NoChangePhaseFactory<Solution_> extends AbstractPhaseFactory<Soluti
     }
 
     @Override
-    public NoChangePhase<Solution_> buildPhase(AtomicInteger phaseIndexCounter,
+    public NoChangePhase<Solution_> buildPhase(PhaseCounter<Solution_> phaseCounter,
             HeuristicConfigPolicy<Solution_> solverConfigPolicy, BestSolutionRecaller<Solution_> bestSolutionRecaller,
             Termination<Solution_> solverTermination) {
         HeuristicConfigPolicy<Solution_> phaseConfigPolicy = solverConfigPolicy.createPhaseConfigPolicy();
-        return new NoChangePhase<>(phaseIndexCounter, solverConfigPolicy.getLogIndentation(), bestSolutionRecaller,
+        return new NoChangePhase<>(phaseCounter, solverConfigPolicy.getLogIndentation(), bestSolutionRecaller,
                 buildPhaseTermination(phaseConfigPolicy, solverTermination));
     }
 }

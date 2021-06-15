@@ -24,7 +24,6 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Semaphore;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.ThreadPoolExecutor;
-import java.util.concurrent.atomic.AtomicInteger;
 
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.config.phase.PhaseConfig;
@@ -38,6 +37,7 @@ import org.optaplanner.core.impl.partitionedsearch.scope.PartitionedSearchPhaseS
 import org.optaplanner.core.impl.partitionedsearch.scope.PartitionedSearchStepScope;
 import org.optaplanner.core.impl.phase.AbstractPhase;
 import org.optaplanner.core.impl.phase.Phase;
+import org.optaplanner.core.impl.phase.PhaseCounter;
 import org.optaplanner.core.impl.phase.PhaseFactory;
 import org.optaplanner.core.impl.score.director.InnerScoreDirector;
 import org.optaplanner.core.impl.solver.recaller.BestSolutionRecaller;
@@ -64,11 +64,11 @@ public class DefaultPartitionedSearchPhase<Solution_> extends AbstractPhase<Solu
     protected List<PhaseConfig> phaseConfigList;
     protected HeuristicConfigPolicy<Solution_> configPolicy;
 
-    public DefaultPartitionedSearchPhase(AtomicInteger phaseIndexCounter, String logIndentation,
+    public DefaultPartitionedSearchPhase(PhaseCounter<Solution_> phaseCounter, String logIndentation,
             BestSolutionRecaller<Solution_> bestSolutionRecaller, Termination<Solution_> termination,
             SolutionPartitioner<Solution_> solutionPartitioner, ThreadFactory threadFactory,
             Integer runnablePartThreadLimit) {
-        super(phaseIndexCounter, logIndentation, bestSolutionRecaller, termination);
+        super(phaseCounter, logIndentation, bestSolutionRecaller, termination);
         this.solutionPartitioner = solutionPartitioner;
         this.threadFactory = threadFactory;
         this.runnablePartThreadLimit = runnablePartThreadLimit;
@@ -177,11 +177,11 @@ public class DefaultPartitionedSearchPhase<Solution_> extends AbstractPhase<Solu
         Termination<Solution_> partTermination = new OrCompositeTermination<>(childThreadPlumbingTermination,
                 termination.createChildThreadTermination(solverScope, ChildThreadType.PART_THREAD));
         List<Phase<Solution_>> phaseList = new ArrayList<>(phaseConfigList.size());
-        AtomicInteger partPhaseIndexCounter = new AtomicInteger();
+        PhaseCounter<Solution_> partPhaseCounter = new PhaseCounter<>(); // Phase count independent of the outer solver.
         for (PhaseConfig phaseConfig : phaseConfigList) {
             PhaseFactory<Solution_> phaseFactory = PhaseFactory.create(phaseConfig);
             Phase<Solution_> phase =
-                    phaseFactory.buildPhase(partPhaseIndexCounter, configPolicy, bestSolutionRecaller, partTermination);
+                    phaseFactory.buildPhase(partPhaseCounter, configPolicy, bestSolutionRecaller, partTermination);
             phaseList.add(phase);
         }
         // TODO create PartitionSolverScope alternative to deal with 3 layer terminations

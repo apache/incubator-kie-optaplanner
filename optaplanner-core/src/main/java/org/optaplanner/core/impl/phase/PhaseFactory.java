@@ -16,8 +16,6 @@
 
 package org.optaplanner.core.impl.phase;
 
-import java.util.concurrent.atomic.AtomicInteger;
-
 import org.optaplanner.core.config.constructionheuristic.ConstructionHeuristicPhaseConfig;
 import org.optaplanner.core.config.exhaustivesearch.ExhaustiveSearchPhaseConfig;
 import org.optaplanner.core.config.localsearch.LocalSearchPhaseConfig;
@@ -55,14 +53,6 @@ public interface PhaseFactory<Solution_> {
         }
     }
 
-    /**
-     *
-     * @param phaseIndexCounter never null, shared index counter; phase is expected to increment by 1 when started.
-     * @param solverConfigPolicy
-     * @param bestSolutionRecaller
-     * @param solverTermination
-     * @return
-     */
-    Phase<Solution_> buildPhase(AtomicInteger phaseIndexCounter, HeuristicConfigPolicy<Solution_> solverConfigPolicy,
+    Phase<Solution_> buildPhase(PhaseCounter<Solution_> phaseCounter, HeuristicConfigPolicy<Solution_> solverConfigPolicy,
             BestSolutionRecaller<Solution_> bestSolutionRecaller, Termination<Solution_> solverTermination);
 }

@@ -22,7 +22,6 @@ import static org.optaplanner.core.config.partitionedsearch.PartitionedSearchPha
 import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.ThreadFactory;
-import java.util.concurrent.atomic.AtomicInteger;
 
 import org.optaplanner.core.config.constructionheuristic.ConstructionHeuristicPhaseConfig;
 import org.optaplanner.core.config.localsearch.LocalSearchPhaseConfig;
@@ -33,6 +32,7 @@ import org.optaplanner.core.config.util.ConfigUtils;
 import org.optaplanner.core.impl.heuristic.HeuristicConfigPolicy;
 import org.optaplanner.core.impl.partitionedsearch.partitioner.SolutionPartitioner;
 import org.optaplanner.core.impl.phase.AbstractPhaseFactory;
+import org.optaplanner.core.impl.phase.PhaseCounter;
 import org.optaplanner.core.impl.solver.recaller.BestSolutionRecaller;
 import org.optaplanner.core.impl.solver.termination.Termination;
 import org.optaplanner.core.impl.solver.thread.ChildThreadType;
@@ -49,7 +49,7 @@ public class DefaultPartitionedSearchPhaseFactory<Solution_>
     }
 
     @Override
-    public PartitionedSearchPhase<Solution_> buildPhase(AtomicInteger phaseIndexCounter,
+    public PartitionedSearchPhase<Solution_> buildPhase(PhaseCounter<Solution_> phaseCounter,
             HeuristicConfigPolicy<Solution_> solverConfigPolicy, BestSolutionRecaller<Solution_> bestSolutionRecaller,
             Termination<Solution_> solverTermination) {
         HeuristicConfigPolicy<Solution_> phaseConfigPolicy = solverConfigPolicy.createPhaseConfigPolicy();
@@ -57,7 +57,7 @@ public class DefaultPartitionedSearchPhaseFactory<Solution_>
         Termination<Solution_> phaseTermination = buildPhaseTermination(phaseConfigPolicy, solverTermination);
         Integer resolvedActiveThreadCount = resolveActiveThreadCount(phaseConfig.getRunnablePartThreadLimit());
         DefaultPartitionedSearchPhase<Solution_> phase =
-                new DefaultPartitionedSearchPhase<>(phaseIndexCounter, solverConfigPolicy.getLogIndentation(),
+                new DefaultPartitionedSearchPhase<>(phaseCounter, solverConfigPolicy.getLogIndentation(),
                         bestSolutionRecaller, phaseTermination, buildSolutionPartitioner(), threadFactory,
                         resolvedActiveThreadCount);
         List<PhaseConfig> phaseConfigList_ = phaseConfig.getPhaseConfigList();

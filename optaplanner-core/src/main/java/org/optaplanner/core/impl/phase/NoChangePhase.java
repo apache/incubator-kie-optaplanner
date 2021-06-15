@@ -16,8 +16,6 @@
 
 package org.optaplanner.core.impl.phase;
 
-import java.util.concurrent.atomic.AtomicInteger;
-
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.impl.solver.recaller.BestSolutionRecaller;
 import org.optaplanner.core.impl.solver.scope.SolverScope;
@@ -32,9 +30,9 @@ import org.optaplanner.core.impl.solver.termination.Termination;
  */
 public class NoChangePhase<Solution_> extends AbstractPhase<Solution_> {
 
-    public NoChangePhase(AtomicInteger phaseIndexCounter, String logIndentation,
-            BestSolutionRecaller<Solution_> bestSolutionRecaller, Termination termination) {
-        super(phaseIndexCounter, logIndentation, bestSolutionRecaller, termination);
+    public NoChangePhase(PhaseCounter<Solution_> phaseCounter, String logIndentation,
+            BestSolutionRecaller<Solution_> bestSolutionRecaller, Termination<Solution_> termination) {
+        super(phaseCounter, logIndentation, bestSolutionRecaller, termination);
     }
 
     @Override

@@ -26,7 +26,6 @@ import static org.optaplanner.core.impl.testdata.util.PlannerAssert.assertCode;
 
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.concurrent.atomic.AtomicInteger;
 
 import org.junit.jupiter.api.Test;
 import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
@@ -41,6 +40,7 @@ import org.optaplanner.core.impl.exhaustivesearch.scope.ExhaustiveSearchPhaseSco
 import org.optaplanner.core.impl.exhaustivesearch.scope.ExhaustiveSearchStepScope;
 import org.optaplanner.core.impl.heuristic.move.Move;
 import org.optaplanner.core.impl.heuristic.selector.entity.EntitySelector;
+import org.optaplanner.core.impl.phase.PhaseCounter;
 import org.optaplanner.core.impl.score.director.InnerScoreDirector;
 import org.optaplanner.core.impl.testdata.domain.TestdataEntity;
 import org.optaplanner.core.impl.testdata.domain.TestdataSolution;
@@ -97,7 +97,7 @@ public class DefaultExhaustiveSearchPhaseTest {
         when(stepScope.getExpandingNode()).thenReturn(node4B);
 
         DefaultExhaustiveSearchPhase<TestdataSolution> phase =
-                new DefaultExhaustiveSearchPhase<>(new AtomicInteger(0), "", null, null);
+                new DefaultExhaustiveSearchPhase<>(new PhaseCounter<>(), "", null, null);
         phase.setEntitySelector(mock(EntitySelector.class));
         phase.setDecider(mock(ExhaustiveSearchDecider.class));
         phase.restoreWorkingSolution(stepScope);

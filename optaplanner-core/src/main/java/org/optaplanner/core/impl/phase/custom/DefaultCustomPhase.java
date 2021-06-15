@@ -17,10 +17,10 @@
 package org.optaplanner.core.impl.phase.custom;
 
 import java.util.List;
-import java.util.concurrent.atomic.AtomicInteger;
 
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.impl.phase.AbstractPhase;
+import org.optaplanner.core.impl.phase.PhaseCounter;
 import org.optaplanner.core.impl.phase.custom.scope.CustomPhaseScope;
 import org.optaplanner.core.impl.phase.custom.scope.CustomStepScope;
 import org.optaplanner.core.impl.score.director.InnerScoreDirector;
@@ -37,9 +37,9 @@ public class DefaultCustomPhase<Solution_> extends AbstractPhase<Solution_> impl
 
     protected List<CustomPhaseCommand<Solution_>> customPhaseCommandList;
 
-    public DefaultCustomPhase(AtomicInteger phaseIndexCounter, String logIndentation,
+    public DefaultCustomPhase(PhaseCounter<Solution_> phaseCounter, String logIndentation,
             BestSolutionRecaller<Solution_> bestSolutionRecaller, Termination<Solution_> termination) {
-        super(phaseIndexCounter, logIndentation, bestSolutionRecaller, termination);
+        super(phaseCounter, logIndentation, bestSolutionRecaller, termination);
     }
 
     public void setCustomPhaseCommandList(List<CustomPhaseCommand<Solution_>> customPhaseCommandList) {
