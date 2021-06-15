@@ -18,7 +18,7 @@
     <!--<minutesSpentLimit>5</minutesSpentLimit>-->
   <!--</termination>-->
   <customPhase>
-    <customPhaseCommandClass>org.optaplanner.examples.taskassigning_listvariable.domain.solver.solution.initializer.RoundRobinInitializer</customPhaseCommandClass>
+    <customPhaseCommandClass>org.optaplanner.examples.taskassigning_listvariable.domain.solver.solution.initializer.TmpRoundRobinInitializer</customPhaseCommandClass>
   </customPhase>
   <localSearch>
     <unionMoveSelector>

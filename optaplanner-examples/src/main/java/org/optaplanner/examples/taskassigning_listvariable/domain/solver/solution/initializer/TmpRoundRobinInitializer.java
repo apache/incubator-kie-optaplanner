@@ -26,9 +26,9 @@ import org.optaplanner.examples.taskassigning_listvariable.domain.TaskAssigningS
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class RoundRobinInitializer implements CustomPhaseCommand<TaskAssigningSolution> {
+public class TmpRoundRobinInitializer implements CustomPhaseCommand<TaskAssigningSolution> {
 
-    private static final Logger logger = LoggerFactory.getLogger(RoundRobinInitializer.class);
+    private static final Logger logger = LoggerFactory.getLogger(TmpRoundRobinInitializer.class);
 
     @Override
     public void changeWorkingSolution(ScoreDirector<TaskAssigningSolution> scoreDirector) {
