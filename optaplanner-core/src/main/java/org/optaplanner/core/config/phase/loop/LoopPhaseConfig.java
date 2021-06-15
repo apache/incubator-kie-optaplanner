@@ -37,7 +37,7 @@ import org.optaplanner.core.config.util.ConfigUtils;
 })
 public class LoopPhaseConfig extends PhaseConfig<LoopPhaseConfig> {
 
-    public static final String XML_ELEMENT_NAME = "loopPhase";
+    public static final String XML_ELEMENT_NAME = "loop";
 
     // Warning: all fields are null (and not defaulted) because they can be inherited
     // and also because the input config file should match the output config file
