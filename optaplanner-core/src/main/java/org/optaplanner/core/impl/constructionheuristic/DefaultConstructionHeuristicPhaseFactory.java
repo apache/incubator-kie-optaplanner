@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2021 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,6 +19,7 @@ package org.optaplanner.core.impl.constructionheuristic;
 import static org.apache.commons.lang3.ObjectUtils.defaultIfNull;
 
 import java.util.concurrent.ThreadFactory;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import org.optaplanner.core.config.constructionheuristic.ConstructionHeuristicPhaseConfig;
 import org.optaplanner.core.config.constructionheuristic.ConstructionHeuristicType;
@@ -55,13 +56,13 @@ public class DefaultConstructionHeuristicPhaseFactory<Solution_>
     }
 
     @Override
-    public ConstructionHeuristicPhase<Solution_> buildPhase(int phaseIndex,
+    public ConstructionHeuristicPhase<Solution_> buildPhase(AtomicInteger phaseIndexCounter,
             HeuristicConfigPolicy<Solution_> solverConfigPolicy, BestSolutionRecaller<Solution_> bestSolutionRecaller,
             Termination<Solution_> solverTermination) {
 
         HeuristicConfigPolicy<Solution_> phaseConfigPolicy = solverConfigPolicy.createFilteredPhaseConfigPolicy();
         DefaultConstructionHeuristicPhase<Solution_> phase =
-                new DefaultConstructionHeuristicPhase<>(phaseIndex, solverConfigPolicy.getLogIndentation(),
+                new DefaultConstructionHeuristicPhase<>(phaseIndexCounter, solverConfigPolicy.getLogIndentation(),
                         bestSolutionRecaller, buildPhaseTermination(phaseConfigPolicy, solverTermination));
         phase.setDecider(buildDecider(phaseConfigPolicy, phase.getTermination()));
         ConstructionHeuristicType constructionHeuristicType_ = defaultIfNull(

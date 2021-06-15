@@ -22,6 +22,7 @@ import static org.optaplanner.core.config.partitionedsearch.PartitionedSearchPha
 import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.ThreadFactory;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import org.optaplanner.core.config.constructionheuristic.ConstructionHeuristicPhaseConfig;
 import org.optaplanner.core.config.localsearch.LocalSearchPhaseConfig;
@@ -48,7 +49,7 @@ public class DefaultPartitionedSearchPhaseFactory<Solution_>
     }
 
     @Override
-    public PartitionedSearchPhase<Solution_> buildPhase(int phaseIndex,
+    public PartitionedSearchPhase<Solution_> buildPhase(AtomicInteger phaseIndexCounter,
             HeuristicConfigPolicy<Solution_> solverConfigPolicy, BestSolutionRecaller<Solution_> bestSolutionRecaller,
             Termination<Solution_> solverTermination) {
         HeuristicConfigPolicy<Solution_> phaseConfigPolicy = solverConfigPolicy.createPhaseConfigPolicy();
@@ -56,8 +57,9 @@ public class DefaultPartitionedSearchPhaseFactory<Solution_>
         Termination<Solution_> phaseTermination = buildPhaseTermination(phaseConfigPolicy, solverTermination);
         Integer resolvedActiveThreadCount = resolveActiveThreadCount(phaseConfig.getRunnablePartThreadLimit());
         DefaultPartitionedSearchPhase<Solution_> phase =
-                new DefaultPartitionedSearchPhase<>(phaseIndex, solverConfigPolicy.getLogIndentation(), bestSolutionRecaller,
-                        phaseTermination, buildSolutionPartitioner(), threadFactory, resolvedActiveThreadCount);
+                new DefaultPartitionedSearchPhase<>(phaseIndexCounter, solverConfigPolicy.getLogIndentation(),
+                        bestSolutionRecaller, phaseTermination, buildSolutionPartitioner(), threadFactory,
+                        resolvedActiveThreadCount);
         List<PhaseConfig> phaseConfigList_ = phaseConfig.getPhaseConfigList();
         if (ConfigUtils.isEmptyCollection(phaseConfigList_)) {
             phaseConfigList_ = Arrays.asList(new ConstructionHeuristicPhaseConfig(), new LocalSearchPhaseConfig());

@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2021 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,6 +21,7 @@ import static org.apache.commons.lang3.ObjectUtils.defaultIfNull;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import org.optaplanner.core.config.exhaustivesearch.ExhaustiveSearchPhaseConfig;
 import org.optaplanner.core.config.exhaustivesearch.ExhaustiveSearchType;
@@ -57,7 +58,7 @@ public class DefaultExhaustiveSearchPhaseFactory<Solution_>
     }
 
     @Override
-    public ExhaustiveSearchPhase<Solution_> buildPhase(int phaseIndex,
+    public ExhaustiveSearchPhase<Solution_> buildPhase(AtomicInteger phaseIndexCounter,
             HeuristicConfigPolicy<Solution_> solverConfigPolicy, BestSolutionRecaller<Solution_> bestSolutionRecaller,
             Termination<Solution_> solverTermination) {
         HeuristicConfigPolicy<Solution_> phaseConfigPolicy = solverConfigPolicy.createFilteredPhaseConfigPolicy();
@@ -70,8 +71,8 @@ public class DefaultExhaustiveSearchPhaseFactory<Solution_>
         phaseConfigPolicy.setValueSorterManner(phaseConfig.getValueSorterManner() != null ? phaseConfig.getValueSorterManner()
                 : exhaustiveSearchType_.getDefaultValueSorterManner());
         DefaultExhaustiveSearchPhase<Solution_> phase =
-                new DefaultExhaustiveSearchPhase<>(phaseIndex, solverConfigPolicy.getLogIndentation(), bestSolutionRecaller,
-                        buildPhaseTermination(phaseConfigPolicy, solverTermination));
+                new DefaultExhaustiveSearchPhase<>(phaseIndexCounter, solverConfigPolicy.getLogIndentation(),
+                        bestSolutionRecaller, buildPhaseTermination(phaseConfigPolicy, solverTermination));
         boolean scoreBounderEnabled = exhaustiveSearchType_.isScoreBounderEnabled();
         NodeExplorationType nodeExplorationType_;
         if (exhaustiveSearchType_ == ExhaustiveSearchType.BRUTE_FORCE) {

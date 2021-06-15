@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2021 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,6 +15,8 @@
  */
 
 package org.optaplanner.core.impl.localsearch;
+
+import java.util.concurrent.atomic.AtomicInteger;
 
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.impl.heuristic.move.Move;
@@ -37,9 +39,9 @@ public class DefaultLocalSearchPhase<Solution_> extends AbstractPhase<Solution_>
 
     protected LocalSearchDecider<Solution_> decider;
 
-    public DefaultLocalSearchPhase(int phaseIndex, String logIndentation,
+    public DefaultLocalSearchPhase(AtomicInteger phaseIndexCounter, String logIndentation,
             BestSolutionRecaller<Solution_> bestSolutionRecaller, Termination<Solution_> termination) {
-        super(phaseIndex, logIndentation, bestSolutionRecaller, termination);
+        super(phaseIndexCounter, logIndentation, bestSolutionRecaller, termination);
     }
 
     public LocalSearchDecider<Solution_> getDecider() {
@@ -152,7 +154,7 @@ public class DefaultLocalSearchPhase<Solution_> extends AbstractPhase<Solution_>
         logger.info("{}Local Search phase ({}) ended: time spent ({}), best score ({}),"
                 + " score calculation speed ({}/sec), step total ({}).",
                 logIndentation,
-                phaseIndex,
+                getPhaseIndex(),
                 phaseScope.calculateSolverTimeMillisSpentUpToNow(),
                 phaseScope.getBestScore(),
                 phaseScope.getPhaseScoreCalculationSpeed(),

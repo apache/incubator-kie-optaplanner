@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2021 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,6 +15,8 @@
  */
 
 package org.optaplanner.core.impl.phase;
+
+import java.util.concurrent.atomic.AtomicInteger;
 
 import org.optaplanner.core.config.constructionheuristic.ConstructionHeuristicPhaseConfig;
 import org.optaplanner.core.config.exhaustivesearch.ExhaustiveSearchPhaseConfig;
@@ -53,6 +55,14 @@ public interface PhaseFactory<Solution_> {
         }
     }
 
-    Phase<Solution_> buildPhase(int phaseIndex, HeuristicConfigPolicy<Solution_> solverConfigPolicy,
+    /**
+     *
+     * @param phaseIndexCounter never null, shared index counter; phase is expected to increment by 1 when started.
+     * @param solverConfigPolicy
+     * @param bestSolutionRecaller
+     * @param solverTermination
+     * @return
+     */
+    Phase<Solution_> buildPhase(AtomicInteger phaseIndexCounter, HeuristicConfigPolicy<Solution_> solverConfigPolicy,
             BestSolutionRecaller<Solution_> bestSolutionRecaller, Termination<Solution_> solverTermination);
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2021 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,6 +17,7 @@
 package org.optaplanner.core.impl.phase;
 
 import java.util.Iterator;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.score.Score;
@@ -44,7 +45,8 @@ public abstract class AbstractPhase<Solution_> implements Phase<Solution_> {
 
     protected final transient Logger logger = LoggerFactory.getLogger(getClass());
 
-    protected final int phaseIndex;
+    private final AtomicInteger phaseIndexCounter;
+    private int phaseIndex = -1;
     protected final String logIndentation;
     protected final BestSolutionRecaller<Solution_> bestSolutionRecaller;
     protected final Termination<Solution_> termination;
@@ -58,15 +60,20 @@ public abstract class AbstractPhase<Solution_> implements Phase<Solution_> {
     protected boolean assertExpectedStepScore = false;
     protected boolean assertShadowVariablesAreNotStaleAfterStep = false;
 
-    public AbstractPhase(int phaseIndex, String logIndentation, BestSolutionRecaller<Solution_> bestSolutionRecaller,
-            Termination<Solution_> termination) {
-        this.phaseIndex = phaseIndex;
+    public AbstractPhase(AtomicInteger phaseIndexCounter, String logIndentation,
+            BestSolutionRecaller<Solution_> bestSolutionRecaller, Termination<Solution_> termination) {
+        this.phaseIndexCounter = phaseIndexCounter;
         this.logIndentation = logIndentation;
         this.bestSolutionRecaller = bestSolutionRecaller;
         this.termination = termination;
     }
 
-    public int getPhaseIndex() {
+    /**
+     * Not constant; changes when the phase instance is reused.
+     *
+     * @return the number of phases that run before this phase, within the current solver run. -1 if phase not yet run.
+     */
+    protected int getPhaseIndex() {
         return phaseIndex;
     }
 
@@ -111,6 +118,7 @@ public abstract class AbstractPhase<Solution_> implements Phase<Solution_> {
 
     @Override
     public void solvingStarted(SolverScope<Solution_> solverScope) {
+        phaseIndexCounter.set(0); // Reset the phase index counter so that the first phase is 0.
         // bestSolutionRecaller.solvingStarted(...) is called by DefaultSolver
         // solverPhaseLifecycleSupport.solvingStarted(...) is called by DefaultSolver
         termination.solvingStarted(solverScope);
@@ -127,6 +135,7 @@ public abstract class AbstractPhase<Solution_> implements Phase<Solution_> {
 
     @Override
     public void phaseStarted(AbstractPhaseScope<Solution_> phaseScope) {
+        phaseIndex = phaseIndexCounter.getAndIncrement();
         phaseScope.startingNow();
         phaseScope.reset();
         bestSolutionRecaller.phaseStarted(phaseScope);

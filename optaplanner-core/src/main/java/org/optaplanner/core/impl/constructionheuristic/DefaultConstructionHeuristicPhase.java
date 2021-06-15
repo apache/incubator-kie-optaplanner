@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2021 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,6 +15,8 @@
  */
 
 package org.optaplanner.core.impl.constructionheuristic;
+
+import java.util.concurrent.atomic.AtomicInteger;
 
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.impl.constructionheuristic.decider.ConstructionHeuristicDecider;
@@ -42,9 +44,9 @@ public class DefaultConstructionHeuristicPhase<Solution_> extends AbstractPhase<
     // TODO make this configurable or make it constant
     protected final boolean skipBestSolutionCloningInSteps = true;
 
-    public DefaultConstructionHeuristicPhase(int phaseIndex, String logIndentation,
+    public DefaultConstructionHeuristicPhase(AtomicInteger phaseIndexCounter, String logIndentation,
             BestSolutionRecaller<Solution_> bestSolutionRecaller, Termination<Solution_> termination) {
-        super(phaseIndex, logIndentation, bestSolutionRecaller, termination);
+        super(phaseIndexCounter, logIndentation, bestSolutionRecaller, termination);
     }
 
     public void setEntityPlacer(EntityPlacer<Solution_> entityPlacer) {
@@ -163,7 +165,7 @@ public class DefaultConstructionHeuristicPhase<Solution_> extends AbstractPhase<
         logger.info("{}Construction Heuristic phase ({}) ended: time spent ({}), best score ({}),"
                 + " score calculation speed ({}/sec), step total ({}).",
                 logIndentation,
-                phaseIndex,
+                getPhaseIndex(),
                 phaseScope.calculateSolverTimeMillisSpentUpToNow(),
                 phaseScope.getBestScore(),
                 phaseScope.getPhaseScoreCalculationSpeed(),

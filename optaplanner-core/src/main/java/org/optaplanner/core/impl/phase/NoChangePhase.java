@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2021 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,6 +16,8 @@
 
 package org.optaplanner.core.impl.phase;
 
+import java.util.concurrent.atomic.AtomicInteger;
+
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.impl.solver.recaller.BestSolutionRecaller;
 import org.optaplanner.core.impl.solver.scope.SolverScope;
@@ -30,9 +32,9 @@ import org.optaplanner.core.impl.solver.termination.Termination;
  */
 public class NoChangePhase<Solution_> extends AbstractPhase<Solution_> {
 
-    public NoChangePhase(int phaseIndex, String logIndentation,
+    public NoChangePhase(AtomicInteger phaseIndexCounter, String logIndentation,
             BestSolutionRecaller<Solution_> bestSolutionRecaller, Termination termination) {
-        super(phaseIndex, logIndentation, bestSolutionRecaller, termination);
+        super(phaseIndexCounter, logIndentation, bestSolutionRecaller, termination);
     }
 
     @Override
@@ -48,7 +50,7 @@ public class NoChangePhase<Solution_> extends AbstractPhase<Solution_> {
     public void solve(SolverScope<Solution_> solverScope) {
         logger.info("{}No Change phase ({}) ended.",
                 logIndentation,
-                phaseIndex);
+                getPhaseIndex());
     }
 
 }

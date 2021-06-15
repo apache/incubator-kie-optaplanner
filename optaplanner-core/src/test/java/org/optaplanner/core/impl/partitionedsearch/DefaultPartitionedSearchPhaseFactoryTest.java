@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2021 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,6 +20,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.when;
+
+import java.util.concurrent.atomic.AtomicInteger;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -88,7 +90,8 @@ class DefaultPartitionedSearchPhaseFactoryTest {
         phaseConfig.setSolutionPartitionerClass(TestdataSolutionPartitioner.class);
         DefaultPartitionedSearchPhaseFactory<TestdataSolution> partitionedSearchPhaseFactory =
                 new DefaultPartitionedSearchPhaseFactory<TestdataSolution>(phaseConfig);
-        return (DefaultPartitionedSearchPhase) partitionedSearchPhaseFactory.buildPhase(0, heuristicConfigPolicy,
+        return (DefaultPartitionedSearchPhase) partitionedSearchPhaseFactory.buildPhase(new AtomicInteger(0),
+                heuristicConfigPolicy,
                 mock(BestSolutionRecaller.class), mock(Termination.class));
     }
 

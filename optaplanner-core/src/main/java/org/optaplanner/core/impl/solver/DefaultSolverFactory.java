@@ -21,6 +21,7 @@ import static org.apache.commons.lang3.ObjectUtils.defaultIfNull;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.solver.Solver;
@@ -173,12 +174,12 @@ public final class DefaultSolverFactory<Solution_> implements SolverFactory<Solu
             phaseConfigList_ = Arrays.asList(new ConstructionHeuristicPhaseConfig(), new LocalSearchPhaseConfig());
         }
         List<Phase<Solution_>> phaseList = new ArrayList<>(phaseConfigList_.size());
-        int phaseIndex = 0;
+        AtomicInteger phaseIndexCounter = new AtomicInteger();
         for (PhaseConfig phaseConfig : phaseConfigList_) {
             PhaseFactory<Solution_> phaseFactory = PhaseFactory.create(phaseConfig);
-            Phase<Solution_> phase = phaseFactory.buildPhase(phaseIndex, configPolicy, bestSolutionRecaller, termination);
+            Phase<Solution_> phase = phaseFactory.buildPhase(phaseIndexCounter, configPolicy, bestSolutionRecaller,
+                    termination);
             phaseList.add(phase);
-            phaseIndex++;
         }
         return phaseList;
     }
