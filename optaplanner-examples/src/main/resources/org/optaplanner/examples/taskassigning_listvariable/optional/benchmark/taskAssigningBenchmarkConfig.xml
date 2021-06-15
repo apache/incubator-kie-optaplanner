@@ -18,7 +18,7 @@
       </termination>
     </solver>
     <problemBenchmarks>
-      <solutionFileIOClass>org.optaplanner.examples.taskassigning_listvariable.persistence.orig.BridgeTaskAssigningXmlSolutionFileIO</solutionFileIOClass>
+      <solutionFileIOClass>org.optaplanner.examples.taskassigning_listvariable.persistence.orig.TmpBridgeTaskAssigningXmlSolutionFileIO</solutionFileIOClass>
       <inputSolutionFile>data/taskassigning/solved/init-24tasks-8employees.xml</inputSolutionFile>
       <inputSolutionFile>data/taskassigning/solved/init-50tasks-5employees.xml</inputSolutionFile>
       <inputSolutionFile>data/taskassigning/solved/init-100tasks-5employees.xml</inputSolutionFile>

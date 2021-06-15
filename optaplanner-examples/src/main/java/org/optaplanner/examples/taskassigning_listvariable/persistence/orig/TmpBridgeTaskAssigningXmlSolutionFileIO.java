@@ -41,9 +41,9 @@ import org.slf4j.LoggerFactory;
 /**
  * Reads a solution that was serialized from the original domain model on master into the new non-chained model.
  */
-public class BridgeTaskAssigningXmlSolutionFileIO implements SolutionFileIO<TaskAssigningSolution> {
+public class TmpBridgeTaskAssigningXmlSolutionFileIO implements SolutionFileIO<TaskAssigningSolution> {
 
-    private static final Logger logger = LoggerFactory.getLogger(BridgeTaskAssigningXmlSolutionFileIO.class);
+    private static final Logger logger = LoggerFactory.getLogger(TmpBridgeTaskAssigningXmlSolutionFileIO.class);
 
     private final org.optaplanner.examples.taskassigning.persistence.TaskAssigningXmlSolutionFileIO origIO =
             new org.optaplanner.examples.taskassigning.persistence.TaskAssigningXmlSolutionFileIO();
