@@ -118,7 +118,12 @@ public class OptaPlannerExamplesApp extends JFrame {
 
         panel.add(createExampleButton(new NurseRosteringApp()));
         panel.add(createExampleButton(new TspApp()));
-        panel.add(createExampleButton(new TaskAssigningApp()));
+
+        JPanel taskAssigningPanel = new JPanel(new GridLayout(1, 2));
+        taskAssigningPanel.add(createExampleButton(new TaskAssigningApp()));
+        taskAssigningPanel
+                .add(createExampleButton(new org.optaplanner.examples.taskassigning_listvariable.app.TaskAssigningApp()));
+        panel.add(taskAssigningPanel);
 
         panel.add(createExampleButton(new CloudBalancingApp()));
         panel.add(createExampleButton(new ConferenceSchedulingApp()));

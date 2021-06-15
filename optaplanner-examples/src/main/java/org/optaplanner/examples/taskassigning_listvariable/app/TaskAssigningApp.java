@@ -35,7 +35,7 @@ public class TaskAssigningApp extends CommonApp<TaskAssigningSolution> {
     }
 
     public TaskAssigningApp() {
-        super("Task assigning",
+        super("LIST VARIABLE",
                 "Assign tasks to employees in a sequence.\n\n"
                         + "Match skills and affinity.\n"
                         + "Prioritize critical tasks.\n"
