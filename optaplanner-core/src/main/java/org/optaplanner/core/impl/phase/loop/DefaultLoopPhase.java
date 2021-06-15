@@ -17,6 +17,7 @@
 package org.optaplanner.core.impl.phase.loop;
 
 import java.util.List;
+
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.impl.phase.AbstractPhase;
 import org.optaplanner.core.impl.phase.PhaseCounter;
@@ -110,11 +111,12 @@ public class DefaultLoopPhase<Solution_> extends AbstractPhase<Solution_> implem
     @Override
     public void setAssertShadowVariablesAreNotStaleAfterStep(boolean assertShadowVariablesAreNotStaleAfterStep) {
         super.setAssertShadowVariablesAreNotStaleAfterStep(assertShadowVariablesAreNotStaleAfterStep);
-        phaseList.forEach(phase -> phase.setAssertShadowVariablesAreNotStaleAfterStep(assertShadowVariablesAreNotStaleAfterStep));
+        phaseList.forEach(
+                phase -> phase.setAssertShadowVariablesAreNotStaleAfterStep(assertShadowVariablesAreNotStaleAfterStep));
     }
 
     private void doStep(SolverScope<Solution_> solverScope, LoopStepScope<Solution_> stepScope,
-                        AbstractPhase<Solution_> phase) {
+            AbstractPhase<Solution_> phase) {
         phase.solve(solverScope);
         calculateWorkingStepScore(stepScope, phase);
         bestSolutionRecaller.processWorkingSolutionDuringStep(stepScope);
