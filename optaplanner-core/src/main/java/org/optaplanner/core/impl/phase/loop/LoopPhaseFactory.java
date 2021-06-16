@@ -44,15 +44,16 @@ public class LoopPhaseFactory<Solution_> extends AbstractPhaseFactory<Solution_,
                     "Configure at least 1 phase in the <" + LoopPhaseConfig.XML_ELEMENT_NAME + "> configuration.");
         }
 
+        HeuristicConfigPolicy<Solution_> phaseConfigPolicy = solverConfigPolicy.createPhaseConfigPolicy();
+        Termination<Solution_> loopTermination = buildPhaseTermination(phaseConfigPolicy, solverTermination);
         List<AbstractPhase<Solution_>> phaseList = phaseConfig.getPhaseConfigList()
                 .stream()
                 .map(PhaseFactory::<Solution_> create)
                 .map(phaseFactory -> (AbstractPhase<Solution_>) phaseFactory.buildPhase(phaseCounter, solverConfigPolicy,
-                        bestSolutionRecaller, solverTermination))
+                        bestSolutionRecaller, loopTermination))
                 .collect(Collectors.toList());
-        HeuristicConfigPolicy<Solution_> phaseConfigPolicy = solverConfigPolicy.createPhaseConfigPolicy();
         return new DefaultLoopPhase<>(phaseCounter, solverConfigPolicy.getLogIndentation(), bestSolutionRecaller,
-                buildPhaseTermination(phaseConfigPolicy, solverTermination), phaseList);
+                loopTermination, phaseList);
     }
 
 }
