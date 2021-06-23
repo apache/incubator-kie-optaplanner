@@ -81,9 +81,8 @@ public class DefaultSolverTest {
 
         Solver<TestdataSolution> solver = solverFactory.buildSolver();
         meterRegistry.publish();
-        assertThat(meterRegistry.getMeasurement("optaplanner.solver.errors", "COUNT").intValueExact()).isEqualTo(0);
-        assertThat(meterRegistry.getMeasurement("optaplanner.solver.solve-length", "ACTIVE_TASKS").intValueExact())
-                .isEqualTo(0);
+        assertThat(meterRegistry.getMeasurement("optaplanner.solver.errors", "COUNT")).isZero();
+        assertThat(meterRegistry.getMeasurement("optaplanner.solver.solve-length", "ACTIVE_TASKS")).isZero();
 
         TestdataSolution solution = new TestdataSolution("s1");
         solution.setValueList(Arrays.asList(new TestdataValue("v1"), new TestdataValue("v2")));
@@ -94,8 +93,7 @@ public class DefaultSolverTest {
             if (!updatedTime.get()) {
                 meterRegistry.getClock().addSeconds(2);
                 meterRegistry.publish();
-                assertThat(meterRegistry.getMeasurement("optaplanner.solver.solve-length", "ACTIVE_TASKS").intValueExact())
-                        .isEqualTo(1);
+                assertThat(meterRegistry.getMeasurement("optaplanner.solver.solve-length", "ACTIVE_TASKS")).isOne();
                 assertThat(meterRegistry.getMeasurement("optaplanner.solver.solve-length", "DURATION").longValue())
                         .isEqualTo(TimeUnit.SECONDS.toNanos(2));
                 updatedTime.set(true);
@@ -107,10 +105,9 @@ public class DefaultSolverTest {
         assertThat(solution).isNotNull();
         assertThat(solution.getScore().isSolutionInitialized()).isTrue();
 
-        assertThat(meterRegistry.getMeasurement("optaplanner.solver.solve-length", "DURATION").intValueExact()).isEqualTo(0);
-        assertThat(meterRegistry.getMeasurement("optaplanner.solver.solve-length", "ACTIVE_TASKS").intValueExact())
-                .isEqualTo(0);
-        assertThat(meterRegistry.getMeasurement("optaplanner.solver.errors", "COUNT").intValueExact()).isEqualTo(0);
+        assertThat(meterRegistry.getMeasurement("optaplanner.solver.solve-length", "DURATION")).isZero();
+        assertThat(meterRegistry.getMeasurement("optaplanner.solver.solve-length", "ACTIVE_TASKS")).isZero();
+        assertThat(meterRegistry.getMeasurement("optaplanner.solver.errors", "COUNT")).isZero();
     }
 
     public static class ErrorThrowingConstraintProvider implements ConstraintProvider {
@@ -141,9 +138,8 @@ public class DefaultSolverTest {
 
         Solver<TestdataSolution> solver = solverFactory.buildSolver();
         meterRegistry.publish();
-        assertThat(meterRegistry.getMeasurement("optaplanner.solver.errors", "COUNT").intValueExact()).isEqualTo(0);
-        assertThat(meterRegistry.getMeasurement("optaplanner.solver.solve-length", "ACTIVE_TASKS").intValueExact())
-                .isEqualTo(0);
+        assertThat(meterRegistry.getMeasurement("optaplanner.solver.errors", "COUNT")).isZero();
+        assertThat(meterRegistry.getMeasurement("optaplanner.solver.solve-length", "ACTIVE_TASKS")).isZero();
 
         TestdataSolution solution = new TestdataSolution("s1");
         solution.setValueList(Arrays.asList(new TestdataValue("v1"), new TestdataValue("v2")));
@@ -157,10 +153,9 @@ public class DefaultSolverTest {
 
         meterRegistry.getClock().addSeconds(1);
         meterRegistry.publish();
-        assertThat(meterRegistry.getMeasurement("optaplanner.solver.solve-length", "ACTIVE_TASKS").intValueExact())
-                .isEqualTo(0);
-        assertThat(meterRegistry.getMeasurement("optaplanner.solver.solve-length", "DURATION").intValueExact()).isEqualTo(0);
-        assertThat(meterRegistry.getMeasurement("optaplanner.solver.errors", "COUNT").intValueExact()).isEqualTo(1);
+        assertThat(meterRegistry.getMeasurement("optaplanner.solver.solve-length", "ACTIVE_TASKS")).isZero();
+        assertThat(meterRegistry.getMeasurement("optaplanner.solver.solve-length", "DURATION")).isZero();
+        assertThat(meterRegistry.getMeasurement("optaplanner.solver.errors", "COUNT")).isOne();
     }
 
     @Test
