@@ -4,6 +4,9 @@ name: Build Chain
 on: [pull_request]
 
 jobs:
+  concurrency:
+    group: pull_request-${{ github.head_ref }}
+    cancel-in-progress: true
   build-chain:
     strategy:
       matrix:
