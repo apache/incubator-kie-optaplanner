@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2021 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,8 +19,7 @@ package org.optaplanner.examples.projectjobscheduling.score;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import org.optaplanner.core.api.score.buildin.bendable.BendableScore;
+import org.optaplanner.core.api.score.buildin.hardmediumsoft.HardMediumSoftScore;
 import org.optaplanner.core.api.score.calculator.IncrementalScoreCalculator;
 import org.optaplanner.examples.projectjobscheduling.domain.Allocation;
 import org.optaplanner.examples.projectjobscheduling.domain.ExecutionMode;
@@ -34,15 +33,15 @@ import org.optaplanner.examples.projectjobscheduling.score.capacity.RenewableRes
 import org.optaplanner.examples.projectjobscheduling.score.capacity.ResourceCapacityTracker;
 
 public class ProjectJobSchedulingIncrementalScoreCalculator
-        implements IncrementalScoreCalculator<Schedule, BendableScore> {
+        implements IncrementalScoreCalculator<Schedule, HardMediumSoftScore> {
 
     private Map<Resource, ResourceCapacityTracker> resourceCapacityTrackerMap;
     private Map<Project, Integer> projectEndDateMap;
     private int maximumProjectEndDate;
 
     private int hardScore;
-    private int soft0Score;
-    private int soft1Score;
+    private int mediumScore;
+    private int softScore;
 
     @Override
     public void resetWorkingSolution(Schedule schedule) {
@@ -57,13 +56,13 @@ public class ProjectJobSchedulingIncrementalScoreCalculator
         projectEndDateMap = new HashMap<>(projectList.size());
         maximumProjectEndDate = 0;
         hardScore = 0;
-        soft0Score = 0;
-        soft1Score = 0;
+        mediumScore = 0;
+        softScore = 0;
         int minimumReleaseDate = Integer.MAX_VALUE;
         for (Project p : projectList) {
             minimumReleaseDate = Math.min(p.getReleaseDate(), minimumReleaseDate);
         }
-        soft1Score += minimumReleaseDate;
+        softScore += minimumReleaseDate;
         for (Allocation allocation : schedule.getAllocationList()) {
             insert(allocation);
         }
@@ -119,10 +118,10 @@ public class ProjectJobSchedulingIncrementalScoreCalculator
                 Project project = allocation.getProject();
                 projectEndDateMap.put(project, endDate);
                 // Total project delay
-                soft0Score -= endDate - project.getCriticalPathEndDate();
+                mediumScore -= endDate - project.getCriticalPathEndDate();
                 // Total make span
                 if (endDate > maximumProjectEndDate) {
-                    soft1Score -= endDate - maximumProjectEndDate;
+                    softScore -= endDate - maximumProjectEndDate;
                     maximumProjectEndDate = endDate;
                 }
             }
@@ -149,11 +148,11 @@ public class ProjectJobSchedulingIncrementalScoreCalculator
                 Project project = allocation.getProject();
                 projectEndDateMap.remove(project);
                 // Total project delay
-                soft0Score += endDate - project.getCriticalPathEndDate();
+                mediumScore += endDate - project.getCriticalPathEndDate();
                 // Total make span
                 if (endDate == maximumProjectEndDate) {
                     updateMaximumProjectEndDate();
-                    soft1Score += endDate - maximumProjectEndDate;
+                    softScore += endDate - maximumProjectEndDate;
                 }
             }
         }
@@ -170,8 +169,8 @@ public class ProjectJobSchedulingIncrementalScoreCalculator
     }
 
     @Override
-    public BendableScore calculateScore() {
-        return BendableScore.of(new int[] { hardScore }, new int[] { soft0Score, soft1Score });
+    public HardMediumSoftScore calculateScore() {
+        return HardMediumSoftScore.of(hardScore, mediumScore, softScore);
     }
 
 }
