@@ -18,6 +18,7 @@ package org.optaplanner.examples.projectjobscheduling.optional.score;
 
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
+
 import org.optaplanner.core.api.score.buildin.hardmediumsoft.HardMediumSoftScore;
 import org.optaplanner.core.api.score.stream.Constraint;
 import org.optaplanner.core.api.score.stream.ConstraintCollectors;
