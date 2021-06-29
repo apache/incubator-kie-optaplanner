@@ -16,6 +16,8 @@
 
 package org.optaplanner.examples.projectjobscheduling.optional.score;
 
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 import org.optaplanner.core.api.score.buildin.hardmediumsoft.HardMediumSoftScore;
 import org.optaplanner.core.api.score.stream.Constraint;
 import org.optaplanner.core.api.score.stream.ConstraintCollectors;
@@ -32,6 +34,7 @@ public class ProjectJobSchedulingConstraintProvider implements ConstraintProvide
     public Constraint[] defineConstraints(ConstraintFactory constraintFactory) {
         return new Constraint[] {
                 nonRenewableResourceCapacity(constraintFactory),
+                renewableResourceCapacity(constraintFactory),
                 totalProjectDelay(constraintFactory),
                 totalMakespan(constraintFactory)
         };
@@ -51,28 +54,39 @@ public class ProjectJobSchedulingConstraintProvider implements ConstraintProvide
     }
 
     protected Constraint renewableResourceCapacity(ConstraintFactory constraintFactory) {
-        return null;
+        return constraintFactory.from(ResourceRequirement.class)
+                .filter(ResourceRequirement::isResourceRenewable)
+                .join(Allocation.class,
+                        Joiners.equal(ResourceRequirement::getExecutionMode, Allocation::getExecutionMode))
+                .flattenLast(a -> IntStream.range(a.getStartDate(), a.getEndDate())
+                        .boxed()
+                        .collect(Collectors.toList()))
+                .groupBy((resourceReq, date) -> resourceReq.getResource(),
+                        (resourceReq, date) -> date,
+                        ConstraintCollectors.sum((resourceReq, date) -> resourceReq.getRequirement()))
+                .filter((resourceReq, date, totalRequirement) -> totalRequirement > resourceReq.getCapacity())
+                .penalize("Renewable resource capacity",
+                        HardMediumSoftScore.ofHard(1),
+                        (resourceReq, date, totalRequirement) -> totalRequirement - resourceReq.getCapacity());
     }
 
     protected Constraint totalProjectDelay(ConstraintFactory constraintFactory) {
         return constraintFactory.from(Allocation.class)
+                .filter(allocation -> allocation.getEndDate() != null)
                 .filter(allocation -> allocation.getJobType() == JobType.SINK)
-                .filter(allocation -> allocation.getEndDate() != null &&
-                        allocation.getEndDate() > allocation.getProjectCriticalPathEndDate())
-                .penalize("Total project delay",
+                .impact("Total project delay",
                         HardMediumSoftScore.ofMedium(1),
-                        allocation -> allocation.getEndDate() - allocation.getProjectCriticalPathEndDate());
+                        allocation -> allocation.getProjectCriticalPathEndDate() - allocation.getEndDate());
     }
 
     protected Constraint totalMakespan(ConstraintFactory constraintFactory) {
         return constraintFactory.from(Allocation.class)
+                .filter(allocation -> allocation.getEndDate() != null)
                 .filter(allocation -> allocation.getJobType() == JobType.SINK)
-                .ifNotExists(Allocation.class,
-                        Joiners.lessThan(Allocation::getEndDate),
-                        Joiners.filtering((allocation1, allocation2) -> allocation2.getJobType() == JobType.SINK))
+                .groupBy(ConstraintCollectors.max(Allocation::getEndDate))
                 .penalize("Total makespan",
                         HardMediumSoftScore.ofSoft(1),
-                        Allocation::getEndDate);
+                        maxEndDate -> maxEndDate);
     }
 
 }

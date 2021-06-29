@@ -19,6 +19,7 @@ package org.optaplanner.examples.projectjobscheduling.score;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 import org.optaplanner.core.api.score.buildin.hardmediumsoft.HardMediumSoftScore;
 import org.optaplanner.core.api.score.calculator.IncrementalScoreCalculator;
 import org.optaplanner.examples.projectjobscheduling.domain.Allocation;

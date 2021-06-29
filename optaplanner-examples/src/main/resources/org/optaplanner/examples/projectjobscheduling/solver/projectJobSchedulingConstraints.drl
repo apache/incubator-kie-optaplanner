@@ -85,8 +85,8 @@ end
 
 rule "totalProjectDelay"
     when
-        Allocation(jobType == JobType.SINK, endDate != null, endDate > projectCriticalPathEndDate, $endDate : endDate,
-            $criticalPathEndDate : projectCriticalPathEndDate)
+        Allocation(jobType == JobType.SINK, endDate != null, $endDate : endDate,
+               $criticalPathEndDate : projectCriticalPathEndDate)
     then
         scoreHolder.addMediumConstraintMatch(kcontext, $criticalPathEndDate - $endDate);
 end
@@ -94,8 +94,10 @@ end
 
 rule "totalMakespan"
     when
-        Allocation(jobType == JobType.SINK, $endDate: endDate)
-        not Allocation(endDate > $endDate)
+        accumulate(
+            Allocation(jobType == JobType.SINK, $endDate : endDate);
+            $maxProjectEndDate : max($endDate)
+        )
     then
-        scoreHolder.addSoftConstraintMatch(kcontext, -$endDate);
+        scoreHolder.addSoftConstraintMatch(kcontext, - (Integer) $maxProjectEndDate);
 end
