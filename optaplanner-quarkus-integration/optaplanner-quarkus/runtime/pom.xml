@@ -58,9 +58,7 @@
         <exclusion>
           <!--
             Dynamic is not compatible with GraalVM native compilation.
-            org.kie.
-
-to:drools-core brings in static.
+            org.kie.kogito:drools-core brings in static.
           -->
           <groupId>org.drools</groupId>
           <artifactId>drools-core-dynamic</artifactId>
