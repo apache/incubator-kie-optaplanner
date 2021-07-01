@@ -564,7 +564,7 @@ Variants of this collector:
 [NOTE]
 ====
 The iteration order of elements in the resulting collection is not guaranteed to be stable,
-unless it is a sorted collector such as `toSortedSet` or `toSortedMap.
+unless it is a sorted collector such as `toSortedSet` or `toSortedMap`.
 ====
 
 
@@ -641,7 +641,7 @@ The result of such mapping is `UniConstraintStream` of the mapped tuples.
 
 [NOTE]
 ====
-In the example above, the mapping function produces duplicate tuples if two different `CloudProcess`es share a single `CloudComputer`.
+In the example above, the mapping function produces duplicate tuples if two different ``CloudProcess``es share a single `CloudComputer`.
 That is, such `CloudComputer` appears in the resulting constraint stream twice.
 See <<constraintStreamsDealingWithDuplicateTuplesUsingDistinct,`distinct()`>> for how to deal with duplicate tuples.
 ====
@@ -838,7 +838,7 @@ There are only two notable differences to the previous example.
 First, the `verifyThat()` call takes no argument here, signifying that the entire `ConstraintProvider` instance is
 being tested.
 Second, instead of either a `penalizesBy()` or `rewardsWith()` call, the `scores(...)` method is used.
-This runs the `ConstraintProvider` on the given facts and returns a sum of `Score`s of all constraint matches resulting
+This runs the `ConstraintProvider` on the given facts and returns a sum of ``Score``s of all constraint matches resulting
 from the given facts.
 
 Using this method, you ensure that the constraint provider does not miss any constraints and that the scoring function
