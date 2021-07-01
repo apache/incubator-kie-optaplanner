@@ -453,7 +453,7 @@ The count is collected in an `int`. Variants of this collector:
 * `countLong()` collects a `long` value instead of an `int` value.
 
 To count a bi, tri or quad stream, use `countBi()`, `countTri()` or `countQuad()` respectively,
-because - unlike the other build-in collectors - they aren't overloaded methods due to Java's generics erasure.
+because - unlike the other built-in collectors - they aren't overloaded methods due to Java's generics erasure.
 
 [[collectorsCountDistinct]]
 ===== `countDistinct()` collector
