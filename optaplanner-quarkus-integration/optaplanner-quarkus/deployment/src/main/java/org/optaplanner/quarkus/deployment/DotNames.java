@@ -35,6 +35,7 @@ import org.optaplanner.core.api.domain.valuerange.ValueRangeProvider;
 import org.optaplanner.core.api.domain.variable.AnchorShadowVariable;
 import org.optaplanner.core.api.domain.variable.CustomShadowVariable;
 import org.optaplanner.core.api.domain.variable.InverseRelationShadowVariable;
+import org.optaplanner.core.api.domain.variable.PlanningCollectionVariable;
 import org.optaplanner.core.api.domain.variable.PlanningVariable;
 import org.optaplanner.core.api.domain.variable.PlanningVariableReference;
 import org.optaplanner.core.api.score.calculator.EasyScoreCalculator;
@@ -64,6 +65,7 @@ public final class DotNames {
     static final DotName PLANNING_ID = DotName.createSimple(PlanningId.class.getName());
 
     static final DotName PLANNING_VARIABLE = DotName.createSimple(PlanningVariable.class.getName());
+    static final DotName PLANNING_COLLECTION_VARIABLE = DotName.createSimple(PlanningCollectionVariable.class.getName());
     static final DotName VALUE_RANGE_PROVIDER = DotName.createSimple(ValueRangeProvider.class.getName());
     static final DotName PLANNING_VARIABLE_REFERENCE = DotName.createSimple(PlanningVariableReference.class.getName());
 
@@ -77,6 +79,7 @@ public final class DotNames {
     static final DotName[] PLANNING_ENTITY_FIELD_ANNOTATIONS = {
             PLANNING_PIN,
             PLANNING_VARIABLE,
+            PLANNING_COLLECTION_VARIABLE,
             ANCHOR_SHADOW_VARIABLE,
             CUSTOM_SHADOW_VARIABLE,
             INVERSE_RELATION_SHADOW_VARIABLE,
@@ -93,6 +96,7 @@ public final class DotNames {
             PLANNING_PIN,
             PLANNING_ID,
             PLANNING_VARIABLE,
+            PLANNING_COLLECTION_VARIABLE,
             PLANNING_VARIABLE_REFERENCE,
             VALUE_RANGE_PROVIDER,
             ANCHOR_SHADOW_VARIABLE,
