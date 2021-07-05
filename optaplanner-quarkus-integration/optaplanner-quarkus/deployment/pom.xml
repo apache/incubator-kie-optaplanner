@@ -6,7 +6,7 @@
   <parent>
     <groupId>org.optaplanner</groupId>
     <artifactId>optaplanner-quarkus-parent</artifactId>
-    <version>8.8.0-SNAPSHOT</version>
+    <version>8.9.0-SNAPSHOT</version>
   </parent>
 
   <artifactId>optaplanner-quarkus-deployment</artifactId>
@@ -73,6 +73,10 @@
          so we mock it functionality via drools-core-dynamic for tests
          in this module (and test drools with kogito-quarkus-rules
          in a separate module) -->
+    <dependency>
+      <groupId>org.kie.kogito</groupId>
+      <artifactId>kogito-legacy-api</artifactId>
+    </dependency>
     <dependency>
       <groupId>org.kie.kogito</groupId>
       <artifactId>drools-core-dynamic</artifactId>
