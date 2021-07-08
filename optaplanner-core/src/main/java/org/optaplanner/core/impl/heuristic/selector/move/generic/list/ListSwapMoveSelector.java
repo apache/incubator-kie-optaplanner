@@ -17,12 +17,13 @@
 package org.optaplanner.core.impl.heuristic.selector.move.generic.list;
 
 import java.util.Iterator;
-import java.util.stream.StreamSupport;
+import java.util.List;
 
 import org.optaplanner.core.impl.domain.variable.descriptor.ListVariableDescriptor;
 import org.optaplanner.core.impl.heuristic.move.Move;
 import org.optaplanner.core.impl.heuristic.selector.entity.EntitySelector;
 import org.optaplanner.core.impl.heuristic.selector.move.generic.GenericMoveSelector;
+import org.optaplanner.core.impl.phase.scope.AbstractPhaseScope;
 
 public class ListSwapMoveSelector<Solution_> extends GenericMoveSelector<Solution_> {
 
@@ -30,6 +31,9 @@ public class ListSwapMoveSelector<Solution_> extends GenericMoveSelector<Solutio
     private final EntitySelector<Solution_> leftEntitySelector;
     private final EntitySelector<Solution_> rightEntitySelector;
     private final boolean randomSelection;
+
+    private List<Object> workingEntityList;
+    private int valueCount;
 
     public ListSwapMoveSelector(
             ListVariableDescriptor<Solution_> listVariableDescriptor,
@@ -47,9 +51,16 @@ public class ListSwapMoveSelector<Solution_> extends GenericMoveSelector<Solutio
     }
 
     @Override
+    public void phaseStarted(AbstractPhaseScope<Solution_> phaseScope) {
+        super.phaseStarted(phaseScope);
+        workingEntityList = phaseScope.getWorkingEntityList();
+        valueCount = workingEntityList.stream().mapToInt(listVariableDescriptor::getListSize).sum();
+    }
+
+    @Override
     public Iterator<Move<Solution_>> iterator() {
         if (randomSelection) {
-            return new RandomListSwapIterator<>(leftEntitySelector, rightEntitySelector, listVariableDescriptor, workingRandom);
+            return new RandomListSwapIterator<>(listVariableDescriptor, workingEntityList, workingRandom);
         } else {
             return new TmpOriginalListSwapIterator<>(leftEntitySelector, rightEntitySelector, listVariableDescriptor);
         }
@@ -67,10 +78,6 @@ public class ListSwapMoveSelector<Solution_> extends GenericMoveSelector<Solutio
 
     @Override
     public long getSize() {
-        Iterable<?> i = leftEntitySelector::endingIterator;
-        int valueCount = StreamSupport.stream(i.spliterator(), false)
-                .mapToInt(listVariableDescriptor::getListSize)
-                .sum();
         return (long) valueCount * valueCount;
     }
 }
