@@ -16,75 +16,61 @@
 
 package org.optaplanner.core.impl.heuristic.selector.move.generic.list;
 
-import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.NavigableMap;
 import java.util.Random;
+import java.util.TreeMap;
 
+import org.apache.commons.lang3.tuple.Pair;
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.impl.domain.variable.descriptor.ListVariableDescriptor;
 import org.optaplanner.core.impl.heuristic.move.Move;
 import org.optaplanner.core.impl.heuristic.selector.common.iterator.UpcomingSelectionIterator;
-import org.optaplanner.core.impl.heuristic.selector.entity.EntitySelector;
 
 /**
  * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
  */
 public class RandomListSwapIterator<Solution_> extends UpcomingSelectionIterator<Move<Solution_>> {
 
-    private final EntitySelector<Solution_> leftEntitySelector;
-    private final EntitySelector<Solution_> rightEntitySelector;
-
     private final ListVariableDescriptor<Solution_> variableDescriptor;
+    private final int indexRange;
     private final Random workingRandom;
-
-    private Iterator<Object> leftSubSelectionIterator;
-    private Iterator<Object> rightSubSelectionIterator;
+    private final NavigableMap<Integer, Object> entityByIndexNavigableMap;
 
     public RandomListSwapIterator(
-            EntitySelector<Solution_> leftEntitySelector,
-            EntitySelector<Solution_> rightEntitySelector,
             ListVariableDescriptor<Solution_> variableDescriptor,
+            List<Object> workingEntityList,
             Random workingRandom) {
-        this.leftEntitySelector = leftEntitySelector;
-        this.rightEntitySelector = rightEntitySelector;
-
-        this.leftSubSelectionIterator = this.leftEntitySelector.iterator();
-        this.rightSubSelectionIterator = this.rightEntitySelector.iterator();
-
         this.variableDescriptor = variableDescriptor;
         this.workingRandom = workingRandom;
+
+        entityByIndexNavigableMap = new TreeMap<>();
+        int cumulativeListSize = 0;
+        for (Object entity : workingEntityList) {
+            entityByIndexNavigableMap.put(cumulativeListSize, entity);
+            cumulativeListSize += variableDescriptor.getListSize(entity);
+        }
+        this.indexRange = cumulativeListSize;
     }
 
     @Override
     protected Move<Solution_> createUpcomingSelection() {
-        Object leftSubSelection = null;
-        while (leftSubSelection == null || variableDescriptor.getListSize(leftSubSelection) == 0) {
-            if (!leftSubSelectionIterator.hasNext()) {
-                leftSubSelectionIterator = leftEntitySelector.iterator();
-                if (!leftSubSelectionIterator.hasNext()) {
-                    return noUpcomingSelection();
-                }
-            }
-            leftSubSelection = leftSubSelectionIterator.next();
+        if (indexRange == 0) {
+            return noUpcomingSelection();
         }
-        Object rightSubSelection = null;
-        while (rightSubSelection == null || variableDescriptor.getListSize(rightSubSelection) == 0) {
-            if (!rightSubSelectionIterator.hasNext()) {
-                rightSubSelectionIterator = rightEntitySelector.iterator();
-                if (!rightSubSelectionIterator.hasNext()) {
-                    return noUpcomingSelection();
-                }
-            }
-            rightSubSelection = rightSubSelectionIterator.next();
-        }
+        Pair<Object, Integer> left = unfoldGlobalIndexIntoEntityAndListIndex(workingRandom.nextInt(indexRange));
+        Pair<Object, Integer> right = unfoldGlobalIndexIntoEntityAndListIndex(workingRandom.nextInt(indexRange));
         return new ListSwapMove<>(
-                leftSubSelection,
-                randomIndex(leftSubSelection),
-                rightSubSelection,
-                randomIndex(rightSubSelection),
+                left.getKey(),
+                left.getValue(),
+                right.getKey(),
+                right.getValue(),
                 variableDescriptor);
     }
 
-    private int randomIndex(Object entity) {
-        return workingRandom.nextInt(variableDescriptor.getListSize(entity));
+    Pair<Object, Integer> unfoldGlobalIndexIntoEntityAndListIndex(int index) {
+        Map.Entry<Integer, Object> entry = entityByIndexNavigableMap.floorEntry(index);
+        return Pair.of(entry.getValue(), index - entry.getKey());
     }
 }
