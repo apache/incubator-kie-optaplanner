@@ -20,15 +20,16 @@ import java.util.Iterator;
 import java.util.Map;
 
 public class MapValuesIterable<KeyType_, ValueType_> implements Iterable<ValueType_> {
-    private final Map<KeyType_, ValueType_> sourceMap;
+    private final Map<KeyType_, ? extends ValueType_> sourceMap;
 
-    public MapValuesIterable(Map<KeyType_, ValueType_> sourceMap) {
+    public MapValuesIterable(Map<KeyType_, ? extends ValueType_> sourceMap) {
         this.sourceMap = sourceMap;
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public Iterator<ValueType_> iterator() {
-        return sourceMap.values().iterator();
+        return (Iterator<ValueType_>) sourceMap.values().iterator();
     }
 
     @Override

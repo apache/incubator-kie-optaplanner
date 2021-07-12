@@ -19,26 +19,37 @@ package org.optaplanner.examples.common.experimental.impl;
 import java.util.Iterator;
 import java.util.NavigableSet;
 import java.util.Objects;
+import java.util.function.BiFunction;
 
-public class IntervalCluster<IntervalValue_, PointValue_ extends Comparable<PointValue_>> implements Iterable<IntervalValue_> {
-    IntervalSplitPoint<IntervalValue_, PointValue_> startSplitPoint;
-    IntervalSplitPoint<IntervalValue_, PointValue_> endSplitPoint;
+import org.optaplanner.examples.common.experimental.api.IntervalCluster;
+
+public class IntervalClusterImpl<IntervalType_, PointType_ extends Comparable<PointType_>, DifferenceType_ extends Comparable<DifferenceType_>>
+        implements
+        IntervalCluster<IntervalType_, PointType_, DifferenceType_> {
+    IntervalSplitPoint<IntervalType_, PointType_> startSplitPoint;
+    IntervalSplitPoint<IntervalType_, PointType_> endSplitPoint;
 
     int count;
     boolean hasOverlap;
-    final NavigableSet<IntervalSplitPoint<IntervalValue_, PointValue_>> splitPointSet;
+    final NavigableSet<IntervalSplitPoint<IntervalType_, PointType_>> splitPointSet;
+    final BiFunction<PointType_, PointType_, DifferenceType_> differenceFunction;
 
-    public IntervalCluster(NavigableSet<IntervalSplitPoint<IntervalValue_, PointValue_>> splitPointSet,
-            IntervalSplitPoint<IntervalValue_, PointValue_> start) {
+    public IntervalClusterImpl(NavigableSet<IntervalSplitPoint<IntervalType_, PointType_>> splitPointSet,
+            BiFunction<PointType_, PointType_, DifferenceType_> differenceFunction,
+            IntervalSplitPoint<IntervalType_, PointType_> start) {
         if (start == null) {
             throw new IllegalArgumentException("start (" + start + ") is null");
         }
+        if (differenceFunction == null) {
+            throw new IllegalArgumentException("differenceFunction (" + differenceFunction + ") is null");
+        }
         this.splitPointSet = splitPointSet;
         this.startSplitPoint = start;
+        this.differenceFunction = differenceFunction;
         int activeIntervals = 0;
         count = 0;
         boolean anyOverlap = false;
-        IntervalSplitPoint<IntervalValue_, PointValue_> current = start;
+        IntervalSplitPoint<IntervalType_, PointType_> current = start;
         do {
             count += current.intervalsStartingAtSplitPointSet.size();
             activeIntervals += current.intervalsStartingAtSplitPointSet.size() - current.intervalsEndingAtSplitPointSet.size();
@@ -56,25 +67,27 @@ public class IntervalCluster<IntervalValue_, PointValue_ extends Comparable<Poin
         }
     }
 
-    public IntervalCluster(NavigableSet<IntervalSplitPoint<IntervalValue_, PointValue_>> splitPointSet,
-            IntervalSplitPoint<IntervalValue_, PointValue_> start,
-            IntervalSplitPoint<IntervalValue_, PointValue_> end, int count, boolean hasOverlap) {
+    public IntervalClusterImpl(NavigableSet<IntervalSplitPoint<IntervalType_, PointType_>> splitPointSet,
+            BiFunction<PointType_, PointType_, DifferenceType_> differenceFunction,
+            IntervalSplitPoint<IntervalType_, PointType_> start,
+            IntervalSplitPoint<IntervalType_, PointType_> end, int count, boolean hasOverlap) {
         this.splitPointSet = splitPointSet;
         this.startSplitPoint = start;
         this.endSplitPoint = end;
+        this.differenceFunction = differenceFunction;
         this.count = count;
         this.hasOverlap = hasOverlap;
     }
 
-    public IntervalSplitPoint<IntervalValue_, PointValue_> getStartSplitPoint() {
+    public IntervalSplitPoint<IntervalType_, PointType_> getStartSplitPoint() {
         return startSplitPoint;
     }
 
-    public IntervalSplitPoint<IntervalValue_, PointValue_> getEndSplitPoint() {
+    public IntervalSplitPoint<IntervalType_, PointType_> getEndSplitPoint() {
         return endSplitPoint;
     }
 
-    public void addInterval(Interval<IntervalValue_, PointValue_> interval) {
+    public void addInterval(Interval<IntervalType_, PointType_> interval) {
         if (interval.getEndSplitPoint().compareTo(getStartSplitPoint()) > 0
                 && interval.getStartSplitPoint().compareTo(getEndSplitPoint()) < 0) {
             hasOverlap = true;
@@ -88,13 +101,13 @@ public class IntervalCluster<IntervalValue_, PointValue_ extends Comparable<Poin
         count++;
     }
 
-    public Iterable<IntervalCluster<IntervalValue_, PointValue_>>
-            removeInterval(Interval<IntervalValue_, PointValue_> interval) {
+    public Iterable<IntervalClusterImpl<IntervalType_, PointType_, DifferenceType_>>
+            removeInterval(Interval<IntervalType_, PointType_> interval) {
         // TODO: Make this incremental by only checking between the interval's
         //       start and end points
-        return () -> new Iterator<IntervalCluster<IntervalValue_, PointValue_>>() {
+        return () -> new Iterator<IntervalClusterImpl<IntervalType_, PointType_, DifferenceType_>>() {
 
-            IntervalSplitPoint<IntervalValue_, PointValue_> current = startSplitPoint;
+            IntervalSplitPoint<IntervalType_, PointType_> current = startSplitPoint;
 
             @Override
             public boolean hasNext() {
@@ -102,9 +115,9 @@ public class IntervalCluster<IntervalValue_, PointValue_ extends Comparable<Poin
             }
 
             @Override
-            public IntervalCluster<IntervalValue_, PointValue_> next() {
-                IntervalSplitPoint<IntervalValue_, PointValue_> start = current;
-                IntervalSplitPoint<IntervalValue_, PointValue_> end;
+            public IntervalClusterImpl<IntervalType_, PointType_, DifferenceType_> next() {
+                IntervalSplitPoint<IntervalType_, PointType_> start = current;
+                IntervalSplitPoint<IntervalType_, PointType_> end;
                 int activeIntervals = 0;
                 count = 0;
                 boolean anyOverlap = false;
@@ -124,27 +137,44 @@ public class IntervalCluster<IntervalValue_, PointValue_ extends Comparable<Poin
                 } else {
                     end = splitPointSet.last();
                 }
-                return new IntervalCluster<>(splitPointSet, start, end, count, hasOverlap);
+                return new IntervalClusterImpl<>(splitPointSet, differenceFunction, start, end, count, hasOverlap);
             }
         };
     }
 
-    public void mergeIntervalCluster(IntervalCluster<IntervalValue_, PointValue_> laterIntervalCluster) {
+    public void mergeIntervalCluster(IntervalClusterImpl<IntervalType_, PointType_, DifferenceType_> laterIntervalCluster) {
         count += laterIntervalCluster.count;
         endSplitPoint = laterIntervalCluster.endSplitPoint;
         hasOverlap |= laterIntervalCluster.hasOverlap;
     }
 
-    public Iterator<IntervalValue_> iterator() {
+    public Iterator<IntervalType_> iterator() {
         return new IntervalTreeIterator<>(splitPointSet.subSet(startSplitPoint, true, endSplitPoint, true));
     }
 
+    @Override
     public int size() {
         return count;
     }
 
+    @Override
     public boolean hasOverlap() {
         return hasOverlap;
+    }
+
+    @Override
+    public PointType_ getStart() {
+        return startSplitPoint.splitPoint;
+    }
+
+    @Override
+    public PointType_ getEnd() {
+        return endSplitPoint.splitPoint;
+    }
+
+    @Override
+    public DifferenceType_ getLength() {
+        return differenceFunction.apply(startSplitPoint.splitPoint, endSplitPoint.splitPoint);
     }
 
     @Override
@@ -153,7 +183,7 @@ public class IntervalCluster<IntervalValue_, PointValue_ extends Comparable<Poin
             return true;
         if (o == null || getClass() != o.getClass())
             return false;
-        IntervalCluster<?, ?> that = (IntervalCluster<?, ?>) o;
+        IntervalClusterImpl<?, ?, ?> that = (IntervalClusterImpl<?, ?, ?>) o;
         return startSplitPoint.equals(that.startSplitPoint) && endSplitPoint.equals(that.endSplitPoint);
     }
 

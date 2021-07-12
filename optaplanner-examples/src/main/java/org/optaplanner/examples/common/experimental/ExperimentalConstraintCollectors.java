@@ -31,7 +31,7 @@ import org.optaplanner.core.impl.score.stream.quad.DefaultQuadConstraintCollecto
 import org.optaplanner.core.impl.score.stream.tri.DefaultTriConstraintCollector;
 import org.optaplanner.core.impl.score.stream.uni.DefaultUniConstraintCollector;
 import org.optaplanner.examples.common.experimental.api.ConsecutiveInfo;
-import org.optaplanner.examples.common.experimental.impl.ConsecutiveIntervalDataImpl;
+import org.optaplanner.examples.common.experimental.api.ConsecutiveIntervalInfo;
 import org.optaplanner.examples.common.experimental.impl.ConsecutiveSetTree;
 import org.optaplanner.examples.common.experimental.impl.IntervalTree;
 
@@ -149,7 +149,7 @@ public class ExperimentalConstraintCollectors {
     }
 
     /**
-     * Creates a constraint collector that returns {@link ConsecutiveIntervalDataImpl} about the first
+     * Creates a constraint collector that returns {@link ConsecutiveIntervalInfo} about the first
      * fact.
      *
      * For instance ${@code [Shift from=2, to=4] [Shift from=3, to=5] [Shift from=6, to=7] [Shift from=7, to=8]}
@@ -162,15 +162,17 @@ public class ExperimentalConstraintCollectors {
      * @param startMap Maps the fact to its start
      * @param endMap Maps the fact to its end
      * @param <A> type of the first mapped fact
-     * @param <C> type of the fact endpoints
+     * @param <PointType_> type of the fact endpoints
      * @return never null
      */
-    public static <A, C extends Comparable<C>> UniConstraintCollector<A, IntervalTree<A, C>, ConsecutiveIntervalDataImpl<A, C>>
-            consecutiveIntervals(Function<A, C> startMap, Function<A, C> endMap) {
+    public static <A, PointType_ extends Comparable<PointType_>, DifferenceType_ extends Comparable<DifferenceType_>>
+            UniConstraintCollector<A, IntervalTree<A, PointType_, DifferenceType_>, ConsecutiveIntervalInfo<A, PointType_, DifferenceType_>>
+            consecutiveIntervals(Function<A, PointType_> startMap, Function<A, PointType_> endMap,
+                    BiFunction<PointType_, PointType_, DifferenceType_> differenceFunction) {
         return new DefaultUniConstraintCollector<>(
                 () -> new IntervalTree<>(
                         startMap,
-                        endMap),
+                        endMap, differenceFunction),
                 (acc, a) -> {
                     acc.add(a);
                     return () -> acc.remove(a);
@@ -179,25 +181,27 @@ public class ExperimentalConstraintCollectors {
     }
 
     /**
-     * As defined by {@link #consecutiveIntervals(Function,Function)}.
+     * As defined by {@link #consecutiveIntervals(Function,Function,BiFunction)}.
      *
      * @param intervalMap Maps both facts to an item in the sequence
      * @param startMap Maps the item to its start
      * @param endMap Maps the item to its end
      * @param <A> type of the first mapped fact
      * @param <B> type of the second mapped fact
-     * @param <C> type of the item endpoints
+     * @param <PointType_> type of the item endpoints
      * @return never null
      */
-    public static <A, B, T, C extends Comparable<C>>
-            BiConstraintCollector<A, B, IntervalTree<T, C>, ConsecutiveIntervalDataImpl<T, C>>
-            consecutiveIntervals(BiFunction<A, B, T> intervalMap, Function<T, C> startMap, Function<T, C> endMap) {
+    public static <A, B, IntervalType_, PointType_ extends Comparable<PointType_>, DifferenceType_ extends Comparable<DifferenceType_>>
+            BiConstraintCollector<A, B, IntervalTree<IntervalType_, PointType_, DifferenceType_>, ConsecutiveIntervalInfo<IntervalType_, PointType_, DifferenceType_>>
+            consecutiveIntervals(BiFunction<A, B, IntervalType_> intervalMap, Function<IntervalType_, PointType_> startMap,
+                    Function<IntervalType_, PointType_> endMap,
+                    BiFunction<PointType_, PointType_, DifferenceType_> differenceFunction) {
         return new DefaultBiConstraintCollector<>(
                 () -> new IntervalTree<>(
                         startMap,
-                        endMap),
+                        endMap, differenceFunction),
                 (acc, a, b) -> {
-                    T interval = intervalMap.apply(a, b);
+                    IntervalType_ interval = intervalMap.apply(a, b);
                     acc.add(interval);
                     return () -> acc.remove(interval);
                 },
@@ -205,7 +209,7 @@ public class ExperimentalConstraintCollectors {
     }
 
     /**
-     * As defined by {@link #consecutiveIntervals(Function,Function)}.
+     * As defined by {@link #consecutiveIntervals(Function,Function,BiFunction)}.
      *
      * @param intervalMap Maps the three facts to an item in the sequence
      * @param startMap Maps the item to its start
@@ -213,18 +217,20 @@ public class ExperimentalConstraintCollectors {
      * @param <A> type of the first mapped fact
      * @param <B> type of the second mapped fact
      * @param <C> type of the third mapped fact
-     * @param <I> type of the item endpoints
+     * @param <PointType_> type of the item endpoints
      * @return never null
      */
-    public static <A, B, C, T, I extends Comparable<I>>
-            TriConstraintCollector<A, B, C, IntervalTree<T, I>, ConsecutiveIntervalDataImpl<T, I>>
-            consecutiveIntervals(TriFunction<A, B, C, T> intervalMap, Function<T, I> startMap, Function<T, I> endMap) {
+    public static <A, B, C, IntervalType_, PointType_ extends Comparable<PointType_>, DifferenceType_ extends Comparable<DifferenceType_>>
+            TriConstraintCollector<A, B, C, IntervalTree<IntervalType_, PointType_, DifferenceType_>, ConsecutiveIntervalInfo<IntervalType_, PointType_, DifferenceType_>>
+            consecutiveIntervals(TriFunction<A, B, C, IntervalType_> intervalMap, Function<IntervalType_, PointType_> startMap,
+                    Function<IntervalType_, PointType_> endMap,
+                    BiFunction<PointType_, PointType_, DifferenceType_> differenceFunction) {
         return new DefaultTriConstraintCollector<>(
                 () -> new IntervalTree<>(
                         startMap,
-                        endMap),
+                        endMap, differenceFunction),
                 (acc, a, b, c) -> {
-                    T interval = intervalMap.apply(a, b, c);
+                    IntervalType_ interval = intervalMap.apply(a, b, c);
                     acc.add(interval);
                     return () -> acc.remove(interval);
                 },
@@ -232,7 +238,7 @@ public class ExperimentalConstraintCollectors {
     }
 
     /**
-     * As defined by {@link #consecutiveIntervals(Function,Function)}.
+     * As defined by {@link #consecutiveIntervals(Function,Function,BiFunction)}.
      *
      * @param intervalMap Maps the four facts to an item in the sequence
      * @param startMap Maps the item to its start
@@ -241,18 +247,20 @@ public class ExperimentalConstraintCollectors {
      * @param <B> type of the second mapped fact
      * @param <C> type of the third mapped fact
      * @param <D> type of the fourth mapped fact
-     * @param <I> type of the item endpoints
+     * @param <PointType_> type of the item endpoints
      * @return never null
      */
-    public static <A, B, C, D, T, I extends Comparable<I>>
-            QuadConstraintCollector<A, B, C, D, IntervalTree<T, I>, ConsecutiveIntervalDataImpl<T, I>>
-            consecutiveIntervals(QuadFunction<A, B, C, D, T> intervalMap, Function<T, I> startMap, Function<T, I> endMap) {
+    public static <A, B, C, D, IntervalType, PointType_ extends Comparable<PointType_>, DifferenceType_ extends Comparable<DifferenceType_>>
+            QuadConstraintCollector<A, B, C, D, IntervalTree<IntervalType, PointType_, DifferenceType_>, ConsecutiveIntervalInfo<IntervalType, PointType_, DifferenceType_>>
+            consecutiveIntervals(QuadFunction<A, B, C, D, IntervalType> intervalMap,
+                    Function<IntervalType, PointType_> startMap, Function<IntervalType, PointType_> endMap,
+                    BiFunction<PointType_, PointType_, DifferenceType_> differenceFunction) {
         return new DefaultQuadConstraintCollector<>(
                 () -> new IntervalTree<>(
                         startMap,
-                        endMap),
+                        endMap, differenceFunction),
                 (acc, a, b, c, d) -> {
-                    T interval = intervalMap.apply(a, b, c, d);
+                    IntervalType interval = intervalMap.apply(a, b, c, d);
                     acc.add(interval);
                     return () -> acc.remove(interval);
                 },
