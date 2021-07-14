@@ -85,7 +85,6 @@ public class ConsecutiveIntervalInfoImpl<IntervalType_, PointType_ extends Compa
             }
             return;
         }
-
         NavigableMap<IntervalSplitPoint<IntervalType_, PointType_>, IntervalBreakImpl<IntervalType_, PointType_, DifferenceType_>> intersectedIntervalBreakMap =
                 clusterStartSplitPointToNextBreak.subMap(
                         ObjectUtils.defaultIfNull(clusterStartSplitPointToNextBreak.floorKey(interval.getStartSplitPoint()),
@@ -100,32 +99,39 @@ public class ConsecutiveIntervalInfoImpl<IntervalType_, PointType_ extends Compa
         intersectedIntervalClusterMap.tailMap(intersectedIntervalClusterMap.firstKey(), false).clear();
 
         if (intersectedIntervalBreakMap.size() > 0) {
-            if (interval.getStartSplitPoint().compareTo(intersectedIntervalBreakMap.firstKey()) <= 0) {
-                if (interval.getEndSplitPoint().compareTo(intersectedIntervalBreakMap.lastKey()) >= 0) {
+            if (interval.getStartSplitPoint().splitPoint
+                    .compareTo(intersectedIntervalBreakMap.firstEntry().getValue().getPreviousIntervalClusterEnd()) <= 0) {
+                if (interval.getEndSplitPoint().splitPoint
+                        .compareTo(intersectedIntervalBreakMap.lastEntry().getValue().getNextIntervalClusterStart()) >= 0) {
                     intersectedIntervalBreakMap.clear();
                 } else {
                     IntervalBreakImpl<IntervalType_, PointType_, DifferenceType_> finalBreak =
                             intersectedIntervalBreakMap.lastEntry().getValue();
                     finalBreak.setPreviousCluster(intervalCluster);
                     finalBreak.setLength(
-                            differenceFunction.apply(intervalCluster.getEnd(), finalBreak.getNextIntervalClusterStart()));
+                            differenceFunction.apply(finalBreak.getPreviousIntervalClusterEnd(),
+                                    finalBreak.getNextIntervalClusterStart()));
                     intersectedIntervalBreakMap.clear();
                     clusterStartSplitPointToNextBreak.put(intervalCluster.getStartSplitPoint(), finalBreak);
                 }
-            } else if (interval.getEndSplitPoint().compareTo(intersectedIntervalBreakMap.lastKey()) >= 0) {
+            } else if (interval.getEndSplitPoint().splitPoint
+                    .compareTo(intersectedIntervalBreakMap.lastEntry().getValue().getNextIntervalClusterStart()) >= 0) {
                 Map.Entry<IntervalSplitPoint<IntervalType_, PointType_>, IntervalBreakImpl<IntervalType_, PointType_, DifferenceType_>> previousBreakEntry =
                         intersectedIntervalBreakMap.firstEntry();
                 IntervalBreakImpl<IntervalType_, PointType_, DifferenceType_> previousBreak = previousBreakEntry.getValue();
                 previousBreak.setNextCluster(intervalCluster);
                 previousBreak.setLength(
                         differenceFunction.apply(previousBreak.getPreviousIntervalClusterEnd(), intervalCluster.getStart()));
-                intersectedIntervalBreakMap.tailMap(previousBreakEntry.getKey(), false).clear();
+                intersectedIntervalBreakMap.clear();
+                clusterStartSplitPointToNextBreak
+                        .put(((IntervalClusterImpl<IntervalType_, PointType_, DifferenceType_>) (previousBreak
+                                .getPreviousIntervalCluster())).getStartSplitPoint(), previousBreak);
             } else {
                 IntervalBreakImpl<IntervalType_, PointType_, DifferenceType_> finalBreak =
                         intersectedIntervalBreakMap.lastEntry().getValue();
-                finalBreak.setPreviousCluster(intervalCluster);
                 finalBreak.setLength(
-                        differenceFunction.apply(intervalCluster.getEnd(), finalBreak.getNextIntervalClusterStart()));
+                        differenceFunction.apply(finalBreak.getPreviousIntervalClusterEnd(),
+                                finalBreak.getNextIntervalClusterStart()));
 
                 Map.Entry<IntervalSplitPoint<IntervalType_, PointType_>, IntervalBreakImpl<IntervalType_, PointType_, DifferenceType_>> previousBreakEntry =
                         intersectedIntervalBreakMap.firstEntry();
@@ -145,7 +151,7 @@ public class ConsecutiveIntervalInfoImpl<IntervalType_, PointType_ extends Compa
         }
     }
 
-    protected void removalInterval(Interval<IntervalType_, PointType_> interval) {
+    protected void removeInterval(Interval<IntervalType_, PointType_> interval) {
         Map.Entry<IntervalSplitPoint<IntervalType_, PointType_>, IntervalClusterImpl<IntervalType_, PointType_, DifferenceType_>> intervalClusterEntry =
                 clusterStartSplitPointToCluster.floorEntry(interval.getStartSplitPoint());
         IntervalClusterImpl<IntervalType_, PointType_, DifferenceType_> intervalCluster = intervalClusterEntry.getValue();
@@ -166,18 +172,22 @@ public class ConsecutiveIntervalInfoImpl<IntervalType_, PointType_ extends Compa
                 previousBreak.setNextCluster(newIntervalCluster);
                 previousBreak.setLength(differenceFunction.apply(previousBreak.getPreviousIntervalCluster().getEnd(),
                         newIntervalCluster.getStart()));
+                clusterStartSplitPointToNextBreak
+                        .put(((IntervalClusterImpl<IntervalType_, PointType_, DifferenceType_>) previousBreak
+                                .getPreviousIntervalCluster()).getStartSplitPoint(), previousBreak);
             }
             previousBreak = new IntervalBreakImpl<>(newIntervalCluster, null, null);
             clusterStartSplitPointToCluster.put(newIntervalCluster.getStartSplitPoint(), newIntervalCluster);
         }
 
-        if (nextIntervalClusterEntry != null) {
+        if (nextIntervalClusterEntry != null && previousBreak != null) {
             previousBreak.setNextCluster(nextIntervalClusterEntry.getValue());
             previousBreak.setLength(differenceFunction.apply(previousBreak.getPreviousIntervalCluster().getEnd(),
                     nextIntervalClusterEntry.getValue().getStart()));
             clusterStartSplitPointToNextBreak.put(
-                    ((IntervalClusterImpl<IntervalType_, PointType_, DifferenceType_>) (previousBreak.getNextIntervalCluster()))
-                            .getStartSplitPoint(),
+                    ((IntervalClusterImpl<IntervalType_, PointType_, DifferenceType_>) (previousBreak
+                            .getPreviousIntervalCluster()))
+                                    .getStartSplitPoint(),
                     previousBreak);
         } else if (previousBreakEntry != null && previousBreak == previousBreakEntry.getValue()) {
             clusterStartSplitPointToNextBreak.remove(previousBreakEntry.getKey());

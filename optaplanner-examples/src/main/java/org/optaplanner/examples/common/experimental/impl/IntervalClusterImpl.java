@@ -45,6 +45,7 @@ public class IntervalClusterImpl<IntervalType_, PointType_ extends Comparable<Po
         }
         this.splitPointSet = splitPointSet;
         this.startSplitPoint = start;
+        this.endSplitPoint = start;
         this.differenceFunction = differenceFunction;
         int activeIntervals = 0;
         count = 0;
@@ -107,11 +108,19 @@ public class IntervalClusterImpl<IntervalType_, PointType_ extends Comparable<Po
         //       start and end points
         return () -> new Iterator<IntervalClusterImpl<IntervalType_, PointType_, DifferenceType_>>() {
 
-            IntervalSplitPoint<IntervalType_, PointType_> current = startSplitPoint;
+            IntervalSplitPoint<IntervalType_, PointType_> current = getStart(startSplitPoint);
+
+            private IntervalSplitPoint<IntervalType_, PointType_>
+                    getStart(IntervalSplitPoint<IntervalType_, PointType_> start) {
+                while (start != null && start.isEmpty()) {
+                    start = splitPointSet.higher(start);
+                }
+                return start;
+            }
 
             @Override
             public boolean hasNext() {
-                return current != null && current.compareTo(endSplitPoint) < 0 && !splitPointSet.isEmpty();
+                return current != null && current.compareTo(endSplitPoint) <= 0 && !splitPointSet.isEmpty();
             }
 
             @Override
@@ -134,17 +143,24 @@ public class IntervalClusterImpl<IntervalType_, PointType_ extends Comparable<Po
 
                 if (current != null) {
                     end = splitPointSet.lower(current);
+                    current = getStart(current);
                 } else {
                     end = splitPointSet.last();
                 }
+
                 return new IntervalClusterImpl<>(splitPointSet, differenceFunction, start, end, count, hasOverlap);
             }
         };
     }
 
     public void mergeIntervalCluster(IntervalClusterImpl<IntervalType_, PointType_, DifferenceType_> laterIntervalCluster) {
+        if (endSplitPoint.compareTo(laterIntervalCluster.startSplitPoint) > 0) {
+            hasOverlap = true;
+        }
+        if (endSplitPoint.compareTo(laterIntervalCluster.endSplitPoint) < 0) {
+            endSplitPoint = laterIntervalCluster.endSplitPoint;
+        }
         count += laterIntervalCluster.count;
-        endSplitPoint = laterIntervalCluster.endSplitPoint;
         hasOverlap |= laterIntervalCluster.hasOverlap;
     }
 

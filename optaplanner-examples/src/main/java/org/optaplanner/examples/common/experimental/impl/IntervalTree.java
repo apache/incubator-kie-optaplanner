@@ -68,7 +68,6 @@ public class IntervalTree<IntervalType_, PointType_ extends Comparable<PointType
         boolean isChanged;
 
         IntervalSplitPoint<IntervalType_, PointType_> flooredStartSplitPoint = splitPointSet.floor(startSplitPoint);
-        IntervalSplitPoint<IntervalType_, PointType_> ceilingEndSplitPoint = splitPointSet.ceiling(endSplitPoint);
         if (flooredStartSplitPoint == null || !flooredStartSplitPoint.equals(startSplitPoint)) {
             splitPointSet.add(startSplitPoint);
             startSplitPoint.createCollections();
@@ -77,6 +76,7 @@ public class IntervalTree<IntervalType_, PointType_ extends Comparable<PointType
             isChanged = flooredStartSplitPoint.addIntervalStartingAtSplitPoint(interval);
         }
 
+        IntervalSplitPoint<IntervalType_, PointType_> ceilingEndSplitPoint = splitPointSet.ceiling(endSplitPoint);
         if (ceilingEndSplitPoint == null || !ceilingEndSplitPoint.equals(endSplitPoint)) {
             splitPointSet.add(endSplitPoint);
             endSplitPoint.createCollections();
@@ -116,7 +116,7 @@ public class IntervalTree<IntervalType_, PointType_ extends Comparable<PointType
             splitPointSet.remove(ceilEndSplitPoint);
         }
 
-        consecutiveIntervalData.removalInterval(interval);
+        consecutiveIntervalData.removeInterval(interval);
         return true;
     }
 

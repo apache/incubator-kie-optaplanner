@@ -26,8 +26,14 @@ public class Interval<IntervalValue_, PointValue_ extends Comparable<PointValue_
     public Interval(IntervalValue_ value, Function<IntervalValue_, PointValue_> startMapping,
             Function<IntervalValue_, PointValue_> endMapping) {
         this.value = value;
-        this.startSplitPoint = new IntervalSplitPoint<>(startMapping.apply(value));
-        this.endSplitPoint = new IntervalSplitPoint<>(endMapping.apply(value));
+        PointValue_ start = startMapping.apply(value);
+        PointValue_ end = endMapping.apply(value);
+        this.startSplitPoint = new IntervalSplitPoint<>(start);
+        if (start == end) {
+            this.endSplitPoint = this.startSplitPoint;
+        } else {
+            this.endSplitPoint = new IntervalSplitPoint<>(end);
+        }
     }
 
     public IntervalValue_ getValue() {
