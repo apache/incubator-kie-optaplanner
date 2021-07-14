@@ -20,19 +20,19 @@ package org.optaplanner.examples.common.experimental.api;
  * Contains info regarding the consecutive sequences and breaks
  * in a collection of points.
  *
- * @param <ValueType_> The type of value in the sequence
- * @param <DifferenceType_> The type of difference between values in the sequence
+ * @param <Value_> The type of value in the sequence
+ * @param <Difference_> The type of difference between values in the sequence
  */
-public interface ConsecutiveInfo<ValueType_, DifferenceType_ extends Comparable<DifferenceType_>> {
+public interface ConsecutiveInfo<Value_, Difference_ extends Comparable<Difference_>> {
     /**
      * @return never null, an iterable that iterates through the sequences contained in
      *         the collection in ascending order
      */
-    Iterable<Sequence<ValueType_, DifferenceType_>> getConsecutiveSequences();
+    Iterable<Sequence<Value_, Difference_>> getConsecutiveSequences();
 
     /**
      * @return never null, an iterable that iterates through the breaks contained in
      *         the collection in ascending order
      */
-    Iterable<Break<ValueType_, DifferenceType_>> getBreaks();
+    Iterable<Break<Value_, Difference_>> getBreaks();
 }

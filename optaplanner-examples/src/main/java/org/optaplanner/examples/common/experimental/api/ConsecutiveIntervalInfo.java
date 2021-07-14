@@ -16,17 +16,17 @@
 
 package org.optaplanner.examples.common.experimental.api;
 
-public interface ConsecutiveIntervalInfo<IntervalType_, PointType_ extends Comparable<PointType_>, DifferenceType_ extends Comparable<DifferenceType_>> {
+public interface ConsecutiveIntervalInfo<Interval_, Point_ extends Comparable<Point_>, Difference_ extends Comparable<Difference_>> {
 
     /**
      * @return never null, an iterable that iterates through the interval clusters
      *         contained in the collection in ascending order
      */
-    Iterable<IntervalCluster<IntervalType_, PointType_, DifferenceType_>> getIntervalClusters();
+    Iterable<IntervalCluster<Interval_, Point_, Difference_>> getIntervalClusters();
 
     /**
      * @return never null, an iterable that iterates through the breaks contained in
      *         the collection in ascending order
      */
-    Iterable<IntervalBreak<IntervalType_, PointType_, DifferenceType_>> getBreaks();
+    Iterable<IntervalBreak<Interval_, Point_, Difference_>> getBreaks();
 }

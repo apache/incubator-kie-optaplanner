@@ -19,17 +19,17 @@ package org.optaplanner.examples.common.experimental.impl;
 import java.util.Iterator;
 import java.util.Map;
 
-public class MapValuesIterable<KeyType_, ValueType_> implements Iterable<ValueType_> {
-    private final Map<KeyType_, ? extends ValueType_> sourceMap;
+public class MapValuesIterable<Key_, Value_> implements Iterable<Value_> {
+    private final Map<Key_, ? extends Value_> sourceMap;
 
-    public MapValuesIterable(Map<KeyType_, ? extends ValueType_> sourceMap) {
+    public MapValuesIterable(Map<Key_, ? extends Value_> sourceMap) {
         this.sourceMap = sourceMap;
     }
 
     @Override
     @SuppressWarnings("unchecked")
-    public Iterator<ValueType_> iterator() {
-        return (Iterator<ValueType_>) sourceMap.values().iterator();
+    public Iterator<Value_> iterator() {
+        return (Iterator<Value_>) sourceMap.values().iterator();
     }
 
     @Override

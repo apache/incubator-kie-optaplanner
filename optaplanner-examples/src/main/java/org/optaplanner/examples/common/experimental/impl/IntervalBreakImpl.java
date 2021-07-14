@@ -21,46 +21,46 @@ import java.util.Objects;
 import org.optaplanner.examples.common.experimental.api.IntervalBreak;
 import org.optaplanner.examples.common.experimental.api.IntervalCluster;
 
-class IntervalBreakImpl<IntervalType_, PointType_ extends Comparable<PointType_>, DifferenceType_ extends Comparable<DifferenceType_>>
-        implements IntervalBreak<IntervalType_, PointType_, DifferenceType_> {
-    private IntervalCluster<IntervalType_, PointType_, DifferenceType_> previousCluster;
-    private IntervalCluster<IntervalType_, PointType_, DifferenceType_> nextCluster;
-    private DifferenceType_ length;
+class IntervalBreakImpl<Interval_, Point_ extends Comparable<Point_>, Difference_ extends Comparable<Difference_>>
+        implements IntervalBreak<Interval_, Point_, Difference_> {
+    private IntervalCluster<Interval_, Point_, Difference_> previousCluster;
+    private IntervalCluster<Interval_, Point_, Difference_> nextCluster;
+    private Difference_ length;
 
-    public IntervalBreakImpl(IntervalCluster<IntervalType_, PointType_, DifferenceType_> previousCluster,
-            IntervalCluster<IntervalType_, PointType_, DifferenceType_> nextCluster,
-            DifferenceType_ length) {
+    public IntervalBreakImpl(IntervalCluster<Interval_, Point_, Difference_> previousCluster,
+            IntervalCluster<Interval_, Point_, Difference_> nextCluster,
+            Difference_ length) {
         this.previousCluster = previousCluster;
         this.nextCluster = nextCluster;
         this.length = length;
     }
 
     @Override
-    public IntervalCluster<IntervalType_, PointType_, DifferenceType_> getPreviousIntervalCluster() {
+    public IntervalCluster<Interval_, Point_, Difference_> getPreviousIntervalCluster() {
         return previousCluster;
     }
 
     @Override
-    public IntervalCluster<IntervalType_, PointType_, DifferenceType_> getNextIntervalCluster() {
+    public IntervalCluster<Interval_, Point_, Difference_> getNextIntervalCluster() {
         return nextCluster;
     }
 
     @Override
-    public DifferenceType_ getLength() {
+    public Difference_ getLength() {
         return length;
     }
 
     public void setPreviousCluster(
-            IntervalCluster<IntervalType_, PointType_, DifferenceType_> previousCluster) {
+            IntervalCluster<Interval_, Point_, Difference_> previousCluster) {
         this.previousCluster = previousCluster;
     }
 
     public void setNextCluster(
-            IntervalCluster<IntervalType_, PointType_, DifferenceType_> nextCluster) {
+            IntervalCluster<Interval_, Point_, Difference_> nextCluster) {
         this.nextCluster = nextCluster;
     }
 
-    public void setLength(DifferenceType_ length) {
+    public void setLength(Difference_ length) {
         this.length = length;
     }
 

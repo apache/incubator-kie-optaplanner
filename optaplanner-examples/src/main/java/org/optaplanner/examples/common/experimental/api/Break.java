@@ -21,19 +21,19 @@ package org.optaplanner.examples.common.experimental.api;
  * the list [1,2,4,5,6,10] has a break of length 2 between 2 and 4,
  * as well as a break of length 4 between 6 and 10.
  *
- * @param <ValueType_> The type of value in the sequence
- * @param <DifferenceType_> The type of difference between values in the sequence
+ * @param <Value_> The type of value in the sequence
+ * @param <Difference_> The type of difference between values in the sequence
  */
-public interface Break<ValueType_, DifferenceType_ extends Comparable<DifferenceType_>> {
+public interface Break<Value_, Difference_ extends Comparable<Difference_>> {
     /**
      * @return never null, the sequence leading directly into this
      */
-    Sequence<ValueType_, DifferenceType_> getPreviousSequence();
+    Sequence<Value_, Difference_> getPreviousSequence();
 
     /**
      * @return never null, the sequence immediately following this
      */
-    Sequence<ValueType_, DifferenceType_> getNextSequence();
+    Sequence<Value_, Difference_> getNextSequence();
 
     /**
      * Return the end of the sequence before this break. For the
@@ -41,7 +41,7 @@ public interface Break<ValueType_, DifferenceType_ extends Comparable<Difference
      * 
      * @return never null, the item this break is directly after
      */
-    default ValueType_ getPreviousSequenceEnd() {
+    default Value_ getPreviousSequenceEnd() {
         return getPreviousSequence().getLastItem();
     };
 
@@ -51,7 +51,7 @@ public interface Break<ValueType_, DifferenceType_ extends Comparable<Difference
      * 
      * @return never null, the item this break is directly before
      */
-    default ValueType_ getNextSequenceStart() {
+    default Value_ getNextSequenceStart() {
         return getNextSequence().getFirstItem();
     }
 
@@ -62,5 +62,5 @@ public interface Break<ValueType_, DifferenceType_ extends Comparable<Difference
      * 
      * @return never null, the length of this break
      */
-    DifferenceType_ getLength();
+    Difference_ getLength();
 }

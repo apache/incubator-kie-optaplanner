@@ -20,19 +20,19 @@ package org.optaplanner.examples.common.experimental.api;
  * An IntervalBreak is a gap between two consecutive interval clusters. For instance,
  * the list [(1,3),(2,4),(3,5),(7,8)] has a break of length 2 between 5 and 7.
  *
- * @param <IntervalType_> The type of value in the sequence
- * @param <DifferenceType_> The type of difference between values in the sequence
+ * @param <Interval_> The type of value in the sequence
+ * @param <Difference_> The type of difference between values in the sequence
  */
-public interface IntervalBreak<IntervalType_, PointType_ extends Comparable<PointType_>, DifferenceType_ extends Comparable<DifferenceType_>> {
+public interface IntervalBreak<Interval_, Point_ extends Comparable<Point_>, Difference_ extends Comparable<Difference_>> {
     /**
      * @return never null, the interval cluster leading directly into this
      */
-    IntervalCluster<IntervalType_, PointType_, DifferenceType_> getPreviousIntervalCluster();
+    IntervalCluster<Interval_, Point_, Difference_> getPreviousIntervalCluster();
 
     /**
      * @return never null, the interval cluster immediately following this
      */
-    IntervalCluster<IntervalType_, PointType_, DifferenceType_> getNextIntervalCluster();
+    IntervalCluster<Interval_, Point_, Difference_> getNextIntervalCluster();
 
     /**
      * Return the end of the sequence before this break. For the
@@ -40,7 +40,7 @@ public interface IntervalBreak<IntervalType_, PointType_ extends Comparable<Poin
      * 
      * @return never null, the item this break is directly after
      */
-    default PointType_ getPreviousIntervalClusterEnd() {
+    default Point_ getPreviousIntervalClusterEnd() {
         return getPreviousIntervalCluster().getEnd();
     };
 
@@ -50,7 +50,7 @@ public interface IntervalBreak<IntervalType_, PointType_ extends Comparable<Poin
      * 
      * @return never null, the item this break is directly before
      */
-    default PointType_ getNextIntervalClusterStart() {
+    default Point_ getNextIntervalClusterStart() {
         return getNextIntervalCluster().getStart();
     }
 
@@ -61,5 +61,5 @@ public interface IntervalBreak<IntervalType_, PointType_ extends Comparable<Poin
      * 
      * @return never null, the length of this break
      */
-    DifferenceType_ getLength();
+    Difference_ getLength();
 }

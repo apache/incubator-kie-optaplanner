@@ -16,15 +16,15 @@
 
 package org.optaplanner.examples.common.experimental.api;
 
-public interface IntervalCluster<IntervalType_, PointType_ extends Comparable<PointType_>, DifferenceType_ extends Comparable<DifferenceType_>>
-        extends Iterable<IntervalType_> {
+public interface IntervalCluster<Interval_, Point_ extends Comparable<Point_>, Difference_ extends Comparable<Difference_>>
+        extends Iterable<Interval_> {
     int size();
 
     boolean hasOverlap();
 
-    DifferenceType_ getLength();
+    Difference_ getLength();
 
-    PointType_ getStart();
+    Point_ getStart();
 
-    PointType_ getEnd();
+    Point_ getEnd();
 }
