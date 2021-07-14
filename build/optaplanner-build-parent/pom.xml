@@ -57,8 +57,7 @@
     <!-- ************************************************************************ -->
 
     <maven.min.version>3.6.2</maven.min.version>
-    <!-- An upcoming minor 8.x release will change this to 11 because the 8.x series require Java 11 or higher. -->
-    <maven.compiler.release>8</maven.compiler.release>
+    <maven.compiler.release>11</maven.compiler.release>
     <!-- jboss suffixed version from jboss-parent which cannot be downloaded due to SNAPSHOT only policy for plugins from JBoss -->
     <version.compiler.plugin>3.8.1</version.compiler.plugin>
     <!-- The first version that supports analysis of classes compiled by Java 11. -->
@@ -686,6 +685,7 @@
           <artifactId>maven-javadoc-plugin</artifactId>
           <version>3.2.0</version>
           <configuration>
+            <release>${maven.compiler.release}</release>
             <author>false</author>
             <failOnError>true</failOnError>
             <!--
@@ -947,25 +947,6 @@
             </executions>
           </plugin>
         </plugins>
-      </build>
-    </profile>
-    <profile>
-      <id>java11-specific-config</id>
-      <activation>
-        <jdk>[11,)</jdk>
-      </activation>
-      <build>
-        <pluginManagement>
-          <plugins>
-            <plugin>
-              <groupId>org.apache.maven.plugins</groupId>
-              <artifactId>maven-javadoc-plugin</artifactId>
-              <configuration>
-                <release>${maven.compiler.release}</release>
-              </configuration>
-            </plugin>
-          </plugins>
-        </pluginManagement>
       </build>
     </profile>
     <!--
