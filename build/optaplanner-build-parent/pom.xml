@@ -683,17 +683,18 @@
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-javadoc-plugin</artifactId>
-          <version>3.2.0</version>
+          <!--
+            Do not upgrade unless prepared to deal with JPMS issues.
+            If upgrading, ensure build still passes with the full profile (-Dfull).
+          -->
+          <version>3.0.1</version>
           <configuration>
-            <release>${maven.compiler.release}</release>
             <author>false</author>
             <failOnError>true</failOnError>
             <!--
                  Disabled to workaround the following issue on JDK 16+:
                  Warning:  javadoc: warning - The -footer option is no longer supported and will be ignored.
-
                  Since we do not add the footer ourselves, it must be the plugin itself.
-                 Therefore until a new Javadoc plugin version is released, there is no better workaround.
             -->
             <!-- <failOnWarnings>true</failOnWarnings>-->
             <quiet>true</quiet>
