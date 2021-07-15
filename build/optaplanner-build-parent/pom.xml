@@ -1100,10 +1100,10 @@
             <artifactId>maven-javadoc-plugin</artifactId>
             <executions>
               <execution>
-                <id>javadoc-javadoc</id>
+                <id>build-javadoc-jar</id>
                 <phase>package</phase>
                 <goals>
-                  <goal>javadoc-no-fork</goal>
+                  <goal>jar</goal>
                 </goals>
               </execution>
             </executions>
