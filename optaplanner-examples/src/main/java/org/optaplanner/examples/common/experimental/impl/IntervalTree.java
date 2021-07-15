@@ -36,7 +36,7 @@ public class IntervalTree<Interval_, Point_ extends Comparable<Point_>, Differen
         consecutiveIntervalData = new ConsecutiveIntervalInfoImpl<>(splitPointSet, differenceFunction);
     }
 
-    private Interval<Interval_, Point_> getInterval(Interval_ intervalValue) {
+    public Interval<Interval_, Point_> getInterval(Interval_ intervalValue) {
         return new Interval<>(intervalValue, startMapping, endMapping);
     }
 
@@ -61,8 +61,14 @@ public class IntervalTree<Interval_, Point_ extends Comparable<Point_>, Differen
         return new IntervalTreeIterator<>(splitPointSet);
     }
 
-    public boolean add(Interval_ o) {
-        Interval<Interval_, Point_> interval = getInterval(o);
+    public boolean add(Interval_ interval) {
+        if (interval == null) {
+            return false;
+        }
+        return add(getInterval(interval));
+    }
+
+    public boolean add(Interval<Interval_, Point_> interval) {
         IntervalSplitPoint<Interval_, Point_> startSplitPoint = interval.getStartSplitPoint();
         IntervalSplitPoint<Interval_, Point_> endSplitPoint = interval.getEndSplitPoint();
         boolean isChanged;
@@ -91,11 +97,14 @@ public class IntervalTree<Interval_, Point_ extends Comparable<Point_>, Differen
         return true;
     }
 
-    public boolean remove(Interval_ o) {
-        if (null == o) {
+    public boolean remove(Interval_ interval) {
+        if (interval == null) {
             return false;
         }
-        Interval<Interval_, Point_> interval = getInterval(o);
+        return remove(getInterval(interval));
+    }
+
+    public boolean remove(Interval<Interval_, Point_> interval) {
         IntervalSplitPoint<Interval_, Point_> startSplitPoint = interval.getStartSplitPoint();
         IntervalSplitPoint<Interval_, Point_> endSplitPoint = interval.getEndSplitPoint();
 

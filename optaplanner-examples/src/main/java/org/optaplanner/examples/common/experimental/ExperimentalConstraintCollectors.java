@@ -33,6 +33,7 @@ import org.optaplanner.core.impl.score.stream.uni.DefaultUniConstraintCollector;
 import org.optaplanner.examples.common.experimental.api.ConsecutiveInfo;
 import org.optaplanner.examples.common.experimental.api.ConsecutiveIntervalInfo;
 import org.optaplanner.examples.common.experimental.impl.ConsecutiveSetTree;
+import org.optaplanner.examples.common.experimental.impl.Interval;
 import org.optaplanner.examples.common.experimental.impl.IntervalTree;
 
 /**
@@ -174,8 +175,9 @@ public class ExperimentalConstraintCollectors {
                         startMap,
                         endMap, differenceFunction),
                 (acc, a) -> {
-                    acc.add(a);
-                    return () -> acc.remove(a);
+                    Interval<A, PointType_> interval = acc.getInterval(a);
+                    acc.add(interval);
+                    return () -> acc.remove(interval);
                 },
                 IntervalTree::getConsecutiveIntervalData);
     }
@@ -201,7 +203,8 @@ public class ExperimentalConstraintCollectors {
                         startMap,
                         endMap, differenceFunction),
                 (acc, a, b) -> {
-                    IntervalType_ interval = intervalMap.apply(a, b);
+                    IntervalType_ intervalObj = intervalMap.apply(a, b);
+                    Interval<IntervalType_, PointType_> interval = acc.getInterval(intervalObj);
                     acc.add(interval);
                     return () -> acc.remove(interval);
                 },
@@ -230,7 +233,8 @@ public class ExperimentalConstraintCollectors {
                         startMap,
                         endMap, differenceFunction),
                 (acc, a, b, c) -> {
-                    IntervalType_ interval = intervalMap.apply(a, b, c);
+                    IntervalType_ intervalObj = intervalMap.apply(a, b, c);
+                    Interval<IntervalType_, PointType_> interval = acc.getInterval(intervalObj);
                     acc.add(interval);
                     return () -> acc.remove(interval);
                 },
@@ -250,17 +254,18 @@ public class ExperimentalConstraintCollectors {
      * @param <PointType_> type of the item endpoints
      * @return never null
      */
-    public static <A, B, C, D, IntervalType, PointType_ extends Comparable<PointType_>, DifferenceType_ extends Comparable<DifferenceType_>>
-            QuadConstraintCollector<A, B, C, D, IntervalTree<IntervalType, PointType_, DifferenceType_>, ConsecutiveIntervalInfo<IntervalType, PointType_, DifferenceType_>>
-            consecutiveIntervals(QuadFunction<A, B, C, D, IntervalType> intervalMap,
-                    Function<IntervalType, PointType_> startMap, Function<IntervalType, PointType_> endMap,
+    public static <A, B, C, D, IntervalType_, PointType_ extends Comparable<PointType_>, DifferenceType_ extends Comparable<DifferenceType_>>
+            QuadConstraintCollector<A, B, C, D, IntervalTree<IntervalType_, PointType_, DifferenceType_>, ConsecutiveIntervalInfo<IntervalType_, PointType_, DifferenceType_>>
+            consecutiveIntervals(QuadFunction<A, B, C, D, IntervalType_> intervalMap,
+                    Function<IntervalType_, PointType_> startMap, Function<IntervalType_, PointType_> endMap,
                     BiFunction<PointType_, PointType_, DifferenceType_> differenceFunction) {
         return new DefaultQuadConstraintCollector<>(
                 () -> new IntervalTree<>(
                         startMap,
                         endMap, differenceFunction),
                 (acc, a, b, c, d) -> {
-                    IntervalType interval = intervalMap.apply(a, b, c, d);
+                    IntervalType_ intervalObj = intervalMap.apply(a, b, c, d);
+                    Interval<IntervalType_, PointType_> interval = acc.getInterval(intervalObj);
                     acc.add(interval);
                     return () -> acc.remove(interval);
                 },
