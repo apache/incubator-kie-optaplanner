@@ -23,18 +23,8 @@ import com.thoughtworks.xstream.annotations.XStreamAlias;
 @XStreamAlias("CtMachineCapacity")
 public class MachineCapacity extends AbstractPersistable {
 
-    private Machine machine;
     private Resource resource;
-
     private int capacity;
-
-    public Machine getMachine() {
-        return machine;
-    }
-
-    public void setMachine(Machine machine) {
-        this.machine = machine;
-    }
 
     public Resource getResource() {
         return resource;
@@ -51,9 +41,5 @@ public class MachineCapacity extends AbstractPersistable {
     public void setCapacity(int capacity) {
         this.capacity = capacity;
     }
-
-    // ************************************************************************
-    // Complex methods
-    // ************************************************************************
 
 }

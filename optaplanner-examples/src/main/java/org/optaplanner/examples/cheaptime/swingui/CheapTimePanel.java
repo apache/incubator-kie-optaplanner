@@ -32,6 +32,7 @@ import java.util.stream.Collectors;
 import javax.swing.JCheckBox;
 import javax.swing.SwingConstants;
 
+import org.apache.commons.lang3.tuple.Pair;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.axis.NumberAxis;
@@ -51,6 +52,7 @@ import org.optaplanner.examples.cheaptime.domain.CheapTimeSolution;
 import org.optaplanner.examples.cheaptime.domain.Machine;
 import org.optaplanner.examples.cheaptime.domain.MachineCapacity;
 import org.optaplanner.examples.cheaptime.domain.Period;
+import org.optaplanner.examples.cheaptime.domain.Resource;
 import org.optaplanner.examples.cheaptime.domain.Task;
 import org.optaplanner.examples.cheaptime.domain.TaskAssignment;
 import org.optaplanner.examples.cheaptime.domain.TaskRequirement;
@@ -169,14 +171,16 @@ public class CheapTimePanel extends SolutionPanel<CheapTimeSolution> {
     }
 
     private XYPlot createAvailableCapacityPlot(TangoColorFactory tangoColorFactory, CheapTimeSolution solution) {
-        Map<MachineCapacity, List<Integer>> availableMap = new LinkedHashMap<>(solution.getMachineCapacityList().size());
-        for (MachineCapacity machineCapacity : solution.getMachineCapacityList()) {
-            List<Integer> machineAvailableList = new ArrayList<>(
-                    solution.getGlobalPeriodRangeTo());
-            for (int period = 0; period < solution.getGlobalPeriodRangeTo(); period++) {
-                machineAvailableList.add(machineCapacity.getCapacity());
+        Map<Pair<Machine, Resource>, List<Integer>> availableMap = new LinkedHashMap<>();
+        for (Machine machine : solution.getMachineList()) {
+            for (Resource resource : solution.getResourceList()) {
+                List<Integer> machineAvailableList = new ArrayList<>(
+                        solution.getGlobalPeriodRangeTo());
+                for (int period = 0; period < solution.getGlobalPeriodRangeTo(); period++) {
+                    machineAvailableList.add(machine.getCapacity(resource));
+                }
+                availableMap.put(Pair.of(machine, resource), machineAvailableList);
             }
-            availableMap.put(machineCapacity, machineAvailableList);
         }
         for (TaskAssignment taskAssignment : solution.getTaskAssignmentList()) {
             Machine machine = taskAssignment.getMachine();
@@ -186,8 +190,9 @@ public class CheapTimePanel extends SolutionPanel<CheapTimeSolution> {
                 List<TaskRequirement> taskRequirementList = task.getTaskRequirementList();
                 for (int i = 0; i < taskRequirementList.size(); i++) {
                     TaskRequirement taskRequirement = taskRequirementList.get(i);
-                    MachineCapacity machineCapacity = machine.getMachineCapacityList().get(i);
-                    List<Integer> machineAvailableList = availableMap.get(machineCapacity);
+                    Resource resource = solution.getResourceList().get(i);
+                    Pair<Machine, Resource> machineResourcePair = Pair.of(machine, resource);
+                    List<Integer> machineAvailableList = availableMap.get(machineResourcePair);
                     for (int j = 0; j < task.getDuration(); j++) {
                         int period = j + taskAssignment.getStartPeriod();
                         int available = machineAvailableList.get(period);
@@ -196,24 +201,27 @@ public class CheapTimePanel extends SolutionPanel<CheapTimeSolution> {
                 }
             }
         }
-        XYSeriesCollection seriesCollection = new XYSeriesCollection();
-        XYItemRenderer renderer = new StandardXYItemRenderer(StandardXYItemRenderer.SHAPES);
-        int seriesIndex = 0;
+        Map<Machine, XYSeries> machineSeriesMap = new LinkedHashMap<>();
         for (Machine machine : solution.getMachineList()) {
             XYSeries machineSeries = new XYSeries(machine.getLabel());
-            for (MachineCapacity machineCapacity : machine.getMachineCapacityList()) {
-                List<Integer> machineAvailableList = availableMap.get(machineCapacity);
-                for (int period = 0; period < solution.getGlobalPeriodRangeTo(); period++) {
-                    int available = machineAvailableList.get(period);
-                    machineSeries.add(available, period);
-                }
+            machineSeriesMap.put(machine, machineSeries);
+        }
+        availableMap.forEach((machineResourcePair, machineAvailableList) -> {
+            for (int period = 0; period < solution.getGlobalPeriodRangeTo(); period++) {
+                int available = machineAvailableList.get(period);
+                machineSeriesMap.get(machineResourcePair.getKey())
+                        .add(available, period);
             }
+        });
+        XYSeriesCollection seriesCollection = new XYSeriesCollection();
+        XYItemRenderer renderer = new StandardXYItemRenderer(StandardXYItemRenderer.SHAPES);
+        machineSeriesMap.forEach((machine, machineSeries) -> {
+            int seriesIndex = machine.getIndex();
             seriesCollection.addSeries(machineSeries);
             renderer.setSeriesPaint(seriesIndex, tangoColorFactory.pickColor(machine));
             renderer.setSeriesShape(seriesIndex, ShapeUtils.createDiamond(1.5F));
             renderer.setSeriesVisibleInLegend(seriesIndex, false);
-            seriesIndex++;
-        }
+        });
         NumberAxis domainAxis = new NumberAxis("Capacity");
         return new XYPlot(seriesCollection, domainAxis, null, renderer);
     }

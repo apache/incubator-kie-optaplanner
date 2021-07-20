@@ -203,7 +203,6 @@ public class CheapTimeImporter extends AbstractTxtSolutionImporter<CheapTimeSolu
                     MachineCapacity machineCapacity = new MachineCapacity();
                     machineCapacity.setId(machineCapacityId);
                     machineCapacityId++;
-                    machineCapacity.setMachine(machine);
                     machineCapacity.setResource(solution.getResourceList().get(j));
                     machineCapacity.setCapacity(Integer.parseInt(capacityLineTokens[j]));
                     machineCapacityList.add(machineCapacity);
@@ -213,7 +212,6 @@ public class CheapTimeImporter extends AbstractTxtSolutionImporter<CheapTimeSolu
                 machineList.add(machine);
             }
             solution.setMachineList(machineList);
-            solution.setMachineCapacityList(machineCapacityList);
         }
 
         private void readTaskList() throws IOException {

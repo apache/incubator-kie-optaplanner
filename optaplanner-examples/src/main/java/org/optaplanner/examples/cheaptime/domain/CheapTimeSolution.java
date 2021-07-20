@@ -41,7 +41,6 @@ public class CheapTimeSolution extends AbstractPersistable {
 
     private List<Resource> resourceList;
     private List<Machine> machineList;
-    private List<MachineCapacity> machineCapacityList;
     private List<Task> taskList;
     private List<TaskRequirement> taskRequirementList;
     // Order is equal to global periodRange so int period can be used for the index
@@ -93,15 +92,6 @@ public class CheapTimeSolution extends AbstractPersistable {
 
     public void setResourceList(List<Resource> resourceList) {
         this.resourceList = resourceList;
-    }
-
-    @ProblemFactCollectionProperty
-    public List<MachineCapacity> getMachineCapacityList() {
-        return machineCapacityList;
-    }
-
-    public void setMachineCapacityList(List<MachineCapacity> machineCapacityList) {
-        this.machineCapacityList = machineCapacityList;
     }
 
     @ProblemFactCollectionProperty

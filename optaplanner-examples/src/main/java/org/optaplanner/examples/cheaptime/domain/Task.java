@@ -30,6 +30,18 @@ public class Task extends AbstractPersistable {
     private int startPeriodRangeFrom; // Inclusive
     private int startPeriodRangeTo; // Exclusive
 
+    public Task() {
+
+    }
+
+    public Task(long id, Period startInclusive, Period endExclusive, int duration, long powerConsumptionMicros) {
+        super(id);
+        this.startPeriodRangeFrom = startInclusive.getPeriod();
+        this.startPeriodRangeTo = endExclusive.getPeriod();
+        this.duration = duration;
+        this.powerConsumptionMicros = 1;
+    }
+
     // Order is equal to resourceList so Resource.getIndex() can be used for the index
     private List<TaskRequirement> taskRequirementList;
 
