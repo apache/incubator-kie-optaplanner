@@ -29,6 +29,9 @@ Map getMultijobPRConfig() {
                 repository: 'kogito-examples',
                 dependsOn: 'optaplanner',
             ]
+        ],
+        extraEnv : [
+            ENABLE_SONARCLOUD: Utils.isMainBranch(this)
         ]
     ]
 }
