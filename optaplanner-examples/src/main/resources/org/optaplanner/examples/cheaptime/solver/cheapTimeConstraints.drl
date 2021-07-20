@@ -24,11 +24,9 @@ import org.optaplanner.core.api.score.buildin.hardmediumsoftlong.HardMediumSoftL
 
 import org.optaplanner.examples.cheaptime.domain.CheapTimeSolution;
 import org.optaplanner.examples.cheaptime.domain.Machine;
-import org.optaplanner.examples.cheaptime.domain.MachineCapacity;
 import org.optaplanner.examples.cheaptime.domain.Period;
 import org.optaplanner.examples.cheaptime.domain.Task;
 import org.optaplanner.examples.cheaptime.domain.TaskAssignment;
-import org.optaplanner.examples.cheaptime.domain.TaskRequirement;
 import org.optaplanner.examples.cheaptime.score.CheapTimeCostCalculator;
 import org.optaplanner.examples.cheaptime.optional.score.MachinePeriodPart;
 import org.optaplanner.examples.cheaptime.optional.score.drools.IdleCost;

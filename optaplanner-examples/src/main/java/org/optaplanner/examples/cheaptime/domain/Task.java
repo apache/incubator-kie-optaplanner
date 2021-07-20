@@ -16,7 +16,9 @@
 
 package org.optaplanner.examples.cheaptime.domain;
 
+import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.optaplanner.examples.common.domain.AbstractPersistable;
 
@@ -30,20 +32,23 @@ public class Task extends AbstractPersistable {
     private int startPeriodRangeFrom; // Inclusive
     private int startPeriodRangeTo; // Exclusive
 
+    // Order is equal to resourceList so Resource.getIndex() can be used for the index
+    private List<TaskRequirement> taskRequirementList;
+
     public Task() {
 
     }
 
-    public Task(long id, Period startInclusive, Period endExclusive, int duration, long powerConsumptionMicros) {
+    public Task(long id, Period startInclusive, Period endExclusive, int duration, long powerConsumptionMicros,
+            TaskRequirement... taskRequirements) {
         super(id);
         this.startPeriodRangeFrom = startInclusive.getPeriod();
         this.startPeriodRangeTo = endExclusive.getPeriod();
         this.duration = duration;
         this.powerConsumptionMicros = powerConsumptionMicros;
+        this.taskRequirementList = Arrays.stream(taskRequirements)
+                .collect(Collectors.toList());
     }
-
-    // Order is equal to resourceList so Resource.getIndex() can be used for the index
-    private List<TaskRequirement> taskRequirementList;
 
     public long getPowerConsumptionMicros() {
         return powerConsumptionMicros;

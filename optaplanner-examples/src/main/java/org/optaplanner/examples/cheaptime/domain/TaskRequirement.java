@@ -23,18 +23,9 @@ import com.thoughtworks.xstream.annotations.XStreamAlias;
 @XStreamAlias("CtTaskRequirement")
 public class TaskRequirement extends AbstractPersistable {
 
-    private Task task;
     private Resource resource;
 
     private int resourceUsage;
-
-    public Task getTask() {
-        return task;
-    }
-
-    public void setTask(Task task) {
-        this.task = task;
-    }
 
     public Resource getResource() {
         return resource;

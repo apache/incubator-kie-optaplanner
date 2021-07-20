@@ -217,7 +217,6 @@ public class CheapTimeImporter extends AbstractTxtSolutionImporter<CheapTimeSolu
         private void readTaskList() throws IOException {
             int taskListSize = readIntegerValue();
             List<Task> taskList = new ArrayList<>(taskListSize);
-            List<TaskRequirement> taskRequirementList = new ArrayList<>(taskListSize * resourceListSize);
             long taskRequirementId = 0L;
             for (int i = 0; i < taskListSize; i++) {
                 String[] taskLineTokens = splitBySpacesOrTabs(readStringValue(), 5);
@@ -256,17 +255,14 @@ public class CheapTimeImporter extends AbstractTxtSolutionImporter<CheapTimeSolu
                     TaskRequirement taskRequirement = new TaskRequirement();
                     taskRequirement.setId(taskRequirementId);
                     taskRequirementId++;
-                    taskRequirement.setTask(task);
                     taskRequirement.setResource(solution.getResourceList().get(j));
                     taskRequirement.setResourceUsage(Integer.parseInt(usageLineTokens[j]));
-                    taskRequirementList.add(taskRequirement);
                     taskRequirementListOfTask.add(taskRequirement);
                 }
                 task.setTaskRequirementList(taskRequirementListOfTask);
                 taskList.add(task);
             }
             solution.setTaskList(taskList);
-            solution.setTaskRequirementList(taskRequirementList);
         }
 
         private void readForecastFile() {
