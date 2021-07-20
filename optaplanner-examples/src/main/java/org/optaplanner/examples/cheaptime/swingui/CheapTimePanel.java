@@ -158,7 +158,7 @@ public class CheapTimePanel extends SolutionPanel<CheapTimeSolution> {
     private XYPlot createPeriodCostPlot(CheapTimeSolution solution) {
         XYSeries series = new XYSeries("Power price");
         for (Period period : solution.getPeriodList()) {
-            series.add(period.getPowerPriceMicros() / 1000000.0, period.getPeriod());
+            series.add(period.getPowerPriceMicros() / 1000000.0, period.getIndex());
         }
         XYSeriesCollection seriesCollection = new XYSeriesCollection();
         seriesCollection.addSeries(series);

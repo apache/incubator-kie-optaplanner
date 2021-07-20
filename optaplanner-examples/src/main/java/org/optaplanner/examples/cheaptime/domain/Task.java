@@ -42,8 +42,8 @@ public class Task extends AbstractPersistable {
     public Task(long id, Period startInclusive, Period endExclusive, int duration, long powerConsumptionMicros,
             TaskRequirement... taskRequirements) {
         super(id);
-        this.startPeriodRangeFrom = startInclusive.getPeriod();
-        this.startPeriodRangeTo = endExclusive.getPeriod();
+        this.startPeriodRangeFrom = startInclusive.getIndex();
+        this.startPeriodRangeTo = endExclusive.getIndex();
         this.duration = duration;
         this.powerConsumptionMicros = powerConsumptionMicros;
         this.taskRequirementList = Arrays.stream(taskRequirements)

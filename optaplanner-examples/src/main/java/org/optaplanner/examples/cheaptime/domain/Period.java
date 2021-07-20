@@ -21,19 +21,19 @@ import org.optaplanner.examples.common.domain.AbstractPersistable;
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 
 @XStreamAlias("CtPeriod")
-public class Period extends AbstractPersistable implements Comparable<Period> {
+public class Period extends AbstractPersistable {
 
-    private final int period;
+    private final int index;
     private long powerPriceMicros;
 
     public Period(int id, long powerPriceMicros) {
         super(id);
-        this.period = id;
+        this.index = id;
         this.powerPriceMicros = powerPriceMicros;
     }
 
-    public int getPeriod() {
-        return period;
+    public int getIndex() {
+        return index;
     }
 
     public long getPowerPriceMicros() {
@@ -44,8 +44,4 @@ public class Period extends AbstractPersistable implements Comparable<Period> {
         this.powerPriceMicros = powerPriceMicros;
     }
 
-    @Override
-    public int compareTo(Period o) {
-        return Long.compare(this.period, o.period);
-    }
 }

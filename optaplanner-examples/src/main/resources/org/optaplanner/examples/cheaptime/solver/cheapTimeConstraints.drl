@@ -37,7 +37,7 @@ global HardMediumSoftLongScoreHolder scoreHolder;
 rule "machinePeriodPart"
     salience 2
     when
-        Period($period : period)
+        Period($period : index)
         $machine : Machine()
         $taskAssignmentList : ArrayList() from collect (
             TaskAssignment(
@@ -102,8 +102,8 @@ rule "calculateIdleCost"
         )
         $idlePeriodPowerPriceList : ArrayList() from collect (
             Period(
-                period > (Integer) $lastActivePeriod,
-                period < $period)
+                index > (Integer) $lastActivePeriod,
+                index < $period)
         )
     then
         long idleCost = 0;
@@ -117,7 +117,7 @@ end
 rule "Active machine power cost"
     when
         MachinePeriodPart($machine : machine, $period : period, active == true)
-        Period(period == $period, $price: powerPriceMicros)
+        Period(index == $period, $price: powerPriceMicros)
     then
         scoreHolder.addMediumConstraintMatch(kcontext,
             - CheapTimeCostCalculator.multiplyTwoMicros($machine.getPowerConsumptionMicros(), $price));
@@ -147,7 +147,7 @@ end
 // Task power cost: Each task consumes power too, which infers a power cost (depending on the power price during its time).
 rule "Task power cost"
     when
-        Period($period: period, $price: powerPriceMicros)
+        Period($period: index, $price: powerPriceMicros)
         TaskAssignment(startPeriod <= $period, endPeriod > $period, $task : task)
     then
         scoreHolder.addMediumConstraintMatch(kcontext,
