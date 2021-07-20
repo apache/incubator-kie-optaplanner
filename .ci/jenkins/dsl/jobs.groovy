@@ -31,6 +31,8 @@ Map getMultijobPRConfig() {
             ]
         ],
         extraEnv : [
+            // Sonarcloud analysis only on main branch
+            // As we have only Community edition
             ENABLE_SONARCLOUD: Utils.isMainBranch(this)
         ]
     ]
