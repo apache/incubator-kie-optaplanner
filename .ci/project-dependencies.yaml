@@ -1,0 +1,35 @@
+version: "2.1"
+
+dependencies:
+  - project: kiegroup/quarkus
+
+  - project: kiegroup/kogito-runtimes
+    dependencies:
+      - project: kiegroup/quarkus
+    mapping:
+      dependencies:
+        default:
+          - source: (\d*)\.(.*)\.(.*)
+            targetExpression: "process.env.GITHUB_BASE_REF.replace(/(\\d*)\\.(.*)\\.(.*)/g, (m, n1, n2, n3) => `${+n1-7}.${n2}.${n3}`)"
+      dependant:
+        default:
+          - source: (\d*)\.(.*)\.(.*)
+            targetExpression: "process.env.GITHUB_BASE_REF.replace(/(\\d*)\\.(.*)\\.(.*)/g, (m, n1, n2, n3) => `${+n1+7}.${n2}.${n3}`)"       
+
+  - project: kiegroup/optaplanner
+    dependencies:
+      - project: kiegroup/kogito-runtimes
+
+  - project: kiegroup/optaweb-employee-rostering
+    dependencies:
+      - project: kiegroup/optaplanner
+
+  - project: kiegroup/optaweb-vehicle-routing
+    dependencies:
+      - project: kiegroup/optaplanner
+
+  - project: kiegroup/optaplanner-quickstarts
+    dependencies:
+      - project: kiegroup/optaweb-employee-rostering
+      - project: kiegroup/optaweb-vehicle-routing
+      
