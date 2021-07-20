@@ -3,8 +3,9 @@ import org.kie.jenkins.jobdsl.KogitoConstants
 import org.kie.jenkins.jobdsl.Utils
 import org.kie.jenkins.jobdsl.KogitoJobType
 
-OPTAPLANNER_JENKINS_PATH = '.ci/jenkins'
-OPTAPLANNER_JENKINSFILE_PATH = "${OPTAPLANNER_JENKINS_PATH}/Jenkinsfile"
+JENKINS_PATH = '.ci/jenkins'
+BUILD_CHAIN_JENKINS_PATH = "${JENKINS_PATH}/Jenkinsfile.buildchain"
+PR_REPO_URL = 'https://github.com/kiegroup/optaplanner'
 
 def getDefaultJobParams(String repoName = 'optaplanner') {
     return KogitoJobTemplate.getDefaultJobParams(this, repoName)
@@ -19,15 +20,52 @@ Map getMultijobPRConfig() {
                 primary: true,
                 // TODO remove once https://issues.redhat.com/browse/KOGITO-4113 is done 
                 // as it will become the default path
-                jenkinsfile: OPTAPLANNER_JENKINSFILE_PATH
+                jenkinsfile: BUILD_CHAIN_JENKINS_PATH,
+                git: [
+                    repo_url: PR_REPO_URL
+                ],
             ], [
                 id: 'apps',
                 repository: 'kogito-apps',
-                dependsOn: 'optaplanner',
+                jenkinsfile: BUILD_CHAIN_JENKINS_PATH,
+                git: [
+                    repo_url: PR_REPO_URL
+                ],
             ], [
                 id: 'examples',
                 repository: 'kogito-examples',
-                dependsOn: 'optaplanner',
+                jenkinsfile: BUILD_CHAIN_JENKINS_PATH,
+                git: [
+                    repo_url: PR_REPO_URL
+                ],
+            ], [
+                id: 'runtimes',
+                repository: 'kogito-runtimes',
+                jenkinsfile: BUILD_CHAIN_JENKINS_PATH,
+                git: [
+                    repo_url: PR_REPO_URL
+                ],
+            ], [
+                id: 'rostering',
+                repository: 'optaweb-employee-rostering',
+                jenkinsfile: BUILD_CHAIN_JENKINS_PATH,
+                git: [
+                    repo_url: PR_REPO_URL
+                ],
+            ], [
+                id: 'routing',
+                repository: 'optaweb-vehicle-routing',
+                jenkinsfile: BUILD_CHAIN_JENKINS_PATH,
+                git: [
+                    repo_url: PR_REPO_URL
+                ],
+            ], [
+                id: 'quickstarts',
+                repository: 'optaplanner-quickstarts',
+                jenkinsfile: BUILD_CHAIN_JENKINS_PATH,
+                git: [
+                    repo_url: PR_REPO_URL
+                ],
             ]
         ],
         extraEnv : [
@@ -179,7 +217,7 @@ void setupNativeLTSJob(String jobFolder) {
 }
 
 void setupDeployJob(String jobFolder, KogitoJobType jobType) {
-    def jobParams = getJobParams('optaplanner-deploy', jobFolder, "${OPTAPLANNER_JENKINS_PATH}/Jenkinsfile.deploy", 'Optaplanner Deploy')
+    def jobParams = getJobParams('optaplanner-deploy', jobFolder, "${JENKINS_PATH}/Jenkinsfile.deploy", 'Optaplanner Deploy')
     if (jobType == KogitoJobType.PR) {
         jobParams.git.branch = '${GIT_BRABUILD_BRANCH_NAMENCH_NAME}'
         jobParams.git.author = '${GIT_AUTHOR}'
@@ -245,7 +283,7 @@ void setupDeployJob(String jobFolder, KogitoJobType jobType) {
 }
 
 void setupPromoteJob(String jobFolder, KogitoJobType jobType) {
-    KogitoJobTemplate.createPipelineJob(this, getJobParams('optaplanner-promote', jobFolder, "${OPTAPLANNER_JENKINS_PATH}/Jenkinsfile.promote", 'Optaplanner Promote')).with {
+    KogitoJobTemplate.createPipelineJob(this, getJobParams('optaplanner-promote', jobFolder, "${JENKINS_PATH}/Jenkinsfile.promote", 'Optaplanner Promote')).with {
         parameters {
             stringParam('DISPLAY_NAME', '', 'Setup a specific build display name')
 
@@ -285,7 +323,7 @@ void setupPromoteJob(String jobFolder, KogitoJobType jobType) {
 }
 
 void setupOptaPlannerTurtleTestsJob(String jobFolder) {
-    def jobParams = getJobParams('optaplanner-turtle-tests', jobFolder, "${OPTAPLANNER_JENKINS_PATH}/Jenkinsfile.turtle",
+    def jobParams = getJobParams('optaplanner-turtle-tests', jobFolder, "${JENKINS_PATH}/Jenkinsfile.turtle",
             'Run OptaPlanner turtle tests on a weekly basis.')
     KogitoJobTemplate.createPipelineJob(this, jobParams).with {
         properties {
