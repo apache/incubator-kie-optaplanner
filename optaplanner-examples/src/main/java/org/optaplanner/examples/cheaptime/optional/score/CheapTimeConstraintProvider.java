@@ -16,17 +16,6 @@
 
 package org.optaplanner.examples.cheaptime.optional.score;
 
-import java.util.function.Function;
-import org.optaplanner.core.api.score.buildin.hardmediumsoftlong.HardMediumSoftLongScore;
-import org.optaplanner.core.api.score.stream.Constraint;
-import org.optaplanner.core.api.score.stream.ConstraintFactory;
-import org.optaplanner.core.api.score.stream.ConstraintProvider;
-import org.optaplanner.examples.cheaptime.domain.Machine;
-import org.optaplanner.examples.cheaptime.domain.Period;
-import org.optaplanner.examples.cheaptime.domain.Resource;
-import org.optaplanner.examples.cheaptime.domain.TaskAssignment;
-import org.optaplanner.examples.common.experimental.api.ConsecutiveIntervalInfo;
-
 import static org.optaplanner.core.api.score.stream.ConstraintCollectors.sum;
 import static org.optaplanner.core.api.score.stream.ConstraintCollectors.sumLong;
 import static org.optaplanner.core.api.score.stream.Joiners.equal;
@@ -38,6 +27,18 @@ import static org.optaplanner.core.api.score.stream.Joiners.lessThanOrEqual;
 import static org.optaplanner.examples.cheaptime.score.CheapTimeCostCalculator.multiplyTwoMicros;
 import static org.optaplanner.examples.cheaptime.score.CheapTimeIncrementalScoreCalculator.CONSTRAINT_PACKAGE;
 import static org.optaplanner.examples.common.experimental.ExperimentalConstraintCollectors.consecutiveIntervals;
+
+import java.util.function.Function;
+
+import org.optaplanner.core.api.score.buildin.hardmediumsoftlong.HardMediumSoftLongScore;
+import org.optaplanner.core.api.score.stream.Constraint;
+import org.optaplanner.core.api.score.stream.ConstraintFactory;
+import org.optaplanner.core.api.score.stream.ConstraintProvider;
+import org.optaplanner.examples.cheaptime.domain.Machine;
+import org.optaplanner.examples.cheaptime.domain.Period;
+import org.optaplanner.examples.cheaptime.domain.Resource;
+import org.optaplanner.examples.cheaptime.domain.TaskAssignment;
+import org.optaplanner.examples.common.experimental.api.ConsecutiveIntervalInfo;
 
 public class CheapTimeConstraintProvider implements ConstraintProvider {
 
