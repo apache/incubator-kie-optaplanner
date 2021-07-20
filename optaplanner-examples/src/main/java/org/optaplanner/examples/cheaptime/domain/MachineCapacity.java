@@ -26,6 +26,16 @@ public class MachineCapacity extends AbstractPersistable {
     private Resource resource;
     private int capacity;
 
+    public MachineCapacity() {
+
+    }
+
+    public MachineCapacity(long id, Resource resource, int capacity) {
+        super(id);
+        this.resource = resource;
+        this.capacity = capacity;
+    }
+
     public Resource getResource() {
         return resource;
     }

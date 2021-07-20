@@ -39,7 +39,7 @@ public class Task extends AbstractPersistable {
         this.startPeriodRangeFrom = startInclusive.getPeriod();
         this.startPeriodRangeTo = endExclusive.getPeriod();
         this.duration = duration;
-        this.powerConsumptionMicros = 1;
+        this.powerConsumptionMicros = powerConsumptionMicros;
     }
 
     // Order is equal to resourceList so Resource.getIndex() can be used for the index

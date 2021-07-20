@@ -60,14 +60,14 @@ public class CheapTimeConstraintProvider implements ConstraintProvider {
         return constraintFactory.from(TaskAssignment.class)
                 .filter(taskAssignment -> taskAssignment.getStartPeriod() < taskAssignment.getTask().getStartPeriodRangeFrom())
                 .penalizeLong(CONSTRAINT_PACKAGE, "Task starts too early", HardMediumSoftLongScore.ONE_HARD,
-                        taskAssignment -> taskAssignment.getStartPeriod() - taskAssignment.getTask().getStartPeriodRangeFrom());
+                        taskAssignment -> taskAssignment.getTask().getStartPeriodRangeFrom() - taskAssignment.getStartPeriod());
     }
 
     protected Constraint startTimeLimitsTo(ConstraintFactory constraintFactory) {
         return constraintFactory.from(TaskAssignment.class)
                 .filter(taskAssignment -> taskAssignment.getStartPeriod() >= taskAssignment.getTask().getStartPeriodRangeTo())
                 .penalizeLong(CONSTRAINT_PACKAGE, "Task starts too late", HardMediumSoftLongScore.ONE_HARD,
-                        taskAssignment -> taskAssignment.getTask().getStartPeriodRangeTo() - taskAssignment.getStartPeriod());
+                        taskAssignment -> taskAssignment.getStartPeriod() - taskAssignment.getTask().getStartPeriodRangeTo());
     }
 
     protected Constraint maximumCapacity(ConstraintFactory constraintFactory) {
