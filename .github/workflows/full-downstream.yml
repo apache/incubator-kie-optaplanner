@@ -40,7 +40,7 @@ jobs:
         id: build-chain
         uses: kiegroup/github-action-build-chain@v2.6.5
         with:
-          definition-file: https://raw.githubusercontent.com/${GROUP}/optaplanner/${BRANCH}/.ci/pull-request-config.yaml
+          definition-file: https://raw.githubusercontent.com/kiegroup/kogito-pipelines/master/.ci/pull-request-config.yaml
           starting-project: kiegroup/optaplanner-quickstarts
         env:
           GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
