@@ -24,8 +24,17 @@ import com.thoughtworks.xstream.annotations.XStreamAlias;
 public class TaskRequirement extends AbstractPersistable {
 
     private Resource resource;
-
     private int resourceUsage;
+
+    public TaskRequirement() {
+
+    }
+
+    public TaskRequirement(long id, Resource resource, int resourceUsage) {
+        super(id);
+        this.resource = resource;
+        this.resourceUsage = resourceUsage;
+    }
 
     public Resource getResource() {
         return resource;
