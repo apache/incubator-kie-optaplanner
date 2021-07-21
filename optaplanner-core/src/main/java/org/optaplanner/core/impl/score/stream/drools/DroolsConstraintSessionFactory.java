@@ -52,8 +52,6 @@ import org.optaplanner.core.impl.score.stream.InnerConstraintFactory;
 
 public final class DroolsConstraintSessionFactory<Solution_, Score_ extends Score<Score_>> {
 
-    private static final String SCORE_INLINER_GLOBAR_VAR_NAME = "scoreInliner";
-
     private final SolutionDescriptor<Solution_> solutionDescriptor;
     private final List<DroolsConstraint<Solution_>> constraintList;
     private final boolean droolsAlphaNetworkCompilationEnabled;
