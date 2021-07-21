@@ -61,24 +61,31 @@ import org.optaplanner.core.impl.score.stream.drools.SessionDescriptor;
 public final class DroolsConstraintStreamScoreDirectorFactory<Solution_, Score_ extends Score<Score_>>
         extends AbstractConstraintStreamScoreDirectorFactory<Solution_, Score_> {
 
-    private final DroolsConstraint<Solution_>[] constraints;
+    private final KieBaseDescriptor<Solution_> kieBaseDescriptor;
     private final Score_ zeroScore;
     private final boolean droolsAlphaNetworkCompilationEnabled;
-    private KieBaseDescriptor<Solution_> kieBaseDescriptor;
 
     public DroolsConstraintStreamScoreDirectorFactory(SolutionDescriptor<Solution_> solutionDescriptor,
             ConstraintProvider constraintProvider, boolean droolsAlphaNetworkCompilationEnabled) {
         super(solutionDescriptor);
-        DroolsConstraintFactory<Solution_> constraintFactory =
-                new DroolsConstraintFactory<>(solutionDescriptor, droolsAlphaNetworkCompilationEnabled);
-        constraints = buildConstraints(constraintProvider, constraintFactory);
-        this.constraintSessionFactory = constraintFactory.buildSessionFactory(constraints);
-        DroolsConstraintFactory<Solution_> constraintFactory = new DroolsConstraintFactory<>(solutionDescriptor);
-        constraints = Arrays.stream(buildConstraints(constraintProvider, constraintFactory))
-                .map(DroolsConstraint.class::cast)
-                .toArray(DroolsConstraint[]::new);
+        this.kieBaseDescriptor = buildKieBase(solutionDescriptor, constraintProvider,
+                droolsAlphaNetworkCompilationEnabled);
         this.zeroScore = (Score_) solutionDescriptor.getScoreDefinition().getZeroScore();
         this.droolsAlphaNetworkCompilationEnabled = droolsAlphaNetworkCompilationEnabled;
+    }
+
+    @Override
+    public DroolsConstraintStreamScoreDirector<Solution_, Score_> buildScoreDirector(boolean lookUpEnabled,
+            boolean constraintMatchEnabledPreference) {
+        return new DroolsConstraintStreamScoreDirector<>(this, lookUpEnabled, constraintMatchEnabledPreference);
+    }
+
+    public static <Solution_> KieBaseDescriptor<Solution_> buildKieBase(SolutionDescriptor<Solution_> solutionDescriptor,
+            ConstraintProvider constraintProvider, boolean droolsAlphaNetworkCompilationEnabled) {
+        DroolsConstraintFactory<Solution_> constraintFactory = new DroolsConstraintFactory<>(solutionDescriptor);
+        DroolsConstraint<Solution_>[] constraints = Arrays.stream(buildConstraints(constraintProvider, constraintFactory))
+                .map(DroolsConstraint.class::cast)
+                .toArray(DroolsConstraint[]::new);
         // Fail fast on duplicate constraint IDs.
         Map<String, List<Constraint>> constraintsPerIdMap = Arrays.stream(constraints)
                 .collect(groupingBy(Constraint::getConstraintId));
@@ -88,47 +95,30 @@ public final class DroolsConstraintStreamScoreDirectorFactory<Solution_, Score_ 
                         "There are multiple constraints with the same name in a package (" + constraintId + ").");
             }
         });
-    }
-
-    @Override
-    public DroolsConstraintStreamScoreDirector<Solution_, Score_> buildScoreDirector(boolean lookUpEnabled,
-            boolean constraintMatchEnabledPreference) {
-        return new DroolsConstraintStreamScoreDirector<>(this, lookUpEnabled, constraintMatchEnabledPreference);
+        Package pack = solutionDescriptor.getSolutionClass().getPackage();
+        String constraintPackageName = (pack == null) ? "" : pack.getName();
+        // Each constraint gets its own global, in which it will keep its impacter.
+        // Impacters carry constraint weights, and therefore the instances are solution-specific.
+        AtomicInteger idCounter = new AtomicInteger(0);
+        Map<DroolsConstraint<Solution_>, Global<WeightedScoreImpacter>> constraintToGlobalMap =
+                Arrays.stream(constraints)
+                        .collect(toMap(Function.identity(),
+                                c -> globalOf(WeightedScoreImpacter.class, constraintPackageName,
+                                        "scoreImpacter" + idCounter.getAndIncrement())));
+        ModelImpl model = Arrays.stream(constraints)
+                .map(constraint -> constraint.buildRule(constraintToGlobalMap.get(constraint)))
+                .reduce(new ModelImpl(), ModelImpl::addRule, (m, key) -> m);
+        constraintToGlobalMap.forEach((constraint, global) -> model.addGlobal(global));
+        KieBase kieBase = buildKieBaseFromModel(model, droolsAlphaNetworkCompilationEnabled);
+        return new KieBaseDescriptor<>(constraintToGlobalMap, kieBase);
     }
 
     public SessionDescriptor<Score_> newConstraintStreamingSession(boolean constraintMatchEnabled,
             Solution_ workingSolution) {
-        if (kieBaseDescriptor == null) {
-            Package pack = solutionDescriptor.getSolutionClass().getPackage();
-            String constraintPackageName = (pack == null) ? "" : pack.getName();
-            // Each constraint gets its own global, in which it will keep its impacter.
-            // Impacters carry constraint weights, and therefore the instances are solution-specific.
-            AtomicInteger idCounter = new AtomicInteger(0);
-            Map<DroolsConstraint<Solution_>, Global<WeightedScoreImpacter>> constraintToGlobalMap =
-                    Arrays.stream(constraints)
-                            .collect(toMap(Function.identity(),
-                                    c -> globalOf(WeightedScoreImpacter.class, constraintPackageName,
-                                            "scoreImpacter" + idCounter.getAndIncrement())));
-            ModelImpl model = Arrays.stream(constraints)
-                    .map(constraint -> constraint.buildRule(constraintToGlobalMap.get(constraint)))
-                    .reduce(new ModelImpl(), ModelImpl::addRule, (m, key) -> m);
-            constraintToGlobalMap.forEach((constraint, global) -> model.addGlobal(global));
-            KieBase kieBase = buildKieBaseFromModel(model, droolsAlphaNetworkCompilationEnabled);
-            kieBaseDescriptor = new KieBaseDescriptor<>(constraintToGlobalMap, kieBase);
-        }
-        return buildSession(workingSolution, constraintMatchEnabled);
-    }
-
-    private static KieSession buildKieSessionFromKieBase(KieBase kieBase) {
-        KieSessionConfiguration config = KieServices.get().newKieSessionConfiguration();
-        config.setOption(DirectFiringOption.YES); // For performance; not applicable to DRL due to insertLogical etc.
-        Environment environment = KieServices.get().newEnvironment();
-        return kieBase.newKieSession(config, environment);
-    }
-
-    private SessionDescriptor<Score_> buildSession(Solution_ workingSolution, boolean constraintMatchEnabled) {
         // Extract constraint weights.
-        Map<DroolsConstraint<Solution_>, Score_> constraintToWeightMap = Arrays.stream(constraints)
+        Map<DroolsConstraint<Solution_>, Score_> constraintToWeightMap = kieBaseDescriptor.getConstraintToGlobalMap()
+                .keySet()
+                .stream()
                 .collect(toMap(Function.identity(), constraint -> constraint.extractConstraintWeight(workingSolution)));
         // Create the session itself.
         KieSession kieSession = buildKieSessionFromKieBase(kieBaseDescriptor.getKieBase());
@@ -148,6 +138,13 @@ public final class DroolsConstraintStreamScoreDirectorFactory<Solution_, Score_ 
         return new SessionDescriptor<>(kieSession, new ConstraintDisablingAgendaFilter(constraintToWeightMap), scoreInliner);
     }
 
+    private static KieSession buildKieSessionFromKieBase(KieBase kieBase) {
+        KieSessionConfiguration config = KieServices.get().newKieSessionConfiguration();
+        config.setOption(DirectFiringOption.YES); // For performance; not applicable to DRL due to insertLogical etc.
+        Environment environment = KieServices.get().newEnvironment();
+        return kieBase.newKieSession(config, environment);
+    }
+
     private static KieBase buildKieBaseFromModel(Model model, boolean droolsAlphaNetworkCompilationEnabled) {
         KieBaseConfiguration kieBaseConfiguration = KieServices.get().newKieBaseConfiguration();
         kieBaseConfiguration.setOption(KieBaseMutabilityOption.DISABLED); // For performance; applicable to DRL too.
@@ -162,7 +159,9 @@ public final class DroolsConstraintStreamScoreDirectorFactory<Solution_, Score_ 
 
     @Override
     public Constraint[] getConstraints() {
-        return constraints;
+        return kieBaseDescriptor.getConstraintToGlobalMap()
+                .keySet()
+                .toArray(Constraint[]::new);
     }
 
     public boolean isDroolsAlphaNetworkCompilationEnabled() {

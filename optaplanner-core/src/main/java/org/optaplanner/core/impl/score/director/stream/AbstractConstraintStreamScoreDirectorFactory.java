@@ -42,7 +42,7 @@ public abstract class AbstractConstraintStreamScoreDirectorFactory<Solution_, Sc
         super(solutionDescriptor);
     }
 
-    protected Constraint[] buildConstraints(ConstraintProvider constraintProvider,
+    protected static <Solution_> Constraint[] buildConstraints(ConstraintProvider constraintProvider,
             InnerConstraintFactory<Solution_> constraintFactory) {
         Constraint[] constraints = constraintProvider.defineConstraints(constraintFactory);
         if (constraints == null) {
