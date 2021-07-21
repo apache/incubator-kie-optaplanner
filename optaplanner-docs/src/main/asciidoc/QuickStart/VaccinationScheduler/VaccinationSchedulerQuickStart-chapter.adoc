@@ -4,15 +4,22 @@
 //:OPTAPLANNER-ENT:
 //Variable for the enterprise version conditional statements.
 
-//
+
 ifdef::OPTAPLANNER-COMM[]
+:doctype: book
+:imagesdir: ../..
+:sectnums:
+:toc: left
+:icons: font
+:experimental:
+
 :PLANNER: OptaPlanner
 :QUARKUS: Quarkus
 :OPTAPLANNER_JDK_VERSION: 11
 :OPTAPLANNER_MAVEN_VERSION: 3.6
 endif::OPTAPLANNER-COMM[]
 
-[id='assembly-optaplanner-vaccination_{context}']
+[id="assembly-optaplanner-vaccination_{context}"]
 
 = {PLANNER} on {QUARKUS}: a vaccination appointment scheduler quick start guide
 
@@ -21,7 +28,10 @@ You can use the OptaPlanner vaccination appointment scheduler quick start to dev
 
 .Prerequisites
 
-* OpenJDK {OPTAPLANNER_JDK_VERSION} or later is installed. Red Hat build of Open JDK is available from the https://access.redhat.com/jbossnetwork/restricted/listSoftware.html[Software Downloads] page in the Red Hat Customer Portal (login required).
+* OpenJDK {OPTAPLANNER_JDK_VERSION} or later is installed.
+ifdef::OPTAPLANNER-ENT[]
+Red Hat build of Open JDK is available from the https://access.redhat.com/jbossnetwork/restricted/listSoftware.html[Software Downloads] page in the Red Hat Customer Portal (login required).
+endif::OPTAPLANNER-ENT[]
 
 * Apache Maven {OPTAPLANNER_MAVEN_VERSION} or higher is installed. Maven is available from the https://maven.apache.org/[Apache Maven Project] website.
 
@@ -100,7 +110,7 @@ Because there are often more people than available appointment slots, you must p
 At the core of OptaPlanner is the solver, the engine that takes the problem data set and overlays the planning constraints and configurations. The problem data set includes all of the information about the people, the vaccines, and the vaccination centers. The solver works through the various combinations of data and eventually determines an optimized appointment schedule with people assigned to vaccination appointments at a specific center.  The following illustration shows a schedule that the solver created:
 
 ifdef::OPTAPLANNER-COMM[]
-image::vaccinationSchedulingValueProposal.png[]
+image::QuickStart/VaccinationScheduler/vaccinationSchedulingValueProposal.png[]
 endif::OPTAPLANNER-COMM[]
 ifdef::OPTAPLANNER-ENT[]
 image::optimizer/vaccinationSchedulingValueProposal.png[]
@@ -112,7 +122,7 @@ endif::OPTAPLANNER-ENT[]
 Continuous planning is the technique of managing one or more upcoming planning periods at the same time and repeating that process monthly, weekly, daily, hourly, or even more frequently. The planning window advances incrementally by a specified interval. The following illustration shows a two week planning window that is updated daily:
 
 ifdef::OPTAPLANNER-COMM[]
-image::vaccinationSchedulingContinuousPlanning.png[]
+image::QuickStart/VaccinationScheduler/vaccinationSchedulingContinuousPlanning.png[]
 endif::OPTAPLANNER-COMM[]
 ifdef::OPTAPLANNER-ENT[]
 image::optimizer/vaccinationSchedulingContinuousPlanning.png[]
