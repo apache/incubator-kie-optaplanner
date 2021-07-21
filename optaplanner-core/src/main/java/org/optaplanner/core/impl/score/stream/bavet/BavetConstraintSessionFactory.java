@@ -18,7 +18,6 @@ package org.optaplanner.core.impl.score.stream.bavet;
 
 import java.util.List;
 import java.util.Map;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import org.optaplanner.core.api.score.Score;
@@ -48,7 +47,7 @@ public final class BavetConstraintSessionFactory<Solution_, Score_ extends Score
         Map<BavetConstraint<Solution_>, Score_> constraintToWeightMap =
                 constraintList.stream()
                         .map(constraint -> {
-                            Object weight = constraint.extractConstraintWeight(workingSolution); // Expensive, only do once.
+                            Score_ weight = constraint.extractConstraintWeight(workingSolution); // Expensive, only do once.
                             return new Object[] { constraint, weight };
                         })
                         .filter(constraintAndWeight -> !constraintAndWeight[1].equals(zeroScore))

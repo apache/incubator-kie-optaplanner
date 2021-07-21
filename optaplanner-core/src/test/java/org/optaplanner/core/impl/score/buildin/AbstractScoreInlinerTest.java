@@ -39,7 +39,7 @@ public abstract class AbstractScoreInlinerTest<Solution_, Score_ extends Score<S
 
     protected Map<Constraint, Score_> getConstaintToWeightMap(TestConstraint<Solution_, Score_>... constraint) {
         return Arrays.stream(constraint)
-                .collect(Collectors.toMap(c -> c, c -> (Score_) c.extractConstraintWeight(null)));
+                .collect(Collectors.toMap(c -> c, c -> c.extractConstraintWeight(null)));
     }
 
     protected TestConstraint<Solution_, Score_> buildConstraint(Score_ constraintWeight) {

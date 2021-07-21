@@ -45,7 +45,7 @@ public abstract class AbstractConstraint<Solution_, ConstraintFactory extends In
         this.isConstraintWeightConfigurable = isConstraintWeightConfigurable;
     }
 
-    public final Score<?> extractConstraintWeight(Solution_ workingSolution) {
+    public final <Score_ extends Score<Score_>> Score_ extractConstraintWeight(Solution_ workingSolution) {
         if (isConstraintWeightConfigurable && workingSolution == null) {
             /*
              * In constraint verifier API, we allow for testing constraint providers without having a planning solution.
@@ -55,9 +55,9 @@ public abstract class AbstractConstraint<Solution_, ConstraintFactory extends In
              * constraint is not ignored.
              * The actual value is not used in any way.
              */
-            return constraintFactory.getSolutionDescriptor().getScoreDefinition().getOneSoftestScore();
+            return (Score_) constraintFactory.getSolutionDescriptor().getScoreDefinition().getOneSoftestScore();
         }
-        Score<?> constraintWeight = constraintWeightExtractor.apply(workingSolution);
+        Score_ constraintWeight = (Score_) constraintWeightExtractor.apply(workingSolution);
         constraintFactory.getSolutionDescriptor().validateConstraintWeight(constraintPackage, constraintName, constraintWeight);
         switch (scoreImpactType) {
             case PENALTY:

@@ -32,7 +32,7 @@ import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.core.impl.domain.variable.descriptor.VariableDescriptor;
 import org.optaplanner.core.impl.score.director.AbstractScoreDirector;
 import org.optaplanner.core.impl.score.inliner.ScoreInliner;
-import org.optaplanner.core.impl.score.stream.drools.DroolsConstraintSessionFactory;
+import org.optaplanner.core.impl.score.stream.drools.SessionDescriptor;
 
 /**
  * FP streams implementation of {@link ScoreDirector}, which only recalculates the {@link Score}
@@ -71,7 +71,7 @@ public final class DroolsConstraintStreamScoreDirector<Solution_, Score_ extends
         if (session != null) {
             session.dispose();
         }
-        DroolsConstraintSessionFactory.SessionDescriptor<Score_> sessionDescriptor =
+        SessionDescriptor<Score_> sessionDescriptor =
                 scoreDirectorFactory.newConstraintStreamingSession(constraintMatchEnabledPreference, workingSolution);
         session = sessionDescriptor.getSession();
         scoreInliner = sessionDescriptor.getScoreInliner();
