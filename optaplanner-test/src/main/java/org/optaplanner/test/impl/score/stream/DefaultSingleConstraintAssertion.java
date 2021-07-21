@@ -199,15 +199,6 @@ public final class DefaultSingleConstraintAssertion<Solution_, Score_ extends Sc
         throw new AssertionError(assertionMessage);
     }
 
-    private boolean isProperMatch(ScoreImpactType expectedScoreImpactType, Score_ constraintMatch, Score_ zeroScore) {
-        boolean isImpactPositive = constraintMatch.compareTo(zeroScore) > 0;
-        boolean isImpactNegative = constraintMatch.compareTo(zeroScore) < 0;
-        if (isImpactPositive && expectedScoreImpactType == ScoreImpactType.PENALTY) {
-            return true;
-        } else
-            return isImpactNegative && expectedScoreImpactType == ScoreImpactType.REWARD;
-    }
-
     private long determineMatchCount(ScoreImpactType scoreImpactType) {
         if (constraintMatchTotalCollection.isEmpty()) {
             return 0;
