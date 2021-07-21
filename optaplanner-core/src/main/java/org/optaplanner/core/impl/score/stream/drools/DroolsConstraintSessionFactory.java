@@ -48,7 +48,6 @@ import org.optaplanner.core.impl.score.definition.ScoreDefinition;
 import org.optaplanner.core.impl.score.director.drools.OptaPlannerRuleEventListener;
 import org.optaplanner.core.impl.score.inliner.ScoreInliner;
 import org.optaplanner.core.impl.score.inliner.WeightedScoreImpacter;
-import org.optaplanner.core.impl.score.stream.InnerConstraintFactory;
 
 public final class DroolsConstraintSessionFactory<Solution_, Score_ extends Score<Score_>> {
 
@@ -102,8 +101,15 @@ public final class DroolsConstraintSessionFactory<Solution_, Score_ extends Scor
 
         // Extract constraint weights, excluding constraints where weight is zero.
         Map<DroolsConstraint<Solution_>, Score_> constraintToWeightMap =
-                InnerConstraintFactory.extractConstraintToWeightMap(constraintList,
-                        c -> (Score_) c.extractConstraintWeight(workingSolution), zeroScore);
+                constraintList.stream()
+                        .map(constraint -> {
+                            Object weight = constraint.extractConstraintWeight(workingSolution); // Expensive, only do once.
+                            return new Object[] { constraint, weight };
+                        })
+                        .filter(constraintAndWeight -> !constraintAndWeight[1].equals(zeroScore))
+                        .collect(Collectors.toMap(
+                                constraintAndWeight -> (DroolsConstraint<Solution_>) constraintAndWeight[0],
+                                constraintAndWeight -> (Score_) constraintAndWeight[1]));
 
         // Creating KieBase is expensive. Therefore we only do it when there has been a change in constraint weights.
         if (kieBaseCache == null || !kieBaseCache.isUpToDate(constraintToWeightMap)) {

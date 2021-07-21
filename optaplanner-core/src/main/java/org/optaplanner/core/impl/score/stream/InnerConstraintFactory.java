@@ -106,20 +106,6 @@ public abstract class InnerConstraintFactory<Solution_> implements ConstraintFac
         }
     }
 
-    public static <Constraint_ extends Constraint, Score_> Map<Constraint_, Score_> extractConstraintToWeightMap(
-            List<Constraint_> constraintList, Function<Constraint_, Score_> weightExtractor, Score_ zeroScore) {
-        // Extract constraint weights, excluding constraints where weight is zero.
-        return constraintList.stream()
-                .map(constraint -> {
-                    Object weight = weightExtractor.apply(constraint); // Expensive, only do once.
-                    return new Object[] { constraint, weight };
-                })
-                .filter(constraintAndWeight -> !constraintAndWeight[1].equals(zeroScore)) // Exclude zero-weighted.
-                .collect(Collectors.toMap(
-                        constraintAndWeight -> (Constraint_) constraintAndWeight[0],
-                        constraintAndWeight -> (Score_) constraintAndWeight[1]));
-    }
-
     // ************************************************************************
     // Getters/setters
     // ************************************************************************
