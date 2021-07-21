@@ -16,17 +16,24 @@
 
 package org.optaplanner.core.impl.score.stream;
 
+import static java.util.stream.Collectors.groupingBy;
 import static java.util.stream.Collectors.toList;
 import static org.optaplanner.core.api.score.stream.Joiners.lessThan;
 
+import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import java.util.function.BiPredicate;
 import java.util.function.Function;
 import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 import org.optaplanner.core.api.domain.lookup.PlanningId;
+import org.optaplanner.core.api.score.stream.Constraint;
 import org.optaplanner.core.api.score.stream.ConstraintFactory;
+import org.optaplanner.core.api.score.stream.ConstraintProvider;
 import org.optaplanner.core.api.score.stream.bi.BiConstraintStream;
 import org.optaplanner.core.api.score.stream.bi.BiJoiner;
 import org.optaplanner.core.api.score.stream.uni.UniConstraintStream;
@@ -36,7 +43,7 @@ import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.core.impl.score.stream.bi.FilteringBiJoiner;
 
-public abstract class InnerConstraintFactory<Solution_> implements ConstraintFactory {
+public abstract class InnerConstraintFactory<Solution_, Constraint_ extends Constraint> implements ConstraintFactory {
 
     // ************************************************************************
     // from
@@ -101,6 +108,32 @@ public abstract class InnerConstraintFactory<Solution_> implements ConstraintFac
                     + "annotated on the planning solution (" + solutionDescriptor.getSolutionClass().getCanonicalName()
                     + ").");
         }
+    }
+
+    public List<Constraint_> buildConstraints(ConstraintProvider constraintProvider) {
+        Constraint[] constraints = constraintProvider.defineConstraints(this);
+        if (constraints == null) {
+            throw new IllegalStateException("The constraintProvider class (" + constraintProvider.getClass()
+                    + ")'s defineConstraints() must not return null.\n"
+                    + "Maybe return an empty array instead if there are no constraints.");
+        }
+        List<Constraint_> constraintList = Arrays.stream(constraints)
+                .map(c -> (Constraint_) c)
+                .collect(Collectors.toList());
+        if (constraintList.stream().anyMatch(Objects::isNull)) {
+            throw new IllegalStateException("The constraintProvider class (" + constraintProvider.getClass()
+                    + ")'s defineConstraints() must not contain an element that is null.\n"
+                    + "Maybe don't include any null elements in the " + Constraint.class.getSimpleName() + " array.");
+        }
+        // Fail fast on duplicate constraint IDs.
+        Map<String, List<Constraint_>> constraintsPerIdMap = constraintList.stream()
+                .collect(groupingBy(Constraint::getConstraintId));
+        constraintsPerIdMap.forEach((constraintId, duplicateConstraintList) -> {
+            if (duplicateConstraintList.size() > 1) {
+                throw new IllegalStateException("There are multiple constraints with the same ID (" + constraintId + ").");
+            }
+        });
+        return constraintList;
     }
 
     // ************************************************************************

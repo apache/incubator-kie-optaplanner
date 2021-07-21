@@ -22,7 +22,8 @@ import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.core.impl.score.stream.InnerConstraintFactory;
 import org.optaplanner.core.impl.score.stream.drools.uni.DroolsFromUniConstraintStream;
 
-public final class DroolsConstraintFactory<Solution_> extends InnerConstraintFactory<Solution_> {
+public final class DroolsConstraintFactory<Solution_>
+        extends InnerConstraintFactory<Solution_, DroolsConstraint<Solution_>> {
 
     private final SolutionDescriptor<Solution_> solutionDescriptor;
     private final String defaultConstraintPackage;

@@ -24,17 +24,17 @@ import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.stream.Constraint;
 import org.optaplanner.core.impl.score.stream.InnerConstraintFactory;
 
-public abstract class AbstractConstraint<Solution_, ConstraintFactory extends InnerConstraintFactory<Solution_>>
+public abstract class AbstractConstraint<Solution_, Constraint_ extends AbstractConstraint<Solution_, Constraint_, ConstraintFactory_>, ConstraintFactory_ extends InnerConstraintFactory<Solution_, Constraint_>>
         implements Constraint {
 
-    protected final ConstraintFactory constraintFactory;
+    protected final ConstraintFactory_ constraintFactory;
     protected final String constraintPackage;
     protected final String constraintName;
     private final Function<Solution_, Score<?>> constraintWeightExtractor;
     protected final ScoreImpactType scoreImpactType;
     private final boolean isConstraintWeightConfigurable;
 
-    protected AbstractConstraint(ConstraintFactory constraintFactory, String constraintPackage, String constraintName,
+    protected AbstractConstraint(ConstraintFactory_ constraintFactory, String constraintPackage, String constraintName,
             Function<Solution_, Score<?>> constraintWeightExtractor, ScoreImpactType scoreImpactType,
             boolean isConstraintWeightConfigurable) {
         this.constraintFactory = constraintFactory;
@@ -100,7 +100,7 @@ public abstract class AbstractConstraint<Solution_, ConstraintFactory extends In
     }
 
     @Override
-    public ConstraintFactory getConstraintFactory() {
+    public ConstraintFactory_ getConstraintFactory() {
         return constraintFactory;
     }
 
