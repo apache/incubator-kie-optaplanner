@@ -20,7 +20,6 @@ import static java.util.stream.Collectors.*;
 import static org.drools.model.DSL.globalOf;
 
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -134,7 +133,7 @@ public final class DroolsConstraintStreamScoreDirectorFactory<Solution_, Score_ 
         // Create the session itself.
         KieSession kieSession = buildKieSessionFromKieBase(kieBaseDescriptor.getKieBase());
         ((RuleEventManager) kieSession).addEventListener(new OptaPlannerRuleEventListener()); // Enables undo in rules.
-        // Cache the impacters for each constraint; this locks in the constraint weights.
+        // Build and set the impacters for each constraint; this locks in the constraint weights.
         ScoreDefinition<Score_> scoreDefinition = solutionDescriptor.getScoreDefinition();
         ScoreInliner<Score_> scoreInliner =
                 scoreDefinition.buildScoreInliner((Map) constraintToWeightMap, constraintMatchEnabled);
@@ -143,8 +142,7 @@ public final class DroolsConstraintStreamScoreDirectorFactory<Solution_, Score_ 
                 return;
             }
             String globalName = kieBaseDescriptor.getConstraintToGlobalMap().get(constraint).getName();
-            kieSession.setGlobal(globalName,
-                    scoreInliner.buildWeightedScoreImpacter(constraint));
+            kieSession.setGlobal(globalName, scoreInliner.buildWeightedScoreImpacter(constraint));
         });
         // Return only the inliner as that holds the work product of the individual impacters.
         return new SessionDescriptor<>(kieSession, new ConstraintDisablingAgendaFilter(constraintToWeightMap), scoreInliner);
