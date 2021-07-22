@@ -4,8 +4,6 @@ import org.kie.jenkins.jobdsl.Utils
 import org.kie.jenkins.jobdsl.KogitoJobType
 
 JENKINS_PATH = '.ci/jenkins'
-BUILD_CHAIN_JENKINS_PATH = "${JENKINS_PATH}/Jenkinsfile.buildchain"
-PR_REPO_URL = 'https://github.com/kiegroup/optaplanner'
 
 def getDefaultJobParams(String repoName = 'optaplanner') {
     return KogitoJobTemplate.getDefaultJobParams(this, repoName)
@@ -18,13 +16,7 @@ Map getMultijobPRConfig() {
         jobs : [
             [
                 id: 'optaplanner',
-                primary: true,
-                // TODO remove once https://issues.redhat.com/browse/KOGITO-4113 is done 
-                // as it will become the default path
-                jenkinsfile: BUILD_CHAIN_JENKINS_PATH,
-                git: [
-                    repo_url: PR_REPO_URL
-                ],
+                primary: true
             ], [
                 id: 'apps',
                 repository: 'kogito-apps',
@@ -34,39 +26,19 @@ Map getMultijobPRConfig() {
                 ],
             ], [
                 id: 'examples',
-                repository: 'kogito-examples',
-                jenkinsfile: BUILD_CHAIN_JENKINS_PATH,
-                git: [
-                    repo_url: PR_REPO_URL
-                ],
+                repository: 'kogito-examples'
             ], [
                 id: 'runtimes',
-                repository: 'kogito-runtimes',
-                jenkinsfile: BUILD_CHAIN_JENKINS_PATH,
-                git: [
-                    repo_url: PR_REPO_URL
-                ],
+                repository: 'kogito-runtimes'
             ], [
                 id: 'rostering',
-                repository: 'optaweb-employee-rostering',
-                jenkinsfile: BUILD_CHAIN_JENKINS_PATH,
-                git: [
-                    repo_url: PR_REPO_URL
-                ],
+                repository: 'optaweb-employee-rostering'
             ], [
                 id: 'routing',
-                repository: 'optaweb-vehicle-routing',
-                jenkinsfile: BUILD_CHAIN_JENKINS_PATH,
-                git: [
-                    repo_url: PR_REPO_URL
-                ],
+                repository: 'optaweb-vehicle-routing'
             ], [
                 id: 'quickstarts',
-                repository: 'optaplanner-quickstarts',
-                jenkinsfile: BUILD_CHAIN_JENKINS_PATH,
-                git: [
-                    repo_url: PR_REPO_URL
-                ],
+                repository: 'optaplanner-quickstarts'
             ]
         ],
         extraEnv : [
