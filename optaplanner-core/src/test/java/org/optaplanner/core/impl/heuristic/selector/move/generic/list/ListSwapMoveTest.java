@@ -25,17 +25,17 @@ import org.optaplanner.core.api.score.director.ScoreDirector;
 import org.optaplanner.core.impl.domain.variable.descriptor.ListVariableDescriptor;
 import org.optaplanner.core.impl.heuristic.move.AbstractMove;
 import org.optaplanner.core.impl.score.director.InnerScoreDirector;
-import org.optaplanner.core.impl.testdata.domain.TestdataValue;
 import org.optaplanner.core.impl.testdata.domain.list.TestdataListEntity;
 import org.optaplanner.core.impl.testdata.domain.list.TestdataListSolution;
+import org.optaplanner.core.impl.testdata.domain.list.TestdataListValue;
 
 class ListSwapMoveTest {
 
     @Test
     void doMove() {
-        TestdataValue v1 = new TestdataValue("1");
-        TestdataValue v2 = new TestdataValue("2");
-        TestdataValue v3 = new TestdataValue("3");
+        TestdataListValue v1 = new TestdataListValue("1");
+        TestdataListValue v2 = new TestdataListValue("2");
+        TestdataListValue v3 = new TestdataListValue("3");
         TestdataListEntity e1 = new TestdataListEntity("e1", v1, v2);
         TestdataListEntity e2 = new TestdataListEntity("e2", v3);
 
@@ -68,9 +68,9 @@ class ListSwapMoveTest {
 
     @Test
     void isMoveDoable() {
-        TestdataValue v1 = new TestdataValue("1");
-        TestdataValue v2 = new TestdataValue("2");
-        TestdataValue v3 = new TestdataValue("3");
+        TestdataListValue v1 = new TestdataListValue("1");
+        TestdataListValue v2 = new TestdataListValue("2");
+        TestdataListValue v3 = new TestdataListValue("3");
         TestdataListEntity e1 = new TestdataListEntity("e1", v1, v2);
         TestdataListEntity e2 = new TestdataListEntity("e2", v3);
 

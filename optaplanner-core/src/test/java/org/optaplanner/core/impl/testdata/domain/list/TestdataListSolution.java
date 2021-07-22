@@ -25,26 +25,28 @@ import org.optaplanner.core.api.domain.solution.ProblemFactCollectionProperty;
 import org.optaplanner.core.api.domain.valuerange.ValueRangeProvider;
 import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
-import org.optaplanner.core.impl.testdata.domain.TestdataValue;
 
 @PlanningSolution
 public class TestdataListSolution {
 
     public static SolutionDescriptor<TestdataListSolution> buildSolutionDescriptor() {
-        return SolutionDescriptor.buildSolutionDescriptor(TestdataListSolution.class, TestdataListEntity.class);
+        return SolutionDescriptor.buildSolutionDescriptor(
+                TestdataListSolution.class,
+                TestdataListEntity.class,
+                TestdataListValue.class);
     }
 
-    private List<TestdataValue> valueList;
+    private List<TestdataListValue> valueList;
     private TestdataListEntity entity;
     private SimpleScore score;
 
     @ValueRangeProvider(id = "valueRange")
     @ProblemFactCollectionProperty
-    public List<TestdataValue> getValueList() {
+    public List<TestdataListValue> getValueList() {
         return valueList;
     }
 
-    public void setValueList(List<TestdataValue> valueList) {
+    public void setValueList(List<TestdataListValue> valueList) {
         this.valueList = valueList;
     }
 
