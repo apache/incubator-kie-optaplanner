@@ -6,7 +6,7 @@ agentLabel = "${env.ADDITIONAL_LABEL?.trim() ? ADDITIONAL_LABEL : 'kie-rhel7 && 
 build_jdk_tool = env.BUILD_JDK_TOOL?.trim() ?: 'kie-jdk11'
 build_maven_tool = env.BUILD_MAVEN_TOOL?.trim() ?: 'kie-maven-3.8.1'
 
-pr_type = env.PR_TYPE?.trim() ?: 'pr'
+pr_type = env.BUILDCHAIN_PR_TYPE?.trim() ?: 'pr'
 
 pipeline {
     agent {
