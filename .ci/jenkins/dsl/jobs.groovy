@@ -1,6 +1,7 @@
 import org.kie.jenkins.jobdsl.templates.KogitoJobTemplate
 import org.kie.jenkins.jobdsl.KogitoConstants
 import org.kie.jenkins.jobdsl.Utils
+import org.kie.jenkins.jobdsl.VersionUtils
 import org.kie.jenkins.jobdsl.KogitoJobType
 
 JENKINS_PATH = '.ci/jenkins'
