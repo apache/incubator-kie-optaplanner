@@ -141,8 +141,10 @@ void setupOptawebEmployeeRosteringPrJob() {
 
 void setupOptawebVehicleRoutingPrJob() {
     def jobParams = getDefaultJobParams('optaweb-vehicle-routing')
-    jobParams.pr.run_only_for_branches = [jobParams.git.branch]
-    jobParams.jenkinsfile = OPTAPLANNER_JENKINSFILE_PATH
+    jobParams.pr.run_only_for_branches = ['master']
+    jobParams.jenkinsfile = KogitoConstants.BUILDCHAIN_JENKINSFILE_PATH 
+    jobParams.git.repo_url = PR_REPO_URL
+    jobParams.git.checkout_branch = VersionUtils.getProjectTargetBranch(KogitoConstants.BUILDCHAIN_REPOSITORY, jobParams.git.branch, jobParams.git.repository)
     KogitoJobTemplate.createPRJob(this, jobParams)
 }
 
