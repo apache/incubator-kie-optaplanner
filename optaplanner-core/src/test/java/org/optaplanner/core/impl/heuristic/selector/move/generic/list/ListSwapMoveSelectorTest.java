@@ -29,17 +29,17 @@ import org.optaplanner.core.impl.heuristic.selector.SelectorTestUtils;
 import org.optaplanner.core.impl.heuristic.selector.entity.EntitySelector;
 import org.optaplanner.core.impl.phase.scope.AbstractPhaseScope;
 import org.optaplanner.core.impl.solver.scope.SolverScope;
-import org.optaplanner.core.impl.testdata.domain.TestdataValue;
 import org.optaplanner.core.impl.testdata.domain.list.TestdataListEntity;
 import org.optaplanner.core.impl.testdata.domain.list.TestdataListSolution;
+import org.optaplanner.core.impl.testdata.domain.list.TestdataListValue;
 
 class ListSwapMoveSelectorTest {
 
     @Test
     void original() {
-        TestdataValue v1 = new TestdataValue("1");
-        TestdataValue v2 = new TestdataValue("2");
-        TestdataValue v3 = new TestdataValue("3");
+        TestdataListValue v1 = new TestdataListValue("1");
+        TestdataListValue v2 = new TestdataListValue("2");
+        TestdataListValue v3 = new TestdataListValue("3");
         TestdataListEntity a = new TestdataListEntity("A", v1, v2);
         TestdataListEntity b = new TestdataListEntity("B");
         TestdataListEntity c = new TestdataListEntity("C", v3);
@@ -77,9 +77,9 @@ class ListSwapMoveSelectorTest {
 
     @Test
     void random() {
-        TestdataValue v1 = new TestdataValue("1");
-        TestdataValue v2 = new TestdataValue("2");
-        TestdataValue v3 = new TestdataValue("3");
+        TestdataListValue v1 = new TestdataListValue("1");
+        TestdataListValue v2 = new TestdataListValue("2");
+        TestdataListValue v3 = new TestdataListValue("3");
         TestdataListEntity a = new TestdataListEntity("A", v1, v2);
         TestdataListEntity b = new TestdataListEntity("B");
         TestdataListEntity c = new TestdataListEntity("C", v3);

@@ -19,6 +19,7 @@ package org.optaplanner.examples.taskassigning_listvariable.domain;
 import org.optaplanner.core.api.domain.entity.PlanningEntity;
 import org.optaplanner.core.api.domain.entity.PlanningPin;
 import org.optaplanner.core.api.domain.variable.CustomShadowVariable;
+import org.optaplanner.core.api.domain.variable.IndexShadowVariable;
 import org.optaplanner.core.api.domain.variable.PlanningVariableReference;
 import org.optaplanner.examples.common.domain.AbstractPersistable;
 import org.optaplanner.examples.common.swingui.components.Labeled;
@@ -52,8 +53,7 @@ public class Task extends AbstractPersistable implements Labeled {
             sources = @PlanningVariableReference(entityClass = Employee.class, variableName = "tasks"))
     // TODO the entity (Employee) or just the collection variable (List<Task>)?
     private Employee employee;
-    // FIXME temporary custom shadow variable listener, will be replaced by a generic one
-    @CustomShadowVariable(variableListenerRef = @PlanningVariableReference(variableName = "employee"))
+    @IndexShadowVariable(sourceVariableName = "tasks")
     private Integer index;
     @CustomShadowVariable(variableListenerClass = StartTimeUpdatingVariableListener.class,
             // Arguable, to adhere to API specs (although this works), nextTask and employee should also be a source,

@@ -22,9 +22,9 @@ import static org.assertj.core.api.Assertions.assertThatCode;
 import java.util.List;
 
 import org.junit.jupiter.api.Test;
-import org.optaplanner.core.impl.testdata.domain.TestdataValue;
 import org.optaplanner.core.impl.testdata.domain.list.TestdataListEntity;
 import org.optaplanner.core.impl.testdata.domain.list.TestdataListSolution;
+import org.optaplanner.core.impl.testdata.domain.list.TestdataListValue;
 import org.optaplanner.core.impl.testdata.domain.list.valuerange.TestdataListEntityWithArrayValueRange;
 
 class ListVariableDescriptorTest {
@@ -34,7 +34,7 @@ class ListVariableDescriptorTest {
         ListVariableDescriptor<TestdataListSolution> listVariableDescriptor =
                 TestdataListEntity.buildVariableDescriptorForValueList();
 
-        assertThat(listVariableDescriptor.acceptsValueType(TestdataValue.class)).isTrue();
+        assertThat(listVariableDescriptor.acceptsValueType(TestdataListValue.class)).isTrue();
         assertThat(listVariableDescriptor.acceptsValueType(List.class)).isFalse();
     }
 

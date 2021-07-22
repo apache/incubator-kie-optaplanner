@@ -61,19 +61,12 @@ public class CustomCollectionInverseRelationShadowVariableListener
         if (employee.getTasks() == null) {
             return;
         }
-        int index = 0;
         for (Task task : employee.getTasks()) {
             if (!Objects.equals(task.getEmployee(), employee)) {
                 scoreDirector.beforeVariableChanged(task, "employee");
                 task.setEmployee(employee);
                 scoreDirector.afterVariableChanged(task, "employee");
             }
-            if (!Objects.equals(task.getIndex(), index)) {
-                scoreDirector.beforeVariableChanged(task, "index");
-                task.setIndex(index);
-                scoreDirector.afterVariableChanged(task, "index");
-            }
-            index++;
         }
     }
 }
