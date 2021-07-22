@@ -14,6 +14,7 @@ def getDefaultJobParams(String repoName = 'optaplanner') {
 Map getMultijobPRConfig() {
     return [
         parallel: true,
+        buildchain: true,
         jobs : [
             [
                 id: 'optaplanner',
