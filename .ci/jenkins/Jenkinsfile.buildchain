@@ -7,6 +7,7 @@ build_jdk_tool = env.BUILD_JDK_TOOL?.trim() ?: 'kie-jdk11'
 build_maven_tool = env.BUILD_MAVEN_TOOL?.trim() ?: 'kie-maven-3.8.1'
 
 pr_type = env.BUILDCHAIN_PR_TYPE?.trim() ?: 'pr'
+build_chain_additional_arguments = "${env.BUILDCHAIN_PROJECT ? "-sp=${env.BUILDCHAIN_PROJECT?.trim()}" : ''}"
 
 pipeline {
     agent {
@@ -51,11 +52,11 @@ pipeline {
             steps {
                 script {
                     def buildChainActionInfo =
-                      isFDB() ? [action: 'fd', file: 'pull-request-config.yaml'] :
-                      isSingle() ? [action: 'single', file: 'pull-request-config.yaml'] :
-                      [action: 'pr', file: 'pull-request-config.yaml']
+                      isFDB() ? [action: 'fd', file: 'pull-request-config.yaml', arguments: build_chain_additional_arguments] :
+                      isSingle() ? [action: 'single', file: 'pull-request-config.yaml', arguments: build_chain_additional_arguments] :
+                      [action: 'pr', file: 'pull-request-config.yaml', arguments: build_chain_additional_arguments]
                     withCredentials([string(credentialsId: 'kie-ci1-token', variable: 'GITHUB_TOKEN')]) {
-                        sh "build-chain-action -token=${GITHUB_TOKEN} -df='https://raw.githubusercontent.com/\${GROUP}/kogito-pipelines/master/.ci/${buildChainActionInfo.file}' -folder='bc' build ${buildChainActionInfo.action} -url=${env.ghprbPullLink} --skipParallelCheckout -cct '(^mvn .*)||\$1 -Dmaven.wagon.http.ssl.insecure=true'"
+                        sh "build-chain-action -token=${GITHUB_TOKEN} -df='https://raw.githubusercontent.com/\${GROUP}/kogito-pipelines/master/.ci/${buildChainActionInfo.file}' -folder='bc' build ${buildChainActionInfo.action} -url=${env.ghprbPullLink} ${buildChainActionInfo.arguments} --skipParallelCheckout -cct '(^mvn .*)||\$1 -Dmaven.wagon.http.ssl.insecure=true'"
                     }
                 }
             }
