@@ -21,10 +21,6 @@ Map getMultijobPRConfig() {
             ], [
                 id: 'apps',
                 repository: 'kogito-apps',
-                jenkinsfile: BUILD_CHAIN_JENKINS_PATH,
-                git: [
-                    repo_url: PR_REPO_URL
-                ],
             ], [
                 id: 'examples',
                 repository: 'kogito-examples'
