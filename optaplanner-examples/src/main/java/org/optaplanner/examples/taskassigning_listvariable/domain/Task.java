@@ -20,10 +20,10 @@ import org.optaplanner.core.api.domain.entity.PlanningEntity;
 import org.optaplanner.core.api.domain.entity.PlanningPin;
 import org.optaplanner.core.api.domain.variable.CustomShadowVariable;
 import org.optaplanner.core.api.domain.variable.IndexShadowVariable;
+import org.optaplanner.core.api.domain.variable.InverseRelationShadowVariable;
 import org.optaplanner.core.api.domain.variable.PlanningVariableReference;
 import org.optaplanner.examples.common.domain.AbstractPersistable;
 import org.optaplanner.examples.common.swingui.components.Labeled;
-import org.optaplanner.examples.taskassigning_listvariable.domain.solver.CustomCollectionInverseRelationShadowVariableListener;
 import org.optaplanner.examples.taskassigning_listvariable.domain.solver.StartTimeUpdatingVariableListener;
 import org.optaplanner.examples.taskassigning_listvariable.domain.solver.TaskDifficultyComparator;
 
@@ -44,14 +44,10 @@ public class Task extends AbstractPersistable implements Labeled {
     private boolean pinned;
 
     // Shadow variables
-    // This maybe duplicates @InverseRelationshipShadowVariable. The field type may be either `Employee` or `Set<Employee>`
-    // depending on whether the genuine `@PlanningVariable List<Task> tasks` is disjoint or not (for task assignment it
+    // The field type may be either `Employee` or `Set<Employee>` depending on whether the genuine
+    // `@PlanningVariable List<Task> tasks` is disjoint or not (for task assignment it
     // is disjoint, for other domains it may not be).
-    // FIXME temporary custom shadow variable listener, will be replaced by a generic one
-    @CustomShadowVariable(
-            variableListenerClass = CustomCollectionInverseRelationShadowVariableListener.class,
-            sources = @PlanningVariableReference(entityClass = Employee.class, variableName = "tasks"))
-    // TODO the entity (Employee) or just the collection variable (List<Task>)?
+    @InverseRelationShadowVariable(sourceVariableName = "tasks")
     private Employee employee;
     @IndexShadowVariable(sourceVariableName = "tasks")
     private Integer index;
