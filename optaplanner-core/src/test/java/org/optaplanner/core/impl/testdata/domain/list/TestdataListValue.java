@@ -18,16 +18,27 @@ package org.optaplanner.core.impl.testdata.domain.list;
 
 import org.optaplanner.core.api.domain.entity.PlanningEntity;
 import org.optaplanner.core.api.domain.variable.IndexShadowVariable;
+import org.optaplanner.core.api.domain.variable.InverseRelationShadowVariable;
 import org.optaplanner.core.impl.testdata.domain.TestdataObject;
 
 @PlanningEntity
 public class TestdataListValue extends TestdataObject {
 
+    @InverseRelationShadowVariable(sourceVariableName = "valueList")
+    private TestdataListEntity entity;
     @IndexShadowVariable(sourceVariableName = "valueList")
     private Integer index;
 
     public TestdataListValue(String code) {
         super(code);
+    }
+
+    public TestdataListEntity getEntity() {
+        return entity;
+    }
+
+    public void setEntity(TestdataListEntity entity) {
+        this.entity = entity;
     }
 
     public Integer getIndex() {

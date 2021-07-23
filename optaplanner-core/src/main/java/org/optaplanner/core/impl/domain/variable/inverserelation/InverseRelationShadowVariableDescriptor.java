@@ -29,6 +29,7 @@ import org.optaplanner.core.impl.domain.common.accessor.MemberAccessor;
 import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
 import org.optaplanner.core.impl.domain.policy.DescriptorPolicy;
 import org.optaplanner.core.impl.domain.variable.descriptor.GenuineVariableDescriptor;
+import org.optaplanner.core.impl.domain.variable.descriptor.ListVariableDescriptor;
 import org.optaplanner.core.impl.domain.variable.descriptor.ShadowVariableDescriptor;
 import org.optaplanner.core.impl.domain.variable.descriptor.VariableDescriptor;
 import org.optaplanner.core.impl.domain.variable.supply.Demand;
@@ -41,6 +42,7 @@ public class InverseRelationShadowVariableDescriptor<Solution_> extends ShadowVa
 
     protected VariableDescriptor<Solution_> sourceVariableDescriptor;
     protected boolean singleton;
+    private boolean chained;
 
     public InverseRelationShadowVariableDescriptor(EntityDescriptor<Solution_> entityDescriptor,
             MemberAccessor variableMemberAccessor) {
@@ -83,6 +85,7 @@ public class InverseRelationShadowVariableDescriptor<Solution_> extends ShadowVa
                     + ") which is not a valid planning entity.");
         }
         String sourceVariableName = shadowVariableAnnotation.sourceVariableName();
+        // TODO can we getGenuineVariableDescriptor()?
         sourceVariableDescriptor = sourceEntityDescriptor.getVariableDescriptor(sourceVariableName);
         if (sourceVariableDescriptor == null) {
             throw new IllegalArgumentException("The entityClass (" + entityDescriptor.getEntityClass()
@@ -93,16 +96,19 @@ public class InverseRelationShadowVariableDescriptor<Solution_> extends ShadowVa
                     + sourceEntityDescriptor.getEntityClass() + ").\n"
                     + entityDescriptor.buildInvalidVariableNameExceptionMessage(sourceVariableName));
         }
-        boolean chained = (sourceVariableDescriptor instanceof GenuineVariableDescriptor) &&
+        chained = (sourceVariableDescriptor instanceof GenuineVariableDescriptor) &&
                 ((GenuineVariableDescriptor<Solution_>) sourceVariableDescriptor).isChained();
+        boolean list = (sourceVariableDescriptor instanceof GenuineVariableDescriptor) &&
+                ((GenuineVariableDescriptor<Solution_>) sourceVariableDescriptor).isListVariable();
         if (singleton) {
-            if (!chained) {
+            if (!chained && !list) {
                 throw new IllegalArgumentException("The entityClass (" + entityDescriptor.getEntityClass()
                         + ") has a @" + InverseRelationShadowVariable.class.getSimpleName()
                         + " annotated property (" + variableMemberAccessor.getName()
                         + ") which does not return a " + Collection.class.getSimpleName()
                         + " with sourceVariableName (" + sourceVariableName
-                        + ") which is not chained. Only a chained variable supports a singleton inverse.");
+                        + ") which is neither chained nor list variable."
+                        + " Only a chained and list variables support a singleton inverse.");
             }
         } else {
             if (chained) {
@@ -125,7 +131,11 @@ public class InverseRelationShadowVariableDescriptor<Solution_> extends ShadowVa
     @Override
     public Class<? extends VariableListener> getVariableListenerClass() {
         if (singleton) {
-            return SingletonInverseVariableListener.class;
+            if (chained) {
+                return SingletonInverseVariableListener.class;
+            } else {
+                return SingletonListInverseVariableListener.class;
+            }
         } else {
             return CollectionInverseVariableListener.class;
         }
@@ -138,7 +148,12 @@ public class InverseRelationShadowVariableDescriptor<Solution_> extends ShadowVa
     @Override
     public Demand<Solution_, ?> getProvidedDemand() {
         if (singleton) {
-            return new SingletonInverseVariableDemand<>(sourceVariableDescriptor);
+            if (chained) {
+                return new SingletonInverseVariableDemand<>(sourceVariableDescriptor);
+            } else {
+                return new SingletonListInverseVariableDemand<>(
+                        (ListVariableDescriptor<Solution_>) sourceVariableDescriptor);
+            }
         } else {
             return new CollectionInverseVariableDemand<>(sourceVariableDescriptor);
         }
@@ -147,7 +162,12 @@ public class InverseRelationShadowVariableDescriptor<Solution_> extends ShadowVa
     @Override
     public VariableListener<Solution_, ?> buildVariableListener(InnerScoreDirector<Solution_, ?> scoreDirector) {
         if (singleton) {
-            return new SingletonInverseVariableListener<>(this, sourceVariableDescriptor);
+            if (chained) {
+                return new SingletonInverseVariableListener<>(this, sourceVariableDescriptor);
+            } else {
+                return new SingletonListInverseVariableListener<>(
+                        this, (ListVariableDescriptor<Solution_>) sourceVariableDescriptor);
+            }
         } else {
             return new CollectionInverseVariableListener<>(this, sourceVariableDescriptor);
         }
