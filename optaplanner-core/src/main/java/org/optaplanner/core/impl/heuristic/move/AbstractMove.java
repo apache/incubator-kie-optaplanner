@@ -1,5 +1,5 @@
 /*
- * Copyright 2014 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2021 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -59,7 +59,7 @@ public abstract class AbstractMove<Solution_> implements Move<Solution_> {
     // Util methods
     // ************************************************************************
 
-    protected static <E> List<E> rebaseList(List<E> externalObjectList, ScoreDirector<?> destinationScoreDirector) {
+    public static <E> List<E> rebaseList(List<E> externalObjectList, ScoreDirector<?> destinationScoreDirector) {
         List<E> rebasedObjectList = new ArrayList<>(externalObjectList.size());
         for (E entity : externalObjectList) {
             rebasedObjectList.add(destinationScoreDirector.lookUpWorkingObject(entity));
@@ -67,7 +67,7 @@ public abstract class AbstractMove<Solution_> implements Move<Solution_> {
         return rebasedObjectList;
     }
 
-    protected static Object[] rebaseArray(Object[] externalObjects, ScoreDirector<?> destinationScoreDirector) {
+    public static Object[] rebaseArray(Object[] externalObjects, ScoreDirector<?> destinationScoreDirector) {
         Object[] rebasedObjects = new Object[externalObjects.length];
         for (int i = 0; i < externalObjects.length; i++) {
             rebasedObjects[i] = destinationScoreDirector.lookUpWorkingObject(externalObjects[i]);
