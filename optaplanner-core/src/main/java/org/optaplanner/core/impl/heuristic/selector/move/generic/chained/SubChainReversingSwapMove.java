@@ -1,5 +1,5 @@
 /*
- * Copyright 2012 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2021 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -77,13 +77,8 @@ public class SubChainReversingSwapMove<Solution_> extends AbstractMove<Solution_
 
     @Override
     public boolean isMoveDoable(ScoreDirector<Solution_> scoreDirector) {
-        for (Object leftEntity : leftSubChain.getEntityList()) {
-            if (rightSubChain.getEntityList().contains(leftEntity)) {
-                return false;
-            }
-        }
         // Because leftFirstEntity and rightFirstEntity are unequal, chained guarantees their values are unequal too.
-        return true;
+        return !SubChainSwapMove.containsAnyOf(rightSubChain, leftSubChain);
     }
 
     @Override
