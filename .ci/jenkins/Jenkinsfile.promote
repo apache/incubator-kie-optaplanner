@@ -488,7 +488,7 @@ String commitAndCreatePR(String commitMsg, Closure precommit, String localBranch
 
     githubscm.commitChanges(commitMsg, precommit)
     githubscm.pushObject('origin', localBranch, getBotAuthorCredsID())
-    return githubscm.createPR(commitMsg, prBody, targetBranch, getBotAuthorCredsID())
+    return githubscm.createPRWithLabels(commitMsg, prBody, targetBranch, [ 'skip-ci' ] as String[], getBotAuthorCredsID())
 }
 
 void commitAndForcePushProtectedBranch(String repo, String branch) {

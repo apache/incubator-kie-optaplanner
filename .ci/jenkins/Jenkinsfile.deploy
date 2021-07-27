@@ -389,7 +389,7 @@ void commitAndCreatePR(String repo, String buildBranch) {
         })
         githubscm.pushObject('origin', getBotBranch(), getBotAuthorCredsID())
         deployProperties["${repo}.pr.link"] = isRelease() ?
-                                                githubscm.createPRWithLabels(commitMsg, prBody, buildBranch, ['DO_NOT_MERGE'] as String[], getBotAuthorCredsID()) :
+                                                githubscm.createPRWithLabels(commitMsg, prBody, buildBranch, ['DO_NOT_MERGE', 'skip-ci'] as String[], getBotAuthorCredsID()) :
                                                 githubscm.createPR(commitMsg, prBody, buildBranch, getBotAuthorCredsID())
     }
 }
