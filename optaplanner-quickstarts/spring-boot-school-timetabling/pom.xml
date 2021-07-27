@@ -78,16 +78,10 @@
     <dependency>
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-starter-data-jpa</artifactId>
-      <exclusions>
-        <exclusion>
-          <groupId>jakarta.persistence</groupId>
-          <artifactId>jakarta.persistence-api</artifactId>
-        </exclusion>
-      </exclusions>
     </dependency>
     <dependency>
-      <groupId>javax.persistence</groupId>
-      <artifactId>javax.persistence-api</artifactId>
+      <groupId>jakarta.persistence</groupId>
+      <artifactId>jakarta.persistence-api</artifactId>
     </dependency>
     <dependency>
       <groupId>com.h2database</groupId>
