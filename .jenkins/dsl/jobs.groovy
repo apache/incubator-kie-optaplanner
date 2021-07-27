@@ -111,13 +111,13 @@ void setupOptaplannerNativePrJob() {
 
 void setupOptawebEmployeeRosteringPrJob() {
     def jobParams = getDefaultJobParams('optaweb-employee-rostering')
-    jobParams.pr.run_only_for_branches = ['master']
+    jobParams.pr.run_only_for_branches = ['main']
     KogitoJobTemplate.createPRJob(this, jobParams)
 }
 
 void setupOptawebVehicleRoutingPrJob() {
     def jobParams = getDefaultJobParams('optaweb-vehicle-routing')
-    jobParams.pr.run_only_for_branches = ['master']
+    jobParams.pr.run_only_for_branches = ['main']
     KogitoJobTemplate.createPRJob(this, jobParams)
 }
 
@@ -162,7 +162,7 @@ void setupDeployJob(String jobFolder, KogitoJobType jobType) {
             }
 
             //Build branch name for quickstarts
-            stringParam('QUICKSTARTS_BUILD_BRANCH_NAME', "${GIT_BRANCH}" == 'master' ? 'development' : "${GIT_BRANCH}", 'Base branch for quickstarts. Set if you are not on a multibranch pipeline.')
+            stringParam('QUICKSTARTS_BUILD_BRANCH_NAME', isMainBranch() ? 'development' : "${GIT_BRANCH}", 'Base branch for quickstarts. Set if you are not on a multibranch pipeline.')
         }
 
         environmentVariables {
