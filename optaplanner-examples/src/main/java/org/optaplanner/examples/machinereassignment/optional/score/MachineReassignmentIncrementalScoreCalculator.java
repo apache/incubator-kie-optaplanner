@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.optaplanner.examples.machinereassignment.score;
+package org.optaplanner.examples.machinereassignment.optional.score;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -39,6 +39,7 @@ import org.optaplanner.examples.machinereassignment.domain.MrNeighborhood;
 import org.optaplanner.examples.machinereassignment.domain.MrProcessAssignment;
 import org.optaplanner.examples.machinereassignment.domain.MrResource;
 import org.optaplanner.examples.machinereassignment.domain.MrService;
+import org.optaplanner.examples.machinereassignment.score.MrConstraints;
 
 public class MachineReassignmentIncrementalScoreCalculator
         implements ConstraintMatchAwareIncrementalScoreCalculator<MachineReassignment, HardSoftLongScore>,
