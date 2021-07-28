@@ -1,4 +1,4 @@
-package org.optaplanner.examples.cheaptime.optional.score;
+package org.optaplanner.examples.cheaptime.score;
 
 import org.junit.jupiter.api.Test;
 import org.optaplanner.examples.cheaptime.domain.CheapTimeSolution;

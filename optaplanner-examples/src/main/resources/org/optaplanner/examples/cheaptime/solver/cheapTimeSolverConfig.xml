@@ -11,8 +11,8 @@
   <!-- Score configuration -->
   <scoreDirectorFactory>
     <!--<easyScoreCalculatorClass>org.optaplanner.examples.cheaptime.optional.score.CheapTimeEasyScoreCalculator</easyScoreCalculatorClass>-->
-    <!--<constraintProviderClass>org.optaplanner.examples.cheaptime.optional.score.CheapTimeConstraintProvider</constraintProviderClass>-->
-    <incrementalScoreCalculatorClass>org.optaplanner.examples.cheaptime.score.CheapTimeIncrementalScoreCalculator</incrementalScoreCalculatorClass>
+    <constraintProviderClass>org.optaplanner.examples.cheaptime.score.CheapTimeConstraintProvider</constraintProviderClass>
+    <!--<incrementalScoreCalculatorClass>org.optaplanner.examples.cheaptime.optional.score.CheapTimeIncrementalScoreCalculator</incrementalScoreCalculatorClass>-->
     <!--<scoreDrl>org/optaplanner/examples/cheaptime/solver/cheapTimeConstraints.drl</scoreDrl>-->
     <initializingScoreTrend>ONLY_DOWN</initializingScoreTrend>
     <!--<assertionScoreDirectorFactory>-->

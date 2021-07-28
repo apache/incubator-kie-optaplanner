@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.optaplanner.examples.cheaptime.optional.score;
+package org.optaplanner.examples.cheaptime.score;
 
 import static org.optaplanner.core.api.score.stream.ConstraintCollectors.sum;
 import static org.optaplanner.core.api.score.stream.ConstraintCollectors.sumLong;
@@ -25,7 +25,6 @@ import static org.optaplanner.core.api.score.stream.Joiners.greaterThanOrEqual;
 import static org.optaplanner.core.api.score.stream.Joiners.lessThan;
 import static org.optaplanner.core.api.score.stream.Joiners.lessThanOrEqual;
 import static org.optaplanner.examples.cheaptime.score.CheapTimeCostCalculator.multiplyTwoMicros;
-import static org.optaplanner.examples.cheaptime.score.CheapTimeIncrementalScoreCalculator.CONSTRAINT_PACKAGE;
 import static org.optaplanner.examples.common.experimental.ExperimentalConstraintCollectors.consecutiveIntervals;
 
 import java.util.function.Function;
@@ -59,14 +58,14 @@ public class CheapTimeConstraintProvider implements ConstraintProvider {
     protected Constraint startTimeLimitsFrom(ConstraintFactory constraintFactory) {
         return constraintFactory.from(TaskAssignment.class)
                 .filter(taskAssignment -> taskAssignment.getStartPeriod() < taskAssignment.getTask().getStartPeriodRangeFrom())
-                .penalizeLong(CONSTRAINT_PACKAGE, "Task starts too early", HardMediumSoftLongScore.ONE_HARD,
+                .penalizeLong("Task starts too early", HardMediumSoftLongScore.ONE_HARD,
                         taskAssignment -> taskAssignment.getTask().getStartPeriodRangeFrom() - taskAssignment.getStartPeriod());
     }
 
     protected Constraint startTimeLimitsTo(ConstraintFactory constraintFactory) {
         return constraintFactory.from(TaskAssignment.class)
                 .filter(taskAssignment -> taskAssignment.getStartPeriod() >= taskAssignment.getTask().getStartPeriodRangeTo())
-                .penalizeLong(CONSTRAINT_PACKAGE, "Task starts too late", HardMediumSoftLongScore.ONE_HARD,
+                .penalizeLong("Task starts too late", HardMediumSoftLongScore.ONE_HARD,
                         taskAssignment -> taskAssignment.getStartPeriod() - taskAssignment.getTask().getStartPeriodRangeTo());
     }
 
@@ -82,7 +81,7 @@ public class CheapTimeConstraintProvider implements ConstraintProvider {
                         (taskAssignment, resource, period) -> taskAssignment.getMachine(),
                         sum((taskAssignment, resource, period) -> taskAssignment.getTask().getUsage(resource)))
                 .filter((period, resource, machine, usage) -> machine.getCapacity(resource) < usage)
-                .penalizeLong(CONSTRAINT_PACKAGE, "Maximum resource capacity", HardMediumSoftLongScore.ONE_HARD,
+                .penalizeLong("Maximum resource capacity", HardMediumSoftLongScore.ONE_HARD,
                         (period, resource, machine, usage) -> usage - machine.getCapacity(resource));
     }
 
@@ -93,7 +92,7 @@ public class CheapTimeConstraintProvider implements ConstraintProvider {
                         equal((period, machine) -> machine, TaskAssignment::getMachine),
                         greaterThanOrEqual((period, machine) -> period.getIndex(), TaskAssignment::getStartPeriod),
                         lessThan((period, machine) -> period.getIndex(), TaskAssignment::getEndPeriod))
-                .penalizeLong(CONSTRAINT_PACKAGE, "Active machine power cost", HardMediumSoftLongScore.ONE_MEDIUM,
+                .penalizeLong("Active machine power cost", HardMediumSoftLongScore.ONE_MEDIUM,
                         (period, machine) -> multiplyTwoMicros(machine.getPowerConsumptionMicros(),
                                 period.getPowerPriceMicros()));
     }
@@ -102,7 +101,7 @@ public class CheapTimeConstraintProvider implements ConstraintProvider {
         return constraintFactory.from(Machine.class)
                 .ifExists(TaskAssignment.class,
                         equal(Function.identity(), TaskAssignment::getMachine))
-                .penalizeLong(CONSTRAINT_PACKAGE, "Active machine spin up and down cost", HardMediumSoftLongScore.ONE_MEDIUM,
+                .penalizeLong("Active machine spin up and down cost", HardMediumSoftLongScore.ONE_MEDIUM,
                         Machine::getSpinUpDownCostMicros);
     }
 
@@ -117,7 +116,7 @@ public class CheapTimeConstraintProvider implements ConstraintProvider {
                 .groupBy((machine, brk, idlePeriod) -> machine,
                         (machine, brk, idlePeriod) -> brk,
                         sumLong((machine, brk, idlePeriod) -> idlePeriod.getPowerPriceMicros()))
-                .penalizeLong(CONSTRAINT_PACKAGE, "Machine idle costs", HardMediumSoftLongScore.ONE_MEDIUM,
+                .penalizeLong("Machine idle costs", HardMediumSoftLongScore.ONE_MEDIUM,
                         (machine, brk, powerCost) -> {
                             long idleCost = multiplyTwoMicros(machine.getPowerConsumptionMicros(), powerCost);
                             // Shutting down and restarting the machine may be cheaper than keeping it idle.
@@ -130,14 +129,14 @@ public class CheapTimeConstraintProvider implements ConstraintProvider {
                 .join(Period.class,
                         lessThanOrEqual(TaskAssignment::getStartPeriod, Period::getIndex),
                         greaterThan(TaskAssignment::getEndPeriod, Period::getIndex))
-                .penalizeLong(CONSTRAINT_PACKAGE, "Task power cost", HardMediumSoftLongScore.ONE_MEDIUM,
+                .penalizeLong("Task power cost", HardMediumSoftLongScore.ONE_MEDIUM,
                         (taskAssignment, period) -> multiplyTwoMicros(taskAssignment.getTask().getPowerConsumptionMicros(),
                                 period.getPowerPriceMicros()));
     }
 
     protected Constraint startEarly(ConstraintFactory constraintFactory) {
         return constraintFactory.from(TaskAssignment.class)
-                .penalize(CONSTRAINT_PACKAGE, "Prefer early task start", HardMediumSoftLongScore.ONE_SOFT,
+                .penalize("Prefer early task start", HardMediumSoftLongScore.ONE_SOFT,
                         TaskAssignment::getStartPeriod);
     }
 
