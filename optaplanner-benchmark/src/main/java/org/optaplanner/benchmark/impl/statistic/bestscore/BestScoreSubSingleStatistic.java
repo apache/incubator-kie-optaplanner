@@ -22,7 +22,6 @@ import org.optaplanner.benchmark.config.statistic.ProblemStatisticType;
 import org.optaplanner.benchmark.impl.result.SubSingleBenchmarkResult;
 import org.optaplanner.benchmark.impl.statistic.ProblemBasedSubSingleStatistic;
 import org.optaplanner.benchmark.impl.statistic.StatisticRegistry;
-import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.solver.Solver;
 import org.optaplanner.core.config.solver.metric.SolverMetric;
 import org.optaplanner.core.impl.score.definition.ScoreDefinition;
@@ -43,8 +42,9 @@ public class BestScoreSubSingleStatistic<Solution_>
     @Override
     public void open(StatisticRegistry registry, Tags runTag, Solver<Solution_> solver) {
         registry.addListener(SolverMetric.BEST_SCORE, timestamp -> {
-            Score score = registry.extractScoreFromMeters(SolverMetric.BEST_SCORE, runTag);
-            pointList.add(new BestScoreStatisticPoint(timestamp, score));
+            registry.extractScoreFromMeters(SolverMetric.BEST_SCORE, runTag, score -> {
+                pointList.add(new BestScoreStatisticPoint(timestamp, score));
+            });
         });
     }
 

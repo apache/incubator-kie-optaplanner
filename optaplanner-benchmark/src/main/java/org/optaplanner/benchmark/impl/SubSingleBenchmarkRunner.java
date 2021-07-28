@@ -115,6 +115,7 @@ public class SubSingleBenchmarkRunner<Solution_> implements Callable<SubSingleBe
         StatisticRegistry statisticRegistry = new StatisticRegistry((DefaultSolver) solver);
         Metrics.addRegistry(statisticRegistry);
         solver.addEventListener(statisticRegistry);
+        solver.addPhaseLifecycleListener(statisticRegistry);
 
         Tags runTag = Tags.of("optaplanner.benchmark.run", runId);
         for (SubSingleStatistic<Solution_, ?> subSingleStatistic : subSingleBenchmarkResult.getEffectiveSubSingleStatisticMap()
@@ -124,6 +125,7 @@ public class SubSingleBenchmarkRunner<Solution_> implements Callable<SubSingleBe
         }
         Solution_ solution = solver.solve(problem);
 
+        solver.removePhaseLifecycleListener(statisticRegistry);
         solver.removeEventListener(statisticRegistry);
         Metrics.removeRegistry(statisticRegistry);
         long timeMillisSpent = solver.getTimeMillisSpent();

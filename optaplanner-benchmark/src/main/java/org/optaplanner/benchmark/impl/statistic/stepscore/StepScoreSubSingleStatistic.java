@@ -42,8 +42,9 @@ public class StepScoreSubSingleStatistic<Solution_>
     @Override
     public void open(StatisticRegistry registry, Tags runTag, Solver<Solution_> solver) {
         registry.addListener(SolverMetric.STEP_SCORE, timeMillisSpent -> {
-            pointList.add(new StepScoreStatisticPoint(timeMillisSpent,
-                    registry.extractScoreFromMeters(SolverMetric.STEP_SCORE, runTag)));
+            registry.extractScoreFromMeters(SolverMetric.STEP_SCORE, runTag, score -> {
+                pointList.add(new StepScoreStatisticPoint(timeMillisSpent, score));
+            });
         });
     }
 

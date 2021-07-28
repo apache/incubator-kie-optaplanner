@@ -16,7 +16,6 @@
 
 package org.optaplanner.benchmark.impl.statistic;
 
-import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -28,51 +27,27 @@ import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.solver.event.BestSolutionChangedEvent;
 import org.optaplanner.core.api.solver.event.SolverEventListener;
 import org.optaplanner.core.config.solver.metric.SolverMetric;
+import org.optaplanner.core.impl.phase.event.PhaseLifecycleListener;
+import org.optaplanner.core.impl.phase.scope.AbstractPhaseScope;
+import org.optaplanner.core.impl.phase.scope.AbstractStepScope;
 import org.optaplanner.core.impl.score.definition.ScoreDefinition;
 import org.optaplanner.core.impl.solver.DefaultSolver;
+import org.optaplanner.core.impl.solver.scope.SolverScope;
 
-import io.micrometer.core.instrument.Clock;
+import io.micrometer.core.instrument.Gauge;
 import io.micrometer.core.instrument.Meter;
 import io.micrometer.core.instrument.Tags;
 import io.micrometer.core.instrument.search.Search;
-import io.micrometer.core.instrument.step.StepMeterRegistry;
-import io.micrometer.core.instrument.step.StepRegistryConfig;
+import io.micrometer.core.instrument.simple.SimpleMeterRegistry;
 
-public class StatisticRegistry extends StepMeterRegistry implements SolverEventListener {
+public class StatisticRegistry extends SimpleMeterRegistry implements PhaseLifecycleListener, SolverEventListener {
 
     List<Consumer<Long>> stepMeterListenerList = new ArrayList<>();
     List<Consumer<Long>> bestSolutionMeterListenerList = new ArrayList<>();
-    long lastUpdatedTimestamp = Long.MIN_VALUE;
     long bestSolutionChangedTimestamp = Long.MIN_VALUE;
     ScoreDefinition scoreDefinition;
 
     public StatisticRegistry(DefaultSolver solver) {
-        super(new StepRegistryConfig() {
-            @Override
-            public Duration step() {
-                return Duration.ofMillis(10L);
-            }
-
-            @Override
-            public String prefix() {
-                return "optaplanner-benchmark-statistic";
-            }
-
-            @Override
-            public String get(String key) {
-                return null;
-            }
-        }, new Clock() {
-            @Override
-            public long wallTime() {
-                return solver.getTimeMillisSpent();
-            }
-
-            @Override
-            public long monotonicTime() {
-                return System.nanoTime();
-            }
-        });
         scoreDefinition = solver.getSolverScope().getScoreDefinition();
     }
 
@@ -111,13 +86,18 @@ public class StatisticRegistry extends StepMeterRegistry implements SolverEventL
                 .collect(Collectors.toSet());
     }
 
-    public Score extractScoreFromMeters(SolverMetric metric, Tags runId) {
+    public void extractScoreFromMeters(SolverMetric metric, Tags runId, Consumer<Score> scoreConsumer) {
         String[] labelNames = scoreDefinition.getLevelLabels();
         Number[] levelNumbers = new Number[labelNames.length];
         for (int i = 0; i < labelNames.length; i++) {
-            levelNumbers[i] = this.find(metric.getMeterId() + "." + labelNames[i]).tags(runId).gauge().value();
+            Gauge scoreLevelGauge = this.find(metric.getMeterId() + "." + labelNames[i]).tags(runId).gauge();
+            if (scoreLevelGauge != null) {
+                levelNumbers[i] = scoreLevelGauge.value();
+            } else {
+                return;
+            }
         }
-        return scoreDefinition.fromLevelNumbers(0, levelNumbers);
+        scoreConsumer.accept(scoreDefinition.fromLevelNumbers(0, levelNumbers));
     }
 
     public Number getGaugeValue(SolverMetric metric, Tags runId) {
@@ -129,21 +109,47 @@ public class StatisticRegistry extends StepMeterRegistry implements SolverEventL
     }
 
     @Override
-    protected void publish() {
-        stepMeterListenerList.forEach(listener -> listener.accept(clock.wallTime()));
-        if (lastUpdatedTimestamp < bestSolutionChangedTimestamp) {
-            bestSolutionMeterListenerList.forEach(listener -> listener.accept(bestSolutionChangedTimestamp));
-            lastUpdatedTimestamp = bestSolutionChangedTimestamp;
-        }
-    }
-
-    @Override
     protected TimeUnit getBaseTimeUnit() {
         return TimeUnit.MILLISECONDS;
     }
 
     @Override
     public void bestSolutionChanged(BestSolutionChangedEvent event) {
+        if (bestSolutionChangedTimestamp != Long.MIN_VALUE) {
+            bestSolutionMeterListenerList.forEach(listener -> listener.accept(bestSolutionChangedTimestamp));
+        }
         bestSolutionChangedTimestamp = event.getTimeMillisSpent();
+    }
+
+    @Override
+    public void stepEnded(AbstractStepScope stepScope) {
+        final long timestamp =
+                System.currentTimeMillis() - stepScope.getPhaseScope().getSolverScope().getStartingSystemTimeMillis();
+        stepMeterListenerList.forEach(listener -> listener.accept(timestamp));
+    }
+
+    @Override
+    public void phaseStarted(AbstractPhaseScope phaseScope) {
+        // intentional empty
+    }
+
+    @Override
+    public void stepStarted(AbstractStepScope stepScope) {
+        // intentional empty
+    }
+
+    @Override
+    public void phaseEnded(AbstractPhaseScope phaseScope) {
+        // intentional empty
+    }
+
+    @Override
+    public void solvingStarted(SolverScope solverScope) {
+        // intentional empty
+    }
+
+    @Override
+    public void solvingEnded(SolverScope solverScope) {
+        // intentional empty
     }
 }

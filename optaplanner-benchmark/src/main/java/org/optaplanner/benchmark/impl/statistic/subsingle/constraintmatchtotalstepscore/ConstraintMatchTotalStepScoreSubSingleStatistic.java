@@ -44,7 +44,6 @@ import org.optaplanner.benchmark.impl.result.SubSingleBenchmarkResult;
 import org.optaplanner.benchmark.impl.statistic.PureSubSingleStatistic;
 import org.optaplanner.benchmark.impl.statistic.StatisticRegistry;
 import org.optaplanner.benchmark.impl.statistic.common.MillisecondsSpentNumberFormat;
-import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.solver.Solver;
 import org.optaplanner.core.config.solver.metric.SolverMetric;
 import org.optaplanner.core.impl.score.ScoreUtils;
@@ -90,19 +89,20 @@ public class ConstraintMatchTotalStepScoreSubSingleStatistic<Solution_>
             constraintPackageNamePairs.forEach(constraintPackageNamePair -> {
                 String constraintPackage = constraintPackageNamePair.left;
                 String constraintName = constraintPackageNamePair.right;
-                Score score = registry.extractScoreFromMeters(SolverMetric.CONSTRAINT_MATCH_TOTAL_STEP_SCORE, runTag
+                registry.extractScoreFromMeters(SolverMetric.CONSTRAINT_MATCH_TOTAL_STEP_SCORE, runTag
                         .and("constraint.package", constraintPackageNamePair.left)
-                        .and("constraint.name", constraintPackageNamePair.right));
-                int count = registry.getGaugeValue(SolverMetric.CONSTRAINT_MATCH_TOTAL_STEP_SCORE + ".count",
-                        runTag.and("constraint.package", constraintPackageNamePair.left)
-                                .and("constraint.name", constraintPackageNamePair.right))
-                        .intValue();
-                pointList.add(new ConstraintMatchTotalStepScoreStatisticPoint(
-                        timeMillisSpent,
-                        constraintPackage,
-                        constraintName,
-                        count,
-                        score));
+                        .and("constraint.name", constraintPackageNamePair.right), score -> {
+                            int count = registry.getGaugeValue(SolverMetric.CONSTRAINT_MATCH_TOTAL_STEP_SCORE + ".count",
+                                    runTag.and("constraint.package", constraintPackageNamePair.left)
+                                            .and("constraint.name", constraintPackageNamePair.right))
+                                    .intValue();
+                            pointList.add(new ConstraintMatchTotalStepScoreStatisticPoint(
+                                    timeMillisSpent,
+                                    constraintPackage,
+                                    constraintName,
+                                    count,
+                                    score));
+                        });
             });
         });
     }
