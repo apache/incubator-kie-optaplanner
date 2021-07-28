@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.optaplanner.examples.common.optional.score;
+package org.optaplanner.examples.common.optional.score.drools;
 
 import java.io.ObjectInput;
 import java.io.ObjectOutput;

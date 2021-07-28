@@ -26,8 +26,8 @@ import org.optaplanner.examples.flightcrewscheduling.domain.FlightAssignment;
 import org.optaplanner.examples.flightcrewscheduling.domain.FlightCrewParametrization;
 import org.optaplanner.examples.flightcrewscheduling.domain.Skill;
 
-import accumulate org.optaplanner.examples.common.optional.score.LoadBalanceByCountAccumulateFunction loadBalanceByCount;
-import accumulate org.optaplanner.examples.common.optional.score.LoadBalanceAccumulateFunction loadBalance;
+import accumulate org.optaplanner.examples.common.optional.score.drools.LoadBalanceByCountAccumulateFunction loadBalanceByCount;
+import accumulate org.optaplanner.examples.common.optional.score.drools.LoadBalanceAccumulateFunction loadBalance;
 
 global HardSoftLongScoreHolder scoreHolder;
 

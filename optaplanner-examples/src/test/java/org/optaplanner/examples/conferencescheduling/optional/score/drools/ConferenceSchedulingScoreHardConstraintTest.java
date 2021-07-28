@@ -1,4 +1,4 @@
-package org.optaplanner.examples.conferencescheduling.solver;
+package org.optaplanner.examples.conferencescheduling.optional.score.drools;
 
 import static org.optaplanner.examples.conferencescheduling.domain.ConferenceConstraintConfiguration.ROOM_CONFLICT;
 import static org.optaplanner.examples.conferencescheduling.domain.ConferenceConstraintConfiguration.ROOM_UNAVAILABLE_TIMESLOT;

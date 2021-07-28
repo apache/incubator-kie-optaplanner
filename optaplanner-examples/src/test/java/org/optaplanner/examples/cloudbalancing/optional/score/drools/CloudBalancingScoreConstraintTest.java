@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.optaplanner.examples.cloudbalancing.solver;
+package org.optaplanner.examples.cloudbalancing.optional.score.drools;
 
 import java.util.Arrays;
 

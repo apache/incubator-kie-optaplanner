@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.optaplanner.examples.taskassigning.solver;
+package org.optaplanner.examples.taskassigning.optional.score.drools;
 
 import java.util.Arrays;
 

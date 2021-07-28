@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.optaplanner.examples.meetingscheduling.solver;
+package org.optaplanner.examples.meetingscheduling.optional.score.drools;
 
 import java.util.ArrayList;
 import java.util.Collections;
