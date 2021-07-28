@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.optaplanner.examples.flightcrewscheduling.optional.score;
+package org.optaplanner.examples.flightcrewscheduling.score;
 
 import static org.optaplanner.core.api.score.stream.Joiners.equal;
 import static org.optaplanner.core.api.score.stream.Joiners.overlapping;
