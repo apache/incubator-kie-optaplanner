@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.optaplanner.examples.tennis.optional.score;
+package org.optaplanner.examples.tennis.score;
 
 import static org.optaplanner.core.api.score.stream.Joiners.equal;
 import static org.optaplanner.core.api.score.stream.Joiners.lessThan;
@@ -35,8 +35,6 @@ import org.optaplanner.examples.tennis.domain.TeamAssignment;
 import org.optaplanner.examples.tennis.domain.UnavailabilityPenalty;
 
 public final class TennisConstraintProvider implements ConstraintProvider {
-
-    private static final String CONSTRAINT_PACKAGE = "org.optaplanner.examples.tennis.solver";
 
     private static <A> DefaultUniConstraintCollector<A, ?, LoadBalanceData> loadBalance(
             Function<A, Object> groupKey) {
@@ -76,7 +74,7 @@ public final class TennisConstraintProvider implements ConstraintProvider {
                         equal(TeamAssignment::getTeam),
                         equal(TeamAssignment::getDay),
                         lessThan(TeamAssignment::getId))
-                .penalize(CONSTRAINT_PACKAGE, "oneAssignmentPerDatePerTeam", HardMediumSoftScore.ONE_HARD);
+                .penalize("oneAssignmentPerDatePerTeam", HardMediumSoftScore.ONE_HARD);
     }
 
     protected Constraint unavailabilityPenalty(ConstraintFactory constraintFactory) {
@@ -84,13 +82,13 @@ public final class TennisConstraintProvider implements ConstraintProvider {
                 .ifExists(TeamAssignment.class,
                         equal(UnavailabilityPenalty::getTeam, TeamAssignment::getTeam),
                         equal(UnavailabilityPenalty::getDay, TeamAssignment::getDay))
-                .penalize(CONSTRAINT_PACKAGE, "unavailabilityPenalty", HardMediumSoftScore.ONE_HARD);
+                .penalize("unavailabilityPenalty", HardMediumSoftScore.ONE_HARD);
     }
 
     protected Constraint fairAssignmentCountPerTeam(ConstraintFactory constraintFactory) {
         return constraintFactory.from(TeamAssignment.class)
                 .groupBy(loadBalance(TeamAssignment::getTeam))
-                .penalize(CONSTRAINT_PACKAGE, "fairAssignmentCountPerTeam", HardMediumSoftScore.ONE_MEDIUM,
+                .penalize("fairAssignmentCountPerTeam", HardMediumSoftScore.ONE_MEDIUM,
                         result -> (int) result.getZeroDeviationSquaredSumRootMillis());
     }
 
@@ -101,7 +99,7 @@ public final class TennisConstraintProvider implements ConstraintProvider {
                         lessThan(assignment -> assignment.getTeam().getId()))
                 .groupBy(loadBalance(
                         (assignment, otherAssignment) -> Pair.of(assignment.getTeam(), otherAssignment.getTeam())))
-                .penalize(CONSTRAINT_PACKAGE, "evenlyConfrontationCount", HardMediumSoftScore.ONE_SOFT,
+                .penalize( "evenlyConfrontationCount", HardMediumSoftScore.ONE_SOFT,
                         result -> (int) result.getZeroDeviationSquaredSumRootMillis());
     }
 

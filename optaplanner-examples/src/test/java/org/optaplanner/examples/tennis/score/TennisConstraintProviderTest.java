@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.optaplanner.examples.tennis.optional.score;
+package org.optaplanner.examples.tennis.score;
 
 import org.junit.jupiter.api.Test;
 import org.optaplanner.examples.tennis.domain.Day;
@@ -22,6 +22,7 @@ import org.optaplanner.examples.tennis.domain.Team;
 import org.optaplanner.examples.tennis.domain.TeamAssignment;
 import org.optaplanner.examples.tennis.domain.TennisSolution;
 import org.optaplanner.examples.tennis.domain.UnavailabilityPenalty;
+import org.optaplanner.examples.tennis.score.TennisConstraintProvider;
 import org.optaplanner.test.api.score.stream.ConstraintVerifier;
 
 public class TennisConstraintProviderTest {
