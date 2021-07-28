@@ -1,4 +1,4 @@
-package org.optaplanner.examples.investment.optional.score;
+package org.optaplanner.examples.investment.score;
 
 import java.util.function.Function;
 
