@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.optaplanner.examples.taskassigning.optional.score;
+package org.optaplanner.examples.taskassigning.score;
 
 import org.optaplanner.core.api.score.buildin.bendable.BendableScore;
 import org.optaplanner.core.api.score.stream.Constraint;

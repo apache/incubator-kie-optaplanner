@@ -28,16 +28,7 @@
     <name>ConstraintStreams (Drools)</name>
     <solver>
       <scoreDirectorFactory>
-        <constraintProviderClass>org.optaplanner.examples.taskassigning.optional.score.TaskAssigningConstraintProvider</constraintProviderClass>
-      </scoreDirectorFactory>
-    </solver>
-  </solverBenchmark>
-  <solverBenchmark>
-    <name>ConstraintStreams (Bavet)</name>
-    <solver>
-      <scoreDirectorFactory>
-        <constraintProviderClass>org.optaplanner.examples.taskassigning.optional.score.TaskAssigningConstraintProvider</constraintProviderClass>
-        <constraintStreamImplType>BAVET</constraintStreamImplType>
+        <constraintProviderClass>org.optaplanner.examples.taskassigning.score.TaskAssigningConstraintProvider</constraintProviderClass>
       </scoreDirectorFactory>
     </solver>
   </solverBenchmark>
