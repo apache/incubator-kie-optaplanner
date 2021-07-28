@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.optaplanner.examples.examination.optional.score;
+package org.optaplanner.examples.examination.score;
 
 import static org.optaplanner.core.api.score.stream.ConstraintCollectors.sum;
 import static org.optaplanner.core.api.score.stream.Joiners.equal;
@@ -38,7 +38,6 @@ import org.optaplanner.examples.examination.domain.RoomPenalty;
 import org.optaplanner.examples.examination.domain.RoomPenaltyType;
 import org.optaplanner.examples.examination.domain.solver.TopicConflict;
 
-// TODO The ExaminationConstraintProvider is unusually slow. For more information, see: https://issues.redhat.com/browse/PLANNER-2011
 public class ExaminationConstraintProvider implements ConstraintProvider {
 
     @Override

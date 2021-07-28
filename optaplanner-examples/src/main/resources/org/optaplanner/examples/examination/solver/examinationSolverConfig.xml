@@ -10,9 +10,9 @@
   <entityClass>org.optaplanner.examples.examination.domain.FollowingExam</entityClass>
 
   <scoreDirectorFactory>
-    <scoreDrl>org/optaplanner/examples/examination/solver/examinationConstraints.drl</scoreDrl>
+    <constraintProviderClass>org.optaplanner.examples.examination.score.ExaminationConstraintProvider</constraintProviderClass>
+    <!--<scoreDrl>org/optaplanner/examples/examination/solver/examinationConstraints.drl</scoreDrl>-->
     <initializingScoreTrend>ONLY_DOWN</initializingScoreTrend>
-    <!--<constraintProviderClass>org.optaplanner.examples.examination.optional.score.ExaminationConstraintProvider</constraintProviderClass>-->
     <!--<assertionScoreDirectorFactory>-->
     <!--  <scoreDrl>org/optaplanner/examples/examination/solver/examinationConstraints.drl</scoreDrl>-->
     <!--</assertionScoreDirectorFactory>-->
