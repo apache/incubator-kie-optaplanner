@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.optaplanner.examples.coachshuttlegathering.optional.score;
+package org.optaplanner.examples.coachshuttlegathering.score;
 
 import java.util.Collections;
 
