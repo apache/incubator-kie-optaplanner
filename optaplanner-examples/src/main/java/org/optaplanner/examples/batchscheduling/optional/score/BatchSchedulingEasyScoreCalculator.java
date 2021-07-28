@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.optaplanner.examples.batchscheduling.solver.score;
+package org.optaplanner.examples.batchscheduling.optional.score;
 
 import java.util.HashMap;
 import java.util.List;

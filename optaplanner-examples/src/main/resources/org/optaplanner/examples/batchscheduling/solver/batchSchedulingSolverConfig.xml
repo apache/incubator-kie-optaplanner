@@ -6,11 +6,11 @@
 	<entityClass>org.optaplanner.examples.batchscheduling.domain.Allocation</entityClass>
 	<entityClass>org.optaplanner.examples.batchscheduling.domain.AllocationPath</entityClass>
 	<scoreDirectorFactory>
-		<!-- <easyScoreCalculatorClass>org.optaplanner.examples.batchscheduling.solver.score.BatchSchedulingEasyScoreCalculator</easyScoreCalculatorClass> -->
-		<incrementalScoreCalculatorClass>org.optaplanner.examples.batchscheduling.solver.score.BatchSchedulingIncrementalScoreCalculator</incrementalScoreCalculatorClass>
+		<!-- <easyScoreCalculatorClass>org.optaplanner.examples.batchscheduling.optional.score.BatchSchedulingEasyScoreCalculator</easyScoreCalculatorClass> -->
+		<incrementalScoreCalculatorClass>org.optaplanner.examples.batchscheduling.score.BatchSchedulingIncrementalScoreCalculator</incrementalScoreCalculatorClass>
 		<!--<initializingScoreTrend>ANY</initializingScoreTrend> -->
 		<!--<assertionScoreDirectorFactory> -->
-		<!--<easyScoreCalculatorClass>org.optaplanner.examples.batchscheduling.solver.score.BatchSchedulingEasyScoreCalculator</easyScoreCalculatorClass> -->
+		<!--<easyScoreCalculatorClass>org.optaplanner.examples.batchscheduling.optional.score.BatchSchedulingEasyScoreCalculator</easyScoreCalculatorClass> -->
 		<!--</assertionScoreDirectorFactory> -->
 	</scoreDirectorFactory>
 	<termination>
