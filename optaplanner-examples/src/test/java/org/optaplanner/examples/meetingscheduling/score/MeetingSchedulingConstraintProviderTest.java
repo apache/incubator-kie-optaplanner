@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.optaplanner.examples.meetingscheduling.optional.score;
+package org.optaplanner.examples.meetingscheduling.score;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,6 +29,7 @@ import org.optaplanner.examples.meetingscheduling.domain.PreferredAttendance;
 import org.optaplanner.examples.meetingscheduling.domain.RequiredAttendance;
 import org.optaplanner.examples.meetingscheduling.domain.Room;
 import org.optaplanner.examples.meetingscheduling.domain.TimeGrain;
+import org.optaplanner.examples.meetingscheduling.score.MeetingSchedulingConstraintProvider;
 import org.optaplanner.test.api.score.stream.ConstraintVerifier;
 
 public class MeetingSchedulingConstraintProviderTest {

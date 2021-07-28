@@ -8,8 +8,8 @@
   <entityClass>org.optaplanner.examples.meetingscheduling.domain.MeetingAssignment</entityClass>
 
   <scoreDirectorFactory>
-    <!--<constraintProviderClass>org.optaplanner.examples.meetingscheduling.optional.score.MeetingSchedulingConstraintProvider</constraintProviderClass>-->
-    <scoreDrl>org/optaplanner/examples/meetingscheduling/solver/meetingSchedulingConstraints.drl</scoreDrl>
+    <constraintProviderClass>org.optaplanner.examples.meetingscheduling.score.MeetingSchedulingConstraintProvider</constraintProviderClass>
+    <!--<scoreDrl>org/optaplanner/examples/meetingscheduling/solver/meetingSchedulingConstraints.drl</scoreDrl>-->
     <!--<assertionScoreDirectorFactory>-->
       <!--<scoreDrl>org/optaplanner/examples/meetingscheduling/solver/meetingSchedulingConstraints.drl</scoreDrl>-->
     <!--</assertionScoreDirectorFactory> -->
