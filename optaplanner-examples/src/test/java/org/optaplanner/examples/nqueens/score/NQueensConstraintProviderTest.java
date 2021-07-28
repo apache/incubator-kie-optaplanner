@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.optaplanner.examples.nqueens.optional.score;
+package org.optaplanner.examples.nqueens.score;
 
 import java.io.IOException;
 import java.io.InputStream;
