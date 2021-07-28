@@ -9,9 +9,9 @@
 
   <scoreDirectorFactory>
     <constraintProviderClass>org.optaplanner.examples.meetingscheduling.score.MeetingSchedulingConstraintProvider</constraintProviderClass>
-    <!--<scoreDrl>org/optaplanner/examples/meetingscheduling/solver/meetingSchedulingConstraints.drl</scoreDrl>-->
+    <!--<scoreDrl>org/optaplanner/examples/meetingscheduling/optional/score/drools/meetingSchedulingConstraints.drl</scoreDrl>-->
     <!--<assertionScoreDirectorFactory>-->
-      <!--<scoreDrl>org/optaplanner/examples/meetingscheduling/solver/meetingSchedulingConstraints.drl</scoreDrl>-->
+      <!--<scoreDrl>org/optaplanner/examples/meetingscheduling/optional/score/drools/meetingSchedulingConstraints.drl</scoreDrl>-->
     <!--</assertionScoreDirectorFactory> -->
   </scoreDirectorFactory>
 

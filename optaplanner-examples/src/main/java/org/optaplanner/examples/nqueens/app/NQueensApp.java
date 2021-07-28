@@ -91,7 +91,7 @@ public class NQueensApp extends CommonApp<NQueens> {
 
         ScoreDirectorFactoryConfig scoreDirectorFactoryConfig = new ScoreDirectorFactoryConfig();
         scoreDirectorFactoryConfig.setScoreDrlList(
-                Arrays.asList("org/optaplanner/examples/nqueens/solver/nQueensConstraints.drl"));
+                Arrays.asList("org/optaplanner/examples/nqueens/optional/score/drools/nQueensConstraints.drl"));
         solverConfig.setScoreDirectorFactoryConfig(scoreDirectorFactoryConfig);
 
         solverConfig.setTerminationConfig(new TerminationConfig().withBestScoreLimit("0"));

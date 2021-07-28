@@ -9,7 +9,7 @@
 
   <scoreDirectorFactory>
     <constraintProviderClass>org.optaplanner.examples.conferencescheduling.score.ConferenceSchedulingConstraintProvider</constraintProviderClass>
-    <!--<scoreDrl>org/optaplanner/examples/conferencescheduling/solver/conferenceSchedulingConstraints.drl</scoreDrl>-->
+    <!--<scoreDrl>org/optaplanner/examples/conferencescheduling/optional/score/drools/conferenceSchedulingConstraints.drl</scoreDrl>-->
   </scoreDirectorFactory>
 
   <!--<termination>-->

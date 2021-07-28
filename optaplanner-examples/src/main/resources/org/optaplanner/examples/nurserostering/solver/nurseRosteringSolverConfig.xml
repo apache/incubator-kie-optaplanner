@@ -9,7 +9,7 @@
 
   <scoreDirectorFactory>
     <constraintProviderClass>org.optaplanner.examples.nurserostering.score.NurseRosteringConstraintProvider</constraintProviderClass>
-    <!--<scoreDrl>org/optaplanner/examples/nurserostering/solver/nurseRosteringConstraints.drl</scoreDrl>-->
+    <!--<scoreDrl>org/optaplanner/examples/nurserostering/optional/score/drools/nurseRosteringConstraints.drl</scoreDrl>-->
   </scoreDirectorFactory>
 
   <termination>

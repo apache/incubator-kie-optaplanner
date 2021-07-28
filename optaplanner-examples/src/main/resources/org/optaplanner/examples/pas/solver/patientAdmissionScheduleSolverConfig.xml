@@ -9,9 +9,9 @@
 
   <scoreDirectorFactory>
     <constraintProviderClass>org.optaplanner.examples.pas.score.PatientAdmissionScheduleConstraintProvider</constraintProviderClass>
-    <!--<scoreDrl>org/optaplanner/examples/pas/solver/patientAdmissionScheduleConstraints.drl</scoreDrl>-->
+    <!--<scoreDrl>org/optaplanner/examples/pas/optional/score/drools/patientAdmissionScheduleConstraints.drl</scoreDrl>-->
     <!--<assertionScoreDirectorFactory>-->
-      <!--<scoreDrl>org/optaplanner/examples/pas/solver/patientAdmissionScheduleConstraints.drl</scoreDrl>-->
+      <!--<scoreDrl>org/optaplanner/examples/pas/optional/score/drools/patientAdmissionScheduleConstraints.drl</scoreDrl>-->
     <!--</assertionScoreDirectorFactory>-->
   </scoreDirectorFactory>
 
