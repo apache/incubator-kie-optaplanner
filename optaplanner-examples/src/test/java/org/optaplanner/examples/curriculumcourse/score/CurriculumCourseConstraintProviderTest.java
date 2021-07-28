@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.optaplanner.examples.curriculumcourse.optional.score;
+package org.optaplanner.examples.curriculumcourse.score;
 
 import org.junit.jupiter.api.Test;
 import org.optaplanner.examples.curriculumcourse.domain.Course;
@@ -28,6 +28,7 @@ import org.optaplanner.examples.curriculumcourse.domain.Teacher;
 import org.optaplanner.examples.curriculumcourse.domain.Timeslot;
 import org.optaplanner.examples.curriculumcourse.domain.UnavailablePeriodPenalty;
 import org.optaplanner.examples.curriculumcourse.domain.solver.CourseConflict;
+import org.optaplanner.examples.curriculumcourse.score.CurriculumCourseConstraintProvider;
 import org.optaplanner.test.api.score.stream.ConstraintVerifier;
 
 public class CurriculumCourseConstraintProviderTest {

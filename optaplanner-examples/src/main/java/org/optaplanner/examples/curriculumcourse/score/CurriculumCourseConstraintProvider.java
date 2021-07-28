@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.optaplanner.examples.curriculumcourse.optional.score;
+package org.optaplanner.examples.curriculumcourse.score;
 
 import static org.optaplanner.core.api.score.buildin.hardsoft.HardSoftScore.ONE_HARD;
 import static org.optaplanner.core.api.score.buildin.hardsoft.HardSoftScore.ofHard;
