@@ -8,8 +8,8 @@
   <entityClass>org.optaplanner.examples.conferencescheduling.domain.Talk</entityClass>
 
   <scoreDirectorFactory>
-    <!--<constraintProviderClass>org.optaplanner.examples.conferencescheduling.optional.score.ConferenceSchedulingConstraintProvider</constraintProviderClass>-->
-    <scoreDrl>org/optaplanner/examples/conferencescheduling/solver/conferenceSchedulingConstraints.drl</scoreDrl>
+    <constraintProviderClass>org.optaplanner.examples.conferencescheduling.score.ConferenceSchedulingConstraintProvider</constraintProviderClass>
+    <!--<scoreDrl>org/optaplanner/examples/conferencescheduling/solver/conferenceSchedulingConstraints.drl</scoreDrl>-->
   </scoreDirectorFactory>
 
   <!--<termination>-->

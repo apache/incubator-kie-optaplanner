@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.optaplanner.examples.conferencescheduling.optional.score;
+package org.optaplanner.examples.conferencescheduling.score;
 
 import static java.util.Collections.emptySet;
 import static java.util.Collections.singleton;
@@ -31,6 +31,7 @@ import org.optaplanner.examples.conferencescheduling.domain.Room;
 import org.optaplanner.examples.conferencescheduling.domain.Speaker;
 import org.optaplanner.examples.conferencescheduling.domain.Talk;
 import org.optaplanner.examples.conferencescheduling.domain.Timeslot;
+import org.optaplanner.examples.conferencescheduling.score.ConferenceSchedulingConstraintProvider;
 import org.optaplanner.test.api.score.stream.ConstraintVerifier;
 
 public class ConferenceSchedulingConstraintProviderTest {
