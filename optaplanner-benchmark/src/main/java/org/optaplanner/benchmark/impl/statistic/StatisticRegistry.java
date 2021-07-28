@@ -100,12 +100,15 @@ public class StatisticRegistry extends SimpleMeterRegistry implements PhaseLifec
         scoreConsumer.accept(scoreDefinition.fromLevelNumbers(0, levelNumbers));
     }
 
-    public Number getGaugeValue(SolverMetric metric, Tags runId) {
-        return getGaugeValue(metric.getMeterId(), runId);
+    public void getGaugeValue(SolverMetric metric, Tags runId, Consumer<Number> gaugeConsumer) {
+        getGaugeValue(metric.getMeterId(), runId, gaugeConsumer);
     }
 
-    public Number getGaugeValue(String meterId, Tags runId) {
-        return this.find(meterId).tags(runId).gauge().value();
+    public void getGaugeValue(String meterId, Tags runId, Consumer<Number> gaugeConsumer) {
+        Gauge gauge = this.find(meterId).tags(runId).gauge();
+        if (gauge != null) {
+            gaugeConsumer.accept(gauge.value());
+        }
     }
 
     @Override

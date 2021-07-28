@@ -42,8 +42,9 @@ public class BestSolutionMutationSubSingleStatistic<Solution_>
     @Override
     public void open(StatisticRegistry registry, Tags runTag, Solver<Solution_> solver) {
         registry.addListener(SolverMetric.BEST_SOLUTION_MUTATION, timestamp -> {
-            pointList.add(new BestSolutionMutationStatisticPoint(timestamp,
-                    registry.getGaugeValue(SolverMetric.BEST_SOLUTION_MUTATION, runTag).intValue()));
+            registry.getGaugeValue(SolverMetric.BEST_SOLUTION_MUTATION, runTag, mutationCount -> {
+                pointList.add(new BestSolutionMutationStatisticPoint(timestamp, mutationCount.intValue()));
+            });
         });
     }
 

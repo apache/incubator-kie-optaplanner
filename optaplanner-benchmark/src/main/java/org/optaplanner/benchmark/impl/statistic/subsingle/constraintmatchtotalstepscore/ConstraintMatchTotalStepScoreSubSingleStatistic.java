@@ -92,16 +92,17 @@ public class ConstraintMatchTotalStepScoreSubSingleStatistic<Solution_>
                 registry.extractScoreFromMeters(SolverMetric.CONSTRAINT_MATCH_TOTAL_STEP_SCORE, runTag
                         .and("constraint.package", constraintPackageNamePair.left)
                         .and("constraint.name", constraintPackageNamePair.right), score -> {
-                            int count = registry.getGaugeValue(SolverMetric.CONSTRAINT_MATCH_TOTAL_STEP_SCORE + ".count",
+                            registry.getGaugeValue(SolverMetric.CONSTRAINT_MATCH_TOTAL_STEP_SCORE + ".count",
                                     runTag.and("constraint.package", constraintPackageNamePair.left)
-                                            .and("constraint.name", constraintPackageNamePair.right))
-                                    .intValue();
-                            pointList.add(new ConstraintMatchTotalStepScoreStatisticPoint(
-                                    timeMillisSpent,
-                                    constraintPackage,
-                                    constraintName,
-                                    count,
-                                    score));
+                                            .and("constraint.name", constraintPackageNamePair.right),
+                                    count -> {
+                                        pointList.add(new ConstraintMatchTotalStepScoreStatisticPoint(
+                                                timeMillisSpent,
+                                                constraintPackage,
+                                                constraintName,
+                                                count.intValue(),
+                                                score));
+                                    });
                         });
             });
         });

@@ -53,8 +53,9 @@ public class ScoreCalculationSpeedSubSingleStatistic<Solution_>
     @Override
     public void open(StatisticRegistry registry, Tags runTag, Solver<Solution_> solver) {
         registry.addListener(SolverMetric.SCORE_CALCULATION_SPEED, timestamp -> {
-            pointList.add(new ScoreCalculationSpeedStatisticPoint(timestamp,
-                    registry.getGaugeValue(SolverMetric.SCORE_CALCULATION_SPEED, runTag).longValue()));
+            registry.getGaugeValue(SolverMetric.SCORE_CALCULATION_SPEED, runTag, scoreCalculationSpeed -> {
+                pointList.add(new ScoreCalculationSpeedStatisticPoint(timestamp, scoreCalculationSpeed.longValue()));
+            });
         });
     }
 

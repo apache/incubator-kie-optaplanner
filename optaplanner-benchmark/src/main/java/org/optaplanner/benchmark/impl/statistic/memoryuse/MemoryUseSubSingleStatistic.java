@@ -74,9 +74,10 @@ public class MemoryUseSubSingleStatistic<Solution_>
         @Override
         public void accept(Long timeMillisSpent) {
             if (timeMillisSpent >= nextTimeMillisThreshold) {
-                pointList.add(new MemoryUseStatisticPoint(timeMillisSpent,
-                        new MemoryUseMeasurement(registry.getGaugeValue(SolverMetric.MEMORY_USE, tags).longValue(),
-                                (long) registry.find("jvm.memory.max").tags(tags).gauge().value())));
+                registry.getGaugeValue(SolverMetric.MEMORY_USE, tags, memoryUse -> {
+                    pointList.add(new MemoryUseStatisticPoint(timeMillisSpent, new MemoryUseMeasurement(memoryUse.longValue(),
+                            (long) registry.find("jvm.memory.max").tags(tags).gauge().value())));
+                });
 
                 nextTimeMillisThreshold += timeMillisThresholdInterval;
                 if (nextTimeMillisThreshold < timeMillisSpent) {
