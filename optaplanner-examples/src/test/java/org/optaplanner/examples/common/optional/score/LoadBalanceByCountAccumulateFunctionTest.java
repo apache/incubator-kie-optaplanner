@@ -14,11 +14,12 @@
  * limitations under the License.
  */
 
-package org.optaplanner.examples.common.solver.drools.functions;
+package org.optaplanner.examples.common.optional.score;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 import org.junit.jupiter.api.Test;
+import org.optaplanner.examples.common.optional.score.LoadBalanceByCountAccumulateFunction;
 
 public class LoadBalanceByCountAccumulateFunctionTest {
 
