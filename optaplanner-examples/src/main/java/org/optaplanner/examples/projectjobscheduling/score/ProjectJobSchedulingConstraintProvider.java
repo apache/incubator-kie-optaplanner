@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.optaplanner.examples.projectjobscheduling.optional.score;
+package org.optaplanner.examples.projectjobscheduling.score;
 
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;

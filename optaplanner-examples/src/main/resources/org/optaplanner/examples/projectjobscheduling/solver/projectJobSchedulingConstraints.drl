@@ -26,9 +26,9 @@ import org.optaplanner.examples.projectjobscheduling.domain.JobType;
 import org.optaplanner.examples.projectjobscheduling.domain.Project;
 import org.optaplanner.examples.projectjobscheduling.domain.ResourceRequirement;
 import org.optaplanner.examples.projectjobscheduling.domain.resource.Resource;
-import org.optaplanner.examples.projectjobscheduling.score.capacity.NonrenewableResourceCapacityTracker;
-import org.optaplanner.examples.projectjobscheduling.score.capacity.RenewableResourceCapacityTracker;
-import org.optaplanner.examples.projectjobscheduling.score.capacity.ResourceCapacityTracker;
+import org.optaplanner.examples.projectjobscheduling.optional.score.common.NonrenewableResourceCapacityTracker;
+import org.optaplanner.examples.projectjobscheduling.optional.score.common.RenewableResourceCapacityTracker;
+import org.optaplanner.examples.projectjobscheduling.optional.score.common.ResourceCapacityTracker;
 import org.optaplanner.examples.projectjobscheduling.optional.score.drools.RenewableResourceUsedDay;
 
 global HardMediumSoftScoreHolder scoreHolder;
