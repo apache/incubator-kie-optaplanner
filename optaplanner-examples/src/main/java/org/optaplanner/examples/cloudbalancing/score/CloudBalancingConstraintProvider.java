@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.optaplanner.examples.cloudbalancing.optional.score;
+package org.optaplanner.examples.cloudbalancing.score;
 
 import static org.optaplanner.core.api.score.stream.ConstraintCollectors.sum;
 import static org.optaplanner.core.api.score.stream.Joiners.equal;

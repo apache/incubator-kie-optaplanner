@@ -68,7 +68,7 @@
     <name>ConstraintStreams (Drools)</name>
     <solver>
       <scoreDirectorFactory>
-        <constraintProviderClass>org.optaplanner.examples.cloudbalancing.optional.score.CloudBalancingConstraintProvider</constraintProviderClass>
+        <constraintProviderClass>org.optaplanner.examples.cloudbalancing.score.CloudBalancingConstraintProvider</constraintProviderClass>
       </scoreDirectorFactory>
     </solver>
   </solverBenchmark>

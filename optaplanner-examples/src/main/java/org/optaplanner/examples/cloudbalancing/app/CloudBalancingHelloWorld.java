@@ -25,7 +25,7 @@ import org.optaplanner.examples.cloudbalancing.domain.CloudBalance;
 import org.optaplanner.examples.cloudbalancing.domain.CloudComputer;
 import org.optaplanner.examples.cloudbalancing.domain.CloudProcess;
 import org.optaplanner.examples.cloudbalancing.optional.benchmark.CloudBalancingBenchmarkHelloWorld;
-import org.optaplanner.examples.cloudbalancing.optional.score.CloudBalancingConstraintProvider;
+import org.optaplanner.examples.cloudbalancing.score.CloudBalancingConstraintProvider;
 import org.optaplanner.examples.cloudbalancing.persistence.CloudBalancingGenerator;
 
 /**
