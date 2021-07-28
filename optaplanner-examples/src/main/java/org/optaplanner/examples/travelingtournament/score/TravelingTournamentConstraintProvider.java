@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.optaplanner.examples.travelingtournament.optional.score;
+package org.optaplanner.examples.travelingtournament.score;
 
 import static org.optaplanner.core.api.score.stream.Joiners.equal;
 
