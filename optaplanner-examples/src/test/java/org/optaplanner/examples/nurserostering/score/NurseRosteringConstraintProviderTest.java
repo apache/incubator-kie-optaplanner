@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.optaplanner.examples.nurserostering.optional.score;
+package org.optaplanner.examples.nurserostering.score;
 
 import java.time.DayOfWeek;
 import java.time.LocalDate;
@@ -51,6 +51,7 @@ import org.optaplanner.examples.nurserostering.domain.request.DayOffRequest;
 import org.optaplanner.examples.nurserostering.domain.request.DayOnRequest;
 import org.optaplanner.examples.nurserostering.domain.request.ShiftOffRequest;
 import org.optaplanner.examples.nurserostering.domain.request.ShiftOnRequest;
+import org.optaplanner.examples.nurserostering.score.NurseRosteringConstraintProvider;
 import org.optaplanner.test.api.score.stream.ConstraintVerifier;
 
 public class NurseRosteringConstraintProviderTest {

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.optaplanner.examples.nurserostering.score.drools;
+package org.optaplanner.examples.nurserostering.optional.score.drools;
 
 import java.util.Comparator;
 import java.util.Objects;
@@ -22,16 +22,16 @@ import java.util.Objects;
 import org.optaplanner.examples.nurserostering.domain.Employee;
 import org.optaplanner.examples.nurserostering.domain.contract.Contract;
 
-public class EmployeeConsecutiveWeekendAssignmentEnd implements Comparable<EmployeeConsecutiveWeekendAssignmentEnd> {
+public class EmployeeConsecutiveWeekendAssignmentStart implements Comparable<EmployeeConsecutiveWeekendAssignmentStart> {
 
-    private static final Comparator<EmployeeConsecutiveWeekendAssignmentEnd> COMPARATOR = Comparator
-            .comparing(EmployeeConsecutiveWeekendAssignmentEnd::getEmployee)
-            .thenComparingInt(EmployeeConsecutiveWeekendAssignmentEnd::getSundayIndex);
+    private static final Comparator<EmployeeConsecutiveWeekendAssignmentStart> COMPARATOR = Comparator
+            .comparing(EmployeeConsecutiveWeekendAssignmentStart::getEmployee)
+            .thenComparingInt(EmployeeConsecutiveWeekendAssignmentStart::getSundayIndex);
 
     private Employee employee;
     private int sundayIndex;
 
-    public EmployeeConsecutiveWeekendAssignmentEnd(Employee employee, int sundayIndex) {
+    public EmployeeConsecutiveWeekendAssignmentStart(Employee employee, int sundayIndex) {
         this.employee = employee;
         this.sundayIndex = sundayIndex;
     }
@@ -60,7 +60,7 @@ public class EmployeeConsecutiveWeekendAssignmentEnd implements Comparable<Emplo
         if (o == null || getClass() != o.getClass()) {
             return false;
         }
-        final EmployeeConsecutiveWeekendAssignmentEnd other = (EmployeeConsecutiveWeekendAssignmentEnd) o;
+        final EmployeeConsecutiveWeekendAssignmentStart other = (EmployeeConsecutiveWeekendAssignmentStart) o;
         return Objects.equals(employee, other.employee) &&
                 sundayIndex == other.sundayIndex;
     }
@@ -71,13 +71,13 @@ public class EmployeeConsecutiveWeekendAssignmentEnd implements Comparable<Emplo
     }
 
     @Override
-    public int compareTo(EmployeeConsecutiveWeekendAssignmentEnd other) {
+    public int compareTo(EmployeeConsecutiveWeekendAssignmentStart other) {
         return COMPARATOR.compare(this, other);
     }
 
     @Override
     public String toString() {
-        return employee + " weekend ... - " + sundayIndex;
+        return employee + " weekend " + sundayIndex + " - ...";
     }
 
     public Contract getContract() {
