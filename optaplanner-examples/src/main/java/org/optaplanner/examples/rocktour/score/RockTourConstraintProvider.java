@@ -1,4 +1,4 @@
-package org.optaplanner.examples.rocktour.optional.score;
+package org.optaplanner.examples.rocktour.score;
 
 import static org.optaplanner.examples.rocktour.domain.RockTourConstraintConfiguration.DELAY_SHOW_COST_PER_DAY;
 import static org.optaplanner.examples.rocktour.domain.RockTourConstraintConfiguration.DRIVING_TIME_TO_BUS_ARRIVAL_PER_SECOND;

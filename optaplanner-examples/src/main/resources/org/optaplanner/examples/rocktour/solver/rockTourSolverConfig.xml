@@ -9,8 +9,8 @@
   <entityClass>org.optaplanner.examples.rocktour.domain.RockStandstill</entityClass>
 
   <scoreDirectorFactory>
-    <!--<constraintProviderClass>org.optaplanner.examples.rocktour.optional.score.RockTourConstraintProvider</constraintProviderClass>-->
-    <scoreDrl>org/optaplanner/examples/rocktour/solver/rockTourConstraints.drl</scoreDrl>
+    <constraintProviderClass>org.optaplanner.examples.rocktour.score.RockTourConstraintProvider</constraintProviderClass>
+    <!--<scoreDrl>org/optaplanner/examples/rocktour/solver/rockTourConstraints.drl</scoreDrl>-->
   </scoreDirectorFactory>
 
   <!--<termination>-->
