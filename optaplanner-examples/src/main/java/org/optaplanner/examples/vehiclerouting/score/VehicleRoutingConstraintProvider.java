@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.optaplanner.examples.vehiclerouting.optional.score;
+package org.optaplanner.examples.vehiclerouting.score;
 
 import static org.optaplanner.core.api.score.stream.ConstraintCollectors.sum;
 
