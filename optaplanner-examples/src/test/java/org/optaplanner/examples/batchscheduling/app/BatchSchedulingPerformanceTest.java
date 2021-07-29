@@ -24,7 +24,7 @@ import org.optaplanner.examples.common.app.SolverPerformanceTest;
 
 public class BatchSchedulingPerformanceTest extends SolverPerformanceTest<BatchSchedule> {
 
-    private static final String UNSOLVED_DATA_FILE = "data/batchscheduling/unsolved/Data50_25.xml";
+    private static final String UNSOLVED_DATA_FILE = "data/batchscheduling/unsolved/Data5_23.xml";
 
     @Override
     protected BatchSchedulingApp createCommonApp() {
@@ -34,7 +34,7 @@ public class BatchSchedulingPerformanceTest extends SolverPerformanceTest<BatchS
     @Override
     protected Stream<TestData> testData() {
         return Stream.of(
-                testData(UNSOLVED_DATA_FILE, "0hard/-902335925205947medium/-20672soft", EnvironmentMode.REPRODUCIBLE),
-                testData(UNSOLVED_DATA_FILE, "0hard/-918680355373904medium/-22228soft", EnvironmentMode.FAST_ASSERT));
+                testData(UNSOLVED_DATA_FILE, "[0/0/0]hard/[-332/0]soft", EnvironmentMode.REPRODUCIBLE),
+                testData(UNSOLVED_DATA_FILE, "[0/0/0]hard/[-359/0]soft", EnvironmentMode.FAST_ASSERT));
     }
 }
