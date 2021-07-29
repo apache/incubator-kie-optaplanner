@@ -16,11 +16,9 @@
 
 package org.optaplanner.examples.tsp.app;
 
-import org.optaplanner.core.api.score.calculator.EasyScoreCalculator;
 import org.optaplanner.examples.common.app.CommonApp;
 import org.optaplanner.examples.common.app.UnsolvedDirSolveAllTurtleTest;
 import org.optaplanner.examples.tsp.domain.TspSolution;
-import org.optaplanner.examples.tsp.optional.score.TspEasyScoreCalculator;
 
 public class TspSolveAllTurtleTest extends UnsolvedDirSolveAllTurtleTest<TspSolution> {
 
@@ -29,8 +27,4 @@ public class TspSolveAllTurtleTest extends UnsolvedDirSolveAllTurtleTest<TspSolu
         return new TspApp();
     }
 
-    @Override
-    protected Class<? extends EasyScoreCalculator> overwritingEasyScoreCalculatorClass() {
-        return TspEasyScoreCalculator.class;
-    }
 }

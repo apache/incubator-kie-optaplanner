@@ -16,11 +16,9 @@
 
 package org.optaplanner.examples.nqueens.app;
 
-import org.optaplanner.core.api.score.calculator.EasyScoreCalculator;
 import org.optaplanner.examples.common.app.CommonApp;
 import org.optaplanner.examples.common.app.UnsolvedDirSolveAllTurtleTest;
 import org.optaplanner.examples.nqueens.domain.NQueens;
-import org.optaplanner.examples.nqueens.optional.score.NQueensEasyScoreCalculator;
 
 public class NQueensSolveAllTurtleTest extends UnsolvedDirSolveAllTurtleTest<NQueens> {
 
@@ -29,8 +27,4 @@ public class NQueensSolveAllTurtleTest extends UnsolvedDirSolveAllTurtleTest<NQu
         return new NQueensApp();
     }
 
-    @Override
-    protected Class<? extends EasyScoreCalculator> overwritingEasyScoreCalculatorClass() {
-        return NQueensEasyScoreCalculator.class;
-    }
 }

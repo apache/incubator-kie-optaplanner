@@ -16,11 +16,9 @@
 
 package org.optaplanner.examples.vehiclerouting.app;
 
-import org.optaplanner.core.api.score.calculator.EasyScoreCalculator;
 import org.optaplanner.examples.common.app.CommonApp;
 import org.optaplanner.examples.common.app.ImportDirSolveAllTurtleTest;
 import org.optaplanner.examples.vehiclerouting.domain.VehicleRoutingSolution;
-import org.optaplanner.examples.vehiclerouting.optional.score.VehicleRoutingEasyScoreCalculator;
 
 public class VehicleRoutingSolveAllTurtleTest extends ImportDirSolveAllTurtleTest<VehicleRoutingSolution> {
 
@@ -29,8 +27,4 @@ public class VehicleRoutingSolveAllTurtleTest extends ImportDirSolveAllTurtleTes
         return new VehicleRoutingApp();
     }
 
-    @Override
-    protected Class<? extends EasyScoreCalculator> overwritingEasyScoreCalculatorClass() {
-        return VehicleRoutingEasyScoreCalculator.class;
-    }
 }

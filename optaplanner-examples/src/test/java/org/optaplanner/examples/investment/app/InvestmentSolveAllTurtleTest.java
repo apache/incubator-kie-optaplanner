@@ -16,11 +16,9 @@
 
 package org.optaplanner.examples.investment.app;
 
-import org.optaplanner.core.api.score.calculator.EasyScoreCalculator;
 import org.optaplanner.examples.common.app.CommonApp;
 import org.optaplanner.examples.common.app.UnsolvedDirSolveAllTurtleTest;
 import org.optaplanner.examples.investment.domain.InvestmentSolution;
-import org.optaplanner.examples.investment.optional.score.InvestmentEasyScoreCalculator;
 
 public class InvestmentSolveAllTurtleTest extends UnsolvedDirSolveAllTurtleTest<InvestmentSolution> {
 
@@ -29,8 +27,4 @@ public class InvestmentSolveAllTurtleTest extends UnsolvedDirSolveAllTurtleTest<
         return new InvestmentApp();
     }
 
-    @Override
-    protected Class<? extends EasyScoreCalculator> overwritingEasyScoreCalculatorClass() {
-        return InvestmentEasyScoreCalculator.class;
-    }
 }

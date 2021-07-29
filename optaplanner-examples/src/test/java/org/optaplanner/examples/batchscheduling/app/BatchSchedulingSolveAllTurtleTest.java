@@ -14,17 +14,17 @@
  * limitations under the License.
  */
 
-package org.optaplanner.examples.coachshuttlegathering.app;
+package org.optaplanner.examples.batchscheduling.app;
 
-import org.optaplanner.examples.coachshuttlegathering.domain.CoachShuttleGatheringSolution;
+import org.optaplanner.examples.batchscheduling.domain.BatchSchedule;
 import org.optaplanner.examples.common.app.CommonApp;
 import org.optaplanner.examples.common.app.UnsolvedDirSolveAllTurtleTest;
 
-public class CoachShuttleGatheringSolveAllTurtleTest extends UnsolvedDirSolveAllTurtleTest<CoachShuttleGatheringSolution> {
+public class BatchSchedulingSolveAllTurtleTest extends UnsolvedDirSolveAllTurtleTest<BatchSchedule> {
 
     @Override
-    protected CommonApp<CoachShuttleGatheringSolution> createCommonApp() {
-        return new CoachShuttleGatheringApp();
+    protected CommonApp<BatchSchedule> createCommonApp() {
+        return new BatchSchedulingApp();
     }
 
 }

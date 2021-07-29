@@ -16,9 +16,7 @@
 
 package org.optaplanner.examples.cloudbalancing.app;
 
-import org.optaplanner.core.api.score.calculator.EasyScoreCalculator;
 import org.optaplanner.examples.cloudbalancing.domain.CloudBalance;
-import org.optaplanner.examples.cloudbalancing.optional.score.CloudBalancingMapBasedEasyScoreCalculator;
 import org.optaplanner.examples.common.app.CommonApp;
 import org.optaplanner.examples.common.app.UnsolvedDirSolveAllTurtleTest;
 
@@ -29,8 +27,4 @@ public class CloudBalancingSolveAllTurtleTest extends UnsolvedDirSolveAllTurtleT
         return new CloudBalancingApp();
     }
 
-    @Override
-    protected Class<? extends EasyScoreCalculator> overwritingEasyScoreCalculatorClass() {
-        return CloudBalancingMapBasedEasyScoreCalculator.class;
-    }
 }
