@@ -51,7 +51,6 @@ import org.optaplanner.examples.nurserostering.domain.request.DayOffRequest;
 import org.optaplanner.examples.nurserostering.domain.request.DayOnRequest;
 import org.optaplanner.examples.nurserostering.domain.request.ShiftOffRequest;
 import org.optaplanner.examples.nurserostering.domain.request.ShiftOnRequest;
-import org.optaplanner.examples.nurserostering.score.NurseRosteringConstraintProvider;
 import org.optaplanner.test.api.score.stream.ConstraintVerifier;
 
 public class NurseRosteringConstraintProviderTest {

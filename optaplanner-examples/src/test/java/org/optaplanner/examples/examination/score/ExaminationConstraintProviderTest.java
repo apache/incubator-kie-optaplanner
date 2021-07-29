@@ -30,7 +30,6 @@ import org.optaplanner.examples.examination.domain.RoomPenaltyType;
 import org.optaplanner.examples.examination.domain.Student;
 import org.optaplanner.examples.examination.domain.Topic;
 import org.optaplanner.examples.examination.domain.solver.TopicConflict;
-import org.optaplanner.examples.examination.score.ExaminationConstraintProvider;
 import org.optaplanner.test.api.score.stream.ConstraintVerifier;
 
 public class ExaminationConstraintProviderTest {

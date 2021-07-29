@@ -26,7 +26,6 @@ import org.optaplanner.examples.vehiclerouting.domain.location.AirLocation;
 import org.optaplanner.examples.vehiclerouting.domain.location.Location;
 import org.optaplanner.examples.vehiclerouting.domain.timewindowed.TimeWindowedCustomer;
 import org.optaplanner.examples.vehiclerouting.domain.timewindowed.TimeWindowedDepot;
-import org.optaplanner.examples.vehiclerouting.score.VehicleRoutingConstraintProvider;
 import org.optaplanner.test.api.score.stream.ConstraintVerifier;
 
 public class VehicleRoutingConstraintProviderTest {

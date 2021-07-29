@@ -42,7 +42,6 @@ import org.optaplanner.examples.pas.domain.Room;
 import org.optaplanner.examples.pas.domain.RoomEquipment;
 import org.optaplanner.examples.pas.domain.RoomSpecialism;
 import org.optaplanner.examples.pas.domain.Specialism;
-import org.optaplanner.examples.pas.score.PatientAdmissionScheduleConstraintProvider;
 import org.optaplanner.test.api.score.stream.ConstraintVerifier;
 
 public class PatientAdmissionScheduleConstraintProviderTest {

@@ -45,7 +45,7 @@ import org.optaplanner.persistence.common.api.domain.solution.SolutionFileIO;
  */
 public class NQueensApp extends CommonApp<NQueens> {
 
-    public static final String SOLVER_CONFIG = "org/optaplanner/examples/nqueens/solver/nqueensSolverConfig.xml";
+    public static final String SOLVER_CONFIG = "org/optaplanner/examples/nqueens/nqueensSolverConfig.xml";
 
     public static final String DATA_DIR_NAME = "nqueens";
 

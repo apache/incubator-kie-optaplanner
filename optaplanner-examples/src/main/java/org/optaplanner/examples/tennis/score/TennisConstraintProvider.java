@@ -99,7 +99,7 @@ public final class TennisConstraintProvider implements ConstraintProvider {
                         lessThan(assignment -> assignment.getTeam().getId()))
                 .groupBy(loadBalance(
                         (assignment, otherAssignment) -> Pair.of(assignment.getTeam(), otherAssignment.getTeam())))
-                .penalize( "evenlyConfrontationCount", HardMediumSoftScore.ONE_SOFT,
+                .penalize("evenlyConfrontationCount", HardMediumSoftScore.ONE_SOFT,
                         result -> (int) result.getZeroDeviationSquaredSumRootMillis());
     }
 
