@@ -50,8 +50,12 @@ pipeline {
         stage('Build optaplanner') {
             steps {
                 script {
-                    getNativeMavenCommand('optaplanner')
-                        .run('clean install')
+                    try {
+                        getNativeMavenCommand('optaplanner')
+                            .run('clean install')
+                    }catch(err) {
+                        unstable("optaplanner test not finish correctly")
+                    }
                 }
             }
             post {
@@ -65,8 +69,12 @@ pipeline {
         stage('Build optaplanner-quickstarts') {
             steps {
                 script {
-                    getNativeMavenCommand('optaplanner-quickstarts')
-                        .run('clean install')
+                    try {
+                        getNativeMavenCommand('optaplanner-quickstarts')
+                            .run('clean install')
+                    }catch(err) {
+                        unstable("optaplanner-quickstarts test not finish correctly")
+                    }
                 }
             }
             post {
