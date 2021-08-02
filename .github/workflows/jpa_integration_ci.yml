@@ -12,7 +12,6 @@ on:
       - '**.md'
       - '**.adoc'
       - '*.txt'
-      - 'build/**'
       - '.ci/**'      
   pull_request:
     types: [opened, synchronize, reopened, ready_for_review]
@@ -24,7 +23,6 @@ on:
       - '**.md'
       - '**.adoc'
       - '*.txt'
-      - 'build/**'
       - '.ci/**'
 
 defaults:
