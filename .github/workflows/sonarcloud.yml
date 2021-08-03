@@ -11,7 +11,8 @@ on:
       - '**.md'
       - '**.adoc'
       - '*.txt'
-      - '.ci/**'      
+      - '.ci/**'
+      - '**/optaplanner-examples/**/swingui/**/*'
 
 defaults:
   run:
