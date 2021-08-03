@@ -45,6 +45,8 @@ import org.junit.jupiter.params.provider.MethodSource;
 import org.optaplanner.core.api.domain.constraintweight.ConstraintWeight;
 import org.optaplanner.core.api.score.buildin.hardmediumsoft.HardMediumSoftScore;
 import org.optaplanner.core.api.solver.SolverFactory;
+import org.optaplanner.core.config.score.director.ScoreDirectorFactoryConfig;
+import org.optaplanner.core.config.solver.SolverConfig;
 import org.optaplanner.core.impl.domain.constraintweight.descriptor.ConstraintWeightDescriptor;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.examples.common.persistence.AbstractXlsxSolutionFileIO;
@@ -80,16 +82,22 @@ public class ConferenceSchedulingConstraintsXlsxTest {
     private static final String testFileName = "testConferenceSchedulingConstraints.xlsx";
     private static final HardMediumSoftScore unassignedScore = HardMediumSoftScore.ZERO;
 
-    private static HardMediumSoftScoreVerifier<ConferenceSolution> scoreVerifier = new HardMediumSoftScoreVerifier<>(
-            SolverFactory.createFromXmlResource(ConferenceSchedulingApp.SOLVER_CONFIG));
+    // This test is specifically designed to test the DRL; therefore we override the default solver config to use DRL.
+    private static final ScoreDirectorFactoryConfig DRL_SCORE_DIRECTOR_FACTORY_CONFIG = new ScoreDirectorFactoryConfig()
+            .withScoreDrls(
+                    "org/optaplanner/examples/conferencescheduling/optional/score/drools/conferenceSchedulingConstraints.drl");
+    private static final SolverConfig SOLVER_CONFIG = SolverConfig.createFromXmlResource(ConferenceSchedulingApp.SOLVER_CONFIG)
+            .withScoreDirectorFactory(DRL_SCORE_DIRECTOR_FACTORY_CONFIG);
+    private static final HardMediumSoftScoreVerifier<ConferenceSolution> SCORE_VERIFIER =
+            new HardMediumSoftScoreVerifier<>(SolverFactory.create(SOLVER_CONFIG));
 
     @ParameterizedTest(name = "{4}")
     @MethodSource("testSheetParameters")
     public void constraints(String constraintPackage, String constraintName,
             HardMediumSoftScore expectedScore, ConferenceSolution solution, String testSheetName) {
-        scoreVerifier.assertHardWeight(constraintPackage, constraintName, expectedScore.getHardScore(), solution);
-        scoreVerifier.assertMediumWeight(constraintPackage, constraintName, expectedScore.getMediumScore(), solution);
-        scoreVerifier.assertSoftWeight(constraintPackage, constraintName, expectedScore.getSoftScore(), solution);
+        SCORE_VERIFIER.assertHardWeight(constraintPackage, constraintName, expectedScore.getHardScore(), solution);
+        SCORE_VERIFIER.assertMediumWeight(constraintPackage, constraintName, expectedScore.getMediumScore(), solution);
+        SCORE_VERIFIER.assertSoftWeight(constraintPackage, constraintName, expectedScore.getSoftScore(), solution);
     }
 
     private static class TestConferenceSchedulingConstraintsReader
@@ -177,8 +185,8 @@ public class ConferenceSchedulingConstraintsXlsxTest {
                     constraintScore.getMediumScore() * weightMultiplier,
                     constraintScore.getSoftScore() * weightMultiplier);
 
-            scoreVerifier.assertHardWeight(constraintPackage, constraintName, unassignedScore.getHardScore(), solution);
-            scoreVerifier.assertSoftWeight(constraintPackage, constraintName, unassignedScore.getSoftScore(), solution);
+            SCORE_VERIFIER.assertHardWeight(constraintPackage, constraintName, unassignedScore.getHardScore(), solution);
+            SCORE_VERIFIER.assertSoftWeight(constraintPackage, constraintName, unassignedScore.getSoftScore(), solution);
 
             nextRow();
             readTimeslotDays();
