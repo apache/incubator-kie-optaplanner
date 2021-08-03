@@ -21,7 +21,7 @@ endif::OPTAPLANNER-COMM[]
 
 [id="assembly-optaplanner-vaccination_{context}"]
 
-= {PLANNER} on {QUARKUS}: a vaccination appointment scheduler quick start guide
+= Vaccination Scheduler
 
 [role="_abstract"]
 You can use the OptaPlanner vaccination appointment scheduler quick start to develop a vaccination schedule that is both efficient and fair. The vaccination appointment scheduler uses artificial intelligence (AI) to prioritize people and allocate time slots based on multiple constraints and priorities.
