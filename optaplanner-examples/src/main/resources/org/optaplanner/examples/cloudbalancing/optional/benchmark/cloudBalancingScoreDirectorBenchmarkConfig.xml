@@ -76,7 +76,7 @@
     <name>DRL (Drools)</name>
     <solver>
       <scoreDirectorFactory>
-        <scoreDrl>org/optaplanner/examples/cloudbalancing/optional/score/drools/cloudBalancingConstraints.drl</scoreDrl>
+        <scoreDrl>org/optaplanner/examples/cloudbalancing/optional/score/cloudBalancingConstraints.drl</scoreDrl>
       </scoreDirectorFactory>
     </solver>
   </solverBenchmark>

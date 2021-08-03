@@ -16,10 +16,10 @@
 
 package org.optaplanner.examples.nurserostering.score;
 
-import static org.optaplanner.examples.nurserostering.optional.score.drools.EmployeeConsecutiveAssignmentEnd.getDistanceToLastDayOfWeekend;
-import static org.optaplanner.examples.nurserostering.optional.score.drools.EmployeeConsecutiveAssignmentEnd.isWeekendAndNotLastDayOfWeekend;
-import static org.optaplanner.examples.nurserostering.optional.score.drools.EmployeeConsecutiveAssignmentStart.getDistanceToFirstDayOfWeekend;
-import static org.optaplanner.examples.nurserostering.optional.score.drools.EmployeeConsecutiveAssignmentStart.isWeekendAndNotFirstDayOfWeekend;
+import static org.optaplanner.examples.nurserostering.optional.score.EmployeeConsecutiveAssignmentEnd.getDistanceToLastDayOfWeekend;
+import static org.optaplanner.examples.nurserostering.optional.score.EmployeeConsecutiveAssignmentEnd.isWeekendAndNotLastDayOfWeekend;
+import static org.optaplanner.examples.nurserostering.optional.score.EmployeeConsecutiveAssignmentStart.getDistanceToFirstDayOfWeekend;
+import static org.optaplanner.examples.nurserostering.optional.score.EmployeeConsecutiveAssignmentStart.isWeekendAndNotFirstDayOfWeekend;
 
 import java.time.DayOfWeek;
 

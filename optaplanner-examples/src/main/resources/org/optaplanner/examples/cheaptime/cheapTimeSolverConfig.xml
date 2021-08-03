@@ -13,7 +13,7 @@
     <!--<easyScoreCalculatorClass>org.optaplanner.examples.cheaptime.optional.score.CheapTimeEasyScoreCalculator</easyScoreCalculatorClass>-->
     <constraintProviderClass>org.optaplanner.examples.cheaptime.score.CheapTimeConstraintProvider</constraintProviderClass>
     <!--<incrementalScoreCalculatorClass>org.optaplanner.examples.cheaptime.optional.score.CheapTimeIncrementalScoreCalculator</incrementalScoreCalculatorClass>-->
-    <!--<scoreDrl>org/optaplanner/examples/cheaptime/optional/score/drools/cheapTimeConstraints.drl</scoreDrl>-->
+    <!--<scoreDrl>org/optaplanner/examples/cheaptime/optional/score/cheapTimeConstraints.drl</scoreDrl>-->
     <initializingScoreTrend>ONLY_DOWN</initializingScoreTrend>
     <!--<assertionScoreDirectorFactory>-->
       <!--<easyScoreCalculatorClass>org.optaplanner.examples.cheaptime.optional.score.CheapTimeEasyScoreCalculator</easyScoreCalculatorClass>-->
