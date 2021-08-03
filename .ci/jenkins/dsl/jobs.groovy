@@ -19,22 +19,19 @@ Map getMultijobPRConfig() {
                 id: 'optaplanner',
                 primary: true
             ], [
-                id: 'apps',
+                id: 'kogito-apps',
                 repository: 'kogito-apps',
             ], [
-                id: 'examples',
+                id: 'kogito-examples',
                 repository: 'kogito-examples'
             ], [
-                id: 'runtimes',
-                repository: 'kogito-runtimes'
-            ], [
-                id: 'rostering',
+                id: 'optaweb-employee-rostering',
                 repository: 'optaweb-employee-rostering'
             ], [
-                id: 'routing',
+                id: 'optaweb-vehicle-routing',
                 repository: 'optaweb-vehicle-routing'
             ], [
-                id: 'quickstarts',
+                id: 'optaplanner-quickstarts',
                 repository: 'optaplanner-quickstarts'
             ]
         ],
@@ -132,7 +129,7 @@ void setupOptawebEmployeeRosteringPrJob() {
     def jobParams = getDefaultJobParams('optaweb-employee-rostering')
     jobParams.pr.run_only_for_branches = [ jobParams.git.branch ] // Run on all release branches
     jobParams.jenkinsfile = KogitoConstants.BUILDCHAIN_JENKINSFILE_PATH 
-    jobParams.git.repo_url = PR_REPO_URL
+    jobParams.git.repo_url = Utils.createRepositoryUrl(jobParams.git.author, KogitoConstants.BUILDCHAIN_REPOSITORY)
     jobParams.git.checkout_branch = VersionUtils.getProjectTargetBranch(KogitoConstants.BUILDCHAIN_REPOSITORY, jobParams.git.branch, jobParams.git.repository)
     KogitoJobTemplate.createPRJob(this, jobParams)
 }
@@ -141,7 +138,7 @@ void setupOptawebVehicleRoutingPrJob() {
     def jobParams = getDefaultJobParams('optaweb-vehicle-routing')
     jobParams.pr.run_only_for_branches = [ jobParams.git.branch ] // Run on all release branches
     jobParams.jenkinsfile = KogitoConstants.BUILDCHAIN_JENKINSFILE_PATH 
-    jobParams.git.repo_url = PR_REPO_URL
+    jobParams.git.repo_url = Utils.createRepositoryUrl(jobParams.git.author, KogitoConstants.BUILDCHAIN_REPOSITORY)
     jobParams.git.checkout_branch = VersionUtils.getProjectTargetBranch(KogitoConstants.BUILDCHAIN_REPOSITORY, jobParams.git.branch, jobParams.git.repository)
     KogitoJobTemplate.createPRJob(this, jobParams)
 }
