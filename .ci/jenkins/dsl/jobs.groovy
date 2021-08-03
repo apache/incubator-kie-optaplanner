@@ -147,7 +147,7 @@ void setupMultijobPrLTSChecks() {
 }
 
 void setupNativeJob(String jobFolder) {
-    def jobParams = getJobParams('optaplanner-native', jobFolder, 'Jenkinsfile.native', 'Optaplanner Native Testing')
+    def jobParams = getJobParams('optaplanner-native', jobFolder, "${OPTAPLANNER_JENKINS_PATH}/Jenkinsfile.native", 'Optaplanner Native Testing')
     jobParams.triggers = [ cron : 'H 6 * * *' ]
     KogitoJobTemplate.createPipelineJob(this, jobParams).with {
         parameters {
@@ -162,7 +162,7 @@ void setupNativeJob(String jobFolder) {
 }
 
 void setupNativeLTSJob(String jobFolder) {
-    def jobParams = getJobParams('optaplanner-native-lts', jobFolder, 'Jenkinsfile.native', 'Optaplanner Native LTS Testing')
+    def jobParams = getJobParams('optaplanner-native-lts', jobFolder, "${OPTAPLANNER_JENKINS_PATH}/Jenkinsfile.native", 'Optaplanner Native LTS Testing')
     jobParams.triggers = [ cron : 'H 8 * * *' ]
     KogitoJobTemplate.createPipelineJob(this, jobParams).with {
         parameters {
