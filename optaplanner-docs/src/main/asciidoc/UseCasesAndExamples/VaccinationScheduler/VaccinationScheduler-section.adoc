@@ -1,7 +1,7 @@
 
-//:OPTAPLANNER-COMM:
+:OPTAPLANNER-COMM:
 //Variable for the community version conditional statements.
-:OPTAPLANNER-ENT:
+//:OPTAPLANNER-ENT:
 //Variable for the enterprise version conditional statements.
 
 
