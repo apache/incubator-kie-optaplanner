@@ -14,6 +14,9 @@
  * limitations under the License.
  */
 
+// Package here does not match location within src/main/resources.
+// This is so that the constraint package is shared by all score directors,
+// which in turn enables us to use the same constraint configuration.
 package org.optaplanner.examples.conferencescheduling.score;
     dialect "java"
 
