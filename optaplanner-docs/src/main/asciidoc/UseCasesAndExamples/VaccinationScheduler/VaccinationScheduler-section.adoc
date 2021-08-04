@@ -1,7 +1,7 @@
 
-:OPTAPLANNER-COMM:
+//:OPTAPLANNER-COMM:
 //Variable for the community version conditional statements.
-//:OPTAPLANNER-ENT:
+:OPTAPLANNER-ENT:
 //Variable for the enterprise version conditional statements.
 
 
@@ -19,7 +19,7 @@ ifdef::OPTAPLANNER-COMM[]
 :OPTAPLANNER_MAVEN_VERSION: 3.6
 endif::OPTAPLANNER-COMM[]
 
-[id="assembly-optaplanner-vaccination_{context}"]
+[id="chap-optaplanner-vaccination_{context}"]
 
 = Vaccination Scheduler
 
