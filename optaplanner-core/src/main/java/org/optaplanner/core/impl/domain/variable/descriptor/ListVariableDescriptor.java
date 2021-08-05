@@ -34,7 +34,7 @@ public class ListVariableDescriptor<Solution_> extends GenuineVariableDescriptor
     protected void processPropertyAnnotations(DescriptorPolicy descriptorPolicy) {
         PlanningCollectionVariable planningVariableAnnotation =
                 variableMemberAccessor.getAnnotation(PlanningCollectionVariable.class);
-        processValueRangeRefs(descriptorPolicy, planningVariableAnnotation::valueRangeProviderRefs);
+        processValueRangeRefs(descriptorPolicy, planningVariableAnnotation.valueRangeProviderRefs());
         // TODO process strength
         //processStrength(descriptorPolicy, planningVariableAnnotation);
     }
