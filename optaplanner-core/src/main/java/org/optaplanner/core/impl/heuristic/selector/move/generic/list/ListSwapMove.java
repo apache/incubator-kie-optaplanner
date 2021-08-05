@@ -75,7 +75,10 @@ public class ListSwapMove<Solution_> extends AbstractMove<Solution_> {
 
     @Override
     public boolean isMoveDoable(ScoreDirector<Solution_> scoreDirector) {
-        return !(rightEntity.equals(leftEntity) && leftIndex == rightIndex);
+        // TODO maybe do not generate such moves
+        // Do not use Object#equals on user-provided domain objects. Relying on user's implementation of Object#equals
+        // opens the opportunity to shoot themselves in the foot if different entities can be equal.
+        return !(rightEntity == leftEntity && leftIndex == rightIndex);
     }
 
     // ************************************************************************

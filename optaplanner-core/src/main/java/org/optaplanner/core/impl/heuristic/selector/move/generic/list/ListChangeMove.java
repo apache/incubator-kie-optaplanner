@@ -72,7 +72,9 @@ public class ListChangeMove<Solution_> extends AbstractMove<Solution_> {
     @Override
     public boolean isMoveDoable(ScoreDirector<Solution_> scoreDirector) {
         // TODO maybe remove this because no such move should be generated
-        return !destinationEntity.equals(sourceEntity)
+        // Do not use Object#equals on user-provided domain objects. Relying on user's implementation of Object#equals
+        // opens the opportunity to shoot themselves in the foot if different entities can be equal.
+        return destinationEntity != sourceEntity
                 || (destinationIndex != sourceIndex && destinationIndex != variableDescriptor.getListSize(sourceEntity));
     }
 
