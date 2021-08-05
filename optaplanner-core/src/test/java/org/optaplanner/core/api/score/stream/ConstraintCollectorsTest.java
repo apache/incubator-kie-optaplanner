@@ -17,7 +17,6 @@
 package org.optaplanner.core.api.score.stream;
 
 import static java.util.Arrays.asList;
-import static java.util.Collections.*;
 import static java.util.Collections.emptyList;
 import static java.util.Collections.emptyMap;
 import static java.util.Collections.emptySet;
