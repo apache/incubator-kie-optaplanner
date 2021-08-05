@@ -1023,7 +1023,7 @@ public final class ConstraintCollectors {
     /**
      * As defined by {@link #average(ToIntFunction)}.
      */
-    public static <A> UniConstraintCollector<A, ?, Double> average(ToLongFunction<A> groupValueMapping) {
+    public static <A> UniConstraintCollector<A, ?, Double> averageLong(ToLongFunction<A> groupValueMapping) {
         return compose(count(), sumLong(groupValueMapping), (count, sum) -> {
             if (count == 0) {
                 return null;
@@ -1035,6 +1035,8 @@ public final class ConstraintCollectors {
 
     /**
      * As defined by {@link #average(ToIntFunction)}.
+     * The scale of the resulting {@link BigDecimal} will be equal to the scale of the sum of all the input tuples,
+     * with rounding mode {@link RoundingMode#HALF_EVEN}.
      */
     public static <A> UniConstraintCollector<A, ?, BigDecimal> averageBigDecimal(
             Function<A, BigDecimal> groupValueMapping) {
@@ -1049,6 +1051,8 @@ public final class ConstraintCollectors {
 
     /**
      * As defined by {@link #average(ToIntFunction)}.
+     * The scale of the resulting {@link BigDecimal} will be equal to the scale of the sum of all the input tuples,
+     * with rounding mode {@link RoundingMode#HALF_EVEN}.
      */
     public static <A> UniConstraintCollector<A, ?, BigDecimal> averageBigInteger(Function<A, BigInteger> groupValueMapping) {
         return compose(count(), sumBigInteger(groupValueMapping), (count, sum) -> {
@@ -1102,7 +1106,7 @@ public final class ConstraintCollectors {
     }
 
     /**
-     * As defined by {@link #average(ToIntFunction)}.
+     * As defined by {@link #averageBigDecimal(Function)}.
      */
     public static <A, B> BiConstraintCollector<A, B, ?, BigDecimal>
             averageBigDecimal(BiFunction<A, B, BigDecimal> groupValueMapping) {
@@ -1116,7 +1120,7 @@ public final class ConstraintCollectors {
     }
 
     /**
-     * As defined by {@link #average(ToIntFunction)}.
+     * As defined by {@link #averageBigInteger(Function)}.
      */
     public static <A, B> BiConstraintCollector<A, B, ?, BigDecimal>
             averageBigInteger(BiFunction<A, B, BigInteger> groupValueMapping) {
@@ -1173,7 +1177,7 @@ public final class ConstraintCollectors {
     }
 
     /**
-     * As defined by {@link #average(ToIntFunction)}.
+     * As defined by {@link #averageBigDecimal(Function)}.
      */
     public static <A, B, C> TriConstraintCollector<A, B, C, ?, BigDecimal>
             averageBigDecimal(TriFunction<A, B, C, BigDecimal> groupValueMapping) {
@@ -1187,7 +1191,7 @@ public final class ConstraintCollectors {
     }
 
     /**
-     * As defined by {@link #average(ToIntFunction)}.
+     * As defined by {@link #averageBigInteger(Function)}.
      */
     public static <A, B, C> TriConstraintCollector<A, B, C, ?, BigDecimal>
             averageBigInteger(TriFunction<A, B, C, BigInteger> groupValueMapping) {
@@ -1245,7 +1249,7 @@ public final class ConstraintCollectors {
     }
 
     /**
-     * As defined by {@link #average(ToIntFunction)}.
+     * As defined by {@link #averageBigDecimal(Function)}.
      */
     public static <A, B, C, D> QuadConstraintCollector<A, B, C, D, ?, BigDecimal>
             averageBigDecimal(QuadFunction<A, B, C, D, BigDecimal> groupValueMapping) {
@@ -1259,7 +1263,7 @@ public final class ConstraintCollectors {
     }
 
     /**
-     * As defined by {@link #average(ToIntFunction)}.
+     * As defined by {@link #averageBigInteger(Function)}.
      */
     public static <A, B, C, D> QuadConstraintCollector<A, B, C, D, ?, BigDecimal>
             averageBigInteger(QuadFunction<A, B, C, D, BigInteger> groupValueMapping) {

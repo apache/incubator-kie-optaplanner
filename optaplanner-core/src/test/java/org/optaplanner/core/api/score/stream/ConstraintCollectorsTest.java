@@ -1870,6 +1870,607 @@ public class ConstraintCollectorsTest {
     }
 
     // ************************************************************************
+    // average
+    // ************************************************************************
+
+    @Test
+    public void average() {
+        UniConstraintCollector<Integer, ?, Double> collector = ConstraintCollectors.average(i -> i);
+        Object container = collector.supplier().get();
+
+        // Default state.
+        assertResult(collector, container, null);
+        // Add first value, we have one now.
+        int firstValue = 4;
+        Runnable firstRetractor = accumulate(collector, container, firstValue);
+        assertResult(collector, container, 4.0D);
+        // Add second value, we have two now.
+        int secondValue = 1;
+        Runnable secondRetractor = accumulate(collector, container, secondValue);
+        assertResult(collector, container, 2.5D);
+        // Add third value, same as the second. We now have three values, two of which are the same.
+        Runnable thirdRetractor = accumulate(collector, container, secondValue);
+        assertResult(collector, container, 2.0D);
+        // Retract one instance of the second value; we only have two values now.
+        secondRetractor.run();
+        assertResult(collector, container, 2.5D);
+        // Retract final instance of the second value; we only have one value now.
+        thirdRetractor.run();
+        assertResult(collector, container, 4.0);
+        // Retract last value; there are no values now.
+        firstRetractor.run();
+        assertResult(collector, container, null);
+    }
+
+    @Test
+    public void averageLong() {
+        UniConstraintCollector<Integer, ?, Double> collector = ConstraintCollectors.averageLong(i -> i);
+        Object container = collector.supplier().get();
+
+        // Default state.
+        assertResult(collector, container, null);
+        // Add first value, we have one now.
+        int firstValue = 4;
+        Runnable firstRetractor = accumulate(collector, container, firstValue);
+        assertResult(collector, container, 4.0D);
+        // Add second value, we have two now.
+        int secondValue = 1;
+        Runnable secondRetractor = accumulate(collector, container, secondValue);
+        assertResult(collector, container, 2.5D);
+        // Add third value, same as the second. We now have three values, two of which are the same.
+        Runnable thirdRetractor = accumulate(collector, container, secondValue);
+        assertResult(collector, container, 2.0D);
+        // Retract one instance of the second value; we only have two values now.
+        secondRetractor.run();
+        assertResult(collector, container, 2.5D);
+        // Retract final instance of the second value; we only have one value now.
+        thirdRetractor.run();
+        assertResult(collector, container, 4.0);
+        // Retract last value; there are no values now.
+        firstRetractor.run();
+        assertResult(collector, container, null);
+    }
+
+    @Test
+    public void averageBigDecimal() {
+        UniConstraintCollector<Integer, ?, BigDecimal> collector =
+                ConstraintCollectors.averageBigDecimal(i -> BigDecimal.valueOf(i));
+        Object container = collector.supplier().get();
+
+        // Default state.
+        assertResult(collector, container, null);
+        // Add first value, we have one now.
+        int firstValue = 4;
+        Runnable firstRetractor = accumulate(collector, container, firstValue);
+        assertResult(collector, container, BigDecimal.valueOf(4));
+        // Add second value, we have two now.
+        int secondValue = 1;
+        Runnable secondRetractor = accumulate(collector, container, secondValue);
+        assertResult(collector, container, BigDecimal.valueOf(2)); // Scale = 0.
+        // Add third value, same as the second. We now have three values, two of which are the same.
+        Runnable thirdRetractor = accumulate(collector, container, secondValue);
+        assertResult(collector, container, BigDecimal.valueOf(2));
+        // Retract one instance of the second value; we only have two values now.
+        secondRetractor.run();
+        assertResult(collector, container, BigDecimal.valueOf(2)); // Scale = 0.
+        // Retract final instance of the second value; we only have one value now.
+        thirdRetractor.run();
+        assertResult(collector, container, BigDecimal.valueOf(4));
+        // Retract last value; there are no values now.
+        firstRetractor.run();
+        assertResult(collector, container, null);
+    }
+
+    @Test
+    public void averageBigInteger() {
+        UniConstraintCollector<Integer, ?, BigDecimal> collector =
+                ConstraintCollectors.averageBigInteger(i -> BigInteger.valueOf(i));
+        Object container = collector.supplier().get();
+
+        // Default state.
+        assertResult(collector, container, null);
+        // Add first value, we have one now.
+        int firstValue = 4;
+        Runnable firstRetractor = accumulate(collector, container, firstValue);
+        assertResult(collector, container, BigDecimal.valueOf(4));
+        // Add second value, we have two now.
+        int secondValue = 1;
+        Runnable secondRetractor = accumulate(collector, container, secondValue);
+        assertResult(collector, container, BigDecimal.valueOf(2)); // Scale = 0.
+        // Add third value, same as the second. We now have three values, two of which are the same.
+        Runnable thirdRetractor = accumulate(collector, container, secondValue);
+        assertResult(collector, container, BigDecimal.valueOf(2));
+        // Retract one instance of the second value; we only have two values now.
+        secondRetractor.run();
+        assertResult(collector, container, BigDecimal.valueOf(2)); // Scale = 0.
+        // Retract final instance of the second value; we only have one value now.
+        thirdRetractor.run();
+        assertResult(collector, container, BigDecimal.valueOf(4));
+        // Retract last value; there are no values now.
+        firstRetractor.run();
+        assertResult(collector, container, null);
+    }
+
+    @Test
+    public void averageDuration() {
+        UniConstraintCollector<Integer, ?, Duration> collector =
+                ConstraintCollectors.averageDuration(i -> Duration.ofSeconds(i));
+        Object container = collector.supplier().get();
+
+        // Default state.
+        assertResult(collector, container, null);
+        // Add first value, we have one now.
+        int firstValue = 4;
+        Runnable firstRetractor = accumulate(collector, container, firstValue);
+        assertResult(collector, container, Duration.ofSeconds(4));
+        // Add second value, we have two now.
+        int secondValue = 1;
+        Runnable secondRetractor = accumulate(collector, container, secondValue);
+        assertResult(collector, container, Duration.ofMillis(2500));
+        // Add third value, same as the second. We now have three values, two of which are the same.
+        Runnable thirdRetractor = accumulate(collector, container, secondValue);
+        assertResult(collector, container, Duration.ofSeconds(2));
+        // Retract one instance of the second value; we only have two values now.
+        secondRetractor.run();
+        assertResult(collector, container, Duration.ofMillis(2500));
+        // Retract final instance of the second value; we only have one value now.
+        thirdRetractor.run();
+        assertResult(collector, container, Duration.ofSeconds(4));
+        // Retract last value; there are no values now.
+        firstRetractor.run();
+        assertResult(collector, container, null);
+    }
+
+    @Test
+    public void averageBi() {
+        BiConstraintCollector<Integer, Integer, ?, Double> collector = ConstraintCollectors.average((i, i2) -> i + i2);
+        Object container = collector.supplier().get();
+
+        // Default state.
+        assertResult(collector, container, null);
+        // Add first value, we have one now.
+        int firstValue = 4;
+        Runnable firstRetractor = accumulate(collector, container, firstValue, 0);
+        assertResult(collector, container, 4.0D);
+        // Add second value, we have two now.
+        int secondValue = 1;
+        Runnable secondRetractor = accumulate(collector, container, secondValue, 0);
+        assertResult(collector, container, 2.5D);
+        // Add third value, same as the second. We now have three values, two of which are the same.
+        Runnable thirdRetractor = accumulate(collector, container, secondValue, 0);
+        assertResult(collector, container, 2.0D);
+        // Retract one instance of the second value; we only have two values now.
+        secondRetractor.run();
+        assertResult(collector, container, 2.5D);
+        // Retract final instance of the second value; we only have one value now.
+        thirdRetractor.run();
+        assertResult(collector, container, 4.0);
+        // Retract last value; there are no values now.
+        firstRetractor.run();
+        assertResult(collector, container, null);
+    }
+
+    @Test
+    public void averageBiLong() {
+        BiConstraintCollector<Integer, Integer, ?, Double> collector =
+                ConstraintCollectors.averageLong((i, i2) -> i + i2);
+        Object container = collector.supplier().get();
+
+        // Default state.
+        assertResult(collector, container, null);
+        // Add first value, we have one now.
+        int firstValue = 4;
+        Runnable firstRetractor = accumulate(collector, container, firstValue, 0);
+        assertResult(collector, container, 4.0D);
+        // Add second value, we have two now.
+        int secondValue = 1;
+        Runnable secondRetractor = accumulate(collector, container, secondValue, 0);
+        assertResult(collector, container, 2.5D);
+        // Add third value, same as the second. We now have three values, two of which are the same.
+        Runnable thirdRetractor = accumulate(collector, container, secondValue, 0);
+        assertResult(collector, container, 2.0D);
+        // Retract one instance of the second value; we only have two values now.
+        secondRetractor.run();
+        assertResult(collector, container, 2.5D);
+        // Retract final instance of the second value; we only have one value now.
+        thirdRetractor.run();
+        assertResult(collector, container, 4.0);
+        // Retract last value; there are no values now.
+        firstRetractor.run();
+        assertResult(collector, container, null);
+    }
+
+    @Test
+    public void averageBiBigDecimal() {
+        BiConstraintCollector<Integer, Integer, ?, BigDecimal> collector =
+                ConstraintCollectors.averageBigDecimal((i, i2) -> BigDecimal.valueOf(i + i2));
+        Object container = collector.supplier().get();
+
+        // Default state.
+        assertResult(collector, container, null);
+        // Add first value, we have one now.
+        int firstValue = 4;
+        Runnable firstRetractor = accumulate(collector, container, firstValue, 0);
+        assertResult(collector, container, BigDecimal.valueOf(4));
+        // Add second value, we have two now.
+        int secondValue = 1;
+        Runnable secondRetractor = accumulate(collector, container, secondValue, 0);
+        assertResult(collector, container, BigDecimal.valueOf(2)); // Scale = 0.
+        // Add third value, same as the second. We now have three values, two of which are the same.
+        Runnable thirdRetractor = accumulate(collector, container, secondValue, 0);
+        assertResult(collector, container, BigDecimal.valueOf(2));
+        // Retract one instance of the second value; we only have two values now.
+        secondRetractor.run();
+        assertResult(collector, container, BigDecimal.valueOf(2)); // Scale = 0.
+        // Retract final instance of the second value; we only have one value now.
+        thirdRetractor.run();
+        assertResult(collector, container, BigDecimal.valueOf(4));
+        // Retract last value; there are no values now.
+        firstRetractor.run();
+        assertResult(collector, container, null);
+    }
+
+    @Test
+    public void averageBiBigInteger() {
+        BiConstraintCollector<Integer, Integer, ?, BigDecimal> collector =
+                ConstraintCollectors.averageBigInteger((i, i2) -> BigInteger.valueOf(i + i2));
+        Object container = collector.supplier().get();
+
+        // Default state.
+        assertResult(collector, container, null);
+        // Add first value, we have one now.
+        int firstValue = 4;
+        Runnable firstRetractor = accumulate(collector, container, firstValue, 0);
+        assertResult(collector, container, BigDecimal.valueOf(4));
+        // Add second value, we have two now.
+        int secondValue = 1;
+        Runnable secondRetractor = accumulate(collector, container, secondValue, 0);
+        assertResult(collector, container, BigDecimal.valueOf(2)); // Scale = 0.
+        // Add third value, same as the second. We now have three values, two of which are the same.
+        Runnable thirdRetractor = accumulate(collector, container, secondValue, 0);
+        assertResult(collector, container, BigDecimal.valueOf(2));
+        // Retract one instance of the second value; we only have two values now.
+        secondRetractor.run();
+        assertResult(collector, container, BigDecimal.valueOf(2)); // Scale = 0.
+        // Retract final instance of the second value; we only have one value now.
+        thirdRetractor.run();
+        assertResult(collector, container, BigDecimal.valueOf(4));
+        // Retract last value; there are no values now.
+        firstRetractor.run();
+        assertResult(collector, container, null);
+    }
+
+    @Test
+    public void averageBiDuration() {
+        BiConstraintCollector<Integer, Integer, ?, Duration> collector =
+                ConstraintCollectors.averageDuration((i, i2) -> Duration.ofSeconds(i + i2));
+        Object container = collector.supplier().get();
+
+        // Default state.
+        assertResult(collector, container, null);
+        // Add first value, we have one now.
+        int firstValue = 4;
+        Runnable firstRetractor = accumulate(collector, container, firstValue, 0);
+        assertResult(collector, container, Duration.ofSeconds(4));
+        // Add second value, we have two now.
+        int secondValue = 1;
+        Runnable secondRetractor = accumulate(collector, container, secondValue, 0);
+        assertResult(collector, container, Duration.ofMillis(2500));
+        // Add third value, same as the second. We now have three values, two of which are the same.
+        Runnable thirdRetractor = accumulate(collector, container, secondValue, 0);
+        assertResult(collector, container, Duration.ofSeconds(2));
+        // Retract one instance of the second value; we only have two values now.
+        secondRetractor.run();
+        assertResult(collector, container, Duration.ofMillis(2500));
+        // Retract final instance of the second value; we only have one value now.
+        thirdRetractor.run();
+        assertResult(collector, container, Duration.ofSeconds(4));
+        // Retract last value; there are no values now.
+        firstRetractor.run();
+        assertResult(collector, container, null);
+    }
+
+    @Test
+    public void averageTri() {
+        TriConstraintCollector<Integer, Integer, Integer, ?, Double> collector =
+                ConstraintCollectors.average((i, i2, i3) -> i + i2 + i3);
+        Object container = collector.supplier().get();
+
+        // Default state.
+        assertResult(collector, container, null);
+        // Add first value, we have one now.
+        int firstValue = 4;
+        Runnable firstRetractor = accumulate(collector, container, firstValue, 0, 0);
+        assertResult(collector, container, 4.0D);
+        // Add second value, we have two now.
+        int secondValue = 1;
+        Runnable secondRetractor = accumulate(collector, container, secondValue, 0, 0);
+        assertResult(collector, container, 2.5D);
+        // Add third value, same as the second. We now have three values, two of which are the same.
+        Runnable thirdRetractor = accumulate(collector, container, secondValue, 0, 0);
+        assertResult(collector, container, 2.0D);
+        // Retract one instance of the second value; we only have two values now.
+        secondRetractor.run();
+        assertResult(collector, container, 2.5D);
+        // Retract final instance of the second value; we only have one value now.
+        thirdRetractor.run();
+        assertResult(collector, container, 4.0);
+        // Retract last value; there are no values now.
+        firstRetractor.run();
+        assertResult(collector, container, null);
+    }
+
+    @Test
+    public void averageTriLong() {
+        TriConstraintCollector<Integer, Integer, Integer, ?, Double> collector =
+                ConstraintCollectors.averageLong((i, i2, i3) -> i + i2 + i3);
+        Object container = collector.supplier().get();
+
+        // Default state.
+        assertResult(collector, container, null);
+        // Add first value, we have one now.
+        int firstValue = 4;
+        Runnable firstRetractor = accumulate(collector, container, firstValue, 0, 0);
+        assertResult(collector, container, 4.0D);
+        // Add second value, we have two now.
+        int secondValue = 1;
+        Runnable secondRetractor = accumulate(collector, container, secondValue, 0, 0);
+        assertResult(collector, container, 2.5D);
+        // Add third value, same as the second. We now have three values, two of which are the same.
+        Runnable thirdRetractor = accumulate(collector, container, secondValue, 0, 0);
+        assertResult(collector, container, 2.0D);
+        // Retract one instance of the second value; we only have two values now.
+        secondRetractor.run();
+        assertResult(collector, container, 2.5D);
+        // Retract final instance of the second value; we only have one value now.
+        thirdRetractor.run();
+        assertResult(collector, container, 4.0);
+        // Retract last value; there are no values now.
+        firstRetractor.run();
+        assertResult(collector, container, null);
+    }
+
+    @Test
+    public void averageTriBigDecimal() {
+        TriConstraintCollector<Integer, Integer, Integer, ?, BigDecimal> collector =
+                ConstraintCollectors.averageBigDecimal((i, i2, i3) -> BigDecimal.valueOf(i + i2 + i3));
+        Object container = collector.supplier().get();
+
+        // Default state.
+        assertResult(collector, container, null);
+        // Add first value, we have one now.
+        int firstValue = 4;
+        Runnable firstRetractor = accumulate(collector, container, firstValue, 0, 0);
+        assertResult(collector, container, BigDecimal.valueOf(4));
+        // Add second value, we have two now.
+        int secondValue = 1;
+        Runnable secondRetractor = accumulate(collector, container, secondValue, 0, 0);
+        assertResult(collector, container, BigDecimal.valueOf(2)); // Scale = 0.
+        // Add third value, same as the second. We now have three values, two of which are the same.
+        Runnable thirdRetractor = accumulate(collector, container, secondValue, 0, 0);
+        assertResult(collector, container, BigDecimal.valueOf(2));
+        // Retract one instance of the second value; we only have two values now.
+        secondRetractor.run();
+        assertResult(collector, container, BigDecimal.valueOf(2)); // Scale = 0.
+        // Retract final instance of the second value; we only have one value now.
+        thirdRetractor.run();
+        assertResult(collector, container, BigDecimal.valueOf(4));
+        // Retract last value; there are no values now.
+        firstRetractor.run();
+        assertResult(collector, container, null);
+    }
+
+    @Test
+    public void averageTriBigInteger() {
+        TriConstraintCollector<Integer, Integer, Integer, ?, BigDecimal> collector =
+                ConstraintCollectors.averageBigInteger((i, i2, i3) -> BigInteger.valueOf(i + i2 + i3));
+        Object container = collector.supplier().get();
+
+        // Default state.
+        assertResult(collector, container, null);
+        // Add first value, we have one now.
+        int firstValue = 4;
+        Runnable firstRetractor = accumulate(collector, container, firstValue, 0, 0);
+        assertResult(collector, container, BigDecimal.valueOf(4));
+        // Add second value, we have two now.
+        int secondValue = 1;
+        Runnable secondRetractor = accumulate(collector, container, secondValue, 0, 0);
+        assertResult(collector, container, BigDecimal.valueOf(2)); // Scale = 0.
+        // Add third value, same as the second. We now have three values, two of which are the same.
+        Runnable thirdRetractor = accumulate(collector, container, secondValue, 0, 0);
+        assertResult(collector, container, BigDecimal.valueOf(2));
+        // Retract one instance of the second value; we only have two values now.
+        secondRetractor.run();
+        assertResult(collector, container, BigDecimal.valueOf(2)); // Scale = 0.
+        // Retract final instance of the second value; we only have one value now.
+        thirdRetractor.run();
+        assertResult(collector, container, BigDecimal.valueOf(4));
+        // Retract last value; there are no values now.
+        firstRetractor.run();
+        assertResult(collector, container, null);
+    }
+
+    @Test
+    public void averageTriDuration() {
+        TriConstraintCollector<Integer, Integer, Integer, ?, Duration> collector =
+                ConstraintCollectors.averageDuration((i, i2, i3) -> Duration.ofSeconds(i + i2 + i3));
+        Object container = collector.supplier().get();
+
+        // Default state.
+        assertResult(collector, container, null);
+        // Add first value, we have one now.
+        int firstValue = 4;
+        Runnable firstRetractor = accumulate(collector, container, firstValue, 0, 0);
+        assertResult(collector, container, Duration.ofSeconds(4));
+        // Add second value, we have two now.
+        int secondValue = 1;
+        Runnable secondRetractor = accumulate(collector, container, secondValue, 0, 0);
+        assertResult(collector, container, Duration.ofMillis(2500));
+        // Add third value, same as the second. We now have three values, two of which are the same.
+        Runnable thirdRetractor = accumulate(collector, container, secondValue, 0, 0);
+        assertResult(collector, container, Duration.ofSeconds(2));
+        // Retract one instance of the second value; we only have two values now.
+        secondRetractor.run();
+        assertResult(collector, container, Duration.ofMillis(2500));
+        // Retract final instance of the second value; we only have one value now.
+        thirdRetractor.run();
+        assertResult(collector, container, Duration.ofSeconds(4));
+        // Retract last value; there are no values now.
+        firstRetractor.run();
+        assertResult(collector, container, null);
+    }
+
+    @Test
+    public void averageQuad() {
+        QuadConstraintCollector<Integer, Integer, Integer, Integer, ?, Double> collector =
+                ConstraintCollectors.average((i, i2, i3, i4) -> i + i2 + i3 + i4);
+        Object container = collector.supplier().get();
+
+        // Default state.
+        assertResult(collector, container, null);
+        // Add first value, we have one now.
+        int firstValue = 4;
+        Runnable firstRetractor = accumulate(collector, container, firstValue, 0, 0, 0);
+        assertResult(collector, container, 4.0D);
+        // Add second value, we have two now.
+        int secondValue = 1;
+        Runnable secondRetractor = accumulate(collector, container, secondValue, 0, 0, 0);
+        assertResult(collector, container, 2.5D);
+        // Add third value, same as the second. We now have three values, two of which are the same.
+        Runnable thirdRetractor = accumulate(collector, container, secondValue, 0, 0, 0);
+        assertResult(collector, container, 2.0D);
+        // Retract one instance of the second value; we only have two values now.
+        secondRetractor.run();
+        assertResult(collector, container, 2.5D);
+        // Retract final instance of the second value; we only have one value now.
+        thirdRetractor.run();
+        assertResult(collector, container, 4.0);
+        // Retract last value; there are no values now.
+        firstRetractor.run();
+        assertResult(collector, container, null);
+    }
+
+    @Test
+    public void averageQuadLong() {
+        QuadConstraintCollector<Integer, Integer, Integer, Integer, ?, Double> collector =
+                ConstraintCollectors.averageLong((i, i2, i3, i4) -> i + i2 + i3 + i4);
+        Object container = collector.supplier().get();
+
+        // Default state.
+        assertResult(collector, container, null);
+        // Add first value, we have one now.
+        int firstValue = 4;
+        Runnable firstRetractor = accumulate(collector, container, firstValue, 0, 0, 0);
+        assertResult(collector, container, 4.0D);
+        // Add second value, we have two now.
+        int secondValue = 1;
+        Runnable secondRetractor = accumulate(collector, container, secondValue, 0, 0, 0);
+        assertResult(collector, container, 2.5D);
+        // Add third value, same as the second. We now have three values, two of which are the same.
+        Runnable thirdRetractor = accumulate(collector, container, secondValue, 0, 0, 0);
+        assertResult(collector, container, 2.0D);
+        // Retract one instance of the second value; we only have two values now.
+        secondRetractor.run();
+        assertResult(collector, container, 2.5D);
+        // Retract final instance of the second value; we only have one value now.
+        thirdRetractor.run();
+        assertResult(collector, container, 4.0);
+        // Retract last value; there are no values now.
+        firstRetractor.run();
+        assertResult(collector, container, null);
+    }
+
+    @Test
+    public void averageQuadBigDecimal() {
+        QuadConstraintCollector<Integer, Integer, Integer, Integer, ?, BigDecimal> collector =
+                ConstraintCollectors.averageBigDecimal((i, i2, i3, i4) -> BigDecimal.valueOf(i + i2 + i3 + i4));
+        Object container = collector.supplier().get();
+
+        // Default state.
+        assertResult(collector, container, null);
+        // Add first value, we have one now.
+        int firstValue = 4;
+        Runnable firstRetractor = accumulate(collector, container, firstValue, 0, 0, 0);
+        assertResult(collector, container, BigDecimal.valueOf(4));
+        // Add second value, we have two now.
+        int secondValue = 1;
+        Runnable secondRetractor = accumulate(collector, container, secondValue, 0, 0, 0);
+        assertResult(collector, container, BigDecimal.valueOf(2)); // Scale = 0.
+        // Add third value, same as the second. We now have three values, two of which are the same.
+        Runnable thirdRetractor = accumulate(collector, container, secondValue, 0, 0, 0);
+        assertResult(collector, container, BigDecimal.valueOf(2));
+        // Retract one instance of the second value; we only have two values now.
+        secondRetractor.run();
+        assertResult(collector, container, BigDecimal.valueOf(2)); // Scale = 0.
+        // Retract final instance of the second value; we only have one value now.
+        thirdRetractor.run();
+        assertResult(collector, container, BigDecimal.valueOf(4));
+        // Retract last value; there are no values now.
+        firstRetractor.run();
+        assertResult(collector, container, null);
+    }
+
+    @Test
+    public void averageQuadBigInteger() {
+        QuadConstraintCollector<Integer, Integer, Integer, Integer, ?, BigDecimal> collector =
+                ConstraintCollectors.averageBigInteger((i, i2, i3, i4) -> BigInteger.valueOf(i + i2 + i3 + i4));
+        Object container = collector.supplier().get();
+
+        // Default state.
+        assertResult(collector, container, null);
+        // Add first value, we have one now.
+        int firstValue = 4;
+        Runnable firstRetractor = accumulate(collector, container, firstValue, 0, 0, 0);
+        assertResult(collector, container, BigDecimal.valueOf(4));
+        // Add second value, we have two now.
+        int secondValue = 1;
+        Runnable secondRetractor = accumulate(collector, container, secondValue, 0, 0, 0);
+        assertResult(collector, container, BigDecimal.valueOf(2)); // Scale = 0.
+        // Add third value, same as the second. We now have three values, two of which are the same.
+        Runnable thirdRetractor = accumulate(collector, container, secondValue, 0, 0, 0);
+        assertResult(collector, container, BigDecimal.valueOf(2));
+        // Retract one instance of the second value; we only have two values now.
+        secondRetractor.run();
+        assertResult(collector, container, BigDecimal.valueOf(2)); // Scale = 0.
+        // Retract final instance of the second value; we only have one value now.
+        thirdRetractor.run();
+        assertResult(collector, container, BigDecimal.valueOf(4));
+        // Retract last value; there are no values now.
+        firstRetractor.run();
+        assertResult(collector, container, null);
+    }
+
+    @Test
+    public void averageQuadDuration() {
+        QuadConstraintCollector<Integer, Integer, Integer, Integer, ?, Duration> collector =
+                ConstraintCollectors.averageDuration((i, i2, i3, i4) -> Duration.ofSeconds(i + i2 + i3 + i4));
+        Object container = collector.supplier().get();
+
+        // Default state.
+        assertResult(collector, container, null);
+        // Add first value, we have one now.
+        int firstValue = 4;
+        Runnable firstRetractor = accumulate(collector, container, firstValue, 0, 0, 0);
+        assertResult(collector, container, Duration.ofSeconds(4));
+        // Add second value, we have two now.
+        int secondValue = 1;
+        Runnable secondRetractor = accumulate(collector, container, secondValue, 0, 0, 0);
+        assertResult(collector, container, Duration.ofMillis(2500));
+        // Add third value, same as the second. We now have three values, two of which are the same.
+        Runnable thirdRetractor = accumulate(collector, container, secondValue, 0, 0, 0);
+        assertResult(collector, container, Duration.ofSeconds(2));
+        // Retract one instance of the second value; we only have two values now.
+        secondRetractor.run();
+        assertResult(collector, container, Duration.ofMillis(2500));
+        // Retract final instance of the second value; we only have one value now.
+        thirdRetractor.run();
+        assertResult(collector, container, Duration.ofSeconds(4));
+        // Retract last value; there are no values now.
+        firstRetractor.run();
+        assertResult(collector, container, null);
+    }
+
+    // ************************************************************************
     // toCollection
     // ************************************************************************
 
