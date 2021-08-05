@@ -19,6 +19,7 @@ package org.optaplanner.core.api.score.stream;
 import java.lang.reflect.Array;
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.math.RoundingMode;
 import java.time.Duration;
 import java.time.Period;
 import java.util.ArrayList;
@@ -992,6 +993,299 @@ public final class ConstraintCollectors {
     public static <A, Result extends Collection<A>> UniConstraintCollector<A, ?, Result> toCollection(
             IntFunction<Result> collectionFunction) {
         return toCollection(Function.identity(), collectionFunction);
+    }
+
+    // ************************************************************************
+    // average
+    // ************************************************************************
+
+    /**
+     * Returns a collector that calculates an average of an {@code int} property of the elements that are being grouped.
+     * <p>
+     * For example, {@code [Ann(age = 20), Beth(age = 25), Cathy(age = 30), David(age = 30), Eric(age = 20)]} with
+     * {@code .groupBy(average(Person::getAge))} returns {@code 25}.
+     * <p>
+     * The default result of the collector (e.g. when never called) is {@code null}.
+     *
+     * @param <A> type of the matched fact
+     * @return never null
+     */
+    public static <A> UniConstraintCollector<A, ?, Double> average(ToIntFunction<A> groupValueMapping) {
+        return compose(count(), sum(groupValueMapping), (count, sum) -> {
+            if (count == 0) {
+                return null;
+            } else {
+                return sum / (double) count;
+            }
+        });
+    }
+
+    /**
+     * As defined by {@link #average(ToIntFunction)}.
+     */
+    public static <A> UniConstraintCollector<A, ?, Double> average(ToLongFunction<A> groupValueMapping) {
+        return compose(count(), sumLong(groupValueMapping), (count, sum) -> {
+            if (count == 0) {
+                return null;
+            } else {
+                return sum / (double) count;
+            }
+        });
+    }
+
+    /**
+     * As defined by {@link #average(ToIntFunction)}.
+     */
+    public static <A> UniConstraintCollector<A, ?, BigDecimal> averageBigDecimal(
+            Function<A, BigDecimal> groupValueMapping) {
+        return compose(count(), sumBigDecimal(groupValueMapping), (count, sum) -> {
+            if (count == 0) {
+                return null;
+            } else {
+                return sum.divide(BigDecimal.valueOf(count), RoundingMode.HALF_EVEN);
+            }
+        });
+    }
+
+    /**
+     * As defined by {@link #average(ToIntFunction)}.
+     */
+    public static <A> UniConstraintCollector<A, ?, BigDecimal> averageBigInteger(Function<A, BigInteger> groupValueMapping) {
+        return compose(count(), sumBigInteger(groupValueMapping), (count, sum) -> {
+            if (count == 0) {
+                return null;
+            } else {
+                return new BigDecimal(sum)
+                        .divide(BigDecimal.valueOf(count), RoundingMode.HALF_EVEN);
+            }
+        });
+    }
+
+    /**
+     * As defined by {@link #average(ToIntFunction)}.
+     */
+    public static <A> UniConstraintCollector<A, ?, Duration> averageDuration(Function<A, Duration> groupValueMapping) {
+        return compose(count(), sumDuration(groupValueMapping), (count, sum) -> {
+            if (count == 0) {
+                return null;
+            } else {
+                long nanos = sum.toNanos();
+                return Duration.ofNanos(nanos / count);
+            }
+        });
+    }
+
+    /**
+     * As defined by {@link #average(ToIntFunction)}.
+     */
+    public static <A, B> BiConstraintCollector<A, B, ?, Double> average(ToIntBiFunction<A, B> groupValueMapping) {
+        return compose(countBi(), sum(groupValueMapping), (count, sum) -> {
+            if (count == 0) {
+                return null;
+            } else {
+                return sum / (double) count;
+            }
+        });
+    }
+
+    /**
+     * As defined by {@link #average(ToIntFunction)}.
+     */
+    public static <A, B> BiConstraintCollector<A, B, ?, Double> averageLong(ToLongBiFunction<A, B> groupValueMapping) {
+        return compose(countBi(), sumLong(groupValueMapping), (count, sum) -> {
+            if (count == 0) {
+                return null;
+            } else {
+                return sum / (double) count;
+            }
+        });
+    }
+
+    /**
+     * As defined by {@link #average(ToIntFunction)}.
+     */
+    public static <A, B> BiConstraintCollector<A, B, ?, BigDecimal>
+            averageBigDecimal(BiFunction<A, B, BigDecimal> groupValueMapping) {
+        return compose(countBi(), sumBigDecimal(groupValueMapping), (count, sum) -> {
+            if (count == 0) {
+                return null;
+            } else {
+                return sum.divide(BigDecimal.valueOf(count), RoundingMode.HALF_EVEN);
+            }
+        });
+    }
+
+    /**
+     * As defined by {@link #average(ToIntFunction)}.
+     */
+    public static <A, B> BiConstraintCollector<A, B, ?, BigDecimal>
+            averageBigInteger(BiFunction<A, B, BigInteger> groupValueMapping) {
+        return compose(countBi(), sumBigInteger(groupValueMapping), (count, sum) -> {
+            if (count == 0) {
+                return null;
+            } else {
+                return new BigDecimal(sum)
+                        .divide(BigDecimal.valueOf(count), RoundingMode.HALF_EVEN);
+            }
+        });
+    }
+
+    /**
+     * As defined by {@link #average(ToIntFunction)}.
+     */
+    public static <A, B> BiConstraintCollector<A, B, ?, Duration>
+            averageDuration(BiFunction<A, B, Duration> groupValueMapping) {
+        return compose(countBi(), sumDuration(groupValueMapping), (count, sum) -> {
+            if (count == 0) {
+                return null;
+            } else {
+                long nanos = sum.toNanos();
+                return Duration.ofNanos(nanos / count);
+            }
+        });
+    }
+
+    /**
+     * As defined by {@link #average(ToIntFunction)}.
+     */
+    public static <A, B, C> TriConstraintCollector<A, B, C, ?, Double> average(ToIntTriFunction<A, B, C> groupValueMapping) {
+        return compose(countTri(), sum(groupValueMapping), (count, sum) -> {
+            if (count == 0) {
+                return null;
+            } else {
+                return sum / (double) count;
+            }
+        });
+    }
+
+    /**
+     * As defined by {@link #average(ToIntFunction)}.
+     */
+    public static <A, B, C> TriConstraintCollector<A, B, C, ?, Double>
+            averageLong(ToLongTriFunction<A, B, C> groupValueMapping) {
+        return compose(countTri(), sumLong(groupValueMapping), (count, sum) -> {
+            if (count == 0) {
+                return null;
+            } else {
+                return sum / (double) count;
+            }
+        });
+    }
+
+    /**
+     * As defined by {@link #average(ToIntFunction)}.
+     */
+    public static <A, B, C> TriConstraintCollector<A, B, C, ?, BigDecimal>
+            averageBigDecimal(TriFunction<A, B, C, BigDecimal> groupValueMapping) {
+        return compose(countTri(), sumBigDecimal(groupValueMapping), (count, sum) -> {
+            if (count == 0) {
+                return null;
+            } else {
+                return sum.divide(BigDecimal.valueOf(count), RoundingMode.HALF_EVEN);
+            }
+        });
+    }
+
+    /**
+     * As defined by {@link #average(ToIntFunction)}.
+     */
+    public static <A, B, C> TriConstraintCollector<A, B, C, ?, BigDecimal>
+            averageBigInteger(TriFunction<A, B, C, BigInteger> groupValueMapping) {
+        return compose(countTri(), sumBigInteger(groupValueMapping), (count, sum) -> {
+            if (count == 0) {
+                return null;
+            } else {
+                return new BigDecimal(sum)
+                        .divide(BigDecimal.valueOf(count), RoundingMode.HALF_EVEN);
+            }
+        });
+    }
+
+    /**
+     * As defined by {@link #average(ToIntFunction)}.
+     */
+    public static <A, B, C> TriConstraintCollector<A, B, C, ?, Duration>
+            averageDuration(TriFunction<A, B, C, Duration> groupValueMapping) {
+        return compose(countTri(), sumDuration(groupValueMapping), (count, sum) -> {
+            if (count == 0) {
+                return null;
+            } else {
+                long nanos = sum.toNanos();
+                return Duration.ofNanos(nanos / count);
+            }
+        });
+    }
+
+    /**
+     * As defined by {@link #average(ToIntFunction)}.
+     */
+    public static <A, B, C, D> QuadConstraintCollector<A, B, C, D, ?, Double>
+            average(ToIntQuadFunction<A, B, C, D> groupValueMapping) {
+        return compose(countQuad(), sum(groupValueMapping), (count, sum) -> {
+            if (count == 0) {
+                return null;
+            } else {
+                return sum / (double) count;
+            }
+        });
+    }
+
+    /**
+     * As defined by {@link #average(ToIntFunction)}.
+     */
+    public static <A, B, C, D> QuadConstraintCollector<A, B, C, D, ?, Double>
+            averageLong(ToLongQuadFunction<A, B, C, D> groupValueMapping) {
+        return compose(countQuad(), sumLong(groupValueMapping), (count, sum) -> {
+            if (count == 0) {
+                return null;
+            } else {
+                return sum / (double) count;
+            }
+        });
+    }
+
+    /**
+     * As defined by {@link #average(ToIntFunction)}.
+     */
+    public static <A, B, C, D> QuadConstraintCollector<A, B, C, D, ?, BigDecimal>
+            averageBigDecimal(QuadFunction<A, B, C, D, BigDecimal> groupValueMapping) {
+        return compose(countQuad(), sumBigDecimal(groupValueMapping), (count, sum) -> {
+            if (count == 0) {
+                return null;
+            } else {
+                return sum.divide(BigDecimal.valueOf(count), RoundingMode.HALF_EVEN);
+            }
+        });
+    }
+
+    /**
+     * As defined by {@link #average(ToIntFunction)}.
+     */
+    public static <A, B, C, D> QuadConstraintCollector<A, B, C, D, ?, BigDecimal>
+            averageBigInteger(QuadFunction<A, B, C, D, BigInteger> groupValueMapping) {
+        return compose(countQuad(), sumBigInteger(groupValueMapping), (count, sum) -> {
+            if (count == 0) {
+                return null;
+            } else {
+                return new BigDecimal(sum)
+                        .divide(BigDecimal.valueOf(count), RoundingMode.HALF_EVEN);
+            }
+        });
+    }
+
+    /**
+     * As defined by {@link #average(ToIntFunction)}.
+     */
+    public static <A, B, C, D> QuadConstraintCollector<A, B, C, D, ?, Duration>
+            averageDuration(QuadFunction<A, B, C, D, Duration> groupValueMapping) {
+        return compose(countQuad(), sumDuration(groupValueMapping), (count, sum) -> {
+            if (count == 0) {
+                return null;
+            } else {
+                long nanos = sum.toNanos();
+                return Duration.ofNanos(nanos / count);
+            }
+        });
     }
 
     // ************************************************************************
