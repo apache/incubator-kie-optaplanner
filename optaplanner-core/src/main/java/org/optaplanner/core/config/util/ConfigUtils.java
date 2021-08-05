@@ -398,7 +398,7 @@ public class ConfigUtils {
                 true);
     }
 
-    public static Class<?> extractCollectionGenericTypeParameterBenevolently(
+    public static Class<?> extractCollectionGenericTypeParameterLeniently(
             String parentClassConcept, Class<?> parentClass,
             Class<?> type, Type genericType,
             Class<? extends Annotation> annotationClass, String memberName) {
