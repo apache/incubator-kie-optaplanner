@@ -37,7 +37,7 @@ public class BasicVariableDescriptor<Solution_> extends GenuineVariableDescripto
         PlanningVariable planningVariableAnnotation = variableMemberAccessor.getAnnotation(PlanningVariable.class);
         processNullable(descriptorPolicy, planningVariableAnnotation);
         processChained(descriptorPolicy, planningVariableAnnotation);
-        processValueRangeRefs(descriptorPolicy, planningVariableAnnotation::valueRangeProviderRefs);
+        processValueRangeRefs(descriptorPolicy, planningVariableAnnotation.valueRangeProviderRefs());
         processStrength(descriptorPolicy, planningVariableAnnotation);
     }
 

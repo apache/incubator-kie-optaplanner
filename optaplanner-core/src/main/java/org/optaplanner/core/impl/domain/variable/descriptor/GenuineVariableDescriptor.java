@@ -21,7 +21,6 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
-import java.util.function.Supplier;
 
 import org.apache.commons.lang3.ArrayUtils;
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
@@ -78,8 +77,7 @@ public abstract class GenuineVariableDescriptor<Solution_> extends VariableDescr
 
     protected abstract void processPropertyAnnotations(DescriptorPolicy descriptorPolicy);
 
-    protected void processValueRangeRefs(DescriptorPolicy descriptorPolicy, Supplier<String[]> valueRangeProviderRefsSupplier) {
-        String[] valueRangeProviderRefs = valueRangeProviderRefsSupplier.get();
+    protected void processValueRangeRefs(DescriptorPolicy descriptorPolicy, String[] valueRangeProviderRefs) {
         if (ArrayUtils.isEmpty(valueRangeProviderRefs)) {
             throw new IllegalArgumentException("The entityClass (" + entityDescriptor.getEntityClass()
                     + ") has a @" + PlanningVariable.class.getSimpleName()
