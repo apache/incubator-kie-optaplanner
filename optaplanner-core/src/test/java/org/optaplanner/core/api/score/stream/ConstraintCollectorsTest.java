@@ -2775,6 +2775,132 @@ public class ConstraintCollectorsTest {
         assertResult(collector, container, emptySortedMap());
     }
 
+    @Test
+    public void conditionally() {
+        UniConstraintCollector<Integer, Object, Integer> collector = ConstraintCollectors.conditionally(
+                (Integer i) -> i > 1,
+                ConstraintCollectors.min());
+        Object container = collector.supplier().get();
+
+        // Default state.
+        assertResult(collector, container, null);
+        // Add first value, we have one now.
+        int firstValue = 2;
+        Runnable firstRetractor = accumulate(collector, container, firstValue);
+        assertResult(collector, container, 2);
+        // Add second value; it is skipped even though it is lesser than the first value.
+        int secondValue = 1;
+        Runnable secondRetractor = accumulate(collector, container, secondValue);
+        assertResult(collector, container, 2);
+        // Add third value, same as the first. We now have two values, both of which are the same.
+        Runnable thirdRetractor = accumulate(collector, container, firstValue);
+        assertResult(collector, container, 2);
+        // Retract one instance of the first value; we only have one value now.
+        firstRetractor.run();
+        assertResult(collector, container, 2);
+        // Retract the skipped value.
+        secondRetractor.run();
+        assertResult(collector, container, 2);
+        // Retract last value; there are no values now.
+        thirdRetractor.run();
+        assertResult(collector, container, null);
+    }
+
+    @Test
+    public void conditionallyBi() {
+        BiConstraintCollector<Integer, Integer, Object, Integer> collector = ConstraintCollectors.conditionally(
+                (i, i2) -> i < 2,
+                ConstraintCollectors.max(Integer::sum, Integer::compareTo));
+        Object container = collector.supplier().get();
+
+        // Default state.
+        assertResult(collector, container, null);
+        // Add first value, we have one now.
+        int firstValue = 1;
+        Runnable firstRetractor = accumulate(collector, container, firstValue, 0);
+        assertResult(collector, container, 1);
+        // Add second value; it is skipped even though it is greater than the first value.
+        int secondValue = 2;
+        Runnable secondRetractor = accumulate(collector, container, secondValue, 0);
+        assertResult(collector, container, 1);
+        // Add third value, same as the first. We now have two values, both of which are the same.
+        Runnable thirdRetractor = accumulate(collector, container, firstValue, 0);
+        assertResult(collector, container, 1);
+        // Retract one instance of the first value; we only have one value now.
+        firstRetractor.run();
+        assertResult(collector, container, 1);
+        // Retract the skipped value.
+        secondRetractor.run();
+        assertResult(collector, container, 1);
+        // Retract last value; there are no values now.
+        thirdRetractor.run();
+        assertResult(collector, container, null);
+    }
+
+    @Test
+    public void conditionallyTri() {
+        TriConstraintCollector<Integer, Integer, Integer, Object, Integer> collector =
+                ConstraintCollectors.conditionally(
+                        (i, i2, i3) -> i < 2,
+                        ConstraintCollectors.max((i, i2, i3) -> i + i2 + i3, Integer::compareTo));
+        Object container = collector.supplier().get();
+
+        // Default state.
+        assertResult(collector, container, null);
+        // Add first value, we have one now.
+        int firstValue = 1;
+        Runnable firstRetractor = accumulate(collector, container, firstValue, 0, 0);
+        assertResult(collector, container, 1);
+        // Add second value; it is skipped even though it is greater than the first value.
+        int secondValue = 2;
+        Runnable secondRetractor = accumulate(collector, container, secondValue, 0, 0);
+        assertResult(collector, container, 1);
+        // Add third value, same as the first. We now have two values, both of which are the same.
+        Runnable thirdRetractor = accumulate(collector, container, firstValue, 0, 0);
+        assertResult(collector, container, 1);
+        // Retract one instance of the first value; we only have one value now.
+        firstRetractor.run();
+        assertResult(collector, container, 1);
+        // Retract the skipped value.
+        secondRetractor.run();
+        assertResult(collector, container, 1);
+        // Retract last value; there are no values now.
+        thirdRetractor.run();
+        assertResult(collector, container, null);
+    }
+
+    @Test
+    public void conditionallyQuad() {
+        QuadConstraintCollector<Integer, Integer, Integer, Integer, Object, Integer> collector =
+                ConstraintCollectors.conditionally(
+                        (i, i2, i3, i4) -> i < 2,
+                        ConstraintCollectors.max((i, i2, i3, i4) -> i + i2 + i3 + i4, Integer::compareTo));
+        Object container = collector.supplier().get();
+
+        // Default state.
+        assertResult(collector, container, null);
+        // Add first value, we have one now.
+        int firstValue = 1;
+        Runnable firstRetractor = accumulate(collector, container, firstValue, 0, 0, 0);
+        assertResult(collector, container, 1);
+        // Add second value; it is skipped even though it is greater than the first value.
+        int secondValue = 2;
+        Runnable secondRetractor = accumulate(collector, container, secondValue, 0, 0, 0);
+        assertResult(collector, container, 1);
+        // Add third value, same as the first. We now have two values, both of which are the same.
+        Runnable thirdRetractor = accumulate(collector, container, firstValue, 0, 0, 0);
+        assertResult(collector, container, 1);
+        // Retract one instance of the first value; we only have one value now.
+        firstRetractor.run();
+        assertResult(collector, container, 1);
+        // Retract the skipped value.
+        secondRetractor.run();
+        assertResult(collector, container, 1);
+        // Retract last value; there are no values now.
+        thirdRetractor.run();
+        assertResult(collector, container, null);
+    }
+
     private static <A, B, C, Container_, Result_> Runnable accumulate(
             TriConstraintCollector<A, B, C, Container_, Result_> collector, Object container, A valueA, B valueB,
             C valueC) {

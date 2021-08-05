@@ -1934,7 +1934,7 @@ public final class ConstraintCollectors {
      * @param <A> generic type of the tuple variable
      * @param <ResultContainer_> generic type of the result container
      * @param <Result_> generic type of the collector's return value
-     * @return
+     * @return never null
      */
     public static <A, ResultContainer_, Result_> UniConstraintCollector<A, ResultContainer_, Result_> conditionally(
             Predicate<A> condition, UniConstraintCollector<A, ResultContainer_, Result_> delegate) {
