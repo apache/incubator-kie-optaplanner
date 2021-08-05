@@ -166,8 +166,8 @@ MavenCommand getNativeMavenCommand(String directory, String builderImage = getNa
                 .withProperty('quarkus.native.container-runtime', 'docker')
                 .withProperty('quarkus.profile', 'native') // Added due to https://github.com/quarkusio/quarkus/issues/13341
     
-    if (getNativeBuilderImage()) {
-        mvnCmd.withProperty('quarkus.native.builder-image', getNativeBuilderImage())
+    if (builderImage) {
+        mvnCmd.withProperty('quarkus.native.builder-image', builderImage)
     }
 
     return mvnCmd
