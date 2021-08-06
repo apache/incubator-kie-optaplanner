@@ -87,6 +87,9 @@ if (Utils.isLTSBranch(this)) {
     setupNativeLTSJob()
 }
 
+// Tools folder
+KogitoJobTemplate.createQuarkusUpdateJob(this, 'optaplanner', 'optaplanner-build-parent', 'Optaplanner')
+
 /////////////////////////////////////////////////////////////////
 // Methods
 /////////////////////////////////////////////////////////////////
