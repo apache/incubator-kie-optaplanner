@@ -16,6 +16,8 @@
 
 package org.optaplanner.core.impl.heuristic.selector.move.generic.list;
 
+import java.util.Objects;
+
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.score.director.ScoreDirector;
 import org.optaplanner.core.impl.domain.variable.descriptor.ListVariableDescriptor;
@@ -39,6 +41,46 @@ public class ListChangeMove<Solution_> extends AbstractMove<Solution_> {
     private final Object destinationEntity;
     private final int destinationIndex;
 
+    /**
+     * The move removes a planning value element from {@code sourceEntity.listVariable[sourceIndex]}
+     * and inserts the planning value at {@code destinationEntity.listVariable[destinationIndex]}.
+     *
+     * <p>
+     * <b>Example 1 - source and destination entities are different</b>
+     *
+     * <pre>
+     * GIVEN
+     * Ann.tasks = [A, B, C]
+     * Bob.tasks = [X, Y]
+     *
+     * WHEN
+     * ListChangeMove: Ann[0]->Bob[2]
+     *
+     * THEN
+     * Ann.tasks = [B, C]
+     * Bob.tasks = [X, Y, A]
+     * </pre>
+     *
+     * <p>
+     * <b>Example 2 - source and destination is the same entity</b>
+     *
+     * <pre>
+     * GIVEN
+     * Ann.tasks = [A, B, C]
+     *
+     * WHEN
+     * ListChangeMove: Ann[0]->Ann[2]
+     *
+     * THEN
+     * Ann.tasks = [B, C, A]
+     * </pre>
+     *
+     * @param variableDescriptor descriptor of a list variable, for example {@code Employee.taskList}
+     * @param sourceEntity planning entity instance from which a planning value will be removed, for example "Ann"
+     * @param sourceIndex index in sourceEntity's list variable from which a planning value will be removed
+     * @param destinationEntity planning entity instance to which a planning value will be moved, for example "Bob"
+     * @param destinationIndex index in destinationEntity's list variable where the moved planning value will be inserted
+     */
     public ListChangeMove(
             ListVariableDescriptor<Solution_> variableDescriptor,
             Object sourceEntity, int sourceIndex,
@@ -78,6 +120,15 @@ public class ListChangeMove<Solution_> extends AbstractMove<Solution_> {
     }
 
     // ************************************************************************
+    // Introspection methods
+    // ************************************************************************
+
+    @Override
+    public String getSimpleMoveTypeDescription() {
+        return getClass().getSimpleName() + "(" + variableDescriptor.getSimpleEntityAndVariableName() + ")";
+    }
+
+    // ************************************************************************
     // Testing methods
     // ************************************************************************
 
@@ -95,6 +146,26 @@ public class ListChangeMove<Solution_> extends AbstractMove<Solution_> {
 
     public int getDestinationIndex() {
         return destinationIndex;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        ListChangeMove<?> other = (ListChangeMove<?>) o;
+        return sourceIndex == other.sourceIndex && destinationIndex == other.destinationIndex
+                && Objects.equals(variableDescriptor, other.variableDescriptor)
+                && Objects.equals(sourceEntity, other.sourceEntity)
+                && Objects.equals(destinationEntity, other.destinationEntity);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(variableDescriptor, sourceEntity, sourceIndex, destinationEntity, destinationIndex);
     }
 
     @Override
