@@ -36,24 +36,24 @@ import org.optaplanner.core.impl.heuristic.selector.entity.EntitySelector;
  */
 public class TmpOriginalListChangeIterator<Solution_> extends UpcomingSelectionIterator<Move<Solution_>> {
 
+    private final ListVariableDescriptor<Solution_> listVariableDescriptor;
     private final EntitySelector<Solution_> entitySelector;
     private final Iterator<Object> fromEntityIterator;
     private PrimitiveIterator.OfInt fromIndexIterator;
     private Iterator<Object> toEntityIterator;
     private PrimitiveIterator.OfInt toIndexIterator;
-    private final ListVariableDescriptor<Solution_> listVariableDescriptor;
 
     private Object upcomingFromEntity;
     private Object upcomingToEntity;
     private int upcomingFromIndex = 0;
 
     public TmpOriginalListChangeIterator(
-            EntitySelector<Solution_> entitySelector,
-            ListVariableDescriptor<Solution_> listVariableDescriptor) {
+            ListVariableDescriptor<Solution_> listVariableDescriptor,
+            EntitySelector<Solution_> entitySelector) {
+        this.listVariableDescriptor = listVariableDescriptor;
         this.entitySelector = entitySelector;
         this.fromEntityIterator = entitySelector.iterator();
         this.toEntityIterator = Collections.emptyIterator();
-        this.listVariableDescriptor = listVariableDescriptor;
         toIndexIterator = IntStream.empty().iterator();
         fromIndexIterator = IntStream.empty().iterator();
     }
@@ -77,11 +77,11 @@ public class TmpOriginalListChangeIterator<Solution_> extends UpcomingSelectionI
         }
 
         return new ListChangeMove<>(
+                listVariableDescriptor,
                 upcomingFromEntity,
                 upcomingFromIndex,
                 upcomingToEntity,
-                toIndexIterator.nextInt(),
-                listVariableDescriptor);
+                toIndexIterator.nextInt());
     }
 
     private PrimitiveIterator.OfInt listIndexIterator(Object entity, BiFunction<Integer, Integer, IntStream> rangeType) {

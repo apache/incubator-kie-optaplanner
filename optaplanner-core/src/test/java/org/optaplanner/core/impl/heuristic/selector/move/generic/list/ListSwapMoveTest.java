@@ -44,7 +44,7 @@ class ListSwapMoveTest {
                 TestdataListEntity.buildVariableDescriptorForValueList();
 
         // Swap Move 1: between two entities
-        ListSwapMove<TestdataListSolution> move1 = new ListSwapMove<>(e1, 0, e2, 0, variableDescriptor);
+        ListSwapMove<TestdataListSolution> move1 = new ListSwapMove<>(variableDescriptor, e1, 0, e2, 0);
 
         AbstractMove<TestdataListSolution> undoMove1 = move1.doMove(scoreDirector);
         assertThat(e1.getValueList()).containsExactly(v3, v2);
@@ -56,7 +56,7 @@ class ListSwapMoveTest {
         assertThat(e2.getValueList()).containsExactly(v3);
 
         // Swap Move 2: same entity
-        ListSwapMove<TestdataListSolution> move2 = new ListSwapMove<>(e1, 0, e1, 1, variableDescriptor);
+        ListSwapMove<TestdataListSolution> move2 = new ListSwapMove<>(variableDescriptor, e1, 0, e1, 1);
 
         AbstractMove<TestdataListSolution> undoMove2 = move2.doMove(scoreDirector);
         assertThat(e1.getValueList()).containsExactly(v2, v1);
@@ -79,11 +79,11 @@ class ListSwapMoveTest {
                 TestdataListEntity.buildVariableDescriptorForValueList();
 
         // same entity, same index => not doable because the move doesn't change anything
-        assertThat(new ListSwapMove<>(e1, 1, e1, 1, variableDescriptor).isMoveDoable(scoreDirector)).isFalse();
+        assertThat(new ListSwapMove<>(variableDescriptor, e1, 1, e1, 1).isMoveDoable(scoreDirector)).isFalse();
         // same entity, different index => doable
-        assertThat(new ListSwapMove<>(e1, 0, e1, 1, variableDescriptor).isMoveDoable(scoreDirector)).isTrue();
+        assertThat(new ListSwapMove<>(variableDescriptor, e1, 0, e1, 1).isMoveDoable(scoreDirector)).isTrue();
         // different entity => doable
-        assertThat(new ListSwapMove<>(e1, 0, e2, 0, variableDescriptor).isMoveDoable(scoreDirector)).isTrue();
+        assertThat(new ListSwapMove<>(variableDescriptor, e1, 0, e2, 0).isMoveDoable(scoreDirector)).isTrue();
     }
 
 }

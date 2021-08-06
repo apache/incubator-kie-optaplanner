@@ -33,27 +33,26 @@ import org.optaplanner.core.impl.score.director.InnerScoreDirector;
  */
 public class ListChangeMove<Solution_> extends AbstractMove<Solution_> {
 
+    private final ListVariableDescriptor<Solution_> variableDescriptor;
     private final Object sourceEntity;
     private final int sourceIndex;
     private final Object destinationEntity;
     private final int destinationIndex;
 
-    private final ListVariableDescriptor<Solution_> variableDescriptor;
-
     public ListChangeMove(
+            ListVariableDescriptor<Solution_> variableDescriptor,
             Object sourceEntity, int sourceIndex,
-            Object destinationEntity, int destinationIndex,
-            ListVariableDescriptor<Solution_> variableDescriptor) {
+            Object destinationEntity, int destinationIndex) {
+        this.variableDescriptor = variableDescriptor;
         this.sourceEntity = sourceEntity;
         this.sourceIndex = sourceIndex;
         this.destinationEntity = destinationEntity;
         this.destinationIndex = destinationIndex;
-        this.variableDescriptor = variableDescriptor;
     }
 
     @Override
     protected AbstractMove<Solution_> createUndoMove(ScoreDirector<Solution_> scoreDirector) {
-        return new ListChangeMove<>(destinationEntity, destinationIndex, sourceEntity, sourceIndex, variableDescriptor);
+        return new ListChangeMove<>(variableDescriptor, destinationEntity, destinationIndex, sourceEntity, sourceIndex);
     }
 
     @Override

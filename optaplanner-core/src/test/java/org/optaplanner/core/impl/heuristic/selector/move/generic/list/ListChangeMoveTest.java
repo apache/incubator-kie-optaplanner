@@ -43,7 +43,7 @@ class ListChangeMoveTest {
         ListVariableDescriptor<TestdataListSolution> variableDescriptor =
                 TestdataListEntity.buildVariableDescriptorForValueList();
 
-        ListChangeMove<TestdataListSolution> move = new ListChangeMove<>(e1, 1, e2, 1, variableDescriptor);
+        ListChangeMove<TestdataListSolution> move = new ListChangeMove<>(variableDescriptor, e1, 1, e2, 1);
 
         AbstractMove<TestdataListSolution> undoMove = move.doMove(scoreDirector);
 
@@ -69,12 +69,12 @@ class ListChangeMoveTest {
                 TestdataListEntity.buildVariableDescriptorForValueList();
 
         // same entity, same index => not doable because the move doesn't change anything
-        assertThat(new ListChangeMove<>(e1, 1, e1, 1, variableDescriptor).isMoveDoable(scoreDirector)).isFalse();
+        assertThat(new ListChangeMove<>(variableDescriptor, e1, 1, e1, 1).isMoveDoable(scoreDirector)).isFalse();
         // same entity, different index => doable
-        assertThat(new ListChangeMove<>(e1, 0, e1, 1, variableDescriptor).isMoveDoable(scoreDirector)).isTrue();
+        assertThat(new ListChangeMove<>(variableDescriptor, e1, 0, e1, 1).isMoveDoable(scoreDirector)).isTrue();
         // same entity, index == list size => not doable because the element is first removed (list size is reduced by 1)
-        assertThat(new ListChangeMove<>(e1, 0, e1, 2, variableDescriptor).isMoveDoable(scoreDirector)).isFalse();
+        assertThat(new ListChangeMove<>(variableDescriptor, e1, 0, e1, 2).isMoveDoable(scoreDirector)).isFalse();
         // different entity => doable
-        assertThat(new ListChangeMove<>(e1, 0, e2, 0, variableDescriptor).isMoveDoable(scoreDirector)).isTrue();
+        assertThat(new ListChangeMove<>(variableDescriptor, e1, 0, e2, 0).isMoveDoable(scoreDirector)).isTrue();
     }
 }

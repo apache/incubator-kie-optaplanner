@@ -36,27 +36,27 @@ import org.optaplanner.core.impl.heuristic.selector.entity.EntitySelector;
  */
 public class TmpOriginalListSwapIterator<Solution_> extends UpcomingSelectionIterator<Move<Solution_>> {
 
+    private final ListVariableDescriptor<Solution_> listVariableDescriptor;
     private final EntitySelector<Solution_> leftEntitySelector;
     private final Iterator<Object> leftEntityIterator;
     private PrimitiveIterator.OfInt leftIndexIterator;
     private final EntitySelector<Solution_> rightEntitySelector;
     private Iterator<Object> rightEntityIterator;
     private PrimitiveIterator.OfInt rightIndexIterator;
-    private final ListVariableDescriptor<Solution_> listVariableDescriptor;
 
     private Object upcomingLeftEntity;
     private Object upcomingRightEntity;
     private int upcomingLeftIndex = 0;
 
     public TmpOriginalListSwapIterator(
+            ListVariableDescriptor<Solution_> listVariableDescriptor,
             EntitySelector<Solution_> leftEntitySelector,
-            EntitySelector<Solution_> rightEntitySelector,
-            ListVariableDescriptor<Solution_> listVariableDescriptor) {
+            EntitySelector<Solution_> rightEntitySelector) {
+        this.listVariableDescriptor = listVariableDescriptor;
         this.leftEntitySelector = leftEntitySelector;
         this.leftEntityIterator = leftEntitySelector.iterator();
         this.rightEntitySelector = rightEntitySelector;
         this.rightEntityIterator = Collections.emptyIterator();
-        this.listVariableDescriptor = listVariableDescriptor;
         rightIndexIterator = IntStream.empty().iterator();
         leftIndexIterator = IntStream.empty().iterator();
     }
@@ -80,11 +80,11 @@ public class TmpOriginalListSwapIterator<Solution_> extends UpcomingSelectionIte
         }
 
         return new ListSwapMove<>(
+                listVariableDescriptor,
                 upcomingLeftEntity,
                 upcomingLeftIndex,
                 upcomingRightEntity,
-                rightIndexIterator.nextInt(),
-                listVariableDescriptor);
+                rightIndexIterator.nextInt());
     }
 
     private PrimitiveIterator.OfInt listIndexIterator(Object entity, BiFunction<Integer, Integer, IntStream> rangeType) {

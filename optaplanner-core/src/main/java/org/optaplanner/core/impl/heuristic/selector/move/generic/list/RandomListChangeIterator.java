@@ -70,11 +70,11 @@ public class RandomListChangeIterator<Solution_> extends UpcomingSelectionIterat
                 unfoldGlobalIndexIntoDestinationEntityAndListIndex(workingRandom.nextInt(destinationIndexRange));
 
         return new ListChangeMove<>(
+                listVariableDescriptor,
                 source.getKey(),
                 source.getValue(),
                 destination.getKey(),
-                destination.getValue(),
-                listVariableDescriptor);
+                destination.getValue());
     }
 
     Pair<Object, Integer> unfoldGlobalIndexIntoSourceEntityAndListIndex(int index) {

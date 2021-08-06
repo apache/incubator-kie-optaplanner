@@ -62,11 +62,11 @@ public class RandomListSwapIterator<Solution_> extends UpcomingSelectionIterator
         Pair<Object, Integer> left = unfoldGlobalIndexIntoEntityAndListIndex(workingRandom.nextInt(indexRange));
         Pair<Object, Integer> right = unfoldGlobalIndexIntoEntityAndListIndex(workingRandom.nextInt(indexRange));
         return new ListSwapMove<>(
+                variableDescriptor,
                 left.getKey(),
                 left.getValue(),
                 right.getKey(),
-                right.getValue(),
-                variableDescriptor);
+                right.getValue());
     }
 
     Pair<Object, Integer> unfoldGlobalIndexIntoEntityAndListIndex(int index) {
