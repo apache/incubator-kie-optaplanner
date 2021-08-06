@@ -62,10 +62,6 @@ if (Utils.isMainBranch(this)) {
     setupOptaplannerNativePrJob()
     // End of old PR checks
 
-    // Optaweb PR checks
-    setupOptawebEmployeeRosteringPrJob()
-    setupOptawebVehicleRoutingPrJob()
-
     // For BDD runtimes PR job
     setupDeployJob(bddRuntimesPrFolder, KogitoJobType.PR)
 }
@@ -74,6 +70,10 @@ if (Utils.isMainBranch(this)) {
 setupMultijobPrDefaultChecks()
 setupMultijobPrNativeChecks()
 setupMultijobPrLTSChecks()
+
+// Optaweb PR checks
+setupOptawebEmployeeRosteringPrJob()
+setupOptawebVehicleRoutingPrJob()
 
 // Nightly jobs
 setupNativeJob(nightlyBranchFolder)
@@ -118,14 +118,14 @@ void setupOptaplannerNativePrJob() {
 
 void setupOptawebEmployeeRosteringPrJob() {
     def jobParams = getDefaultJobParams('optaweb-employee-rostering')
-    jobParams.pr.run_only_for_branches = ['main']
+    jobParams.pr.run_only_for_branches = [jobParams.git.branch]
     jobParams.jenkinsfile = OPTAPLANNER_JENKINSFILE_PATH
     KogitoJobTemplate.createPRJob(this, jobParams)
 }
 
 void setupOptawebVehicleRoutingPrJob() {
     def jobParams = getDefaultJobParams('optaweb-vehicle-routing')
-    jobParams.pr.run_only_for_branches = ['main']
+    jobParams.pr.run_only_for_branches = [jobParams.git.branch]
     jobParams.jenkinsfile = OPTAPLANNER_JENKINSFILE_PATH
     KogitoJobTemplate.createPRJob(this, jobParams)
 }
