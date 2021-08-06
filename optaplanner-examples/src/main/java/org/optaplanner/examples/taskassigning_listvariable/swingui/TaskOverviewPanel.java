@@ -217,12 +217,12 @@ public class TaskOverviewPanel extends JPanel implements Scrollable {
                 Employee selectedEmployee = (Employee) employeeListField.getSelectedItem();
                 Integer selectedIndex = (Integer) indexListField.getSelectedItem();
                 ListChangeMove<TaskAssigningSolution> changeMove = new ListChangeMove<>(
+                        (ListVariableDescriptor<TaskAssigningSolution>) taskAssigningPanel.getSolutionBusiness()
+                                .variableDescriptor(task.getEmployee(), "tasks"),
                         task.getEmployee(),
                         task.getIndex(),
                         selectedEmployee,
-                        selectedIndex,
-                        (ListVariableDescriptor<TaskAssigningSolution>) taskAssigningPanel.getSolutionBusiness()
-                                .variableDescriptor(task.getEmployee(), "tasks"));
+                        selectedIndex);
                 taskAssigningPanel.getSolutionBusiness().doMove(changeMove);
                 taskAssigningPanel.getSolverAndPersistenceFrame().resetScreen();
             }
