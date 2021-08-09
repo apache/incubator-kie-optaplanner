@@ -180,7 +180,7 @@ public class GizmoMemberDescriptor {
                     bytecodeCreator.writeInstanceField(fd, thisObj, newValue);
                 }
             } catch (NoSuchFieldException e) {
-                throw new IllegalStateException("Field (" + name + ") of class (" + declaringClass + ") does not exist", e);
+                throw new IllegalStateException("Field (" + name + ") of class (" + declaringClass + ") does not exist.", e);
             }
             return true;
         } else if (memberDescriptor instanceof MethodDescriptor) {
