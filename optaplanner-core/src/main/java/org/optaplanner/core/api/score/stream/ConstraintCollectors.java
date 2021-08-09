@@ -2344,11 +2344,10 @@ public final class ConstraintCollectors {
 
     private static class BiResultContainer<ResultContainer1, ResultContainer2> {
 
-        public static <SubResultContainer1_, SubResultContainer2_>
-                BiResultContainer<SubResultContainer1_, SubResultContainer2_>
-                of(Supplier<SubResultContainer1_> subResultContainer1Supplier,
-                        Supplier<SubResultContainer2_> subResultContainer2Supplier) {
-            return new BiResultContainer<>(subResultContainer1Supplier.get(), subResultContainer2Supplier.get());
+        public static <ResultContainer1_, ResultContainer2_> BiResultContainer<ResultContainer1_, ResultContainer2_>
+                of(Supplier<ResultContainer1_> resultContainer1Supplier,
+                        Supplier<ResultContainer2_> resultContainer2Supplier) {
+            return new BiResultContainer<>(resultContainer1Supplier.get(), resultContainer2Supplier.get());
         }
 
         final ResultContainer1 resultContainer1;
@@ -2422,13 +2421,13 @@ public final class ConstraintCollectors {
     private static class TriResultContainer<ResultContainer1, ResultContainer2, ResultContainer3>
             extends BiResultContainer<ResultContainer1, ResultContainer2> {
 
-        public static <SubResultContainer1_, SubResultContainer2_, SubResultContainer3_>
-                TriResultContainer<SubResultContainer1_, SubResultContainer2_, SubResultContainer3_>
-                of(Supplier<SubResultContainer1_> subResultContainer1Supplier,
-                        Supplier<SubResultContainer2_> subResultContainer2Supplier,
-                        Supplier<SubResultContainer3_> subResultContainer3Supplier) {
-            return new TriResultContainer<>(subResultContainer1Supplier.get(), subResultContainer2Supplier.get(),
-                    subResultContainer3Supplier.get());
+        public static <ResultContainer1_, ResultContainer2_, ResultContainer3_>
+                TriResultContainer<ResultContainer1_, ResultContainer2_, ResultContainer3_>
+                of(Supplier<ResultContainer1_> resultContainer1Supplier,
+                        Supplier<ResultContainer2_> resultContainer2Supplier,
+                        Supplier<ResultContainer3_> resultContainer3Supplier) {
+            return new TriResultContainer<>(resultContainer1Supplier.get(), resultContainer2Supplier.get(),
+                    resultContainer3Supplier.get());
         }
 
         final ResultContainer3 resultContainer3;
@@ -2512,14 +2511,14 @@ public final class ConstraintCollectors {
     private static final class QuadResultContainer<ResultContainer1, ResultContainer2, ResultContainer3, ResultContainer4>
             extends TriResultContainer<ResultContainer1, ResultContainer2, ResultContainer3> {
 
-        public static <SubResultContainer1_, SubResultContainer2_, SubResultContainer3_, SubResultContainer4_>
-                QuadResultContainer<SubResultContainer1_, SubResultContainer2_, SubResultContainer3_, SubResultContainer4_>
-                of(Supplier<SubResultContainer1_> subResultContainer1Supplier,
-                        Supplier<SubResultContainer2_> subResultContainer2Supplier,
-                        Supplier<SubResultContainer3_> subResultContainer3Supplier,
-                        Supplier<SubResultContainer4_> subResultContainer4Supplier) {
-            return new QuadResultContainer<>(subResultContainer1Supplier.get(), subResultContainer2Supplier.get(),
-                    subResultContainer3Supplier.get(), subResultContainer4Supplier.get());
+        public static <ResultContainer1_, ResultContainer2_, ResultContainer3_, ResultContainer4_>
+                QuadResultContainer<ResultContainer1_, ResultContainer2_, ResultContainer3_, ResultContainer4_>
+                of(Supplier<ResultContainer1_> resultContainer1Supplier,
+                        Supplier<ResultContainer2_> resultContainer2Supplier,
+                        Supplier<ResultContainer3_> resultContainer3Supplier,
+                        Supplier<ResultContainer4_> resultContainer4Supplier) {
+            return new QuadResultContainer<>(resultContainer1Supplier.get(), resultContainer2Supplier.get(),
+                    resultContainer3Supplier.get(), resultContainer4Supplier.get());
         }
 
         final ResultContainer4 resultContainer4;
