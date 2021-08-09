@@ -98,7 +98,12 @@ public final class DefaultSolverFactory<Solution_> implements SolverFactory<Solu
                 .reduce(Tags.empty(), Tags::and)
                 .and("solver.id", solverId);
         solverScope.setMetricTags(tags);
-        solverScope.setSolverMetricSet(EnumSet.copyOf(metricConfig.getSolverMetricList()));
+        if (!metricConfig.getSolverMetricList().isEmpty()) {
+            solverScope.setSolverMetricSet(EnumSet.copyOf(metricConfig.getSolverMetricList()));
+        } else {
+            solverScope.setSolverMetricSet(EnumSet.noneOf(SolverMetric.class));
+        }
+
         solverScope.setScoreDirector(scoreDirectorFactory.buildScoreDirector(true, constraintMatchEnabledPreference));
 
         if (solverScope.isMetricEnabled(SolverMetric.CONSTRAINT_MATCH_TOTAL_STEP_SCORE)

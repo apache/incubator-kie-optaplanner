@@ -21,6 +21,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import org.optaplanner.core.api.score.Score;
@@ -46,9 +47,27 @@ public class StatisticRegistry extends SimpleMeterRegistry implements PhaseLifec
     List<Consumer<Long>> bestSolutionMeterListenerList = new ArrayList<>();
     long bestSolutionChangedTimestamp = Long.MIN_VALUE;
     ScoreDefinition scoreDefinition;
+    final Function<Number, Number> scoreLevelNumberConverter;
 
     public StatisticRegistry(DefaultSolver solver) {
         scoreDefinition = solver.getSolverScope().getScoreDefinition();
+        Number zeroScoreLevel0 = scoreDefinition.getZeroScore().toLevelNumbers()[0];
+        if (zeroScoreLevel0 instanceof Double) {
+            scoreLevelNumberConverter = Number::doubleValue;
+        } else if (zeroScoreLevel0 instanceof Float) {
+            scoreLevelNumberConverter = Number::floatValue;
+        } else if (zeroScoreLevel0 instanceof Long) {
+            scoreLevelNumberConverter = Number::longValue;
+        } else if (zeroScoreLevel0 instanceof Integer) {
+            scoreLevelNumberConverter = Number::intValue;
+        } else if (zeroScoreLevel0 instanceof Short) {
+            scoreLevelNumberConverter = Number::shortValue;
+        } else if (zeroScoreLevel0 instanceof Byte) {
+            scoreLevelNumberConverter = Number::byteValue;
+        } else {
+            throw new IllegalStateException(
+                    "Cannot determine score level type for score definition (" + scoreDefinition.getClass().getName() + ").");
+        }
     }
 
     public void addListener(SolverMetric metric, Consumer<Long> listener) {
@@ -92,7 +111,7 @@ public class StatisticRegistry extends SimpleMeterRegistry implements PhaseLifec
         for (int i = 0; i < labelNames.length; i++) {
             Gauge scoreLevelGauge = this.find(metric.getMeterId() + "." + labelNames[i]).tags(runId).gauge();
             if (scoreLevelGauge != null) {
-                levelNumbers[i] = scoreLevelGauge.value();
+                levelNumbers[i] = scoreLevelNumberConverter.apply(scoreLevelGauge.value());
             } else {
                 return;
             }

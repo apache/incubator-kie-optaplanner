@@ -42,8 +42,8 @@ public class MoveCountPerStepSubSingleStatistic<Solution_>
     @Override
     public void open(StatisticRegistry registry, Tags runTag, Solver<Solution_> solver) {
         registry.addListener(SolverMetric.MOVE_COUNT_PER_STEP, timeMillisSpent -> {
-            registry.getGaugeValue(SolverMetric.MOVE_COUNT_PER_STEP + ".accepted", runTag, accepted -> {
-                registry.getGaugeValue(SolverMetric.MOVE_COUNT_PER_STEP + ".accepted", runTag, selected -> {
+            registry.getGaugeValue(SolverMetric.MOVE_COUNT_PER_STEP.getMeterId() + ".accepted", runTag, accepted -> {
+                registry.getGaugeValue(SolverMetric.MOVE_COUNT_PER_STEP.getMeterId() + ".selected", runTag, selected -> {
                     pointList.add(new MoveCountPerStepStatisticPoint(timeMillisSpent,
                             new MoveCountPerStepMeasurement(accepted.longValue(), selected.longValue())));
                 });

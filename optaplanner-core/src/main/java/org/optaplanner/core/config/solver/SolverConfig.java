@@ -85,7 +85,7 @@ import org.optaplanner.core.impl.solver.random.RandomFactory;
         "scoreDirectorFactoryConfig",
         "terminationConfig",
         "phaseConfigList",
-        "metricConfig",
+        //"metricConfig",
 })
 public class SolverConfig extends AbstractConfig<SolverConfig> {
 
@@ -266,7 +266,8 @@ public class SolverConfig extends AbstractConfig<SolverConfig> {
     })
     protected List<PhaseConfig> phaseConfigList = null;
 
-    @XmlElement(name = "metrics")
+    //@XmlElement(name = "metrics")
+    @XmlTransient
     protected MetricConfig metricConfig = null;
 
     // ************************************************************************
@@ -647,6 +648,7 @@ public class SolverConfig extends AbstractConfig<SolverConfig> {
                 inheritedConfig.getScoreDirectorFactoryConfig());
         terminationConfig = ConfigUtils.inheritConfig(terminationConfig, inheritedConfig.getTerminationConfig());
         phaseConfigList = ConfigUtils.inheritMergeableListConfig(phaseConfigList, inheritedConfig.getPhaseConfigList());
+        metricConfig = ConfigUtils.inheritConfig(metricConfig, inheritedConfig.getMetricConfig());
         return this;
     }
 
