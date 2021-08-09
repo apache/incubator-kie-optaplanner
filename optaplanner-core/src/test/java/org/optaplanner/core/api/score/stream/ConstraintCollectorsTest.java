@@ -25,6 +25,7 @@ import static java.util.Collections.emptySortedSet;
 import static java.util.Collections.singleton;
 import static java.util.Collections.singletonList;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.optaplanner.core.api.score.stream.ConstraintCollectors.*;
 import static org.optaplanner.core.api.score.stream.ConstraintCollectors.countLongBi;
 import static org.optaplanner.core.api.score.stream.ConstraintCollectors.countLongQuad;
 import static org.optaplanner.core.api.score.stream.ConstraintCollectors.countLongTri;
@@ -42,13 +43,18 @@ import java.time.Period;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import java.util.SortedMap;
 import java.util.SortedSet;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 
+import org.apache.commons.lang3.tuple.Pair;
+import org.apache.commons.lang3.tuple.Triple;
 import org.junit.jupiter.api.Test;
+import org.optaplanner.core.api.function.QuadFunction;
+import org.optaplanner.core.api.function.TriFunction;
 import org.optaplanner.core.api.score.stream.bi.BiConstraintCollector;
 import org.optaplanner.core.api.score.stream.quad.QuadConstraintCollector;
 import org.optaplanner.core.api.score.stream.tri.TriConstraintCollector;
@@ -3379,7 +3385,7 @@ public class ConstraintCollectorsTest {
     public void conditionally() {
         UniConstraintCollector<Integer, Object, Integer> collector = ConstraintCollectors.conditionally(
                 (Integer i) -> i > 1,
-                ConstraintCollectors.min());
+                min());
         Object container = collector.supplier().get();
 
         // Default state.
@@ -3410,7 +3416,7 @@ public class ConstraintCollectorsTest {
     public void conditionallyBi() {
         BiConstraintCollector<Integer, Integer, Object, Integer> collector = ConstraintCollectors.conditionally(
                 (i, i2) -> i < 2,
-                ConstraintCollectors.max(Integer::sum, Integer::compareTo));
+                max(Integer::sum, Integer::compareTo));
         Object container = collector.supplier().get();
 
         // Default state.
@@ -3442,7 +3448,7 @@ public class ConstraintCollectorsTest {
         TriConstraintCollector<Integer, Integer, Integer, Object, Integer> collector =
                 ConstraintCollectors.conditionally(
                         (i, i2, i3) -> i < 2,
-                        ConstraintCollectors.max((i, i2, i3) -> i + i2 + i3, Integer::compareTo));
+                        max((i, i2, i3) -> i + i2 + i3, Integer::compareTo));
         Object container = collector.supplier().get();
 
         // Default state.
@@ -3474,7 +3480,7 @@ public class ConstraintCollectorsTest {
         QuadConstraintCollector<Integer, Integer, Integer, Integer, Object, Integer> collector =
                 ConstraintCollectors.conditionally(
                         (i, i2, i3, i4) -> i < 2,
-                        ConstraintCollectors.max((i, i2, i3, i4) -> i + i2 + i3 + i4, Integer::compareTo));
+                        max((i, i2, i3, i4) -> i + i2 + i3 + i4, Integer::compareTo));
         Object container = collector.supplier().get();
 
         // Default state.
@@ -3499,6 +3505,437 @@ public class ConstraintCollectorsTest {
         // Retract last value; there are no values now.
         thirdRetractor.run();
         assertResult(collector, container, null);
+    }
+
+    @Test
+    public void compose2() {
+        UniConstraintCollector<Integer, ?, Pair<Integer, Integer>> collector =
+                compose(min(i -> i), max(i -> i),
+                        (BiFunction<Integer, Integer, Pair<Integer, Integer>>) Pair::of);
+        Object container = collector.supplier().get();
+
+        // Default state.
+        assertResult(collector, container, Pair.of(null, null));
+        // Add first value.
+        int firstValue = 2;
+        Runnable firstRetractor = accumulate(collector, container, firstValue);
+        assertResult(collector, container, Pair.of(2, 2));
+        // Add second value, lesser than the first.
+        int secondValue = 1;
+        Runnable secondRetractor = accumulate(collector, container, secondValue);
+        assertResult(collector, container, Pair.of(1, 2));
+        // Add third value, same as the second, result does not change.
+        Runnable thirdRetractor = accumulate(collector, container, secondValue);
+        assertResult(collector, container, Pair.of(1, 2));
+        // Retract one instance of the second value; nothing should change.
+        secondRetractor.run();
+        assertResult(collector, container, Pair.of(1, 2));
+        // Retract final instance of the second value.
+        thirdRetractor.run();
+        assertResult(collector, container, Pair.of(2, 2));
+        // Retract last value; there are no values now.
+        firstRetractor.run();
+        assertResult(collector, container, Pair.of(null, null));
+    }
+
+    @Test
+    public void compose3() {
+        UniConstraintCollector<Integer, ?, Triple<Integer, Integer, Double>> collector =
+                compose(min(i -> i), max(i -> i), ConstraintCollectors.average(i -> i),
+                        (TriFunction<Integer, Integer, Double, Triple<Integer, Integer, Double>>) Triple::of);
+        Object container = collector.supplier().get();
+
+        // Default state.
+        assertResult(collector, container, Triple.of(null, null, null));
+        // Add first value.
+        int firstValue = 4;
+        Runnable firstRetractor = accumulate(collector, container, firstValue);
+        assertResult(collector, container, Triple.of(4, 4, 4D));
+        // Add second value, lesser than the first.
+        int secondValue = 1;
+        Runnable secondRetractor = accumulate(collector, container, secondValue);
+        assertResult(collector, container, Triple.of(1, 4, 2.5D));
+        // Add third value, same as the second.
+        Runnable thirdRetractor = accumulate(collector, container, secondValue);
+        assertResult(collector, container, Triple.of(1, 4, 2D));
+        // Retract one instance of the second value.
+        secondRetractor.run();
+        assertResult(collector, container, Triple.of(1, 4, 2.5D));
+        // Retract final instance of the second value.
+        thirdRetractor.run();
+        assertResult(collector, container, Triple.of(4, 4, 4D));
+        // Retract last value; there are no values now.
+        firstRetractor.run();
+        assertResult(collector, container, Triple.of(null, null, null));
+    }
+
+    @Test
+    public void compose4() {
+        UniConstraintCollector<Integer, ?, Quadruple<Integer, Integer, Integer, Double>> collector =
+                compose(ConstraintCollectors.count(), min(i -> i), max(i -> i),
+                        ConstraintCollectors.average(i -> i),
+                        (QuadFunction<Integer, Integer, Integer, Double, Quadruple<Integer, Integer, Integer, Double>>) Quadruple::of);
+        Object container = collector.supplier().get();
+
+        // Default state.
+        assertResult(collector, container, Quadruple.of(0, null, null, null));
+        // Add first value.
+        int firstValue = 4;
+        Runnable firstRetractor = accumulate(collector, container, firstValue);
+        assertResult(collector, container, Quadruple.of(1, 4, 4, 4D));
+        // Add second value, lesser than the first.
+        int secondValue = 1;
+        Runnable secondRetractor = accumulate(collector, container, secondValue);
+        assertResult(collector, container, Quadruple.of(2, 1, 4, 2.5D));
+        // Add third value, same as the second.
+        Runnable thirdRetractor = accumulate(collector, container, secondValue);
+        assertResult(collector, container, Quadruple.of(3, 1, 4, 2D));
+        // Retract one instance of the second value.
+        secondRetractor.run();
+        assertResult(collector, container, Quadruple.of(2, 1, 4, 2.5D));
+        // Retract final instance of the second value.
+        thirdRetractor.run();
+        assertResult(collector, container, Quadruple.of(1, 4, 4, 4D));
+        // Retract last value; there are no values now.
+        firstRetractor.run();
+        assertResult(collector, container, Quadruple.of(0, null, null, null));
+    }
+
+    @Test
+    public void compose2Bi() {
+        BiConstraintCollector<Integer, Integer, ?, Pair<Integer, Integer>> collector =
+                compose(min(Integer::sum, Integer::compareTo),
+                        max(Integer::sum, Integer::compareTo),
+                        Pair::of);
+        Object container = collector.supplier().get();
+
+        // Default state.
+        assertResult(collector, container, Pair.of(null, null));
+        // Add first value.
+        int firstValue = 2;
+        Runnable firstRetractor = accumulate(collector, container, firstValue, 0);
+        assertResult(collector, container, Pair.of(2, 2));
+        // Add second value, lesser than the first.
+        int secondValue = 1;
+        Runnable secondRetractor = accumulate(collector, container, secondValue, 0);
+        assertResult(collector, container, Pair.of(1, 2));
+        // Add third value, same as the second, result does not change.
+        Runnable thirdRetractor = accumulate(collector, container, secondValue, 0);
+        assertResult(collector, container, Pair.of(1, 2));
+        // Retract one instance of the second value; nothing should change.
+        secondRetractor.run();
+        assertResult(collector, container, Pair.of(1, 2));
+        // Retract final instance of the second value.
+        thirdRetractor.run();
+        assertResult(collector, container, Pair.of(2, 2));
+        // Retract last value; there are no values now.
+        firstRetractor.run();
+        assertResult(collector, container, Pair.of(null, null));
+    }
+
+    @Test
+    public void compose3Bi() {
+        BiConstraintCollector<Integer, Integer, ?, Triple<Integer, Integer, Double>> collector =
+                compose(min(Integer::sum, Integer::compareTo),
+                        max(Integer::sum, Integer::compareTo),
+                        ConstraintCollectors.average(Integer::sum),
+                        Triple::of);
+        Object container = collector.supplier().get();
+
+        // Default state.
+        assertResult(collector, container, Triple.of(null, null, null));
+        // Add first value.
+        int firstValue = 4;
+        Runnable firstRetractor = accumulate(collector, container, firstValue, 0);
+        assertResult(collector, container, Triple.of(4, 4, 4D));
+        // Add second value, lesser than the first.
+        int secondValue = 1;
+        Runnable secondRetractor = accumulate(collector, container, secondValue, 0);
+        assertResult(collector, container, Triple.of(1, 4, 2.5D));
+        // Add third value, same as the second.
+        Runnable thirdRetractor = accumulate(collector, container, secondValue, 0);
+        assertResult(collector, container, Triple.of(1, 4, 2D));
+        // Retract one instance of the second value.
+        secondRetractor.run();
+        assertResult(collector, container, Triple.of(1, 4, 2.5D));
+        // Retract final instance of the second value.
+        thirdRetractor.run();
+        assertResult(collector, container, Triple.of(4, 4, 4D));
+        // Retract last value; there are no values now.
+        firstRetractor.run();
+        assertResult(collector, container, Triple.of(null, null, null));
+    }
+
+    @Test
+    public void compose4Bi() {
+        BiConstraintCollector<Integer, Integer, ?, Quadruple<Integer, Integer, Integer, Double>> collector =
+                compose(ConstraintCollectors.countBi(),
+                        min(Integer::sum, Integer::compareTo),
+                        max(Integer::sum, Integer::compareTo),
+                        ConstraintCollectors.average(Integer::sum),
+                        Quadruple::of);
+        Object container = collector.supplier().get();
+
+        // Default state.
+        assertResult(collector, container, Quadruple.of(0, null, null, null));
+        // Add first value.
+        int firstValue = 4;
+        Runnable firstRetractor = accumulate(collector, container, firstValue, 0);
+        assertResult(collector, container, Quadruple.of(1, 4, 4, 4D));
+        // Add second value, lesser than the first.
+        int secondValue = 1;
+        Runnable secondRetractor = accumulate(collector, container, secondValue, 0);
+        assertResult(collector, container, Quadruple.of(2, 1, 4, 2.5D));
+        // Add third value, same as the second.
+        Runnable thirdRetractor = accumulate(collector, container, secondValue, 0);
+        assertResult(collector, container, Quadruple.of(3, 1, 4, 2D));
+        // Retract one instance of the second value.
+        secondRetractor.run();
+        assertResult(collector, container, Quadruple.of(2, 1, 4, 2.5D));
+        // Retract final instance of the second value.
+        thirdRetractor.run();
+        assertResult(collector, container, Quadruple.of(1, 4, 4, 4D));
+        // Retract last value; there are no values now.
+        firstRetractor.run();
+        assertResult(collector, container, Quadruple.of(0, null, null, null));
+    }
+
+    @Test
+    public void compose2Tri() {
+        TriConstraintCollector<Integer, Integer, Integer, ?, Pair<Integer, Integer>> collector =
+                compose(min((i, i2, i3) -> i + i2 + i3, Integer::compareTo),
+                        max((i, i2, i3) -> i + i2 + i3, Integer::compareTo),
+                        Pair::of);
+        Object container = collector.supplier().get();
+
+        // Default state.
+        assertResult(collector, container, Pair.of(null, null));
+        // Add first value.
+        int firstValue = 2;
+        Runnable firstRetractor = accumulate(collector, container, firstValue, 0, 0);
+        assertResult(collector, container, Pair.of(2, 2));
+        // Add second value, lesser than the first.
+        int secondValue = 1;
+        Runnable secondRetractor = accumulate(collector, container, secondValue, 0, 0);
+        assertResult(collector, container, Pair.of(1, 2));
+        // Add third value, same as the second, result does not change.
+        Runnable thirdRetractor = accumulate(collector, container, secondValue, 0, 0);
+        assertResult(collector, container, Pair.of(1, 2));
+        // Retract one instance of the second value; nothing should change.
+        secondRetractor.run();
+        assertResult(collector, container, Pair.of(1, 2));
+        // Retract final instance of the second value.
+        thirdRetractor.run();
+        assertResult(collector, container, Pair.of(2, 2));
+        // Retract last value; there are no values now.
+        firstRetractor.run();
+        assertResult(collector, container, Pair.of(null, null));
+    }
+
+    @Test
+    public void compose3Tri() {
+        TriConstraintCollector<Integer, Integer, Integer, ?, Triple<Integer, Integer, Double>> collector =
+                compose(min((i, i2, i3) -> i + i2 + i3, Integer::compareTo),
+                        max((i, i2, i3) -> i + i2 + i3, Integer::compareTo),
+                        ConstraintCollectors.average((i, i2, i3) -> i + i2 + i3),
+                        Triple::of);
+        Object container = collector.supplier().get();
+
+        // Default state.
+        assertResult(collector, container, Triple.of(null, null, null));
+        // Add first value.
+        int firstValue = 4;
+        Runnable firstRetractor = accumulate(collector, container, firstValue, 0, 0);
+        assertResult(collector, container, Triple.of(4, 4, 4D));
+        // Add second value, lesser than the first.
+        int secondValue = 1;
+        Runnable secondRetractor = accumulate(collector, container, secondValue, 0, 0);
+        assertResult(collector, container, Triple.of(1, 4, 2.5D));
+        // Add third value, same as the second.
+        Runnable thirdRetractor = accumulate(collector, container, secondValue, 0, 0);
+        assertResult(collector, container, Triple.of(1, 4, 2D));
+        // Retract one instance of the second value.
+        secondRetractor.run();
+        assertResult(collector, container, Triple.of(1, 4, 2.5D));
+        // Retract final instance of the second value.
+        thirdRetractor.run();
+        assertResult(collector, container, Triple.of(4, 4, 4D));
+        // Retract last value; there are no values now.
+        firstRetractor.run();
+        assertResult(collector, container, Triple.of(null, null, null));
+    }
+
+    @Test
+    public void compose4Tri() {
+        TriConstraintCollector<Integer, Integer, Integer, ?, Quadruple<Integer, Integer, Integer, Double>> collector =
+                compose(ConstraintCollectors.countTri(),
+                        min((i, i2, i3) -> i + i2 + i3, Integer::compareTo),
+                        max((i, i2, i3) -> i + i2 + i3, Integer::compareTo),
+                        ConstraintCollectors.average((i, i2, i3) -> i + i2 + i3),
+                        Quadruple::of);
+        Object container = collector.supplier().get();
+
+        // Default state.
+        assertResult(collector, container, Quadruple.of(0, null, null, null));
+        // Add first value.
+        int firstValue = 4;
+        Runnable firstRetractor = accumulate(collector, container, firstValue, 0, 0);
+        assertResult(collector, container, Quadruple.of(1, 4, 4, 4D));
+        // Add second value, lesser than the first.
+        int secondValue = 1;
+        Runnable secondRetractor = accumulate(collector, container, secondValue, 0, 0);
+        assertResult(collector, container, Quadruple.of(2, 1, 4, 2.5D));
+        // Add third value, same as the second.
+        Runnable thirdRetractor = accumulate(collector, container, secondValue, 0, 0);
+        assertResult(collector, container, Quadruple.of(3, 1, 4, 2D));
+        // Retract one instance of the second value.
+        secondRetractor.run();
+        assertResult(collector, container, Quadruple.of(2, 1, 4, 2.5D));
+        // Retract final instance of the second value.
+        thirdRetractor.run();
+        assertResult(collector, container, Quadruple.of(1, 4, 4, 4D));
+        // Retract last value; there are no values now.
+        firstRetractor.run();
+        assertResult(collector, container, Quadruple.of(0, null, null, null));
+    }
+
+    @Test
+    public void compose2Quad() {
+        QuadConstraintCollector<Integer, Integer, Integer, Integer, ?, Pair<Integer, Integer>> collector =
+                compose(min((i, i2, i3, i4) -> i + i2 + i3 + i4, Integer::compareTo),
+                        max((i, i2, i3, i4) -> i + i2 + i3 + i4, Integer::compareTo),
+                        Pair::of);
+        Object container = collector.supplier().get();
+
+        // Default state.
+        assertResult(collector, container, Pair.of(null, null));
+        // Add first value.
+        int firstValue = 2;
+        Runnable firstRetractor = accumulate(collector, container, firstValue, 0, 0, 0);
+        assertResult(collector, container, Pair.of(2, 2));
+        // Add second value, lesser than the first.
+        int secondValue = 1;
+        Runnable secondRetractor = accumulate(collector, container, secondValue, 0, 0, 0);
+        assertResult(collector, container, Pair.of(1, 2));
+        // Add third value, same as the second, result does not change.
+        Runnable thirdRetractor = accumulate(collector, container, secondValue, 0, 0, 0);
+        assertResult(collector, container, Pair.of(1, 2));
+        // Retract one instance of the second value; nothing should change.
+        secondRetractor.run();
+        assertResult(collector, container, Pair.of(1, 2));
+        // Retract final instance of the second value.
+        thirdRetractor.run();
+        assertResult(collector, container, Pair.of(2, 2));
+        // Retract last value; there are no values now.
+        firstRetractor.run();
+        assertResult(collector, container, Pair.of(null, null));
+    }
+
+    @Test
+    public void compose3Quad() {
+        QuadConstraintCollector<Integer, Integer, Integer, Integer, ?, Triple<Integer, Integer, Double>> collector =
+                compose(min((i, i2, i3, i4) -> i + i2 + i3 + i4, Integer::compareTo),
+                        max((i, i2, i3, i4) -> i + i2 + i3 + i4, Integer::compareTo),
+                        ConstraintCollectors.average((i, i2, i3, i4) -> i + i2 + i3 + i4),
+                        Triple::of);
+        Object container = collector.supplier().get();
+
+        // Default state.
+        assertResult(collector, container, Triple.of(null, null, null));
+        // Add first value.
+        int firstValue = 4;
+        Runnable firstRetractor = accumulate(collector, container, firstValue, 0, 0, 0);
+        assertResult(collector, container, Triple.of(4, 4, 4D));
+        // Add second value, lesser than the first.
+        int secondValue = 1;
+        Runnable secondRetractor = accumulate(collector, container, secondValue, 0, 0, 0);
+        assertResult(collector, container, Triple.of(1, 4, 2.5D));
+        // Add third value, same as the second.
+        Runnable thirdRetractor = accumulate(collector, container, secondValue, 0, 0, 0);
+        assertResult(collector, container, Triple.of(1, 4, 2D));
+        // Retract one instance of the second value.
+        secondRetractor.run();
+        assertResult(collector, container, Triple.of(1, 4, 2.5D));
+        // Retract final instance of the second value.
+        thirdRetractor.run();
+        assertResult(collector, container, Triple.of(4, 4, 4D));
+        // Retract last value; there are no values now.
+        firstRetractor.run();
+        assertResult(collector, container, Triple.of(null, null, null));
+    }
+
+    @Test
+    public void compose4Quad() {
+        QuadConstraintCollector<Integer, Integer, Integer, Integer, ?, Quadruple<Integer, Integer, Integer, Double>> collector =
+                compose(ConstraintCollectors.countQuad(),
+                        min((i, i2, i3, i4) -> i + i2 + i3 + i4, Integer::compareTo),
+                        max((i, i2, i3, i4) -> i + i2 + i3 + i4, Integer::compareTo),
+                        ConstraintCollectors.average((i, i2, i3, i4) -> i + i2 + i3 + i4),
+                        Quadruple::of);
+        Object container = collector.supplier().get();
+
+        // Default state.
+        assertResult(collector, container, Quadruple.of(0, null, null, null));
+        // Add first value.
+        int firstValue = 4;
+        Runnable firstRetractor = accumulate(collector, container, firstValue, 0, 0, 0);
+        assertResult(collector, container, Quadruple.of(1, 4, 4, 4D));
+        // Add second value, lesser than the first.
+        int secondValue = 1;
+        Runnable secondRetractor = accumulate(collector, container, secondValue, 0, 0, 0);
+        assertResult(collector, container, Quadruple.of(2, 1, 4, 2.5D));
+        // Add third value, same as the second.
+        Runnable thirdRetractor = accumulate(collector, container, secondValue, 0, 0, 0);
+        assertResult(collector, container, Quadruple.of(3, 1, 4, 2D));
+        // Retract one instance of the second value.
+        secondRetractor.run();
+        assertResult(collector, container, Quadruple.of(2, 1, 4, 2.5D));
+        // Retract final instance of the second value.
+        thirdRetractor.run();
+        assertResult(collector, container, Quadruple.of(1, 4, 4, 4D));
+        // Retract last value; there are no values now.
+        firstRetractor.run();
+        assertResult(collector, container, Quadruple.of(0, null, null, null));
+    }
+
+    private static final class Quadruple<A, B, C, D> {
+
+        public static <A, B, C, D> Quadruple<A, B, C, D> of(A a, B b, C c, D d) {
+            return new Quadruple<>(a, b, c, d);
+        }
+
+        private final A a;
+        private final B b;
+        private final C c;
+        private final D d;
+
+        private Quadruple(A a, B b, C c, D d) {
+            this.a = a;
+            this.b = b;
+            this.c = c;
+            this.d = d;
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o)
+                return true;
+            if (o == null || getClass() != o.getClass())
+                return false;
+            Quadruple<?, ?, ?, ?> quadruple = (Quadruple<?, ?, ?, ?>) o;
+            return Objects.equals(a, quadruple.a) && Objects.equals(b, quadruple.b) && Objects.equals(c, quadruple.c)
+                    && Objects.equals(d, quadruple.d);
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hash(a, b, c, d);
+        }
+
+        @Override
+        public String toString() {
+            return "{" + a + ", " + b + ", " + c + ", " + d + "}";
+        }
     }
 
     private static <A, B, C, Container_, Result_> Runnable accumulate(
