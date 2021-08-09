@@ -16,7 +16,8 @@
 
 package org.optaplanner.core.impl.score.director.stream;
 
-import static java.util.stream.Collectors.*;
+import static java.util.stream.Collectors.toMap;
+import static java.util.stream.Collectors.toSet;
 import static org.drools.model.DSL.globalOf;
 
 import java.util.List;
