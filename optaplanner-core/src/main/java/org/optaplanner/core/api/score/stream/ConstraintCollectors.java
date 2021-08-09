@@ -47,6 +47,7 @@ import java.util.function.ToIntFunction;
 import java.util.function.ToLongBiFunction;
 import java.util.function.ToLongFunction;
 
+import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.function.PentaFunction;
 import org.optaplanner.core.api.function.QuadFunction;
 import org.optaplanner.core.api.function.QuadPredicate;
@@ -60,6 +61,7 @@ import org.optaplanner.core.api.score.stream.bi.BiConstraintCollector;
 import org.optaplanner.core.api.score.stream.quad.QuadConstraintCollector;
 import org.optaplanner.core.api.score.stream.tri.TriConstraintCollector;
 import org.optaplanner.core.api.score.stream.uni.UniConstraintCollector;
+import org.optaplanner.core.api.score.stream.uni.UniConstraintStream;
 import org.optaplanner.core.impl.score.stream.bi.DefaultBiConstraintCollector;
 import org.optaplanner.core.impl.score.stream.quad.DefaultQuadConstraintCollector;
 import org.optaplanner.core.impl.score.stream.tri.DefaultTriConstraintCollector;
@@ -2328,28 +2330,16 @@ public final class ConstraintCollectors {
                     UniConstraintCollector<A, SubResultContainer1_, SubResult1_> subCollector1,
                     UniConstraintCollector<A, SubResultContainer2_, SubResult2_> subCollector2,
                     BiFunction<SubResult1_, SubResult2_, Result_> composeFunction) {
-        Supplier<SubResultContainer1_> subResultContainer1Supplier = subCollector1.supplier();
-        Supplier<SubResultContainer2_> subResultContainer2Supplier = subCollector2.supplier();
         BiFunction<SubResultContainer1_, A, Runnable> subResult1Accumulator = subCollector1.accumulator();
         BiFunction<SubResultContainer2_, A, Runnable> subResult2Accumulator = subCollector2.accumulator();
-        Function<SubResultContainer1_, SubResult1_> subResult1Finisher = subCollector1.finisher();
-        Function<SubResultContainer2_, SubResult2_> subResult2Finisher = subCollector2.finisher();
         return new DefaultUniConstraintCollector<>(
-                () -> new BiResultContainer<>(subResultContainer1Supplier.get(),
-                        subResultContainer2Supplier.get()),
+                () -> BiResultContainer.of(subCollector1.supplier(), subCollector2.supplier()),
                 (resultContainer, a) -> {
                     Runnable undo1 = subResult1Accumulator.apply(resultContainer.resultContainer1, a);
                     Runnable undo2 = subResult2Accumulator.apply(resultContainer.resultContainer2, a);
-                    return () -> {
-                        undo1.run();
-                        undo2.run();
-                    };
+                    return compose(undo1, undo2);
                 },
-                resultContainer -> {
-                    SubResult1_ result1 = subResult1Finisher.apply(resultContainer.resultContainer1);
-                    SubResult2_ result2 = subResult2Finisher.apply(resultContainer.resultContainer2);
-                    return composeFunction.apply(result1, result2);
-                });
+                createComposedFinisher(subCollector1.finisher(), subCollector2.finisher(), composeFunction));
     }
 
     private static class BiResultContainer<ResultContainer1, ResultContainer2> {
@@ -2369,6 +2359,25 @@ public final class ConstraintCollectors {
             this.resultContainer2 = Objects.requireNonNull(resultContainer2);
         }
 
+    }
+
+    private static <Result_, SubResultContainer1_, SubResultContainer2_, SubResult1_, SubResult2_>
+            Function<BiResultContainer<SubResultContainer1_, SubResultContainer2_>, Result_>
+            createComposedFinisher(Function<SubResultContainer1_, SubResult1_> subResult1Finisher,
+                    Function<SubResultContainer2_, SubResult2_> subResult2Finisher,
+                    BiFunction<SubResult1_, SubResult2_, Result_> composeFunction) {
+        return (resultContainer) -> {
+            SubResult1_ result1 = subResult1Finisher.apply(resultContainer.resultContainer1);
+            SubResult2_ result2 = subResult2Finisher.apply(resultContainer.resultContainer2);
+            return composeFunction.apply(result1, result2);
+        };
+    }
+
+    private static Runnable compose(Runnable runnable1, Runnable runnable2) {
+        return () -> {
+            runnable1.run();
+            runnable2.run();
+        };
     }
 
     /**
@@ -2395,34 +2404,19 @@ public final class ConstraintCollectors {
                     UniConstraintCollector<A, SubResultContainer2_, SubResult2_> subCollector2,
                     UniConstraintCollector<A, SubResultContainer3_, SubResult3_> subCollector3,
                     TriFunction<SubResult1_, SubResult2_, SubResult3_, Result_> composeFunction) {
-        Supplier<SubResultContainer1_> subResultContainer1Supplier = subCollector1.supplier();
-        Supplier<SubResultContainer2_> subResultContainer2Supplier = subCollector2.supplier();
-        Supplier<SubResultContainer3_> subResultContainer3Supplier = subCollector3.supplier();
         BiFunction<SubResultContainer1_, A, Runnable> subResult1Accumulator = subCollector1.accumulator();
         BiFunction<SubResultContainer2_, A, Runnable> subResult2Accumulator = subCollector2.accumulator();
         BiFunction<SubResultContainer3_, A, Runnable> subResult3Accumulator = subCollector3.accumulator();
-        Function<SubResultContainer1_, SubResult1_> subResult1Finisher = subCollector1.finisher();
-        Function<SubResultContainer2_, SubResult2_> subResult2Finisher = subCollector2.finisher();
-        Function<SubResultContainer3_, SubResult3_> subResult3Finisher = subCollector3.finisher();
         return new DefaultUniConstraintCollector<>(
-                () -> new TriResultContainer<>(subResultContainer1Supplier.get(),
-                        subResultContainer2Supplier.get(), subResultContainer3Supplier.get()),
+                () -> TriResultContainer.of(subCollector1.supplier(), subCollector2.supplier(), subCollector3.supplier()),
                 (resultContainer, a) -> {
                     Runnable undo1 = subResult1Accumulator.apply(resultContainer.resultContainer1, a);
                     Runnable undo2 = subResult2Accumulator.apply(resultContainer.resultContainer2, a);
                     Runnable undo3 = subResult3Accumulator.apply(resultContainer.resultContainer3, a);
-                    return () -> {
-                        undo1.run();
-                        undo2.run();
-                        undo3.run();
-                    };
+                    return compose(undo1, undo2, undo3);
                 },
-                resultContainer -> {
-                    SubResult1_ result1 = subResult1Finisher.apply(resultContainer.resultContainer1);
-                    SubResult2_ result2 = subResult2Finisher.apply(resultContainer.resultContainer2);
-                    SubResult3_ result3 = subResult3Finisher.apply(resultContainer.resultContainer3);
-                    return composeFunction.apply(result1, result2, result3);
-                });
+                createComposedFinisher(subCollector1.finisher(), subCollector2.finisher(), subCollector3.finisher(),
+                        composeFunction));
     }
 
     private static class TriResultContainer<ResultContainer1, ResultContainer2, ResultContainer3>
@@ -2445,6 +2439,28 @@ public final class ConstraintCollectors {
             this.resultContainer3 = Objects.requireNonNull(resultContainer3);
         }
 
+    }
+
+    private static <Result_, SubResultContainer1_, SubResultContainer2_, SubResultContainer3_, SubResult1_, SubResult2_, SubResult3_>
+            Function<TriResultContainer<SubResultContainer1_, SubResultContainer2_, SubResultContainer3_>, Result_>
+            createComposedFinisher(Function<SubResultContainer1_, SubResult1_> subResult1Finisher,
+                    Function<SubResultContainer2_, SubResult2_> subResult2Finisher,
+                    Function<SubResultContainer3_, SubResult3_> subResult3Finisher,
+                    TriFunction<SubResult1_, SubResult2_, SubResult3_, Result_> composeFunction) {
+        return (resultContainer) -> {
+            SubResult1_ result1 = subResult1Finisher.apply(resultContainer.resultContainer1);
+            SubResult2_ result2 = subResult2Finisher.apply(resultContainer.resultContainer2);
+            SubResult3_ result3 = subResult3Finisher.apply(resultContainer.resultContainer3);
+            return composeFunction.apply(result1, result2, result3);
+        };
+    }
+
+    private static Runnable compose(Runnable runnable1, Runnable runnable2, Runnable runnable3) {
+        return () -> {
+            runnable1.run();
+            runnable2.run();
+            runnable3.run();
+        };
     }
 
     /**
@@ -2475,41 +2491,22 @@ public final class ConstraintCollectors {
                     UniConstraintCollector<A, SubResultContainer3_, SubResult3_> subCollector3,
                     UniConstraintCollector<A, SubResultContainer4_, SubResult4_> subCollector4,
                     QuadFunction<SubResult1_, SubResult2_, SubResult3_, SubResult4_, Result_> composeFunction) {
-        Supplier<SubResultContainer1_> subResultContainer1Supplier = subCollector1.supplier();
-        Supplier<SubResultContainer2_> subResultContainer2Supplier = subCollector2.supplier();
-        Supplier<SubResultContainer3_> subResultContainer3Supplier = subCollector3.supplier();
-        Supplier<SubResultContainer4_> subResultContainer4Supplier = subCollector4.supplier();
         BiFunction<SubResultContainer1_, A, Runnable> subResult1Accumulator = subCollector1.accumulator();
         BiFunction<SubResultContainer2_, A, Runnable> subResult2Accumulator = subCollector2.accumulator();
         BiFunction<SubResultContainer3_, A, Runnable> subResult3Accumulator = subCollector3.accumulator();
         BiFunction<SubResultContainer4_, A, Runnable> subResult4Accumulator = subCollector4.accumulator();
-        Function<SubResultContainer1_, SubResult1_> subResult1Finisher = subCollector1.finisher();
-        Function<SubResultContainer2_, SubResult2_> subResult2Finisher = subCollector2.finisher();
-        Function<SubResultContainer3_, SubResult3_> subResult3Finisher = subCollector3.finisher();
-        Function<SubResultContainer4_, SubResult4_> subResult4Finisher = subCollector4.finisher();
         return new DefaultUniConstraintCollector<>(
-                () -> new QuadResultContainer<>(subResultContainer1Supplier.get(),
-                        subResultContainer2Supplier.get(), subResultContainer3Supplier.get(),
-                        subResultContainer4Supplier.get()),
+                () -> QuadResultContainer.of(subCollector1.supplier(), subCollector2.supplier(), subCollector3.supplier(),
+                        subCollector4.supplier()),
                 (resultContainer, a) -> {
                     Runnable undo1 = subResult1Accumulator.apply(resultContainer.resultContainer1, a);
                     Runnable undo2 = subResult2Accumulator.apply(resultContainer.resultContainer2, a);
                     Runnable undo3 = subResult3Accumulator.apply(resultContainer.resultContainer3, a);
                     Runnable undo4 = subResult4Accumulator.apply(resultContainer.resultContainer4, a);
-                    return () -> {
-                        undo1.run();
-                        undo2.run();
-                        undo3.run();
-                        undo4.run();
-                    };
+                    return compose(undo1, undo2, undo3, undo4);
                 },
-                resultContainer -> {
-                    SubResult1_ result1 = subResult1Finisher.apply(resultContainer.resultContainer1);
-                    SubResult2_ result2 = subResult2Finisher.apply(resultContainer.resultContainer2);
-                    SubResult3_ result3 = subResult3Finisher.apply(resultContainer.resultContainer3);
-                    SubResult4_ result4 = subResult4Finisher.apply(resultContainer.resultContainer4);
-                    return composeFunction.apply(result1, result2, result3, result4);
-                });
+                createComposedFinisher(subCollector1.finisher(), subCollector2.finisher(), subCollector3.finisher(),
+                        subCollector4.finisher(), composeFunction));
     }
 
     private static final class QuadResultContainer<ResultContainer1, ResultContainer2, ResultContainer3, ResultContainer4>
@@ -2535,6 +2532,31 @@ public final class ConstraintCollectors {
 
     }
 
+    private static <Result_, SubResultContainer1_, SubResultContainer2_, SubResultContainer3_, SubResultContainer4_, SubResult1_, SubResult2_, SubResult3_, SubResult4_>
+            Function<QuadResultContainer<SubResultContainer1_, SubResultContainer2_, SubResultContainer3_, SubResultContainer4_>, Result_>
+            createComposedFinisher(Function<SubResultContainer1_, SubResult1_> subResult1Finisher,
+                    Function<SubResultContainer2_, SubResult2_> subResult2Finisher,
+                    Function<SubResultContainer3_, SubResult3_> subResult3Finisher,
+                    Function<SubResultContainer4_, SubResult4_> subResult4Finisher,
+                    QuadFunction<SubResult1_, SubResult2_, SubResult3_, SubResult4_, Result_> composeFunction) {
+        return (resultContainer) -> {
+            SubResult1_ result1 = subResult1Finisher.apply(resultContainer.resultContainer1);
+            SubResult2_ result2 = subResult2Finisher.apply(resultContainer.resultContainer2);
+            SubResult3_ result3 = subResult3Finisher.apply(resultContainer.resultContainer3);
+            SubResult4_ result4 = subResult4Finisher.apply(resultContainer.resultContainer4);
+            return composeFunction.apply(result1, result2, result3, result4);
+        };
+    }
+
+    private static Runnable compose(Runnable runnable1, Runnable runnable2, Runnable runnable3, Runnable runnable4) {
+        return () -> {
+            runnable1.run();
+            runnable2.run();
+            runnable3.run();
+            runnable4.run();
+        };
+    }
+
     /**
      * As defined by {@link #compose(UniConstraintCollector, UniConstraintCollector, BiFunction)}.
      */
@@ -2545,23 +2567,14 @@ public final class ConstraintCollectors {
                     BiFunction<SubResult1_, SubResult2_, Result_> composeFunction) {
         TriFunction<SubResultContainer1_, A, B, Runnable> subResult1Accumulator = subCollector1.accumulator();
         TriFunction<SubResultContainer2_, A, B, Runnable> subResult2Accumulator = subCollector2.accumulator();
-        Function<SubResultContainer1_, SubResult1_> subResult1Finisher = subCollector1.finisher();
-        Function<SubResultContainer2_, SubResult2_> subResult2Finisher = subCollector2.finisher();
         return new DefaultBiConstraintCollector<>(
                 () -> BiResultContainer.of(subCollector1.supplier(), subCollector2.supplier()),
                 (resultContainer, a, b) -> {
                     Runnable undo1 = subResult1Accumulator.apply(resultContainer.resultContainer1, a, b);
                     Runnable undo2 = subResult2Accumulator.apply(resultContainer.resultContainer2, a, b);
-                    return () -> {
-                        undo1.run();
-                        undo2.run();
-                    };
+                    return compose(undo1, undo2);
                 },
-                resultContainer -> {
-                    SubResult1_ result1 = subResult1Finisher.apply(resultContainer.resultContainer1);
-                    SubResult2_ result2 = subResult2Finisher.apply(resultContainer.resultContainer2);
-                    return composeFunction.apply(result1, result2);
-                });
+                createComposedFinisher(subCollector1.finisher(), subCollector2.finisher(), composeFunction));
     }
 
     /**
@@ -2576,27 +2589,16 @@ public final class ConstraintCollectors {
         TriFunction<SubResultContainer1_, A, B, Runnable> subResult1Accumulator = subCollector1.accumulator();
         TriFunction<SubResultContainer2_, A, B, Runnable> subResult2Accumulator = subCollector2.accumulator();
         TriFunction<SubResultContainer3_, A, B, Runnable> subResult3Accumulator = subCollector3.accumulator();
-        Function<SubResultContainer1_, SubResult1_> subResult1Finisher = subCollector1.finisher();
-        Function<SubResultContainer2_, SubResult2_> subResult2Finisher = subCollector2.finisher();
-        Function<SubResultContainer3_, SubResult3_> subResult3Finisher = subCollector3.finisher();
         return new DefaultBiConstraintCollector<>(
                 () -> TriResultContainer.of(subCollector1.supplier(), subCollector2.supplier(), subCollector3.supplier()),
                 (resultContainer, a, b) -> {
                     Runnable undo1 = subResult1Accumulator.apply(resultContainer.resultContainer1, a, b);
                     Runnable undo2 = subResult2Accumulator.apply(resultContainer.resultContainer2, a, b);
                     Runnable undo3 = subResult3Accumulator.apply(resultContainer.resultContainer3, a, b);
-                    return () -> {
-                        undo1.run();
-                        undo2.run();
-                        undo3.run();
-                    };
+                    return compose(undo1, undo2, undo3);
                 },
-                resultContainer -> {
-                    SubResult1_ result1 = subResult1Finisher.apply(resultContainer.resultContainer1);
-                    SubResult2_ result2 = subResult2Finisher.apply(resultContainer.resultContainer2);
-                    SubResult3_ result3 = subResult3Finisher.apply(resultContainer.resultContainer3);
-                    return composeFunction.apply(result1, result2, result3);
-                });
+                createComposedFinisher(subCollector1.finisher(), subCollector2.finisher(), subCollector3.finisher(),
+                        composeFunction));
     }
 
     /**
@@ -2614,10 +2616,6 @@ public final class ConstraintCollectors {
         TriFunction<SubResultContainer2_, A, B, Runnable> subResult2Accumulator = subCollector2.accumulator();
         TriFunction<SubResultContainer3_, A, B, Runnable> subResult3Accumulator = subCollector3.accumulator();
         TriFunction<SubResultContainer4_, A, B, Runnable> subResult4Accumulator = subCollector4.accumulator();
-        Function<SubResultContainer1_, SubResult1_> subResult1Finisher = subCollector1.finisher();
-        Function<SubResultContainer2_, SubResult2_> subResult2Finisher = subCollector2.finisher();
-        Function<SubResultContainer3_, SubResult3_> subResult3Finisher = subCollector3.finisher();
-        Function<SubResultContainer4_, SubResult4_> subResult4Finisher = subCollector4.finisher();
         return new DefaultBiConstraintCollector<>(
                 () -> QuadResultContainer.of(subCollector1.supplier(), subCollector2.supplier(), subCollector3.supplier(),
                         subCollector4.supplier()),
@@ -2626,20 +2624,10 @@ public final class ConstraintCollectors {
                     Runnable undo2 = subResult2Accumulator.apply(resultContainer.resultContainer2, a, b);
                     Runnable undo3 = subResult3Accumulator.apply(resultContainer.resultContainer3, a, b);
                     Runnable undo4 = subResult4Accumulator.apply(resultContainer.resultContainer4, a, b);
-                    return () -> {
-                        undo1.run();
-                        undo2.run();
-                        undo3.run();
-                        undo4.run();
-                    };
+                    return compose(undo1, undo2, undo3, undo4);
                 },
-                resultContainer -> {
-                    SubResult1_ result1 = subResult1Finisher.apply(resultContainer.resultContainer1);
-                    SubResult2_ result2 = subResult2Finisher.apply(resultContainer.resultContainer2);
-                    SubResult3_ result3 = subResult3Finisher.apply(resultContainer.resultContainer3);
-                    SubResult4_ result4 = subResult4Finisher.apply(resultContainer.resultContainer4);
-                    return composeFunction.apply(result1, result2, result3, result4);
-                });
+                createComposedFinisher(subCollector1.finisher(), subCollector2.finisher(), subCollector3.finisher(),
+                        subCollector4.finisher(), composeFunction));
     }
 
     /**
@@ -2652,23 +2640,14 @@ public final class ConstraintCollectors {
                     BiFunction<SubResult1_, SubResult2_, Result_> composeFunction) {
         QuadFunction<SubResultContainer1_, A, B, C, Runnable> subResult1Accumulator = subCollector1.accumulator();
         QuadFunction<SubResultContainer2_, A, B, C, Runnable> subResult2Accumulator = subCollector2.accumulator();
-        Function<SubResultContainer1_, SubResult1_> subResult1Finisher = subCollector1.finisher();
-        Function<SubResultContainer2_, SubResult2_> subResult2Finisher = subCollector2.finisher();
         return new DefaultTriConstraintCollector<>(
                 () -> BiResultContainer.of(subCollector1.supplier(), subCollector2.supplier()),
                 (resultContainer, a, b, c) -> {
                     Runnable undo1 = subResult1Accumulator.apply(resultContainer.resultContainer1, a, b, c);
                     Runnable undo2 = subResult2Accumulator.apply(resultContainer.resultContainer2, a, b, c);
-                    return () -> {
-                        undo1.run();
-                        undo2.run();
-                    };
+                    return compose(undo1, undo2);
                 },
-                resultContainer -> {
-                    SubResult1_ result1 = subResult1Finisher.apply(resultContainer.resultContainer1);
-                    SubResult2_ result2 = subResult2Finisher.apply(resultContainer.resultContainer2);
-                    return composeFunction.apply(result1, result2);
-                });
+                createComposedFinisher(subCollector1.finisher(), subCollector2.finisher(), composeFunction));
     }
 
     /**
@@ -2683,27 +2662,16 @@ public final class ConstraintCollectors {
         QuadFunction<SubResultContainer1_, A, B, C, Runnable> subResult1Accumulator = subCollector1.accumulator();
         QuadFunction<SubResultContainer2_, A, B, C, Runnable> subResult2Accumulator = subCollector2.accumulator();
         QuadFunction<SubResultContainer3_, A, B, C, Runnable> subResult3Accumulator = subCollector3.accumulator();
-        Function<SubResultContainer1_, SubResult1_> subResult1Finisher = subCollector1.finisher();
-        Function<SubResultContainer2_, SubResult2_> subResult2Finisher = subCollector2.finisher();
-        Function<SubResultContainer3_, SubResult3_> subResult3Finisher = subCollector3.finisher();
         return new DefaultTriConstraintCollector<>(
                 () -> TriResultContainer.of(subCollector1.supplier(), subCollector2.supplier(), subCollector3.supplier()),
                 (resultContainer, a, b, c) -> {
                     Runnable undo1 = subResult1Accumulator.apply(resultContainer.resultContainer1, a, b, c);
                     Runnable undo2 = subResult2Accumulator.apply(resultContainer.resultContainer2, a, b, c);
                     Runnable undo3 = subResult3Accumulator.apply(resultContainer.resultContainer3, a, b, c);
-                    return () -> {
-                        undo1.run();
-                        undo2.run();
-                        undo3.run();
-                    };
+                    return compose(undo1, undo2, undo3);
                 },
-                resultContainer -> {
-                    SubResult1_ result1 = subResult1Finisher.apply(resultContainer.resultContainer1);
-                    SubResult2_ result2 = subResult2Finisher.apply(resultContainer.resultContainer2);
-                    SubResult3_ result3 = subResult3Finisher.apply(resultContainer.resultContainer3);
-                    return composeFunction.apply(result1, result2, result3);
-                });
+                createComposedFinisher(subCollector1.finisher(), subCollector2.finisher(), subCollector3.finisher(),
+                        composeFunction));
     }
 
     /**
@@ -2721,10 +2689,6 @@ public final class ConstraintCollectors {
         QuadFunction<SubResultContainer2_, A, B, C, Runnable> subResult2Accumulator = subCollector2.accumulator();
         QuadFunction<SubResultContainer3_, A, B, C, Runnable> subResult3Accumulator = subCollector3.accumulator();
         QuadFunction<SubResultContainer4_, A, B, C, Runnable> subResult4Accumulator = subCollector4.accumulator();
-        Function<SubResultContainer1_, SubResult1_> subResult1Finisher = subCollector1.finisher();
-        Function<SubResultContainer2_, SubResult2_> subResult2Finisher = subCollector2.finisher();
-        Function<SubResultContainer3_, SubResult3_> subResult3Finisher = subCollector3.finisher();
-        Function<SubResultContainer4_, SubResult4_> subResult4Finisher = subCollector4.finisher();
         return new DefaultTriConstraintCollector<>(
                 () -> QuadResultContainer.of(subCollector1.supplier(), subCollector2.supplier(), subCollector3.supplier(),
                         subCollector4.supplier()),
@@ -2733,20 +2697,10 @@ public final class ConstraintCollectors {
                     Runnable undo2 = subResult2Accumulator.apply(resultContainer.resultContainer2, a, b, c);
                     Runnable undo3 = subResult3Accumulator.apply(resultContainer.resultContainer3, a, b, c);
                     Runnable undo4 = subResult4Accumulator.apply(resultContainer.resultContainer4, a, b, c);
-                    return () -> {
-                        undo1.run();
-                        undo2.run();
-                        undo3.run();
-                        undo4.run();
-                    };
+                    return compose(undo1, undo2, undo3, undo4);
                 },
-                resultContainer -> {
-                    SubResult1_ result1 = subResult1Finisher.apply(resultContainer.resultContainer1);
-                    SubResult2_ result2 = subResult2Finisher.apply(resultContainer.resultContainer2);
-                    SubResult3_ result3 = subResult3Finisher.apply(resultContainer.resultContainer3);
-                    SubResult4_ result4 = subResult4Finisher.apply(resultContainer.resultContainer4);
-                    return composeFunction.apply(result1, result2, result3, result4);
-                });
+                createComposedFinisher(subCollector1.finisher(), subCollector2.finisher(), subCollector3.finisher(),
+                        subCollector4.finisher(), composeFunction));
     }
 
     /**
@@ -2759,23 +2713,14 @@ public final class ConstraintCollectors {
                     BiFunction<SubResult1_, SubResult2_, Result_> composeFunction) {
         PentaFunction<SubResultContainer1_, A, B, C, D, Runnable> subResult1Accumulator = subCollector1.accumulator();
         PentaFunction<SubResultContainer2_, A, B, C, D, Runnable> subResult2Accumulator = subCollector2.accumulator();
-        Function<SubResultContainer1_, SubResult1_> subResult1Finisher = subCollector1.finisher();
-        Function<SubResultContainer2_, SubResult2_> subResult2Finisher = subCollector2.finisher();
         return new DefaultQuadConstraintCollector<>(
                 () -> BiResultContainer.of(subCollector1.supplier(), subCollector2.supplier()),
                 (resultContainer, a, b, c, d) -> {
                     Runnable undo1 = subResult1Accumulator.apply(resultContainer.resultContainer1, a, b, c, d);
                     Runnable undo2 = subResult2Accumulator.apply(resultContainer.resultContainer2, a, b, c, d);
-                    return () -> {
-                        undo1.run();
-                        undo2.run();
-                    };
+                    return compose(undo1, undo2);
                 },
-                resultContainer -> {
-                    SubResult1_ result1 = subResult1Finisher.apply(resultContainer.resultContainer1);
-                    SubResult2_ result2 = subResult2Finisher.apply(resultContainer.resultContainer2);
-                    return composeFunction.apply(result1, result2);
-                });
+                createComposedFinisher(subCollector1.finisher(), subCollector2.finisher(), composeFunction));
     }
 
     /**
@@ -2790,27 +2735,16 @@ public final class ConstraintCollectors {
         PentaFunction<SubResultContainer1_, A, B, C, D, Runnable> subResult1Accumulator = subCollector1.accumulator();
         PentaFunction<SubResultContainer2_, A, B, C, D, Runnable> subResult2Accumulator = subCollector2.accumulator();
         PentaFunction<SubResultContainer3_, A, B, C, D, Runnable> subResult3Accumulator = subCollector3.accumulator();
-        Function<SubResultContainer1_, SubResult1_> subResult1Finisher = subCollector1.finisher();
-        Function<SubResultContainer2_, SubResult2_> subResult2Finisher = subCollector2.finisher();
-        Function<SubResultContainer3_, SubResult3_> subResult3Finisher = subCollector3.finisher();
         return new DefaultQuadConstraintCollector<>(
                 () -> TriResultContainer.of(subCollector1.supplier(), subCollector2.supplier(), subCollector3.supplier()),
                 (resultContainer, a, b, c, d) -> {
                     Runnable undo1 = subResult1Accumulator.apply(resultContainer.resultContainer1, a, b, c, d);
                     Runnable undo2 = subResult2Accumulator.apply(resultContainer.resultContainer2, a, b, c, d);
                     Runnable undo3 = subResult3Accumulator.apply(resultContainer.resultContainer3, a, b, c, d);
-                    return () -> {
-                        undo1.run();
-                        undo2.run();
-                        undo3.run();
-                    };
+                    return compose(undo1, undo2, undo3);
                 },
-                resultContainer -> {
-                    SubResult1_ result1 = subResult1Finisher.apply(resultContainer.resultContainer1);
-                    SubResult2_ result2 = subResult2Finisher.apply(resultContainer.resultContainer2);
-                    SubResult3_ result3 = subResult3Finisher.apply(resultContainer.resultContainer3);
-                    return composeFunction.apply(result1, result2, result3);
-                });
+                createComposedFinisher(subCollector1.finisher(), subCollector2.finisher(), subCollector3.finisher(),
+                        composeFunction));
     }
 
     /**
@@ -2828,10 +2762,6 @@ public final class ConstraintCollectors {
         PentaFunction<SubResultContainer2_, A, B, C, D, Runnable> subResult2Accumulator = subCollector2.accumulator();
         PentaFunction<SubResultContainer3_, A, B, C, D, Runnable> subResult3Accumulator = subCollector3.accumulator();
         PentaFunction<SubResultContainer4_, A, B, C, D, Runnable> subResult4Accumulator = subCollector4.accumulator();
-        Function<SubResultContainer1_, SubResult1_> subResult1Finisher = subCollector1.finisher();
-        Function<SubResultContainer2_, SubResult2_> subResult2Finisher = subCollector2.finisher();
-        Function<SubResultContainer3_, SubResult3_> subResult3Finisher = subCollector3.finisher();
-        Function<SubResultContainer4_, SubResult4_> subResult4Finisher = subCollector4.finisher();
         return new DefaultQuadConstraintCollector<>(
                 () -> QuadResultContainer.of(subCollector1.supplier(), subCollector2.supplier(), subCollector3.supplier(),
                         subCollector4.supplier()),
@@ -2840,20 +2770,10 @@ public final class ConstraintCollectors {
                     Runnable undo2 = subResult2Accumulator.apply(resultContainer.resultContainer2, a, b, c, d);
                     Runnable undo3 = subResult3Accumulator.apply(resultContainer.resultContainer3, a, b, c, d);
                     Runnable undo4 = subResult4Accumulator.apply(resultContainer.resultContainer4, a, b, c, d);
-                    return () -> {
-                        undo1.run();
-                        undo2.run();
-                        undo3.run();
-                        undo4.run();
-                    };
+                    return compose(undo1, undo2, undo3, undo4);
                 },
-                resultContainer -> {
-                    SubResult1_ result1 = subResult1Finisher.apply(resultContainer.resultContainer1);
-                    SubResult2_ result2 = subResult2Finisher.apply(resultContainer.resultContainer2);
-                    SubResult3_ result3 = subResult3Finisher.apply(resultContainer.resultContainer3);
-                    SubResult4_ result4 = subResult4Finisher.apply(resultContainer.resultContainer4);
-                    return composeFunction.apply(result1, result2, result3, result4);
-                });
+                createComposedFinisher(subCollector1.finisher(), subCollector2.finisher(), subCollector3.finisher(),
+                        subCollector4.finisher(), composeFunction));
     }
 
     private ConstraintCollectors() {
