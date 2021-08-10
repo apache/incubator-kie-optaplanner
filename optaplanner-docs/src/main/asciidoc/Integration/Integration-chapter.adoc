@@ -672,7 +672,7 @@ The `optaplanner-core` jar includes OSGi metadata in its `MANIFEST.MF` file to f
 Furthermore, the maven artifact `kie-karaf-features` contains a `features.xml` file that supports the OSGi-feature ``optaplanner-engine``.
 
 Because of the OSGi's `ClassLoader` magic, provide the `ClassLoader` of your classes <<solverConfigurationByXML,during the SolverFactory creation>>,
-so it can find the classpath resources (the solver config, domain classes etc.) in your jars.
+so it can find the classpath resources (the solver config, domain classes, etc.) in your jars.
 
 [NOTE]
 ====
