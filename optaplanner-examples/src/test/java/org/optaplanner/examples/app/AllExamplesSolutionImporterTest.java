@@ -1,6 +1,6 @@
 package org.optaplanner.examples.app;
 
-import static java.util.stream.Collectors.*;
+import static java.util.stream.Collectors.toConcurrentMap;
 
 import java.io.IOException;
 import java.nio.file.Files;
