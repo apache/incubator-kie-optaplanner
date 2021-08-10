@@ -20,7 +20,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicReference;
-import java.util.function.Consumer;
 
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.solver.Solver;
@@ -37,9 +36,10 @@ import org.optaplanner.core.impl.solver.DefaultSolver;
 
 import io.micrometer.core.instrument.Tags;
 
-public class PickedMoveBestScoreDiffStatistic implements Consumer<Solver> {
+public class PickedMoveBestScoreDiffStatistic implements SolverStatistic {
     @Override
-    public void accept(Solver solver) {
+    @SuppressWarnings("unchecked")
+    public void register(Solver<?> solver) {
         DefaultSolver<?> defaultSolver = (DefaultSolver<?>) solver;
         InnerScoreDirectorFactory<?, ?> innerScoreDirectorFactory = defaultSolver.getScoreDirectorFactory();
         SolutionDescriptor<?> solutionDescriptor = innerScoreDirectorFactory.getSolutionDescriptor();
@@ -47,13 +47,14 @@ public class PickedMoveBestScoreDiffStatistic implements Consumer<Solver> {
                 new PickedMoveBestScoreDiffStatisticListener(solutionDescriptor.getScoreDefinition()));
     }
 
+    @SuppressWarnings({ "rawtypes", "unchecked" })
     private static class PickedMoveBestScoreDiffStatisticListener extends PhaseLifecycleListenerAdapter {
 
-        private Score oldBestScore = null;
-        private final ScoreDefinition scoreDefinition;
+        private Score<?> oldBestScore = null;
+        private final ScoreDefinition<?> scoreDefinition;
         private final Map<Tags, List<AtomicReference<Number>>> tagsToMoveScoreMap = new ConcurrentHashMap<>();
 
-        public PickedMoveBestScoreDiffStatisticListener(ScoreDefinition scoreDefinition) {
+        public PickedMoveBestScoreDiffStatisticListener(ScoreDefinition<?> scoreDefinition) {
             this.scoreDefinition = scoreDefinition;
         }
 

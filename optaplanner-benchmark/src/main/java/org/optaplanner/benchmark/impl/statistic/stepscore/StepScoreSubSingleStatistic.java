@@ -40,16 +40,10 @@ public class StepScoreSubSingleStatistic<Solution_>
     // ************************************************************************
 
     @Override
-    public void open(StatisticRegistry registry, Tags runTag, Solver<Solution_> solver) {
-        registry.addListener(SolverMetric.STEP_SCORE, timeMillisSpent -> {
-            registry.extractScoreFromMeters(SolverMetric.STEP_SCORE, runTag, score -> {
-                pointList.add(new StepScoreStatisticPoint(timeMillisSpent, score));
-            });
-        });
-    }
-
-    @Override
-    public void close(StatisticRegistry registry, Tags runTag, Solver<Solution_> solver) {
+    public void open(StatisticRegistry<Solution_> registry, Tags runTag, Solver<Solution_> solver) {
+        registry.addListener(SolverMetric.STEP_SCORE,
+                timeMillisSpent -> registry.extractScoreFromMeters(SolverMetric.STEP_SCORE, runTag,
+                        score -> pointList.add(new StepScoreStatisticPoint(timeMillisSpent, score))));
     }
 
     // ************************************************************************
@@ -62,7 +56,7 @@ public class StepScoreSubSingleStatistic<Solution_>
     }
 
     @Override
-    protected StepScoreStatisticPoint createPointFromCsvLine(ScoreDefinition scoreDefinition,
+    protected StepScoreStatisticPoint createPointFromCsvLine(ScoreDefinition<?> scoreDefinition,
             List<String> csvLine) {
         return new StepScoreStatisticPoint(Long.parseLong(csvLine.get(0)),
                 scoreDefinition.parseScore(csvLine.get(1)));

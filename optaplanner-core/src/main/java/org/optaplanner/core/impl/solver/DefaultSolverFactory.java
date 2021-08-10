@@ -132,7 +132,7 @@ public final class DefaultSolverFactory<Solution_> implements SolverFactory<Solu
                 new DefaultSolver<>(environmentMode_, randomFactory, bestSolutionRecaller, basicPlumbingTermination,
                         termination, phaseList, solverScope,
                         moveThreadCount_ == null ? SolverConfig.MOVE_THREAD_COUNT_NONE : Integer.toString(moveThreadCount_));
-        SolverMetric.setupMetrics(solverId, solverConfig, out);
+        SolverMetric.setupMetrics(solverConfig, out);
         return out;
     }
 

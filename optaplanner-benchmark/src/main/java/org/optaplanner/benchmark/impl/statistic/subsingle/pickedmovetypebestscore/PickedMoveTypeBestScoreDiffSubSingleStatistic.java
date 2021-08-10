@@ -57,7 +57,7 @@ public class PickedMoveTypeBestScoreDiffSubSingleStatistic<Solution_>
         extends PureSubSingleStatistic<Solution_, PickedMoveTypeBestScoreDiffStatisticPoint> {
 
     @XmlTransient
-    private PickedMoveTypeBestScoreDiffSubSingleStatisticListener listener;
+    private final PickedMoveTypeBestScoreDiffSubSingleStatisticListener listener;
 
     @XmlTransient
     protected List<File> graphFileList = null;
@@ -80,19 +80,19 @@ public class PickedMoveTypeBestScoreDiffSubSingleStatistic<Solution_>
     // ************************************************************************
 
     @Override
-    public void open(StatisticRegistry registry, Tags runTag, Solver<Solution_> solver) {
+    public void open(StatisticRegistry<Solution_> registry, Tags runTag, Solver<Solution_> solver) {
         // TODO: convert this to use registry
         ((AbstractSolver<Solution_>) solver).addPhaseLifecycleListener(listener);
     }
 
     @Override
-    public void close(StatisticRegistry registry, Tags runTag, Solver<Solution_> solver) {
+    public void close(StatisticRegistry<Solution_> registry, Tags runTag, Solver<Solution_> solver) {
         ((AbstractSolver<Solution_>) solver).removePhaseLifecycleListener(listener);
     }
 
     private class PickedMoveTypeBestScoreDiffSubSingleStatisticListener extends PhaseLifecycleListenerAdapter<Solution_> {
 
-        private Score oldBestScore = null;
+        private Score<?> oldBestScore = null;
 
         @Override
         public void phaseStarted(AbstractPhaseScope<Solution_> phaseScope) {
@@ -115,6 +115,7 @@ public class PickedMoveTypeBestScoreDiffSubSingleStatistic<Solution_>
             }
         }
 
+        @SuppressWarnings({ "unchecked", "rawtypes" })
         private void localSearchStepEnded(LocalSearchStepScope<Solution_> stepScope) {
             if (stepScope.getBestScoreImproved()) {
                 long timeMillisSpent = stepScope.getPhaseScope().calculateSolverTimeMillisSpentUpToNow();
@@ -139,7 +140,7 @@ public class PickedMoveTypeBestScoreDiffSubSingleStatistic<Solution_>
     }
 
     @Override
-    protected PickedMoveTypeBestScoreDiffStatisticPoint createPointFromCsvLine(ScoreDefinition scoreDefinition,
+    protected PickedMoveTypeBestScoreDiffStatisticPoint createPointFromCsvLine(ScoreDefinition<?> scoreDefinition,
             List<String> csvLine) {
         return new PickedMoveTypeBestScoreDiffStatisticPoint(Long.parseLong(csvLine.get(0)),
                 csvLine.get(1), scoreDefinition.parseScore(csvLine.get(2)));
@@ -166,7 +167,7 @@ public class PickedMoveTypeBestScoreDiffSubSingleStatistic<Solution_>
                 double yValue = levelValues[i];
                 // In an XYInterval the yLow must be lower than yHigh
                 series.add(timeMillisSpent, timeMillisSpent, timeMillisSpent,
-                        yValue, (yValue > 0.0) ? 0.0 : yValue, (yValue > 0.0) ? yValue : 0.0);
+                        yValue, Math.min(yValue, 0.0), Math.max(yValue, 0.0));
             }
         }
         graphFileList = new ArrayList<>(moveTypeToSeriesMapList.size());

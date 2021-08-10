@@ -20,7 +20,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicReference;
-import java.util.function.Consumer;
 
 import javax.xml.bind.annotation.XmlEnum;
 
@@ -33,44 +32,49 @@ import org.optaplanner.core.impl.statistic.BestSolutionMutationCountStatistic;
 import org.optaplanner.core.impl.statistic.MemoryUseStatistic;
 import org.optaplanner.core.impl.statistic.PickedMoveBestScoreDiffStatistic;
 import org.optaplanner.core.impl.statistic.PickedMoveStepScoreDiffStatistic;
+import org.optaplanner.core.impl.statistic.SolverStatistic;
 
 import io.micrometer.core.instrument.Metrics;
 import io.micrometer.core.instrument.Tags;
 
 @XmlEnum
 public enum SolverMetric {
-    SOLVE_LENGTH("optaplanner.solver.solve-length"),
-    ERROR_COUNT("optaplanner.solver.errors"),
-    BEST_SCORE("optaplanner.solver.best-score", new BestScoreStatistic()),
-    STEP_SCORE("optaplanner.solver.step-score"),
-    SCORE_CALCULATION_COUNT("optaplanner.solver.score-calculation-count"),
-    BEST_SOLUTION_MUTATION("optaplanner.solver.best-solution-mutation", new BestSolutionMutationCountStatistic()),
-    MOVE_COUNT_PER_STEP("optaplanner.solver.step-move-count"),
-    MEMORY_USE("jvm.memory.used", new MemoryUseStatistic()),
-    CONSTRAINT_MATCH_TOTAL_BEST_SCORE("optaplanner.solver.constraint-match.best-score"),
-    CONSTRAINT_MATCH_TOTAL_STEP_SCORE("optaplanner.solver.constraint-match.step-score"),
-    PICKED_MOVE_TYPE_BEST_SCORE_DIFF("optaplanner.solver.move-type.best-score-diff", new PickedMoveBestScoreDiffStatistic()),
-    PICKED_MOVE_TYPE_STEP_SCORE_DIFF("optaplanner.solver.move-type.step-score-diff", new PickedMoveStepScoreDiffStatistic());
+    SOLVE_LENGTH("optaplanner.solver.solve-length", false),
+    ERROR_COUNT("optaplanner.solver.errors", false),
+    BEST_SCORE("optaplanner.solver.best-score", new BestScoreStatistic(), true),
+    STEP_SCORE("optaplanner.solver.step-score", false),
+    SCORE_CALCULATION_COUNT("optaplanner.solver.score-calculation-count", false),
+    BEST_SOLUTION_MUTATION("optaplanner.solver.best-solution-mutation", new BestSolutionMutationCountStatistic(), true),
+    MOVE_COUNT_PER_STEP("optaplanner.solver.step-move-count", false),
+    MEMORY_USE("jvm.memory.used", new MemoryUseStatistic(), false),
+    CONSTRAINT_MATCH_TOTAL_BEST_SCORE("optaplanner.solver.constraint-match.best-score", true),
+    CONSTRAINT_MATCH_TOTAL_STEP_SCORE("optaplanner.solver.constraint-match.step-score", false),
+    PICKED_MOVE_TYPE_BEST_SCORE_DIFF("optaplanner.solver.move-type.best-score-diff", new PickedMoveBestScoreDiffStatistic(),
+            true),
+    PICKED_MOVE_TYPE_STEP_SCORE_DIFF("optaplanner.solver.move-type.step-score-diff", new PickedMoveStepScoreDiffStatistic(),
+            false);
 
     String meterId;
-    Consumer<Solver> registerFunction;
+    SolverStatistic registerFunction;
+    boolean isBestSolutionBased;
 
-    SolverMetric(String meterId) {
+    SolverMetric(String meterId, boolean isBestSolutionBased) {
         this(meterId, solver -> {
-        });
+        }, isBestSolutionBased);
     }
 
-    SolverMetric(String meterId, Consumer<Solver> registerFunction) {
+    SolverMetric(String meterId, SolverStatistic registerFunction, boolean isBestSolutionBased) {
         this.meterId = meterId;
         this.registerFunction = registerFunction;
+        this.isBestSolutionBased = isBestSolutionBased;
     }
 
     public String getMeterId() {
         return meterId;
     }
 
-    public static void registerScoreMetrics(SolverMetric metric, Tags tags, ScoreDefinition scoreDefinition,
-            Map<Tags, List<AtomicReference<Number>>> tagToScoreLevels, Score score) {
+    public static void registerScoreMetrics(SolverMetric metric, Tags tags, ScoreDefinition<?> scoreDefinition,
+            Map<Tags, List<AtomicReference<Number>>> tagToScoreLevels, Score<?> score) {
         Number[] levelValues = score.toLevelNumbers();
         if (tagToScoreLevels.containsKey(tags)) {
             List<AtomicReference<Number>> scoreLevels = tagToScoreLevels.get(tags);
@@ -89,12 +93,16 @@ public enum SolverMetric {
         }
     }
 
-    public static void setupMetrics(String solverId, SolverConfig solverConfig, Solver solver) {
+    public static void setupMetrics(SolverConfig solverConfig, Solver<?> solver) {
         List<SolverMetric> metricsToAcceptList = solverConfig.determineMetricConfig().getSolverMetricList();
         metricsToAcceptList.forEach(metric -> metric.register(solver));
     }
 
-    public void register(Solver solver) {
-        registerFunction.accept(solver);
+    public boolean isMetricBestSolutionBased() {
+        return isBestSolutionBased;
+    }
+
+    public void register(Solver<?> solver) {
+        registerFunction.register(solver);
     }
 }

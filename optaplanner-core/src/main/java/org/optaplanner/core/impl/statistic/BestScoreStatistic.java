@@ -20,7 +20,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicReference;
-import java.util.function.Consumer;
 
 import org.optaplanner.core.api.solver.Solver;
 import org.optaplanner.core.config.solver.metric.SolverMetric;
@@ -29,13 +28,13 @@ import org.optaplanner.core.impl.solver.DefaultSolver;
 
 import io.micrometer.core.instrument.Tags;
 
-public class BestScoreStatistic implements Consumer<Solver> {
+public class BestScoreStatistic implements SolverStatistic {
     private final Map<Tags, List<AtomicReference<Number>>> tagsToBestScoreMap = new ConcurrentHashMap<>();
 
     @Override
-    public void accept(Solver solver) {
-        DefaultSolver defaultSolver = (DefaultSolver) solver;
-        ScoreDefinition scoreDefinition = defaultSolver.getSolverScope().getScoreDefinition();
+    public void register(Solver<?> solver) {
+        DefaultSolver<?> defaultSolver = (DefaultSolver<?>) solver;
+        ScoreDefinition<?> scoreDefinition = defaultSolver.getSolverScope().getScoreDefinition();
         defaultSolver.addEventListener(event -> {
             SolverMetric.registerScoreMetrics(SolverMetric.BEST_SCORE, defaultSolver.getSolverScope().getMetricTags(),
                     scoreDefinition, tagsToBestScoreMap, event.getNewBestScore());

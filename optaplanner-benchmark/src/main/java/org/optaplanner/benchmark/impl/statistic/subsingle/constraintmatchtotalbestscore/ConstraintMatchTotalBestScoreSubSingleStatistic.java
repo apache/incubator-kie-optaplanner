@@ -76,40 +76,31 @@ public class ConstraintMatchTotalBestScoreSubSingleStatistic<Solution_>
     // ************************************************************************
 
     @Override
-    public void open(StatisticRegistry registry, Tags runTag, Solver<Solution_> solver) {
+    public void open(StatisticRegistry<Solution_> registry, Tags runTag, Solver<Solution_> solver) {
         DefaultSolver<Solution_> defaultSolver = (DefaultSolver<Solution_>) solver;
         defaultSolver.getSolverScope().getScoreDirector().overwriteConstraintMatchEnabledPreference(true);
         registry.addListener(SolverMetric.CONSTRAINT_MATCH_TOTAL_BEST_SCORE, timeMillisSpent -> {
             Set<Meter.Id> meterIds = registry.getMeterIds(SolverMetric.CONSTRAINT_MATCH_TOTAL_BEST_SCORE, runTag);
             Set<ImmutablePair<String, String>> constraintPackageNamePairs = new HashSet<>();
-            meterIds.forEach(meterId -> {
-                constraintPackageNamePairs
-                        .add(ImmutablePair.of(meterId.getTag("constraint.package"), meterId.getTag("constraint.name")));
-            });
+            meterIds.forEach(meterId -> constraintPackageNamePairs
+                    .add(ImmutablePair.of(meterId.getTag("constraint.package"), meterId.getTag("constraint.name"))));
             constraintPackageNamePairs.forEach(constraintPackageNamePair -> {
                 String constraintPackage = constraintPackageNamePair.left;
                 String constraintName = constraintPackageNamePair.right;
                 registry.extractScoreFromMeters(SolverMetric.CONSTRAINT_MATCH_TOTAL_BEST_SCORE, runTag
                         .and("constraint.package", constraintPackageNamePair.left)
-                        .and("constraint.name", constraintPackageNamePair.right), score -> {
-                            registry.getGaugeValue(SolverMetric.CONSTRAINT_MATCH_TOTAL_BEST_SCORE.getMeterId() + ".count",
-                                    runTag.and("constraint.package", constraintPackageNamePair.left)
-                                            .and("constraint.name", constraintPackageNamePair.right),
-                                    count -> {
-                                        pointList.add(new ConstraintMatchTotalBestScoreStatisticPoint(
-                                                timeMillisSpent,
-                                                constraintPackage,
-                                                constraintName,
-                                                count.intValue(),
-                                                score));
-                                    });
-                        });
+                        .and("constraint.name", constraintPackageNamePair.right),
+                        score -> registry.getGaugeValue(SolverMetric.CONSTRAINT_MATCH_TOTAL_BEST_SCORE.getMeterId() + ".count",
+                                runTag.and("constraint.package", constraintPackageNamePair.left)
+                                        .and("constraint.name", constraintPackageNamePair.right),
+                                count -> pointList.add(new ConstraintMatchTotalBestScoreStatisticPoint(
+                                        timeMillisSpent,
+                                        constraintPackage,
+                                        constraintName,
+                                        count.intValue(),
+                                        score))));
             });
         });
-    }
-
-    @Override
-    public void close(StatisticRegistry registry, Tags runTag, Solver<Solution_> solver) {
     }
 
     // ************************************************************************
@@ -124,7 +115,7 @@ public class ConstraintMatchTotalBestScoreSubSingleStatistic<Solution_>
     }
 
     @Override
-    protected ConstraintMatchTotalBestScoreStatisticPoint createPointFromCsvLine(ScoreDefinition scoreDefinition,
+    protected ConstraintMatchTotalBestScoreStatisticPoint createPointFromCsvLine(ScoreDefinition<?> scoreDefinition,
             List<String> csvLine) {
         return new ConstraintMatchTotalBestScoreStatisticPoint(Long.parseLong(csvLine.get(0)),
                 csvLine.get(1), csvLine.get(2),

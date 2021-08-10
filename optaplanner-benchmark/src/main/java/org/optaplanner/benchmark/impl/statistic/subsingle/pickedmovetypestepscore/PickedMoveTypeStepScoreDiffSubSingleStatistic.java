@@ -57,7 +57,7 @@ public class PickedMoveTypeStepScoreDiffSubSingleStatistic<Solution_>
         extends PureSubSingleStatistic<Solution_, PickedMoveTypeStepScoreDiffStatisticPoint> {
 
     @XmlTransient
-    private PickedMoveTypeStepScoreDiffSubSingleStatisticListener listener;
+    private final PickedMoveTypeStepScoreDiffSubSingleStatisticListener listener;
 
     @XmlTransient
     protected List<File> graphFileList = null;
@@ -80,19 +80,19 @@ public class PickedMoveTypeStepScoreDiffSubSingleStatistic<Solution_>
     // ************************************************************************
 
     @Override
-    public void open(StatisticRegistry registry, Tags runTag, Solver<Solution_> solver) {
+    public void open(StatisticRegistry<Solution_> registry, Tags runTag, Solver<Solution_> solver) {
         // TODO: convert this to use registry
         ((AbstractSolver<Solution_>) solver).addPhaseLifecycleListener(listener);
     }
 
     @Override
-    public void close(StatisticRegistry registry, Tags runTag, Solver<Solution_> solver) {
+    public void close(StatisticRegistry<Solution_> registry, Tags runTag, Solver<Solution_> solver) {
         ((AbstractSolver<Solution_>) solver).removePhaseLifecycleListener(listener);
     }
 
     private class PickedMoveTypeStepScoreDiffSubSingleStatisticListener extends PhaseLifecycleListenerAdapter<Solution_> {
 
-        private Score oldStepScore = null;
+        private Score<?> oldStepScore = null;
 
         @Override
         public void phaseStarted(AbstractPhaseScope<Solution_> phaseScope) {
@@ -115,6 +115,7 @@ public class PickedMoveTypeStepScoreDiffSubSingleStatistic<Solution_>
             }
         }
 
+        @SuppressWarnings({ "rawtypes", "unchecked" })
         private void localSearchStepEnded(LocalSearchStepScope<Solution_> stepScope) {
             long timeMillisSpent = stepScope.getPhaseScope().calculateSolverTimeMillisSpentUpToNow();
             String moveType = stepScope.getStep().getSimpleMoveTypeDescription();
@@ -137,7 +138,7 @@ public class PickedMoveTypeStepScoreDiffSubSingleStatistic<Solution_>
     }
 
     @Override
-    protected PickedMoveTypeStepScoreDiffStatisticPoint createPointFromCsvLine(ScoreDefinition scoreDefinition,
+    protected PickedMoveTypeStepScoreDiffStatisticPoint createPointFromCsvLine(ScoreDefinition<?> scoreDefinition,
             List<String> csvLine) {
         return new PickedMoveTypeStepScoreDiffStatisticPoint(Long.parseLong(csvLine.get(0)),
                 csvLine.get(1), scoreDefinition.parseScore(csvLine.get(2)));
@@ -165,7 +166,7 @@ public class PickedMoveTypeStepScoreDiffSubSingleStatistic<Solution_>
                 double yValue = levelValues[i];
                 // In an XYInterval the yLow must be lower than yHigh
                 series.add(timeMillisSpent, timeMillisSpent, timeMillisSpent,
-                        yValue, (yValue > 0.0) ? 0.0 : yValue, (yValue > 0.0) ? yValue : 0.0);
+                        yValue, Math.min(yValue, 0.0), Math.max(yValue, 0.0));
             }
         }
         graphFileList = new ArrayList<>(moveTypeToSeriesMapList.size());

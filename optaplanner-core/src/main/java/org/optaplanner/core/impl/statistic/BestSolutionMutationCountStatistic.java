@@ -16,8 +16,6 @@
 
 package org.optaplanner.core.impl.statistic;
 
-import java.util.function.Consumer;
-
 import org.optaplanner.core.api.solver.Solver;
 import org.optaplanner.core.api.solver.event.BestSolutionChangedEvent;
 import org.optaplanner.core.api.solver.event.SolverEventListener;
@@ -29,25 +27,27 @@ import org.optaplanner.core.impl.solver.DefaultSolver;
 
 import io.micrometer.core.instrument.Metrics;
 
-public class BestSolutionMutationCountStatistic implements Consumer<Solver> {
+public class BestSolutionMutationCountStatistic implements SolverStatistic {
     @Override
-    public void accept(Solver solver) {
+    @SuppressWarnings("unchecked")
+    public void register(Solver<?> solver) {
         DefaultSolver<?> defaultSolver = (DefaultSolver<?>) solver;
         InnerScoreDirectorFactory<?, ?> innerScoreDirectorFactory = defaultSolver.getScoreDirectorFactory();
         SolutionDescriptor<?> solutionDescriptor = innerScoreDirectorFactory.getSolutionDescriptor();
-        MutationCounter mutationCounter = new MutationCounter(solutionDescriptor);
+        MutationCounter<?> mutationCounter = new MutationCounter<>(solutionDescriptor);
         solver.addEventListener(Metrics.gauge(SolverMetric.BEST_SOLUTION_MUTATION.getMeterId(),
                 defaultSolver.getSolverScope().getMetricTags(),
                 new BestSolutionMutationCountStatisticListener(mutationCounter),
                 BestSolutionMutationCountStatisticListener::getMutationCount));
     }
 
-    private class BestSolutionMutationCountStatisticListener implements SolverEventListener {
+    @SuppressWarnings("rawtypes")
+    private static class BestSolutionMutationCountStatisticListener implements SolverEventListener {
         final MutationCounter mutationCounter;
         int mutationCount = 0;
         Object oldBestSolution = null;
 
-        public BestSolutionMutationCountStatisticListener(MutationCounter mutationCounter) {
+        public BestSolutionMutationCountStatisticListener(MutationCounter<?> mutationCounter) {
             this.mutationCounter = mutationCounter;
         }
 
@@ -56,6 +56,7 @@ public class BestSolutionMutationCountStatistic implements Consumer<Solver> {
         }
 
         @Override
+        @SuppressWarnings("unchecked")
         public void bestSolutionChanged(BestSolutionChangedEvent event) {
             Object newBestSolution = event.getNewBestSolution();
             if (oldBestSolution == null) {

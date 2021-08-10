@@ -16,18 +16,16 @@
 
 package org.optaplanner.core.impl.statistic;
 
-import java.util.function.Consumer;
-
 import org.optaplanner.core.api.solver.Solver;
 import org.optaplanner.core.impl.solver.DefaultSolver;
 
 import io.micrometer.core.instrument.Metrics;
 import io.micrometer.core.instrument.binder.jvm.JvmMemoryMetrics;
 
-public class MemoryUseStatistic implements Consumer<Solver> {
+public class MemoryUseStatistic implements SolverStatistic {
     @Override
-    public void accept(Solver solver) {
-        DefaultSolver defaultSolver = (DefaultSolver) solver;
+    public void register(Solver<?> solver) {
+        DefaultSolver<?> defaultSolver = (DefaultSolver<?>) solver;
         new JvmMemoryMetrics(defaultSolver.getSolverScope().getMetricTags()).bindTo(Metrics.globalRegistry);
     }
 }

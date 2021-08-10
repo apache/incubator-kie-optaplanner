@@ -40,19 +40,12 @@ public class MoveCountPerStepSubSingleStatistic<Solution_>
     // ************************************************************************
 
     @Override
-    public void open(StatisticRegistry registry, Tags runTag, Solver<Solution_> solver) {
-        registry.addListener(SolverMetric.MOVE_COUNT_PER_STEP, timeMillisSpent -> {
-            registry.getGaugeValue(SolverMetric.MOVE_COUNT_PER_STEP.getMeterId() + ".accepted", runTag, accepted -> {
-                registry.getGaugeValue(SolverMetric.MOVE_COUNT_PER_STEP.getMeterId() + ".selected", runTag, selected -> {
-                    pointList.add(new MoveCountPerStepStatisticPoint(timeMillisSpent,
-                            new MoveCountPerStepMeasurement(accepted.longValue(), selected.longValue())));
-                });
-            });
-        });
-    }
-
-    @Override
-    public void close(StatisticRegistry registry, Tags runTag, Solver<Solution_> solver) {
+    public void open(StatisticRegistry<Solution_> registry, Tags runTag, Solver<Solution_> solver) {
+        registry.addListener(SolverMetric.MOVE_COUNT_PER_STEP,
+                timeMillisSpent -> registry.getGaugeValue(SolverMetric.MOVE_COUNT_PER_STEP.getMeterId() + ".accepted", runTag,
+                        accepted -> registry.getGaugeValue(SolverMetric.MOVE_COUNT_PER_STEP.getMeterId() + ".selected", runTag,
+                                selected -> pointList.add(new MoveCountPerStepStatisticPoint(timeMillisSpent,
+                                        new MoveCountPerStepMeasurement(accepted.longValue(), selected.longValue()))))));
     }
 
     // ************************************************************************
@@ -65,7 +58,7 @@ public class MoveCountPerStepSubSingleStatistic<Solution_>
     }
 
     @Override
-    protected MoveCountPerStepStatisticPoint createPointFromCsvLine(ScoreDefinition scoreDefinition,
+    protected MoveCountPerStepStatisticPoint createPointFromCsvLine(ScoreDefinition<?> scoreDefinition,
             List<String> csvLine) {
         return new MoveCountPerStepStatisticPoint(Long.parseLong(csvLine.get(0)),
                 new MoveCountPerStepMeasurement(Long.parseLong(csvLine.get(1)), Long.parseLong(csvLine.get(2))));

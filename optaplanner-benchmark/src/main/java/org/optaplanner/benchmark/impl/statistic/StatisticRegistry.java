@@ -43,16 +43,16 @@ import io.micrometer.core.instrument.Tags;
 import io.micrometer.core.instrument.search.Search;
 import io.micrometer.core.instrument.simple.SimpleMeterRegistry;
 
-public class StatisticRegistry extends SimpleMeterRegistry
-        implements PhaseLifecycleListener, SolverEventListener {
+public class StatisticRegistry<Solution_> extends SimpleMeterRegistry
+        implements PhaseLifecycleListener<Solution_>, SolverEventListener<Solution_> {
 
     List<Consumer<Long>> stepMeterListenerList = new ArrayList<>();
     List<Consumer<Long>> bestSolutionMeterListenerList = new ArrayList<>();
     long bestSolutionChangedTimestamp = Long.MIN_VALUE;
-    ScoreDefinition scoreDefinition;
+    ScoreDefinition<?> scoreDefinition;
     final Function<Number, Number> scoreLevelNumberConverter;
 
-    public StatisticRegistry(DefaultSolver solver) {
+    public StatisticRegistry(DefaultSolver<Solution_> solver) {
         scoreDefinition = solver.getSolverScope().getScoreDefinition();
         Number zeroScoreLevel0 = scoreDefinition.getZeroScore().toLevelNumbers()[0];
         if (zeroScoreLevel0 instanceof BigDecimal) {
@@ -78,31 +78,10 @@ public class StatisticRegistry extends SimpleMeterRegistry
     }
 
     public void addListener(SolverMetric metric, Consumer<Long> listener) {
-        if (isMetricBestSolutionBased(metric)) {
+        if (metric.isMetricBestSolutionBased()) {
             bestSolutionMeterListenerList.add(listener);
         } else {
             stepMeterListenerList.add(listener);
-        }
-    }
-
-    private boolean isMetricBestSolutionBased(SolverMetric metric) {
-        switch (metric) {
-            case BEST_SCORE:
-            case BEST_SOLUTION_MUTATION:
-            case CONSTRAINT_MATCH_TOTAL_BEST_SCORE:
-            case PICKED_MOVE_TYPE_BEST_SCORE_DIFF:
-                return true;
-            case MEMORY_USE:
-            case STEP_SCORE:
-            case ERROR_COUNT:
-            case SOLVE_LENGTH:
-            case MOVE_COUNT_PER_STEP:
-            case SCORE_CALCULATION_COUNT:
-            case PICKED_MOVE_TYPE_STEP_SCORE_DIFF:
-            case CONSTRAINT_MATCH_TOTAL_STEP_SCORE:
-                return false;
-            default:
-                throw new IllegalStateException("SolverMetric (" + metric + ") does not have a case");
         }
     }
 
@@ -112,7 +91,7 @@ public class StatisticRegistry extends SimpleMeterRegistry
                 .collect(Collectors.toSet());
     }
 
-    public void extractScoreFromMeters(SolverMetric metric, Tags runId, Consumer<Score> scoreConsumer) {
+    public void extractScoreFromMeters(SolverMetric metric, Tags runId, Consumer<Score<?>> scoreConsumer) {
         String[] labelNames = scoreDefinition.getLevelLabels();
         Number[] levelNumbers = new Number[labelNames.length];
         for (int i = 0; i < labelNames.length; i++) {
@@ -143,7 +122,7 @@ public class StatisticRegistry extends SimpleMeterRegistry
     }
 
     @Override
-    public void bestSolutionChanged(BestSolutionChangedEvent event) {
+    public void bestSolutionChanged(BestSolutionChangedEvent<Solution_> event) {
         if (bestSolutionChangedTimestamp != Long.MIN_VALUE) {
             bestSolutionMeterListenerList.forEach(listener -> listener.accept(bestSolutionChangedTimestamp));
         }
@@ -151,34 +130,34 @@ public class StatisticRegistry extends SimpleMeterRegistry
     }
 
     @Override
-    public void stepEnded(AbstractStepScope stepScope) {
+    public void stepEnded(AbstractStepScope<Solution_> stepScope) {
         final long timestamp =
                 System.currentTimeMillis() - stepScope.getPhaseScope().getSolverScope().getStartingSystemTimeMillis();
         stepMeterListenerList.forEach(listener -> listener.accept(timestamp));
     }
 
     @Override
-    public void phaseStarted(AbstractPhaseScope phaseScope) {
+    public void phaseStarted(AbstractPhaseScope<Solution_> phaseScope) {
         // intentional empty
     }
 
     @Override
-    public void stepStarted(AbstractStepScope stepScope) {
+    public void stepStarted(AbstractStepScope<Solution_> stepScope) {
         // intentional empty
     }
 
     @Override
-    public void phaseEnded(AbstractPhaseScope phaseScope) {
+    public void phaseEnded(AbstractPhaseScope<Solution_> phaseScope) {
         // intentional empty
     }
 
     @Override
-    public void solvingStarted(SolverScope solverScope) {
+    public void solvingStarted(SolverScope<Solution_> solverScope) {
         // intentional empty
     }
 
     @Override
-    public void solvingEnded(SolverScope solverScope) {
+    public void solvingEnded(SolverScope<Solution_> solverScope) {
         // intentional empty
     }
 }

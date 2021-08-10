@@ -53,8 +53,8 @@ public class ScoreCalculationSpeedSubSingleStatistic<Solution_>
     // ************************************************************************
 
     @Override
-    public void open(StatisticRegistry registry, Tags runTag, Solver<Solution_> solver) {
-        registry.addListener(SolverMetric.SCORE_CALCULATION_COUNT, new Consumer<Long>() {
+    public void open(StatisticRegistry<Solution_> registry, Tags runTag, Solver<Solution_> solver) {
+        registry.addListener(SolverMetric.SCORE_CALCULATION_COUNT, new Consumer<>() {
             long nextTimeMillisThreshold = timeMillisThresholdInterval;
             long lastTimeMillisSpent = 0;
             final AtomicLong lastScoreCalculationCount = new AtomicLong(0);
@@ -84,10 +84,6 @@ public class ScoreCalculationSpeedSubSingleStatistic<Solution_>
         });
     }
 
-    @Override
-    public void close(StatisticRegistry registry, Tags runTag, Solver<Solution_> solver) {
-    }
-
     // ************************************************************************
     // CSV methods
     // ************************************************************************
@@ -98,7 +94,7 @@ public class ScoreCalculationSpeedSubSingleStatistic<Solution_>
     }
 
     @Override
-    protected ScoreCalculationSpeedStatisticPoint createPointFromCsvLine(ScoreDefinition scoreDefinition,
+    protected ScoreCalculationSpeedStatisticPoint createPointFromCsvLine(ScoreDefinition<?> scoreDefinition,
             List<String> csvLine) {
         return new ScoreCalculationSpeedStatisticPoint(Long.parseLong(csvLine.get(0)),
                 Long.parseLong(csvLine.get(1)));

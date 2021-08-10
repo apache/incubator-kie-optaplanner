@@ -40,16 +40,11 @@ public class BestSolutionMutationSubSingleStatistic<Solution_>
     // ************************************************************************
 
     @Override
-    public void open(StatisticRegistry registry, Tags runTag, Solver<Solution_> solver) {
-        registry.addListener(SolverMetric.BEST_SOLUTION_MUTATION, timestamp -> {
-            registry.getGaugeValue(SolverMetric.BEST_SOLUTION_MUTATION, runTag, mutationCount -> {
-                pointList.add(new BestSolutionMutationStatisticPoint(timestamp, mutationCount.intValue()));
-            });
-        });
-    }
-
-    @Override
-    public void close(StatisticRegistry registry, Tags runTag, Solver<Solution_> solver) {
+    public void open(StatisticRegistry<Solution_> registry, Tags runTag, Solver<Solution_> solver) {
+        registry.addListener(SolverMetric.BEST_SOLUTION_MUTATION,
+                timestamp -> registry.getGaugeValue(SolverMetric.BEST_SOLUTION_MUTATION, runTag,
+                        mutationCount -> pointList
+                                .add(new BestSolutionMutationStatisticPoint(timestamp, mutationCount.intValue()))));
     }
 
     // ************************************************************************
@@ -62,7 +57,7 @@ public class BestSolutionMutationSubSingleStatistic<Solution_>
     }
 
     @Override
-    protected BestSolutionMutationStatisticPoint createPointFromCsvLine(ScoreDefinition scoreDefinition,
+    protected BestSolutionMutationStatisticPoint createPointFromCsvLine(ScoreDefinition<?> scoreDefinition,
             List<String> csvLine) {
         return new BestSolutionMutationStatisticPoint(Long.parseLong(csvLine.get(0)),
                 Integer.parseInt(csvLine.get(1)));

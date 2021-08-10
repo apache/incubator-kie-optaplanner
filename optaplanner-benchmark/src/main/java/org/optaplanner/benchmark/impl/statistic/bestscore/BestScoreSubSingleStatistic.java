@@ -40,16 +40,10 @@ public class BestScoreSubSingleStatistic<Solution_>
     // ************************************************************************
 
     @Override
-    public void open(StatisticRegistry registry, Tags runTag, Solver<Solution_> solver) {
-        registry.addListener(SolverMetric.BEST_SCORE, timestamp -> {
-            registry.extractScoreFromMeters(SolverMetric.BEST_SCORE, runTag, score -> {
-                pointList.add(new BestScoreStatisticPoint(timestamp, score));
-            });
-        });
-    }
-
-    @Override
-    public void close(StatisticRegistry registry, Tags runTag, Solver<Solution_> solver) {
+    public void open(StatisticRegistry<Solution_> registry, Tags runTag, Solver<Solution_> solver) {
+        registry.addListener(SolverMetric.BEST_SCORE,
+                timestamp -> registry.extractScoreFromMeters(SolverMetric.BEST_SCORE, runTag,
+                        score -> pointList.add(new BestScoreStatisticPoint(timestamp, score))));
     }
 
     // ************************************************************************
@@ -62,7 +56,7 @@ public class BestScoreSubSingleStatistic<Solution_>
     }
 
     @Override
-    protected BestScoreStatisticPoint createPointFromCsvLine(ScoreDefinition scoreDefinition,
+    protected BestScoreStatisticPoint createPointFromCsvLine(ScoreDefinition<?> scoreDefinition,
             List<String> csvLine) {
         return new BestScoreStatisticPoint(Long.parseLong(csvLine.get(0)),
                 scoreDefinition.parseScore(csvLine.get(1)));

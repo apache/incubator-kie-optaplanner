@@ -112,7 +112,7 @@ public class SubSingleBenchmarkRunner<Solution_> implements Callable<SubSingleBe
         // Defensive copy of solverConfig for every SingleBenchmarkResult to reset Random, tabu lists, ...
         DefaultSolverFactory<Solution_> solverFactory = new DefaultSolverFactory<>(new SolverConfig(solverConfig));
         DefaultSolver<Solution_> solver = (DefaultSolver<Solution_>) solverFactory.buildSolver();
-        StatisticRegistry statisticRegistry = new StatisticRegistry((DefaultSolver) solver);
+        StatisticRegistry<Solution_> statisticRegistry = new StatisticRegistry<>(solver);
         Metrics.addRegistry(statisticRegistry);
         solver.addEventListener(statisticRegistry);
         solver.addPhaseLifecycleListener(statisticRegistry);
