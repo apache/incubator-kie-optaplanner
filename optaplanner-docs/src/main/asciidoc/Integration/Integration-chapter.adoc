@@ -535,7 +535,7 @@ That component works in Karaf too.
 === JBoss Modules, WildFly, and JBoss EAP
 
 Because of JBoss Modules' `ClassLoader` magic, provide the `ClassLoader` of your classes <<solverConfigurationByXML,during the SolverFactory creation>>,
-so it can find the classpath resources (the solver config, domain classes etc.) in your jars.
+so it can find the classpath resources (the solver config, domain classes, etc.) in your jars.
 
 It's also recommended <<customThreadFactory,to plug in WildFly's thread factory>>,
 especially with <<multithreadedSolving,multithreaded solving>>.
