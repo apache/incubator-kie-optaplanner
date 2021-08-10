@@ -17,6 +17,8 @@
 package org.optaplanner.benchmark.impl.statistic.scorecalculationspeed;
 
 import java.util.List;
+import java.util.concurrent.atomic.AtomicLong;
+import java.util.function.Consumer;
 
 import org.optaplanner.benchmark.config.statistic.ProblemStatisticType;
 import org.optaplanner.benchmark.impl.result.SubSingleBenchmarkResult;
@@ -52,10 +54,33 @@ public class ScoreCalculationSpeedSubSingleStatistic<Solution_>
 
     @Override
     public void open(StatisticRegistry registry, Tags runTag, Solver<Solution_> solver) {
-        registry.addListener(SolverMetric.SCORE_CALCULATION_SPEED, timestamp -> {
-            registry.getGaugeValue(SolverMetric.SCORE_CALCULATION_SPEED, runTag, scoreCalculationSpeed -> {
-                pointList.add(new ScoreCalculationSpeedStatisticPoint(timestamp, scoreCalculationSpeed.longValue()));
-            });
+        registry.addListener(SolverMetric.SCORE_CALCULATION_COUNT, new Consumer<Long>() {
+            long nextTimeMillisThreshold = timeMillisThresholdInterval;
+            long lastTimeMillisSpent = 0;
+            final AtomicLong lastScoreCalculationCount = new AtomicLong(0);
+
+            @Override
+            public void accept(Long timeMillisSpent) {
+                if (timeMillisSpent >= nextTimeMillisThreshold) {
+                    registry.getGaugeValue(SolverMetric.SCORE_CALCULATION_COUNT, runTag, scoreCalculationCountNumber -> {
+                        long scoreCalculationCount = scoreCalculationCountNumber.longValue();
+                        long calculationCountInterval = scoreCalculationCount - lastScoreCalculationCount.get();
+                        long timeMillisSpentInterval = timeMillisSpent - lastTimeMillisSpent;
+                        if (timeMillisSpentInterval == 0L) {
+                            // Avoid divide by zero exception on a fast CPU
+                            timeMillisSpentInterval = 1L;
+                        }
+                        long scoreCalculationSpeed = calculationCountInterval * 1000L / timeMillisSpentInterval;
+                        pointList.add(new ScoreCalculationSpeedStatisticPoint(timeMillisSpent, scoreCalculationSpeed));
+                        lastScoreCalculationCount.set(scoreCalculationCount);
+                    });
+                    lastTimeMillisSpent = timeMillisSpent;
+                    nextTimeMillisThreshold += timeMillisThresholdInterval;
+                    if (nextTimeMillisThreshold < timeMillisSpent) {
+                        nextTimeMillisThreshold = timeMillisSpent;
+                    }
+                }
+            }
         });
     }
 

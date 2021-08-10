@@ -16,6 +16,8 @@
 
 package org.optaplanner.benchmark.impl.statistic;
 
+import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -41,7 +43,8 @@ import io.micrometer.core.instrument.Tags;
 import io.micrometer.core.instrument.search.Search;
 import io.micrometer.core.instrument.simple.SimpleMeterRegistry;
 
-public class StatisticRegistry extends SimpleMeterRegistry implements PhaseLifecycleListener, SolverEventListener {
+public class StatisticRegistry extends SimpleMeterRegistry
+        implements PhaseLifecycleListener, SolverEventListener {
 
     List<Consumer<Long>> stepMeterListenerList = new ArrayList<>();
     List<Consumer<Long>> bestSolutionMeterListenerList = new ArrayList<>();
@@ -52,7 +55,11 @@ public class StatisticRegistry extends SimpleMeterRegistry implements PhaseLifec
     public StatisticRegistry(DefaultSolver solver) {
         scoreDefinition = solver.getSolverScope().getScoreDefinition();
         Number zeroScoreLevel0 = scoreDefinition.getZeroScore().toLevelNumbers()[0];
-        if (zeroScoreLevel0 instanceof Double) {
+        if (zeroScoreLevel0 instanceof BigDecimal) {
+            scoreLevelNumberConverter = number -> BigDecimal.valueOf(number.doubleValue());
+        } else if (zeroScoreLevel0 instanceof BigInteger) {
+            scoreLevelNumberConverter = number -> BigInteger.valueOf(number.longValue());
+        } else if (zeroScoreLevel0 instanceof Double) {
             scoreLevelNumberConverter = Number::doubleValue;
         } else if (zeroScoreLevel0 instanceof Float) {
             scoreLevelNumberConverter = Number::floatValue;
@@ -90,7 +97,7 @@ public class StatisticRegistry extends SimpleMeterRegistry implements PhaseLifec
             case ERROR_COUNT:
             case SOLVE_LENGTH:
             case MOVE_COUNT_PER_STEP:
-            case SCORE_CALCULATION_SPEED:
+            case SCORE_CALCULATION_COUNT:
             case PICKED_MOVE_TYPE_STEP_SCORE_DIFF:
             case CONSTRAINT_MATCH_TOTAL_STEP_SCORE:
                 return false;
@@ -101,7 +108,7 @@ public class StatisticRegistry extends SimpleMeterRegistry implements PhaseLifec
 
     public Set<Meter.Id> getMeterIds(SolverMetric metric, Tags runId) {
         return Search.in(this).name(name -> name.startsWith(metric.getMeterId())).tags(runId)
-                .meters().stream().map(meter -> meter.getId())
+                .meters().stream().map(Meter::getId)
                 .collect(Collectors.toSet());
     }
 

@@ -105,7 +105,11 @@ public class SolverBenchmarkFactory {
         }
         for (ProblemStatisticType problemStatisticType : ObjectUtils.defaultIfNull(config.getProblemStatisticTypeList(),
                 Collections.<ProblemStatisticType> emptyList())) {
-            out.add(SolverMetric.valueOf(problemStatisticType.name()));
+            if (problemStatisticType == ProblemStatisticType.SCORE_CALCULATION_SPEED) {
+                out.add(SolverMetric.SCORE_CALCULATION_COUNT);
+            } else {
+                out.add(SolverMetric.valueOf(problemStatisticType.name()));
+            }
         }
         for (SingleStatisticType singleStatisticType : ObjectUtils.defaultIfNull(config.getSingleStatisticTypeList(),
                 Collections.<SingleStatisticType> emptyList())) {

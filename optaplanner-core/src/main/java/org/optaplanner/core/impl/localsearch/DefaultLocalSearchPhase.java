@@ -16,6 +16,12 @@
 
 package org.optaplanner.core.impl.localsearch;
 
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.AtomicLong;
+import java.util.concurrent.atomic.AtomicReference;
+
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.score.constraint.ConstraintMatchTotal;
 import org.optaplanner.core.config.solver.metric.SolverMetric;
@@ -32,6 +38,7 @@ import org.optaplanner.core.impl.solver.scope.SolverScope;
 import org.optaplanner.core.impl.solver.termination.Termination;
 
 import io.micrometer.core.instrument.Metrics;
+import io.micrometer.core.instrument.Tags;
 
 /**
  * Default implementation of {@link LocalSearchPhase}.
@@ -42,6 +49,12 @@ public class DefaultLocalSearchPhase<Solution_> extends AbstractPhase<Solution_>
         LocalSearchPhaseLifecycleListener<Solution_> {
 
     protected LocalSearchDecider<Solution_> decider;
+    protected final AtomicLong acceptedMoveCountPerStep = new AtomicLong(0);
+    protected final AtomicLong selectedMoveCountPerStep = new AtomicLong(0);
+    protected final Map<Tags, AtomicLong> constraintMatchTotalTagsToStepCount = new ConcurrentHashMap<>();
+    protected final Map<Tags, AtomicLong> constraintMatchTotalTagsToBestCount = new ConcurrentHashMap<>();
+    protected final Map<Tags, List<AtomicReference<Number>>> constraintMatchTotalStepScoreMap = new ConcurrentHashMap<>();
+    protected final Map<Tags, List<AtomicReference<Number>>> constraintMatchTotalBestScoreMap = new ConcurrentHashMap<>();
 
     public DefaultLocalSearchPhase(int phaseIndex, String logIndentation,
             BestSolutionRecaller<Solution_> bestSolutionRecaller, Termination<Solution_> termination) {
@@ -69,6 +82,13 @@ public class DefaultLocalSearchPhase<Solution_> extends AbstractPhase<Solution_>
     public void solve(SolverScope<Solution_> solverScope) {
         LocalSearchPhaseScope<Solution_> phaseScope = new LocalSearchPhaseScope<>(solverScope);
         phaseStarted(phaseScope);
+
+        if (solverScope.isMetricEnabled(SolverMetric.MOVE_COUNT_PER_STEP)) {
+            Metrics.gauge(SolverMetric.MOVE_COUNT_PER_STEP.getMeterId() + ".accepted",
+                    solverScope.getMetricTags(), acceptedMoveCountPerStep);
+            Metrics.gauge(SolverMetric.MOVE_COUNT_PER_STEP.getMeterId() + ".selected",
+                    solverScope.getMetricTags(), selectedMoveCountPerStep);
+        }
 
         while (!termination.isPhaseTerminated(phaseScope)) {
             LocalSearchStepScope<Solution_> stepScope = new LocalSearchStepScope<>(phaseScope);
@@ -155,10 +175,8 @@ public class DefaultLocalSearchPhase<Solution_> extends AbstractPhase<Solution_>
         LocalSearchPhaseScope<Solution_> phaseScope = stepScope.getPhaseScope();
         SolverScope<Solution_> solverScope = phaseScope.getSolverScope();
         if (solverScope.isMetricEnabled(SolverMetric.MOVE_COUNT_PER_STEP)) {
-            Metrics.gauge(SolverMetric.MOVE_COUNT_PER_STEP.getMeterId() + ".accepted",
-                    solverScope.getMetricTags(), stepScope.getAcceptedMoveCount());
-            Metrics.gauge(SolverMetric.MOVE_COUNT_PER_STEP.getMeterId() + ".selected",
-                    solverScope.getMetricTags(), stepScope.getSelectedMoveCount());
+            acceptedMoveCountPerStep.set(stepScope.getAcceptedMoveCount());
+            selectedMoveCountPerStep.set(stepScope.getSelectedMoveCount());
         }
         if (solverScope.isMetricEnabled(SolverMetric.CONSTRAINT_MATCH_TOTAL_STEP_SCORE)
                 || solverScope.isMetricEnabled(SolverMetric.CONSTRAINT_MATCH_TOTAL_BEST_SCORE)) {
@@ -167,38 +185,36 @@ public class DefaultLocalSearchPhase<Solution_> extends AbstractPhase<Solution_>
             if (scoreDirector.isConstraintMatchEnabled()) {
                 for (ConstraintMatchTotal<?> constraintMatchTotal : scoreDirector.getConstraintMatchTotalMap()
                         .values()) {
+                    Tags tags = solverScope.getMetricTags().and(
+                            "constraint.package", constraintMatchTotal.getConstraintPackage(),
+                            "constraint.name", constraintMatchTotal.getConstraintName());
                     if (solverScope.isMetricEnabled(SolverMetric.CONSTRAINT_MATCH_TOTAL_STEP_SCORE)) {
-                        Metrics.gauge(SolverMetric.CONSTRAINT_MATCH_TOTAL_STEP_SCORE.getMeterId() + ".count",
-                                solverScope.getMetricTags().and(
-                                        "constraint.package", constraintMatchTotal.getConstraintPackage(),
-                                        "constraint.name", constraintMatchTotal.getConstraintName()),
-                                constraintMatchTotal.getConstraintMatchCount());
+                        if (constraintMatchTotalTagsToStepCount.containsKey(tags)) {
+                            constraintMatchTotalTagsToStepCount.get(tags).set(constraintMatchTotal.getConstraintMatchCount());
+                        } else {
+                            AtomicLong count = new AtomicLong(constraintMatchTotal.getConstraintMatchCount());
+                            constraintMatchTotalTagsToStepCount.put(tags, count);
+                            Metrics.gauge(SolverMetric.CONSTRAINT_MATCH_TOTAL_STEP_SCORE.getMeterId() + ".count",
+                                    tags, count);
+                        }
                         SolverMetric.registerScoreMetrics(SolverMetric.CONSTRAINT_MATCH_TOTAL_STEP_SCORE,
-                                solverScope.getMetricTags().and(
-                                        "constraint.package", constraintMatchTotal.getConstraintPackage(),
-                                        "constraint.name", constraintMatchTotal.getConstraintName()),
-                                scoreDefinition, stepScope.getScore());
+                                tags, scoreDefinition, constraintMatchTotalStepScoreMap, constraintMatchTotal.getScore());
                     }
                     if (solverScope.isMetricEnabled(SolverMetric.CONSTRAINT_MATCH_TOTAL_BEST_SCORE)
                             && stepScope.getBestScoreImproved()) {
-                        Metrics.gauge(SolverMetric.CONSTRAINT_MATCH_TOTAL_BEST_SCORE.getMeterId() + ".count",
-                                solverScope.getMetricTags().and(
-                                        "constraint.package", constraintMatchTotal.getConstraintPackage(),
-                                        "constraint.name", constraintMatchTotal.getConstraintName()),
-                                constraintMatchTotal.getConstraintMatchCount());
-
+                        if (constraintMatchTotalTagsToBestCount.containsKey(tags)) {
+                            constraintMatchTotalTagsToBestCount.get(tags).set(constraintMatchTotal.getConstraintMatchCount());
+                        } else {
+                            AtomicLong count = new AtomicLong(constraintMatchTotal.getConstraintMatchCount());
+                            constraintMatchTotalTagsToBestCount.put(tags, count);
+                            Metrics.gauge(SolverMetric.CONSTRAINT_MATCH_TOTAL_BEST_SCORE.getMeterId() + ".count",
+                                    tags, count);
+                        }
                         SolverMetric.registerScoreMetrics(SolverMetric.CONSTRAINT_MATCH_TOTAL_BEST_SCORE,
-                                solverScope.getMetricTags().and(
-                                        "constraint.package", constraintMatchTotal.getConstraintPackage(),
-                                        "constraint.name", constraintMatchTotal.getConstraintName()),
-                                scoreDefinition, stepScope.getScore());
+                                tags, scoreDefinition, constraintMatchTotalBestScoreMap, constraintMatchTotal.getScore());
                     }
                 }
             }
-        }
-        if (solverScope.isMetricEnabled(SolverMetric.PICKED_MOVE_TYPE_BEST_SCORE_DIFF)
-                || solverScope.isMetricEnabled(SolverMetric.PICKED_MOVE_TYPE_STEP_SCORE_DIFF)) {
-
         }
     }
 

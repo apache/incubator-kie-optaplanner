@@ -16,7 +16,10 @@
 
 package org.optaplanner.core.config.solver.metric;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Consumer;
 
 import javax.xml.bind.annotation.XmlEnum;
@@ -40,7 +43,7 @@ public enum SolverMetric {
     ERROR_COUNT("optaplanner.solver.errors"),
     BEST_SCORE("optaplanner.solver.best-score", new BestScoreStatistic()),
     STEP_SCORE("optaplanner.solver.step-score"),
-    SCORE_CALCULATION_SPEED("optaplanner.solver.score-calculation-count"),
+    SCORE_CALCULATION_COUNT("optaplanner.solver.score-calculation-count"),
     BEST_SOLUTION_MUTATION("optaplanner.solver.best-solution-mutation", new BestSolutionMutationCountStatistic()),
     MOVE_COUNT_PER_STEP("optaplanner.solver.step-move-count"),
     MEMORY_USE("jvm.memory.used", new MemoryUseStatistic()),
@@ -66,12 +69,23 @@ public enum SolverMetric {
         return meterId;
     }
 
-    public static void registerScoreMetrics(SolverMetric metric, Tags tags, ScoreDefinition scoreDefinition, Score score) {
-        String[] levelLabels = scoreDefinition.getLevelLabels();
+    public static void registerScoreMetrics(SolverMetric metric, Tags tags, ScoreDefinition scoreDefinition,
+            Map<Tags, List<AtomicReference<Number>>> tagToScoreLevels, Score score) {
         Number[] levelValues = score.toLevelNumbers();
-        for (int i = 0; i < levelValues.length; i++) {
-            Metrics.gauge(metric.getMeterId() + "." + levelLabels[i],
-                    tags, levelValues[i]);
+        if (tagToScoreLevels.containsKey(tags)) {
+            List<AtomicReference<Number>> scoreLevels = tagToScoreLevels.get(tags);
+            for (int i = 0; i < levelValues.length; i++) {
+                scoreLevels.get(i).set(levelValues[i]);
+            }
+        } else {
+            String[] levelLabels = scoreDefinition.getLevelLabels();
+            List<AtomicReference<Number>> scoreLevels = new ArrayList<>(levelValues.length);
+            for (int i = 0; i < levelValues.length; i++) {
+                scoreLevels.add(Metrics.gauge(metric.getMeterId() + "." + levelLabels[i],
+                        tags, new AtomicReference<>(levelValues[i]),
+                        ar -> ar.get().doubleValue()));
+            }
+            tagToScoreLevels.put(tags, scoreLevels);
         }
     }
 

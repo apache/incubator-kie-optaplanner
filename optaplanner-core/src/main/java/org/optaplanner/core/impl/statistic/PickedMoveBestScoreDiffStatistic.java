@@ -16,6 +16,10 @@
 
 package org.optaplanner.core.impl.statistic;
 
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Consumer;
 
 import org.optaplanner.core.api.score.Score;
@@ -31,6 +35,8 @@ import org.optaplanner.core.impl.score.definition.ScoreDefinition;
 import org.optaplanner.core.impl.score.director.InnerScoreDirectorFactory;
 import org.optaplanner.core.impl.solver.DefaultSolver;
 
+import io.micrometer.core.instrument.Tags;
+
 public class PickedMoveBestScoreDiffStatistic implements Consumer<Solver> {
     @Override
     public void accept(Solver solver) {
@@ -45,6 +51,7 @@ public class PickedMoveBestScoreDiffStatistic implements Consumer<Solver> {
 
         private Score oldBestScore = null;
         private final ScoreDefinition scoreDefinition;
+        private final Map<Tags, List<AtomicReference<Number>>> tagsToMoveScoreMap = new ConcurrentHashMap<>();
 
         public PickedMoveBestScoreDiffStatisticListener(ScoreDefinition scoreDefinition) {
             this.scoreDefinition = scoreDefinition;
@@ -81,6 +88,7 @@ public class PickedMoveBestScoreDiffStatistic implements Consumer<Solver> {
                         stepScope.getPhaseScope().getSolverScope().getMetricTags()
                                 .and("move.type", moveType),
                         scoreDefinition,
+                        tagsToMoveScoreMap,
                         bestScoreDiff);
             }
         }
