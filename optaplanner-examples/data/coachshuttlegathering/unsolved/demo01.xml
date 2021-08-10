@@ -3749,6 +3749,7 @@
       <departureLocation reference="21"/>
       <capacity>20</capacity>
       <mileageCost>10</mileageCost>
+      <passengerQuantityTotal>0</passengerQuantityTotal>
       <stopLimit>3</stopLimit>
       <destination id="445">
         <id>9</id>
@@ -3761,6 +3762,7 @@
             <departureLocation reference="6"/>
             <capacity>3</capacity>
             <mileageCost>2</mileageCost>
+            <passengerQuantityTotal>0</passengerQuantityTotal>
             <setupCost>10</setupCost>
             <destination class="CsgBusHub" reference="445"/>
           </CsgShuttle>
@@ -3770,6 +3772,7 @@
             <departureLocation reference="3"/>
             <capacity>3</capacity>
             <mileageCost>2</mileageCost>
+            <passengerQuantityTotal>0</passengerQuantityTotal>
             <setupCost>10</setupCost>
             <destination class="CsgBusHub" reference="445"/>
           </CsgShuttle>
@@ -3779,6 +3782,7 @@
             <departureLocation reference="231"/>
             <capacity>4</capacity>
             <mileageCost>3</mileageCost>
+            <passengerQuantityTotal>0</passengerQuantityTotal>
             <setupCost>10</setupCost>
             <destination class="CsgBusHub" reference="445"/>
           </CsgShuttle>
@@ -3788,6 +3792,7 @@
             <departureLocation reference="210"/>
             <capacity>4</capacity>
             <mileageCost>3</mileageCost>
+            <passengerQuantityTotal>0</passengerQuantityTotal>
             <setupCost>10</setupCost>
             <destination class="CsgBusHub" reference="445"/>
           </CsgShuttle>
@@ -3797,6 +3802,7 @@
             <departureLocation reference="210"/>
             <capacity>8</capacity>
             <mileageCost>4</mileageCost>
+            <passengerQuantityTotal>0</passengerQuantityTotal>
             <setupCost>20</setupCost>
             <destination class="CsgBusHub" reference="445"/>
           </CsgShuttle>
@@ -3806,6 +3812,7 @@
             <departureLocation reference="190"/>
             <capacity>8</capacity>
             <mileageCost>4</mileageCost>
+            <passengerQuantityTotal>0</passengerQuantityTotal>
             <setupCost>20</setupCost>
             <destination class="CsgBusHub" reference="445"/>
           </CsgShuttle>
@@ -3818,6 +3825,7 @@
       <departureLocation reference="21"/>
       <capacity>25</capacity>
       <mileageCost>11</mileageCost>
+      <passengerQuantityTotal>0</passengerQuantityTotal>
       <stopLimit>3</stopLimit>
       <destination reference="445"/>
     </CsgCoach>
@@ -3827,6 +3835,7 @@
       <departureLocation reference="91"/>
       <capacity>30</capacity>
       <mileageCost>12</mileageCost>
+      <passengerQuantityTotal>0</passengerQuantityTotal>
       <stopLimit>3</stopLimit>
       <destination reference="445"/>
     </CsgCoach>

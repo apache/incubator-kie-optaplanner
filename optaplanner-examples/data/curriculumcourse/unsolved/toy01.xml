@@ -3,12 +3,12 @@
   <name>Toy01</name>
   <teacherList id="2">
     <Teacher id="3">
-      <id>1</id>
-      <code>t2</code>
-    </Teacher>
-    <Teacher id="4">
       <id>0</id>
       <code>t1</code>
+    </Teacher>
+    <Teacher id="4">
+      <id>1</id>
+      <code>t2</code>
     </Teacher>
   </teacherList>
   <curriculumList id="5">
@@ -25,10 +25,10 @@
     <Course id="9">
       <id>0</id>
       <code>math</code>
-      <teacher reference="4"/>
+      <teacher reference="3"/>
       <lectureSize>2</lectureSize>
       <minWorkingDaySize>1</minWorkingDaySize>
-      <curriculumSet id="10">
+      <curriculumSet class="linked-hash-set" id="10">
         <Curriculum reference="6"/>
         <Curriculum reference="7"/>
       </curriculumSet>
@@ -37,10 +37,10 @@
     <Course id="11">
       <id>1</id>
       <code>science</code>
-      <teacher reference="4"/>
+      <teacher reference="3"/>
       <lectureSize>1</lectureSize>
       <minWorkingDaySize>1</minWorkingDaySize>
-      <curriculumSet id="12">
+      <curriculumSet class="linked-hash-set" id="12">
         <Curriculum reference="7"/>
       </curriculumSet>
       <studentSize>80</studentSize>
@@ -48,10 +48,10 @@
     <Course id="13">
       <id>2</id>
       <code>french</code>
-      <teacher reference="3"/>
+      <teacher reference="4"/>
       <lectureSize>1</lectureSize>
       <minWorkingDaySize>1</minWorkingDaySize>
-      <curriculumSet id="14">
+      <curriculumSet class="linked-hash-set" id="14">
         <Curriculum reference="6"/>
       </curriculumSet>
       <studentSize>20</studentSize>

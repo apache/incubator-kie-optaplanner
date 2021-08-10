@@ -23,7 +23,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.math.BigInteger;
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -130,9 +130,9 @@ public class MachineReassignmentImporter extends AbstractTxtSolutionImporter<Mac
         private void readMachineList() throws IOException {
             int machineListSize = readIntegerValue();
             List<MrNeighborhood> neighborhoodList = new ArrayList<>(machineListSize);
-            Map<Long, MrNeighborhood> idToNeighborhoodMap = new HashMap<>(machineListSize);
+            Map<Long, MrNeighborhood> idToNeighborhoodMap = new LinkedHashMap<>(machineListSize);
             List<MrLocation> locationList = new ArrayList<>(machineListSize);
-            Map<Long, MrLocation> idToLocationMap = new HashMap<>(machineListSize);
+            Map<Long, MrLocation> idToLocationMap = new LinkedHashMap<>(machineListSize);
             machineList = new ArrayList<>(machineListSize);
             long machineId = 0L;
             List<MrMachineCapacity> machineCapacityList = new ArrayList<>(machineListSize * resourceListSize);
@@ -180,7 +180,7 @@ public class MachineReassignmentImporter extends AbstractTxtSolutionImporter<Mac
                     machineCapacityId++;
                 }
                 machine.setMachineCapacityList(machineCapacityListOfMachine);
-                Map<MrMachine, Integer> machineMoveCostMap = new HashMap<>(machineListSize);
+                Map<MrMachine, Integer> machineMoveCostMap = new LinkedHashMap<>(machineListSize);
                 for (int j = 0; j < machineListSize; j++) {
                     MrMachine toMachine = machineList.get(j);
                     int moveCost = Integer.parseInt(lineTokens[moveCostOffset + j]);

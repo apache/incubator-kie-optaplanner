@@ -3,192 +3,192 @@
   <name>Let0405-1</name>
   <teacherList id="2">
     <Teacher id="3">
-      <id>10</id>
-      <code>t010</code>
-    </Teacher>
-    <Teacher id="4">
-      <id>11</id>
-      <code>t011</code>
-    </Teacher>
-    <Teacher id="5">
-      <id>12</id>
-      <code>t012</code>
-    </Teacher>
-    <Teacher id="6">
-      <id>13</id>
-      <code>t013</code>
-    </Teacher>
-    <Teacher id="7">
-      <id>14</id>
-      <code>t014</code>
-    </Teacher>
-    <Teacher id="8">
-      <id>34</id>
-      <code>t034</code>
-    </Teacher>
-    <Teacher id="9">
-      <id>33</id>
-      <code>t033</code>
-    </Teacher>
-    <Teacher id="10">
-      <id>36</id>
-      <code>t036</code>
-    </Teacher>
-    <Teacher id="11">
-      <id>35</id>
-      <code>t035</code>
-    </Teacher>
-    <Teacher id="12">
-      <id>30</id>
-      <code>t030</code>
-    </Teacher>
-    <Teacher id="13">
-      <id>32</id>
-      <code>t032</code>
-    </Teacher>
-    <Teacher id="14">
-      <id>31</id>
-      <code>t031</code>
-    </Teacher>
-    <Teacher id="15">
-      <id>26</id>
-      <code>t026</code>
-    </Teacher>
-    <Teacher id="16">
-      <id>27</id>
-      <code>t027</code>
-    </Teacher>
-    <Teacher id="17">
-      <id>28</id>
-      <code>t028</code>
-    </Teacher>
-    <Teacher id="18">
-      <id>29</id>
-      <code>t029</code>
-    </Teacher>
-    <Teacher id="19">
-      <id>5</id>
-      <code>t005</code>
-    </Teacher>
-    <Teacher id="20">
-      <id>4</id>
-      <code>t004</code>
-    </Teacher>
-    <Teacher id="21">
-      <id>7</id>
-      <code>t007</code>
-    </Teacher>
-    <Teacher id="22">
-      <id>6</id>
-      <code>t006</code>
-    </Teacher>
-    <Teacher id="23">
-      <id>9</id>
-      <code>t009</code>
-    </Teacher>
-    <Teacher id="24">
-      <id>8</id>
-      <code>t008</code>
-    </Teacher>
-    <Teacher id="25">
-      <id>2</id>
-      <code>t002</code>
-    </Teacher>
-    <Teacher id="26">
-      <id>20</id>
-      <code>t020</code>
-    </Teacher>
-    <Teacher id="27">
-      <id>3</id>
-      <code>t003</code>
-    </Teacher>
-    <Teacher id="28">
-      <id>21</id>
-      <code>t021</code>
-    </Teacher>
-    <Teacher id="29">
       <id>0</id>
       <code>t000</code>
     </Teacher>
-    <Teacher id="30">
+    <Teacher id="4">
       <id>1</id>
       <code>t001</code>
     </Teacher>
-    <Teacher id="31">
-      <id>24</id>
-      <code>t024</code>
+    <Teacher id="5">
+      <id>2</id>
+      <code>t002</code>
     </Teacher>
-    <Teacher id="32">
-      <id>25</id>
-      <code>t025</code>
+    <Teacher id="6">
+      <id>3</id>
+      <code>t003</code>
     </Teacher>
-    <Teacher id="33">
+    <Teacher id="7">
+      <id>4</id>
+      <code>t004</code>
+    </Teacher>
+    <Teacher id="8">
+      <id>5</id>
+      <code>t005</code>
+    </Teacher>
+    <Teacher id="9">
+      <id>6</id>
+      <code>t006</code>
+    </Teacher>
+    <Teacher id="10">
+      <id>7</id>
+      <code>t007</code>
+    </Teacher>
+    <Teacher id="11">
+      <id>8</id>
+      <code>t008</code>
+    </Teacher>
+    <Teacher id="12">
+      <id>9</id>
+      <code>t009</code>
+    </Teacher>
+    <Teacher id="13">
+      <id>10</id>
+      <code>t010</code>
+    </Teacher>
+    <Teacher id="14">
+      <id>11</id>
+      <code>t011</code>
+    </Teacher>
+    <Teacher id="15">
+      <id>12</id>
+      <code>t012</code>
+    </Teacher>
+    <Teacher id="16">
+      <id>13</id>
+      <code>t013</code>
+    </Teacher>
+    <Teacher id="17">
+      <id>14</id>
+      <code>t014</code>
+    </Teacher>
+    <Teacher id="18">
+      <id>15</id>
+      <code>t015</code>
+    </Teacher>
+    <Teacher id="19">
+      <id>16</id>
+      <code>t016</code>
+    </Teacher>
+    <Teacher id="20">
+      <id>17</id>
+      <code>t017</code>
+    </Teacher>
+    <Teacher id="21">
+      <id>18</id>
+      <code>t018</code>
+    </Teacher>
+    <Teacher id="22">
+      <id>19</id>
+      <code>t019</code>
+    </Teacher>
+    <Teacher id="23">
+      <id>20</id>
+      <code>t020</code>
+    </Teacher>
+    <Teacher id="24">
+      <id>21</id>
+      <code>t021</code>
+    </Teacher>
+    <Teacher id="25">
       <id>22</id>
       <code>t022</code>
     </Teacher>
-    <Teacher id="34">
+    <Teacher id="26">
       <id>23</id>
       <code>t023</code>
     </Teacher>
+    <Teacher id="27">
+      <id>24</id>
+      <code>t024</code>
+    </Teacher>
+    <Teacher id="28">
+      <id>25</id>
+      <code>t025</code>
+    </Teacher>
+    <Teacher id="29">
+      <id>26</id>
+      <code>t026</code>
+    </Teacher>
+    <Teacher id="30">
+      <id>27</id>
+      <code>t027</code>
+    </Teacher>
+    <Teacher id="31">
+      <id>28</id>
+      <code>t028</code>
+    </Teacher>
+    <Teacher id="32">
+      <id>29</id>
+      <code>t029</code>
+    </Teacher>
+    <Teacher id="33">
+      <id>30</id>
+      <code>t030</code>
+    </Teacher>
+    <Teacher id="34">
+      <id>31</id>
+      <code>t031</code>
+    </Teacher>
     <Teacher id="35">
-      <id>46</id>
-      <code>t046</code>
+      <id>32</id>
+      <code>t032</code>
     </Teacher>
     <Teacher id="36">
-      <id>45</id>
-      <code>t045</code>
+      <id>33</id>
+      <code>t033</code>
     </Teacher>
     <Teacher id="37">
-      <id>44</id>
-      <code>t044</code>
+      <id>34</id>
+      <code>t034</code>
     </Teacher>
     <Teacher id="38">
-      <id>43</id>
-      <code>t043</code>
+      <id>35</id>
+      <code>t035</code>
     </Teacher>
     <Teacher id="39">
-      <id>42</id>
-      <code>t042</code>
+      <id>36</id>
+      <code>t036</code>
     </Teacher>
     <Teacher id="40">
-      <id>41</id>
-      <code>t041</code>
+      <id>37</id>
+      <code>t037</code>
     </Teacher>
     <Teacher id="41">
-      <id>40</id>
-      <code>t040</code>
+      <id>38</id>
+      <code>t038</code>
     </Teacher>
     <Teacher id="42">
       <id>39</id>
       <code>t039</code>
     </Teacher>
     <Teacher id="43">
-      <id>37</id>
-      <code>t037</code>
+      <id>40</id>
+      <code>t040</code>
     </Teacher>
     <Teacher id="44">
-      <id>38</id>
-      <code>t038</code>
+      <id>41</id>
+      <code>t041</code>
     </Teacher>
     <Teacher id="45">
-      <id>18</id>
-      <code>t018</code>
+      <id>42</id>
+      <code>t042</code>
     </Teacher>
     <Teacher id="46">
-      <id>17</id>
-      <code>t017</code>
+      <id>43</id>
+      <code>t043</code>
     </Teacher>
     <Teacher id="47">
-      <id>16</id>
-      <code>t016</code>
+      <id>44</id>
+      <code>t044</code>
     </Teacher>
     <Teacher id="48">
-      <id>15</id>
-      <code>t015</code>
+      <id>45</id>
+      <code>t045</code>
     </Teacher>
     <Teacher id="49">
-      <id>19</id>
-      <code>t019</code>
+      <id>46</id>
+      <code>t046</code>
     </Teacher>
   </teacherList>
   <curriculumList id="50">
@@ -753,10 +753,10 @@
     <Course id="191">
       <id>0</id>
       <code>LinTed1</code>
-      <teacher reference="29"/>
+      <teacher reference="3"/>
       <lectureSize>1</lectureSize>
       <minWorkingDaySize>1</minWorkingDaySize>
-      <curriculumSet id="192">
+      <curriculumSet class="linked-hash-set" id="192">
         <Curriculum reference="55"/>
       </curriculumSet>
       <studentSize>10</studentSize>
@@ -764,10 +764,10 @@
     <Course id="193">
       <id>1</id>
       <code>AlfInf</code>
-      <teacher reference="30"/>
+      <teacher reference="4"/>
       <lectureSize>1</lectureSize>
       <minWorkingDaySize>1</minWorkingDaySize>
-      <curriculumSet id="194">
+      <curriculumSet class="linked-hash-set" id="194">
         <Curriculum reference="55"/>
       </curriculumSet>
       <studentSize>10</studentSize>
@@ -775,10 +775,10 @@
     <Course id="195">
       <id>2</id>
       <code>LetIta1</code>
-      <teacher reference="25"/>
+      <teacher reference="5"/>
       <lectureSize>3</lectureSize>
       <minWorkingDaySize>3</minWorkingDaySize>
-      <curriculumSet id="196">
+      <curriculumSet class="linked-hash-set" id="196">
         <Curriculum reference="51"/>
         <Curriculum reference="56"/>
         <Curriculum reference="66"/>
@@ -813,10 +813,10 @@
     <Course id="197">
       <id>3</id>
       <code>FilTesItaCS</code>
-      <teacher reference="27"/>
+      <teacher reference="6"/>
       <lectureSize>3</lectureSize>
       <minWorkingDaySize>3</minWorkingDaySize>
-      <curriculumSet id="198">
+      <curriculumSet class="linked-hash-set" id="198">
         <Curriculum reference="168"/>
         <Curriculum reference="169"/>
         <Curriculum reference="170"/>
@@ -833,10 +833,10 @@
     <Course id="199">
       <id>4</id>
       <code>LinGreA</code>
-      <teacher reference="20"/>
+      <teacher reference="7"/>
       <lectureSize>3</lectureSize>
       <minWorkingDaySize>3</minWorkingDaySize>
-      <curriculumSet id="200">
+      <curriculumSet class="linked-hash-set" id="200">
         <Curriculum reference="56"/>
         <Curriculum reference="78"/>
         <Curriculum reference="79"/>
@@ -847,10 +847,10 @@
     <Course id="201">
       <id>5</id>
       <code>LinLatA</code>
-      <teacher reference="19"/>
+      <teacher reference="8"/>
       <lectureSize>2</lectureSize>
       <minWorkingDaySize>2</minWorkingDaySize>
-      <curriculumSet id="202">
+      <curriculumSet class="linked-hash-set" id="202">
         <Curriculum reference="51"/>
         <Curriculum reference="56"/>
         <Curriculum reference="66"/>
@@ -861,10 +861,10 @@
     <Course id="203">
       <id>6</id>
       <code>LinLetGre1</code>
-      <teacher reference="22"/>
+      <teacher reference="9"/>
       <lectureSize>3</lectureSize>
       <minWorkingDaySize>3</minWorkingDaySize>
-      <curriculumSet id="204">
+      <curriculumSet class="linked-hash-set" id="204">
         <Curriculum reference="57"/>
         <Curriculum reference="59"/>
         <Curriculum reference="94"/>
@@ -888,10 +888,10 @@
     <Course id="205">
       <id>7</id>
       <code>LinLetLat1</code>
-      <teacher reference="21"/>
+      <teacher reference="10"/>
       <lectureSize>3</lectureSize>
       <minWorkingDaySize>2</minWorkingDaySize>
-      <curriculumSet id="206">
+      <curriculumSet class="linked-hash-set" id="206">
         <Curriculum reference="52"/>
         <Curriculum reference="53"/>
         <Curriculum reference="54"/>
@@ -929,10 +929,10 @@
     <Course id="207">
       <id>8</id>
       <code>LetCriAnt</code>
-      <teacher reference="24"/>
+      <teacher reference="11"/>
       <lectureSize>3</lectureSize>
       <minWorkingDaySize>3</minWorkingDaySize>
-      <curriculumSet id="208">
+      <curriculumSet class="linked-hash-set" id="208">
         <Curriculum reference="58"/>
         <Curriculum reference="61"/>
         <Curriculum reference="72"/>
@@ -944,10 +944,10 @@
     <Course id="209">
       <id>9</id>
       <code>Papiro</code>
-      <teacher reference="23"/>
+      <teacher reference="12"/>
       <lectureSize>3</lectureSize>
       <minWorkingDaySize>3</minWorkingDaySize>
-      <curriculumSet id="210">
+      <curriculumSet class="linked-hash-set" id="210">
         <Curriculum reference="58"/>
         <Curriculum reference="60"/>
         <Curriculum reference="61"/>
@@ -973,10 +973,10 @@
     <Course id="211">
       <id>10</id>
       <code>EpiGre</code>
-      <teacher reference="3"/>
+      <teacher reference="13"/>
       <lectureSize>3</lectureSize>
       <minWorkingDaySize>3</minWorkingDaySize>
-      <curriculumSet id="212">
+      <curriculumSet class="linked-hash-set" id="212">
         <Curriculum reference="60"/>
         <Curriculum reference="61"/>
         <Curriculum reference="62"/>
@@ -989,10 +989,10 @@
     <Course id="213">
       <id>11</id>
       <code>StoMod1</code>
-      <teacher reference="4"/>
+      <teacher reference="14"/>
       <lectureSize>3</lectureSize>
       <minWorkingDaySize>3</minWorkingDaySize>
-      <curriculumSet id="214">
+      <curriculumSet class="linked-hash-set" id="214">
         <Curriculum reference="52"/>
         <Curriculum reference="53"/>
         <Curriculum reference="54"/>
@@ -1041,10 +1041,10 @@
     <Course id="215">
       <id>12</id>
       <code>StoCon</code>
-      <teacher reference="5"/>
+      <teacher reference="15"/>
       <lectureSize>2</lectureSize>
       <minWorkingDaySize>2</minWorkingDaySize>
-      <curriculumSet id="216">
+      <curriculumSet class="linked-hash-set" id="216">
         <Curriculum reference="55"/>
         <Curriculum reference="65"/>
         <Curriculum reference="68"/>
@@ -1090,10 +1090,10 @@
     <Course id="217">
       <id>13</id>
       <code>Geo2</code>
-      <teacher reference="6"/>
+      <teacher reference="16"/>
       <lectureSize>3</lectureSize>
       <minWorkingDaySize>3</minWorkingDaySize>
-      <curriculumSet id="218">
+      <curriculumSet class="linked-hash-set" id="218">
         <Curriculum reference="67"/>
         <Curriculum reference="69"/>
       </curriculumSet>
@@ -1102,10 +1102,10 @@
     <Course id="219">
       <id>14</id>
       <code>AntCul1</code>
-      <teacher reference="7"/>
+      <teacher reference="17"/>
       <lectureSize>3</lectureSize>
       <minWorkingDaySize>3</minWorkingDaySize>
-      <curriculumSet id="220">
+      <curriculumSet class="linked-hash-set" id="220">
         <Curriculum reference="64"/>
         <Curriculum reference="66"/>
         <Curriculum reference="67"/>
@@ -1141,10 +1141,10 @@
     <Course id="221">
       <id>15</id>
       <code>StoFil1</code>
-      <teacher reference="48"/>
+      <teacher reference="18"/>
       <lectureSize>3</lectureSize>
       <minWorkingDaySize>2</minWorkingDaySize>
-      <curriculumSet id="222">
+      <curriculumSet class="linked-hash-set" id="222">
         <Curriculum reference="51"/>
         <Curriculum reference="56"/>
         <Curriculum reference="66"/>
@@ -1157,10 +1157,10 @@
     <Course id="223">
       <id>16</id>
       <code>StoCriChi</code>
-      <teacher reference="47"/>
+      <teacher reference="19"/>
       <lectureSize>3</lectureSize>
       <minWorkingDaySize>3</minWorkingDaySize>
-      <curriculumSet id="224">
+      <curriculumSet class="linked-hash-set" id="224">
         <Curriculum reference="63"/>
         <Curriculum reference="65"/>
         <Curriculum reference="72"/>
@@ -1173,10 +1173,10 @@
     <Course id="225">
       <id>17</id>
       <code>StoSci</code>
-      <teacher reference="46"/>
+      <teacher reference="20"/>
       <lectureSize>3</lectureSize>
       <minWorkingDaySize>3</minWorkingDaySize>
-      <curriculumSet id="226">
+      <curriculumSet class="linked-hash-set" id="226">
         <Curriculum reference="65"/>
         <Curriculum reference="68"/>
         <Curriculum reference="69"/>
@@ -1188,10 +1188,10 @@
     <Course id="227">
       <id>18</id>
       <code>MetRicArc</code>
-      <teacher reference="45"/>
+      <teacher reference="21"/>
       <lectureSize>3</lectureSize>
       <minWorkingDaySize>3</minWorkingDaySize>
-      <curriculumSet id="228">
+      <curriculumSet class="linked-hash-set" id="228">
         <Curriculum reference="77"/>
       </curriculumSet>
       <studentSize>10</studentSize>
@@ -1199,10 +1199,10 @@
     <Course id="229">
       <id>19</id>
       <code>ArcCla1</code>
-      <teacher reference="49"/>
+      <teacher reference="22"/>
       <lectureSize>3</lectureSize>
       <minWorkingDaySize>3</minWorkingDaySize>
-      <curriculumSet id="230">
+      <curriculumSet class="linked-hash-set" id="230">
         <Curriculum reference="57"/>
         <Curriculum reference="59"/>
         <Curriculum reference="77"/>
@@ -1218,10 +1218,10 @@
     <Course id="231">
       <id>20</id>
       <code>LinLatB</code>
-      <teacher reference="26"/>
+      <teacher reference="23"/>
       <lectureSize>3</lectureSize>
       <minWorkingDaySize>3</minWorkingDaySize>
-      <curriculumSet id="232">
+      <curriculumSet class="linked-hash-set" id="232">
         <Curriculum reference="77"/>
         <Curriculum reference="86"/>
         <Curriculum reference="134"/>
@@ -1231,10 +1231,10 @@
     <Course id="233">
       <id>21</id>
       <code>Numism</code>
-      <teacher reference="28"/>
+      <teacher reference="24"/>
       <lectureSize>3</lectureSize>
       <minWorkingDaySize>3</minWorkingDaySize>
-      <curriculumSet id="234">
+      <curriculumSet class="linked-hash-set" id="234">
         <Curriculum reference="62"/>
         <Curriculum reference="78"/>
         <Curriculum reference="79"/>
@@ -1247,10 +1247,10 @@
     <Course id="235">
       <id>22</id>
       <code>PrePro</code>
-      <teacher reference="33"/>
+      <teacher reference="25"/>
       <lectureSize>3</lectureSize>
       <minWorkingDaySize>2</minWorkingDaySize>
-      <curriculumSet id="236">
+      <curriculumSet class="linked-hash-set" id="236">
         <Curriculum reference="79"/>
         <Curriculum reference="148"/>
         <Curriculum reference="149"/>
@@ -1261,10 +1261,10 @@
     <Course id="237">
       <id>23</id>
       <code>StoVicOriAnt</code>
-      <teacher reference="34"/>
+      <teacher reference="26"/>
       <lectureSize>3</lectureSize>
       <minWorkingDaySize>3</minWorkingDaySize>
-      <curriculumSet id="238">
+      <curriculumSet class="linked-hash-set" id="238">
         <Curriculum reference="59"/>
         <Curriculum reference="80"/>
         <Curriculum reference="146"/>
@@ -1275,10 +1275,10 @@
     <Course id="239">
       <id>24</id>
       <code>ArcEge</code>
-      <teacher reference="31"/>
+      <teacher reference="27"/>
       <lectureSize>3</lectureSize>
       <minWorkingDaySize>3</minWorkingDaySize>
-      <curriculumSet id="240">
+      <curriculumSet class="linked-hash-set" id="240">
         <Curriculum reference="83"/>
         <Curriculum reference="85"/>
         <Curriculum reference="146"/>
@@ -1290,10 +1290,10 @@
     <Course id="241">
       <id>25</id>
       <code>FilSem</code>
-      <teacher reference="34"/>
+      <teacher reference="26"/>
       <lectureSize>3</lectureSize>
       <minWorkingDaySize>3</minWorkingDaySize>
-      <curriculumSet id="242">
+      <curriculumSet class="linked-hash-set" id="242">
         <Curriculum reference="82"/>
         <Curriculum reference="83"/>
         <Curriculum reference="84"/>
@@ -1305,10 +1305,10 @@
     <Course id="243">
       <id>26</id>
       <code>LegBenCul1</code>
-      <teacher reference="32"/>
+      <teacher reference="28"/>
       <lectureSize>2</lectureSize>
       <minWorkingDaySize>2</minWorkingDaySize>
-      <curriculumSet id="244">
+      <curriculumSet class="linked-hash-set" id="244">
         <Curriculum reference="81"/>
         <Curriculum reference="82"/>
         <Curriculum reference="83"/>
@@ -1329,10 +1329,10 @@
     <Course id="245">
       <id>27</id>
       <code>Bibeco</code>
-      <teacher reference="15"/>
+      <teacher reference="29"/>
       <lectureSize>3</lectureSize>
       <minWorkingDaySize>3</minWorkingDaySize>
-      <curriculumSet id="246">
+      <curriculumSet class="linked-hash-set" id="246">
         <Curriculum reference="53"/>
         <Curriculum reference="86"/>
         <Curriculum reference="168"/>
@@ -1346,10 +1346,10 @@
     <Course id="247">
       <id>28</id>
       <code>ConBenArcLib</code>
-      <teacher reference="16"/>
+      <teacher reference="30"/>
       <lectureSize>3</lectureSize>
       <minWorkingDaySize>3</minWorkingDaySize>
-      <curriculumSet id="248">
+      <curriculumSet class="linked-hash-set" id="248">
         <Curriculum reference="86"/>
       </curriculumSet>
       <studentSize>10</studentSize>
@@ -1357,10 +1357,10 @@
     <Course id="249">
       <id>29</id>
       <code>ResBenArcLib</code>
-      <teacher reference="17"/>
+      <teacher reference="31"/>
       <lectureSize>3</lectureSize>
       <minWorkingDaySize>3</minWorkingDaySize>
-      <curriculumSet id="250">
+      <curriculumSet class="linked-hash-set" id="250">
         <Curriculum reference="91"/>
         <Curriculum reference="92"/>
         <Curriculum reference="93"/>
@@ -1382,10 +1382,10 @@
     <Course id="251">
       <id>30</id>
       <code>InfArcBib</code>
-      <teacher reference="18"/>
+      <teacher reference="32"/>
       <lectureSize>3</lectureSize>
       <minWorkingDaySize>3</minWorkingDaySize>
-      <curriculumSet id="252">
+      <curriculumSet class="linked-hash-set" id="252">
         <Curriculum reference="109"/>
         <Curriculum reference="114"/>
         <Curriculum reference="115"/>
@@ -1401,10 +1401,10 @@
     <Course id="253">
       <id>31</id>
       <code>TeoTecCatCla</code>
-      <teacher reference="12"/>
+      <teacher reference="33"/>
       <lectureSize>3</lectureSize>
       <minWorkingDaySize>3</minWorkingDaySize>
-      <curriculumSet id="254">
+      <curriculumSet class="linked-hash-set" id="254">
         <Curriculum reference="113"/>
         <Curriculum reference="117"/>
         <Curriculum reference="120"/>
@@ -1420,10 +1420,10 @@
     <Course id="255">
       <id>32</id>
       <code>StoArtMed1</code>
-      <teacher reference="14"/>
+      <teacher reference="34"/>
       <lectureSize>3</lectureSize>
       <minWorkingDaySize>3</minWorkingDaySize>
-      <curriculumSet id="256">
+      <curriculumSet class="linked-hash-set" id="256">
         <Curriculum reference="51"/>
         <Curriculum reference="73"/>
         <Curriculum reference="75"/>
@@ -1444,10 +1444,10 @@
     <Course id="257">
       <id>33</id>
       <code>IcoIcoA</code>
-      <teacher reference="13"/>
+      <teacher reference="35"/>
       <lectureSize>3</lectureSize>
       <minWorkingDaySize>3</minWorkingDaySize>
-      <curriculumSet id="258">
+      <curriculumSet class="linked-hash-set" id="258">
         <Curriculum reference="134"/>
         <Curriculum reference="136"/>
         <Curriculum reference="159"/>
@@ -1463,10 +1463,10 @@
     <Course id="259">
       <id>34</id>
       <code>IcoIcoB</code>
-      <teacher reference="13"/>
+      <teacher reference="35"/>
       <lectureSize>3</lectureSize>
       <minWorkingDaySize>3</minWorkingDaySize>
-      <curriculumSet id="260">
+      <curriculumSet class="linked-hash-set" id="260">
         <Curriculum reference="159"/>
         <Curriculum reference="160"/>
         <Curriculum reference="162"/>
@@ -1479,10 +1479,10 @@
     <Course id="261">
       <id>35</id>
       <code>StoArtMod1</code>
-      <teacher reference="9"/>
+      <teacher reference="36"/>
       <lectureSize>2</lectureSize>
       <minWorkingDaySize>2</minWorkingDaySize>
-      <curriculumSet id="262">
+      <curriculumSet class="linked-hash-set" id="262">
         <Curriculum reference="52"/>
         <Curriculum reference="53"/>
         <Curriculum reference="54"/>
@@ -1509,10 +1509,10 @@
     <Course id="263">
       <id>36</id>
       <code>MetRicStoArt</code>
-      <teacher reference="8"/>
+      <teacher reference="37"/>
       <lectureSize>3</lectureSize>
       <minWorkingDaySize>3</minWorkingDaySize>
-      <curriculumSet id="264">
+      <curriculumSet class="linked-hash-set" id="264">
         <Curriculum reference="137"/>
         <Curriculum reference="159"/>
         <Curriculum reference="161"/>
@@ -1524,10 +1524,10 @@
     <Course id="265">
       <id>37</id>
       <code>StoArtLatAmeA</code>
-      <teacher reference="11"/>
+      <teacher reference="38"/>
       <lectureSize>3</lectureSize>
       <minWorkingDaySize>3</minWorkingDaySize>
-      <curriculumSet id="266">
+      <curriculumSet class="linked-hash-set" id="266">
         <Curriculum reference="138"/>
         <Curriculum reference="140"/>
         <Curriculum reference="141"/>
@@ -1543,10 +1543,10 @@
     <Course id="267">
       <id>38</id>
       <code>StoArtCon1</code>
-      <teacher reference="10"/>
+      <teacher reference="39"/>
       <lectureSize>3</lectureSize>
       <minWorkingDaySize>3</minWorkingDaySize>
-      <curriculumSet id="268">
+      <curriculumSet class="linked-hash-set" id="268">
         <Curriculum reference="55"/>
         <Curriculum reference="65"/>
         <Curriculum reference="90"/>
@@ -1568,10 +1568,10 @@
     <Course id="269">
       <id>39</id>
       <code>PsiArt</code>
-      <teacher reference="43"/>
+      <teacher reference="40"/>
       <lectureSize>3</lectureSize>
       <minWorkingDaySize>3</minWorkingDaySize>
-      <curriculumSet id="270">
+      <curriculumSet class="linked-hash-set" id="270">
         <Curriculum reference="68"/>
         <Curriculum reference="69"/>
         <Curriculum reference="70"/>
@@ -1583,10 +1583,10 @@
     <Course id="271">
       <id>40</id>
       <code>ArcPae</code>
-      <teacher reference="44"/>
+      <teacher reference="41"/>
       <lectureSize>1</lectureSize>
       <minWorkingDaySize>1</minWorkingDaySize>
-      <curriculumSet id="272">
+      <curriculumSet class="linked-hash-set" id="272">
         <Curriculum reference="81"/>
         <Curriculum reference="82"/>
         <Curriculum reference="83"/>
@@ -1627,10 +1627,10 @@
     <Course id="273">
       <id>41</id>
       <code>LetIta4CS</code>
-      <teacher reference="25"/>
+      <teacher reference="5"/>
       <lectureSize>3</lectureSize>
       <minWorkingDaySize>3</minWorkingDaySize>
-      <curriculumSet id="274">
+      <curriculumSet class="linked-hash-set" id="274">
         <Curriculum reference="154"/>
         <Curriculum reference="157"/>
         <Curriculum reference="178"/>
@@ -1643,7 +1643,7 @@
       <teacher reference="42"/>
       <lectureSize>3</lectureSize>
       <minWorkingDaySize>3</minWorkingDaySize>
-      <curriculumSet id="276">
+      <curriculumSet class="linked-hash-set" id="276">
         <Curriculum reference="146"/>
         <Curriculum reference="147"/>
         <Curriculum reference="148"/>
@@ -1656,10 +1656,10 @@
     <Course id="277">
       <id>43</id>
       <code>StoMedCS</code>
-      <teacher reference="41"/>
+      <teacher reference="43"/>
       <lectureSize>3</lectureSize>
       <minWorkingDaySize>3</minWorkingDaySize>
-      <curriculumSet id="278">
+      <curriculumSet class="linked-hash-set" id="278">
         <Curriculum reference="168"/>
         <Curriculum reference="169"/>
         <Curriculum reference="170"/>
@@ -1677,10 +1677,10 @@
     <Course id="279">
       <id>44</id>
       <code>BioArcCS</code>
-      <teacher reference="40"/>
+      <teacher reference="44"/>
       <lectureSize>3</lectureSize>
       <minWorkingDaySize>3</minWorkingDaySize>
-      <curriculumSet id="280">
+      <curriculumSet class="linked-hash-set" id="280">
         <Curriculum reference="146"/>
         <Curriculum reference="147"/>
         <Curriculum reference="148"/>
@@ -1691,10 +1691,10 @@
     <Course id="281">
       <id>45</id>
       <code>Antrop</code>
-      <teacher reference="40"/>
+      <teacher reference="44"/>
       <lectureSize>3</lectureSize>
       <minWorkingDaySize>3</minWorkingDaySize>
-      <curriculumSet id="282">
+      <curriculumSet class="linked-hash-set" id="282">
         <Curriculum reference="150"/>
       </curriculumSet>
       <studentSize>10</studentSize>
@@ -1702,10 +1702,10 @@
     <Course id="283">
       <id>46</id>
       <code>LegBenCul2</code>
-      <teacher reference="32"/>
+      <teacher reference="28"/>
       <lectureSize>3</lectureSize>
       <minWorkingDaySize>3</minWorkingDaySize>
-      <curriculumSet id="284">
+      <curriculumSet class="linked-hash-set" id="284">
         <Curriculum reference="151"/>
         <Curriculum reference="152"/>
         <Curriculum reference="158"/>
@@ -1721,10 +1721,10 @@
     <Course id="285">
       <id>47</id>
       <code>StoArtMed2CS</code>
-      <teacher reference="14"/>
+      <teacher reference="34"/>
       <lectureSize>3</lectureSize>
       <minWorkingDaySize>3</minWorkingDaySize>
-      <curriculumSet id="286">
+      <curriculumSet class="linked-hash-set" id="286">
         <Curriculum reference="159"/>
         <Curriculum reference="160"/>
         <Curriculum reference="161"/>
@@ -1737,10 +1737,10 @@
     <Course id="287">
       <id>48</id>
       <code>ChiAppBenCul</code>
-      <teacher reference="39"/>
+      <teacher reference="45"/>
       <lectureSize>3</lectureSize>
       <minWorkingDaySize>3</minWorkingDaySize>
-      <curriculumSet id="288">
+      <curriculumSet class="linked-hash-set" id="288">
         <Curriculum reference="165"/>
         <Curriculum reference="166"/>
       </curriculumSet>
@@ -1749,10 +1749,10 @@
     <Course id="289">
       <id>49</id>
       <code>StoArc</code>
-      <teacher reference="49"/>
+      <teacher reference="22"/>
       <lectureSize>3</lectureSize>
       <minWorkingDaySize>3</minWorkingDaySize>
-      <curriculumSet id="290">
+      <curriculumSet class="linked-hash-set" id="290">
         <Curriculum reference="142"/>
       </curriculumSet>
       <studentSize>10</studentSize>
@@ -1760,10 +1760,10 @@
     <Course id="291">
       <id>50</id>
       <code>StoArt</code>
-      <teacher reference="38"/>
+      <teacher reference="46"/>
       <lectureSize>3</lectureSize>
       <minWorkingDaySize>3</minWorkingDaySize>
-      <curriculumSet id="292">
+      <curriculumSet class="linked-hash-set" id="292">
         <Curriculum reference="143"/>
         <Curriculum reference="144"/>
         <Curriculum reference="145"/>
@@ -1773,10 +1773,10 @@
     <Course id="293">
       <id>51</id>
       <code>FonSocAntCulI</code>
-      <teacher reference="37"/>
+      <teacher reference="47"/>
       <lectureSize>3</lectureSize>
       <minWorkingDaySize>3</minWorkingDaySize>
-      <curriculumSet id="294">
+      <curriculumSet class="linked-hash-set" id="294">
         <Curriculum reference="64"/>
         <Curriculum reference="66"/>
         <Curriculum reference="72"/>
@@ -1790,10 +1790,10 @@
     <Course id="295">
       <id>52</id>
       <code>Bibgra</code>
-      <teacher reference="36"/>
+      <teacher reference="48"/>
       <lectureSize>3</lectureSize>
       <minWorkingDaySize>3</minWorkingDaySize>
-      <curriculumSet id="296">
+      <curriculumSet class="linked-hash-set" id="296">
         <Curriculum reference="54"/>
         <Curriculum reference="87"/>
         <Curriculum reference="88"/>
@@ -1828,10 +1828,10 @@
     <Course id="297">
       <id>53</id>
       <code>BibgraCS</code>
-      <teacher reference="35"/>
+      <teacher reference="49"/>
       <lectureSize>3</lectureSize>
       <minWorkingDaySize>3</minWorkingDaySize>
-      <curriculumSet id="298">
+      <curriculumSet class="linked-hash-set" id="298">
         <Curriculum reference="151"/>
         <Curriculum reference="152"/>
         <Curriculum reference="155"/>

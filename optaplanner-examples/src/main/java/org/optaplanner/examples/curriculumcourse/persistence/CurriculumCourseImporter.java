@@ -21,6 +21,7 @@ import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
@@ -113,8 +114,8 @@ public class CurriculumCourseImporter extends AbstractTxtSolutionImporter<Course
 
         private Map<String, Course> readCourseListAndTeacherList(
                 CourseSchedule schedule, int courseListSize) throws IOException {
-            Map<String, Course> courseMap = new HashMap<>(courseListSize);
-            Map<String, Teacher> teacherMap = new HashMap<>();
+            Map<String, Course> courseMap = new LinkedHashMap<>(courseListSize);
+            Map<String, Teacher> teacherMap = new LinkedHashMap<>();
             List<Course> courseList = new ArrayList<>(courseListSize);
             readEmptyLine();
             readConstantLine("COURSES:");

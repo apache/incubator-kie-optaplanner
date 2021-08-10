@@ -173,63 +173,63 @@
                                       </entry>
                                     </correlationMillisMap>
                                   </AssetClass>
-                                  <long>0</long>
+                                  <long>200</long>
                                 </entry>
                               </correlationMillisMap>
                             </AssetClass>
-                            <long>0</long>
+                            <long>520</long>
                           </entry>
                           <entry>
                             <AssetClass reference="21"/>
-                            <long>0</long>
+                            <long>-20</long>
                           </entry>
                         </correlationMillisMap>
                       </AssetClass>
-                      <long>0</long>
+                      <long>870</long>
                     </entry>
                     <entry>
                       <AssetClass reference="19"/>
-                      <long>0</long>
+                      <long>620</long>
                     </entry>
                     <entry>
                       <AssetClass reference="21"/>
-                      <long>0</long>
+                      <long>-50</long>
                     </entry>
                   </correlationMillisMap>
                 </AssetClass>
-                <long>0</long>
+                <long>40</long>
               </entry>
               <entry>
                 <AssetClass reference="17"/>
-                <long>0</long>
+                <long>300</long>
               </entry>
               <entry>
                 <AssetClass reference="19"/>
-                <long>0</long>
+                <long>360</long>
               </entry>
               <entry>
                 <AssetClass reference="21"/>
-                <long>0</long>
+                <long>250</long>
               </entry>
             </correlationMillisMap>
           </AssetClass>
-          <long>0</long>
+          <long>760</long>
         </entry>
         <entry>
           <AssetClass reference="15"/>
-          <long>0</long>
+          <long>350</long>
         </entry>
         <entry>
           <AssetClass reference="17"/>
-          <long>0</long>
+          <long>500</long>
         </entry>
         <entry>
           <AssetClass reference="19"/>
-          <long>0</long>
+          <long>240</long>
         </entry>
         <entry>
           <AssetClass reference="21"/>
-          <long>0</long>
+          <long>300</long>
         </entry>
       </correlationMillisMap>
     </AssetClass>

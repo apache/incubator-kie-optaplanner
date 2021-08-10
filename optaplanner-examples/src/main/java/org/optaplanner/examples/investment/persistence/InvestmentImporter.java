@@ -20,7 +20,6 @@ import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -159,7 +158,7 @@ public class InvestmentImporter extends AbstractXlsxSolutionImporter<InvestmentS
 
             int assetClassListSize = headerRow.getPhysicalNumberOfCells() - ASSET_CLASS_PROPERTIES_COUNT;
             List<AssetClass> assetClassList = new ArrayList<>(assetClassListSize);
-            Map<Long, AssetClass> idToAssetClassMap = new HashMap<>(assetClassListSize);
+            Map<Long, AssetClass> idToAssetClassMap = new LinkedHashMap<>(assetClassListSize);
             for (int i = 0; i < assetClassListSize; i++) {
                 AssetClass assetClass = new AssetClass();
                 assetClass.setId(readLongCell(headerRow.getCell(ASSET_CLASS_PROPERTIES_COUNT + i)));

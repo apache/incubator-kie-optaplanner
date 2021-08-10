@@ -149,8 +149,8 @@
       <lectureSize>2</lectureSize>
       <minWorkingDaySize>1</minWorkingDaySize>
       <curriculumSet id="38">
-        <Curriculum reference="21"/>
         <Curriculum reference="22"/>
+        <Curriculum reference="21"/>
       </curriculumSet>
       <studentSize>35</studentSize>
     </Course>
@@ -173,8 +173,8 @@
       <lectureSize>3</lectureSize>
       <minWorkingDaySize>1</minWorkingDaySize>
       <curriculumSet id="42">
-        <Curriculum reference="25"/>
         <Curriculum reference="27"/>
+        <Curriculum reference="25"/>
       </curriculumSet>
       <studentSize>22</studentSize>
     </Course>
@@ -240,8 +240,8 @@
       <lectureSize>6</lectureSize>
       <minWorkingDaySize>1</minWorkingDaySize>
       <curriculumSet id="54">
-        <Curriculum reference="21"/>
         <Curriculum reference="22"/>
+        <Curriculum reference="21"/>
       </curriculumSet>
       <studentSize>35</studentSize>
     </Course>
@@ -270,8 +270,8 @@
       <lectureSize>3</lectureSize>
       <minWorkingDaySize>1</minWorkingDaySize>
       <curriculumSet id="60">
-        <Curriculum reference="20"/>
         <Curriculum reference="26"/>
+        <Curriculum reference="20"/>
       </curriculumSet>
       <studentSize>35</studentSize>
     </Course>
@@ -304,8 +304,8 @@
       <lectureSize>5</lectureSize>
       <minWorkingDaySize>1</minWorkingDaySize>
       <curriculumSet id="66">
-        <Curriculum reference="24"/>
         <Curriculum reference="27"/>
+        <Curriculum reference="24"/>
       </curriculumSet>
       <studentSize>25</studentSize>
     </Course>
@@ -325,8 +325,8 @@
       <lectureSize>6</lectureSize>
       <minWorkingDaySize>1</minWorkingDaySize>
       <curriculumSet id="70">
-        <Curriculum reference="23"/>
         <Curriculum reference="27"/>
+        <Curriculum reference="23"/>
       </curriculumSet>
       <studentSize>18</studentSize>
     </Course>
@@ -455,8 +455,8 @@
       <lectureSize>6</lectureSize>
       <minWorkingDaySize>1</minWorkingDaySize>
       <curriculumSet id="94">
-        <Curriculum reference="25"/>
         <Curriculum reference="26"/>
+        <Curriculum reference="25"/>
       </curriculumSet>
       <studentSize>36</studentSize>
     </Course>
@@ -467,8 +467,8 @@
       <lectureSize>6</lectureSize>
       <minWorkingDaySize>1</minWorkingDaySize>
       <curriculumSet id="96">
-        <Curriculum reference="21"/>
         <Curriculum reference="22"/>
+        <Curriculum reference="21"/>
       </curriculumSet>
       <studentSize>35</studentSize>
     </Course>
@@ -491,9 +491,9 @@
       <lectureSize>6</lectureSize>
       <minWorkingDaySize>1</minWorkingDaySize>
       <curriculumSet id="100">
-        <Curriculum reference="23"/>
-        <Curriculum reference="24"/>
         <Curriculum reference="27"/>
+        <Curriculum reference="24"/>
+        <Curriculum reference="23"/>
       </curriculumSet>
       <studentSize>36</studentSize>
     </Course>
@@ -558,8 +558,8 @@
       <lectureSize>5</lectureSize>
       <minWorkingDaySize>1</minWorkingDaySize>
       <curriculumSet id="112">
-        <Curriculum reference="23"/>
         <Curriculum reference="26"/>
+        <Curriculum reference="23"/>
       </curriculumSet>
       <studentSize>32</studentSize>
     </Course>
@@ -570,8 +570,8 @@
       <lectureSize>4</lectureSize>
       <minWorkingDaySize>1</minWorkingDaySize>
       <curriculumSet id="114">
-        <Curriculum reference="21"/>
         <Curriculum reference="22"/>
+        <Curriculum reference="21"/>
       </curriculumSet>
       <studentSize>35</studentSize>
     </Course>
@@ -582,8 +582,8 @@
       <lectureSize>2</lectureSize>
       <minWorkingDaySize>1</minWorkingDaySize>
       <curriculumSet id="116">
-        <Curriculum reference="20"/>
         <Curriculum reference="26"/>
+        <Curriculum reference="20"/>
       </curriculumSet>
       <studentSize>35</studentSize>
     </Course>
@@ -2346,4 +2346,5 @@
       <pinned>false</pinned>
     </Lecture>
   </lectureList>
+  <score id="431">-400init/0hard/0soft</score>
 </CourseSchedule>

@@ -24,7 +24,6 @@ import java.io.InputStreamReader;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -112,7 +111,7 @@ public class CoachShuttleGatheringImporter extends AbstractTxtSolutionImporter<C
 
         private void readLocationList() throws IOException {
             File file = new File(inputFile.getParentFile(), "DistanceTimesCoordinates.csv");
-            latLongToLocationMap = new HashMap<>();
+            latLongToLocationMap = new LinkedHashMap<>();
             List<RoadLocation> locationList = new ArrayList<>();
             long locationId = 0L;
             try (BufferedReader subBufferedReader = new BufferedReader(

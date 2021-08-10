@@ -19,7 +19,7 @@ package org.optaplanner.examples.travelingtournament.persistence;
 import java.io.IOException;
 import java.math.BigInteger;
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.StringTokenizer;
 
@@ -53,7 +53,7 @@ public class TravelingTournamentImporter extends AbstractTxtSolutionImporter<Tra
             int n = readN();
             readTeamList(travelingTournament, n);
             createDayList(travelingTournament, n);
-            List<List<Integer>> outerDistanceList = readOuterDistanceList(travelingTournament);
+            List<List<Integer>> outerDistanceList = readOuterDistanceList();
             // TODO setting the distances should be a separate method
             createMatchListAndSetDistancesInTeamList(travelingTournament, outerDistanceList);
             initializeMatchDays(travelingTournament);
@@ -78,13 +78,13 @@ public class TravelingTournamentImporter extends AbstractTxtSolutionImporter<Tra
                 Team team = new Team();
                 team.setId((long) i);
                 team.setName(bufferedReader.readLine());
-                team.setDistanceToTeamMap(new HashMap<>());
+                team.setDistanceToTeamMap(new LinkedHashMap<>());
                 teamList.add(team);
             }
             travelingTournament.setTeamList(teamList);
         }
 
-        private List<List<Integer>> readOuterDistanceList(TravelingTournament travelingTournament) throws IOException {
+        private List<List<Integer>> readOuterDistanceList() throws IOException {
             List<List<Integer>> outerDistanceList = new ArrayList<>();
             String line = bufferedReader.readLine();
             while (line != null && !line.replaceAll("\\s+", "").equals("")) {
