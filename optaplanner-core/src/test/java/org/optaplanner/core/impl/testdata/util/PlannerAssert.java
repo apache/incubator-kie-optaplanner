@@ -149,13 +149,6 @@ public final class PlannerAssert {
         }
     }
 
-    public static <E> void assertListElementsSameExactly(List<E> expectedList, List<E> actualList) {
-        assertThat(actualList.size()).isEqualTo(expectedList.size());
-        for (int i = 0; i < expectedList.size(); i++) {
-            assertThat(actualList.get(i)).isSameAs(expectedList.get(i));
-        }
-    }
-
     public static <E> void assertArrayElementsSameExactly(E[] expectedArray, E[] actualArray) {
         assertThat(actualArray.length).isEqualTo(expectedArray.length);
         for (int i = 0; i < expectedArray.length; i++) {
