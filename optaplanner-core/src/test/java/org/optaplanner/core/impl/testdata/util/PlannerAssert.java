@@ -149,13 +149,6 @@ public final class PlannerAssert {
         }
     }
 
-    public static <E> void assertArrayElementsSameExactly(E[] expectedArray, E[] actualArray) {
-        assertThat(actualArray.length).isEqualTo(expectedArray.length);
-        for (int i = 0; i < expectedArray.length; i++) {
-            assertThat(actualArray[i]).isSameAs(expectedArray[i]);
-        }
-    }
-
     // ************************************************************************
     // PhaseLifecycleListener methods
     // ************************************************************************
