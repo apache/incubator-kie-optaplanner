@@ -136,7 +136,7 @@
       </activation>
       <modules>
         <module>optaplanner-docs</module>
-        <module>optaplanner-distribution</module>
+        <module>optaplanner-distribution-internal</module>
       </modules>
     </profile>
   </profiles>
