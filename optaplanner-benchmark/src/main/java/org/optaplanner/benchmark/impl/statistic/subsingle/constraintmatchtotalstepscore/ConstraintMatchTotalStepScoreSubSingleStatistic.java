@@ -80,16 +80,21 @@ public class ConstraintMatchTotalStepScoreSubSingleStatistic<Solution_>
         DefaultSolver<Solution_> defaultSolver = (DefaultSolver<Solution_>) solver;
         defaultSolver.getSolverScope().getScoreDirector().overwriteConstraintMatchEnabledPreference(true);
         registry.addListener(SolverMetric.CONSTRAINT_MATCH_TOTAL_STEP_SCORE, timeMillisSpent -> {
+            // Get all meter ids that begin with CONSTRAINT_MATCH_TOTAL_STEP_SCORE meter id with the corresponding run tags.
             Set<Meter.Id> meterIds = registry.getMeterIds(SolverMetric.CONSTRAINT_MATCH_TOTAL_STEP_SCORE, runTag);
             Set<ImmutablePair<String, String>> constraintPackageNamePairs = new HashSet<>();
+            // Add the constraint ids from the meter ids
             meterIds.forEach(meterId -> constraintPackageNamePairs
                     .add(ImmutablePair.of(meterId.getTag("constraint.package"), meterId.getTag("constraint.name"))));
             constraintPackageNamePairs.forEach(constraintPackageNamePair -> {
                 String constraintPackage = constraintPackageNamePair.left;
                 String constraintName = constraintPackageNamePair.right;
+
+                // Get the score from the corresponding constraint package and constraint name meters
                 registry.extractScoreFromMeters(SolverMetric.CONSTRAINT_MATCH_TOTAL_STEP_SCORE, runTag
                         .and("constraint.package", constraintPackageNamePair.left)
                         .and("constraint.name", constraintPackageNamePair.right),
+                        // Get the count gauge (add constraint package and constraint name to the run tags)
                         score -> registry.getGaugeValue(SolverMetric.CONSTRAINT_MATCH_TOTAL_STEP_SCORE.getMeterId() + ".count",
                                 runTag.and("constraint.package", constraintPackageNamePair.left)
                                         .and("constraint.name", constraintPackageNamePair.right),

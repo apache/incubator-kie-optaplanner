@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
+import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -46,9 +47,11 @@ import io.micrometer.core.instrument.simple.SimpleMeterRegistry;
 public class StatisticRegistry<Solution_> extends SimpleMeterRegistry
         implements PhaseLifecycleListener<Solution_>, SolverEventListener<Solution_> {
 
-    List<Consumer<Long>> stepMeterListenerList = new ArrayList<>();
-    List<Consumer<Long>> bestSolutionMeterListenerList = new ArrayList<>();
+    List<BiConsumer<Long, AbstractStepScope<Solution_>>> stepMeterListenerList = new ArrayList<>();
+    List<BiConsumer<Long, AbstractStepScope<Solution_>>> bestSolutionMeterListenerList = new ArrayList<>();
+    AbstractStepScope<Solution_> bestSolutionStepScope = null;
     long bestSolutionChangedTimestamp = Long.MIN_VALUE;
+    boolean lastStepImprovedSolution = false;
     ScoreDefinition<?> scoreDefinition;
     final Function<Number, Number> scoreLevelNumberConverter;
 
@@ -78,6 +81,10 @@ public class StatisticRegistry<Solution_> extends SimpleMeterRegistry
     }
 
     public void addListener(SolverMetric metric, Consumer<Long> listener) {
+        addListener(metric, (timestamp, stepScope) -> listener.accept(timestamp));
+    }
+
+    public void addListener(SolverMetric metric, BiConsumer<Long, AbstractStepScope<Solution_>> listener) {
         if (metric.isMetricBestSolutionBased()) {
             bestSolutionMeterListenerList.add(listener);
         } else {
@@ -123,17 +130,21 @@ public class StatisticRegistry<Solution_> extends SimpleMeterRegistry
 
     @Override
     public void bestSolutionChanged(BestSolutionChangedEvent<Solution_> event) {
-        if (bestSolutionChangedTimestamp != Long.MIN_VALUE) {
-            bestSolutionMeterListenerList.forEach(listener -> listener.accept(bestSolutionChangedTimestamp));
-        }
-        bestSolutionChangedTimestamp = event.getTimeMillisSpent();
+
     }
 
     @Override
     public void stepEnded(AbstractStepScope<Solution_> stepScope) {
         final long timestamp =
                 System.currentTimeMillis() - stepScope.getPhaseScope().getSolverScope().getStartingSystemTimeMillis();
-        stepMeterListenerList.forEach(listener -> listener.accept(timestamp));
+        stepMeterListenerList.forEach(listener -> listener.accept(timestamp, stepScope));
+        if (stepScope.getBestScoreImproved()) {
+            // Since best solution metrics are updated in a best solution listener, we need
+            // to delay updating it until after the best solution listeners were processed
+            bestSolutionStepScope = stepScope;
+            bestSolutionChangedTimestamp = timestamp;
+            lastStepImprovedSolution = true;
+        }
     }
 
     @Override
@@ -143,7 +154,11 @@ public class StatisticRegistry<Solution_> extends SimpleMeterRegistry
 
     @Override
     public void stepStarted(AbstractStepScope<Solution_> stepScope) {
-        // intentional empty
+        if (lastStepImprovedSolution) {
+            bestSolutionMeterListenerList
+                    .forEach(listener -> listener.accept(bestSolutionChangedTimestamp, bestSolutionStepScope));
+            lastStepImprovedSolution = false;
+        }
     }
 
     @Override
@@ -158,6 +173,10 @@ public class StatisticRegistry<Solution_> extends SimpleMeterRegistry
 
     @Override
     public void solvingEnded(SolverScope<Solution_> solverScope) {
-        // intentional empty
+        if (lastStepImprovedSolution) {
+            bestSolutionMeterListenerList
+                    .forEach(listener -> listener.accept(bestSolutionChangedTimestamp, bestSolutionStepScope));
+            lastStepImprovedSolution = false;
+        }
     }
 }

@@ -54,7 +54,7 @@ public class ScoreCalculationSpeedSubSingleStatistic<Solution_>
 
     @Override
     public void open(StatisticRegistry<Solution_> registry, Tags runTag, Solver<Solution_> solver) {
-        registry.addListener(SolverMetric.SCORE_CALCULATION_COUNT, new Consumer<>() {
+        registry.addListener(SolverMetric.SCORE_CALCULATION_COUNT, new Consumer<Long>() {
             long nextTimeMillisThreshold = timeMillisThresholdInterval;
             long lastTimeMillisSpent = 0;
             final AtomicLong lastScoreCalculationCount = new AtomicLong(0);
