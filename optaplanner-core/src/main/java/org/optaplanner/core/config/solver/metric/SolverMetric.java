@@ -41,20 +41,21 @@ import io.micrometer.core.instrument.Tags;
 public enum SolverMetric {
     SOLVE_LENGTH("optaplanner.solver.solve-length", false),
     ERROR_COUNT("optaplanner.solver.errors", false),
-    BEST_SCORE("optaplanner.solver.best-score", new BestScoreStatistic(), true),
+    BEST_SCORE("optaplanner.solver.best-score", new BestScoreStatistic<>(), true),
     STEP_SCORE("optaplanner.solver.step-score", false),
     SCORE_CALCULATION_COUNT("optaplanner.solver.score-calculation-count", false),
-    BEST_SOLUTION_MUTATION("optaplanner.solver.best-solution-mutation", new BestSolutionMutationCountStatistic(), true),
+    BEST_SOLUTION_MUTATION("optaplanner.solver.best-solution-mutation", new BestSolutionMutationCountStatistic<>(), true),
     MOVE_COUNT_PER_STEP("optaplanner.solver.step-move-count", false),
-    MEMORY_USE("jvm.memory.used", new MemoryUseStatistic(), false),
+    MEMORY_USE("jvm.memory.used", new MemoryUseStatistic<>(), false),
     CONSTRAINT_MATCH_TOTAL_BEST_SCORE("optaplanner.solver.constraint-match.best-score", true),
     CONSTRAINT_MATCH_TOTAL_STEP_SCORE("optaplanner.solver.constraint-match.step-score", false),
-    PICKED_MOVE_TYPE_BEST_SCORE_DIFF("optaplanner.solver.move-type.best-score-diff", new PickedMoveBestScoreDiffStatistic(),
+    PICKED_MOVE_TYPE_BEST_SCORE_DIFF("optaplanner.solver.move-type.best-score-diff", new PickedMoveBestScoreDiffStatistic<>(),
             true),
-    PICKED_MOVE_TYPE_STEP_SCORE_DIFF("optaplanner.solver.move-type.step-score-diff", new PickedMoveStepScoreDiffStatistic(),
+    PICKED_MOVE_TYPE_STEP_SCORE_DIFF("optaplanner.solver.move-type.step-score-diff", new PickedMoveStepScoreDiffStatistic<>(),
             false);
 
     String meterId;
+    @SuppressWarnings("rawtypes")
     SolverStatistic registerFunction;
     boolean isBestSolutionBased;
 
@@ -63,7 +64,7 @@ public enum SolverMetric {
         }, isBestSolutionBased);
     }
 
-    SolverMetric(String meterId, SolverStatistic registerFunction, boolean isBestSolutionBased) {
+    SolverMetric(String meterId, SolverStatistic<?> registerFunction, boolean isBestSolutionBased) {
         this.meterId = meterId;
         this.registerFunction = registerFunction;
         this.isBestSolutionBased = isBestSolutionBased;
@@ -102,6 +103,7 @@ public enum SolverMetric {
         return isBestSolutionBased;
     }
 
+    @SuppressWarnings("unchecked")
     public void register(Solver<?> solver) {
         registerFunction.register(solver);
     }

@@ -22,10 +22,10 @@ import org.optaplanner.core.impl.solver.DefaultSolver;
 import io.micrometer.core.instrument.Metrics;
 import io.micrometer.core.instrument.binder.jvm.JvmMemoryMetrics;
 
-public class MemoryUseStatistic implements SolverStatistic {
+public class MemoryUseStatistic<Solution_> implements SolverStatistic<Solution_> {
     @Override
-    public void register(Solver<?> solver) {
-        DefaultSolver<?> defaultSolver = (DefaultSolver<?>) solver;
+    public void register(Solver<Solution_> solver) {
+        DefaultSolver<Solution_> defaultSolver = (DefaultSolver<Solution_>) solver;
         new JvmMemoryMetrics(defaultSolver.getSolverScope().getMetricTags()).bindTo(Metrics.globalRegistry);
     }
 }

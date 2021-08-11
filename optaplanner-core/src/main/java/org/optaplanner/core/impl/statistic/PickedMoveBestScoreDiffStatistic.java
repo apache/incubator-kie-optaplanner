@@ -36,54 +36,55 @@ import org.optaplanner.core.impl.solver.DefaultSolver;
 
 import io.micrometer.core.instrument.Tags;
 
-public class PickedMoveBestScoreDiffStatistic implements SolverStatistic {
+public class PickedMoveBestScoreDiffStatistic<Solution_, Score_ extends Score<Score_>> implements SolverStatistic<Solution_> {
     @Override
     @SuppressWarnings("unchecked")
-    public void register(Solver<?> solver) {
-        DefaultSolver<?> defaultSolver = (DefaultSolver<?>) solver;
-        InnerScoreDirectorFactory<?, ?> innerScoreDirectorFactory = defaultSolver.getScoreDirectorFactory();
-        SolutionDescriptor<?> solutionDescriptor = innerScoreDirectorFactory.getSolutionDescriptor();
+    public void register(Solver<Solution_> solver) {
+        DefaultSolver<Solution_> defaultSolver = (DefaultSolver<Solution_>) solver;
+        InnerScoreDirectorFactory<Solution_, ?> innerScoreDirectorFactory = defaultSolver.getScoreDirectorFactory();
+        SolutionDescriptor<Solution_> solutionDescriptor = innerScoreDirectorFactory.getSolutionDescriptor();
         defaultSolver.addPhaseLifecycleListener(
-                new PickedMoveBestScoreDiffStatisticListener(solutionDescriptor.getScoreDefinition()));
+                new PickedMoveBestScoreDiffStatisticListener<Solution_, Score_>(solutionDescriptor.getScoreDefinition()));
     }
 
-    @SuppressWarnings({ "rawtypes", "unchecked" })
-    private static class PickedMoveBestScoreDiffStatisticListener extends PhaseLifecycleListenerAdapter {
+    private static class PickedMoveBestScoreDiffStatisticListener<Solution_, Score_ extends Score<Score_>>
+            extends PhaseLifecycleListenerAdapter<Solution_> {
 
-        private Score<?> oldBestScore = null;
-        private final ScoreDefinition<?> scoreDefinition;
+        private Score_ oldBestScore = null;
+        private final ScoreDefinition<Score_> scoreDefinition;
         private final Map<Tags, List<AtomicReference<Number>>> tagsToMoveScoreMap = new ConcurrentHashMap<>();
 
-        public PickedMoveBestScoreDiffStatisticListener(ScoreDefinition<?> scoreDefinition) {
+        public PickedMoveBestScoreDiffStatisticListener(ScoreDefinition<Score_> scoreDefinition) {
             this.scoreDefinition = scoreDefinition;
         }
 
         @Override
-        public void phaseStarted(AbstractPhaseScope phaseScope) {
+        public void phaseStarted(AbstractPhaseScope<Solution_> phaseScope) {
             if (phaseScope instanceof LocalSearchPhaseScope) {
                 oldBestScore = phaseScope.getBestScore();
             }
         }
 
         @Override
-        public void phaseEnded(AbstractPhaseScope phaseScope) {
+        public void phaseEnded(AbstractPhaseScope<Solution_> phaseScope) {
             if (phaseScope instanceof LocalSearchPhaseScope) {
                 oldBestScore = null;
             }
         }
 
         @Override
-        public void stepEnded(AbstractStepScope stepScope) {
+        public void stepEnded(AbstractStepScope<Solution_> stepScope) {
             if (stepScope instanceof LocalSearchStepScope) {
-                localSearchStepEnded((LocalSearchStepScope) stepScope);
+                localSearchStepEnded((LocalSearchStepScope<Solution_>) stepScope);
             }
         }
 
-        private void localSearchStepEnded(LocalSearchStepScope stepScope) {
+        @SuppressWarnings("unchecked")
+        private void localSearchStepEnded(LocalSearchStepScope<Solution_> stepScope) {
             if (stepScope.getBestScoreImproved()) {
                 String moveType = stepScope.getStep().getSimpleMoveTypeDescription();
-                Score newBestScore = stepScope.getScore();
-                Score bestScoreDiff = newBestScore.subtract(oldBestScore);
+                Score_ newBestScore = (Score_) stepScope.getScore();
+                Score_ bestScoreDiff = newBestScore.subtract(oldBestScore);
                 oldBestScore = newBestScore;
                 SolverMetric.registerScoreMetrics(SolverMetric.PICKED_MOVE_TYPE_BEST_SCORE_DIFF,
                         stepScope.getPhaseScope().getSolverScope().getMetricTags()

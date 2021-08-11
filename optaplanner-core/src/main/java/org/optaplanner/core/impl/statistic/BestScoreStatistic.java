@@ -28,16 +28,15 @@ import org.optaplanner.core.impl.solver.DefaultSolver;
 
 import io.micrometer.core.instrument.Tags;
 
-public class BestScoreStatistic implements SolverStatistic {
+public class BestScoreStatistic<Solution_> implements SolverStatistic<Solution_> {
     private final Map<Tags, List<AtomicReference<Number>>> tagsToBestScoreMap = new ConcurrentHashMap<>();
 
     @Override
-    public void register(Solver<?> solver) {
-        DefaultSolver<?> defaultSolver = (DefaultSolver<?>) solver;
+    public void register(Solver<Solution_> solver) {
+        DefaultSolver<Solution_> defaultSolver = (DefaultSolver<Solution_>) solver;
         ScoreDefinition<?> scoreDefinition = defaultSolver.getSolverScope().getScoreDefinition();
-        defaultSolver.addEventListener(event -> {
-            SolverMetric.registerScoreMetrics(SolverMetric.BEST_SCORE, defaultSolver.getSolverScope().getMetricTags(),
-                    scoreDefinition, tagsToBestScoreMap, event.getNewBestScore());
-        });
+        defaultSolver.addEventListener(event -> SolverMetric.registerScoreMetrics(SolverMetric.BEST_SCORE,
+                defaultSolver.getSolverScope().getMetricTags(),
+                scoreDefinition, tagsToBestScoreMap, event.getNewBestScore()));
     }
 }
