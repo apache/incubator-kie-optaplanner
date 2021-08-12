@@ -31,6 +31,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.NoSuchElementException;
 
+import org.assertj.core.util.Streams;
 import org.optaplanner.core.impl.constructionheuristic.event.ConstructionHeuristicPhaseLifecycleListener;
 import org.optaplanner.core.impl.constructionheuristic.scope.ConstructionHeuristicPhaseScope;
 import org.optaplanner.core.impl.constructionheuristic.scope.ConstructionHeuristicStepScope;
@@ -231,14 +232,23 @@ public final class PlannerAssert {
         }
     }
 
-    public static void assertCodesOfIterator(Iterator<?> iterator, String... codes) {
+    private static String codeIfNotNull(Object o) {
+        return o == null ? null : convertToCodeAssertable(o).getCode();
+    }
+
+    public static <O> void assertCodesOfNeverEndingIterator(Iterator<O> iterator, String... codes) {
         assertThat(iterator).isNotNull();
-        for (String code : codes) {
-            if (!iterator.hasNext()) {
-                fail("The asserted iterator ends too soon, instead it should return selection (" + code + ").");
-            }
-            assertCode(code, iterator.next());
-        }
+        assertThat(Streams.stream(iterator)
+                .map(PlannerAssert::codeIfNotNull)
+                .limit(codes.length)).containsExactly(codes);
+    }
+
+    public static <O> void assertCodesOfIterator(Iterator<O> iterator, String... codes) {
+        assertThat(iterator).isNotNull();
+        assertThat(iterator)
+                .toIterable()
+                .map(PlannerAssert::codeIfNotNull)
+                .containsExactly(codes);
     }
 
     public static void assertAllCodesOfIterator(Iterator<?> iterator, String... codes) {
@@ -261,7 +271,7 @@ public final class PlannerAssert {
 
     public static void assertCodesOfNeverEndingIterableSelector(IterableSelector<?, ?> selector, long size, String... codes) {
         Iterator<?> iterator = selector.iterator();
-        assertCodesOfIterator(iterator, codes);
+        assertCodesOfNeverEndingIterator(iterator, codes);
         assertThat(iterator.hasNext()).isTrue();
         assertThat(selector.isCountable()).isTrue();
         assertThat(selector.isNeverEnding()).isTrue();
