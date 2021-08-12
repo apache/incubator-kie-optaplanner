@@ -35,7 +35,6 @@ if [[ $# -ne 2 ]]; then
   exit 1
 fi
 
-#readonly remote_optaplanner_downloads=optaplanner@filemgmt.jboss.org:/downloads_htdocs/optaplanner
 readonly remote_optaplanner_docs=optaplanner@filemgmt.jboss.org:/docs_htdocs/optaplanner
 
 readonly version=$1
