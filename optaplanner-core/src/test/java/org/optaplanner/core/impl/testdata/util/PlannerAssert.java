@@ -48,7 +48,6 @@ import org.optaplanner.core.impl.phase.event.PhaseLifecycleListener;
 import org.optaplanner.core.impl.phase.scope.AbstractPhaseScope;
 import org.optaplanner.core.impl.phase.scope.AbstractStepScope;
 import org.optaplanner.core.impl.solver.scope.SolverScope;
-import org.optaplanner.core.impl.testdata.domain.TestdataEntity;
 import org.optaplanner.core.impl.testdata.domain.TestdataSolution;
 
 /**
@@ -67,8 +66,8 @@ public final class PlannerAssert {
         for (int i = 0; i < objects.length; i++) {
             for (int j = i + 1; j < objects.length; j++) {
                 assertThat(objects[j]).isEqualTo(objects[i]);
-                assertThat(objects[j].hashCode()).isEqualTo(objects[i].hashCode());
-                assertThat(objects[i].compareTo(objects[j])).isEqualTo(0);
+                assertThat(objects[j]).hasSameHashCodeAs(objects[i]);
+                assertThat(objects[i]).isEqualByComparingTo(objects[j]);
             }
         }
     }
@@ -87,7 +86,7 @@ public final class PlannerAssert {
         for (int i = 0; i < objects.length; i++) {
             for (int j = i + 1; j < objects.length; j++) {
                 assertThat(objects[j]).isNotEqualTo(objects[i]);
-                assertThat(objects[i].compareTo(objects[j])).isNotEqualTo(0);
+                assertThat(objects[i]).isNotEqualByComparingTo(objects[j]);
             }
         }
     }
@@ -184,7 +183,7 @@ public final class PlannerAssert {
     public static <O> void assertElementsOfIterator(Iterator<O> iterator, O... elements) {
         assertThat(iterator).isNotNull();
         for (O element : elements) {
-            assertThat(iterator.hasNext()).isTrue();
+            assertThat(iterator).hasNext();
             assertThat(iterator.next()).isEqualTo(element);
         }
     }
@@ -192,7 +191,7 @@ public final class PlannerAssert {
     @SafeVarargs
     public static <O> void assertAllElementsOfIterator(Iterator<O> iterator, O... elements) {
         assertElementsOfIterator(iterator, elements);
-        assertThat(iterator.hasNext()).isFalse();
+        assertThat(iterator).isExhausted();
         try {
             iterator.next();
             fail("The iterator with hasNext() (" + false + ") is expected to throw a "
@@ -224,7 +223,7 @@ public final class PlannerAssert {
 
     public static <O> void assertAllCodesOfArray(O[] array, String... codes) {
         assertThat(array).isNotNull();
-        assertThat(array.length).isEqualTo(codes.length);
+        assertThat(array).hasSameSizeAs(codes);
         for (int i = 0; i < array.length; i++) {
             assertCode(codes[i], array[i]);
         }
@@ -251,7 +250,7 @@ public final class PlannerAssert {
 
     public static void assertAllCodesOfIterator(Iterator<?> iterator, String... codes) {
         assertCodesOfIterator(iterator, codes);
-        assertThat(iterator.hasNext()).isFalse();
+        assertThat(iterator).isExhausted();
     }
 
     public static void assertAllCodesOfCollection(Collection<?> collection, String... codes) {
@@ -270,7 +269,7 @@ public final class PlannerAssert {
     public static void assertCodesOfNeverEndingIterableSelector(IterableSelector<?, ?> selector, long size, String... codes) {
         Iterator<?> iterator = selector.iterator();
         assertCodesOfNeverEndingIterator(iterator, codes);
-        assertThat(iterator.hasNext()).isTrue();
+        assertThat(iterator).hasNext();
         assertThat(selector.isCountable()).isTrue();
         assertThat(selector.isNeverEnding()).isTrue();
         if (size != DO_NOT_ASSERT_SIZE) {
@@ -279,7 +278,7 @@ public final class PlannerAssert {
     }
 
     public static void assertEmptyNeverEndingIterableSelector(IterableSelector<?, ?> selector, long size) {
-        assertThat(selector.iterator().hasNext()).isFalse();
+        assertThat(selector.iterator()).isExhausted();
         assertThat(selector.isCountable()).isTrue();
         assertThat(selector.isNeverEnding()).isTrue();
         if (size != DO_NOT_ASSERT_SIZE) {
@@ -382,15 +381,13 @@ public final class PlannerAssert {
 
     public static void assertSolutionInitialized(TestdataSolution solution) {
         assertThat(solution).isNotNull();
-        List<TestdataEntity> entityList = solution.getEntityList();
-        assertThat(entityList.isEmpty()).isFalse();
-        for (TestdataEntity entity : entityList) {
-            assertThat(entity.getValue()).isNotNull();
-        }
+        assertThat(solution.getEntityList())
+                .isNotEmpty()
+                .noneMatch(entity -> entity.getValue() == null);
     }
 
     public static <E> E extractSingleton(List<E> singletonList) {
-        assertThat(singletonList.size()).isEqualTo(1);
+        assertThat(singletonList).hasSize(1);
         return singletonList.get(0);
     }
 
