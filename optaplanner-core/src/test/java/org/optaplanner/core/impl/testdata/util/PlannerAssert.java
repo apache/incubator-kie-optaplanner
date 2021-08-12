@@ -23,7 +23,6 @@ import static org.assertj.core.api.SoftAssertions.assertSoftly;
 import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
-import static org.optaplanner.core.impl.testdata.util.CodeAssertable.convertToCodeAssertable;
 
 import java.util.Collection;
 import java.util.Comparator;
@@ -211,8 +210,7 @@ public final class PlannerAssert {
         if (expectedCode == null) {
             assertThat(o).isNull();
         } else {
-            CodeAssertable codeAssertable = convertToCodeAssertable(o);
-            assertCode(expectedCode, codeAssertable);
+            assertCode(expectedCode, CodeAssertable.convert(o));
         }
     }
 
@@ -233,7 +231,7 @@ public final class PlannerAssert {
     }
 
     private static String codeIfNotNull(Object o) {
-        return o == null ? null : convertToCodeAssertable(o).getCode();
+        return o == null ? null : CodeAssertable.convert(o).getCode();
     }
 
     public static <O> void assertCodesOfNeverEndingIterator(Iterator<O> iterator, String... codes) {

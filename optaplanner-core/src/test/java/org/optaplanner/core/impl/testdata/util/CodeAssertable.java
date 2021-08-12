@@ -29,25 +29,25 @@ public interface CodeAssertable {
 
     String getCode();
 
-    static CodeAssertable convertToCodeAssertable(Object o) {
+    static CodeAssertable convert(Object o) {
         Objects.requireNonNull(o);
         if (o instanceof CodeAssertable) {
             return (CodeAssertable) o;
         } else if (o instanceof ChangeMove) {
             ChangeMove<?> changeMove = (ChangeMove) o;
-            final String code = convertToCodeAssertable(changeMove.getEntity()).getCode()
-                    + "->" + convertToCodeAssertable(changeMove.getToPlanningValue()).getCode();
+            final String code = convert(changeMove.getEntity()).getCode()
+                    + "->" + convert(changeMove.getToPlanningValue()).getCode();
             return () -> code;
         } else if (o instanceof SwapMove) {
             SwapMove<?> swapMove = (SwapMove) o;
-            final String code = convertToCodeAssertable(swapMove.getLeftEntity()).getCode()
-                    + "<->" + convertToCodeAssertable(swapMove.getRightEntity()).getCode();
+            final String code = convert(swapMove.getLeftEntity()).getCode()
+                    + "<->" + convert(swapMove.getRightEntity()).getCode();
             return () -> code;
         } else if (o instanceof CompositeMove) {
             CompositeMove<?> compositeMove = (CompositeMove) o;
             StringBuilder codeBuilder = new StringBuilder(compositeMove.getMoves().length * 80);
             for (Move<?> move : compositeMove.getMoves()) {
-                codeBuilder.append("+").append(convertToCodeAssertable(move).getCode());
+                codeBuilder.append("+").append(convert(move).getCode());
             }
             final String code = codeBuilder.substring(1);
             return () -> code;
@@ -61,14 +61,14 @@ public interface CodeAssertable {
                 } else {
                     codeBuilder.append(", ");
                 }
-                codeBuilder.append(convertToCodeAssertable(element).getCode());
+                codeBuilder.append(convert(element).getCode());
             }
             codeBuilder.append("]");
             final String code = codeBuilder.toString();
             return () -> code;
         } else if (o instanceof SubChain) {
             SubChain subChain = (SubChain) o;
-            final String code = convertToCodeAssertable(subChain.getEntityList()).getCode();
+            final String code = convert(subChain.getEntityList()).getCode();
             return () -> code;
         }
         throw new AssertionError(("o's class (" + o.getClass() + ") cannot be converted to CodeAssertable."));
