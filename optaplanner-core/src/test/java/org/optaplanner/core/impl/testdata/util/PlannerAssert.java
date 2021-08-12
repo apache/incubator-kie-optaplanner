@@ -34,7 +34,7 @@ import java.util.NoSuchElementException;
 import org.optaplanner.core.impl.constructionheuristic.event.ConstructionHeuristicPhaseLifecycleListener;
 import org.optaplanner.core.impl.constructionheuristic.scope.ConstructionHeuristicPhaseScope;
 import org.optaplanner.core.impl.constructionheuristic.scope.ConstructionHeuristicStepScope;
-import org.optaplanner.core.impl.heuristic.move.Move;
+import org.optaplanner.core.impl.heuristic.selector.IterableSelector;
 import org.optaplanner.core.impl.heuristic.selector.entity.EntitySelector;
 import org.optaplanner.core.impl.heuristic.selector.entity.pillar.PillarSelector;
 import org.optaplanner.core.impl.heuristic.selector.move.MoveSelector;
@@ -215,20 +215,13 @@ public final class PlannerAssert {
         }
     }
 
-    public static void assertCode(String message, String expectedCode, Object o) {
-        CodeAssertable codeAssertable = convertToCodeAssertable(o);
-        assertCode(message, expectedCode, codeAssertable);
-    }
-
     public static void assertCode(String expectedCode, CodeAssertable codeAssertable) {
         assertThat(codeAssertable.getCode()).isEqualTo(expectedCode);
     }
 
-    public static void assertCode(String message, String expectedCode, CodeAssertable codeAssertable) {
-        assertThat(codeAssertable.getCode())
-                .as(message)
-                .isEqualTo(expectedCode);
-    }
+    // ************************************************************************
+    // Generic sequences
+    // ************************************************************************
 
     public static <O> void assertAllCodesOfArray(O[] array, String... codes) {
         assertThat(array).isNotNull();
@@ -238,7 +231,7 @@ public final class PlannerAssert {
         }
     }
 
-    public static <O> void assertCodesOfIterator(Iterator<O> iterator, String... codes) {
+    public static void assertCodesOfIterator(Iterator<?> iterator, String... codes) {
         assertThat(iterator).isNotNull();
         for (String code : codes) {
             if (!iterator.hasNext()) {
@@ -248,140 +241,130 @@ public final class PlannerAssert {
         }
     }
 
-    public static <O> void assertAllCodesOfIterator(Iterator<O> iterator, String... codes) {
+    public static void assertAllCodesOfIterator(Iterator<?> iterator, String... codes) {
         assertCodesOfIterator(iterator, codes);
         assertThat(iterator.hasNext()).isFalse();
     }
 
-    public static <O> void assertAllCodesOfCollection(Collection<O> collection, String... codes) {
+    public static void assertAllCodesOfCollection(Collection<?> collection, String... codes) {
         assertAllCodesOfIterator(collection.iterator(), codes);
     }
 
-    public static void assertAllCodesOfMoveSelector(MoveSelector moveSelector, String... codes) {
-        assertAllCodesOfMoveSelector(moveSelector, codes.length, codes);
-    }
-
-    public static void assertAllCodesOfMoveSelector(MoveSelector moveSelector, long size, String... codes) {
-        assertAllCodesOfIterator(moveSelector.iterator(), codes);
-        assertThat(moveSelector.isCountable()).isTrue();
-        assertThat(moveSelector.isNeverEnding()).isFalse();
+    public static void assertAllCodesOfIterableSelector(IterableSelector<?, ?> selector, long size, String... codes) {
+        assertAllCodesOfIterator(selector.iterator(), codes);
+        assertThat(selector.isCountable()).isTrue();
+        assertThat(selector.isNeverEnding()).isFalse();
         if (size != DO_NOT_ASSERT_SIZE) {
-            assertThat(moveSelector.getSize()).isEqualTo(size);
+            assertThat(selector.getSize()).isEqualTo(size);
         }
     }
 
-    public static void assertCodesOfNeverEndingMoveSelector(MoveSelector moveSelector, String... codes) {
-        assertCodesOfNeverEndingMoveSelector(moveSelector, DO_NOT_ASSERT_SIZE, codes);
-    }
-
-    public static void assertCodesOfNeverEndingMoveSelector(MoveSelector moveSelector, long size, String... codes) {
-        Iterator<Move> iterator = moveSelector.iterator();
+    public static void assertCodesOfNeverEndingIterableSelector(IterableSelector<?, ?> selector, long size, String... codes) {
+        Iterator<?> iterator = selector.iterator();
         assertCodesOfIterator(iterator, codes);
         assertThat(iterator.hasNext()).isTrue();
-        assertThat(moveSelector.isCountable()).isTrue();
-        assertThat(moveSelector.isNeverEnding()).isTrue();
+        assertThat(selector.isCountable()).isTrue();
+        assertThat(selector.isNeverEnding()).isTrue();
         if (size != DO_NOT_ASSERT_SIZE) {
-            assertThat(moveSelector.getSize()).isEqualTo(size);
+            assertThat(selector.getSize()).isEqualTo(size);
         }
     }
 
-    public static void assertEmptyNeverEndingMoveSelector(MoveSelector moveSelector) {
-        assertEmptyNeverEndingMoveSelector(moveSelector, 0L);
-    }
-
-    public static void assertEmptyNeverEndingMoveSelector(MoveSelector moveSelector, long size) {
-        Iterator<Move> iterator = moveSelector.iterator();
-        assertThat(iterator.hasNext()).isFalse();
-        assertThat(moveSelector.isCountable()).isTrue();
-        assertThat(moveSelector.isNeverEnding()).isTrue();
+    public static void assertEmptyNeverEndingIterableSelector(IterableSelector<?, ?> selector, long size) {
+        assertThat(selector.iterator().hasNext()).isFalse();
+        assertThat(selector.isCountable()).isTrue();
+        assertThat(selector.isNeverEnding()).isTrue();
         if (size != DO_NOT_ASSERT_SIZE) {
-            assertThat(moveSelector.getSize()).isEqualTo(size);
+            assertThat(selector.getSize()).isZero();
         }
     }
 
-    public static void assertAllCodesOfEntitySelector(EntitySelector entitySelector, String... codes) {
-        assertAllCodesOfEntitySelector(entitySelector, codes.length, codes);
+    // ************************************************************************
+    // Aliases for IterableSelector assert
+    // ************************************************************************
+
+    // ---- Move
+
+    public static void assertAllCodesOfMoveSelector(MoveSelector<?> moveSelector, String... codes) {
+        assertAllCodesOfIterableSelector(moveSelector, codes.length, codes);
     }
 
-    public static void assertAllCodesOfEntitySelector(EntitySelector entitySelector, long size, String... codes) {
-        assertAllCodesOfIterator(entitySelector.iterator(), codes);
-        assertThat(entitySelector.isCountable()).isTrue();
-        assertThat(entitySelector.isNeverEnding()).isFalse();
-        if (size != DO_NOT_ASSERT_SIZE) {
-            assertThat(entitySelector.getSize()).isEqualTo(size);
-        }
+    public static void assertAllCodesOfMoveSelector(MoveSelector<?> moveSelector, long size, String... codes) {
+        assertAllCodesOfIterableSelector(moveSelector, size, codes);
     }
 
-    public static void assertCodesOfNeverEndingOfEntitySelector(EntitySelector entitySelector, String... codes) {
-        assertCodesOfNeverEndingOfEntitySelector(entitySelector, DO_NOT_ASSERT_SIZE, codes);
+    public static void assertCodesOfNeverEndingMoveSelector(MoveSelector<?> moveSelector, String... codes) {
+        assertCodesOfNeverEndingIterableSelector(moveSelector, DO_NOT_ASSERT_SIZE, codes);
     }
 
-    public static void assertCodesOfNeverEndingOfEntitySelector(EntitySelector entitySelector, long size, String... codes) {
-        Iterator<Object> iterator = entitySelector.iterator();
-        assertCodesOfIterator(iterator, codes);
-        assertThat(iterator.hasNext()).isTrue();
-        assertThat(entitySelector.isCountable()).isTrue();
-        assertThat(entitySelector.isNeverEnding()).isTrue();
-        if (size != DO_NOT_ASSERT_SIZE) {
-            assertThat(entitySelector.getSize()).isEqualTo(size);
-        }
+    public static void assertCodesOfNeverEndingMoveSelector(MoveSelector<?> moveSelector, long size, String... codes) {
+        assertCodesOfNeverEndingIterableSelector(moveSelector, size, codes);
     }
 
-    public static void assertAllCodesOfPillarSelector(PillarSelector pillarSelector, String... codes) {
-        assertAllCodesOfPillarSelector(pillarSelector, codes.length, codes);
+    public static void assertEmptyNeverEndingMoveSelector(MoveSelector<?> moveSelector) {
+        assertEmptyNeverEndingIterableSelector(moveSelector, 0);
     }
 
-    public static void assertAllCodesOfPillarSelector(PillarSelector pillarSelector, long size, String... codes) {
-        assertAllCodesOfIterator(pillarSelector.iterator(), codes);
-        assertThat(pillarSelector.isCountable()).isTrue();
-        assertThat(pillarSelector.isNeverEnding()).isFalse();
-        if (size != DO_NOT_ASSERT_SIZE) {
-            assertThat(pillarSelector.getSize()).isEqualTo(size);
-        }
+    // ---- Entity
+
+    public static void assertAllCodesOfEntitySelector(EntitySelector<?> entitySelector, String... codes) {
+        assertAllCodesOfIterableSelector(entitySelector, codes.length, codes);
     }
 
-    public static void assertAllCodesOfValueSelector(EntityIndependentValueSelector valueSelector,
+    public static void assertAllCodesOfEntitySelector(EntitySelector<?> entitySelector, long size, String... codes) {
+        assertAllCodesOfIterableSelector(entitySelector, size, codes);
+    }
+
+    public static void assertCodesOfNeverEndingOfEntitySelector(EntitySelector<?> entitySelector, long size, String... codes) {
+        assertCodesOfNeverEndingIterableSelector(entitySelector, size, codes);
+    }
+
+    // ---- Pillar
+
+    public static void assertAllCodesOfPillarSelector(PillarSelector<?> pillarSelector, String... codes) {
+        assertAllCodesOfIterableSelector(pillarSelector, codes.length, codes);
+    }
+
+    public static void assertCodesOfNeverEndingPillarSelector(PillarSelector<?> pillarSelector, String... codes) {
+        assertCodesOfNeverEndingIterableSelector(pillarSelector, DO_NOT_ASSERT_SIZE, codes);
+    }
+
+    public static void assertEmptyNeverEndingPillarSelector(PillarSelector<?> pillarSelector) {
+        assertEmptyNeverEndingIterableSelector(pillarSelector, DO_NOT_ASSERT_SIZE);
+    }
+
+    // ---- Sub Chain
+
+    public static void assertAllCodesOfSubChainSelector(SubChainSelector<?> selector, String... codes) {
+        assertAllCodesOfIterableSelector(selector, codes.length, codes);
+    }
+
+    // ---- Value
+
+    public static void assertAllCodesOfValueSelector(EntityIndependentValueSelector<?> valueSelector, String... codes) {
+        assertAllCodesOfIterableSelector(valueSelector, codes.length, codes);
+    }
+
+    public static void assertAllCodesOfValueSelector(EntityIndependentValueSelector<?> valueSelector, long size,
             String... codes) {
-        assertAllCodesOfValueSelector(valueSelector, codes.length, codes);
+        assertAllCodesOfIterableSelector(valueSelector, size, codes);
     }
 
-    public static void assertAllCodesOfValueSelector(EntityIndependentValueSelector valueSelector, long size,
-            String... codes) {
-        assertAllCodesOfIterator(valueSelector.iterator(), codes);
-        assertThat(valueSelector.isCountable()).isTrue();
-        assertThat(valueSelector.isNeverEnding()).isFalse();
-        if (size != DO_NOT_ASSERT_SIZE) {
-            assertThat(valueSelector.getSize()).isEqualTo(size);
-        }
-    }
+    // ************************************************************************
+    // Entity dependent
+    // ************************************************************************
 
-    public static void assertAllCodesOfValueSelectorForEntity(ValueSelector valueSelector, Object entity,
-            String... codes) {
+    public static void assertAllCodesOfValueSelectorForEntity(ValueSelector<?> valueSelector, Object entity, String... codes) {
         assertAllCodesOfValueSelectorForEntity(valueSelector, entity, codes.length, codes);
     }
 
-    public static void assertAllCodesOfValueSelectorForEntity(ValueSelector valueSelector, Object entity,
+    public static void assertAllCodesOfValueSelectorForEntity(ValueSelector<?> valueSelector, Object entity,
             long size, String... codes) {
         assertAllCodesOfIterator(valueSelector.iterator(entity), codes);
         assertThat(valueSelector.isCountable()).isTrue();
         assertThat(valueSelector.isNeverEnding()).isFalse();
         if (size != DO_NOT_ASSERT_SIZE) {
             assertThat(valueSelector.getSize(entity)).isEqualTo(size);
-        }
-    }
-
-    public static void assertAllCodesOfSubChainSelector(SubChainSelector subChainSelector,
-            String... codes) {
-        assertAllCodesOfSubChainSelector(subChainSelector, codes.length, codes);
-    }
-
-    public static void assertAllCodesOfSubChainSelector(SubChainSelector subChainSelector, long size,
-            String... codes) {
-        assertAllCodesOfIterator(subChainSelector.iterator(), codes);
-        assertThat(subChainSelector.isCountable()).isTrue();
-        assertThat(subChainSelector.isNeverEnding()).isFalse();
-        if (size != DO_NOT_ASSERT_SIZE) {
-            assertThat(subChainSelector.getSize()).isEqualTo(size);
         }
     }
 
