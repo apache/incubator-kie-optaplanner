@@ -106,14 +106,13 @@ public final class DefaultSolverFactory<Solution_> implements SolverFactory<Solu
 
         solverScope.setScoreDirector(scoreDirectorFactory.buildScoreDirector(true, constraintMatchEnabledPreference));
 
-        if (solverScope.isMetricEnabled(SolverMetric.CONSTRAINT_MATCH_TOTAL_STEP_SCORE)
-                || solverScope.isMetricEnabled(SolverMetric.CONSTRAINT_MATCH_TOTAL_BEST_SCORE)) {
-            if (!solverScope.getScoreDirector().isConstraintMatchEnabled()) {
-                LOGGER.warn("The metrics [{}, {}] cannot function properly" +
-                        " because ConstraintMatches are not supported on the ScoreDirector.",
-                        SolverMetric.CONSTRAINT_MATCH_TOTAL_STEP_SCORE.getMeterId(),
-                        SolverMetric.CONSTRAINT_MATCH_TOTAL_BEST_SCORE.getMeterId());
-            }
+        if ((solverScope.isMetricEnabled(SolverMetric.CONSTRAINT_MATCH_TOTAL_STEP_SCORE)
+                || solverScope.isMetricEnabled(SolverMetric.CONSTRAINT_MATCH_TOTAL_BEST_SCORE)) &&
+                !solverScope.getScoreDirector().isConstraintMatchEnabled()) {
+            LOGGER.warn("The metrics [{}, {}] cannot function properly" +
+                    " because ConstraintMatches are not supported on the ScoreDirector.",
+                    SolverMetric.CONSTRAINT_MATCH_TOTAL_STEP_SCORE.getMeterId(),
+                    SolverMetric.CONSTRAINT_MATCH_TOTAL_BEST_SCORE.getMeterId());
         }
 
         BestSolutionRecaller<Solution_> bestSolutionRecaller =

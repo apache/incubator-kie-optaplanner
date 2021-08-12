@@ -181,40 +181,38 @@ public class DefaultLocalSearchPhase<Solution_> extends AbstractPhase<Solution_>
         if (solverScope.isMetricEnabled(SolverMetric.CONSTRAINT_MATCH_TOTAL_STEP_SCORE)
                 || solverScope.isMetricEnabled(SolverMetric.CONSTRAINT_MATCH_TOTAL_BEST_SCORE)) {
             InnerScoreDirector<Solution_, ?> scoreDirector = stepScope.getScoreDirector();
-            ScoreDefinition scoreDefinition = solverScope.getScoreDefinition();
+            ScoreDefinition<?> scoreDefinition = solverScope.getScoreDefinition();
             if (scoreDirector.isConstraintMatchEnabled()) {
                 for (ConstraintMatchTotal<?> constraintMatchTotal : scoreDirector.getConstraintMatchTotalMap()
                         .values()) {
                     Tags tags = solverScope.getMetricTags().and(
                             "constraint.package", constraintMatchTotal.getConstraintPackage(),
                             "constraint.name", constraintMatchTotal.getConstraintName());
-                    if (solverScope.isMetricEnabled(SolverMetric.CONSTRAINT_MATCH_TOTAL_STEP_SCORE)) {
-                        if (constraintMatchTotalTagsToStepCount.containsKey(tags)) {
-                            constraintMatchTotalTagsToStepCount.get(tags).set(constraintMatchTotal.getConstraintMatchCount());
-                        } else {
-                            AtomicLong count = new AtomicLong(constraintMatchTotal.getConstraintMatchCount());
-                            constraintMatchTotalTagsToStepCount.put(tags, count);
-                            Metrics.gauge(SolverMetric.CONSTRAINT_MATCH_TOTAL_STEP_SCORE.getMeterId() + ".count",
-                                    tags, count);
-                        }
-                        SolverMetric.registerScoreMetrics(SolverMetric.CONSTRAINT_MATCH_TOTAL_STEP_SCORE,
-                                tags, scoreDefinition, constraintMatchTotalStepScoreMap, constraintMatchTotal.getScore());
-                    }
-                    if (solverScope.isMetricEnabled(SolverMetric.CONSTRAINT_MATCH_TOTAL_BEST_SCORE)
-                            && stepScope.getBestScoreImproved()) {
-                        if (constraintMatchTotalTagsToBestCount.containsKey(tags)) {
-                            constraintMatchTotalTagsToBestCount.get(tags).set(constraintMatchTotal.getConstraintMatchCount());
-                        } else {
-                            AtomicLong count = new AtomicLong(constraintMatchTotal.getConstraintMatchCount());
-                            constraintMatchTotalTagsToBestCount.put(tags, count);
-                            Metrics.gauge(SolverMetric.CONSTRAINT_MATCH_TOTAL_BEST_SCORE.getMeterId() + ".count",
-                                    tags, count);
-                        }
-                        SolverMetric.registerScoreMetrics(SolverMetric.CONSTRAINT_MATCH_TOTAL_BEST_SCORE,
-                                tags, scoreDefinition, constraintMatchTotalBestScoreMap, constraintMatchTotal.getScore());
-                    }
+                    collectConstraintMatchTotalMetrics(SolverMetric.CONSTRAINT_MATCH_TOTAL_BEST_SCORE, tags,
+                            constraintMatchTotalTagsToBestCount,
+                            constraintMatchTotalBestScoreMap, constraintMatchTotal, scoreDefinition, solverScope);
+                    collectConstraintMatchTotalMetrics(SolverMetric.CONSTRAINT_MATCH_TOTAL_STEP_SCORE, tags,
+                            constraintMatchTotalTagsToStepCount,
+                            constraintMatchTotalStepScoreMap, constraintMatchTotal, scoreDefinition, solverScope);
                 }
             }
+        }
+    }
+
+    private void collectConstraintMatchTotalMetrics(SolverMetric metric, Tags tags, Map<Tags, AtomicLong> countMap,
+            Map<Tags, List<AtomicReference<Number>>> scoreMap, ConstraintMatchTotal<?> constraintMatchTotal,
+            ScoreDefinition<?> scoreDefinition, SolverScope<Solution_> solverScope) {
+        if (solverScope.isMetricEnabled(metric)) {
+            if (countMap.containsKey(tags)) {
+                countMap.get(tags).set(constraintMatchTotal.getConstraintMatchCount());
+            } else {
+                AtomicLong count = new AtomicLong(constraintMatchTotal.getConstraintMatchCount());
+                countMap.put(tags, count);
+                Metrics.gauge(metric.getMeterId() + ".count",
+                        tags, count);
+            }
+            SolverMetric.registerScoreMetrics(metric,
+                    tags, scoreDefinition, scoreMap, constraintMatchTotal.getScore());
         }
     }
 

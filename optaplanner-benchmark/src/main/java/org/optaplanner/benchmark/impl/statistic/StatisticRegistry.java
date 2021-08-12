@@ -19,6 +19,7 @@ package org.optaplanner.benchmark.impl.statistic;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
@@ -27,9 +28,8 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.optaplanner.core.api.score.Score;
-import org.optaplanner.core.api.solver.event.BestSolutionChangedEvent;
-import org.optaplanner.core.api.solver.event.SolverEventListener;
 import org.optaplanner.core.config.solver.metric.SolverMetric;
 import org.optaplanner.core.impl.phase.event.PhaseLifecycleListener;
 import org.optaplanner.core.impl.phase.scope.AbstractPhaseScope;
@@ -45,7 +45,7 @@ import io.micrometer.core.instrument.search.Search;
 import io.micrometer.core.instrument.simple.SimpleMeterRegistry;
 
 public class StatisticRegistry<Solution_> extends SimpleMeterRegistry
-        implements PhaseLifecycleListener<Solution_>, SolverEventListener<Solution_> {
+        implements PhaseLifecycleListener<Solution_> {
 
     List<BiConsumer<Long, AbstractStepScope<Solution_>>> stepMeterListenerList = new ArrayList<>();
     List<BiConsumer<Long, AbstractStepScope<Solution_>>> bestSolutionMeterListenerList = new ArrayList<>();
@@ -112,6 +112,29 @@ public class StatisticRegistry<Solution_> extends SimpleMeterRegistry
         scoreConsumer.accept(scoreDefinition.fromLevelNumbers(0, levelNumbers));
     }
 
+    @SuppressWarnings({ "rawtypes", "unchecked" })
+    public void extractConstraintSummariesFromMeters(SolverMetric metric, Tags runId,
+            Consumer<ConstraintSummary<?>> constraintMatchTotalConsumer) {
+        Set<Meter.Id> meterIds = getMeterIds(metric, runId);
+        Set<ImmutablePair<String, String>> constraintPackageNamePairs = new HashSet<>();
+        // Add the constraint ids from the meter ids
+        meterIds.forEach(meterId -> constraintPackageNamePairs
+                .add(ImmutablePair.of(meterId.getTag("constraint.package"), meterId.getTag("constraint.name"))));
+        constraintPackageNamePairs.forEach(constraintPackageNamePair -> {
+            String constraintPackage = constraintPackageNamePair.left;
+            String constraintName = constraintPackageNamePair.right;
+            Tags constraintMatchTotalRunId = runId.and("constraint.package", constraintPackage)
+                    .and("constraint.name", constraintName);
+            // Get the score from the corresponding constraint package and constraint name meters
+            extractScoreFromMeters(metric, constraintMatchTotalRunId,
+                    // Get the count gauge (add constraint package and constraint name to the run tags)
+                    score -> getGaugeValue(metric.getMeterId() + ".count",
+                            constraintMatchTotalRunId,
+                            count -> constraintMatchTotalConsumer.accept(
+                                    new ConstraintSummary(constraintPackage, constraintName, score, count.intValue()))));
+        });
+    }
+
     public void getGaugeValue(SolverMetric metric, Tags runId, Consumer<Number> gaugeConsumer) {
         getGaugeValue(metric.getMeterId(), runId, gaugeConsumer);
     }
@@ -126,11 +149,6 @@ public class StatisticRegistry<Solution_> extends SimpleMeterRegistry
     @Override
     protected TimeUnit getBaseTimeUnit() {
         return TimeUnit.MILLISECONDS;
-    }
-
-    @Override
-    public void bestSolutionChanged(BestSolutionChangedEvent<Solution_> event) {
-
     }
 
     @Override

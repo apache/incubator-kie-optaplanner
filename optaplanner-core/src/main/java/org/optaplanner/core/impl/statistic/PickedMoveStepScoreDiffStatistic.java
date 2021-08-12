@@ -36,15 +36,14 @@ import org.optaplanner.core.impl.solver.DefaultSolver;
 
 import io.micrometer.core.instrument.Tags;
 
-public class PickedMoveStepScoreDiffStatistic<Solution_, Score_ extends Score<Score_>> implements SolverStatistic<Solution_> {
+public class PickedMoveStepScoreDiffStatistic<Solution_> implements SolverStatistic<Solution_> {
     @Override
-    @SuppressWarnings("unchecked")
     public void register(Solver<Solution_> solver) {
         DefaultSolver<Solution_> defaultSolver = (DefaultSolver<Solution_>) solver;
         InnerScoreDirectorFactory<Solution_, ?> innerScoreDirectorFactory = defaultSolver.getScoreDirectorFactory();
         SolutionDescriptor<Solution_> solutionDescriptor = innerScoreDirectorFactory.getSolutionDescriptor();
         defaultSolver.addPhaseLifecycleListener(
-                new PickedMoveStepScoreDiffStatisticListener<Solution_, Score_>(solutionDescriptor.getScoreDefinition()));
+                new PickedMoveStepScoreDiffStatisticListener<>((ScoreDefinition<?>) solutionDescriptor.getScoreDefinition()));
     }
 
     private static class PickedMoveStepScoreDiffStatisticListener<Solution_, Score_ extends Score<Score_>>

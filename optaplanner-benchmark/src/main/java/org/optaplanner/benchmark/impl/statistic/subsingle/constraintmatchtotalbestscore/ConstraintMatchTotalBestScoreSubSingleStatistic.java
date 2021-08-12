@@ -19,17 +19,14 @@ package org.optaplanner.benchmark.impl.statistic.subsingle.constraintmatchtotalb
 import java.io.File;
 import java.text.NumberFormat;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-import java.util.Set;
 
 import javax.xml.bind.annotation.XmlTransient;
 
-import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.axis.NumberAxis;
 import org.jfree.chart.plot.PlotOrientation;
@@ -50,7 +47,6 @@ import org.optaplanner.core.impl.score.ScoreUtils;
 import org.optaplanner.core.impl.score.definition.ScoreDefinition;
 import org.optaplanner.core.impl.solver.DefaultSolver;
 
-import io.micrometer.core.instrument.Meter;
 import io.micrometer.core.instrument.Tags;
 
 public class ConstraintMatchTotalBestScoreSubSingleStatistic<Solution_>
@@ -79,32 +75,14 @@ public class ConstraintMatchTotalBestScoreSubSingleStatistic<Solution_>
     public void open(StatisticRegistry<Solution_> registry, Tags runTag, Solver<Solution_> solver) {
         DefaultSolver<Solution_> defaultSolver = (DefaultSolver<Solution_>) solver;
         defaultSolver.getSolverScope().getScoreDirector().overwriteConstraintMatchEnabledPreference(true);
-        registry.addListener(SolverMetric.CONSTRAINT_MATCH_TOTAL_BEST_SCORE, timeMillisSpent -> {
-            // Get all meter ids that begin with CONSTRAINT_MATCH_TOTAL_BEST_SCORE meter id with the corresponding run tags.
-            Set<Meter.Id> meterIds = registry.getMeterIds(SolverMetric.CONSTRAINT_MATCH_TOTAL_BEST_SCORE, runTag);
-            Set<ImmutablePair<String, String>> constraintPackageNamePairs = new HashSet<>();
-            // Add the constraint ids from the meter ids
-            meterIds.forEach(meterId -> constraintPackageNamePairs
-                    .add(ImmutablePair.of(meterId.getTag("constraint.package"), meterId.getTag("constraint.name"))));
-            constraintPackageNamePairs.forEach(constraintPackageNamePair -> {
-                String constraintPackage = constraintPackageNamePair.left;
-                String constraintName = constraintPackageNamePair.right;
-                // Get the score from the corresponding constraint package and constraint name meters
-                registry.extractScoreFromMeters(SolverMetric.CONSTRAINT_MATCH_TOTAL_BEST_SCORE, runTag
-                        .and("constraint.package", constraintPackageNamePair.left)
-                        .and("constraint.name", constraintPackageNamePair.right),
-                        // Get the count gauge (add constraint package and constraint name to the run tags)
-                        score -> registry.getGaugeValue(SolverMetric.CONSTRAINT_MATCH_TOTAL_BEST_SCORE.getMeterId() + ".count",
-                                runTag.and("constraint.package", constraintPackageNamePair.left)
-                                        .and("constraint.name", constraintPackageNamePair.right),
-                                count -> pointList.add(new ConstraintMatchTotalBestScoreStatisticPoint(
-                                        timeMillisSpent,
-                                        constraintPackage,
-                                        constraintName,
-                                        count.intValue(),
-                                        score))));
-            });
-        });
+        registry.addListener(SolverMetric.CONSTRAINT_MATCH_TOTAL_BEST_SCORE,
+                timeMillisSpent -> registry.extractConstraintSummariesFromMeters(SolverMetric.CONSTRAINT_MATCH_TOTAL_BEST_SCORE,
+                        runTag, constraintSummary -> pointList.add(new ConstraintMatchTotalBestScoreStatisticPoint(
+                                timeMillisSpent,
+                                constraintSummary.getConstraintPackage(),
+                                constraintSummary.getConstraintName(),
+                                constraintSummary.getCount(),
+                                constraintSummary.getScore()))));
     }
 
     // ************************************************************************
