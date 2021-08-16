@@ -54,7 +54,7 @@ public class ListChangeMove<Solution_> extends AbstractMove<Solution_> {
      * Bob.tasks = [X, Y]
      *
      * WHEN
-     * ListChangeMove: Ann[0]->Bob[2]
+     * ListChangeMove: A {Ann[0]->Bob[2]}
      *
      * THEN
      * Ann.tasks = [B, C]
@@ -69,7 +69,7 @@ public class ListChangeMove<Solution_> extends AbstractMove<Solution_> {
      * Ann.tasks = [A, B, C]
      *
      * WHEN
-     * ListChangeMove: Ann[0]->Ann[2]
+     * ListChangeMove: A {Ann[0]->Ann[2]}
      *
      * THEN
      * Ann.tasks = [B, C, A]
@@ -148,6 +148,10 @@ public class ListChangeMove<Solution_> extends AbstractMove<Solution_> {
         return destinationIndex;
     }
 
+    public Object getMovedValue() {
+        return variableDescriptor.getElement(sourceEntity, sourceIndex);
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -170,6 +174,7 @@ public class ListChangeMove<Solution_> extends AbstractMove<Solution_> {
 
     @Override
     public String toString() {
-        return String.format("%s[%d]->%s[%d]", sourceEntity, sourceIndex, destinationEntity, destinationIndex);
+        return String.format("%s {%s[%d]->%s[%d]}",
+                getMovedValue(), sourceEntity, sourceIndex, destinationEntity, destinationIndex);
     }
 }

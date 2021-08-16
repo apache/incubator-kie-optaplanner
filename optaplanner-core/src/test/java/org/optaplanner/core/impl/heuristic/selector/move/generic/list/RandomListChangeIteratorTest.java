@@ -68,9 +68,9 @@ class RandomListChangeIteratorTest {
         assertEntityAndIndex(randomListChangeIterator::unfoldGlobalIndexIntoDestinationEntityAndListIndex, 3, b, 0);
 
         assertCodesOfIterator(randomListChangeIterator,
-                "A[0]->A[2]",
-                "A[1]->B[0]",
-                "C[0]->A[0]");
+                "1 {A[0]->A[2]}",
+                "2 {A[1]->B[0]}",
+                "3 {C[0]->A[0]}");
     }
 
     private static void assertEntityAndIndex(

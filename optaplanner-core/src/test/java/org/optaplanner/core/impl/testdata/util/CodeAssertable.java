@@ -55,10 +55,11 @@ public interface CodeAssertable {
             return () -> code;
         } else if (o instanceof ListChangeMove) {
             ListChangeMove<?> listChangeMove = (ListChangeMove<?>) o;
-            return () -> convert(listChangeMove.getSourceEntity())
+            return () -> convert(listChangeMove.getMovedValue())
+                    + " {" + convert(listChangeMove.getSourceEntity())
                     + "[" + listChangeMove.getSourceIndex() + "]->"
                     + convert(listChangeMove.getDestinationEntity())
-                    + "[" + listChangeMove.getDestinationIndex() + "]";
+                    + "[" + listChangeMove.getDestinationIndex() + "]}";
         } else if (o instanceof ListSwapMove) {
             ListSwapMove<?> listSwapMove = (ListSwapMove<?>) o;
             return () -> convert(listSwapMove.getLeftEntity())

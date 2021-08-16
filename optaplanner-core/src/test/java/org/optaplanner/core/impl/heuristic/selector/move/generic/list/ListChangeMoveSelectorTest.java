@@ -25,64 +25,99 @@ import java.util.Arrays;
 import java.util.Random;
 
 import org.junit.jupiter.api.Test;
+import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
+import org.optaplanner.core.impl.domain.variable.descriptor.ListVariableDescriptor;
 import org.optaplanner.core.impl.heuristic.selector.SelectorTestUtils;
 import org.optaplanner.core.impl.heuristic.selector.entity.EntitySelector;
-import org.optaplanner.core.impl.heuristic.selector.value.ValueSelector;
+import org.optaplanner.core.impl.heuristic.selector.value.EntityIndependentValueSelector;
 import org.optaplanner.core.impl.phase.scope.AbstractPhaseScope;
+import org.optaplanner.core.impl.score.director.InnerScoreDirector;
 import org.optaplanner.core.impl.solver.scope.SolverScope;
 import org.optaplanner.core.impl.testdata.domain.list.TestdataListEntity;
 import org.optaplanner.core.impl.testdata.domain.list.TestdataListSolution;
 import org.optaplanner.core.impl.testdata.domain.list.TestdataListValue;
+import org.optaplanner.core.impl.testdata.util.PlannerTestUtils;
 
 class ListChangeMoveSelectorTest {
+
+    private static EntitySelector<TestdataListSolution> mockEntitySelector(Object... entities) {
+        return SelectorTestUtils.mockEntitySelector(TestdataListEntity.class, entities);
+    }
+
+    private static EntityIndependentValueSelector<TestdataListSolution> mockEntityIndependentValueSelector(Object... values) {
+        return SelectorTestUtils.mockEntityIndependentValueSelector(TestdataListEntity.class, "valueList", values);
+    }
+
+    private static ListVariableDescriptor<TestdataListSolution> getListVariableDescriptor(
+            InnerScoreDirector<TestdataListSolution, ?> scoreDirector) {
+        return (ListVariableDescriptor<TestdataListSolution>) scoreDirector
+                .getSolutionDescriptor()
+                .getEntityDescriptorStrict(TestdataListEntity.class)
+                .getGenuineVariableDescriptor("valueList");
+    }
 
     @Test
     void original() {
         TestdataListValue v1 = new TestdataListValue("1");
         TestdataListValue v2 = new TestdataListValue("2");
         TestdataListValue v3 = new TestdataListValue("3");
-        TestdataListEntity a = new TestdataListEntity("A", v1, v2);
+        TestdataListEntity a = new TestdataListEntity("A", v2, v1);
         TestdataListEntity b = new TestdataListEntity("B");
         TestdataListEntity c = new TestdataListEntity("C", v3);
-        EntitySelector<TestdataListSolution> entitySelector = SelectorTestUtils.mockEntitySelector(
-                TestdataListEntity.class, a, b, c);
-        ValueSelector<TestdataListSolution> valueSelector = SelectorTestUtils.mockValueSelector(
-                TestdataListEntity.class, "valueList", v1, v2, v3);
+        // Set up shadow variables
+        v1.setEntity(a);
+        v1.setIndex(1);
+        v2.setEntity(a);
+        v2.setIndex(0);
+        v3.setEntity(c);
+        v3.setIndex(0);
+
+        InnerScoreDirector<TestdataListSolution, SimpleScore> scoreDirector =
+                PlannerTestUtils.mockScoreDirector(TestdataListSolution.buildSolutionDescriptor());
 
         ListChangeMoveSelector<TestdataListSolution> moveSelector = new ListChangeMoveSelector<>(
-                TestdataListEntity.buildVariableDescriptorForValueList(),
-                entitySelector,
-                valueSelector,
+                getListVariableDescriptor(scoreDirector),
+                mockEntitySelector(a, b, c),
+                mockEntityIndependentValueSelector(v3, v1, v2),
                 false);
+
+        SolverScope<TestdataListSolution> solverScope = mock(SolverScope.class);
+        when(solverScope.<SimpleScore> getScoreDirector()).thenReturn(scoreDirector);
+        moveSelector.solvingStarted(solverScope);
 
         AbstractPhaseScope<TestdataListSolution> phaseScope = mock(AbstractPhaseScope.class);
         when(phaseScope.getWorkingEntityList()).thenReturn(Arrays.asList(a, b, c));
         moveSelector.phaseStarted(phaseScope);
 
+        // Value order: [3, 1, 2]
+        // Entity order: [A, B, C]
+        // Initial state:
+        // - A [2, 1]
+        // - B []
+        // - C [3]
+
         assertAllCodesOfMoveSelector(moveSelector,
-                // moving A[0]
-                "A[0]->A[0]", // undoable
-                "A[0]->A[1]",
-                "A[0]->A[2]", // undoable
-                "A[0]->B[0]",
-                "A[0]->C[0]",
-                "A[0]->C[1]",
-                // moving A[1]
-                "A[1]->A[0]",
-                "A[1]->A[1]", // undoable
-                "A[1]->A[2]", // undoable
-                "A[1]->B[0]",
-                "A[1]->C[0]",
-                "A[1]->C[1]",
-                // B has no elements, so no moves
-                // moving C[0]
-                "C[0]->A[0]",
-                "C[0]->A[1]",
-                "C[0]->A[2]",
-                "C[0]->B[0]",
-                "C[0]->C[0]", // undoable
-                "C[0]->C[1]" // undoable
-        );
+                // Moving 3 from C[0]
+                "3 {C[0]->A[0]}",
+                "3 {C[0]->A[1]}",
+                "3 {C[0]->A[2]}",
+                "3 {C[0]->B[0]}",
+                "3 {C[0]->C[0]}", // noop
+                "3 {C[0]->C[1]}", // undoable
+                // Moving 1 from A[1]
+                "1 {A[1]->A[0]}",
+                "1 {A[1]->A[1]}", // noop
+                "1 {A[1]->A[2]}", // undoable
+                "1 {A[1]->B[0]}",
+                "1 {A[1]->C[0]}",
+                "1 {A[1]->C[1]}",
+                // Moving 2 from A[0]
+                "2 {A[0]->A[0]}", // noop
+                "2 {A[0]->A[1]}",
+                "2 {A[0]->A[2]}", // undoable
+                "2 {A[0]->B[0]}",
+                "2 {A[0]->C[0]}",
+                "2 {A[0]->C[1]}");
     }
 
     @Test
@@ -93,25 +128,25 @@ class ListChangeMoveSelectorTest {
         TestdataListEntity a = new TestdataListEntity("A", v1, v2);
         TestdataListEntity b = new TestdataListEntity("B");
         TestdataListEntity c = new TestdataListEntity("C", v3);
-        EntitySelector<TestdataListSolution> entitySelector = SelectorTestUtils.mockEntitySelector(
-                TestdataListEntity.class, a, b, c);
-        ValueSelector<TestdataListSolution> valueSelector = SelectorTestUtils.mockValueSelector(
-                TestdataListEntity.class, "valueList", v1, v2, v3);
-
-        ListChangeMoveSelector<TestdataListSolution> moveSelector = new ListChangeMoveSelector<>(
-                TestdataListEntity.buildVariableDescriptorForValueList(),
-                entitySelector,
-                valueSelector,
-                true);
 
         final int sourceIndexRange = 3; // value count
         final int destinationIndexRange = 6; // value count + entity count
+
+        InnerScoreDirector<TestdataListSolution, SimpleScore> scoreDirector =
+                PlannerTestUtils.mockScoreDirector(TestdataListSolution.buildSolutionDescriptor());
 
         Random random = mock(Random.class);
         when(random.nextInt(sourceIndexRange)).thenReturn(1, 0, 2, 2, 2);
         when(random.nextInt(destinationIndexRange)).thenReturn(3, 2, 0, 1, 2);
 
+        ListChangeMoveSelector<TestdataListSolution> moveSelector = new ListChangeMoveSelector<>(
+                getListVariableDescriptor(scoreDirector),
+                mockEntitySelector(a, b, c),
+                mockEntityIndependentValueSelector(v1, v2, v3),
+                true);
+
         SolverScope<TestdataListSolution> solverScope = mock(SolverScope.class);
+        when(solverScope.<SimpleScore> getScoreDirector()).thenReturn(scoreDirector);
         when(solverScope.getWorkingRandom()).thenReturn(random);
         moveSelector.solvingStarted(solverScope);
 
@@ -119,11 +154,16 @@ class ListChangeMoveSelectorTest {
         when(phaseScope.getWorkingEntityList()).thenReturn(Arrays.asList(a, b, c));
         moveSelector.phaseStarted(phaseScope);
 
+        // Initial state:
+        // - A [1, 2]
+        // - B []
+        // - C [3]
+
         assertCodesOfNeverEndingMoveSelector(moveSelector,
-                "A[1]->B[0]",
-                "A[0]->A[2]",
-                "C[0]->A[0]",
-                "C[0]->A[1]",
-                "C[0]->A[2]");
+                "2 {A[1]->B[0]}",
+                "1 {A[0]->A[2]}",
+                "3 {C[0]->A[0]}",
+                "3 {C[0]->A[1]}",
+                "3 {C[0]->A[2]}");
     }
 }
