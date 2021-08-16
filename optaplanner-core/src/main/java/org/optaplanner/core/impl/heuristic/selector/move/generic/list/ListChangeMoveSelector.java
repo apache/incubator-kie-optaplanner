@@ -20,11 +20,18 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.optaplanner.core.impl.domain.variable.descriptor.ListVariableDescriptor;
+import org.optaplanner.core.impl.domain.variable.index.IndexVariableDemand;
+import org.optaplanner.core.impl.domain.variable.index.IndexVariableSupply;
+import org.optaplanner.core.impl.domain.variable.inverserelation.SingletonInverseVariableSupply;
+import org.optaplanner.core.impl.domain.variable.inverserelation.SingletonListInverseVariableDemand;
+import org.optaplanner.core.impl.domain.variable.supply.SupplyManager;
 import org.optaplanner.core.impl.heuristic.move.Move;
 import org.optaplanner.core.impl.heuristic.selector.entity.EntitySelector;
 import org.optaplanner.core.impl.heuristic.selector.move.generic.GenericMoveSelector;
+import org.optaplanner.core.impl.heuristic.selector.value.EntityIndependentValueSelector;
 import org.optaplanner.core.impl.heuristic.selector.value.ValueSelector;
 import org.optaplanner.core.impl.phase.scope.AbstractPhaseScope;
+import org.optaplanner.core.impl.solver.scope.SolverScope;
 
 public class ListChangeMoveSelector<Solution_> extends GenericMoveSelector<Solution_> {
 
@@ -32,6 +39,9 @@ public class ListChangeMoveSelector<Solution_> extends GenericMoveSelector<Solut
     private final EntitySelector<Solution_> entitySelector;
     private final ValueSelector<Solution_> valueSelector;
     private final boolean randomSelection;
+
+    private SingletonInverseVariableSupply inverseVariableSupply;
+    private IndexVariableSupply indexVariableSupply;
 
     private List<Object> workingEntityList;
     private int valueCount;
@@ -45,8 +55,28 @@ public class ListChangeMoveSelector<Solution_> extends GenericMoveSelector<Solut
         this.entitySelector = entitySelector;
         this.valueSelector = valueSelector;
         this.randomSelection = randomSelection;
+        if (!randomSelection && !(valueSelector instanceof EntityIndependentValueSelector)) {
+            throw new IllegalArgumentException("The valueSelector (" + valueSelector
+                    + ") must be entity independent when using non-random move selection.");
+        }
+
         phaseLifecycleSupport.addEventListener(entitySelector);
         phaseLifecycleSupport.addEventListener(valueSelector);
+    }
+
+    @Override
+    public void solvingStarted(SolverScope<Solution_> solverScope) {
+        super.solvingStarted(solverScope);
+        SupplyManager<Solution_> supplyManager = solverScope.getScoreDirector().getSupplyManager();
+        inverseVariableSupply = supplyManager.demand(new SingletonListInverseVariableDemand<>(listVariableDescriptor));
+        indexVariableSupply = supplyManager.demand(new IndexVariableDemand<>(listVariableDescriptor));
+    }
+
+    @Override
+    public void solvingEnded(SolverScope<Solution_> solverScope) {
+        super.solvingEnded(solverScope);
+        inverseVariableSupply = null;
+        indexVariableSupply = null;
     }
 
     @Override
@@ -67,7 +97,12 @@ public class ListChangeMoveSelector<Solution_> extends GenericMoveSelector<Solut
         if (randomSelection) {
             return new RandomListChangeIterator<>(listVariableDescriptor, workingEntityList, workingRandom);
         } else {
-            return new TmpOriginalListChangeIterator<>(listVariableDescriptor, entitySelector);
+            return new TmpOriginalListChangeIterator<>(
+                    listVariableDescriptor,
+                    inverseVariableSupply,
+                    indexVariableSupply,
+                    (EntityIndependentValueSelector<Solution_>) valueSelector,
+                    entitySelector);
         }
     }
 
