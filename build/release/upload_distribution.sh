@@ -63,7 +63,7 @@ mkdir -p "$local_optaplanner_docs/$version/optaplanner-docs"
 mkdir -p "$local_optaplanner_docs/$version/optaplanner-javadoc"
 
 # Upload the documentation and Javadoc.
-cp -r "$optaplanner_docs_build_dir"/generated-docs/* "$local_optaplanner_docs/$version/optaplanner-docs"
+cp -r "$optaplanner_docs_build_dir/optaplanner-docs-$version"/* "$local_optaplanner_docs/$version/optaplanner-docs"
 cp -r "$optaplanner_docs_build_dir"/aggregated-javadocs/apidocs/* "$local_optaplanner_docs/$version/optaplanner-javadoc"
 
 create_latest_symlinks "$local_optaplanner_docs" "$version"
