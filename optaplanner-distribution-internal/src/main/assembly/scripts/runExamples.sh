@@ -18,10 +18,10 @@ echo
 
 if [ -f $JAVA_HOME/bin/java ]; then
     echo "Starting examples app with JDK from environment variable JAVA_HOME ($JAVA_HOME)..."
-    $JAVA_HOME/bin/java ${jvmOptions} -cp ${mainClasspath} ${mainClass} "$*"
+    $JAVA_HOME/bin/java ${jvmOptions} -cp "${mainClasspath}" ${mainClass} "$*"
 else
     echo "Starting examples app with java from environment variable PATH..."
-    java ${jvmOptions} -cp ${mainClasspath} ${mainClass} "$*"
+    java ${jvmOptions} -cp "${mainClasspath}" ${mainClass} "$*"
 fi
 
 if [ $? != 0 ]; then
