@@ -29,7 +29,6 @@ import org.optaplanner.core.impl.heuristic.move.Move;
 import org.optaplanner.core.impl.heuristic.selector.entity.EntitySelector;
 import org.optaplanner.core.impl.heuristic.selector.move.generic.GenericMoveSelector;
 import org.optaplanner.core.impl.heuristic.selector.value.EntityIndependentValueSelector;
-import org.optaplanner.core.impl.heuristic.selector.value.ValueSelector;
 import org.optaplanner.core.impl.phase.scope.AbstractPhaseScope;
 import org.optaplanner.core.impl.solver.scope.SolverScope;
 
@@ -37,28 +36,23 @@ public class ListChangeMoveSelector<Solution_> extends GenericMoveSelector<Solut
 
     private final ListVariableDescriptor<Solution_> listVariableDescriptor;
     private final EntitySelector<Solution_> entitySelector;
-    private final ValueSelector<Solution_> valueSelector;
+    private final EntityIndependentValueSelector<Solution_> valueSelector;
     private final boolean randomSelection;
 
     private SingletonInverseVariableSupply inverseVariableSupply;
     private IndexVariableSupply indexVariableSupply;
 
     private List<Object> workingEntityList;
-    private int valueCount;
 
     public ListChangeMoveSelector(
             ListVariableDescriptor<Solution_> listVariableDescriptor,
             EntitySelector<Solution_> entitySelector,
-            ValueSelector<Solution_> valueSelector,
+            EntityIndependentValueSelector<Solution_> valueSelector,
             boolean randomSelection) {
         this.listVariableDescriptor = listVariableDescriptor;
         this.entitySelector = entitySelector;
         this.valueSelector = valueSelector;
         this.randomSelection = randomSelection;
-        if (!randomSelection && !(valueSelector instanceof EntityIndependentValueSelector)) {
-            throw new IllegalArgumentException("The valueSelector (" + valueSelector
-                    + ") must be entity independent when using non-random move selection.");
-        }
 
         phaseLifecycleSupport.addEventListener(entitySelector);
         phaseLifecycleSupport.addEventListener(valueSelector);
@@ -83,12 +77,12 @@ public class ListChangeMoveSelector<Solution_> extends GenericMoveSelector<Solut
     public void phaseStarted(AbstractPhaseScope<Solution_> phaseScope) {
         super.phaseStarted(phaseScope);
         workingEntityList = phaseScope.getWorkingEntityList();
-        valueCount = workingEntityList.stream().mapToInt(listVariableDescriptor::getListSize).sum();
     }
 
     @Override
     public long getSize() {
         long entityCount = workingEntityList.size();
+        long valueCount = valueSelector.getSize();
         return valueCount * (valueCount + entityCount);
     }
 
@@ -101,7 +95,7 @@ public class ListChangeMoveSelector<Solution_> extends GenericMoveSelector<Solut
                     listVariableDescriptor,
                     inverseVariableSupply,
                     indexVariableSupply,
-                    (EntityIndependentValueSelector<Solution_>) valueSelector,
+                    valueSelector,
                     entitySelector);
         }
     }

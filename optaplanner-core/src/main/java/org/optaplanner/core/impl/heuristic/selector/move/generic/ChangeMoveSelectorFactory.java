@@ -37,6 +37,7 @@ import org.optaplanner.core.impl.heuristic.selector.entity.EntitySelectorFactory
 import org.optaplanner.core.impl.heuristic.selector.move.AbstractMoveSelectorFactory;
 import org.optaplanner.core.impl.heuristic.selector.move.MoveSelector;
 import org.optaplanner.core.impl.heuristic.selector.move.generic.list.ListChangeMoveSelector;
+import org.optaplanner.core.impl.heuristic.selector.value.EntityIndependentValueSelector;
 import org.optaplanner.core.impl.heuristic.selector.value.ValueSelector;
 import org.optaplanner.core.impl.heuristic.selector.value.ValueSelectorFactory;
 
@@ -71,7 +72,8 @@ public class ChangeMoveSelectorFactory<Solution_>
             return new ListChangeMoveSelector<>(
                     (ListVariableDescriptor<Solution_>) valueSelector.getVariableDescriptor(),
                     entitySelector,
-                    valueSelector,
+                    // This cast is guaranteed by ListVariableDescriptor.processValueRangeRefs().
+                    (EntityIndependentValueSelector<Solution_>) valueSelector,
                     randomSelection);
         }
         return new ChangeMoveSelector<>(entitySelector, valueSelector, randomSelection);

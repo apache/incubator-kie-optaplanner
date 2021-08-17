@@ -16,8 +16,13 @@
 
 package org.optaplanner.core.impl.domain.variable.descriptor;
 
+import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
+import org.optaplanner.core.api.domain.entity.PlanningEntity;
+import org.optaplanner.core.api.domain.solution.PlanningSolution;
+import org.optaplanner.core.api.domain.valuerange.ValueRangeProvider;
 import org.optaplanner.core.api.domain.variable.PlanningCollectionVariable;
 import org.optaplanner.core.config.util.ConfigUtils;
 import org.optaplanner.core.impl.domain.common.accessor.MemberAccessor;
@@ -37,6 +42,22 @@ public class ListVariableDescriptor<Solution_> extends GenuineVariableDescriptor
         processValueRangeRefs(descriptorPolicy, planningVariableAnnotation.valueRangeProviderRefs());
         // TODO process strength
         //processStrength(descriptorPolicy, planningVariableAnnotation);
+    }
+
+    @Override
+    protected void processValueRangeRefs(DescriptorPolicy descriptorPolicy, String[] valueRangeProviderRefs) {
+        List<String> fromEntityValueRangeProviderRefs = Arrays.stream(valueRangeProviderRefs)
+                .filter(descriptorPolicy::hasFromEntityValueRangeProvider)
+                .collect(Collectors.toList());
+        if (!fromEntityValueRangeProviderRefs.isEmpty()) {
+            throw new IllegalArgumentException("@" + ValueRangeProvider.class.getSimpleName()
+                    + " on a @" + PlanningEntity.class.getSimpleName()
+                    + " is not supported with a list variable (" + this + ").\n"
+                    + "Maybe move the valueRangeProvider" + (fromEntityValueRangeProviderRefs.size() > 1 ? "s" : "")
+                    + " (" + fromEntityValueRangeProviderRefs
+                    + ") from the entity class to the @" + PlanningSolution.class.getSimpleName() + " class.");
+        }
+        super.processValueRangeRefs(descriptorPolicy, valueRangeProviderRefs);
     }
 
     @Override
