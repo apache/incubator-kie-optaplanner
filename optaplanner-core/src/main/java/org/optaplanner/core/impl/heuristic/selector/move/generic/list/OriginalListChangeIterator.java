@@ -41,12 +41,12 @@ public class OriginalListChangeIterator<Solution_> extends UpcomingSelectionIter
     private final IndexVariableSupply indexVariableSupply;
     private final Iterator<Object> valueIterator;
     private final EntitySelector<Solution_> entitySelector;
-    private Iterator<Object> toEntityIterator;
-    private PrimitiveIterator.OfInt toIndexIterator;
+    private Iterator<Object> destinationEntityIterator;
+    private PrimitiveIterator.OfInt destinationIndexIterator;
 
-    private Object upcomingFromEntity;
-    private Integer upcomingFromIndex;
-    private Object upcomingToEntity;
+    private Object upcomingSourceEntity;
+    private Integer upcomingSourceIndex;
+    private Object upcomingDestinationEntity;
 
     public OriginalListChangeIterator(
             ListVariableDescriptor<Solution_> listVariableDescriptor,
@@ -59,33 +59,33 @@ public class OriginalListChangeIterator<Solution_> extends UpcomingSelectionIter
         this.indexVariableSupply = indexVariableSupply;
         this.valueIterator = valueSelector.iterator();
         this.entitySelector = entitySelector;
-        this.toEntityIterator = Collections.emptyIterator();
-        this.toIndexIterator = IntStream.empty().iterator();
+        this.destinationEntityIterator = Collections.emptyIterator();
+        this.destinationIndexIterator = IntStream.empty().iterator();
     }
 
     @Override
     protected Move<Solution_> createUpcomingSelection() {
-        if (!toIndexIterator.hasNext()) {
-            while (!toEntityIterator.hasNext()) {
+        if (!destinationIndexIterator.hasNext()) {
+            while (!destinationEntityIterator.hasNext()) {
                 if (!valueIterator.hasNext()) {
                     return noUpcomingSelection();
                 }
                 Object upcomingValue = valueIterator.next();
-                upcomingFromEntity = inverseVariableSupply.getInverseSingleton(upcomingValue);
-                upcomingFromIndex = indexVariableSupply.getIndex(upcomingValue);
+                upcomingSourceEntity = inverseVariableSupply.getInverseSingleton(upcomingValue);
+                upcomingSourceIndex = indexVariableSupply.getIndex(upcomingValue);
 
-                toEntityIterator = entitySelector.iterator();
+                destinationEntityIterator = entitySelector.iterator();
             }
-            upcomingToEntity = toEntityIterator.next();
-            toIndexIterator = listIndexIterator(upcomingToEntity);
+            upcomingDestinationEntity = destinationEntityIterator.next();
+            destinationIndexIterator = listIndexIterator(upcomingDestinationEntity);
         }
 
         return new ListChangeMove<>(
                 listVariableDescriptor,
-                upcomingFromEntity,
-                upcomingFromIndex,
-                upcomingToEntity,
-                toIndexIterator.nextInt());
+                upcomingSourceEntity,
+                upcomingSourceIndex,
+                upcomingDestinationEntity,
+                destinationIndexIterator.nextInt());
     }
 
     private PrimitiveIterator.OfInt listIndexIterator(Object entity) {
