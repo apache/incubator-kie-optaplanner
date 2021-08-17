@@ -87,7 +87,7 @@ public class ListSwapMoveSelector<Solution_> extends GenericMoveSelector<Solutio
         if (randomSelection) {
             return new RandomListSwapIterator<>(listVariableDescriptor, workingEntityList, workingRandom);
         } else {
-            return new TmpOriginalListSwapIterator<>(
+            return new OriginalListSwapIterator<>(
                     listVariableDescriptor,
                     inverseVariableSupply,
                     indexVariableSupply,
