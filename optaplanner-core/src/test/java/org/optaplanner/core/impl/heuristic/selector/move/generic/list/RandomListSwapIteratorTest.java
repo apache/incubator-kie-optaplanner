@@ -61,10 +61,10 @@ class RandomListSwapIteratorTest {
         assertEntityAndIndex(randomListSwapIterator, 2, c, 0);
 
         assertCodesOfIterator(randomListSwapIterator,
-                "A[0]<->A[0]",
-                "A[0]<->A[1]",
-                "A[0]<->C[0]",
-                "C[0]<->A[0]");
+                "1 {A[0]} <-> 1 {A[0]}",
+                "1 {A[0]} <-> 2 {A[1]}",
+                "1 {A[0]} <-> 3 {C[0]}",
+                "3 {C[0]} <-> 1 {A[0]}");
     }
 
     private static void assertEntityAndIndex(

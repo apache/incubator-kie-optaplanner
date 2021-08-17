@@ -20,34 +20,59 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.optaplanner.core.impl.domain.variable.descriptor.ListVariableDescriptor;
+import org.optaplanner.core.impl.domain.variable.index.IndexVariableDemand;
+import org.optaplanner.core.impl.domain.variable.index.IndexVariableSupply;
+import org.optaplanner.core.impl.domain.variable.inverserelation.SingletonInverseVariableSupply;
+import org.optaplanner.core.impl.domain.variable.inverserelation.SingletonListInverseVariableDemand;
+import org.optaplanner.core.impl.domain.variable.supply.SupplyManager;
 import org.optaplanner.core.impl.heuristic.move.Move;
-import org.optaplanner.core.impl.heuristic.selector.entity.EntitySelector;
 import org.optaplanner.core.impl.heuristic.selector.move.generic.GenericMoveSelector;
+import org.optaplanner.core.impl.heuristic.selector.value.EntityIndependentValueSelector;
 import org.optaplanner.core.impl.phase.scope.AbstractPhaseScope;
+import org.optaplanner.core.impl.solver.scope.SolverScope;
 
 public class ListSwapMoveSelector<Solution_> extends GenericMoveSelector<Solution_> {
 
     private final ListVariableDescriptor<Solution_> listVariableDescriptor;
-    private final EntitySelector<Solution_> leftEntitySelector;
-    private final EntitySelector<Solution_> rightEntitySelector;
+    private final EntityIndependentValueSelector<Solution_> leftValueSelector;
+    private final EntityIndependentValueSelector<Solution_> rightValueSelector;
     private final boolean randomSelection;
+
+    private SingletonInverseVariableSupply inverseVariableSupply;
+    private IndexVariableSupply indexVariableSupply;
 
     private List<Object> workingEntityList;
     private int valueCount;
 
     public ListSwapMoveSelector(
             ListVariableDescriptor<Solution_> listVariableDescriptor,
-            EntitySelector<Solution_> leftEntitySelector,
-            EntitySelector<Solution_> rightEntitySelector,
+            EntityIndependentValueSelector<Solution_> leftValueSelector,
+            EntityIndependentValueSelector<Solution_> rightValueSelector,
             boolean randomSelection) {
         this.listVariableDescriptor = listVariableDescriptor;
-        this.leftEntitySelector = leftEntitySelector;
-        this.rightEntitySelector = rightEntitySelector;
+        // TODO require not same
+        this.leftValueSelector = leftValueSelector;
+        this.rightValueSelector = rightValueSelector;
         this.randomSelection = randomSelection;
-        phaseLifecycleSupport.addEventListener(leftEntitySelector);
-        if (leftEntitySelector != rightEntitySelector) {
-            phaseLifecycleSupport.addEventListener(rightEntitySelector);
+        phaseLifecycleSupport.addEventListener(leftValueSelector);
+        if (leftValueSelector != rightValueSelector) {
+            phaseLifecycleSupport.addEventListener(rightValueSelector);
         }
+    }
+
+    @Override
+    public void solvingStarted(SolverScope<Solution_> solverScope) {
+        super.solvingStarted(solverScope);
+        SupplyManager<Solution_> supplyManager = solverScope.getScoreDirector().getSupplyManager();
+        inverseVariableSupply = supplyManager.demand(new SingletonListInverseVariableDemand<>(listVariableDescriptor));
+        indexVariableSupply = supplyManager.demand(new IndexVariableDemand<>(listVariableDescriptor));
+    }
+
+    @Override
+    public void solvingEnded(SolverScope<Solution_> solverScope) {
+        super.solvingEnded(solverScope);
+        inverseVariableSupply = null;
+        indexVariableSupply = null;
     }
 
     @Override
@@ -62,18 +87,23 @@ public class ListSwapMoveSelector<Solution_> extends GenericMoveSelector<Solutio
         if (randomSelection) {
             return new RandomListSwapIterator<>(listVariableDescriptor, workingEntityList, workingRandom);
         } else {
-            return new TmpOriginalListSwapIterator<>(listVariableDescriptor, leftEntitySelector, rightEntitySelector);
+            return new TmpOriginalListSwapIterator<>(
+                    listVariableDescriptor,
+                    inverseVariableSupply,
+                    indexVariableSupply,
+                    leftValueSelector,
+                    rightValueSelector);
         }
     }
 
     @Override
     public boolean isCountable() {
-        return leftEntitySelector.isCountable() && rightEntitySelector.isCountable();
+        return leftValueSelector.isCountable() && rightValueSelector.isCountable();
     }
 
     @Override
     public boolean isNeverEnding() {
-        return randomSelection || leftEntitySelector.isNeverEnding() || rightEntitySelector.isNeverEnding();
+        return randomSelection || leftValueSelector.isNeverEnding() || rightValueSelector.isNeverEnding();
     }
 
     @Override

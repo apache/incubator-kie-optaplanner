@@ -18,6 +18,9 @@ package org.optaplanner.core.impl.heuristic.selector.move.generic.list;
 
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
+import static org.optaplanner.core.impl.testdata.domain.list.TestdataListUtils.getListVariableDescriptor;
+import static org.optaplanner.core.impl.testdata.domain.list.TestdataListUtils.mockEntityIndependentValueSelector;
+import static org.optaplanner.core.impl.testdata.domain.list.TestdataListUtils.mockEntitySelector;
 import static org.optaplanner.core.impl.testdata.util.PlannerAssert.assertAllCodesOfMoveSelector;
 import static org.optaplanner.core.impl.testdata.util.PlannerAssert.assertCodesOfNeverEndingMoveSelector;
 
@@ -26,10 +29,6 @@ import java.util.Random;
 
 import org.junit.jupiter.api.Test;
 import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
-import org.optaplanner.core.impl.domain.variable.descriptor.ListVariableDescriptor;
-import org.optaplanner.core.impl.heuristic.selector.SelectorTestUtils;
-import org.optaplanner.core.impl.heuristic.selector.entity.EntitySelector;
-import org.optaplanner.core.impl.heuristic.selector.value.EntityIndependentValueSelector;
 import org.optaplanner.core.impl.phase.scope.AbstractPhaseScope;
 import org.optaplanner.core.impl.score.director.InnerScoreDirector;
 import org.optaplanner.core.impl.solver.scope.SolverScope;
@@ -40,37 +39,14 @@ import org.optaplanner.core.impl.testdata.util.PlannerTestUtils;
 
 class ListChangeMoveSelectorTest {
 
-    private static EntitySelector<TestdataListSolution> mockEntitySelector(Object... entities) {
-        return SelectorTestUtils.mockEntitySelector(TestdataListEntity.class, entities);
-    }
-
-    private static EntityIndependentValueSelector<TestdataListSolution> mockEntityIndependentValueSelector(Object... values) {
-        return SelectorTestUtils.mockEntityIndependentValueSelector(TestdataListEntity.class, "valueList", values);
-    }
-
-    private static ListVariableDescriptor<TestdataListSolution> getListVariableDescriptor(
-            InnerScoreDirector<TestdataListSolution, ?> scoreDirector) {
-        return (ListVariableDescriptor<TestdataListSolution>) scoreDirector
-                .getSolutionDescriptor()
-                .getEntityDescriptorStrict(TestdataListEntity.class)
-                .getGenuineVariableDescriptor("valueList");
-    }
-
     @Test
     void original() {
         TestdataListValue v1 = new TestdataListValue("1");
         TestdataListValue v2 = new TestdataListValue("2");
         TestdataListValue v3 = new TestdataListValue("3");
-        TestdataListEntity a = new TestdataListEntity("A", v2, v1);
-        TestdataListEntity b = new TestdataListEntity("B");
-        TestdataListEntity c = new TestdataListEntity("C", v3);
-        // Set up shadow variables
-        v1.setEntity(a);
-        v1.setIndex(1);
-        v2.setEntity(a);
-        v2.setIndex(0);
-        v3.setEntity(c);
-        v3.setIndex(0);
+        TestdataListEntity a = TestdataListEntity.createWithValues("A", v2, v1);
+        TestdataListEntity b = TestdataListEntity.createWithValues("B");
+        TestdataListEntity c = TestdataListEntity.createWithValues("C", v3);
 
         InnerScoreDirector<TestdataListSolution, SimpleScore> scoreDirector =
                 PlannerTestUtils.mockScoreDirector(TestdataListSolution.buildSolutionDescriptor());

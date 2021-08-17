@@ -18,16 +18,19 @@ package org.optaplanner.core.impl.heuristic.selector.move.generic.list;
 
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
+import static org.optaplanner.core.impl.testdata.domain.list.TestdataListUtils.getListVariableDescriptor;
+import static org.optaplanner.core.impl.testdata.domain.list.TestdataListUtils.mockEntityIndependentValueSelector;
 import static org.optaplanner.core.impl.testdata.util.PlannerAssert.assertAllCodesOfMoveSelector;
 import static org.optaplanner.core.impl.testdata.util.PlannerAssert.assertCodesOfNeverEndingMoveSelector;
+import static org.optaplanner.core.impl.testdata.util.PlannerTestUtils.mockScoreDirector;
 
 import java.util.Arrays;
 import java.util.Random;
 
 import org.junit.jupiter.api.Test;
-import org.optaplanner.core.impl.heuristic.selector.SelectorTestUtils;
-import org.optaplanner.core.impl.heuristic.selector.entity.EntitySelector;
+import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
 import org.optaplanner.core.impl.phase.scope.AbstractPhaseScope;
+import org.optaplanner.core.impl.score.director.InnerScoreDirector;
 import org.optaplanner.core.impl.solver.scope.SolverScope;
 import org.optaplanner.core.impl.testdata.domain.list.TestdataListEntity;
 import org.optaplanner.core.impl.testdata.domain.list.TestdataListSolution;
@@ -40,38 +43,44 @@ class ListSwapMoveSelectorTest {
         TestdataListValue v1 = new TestdataListValue("1");
         TestdataListValue v2 = new TestdataListValue("2");
         TestdataListValue v3 = new TestdataListValue("3");
-        TestdataListEntity a = new TestdataListEntity("A", v1, v2);
-        TestdataListEntity b = new TestdataListEntity("B");
-        TestdataListEntity c = new TestdataListEntity("C", v3);
-        EntitySelector<TestdataListSolution> leftEntitySelector = SelectorTestUtils.mockEntitySelector(
-                TestdataListEntity.class, a, b, c);
-        EntitySelector<TestdataListSolution> rightEntitySelector = SelectorTestUtils.mockEntitySelector(
-                TestdataListEntity.class, a, b, c);
+        TestdataListEntity a = TestdataListEntity.createWithValues("A", v2, v1);
+        TestdataListEntity b = TestdataListEntity.createWithValues("B");
+        TestdataListEntity c = TestdataListEntity.createWithValues("C", v3);
+
+        InnerScoreDirector<TestdataListSolution, SimpleScore> scoreDirector =
+                mockScoreDirector(TestdataListSolution.buildSolutionDescriptor());
 
         ListSwapMoveSelector<TestdataListSolution> moveSelector = new ListSwapMoveSelector<>(
-                TestdataListEntity.buildVariableDescriptorForValueList(),
-                leftEntitySelector,
-                rightEntitySelector,
+                getListVariableDescriptor(scoreDirector),
+                mockEntityIndependentValueSelector(v3, v1, v2),
+                mockEntityIndependentValueSelector(v3, v1, v2),
                 false);
+
+        SolverScope<TestdataListSolution> solverScope = mock(SolverScope.class);
+        when(solverScope.<SimpleScore> getScoreDirector()).thenReturn(scoreDirector);
+        moveSelector.solvingStarted(solverScope);
 
         AbstractPhaseScope<TestdataListSolution> phaseScope = mock(AbstractPhaseScope.class);
         when(phaseScope.getWorkingEntityList()).thenReturn(Arrays.asList(a, b, c));
         moveSelector.phaseStarted(phaseScope);
 
+        // Value order: [3, 1, 2]
+        // Entity order: [A, B, C]
+        // Initial state:
+        // - A [2, 1]
+        // - B []
+        // - C [3]
+
         assertAllCodesOfMoveSelector(moveSelector,
-                // moving A[0]
-                "A[0]<->A[0]", // undoable
-                "A[0]<->A[1]",
-                "A[0]<->C[0]",
-                // moving A[1]
-                "A[1]<->A[0]", // redundant?
-                "A[1]<->A[1]", // undoable
-                "A[1]<->C[0]",
-                // B has no elements, so no moves
-                // moving C[0]
-                "C[0]<->A[0]", // redundant?
-                "C[0]<->A[1]", // redundant?
-                "C[0]<->C[0]" // undoable
+                "3 {C[0]} <-> 3 {C[0]}", // undoable
+                "3 {C[0]} <-> 1 {A[1]}",
+                "3 {C[0]} <-> 2 {A[0]}",
+                "1 {A[1]} <-> 3 {C[0]}", // redundant
+                "1 {A[1]} <-> 1 {A[1]}", // undoable
+                "1 {A[1]} <-> 2 {A[0]}",
+                "2 {A[0]} <-> 3 {C[0]}", // redundant
+                "2 {A[0]} <-> 1 {A[1]}", // redundant
+                "2 {A[0]} <-> 2 {A[0]}" // undoable
         );
     }
 
@@ -83,21 +92,21 @@ class ListSwapMoveSelectorTest {
         TestdataListEntity a = new TestdataListEntity("A", v1, v2);
         TestdataListEntity b = new TestdataListEntity("B");
         TestdataListEntity c = new TestdataListEntity("C", v3);
-        EntitySelector<TestdataListSolution> leftEntitySelector = SelectorTestUtils.mockEntitySelector(
-                TestdataListEntity.class, a, b, c);
-        EntitySelector<TestdataListSolution> rightEntitySelector = SelectorTestUtils.mockEntitySelector(
-                TestdataListEntity.class, a, b, c);
+
+        InnerScoreDirector<TestdataListSolution, SimpleScore> scoreDirector =
+                mockScoreDirector(TestdataListSolution.buildSolutionDescriptor());
 
         ListSwapMoveSelector<TestdataListSolution> moveSelector = new ListSwapMoveSelector<>(
-                TestdataListEntity.buildVariableDescriptorForValueList(),
-                leftEntitySelector,
-                rightEntitySelector,
+                getListVariableDescriptor(scoreDirector),
+                mockEntityIndependentValueSelector(v1, v2, v3),
+                mockEntityIndependentValueSelector(v1, v2, v3),
                 true);
 
         Random random = mock(Random.class);
         when(random.nextInt(3)).thenReturn(1, 1, 2, 2, 1, 1, 2, 2, 1, 1, 2, 2);
 
         SolverScope<TestdataListSolution> solverScope = mock(SolverScope.class);
+        when(solverScope.<SimpleScore> getScoreDirector()).thenReturn(scoreDirector);
         when(solverScope.getWorkingRandom()).thenReturn(random);
         moveSelector.solvingStarted(solverScope);
 
@@ -106,11 +115,11 @@ class ListSwapMoveSelectorTest {
         moveSelector.phaseStarted(phaseScope);
 
         assertCodesOfNeverEndingMoveSelector(moveSelector,
-                "A[1]<->A[1]",
-                "C[0]<->C[0]",
-                "A[1]<->A[1]",
-                "C[0]<->C[0]",
-                "A[1]<->A[1]",
-                "C[0]<->C[0]");
+                "2 {A[1]} <-> 2 {A[1]}",
+                "3 {C[0]} <-> 3 {C[0]}",
+                "2 {A[1]} <-> 2 {A[1]}",
+                "3 {C[0]} <-> 3 {C[0]}",
+                "2 {A[1]} <-> 2 {A[1]}",
+                "3 {C[0]} <-> 3 {C[0]}");
     }
 }
