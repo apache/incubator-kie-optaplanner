@@ -34,7 +34,7 @@ import org.optaplanner.core.impl.heuristic.selector.value.EntityIndependentValue
  *
  * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
  */
-public class TmpOriginalListChangeIterator<Solution_> extends UpcomingSelectionIterator<Move<Solution_>> {
+public class OriginalListChangeIterator<Solution_> extends UpcomingSelectionIterator<Move<Solution_>> {
 
     private final ListVariableDescriptor<Solution_> listVariableDescriptor;
     private final SingletonInverseVariableSupply inverseVariableSupply;
@@ -48,7 +48,7 @@ public class TmpOriginalListChangeIterator<Solution_> extends UpcomingSelectionI
     private int upcomingFromIndex = 0;
     private Object upcomingToEntity;
 
-    public TmpOriginalListChangeIterator(
+    public OriginalListChangeIterator(
             ListVariableDescriptor<Solution_> listVariableDescriptor,
             SingletonInverseVariableSupply inverseVariableSupply,
             IndexVariableSupply indexVariableSupply,

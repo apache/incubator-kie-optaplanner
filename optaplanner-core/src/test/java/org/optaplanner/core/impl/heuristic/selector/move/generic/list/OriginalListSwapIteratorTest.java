@@ -34,7 +34,7 @@ import org.optaplanner.core.impl.score.director.InnerScoreDirector;
 import org.optaplanner.core.impl.testdata.domain.list.TestdataListSolution;
 import org.optaplanner.core.impl.testdata.domain.list.TestdataListValue;
 
-class TmpOriginalListSwapIteratorTest {
+class OriginalListSwapIteratorTest {
 
     private final TestdataListValue v1 = new TestdataListValue("v1");
     private final TestdataListValue v2 = new TestdataListValue("v2");
@@ -53,7 +53,7 @@ class TmpOriginalListSwapIteratorTest {
         InnerScoreDirector<TestdataListSolution, SimpleScore> scoreDirector =
                 mockScoreDirector(TestdataListSolution.buildSolutionDescriptor());
         ListVariableDescriptor<TestdataListSolution> listVariableDescriptor = getListVariableDescriptor(scoreDirector);
-        TmpOriginalListSwapIterator<TestdataListSolution> listSwapIterator = new TmpOriginalListSwapIterator<>(
+        OriginalListSwapIterator<TestdataListSolution> listSwapIterator = new OriginalListSwapIterator<>(
                 listVariableDescriptor,
                 scoreDirector.getSupplyManager().demand(new SingletonListInverseVariableDemand<>(listVariableDescriptor)),
                 scoreDirector.getSupplyManager().demand(new IndexVariableDemand<>(listVariableDescriptor)),

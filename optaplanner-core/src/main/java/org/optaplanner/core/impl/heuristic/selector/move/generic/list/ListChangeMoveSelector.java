@@ -97,7 +97,7 @@ public class ListChangeMoveSelector<Solution_> extends GenericMoveSelector<Solut
         if (randomSelection) {
             return new RandomListChangeIterator<>(listVariableDescriptor, workingEntityList, workingRandom);
         } else {
-            return new TmpOriginalListChangeIterator<>(
+            return new OriginalListChangeIterator<>(
                     listVariableDescriptor,
                     inverseVariableSupply,
                     indexVariableSupply,
