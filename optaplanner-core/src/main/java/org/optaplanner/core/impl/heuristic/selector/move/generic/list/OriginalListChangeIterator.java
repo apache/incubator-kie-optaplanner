@@ -45,7 +45,7 @@ public class OriginalListChangeIterator<Solution_> extends UpcomingSelectionIter
     private PrimitiveIterator.OfInt toIndexIterator;
 
     private Object upcomingFromEntity;
-    private int upcomingFromIndex = 0;
+    private Integer upcomingFromIndex;
     private Object upcomingToEntity;
 
     public OriginalListChangeIterator(
@@ -66,7 +66,7 @@ public class OriginalListChangeIterator<Solution_> extends UpcomingSelectionIter
     @Override
     protected Move<Solution_> createUpcomingSelection() {
         if (!toIndexIterator.hasNext()) {
-            if (!toEntityIterator.hasNext()) {
+            while (!toEntityIterator.hasNext()) {
                 if (!valueIterator.hasNext()) {
                     return noUpcomingSelection();
                 }
