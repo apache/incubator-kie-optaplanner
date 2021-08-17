@@ -18,76 +18,64 @@ package org.optaplanner.core.impl.heuristic.selector.move.generic.list;
 
 import java.util.Collections;
 import java.util.Iterator;
-import java.util.PrimitiveIterator;
-import java.util.function.BiFunction;
-import java.util.stream.IntStream;
 
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.impl.domain.variable.descriptor.ListVariableDescriptor;
+import org.optaplanner.core.impl.domain.variable.index.IndexVariableSupply;
+import org.optaplanner.core.impl.domain.variable.inverserelation.SingletonInverseVariableSupply;
 import org.optaplanner.core.impl.heuristic.move.Move;
 import org.optaplanner.core.impl.heuristic.selector.common.iterator.UpcomingSelectionIterator;
-import org.optaplanner.core.impl.heuristic.selector.entity.EntitySelector;
+import org.optaplanner.core.impl.heuristic.selector.value.EntityIndependentValueSelector;
 
 /**
- * Iterates over entities and elements of their list planning variables. This approach allows to generate moves
- * without using anchorVariableSupply and indexSupply.
  *
  * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
  */
 public class TmpOriginalListSwapIterator<Solution_> extends UpcomingSelectionIterator<Move<Solution_>> {
 
     private final ListVariableDescriptor<Solution_> listVariableDescriptor;
-    private final EntitySelector<Solution_> leftEntitySelector;
-    private final Iterator<Object> leftEntityIterator;
-    private PrimitiveIterator.OfInt leftIndexIterator;
-    private final EntitySelector<Solution_> rightEntitySelector;
-    private Iterator<Object> rightEntityIterator;
-    private PrimitiveIterator.OfInt rightIndexIterator;
+    private final SingletonInverseVariableSupply inverseVariableSupply;
+    private final IndexVariableSupply indexVariableSupply;
+    private final Iterator<Object> leftValueIterator;
+    private final EntityIndependentValueSelector<Solution_> rightValueSelector;
+    private Iterator<Object> rightValueIterator;
 
     private Object upcomingLeftEntity;
-    private Object upcomingRightEntity;
-    private int upcomingLeftIndex = 0;
+    private Integer upcomingLeftIndex;
 
     public TmpOriginalListSwapIterator(
             ListVariableDescriptor<Solution_> listVariableDescriptor,
-            EntitySelector<Solution_> leftEntitySelector,
-            EntitySelector<Solution_> rightEntitySelector) {
+            SingletonInverseVariableSupply inverseVariableSupply,
+            IndexVariableSupply indexVariableSupply,
+            EntityIndependentValueSelector<Solution_> leftValueSelector,
+            EntityIndependentValueSelector<Solution_> rightValueSelector) {
         this.listVariableDescriptor = listVariableDescriptor;
-        this.leftEntitySelector = leftEntitySelector;
-        this.leftEntityIterator = leftEntitySelector.iterator();
-        this.rightEntitySelector = rightEntitySelector;
-        this.rightEntityIterator = Collections.emptyIterator();
-        rightIndexIterator = IntStream.empty().iterator();
-        leftIndexIterator = IntStream.empty().iterator();
+        this.inverseVariableSupply = inverseVariableSupply;
+        this.indexVariableSupply = indexVariableSupply;
+        this.leftValueIterator = leftValueSelector.iterator();
+        this.rightValueIterator = Collections.emptyIterator();
+        this.rightValueSelector = rightValueSelector;
     }
 
     @Override
     protected Move<Solution_> createUpcomingSelection() {
-        while (!rightIndexIterator.hasNext()) {
-            if (!rightEntityIterator.hasNext()) {
-                while (!leftIndexIterator.hasNext()) {
-                    if (!leftEntityIterator.hasNext()) {
-                        return noUpcomingSelection();
-                    }
-                    upcomingLeftEntity = leftEntityIterator.next();
-                    leftIndexIterator = listIndexIterator(upcomingLeftEntity, IntStream::range);
-                }
-                upcomingLeftIndex = leftIndexIterator.nextInt();
-                rightEntityIterator = rightEntitySelector.iterator();
+        while (!rightValueIterator.hasNext()) {
+            if (!leftValueIterator.hasNext()) {
+                return noUpcomingSelection();
             }
-            upcomingRightEntity = rightEntityIterator.next();
-            rightIndexIterator = listIndexIterator(upcomingRightEntity, IntStream::range);
+            Object upcomingLeftValue = leftValueIterator.next();
+            upcomingLeftEntity = inverseVariableSupply.getInverseSingleton(upcomingLeftValue);
+            upcomingLeftIndex = indexVariableSupply.getIndex(upcomingLeftValue);
+            rightValueIterator = rightValueSelector.iterator();
         }
+
+        Object upcomingRightValue = rightValueIterator.next();
 
         return new ListSwapMove<>(
                 listVariableDescriptor,
                 upcomingLeftEntity,
                 upcomingLeftIndex,
-                upcomingRightEntity,
-                rightIndexIterator.nextInt());
-    }
-
-    private PrimitiveIterator.OfInt listIndexIterator(Object entity, BiFunction<Integer, Integer, IntStream> rangeType) {
-        return rangeType.apply(0, listVariableDescriptor.getListSize(entity)).iterator();
+                inverseVariableSupply.getInverseSingleton(upcomingRightValue),
+                indexVariableSupply.getIndex(upcomingRightValue));
     }
 }

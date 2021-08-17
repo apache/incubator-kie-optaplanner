@@ -100,8 +100,18 @@ public class ListSwapMove<Solution_> extends AbstractMove<Solution_> {
         return rightIndex;
     }
 
+    public Object getLeftValue() {
+        return variableDescriptor.getElement(leftEntity, leftIndex);
+    }
+
+    public Object getRightValue() {
+        return variableDescriptor.getElement(rightEntity, rightIndex);
+    }
+
     @Override
     public String toString() {
-        return String.format("%s[%d]<->%s[%d]", leftEntity, leftIndex, rightEntity, rightIndex);
+        return String.format("%s {%s[%d]} <-> %s {%s[%d]}",
+                getLeftValue(), leftEntity, leftIndex,
+                getRightValue(), rightEntity, rightIndex);
     }
 }

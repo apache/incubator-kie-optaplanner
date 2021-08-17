@@ -29,6 +29,7 @@ import org.optaplanner.core.config.heuristic.selector.entity.EntitySelectorConfi
 import org.optaplanner.core.config.heuristic.selector.move.MoveSelectorConfig;
 import org.optaplanner.core.config.heuristic.selector.move.composite.UnionMoveSelectorConfig;
 import org.optaplanner.core.config.heuristic.selector.move.generic.SwapMoveSelectorConfig;
+import org.optaplanner.core.config.heuristic.selector.value.ValueSelectorConfig;
 import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
 import org.optaplanner.core.impl.domain.variable.descriptor.GenuineVariableDescriptor;
 import org.optaplanner.core.impl.domain.variable.descriptor.ListVariableDescriptor;
@@ -38,6 +39,8 @@ import org.optaplanner.core.impl.heuristic.selector.entity.EntitySelectorFactory
 import org.optaplanner.core.impl.heuristic.selector.move.AbstractMoveSelectorFactory;
 import org.optaplanner.core.impl.heuristic.selector.move.MoveSelector;
 import org.optaplanner.core.impl.heuristic.selector.move.generic.list.ListSwapMoveSelector;
+import org.optaplanner.core.impl.heuristic.selector.value.EntityIndependentValueSelector;
+import org.optaplanner.core.impl.heuristic.selector.value.ValueSelectorFactory;
 
 public class SwapMoveSelectorFactory<Solution_>
         extends AbstractMoveSelectorFactory<Solution_, SwapMoveSelectorConfig> {
@@ -63,10 +66,21 @@ public class SwapMoveSelectorFactory<Solution_>
         List<GenuineVariableDescriptor<Solution_>> variableDescriptorList =
                 deduceVariableDescriptorList(leftEntitySelector.getEntityDescriptor(), config.getVariableNameIncludeList());
         if (variableDescriptorList.size() == 1 && variableDescriptorList.get(0).isListVariable()) {
+            // TODO add ValueSelector to the config
+            ValueSelectorFactory<Solution_> valueSelectorFactory = ValueSelectorFactory.create(new ValueSelectorConfig());
+            // TODO throw exception if the value selector is not entity independent
+            EntityIndependentValueSelector<Solution_> leftValueSelector =
+                    (EntityIndependentValueSelector<Solution_>) valueSelectorFactory.buildValueSelector(configPolicy,
+                            leftEntitySelector.getEntityDescriptor(),
+                            minimumCacheType, SelectionOrder.fromRandomSelectionBoolean(randomSelection));
+            EntityIndependentValueSelector<Solution_> rightValueSelector =
+                    (EntityIndependentValueSelector<Solution_>) valueSelectorFactory.buildValueSelector(configPolicy,
+                            rightEntitySelector.getEntityDescriptor(),
+                            minimumCacheType, SelectionOrder.fromRandomSelectionBoolean(randomSelection));
             return new ListSwapMoveSelector<>(
                     (ListVariableDescriptor<Solution_>) variableDescriptorList.get(0),
-                    leftEntitySelector,
-                    rightEntitySelector,
+                    leftValueSelector,
+                    rightValueSelector,
                     randomSelection);
         }
         if (variableDescriptorList.stream().noneMatch(GenuineVariableDescriptor::isListVariable)) {
