@@ -40,6 +40,7 @@ import org.optaplanner.core.impl.heuristic.selector.move.AbstractMoveSelectorFac
 import org.optaplanner.core.impl.heuristic.selector.move.MoveSelector;
 import org.optaplanner.core.impl.heuristic.selector.move.generic.list.ListSwapMoveSelector;
 import org.optaplanner.core.impl.heuristic.selector.value.EntityIndependentValueSelector;
+import org.optaplanner.core.impl.heuristic.selector.value.ValueSelector;
 import org.optaplanner.core.impl.heuristic.selector.value.ValueSelectorFactory;
 
 public class SwapMoveSelectorFactory<Solution_>
@@ -68,19 +69,17 @@ public class SwapMoveSelectorFactory<Solution_>
         if (variableDescriptorList.size() == 1 && variableDescriptorList.get(0).isListVariable()) {
             // TODO add ValueSelector to the config
             ValueSelectorFactory<Solution_> valueSelectorFactory = ValueSelectorFactory.create(new ValueSelectorConfig());
-            // TODO throw exception if the value selector is not entity independent
-            EntityIndependentValueSelector<Solution_> leftValueSelector =
-                    (EntityIndependentValueSelector<Solution_>) valueSelectorFactory.buildValueSelector(configPolicy,
-                            leftEntitySelector.getEntityDescriptor(),
-                            minimumCacheType, SelectionOrder.fromRandomSelectionBoolean(randomSelection));
-            EntityIndependentValueSelector<Solution_> rightValueSelector =
-                    (EntityIndependentValueSelector<Solution_>) valueSelectorFactory.buildValueSelector(configPolicy,
-                            rightEntitySelector.getEntityDescriptor(),
-                            minimumCacheType, SelectionOrder.fromRandomSelectionBoolean(randomSelection));
+            ValueSelector<Solution_> leftValueSelector = valueSelectorFactory.buildValueSelector(configPolicy,
+                    leftEntitySelector.getEntityDescriptor(),
+                    minimumCacheType, SelectionOrder.fromRandomSelectionBoolean(randomSelection));
+            ValueSelector<Solution_> rightValueSelector = valueSelectorFactory.buildValueSelector(configPolicy,
+                    rightEntitySelector.getEntityDescriptor(),
+                    minimumCacheType, SelectionOrder.fromRandomSelectionBoolean(randomSelection));
             return new ListSwapMoveSelector<>(
                     (ListVariableDescriptor<Solution_>) variableDescriptorList.get(0),
-                    leftValueSelector,
-                    rightValueSelector,
+                    // This cast is guaranteed by ListVariableDescriptor.processValueRangeRefs().
+                    (EntityIndependentValueSelector<Solution_>) leftValueSelector,
+                    (EntityIndependentValueSelector<Solution_>) rightValueSelector,
                     randomSelection);
         }
         if (variableDescriptorList.stream().noneMatch(GenuineVariableDescriptor::isListVariable)) {

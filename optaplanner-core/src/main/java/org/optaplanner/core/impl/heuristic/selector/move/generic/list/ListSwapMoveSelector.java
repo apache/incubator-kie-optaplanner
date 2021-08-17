@@ -42,7 +42,6 @@ public class ListSwapMoveSelector<Solution_> extends GenericMoveSelector<Solutio
     private IndexVariableSupply indexVariableSupply;
 
     private List<Object> workingEntityList;
-    private int valueCount;
 
     public ListSwapMoveSelector(
             ListVariableDescriptor<Solution_> listVariableDescriptor,
@@ -79,7 +78,6 @@ public class ListSwapMoveSelector<Solution_> extends GenericMoveSelector<Solutio
     public void phaseStarted(AbstractPhaseScope<Solution_> phaseScope) {
         super.phaseStarted(phaseScope);
         workingEntityList = phaseScope.getWorkingEntityList();
-        valueCount = workingEntityList.stream().mapToInt(listVariableDescriptor::getListSize).sum();
     }
 
     @Override
@@ -108,6 +106,6 @@ public class ListSwapMoveSelector<Solution_> extends GenericMoveSelector<Solutio
 
     @Override
     public long getSize() {
-        return (long) valueCount * valueCount;
+        return leftValueSelector.getSize() * rightValueSelector.getSize();
     }
 }
