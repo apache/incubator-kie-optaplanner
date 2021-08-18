@@ -1,7 +1,19 @@
 
 name: Build Chain
 
-on: [pull_request]
+on:
+  pull_request:
+    types: [opened, synchronize, reopened, ready_for_review]
+    branches:
+      - main
+      - 8.*
+    paths-ignore:
+      - 'LICENSE*'
+      - '.gitignore'
+      - '**.md'
+      - '**.adoc'
+      - '*.txt'
+      - '.ci/**'
 
 jobs:
   concurrency:
@@ -34,7 +46,7 @@ jobs:
         id: build-chain
         uses: kiegroup/github-action-build-chain@v2.6.5
         with:
-          definition-file: https://raw.githubusercontent.com/kiegroup/kogito-pipelines/master/.ci/pull-request-config.yaml
+          definition-file: https://raw.githubusercontent.com/${GROUP}/kogito-pipelines/main/.ci/pull-request-config.yaml
         env:
           GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
       - name: Check Surefire Report
