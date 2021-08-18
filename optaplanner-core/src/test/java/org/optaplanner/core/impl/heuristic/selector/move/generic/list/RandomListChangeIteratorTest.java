@@ -19,14 +19,21 @@ package org.optaplanner.core.impl.heuristic.selector.move.generic.list;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
+import static org.optaplanner.core.impl.testdata.domain.list.TestdataListUtils.getListVariableDescriptor;
+import static org.optaplanner.core.impl.testdata.domain.list.TestdataListUtils.mockEntityIndependentValueSelector;
 import static org.optaplanner.core.impl.testdata.domain.list.TestdataListUtils.mockEntitySelector;
 import static org.optaplanner.core.impl.testdata.util.PlannerAssert.assertCodesOfIterator;
+import static org.optaplanner.core.impl.testdata.util.PlannerTestUtils.mockScoreDirector;
 
 import java.util.Random;
-import java.util.function.IntFunction;
 
 import org.apache.commons.lang3.tuple.Pair;
 import org.junit.jupiter.api.Test;
+import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
+import org.optaplanner.core.impl.domain.variable.descriptor.ListVariableDescriptor;
+import org.optaplanner.core.impl.domain.variable.index.IndexVariableDemand;
+import org.optaplanner.core.impl.domain.variable.inverserelation.SingletonListInverseVariableDemand;
+import org.optaplanner.core.impl.score.director.InnerScoreDirector;
 import org.optaplanner.core.impl.testdata.domain.list.TestdataListEntity;
 import org.optaplanner.core.impl.testdata.domain.list.TestdataListSolution;
 import org.optaplanner.core.impl.testdata.domain.list.TestdataListValue;
@@ -38,34 +45,34 @@ class RandomListChangeIteratorTest {
         TestdataListValue v1 = new TestdataListValue("1");
         TestdataListValue v2 = new TestdataListValue("2");
         TestdataListValue v3 = new TestdataListValue("3");
-        TestdataListEntity a = new TestdataListEntity("A", v1, v2);
-        TestdataListEntity b = new TestdataListEntity("B");
-        TestdataListEntity c = new TestdataListEntity("C", v3);
+        TestdataListEntity a = TestdataListEntity.createWithValues("A", v1, v2);
+        TestdataListEntity b = TestdataListEntity.createWithValues("B");
+        TestdataListEntity c = TestdataListEntity.createWithValues("C", v3);
 
         Random random = mock(Random.class);
-        when(random.nextInt(3)).thenReturn(0, 1, 2); // global source indexes
-        when(random.nextInt(6)).thenReturn(2, 3, 0); // global destination indexes
+        final int destinationIndexRange = 6; // value count + entity count
+        when(random.nextInt(destinationIndexRange)).thenReturn(2, 3, 0); // global destination indexes
+
+        InnerScoreDirector<TestdataListSolution, SimpleScore> scoreDirector =
+                mockScoreDirector(TestdataListSolution.buildSolutionDescriptor());
+        ListVariableDescriptor<TestdataListSolution> listVariableDescriptor = getListVariableDescriptor(scoreDirector);
 
         RandomListChangeIterator<TestdataListSolution> randomListChangeIterator = new RandomListChangeIterator<>(
-                TestdataListEntity.buildVariableDescriptorForValueList(),
+                listVariableDescriptor,
+                scoreDirector.getSupplyManager().demand(new SingletonListInverseVariableDemand<>(listVariableDescriptor)),
+                scoreDirector.getSupplyManager().demand(new IndexVariableDemand<>(listVariableDescriptor)),
+                mockEntityIndependentValueSelector(v1, v2, v3),
                 mockEntitySelector(a, b, c),
                 random);
 
-        // 0 unfolds to [A, 0]
-        assertEntityAndIndex(randomListChangeIterator::unfoldGlobalIndexIntoSourceEntityAndListIndex, 0, a, 0);
-        // 1 unfolds to [A, 1]
-        assertEntityAndIndex(randomListChangeIterator::unfoldGlobalIndexIntoSourceEntityAndListIndex, 1, a, 1);
-        // 2 unfolds to [C, 0]
-        assertEntityAndIndex(randomListChangeIterator::unfoldGlobalIndexIntoSourceEntityAndListIndex, 2, c, 0);
-
-        // 0 unfolds to [A, 0]
-        assertEntityAndIndex(randomListChangeIterator::unfoldGlobalIndexIntoDestinationEntityAndListIndex, 0, a, 0);
-        // 1 unfolds to [A, 1]
-        assertEntityAndIndex(randomListChangeIterator::unfoldGlobalIndexIntoDestinationEntityAndListIndex, 1, a, 1);
-        // 2 unfolds to [A, 2]
-        assertEntityAndIndex(randomListChangeIterator::unfoldGlobalIndexIntoDestinationEntityAndListIndex, 2, a, 2);
-        // 3 unfolds to [B, 0]
-        assertEntityAndIndex(randomListChangeIterator::unfoldGlobalIndexIntoDestinationEntityAndListIndex, 3, b, 0);
+        // 0 points at A[0]
+        assertEntityAndIndex(randomListChangeIterator, 0, a, 0);
+        // 1 points at A[1]
+        assertEntityAndIndex(randomListChangeIterator, 1, a, 1);
+        // 2 points at A[2]
+        assertEntityAndIndex(randomListChangeIterator, 2, a, 2);
+        // 3 points at B[0]
+        assertEntityAndIndex(randomListChangeIterator, 3, b, 0);
 
         assertCodesOfIterator(randomListChangeIterator,
                 "1 {A[0]->A[2]}",
@@ -74,11 +81,11 @@ class RandomListChangeIteratorTest {
     }
 
     private static void assertEntityAndIndex(
-            IntFunction<Pair<Object, Integer>> unfoldMethod,
+            RandomListChangeIterator<TestdataListSolution> randomListChangeIterator,
             int globalIndex,
             Object expectedEntity,
             int expectedListIndex) {
-        Pair<Object, Integer> pair = unfoldMethod.apply(globalIndex);
+        Pair<Object, Integer> pair = randomListChangeIterator.entityAndIndexFromGlobalIndex(globalIndex);
         assertThat(pair.getLeft()).isEqualTo(expectedEntity);
         assertThat(pair.getRight()).isEqualTo(expectedListIndex);
     }

@@ -95,25 +95,24 @@ class ListChangeMoveSelectorTest {
         TestdataListValue v1 = new TestdataListValue("1");
         TestdataListValue v2 = new TestdataListValue("2");
         TestdataListValue v3 = new TestdataListValue("3");
-        TestdataListEntity a = new TestdataListEntity("A", v1, v2);
-        TestdataListEntity b = new TestdataListEntity("B");
-        TestdataListEntity c = new TestdataListEntity("C", v3);
-
-        final int sourceIndexRange = 3; // value count
-        final int destinationIndexRange = 6; // value count + entity count
+        TestdataListEntity a = TestdataListEntity.createWithValues("A", v1, v2);
+        TestdataListEntity b = TestdataListEntity.createWithValues("B");
+        TestdataListEntity c = TestdataListEntity.createWithValues("C", v3);
 
         InnerScoreDirector<TestdataListSolution, SimpleScore> scoreDirector =
                 PlannerTestUtils.mockScoreDirector(TestdataListSolution.buildSolutionDescriptor());
 
-        Random random = mock(Random.class);
-        when(random.nextInt(sourceIndexRange)).thenReturn(1, 0, 2, 2, 2);
-        when(random.nextInt(destinationIndexRange)).thenReturn(3, 2, 0, 1, 2);
-
         ListChangeMoveSelector<TestdataListSolution> moveSelector = new ListChangeMoveSelector<>(
                 getListVariableDescriptor(scoreDirector),
                 mockEntitySelector(a, b, c),
-                mockEntityIndependentValueSelector(v1, v2, v3),
+                // The value selector is longer than the number of expected codes because it is expected
+                // to be never ending, so it must not be exhausted after the last asserted code.
+                mockEntityIndependentValueSelector(v2, v1, v3, v3, v3, v1),
                 true);
+
+        Random random = mock(Random.class);
+        final int destinationIndexRange = 6; // value count + entity count
+        when(random.nextInt(destinationIndexRange)).thenReturn(3, 2, 0, 1, 2);
 
         SolverScope<TestdataListSolution> solverScope = mock(SolverScope.class);
         when(solverScope.<SimpleScore> getScoreDirector()).thenReturn(scoreDirector);

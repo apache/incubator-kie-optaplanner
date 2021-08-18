@@ -24,12 +24,8 @@ import static org.optaplanner.core.impl.testdata.util.PlannerAssert.assertAllCod
 import static org.optaplanner.core.impl.testdata.util.PlannerAssert.assertCodesOfNeverEndingMoveSelector;
 import static org.optaplanner.core.impl.testdata.util.PlannerTestUtils.mockScoreDirector;
 
-import java.util.Arrays;
-import java.util.Random;
-
 import org.junit.jupiter.api.Test;
 import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
-import org.optaplanner.core.impl.phase.scope.AbstractPhaseScope;
 import org.optaplanner.core.impl.score.director.InnerScoreDirector;
 import org.optaplanner.core.impl.solver.scope.SolverScope;
 import org.optaplanner.core.impl.testdata.domain.list.TestdataListEntity;
@@ -43,9 +39,9 @@ class ListSwapMoveSelectorTest {
         TestdataListValue v1 = new TestdataListValue("1");
         TestdataListValue v2 = new TestdataListValue("2");
         TestdataListValue v3 = new TestdataListValue("3");
-        TestdataListEntity a = TestdataListEntity.createWithValues("A", v2, v1);
-        TestdataListEntity b = TestdataListEntity.createWithValues("B");
-        TestdataListEntity c = TestdataListEntity.createWithValues("C", v3);
+        TestdataListEntity.createWithValues("A", v2, v1);
+        TestdataListEntity.createWithValues("B");
+        TestdataListEntity.createWithValues("C", v3);
 
         InnerScoreDirector<TestdataListSolution, SimpleScore> scoreDirector =
                 mockScoreDirector(TestdataListSolution.buildSolutionDescriptor());
@@ -59,10 +55,6 @@ class ListSwapMoveSelectorTest {
         SolverScope<TestdataListSolution> solverScope = mock(SolverScope.class);
         when(solverScope.<SimpleScore> getScoreDirector()).thenReturn(scoreDirector);
         moveSelector.solvingStarted(solverScope);
-
-        AbstractPhaseScope<TestdataListSolution> phaseScope = mock(AbstractPhaseScope.class);
-        when(phaseScope.getWorkingEntityList()).thenReturn(Arrays.asList(a, b, c));
-        moveSelector.phaseStarted(phaseScope);
 
         // Value order: [3, 1, 2]
         // Entity order: [A, B, C]
@@ -89,37 +81,34 @@ class ListSwapMoveSelectorTest {
         TestdataListValue v1 = new TestdataListValue("1");
         TestdataListValue v2 = new TestdataListValue("2");
         TestdataListValue v3 = new TestdataListValue("3");
-        TestdataListEntity a = new TestdataListEntity("A", v1, v2);
-        TestdataListEntity b = new TestdataListEntity("B");
-        TestdataListEntity c = new TestdataListEntity("C", v3);
+        TestdataListEntity.createWithValues("A", v1, v2);
+        TestdataListEntity.createWithValues("B");
+        TestdataListEntity.createWithValues("C", v3);
 
         InnerScoreDirector<TestdataListSolution, SimpleScore> scoreDirector =
                 mockScoreDirector(TestdataListSolution.buildSolutionDescriptor());
 
         ListSwapMoveSelector<TestdataListSolution> moveSelector = new ListSwapMoveSelector<>(
                 getListVariableDescriptor(scoreDirector),
-                mockEntityIndependentValueSelector(v1, v2, v3),
-                mockEntityIndependentValueSelector(v1, v2, v3),
+                // Value selectors are longer than the number of expected codes because they're expected
+                // to be never ending, so they must not be exhausted after the last asserted code.
+                mockEntityIndependentValueSelector(v2, v3, v2, v3, v2, v3, v1, v1, v1, v1),
+                mockEntityIndependentValueSelector(v1, v2, v3, v1, v2, v3, v1, v2, v3, v1),
                 true);
-
-        Random random = mock(Random.class);
-        when(random.nextInt(3)).thenReturn(1, 1, 2, 2, 1, 1, 2, 2, 1, 1, 2, 2);
 
         SolverScope<TestdataListSolution> solverScope = mock(SolverScope.class);
         when(solverScope.<SimpleScore> getScoreDirector()).thenReturn(scoreDirector);
-        when(solverScope.getWorkingRandom()).thenReturn(random);
         moveSelector.solvingStarted(solverScope);
 
-        AbstractPhaseScope<TestdataListSolution> phaseScope = mock(AbstractPhaseScope.class);
-        when(phaseScope.getWorkingEntityList()).thenReturn(Arrays.asList(a, b, c));
-        moveSelector.phaseStarted(phaseScope);
-
         assertCodesOfNeverEndingMoveSelector(moveSelector,
+                "2 {A[1]} <-> 1 {A[0]}",
+                "3 {C[0]} <-> 2 {A[1]}",
+                "2 {A[1]} <-> 3 {C[0]}",
+                "3 {C[0]} <-> 1 {A[0]}",
                 "2 {A[1]} <-> 2 {A[1]}",
                 "3 {C[0]} <-> 3 {C[0]}",
-                "2 {A[1]} <-> 2 {A[1]}",
-                "3 {C[0]} <-> 3 {C[0]}",
-                "2 {A[1]} <-> 2 {A[1]}",
-                "3 {C[0]} <-> 3 {C[0]}");
+                "1 {A[0]} <-> 1 {A[0]}",
+                "1 {A[0]} <-> 2 {A[1]}",
+                "1 {A[0]} <-> 3 {C[0]}");
     }
 }
