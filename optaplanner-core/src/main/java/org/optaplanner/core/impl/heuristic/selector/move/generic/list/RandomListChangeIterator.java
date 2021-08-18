@@ -16,7 +16,6 @@
 
 package org.optaplanner.core.impl.heuristic.selector.move.generic.list;
 
-import java.util.List;
 import java.util.Map;
 import java.util.NavigableMap;
 import java.util.Random;
@@ -27,6 +26,7 @@ import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.impl.domain.variable.descriptor.ListVariableDescriptor;
 import org.optaplanner.core.impl.heuristic.move.Move;
 import org.optaplanner.core.impl.heuristic.selector.common.iterator.UpcomingSelectionIterator;
+import org.optaplanner.core.impl.heuristic.selector.entity.EntitySelector;
 
 /**
  * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
@@ -43,7 +43,7 @@ public class RandomListChangeIterator<Solution_> extends UpcomingSelectionIterat
 
     public RandomListChangeIterator(
             ListVariableDescriptor<Solution_> listVariableDescriptor,
-            List<Object> workingEntityList,
+            EntitySelector<Solution_> entitySelector,
             Random workingRandom) {
         this.listVariableDescriptor = listVariableDescriptor;
         this.workingRandom = workingRandom;
@@ -52,7 +52,7 @@ public class RandomListChangeIterator<Solution_> extends UpcomingSelectionIterat
         destinationEntityByIndexNavigableMap = new TreeMap<>();
         int cumulativeListSize = 0;
         int cumulativeDestinationListSize = 0;
-        for (Object entity : workingEntityList) {
+        for (Object entity : entitySelector) {
             sourceEntityByIndexNavigableMap.put(cumulativeListSize, entity);
             cumulativeListSize += listVariableDescriptor.getListSize(entity);
             destinationEntityByIndexNavigableMap.put(cumulativeDestinationListSize, entity);

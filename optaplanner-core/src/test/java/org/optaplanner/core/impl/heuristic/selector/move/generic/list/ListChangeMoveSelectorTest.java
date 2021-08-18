@@ -24,12 +24,10 @@ import static org.optaplanner.core.impl.testdata.domain.list.TestdataListUtils.m
 import static org.optaplanner.core.impl.testdata.util.PlannerAssert.assertAllCodesOfMoveSelector;
 import static org.optaplanner.core.impl.testdata.util.PlannerAssert.assertCodesOfNeverEndingMoveSelector;
 
-import java.util.Arrays;
 import java.util.Random;
 
 import org.junit.jupiter.api.Test;
 import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
-import org.optaplanner.core.impl.phase.scope.AbstractPhaseScope;
 import org.optaplanner.core.impl.score.director.InnerScoreDirector;
 import org.optaplanner.core.impl.solver.scope.SolverScope;
 import org.optaplanner.core.impl.testdata.domain.list.TestdataListEntity;
@@ -60,10 +58,6 @@ class ListChangeMoveSelectorTest {
         SolverScope<TestdataListSolution> solverScope = mock(SolverScope.class);
         when(solverScope.<SimpleScore> getScoreDirector()).thenReturn(scoreDirector);
         moveSelector.solvingStarted(solverScope);
-
-        AbstractPhaseScope<TestdataListSolution> phaseScope = mock(AbstractPhaseScope.class);
-        when(phaseScope.getWorkingEntityList()).thenReturn(Arrays.asList(a, b, c));
-        moveSelector.phaseStarted(phaseScope);
 
         // Value order: [3, 1, 2]
         // Entity order: [A, B, C]
@@ -125,10 +119,6 @@ class ListChangeMoveSelectorTest {
         when(solverScope.<SimpleScore> getScoreDirector()).thenReturn(scoreDirector);
         when(solverScope.getWorkingRandom()).thenReturn(random);
         moveSelector.solvingStarted(solverScope);
-
-        AbstractPhaseScope<TestdataListSolution> phaseScope = mock(AbstractPhaseScope.class);
-        when(phaseScope.getWorkingEntityList()).thenReturn(Arrays.asList(a, b, c));
-        moveSelector.phaseStarted(phaseScope);
 
         // Initial state:
         // - A [1, 2]

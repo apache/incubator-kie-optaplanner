@@ -19,9 +19,9 @@ package org.optaplanner.core.impl.heuristic.selector.move.generic.list;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
+import static org.optaplanner.core.impl.testdata.domain.list.TestdataListUtils.mockEntitySelector;
 import static org.optaplanner.core.impl.testdata.util.PlannerAssert.assertCodesOfIterator;
 
-import java.util.Arrays;
 import java.util.Random;
 import java.util.function.IntFunction;
 
@@ -48,7 +48,7 @@ class RandomListChangeIteratorTest {
 
         RandomListChangeIterator<TestdataListSolution> randomListChangeIterator = new RandomListChangeIterator<>(
                 TestdataListEntity.buildVariableDescriptorForValueList(),
-                Arrays.asList(a, b, c),
+                mockEntitySelector(a, b, c),
                 random);
 
         // 0 unfolds to [A, 0]
