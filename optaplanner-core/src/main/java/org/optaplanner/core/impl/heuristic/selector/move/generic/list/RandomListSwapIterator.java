@@ -16,61 +16,54 @@
 
 package org.optaplanner.core.impl.heuristic.selector.move.generic.list;
 
-import java.util.List;
-import java.util.Map;
-import java.util.NavigableMap;
-import java.util.Random;
-import java.util.TreeMap;
+import java.util.Iterator;
 
-import org.apache.commons.lang3.tuple.Pair;
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.impl.domain.variable.descriptor.ListVariableDescriptor;
+import org.optaplanner.core.impl.domain.variable.index.IndexVariableSupply;
+import org.optaplanner.core.impl.domain.variable.inverserelation.SingletonInverseVariableSupply;
 import org.optaplanner.core.impl.heuristic.move.Move;
 import org.optaplanner.core.impl.heuristic.selector.common.iterator.UpcomingSelectionIterator;
+import org.optaplanner.core.impl.heuristic.selector.value.EntityIndependentValueSelector;
 
 /**
  * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
  */
 public class RandomListSwapIterator<Solution_> extends UpcomingSelectionIterator<Move<Solution_>> {
 
-    private final ListVariableDescriptor<Solution_> variableDescriptor;
-    private final int indexRange;
-    private final Random workingRandom;
-    private final NavigableMap<Integer, Object> entityByIndexNavigableMap;
+    private final ListVariableDescriptor<Solution_> listVariableDescriptor;
+    private final SingletonInverseVariableSupply inverseVariableSupply;
+    private final IndexVariableSupply indexVariableSupply;
+    private final Iterator<Object> leftValueIterator;
+    private final Iterator<Object> rightValueIterator;
 
     public RandomListSwapIterator(
-            ListVariableDescriptor<Solution_> variableDescriptor,
-            List<Object> workingEntityList,
-            Random workingRandom) {
-        this.variableDescriptor = variableDescriptor;
-        this.workingRandom = workingRandom;
-
-        entityByIndexNavigableMap = new TreeMap<>();
-        int cumulativeListSize = 0;
-        for (Object entity : workingEntityList) {
-            entityByIndexNavigableMap.put(cumulativeListSize, entity);
-            cumulativeListSize += variableDescriptor.getListSize(entity);
-        }
-        this.indexRange = cumulativeListSize;
+            ListVariableDescriptor<Solution_> listVariableDescriptor,
+            SingletonInverseVariableSupply inverseVariableSupply,
+            IndexVariableSupply indexVariableSupply,
+            EntityIndependentValueSelector<Solution_> leftValueSelector,
+            EntityIndependentValueSelector<Solution_> rightValueSelector) {
+        this.listVariableDescriptor = listVariableDescriptor;
+        this.inverseVariableSupply = inverseVariableSupply;
+        this.indexVariableSupply = indexVariableSupply;
+        this.leftValueIterator = leftValueSelector.iterator();
+        this.rightValueIterator = rightValueSelector.iterator();
     }
 
     @Override
     protected Move<Solution_> createUpcomingSelection() {
-        if (indexRange == 0) {
+        if (!leftValueIterator.hasNext() || !rightValueIterator.hasNext()) {
             return noUpcomingSelection();
         }
-        Pair<Object, Integer> left = unfoldGlobalIndexIntoEntityAndListIndex(workingRandom.nextInt(indexRange));
-        Pair<Object, Integer> right = unfoldGlobalIndexIntoEntityAndListIndex(workingRandom.nextInt(indexRange));
-        return new ListSwapMove<>(
-                variableDescriptor,
-                left.getKey(),
-                left.getValue(),
-                right.getKey(),
-                right.getValue());
-    }
 
-    Pair<Object, Integer> unfoldGlobalIndexIntoEntityAndListIndex(int index) {
-        Map.Entry<Integer, Object> entry = entityByIndexNavigableMap.floorEntry(index);
-        return Pair.of(entry.getValue(), index - entry.getKey());
+        Object upcomingLeftValue = leftValueIterator.next();
+        Object upcomingRightValue = rightValueIterator.next();
+
+        return new ListSwapMove<>(
+                listVariableDescriptor,
+                inverseVariableSupply.getInverseSingleton(upcomingLeftValue),
+                indexVariableSupply.getIndex(upcomingLeftValue),
+                inverseVariableSupply.getInverseSingleton(upcomingRightValue),
+                indexVariableSupply.getIndex(upcomingRightValue));
     }
 }
