@@ -17,7 +17,6 @@
 package org.optaplanner.core.impl.heuristic.selector.move.generic.list;
 
 import java.util.Iterator;
-import java.util.List;
 
 import org.optaplanner.core.impl.domain.variable.descriptor.ListVariableDescriptor;
 import org.optaplanner.core.impl.domain.variable.index.IndexVariableDemand;
@@ -29,7 +28,6 @@ import org.optaplanner.core.impl.heuristic.move.Move;
 import org.optaplanner.core.impl.heuristic.selector.entity.EntitySelector;
 import org.optaplanner.core.impl.heuristic.selector.move.generic.GenericMoveSelector;
 import org.optaplanner.core.impl.heuristic.selector.value.EntityIndependentValueSelector;
-import org.optaplanner.core.impl.phase.scope.AbstractPhaseScope;
 import org.optaplanner.core.impl.solver.scope.SolverScope;
 
 public class ListChangeMoveSelector<Solution_> extends GenericMoveSelector<Solution_> {
@@ -41,8 +39,6 @@ public class ListChangeMoveSelector<Solution_> extends GenericMoveSelector<Solut
 
     private SingletonInverseVariableSupply inverseVariableSupply;
     private IndexVariableSupply indexVariableSupply;
-
-    private List<Object> workingEntityList;
 
     public ListChangeMoveSelector(
             ListVariableDescriptor<Solution_> listVariableDescriptor,
@@ -74,14 +70,8 @@ public class ListChangeMoveSelector<Solution_> extends GenericMoveSelector<Solut
     }
 
     @Override
-    public void phaseStarted(AbstractPhaseScope<Solution_> phaseScope) {
-        super.phaseStarted(phaseScope);
-        workingEntityList = phaseScope.getWorkingEntityList();
-    }
-
-    @Override
     public long getSize() {
-        long entityCount = workingEntityList.size();
+        long entityCount = entitySelector.getSize();
         long valueCount = valueSelector.getSize();
         return valueCount * (valueCount + entityCount);
     }
@@ -89,7 +79,7 @@ public class ListChangeMoveSelector<Solution_> extends GenericMoveSelector<Solut
     @Override
     public Iterator<Move<Solution_>> iterator() {
         if (randomSelection) {
-            return new RandomListChangeIterator<>(listVariableDescriptor, workingEntityList, workingRandom);
+            return new RandomListChangeIterator<>(listVariableDescriptor, entitySelector, workingRandom);
         } else {
             return new OriginalListChangeIterator<>(
                     listVariableDescriptor,
