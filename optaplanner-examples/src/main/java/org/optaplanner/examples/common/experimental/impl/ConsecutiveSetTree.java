@@ -21,6 +21,8 @@ import java.util.IdentityHashMap;
 import java.util.Map;
 import java.util.NavigableMap;
 import java.util.NavigableSet;
+import java.util.Objects;
+import java.util.SortedMap;
 import java.util.TreeMap;
 import java.util.TreeSet;
 import java.util.function.BiFunction;
@@ -40,14 +42,13 @@ import org.optaplanner.examples.common.experimental.api.Sequence;
  * @param <Point_> The type of the point (examples: int, LocalDateTime)
  * @param <Difference_> The type of the difference (examples: int, Duration)
  */
-public class ConsecutiveSetTree<Value_, Point_ extends Comparable<Point_>, Difference_ extends Comparable<Difference_>> {
+public final class ConsecutiveSetTree<Value_, Point_ extends Comparable<Point_>, Difference_ extends Comparable<Difference_>> {
     private final Function<Value_, Point_> indexFunction;
     private final BiFunction<Point_, Point_, Difference_> differenceFunction;
     private final BiFunction<Difference_, Difference_, Difference_> sumFunction;
     private final Difference_ maxDifference;
     private final Difference_ zeroDifference;
-    private final Map<Value_, Integer> itemToCountMap;
-    private final NavigableSet<Value_> itemSet;
+    private final NavigableMap<Value_, Integer> itemToCountMap;
     private final NavigableMap<Value_, SequenceImpl<Value_, Difference_>> startItemToSequence;
     private final NavigableMap<Value_, BreakImpl<Value_, Difference_>> startItemToPreviousBreak;
 
@@ -66,11 +67,8 @@ public class ConsecutiveSetTree<Value_, Point_ extends Comparable<Point_>, Diffe
         this.sumFunction = sumFunction;
         this.maxDifference = maxDifference;
         this.zeroDifference = zeroDifference;
-        // Identity Hashcode for duplicate protection
-        // Ex: two different games on the same time slot
-        Comparator<Value_> comparator = Comparator.comparing(indexFunction).thenComparing(System::identityHashCode);
-        itemToCountMap = new IdentityHashMap<>();
-        itemSet = new TreeSet<>(comparator);
+        Comparator<Value_> comparator = new ValueComparator<>(indexFunction);
+        itemToCountMap = new TreeMap<>(comparator);
         startItemToSequence = new TreeMap<>(comparator);
         startItemToPreviousBreak = new TreeMap<>(comparator);
         consecutiveData = new ConsecutiveDataImpl<>(this);
@@ -98,7 +96,6 @@ public class ConsecutiveSetTree<Value_, Point_ extends Comparable<Point_>, Diffe
         if (newCount > 1) { // Item already in bag.
             return true;
         }
-        itemSet.add(item);
         Value_ firstBeforeItem = startItemToSequence.floorKey(item);
         Point_ itemIndex = indexFunction.apply(item);
         if (firstBeforeItem != null) {
@@ -177,7 +174,6 @@ public class ConsecutiveSetTree<Value_, Point_ extends Comparable<Point_>, Diffe
         Value_ firstBeforeItem = startItemToSequence.floorKey(item);
         SequenceImpl<Value_, Difference_> bag = startItemToSequence.get(firstBeforeItem);
         Value_ endItem = bag.getLastItem();
-        itemSet.remove(item);
 
         // Bag is empty if first item = last item
         if (bag.getFirstItem() == bag.getLastItem()) {
@@ -203,24 +199,24 @@ public class ConsecutiveSetTree<Value_, Point_ extends Comparable<Point_>, Diffe
 
     // Protected API
 
-    protected NavigableSet<Value_> getItemSet() {
-        return itemSet;
+    NavigableSet<Value_> getItemSet() {
+        return (NavigableSet<Value_>) itemToCountMap.keySet();
     }
 
-    protected void updateLengthOfBreak(BreakImpl<Value_, Difference_> theBreak) {
+    void updateLengthOfBreak(BreakImpl<Value_, Difference_> theBreak) {
         theBreak.setLength(getBreakLengthBetween(theBreak.getPreviousSequenceEnd(), theBreak.getNextSequenceStart()));
     }
 
-    protected Difference_ getSequenceLength(Sequence<Value_, Difference_> sequence) {
+    Difference_ getSequenceLength(Sequence<Value_, Difference_> sequence) {
         return sumFunction.apply(maxDifference, differenceFunction.apply(indexFunction.apply(sequence.getFirstItem()),
                 indexFunction.apply(sequence.getLastItem())));
     }
 
-    protected Difference_ getBreakLengthBetween(Value_ from, Value_ to) {
+    Difference_ getBreakLengthBetween(Value_ from, Value_ to) {
         return differenceFunction.apply(indexFunction.apply(from), indexFunction.apply(to));
     }
 
-    protected Value_ getEndItem(Value_ key) {
+    Value_ getEndItem(Value_ key) {
         return startItemToSequence.get(key).getLastItem();
     }
 
@@ -286,6 +282,7 @@ public class ConsecutiveSetTree<Value_, Point_ extends Comparable<Point_>, Diffe
 
     private boolean removeItemFromBag(SequenceImpl<Value_, Difference_> bag, Value_ item, Value_ sequenceStart,
             Value_ sequenceEnd) {
+        NavigableSet<Value_> itemSet = getItemSet();
         if (item.equals(sequenceStart)) {
             // Change start key to the item after this one
             bag.setStart(itemSet.higher(item));
@@ -337,6 +334,40 @@ public class ConsecutiveSetTree<Value_, Point_ extends Comparable<Point_>, Diffe
             maybeNextBreak.getValue().setPreviousSequence(splitBag);
         }
         return true;
+    }
+
+    private static final class ValueComparator<Value_, Point_ extends Comparable<Point_>> implements Comparator<Value_> {
+
+        private final Function<Value_, Point_> indexFunction;
+
+        public ValueComparator(Function<Value_, Point_> indexFunction) {
+            this.indexFunction = Objects.requireNonNull(indexFunction);
+        }
+
+        @Override
+        public int compare(Value_ o1, Value_ o2) {
+            if (o1 == o2) {
+                return 0;
+            }
+            Point_ point1 = indexFunction.apply(o1);
+            Point_ point2 = indexFunction.apply(o2);
+            if (point1 == point2) {
+                return compareWithIdentityHashCode(o1, o2);
+            }
+            int comparison = point1.compareTo(point2);
+            if (comparison != 0) {
+                return comparison;
+            }
+            return compareWithIdentityHashCode(o1, o2);
+        }
+
+        private static int compareWithIdentityHashCode(Object o1, Object o2) {
+            // Identity Hashcode for duplicate protection; we must always include duplicates.
+            // Ex: two different games on the same time slot
+            int identityHashCode1 = System.identityHashCode(o1);
+            int identityHashCode2 = System.identityHashCode(o2);
+            return Integer.compare(identityHashCode1, identityHashCode2);
+        }
     }
 
 }
