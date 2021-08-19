@@ -20,6 +20,9 @@ Map getMultijobPRConfig() {
                 primary: true,
                 env : [
                     SONARCLOUD_ANALYSIS_MVN_OPTS: '-Dsonar.projectKey=org.optaplanner:optaplanner',
+                    // Sonarcloud analysis only on main branch
+                    // As we have only Community edition
+                    DISABLE_SONARCLOUD: !Utils.isMainBranch(this),
                 ]
             ], [
                 id: 'kogito-apps',
