@@ -22,9 +22,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import java.util.Objects;
 
 import org.junit.jupiter.api.Test;
-import org.optaplanner.core.api.score.stream.bi.BiConstraintCollector;
-import org.optaplanner.core.api.score.stream.quad.QuadConstraintCollector;
-import org.optaplanner.core.api.score.stream.tri.TriConstraintCollector;
 import org.optaplanner.core.api.score.stream.uni.UniConstraintCollector;
 import org.optaplanner.examples.common.experimental.api.ConsecutiveInfo;
 import org.optaplanner.examples.common.experimental.api.ConsecutiveIntervalInfo;
