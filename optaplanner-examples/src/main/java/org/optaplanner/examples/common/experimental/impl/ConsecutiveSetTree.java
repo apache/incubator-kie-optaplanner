@@ -27,6 +27,8 @@ import java.util.TreeMap;
 import java.util.TreeSet;
 import java.util.function.BiFunction;
 import java.util.function.Function;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.optaplanner.examples.common.experimental.api.Break;
 import org.optaplanner.examples.common.experimental.api.ConsecutiveInfo;
@@ -42,7 +44,8 @@ import org.optaplanner.examples.common.experimental.api.Sequence;
  * @param <Point_> The type of the point (examples: int, LocalDateTime)
  * @param <Difference_> The type of the difference (examples: int, Duration)
  */
-public final class ConsecutiveSetTree<Value_, Point_ extends Comparable<Point_>, Difference_ extends Comparable<Difference_>> {
+public final class ConsecutiveSetTree<Value_, Point_ extends Comparable<Point_>, Difference_ extends Comparable<Difference_>>
+    implements ConsecutiveInfo<Value_, Difference_> {
     private final Function<Value_, Point_> indexFunction;
     private final BiFunction<Point_, Point_, Difference_> differenceFunction;
     private final BiFunction<Difference_, Difference_, Difference_> sumFunction;
@@ -54,8 +57,6 @@ public final class ConsecutiveSetTree<Value_, Point_ extends Comparable<Point_>,
 
     private final MapValuesIterable<Value_, SequenceImpl<Value_, Difference_>> sequenceList;
     private final MapValuesIterable<Value_, BreakImpl<Value_, Difference_>> breakList;
-
-    private final ConsecutiveDataImpl<Value_, Difference_> consecutiveData;
 
     public ConsecutiveSetTree(Function<Value_, Point_> indexFunction,
             BiFunction<Point_, Point_, Difference_> differenceFunction,
@@ -71,24 +72,21 @@ public final class ConsecutiveSetTree<Value_, Point_ extends Comparable<Point_>,
         itemToCountMap = new TreeMap<>(comparator);
         startItemToSequence = new TreeMap<>(comparator);
         startItemToPreviousBreak = new TreeMap<>(comparator);
-        consecutiveData = new ConsecutiveDataImpl<>(this);
         sequenceList = new MapValuesIterable<>(startItemToSequence);
         breakList = new MapValuesIterable<>(startItemToPreviousBreak);
     }
 
     // Public API
     @SuppressWarnings({ "unchecked", "rawtypes" })
+    @Override
     public Iterable<Sequence<Value_, Difference_>> getConsecutiveSequences() {
         return (Iterable) sequenceList;
     }
 
     @SuppressWarnings({ "unchecked", "rawtypes" })
+    @Override
     public Iterable<Break<Value_, Difference_>> getBreaks() {
         return (Iterable) breakList;
-    }
-
-    public ConsecutiveInfo<Value_, Difference_> getConsecutiveData() {
-        return consecutiveData;
     }
 
     public boolean add(Value_ item) {
@@ -334,6 +332,17 @@ public final class ConsecutiveSetTree<Value_, Point_ extends Comparable<Point_>,
             maybeNextBreak.getValue().setPreviousSequence(splitBag);
         }
         return true;
+    }
+
+    @Override
+    public String toString() {
+        Stream.Builder<Sequence<Value_, Difference_>> streamBuilder = Stream.builder();
+        for (Sequence<Value_, Difference_> sequence : getConsecutiveSequences()) {
+            streamBuilder.add(sequence);
+        }
+
+        return streamBuilder.build().map(Sequence::toString)
+                .collect(Collectors.joining("; ", "Sequences [", "]"));
     }
 
     private static final class ValueComparator<Value_, Point_ extends Comparable<Point_>> implements Comparator<Value_> {
