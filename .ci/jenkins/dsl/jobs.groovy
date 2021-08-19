@@ -76,10 +76,6 @@ setupMultijobPrDefaultChecks()
 setupMultijobPrNativeChecks()
 setupMultijobPrLTSChecks()
 
-// Optaweb PR checks
-setupOptawebEmployeeRosteringPrJob()
-setupOptawebVehicleRoutingPrJob()
-
 // Nightly jobs
 setupNativeJob(nightlyBranchFolder)
 setupDeployJob(nightlyBranchFolder, KogitoJobType.NIGHTLY)
@@ -123,24 +119,6 @@ void setupOptaplannerNativePrJob() {
     def jobParams = getDefaultJobParams()
     jobParams.pr.run_only_for_branches = ['8.5.x']
     KogitoJobTemplate.createNativePRJob(this, jobParams)
-}
-
-void setupOptawebEmployeeRosteringPrJob() {
-    def jobParams = getDefaultJobParams('optaweb-employee-rostering')
-    jobParams.pr.run_only_for_branches = [ jobParams.git.branch ] // Run on all release branches
-    jobParams.jenkinsfile = KogitoConstants.BUILDCHAIN_JENKINSFILE_PATH 
-    jobParams.git.repo_url = Utils.createRepositoryUrl(jobParams.git.author, KogitoConstants.BUILDCHAIN_REPOSITORY)
-    jobParams.git.checkout_branch = VersionUtils.getProjectTargetBranch(KogitoConstants.BUILDCHAIN_REPOSITORY, jobParams.git.branch, jobParams.git.repository)
-    KogitoJobTemplate.createPRJob(this, jobParams)
-}
-
-void setupOptawebVehicleRoutingPrJob() {
-    def jobParams = getDefaultJobParams('optaweb-vehicle-routing')
-    jobParams.pr.run_only_for_branches = [ jobParams.git.branch ] // Run on all release branches
-    jobParams.jenkinsfile = KogitoConstants.BUILDCHAIN_JENKINSFILE_PATH 
-    jobParams.git.repo_url = Utils.createRepositoryUrl(jobParams.git.author, KogitoConstants.BUILDCHAIN_REPOSITORY)
-    jobParams.git.checkout_branch = VersionUtils.getProjectTargetBranch(KogitoConstants.BUILDCHAIN_REPOSITORY, jobParams.git.branch, jobParams.git.repository)
-    KogitoJobTemplate.createPRJob(this, jobParams)
 }
 
 void setupMultijobPrDefaultChecks() {
