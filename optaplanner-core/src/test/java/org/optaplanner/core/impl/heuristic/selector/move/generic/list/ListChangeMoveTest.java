@@ -146,4 +146,19 @@ class ListChangeMoveTest {
         assertThat(variableDescriptor.getElement(e, sourceIndex)).isEqualTo(v2);
         assertThat(e.getValueList()).containsExactly(v0, v1, v2, v3, v4);
     }
+
+    @Test
+    void toStringTest() {
+        TestdataListValue v1 = new TestdataListValue("1");
+        TestdataListValue v2 = new TestdataListValue("2");
+        TestdataListValue v3 = new TestdataListValue("3");
+        TestdataListEntity e1 = new TestdataListEntity("e1", v1, v2);
+        TestdataListEntity e2 = new TestdataListEntity("e2", v3);
+
+        ListVariableDescriptor<TestdataListSolution> variableDescriptor =
+                TestdataListEntity.buildVariableDescriptorForValueList();
+
+        assertThat(new ListChangeMove<>(variableDescriptor, e1, 1, e1, 0)).hasToString("2 {e1[1]->e1[0]}");
+        assertThat(new ListChangeMove<>(variableDescriptor, e1, 0, e2, 1)).hasToString("1 {e1[0]->e2[1]}");
+    }
 }

@@ -17,19 +17,20 @@
 package org.optaplanner.core.impl.heuristic.selector.move.generic.list;
 
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
+import org.optaplanner.core.api.domain.variable.PlanningCollectionVariable;
 import org.optaplanner.core.api.score.director.ScoreDirector;
 import org.optaplanner.core.impl.domain.variable.descriptor.ListVariableDescriptor;
 import org.optaplanner.core.impl.heuristic.move.AbstractMove;
 import org.optaplanner.core.impl.score.director.InnerScoreDirector;
 
 /**
- * Swaps two elements of a list planning variable.
+ * Swaps two elements of a {@link PlanningCollectionVariable list variable}.
  * Each element is identified by an entity instance and an index in that entity's list variable.
  * The swap move has two sides called left and right. The element at {@code leftIndex} in {@code leftEntity}'s list variable
  * is replaced by the element at {@code rightIndex} in {@code rightEntity}'s list variable and vice versa.
  * Left and right entity can be the same instance.
  * <p>
- * Flipping the left and right-side entity and index produces an undo move.
+ * An undo move is created by flipping the left and right-hand entity and index.
  *
  * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
  */
@@ -41,6 +42,47 @@ public class ListSwapMove<Solution_> extends AbstractMove<Solution_> {
     private final Object rightEntity;
     private final int rightIndex;
 
+    /**
+     * Create a move that swaps a list variable element at {@code leftEntity.listVariable[leftIndex]} with
+     * {@code rightEntity.listVariable[rightIndex]}.
+     *
+     * <h4>ListSwapMove anatomy</h4>
+     *
+     * <pre>
+     * {@code
+     *                                 ┌ rightEntity
+     *                right element ┐  │   ┌ rightIndex
+     *                              ↓  ↓   ↓
+     *               A {Ann[0]} <-> Y {Bob[1]}
+     *               ↑  ↑   ↑
+     *  left element ┘  │   └ leftIndex
+     *                  └ leftEntity
+     * }
+     * </pre>
+     *
+     * <h4>Example</h4>
+     *
+     * <pre>
+     * {@code
+     * GIVEN
+     * Ann.tasks = [A, B, C]
+     * Bob.tasks = [X, Y]
+     *
+     * WHEN
+     * ListSwapMove: A {Ann[0]} <-> Y {Bob[1]}
+     *
+     * THEN
+     * Ann.tasks = [Y, B, C]
+     * Bob.tasks = [X, A]
+     * }
+     * </pre>
+     *
+     * @param variableDescriptor descriptor of a list variable, for example {@code Employee.taskList}
+     * @param leftEntity together with {@code leftIndex} identifies the left element to be moved
+     * @param leftIndex together with {@code leftEntity} identifies the left element to be moved
+     * @param rightEntity together with {@code rightIndex} identifies the right element to be moved
+     * @param rightIndex together with {@code rightEntity} identifies the right element to be moved
+     */
     public ListSwapMove(
             ListVariableDescriptor<Solution_> variableDescriptor,
             Object leftEntity, int leftIndex,
@@ -78,6 +120,15 @@ public class ListSwapMove<Solution_> extends AbstractMove<Solution_> {
         // Do not use Object#equals on user-provided domain objects. Relying on user's implementation of Object#equals
         // opens the opportunity to shoot themselves in the foot if different entities can be equal.
         return !(rightEntity == leftEntity && leftIndex == rightIndex);
+    }
+
+    // ************************************************************************
+    // Introspection methods
+    // ************************************************************************
+
+    @Override
+    public String getSimpleMoveTypeDescription() {
+        return getClass().getSimpleName() + "(" + variableDescriptor.getSimpleEntityAndVariableName() + ")";
     }
 
     // ************************************************************************

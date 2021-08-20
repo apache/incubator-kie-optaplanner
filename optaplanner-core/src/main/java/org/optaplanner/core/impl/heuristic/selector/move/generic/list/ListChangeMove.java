@@ -19,17 +19,18 @@ package org.optaplanner.core.impl.heuristic.selector.move.generic.list;
 import java.util.Objects;
 
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
+import org.optaplanner.core.api.domain.variable.PlanningCollectionVariable;
 import org.optaplanner.core.api.score.director.ScoreDirector;
 import org.optaplanner.core.impl.domain.variable.descriptor.ListVariableDescriptor;
 import org.optaplanner.core.impl.heuristic.move.AbstractMove;
 import org.optaplanner.core.impl.score.director.InnerScoreDirector;
 
 /**
- * Moves an element of a list planning variable. The moved element is identified by an entity instance and a position
- * in that entity's list variable. The element is inserted at the given index in the given destination entity's list
- * variable.
+ * Moves an element of a {@link PlanningCollectionVariable list variable}. The moved element is identified
+ * by an entity instance and a position in that entity's list variable. The element is inserted at the given index
+ * in the given destination entity's list variable.
  * <p>
- * The move can be undone by simply flipping the source and destination entity+index.
+ * An undo move is simply created by flipping the source and destination entity+index.
  *
  * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
  */
@@ -45,10 +46,24 @@ public class ListChangeMove<Solution_> extends AbstractMove<Solution_> {
      * The move removes a planning value element from {@code sourceEntity.listVariable[sourceIndex]}
      * and inserts the planning value at {@code destinationEntity.listVariable[destinationIndex]}.
      *
-     * <p>
-     * <b>Example 1 - source and destination entities are different</b>
+     * <h4>ListChangeMove anatomy</h4>
      *
      * <pre>
+     * {@code
+     *                             ┌ destinationEntity
+     *                             │   ┌ destinationIndex
+     *                             ↓   ↓
+     *                A {Ann[0]}->{Bob[2]}
+     *                ↑  ↑   ↑
+     * planning value ┘  │   └ sourceIndex
+     *                   └ sourceEntity
+     * }
+     * </pre>
+     *
+     * <h4>Example 1 - source and destination entities are different</h4>
+     *
+     * <pre>
+     * {@code
      * GIVEN
      * Ann.tasks = [A, B, C]
      * Bob.tasks = [X, Y]
@@ -59,12 +74,13 @@ public class ListChangeMove<Solution_> extends AbstractMove<Solution_> {
      * THEN
      * Ann.tasks = [B, C]
      * Bob.tasks = [X, Y, A]
+     * }
      * </pre>
      *
-     * <p>
-     * <b>Example 2 - source and destination is the same entity</b>
+     * <h4>Example 2 - source and destination is the same entity</h4>
      *
      * <pre>
+     * {@code
      * GIVEN
      * Ann.tasks = [A, B, C]
      *
@@ -73,6 +89,7 @@ public class ListChangeMove<Solution_> extends AbstractMove<Solution_> {
      *
      * THEN
      * Ann.tasks = [B, C, A]
+     * }
      * </pre>
      *
      * @param variableDescriptor descriptor of a list variable, for example {@code Employee.taskList}
