@@ -107,15 +107,15 @@ public class InverseRelationShadowVariableDescriptor<Solution_> extends ShadowVa
                         + " annotated property (" + variableMemberAccessor.getName()
                         + ") which does not return a " + Collection.class.getSimpleName()
                         + " with sourceVariableName (" + sourceVariableName
-                        + ") which is neither chained nor list variable."
-                        + " Only a chained and list variables support a singleton inverse.");
+                        + ") which is neither a list variable nor a chained variable."
+                        + " Only list and chained variables support a singleton inverse.");
             }
         } else {
             if (chained) {
                 throw new IllegalArgumentException("The entityClass (" + entityDescriptor.getEntityClass()
                         + ") has a @" + InverseRelationShadowVariable.class.getSimpleName()
                         + " annotated property (" + variableMemberAccessor.getName()
-                        + ") which does returns a " + Collection.class.getSimpleName()
+                        + ") which returns a " + Collection.class.getSimpleName()
                         + " with sourceVariableName (" + sourceVariableName
                         + ") which is chained. A chained variable supports only a singleton inverse.");
             }

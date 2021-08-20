@@ -264,7 +264,7 @@ public class EntityDescriptor<Solution_> {
                         + ") has a @" + PlanningCollectionVariable.class.getSimpleName()
                         + " annotated member (" + memberAccessor
                         + ") that has an unsupported type (" + memberAccessor.getType() + ").\n"
-                        + "A subtype of " + List.class.getCanonicalName() + " is expected.");
+                        + "Maybe use " + List.class.getCanonicalName() + ".");
             }
         } else if (variableAnnotationClass.equals(InverseRelationShadowVariable.class)) {
             ShadowVariableDescriptor<Solution_> variableDescriptor = new InverseRelationShadowVariableDescriptor<>(
