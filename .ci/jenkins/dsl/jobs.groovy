@@ -60,14 +60,6 @@ def nightlyBranchFolder = "${KogitoConstants.KOGITO_DSL_NIGHTLY_FOLDER}/${JOB_BR
 def releaseBranchFolder = "${KogitoConstants.KOGITO_DSL_RELEASE_FOLDER}/${JOB_BRANCH_FOLDER}"
 
 if (Utils.isMainBranch(this)) {
-    // Old PR checks.
-    // To be removed once 8.5.x release branch is no more maintained.
-    // TODO remove method calls once 8.5.x is no more supported
-    setupOptaplannerPrJob()
-    setupOptaplannerQuarkusLTSPrJob()
-    setupOptaplannerNativePrJob()
-    // End of old PR checks
-
     // For BDD runtimes PR job
     setupDeployJob(bddRuntimesPrFolder, KogitoJobType.PR)
 }
@@ -100,27 +92,6 @@ if (Utils.isLTSBranch(this)) {
 /////////////////////////////////////////////////////////////////
 // Methods
 /////////////////////////////////////////////////////////////////
-
-// TODO remove method once 8.5.x is no more supported
-void setupOptaplannerPrJob() {
-    def jobParams = getDefaultJobParams()
-    jobParams.pr.run_only_for_branches = ['8.5.x']
-    KogitoJobTemplate.createPRJob(this, jobParams)
-}
-
-// TODO remove method once 8.5.x is no more supported
-void setupOptaplannerQuarkusLTSPrJob() {
-    def jobParams = getDefaultJobParams()
-    jobParams.pr.run_only_for_branches = ['8.5.x']
-    KogitoJobTemplate.createQuarkusLTSPRJob(this, jobParams)
-}
-
-// TODO remove method once 8.5.x is no more supported
-void setupOptaplannerNativePrJob() {
-    def jobParams = getDefaultJobParams()
-    jobParams.pr.run_only_for_branches = ['8.5.x']
-    KogitoJobTemplate.createNativePRJob(this, jobParams)
-}
 
 void setupMultijobPrDefaultChecks() {
     KogitoJobTemplate.createMultijobPRJobs(this, getMultijobPRConfig()) { return getDefaultJobParams() }
