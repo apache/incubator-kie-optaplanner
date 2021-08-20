@@ -22,10 +22,10 @@ import org.optaplanner.core.impl.domain.variable.supply.Supply;
 public interface IndexVariableSupply extends Supply {
 
     /**
-     * Get planningValue's index in the {@link PlanningCollectionVariable list variable} it is a member of.
+     * Get {@code planningValue}'s index in the {@link PlanningCollectionVariable list variable} it is a member of.
      *
      * @param planningValue never null
-     * @return never null, planningValue's index in the list variable it is a member of
+     * @return never null, {@code planningValue}'s index in the list variable it is a member of
      */
     Integer getIndex(Object planningValue);
 }
