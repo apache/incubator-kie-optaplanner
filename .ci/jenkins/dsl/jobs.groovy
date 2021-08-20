@@ -1,5 +1,4 @@
 import org.kie.jenkins.jobdsl.templates.KogitoJobTemplate
-import org.kie.jenkins.jobdsl.KogitoConstants
 import org.kie.jenkins.jobdsl.FolderUtils
 import org.kie.jenkins.jobdsl.Utils
 import org.kie.jenkins.jobdsl.VersionUtils
