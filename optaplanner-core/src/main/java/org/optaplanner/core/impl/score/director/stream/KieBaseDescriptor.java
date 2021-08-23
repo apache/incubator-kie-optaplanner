@@ -8,7 +8,7 @@ import org.kie.api.KieBase;
 import org.optaplanner.core.impl.score.inliner.WeightedScoreImpacter;
 import org.optaplanner.core.impl.score.stream.drools.DroolsConstraint;
 
-final class KieBaseDescriptor<Solution_> {
+final public class KieBaseDescriptor<Solution_> {
 
     private final Map<DroolsConstraint<Solution_>, Global<WeightedScoreImpacter>> constraintToGlobalMap;
     private final KieBase kieBase;
