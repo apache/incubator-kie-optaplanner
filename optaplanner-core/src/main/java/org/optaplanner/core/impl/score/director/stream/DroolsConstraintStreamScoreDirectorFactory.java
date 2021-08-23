@@ -26,6 +26,7 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Function;
+import java.util.function.Supplier;
 
 import org.drools.ancompiler.KieBaseUpdaterANC;
 import org.drools.model.Global;
@@ -69,6 +70,13 @@ public final class DroolsConstraintStreamScoreDirectorFactory<Solution_, Score_ 
             ConstraintProvider constraintProvider, boolean droolsAlphaNetworkCompilationEnabled) {
         this(solutionDescriptor,
                 buildKieBase(solutionDescriptor, constraintProvider, droolsAlphaNetworkCompilationEnabled),
+                droolsAlphaNetworkCompilationEnabled);
+    }
+
+    @SuppressWarnings("unchecked")
+    public DroolsConstraintStreamScoreDirectorFactory(SolutionDescriptor<Solution_> solutionDescriptor,
+            Supplier<?> kieBaseDescriptorSupplier, boolean droolsAlphaNetworkCompilationEnabled) {
+        this(solutionDescriptor, (KieBaseDescriptor<Solution_>) kieBaseDescriptorSupplier.get(),
                 droolsAlphaNetworkCompilationEnabled);
     }
 

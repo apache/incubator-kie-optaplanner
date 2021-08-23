@@ -221,7 +221,7 @@ public class ScoreDirectorFactoryFactory<Solution_, Score_ extends Score<Score_>
                 case DROOLS:
                     if (config.getGizmoKieBaseDescriptorWrapper() != null) {
                         return new DroolsConstraintStreamScoreDirectorFactory<>(solutionDescriptor,
-                                config.getGizmoKieBaseDescriptorWrapper().get(),
+                                config.getGizmoKieBaseDescriptorWrapper(),
                                 config.isDroolsAlphaNetworkCompilationEnabled());
                     }
                     return new DroolsConstraintStreamScoreDirectorFactory<>(solutionDescriptor, constraintProvider,
@@ -298,7 +298,7 @@ public class ScoreDirectorFactoryFactory<Solution_, Score_ extends Score<Score_>
         try {
             KieBase kieBase;
             if (config.getGizmoKieRuntimeBuilderWrapper() != null) {
-                kieBase = config.getGizmoKieRuntimeBuilderWrapper().get();
+                kieBase = config.getGizmoKieRuntimeBuilderWrapper().extractKieBase();
             } else {
                 // Can't put this code in KieBaseExtractor since it reference
                 // KieRuntimeBuilder, which is an optional dependency

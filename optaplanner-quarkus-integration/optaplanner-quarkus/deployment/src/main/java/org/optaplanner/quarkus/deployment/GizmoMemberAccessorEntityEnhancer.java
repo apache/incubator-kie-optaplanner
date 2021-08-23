@@ -55,7 +55,6 @@ import org.jboss.jandex.DotName;
 import org.jboss.jandex.FieldInfo;
 import org.jboss.jandex.IndexView;
 import org.jboss.jandex.MethodInfo;
-import org.kie.api.KieBase;
 import org.kie.api.definition.type.ClassReactive;
 import org.kie.api.definition.type.PropertyReactive;
 import org.kie.kogito.legacy.rules.KieRuntimeBuilder;
@@ -81,8 +80,8 @@ import org.optaplanner.core.impl.domain.solution.cloner.gizmo.GizmoSolutionClone
 import org.optaplanner.core.impl.domain.solution.cloner.gizmo.GizmoSolutionClonerImplementor;
 import org.optaplanner.core.impl.domain.solution.cloner.gizmo.GizmoSolutionOrEntityDescriptor;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
+import org.optaplanner.core.impl.score.director.drools.KieRuntimeBuilderWrapper;
 import org.optaplanner.core.impl.score.director.stream.DroolsConstraintStreamScoreDirectorFactory;
-import org.optaplanner.core.impl.score.director.stream.KieBaseDescriptor;
 import org.optaplanner.quarkus.gizmo.OptaPlannerDroolsInitializer;
 import org.optaplanner.quarkus.gizmo.OptaPlannerGizmoBeanFactory;
 
@@ -537,17 +536,14 @@ public class GizmoMemberAccessorEntityEnhancer {
                 ResultHandle kieRuntimeBuilder =
                         methodCreator.invokeInterfaceMethod(MethodDescriptor.ofMethod(Instance.class, "get", Object.class),
                                 kieRuntimeBuilderInstanceResultHandle);
-                FunctionCreator supplierCreator = methodCreator.createFunction(Supplier.class);
-                BytecodeCreator supplierBytecode = supplierCreator.getBytecode();
-                ResultHandle kieBase = supplierBytecode.invokeInterfaceMethod(
-                        MethodDescriptor.ofMethod(KieRuntimeBuilder.class, "getKieBase", KieBase.class),
+                ResultHandle kieRuntimeBuilderWrapper = methodCreator.newInstance(
+                        MethodDescriptor.ofConstructor(KieRuntimeBuilderWrapper.class, KieRuntimeBuilder.class),
                         kieRuntimeBuilder);
-                supplierBytecode.returnValue(kieBase);
                 methodCreator.invokeVirtualMethod(
                         MethodDescriptor.ofMethod(ScoreDirectorFactoryConfig.class, "setGizmoKieRuntimeBuilderWrapper",
                                 void.class,
-                                Supplier.class),
-                        methodCreator.getMethodParam(0), supplierCreator.getInstance());
+                                KieRuntimeBuilderWrapper.class),
+                        methodCreator.getMethodParam(0), kieRuntimeBuilderWrapper);
 
                 // Workaround for https://issues.redhat.com/browse/KOGITO-5101
                 transformers.produce(new BytecodeTransformerBuildItem(config.getSolutionClass().getName(),
@@ -583,7 +579,7 @@ public class GizmoMemberAccessorEntityEnhancer {
                         methodCreator.load(config.getScoreDirectorFactoryConfig().isDroolsAlphaNetworkCompilationEnabled());
                 ResultHandle kieBaseDescriptor = methodCreator.invokeStaticMethod(
                         MethodDescriptor.ofMethod(DroolsConstraintStreamScoreDirectorFactory.class, "buildKieBase",
-                                KieBaseDescriptor.class,
+                                "org.optaplanner.core.impl.score.director.stream.KieBaseDescriptor",
                                 SolutionDescriptor.class, ConstraintProvider.class, boolean.class),
                         solutionDescriptor, constraintProvider, isDroolsAlphaNetworkCompilationEnabled);
                 FunctionCreator supplierCreator = methodCreator.createFunction(Supplier.class);
