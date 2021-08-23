@@ -219,9 +219,9 @@ public class ScoreDirectorFactoryFactory<Solution_, Score_ extends Score<Score_>
                 case BAVET:
                     return new BavetConstraintStreamScoreDirectorFactory<>(solutionDescriptor, constraintProvider);
                 case DROOLS:
-                    if (config.getGizmoKieBaseDescriptorWrapper() != null) {
+                    if (config.getKieBaseSupplier() != null) {
                         return new DroolsConstraintStreamScoreDirectorFactory<>(solutionDescriptor,
-                                config.getGizmoKieBaseDescriptorWrapper(),
+                                config.getKieBaseSupplier(),
                                 config.isDroolsAlphaNetworkCompilationEnabled());
                     }
                     return new DroolsConstraintStreamScoreDirectorFactory<>(solutionDescriptor, constraintProvider,
@@ -297,8 +297,8 @@ public class ScoreDirectorFactoryFactory<Solution_, Score_ extends Score<Score_>
 
         try {
             KieBase kieBase;
-            if (config.getGizmoKieRuntimeBuilderWrapper() != null) {
-                kieBase = config.getGizmoKieRuntimeBuilderWrapper().extractKieBase();
+            if (config.getKieBaseSupplier() != null) {
+                kieBase = config.getKieBaseSupplier().get();
             } else {
                 // Can't put this code in KieBaseExtractor since it reference
                 // KieRuntimeBuilder, which is an optional dependency

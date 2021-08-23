@@ -2,13 +2,14 @@ package org.optaplanner.core.impl.score.director.stream;
 
 import java.util.Map;
 import java.util.Objects;
+import java.util.function.Supplier;
 
 import org.drools.model.Global;
 import org.kie.api.KieBase;
 import org.optaplanner.core.impl.score.inliner.WeightedScoreImpacter;
 import org.optaplanner.core.impl.score.stream.drools.DroolsConstraint;
 
-final class KieBaseDescriptor<Solution_> {
+final class KieBaseDescriptor<Solution_> implements Supplier<KieBase> {
 
     private final Map<DroolsConstraint<Solution_>, Global<WeightedScoreImpacter>> constraintToGlobalMap;
     private final KieBase kieBase;
@@ -24,6 +25,11 @@ final class KieBaseDescriptor<Solution_> {
     }
 
     public KieBase getKieBase() {
+        return kieBase;
+    }
+
+    @Override
+    public KieBase get() {
         return kieBase;
     }
 

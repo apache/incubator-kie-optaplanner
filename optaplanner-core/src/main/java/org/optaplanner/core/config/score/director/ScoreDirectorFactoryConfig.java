@@ -30,6 +30,7 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 import org.apache.commons.lang3.ObjectUtils;
 import org.drools.core.base.CoreComponentsBuilder;
+import org.kie.api.KieBase;
 import org.optaplanner.core.api.score.calculator.EasyScoreCalculator;
 import org.optaplanner.core.api.score.calculator.IncrementalScoreCalculator;
 import org.optaplanner.core.api.score.stream.ConstraintProvider;
@@ -77,9 +78,7 @@ public class ScoreDirectorFactoryConfig extends AbstractConfig<ScoreDirectorFact
     @XmlElement(name = "scoreDrlFile")
     protected List<File> scoreDrlFileList = null;
     @XmlTransient
-    protected KieRuntimeBuilderWrapper gizmoKieRuntimeBuilderWrapper = null;
-    @XmlTransient
-    protected Supplier<?> gizmoKieBaseDescriptorWrapper = null;
+    protected Supplier<KieBase> kieBaseSupplier = null;
 
     protected Boolean droolsAlphaNetworkCompilationEnabled = null;
     @XmlJavaTypeAdapter(JaxbCustomPropertiesAdapter.class)
@@ -172,20 +171,22 @@ public class ScoreDirectorFactoryConfig extends AbstractConfig<ScoreDirectorFact
         return droolsAlphaNetworkCompilationEnabled;
     }
 
+    @Deprecated
     public KieRuntimeBuilderWrapper getGizmoKieRuntimeBuilderWrapper() {
-        return gizmoKieRuntimeBuilderWrapper;
+        return (KieRuntimeBuilderWrapper) getKieBaseSupplier();
     }
 
+    @Deprecated
     public void setGizmoKieRuntimeBuilderWrapper(KieRuntimeBuilderWrapper kieRuntimeBuilderWrapper) {
-        this.gizmoKieRuntimeBuilderWrapper = kieRuntimeBuilderWrapper;
+        setKieBaseSupplier(kieRuntimeBuilderWrapper);
     }
 
-    public Supplier<?> getGizmoKieBaseDescriptorWrapper() {
-        return gizmoKieBaseDescriptorWrapper;
+    public Supplier<KieBase> getKieBaseSupplier() {
+        return kieBaseSupplier;
     }
 
-    public void setGizmoKieBaseDescriptorWrapper(Supplier<?> gizmoKieBaseDescriptorWrapper) {
-        this.gizmoKieBaseDescriptorWrapper = gizmoKieBaseDescriptorWrapper;
+    public void setKieBaseSupplier(Supplier<KieBase> kieBaseSupplier) {
+        this.kieBaseSupplier = kieBaseSupplier;
     }
 
     public void setDroolsAlphaNetworkCompilationEnabled(Boolean droolsAlphaNetworkCompilationEnabled) {
@@ -280,14 +281,9 @@ public class ScoreDirectorFactoryConfig extends AbstractConfig<ScoreDirectorFact
         return this;
     }
 
+    @Deprecated
     public ScoreDirectorFactoryConfig withGizmoKieRuntimeBuilderWrapper(KieRuntimeBuilderWrapper kieRuntimeBuilderWrapper) {
-        this.gizmoKieRuntimeBuilderWrapper = kieRuntimeBuilderWrapper;
-        return this;
-    }
-
-    public ScoreDirectorFactoryConfig
-            withGizmoKieBaseDescriptorWrapper(Supplier<?> gizmoKieBaseDescriptorWrapper) {
-        this.gizmoKieBaseDescriptorWrapper = gizmoKieBaseDescriptorWrapper;
+        setKieBaseSupplier(kieRuntimeBuilderWrapper);
         return this;
     }
 
@@ -328,10 +324,8 @@ public class ScoreDirectorFactoryConfig extends AbstractConfig<ScoreDirectorFact
                 scoreDrlList, inheritedConfig.getScoreDrlList());
         scoreDrlFileList = ConfigUtils.inheritMergeableListProperty(
                 scoreDrlFileList, inheritedConfig.getScoreDrlFileList());
-        gizmoKieRuntimeBuilderWrapper = ConfigUtils.inheritOverwritableProperty(gizmoKieRuntimeBuilderWrapper,
-                inheritedConfig.getGizmoKieRuntimeBuilderWrapper());
-        gizmoKieBaseDescriptorWrapper = ConfigUtils.inheritOverwritableProperty(gizmoKieBaseDescriptorWrapper,
-                inheritedConfig.getGizmoKieBaseDescriptorWrapper());
+        kieBaseSupplier = ConfigUtils.inheritOverwritableProperty(kieBaseSupplier,
+                inheritedConfig.getKieBaseSupplier());
         droolsAlphaNetworkCompilationEnabled = ConfigUtils.inheritOverwritableProperty(
                 droolsAlphaNetworkCompilationEnabled, inheritedConfig.getDroolsAlphaNetworkCompilationEnabled());
         kieBaseConfigurationProperties = ConfigUtils.inheritMergeableMapProperty(

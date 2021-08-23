@@ -55,6 +55,7 @@ import org.jboss.jandex.DotName;
 import org.jboss.jandex.FieldInfo;
 import org.jboss.jandex.IndexView;
 import org.jboss.jandex.MethodInfo;
+import org.kie.api.KieBase;
 import org.kie.api.definition.type.ClassReactive;
 import org.kie.api.definition.type.PropertyReactive;
 import org.kie.kogito.legacy.rules.KieRuntimeBuilder;
@@ -80,7 +81,6 @@ import org.optaplanner.core.impl.domain.solution.cloner.gizmo.GizmoSolutionClone
 import org.optaplanner.core.impl.domain.solution.cloner.gizmo.GizmoSolutionClonerImplementor;
 import org.optaplanner.core.impl.domain.solution.cloner.gizmo.GizmoSolutionOrEntityDescriptor;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
-import org.optaplanner.core.impl.score.director.drools.KieRuntimeBuilderWrapper;
 import org.optaplanner.core.impl.score.director.stream.DroolsConstraintStreamScoreDirectorFactory;
 import org.optaplanner.quarkus.gizmo.OptaPlannerDroolsInitializer;
 import org.optaplanner.quarkus.gizmo.OptaPlannerGizmoBeanFactory;
@@ -536,14 +536,17 @@ public class GizmoMemberAccessorEntityEnhancer {
                 ResultHandle kieRuntimeBuilder =
                         methodCreator.invokeInterfaceMethod(MethodDescriptor.ofMethod(Instance.class, "get", Object.class),
                                 kieRuntimeBuilderInstanceResultHandle);
-                ResultHandle kieRuntimeBuilderWrapper = methodCreator.newInstance(
-                        MethodDescriptor.ofConstructor(KieRuntimeBuilderWrapper.class, KieRuntimeBuilder.class),
-                        kieRuntimeBuilder);
+
+                FunctionCreator supplierCreator = methodCreator.createFunction(Supplier.class);
+                BytecodeCreator supplierBytecode = supplierCreator.getBytecode();
+                supplierBytecode.returnValue(supplierBytecode.invokeInterfaceMethod(
+                        MethodDescriptor.ofMethod(KieRuntimeBuilder.class, "getKieBase", KieBase.class),
+                        kieRuntimeBuilder));
                 methodCreator.invokeVirtualMethod(
-                        MethodDescriptor.ofMethod(ScoreDirectorFactoryConfig.class, "setGizmoKieRuntimeBuilderWrapper",
+                        MethodDescriptor.ofMethod(ScoreDirectorFactoryConfig.class, "setKieBaseSupplier",
                                 void.class,
-                                KieRuntimeBuilderWrapper.class),
-                        methodCreator.getMethodParam(0), kieRuntimeBuilderWrapper);
+                                Supplier.class),
+                        methodCreator.getMethodParam(0), supplierCreator.getInstance());
 
                 // Workaround for https://issues.redhat.com/browse/KOGITO-5101
                 transformers.produce(new BytecodeTransformerBuildItem(config.getSolutionClass().getName(),
@@ -582,14 +585,11 @@ public class GizmoMemberAccessorEntityEnhancer {
                                 "org.optaplanner.core.impl.score.director.stream.KieBaseDescriptor",
                                 SolutionDescriptor.class, ConstraintProvider.class, boolean.class),
                         solutionDescriptor, constraintProvider, isDroolsAlphaNetworkCompilationEnabled);
-                FunctionCreator supplierCreator = methodCreator.createFunction(Supplier.class);
-                BytecodeCreator supplierBytecode = supplierCreator.getBytecode();
-                supplierBytecode.returnValue(kieBaseDescriptor);
                 methodCreator.invokeVirtualMethod(
-                        MethodDescriptor.ofMethod(ScoreDirectorFactoryConfig.class, "setGizmoKieBaseDescriptorWrapper",
+                        MethodDescriptor.ofMethod(ScoreDirectorFactoryConfig.class, "setKieBaseSupplier",
                                 void.class,
                                 Supplier.class),
-                        methodCreator.getMethodParam(0), supplierCreator.getInstance());
+                        methodCreator.getMethodParam(0), kieBaseDescriptor);
             } else {
                 // No additional setup needed; Drools isn't used
                 methodCreator = classCreator.getMethodCreator(MethodDescriptor.ofMethod(OptaPlannerDroolsInitializer.class,
