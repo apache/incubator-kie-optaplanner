@@ -21,9 +21,6 @@ import static org.mockito.Mockito.mock;
 
 import org.junit.jupiter.api.Test;
 import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
-import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
-import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
-import org.optaplanner.core.impl.domain.variable.descriptor.ListVariableDescriptor;
 import org.optaplanner.core.impl.score.director.InnerScoreDirector;
 import org.optaplanner.core.impl.testdata.domain.list.TestdataListEntity;
 import org.optaplanner.core.impl.testdata.domain.list.TestdataListSolution;
@@ -34,19 +31,10 @@ class IndexVariableListenerTest {
     @Test
     void index() {
         InnerScoreDirector<TestdataListSolution, SimpleScore> scoreDirector = mock(InnerScoreDirector.class);
-        SolutionDescriptor<TestdataListSolution> solutionDescriptor = TestdataListSolution.buildSolutionDescriptor();
-        EntityDescriptor<TestdataListSolution> sourceEntityDescriptor =
-                solutionDescriptor.findEntityDescriptorOrFail(TestdataListEntity.class);
-        EntityDescriptor<TestdataListSolution> shadowEntityDescriptor =
-                solutionDescriptor.findEntityDescriptorOrFail(TestdataListValue.class);
-        IndexShadowVariableDescriptor<TestdataListSolution> indexShadowVariableDescriptor =
-                (IndexShadowVariableDescriptor<TestdataListSolution>) shadowEntityDescriptor
-                        .getShadowVariableDescriptor("index");
 
-        ListVariableDescriptor<TestdataListSolution> listVariableDescriptor =
-                (ListVariableDescriptor<TestdataListSolution>) sourceEntityDescriptor.getGenuineVariableDescriptor("valueList");
-        IndexVariableListener<TestdataListSolution> indexVariableListener =
-                new IndexVariableListener<>(indexShadowVariableDescriptor, listVariableDescriptor);
+        IndexVariableListener<TestdataListSolution> indexVariableListener = new IndexVariableListener<>(
+                TestdataListValue.buildVariableDescriptorForIndex(),
+                TestdataListEntity.buildVariableDescriptorForValueList());
 
         TestdataListValue v1 = new TestdataListValue("1");
         TestdataListValue v2 = new TestdataListValue("2");
