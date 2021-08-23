@@ -42,7 +42,7 @@ public class RandomListChangeIterator<Solution_> extends UpcomingSelectionIterat
     private final IndexVariableSupply indexVariableSupply;
     private final Iterator<Object> valueIterator;
     private final Random workingRandom;
-    private final NavigableMap<Integer, Object> destinationEntityByIndexNavigableMap;
+    private final NavigableMap<Integer, Object> indexToDestinationEntityMap;
     private final int destinationIndexRange;
 
     public RandomListChangeIterator(
@@ -58,10 +58,11 @@ public class RandomListChangeIterator<Solution_> extends UpcomingSelectionIterat
         this.valueIterator = valueSelector.iterator();
         this.workingRandom = workingRandom;
 
-        destinationEntityByIndexNavigableMap = new TreeMap<>();
+        // TODO optimize this (don't rebuild the whole map at the beginning of each step).
+        indexToDestinationEntityMap = new TreeMap<>();
         int cumulativeDestinationListSize = 0;
         for (Object entity : ((Iterable<Object>) entitySelector::endingIterator)) {
-            destinationEntityByIndexNavigableMap.put(cumulativeDestinationListSize, entity);
+            indexToDestinationEntityMap.put(cumulativeDestinationListSize, entity);
             cumulativeDestinationListSize += (listVariableDescriptor.getListSize(entity) + 1);
         }
         this.destinationIndexRange = cumulativeDestinationListSize;
@@ -85,7 +86,7 @@ public class RandomListChangeIterator<Solution_> extends UpcomingSelectionIterat
     }
 
     Pair<Object, Integer> entityAndIndexFromGlobalIndex(int index) {
-        Map.Entry<Integer, Object> entry = destinationEntityByIndexNavigableMap.floorEntry(index);
+        Map.Entry<Integer, Object> entry = indexToDestinationEntityMap.floorEntry(index);
         return Pair.of(entry.getValue(), index - entry.getKey());
     }
 }
