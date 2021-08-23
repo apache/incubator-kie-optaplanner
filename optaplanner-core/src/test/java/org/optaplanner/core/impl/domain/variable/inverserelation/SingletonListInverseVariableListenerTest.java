@@ -69,4 +69,34 @@ class SingletonListInverseVariableListenerTest {
         assertThat(v1.getEntity()).isEqualTo(e2);
         assertThat(inverseVariableListener.getInverseSingleton(v1)).isEqualTo(e2);
     }
+
+    @Test
+    void removeEntity() {
+        InnerScoreDirector<TestdataListSolution, SimpleScore> scoreDirector = mock(InnerScoreDirector.class);
+
+        SingletonListInverseVariableListener<TestdataListSolution> inverseVariableListener =
+                new SingletonListInverseVariableListener<>(
+                        TestdataListValue.buildVariableDescriptorForEntity(),
+                        TestdataListEntity.buildVariableDescriptorForValueList());
+
+        TestdataListValue v1 = new TestdataListValue("1");
+        TestdataListValue v2 = new TestdataListValue("2");
+        TestdataListValue v3 = new TestdataListValue("3");
+        TestdataListEntity e1 = TestdataListEntity.createWithValues("a", v1, v2);
+        TestdataListEntity e2 = TestdataListEntity.createWithValues("b", v3);
+
+        assertThat(v1.getEntity()).isEqualTo(e1);
+        assertThat(v2.getEntity()).isEqualTo(e1);
+        assertThat(v3.getEntity()).isEqualTo(e2);
+
+        inverseVariableListener.beforeEntityRemoved(scoreDirector, e1);
+        inverseVariableListener.afterEntityRemoved(scoreDirector, e1);
+
+        assertThat(v1.getEntity()).isNull();
+        assertThat(v2.getEntity()).isNull();
+        assertThat(v3.getEntity()).isEqualTo(e2);
+        assertThat(inverseVariableListener.getInverseSingleton(v1)).isNull();
+        assertThat(inverseVariableListener.getInverseSingleton(v2)).isNull();
+        assertThat(inverseVariableListener.getInverseSingleton(v3)).isEqualTo(e2);
+    }
 }

@@ -70,4 +70,29 @@ class IndexVariableListenerTest {
         assertThat(v4.getIndex()).isEqualTo(1);
         assertThat(v3.getIndex()).isEqualTo(2);
     }
+
+    @Test
+    void removeEntity() {
+        InnerScoreDirector<TestdataListSolution, SimpleScore> scoreDirector = mock(InnerScoreDirector.class);
+
+        IndexVariableListener<TestdataListSolution> indexVariableListener = new IndexVariableListener<>(
+                TestdataListValue.buildVariableDescriptorForIndex(),
+                TestdataListEntity.buildVariableDescriptorForValueList());
+
+        TestdataListValue v1 = new TestdataListValue("1");
+        TestdataListValue v2 = new TestdataListValue("2");
+        TestdataListValue v3 = new TestdataListValue("3");
+        TestdataListEntity entity = TestdataListEntity.createWithValues("a", v1, v2, v3);
+
+        assertThat(v1.getIndex()).isEqualTo(0);
+        assertThat(v2.getIndex()).isEqualTo(1);
+        assertThat(v3.getIndex()).isEqualTo(2);
+
+        indexVariableListener.beforeEntityRemoved(scoreDirector, entity);
+        indexVariableListener.afterEntityRemoved(scoreDirector, entity);
+
+        assertThat(v1.getIndex()).isNull();
+        assertThat(v2.getIndex()).isNull();
+        assertThat(v3.getIndex()).isNull();
+    }
 }

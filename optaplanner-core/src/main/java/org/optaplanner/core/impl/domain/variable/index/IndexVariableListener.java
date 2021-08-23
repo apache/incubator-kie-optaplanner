@@ -60,7 +60,7 @@ public class IndexVariableListener<Solution_> implements VariableListener<Soluti
 
     @Override
     public void beforeEntityRemoved(ScoreDirector<Solution_> scoreDirector, Object entity) {
-        // TODO maybe set all indexes to null
+        retract((InnerScoreDirector<Solution_, ?>) scoreDirector, entity);
     }
 
     @Override
@@ -83,6 +83,18 @@ public class IndexVariableListener<Solution_> implements VariableListener<Soluti
                 scoreDirector.afterVariableChanged(indexShadowVariableDescriptor, shadowEntity);
             }
             index++;
+        }
+    }
+
+    protected void retract(InnerScoreDirector<Solution_, ?> scoreDirector, Object sourceEntity) {
+        List<Object> listVariable = sourceListVariableDescriptor.getListVariable(sourceEntity);
+        if (listVariable == null) {
+            return;
+        }
+        for (Object shadowEntity : listVariable) {
+            scoreDirector.beforeVariableChanged(indexShadowVariableDescriptor, shadowEntity);
+            indexShadowVariableDescriptor.setValue(shadowEntity, null);
+            scoreDirector.afterVariableChanged(indexShadowVariableDescriptor, shadowEntity);
         }
     }
 

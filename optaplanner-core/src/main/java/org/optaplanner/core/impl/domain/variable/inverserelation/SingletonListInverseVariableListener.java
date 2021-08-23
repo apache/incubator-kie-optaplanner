@@ -61,7 +61,7 @@ public class SingletonListInverseVariableListener<Solution_>
 
     @Override
     public void beforeEntityRemoved(ScoreDirector<Solution_> scoreDirector, Object entity) {
-        // TODO maybe set all indexes to null
+        retract((InnerScoreDirector<Solution_, ?>) scoreDirector, entity);
     }
 
     @Override
@@ -80,6 +80,18 @@ public class SingletonListInverseVariableListener<Solution_>
                 shadowVariableDescriptor.setValue(shadowEntity, sourceEntity);
                 scoreDirector.afterVariableChanged(shadowVariableDescriptor, shadowEntity);
             }
+        }
+    }
+
+    protected void retract(InnerScoreDirector<Solution_, ?> scoreDirector, Object sourceEntity) {
+        List<Object> listVariable = sourceListVariableDescriptor.getListVariable(sourceEntity);
+        if (listVariable == null) {
+            return;
+        }
+        for (Object shadowEntity : listVariable) {
+            scoreDirector.beforeVariableChanged(shadowVariableDescriptor, shadowEntity);
+            shadowVariableDescriptor.setValue(shadowEntity, null);
+            scoreDirector.afterVariableChanged(shadowVariableDescriptor, shadowEntity);
         }
     }
 
