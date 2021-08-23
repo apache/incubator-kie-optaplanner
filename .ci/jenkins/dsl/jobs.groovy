@@ -81,11 +81,11 @@ if (!Utils.isMainBranch(this)) {
 }
 
 if (Utils.isMainBranch(this)) {
-    setupOptaPlannerTurtleTestsJob(otherFolder)
+    setupOptaPlannerTurtleTestsJob()
 }
 
 if (Utils.isLTSBranch(this)) {
-    setupNativeLTSJob(nightlyBranchFolder)
+    setupNativeLTSJob()
 }
 
 /////////////////////////////////////////////////////////////////
