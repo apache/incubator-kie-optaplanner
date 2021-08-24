@@ -83,29 +83,6 @@
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-assembly-plugin</artifactId>
       </plugin>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-javadoc-plugin</artifactId>
-        <executions>
-          <execution>
-            <id>javadoc-javadoc</id>
-            <phase>package</phase>
-            <goals>
-              <goal>javadoc</goal>
-            </goals>
-            <configuration>
-              <reportOutputDirectory>${project.build.directory}/aggregated-javadocs</reportOutputDirectory>
-              <includeDependencySources>true</includeDependencySources>
-              <dependencySourceIncludes>
-                <dependencySourceInclude>org.optaplanner:optaplanner-core</dependencySourceInclude>
-                <dependencySourceInclude>org.optaplanner:optaplanner-benchmark</dependencySourceInclude>
-                <dependencySourceInclude>org.optaplanner:optaplanner-persistence-*</dependencySourceInclude>
-                <dependencySourceInclude>org.optaplanner:optaplanner-test</dependencySourceInclude>
-              </dependencySourceIncludes>
-            </configuration>
-          </execution>
-        </executions>
-      </plugin>
     </plugins>
 
     <pluginManagement>
@@ -136,69 +113,4 @@
       </plugins>
     </pluginManagement>
   </build>
-
-  <dependencies>
-    <!-- Javadoc dependencies -->
-    <dependency>
-      <groupId>org.optaplanner</groupId>
-      <artifactId>optaplanner-core</artifactId>
-    </dependency>
-   <dependency>
-      <groupId>org.optaplanner</groupId>
-      <artifactId>optaplanner-core</artifactId>
-      <classifier>sources</classifier>
-    </dependency>
-    <dependency>
-      <groupId>org.optaplanner</groupId>
-      <artifactId>optaplanner-benchmark</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.optaplanner</groupId>
-      <artifactId>optaplanner-persistence-common</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.optaplanner</groupId>
-      <artifactId>optaplanner-persistence-xstream</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.optaplanner</groupId>
-      <artifactId>optaplanner-persistence-jaxb</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.optaplanner</groupId>
-      <artifactId>optaplanner-persistence-jackson</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.optaplanner</groupId>
-      <artifactId>optaplanner-persistence-jsonb</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.optaplanner</groupId>
-      <artifactId>optaplanner-persistence-jpa</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.optaplanner</groupId>
-      <artifactId>optaplanner-test</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>io.quarkus.gizmo</groupId>
-      <artifactId>gizmo</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.kie.kogito</groupId>
-      <artifactId>kogito-legacy-api</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.ow2.asm</groupId>
-      <artifactId>asm</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.jboss</groupId>
-      <artifactId>jandex</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.hibernate</groupId>
-      <artifactId>hibernate-core</artifactId>
-    </dependency>
-  </dependencies>
 </project>

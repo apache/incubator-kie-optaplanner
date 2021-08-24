@@ -24,6 +24,13 @@ function create_latest_symlinks() {
   popd
 }
 
+function assert_directory_exists() {
+  if [[ ! -d "$1" ]]; then
+    echo "The $1 directory does not exist. Please run the build with the full profile enabled."
+    exit 1
+  fi
+}
+
 if [[ $1 == "--help" ]]; then
   display_help
   exit 0
@@ -47,11 +54,10 @@ fi
 
 readonly optaplanner_project_root=$this_script_directory/../..
 readonly optaplanner_docs_build_dir="$optaplanner_project_root/optaplanner-docs/target"
+readonly optaplanner_javadoc_build_dir="$optaplanner_project_root/build/optaplanner-javadoc/target"
 
-if [[ ! -d "$optaplanner_docs_build_dir" ]]; then
-  echo "The $optaplanner_docs_build_dir directory does not exist. Please run the build with the full profile enabled."
-  exit 1
-fi
+assert_directory_exists "$optaplanner_docs_build_dir"
+assert_directory_exists "$optaplanner_javadoc_build_dir"
 
 # Create the directory structure .../release/${version}
 readonly temp_release_directory=/tmp/optaplanner-release-$version
@@ -64,7 +70,7 @@ mkdir -p "$local_optaplanner_docs/$version/optaplanner-javadoc"
 
 # Upload the documentation and Javadoc.
 cp -r "$optaplanner_docs_build_dir/optaplanner-docs-$version"/* "$local_optaplanner_docs/$version/optaplanner-docs"
-cp -r "$optaplanner_docs_build_dir"/aggregated-javadocs/apidocs/* "$local_optaplanner_docs/$version/optaplanner-javadoc"
+cp -r "$optaplanner_javadoc_build_dir/aggregated-javadocs/apidocs"/* "$local_optaplanner_docs/$version/optaplanner-javadoc"
 
 create_latest_symlinks "$local_optaplanner_docs" "$version"
 rsync -a -r -e "$remote_shell" --protocol=28 "$local_optaplanner_docs/.." "$remote_optaplanner_docs"
