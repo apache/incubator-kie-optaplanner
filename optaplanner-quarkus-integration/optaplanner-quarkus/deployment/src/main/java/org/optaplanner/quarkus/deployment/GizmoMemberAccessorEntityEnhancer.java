@@ -82,6 +82,7 @@ import org.optaplanner.core.impl.domain.solution.cloner.gizmo.GizmoSolutionClone
 import org.optaplanner.core.impl.domain.solution.cloner.gizmo.GizmoSolutionOrEntityDescriptor;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.core.impl.score.director.stream.DroolsConstraintStreamScoreDirectorFactory;
+import org.optaplanner.core.impl.score.director.stream.KieBaseDescriptor;
 import org.optaplanner.quarkus.gizmo.OptaPlannerDroolsInitializer;
 import org.optaplanner.quarkus.gizmo.OptaPlannerGizmoBeanFactory;
 
@@ -543,7 +544,7 @@ public class GizmoMemberAccessorEntityEnhancer {
                         MethodDescriptor.ofMethod(KieRuntimeBuilder.class, "getKieBase", KieBase.class),
                         kieRuntimeBuilder));
                 methodCreator.invokeVirtualMethod(
-                        MethodDescriptor.ofMethod(ScoreDirectorFactoryConfig.class, "setKieBaseSupplier",
+                        MethodDescriptor.ofMethod(ScoreDirectorFactoryConfig.class, "setGizmoKieBaseSupplier",
                                 void.class,
                                 Supplier.class),
                         methodCreator.getMethodParam(0), supplierCreator.getInstance());
@@ -582,11 +583,11 @@ public class GizmoMemberAccessorEntityEnhancer {
                         methodCreator.load(config.getScoreDirectorFactoryConfig().isDroolsAlphaNetworkCompilationEnabled());
                 ResultHandle kieBaseDescriptor = methodCreator.invokeStaticMethod(
                         MethodDescriptor.ofMethod(DroolsConstraintStreamScoreDirectorFactory.class, "buildKieBase",
-                                "org.optaplanner.core.impl.score.director.stream.KieBaseDescriptor",
+                                KieBaseDescriptor.class,
                                 SolutionDescriptor.class, ConstraintProvider.class, boolean.class),
                         solutionDescriptor, constraintProvider, isDroolsAlphaNetworkCompilationEnabled);
                 methodCreator.invokeVirtualMethod(
-                        MethodDescriptor.ofMethod(ScoreDirectorFactoryConfig.class, "setKieBaseSupplier",
+                        MethodDescriptor.ofMethod(ScoreDirectorFactoryConfig.class, "setGizmoKieBaseSupplier",
                                 void.class,
                                 Supplier.class),
                         methodCreator.getMethodParam(0), kieBaseDescriptor);
