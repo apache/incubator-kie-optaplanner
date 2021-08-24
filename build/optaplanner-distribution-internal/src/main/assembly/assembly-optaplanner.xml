@@ -12,7 +12,7 @@
 
   <fileSets>
     <fileSet><!-- Note: going outside the module dir is bad, but it is not fetching generated files -->
-      <directory>..</directory>
+      <directory>../..</directory>
       <includes>
         <include>LICENSE.txt</include>
       </includes>
@@ -39,7 +39,7 @@
     </fileSet>
     <!-- Examples -->
     <fileSet><!-- Note: going outside the module dir is bad, but it is not fetching generated files -->
-      <directory>../optaplanner-examples</directory>
+      <directory>../../optaplanner-examples</directory>
       <outputDirectory>examples/sources</outputDirectory>
       <excludes>
         <exclude>data/**/tmp-*.*</exclude>
