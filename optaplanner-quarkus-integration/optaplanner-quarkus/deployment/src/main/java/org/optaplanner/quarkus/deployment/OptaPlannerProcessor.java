@@ -214,7 +214,15 @@ class OptaPlannerProcessor {
         }
 
         if (determineIfNative.isNative()) {
-            solverConfig.getScoreDirectorFactoryConfig().setDroolsAlphaNetworkCompilationEnabled(false);
+            // DroolsAlphaNetworkCompilationEnabled is a three-state boolean (null, true, false); if it not
+            // null, ScoreDirectorFactoryFactory will throw an error if Drools isn't use (i.e. BAVET or Easy/Incremental)
+            if (solverConfig.getScoreDirectorFactoryConfig().getConstraintProviderClass() != null && solverConfig
+                    .getScoreDirectorFactoryConfig().getConstraintStreamImplType() == ConstraintStreamImplType.DROOLS) {
+                disableANC(solverConfig);
+            } else if (solverConfig.getScoreDirectorFactoryConfig().getScoreDrlList() != null
+                    || solverConfig.getScoreDirectorFactoryConfig().getScoreDrlFileList() == null) {
+                disableANC(solverConfig);
+            }
         }
 
         Set<Class<?>> reflectiveClassSet = new LinkedHashSet<>();
@@ -247,6 +255,14 @@ class OptaPlannerProcessor {
         additionalBeans.produce(new AdditionalBeanBuildItem(OptaPlannerBeanProvider.class));
         unremovableBeans.produce(UnremovableBeanBuildItem.beanTypes(OptaPlannerRuntimeConfig.class));
         return new SolverConfigBuildItem(solverConfig);
+    }
+
+    private void disableANC(SolverConfig solverConfig) {
+        if (solverConfig.getScoreDirectorFactoryConfig().getDroolsAlphaNetworkCompilationEnabled() != null
+                && solverConfig.getScoreDirectorFactoryConfig().getDroolsAlphaNetworkCompilationEnabled()) {
+            log.warn("Drools ANC is disabled since this is a native build");
+        }
+        solverConfig.getScoreDirectorFactoryConfig().setDroolsAlphaNetworkCompilationEnabled(false);
     }
 
     private void generateConstraintVerifier(SolverConfig solverConfig,
