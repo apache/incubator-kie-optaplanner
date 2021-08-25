@@ -147,14 +147,13 @@ public class NurseRosteringConstraintProvider implements ConstraintProvider {
                         minMaxContractLine.isEnabled())
                 .join(ShiftAssignment.class,
                         Joiners.equal(ContractLine::getContract, ShiftAssignment::getContract))
-                .join(NurseRosterParametrization.class)
-                .groupBy((contract, shift, nrp) -> shift.getEmployee(),
-                        (contract, shift, nrp) -> contract,
-                        (contract, shift, nrp) -> nrp,
-                        ExperimentalConstraintCollectors.consecutive((contract, shift, nrp) -> shift.getShiftDate(),
+                .groupBy((contract, shift) -> shift.getEmployee(),
+                        (contract, shift) -> contract,
+                        ExperimentalConstraintCollectors.consecutive((contract, shift) -> shift.getShiftDate(),
                                 ShiftDate::getDayIndex))
                 .flattenLast(ConsecutiveInfo::getConsecutiveSequences)
-                .filter((employee, contract, nrp, shiftSequence) -> {
+                .join(NurseRosterParametrization.class)
+                .filter((employee, contract, shiftSequence, nrp) -> {
                     if (!shiftSequence.isFirst() && contract.isViolated(shiftSequence.getPreviousBreak().getLength() - 1)) {
                         return true;
                     }
@@ -173,7 +172,7 @@ public class NurseRosteringConstraintProvider implements ConstraintProvider {
                     return false;
                 })
                 .penalize("consecutiveFreeDays", HardSoftScore.ONE_SOFT,
-                        (employee, contract, nrp, shiftSequence) -> {
+                        (employee, contract, shiftSequence, nrp) -> {
                             int total = 0;
                             if (!shiftSequence.isFirst()) {
                                 total += contract.getViolationAmount(shiftSequence.getPreviousBreak().getLength() - 1);
