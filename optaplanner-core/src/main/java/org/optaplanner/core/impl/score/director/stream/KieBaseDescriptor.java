@@ -24,10 +24,6 @@ public final class KieBaseDescriptor<Solution_> implements Supplier<KieBase> {
         return constraintToGlobalMap;
     }
 
-    public KieBase getKieBase() {
-        return kieBase;
-    }
-
     @Override
     public KieBase get() {
         return kieBase;

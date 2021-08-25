@@ -260,7 +260,7 @@ class OptaPlannerProcessor {
     private void disableANC(SolverConfig solverConfig) {
         if (solverConfig.getScoreDirectorFactoryConfig().getDroolsAlphaNetworkCompilationEnabled() != null
                 && solverConfig.getScoreDirectorFactoryConfig().getDroolsAlphaNetworkCompilationEnabled()) {
-            log.warn("Drools ANC is disabled since this is a native build");
+            log.warn("Disabling Drools Alpha Network Compiler since this is a native build.");
         }
         solverConfig.getScoreDirectorFactoryConfig().setDroolsAlphaNetworkCompilationEnabled(false);
     }

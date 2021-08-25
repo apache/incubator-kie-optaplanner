@@ -32,12 +32,8 @@ public class KieRuntimeBuilderWrapper implements Supplier<KieBase> {
         this.kieRuntimeBuilder = kieRuntimeBuilder;
     }
 
-    public KieBase extractKieBase() {
-        return kieRuntimeBuilder.getKieBase();
-    }
-
     @Override
     public KieBase get() {
-        return extractKieBase();
+        return kieRuntimeBuilder.getKieBase();
     }
 }
