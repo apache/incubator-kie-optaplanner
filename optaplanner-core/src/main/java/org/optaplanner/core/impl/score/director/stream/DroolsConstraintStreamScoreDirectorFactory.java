@@ -155,7 +155,6 @@ public final class DroolsConstraintStreamScoreDirectorFactory<Solution_, Score_ 
     public Constraint[] getConstraints() {
         return kieBaseDescriptor.getConstraintToGlobalMap()
                 .keySet()
-                .stream()
                 .toArray(Constraint[]::new);
     }
 
