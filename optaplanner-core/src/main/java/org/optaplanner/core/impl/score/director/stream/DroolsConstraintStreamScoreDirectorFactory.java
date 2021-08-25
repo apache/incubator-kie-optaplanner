@@ -181,9 +181,11 @@ public final class DroolsConstraintStreamScoreDirectorFactory<Solution_, Score_ 
                 return true;
             }
             Rule rule = match.getRule();
-            // We identify the rule by its constraint ID, which we pre-calculated during rule creation.
-            // The alternative is to pay string concat penalty (packageName + name) to calculate the ID on every rule evaluation.
-            // Since this code is on the hot path, this optimization was confirmed to bring considerable benefits.
+            /*
+             * We identify the rule by its constraint ID, which we pre-calculated during rule creation.
+             * The alternative is to pay string concat penalty (packageName + name) to calculate the ID on every match.
+             * Since this code is on the hot path, this optimization was confirmed to bring considerable benefits.
+             */
             String constraintId = (String) Objects.requireNonNull(
                     rule.getMetaData().get(CONSTRAINT_ID_RULE_METADATA_KEY),
                     () -> "Impossible state: Rule ("
