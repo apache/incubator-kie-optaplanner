@@ -61,6 +61,8 @@ import org.optaplanner.core.impl.score.stream.drools.SessionDescriptor;
 public final class DroolsConstraintStreamScoreDirectorFactory<Solution_, Score_ extends Score<Score_>>
         extends AbstractConstraintStreamScoreDirectorFactory<Solution_, Score_> {
 
+    public static final String CONSTRAINT_ID_RULE_METADATA_KEY = "constraintStreamsConstraintId";
+
     private final KieBaseDescriptor<Solution_> kieBaseDescriptor;
     private final Score_ zeroScore;
     private final boolean droolsAlphaNetworkCompilationEnabled;
@@ -180,7 +182,14 @@ public final class DroolsConstraintStreamScoreDirectorFactory<Solution_, Score_ 
                 return true;
             }
             Rule rule = match.getRule();
-            String constraintId = ConstraintMatchTotal.composeConstraintId(rule.getPackageName(), rule.getName());
+            // We identify the rule by its constraint ID, which we pre-calculated during rule creation.
+            // The alternative is to pay string concat penalty (packageName + name) to calculate the ID on every rule evaluation.
+            // Since this code is on the hot path, this optimization was confirmed to bring considerable benefits.
+            String constraintId = (String) Objects.requireNonNull(
+                    rule.getMetaData().get(CONSTRAINT_ID_RULE_METADATA_KEY),
+                    () -> "Impossible state: Rule ("
+                            + ConstraintMatchTotal.composeConstraintId(rule.getPackageName(), rule.getName())
+                            + ") has no constraint ID.");
             return !disabledConstraintIdSet.contains(constraintId);
         }
     }
