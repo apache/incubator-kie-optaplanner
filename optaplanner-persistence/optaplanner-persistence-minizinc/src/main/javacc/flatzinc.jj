@@ -41,6 +41,7 @@ import org.optaplanner.persistence.minizinc.model.FlatZincGoal;
 import org.optaplanner.persistence.minizinc.model.FlatZincPredicate;
 import org.optaplanner.persistence.minizinc.model.FlatZincPlanningVariable;
 import org.optaplanner.persistence.minizinc.model.FlatZincSolve;
+import org.optaplanner.persistence.minizinc.model.FlatZincString;
 import org.optaplanner.persistence.minizinc.model.TypeNameValue;
 import org.optaplanner.persistence.minizinc.model.FlatZincAnnotation;
 import org.optaplanner.persistence.minizinc.model.FlatZincExpr;
@@ -139,6 +140,28 @@ int IntLiteral() :
     }
 }
 
+MORE: {
+    <StringStart: ("\"")>:STRING
+}
+
+<STRING> MORE: {
+    <StringContent: ((~["\"", "\n", "]", "(", "]"])*)>
+}
+
+<STRING> TOKEN: {
+    <StringEnd: ("\"")>:DEFAULT
+}
+
+
+String StringLiteral() :
+{ Token token; }
+{
+    token=<StringEnd>
+    {
+        return token.image;
+    }
+}
+
 List<Integer> IndexSet() :
 { int start; int end; }
 {
@@ -217,7 +240,7 @@ List<Integer> IntList():
 }
 
 List<Integer> IntSetLiteral() :
-{ int head; List<Integer> rest; }
+{ int head; List<Integer> rest; int start; int end; }
 {
     LOOKAHEAD (3)
     "{" head=IntLiteral() "," rest=IntList() "}"
@@ -232,6 +255,16 @@ List<Integer> IntSetLiteral() :
     "{" head=IntLiteral() "}"
     {
         return List.of(head);
+    }
+    |
+    LOOKAHEAD (3)
+    start=IntLiteral() ".." end=IntLiteral()
+    {
+        List<Integer> out = new ArrayList<>(end - start + 1);
+        for (int i = start; i <= end; i++) {
+            out.add(i);
+        }
+        return out;
     }
 }
 
@@ -255,7 +288,7 @@ List<BigDecimal> FloatList():
 }
 
 List<BigDecimal> FloatSetLiteral() :
-{ BigDecimal head; List<BigDecimal> rest; }
+{ BigDecimal head; List<BigDecimal> rest; BigDecimal start; BigDecimal end; }
 {
     LOOKAHEAD (3)
     "{" head=FloatLiteral() "}"
@@ -268,6 +301,20 @@ List<BigDecimal> FloatSetLiteral() :
         List<BigDecimal> out = new ArrayList<>(rest.size() + 1);
         out.add(head);
         out.addAll(rest);
+        return out;
+    }
+    |
+    LOOKAHEAD (3)
+    start=FloatLiteral() ".." end=FloatLiteral()
+    {
+        int scale = start.scale();
+        BigDecimal unit = BigDecimal.valueOf(1, scale);
+        BigDecimal difference = end.subtract(start);
+        int size = difference.divide(unit, RoundingMode.CEILING).intValue();
+        List<BigDecimal> out = new ArrayList<>(size);
+        for (int i = 0; i <= size; i++) {
+            out.add(start.add(unit.multiply(BigDecimal.valueOf(i))));
+        }
         return out;
     }
 }
@@ -354,6 +401,39 @@ List<ValueRange> ArrayVarType() :
 FlatZincExpr BasicLiteralExpr() :
 { Object value; int start; int end; BigDecimal floatStart; BigDecimal floatEnd; }
 {
+    LOOKAHEAD (3)
+    value=IntSetLiteral()
+    {
+        return new FlatZincExpr(((List<Integer>) value).toArray(new Integer[0]));
+    }
+    | LOOKAHEAD (3)
+    start=IntLiteral() ".." end=IntLiteral()
+    {
+        int[] out = new int[end - start + 1];
+        for (int i = 0; i <= out.length; i++) {
+            out[i] = start + i;
+        }
+        return new FlatZincExpr(out);
+    }
+    | LOOKAHEAD (3)
+    value=FloatSetLiteral()
+    {
+        return new FlatZincExpr(((List<BigDecimal>) value).toArray(new BigDecimal[0]));
+    }
+    | LOOKAHEAD (3)
+    floatStart=FloatLiteral() ".." floatEnd=FloatLiteral()
+    {
+        int scale = floatStart.scale();
+        BigDecimal unit = BigDecimal.valueOf(1, scale);
+        BigDecimal difference = floatEnd.subtract(floatStart);
+        int size = difference.divide(unit, RoundingMode.CEILING).intValue();
+        BigDecimal[] out = new BigDecimal[size];
+        for (int i = 0; i <= out.length; i++) {
+            out[i] = floatStart.add(unit.multiply(BigDecimal.valueOf(i)));
+        }
+        return new FlatZincExpr(out);
+    }
+    |
     LOOKAHEAD (2)
     value=BoolLiteral()
     {
@@ -368,38 +448,6 @@ FlatZincExpr BasicLiteralExpr() :
     value=FloatLiteral()
     {
         return new FlatZincExpr((BigDecimal) value);
-    }
-    | LOOKAHEAD (3)
-    value=IntSetLiteral()
-    {
-        return new FlatZincExpr(((List<Integer>) value).toArray(new Integer[0]));
-    }
-    |
-    start=IntLiteral() ".." end=IntLiteral()
-    {
-        int[] out = new int[end - start + 1];
-        for (int i = 0; i <= out.length; i++) {
-            out[i] = start + i;
-        }
-        return new FlatZincExpr(out);
-    }
-    |
-    value=FloatSetLiteral()
-    {
-        return new FlatZincExpr(((List<BigDecimal>) value).toArray(new BigDecimal[0]));
-    }
-    |
-    floatStart=FloatLiteral() ".." floatEnd=FloatLiteral()
-    {
-        int scale = floatStart.scale();
-        BigDecimal unit = BigDecimal.valueOf(1, scale);
-        BigDecimal difference = floatEnd.subtract(floatStart);
-        int size = difference.divide(unit, RoundingMode.CEILING).intValue();
-        BigDecimal[] out = new BigDecimal[size];
-        for (int i = 0; i <= out.length; i++) {
-            out[i] = floatStart.add(unit.multiply(BigDecimal.valueOf(i)));
-        }
-        return new FlatZincExpr(out);
     }
 }
 
@@ -478,67 +526,70 @@ FlatZincArray ParArrayLiteral() :
     }
 }
 
-List<FlatZincExpr> Expr() :
-{ FlatZincExpr item; List<FlatZincExpr> items; }
-{
-    LOOKAHEAD (3)
-    items = BasicExprList()
-    {
-        return items;
-    }
-    |
-    LOOKAHEAD (3)
-    item = BasicExpr()
-    {
-        return List.of(item);
-    }
-}
-
 FlatZincAnnotation Annotation() :
 { Token name; List<FlatZincExpr> args; }
 {
+    LOOKAHEAD (3)
+    name = <Identifier> "(" args = BasicAnnotationArgs() ")"
+    {
+        return new FlatZincAnnotation(name.toString(), args);
+    }
+    |
     LOOKAHEAD (3)
     name = <Identifier>
     {
         return new FlatZincAnnotation(name.toString(), List.of());
     }
-    | LOOKAHEAD (3)
-    name = <Identifier> "(" args = AnnotationExprList() ")"
+}
+
+List<FlatZincExpr> BasicAnnotationArgs() :
+{ FlatZincExpr single; List<FlatZincExpr> many; }
+{
+    single=BasicAnnotationExpr()
     {
-        return new FlatZincAnnotation(name.toString(), args);
+        return List.of(single);
+    }
+    |
+    "[" many=AnnotationExprList() "]"
+    {
+        return many;
+    }
+}
+
+FlatZincExpr BasicAnnotationExpr() :
+{ String string; FlatZincExpr out; }
+{
+    out = BasicLiteralExpr()
+    {
+        return out;
+    }
+    |
+    out = Annotation()
+    {
+        return out;
+    }
+    |
+    string = StringLiteral()
+    {
+        return new FlatZincString(string);
     }
 }
 
 List<FlatZincExpr> AnnotationExprList() :
 { FlatZincExpr head; List<FlatZincExpr> tail; }
 {
-    LOOKAHEAD (3)
-    head = Annotation() "," tail = AnnotationExprList()
+    LOOKAHEAD (8)
+    head = BasicAnnotationExpr() "," tail = AnnotationExprList()
     {
         List<FlatZincExpr> out = new ArrayList<>(tail.size() + 1);
         out.add(head);
         out.addAll(tail);
         return out;
     }
-    |
-    LOOKAHEAD (3)
-    head = BasicLiteralExpr() "," tail = AnnotationExprList()
+    | LOOKAHEAD (8)
+    BasicAnnotationExpr()
     {
-        List<FlatZincExpr> out = new ArrayList<>(tail.size() + 1);
-        out.add(head);
-        out.addAll(tail);
-        return out;
-    }
-    |
-    LOOKAHEAD (3)
-    head = BasicLiteralExpr()
-    {
-        return List.of(head);
-    }
-    | LOOKAHEAD (3)
-    head = Annotation()
-    {
-        return List.of(head);
+        return List.of();
     }
 }
 
@@ -569,6 +620,7 @@ List<FlatZincAnnotation> Annotations() :
 Class BasicPredParamType() :
 { Token parType; ValueRange varType; Token type; }
 {
+    LOOKAHEAD (3)
     parType = <BasicParType>
     {
         String token = parType.toString();
@@ -584,21 +636,22 @@ Class BasicPredParamType() :
             throw new IllegalStateException("Impossible state: unmatched token (" + token + ").");
         }
     }
+    | LOOKAHEAD (3)
     varType = BasicVarType()
     {
         return varType.createRandomIterator(new Random()).next().getClass();
     }
-    |
+    | LOOKAHEAD (3)
     IntLiteral() ".." IntLiteral()
     {
         return int.class;
     }
-    |
+    | LOOKAHEAD (3)
     FloatLiteral() ".." FloatLiteral()
     {
         return BigDecimal.class;
     }
-    |
+    | LOOKAHEAD (3)
     IntSetLiteral()
     {
         return int.class;
