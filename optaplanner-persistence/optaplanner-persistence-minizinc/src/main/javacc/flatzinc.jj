@@ -1,0 +1,850 @@
+/*
+ * Copyright 2021 Red Hat, Inc. and/or its affiliates.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+options {
+   STATIC=false;
+}
+
+PARSER_BEGIN(OptaPlannerMiniZincParserImpl)
+package org.optaplanner.persistence.minizinc.parser;
+
+import java.io.InputStream;
+import java.lang.reflect.Array;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
+
+import org.optaplanner.core.api.domain.valuerange.ValueRange;
+import org.optaplanner.core.impl.domain.valuerange.buildin.bigdecimal.BigDecimalValueRange;
+import org.optaplanner.core.impl.domain.valuerange.buildin.collection.ListValueRange;
+import org.optaplanner.core.impl.domain.valuerange.buildin.primint.IntValueRange;
+import org.optaplanner.core.impl.domain.valuerange.buildin.primboolean.BooleanValueRange;
+import org.optaplanner.persistence.minizinc.FlatZincModel;
+import org.optaplanner.persistence.minizinc.model.FlatZincArray;
+import org.optaplanner.persistence.minizinc.model.FlatZincConstraint;
+import org.optaplanner.persistence.minizinc.model.FlatZincGoal;
+import org.optaplanner.persistence.minizinc.model.FlatZincPredicate;
+import org.optaplanner.persistence.minizinc.model.FlatZincPlanningVariable;
+import org.optaplanner.persistence.minizinc.model.FlatZincSolve;
+import org.optaplanner.persistence.minizinc.model.TypeNameValue;
+import org.optaplanner.persistence.minizinc.model.FlatZincAnnotation;
+import org.optaplanner.persistence.minizinc.model.FlatZincExpr;
+import org.optaplanner.persistence.minizinc.model.IntSetValueRange;
+
+public class OptaPlannerMiniZincParserImpl {
+    public static FlatZincModel parse(InputStream input) throws ParseException {
+        return new OptaPlannerMiniZincParserImpl(input, "UTF-8").Input();
+    }
+}
+PARSER_END(OptaPlannerMiniZincParserImpl)
+
+<*> TOKEN : {
+  <#_WHITESPACE:      ( " " | "\t" | "\n" | "\r" ) >
+}
+
+
+<DEFAULT> SKIP : {
+  < <_WHITESPACE>>
+}
+
+// Comments
+<DEFAULT> SKIP : {
+  <"%" (~["\n"])*>
+}
+
+<DEFAULT> TOKEN : {
+    <BasicParType: ("bool"|"int"|"float"|"set of int")>
+    | <ArrayToken: "array">
+    | <SetToken: "set">
+    | <OfToken: "of">
+    | <VarToken: "var">
+    | <PredicateToken: "predicate">
+    | <ConstraintToken: "constraint">
+    | <SolveToken: "solve">
+    | <SatisfyToken: "satisfy">
+    | <MinimizeToken: "minimize">
+    | <MaximizeToken: "maximize">
+    | <BoolToken: ("true" | "false")>
+    | <PredicateStart: "(">
+    | <PredicateEnd: ")">
+    | <ItemEnd: ";">
+    | <FloatToken: (("-")?((["0"-"9"])+"."(["0"-"9"])+)
+                       | ((["0"-"9"])+"."(["0"-"9"])+["E","e"](["-","+"])?(["0"-"9"])+)
+                       | (["0"-"9"])+["E","e"](["-","+"])?(["0"-"9"])+)>
+    | <IntToken: (("-")?((["0"-"9"])+ | "0x"(["0"-"9"]|["A"-"F"]|["a"-"f"])+ | "0o"(["0"-"7"])+))>
+    | <Identifier: ((["A"-"Z"]|["a"-"z"])(["A"-"Z"]|["a"-"z"]|["0"-"9"]|"_")*)>
+}
+
+/* Root production. */
+FlatZincModel Input() :
+{ List<FlatZincPredicate> predicates; List<TypeNameValue> parameters; List<FlatZincPlanningVariable> variables; List<FlatZincConstraint> constraints; FlatZincSolve solveGoal;}
+{
+    predicates=PredicateItems() parameters=ParDeclItems() variables=VarDeclItems() constraints=ConstraintItems() solveGoal=SolveItem()
+    {
+        return new FlatZincModel(predicates, parameters, variables, constraints, solveGoal);
+    }
+}
+
+void Empty() : {}
+{
+     {}
+}
+
+boolean BoolLiteral() :
+{ Token token; }
+{
+    token=<BoolToken>
+    {
+        return Boolean.valueOf(token.toString());
+    }
+}
+
+BigDecimal FloatLiteral() :
+{ Token token; }
+{
+    token=<FloatToken>
+    {
+        return new BigDecimal(token.toString());
+    }
+}
+
+int IntLiteral() :
+{ Token token; }
+{
+    token=<IntToken>
+    {
+         String value = token.toString();
+         if (value.startsWith("0x")) {
+             return Integer.parseInt(value.substring(2, 16));
+         } else if (value.startsWith("0o")) {
+             return Integer.parseInt(value.substring(2, 8));
+         } else {
+             return Integer.parseInt(value, 10);
+         }
+    }
+}
+
+List<Integer> IndexSet() :
+{ int start; int end; }
+{
+    start=IntLiteral() ".." end=IntLiteral()
+    {
+        if (start != 1) {
+            throw new IllegalArgumentException("Index Sets must begin with 1.");
+        }
+        List<Integer> out = new ArrayList<>(end);
+        for (int i = 1; i <= end; i++) {
+            out.add(i);
+        }
+        return out;
+    }
+}
+
+List<Class> ParType() :
+{ Token token; List<Integer> indexSet; String value; }
+{
+    token=<BasicParType>
+    {
+        value = token.toString();
+        if (value.equals("bool")) {
+            return List.of(boolean.class);
+        } else if (value.equals("int")) {
+            return List.of(int.class);
+        } else if (value.equals("float")) {
+            return List.of(BigDecimal.class);
+        } else if (value.equals("set of int")) {
+            return List.of(int[].class);
+        } else {
+            throw new IllegalStateException("Impossible state: unmatched token (" + token + ").");
+        }
+    }
+    |
+    <ArrayToken> "[" indexSet=IndexSet() "]" <OfToken> token=<BasicParType>
+    {
+        value = token.toString();
+        List<Class> out = new ArrayList<>(indexSet.size());
+        Class type = null;
+        if (value.equals("bool")) {
+            type = boolean.class;
+        } else if (value.equals("int")) {
+            type = int.class;
+        } else if (value.equals("float")) {
+            type = BigDecimal.class;
+        } else if (value.equals("set of int")) {
+            type = int[].class;
+        } else {
+            throw new IllegalStateException("Impossible state: unmatched token (" + token + ").");
+        }
+        for (int i = 0; i < indexSet.size(); i++) {
+            out.add(type);
+        }
+        return out;
+    }
+}
+
+List<Integer> IntList():
+{ int head; List<Integer> rest; }
+{
+    LOOKAHEAD (2)
+    head=IntLiteral() "," rest=IntList()
+    {
+        List<Integer> out = new ArrayList<>(rest.size() + 1);
+        out.add(head);
+        out.addAll(rest);
+        return out;
+    }
+    |
+    LOOKAHEAD (2)
+    head=IntLiteral()
+    {
+        return List.of(head);
+    }
+}
+
+List<Integer> IntSetLiteral() :
+{ int head; List<Integer> rest; }
+{
+    LOOKAHEAD (3)
+    "{" head=IntLiteral() "," rest=IntList() "}"
+    {
+        List<Integer> out = new ArrayList<>(rest.size() + 1);
+        out.add(head);
+        out.addAll(rest);
+        return out;
+    }
+    |
+    LOOKAHEAD (3)
+    "{" head=IntLiteral() "}"
+    {
+        return List.of(head);
+    }
+}
+
+List<BigDecimal> FloatList():
+{ BigDecimal head; List<BigDecimal> rest; }
+{
+    LOOKAHEAD (2)
+    head=FloatLiteral() "," rest=FloatList()
+    {
+        List<BigDecimal> out = new ArrayList<>(rest.size() + 1);
+        out.add(head);
+        out.addAll(rest);
+        return out;
+    }
+    |
+    LOOKAHEAD (2)
+    head=FloatLiteral()
+    {
+        return List.of(head);
+    }
+}
+
+List<BigDecimal> FloatSetLiteral() :
+{ BigDecimal head; List<BigDecimal> rest; }
+{
+    LOOKAHEAD (3)
+    "{" head=FloatLiteral() "}"
+    {
+        return List.of(head);
+    }
+    |
+    "{" head=FloatLiteral() "," rest=FloatList() "}"
+    {
+        List<BigDecimal> out = new ArrayList<>(rest.size() + 1);
+        out.add(head);
+        out.addAll(rest);
+        return out;
+    }
+}
+
+ValueRange BasicVarType() :
+{ String value; int start; int end; BigDecimal floatStart; BigDecimal floatEnd; Token token; List<Integer> intSet; }
+{
+    LOOKAHEAD (3)
+    <VarToken> token=<BasicParType>
+    {
+        value = token.toString();
+        if (value.equals("bool")) {
+            return new BooleanValueRange();
+        } else if (value.equals("int")) {
+            // TODO: Try to limit value range from annotations?
+            return new IntValueRange(Integer.MIN_VALUE, Integer.MAX_VALUE);
+        } else if (value.equals("float")) {
+            // TODO: Try to limit value range from annotations?
+            return new BigDecimalValueRange(BigDecimal.valueOf(Long.MIN_VALUE), BigDecimal.valueOf(Long.MAX_VALUE));
+        } else if (value.equals("set of int")) {
+            throw new IllegalArgumentException("set of int is not allowed as a variable type. Maybe you meant \"set of 1, 2, ...\"?");
+        } else {
+            throw new IllegalStateException("Impossible state: unmatched token (" + token + ").");
+        }
+    }
+    | LOOKAHEAD (2)
+    <VarToken> floatStart=FloatLiteral() ".." floatEnd=FloatLiteral()
+    {
+        return new BigDecimalValueRange(floatStart, floatEnd);
+    }
+    | LOOKAHEAD (2)
+    <VarToken> start=IntLiteral() ".." end=IntLiteral()
+    {
+        return new IntValueRange(start, end);
+    }
+    | LOOKAHEAD (3)
+    <VarToken> intSet=IntSetLiteral()
+    {
+        return new ListValueRange(intSet);
+    }
+    | LOOKAHEAD (3)
+    <VarToken> <SetToken> <OfToken> start=IntLiteral() ".." end=IntLiteral()
+    {
+        List<Integer> possibleValues = new ArrayList<>(end - start + 1);
+        for (int i = start; i <= end; i++) {
+            possibleValues.add(i);
+        }
+        return new IntSetValueRange(possibleValues);
+    }
+    |
+    <VarToken> <SetToken> <OfToken> intSet=IntSetLiteral()
+    {
+        return new IntSetValueRange(intSet);
+    }
+}
+
+String VarParIdentifier() :
+{ Token identifier; }
+{
+    identifier = <Identifier>
+    {
+        return identifier.toString();
+    }
+    |
+    "_" identifier = <Identifier>
+    {
+        return "_" + identifier.toString();
+    }
+}
+
+List<ValueRange> ArrayVarType() :
+{ List<Integer> indexSet; ValueRange valueRange; }
+{
+    <ArrayToken> "[" indexSet=IndexSet() "]" <OfToken> valueRange=BasicVarType()
+    {
+        List<ValueRange> out = new ArrayList<>(indexSet.size());
+        for (int i = 0; i < indexSet.size(); i++) {
+            out.add(valueRange);
+        }
+        return out;
+    }
+}
+
+FlatZincExpr BasicLiteralExpr() :
+{ Object value; int start; int end; BigDecimal floatStart; BigDecimal floatEnd; }
+{
+    LOOKAHEAD (2)
+    value=BoolLiteral()
+    {
+        return new FlatZincExpr((boolean) value);
+    }
+    | LOOKAHEAD (3)
+    value=IntLiteral()
+    {
+        return new FlatZincExpr((int) value);
+    }
+    | LOOKAHEAD (3)
+    value=FloatLiteral()
+    {
+        return new FlatZincExpr((BigDecimal) value);
+    }
+    | LOOKAHEAD (3)
+    value=IntSetLiteral()
+    {
+        return new FlatZincExpr(((List<Integer>) value).toArray(new Integer[0]));
+    }
+    |
+    start=IntLiteral() ".." end=IntLiteral()
+    {
+        int[] out = new int[end - start + 1];
+        for (int i = 0; i <= out.length; i++) {
+            out[i] = start + i;
+        }
+        return new FlatZincExpr(out);
+    }
+    |
+    value=FloatSetLiteral()
+    {
+        return new FlatZincExpr(((List<BigDecimal>) value).toArray(new BigDecimal[0]));
+    }
+    |
+    floatStart=FloatLiteral() ".." floatEnd=FloatLiteral()
+    {
+        int scale = floatStart.scale();
+        BigDecimal unit = BigDecimal.valueOf(1, scale);
+        BigDecimal difference = floatEnd.subtract(floatStart);
+        int size = difference.divide(unit, RoundingMode.CEILING).intValue();
+        BigDecimal[] out = new BigDecimal[size];
+        for (int i = 0; i <= out.length; i++) {
+            out[i] = floatStart.add(unit.multiply(BigDecimal.valueOf(i)));
+        }
+        return new FlatZincExpr(out);
+    }
+}
+
+FlatZincExpr BasicExpr() :
+{ FlatZincExpr expr; String variable; }
+{
+    expr=ArrayLiteral()
+    {
+        return expr;
+    }
+    |
+    expr=BasicLiteralExpr()
+    {
+        return expr;
+    }
+    |
+    variable=VarParIdentifier()
+    {
+        return new FlatZincExpr(variable);
+    }
+}
+
+List<FlatZincExpr> BasicExprList() :
+{ FlatZincExpr head; List<FlatZincExpr> tail; }
+{
+    LOOKAHEAD (3)
+    head = BasicExpr() "," tail = BasicExprList()
+    {
+        List<FlatZincExpr> out = new ArrayList<>(tail.size() + 1);
+        out.add(head);
+        out.addAll(tail);
+        return out;
+    }
+    |
+    LOOKAHEAD (3)
+    head = BasicExpr()
+    {
+        return List.of(head);
+    }
+}
+
+FlatZincArray BasicLiteralExprList() :
+{ FlatZincExpr head; FlatZincArray tail; }
+{
+    LOOKAHEAD (3)
+    head = BasicLiteralExpr() "," tail = BasicLiteralExprList()
+    {
+        List<FlatZincExpr> out = new ArrayList<>(tail.getItems().size() + 1);
+        out.add(head);
+        out.addAll(tail.getItems());
+        return new FlatZincArray(out);
+    }
+    |
+    LOOKAHEAD (3)
+    head = BasicLiteralExpr()
+    {
+        return new FlatZincArray(List.of(head));
+    }
+}
+
+FlatZincArray ArrayLiteral() :
+{ List<FlatZincExpr> items; }
+{
+    "[" items = BasicExprList() "]"
+    {
+        return new FlatZincArray(items);
+    }
+}
+
+FlatZincArray ParArrayLiteral() :
+{ FlatZincArray items; }
+{
+    "[" items = BasicLiteralExprList() "]"
+    {
+        return items;
+    }
+}
+
+List<FlatZincExpr> Expr() :
+{ FlatZincExpr item; List<FlatZincExpr> items; }
+{
+    LOOKAHEAD (3)
+    items = BasicExprList()
+    {
+        return items;
+    }
+    |
+    LOOKAHEAD (3)
+    item = BasicExpr()
+    {
+        return List.of(item);
+    }
+}
+
+FlatZincAnnotation Annotation() :
+{ Token name; List<FlatZincExpr> args; }
+{
+    LOOKAHEAD (3)
+    name = <Identifier>
+    {
+        return new FlatZincAnnotation(name.toString(), List.of());
+    }
+    | LOOKAHEAD (3)
+    name = <Identifier> "(" args = AnnotationExprList() ")"
+    {
+        return new FlatZincAnnotation(name.toString(), args);
+    }
+}
+
+List<FlatZincExpr> AnnotationExprList() :
+{ FlatZincExpr head; List<FlatZincExpr> tail; }
+{
+    LOOKAHEAD (3)
+    head = Annotation() "," tail = AnnotationExprList()
+    {
+        List<FlatZincExpr> out = new ArrayList<>(tail.size() + 1);
+        out.add(head);
+        out.addAll(tail);
+        return out;
+    }
+    |
+    LOOKAHEAD (3)
+    head = BasicLiteralExpr() "," tail = AnnotationExprList()
+    {
+        List<FlatZincExpr> out = new ArrayList<>(tail.size() + 1);
+        out.add(head);
+        out.addAll(tail);
+        return out;
+    }
+    |
+    LOOKAHEAD (3)
+    head = BasicLiteralExpr()
+    {
+        return List.of(head);
+    }
+    | LOOKAHEAD (3)
+    head = Annotation()
+    {
+        return List.of(head);
+    }
+}
+
+List<FlatZincAnnotation> Annotations() :
+{ FlatZincAnnotation head; List<FlatZincAnnotation> tail; }
+{
+    LOOKAHEAD (3)
+    "::" head = Annotation()  tail = Annotations()
+    {
+        List<FlatZincAnnotation> out = new ArrayList<>(tail.size() + 1);
+        out.add(head);
+        out.addAll(tail);
+        return out;
+    }
+    |
+    LOOKAHEAD (3)
+    "::" head = Annotation()
+    {
+        return List.of(head);
+    }
+    |
+    Empty()
+    {
+        return List.of();
+    }
+}
+
+Class BasicPredParamType() :
+{ Token parType; ValueRange varType; Token type; }
+{
+    parType = <BasicParType>
+    {
+        String token = parType.toString();
+        if (token.equals("bool")) {
+            return boolean.class;
+        } else if (token.equals("int")) {
+            return int.class;
+        } else if (token.equals("float")) {
+            return BigDecimal.class;
+        } else if (token.equals("set of int")) {
+            return int[].class;
+        } else {
+            throw new IllegalStateException("Impossible state: unmatched token (" + token + ").");
+        }
+    }
+    varType = BasicVarType()
+    {
+        return varType.createRandomIterator(new Random()).next().getClass();
+    }
+    |
+    IntLiteral() ".." IntLiteral()
+    {
+        return int.class;
+    }
+    |
+    FloatLiteral() ".." FloatLiteral()
+    {
+        return BigDecimal.class;
+    }
+    |
+    IntSetLiteral()
+    {
+        return int.class;
+    }
+    | LOOKAHEAD (3)
+    <SetToken> <OfToken> IntList()
+    {
+        return List.class;
+    }
+    | LOOKAHEAD (3)
+    <SetToken> <OfToken> IntSetLiteral()
+    {
+        return List.class;
+    }
+    | LOOKAHEAD (3)
+    <VarToken> <SetToken> <OfToken> type = <BasicParType>
+    {
+        String value = type.toString();
+        if (value.equals("int")) {
+            return List.class;
+        } else {
+            throw new IllegalArgumentException("set of " + type + " is not allowed as a predicate parameter type. Maybe you meant set of int?");
+        }
+    }
+}
+
+Class PredIndexSet() :
+{ Token token; }
+{
+    IndexSet()
+    {
+        return int.class;
+    }
+    |
+    token = <BasicParType>
+    {
+        String value = token.toString();
+        if (value.equals("int")) {
+            return int.class;
+        } else {
+            throw new IllegalArgumentException(token + " not allowed as a predicate index set. Maybe you meant int?");
+        }
+    }
+}
+
+Class PredParamType() :
+{ Class out; }
+{
+    out = BasicPredParamType()
+    {
+        return out;
+    }
+    |
+    <ArrayToken> "[" PredIndexSet() "]"  <OfToken> out = BasicPredParamType()
+    {
+        return Array.newInstance(out, 0).getClass();
+    }
+}
+
+List<TypeNameValue> PredicateArgList() :
+{ Class type; Token name; List<TypeNameValue> tail; }
+{
+    LOOKAHEAD (3)
+    type = PredParamType() ":" name = <Identifier> "," tail=PredicateArgList()
+    {
+        List<TypeNameValue> out = new ArrayList<>(tail.size() + 1);
+        out.add(new TypeNameValue(type, name.toString()));
+        out.addAll(tail);
+        return out;
+    }
+    |
+    LOOKAHEAD (3)
+    type = PredParamType() ":" name = <Identifier>
+    {
+        return List.of(new TypeNameValue(type, name.toString()));
+    }
+    |
+    Empty()
+    {
+        return List.of();
+    }
+}
+
+FlatZincPredicate PredicateItem() :
+{ Token name; List<TypeNameValue> args; }
+{
+    <PredicateToken> name=<Identifier> <PredicateStart> args=PredicateArgList() <PredicateEnd> <ItemEnd>
+    {
+        return new FlatZincPredicate(name.toString(), args);
+    }
+}
+
+List<FlatZincPredicate> PredicateItems() :
+{ FlatZincPredicate head; List<FlatZincPredicate> tail; }
+{
+    head=PredicateItem() tail=PredicateItems()
+    {
+        List<FlatZincPredicate> out = new ArrayList<>(tail.size() + 1);
+        out.add(head);
+        out.addAll(tail);
+        return out;
+    }
+    |
+    Empty()
+    {
+        return List.of();
+    }
+}
+
+FlatZincExpr ParExpr() :
+{ FlatZincExpr literal; }
+{
+    literal = BasicLiteralExpr()
+    {
+        return literal;
+    }
+    |
+    literal = ParArrayLiteral()
+    {
+        return literal;
+    }
+}
+
+TypeNameValue ParDeclItem() :
+{ List<Class> type; String name; FlatZincExpr value; }
+{
+    type = ParType() ":" name = VarParIdentifier() "=" value = ParExpr() <ItemEnd>
+    {
+        if (value instanceof FlatZincArray) {
+            FlatZincArray array = (FlatZincArray) value;
+            if (type.size() != array.getItems().size()) {
+                throw new IllegalArgumentException("Parameter (" + name + ") has mismatched cardinality: expected (" + type.size() + ") values but got (" + array.getItems().size() + ").");
+            }
+            return new TypeNameValue(Array.newInstance(type.get(0), 0).getClass(), name, array);
+        } else {
+            if (type.size() != 1) {
+                throw new IllegalArgumentException("Parameter (" + name + ") has mismatched cardinality: expected (" + type.size() + ") values but got (1).");
+            }
+            return new TypeNameValue(type.get(0), name, value);
+        }
+    }
+}
+
+List<TypeNameValue> ParDeclItems() :
+{ TypeNameValue head; List<TypeNameValue> tail; }
+{
+    head=ParDeclItem() tail=ParDeclItems()
+    {
+        List<TypeNameValue> out = new ArrayList<>(tail.size() + 1);
+        out.add(head);
+        out.addAll(tail);
+        return out;
+    }
+    |
+    Empty()
+    {
+        return List.of();
+    }
+}
+
+List<FlatZincPlanningVariable> VarDeclItem() :
+{ ValueRange valueRange; List<ValueRange> arrayValueRange; String name; List<FlatZincAnnotation> annotationList; FlatZincExpr defaultValue; FlatZincArray arrayDefaultValue; }
+{
+    LOOKAHEAD (3)
+    valueRange = BasicVarType() ":" name = VarParIdentifier() annotationList = Annotations() <ItemEnd>
+    {
+        return List.of(new FlatZincPlanningVariable(valueRange, name, annotationList));
+    }
+    |
+    LOOKAHEAD (3)
+    valueRange = BasicVarType() ":" name = VarParIdentifier() annotationList = Annotations() "=" defaultValue = BasicExpr() <ItemEnd>
+    {
+        return List.of(new FlatZincPlanningVariable(valueRange, name, annotationList, defaultValue));
+    }
+    | LOOKAHEAD (3)
+    arrayValueRange = ArrayVarType() ":" name = VarParIdentifier() annotationList = Annotations() "=" arrayDefaultValue = ArrayLiteral() <ItemEnd>
+    {
+        if (arrayValueRange.size() != arrayDefaultValue.getItems().size()) {
+            throw new IllegalArgumentException("Planning Variable (" + name + ") has mismatched cardinality: expected (" + arrayValueRange.size() + ") values but got (" + arrayDefaultValue.getItems().size() + ").");
+        }
+        List<FlatZincPlanningVariable> out = new ArrayList<>(arrayValueRange.size());
+        for (int i = 0; i < arrayValueRange.size(); i++) {
+            out.add(new FlatZincPlanningVariable(arrayValueRange.get(i), name + (i + 1), annotationList, arrayDefaultValue.getItems().get(i)));
+        }
+        return out;
+    }
+}
+
+List<FlatZincPlanningVariable> VarDeclItems() :
+{ List<FlatZincPlanningVariable> head; List<FlatZincPlanningVariable> tail; }
+{
+    head=VarDeclItem() tail=VarDeclItems()
+    {
+        List<FlatZincPlanningVariable> out = new ArrayList<>(tail.size() + head.size());
+        out.addAll(head);
+        out.addAll(tail);
+        return out;
+    }
+    |
+    Empty()
+    {
+        return List.of();
+    }
+}
+
+FlatZincConstraint ConstraintItem() :
+{ Token predicateName; List<FlatZincExpr> predicateArguments; List<FlatZincAnnotation> annotationList; }
+{
+    <ConstraintToken> predicateName = <Identifier> <PredicateStart> predicateArguments=BasicExprList() <PredicateEnd> annotationList=Annotations() <ItemEnd>
+    {
+        return new FlatZincConstraint(predicateName.toString(), predicateArguments, annotationList);
+    }
+}
+
+List<FlatZincConstraint> ConstraintItems() :
+{ FlatZincConstraint head; List<FlatZincConstraint> tail; }
+{
+    head=ConstraintItem() tail=ConstraintItems()
+    {
+        List<FlatZincConstraint> out = new ArrayList<>(tail.size() + 1);
+        out.add(head);
+        out.addAll(tail);
+        return out;
+    }
+    |
+    Empty()
+    {
+        return List.of();
+    }
+}
+
+FlatZincSolve SolveItem() :
+{ List<FlatZincAnnotation> annotationList; FlatZincExpr goalExpression; }
+{   LOOKAHEAD (3)
+    <SolveToken> annotationList=Annotations() <SatisfyToken> <ItemEnd>
+    {
+        return new FlatZincSolve(annotationList, FlatZincGoal.SATISFY, null);
+    }
+    | LOOKAHEAD (3)
+    <SolveToken> annotationList=Annotations() <MinimizeToken> goalExpression=BasicExpr() <ItemEnd>
+    {
+        return new FlatZincSolve(annotationList, FlatZincGoal.MINIMIZE, goalExpression);
+    }
+    |
+    <SolveToken> annotationList=Annotations() <MaximizeToken> goalExpression=BasicExpr() <ItemEnd>
+    {
+        return new FlatZincSolve(annotationList, FlatZincGoal.MAXIMIZE, goalExpression);
+    }
+}

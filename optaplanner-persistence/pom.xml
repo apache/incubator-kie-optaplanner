@@ -30,6 +30,7 @@
     <module>optaplanner-persistence-jackson</module>
     <module>optaplanner-persistence-jpa</module>
     <module>optaplanner-persistence-jsonb</module>
+    <module>optaplanner-persistence-minizinc</module>
   </modules>
 
   <!-- TODO: Move to optaplanner-build-parent once https://github.com/quarkusio/quarkus-platform-bom-generator/issues/64 is solved.  -->

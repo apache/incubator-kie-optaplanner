@@ -1,0 +1,18 @@
+array [1..2] of int: X_INTRODUCED_0_ = [1,-1];
+var 1..3: wa:: output_var;
+var 1..3: nt:: output_var;
+var 1..3: sa:: output_var;
+var 1..3: q:: output_var;
+var 1..3: nsw:: output_var;
+var 1..3: v:: output_var;
+var 1..3: t:: output_var;
+constraint int_lin_ne(X_INTRODUCED_0_,[wa,nt],0);
+constraint int_lin_ne(X_INTRODUCED_0_,[wa,sa],0);
+constraint int_lin_ne(X_INTRODUCED_0_,[nt,sa],0);
+constraint int_lin_ne(X_INTRODUCED_0_,[nt,q],0);
+constraint int_lin_ne(X_INTRODUCED_0_,[sa,q],0);
+constraint int_lin_ne(X_INTRODUCED_0_,[sa,nsw],0);
+constraint int_lin_ne(X_INTRODUCED_0_,[sa,v],0);
+constraint int_lin_ne(X_INTRODUCED_0_,[q,nsw],0);
+constraint int_lin_ne(X_INTRODUCED_0_,[nsw,v],0);
+solve  satisfy;
