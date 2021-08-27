@@ -17,6 +17,7 @@
 package org.optaplanner.persistence.minizinc.model;
 
 import java.util.List;
+import java.util.Objects;
 
 public class FlatZincConstraint {
     private final String predicateName;
@@ -49,5 +50,23 @@ public class FlatZincConstraint {
                 ", predicateArguments=" + predicateArguments +
                 ", annotationList=" + annotationList +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        FlatZincConstraint that = (FlatZincConstraint) o;
+        return predicateName.equals(that.predicateName) && predicateArguments.equals(that.predicateArguments)
+                && annotationList.equals(that.annotationList);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(predicateName, predicateArguments, annotationList);
     }
 }

@@ -301,7 +301,7 @@ ValueRange BasicVarType() :
     | LOOKAHEAD (2)
     <VarToken> start=IntLiteral() ".." end=IntLiteral()
     {
-        return new IntValueRange(start, end);
+        return new IntValueRange(start, end + 1);
     }
     | LOOKAHEAD (3)
     <VarToken> intSet=IntSetLiteral()

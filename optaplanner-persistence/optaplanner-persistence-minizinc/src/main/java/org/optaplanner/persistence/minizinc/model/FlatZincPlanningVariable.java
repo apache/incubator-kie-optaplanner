@@ -17,6 +17,7 @@
 package org.optaplanner.persistence.minizinc.model;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 import org.optaplanner.core.api.domain.valuerange.ValueRange;
@@ -33,7 +34,6 @@ public class FlatZincPlanningVariable {
         this.valueRange = valueRange;
         this.annotationList = annotationList;
         this.defaultValue = Optional.of(defaultValue);
-        System.out.println(this);
     }
 
     public FlatZincPlanningVariable(ValueRange valueRange, String name, List<FlatZincAnnotation> annotationList) {
@@ -67,5 +67,23 @@ public class FlatZincPlanningVariable {
                 ", annotationList=" + annotationList +
                 ", defaultValue=" + defaultValue +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        FlatZincPlanningVariable that = (FlatZincPlanningVariable) o;
+        return valueRange.equals(that.valueRange) && name.equals(that.name) && annotationList.equals(that.annotationList)
+                && defaultValue.equals(that.defaultValue);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(valueRange, name, annotationList, defaultValue);
     }
 }

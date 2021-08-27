@@ -17,6 +17,7 @@
 package org.optaplanner.persistence.minizinc.model;
 
 import java.math.BigDecimal;
+import java.util.Objects;
 
 public class FlatZincExpr {
     Object value;
@@ -98,5 +99,22 @@ public class FlatZincExpr {
         return "FlatZincExpr{" +
                 "value=" + value +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        FlatZincExpr that = (FlatZincExpr) o;
+        return Objects.equals(value, that.value);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(value);
     }
 }

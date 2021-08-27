@@ -17,6 +17,7 @@
 package org.optaplanner.persistence.minizinc;
 
 import java.util.List;
+import java.util.Objects;
 
 import org.optaplanner.persistence.minizinc.model.FlatZincConstraint;
 import org.optaplanner.persistence.minizinc.model.FlatZincPlanningVariable;
@@ -70,5 +71,26 @@ public class FlatZincModel {
                 ",\n    constraintList=" + constraintList +
                 ",\n    solveGoal=" + solveGoal +
                 "\n}";
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        FlatZincModel that = (FlatZincModel) o;
+        return predicateList.equals(that.predicateList)
+                && parameterList.equals(that.parameterList)
+                && planningVariableList.equals(that.planningVariableList)
+                && constraintList.equals(that.constraintList)
+                && solveGoal.equals(that.solveGoal);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(predicateList, parameterList, planningVariableList, constraintList, solveGoal);
     }
 }

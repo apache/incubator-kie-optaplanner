@@ -19,6 +19,7 @@ package org.optaplanner.persistence.minizinc.model;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Objects;
 import java.util.Random;
 
 import org.optaplanner.core.impl.domain.valuerange.AbstractCountableValueRange;
@@ -94,5 +95,22 @@ public class IntSetValueRange extends AbstractCountableValueRange<List<Integer>>
         return "IntSetValueRange{" +
                 "possibleItemsOfSet=" + possibleItemsOfSet +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        IntSetValueRange that = (IntSetValueRange) o;
+        return possibleItemsOfSet.equals(that.possibleItemsOfSet);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(possibleItemsOfSet);
     }
 }

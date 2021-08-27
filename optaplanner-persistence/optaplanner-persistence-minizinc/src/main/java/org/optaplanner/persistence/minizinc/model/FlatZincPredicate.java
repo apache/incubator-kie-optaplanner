@@ -17,6 +17,7 @@
 package org.optaplanner.persistence.minizinc.model;
 
 import java.util.List;
+import java.util.Objects;
 
 public class FlatZincPredicate {
     private final String name;
@@ -41,5 +42,22 @@ public class FlatZincPredicate {
                 "name='" + name + '\'' +
                 ", argList=" + argList +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        FlatZincPredicate that = (FlatZincPredicate) o;
+        return name.equals(that.name) && argList.equals(that.argList);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(name, argList);
     }
 }

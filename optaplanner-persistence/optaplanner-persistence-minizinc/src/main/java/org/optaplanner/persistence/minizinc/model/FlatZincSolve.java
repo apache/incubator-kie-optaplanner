@@ -17,6 +17,7 @@
 package org.optaplanner.persistence.minizinc.model;
 
 import java.util.List;
+import java.util.Objects;
 
 public class FlatZincSolve {
     private final List<FlatZincAnnotation> annotationList;
@@ -48,5 +49,23 @@ public class FlatZincSolve {
                 ", goal=" + goal +
                 ", goalExpression=" + goalExpression +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        FlatZincSolve that = (FlatZincSolve) o;
+        return annotationList.equals(that.annotationList) && goal == that.goal
+                && Objects.equals(goalExpression, that.goalExpression);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(annotationList, goal, goalExpression);
     }
 }

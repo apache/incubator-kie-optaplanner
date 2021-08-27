@@ -17,6 +17,7 @@
 package org.optaplanner.persistence.minizinc.model;
 
 import java.util.List;
+import java.util.Objects;
 
 public class FlatZincArray extends FlatZincExpr {
     private final List<FlatZincExpr> items;
@@ -34,5 +35,25 @@ public class FlatZincArray extends FlatZincExpr {
         return "FlatZincArray{" +
                 "items=" + items +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        if (!super.equals(o)) {
+            return false;
+        }
+        FlatZincArray that = (FlatZincArray) o;
+        return items.equals(that.items);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(super.hashCode(), items);
     }
 }

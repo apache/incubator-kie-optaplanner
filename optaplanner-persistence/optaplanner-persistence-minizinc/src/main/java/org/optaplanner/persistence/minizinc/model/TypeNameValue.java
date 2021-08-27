@@ -16,6 +16,8 @@
 
 package org.optaplanner.persistence.minizinc.model;
 
+import java.util.Objects;
+
 public class TypeNameValue {
     private final Class type;
     private final String name;
@@ -50,5 +52,22 @@ public class TypeNameValue {
                 ", name='" + name + '\'' +
                 ", value=" + value +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        TypeNameValue that = (TypeNameValue) o;
+        return type.equals(that.type) && name.equals(that.name) && Objects.equals(value, that.value);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(type, name, value);
     }
 }

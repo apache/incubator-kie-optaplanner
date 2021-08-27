@@ -13,6 +13,7 @@
 
   <properties>
     <java.module.name>org.optaplanner.persistence.minizinc</java.module.name>
+    <version.javacc.plugin>4.1.4</version.javacc.plugin>
   </properties>
 
   <dependencies>
@@ -54,6 +55,15 @@
   </dependencies>
 
   <build>
+    <pluginManagement>
+      <plugins>
+        <plugin>
+          <groupId>com.helger.maven</groupId>
+          <artifactId>ph-javacc-maven-plugin</artifactId>
+          <version>${version.javacc.plugin}</version>
+        </plugin>
+      </plugins>
+    </pluginManagement>
     <plugins>
       <plugin>
         <groupId>com.helger.maven</groupId>
