@@ -55,7 +55,7 @@ public class OptaPlannerDevUITest {
                 .asPrettyString();
         XmlParser xmlParser = new XmlParser();
         Node node = xmlParser.parseText(body);
-        String solverConfig = Objects.requireNonNull(findById("solver-config", node)).text();
+        String solverConfig = Objects.requireNonNull(findById("optaplanner-solver-config", node)).text();
         assertThat(solverConfig).isEqualToIgnoringWhitespace(
                 "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
                         + "<!--Properties that can be set at runtime are not included-->\n"
@@ -78,7 +78,7 @@ public class OptaPlannerDevUITest {
                 .asPrettyString();
         XmlParser xmlParser = new XmlParser();
         Node node = xmlParser.parseText(body);
-        String model = Objects.requireNonNull(findById("model", node)).toString();
+        String model = Objects.requireNonNull(findById("optaplanner-model", node)).toString();
         assertThat(model)
                 .contains("value=[Solution: org.optaplanner.quarkus.it.devui.domain.TestdataStringLengthShadowSolution]");
         assertThat(model).contains("value=[Entity: org.optaplanner.quarkus.it.devui.domain.TestdataStringLengthShadowEntity]");
@@ -97,7 +97,7 @@ public class OptaPlannerDevUITest {
                 .asPrettyString();
         XmlParser xmlParser = new XmlParser();
         Node node = xmlParser.parseText(body);
-        String constraints = Objects.requireNonNull(findById("constraints", node)).text();
+        String constraints = Objects.requireNonNull(findById("optaplanner-constraints", node)).text();
         assertThat(constraints).contains("org.optaplanner.quarkus.it.devui.domain/Don't assign 2 entities the same value");
         assertThat(constraints).contains("org.optaplanner.quarkus.it.devui.domain/Maximize value length");
     }
