@@ -17,6 +17,7 @@
 package org.optaplanner.persistence.minizinc.model;
 
 import java.math.BigDecimal;
+import java.util.Arrays;
 import java.util.Objects;
 
 public class FlatZincExpr {
@@ -96,8 +97,19 @@ public class FlatZincExpr {
 
     @Override
     public String toString() {
+        if (value != null) {
+            String valueToString = value.toString();
+            if (value instanceof int[]) {
+                valueToString = Arrays.toString((int[]) value);
+            } else if (value instanceof BigDecimal[]) {
+                valueToString = Arrays.toString((BigDecimal[]) value);
+            }
+            return "FlatZincExpr{" +
+                    "value=" + valueToString +
+                    '}';
+        }
         return "FlatZincExpr{" +
-                "value=" + value +
+                "value=null" +
                 '}';
     }
 

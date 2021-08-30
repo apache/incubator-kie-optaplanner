@@ -343,7 +343,9 @@ ValueRange BasicVarType() :
     | LOOKAHEAD (2)
     <VarToken> floatStart=FloatLiteral() ".." floatEnd=FloatLiteral()
     {
-        return new BigDecimalValueRange(floatStart, floatEnd);
+        int scale = floatStart.scale();
+        BigDecimal unit = BigDecimal.valueOf(1, scale);
+        return new BigDecimalValueRange(floatStart, floatEnd.add(unit));
     }
     | LOOKAHEAD (2)
     <VarToken> start=IntLiteral() ".." end=IntLiteral()
@@ -385,16 +387,12 @@ String VarParIdentifier() :
     }
 }
 
-List<ValueRange> ArrayVarType() :
+ValueRange ArrayVarType() :
 { List<Integer> indexSet; ValueRange valueRange; }
 {
     <ArrayToken> "[" indexSet=IndexSet() "]" <OfToken> valueRange=BasicVarType()
     {
-        List<ValueRange> out = new ArrayList<>(indexSet.size());
-        for (int i = 0; i < indexSet.size(); i++) {
-            out.add(valueRange);
-        }
-        return out;
+        return valueRange;
     }
 }
 
@@ -587,9 +585,9 @@ List<FlatZincExpr> AnnotationExprList() :
         return out;
     }
     | LOOKAHEAD (8)
-    BasicAnnotationExpr()
+    head = BasicAnnotationExpr()
     {
-        return List.of();
+        return List.of(head);
     }
 }
 
@@ -812,41 +810,34 @@ List<TypeNameValue> ParDeclItems() :
     }
 }
 
-List<FlatZincPlanningVariable> VarDeclItem() :
-{ ValueRange valueRange; List<ValueRange> arrayValueRange; String name; List<FlatZincAnnotation> annotationList; FlatZincExpr defaultValue; FlatZincArray arrayDefaultValue; }
+FlatZincPlanningVariable VarDeclItem() :
+{ ValueRange valueRange; String name; List<FlatZincAnnotation> annotationList; FlatZincExpr defaultValue; }
 {
     LOOKAHEAD (3)
     valueRange = BasicVarType() ":" name = VarParIdentifier() annotationList = Annotations() <ItemEnd>
     {
-        return List.of(new FlatZincPlanningVariable(valueRange, name, annotationList));
+        return new FlatZincPlanningVariable(valueRange, name, annotationList);
     }
     |
     LOOKAHEAD (3)
     valueRange = BasicVarType() ":" name = VarParIdentifier() annotationList = Annotations() "=" defaultValue = BasicExpr() <ItemEnd>
     {
-        return List.of(new FlatZincPlanningVariable(valueRange, name, annotationList, defaultValue));
+        return new FlatZincPlanningVariable(valueRange, name, annotationList, defaultValue);
     }
     | LOOKAHEAD (3)
-    arrayValueRange = ArrayVarType() ":" name = VarParIdentifier() annotationList = Annotations() "=" arrayDefaultValue = ArrayLiteral() <ItemEnd>
+    valueRange = ArrayVarType() ":" name = VarParIdentifier() annotationList = Annotations() "=" defaultValue = ArrayLiteral() <ItemEnd>
     {
-        if (arrayValueRange.size() != arrayDefaultValue.getItems().size()) {
-            throw new IllegalArgumentException("Planning Variable (" + name + ") has mismatched cardinality: expected (" + arrayValueRange.size() + ") values but got (" + arrayDefaultValue.getItems().size() + ").");
-        }
-        List<FlatZincPlanningVariable> out = new ArrayList<>(arrayValueRange.size());
-        for (int i = 0; i < arrayValueRange.size(); i++) {
-            out.add(new FlatZincPlanningVariable(arrayValueRange.get(i), name + (i + 1), annotationList, arrayDefaultValue.getItems().get(i)));
-        }
-        return out;
+        return new FlatZincPlanningVariable(valueRange, name, annotationList, defaultValue);
     }
 }
 
 List<FlatZincPlanningVariable> VarDeclItems() :
-{ List<FlatZincPlanningVariable> head; List<FlatZincPlanningVariable> tail; }
+{ FlatZincPlanningVariable head; List<FlatZincPlanningVariable> tail; }
 {
     head=VarDeclItem() tail=VarDeclItems()
     {
-        List<FlatZincPlanningVariable> out = new ArrayList<>(tail.size() + head.size());
-        out.addAll(head);
+        List<FlatZincPlanningVariable> out = new ArrayList<>(tail.size() + 1);
+        out.add(head);
         out.addAll(tail);
         return out;
     }
