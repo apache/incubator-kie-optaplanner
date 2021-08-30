@@ -85,7 +85,7 @@ import org.optaplanner.core.impl.solver.random.RandomFactory;
         "scoreDirectorFactoryConfig",
         "terminationConfig",
         "phaseConfigList",
-        //"metricConfig",
+        "metricConfig",
 })
 public class SolverConfig extends AbstractConfig<SolverConfig> {
 
@@ -266,8 +266,7 @@ public class SolverConfig extends AbstractConfig<SolverConfig> {
     })
     protected List<PhaseConfig> phaseConfigList = null;
 
-    //@XmlElement(name = "metrics")
-    @XmlTransient
+    @XmlElement(name = "metrics")
     protected MetricConfig metricConfig = null;
 
     // ************************************************************************
