@@ -67,7 +67,6 @@ public class ChangeMoveSelectorFactory<Solution_>
         ValueSelector<Solution_> valueSelector = valueSelectorFactory.buildValueSelector(configPolicy,
                 entitySelector.getEntityDescriptor(),
                 minimumCacheType, SelectionOrder.fromRandomSelectionBoolean(randomSelection));
-        // FIXME ugly
         if (valueSelector.getVariableDescriptor().isListVariable()) {
             return new ListChangeMoveSelector<>(
                     (ListVariableDescriptor<Solution_>) valueSelector.getVariableDescriptor(),
