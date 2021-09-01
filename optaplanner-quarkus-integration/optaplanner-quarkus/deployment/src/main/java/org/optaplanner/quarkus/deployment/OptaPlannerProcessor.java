@@ -51,13 +51,15 @@ import org.optaplanner.core.api.score.calculator.EasyScoreCalculator;
 import org.optaplanner.core.api.score.calculator.IncrementalScoreCalculator;
 import org.optaplanner.core.api.score.stream.ConstraintProvider;
 import org.optaplanner.core.api.score.stream.ConstraintStreamImplType;
+import org.optaplanner.core.api.solver.SolverFactory;
 import org.optaplanner.core.config.score.director.ScoreDirectorFactoryConfig;
 import org.optaplanner.core.config.solver.SolverConfig;
 import org.optaplanner.core.config.solver.SolverManagerConfig;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.core.impl.io.jaxb.SolverConfigIO;
-import org.optaplanner.quarkus.OptaPlannerBeanProvider;
 import org.optaplanner.quarkus.OptaPlannerRecorder;
+import org.optaplanner.quarkus.bean.DefaultOptaPlannerBeanProvider;
+import org.optaplanner.quarkus.bean.UnavailableOptaPlannerBeanProvider;
 import org.optaplanner.quarkus.config.OptaPlannerRuntimeConfig;
 import org.optaplanner.quarkus.deployment.config.OptaPlannerBuildTimeConfig;
 import org.optaplanner.quarkus.devui.OptaPlannerDevUIPropertiesSupplier;
@@ -125,9 +127,19 @@ class OptaPlannerProcessor {
         unremovableBeans.produce(UnremovableBeanBuildItem.beanTypes(OptaPlannerGizmoBeanFactory.class));
     }
 
+    @BuildStep(onlyIfNot = NativeBuild.class)
+    DetermineIfNativeBuildItem ifNotNativeBuild() {
+        return new DetermineIfNativeBuildItem(false);
+    }
+
+    @BuildStep(onlyIf = NativeBuild.class)
+    DetermineIfNativeBuildItem ifNativeBuild() {
+        return new DetermineIfNativeBuildItem(true);
+    }
+
     @BuildStep(onlyIf = IsDevelopment.class)
-    public DevConsoleRuntimeTemplateInfoBuildItem getSolverConfig(SolverConfigBuildStep solverConfigBuildStep) {
-        SolverConfig solverConfig = solverConfigBuildStep.getSolverConfig();
+    public DevConsoleRuntimeTemplateInfoBuildItem getSolverConfig(SolverConfigBuildItem solverConfigBuildItem) {
+        SolverConfig solverConfig = solverConfigBuildItem.getSolverConfig();
         if (solverConfig != null) {
             StringWriter effectiveSolverConfigWriter = new StringWriter();
             SolverConfigIO solverConfigIO = new SolverConfigIO();
@@ -140,9 +152,19 @@ class OptaPlannerProcessor {
         }
     }
 
+    /**
+     * The DevConsole injects the SolverFactory bean programmatically, which is not detected by ArC. As a result,
+     * the bean is removed as unused unless told otherwise via the {@link UnremovableBeanBuildItem}.
+     */
+    @BuildStep(onlyIf = IsDevelopment.class)
+    void makeSolverFactoryUnremovableInDevMode(BuildProducer<UnremovableBeanBuildItem> unremovableBeans) {
+        unremovableBeans.produce(UnremovableBeanBuildItem.beanTypes(SolverFactory.class));
+    }
+
     @BuildStep
     @Record(STATIC_INIT)
-    SolverConfigBuildStep recordAndRegisterBeans(OptaPlannerRecorder recorder, RecorderContext recorderContext,
+    SolverConfigBuildItem recordAndRegisterBeans(OptaPlannerRecorder recorder, RecorderContext recorderContext,
+            DetermineIfNativeBuildItem determineIfNative,
             CombinedIndexBuildItem combinedIndex, Capabilities capabilities,
             BuildProducer<ReflectiveHierarchyBuildItem> reflectiveHierarchyClass,
             BuildProducer<SyntheticBeanBuildItem> syntheticBeanBuildItemBuildProducer,
@@ -162,7 +184,8 @@ class OptaPlannerProcessor {
                     + " the Jandex index by using the jandex-maven-plugin in that dependency, or by adding"
                     + "application.properties entries (quarkus.index-dependency.<name>.group-id"
                     + " and quarkus.index-dependency.<name>.artifact-id).");
-            return new SolverConfigBuildStep(null);
+            additionalBeans.produce(new AdditionalBeanBuildItem(UnavailableOptaPlannerBeanProvider.class));
+            return new SolverConfigBuildItem(null);
         }
 
         // Quarkus extensions must always use getContextClassLoader()
@@ -202,6 +225,18 @@ class OptaPlannerProcessor {
                     .build());
         }
 
+        if (determineIfNative.isNative()) {
+            // DroolsAlphaNetworkCompilationEnabled is a three-state boolean (null, true, false); if it not
+            // null, ScoreDirectorFactoryFactory will throw an error if Drools isn't use (i.e. BAVET or Easy/Incremental)
+            if (solverConfig.getScoreDirectorFactoryConfig().getConstraintProviderClass() != null && solverConfig
+                    .getScoreDirectorFactoryConfig().getConstraintStreamImplType() == ConstraintStreamImplType.DROOLS) {
+                disableANC(solverConfig);
+            } else if (solverConfig.getScoreDirectorFactoryConfig().getScoreDrlList() != null
+                    || solverConfig.getScoreDirectorFactoryConfig().getScoreDrlFileList() == null) {
+                disableANC(solverConfig);
+            }
+        }
+
         Set<Class<?>> reflectiveClassSet = new LinkedHashSet<>();
 
         registerClassesFromAnnotations(indexView, reflectiveClassSet);
@@ -229,9 +264,17 @@ class OptaPlannerProcessor {
                 .defaultBean()
                 .supplier(recorder.solverManagerConfig(solverManagerConfig)).done());
 
-        additionalBeans.produce(new AdditionalBeanBuildItem(OptaPlannerBeanProvider.class));
+        additionalBeans.produce(new AdditionalBeanBuildItem(DefaultOptaPlannerBeanProvider.class));
         unremovableBeans.produce(UnremovableBeanBuildItem.beanTypes(OptaPlannerRuntimeConfig.class));
-        return new SolverConfigBuildStep(solverConfig);
+        return new SolverConfigBuildItem(solverConfig);
+    }
+
+    private void disableANC(SolverConfig solverConfig) {
+        if (solverConfig.getScoreDirectorFactoryConfig().getDroolsAlphaNetworkCompilationEnabled() != null
+                && solverConfig.getScoreDirectorFactoryConfig().getDroolsAlphaNetworkCompilationEnabled()) {
+            log.warn("Disabling Drools Alpha Network Compiler since this is a native build.");
+        }
+        solverConfig.getScoreDirectorFactoryConfig().setDroolsAlphaNetworkCompilationEnabled(false);
     }
 
     private void generateConstraintVerifier(SolverConfig solverConfig,

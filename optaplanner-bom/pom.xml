@@ -6,7 +6,7 @@
   <parent>
     <groupId>org.optaplanner</groupId>
     <artifactId>optaplanner-parent</artifactId>
-    <version>8.10.0-SNAPSHOT</version>
+    <version>8.12.0-SNAPSHOT</version>
   </parent>
 
   <artifactId>optaplanner-bom</artifactId>
@@ -468,7 +468,7 @@
       </dependency>
       <dependency>
         <groupId>org.optaplanner</groupId>
-        <artifactId>optaplanner-distribution</artifactId>
+        <artifactId>optaplanner-distribution-internal</artifactId>
         <version>${version.org.optaplanner}</version>
         <type>zip</type>
       </dependency>

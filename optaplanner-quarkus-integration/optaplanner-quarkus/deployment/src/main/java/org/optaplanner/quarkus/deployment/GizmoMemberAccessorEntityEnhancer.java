@@ -40,6 +40,7 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 import javax.enterprise.context.ApplicationScoped;
@@ -54,13 +55,19 @@ import org.jboss.jandex.DotName;
 import org.jboss.jandex.FieldInfo;
 import org.jboss.jandex.IndexView;
 import org.jboss.jandex.MethodInfo;
+import org.kie.api.KieBase;
 import org.kie.api.definition.type.ClassReactive;
 import org.kie.api.definition.type.PropertyReactive;
 import org.kie.kogito.legacy.rules.KieRuntimeBuilder;
 import org.objectweb.asm.ClassVisitor;
+import org.objectweb.asm.FieldVisitor;
 import org.objectweb.asm.MethodVisitor;
+import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.Type;
+import org.optaplanner.core.api.domain.common.DomainAccessType;
 import org.optaplanner.core.api.domain.solution.cloner.SolutionCloner;
+import org.optaplanner.core.api.score.stream.ConstraintProvider;
+import org.optaplanner.core.api.score.stream.ConstraintStreamImplType;
 import org.optaplanner.core.config.score.director.ScoreDirectorFactoryConfig;
 import org.optaplanner.core.config.solver.SolverConfig;
 import org.optaplanner.core.config.util.ConfigUtils;
@@ -74,7 +81,8 @@ import org.optaplanner.core.impl.domain.solution.cloner.gizmo.GizmoSolutionClone
 import org.optaplanner.core.impl.domain.solution.cloner.gizmo.GizmoSolutionClonerImplementor;
 import org.optaplanner.core.impl.domain.solution.cloner.gizmo.GizmoSolutionOrEntityDescriptor;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
-import org.optaplanner.core.impl.score.director.drools.KieRuntimeBuilderWrapper;
+import org.optaplanner.core.impl.score.director.stream.DroolsConstraintStreamScoreDirectorFactory;
+import org.optaplanner.core.impl.score.director.stream.KieBaseDescriptor;
 import org.optaplanner.quarkus.gizmo.OptaPlannerDroolsInitializer;
 import org.optaplanner.quarkus.gizmo.OptaPlannerGizmoBeanFactory;
 
@@ -88,6 +96,7 @@ import io.quarkus.gizmo.ClassCreator;
 import io.quarkus.gizmo.ClassOutput;
 import io.quarkus.gizmo.DescriptorUtils;
 import io.quarkus.gizmo.FieldDescriptor;
+import io.quarkus.gizmo.FunctionCreator;
 import io.quarkus.gizmo.Gizmo;
 import io.quarkus.gizmo.MethodCreator;
 import io.quarkus.gizmo.MethodDescriptor;
@@ -100,7 +109,11 @@ public class GizmoMemberAccessorEntityEnhancer {
             OptaPlannerDroolsInitializer.class.getName() + "$Implementation";
 
     private static Set<Class<?>> visitedClasses = new HashSet<>();
+
+    // This keep track of fields we add virtual getters/setters for
     private static Set<Field> visitedFields = new HashSet<>();
+    // This keep track of what fields we made non-final
+    private static Set<Field> visitedFinalFields = new HashSet<>();
     private static Set<MethodInfo> visitedMethods = new HashSet<>();
 
     public static void makeConstructorAccessible(Class<?> clazz, BuildProducer<BytecodeTransformerBuildItem> transformers) {
@@ -118,6 +131,15 @@ public class GizmoMemberAccessorEntityEnhancer {
             throw new IllegalStateException(
                     "Class (" + clazz.getName() + ") must have a no-args constructor so it can be constructed by OptaPlanner.");
         }
+    }
+
+    public static void makeFieldNonFinal(Field finalField, BuildProducer<BytecodeTransformerBuildItem> transformers) {
+        if (visitedFinalFields.contains(finalField)) {
+            return;
+        }
+        transformers.produce(new BytecodeTransformerBuildItem(finalField.getDeclaringClass().getName(),
+                (className, classVisitor) -> new OptaPlannerFinalFieldEnhancingClassVisitor(classVisitor, finalField)));
+        visitedFinalFields.add(finalField);
     }
 
     public static void addVirtualFieldGetter(ClassInfo classInfo, FieldInfo fieldInfo,
@@ -192,6 +214,10 @@ public class GizmoMemberAccessorEntityEnhancer {
 
             FieldDescriptor memberDescriptor = FieldDescriptor.of(fieldInfo);
             String name = fieldInfo.name();
+
+            if (Modifier.isFinal(fieldMember.getModifiers())) {
+                makeFieldNonFinal(fieldMember, transformers);
+            }
 
             if (Modifier.isPublic(fieldInfo.flags())) {
                 member = new GizmoMemberDescriptor(name, memberDescriptor, memberDescriptor, declaringClass);
@@ -384,6 +410,10 @@ public class GizmoMemberAccessorEntityEnhancer {
                     FieldDescriptor memberDescriptor = FieldDescriptor.of(field);
                     String name = field.getName();
 
+                    if (Modifier.isFinal(field.getModifiers())) {
+                        makeFieldNonFinal(field, transformers);
+                    }
+
                     // Not being recorded, so can use Type and annotated element directly
                     if (Modifier.isPublic(field.getModifiers())) {
                         member = new GizmoMemberDescriptor(name, memberDescriptor, memberDescriptor, declaringClass);
@@ -474,6 +504,8 @@ public class GizmoMemberAccessorEntityEnhancer {
             BuildProducer<UnremovableBeanBuildItem> unremovableBeans,
             BuildProducer<BytecodeTransformerBuildItem> transformers) {
         String generatedClassName = DROOLS_INITIALIZER_CLASS_NAME;
+        ConstraintStreamImplType constraintStreamImplType = ObjectUtils.defaultIfNull(
+                config.getScoreDirectorFactoryConfig().getConstraintStreamImplType(), ConstraintStreamImplType.DROOLS);
         try (ClassCreator classCreator = ClassCreator
                 .builder()
                 .className(generatedClassName)
@@ -505,14 +537,17 @@ public class GizmoMemberAccessorEntityEnhancer {
                 ResultHandle kieRuntimeBuilder =
                         methodCreator.invokeInterfaceMethod(MethodDescriptor.ofMethod(Instance.class, "get", Object.class),
                                 kieRuntimeBuilderInstanceResultHandle);
-                ResultHandle kieBaseExtractor = methodCreator.newInstance(
-                        MethodDescriptor.ofConstructor(KieRuntimeBuilderWrapper.class, KieRuntimeBuilder.class),
-                        kieRuntimeBuilder);
+
+                FunctionCreator supplierCreator = methodCreator.createFunction(Supplier.class);
+                BytecodeCreator supplierBytecode = supplierCreator.getBytecode();
+                supplierBytecode.returnValue(supplierBytecode.invokeInterfaceMethod(
+                        MethodDescriptor.ofMethod(KieRuntimeBuilder.class, "getKieBase", KieBase.class),
+                        kieRuntimeBuilder));
                 methodCreator.invokeVirtualMethod(
-                        MethodDescriptor.ofMethod(ScoreDirectorFactoryConfig.class, "setGizmoKieRuntimeBuilderWrapper",
+                        MethodDescriptor.ofMethod(ScoreDirectorFactoryConfig.class, "setGizmoKieBaseSupplier",
                                 void.class,
-                                KieRuntimeBuilderWrapper.class),
-                        methodCreator.getMethodParam(0), kieBaseExtractor);
+                                Supplier.class),
+                        methodCreator.getMethodParam(0), supplierCreator.getInstance());
 
                 // Workaround for https://issues.redhat.com/browse/KOGITO-5101
                 transformers.produce(new BytecodeTransformerBuildItem(config.getSolutionClass().getName(),
@@ -522,6 +557,40 @@ public class GizmoMemberAccessorEntityEnhancer {
                     transformers.produce(new BytecodeTransformerBuildItem(entityClass.getName(),
                             (className, classVisitor) -> new OptaPlannerDroolsReactiveClassVisitor(entityClass, classVisitor)));
                 }
+            } else if (config.getScoreDirectorFactoryConfig().getConstraintProviderClass() != null
+                    && constraintStreamImplType == ConstraintStreamImplType.DROOLS) {
+                methodCreator = classCreator.getMethodCreator(MethodDescriptor.ofMethod(OptaPlannerDroolsInitializer.class,
+                        "setup", void.class, ScoreDirectorFactoryConfig.class));
+                ResultHandle constraintProvider = methodCreator.newInstance(
+                        MethodDescriptor.ofConstructor(config.getScoreDirectorFactoryConfig().getConstraintProviderClass()));
+                ResultHandle entityClassList = methodCreator.newInstance(MethodDescriptor.ofConstructor(ArrayList.class));
+                for (Class<?> entityClass : config.getEntityClassList()) {
+                    ResultHandle entityClassResultHandle = methodCreator.loadClass(entityClass);
+                    methodCreator.invokeInterfaceMethod(
+                            MethodDescriptor.ofMethod(List.class, "add", boolean.class, Object.class),
+                            entityClassList, entityClassResultHandle);
+                }
+                ResultHandle solutionDescriptor = methodCreator.invokeStaticMethod(
+                        MethodDescriptor.ofMethod(SolutionDescriptor.class, "buildSolutionDescriptor",
+                                SolutionDescriptor.class, DomainAccessType.class, Class.class, Map.class, Map.class,
+                                List.class),
+                        methodCreator.load(DomainAccessType.REFLECTION),
+                        methodCreator.loadClass(config.getSolutionClass()),
+                        methodCreator.loadNull(),
+                        methodCreator.loadNull(),
+                        entityClassList);
+                ResultHandle isDroolsAlphaNetworkCompilationEnabled =
+                        methodCreator.load(config.getScoreDirectorFactoryConfig().isDroolsAlphaNetworkCompilationEnabled());
+                ResultHandle kieBaseDescriptor = methodCreator.invokeStaticMethod(
+                        MethodDescriptor.ofMethod(DroolsConstraintStreamScoreDirectorFactory.class, "buildKieBase",
+                                KieBaseDescriptor.class,
+                                SolutionDescriptor.class, ConstraintProvider.class, boolean.class),
+                        solutionDescriptor, constraintProvider, isDroolsAlphaNetworkCompilationEnabled);
+                methodCreator.invokeVirtualMethod(
+                        MethodDescriptor.ofMethod(ScoreDirectorFactoryConfig.class, "setGizmoKieBaseSupplier",
+                                void.class,
+                                Supplier.class),
+                        methodCreator.getMethodParam(0), kieBaseDescriptor);
             } else {
                 // No additional setup needed; Drools isn't used
                 methodCreator = classCreator.getMethodCreator(MethodDescriptor.ofMethod(OptaPlannerDroolsInitializer.class,
@@ -553,6 +622,25 @@ public class GizmoMemberAccessorEntityEnhancer {
             }
         }
 
+    }
+
+    private static class OptaPlannerFinalFieldEnhancingClassVisitor extends ClassVisitor {
+        final Field finalField;
+
+        public OptaPlannerFinalFieldEnhancingClassVisitor(ClassVisitor outputClassVisitor, Field finalField) {
+            super(Gizmo.ASM_API_VERSION, outputClassVisitor);
+            this.finalField = finalField;
+        }
+
+        @Override
+        public FieldVisitor visitField(int access, String name, String descriptor, String signature, Object value) {
+            if (name.equals(finalField.getName())) {
+                // x & ~bitFlag = x without bitFlag set
+                return super.visitField(access & ~Opcodes.ACC_FINAL, name, descriptor, signature, value);
+            } else {
+                return super.visitField(access, name, descriptor, signature, value);
+            }
+        }
     }
 
     private static class OptaPlannerConstructorEnhancingClassVisitor extends ClassVisitor {

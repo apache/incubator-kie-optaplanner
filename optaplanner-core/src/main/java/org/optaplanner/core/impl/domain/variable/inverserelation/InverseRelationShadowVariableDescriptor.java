@@ -82,7 +82,7 @@ public class InverseRelationShadowVariableDescriptor<Solution_> extends ShadowVa
                 .findEntityDescriptor(sourceClass);
         if (sourceEntityDescriptor == null) {
             throw new IllegalArgumentException("The entityClass (" + entityDescriptor.getEntityClass()
-                    + ") has a @" + InverseRelationShadowVariable.class.getSimpleName()
+                    + ") has an @" + InverseRelationShadowVariable.class.getSimpleName()
                     + " annotated property (" + variableMemberAccessor.getName()
                     + ") with a sourceClass (" + sourceClass
                     + ") which is not a valid planning entity.");
@@ -92,12 +92,12 @@ public class InverseRelationShadowVariableDescriptor<Solution_> extends ShadowVa
         sourceVariableDescriptor = sourceEntityDescriptor.getVariableDescriptor(sourceVariableName);
         if (sourceVariableDescriptor == null) {
             throw new IllegalArgumentException("The entityClass (" + entityDescriptor.getEntityClass()
-                    + ") has a @" + InverseRelationShadowVariable.class.getSimpleName()
+                    + ") has an @" + InverseRelationShadowVariable.class.getSimpleName()
                     + " annotated property (" + variableMemberAccessor.getName()
                     + ") with sourceVariableName (" + sourceVariableName
                     + ") which is not a valid planning variable on entityClass ("
                     + sourceEntityDescriptor.getEntityClass() + ").\n"
-                    + entityDescriptor.buildInvalidVariableNameExceptionMessage(sourceVariableName));
+                    + sourceEntityDescriptor.buildInvalidVariableNameExceptionMessage(sourceVariableName));
         }
         chained = (sourceVariableDescriptor instanceof GenuineVariableDescriptor) &&
                 ((GenuineVariableDescriptor<Solution_>) sourceVariableDescriptor).isChained();
@@ -106,7 +106,7 @@ public class InverseRelationShadowVariableDescriptor<Solution_> extends ShadowVa
         if (singleton) {
             if (!chained && !list) {
                 throw new IllegalArgumentException("The entityClass (" + entityDescriptor.getEntityClass()
-                        + ") has a @" + InverseRelationShadowVariable.class.getSimpleName()
+                        + ") has an @" + InverseRelationShadowVariable.class.getSimpleName()
                         + " annotated property (" + variableMemberAccessor.getName()
                         + ") which does not return a " + Collection.class.getSimpleName()
                         + " with sourceVariableName (" + sourceVariableName
@@ -118,7 +118,7 @@ public class InverseRelationShadowVariableDescriptor<Solution_> extends ShadowVa
         } else {
             if (chained) {
                 throw new IllegalArgumentException("The entityClass (" + entityDescriptor.getEntityClass()
-                        + ") has a @" + InverseRelationShadowVariable.class.getSimpleName()
+                        + ") has an @" + InverseRelationShadowVariable.class.getSimpleName()
                         + " annotated property (" + variableMemberAccessor.getName()
                         + ") which returns a " + Collection.class.getSimpleName()
                         + " with sourceVariableName (" + sourceVariableName

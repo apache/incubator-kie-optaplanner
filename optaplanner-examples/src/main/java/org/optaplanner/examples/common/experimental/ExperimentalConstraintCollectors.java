@@ -73,7 +73,7 @@ public class ExperimentalConstraintCollectors {
                     acc.add(a);
                     return () -> acc.remove(a);
                 },
-                ConsecutiveSetTree::getConsecutiveData);
+                tree -> tree);
     }
 
     /**
@@ -98,7 +98,7 @@ public class ExperimentalConstraintCollectors {
                     acc.add(result);
                     return () -> acc.remove(result);
                 },
-                ConsecutiveSetTree::getConsecutiveData);
+                tree -> tree);
     }
 
     /**
@@ -123,7 +123,7 @@ public class ExperimentalConstraintCollectors {
                     acc.add(result);
                     return () -> acc.remove(result);
                 },
-                ConsecutiveSetTree::getConsecutiveData);
+                tree -> tree);
     }
 
     /**
@@ -149,7 +149,7 @@ public class ExperimentalConstraintCollectors {
                     acc.add(result);
                     return () -> acc.remove(result);
                 },
-                ConsecutiveSetTree::getConsecutiveData);
+                tree -> tree);
     }
 
     /**
@@ -193,7 +193,7 @@ public class ExperimentalConstraintCollectors {
     /**
      * Specialized version of {@link #consecutiveIntervals(Function,Function,BiFunction)} for
      * {@link Temporal} types.
-     * 
+     *
      * @param <A> type of the first mapped fact
      * @param <PointType_> temporal type of the endpoints
      * @param startMap Maps the fact to its start
@@ -296,7 +296,7 @@ public class ExperimentalConstraintCollectors {
      * @param startMap Maps the item to its start
      * @param endMap Maps the item to its end
      * @param differenceFunction Computes the difference between two points. The second argument is always
-     *        larger than the first (ex: {@link Duration#between)}
+     *        larger than the first (ex: {@link Duration#between}
      *        or (a,b) -> b - a).
      * @param <A> type of the first mapped fact
      * @param <B> type of the second mapped fact

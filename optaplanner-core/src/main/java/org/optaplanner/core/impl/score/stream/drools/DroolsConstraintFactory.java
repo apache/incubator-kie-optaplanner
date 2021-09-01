@@ -16,27 +16,20 @@
 
 package org.optaplanner.core.impl.score.stream.drools;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
-
-import org.optaplanner.core.api.score.stream.Constraint;
 import org.optaplanner.core.api.score.stream.uni.UniConstraintStream;
 import org.optaplanner.core.impl.domain.constraintweight.descriptor.ConstraintConfigurationDescriptor;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.core.impl.score.stream.InnerConstraintFactory;
 import org.optaplanner.core.impl.score.stream.drools.uni.DroolsFromUniConstraintStream;
 
-public final class DroolsConstraintFactory<Solution_> extends InnerConstraintFactory<Solution_> {
+public final class DroolsConstraintFactory<Solution_>
+        extends InnerConstraintFactory<Solution_, DroolsConstraint<Solution_>> {
 
     private final SolutionDescriptor<Solution_> solutionDescriptor;
     private final String defaultConstraintPackage;
     private final DroolsVariableFactory variableFactory = new DroolsVariableFactory();
-    private final boolean droolsAlphaNetworkCompilationEnabled;
 
-    public DroolsConstraintFactory(SolutionDescriptor<Solution_> solutionDescriptor,
-            boolean droolsAlphaNetworkCompilationEnabled) {
+    public DroolsConstraintFactory(SolutionDescriptor<Solution_> solutionDescriptor) {
         this.solutionDescriptor = solutionDescriptor;
         ConstraintConfigurationDescriptor<Solution_> configurationDescriptor = solutionDescriptor
                 .getConstraintConfigurationDescriptor();
@@ -46,7 +39,6 @@ public final class DroolsConstraintFactory<Solution_> extends InnerConstraintFac
         } else {
             defaultConstraintPackage = configurationDescriptor.getConstraintPackage();
         }
-        this.droolsAlphaNetworkCompilationEnabled = droolsAlphaNetworkCompilationEnabled;
     }
 
     @Override
@@ -56,27 +48,10 @@ public final class DroolsConstraintFactory<Solution_> extends InnerConstraintFac
     }
 
     // ************************************************************************
-    // SessionFactory creation
-    // ************************************************************************
-
-    public DroolsConstraintSessionFactory<Solution_, ?> buildSessionFactory(Constraint[] constraints) {
-        Map<String, List<Constraint>> constraintsPerIdMap = Arrays.stream(constraints)
-                .collect(Collectors.groupingBy(Constraint::getConstraintId));
-        constraintsPerIdMap.forEach((constraintId, constraintList) -> {
-            if (constraintList.size() > 1) {
-                throw new IllegalStateException(
-                        "There are multiple constraints with the same name in a package (" + constraintId + ").");
-            }
-        });
-
-        return new DroolsConstraintSessionFactory<>(solutionDescriptor, this, droolsAlphaNetworkCompilationEnabled,
-                constraints);
-    }
-
-    // ************************************************************************
     // Getters/setters
     // ************************************************************************
 
+    @Override
     public SolutionDescriptor<Solution_> getSolutionDescriptor() {
         return solutionDescriptor;
     }

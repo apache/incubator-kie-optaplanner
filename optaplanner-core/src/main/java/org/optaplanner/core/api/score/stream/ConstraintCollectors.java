@@ -19,6 +19,7 @@ package org.optaplanner.core.api.score.stream;
 import java.lang.reflect.Array;
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.math.RoundingMode;
 import java.time.Duration;
 import java.time.Period;
 import java.util.ArrayList;
@@ -29,29 +30,33 @@ import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import java.util.SortedMap;
 import java.util.SortedSet;
 import java.util.TreeMap;
 import java.util.function.BiFunction;
+import java.util.function.BiPredicate;
 import java.util.function.BinaryOperator;
 import java.util.function.Function;
 import java.util.function.IntFunction;
+import java.util.function.Predicate;
 import java.util.function.Supplier;
 import java.util.function.ToIntBiFunction;
 import java.util.function.ToIntFunction;
 import java.util.function.ToLongBiFunction;
 import java.util.function.ToLongFunction;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
+import org.optaplanner.core.api.function.PentaFunction;
 import org.optaplanner.core.api.function.QuadFunction;
+import org.optaplanner.core.api.function.QuadPredicate;
 import org.optaplanner.core.api.function.ToIntQuadFunction;
 import org.optaplanner.core.api.function.ToIntTriFunction;
 import org.optaplanner.core.api.function.ToLongQuadFunction;
 import org.optaplanner.core.api.function.ToLongTriFunction;
 import org.optaplanner.core.api.function.TriFunction;
+import org.optaplanner.core.api.function.TriPredicate;
 import org.optaplanner.core.api.score.stream.bi.BiConstraintCollector;
 import org.optaplanner.core.api.score.stream.quad.QuadConstraintCollector;
 import org.optaplanner.core.api.score.stream.tri.TriConstraintCollector;
@@ -68,6 +73,10 @@ import org.optaplanner.core.impl.score.stream.uni.DefaultUniConstraintCollector;
  */
 public final class ConstraintCollectors {
 
+    private static final Runnable NOOP = () -> {
+        // No operation.
+    };
+
     // ************************************************************************
     // count
     // ************************************************************************
@@ -77,6 +86,8 @@ public final class ConstraintCollectors {
      * <p>
      * For example, {@code [Ann(age = 20), Beth(age = 25), Cathy(age = 30), David(age = 30), Eric(age = 20)]} with
      * {@code .groupBy(count())} returns {@code 5}.
+     * <p>
+     * The default result of the collector (e.g. when never called) is {@code 0}.
      *
      * @param <A> type of the matched fact
      * @return never null
@@ -199,6 +210,8 @@ public final class ConstraintCollectors {
      * <p>
      * For example, {@code [Ann(age = 20), Beth(age = 25), Cathy(age = 30), David(age = 30), Eric(age = 20)]} with
      * {@code .groupBy(countDistinct(Person::getAge))} returns {@code 3}, one for age 20, 25 and 30 each.
+     * <p>
+     * The default result of the collector (e.g. when never called) is {@code 0}.
      *
      * @param <A> type of the matched fact
      * @return never null
@@ -369,6 +382,8 @@ public final class ConstraintCollectors {
      * <p>
      * For example, {@code [Ann(age = 20), Beth(age = 25), Cathy(age = 30), David(age = 30), Eric(age = 20)]} with
      * {@code .groupBy(sum(Person::getAge))} returns {@code 125}.
+     * <p>
+     * The default result of the collector (e.g. when never called) is {@code 0}.
      *
      * @param <A> type of the matched fact
      * @return never null
@@ -702,6 +717,8 @@ public final class ConstraintCollectors {
      * {@link Comparable} by the {@code age} field.
      * To avoid this, always end your {@link Comparator} by an identity comparison, such as
      * {@code Comparator.comparing(Person::getAge).comparing(Person::getId))}.
+     * <p>
+     * The default result of the collector (e.g. when never called) is {@code null}.
      *
      * @param <A> type of the matched fact
      * @return never null
@@ -721,6 +738,8 @@ public final class ConstraintCollectors {
      * <p>
      * For example, {@code [Ann(age = 20), Beth(age = 25), Cathy(age = 30), David(age = 30), Eric(age = 20)]} with
      * {@code .groupBy(min(Person::getAge))} returns {@code 20}.
+     * <p>
+     * The default result of the collector (e.g. when never called) is {@code null}.
      *
      * @param <A> type of the matched fact
      * @param <Mapped> type of the result
@@ -813,6 +832,8 @@ public final class ConstraintCollectors {
      * {@link Comparable} by the {@code age} field.
      * To avoid this, always end your {@link Comparator} by an identity comparison, such as
      * {@code Comparator.comparing(Person::getAge).comparing(Person::getId))}.
+     * <p>
+     * The default result of the collector (e.g. when never called) is {@code null}.
      *
      * @param <A> type of the matched fact
      * @return never null
@@ -832,6 +853,8 @@ public final class ConstraintCollectors {
      * <p>
      * For example, {@code [Ann(age = 20), Beth(age = 25), Cathy(age = 30), David(age = 30), Eric(age = 20)]} with
      * {@code .groupBy(max(Person::getAge))} returns {@code 30}.
+     * <p>
+     * The default result of the collector (e.g. when never called) is {@code null}.
      *
      * @param <A> type of the matched fact
      * @param <Mapped> type of the result
@@ -973,6 +996,303 @@ public final class ConstraintCollectors {
     }
 
     // ************************************************************************
+    // average
+    // ************************************************************************
+
+    /**
+     * Returns a collector that calculates an average of an {@code int} property of the elements that are being grouped.
+     * <p>
+     * For example, {@code [Ann(age = 20), Beth(age = 25), Cathy(age = 30), David(age = 30), Eric(age = 20)]} with
+     * {@code .groupBy(average(Person::getAge))} returns {@code 25}.
+     * <p>
+     * The default result of the collector (e.g. when never called) is {@code null}.
+     *
+     * @param <A> type of the matched fact
+     * @return never null
+     */
+    public static <A> UniConstraintCollector<A, ?, Double> average(ToIntFunction<A> groupValueMapping) {
+        return compose(count(), sum(groupValueMapping), (count, sum) -> {
+            if (count == 0) {
+                return null;
+            } else {
+                return sum / (double) count;
+            }
+        });
+    }
+
+    /**
+     * As defined by {@link #average(ToIntFunction)}.
+     */
+    public static <A> UniConstraintCollector<A, ?, Double> averageLong(ToLongFunction<A> groupValueMapping) {
+        return compose(count(), sumLong(groupValueMapping), (count, sum) -> {
+            if (count == 0) {
+                return null;
+            } else {
+                return sum / (double) count;
+            }
+        });
+    }
+
+    /**
+     * As defined by {@link #average(ToIntFunction)}.
+     * The scale of the resulting {@link BigDecimal} will be equal to the scale of the sum of all the input tuples,
+     * with rounding mode {@link RoundingMode#HALF_EVEN}.
+     */
+    public static <A> UniConstraintCollector<A, ?, BigDecimal> averageBigDecimal(
+            Function<A, BigDecimal> groupValueMapping) {
+        return compose(count(), sumBigDecimal(groupValueMapping), (count, sum) -> {
+            if (count == 0) {
+                return null;
+            } else {
+                return sum.divide(BigDecimal.valueOf(count), RoundingMode.HALF_EVEN);
+            }
+        });
+    }
+
+    /**
+     * As defined by {@link #average(ToIntFunction)}.
+     * The scale of the resulting {@link BigDecimal} will be equal to the scale of the sum of all the input tuples,
+     * with rounding mode {@link RoundingMode#HALF_EVEN}.
+     */
+    public static <A> UniConstraintCollector<A, ?, BigDecimal> averageBigInteger(Function<A, BigInteger> groupValueMapping) {
+        return compose(count(), sumBigInteger(groupValueMapping), (count, sum) -> {
+            if (count == 0) {
+                return null;
+            } else {
+                return new BigDecimal(sum)
+                        .divide(BigDecimal.valueOf(count), RoundingMode.HALF_EVEN);
+            }
+        });
+    }
+
+    /**
+     * As defined by {@link #average(ToIntFunction)}.
+     */
+    public static <A> UniConstraintCollector<A, ?, Duration> averageDuration(Function<A, Duration> groupValueMapping) {
+        return compose(count(), sumDuration(groupValueMapping), (count, sum) -> {
+            if (count == 0) {
+                return null;
+            } else {
+                long nanos = sum.toNanos();
+                return Duration.ofNanos(nanos / count);
+            }
+        });
+    }
+
+    /**
+     * As defined by {@link #average(ToIntFunction)}.
+     */
+    public static <A, B> BiConstraintCollector<A, B, ?, Double> average(ToIntBiFunction<A, B> groupValueMapping) {
+        return compose(countBi(), sum(groupValueMapping), (count, sum) -> {
+            if (count == 0) {
+                return null;
+            } else {
+                return sum / (double) count;
+            }
+        });
+    }
+
+    /**
+     * As defined by {@link #average(ToIntFunction)}.
+     */
+    public static <A, B> BiConstraintCollector<A, B, ?, Double> averageLong(ToLongBiFunction<A, B> groupValueMapping) {
+        return compose(countBi(), sumLong(groupValueMapping), (count, sum) -> {
+            if (count == 0) {
+                return null;
+            } else {
+                return sum / (double) count;
+            }
+        });
+    }
+
+    /**
+     * As defined by {@link #averageBigDecimal(Function)}.
+     */
+    public static <A, B> BiConstraintCollector<A, B, ?, BigDecimal>
+            averageBigDecimal(BiFunction<A, B, BigDecimal> groupValueMapping) {
+        return compose(countBi(), sumBigDecimal(groupValueMapping), (count, sum) -> {
+            if (count == 0) {
+                return null;
+            } else {
+                return sum.divide(BigDecimal.valueOf(count), RoundingMode.HALF_EVEN);
+            }
+        });
+    }
+
+    /**
+     * As defined by {@link #averageBigInteger(Function)}.
+     */
+    public static <A, B> BiConstraintCollector<A, B, ?, BigDecimal>
+            averageBigInteger(BiFunction<A, B, BigInteger> groupValueMapping) {
+        return compose(countBi(), sumBigInteger(groupValueMapping), (count, sum) -> {
+            if (count == 0) {
+                return null;
+            } else {
+                return new BigDecimal(sum)
+                        .divide(BigDecimal.valueOf(count), RoundingMode.HALF_EVEN);
+            }
+        });
+    }
+
+    /**
+     * As defined by {@link #average(ToIntFunction)}.
+     */
+    public static <A, B> BiConstraintCollector<A, B, ?, Duration>
+            averageDuration(BiFunction<A, B, Duration> groupValueMapping) {
+        return compose(countBi(), sumDuration(groupValueMapping), (count, sum) -> {
+            if (count == 0) {
+                return null;
+            } else {
+                long nanos = sum.toNanos();
+                return Duration.ofNanos(nanos / count);
+            }
+        });
+    }
+
+    /**
+     * As defined by {@link #average(ToIntFunction)}.
+     */
+    public static <A, B, C> TriConstraintCollector<A, B, C, ?, Double> average(ToIntTriFunction<A, B, C> groupValueMapping) {
+        return compose(countTri(), sum(groupValueMapping), (count, sum) -> {
+            if (count == 0) {
+                return null;
+            } else {
+                return sum / (double) count;
+            }
+        });
+    }
+
+    /**
+     * As defined by {@link #average(ToIntFunction)}.
+     */
+    public static <A, B, C> TriConstraintCollector<A, B, C, ?, Double>
+            averageLong(ToLongTriFunction<A, B, C> groupValueMapping) {
+        return compose(countTri(), sumLong(groupValueMapping), (count, sum) -> {
+            if (count == 0) {
+                return null;
+            } else {
+                return sum / (double) count;
+            }
+        });
+    }
+
+    /**
+     * As defined by {@link #averageBigDecimal(Function)}.
+     */
+    public static <A, B, C> TriConstraintCollector<A, B, C, ?, BigDecimal>
+            averageBigDecimal(TriFunction<A, B, C, BigDecimal> groupValueMapping) {
+        return compose(countTri(), sumBigDecimal(groupValueMapping), (count, sum) -> {
+            if (count == 0) {
+                return null;
+            } else {
+                return sum.divide(BigDecimal.valueOf(count), RoundingMode.HALF_EVEN);
+            }
+        });
+    }
+
+    /**
+     * As defined by {@link #averageBigInteger(Function)}.
+     */
+    public static <A, B, C> TriConstraintCollector<A, B, C, ?, BigDecimal>
+            averageBigInteger(TriFunction<A, B, C, BigInteger> groupValueMapping) {
+        return compose(countTri(), sumBigInteger(groupValueMapping), (count, sum) -> {
+            if (count == 0) {
+                return null;
+            } else {
+                return new BigDecimal(sum)
+                        .divide(BigDecimal.valueOf(count), RoundingMode.HALF_EVEN);
+            }
+        });
+    }
+
+    /**
+     * As defined by {@link #average(ToIntFunction)}.
+     */
+    public static <A, B, C> TriConstraintCollector<A, B, C, ?, Duration>
+            averageDuration(TriFunction<A, B, C, Duration> groupValueMapping) {
+        return compose(countTri(), sumDuration(groupValueMapping), (count, sum) -> {
+            if (count == 0) {
+                return null;
+            } else {
+                long nanos = sum.toNanos();
+                return Duration.ofNanos(nanos / count);
+            }
+        });
+    }
+
+    /**
+     * As defined by {@link #average(ToIntFunction)}.
+     */
+    public static <A, B, C, D> QuadConstraintCollector<A, B, C, D, ?, Double>
+            average(ToIntQuadFunction<A, B, C, D> groupValueMapping) {
+        return compose(countQuad(), sum(groupValueMapping), (count, sum) -> {
+            if (count == 0) {
+                return null;
+            } else {
+                return sum / (double) count;
+            }
+        });
+    }
+
+    /**
+     * As defined by {@link #average(ToIntFunction)}.
+     */
+    public static <A, B, C, D> QuadConstraintCollector<A, B, C, D, ?, Double>
+            averageLong(ToLongQuadFunction<A, B, C, D> groupValueMapping) {
+        return compose(countQuad(), sumLong(groupValueMapping), (count, sum) -> {
+            if (count == 0) {
+                return null;
+            } else {
+                return sum / (double) count;
+            }
+        });
+    }
+
+    /**
+     * As defined by {@link #averageBigDecimal(Function)}.
+     */
+    public static <A, B, C, D> QuadConstraintCollector<A, B, C, D, ?, BigDecimal>
+            averageBigDecimal(QuadFunction<A, B, C, D, BigDecimal> groupValueMapping) {
+        return compose(countQuad(), sumBigDecimal(groupValueMapping), (count, sum) -> {
+            if (count == 0) {
+                return null;
+            } else {
+                return sum.divide(BigDecimal.valueOf(count), RoundingMode.HALF_EVEN);
+            }
+        });
+    }
+
+    /**
+     * As defined by {@link #averageBigInteger(Function)}.
+     */
+    public static <A, B, C, D> QuadConstraintCollector<A, B, C, D, ?, BigDecimal>
+            averageBigInteger(QuadFunction<A, B, C, D, BigInteger> groupValueMapping) {
+        return compose(countQuad(), sumBigInteger(groupValueMapping), (count, sum) -> {
+            if (count == 0) {
+                return null;
+            } else {
+                return new BigDecimal(sum)
+                        .divide(BigDecimal.valueOf(count), RoundingMode.HALF_EVEN);
+            }
+        });
+    }
+
+    /**
+     * As defined by {@link #average(ToIntFunction)}.
+     */
+    public static <A, B, C, D> QuadConstraintCollector<A, B, C, D, ?, Duration>
+            averageDuration(QuadFunction<A, B, C, D, Duration> groupValueMapping) {
+        return compose(countQuad(), sumDuration(groupValueMapping), (count, sum) -> {
+            if (count == 0) {
+                return null;
+            } else {
+                long nanos = sum.toNanos();
+                return Duration.ofNanos(nanos / count);
+            }
+        });
+    }
+
+    // ************************************************************************
     // toCollection
     // ************************************************************************
 
@@ -980,6 +1300,8 @@ public final class ConstraintCollectors {
      * Creates constraint collector that returns {@link Set} of the same element type as the {@link ConstraintStream}.
      * Makes no guarantees on iteration order.
      * For stable iteration order, use {@link #toSortedSet()}.
+     * <p>
+     * The default result of the collector (e.g. when never called) is an empty {@link Set}.
      *
      * @param <A> type of the matched fact
      * @return never null
@@ -991,6 +1313,8 @@ public final class ConstraintCollectors {
     /**
      * Creates constraint collector that returns {@link SortedSet} of the same element type as the
      * {@link ConstraintStream}.
+     * <p>
+     * The default result of the collector (e.g. when never called) is an empty {@link SortedSet}.
      *
      * @param <A> type of the matched fact
      * @return never null
@@ -1010,6 +1334,8 @@ public final class ConstraintCollectors {
      * Creates constraint collector that returns {@link List} of the same element type as the {@link ConstraintStream}.
      * Makes no guarantees on iteration order.
      * For stable iteration order, use {@link #toSortedSet()}.
+     * <p>
+     * The default result of the collector (e.g. when never called) is an empty {@link List}.
      *
      * @param <A> type of the matched fact
      * @return never null
@@ -1048,6 +1374,8 @@ public final class ConstraintCollectors {
      * Creates constraint collector that returns {@link Set} of the same element type as the {@link ConstraintStream}.
      * Makes no guarantees on iteration order.
      * For stable iteration order, use {@link #toSortedSet()}.
+     * <p>
+     * The default result of the collector (e.g. when never called) is an empty {@link Set}.
      *
      * @param groupValueMapping never null, converts matched facts to elements of the resulting set
      * @param <A> type of the matched fact
@@ -1067,6 +1395,8 @@ public final class ConstraintCollectors {
     /**
      * Creates constraint collector that returns {@link SortedSet} of the same element type as the
      * {@link ConstraintStream}.
+     * <p>
+     * The default result of the collector (e.g. when never called) is an empty {@link SortedSet}.
      *
      * @param groupValueMapping never null, converts matched facts to elements of the resulting set
      * @param <A> type of the matched fact
@@ -1096,6 +1426,8 @@ public final class ConstraintCollectors {
      * Creates constraint collector that returns {@link List} of the given element type.
      * Makes no guarantees on iteration order.
      * For stable iteration order, use {@link #toSortedSet(Function)}.
+     * <p>
+     * The default result of the collector (e.g. when never called) is an empty {@link List}.
      *
      * @param groupValueMapping never null, converts matched facts to elements of the resulting collection
      * @param <A> type of the matched fact
@@ -1132,12 +1464,6 @@ public final class ConstraintCollectors {
 
     /**
      * As defined by {@link #toSet(Function)}.
-     *
-     * @param groupValueMapping never null, converts matched facts to elements of the resulting set
-     * @param <A> type of the first matched fact
-     * @param <B> type of the second matched fact
-     * @param <Mapped> type of elements in the resulting set
-     * @return never null
      */
     public static <A, B, Mapped> BiConstraintCollector<A, B, ?, Set<Mapped>> toSet(
             BiFunction<A, B, Mapped> groupValueMapping) {
@@ -1152,12 +1478,6 @@ public final class ConstraintCollectors {
 
     /**
      * As defined by {@link #toSortedSet(Function)}.
-     *
-     * @param groupValueMapping never null, converts matched facts to elements of the resulting set
-     * @param <A> type of the first matched fact
-     * @param <B> type of the second matched fact
-     * @param <Mapped> type of elements in the resulting set
-     * @return never null
      */
     public static <A, B, Mapped extends Comparable<Mapped>> BiConstraintCollector<A, B, ?, SortedSet<Mapped>> toSortedSet(
             BiFunction<A, B, Mapped> groupValueMapping) {
@@ -1180,12 +1500,6 @@ public final class ConstraintCollectors {
 
     /**
      * As defined by {@link #toList(Function)}.
-     *
-     * @param groupValueMapping never null, converts matched facts to elements of the resulting collection
-     * @param <A> type of the first matched fact
-     * @param <B> type of the second matched fact
-     * @param <Mapped> type of elements in the resulting collection
-     * @return never null
      */
     public static <A, B, Mapped> BiConstraintCollector<A, B, ?, List<Mapped>> toList(
             BiFunction<A, B, Mapped> groupValueMapping) {
@@ -1218,13 +1532,6 @@ public final class ConstraintCollectors {
 
     /**
      * As defined by {@link #toSet(Function)}.
-     *
-     * @param groupValueMapping never null, converts matched facts to elements of the resulting set
-     * @param <A> type of the first matched fact
-     * @param <B> type of the second matched fact
-     * @param <C> type of the third matched fact
-     * @param <Mapped> type of elements in the resulting set
-     * @return never null
      */
     public static <A, B, C, Mapped> TriConstraintCollector<A, B, C, ?, Set<Mapped>> toSet(
             TriFunction<A, B, C, Mapped> groupValueMapping) {
@@ -1239,13 +1546,6 @@ public final class ConstraintCollectors {
 
     /**
      * As defined by {@link #toSortedSet(Function)}.
-     *
-     * @param groupValueMapping never null, converts matched facts to elements of the resulting set
-     * @param <A> type of the first matched fact
-     * @param <B> type of the second matched fact
-     * @param <C> type of the third matched fact
-     * @param <Mapped> type of elements in the resulting set
-     * @return never null
      */
     public static <A, B, C, Mapped extends Comparable<Mapped>> TriConstraintCollector<A, B, C, ?, SortedSet<Mapped>>
             toSortedSet(TriFunction<A, B, C, Mapped> groupValueMapping) {
@@ -1268,13 +1568,6 @@ public final class ConstraintCollectors {
 
     /**
      * As defined by {@link #toList(Function)}.
-     *
-     * @param groupValueMapping never null, converts matched facts to elements of the resulting collection
-     * @param <A> type of the first matched fact
-     * @param <B> type of the second matched fact
-     * @param <C> type of the third matched fact
-     * @param <Mapped> type of elements in the resulting collection
-     * @return never null
      */
     public static <A, B, C, Mapped> TriConstraintCollector<A, B, C, ?, List<Mapped>> toList(
             TriFunction<A, B, C, Mapped> groupValueMapping) {
@@ -1307,14 +1600,6 @@ public final class ConstraintCollectors {
 
     /**
      * As defined by {@link #toSet(Function)}.
-     *
-     * @param groupValueMapping never null, converts matched facts to elements of the resulting set
-     * @param <A> type of the first matched fact
-     * @param <B> type of the second matched fact
-     * @param <C> type of the third matched fact
-     * @param <D> type of the fourth matched fact
-     * @param <Mapped> type of elements in the resulting set
-     * @return never null
      */
     public static <A, B, C, D, Mapped> QuadConstraintCollector<A, B, C, D, ?, Set<Mapped>> toSet(
             QuadFunction<A, B, C, D, Mapped> groupValueMapping) {
@@ -1329,14 +1614,6 @@ public final class ConstraintCollectors {
 
     /**
      * As defined by {@link #toSortedSet(Function)}.
-     *
-     * @param groupValueMapping never null, converts matched facts to elements of the resulting set
-     * @param <A> type of the first matched fact
-     * @param <B> type of the second matched fact
-     * @param <C> type of the third matched fact
-     * @param <D> type of the fourth matched fact
-     * @param <Mapped> type of elements in the resulting set
-     * @return never null
      */
     public static <A, B, C, D, Mapped extends Comparable<Mapped>> QuadConstraintCollector<A, B, C, D, ?, SortedSet<Mapped>>
             toSortedSet(QuadFunction<A, B, C, D, Mapped> groupValueMapping) {
@@ -1359,14 +1636,6 @@ public final class ConstraintCollectors {
 
     /**
      * As defined by {@link #toList(Function)}.
-     *
-     * @param groupValueMapping never null, converts matched facts to elements of the resulting collection
-     * @param <A> type of the first matched fact
-     * @param <B> type of the second matched fact
-     * @param <C> type of the third matched fact
-     * @param <D> type of the fourth matched fact
-     * @param <Mapped> type of elements in the resulting collection
-     * @return never null
      */
     public static <A, B, C, D, Mapped> QuadConstraintCollector<A, B, C, D, ?, List<Mapped>> toList(
             QuadFunction<A, B, C, D, Mapped> groupValueMapping) {
@@ -1394,6 +1663,8 @@ public final class ConstraintCollectors {
      * <p>
      * Makes no guarantees on iteration order, neither for map entries, nor for the value sets.
      * For stable iteration order, use {@link #toSortedMap(Function, Function, IntFunction)}.
+     * <p>
+     * The default result of the collector (e.g. when never called) is an empty {@link Map}.
      *
      * @param keyMapper map matched fact to a map key
      * @param valueMapper map matched fact to a value
@@ -1418,6 +1689,8 @@ public final class ConstraintCollectors {
      * Iteration order of value collections depends on the {@link Set} provided.
      * Makes no guarantees on iteration order for map entries, use {@link #toSortedMap(Function, Function, IntFunction)}
      * for that.
+     * <p>
+     * The default result of the collector (e.g. when never called) is an empty {@link Map}.
      *
      * @param keyMapper map matched fact to a map key
      * @param valueMapper map matched fact to a value
@@ -1432,11 +1705,9 @@ public final class ConstraintCollectors {
             Function<? super A, ? extends Key> keyMapper, Function<? super A, ? extends Value> valueMapper,
             IntFunction<ValueSet> valueSetFunction) {
         return new DefaultUniConstraintCollector<>(
-                (Supplier<ToMapResultContainer<Key, Value>>) ToMapResultContainer::new,
+                () -> new ToMultiMapResultContainer<>((IntFunction<HashMap<Key, ValueSet>>) HashMap::new, valueSetFunction),
                 (resultContainer, a) -> toMapAccumulator(keyMapper, valueMapper, resultContainer, a),
-                resultContainer -> resultContainer.entries()
-                        .filter(e -> !e.value.isEmpty()) // Filter out keys without values.
-                        .collect(Collectors.toMap(e -> e.key, e -> toValueSet(e.value, valueSetFunction))));
+                ToMultiMapResultContainer::getResult);
     }
 
     private static final class ToMapPerKeyCounter<Value> {
@@ -1464,8 +1735,13 @@ public final class ConstraintCollectors {
             return newCount == null ? 0L : newCount;
         }
 
-        public Set<Value> getValues() {
-            return counts.keySet();
+        public Value merge(BinaryOperator<Value> mergeFunction) {
+            // Rebuilding the value from the collection is not incremental.
+            // The impact is negligible, assuming there are not too many values for the same key.
+            return counts.keySet()
+                    .stream()
+                    .reduce(mergeFunction)
+                    .orElseThrow(() -> new IllegalStateException("Programming error: Should have had at least one value."));
         }
 
         public boolean isEmpty() {
@@ -1474,61 +1750,120 @@ public final class ConstraintCollectors {
 
     }
 
-    private static final class Tuple<Key, Value> {
+    private interface ToMapResultContainer<Key, Value, ResultValue, Result_ extends Map<Key, ResultValue>> {
 
-        public final Key key;
-        public final Value value;
+        void add(Key key, Value value);
 
-        public Tuple(Key key, Value value) {
-            this.key = key;
-            this.value = value;
-        }
+        void remove(Key key, Value value);
+
+        Result_ getResult();
 
     }
 
-    private static final class ToMapResultContainer<Key, Value> {
+    private static final class ToSimpleMapResultContainer<Key, Value, Result_ extends Map<Key, Value>>
+            implements ToMapResultContainer<Key, Value, Value, Result_> {
 
+        private final BinaryOperator<Value> mergeFunction;
+        private final Result_ result;
         private final Map<Key, ToMapPerKeyCounter<Value>> valueCounts = new HashMap<>(0);
+
+        public ToSimpleMapResultContainer(Supplier<Result_> resultSupplier, BinaryOperator<Value> mergeFunction) {
+            this.mergeFunction = Objects.requireNonNull(mergeFunction);
+            this.result = Objects.requireNonNull(resultSupplier).get();
+        }
+
+        public ToSimpleMapResultContainer(IntFunction<Result_> resultSupplier, BinaryOperator<Value> mergeFunction) {
+            this.mergeFunction = Objects.requireNonNull(mergeFunction);
+            this.result = Objects.requireNonNull(resultSupplier).apply(0);
+        }
 
         public void add(Key key, Value value) {
             ToMapPerKeyCounter<Value> counter = valueCounts.computeIfAbsent(key, k -> new ToMapPerKeyCounter<>());
-            counter.add(value);
+            long newCount = counter.add(value);
+            if (newCount == 1L) {
+                result.put(key, value);
+            } else {
+                result.put(key, counter.merge(mergeFunction));
+            }
         }
 
         public void remove(Key key, Value value) {
             ToMapPerKeyCounter<Value> counter = valueCounts.get(key);
-            counter.remove(value);
+            long newCount = counter.remove(value);
+            if (newCount == 0L) {
+                result.remove(key);
+            } else {
+                result.put(key, counter.merge(mergeFunction));
+            }
             if (counter.isEmpty()) {
                 valueCounts.remove(key);
             }
         }
 
-        public Stream<Tuple<Key, Set<Value>>> entries() {
-            return valueCounts.entrySet()
-                    .stream()
-                    .map(e -> new Tuple<>(e.getKey(), e.getValue().getValues()));
+        @Override
+        public Result_ getResult() {
+            return result;
+        }
+
+    }
+
+    private static final class ToMultiMapResultContainer<Key, Value, Set_ extends Set<Value>, Result_ extends Map<Key, Set_>>
+            implements ToMapResultContainer<Key, Value, Set_, Result_> {
+
+        private final Supplier<Set_> setSupplier;
+        private final Result_ result;
+        private final Map<Key, ToMapPerKeyCounter<Value>> valueCounts = new HashMap<>(0);
+
+        public ToMultiMapResultContainer(Supplier<Result_> resultSupplier, IntFunction<Set_> setFunction) {
+            IntFunction<Set_> nonNullSetFunction = Objects.requireNonNull(setFunction);
+            this.setSupplier = () -> nonNullSetFunction.apply(0);
+            this.result = Objects.requireNonNull(resultSupplier).get();
+        }
+
+        public ToMultiMapResultContainer(IntFunction<Result_> resultFunction, IntFunction<Set_> setFunction) {
+            IntFunction<Set_> nonNullSetFunction = Objects.requireNonNull(setFunction);
+            this.setSupplier = () -> nonNullSetFunction.apply(0);
+            this.result = Objects.requireNonNull(resultFunction).apply(0);
+        }
+
+        public void add(Key key, Value value) {
+            ToMapPerKeyCounter<Value> counter = valueCounts.computeIfAbsent(key, k -> new ToMapPerKeyCounter<>());
+            counter.add(value);
+            result.computeIfAbsent(key, k -> setSupplier.get())
+                    .add(value);
+        }
+
+        public void remove(Key key, Value value) {
+            ToMapPerKeyCounter<Value> counter = valueCounts.get(key);
+            long newCount = counter.remove(value);
+            if (newCount == 0) {
+                result.get(key).remove(value);
+            }
+            if (counter.isEmpty()) {
+                valueCounts.remove(key);
+                result.remove(key);
+            }
+        }
+
+        @Override
+        public Result_ getResult() {
+            return result;
         }
 
     }
 
     private static <A, Key, Value> Runnable toMapAccumulator(Function<? super A, ? extends Key> keyMapper,
-            Function<? super A, ? extends Value> valueMapper, ToMapResultContainer<Key, Value> resultContainer, A a) {
+            Function<? super A, ? extends Value> valueMapper, ToMapResultContainer<Key, Value, ?, ?> resultContainer,
+            A a) {
         Key key = keyMapper.apply(a);
         Value value = valueMapper.apply(a);
         return toMapInnerAccumulator(key, value, resultContainer);
     }
 
     private static <Key, Value> Runnable toMapInnerAccumulator(Key key, Value value,
-            ToMapResultContainer<Key, Value> resultContainer) {
+            ToMapResultContainer<Key, Value, ?, ?> resultContainer) {
         resultContainer.add(key, value);
         return () -> resultContainer.remove(key, value);
-    }
-
-    private static <Value, ValueSet extends Set<Value>> ValueSet toValueSet(Set<Value> in,
-            IntFunction<ValueSet> valueSetFunction) {
-        ValueSet result = valueSetFunction.apply(in.size());
-        result.addAll(in);
-        return result;
     }
 
     /**
@@ -1541,7 +1876,7 @@ public final class ConstraintCollectors {
      * Makes no guarantees on iteration order for map entries.
      * For stable iteration order, use {@link #toSortedMap(Function, Function, BinaryOperator)}.
      * <p>
-     * This constraint collector is slow and causes considerable garbage collector pressure.
+     * The default result of the collector (e.g. when never called) is an empty {@link Map}.
      *
      * @param keyMapper map matched fact to a map key
      * @param valueMapper map matched fact to a value
@@ -1555,17 +1890,9 @@ public final class ConstraintCollectors {
             Function<? super A, ? extends Key> keyMapper, Function<? super A, ? extends Value> valueMapper,
             BinaryOperator<Value> mergeFunction) {
         return new DefaultUniConstraintCollector<>(
-                (Supplier<ToMapResultContainer<Key, Value>>) ToMapResultContainer::new,
+                () -> new ToSimpleMapResultContainer<>((IntFunction<HashMap<Key, Value>>) HashMap::new, mergeFunction),
                 (resultContainer, a) -> toMapAccumulator(keyMapper, valueMapper, resultContainer, a),
-                resultContainer -> resultContainer.entries()
-                        .filter(e -> !e.value.isEmpty()) // Filter out keys without values.
-                        .collect(Collectors.toMap(e -> e.key, e -> toValue(e.value, mergeFunction))));
-    }
-
-    private static <Value> Value toValue(Set<Value> in, BinaryOperator<Value> mergeFunction) {
-        return in.stream()
-                .reduce(mergeFunction)
-                .orElseThrow(() -> new IllegalStateException("Programming error: Should have had at least one value."));
+                ToMapResultContainer::getResult);
     }
 
     /**
@@ -1579,7 +1906,7 @@ public final class ConstraintCollectors {
      * Makes no guarantees on iteration order for the value sets, use
      * {@link #toSortedMap(Function, Function, IntFunction)} for that.
      * <p>
-     * This constraint collector is slow and causes considerable garbage collector pressure.
+     * The default result of the collector (e.g. when never called) is an empty {@link SortedMap}.
      *
      * @param keyMapper map matched fact to a map key
      * @param valueMapper map matched fact to a value
@@ -1602,6 +1929,8 @@ public final class ConstraintCollectors {
      * {@code {20: [Ann, Eric], 25: [Beth], 30: [Cathy, David]}}.
      * <p>
      * Iteration order of value collections depends on the {@link Set} provided.
+     * <p>
+     * The default result of the collector (e.g. when never called) is an empty {@link SortedMap}.
      *
      * @param keyMapper map matched fact to a map key
      * @param valueMapper map matched fact to a value
@@ -1617,16 +1946,9 @@ public final class ConstraintCollectors {
                     Function<? super A, ? extends Key> keyMapper,
                     Function<? super A, ? extends Value> valueMapper, IntFunction<ValueSet> valueSetFunction) {
         return new DefaultUniConstraintCollector<>(
-                (Supplier<ToMapResultContainer<Key, Value>>) ToMapResultContainer::new,
+                () -> new ToMultiMapResultContainer<>((Supplier<TreeMap<Key, ValueSet>>) TreeMap::new, valueSetFunction),
                 (resultContainer, a) -> toMapAccumulator(keyMapper, valueMapper, resultContainer, a),
-                resultContainer -> resultContainer.entries()
-                        .filter(e -> !e.value.isEmpty()) // Filter out keys without values.
-                        .collect(Collectors.toMap(e -> e.key, e -> toValueSet(e.value, valueSetFunction),
-                                ConstraintCollectors::throwOnKeyConflict, TreeMap::new)));
-    }
-
-    private static <Value> Value throwOnKeyConflict(Value firstValue, Value secondValue) {
-        throw new IllegalStateException("Programming error, key conflict: (" + firstValue + "), (" + secondValue + ").");
+                ToMultiMapResultContainer::getResult);
     }
 
     /**
@@ -1635,6 +1957,8 @@ public final class ConstraintCollectors {
      * For example, {@code [Ann(age = 20), Beth(age = 25), Cathy(age = 30), David(age = 30), Eric(age = 20)]}
      * with {@code .groupBy(toMap(Person::getAge, Person::getName, (name1, name2) -> name1 + " and " + name2)} returns
      * {@code {20: "Ann and Eric", 25: "Beth", 30: "Cathy and David"}}.
+     * <p>
+     * The default result of the collector (e.g. when never called) is an empty {@link SortedMap}.
      *
      * @param keyMapper map matched fact to a map key
      * @param valueMapper map matched fact to a value
@@ -1648,24 +1972,13 @@ public final class ConstraintCollectors {
             Function<? super A, ? extends Key> keyMapper, Function<? super A, ? extends Value> valueMapper,
             BinaryOperator<Value> mergeFunction) {
         return new DefaultUniConstraintCollector<>(
-                (Supplier<ToMapResultContainer<Key, Value>>) ToMapResultContainer::new,
+                () -> new ToSimpleMapResultContainer<>((Supplier<TreeMap<Key, Value>>) TreeMap::new, mergeFunction),
                 (resultContainer, a) -> toMapAccumulator(keyMapper, valueMapper, resultContainer, a),
-                resultContainer -> resultContainer.entries()
-                        .filter(e -> !e.value.isEmpty()) // Filter out keys without values.
-                        .collect(Collectors.toMap(e -> e.key, e -> toValue(e.value, mergeFunction),
-                                ConstraintCollectors::throwOnKeyConflict, TreeMap::new)));
+                ToSimpleMapResultContainer::getResult);
     }
 
     /**
      * As defined by {@link #toMap(Function, Function)}.
-     *
-     * @param keyMapper map matched fact to a map key
-     * @param valueMapper map matched fact to a value
-     * @param <A> type of the first matched fact
-     * @param <B> type of the second matched fact
-     * @param <Key> type of map key
-     * @param <Value> type of map value
-     * @return never null
      */
     public static <A, B, Key, Value> BiConstraintCollector<A, B, ?, Map<Key, Set<Value>>> toMap(
             BiFunction<? super A, ? super B, ? extends Key> keyMapper,
@@ -1675,32 +1988,20 @@ public final class ConstraintCollectors {
 
     /**
      * As defined by {@link #toMap(Function, Function, IntFunction)}.
-     *
-     * @param keyMapper map matched fact to a map key
-     * @param valueMapper map matched fact to a value
-     * @param valueSetFunction creates a set that will be used to store value mappings
-     * @param <A> type of the first matched fact
-     * @param <B> type of the second matched fact
-     * @param <Key> type of map key
-     * @param <Value> type of map value
-     * @param <ValueSet> type of the value set
-     * @return never null
      */
     public static <A, B, Key, Value, ValueSet extends Set<Value>> BiConstraintCollector<A, B, ?, Map<Key, ValueSet>> toMap(
             BiFunction<? super A, ? super B, ? extends Key> keyMapper,
             BiFunction<? super A, ? super B, ? extends Value> valueMapper, IntFunction<ValueSet> valueSetFunction) {
         return new DefaultBiConstraintCollector<>(
-                (Supplier<ToMapResultContainer<Key, Value>>) ToMapResultContainer::new,
+                () -> new ToMultiMapResultContainer<>((IntFunction<HashMap<Key, ValueSet>>) HashMap::new, valueSetFunction),
                 (resultContainer, a, b) -> toMapAccumulator(keyMapper, valueMapper, resultContainer, a, b),
-                resultContainer -> resultContainer.entries()
-                        .filter(e -> !e.value.isEmpty()) // Filter out keys without values.
-                        .collect(Collectors.toMap(e -> e.key, e -> toValueSet(e.value, valueSetFunction))));
+                ToMultiMapResultContainer::getResult);
     }
 
     private static <A, B, Key, Value> Runnable toMapAccumulator(
             BiFunction<? super A, ? super B, ? extends Key> keyMapper,
             BiFunction<? super A, ? super B, ? extends Value> valueMapper,
-            ToMapResultContainer<Key, Value> resultContainer, A a, B b) {
+            ToMapResultContainer<Key, Value, ?, ?> resultContainer, A a, B b) {
         Key key = keyMapper.apply(a, b);
         Value value = valueMapper.apply(a, b);
         return toMapInnerAccumulator(key, value, resultContainer);
@@ -1708,37 +2009,18 @@ public final class ConstraintCollectors {
 
     /**
      * As defined by {@link #toMap(Function, Function, BinaryOperator)}.
-     *
-     * @param keyMapper map matched fact to a map key
-     * @param valueMapper map matched fact to a value
-     * @param mergeFunction takes two values and merges them to one
-     * @param <A> type of the first matched fact
-     * @param <B> type of the second matched fact
-     * @param <Key> type of map key
-     * @param <Value> type of map value
-     * @return never null
      */
     public static <A, B, Key, Value> BiConstraintCollector<A, B, ?, Map<Key, Value>> toMap(
             BiFunction<? super A, ? super B, ? extends Key> keyMapper,
             BiFunction<? super A, ? super B, ? extends Value> valueMapper, BinaryOperator<Value> mergeFunction) {
         return new DefaultBiConstraintCollector<>(
-                (Supplier<ToMapResultContainer<Key, Value>>) ToMapResultContainer::new,
+                () -> new ToSimpleMapResultContainer<>((IntFunction<HashMap<Key, Value>>) HashMap::new, mergeFunction),
                 (resultContainer, a, b) -> toMapAccumulator(keyMapper, valueMapper, resultContainer, a, b),
-                resultContainer -> resultContainer.entries()
-                        .filter(e -> !e.value.isEmpty()) // Filter out keys without values.
-                        .collect(Collectors.toMap(e -> e.key, e -> toValue(e.value, mergeFunction))));
+                ToSimpleMapResultContainer::getResult);
     }
 
     /**
      * As defined by {@link #toSortedMap(Function, Function)}.
-     *
-     * @param keyMapper map matched fact to a map key
-     * @param valueMapper map matched fact to a value
-     * @param <A> type of the first matched fact
-     * @param <B> type of the second matched fact
-     * @param <Key> type of map key
-     * @param <Value> type of map value
-     * @return never null
      */
     public static <A, B, Key extends Comparable<Key>, Value> BiConstraintCollector<A, B, ?, SortedMap<Key, Set<Value>>>
             toSortedMap(BiFunction<? super A, ? super B, ? extends Key> keyMapper,
@@ -1748,65 +2030,31 @@ public final class ConstraintCollectors {
 
     /**
      * As defined by {@link #toSortedMap(Function, Function, IntFunction)}.
-     *
-     * @param keyMapper map matched fact to a map key
-     * @param valueMapper map matched fact to a value
-     * @param valueSetFunction creates a set that will be used to store value mappings
-     * @param <A> type of the first matched fact
-     * @param <B> type of the second matched fact
-     * @param <Key> type of map key
-     * @param <Value> type of map value
-     * @param <ValueSet> type of the value set
-     * @return never null
      */
     public static <A, B, Key extends Comparable<Key>, Value, ValueSet extends Set<Value>>
             BiConstraintCollector<A, B, ?, SortedMap<Key, ValueSet>> toSortedMap(
                     BiFunction<? super A, ? super B, ? extends Key> keyMapper,
                     BiFunction<? super A, ? super B, ? extends Value> valueMapper, IntFunction<ValueSet> valueSetFunction) {
         return new DefaultBiConstraintCollector<>(
-                (Supplier<ToMapResultContainer<Key, Value>>) ToMapResultContainer::new,
+                () -> new ToMultiMapResultContainer<>((Supplier<TreeMap<Key, ValueSet>>) TreeMap::new, valueSetFunction),
                 (resultContainer, a, b) -> toMapAccumulator(keyMapper, valueMapper, resultContainer, a, b),
-                resultContainer -> resultContainer.entries()
-                        .filter(e -> !e.value.isEmpty()) // Filter out keys without values.
-                        .collect(Collectors.toMap(e -> e.key, e -> toValueSet(e.value, valueSetFunction),
-                                ConstraintCollectors::throwOnKeyConflict, TreeMap::new)));
+                ToMultiMapResultContainer::getResult);
     }
 
     /**
      * As defined by {@link #toSortedMap(Function, Function, BinaryOperator)}.
-     *
-     * @param keyMapper map matched fact to a map key
-     * @param valueMapper map matched fact to a value
-     * @param mergeFunction takes two values and merges them to one
-     * @param <A> type of the first matched fact
-     * @param <B> type of the second matched fact
-     * @param <Key> type of map key
-     * @param <Value> type of map value
-     * @return never null
      */
     public static <A, B, Key extends Comparable<Key>, Value> BiConstraintCollector<A, B, ?, SortedMap<Key, Value>> toSortedMap(
             BiFunction<? super A, ? super B, ? extends Key> keyMapper,
             BiFunction<? super A, ? super B, ? extends Value> valueMapper, BinaryOperator<Value> mergeFunction) {
         return new DefaultBiConstraintCollector<>(
-                (Supplier<ToMapResultContainer<Key, Value>>) ToMapResultContainer::new,
+                () -> new ToSimpleMapResultContainer<>((Supplier<TreeMap<Key, Value>>) TreeMap::new, mergeFunction),
                 (resultContainer, a, b) -> toMapAccumulator(keyMapper, valueMapper, resultContainer, a, b),
-                resultContainer -> resultContainer.entries()
-                        .filter(e -> !e.value.isEmpty()) // Filter out keys without values.
-                        .collect(Collectors.toMap(e -> e.key, e -> toValue(e.value, mergeFunction),
-                                ConstraintCollectors::throwOnKeyConflict, TreeMap::new)));
+                ToSimpleMapResultContainer::getResult);
     }
 
     /**
      * As defined by {@link #toMap(Function, Function)}.
-     *
-     * @param keyMapper map matched fact to a map key
-     * @param valueMapper map matched fact to a value
-     * @param <A> type of the first matched fact
-     * @param <B> type of the second matched fact
-     * @param <C> type of the third matched fact
-     * @param <Key> type of map key
-     * @param <Value> type of map value
-     * @return never null
      */
     public static <A, B, C, Key, Value> TriConstraintCollector<A, B, C, ?, Map<Key, Set<Value>>> toMap(
             TriFunction<? super A, ? super B, ? super C, ? extends Key> keyMapper,
@@ -1816,34 +2064,21 @@ public final class ConstraintCollectors {
 
     /**
      * As defined by {@link #toMap(Function, Function, IntFunction)}.
-     *
-     * @param keyMapper map matched fact to a map key
-     * @param valueMapper map matched fact to a value
-     * @param valueSetFunction creates a set that will be used to store value mappings
-     * @param <A> type of the first matched fact
-     * @param <B> type of the second matched fact
-     * @param <C> type of the third matched fact
-     * @param <Key> type of map key
-     * @param <Value> type of map value
-     * @param <ValueSet> type of the value set
-     * @return never null
      */
     public static <A, B, C, Key, Value, ValueSet extends Set<Value>> TriConstraintCollector<A, B, C, ?, Map<Key, ValueSet>>
             toMap(TriFunction<? super A, ? super B, ? super C, ? extends Key> keyMapper,
                     TriFunction<? super A, ? super B, ? super C, ? extends Value> valueMapper,
                     IntFunction<ValueSet> valueSetFunction) {
         return new DefaultTriConstraintCollector<>(
-                (Supplier<ToMapResultContainer<Key, Value>>) ToMapResultContainer::new,
+                () -> new ToMultiMapResultContainer<>((IntFunction<HashMap<Key, ValueSet>>) HashMap::new, valueSetFunction),
                 (resultContainer, a, b, c) -> toMapAccumulator(keyMapper, valueMapper, resultContainer, a, b, c),
-                resultContainer -> resultContainer.entries()
-                        .filter(e -> !e.value.isEmpty()) // Filter out keys without values.
-                        .collect(Collectors.toMap(e -> e.key, e -> toValueSet(e.value, valueSetFunction))));
+                ToMultiMapResultContainer::getResult);
     }
 
     private static <A, B, C, Key, Value> Runnable toMapAccumulator(
             TriFunction<? super A, ? super B, ? super C, ? extends Key> keyMapper,
             TriFunction<? super A, ? super B, ? super C, ? extends Value> valueMapper,
-            ToMapResultContainer<Key, Value> resultContainer, A a, B b, C c) {
+            ToMapResultContainer<Key, Value, ?, ?> resultContainer, A a, B b, C c) {
         Key key = keyMapper.apply(a, b, c);
         Value value = valueMapper.apply(a, b, c);
         return toMapInnerAccumulator(key, value, resultContainer);
@@ -1851,40 +2086,19 @@ public final class ConstraintCollectors {
 
     /**
      * As defined by {@link #toMap(Function, Function, BinaryOperator)}.
-     *
-     * @param keyMapper map matched fact to a map key
-     * @param valueMapper map matched fact to a value
-     * @param mergeFunction takes two values and merges them to one
-     * @param <A> type of the first matched fact
-     * @param <B> type of the second matched fact
-     * @param <C> type of the third matched fact
-     * @param <Key> type of map key
-     * @param <Value> type of map value
-     * @return never null
      */
     public static <A, B, C, Key, Value> TriConstraintCollector<A, B, C, ?, Map<Key, Value>> toMap(
             TriFunction<? super A, ? super B, ? super C, ? extends Key> keyMapper,
             TriFunction<? super A, ? super B, ? super C, ? extends Value> valueMapper,
             BinaryOperator<Value> mergeFunction) {
         return new DefaultTriConstraintCollector<>(
-                (Supplier<ToMapResultContainer<Key, Value>>) ToMapResultContainer::new,
+                () -> new ToSimpleMapResultContainer<>((IntFunction<HashMap<Key, Value>>) HashMap::new, mergeFunction),
                 (resultContainer, a, b, c) -> toMapAccumulator(keyMapper, valueMapper, resultContainer, a, b, c),
-                resultContainer -> resultContainer.entries()
-                        .filter(e -> !e.value.isEmpty()) // Filter out keys without values.
-                        .collect(Collectors.toMap(e -> e.key, e -> toValue(e.value, mergeFunction))));
+                ToSimpleMapResultContainer::getResult);
     }
 
     /**
      * As defined by {@link #toSortedMap(Function, Function)}.
-     *
-     * @param keyMapper map matched fact to a map key
-     * @param valueMapper map matched fact to a value
-     * @param <A> type of the first matched fact
-     * @param <B> type of the second matched fact
-     * @param <C> type of the third matched fact
-     * @param <Key> type of map key
-     * @param <Value> type of map value
-     * @return never null
      */
     public static <A, B, C, Key extends Comparable<Key>, Value> TriConstraintCollector<A, B, C, ?, SortedMap<Key, Set<Value>>>
             toSortedMap(TriFunction<? super A, ? super B, ? super C, ? extends Key> keyMapper,
@@ -1894,17 +2108,6 @@ public final class ConstraintCollectors {
 
     /**
      * As defined by {@link #toSortedMap(Function, Function, IntFunction)}.
-     *
-     * @param keyMapper map matched fact to a map key
-     * @param valueMapper map matched fact to a value
-     * @param valueSetFunction creates a set that will be used to store value mappings
-     * @param <A> type of the first matched fact
-     * @param <B> type of the second matched fact
-     * @param <C> type of the third matched fact
-     * @param <Key> type of map key
-     * @param <Value> type of map value
-     * @param <ValueSet> type of the value set
-     * @return never null
      */
     public static <A, B, C, Key extends Comparable<Key>, Value, ValueSet extends Set<Value>>
             TriConstraintCollector<A, B, C, ?, SortedMap<Key, ValueSet>> toSortedMap(
@@ -1912,52 +2115,26 @@ public final class ConstraintCollectors {
                     TriFunction<? super A, ? super B, ? super C, ? extends Value> valueMapper,
                     IntFunction<ValueSet> valueSetFunction) {
         return new DefaultTriConstraintCollector<>(
-                (Supplier<ToMapResultContainer<Key, Value>>) ToMapResultContainer::new,
+                () -> new ToMultiMapResultContainer<>((Supplier<TreeMap<Key, ValueSet>>) TreeMap::new, valueSetFunction),
                 (resultContainer, a, b, c) -> toMapAccumulator(keyMapper, valueMapper, resultContainer, a, b, c),
-                resultContainer -> resultContainer.entries()
-                        .filter(e -> !e.value.isEmpty()) // Filter out keys without values.
-                        .collect(Collectors.toMap(e -> e.key, e -> toValueSet(e.value, valueSetFunction),
-                                ConstraintCollectors::throwOnKeyConflict, TreeMap::new)));
+                ToMultiMapResultContainer::getResult);
     }
 
     /**
      * As defined by {@link #toSortedMap(Function, Function, BinaryOperator)}.
-     *
-     * @param keyMapper map matched fact to a map key
-     * @param valueMapper map matched fact to a value
-     * @param mergeFunction takes two values and merges them to one
-     * @param <A> type of the first matched fact
-     * @param <B> type of the second matched fact
-     * @param <C> type of the third matched fact
-     * @param <Key> type of map key
-     * @param <Value> type of map value
-     * @return never null
      */
     public static <A, B, C, Key extends Comparable<Key>, Value> TriConstraintCollector<A, B, C, ?, SortedMap<Key, Value>>
             toSortedMap(TriFunction<? super A, ? super B, ? super C, ? extends Key> keyMapper,
                     TriFunction<? super A, ? super B, ? super C, ? extends Value> valueMapper,
                     BinaryOperator<Value> mergeFunction) {
         return new DefaultTriConstraintCollector<>(
-                (Supplier<ToMapResultContainer<Key, Value>>) ToMapResultContainer::new,
+                () -> new ToSimpleMapResultContainer<>((Supplier<TreeMap<Key, Value>>) TreeMap::new, mergeFunction),
                 (resultContainer, a, b, c) -> toMapAccumulator(keyMapper, valueMapper, resultContainer, a, b, c),
-                resultContainer -> resultContainer.entries()
-                        .filter(e -> !e.value.isEmpty()) // Filter out keys without values.
-                        .collect(Collectors.toMap(e -> e.key, e -> toValue(e.value, mergeFunction),
-                                ConstraintCollectors::throwOnKeyConflict, TreeMap::new)));
+                ToSimpleMapResultContainer::getResult);
     }
 
     /**
      * As defined by {@link #toMap(Function, Function)}.
-     *
-     * @param keyMapper map matched fact to a map key
-     * @param valueMapper map matched fact to a value
-     * @param <A> type of the first matched fact
-     * @param <B> type of the second matched fact
-     * @param <C> type of the third matched fact
-     * @param <D> type of the fourth matched fact
-     * @param <Key> type of map key
-     * @param <Value> type of map value
-     * @return never null
      */
     public static <A, B, C, D, Key, Value> QuadConstraintCollector<A, B, C, D, ?, Map<Key, Set<Value>>> toMap(
             QuadFunction<? super A, ? super B, ? super C, ? super D, ? extends Key> keyMapper,
@@ -1967,18 +2144,6 @@ public final class ConstraintCollectors {
 
     /**
      * As defined by {@link #toMap(Function, Function, IntFunction)}.
-     *
-     * @param keyMapper map matched fact to a map key
-     * @param valueMapper map matched fact to a value
-     * @param valueSetFunction creates a set that will be used to store value mappings
-     * @param <A> type of the first matched fact
-     * @param <B> type of the second matched fact
-     * @param <C> type of the third matched fact
-     * @param <D> type of the fourth matched fact
-     * @param <Key> type of map key
-     * @param <Value> type of map value
-     * @param <ValueSet> type of the value set
-     * @return never null
      */
     public static <A, B, C, D, Key, Value, ValueSet extends Set<Value>>
             QuadConstraintCollector<A, B, C, D, ?, Map<Key, ValueSet>> toMap(
@@ -1986,17 +2151,15 @@ public final class ConstraintCollectors {
                     QuadFunction<? super A, ? super B, ? super C, ? super D, ? extends Value> valueMapper,
                     IntFunction<ValueSet> valueSetFunction) {
         return new DefaultQuadConstraintCollector<>(
-                (Supplier<ToMapResultContainer<Key, Value>>) ToMapResultContainer::new,
+                () -> new ToMultiMapResultContainer<>((IntFunction<HashMap<Key, ValueSet>>) HashMap::new, valueSetFunction),
                 (resultContainer, a, b, c, d) -> toMapAccumulator(keyMapper, valueMapper, resultContainer, a, b, c, d),
-                resultContainer -> resultContainer.entries()
-                        .filter(e -> !e.value.isEmpty()) // Filter out keys without values.
-                        .collect(Collectors.toMap(e -> e.key, e -> toValueSet(e.value, valueSetFunction))));
+                ToMultiMapResultContainer::getResult);
     }
 
     private static <A, B, C, D, Key, Value> Runnable toMapAccumulator(
             QuadFunction<? super A, ? super B, ? super C, ? super D, ? extends Key> keyMapper,
             QuadFunction<? super A, ? super B, ? super C, ? super D, ? extends Value> valueMapper,
-            ToMapResultContainer<Key, Value> resultContainer, A a, B b, C c, D d) {
+            ToMapResultContainer<Key, Value, ?, ?> resultContainer, A a, B b, C c, D d) {
         Key key = keyMapper.apply(a, b, c, d);
         Value value = valueMapper.apply(a, b, c, d);
         return toMapInnerAccumulator(key, value, resultContainer);
@@ -2004,42 +2167,19 @@ public final class ConstraintCollectors {
 
     /**
      * As defined by {@link #toMap(Function, Function, BinaryOperator)}.
-     *
-     * @param keyMapper map matched fact to a map key
-     * @param valueMapper map matched fact to a value
-     * @param mergeFunction takes two values and merges them to one
-     * @param <A> type of the first matched fact
-     * @param <B> type of the second matched fact
-     * @param <C> type of the third matched fact
-     * @param <D> type of the fourth matched fact
-     * @param <Key> type of map key
-     * @param <Value> type of map value
-     * @return never null
      */
     public static <A, B, C, D, Key, Value> QuadConstraintCollector<A, B, C, D, ?, Map<Key, Value>> toMap(
             QuadFunction<? super A, ? super B, ? super C, ? super D, ? extends Key> keyMapper,
             QuadFunction<? super A, ? super B, ? super C, ? super D, ? extends Value> valueMapper,
             BinaryOperator<Value> mergeFunction) {
         return new DefaultQuadConstraintCollector<>(
-                (Supplier<ToMapResultContainer<Key, Value>>) ToMapResultContainer::new,
+                () -> new ToSimpleMapResultContainer<>((IntFunction<HashMap<Key, Value>>) HashMap::new, mergeFunction),
                 (resultContainer, a, b, c, d) -> toMapAccumulator(keyMapper, valueMapper, resultContainer, a, b, c, d),
-                resultContainer -> resultContainer.entries()
-                        .filter(e -> !e.value.isEmpty()) // Filter out keys without values.
-                        .collect(Collectors.toMap(e -> e.key, e -> toValue(e.value, mergeFunction))));
+                ToSimpleMapResultContainer::getResult);
     }
 
     /**
      * As defined by {@link #toSortedMap(Function, Function)}.
-     *
-     * @param keyMapper map matched fact to a map key
-     * @param valueMapper map matched fact to a value
-     * @param <A> type of the first matched fact
-     * @param <B> type of the second matched fact
-     * @param <C> type of the third matched fact
-     * @param <D> type of the fourth matched fact
-     * @param <Key> type of map key
-     * @param <Value> type of map value
-     * @return never null
      */
     public static <A, B, C, D, Key extends Comparable<Key>, Value>
             QuadConstraintCollector<A, B, C, D, ?, SortedMap<Key, Set<Value>>> toSortedMap(
@@ -2050,18 +2190,6 @@ public final class ConstraintCollectors {
 
     /**
      * As defined by {@link #toSortedMap(Function, Function, IntFunction)}.
-     *
-     * @param keyMapper map matched fact to a map key
-     * @param valueMapper map matched fact to a value
-     * @param valueSetFunction creates a set that will be used to store value mappings
-     * @param <A> type of the first matched fact
-     * @param <B> type of the second matched fact
-     * @param <C> type of the third matched fact
-     * @param <D> type of the fourth matched fact
-     * @param <Key> type of map key
-     * @param <Value> type of map value
-     * @param <ValueSet> type of the value set
-     * @return never null
      */
     public static <A, B, C, D, Key extends Comparable<Key>, Value, ValueSet extends Set<Value>>
             QuadConstraintCollector<A, B, C, D, ?, SortedMap<Key, ValueSet>> toSortedMap(
@@ -2069,39 +2197,582 @@ public final class ConstraintCollectors {
                     QuadFunction<? super A, ? super B, ? super C, ? super D, ? extends Value> valueMapper,
                     IntFunction<ValueSet> valueSetFunction) {
         return new DefaultQuadConstraintCollector<>(
-                (Supplier<ToMapResultContainer<Key, Value>>) ToMapResultContainer::new,
+                () -> new ToMultiMapResultContainer<>((Supplier<TreeMap<Key, ValueSet>>) TreeMap::new, valueSetFunction),
                 (resultContainer, a, b, c, d) -> toMapAccumulator(keyMapper, valueMapper, resultContainer, a, b, c, d),
-                resultContainer -> resultContainer.entries()
-                        .filter(e -> !e.value.isEmpty()) // Filter out keys without values.
-                        .collect(Collectors.toMap(e -> e.key, e -> toValueSet(e.value, valueSetFunction),
-                                ConstraintCollectors::throwOnKeyConflict, TreeMap::new)));
+                ToMultiMapResultContainer::getResult);
     }
 
     /**
      * As defined by {@link #toSortedMap(Function, Function, BinaryOperator)}.
-     *
-     * @param keyMapper map matched fact to a map key
-     * @param valueMapper map matched fact to a value
-     * @param mergeFunction takes two values and merges them to one
-     * @param <A> type of the first matched fact
-     * @param <B> type of the second matched fact
-     * @param <C> type of the third matched fact
-     * @param <D> type of the fourth matched fact
-     * @param <Key> type of map key
-     * @param <Value> type of map value
-     * @return never null
      */
     public static <A, B, C, D, Key extends Comparable<Key>, Value> QuadConstraintCollector<A, B, C, D, ?, SortedMap<Key, Value>>
             toSortedMap(QuadFunction<? super A, ? super B, ? super C, ? super D, ? extends Key> keyMapper,
                     QuadFunction<? super A, ? super B, ? super C, ? super D, ? extends Value> valueMapper,
                     BinaryOperator<Value> mergeFunction) {
         return new DefaultQuadConstraintCollector<>(
-                (Supplier<ToMapResultContainer<Key, Value>>) ToMapResultContainer::new,
+                () -> new ToSimpleMapResultContainer<>((Supplier<TreeMap<Key, Value>>) TreeMap::new, mergeFunction),
                 (resultContainer, a, b, c, d) -> toMapAccumulator(keyMapper, valueMapper, resultContainer, a, b, c, d),
-                resultContainer -> resultContainer.entries()
-                        .filter(e -> !e.value.isEmpty()) // Filter out keys without values.
-                        .collect(Collectors.toMap(e -> e.key, e -> toValue(e.value, mergeFunction),
-                                ConstraintCollectors::throwOnKeyConflict, TreeMap::new)));
+                ToSimpleMapResultContainer::getResult);
+    }
+
+    // ************************************************************************
+    // conditional collectors
+    // ************************************************************************
+
+    /**
+     * Returns a collector that delegates to the underlying collector
+     * if and only if the input tuple meets the given condition.
+     *
+     * <p>
+     * The result of the collector is always the underlying collector's result.
+     * Therefore the default result of the collector (e.g. when never called) is the default result of the underlying collector.
+     *
+     * @param condition never null, condition to meet in order to delegate to the underlying collector
+     * @param delegate never null, the underlying collector to delegate to
+     * @param <A> generic type of the tuple variable
+     * @param <ResultContainer_> generic type of the result container
+     * @param <Result_> generic type of the collector's return value
+     * @return never null
+     */
+    public static <A, ResultContainer_, Result_> UniConstraintCollector<A, ResultContainer_, Result_> conditionally(
+            Predicate<A> condition, UniConstraintCollector<A, ResultContainer_, Result_> delegate) {
+        BiFunction<ResultContainer_, A, Runnable> accumulator = delegate.accumulator();
+        return new DefaultUniConstraintCollector<>(
+                delegate.supplier(),
+                (resultContainer, a) -> {
+                    if (condition.test(a)) {
+                        return accumulator.apply(resultContainer, a);
+                    } else {
+                        return NOOP;
+                    }
+                },
+                delegate.finisher());
+    }
+
+    /**
+     * As defined by {@link #conditionally(Predicate, UniConstraintCollector)}.
+     */
+    public static <A, B, ResultContainer_, Result_> BiConstraintCollector<A, B, ResultContainer_, Result_>
+            conditionally(BiPredicate<A, B> condition,
+                    BiConstraintCollector<A, B, ResultContainer_, Result_> delegate) {
+        TriFunction<ResultContainer_, A, B, Runnable> accumulator = delegate.accumulator();
+        return new DefaultBiConstraintCollector<>(
+                delegate.supplier(),
+                (resultContainer, a, b) -> {
+                    if (condition.test(a, b)) {
+                        return accumulator.apply(resultContainer, a, b);
+                    } else {
+                        return NOOP;
+                    }
+                },
+                delegate.finisher());
+    }
+
+    /**
+     * As defined by {@link #conditionally(Predicate, UniConstraintCollector)}.
+     */
+    public static <A, B, C, ResultContainer_, Result_> TriConstraintCollector<A, B, C, ResultContainer_, Result_>
+            conditionally(TriPredicate<A, B, C> condition,
+                    TriConstraintCollector<A, B, C, ResultContainer_, Result_> delegate) {
+        QuadFunction<ResultContainer_, A, B, C, Runnable> accumulator = delegate.accumulator();
+        return new DefaultTriConstraintCollector<>(
+                delegate.supplier(),
+                (resultContainer, a, b, c) -> {
+                    if (condition.test(a, b, c)) {
+                        return accumulator.apply(resultContainer, a, b, c);
+                    } else {
+                        return NOOP;
+                    }
+                },
+                delegate.finisher());
+    }
+
+    /**
+     * As defined by {@link #conditionally(Predicate, UniConstraintCollector)}.
+     */
+    public static <A, B, C, D, ResultContainer_, Result_> QuadConstraintCollector<A, B, C, D, ResultContainer_, Result_>
+            conditionally(QuadPredicate<A, B, C, D> condition,
+                    QuadConstraintCollector<A, B, C, D, ResultContainer_, Result_> delegate) {
+        PentaFunction<ResultContainer_, A, B, C, D, Runnable> accumulator = delegate.accumulator();
+        return new DefaultQuadConstraintCollector<>(
+                delegate.supplier(),
+                (resultContainer, a, b, c, d) -> {
+                    if (condition.test(a, b, c, d)) {
+                        return accumulator.apply(resultContainer, a, b, c, d);
+                    } else {
+                        return NOOP;
+                    }
+                },
+                delegate.finisher());
+    }
+
+    // ************************************************************************
+    // composite collectors
+    // ************************************************************************
+
+    /**
+     * Returns a constraint collector the result of which is a composition of other constraint collectors.
+     * The return value of this collector, incl. the default return value, depends solely on the compose function.
+     *
+     * @param subCollector1 never null, first collector to compose
+     * @param subCollector2 never null, second collector to compose
+     * @param composeFunction never null, turns results of the sub collectors to a result of the parent collector
+     * @param <A> generic type of the tuple variable
+     * @param <Result_> generic type of the parent collector's return value
+     * @param <SubResultContainer1_> generic type of the first sub collector's result container
+     * @param <SubResultContainer2_> generic type of the second sub collector's result container
+     * @param <SubResult1_> generic type of the first sub collector's return value
+     * @param <SubResult2_> generic type of the second sub collector's return value
+     * @return never null
+     */
+    public static <A, Result_, SubResultContainer1_, SubResultContainer2_, SubResult1_, SubResult2_>
+            UniConstraintCollector<A, ?, Result_> compose(
+                    UniConstraintCollector<A, SubResultContainer1_, SubResult1_> subCollector1,
+                    UniConstraintCollector<A, SubResultContainer2_, SubResult2_> subCollector2,
+                    BiFunction<SubResult1_, SubResult2_, Result_> composeFunction) {
+        BiFunction<SubResultContainer1_, A, Runnable> subResult1Accumulator = subCollector1.accumulator();
+        BiFunction<SubResultContainer2_, A, Runnable> subResult2Accumulator = subCollector2.accumulator();
+        return new DefaultUniConstraintCollector<>(
+                () -> BiResultContainer.of(subCollector1.supplier(), subCollector2.supplier()),
+                (resultContainer, a) -> {
+                    Runnable undo1 = subResult1Accumulator.apply(resultContainer.resultContainer1, a);
+                    Runnable undo2 = subResult2Accumulator.apply(resultContainer.resultContainer2, a);
+                    return compose(undo1, undo2);
+                },
+                createComposedFinisher(subCollector1.finisher(), subCollector2.finisher(), composeFunction));
+    }
+
+    private static class BiResultContainer<ResultContainer1, ResultContainer2> {
+
+        public static <ResultContainer1_, ResultContainer2_> BiResultContainer<ResultContainer1_, ResultContainer2_>
+                of(Supplier<ResultContainer1_> resultContainer1Supplier,
+                        Supplier<ResultContainer2_> resultContainer2Supplier) {
+            return new BiResultContainer<>(resultContainer1Supplier.get(), resultContainer2Supplier.get());
+        }
+
+        final ResultContainer1 resultContainer1;
+        final ResultContainer2 resultContainer2;
+
+        public BiResultContainer(ResultContainer1 resultContainer1, ResultContainer2 resultContainer2) {
+            this.resultContainer1 = Objects.requireNonNull(resultContainer1);
+            this.resultContainer2 = Objects.requireNonNull(resultContainer2);
+        }
+
+    }
+
+    private static <Result_, SubResultContainer1_, SubResultContainer2_, SubResult1_, SubResult2_>
+            Function<BiResultContainer<SubResultContainer1_, SubResultContainer2_>, Result_>
+            createComposedFinisher(Function<SubResultContainer1_, SubResult1_> subResult1Finisher,
+                    Function<SubResultContainer2_, SubResult2_> subResult2Finisher,
+                    BiFunction<SubResult1_, SubResult2_, Result_> composeFunction) {
+        return (resultContainer) -> {
+            SubResult1_ result1 = subResult1Finisher.apply(resultContainer.resultContainer1);
+            SubResult2_ result2 = subResult2Finisher.apply(resultContainer.resultContainer2);
+            return composeFunction.apply(result1, result2);
+        };
+    }
+
+    private static Runnable compose(Runnable runnable1, Runnable runnable2) {
+        return () -> {
+            runnable1.run();
+            runnable2.run();
+        };
+    }
+
+    /**
+     * Returns a constraint collector the result of which is a composition of other constraint collectors.
+     * The return value of this collector, incl. the default return value, depends solely on the compose function.
+     *
+     * @param subCollector1 never null, first collector to compose
+     * @param subCollector2 never null, second collector to compose
+     * @param subCollector3 never null, third collector to compose
+     * @param composeFunction never null, turns results of the sub collectors to a result of the parent collector
+     * @param <A> generic type of the tuple variable
+     * @param <Result_> generic type of the parent collector's return value
+     * @param <SubResultContainer1_> generic type of the first sub collector's result container
+     * @param <SubResultContainer2_> generic type of the second sub collector's result container
+     * @param <SubResultContainer3_> generic type of the third sub collector's result container
+     * @param <SubResult1_> generic type of the first sub collector's return value
+     * @param <SubResult2_> generic type of the second sub collector's return value
+     * @param <SubResult3_> generic type of the third sub collector's return value
+     * @return never null
+     */
+    public static <A, Result_, SubResultContainer1_, SubResultContainer2_, SubResultContainer3_, SubResult1_, SubResult2_, SubResult3_>
+            UniConstraintCollector<A, ?, Result_> compose(
+                    UniConstraintCollector<A, SubResultContainer1_, SubResult1_> subCollector1,
+                    UniConstraintCollector<A, SubResultContainer2_, SubResult2_> subCollector2,
+                    UniConstraintCollector<A, SubResultContainer3_, SubResult3_> subCollector3,
+                    TriFunction<SubResult1_, SubResult2_, SubResult3_, Result_> composeFunction) {
+        BiFunction<SubResultContainer1_, A, Runnable> subResult1Accumulator = subCollector1.accumulator();
+        BiFunction<SubResultContainer2_, A, Runnable> subResult2Accumulator = subCollector2.accumulator();
+        BiFunction<SubResultContainer3_, A, Runnable> subResult3Accumulator = subCollector3.accumulator();
+        return new DefaultUniConstraintCollector<>(
+                () -> TriResultContainer.of(subCollector1.supplier(), subCollector2.supplier(), subCollector3.supplier()),
+                (resultContainer, a) -> {
+                    Runnable undo1 = subResult1Accumulator.apply(resultContainer.resultContainer1, a);
+                    Runnable undo2 = subResult2Accumulator.apply(resultContainer.resultContainer2, a);
+                    Runnable undo3 = subResult3Accumulator.apply(resultContainer.resultContainer3, a);
+                    return compose(undo1, undo2, undo3);
+                },
+                createComposedFinisher(subCollector1.finisher(), subCollector2.finisher(), subCollector3.finisher(),
+                        composeFunction));
+    }
+
+    private static class TriResultContainer<ResultContainer1, ResultContainer2, ResultContainer3>
+            extends BiResultContainer<ResultContainer1, ResultContainer2> {
+
+        public static <ResultContainer1_, ResultContainer2_, ResultContainer3_>
+                TriResultContainer<ResultContainer1_, ResultContainer2_, ResultContainer3_>
+                of(Supplier<ResultContainer1_> resultContainer1Supplier,
+                        Supplier<ResultContainer2_> resultContainer2Supplier,
+                        Supplier<ResultContainer3_> resultContainer3Supplier) {
+            return new TriResultContainer<>(resultContainer1Supplier.get(), resultContainer2Supplier.get(),
+                    resultContainer3Supplier.get());
+        }
+
+        final ResultContainer3 resultContainer3;
+
+        private TriResultContainer(ResultContainer1 resultContainer1, ResultContainer2 resultContainer2,
+                ResultContainer3 resultContainer3) {
+            super(resultContainer1, resultContainer2);
+            this.resultContainer3 = Objects.requireNonNull(resultContainer3);
+        }
+
+    }
+
+    private static <Result_, SubResultContainer1_, SubResultContainer2_, SubResultContainer3_, SubResult1_, SubResult2_, SubResult3_>
+            Function<TriResultContainer<SubResultContainer1_, SubResultContainer2_, SubResultContainer3_>, Result_>
+            createComposedFinisher(Function<SubResultContainer1_, SubResult1_> subResult1Finisher,
+                    Function<SubResultContainer2_, SubResult2_> subResult2Finisher,
+                    Function<SubResultContainer3_, SubResult3_> subResult3Finisher,
+                    TriFunction<SubResult1_, SubResult2_, SubResult3_, Result_> composeFunction) {
+        return (resultContainer) -> {
+            SubResult1_ result1 = subResult1Finisher.apply(resultContainer.resultContainer1);
+            SubResult2_ result2 = subResult2Finisher.apply(resultContainer.resultContainer2);
+            SubResult3_ result3 = subResult3Finisher.apply(resultContainer.resultContainer3);
+            return composeFunction.apply(result1, result2, result3);
+        };
+    }
+
+    private static Runnable compose(Runnable runnable1, Runnable runnable2, Runnable runnable3) {
+        return () -> {
+            runnable1.run();
+            runnable2.run();
+            runnable3.run();
+        };
+    }
+
+    /**
+     * Returns a constraint collector the result of which is a composition of other constraint collectors.
+     * The return value of this collector, incl. the default return value, depends solely on the compose function.
+     *
+     * @param subCollector1 never null, first collector to compose
+     * @param subCollector2 never null, second collector to compose
+     * @param subCollector3 never null, third collector to compose
+     * @param subCollector4 never null, fourth collector to compose
+     * @param composeFunction never null, turns results of the sub collectors to a result of the parent collector
+     * @param <A> generic type of the tuple variable
+     * @param <Result_> generic type of the parent collector's return value
+     * @param <SubResultContainer1_> generic type of the first sub collector's result container
+     * @param <SubResultContainer2_> generic type of the second sub collector's result container
+     * @param <SubResultContainer3_> generic type of the third sub collector's result container
+     * @param <SubResultContainer4_> generic type of the fourth sub collector's result container
+     * @param <SubResult1_> generic type of the first sub collector's return value
+     * @param <SubResult2_> generic type of the second sub collector's return value
+     * @param <SubResult3_> generic type of the third sub collector's return value
+     * @param <SubResult4_> generic type of the fourth sub collector's return value
+     * @return never null
+     */
+    public static <A, Result_, SubResultContainer1_, SubResultContainer2_, SubResultContainer3_, SubResultContainer4_, SubResult1_, SubResult2_, SubResult3_, SubResult4_>
+            UniConstraintCollector<A, ?, Result_> compose(
+                    UniConstraintCollector<A, SubResultContainer1_, SubResult1_> subCollector1,
+                    UniConstraintCollector<A, SubResultContainer2_, SubResult2_> subCollector2,
+                    UniConstraintCollector<A, SubResultContainer3_, SubResult3_> subCollector3,
+                    UniConstraintCollector<A, SubResultContainer4_, SubResult4_> subCollector4,
+                    QuadFunction<SubResult1_, SubResult2_, SubResult3_, SubResult4_, Result_> composeFunction) {
+        BiFunction<SubResultContainer1_, A, Runnable> subResult1Accumulator = subCollector1.accumulator();
+        BiFunction<SubResultContainer2_, A, Runnable> subResult2Accumulator = subCollector2.accumulator();
+        BiFunction<SubResultContainer3_, A, Runnable> subResult3Accumulator = subCollector3.accumulator();
+        BiFunction<SubResultContainer4_, A, Runnable> subResult4Accumulator = subCollector4.accumulator();
+        return new DefaultUniConstraintCollector<>(
+                () -> QuadResultContainer.of(subCollector1.supplier(), subCollector2.supplier(), subCollector3.supplier(),
+                        subCollector4.supplier()),
+                (resultContainer, a) -> {
+                    Runnable undo1 = subResult1Accumulator.apply(resultContainer.resultContainer1, a);
+                    Runnable undo2 = subResult2Accumulator.apply(resultContainer.resultContainer2, a);
+                    Runnable undo3 = subResult3Accumulator.apply(resultContainer.resultContainer3, a);
+                    Runnable undo4 = subResult4Accumulator.apply(resultContainer.resultContainer4, a);
+                    return compose(undo1, undo2, undo3, undo4);
+                },
+                createComposedFinisher(subCollector1.finisher(), subCollector2.finisher(), subCollector3.finisher(),
+                        subCollector4.finisher(), composeFunction));
+    }
+
+    private static final class QuadResultContainer<ResultContainer1, ResultContainer2, ResultContainer3, ResultContainer4>
+            extends TriResultContainer<ResultContainer1, ResultContainer2, ResultContainer3> {
+
+        public static <ResultContainer1_, ResultContainer2_, ResultContainer3_, ResultContainer4_>
+                QuadResultContainer<ResultContainer1_, ResultContainer2_, ResultContainer3_, ResultContainer4_>
+                of(Supplier<ResultContainer1_> resultContainer1Supplier,
+                        Supplier<ResultContainer2_> resultContainer2Supplier,
+                        Supplier<ResultContainer3_> resultContainer3Supplier,
+                        Supplier<ResultContainer4_> resultContainer4Supplier) {
+            return new QuadResultContainer<>(resultContainer1Supplier.get(), resultContainer2Supplier.get(),
+                    resultContainer3Supplier.get(), resultContainer4Supplier.get());
+        }
+
+        final ResultContainer4 resultContainer4;
+
+        private QuadResultContainer(ResultContainer1 resultContainer1, ResultContainer2 resultContainer2,
+                ResultContainer3 resultContainer3, ResultContainer4 resultContainer4) {
+            super(resultContainer1, resultContainer2, resultContainer3);
+            this.resultContainer4 = Objects.requireNonNull(resultContainer4);
+        }
+
+    }
+
+    private static <Result_, SubResultContainer1_, SubResultContainer2_, SubResultContainer3_, SubResultContainer4_, SubResult1_, SubResult2_, SubResult3_, SubResult4_>
+            Function<QuadResultContainer<SubResultContainer1_, SubResultContainer2_, SubResultContainer3_, SubResultContainer4_>, Result_>
+            createComposedFinisher(Function<SubResultContainer1_, SubResult1_> subResult1Finisher,
+                    Function<SubResultContainer2_, SubResult2_> subResult2Finisher,
+                    Function<SubResultContainer3_, SubResult3_> subResult3Finisher,
+                    Function<SubResultContainer4_, SubResult4_> subResult4Finisher,
+                    QuadFunction<SubResult1_, SubResult2_, SubResult3_, SubResult4_, Result_> composeFunction) {
+        return (resultContainer) -> {
+            SubResult1_ result1 = subResult1Finisher.apply(resultContainer.resultContainer1);
+            SubResult2_ result2 = subResult2Finisher.apply(resultContainer.resultContainer2);
+            SubResult3_ result3 = subResult3Finisher.apply(resultContainer.resultContainer3);
+            SubResult4_ result4 = subResult4Finisher.apply(resultContainer.resultContainer4);
+            return composeFunction.apply(result1, result2, result3, result4);
+        };
+    }
+
+    private static Runnable compose(Runnable runnable1, Runnable runnable2, Runnable runnable3, Runnable runnable4) {
+        return () -> {
+            runnable1.run();
+            runnable2.run();
+            runnable3.run();
+            runnable4.run();
+        };
+    }
+
+    /**
+     * As defined by {@link #compose(UniConstraintCollector, UniConstraintCollector, BiFunction)}.
+     */
+    public static <A, B, Result_, SubResultContainer1_, SubResultContainer2_, SubResult1_, SubResult2_>
+            BiConstraintCollector<A, B, ?, Result_> compose(
+                    BiConstraintCollector<A, B, SubResultContainer1_, SubResult1_> subCollector1,
+                    BiConstraintCollector<A, B, SubResultContainer2_, SubResult2_> subCollector2,
+                    BiFunction<SubResult1_, SubResult2_, Result_> composeFunction) {
+        TriFunction<SubResultContainer1_, A, B, Runnable> subResult1Accumulator = subCollector1.accumulator();
+        TriFunction<SubResultContainer2_, A, B, Runnable> subResult2Accumulator = subCollector2.accumulator();
+        return new DefaultBiConstraintCollector<>(
+                () -> BiResultContainer.of(subCollector1.supplier(), subCollector2.supplier()),
+                (resultContainer, a, b) -> {
+                    Runnable undo1 = subResult1Accumulator.apply(resultContainer.resultContainer1, a, b);
+                    Runnable undo2 = subResult2Accumulator.apply(resultContainer.resultContainer2, a, b);
+                    return compose(undo1, undo2);
+                },
+                createComposedFinisher(subCollector1.finisher(), subCollector2.finisher(), composeFunction));
+    }
+
+    /**
+     * As defined by {@link #compose(UniConstraintCollector, UniConstraintCollector, UniConstraintCollector, TriFunction)}.
+     */
+    public static <A, B, Result_, SubResultContainer1_, SubResultContainer2_, SubResultContainer3_, SubResult1_, SubResult2_, SubResult3_>
+            BiConstraintCollector<A, B, ?, Result_> compose(
+                    BiConstraintCollector<A, B, SubResultContainer1_, SubResult1_> subCollector1,
+                    BiConstraintCollector<A, B, SubResultContainer2_, SubResult2_> subCollector2,
+                    BiConstraintCollector<A, B, SubResultContainer3_, SubResult3_> subCollector3,
+                    TriFunction<SubResult1_, SubResult2_, SubResult3_, Result_> composeFunction) {
+        TriFunction<SubResultContainer1_, A, B, Runnable> subResult1Accumulator = subCollector1.accumulator();
+        TriFunction<SubResultContainer2_, A, B, Runnable> subResult2Accumulator = subCollector2.accumulator();
+        TriFunction<SubResultContainer3_, A, B, Runnable> subResult3Accumulator = subCollector3.accumulator();
+        return new DefaultBiConstraintCollector<>(
+                () -> TriResultContainer.of(subCollector1.supplier(), subCollector2.supplier(), subCollector3.supplier()),
+                (resultContainer, a, b) -> {
+                    Runnable undo1 = subResult1Accumulator.apply(resultContainer.resultContainer1, a, b);
+                    Runnable undo2 = subResult2Accumulator.apply(resultContainer.resultContainer2, a, b);
+                    Runnable undo3 = subResult3Accumulator.apply(resultContainer.resultContainer3, a, b);
+                    return compose(undo1, undo2, undo3);
+                },
+                createComposedFinisher(subCollector1.finisher(), subCollector2.finisher(), subCollector3.finisher(),
+                        composeFunction));
+    }
+
+    /**
+     * As defined by
+     * {@link #compose(UniConstraintCollector, UniConstraintCollector, UniConstraintCollector, UniConstraintCollector, QuadFunction)}.
+     */
+    public static <A, B, Result_, SubResultContainer1_, SubResultContainer2_, SubResultContainer3_, SubResultContainer4_, SubResult1_, SubResult2_, SubResult3_, SubResult4_>
+            BiConstraintCollector<A, B, ?, Result_> compose(
+                    BiConstraintCollector<A, B, SubResultContainer1_, SubResult1_> subCollector1,
+                    BiConstraintCollector<A, B, SubResultContainer2_, SubResult2_> subCollector2,
+                    BiConstraintCollector<A, B, SubResultContainer3_, SubResult3_> subCollector3,
+                    BiConstraintCollector<A, B, SubResultContainer4_, SubResult4_> subCollector4,
+                    QuadFunction<SubResult1_, SubResult2_, SubResult3_, SubResult4_, Result_> composeFunction) {
+        TriFunction<SubResultContainer1_, A, B, Runnable> subResult1Accumulator = subCollector1.accumulator();
+        TriFunction<SubResultContainer2_, A, B, Runnable> subResult2Accumulator = subCollector2.accumulator();
+        TriFunction<SubResultContainer3_, A, B, Runnable> subResult3Accumulator = subCollector3.accumulator();
+        TriFunction<SubResultContainer4_, A, B, Runnable> subResult4Accumulator = subCollector4.accumulator();
+        return new DefaultBiConstraintCollector<>(
+                () -> QuadResultContainer.of(subCollector1.supplier(), subCollector2.supplier(), subCollector3.supplier(),
+                        subCollector4.supplier()),
+                (resultContainer, a, b) -> {
+                    Runnable undo1 = subResult1Accumulator.apply(resultContainer.resultContainer1, a, b);
+                    Runnable undo2 = subResult2Accumulator.apply(resultContainer.resultContainer2, a, b);
+                    Runnable undo3 = subResult3Accumulator.apply(resultContainer.resultContainer3, a, b);
+                    Runnable undo4 = subResult4Accumulator.apply(resultContainer.resultContainer4, a, b);
+                    return compose(undo1, undo2, undo3, undo4);
+                },
+                createComposedFinisher(subCollector1.finisher(), subCollector2.finisher(), subCollector3.finisher(),
+                        subCollector4.finisher(), composeFunction));
+    }
+
+    /**
+     * As defined by {@link #compose(UniConstraintCollector, UniConstraintCollector, BiFunction)}.
+     */
+    public static <A, B, C, Result_, SubResultContainer1_, SubResultContainer2_, SubResult1_, SubResult2_>
+            TriConstraintCollector<A, B, C, ?, Result_> compose(
+                    TriConstraintCollector<A, B, C, SubResultContainer1_, SubResult1_> subCollector1,
+                    TriConstraintCollector<A, B, C, SubResultContainer2_, SubResult2_> subCollector2,
+                    BiFunction<SubResult1_, SubResult2_, Result_> composeFunction) {
+        QuadFunction<SubResultContainer1_, A, B, C, Runnable> subResult1Accumulator = subCollector1.accumulator();
+        QuadFunction<SubResultContainer2_, A, B, C, Runnable> subResult2Accumulator = subCollector2.accumulator();
+        return new DefaultTriConstraintCollector<>(
+                () -> BiResultContainer.of(subCollector1.supplier(), subCollector2.supplier()),
+                (resultContainer, a, b, c) -> {
+                    Runnable undo1 = subResult1Accumulator.apply(resultContainer.resultContainer1, a, b, c);
+                    Runnable undo2 = subResult2Accumulator.apply(resultContainer.resultContainer2, a, b, c);
+                    return compose(undo1, undo2);
+                },
+                createComposedFinisher(subCollector1.finisher(), subCollector2.finisher(), composeFunction));
+    }
+
+    /**
+     * As defined by {@link #compose(UniConstraintCollector, UniConstraintCollector, UniConstraintCollector, TriFunction)}.
+     */
+    public static <A, B, C, Result_, SubResultContainer1_, SubResultContainer2_, SubResultContainer3_, SubResult1_, SubResult2_, SubResult3_>
+            TriConstraintCollector<A, B, C, ?, Result_> compose(
+                    TriConstraintCollector<A, B, C, SubResultContainer1_, SubResult1_> subCollector1,
+                    TriConstraintCollector<A, B, C, SubResultContainer2_, SubResult2_> subCollector2,
+                    TriConstraintCollector<A, B, C, SubResultContainer3_, SubResult3_> subCollector3,
+                    TriFunction<SubResult1_, SubResult2_, SubResult3_, Result_> composeFunction) {
+        QuadFunction<SubResultContainer1_, A, B, C, Runnable> subResult1Accumulator = subCollector1.accumulator();
+        QuadFunction<SubResultContainer2_, A, B, C, Runnable> subResult2Accumulator = subCollector2.accumulator();
+        QuadFunction<SubResultContainer3_, A, B, C, Runnable> subResult3Accumulator = subCollector3.accumulator();
+        return new DefaultTriConstraintCollector<>(
+                () -> TriResultContainer.of(subCollector1.supplier(), subCollector2.supplier(), subCollector3.supplier()),
+                (resultContainer, a, b, c) -> {
+                    Runnable undo1 = subResult1Accumulator.apply(resultContainer.resultContainer1, a, b, c);
+                    Runnable undo2 = subResult2Accumulator.apply(resultContainer.resultContainer2, a, b, c);
+                    Runnable undo3 = subResult3Accumulator.apply(resultContainer.resultContainer3, a, b, c);
+                    return compose(undo1, undo2, undo3);
+                },
+                createComposedFinisher(subCollector1.finisher(), subCollector2.finisher(), subCollector3.finisher(),
+                        composeFunction));
+    }
+
+    /**
+     * As defined by
+     * {@link #compose(UniConstraintCollector, UniConstraintCollector, UniConstraintCollector, UniConstraintCollector, QuadFunction)}.
+     */
+    public static <A, B, C, Result_, SubResultContainer1_, SubResultContainer2_, SubResultContainer3_, SubResultContainer4_, SubResult1_, SubResult2_, SubResult3_, SubResult4_>
+            TriConstraintCollector<A, B, C, ?, Result_> compose(
+                    TriConstraintCollector<A, B, C, SubResultContainer1_, SubResult1_> subCollector1,
+                    TriConstraintCollector<A, B, C, SubResultContainer2_, SubResult2_> subCollector2,
+                    TriConstraintCollector<A, B, C, SubResultContainer3_, SubResult3_> subCollector3,
+                    TriConstraintCollector<A, B, C, SubResultContainer4_, SubResult4_> subCollector4,
+                    QuadFunction<SubResult1_, SubResult2_, SubResult3_, SubResult4_, Result_> composeFunction) {
+        QuadFunction<SubResultContainer1_, A, B, C, Runnable> subResult1Accumulator = subCollector1.accumulator();
+        QuadFunction<SubResultContainer2_, A, B, C, Runnable> subResult2Accumulator = subCollector2.accumulator();
+        QuadFunction<SubResultContainer3_, A, B, C, Runnable> subResult3Accumulator = subCollector3.accumulator();
+        QuadFunction<SubResultContainer4_, A, B, C, Runnable> subResult4Accumulator = subCollector4.accumulator();
+        return new DefaultTriConstraintCollector<>(
+                () -> QuadResultContainer.of(subCollector1.supplier(), subCollector2.supplier(), subCollector3.supplier(),
+                        subCollector4.supplier()),
+                (resultContainer, a, b, c) -> {
+                    Runnable undo1 = subResult1Accumulator.apply(resultContainer.resultContainer1, a, b, c);
+                    Runnable undo2 = subResult2Accumulator.apply(resultContainer.resultContainer2, a, b, c);
+                    Runnable undo3 = subResult3Accumulator.apply(resultContainer.resultContainer3, a, b, c);
+                    Runnable undo4 = subResult4Accumulator.apply(resultContainer.resultContainer4, a, b, c);
+                    return compose(undo1, undo2, undo3, undo4);
+                },
+                createComposedFinisher(subCollector1.finisher(), subCollector2.finisher(), subCollector3.finisher(),
+                        subCollector4.finisher(), composeFunction));
+    }
+
+    /**
+     * As defined by {@link #compose(UniConstraintCollector, UniConstraintCollector, BiFunction)}.
+     */
+    public static <A, B, C, D, Result_, SubResultContainer1_, SubResultContainer2_, SubResult1_, SubResult2_>
+            QuadConstraintCollector<A, B, C, D, ?, Result_> compose(
+                    QuadConstraintCollector<A, B, C, D, SubResultContainer1_, SubResult1_> subCollector1,
+                    QuadConstraintCollector<A, B, C, D, SubResultContainer2_, SubResult2_> subCollector2,
+                    BiFunction<SubResult1_, SubResult2_, Result_> composeFunction) {
+        PentaFunction<SubResultContainer1_, A, B, C, D, Runnable> subResult1Accumulator = subCollector1.accumulator();
+        PentaFunction<SubResultContainer2_, A, B, C, D, Runnable> subResult2Accumulator = subCollector2.accumulator();
+        return new DefaultQuadConstraintCollector<>(
+                () -> BiResultContainer.of(subCollector1.supplier(), subCollector2.supplier()),
+                (resultContainer, a, b, c, d) -> {
+                    Runnable undo1 = subResult1Accumulator.apply(resultContainer.resultContainer1, a, b, c, d);
+                    Runnable undo2 = subResult2Accumulator.apply(resultContainer.resultContainer2, a, b, c, d);
+                    return compose(undo1, undo2);
+                },
+                createComposedFinisher(subCollector1.finisher(), subCollector2.finisher(), composeFunction));
+    }
+
+    /**
+     * As defined by {@link #compose(UniConstraintCollector, UniConstraintCollector, UniConstraintCollector, TriFunction)}.
+     */
+    public static <A, B, C, D, Result_, SubResultContainer1_, SubResultContainer2_, SubResultContainer3_, SubResult1_, SubResult2_, SubResult3_>
+            QuadConstraintCollector<A, B, C, D, ?, Result_> compose(
+                    QuadConstraintCollector<A, B, C, D, SubResultContainer1_, SubResult1_> subCollector1,
+                    QuadConstraintCollector<A, B, C, D, SubResultContainer2_, SubResult2_> subCollector2,
+                    QuadConstraintCollector<A, B, C, D, SubResultContainer3_, SubResult3_> subCollector3,
+                    TriFunction<SubResult1_, SubResult2_, SubResult3_, Result_> composeFunction) {
+        PentaFunction<SubResultContainer1_, A, B, C, D, Runnable> subResult1Accumulator = subCollector1.accumulator();
+        PentaFunction<SubResultContainer2_, A, B, C, D, Runnable> subResult2Accumulator = subCollector2.accumulator();
+        PentaFunction<SubResultContainer3_, A, B, C, D, Runnable> subResult3Accumulator = subCollector3.accumulator();
+        return new DefaultQuadConstraintCollector<>(
+                () -> TriResultContainer.of(subCollector1.supplier(), subCollector2.supplier(), subCollector3.supplier()),
+                (resultContainer, a, b, c, d) -> {
+                    Runnable undo1 = subResult1Accumulator.apply(resultContainer.resultContainer1, a, b, c, d);
+                    Runnable undo2 = subResult2Accumulator.apply(resultContainer.resultContainer2, a, b, c, d);
+                    Runnable undo3 = subResult3Accumulator.apply(resultContainer.resultContainer3, a, b, c, d);
+                    return compose(undo1, undo2, undo3);
+                },
+                createComposedFinisher(subCollector1.finisher(), subCollector2.finisher(), subCollector3.finisher(),
+                        composeFunction));
+    }
+
+    /**
+     * As defined by
+     * {@link #compose(UniConstraintCollector, UniConstraintCollector, UniConstraintCollector, UniConstraintCollector, QuadFunction)}.
+     */
+    public static <A, B, C, D, Result_, SubResultContainer1_, SubResultContainer2_, SubResultContainer3_, SubResultContainer4_, SubResult1_, SubResult2_, SubResult3_, SubResult4_>
+            QuadConstraintCollector<A, B, C, D, ?, Result_> compose(
+                    QuadConstraintCollector<A, B, C, D, SubResultContainer1_, SubResult1_> subCollector1,
+                    QuadConstraintCollector<A, B, C, D, SubResultContainer2_, SubResult2_> subCollector2,
+                    QuadConstraintCollector<A, B, C, D, SubResultContainer3_, SubResult3_> subCollector3,
+                    QuadConstraintCollector<A, B, C, D, SubResultContainer4_, SubResult4_> subCollector4,
+                    QuadFunction<SubResult1_, SubResult2_, SubResult3_, SubResult4_, Result_> composeFunction) {
+        PentaFunction<SubResultContainer1_, A, B, C, D, Runnable> subResult1Accumulator = subCollector1.accumulator();
+        PentaFunction<SubResultContainer2_, A, B, C, D, Runnable> subResult2Accumulator = subCollector2.accumulator();
+        PentaFunction<SubResultContainer3_, A, B, C, D, Runnable> subResult3Accumulator = subCollector3.accumulator();
+        PentaFunction<SubResultContainer4_, A, B, C, D, Runnable> subResult4Accumulator = subCollector4.accumulator();
+        return new DefaultQuadConstraintCollector<>(
+                () -> QuadResultContainer.of(subCollector1.supplier(), subCollector2.supplier(), subCollector3.supplier(),
+                        subCollector4.supplier()),
+                (resultContainer, a, b, c, d) -> {
+                    Runnable undo1 = subResult1Accumulator.apply(resultContainer.resultContainer1, a, b, c, d);
+                    Runnable undo2 = subResult2Accumulator.apply(resultContainer.resultContainer2, a, b, c, d);
+                    Runnable undo3 = subResult3Accumulator.apply(resultContainer.resultContainer3, a, b, c, d);
+                    Runnable undo4 = subResult4Accumulator.apply(resultContainer.resultContainer4, a, b, c, d);
+                    return compose(undo1, undo2, undo3, undo4);
+                },
+                createComposedFinisher(subCollector1.finisher(), subCollector2.finisher(), subCollector3.finisher(),
+                        subCollector4.finisher(), composeFunction));
     }
 
     private ConstraintCollectors() {

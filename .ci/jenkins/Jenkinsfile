@@ -1,3 +1,6 @@
+// Jenkinsfile is still used by Kogito PR checks
+// Can be removed once Kogito PR checks are using the build-chain
+
 @Library('jenkins-pipeline-shared-libraries')_
 
 import org.kie.jenkins.MavenCommand
@@ -16,7 +19,7 @@ pipeline {
         label 'kie-rhel7 && kie-mem16g'
     }
     tools {
-        maven 'kie-maven-3.6.2'
+        maven 'kie-maven-3.6.3'
         jdk 'kie-jdk11'
     }
     options {
@@ -59,8 +62,7 @@ pipeline {
             steps {
                 script {
                     getMavenCommand(kogitoRuntimesRepo)
-                        .skipTests(true)
-                        .withProperty('skipITs', true)
+                        .withProperty('quickly')
                         .run('clean install')
                 }
             }

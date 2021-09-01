@@ -6,7 +6,7 @@
   <parent>
     <groupId>org.optaplanner</groupId>
     <artifactId>optaplanner-parent</artifactId>
-    <version>8.10.0-SNAPSHOT</version>
+    <version>8.12.0-SNAPSHOT</version>
     <relativePath>../../pom.xml</relativePath>
   </parent>
 
@@ -24,8 +24,8 @@
 
     <!-- Normal dependency versions -->
     <version.ch.qos.logback>1.2.3</version.ch.qos.logback>
-    <version.com.thoughtworks.xstream>1.4.17</version.com.thoughtworks.xstream>
-    <version.io.quarkus>2.1.0.Final</version.io.quarkus>
+    <version.com.thoughtworks.xstream>1.4.18</version.com.thoughtworks.xstream>
+    <version.io.quarkus>2.2.0.Final</version.io.quarkus>
     <version.org.apache.commons.math3>3.6.1</version.org.apache.commons.math3>
     <version.org.apache.poi>4.1.2</version.org.apache.poi>
     <version.org.freemarker>2.3.31</version.org.freemarker>
@@ -40,6 +40,8 @@
 
     <maven.min.version>3.6.2</maven.min.version>
     <maven.compiler.release>11</maven.compiler.release>
+    <!-- A workaround for https://youtrack.jetbrains.com/issue/IDEA-276403. -->
+    <maven.compiler.target>11</maven.compiler.target>
     <!-- jboss suffixed version from jboss-parent which cannot be downloaded due to SNAPSHOT only policy for plugins from JBoss -->
     <version.compiler.plugin>3.8.1</version.compiler.plugin>
     <!-- The first version that supports analysis of classes compiled by Java 11. -->
@@ -68,6 +70,7 @@
 
     <schema.filename.benchmark>benchmark-with-import.xsd</schema.filename.benchmark>
     <schema.filename.solver>solver.xsd</schema.filename.solver>
+    <sonar.coverage.exclusions>**/swingui/**/*.java</sonar.coverage.exclusions>
   </properties>
 
   <dependencyManagement>
@@ -182,87 +185,14 @@
         <version>${version.org.apache.commons.math3}</version>
       </dependency>
       <dependency>
-        <groupId>org.apache.poi</groupId>
-        <artifactId>poi</artifactId>
-        <version>${version.org.apache.poi}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.apache.poi</groupId>
-        <artifactId>poi-ooxml</artifactId>
-        <version>${version.org.apache.poi}</version>
-        <exclusions>
-          <exclusion>
-            <!-- Collides with 'javax.xml.stream:stax-api' brought in by 'org.drools:drools-decisiontables'. -->
-            <groupId>stax</groupId>
-            <artifactId>stax-api</artifactId>
-          </exclusion>
-          <exclusion>
-            <groupId>org.glassfish</groupId>
-            <artifactId>javax.json</artifactId>
-          </exclusion>
-        </exclusions>
-      </dependency>
-      <dependency>
         <groupId>org.freemarker</groupId>
         <artifactId>freemarker</artifactId>
         <version>${version.org.freemarker}</version>
       </dependency>
       <dependency>
-        <groupId>org.jdom</groupId>
-        <artifactId>jdom</artifactId>
-        <version>${version.org.jdom}</version>
-      </dependency>
-      <dependency>
         <groupId>org.jfree</groupId>
         <artifactId>jfreechart</artifactId>
         <version>${version.org.jfree.jfreechart}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.springframework</groupId>
-        <artifactId>spring-context</artifactId>
-        <version>${version.org.springframework}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.springframework</groupId>
-        <artifactId>spring-web</artifactId>
-        <version>${version.org.springframework}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.springframework</groupId>
-        <artifactId>spring-test</artifactId>
-        <version>${version.org.springframework}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.springframework.boot</groupId>
-        <artifactId>spring-boot-autoconfigure</artifactId>
-        <version>${version.org.springframework.boot}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.springframework.boot</groupId>
-        <artifactId>spring-boot-autoconfigure-processor</artifactId>
-        <version>${version.org.springframework.boot}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.springframework.boot</groupId>
-        <artifactId>spring-boot-configuration-processor</artifactId>
-        <version>${version.org.springframework.boot}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.springframework.boot</groupId>
-        <artifactId>spring-boot-test</artifactId>
-        <version>${version.org.springframework.boot}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.springframework.boot</groupId>
-        <artifactId>spring-boot-test-autoconfigure</artifactId>
-        <version>${version.org.springframework.boot}</version>
-      </dependency>
-
-      <!-- TODO Dependencies that should maybe be removed/replaced in 8 https://issues.redhat.com/browse/PLANNER-2262 -->
-      <dependency>
-        <groupId>org.eclipse.persistence</groupId>
-        <artifactId>org.eclipse.persistence.moxy</artifactId>
-        <version>2.7.6</version>
       </dependency>
     </dependencies>
   </dependencyManagement>
@@ -569,6 +499,11 @@
           <groupId>org.jacoco</groupId>
           <artifactId>jacoco-maven-plugin</artifactId>
           <version>${version.jacoco.plugin}</version>
+          <configuration>
+            <excludes>
+              <exclude>**/swingui/**/*</exclude>
+            </excludes>
+          </configuration>
           <executions>
             <execution>
               <id>jacoco-prepare-agent</id>
@@ -578,15 +513,6 @@
               <configuration>
                 <append>true</append>
                 <destFile>${jacoco.exec.file}</destFile>
-                <excludes>
-                  <!-- Instrumentation of classes generated by antlr fails due to exceeding method size limit. -->
-                  <exclude>*Lexer</exclude>
-                  <!--
-                    JaCoCo adds a field to every class and as a result tests checking fields on test data classes fail.
-                  -->
-                  <exclude>org.optaplanner.core.impl.testdata.domain.*</exclude>
-                  <exclude>*TestdataAbstractSolutionBasedSolution</exclude>
-                </excludes>
                 <propertyName>jacoco.agent.argLine</propertyName>
               </configuration>
             </execution>
@@ -814,8 +740,6 @@
         <sonar.coverage.jacoco.xmlReportPaths>${project.reporting.outputDirectory}/jacoco/jacoco.xml</sonar.coverage.jacoco.xmlReportPaths>
         <sonar.host.url>https://sonarcloud.io</sonar.host.url>
         <sonar.organization>kiegroup</sonar.organization>
-        <!--suppress UnresolvedMavenProperty -->
-        <sonar.login>${env.SONARCLOUD_TOKEN}</sonar.login>
         <sonar.java.source>${maven.compiler.release}</sonar.java.source>
       </properties>
       <build>

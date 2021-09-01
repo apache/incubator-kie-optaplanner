@@ -45,7 +45,7 @@ However, for portability reasons, a classpath resource is recommended.
 
 [NOTE]
 ====
-On some environments (<<integrationWithOSGi,OSGi>>, <<integrationWithJBossModules,JBoss modules>>, ...), classpath resources (such as the solver config, score DRLs and domain classes) in your jars might not be available to the default `ClassLoader` of the `optaplanner-core` jar.
+On some environments (<<integrationWithOSGi,OSGi>>, <<integrationWithJBossModules,JBoss modules>>, ...), classpath resources (the solver config, domain classes, etc.) in your jars might not be available to the default `ClassLoader` of the `optaplanner-core` jar.
 In those cases, provide the `ClassLoader` of your classes as a parameter:
 
 [source,java,options="nowrap"]
@@ -70,7 +70,7 @@ A solver configuration XML file looks like this:
 
   <!-- Define the score function -->
   <scoreDirectorFactory>
-    <scoreDrl>org/optaplanner/examples/nqueens/solver/nQueensConstraints.drl</scoreDrl>
+    <constraintProviderClass>org.optaplanner.examples.nqueens.score.NQueensConstraintProvider</constraintProviderClass>
   </scoreDirectorFactory>
 
   <!-- Configure the optimization algorithms (optional) -->
@@ -569,18 +569,18 @@ One way to deal with this is to filter the entity selector of the placer in the 
 <solver xmlns="https://www.optaplanner.org/xsd/solver" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="https://www.optaplanner.org/xsd/solver https://www.optaplanner.org/xsd/solver/solver.xsd">
   ...
-  <constructionHeuristics>
+  <constructionHeuristic>
     <queuedEntityPlacer>
       <entitySelector id="entitySelector1">
         <filterClass>...</filterClass>
       </entitySelector>
     </queuedEntityPlacer>
     ...
-    <changeMoveselector>
-      <entitySelector mimicRef="entitySelector1" />
-    </changeMoveselector>
+    <changeMoveSelector>
+      <entitySelector mimicSelectorRef="entitySelector1" />
+    </changeMoveSelector>
     ...
-  </constructionHeuristics>
+  </constructionHeuristic>
  ...
 </solver>
 ----
@@ -741,7 +741,7 @@ A `ValueRangeProvider` on the planning entity is not currently compatible with a
 [[valueRangeFactory]]
 ===== `ValueRangeFactory`
 
-Instead of a ``Collection``, you can also return a `ValueRange` or ``CountableValueRange``, build by the ``ValueRangeFactory``:
+Instead of a ``Collection``, you can also return a `ValueRange` or ``CountableValueRange``, built by the ``ValueRangeFactory``:
 
 [source,java,options="nowrap"]
 ----
@@ -1125,10 +1125,10 @@ This annotation can also be <<autoDiscoverSolutionProperties, auto discovered>> 
 [[problemFacts]]
 ==== Problem facts of a solution (`@ProblemFactCollectionProperty`)
 
-For <<constraintStreams,constraint streams>> and <<droolsScoreCalculation,Drools score calculation>>,
+For <<constraintStreams,Constraint Streams>> and <<droolsScoreCalculation,Drools score calculation>>,
 OptaPlanner needs to extract the problem fact instances from the solution instance.
 It gets those collection(s) by calling every method (or field) that is annotated with ``@ProblemFactCollectionProperty``.
-All objects returned by those methods are available to use by the constraint streams or Drools rules.
+All objects returned by those methods are available to use by Constraint Streams or Drools rules.
 For example in `NQueens` all `Column` and `Row` instances are problem facts.
 
 [source,java,options="nowrap"]
@@ -1153,8 +1153,8 @@ public class NQueens {
 }
 ----
 
-All planning entities are automatically inserted into the Drools working memory.
-Do note add an annotation on their properties.
+All planning entities are automatically inserted into the working memory.
+Do not add an annotation on their properties.
 
 [NOTE]
 ====
@@ -1251,7 +1251,7 @@ The automatic annotation is based on the field type (or getter return type):
 * `@PlanningEntityCollectionProperty`: when it's a `Collection` (or array) of a type that is a configured `@PlanningEntity` class or subclass
 * `@PlanningScore`: when it is a `Score` or subclass
 
-These automatic annotation can still be overwritten per field (or getter).
+These automatic annotations can still be overwritten per field (or getter).
 Specifically, a <<bendableScore, BendableScore>> always needs to override
 with an explicit `@PlanningScore` annotation to define the number of hard and soft levels.
 
@@ -1680,7 +1680,7 @@ most appenders (including the console) cause congestion with `debug` and `trace`
 Switch to an async appender to avoid this problem or turn off `debug` logging.
 ====
 
-If instead, you are still using Log4J 1.x (and you do not want to switch to its faster successor, Logback), add the bridge dependency:
+If instead, you are still using Log4j 1.x (and you do not want to switch to its faster successor, Logback), add the bridge dependency:
 
 [source,xml,options="nowrap"]
 ----
@@ -1737,6 +1737,25 @@ For example in Logback, use a `SiftingAppender` in ``logback.xml``:
   </appender>
 ----
 ====
+
+[[monitoring]]
+=== Monitoring
+
+OptaPlanner exposes metrics via https://micrometer.io/[Micrometer] which can be used for monitoring the Solver. OptaPlanner automatically connects to configured registries when used in Quarkus or Spring Boot. In plain Java, add the registry to the global registry:
+[source,java,nowrap]
+----
+Metrics.addRegistry(new SimpleMeterRegistry());
+----
+
+The following metrics are exposed (format may differ depending on registry):
+
+- `optaplanner.solver.errors`: Count the total number of errors that occurred while solving
+
+- `optaplanner.solver.solve-length.active-count`: The number of solvers currently active
+
+- `optaplanner.solver.solve-length.seconds-max`: Run time of the longest-running currently active solver
+
+- `optaplanner.solver.solve-length.seconds-duration-sum`: The sum of each active solver solve length (ex: if there are two active solvers, one running for 3 minutes and the other for 1 minute, this would be 4 minutes).
 
 
 [[randomNumberGenerator]]

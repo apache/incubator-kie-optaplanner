@@ -1,10 +1,10 @@
 import org.kie.jenkins.jobdsl.templates.KogitoJobTemplate
 import org.kie.jenkins.jobdsl.KogitoConstants
 import org.kie.jenkins.jobdsl.Utils
+import org.kie.jenkins.jobdsl.VersionUtils
 import org.kie.jenkins.jobdsl.KogitoJobType
 
-OPTAPLANNER_JENKINS_PATH = '.ci/jenkins'
-OPTAPLANNER_JENKINSFILE_PATH = "${OPTAPLANNER_JENKINS_PATH}/Jenkinsfile"
+JENKINS_PATH = '.ci/jenkins'
 
 def getDefaultJobParams(String repoName = 'optaplanner') {
     return KogitoJobTemplate.getDefaultJobParams(this, repoName)
@@ -13,27 +13,36 @@ def getDefaultJobParams(String repoName = 'optaplanner') {
 Map getMultijobPRConfig() {
     return [
         parallel: true,
+        buildchain: true,
         jobs : [
             [
                 id: 'optaplanner',
                 primary: true,
-                // TODO remove once https://issues.redhat.com/browse/KOGITO-4113 is done 
-                // as it will become the default path
-                jenkinsfile: OPTAPLANNER_JENKINSFILE_PATH
+                env : [
+                    SONARCLOUD_ANALYSIS_MVN_OPTS: '-Dsonar.projectKey=org.optaplanner:optaplanner',
+                    // Sonarcloud analysis only on main branch
+                    // As we have only Community edition
+                    DISABLE_SONARCLOUD: !Utils.isMainBranch(this),
+                ]
             ], [
-                id: 'apps',
+                id: 'kogito-apps',
                 repository: 'kogito-apps',
-                dependsOn: 'optaplanner',
             ], [
-                id: 'examples',
-                repository: 'kogito-examples',
-                dependsOn: 'optaplanner',
+                id: 'kogito-examples',
+                repository: 'kogito-examples'
+            ], [
+                id: 'optaweb-employee-rostering',
+                repository: 'optaweb-employee-rostering'
+            ], [
+                id: 'optaweb-vehicle-routing',
+                repository: 'optaweb-vehicle-routing'
+            ], [
+                id: 'optaplanner-quickstarts',
+                repository: 'optaplanner-quickstarts',
+                env : [
+                    BUILD_MVN_OPTS: '-Dfull'
+                ]
             ]
-        ],
-        extraEnv : [
-            // Sonarcloud analysis only on main branch
-            // As we have only Community edition
-            ENABLE_SONARCLOUD: Utils.isMainBranch(this)
         ]
     ]
 }
@@ -54,18 +63,6 @@ def nightlyBranchFolder = "${KogitoConstants.KOGITO_DSL_NIGHTLY_FOLDER}/${JOB_BR
 def releaseBranchFolder = "${KogitoConstants.KOGITO_DSL_RELEASE_FOLDER}/${JOB_BRANCH_FOLDER}"
 
 if (Utils.isMainBranch(this)) {
-    // Old PR checks.
-    // To be removed once 8.5.x release branch is no more maintained.
-    // TODO remove method calls once 8.5.x is no more supported
-    setupOptaplannerPrJob()
-    setupOptaplannerQuarkusLTSPrJob()
-    setupOptaplannerNativePrJob()
-    // End of old PR checks
-
-    // Optaweb PR checks
-    setupOptawebEmployeeRosteringPrJob()
-    setupOptawebVehicleRoutingPrJob()
-
     // For BDD runtimes PR job
     setupDeployJob(bddRuntimesPrFolder, KogitoJobType.PR)
 }
@@ -76,6 +73,7 @@ setupMultijobPrNativeChecks()
 setupMultijobPrLTSChecks()
 
 // Nightly jobs
+setupNativeJob(nightlyBranchFolder)
 setupDeployJob(nightlyBranchFolder, KogitoJobType.NIGHTLY)
 setupPromoteJob(nightlyBranchFolder, KogitoJobType.NIGHTLY)
 
@@ -90,44 +88,13 @@ if (Utils.isMainBranch(this)) {
     setupOptaPlannerTurtleTestsJob(otherFolder)
 }
 
+if (Utils.isLTSBranch(this)) {
+    setupNativeLTSJob(nightlyBranchFolder)
+}
+
 /////////////////////////////////////////////////////////////////
 // Methods
 /////////////////////////////////////////////////////////////////
-
-// TODO remove method once 8.5.x is no more supported
-void setupOptaplannerPrJob() {
-    def jobParams = getDefaultJobParams()
-    jobParams.pr.run_only_for_branches = ['8.5.x']
-    KogitoJobTemplate.createPRJob(this, jobParams)
-}
-
-// TODO remove method once 8.5.x is no more supported
-void setupOptaplannerQuarkusLTSPrJob() {
-    def jobParams = getDefaultJobParams()
-    jobParams.pr.run_only_for_branches = ['8.5.x']
-    KogitoJobTemplate.createQuarkusLTSPRJob(this, jobParams)
-}
-
-// TODO remove method once 8.5.x is no more supported
-void setupOptaplannerNativePrJob() {
-    def jobParams = getDefaultJobParams()
-    jobParams.pr.run_only_for_branches = ['8.5.x']
-    KogitoJobTemplate.createNativePRJob(this, jobParams)
-}
-
-void setupOptawebEmployeeRosteringPrJob() {
-    def jobParams = getDefaultJobParams('optaweb-employee-rostering')
-    jobParams.pr.run_only_for_branches = ['main']
-    jobParams.jenkinsfile = OPTAPLANNER_JENKINSFILE_PATH
-    KogitoJobTemplate.createPRJob(this, jobParams)
-}
-
-void setupOptawebVehicleRoutingPrJob() {
-    def jobParams = getDefaultJobParams('optaweb-vehicle-routing')
-    jobParams.pr.run_only_for_branches = ['main']
-    jobParams.jenkinsfile = OPTAPLANNER_JENKINSFILE_PATH
-    KogitoJobTemplate.createPRJob(this, jobParams)
-}
 
 void setupMultijobPrDefaultChecks() {
     KogitoJobTemplate.createMultijobPRJobs(this, getMultijobPRConfig()) { return getDefaultJobParams() }
@@ -141,8 +108,40 @@ void setupMultijobPrLTSChecks() {
     KogitoJobTemplate.createMultijobLTSPRJobs(this, getMultijobPRConfig()) { return getDefaultJobParams() }
 }
 
+void setupNativeJob(String jobFolder) {
+    def jobParams = getJobParams('optaplanner-native', jobFolder, "${JENKINS_PATH}/Jenkinsfile.native", 'Optaplanner Native Testing')
+    jobParams.triggers = [ cron : 'H 6 * * *' ]
+    KogitoJobTemplate.createPipelineJob(this, jobParams).with {
+        parameters {
+            stringParam('BUILD_BRANCH_NAME', "${GIT_BRANCH}", 'Set the Git branch to checkout')
+            stringParam('GIT_AUTHOR', "${GIT_AUTHOR_NAME}", 'Set the Git author to checkout')
+        }
+        environmentVariables {
+            env('JENKINS_EMAIL_CREDS_ID', "${JENKINS_EMAIL_CREDS_ID}")
+            env('NOTIFICATION_JOB_NAME', 'Native check')
+        }
+    }
+}
+
+void setupNativeLTSJob(String jobFolder) {
+    def jobParams = getJobParams('optaplanner-native-lts', jobFolder, "${JENKINS_PATH}/Jenkinsfile.native", 'Optaplanner Native LTS Testing')
+    jobParams.triggers = [ cron : 'H 8 * * *' ]
+    KogitoJobTemplate.createPipelineJob(this, jobParams).with {
+        parameters {
+            stringParam('BUILD_BRANCH_NAME', "${GIT_BRANCH}", 'Set the Git branch to checkout')
+            stringParam('GIT_AUTHOR', "${GIT_AUTHOR_NAME}", 'Set the Git author to checkout')
+
+            stringParam('NATIVE_BUILDER_IMAGE', Utils.getLTSNativeBuilderImage(this), 'Which native builder image to use ?')
+        }
+        environmentVariables {
+            env('JENKINS_EMAIL_CREDS_ID', "${JENKINS_EMAIL_CREDS_ID}")
+            env('NOTIFICATION_JOB_NAME', 'Native LTS check')
+        }
+    }
+}
+
 void setupDeployJob(String jobFolder, KogitoJobType jobType) {
-    def jobParams = getJobParams('optaplanner-deploy', jobFolder, "${OPTAPLANNER_JENKINS_PATH}/Jenkinsfile.deploy", 'Optaplanner Deploy')
+    def jobParams = getJobParams('optaplanner-deploy', jobFolder, "${JENKINS_PATH}/Jenkinsfile.deploy", 'Optaplanner Deploy')
     if (jobType == KogitoJobType.PR) {
         jobParams.git.branch = '${GIT_BRABUILD_BRANCH_NAMENCH_NAME}'
         jobParams.git.author = '${GIT_AUTHOR}'
@@ -208,7 +207,7 @@ void setupDeployJob(String jobFolder, KogitoJobType jobType) {
 }
 
 void setupPromoteJob(String jobFolder, KogitoJobType jobType) {
-    KogitoJobTemplate.createPipelineJob(this, getJobParams('optaplanner-promote', jobFolder, "${OPTAPLANNER_JENKINS_PATH}/Jenkinsfile.promote", 'Optaplanner Promote')).with {
+    KogitoJobTemplate.createPipelineJob(this, getJobParams('optaplanner-promote', jobFolder, "${JENKINS_PATH}/Jenkinsfile.promote", 'Optaplanner Promote')).with {
         parameters {
             stringParam('DISPLAY_NAME', '', 'Setup a specific build display name')
 
@@ -248,7 +247,7 @@ void setupPromoteJob(String jobFolder, KogitoJobType jobType) {
 }
 
 void setupOptaPlannerTurtleTestsJob(String jobFolder) {
-    def jobParams = getJobParams('optaplanner-turtle-tests', jobFolder, "${OPTAPLANNER_JENKINS_PATH}/Jenkinsfile.turtle",
+    def jobParams = getJobParams('optaplanner-turtle-tests', jobFolder, "${JENKINS_PATH}/Jenkinsfile.turtle",
             'Run OptaPlanner turtle tests on a weekly basis.')
     KogitoJobTemplate.createPipelineJob(this, jobParams).with {
         properties {

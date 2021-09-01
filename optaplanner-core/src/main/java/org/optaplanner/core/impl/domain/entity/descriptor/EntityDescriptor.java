@@ -107,6 +107,8 @@ public class EntityDescriptor<Solution_> {
     private Map<String, GenuineVariableDescriptor<Solution_>> effectiveGenuineVariableDescriptorMap;
     private Map<String, ShadowVariableDescriptor<Solution_>> effectiveShadowVariableDescriptorMap;
     private Map<String, VariableDescriptor<Solution_>> effectiveVariableDescriptorMap;
+    // Duplicate of effectiveGenuineVariableDescriptorMap.values() for faster iteration on the hot path.
+    private List<GenuineVariableDescriptor<Solution_>> effectiveGenuineVariableDescriptorList;
 
     // ************************************************************************
     // Constructors and simple getters/setters
@@ -196,7 +198,7 @@ public class EntityDescriptor<Solution_> {
         if (difficultyComparatorClass != null) {
             Comparator<Object> difficultyComparator = ConfigUtils.newInstance(this::toString,
                     "difficultyComparatorClass", difficultyComparatorClass);
-            decreasingDifficultySorter = new ComparatorSelectionSorter<Solution_, Object>(
+            decreasingDifficultySorter = new ComparatorSelectionSorter<>(
                     difficultyComparator, SelectionSorterOrder.DESCENDING);
         }
         if (difficultyWeightFactoryClass != null) {
@@ -217,8 +219,7 @@ public class EntityDescriptor<Solution_> {
         }
     }
 
-    private void processPlanningVariableAnnotation(DescriptorPolicy descriptorPolicy,
-            Member member) {
+    private void processPlanningVariableAnnotation(DescriptorPolicy descriptorPolicy, Member member) {
         Class<? extends Annotation> variableAnnotationClass = ConfigUtils.extractAnnotationClass(
                 member, VARIABLE_ANNOTATION_CLASSES);
         if (variableAnnotationClass != null) {
@@ -245,7 +246,7 @@ public class EntityDescriptor<Solution_> {
                 duplicate = declaredShadowVariableDescriptorMap.get(memberName);
             }
             throw new IllegalStateException("The entityClass (" + entityClass
-                    + ") has a " + variableAnnotationClass.getSimpleName()
+                    + ") has a @" + variableAnnotationClass.getSimpleName()
                     + " annotated member (" + memberAccessor
                     + ") that is duplicated by another member for variableDescriptor (" + duplicate + ").\n"
                     + "Maybe the annotation is defined on both the field and its getter.");
@@ -288,8 +289,7 @@ public class EntityDescriptor<Solution_> {
         }
     }
 
-    private void processPlanningPinAnnotation(DescriptorPolicy descriptorPolicy,
-            Member member) {
+    private void processPlanningPinAnnotation(DescriptorPolicy descriptorPolicy, Member member) {
         if (((AnnotatedElement) member).isAnnotationPresent(PlanningPin.class)) {
             MemberAccessor memberAccessor = MemberAccessorFactory.buildMemberAccessor(member, FIELD_OR_READ_METHOD,
                     PlanningPin.class, descriptorPolicy.getDomainAccessType(),
@@ -355,6 +355,7 @@ public class EntityDescriptor<Solution_> {
                 effectiveGenuineVariableDescriptorMap.size() + effectiveShadowVariableDescriptorMap.size());
         effectiveVariableDescriptorMap.putAll(effectiveGenuineVariableDescriptorMap);
         effectiveVariableDescriptorMap.putAll(effectiveShadowVariableDescriptorMap);
+        effectiveGenuineVariableDescriptorList = new ArrayList<>(effectiveGenuineVariableDescriptorMap.values());
     }
 
     private void createEffectiveMovableEntitySelectionFilter() {
@@ -433,13 +434,8 @@ public class EntityDescriptor<Solution_> {
         return effectiveGenuineVariableDescriptorMap;
     }
 
-    public Collection<GenuineVariableDescriptor<Solution_>> getGenuineVariableDescriptors() {
-        return effectiveGenuineVariableDescriptorMap.values();
-    }
-
     public List<GenuineVariableDescriptor<Solution_>> getGenuineVariableDescriptorList() {
-        // TODO We might want to cache that list
-        return new ArrayList<>(effectiveGenuineVariableDescriptorMap.values());
+        return effectiveGenuineVariableDescriptorList;
     }
 
     public boolean hasGenuineVariableDescriptor(String variableName) {
@@ -503,7 +499,7 @@ public class EntityDescriptor<Solution_> {
                 && !ReflectionHelper.hasField(entityClass, variableName)) {
             String exceptionMessage = "The variableName (" + variableName
                     + ") for entityClass (" + entityClass
-                    + ") does not exists as a getter or field on that class.\n"
+                    + ") does not exist as a getter or field on that class.\n"
                     + "Check the spelling of the variableName (" + variableName + ").";
             if (variableName.length() >= 2
                     && !Character.isUpperCase(variableName.charAt(0))
@@ -531,7 +527,7 @@ public class EntityDescriptor<Solution_> {
     }
 
     public boolean hasAnyChainedGenuineVariables() {
-        for (GenuineVariableDescriptor<Solution_> variableDescriptor : effectiveGenuineVariableDescriptorMap.values()) {
+        for (GenuineVariableDescriptor<Solution_> variableDescriptor : effectiveGenuineVariableDescriptorList) {
             if (!variableDescriptor.isChained()) {
                 return true;
             }
@@ -548,12 +544,12 @@ public class EntityDescriptor<Solution_> {
     }
 
     public long getGenuineVariableCount() {
-        return effectiveGenuineVariableDescriptorMap.size();
+        return effectiveGenuineVariableDescriptorList.size();
     }
 
     public long getMaximumValueCount(Solution_ solution, Object entity) {
         long maximumValueCount = 0L;
-        for (GenuineVariableDescriptor<Solution_> variableDescriptor : effectiveGenuineVariableDescriptorMap.values()) {
+        for (GenuineVariableDescriptor<Solution_> variableDescriptor : effectiveGenuineVariableDescriptorList) {
             maximumValueCount = Math.max(maximumValueCount, variableDescriptor.getValueCount(solution, entity));
         }
         return maximumValueCount;
@@ -562,7 +558,7 @@ public class EntityDescriptor<Solution_> {
 
     public long getProblemScale(Solution_ solution, Object entity) {
         long problemScale = 1L;
-        for (GenuineVariableDescriptor<Solution_> variableDescriptor : effectiveGenuineVariableDescriptorMap.values()) {
+        for (GenuineVariableDescriptor<Solution_> variableDescriptor : effectiveGenuineVariableDescriptorList) {
             problemScale *= variableDescriptor.getValueCount(solution, entity);
         }
         return problemScale;
@@ -570,7 +566,7 @@ public class EntityDescriptor<Solution_> {
 
     public int countUninitializedVariables(Object entity) {
         int count = 0;
-        for (GenuineVariableDescriptor<Solution_> variableDescriptor : effectiveGenuineVariableDescriptorMap.values()) {
+        for (GenuineVariableDescriptor<Solution_> variableDescriptor : effectiveGenuineVariableDescriptorList) {
             if (!variableDescriptor.isInitialized(entity)) {
                 count++;
             }
@@ -579,7 +575,7 @@ public class EntityDescriptor<Solution_> {
     }
 
     public boolean isInitialized(Object entity) {
-        for (GenuineVariableDescriptor<Solution_> variableDescriptor : effectiveGenuineVariableDescriptorMap.values()) {
+        for (GenuineVariableDescriptor<Solution_> variableDescriptor : effectiveGenuineVariableDescriptorList) {
             if (!variableDescriptor.isInitialized(entity)) {
                 return false;
             }
@@ -589,7 +585,7 @@ public class EntityDescriptor<Solution_> {
 
     public int countReinitializableVariables(ScoreDirector<Solution_> scoreDirector, Object entity) {
         int count = 0;
-        for (GenuineVariableDescriptor<Solution_> variableDescriptor : effectiveGenuineVariableDescriptorMap.values()) {
+        for (GenuineVariableDescriptor<Solution_> variableDescriptor : effectiveGenuineVariableDescriptorList) {
             if (variableDescriptor.isReinitializable(scoreDirector, entity)) {
                 count++;
             }

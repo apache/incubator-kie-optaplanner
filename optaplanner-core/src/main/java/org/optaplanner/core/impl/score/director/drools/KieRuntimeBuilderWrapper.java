@@ -16,13 +16,15 @@
 
 package org.optaplanner.core.impl.score.director.drools;
 
+import java.util.function.Supplier;
+
 import org.kie.api.KieBase;
 import org.kie.kogito.legacy.rules.KieRuntimeBuilder;
 
 /**
  * Wraps {@link KieRuntimeBuilder} so the dependency on kogito-api is optional.
  */
-public class KieRuntimeBuilderWrapper {
+public class KieRuntimeBuilderWrapper implements Supplier<KieBase> {
 
     private final KieRuntimeBuilder kieRuntimeBuilder;
 
@@ -30,8 +32,8 @@ public class KieRuntimeBuilderWrapper {
         this.kieRuntimeBuilder = kieRuntimeBuilder;
     }
 
-    public KieBase extractKieBase() {
+    @Override
+    public KieBase get() {
         return kieRuntimeBuilder.getKieBase();
     }
-
 }

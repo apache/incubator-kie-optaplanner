@@ -13,7 +13,7 @@
   <groupId>org.optaplanner</groupId>
   <artifactId>optaplanner-parent</artifactId>
   <packaging>pom</packaging>
-  <version>8.10.0-SNAPSHOT</version>
+  <version>8.12.0-SNAPSHOT</version>
 
   <name>OptaPlanner multiproject parent</name>
   <description>
@@ -136,7 +136,8 @@
       </activation>
       <modules>
         <module>optaplanner-docs</module>
-        <module>optaplanner-distribution</module>
+        <module>build/optaplanner-javadoc</module>
+        <module>build/optaplanner-distribution-internal</module>
       </modules>
     </profile>
   </profiles>

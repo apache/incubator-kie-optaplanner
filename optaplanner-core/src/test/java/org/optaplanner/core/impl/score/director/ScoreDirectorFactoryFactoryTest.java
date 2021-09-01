@@ -17,6 +17,7 @@
 package org.optaplanner.core.impl.score.director;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
 import java.io.File;
@@ -38,7 +39,6 @@ import org.optaplanner.core.impl.score.director.incremental.IncrementalScoreDire
 import org.optaplanner.core.impl.score.director.stream.AbstractConstraintStreamScoreDirectorFactory;
 import org.optaplanner.core.impl.score.director.stream.BavetConstraintStreamScoreDirectorFactory;
 import org.optaplanner.core.impl.score.director.stream.DroolsConstraintStreamScoreDirectorFactory;
-import org.optaplanner.core.impl.score.stream.drools.DroolsConstraintSessionFactory;
 import org.optaplanner.core.impl.testdata.domain.TestdataSolution;
 
 class ScoreDirectorFactoryFactoryTest {
@@ -128,9 +128,53 @@ class ScoreDirectorFactoryFactoryTest {
         assertThat(uncastScoreDirectorFactory).isInstanceOf(DroolsConstraintStreamScoreDirectorFactory.class);
         DroolsConstraintStreamScoreDirectorFactory<TestdataSolution, SimpleScore> scoreDirectorFactory =
                 (DroolsConstraintStreamScoreDirectorFactory<TestdataSolution, SimpleScore>) uncastScoreDirectorFactory;
-        DroolsConstraintSessionFactory<TestdataSolution, SimpleScore> constraintSessionFactory =
-                scoreDirectorFactory.getConstraintSessionFactory();
-        assertThat(constraintSessionFactory.isDroolsAlphaNetworkCompilationEnabled()).isTrue();
+        assertThat(scoreDirectorFactory.isDroolsAlphaNetworkCompilationEnabled()).isTrue();
+    }
+
+    @Test
+    void constraintStreamsDroolsWithAlphaNetworkCompilationEnabledNoDrools_throws() {
+        ScoreDirectorFactoryConfig config = new ScoreDirectorFactoryConfig()
+                .withConstraintProviderClass(TestdataConstraintProvider.class)
+                .withConstraintStreamImplType(ConstraintStreamImplType.BAVET)
+                .withDroolsAlphaNetworkCompilationEnabled(true);
+        ScoreDirectorFactoryFactory<TestdataSolution, SimpleScore> factoryFactory = new ScoreDirectorFactoryFactory<>(config);
+        assertThatCode(() -> factoryFactory.buildScoreDirectorFactory(ScoreDirectorFactoryFactoryTest.class.getClassLoader(),
+                EnvironmentMode.FAST_ASSERT,
+                TestdataSolution.buildSolutionDescriptor()))
+                        .hasMessage("If there is no scoreDrl (null), scoreDrlFile (null) or constraintProviderClass " +
+                                "(class org.optaplanner.core.impl.score.director.ScoreDirectorFactoryFactoryTest$TestdataConstraintProvider)"
+                                +
+                                " with DROOLS impl type (BAVET), there can be no droolsAlphaNetworkCompilationEnabled (true) either.");
+    }
+
+    @Test
+    void constraintStreamsKieBaseSupplierNoDrools_throws() {
+        ScoreDirectorFactoryConfig config = new ScoreDirectorFactoryConfig()
+                .withConstraintProviderClass(TestdataConstraintProvider.class)
+                .withConstraintStreamImplType(ConstraintStreamImplType.BAVET)
+                .withGizmoKieBaseSupplier(() -> null);
+        ScoreDirectorFactoryFactory<TestdataSolution, SimpleScore> factoryFactory = new ScoreDirectorFactoryFactory<>(config);
+        assertThatCode(() -> factoryFactory.buildScoreDirectorFactory(ScoreDirectorFactoryFactoryTest.class.getClassLoader(),
+                EnvironmentMode.FAST_ASSERT,
+                TestdataSolution.buildSolutionDescriptor()))
+                        .hasMessageContaining("If there is no scoreDrl (null), scoreDrlFile (null) or constraintProviderClass "
+                                +
+                                "(class org.optaplanner.core.impl.score.director.ScoreDirectorFactoryFactoryTest$TestdataConstraintProvider)"
+                                +
+                                " with DROOLS impl type (BAVET), there can be no gizmoKieBaseSupplier ");
+    }
+
+    @Test
+    void constraintStreamsKieBaseSupplierNotKieBaseDescriptor_throws() {
+        ScoreDirectorFactoryConfig config = new ScoreDirectorFactoryConfig()
+                .withConstraintProviderClass(TestdataConstraintProvider.class)
+                .withGizmoKieBaseSupplier(() -> null);
+        ScoreDirectorFactoryFactory<TestdataSolution, SimpleScore> factoryFactory = new ScoreDirectorFactoryFactory<>(config);
+        assertThatCode(() -> factoryFactory.buildScoreDirectorFactory(ScoreDirectorFactoryFactoryTest.class.getClassLoader(),
+                EnvironmentMode.FAST_ASSERT,
+                TestdataSolution.buildSolutionDescriptor()))
+                        .hasMessageContainingAll("The kieBaseSupplier (",
+                                ") is not a KieBaseDescriptor. Maybe remove calls to ScoreDirectorFactoryConfig.setKieBaseSupplier(Supplier)?");
     }
 
     @Test
@@ -144,9 +188,7 @@ class ScoreDirectorFactoryFactoryTest {
         assertThat(uncastScoreDirectorFactory).isInstanceOf(DroolsConstraintStreamScoreDirectorFactory.class);
         DroolsConstraintStreamScoreDirectorFactory<TestdataSolution, SimpleScore> scoreDirectorFactory =
                 (DroolsConstraintStreamScoreDirectorFactory<TestdataSolution, SimpleScore>) uncastScoreDirectorFactory;
-        DroolsConstraintSessionFactory<TestdataSolution, SimpleScore> constraintSessionFactory =
-                scoreDirectorFactory.getConstraintSessionFactory();
-        assertThat(constraintSessionFactory.isDroolsAlphaNetworkCompilationEnabled()).isFalse();
+        assertThat(scoreDirectorFactory.isDroolsAlphaNetworkCompilationEnabled()).isFalse();
     }
 
     @Test
