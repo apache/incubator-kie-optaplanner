@@ -88,8 +88,9 @@ public class IndexShadowVariableDescriptor<Solution_> extends ShadowVariableDesc
                 entitiesWithSourceVariable.get(0).getVariableDescriptor(sourceVariableName);
         if (variableDescriptor == null) {
             throw new IllegalStateException(
-                    "Impossible state. Based on previous checks, the entityClass (" + entitiesWithSourceVariable.get(0)
-                            + ") must have the planning variable (" + sourceVariableName + ").");
+                    "Impossible state: variableDescriptor (" + variableDescriptor + ") is null"
+                            + " but previous checks indicate that the entityClass (" + entitiesWithSourceVariable.get(0)
+                            + ") has a planning variable with sourceVariableName (" + sourceVariableName + ").");
         }
         if (!(variableDescriptor instanceof ListVariableDescriptor)) {
             throw new IllegalArgumentException("The entityClass (" + entityDescriptor.getEntityClass()
