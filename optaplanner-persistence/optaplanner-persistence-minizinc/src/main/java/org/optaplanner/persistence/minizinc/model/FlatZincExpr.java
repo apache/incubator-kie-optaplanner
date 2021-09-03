@@ -64,7 +64,7 @@ public class FlatZincExpr {
     }
 
     public boolean isVariable() {
-        return String.class.equals(value.getClass());
+        return value != null && String.class.equals(value.getClass());
     }
 
     public boolean asBoolean() {
@@ -128,5 +128,9 @@ public class FlatZincExpr {
     @Override
     public int hashCode() {
         return Objects.hash(value);
+    }
+
+    public Object getValue() {
+        return value;
     }
 }

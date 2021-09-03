@@ -17,5 +17,5 @@
 package org.optaplanner.persistence.minizinc.backend;
 
 public interface FloatArrayVariable extends FloatVariable {
-    int getIndex();
+    IndexSet getIndex(Class<?> arrayMarkerClass);
 }

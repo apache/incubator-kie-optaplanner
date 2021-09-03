@@ -102,7 +102,8 @@ public class FlatZincBuiltIns {
             Class<? extends IntArrayVariable> arrayVariableClass, Class<? extends IntVariable> constrainedVariableClass,
             String id, ConstraintFactory constraintFactory) {
         return constraintFactory.from(arrayVariableClass)
-                .join(indexVariableClass, Joiners.equal(IntArrayVariable::getIndex, IntVariable::getValue))
+                .join(indexVariableClass,
+                        Joiners.filtering((array, index) -> array.getIndex(arrayVariableClass).hasIndex(index.getValue())))
                 .ifNotExists(constrainedVariableClass,
                         Joiners.equal((arrayElement, index) -> arrayElement.getValue(), IntVariable::getValue))
                 .penalize(id, HardSoftScore.ONE_HARD);
@@ -122,6 +123,22 @@ public class FlatZincBuiltIns {
         return constraintFactory.from(valueClass)
                 .ifNotExists(constrainedVariableClass,
                         Joiners.equal(value -> Math.abs(value.getValue()), IntVariable::getValue))
+                .penalize(id, HardSoftScore.ONE_HARD);
+    }
+
+    public static int getEffectiveMultiplier(int[] multipliers, IndexSet multiplierIndexSet) {
+        return multiplierIndexSet.indexBitSet.stream().map(index -> multipliers[index]).reduce(Integer::sum).orElse(0);
+    }
+
+    // Constrains c≠∑as[i]∗bs[i]
+    // https://www.minizinc.org/doc-2.5.5/en/lib-flatzinc.html#index-14
+    public static Constraint int_lin_ne(int[] variableMultipliers, Class<? extends IntArrayVariable> variableArrayClass,
+            int constant, String id, ConstraintFactory constraintFactory) {
+        return constraintFactory.from(variableArrayClass)
+                .filter(variable -> variable.getValue() != null)
+                .groupBy(ConstraintCollectors.sum(variable -> variable.getValue()
+                        * getEffectiveMultiplier(variableMultipliers, variable.getIndex(variableArrayClass))))
+                .filter(sum -> sum == constant)
                 .penalize(id, HardSoftScore.ONE_HARD);
     }
 }

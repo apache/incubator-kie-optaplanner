@@ -22,7 +22,7 @@ import org.optaplanner.core.api.domain.variable.PlanningVariable;
 @PlanningEntity
 public class MyIntArrayVariable implements IntArrayVariable {
 
-    int index;
+    IndexSet index;
 
     @PlanningVariable(valueRangeProviderRefs = { "valueRange" })
     Integer value;
@@ -31,12 +31,12 @@ public class MyIntArrayVariable implements IntArrayVariable {
     }
 
     public MyIntArrayVariable(int index, Integer value) {
-        this.index = index;
+        this.index = new IndexSet(index);
         this.value = value;
     }
 
     @Override
-    public int getIndex() {
+    public IndexSet getIndex(Class<?> markerClass) {
         return index;
     }
 

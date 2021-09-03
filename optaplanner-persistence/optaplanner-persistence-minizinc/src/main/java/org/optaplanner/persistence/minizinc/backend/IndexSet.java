@@ -16,6 +16,26 @@
 
 package org.optaplanner.persistence.minizinc.backend;
 
-public interface IntArrayVariable extends IntVariable {
-    IndexSet getIndex(Class<?> arrayMarkerClass);
+import java.util.BitSet;
+import java.util.List;
+
+public class IndexSet {
+    public static final IndexSet EMPTY = new IndexSet(List.of());
+    final BitSet indexBitSet;
+
+    public IndexSet(int index) {
+        this.indexBitSet = new BitSet();
+        indexBitSet.set(index);
+    }
+
+    public IndexSet(List<Integer> indexList) {
+        this.indexBitSet = new BitSet();
+        for (Integer index : indexList) {
+            indexBitSet.set(index);
+        }
+    }
+
+    public boolean hasIndex(int index) {
+        return indexBitSet.get(index);
+    }
 }
