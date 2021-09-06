@@ -398,7 +398,7 @@ SolverFactory<TimeTable> solverFactory = SolverFactory.create(new SolverConfig()
 ----
 
 It registers the `@PlanningSolution` class, the `@PlanningEntity` classes
-and the `ContraintProvider` class, all of which you created earlier.
+and the `ConstraintProvider` class, all of which you created earlier.
 
 Without a termination setting or a `terminationEarly()` event, the solver runs forever.
 To avoid that, it limits the solving time to five seconds.
