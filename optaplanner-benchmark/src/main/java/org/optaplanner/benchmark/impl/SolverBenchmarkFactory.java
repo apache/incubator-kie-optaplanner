@@ -18,9 +18,7 @@ package org.optaplanner.benchmark.impl;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.apache.commons.lang3.ObjectUtils;
 import org.optaplanner.benchmark.config.ProblemBenchmarksConfig;
@@ -30,8 +28,9 @@ import org.optaplanner.benchmark.config.statistic.SingleStatisticType;
 import org.optaplanner.benchmark.impl.result.PlannerBenchmarkResult;
 import org.optaplanner.benchmark.impl.result.SolverBenchmarkResult;
 import org.optaplanner.core.config.solver.EnvironmentMode;
-import org.optaplanner.core.config.solver.metric.MetricConfig;
-import org.optaplanner.core.config.solver.metric.SolverMetric;
+import org.optaplanner.core.config.solver.SolverConfig;
+import org.optaplanner.core.config.solver.monitoring.MonitoringConfig;
+import org.optaplanner.core.config.solver.monitoring.SolverMetric;
 import org.optaplanner.core.config.util.ConfigUtils;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.core.impl.solver.DefaultSolverFactory;
@@ -52,13 +51,18 @@ public class SolverBenchmarkFactory {
         if (config.getSolverConfig().getClassLoader() == null) {
             config.getSolverConfig().setClassLoader(classLoader);
         }
-        Map<String, String> additionalTagsMap = new HashMap<>();
+        if (config.getSolverConfig().getMonitoringConfig() != null &&
+                config.getSolverConfig().getMonitoringConfig().getSolverMetricList() != null &&
+                !config.getSolverConfig().getMonitoringConfig().getSolverMetricList().isEmpty()) {
+            throw new IllegalArgumentException(
+                    "The solverBenchmarkConfig (" + config + ") has a " + SolverConfig.class.getSimpleName() +
+                            " (" + config.getSolverConfig() + " ) with a non-empty " + MonitoringConfig.class.getSimpleName() +
+                            " (" + config.getSolverConfig().getMonitoringConfig() + ").");
+        }
         List<SolverMetric> solverMetricList = getSolverMetrics(config.getProblemBenchmarksConfig());
-        additionalTagsMap.put("optaplanner.benchmark.name", config.getName());
         solverBenchmarkResult.setSolverConfig(config.getSolverConfig()
-                .copyConfig().withMetricConfig(
-                        new MetricConfig()
-                                .withTagNameToValueMap(additionalTagsMap)
+                .copyConfig().withMonitoringConfig(
+                        new MonitoringConfig()
                                 .withSolverMetricList(solverMetricList)));
         DefaultSolverFactory<Solution_> defaultSolverFactory = new DefaultSolverFactory<>(config.getSolverConfig());
         SolutionDescriptor<Solution_> solutionDescriptor =

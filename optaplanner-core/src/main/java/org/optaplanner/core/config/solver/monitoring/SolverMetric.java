@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.optaplanner.core.config.solver.metric;
+package org.optaplanner.core.config.solver.monitoring;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,7 +25,6 @@ import javax.xml.bind.annotation.XmlEnum;
 
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.solver.Solver;
-import org.optaplanner.core.config.solver.SolverConfig;
 import org.optaplanner.core.impl.score.definition.ScoreDefinition;
 import org.optaplanner.core.impl.statistic.BestScoreStatistic;
 import org.optaplanner.core.impl.statistic.BestSolutionMutationCountStatistic;
@@ -33,6 +32,7 @@ import org.optaplanner.core.impl.statistic.MemoryUseStatistic;
 import org.optaplanner.core.impl.statistic.PickedMoveBestScoreDiffStatistic;
 import org.optaplanner.core.impl.statistic.PickedMoveStepScoreDiffStatistic;
 import org.optaplanner.core.impl.statistic.SolverStatistic;
+import org.optaplanner.core.impl.statistic.StatelessSolverStatistic;
 
 import io.micrometer.core.instrument.Metrics;
 import io.micrometer.core.instrument.Tags;
@@ -60,8 +60,7 @@ public enum SolverMetric {
     boolean isBestSolutionBased;
 
     SolverMetric(String meterId, boolean isBestSolutionBased) {
-        this(meterId, solver -> {
-        }, isBestSolutionBased);
+        this(meterId, new StatelessSolverStatistic<>(), isBestSolutionBased);
     }
 
     SolverMetric(String meterId, SolverStatistic<?> registerFunction, boolean isBestSolutionBased) {
@@ -94,11 +93,6 @@ public enum SolverMetric {
         }
     }
 
-    public static void setupMetrics(SolverConfig solverConfig, Solver<?> solver) {
-        List<SolverMetric> metricsToAcceptList = solverConfig.determineMetricConfig().getSolverMetricList();
-        metricsToAcceptList.forEach(metric -> metric.register(solver));
-    }
-
     public boolean isMetricBestSolutionBased() {
         return isBestSolutionBased;
     }
@@ -106,5 +100,10 @@ public enum SolverMetric {
     @SuppressWarnings("unchecked")
     public void register(Solver<?> solver) {
         registerFunction.register(solver);
+    }
+
+    @SuppressWarnings("unchecked")
+    public void unregister(Solver<?> solver) {
+        registerFunction.unregister(solver);
     }
 }

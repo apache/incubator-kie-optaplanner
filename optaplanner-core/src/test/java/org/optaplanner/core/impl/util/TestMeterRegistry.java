@@ -60,7 +60,7 @@ public class TestMeterRegistry extends SimpleMeterRegistry {
 
     public void publish(Solver solver) {
         DefaultSolver defaultSolver = (DefaultSolver) solver;
-        String solverId = defaultSolver.getSolverScope().getMetricTags().stream()
+        String solverId = defaultSolver.getSolverScope().getMonitoringTags().stream()
                 .filter(tag -> tag.getKey().equals("solver.id")).findAny()
                 .orElseThrow(IllegalStateException::new).getValue();
         this.getMeters().stream().filter(meter -> solverId.equals(meter.getId().getTag("solver.id"))).forEach(meter -> {

@@ -25,7 +25,7 @@ import org.optaplanner.benchmark.impl.result.SubSingleBenchmarkResult;
 import org.optaplanner.benchmark.impl.statistic.ProblemBasedSubSingleStatistic;
 import org.optaplanner.benchmark.impl.statistic.StatisticRegistry;
 import org.optaplanner.core.api.solver.Solver;
-import org.optaplanner.core.config.solver.metric.SolverMetric;
+import org.optaplanner.core.config.solver.monitoring.SolverMetric;
 import org.optaplanner.core.impl.score.definition.ScoreDefinition;
 
 import io.micrometer.core.instrument.Tags;

@@ -24,7 +24,7 @@ import java.util.concurrent.atomic.AtomicReference;
 
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.score.constraint.ConstraintMatchTotal;
-import org.optaplanner.core.config.solver.metric.SolverMetric;
+import org.optaplanner.core.config.solver.monitoring.SolverMetric;
 import org.optaplanner.core.impl.heuristic.move.Move;
 import org.optaplanner.core.impl.localsearch.decider.LocalSearchDecider;
 import org.optaplanner.core.impl.localsearch.event.LocalSearchPhaseLifecycleListener;
@@ -85,9 +85,9 @@ public class DefaultLocalSearchPhase<Solution_> extends AbstractPhase<Solution_>
 
         if (solverScope.isMetricEnabled(SolverMetric.MOVE_COUNT_PER_STEP)) {
             Metrics.gauge(SolverMetric.MOVE_COUNT_PER_STEP.getMeterId() + ".accepted",
-                    solverScope.getMetricTags(), acceptedMoveCountPerStep);
+                    solverScope.getMonitoringTags(), acceptedMoveCountPerStep);
             Metrics.gauge(SolverMetric.MOVE_COUNT_PER_STEP.getMeterId() + ".selected",
-                    solverScope.getMetricTags(), selectedMoveCountPerStep);
+                    solverScope.getMonitoringTags(), selectedMoveCountPerStep);
         }
 
         while (!termination.isPhaseTerminated(phaseScope)) {
@@ -185,7 +185,7 @@ public class DefaultLocalSearchPhase<Solution_> extends AbstractPhase<Solution_>
             if (scoreDirector.isConstraintMatchEnabled()) {
                 for (ConstraintMatchTotal<?> constraintMatchTotal : scoreDirector.getConstraintMatchTotalMap()
                         .values()) {
-                    Tags tags = solverScope.getMetricTags().and(
+                    Tags tags = solverScope.getMonitoringTags().and(
                             "constraint.package", constraintMatchTotal.getConstraintPackage(),
                             "constraint.name", constraintMatchTotal.getConstraintName());
                     collectConstraintMatchTotalMetrics(SolverMetric.CONSTRAINT_MATCH_TOTAL_BEST_SCORE, tags,

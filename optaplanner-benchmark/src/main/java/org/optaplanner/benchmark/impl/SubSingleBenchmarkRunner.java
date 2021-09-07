@@ -21,7 +21,6 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.Callable;
 
-import org.apache.commons.lang3.ObjectUtils;
 import org.optaplanner.benchmark.impl.result.ProblemBenchmarkResult;
 import org.optaplanner.benchmark.impl.result.SingleBenchmarkResult;
 import org.optaplanner.benchmark.impl.result.SubSingleBenchmarkResult;
@@ -29,7 +28,6 @@ import org.optaplanner.benchmark.impl.statistic.StatisticRegistry;
 import org.optaplanner.benchmark.impl.statistic.SubSingleStatistic;
 import org.optaplanner.core.api.score.ScoreManager;
 import org.optaplanner.core.config.solver.SolverConfig;
-import org.optaplanner.core.config.solver.metric.MetricConfig;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.core.impl.solver.DefaultSolver;
 import org.optaplanner.core.impl.solver.DefaultSolverFactory;
@@ -105,13 +103,12 @@ public class SubSingleBenchmarkRunner<Solution_> implements Callable<SubSingleBe
         Map<String, String> subSingleBenchmarkTagMap = new HashMap<>();
         String runId = UUID.randomUUID().toString();
         subSingleBenchmarkTagMap.put("optaplanner.benchmark.run", runId);
-        solverConfig = new SolverConfig(solverConfig).withMetricConfig(
-                ObjectUtils.defaultIfNull(solverConfig.getMetricConfig(), new MetricConfig()).copyConfig().inherit(
-                        new MetricConfig().withTagNameToValueMap(subSingleBenchmarkTagMap)));
+        solverConfig = new SolverConfig(solverConfig);
         randomSeed = solverConfig.getRandomSeed();
         // Defensive copy of solverConfig for every SingleBenchmarkResult to reset Random, tabu lists, ...
         DefaultSolverFactory<Solution_> solverFactory = new DefaultSolverFactory<>(new SolverConfig(solverConfig));
         DefaultSolver<Solution_> solver = (DefaultSolver<Solution_>) solverFactory.buildSolver();
+        solver.setMonitorTagMap(subSingleBenchmarkTagMap);
         StatisticRegistry<Solution_> statisticRegistry = new StatisticRegistry<>(solver);
         Metrics.addRegistry(statisticRegistry);
         solver.addPhaseLifecycleListener(statisticRegistry);

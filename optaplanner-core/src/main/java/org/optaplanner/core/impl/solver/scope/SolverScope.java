@@ -25,7 +25,7 @@ import java.util.concurrent.Semaphore;
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.solver.Solver;
-import org.optaplanner.core.config.solver.metric.SolverMetric;
+import org.optaplanner.core.config.solver.monitoring.SolverMetric;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.core.impl.phase.scope.AbstractPhaseScope;
 import org.optaplanner.core.impl.score.definition.ScoreDefinition;
@@ -40,7 +40,7 @@ import io.micrometer.core.instrument.Tags;
  */
 public class SolverScope<Solution_> {
     protected Set<SolverMetric> solverMetricSet;
-    protected Tags metricTags;
+    protected Tags monitoringTags;
     protected int startingSolverCount;
     protected Random workingRandom;
     protected InnerScoreDirector<Solution_, ?> scoreDirector;
@@ -63,12 +63,16 @@ public class SolverScope<Solution_> {
     // Constructors and simple getters/setters
     // ************************************************************************
 
-    public Tags getMetricTags() {
-        return metricTags;
+    public Tags getMonitoringTags() {
+        return monitoringTags;
     }
 
-    public void setMetricTags(Tags metricTags) {
-        this.metricTags = metricTags;
+    public void setMonitoringTags(Tags monitoringTags) {
+        this.monitoringTags = monitoringTags;
+    }
+
+    public Set<SolverMetric> getSolverMetricSet() {
+        return solverMetricSet;
     }
 
     public void setSolverMetricSet(EnumSet<SolverMetric> solverMetricSet) {
@@ -239,7 +243,7 @@ public class SolverScope<Solution_> {
 
     public SolverScope<Solution_> createChildThreadSolverScope(ChildThreadType childThreadType) {
         SolverScope<Solution_> childThreadSolverScope = new SolverScope<>();
-        childThreadSolverScope.metricTags = metricTags;
+        childThreadSolverScope.monitoringTags = monitoringTags;
         childThreadSolverScope.solverMetricSet = solverMetricSet;
         childThreadSolverScope.startingSolverCount = startingSolverCount;
         // TODO FIXME use RandomFactory

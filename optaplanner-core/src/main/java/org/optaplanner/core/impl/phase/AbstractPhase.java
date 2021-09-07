@@ -23,7 +23,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicReference;
 
 import org.optaplanner.core.api.score.Score;
-import org.optaplanner.core.config.solver.metric.SolverMetric;
+import org.optaplanner.core.config.solver.monitoring.SolverMetric;
 import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.core.impl.domain.variable.descriptor.GenuineVariableDescriptor;
@@ -192,7 +192,7 @@ public abstract class AbstractPhase<Solution_> implements Phase<Solution_> {
                 && stepScope.getScore().isSolutionInitialized()) {
             ScoreDefinition<?> scoreDefinition = stepScope.getPhaseScope().getScoreDefinition();
             SolverMetric.registerScoreMetrics(SolverMetric.STEP_SCORE,
-                    stepScope.getPhaseScope().getSolverScope().getMetricTags(),
+                    stepScope.getPhaseScope().getSolverScope().getMonitoringTags(),
                     scoreDefinition,
                     stepScoreMap,
                     stepScope.getScore());

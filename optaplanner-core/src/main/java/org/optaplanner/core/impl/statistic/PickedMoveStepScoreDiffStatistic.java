@@ -18,12 +18,13 @@ package org.optaplanner.core.impl.statistic;
 
 import java.util.List;
 import java.util.Map;
+import java.util.WeakHashMap;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicReference;
 
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.solver.Solver;
-import org.optaplanner.core.config.solver.metric.SolverMetric;
+import org.optaplanner.core.config.solver.monitoring.SolverMetric;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.core.impl.localsearch.scope.LocalSearchPhaseScope;
 import org.optaplanner.core.impl.localsearch.scope.LocalSearchStepScope;
@@ -37,13 +38,27 @@ import org.optaplanner.core.impl.solver.DefaultSolver;
 import io.micrometer.core.instrument.Tags;
 
 public class PickedMoveStepScoreDiffStatistic<Solution_> implements SolverStatistic<Solution_> {
+
+    private final Map<Solver<Solution_>, PhaseLifecycleListenerAdapter<Solution_>> solverToPhaseLifecycleListenerMap =
+            new WeakHashMap<>();
+
+    @Override
+    public void unregister(Solver<Solution_> solver) {
+        PhaseLifecycleListenerAdapter<Solution_> listener = solverToPhaseLifecycleListenerMap.remove(solver);
+        if (listener != null) {
+            ((DefaultSolver<Solution_>) solver).removePhaseLifecycleListener(listener);
+        }
+    }
+
     @Override
     public void register(Solver<Solution_> solver) {
         DefaultSolver<Solution_> defaultSolver = (DefaultSolver<Solution_>) solver;
         InnerScoreDirectorFactory<Solution_, ?> innerScoreDirectorFactory = defaultSolver.getScoreDirectorFactory();
         SolutionDescriptor<Solution_> solutionDescriptor = innerScoreDirectorFactory.getSolutionDescriptor();
-        defaultSolver.addPhaseLifecycleListener(
-                new PickedMoveStepScoreDiffStatisticListener<>((ScoreDefinition<?>) solutionDescriptor.getScoreDefinition()));
+        PickedMoveStepScoreDiffStatisticListener<Solution_, ?> listener =
+                new PickedMoveStepScoreDiffStatisticListener<>((ScoreDefinition<?>) solutionDescriptor.getScoreDefinition());
+        solverToPhaseLifecycleListenerMap.put(solver, listener);
+        defaultSolver.addPhaseLifecycleListener(listener);
     }
 
     private static class PickedMoveStepScoreDiffStatisticListener<Solution_, Score_ extends Score<Score_>>
@@ -85,7 +100,7 @@ public class PickedMoveStepScoreDiffStatistic<Solution_> implements SolverStatis
             oldStepScore = newStepScore;
 
             SolverMetric.registerScoreMetrics(SolverMetric.PICKED_MOVE_TYPE_STEP_SCORE_DIFF,
-                    stepScope.getPhaseScope().getSolverScope().getMetricTags()
+                    stepScope.getPhaseScope().getSolverScope().getMonitoringTags()
                             .and("move.type", moveType),
                     scoreDefinition,
                     tagsToMoveScoreMap,

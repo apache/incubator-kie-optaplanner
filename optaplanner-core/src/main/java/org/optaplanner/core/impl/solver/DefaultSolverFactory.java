@@ -20,12 +20,9 @@ import static org.apache.commons.lang3.ObjectUtils.defaultIfNull;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.EnumSet;
 import java.util.List;
-import java.util.UUID;
 
-import org.apache.commons.lang3.ObjectUtils;
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.solver.Solver;
 import org.optaplanner.core.api.solver.SolverFactory;
@@ -35,8 +32,8 @@ import org.optaplanner.core.config.phase.PhaseConfig;
 import org.optaplanner.core.config.score.director.ScoreDirectorFactoryConfig;
 import org.optaplanner.core.config.solver.EnvironmentMode;
 import org.optaplanner.core.config.solver.SolverConfig;
-import org.optaplanner.core.config.solver.metric.MetricConfig;
-import org.optaplanner.core.config.solver.metric.SolverMetric;
+import org.optaplanner.core.config.solver.monitoring.MonitoringConfig;
+import org.optaplanner.core.config.solver.monitoring.SolverMetric;
 import org.optaplanner.core.config.solver.random.RandomType;
 import org.optaplanner.core.config.solver.termination.TerminationConfig;
 import org.optaplanner.core.config.util.ConfigUtils;
@@ -83,7 +80,6 @@ public final class DefaultSolverFactory<Solution_> implements SolverFactory<Solu
 
     @Override
     public Solver<Solution_> buildSolver() {
-        String solverId = UUID.randomUUID().toString();
         EnvironmentMode environmentMode_ = solverConfig.determineEnvironmentMode();
         boolean daemon_ = defaultIfNull(solverConfig.getDaemon(), false);
 
@@ -92,14 +88,10 @@ public final class DefaultSolverFactory<Solution_> implements SolverFactory<Solu
         InnerScoreDirectorFactory<Solution_, ?> scoreDirectorFactory = buildScoreDirectorFactory(environmentMode_);
         boolean constraintMatchEnabledPreference = environmentMode_.isAsserted();
         SolverScope<Solution_> solverScope = new SolverScope<>();
-        MetricConfig metricConfig = solverConfig.determineMetricConfig();
-        Tags tags = ObjectUtils.defaultIfNull(metricConfig.getTagNameToValueMap(), Collections.<String, String> emptyMap())
-                .entrySet().stream().map(entry -> Tags.of(entry.getKey(), entry.getValue()))
-                .reduce(Tags.empty(), Tags::and)
-                .and("solver.id", solverId);
-        solverScope.setMetricTags(tags);
-        if (!metricConfig.getSolverMetricList().isEmpty()) {
-            solverScope.setSolverMetricSet(EnumSet.copyOf(metricConfig.getSolverMetricList()));
+        MonitoringConfig monitoringConfig = solverConfig.determineMetricConfig();
+        solverScope.setMonitoringTags(Tags.empty());
+        if (!monitoringConfig.getSolverMetricList().isEmpty()) {
+            solverScope.setSolverMetricSet(EnumSet.copyOf(monitoringConfig.getSolverMetricList()));
         } else {
             solverScope.setSolverMetricSet(EnumSet.noneOf(SolverMetric.class));
         }
@@ -131,7 +123,6 @@ public final class DefaultSolverFactory<Solution_> implements SolverFactory<Solu
                 new DefaultSolver<>(environmentMode_, randomFactory, bestSolutionRecaller, basicPlumbingTermination,
                         termination, phaseList, solverScope,
                         moveThreadCount_ == null ? SolverConfig.MOVE_THREAD_COUNT_NONE : Integer.toString(moveThreadCount_));
-        SolverMetric.setupMetrics(solverConfig, out);
         return out;
     }
 

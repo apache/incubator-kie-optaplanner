@@ -14,30 +14,23 @@
  * limitations under the License.
  */
 
-package org.optaplanner.core.config.solver.metric;
+package org.optaplanner.core.config.solver.monitoring;
 
 import java.util.List;
-import java.util.Map;
 import java.util.function.Consumer;
 
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlType;
-import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 import org.optaplanner.core.config.AbstractConfig;
 import org.optaplanner.core.config.util.ConfigUtils;
-import org.optaplanner.core.impl.io.jaxb.adapter.JaxbCustomPropertiesAdapter;
 
 @XmlType(propOrder = {
         "solverMetricList",
-        "tagNameToValueMap"
 })
-public class MetricConfig extends AbstractConfig<MetricConfig> {
-    @XmlElement(name = "metrics")
+public class MonitoringConfig extends AbstractConfig<MonitoringConfig> {
+    @XmlElement(name = "metric")
     protected List<SolverMetric> solverMetricList = null;
-
-    @XmlJavaTypeAdapter(JaxbCustomPropertiesAdapter.class)
-    protected Map<String, String> tagNameToValueMap = null;
 
     // ************************************************************************
     // Constructors and simple getters/setters
@@ -50,38 +43,24 @@ public class MetricConfig extends AbstractConfig<MetricConfig> {
         this.solverMetricList = solverMetricList;
     }
 
-    public Map<String, String> getTagNameToValueMap() {
-        return tagNameToValueMap;
-    }
-
-    public void setTagNameToValueMap(Map<String, String> tagNameToValueMap) {
-        this.tagNameToValueMap = tagNameToValueMap;
-    }
-
     // ************************************************************************
     // With methods
     // ************************************************************************
 
-    public MetricConfig withSolverMetricList(List<SolverMetric> solverMetricList) {
+    public MonitoringConfig withSolverMetricList(List<SolverMetric> solverMetricList) {
         this.solverMetricList = solverMetricList;
         return this;
     }
 
-    public MetricConfig withTagNameToValueMap(Map<String, String> tagNameToValueMap) {
-        this.tagNameToValueMap = tagNameToValueMap;
-        return this;
-    }
-
     @Override
-    public MetricConfig inherit(MetricConfig inheritedConfig) {
+    public MonitoringConfig inherit(MonitoringConfig inheritedConfig) {
         solverMetricList = ConfigUtils.inheritMergeableListProperty(solverMetricList, inheritedConfig.solverMetricList);
-        tagNameToValueMap = ConfigUtils.inheritMergeableMapProperty(tagNameToValueMap, inheritedConfig.tagNameToValueMap);
         return this;
     }
 
     @Override
-    public MetricConfig copyConfig() {
-        return new MetricConfig().inherit(this);
+    public MonitoringConfig copyConfig() {
+        return new MonitoringConfig().inherit(this);
     }
 
     @Override

@@ -22,6 +22,7 @@ import static org.assertj.core.api.Assertions.fail;
 
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -80,6 +81,7 @@ public class DefaultSolverTest {
         SolverFactory<TestdataSolution> solverFactory = SolverFactory.create(solverConfig);
 
         Solver<TestdataSolution> solver = solverFactory.buildSolver();
+        ((DefaultSolver<TestdataSolution>) solver).setMonitorTagMap(Map.of("solver.id", "solveMetrics"));
         meterRegistry.publish(solver);
         assertThat(meterRegistry.getMeasurement("optaplanner.solver.errors", "COUNT")).isZero();
         assertThat(meterRegistry.getMeasurement("optaplanner.solver.solve.duration", "ACTIVE_TASKS")).isZero();
@@ -137,6 +139,7 @@ public class DefaultSolverTest {
         SolverFactory<TestdataSolution> solverFactory = SolverFactory.create(solverConfig);
 
         Solver<TestdataSolution> solver = solverFactory.buildSolver();
+        ((DefaultSolver<TestdataSolution>) solver).setMonitorTagMap(Map.of("solver.id", "solveMetricsError"));
         meterRegistry.publish(solver);
         assertThat(meterRegistry.getMeasurement("optaplanner.solver.errors", "COUNT")).isZero();
         assertThat(meterRegistry.getMeasurement("optaplanner.solver.solve.duration", "ACTIVE_TASKS")).isZero();

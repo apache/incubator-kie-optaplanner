@@ -55,8 +55,8 @@ import org.optaplanner.core.config.phase.NoChangePhaseConfig;
 import org.optaplanner.core.config.phase.PhaseConfig;
 import org.optaplanner.core.config.phase.custom.CustomPhaseConfig;
 import org.optaplanner.core.config.score.director.ScoreDirectorFactoryConfig;
-import org.optaplanner.core.config.solver.metric.MetricConfig;
-import org.optaplanner.core.config.solver.metric.SolverMetric;
+import org.optaplanner.core.config.solver.monitoring.MonitoringConfig;
+import org.optaplanner.core.config.solver.monitoring.SolverMetric;
 import org.optaplanner.core.config.solver.random.RandomType;
 import org.optaplanner.core.config.solver.termination.TerminationConfig;
 import org.optaplanner.core.config.util.ConfigUtils;
@@ -79,13 +79,13 @@ import org.optaplanner.core.impl.solver.random.RandomFactory;
         "moveThreadCount",
         "moveThreadBufferSize",
         "threadFactoryClass",
+        "monitoringConfig",
         "solutionClass",
         "entityClassList",
         "domainAccessType",
         "scoreDirectorFactoryConfig",
         "terminationConfig",
         "phaseConfigList",
-        "metricConfig",
 })
 public class SolverConfig extends AbstractConfig<SolverConfig> {
 
@@ -266,8 +266,8 @@ public class SolverConfig extends AbstractConfig<SolverConfig> {
     })
     protected List<PhaseConfig> phaseConfigList = null;
 
-    @XmlElement(name = "metrics")
-    protected MetricConfig metricConfig = null;
+    @XmlElement(name = "monitoring")
+    protected MonitoringConfig monitoringConfig = null;
 
     // ************************************************************************
     // Constructors and simple getters/setters
@@ -434,12 +434,12 @@ public class SolverConfig extends AbstractConfig<SolverConfig> {
         this.phaseConfigList = phaseConfigList;
     }
 
-    public MetricConfig getMetricConfig() {
-        return metricConfig;
+    public MonitoringConfig getMonitoringConfig() {
+        return monitoringConfig;
     }
 
-    public void setMetricConfig(MetricConfig metricConfig) {
-        this.metricConfig = metricConfig;
+    public void setMonitoringConfig(MonitoringConfig monitoringConfig) {
+        this.monitoringConfig = monitoringConfig;
     }
 
     // ************************************************************************
@@ -578,8 +578,8 @@ public class SolverConfig extends AbstractConfig<SolverConfig> {
         return this;
     }
 
-    public SolverConfig withMetricConfig(MetricConfig solverMetricList) {
-        this.metricConfig = solverMetricList;
+    public SolverConfig withMonitoringConfig(MonitoringConfig monitoringConfig) {
+        this.monitoringConfig = monitoringConfig;
         return this;
     }
 
@@ -595,9 +595,9 @@ public class SolverConfig extends AbstractConfig<SolverConfig> {
         return defaultIfNull(domainAccessType, DomainAccessType.REFLECTION);
     }
 
-    public MetricConfig determineMetricConfig() {
-        return defaultIfNull(metricConfig,
-                new MetricConfig().withSolverMetricList(Arrays.asList(SolverMetric.SOLVE_LENGTH, SolverMetric.ERROR_COUNT,
+    public MonitoringConfig determineMetricConfig() {
+        return defaultIfNull(monitoringConfig,
+                new MonitoringConfig().withSolverMetricList(Arrays.asList(SolverMetric.SOLVE_LENGTH, SolverMetric.ERROR_COUNT,
                         SolverMetric.SCORE_CALCULATION_COUNT)));
     }
 
@@ -647,7 +647,7 @@ public class SolverConfig extends AbstractConfig<SolverConfig> {
                 inheritedConfig.getScoreDirectorFactoryConfig());
         terminationConfig = ConfigUtils.inheritConfig(terminationConfig, inheritedConfig.getTerminationConfig());
         phaseConfigList = ConfigUtils.inheritMergeableListConfig(phaseConfigList, inheritedConfig.getPhaseConfigList());
-        metricConfig = ConfigUtils.inheritConfig(metricConfig, inheritedConfig.getMetricConfig());
+        monitoringConfig = ConfigUtils.inheritConfig(monitoringConfig, inheritedConfig.getMonitoringConfig());
         return this;
     }
 
