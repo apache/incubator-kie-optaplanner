@@ -38,4 +38,11 @@ public class IndexSet {
     public boolean hasIndex(int index) {
         return indexBitSet.get(index);
     }
+
+    @Override
+    public String toString() {
+        return "IndexSet{" +
+                "indexBitSet=" + indexBitSet +
+                '}';
+    }
 }

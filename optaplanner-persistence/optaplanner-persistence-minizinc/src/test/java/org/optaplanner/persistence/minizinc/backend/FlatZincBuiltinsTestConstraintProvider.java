@@ -56,4 +56,8 @@ public class FlatZincBuiltinsTestConstraintProvider implements ConstraintProvide
     public Constraint int_abs(ConstraintFactory constraintFactory) {
         return FlatZincBuiltIns.int_abs(MyIntVariable.class, ConstrainedIntVariable.class, "int_abs", constraintFactory);
     }
+
+    public Constraint int_lin_ne(ConstraintFactory constraintFactory) {
+        return FlatZincBuiltIns.int_lin_ne(new int[] { 1, -1 }, MyIntArrayVariable.class, 0, "int_lin_ne", constraintFactory);
+    }
 }

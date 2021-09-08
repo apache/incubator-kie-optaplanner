@@ -127,4 +127,16 @@ public class FlatZincBuiltinsTest {
                         new ConstrainedIntVariable(10))
                 .penalizes(0);
     }
+
+    @Test
+    public void test_int_lin_ne() {
+        constraintVerifier.verifyThat(FlatZincBuiltinsTestConstraintProvider::int_lin_ne)
+                .given(new MyIntArrayVariable(0, 1),
+                        new MyIntArrayVariable(1, 1))
+                .penalizes(1);
+        constraintVerifier.verifyThat(FlatZincBuiltinsTestConstraintProvider::int_lin_ne)
+                .given(new MyIntArrayVariable(0, 1),
+                        new MyIntArrayVariable(1, 2))
+                .penalizes(0);
+    }
 }

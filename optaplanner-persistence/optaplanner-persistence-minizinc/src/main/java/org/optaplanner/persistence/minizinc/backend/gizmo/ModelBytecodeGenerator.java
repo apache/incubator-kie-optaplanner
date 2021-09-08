@@ -356,9 +356,11 @@ public class ModelBytecodeGenerator {
         }
         BytecodeCreator currentBranch =
                 classCreator.getMethodCreator(MethodDescriptor.ofMethod(className, "getIndex", IndexSet.class, Class.class));
-        ResultHandle thisObj = currentBranch.getThis();
+        ResultHandle parameter = currentBranch.getMethodParam(0);
         for (Map.Entry<Class<?>, FieldDescriptor> entry : arrayClassToFieldDescriptor.entrySet()) {
-            ResultHandle isInstance = currentBranch.instanceOf(thisObj, entry.getKey());
+            ResultHandle isInstance = currentBranch.invokeVirtualMethod(
+                    MethodDescriptor.ofMethod(Object.class, "equals", boolean.class, Object.class),
+                    currentBranch.loadClass(entry.getKey()), parameter);
             BranchResult isInstanceBranchResult = currentBranch.ifTrue(isInstance);
             BytecodeCreator isInstanceBranch = isInstanceBranchResult.trueBranch();
             isInstanceBranch.returnValue(isInstanceBranch.readStaticField(entry.getValue()));

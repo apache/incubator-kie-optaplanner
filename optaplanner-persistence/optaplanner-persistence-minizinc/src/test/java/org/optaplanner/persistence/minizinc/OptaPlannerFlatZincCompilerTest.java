@@ -22,14 +22,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.optaplanner.persistence.minizinc.parser.ParseException;
 
 public class OptaPlannerFlatZincCompilerTest {
 
     @Test
-    @Disabled("Generated ConstraintProvider does not match constraints")
     public void testThreeColor() throws ParseException {
         String solution = OptaPlannerFlatZincCompiler
                 .solve(OptaPlannerFlatZincCompilerTest.class.getResourceAsStream("/three-color-model.fzn"));
@@ -42,7 +40,6 @@ public class OptaPlannerFlatZincCompilerTest {
         String v = parsedSolution.get("v");
         String t = parsedSolution.get("t");
 
-        System.out.println(solution);
         assertThat(List.of(wa, nt, sa, q, nsw, v, t)).describedAs("all initialized")
                 .allSatisfy(variable -> assertThat(variable).isNotNull());
 
