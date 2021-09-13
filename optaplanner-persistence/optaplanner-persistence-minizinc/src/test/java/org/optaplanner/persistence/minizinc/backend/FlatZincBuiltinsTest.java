@@ -22,7 +22,9 @@ import org.optaplanner.test.api.score.stream.ConstraintVerifier;
 public class FlatZincBuiltinsTest {
 
     final ConstraintVerifier<FlatZincBuiltinsTestConstraintProvider, MyPlanningSolution> constraintVerifier = ConstraintVerifier
-            .build(new FlatZincBuiltinsTestConstraintProvider(), MyPlanningSolution.class, MyIntVariable.class,
+            .build(new FlatZincBuiltinsTestConstraintProvider(), MyPlanningSolution.class,
+                    MyIntVariable.class,
+                    MySecondIntVariable.class,
                     ConstrainedIntVariable.class,
                     MyIntArrayVariable.class);
 
@@ -129,6 +131,201 @@ public class FlatZincBuiltinsTest {
     }
 
     @Test
+    public void test_int_div() {
+        constraintVerifier.verifyThat(FlatZincBuiltinsTestConstraintProvider::int_div)
+                .given(new MyIntVariable(10),
+                        new MySecondIntVariable(5),
+                        new ConstrainedIntVariable(1))
+                .penalizes(1);
+        constraintVerifier.verifyThat(FlatZincBuiltinsTestConstraintProvider::int_div)
+                .given(new MyIntVariable(10),
+                        new MySecondIntVariable(5),
+                        new ConstrainedIntVariable(2))
+                .penalizes(0);
+        constraintVerifier.verifyThat(FlatZincBuiltinsTestConstraintProvider::int_div)
+                .given(new MyIntVariable(3),
+                        new MySecondIntVariable(2),
+                        new ConstrainedIntVariable(1))
+                .penalizes(0);
+    }
+
+    @Test
+    public void test_int_eq() {
+        constraintVerifier.verifyThat(FlatZincBuiltinsTestConstraintProvider::int_eq)
+                .given(new MyIntVariable(1),
+                        new ConstrainedIntVariable(2))
+                .penalizes(1);
+        constraintVerifier.verifyThat(FlatZincBuiltinsTestConstraintProvider::int_eq)
+                .given(new MyIntVariable(1),
+                        new ConstrainedIntVariable(1))
+                .penalizes(0);
+        constraintVerifier.verifyThat(FlatZincBuiltinsTestConstraintProvider::int_eq)
+                .given(new MyIntVariable(-5),
+                        new ConstrainedIntVariable(-5))
+                .penalizes(0);
+    }
+
+    @Test
+    public void test_int_eq_reif() {
+        constraintVerifier.verifyThat(FlatZincBuiltinsTestConstraintProvider::int_eq_reif)
+                .given(new MyIntVariable(1),
+                        new ConstrainedIntVariable(2),
+                        new MySecondIntVariable(1))
+                .penalizes(1);
+        constraintVerifier.verifyThat(FlatZincBuiltinsTestConstraintProvider::int_eq_reif)
+                .given(new MyIntVariable(1),
+                        new ConstrainedIntVariable(2),
+                        new MySecondIntVariable(0))
+                .penalizes(0);
+        constraintVerifier.verifyThat(FlatZincBuiltinsTestConstraintProvider::int_eq_reif)
+                .given(new MyIntVariable(1),
+                        new ConstrainedIntVariable(1),
+                        new MySecondIntVariable(1))
+                .penalizes(0);
+        constraintVerifier.verifyThat(FlatZincBuiltinsTestConstraintProvider::int_eq_reif)
+                .given(new MyIntVariable(1),
+                        new ConstrainedIntVariable(1),
+                        new MySecondIntVariable(0))
+                .penalizes(1);
+    }
+
+    @Test
+    public void test_int_le() {
+        constraintVerifier.verifyThat(FlatZincBuiltinsTestConstraintProvider::int_le)
+                .given(new MyIntVariable(1),
+                        new ConstrainedIntVariable(2))
+                .penalizes(0);
+        constraintVerifier.verifyThat(FlatZincBuiltinsTestConstraintProvider::int_le)
+                .given(new MyIntVariable(1),
+                        new ConstrainedIntVariable(1))
+                .penalizes(0);
+        constraintVerifier.verifyThat(FlatZincBuiltinsTestConstraintProvider::int_le)
+                .given(new MyIntVariable(2),
+                        new ConstrainedIntVariable(1))
+                .penalizes(1);
+    }
+
+    @Test
+    public void test_int_le_reif() {
+        constraintVerifier.verifyThat(FlatZincBuiltinsTestConstraintProvider::int_le_reif)
+                .given(new MyIntVariable(1),
+                        new ConstrainedIntVariable(2),
+                        new MySecondIntVariable(0))
+                .penalizes(1);
+        constraintVerifier.verifyThat(FlatZincBuiltinsTestConstraintProvider::int_le_reif)
+                .given(new MyIntVariable(1),
+                        new ConstrainedIntVariable(2),
+                        new MySecondIntVariable(1))
+                .penalizes(0);
+        constraintVerifier.verifyThat(FlatZincBuiltinsTestConstraintProvider::int_le_reif)
+                .given(new MyIntVariable(1),
+                        new ConstrainedIntVariable(1),
+                        new MySecondIntVariable(0))
+                .penalizes(1);
+        constraintVerifier.verifyThat(FlatZincBuiltinsTestConstraintProvider::int_le_reif)
+                .given(new MyIntVariable(1),
+                        new ConstrainedIntVariable(1),
+                        new MySecondIntVariable(1))
+                .penalizes(0);
+        constraintVerifier.verifyThat(FlatZincBuiltinsTestConstraintProvider::int_le_reif)
+                .given(new MyIntVariable(2),
+                        new ConstrainedIntVariable(1),
+                        new MySecondIntVariable(0))
+                .penalizes(0);
+        constraintVerifier.verifyThat(FlatZincBuiltinsTestConstraintProvider::int_le_reif)
+                .given(new MyIntVariable(2),
+                        new ConstrainedIntVariable(1),
+                        new MySecondIntVariable(1))
+                .penalizes(1);
+    }
+
+    @Test
+    public void test_int_lin_eq() {
+        constraintVerifier.verifyThat(FlatZincBuiltinsTestConstraintProvider::int_lin_eq)
+                .given(new MyIntArrayVariable(0, 1),
+                        new MyIntArrayVariable(1, 1))
+                .penalizes(0);
+        constraintVerifier.verifyThat(FlatZincBuiltinsTestConstraintProvider::int_lin_eq)
+                .given(new MyIntArrayVariable(0, 1),
+                        new MyIntArrayVariable(1, 2))
+                .penalizes(1);
+    }
+
+    @Test
+    public void test_int_lin_eq_reif() {
+        constraintVerifier.verifyThat(FlatZincBuiltinsTestConstraintProvider::int_lin_eq_reif)
+                .given(new MyIntArrayVariable(0, 1),
+                        new MyIntArrayVariable(1, 1),
+                        new MyIntVariable(1))
+                .penalizes(0);
+        constraintVerifier.verifyThat(FlatZincBuiltinsTestConstraintProvider::int_lin_eq_reif)
+                .given(new MyIntArrayVariable(0, 1),
+                        new MyIntArrayVariable(1, 2),
+                        new MyIntVariable(1))
+                .penalizes(1);
+        constraintVerifier.verifyThat(FlatZincBuiltinsTestConstraintProvider::int_lin_eq_reif)
+                .given(new MyIntArrayVariable(0, 1),
+                        new MyIntArrayVariable(1, 1),
+                        new MyIntVariable(0))
+                .penalizes(1);
+        constraintVerifier.verifyThat(FlatZincBuiltinsTestConstraintProvider::int_lin_eq_reif)
+                .given(new MyIntArrayVariable(0, 1),
+                        new MyIntArrayVariable(1, 2),
+                        new MyIntVariable(0))
+                .penalizes(0);
+    }
+
+    @Test
+    public void test_int_lin_le() {
+        constraintVerifier.verifyThat(FlatZincBuiltinsTestConstraintProvider::int_lin_le)
+                .given(new MyIntArrayVariable(0, 1),
+                        new MyIntArrayVariable(1, 1))
+                .penalizes(0);
+        constraintVerifier.verifyThat(FlatZincBuiltinsTestConstraintProvider::int_lin_le)
+                .given(new MyIntArrayVariable(0, 1),
+                        new MyIntArrayVariable(1, 2))
+                .penalizes(0);
+        constraintVerifier.verifyThat(FlatZincBuiltinsTestConstraintProvider::int_lin_le)
+                .given(new MyIntArrayVariable(0, 2),
+                        new MyIntArrayVariable(1, 1))
+                .penalizes(1);
+    }
+
+    @Test
+    public void test_int_lin_le_reif() {
+        constraintVerifier.verifyThat(FlatZincBuiltinsTestConstraintProvider::int_lin_le_reif)
+                .given(new MyIntArrayVariable(0, 1),
+                        new MyIntArrayVariable(1, 1),
+                        new MyIntVariable(0))
+                .penalizes(0);
+        constraintVerifier.verifyThat(FlatZincBuiltinsTestConstraintProvider::int_lin_le_reif)
+                .given(new MyIntArrayVariable(0, 1),
+                        new MyIntArrayVariable(1, 2),
+                        new MyIntVariable(0))
+                .penalizes(0);
+        constraintVerifier.verifyThat(FlatZincBuiltinsTestConstraintProvider::int_lin_le_reif)
+                .given(new MyIntArrayVariable(0, 2),
+                        new MyIntArrayVariable(1, 1),
+                        new MyIntVariable(0))
+                .penalizes(1);
+        constraintVerifier.verifyThat(FlatZincBuiltinsTestConstraintProvider::int_lin_le_reif)
+                .given(new MyIntArrayVariable(0, 1),
+                        new MyIntArrayVariable(1, 1),
+                        new MyIntVariable(1))
+                .penalizes(1);
+        constraintVerifier.verifyThat(FlatZincBuiltinsTestConstraintProvider::int_lin_le_reif)
+                .given(new MyIntArrayVariable(0, 1),
+                        new MyIntArrayVariable(1, 2),
+                        new MyIntVariable(1))
+                .penalizes(1);
+        constraintVerifier.verifyThat(FlatZincBuiltinsTestConstraintProvider::int_lin_le_reif)
+                .given(new MyIntArrayVariable(0, 2),
+                        new MyIntArrayVariable(1, 1),
+                        new MyIntVariable(1))
+                .penalizes(0);
+    }
+
+    @Test
     public void test_int_lin_ne() {
         constraintVerifier.verifyThat(FlatZincBuiltinsTestConstraintProvider::int_lin_ne)
                 .given(new MyIntArrayVariable(0, 1),
@@ -137,6 +334,275 @@ public class FlatZincBuiltinsTest {
         constraintVerifier.verifyThat(FlatZincBuiltinsTestConstraintProvider::int_lin_ne)
                 .given(new MyIntArrayVariable(0, 1),
                         new MyIntArrayVariable(1, 2))
+                .penalizes(0);
+    }
+
+    @Test
+    public void test_int_lin_ne_reif() {
+        constraintVerifier.verifyThat(FlatZincBuiltinsTestConstraintProvider::int_lin_ne_reif)
+                .given(new MyIntArrayVariable(0, 1),
+                        new MyIntArrayVariable(1, 1),
+                        new MyIntVariable(1))
+                .penalizes(1);
+        constraintVerifier.verifyThat(FlatZincBuiltinsTestConstraintProvider::int_lin_ne_reif)
+                .given(new MyIntArrayVariable(0, 1),
+                        new MyIntArrayVariable(1, 2),
+                        new MyIntVariable(1))
+                .penalizes(0);
+        constraintVerifier.verifyThat(FlatZincBuiltinsTestConstraintProvider::int_lin_ne_reif)
+                .given(new MyIntArrayVariable(0, 1),
+                        new MyIntArrayVariable(1, 1),
+                        new MyIntVariable(0))
+                .penalizes(0);
+        constraintVerifier.verifyThat(FlatZincBuiltinsTestConstraintProvider::int_lin_ne_reif)
+                .given(new MyIntArrayVariable(0, 1),
+                        new MyIntArrayVariable(1, 2),
+                        new MyIntVariable(0))
+                .penalizes(1);
+    }
+
+    @Test
+    public void test_int_lt() {
+        constraintVerifier.verifyThat(FlatZincBuiltinsTestConstraintProvider::int_lt)
+                .given(new MyIntVariable(1),
+                        new ConstrainedIntVariable(2))
+                .penalizes(0);
+        constraintVerifier.verifyThat(FlatZincBuiltinsTestConstraintProvider::int_lt)
+                .given(new MyIntVariable(1),
+                        new ConstrainedIntVariable(1))
+                .penalizes(1);
+        constraintVerifier.verifyThat(FlatZincBuiltinsTestConstraintProvider::int_lt)
+                .given(new MyIntVariable(2),
+                        new ConstrainedIntVariable(1))
+                .penalizes(1);
+    }
+
+    @Test
+    public void test_int_lt_reif() {
+        constraintVerifier.verifyThat(FlatZincBuiltinsTestConstraintProvider::int_lt_reif)
+                .given(new MyIntVariable(1),
+                        new ConstrainedIntVariable(2),
+                        new MySecondIntVariable(0))
+                .penalizes(1);
+        constraintVerifier.verifyThat(FlatZincBuiltinsTestConstraintProvider::int_lt_reif)
+                .given(new MyIntVariable(1),
+                        new ConstrainedIntVariable(2),
+                        new MySecondIntVariable(1))
+                .penalizes(0);
+        constraintVerifier.verifyThat(FlatZincBuiltinsTestConstraintProvider::int_lt_reif)
+                .given(new MyIntVariable(1),
+                        new ConstrainedIntVariable(1),
+                        new MySecondIntVariable(0))
+                .penalizes(0);
+        constraintVerifier.verifyThat(FlatZincBuiltinsTestConstraintProvider::int_lt_reif)
+                .given(new MyIntVariable(1),
+                        new ConstrainedIntVariable(1),
+                        new MySecondIntVariable(1))
+                .penalizes(1);
+        constraintVerifier.verifyThat(FlatZincBuiltinsTestConstraintProvider::int_lt_reif)
+                .given(new MyIntVariable(2),
+                        new ConstrainedIntVariable(1),
+                        new MySecondIntVariable(0))
+                .penalizes(0);
+        constraintVerifier.verifyThat(FlatZincBuiltinsTestConstraintProvider::int_lt_reif)
+                .given(new MyIntVariable(2),
+                        new ConstrainedIntVariable(1),
+                        new MySecondIntVariable(1))
+                .penalizes(1);
+    }
+
+    @Test
+    public void test_int_max() {
+        constraintVerifier.verifyThat(FlatZincBuiltinsTestConstraintProvider::int_max)
+                .given(new MyIntVariable(10),
+                        new MySecondIntVariable(5),
+                        new ConstrainedIntVariable(5))
+                .penalizes(1);
+        constraintVerifier.verifyThat(FlatZincBuiltinsTestConstraintProvider::int_max)
+                .given(new MyIntVariable(10),
+                        new MySecondIntVariable(5),
+                        new ConstrainedIntVariable(10))
+                .penalizes(0);
+        constraintVerifier.verifyThat(FlatZincBuiltinsTestConstraintProvider::int_max)
+                .given(new MyIntVariable(10),
+                        new MySecondIntVariable(5),
+                        new ConstrainedIntVariable(12))
+                .penalizes(1);
+    }
+
+    @Test
+    public void test_int_min() {
+        constraintVerifier.verifyThat(FlatZincBuiltinsTestConstraintProvider::int_min)
+                .given(new MyIntVariable(10),
+                        new MySecondIntVariable(5),
+                        new ConstrainedIntVariable(5))
+                .penalizes(0);
+        constraintVerifier.verifyThat(FlatZincBuiltinsTestConstraintProvider::int_min)
+                .given(new MyIntVariable(10),
+                        new MySecondIntVariable(5),
+                        new ConstrainedIntVariable(10))
+                .penalizes(1);
+        constraintVerifier.verifyThat(FlatZincBuiltinsTestConstraintProvider::int_min)
+                .given(new MyIntVariable(10),
+                        new MySecondIntVariable(5),
+                        new ConstrainedIntVariable(2))
+                .penalizes(1);
+    }
+
+    @Test
+    public void test_int_mod() {
+        constraintVerifier.verifyThat(FlatZincBuiltinsTestConstraintProvider::int_mod)
+                .given(new MyIntVariable(10),
+                        new MySecondIntVariable(5),
+                        new ConstrainedIntVariable(1))
+                .penalizes(1);
+        constraintVerifier.verifyThat(FlatZincBuiltinsTestConstraintProvider::int_mod)
+                .given(new MyIntVariable(10),
+                        new MySecondIntVariable(5),
+                        new ConstrainedIntVariable(0))
+                .penalizes(0);
+        constraintVerifier.verifyThat(FlatZincBuiltinsTestConstraintProvider::int_mod)
+                .given(new MyIntVariable(3),
+                        new MySecondIntVariable(2),
+                        new ConstrainedIntVariable(1))
+                .penalizes(0);
+        constraintVerifier.verifyThat(FlatZincBuiltinsTestConstraintProvider::int_mod)
+                .given(new MyIntVariable(3),
+                        new MySecondIntVariable(2),
+                        new ConstrainedIntVariable(5))
+                .penalizes(1);
+    }
+
+    @Test
+    public void test_int_ne() {
+        constraintVerifier.verifyThat(FlatZincBuiltinsTestConstraintProvider::int_ne)
+                .given(new MyIntVariable(1),
+                        new ConstrainedIntVariable(2))
+                .penalizes(0);
+        constraintVerifier.verifyThat(FlatZincBuiltinsTestConstraintProvider::int_ne)
+                .given(new MyIntVariable(2),
+                        new ConstrainedIntVariable(1))
+                .penalizes(0);
+        constraintVerifier.verifyThat(FlatZincBuiltinsTestConstraintProvider::int_ne)
+                .given(new MyIntVariable(1),
+                        new ConstrainedIntVariable(1))
+                .penalizes(1);
+        constraintVerifier.verifyThat(FlatZincBuiltinsTestConstraintProvider::int_ne)
+                .given(new MyIntVariable(-5),
+                        new ConstrainedIntVariable(-5))
+                .penalizes(1);
+    }
+
+    @Test
+    public void test_int_ne_reif() {
+        constraintVerifier.verifyThat(FlatZincBuiltinsTestConstraintProvider::int_ne_reif)
+                .given(new MyIntVariable(1),
+                        new ConstrainedIntVariable(2),
+                        new MySecondIntVariable(1))
+                .penalizes(0);
+        constraintVerifier.verifyThat(FlatZincBuiltinsTestConstraintProvider::int_ne_reif)
+                .given(new MyIntVariable(1),
+                        new ConstrainedIntVariable(2),
+                        new MySecondIntVariable(0))
+                .penalizes(1);
+        constraintVerifier.verifyThat(FlatZincBuiltinsTestConstraintProvider::int_ne_reif)
+                .given(new MyIntVariable(1),
+                        new ConstrainedIntVariable(1),
+                        new MySecondIntVariable(1))
+                .penalizes(1);
+        constraintVerifier.verifyThat(FlatZincBuiltinsTestConstraintProvider::int_ne_reif)
+                .given(new MyIntVariable(1),
+                        new ConstrainedIntVariable(1),
+                        new MySecondIntVariable(0))
+                .penalizes(0);
+    }
+
+    @Test
+    public void test_int_plus() {
+        constraintVerifier.verifyThat(FlatZincBuiltinsTestConstraintProvider::int_plus)
+                .given(new MyIntVariable(10),
+                        new MySecondIntVariable(5),
+                        new ConstrainedIntVariable(1))
+                .penalizes(1);
+        constraintVerifier.verifyThat(FlatZincBuiltinsTestConstraintProvider::int_plus)
+                .given(new MyIntVariable(10),
+                        new MySecondIntVariable(5),
+                        new ConstrainedIntVariable(15))
+                .penalizes(0);
+        constraintVerifier.verifyThat(FlatZincBuiltinsTestConstraintProvider::int_plus)
+                .given(new MyIntVariable(3),
+                        new MySecondIntVariable(-2),
+                        new ConstrainedIntVariable(1))
+                .penalizes(0);
+    }
+
+    @Test
+    public void test_int_pow() {
+        constraintVerifier.verifyThat(FlatZincBuiltinsTestConstraintProvider::int_pow)
+                .given(new MyIntVariable(2),
+                        new MySecondIntVariable(3),
+                        new ConstrainedIntVariable(1))
+                .penalizes(1);
+        constraintVerifier.verifyThat(FlatZincBuiltinsTestConstraintProvider::int_pow)
+                .given(new MyIntVariable(2),
+                        new MySecondIntVariable(3),
+                        new ConstrainedIntVariable(8))
+                .penalizes(0);
+        constraintVerifier.verifyThat(FlatZincBuiltinsTestConstraintProvider::int_pow)
+                .given(new MyIntVariable(5),
+                        new MySecondIntVariable(2),
+                        new ConstrainedIntVariable(25))
+                .penalizes(0);
+        constraintVerifier.verifyThat(FlatZincBuiltinsTestConstraintProvider::int_pow)
+                .given(new MyIntVariable(16),
+                        new MySecondIntVariable(0),
+                        new ConstrainedIntVariable(1))
+                .penalizes(0);
+        constraintVerifier.verifyThat(FlatZincBuiltinsTestConstraintProvider::int_pow)
+                .given(new MyIntVariable(16),
+                        new MySecondIntVariable(0),
+                        new ConstrainedIntVariable(8))
+                .penalizes(1);
+    }
+
+    @Test
+    public void test_int_times() {
+        constraintVerifier.verifyThat(FlatZincBuiltinsTestConstraintProvider::int_times)
+                .given(new MyIntVariable(10),
+                        new MySecondIntVariable(5),
+                        new ConstrainedIntVariable(1))
+                .penalizes(1);
+        constraintVerifier.verifyThat(FlatZincBuiltinsTestConstraintProvider::int_times)
+                .given(new MyIntVariable(10),
+                        new MySecondIntVariable(5),
+                        new ConstrainedIntVariable(50))
+                .penalizes(0);
+        constraintVerifier.verifyThat(FlatZincBuiltinsTestConstraintProvider::int_times)
+                .given(new MyIntVariable(3),
+                        new MySecondIntVariable(-2),
+                        new ConstrainedIntVariable(-6))
+                .penalizes(0);
+    }
+
+    @Test
+    public void test_set_in() {
+        constraintVerifier.verifyThat(FlatZincBuiltinsTestConstraintProvider::set_in)
+                .given(new MyIntVariable(0))
+                .penalizes(1);
+        constraintVerifier.verifyThat(FlatZincBuiltinsTestConstraintProvider::set_in)
+                .given(new MyIntVariable(1))
+                .penalizes(0);
+        constraintVerifier.verifyThat(FlatZincBuiltinsTestConstraintProvider::set_in)
+                .given(new MyIntVariable(2))
+                .penalizes(0);
+        constraintVerifier.verifyThat(FlatZincBuiltinsTestConstraintProvider::set_in)
+                .given(new MyIntVariable(3))
+                .penalizes(0);
+        constraintVerifier.verifyThat(FlatZincBuiltinsTestConstraintProvider::set_in)
+                .given(new MyIntVariable(4))
+                .penalizes(1);
+        constraintVerifier.verifyThat(FlatZincBuiltinsTestConstraintProvider::set_in)
+                .given(new MyIntVariable(5))
                 .penalizes(0);
     }
 }

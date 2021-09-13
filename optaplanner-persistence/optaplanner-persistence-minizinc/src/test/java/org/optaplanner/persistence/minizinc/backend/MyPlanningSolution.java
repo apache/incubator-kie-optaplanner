@@ -30,6 +30,9 @@ public class MyPlanningSolution {
     List<MyIntVariable> intVariableList;
 
     @PlanningEntityCollectionProperty
+    List<MySecondIntVariable> secondIntVariableList;
+
+    @PlanningEntityCollectionProperty
     List<ConstrainedIntVariable> constrainedIntVariableList;
 
     @PlanningEntityCollectionProperty
