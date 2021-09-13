@@ -80,7 +80,7 @@ public class ReflectionsKieVfsUrlType implements Vfs.UrlType {
 
         @Override
         public String getPath() {
-            return kieFolder.getPath().toPortableString();
+            return kieFolder.getPath().asString();
         }
 
         @Override
@@ -133,7 +133,7 @@ public class ReflectionsKieVfsUrlType implements Vfs.UrlType {
 
         @Override
         public String getRelativePath() {
-            return kieFile.getPath().toPortableString();
+            return kieFile.getPath().asString();
         }
 
         @Override
