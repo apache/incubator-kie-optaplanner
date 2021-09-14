@@ -106,7 +106,7 @@ public class StatisticRegistry<Solution_> extends SimpleMeterRegistry
         Number[] levelNumbers = new Number[labelNames.length];
         for (int i = 0; i < labelNames.length; i++) {
             Gauge scoreLevelGauge = this.find(metric.getMeterId() + "." + labelNames[i]).tags(runId).gauge();
-            if (scoreLevelGauge != null) {
+            if (scoreLevelGauge != null && Double.isFinite(scoreLevelGauge.value())) {
                 levelNumbers[i] = scoreLevelNumberConverter.apply(scoreLevelGauge.value());
             } else {
                 return;
@@ -144,7 +144,7 @@ public class StatisticRegistry<Solution_> extends SimpleMeterRegistry
 
     public void getGaugeValue(String meterId, Tags runId, Consumer<Number> gaugeConsumer) {
         Gauge gauge = this.find(meterId).tags(runId).gauge();
-        if (gauge != null) {
+        if (gauge != null && Double.isFinite(gauge.value())) {
             gaugeConsumer.accept(gauge.value());
         }
     }

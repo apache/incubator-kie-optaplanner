@@ -76,7 +76,9 @@ public class TestMeterRegistry extends SimpleMeterRegistry {
             measurementMap.put(meter.getId().getConventionName(NamingConvention.dot) + meterTags,
                     meterMeasurementMap);
             meter.measure().forEach(measurement -> {
-                meterMeasurementMap.put(measurement.getStatistic().name(), BigDecimal.valueOf(measurement.getValue()));
+                if (Double.isFinite(measurement.getValue())) {
+                    meterMeasurementMap.put(measurement.getStatistic().name(), BigDecimal.valueOf(measurement.getValue()));
+                }
             });
         });
     }
