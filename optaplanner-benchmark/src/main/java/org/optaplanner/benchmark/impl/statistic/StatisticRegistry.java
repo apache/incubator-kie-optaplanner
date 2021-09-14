@@ -100,6 +100,9 @@ public class StatisticRegistry<Solution_> extends SimpleMeterRegistry
 
     public void extractScoreFromMeters(SolverMetric metric, Tags runId, Consumer<Score<?>> scoreConsumer) {
         String[] labelNames = scoreDefinition.getLevelLabels();
+        for (int i = 0; i < labelNames.length; i++) {
+            labelNames[i] = labelNames[i].replace(' ', '.');
+        }
         Number[] levelNumbers = new Number[labelNames.length];
         for (int i = 0; i < labelNames.length; i++) {
             Gauge scoreLevelGauge = this.find(metric.getMeterId() + "." + labelNames[i]).tags(runId).gauge();

@@ -83,6 +83,9 @@ public enum SolverMetric {
             }
         } else {
             String[] levelLabels = scoreDefinition.getLevelLabels();
+            for (int i = 0; i < levelLabels.length; i++) {
+                levelLabels[i] = levelLabels[i].replace(' ', '.');
+            }
             List<AtomicReference<Number>> scoreLevels = new ArrayList<>(levelValues.length);
             for (int i = 0; i < levelValues.length; i++) {
                 scoreLevels.add(Metrics.gauge(metric.getMeterId() + "." + levelLabels[i],

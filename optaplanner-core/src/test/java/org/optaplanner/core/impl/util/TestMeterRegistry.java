@@ -65,7 +65,16 @@ public class TestMeterRegistry extends SimpleMeterRegistry {
                 .orElseThrow(IllegalStateException::new).getValue();
         this.getMeters().stream().filter(meter -> solverId.equals(meter.getId().getTag("solver.id"))).forEach(meter -> {
             final Map<String, BigDecimal> meterMeasurementMap = new HashMap<>();
-            measurementMap.put(meter.getId().getConventionName(NamingConvention.dot), meterMeasurementMap);
+            String meterTags = "";
+            if (meter.getId().getTags().size() > 1) {
+                meterTags = meter.getId().getConventionTags(NamingConvention.dot).stream()
+                        .filter(tag -> !tag.getKey().equals("solver.id"))
+                        .map(tag -> tag.getKey() + "=" + tag.getValue())
+                        .sorted()
+                        .collect(Collectors.joining(",", ":", ""));
+            }
+            measurementMap.put(meter.getId().getConventionName(NamingConvention.dot) + meterTags,
+                    meterMeasurementMap);
             meter.measure().forEach(measurement -> {
                 meterMeasurementMap.put(measurement.getStatistic().name(), BigDecimal.valueOf(measurement.getValue()));
             });
