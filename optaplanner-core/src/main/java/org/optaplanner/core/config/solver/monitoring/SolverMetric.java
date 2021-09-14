@@ -39,7 +39,7 @@ import io.micrometer.core.instrument.Tags;
 
 @XmlEnum
 public enum SolverMetric {
-    SOLVE_LENGTH("optaplanner.solver.solve-length", false),
+    SOLVE_DURATION("optaplanner.solver.solve.duration", false),
     ERROR_COUNT("optaplanner.solver.errors", false),
     BEST_SCORE("optaplanner.solver.best-score", new BestScoreStatistic<>(), true),
     STEP_SCORE("optaplanner.solver.step-score", false),

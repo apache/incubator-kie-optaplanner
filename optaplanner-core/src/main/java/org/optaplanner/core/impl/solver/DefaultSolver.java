@@ -176,7 +176,7 @@ public class DefaultSolver<Solution_> extends AbstractSolver<Solution_> {
     }
 
     private void registerMetrics() {
-        this.solveLengthTimer = Metrics.more().longTaskTimer(SolverMetric.SOLVE_LENGTH.getMeterId(),
+        this.solveLengthTimer = Metrics.more().longTaskTimer(SolverMetric.SOLVE_DURATION.getMeterId(),
                 solverScope.getMonitoringTags());
         this.errorCounter = Metrics.counter(SolverMetric.ERROR_COUNT.getMeterId(), solverScope.getMonitoringTags());
 
