@@ -1812,7 +1812,7 @@ For more detailed monitoring, OptaPlanner can be configured to monitor additiona
 
 The following metrics are available:
 
-- `SOLVE_DURATION` (default, Micrometer meter id: "optaplanner.solver.solve.duration"): Measure the duration of solving for the longest active solver, the number of active solvers and the culmative duration of all active solvers.
+- `SOLVE_DURATION` (default, Micrometer meter id: "optaplanner.solver.solve.duration"): Measure the duration of solving for the longest active solver, the number of active solvers and the cumulative duration of all active solvers.
 
 - `ERROR_COUNT` (default, Micrometer meter id: "optaplanner.solver.errors"): Measures the number of errors that occur while solving.
 
