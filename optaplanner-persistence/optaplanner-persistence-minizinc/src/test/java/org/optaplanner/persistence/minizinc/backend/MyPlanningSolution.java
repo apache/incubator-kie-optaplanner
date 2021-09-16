@@ -39,6 +39,12 @@ public class MyPlanningSolution {
     @PlanningEntityCollectionProperty
     List<MyIntArrayVariable> intArrayVariableList;
 
+    @PlanningEntityCollectionProperty
+    List<MyBoolVariable> boolVariableList;
+
+    @PlanningEntityCollectionProperty
+    List<MyBoolArrayVariable> boolArrayVariableList;
+
     @ValueRangeProvider(id = "valueRange")
     List<Integer> valueRange;
 

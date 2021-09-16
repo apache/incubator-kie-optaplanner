@@ -27,16 +27,9 @@ import org.optaplanner.core.api.score.stream.ConstraintCollectors;
 import org.optaplanner.core.api.score.stream.ConstraintFactory;
 import org.optaplanner.core.api.score.stream.Joiners;
 
-/**
- * Contains builtin predicates for the FlatZinc language.
- * Note: is_defined_var / defines_var pair is implemented
- * using CustomShadowVariable (See https://www.minizinc.org/doc-2.5.5/en/lib-stdlib.html#index-13 /
- * https://www.minizinc.org/doc-2.5.5/en/lib-stdlib.html#index-23).
- * See https://www.minizinc.org/doc-2.5.5/en/lib-flatzinc.html
- */
-public class FlatZincBuiltIns {
-    // Private default constructor since this is a factory class
-    private FlatZincBuiltIns() {
+public class IntFlatZincBuiltins {
+    // Private constructor; factory method
+    private IntFlatZincBuiltins() {
     }
 
     // https://www.minizinc.org/doc-2.5.5/en/lib-flatzinc.html#index-0

@@ -39,7 +39,7 @@ import org.optaplanner.core.api.score.stream.Constraint;
 import org.optaplanner.core.api.score.stream.ConstraintFactory;
 import org.optaplanner.core.api.score.stream.ConstraintProvider;
 import org.optaplanner.persistence.minizinc.FlatZincModel;
-import org.optaplanner.persistence.minizinc.backend.FlatZincBuiltIns;
+import org.optaplanner.persistence.minizinc.backend.FlatZincBuiltins;
 import org.optaplanner.persistence.minizinc.model.FlatZincArray;
 import org.optaplanner.persistence.minizinc.model.FlatZincConstraint;
 import org.optaplanner.persistence.minizinc.model.FlatZincExpr;
@@ -253,9 +253,11 @@ public class ConstraintProviderBytecodeImplementor {
     }
 
     private static Method findBuiltinMethod(String name) {
-        for (Method method : FlatZincBuiltIns.class.getMethods()) {
-            if (method.getName().equals(name)) {
-                return method;
+        for (Class<?> factoryClass : FlatZincBuiltins.getConstraintFactoryList()) {
+            for (Method method : factoryClass.getMethods()) {
+                if (method.getName().equals(name)) {
+                    return method;
+                }
             }
         }
         throw new IllegalStateException("Could not find method (" + name + ") in builtins.");
