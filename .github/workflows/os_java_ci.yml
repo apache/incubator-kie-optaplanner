@@ -25,12 +25,14 @@ jobs:
       matrix:
         os: [ubuntu-latest, windows-latest]
         java: [8, 11]
+        maven-version: ['3.8.1']
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v2
-      - name: Set up JDK
-        uses: actions/setup-java@v1
+      - name: Setup Maven And Java Version
+        uses: s4u/setup-maven-action@v1.2.1
         with:
-          java-version: ${{ matrix.java }}
-      - name: Build with Maven
+          java-version: ${{ matrix.java-version }}
+          maven-version: ${{ matrix.maven-version }}
+      - name: Build with Maven version ${{ matrix.maven-version }}
         run: mvn -B clean install ${{ env.MVN_CONNECTION_PROPS }}
