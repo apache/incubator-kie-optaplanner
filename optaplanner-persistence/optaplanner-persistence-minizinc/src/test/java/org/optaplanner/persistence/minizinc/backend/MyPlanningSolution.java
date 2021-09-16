@@ -23,6 +23,7 @@ import org.optaplanner.core.api.domain.solution.PlanningScore;
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.domain.valuerange.ValueRangeProvider;
 import org.optaplanner.core.api.score.buildin.hardsoft.HardSoftScore;
+import org.optaplanner.core.impl.domain.valuerange.buildin.primboolean.BooleanValueRange;
 
 @PlanningSolution
 public class MyPlanningSolution {
@@ -40,6 +41,9 @@ public class MyPlanningSolution {
 
     @ValueRangeProvider(id = "valueRange")
     List<Integer> valueRange;
+
+    @ValueRangeProvider(id = "booleanRange")
+    BooleanValueRange booleanValueRange;
 
     @PlanningScore
     HardSoftScore hardSoftScore;

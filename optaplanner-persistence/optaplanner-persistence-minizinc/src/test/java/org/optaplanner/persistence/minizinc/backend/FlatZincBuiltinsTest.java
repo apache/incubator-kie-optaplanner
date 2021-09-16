@@ -26,7 +26,8 @@ public class FlatZincBuiltinsTest {
                     MyIntVariable.class,
                     MySecondIntVariable.class,
                     ConstrainedIntVariable.class,
-                    MyIntArrayVariable.class);
+                    MyIntArrayVariable.class,
+                    MyBoolVariable.class);
 
     @Test
     public void test_array_int_element() {
@@ -170,22 +171,22 @@ public class FlatZincBuiltinsTest {
         constraintVerifier.verifyThat(FlatZincBuiltinsTestConstraintProvider::int_eq_reif)
                 .given(new MyIntVariable(1),
                         new ConstrainedIntVariable(2),
-                        new MySecondIntVariable(1))
+                        new MyBoolVariable(true))
                 .penalizes(1);
         constraintVerifier.verifyThat(FlatZincBuiltinsTestConstraintProvider::int_eq_reif)
                 .given(new MyIntVariable(1),
                         new ConstrainedIntVariable(2),
-                        new MySecondIntVariable(0))
+                        new MyBoolVariable(false))
                 .penalizes(0);
         constraintVerifier.verifyThat(FlatZincBuiltinsTestConstraintProvider::int_eq_reif)
                 .given(new MyIntVariable(1),
                         new ConstrainedIntVariable(1),
-                        new MySecondIntVariable(1))
+                        new MyBoolVariable(true))
                 .penalizes(0);
         constraintVerifier.verifyThat(FlatZincBuiltinsTestConstraintProvider::int_eq_reif)
                 .given(new MyIntVariable(1),
                         new ConstrainedIntVariable(1),
-                        new MySecondIntVariable(0))
+                        new MyBoolVariable(false))
                 .penalizes(1);
     }
 
@@ -210,32 +211,32 @@ public class FlatZincBuiltinsTest {
         constraintVerifier.verifyThat(FlatZincBuiltinsTestConstraintProvider::int_le_reif)
                 .given(new MyIntVariable(1),
                         new ConstrainedIntVariable(2),
-                        new MySecondIntVariable(0))
+                        new MyBoolVariable(false))
                 .penalizes(1);
         constraintVerifier.verifyThat(FlatZincBuiltinsTestConstraintProvider::int_le_reif)
                 .given(new MyIntVariable(1),
                         new ConstrainedIntVariable(2),
-                        new MySecondIntVariable(1))
+                        new MyBoolVariable(true))
                 .penalizes(0);
         constraintVerifier.verifyThat(FlatZincBuiltinsTestConstraintProvider::int_le_reif)
                 .given(new MyIntVariable(1),
                         new ConstrainedIntVariable(1),
-                        new MySecondIntVariable(0))
+                        new MyBoolVariable(false))
                 .penalizes(1);
         constraintVerifier.verifyThat(FlatZincBuiltinsTestConstraintProvider::int_le_reif)
                 .given(new MyIntVariable(1),
                         new ConstrainedIntVariable(1),
-                        new MySecondIntVariable(1))
+                        new MyBoolVariable(true))
                 .penalizes(0);
         constraintVerifier.verifyThat(FlatZincBuiltinsTestConstraintProvider::int_le_reif)
                 .given(new MyIntVariable(2),
                         new ConstrainedIntVariable(1),
-                        new MySecondIntVariable(0))
+                        new MyBoolVariable(false))
                 .penalizes(0);
         constraintVerifier.verifyThat(FlatZincBuiltinsTestConstraintProvider::int_le_reif)
                 .given(new MyIntVariable(2),
                         new ConstrainedIntVariable(1),
-                        new MySecondIntVariable(1))
+                        new MyBoolVariable(true))
                 .penalizes(1);
     }
 
@@ -256,22 +257,22 @@ public class FlatZincBuiltinsTest {
         constraintVerifier.verifyThat(FlatZincBuiltinsTestConstraintProvider::int_lin_eq_reif)
                 .given(new MyIntArrayVariable(0, 1),
                         new MyIntArrayVariable(1, 1),
-                        new MyIntVariable(1))
+                        new MyBoolVariable(true))
                 .penalizes(0);
         constraintVerifier.verifyThat(FlatZincBuiltinsTestConstraintProvider::int_lin_eq_reif)
                 .given(new MyIntArrayVariable(0, 1),
                         new MyIntArrayVariable(1, 2),
-                        new MyIntVariable(1))
+                        new MyBoolVariable(true))
                 .penalizes(1);
         constraintVerifier.verifyThat(FlatZincBuiltinsTestConstraintProvider::int_lin_eq_reif)
                 .given(new MyIntArrayVariable(0, 1),
                         new MyIntArrayVariable(1, 1),
-                        new MyIntVariable(0))
+                        new MyBoolVariable(false))
                 .penalizes(1);
         constraintVerifier.verifyThat(FlatZincBuiltinsTestConstraintProvider::int_lin_eq_reif)
                 .given(new MyIntArrayVariable(0, 1),
                         new MyIntArrayVariable(1, 2),
-                        new MyIntVariable(0))
+                        new MyBoolVariable(false))
                 .penalizes(0);
     }
 
@@ -296,32 +297,32 @@ public class FlatZincBuiltinsTest {
         constraintVerifier.verifyThat(FlatZincBuiltinsTestConstraintProvider::int_lin_le_reif)
                 .given(new MyIntArrayVariable(0, 1),
                         new MyIntArrayVariable(1, 1),
-                        new MyIntVariable(0))
+                        new MyBoolVariable(false))
                 .penalizes(0);
         constraintVerifier.verifyThat(FlatZincBuiltinsTestConstraintProvider::int_lin_le_reif)
                 .given(new MyIntArrayVariable(0, 1),
                         new MyIntArrayVariable(1, 2),
-                        new MyIntVariable(0))
+                        new MyBoolVariable(false))
                 .penalizes(0);
         constraintVerifier.verifyThat(FlatZincBuiltinsTestConstraintProvider::int_lin_le_reif)
                 .given(new MyIntArrayVariable(0, 2),
                         new MyIntArrayVariable(1, 1),
-                        new MyIntVariable(0))
+                        new MyBoolVariable(false))
                 .penalizes(1);
         constraintVerifier.verifyThat(FlatZincBuiltinsTestConstraintProvider::int_lin_le_reif)
                 .given(new MyIntArrayVariable(0, 1),
                         new MyIntArrayVariable(1, 1),
-                        new MyIntVariable(1))
+                        new MyBoolVariable(true))
                 .penalizes(1);
         constraintVerifier.verifyThat(FlatZincBuiltinsTestConstraintProvider::int_lin_le_reif)
                 .given(new MyIntArrayVariable(0, 1),
                         new MyIntArrayVariable(1, 2),
-                        new MyIntVariable(1))
+                        new MyBoolVariable(true))
                 .penalizes(1);
         constraintVerifier.verifyThat(FlatZincBuiltinsTestConstraintProvider::int_lin_le_reif)
                 .given(new MyIntArrayVariable(0, 2),
                         new MyIntArrayVariable(1, 1),
-                        new MyIntVariable(1))
+                        new MyBoolVariable(true))
                 .penalizes(0);
     }
 
@@ -342,22 +343,22 @@ public class FlatZincBuiltinsTest {
         constraintVerifier.verifyThat(FlatZincBuiltinsTestConstraintProvider::int_lin_ne_reif)
                 .given(new MyIntArrayVariable(0, 1),
                         new MyIntArrayVariable(1, 1),
-                        new MyIntVariable(1))
+                        new MyBoolVariable(true))
                 .penalizes(1);
         constraintVerifier.verifyThat(FlatZincBuiltinsTestConstraintProvider::int_lin_ne_reif)
                 .given(new MyIntArrayVariable(0, 1),
                         new MyIntArrayVariable(1, 2),
-                        new MyIntVariable(1))
+                        new MyBoolVariable(true))
                 .penalizes(0);
         constraintVerifier.verifyThat(FlatZincBuiltinsTestConstraintProvider::int_lin_ne_reif)
                 .given(new MyIntArrayVariable(0, 1),
                         new MyIntArrayVariable(1, 1),
-                        new MyIntVariable(0))
+                        new MyBoolVariable(false))
                 .penalizes(0);
         constraintVerifier.verifyThat(FlatZincBuiltinsTestConstraintProvider::int_lin_ne_reif)
                 .given(new MyIntArrayVariable(0, 1),
                         new MyIntArrayVariable(1, 2),
-                        new MyIntVariable(0))
+                        new MyBoolVariable(false))
                 .penalizes(1);
     }
 
@@ -382,32 +383,32 @@ public class FlatZincBuiltinsTest {
         constraintVerifier.verifyThat(FlatZincBuiltinsTestConstraintProvider::int_lt_reif)
                 .given(new MyIntVariable(1),
                         new ConstrainedIntVariable(2),
-                        new MySecondIntVariable(0))
+                        new MyBoolVariable(false))
                 .penalizes(1);
         constraintVerifier.verifyThat(FlatZincBuiltinsTestConstraintProvider::int_lt_reif)
                 .given(new MyIntVariable(1),
                         new ConstrainedIntVariable(2),
-                        new MySecondIntVariable(1))
+                        new MyBoolVariable(true))
                 .penalizes(0);
         constraintVerifier.verifyThat(FlatZincBuiltinsTestConstraintProvider::int_lt_reif)
                 .given(new MyIntVariable(1),
                         new ConstrainedIntVariable(1),
-                        new MySecondIntVariable(0))
+                        new MyBoolVariable(false))
                 .penalizes(0);
         constraintVerifier.verifyThat(FlatZincBuiltinsTestConstraintProvider::int_lt_reif)
                 .given(new MyIntVariable(1),
                         new ConstrainedIntVariable(1),
-                        new MySecondIntVariable(1))
+                        new MyBoolVariable(true))
                 .penalizes(1);
         constraintVerifier.verifyThat(FlatZincBuiltinsTestConstraintProvider::int_lt_reif)
                 .given(new MyIntVariable(2),
                         new ConstrainedIntVariable(1),
-                        new MySecondIntVariable(0))
+                        new MyBoolVariable(false))
                 .penalizes(0);
         constraintVerifier.verifyThat(FlatZincBuiltinsTestConstraintProvider::int_lt_reif)
                 .given(new MyIntVariable(2),
                         new ConstrainedIntVariable(1),
-                        new MySecondIntVariable(1))
+                        new MyBoolVariable(true))
                 .penalizes(1);
     }
 
@@ -498,22 +499,22 @@ public class FlatZincBuiltinsTest {
         constraintVerifier.verifyThat(FlatZincBuiltinsTestConstraintProvider::int_ne_reif)
                 .given(new MyIntVariable(1),
                         new ConstrainedIntVariable(2),
-                        new MySecondIntVariable(1))
+                        new MyBoolVariable(true))
                 .penalizes(0);
         constraintVerifier.verifyThat(FlatZincBuiltinsTestConstraintProvider::int_ne_reif)
                 .given(new MyIntVariable(1),
                         new ConstrainedIntVariable(2),
-                        new MySecondIntVariable(0))
+                        new MyBoolVariable(false))
                 .penalizes(1);
         constraintVerifier.verifyThat(FlatZincBuiltinsTestConstraintProvider::int_ne_reif)
                 .given(new MyIntVariable(1),
                         new ConstrainedIntVariable(1),
-                        new MySecondIntVariable(1))
+                        new MyBoolVariable(true))
                 .penalizes(1);
         constraintVerifier.verifyThat(FlatZincBuiltinsTestConstraintProvider::int_ne_reif)
                 .given(new MyIntVariable(1),
                         new ConstrainedIntVariable(1),
-                        new MySecondIntVariable(0))
+                        new MyBoolVariable(false))
                 .penalizes(0);
     }
 

@@ -63,7 +63,7 @@ public class FlatZincBuiltinsTestConstraintProvider implements ConstraintProvide
     }
 
     public Constraint int_eq_reif(ConstraintFactory constraintFactory) {
-        return FlatZincBuiltIns.int_eq_reif(MyIntVariable.class, ConstrainedIntVariable.class, MySecondIntVariable.class,
+        return FlatZincBuiltIns.int_eq_reif(MyIntVariable.class, ConstrainedIntVariable.class, MyBoolVariable.class,
                 "int_eq_reif", constraintFactory);
     }
 
@@ -72,7 +72,7 @@ public class FlatZincBuiltinsTestConstraintProvider implements ConstraintProvide
     }
 
     public Constraint int_le_reif(ConstraintFactory constraintFactory) {
-        return FlatZincBuiltIns.int_le_reif(MyIntVariable.class, ConstrainedIntVariable.class, MySecondIntVariable.class,
+        return FlatZincBuiltIns.int_le_reif(MyIntVariable.class, ConstrainedIntVariable.class, MyBoolVariable.class,
                 "int_le_reif", constraintFactory);
     }
 
@@ -81,7 +81,7 @@ public class FlatZincBuiltinsTestConstraintProvider implements ConstraintProvide
     }
 
     public Constraint int_lin_eq_reif(ConstraintFactory constraintFactory) {
-        return FlatZincBuiltIns.int_lin_eq_reif(new int[] { 1, -1 }, MyIntArrayVariable.class, 0, MyIntVariable.class,
+        return FlatZincBuiltIns.int_lin_eq_reif(new int[] { 1, -1 }, MyIntArrayVariable.class, 0, MyBoolVariable.class,
                 "int_lin_eq_reif", constraintFactory);
     }
 
@@ -90,7 +90,7 @@ public class FlatZincBuiltinsTestConstraintProvider implements ConstraintProvide
     }
 
     public Constraint int_lin_le_reif(ConstraintFactory constraintFactory) {
-        return FlatZincBuiltIns.int_lin_le_reif(new int[] { 1, -1 }, MyIntArrayVariable.class, 0, MyIntVariable.class,
+        return FlatZincBuiltIns.int_lin_le_reif(new int[] { 1, -1 }, MyIntArrayVariable.class, 0, MyBoolVariable.class,
                 "int_lin_le_reif", constraintFactory);
     }
 
@@ -99,7 +99,7 @@ public class FlatZincBuiltinsTestConstraintProvider implements ConstraintProvide
     }
 
     public Constraint int_lin_ne_reif(ConstraintFactory constraintFactory) {
-        return FlatZincBuiltIns.int_lin_ne_reif(new int[] { 1, -1 }, MyIntArrayVariable.class, 0, MyIntVariable.class,
+        return FlatZincBuiltIns.int_lin_ne_reif(new int[] { 1, -1 }, MyIntArrayVariable.class, 0, MyBoolVariable.class,
                 "int_lin_ne_reif", constraintFactory);
     }
 
@@ -108,7 +108,7 @@ public class FlatZincBuiltinsTestConstraintProvider implements ConstraintProvide
     }
 
     public Constraint int_lt_reif(ConstraintFactory constraintFactory) {
-        return FlatZincBuiltIns.int_lt_reif(MyIntVariable.class, ConstrainedIntVariable.class, MySecondIntVariable.class,
+        return FlatZincBuiltIns.int_lt_reif(MyIntVariable.class, ConstrainedIntVariable.class, MyBoolVariable.class,
                 "int_lt_reif", constraintFactory);
     }
 
@@ -132,7 +132,7 @@ public class FlatZincBuiltinsTestConstraintProvider implements ConstraintProvide
     }
 
     public Constraint int_ne_reif(ConstraintFactory constraintFactory) {
-        return FlatZincBuiltIns.int_ne_reif(MyIntVariable.class, ConstrainedIntVariable.class, MySecondIntVariable.class,
+        return FlatZincBuiltIns.int_ne_reif(MyIntVariable.class, ConstrainedIntVariable.class, MyBoolVariable.class,
                 "int_ne_reif", constraintFactory);
     }
 

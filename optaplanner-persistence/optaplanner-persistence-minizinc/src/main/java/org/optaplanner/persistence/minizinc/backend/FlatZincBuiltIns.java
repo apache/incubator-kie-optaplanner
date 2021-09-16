@@ -178,11 +178,11 @@ public class FlatZincBuiltIns {
      */
     public static Constraint int_eq_reif(Class<? extends IntVariable> valueClass,
             Class<? extends IntVariable> constrainedVariableClass,
-            Class<? extends IntVariable> isReversedClass, String id, ConstraintFactory constraintFactory) {
+            Class<? extends BoolVariable> isReversedClass, String id, ConstraintFactory constraintFactory) {
         return constraintFactory.from(valueClass)
                 .join(constrainedVariableClass)
                 .ifNotExists(isReversedClass,
-                        Joiners.equal((a, b) -> a.getValue().equals(b.getValue()), isReversed -> isReversed.getValue() == 1))
+                        Joiners.equal((a, b) -> a.getValue().equals(b.getValue()), BoolVariable::getValue))
                 .penalize(id, HardSoftScore.ONE_HARD);
     }
 
@@ -215,12 +215,12 @@ public class FlatZincBuiltIns {
      */
     public static Constraint int_le_reif(Class<? extends IntVariable> valueClass,
             Class<? extends IntVariable> constrainedVariableClass,
-            Class<? extends IntVariable> isReversedClass, String id, ConstraintFactory constraintFactory) {
+            Class<? extends BoolVariable> isReversedClass, String id, ConstraintFactory constraintFactory) {
         return constraintFactory.from(valueClass)
                 .join(constrainedVariableClass)
                 .ifNotExists(isReversedClass,
                         Joiners.equal((a, b) -> a.getValue().compareTo(b.getValue()) <= 0,
-                                isReversed -> isReversed.getValue() == 1))
+                                BoolVariable::getValue))
                 .penalize(id, HardSoftScore.ONE_HARD);
     }
 
@@ -243,12 +243,12 @@ public class FlatZincBuiltIns {
     // Constrains (c=∑as[i]∗bs[i]) if and only if r
     // https://www.minizinc.org/doc-2.5.5/en/lib-flatzinc.html#index-11
     public static Constraint int_lin_eq_reif(int[] variableMultipliers, Class<? extends IntArrayVariable> variableArrayClass,
-            int constant, Class<? extends IntVariable> isReversedClass, String id, ConstraintFactory constraintFactory) {
+            int constant, Class<? extends BoolVariable> isReversedClass, String id, ConstraintFactory constraintFactory) {
         return constraintFactory.from(variableArrayClass)
                 .filter(variable -> variable.getValue() != null)
                 .groupBy(ConstraintCollectors.sum(variable -> variable.getValue()
                         * getEffectiveMultiplier(variableMultipliers, variable.getIndex(variableArrayClass))))
-                .ifNotExists(isReversedClass, Joiners.equal(sum -> sum == constant, r -> r.getValue().equals(1)))
+                .ifNotExists(isReversedClass, Joiners.equal(sum -> sum == constant, BoolVariable::getValue))
                 .penalize(id, HardSoftScore.ONE_HARD);
     }
 
@@ -267,12 +267,12 @@ public class FlatZincBuiltIns {
     // Constrains (∑as[i]∗bs[i] <= c) if and only if r
     // https://www.minizinc.org/doc-2.5.5/en/lib-flatzinc.html#index-13
     public static Constraint int_lin_le_reif(int[] variableMultipliers, Class<? extends IntArrayVariable> variableArrayClass,
-            int constant, Class<? extends IntVariable> isReversedClass, String id, ConstraintFactory constraintFactory) {
+            int constant, Class<? extends BoolVariable> isReversedClass, String id, ConstraintFactory constraintFactory) {
         return constraintFactory.from(variableArrayClass)
                 .filter(variable -> variable.getValue() != null)
                 .groupBy(ConstraintCollectors.sum(variable -> variable.getValue()
                         * getEffectiveMultiplier(variableMultipliers, variable.getIndex(variableArrayClass))))
-                .ifNotExists(isReversedClass, Joiners.equal(sum -> sum > constant, r -> r.getValue().equals(1)))
+                .ifNotExists(isReversedClass, Joiners.equal(sum -> sum > constant, BoolVariable::getValue))
                 .penalize(id, HardSoftScore.ONE_HARD);
     }
 
@@ -291,12 +291,12 @@ public class FlatZincBuiltIns {
     // Constrains (c≠∑as[i]∗bs[i]) if and only if r
     // https://www.minizinc.org/doc-2.5.5/en/lib-flatzinc.html#index-15
     public static Constraint int_lin_ne_reif(int[] variableMultipliers, Class<? extends IntArrayVariable> variableArrayClass,
-            int constant, Class<? extends IntVariable> isReversedClass, String id, ConstraintFactory constraintFactory) {
+            int constant, Class<? extends BoolVariable> isReversedClass, String id, ConstraintFactory constraintFactory) {
         return constraintFactory.from(variableArrayClass)
                 .filter(variable -> variable.getValue() != null)
                 .groupBy(ConstraintCollectors.sum(variable -> variable.getValue()
                         * getEffectiveMultiplier(variableMultipliers, variable.getIndex(variableArrayClass))))
-                .ifNotExists(isReversedClass, Joiners.equal(sum -> sum != constant, r -> r.getValue().equals(1)))
+                .ifNotExists(isReversedClass, Joiners.equal(sum -> sum != constant, BoolVariable::getValue))
                 .penalize(id, HardSoftScore.ONE_HARD);
     }
 
@@ -329,12 +329,12 @@ public class FlatZincBuiltIns {
      */
     public static Constraint int_lt_reif(Class<? extends IntVariable> valueClass,
             Class<? extends IntVariable> constrainedVariableClass,
-            Class<? extends IntVariable> isReversedClass, String id, ConstraintFactory constraintFactory) {
+            Class<? extends BoolVariable> isReversedClass, String id, ConstraintFactory constraintFactory) {
         return constraintFactory.from(valueClass)
                 .join(constrainedVariableClass)
                 .ifNotExists(isReversedClass,
                         Joiners.equal((a, b) -> a.getValue().compareTo(b.getValue()) < 0,
-                                isReversed -> isReversed.getValue() == 1))
+                                BoolVariable::getValue))
                 .penalize(id, HardSoftScore.ONE_HARD);
     }
 
@@ -427,11 +427,11 @@ public class FlatZincBuiltIns {
      */
     public static Constraint int_ne_reif(Class<? extends IntVariable> valueClass,
             Class<? extends IntVariable> constrainedVariableClass,
-            Class<? extends IntVariable> isReversedClass, String id, ConstraintFactory constraintFactory) {
+            Class<? extends BoolVariable> isReversedClass, String id, ConstraintFactory constraintFactory) {
         return constraintFactory.from(valueClass)
                 .join(constrainedVariableClass)
                 .ifExists(isReversedClass,
-                        Joiners.equal((a, b) -> a.getValue().equals(b.getValue()), isReversed -> isReversed.getValue() == 1))
+                        Joiners.equal((a, b) -> a.getValue().equals(b.getValue()), BoolVariable::getValue))
                 .penalize(id, HardSoftScore.ONE_HARD);
     }
 
