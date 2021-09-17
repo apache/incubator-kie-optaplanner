@@ -28,6 +28,7 @@ jobs:
         maven-version: ['3.8.1']
     runs-on: ${{ matrix.os }}
     steps:
+      - uses: actions/checkout@v2
       - name: Setup Maven And Java Version
         uses: s4u/setup-maven-action@v1.2.1
         with:
