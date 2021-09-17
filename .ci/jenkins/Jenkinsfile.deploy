@@ -118,111 +118,111 @@ pipeline {
                 }
             }
         }
-        stage('Build OptaPlanner') {
-            steps {
-                script {
-                    getOptaplannerMavenCommand().skipTests(params.SKIP_TESTS).run('clean install')
-                }
-            }
-            post {
-                always {
-                    archiveJUnitTestResults()
-                }
-            }
-        }
+        // stage('Build OptaPlanner') {
+        //     steps {
+        //         script {
+        //             getOptaplannerMavenCommand().skipTests(params.SKIP_TESTS).run('clean install')
+        //         }
+        //     }
+        //     post {
+        //         always {
+        //             archiveJUnitTestResults()
+        //         }
+        //     }
+        // }
 
-        stage('Build Quickstarts') {
-            steps {
-                script {
-                    getOptaplannerQuickstartsMavenCommand().skipTests(params.SKIP_TESTS).run('clean install')
-                }
-            }
-            post {
-                always {
-                    archiveJUnitTestResults()
-                }
-            }
-        }
+        // stage('Build Quickstarts') {
+        //     steps {
+        //         script {
+        //             getOptaplannerQuickstartsMavenCommand().skipTests(params.SKIP_TESTS).run('clean install')
+        //         }
+        //     }
+        //     post {
+        //         always {
+        //             archiveJUnitTestResults()
+        //         }
+        //     }
+        // }
 
-        stage('Build Vehicle Routing') {
-            steps {
-                script {
-                    buildOptaweb(getOptawebVehicleRoutingMavenCommand())
-                }
-            }
-            post {
-                always {
-                    archiveJUnitTestResults()
-                    archiveCypressArtifacts()
-                }
-            }
-        }
+        // stage('Build Vehicle Routing') {
+        //     steps {
+        //         script {
+        //             buildOptaweb(getOptawebVehicleRoutingMavenCommand())
+        //         }
+        //     }
+        //     post {
+        //         always {
+        //             archiveJUnitTestResults()
+        //             archiveCypressArtifacts()
+        //         }
+        //     }
+        // }
 
-        stage('Build Employee Rostering') {
-            steps {
-                script {
-                    buildOptaweb(getOptawebEmployeeRosteringMavenCommand())
-                }
-            }
-            post {
-                always {
-                    archiveJUnitTestResults()
-                    archiveCypressArtifacts()
-                }
-            }
-        }
+        // stage('Build Employee Rostering') {
+        //     steps {
+        //         script {
+        //             buildOptaweb(getOptawebEmployeeRosteringMavenCommand())
+        //         }
+        //     }
+        //     post {
+        //         always {
+        //             archiveJUnitTestResults()
+        //             archiveCypressArtifacts()
+        //         }
+        //     }
+        // }
 
-        stage('Deploy to repository') {
-            when {
-                expression { return !shouldStageArtifacts() && !isSpecificArtifactsUpload() && shouldDeployToRepository() }
-            }
-            steps {
-                script {
-                    runMavenDeploy(getOptaplannerMavenCommand())
-                    runMavenDeploy(getOptaplannerQuickstartsMavenCommand().withOptions(['-pl', ':optaplanner-distribution']))
-                    runMavenDeploy(getOptawebVehicleRoutingMavenCommand())
-                    runMavenDeploy(getOptawebEmployeeRosteringMavenCommand())
-                }
-            }
-        }
-        stage('Deploy locally') {
-            when {
-                expression { return shouldStageArtifacts() || isSpecificArtifactsUpload() }
-            }
-            steps {
-                script {
-                    runMavenDeploy(getOptaplannerMavenCommand(), optaplannerRepository)
-                    runMavenDeploy(getOptawebVehicleRoutingMavenCommand(), vehicleRoutingRepository)
-                    runMavenDeploy(getOptawebEmployeeRosteringMavenCommand(), employeeRosteringRepository)
-                }
-            }
-        }
-        stage('Upload artifacts to given repository') {
-            when {
-                expression { return isSpecificArtifactsUpload() }
-            }
-            steps {
-                script {
-                    // Deploy to specific repository with credentials
-                    maven.uploadLocalArtifacts(env.MAVEN_REPO_CREDS_ID, getLocalDeploymentFolder(optaplannerRepository), getMavenRepoZipUrl())
-                    maven.uploadLocalArtifacts(env.MAVEN_REPO_CREDS_ID, getLocalDeploymentFolder(vehicleRoutingRepository), getMavenRepoZipUrl())
-                    maven.uploadLocalArtifacts(env.MAVEN_REPO_CREDS_ID, getLocalDeploymentFolder(employeeRosteringRepository), getMavenRepoZipUrl())
-                }
-            }
-        }
-        stage('Stage artifacts') {
-            when {
-                expression { return shouldStageArtifacts() }
-            }
-            steps {
-                script {
-                    // Stage release artifacts
-                    runMavenStage(getOptaplannerMavenCommand(), optaplannerRepository)
-                    runMavenStage(getOptawebVehicleRoutingMavenCommand(), vehicleRoutingRepository)
-                    runMavenStage(getOptawebEmployeeRosteringMavenCommand(), employeeRosteringRepository)
-                }
-            }
-        }
+        // stage('Deploy to repository') {
+        //     when {
+        //         expression { return !shouldStageArtifacts() && !isSpecificArtifactsUpload() && shouldDeployToRepository() }
+        //     }
+        //     steps {
+        //         script {
+        //             runMavenDeploy(getOptaplannerMavenCommand())
+        //             runMavenDeploy(getOptaplannerQuickstartsMavenCommand().withOptions(['-pl', ':optaplanner-distribution']))
+        //             runMavenDeploy(getOptawebVehicleRoutingMavenCommand())
+        //             runMavenDeploy(getOptawebEmployeeRosteringMavenCommand())
+        //         }
+        //     }
+        // }
+        // stage('Deploy locally') {
+        //     when {
+        //         expression { return shouldStageArtifacts() || isSpecificArtifactsUpload() }
+        //     }
+        //     steps {
+        //         script {
+        //             runMavenDeploy(getOptaplannerMavenCommand(), optaplannerRepository)
+        //             runMavenDeploy(getOptawebVehicleRoutingMavenCommand(), vehicleRoutingRepository)
+        //             runMavenDeploy(getOptawebEmployeeRosteringMavenCommand(), employeeRosteringRepository)
+        //         }
+        //     }
+        // }
+        // stage('Upload artifacts to given repository') {
+        //     when {
+        //         expression { return isSpecificArtifactsUpload() }
+        //     }
+        //     steps {
+        //         script {
+        //             // Deploy to specific repository with credentials
+        //             maven.uploadLocalArtifacts(env.MAVEN_REPO_CREDS_ID, getLocalDeploymentFolder(optaplannerRepository), getMavenRepoZipUrl())
+        //             maven.uploadLocalArtifacts(env.MAVEN_REPO_CREDS_ID, getLocalDeploymentFolder(vehicleRoutingRepository), getMavenRepoZipUrl())
+        //             maven.uploadLocalArtifacts(env.MAVEN_REPO_CREDS_ID, getLocalDeploymentFolder(employeeRosteringRepository), getMavenRepoZipUrl())
+        //         }
+        //     }
+        // }
+        // stage('Stage artifacts') {
+        //     when {
+        //         expression { return shouldStageArtifacts() }
+        //     }
+        //     steps {
+        //         script {
+        //             // Stage release artifacts
+        //             runMavenStage(getOptaplannerMavenCommand(), optaplannerRepository)
+        //             runMavenStage(getOptawebVehicleRoutingMavenCommand(), vehicleRoutingRepository)
+        //             runMavenStage(getOptawebEmployeeRosteringMavenCommand(), employeeRosteringRepository)
+        //         }
+        //     }
+        // }
 
         stage('Create PRs') {
             when {
