@@ -539,6 +539,10 @@ String getGitAuthor() {
     return "${GIT_AUTHOR}"
 }
 
+String getGitAuthorCredsID() {
+    return env.AUTHOR_CREDS_ID
+}
+
 String getBuildBranch() {
     return params.BUILD_BRANCH_NAME
 }
