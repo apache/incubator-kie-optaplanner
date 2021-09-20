@@ -43,7 +43,16 @@ public class MyPlanningSolution {
     List<MyBoolVariable> boolVariableList;
 
     @PlanningEntityCollectionProperty
+    List<MySecondBoolVariable> secondBoolVariableList;
+
+    @PlanningEntityCollectionProperty
+    List<ConstrainedBoolVariable> constrainedBoolVariableList;
+
+    @PlanningEntityCollectionProperty
     List<MyBoolArrayVariable> boolArrayVariableList;
+
+    @PlanningEntityCollectionProperty
+    List<MySecondBoolArrayVariable> secondBoolArrayVariableList;
 
     @ValueRangeProvider(id = "valueRange")
     List<Integer> valueRange;

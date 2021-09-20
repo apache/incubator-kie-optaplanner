@@ -217,10 +217,6 @@ public class IntFlatZincBuiltins {
                 .penalize(id, HardSoftScore.ONE_HARD);
     }
 
-    public static int getEffectiveMultiplier(int[] multipliers, IndexSet multiplierIndexSet) {
-        return multiplierIndexSet.indexBitSet.stream().map(index -> multipliers[index]).reduce(Integer::sum).orElse(0);
-    }
-
     // Constrains c=∑as[i]∗bs[i]
     // https://www.minizinc.org/doc-2.5.5/en/lib-flatzinc.html#index-10
     public static Constraint int_lin_eq(int[] variableMultipliers, Class<? extends IntArrayVariable> variableArrayClass,
@@ -228,7 +224,7 @@ public class IntFlatZincBuiltins {
         return constraintFactory.from(variableArrayClass)
                 .filter(variable -> variable.getValue() != null)
                 .groupBy(ConstraintCollectors.sum(variable -> variable.getValue()
-                        * getEffectiveMultiplier(variableMultipliers, variable.getIndex(variableArrayClass))))
+                        * FlatZincBuiltins.getEffectiveMultiplier(variableMultipliers, variable.getIndex(variableArrayClass))))
                 .filter(sum -> sum != constant)
                 .penalize(id, HardSoftScore.ONE_HARD);
     }
@@ -240,7 +236,7 @@ public class IntFlatZincBuiltins {
         return constraintFactory.from(variableArrayClass)
                 .filter(variable -> variable.getValue() != null)
                 .groupBy(ConstraintCollectors.sum(variable -> variable.getValue()
-                        * getEffectiveMultiplier(variableMultipliers, variable.getIndex(variableArrayClass))))
+                        * FlatZincBuiltins.getEffectiveMultiplier(variableMultipliers, variable.getIndex(variableArrayClass))))
                 .ifNotExists(isReversedClass, Joiners.equal(sum -> sum == constant, BoolVariable::getValue))
                 .penalize(id, HardSoftScore.ONE_HARD);
     }
@@ -252,7 +248,7 @@ public class IntFlatZincBuiltins {
         return constraintFactory.from(variableArrayClass)
                 .filter(variable -> variable.getValue() != null)
                 .groupBy(ConstraintCollectors.sum(variable -> variable.getValue()
-                        * getEffectiveMultiplier(variableMultipliers, variable.getIndex(variableArrayClass))))
+                        * FlatZincBuiltins.getEffectiveMultiplier(variableMultipliers, variable.getIndex(variableArrayClass))))
                 .filter(sum -> sum > constant)
                 .penalize(id, HardSoftScore.ONE_HARD);
     }
@@ -264,7 +260,7 @@ public class IntFlatZincBuiltins {
         return constraintFactory.from(variableArrayClass)
                 .filter(variable -> variable.getValue() != null)
                 .groupBy(ConstraintCollectors.sum(variable -> variable.getValue()
-                        * getEffectiveMultiplier(variableMultipliers, variable.getIndex(variableArrayClass))))
+                        * FlatZincBuiltins.getEffectiveMultiplier(variableMultipliers, variable.getIndex(variableArrayClass))))
                 .ifNotExists(isReversedClass, Joiners.equal(sum -> sum > constant, BoolVariable::getValue))
                 .penalize(id, HardSoftScore.ONE_HARD);
     }
@@ -276,7 +272,7 @@ public class IntFlatZincBuiltins {
         return constraintFactory.from(variableArrayClass)
                 .filter(variable -> variable.getValue() != null)
                 .groupBy(ConstraintCollectors.sum(variable -> variable.getValue()
-                        * getEffectiveMultiplier(variableMultipliers, variable.getIndex(variableArrayClass))))
+                        * FlatZincBuiltins.getEffectiveMultiplier(variableMultipliers, variable.getIndex(variableArrayClass))))
                 .filter(sum -> sum == constant)
                 .penalize(id, HardSoftScore.ONE_HARD);
     }
@@ -288,7 +284,7 @@ public class IntFlatZincBuiltins {
         return constraintFactory.from(variableArrayClass)
                 .filter(variable -> variable.getValue() != null)
                 .groupBy(ConstraintCollectors.sum(variable -> variable.getValue()
-                        * getEffectiveMultiplier(variableMultipliers, variable.getIndex(variableArrayClass))))
+                        * FlatZincBuiltins.getEffectiveMultiplier(variableMultipliers, variable.getIndex(variableArrayClass))))
                 .ifNotExists(isReversedClass, Joiners.equal(sum -> sum != constant, BoolVariable::getValue))
                 .penalize(id, HardSoftScore.ONE_HARD);
     }

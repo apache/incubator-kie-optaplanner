@@ -161,7 +161,8 @@ public class ConstraintProviderBytecodeImplementor {
     private static ResultHandle defineConstraint(FlatZincConstraint flatZincConstraint,
             CompiledVariablesAndConstantsData compiledModelData, ResultHandle constraintFactory, int constraintId,
             MethodCreator methodCreator) {
-        Method constraintImplMethod = findBuiltinMethod(flatZincConstraint.getPredicateName());
+        Method constraintImplMethod = findBuiltinMethod(flatZincConstraint.getPredicateName(),
+                flatZincConstraint.getPredicateArguments().size());
         // Method parameters: (parameter1, parameter2,...,parameterN, constraintId, constraintFactory)
         // parameter1,...,parameterN are in the same order as the FlatZinc predicate
         ResultHandle[] parameters = new ResultHandle[constraintImplMethod.getParameterCount()];
@@ -252,10 +253,10 @@ public class ConstraintProviderBytecodeImplementor {
         return argResultHandle;
     }
 
-    private static Method findBuiltinMethod(String name) {
+    private static Method findBuiltinMethod(String name, int parameterCount) {
         for (Class<?> factoryClass : FlatZincBuiltins.getConstraintFactoryList()) {
             for (Method method : factoryClass.getMethods()) {
-                if (method.getName().equals(name)) {
+                if (method.getName().equals(name) && method.getParameterCount() == parameterCount + 2) {
                     return method;
                 }
             }

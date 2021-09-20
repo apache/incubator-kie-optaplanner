@@ -33,4 +33,8 @@ public class FlatZincBuiltins {
     public static List<Class<?>> getConstraintFactoryList() {
         return List.of(IntFlatZincBuiltins.class);
     }
+
+    public static int getEffectiveMultiplier(int[] multipliers, IndexSet multiplierIndexSet) {
+        return multiplierIndexSet.indexBitSet.stream().map(index -> multipliers[index]).reduce(Integer::sum).orElse(0);
+    }
 }
