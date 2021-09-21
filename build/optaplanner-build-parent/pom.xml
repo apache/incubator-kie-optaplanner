@@ -502,6 +502,7 @@
           <configuration>
             <excludes>
               <exclude>**/swingui/**/*</exclude>
+              <exclude>*Lexer</exclude>
             </excludes>
           </configuration>
           <executions>
