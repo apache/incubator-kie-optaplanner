@@ -64,10 +64,6 @@ public class DefaultSolver<Solution_> extends AbstractSolver<Solution_> {
 
     private final String moveThreadCountDescription;
 
-    // Metrics
-    private LongTaskTimer solveLengthTimer;
-    private Counter errorCounter;
-
     // ************************************************************************
     // Constructors and simple getters/setters
     // ************************************************************************
@@ -82,7 +78,6 @@ public class DefaultSolver<Solution_> extends AbstractSolver<Solution_> {
         this.basicPlumbingTermination = basicPlumbingTermination;
         this.solverScope = solverScope;
         this.moveThreadCountDescription = moveThreadCountDescription;
-        registerMetrics();
     }
 
     public EnvironmentMode getEnvironmentMode() {
@@ -165,31 +160,7 @@ public class DefaultSolver<Solution_> extends AbstractSolver<Solution_> {
         Tags monitoringTags = ObjectUtils.defaultIfNull(monitorTagMap, Collections.<String, String> emptyMap())
                 .entrySet().stream().map(entry -> Tags.of(entry.getKey(), entry.getValue()))
                 .reduce(Tags.empty(), Tags::and);
-        unregisterMetrics();
         solverScope.setMonitoringTags(monitoringTags);
-        registerMetrics();
-    }
-
-    private void unregisterMetrics() {
-        Metrics.globalRegistry.remove(solveLengthTimer);
-        Metrics.globalRegistry.remove(errorCounter);
-        Metrics.globalRegistry.remove(new Meter.Id(SolverMetric.SCORE_CALCULATION_COUNT.getMeterId(),
-                solverScope.getMonitoringTags(),
-                null,
-                null,
-                Meter.Type.GAUGE));
-        solverScope.getSolverMetricSet().forEach(solverMetric -> solverMetric.unregister(this));
-    }
-
-    private void registerMetrics() {
-        this.solveLengthTimer = Metrics.more().longTaskTimer(SolverMetric.SOLVE_DURATION.getMeterId(),
-                solverScope.getMonitoringTags());
-        this.errorCounter = Metrics.counter(SolverMetric.ERROR_COUNT.getMeterId(), solverScope.getMonitoringTags());
-
-        // NOTE: Speed can be derived by count if sampling rate is known
-        Metrics.gauge(SolverMetric.SCORE_CALCULATION_COUNT.getMeterId(), solverScope.getMonitoringTags(),
-                solverScope, SolverScope::getScoreCalculationCount);
-        solverScope.getSolverMetricSet().forEach(solverMetric -> solverMetric.register(this));
     }
 
     // ************************************************************************
@@ -201,6 +172,13 @@ public class DefaultSolver<Solution_> extends AbstractSolver<Solution_> {
         if (problem == null) {
             throw new IllegalArgumentException("The problem (" + problem + ") must not be null.");
         }
+        LongTaskTimer solveLengthTimer = Metrics.more().longTaskTimer(SolverMetric.SOLVE_DURATION.getMeterId(),
+                solverScope.getMonitoringTags());
+        Counter errorCounter = Metrics.counter(SolverMetric.ERROR_COUNT.getMeterId(), solverScope.getMonitoringTags());
+        Metrics.gauge(SolverMetric.SCORE_CALCULATION_COUNT.getMeterId(), solverScope.getMonitoringTags(),
+                solverScope, SolverScope::getScoreCalculationCount);
+        solverScope.getSolverMetricSet().forEach(solverMetric -> solverMetric.register(this));
+
         solverScope.setBestSolution(problem);
         outerSolvingStarted(solverScope);
         boolean restartSolver = true;
@@ -215,6 +193,12 @@ public class DefaultSolver<Solution_> extends AbstractSolver<Solution_> {
                 throw e;
             } finally {
                 sample.stop();
+                Metrics.globalRegistry.remove(new Meter.Id(SolverMetric.SCORE_CALCULATION_COUNT.getMeterId(),
+                        solverScope.getMonitoringTags(),
+                        null,
+                        null,
+                        Meter.Type.GAUGE));
+                solverScope.getSolverMetricSet().forEach(solverMetric -> solverMetric.unregister(this));
             }
             restartSolver = checkProblemFactChanges();
         }
