@@ -33,7 +33,7 @@ defaults:
 jobs:
   build-chain:
     concurrency:
-      group: pull_request-${{ github.head_ref }}
+      group: pull_request-${{ github.event_name }}-${{ github.head_ref }}-${{ matrix.os }}
       cancel-in-progress: true
     strategy:
       matrix:
