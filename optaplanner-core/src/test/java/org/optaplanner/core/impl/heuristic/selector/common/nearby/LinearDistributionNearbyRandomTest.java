@@ -18,8 +18,6 @@ package org.optaplanner.core.impl.heuristic.selector.common.nearby;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 
 import java.util.Random;
 
@@ -37,12 +35,11 @@ public class LinearDistributionNearbyRandomTest {
     public void nextInt() {
         Random random = new TestRandom(
                 0.0,
-                2.0/100.0,
+                2.0 / 100.0,
                 2.0 / 100.0 + 2.0 / 100.0 + 2.0 / 10000.0,
                 2.0 / 100.0 + 2.0 / 100.0 + 2.0 / 10000.0 + 2.0 / 100.0 + 4.0 / 10000.0,
                 0.0,
-                2.0/10.0
-        );
+                2.0 / 10.0);
         NearbyRandom nearbyRandom = new LinearDistributionNearbyRandom(100);
 
         assertThat(nearbyRandom.nextInt(random, 500)).isEqualTo(0);
@@ -58,8 +55,7 @@ public class LinearDistributionNearbyRandomTest {
     public void cornerCase() {
         Random random = new TestRandom(
                 Math.nextAfter(1.0, Double.NEGATIVE_INFINITY),
-                Math.nextAfter(1.0, Double.NEGATIVE_INFINITY)
-        );
+                Math.nextAfter(1.0, Double.NEGATIVE_INFINITY));
         NearbyRandom nearbyRandom = new LinearDistributionNearbyRandom(100);
 
         assertThat(nearbyRandom.nextInt(random, 10)).isEqualTo(9);

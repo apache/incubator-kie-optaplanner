@@ -111,8 +111,7 @@ public class UnionMoveSelectorTest {
                 1019.0 / 1020.0,
                 1000.0 / 1020.0,
                 0.0,
-                999.0 / 1020.0
-        );
+                999.0 / 1020.0);
         SolverScope solverScope = mock(SolverScope.class);
         when(solverScope.getWorkingRandom()).thenReturn(workingRandom);
         moveSelector.solvingStarted(solverScope);

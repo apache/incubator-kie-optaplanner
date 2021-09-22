@@ -2,11 +2,13 @@ package org.optaplanner.core.impl.util;
 
 import java.math.BigDecimal;
 import java.util.Arrays;
+import java.util.Objects;
 import java.util.Random;
 import java.util.stream.DoubleStream;
 import java.util.stream.IntStream;
 import java.util.stream.LongStream;
-import java.util.stream.Stream;
+
+import org.junit.jupiter.api.Assertions;
 
 /**
  * On the later JDKs, it is no longer possible to mock {@link Random} to return custom sequences.
@@ -25,6 +27,7 @@ public final class TestRandom extends Random {
 
     private BigDecimal[] toReturn;
     private int returnCount = 0;
+    private Integer lastRequestedIntBound = null;
 
     public TestRandom(int... toReturn) {
         super(0);
@@ -48,6 +51,7 @@ public final class TestRandom extends Random {
 
     @Override
     public int nextInt(int bound) {
+        lastRequestedIntBound = bound;
         returnCount++;
         if (returnCount > toReturn.length) {
             return toReturn[toReturn.length - 1].intValue();
@@ -198,6 +202,22 @@ public final class TestRandom extends Random {
             this.toReturn[i] = toReturn[i] ? BigDecimal.ONE : BigDecimal.ZERO;
         }
         this.returnCount = 0;
+    }
+
+    /**
+     * Check whether the last time that {@link #nextInt(int)} was last called with the given bound value.
+     * If not, throws; otherwise resets the last known bound.
+     *
+     * @param bound
+     * @throws org.opentest4j.AssertionFailedError when bound not matching
+     */
+    public void assertIntBoundJustRequested(int bound) {
+        if (Objects.equals(bound, lastRequestedIntBound)) {
+            lastRequestedIntBound = null;
+            return;
+        }
+        Assertions.fail("Expected bound (" + bound + ") to have just been requested, " +
+                "but was (" + lastRequestedIntBound + ").");
     }
 
 }

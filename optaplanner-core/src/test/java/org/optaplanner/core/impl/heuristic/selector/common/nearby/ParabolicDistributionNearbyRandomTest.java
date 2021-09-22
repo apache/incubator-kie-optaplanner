@@ -18,8 +18,6 @@ package org.optaplanner.core.impl.heuristic.selector.common.nearby;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 
 import java.util.Random;
 
@@ -38,8 +36,7 @@ public class ParabolicDistributionNearbyRandomTest {
         Random random = new TestRandom(
                 0.0,
                 1.0 - Math.pow(1 - 1.0 / 100.0, 3.0),
-                1.0 - Math.pow(1 - 2.0 / 100.0, 3.0)
-        );
+                1.0 - Math.pow(1 - 2.0 / 100.0, 3.0));
         NearbyRandom nearbyRandom = new ParabolicDistributionNearbyRandom(100);
 
         assertThat(nearbyRandom.nextInt(random, 500)).isEqualTo(0);
@@ -52,8 +49,7 @@ public class ParabolicDistributionNearbyRandomTest {
         Random random = new TestRandom(
                 Math.nextAfter(1.0, Double.NEGATIVE_INFINITY),
                 Math.nextAfter(1.0, Double.NEGATIVE_INFINITY),
-                0.0
-        );
+                0.0);
         NearbyRandom nearbyRandom = new ParabolicDistributionNearbyRandom(100);
 
         assertThat(nearbyRandom.nextInt(random, 500)).isEqualTo(99);

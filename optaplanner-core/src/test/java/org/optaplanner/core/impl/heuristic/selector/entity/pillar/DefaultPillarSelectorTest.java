@@ -16,7 +16,6 @@
 
 package org.optaplanner.core.impl.heuristic.selector.entity.pillar;
 
-import static org.mockito.Mockito.anyInt;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 import static org.optaplanner.core.impl.testdata.util.PlannerAssert.assertAllCodesOfPillarSelector;

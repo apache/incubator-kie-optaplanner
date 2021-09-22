@@ -17,14 +17,10 @@
 package org.optaplanner.core.impl.domain.valuerange.buildin.biginteger;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.anyInt;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 import static org.optaplanner.core.impl.testdata.util.PlannerAssert.assertAllElementsOfIterator;
 import static org.optaplanner.core.impl.testdata.util.PlannerAssert.assertElementsOfIterator;
 
 import java.math.BigInteger;
-import java.util.Random;
 
 import org.junit.jupiter.api.Test;
 import org.optaplanner.core.impl.util.TestRandom;

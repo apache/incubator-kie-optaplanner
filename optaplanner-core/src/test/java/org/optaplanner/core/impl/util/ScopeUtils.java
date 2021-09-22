@@ -1,18 +1,13 @@
 package org.optaplanner.core.impl.util;
 
-import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.impl.phase.scope.AbstractPhaseScope;
 import org.optaplanner.core.impl.phase.scope.AbstractStepScope;
 import org.optaplanner.core.impl.solver.scope.SolverScope;
 
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.spy;
-import static org.mockito.Mockito.when;
-
 public final class ScopeUtils {
 
     /**
-     * Mocks {@link AbstractPhaseScope} that will delegate to {@link SolverScope#getWorkingRandom()}.
+     * Returns {@link AbstractPhaseScope} instance that will delegate to {@link SolverScope#getWorkingRandom()}.
      * 
      * @param solverScope never null
      * @param <Solution_> generic type of the solution
@@ -28,7 +23,7 @@ public final class ScopeUtils {
     }
 
     /**
-     * Mocks {@link AbstractPhaseScope} that will delegate to {@link AbstractPhaseScope#getWorkingRandom()}.
+     * Returns {@link AbstractPhaseScope} instance that will delegate to {@link AbstractPhaseScope#getWorkingRandom()}.
      * 
      * @param phaseScope never null
      * @param <Solution_> generic type of the solution
