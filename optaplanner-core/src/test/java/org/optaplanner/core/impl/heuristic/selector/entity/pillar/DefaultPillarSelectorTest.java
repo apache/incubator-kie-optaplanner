@@ -39,6 +39,8 @@ import org.optaplanner.core.impl.solver.scope.SolverScope;
 import org.optaplanner.core.impl.testdata.domain.TestdataEntity;
 import org.optaplanner.core.impl.testdata.domain.TestdataObject;
 import org.optaplanner.core.impl.testdata.domain.TestdataValue;
+import org.optaplanner.core.impl.util.ScopeUtils;
+import org.optaplanner.core.impl.util.TestRandom;
 
 public class DefaultPillarSelectorTest {
 
@@ -214,22 +216,20 @@ public class DefaultPillarSelectorTest {
                 entitySelector, Arrays.asList(variableDescriptor), true,
                 SubPillarConfigPolicy.withSubpillarsUnlimited());
 
-        Random workingRandom = mock(Random.class);
+        TestRandom workingRandom = new TestRandom(0);
 
         SolverScope solverScope = mock(SolverScope.class);
         when(solverScope.getWorkingRandom()).thenReturn(workingRandom);
         pillarSelector.solvingStarted(solverScope);
 
-        AbstractPhaseScope phaseScopeA = mock(AbstractPhaseScope.class);
-        when(phaseScopeA.getSolverScope()).thenReturn(solverScope);
+        AbstractPhaseScope phaseScopeA = ScopeUtils.delegatingPhaseScope(solverScope);
         pillarSelector.phaseStarted(phaseScopeA);
 
-        AbstractStepScope stepScopeA1 = mock(AbstractStepScope.class);
-        when(stepScopeA1.getPhaseScope()).thenReturn(phaseScopeA);
+        AbstractStepScope stepScopeA1 = ScopeUtils.delegatingStepScope(phaseScopeA);
         pillarSelector.stepStarted(stepScopeA1);
         // nextInt pattern: pillarIndex, subPillarSize, element 0, element 1, element 2, ...
         // Expected pillar cache: [a], [b, d], [c, e, f]
-        when(workingRandom.nextInt(anyInt())).thenReturn(
+        workingRandom.reset(
                 0, // [a]
                 2, 1, 0, 0, // [c, e, f]
                 1, 0, 0, // [b, d]
@@ -240,12 +240,11 @@ public class DefaultPillarSelectorTest {
         b.setValue(val3);
         f.setValue(val4);
 
-        AbstractStepScope stepScopeA2 = mock(AbstractStepScope.class);
-        when(stepScopeA2.getPhaseScope()).thenReturn(phaseScopeA);
+        AbstractStepScope stepScopeA2 = ScopeUtils.delegatingStepScope(phaseScopeA);
         pillarSelector.stepStarted(stepScopeA2);
         // nextInt pattern: pillarIndex, subPillarSize, element 0, element 1, element 2, ...
         // Expected pillar cache: [a], [b, c, e], [d], [f]
-        when(workingRandom.nextInt(anyInt())).thenReturn(
+        workingRandom.reset(
                 3, // [f]
                 1, 2, // [b, c, e]
                 1, 0, 0, // [b, c, e]
@@ -255,16 +254,14 @@ public class DefaultPillarSelectorTest {
 
         pillarSelector.phaseEnded(phaseScopeA);
 
-        AbstractPhaseScope phaseScopeB = mock(AbstractPhaseScope.class);
-        when(phaseScopeB.getSolverScope()).thenReturn(solverScope);
+        AbstractPhaseScope phaseScopeB = ScopeUtils.delegatingPhaseScope(solverScope);
         pillarSelector.phaseStarted(phaseScopeB);
 
-        AbstractStepScope stepScopeB1 = mock(AbstractStepScope.class);
-        when(stepScopeB1.getPhaseScope()).thenReturn(phaseScopeB);
+        AbstractStepScope stepScopeB1 = ScopeUtils.delegatingStepScope(phaseScopeB);
         pillarSelector.stepStarted(stepScopeB1);
         // nextInt pattern: pillarIndex, subPillarSize, element 0, element 1, element 2, ...
         // Expected pillar cache: [a], [b, c, e], [d], [f]
-        when(workingRandom.nextInt(anyInt())).thenReturn(
+        workingRandom.reset(
                 3, // [f]
                 1, 2, // [b, c, e]
                 1, 0, 0, // [b, c, e]
@@ -299,24 +296,21 @@ public class DefaultPillarSelectorTest {
         DefaultPillarSelector pillarSelector = new DefaultPillarSelector(
                 entitySelector, Arrays.asList(variableDescriptor), true, SubPillarConfigPolicy.withSubpillars(2, 2));
 
-        Random workingRandom = mock(Random.class);
+        // nextInt pattern: pillarIndex, subPillarSize, element 0, element 1, element 2, ...
+        // Expected pillar cache: [b, d], [c, e, f]
+        Random workingRandom = new TestRandom(
+                1, 0, 0, 0, // [c, e]
+                0); // [b, d]
 
         SolverScope solverScope = mock(SolverScope.class);
         when(solverScope.getWorkingRandom()).thenReturn(workingRandom);
         pillarSelector.solvingStarted(solverScope);
 
-        AbstractPhaseScope phaseScopeA = mock(AbstractPhaseScope.class);
-        when(phaseScopeA.getSolverScope()).thenReturn(solverScope);
+        AbstractPhaseScope phaseScopeA = ScopeUtils.delegatingPhaseScope(solverScope);
         pillarSelector.phaseStarted(phaseScopeA);
 
-        AbstractStepScope stepScopeA1 = mock(AbstractStepScope.class);
-        when(stepScopeA1.getPhaseScope()).thenReturn(phaseScopeA);
+        AbstractStepScope stepScopeA1 = ScopeUtils.delegatingStepScope(phaseScopeA);
         pillarSelector.stepStarted(stepScopeA1);
-        // nextInt pattern: pillarIndex, subPillarSize, element 0, element 1, element 2, ...
-        // Expected pillar cache: [b, d], [c, e, f]
-        when(workingRandom.nextInt(anyInt())).thenReturn(
-                1, 0, 0, 0, // [c, e]
-                0); // [b, d]
         assertCodesOfNeverEndingPillarSelector(pillarSelector, "[c, e]", "[b, d]");
         pillarSelector.stepEnded(stepScopeA1);
 
@@ -349,27 +343,24 @@ public class DefaultPillarSelectorTest {
                 Arrays.asList(variableDescriptor), true,
                 SubPillarConfigPolicy.sequentialUnlimited(lexicographicComparator));
 
-        Random workingRandom = mock(Random.class);
-
-        SolverScope solverScope = mock(SolverScope.class);
-        when(solverScope.getWorkingRandom()).thenReturn(workingRandom);
-        pillarSelector.solvingStarted(solverScope);
-
-        AbstractPhaseScope phaseScopeA = mock(AbstractPhaseScope.class);
-        when(phaseScopeA.getSolverScope()).thenReturn(solverScope);
-        pillarSelector.phaseStarted(phaseScopeA);
-
-        AbstractStepScope stepScopeA1 = mock(AbstractStepScope.class);
-        when(stepScopeA1.getPhaseScope()).thenReturn(phaseScopeA);
-        pillarSelector.stepStarted(stepScopeA1);
         // nextInt pattern: pillarIndex, subPillarSize, subPillarStartingIndex
         // Expected pillar cache: [a], [b, d], [c, e, f]
-        when(workingRandom.nextInt(anyInt())).thenReturn(
+        Random workingRandom = new TestRandom(
                 1, 1, // [b, d]
                 2, 2, // [c, e, f]
                 2, 1, 1, // [c, e, f]
                 0 // [a]
         );
+
+        SolverScope solverScope = mock(SolverScope.class);
+        when(solverScope.getWorkingRandom()).thenReturn(workingRandom);
+        pillarSelector.solvingStarted(solverScope);
+
+        AbstractPhaseScope phaseScopeA = ScopeUtils.delegatingPhaseScope(solverScope);
+        pillarSelector.phaseStarted(phaseScopeA);
+
+        AbstractStepScope stepScopeA1 = ScopeUtils.delegatingStepScope(phaseScopeA);
+        pillarSelector.stepStarted(stepScopeA1);
         assertCodesOfNeverEndingPillarSelector(pillarSelector, "[b, d]", "[c, e, f]", "[e, f]", "[a]");
         pillarSelector.stepEnded(stepScopeA1);
 

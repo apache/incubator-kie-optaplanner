@@ -9,45 +9,41 @@ import java.util.stream.LongStream;
 import java.util.stream.Stream;
 
 /**
- * On the alter JDKs, it is no longer possible to mock {@link Random} to return custom sequences.
+ * On the later JDKs, it is no longer possible to mock {@link Random} to return custom sequences.
  * Therefore we introduce this class to allow for that use case.
  *
  * It allows to provide a sequence of pre-defined "random" values.
- * It maintains an internal count of values already returned and if it larger than the sequence provided,
+ * It maintains an internal count of values already returned and if larger than the sequence provided,
  * the last element in the sequence is returned.
+ *
+ * Due to some internals of OptaPlanner where randoms are read from {@link org.optaplanner.core.impl.solver.scope.SolverScope}
+ * and never updated in later phases and steps,
+ * we need to be able to reset the same random to start running a new sequence of numbers.
+ * That is what {@link #reset(int...)} et al. are for.
  */
 public final class TestRandom extends Random {
 
-    private final BigDecimal[] toReturn;
+    private BigDecimal[] toReturn;
     private int returnCount = 0;
 
     public TestRandom(int... toReturn) {
         super(0);
-        this.toReturn = Arrays.stream(toReturn)
-                .mapToObj(BigDecimal::valueOf)
-                .toArray(BigDecimal[]::new);
+        reset(toReturn);
     }
 
     public TestRandom(long... toReturn) {
         super(0);
-        this.toReturn = Arrays.stream(toReturn)
-                .mapToObj(BigDecimal::valueOf)
-                .toArray(BigDecimal[]::new);
+        reset(toReturn);
     }
 
     public TestRandom(double... toReturn) {
         super(0);
-        this.toReturn = Arrays.stream(toReturn)
-                .mapToObj(BigDecimal::valueOf)
-                .toArray(BigDecimal[]::new);
+        reset(toReturn);
     }
 
     public TestRandom(boolean... toReturn) {
         super(0);
-        this.toReturn = new BigDecimal[toReturn.length];
-        for (int i = 0; i < toReturn.length; i++) {
-            this.toReturn[i] = toReturn[i] ? BigDecimal.ONE : BigDecimal.ZERO;
-        }
+        reset(toReturn);
     }
 
     @Override
@@ -173,6 +169,35 @@ public final class TestRandom extends Random {
     @Override
     public DoubleStream doubles(double randomNumberOrigin, double randomNumberBound) {
         throw new UnsupportedOperationException(getClass().getCanonicalName() + " does not support this method.");
+    }
+
+    public void reset(int... toReturn) {
+        this.toReturn = Arrays.stream(toReturn)
+                .mapToObj(BigDecimal::valueOf)
+                .toArray(BigDecimal[]::new);
+        this.returnCount = 0;
+    }
+
+    public void reset(long... toReturn) {
+        this.toReturn = Arrays.stream(toReturn)
+                .mapToObj(BigDecimal::valueOf)
+                .toArray(BigDecimal[]::new);
+        this.returnCount = 0;
+    }
+
+    public void reset(double... toReturn) {
+        this.toReturn = Arrays.stream(toReturn)
+                .mapToObj(BigDecimal::valueOf)
+                .toArray(BigDecimal[]::new);
+        this.returnCount = 0;
+    }
+
+    public void reset(boolean... toReturn) {
+        this.toReturn = new BigDecimal[toReturn.length];
+        for (int i = 0; i < toReturn.length; i++) {
+            this.toReturn[i] = toReturn[i] ? BigDecimal.ONE : BigDecimal.ZERO;
+        }
+        this.returnCount = 0;
     }
 
 }

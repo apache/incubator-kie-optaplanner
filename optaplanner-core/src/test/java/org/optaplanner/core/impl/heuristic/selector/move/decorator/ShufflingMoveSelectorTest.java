@@ -33,6 +33,8 @@ import org.optaplanner.core.impl.heuristic.selector.move.MoveSelector;
 import org.optaplanner.core.impl.phase.scope.AbstractPhaseScope;
 import org.optaplanner.core.impl.phase.scope.AbstractStepScope;
 import org.optaplanner.core.impl.solver.scope.SolverScope;
+import org.optaplanner.core.impl.util.ScopeUtils;
+import org.optaplanner.core.impl.util.TestRandom;
 
 public class ShufflingMoveSelectorTest {
 
@@ -58,31 +60,21 @@ public class ShufflingMoveSelectorTest {
         ShufflingMoveSelector moveSelector = new ShufflingMoveSelector(childMoveSelector, cacheType);
         verify(childMoveSelector, times(1)).isNeverEnding();
 
-        Random workingRandom = mock(Random.class);
-
+        TestRandom workingRandom = new TestRandom(2, 0);
         SolverScope solverScope = mock(SolverScope.class);
         when(solverScope.getWorkingRandom()).thenReturn(workingRandom);
         moveSelector.solvingStarted(solverScope);
 
-        AbstractPhaseScope phaseScopeA = mock(AbstractPhaseScope.class);
-        when(phaseScopeA.getSolverScope()).thenReturn(solverScope);
-        when(phaseScopeA.getWorkingRandom()).thenReturn(workingRandom);
+        AbstractPhaseScope phaseScopeA = ScopeUtils.delegatingPhaseScope(solverScope);
         moveSelector.phaseStarted(phaseScopeA);
 
-        AbstractStepScope stepScopeA1 = mock(AbstractStepScope.class);
-        when(stepScopeA1.getPhaseScope()).thenReturn(phaseScopeA);
-        when(stepScopeA1.getWorkingRandom()).thenReturn(workingRandom);
-        when(workingRandom.nextInt(3)).thenReturn(2);
-        when(workingRandom.nextInt(2)).thenReturn(0);
+        AbstractStepScope stepScopeA1 = ScopeUtils.delegatingStepScope(phaseScopeA);
         moveSelector.stepStarted(stepScopeA1);
         assertAllCodesOfMoveSelector(moveSelector, "a2", "a1", "a3");
         moveSelector.stepEnded(stepScopeA1);
 
-        AbstractStepScope stepScopeA2 = mock(AbstractStepScope.class);
-        when(stepScopeA2.getPhaseScope()).thenReturn(phaseScopeA);
-        when(stepScopeA2.getWorkingRandom()).thenReturn(workingRandom);
-        when(workingRandom.nextInt(3)).thenReturn(0);
-        when(workingRandom.nextInt(2)).thenReturn(1);
+        workingRandom.reset(0, 1);
+        AbstractStepScope stepScopeA2 = ScopeUtils.delegatingStepScope(phaseScopeA);
         moveSelector.stepStarted(stepScopeA2);
         if (cacheType.compareTo(SelectionCacheType.STEP) > 0) {
             // From a1, a2, a3
@@ -95,16 +87,11 @@ public class ShufflingMoveSelectorTest {
 
         moveSelector.phaseEnded(phaseScopeA);
 
-        AbstractPhaseScope phaseScopeB = mock(AbstractPhaseScope.class);
-        when(phaseScopeB.getSolverScope()).thenReturn(solverScope);
-        when(phaseScopeB.getWorkingRandom()).thenReturn(workingRandom);
+        AbstractPhaseScope phaseScopeB = ScopeUtils.delegatingPhaseScope(solverScope);
         moveSelector.phaseStarted(phaseScopeB);
 
-        AbstractStepScope stepScopeB1 = mock(AbstractStepScope.class);
-        when(stepScopeB1.getPhaseScope()).thenReturn(phaseScopeB);
-        when(stepScopeB1.getWorkingRandom()).thenReturn(workingRandom);
-        when(workingRandom.nextInt(3)).thenReturn(1);
-        when(workingRandom.nextInt(2)).thenReturn(0);
+        workingRandom.reset(1, 0);
+        AbstractStepScope stepScopeB1 = ScopeUtils.delegatingStepScope(phaseScopeB);
         moveSelector.stepStarted(stepScopeB1);
         if (cacheType.compareTo(SelectionCacheType.PHASE) > 0) {
             // From a3, a1, a2
