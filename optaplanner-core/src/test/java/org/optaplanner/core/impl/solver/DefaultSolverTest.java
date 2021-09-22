@@ -28,6 +28,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.optaplanner.core.api.score.buildin.hardsoft.HardSoftScore;
@@ -64,9 +65,16 @@ import org.optaplanner.core.impl.testdata.domain.score.TestdataHardSoftScoreSolu
 import org.optaplanner.core.impl.testdata.util.PlannerTestUtils;
 import org.optaplanner.core.impl.util.TestMeterRegistry;
 
+import io.micrometer.core.instrument.Meter;
 import io.micrometer.core.instrument.Metrics;
+import io.micrometer.core.instrument.Tags;
 
 public class DefaultSolverTest {
+
+    @BeforeEach
+    public void resetGlobalRegistry() {
+        Metrics.globalRegistry.clear();
+    }
 
     @Test
     public void solve() {
@@ -82,6 +90,56 @@ public class DefaultSolverTest {
         solution = solver.solve(solution);
         assertThat(solution).isNotNull();
         assertThat(solution.getScore().isSolutionInitialized()).isTrue();
+    }
+
+    @Test
+    public void changeMetricTags() {
+        TestMeterRegistry meterRegistry = new TestMeterRegistry();
+        Metrics.addRegistry(meterRegistry);
+
+        SolverConfig solverConfig = PlannerTestUtils.buildSolverConfig(
+                TestdataSolution.class, TestdataEntity.class);
+        SolverFactory<TestdataSolution> solverFactory = SolverFactory.create(solverConfig);
+
+        DefaultSolver<TestdataSolution> solver = (DefaultSolver<TestdataSolution>) (solverFactory.buildSolver());
+
+        assertThat(meterRegistry.getMeters().stream().map(Meter::getId))
+                .containsExactlyInAnyOrder(
+                        new Meter.Id(SolverMetric.SOLVE_DURATION.getMeterId(),
+                                Tags.empty(),
+                                null,
+                                null,
+                                Meter.Type.LONG_TASK_TIMER),
+                        new Meter.Id(SolverMetric.ERROR_COUNT.getMeterId(),
+                                Tags.empty(),
+                                null,
+                                null,
+                                Meter.Type.COUNTER),
+                        new Meter.Id(SolverMetric.SCORE_CALCULATION_COUNT.getMeterId(),
+                                Tags.empty(),
+                                null,
+                                null,
+                                Meter.Type.GAUGE));
+
+        solver.setMonitorTagMap(Map.of("problem.id", "1"));
+
+        assertThat(meterRegistry.getMeters().stream().map(Meter::getId))
+                .containsExactlyInAnyOrder(
+                        new Meter.Id(SolverMetric.SOLVE_DURATION.getMeterId(),
+                                Tags.of("problem.id", "1"),
+                                null,
+                                null,
+                                Meter.Type.LONG_TASK_TIMER),
+                        new Meter.Id(SolverMetric.ERROR_COUNT.getMeterId(),
+                                Tags.of("problem.id", "1"),
+                                null,
+                                null,
+                                Meter.Type.COUNTER),
+                        new Meter.Id(SolverMetric.SCORE_CALCULATION_COUNT.getMeterId(),
+                                Tags.of("problem.id", "1"),
+                                null,
+                                null,
+                                Meter.Type.GAUGE));
     }
 
     @Test
