@@ -25,6 +25,7 @@ import static org.optaplanner.core.impl.testdata.util.PlannerAssert.assertElemen
 import java.util.Random;
 
 import org.junit.jupiter.api.Test;
+import org.optaplanner.core.impl.util.TestRandom;
 
 public class EmptyValueRangeTest {
 
@@ -52,7 +53,7 @@ public class EmptyValueRangeTest {
 
     @Test
     public void createRandomIterator() {
-        Random workingRandom = mock(Random.class);
+        Random workingRandom = new Random(0);
         assertElementsOfIterator(new EmptyValueRange<Integer>().createRandomIterator(workingRandom));
     }
 

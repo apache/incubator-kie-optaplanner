@@ -26,6 +26,7 @@ import static org.optaplanner.core.impl.testdata.util.PlannerAssert.assertElemen
 import java.util.Random;
 
 import org.junit.jupiter.api.Test;
+import org.optaplanner.core.impl.util.TestRandom;
 
 public class BooleanValueRangeTest {
 
@@ -54,9 +55,7 @@ public class BooleanValueRangeTest {
 
     @Test
     public void createRandomIterator() {
-        Random workingRandom = mock(Random.class);
-
-        when(workingRandom.nextBoolean()).thenReturn(true, true, false, true);
+        Random workingRandom = new TestRandom(true, true, false, true);
         assertElementsOfIterator(new BooleanValueRange().createRandomIterator(workingRandom),
                 Boolean.TRUE, Boolean.TRUE, Boolean.FALSE, Boolean.TRUE);
     }

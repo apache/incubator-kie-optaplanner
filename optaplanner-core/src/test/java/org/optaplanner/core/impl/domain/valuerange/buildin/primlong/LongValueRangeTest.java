@@ -26,6 +26,7 @@ import static org.optaplanner.core.impl.testdata.util.PlannerAssert.assertElemen
 import java.util.Random;
 
 import org.junit.jupiter.api.Test;
+import org.optaplanner.core.impl.util.TestRandom;
 
 public class LongValueRangeTest {
 
@@ -87,22 +88,14 @@ public class LongValueRangeTest {
 
     @Test
     public void createRandomIterator() {
-        Random workingRandom = mock(Random.class);
-
-        when(workingRandom.nextInt(anyInt())).thenReturn(3, 0);
-        assertElementsOfIterator(new LongValueRange(0L, 7L).createRandomIterator(workingRandom), 3L, 0L);
-        when(workingRandom.nextInt(anyInt())).thenReturn(3, 0);
-        assertElementsOfIterator(new LongValueRange(100L, 104L).createRandomIterator(workingRandom), 103L, 100L);
-        when(workingRandom.nextInt(anyInt())).thenReturn(3, 0);
-        assertElementsOfIterator(new LongValueRange(-4L, 3L).createRandomIterator(workingRandom), -1L, -4L);
-        assertAllElementsOfIterator(new LongValueRange(7L, 7L).createRandomIterator(workingRandom));
+        assertElementsOfIterator(new LongValueRange(0L, 7L).createRandomIterator(new TestRandom(3, 0)), 3L, 0L);
+        assertElementsOfIterator(new LongValueRange(100L, 104L).createRandomIterator(new TestRandom(3, 0)), 103L, 100L);
+        assertElementsOfIterator(new LongValueRange(-4L, 3L).createRandomIterator(new TestRandom(3, 0)), -1L, -4L);
+        assertAllElementsOfIterator(new LongValueRange(7L, 7L).createRandomIterator(new TestRandom(0)));
         // IncrementUnit
-        when(workingRandom.nextInt(anyInt())).thenReturn(3, 0);
-        assertElementsOfIterator(new LongValueRange(0L, 10L, 2L).createRandomIterator(workingRandom), 6L, 0L);
-        when(workingRandom.nextInt(anyInt())).thenReturn(3, 0);
-        assertElementsOfIterator(new LongValueRange(-1L, 9L, 2L).createRandomIterator(workingRandom), 5L, -1L);
-        when(workingRandom.nextInt(anyInt())).thenReturn(3, 0);
-        assertElementsOfIterator(new LongValueRange(100L, 120L, 5L).createRandomIterator(workingRandom), 115L, 100L);
+        assertElementsOfIterator(new LongValueRange(0L, 10L, 2L).createRandomIterator(new TestRandom(3, 0)), 6L, 0L);
+        assertElementsOfIterator(new LongValueRange(-1L, 9L, 2L).createRandomIterator(new TestRandom(3, 0)), 5L, -1L);
+        assertElementsOfIterator(new LongValueRange(100L, 120L, 5L).createRandomIterator(new TestRandom(3, 0)), 115L, 100L);
     }
 
 }
