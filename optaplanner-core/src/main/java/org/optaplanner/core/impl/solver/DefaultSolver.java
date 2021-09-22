@@ -40,6 +40,7 @@ import org.optaplanner.core.impl.solver.termination.Termination;
 
 import io.micrometer.core.instrument.Counter;
 import io.micrometer.core.instrument.LongTaskTimer;
+import io.micrometer.core.instrument.Meter;
 import io.micrometer.core.instrument.Metrics;
 import io.micrometer.core.instrument.Tags;
 
@@ -64,7 +65,6 @@ public class DefaultSolver<Solution_> extends AbstractSolver<Solution_> {
     private final String moveThreadCountDescription;
 
     // Metrics
-    private Tags monitoringTags;
     private LongTaskTimer solveLengthTimer;
     private Counter errorCounter;
 
@@ -82,7 +82,6 @@ public class DefaultSolver<Solution_> extends AbstractSolver<Solution_> {
         this.basicPlumbingTermination = basicPlumbingTermination;
         this.solverScope = solverScope;
         this.moveThreadCountDescription = moveThreadCountDescription;
-        monitoringTags = Tags.empty();
         registerMetrics();
     }
 
@@ -163,15 +162,22 @@ public class DefaultSolver<Solution_> extends AbstractSolver<Solution_> {
     }
 
     public void setMonitorTagMap(Map<String, String> monitorTagMap) {
-        monitoringTags = ObjectUtils.defaultIfNull(monitorTagMap, Collections.<String, String> emptyMap())
+        Tags monitoringTags = ObjectUtils.defaultIfNull(monitorTagMap, Collections.<String, String> emptyMap())
                 .entrySet().stream().map(entry -> Tags.of(entry.getKey(), entry.getValue()))
                 .reduce(Tags.empty(), Tags::and);
-        solverScope.setMonitoringTags(monitoringTags);
         unregisterMetrics();
+        solverScope.setMonitoringTags(monitoringTags);
         registerMetrics();
     }
 
     private void unregisterMetrics() {
+        Metrics.globalRegistry.remove(solveLengthTimer);
+        Metrics.globalRegistry.remove(errorCounter);
+        Metrics.globalRegistry.remove(new Meter.Id(SolverMetric.SCORE_CALCULATION_COUNT.getMeterId(),
+                solverScope.getMonitoringTags(),
+                null,
+                null,
+                Meter.Type.GAUGE));
         solverScope.getSolverMetricSet().forEach(solverMetric -> solverMetric.unregister(this));
     }
 
