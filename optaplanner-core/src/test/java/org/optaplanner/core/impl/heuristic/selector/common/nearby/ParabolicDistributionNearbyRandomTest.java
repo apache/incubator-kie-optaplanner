@@ -49,7 +49,7 @@ public class ParabolicDistributionNearbyRandomTest {
         Random random = new TestRandom(
                 Math.nextAfter(1.0, Double.NEGATIVE_INFINITY),
                 Math.nextAfter(1.0, Double.NEGATIVE_INFINITY),
-                0.0);
+                0, 0);
         NearbyRandom nearbyRandom = new ParabolicDistributionNearbyRandom(100);
 
         assertThat(nearbyRandom.nextInt(random, 500)).isEqualTo(99);

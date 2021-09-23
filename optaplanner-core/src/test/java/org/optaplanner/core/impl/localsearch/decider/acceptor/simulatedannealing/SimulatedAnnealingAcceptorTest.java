@@ -78,7 +78,7 @@ public class SimulatedAnnealingAcceptorTest extends AbstractAcceptorTest {
         acceptor.stepEnded(stepScope1);
         phaseScope.setLastCompletedStepScope(stepScope1);
 
-        solverScope.setWorkingRandom(new TestRandom(0.01));
+        solverScope.setWorkingRandom(new TestRandom(0.01, 0.01));
         LocalSearchStepScope<TestdataSolution> stepScope2 = new LocalSearchStepScope<>(phaseScope);
         stepScope2.setTimeGradient(1.0);
         acceptor.stepStarted(stepScope2);

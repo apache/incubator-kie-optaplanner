@@ -96,7 +96,7 @@ public class BlockDistributionNearbyRandomTest {
         Random random = new TestRandom(Math.nextAfter(threshold, Double.NEGATIVE_INFINITY), -1);
         assertThat(nearbyRandom.nextInt(random, 1)).isEqualTo(-1);
 
-        random = new TestRandom(threshold, -1, threshold, -1);
+        random = new TestRandom(threshold, -1, threshold, -1, -1, -1, -1, -1);
         assertThat(nearbyRandom.nextInt(random, 10)).isEqualTo(-1);
         assertThat(nearbyRandom.nextInt(random, 11)).isEqualTo(-1);
         assertThat(nearbyRandom.nextInt(random, 20)).isEqualTo(-1);
@@ -107,18 +107,18 @@ public class BlockDistributionNearbyRandomTest {
         assertThat(nearbyRandom.nextInt(random, 21)).isEqualTo(-1);
         assertThat(nearbyRandom.nextInt(random, 22)).isEqualTo(-2);
 
-        random = new TestRandom(threshold, -1);
+        random = new TestRandom(threshold, -1, -1, -1, -1, -1);
         assertThat(nearbyRandom.nextInt(random, 200)).isEqualTo(-1);
         assertThat(nearbyRandom.nextInt(random, 300)).isEqualTo(-1);
         assertThat(nearbyRandom.nextInt(random, 1000)).isEqualTo(-1);
 
         // Rounding
-        random = new TestRandom(threshold, -3, threshold, -3, -2);
+        random = new TestRandom(threshold, -3, threshold, -3, -2, -2, -2);
         assertThat(nearbyRandom.nextInt(random, 199)).isEqualTo(-3);
         assertThat(nearbyRandom.nextInt(random, 198)).isEqualTo(-3);
         assertThat(nearbyRandom.nextInt(random, 197)).isEqualTo(-2);
 
-        random = new TestRandom(1, -1, -1, -2, -2);
+        random = new TestRandom(1, -1, -1, -2, -2, -2);
         assertThat(nearbyRandom.nextInt(random, 5)).isEqualTo(-1);
         assertThat(nearbyRandom.nextInt(random, 6)).isEqualTo(-2);
         assertThat(nearbyRandom.nextInt(random, 4)).isEqualTo(-2);

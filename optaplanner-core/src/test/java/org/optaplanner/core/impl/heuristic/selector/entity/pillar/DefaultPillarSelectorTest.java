@@ -232,7 +232,7 @@ public class DefaultPillarSelectorTest {
                 0, // [a]
                 2, 1, 0, 0, // [c, e, f]
                 1, 0, 0, // [b, d]
-                1, 0, 1); // [b, d]
+                1, 0, 1, 1, 1); // [b, d]
         assertCodesOfNeverEndingPillarSelector(pillarSelector, "[a]", "[c, e]", "[b]", "[d]");
         pillarSelector.stepEnded(stepScopeA1);
 
@@ -299,7 +299,7 @@ public class DefaultPillarSelectorTest {
         // Expected pillar cache: [b, d], [c, e, f]
         Random workingRandom = new TestRandom(
                 1, 0, 0, 0, // [c, e]
-                0); // [b, d]
+                0, 0, 0, 0); // [b, d]
 
         SolverScope solverScope = mock(SolverScope.class);
         when(solverScope.getWorkingRandom()).thenReturn(workingRandom);
@@ -348,7 +348,7 @@ public class DefaultPillarSelectorTest {
                 1, 1, // [b, d]
                 2, 2, // [c, e, f]
                 2, 1, 1, // [c, e, f]
-                0 // [a]
+                0, 0 // [a]
         );
 
         SolverScope solverScope = mock(SolverScope.class);

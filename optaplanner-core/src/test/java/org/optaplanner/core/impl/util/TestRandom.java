@@ -15,8 +15,7 @@ import org.junit.jupiter.api.Assertions;
  * Therefore we introduce this class to allow for that use case.
  *
  * It allows to provide a sequence of pre-defined "random" values.
- * It maintains an internal count of values already returned and if larger than the sequence provided,
- * the last element in the sequence is returned.
+ * It throws an exception of that sequence has been exhausted.
  *
  * Due to some internals of OptaPlanner where randoms are read from {@link org.optaplanner.core.impl.solver.scope.SolverScope}
  * and never updated in later phases and steps,
@@ -52,12 +51,17 @@ public final class TestRandom extends Random {
     @Override
     public int nextInt(int bound) {
         lastRequestedIntBound = bound;
+        return getNextValue().intValue();
+    }
+
+    private BigDecimal getNextValue() {
         returnCount++;
         if (returnCount > toReturn.length) {
-            return toReturn[toReturn.length - 1].intValue();
-        } else {
-            return toReturn[returnCount - 1].intValue();
+            throw new IllegalStateException("Requested a random value past the specified collection (" +
+                    Arrays.toString(toReturn) + ").\n" +
+                    "The code being tested is requesting more random values than expected.");
         }
+        return toReturn[returnCount - 1];
     }
 
     @Override
@@ -77,12 +81,7 @@ public final class TestRandom extends Random {
 
     @Override
     public long nextLong() {
-        returnCount++;
-        if (returnCount > toReturn.length) {
-            return toReturn[toReturn.length - 1].longValue();
-        } else {
-            return toReturn[returnCount - 1].longValue();
-        }
+        return getNextValue().longValue();
     }
 
     @Override
@@ -92,22 +91,12 @@ public final class TestRandom extends Random {
 
     @Override
     public float nextFloat() {
-        returnCount++;
-        if (returnCount > toReturn.length) {
-            return toReturn[toReturn.length - 1].floatValue();
-        } else {
-            return toReturn[returnCount - 1].floatValue();
-        }
+        return getNextValue().floatValue();
     }
 
     @Override
     public double nextDouble() {
-        returnCount++;
-        if (returnCount > toReturn.length) {
-            return toReturn[toReturn.length - 1].doubleValue();
-        } else {
-            return toReturn[returnCount - 1].doubleValue();
-        }
+        return getNextValue().doubleValue();
     }
 
     @Override
