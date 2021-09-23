@@ -34,7 +34,7 @@ import org.optaplanner.core.impl.heuristic.selector.move.MoveSelector;
 import org.optaplanner.core.impl.phase.scope.AbstractPhaseScope;
 import org.optaplanner.core.impl.phase.scope.AbstractStepScope;
 import org.optaplanner.core.impl.solver.scope.SolverScope;
-import org.optaplanner.core.impl.util.ScopeUtils;
+import org.optaplanner.core.impl.testdata.util.PlannerTestUtils;
 import org.optaplanner.core.impl.util.TestRandom;
 
 public class UnionMoveSelectorTest {
@@ -115,9 +115,9 @@ public class UnionMoveSelectorTest {
         SolverScope solverScope = mock(SolverScope.class);
         when(solverScope.getWorkingRandom()).thenReturn(workingRandom);
         moveSelector.solvingStarted(solverScope);
-        AbstractPhaseScope phaseScopeA = ScopeUtils.delegatingPhaseScope(solverScope);
+        AbstractPhaseScope phaseScopeA = PlannerTestUtils.delegatingPhaseScope(solverScope);
         moveSelector.phaseStarted(phaseScopeA);
-        AbstractStepScope stepScopeA1 = ScopeUtils.delegatingStepScope(phaseScopeA);
+        AbstractStepScope stepScopeA1 = PlannerTestUtils.delegatingStepScope(phaseScopeA);
         moveSelector.stepStarted(stepScopeA1);
 
         // A union of ending MoveSelectors does end, even with randomSelection
@@ -147,9 +147,9 @@ public class UnionMoveSelectorTest {
         SolverScope solverScope = mock(SolverScope.class);
         when(solverScope.getWorkingRandom()).thenReturn(workingRandom);
         moveSelector.solvingStarted(solverScope);
-        AbstractPhaseScope phaseScopeA = ScopeUtils.delegatingPhaseScope(solverScope);
+        AbstractPhaseScope phaseScopeA = PlannerTestUtils.delegatingPhaseScope(solverScope);
         moveSelector.phaseStarted(phaseScopeA);
-        AbstractStepScope stepScopeA1 = ScopeUtils.delegatingStepScope(phaseScopeA);
+        AbstractStepScope stepScopeA1 = PlannerTestUtils.delegatingStepScope(phaseScopeA);
         moveSelector.stepStarted(stepScopeA1);
 
         // A union of ending MoveSelectors does end, even with randomSelection

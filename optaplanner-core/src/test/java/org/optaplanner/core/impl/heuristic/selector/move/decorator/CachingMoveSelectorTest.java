@@ -32,7 +32,7 @@ import org.optaplanner.core.impl.heuristic.selector.move.MoveSelector;
 import org.optaplanner.core.impl.phase.scope.AbstractPhaseScope;
 import org.optaplanner.core.impl.phase.scope.AbstractStepScope;
 import org.optaplanner.core.impl.solver.scope.SolverScope;
-import org.optaplanner.core.impl.util.ScopeUtils;
+import org.optaplanner.core.impl.testdata.util.PlannerTestUtils;
 import org.optaplanner.core.impl.util.TestRandom;
 
 public class CachingMoveSelectorTest {
@@ -139,15 +139,15 @@ public class CachingMoveSelectorTest {
         when(solverScope.getWorkingRandom()).thenReturn(workingRandom);
         moveSelector.solvingStarted(solverScope);
 
-        AbstractPhaseScope phaseScopeA = ScopeUtils.delegatingPhaseScope(solverScope);
+        AbstractPhaseScope phaseScopeA = PlannerTestUtils.delegatingPhaseScope(solverScope);
         moveSelector.phaseStarted(phaseScopeA);
 
-        AbstractStepScope stepScopeA1 = ScopeUtils.delegatingStepScope(phaseScopeA);
+        AbstractStepScope stepScopeA1 = PlannerTestUtils.delegatingStepScope(phaseScopeA);
         moveSelector.stepStarted(stepScopeA1);
         assertCodesOfNeverEndingMoveSelector(moveSelector, 3L, "a2", "a1", "a3");
         moveSelector.stepEnded(stepScopeA1);
 
-        AbstractStepScope stepScopeA2 = ScopeUtils.delegatingStepScope(phaseScopeA);
+        AbstractStepScope stepScopeA2 = PlannerTestUtils.delegatingStepScope(phaseScopeA);
         moveSelector.stepStarted(stepScopeA2);
         workingRandom.reset(2, 0, 1);
         assertCodesOfNeverEndingMoveSelector(moveSelector, 3L, "a3", "a1", "a2");
@@ -155,10 +155,10 @@ public class CachingMoveSelectorTest {
 
         moveSelector.phaseEnded(phaseScopeA);
 
-        AbstractPhaseScope phaseScopeB = ScopeUtils.delegatingPhaseScope(solverScope);
+        AbstractPhaseScope phaseScopeB = PlannerTestUtils.delegatingPhaseScope(solverScope);
         moveSelector.phaseStarted(phaseScopeB);
 
-        AbstractStepScope stepScopeB1 = ScopeUtils.delegatingStepScope(phaseScopeB);
+        AbstractStepScope stepScopeB1 = PlannerTestUtils.delegatingStepScope(phaseScopeB);
         moveSelector.stepStarted(stepScopeB1);
         workingRandom.reset(1, 2, 0);
         assertCodesOfNeverEndingMoveSelector(moveSelector, 3L, "a2", "a3", "a1");

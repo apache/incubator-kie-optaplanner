@@ -37,7 +37,7 @@ import org.optaplanner.core.impl.score.director.InnerScoreDirector;
 import org.optaplanner.core.impl.solver.scope.SolverScope;
 import org.optaplanner.core.impl.testdata.domain.TestdataEntity;
 import org.optaplanner.core.impl.testdata.domain.TestdataSolution;
-import org.optaplanner.core.impl.util.ScopeUtils;
+import org.optaplanner.core.impl.testdata.util.PlannerTestUtils;
 import org.optaplanner.core.impl.util.TestRandom;
 
 public class FromSolutionEntitySelectorTest {
@@ -242,35 +242,35 @@ public class FromSolutionEntitySelectorTest {
         when(solverScope.getScoreDirector()).thenReturn(scoreDirector);
         entitySelector.solvingStarted(solverScope);
 
-        AbstractPhaseScope phaseScopeA = ScopeUtils.delegatingPhaseScope(solverScope);
+        AbstractPhaseScope phaseScopeA = PlannerTestUtils.delegatingPhaseScope(solverScope);
         entitySelector.phaseStarted(phaseScopeA);
 
-        AbstractStepScope stepScopeA1 = ScopeUtils.delegatingStepScope(phaseScopeA);
+        AbstractStepScope stepScopeA1 = PlannerTestUtils.delegatingStepScope(phaseScopeA);
         entitySelector.stepStarted(stepScopeA1);
         assertCodesOfNeverEndingOfEntitySelector(entitySelector, 3L, "e2", "e1", "e1", "e3");
         entitySelector.stepEnded(stepScopeA1);
 
-        AbstractStepScope stepScopeA2 = ScopeUtils.delegatingStepScope(phaseScopeA);
+        AbstractStepScope stepScopeA2 = PlannerTestUtils.delegatingStepScope(phaseScopeA);
         entitySelector.stepStarted(stepScopeA2);
         assertCodesOfNeverEndingOfEntitySelector(entitySelector, 3L, "e2", "e3");
         entitySelector.stepEnded(stepScopeA2);
 
         entitySelector.phaseEnded(phaseScopeA);
 
-        AbstractPhaseScope phaseScopeB = ScopeUtils.delegatingPhaseScope(solverScope);
+        AbstractPhaseScope phaseScopeB = PlannerTestUtils.delegatingPhaseScope(solverScope);
         entitySelector.phaseStarted(phaseScopeB);
 
-        AbstractStepScope stepScopeB1 = ScopeUtils.delegatingStepScope(phaseScopeB);
+        AbstractStepScope stepScopeB1 = PlannerTestUtils.delegatingStepScope(phaseScopeB);
         entitySelector.stepStarted(stepScopeB1);
         assertCodesOfNeverEndingOfEntitySelector(entitySelector, 3L, "e3");
         entitySelector.stepEnded(stepScopeB1);
 
-        AbstractStepScope stepScopeB2 = ScopeUtils.delegatingStepScope(phaseScopeB);
+        AbstractStepScope stepScopeB2 = PlannerTestUtils.delegatingStepScope(phaseScopeB);
         entitySelector.stepStarted(stepScopeB2);
         assertCodesOfNeverEndingOfEntitySelector(entitySelector, 3L, "e2");
         entitySelector.stepEnded(stepScopeB2);
 
-        AbstractStepScope stepScopeB3 = ScopeUtils.delegatingStepScope(phaseScopeB);
+        AbstractStepScope stepScopeB3 = PlannerTestUtils.delegatingStepScope(phaseScopeB);
         entitySelector.stepStarted(stepScopeB3);
         assertCodesOfNeverEndingOfEntitySelector(entitySelector, 3L, "e1");
         entitySelector.stepEnded(stepScopeB3);
@@ -302,10 +302,10 @@ public class FromSolutionEntitySelectorTest {
         when(solverScope.getScoreDirector()).thenReturn(scoreDirector);
         entitySelector.solvingStarted(solverScope);
 
-        AbstractPhaseScope phaseScopeA = ScopeUtils.delegatingPhaseScope(solverScope);
+        AbstractPhaseScope phaseScopeA = PlannerTestUtils.delegatingPhaseScope(solverScope);
         entitySelector.phaseStarted(phaseScopeA);
 
-        AbstractStepScope stepScopeA1 = ScopeUtils.delegatingStepScope(phaseScopeA);
+        AbstractStepScope stepScopeA1 = PlannerTestUtils.delegatingStepScope(phaseScopeA);
         entitySelector.stepStarted(stepScopeA1);
         assertCodesOfNeverEndingOfEntitySelector(entitySelector, 3L, "e2", "e1", "e1", "e3");
         entitySelector.stepEnded(stepScopeA1);
@@ -316,22 +316,22 @@ public class FromSolutionEntitySelectorTest {
         when(scoreDirector.isWorkingEntityListDirty(7L)).thenReturn(true);
         when(scoreDirector.isWorkingEntityListDirty(8L)).thenReturn(false);
 
-        AbstractStepScope stepScopeA2 = ScopeUtils.delegatingStepScope(phaseScopeA);
+        AbstractStepScope stepScopeA2 = PlannerTestUtils.delegatingStepScope(phaseScopeA);
         entitySelector.stepStarted(stepScopeA2);
         assertCodesOfNeverEndingOfEntitySelector(entitySelector, 3L, "f2", "f3");
         entitySelector.stepEnded(stepScopeA2);
 
         entitySelector.phaseEnded(phaseScopeA);
 
-        AbstractPhaseScope phaseScopeB = ScopeUtils.delegatingPhaseScope(solverScope);
+        AbstractPhaseScope phaseScopeB = PlannerTestUtils.delegatingPhaseScope(solverScope);
         entitySelector.phaseStarted(phaseScopeB);
 
-        AbstractStepScope stepScopeB1 = ScopeUtils.delegatingStepScope(phaseScopeB);
+        AbstractStepScope stepScopeB1 = PlannerTestUtils.delegatingStepScope(phaseScopeB);
         entitySelector.stepStarted(stepScopeB1);
         assertCodesOfNeverEndingOfEntitySelector(entitySelector, 3L, "f3");
         entitySelector.stepEnded(stepScopeB1);
 
-        AbstractStepScope stepScopeB2 = ScopeUtils.delegatingStepScope(phaseScopeB);
+        AbstractStepScope stepScopeB2 = PlannerTestUtils.delegatingStepScope(phaseScopeB);
         entitySelector.stepStarted(stepScopeB2);
         assertCodesOfNeverEndingOfEntitySelector(entitySelector, 3L, "f2");
         entitySelector.stepEnded(stepScopeB2);
@@ -342,7 +342,7 @@ public class FromSolutionEntitySelectorTest {
         when(scoreDirector.isWorkingEntityListDirty(8L)).thenReturn(true);
         when(scoreDirector.isWorkingEntityListDirty(9L)).thenReturn(false);
 
-        AbstractStepScope stepScopeB3 = ScopeUtils.delegatingStepScope(phaseScopeB);
+        AbstractStepScope stepScopeB3 = PlannerTestUtils.delegatingStepScope(phaseScopeB);
         entitySelector.stepStarted(stepScopeB3);
         assertCodesOfNeverEndingOfEntitySelector(entitySelector, 3L, "e1");
         entitySelector.stepEnded(stepScopeB3);

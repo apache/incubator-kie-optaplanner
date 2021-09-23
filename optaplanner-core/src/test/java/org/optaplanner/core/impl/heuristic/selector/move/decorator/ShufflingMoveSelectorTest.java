@@ -31,7 +31,7 @@ import org.optaplanner.core.impl.heuristic.selector.move.MoveSelector;
 import org.optaplanner.core.impl.phase.scope.AbstractPhaseScope;
 import org.optaplanner.core.impl.phase.scope.AbstractStepScope;
 import org.optaplanner.core.impl.solver.scope.SolverScope;
-import org.optaplanner.core.impl.util.ScopeUtils;
+import org.optaplanner.core.impl.testdata.util.PlannerTestUtils;
 import org.optaplanner.core.impl.util.TestRandom;
 
 public class ShufflingMoveSelectorTest {
@@ -63,16 +63,16 @@ public class ShufflingMoveSelectorTest {
         when(solverScope.getWorkingRandom()).thenReturn(workingRandom);
         moveSelector.solvingStarted(solverScope);
 
-        AbstractPhaseScope phaseScopeA = ScopeUtils.delegatingPhaseScope(solverScope);
+        AbstractPhaseScope phaseScopeA = PlannerTestUtils.delegatingPhaseScope(solverScope);
         moveSelector.phaseStarted(phaseScopeA);
 
-        AbstractStepScope stepScopeA1 = ScopeUtils.delegatingStepScope(phaseScopeA);
+        AbstractStepScope stepScopeA1 = PlannerTestUtils.delegatingStepScope(phaseScopeA);
         moveSelector.stepStarted(stepScopeA1);
         assertAllCodesOfMoveSelector(moveSelector, "a2", "a1", "a3");
         moveSelector.stepEnded(stepScopeA1);
 
         workingRandom.reset(0, 1);
-        AbstractStepScope stepScopeA2 = ScopeUtils.delegatingStepScope(phaseScopeA);
+        AbstractStepScope stepScopeA2 = PlannerTestUtils.delegatingStepScope(phaseScopeA);
         moveSelector.stepStarted(stepScopeA2);
         if (cacheType.compareTo(SelectionCacheType.STEP) > 0) {
             // From a1, a2, a3
@@ -85,11 +85,11 @@ public class ShufflingMoveSelectorTest {
 
         moveSelector.phaseEnded(phaseScopeA);
 
-        AbstractPhaseScope phaseScopeB = ScopeUtils.delegatingPhaseScope(solverScope);
+        AbstractPhaseScope phaseScopeB = PlannerTestUtils.delegatingPhaseScope(solverScope);
         moveSelector.phaseStarted(phaseScopeB);
 
         workingRandom.reset(1, 0);
-        AbstractStepScope stepScopeB1 = ScopeUtils.delegatingStepScope(phaseScopeB);
+        AbstractStepScope stepScopeB1 = PlannerTestUtils.delegatingStepScope(phaseScopeB);
         moveSelector.stepStarted(stepScopeB1);
         if (cacheType.compareTo(SelectionCacheType.PHASE) > 0) {
             // From a3, a1, a2

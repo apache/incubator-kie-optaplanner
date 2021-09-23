@@ -39,7 +39,7 @@ import org.optaplanner.core.impl.phase.scope.AbstractStepScope;
 import org.optaplanner.core.impl.solver.scope.SolverScope;
 import org.optaplanner.core.impl.testdata.domain.TestdataEntity;
 import org.optaplanner.core.impl.testdata.domain.TestdataSolution;
-import org.optaplanner.core.impl.util.ScopeUtils;
+import org.optaplanner.core.impl.testdata.util.PlannerTestUtils;
 import org.optaplanner.core.impl.util.TestRandom;
 
 public class ProbabilityEntitySelectorTest {
@@ -77,9 +77,9 @@ public class ProbabilityEntitySelectorTest {
         SolverScope solverScope = mock(SolverScope.class);
         when(solverScope.getWorkingRandom()).thenReturn(workingRandom);
         entitySelector.solvingStarted(solverScope);
-        AbstractPhaseScope phaseScopeA = ScopeUtils.delegatingPhaseScope(solverScope);
+        AbstractPhaseScope phaseScopeA = PlannerTestUtils.delegatingPhaseScope(solverScope);
         entitySelector.phaseStarted(phaseScopeA);
-        AbstractStepScope stepScopeA1 = ScopeUtils.delegatingStepScope(phaseScopeA);
+        AbstractStepScope stepScopeA1 = PlannerTestUtils.delegatingStepScope(phaseScopeA);
         entitySelector.stepStarted(stepScopeA1);
 
         assertThat(entitySelector.isCountable()).isTrue();

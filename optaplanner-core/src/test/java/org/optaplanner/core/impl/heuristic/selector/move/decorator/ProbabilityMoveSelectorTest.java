@@ -35,7 +35,7 @@ import org.optaplanner.core.impl.phase.scope.AbstractPhaseScope;
 import org.optaplanner.core.impl.phase.scope.AbstractStepScope;
 import org.optaplanner.core.impl.solver.scope.SolverScope;
 import org.optaplanner.core.impl.testdata.domain.TestdataSolution;
-import org.optaplanner.core.impl.util.ScopeUtils;
+import org.optaplanner.core.impl.testdata.util.PlannerTestUtils;
 import org.optaplanner.core.impl.util.TestRandom;
 
 public class ProbabilityMoveSelectorTest {
@@ -73,9 +73,9 @@ public class ProbabilityMoveSelectorTest {
         SolverScope<TestdataSolution> solverScope = mock(SolverScope.class);
         when(solverScope.getWorkingRandom()).thenReturn(workingRandom);
         moveSelector.solvingStarted(solverScope);
-        AbstractPhaseScope<TestdataSolution> phaseScopeA = ScopeUtils.delegatingPhaseScope(solverScope);
+        AbstractPhaseScope<TestdataSolution> phaseScopeA = PlannerTestUtils.delegatingPhaseScope(solverScope);
         moveSelector.phaseStarted(phaseScopeA);
-        AbstractStepScope<TestdataSolution> stepScopeA1 = ScopeUtils.delegatingStepScope(phaseScopeA);
+        AbstractStepScope<TestdataSolution> stepScopeA1 = PlannerTestUtils.delegatingStepScope(phaseScopeA);
         moveSelector.stepStarted(stepScopeA1);
 
         assertCodesOfNeverEndingMoveSelector(moveSelector, 4L, "e3", "e1", "e1", "e4", "e2");

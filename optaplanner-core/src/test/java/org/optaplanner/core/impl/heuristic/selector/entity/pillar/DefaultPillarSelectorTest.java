@@ -38,7 +38,7 @@ import org.optaplanner.core.impl.solver.scope.SolverScope;
 import org.optaplanner.core.impl.testdata.domain.TestdataEntity;
 import org.optaplanner.core.impl.testdata.domain.TestdataObject;
 import org.optaplanner.core.impl.testdata.domain.TestdataValue;
-import org.optaplanner.core.impl.util.ScopeUtils;
+import org.optaplanner.core.impl.testdata.util.PlannerTestUtils;
 import org.optaplanner.core.impl.util.TestRandom;
 
 public class DefaultPillarSelectorTest {
@@ -221,10 +221,10 @@ public class DefaultPillarSelectorTest {
         when(solverScope.getWorkingRandom()).thenReturn(workingRandom);
         pillarSelector.solvingStarted(solverScope);
 
-        AbstractPhaseScope phaseScopeA = ScopeUtils.delegatingPhaseScope(solverScope);
+        AbstractPhaseScope phaseScopeA = PlannerTestUtils.delegatingPhaseScope(solverScope);
         pillarSelector.phaseStarted(phaseScopeA);
 
-        AbstractStepScope stepScopeA1 = ScopeUtils.delegatingStepScope(phaseScopeA);
+        AbstractStepScope stepScopeA1 = PlannerTestUtils.delegatingStepScope(phaseScopeA);
         pillarSelector.stepStarted(stepScopeA1);
         // nextInt pattern: pillarIndex, subPillarSize, element 0, element 1, element 2, ...
         // Expected pillar cache: [a], [b, d], [c, e, f]
@@ -239,7 +239,7 @@ public class DefaultPillarSelectorTest {
         b.setValue(val3);
         f.setValue(val4);
 
-        AbstractStepScope stepScopeA2 = ScopeUtils.delegatingStepScope(phaseScopeA);
+        AbstractStepScope stepScopeA2 = PlannerTestUtils.delegatingStepScope(phaseScopeA);
         pillarSelector.stepStarted(stepScopeA2);
         // nextInt pattern: pillarIndex, subPillarSize, element 0, element 1, element 2, ...
         // Expected pillar cache: [a], [b, c, e], [d], [f]
@@ -253,10 +253,10 @@ public class DefaultPillarSelectorTest {
 
         pillarSelector.phaseEnded(phaseScopeA);
 
-        AbstractPhaseScope phaseScopeB = ScopeUtils.delegatingPhaseScope(solverScope);
+        AbstractPhaseScope phaseScopeB = PlannerTestUtils.delegatingPhaseScope(solverScope);
         pillarSelector.phaseStarted(phaseScopeB);
 
-        AbstractStepScope stepScopeB1 = ScopeUtils.delegatingStepScope(phaseScopeB);
+        AbstractStepScope stepScopeB1 = PlannerTestUtils.delegatingStepScope(phaseScopeB);
         pillarSelector.stepStarted(stepScopeB1);
         // nextInt pattern: pillarIndex, subPillarSize, element 0, element 1, element 2, ...
         // Expected pillar cache: [a], [b, c, e], [d], [f]
@@ -305,10 +305,10 @@ public class DefaultPillarSelectorTest {
         when(solverScope.getWorkingRandom()).thenReturn(workingRandom);
         pillarSelector.solvingStarted(solverScope);
 
-        AbstractPhaseScope phaseScopeA = ScopeUtils.delegatingPhaseScope(solverScope);
+        AbstractPhaseScope phaseScopeA = PlannerTestUtils.delegatingPhaseScope(solverScope);
         pillarSelector.phaseStarted(phaseScopeA);
 
-        AbstractStepScope stepScopeA1 = ScopeUtils.delegatingStepScope(phaseScopeA);
+        AbstractStepScope stepScopeA1 = PlannerTestUtils.delegatingStepScope(phaseScopeA);
         pillarSelector.stepStarted(stepScopeA1);
         assertCodesOfNeverEndingPillarSelector(pillarSelector, "[c, e]", "[b, d]");
         pillarSelector.stepEnded(stepScopeA1);
@@ -355,10 +355,10 @@ public class DefaultPillarSelectorTest {
         when(solverScope.getWorkingRandom()).thenReturn(workingRandom);
         pillarSelector.solvingStarted(solverScope);
 
-        AbstractPhaseScope phaseScopeA = ScopeUtils.delegatingPhaseScope(solverScope);
+        AbstractPhaseScope phaseScopeA = PlannerTestUtils.delegatingPhaseScope(solverScope);
         pillarSelector.phaseStarted(phaseScopeA);
 
-        AbstractStepScope stepScopeA1 = ScopeUtils.delegatingStepScope(phaseScopeA);
+        AbstractStepScope stepScopeA1 = PlannerTestUtils.delegatingStepScope(phaseScopeA);
         pillarSelector.stepStarted(stepScopeA1);
         assertCodesOfNeverEndingPillarSelector(pillarSelector, "[b, d]", "[c, e, f]", "[e, f]", "[a]");
         pillarSelector.stepEnded(stepScopeA1);
