@@ -187,10 +187,6 @@ public abstract class GenuineVariableDescriptor<Solution_> extends VariableDescr
         return movableChainedTrailingValueFilter;
     }
 
-    public SelectionFilter<Solution_, Object> getReinitializeVariableEntityFilter() {
-        return reinitializeVariableEntityFilter;
-    }
-
     public ValueRangeDescriptor<Solution_> getValueRangeDescriptor() {
         return valueRangeDescriptor;
     }
