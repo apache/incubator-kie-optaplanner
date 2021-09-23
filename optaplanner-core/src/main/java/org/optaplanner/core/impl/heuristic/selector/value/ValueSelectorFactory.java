@@ -113,18 +113,15 @@ public class ValueSelectorFactory<Solution_>
     public ValueSelector<Solution_> buildValueSelector(HeuristicConfigPolicy<Solution_> configPolicy,
             EntityDescriptor<Solution_> entityDescriptor, SelectionCacheType minimumCacheType,
             SelectionOrder inheritedSelectionOrder, boolean applyReinitializeVariableFiltering) {
+        GenuineVariableDescriptor<Solution_> variableDescriptor = deduceGenuineVariableDescriptor(
+                downcastEntityDescriptor(configPolicy, entityDescriptor));
         if (config.getMimicSelectorRef() != null) {
             ValueSelector<Solution_> valueSelector = buildMimicReplaying(configPolicy);
-            if (applyReinitializeVariableFiltering) {
-                valueSelector = new ReinitializeVariableValueSelector<>(valueSelector);
-            }
+            valueSelector = applyReinitializeVariableFiltering(
+                    applyReinitializeVariableFiltering, variableDescriptor, valueSelector);
             valueSelector = applyDowncasting(valueSelector);
             return valueSelector;
         }
-        entityDescriptor = downcastEntityDescriptor(configPolicy, entityDescriptor);
-        GenuineVariableDescriptor<Solution_> variableDescriptor =
-                config.getVariableName() == null ? deduceVariableDescriptor(entityDescriptor)
-                        : deduceVariableDescriptor(entityDescriptor, config.getVariableName());
         SelectionCacheType resolvedCacheType = SelectionCacheType.resolve(config.getCacheType(), minimumCacheType);
         SelectionOrder resolvedSelectionOrder = SelectionOrder.resolve(config.getSelectionOrder(), inheritedSelectionOrder);
 
@@ -154,11 +151,16 @@ public class ValueSelectorFactory<Solution_>
         valueSelector = applyCaching(resolvedCacheType, resolvedSelectionOrder, valueSelector);
         valueSelector = applySelectedLimit(valueSelector);
         valueSelector = applyMimicRecording(configPolicy, valueSelector);
-        if (applyReinitializeVariableFiltering) {
-            valueSelector = new ReinitializeVariableValueSelector<>(valueSelector);
-        }
+        valueSelector = applyReinitializeVariableFiltering(
+                applyReinitializeVariableFiltering, variableDescriptor, valueSelector);
         valueSelector = applyDowncasting(valueSelector);
         return valueSelector;
+    }
+
+    private GenuineVariableDescriptor<Solution_> deduceGenuineVariableDescriptor(EntityDescriptor<Solution_> entityDescriptor) {
+        return config.getVariableName() == null
+                ? deduceVariableDescriptor(entityDescriptor)
+                : deduceVariableDescriptor(entityDescriptor, config.getVariableName());
     }
 
     protected ValueSelector<Solution_> buildMimicReplaying(HeuristicConfigPolicy<Solution_> configPolicy) {
@@ -507,6 +509,14 @@ public class ValueSelectorFactory<Solution_>
                     (EntityIndependentValueSelector<Solution_>) valueSelector);
             configPolicy.addValueMimicRecorder(config.getId(), mimicRecordingValueSelector);
             valueSelector = mimicRecordingValueSelector;
+        }
+        return valueSelector;
+    }
+
+    private ValueSelector<Solution_> applyReinitializeVariableFiltering(boolean applyReinitializeVariableFiltering,
+            GenuineVariableDescriptor<Solution_> variableDescriptor, ValueSelector<Solution_> valueSelector) {
+        if (applyReinitializeVariableFiltering && !variableDescriptor.isListVariable()) {
+            valueSelector = new ReinitializeVariableValueSelector<>(valueSelector);
         }
         return valueSelector;
     }
