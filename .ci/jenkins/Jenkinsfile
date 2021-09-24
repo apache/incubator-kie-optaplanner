@@ -1,3 +1,6 @@
+// Jenkinsfile is still used by Kogito PR checks
+// Can be removed once Kogito PR checks are using the build-chain
+
 @Library('jenkins-pipeline-shared-libraries')_
 
 import org.kie.jenkins.MavenCommand
