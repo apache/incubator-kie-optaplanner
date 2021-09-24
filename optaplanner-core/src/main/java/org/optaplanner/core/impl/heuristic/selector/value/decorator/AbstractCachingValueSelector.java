@@ -30,7 +30,7 @@ import org.optaplanner.core.impl.heuristic.selector.value.ValueSelector;
 import org.optaplanner.core.impl.solver.scope.SolverScope;
 
 public abstract class AbstractCachingValueSelector<Solution_> extends AbstractValueSelector<Solution_>
-        implements SelectionCacheLifecycleListener<Solution_> {
+        implements EntityIndependentValueSelector<Solution_>, SelectionCacheLifecycleListener<Solution_> {
 
     protected final EntityIndependentValueSelector<Solution_> childValueSelector;
     protected final SelectionCacheType cacheType;
@@ -103,6 +103,7 @@ public abstract class AbstractCachingValueSelector<Solution_> extends AbstractVa
         return getSize();
     }
 
+    @Override
     public long getSize() {
         return cachedValueList.size();
     }
@@ -112,6 +113,7 @@ public abstract class AbstractCachingValueSelector<Solution_> extends AbstractVa
         return endingIterator();
     }
 
+    @Override
     public Iterator<Object> endingIterator() {
         return cachedValueList.iterator();
     }
