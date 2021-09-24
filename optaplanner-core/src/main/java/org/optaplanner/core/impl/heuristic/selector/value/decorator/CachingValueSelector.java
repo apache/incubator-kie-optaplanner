@@ -30,8 +30,7 @@ import org.optaplanner.core.impl.heuristic.selector.value.ValueSelector;
  * <p>
  * Keep this code in sync with {@link CachingEntitySelector} and {@link CachingMoveSelector}.
  */
-public class CachingValueSelector<Solution_> extends AbstractCachingValueSelector<Solution_>
-        implements EntityIndependentValueSelector<Solution_> {
+public class CachingValueSelector<Solution_> extends AbstractCachingValueSelector<Solution_> {
 
     protected final boolean randomSelection;
 

@@ -52,6 +52,7 @@ import org.optaplanner.core.impl.heuristic.selector.value.decorator.EntityDepend
 import org.optaplanner.core.impl.heuristic.selector.value.decorator.FilteringValueSelector;
 import org.optaplanner.core.impl.heuristic.selector.value.decorator.InitializedValueSelector;
 import org.optaplanner.core.impl.heuristic.selector.value.decorator.ProbabilityValueSelector;
+import org.optaplanner.core.impl.heuristic.selector.value.decorator.ReassignValueToListVariableSelector;
 import org.optaplanner.core.impl.heuristic.selector.value.decorator.ReinitializeVariableValueSelector;
 import org.optaplanner.core.impl.heuristic.selector.value.decorator.SelectedCountLimitValueSelector;
 import org.optaplanner.core.impl.heuristic.selector.value.decorator.ShufflingValueSelector;
@@ -150,9 +151,10 @@ public class ValueSelectorFactory<Solution_>
         valueSelector = applyShuffling(resolvedCacheType, resolvedSelectionOrder, valueSelector);
         valueSelector = applyCaching(resolvedCacheType, resolvedSelectionOrder, valueSelector);
         valueSelector = applySelectedLimit(valueSelector);
-        valueSelector = applyMimicRecording(configPolicy, valueSelector);
+        // TODO is this change safe?
         valueSelector = applyReinitializeVariableFiltering(
                 applyReinitializeVariableFiltering, variableDescriptor, valueSelector);
+        valueSelector = applyMimicRecording(configPolicy, valueSelector);
         valueSelector = applyDowncasting(valueSelector);
         return valueSelector;
     }
@@ -515,8 +517,14 @@ public class ValueSelectorFactory<Solution_>
 
     private ValueSelector<Solution_> applyReinitializeVariableFiltering(boolean applyReinitializeVariableFiltering,
             GenuineVariableDescriptor<Solution_> variableDescriptor, ValueSelector<Solution_> valueSelector) {
-        if (applyReinitializeVariableFiltering && !variableDescriptor.isListVariable()) {
-            valueSelector = new ReinitializeVariableValueSelector<>(valueSelector);
+        if (applyReinitializeVariableFiltering) {
+            if (variableDescriptor.isListVariable()) {
+                // TODO check instanceof + nice error message
+                valueSelector =
+                        new ReassignValueToListVariableSelector<>(((EntityIndependentValueSelector<Solution_>) valueSelector));
+            } else {
+                valueSelector = new ReinitializeVariableValueSelector<>(valueSelector);
+            }
         }
         return valueSelector;
     }

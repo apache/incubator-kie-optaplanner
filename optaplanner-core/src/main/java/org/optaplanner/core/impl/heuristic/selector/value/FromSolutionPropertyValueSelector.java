@@ -151,6 +151,7 @@ public class FromSolutionPropertyValueSelector<Solution_> extends AbstractValueS
         return endingIterator();
     }
 
+    @Override
     public Iterator<Object> endingIterator() {
         return ((CountableValueRange<Object>) cachedValueRange).createOriginalIterator();
     }
