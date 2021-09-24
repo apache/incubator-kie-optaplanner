@@ -17,30 +17,16 @@
   <!--<termination>-->
     <!--<minutesSpentLimit>5</minutesSpentLimit>-->
   <!--</termination>-->
-  <customPhase>
-    <customPhaseCommandClass>org.optaplanner.examples.taskassigning_listvariable.domain.solver.solution.initializer.TmpRoundRobinInitializer</customPhaseCommandClass>
-  </customPhase>
-  <localSearch>
-    <unionMoveSelector>
+  <constructionHeuristic>
+    <queuedValuePlacer>
+      <valueSelector variableName="tasks" id="1">
+        <cacheType>PHASE</cacheType>
+        <selectionOrder>ORIGINAL</selectionOrder>
+      </valueSelector>
       <changeMoveSelector>
-        <!--      <cacheType>STEP</cacheType>-->
-        <!--      <selectionOrder>ORIGINAL</selectionOrder>-->
-<!--        <entitySelector>-->
-<!--          <cacheType>STEP</cacheType>-->
-<!--          <selectionOrder>SHUFFLED</selectionOrder>-->
-<!--        </entitySelector>-->
+        <valueSelector mimicSelectorRef="1"/>
       </changeMoveSelector>
-      <swapMoveSelector>
-        <!--      <cacheType>STEP</cacheType>-->
-        <!--      <selectionOrder>ORIGINAL</selectionOrder>-->
-<!--        <entitySelector>-->
-<!--          <cacheType>STEP</cacheType>-->
-<!--          <selectionOrder>SHUFFLED</selectionOrder>-->
-<!--        </entitySelector>-->
-      </swapMoveSelector>
-    </unionMoveSelector>
-<!--    <forager>-->
-<!--      <acceptedCountLimit>10</acceptedCountLimit>-->
-<!--    </forager>-->
-  </localSearch>
+    </queuedValuePlacer>
+  </constructionHeuristic>
+  <localSearch/>
 </solver>
