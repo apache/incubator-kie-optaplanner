@@ -15,7 +15,7 @@
   <packaging>pom</packaging>
   <version>8.12.0-SNAPSHOT</version>
 
-  <name>OptaPlanner multiproject parent</name>
+  <name>OptaPlanner multiproject parent simple test</name>
   <description>
     OptaPlanner solves planning problems.
     This lightweight, embeddable planning engine implements powerful and scalable algorithms
