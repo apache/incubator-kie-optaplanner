@@ -142,9 +142,9 @@ public class BestSolutionRecaller<Solution_> extends PhaseLifecycleListenerAdapt
                 solverScope.setStartingInitializedScore(bestScore);
             }
         }
+        solverScope.setBestSolution(bestSolution);
         solverScope.setBestScore(bestScore);
         solverScope.setBestSolutionTimeMillis(System.currentTimeMillis());
-        solverScope.setBestSolution(bestSolution);
     }
 
 }
