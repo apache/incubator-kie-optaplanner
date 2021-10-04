@@ -89,7 +89,7 @@ if (Utils.isLTSBranch(this)) {
 }
 
 // Tools folder
-KogitoJobUtils.createQuarkusUpdateToolsJob(this, 'optaplanner', 'Optaplanner', [
+KogitoJobUtils.createQuarkusUpdateToolsJob(this, 'optaplanner', 'OptaPlanner', [
   modules: [ 'optaplanner-build-parent' ],
   properties: [ 'version.io.quarkus' ],
 ])
