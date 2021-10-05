@@ -25,7 +25,7 @@ public interface IndexVariableSupply extends Supply {
      * Get {@code planningValue}'s index in the {@link PlanningCollectionVariable list variable} it is a member of.
      *
      * @param planningValue never null
-     * @return never null, {@code planningValue}'s index in the list variable it is a member of
+     * @return {@code planningValue}'s index in the list variable it is a member of or {@code null} if the value is unassigned
      */
     Integer getIndex(Object planningValue);
 }
