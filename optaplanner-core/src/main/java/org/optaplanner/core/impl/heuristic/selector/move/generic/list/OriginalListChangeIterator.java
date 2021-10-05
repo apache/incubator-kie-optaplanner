@@ -47,6 +47,7 @@ public class OriginalListChangeIterator<Solution_> extends UpcomingSelectionIter
     private Object upcomingSourceEntity;
     private Integer upcomingSourceIndex;
     private Object upcomingDestinationEntity;
+    private Object upcomingValue;
 
     public OriginalListChangeIterator(
             ListVariableDescriptor<Solution_> listVariableDescriptor,
@@ -70,7 +71,7 @@ public class OriginalListChangeIterator<Solution_> extends UpcomingSelectionIter
                 if (!valueIterator.hasNext()) {
                     return noUpcomingSelection();
                 }
-                Object upcomingValue = valueIterator.next();
+                upcomingValue = valueIterator.next();
                 upcomingSourceEntity = inverseVariableSupply.getInverseSingleton(upcomingValue);
                 upcomingSourceIndex = indexVariableSupply.getIndex(upcomingValue);
 
@@ -78,6 +79,14 @@ public class OriginalListChangeIterator<Solution_> extends UpcomingSelectionIter
             }
             upcomingDestinationEntity = destinationEntityIterator.next();
             destinationIndexIterator = listIndexIterator(upcomingDestinationEntity);
+        }
+
+        if (upcomingSourceEntity == null && upcomingSourceIndex == null) {
+            return new ListAssignMove<>(
+                    listVariableDescriptor,
+                    upcomingValue,
+                    upcomingDestinationEntity,
+                    destinationIndexIterator.nextInt());
         }
 
         return new ListChangeMove<>(
