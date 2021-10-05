@@ -123,13 +123,14 @@ public abstract class GenuineVariableDescriptor<Solution_> extends VariableDescr
         }
     }
 
-    protected void processStrength(DescriptorPolicy descriptorPolicy, PlanningVariable planningVariableAnnotation) {
-        Class<? extends Comparator> strengthComparatorClass = planningVariableAnnotation.strengthComparatorClass();
-        if (strengthComparatorClass == PlanningVariable.NullStrengthComparator.class) {
+    protected void processStrength(
+            DescriptorPolicy descriptorPolicy,
+            Class<? extends Comparator> strengthComparatorClass,
+            Class<? extends SelectionSorterWeightFactory> strengthWeightFactoryClass) {
+        if (strengthComparatorClass == PlanningVariable.NullStrengthComparator.class
+                || strengthComparatorClass == PlanningCollectionVariable.NullStrengthComparator.class) {
             strengthComparatorClass = null;
         }
-        Class<? extends SelectionSorterWeightFactory> strengthWeightFactoryClass = planningVariableAnnotation
-                .strengthWeightFactoryClass();
         if (strengthWeightFactoryClass == PlanningVariable.NullStrengthWeightFactory.class) {
             strengthWeightFactoryClass = null;
         }

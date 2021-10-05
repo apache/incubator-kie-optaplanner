@@ -22,9 +22,11 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
+import java.util.Comparator;
 import java.util.List;
 
 import org.optaplanner.core.api.domain.entity.PlanningEntity;
+import org.optaplanner.core.impl.heuristic.selector.common.decorator.SelectionSorterWeightFactory;
 
 /**
  * Specifies that a bean property (or a field) of a {@link List} type should be optimized by the optimization
@@ -57,5 +59,37 @@ import org.optaplanner.core.api.domain.entity.PlanningEntity;
 public @interface PlanningCollectionVariable {
     String[] valueRangeProviderRefs() default {};
 
-    // TODO value strength
+    /**
+     * Allows a collection of planning values for this variable to be sorted by strength.
+     * A strengthWeight estimates how strong a planning value is.
+     * Some algorithms benefit from planning on weaker planning values first or from focusing on them.
+     * <p>
+     * The {@link Comparator} should sort in ascending strength.
+     * For example: sorting 3 computers on strength based on their RAM capacity:
+     * Computer B (1GB RAM), Computer A (2GB RAM), Computer C (7GB RAM),
+     * <p>
+     * Do not use together with {@link #strengthWeightFactoryClass()}.
+     *
+     * @return {@link PlanningVariable.NullStrengthComparator} when it is null (workaround for annotation limitation)
+     * @see #strengthWeightFactoryClass()
+     */
+    Class<? extends Comparator> strengthComparatorClass() default PlanningVariable.NullStrengthComparator.class;
+
+    /** Workaround for annotation limitation in {@link #strengthComparatorClass()}. */
+    interface NullStrengthComparator extends Comparator {
+    }
+
+    /**
+     * The {@link SelectionSorterWeightFactory} alternative for {@link #strengthComparatorClass()}.
+     * <p>
+     * Do not use together with {@link #strengthComparatorClass()}.
+     *
+     * @return {@link PlanningVariable.NullStrengthWeightFactory} when it is null (workaround for annotation limitation)
+     * @see #strengthComparatorClass()
+     */
+    Class<? extends SelectionSorterWeightFactory> strengthWeightFactoryClass() default PlanningVariable.NullStrengthWeightFactory.class;
+
+    /** Workaround for annotation limitation in {@link #strengthWeightFactoryClass()}. */
+    interface NullStrengthWeightFactory extends SelectionSorterWeightFactory {
+    }
 }

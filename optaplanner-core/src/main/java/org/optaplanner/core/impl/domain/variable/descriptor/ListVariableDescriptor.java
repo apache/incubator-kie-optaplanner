@@ -40,8 +40,8 @@ public class ListVariableDescriptor<Solution_> extends GenuineVariableDescriptor
         PlanningCollectionVariable planningVariableAnnotation =
                 variableMemberAccessor.getAnnotation(PlanningCollectionVariable.class);
         processValueRangeRefs(descriptorPolicy, planningVariableAnnotation.valueRangeProviderRefs());
-        // TODO process strength
-        //processStrength(descriptorPolicy, planningVariableAnnotation);
+        processStrength(descriptorPolicy, planningVariableAnnotation.strengthComparatorClass(),
+                planningVariableAnnotation.strengthWeightFactoryClass());
     }
 
     @Override
