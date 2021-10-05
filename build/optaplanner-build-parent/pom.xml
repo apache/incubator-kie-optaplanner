@@ -136,12 +136,26 @@
             <groupId>org.kie.kogito</groupId>
             <artifactId>kogito-timer</artifactId>
           </exclusion>
+          <exclusion>
+            <groupId>com.thoughtworks.xstream</groupId>
+            <artifactId>xstream</artifactId>
+          </exclusion>
+          <exclusion>
+            <groupId>org.kie.soup</groupId>
+            <artifactId>kie-soup-xstream</artifactId>
+          </exclusion>
         </exclusions>
       </dependency>
       <dependency>
         <groupId>org.kie.kogito</groupId>
         <artifactId>drools-compiler</artifactId>
         <version>${version.org.kie.kogito}</version>
+        <exclusions>
+          <exclusion>
+            <groupId>com.thoughtworks.xstream</groupId>
+            <artifactId>xstream</artifactId>
+          </exclusion>
+        </exclusions>
       </dependency>
       <dependency>
         <groupId>org.kie.kogito</groupId>
