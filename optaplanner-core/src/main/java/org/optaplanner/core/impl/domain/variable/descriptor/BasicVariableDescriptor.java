@@ -38,7 +38,8 @@ public class BasicVariableDescriptor<Solution_> extends GenuineVariableDescripto
         processNullable(descriptorPolicy, planningVariableAnnotation);
         processChained(descriptorPolicy, planningVariableAnnotation);
         processValueRangeRefs(descriptorPolicy, planningVariableAnnotation.valueRangeProviderRefs());
-        processStrength(descriptorPolicy, planningVariableAnnotation);
+        processStrength(descriptorPolicy, planningVariableAnnotation.strengthComparatorClass(),
+                planningVariableAnnotation.strengthWeightFactoryClass());
     }
 
     @Override
