@@ -43,10 +43,12 @@
     <dependency>
       <groupId>org.graalvm.sdk</groupId>
       <artifactId>graal-sdk</artifactId>
+      <scope>runtime</scope>
     </dependency>
     <dependency>
       <groupId>org.graalvm.nativeimage</groupId>
       <artifactId>svm</artifactId>
+      <scope>runtime</scope>
     </dependency>
     <!-- Logging -->
     <dependency>

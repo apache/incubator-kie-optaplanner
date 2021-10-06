@@ -46,6 +46,12 @@
     <dependency>
       <groupId>org.drools</groupId>
       <artifactId>drools-core</artifactId>
+      <exclusions>
+        <exclusion>
+          <groupId>org.kie.soup</groupId>
+          <artifactId>kie-soup-xstream</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
     <!-- External dependencies -->
     <!-- Common utils -->
