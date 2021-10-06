@@ -28,13 +28,13 @@ Map getMultijobPRConfig() {
                 id: 'kogito-apps',
                 repository: 'kogito-apps',
                 env : [
-                    KOGITO_APPS_BUILD_MVN_OPTS: '-Poptaplanner-downstream -am -amd'
+                    KOGITO_APPS_BUILD_MVN_OPTS: '-Poptaplanner-downstream'
                 ]
             ], [
                 id: 'kogito-examples',
                 repository: 'kogito-examples',
                 env : [
-                    KOGITO_EXAMPLES_BUILD_MVN_OPTS: '-Poptaplanner-downstream -am -amd'
+                    KOGITO_EXAMPLES_BUILD_MVN_OPTS: '-Poptaplanner-downstream'
                 ]
             ], [
                 id: 'optaweb-employee-rostering',
@@ -103,8 +103,8 @@ void setupMultijobPrDefaultChecks() {
 
 void setupMultijobPrNativeChecks() {
     def multijobConfig = getMultijobPRConfig()
-    multijobConfig.jobs.find { it.id == 'kogito-apps' }.env.KOGITO_APPS_BUILD_MVN_OPTS = '-Poptaplanner-downstream,native -am -amd'
-    multijobConfig.jobs.find { it.id == 'kogito-examples' }.env.KOGITO_EXAMPLES_BUILD_MVN_OPTS = '-Poptaplanner-downstream-native -am -amd'
+    multijobConfig.jobs.find { it.id == 'kogito-apps' }.env.KOGITO_APPS_BUILD_MVN_OPTS = '-Poptaplanner-downstream,native'
+    multijobConfig.jobs.find { it.id == 'kogito-examples' }.env.KOGITO_EXAMPLES_BUILD_MVN_OPTS = '-Poptaplanner-downstream-native'
     KogitoJobTemplate.createMultijobNativePRJobs(this, getMultijobPRConfig()) { return getDefaultJobParams() }
 }
 
