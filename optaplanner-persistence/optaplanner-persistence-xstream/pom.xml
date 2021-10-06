@@ -33,15 +33,21 @@
     </dependency>
     <dependency>
       <groupId>org.optaplanner</groupId>
-      <artifactId>optaplanner-core</artifactId>
-      <type>test-jar</type>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.optaplanner</groupId>
       <artifactId>optaplanner-persistence-common</artifactId>
     </dependency>
+    <dependency> <!-- TODO: Remove after https://issues.redhat.com/browse/DROOLS-6643 is resolved. -->
+      <groupId>org.drools</groupId>
+      <artifactId>drools-compiler</artifactId>
+    </dependency>
     <!-- External dependencies -->
+    <dependency>
+      <groupId>org.graalvm.sdk</groupId>
+      <artifactId>graal-sdk</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.graalvm.nativeimage</groupId>
+      <artifactId>svm</artifactId>
+    </dependency>
     <!-- Logging -->
     <dependency>
       <groupId>ch.qos.logback</groupId>
@@ -54,6 +60,12 @@
       <artifactId>xstream</artifactId>
     </dependency>
     <!-- Testing -->
+    <dependency>
+      <groupId>org.optaplanner</groupId>
+      <artifactId>optaplanner-core</artifactId>
+      <type>test-jar</type>
+      <scope>test</scope>
+    </dependency>
     <dependency>
       <groupId>org.junit.jupiter</groupId>
       <artifactId>junit-jupiter-api</artifactId>
