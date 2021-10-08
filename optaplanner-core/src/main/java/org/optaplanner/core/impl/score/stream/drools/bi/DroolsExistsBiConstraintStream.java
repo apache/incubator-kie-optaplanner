@@ -19,6 +19,7 @@ package org.optaplanner.core.impl.score.stream.drools.bi;
 import java.util.function.Predicate;
 
 import org.optaplanner.core.api.score.stream.tri.TriJoiner;
+import org.optaplanner.core.impl.score.stream.common.RetrievalSemantics;
 import org.optaplanner.core.impl.score.stream.drools.DroolsConstraintFactory;
 import org.optaplanner.core.impl.score.stream.drools.common.BiLeftHandSide;
 
@@ -34,7 +35,9 @@ public final class DroolsExistsBiConstraintStream<Solution_, A, B>
             TriJoiner<A, B, C>... joiners) {
         super(constraintFactory, parent.getRetrievalSemantics());
         this.parent = parent;
-        Predicate<C> nullityFilter = constraintFactory.getNullityFilter(otherClass);
+        Predicate<C> nullityFilter =
+                parent.getRetrievalSemantics() == RetrievalSemantics.STANDARD ? constraintFactory.getNullityFilter(otherClass)
+                        : null;
         this.leftHandSide = shouldExist
                 ? parent.getLeftHandSide().andExists(otherClass, joiners, nullityFilter)
                 : parent.getLeftHandSide().andNotExists(otherClass, joiners, nullityFilter);

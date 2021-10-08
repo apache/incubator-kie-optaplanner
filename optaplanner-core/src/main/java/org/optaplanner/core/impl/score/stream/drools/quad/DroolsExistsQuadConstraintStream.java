@@ -19,6 +19,7 @@ package org.optaplanner.core.impl.score.stream.drools.quad;
 import java.util.function.Predicate;
 
 import org.optaplanner.core.api.score.stream.penta.PentaJoiner;
+import org.optaplanner.core.impl.score.stream.common.RetrievalSemantics;
 import org.optaplanner.core.impl.score.stream.drools.DroolsConstraintFactory;
 import org.optaplanner.core.impl.score.stream.drools.common.QuadLeftHandSide;
 
@@ -34,7 +35,9 @@ public final class DroolsExistsQuadConstraintStream<Solution_, A, B, C, D>
             PentaJoiner<A, B, C, D, E>... joiners) {
         super(constraintFactory, parent.getRetrievalSemantics());
         this.parent = parent;
-        Predicate<E> nullityFilter = constraintFactory.getNullityFilter(otherClass);
+        Predicate<E> nullityFilter =
+                parent.getRetrievalSemantics() == RetrievalSemantics.STANDARD ? constraintFactory.getNullityFilter(otherClass)
+                        : null;
         this.leftHandSide = shouldExist
                 ? parent.getLeftHandSide().andExists(otherClass, joiners, nullityFilter)
                 : parent.getLeftHandSide().andNotExists(otherClass, joiners, nullityFilter);
