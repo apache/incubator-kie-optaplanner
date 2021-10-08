@@ -16,10 +16,6 @@
 
 package org.optaplanner.core.impl.score.stream;
 
-import static java.util.stream.Collectors.groupingBy;
-import static java.util.stream.Collectors.toList;
-import static org.optaplanner.core.api.score.stream.Joiners.lessThan;
-
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -43,11 +39,46 @@ import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.core.impl.score.stream.bi.FilteringBiJoiner;
 
+import static java.util.stream.Collectors.groupingBy;
+import static java.util.stream.Collectors.toList;
+import static org.optaplanner.core.api.score.stream.Joiners.lessThan;
+
 public abstract class InnerConstraintFactory<Solution_, Constraint_ extends Constraint> implements ConstraintFactory {
 
-    // ************************************************************************
-    // from
-    // ************************************************************************
+    @Override
+    public <A> UniConstraintStream<A> forEach(Class<A> fromClass) {
+        UniConstraintStream<A> stream = forEachIncludingNullVars(fromClass);
+        EntityDescriptor<Solution_> entityDescriptor = getSolutionDescriptor().findEntityDescriptor(fromClass);
+        if (entityDescriptor != null && entityDescriptor.hasAnyGenuineVariables()) {
+            Predicate<A> predicate = (Predicate<A>) entityDescriptor.getHasNoNullVariables();
+            stream = stream.filter(predicate);
+        }
+        return stream;
+    }
+
+    @Override
+    public <A> BiConstraintStream<A, A> forEachUniquePair(Class<A> fromClass, BiJoiner<A, A> joiner) {
+        MemberAccessor planningIdMemberAccessor =
+                ConfigUtils.findPlanningIdMemberAccessor(fromClass, getSolutionDescriptor().getDomainAccessType(),
+                        getSolutionDescriptor().getGeneratedMemberAccessorMap());
+        if (planningIdMemberAccessor == null) {
+            throw new IllegalArgumentException("The fromClass (" + fromClass + ") has no member with a @"
+                    + PlanningId.class.getSimpleName() + " annotation,"
+                    + " so the pairs cannot be made unique ([A,B] vs [B,A]).");
+        }
+        // TODO In Bavet breaks node sharing + involves unneeded indirection
+        Function<A, Comparable> planningIdGetter = fact -> (Comparable<?>) planningIdMemberAccessor.executeGetter(fact);
+        // Joiner.filtering() must come last, yet Bavet requires that Joiner.lessThan() be last. This is a workaround.
+        if (joiner instanceof FilteringBiJoiner) {
+            BiPredicate<A, A> filter = ((FilteringBiJoiner<A, A>) joiner).getFilter();
+            return forEach(fromClass)
+                    .join(fromClass, lessThan(planningIdGetter))
+                    .filter(filter);
+        } else {
+            return forEach(fromClass)
+                    .join(fromClass, joiner, lessThan(planningIdGetter));
+        }
+    }
 
     @Override
     public <A> UniConstraintStream<A> from(Class<A> fromClass) {
@@ -135,10 +166,6 @@ public abstract class InnerConstraintFactory<Solution_, Constraint_ extends Cons
         });
         return constraintList;
     }
-
-    // ************************************************************************
-    // Getters/setters
-    // ************************************************************************
 
     /**
      * @return never null

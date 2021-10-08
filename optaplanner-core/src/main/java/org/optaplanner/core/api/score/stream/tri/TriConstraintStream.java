@@ -211,7 +211,7 @@ public interface TriConstraintStream<A, B, C> extends ConstraintStream {
      *         is true
      */
     default <D> QuadConstraintStream<A, B, C, D> join(Class<D> otherClass, QuadJoiner<A, B, C, D> joiner) {
-        return join(getConstraintFactory().from(otherClass), joiner);
+        return join(otherClass, new QuadJoiner[] { joiner });
     }
 
     /**
@@ -226,7 +226,7 @@ public interface TriConstraintStream<A, B, C> extends ConstraintStream {
      */
     default <D> QuadConstraintStream<A, B, C, D> join(Class<D> otherClass, QuadJoiner<A, B, C, D> joiner1,
             QuadJoiner<A, B, C, D> joiner2) {
-        return join(getConstraintFactory().from(otherClass), joiner1, joiner2);
+        return join(otherClass, new QuadJoiner[] { joiner1, joiner2 });
     }
 
     /**
@@ -242,7 +242,7 @@ public interface TriConstraintStream<A, B, C> extends ConstraintStream {
      */
     default <D> QuadConstraintStream<A, B, C, D> join(Class<D> otherClass, QuadJoiner<A, B, C, D> joiner1,
             QuadJoiner<A, B, C, D> joiner2, QuadJoiner<A, B, C, D> joiner3) {
-        return join(getConstraintFactory().from(otherClass), joiner1, joiner2, joiner3);
+        return join(otherClass, new QuadJoiner[] { joiner1, joiner2, joiner3 });
     }
 
     /**
@@ -259,7 +259,7 @@ public interface TriConstraintStream<A, B, C> extends ConstraintStream {
      */
     default <D> QuadConstraintStream<A, B, C, D> join(Class<D> otherClass, QuadJoiner<A, B, C, D> joiner1,
             QuadJoiner<A, B, C, D> joiner2, QuadJoiner<A, B, C, D> joiner3, QuadJoiner<A, B, C, D> joiner4) {
-        return join(getConstraintFactory().from(otherClass), joiner1, joiner2, joiner3, joiner4);
+        return join(otherClass, new QuadJoiner[] { joiner1, joiner2, joiner3, joiner4 });
     }
 
     /**
@@ -275,9 +275,7 @@ public interface TriConstraintStream<A, B, C> extends ConstraintStream {
      * @return never null, a stream that matches every combination of [A, B, C] and D for which all the
      *         {@link QuadJoiner joiners} are true
      */
-    default <D> QuadConstraintStream<A, B, C, D> join(Class<D> otherClass, QuadJoiner<A, B, C, D>... joiners) {
-        return join(getConstraintFactory().from(otherClass), joiners);
-    }
+    <D> QuadConstraintStream<A, B, C, D> join(Class<D> otherClass, QuadJoiner<A, B, C, D>... joiners);
 
     // ************************************************************************
     // If (not) exists

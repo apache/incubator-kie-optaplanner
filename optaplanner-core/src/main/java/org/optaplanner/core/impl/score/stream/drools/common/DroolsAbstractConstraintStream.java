@@ -25,16 +25,20 @@ import java.util.function.Function;
 
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.impl.score.stream.common.AbstractConstraintStream;
+import org.optaplanner.core.impl.score.stream.common.RetrievalSemantics;
 import org.optaplanner.core.impl.score.stream.common.ScoreImpactType;
 import org.optaplanner.core.impl.score.stream.drools.DroolsConstraint;
 import org.optaplanner.core.impl.score.stream.drools.DroolsConstraintFactory;
 
 public abstract class DroolsAbstractConstraintStream<Solution_> extends AbstractConstraintStream<Solution_> {
 
+    // TODO make private
     protected final DroolsConstraintFactory<Solution_> constraintFactory;
     private final List<DroolsAbstractConstraintStream<Solution_>> childStreamList = new ArrayList<>(2);
 
-    public DroolsAbstractConstraintStream(DroolsConstraintFactory<Solution_> constraintFactory) {
+    public DroolsAbstractConstraintStream(DroolsConstraintFactory<Solution_> constraintFactory,
+            RetrievalSemantics retrievalSemantics) {
+        super(retrievalSemantics);
         this.constraintFactory = Objects.requireNonNull(constraintFactory);
     }
 
@@ -78,5 +82,4 @@ public abstract class DroolsAbstractConstraintStream<Solution_> extends Abstract
     public DroolsConstraintFactory<Solution_> getConstraintFactory() {
         return constraintFactory;
     }
-
 }

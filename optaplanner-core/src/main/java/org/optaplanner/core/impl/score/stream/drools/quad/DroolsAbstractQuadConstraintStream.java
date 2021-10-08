@@ -32,6 +32,7 @@ import org.optaplanner.core.api.score.stream.quad.QuadConstraintCollector;
 import org.optaplanner.core.api.score.stream.quad.QuadConstraintStream;
 import org.optaplanner.core.api.score.stream.tri.TriConstraintStream;
 import org.optaplanner.core.api.score.stream.uni.UniConstraintStream;
+import org.optaplanner.core.impl.score.stream.common.RetrievalSemantics;
 import org.optaplanner.core.impl.score.stream.common.ScoreImpactType;
 import org.optaplanner.core.impl.score.stream.drools.DroolsConstraintFactory;
 import org.optaplanner.core.impl.score.stream.drools.bi.DroolsGroupingBiConstraintStream;
@@ -46,8 +47,9 @@ import org.optaplanner.core.impl.score.stream.quad.InnerQuadConstraintStream;
 public abstract class DroolsAbstractQuadConstraintStream<Solution_, A, B, C, D>
         extends DroolsAbstractConstraintStream<Solution_> implements InnerQuadConstraintStream<A, B, C, D> {
 
-    public DroolsAbstractQuadConstraintStream(DroolsConstraintFactory<Solution_> constraintFactory) {
-        super(constraintFactory);
+    public DroolsAbstractQuadConstraintStream(DroolsConstraintFactory<Solution_> constraintFactory,
+            RetrievalSemantics retrievalSemantics) {
+        super(constraintFactory, retrievalSemantics);
     }
 
     @Override
@@ -57,10 +59,6 @@ public abstract class DroolsAbstractQuadConstraintStream<Solution_, A, B, C, D>
         addChildStream(stream);
         return stream;
     }
-
-    // ************************************************************************
-    // If (not) exists
-    // ************************************************************************
 
     @SafeVarargs
     @Override
@@ -85,10 +83,6 @@ public abstract class DroolsAbstractQuadConstraintStream<Solution_, A, B, C, D>
         addChildStream(stream);
         return stream;
     }
-
-    // ************************************************************************
-    // Group by
-    // ************************************************************************
 
     @Override
     public <ResultContainer_, Result_> UniConstraintStream<Result_> groupBy(
@@ -252,10 +246,6 @@ public abstract class DroolsAbstractQuadConstraintStream<Solution_, A, B, C, D>
         return stream;
     }
 
-    // ************************************************************************
-    // Operations with duplicate tuple possibility
-    // ************************************************************************
-
     @Override
     public <ResultA_> UniConstraintStream<ResultA_> map(QuadFunction<A, B, C, D, ResultA_> mapping) {
         DroolsMappingUniConstraintStream<Solution_, ResultA_> stream =
@@ -271,10 +261,6 @@ public abstract class DroolsAbstractQuadConstraintStream<Solution_, A, B, C, D>
         addChildStream(stream);
         return stream;
     }
-
-    // ************************************************************************
-    // Penalize/reward
-    // ************************************************************************
 
     @Override
     protected Constraint impactScore(String constraintPackage, String constraintName, Score<?> constraintWeight,
@@ -331,10 +317,6 @@ public abstract class DroolsAbstractQuadConstraintStream<Solution_, A, B, C, D>
         RuleBuilder<Solution_> ruleBuilder = getLeftHandSide().andTerminate(matchWeigher);
         return buildConstraintConfigurable(constraintPackage, constraintName, impactType, ruleBuilder);
     }
-
-    // ************************************************************************
-    // Pattern creation
-    // ************************************************************************
 
     public abstract QuadLeftHandSide<A, B, C, D> getLeftHandSide();
 

@@ -30,7 +30,7 @@ public final class DroolsExistsBiConstraintStream<Solution_, A, B>
     public <C> DroolsExistsBiConstraintStream(DroolsConstraintFactory<Solution_> constraintFactory,
             DroolsAbstractBiConstraintStream<Solution_, A, B> parent, boolean shouldExist, Class<C> otherClass,
             TriJoiner<A, B, C>... joiners) {
-        super(constraintFactory);
+        super(constraintFactory, parent.getRetrievalSemantics());
         this.parent = parent;
         this.leftHandSide = shouldExist
                 ? parent.getLeftHandSide().andExists(otherClass, joiners)

@@ -30,7 +30,7 @@ public final class DroolsExistsQuadConstraintStream<Solution_, A, B, C, D>
     public <E> DroolsExistsQuadConstraintStream(DroolsConstraintFactory<Solution_> constraintFactory,
             DroolsAbstractQuadConstraintStream<Solution_, A, B, C, D> parent, boolean shouldExist, Class<E> otherClass,
             PentaJoiner<A, B, C, D, E>... joiners) {
-        super(constraintFactory);
+        super(constraintFactory, parent.getRetrievalSemantics());
         this.parent = parent;
         this.leftHandSide = shouldExist
                 ? parent.getLeftHandSide().andExists(otherClass, joiners)

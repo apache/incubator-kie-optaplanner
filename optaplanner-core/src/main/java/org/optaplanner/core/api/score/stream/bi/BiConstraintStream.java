@@ -208,7 +208,7 @@ public interface BiConstraintStream<A, B> extends ConstraintStream {
      *         true
      */
     default <C> TriConstraintStream<A, B, C> join(Class<C> otherClass, TriJoiner<A, B, C> joiner) {
-        return join(getConstraintFactory().from(otherClass), joiner);
+        return join(otherClass, new TriJoiner[] { joiner });
     }
 
     /**
@@ -223,7 +223,7 @@ public interface BiConstraintStream<A, B> extends ConstraintStream {
      */
     default <C> TriConstraintStream<A, B, C> join(Class<C> otherClass, TriJoiner<A, B, C> joiner1,
             TriJoiner<A, B, C> joiner2) {
-        return join(getConstraintFactory().from(otherClass), joiner1, joiner2);
+        return join(otherClass, new TriJoiner[] { joiner1, joiner2 });
     }
 
     /**
@@ -239,7 +239,7 @@ public interface BiConstraintStream<A, B> extends ConstraintStream {
      */
     default <C> TriConstraintStream<A, B, C> join(Class<C> otherClass, TriJoiner<A, B, C> joiner1,
             TriJoiner<A, B, C> joiner2, TriJoiner<A, B, C> joiner3) {
-        return join(getConstraintFactory().from(otherClass), joiner1, joiner2, joiner3);
+        return join(otherClass, new TriJoiner[] { joiner1, joiner2, joiner3 });
     }
 
     /**
@@ -256,7 +256,7 @@ public interface BiConstraintStream<A, B> extends ConstraintStream {
      */
     default <C> TriConstraintStream<A, B, C> join(Class<C> otherClass, TriJoiner<A, B, C> joiner1,
             TriJoiner<A, B, C> joiner2, TriJoiner<A, B, C> joiner3, TriJoiner<A, B, C> joiner4) {
-        return join(getConstraintFactory().from(otherClass), joiner1, joiner2, joiner3, joiner4);
+        return join(otherClass, new TriJoiner[] { joiner1, joiner2, joiner3, joiner4 });
     }
 
     /**
@@ -272,9 +272,7 @@ public interface BiConstraintStream<A, B> extends ConstraintStream {
      * @return never null, a stream that matches every combination of [A, B] and C for which all the
      *         {@link TriJoiner joiners} are true
      */
-    default <C> TriConstraintStream<A, B, C> join(Class<C> otherClass, TriJoiner<A, B, C>... joiners) {
-        return join(getConstraintFactory().from(otherClass), joiners);
-    }
+    <C> TriConstraintStream<A, B, C> join(Class<C> otherClass, TriJoiner<A, B, C>... joiners);
 
     // ************************************************************************
     // If (not) exists

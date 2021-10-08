@@ -16,10 +16,6 @@
 
 package org.optaplanner.core.impl.domain.entity.descriptor;
 
-import static org.optaplanner.core.impl.domain.common.accessor.MemberAccessorFactory.MemberAccessorType.FIELD_OR_GETTER_METHOD;
-import static org.optaplanner.core.impl.domain.common.accessor.MemberAccessorFactory.MemberAccessorType.FIELD_OR_GETTER_METHOD_WITH_SETTER;
-import static org.optaplanner.core.impl.domain.common.accessor.MemberAccessorFactory.MemberAccessorType.FIELD_OR_READ_METHOD;
-
 import java.lang.annotation.Annotation;
 import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Member;
@@ -64,6 +60,10 @@ import org.optaplanner.core.impl.heuristic.selector.entity.decorator.PinEntityFi
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import static org.optaplanner.core.impl.domain.common.accessor.MemberAccessorFactory.MemberAccessorType.FIELD_OR_GETTER_METHOD;
+import static org.optaplanner.core.impl.domain.common.accessor.MemberAccessorFactory.MemberAccessorType.FIELD_OR_GETTER_METHOD_WITH_SETTER;
+import static org.optaplanner.core.impl.domain.common.accessor.MemberAccessorFactory.MemberAccessorType.FIELD_OR_READ_METHOD;
+
 /**
  * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
  */
@@ -80,6 +80,7 @@ public class EntityDescriptor<Solution_> {
 
     private final Class<?> entityClass;
     private final Predicate<Object> isInitializedPredicate;
+    private final Predicate<Object> hasNoNullVariables;
     // Only declared movable filter, excludes inherited and descending movable filters
     private SelectionFilter<Solution_, Object> declaredMovableEntitySelectionFilter;
     private SelectionSorter<Solution_, Object> decreasingDifficultySorter;
@@ -110,6 +111,7 @@ public class EntityDescriptor<Solution_> {
         this.solutionDescriptor = solutionDescriptor;
         this.entityClass = entityClass;
         isInitializedPredicate = this::isInitialized;
+        hasNoNullVariables = this::hasNoNullVariables;
         if (entityClass.getPackage() == null) {
             LOGGER.warn("The entityClass ({}) should be in a proper java package.", entityClass);
         }
@@ -119,10 +121,16 @@ public class EntityDescriptor<Solution_> {
      * Using entityDescriptor::isInitialized directly breaks node sharing
      * because it creates multiple instances of this {@link Predicate}.
      *
+     * @deprecated in favor of {@link #getHasNoNullVariables()}.
      * @return never null, always the same {@link Predicate} instance to {@link #isInitialized(Object)}
      */
+    @Deprecated(forRemoval = true)
     public Predicate<Object> getIsInitializedPredicate() {
         return isInitializedPredicate;
+    }
+
+    public Predicate<Object> getHasNoNullVariables() {
+        return hasNoNullVariables;
     }
 
     // ************************************************************************
@@ -553,6 +561,15 @@ public class EntityDescriptor<Solution_> {
     public boolean isInitialized(Object entity) {
         for (GenuineVariableDescriptor<Solution_> variableDescriptor : effectiveGenuineVariableDescriptorList) {
             if (!variableDescriptor.isInitialized(entity)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    public boolean hasNoNullVariables(Object entity) {
+        for (GenuineVariableDescriptor<Solution_> variableDescriptor : effectiveGenuineVariableDescriptorList) {
+            if (variableDescriptor.getValue(entity) == null) {
                 return false;
             }
         }

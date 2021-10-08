@@ -16,8 +16,6 @@
 
 package org.optaplanner.core.impl.score.stream.bavet.bi;
 
-import static java.util.Arrays.asList;
-
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.function.BiFunction;
@@ -32,6 +30,8 @@ import org.optaplanner.core.impl.score.stream.bavet.BavetConstraint;
 import org.optaplanner.core.impl.score.stream.bavet.BavetConstraintFactory;
 import org.optaplanner.core.impl.score.stream.bavet.common.BavetNodeBuildPolicy;
 import org.optaplanner.core.impl.score.stream.bavet.uni.BavetFromUniConstraintStream;
+
+import static java.util.Arrays.asList;
 
 public final class BavetScoringBiConstraintStream<Solution_, A, B>
         extends BavetAbstractBiConstraintStream<Solution_, A, B> {
@@ -81,7 +81,7 @@ public final class BavetScoringBiConstraintStream<Solution_, A, B>
             BavetConstraint<Solution_> constraint, boolean noMatchWeigher,
             ToIntBiFunction<A, B> intMatchWeigher, ToLongBiFunction<A, B> longMatchWeigher,
             BiFunction<A, B, BigDecimal> bigDecimalMatchWeigher) {
-        super(constraintFactory);
+        super(constraintFactory, parent.getRetrievalSemantics());
         this.parent = parent;
         this.constraint = constraint;
         this.noMatchWeigher = noMatchWeigher;

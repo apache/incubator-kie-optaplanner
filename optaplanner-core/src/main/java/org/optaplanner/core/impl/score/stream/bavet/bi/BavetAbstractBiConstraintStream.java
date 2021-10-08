@@ -43,6 +43,7 @@ import org.optaplanner.core.impl.score.stream.bavet.tri.BavetJoinTriConstraintSt
 import org.optaplanner.core.impl.score.stream.bavet.uni.BavetAbstractUniConstraintStream;
 import org.optaplanner.core.impl.score.stream.bavet.uni.BavetJoinBridgeUniConstraintStream;
 import org.optaplanner.core.impl.score.stream.bi.InnerBiConstraintStream;
+import org.optaplanner.core.impl.score.stream.common.RetrievalSemantics;
 import org.optaplanner.core.impl.score.stream.common.ScoreImpactType;
 import org.optaplanner.core.impl.score.stream.tri.AbstractTriJoiner;
 
@@ -51,8 +52,9 @@ public abstract class BavetAbstractBiConstraintStream<Solution_, A, B> extends B
 
     protected final List<BavetAbstractBiConstraintStream<Solution_, A, B>> childStreamList = new ArrayList<>(2);
 
-    public BavetAbstractBiConstraintStream(BavetConstraintFactory<Solution_> constraintFactory) {
-        super(constraintFactory);
+    public BavetAbstractBiConstraintStream(BavetConstraintFactory<Solution_> constraintFactory,
+            RetrievalSemantics retrievalSemantics) {
+        super(constraintFactory, retrievalSemantics);
     }
 
     // ************************************************************************
@@ -108,6 +110,15 @@ public abstract class BavetAbstractBiConstraintStream<Solution_, A, B> extends B
         leftBridge.setJoinStream(joinStream);
         rightBridge.setJoinStream(joinStream);
         return joinStream;
+    }
+
+    @Override
+    public <C> TriConstraintStream<A, B, C> join(Class<C> otherClass, TriJoiner<A, B, C>... joiners) {
+        if (getRetrievalSemantics() == RetrievalSemantics.STANDARD) {
+            return join(constraintFactory.forEach(otherClass), joiners);
+        } else {
+            return join(constraintFactory.from(otherClass), joiners);
+        }
     }
 
     // ************************************************************************

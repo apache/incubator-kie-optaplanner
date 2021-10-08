@@ -32,6 +32,7 @@ import org.optaplanner.core.api.score.stream.quad.QuadJoiner;
 import org.optaplanner.core.api.score.stream.tri.TriConstraintCollector;
 import org.optaplanner.core.api.score.stream.tri.TriConstraintStream;
 import org.optaplanner.core.api.score.stream.uni.UniConstraintStream;
+import org.optaplanner.core.impl.score.stream.common.RetrievalSemantics;
 import org.optaplanner.core.impl.score.stream.common.ScoreImpactType;
 import org.optaplanner.core.impl.score.stream.drools.DroolsConstraintFactory;
 import org.optaplanner.core.impl.score.stream.drools.bi.DroolsGroupingBiConstraintStream;
@@ -50,8 +51,9 @@ import org.optaplanner.core.impl.score.stream.tri.InnerTriConstraintStream;
 public abstract class DroolsAbstractTriConstraintStream<Solution_, A, B, C>
         extends DroolsAbstractConstraintStream<Solution_> implements InnerTriConstraintStream<A, B, C> {
 
-    public DroolsAbstractTriConstraintStream(DroolsConstraintFactory<Solution_> constraintFactory) {
-        super(constraintFactory);
+    public DroolsAbstractTriConstraintStream(DroolsConstraintFactory<Solution_> constraintFactory,
+            RetrievalSemantics retrievalSemantics) {
+        super(constraintFactory, retrievalSemantics);
     }
 
     @Override
@@ -76,9 +78,14 @@ public abstract class DroolsAbstractTriConstraintStream<Solution_, A, B, C>
         return stream;
     }
 
-    // ************************************************************************
-    // If (not) exists
-    // ************************************************************************
+    @Override
+    public <D> QuadConstraintStream<A, B, C, D> join(Class<D> otherClass, QuadJoiner<A, B, C, D>... joiners) {
+        if (getRetrievalSemantics() == RetrievalSemantics.STANDARD) {
+            return join(constraintFactory.forEach(otherClass), joiners);
+        } else {
+            return join(constraintFactory.from(otherClass), joiners);
+        }
+    }
 
     @SafeVarargs
     @Override
@@ -101,10 +108,6 @@ public abstract class DroolsAbstractTriConstraintStream<Solution_, A, B, C>
         addChildStream(stream);
         return stream;
     }
-
-    // ************************************************************************
-    // Group by
-    // ************************************************************************
 
     @Override
     public <ResultContainer_, Result_> UniConstraintStream<Result_> groupBy(
@@ -263,10 +266,6 @@ public abstract class DroolsAbstractTriConstraintStream<Solution_, A, B, C>
         return stream;
     }
 
-    // ************************************************************************
-    // Operations with duplicate tuple possibility
-    // ************************************************************************
-
     @Override
     public <ResultA_> UniConstraintStream<ResultA_> map(TriFunction<A, B, C, ResultA_> mapping) {
         DroolsMappingUniConstraintStream<Solution_, ResultA_> stream =
@@ -282,10 +281,6 @@ public abstract class DroolsAbstractTriConstraintStream<Solution_, A, B, C>
         addChildStream(stream);
         return stream;
     }
-
-    // ************************************************************************
-    // Penalize/reward
-    // ************************************************************************
 
     @Override
     protected Constraint impactScore(String constraintPackage, String constraintName, Score<?> constraintWeight,
@@ -342,10 +337,6 @@ public abstract class DroolsAbstractTriConstraintStream<Solution_, A, B, C>
         RuleBuilder<Solution_> ruleBuilder = getLeftHandSide().andTerminate(matchWeigher);
         return buildConstraintConfigurable(constraintPackage, constraintName, impactType, ruleBuilder);
     }
-
-    // ************************************************************************
-    // Pattern creation
-    // ************************************************************************
 
     public abstract TriLeftHandSide<A, B, C> getLeftHandSide();
 

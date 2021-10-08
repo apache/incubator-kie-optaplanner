@@ -16,8 +16,6 @@
 
 package org.optaplanner.core.impl.score.stream.bavet.uni;
 
-import static java.util.Collections.singletonList;
-
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.function.Function;
@@ -31,6 +29,8 @@ import org.optaplanner.core.impl.score.inliner.WeightedScoreImpacter;
 import org.optaplanner.core.impl.score.stream.bavet.BavetConstraint;
 import org.optaplanner.core.impl.score.stream.bavet.BavetConstraintFactory;
 import org.optaplanner.core.impl.score.stream.bavet.common.BavetNodeBuildPolicy;
+
+import static java.util.Collections.singletonList;
 
 public final class BavetScoringUniConstraintStream<Solution_, A> extends BavetAbstractUniConstraintStream<Solution_, A> {
 
@@ -75,11 +75,10 @@ public final class BavetScoringUniConstraintStream<Solution_, A> extends BavetAb
     }
 
     private BavetScoringUniConstraintStream(BavetConstraintFactory<Solution_> constraintFactory,
-            BavetAbstractUniConstraintStream<Solution_, A> parent,
-            BavetConstraint<Solution_> constraint, boolean noMatchWeigher,
-            ToIntFunction<A> intMatchWeigher, ToLongFunction<A> longMatchWeigher,
+            BavetAbstractUniConstraintStream<Solution_, A> parent, BavetConstraint<Solution_> constraint,
+            boolean noMatchWeigher, ToIntFunction<A> intMatchWeigher, ToLongFunction<A> longMatchWeigher,
             Function<A, BigDecimal> bigDecimalMatchWeigher) {
-        super(constraintFactory);
+        super(constraintFactory, parent.getRetrievalSemantics());
         this.parent = parent;
         this.constraint = constraint;
         this.noMatchWeigher = noMatchWeigher;

@@ -29,7 +29,7 @@ public final class DroolsExistsUniConstraintStream<Solution_, A> extends DroolsA
     public <B> DroolsExistsUniConstraintStream(DroolsConstraintFactory<Solution_> constraintFactory,
             DroolsAbstractUniConstraintStream<Solution_, A> parent, boolean shouldExist, Class<B> otherClass,
             BiJoiner<A, B>... joiners) {
-        super(constraintFactory);
+        super(constraintFactory, parent.getRetrievalSemantics());
         this.parent = parent;
         this.leftHandSide = shouldExist
                 ? parent.getLeftHandSide().andExists(otherClass, joiners)

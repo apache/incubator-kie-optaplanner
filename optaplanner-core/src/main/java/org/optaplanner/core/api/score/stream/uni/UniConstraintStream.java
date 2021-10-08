@@ -206,7 +206,7 @@ public interface UniConstraintStream<A> extends ConstraintStream {
      * @return never null, a stream that matches every combination of A and B for which the {@link BiJoiner} is true
      */
     default <B> BiConstraintStream<A, B> join(Class<B> otherClass, BiJoiner<A, B> joiner) {
-        return join(getConstraintFactory().from(otherClass), joiner);
+        return join(otherClass, new BiJoiner[] { joiner });
     }
 
     /**
@@ -221,7 +221,7 @@ public interface UniConstraintStream<A> extends ConstraintStream {
      *         are true
      */
     default <B> BiConstraintStream<A, B> join(Class<B> otherClass, BiJoiner<A, B> joiner1, BiJoiner<A, B> joiner2) {
-        return join(getConstraintFactory().from(otherClass), joiner1, joiner2);
+        return join(otherClass, new BiJoiner[] { joiner1, joiner2 });
     }
 
     /**
@@ -238,7 +238,7 @@ public interface UniConstraintStream<A> extends ConstraintStream {
      */
     default <B> BiConstraintStream<A, B> join(Class<B> otherClass, BiJoiner<A, B> joiner1, BiJoiner<A, B> joiner2,
             BiJoiner<A, B> joiner3) {
-        return join(getConstraintFactory().from(otherClass), joiner1, joiner2, joiner3);
+        return join(otherClass, new BiJoiner[] { joiner1, joiner2, joiner3 });
     }
 
     /**
@@ -256,7 +256,7 @@ public interface UniConstraintStream<A> extends ConstraintStream {
      */
     default <B> BiConstraintStream<A, B> join(Class<B> otherClass, BiJoiner<A, B> joiner1, BiJoiner<A, B> joiner2,
             BiJoiner<A, B> joiner3, BiJoiner<A, B> joiner4) {
-        return join(getConstraintFactory().from(otherClass), joiner1, joiner2, joiner3, joiner4);
+        return join(otherClass, new BiJoiner[] { joiner1, joiner2, joiner3, joiner4 });
     }
 
     /**
@@ -273,9 +273,7 @@ public interface UniConstraintStream<A> extends ConstraintStream {
      * @return never null, a stream that matches every combination of A and B for which all the {@link BiJoiner joiners}
      *         are true
      */
-    default <B> BiConstraintStream<A, B> join(Class<B> otherClass, BiJoiner<A, B>... joiners) {
-        return join(getConstraintFactory().from(otherClass), joiners);
-    }
+    <B> BiConstraintStream<A, B> join(Class<B> otherClass, BiJoiner<A, B>... joiners);
 
     // ************************************************************************
     // If (not) exists
