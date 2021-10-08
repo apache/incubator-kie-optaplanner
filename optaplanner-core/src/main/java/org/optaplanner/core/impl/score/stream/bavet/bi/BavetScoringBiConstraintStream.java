@@ -16,6 +16,8 @@
 
 package org.optaplanner.core.impl.score.stream.bavet.bi;
 
+import static java.util.Arrays.asList;
+
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.function.BiFunction;
@@ -30,8 +32,6 @@ import org.optaplanner.core.impl.score.stream.bavet.BavetConstraint;
 import org.optaplanner.core.impl.score.stream.bavet.BavetConstraintFactory;
 import org.optaplanner.core.impl.score.stream.bavet.common.BavetNodeBuildPolicy;
 import org.optaplanner.core.impl.score.stream.bavet.uni.BavetFromUniConstraintStream;
-
-import static java.util.Arrays.asList;
 
 public final class BavetScoringBiConstraintStream<Solution_, A, B>
         extends BavetAbstractBiConstraintStream<Solution_, A, B> {

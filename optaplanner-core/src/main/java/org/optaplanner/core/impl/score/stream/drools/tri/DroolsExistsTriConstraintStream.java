@@ -16,6 +16,8 @@
 
 package org.optaplanner.core.impl.score.stream.drools.tri;
 
+import java.util.function.Predicate;
+
 import org.optaplanner.core.api.score.stream.quad.QuadJoiner;
 import org.optaplanner.core.impl.score.stream.drools.DroolsConstraintFactory;
 import org.optaplanner.core.impl.score.stream.drools.common.TriLeftHandSide;
@@ -32,9 +34,10 @@ public final class DroolsExistsTriConstraintStream<Solution_, A, B, C>
             QuadJoiner<A, B, C, D>... joiners) {
         super(constraintFactory, parent.getRetrievalSemantics());
         this.parent = parent;
+        Predicate<D> nullityFilter = constraintFactory.getNullityFilter(otherClass);
         this.leftHandSide = shouldExist
-                ? parent.getLeftHandSide().andExists(otherClass, joiners)
-                : parent.getLeftHandSide().andNotExists(otherClass, joiners);
+                ? parent.getLeftHandSide().andExists(otherClass, joiners, nullityFilter)
+                : parent.getLeftHandSide().andNotExists(otherClass, joiners, nullityFilter);
         this.streamName = shouldExist ? "TriIfExists()" : "TriIfNotExists()";
     }
 

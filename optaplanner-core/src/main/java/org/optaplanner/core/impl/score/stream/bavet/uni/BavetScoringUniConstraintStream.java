@@ -16,6 +16,8 @@
 
 package org.optaplanner.core.impl.score.stream.bavet.uni;
 
+import static java.util.Collections.singletonList;
+
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.function.Function;
@@ -29,8 +31,6 @@ import org.optaplanner.core.impl.score.inliner.WeightedScoreImpacter;
 import org.optaplanner.core.impl.score.stream.bavet.BavetConstraint;
 import org.optaplanner.core.impl.score.stream.bavet.BavetConstraintFactory;
 import org.optaplanner.core.impl.score.stream.bavet.common.BavetNodeBuildPolicy;
-
-import static java.util.Collections.singletonList;
 
 public final class BavetScoringUniConstraintStream<Solution_, A> extends BavetAbstractUniConstraintStream<Solution_, A> {
 

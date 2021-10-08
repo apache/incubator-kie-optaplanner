@@ -16,6 +16,10 @@
 
 package org.optaplanner.core.impl.score.stream;
 
+import static java.util.stream.Collectors.groupingBy;
+import static java.util.stream.Collectors.toList;
+import static org.optaplanner.core.api.score.stream.Joiners.lessThan;
+
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -39,21 +43,21 @@ import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.core.impl.score.stream.bi.FilteringBiJoiner;
 
-import static java.util.stream.Collectors.groupingBy;
-import static java.util.stream.Collectors.toList;
-import static org.optaplanner.core.api.score.stream.Joiners.lessThan;
-
 public abstract class InnerConstraintFactory<Solution_, Constraint_ extends Constraint> implements ConstraintFactory {
 
     @Override
     public <A> UniConstraintStream<A> forEach(Class<A> fromClass) {
         UniConstraintStream<A> stream = forEachIncludingNullVars(fromClass);
+        Predicate<A> nullityFilter = getNullityFilter(fromClass);
+        return nullityFilter == null ? stream : stream.filter(nullityFilter);
+    }
+
+    public <A> Predicate<A> getNullityFilter(Class<A> fromClass) {
         EntityDescriptor<Solution_> entityDescriptor = getSolutionDescriptor().findEntityDescriptor(fromClass);
         if (entityDescriptor != null && entityDescriptor.hasAnyGenuineVariables()) {
-            Predicate<A> predicate = (Predicate<A>) entityDescriptor.getHasNoNullVariables();
-            stream = stream.filter(predicate);
+            return (Predicate<A>) entityDescriptor.getHasNoNullVariables();
         }
-        return stream;
+        return null;
     }
 
     @Override

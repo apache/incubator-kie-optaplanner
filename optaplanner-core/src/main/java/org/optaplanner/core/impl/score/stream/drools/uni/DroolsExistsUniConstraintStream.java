@@ -16,6 +16,8 @@
 
 package org.optaplanner.core.impl.score.stream.drools.uni;
 
+import java.util.function.Predicate;
+
 import org.optaplanner.core.api.score.stream.bi.BiJoiner;
 import org.optaplanner.core.impl.score.stream.drools.DroolsConstraintFactory;
 import org.optaplanner.core.impl.score.stream.drools.common.UniLeftHandSide;
@@ -31,9 +33,10 @@ public final class DroolsExistsUniConstraintStream<Solution_, A> extends DroolsA
             BiJoiner<A, B>... joiners) {
         super(constraintFactory, parent.getRetrievalSemantics());
         this.parent = parent;
+        Predicate<B> nullityFilter = constraintFactory.getNullityFilter(otherClass);
         this.leftHandSide = shouldExist
-                ? parent.getLeftHandSide().andExists(otherClass, joiners)
-                : parent.getLeftHandSide().andNotExists(otherClass, joiners);
+                ? parent.getLeftHandSide().andExists(otherClass, joiners, nullityFilter)
+                : parent.getLeftHandSide().andNotExists(otherClass, joiners, nullityFilter);
         this.streamName = shouldExist ? "IfExists()" : "IfNotExists()";
     }
 
