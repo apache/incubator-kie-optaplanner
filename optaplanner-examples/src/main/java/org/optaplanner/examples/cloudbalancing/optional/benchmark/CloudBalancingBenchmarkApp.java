@@ -20,10 +20,6 @@ import org.optaplanner.examples.common.app.CommonBenchmarkApp;
 
 public class CloudBalancingBenchmarkApp extends CommonBenchmarkApp {
 
-    public static void main(String[] args) {
-        new CloudBalancingBenchmarkApp().buildAndBenchmark(args);
-    }
-
     public CloudBalancingBenchmarkApp() {
         super(
                 new ArgOption("default",
@@ -36,6 +32,10 @@ public class CloudBalancingBenchmarkApp extends CommonBenchmarkApp {
                         "org/optaplanner/examples/cloudbalancing/optional/benchmark/cloudBalancingBenchmarkConfigTemplate.xml.ftl",
                         true),
                 new ArgOption("partitioned",
-                              "org/optaplanner/examples/cloudbalancing/optional/benchmark/cloudBalancingPartitionedSearchBenchmarkConfig.xml"));
+                        "org/optaplanner/examples/cloudbalancing/optional/benchmark/cloudBalancingPartitionedSearchBenchmarkConfig.xml"));
+    }
+
+    public static void main(String[] args) {
+        new CloudBalancingBenchmarkApp().buildAndBenchmark(args);
     }
 }
