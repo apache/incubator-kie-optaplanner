@@ -26,15 +26,12 @@ import org.optaplanner.examples.vehiclerouting.domain.Customer;
 import org.optaplanner.examples.vehiclerouting.domain.Standstill;
 import org.optaplanner.examples.vehiclerouting.domain.Vehicle;
 import org.optaplanner.examples.vehiclerouting.domain.VehicleRoutingSolution;
-import org.optaplanner.examples.vehiclerouting.domain.timewindowed.TimeWindowedCustomer;
-import org.optaplanner.examples.vehiclerouting.domain.timewindowed.TimeWindowedVehicleRoutingSolution;
 
 public class VehicleRoutingEasyScoreCalculator
         implements EasyScoreCalculator<VehicleRoutingSolution, HardSoftLongScore> {
 
     @Override
     public HardSoftLongScore calculateScore(VehicleRoutingSolution solution) {
-        boolean timeWindowed = solution instanceof TimeWindowedVehicleRoutingSolution;
         List<Customer> customerList = solution.getCustomerList();
         List<Vehicle> vehicleList = solution.getVehicleList();
         Map<Vehicle, Integer> vehicleDemandMap = new HashMap<>(vehicleList.size());
@@ -53,15 +50,6 @@ public class VehicleRoutingEasyScoreCalculator
                 if (customer.getNextCustomer() == null) {
                     // Score constraint distanceFromLastCustomerToDepot
                     softScore -= customer.getLocation().getDistanceTo(vehicle.getLocation());
-                }
-                if (timeWindowed) {
-                    TimeWindowedCustomer timeWindowedCustomer = (TimeWindowedCustomer) customer;
-                    long dueTime = timeWindowedCustomer.getDueTime();
-                    Long arrivalTime = timeWindowedCustomer.getArrivalTime();
-                    if (dueTime < arrivalTime) {
-                        // Score constraint arrivalAfterDueTime
-                        hardScore -= (arrivalTime - dueTime);
-                    }
                 }
             }
         }

@@ -26,13 +26,10 @@ import org.optaplanner.examples.vehiclerouting.domain.Customer;
 import org.optaplanner.examples.vehiclerouting.domain.Standstill;
 import org.optaplanner.examples.vehiclerouting.domain.Vehicle;
 import org.optaplanner.examples.vehiclerouting.domain.VehicleRoutingSolution;
-import org.optaplanner.examples.vehiclerouting.domain.timewindowed.TimeWindowedCustomer;
-import org.optaplanner.examples.vehiclerouting.domain.timewindowed.TimeWindowedVehicleRoutingSolution;
 
 public class VehicleRoutingIncrementalScoreCalculator
         implements IncrementalScoreCalculator<VehicleRoutingSolution, HardSoftLongScore> {
 
-    private boolean timeWindowed;
     private Map<Vehicle, Integer> vehicleDemandMap;
 
     private long hardScore;
@@ -40,7 +37,6 @@ public class VehicleRoutingIncrementalScoreCalculator
 
     @Override
     public void resetWorkingSolution(VehicleRoutingSolution solution) {
-        timeWindowed = solution instanceof TimeWindowedVehicleRoutingSolution;
         List<Vehicle> vehicleList = solution.getVehicleList();
         vehicleDemandMap = new HashMap<>(vehicleList.size());
         for (Vehicle vehicle : vehicleList) {
@@ -51,10 +47,6 @@ public class VehicleRoutingIncrementalScoreCalculator
         for (Customer customer : solution.getCustomerList()) {
             insertPreviousStandstill(customer);
             insertVehicle(customer);
-            // Do not do insertNextCustomer(customer) to avoid counting distanceFromLastCustomerToDepot twice
-            if (timeWindowed) {
-                insertArrivalTime((TimeWindowedCustomer) customer);
-            }
         }
     }
 
@@ -70,10 +62,6 @@ public class VehicleRoutingIncrementalScoreCalculator
         }
         insertPreviousStandstill((Customer) entity);
         insertVehicle((Customer) entity);
-        // Do not do insertNextCustomer(customer) to avoid counting distanceFromLastCustomerToDepot twice
-        if (timeWindowed) {
-            insertArrivalTime((TimeWindowedCustomer) entity);
-        }
     }
 
     @Override
@@ -90,9 +78,6 @@ public class VehicleRoutingIncrementalScoreCalculator
                 break;
             case "nextCustomer":
                 retractNextCustomer((Customer) entity);
-                break;
-            case "arrivalTime":
-                retractArrivalTime((TimeWindowedCustomer) entity);
                 break;
             default:
                 throw new IllegalArgumentException("Unsupported variableName (" + variableName + ").");
@@ -114,9 +99,6 @@ public class VehicleRoutingIncrementalScoreCalculator
             case "nextCustomer":
                 insertNextCustomer((Customer) entity);
                 break;
-            case "arrivalTime":
-                insertArrivalTime((TimeWindowedCustomer) entity);
-                break;
             default:
                 throw new IllegalArgumentException("Unsupported variableName (" + variableName + ").");
         }
@@ -129,10 +111,6 @@ public class VehicleRoutingIncrementalScoreCalculator
         }
         retractPreviousStandstill((Customer) entity);
         retractVehicle((Customer) entity);
-        // Do not do retractNextCustomer(customer) to avoid counting distanceFromLastCustomerToDepot twice
-        if (timeWindowed) {
-            retractArrivalTime((TimeWindowedCustomer) entity);
-        }
     }
 
     @Override
@@ -204,29 +182,6 @@ public class VehicleRoutingIncrementalScoreCalculator
             if (customer.getNextCustomer() == null) {
                 // Score constraint distanceFromLastCustomerToDepot
                 softScore += customer.getLocation().getDistanceTo(vehicle.getLocation());
-            }
-        }
-    }
-
-    private void insertArrivalTime(TimeWindowedCustomer customer) {
-        Long arrivalTime = customer.getArrivalTime();
-        if (arrivalTime != null) {
-            long dueTime = customer.getDueTime();
-            if (dueTime < arrivalTime) {
-                // Score constraint arrivalAfterDueTime
-                hardScore -= (arrivalTime - dueTime);
-            }
-        }
-        // Score constraint arrivalAfterDueTimeAtDepot is a built-in hard constraint in VehicleRoutingImporter
-    }
-
-    private void retractArrivalTime(TimeWindowedCustomer customer) {
-        Long arrivalTime = customer.getArrivalTime();
-        if (arrivalTime != null) {
-            long dueTime = customer.getDueTime();
-            if (dueTime < arrivalTime) {
-                // Score constraint arrivalAfterDueTime
-                hardScore += (arrivalTime - dueTime);
             }
         }
     }

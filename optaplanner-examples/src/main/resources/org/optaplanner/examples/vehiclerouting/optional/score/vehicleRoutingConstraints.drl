@@ -24,9 +24,6 @@ import org.optaplanner.examples.vehiclerouting.domain.location.Location;
 import org.optaplanner.examples.vehiclerouting.domain.Vehicle;
 import org.optaplanner.examples.vehiclerouting.domain.VehicleRoutingSolution;
 import org.optaplanner.examples.vehiclerouting.domain.Customer;
-import org.optaplanner.examples.vehiclerouting.domain.timewindowed.TimeWindowedDepot;
-import org.optaplanner.examples.vehiclerouting.domain.timewindowed.TimeWindowedVehicleRoutingSolution;
-import org.optaplanner.examples.vehiclerouting.domain.timewindowed.TimeWindowedCustomer
 import org.optaplanner.examples.vehiclerouting.domain.Vehicle;
 
 global HardSoftLongScoreHolder scoreHolder;
@@ -67,17 +64,3 @@ rule "distanceFromLastCustomerToDepot"
         Vehicle vehicle = $customer.getVehicle();
         scoreHolder.addSoftConstraintMatch(kcontext, - $customer.getDistanceTo(vehicle));
 end
-
-
-// ############################################################################
-// TimeWindowed: additional hard constraints
-// ############################################################################
-
-rule "arrivalAfterDueTime"
-    when
-        TimeWindowedCustomer(dueTime < arrivalTime, $dueTime : dueTime, $arrivalTime : arrivalTime)
-    then
-        scoreHolder.addHardConstraintMatch(kcontext, $dueTime - $arrivalTime.longValue());
-end
-
-// Score constraint arrivalAfterDueTimeAtDepot is a built-in hard constraint in VehicleRoutingImporter

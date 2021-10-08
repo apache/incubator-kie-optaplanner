@@ -26,9 +26,6 @@ import org.optaplanner.examples.vehiclerouting.domain.Customer;
 import org.optaplanner.examples.vehiclerouting.domain.VehicleRoutingSolution;
 import org.optaplanner.examples.vehiclerouting.domain.location.AirLocation;
 import org.optaplanner.examples.vehiclerouting.domain.location.Location;
-import org.optaplanner.examples.vehiclerouting.domain.timewindowed.TimeWindowedCustomer;
-import org.optaplanner.examples.vehiclerouting.domain.timewindowed.TimeWindowedDepot;
-import org.optaplanner.examples.vehiclerouting.domain.timewindowed.TimeWindowedVehicleRoutingSolution;
 
 public class VehicleRoutingPanel extends SolutionPanel<VehicleRoutingSolution> {
 
@@ -109,21 +106,7 @@ public class VehicleRoutingPanel extends SolutionPanel<VehicleRoutingSolution> {
     }
 
     protected Customer createCustomer(VehicleRoutingSolution solution, Location newLocation) {
-        Customer newCustomer;
-        if (solution instanceof TimeWindowedVehicleRoutingSolution) {
-            TimeWindowedCustomer newTimeWindowedCustomer = new TimeWindowedCustomer();
-            TimeWindowedDepot timeWindowedDepot = (TimeWindowedDepot) solution.getDepotList().get(0);
-            long windowTime = (timeWindowedDepot.getDueTime() - timeWindowedDepot.getReadyTime()) / 4L;
-            long readyTime = demandRandom.longs(0, windowTime * 3L)
-                    .findAny()
-                    .orElseThrow();
-            newTimeWindowedCustomer.setReadyTime(readyTime);
-            newTimeWindowedCustomer.setDueTime(readyTime + windowTime);
-            newTimeWindowedCustomer.setServiceDuration(Math.min(10000L, windowTime / 2L));
-            newCustomer = newTimeWindowedCustomer;
-        } else {
-            newCustomer = new Customer();
-        }
+        Customer newCustomer = new Customer();
         newCustomer.setId(newLocation.getId());
         newCustomer.setLocation(newLocation);
         // Demand must not be 0

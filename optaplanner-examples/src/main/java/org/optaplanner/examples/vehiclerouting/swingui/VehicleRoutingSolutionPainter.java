@@ -36,15 +36,11 @@ import org.optaplanner.examples.vehiclerouting.domain.VehicleRoutingSolution;
 import org.optaplanner.examples.vehiclerouting.domain.location.AirLocation;
 import org.optaplanner.examples.vehiclerouting.domain.location.DistanceType;
 import org.optaplanner.examples.vehiclerouting.domain.location.Location;
-import org.optaplanner.examples.vehiclerouting.domain.timewindowed.TimeWindowedCustomer;
-import org.optaplanner.examples.vehiclerouting.domain.timewindowed.TimeWindowedDepot;
-import org.optaplanner.examples.vehiclerouting.domain.timewindowed.TimeWindowedVehicleRoutingSolution;
 import org.optaplanner.swing.impl.TangoColorFactory;
 
 public class VehicleRoutingSolutionPainter {
 
     private static final int TEXT_SIZE = 12;
-    private static final int TIME_WINDOW_DIAMETER = 26;
     private static final NumberFormat NUMBER_FORMAT = new DecimalFormat("#,##0.00");
 
     private static final String IMAGE_PATH_PREFIX = "/org/optaplanner/examples/vehiclerouting/swingui/";
@@ -86,7 +82,6 @@ public class VehicleRoutingSolutionPainter {
         for (Location location : solution.getLocationList()) {
             translator.addCoordinates(location.getLatitude(), location.getLongitude());
         }
-        determineMinimumAndMaximumTimeWindowTime(solution);
 
         double width = size.getWidth();
         double height = size.getHeight();
@@ -103,33 +98,6 @@ public class VehicleRoutingSolutionPainter {
             g.fillRect(x - 1, y - 1, 3, 3);
             String demandString = Integer.toString(customer.getDemand());
             g.drawString(demandString, x - (g.getFontMetrics().stringWidth(demandString) / 2), y - TEXT_SIZE / 2);
-            if (customer instanceof TimeWindowedCustomer) {
-                TimeWindowedCustomer timeWindowedCustomer = (TimeWindowedCustomer) customer;
-                g.setColor(TangoColorFactory.ALUMINIUM_3);
-                int circleX = x - (TIME_WINDOW_DIAMETER / 2);
-                int circleY = y + 5;
-                g.drawOval(circleX, circleY, TIME_WINDOW_DIAMETER, TIME_WINDOW_DIAMETER);
-                g.fillArc(circleX, circleY, TIME_WINDOW_DIAMETER, TIME_WINDOW_DIAMETER,
-                        90 - calculateTimeWindowDegree(timeWindowedCustomer.getReadyTime()),
-                        calculateTimeWindowDegree(timeWindowedCustomer.getReadyTime())
-                                - calculateTimeWindowDegree(timeWindowedCustomer.getDueTime()));
-                if (timeWindowedCustomer.getArrivalTime() != null) {
-                    if (timeWindowedCustomer.isArrivalAfterDueTime()) {
-                        g.setColor(TangoColorFactory.SCARLET_2);
-                    } else if (timeWindowedCustomer.isArrivalBeforeReadyTime()) {
-                        g.setColor(TangoColorFactory.ORANGE_2);
-                    } else {
-                        g.setColor(TangoColorFactory.ALUMINIUM_6);
-                    }
-                    g.setStroke(TangoColorFactory.THICK_STROKE);
-                    int circleCenterY = y + 5 + TIME_WINDOW_DIAMETER / 2;
-                    int angle = calculateTimeWindowDegree(timeWindowedCustomer.getArrivalTime());
-                    g.drawLine(x, circleCenterY,
-                            x + (int) (Math.sin(Math.toRadians(angle)) * (TIME_WINDOW_DIAMETER / 2 + 3)),
-                            circleCenterY - (int) (Math.cos(Math.toRadians(angle)) * (TIME_WINDOW_DIAMETER / 2 + 3)));
-                    g.setStroke(TangoColorFactory.NORMAL_STROKE);
-                }
-            }
         }
         g.setColor(TangoColorFactory.ALUMINIUM_3);
         for (Depot depot : solution.getDepotList()) {
@@ -207,9 +175,7 @@ public class VehicleRoutingSolutionPainter {
                 ((int) width - g.getFontMetrics().stringWidth(vehiclesSizeString)) / 2, (int) height - 10 - TEXT_SIZE);
         g.setColor(TangoColorFactory.ALUMINIUM_4);
         g.fillRect(6, (int) height - 6 - (TEXT_SIZE / 2), 3, 3);
-        g.drawString((solution instanceof TimeWindowedVehicleRoutingSolution)
-                ? "Customer: demand, time window and arrival time"
-                : "Customer: demand", 15, (int) height - 5);
+        g.drawString("Customer: demand", 15, (int) height - 5);
         String customersSizeString = solution.getCustomerList().size() + " customers";
         g.drawString(customersSizeString,
                 ((int) width - g.getFontMetrics().stringWidth(customersSizeString)) / 2, (int) height - 5);
@@ -231,41 +197,6 @@ public class VehicleRoutingSolutionPainter {
             g.drawString(distanceString,
                     (int) width - g.getFontMetrics().stringWidth(distanceString) - 10, (int) height - 10 - TEXT_SIZE);
         }
-    }
-
-    private void determineMinimumAndMaximumTimeWindowTime(VehicleRoutingSolution solution) {
-        minimumTimeWindowTime = Long.MAX_VALUE;
-        maximumTimeWindowTime = Long.MIN_VALUE;
-        for (Depot depot : solution.getDepotList()) {
-            if (depot instanceof TimeWindowedDepot) {
-                TimeWindowedDepot timeWindowedDepot = (TimeWindowedDepot) depot;
-                long readyTime = timeWindowedDepot.getReadyTime();
-                if (readyTime < minimumTimeWindowTime) {
-                    minimumTimeWindowTime = readyTime;
-                }
-                long dueTime = timeWindowedDepot.getDueTime();
-                if (dueTime > maximumTimeWindowTime) {
-                    maximumTimeWindowTime = dueTime;
-                }
-            }
-        }
-        for (Customer customer : solution.getCustomerList()) {
-            if (customer instanceof TimeWindowedCustomer) {
-                TimeWindowedCustomer timeWindowedCustomer = (TimeWindowedCustomer) customer;
-                long readyTime = timeWindowedCustomer.getReadyTime();
-                if (readyTime < minimumTimeWindowTime) {
-                    minimumTimeWindowTime = readyTime;
-                }
-                long dueTime = timeWindowedCustomer.getDueTime();
-                if (dueTime > maximumTimeWindowTime) {
-                    maximumTimeWindowTime = dueTime;
-                }
-            }
-        }
-    }
-
-    private int calculateTimeWindowDegree(long timeWindowTime) {
-        return (int) (360L * (timeWindowTime - minimumTimeWindowTime) / (maximumTimeWindowTime - minimumTimeWindowTime));
     }
 
     public Graphics2D createCanvas(double width, double height) {
