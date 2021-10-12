@@ -120,7 +120,7 @@ public class BiConstraintStreamTest extends AbstractConstraintStreamTest impleme
         TestdataLavishEntity entity5 = solution.getEntityList().get(4);
 
         InnerScoreDirector<TestdataLavishSolution, SimpleScore> scoreDirector = buildScoreDirector(factory -> {
-            return factory.fromUniquePair(TestdataLavishEntity.class,
+            return factory.forEachUniquePair(TestdataLavishEntity.class,
                     filtering((entityA, entityB) -> !Objects.equals(entityA, entity1)))
                     .filter((entityA, entityB) -> !Objects.equals(entityA, entity2))
                     .filter((entityA, entityB) -> !Objects.equals(entityA, entity3))
@@ -726,7 +726,7 @@ public class BiConstraintStreamTest extends AbstractConstraintStreamTest impleme
         solution.getEntityList().add(entity3);
 
         InnerScoreDirector<TestdataLavishSolution, SimpleScore> scoreDirector = buildScoreDirector(factory -> {
-            return factory.fromUniquePair(TestdataLavishEntity.class, equal(TestdataLavishEntity::getEntityGroup))
+            return factory.forEachUniquePair(TestdataLavishEntity.class, equal(TestdataLavishEntity::getEntityGroup))
                     .groupBy((entityA, entityB) -> entityA.getEntityGroup())
                     .penalize(TEST_CONSTRAINT_NAME, SimpleScore.ONE);
         });

@@ -54,8 +54,8 @@ public class TestdataConstraintProvider implements ConstraintProvider {
     }
 
     public Constraint differentStringEntityHaveDifferentValues(ConstraintFactory constraintFactory) {
-        return constraintFactory
-                .fromUniquePair(TestdataStringPlanningIdEntity.class, Joiners.equal(TestdataStringPlanningIdEntity::getValue))
+        return constraintFactory.forEachUniquePair(TestdataStringPlanningIdEntity.class,
+                Joiners.equal(TestdataStringPlanningIdEntity::getValue))
                 .penalize("Different String Entity Have Different Values", SimpleScore.ONE);
     }
 
