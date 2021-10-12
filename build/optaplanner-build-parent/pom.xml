@@ -902,6 +902,27 @@
             </executions>
           </plugin>
         </plugins>
+        <pluginManagement>
+          <plugins>
+            <plugin>
+              <groupId>io.quarkus</groupId>
+              <artifactId>quarkus-maven-plugin</artifactId>
+              <dependencies>
+                <dependency> <!-- Otherwise native image is going to fail with CNFE; KieModuleModule needs XStream even if we don't. -->
+                  <groupId>com.thoughtworks.xstream</groupId>
+                  <artifactId>xstream</artifactId>
+                </dependency>
+              </dependencies>
+              <executions>
+                <execution>
+                  <goals>
+                    <goal>build</goal>
+                  </goals>
+                </execution>
+              </executions>
+            </plugin>
+          </plugins>
+        </pluginManagement>
       </build>
     </profile>
   </profiles>
