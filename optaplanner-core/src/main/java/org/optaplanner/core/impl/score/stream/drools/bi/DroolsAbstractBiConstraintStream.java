@@ -15,6 +15,8 @@
  */
 package org.optaplanner.core.impl.score.stream.drools.bi;
 
+import static org.optaplanner.core.impl.score.stream.common.RetrievalSemantics.*;
+
 import java.math.BigDecimal;
 import java.util.Objects;
 import java.util.function.BiFunction;
@@ -79,7 +81,7 @@ public abstract class DroolsAbstractBiConstraintStream<Solution_, A, B>
 
     @Override
     public <C> TriConstraintStream<A, B, C> join(Class<C> otherClass, TriJoiner<A, B, C>... joiners) {
-        if (getRetrievalSemantics() == RetrievalSemantics.STANDARD) {
+        if (getRetrievalSemantics() == STANDARD) {
             return join(constraintFactory.forEach(otherClass), joiners);
         } else {
             return join(constraintFactory.from(otherClass), joiners);
@@ -89,21 +91,33 @@ public abstract class DroolsAbstractBiConstraintStream<Solution_, A, B>
     @SafeVarargs
     @Override
     public final <C> BiConstraintStream<A, B> ifExists(Class<C> otherClass, TriJoiner<A, B, C>... joiners) {
-        return ifExistsOrNot(true, otherClass, joiners);
+        return ifExistsOrNot(true, getRetrievalSemantics() == LEGACY, otherClass, joiners);
+    }
+
+    @SafeVarargs
+    @Override
+    public final <C> BiConstraintStream<A, B> ifExistsIncludingNullVars(Class<C> otherClass, TriJoiner<A, B, C>... joiners) {
+        return ifExistsOrNot(true, true, otherClass, joiners);
     }
 
     @SafeVarargs
     @Override
     public final <C> BiConstraintStream<A, B> ifNotExists(Class<C> otherClass, TriJoiner<A, B, C>... joiners) {
-        return ifExistsOrNot(false, otherClass, joiners);
+        return ifExistsOrNot(false, getRetrievalSemantics() == LEGACY, otherClass, joiners);
     }
 
     @SafeVarargs
-    private final <C> BiConstraintStream<A, B> ifExistsOrNot(boolean shouldExist, Class<C> otherClass,
-            TriJoiner<A, B, C>... joiners) {
+    @Override
+    public final <C> BiConstraintStream<A, B> ifNotExistsIncludingNullVars(Class<C> otherClass, TriJoiner<A, B, C>... joiners) {
+        return ifExistsOrNot(false, true, otherClass, joiners);
+    }
+
+    @SafeVarargs
+    private <C> BiConstraintStream<A, B> ifExistsOrNot(boolean shouldExist, boolean shouldIncludeNullVars,
+            Class<C> otherClass, TriJoiner<A, B, C>... joiners) {
         getConstraintFactory().assertValidFromType(otherClass);
         DroolsExistsBiConstraintStream<Solution_, A, B> stream = new DroolsExistsBiConstraintStream<>(constraintFactory, this,
-                shouldExist, otherClass, joiners);
+                shouldExist, shouldIncludeNullVars, otherClass, joiners);
         addChildStream(stream);
         return stream;
     }

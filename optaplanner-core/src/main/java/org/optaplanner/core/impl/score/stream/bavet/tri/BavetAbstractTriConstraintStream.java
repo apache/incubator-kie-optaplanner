@@ -101,7 +101,21 @@ public abstract class BavetAbstractTriConstraintStream<Solution_, A, B, C> exten
 
     @SafeVarargs
     @Override
+    public final <D> TriConstraintStream<A, B, C> ifExistsIncludingNullVars(Class<D> otherClass,
+            QuadJoiner<A, B, C, D>... joiners) {
+        throw new UnsupportedOperationException();
+    }
+
+    @SafeVarargs
+    @Override
     public final <D> TriConstraintStream<A, B, C> ifNotExists(Class<D> otherClass, QuadJoiner<A, B, C, D>... joiners) {
+        throw new UnsupportedOperationException();
+    }
+
+    @SafeVarargs
+    @Override
+    public final <D> TriConstraintStream<A, B, C> ifNotExistsIncludingNullVars(Class<D> otherClass,
+            QuadJoiner<A, B, C, D>... joiners) {
         throw new UnsupportedOperationException();
     }
 

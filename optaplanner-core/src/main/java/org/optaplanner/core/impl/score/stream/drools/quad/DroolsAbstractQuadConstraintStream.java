@@ -16,6 +16,8 @@
 
 package org.optaplanner.core.impl.score.stream.drools.quad;
 
+import static org.optaplanner.core.impl.score.stream.common.RetrievalSemantics.*;
+
 import java.math.BigDecimal;
 import java.util.Objects;
 import java.util.function.Function;
@@ -64,22 +66,36 @@ public abstract class DroolsAbstractQuadConstraintStream<Solution_, A, B, C, D>
     @Override
     public final <E> QuadConstraintStream<A, B, C, D> ifExists(Class<E> otherClass,
             PentaJoiner<A, B, C, D, E>... joiners) {
-        return ifExistsOrNot(true, otherClass, joiners);
+        return ifExistsOrNot(true, getRetrievalSemantics() == LEGACY, otherClass, joiners);
+    }
+
+    @SafeVarargs
+    @Override
+    public final <E> QuadConstraintStream<A, B, C, D> ifExistsIncludingNullVars(Class<E> otherClass,
+            PentaJoiner<A, B, C, D, E>... joiners) {
+        return ifExistsOrNot(true, true, otherClass, joiners);
     }
 
     @SafeVarargs
     @Override
     public final <E> QuadConstraintStream<A, B, C, D> ifNotExists(Class<E> otherClass,
             PentaJoiner<A, B, C, D, E>... joiners) {
-        return ifExistsOrNot(false, otherClass, joiners);
+        return ifExistsOrNot(false, getRetrievalSemantics() == LEGACY, otherClass, joiners);
     }
 
     @SafeVarargs
-    private final <E> QuadConstraintStream<A, B, C, D> ifExistsOrNot(boolean shouldExist, Class<E> otherClass,
+    @Override
+    public final <E> QuadConstraintStream<A, B, C, D> ifNotExistsIncludingNullVars(Class<E> otherClass,
             PentaJoiner<A, B, C, D, E>... joiners) {
+        return ifExistsOrNot(false, true, otherClass, joiners);
+    }
+
+    @SafeVarargs
+    private final <E> QuadConstraintStream<A, B, C, D> ifExistsOrNot(boolean shouldExist, boolean shouldIncludeNullVars,
+            Class<E> otherClass, PentaJoiner<A, B, C, D, E>... joiners) {
         getConstraintFactory().assertValidFromType(otherClass);
         DroolsExistsQuadConstraintStream<Solution_, A, B, C, D> stream = new DroolsExistsQuadConstraintStream<>(
-                constraintFactory, this, shouldExist, otherClass, joiners);
+                constraintFactory, this, shouldExist, shouldIncludeNullVars, otherClass, joiners);
         addChildStream(stream);
         return stream;
     }

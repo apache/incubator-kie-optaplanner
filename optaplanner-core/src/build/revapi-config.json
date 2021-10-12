@@ -213,6 +213,78 @@
           "methodName": "join",
           "elementKind": "method",
           "justification": "The method is now implemented later."
+        },
+        {
+          "code": "java.method.addedToInterface",
+          "new": "method <C> org.optaplanner.core.api.score.stream.bi.BiConstraintStream<A, B> org.optaplanner.core.api.score.stream.bi.BiConstraintStream<A, B>::ifExistsIncludingNullVars(java.lang.Class<C>, org.optaplanner.core.api.score.stream.tri.TriJoiner<A, B, C>[])",
+          "package": "org.optaplanner.core.api.score.stream.bi",
+          "classSimpleName": "BiConstraintStream",
+          "methodName": "ifExistsIncludingNullVars",
+          "elementKind": "method",
+          "justification": "Covers an API gap opened by the forEach() semantics."
+        },
+        {
+          "code": "java.method.addedToInterface",
+          "new": "method <C> org.optaplanner.core.api.score.stream.bi.BiConstraintStream<A, B> org.optaplanner.core.api.score.stream.bi.BiConstraintStream<A, B>::ifNotExistsIncludingNullVars(java.lang.Class<C>, org.optaplanner.core.api.score.stream.tri.TriJoiner<A, B, C>[])",
+          "package": "org.optaplanner.core.api.score.stream.bi",
+          "classSimpleName": "BiConstraintStream",
+          "methodName": "ifNotExistsIncludingNullVars",
+          "elementKind": "method",
+          "justification": "Covers an API gap opened by the forEach() semantics."
+        },
+        {
+          "code": "java.method.addedToInterface",
+          "new": "method <E> org.optaplanner.core.api.score.stream.quad.QuadConstraintStream<A, B, C, D> org.optaplanner.core.api.score.stream.quad.QuadConstraintStream<A, B, C, D>::ifExistsIncludingNullVars(java.lang.Class<E>, org.optaplanner.core.api.score.stream.penta.PentaJoiner<A, B, C, D, E>[])",
+          "package": "org.optaplanner.core.api.score.stream.quad",
+          "classSimpleName": "QuadConstraintStream",
+          "methodName": "ifExistsIncludingNullVars",
+          "elementKind": "method",
+          "justification": "Covers an API gap opened by the forEach() semantics."
+        },
+        {
+          "code": "java.method.addedToInterface",
+          "new": "method <E> org.optaplanner.core.api.score.stream.quad.QuadConstraintStream<A, B, C, D> org.optaplanner.core.api.score.stream.quad.QuadConstraintStream<A, B, C, D>::ifNotExistsIncludingNullVars(java.lang.Class<E>, org.optaplanner.core.api.score.stream.penta.PentaJoiner<A, B, C, D, E>[])",
+          "package": "org.optaplanner.core.api.score.stream.quad",
+          "classSimpleName": "QuadConstraintStream",
+          "methodName": "ifNotExistsIncludingNullVars",
+          "elementKind": "method",
+          "justification": "Covers an API gap opened by the forEach() semantics."
+        },
+        {
+          "code": "java.method.addedToInterface",
+          "new": "method <D> org.optaplanner.core.api.score.stream.tri.TriConstraintStream<A, B, C> org.optaplanner.core.api.score.stream.tri.TriConstraintStream<A, B, C>::ifExistsIncludingNullVars(java.lang.Class<D>, org.optaplanner.core.api.score.stream.quad.QuadJoiner<A, B, C, D>[])",
+          "package": "org.optaplanner.core.api.score.stream.tri",
+          "classSimpleName": "TriConstraintStream",
+          "methodName": "ifExistsIncludingNullVars",
+          "elementKind": "method",
+          "justification": "Covers an API gap opened by the forEach() semantics."
+        },
+        {
+          "code": "java.method.addedToInterface",
+          "new": "method <D> org.optaplanner.core.api.score.stream.tri.TriConstraintStream<A, B, C> org.optaplanner.core.api.score.stream.tri.TriConstraintStream<A, B, C>::ifNotExistsIncludingNullVars(java.lang.Class<D>, org.optaplanner.core.api.score.stream.quad.QuadJoiner<A, B, C, D>[])",
+          "package": "org.optaplanner.core.api.score.stream.tri",
+          "classSimpleName": "TriConstraintStream",
+          "methodName": "ifNotExistsIncludingNullVars",
+          "elementKind": "method",
+          "justification": "Covers an API gap opened by the forEach() semantics."
+        },
+        {
+          "code": "java.method.addedToInterface",
+          "new": "method <B> org.optaplanner.core.api.score.stream.uni.UniConstraintStream<A> org.optaplanner.core.api.score.stream.uni.UniConstraintStream<A>::ifExistsIncludingNullVars(java.lang.Class<B>, org.optaplanner.core.api.score.stream.bi.BiJoiner<A, B>[])",
+          "package": "org.optaplanner.core.api.score.stream.uni",
+          "classSimpleName": "UniConstraintStream",
+          "methodName": "ifExistsIncludingNullVars",
+          "elementKind": "method",
+          "justification": "Covers an API gap opened by the forEach() semantics."
+        },
+        {
+          "code": "java.method.addedToInterface",
+          "new": "method <B> org.optaplanner.core.api.score.stream.uni.UniConstraintStream<A> org.optaplanner.core.api.score.stream.uni.UniConstraintStream<A>::ifNotExistsIncludingNullVars(java.lang.Class<B>, org.optaplanner.core.api.score.stream.bi.BiJoiner<A, B>[])",
+          "package": "org.optaplanner.core.api.score.stream.uni",
+          "classSimpleName": "UniConstraintStream",
+          "methodName": "ifNotExistsIncludingNullVars",
+          "elementKind": "method",
+          "justification": "Covers an API gap opened by the forEach() semantics."
         }
       ]
     }

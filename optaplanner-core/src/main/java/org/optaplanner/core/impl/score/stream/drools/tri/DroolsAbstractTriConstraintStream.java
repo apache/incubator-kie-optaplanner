@@ -90,21 +90,35 @@ public abstract class DroolsAbstractTriConstraintStream<Solution_, A, B, C>
     @SafeVarargs
     @Override
     public final <D> TriConstraintStream<A, B, C> ifExists(Class<D> otherClass, QuadJoiner<A, B, C, D>... joiners) {
-        return ifExistsOrNot(true, otherClass, joiners);
+        return ifExistsOrNot(true, getRetrievalSemantics() == RetrievalSemantics.LEGACY, otherClass, joiners);
+    }
+
+    @SafeVarargs
+    @Override
+    public final <D> TriConstraintStream<A, B, C> ifExistsIncludingNullVars(Class<D> otherClass,
+            QuadJoiner<A, B, C, D>... joiners) {
+        return ifExistsOrNot(true, true, otherClass, joiners);
     }
 
     @SafeVarargs
     @Override
     public final <D> TriConstraintStream<A, B, C> ifNotExists(Class<D> otherClass, QuadJoiner<A, B, C, D>... joiners) {
-        return ifExistsOrNot(false, otherClass, joiners);
+        return ifExistsOrNot(false, getRetrievalSemantics() == RetrievalSemantics.LEGACY, otherClass, joiners);
     }
 
     @SafeVarargs
-    private final <D> TriConstraintStream<A, B, C> ifExistsOrNot(boolean shouldExist, Class<D> otherClass,
+    @Override
+    public final <D> TriConstraintStream<A, B, C> ifNotExistsIncludingNullVars(Class<D> otherClass,
             QuadJoiner<A, B, C, D>... joiners) {
+        return ifExistsOrNot(false, true, otherClass, joiners);
+    }
+
+    @SafeVarargs
+    private <D> TriConstraintStream<A, B, C> ifExistsOrNot(boolean shouldExist, boolean shouldIncludeNullVars,
+            Class<D> otherClass, QuadJoiner<A, B, C, D>... joiners) {
         getConstraintFactory().assertValidFromType(otherClass);
         DroolsExistsTriConstraintStream<Solution_, A, B, C> stream = new DroolsExistsTriConstraintStream<>(constraintFactory,
-                this, shouldExist, otherClass, joiners);
+                this, shouldExist, shouldIncludeNullVars, otherClass, joiners);
         addChildStream(stream);
         return stream;
     }

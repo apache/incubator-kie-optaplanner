@@ -19,7 +19,6 @@ package org.optaplanner.core.impl.score.stream.drools.quad;
 import java.util.function.Predicate;
 
 import org.optaplanner.core.api.score.stream.penta.PentaJoiner;
-import org.optaplanner.core.impl.score.stream.common.RetrievalSemantics;
 import org.optaplanner.core.impl.score.stream.drools.DroolsConstraintFactory;
 import org.optaplanner.core.impl.score.stream.drools.common.QuadLeftHandSide;
 
@@ -31,13 +30,11 @@ public final class DroolsExistsQuadConstraintStream<Solution_, A, B, C, D>
     private final String streamName;
 
     public <E> DroolsExistsQuadConstraintStream(DroolsConstraintFactory<Solution_> constraintFactory,
-            DroolsAbstractQuadConstraintStream<Solution_, A, B, C, D> parent, boolean shouldExist, Class<E> otherClass,
-            PentaJoiner<A, B, C, D, E>... joiners) {
+            DroolsAbstractQuadConstraintStream<Solution_, A, B, C, D> parent, boolean shouldExist,
+            boolean shouldIncludeNullVars, Class<E> otherClass, PentaJoiner<A, B, C, D, E>... joiners) {
         super(constraintFactory, parent.getRetrievalSemantics());
         this.parent = parent;
-        Predicate<E> nullityFilter =
-                parent.getRetrievalSemantics() == RetrievalSemantics.STANDARD ? constraintFactory.getNullityFilter(otherClass)
-                        : null;
+        Predicate<E> nullityFilter = shouldIncludeNullVars ? null : constraintFactory.getNullityFilter(otherClass);
         this.leftHandSide = shouldExist
                 ? parent.getLeftHandSide().andExists(otherClass, joiners, nullityFilter)
                 : parent.getLeftHandSide().andNotExists(otherClass, joiners, nullityFilter);

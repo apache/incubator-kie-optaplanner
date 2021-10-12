@@ -42,10 +42,6 @@ public abstract class DroolsAbstractConstraintStream<Solution_> extends Abstract
         this.constraintFactory = Objects.requireNonNull(constraintFactory);
     }
 
-    // ************************************************************************
-    // Penalize/reward
-    // ************************************************************************
-
     protected DroolsConstraint<Solution_> buildConstraint(String constraintPackage, String constraintName,
             Score<?> constraintWeight, ScoreImpactType impactType, RuleBuilder<Solution_> ruleBuilder) {
         Function<Solution_, Score<?>> constraintWeightExtractor = buildConstraintWeightExtractor(constraintPackage,
@@ -62,10 +58,6 @@ public abstract class DroolsAbstractConstraintStream<Solution_> extends Abstract
                 impactType, true, ruleBuilder);
     }
 
-    // ************************************************************************
-    // Pattern creation
-    // ************************************************************************
-
     public void addChildStream(DroolsAbstractConstraintStream<Solution_> childStream) {
         childStreamList.add(childStream);
     }
@@ -73,10 +65,6 @@ public abstract class DroolsAbstractConstraintStream<Solution_> extends Abstract
     public Collection<DroolsAbstractConstraintStream<Solution_>> getChildStreams() {
         return Collections.unmodifiableList(childStreamList);
     }
-
-    // ************************************************************************
-    // Getters/setters
-    // ************************************************************************
 
     @Override
     public DroolsConstraintFactory<Solution_> getConstraintFactory() {
