@@ -88,7 +88,7 @@ public class TriConstraintStreamTest extends AbstractConstraintStreamTest implem
         solution.getExtraList().add(extra2);
 
         InnerScoreDirector<TestdataLavishSolution, SimpleScore> scoreDirector = buildScoreDirector(factory -> {
-            return factory.from(TestdataLavishEntity.class)
+            return factory.forEach(TestdataLavishEntity.class)
                     .join(TestdataLavishValue.class, equal(TestdataLavishEntity::getValue, identity()))
                     .join(TestdataLavishExtra.class)
                     .filter((entity, value, extra) -> value.getCode().equals("MyValue 1")
@@ -647,7 +647,7 @@ public class TriConstraintStreamTest extends AbstractConstraintStreamTest implem
         TestdataLavishSolution solution = TestdataLavishSolution.generateSolution(1, 2, 2, 3);
 
         InnerScoreDirector<TestdataLavishSolution, SimpleScore> scoreDirector = buildScoreDirector(factory -> {
-            return factory.from(TestdataLavishEntity.class)
+            return factory.forEach(TestdataLavishEntity.class)
                     .join(TestdataLavishEntityGroup.class, equal(TestdataLavishEntity::getEntityGroup, identity()))
                     .join(TestdataLavishValue.class, equal((entity, group) -> entity.getValue(), identity()))
                     .groupBy(countTri())
@@ -774,7 +774,7 @@ public class TriConstraintStreamTest extends AbstractConstraintStreamTest implem
         TestdataLavishSolution solution = TestdataLavishSolution.generateSolution(1, 2, 2, 3);
 
         InnerScoreDirector<TestdataLavishSolution, SimpleScore> scoreDirector = buildScoreDirector(factory -> {
-            return factory.from(TestdataLavishEntity.class)
+            return factory.forEach(TestdataLavishEntity.class)
                     .join(TestdataLavishEntityGroup.class, equal(TestdataLavishEntity::getEntityGroup, identity()))
                     .join(TestdataLavishValue.class, equal((entity, group) -> entity.getValue(), identity()))
                     .groupBy((entity, group, value) -> value)
@@ -797,7 +797,7 @@ public class TriConstraintStreamTest extends AbstractConstraintStreamTest implem
         TestdataLavishSolution solution = TestdataLavishSolution.generateSolution(1, 2, 2, 3);
 
         InnerScoreDirector<TestdataLavishSolution, SimpleScore> scoreDirector = buildScoreDirector(factory -> {
-            return factory.from(TestdataLavishEntity.class)
+            return factory.forEach(TestdataLavishEntity.class)
                     .join(TestdataLavishEntityGroup.class, equal(TestdataLavishEntity::getEntityGroup, identity()))
                     .join(TestdataLavishValue.class, equal((entity, group) -> entity.getValue(), identity()))
                     .groupBy((entity, group, value) -> value, countTri())
@@ -903,7 +903,7 @@ public class TriConstraintStreamTest extends AbstractConstraintStreamTest implem
         assumeDrools();
         TestdataLavishSolution solution = TestdataLavishSolution.generateSolution(1, 2, 2, 3);
         InnerScoreDirector<TestdataLavishSolution, SimpleScore> scoreDirector = buildScoreDirector(factory -> {
-            return factory.from(TestdataLavishEntity.class)
+            return factory.forEach(TestdataLavishEntity.class)
                     .join(TestdataLavishEntityGroup.class, equal(TestdataLavishEntity::getEntityGroup, identity()))
                     .join(TestdataLavishValue.class, equal((entity, group) -> entity.getValue(), identity()))
                     .groupBy((entity, group, value) -> group, (entity, group, value) -> value)
@@ -938,7 +938,7 @@ public class TriConstraintStreamTest extends AbstractConstraintStreamTest implem
         TestdataLavishSolution solution = TestdataLavishSolution.generateSolution(1, 2, 2, 3);
 
         InnerScoreDirector<TestdataLavishSolution, SimpleScore> scoreDirector = buildScoreDirector(factory -> {
-            return factory.from(TestdataLavishEntity.class)
+            return factory.forEach(TestdataLavishEntity.class)
                     .join(TestdataLavishEntityGroup.class, equal(TestdataLavishEntity::getEntityGroup, identity()))
                     .join(TestdataLavishValue.class, equal((entity, group) -> entity.getValue(), identity()))
                     .groupBy((entity, group, value) -> group, (entity, group, value) -> value, countTri())
@@ -973,7 +973,7 @@ public class TriConstraintStreamTest extends AbstractConstraintStreamTest implem
         TestdataLavishSolution solution = TestdataLavishSolution.generateSolution(1, 2, 2, 3);
 
         InnerScoreDirector<TestdataLavishSolution, SimpleScore> scoreDirector = buildScoreDirector(factory -> {
-            return factory.from(TestdataLavishEntity.class)
+            return factory.forEach(TestdataLavishEntity.class)
                     .join(TestdataLavishEntityGroup.class, equal(TestdataLavishEntity::getEntityGroup, identity()))
                     .join(TestdataLavishValue.class, equal((entity, group) -> entity.getValue(), identity()))
                     .groupBy((entity, group, value) -> group, (entity, group, value) -> value, countTri(), countTri())
@@ -1422,11 +1422,11 @@ public class TriConstraintStreamTest extends AbstractConstraintStreamTest implem
         InnerScoreDirector<TestdataSolution, SimpleScore> scoreDirector = buildScoreDirector(
                 TestdataSolution.buildSolutionDescriptor(),
                 factory -> new Constraint[] {
-                        factory.from(TestdataEntity.class)
+                        factory.forEach(TestdataEntity.class)
                                 .join(TestdataValue.class, equal(TestdataEntity::getValue, identity()))
                                 .join(TestdataValue.class)
                                 .penalize("myConstraint1", SimpleScore.ONE),
-                        factory.from(TestdataEntity.class)
+                        factory.forEach(TestdataEntity.class)
                                 .join(TestdataValue.class, equal(TestdataEntity::getValue, identity()))
                                 .join(TestdataValue.class)
                                 .penalize("myConstraint2", SimpleScore.ONE, (entity, value, extra) -> 20)
@@ -1449,11 +1449,11 @@ public class TriConstraintStreamTest extends AbstractConstraintStreamTest implem
         InnerScoreDirector<TestdataSimpleLongScoreSolution, SimpleLongScore> scoreDirector = buildScoreDirector(
                 TestdataSimpleLongScoreSolution.buildSolutionDescriptor(),
                 factory -> new Constraint[] {
-                        factory.from(TestdataEntity.class)
+                        factory.forEach(TestdataEntity.class)
                                 .join(TestdataValue.class, equal(TestdataEntity::getValue, identity()))
                                 .join(TestdataValue.class)
                                 .penalize("myConstraint1", SimpleLongScore.ONE),
-                        factory.from(TestdataEntity.class)
+                        factory.forEach(TestdataEntity.class)
                                 .join(TestdataValue.class, equal(TestdataEntity::getValue, identity()))
                                 .join(TestdataValue.class)
                                 .penalizeLong("myConstraint2", SimpleLongScore.ONE, (entity, value, extra) -> 20L)
@@ -1476,11 +1476,11 @@ public class TriConstraintStreamTest extends AbstractConstraintStreamTest implem
         InnerScoreDirector<TestdataSimpleBigDecimalScoreSolution, SimpleBigDecimalScore> scoreDirector = buildScoreDirector(
                 TestdataSimpleBigDecimalScoreSolution.buildSolutionDescriptor(),
                 factory -> new Constraint[] {
-                        factory.from(TestdataEntity.class)
+                        factory.forEach(TestdataEntity.class)
                                 .join(TestdataValue.class, equal(TestdataEntity::getValue, identity()))
                                 .join(TestdataValue.class)
                                 .penalize("myConstraint1", SimpleBigDecimalScore.ONE),
-                        factory.from(TestdataEntity.class)
+                        factory.forEach(TestdataEntity.class)
                                 .join(TestdataValue.class, equal(TestdataEntity::getValue, identity()))
                                 .join(TestdataValue.class)
                                 .penalizeBigDecimal("myConstraint2", SimpleBigDecimalScore.ONE,
@@ -1499,7 +1499,7 @@ public class TriConstraintStreamTest extends AbstractConstraintStreamTest implem
 
         String constraintName = "myConstraint";
         InnerScoreDirector<TestdataLavishSolution, SimpleScore> scoreDirector = buildScoreDirector(
-                factory -> factory.from(TestdataLavishEntity.class)
+                factory -> factory.forEach(TestdataLavishEntity.class)
                         .join(TestdataLavishEntityGroup.class)
                         .join(TestdataLavishValue.class)
                         .penalize(constraintName, SimpleScore.ONE, (entity, group, value) -> -1));
@@ -1521,11 +1521,11 @@ public class TriConstraintStreamTest extends AbstractConstraintStreamTest implem
         InnerScoreDirector<TestdataSolution, SimpleScore> scoreDirector = buildScoreDirector(
                 TestdataSolution.buildSolutionDescriptor(),
                 factory -> new Constraint[] {
-                        factory.from(TestdataEntity.class)
+                        factory.forEach(TestdataEntity.class)
                                 .join(TestdataValue.class, equal(TestdataEntity::getValue, identity()))
                                 .join(TestdataValue.class)
                                 .reward("myConstraint1", SimpleScore.ONE),
-                        factory.from(TestdataEntity.class)
+                        factory.forEach(TestdataEntity.class)
                                 .join(TestdataValue.class, equal(TestdataEntity::getValue, identity()))
                                 .join(TestdataValue.class)
                                 .reward("myConstraint2", SimpleScore.ONE, (entity, value, extra) -> 20)
@@ -1548,11 +1548,11 @@ public class TriConstraintStreamTest extends AbstractConstraintStreamTest implem
         InnerScoreDirector<TestdataSimpleLongScoreSolution, SimpleLongScore> scoreDirector = buildScoreDirector(
                 TestdataSimpleLongScoreSolution.buildSolutionDescriptor(),
                 factory -> new Constraint[] {
-                        factory.from(TestdataEntity.class)
+                        factory.forEach(TestdataEntity.class)
                                 .join(TestdataValue.class, equal(TestdataEntity::getValue, identity()))
                                 .join(TestdataValue.class)
                                 .reward("myConstraint1", SimpleLongScore.ONE),
-                        factory.from(TestdataEntity.class)
+                        factory.forEach(TestdataEntity.class)
                                 .join(TestdataValue.class, equal(TestdataEntity::getValue, identity()))
                                 .join(TestdataValue.class)
                                 .rewardLong("myConstraint2", SimpleLongScore.ONE, (entity, value, extra) -> 20L)
@@ -1575,11 +1575,11 @@ public class TriConstraintStreamTest extends AbstractConstraintStreamTest implem
         InnerScoreDirector<TestdataSimpleBigDecimalScoreSolution, SimpleBigDecimalScore> scoreDirector =
                 buildScoreDirector(TestdataSimpleBigDecimalScoreSolution.buildSolutionDescriptor(),
                         factory -> new Constraint[] {
-                                factory.from(TestdataEntity.class)
+                                factory.forEach(TestdataEntity.class)
                                         .join(TestdataValue.class, equal(TestdataEntity::getValue, identity()))
                                         .join(TestdataValue.class)
                                         .reward("myConstraint1", SimpleBigDecimalScore.ONE),
-                                factory.from(TestdataEntity.class)
+                                factory.forEach(TestdataEntity.class)
                                         .join(TestdataValue.class, equal(TestdataEntity::getValue, identity()))
                                         .join(TestdataValue.class)
                                         .rewardBigDecimal("myConstraint2", SimpleBigDecimalScore.ONE,
@@ -1598,7 +1598,7 @@ public class TriConstraintStreamTest extends AbstractConstraintStreamTest implem
 
         String constraintName = "myConstraint";
         InnerScoreDirector<TestdataLavishSolution, SimpleScore> scoreDirector = buildScoreDirector(
-                factory -> factory.from(TestdataLavishEntity.class)
+                factory -> factory.forEach(TestdataLavishEntity.class)
                         .join(TestdataLavishEntityGroup.class)
                         .join(TestdataLavishValue.class)
                         .reward(constraintName, SimpleScore.ONE, (entity, group, value) -> -1));
