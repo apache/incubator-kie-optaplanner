@@ -362,6 +362,91 @@ public interface BiConstraintStream<A, B> extends ConstraintStream {
     <C> BiConstraintStream<A, B> ifExists(Class<C> otherClass, TriJoiner<A, B, C>... joiners);
 
     /**
+     * Create a new {@link BiConstraintStream} for every pair of A and B where C exists for which the {@link TriJoiner}
+     * is true (for the properties it extracts from the facts).
+     * For classes annotated with {@link org.optaplanner.core.api.domain.entity.PlanningEntity},
+     * this method will also include instances with null variables.
+     * <p>
+     * This method has overloaded methods with multiple {@link TriJoiner} parameters.
+     *
+     * @param otherClass never null
+     * @param joiner never null
+     * @param <C> the type of the third matched fact
+     * @return never null, a stream that matches every pair of A and B where C exists for which the {@link TriJoiner}
+     *         is true
+     */
+    default <C> BiConstraintStream<A, B> ifExistsIncludingNullVars(Class<C> otherClass, TriJoiner<A, B, C> joiner) {
+        return ifExistsIncludingNullVars(otherClass, new TriJoiner[] { joiner });
+    }
+
+    /**
+     * As defined by {@link #ifExistsIncludingNullVars(Class, TriJoiner)}.
+     * For performance reasons, indexing joiners must be placed before filtering joiners.
+     *
+     * @param otherClass never null
+     * @param joiner1 never null
+     * @param joiner2 never null
+     * @param <C> the type of the third matched fact
+     * @return never null, a stream that matches every pair of A and B where C exists for which the {@link TriJoiner}s
+     *         are true
+     */
+    default <C> BiConstraintStream<A, B> ifExistsIncludingNullVars(Class<C> otherClass, TriJoiner<A, B, C> joiner1,
+            TriJoiner<A, B, C> joiner2) {
+        return ifExistsIncludingNullVars(otherClass, new TriJoiner[] { joiner1, joiner2 });
+    }
+
+    /**
+     * As defined by {@link #ifExistsIncludingNullVars(Class, TriJoiner)}.
+     * For performance reasons, indexing joiners must be placed before filtering joiners.
+     *
+     * @param otherClass never null
+     * @param joiner1 never null
+     * @param joiner2 never null
+     * @param joiner3 never null
+     * @param <C> the type of the third matched fact
+     * @return never null, a stream that matches every pair of A and B where C exists for which the {@link TriJoiner}s
+     *         are true
+     */
+    default <C> BiConstraintStream<A, B> ifExistsIncludingNullVars(Class<C> otherClass, TriJoiner<A, B, C> joiner1,
+            TriJoiner<A, B, C> joiner2, TriJoiner<A, B, C> joiner3) {
+        return ifExistsIncludingNullVars(otherClass, new TriJoiner[] { joiner1, joiner2, joiner3 });
+    }
+
+    /**
+     * As defined by {@link #ifExistsIncludingNullVars(Class, TriJoiner)}.
+     * For performance reasons, indexing joiners must be placed before filtering joiners.
+     *
+     * @param otherClass never null
+     * @param joiner1 never null
+     * @param joiner2 never null
+     * @param joiner3 never null
+     * @param joiner4 never null
+     * @param <C> the type of the third matched fact
+     * @return never null, a stream that matches every pair of A and B where C exists for which the {@link TriJoiner}s
+     *         are true
+     */
+    default <C> BiConstraintStream<A, B> ifExistsIncludingNullVars(Class<C> otherClass, TriJoiner<A, B, C> joiner1,
+            TriJoiner<A, B, C> joiner2, TriJoiner<A, B, C> joiner3, TriJoiner<A, B, C> joiner4) {
+        return ifExistsIncludingNullVars(otherClass, new TriJoiner[] { joiner1, joiner2, joiner3, joiner4 });
+    }
+
+    /**
+     * As defined by {@link #ifExistsIncludingNullVars(Class, TriJoiner)}.
+     * For performance reasons, indexing joiners must be placed before filtering joiners.
+     * <p>
+     * This method causes <i>Unchecked generics array creation for varargs parameter</i> warnings,
+     * but we can't fix it with a {@link SafeVarargs} annotation because it's an interface method.
+     * Therefore, there are overloaded methods with up to 4 {@link TriJoiner} parameters.
+     *
+     * @param otherClass never null
+     * @param joiners never null
+     * @param <C> the type of the third matched fact
+     * @return never null, a stream that matches every pair of A and B where C exists for which the {@link TriJoiner}s
+     *         are true
+     */
+    <C> BiConstraintStream<A, B> ifExistsIncludingNullVars(Class<C> otherClass, TriJoiner<A, B, C>... joiners);
+
+    /**
      * Create a new {@link BiConstraintStream} for every pair of A and B where C does not exist for which the
      * {@link TriJoiner} is true (for the properties it extracts from the facts).
      * <p>
@@ -443,6 +528,91 @@ public interface BiConstraintStream<A, B> extends ConstraintStream {
      *         {@link TriJoiner}s are true
      */
     <C> BiConstraintStream<A, B> ifNotExists(Class<C> otherClass, TriJoiner<A, B, C>... joiners);
+
+    /**
+     * Create a new {@link BiConstraintStream} for every pair of A and B where C does not exist for which the
+     * {@link TriJoiner} is true (for the properties it extracts from the facts).
+     * For classes annotated with {@link org.optaplanner.core.api.domain.entity.PlanningEntity},
+     * this method will also include instances with null variables.
+     * <p>
+     * This method has overloaded methods with multiple {@link TriJoiner} parameters.
+     *
+     * @param otherClass never null
+     * @param joiner never null
+     * @param <C> the type of the third matched fact
+     * @return never null, a stream that matches every pair of A and B where C does not exist for which the
+     *         {@link TriJoiner} is true
+     */
+    default <C> BiConstraintStream<A, B> ifNotExistsIncludingNullVars(Class<C> otherClass, TriJoiner<A, B, C> joiner) {
+        return ifNotExistsIncludingNullVars(otherClass, new TriJoiner[] { joiner });
+    }
+
+    /**
+     * As defined by {@link #ifNotExistsIncludingNullVars(Class, TriJoiner)}.
+     * For performance reasons, indexing joiners must be placed before filtering joiners.
+     *
+     * @param otherClass never null
+     * @param joiner1 never null
+     * @param joiner2 never null
+     * @param <C> the type of the third matched fact
+     * @return never null, a stream that matches every pair of A and B where C does not exist for which the
+     *         {@link TriJoiner}s are true
+     */
+    default <C> BiConstraintStream<A, B> ifNotExistsIncludingNullVars(Class<C> otherClass, TriJoiner<A, B, C> joiner1,
+            TriJoiner<A, B, C> joiner2) {
+        return ifNotExistsIncludingNullVars(otherClass, new TriJoiner[] { joiner1, joiner2 });
+    }
+
+    /**
+     * As defined by {@link #ifNotExistsIncludingNullVars(Class, TriJoiner)}.
+     * For performance reasons, indexing joiners must be placed before filtering joiners.
+     *
+     * @param otherClass never null
+     * @param joiner1 never null
+     * @param joiner2 never null
+     * @param joiner3 never null
+     * @param <C> the type of the third matched fact
+     * @return never null, a stream that matches every pair of A and B where C does not exist for which the
+     *         {@link TriJoiner}s are true
+     */
+    default <C> BiConstraintStream<A, B> ifNotExistsIncludingNullVars(Class<C> otherClass, TriJoiner<A, B, C> joiner1,
+            TriJoiner<A, B, C> joiner2, TriJoiner<A, B, C> joiner3) {
+        return ifNotExistsIncludingNullVars(otherClass, new TriJoiner[] { joiner1, joiner2, joiner3 });
+    }
+
+    /**
+     * As defined by {@link #ifNotExistsIncludingNullVars(Class, TriJoiner)}.
+     * For performance reasons, indexing joiners must be placed before filtering joiners.
+     *
+     * @param otherClass never null
+     * @param joiner1 never null
+     * @param joiner2 never null
+     * @param joiner3 never null
+     * @param joiner4 never null
+     * @param <C> the type of the third matched fact
+     * @return never null, a stream that matches every pair of A and B where C does not exist for which the
+     *         {@link TriJoiner}s are true
+     */
+    default <C> BiConstraintStream<A, B> ifNotExistsIncludingNullVars(Class<C> otherClass, TriJoiner<A, B, C> joiner1,
+            TriJoiner<A, B, C> joiner2, TriJoiner<A, B, C> joiner3, TriJoiner<A, B, C> joiner4) {
+        return ifNotExistsIncludingNullVars(otherClass, new TriJoiner[] { joiner1, joiner2, joiner3, joiner4 });
+    }
+
+    /**
+     * As defined by {@link #ifNotExistsIncludingNullVars(Class, TriJoiner)}.
+     * For performance reasons, indexing joiners must be placed before filtering joiners.
+     * <p>
+     * This method causes <i>Unchecked generics array creation for varargs parameter</i> warnings,
+     * but we can't fix it with a {@link SafeVarargs} annotation because it's an interface method.
+     * Therefore, there are overloaded methods with up to 4 {@link TriJoiner} parameters.
+     *
+     * @param otherClass never null
+     * @param joiners never null
+     * @param <C> the type of the third matched fact
+     * @return never null, a stream that matches every pair of A and B where C does not exist for which the
+     *         {@link TriJoiner}s are true
+     */
+    <C> BiConstraintStream<A, B> ifNotExistsIncludingNullVars(Class<C> otherClass, TriJoiner<A, B, C>... joiners);
 
     // ************************************************************************
     // Group by
