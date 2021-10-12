@@ -90,7 +90,7 @@ public abstract class DroolsAbstractUniConstraintStream<Solution_, A> extends Dr
     @SafeVarargs
     @Override
     public final <B> UniConstraintStream<A> ifExists(Class<B> otherClass, BiJoiner<A, B>... joiners) {
-        return ifExistsOrNot(true, getRetrievalSemantics() == LEGACY, otherClass, joiners);
+        return ifExistsOrNot(true, getRetrievalSemantics() != STANDARD, otherClass, joiners);
     }
 
     @SafeVarargs
@@ -102,7 +102,7 @@ public abstract class DroolsAbstractUniConstraintStream<Solution_, A> extends Dr
     @SafeVarargs
     @Override
     public final <B> UniConstraintStream<A> ifNotExists(Class<B> otherClass, BiJoiner<A, B>... joiners) {
-        return ifExistsOrNot(false, getRetrievalSemantics() == LEGACY,
+        return ifExistsOrNot(false, getRetrievalSemantics() != STANDARD,
                 otherClass, joiners);
     }
 

@@ -66,7 +66,7 @@ public abstract class DroolsAbstractQuadConstraintStream<Solution_, A, B, C, D>
     @Override
     public final <E> QuadConstraintStream<A, B, C, D> ifExists(Class<E> otherClass,
             PentaJoiner<A, B, C, D, E>... joiners) {
-        return ifExistsOrNot(true, getRetrievalSemantics() == LEGACY, otherClass, joiners);
+        return ifExistsOrNot(true, getRetrievalSemantics() != STANDARD, otherClass, joiners);
     }
 
     @SafeVarargs
@@ -80,7 +80,7 @@ public abstract class DroolsAbstractQuadConstraintStream<Solution_, A, B, C, D>
     @Override
     public final <E> QuadConstraintStream<A, B, C, D> ifNotExists(Class<E> otherClass,
             PentaJoiner<A, B, C, D, E>... joiners) {
-        return ifExistsOrNot(false, getRetrievalSemantics() == LEGACY, otherClass, joiners);
+        return ifExistsOrNot(false, getRetrievalSemantics() != STANDARD, otherClass, joiners);
     }
 
     @SafeVarargs

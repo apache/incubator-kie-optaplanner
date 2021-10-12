@@ -91,7 +91,7 @@ public abstract class DroolsAbstractBiConstraintStream<Solution_, A, B>
     @SafeVarargs
     @Override
     public final <C> BiConstraintStream<A, B> ifExists(Class<C> otherClass, TriJoiner<A, B, C>... joiners) {
-        return ifExistsOrNot(true, getRetrievalSemantics() == LEGACY, otherClass, joiners);
+        return ifExistsOrNot(true, getRetrievalSemantics() != STANDARD, otherClass, joiners);
     }
 
     @SafeVarargs
@@ -103,7 +103,7 @@ public abstract class DroolsAbstractBiConstraintStream<Solution_, A, B>
     @SafeVarargs
     @Override
     public final <C> BiConstraintStream<A, B> ifNotExists(Class<C> otherClass, TriJoiner<A, B, C>... joiners) {
-        return ifExistsOrNot(false, getRetrievalSemantics() == LEGACY, otherClass, joiners);
+        return ifExistsOrNot(false, getRetrievalSemantics() != STANDARD, otherClass, joiners);
     }
 
     @SafeVarargs

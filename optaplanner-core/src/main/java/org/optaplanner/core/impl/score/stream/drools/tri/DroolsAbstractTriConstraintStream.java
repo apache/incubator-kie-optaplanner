@@ -16,6 +16,8 @@
 
 package org.optaplanner.core.impl.score.stream.drools.tri;
 
+import static org.optaplanner.core.impl.score.stream.common.RetrievalSemantics.STANDARD;
+
 import java.math.BigDecimal;
 import java.util.Objects;
 import java.util.function.Function;
@@ -90,7 +92,7 @@ public abstract class DroolsAbstractTriConstraintStream<Solution_, A, B, C>
     @SafeVarargs
     @Override
     public final <D> TriConstraintStream<A, B, C> ifExists(Class<D> otherClass, QuadJoiner<A, B, C, D>... joiners) {
-        return ifExistsOrNot(true, getRetrievalSemantics() == RetrievalSemantics.LEGACY, otherClass, joiners);
+        return ifExistsOrNot(true, getRetrievalSemantics() != STANDARD, otherClass, joiners);
     }
 
     @SafeVarargs
@@ -103,7 +105,7 @@ public abstract class DroolsAbstractTriConstraintStream<Solution_, A, B, C>
     @SafeVarargs
     @Override
     public final <D> TriConstraintStream<A, B, C> ifNotExists(Class<D> otherClass, QuadJoiner<A, B, C, D>... joiners) {
-        return ifExistsOrNot(false, getRetrievalSemantics() == RetrievalSemantics.LEGACY, otherClass, joiners);
+        return ifExistsOrNot(false, getRetrievalSemantics() != STANDARD, otherClass, joiners);
     }
 
     @SafeVarargs
