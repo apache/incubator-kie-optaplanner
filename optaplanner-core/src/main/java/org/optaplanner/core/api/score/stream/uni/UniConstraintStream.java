@@ -284,6 +284,24 @@ public interface UniConstraintStream<A> extends ConstraintStream {
      * (for the properties it extracts from both facts).
      * <p>
      * This method has overloaded methods with multiple {@link BiJoiner} parameters.
+     * <p>
+     * This method behaves differently based on whether the constraint stream was started by
+     * {@link org.optaplanner.core.api.score.stream.ConstraintFactory#forEach(Class)} or
+     * {@link org.optaplanner.core.api.score.stream.ConstraintFactory#from(Class)}.
+     *
+     * <ul>
+     * <li>In the case of the forEach*() family of methods, a fact is only considered to exist if all joiners match and:
+     * <ol>
+     * <li>It is not a planning entity or</li>
+     * <li>if that planning entity has no null values in any of its planning variables.</li>
+     * </ol>
+     * </li>
+     * <li>In the case of the from*() family of methods, a fact is only considered to exist if all joiners match.
+     * In other words, even planning entities with null variables will be considered.
+     * This is a legacy behavior, maintained for backwards compatibility purposes.
+     * It will be removed in 9.0 together with {@link org.optaplanner.core.api.score.stream.ConstraintFactory#from(Class)}.
+     * </li>
+     * </ul>
      *
      * @param otherClass never null
      * @param joiner never null
@@ -342,8 +360,8 @@ public interface UniConstraintStream<A> extends ConstraintStream {
     }
 
     /**
-     * As defined by {@link #ifExists(Class, BiJoiner)}. For performance reasons, indexing joiners must be placed before
-     * filtering joiners.
+     * As defined by {@link #ifExists(Class, BiJoiner)}.
+     * For performance reasons, indexing joiners must be placed before filtering joiners.
      * <p>
      * This method causes <i>Unchecked generics array creation for varargs parameter</i> warnings,
      * but we can't fix it with a {@link SafeVarargs} annotation because it's an interface method.
@@ -441,6 +459,24 @@ public interface UniConstraintStream<A> extends ConstraintStream {
     /**
      * Create a new {@link UniConstraintStream} for every A, if another A exists that does not {@link Object#equals(Object)}
      * the first.
+     * <p>
+     * This method behaves differently based on whether the constraint stream was started by
+     * {@link org.optaplanner.core.api.score.stream.ConstraintFactory#forEach(Class)} or
+     * {@link org.optaplanner.core.api.score.stream.ConstraintFactory#from(Class)}.
+     *
+     * <ul>
+     * <li>In the case of the forEach*() family of methods, a fact is only considered to exist if:
+     * <ol>
+     * <li>It is not a planning entity or</li>
+     * <li>if that planning entity has no null values in any of its planning variables.</li>
+     * </ol>
+     * </li>
+     * <li>In the case of the from*() family of methods, a fact is always considered to exist.
+     * In other words, even planning entities with null variables will be considered.
+     * This is a legacy behavior, maintained for backwards compatibility purposes.
+     * It will be removed in 9.0 together with {@link org.optaplanner.core.api.score.stream.ConstraintFactory#from(Class)}.
+     * </li>
+     * </ul>
      *
      * @param otherClass never null
      * @return never null, a stream that matches every A where a different A exists
@@ -454,6 +490,24 @@ public interface UniConstraintStream<A> extends ConstraintStream {
      * the first, and for which the {@link BiJoiner} is true (for the properties it extracts from both facts).
      * <p>
      * This method has overloaded methods with multiple {@link BiJoiner} parameters.
+     * <p>
+     * This method behaves differently based on whether the constraint stream was started by
+     * {@link org.optaplanner.core.api.score.stream.ConstraintFactory#forEach(Class)} or
+     * {@link org.optaplanner.core.api.score.stream.ConstraintFactory#from(Class)}.
+     *
+     * <ul>
+     * <li>In the case of the forEach*() family of methods, a fact is only considered to exist if all joiners match and:
+     * <ol>
+     * <li>It is not a planning entity or</li>
+     * <li>if that planning entity has no null values in any of its planning variables.</li>
+     * </ol>
+     * </li>
+     * <li>In the case of the from*() family of methods, a fact is only considered to exist if all joiners match.
+     * In other words, even planning entities with null variables will be considered.
+     * This is a legacy behavior, maintained for backwards compatibility purposes.
+     * It will be removed in 9.0 together with {@link org.optaplanner.core.api.score.stream.ConstraintFactory#from(Class)}.
+     * </li>
+     * </ul>
      *
      * @param otherClass never null
      * @param joiner never null
@@ -465,8 +519,8 @@ public interface UniConstraintStream<A> extends ConstraintStream {
     }
 
     /**
-     * As defined by {@link #ifExistsOther(Class, BiJoiner)}. For performance reasons, indexing joiners must be placed
-     * before filtering joiners.
+     * As defined by {@link #ifExistsOther(Class, BiJoiner)}.
+     * For performance reasons, indexing joiners must be placed before filtering joiners.
      *
      * @param otherClass never null
      * @param joiner1 never null
@@ -479,8 +533,8 @@ public interface UniConstraintStream<A> extends ConstraintStream {
     }
 
     /**
-     * As defined by {@link #ifExistsOther(Class, BiJoiner)}. For performance reasons, indexing joiners must be placed
-     * before filtering joiners.
+     * As defined by {@link #ifExistsOther(Class, BiJoiner)}.
+     * For performance reasons, indexing joiners must be placed before filtering joiners.
      *
      * @param otherClass never null
      * @param joiner1 never null
@@ -495,8 +549,8 @@ public interface UniConstraintStream<A> extends ConstraintStream {
     }
 
     /**
-     * As defined by {@link #ifExistsOther(Class, BiJoiner)}. For performance reasons, indexing joiners must be placed
-     * before filtering joiners.
+     * As defined by {@link #ifExistsOther(Class, BiJoiner)}.
+     * For performance reasons, indexing joiners must be placed before filtering joiners.
      *
      * @param otherClass never null
      * @param joiner1 never null
@@ -512,8 +566,8 @@ public interface UniConstraintStream<A> extends ConstraintStream {
     }
 
     /**
-     * As defined by {@link #ifExistsOther(Class, BiJoiner)}. If multiple {@link BiJoiner}s are provided,
-     * for performance reasons, the indexing joiners must be placed before filtering joiners.
+     * As defined by {@link #ifExistsOther(Class, BiJoiner)}.
+     * For performance reasons, the indexing joiners must be placed before filtering joiners.
      * <p>
      * This method causes <i>Unchecked generics array creation for varargs parameter</i> warnings,
      * but we can't fix it with a {@link SafeVarargs} annotation because it's an interface method.
@@ -635,6 +689,24 @@ public interface UniConstraintStream<A> extends ConstraintStream {
      * true (for the properties it extracts from both facts).
      * <p>
      * This method has overloaded methods with multiple {@link BiJoiner} parameters.
+     * <p>
+     * This method behaves differently based on whether the constraint stream was started by
+     * {@link org.optaplanner.core.api.score.stream.ConstraintFactory#forEach(Class)} or
+     * {@link org.optaplanner.core.api.score.stream.ConstraintFactory#from(Class)}.
+     *
+     * <ul>
+     * <li>In the case of the forEach*() family of methods, a fact is only considered to exist if all joiners match and:
+     * <ol>
+     * <li>It is not a planning entity or</li>
+     * <li>if that planning entity has no null values in any of its planning variables.</li>
+     * </ol>
+     * </li>
+     * <li>In the case of the from*() family of methods, a fact is only considered to exist if all joiners match.
+     * In other words, even planning entities with null variables will be considered.
+     * This is a legacy behavior, maintained for backwards compatibility purposes.
+     * It will be removed in 9.0 together with {@link org.optaplanner.core.api.score.stream.ConstraintFactory#from(Class)}.
+     * </li>
+     * </ul>
      *
      * @param otherClass never null
      * @param joiner never null
@@ -646,8 +718,8 @@ public interface UniConstraintStream<A> extends ConstraintStream {
     }
 
     /**
-     * As defined by {@link #ifNotExists(Class, BiJoiner)}. For performance reasons, indexing joiners must be placed
-     * before filtering joiners.
+     * As defined by {@link #ifNotExists(Class, BiJoiner)}.
+     * For performance reasons, indexing joiners must be placed before filtering joiners.
      *
      * @param otherClass never null
      * @param joiner1 never null
@@ -662,8 +734,8 @@ public interface UniConstraintStream<A> extends ConstraintStream {
     }
 
     /**
-     * As defined by {@link #ifNotExists(Class, BiJoiner)}. For performance reasons, indexing joiners must be placed
-     * before filtering joiners.
+     * As defined by {@link #ifNotExists(Class, BiJoiner)}.
+     * For performance reasons, indexing joiners must be placed before filtering joiners.
      *
      * @param otherClass never null
      * @param joiner1 never null
@@ -679,8 +751,8 @@ public interface UniConstraintStream<A> extends ConstraintStream {
     }
 
     /**
-     * As defined by {@link #ifNotExists(Class, BiJoiner)}. For performance reasons, indexing joiners must be placed
-     * before filtering joiners.
+     * As defined by {@link #ifNotExists(Class, BiJoiner)}.
+     * For performance reasons, indexing joiners must be placed before filtering joiners.
      *
      * @param otherClass never null
      * @param joiner1 never null
@@ -697,8 +769,8 @@ public interface UniConstraintStream<A> extends ConstraintStream {
     }
 
     /**
-     * As defined by {@link #ifNotExists(Class, BiJoiner)}. For performance reasons, indexing joiners must be placed
-     * before filtering joiners.
+     * As defined by {@link #ifNotExists(Class, BiJoiner)}.
+     * For performance reasons, indexing joiners must be placed before filtering joiners.
      * <p>
      * This method causes <i>Unchecked generics array creation for varargs parameter</i> warnings,
      * but we can't fix it with a {@link SafeVarargs} annotation because it's an interface method.
@@ -799,6 +871,24 @@ public interface UniConstraintStream<A> extends ConstraintStream {
     /**
      * Create a new {@link UniConstraintStream} for every A, if no other A exists that does not {@link Object#equals(Object)}
      * the first.
+     * <p>
+     * This method behaves differently based on whether the constraint stream was started by
+     * {@link org.optaplanner.core.api.score.stream.ConstraintFactory#forEach(Class)} or
+     * {@link org.optaplanner.core.api.score.stream.ConstraintFactory#from(Class)}.
+     *
+     * <ul>
+     * <li>In the case of the forEach*() family of methods, a fact is only considered to exist if:
+     * <ol>
+     * <li>It is not a planning entity or</li>
+     * <li>if that planning entity has no null values in any of its planning variables.</li>
+     * </ol>
+     * </li>
+     * <li>In the case of the from*() family of methods, a fact is always considered to exist.
+     * In other words, even planning entities with null variables will be considered.
+     * This is a legacy behavior, maintained for backwards compatibility purposes.
+     * It will be removed in 9.0 together with {@link org.optaplanner.core.api.score.stream.ConstraintFactory#from(Class)}.
+     * </li>
+     * </ul>
      *
      * @param otherClass never null
      * @return never null, a stream that matches every A where a different A does not exist
@@ -812,6 +902,24 @@ public interface UniConstraintStream<A> extends ConstraintStream {
      * the first, and for which the {@link BiJoiner} is true (for the properties it extracts from both facts).
      * <p>
      * This method has overloaded methods with multiple {@link BiJoiner} parameters.
+     * <p>
+     * This method behaves differently based on whether the constraint stream was started by
+     * {@link org.optaplanner.core.api.score.stream.ConstraintFactory#forEach(Class)} or
+     * {@link org.optaplanner.core.api.score.stream.ConstraintFactory#from(Class)}.
+     *
+     * <ul>
+     * <li>In the case of the forEach*() family of methods, a fact is only considered to exist if all joiners match and:
+     * <ol>
+     * <li>It is not a planning entity or</li>
+     * <li>if that planning entity has no null values in any of its planning variables.</li>
+     * </ol>
+     * </li>
+     * <li>In the case of the from*() family of methods, a fact is only considered to exist if all joiners match.
+     * In other words, even planning entities with null variables will be considered.
+     * This is a legacy behavior, maintained for backwards compatibility purposes.
+     * It will be removed in 9.0 together with {@link org.optaplanner.core.api.score.stream.ConstraintFactory#from(Class)}.
+     * </li>
+     * </ul>
      *
      * @param otherClass never null
      * @param joiner never null
@@ -823,8 +931,8 @@ public interface UniConstraintStream<A> extends ConstraintStream {
     }
 
     /**
-     * As defined by {@link #ifNotExistsOther(Class, BiJoiner)}. For performance reasons, indexing joiners must be
-     * placed before filtering joiners.
+     * As defined by {@link #ifNotExistsOther(Class, BiJoiner)}.
+     * For performance reasons, indexing joiners must be placed before filtering joiners.
      *
      * @param otherClass never null
      * @param joiner1 never null
@@ -838,8 +946,8 @@ public interface UniConstraintStream<A> extends ConstraintStream {
     }
 
     /**
-     * As defined by {@link #ifNotExistsOther(Class, BiJoiner)}. For performance reasons, indexing joiners must be
-     * placed before filtering joiners.
+     * As defined by {@link #ifNotExistsOther(Class, BiJoiner)}.
+     * For performance reasons, indexing joiners must be placed before filtering joiners.
      *
      * @param otherClass never null
      * @param joiner1 never null
@@ -854,8 +962,8 @@ public interface UniConstraintStream<A> extends ConstraintStream {
     }
 
     /**
-     * As defined by {@link #ifNotExistsOther(Class, BiJoiner)}. For performance reasons, indexing joiners must be
-     * placed before filtering joiners.
+     * As defined by {@link #ifNotExistsOther(Class, BiJoiner)}.
+     * For performance reasons, indexing joiners must be placed before filtering joiners.
      *
      * @param otherClass never null
      * @param joiner1 never null
@@ -871,8 +979,8 @@ public interface UniConstraintStream<A> extends ConstraintStream {
     }
 
     /**
-     * As defined by {@link #ifNotExistsOther(Class, BiJoiner)}. If multiple {@link BiJoiner}s are provided, for
-     * performance reasons, the indexing joiners must be placed before filtering joiners.
+     * As defined by {@link #ifNotExistsOther(Class, BiJoiner)}.
+     * For performance reasons, the indexing joiners must be placed before filtering joiners.
      * <p>
      * This method causes <i>Unchecked generics array creation for varargs parameter</i> warnings,
      * but we can't fix it with a {@link SafeVarargs} annotation because it's an interface method.
