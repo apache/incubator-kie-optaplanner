@@ -529,7 +529,7 @@ public class AdvancedGroupByConstraintStreamTest extends AbstractConstraintStrea
         solution.getEntityList().add(entity3);
 
         InnerScoreDirector<TestdataLavishSolution, SimpleScore> scoreDirector = buildScoreDirector(factory -> {
-            return factory.fromUniquePair(TestdataLavishEntity.class)
+            return factory.forEachUniquePair(TestdataLavishEntity.class)
                     .ifExists(TestdataLavishEntityGroup.class,
                             equal((e1, e2) -> e1.getEntityGroup(), Function.identity()))
                     .groupBy((e1, e2) -> e1.getEntityGroup(), countBi())

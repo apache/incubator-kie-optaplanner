@@ -694,7 +694,7 @@ public class UniConstraintStreamTest extends AbstractConstraintStreamTest implem
         solution.getEntityList().add(entityC);
 
         InnerScoreDirector<TestdataLavishSolution, SimpleScore> scoreDirector = buildScoreDirector(factory -> {
-            return factory.fromUniquePair(TestdataLavishEntity.class)
+            return factory.forEachUniquePair(TestdataLavishEntity.class)
                     .penalize(TEST_CONSTRAINT_NAME, SimpleScore.ONE);
         });
 

@@ -82,8 +82,8 @@ public interface ConstraintFactory {
      * Create a new {@link BiConstraintStream} for every unique combination of A and another A with a higher {@link PlanningId}.
      * <p>
      * Important: {@link BiConstraintStream#filter(BiPredicate) Filtering} this is slower and less scalable
-     * than using a {@link #fromUniquePair(Class, BiJoiner) joiner},
-     * because it does barely applies hashing and/or indexing on the properties,
+     * than using a {@link #forEachUniquePair(Class, BiJoiner) joiner},
+     * because it barely applies hashing and/or indexing on the properties,
      * so it creates and checks almost every combination of A and A.
      * <p>
      * This method is syntactic sugar for {@link UniConstraintStream#join(Class)}.
@@ -246,7 +246,7 @@ public interface ConstraintFactory {
      * <p>
      * Important: {@link BiConstraintStream#filter(BiPredicate) Filtering} this is slower and less scalable
      * than using a {@link #fromUniquePair(Class, BiJoiner) joiner},
-     * because it does barely applies hashing and/or indexing on the properties,
+     * because it barely applies hashing and/or indexing on the properties,
      * so it creates and checks almost every combination of A and A.
      * <p>
      * This method is syntactic sugar for {@link UniConstraintStream#join(Class)}.
