@@ -177,6 +177,32 @@ public interface UniConstraintStream<A> extends ConstraintStream {
      * because it doesn't apply hashing and/or indexing on the properties,
      * so it creates and checks every combination of A and B.
      * <p>
+     * Important: This is faster and more scalable than a {@link #join(Class) join}
+     * followed by a {@link BiConstraintStream#filter(BiPredicate) filter},
+     * because it applies hashing and/or indexing on the properties,
+     * so it doesn't create nor checks every combination of A and B.
+     * <p>
+     * This method behaves differently based on whether the constraint stream was started by
+     * {@link org.optaplanner.core.api.score.stream.ConstraintFactory#forEach(Class)} or
+     * {@link org.optaplanner.core.api.score.stream.ConstraintFactory#from(Class)}.
+     *
+     * <ul>
+     * <li>In the case of the forEach*() family of methods, a fact is included if:
+     * <ol>
+     * <li>It is not a planning entity or</li>
+     * <li>if that planning entity has no null values in any of its planning variables.</li>
+     * </ol>
+     * </li>
+     * <li>In the case of the from*() family of methods, a fact is included if:
+     * <ol>
+     * <li>It is not a planning entity or</li>
+     * <li>if that planning entity has a nullable genuine planning variable with a null value.</li>
+     * </ol>
+     * This is a legacy behavior, maintained for backwards compatibility purposes.
+     * It will be removed in 9.0 together with {@link org.optaplanner.core.api.score.stream.ConstraintFactory#from(Class)}.
+     * </li>
+     * </ul>
+     * <p>
      * This method is syntactic sugar for {@link #join(UniConstraintStream)}.
      *
      * @param otherClass never null
@@ -196,6 +222,27 @@ public interface UniConstraintStream<A> extends ConstraintStream {
      * because it applies hashing and/or indexing on the properties,
      * so it doesn't create nor checks every combination of A and B.
      * <p>
+     * This method behaves differently based on whether the constraint stream was started by
+     * {@link org.optaplanner.core.api.score.stream.ConstraintFactory#forEach(Class)} or
+     * {@link org.optaplanner.core.api.score.stream.ConstraintFactory#from(Class)}.
+     *
+     * <ul>
+     * <li>In the case of the forEach*() family of methods, a fact is included if all joiners match and:
+     * <ol>
+     * <li>It is not a planning entity or</li>
+     * <li>if that planning entity has no null values in any of its planning variables.</li>
+     * </ol>
+     * </li>
+     * <li>In the case of the from*() family of methods, a fact is included if all joiners match and:
+     * <ol>
+     * <li>It is not a planning entity or</li>
+     * <li>if that planning entity has a nullable genuine planning variable with a null value.</li>
+     * </ol>
+     * This is a legacy behavior, maintained for backwards compatibility purposes.
+     * It will be removed in 9.0 together with {@link org.optaplanner.core.api.score.stream.ConstraintFactory#from(Class)}.
+     * </li>
+     * </ul>
+     * <p>
      * This method is syntactic sugar for {@link #join(UniConstraintStream, BiJoiner)}.
      * <p>
      * This method has overloaded methods with multiple {@link BiJoiner} parameters.
@@ -210,8 +257,8 @@ public interface UniConstraintStream<A> extends ConstraintStream {
     }
 
     /**
-     * As defined by {@link #join(Class, BiJoiner)}. For performance reasons, indexing joiners must be placed before
-     * filtering joiners.
+     * As defined by {@link #join(Class, BiJoiner)}.
+     * For performance reasons, indexing joiners must be placed before filtering joiners.
      *
      * @param otherClass never null
      * @param joiner1 never null
@@ -225,8 +272,8 @@ public interface UniConstraintStream<A> extends ConstraintStream {
     }
 
     /**
-     * As defined by {@link #join(Class, BiJoiner)}. For performance reasons, indexing joiners must be placed before
-     * filtering joiners.
+     * As defined by {@link #join(Class, BiJoiner)}.
+     * For performance reasons, indexing joiners must be placed before filtering joiners.
      *
      * @param otherClass never null
      * @param joiner1 never null
@@ -242,8 +289,8 @@ public interface UniConstraintStream<A> extends ConstraintStream {
     }
 
     /**
-     * As defined by {@link #join(Class, BiJoiner)}. For performance reasons, indexing joiners must be placed before
-     * filtering joiners.
+     * As defined by {@link #join(Class, BiJoiner)}.
+     * For performance reasons, indexing joiners must be placed before filtering joiners.
      *
      * @param otherClass never null
      * @param joiner1 never null
@@ -260,8 +307,8 @@ public interface UniConstraintStream<A> extends ConstraintStream {
     }
 
     /**
-     * As defined by {@link #join(Class, BiJoiner)}. If multiple {@link BiJoiner}s are provided, for performance
-     * reasons, the indexing joiners must be placed before filtering joiners.
+     * As defined by {@link #join(Class, BiJoiner)}.
+     * For performance reasons, the indexing joiners must be placed before filtering joiners.
      * <p>
      * This method causes <i>Unchecked generics array creation for varargs parameter</i> warnings,
      * but we can't fix it with a {@link SafeVarargs} annotation because it's an interface method.
