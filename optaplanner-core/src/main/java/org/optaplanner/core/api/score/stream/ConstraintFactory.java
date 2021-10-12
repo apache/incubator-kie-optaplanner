@@ -57,10 +57,8 @@ public interface ConstraintFactory {
      * that are known as {@link ProblemFactCollectionProperty problem facts} or {@link PlanningEntity planning entities}.
      * <p>
      * If the fromClass is a {@link PlanningEntity}, then it will be automatically
-     * {@link UniConstraintStream#filter(Predicate) filtered} to only contain fully initialized entities,
-     * for which each genuine {@link PlanningVariable} (of the fromClass or a superclass thereof) is initialized
-     * (so when the value is not null - unless {@link PlanningVariable#nullable()} is modified).
-     * This filtering will NOT automatically apply to genuine planning variables of subclass planning entities of the fromClass.
+     * {@link UniConstraintStream#filter(Predicate) filtered} to only contain entities
+     * for which each genuine {@link PlanningVariable} (of the fromClass or a superclass thereof) has a non-null value.
      *
      * @param fromClass never null
      * @param <A> the type of the matched problem fact or {@link PlanningEntity planning entity}
@@ -69,8 +67,8 @@ public interface ConstraintFactory {
     <A> UniConstraintStream<A> forEach(Class<A> fromClass);
 
     /**
-     * Like {@link #from(Class)},
-     * but without any filtering of uninitialized {@link PlanningEntity planning entities}.
+     * Like {@link #forEach(Class)},
+     * but without any filtering of null {@link PlanningEntity planning entity} variables.
      *
      * @param fromClass never null
      * @param <A> the type of the matched problem fact or {@link PlanningEntity planning entity}
@@ -101,7 +99,7 @@ public interface ConstraintFactory {
      * Create a new {@link BiConstraintStream} for every unique combination of A and another A with a higher {@link PlanningId}
      * for which the {@link BiJoiner} is true (for the properties it extracts from both facts).
      * <p>
-     * Important: This is faster and more scalable than not using a {@link #fromUniquePair(Class)} joiner}
+     * Important: This is faster and more scalable than not using a {@link #forEachUniquePair(Class)} joiner}
      * followed by a {@link BiConstraintStream#filter(BiPredicate) filter},
      * because it applies hashing and/or indexing on the properties,
      * so it doesn't create nor checks almost every combination of A and A.
@@ -166,7 +164,7 @@ public interface ConstraintFactory {
     }
 
     /**
-     * As defined by {@link #fromUniquePair(Class, BiJoiner)}.
+     * As defined by {@link #forEachUniquePair(Class, BiJoiner)}.
      * <p>
      * This method causes <i>Unchecked generics array creation for varargs parameter</i> warnings,
      * but we can't fix it with a {@link SafeVarargs} annotation because it's an interface method.
@@ -219,10 +217,19 @@ public interface ConstraintFactory {
      * <p>
      * If the fromClass is a {@link PlanningEntity}, then it will be automatically
      * {@link UniConstraintStream#filter(Predicate) filtered} to only contain fully initialized entities,
-     * for which each genuine {@link PlanningVariable} (of the fromClass or a superclass thereof) is initialized
-     * (so when the value is not null - unless {@link PlanningVariable#nullable()} is modified).
+     * for which each genuine {@link PlanningVariable} (of the fromClass or a superclass thereof) is initialized.
      * This filtering will NOT automatically apply to genuine planning variables of subclass planning entities of the fromClass.
+     * <p>
+     * As a result, this method treats entities with and without nullable variables differently.
+     * When planning variables are not declared nullable,
+     * entities with null values in these variables will not be included.
+     * However, entities with a null value in at least one of their planning variables will be included,
+     * if these planning variables are declared nullable.
+     * Therefore by switching a planning variable to nullable,
+     * you may end up with constraints throwing {@link NullPointerException}s where they previously did not.
      *
+     * @deprecated in favor of {@link #forEach(Class)},
+     *             which exhibits the same behavior for both nullable and non-nullable planning variables.
      * @param fromClass never null
      * @param <A> the type of the matched problem fact or {@link PlanningEntity planning entity}
      * @return never null
@@ -234,6 +241,7 @@ public interface ConstraintFactory {
      * Like {@link #from(Class)},
      * but without any filtering of uninitialized {@link PlanningEntity planning entities}.
      *
+     * @deprecated in favor of {@link #forEachIncludingNullVars(Class)}.
      * @param fromClass never null
      * @param <A> the type of the matched problem fact or {@link PlanningEntity planning entity}
      * @return never null
@@ -251,7 +259,12 @@ public interface ConstraintFactory {
      * <p>
      * This method is syntactic sugar for {@link UniConstraintStream#join(Class)}.
      * It automatically adds a {@link Joiners#lessThan(Function) lessThan} joiner on the {@link PlanningId} of A.
+     * <p>
+     * See {@link #from(Class)} for a discussion of the behavior of this method
+     * in situations with and without nullable planning variables.
      *
+     * @deprecated in favor of {@link #forEachUniquePair(Class)},
+     *             which exhibits the same behavior for both nullable and non-nullable planning variables.
      * @param fromClass never null
      * @param <A> the type of the matched problem fact or {@link PlanningEntity planning entity}
      * @return a stream that matches every unique combination of A and another A
@@ -274,7 +287,12 @@ public interface ConstraintFactory {
      * It automatically adds a {@link Joiners#lessThan(Function) lessThan} joiner on the {@link PlanningId} of A.
      * <p>
      * This method has overloaded methods with multiple {@link BiJoiner} parameters.
+     * <p>
+     * See {@link #from(Class)} for a discussion of the behavior of this method
+     * in situations with and without nullable planning variables.
      *
+     * @deprecated in favor of {@link #forEachUniquePair(Class, BiJoiner)},
+     *             which exhibits the same behavior for both nullable and non-nullable planning variables.
      * @param fromClass never null
      * @param joiner never null
      * @param <A> the type of the matched problem fact or {@link PlanningEntity planning entity}
@@ -286,6 +304,8 @@ public interface ConstraintFactory {
     /**
      * As defined by {@link #fromUniquePair(Class, BiJoiner)}.
      *
+     * @deprecated in favor of {@link #forEachUniquePair(Class, BiJoiner, BiJoiner)},
+     *             which exhibits the same behavior for both nullable and non-nullable planning variables.
      * @param fromClass never null
      * @param joiner1 never null
      * @param joiner2 never null
@@ -301,6 +321,8 @@ public interface ConstraintFactory {
     /**
      * As defined by {@link #fromUniquePair(Class, BiJoiner)}.
      *
+     * @deprecated in favor of {@link #forEachUniquePair(Class, BiJoiner, BiJoiner, BiJoiner)},
+     *             which exhibits the same behavior for both nullable and non-nullable planning variables.
      * @param fromClass never null
      * @param joiner1 never null
      * @param joiner2 never null
@@ -318,6 +340,8 @@ public interface ConstraintFactory {
     /**
      * As defined by {@link #fromUniquePair(Class, BiJoiner)}.
      *
+     * @deprecated in favor of {@link #forEachUniquePair(Class, BiJoiner, BiJoiner, BiJoiner, BiJoiner)},
+     *             which exhibits the same behavior for both nullable and non-nullable planning variables.
      * @param fromClass never null
      * @param joiner1 never null
      * @param joiner2 never null
@@ -340,6 +364,8 @@ public interface ConstraintFactory {
      * but we can't fix it with a {@link SafeVarargs} annotation because it's an interface method.
      * Therefore, there are overloaded methods with up to 4 {@link BiJoiner} parameters.
      *
+     * @deprecated in favor of {@link #forEachUniquePair(Class, BiJoiner...)},
+     *             which exhibits the same behavior for both nullable and non-nullable planning variables.
      * @param fromClass never null
      * @param joiners never null
      * @param <A> the type of the matched problem fact or {@link PlanningEntity planning entity}

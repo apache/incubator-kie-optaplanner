@@ -38,17 +38,17 @@ public class TestdataConstraintProvider implements ConstraintProvider {
     }
 
     public Constraint penalizeEveryEntity(ConstraintFactory constraintFactory) {
-        return constraintFactory.from(TestdataEntity.class)
+        return constraintFactory.forEach(TestdataEntity.class)
                 .penalize("Penalize every entity", SimpleScore.ONE);
     }
 
     public Constraint rewardEveryEntity(ConstraintFactory constraintFactory) {
-        return constraintFactory.from(TestdataEntity.class)
+        return constraintFactory.forEach(TestdataEntity.class)
                 .reward("Reward every entity", SimpleScore.ONE);
     }
 
     public Constraint impactEveryEntity(ConstraintFactory constraintFactory) {
-        return constraintFactory.from(TestdataEntity.class)
+        return constraintFactory.forEach(TestdataEntity.class)
                 .impact("Impact every entity", SimpleScore.ONE,
                         entity -> Objects.equals(entity.getCode(), "A") ? 1 : -1);
     }

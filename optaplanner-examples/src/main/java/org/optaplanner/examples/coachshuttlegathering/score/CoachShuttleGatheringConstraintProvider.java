@@ -52,7 +52,7 @@ public class CoachShuttleGatheringConstraintProvider implements ConstraintProvid
     }
 
     Constraint coachStopLimit(ConstraintFactory constraintFactory) {
-        return constraintFactory.from(Coach.class)
+        return constraintFactory.forEach(Coach.class)
                 .join(BusStop.class, equal(coach -> coach, BusStop::getBus))
                 .groupBy((coach, busStop) -> coach, countBi())
                 .filter((coach, stopCount) -> stopCount > coach.getStopLimit())
