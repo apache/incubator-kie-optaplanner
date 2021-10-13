@@ -126,7 +126,8 @@ public interface ConstraintFactory {
      * @return a stream that matches every unique combination of A and another A for which all the
      *         {@link BiJoiner joiners} are true
      */
-    default <A> BiConstraintStream<A, A> forEachUniquePair(Class<A> sourceClass, BiJoiner<A, A> joiner1, BiJoiner<A, A> joiner2) {
+    default <A> BiConstraintStream<A, A> forEachUniquePair(Class<A> sourceClass, BiJoiner<A, A> joiner1,
+            BiJoiner<A, A> joiner2) {
         return forEachUniquePair(sourceClass, new BiJoiner[] { joiner1, joiner2 });
     }
 
@@ -220,18 +221,19 @@ public interface ConstraintFactory {
      * When migrating uses of this method to {@link #forEach(Class)}, consider the following:
      *
      * <ul>
-     *     <li>If none of your {@link PlanningVariable planning variables} are explicitly set to nullable=true,
-     *      then this has little to no impact.
-     *      Subsequent conditional propagation calls ({@link UniConstraintStream#ifExists} etc.)
-     *      will now also filter out planning entities with null variables,
-     *      consistently with {@link #forEach(Class)} family of methods and with joining.</li>
-     *     <li>If any of your {@link PlanningVariable planning variables} are nullable=true,
-     *      then there is severe impact.
-     *      Calls to the {@link #forEach(Class)} family of methods will now filter out planning entities with null variables,
-     *      so most constraints no longer need to do null checks,
-     *      but the constraint that penalizes unassigned entities (typically a medium constraint)
-     *      must now use {@link #forEachIncludingNullVars(Class)} instead.
-     *      Subsequent joins and conditional propagation calls will now also consistently filter out planning entities with null variables.</li>
+     * <li>If none of your {@link PlanningVariable planning variables} are explicitly set to nullable=true,
+     * then this has little to no impact.
+     * Subsequent conditional propagation calls ({@link UniConstraintStream#ifExists} etc.)
+     * will now also filter out planning entities with null variables,
+     * consistently with {@link #forEach(Class)} family of methods and with joining.</li>
+     * <li>If any of your {@link PlanningVariable planning variables} are nullable=true,
+     * then there is severe impact.
+     * Calls to the {@link #forEach(Class)} family of methods will now filter out planning entities with null variables,
+     * so most constraints no longer need to do null checks,
+     * but the constraint that penalizes unassigned entities (typically a medium constraint)
+     * must now use {@link #forEachIncludingNullVars(Class)} instead.
+     * Subsequent joins and conditional propagation calls will now also consistently filter out planning entities with null
+     * variables.</li>
      * </ul>
      * <p>
      * The original Javadoc of this method follows:

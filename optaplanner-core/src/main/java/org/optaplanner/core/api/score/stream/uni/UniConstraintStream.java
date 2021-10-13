@@ -183,26 +183,10 @@ public interface UniConstraintStream<A> extends ConstraintStream {
      * because it applies hashing and/or indexing on the properties,
      * so it doesn't create nor checks every combination of A and B.
      * <p>
-     * This method behaves differently based on whether the constraint stream was started by
-     * {@link ConstraintFactory#forEach(Class)} or
-     * {@link ConstraintFactory#from(Class)}.
-     *
-     * <ul>
-     * <li>In the case of the forEach*() family of methods, a fact is included if:
-     * <ol>
-     * <li>It is not a planning entity or</li>
-     * <li>if that planning entity has no null values in any of its planning variables.</li>
-     * </ol>
-     * </li>
-     * <li>In the case of the from*() family of methods, a fact is included if:
-     * <ol>
-     * <li>It is not a planning entity or</li>
-     * <li>if that planning entity has a nullable genuine planning variable with a null value.</li>
-     * </ol>
-     * This is a legacy behavior, maintained for backwards compatibility purposes.
-     * It will be removed in 9.0 together with {@link ConstraintFactory#from(Class)}.
-     * </li>
-     * </ul>
+     * Note that, if a legacy constraint stream was started using {@link ConstraintFactory#from(Class)}
+     * as opposed to {@link ConstraintFactory#forEach(Class)},
+     * a different range of B may be selected.
+     * (See {@link ConstraintFactory#from(Class)} Javadoc.)
      * <p>
      * This method is syntactic sugar for {@link #join(UniConstraintStream)}.
      *
@@ -223,26 +207,10 @@ public interface UniConstraintStream<A> extends ConstraintStream {
      * because it applies hashing and/or indexing on the properties,
      * so it doesn't create nor checks every combination of A and B.
      * <p>
-     * This method behaves differently based on whether the constraint stream was started by
-     * {@link ConstraintFactory#forEach(Class)} or
-     * {@link ConstraintFactory#from(Class)}.
-     *
-     * <ul>
-     * <li>In the case of the forEach*() family of methods, a fact is included if all joiners match and:
-     * <ol>
-     * <li>It is not a planning entity or</li>
-     * <li>if that planning entity has no null values in any of its planning variables.</li>
-     * </ol>
-     * </li>
-     * <li>In the case of the from*() family of methods, a fact is included if all joiners match and:
-     * <ol>
-     * <li>It is not a planning entity or</li>
-     * <li>if that planning entity has a nullable genuine planning variable with a null value.</li>
-     * </ol>
-     * This is a legacy behavior, maintained for backwards compatibility purposes.
-     * It will be removed in 9.0 together with {@link ConstraintFactory#from(Class)}.
-     * </li>
-     * </ul>
+     * Note that, if a legacy constraint stream was started using {@link ConstraintFactory#from(Class)}
+     * as opposed to {@link ConstraintFactory#forEach(Class)},
+     * a different range of B may be selected.
+     * (See {@link ConstraintFactory#from(Class)} Javadoc.)
      * <p>
      * This method is syntactic sugar for {@link #join(UniConstraintStream, BiJoiner)}.
      * <p>
