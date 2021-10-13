@@ -46,9 +46,9 @@ import org.optaplanner.core.impl.score.stream.bi.FilteringBiJoiner;
 public abstract class InnerConstraintFactory<Solution_, Constraint_ extends Constraint> implements ConstraintFactory {
 
     @Override
-    public <A> UniConstraintStream<A> forEach(Class<A> fromClass) {
-        UniConstraintStream<A> stream = forEachIncludingNullVars(fromClass);
-        Predicate<A> nullityFilter = getNullityFilter(fromClass);
+    public <A> UniConstraintStream<A> forEach(Class<A> sourceClass) {
+        UniConstraintStream<A> stream = forEachIncludingNullVars(sourceClass);
+        Predicate<A> nullityFilter = getNullityFilter(sourceClass);
         return nullityFilter == null ? stream : stream.filter(nullityFilter);
     }
 
@@ -61,12 +61,12 @@ public abstract class InnerConstraintFactory<Solution_, Constraint_ extends Cons
     }
 
     @Override
-    public <A> BiConstraintStream<A, A> forEachUniquePair(Class<A> fromClass, BiJoiner<A, A> joiner) {
+    public <A> BiConstraintStream<A, A> forEachUniquePair(Class<A> sourceClass, BiJoiner<A, A> joiner) {
         MemberAccessor planningIdMemberAccessor =
-                ConfigUtils.findPlanningIdMemberAccessor(fromClass, getSolutionDescriptor().getDomainAccessType(),
+                ConfigUtils.findPlanningIdMemberAccessor(sourceClass, getSolutionDescriptor().getDomainAccessType(),
                         getSolutionDescriptor().getGeneratedMemberAccessorMap());
         if (planningIdMemberAccessor == null) {
-            throw new IllegalArgumentException("The fromClass (" + fromClass + ") has no member with a @"
+            throw new IllegalArgumentException("The fromClass (" + sourceClass + ") has no member with a @"
                     + PlanningId.class.getSimpleName() + " annotation,"
                     + " so the pairs cannot be made unique ([A,B] vs [B,A]).");
         }
@@ -75,12 +75,12 @@ public abstract class InnerConstraintFactory<Solution_, Constraint_ extends Cons
         // Joiner.filtering() must come last, yet Bavet requires that Joiner.lessThan() be last. This is a workaround.
         if (joiner instanceof FilteringBiJoiner) {
             BiPredicate<A, A> filter = ((FilteringBiJoiner<A, A>) joiner).getFilter();
-            return forEach(fromClass)
-                    .join(fromClass, lessThan(planningIdGetter))
+            return forEach(sourceClass)
+                    .join(sourceClass, lessThan(planningIdGetter))
                     .filter(filter);
         } else {
-            return forEach(fromClass)
-                    .join(fromClass, joiner, lessThan(planningIdGetter));
+            return forEach(sourceClass)
+                    .join(sourceClass, joiner, lessThan(planningIdGetter));
         }
     }
 

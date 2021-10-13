@@ -43,9 +43,9 @@ public final class DroolsConstraintFactory<Solution_>
     }
 
     @Override
-    public <A> UniConstraintStream<A> forEachIncludingNullVars(Class<A> fromClass) {
-        assertValidFromType(fromClass);
-        return new DroolsFromUniConstraintStream<>(this, fromClass, RetrievalSemantics.STANDARD);
+    public <A> UniConstraintStream<A> forEachIncludingNullVars(Class<A> sourceClass) {
+        assertValidFromType(sourceClass);
+        return new DroolsFromUniConstraintStream<>(this, sourceClass, RetrievalSemantics.STANDARD);
     }
 
     @Override

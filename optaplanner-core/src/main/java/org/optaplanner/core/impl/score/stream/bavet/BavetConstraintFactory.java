@@ -47,9 +47,9 @@ public final class BavetConstraintFactory<Solution_>
     // ************************************************************************
 
     @Override
-    public <A> UniConstraintStream<A> forEachIncludingNullVars(Class<A> fromClass) {
-        assertValidFromType(fromClass);
-        return new BavetFromUniConstraintStream<>(this, fromClass, RetrievalSemantics.STANDARD);
+    public <A> UniConstraintStream<A> forEachIncludingNullVars(Class<A> sourceClass) {
+        assertValidFromType(sourceClass);
+        return new BavetFromUniConstraintStream<>(this, sourceClass, RetrievalSemantics.STANDARD);
     }
 
     @Override

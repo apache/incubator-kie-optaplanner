@@ -53,28 +53,28 @@ public interface ConstraintFactory {
     // ************************************************************************
 
     /**
-     * Start a {@link ConstraintStream} of all instances of the fromClass
+     * Start a {@link ConstraintStream} of all instances of the sourceClass
      * that are known as {@link ProblemFactCollectionProperty problem facts} or {@link PlanningEntity planning entities}.
      * <p>
-     * If the fromClass is a {@link PlanningEntity}, then it will be automatically
+     * If the sourceClass is a {@link PlanningEntity}, then it will be automatically
      * {@link UniConstraintStream#filter(Predicate) filtered} to only contain entities
-     * for which each genuine {@link PlanningVariable} (of the fromClass or a superclass thereof) has a non-null value.
+     * for which each genuine {@link PlanningVariable} (of the sourceClass or a superclass thereof) has a non-null value.
      *
-     * @param fromClass never null
+     * @param sourceClass never null
      * @param <A> the type of the matched problem fact or {@link PlanningEntity planning entity}
      * @return never null
      */
-    <A> UniConstraintStream<A> forEach(Class<A> fromClass);
+    <A> UniConstraintStream<A> forEach(Class<A> sourceClass);
 
     /**
      * As defined by {@link #forEach(Class)},
      * but without any filtering of null {@link PlanningEntity planning entity} variables.
      *
-     * @param fromClass never null
+     * @param sourceClass never null
      * @param <A> the type of the matched problem fact or {@link PlanningEntity planning entity}
      * @return never null
      */
-    <A> UniConstraintStream<A> forEachIncludingNullVars(Class<A> fromClass);
+    <A> UniConstraintStream<A> forEachIncludingNullVars(Class<A> sourceClass);
 
     /**
      * Create a new {@link BiConstraintStream} for every unique combination of A and another A with a higher {@link PlanningId}.
@@ -87,12 +87,12 @@ public interface ConstraintFactory {
      * This method is syntactic sugar for {@link UniConstraintStream#join(Class)}.
      * It automatically adds a {@link Joiners#lessThan(Function) lessThan} joiner on the {@link PlanningId} of A.
      *
-     * @param fromClass never null
+     * @param sourceClass never null
      * @param <A> the type of the matched problem fact or {@link PlanningEntity planning entity}
      * @return a stream that matches every unique combination of A and another A
      */
-    default <A> BiConstraintStream<A, A> forEachUniquePair(Class<A> fromClass) {
-        return forEachUniquePair(fromClass, new NoneBiJoiner<>());
+    default <A> BiConstraintStream<A, A> forEachUniquePair(Class<A> sourceClass) {
+        return forEachUniquePair(sourceClass, new NoneBiJoiner<>());
     }
 
     /**
@@ -109,31 +109,31 @@ public interface ConstraintFactory {
      * <p>
      * This method has overloaded methods with multiple {@link BiJoiner} parameters.
      *
-     * @param fromClass never null
+     * @param sourceClass never null
      * @param joiner never null
      * @param <A> the type of the matched problem fact or {@link PlanningEntity planning entity}
      * @return a stream that matches every unique combination of A and another A for which the {@link BiJoiner} is true
      */
-    <A> BiConstraintStream<A, A> forEachUniquePair(Class<A> fromClass, BiJoiner<A, A> joiner);
+    <A> BiConstraintStream<A, A> forEachUniquePair(Class<A> sourceClass, BiJoiner<A, A> joiner);
 
     /**
      * As defined by {@link #fromUniquePair(Class, BiJoiner)}.
      *
-     * @param fromClass never null
+     * @param sourceClass never null
      * @param joiner1 never null
      * @param joiner2 never null
      * @param <A> the type of the matched problem fact or {@link PlanningEntity planning entity}
      * @return a stream that matches every unique combination of A and another A for which all the
      *         {@link BiJoiner joiners} are true
      */
-    default <A> BiConstraintStream<A, A> forEachUniquePair(Class<A> fromClass, BiJoiner<A, A> joiner1, BiJoiner<A, A> joiner2) {
-        return forEachUniquePair(fromClass, new BiJoiner[] { joiner1, joiner2 });
+    default <A> BiConstraintStream<A, A> forEachUniquePair(Class<A> sourceClass, BiJoiner<A, A> joiner1, BiJoiner<A, A> joiner2) {
+        return forEachUniquePair(sourceClass, new BiJoiner[] { joiner1, joiner2 });
     }
 
     /**
      * As defined by {@link #fromUniquePair(Class, BiJoiner)}.
      *
-     * @param fromClass never null
+     * @param sourceClass never null
      * @param joiner1 never null
      * @param joiner2 never null
      * @param joiner3 never null
@@ -141,15 +141,15 @@ public interface ConstraintFactory {
      * @return a stream that matches every unique combination of A and another A for which all the
      *         {@link BiJoiner joiners} are true
      */
-    default <A> BiConstraintStream<A, A> forEachUniquePair(Class<A> fromClass, BiJoiner<A, A> joiner1, BiJoiner<A, A> joiner2,
+    default <A> BiConstraintStream<A, A> forEachUniquePair(Class<A> sourceClass, BiJoiner<A, A> joiner1, BiJoiner<A, A> joiner2,
             BiJoiner<A, A> joiner3) {
-        return forEachUniquePair(fromClass, new BiJoiner[] { joiner1, joiner2, joiner3 });
+        return forEachUniquePair(sourceClass, new BiJoiner[] { joiner1, joiner2, joiner3 });
     }
 
     /**
      * As defined by {@link #fromUniquePair(Class, BiJoiner)}.
      *
-     * @param fromClass never null
+     * @param sourceClass never null
      * @param joiner1 never null
      * @param joiner2 never null
      * @param joiner3 never null
@@ -158,9 +158,9 @@ public interface ConstraintFactory {
      * @return a stream that matches every unique combination of A and another A for which all the
      *         {@link BiJoiner joiners} are true
      */
-    default <A> BiConstraintStream<A, A> forEachUniquePair(Class<A> fromClass, BiJoiner<A, A> joiner1, BiJoiner<A, A> joiner2,
+    default <A> BiConstraintStream<A, A> forEachUniquePair(Class<A> sourceClass, BiJoiner<A, A> joiner1, BiJoiner<A, A> joiner2,
             BiJoiner<A, A> joiner3, BiJoiner<A, A> joiner4) {
-        return forEachUniquePair(fromClass, new BiJoiner[] { joiner1, joiner2, joiner3, joiner4 });
+        return forEachUniquePair(sourceClass, new BiJoiner[] { joiner1, joiner2, joiner3, joiner4 });
     }
 
     /**
@@ -170,14 +170,30 @@ public interface ConstraintFactory {
      * but we can't fix it with a {@link SafeVarargs} annotation because it's an interface method.
      * Therefore, there are overloaded methods with up to 4 {@link BiJoiner} parameters.
      *
-     * @param fromClass never null
+     * @param sourceClass never null
      * @param joiners never null
      * @param <A> the type of the matched problem fact or {@link PlanningEntity planning entity}
      * @return a stream that matches every unique combination of A and another A for which all the
      *         {@link BiJoiner joiners} are true
      */
-    default <A> BiConstraintStream<A, A> forEachUniquePair(Class<A> fromClass, BiJoiner<A, A>... joiners) {
+    default <A> BiConstraintStream<A, A> forEachUniquePair(Class<A> sourceClass, BiJoiner<A, A>... joiners) {
         // First make sure filtering joiners are always last, if there are any.
+        int indexOfFirstFilter = findIndexOfFirstFilteringJoiner(joiners);
+        if (indexOfFirstFilter < 0) {
+            // No filtering joiners. Simply merge all joiners and create the stream.
+            return forEachUniquePair(sourceClass, AbstractBiJoiner.merge(joiners));
+        }
+        // Merge indexing joiners, create stream and append filters for every subsequent filtering joiner.
+        BiJoiner<A, A> mergedJoiner = AbstractBiJoiner.merge(Arrays.copyOf(joiners, indexOfFirstFilter));
+        BiConstraintStream<A, A> resultingStream = forEachUniquePair(sourceClass, mergedJoiner);
+        for (int filterIndex = indexOfFirstFilter; filterIndex < joiners.length; filterIndex++) {
+            FilteringBiJoiner<A, A> filteringJoiner = (FilteringBiJoiner<A, A>) joiners[filterIndex];
+            resultingStream = resultingStream.filter(filteringJoiner.getFilter());
+        }
+        return resultingStream;
+    }
+
+    private static <A> int findIndexOfFirstFilteringJoiner(BiJoiner<A, A>[] joiners) {
         int indexOfFirstFilter = -1;
         for (int index = 0; index < joiners.length; index++) {
             boolean seenFilterAlready = indexOfFirstFilter >= 0;
@@ -193,18 +209,7 @@ public interface ConstraintFactory {
                         "Maybe reorder the joiners such that filtering() joiners are later in the parameter list.");
             }
         }
-        if (indexOfFirstFilter < 0) {
-            // No filtering joiners. Simply merge all joiners and create the stream.
-            return forEachUniquePair(fromClass, AbstractBiJoiner.merge(joiners));
-        }
-        // Merge indexing joiners, create stream and append filters for every subsequent filtering joiner.
-        BiJoiner<A, A> mergedJoiner = AbstractBiJoiner.merge(Arrays.copyOf(joiners, indexOfFirstFilter));
-        BiConstraintStream<A, A> resultingStream = forEachUniquePair(fromClass, mergedJoiner);
-        for (int filterIndex = indexOfFirstFilter; filterIndex < joiners.length; filterIndex++) {
-            FilteringBiJoiner<A, A> filteringJoiner = (FilteringBiJoiner<A, A>) joiners[filterIndex];
-            resultingStream = resultingStream.filter(filteringJoiner.getFilter());
-        }
-        return resultingStream;
+        return indexOfFirstFilter;
     }
 
     // ************************************************************************
@@ -260,8 +265,7 @@ public interface ConstraintFactory {
      * This method is syntactic sugar for {@link UniConstraintStream#join(Class)}.
      * It automatically adds a {@link Joiners#lessThan(Function) lessThan} joiner on the {@link PlanningId} of A.
      * <p>
-     * See {@link #from(Class)} for a discussion of the behavior of this method
-     * in situations with and without nullable planning variables.
+     * See {@link #from(Class)} for the behavior of this method in situations with and without nullable planning variables.
      *
      * @deprecated in favor of {@link #forEachUniquePair(Class)},
      *             which exhibits the same behavior for both nullable and non-nullable planning variables.
@@ -288,8 +292,7 @@ public interface ConstraintFactory {
      * <p>
      * This method has overloaded methods with multiple {@link BiJoiner} parameters.
      * <p>
-     * See {@link #from(Class)} for a discussion of the behavior of this method
-     * in situations with and without nullable planning variables.
+     * See {@link #from(Class)} for the behavior of this method in situations with and without nullable planning variables.
      *
      * @deprecated in favor of {@link #forEachUniquePair(Class, BiJoiner)},
      *             which exhibits the same behavior for both nullable and non-nullable planning variables.
@@ -375,21 +378,7 @@ public interface ConstraintFactory {
     @Deprecated(forRemoval = true)
     default <A> BiConstraintStream<A, A> fromUniquePair(Class<A> fromClass, BiJoiner<A, A>... joiners) {
         // First make sure filtering joiners are always last, if there are any.
-        int indexOfFirstFilter = -1;
-        for (int index = 0; index < joiners.length; index++) {
-            boolean seenFilterAlready = indexOfFirstFilter >= 0;
-            BiJoiner<A, A> joiner = joiners[index];
-            boolean isFilter = joiner instanceof FilteringBiJoiner;
-            if (!seenFilterAlready && isFilter) {
-                indexOfFirstFilter = index;
-                continue;
-            }
-            if (seenFilterAlready && !isFilter) {
-                throw new IllegalStateException("Indexing joiner (" + joiner + ") must not follow " +
-                        "a filtering joiner (" + joiners[indexOfFirstFilter] + ").\n" +
-                        "Maybe reorder the joiners such that filtering() joiners are later in the parameter list.");
-            }
-        }
+        int indexOfFirstFilter = findIndexOfFirstFilteringJoiner(joiners);
         if (indexOfFirstFilter < 0) {
             // No filtering joiners. Simply merge all joiners and create the stream.
             return fromUniquePair(fromClass, AbstractBiJoiner.merge(joiners));
