@@ -32,6 +32,7 @@ import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.constraint.ConstraintMatchTotal;
 import org.optaplanner.core.api.score.stream.Constraint;
 import org.optaplanner.core.api.score.stream.ConstraintCollectors;
+import org.optaplanner.core.api.score.stream.ConstraintFactory;
 import org.optaplanner.core.api.score.stream.ConstraintStream;
 import org.optaplanner.core.api.score.stream.Joiners;
 import org.optaplanner.core.api.score.stream.bi.BiConstraintStream;
@@ -183,8 +184,8 @@ public interface UniConstraintStream<A> extends ConstraintStream {
      * so it doesn't create nor checks every combination of A and B.
      * <p>
      * This method behaves differently based on whether the constraint stream was started by
-     * {@link org.optaplanner.core.api.score.stream.ConstraintFactory#forEach(Class)} or
-     * {@link org.optaplanner.core.api.score.stream.ConstraintFactory#from(Class)}.
+     * {@link ConstraintFactory#forEach(Class)} or
+     * {@link ConstraintFactory#from(Class)}.
      *
      * <ul>
      * <li>In the case of the forEach*() family of methods, a fact is included if:
@@ -199,7 +200,7 @@ public interface UniConstraintStream<A> extends ConstraintStream {
      * <li>if that planning entity has a nullable genuine planning variable with a null value.</li>
      * </ol>
      * This is a legacy behavior, maintained for backwards compatibility purposes.
-     * It will be removed in 9.0 together with {@link org.optaplanner.core.api.score.stream.ConstraintFactory#from(Class)}.
+     * It will be removed in 9.0 together with {@link ConstraintFactory#from(Class)}.
      * </li>
      * </ul>
      * <p>
@@ -223,8 +224,8 @@ public interface UniConstraintStream<A> extends ConstraintStream {
      * so it doesn't create nor checks every combination of A and B.
      * <p>
      * This method behaves differently based on whether the constraint stream was started by
-     * {@link org.optaplanner.core.api.score.stream.ConstraintFactory#forEach(Class)} or
-     * {@link org.optaplanner.core.api.score.stream.ConstraintFactory#from(Class)}.
+     * {@link ConstraintFactory#forEach(Class)} or
+     * {@link ConstraintFactory#from(Class)}.
      *
      * <ul>
      * <li>In the case of the forEach*() family of methods, a fact is included if all joiners match and:
@@ -239,7 +240,7 @@ public interface UniConstraintStream<A> extends ConstraintStream {
      * <li>if that planning entity has a nullable genuine planning variable with a null value.</li>
      * </ol>
      * This is a legacy behavior, maintained for backwards compatibility purposes.
-     * It will be removed in 9.0 together with {@link org.optaplanner.core.api.score.stream.ConstraintFactory#from(Class)}.
+     * It will be removed in 9.0 together with {@link ConstraintFactory#from(Class)}.
      * </li>
      * </ul>
      * <p>
@@ -332,23 +333,10 @@ public interface UniConstraintStream<A> extends ConstraintStream {
      * <p>
      * This method has overloaded methods with multiple {@link BiJoiner} parameters.
      * <p>
-     * This method behaves differently based on whether the constraint stream was started by
-     * {@link org.optaplanner.core.api.score.stream.ConstraintFactory#forEach(Class)} or
-     * {@link org.optaplanner.core.api.score.stream.ConstraintFactory#from(Class)}.
-     *
-     * <ul>
-     * <li>In the case of the forEach*() family of methods, a fact is only considered to exist if all joiners match and:
-     * <ol>
-     * <li>It is not a planning entity or</li>
-     * <li>if that planning entity has no null values in any of its planning variables.</li>
-     * </ol>
-     * </li>
-     * <li>In the case of the from*() family of methods, a fact is only considered to exist if all joiners match.
-     * In other words, even planning entities with null variables will be considered.
-     * This is a legacy behavior, maintained for backwards compatibility purposes.
-     * It will be removed in 9.0 together with {@link org.optaplanner.core.api.score.stream.ConstraintFactory#from(Class)}.
-     * </li>
-     * </ul>
+     * Note that, if a legacy constraint stream was started using {@link ConstraintFactory#from(Class)}
+     * as opposed to {@link ConstraintFactory#forEach(Class)},
+     * a different definition of exists applies.
+     * (See {@link ConstraintFactory#from(Class)} Javadoc.)
      *
      * @param otherClass never null
      * @param joiner never null
@@ -507,23 +495,10 @@ public interface UniConstraintStream<A> extends ConstraintStream {
      * Create a new {@link UniConstraintStream} for every A, if another A exists that does not {@link Object#equals(Object)}
      * the first.
      * <p>
-     * This method behaves differently based on whether the constraint stream was started by
-     * {@link org.optaplanner.core.api.score.stream.ConstraintFactory#forEach(Class)} or
-     * {@link org.optaplanner.core.api.score.stream.ConstraintFactory#from(Class)}.
-     *
-     * <ul>
-     * <li>In the case of the forEach*() family of methods, a fact is only considered to exist if:
-     * <ol>
-     * <li>It is not a planning entity or</li>
-     * <li>if that planning entity has no null values in any of its planning variables.</li>
-     * </ol>
-     * </li>
-     * <li>In the case of the from*() family of methods, a fact is always considered to exist.
-     * In other words, even planning entities with null variables will be considered.
-     * This is a legacy behavior, maintained for backwards compatibility purposes.
-     * It will be removed in 9.0 together with {@link org.optaplanner.core.api.score.stream.ConstraintFactory#from(Class)}.
-     * </li>
-     * </ul>
+     * Note that, if a legacy constraint stream was started using {@link ConstraintFactory#from(Class)}
+     * as opposed to {@link ConstraintFactory#forEach(Class)},
+     * a different definition of exists applies.
+     * (See {@link ConstraintFactory#from(Class)} Javadoc.)
      *
      * @param otherClass never null
      * @return never null, a stream that matches every A where a different A exists
@@ -538,23 +513,10 @@ public interface UniConstraintStream<A> extends ConstraintStream {
      * <p>
      * This method has overloaded methods with multiple {@link BiJoiner} parameters.
      * <p>
-     * This method behaves differently based on whether the constraint stream was started by
-     * {@link org.optaplanner.core.api.score.stream.ConstraintFactory#forEach(Class)} or
-     * {@link org.optaplanner.core.api.score.stream.ConstraintFactory#from(Class)}.
-     *
-     * <ul>
-     * <li>In the case of the forEach*() family of methods, a fact is only considered to exist if all joiners match and:
-     * <ol>
-     * <li>It is not a planning entity or</li>
-     * <li>if that planning entity has no null values in any of its planning variables.</li>
-     * </ol>
-     * </li>
-     * <li>In the case of the from*() family of methods, a fact is only considered to exist if all joiners match.
-     * In other words, even planning entities with null variables will be considered.
-     * This is a legacy behavior, maintained for backwards compatibility purposes.
-     * It will be removed in 9.0 together with {@link org.optaplanner.core.api.score.stream.ConstraintFactory#from(Class)}.
-     * </li>
-     * </ul>
+     * Note that, if a legacy constraint stream was started using {@link ConstraintFactory#from(Class)}
+     * as opposed to {@link ConstraintFactory#forEach(Class)},
+     * a different definition of exists applies.
+     * (See {@link ConstraintFactory#from(Class)} Javadoc.)
      *
      * @param otherClass never null
      * @param joiner never null
@@ -737,23 +699,9 @@ public interface UniConstraintStream<A> extends ConstraintStream {
      * <p>
      * This method has overloaded methods with multiple {@link BiJoiner} parameters.
      * <p>
-     * This method behaves differently based on whether the constraint stream was started by
-     * {@link org.optaplanner.core.api.score.stream.ConstraintFactory#forEach(Class)} or
-     * {@link org.optaplanner.core.api.score.stream.ConstraintFactory#from(Class)}.
-     *
-     * <ul>
-     * <li>In the case of the forEach*() family of methods, a fact is only considered to exist if all joiners match and:
-     * <ol>
-     * <li>It is not a planning entity or</li>
-     * <li>if that planning entity has no null values in any of its planning variables.</li>
-     * </ol>
-     * </li>
-     * <li>In the case of the from*() family of methods, a fact is only considered to exist if all joiners match.
-     * In other words, even planning entities with null variables will be considered.
-     * This is a legacy behavior, maintained for backwards compatibility purposes.
-     * It will be removed in 9.0 together with {@link org.optaplanner.core.api.score.stream.ConstraintFactory#from(Class)}.
-     * </li>
-     * </ul>
+     * Note that, if a legacy constraint stream was started using {@link ConstraintFactory#from(Class)}
+     * as opposed to {@link ConstraintFactory#forEach(Class)},
+     * a different definition of exists applies. (See {@link ConstraintFactory#from(Class)} Javadoc.)
      *
      * @param otherClass never null
      * @param joiner never null
@@ -919,23 +867,10 @@ public interface UniConstraintStream<A> extends ConstraintStream {
      * Create a new {@link UniConstraintStream} for every A, if no other A exists that does not {@link Object#equals(Object)}
      * the first.
      * <p>
-     * This method behaves differently based on whether the constraint stream was started by
-     * {@link org.optaplanner.core.api.score.stream.ConstraintFactory#forEach(Class)} or
-     * {@link org.optaplanner.core.api.score.stream.ConstraintFactory#from(Class)}.
-     *
-     * <ul>
-     * <li>In the case of the forEach*() family of methods, a fact is only considered to exist if:
-     * <ol>
-     * <li>It is not a planning entity or</li>
-     * <li>if that planning entity has no null values in any of its planning variables.</li>
-     * </ol>
-     * </li>
-     * <li>In the case of the from*() family of methods, a fact is always considered to exist.
-     * In other words, even planning entities with null variables will be considered.
-     * This is a legacy behavior, maintained for backwards compatibility purposes.
-     * It will be removed in 9.0 together with {@link org.optaplanner.core.api.score.stream.ConstraintFactory#from(Class)}.
-     * </li>
-     * </ul>
+     * Note that, if a legacy constraint stream was started using {@link ConstraintFactory#from(Class)}
+     * as opposed to {@link ConstraintFactory#forEach(Class)},
+     * a different definition of exists applies.
+     * (See {@link ConstraintFactory#from(Class)} Javadoc.)
      *
      * @param otherClass never null
      * @return never null, a stream that matches every A where a different A does not exist
@@ -950,23 +885,10 @@ public interface UniConstraintStream<A> extends ConstraintStream {
      * <p>
      * This method has overloaded methods with multiple {@link BiJoiner} parameters.
      * <p>
-     * This method behaves differently based on whether the constraint stream was started by
-     * {@link org.optaplanner.core.api.score.stream.ConstraintFactory#forEach(Class)} or
-     * {@link org.optaplanner.core.api.score.stream.ConstraintFactory#from(Class)}.
-     *
-     * <ul>
-     * <li>In the case of the forEach*() family of methods, a fact is only considered to exist if all joiners match and:
-     * <ol>
-     * <li>It is not a planning entity or</li>
-     * <li>if that planning entity has no null values in any of its planning variables.</li>
-     * </ol>
-     * </li>
-     * <li>In the case of the from*() family of methods, a fact is only considered to exist if all joiners match.
-     * In other words, even planning entities with null variables will be considered.
-     * This is a legacy behavior, maintained for backwards compatibility purposes.
-     * It will be removed in 9.0 together with {@link org.optaplanner.core.api.score.stream.ConstraintFactory#from(Class)}.
-     * </li>
-     * </ul>
+     * Note that, if a legacy constraint stream was started using {@link ConstraintFactory#from(Class)}
+     * as opposed to {@link ConstraintFactory#forEach(Class)},
+     * a different definition of exists applies.
+     * (See {@link ConstraintFactory#from(Class)} Javadoc.)
      *
      * @param otherClass never null
      * @param joiner never null
