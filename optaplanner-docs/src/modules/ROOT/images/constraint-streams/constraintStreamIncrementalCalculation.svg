@@ -618,7 +618,7 @@
            width="200.00002"
            id="rect2679" /></flowRegion><flowPara
          id="flowPara2683"
-         style="font-size:21.3333px;line-height:1.25;text-align:start;text-anchor:start">from(<flowSpan
+         style="font-size:21.3333px;line-height:1.25;text-align:start;text-anchor:start">forEach(<flowSpan
    style="fill:#4e9a06"
    id="flowSpan2695">Shift</flowSpan>.class)</flowPara></flowRoot>
     <g
