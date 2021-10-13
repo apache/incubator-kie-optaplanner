@@ -67,7 +67,7 @@ public interface ConstraintFactory {
     <A> UniConstraintStream<A> forEach(Class<A> fromClass);
 
     /**
-     * Like {@link #forEach(Class)},
+     * As defined by {@link #forEach(Class)},
      * but without any filtering of null {@link PlanningEntity planning entity} variables.
      *
      * @param fromClass never null
@@ -238,7 +238,7 @@ public interface ConstraintFactory {
     <A> UniConstraintStream<A> from(Class<A> fromClass);
 
     /**
-     * Like {@link #from(Class)},
+     * As defined by {@link #from(Class)},
      * but without any filtering of uninitialized {@link PlanningEntity planning entities}.
      *
      * @deprecated in favor of {@link #forEachIncludingNullVars(Class)}.
