@@ -217,6 +217,25 @@ public interface ConstraintFactory {
     // ************************************************************************
 
     /**
+     * When migrating uses of this method to {@link #forEach(Class)}, consider the following:
+     *
+     * <ul>
+     *     <li>If none of your {@link PlanningVariable planning variables} are explicitly set to nullable=true,
+     *      then this has little to no impact.
+     *      Subsequent conditional propagation calls ({@link UniConstraintStream#ifExists} etc.)
+     *      will now also filter out planning entities with null variables,
+     *      consistently with {@link #forEach(Class)} family of methods and with joining.</li>
+     *     <li>If any of your {@link PlanningVariable planning variables} are nullable=true,
+     *      then there is severe impact.
+     *      Calls to the {@link #forEach(Class)} family of methods will now filter out planning entities with null variables,
+     *      so most constraints no longer need to do null checks,
+     *      but the constraint that penalizes unassigned entities (typically a medium constraint)
+     *      must now use {@link #forEachIncludingNullVars(Class)} instead.
+     *      Subsequent joins and conditional propagation calls will now also consistently filter out planning entities with null variables.</li>
+     * </ul>
+     * <p>
+     * The original Javadoc of this method follows:
+     * <p>
      * Start a {@link ConstraintStream} of all instances of the fromClass
      * that are known as {@link ProblemFactCollectionProperty problem facts} or {@link PlanningEntity planning entities}.
      * <p>
@@ -224,16 +243,8 @@ public interface ConstraintFactory {
      * {@link UniConstraintStream#filter(Predicate) filtered} to only contain fully initialized entities,
      * for which each genuine {@link PlanningVariable} (of the fromClass or a superclass thereof) is initialized.
      * This filtering will NOT automatically apply to genuine planning variables of subclass planning entities of the fromClass.
-     * <p>
-     * As a result, this method treats entities with and without nullable variables differently.
-     * When planning variables are not declared nullable,
-     * entities with null values in these variables will not be included.
-     * However, entities with a null value in at least one of their planning variables will be included,
-     * if these planning variables are declared nullable.
-     * Therefore by switching a planning variable to nullable,
-     * you may end up with constraints throwing {@link NullPointerException}s where they previously did not.
      *
-     * @deprecated in favor of {@link #forEach(Class)},
+     * @deprecated This method is deprecated in favor of {@link #forEach(Class)},
      *             which exhibits the same behavior for both nullable and non-nullable planning variables.
      * @param fromClass never null
      * @param <A> the type of the matched problem fact or {@link PlanningEntity planning entity}
@@ -243,6 +254,12 @@ public interface ConstraintFactory {
     <A> UniConstraintStream<A> from(Class<A> fromClass);
 
     /**
+     * When migrating uses of this method to {@link #forEachIncludingNullVars(Class)},
+     * note that subsequent joins and conditional propagation calls ({@link UniConstraintStream#ifExists} etc.)
+     * will now also consistently filter out planning entities with null variables.
+     * <p>
+     * The original Javadoc of this method follows:
+     * <p>
      * As defined by {@link #from(Class)},
      * but without any filtering of uninitialized {@link PlanningEntity planning entities}.
      *
@@ -255,6 +272,11 @@ public interface ConstraintFactory {
     <A> UniConstraintStream<A> fromUnfiltered(Class<A> fromClass);
 
     /**
+     * When migrating uses of this method to {@link #forEachUniquePair(Class)},
+     * note that the same precautions apply as with the use of {@link #from(Class)}.
+     * <p>
+     * The original Javadoc of this method follows:
+     * <p>
      * Create a new {@link BiConstraintStream} for every unique combination of A and another A with a higher {@link PlanningId}.
      * <p>
      * Important: {@link BiConstraintStream#filter(BiPredicate) Filtering} this is slower and less scalable
@@ -264,8 +286,6 @@ public interface ConstraintFactory {
      * <p>
      * This method is syntactic sugar for {@link UniConstraintStream#join(Class)}.
      * It automatically adds a {@link Joiners#lessThan(Function) lessThan} joiner on the {@link PlanningId} of A.
-     * <p>
-     * See {@link #from(Class)} for the behavior of this method in situations with and without nullable planning variables.
      *
      * @deprecated in favor of {@link #forEachUniquePair(Class)},
      *             which exhibits the same behavior for both nullable and non-nullable planning variables.
@@ -279,6 +299,11 @@ public interface ConstraintFactory {
     }
 
     /**
+     * When migrating uses of this method to {@link #forEachUniquePair(Class, BiJoiner)},
+     * note that the same precautions apply as with the use of {@link #from(Class)}.
+     * <p>
+     * The original Javadoc of this method follows:
+     * <p>
      * Create a new {@link BiConstraintStream} for every unique combination of A and another A with a higher {@link PlanningId}
      * for which the {@link BiJoiner} is true (for the properties it extracts from both facts).
      * <p>
@@ -291,8 +316,6 @@ public interface ConstraintFactory {
      * It automatically adds a {@link Joiners#lessThan(Function) lessThan} joiner on the {@link PlanningId} of A.
      * <p>
      * This method has overloaded methods with multiple {@link BiJoiner} parameters.
-     * <p>
-     * See {@link #from(Class)} for the behavior of this method in situations with and without nullable planning variables.
      *
      * @deprecated in favor of {@link #forEachUniquePair(Class, BiJoiner)},
      *             which exhibits the same behavior for both nullable and non-nullable planning variables.
@@ -305,6 +328,11 @@ public interface ConstraintFactory {
     <A> BiConstraintStream<A, A> fromUniquePair(Class<A> fromClass, BiJoiner<A, A> joiner);
 
     /**
+     * When migrating uses of this method to {@link #forEachUniquePair(Class, BiJoiner, BiJoiner)},
+     * note that the same precautions apply as with the use of {@link #from(Class)}.
+     * <p>
+     * The original Javadoc of this method follows:
+     * <p>
      * As defined by {@link #fromUniquePair(Class, BiJoiner)}.
      *
      * @deprecated in favor of {@link #forEachUniquePair(Class, BiJoiner, BiJoiner)},
@@ -322,6 +350,11 @@ public interface ConstraintFactory {
     }
 
     /**
+     * When migrating uses of this method to {@link #forEachUniquePair(Class, BiJoiner, BiJoiner, BiJoiner)},
+     * note that the same precautions apply as with the use of {@link #from(Class)}.
+     * <p>
+     * The original Javadoc of this method follows:
+     * <p>
      * As defined by {@link #fromUniquePair(Class, BiJoiner)}.
      *
      * @deprecated in favor of {@link #forEachUniquePair(Class, BiJoiner, BiJoiner, BiJoiner)},
@@ -341,6 +374,11 @@ public interface ConstraintFactory {
     }
 
     /**
+     * When migrating uses of this method to {@link #forEachUniquePair(Class, BiJoiner, BiJoiner, BiJoiner, BiJoiner)},
+     * note that the same precautions apply as with the use of {@link #from(Class)}.
+     * <p>
+     * The original Javadoc of this method follows:
+     * <p>
      * As defined by {@link #fromUniquePair(Class, BiJoiner)}.
      *
      * @deprecated in favor of {@link #forEachUniquePair(Class, BiJoiner, BiJoiner, BiJoiner, BiJoiner)},
@@ -361,6 +399,11 @@ public interface ConstraintFactory {
     }
 
     /**
+     * When migrating uses of this method to {@link #forEachUniquePair(Class, BiJoiner...)},
+     * note that the same precautions apply as with the use of {@link #from(Class)}.
+     * <p>
+     * The original Javadoc of this method follows:
+     * <p>
      * As defined by {@link #fromUniquePair(Class, BiJoiner)}.
      * <p>
      * This method causes <i>Unchecked generics array creation for varargs parameter</i> warnings,
