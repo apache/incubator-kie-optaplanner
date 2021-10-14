@@ -560,6 +560,62 @@ public class BiConstraintStreamTest extends AbstractConstraintStreamTest impleme
 
     @Override
     @TestTemplate
+    public void ifExistsDoesNotIncludeNullVars() {
+        assumeDrools();
+        TestdataLavishSolution solution = TestdataLavishSolution.generateSolution(2, 5, 1, 1);
+        TestdataLavishEntityGroup entityGroup = new TestdataLavishEntityGroup("MyEntityGroup");
+        solution.getEntityGroupList().add(entityGroup);
+        TestdataLavishEntity entity1 = new TestdataLavishEntity("MyEntity 1", entityGroup, solution.getFirstValue());
+        solution.getEntityList().add(entity1);
+        TestdataLavishEntity entity2 = new TestdataLavishEntity("MyEntity 2", solution.getFirstEntityGroup(),
+                null);
+        solution.getEntityList().add(entity2);
+
+        InnerScoreDirector<TestdataLavishSolution, SimpleScore> scoreDirector = buildScoreDirector(factory -> {
+            return factory.forEachUniquePair(TestdataLavishEntity.class)
+                    .ifExists(TestdataLavishEntity.class,
+                            filtering((a, b, c) -> a != c && b != c))
+                    .penalize(TEST_CONSTRAINT_NAME, SimpleScore.ONE);
+        });
+
+        scoreDirector.setWorkingSolution(solution);
+        assertScore(scoreDirector);
+    }
+
+    @Override
+    @TestTemplate
+    public void ifExistsIncludesNullVarsWithFrom() {
+        assumeDrools();
+        TestdataLavishSolution solution = TestdataLavishSolution.generateSolution(2, 5, 1, 1);
+        TestdataLavishEntityGroup entityGroup = new TestdataLavishEntityGroup("MyEntityGroup");
+        solution.getEntityGroupList().add(entityGroup);
+        TestdataLavishEntity entity1 = new TestdataLavishEntity("MyEntity 1", entityGroup, solution.getFirstValue());
+        solution.getEntityList().add(entity1);
+        TestdataLavishEntity entity2 = new TestdataLavishEntity("MyEntity 2", solution.getFirstEntityGroup(),
+                null);
+        solution.getEntityList().add(entity2);
+
+        InnerScoreDirector<TestdataLavishSolution, SimpleScore> scoreDirector = buildScoreDirector(factory -> {
+            return factory.fromUniquePair(TestdataLavishEntity.class)
+                    .ifExists(TestdataLavishEntity.class,
+                            filtering((a, b, c) -> a != c && b != c))
+                    .penalize(TEST_CONSTRAINT_NAME, SimpleScore.ONE);
+        });
+
+        // From scratch
+        scoreDirector.setWorkingSolution(solution);
+        assertScore(scoreDirector,
+                assertMatch(solution.getFirstEntity(), entity1));
+
+        // Incremental
+        scoreDirector.beforeProblemFactRemoved(entity2);
+        solution.getEntityList().remove(entity2);
+        scoreDirector.afterProblemFactRemoved(entity2);
+        assertScore(scoreDirector);
+    }
+
+    @Override
+    @TestTemplate
     public void ifNotExists_unknownClass() {
         assumeDrools();
         assertThatThrownBy(() -> buildScoreDirector(factory -> {
@@ -704,6 +760,71 @@ public class BiConstraintStreamTest extends AbstractConstraintStreamTest impleme
                 assertMatch(solution.getFirstEntity(), entity1),
                 assertMatch(solution.getFirstEntity(), entity2),
                 assertMatch(entity1, entity2));
+    }
+
+    @Override
+    @TestTemplate
+    public void ifNotExistsDoesNotIncludeNullVars() {
+        assumeDrools();
+        TestdataLavishSolution solution = TestdataLavishSolution.generateSolution(2, 5, 1, 1);
+        TestdataLavishEntityGroup entityGroup = new TestdataLavishEntityGroup("MyEntityGroup");
+        solution.getEntityGroupList().add(entityGroup);
+        TestdataLavishEntity entity1 = new TestdataLavishEntity("MyEntity 1", entityGroup, solution.getFirstValue());
+        solution.getEntityList().add(entity1);
+        TestdataLavishEntity entity2 = new TestdataLavishEntity("MyEntity 2", solution.getFirstEntityGroup(),
+                null);
+        solution.getEntityList().add(entity2);
+
+        InnerScoreDirector<TestdataLavishSolution, SimpleScore> scoreDirector = buildScoreDirector(factory -> {
+            return factory.forEachUniquePair(TestdataLavishEntity.class)
+                    .ifNotExists(TestdataLavishEntity.class,
+                            filtering((a, b, c) -> a != c && b != c))
+                    .penalize(TEST_CONSTRAINT_NAME, SimpleScore.ONE);
+        });
+
+        // From scratch
+        scoreDirector.setWorkingSolution(solution);
+        assertScore(scoreDirector,
+                assertMatch(solution.getFirstEntity(), entity1));
+
+        // Incremental
+        scoreDirector.beforeProblemFactRemoved(entity2);
+        solution.getEntityList().remove(entity2);
+        scoreDirector.afterProblemFactRemoved(entity2);
+        assertScore(scoreDirector,
+                assertMatch(solution.getFirstEntity(), entity1));
+    }
+
+    @Override
+    @TestTemplate
+    public void ifNotExistsIncludesNullVarsWithFrom() {
+        assumeDrools();
+        TestdataLavishSolution solution = TestdataLavishSolution.generateSolution(2, 5, 1, 1);
+        TestdataLavishEntityGroup entityGroup = new TestdataLavishEntityGroup("MyEntityGroup");
+        solution.getEntityGroupList().add(entityGroup);
+        TestdataLavishEntity entity1 = new TestdataLavishEntity("MyEntity 1", entityGroup, solution.getFirstValue());
+        solution.getEntityList().add(entity1);
+        TestdataLavishEntity entity2 = new TestdataLavishEntity("MyEntity 2", solution.getFirstEntityGroup(),
+                null);
+        solution.getEntityList().add(entity2);
+
+        InnerScoreDirector<TestdataLavishSolution, SimpleScore> scoreDirector = buildScoreDirector(factory -> {
+            return factory.fromUniquePair(TestdataLavishEntity.class)
+                    .ifNotExists(TestdataLavishEntity.class,
+                            filtering((a, b, c) -> a != c && b != c))
+                    .penalize(TEST_CONSTRAINT_NAME, SimpleScore.ONE);
+        });
+
+        // From scratch
+        scoreDirector.setWorkingSolution(solution);
+        assertScore(scoreDirector);
+
+        // Incremental
+        scoreDirector.beforeProblemFactRemoved(entity2);
+        solution.getEntityList().remove(entity2);
+        scoreDirector.afterProblemFactRemoved(entity2);
+        assertScore(scoreDirector,
+                assertMatch(solution.getFirstEntity(), entity1));
     }
 
     // ************************************************************************

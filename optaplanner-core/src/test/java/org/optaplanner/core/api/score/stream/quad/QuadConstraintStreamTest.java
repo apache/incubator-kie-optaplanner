@@ -34,6 +34,7 @@ import java.math.BigDecimal;
 import java.util.Objects;
 import java.util.function.Function;
 
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.TestTemplate;
 import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
 import org.optaplanner.core.api.score.buildin.simplebigdecimal.SimpleBigDecimalScore;
@@ -319,6 +320,19 @@ public class QuadConstraintStreamTest extends AbstractConstraintStreamTest imple
 
     @Override
     @TestTemplate
+    @Disabled("Would cause too many matches to meaningfully assert; cost-benefit ratio is wrong here.")
+    public void ifExistsDoesNotIncludeNullVars() {
+
+    }
+
+    @Override
+    @TestTemplate
+    @Disabled("Would cause too many matches to meaningfully assert; cost-benefit ratio is wrong here.")
+    public void ifExistsIncludesNullVarsWithFrom() {
+    }
+
+    @Override
+    @TestTemplate
     public void ifNotExists_unknownClass() {
         assumeDrools();
         assertThatThrownBy(() -> buildScoreDirector(factory -> {
@@ -472,6 +486,20 @@ public class QuadConstraintStreamTest extends AbstractConstraintStreamTest imple
         solution.getEntityGroupList().remove(entityGroup);
         scoreDirector.afterProblemFactRemoved(entityGroup);
         assertScore(scoreDirector);
+    }
+
+    @Override
+    @TestTemplate
+    @Disabled("Would cause too many matches to meaningfully assert; cost-benefit ratio is wrong here.")
+    public void ifNotExistsDoesNotIncludeNullVars() {
+
+    }
+
+    @Override
+    @TestTemplate
+    @Disabled("Would cause too many matches to meaningfully assert; cost-benefit ratio is wrong here.")
+    public void ifNotExistsIncludesNullVarsWithFrom() {
+
     }
 
     // ************************************************************************
