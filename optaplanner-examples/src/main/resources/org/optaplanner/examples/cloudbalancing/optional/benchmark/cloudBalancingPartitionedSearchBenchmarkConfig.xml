@@ -29,13 +29,12 @@
         <initializingScoreTrend>ONLY_DOWN</initializingScoreTrend>
       </scoreDirectorFactory>
       <termination>
-        <secondsSpentLimit>15</secondsSpentLimit>
+        <secondsSpentLimit>5</secondsSpentLimit>
       </termination>
     </solver>
     <problemBenchmarks>
       <solutionFileIOClass>org.optaplanner.examples.cloudbalancing.persistence.CloudBalanceXmlSolutionFileIO</solutionFileIOClass>
-      <inputSolutionFile>data/cloudbalancing/unsolved/400computers-1200processes.xml</inputSolutionFile>
-      <inputSolutionFile>data/cloudbalancing/unsolved/2400computers-7000processes.xml</inputSolutionFile>
+      <inputSolutionFile>data/cloudbalancing/unsolved/1600computers-4800processes.xml</inputSolutionFile>
     </problemBenchmarks>
   </inheritedSolverBenchmark>
 
