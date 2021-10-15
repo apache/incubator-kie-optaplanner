@@ -6,7 +6,7 @@ name: Jenkins Tests
 on:
   pull_request:
     paths: 
-    - '.jenkins/**'
+    - '.ci/jenkins/**'
 
 jobs:
   dsl-tests:
