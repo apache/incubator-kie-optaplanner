@@ -1,7 +1,7 @@
 
 
 [id="chap-optaplanner-vaccination_{context}"]
-= OPTAPLANNER Vaccination Scheduler
+= OptaPlanner Vaccination Scheduler
 
 :OPTAPLANNER-COMM:
 //Variable for the community version conditional statements.
