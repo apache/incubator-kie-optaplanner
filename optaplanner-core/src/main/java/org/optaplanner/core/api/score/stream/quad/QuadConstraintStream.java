@@ -79,8 +79,8 @@ public interface QuadConstraintStream<A, B, C, D> extends ConstraintStream {
      * <p>
      * This method has overloaded methods with multiple {@link PentaJoiner} parameters.
      * <p>
-     * Note that, if a legacy constraint stream was started using {@link ConstraintFactory#from(Class)}
-     * as opposed to {@link ConstraintFactory#forEach(Class)},
+     * Note that, if a legacy constraint stream uses {@link ConstraintFactory#from(Class)} as opposed to
+     * {@link ConstraintFactory#forEach(Class)},
      * a different definition of exists applies.
      * (See {@link ConstraintFactory#from(Class)} Javadoc.)
      *
@@ -166,7 +166,7 @@ public interface QuadConstraintStream<A, B, C, D> extends ConstraintStream {
      * Create a new {@link BiConstraintStream} for every tuple of A, B, C and D where E exists for which the
      * {@link PentaJoiner} is true (for the properties it extracts from the facts).
      * For classes annotated with {@link org.optaplanner.core.api.domain.entity.PlanningEntity},
-     * this method will also include instances with null variables.
+     * this method also includes instances with null variables.
      * <p>
      * This method has overloaded methods with multiple {@link PentaJoiner} parameters.
      *
@@ -256,8 +256,8 @@ public interface QuadConstraintStream<A, B, C, D> extends ConstraintStream {
      * <p>
      * This method has overloaded methods with multiple {@link PentaJoiner} parameters.
      * <p>
-     * Note that, if a legacy constraint stream was started using {@link ConstraintFactory#from(Class)}
-     * as opposed to {@link ConstraintFactory#forEach(Class)},
+     * Note that, if a legacy constraint stream uses{@link ConstraintFactory#from(Class)} as opposed to
+     * {@link ConstraintFactory#forEach(Class)},
      * a different definition of exists applies.
      * (See {@link ConstraintFactory#from(Class)} Javadoc.)
      *
@@ -342,7 +342,7 @@ public interface QuadConstraintStream<A, B, C, D> extends ConstraintStream {
      * Create a new {@link BiConstraintStream} for every tuple of A, B, C and D where E does not exist for which the
      * {@link PentaJoiner} is true (for the properties it extracts from the facts).
      * For classes annotated with {@link org.optaplanner.core.api.domain.entity.PlanningEntity},
-     * this method will also include instances with null variables.
+     * this method also includes instances with null variables.
      * <p>
      * This method has overloaded methods with multiple {@link PentaJoiner} parameters.
      *

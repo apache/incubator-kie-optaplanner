@@ -183,8 +183,8 @@ public interface BiConstraintStream<A, B> extends ConstraintStream {
      * because it doesn't apply hashing and/or indexing on the properties,
      * so it creates and checks every combination of [A, B] and C.
      * <p>
-     * Note that, if a legacy constraint stream was started using {@link ConstraintFactory#from(Class)}
-     * as opposed to {@link ConstraintFactory#forEach(Class)},
+     * Note that, if a legacy constraint stream uses {@link ConstraintFactory#from(Class)} as opposed to
+     * {@link ConstraintFactory#forEach(Class)},
      * a different range of C may be selected.
      * (See {@link ConstraintFactory#from(Class)} Javadoc.)
      * <p>
@@ -207,9 +207,8 @@ public interface BiConstraintStream<A, B> extends ConstraintStream {
      * because it applies hashing and/or indexing on the properties,
      * so it doesn't create nor checks every combination of [A, B] and C.
      * <p>
-     * Note that, if a legacy constraint stream was started using {@link ConstraintFactory#from(Class)}
-     * as opposed to {@link ConstraintFactory#forEach(Class)},
-     * a different range of C may be selected.
+     * Note that, if a legacy constraint stream uses {@link ConstraintFactory#from(Class)} as opposed to
+     * {@link ConstraintFactory#forEach(Class)}, a different range of C may be selected.
      * (See {@link ConstraintFactory#from(Class)} Javadoc.)
      * <p>
      * This method is syntactic sugar for {@link #join(UniConstraintStream, TriJoiner)}.
@@ -303,8 +302,8 @@ public interface BiConstraintStream<A, B> extends ConstraintStream {
      * <p>
      * This method has overloaded methods with multiple {@link TriJoiner} parameters.
      * <p>
-     * Note that, if a legacy constraint stream was started using {@link ConstraintFactory#from(Class)}
-     * as opposed to {@link ConstraintFactory#forEach(Class)},
+     * Note that, if a legacy constraint stream uses {@link ConstraintFactory#from(Class)} as opposed to
+     * {@link ConstraintFactory#forEach(Class)},
      * a different definition of exists applies.
      * (See {@link ConstraintFactory#from(Class)} Javadoc.)
      * 
@@ -389,7 +388,7 @@ public interface BiConstraintStream<A, B> extends ConstraintStream {
      * Create a new {@link BiConstraintStream} for every pair of A and B where C exists for which the {@link TriJoiner}
      * is true (for the properties it extracts from the facts).
      * For classes annotated with {@link org.optaplanner.core.api.domain.entity.PlanningEntity},
-     * this method will also include instances with null variables.
+     * this method also includes instances with null variables.
      * <p>
      * This method has overloaded methods with multiple {@link TriJoiner} parameters.
      *
@@ -476,8 +475,8 @@ public interface BiConstraintStream<A, B> extends ConstraintStream {
      * <p>
      * This method has overloaded methods with multiple {@link TriJoiner} parameters.
      * <p>
-     * Note that, if a legacy constraint stream was started using {@link ConstraintFactory#from(Class)}
-     * as opposed to {@link ConstraintFactory#forEach(Class)},
+     * Note that, if a legacy constraint stream uses {@link ConstraintFactory#from(Class)} as opposed to
+     * {@link ConstraintFactory#forEach(Class)},
      * a different definition of exists applies.
      * (See {@link ConstraintFactory#from(Class)} Javadoc.)
      *
@@ -562,7 +561,7 @@ public interface BiConstraintStream<A, B> extends ConstraintStream {
      * Create a new {@link BiConstraintStream} for every pair of A and B where C does not exist for which the
      * {@link TriJoiner} is true (for the properties it extracts from the facts).
      * For classes annotated with {@link org.optaplanner.core.api.domain.entity.PlanningEntity},
-     * this method will also include instances with null variables.
+     * this method also includes instances with null variables.
      * <p>
      * This method has overloaded methods with multiple {@link TriJoiner} parameters.
      *

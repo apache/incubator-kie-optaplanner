@@ -183,8 +183,8 @@ public interface UniConstraintStream<A> extends ConstraintStream {
      * because it applies hashing and/or indexing on the properties,
      * so it doesn't create nor checks every combination of A and B.
      * <p>
-     * Note that, if a legacy constraint stream was started using {@link ConstraintFactory#from(Class)}
-     * as opposed to {@link ConstraintFactory#forEach(Class)},
+     * Note that, if a legacy constraint stream uses {@link ConstraintFactory#from(Class)} as opposed to
+     * {@link ConstraintFactory#forEach(Class)},
      * a different range of B may be selected.
      * (See {@link ConstraintFactory#from(Class)} Javadoc.)
      * <p>
@@ -207,8 +207,8 @@ public interface UniConstraintStream<A> extends ConstraintStream {
      * because it applies hashing and/or indexing on the properties,
      * so it doesn't create nor checks every combination of A and B.
      * <p>
-     * Note that, if a legacy constraint stream was started using {@link ConstraintFactory#from(Class)}
-     * as opposed to {@link ConstraintFactory#forEach(Class)},
+     * Note that, if a legacy constraint stream uses {@link ConstraintFactory#from(Class)} as opposed to
+     * {@link ConstraintFactory#forEach(Class)},
      * a different range of B may be selected.
      * (See {@link ConstraintFactory#from(Class)} Javadoc.)
      * <p>
@@ -301,8 +301,8 @@ public interface UniConstraintStream<A> extends ConstraintStream {
      * <p>
      * This method has overloaded methods with multiple {@link BiJoiner} parameters.
      * <p>
-     * Note that, if a legacy constraint stream was started using {@link ConstraintFactory#from(Class)}
-     * as opposed to {@link ConstraintFactory#forEach(Class)},
+     * Note that, if a legacy constraint stream uses {@link ConstraintFactory#from(Class)} as opposed to
+     * {@link ConstraintFactory#forEach(Class)},
      * a different definition of exists applies.
      * (See {@link ConstraintFactory#from(Class)} Javadoc.)
      *
@@ -381,7 +381,7 @@ public interface UniConstraintStream<A> extends ConstraintStream {
      * Create a new {@link UniConstraintStream} for every A where B exists for which the {@link BiJoiner} is true
      * (for the properties it extracts from both facts).
      * For classes annotated with {@link org.optaplanner.core.api.domain.entity.PlanningEntity},
-     * this method will also include instances with null variables.
+     * this method also includes instances with null variables.
      * <p>
      * This method has overloaded methods with multiple {@link BiJoiner} parameters.
      *
@@ -463,8 +463,8 @@ public interface UniConstraintStream<A> extends ConstraintStream {
      * Create a new {@link UniConstraintStream} for every A, if another A exists that does not {@link Object#equals(Object)}
      * the first.
      * <p>
-     * Note that, if a legacy constraint stream was started using {@link ConstraintFactory#from(Class)}
-     * as opposed to {@link ConstraintFactory#forEach(Class)},
+     * Note that, if a legacy constraint stream uses {@link ConstraintFactory#from(Class)} as opposed to
+     * {@link ConstraintFactory#forEach(Class)},
      * a different definition of exists applies.
      * (See {@link ConstraintFactory#from(Class)} Javadoc.)
      *
@@ -481,8 +481,8 @@ public interface UniConstraintStream<A> extends ConstraintStream {
      * <p>
      * This method has overloaded methods with multiple {@link BiJoiner} parameters.
      * <p>
-     * Note that, if a legacy constraint stream was started using {@link ConstraintFactory#from(Class)}
-     * as opposed to {@link ConstraintFactory#forEach(Class)},
+     * Note that, if a legacy constraint stream uses {@link ConstraintFactory#from(Class)} as opposed to
+     * {@link ConstraintFactory#forEach(Class)},
      * a different definition of exists applies.
      * (See {@link ConstraintFactory#from(Class)} Javadoc.)
      *
@@ -566,7 +566,7 @@ public interface UniConstraintStream<A> extends ConstraintStream {
      * Create a new {@link UniConstraintStream} for every A, if another A exists that does not {@link Object#equals(Object)}
      * the first.
      * For classes annotated with {@link org.optaplanner.core.api.domain.entity.PlanningEntity},
-     * this method will also include instances with null variables.
+     * this method also includes instances with null variables.
      *
      * @param otherClass never null
      * @return never null, a stream that matches every A where a different A exists
@@ -579,7 +579,7 @@ public interface UniConstraintStream<A> extends ConstraintStream {
      * Create a new {@link UniConstraintStream} for every A, if another A exists that does not {@link Object#equals(Object)}
      * the first, and for which the {@link BiJoiner} is true (for the properties it extracts from both facts).
      * For classes annotated with {@link org.optaplanner.core.api.domain.entity.PlanningEntity},
-     * this method will also include instances with null variables.
+     * this method also includes instances with null variables.
      * <p>
      * This method has overloaded methods with multiple {@link BiJoiner} parameters.
      *
@@ -667,9 +667,10 @@ public interface UniConstraintStream<A> extends ConstraintStream {
      * <p>
      * This method has overloaded methods with multiple {@link BiJoiner} parameters.
      * <p>
-     * Note that, if a legacy constraint stream was started using {@link ConstraintFactory#from(Class)}
-     * as opposed to {@link ConstraintFactory#forEach(Class)},
-     * a different definition of exists applies. (See {@link ConstraintFactory#from(Class)} Javadoc.)
+     * Note that, if a legacy constraint stream uses {@link ConstraintFactory#from(Class)} as opposed to
+     * {@link ConstraintFactory#forEach(Class)},
+     * a different definition of exists applies.
+     * (See {@link ConstraintFactory#from(Class)} Javadoc.)
      *
      * @param otherClass never null
      * @param joiner never null
@@ -751,7 +752,7 @@ public interface UniConstraintStream<A> extends ConstraintStream {
      * Create a new {@link UniConstraintStream} for every A where B does not exist for which the {@link BiJoiner} is
      * true (for the properties it extracts from both facts).
      * For classes annotated with {@link org.optaplanner.core.api.domain.entity.PlanningEntity},
-     * this method will also include instances with null variables.
+     * this method also includes instances with null variables.
      * <p>
      * This method has overloaded methods with multiple {@link BiJoiner} parameters.
      *
@@ -835,8 +836,8 @@ public interface UniConstraintStream<A> extends ConstraintStream {
      * Create a new {@link UniConstraintStream} for every A, if no other A exists that does not {@link Object#equals(Object)}
      * the first.
      * <p>
-     * Note that, if a legacy constraint stream was started using {@link ConstraintFactory#from(Class)}
-     * as opposed to {@link ConstraintFactory#forEach(Class)},
+     * Note that, if a legacy constraint stream uses {@link ConstraintFactory#from(Class)} as opposed to
+     * {@link ConstraintFactory#forEach(Class)},
      * a different definition of exists applies.
      * (See {@link ConstraintFactory#from(Class)} Javadoc.)
      *
@@ -853,8 +854,8 @@ public interface UniConstraintStream<A> extends ConstraintStream {
      * <p>
      * This method has overloaded methods with multiple {@link BiJoiner} parameters.
      * <p>
-     * Note that, if a legacy constraint stream was started using {@link ConstraintFactory#from(Class)}
-     * as opposed to {@link ConstraintFactory#forEach(Class)},
+     * Note that, if a legacy constraint stream uses {@link ConstraintFactory#from(Class)} as opposed to
+     * {@link ConstraintFactory#forEach(Class)},
      * a different definition of exists applies.
      * (See {@link ConstraintFactory#from(Class)} Javadoc.)
      *
@@ -939,7 +940,7 @@ public interface UniConstraintStream<A> extends ConstraintStream {
      * Create a new {@link UniConstraintStream} for every A, if no other A exists that does not {@link Object#equals(Object)}
      * the first.
      * For classes annotated with {@link org.optaplanner.core.api.domain.entity.PlanningEntity},
-     * this method will also include instances with null variables.
+     * this method also includes instances with null variables.
      *
      * @param otherClass never null
      * @return never null, a stream that matches every A where a different A does not exist
@@ -952,7 +953,7 @@ public interface UniConstraintStream<A> extends ConstraintStream {
      * Create a new {@link UniConstraintStream} for every A, if no other A exists that does not {@link Object#equals(Object)}
      * the first, and for which the {@link BiJoiner} is true (for the properties it extracts from both facts).
      * For classes annotated with {@link org.optaplanner.core.api.domain.entity.PlanningEntity},
-     * this method will also include instances with null variables.
+     * this method also includes instances with null variables.
      * <p>
      * This method has overloaded methods with multiple {@link BiJoiner} parameters.
      *

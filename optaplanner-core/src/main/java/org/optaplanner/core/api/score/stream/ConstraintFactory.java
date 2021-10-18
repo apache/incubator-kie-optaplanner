@@ -56,7 +56,7 @@ public interface ConstraintFactory {
      * Start a {@link ConstraintStream} of all instances of the sourceClass
      * that are known as {@link ProblemFactCollectionProperty problem facts} or {@link PlanningEntity planning entities}.
      * <p>
-     * If the sourceClass is a {@link PlanningEntity}, then it will be automatically
+     * If the sourceClass is a {@link PlanningEntity}, then it is automatically
      * {@link UniConstraintStream#filter(Predicate) filtered} to only contain entities
      * for which each genuine {@link PlanningVariable} (of the sourceClass or a superclass thereof) has a non-null value.
      *
@@ -218,11 +218,12 @@ public interface ConstraintFactory {
     // ************************************************************************
 
     /**
-     * When migrating uses of this method to {@link #forEach(Class)}, consider the following:
+     * This method is deprecated.
+     * Migrate uses of this method to {@link #forEach(Class)}, but first understand this:
      *
      * <ul>
      * <li>If none of your {@link PlanningVariable planning variables} are explicitly set to nullable=true,
-     * then this has little to no impact.
+     * then the replacement by {@link #forEach(Class)} has little to no impact.
      * Subsequent conditional propagation calls ({@link UniConstraintStream#ifExists} etc.)
      * will now also filter out planning entities with null variables,
      * consistently with {@link #forEach(Class)} family of methods and with joining.</li>
@@ -241,7 +242,7 @@ public interface ConstraintFactory {
      * Start a {@link ConstraintStream} of all instances of the fromClass
      * that are known as {@link ProblemFactCollectionProperty problem facts} or {@link PlanningEntity planning entities}.
      * <p>
-     * If the fromClass is a {@link PlanningEntity}, then it will be automatically
+     * If the fromClass is a {@link PlanningEntity}, then it is automatically
      * {@link UniConstraintStream#filter(Predicate) filtered} to only contain fully initialized entities,
      * for which each genuine {@link PlanningVariable} (of the fromClass or a superclass thereof) is initialized.
      * This filtering will NOT automatically apply to genuine planning variables of subclass planning entities of the fromClass.
@@ -256,8 +257,10 @@ public interface ConstraintFactory {
     <A> UniConstraintStream<A> from(Class<A> fromClass);
 
     /**
-     * When migrating uses of this method to {@link #forEachIncludingNullVars(Class)},
-     * note that subsequent joins and conditional propagation calls ({@link UniConstraintStream#ifExists} etc.)
+     * This method is deprecated.
+     * Migrate uses of this method to {@link #forEachIncludingNullVars(Class)},
+     * but first understand that subsequent joins and conditional propagation calls
+     * ({@link UniConstraintStream#ifExists} etc.)
      * will now also consistently filter out planning entities with null variables.
      * <p>
      * The original Javadoc of this method follows:
@@ -274,8 +277,9 @@ public interface ConstraintFactory {
     <A> UniConstraintStream<A> fromUnfiltered(Class<A> fromClass);
 
     /**
-     * When migrating uses of this method to {@link #forEachUniquePair(Class)},
-     * note that the same precautions apply as with the use of {@link #from(Class)}.
+     * This method is deprecated.
+     * Migrate uses of this method to {@link #forEachUniquePair(Class)},
+     * but first understand that the same precautions apply as with the use of {@link #from(Class)}.
      * <p>
      * The original Javadoc of this method follows:
      * <p>
@@ -301,8 +305,9 @@ public interface ConstraintFactory {
     }
 
     /**
-     * When migrating uses of this method to {@link #forEachUniquePair(Class, BiJoiner)},
-     * note that the same precautions apply as with the use of {@link #from(Class)}.
+     * This method is deprecated.
+     * Migrate uses of this method to {@link #forEachUniquePair(Class, BiJoiner)},
+     * but first understand that the same precautions apply as with the use of {@link #from(Class)}.
      * <p>
      * The original Javadoc of this method follows:
      * <p>
@@ -330,8 +335,9 @@ public interface ConstraintFactory {
     <A> BiConstraintStream<A, A> fromUniquePair(Class<A> fromClass, BiJoiner<A, A> joiner);
 
     /**
-     * When migrating uses of this method to {@link #forEachUniquePair(Class, BiJoiner, BiJoiner)},
-     * note that the same precautions apply as with the use of {@link #from(Class)}.
+     * This method is deprecated.
+     * Migrate uses of this method to {@link #forEachUniquePair(Class, BiJoiner, BiJoiner)},
+     * but first understand that the same precautions apply as with the use of {@link #from(Class)}.
      * <p>
      * The original Javadoc of this method follows:
      * <p>
@@ -352,8 +358,9 @@ public interface ConstraintFactory {
     }
 
     /**
-     * When migrating uses of this method to {@link #forEachUniquePair(Class, BiJoiner, BiJoiner, BiJoiner)},
-     * note that the same precautions apply as with the use of {@link #from(Class)}.
+     * This method is deprecated.
+     * Migrate uses of this method to {@link #forEachUniquePair(Class, BiJoiner, BiJoiner, BiJoiner)},
+     * but first understand that the same precautions apply as with the use of {@link #from(Class)}.
      * <p>
      * The original Javadoc of this method follows:
      * <p>
@@ -376,8 +383,9 @@ public interface ConstraintFactory {
     }
 
     /**
-     * When migrating uses of this method to {@link #forEachUniquePair(Class, BiJoiner, BiJoiner, BiJoiner, BiJoiner)},
-     * note that the same precautions apply as with the use of {@link #from(Class)}.
+     * This method is deprecated.
+     * Migrate uses of this method to {@link #forEachUniquePair(Class, BiJoiner, BiJoiner, BiJoiner, BiJoiner)},
+     * but first understand that the same precautions apply as with the use of {@link #from(Class)}.
      * <p>
      * The original Javadoc of this method follows:
      * <p>
@@ -401,8 +409,9 @@ public interface ConstraintFactory {
     }
 
     /**
-     * When migrating uses of this method to {@link #forEachUniquePair(Class, BiJoiner...)},
-     * note that the same precautions apply as with the use of {@link #from(Class)}.
+     * This method is deprecated.
+     * Migrate uses of this method to {@link #forEachUniquePair(Class, BiJoiner...)},
+     * but first understand that the same precautions apply as with the use of {@link #from(Class)}.
      * <p>
      * The original Javadoc of this method follows:
      * <p>
