@@ -203,7 +203,7 @@ pipeline {
 
                         // Update the XSDs. OptaPlanner must be cloned and build with the full profile before.
                         String optaplannerRoot = "$WORKSPACE/optaplanner"
-                        String optaplannerWebsiteModule = 'optaplanner-website-main'
+                        String optaplannerWebsiteModule = 'optaplanner-website-root'
                         String optaplannerWebsiteXsd = "$optaplannerWebsiteModule/content/xsd"
                         sh "cp $optaplannerRoot/optaplanner-core/target/classes/solver.xsd $optaplannerWebsiteXsd/solver/solver-8.xsd"
                         sh "cp $optaplannerRoot/optaplanner-benchmark/target/classes/benchmark.xsd $optaplannerWebsiteXsd/benchmark/benchmark-8.xsd"
