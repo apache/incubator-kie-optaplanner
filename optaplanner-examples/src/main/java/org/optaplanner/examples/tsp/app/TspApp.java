@@ -16,7 +16,7 @@
 
 package org.optaplanner.examples.tsp.app;
 
-import java.util.HashSet;
+import java.util.Collections;
 import java.util.Set;
 
 import org.optaplanner.examples.common.app.CommonApp;
@@ -30,6 +30,7 @@ import org.optaplanner.examples.tsp.persistence.TspImageStipplerImporter;
 import org.optaplanner.examples.tsp.persistence.TspImporter;
 import org.optaplanner.examples.tsp.persistence.TspXmlSolutionFileIO;
 import org.optaplanner.examples.tsp.swingui.TspPanel;
+import org.optaplanner.examples.vehiclerouting.persistence.VehicleRoutingImporter;
 import org.optaplanner.persistence.common.api.domain.solution.SolutionFileIO;
 
 public class TspApp extends CommonApp<TspSolution> {
@@ -63,21 +64,18 @@ public class TspApp extends CommonApp<TspSolution> {
     }
 
     @Override
-    protected AbstractSolutionImporter[] createSolutionImporters() {
-        return new AbstractSolutionImporter[] {
+    protected Set<AbstractSolutionImporter<TspSolution>> createSolutionImporters() {
+        return Set.of(
                 new TspImporter(),
-                new TspImageStipplerImporter()
-        };
+                new TspImageStipplerImporter());
     }
 
     @Override
-    protected Set<AbstractSolutionExporter> createSolutionExporters() {
-        Set<AbstractSolutionExporter> exporters = new HashSet<>();
-        exporters.add(new TspExporter());
-        exporters.add(new SvgTspPathExporter());
-        exporters.add(new SvgTspLineAndCircleExporter());
-
-        return exporters;
+    protected Set<AbstractSolutionExporter<TspSolution>> createSolutionExporters() {
+        return Set.of(
+                new TspExporter(),
+                new SvgTspPathExporter(),
+                new SvgTspLineAndCircleExporter());
     }
 
 }

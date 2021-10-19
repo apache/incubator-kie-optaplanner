@@ -67,12 +67,12 @@ public class SolutionBusiness<Solution_, Score_ extends Score<Score_>> {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(SolutionBusiness.class);
 
-    private final CommonApp app;
+    private final CommonApp<Solution_> app;
     private File dataDir;
     private SolutionFileIO<Solution_> solutionFileIO;
 
-    private AbstractSolutionImporter<Solution_>[] importers;
-    private Set<AbstractSolutionExporter> exporters;
+    private Set<AbstractSolutionImporter<Solution_>> importers;
+    private Set<AbstractSolutionExporter<Solution_>> exporters;
 
     private File importDataDir;
     private File unsolvedDataDir;
@@ -87,7 +87,7 @@ public class SolutionBusiness<Solution_, Score_ extends Score<Score_>> {
 
     private final AtomicReference<Solution_> skipToBestSolutionRef = new AtomicReference<>();
 
-    public SolutionBusiness(CommonApp app) {
+    public SolutionBusiness(CommonApp<Solution_> app) {
         this.app = app;
     }
 
@@ -119,15 +119,15 @@ public class SolutionBusiness<Solution_, Score_ extends Score<Score_>> {
         this.solutionFileIO = solutionFileIO;
     }
 
-    public AbstractSolutionImporter<Solution_>[] getImporters() {
+    public Set<AbstractSolutionImporter<Solution_>> getImporters() {
         return importers;
     }
 
-    public void setImporters(AbstractSolutionImporter<Solution_>[] importers) {
+    public void setImporters(Set<AbstractSolutionImporter<Solution_>> importers) {
         this.importers = importers;
     }
 
-    public void setExporters(Set<AbstractSolutionExporter> exporters) {
+    public void setExporters(Set<AbstractSolutionExporter<Solution_>> exporters) {
         if (exporters == null) {
             throw new IllegalArgumentException("Passed exporters must not be null");
         }
@@ -138,12 +138,12 @@ public class SolutionBusiness<Solution_, Score_ extends Score<Score_>> {
         this.exporters.add(exporter);
     }
 
-    public Set<AbstractSolutionExporter> getExporters() {
+    public Set<AbstractSolutionExporter<Solution_>> getExporters() {
         return this.exporters;
     }
 
     public boolean hasImporter() {
-        return importers.length > 0;
+        return !importers.isEmpty();
     }
 
     public boolean hasExporter() {
@@ -296,7 +296,9 @@ public class SolutionBusiness<Solution_, Score_ extends Score<Score_>> {
                 return importer;
             }
         }
-        return importers[0];
+        return importers.stream()
+                .findFirst()
+                .orElseThrow();
     }
 
     public void openSolution(File file) {
