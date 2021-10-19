@@ -28,7 +28,6 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.config.solver.monitoring.SolverMetric;
 import org.optaplanner.core.impl.phase.event.PhaseLifecycleListener;
@@ -43,6 +42,7 @@ import io.micrometer.core.instrument.Meter;
 import io.micrometer.core.instrument.Tags;
 import io.micrometer.core.instrument.search.Search;
 import io.micrometer.core.instrument.simple.SimpleMeterRegistry;
+import org.optaplanner.core.impl.util.Pair;
 
 public class StatisticRegistry<Solution_> extends SimpleMeterRegistry
         implements PhaseLifecycleListener<Solution_> {
@@ -119,13 +119,13 @@ public class StatisticRegistry<Solution_> extends SimpleMeterRegistry
     public void extractConstraintSummariesFromMeters(SolverMetric metric, Tags runId,
             Consumer<ConstraintSummary<?>> constraintMatchTotalConsumer) {
         Set<Meter.Id> meterIds = getMeterIds(metric, runId);
-        Set<ImmutablePair<String, String>> constraintPackageNamePairs = new HashSet<>();
+        Set<Pair<String, String>> constraintPackageNamePairs = new HashSet<>();
         // Add the constraint ids from the meter ids
         meterIds.forEach(meterId -> constraintPackageNamePairs
-                .add(ImmutablePair.of(meterId.getTag("constraint.package"), meterId.getTag("constraint.name"))));
+                .add(Pair.of(meterId.getTag("constraint.package"), meterId.getTag("constraint.name"))));
         constraintPackageNamePairs.forEach(constraintPackageNamePair -> {
-            String constraintPackage = constraintPackageNamePair.left;
-            String constraintName = constraintPackageNamePair.right;
+            String constraintPackage = constraintPackageNamePair.getKey();
+            String constraintName = constraintPackageNamePair.getValue();
             Tags constraintMatchTotalRunId = runId.and("constraint.package", constraintPackage)
                     .and("constraint.name", constraintName);
             // Get the score from the corresponding constraint package and constraint name meters
