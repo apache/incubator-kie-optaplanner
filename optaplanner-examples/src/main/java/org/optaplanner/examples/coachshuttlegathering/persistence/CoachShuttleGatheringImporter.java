@@ -29,7 +29,6 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.io.FilenameUtils;
 import org.optaplanner.examples.coachshuttlegathering.app.CoachShuttleGatheringApp;
 import org.optaplanner.examples.coachshuttlegathering.domain.Bus;
 import org.optaplanner.examples.coachshuttlegathering.domain.BusHub;
@@ -107,7 +106,7 @@ public class CoachShuttleGatheringImporter extends AbstractTxtSolutionImporter<C
 
         @Override
         public String getInputId() {
-            return FilenameUtils.getBaseName(inputFile.getParentFile().getPath());
+            return getBaseFileName(inputFile.getParentFile());
         }
 
         private void readLocationList() throws IOException {

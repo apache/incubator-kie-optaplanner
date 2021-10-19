@@ -364,7 +364,7 @@ public class SolverAndPersistenceFrame<Solution_> extends JFrame {
         }
 
         @Override
-        protected Solution_ doInBackground() throws Exception {
+        protected Solution_ doInBackground() {
             return solutionBusiness.solve(problem);
         }
 

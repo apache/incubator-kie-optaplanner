@@ -23,7 +23,6 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.io.FilenameUtils;
 import org.optaplanner.examples.common.persistence.AbstractTxtSolutionImporter;
 import org.optaplanner.examples.common.persistence.SolutionConverter;
 import org.optaplanner.examples.vehiclerouting.app.VehicleRoutingApp;
@@ -90,7 +89,7 @@ public class VehicleRoutingImporter extends AbstractTxtSolutionImporter<VehicleR
                 timewindowed = false;
                 solution = new VehicleRoutingSolution();
                 solution.setId(0L);
-                solution.setName(FilenameUtils.getBaseName(inputFile.getName()));
+                solution.setName(getBaseFileName(inputFile));
                 String[] tokens = splitBySpacesOrTabs(firstLine, 3);
                 customerListSize = Integer.parseInt(tokens[0]);
                 vehicleListSize = Integer.parseInt(tokens[1]);

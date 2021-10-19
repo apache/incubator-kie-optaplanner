@@ -25,7 +25,6 @@ import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.commons.io.FilenameUtils;
 import org.optaplanner.examples.cheaptime.app.CheapTimeApp;
 import org.optaplanner.examples.cheaptime.domain.CheapTimeSolution;
 import org.optaplanner.examples.cheaptime.domain.Machine;
@@ -168,7 +167,7 @@ public class CheapTimeImporter extends AbstractTxtSolutionImporter<CheapTimeSolu
 
         @Override
         public String getInputId() {
-            return FilenameUtils.getBaseName(inputFile.getParentFile().getPath());
+            return getBaseFileName(inputFile.getParentFile());
         }
 
         private void readResourceList() throws IOException {

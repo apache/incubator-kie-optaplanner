@@ -22,7 +22,6 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
-import org.apache.commons.io.FilenameUtils;
 import org.jdom.Document;
 import org.jdom.Element;
 import org.jdom.JDOMException;
@@ -85,7 +84,7 @@ public abstract class AbstractXmlSolutionImporter<Solution_> extends AbstractSol
         // ************************************************************************
 
         public String getInputId() {
-            return FilenameUtils.getBaseName(inputFile.getPath());
+            return getBaseFileName(inputFile);
         }
 
         protected void assertElementName(Element element, String name) {

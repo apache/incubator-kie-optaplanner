@@ -22,7 +22,6 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
-import org.apache.commons.io.FilenameUtils;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
@@ -82,7 +81,7 @@ public abstract class AbstractXlsxSolutionImporter<Solution_> extends AbstractSo
         // ************************************************************************
 
         public String getInputId() {
-            return FilenameUtils.getBaseName(inputFile.getPath());
+            return getBaseFileName(inputFile);
         }
 
         protected XSSFSheet readSheet(int index, String name) {

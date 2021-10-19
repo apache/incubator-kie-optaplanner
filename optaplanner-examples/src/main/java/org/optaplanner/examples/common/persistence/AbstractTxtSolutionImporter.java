@@ -25,7 +25,6 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.commons.io.FilenameUtils;
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
 
 /**
@@ -98,7 +97,7 @@ public abstract class AbstractTxtSolutionImporter<Solution_> extends AbstractSol
         // ************************************************************************
 
         public String getInputId() {
-            return FilenameUtils.getBaseName(inputFile.getPath());
+            return getBaseFileName(inputFile);
         }
 
         // ************************************************************************

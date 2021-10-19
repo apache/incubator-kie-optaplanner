@@ -22,7 +22,6 @@ import java.io.IOException;
 
 import javax.imageio.ImageIO;
 
-import org.apache.commons.io.FilenameUtils;
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
 
 /**
@@ -78,7 +77,7 @@ public abstract class AbstractPngSolutionImporter<Solution_> extends AbstractSol
         // ************************************************************************
 
         public String getInputId() {
-            return FilenameUtils.getBaseName(inputFile.getPath());
+            return getBaseFileName(inputFile);
         }
     }
 

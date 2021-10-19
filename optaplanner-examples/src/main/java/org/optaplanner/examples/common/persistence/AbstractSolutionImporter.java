@@ -45,6 +45,16 @@ public abstract class AbstractSolutionImporter<Solution_> extends LoggingMain {
 
     public static abstract class InputBuilder extends LoggingMain {
 
+        protected String getBaseFileName(File file) {
+            String name = file.getName();
+            int indexOfLastDot = name.lastIndexOf('.');
+            if (indexOfLastDot > 0) {
+                return name.substring(0, indexOfLastDot);
+            } else {
+                return name;
+            }
+        }
+
     }
 
     public static BigInteger factorial(int base) {
