@@ -36,13 +36,13 @@ import org.optaplanner.core.impl.phase.scope.AbstractStepScope;
 import org.optaplanner.core.impl.score.definition.ScoreDefinition;
 import org.optaplanner.core.impl.solver.DefaultSolver;
 import org.optaplanner.core.impl.solver.scope.SolverScope;
+import org.optaplanner.core.impl.util.Pair;
 
 import io.micrometer.core.instrument.Gauge;
 import io.micrometer.core.instrument.Meter;
 import io.micrometer.core.instrument.Tags;
 import io.micrometer.core.instrument.search.Search;
 import io.micrometer.core.instrument.simple.SimpleMeterRegistry;
-import org.optaplanner.core.impl.util.Pair;
 
 public class StatisticRegistry<Solution_> extends SimpleMeterRegistry
         implements PhaseLifecycleListener<Solution_> {

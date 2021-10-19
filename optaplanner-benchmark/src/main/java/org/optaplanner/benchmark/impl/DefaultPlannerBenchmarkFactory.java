@@ -81,7 +81,8 @@ public class DefaultPlannerBenchmarkFactory extends PlannerBenchmarkFactory {
         plannerBenchmarkResult.setAggregation(false);
         int parallelBenchmarkCount = resolveParallelBenchmarkCount();
         plannerBenchmarkResult.setParallelBenchmarkCount(parallelBenchmarkCount);
-        plannerBenchmarkResult.setWarmUpTimeMillisSpentLimit(Objects.requireNonNullElse(calculateWarmUpTimeMillisSpentLimit(), 30L));
+        plannerBenchmarkResult
+                .setWarmUpTimeMillisSpentLimit(Objects.requireNonNullElse(calculateWarmUpTimeMillisSpentLimit(), 30L));
         plannerBenchmarkResult.setUnifiedProblemBenchmarkResultList(new ArrayList<>());
         plannerBenchmarkResult.setSolverBenchmarkResultList(new ArrayList<>(effectiveSolverBenchmarkConfigList.size()));
         for (SolverBenchmarkConfig solverBenchmarkConfig : effectiveSolverBenchmarkConfigList) {
