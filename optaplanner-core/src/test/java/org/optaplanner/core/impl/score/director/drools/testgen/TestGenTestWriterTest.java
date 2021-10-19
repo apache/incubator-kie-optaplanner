@@ -33,7 +33,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import org.apache.commons.lang3.StringUtils;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Timeout;
 import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
@@ -121,8 +120,8 @@ public class TestGenTestWriterTest {
         List<String> expectedLines = Files.readAllLines(expected, StandardCharsets.UTF_8);
         List<String> actualLines = new BufferedReader(new StringReader(actual)).lines().collect(Collectors.toList());
         for (int i = 0; i < Math.min(expectedLines.size(), actualLines.size()); i++) {
-            String expectedLine = StringUtils.replace(expectedLines.get(i),
-                    DRL_FILE_PLACEHOLDER, new File(DRL_FILE_PATH).getAbsolutePath());
+            String expectedLine = expectedLines.get(i).replaceAll("\\Q" + DRL_FILE_PLACEHOLDER + "\\E",
+                    new File(DRL_FILE_PATH).getAbsolutePath());
             assertThat(actualLines.get(i))
                     .withFailMessage("At line " + (i + 1))
                     .isEqualTo(expectedLine);
@@ -132,8 +131,8 @@ public class TestGenTestWriterTest {
         assertThat(actualLines).hasSameSizeAs(expectedLines);
 
         // finally check the whole string
-        String expectedString = StringUtils.replace(Files.readString(expected, StandardCharsets.UTF_8),
-                DRL_FILE_PLACEHOLDER, new File(DRL_FILE_PATH).getAbsolutePath());
+        String expectedString = Files.readString(expected, StandardCharsets.UTF_8)
+                .replaceAll("\\Q" + DRL_FILE_PLACEHOLDER + "\\E", new File(DRL_FILE_PATH).getAbsolutePath());
         assertThat(actual).isEqualTo(expectedString);
     }
 
