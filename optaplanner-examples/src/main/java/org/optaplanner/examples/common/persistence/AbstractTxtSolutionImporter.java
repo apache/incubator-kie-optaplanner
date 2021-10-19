@@ -26,6 +26,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
+import org.optaplanner.examples.common.business.SolutionBusiness;
 
 /**
  * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
@@ -97,7 +98,7 @@ public abstract class AbstractTxtSolutionImporter<Solution_> extends AbstractSol
         // ************************************************************************
 
         public String getInputId() {
-            return getBaseFileName(inputFile);
+            return SolutionBusiness.getBaseFileName(inputFile);
         }
 
         // ************************************************************************

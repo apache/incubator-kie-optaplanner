@@ -27,6 +27,7 @@ import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
+import org.optaplanner.examples.common.business.SolutionBusiness;
 
 /**
  * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
@@ -81,7 +82,7 @@ public abstract class AbstractXlsxSolutionImporter<Solution_> extends AbstractSo
         // ************************************************************************
 
         public String getInputId() {
-            return getBaseFileName(inputFile);
+            return SolutionBusiness.getBaseFileName(inputFile);
         }
 
         protected XSSFSheet readSheet(int index, String name) {

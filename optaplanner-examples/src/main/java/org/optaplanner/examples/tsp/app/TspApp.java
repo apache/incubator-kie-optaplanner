@@ -16,7 +16,6 @@
 
 package org.optaplanner.examples.tsp.app;
 
-import java.util.Collections;
 import java.util.Set;
 
 import org.optaplanner.examples.common.app.CommonApp;
@@ -30,7 +29,6 @@ import org.optaplanner.examples.tsp.persistence.TspImageStipplerImporter;
 import org.optaplanner.examples.tsp.persistence.TspImporter;
 import org.optaplanner.examples.tsp.persistence.TspXmlSolutionFileIO;
 import org.optaplanner.examples.tsp.swingui.TspPanel;
-import org.optaplanner.examples.vehiclerouting.persistence.VehicleRoutingImporter;
 import org.optaplanner.persistence.common.api.domain.solution.SolutionFileIO;
 
 public class TspApp extends CommonApp<TspSolution> {

@@ -38,6 +38,7 @@ import org.optaplanner.examples.coachshuttlegathering.domain.CoachShuttleGatheri
 import org.optaplanner.examples.coachshuttlegathering.domain.Shuttle;
 import org.optaplanner.examples.coachshuttlegathering.domain.location.RoadLocation;
 import org.optaplanner.examples.coachshuttlegathering.domain.location.RoadLocationArc;
+import org.optaplanner.examples.common.business.SolutionBusiness;
 import org.optaplanner.examples.common.persistence.AbstractTxtSolutionImporter;
 import org.optaplanner.examples.common.persistence.SolutionConverter;
 
@@ -106,7 +107,7 @@ public class CoachShuttleGatheringImporter extends AbstractTxtSolutionImporter<C
 
         @Override
         public String getInputId() {
-            return getBaseFileName(inputFile.getParentFile());
+            return SolutionBusiness.getBaseFileName(inputFile.getParentFile());
         }
 
         private void readLocationList() throws IOException {

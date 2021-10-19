@@ -19,6 +19,10 @@ package org.optaplanner.examples.common.business;
 import static java.util.stream.Collectors.toList;
 
 import java.io.File;
+import java.io.IOException;
+import java.nio.file.FileVisitOption;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -27,7 +31,6 @@ import java.util.concurrent.atomic.AtomicReference;
 
 import javax.swing.SwingUtilities;
 
-import org.apache.commons.io.FileUtils;
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.ScoreManager;
@@ -62,6 +65,19 @@ import org.slf4j.LoggerFactory;
  * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
  */
 public class SolutionBusiness<Solution_, Score_ extends Score<Score_>> {
+
+    public static String getBaseFileName(File file) {
+        return getBaseFileName(file.getName());
+    }
+
+    public static String getBaseFileName(String name) {
+        int indexOfLastDot = name.lastIndexOf('.');
+        if (indexOfLastDot > 0) {
+            return name.substring(0, indexOfLastDot);
+        } else {
+            return name;
+        }
+    }
 
     private static final ProblemFileComparator FILE_COMPARATOR = new ProblemFileComparator();
 
@@ -202,17 +218,24 @@ public class SolutionBusiness<Solution_, Score_ extends Score<Score_>> {
     }
 
     public List<File> getUnsolvedFileList() {
-        List<File> fileList = new ArrayList<>(
-                FileUtils.listFiles(unsolvedDataDir, new String[] { solutionFileIO.getInputFileExtension() }, true));
-        fileList.sort(FILE_COMPARATOR);
-        return fileList;
+        return getFileList(unsolvedDataDir, solutionFileIO.getInputFileExtension());
+    }
+
+    private List<File> getFileList(File dataDir, String extension) {
+        try {
+            return Files.walk(dataDir.toPath(), FileVisitOption.FOLLOW_LINKS)
+                    .filter(Files::isRegularFile)
+                    .filter(path -> path.toString().endsWith("." + extension))
+                    .map(Path::toFile)
+                    .sorted(FILE_COMPARATOR)
+                    .collect(toList());
+        } catch (IOException e) {
+            throw new IllegalStateException("Error while crawling data directory (" + dataDir + ").", e);
+        }
     }
 
     public List<File> getSolvedFileList() {
-        List<File> fileList = new ArrayList<>(
-                FileUtils.listFiles(solvedDataDir, new String[] { solutionFileIO.getOutputFileExtension() }, true));
-        fileList.sort(FILE_COMPARATOR);
-        return fileList;
+        return getFileList(solvedDataDir, solutionFileIO.getOutputFileExtension());
     }
 
     public Solution_ getSolution() {

@@ -27,6 +27,7 @@ import org.jdom.Element;
 import org.jdom.JDOMException;
 import org.jdom.input.SAXBuilder;
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
+import org.optaplanner.examples.common.business.SolutionBusiness;
 
 /**
  * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
@@ -84,7 +85,7 @@ public abstract class AbstractXmlSolutionImporter<Solution_> extends AbstractSol
         // ************************************************************************
 
         public String getInputId() {
-            return getBaseFileName(inputFile);
+            return SolutionBusiness.getBaseFileName(inputFile);
         }
 
         protected void assertElementName(Element element, String name) {
