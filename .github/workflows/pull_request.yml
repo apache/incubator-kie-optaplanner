@@ -37,37 +37,14 @@ jobs:
       cancel-in-progress: true
     strategy:
       matrix:
-        os: [ ubuntu-latest, windows-latest ]
-        java-version: [ 11, 17 ]
+        os: [ ubuntu-latest ]
+        java-version: [ 17 ]
         maven-version: ['3.8.1']
       fail-fast: false
     runs-on: ${{ matrix.os }}
     name: Maven Build
     timeout-minutes: 120
     steps:
-      - name: Support longpaths
-        if: ${{ matrix.os == 'windows-latest' }}
-        run: git config --system core.longpaths true
-      - name: Disk space report before modification
-        if: ${{ matrix.os == 'ubuntu-latest' }}
-        shell: bash
-        run: |
-          echo "Available storage:"
-          df -h
-      # Inspired to maximize-build-space action https://github.com/easimon/maximize-build-space
-      - name: Free disk space (remove dotnet, android and haskell)
-        if: ${{ matrix.os == 'ubuntu-latest' }}
-        shell: bash
-        run: |
-          sudo rm -rf /usr/share/dotnet
-          sudo rm -rf /usr/local/lib/android
-          sudo rm -rf /opt/ghc
-      - name: Disk space report after modification
-        if: ${{ matrix.os == 'ubuntu-latest' }}
-        shell: bash
-        run: |
-          echo "Available storage:"
-          df -h
       - name: Setup Maven And Java Version
         uses: s4u/setup-maven-action@v1.2.1
         with:
