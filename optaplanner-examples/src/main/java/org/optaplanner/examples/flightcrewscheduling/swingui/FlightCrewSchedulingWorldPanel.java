@@ -26,7 +26,6 @@ import java.awt.image.BufferedImage;
 
 import javax.swing.JPanel;
 
-import org.apache.commons.lang3.StringUtils;
 import org.optaplanner.examples.common.swingui.latitudelongitude.LatitudeLongitudeTranslator;
 import org.optaplanner.examples.flightcrewscheduling.domain.Airport;
 import org.optaplanner.examples.flightcrewscheduling.domain.Flight;
@@ -75,7 +74,7 @@ public class FlightCrewSchedulingWorldPanel extends JPanel {
             int x = translator.translateLongitudeToX(airport.getLongitude());
             int y = translator.translateLatitudeToY(airport.getLatitude());
             g.fillRect(x - 1, y - 1, 3, 3);
-            g.drawString(StringUtils.abbreviate(airport.getCode(), 20), x + 3, y - 3);
+            g.drawString(airport.getCode(), x + 3, y - 3);
         }
         g.setColor(TangoColorFactory.CHOCOLATE_1);
         for (Flight flight : solution.getFlightList()) {

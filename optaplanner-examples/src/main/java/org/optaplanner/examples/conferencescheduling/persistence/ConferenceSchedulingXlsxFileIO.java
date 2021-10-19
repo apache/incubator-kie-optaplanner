@@ -92,7 +92,7 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
-import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.text.WordUtils;
 import org.apache.poi.ss.usermodel.ClientAnchor;
 import org.apache.poi.ss.usermodel.Comment;
 import org.apache.poi.ss.usermodel.Workbook;
@@ -1561,9 +1561,11 @@ public class ConferenceSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<C
                     }
                     boolean unavailable = room.getUnavailableTimeslotSet().contains(timeslot)
                             || disjoint(room.getTalkTypeSet(), timeslot.getTalkTypeSet());
-                    nextTalkListCell(unavailable, talkList, talk -> StringUtils.abbreviate(talk.getTitle(), 50) + "\n"
-                            + StringUtils.abbreviate(
-                                    talk.getSpeakerList().stream().map(Speaker::getName).collect(joining(", ")), 30),
+                    nextTalkListCell(unavailable, talkList,
+                            talk -> WordUtils.abbreviate(talk.getTitle(), 50, -1, "...") + "\n" +
+                                    WordUtils.abbreviate(
+                                            talk.getSpeakerList().stream().map(Speaker::getName).collect(joining(", ")), 30, -1,
+                                            "..."),
                             true);
                     mergePreviousTimeslot = talkList.isEmpty() ? null : timeslot;
                     mergeStart = currentRowNumber;
