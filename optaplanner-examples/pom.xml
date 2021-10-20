@@ -81,6 +81,11 @@
   <dependencyManagement>
     <dependencies>
       <dependency>
+        <groupId>org.apache.commons</groupId>
+        <artifactId>commons-text</artifactId>
+        <version>${version.org.apache.commons.text}</version>
+      </dependency>
+      <dependency>
         <groupId>org.jdom</groupId>
         <artifactId>jdom</artifactId>
         <version>${version.org.jdom}</version>

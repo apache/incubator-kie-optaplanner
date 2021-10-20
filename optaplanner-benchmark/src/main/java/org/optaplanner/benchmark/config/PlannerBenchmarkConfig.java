@@ -16,8 +16,6 @@
 
 package org.optaplanner.benchmark.config;
 
-import static freemarker.template.Configuration.*;
-
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -453,7 +451,7 @@ public class PlannerBenchmarkConfig {
      */
     public static PlannerBenchmarkConfig createFromFreemarkerXmlReader(Reader templateReader, Object model,
             ClassLoader classLoader) {
-        Configuration freemarkerConfiguration = new Configuration(VERSION_2_3_31);
+        Configuration freemarkerConfiguration = new Configuration(Configuration.VERSION_2_3_31);
         freemarkerConfiguration.setDefaultEncoding("UTF-8");
         // Write each number according to Java language spec (as expected by XStream), so not formatted by locale
         freemarkerConfiguration.setNumberFormat("computer");

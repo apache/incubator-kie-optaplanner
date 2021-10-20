@@ -28,6 +28,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.stream.Stream;
 
 import javax.swing.SwingUtilities;
 
@@ -222,9 +223,8 @@ public class SolutionBusiness<Solution_, Score_ extends Score<Score_>> {
     }
 
     private List<File> getFileList(File dataDir, String extension) {
-        try {
-            return Files.walk(dataDir.toPath(), FileVisitOption.FOLLOW_LINKS)
-                    .filter(Files::isRegularFile)
+        try (Stream<Path> paths = Files.walk(dataDir.toPath(), FileVisitOption.FOLLOW_LINKS)) {
+            return paths.filter(Files::isRegularFile)
                     .filter(path -> path.toString().endsWith("." + extension))
                     .map(Path::toFile)
                     .sorted(FILE_COMPARATOR)

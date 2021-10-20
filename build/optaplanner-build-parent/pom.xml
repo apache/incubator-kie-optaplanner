@@ -186,11 +186,6 @@
         <version>${version.org.apache.commons.math3}</version>
       </dependency>
       <dependency>
-        <groupId>org.apache.commons</groupId>
-        <artifactId>commons-text</artifactId>
-        <version>${version.org.apache.commons.text}</version>
-      </dependency>
-      <dependency>
         <groupId>org.freemarker</groupId>
         <artifactId>freemarker</artifactId>
         <version>${version.org.freemarker}</version>

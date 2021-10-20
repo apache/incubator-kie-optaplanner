@@ -33,6 +33,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.assertj.core.api.SoftAssertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Timeout;
 import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
@@ -118,14 +119,20 @@ public class TestGenTestWriterTest {
     private static void checkOutput(Path expected, String actual) throws IOException {
         // first detect different lines
         List<String> expectedLines = Files.readAllLines(expected, StandardCharsets.UTF_8);
-        List<String> actualLines = new BufferedReader(new StringReader(actual)).lines().collect(Collectors.toList());
-        for (int i = 0; i < Math.min(expectedLines.size(), actualLines.size()); i++) {
-            String expectedLine = expectedLines.get(i).replaceAll("\\Q" + DRL_FILE_PLACEHOLDER + "\\E",
-                    new File(DRL_FILE_PATH).getAbsolutePath());
-            assertThat(actualLines.get(i))
-                    .withFailMessage("At line " + (i + 1))
-                    .isEqualTo(expectedLine);
-        }
+        List<String> actualLines = actual.lines().collect(Collectors.toList());
+        SoftAssertions.assertSoftly(softly -> {
+            for (int i = 0; i < Math.min(expectedLines.size(), actualLines.size()); i++) {
+                String expectedLine = expectedLines.get(i)
+                        .replaceAll("\\Q" + DRL_FILE_PLACEHOLDER + "\\E",
+                                new File(DRL_FILE_PATH).getAbsolutePath());
+                softly.assertThat(actualLines.get(i))
+                        .withFailMessage("Mismatch at line %d.\n" +
+                                        "  Expected: '%s'.\n" +
+                                        "   But was: '%s'.", i + 1,
+                                expected, actualLines.get(i))
+                        .isEqualTo(expectedLine);
+            }
+        });
 
         // then check line counts are the same
         assertThat(actualLines).hasSameSizeAs(expectedLines);
