@@ -17,10 +17,8 @@ package org.optaplanner.core.impl.score.director.drools.testgen;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
-import java.io.StringReader;
 import java.io.StringWriter;
 import java.net.URISyntaxException;
 import java.net.URL;
@@ -127,8 +125,8 @@ public class TestGenTestWriterTest {
                                 new File(DRL_FILE_PATH).getAbsolutePath());
                 softly.assertThat(actualLines.get(i))
                         .withFailMessage("Mismatch at line %d.\n" +
-                                        "  Expected: '%s'.\n" +
-                                        "   But was: '%s'.", i + 1,
+                                "  Expected: '%s'.\n" +
+                                "   But was: '%s'.", i + 1,
                                 expected, actualLines.get(i))
                         .isEqualTo(expectedLine);
             }
