@@ -31,6 +31,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.apache.commons.lang3.StringUtils;
 import org.assertj.core.api.SoftAssertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Timeout;
@@ -120,9 +121,8 @@ public class TestGenTestWriterTest {
         List<String> actualLines = actual.lines().collect(Collectors.toList());
         SoftAssertions.assertSoftly(softly -> {
             for (int i = 0; i < Math.min(expectedLines.size(), actualLines.size()); i++) {
-                String expectedLine = expectedLines.get(i)
-                        .replaceAll("\\Q" + DRL_FILE_PLACEHOLDER + "\\E",
-                                new File(DRL_FILE_PATH).getAbsolutePath());
+                String expectedLine = StringUtils.replace(expectedLines.get(i), DRL_FILE_PLACEHOLDER,
+                        new File(DRL_FILE_PATH).getAbsolutePath());
                 softly.assertThat(actualLines.get(i))
                         .withFailMessage("Mismatch at line %d.\n" +
                                 "  Expected: '%s'.\n" +
@@ -136,8 +136,8 @@ public class TestGenTestWriterTest {
         assertThat(actualLines).hasSameSizeAs(expectedLines);
 
         // finally check the whole string
-        String expectedString = Files.readString(expected, StandardCharsets.UTF_8)
-                .replaceAll("\\Q" + DRL_FILE_PLACEHOLDER + "\\E", new File(DRL_FILE_PATH).getAbsolutePath());
+        String expectedString = StringUtils.replace(Files.readString(expected, StandardCharsets.UTF_8), DRL_FILE_PLACEHOLDER,
+                new File(DRL_FILE_PATH).getAbsolutePath());
         assertThat(actual).isEqualTo(expectedString);
     }
 
