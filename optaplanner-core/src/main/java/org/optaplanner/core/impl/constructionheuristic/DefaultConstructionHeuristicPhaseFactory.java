@@ -16,8 +16,11 @@
 
 package org.optaplanner.core.impl.constructionheuristic;
 
+import java.util.Collection;
+import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.ThreadFactory;
+import java.util.stream.Collectors;
 
 import org.optaplanner.core.config.constructionheuristic.ConstructionHeuristicPhaseConfig;
 import org.optaplanner.core.config.constructionheuristic.ConstructionHeuristicType;
@@ -29,6 +32,8 @@ import org.optaplanner.core.config.constructionheuristic.placer.QueuedValuePlace
 import org.optaplanner.core.config.heuristic.selector.move.MoveSelectorConfig;
 import org.optaplanner.core.config.heuristic.selector.move.composite.CartesianProductMoveSelectorConfig;
 import org.optaplanner.core.config.heuristic.selector.move.composite.UnionMoveSelectorConfig;
+import org.optaplanner.core.config.heuristic.selector.move.generic.ChangeMoveSelectorConfig;
+import org.optaplanner.core.config.heuristic.selector.value.ValueSelectorConfig;
 import org.optaplanner.core.config.solver.EnvironmentMode;
 import org.optaplanner.core.config.util.ConfigUtils;
 import org.optaplanner.core.impl.constructionheuristic.decider.ConstructionHeuristicDecider;
@@ -40,6 +45,8 @@ import org.optaplanner.core.impl.constructionheuristic.placer.EntityPlacerFactor
 import org.optaplanner.core.impl.constructionheuristic.placer.PooledEntityPlacerFactory;
 import org.optaplanner.core.impl.constructionheuristic.placer.QueuedEntityPlacerFactory;
 import org.optaplanner.core.impl.constructionheuristic.placer.QueuedValuePlacerFactory;
+import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
+import org.optaplanner.core.impl.domain.variable.descriptor.GenuineVariableDescriptor;
 import org.optaplanner.core.impl.heuristic.HeuristicConfigPolicy;
 import org.optaplanner.core.impl.phase.AbstractPhaseFactory;
 import org.optaplanner.core.impl.solver.recaller.BestSolutionRecaller;
@@ -71,9 +78,22 @@ public class DefaultConstructionHeuristicPhaseFactory<Solution_>
         phaseConfigPolicy.setValueSorterManner(phaseConfig.getValueSorterManner() != null ? phaseConfig.getValueSorterManner()
                 : constructionHeuristicType_.getDefaultValueSorterManner());
         EntityPlacerConfig entityPlacerConfig_;
+        List<GenuineVariableDescriptor<Solution_>> listVariableDescriptors = findListVariableDescriptors(solverConfigPolicy);
         if (phaseConfig.getEntityPlacerConfig() == null) {
-            entityPlacerConfig_ = buildUnfoldedEntityPlacerConfig(phaseConfigPolicy, constructionHeuristicType_);
+            if (listVariableDescriptors.isEmpty()) {
+                entityPlacerConfig_ = buildUnfoldedEntityPlacerConfig(phaseConfigPolicy, constructionHeuristicType_);
+            } else {
+                if (listVariableDescriptors.size() > 1) {
+                    throw new IllegalArgumentException("Construction Heuristics does not support multiple list variables ("
+                            + listVariableDescriptors + ").");
+                }
+                entityPlacerConfig_ = buildListVariablePlacerConfig(listVariableDescriptors.get(0));
+            }
         } else {
+            if (!listVariableDescriptors.isEmpty()) {
+                throw new IllegalArgumentException(
+                        "Power tweaking Construction Heuristics for a list variable is not allowed.");
+            }
             entityPlacerConfig_ = phaseConfig.getEntityPlacerConfig();
             if (phaseConfig.getConstructionHeuristicType() != null) {
                 throw new IllegalArgumentException(
@@ -99,6 +119,40 @@ public class DefaultConstructionHeuristicPhaseFactory<Solution_>
             phase.setAssertShadowVariablesAreNotStaleAfterStep(true);
         }
         return phase;
+    }
+
+    private static <Solution_> List<GenuineVariableDescriptor<Solution_>>
+            findListVariableDescriptors(HeuristicConfigPolicy<Solution_> solverConfigPolicy) {
+        return solverConfigPolicy.getSolutionDescriptor().getGenuineEntityDescriptors().stream()
+                .map(EntityDescriptor::getGenuineVariableDescriptorList)
+                .flatMap(Collection::stream)
+                .filter(GenuineVariableDescriptor::isListVariable)
+                .collect(Collectors.toList());
+    }
+
+    private QueuedValuePlacerConfig buildListVariablePlacerConfig(GenuineVariableDescriptor<Solution_> variableDescriptor) {
+        String mimicSelectorId = variableDescriptor.getVariableName();
+
+        // Prepare recording ValueSelector config.
+        ValueSelectorConfig mimicRecordingValueSelectorConfig = new ValueSelectorConfig(variableDescriptor.getVariableName());
+        mimicRecordingValueSelectorConfig.setId(mimicSelectorId);
+        // TODO what about sorting? Can we make it work with no configuration? Think decreasing vs. increasing strength.
+        //  If it can't work out of the box then there is no use for @PlanningCollectionVariable(strengthComparatorClass = ...).
+        // Prepare replaying ValueSelector config.
+        ValueSelectorConfig mimicReplayingValueSelectorConfig = new ValueSelectorConfig();
+        mimicReplayingValueSelectorConfig.setMimicSelectorRef(mimicSelectorId);
+
+        // ChangeMoveSelector uses the replaying ValueSelector.
+        ChangeMoveSelectorConfig changeMoveSelectorConfig = new ChangeMoveSelectorConfig();
+        changeMoveSelectorConfig.setValueSelectorConfig(mimicReplayingValueSelectorConfig);
+
+        // Finally, QueuedValuePlacer uses the recording ValueSelector and a ChangeMoveSelector.
+        // The ChangeMoveSelector's replaying ValueSelector mimics the QueuedValuePlacer's recording ValueSelector.
+        QueuedValuePlacerConfig queuedValuePlacerConfig = new QueuedValuePlacerConfig();
+        queuedValuePlacerConfig.setValueSelectorConfig(mimicRecordingValueSelectorConfig);
+        queuedValuePlacerConfig.setMoveSelectorConfig(changeMoveSelectorConfig);
+
+        return queuedValuePlacerConfig;
     }
 
     private ConstructionHeuristicDecider<Solution_> buildDecider(HeuristicConfigPolicy<Solution_> configPolicy,

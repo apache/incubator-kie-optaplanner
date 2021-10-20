@@ -17,17 +17,4 @@
   <!--<termination>-->
     <!--<minutesSpentLimit>5</minutesSpentLimit>-->
   <!--</termination>-->
-  <constructionHeuristic>
-    <queuedValuePlacer>
-      <valueSelector variableName="tasks" id="1">
-        <cacheType>PHASE</cacheType>
-        <selectionOrder>SORTED</selectionOrder>
-        <sorterManner>DECREASING_STRENGTH</sorterManner>
-      </valueSelector>
-      <changeMoveSelector>
-        <valueSelector mimicSelectorRef="1"/>
-      </changeMoveSelector>
-    </queuedValuePlacer>
-  </constructionHeuristic>
-  <localSearch/>
 </solver>
