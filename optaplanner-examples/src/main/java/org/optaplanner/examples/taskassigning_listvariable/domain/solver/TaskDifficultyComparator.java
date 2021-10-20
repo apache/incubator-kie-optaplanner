@@ -29,6 +29,6 @@ public class TaskDifficultyComparator implements Comparator<Task> {
 
     @Override
     public int compare(Task a, Task b) {
-        return COMPARATOR.compare(a, b);
+        return -COMPARATOR.compare(a, b);
     }
 }
