@@ -24,6 +24,7 @@ import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.domain.valuerange.ValueRangeProvider;
 import org.optaplanner.core.api.score.buildin.hardsoft.HardSoftScore;
 import org.optaplanner.core.impl.domain.valuerange.buildin.primboolean.BooleanValueRange;
+import org.optaplanner.persistence.minizinc.model.IntSetValueRange;
 
 @PlanningSolution
 public class MyPlanningSolution {
@@ -38,6 +39,18 @@ public class MyPlanningSolution {
 
     @PlanningEntityCollectionProperty
     List<MyIntArrayVariable> intArrayVariableList;
+
+    @PlanningEntityCollectionProperty
+    List<MyIntSetVariable> intSetVariableList;
+
+    @PlanningEntityCollectionProperty
+    List<MySecondIntSetVariable> secondIntSetVariableList;
+
+    @PlanningEntityCollectionProperty
+    List<ConstrainedIntSetVariable> constrainedIntSetVariableList;
+
+    @PlanningEntityCollectionProperty
+    List<MyIntSetArrayVariable> intSetArrayVariableList;
 
     @PlanningEntityCollectionProperty
     List<MyBoolVariable> boolVariableList;
@@ -56,6 +69,9 @@ public class MyPlanningSolution {
 
     @ValueRangeProvider(id = "valueRange")
     List<Integer> valueRange;
+
+    @ValueRangeProvider(id = "intSetValueRange")
+    IntSetValueRange intSetValueRange;
 
     @ValueRangeProvider(id = "booleanRange")
     BooleanValueRange booleanValueRange;

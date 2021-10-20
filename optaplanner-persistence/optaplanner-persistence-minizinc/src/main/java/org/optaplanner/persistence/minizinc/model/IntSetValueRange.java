@@ -23,8 +23,9 @@ import java.util.Objects;
 import java.util.Random;
 
 import org.optaplanner.core.impl.domain.valuerange.AbstractCountableValueRange;
+import org.optaplanner.persistence.minizinc.backend.IntSet;
 
-public class IntSetValueRange extends AbstractCountableValueRange<List<Integer>> {
+public class IntSetValueRange extends AbstractCountableValueRange<IntSet> {
 
     private final List<Integer> possibleItemsOfSet;
 
@@ -38,7 +39,7 @@ public class IntSetValueRange extends AbstractCountableValueRange<List<Integer>>
     }
 
     @Override
-    public List<Integer> get(long index) {
+    public IntSet get(long index) {
         int size = Long.bitCount(index);
         List<Integer> out = new ArrayList<>(size);
         while (index != 0) {
@@ -47,13 +48,12 @@ public class IntSetValueRange extends AbstractCountableValueRange<List<Integer>>
             out.add(possibleItemsOfSet.get(itemIndex));
             index -= item;
         }
-        ;
-        return out;
+        return new IntSet(out);
     }
 
     @Override
-    public Iterator<List<Integer>> createOriginalIterator() {
-        return new Iterator<List<Integer>>() {
+    public Iterator<IntSet> createOriginalIterator() {
+        return new Iterator<>() {
             long index = 0;
 
             @Override
@@ -62,8 +62,8 @@ public class IntSetValueRange extends AbstractCountableValueRange<List<Integer>>
             }
 
             @Override
-            public List<Integer> next() {
-                List<Integer> out = get(index);
+            public IntSet next() {
+                IntSet out = get(index);
                 index++;
                 return out;
             }
@@ -71,12 +71,12 @@ public class IntSetValueRange extends AbstractCountableValueRange<List<Integer>>
     }
 
     @Override
-    public boolean contains(List<Integer> value) {
-        return possibleItemsOfSet.containsAll(value);
+    public boolean contains(IntSet value) {
+        return value.containsOnly(possibleItemsOfSet);
     }
 
     @Override
-    public Iterator<List<Integer>> createRandomIterator(Random workingRandom) {
+    public Iterator<IntSet> createRandomIterator(Random workingRandom) {
         return new Iterator<>() {
             @Override
             public boolean hasNext() {
@@ -84,7 +84,7 @@ public class IntSetValueRange extends AbstractCountableValueRange<List<Integer>>
             }
 
             @Override
-            public List<Integer> next() {
+            public IntSet next() {
                 return get(workingRandom.nextLong());
             }
         };

@@ -26,6 +26,7 @@ import java.lang.reflect.Type;
 import java.lang.reflect.WildcardType;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -162,7 +163,7 @@ public class ConstraintProviderBytecodeImplementor {
             CompiledVariablesAndConstantsData compiledModelData, ResultHandle constraintFactory, int constraintId,
             MethodCreator methodCreator) {
         Method constraintImplMethod = findBuiltinMethod(flatZincConstraint.getPredicateName(),
-                flatZincConstraint.getPredicateArguments().size());
+                flatZincConstraint.getPredicateArguments());
         // Method parameters: (parameter1, parameter2,...,parameterN, constraintId, constraintFactory)
         // parameter1,...,parameterN are in the same order as the FlatZinc predicate
         ResultHandle[] parameters = new ResultHandle[constraintImplMethod.getParameterCount()];
@@ -174,6 +175,8 @@ public class ConstraintProviderBytecodeImplementor {
                     parameters[argumentIndex] = methodCreator.load(argument.asInt());
                 } else if (int[].class.equals(parameterType)) {
                     parameters[argumentIndex] = createConstantIntArray(methodCreator, argument);
+                } else if (int[][].class.equals(parameterType)) {
+                    parameters[argumentIndex] = createConstantIntSetArray(methodCreator, argument);
                 } else {
                     throw new IllegalStateException("Unhandled case: (" + parameterType + ")");
                 }
@@ -253,10 +256,40 @@ public class ConstraintProviderBytecodeImplementor {
         return argResultHandle;
     }
 
-    private static Method findBuiltinMethod(String name, int parameterCount) {
+    private static ResultHandle createConstantIntSetArray(MethodCreator methodCreator, FlatZincExpr argument) {
+        // constant int[][]
+        List<int[]> intSetArray;
+        if (argument instanceof FlatZincArray) {
+            intSetArray =
+                    ((FlatZincArray) argument).getItems().stream().map(FlatZincExpr::asIntSet).collect(Collectors.toList());
+        } else {
+            intSetArray = Collections.singletonList(argument.asIntSet());
+        }
+        ResultHandle argResultHandle = methodCreator.newArray(int[].class, intSetArray.size());
+        for (int intSetArrayIndex = 0; intSetArrayIndex < intSetArray.size(); intSetArrayIndex++) {
+            int[] intSet = intSetArray.get(intSetArrayIndex);
+            ResultHandle itemResultHandle = methodCreator.newArray(int.class, intSet.length);
+            for (int intSetIndex = 0; intSetIndex < intSet.length; intSetIndex++) {
+                methodCreator.writeArrayValue(itemResultHandle, intSetIndex, methodCreator.load(intSet[intSetIndex]));
+            }
+            methodCreator.writeArrayValue(argResultHandle, intSetArrayIndex, itemResultHandle);
+        }
+        return argResultHandle;
+    }
+
+    private static Method findBuiltinMethod(String name, List<FlatZincExpr> arguments) {
         for (Class<?> factoryClass : FlatZincBuiltins.getConstraintFactoryList()) {
-            for (Method method : factoryClass.getMethods()) {
-                if (method.getName().equals(name) && method.getParameterCount() == parameterCount + 2) {
+            processCandidateMethod: for (Method method : factoryClass.getMethods()) {
+                if (method.getName().equals(name) && method.getParameterCount() == arguments.size() + 2) {
+                    for (int argIndex = 0; argIndex < arguments.size(); argIndex++) {
+                        Class<?> methodParameterType = method.getParameterTypes()[argIndex];
+                        FlatZincExpr parameterValue = arguments.get(argIndex);
+
+                        if (methodParameterType.isArray() && !parameterValue.isLiteral()) {
+                            // Invalid argument; continue outer loop
+                            continue processCandidateMethod;
+                        }
+                    }
                     return method;
                 }
             }

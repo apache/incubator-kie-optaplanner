@@ -31,7 +31,9 @@ public class FlatZincBuiltins {
     }
 
     public static List<Class<?>> getConstraintFactoryList() {
-        return List.of(IntFlatZincBuiltins.class);
+        return List.of(IntFlatZincBuiltins.class,
+                BoolFlatZincBuiltins.class,
+                IntSetFlatZincBuiltins.class);
     }
 
     public static int getEffectiveMultiplier(int[] multipliers, IndexSet multiplierIndexSet) {
