@@ -16,7 +16,10 @@
 
 package org.optaplanner.core.impl.solver;
 
+import java.util.Collections;
 import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -25,6 +28,7 @@ import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.solver.ProblemFactChange;
 import org.optaplanner.core.api.solver.Solver;
 import org.optaplanner.core.config.solver.EnvironmentMode;
+import org.optaplanner.core.config.solver.monitoring.SolverMetric;
 import org.optaplanner.core.impl.phase.Phase;
 import org.optaplanner.core.impl.score.director.InnerScoreDirector;
 import org.optaplanner.core.impl.score.director.InnerScoreDirectorFactory;
@@ -36,7 +40,9 @@ import org.optaplanner.core.impl.solver.termination.Termination;
 
 import io.micrometer.core.instrument.Counter;
 import io.micrometer.core.instrument.LongTaskTimer;
+import io.micrometer.core.instrument.Meter;
 import io.micrometer.core.instrument.Metrics;
+import io.micrometer.core.instrument.Tags;
 
 /**
  * Default implementation for {@link Solver}.
@@ -58,10 +64,6 @@ public class DefaultSolver<Solution_> extends AbstractSolver<Solution_> {
 
     private final String moveThreadCountDescription;
 
-    // Metrics
-    private LongTaskTimer solveLengthTimer;
-    private Counter errorCounter;
-
     // ************************************************************************
     // Constructors and simple getters/setters
     // ************************************************************************
@@ -76,8 +78,6 @@ public class DefaultSolver<Solution_> extends AbstractSolver<Solution_> {
         this.basicPlumbingTermination = basicPlumbingTermination;
         this.solverScope = solverScope;
         this.moveThreadCountDescription = moveThreadCountDescription;
-        this.solveLengthTimer = Metrics.more().longTaskTimer("optaplanner.solver.solve-length");
-        this.errorCounter = Metrics.counter("optaplanner.solver.errors");
     }
 
     public EnvironmentMode getEnvironmentMode() {
@@ -156,6 +156,13 @@ public class DefaultSolver<Solution_> extends AbstractSolver<Solution_> {
         return basicPlumbingTermination.isEveryProblemFactChangeProcessed();
     }
 
+    public void setMonitorTagMap(Map<String, String> monitorTagMap) {
+        Tags monitoringTags = Objects.requireNonNullElse(monitorTagMap, Collections.<String, String> emptyMap())
+                .entrySet().stream().map(entry -> Tags.of(entry.getKey(), entry.getValue()))
+                .reduce(Tags.empty(), Tags::and);
+        solverScope.setMonitoringTags(monitoringTags);
+    }
+
     // ************************************************************************
     // Worker methods
     // ************************************************************************
@@ -165,6 +172,16 @@ public class DefaultSolver<Solution_> extends AbstractSolver<Solution_> {
         if (problem == null) {
             throw new IllegalArgumentException("The problem (" + problem + ") must not be null.");
         }
+
+        // No tags for these metrics; they are global
+        LongTaskTimer solveLengthTimer = Metrics.more().longTaskTimer(SolverMetric.SOLVE_DURATION.getMeterId());
+        Counter errorCounter = Metrics.counter(SolverMetric.ERROR_COUNT.getMeterId());
+
+        // Score Calculation Count is specific per solver
+        Metrics.gauge(SolverMetric.SCORE_CALCULATION_COUNT.getMeterId(), solverScope.getMonitoringTags(),
+                solverScope, SolverScope::getScoreCalculationCount);
+        solverScope.getSolverMetricSet().forEach(solverMetric -> solverMetric.register(this));
+
         solverScope.setBestSolution(problem);
         outerSolvingStarted(solverScope);
         boolean restartSolver = true;
@@ -179,6 +196,12 @@ public class DefaultSolver<Solution_> extends AbstractSolver<Solution_> {
                 throw e;
             } finally {
                 sample.stop();
+                Metrics.globalRegistry.remove(new Meter.Id(SolverMetric.SCORE_CALCULATION_COUNT.getMeterId(),
+                        solverScope.getMonitoringTags(),
+                        null,
+                        null,
+                        Meter.Type.GAUGE));
+                solverScope.getSolverMetricSet().forEach(solverMetric -> solverMetric.unregister(this));
             }
             restartSolver = checkProblemFactChanges();
         }
@@ -251,7 +274,7 @@ public class DefaultSolver<Solution_> extends AbstractSolver<Solution_> {
             scoreDirector.assertNonNullPlanningIds();
             // Everything is fine, proceed.
             basicPlumbingTermination.endProblemFactChangesProcessing();
-            bestSolutionRecaller.updateBestSolution(solverScope);
+            bestSolutionRecaller.updateBestSolutionAndFire(solverScope);
             logger.info("Real-time problem fact changes done: step total ({}), new best score ({}).",
                     stepIndex, score);
             return true;

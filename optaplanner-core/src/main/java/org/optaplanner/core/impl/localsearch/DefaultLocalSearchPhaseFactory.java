@@ -16,10 +16,9 @@
 
 package org.optaplanner.core.impl.localsearch;
 
-import static org.apache.commons.lang3.ObjectUtils.defaultIfNull;
-
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Objects;
 import java.util.concurrent.ThreadFactory;
 
 import org.optaplanner.core.config.heuristic.selector.common.SelectionCacheType;
@@ -61,10 +60,10 @@ public class DefaultLocalSearchPhaseFactory<Solution_>
             BestSolutionRecaller<Solution_> bestSolutionRecaller, Termination<Solution_> solverTermination) {
         HeuristicConfigPolicy<Solution_> phaseConfigPolicy = solverConfigPolicy.createPhaseConfigPolicy();
         DefaultLocalSearchPhase<Solution_> phase =
-                new DefaultLocalSearchPhase<>(phaseIndex, solverConfigPolicy.getLogIndentation(), bestSolutionRecaller,
+                new DefaultLocalSearchPhase<>(phaseIndex, solverConfigPolicy.getLogIndentation(),
                         buildPhaseTermination(phaseConfigPolicy, solverTermination));
         phase.setDecider(buildDecider(phaseConfigPolicy,
-                phase.getTermination()));
+                phase.getPhaseTermination()));
         EnvironmentMode environmentMode = phaseConfigPolicy.getEnvironmentMode();
         if (environmentMode.isNonIntrusiveFullAsserted()) {
             phase.setAssertStepScoreFromScratch(true);
@@ -135,7 +134,7 @@ public class DefaultLocalSearchPhaseFactory<Solution_>
             acceptorConfig_ = phaseConfig.getAcceptorConfig();
         } else {
             LocalSearchType localSearchType_ =
-                    defaultIfNull(phaseConfig.getLocalSearchType(), LocalSearchType.LATE_ACCEPTANCE);
+                    Objects.requireNonNullElse(phaseConfig.getLocalSearchType(), LocalSearchType.LATE_ACCEPTANCE);
             acceptorConfig_ = new LocalSearchAcceptorConfig();
             switch (localSearchType_) {
                 case HILL_CLIMBING:
@@ -174,7 +173,7 @@ public class DefaultLocalSearchPhaseFactory<Solution_>
             foragerConfig_ = phaseConfig.getForagerConfig();
         } else {
             LocalSearchType localSearchType_ =
-                    defaultIfNull(phaseConfig.getLocalSearchType(), LocalSearchType.LATE_ACCEPTANCE);
+                    Objects.requireNonNullElse(phaseConfig.getLocalSearchType(), LocalSearchType.LATE_ACCEPTANCE);
             foragerConfig_ = new LocalSearchForagerConfig();
             switch (localSearchType_) {
                 case HILL_CLIMBING:

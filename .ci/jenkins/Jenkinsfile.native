@@ -5,13 +5,14 @@ import org.kie.jenkins.MavenCommand
 optaplannerRepo = 'optaplanner'
 quickstartsRepo = 'optaplanner-quickstarts'
 kogitoRuntimesRepo = 'kogito-runtimes'
+droolsRepo = 'drools'
 
 pipeline {
     agent {
         label 'kie-rhel7 && kie-mem16g'
     }
     tools {
-        maven 'kie-maven-3.6.2'
+        maven 'kie-maven-3.6.3'
         jdk 'kie-jdk11'
     }
     options {
@@ -28,6 +29,22 @@ pipeline {
                     checkoutRuntimesRepo()
                     checkoutOptaplannerRepo()
                     checkoutOptaplannerQuickstartsRepo()
+                }
+            }
+        }
+        stage('Build quickly drools') {
+            steps {
+                script {
+                    getMavenCommand(droolsRepo)
+                        .withProperty('quickly')
+                        .run('clean install')
+                }
+            }
+            post {
+                always {
+                    script {
+                        cleanContainers()
+                    }
                 }
             }
         }
@@ -130,11 +147,21 @@ void checkoutOptaplannerQuickstartsRepo() {
     }
 }
 
+void checkoutDroolsRepo() {
+    dir(droolsRepo) {
+        checkout(githubscm.resolveRepository(droolsRepo, params.GIT_AUTHOR, getDroolsTargetBranch(), false))
+    }
+}
+
 String getKogitoTargetBranch() {
     return getTargetBranch(-7)
 }
 
 String getOptaplannerTargetBranch() {
+    return getTargetBranch(0)
+}
+
+String getDroolsTargetBranch() {
     return getTargetBranch(0)
 }
 

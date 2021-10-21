@@ -17,9 +17,14 @@
 package org.optaplanner.core.impl.phase;
 
 import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.AtomicReference;
 
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.score.Score;
+import org.optaplanner.core.config.solver.monitoring.SolverMetric;
 import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.core.impl.domain.variable.descriptor.GenuineVariableDescriptor;
@@ -28,13 +33,15 @@ import org.optaplanner.core.impl.phase.event.PhaseLifecycleListener;
 import org.optaplanner.core.impl.phase.event.PhaseLifecycleSupport;
 import org.optaplanner.core.impl.phase.scope.AbstractPhaseScope;
 import org.optaplanner.core.impl.phase.scope.AbstractStepScope;
+import org.optaplanner.core.impl.score.definition.ScoreDefinition;
 import org.optaplanner.core.impl.score.director.InnerScoreDirector;
-import org.optaplanner.core.impl.solver.DefaultSolver;
-import org.optaplanner.core.impl.solver.recaller.BestSolutionRecaller;
+import org.optaplanner.core.impl.solver.AbstractSolver;
 import org.optaplanner.core.impl.solver.scope.SolverScope;
 import org.optaplanner.core.impl.solver.termination.Termination;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import io.micrometer.core.instrument.Tags;
 
 /**
  * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
@@ -46,37 +53,40 @@ public abstract class AbstractPhase<Solution_> implements Phase<Solution_> {
 
     protected final int phaseIndex;
     protected final String logIndentation;
-    protected final BestSolutionRecaller<Solution_> bestSolutionRecaller;
-    protected final Termination<Solution_> termination;
+    protected final Map<Tags, List<AtomicReference<Number>>> stepScoreMap = new ConcurrentHashMap<>();
 
-    /** Used for {@link DefaultSolver#addPhaseLifecycleListener(PhaseLifecycleListener)}. */
-    protected PhaseLifecycleSupport<Solution_> solverPhaseLifecycleSupport;
+    // Called "phaseTermination" to clearly distinguish from "solverTermination" inside AbstractSolver.
+    protected final Termination<Solution_> phaseTermination;
+
     /** Used for {@link #addPhaseLifecycleListener(PhaseLifecycleListener)}. */
     protected PhaseLifecycleSupport<Solution_> phaseLifecycleSupport = new PhaseLifecycleSupport<>();
+
+    protected AbstractSolver<Solution_> solver;
 
     protected boolean assertStepScoreFromScratch = false;
     protected boolean assertExpectedStepScore = false;
     protected boolean assertShadowVariablesAreNotStaleAfterStep = false;
 
-    public AbstractPhase(int phaseIndex, String logIndentation, BestSolutionRecaller<Solution_> bestSolutionRecaller,
-            Termination<Solution_> termination) {
+    public AbstractPhase(int phaseIndex, String logIndentation, Termination<Solution_> phaseTermination) {
         this.phaseIndex = phaseIndex;
         this.logIndentation = logIndentation;
-        this.bestSolutionRecaller = bestSolutionRecaller;
-        this.termination = termination;
+        this.phaseTermination = phaseTermination;
     }
 
     public int getPhaseIndex() {
         return phaseIndex;
     }
 
-    public Termination<Solution_> getTermination() {
-        return termination;
+    public Termination<Solution_> getPhaseTermination() {
+        return phaseTermination;
     }
 
-    @Override
-    public void setSolverPhaseLifecycleSupport(PhaseLifecycleSupport<Solution_> solverPhaseLifecycleSupport) {
-        this.solverPhaseLifecycleSupport = solverPhaseLifecycleSupport;
+    public AbstractSolver<Solution_> getSolver() {
+        return solver;
+    }
+
+    public void setSolver(AbstractSolver<Solution_> solver) {
+        this.solver = solver;
     }
 
     public boolean isAssertStepScoreFromScratch() {
@@ -111,17 +121,13 @@ public abstract class AbstractPhase<Solution_> implements Phase<Solution_> {
 
     @Override
     public void solvingStarted(SolverScope<Solution_> solverScope) {
-        // bestSolutionRecaller.solvingStarted(...) is called by DefaultSolver
-        // solverPhaseLifecycleSupport.solvingStarted(...) is called by DefaultSolver
-        termination.solvingStarted(solverScope);
+        phaseTermination.solvingStarted(solverScope);
         phaseLifecycleSupport.fireSolvingStarted(solverScope);
     }
 
     @Override
     public void solvingEnded(SolverScope<Solution_> solverScope) {
-        // bestSolutionRecaller.solvingEnded(...) is called by DefaultSolver
-        // solverPhaseLifecycleSupport.solvingEnded(...) is called by DefaultSolver
-        termination.solvingEnded(solverScope);
+        phaseTermination.solvingEnded(solverScope);
         phaseLifecycleSupport.fireSolvingEnded(solverScope);
     }
 
@@ -129,17 +135,22 @@ public abstract class AbstractPhase<Solution_> implements Phase<Solution_> {
     public void phaseStarted(AbstractPhaseScope<Solution_> phaseScope) {
         phaseScope.startingNow();
         phaseScope.reset();
-        bestSolutionRecaller.phaseStarted(phaseScope);
-        solverPhaseLifecycleSupport.firePhaseStarted(phaseScope);
-        termination.phaseStarted(phaseScope);
+        solver.phaseStarted(phaseScope);
+        phaseTermination.phaseStarted(phaseScope);
         phaseLifecycleSupport.firePhaseStarted(phaseScope);
     }
 
     @Override
+    public void phaseEnded(AbstractPhaseScope<Solution_> phaseScope) {
+        solver.phaseEnded(phaseScope);
+        phaseTermination.phaseEnded(phaseScope);
+        phaseLifecycleSupport.firePhaseEnded(phaseScope);
+    }
+
+    @Override
     public void stepStarted(AbstractStepScope<Solution_> stepScope) {
-        bestSolutionRecaller.stepStarted(stepScope);
-        solverPhaseLifecycleSupport.fireStepStarted(stepScope);
-        termination.stepStarted(stepScope);
+        solver.stepStarted(stepScope);
+        phaseTermination.stepStarted(stepScope);
         phaseLifecycleSupport.fireStepStarted(stepScope);
     }
 
@@ -174,18 +185,22 @@ public abstract class AbstractPhase<Solution_> implements Phase<Solution_> {
 
     @Override
     public void stepEnded(AbstractStepScope<Solution_> stepScope) {
-        bestSolutionRecaller.stepEnded(stepScope);
-        solverPhaseLifecycleSupport.fireStepEnded(stepScope);
-        termination.stepEnded(stepScope);
+        solver.stepEnded(stepScope);
+        collectMetrics(stepScope);
+        phaseTermination.stepEnded(stepScope);
         phaseLifecycleSupport.fireStepEnded(stepScope);
     }
 
-    @Override
-    public void phaseEnded(AbstractPhaseScope<Solution_> phaseScope) {
-        bestSolutionRecaller.phaseEnded(phaseScope);
-        solverPhaseLifecycleSupport.firePhaseEnded(phaseScope);
-        termination.phaseEnded(phaseScope);
-        phaseLifecycleSupport.firePhaseEnded(phaseScope);
+    private void collectMetrics(AbstractStepScope<Solution_> stepScope) {
+        if (stepScope.getPhaseScope().getSolverScope().isMetricEnabled(SolverMetric.STEP_SCORE)
+                && stepScope.getScore().isSolutionInitialized()) {
+            ScoreDefinition<?> scoreDefinition = stepScope.getPhaseScope().getScoreDefinition();
+            SolverMetric.registerScoreMetrics(SolverMetric.STEP_SCORE,
+                    stepScope.getPhaseScope().getSolverScope().getMonitoringTags(),
+                    scoreDefinition,
+                    stepScoreMap,
+                    stepScope.getScore());
+        }
     }
 
     @Override
