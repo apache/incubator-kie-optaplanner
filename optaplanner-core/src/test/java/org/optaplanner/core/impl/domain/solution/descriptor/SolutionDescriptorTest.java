@@ -30,11 +30,14 @@ import org.optaplanner.core.api.solver.SolverFactory;
 import org.optaplanner.core.impl.score.buildin.simple.SimpleScoreDefinition;
 import org.optaplanner.core.impl.testdata.domain.TestdataEntity;
 import org.optaplanner.core.impl.testdata.domain.TestdataObject;
+import org.optaplanner.core.impl.testdata.domain.TestdataSolution;
 import org.optaplanner.core.impl.testdata.domain.TestdataValue;
 import org.optaplanner.core.impl.testdata.domain.collection.TestdataArrayBasedSolution;
 import org.optaplanner.core.impl.testdata.domain.collection.TestdataSetBasedSolution;
 import org.optaplanner.core.impl.testdata.domain.extended.TestdataAnnotatedExtendedSolution;
 import org.optaplanner.core.impl.testdata.domain.extended.TestdataUnannotatedExtendedEntity;
+import org.optaplanner.core.impl.testdata.domain.list.TestdataListSolution;
+import org.optaplanner.core.impl.testdata.domain.list.TestdataListValue;
 import org.optaplanner.core.impl.testdata.domain.reflect.generic.TestdataGenericEntity;
 import org.optaplanner.core.impl.testdata.domain.reflect.generic.TestdataGenericSolution;
 import org.optaplanner.core.impl.testdata.domain.solutionproperties.TestdataNoProblemFactPropertySolution;
@@ -341,4 +344,39 @@ public class SolutionDescriptorTest {
         assertAllCodesOfCollection(solutionDescriptor.getAllFacts(solution), "otherE1", "f1", "p1", "e1", "e2");
     }
 
+    @Test
+    void countUninitializedVariables() {
+        int valueCount = 10;
+        int entityCount = 3;
+        TestdataSolution solution = TestdataSolution.generateSolution(valueCount, entityCount);
+        SolutionDescriptor<TestdataSolution> solutionDescriptor = TestdataSolution.buildSolutionDescriptor();
+
+        assertThat(solutionDescriptor.countUninitialized(solution)).isZero();
+
+        solution.getEntityList().get(0).setValue(null);
+        assertThat(solutionDescriptor.countUninitialized(solution)).isOne();
+
+        solution.getEntityList().forEach(entity -> entity.setValue(null));
+        assertThat(solutionDescriptor.countUninitialized(solution)).isEqualTo(entityCount);
+    }
+
+    @Test
+    void countUnassignedValues() {
+        int valueCount = 10;
+        int entityCount = 3;
+        TestdataListSolution solution = TestdataListSolution.generateSolution(valueCount, entityCount);
+        SolutionDescriptor<TestdataListSolution> solutionDescriptor = TestdataListSolution.buildSolutionDescriptor();
+
+        assertThat(solutionDescriptor.countUninitialized(solution)).isZero();
+
+        List<TestdataListValue> valueList = solution.getEntityList().get(0).getValueList();
+        int unassignedValueCount = valueList.size();
+        assertThat(valueList).hasSizeGreaterThan(10 / 3);
+        valueList.forEach(value -> {
+            value.setEntity(null);
+            value.setIndex(null);
+        });
+        valueList.clear();
+        assertThat(solutionDescriptor.countUninitialized(solution)).isEqualTo(unassignedValueCount);
+    }
 }

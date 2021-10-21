@@ -73,6 +73,7 @@ import org.optaplanner.core.impl.domain.score.descriptor.ScoreDescriptor;
 import org.optaplanner.core.impl.domain.solution.cloner.FieldAccessingSolutionCloner;
 import org.optaplanner.core.impl.domain.solution.cloner.gizmo.GizmoSolutionClonerFactory;
 import org.optaplanner.core.impl.domain.variable.descriptor.GenuineVariableDescriptor;
+import org.optaplanner.core.impl.domain.variable.descriptor.ListVariableDescriptor;
 import org.optaplanner.core.impl.domain.variable.descriptor.ShadowVariableDescriptor;
 import org.optaplanner.core.impl.domain.variable.descriptor.VariableDescriptor;
 import org.optaplanner.core.impl.score.definition.AbstractBendableScoreDefinition;
@@ -981,12 +982,40 @@ public class SolutionDescriptor<Solution_> {
                 .sum();
     }
 
-    public int countUninitializedVariables(Solution_ solution) {
+    /**
+     * Calculates the number of elements that need to be processed in the Construction Heuristics phase.
+     * The negative value of this is the {@code initScore}. It represents how many Construction Heuristics steps need to
+     * be taken before the solution is fully initialized.
+     *
+     * @param solution never null
+     * @return {@code >= 0}
+     */
+    public int countUninitialized(Solution_ solution) {
+        return getGenuineEntityDescriptors().stream()
+                .map(EntityDescriptor::getGenuineVariableDescriptorList)
+                .flatMap(Collection::stream)
+                .filter(GenuineVariableDescriptor::isListVariable)
+                .findFirst()
+                .map(variableDescriptor -> countUnassignedValues(
+                        solution, (ListVariableDescriptor<Solution_>) variableDescriptor))
+                .orElseGet(() -> countUninitializedVariables(solution));
+    }
+
+    private int countUninitializedVariables(Solution_ solution) {
         long count = extractAllEntitiesStream(solution)
                 .mapToLong(entity -> findEntityDescriptorOrFail(entity.getClass()).countUninitializedVariables(entity))
                 .sum();
         // Score.initScore is an int
         return Math.toIntExact(count);
+    }
+
+    private int countUnassignedValues(Solution_ solution, ListVariableDescriptor<Solution_> variableDescriptor) {
+        long totalValueCount = variableDescriptor.getValueCount(solution, null);
+        // TODO maybe detect duplicates and elements that are outside the value range
+        int assignedValuesCount = extractAllEntitiesStream(solution)
+                .mapToInt(variableDescriptor::getListSize)
+                .sum();
+        return Math.toIntExact(totalValueCount - assignedValuesCount);
     }
 
     public Iterator<Object> extractAllEntitiesIterator(Solution_ solution) {

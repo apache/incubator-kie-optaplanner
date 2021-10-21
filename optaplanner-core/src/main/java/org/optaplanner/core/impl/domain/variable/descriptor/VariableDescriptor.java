@@ -122,4 +122,7 @@ public abstract class VariableDescriptor<Solution_> {
 
     public abstract boolean isGenuineAndUninitialized(Object entity);
 
+    public boolean isGenuineListVariable() {
+        return false;
+    }
 }
