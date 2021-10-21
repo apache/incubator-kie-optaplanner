@@ -89,6 +89,11 @@ public class ListVariableDescriptor<Solution_> extends GenuineVariableDescriptor
         return true;
     }
 
+    @Override
+    public boolean isGenuineListVariable() {
+        return true;
+    }
+
     public List<Object> getListVariable(Object entity) {
         return (List<Object>) getValue(entity);
     }

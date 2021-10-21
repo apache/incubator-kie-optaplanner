@@ -17,6 +17,8 @@
 package org.optaplanner.core.impl.testdata.domain.list;
 
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 import org.optaplanner.core.api.domain.solution.PlanningEntityCollectionProperty;
 import org.optaplanner.core.api.domain.solution.PlanningScore;
@@ -39,6 +41,25 @@ public class TestdataListSolution {
     private List<TestdataListValue> valueList;
     private List<TestdataListEntity> entityList;
     private SimpleScore score;
+
+    public static TestdataListSolution generateSolution(int valueCount, int entityCount) {
+        List<TestdataListEntity> entityList = IntStream.range(0, entityCount)
+                .mapToObj(i -> new TestdataListEntity("Generated Entity " + i))
+                .collect(Collectors.toList());
+        List<TestdataListValue> valueList = IntStream.range(0, valueCount)
+                .mapToObj(i -> {
+                    TestdataListValue value = new TestdataListValue("Generated Value " + i);
+                    TestdataListEntity entity = entityList.get(i % entityCount);
+                    value.setEntity(entity);
+                    value.setIndex(entity.getValueList().size());
+                    entity.getValueList().add(value);
+                    return value;
+                }).collect(Collectors.toList());
+        TestdataListSolution solution = new TestdataListSolution();
+        solution.setValueList(valueList);
+        solution.setEntityList(entityList);
+        return solution;
+    }
 
     @ValueRangeProvider(id = "valueRange")
     @ProblemFactCollectionProperty
