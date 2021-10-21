@@ -16,8 +16,7 @@
 
 package org.optaplanner.core.impl.constructionheuristic;
 
-import static org.apache.commons.lang3.ObjectUtils.defaultIfNull;
-
+import java.util.Objects;
 import java.util.concurrent.ThreadFactory;
 
 import org.optaplanner.core.config.constructionheuristic.ConstructionHeuristicPhaseConfig;
@@ -58,14 +57,14 @@ public class DefaultConstructionHeuristicPhaseFactory<Solution_>
     public ConstructionHeuristicPhase<Solution_> buildPhase(int phaseIndex,
             HeuristicConfigPolicy<Solution_> solverConfigPolicy, BestSolutionRecaller<Solution_> bestSolutionRecaller,
             Termination<Solution_> solverTermination) {
-
         HeuristicConfigPolicy<Solution_> phaseConfigPolicy = solverConfigPolicy.createFilteredPhaseConfigPolicy();
         DefaultConstructionHeuristicPhase<Solution_> phase =
                 new DefaultConstructionHeuristicPhase<>(phaseIndex, solverConfigPolicy.getLogIndentation(),
-                        bestSolutionRecaller, buildPhaseTermination(phaseConfigPolicy, solverTermination));
-        phase.setDecider(buildDecider(phaseConfigPolicy, phase.getTermination()));
-        ConstructionHeuristicType constructionHeuristicType_ = defaultIfNull(
-                phaseConfig.getConstructionHeuristicType(), ConstructionHeuristicType.ALLOCATE_ENTITY_FROM_QUEUE);
+                        buildPhaseTermination(phaseConfigPolicy, solverTermination));
+        phase.setDecider(buildDecider(phaseConfigPolicy, phase.getPhaseTermination()));
+        ConstructionHeuristicType constructionHeuristicType_ =
+                Objects.requireNonNullElse(phaseConfig.getConstructionHeuristicType(),
+                        ConstructionHeuristicType.ALLOCATE_ENTITY_FROM_QUEUE);
         phaseConfigPolicy
                 .setEntitySorterManner(phaseConfig.getEntitySorterManner() != null ? phaseConfig.getEntitySorterManner()
                         : constructionHeuristicType_.getDefaultEntitySorterManner());

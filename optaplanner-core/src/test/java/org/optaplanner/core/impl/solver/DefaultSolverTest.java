@@ -22,22 +22,36 @@ import static org.assertj.core.api.Assertions.fail;
 
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.List;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicInteger;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
+import org.optaplanner.core.api.score.buildin.hardsoft.HardSoftScore;
 import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
+import org.optaplanner.core.api.score.director.ScoreDirector;
 import org.optaplanner.core.api.score.stream.Constraint;
 import org.optaplanner.core.api.score.stream.ConstraintFactory;
 import org.optaplanner.core.api.score.stream.ConstraintProvider;
 import org.optaplanner.core.api.solver.Solver;
 import org.optaplanner.core.api.solver.SolverFactory;
 import org.optaplanner.core.config.constructionheuristic.ConstructionHeuristicPhaseConfig;
+import org.optaplanner.core.config.constructionheuristic.ConstructionHeuristicType;
+import org.optaplanner.core.config.heuristic.selector.move.generic.ChangeMoveSelectorConfig;
+import org.optaplanner.core.config.localsearch.LocalSearchPhaseConfig;
+import org.optaplanner.core.config.localsearch.LocalSearchType;
 import org.optaplanner.core.config.phase.custom.CustomPhaseConfig;
 import org.optaplanner.core.config.score.director.ScoreDirectorFactoryConfig;
 import org.optaplanner.core.config.solver.SolverConfig;
+import org.optaplanner.core.config.solver.monitoring.MonitoringConfig;
+import org.optaplanner.core.config.solver.monitoring.SolverMetric;
 import org.optaplanner.core.config.solver.termination.TerminationConfig;
+import org.optaplanner.core.impl.heuristic.selector.common.decorator.SelectionFilter;
+import org.optaplanner.core.impl.heuristic.selector.move.generic.ChangeMove;
 import org.optaplanner.core.impl.phase.custom.NoChangeCustomPhaseCommand;
 import org.optaplanner.core.impl.testdata.domain.TestdataEntity;
 import org.optaplanner.core.impl.testdata.domain.TestdataSolution;
@@ -47,12 +61,20 @@ import org.optaplanner.core.impl.testdata.domain.chained.TestdataChainedEntity;
 import org.optaplanner.core.impl.testdata.domain.chained.TestdataChainedSolution;
 import org.optaplanner.core.impl.testdata.domain.pinned.TestdataPinnedEntity;
 import org.optaplanner.core.impl.testdata.domain.pinned.TestdataPinnedSolution;
+import org.optaplanner.core.impl.testdata.domain.score.TestdataHardSoftScoreSolution;
 import org.optaplanner.core.impl.testdata.util.PlannerTestUtils;
 import org.optaplanner.core.impl.util.TestMeterRegistry;
 
+import io.micrometer.core.instrument.Meter;
 import io.micrometer.core.instrument.Metrics;
+import io.micrometer.core.instrument.Tags;
 
 public class DefaultSolverTest {
+
+    @BeforeEach
+    public void resetGlobalRegistry() {
+        Metrics.globalRegistry.clear();
+    }
 
     @Test
     public void solve() {
@@ -71,6 +93,129 @@ public class DefaultSolverTest {
     }
 
     @Test
+    public void checkDefaultMeters() {
+        TestMeterRegistry meterRegistry = new TestMeterRegistry();
+        Metrics.addRegistry(meterRegistry);
+
+        SolverConfig solverConfig = PlannerTestUtils.buildSolverConfig(
+                TestdataSolution.class, TestdataEntity.class);
+        SolverFactory<TestdataSolution> solverFactory = SolverFactory.create(solverConfig);
+
+        DefaultSolver<TestdataSolution> solver = (DefaultSolver<TestdataSolution>) solverFactory.buildSolver();
+        meterRegistry.publish(solver);
+        assertThat(meterRegistry.getMeters().stream().map(Meter::getId)).isEmpty();
+
+        TestdataSolution solution = new TestdataSolution("s1");
+        solution.setValueList(Arrays.asList(new TestdataValue("v1"), new TestdataValue("v2")));
+        solution.setEntityList(Arrays.asList(new TestdataEntity("e1"), new TestdataEntity("e2")));
+
+        AtomicBoolean updatedTime = new AtomicBoolean();
+        solver.addEventListener(event -> {
+            if (!updatedTime.get()) {
+                assertThat(meterRegistry.getMeters().stream().map(Meter::getId))
+                        .containsExactlyInAnyOrder(
+                                new Meter.Id(SolverMetric.SOLVE_DURATION.getMeterId(),
+                                        Tags.empty(),
+                                        null,
+                                        null,
+                                        Meter.Type.LONG_TASK_TIMER),
+                                new Meter.Id(SolverMetric.ERROR_COUNT.getMeterId(),
+                                        Tags.empty(),
+                                        null,
+                                        null,
+                                        Meter.Type.COUNTER),
+                                new Meter.Id(SolverMetric.SCORE_CALCULATION_COUNT.getMeterId(),
+                                        Tags.empty(),
+                                        null,
+                                        null,
+                                        Meter.Type.GAUGE));
+                updatedTime.set(true);
+            }
+        });
+        solver.solve(solution);
+
+        // Score calculation count should be removed
+        // since registering multiple gauges with the same id
+        // make it return the average, and the solver holds
+        // onto the solver scope, meaning it won't automatically
+        // be deregistered.
+        assertThat(meterRegistry.getMeters().stream().map(Meter::getId))
+                .containsExactlyInAnyOrder(
+                        new Meter.Id(SolverMetric.SOLVE_DURATION.getMeterId(),
+                                Tags.empty(),
+                                null,
+                                null,
+                                Meter.Type.LONG_TASK_TIMER),
+                        new Meter.Id(SolverMetric.ERROR_COUNT.getMeterId(),
+                                Tags.empty(),
+                                null,
+                                null,
+                                Meter.Type.COUNTER));
+    }
+
+    @Test
+    public void checkDefaultMetersTags() {
+        TestMeterRegistry meterRegistry = new TestMeterRegistry();
+        Metrics.addRegistry(meterRegistry);
+
+        SolverConfig solverConfig = PlannerTestUtils.buildSolverConfig(
+                TestdataSolution.class, TestdataEntity.class);
+        SolverFactory<TestdataSolution> solverFactory = SolverFactory.create(solverConfig);
+
+        DefaultSolver<TestdataSolution> solver = (DefaultSolver<TestdataSolution>) solverFactory.buildSolver();
+        solver.setMonitorTagMap(Map.of("tag.key", "tag.value"));
+        meterRegistry.publish(solver);
+        assertThat(meterRegistry.getMeters().stream().map(Meter::getId)).isEmpty();
+
+        TestdataSolution solution = new TestdataSolution("s1");
+        solution.setValueList(Arrays.asList(new TestdataValue("v1"), new TestdataValue("v2")));
+        solution.setEntityList(Arrays.asList(new TestdataEntity("e1"), new TestdataEntity("e2")));
+
+        AtomicBoolean updatedTime = new AtomicBoolean();
+        solver.addEventListener(event -> {
+            if (!updatedTime.get()) {
+                assertThat(meterRegistry.getMeters().stream().map(Meter::getId))
+                        .containsExactlyInAnyOrder(
+                                new Meter.Id(SolverMetric.SOLVE_DURATION.getMeterId(),
+                                        Tags.empty(),
+                                        null,
+                                        null,
+                                        Meter.Type.LONG_TASK_TIMER),
+                                new Meter.Id(SolverMetric.ERROR_COUNT.getMeterId(),
+                                        Tags.empty(),
+                                        null,
+                                        null,
+                                        Meter.Type.COUNTER),
+                                new Meter.Id(SolverMetric.SCORE_CALCULATION_COUNT.getMeterId(),
+                                        Tags.of("tag.key", "tag.value"),
+                                        null,
+                                        null,
+                                        Meter.Type.GAUGE));
+                updatedTime.set(true);
+            }
+        });
+        solver.solve(solution);
+
+        // Score calculation count should be removed
+        // since registering multiple gauges with the same id
+        // make it return the average, and the solver holds
+        // onto the solver scope, meaning it won't automatically
+        // be deregistered.
+        assertThat(meterRegistry.getMeters().stream().map(Meter::getId))
+                .containsExactlyInAnyOrder(
+                        new Meter.Id(SolverMetric.SOLVE_DURATION.getMeterId(),
+                                Tags.empty(),
+                                null,
+                                null,
+                                Meter.Type.LONG_TASK_TIMER),
+                        new Meter.Id(SolverMetric.ERROR_COUNT.getMeterId(),
+                                Tags.empty(),
+                                null,
+                                null,
+                                Meter.Type.COUNTER));
+    }
+
+    @Test
     public void solveMetrics() {
         TestMeterRegistry meterRegistry = new TestMeterRegistry();
         Metrics.addRegistry(meterRegistry);
@@ -80,9 +225,8 @@ public class DefaultSolverTest {
         SolverFactory<TestdataSolution> solverFactory = SolverFactory.create(solverConfig);
 
         Solver<TestdataSolution> solver = solverFactory.buildSolver();
-        meterRegistry.publish();
-        assertThat(meterRegistry.getMeasurement("optaplanner.solver.errors", "COUNT")).isZero();
-        assertThat(meterRegistry.getMeasurement("optaplanner.solver.solve-length", "ACTIVE_TASKS")).isZero();
+        ((DefaultSolver<TestdataSolution>) solver).setMonitorTagMap(Map.of("solver.id", "solveMetrics"));
+        meterRegistry.publish(solver);
 
         TestdataSolution solution = new TestdataSolution("s1");
         solution.setValueList(Arrays.asList(new TestdataValue("v1"), new TestdataValue("v2")));
@@ -92,22 +236,113 @@ public class DefaultSolverTest {
         solver.addEventListener(event -> {
             if (!updatedTime.get()) {
                 meterRegistry.getClock().addSeconds(2);
-                meterRegistry.publish();
-                assertThat(meterRegistry.getMeasurement("optaplanner.solver.solve-length", "ACTIVE_TASKS")).isOne();
-                assertThat(meterRegistry.getMeasurement("optaplanner.solver.solve-length", "DURATION").longValue())
+                meterRegistry.publish(solver);
+                assertThat(meterRegistry.getMeasurement(SolverMetric.SOLVE_DURATION.getMeterId(), "ACTIVE_TASKS")).isOne();
+                assertThat(meterRegistry.getMeasurement(SolverMetric.SOLVE_DURATION.getMeterId(), "DURATION").longValue())
                         .isEqualTo(TimeUnit.SECONDS.toNanos(2));
                 updatedTime.set(true);
             }
         });
         solution = solver.solve(solution);
 
-        meterRegistry.publish();
+        meterRegistry.publish(solver);
         assertThat(solution).isNotNull();
         assertThat(solution.getScore().isSolutionInitialized()).isTrue();
 
-        assertThat(meterRegistry.getMeasurement("optaplanner.solver.solve-length", "DURATION")).isZero();
-        assertThat(meterRegistry.getMeasurement("optaplanner.solver.solve-length", "ACTIVE_TASKS")).isZero();
-        assertThat(meterRegistry.getMeasurement("optaplanner.solver.errors", "COUNT")).isZero();
+        assertThat(meterRegistry.getMeasurement(SolverMetric.SOLVE_DURATION.getMeterId(), "DURATION")).isZero();
+        assertThat(meterRegistry.getMeasurement(SolverMetric.SOLVE_DURATION.getMeterId(), "ACTIVE_TASKS")).isZero();
+        assertThat(meterRegistry.getMeasurement(SolverMetric.ERROR_COUNT.getMeterId(), "COUNT")).isZero();
+    }
+
+    public static class BestScoreMetricConstraintProvider implements ConstraintProvider {
+
+        @Override
+        public Constraint[] defineConstraints(ConstraintFactory constraintFactory) {
+            return new Constraint[] {
+                    constraintFactory.from(TestdataEntity.class)
+                            .filter(entity -> entity.getValue().getCode().startsWith("reward"))
+                            .reward("rewarding value", HardSoftScore.ONE_SOFT)
+            };
+        }
+    }
+
+    public static class NoneValueSelectionFilter
+            implements SelectionFilter<TestdataHardSoftScoreSolution, ChangeMove<TestdataHardSoftScoreSolution>> {
+        @Override
+        public boolean accept(ScoreDirector<TestdataHardSoftScoreSolution> scoreDirector,
+                ChangeMove<TestdataHardSoftScoreSolution> selection) {
+            return ((TestdataValue) (selection.getToPlanningValue())).getCode().equals("none");
+        }
+    }
+
+    @Test
+    public void solveBestScoreMetrics() {
+        TestMeterRegistry meterRegistry = new TestMeterRegistry();
+        Metrics.addRegistry(meterRegistry);
+
+        SolverConfig solverConfig = PlannerTestUtils.buildSolverConfig(
+                TestdataHardSoftScoreSolution.class, TestdataEntity.class);
+        solverConfig.setScoreDirectorFactoryConfig(
+                new ScoreDirectorFactoryConfig().withConstraintProviderClass(BestScoreMetricConstraintProvider.class));
+        solverConfig.setTerminationConfig(new TerminationConfig().withBestScoreLimit("0hard/2soft"));
+        solverConfig.setMonitoringConfig(new MonitoringConfig()
+                .withSolverMetricList(List.of(SolverMetric.BEST_SCORE)));
+        solverConfig.setPhaseConfigList(List.of(
+                // Force OptaPlanner to select "none" value which reward 0 soft
+                new ConstructionHeuristicPhaseConfig()
+                        .withConstructionHeuristicType(ConstructionHeuristicType.FIRST_FIT)
+                        .withMoveSelectorConfigList(
+                                List.of(new ChangeMoveSelectorConfig()
+                                        .withFilterClass(NoneValueSelectionFilter.class))),
+                // Then do a local search, which allow OptaPlanner to select "reward" value
+                // which reward 1 soft per entity
+                new LocalSearchPhaseConfig()
+                        .withLocalSearchType(LocalSearchType.HILL_CLIMBING)));
+        SolverFactory<TestdataHardSoftScoreSolution> solverFactory = SolverFactory.create(solverConfig);
+
+        Solver<TestdataHardSoftScoreSolution> solver = solverFactory.buildSolver();
+        ((DefaultSolver<TestdataHardSoftScoreSolution>) solver).setMonitorTagMap(Map.of("solver.id", "solveMetrics"));
+        meterRegistry.publish(solver);
+        TestdataHardSoftScoreSolution solution = new TestdataHardSoftScoreSolution("s1");
+        solution.setValueList(Arrays.asList(new TestdataValue("none"), new TestdataValue("reward")));
+        solution.setEntityList(Arrays.asList(new TestdataEntity("e1"), new TestdataEntity("e2")));
+        AtomicInteger step = new AtomicInteger(-1);
+
+        solver.addEventListener(event -> {
+            meterRegistry.publish(solver);
+            System.out.println(event.getNewBestScore());
+
+            // This event listener is added before the best score event listener
+            // so it is one step behind
+            if (step.get() != -1) {
+                assertThat(
+                        meterRegistry.getMeasurement(SolverMetric.BEST_SCORE.getMeterId() + ".hard.score", "VALUE").intValue())
+                                .isEqualTo(0);
+            }
+            if (step.get() == 0) {
+                assertThat(
+                        meterRegistry.getMeasurement(SolverMetric.BEST_SCORE.getMeterId() + ".soft.score", "VALUE").intValue())
+                                .isEqualTo(0);
+            } else if (step.get() == 1) {
+                assertThat(
+                        meterRegistry.getMeasurement(SolverMetric.BEST_SCORE.getMeterId() + ".soft.score", "VALUE").intValue())
+                                .isEqualTo(1);
+            } else if (step.get() == 2) {
+                assertThat(
+                        meterRegistry.getMeasurement(SolverMetric.BEST_SCORE.getMeterId() + ".soft.score", "VALUE").intValue())
+                                .isEqualTo(2);
+            }
+            step.incrementAndGet();
+        });
+        solution = solver.solve(solution);
+
+        assertThat(step.get()).isEqualTo(2);
+        meterRegistry.publish(solver);
+        assertThat(solution).isNotNull();
+        assertThat(meterRegistry.getMeasurement(SolverMetric.BEST_SCORE.getMeterId() + ".hard.score", "VALUE").intValue())
+                .isEqualTo(0);
+        assertThat(meterRegistry.getMeasurement(SolverMetric.BEST_SCORE.getMeterId() + ".soft.score", "VALUE").intValue())
+                .isEqualTo(2);
     }
 
     public static class ErrorThrowingConstraintProvider implements ConstraintProvider {
@@ -137,25 +372,24 @@ public class DefaultSolverTest {
         SolverFactory<TestdataSolution> solverFactory = SolverFactory.create(solverConfig);
 
         Solver<TestdataSolution> solver = solverFactory.buildSolver();
-        meterRegistry.publish();
-        assertThat(meterRegistry.getMeasurement("optaplanner.solver.errors", "COUNT")).isZero();
-        assertThat(meterRegistry.getMeasurement("optaplanner.solver.solve-length", "ACTIVE_TASKS")).isZero();
+        ((DefaultSolver<TestdataSolution>) solver).setMonitorTagMap(Map.of("solver.id", "solveMetricsError"));
+        meterRegistry.publish(solver);
 
         TestdataSolution solution = new TestdataSolution("s1");
         solution.setValueList(Arrays.asList(new TestdataValue("v1"), new TestdataValue("v2")));
         solution.setEntityList(Arrays.asList(new TestdataEntity("e1"), new TestdataEntity("e2")));
 
-        meterRegistry.publish();
+        meterRegistry.publish(solver);
 
         assertThatCode(() -> {
             solver.solve(solution);
-        }).hasMessageContaining("Thrown exception in constraint provider");
+        }).hasStackTraceContaining("Thrown exception in constraint provider");
 
         meterRegistry.getClock().addSeconds(1);
-        meterRegistry.publish();
-        assertThat(meterRegistry.getMeasurement("optaplanner.solver.solve-length", "ACTIVE_TASKS")).isZero();
-        assertThat(meterRegistry.getMeasurement("optaplanner.solver.solve-length", "DURATION")).isZero();
-        assertThat(meterRegistry.getMeasurement("optaplanner.solver.errors", "COUNT")).isOne();
+        meterRegistry.publish(solver);
+        assertThat(meterRegistry.getMeasurement(SolverMetric.SOLVE_DURATION.getMeterId(), "ACTIVE_TASKS")).isZero();
+        assertThat(meterRegistry.getMeasurement(SolverMetric.SOLVE_DURATION.getMeterId(), "DURATION")).isZero();
+        assertThat(meterRegistry.getMeasurement(SolverMetric.ERROR_COUNT.getMeterId(), "COUNT")).isOne();
     }
 
     @Test

@@ -23,7 +23,6 @@ import static org.optaplanner.examples.nurserostering.optional.score.EmployeeCon
 
 import java.time.DayOfWeek;
 
-import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.optaplanner.core.api.score.buildin.hardsoft.HardSoftScore;
 import org.optaplanner.core.api.score.stream.Constraint;
 import org.optaplanner.core.api.score.stream.ConstraintCollectors;
@@ -32,6 +31,7 @@ import org.optaplanner.core.api.score.stream.ConstraintProvider;
 import org.optaplanner.core.api.score.stream.Joiners;
 import org.optaplanner.examples.common.experimental.ExperimentalConstraintCollectors;
 import org.optaplanner.examples.common.experimental.api.ConsecutiveInfo;
+import org.optaplanner.examples.common.util.Pair;
 import org.optaplanner.examples.nurserostering.domain.Employee;
 import org.optaplanner.examples.nurserostering.domain.NurseRosterParametrization;
 import org.optaplanner.examples.nurserostering.domain.ShiftAssignment;
@@ -62,8 +62,6 @@ public class NurseRosteringConstraintProvider implements ConstraintProvider {
                 consecutiveWorkingDays(constraintFactory),
                 consecutiveFreeDays(constraintFactory),
                 maximumConsecutiveFreeDaysNoAssignments(constraintFactory),
-                consecutiveFreeDaysFirstBreak(constraintFactory),
-                consecutiveFreeDaysFinalBreak(constraintFactory),
                 consecutiveWorkingWeekends(constraintFactory),
                 startOnNotFirstDayOfWeekend(constraintFactory),
                 endOnNotLastDayOfWeekend(constraintFactory),
@@ -153,11 +151,46 @@ public class NurseRosteringConstraintProvider implements ConstraintProvider {
                         (contract, shift) -> contract,
                         ExperimentalConstraintCollectors.consecutive((contract, shift) -> shift.getShiftDate(),
                                 ShiftDate::getDayIndex))
-                .flattenLast(ConsecutiveInfo::getBreaks)
-                .filter((employee, contract, breakInfo) -> contract.isViolated(breakInfo.getLength() - 1))
+                .flattenLast(ConsecutiveInfo::getConsecutiveSequences)
+                .join(NurseRosterParametrization.class)
+                .filter((employee, contract, shiftSequence, nrp) -> {
+                    if (!shiftSequence.isFirst() && contract.isViolated(shiftSequence.getPreviousBreak().getLength() - 1)) {
+                        return true;
+                    }
+                    if (shiftSequence.isFirst()) {
+                        int length = shiftSequence.getFirstItem().getDayIndex() - nrp.getFirstShiftDateDayIndex();
+                        if (length > 0 && contract.isViolated(length)) {
+                            return true;
+                        }
+                    }
+                    if (shiftSequence.isLast()) {
+                        int length = nrp.getLastShiftDateDayIndex() - shiftSequence.getLastItem().getDayIndex();
+                        if (length > 0 && contract.isViolated(length)) {
+                            return true;
+                        }
+                    }
+                    return false;
+                })
                 .penalize("consecutiveFreeDays", HardSoftScore.ONE_SOFT,
-                        (employee, contract, breakInfo) -> contract
-                                .getViolationAmount(breakInfo.getLength() - 1));
+                        (employee, contract, shiftSequence, nrp) -> {
+                            int total = 0;
+                            if (!shiftSequence.isFirst()) {
+                                total += contract.getViolationAmount(shiftSequence.getPreviousBreak().getLength() - 1);
+                            }
+                            if (shiftSequence.isFirst()) {
+                                int length = shiftSequence.getFirstItem().getDayIndex() - nrp.getFirstShiftDateDayIndex();
+                                if (length > 0) {
+                                    total += contract.getViolationAmount(length);
+                                }
+                            }
+                            if (shiftSequence.isLast()) {
+                                int length = nrp.getLastShiftDateDayIndex() - shiftSequence.getLastItem().getDayIndex();
+                                if (length > 0) {
+                                    total += contract.getViolationAmount(length);
+                                }
+                            }
+                            return total;
+                        });
     }
 
     Constraint maximumConsecutiveFreeDaysNoAssignments(ConstraintFactory constraintFactory) {
@@ -175,49 +208,6 @@ public class NurseRosteringConstraintProvider implements ConstraintProvider {
                 .penalize("maximumConsecutiveFreeDays (no shifts)", HardSoftScore.ONE_SOFT,
                         (contract, employee, nrp) -> contract
                                 .getViolationAmount(nrp.getLastShiftDateDayIndex() - nrp.getFirstShiftDateDayIndex() + 1));
-    }
-
-    Constraint consecutiveFreeDaysFirstBreak(ConstraintFactory constraintFactory) {
-        return constraintFactory.from(MinMaxContractLine.class)
-                .filter(minMaxContractLine -> minMaxContractLine
-                        .getContractLineType() == ContractLineType.CONSECUTIVE_FREE_DAYS &&
-                        minMaxContractLine.isEnabled())
-                .join(ShiftAssignment.class,
-                        Joiners.equal(ContractLine::getContract, ShiftAssignment::getContract))
-                .groupBy((contract, shiftAssignment) -> contract,
-                        (contract, shiftAssignment) -> shiftAssignment.getEmployee(),
-                        ConstraintCollectors.<MinMaxContractLine, ShiftAssignment, ShiftAssignment> min(
-                                (contract, shiftAssignment) -> shiftAssignment))
-                .join(NurseRosterParametrization.class)
-                .filter((contract, employee, shiftAssignment,
-                        nrp) -> nrp.getFirstShiftDate() != shiftAssignment.getShiftDate() && contract
-                                .isViolated(shiftAssignment.getShiftDateDayIndex() - nrp.getFirstShiftDateDayIndex()))
-                .penalize("consecutiveFreeDays (first break)",
-                        HardSoftScore.ONE_SOFT,
-                        (contractLine, employee, shiftAssignment, nrp) -> contractLine
-                                .getViolationAmount(shiftAssignment.getShiftDateDayIndex() - nrp.getFirstShiftDateDayIndex()));
-    }
-
-    Constraint consecutiveFreeDaysFinalBreak(ConstraintFactory constraintFactory) {
-        return constraintFactory.from(MinMaxContractLine.class)
-                .filter(minMaxContractLine -> minMaxContractLine
-                        .getContractLineType() == ContractLineType.CONSECUTIVE_FREE_DAYS &&
-                        minMaxContractLine.isEnabled())
-                .join(ShiftAssignment.class,
-                        Joiners.equal(ContractLine::getContract, ShiftAssignment::getContract))
-                .groupBy((contract, shiftAssignment) -> contract,
-                        (contract, shiftAssignment) -> shiftAssignment.getEmployee(),
-                        ConstraintCollectors.<MinMaxContractLine, ShiftAssignment, ShiftAssignment> max(
-                                (contract, shiftAssignment) -> shiftAssignment))
-                .join(NurseRosterParametrization.class)
-                .filter((contractLine, employee, shiftAssignment,
-                        nrp) -> nrp.getLastShiftDate() != shiftAssignment.getShiftDate() &&
-                                contractLine
-                                        .isViolated(nrp.getLastShiftDateDayIndex() - shiftAssignment.getShiftDateDayIndex()))
-                .penalize("consecutiveFreeDays (final break)",
-                        HardSoftScore.ONE_SOFT,
-                        (contractLine, employee, shiftAssignment, nrp) -> contractLine
-                                .getViolationAmount(nrp.getLastShiftDateDayIndex() - shiftAssignment.getShiftDateDayIndex()));
     }
 
     // Min/Max consecutive working weekends
@@ -292,7 +282,7 @@ public class NurseRosteringConstraintProvider implements ConstraintProvider {
                         Joiners.equal((contract, date) -> contract.getContract(), ShiftAssignment::getContract))
                 .groupBy((contract, date, sa) -> contract,
                         (contract, date, sa) -> sa.getEmployee(),
-                        (contract, date, sa) -> ImmutablePair.of(sa.getShiftType(), date), // No 4-key groupBy overload
+                        (contract, date, sa) -> Pair.of(sa.getShiftType(), date), // No 4-key groupBy overload
                         ConstraintCollectors.countTri())
                 .filter((contract, employee, type, count) -> count < employee.getWeekendLength())
                 .penalize("identicalShiftTypesDuringWeekend", HardSoftScore.ONE_SOFT,

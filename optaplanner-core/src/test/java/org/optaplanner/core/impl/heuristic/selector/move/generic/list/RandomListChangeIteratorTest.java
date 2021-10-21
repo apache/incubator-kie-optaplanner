@@ -27,7 +27,6 @@ import static org.optaplanner.core.impl.testdata.util.PlannerTestUtils.mockScore
 
 import java.util.Random;
 
-import org.apache.commons.lang3.tuple.Pair;
 import org.junit.jupiter.api.Test;
 import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
 import org.optaplanner.core.impl.domain.variable.descriptor.ListVariableDescriptor;
@@ -37,6 +36,7 @@ import org.optaplanner.core.impl.score.director.InnerScoreDirector;
 import org.optaplanner.core.impl.testdata.domain.list.TestdataListEntity;
 import org.optaplanner.core.impl.testdata.domain.list.TestdataListSolution;
 import org.optaplanner.core.impl.testdata.domain.list.TestdataListValue;
+import org.optaplanner.core.impl.util.Pair;
 
 class RandomListChangeIteratorTest {
 
@@ -86,7 +86,7 @@ class RandomListChangeIteratorTest {
             Object expectedEntity,
             int expectedListIndex) {
         Pair<Object, Integer> pair = randomListChangeIterator.entityAndIndexFromGlobalIndex(globalIndex);
-        assertThat(pair.getLeft()).isEqualTo(expectedEntity);
-        assertThat(pair.getRight()).isEqualTo(expectedListIndex);
+        assertThat(pair.getKey()).isEqualTo(expectedEntity);
+        assertThat(pair.getValue()).isEqualTo(expectedListIndex);
     }
 }

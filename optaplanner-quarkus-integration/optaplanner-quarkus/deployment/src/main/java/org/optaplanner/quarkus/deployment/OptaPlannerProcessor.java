@@ -26,13 +26,13 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
 import javax.inject.Singleton;
 
-import org.apache.commons.lang3.ObjectUtils;
 import org.jboss.jandex.AnnotationInstance;
 import org.jboss.jandex.AnnotationTarget;
 import org.jboss.jandex.AnnotationValue;
@@ -287,7 +287,7 @@ class OptaPlannerProcessor {
             final List<Class<?>> planningEntityClasses = solverConfig.getEntityClassList();
             // TODO Don't duplicate defaults by using ConstraintVerifier.create(solverConfig) instead
             final ConstraintStreamImplType constraintStreamImplType =
-                    ObjectUtils.defaultIfNull(solverConfig.getScoreDirectorFactoryConfig().getConstraintStreamImplType(),
+                    Objects.requireNonNullElse(solverConfig.getScoreDirectorFactoryConfig().getConstraintStreamImplType(),
                             ConstraintStreamImplType.DROOLS);
             final boolean droolsAlphaNetworkCompilationEnabled =
                     solverConfig.getScoreDirectorFactoryConfig().isDroolsAlphaNetworkCompilationEnabled();
@@ -494,6 +494,12 @@ class OptaPlannerProcessor {
                                 + "Maybe add the dependency org.kie.kogito:kogito-quarkus-rules"
                                 + "\nMaybe use a " + ConstraintProvider.class.getSimpleName() + " instead of the scoreDRL.");
             }
+        }
+
+        if (solverConfig.getScoreDirectorFactoryConfig().getKieBaseConfigurationProperties() != null) {
+            throw new IllegalStateException("Using kieBaseConfigurationProperties ("
+                    + solverConfig.getScoreDirectorFactoryConfig().getKieBaseConfigurationProperties()
+                    + ") in Quarkus, which is unsupported.");
         }
     }
 

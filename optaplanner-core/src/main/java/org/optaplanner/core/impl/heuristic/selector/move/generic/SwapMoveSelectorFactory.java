@@ -16,11 +16,10 @@
 
 package org.optaplanner.core.impl.heuristic.selector.move.generic;
 
-import static org.apache.commons.lang3.ObjectUtils.defaultIfNull;
-
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Objects;
 
 import org.optaplanner.core.api.domain.variable.PlanningCollectionVariable;
 import org.optaplanner.core.config.heuristic.selector.common.SelectionCacheType;
@@ -58,7 +57,7 @@ public class SwapMoveSelectorFactory<Solution_>
         EntitySelector<Solution_> leftEntitySelector = EntitySelectorFactory.<Solution_> create(entitySelectorConfig_)
                 .buildEntitySelector(configPolicy, minimumCacheType,
                         SelectionOrder.fromRandomSelectionBoolean(randomSelection));
-        EntitySelectorConfig rightEntitySelectorConfig = defaultIfNull(config.getSecondaryEntitySelectorConfig(),
+        EntitySelectorConfig rightEntitySelectorConfig = Objects.requireNonNullElse(config.getSecondaryEntitySelectorConfig(),
                 entitySelectorConfig_);
         EntitySelector<Solution_> rightEntitySelector =
                 EntitySelectorFactory.<Solution_> create(rightEntitySelectorConfig)

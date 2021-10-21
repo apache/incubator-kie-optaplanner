@@ -23,8 +23,8 @@ import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-import org.apache.commons.lang3.tuple.Pair;
 import org.optaplanner.examples.common.domain.AbstractPersistable;
+import org.optaplanner.examples.common.util.Pair;
 import org.optaplanner.examples.taskassigning_listvariable.domain.Affinity;
 import org.optaplanner.examples.taskassigning_listvariable.domain.Customer;
 import org.optaplanner.examples.taskassigning_listvariable.domain.Employee;
@@ -96,7 +96,7 @@ public class TmpBridgeTaskAssigningXmlSolutionFileIO implements SolutionFileIO<T
                     employee.setAffinityMap(origEmployee.getAffinityMap().entrySet().stream()
                             .map(customerAffinityEntry -> Pair.of(customerByIdMap.get(customerAffinityEntry.getKey().getId()),
                                     Affinity.valueOf(customerAffinityEntry.getValue().name())))
-                            .collect(Collectors.toMap(Pair::getLeft, Pair::getRight)));
+                            .collect(Collectors.toMap(Pair::getKey, Pair::getValue)));
                     // Tasks will be added later.
                     return employee;
                 })

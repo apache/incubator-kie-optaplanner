@@ -16,8 +16,6 @@
 
 package org.optaplanner.core.config.solver;
 
-import static org.apache.commons.lang3.ObjectUtils.defaultIfNull;
-
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -31,6 +29,7 @@ import java.time.Duration;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.concurrent.ThreadFactory;
 import java.util.function.Consumer;
 
@@ -55,6 +54,8 @@ import org.optaplanner.core.config.phase.NoChangePhaseConfig;
 import org.optaplanner.core.config.phase.PhaseConfig;
 import org.optaplanner.core.config.phase.custom.CustomPhaseConfig;
 import org.optaplanner.core.config.score.director.ScoreDirectorFactoryConfig;
+import org.optaplanner.core.config.solver.monitoring.MonitoringConfig;
+import org.optaplanner.core.config.solver.monitoring.SolverMetric;
 import org.optaplanner.core.config.solver.random.RandomType;
 import org.optaplanner.core.config.solver.termination.TerminationConfig;
 import org.optaplanner.core.config.util.ConfigUtils;
@@ -77,12 +78,13 @@ import org.optaplanner.core.impl.solver.random.RandomFactory;
         "moveThreadCount",
         "moveThreadBufferSize",
         "threadFactoryClass",
+        "monitoringConfig",
         "solutionClass",
         "entityClassList",
         "domainAccessType",
         "scoreDirectorFactoryConfig",
         "terminationConfig",
-        "phaseConfigList"
+        "phaseConfigList",
 })
 public class SolverConfig extends AbstractConfig<SolverConfig> {
 
@@ -263,6 +265,9 @@ public class SolverConfig extends AbstractConfig<SolverConfig> {
     })
     protected List<PhaseConfig> phaseConfigList = null;
 
+    @XmlElement(name = "monitoring")
+    protected MonitoringConfig monitoringConfig = null;
+
     // ************************************************************************
     // Constructors and simple getters/setters
     // ************************************************************************
@@ -428,6 +433,14 @@ public class SolverConfig extends AbstractConfig<SolverConfig> {
         this.phaseConfigList = phaseConfigList;
     }
 
+    public MonitoringConfig getMonitoringConfig() {
+        return monitoringConfig;
+    }
+
+    public void setMonitoringConfig(MonitoringConfig monitoringConfig) {
+        this.monitoringConfig = monitoringConfig;
+    }
+
     // ************************************************************************
     // With methods
     // ************************************************************************
@@ -564,16 +577,27 @@ public class SolverConfig extends AbstractConfig<SolverConfig> {
         return this;
     }
 
+    public SolverConfig withMonitoringConfig(MonitoringConfig monitoringConfig) {
+        this.monitoringConfig = monitoringConfig;
+        return this;
+    }
+
     // ************************************************************************
     // Smart getters
     // ************************************************************************
 
     public EnvironmentMode determineEnvironmentMode() {
-        return defaultIfNull(environmentMode, EnvironmentMode.REPRODUCIBLE);
+        return Objects.requireNonNullElse(environmentMode, EnvironmentMode.REPRODUCIBLE);
     }
 
     public DomainAccessType determineDomainAccessType() {
-        return defaultIfNull(domainAccessType, DomainAccessType.REFLECTION);
+        return Objects.requireNonNullElse(domainAccessType, DomainAccessType.REFLECTION);
+    }
+
+    public MonitoringConfig determineMetricConfig() {
+        return Objects.requireNonNullElse(monitoringConfig,
+                new MonitoringConfig().withSolverMetricList(Arrays.asList(SolverMetric.SOLVE_DURATION, SolverMetric.ERROR_COUNT,
+                        SolverMetric.SCORE_CALCULATION_COUNT)));
     }
 
     // ************************************************************************
@@ -622,6 +646,7 @@ public class SolverConfig extends AbstractConfig<SolverConfig> {
                 inheritedConfig.getScoreDirectorFactoryConfig());
         terminationConfig = ConfigUtils.inheritConfig(terminationConfig, inheritedConfig.getTerminationConfig());
         phaseConfigList = ConfigUtils.inheritMergeableListConfig(phaseConfigList, inheritedConfig.getPhaseConfigList());
+        monitoringConfig = ConfigUtils.inheritConfig(monitoringConfig, inheritedConfig.getMonitoringConfig());
         return this;
     }
 
