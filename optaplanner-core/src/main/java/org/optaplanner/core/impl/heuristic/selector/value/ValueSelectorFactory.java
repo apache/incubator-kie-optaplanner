@@ -108,18 +108,19 @@ public class ValueSelectorFactory<Solution_>
             EntityDescriptor<Solution_> entityDescriptor, SelectionCacheType minimumCacheType,
             SelectionOrder inheritedSelectionOrder) {
         return buildValueSelector(configPolicy, entityDescriptor, minimumCacheType, inheritedSelectionOrder,
-                configPolicy.isReinitializeVariableFilterEnabled());
+                configPolicy.isReinitializeVariableFilterEnabled(), false);
     }
 
     public ValueSelector<Solution_> buildValueSelector(HeuristicConfigPolicy<Solution_> configPolicy,
             EntityDescriptor<Solution_> entityDescriptor, SelectionCacheType minimumCacheType,
-            SelectionOrder inheritedSelectionOrder, boolean applyReinitializeVariableFiltering) {
+            SelectionOrder inheritedSelectionOrder, boolean applyReinitializeVariableFiltering,
+            boolean applyReassignValueFiltering) {
         GenuineVariableDescriptor<Solution_> variableDescriptor = deduceGenuineVariableDescriptor(
                 downcastEntityDescriptor(configPolicy, entityDescriptor));
         if (config.getMimicSelectorRef() != null) {
             ValueSelector<Solution_> valueSelector = buildMimicReplaying(configPolicy);
-            valueSelector = applyReinitializeVariableFiltering(
-                    applyReinitializeVariableFiltering, variableDescriptor, valueSelector);
+            valueSelector =
+                    applyReinitializeVariableFiltering(applyReinitializeVariableFiltering, variableDescriptor, valueSelector);
             valueSelector = applyDowncasting(valueSelector);
             return valueSelector;
         }
@@ -151,10 +152,10 @@ public class ValueSelectorFactory<Solution_>
         valueSelector = applyShuffling(resolvedCacheType, resolvedSelectionOrder, valueSelector);
         valueSelector = applyCaching(resolvedCacheType, resolvedSelectionOrder, valueSelector);
         valueSelector = applySelectedLimit(valueSelector);
-        // TODO is this change safe?
-        valueSelector = applyReinitializeVariableFiltering(
-                applyReinitializeVariableFiltering, variableDescriptor, valueSelector);
+        valueSelector = applyReassignValueFiltering(applyReassignValueFiltering, variableDescriptor, valueSelector);
         valueSelector = applyMimicRecording(configPolicy, valueSelector);
+        valueSelector =
+                applyReinitializeVariableFiltering(applyReinitializeVariableFiltering, variableDescriptor, valueSelector);
         valueSelector = applyDowncasting(valueSelector);
         return valueSelector;
     }
@@ -515,16 +516,20 @@ public class ValueSelectorFactory<Solution_>
         return valueSelector;
     }
 
+    private ValueSelector<Solution_> applyReassignValueFiltering(boolean applyReassignValueFiltering,
+            GenuineVariableDescriptor<Solution_> variableDescriptor, ValueSelector<Solution_> valueSelector) {
+        if (applyReassignValueFiltering && variableDescriptor.isListVariable()) {
+            // TODO check instanceof + nice error message
+            valueSelector =
+                    new ReassignValueToListVariableSelector<>(((EntityIndependentValueSelector<Solution_>) valueSelector));
+        }
+        return valueSelector;
+    }
+
     private ValueSelector<Solution_> applyReinitializeVariableFiltering(boolean applyReinitializeVariableFiltering,
             GenuineVariableDescriptor<Solution_> variableDescriptor, ValueSelector<Solution_> valueSelector) {
-        if (applyReinitializeVariableFiltering) {
-            if (variableDescriptor.isListVariable()) {
-                // TODO check instanceof + nice error message
-                valueSelector =
-                        new ReassignValueToListVariableSelector<>(((EntityIndependentValueSelector<Solution_>) valueSelector));
-            } else {
-                valueSelector = new ReinitializeVariableValueSelector<>(valueSelector);
-            }
+        if (applyReinitializeVariableFiltering && !variableDescriptor.isListVariable()) {
+            valueSelector = new ReinitializeVariableValueSelector<>(valueSelector);
         }
         return valueSelector;
     }

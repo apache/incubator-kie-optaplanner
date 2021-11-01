@@ -52,8 +52,8 @@ public class QueuedValuePlacerFactory<Solution_>
                         : deduceEntityDescriptor(configPolicy.getSolutionDescriptor(), config.getEntityClass());
         ValueSelectorConfig valueSelectorConfig_ = buildValueSelectorConfig(configPolicy, entityDescriptor);
         ValueSelector<Solution_> valueSelector = ValueSelectorFactory.<Solution_> create(valueSelectorConfig_)
-                // TODO check whether this change is safe
-                .buildValueSelector(configPolicy, entityDescriptor, SelectionCacheType.PHASE, SelectionOrder.ORIGINAL);
+                .buildValueSelector(configPolicy, entityDescriptor, SelectionCacheType.PHASE, SelectionOrder.ORIGINAL,
+                        false, true);
 
         MoveSelectorConfig moveSelectorConfig_ = config.getMoveSelectorConfig() == null
                 ? buildChangeMoveSelectorConfig(configPolicy, valueSelectorConfig_.getId(),
