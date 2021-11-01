@@ -31,6 +31,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Timeout;
 import org.optaplanner.core.api.solver.Solver;
@@ -166,6 +167,7 @@ public class DefaultPartitionedSearchPhaseTest {
     }
 
     @Test
+    @Disabled("PLANNER-2563")
     @Timeout(5)
     public void shutdownMainThreadAbruptly() throws InterruptedException {
         final int partSize = 5;
