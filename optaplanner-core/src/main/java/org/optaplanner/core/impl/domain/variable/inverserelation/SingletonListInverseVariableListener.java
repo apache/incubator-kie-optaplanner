@@ -49,9 +49,7 @@ public class SingletonListInverseVariableListener<Solution_>
 
     @Override
     public void beforeVariableChanged(ScoreDirector<Solution_> scoreDirector, Object entity) {
-        // TODO maybe set all indexes to null
-        // When we support over-constrained planning (e.g. there is not enough Employees to assign all tasks), then
-        // an unassigned planning value should have a null index.
+        retract((InnerScoreDirector<Solution_, ?>) scoreDirector, entity);
     }
 
     @Override
