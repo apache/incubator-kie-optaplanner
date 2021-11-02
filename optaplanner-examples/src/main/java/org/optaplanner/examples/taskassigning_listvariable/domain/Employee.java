@@ -16,6 +16,7 @@
 
 package org.optaplanner.examples.taskassigning_listvariable.domain;
 
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -55,6 +56,7 @@ public class Employee extends AbstractPersistable implements Labeled {
         this.fullName = fullName;
         skillSet = new LinkedHashSet<>();
         affinityMap = new LinkedHashMap<>();
+        tasks = new ArrayList<>();
     }
 
     public String getFullName() {
