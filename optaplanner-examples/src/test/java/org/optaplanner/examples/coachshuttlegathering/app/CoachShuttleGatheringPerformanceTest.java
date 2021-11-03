@@ -23,7 +23,8 @@ import org.optaplanner.core.config.solver.EnvironmentMode;
 import org.optaplanner.examples.coachshuttlegathering.domain.CoachShuttleGatheringSolution;
 import org.optaplanner.examples.common.app.SolverPerformanceTest;
 
-public class CoachShuttleGatheringPerformanceTest extends SolverPerformanceTest<CoachShuttleGatheringSolution, HardSoftLongScore> {
+public class CoachShuttleGatheringPerformanceTest
+        extends SolverPerformanceTest<CoachShuttleGatheringSolution, HardSoftLongScore> {
 
     private static final String UNSOLVED_DATA_FILE = "data/coachshuttlegathering/unsolved/demo01.xml";
 

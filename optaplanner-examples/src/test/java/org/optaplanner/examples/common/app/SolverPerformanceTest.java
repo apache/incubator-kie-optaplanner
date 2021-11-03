@@ -112,7 +112,7 @@ public abstract class SolverPerformanceTest<Solution_, Score_ extends Score<Scor
         SolverConfig solverConfig = SolverConfig.createFromXmlResource(solverConfigResource);
         solverConfig.withEnvironmentMode(environmentMode)
                 .withTerminationConfig(new TerminationConfig()
-                        .withBestScoreLimit(bestScoreLimit.toShortString()))
+                        .withBestScoreLimit(bestScoreLimit.toString()))
                 .withMoveThreadCount(moveThreadCount);
         return SolverFactory.create(solverConfig);
     }

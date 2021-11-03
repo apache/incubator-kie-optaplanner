@@ -35,7 +35,7 @@ public class TspPerformanceTest extends SolverPerformanceTest<TspSolution, Simpl
     @Override
     protected Stream<TestData<SimpleLongScore>> testData() {
         return Stream.of(
-                testData(UNSOLVED_DATA_FILE, SimpleLongScore.of(216469618), EnvironmentMode.REPRODUCIBLE),
-                testData(UNSOLVED_DATA_FILE, SimpleLongScore.of(217458433), EnvironmentMode.FAST_ASSERT));
+                testData(UNSOLVED_DATA_FILE, SimpleLongScore.of(-216469618), EnvironmentMode.REPRODUCIBLE),
+                testData(UNSOLVED_DATA_FILE, SimpleLongScore.of(-217458433), EnvironmentMode.FAST_ASSERT));
     }
 }

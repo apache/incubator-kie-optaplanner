@@ -123,7 +123,6 @@ public class InvestmentBiQuantityTransferMoveIteratorFactory
                     .orElseThrow();
         }
 
-
         @Override
         public void remove() {
             throw new UnsupportedOperationException("The optional operation remove() is not supported.");

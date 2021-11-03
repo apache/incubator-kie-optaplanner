@@ -18,7 +18,6 @@ package org.optaplanner.examples.vehiclerouting.app;
 
 import java.util.stream.Stream;
 
-import org.optaplanner.core.api.score.buildin.hardsoft.HardSoftScore;
 import org.optaplanner.core.api.score.buildin.hardsoftlong.HardSoftLongScore;
 import org.optaplanner.core.config.solver.EnvironmentMode;
 import org.optaplanner.examples.common.app.SolverPerformanceTest;

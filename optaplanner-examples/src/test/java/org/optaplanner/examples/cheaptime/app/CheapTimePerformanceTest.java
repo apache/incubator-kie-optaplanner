@@ -35,7 +35,9 @@ public class CheapTimePerformanceTest extends SolverPerformanceTest<CheapTimeSol
     @Override
     protected Stream<TestData<HardMediumSoftLongScore>> testData() {
         return Stream.of(
-                testData(UNSOLVED_DATA_FILE, HardMediumSoftLongScore.of(0, -1043600344878178L, -24077), EnvironmentMode.REPRODUCIBLE),
-                testData(UNSOLVED_DATA_FILE, HardMediumSoftLongScore.of(0, -1047922570736971L, -23863), EnvironmentMode.FAST_ASSERT));
+                testData(UNSOLVED_DATA_FILE, HardMediumSoftLongScore.of(0, -1043600344878178L, -24077),
+                        EnvironmentMode.REPRODUCIBLE),
+                testData(UNSOLVED_DATA_FILE, HardMediumSoftLongScore.of(0, -1047922570736971L, -23863),
+                        EnvironmentMode.FAST_ASSERT));
     }
 }
