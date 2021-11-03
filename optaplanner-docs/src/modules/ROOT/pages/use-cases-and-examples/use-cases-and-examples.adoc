@@ -1,11 +1,8 @@
 [[useCasesAndExamples]]
 = Use cases and examples
 :doctype: book
-:imagesdir: ..
 :sectnums:
-:toc: left
 :icons: font
-:experimental:
 
 include::examples-overview/examples-overview.adoc[leveloffset=+1]
 

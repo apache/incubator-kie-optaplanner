@@ -1,11 +1,8 @@
 [[designPatterns]]
 = Design patterns
 :doctype: book
-:imagesdir: ..
 :sectnums:
-:toc: left
 :icons: font
-:experimental:
 
 
 [[designPatternsIntroduction]]

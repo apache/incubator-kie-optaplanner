@@ -1,11 +1,8 @@
 [[benchmarker]]
 = Benchmarking and tweaking
 :doctype: book
-:imagesdir: ..
 :sectnums:
-:toc: left
 :icons: font
-:experimental:
 
 
 [[findTheBestSolverConfiguration]]

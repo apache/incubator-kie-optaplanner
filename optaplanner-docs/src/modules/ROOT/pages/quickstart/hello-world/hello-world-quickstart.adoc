@@ -3,9 +3,7 @@
 :doctype: book
 :imagesdir: ../..
 :sectnums:
-:toc: left
 :icons: font
-:experimental:
 :quickstartsCloneUrl: https://github.com/kiegroup/optaplanner-quickstarts
 :quickstartsArchiveUrl: https://www.optaplanner.org/download/download.html
 :helloWorldJavaQuickstartUrl: https://github.com/kiegroup/optaplanner-quickstarts/tree/stable/hello-world

@@ -1,11 +1,8 @@
 [[quickStart]]
 = Quick start
 :doctype: book
-:imagesdir: ..
 :sectnums:
-:toc: left
 :icons: font
-:experimental:
 
 include::overview/overview-quickstarts.adoc[leveloffset=+1]
 

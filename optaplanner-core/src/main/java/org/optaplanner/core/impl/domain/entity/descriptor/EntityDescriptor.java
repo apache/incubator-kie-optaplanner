@@ -88,6 +88,7 @@ public class EntityDescriptor<Solution_> {
 
     private final Class<?> entityClass;
     private final Predicate<Object> isInitializedPredicate;
+    private final Predicate<Object> hasNoNullVariables;
     // Only declared movable filter, excludes inherited and descending movable filters
     private SelectionFilter<Solution_, Object> declaredMovableEntitySelectionFilter;
     private SelectionSorter<Solution_, Object> decreasingDifficultySorter;
@@ -118,6 +119,7 @@ public class EntityDescriptor<Solution_> {
         this.solutionDescriptor = solutionDescriptor;
         this.entityClass = entityClass;
         isInitializedPredicate = this::isInitialized;
+        hasNoNullVariables = this::hasNoNullVariables;
         if (entityClass.getPackage() == null) {
             LOGGER.warn("The entityClass ({}) should be in a proper java package.", entityClass);
         }
@@ -127,10 +129,16 @@ public class EntityDescriptor<Solution_> {
      * Using entityDescriptor::isInitialized directly breaks node sharing
      * because it creates multiple instances of this {@link Predicate}.
      *
+     * @deprecated in favor of {@link #getHasNoNullVariables()}.
      * @return never null, always the same {@link Predicate} instance to {@link #isInitialized(Object)}
      */
+    @Deprecated(forRemoval = true)
     public Predicate<Object> getIsInitializedPredicate() {
         return isInitializedPredicate;
+    }
+
+    public Predicate<Object> getHasNoNullVariables() {
+        return hasNoNullVariables;
     }
 
     // ************************************************************************
@@ -577,6 +585,15 @@ public class EntityDescriptor<Solution_> {
     public boolean isInitialized(Object entity) {
         for (GenuineVariableDescriptor<Solution_> variableDescriptor : effectiveGenuineVariableDescriptorList) {
             if (!variableDescriptor.isInitialized(entity)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    public boolean hasNoNullVariables(Object entity) {
+        for (GenuineVariableDescriptor<Solution_> variableDescriptor : effectiveGenuineVariableDescriptorList) {
+            if (variableDescriptor.getValue(entity) == null) {
                 return false;
             }
         }

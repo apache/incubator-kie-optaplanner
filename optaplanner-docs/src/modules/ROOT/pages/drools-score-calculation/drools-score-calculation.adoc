@@ -1,11 +1,8 @@
 [[droolsScoreCalculation]]
 = Drools score calculation
 :doctype: book
-:imagesdir: ..
 :sectnums:
-:toc: left
 :icons: font
-:experimental:
 
 
 [[droolsScoreCalculationOverview]]

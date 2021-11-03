@@ -1,11 +1,8 @@
 [[exhaustiveSearch]]
 = Exhaustive search
 :doctype: book
-:imagesdir: ..
 :sectnums:
-:toc: left
 :icons: font
-:experimental:
 
 
 [[exhaustiveSearchOverview]]

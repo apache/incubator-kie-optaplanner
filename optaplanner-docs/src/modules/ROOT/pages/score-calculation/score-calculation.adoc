@@ -1,11 +1,8 @@
 [[scoreCalculation]]
 = Score calculation
 :doctype: book
-:imagesdir: ..
 :sectnums:
-:toc: left
 :icons: font
-:experimental:
 
 
 [[scoreTerminology]]

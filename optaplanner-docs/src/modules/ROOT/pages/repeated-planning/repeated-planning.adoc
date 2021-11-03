@@ -1,11 +1,8 @@
 [[repeatedPlanning]]
 = Repeated planning
 :doctype: book
-:imagesdir: ..
 :sectnums:
-:toc: left
 :icons: font
-:experimental:
 
 [[introductionToRepeatedPlanning]]
 == Introduction to repeated planning

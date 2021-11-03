@@ -1,11 +1,10 @@
 [[plannerIntroduction]]
 = OptaPlanner Introduction
+// Redirect to this page from .../docs/optaplanner/latest.
+:page-aliases: ../index.adoc
 :doctype: book
-:imagesdir: ..
 :sectnums:
-:toc: left
 :icons: font
-:experimental:
 
 [[whatIsOptaPlanner]]
 == What is OptaPlanner?

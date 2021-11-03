@@ -1,11 +1,8 @@
 [[optimizationAlgorithms]]
 = Optimization algorithms
 :doctype: book
-:imagesdir: ..
 :sectnums:
-:toc: left
 :icons: font
-:experimental:
 
 
 [[searchSpaceSize]]

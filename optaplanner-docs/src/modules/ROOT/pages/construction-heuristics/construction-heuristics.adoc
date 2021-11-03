@@ -1,11 +1,8 @@
 [[constructionHeuristics]]
 = Construction heuristics
 :doctype: book
-:imagesdir: ..
 :sectnums:
-:toc: left
 :icons: font
-:experimental:
 
 
 [[constructionHeuristicsOverview]]

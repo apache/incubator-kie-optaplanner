@@ -1,11 +1,8 @@
 [[partitionedSearch]]
 = Partitioned search
 :doctype: book
-:imagesdir: ..
 :sectnums:
-:toc: left
 :icons: font
-:experimental:
 
 
 [[partitionedSearchAlgorithm]]

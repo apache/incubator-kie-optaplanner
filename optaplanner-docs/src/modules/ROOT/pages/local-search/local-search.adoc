@@ -1,11 +1,8 @@
 [[localSearch]]
 = Local search
 :doctype: book
-:imagesdir: ..
 :sectnums:
-:toc: left
 :icons: font
-:experimental:
 
 
 [[localSearchOverview]]

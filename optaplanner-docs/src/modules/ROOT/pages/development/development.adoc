@@ -1,11 +1,8 @@
 [[development]]
 = Development
 :doctype: book
-:imagesdir: ..
 :sectnums:
-:toc: left
 :icons: font
-:experimental:
 
 [[methodologyOverview]]
 == Methodology overview

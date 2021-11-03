@@ -1,11 +1,8 @@
 [[integration]]
 = Integration
 :doctype: book
-:imagesdir: ..
 :sectnums:
-:toc: left
 :icons: font
-:experimental:
 
 
 [[integrationOverview]]
