@@ -41,6 +41,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.ConcurrentMap;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.optaplanner.core.api.domain.autodiscover.AutoDiscoverMemberType;
@@ -778,6 +779,17 @@ public class SolutionDescriptor<Solution_> {
         return variableDescriptor;
     }
 
+    public List<GenuineVariableDescriptor<Solution_>> findListVariableDescriptors() {
+        return streamListVariableDescriptors().collect(Collectors.toList());
+    }
+
+    private Stream<GenuineVariableDescriptor<Solution_>> streamListVariableDescriptors() {
+        return getGenuineEntityDescriptors().stream()
+                .map(EntityDescriptor::getGenuineVariableDescriptorList)
+                .flatMap(Collection::stream)
+                .filter(GenuineVariableDescriptor::isListVariable);
+    }
+
     // ************************************************************************
     // Look up methods
     // ************************************************************************
@@ -991,10 +1003,7 @@ public class SolutionDescriptor<Solution_> {
      * @return {@code >= 0}
      */
     public int countUninitialized(Solution_ solution) {
-        return getGenuineEntityDescriptors().stream()
-                .map(EntityDescriptor::getGenuineVariableDescriptorList)
-                .flatMap(Collection::stream)
-                .filter(GenuineVariableDescriptor::isListVariable)
+        return streamListVariableDescriptors()
                 .findFirst()
                 .map(variableDescriptor -> countUnassignedValues(
                         solution, (ListVariableDescriptor<Solution_>) variableDescriptor))
