@@ -16,11 +16,9 @@
 
 package org.optaplanner.core.impl.constructionheuristic;
 
-import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.ThreadFactory;
-import java.util.stream.Collectors;
 
 import org.optaplanner.core.config.constructionheuristic.ConstructionHeuristicPhaseConfig;
 import org.optaplanner.core.config.constructionheuristic.ConstructionHeuristicType;
@@ -47,7 +45,6 @@ import org.optaplanner.core.impl.constructionheuristic.placer.EntityPlacerFactor
 import org.optaplanner.core.impl.constructionheuristic.placer.PooledEntityPlacerFactory;
 import org.optaplanner.core.impl.constructionheuristic.placer.QueuedEntityPlacerFactory;
 import org.optaplanner.core.impl.constructionheuristic.placer.QueuedValuePlacerFactory;
-import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
 import org.optaplanner.core.impl.domain.variable.descriptor.GenuineVariableDescriptor;
 import org.optaplanner.core.impl.heuristic.HeuristicConfigPolicy;
 import org.optaplanner.core.impl.phase.AbstractPhaseFactory;
@@ -80,7 +77,8 @@ public class DefaultConstructionHeuristicPhaseFactory<Solution_>
         phaseConfigPolicy.setValueSorterManner(phaseConfig.getValueSorterManner() != null ? phaseConfig.getValueSorterManner()
                 : constructionHeuristicType_.getDefaultValueSorterManner());
         EntityPlacerConfig entityPlacerConfig_;
-        List<GenuineVariableDescriptor<Solution_>> listVariableDescriptors = findListVariableDescriptors(solverConfigPolicy);
+        List<GenuineVariableDescriptor<Solution_>> listVariableDescriptors =
+                solverConfigPolicy.getSolutionDescriptor().findListVariableDescriptors();
         if (phaseConfig.getEntityPlacerConfig() == null) {
             if (listVariableDescriptors.isEmpty()) {
                 entityPlacerConfig_ = buildUnfoldedEntityPlacerConfig(phaseConfigPolicy, constructionHeuristicType_);
@@ -121,15 +119,6 @@ public class DefaultConstructionHeuristicPhaseFactory<Solution_>
             phase.setAssertShadowVariablesAreNotStaleAfterStep(true);
         }
         return phase;
-    }
-
-    private static <Solution_> List<GenuineVariableDescriptor<Solution_>> findListVariableDescriptors(
-            HeuristicConfigPolicy<Solution_> solverConfigPolicy) {
-        return solverConfigPolicy.getSolutionDescriptor().getGenuineEntityDescriptors().stream()
-                .map(EntityDescriptor::getGenuineVariableDescriptorList)
-                .flatMap(Collection::stream)
-                .filter(GenuineVariableDescriptor::isListVariable)
-                .collect(Collectors.toList());
     }
 
     private static <Solution_> QueuedValuePlacerConfig buildListVariablePlacerConfig(
