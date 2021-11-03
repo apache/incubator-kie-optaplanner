@@ -43,7 +43,8 @@ public class RandomUtils {
      * @see Random#nextInt(int)
      */
     public static double nextDouble(Random random, double n) {
-        return random.doubles(0, n)
+        return random.doubles()
+                .map(d -> d * n)
                 .findAny()
                 .orElseThrow();
     }
