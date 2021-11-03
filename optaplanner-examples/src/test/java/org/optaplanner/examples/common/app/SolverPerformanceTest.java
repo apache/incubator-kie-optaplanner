@@ -32,6 +32,7 @@ import org.junit.jupiter.api.TestFactory;
 import org.junit.jupiter.api.Timeout;
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.score.Score;
+import org.optaplanner.core.api.score.ScoreExplanation;
 import org.optaplanner.core.api.score.ScoreManager;
 import org.optaplanner.core.api.score.constraint.ConstraintMatchTotal;
 import org.optaplanner.core.api.solver.Solver;
@@ -39,11 +40,10 @@ import org.optaplanner.core.api.solver.SolverFactory;
 import org.optaplanner.core.config.solver.EnvironmentMode;
 import org.optaplanner.core.config.solver.SolverConfig;
 import org.optaplanner.core.config.solver.termination.TerminationConfig;
-import org.optaplanner.core.impl.score.director.InnerScoreDirector;
-import org.optaplanner.core.impl.score.director.InnerScoreDirectorFactory;
-import org.optaplanner.core.impl.solver.DefaultSolverFactory;
 import org.optaplanner.examples.common.TestSystemProperties;
 import org.optaplanner.persistence.common.api.domain.solution.SolutionFileIO;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Runs an example {@link Solver}.
@@ -57,6 +57,7 @@ public abstract class SolverPerformanceTest<Solution_, Score_ extends Score<Scor
 
     private static final String MOVE_THREAD_COUNTS_STRING = System.getProperty(TestSystemProperties.MOVE_THREAD_COUNTS);
 
+    private final Logger logger = LoggerFactory.getLogger(getClass());
     protected SolutionFileIO<Solution_> solutionFileIO;
     protected String solverConfigResource;
 
@@ -119,29 +120,25 @@ public abstract class SolverPerformanceTest<Solution_, Score_ extends Score<Scor
     private void assertScoreAndConstraintMatches(SolverFactory<Solution_> solverFactory, Solution_ bestSolution,
             Score_ bestScoreLimit) {
         assertThat(bestSolution).isNotNull();
-        InnerScoreDirectorFactory<Solution_, Score_> scoreDirectorFactory =
-                (InnerScoreDirectorFactory<Solution_, Score_>) ((DefaultSolverFactory<Solution_>) solverFactory)
-                        .getScoreDirectorFactory();
-        Score_ bestScore = ScoreManager.<Solution_, Score_> create(solverFactory)
-                .updateScore(bestSolution);
+        ScoreManager<Solution_, Score_> scoreManager = ScoreManager.<Solution_, Score_> create(solverFactory);
+        Score_ bestScore = scoreManager.updateScore(bestSolution);
         assertThat(bestScore)
                 .as("The bestScore (" + bestScore + ") must be at least the bestScoreLimit (" + bestScoreLimit + ").")
                 .isGreaterThanOrEqualTo(bestScoreLimit);
 
-        try (InnerScoreDirector<Solution_, Score_> scoreDirector = scoreDirectorFactory.buildScoreDirector()) {
-            scoreDirector.setWorkingSolution(bestSolution);
-            Score_ score = scoreDirector.calculateScore();
-            assertThat(bestScore).isEqualTo(score);
-            if (scoreDirector.isConstraintMatchEnabled()) {
-                Map<String, ConstraintMatchTotal<Score_>> constraintMatchTotals =
-                        scoreDirector.getConstraintMatchTotalMap();
-                assertThat(constraintMatchTotals).isNotNull();
-                assertThat(constraintMatchTotals.values().stream()
-                        .map(ConstraintMatchTotal::getScore)
-                        .reduce(Score::add)
-                        .orElse(bestScore.zero())).isEqualTo(score);
-                assertThat(scoreDirector.getIndictmentMap()).isNotNull();
-            }
+        try {
+            ScoreExplanation<Solution_, Score_> scoreExplanation = scoreManager.explainScore(bestSolution);
+            Map<String, ConstraintMatchTotal<Score_>> constraintMatchTotals =
+                    scoreExplanation.getConstraintMatchTotalMap();
+            assertThat(constraintMatchTotals).isNotNull();
+            assertThat(constraintMatchTotals.values().stream()
+                    .map(ConstraintMatchTotal::getScore)
+                    .reduce(Score::add)
+                    .orElse(bestScore.zero()))
+                            .isEqualTo(scoreExplanation.getScore());
+            assertThat(scoreExplanation.getIndictmentMap()).isNotNull();
+        } catch (IllegalStateException ex) {
+            logger.info("Constraint match likely not supported.", ex);
         }
     }
 
