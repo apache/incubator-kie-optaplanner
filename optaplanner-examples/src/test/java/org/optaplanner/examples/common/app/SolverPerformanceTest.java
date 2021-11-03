@@ -39,7 +39,6 @@ import org.optaplanner.core.api.solver.SolverFactory;
 import org.optaplanner.core.config.solver.EnvironmentMode;
 import org.optaplanner.core.config.solver.SolverConfig;
 import org.optaplanner.core.config.solver.termination.TerminationConfig;
-import org.optaplanner.core.impl.score.definition.ScoreDefinition;
 import org.optaplanner.core.impl.score.director.InnerScoreDirector;
 import org.optaplanner.core.impl.score.director.InnerScoreDirectorFactory;
 import org.optaplanner.core.impl.solver.DefaultSolverFactory;
@@ -125,10 +124,9 @@ public abstract class SolverPerformanceTest<Solution_, Score_ extends Score<Scor
                         .getScoreDirectorFactory();
         Score_ bestScore = ScoreManager.<Solution_, Score_> create(solverFactory)
                 .updateScore(bestSolution);
-        ScoreDefinition<Score_> scoreDefinition = scoreDirectorFactory.getScoreDefinition();
-        assertThat(bestScore.compareTo(bestScoreLimit))
+        assertThat(bestScore)
                 .as("The bestScore (" + bestScore + ") must be at least the bestScoreLimit (" + bestScoreLimit + ").")
-                .isGreaterThanOrEqualTo(0);
+                .isGreaterThanOrEqualTo(bestScoreLimit);
 
         try (InnerScoreDirector<Solution_, Score_> scoreDirector = scoreDirectorFactory.buildScoreDirector()) {
             scoreDirector.setWorkingSolution(bestSolution);
@@ -141,7 +139,7 @@ public abstract class SolverPerformanceTest<Solution_, Score_ extends Score<Scor
                 assertThat(constraintMatchTotals.values().stream()
                         .map(ConstraintMatchTotal::getScore)
                         .reduce(Score::add)
-                        .orElse(scoreDefinition.getZeroScore())).isEqualTo(score);
+                        .orElse(bestScore.zero())).isEqualTo(score);
                 assertThat(scoreDirector.getIndictmentMap()).isNotNull();
             }
         }

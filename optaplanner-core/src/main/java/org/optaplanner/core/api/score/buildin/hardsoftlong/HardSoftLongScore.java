@@ -171,6 +171,11 @@ public final class HardSoftLongScore extends AbstractScore<HardSoftLongScore> {
     }
 
     @Override
+    public HardSoftLongScore zero() {
+        return HardSoftLongScore.ZERO;
+    }
+
+    @Override
     public Number[] toLevelNumbers() {
         return new Number[] { hardScore, softScore };
     }

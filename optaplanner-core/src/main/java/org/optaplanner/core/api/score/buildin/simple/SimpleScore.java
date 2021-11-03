@@ -131,6 +131,11 @@ public final class SimpleScore extends AbstractScore<SimpleScore> {
     }
 
     @Override
+    public SimpleScore zero() {
+        return SimpleScore.ZERO;
+    }
+
+    @Override
     public boolean isFeasible() {
         return initScore >= 0;
     }

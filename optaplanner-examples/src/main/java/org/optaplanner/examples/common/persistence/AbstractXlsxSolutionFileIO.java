@@ -464,11 +464,11 @@ public abstract class AbstractXlsxSolutionFileIO<Solution_> implements SolutionF
             nextHeaderCell("Description");
         }
 
-        protected void writeScoreConstraintLine(
-                String constraintName, Score_ constraintScore, String constraintDescription) {
+        protected void writeScoreConstraintLine(String constraintName, Score_ constraintScore,
+                String constraintDescription) {
             nextRow();
             nextHeaderCell(constraintName);
-            nextCell(scoreDefinition.getZeroScore().equals(constraintScore) ? disabledScoreStyle : scoreStyle)
+            nextCell(constraintScore.isZero() ? disabledScoreStyle : scoreStyle)
                     .setCellValue(constraintScore.toString());
             nextHeaderCell(constraintDescription);
         }

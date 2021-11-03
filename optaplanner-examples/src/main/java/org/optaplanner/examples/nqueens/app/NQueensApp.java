@@ -62,7 +62,6 @@ public class NQueensApp extends CommonApp<NQueens> {
                 NQueensPanel.LOGO_PATH);
     }
 
-    @Override
     protected SolverFactory<NQueens> createSolverFactory() {
         return createSolverFactoryByXml();
     }

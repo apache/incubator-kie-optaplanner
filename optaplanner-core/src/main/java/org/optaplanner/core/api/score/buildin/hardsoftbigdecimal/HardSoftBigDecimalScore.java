@@ -187,6 +187,11 @@ public final class HardSoftBigDecimalScore extends AbstractScore<HardSoftBigDeci
     }
 
     @Override
+    public HardSoftBigDecimalScore zero() {
+        return HardSoftBigDecimalScore.ZERO;
+    }
+
+    @Override
     public Number[] toLevelNumbers() {
         return new Number[] { hardScore, softScore };
     }

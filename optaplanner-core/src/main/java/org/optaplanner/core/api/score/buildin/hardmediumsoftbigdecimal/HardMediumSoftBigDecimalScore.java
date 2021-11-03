@@ -224,6 +224,11 @@ public final class HardMediumSoftBigDecimalScore extends AbstractScore<HardMediu
     }
 
     @Override
+    public HardMediumSoftBigDecimalScore zero() {
+        return HardMediumSoftBigDecimalScore.ZERO;
+    }
+
+    @Override
     public Number[] toLevelNumbers() {
         return new Number[] { hardScore, mediumScore, softScore };
     }

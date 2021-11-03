@@ -318,6 +318,11 @@ public final class BendableLongScore extends AbstractBendableScore<BendableLongS
     }
 
     @Override
+    public BendableLongScore zero() {
+        return BendableLongScore.zero(getHardLevelsSize(), getSoftLevelsSize());
+    }
+
+    @Override
     public Number[] toLevelNumbers() {
         Number[] levelNumbers = new Number[hardScores.length + softScores.length];
         for (int i = 0; i < hardScores.length; i++) {
