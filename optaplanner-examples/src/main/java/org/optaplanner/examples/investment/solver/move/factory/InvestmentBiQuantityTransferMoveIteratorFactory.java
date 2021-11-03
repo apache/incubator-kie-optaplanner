@@ -25,7 +25,6 @@ import org.optaplanner.core.api.score.director.ScoreDirector;
 import org.optaplanner.core.impl.heuristic.move.CompositeMove;
 import org.optaplanner.core.impl.heuristic.move.Move;
 import org.optaplanner.core.impl.heuristic.selector.move.factory.MoveIteratorFactory;
-import org.optaplanner.core.impl.solver.random.RandomUtils;
 import org.optaplanner.examples.investment.domain.AssetClassAllocation;
 import org.optaplanner.examples.investment.domain.InvestmentSolution;
 import org.optaplanner.examples.investment.domain.util.InvestmentNumericUtil;
@@ -107,16 +106,23 @@ public class InvestmentBiQuantityTransferMoveIteratorFactory
             } else if (secondTo == secondFrom) {
                 secondTo = allocationList.get(allocationListSize - 2);
             }
-            long firstTransferMillis = RandomUtils.nextLong(workingRandom, firstFrom.getQuantityMillis()) + 1L;
+            long firstTransferMillis = nextLong(workingRandom, firstFrom.getQuantityMillis()) + 1L;
             if (firstFrom == secondFrom && firstFrom.getQuantityMillis() == firstTransferMillis) {
                 // secondTransferMillis must never do a nextLong(0L) which would throw an IllegalArgumentException
                 firstTransferMillis--;
             }
-            long secondTransferMillis = RandomUtils.nextLong(workingRandom, secondFrom.getQuantityMillis()
+            long secondTransferMillis = nextLong(workingRandom, secondFrom.getQuantityMillis()
                     - (firstFrom == secondFrom ? firstTransferMillis : 0L)) + 1L;
             return CompositeMove.buildMove(new InvestmentQuantityTransferMove(firstFrom, firstTo, firstTransferMillis),
                     new InvestmentQuantityTransferMove(secondFrom, secondTo, secondTransferMillis));
         }
+
+        private static long nextLong(Random random, long n) {
+            return random.longs(0, n)
+                    .findAny()
+                    .orElseThrow();
+        }
+
 
         @Override
         public void remove() {
