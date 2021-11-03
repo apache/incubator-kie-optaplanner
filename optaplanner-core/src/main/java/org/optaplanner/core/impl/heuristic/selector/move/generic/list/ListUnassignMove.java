@@ -65,19 +65,7 @@ public class ListUnassignMove<Solution_> extends AbstractMove<Solution_> {
         return getClass().getSimpleName() + "(" + variableDescriptor.getSimpleEntityAndVariableName() + ")";
     }
 
-    // ************************************************************************
-    // Testing methods
-    // ************************************************************************
-
-    public Object getSourceEntity() {
-        return sourceEntity;
-    }
-
-    public int getSourceIndex() {
-        return sourceIndex;
-    }
-
-    public Object getMovedValue() {
+    private Object getMovedValue() {
         return variableDescriptor.getElement(sourceEntity, sourceIndex);
     }
 

@@ -17,6 +17,8 @@
 package org.optaplanner.core.impl.heuristic.selector.move.generic.list;
 
 import java.util.Iterator;
+import java.util.Spliterators;
+import java.util.stream.StreamSupport;
 
 import org.optaplanner.core.impl.domain.variable.descriptor.ListVariableDescriptor;
 import org.optaplanner.core.impl.domain.variable.index.IndexVariableDemand;
@@ -73,7 +75,11 @@ public class ListChangeMoveSelector<Solution_> extends GenericMoveSelector<Solut
     public long getSize() {
         long entityCount = entitySelector.getSize();
         long valueCount = valueSelector.getSize();
-        return valueCount * (valueCount + entityCount);
+        int assignedValueCount = StreamSupport
+                .stream(Spliterators.spliterator(entitySelector.endingIterator(), entitySelector.getSize(), 0), false)
+                .mapToInt(listVariableDescriptor::getListSize)
+                .sum();
+        return valueCount * (entityCount + assignedValueCount);
     }
 
     @Override
