@@ -131,4 +131,56 @@ class ListChangeMoveSelectorTest {
                 "3 {C[0]->A[1]}",
                 "3 {C[0]->A[2]}");
     }
+
+    @Test
+    void constructionHeuristic() {
+        TestdataListValue v1 = new TestdataListValue("1");
+        TestdataListValue v2 = new TestdataListValue("2");
+        TestdataListValue v3 = new TestdataListValue("3");
+        TestdataListValue v4 = new TestdataListValue("4");
+        TestdataListValue v5 = new TestdataListValue("5");
+        TestdataListEntity a = new TestdataListEntity("A");
+        TestdataListEntity b = new TestdataListEntity("B");
+        TestdataListEntity c = TestdataListEntity.createWithValues("C", v5);
+
+        InnerScoreDirector<TestdataListSolution, SimpleScore> scoreDirector =
+                PlannerTestUtils.mockScoreDirector(TestdataListSolution.buildSolutionDescriptor());
+
+        ListChangeMoveSelector<TestdataListSolution> moveSelector = new ListChangeMoveSelector<>(
+                getListVariableDescriptor(scoreDirector),
+                mockEntitySelector(a, b, c),
+                mockEntityIndependentValueSelector(v3, v1, v4, v2, v5),
+                false);
+
+        SolverScope<TestdataListSolution> solverScope = mock(SolverScope.class);
+        when(solverScope.<SimpleScore> getScoreDirector()).thenReturn(scoreDirector);
+        moveSelector.solvingStarted(solverScope);
+
+        assertAllCodesOfMoveSelector(moveSelector,
+                // Assigning 3
+                "3 {unassigned->A[0]}",
+                "3 {unassigned->B[0]}",
+                "3 {unassigned->C[0]}",
+                "3 {unassigned->C[1]}",
+                // Assigning 1
+                "1 {unassigned->A[0]}",
+                "1 {unassigned->B[0]}",
+                "1 {unassigned->C[0]}",
+                "1 {unassigned->C[1]}",
+                // Assigning 4
+                "4 {unassigned->A[0]}",
+                "4 {unassigned->B[0]}",
+                "4 {unassigned->C[0]}",
+                "4 {unassigned->C[1]}",
+                // Assigning 2
+                "2 {unassigned->A[0]}",
+                "2 {unassigned->B[0]}",
+                "2 {unassigned->C[0]}",
+                "2 {unassigned->C[1]}",
+                // 5 is already assigned, so ListChangeMoves are selected.
+                "5 {C[0]->A[0]}",
+                "5 {C[0]->B[0]}",
+                "5 {C[0]->C[0]}",
+                "5 {C[0]->C[1]}");
+    }
 }
