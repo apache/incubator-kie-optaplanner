@@ -46,6 +46,12 @@ public class ReassignValueToListVariableSelector<Solution_> extends AbstractValu
     protected SingletonInverseVariableSupply inverseVariableSupply;
 
     public ReassignValueToListVariableSelector(EntityIndependentValueSelector<Solution_> childValueSelector) {
+        if (childValueSelector.isNeverEnding()) {
+            throw new IllegalStateException("The childValueSelector (" + childValueSelector + ") must not be never ending"
+                    + " because the " + ReassignValueToListVariableSelector.class.getSimpleName() + " filter cannot work"
+                    + " on a never ending child value selector.\n"
+                    + "This could be a result of using random selection order (which is often the default).");
+        }
         this.childValueSelector = childValueSelector;
         phaseLifecycleSupport.addEventListener(childValueSelector);
     }
