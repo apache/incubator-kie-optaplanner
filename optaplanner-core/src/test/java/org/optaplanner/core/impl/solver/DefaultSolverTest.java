@@ -27,6 +27,8 @@ import java.util.Map;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 import org.assertj.core.api.SoftAssertions;
 import org.assertj.core.api.junit.jupiter.SoftAssertionsExtension;
@@ -545,6 +547,40 @@ public class DefaultSolverTest {
         solution = solver.solve(solution);
         assertThat(solution).isNotNull();
         assertThat(solution.getScore().isSolutionInitialized()).isFalse();
+    }
+
+    @Test
+    public void solveRepeatedlyBasicVariable(SoftAssertions softly) {
+        SolverConfig solverConfig = PlannerTestUtils.buildSolverConfig(TestdataSolution.class, TestdataEntity.class);
+        ConstructionHeuristicPhaseConfig phaseConfig = new ConstructionHeuristicPhaseConfig();
+        // Run only 2 steps at a time, although 5 are needed to initialize all entities.
+        int stepCountLimit = 2;
+        phaseConfig.setTerminationConfig(new TerminationConfig().withStepCountLimit(stepCountLimit));
+        solverConfig.setPhaseConfigList(Collections.singletonList(phaseConfig));
+        SolverFactory<TestdataSolution> solverFactory = SolverFactory.create(solverConfig);
+        Solver<TestdataSolution> solver = solverFactory.buildSolver();
+
+        TestdataSolution solution = new TestdataSolution("s1");
+        solution.setValueList(Arrays.asList(new TestdataValue("v1"), new TestdataValue("v2")));
+        final int entityCount = 5;
+        solution.setEntityList(IntStream.rangeClosed(1, entityCount)
+                .mapToObj(id -> new TestdataEntity("e" + id))
+                .collect(Collectors.toList()));
+
+        Score<?> score = ScoreManager.create(solverFactory).updateScore(solution);
+        assertThat(score.getInitScore()).isEqualTo(-entityCount);
+        assertThat(score.isSolutionInitialized()).isFalse();
+
+        // Keep restarting the solver until the solution is initialized.
+        for (int initScore = -entityCount; initScore < 0; initScore += stepCountLimit) {
+            softly.assertThat(solution.getScore().getInitScore()).isEqualTo(initScore);
+            softly.assertThat(solution.getScore().isSolutionInitialized()).isFalse();
+            solution = solver.solve(solution);
+        }
+
+        // Finally, the initScore is 0.
+        softly.assertThat(solution.getScore().getInitScore()).isZero();
+        softly.assertThat(solution.getScore().isSolutionInitialized()).isTrue();
     }
 
     @Test
