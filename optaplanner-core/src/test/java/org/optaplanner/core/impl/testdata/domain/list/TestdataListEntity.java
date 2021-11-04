@@ -38,17 +38,23 @@ public class TestdataListEntity extends TestdataObject {
     }
 
     public static TestdataListEntity createWithValues(String code, TestdataListValue... values) {
-        TestdataListEntity testdataListEntity = new TestdataListEntity(code, values);
         // Set up shadow variables to preserve consistency.
-        testdataListEntity.valueList.forEach(testdataListValue -> {
-            testdataListValue.setEntity(testdataListEntity);
-            testdataListValue.setIndex(testdataListEntity.valueList.indexOf(testdataListValue));
+        return new TestdataListEntity(code, values).setUpShadowVariables();
+    }
+
+    TestdataListEntity setUpShadowVariables() {
+        valueList.forEach(testdataListValue -> {
+            testdataListValue.setEntity(this);
+            testdataListValue.setIndex(valueList.indexOf(testdataListValue));
         });
-        return testdataListEntity;
+        return this;
     }
 
     @PlanningCollectionVariable(valueRangeProviderRefs = "valueRange")
-    private final List<TestdataListValue> valueList;
+    private List<TestdataListValue> valueList;
+
+    public TestdataListEntity() {
+    }
 
     public TestdataListEntity(String code, List<TestdataListValue> valueList) {
         super(code);
