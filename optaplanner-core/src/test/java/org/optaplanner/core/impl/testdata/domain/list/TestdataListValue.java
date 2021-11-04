@@ -46,6 +46,9 @@ public class TestdataListValue extends TestdataObject {
     @IndexShadowVariable(sourceVariableName = "valueList")
     private Integer index;
 
+    public TestdataListValue() {
+    }
+
     public TestdataListValue(String code) {
         super(code);
     }

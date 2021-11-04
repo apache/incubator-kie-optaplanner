@@ -28,9 +28,14 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import org.assertj.core.api.SoftAssertions;
+import org.assertj.core.api.junit.jupiter.SoftAssertionsExtension;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.optaplanner.core.api.score.Score;
+import org.optaplanner.core.api.score.ScoreManager;
 import org.optaplanner.core.api.score.buildin.hardsoft.HardSoftScore;
 import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
 import org.optaplanner.core.api.score.director.ScoreDirector;
@@ -59,6 +64,9 @@ import org.optaplanner.core.impl.testdata.domain.TestdataValue;
 import org.optaplanner.core.impl.testdata.domain.chained.TestdataChainedAnchor;
 import org.optaplanner.core.impl.testdata.domain.chained.TestdataChainedEntity;
 import org.optaplanner.core.impl.testdata.domain.chained.TestdataChainedSolution;
+import org.optaplanner.core.impl.testdata.domain.list.TestdataListEntity;
+import org.optaplanner.core.impl.testdata.domain.list.TestdataListSolution;
+import org.optaplanner.core.impl.testdata.domain.list.TestdataListValue;
 import org.optaplanner.core.impl.testdata.domain.pinned.TestdataPinnedEntity;
 import org.optaplanner.core.impl.testdata.domain.pinned.TestdataPinnedSolution;
 import org.optaplanner.core.impl.testdata.domain.score.TestdataHardSoftScoreSolution;
@@ -69,6 +77,7 @@ import io.micrometer.core.instrument.Meter;
 import io.micrometer.core.instrument.Metrics;
 import io.micrometer.core.instrument.Tags;
 
+@ExtendWith(SoftAssertionsExtension.class)
 public class DefaultSolverTest {
 
     @BeforeEach
@@ -536,6 +545,38 @@ public class DefaultSolverTest {
         solution = solver.solve(solution);
         assertThat(solution).isNotNull();
         assertThat(solution.getScore().isSolutionInitialized()).isFalse();
+    }
+
+    @Test
+    public void solveRepeatedlyListVariable(SoftAssertions softly) {
+        SolverConfig solverConfig = PlannerTestUtils.buildSolverConfig(
+                TestdataListSolution.class, TestdataListEntity.class, TestdataListValue.class);
+
+        // Run only 7 steps at a time, although the total number of steps needed to complete CH is equal to valueCount.
+        final int stepCountLimit = 7;
+        ConstructionHeuristicPhaseConfig phaseConfig = new ConstructionHeuristicPhaseConfig();
+        phaseConfig.setTerminationConfig(new TerminationConfig().withStepCountLimit(stepCountLimit));
+        solverConfig.setPhaseConfigList(Collections.singletonList(phaseConfig));
+        SolverFactory<TestdataListSolution> solverFactory = SolverFactory.create(solverConfig);
+        Solver<TestdataListSolution> solver = solverFactory.buildSolver();
+
+        final int valueCount = 24;
+        TestdataListSolution solution = TestdataListSolution.generateUninitializedSolution(valueCount, 8);
+
+        Score<?> score = ScoreManager.create(solverFactory).updateScore(solution);
+        assertThat(score.getInitScore()).isEqualTo(-valueCount);
+        assertThat(score.isSolutionInitialized()).isFalse();
+
+        // Keep restarting the solver until the solution is initialized.
+        for (int initScore = -valueCount; initScore < 0; initScore += stepCountLimit) {
+            softly.assertThat(solution.getScore().getInitScore()).isEqualTo(initScore);
+            softly.assertThat(solution.getScore().isSolutionInitialized()).isFalse();
+            solution = solver.solve(solution);
+        }
+
+        // Finally, the initScore is 0.
+        softly.assertThat(solution.getScore().getInitScore()).isZero();
+        softly.assertThat(solution.getScore().isSolutionInitialized()).isTrue();
     }
 
 }

@@ -364,7 +364,7 @@ public class SolutionDescriptorTest {
     void countUnassignedValues() {
         int valueCount = 10;
         int entityCount = 3;
-        TestdataListSolution solution = TestdataListSolution.generateSolution(valueCount, entityCount);
+        TestdataListSolution solution = TestdataListSolution.generateInitializedSolution(valueCount, entityCount);
         SolutionDescriptor<TestdataListSolution> solutionDescriptor = TestdataListSolution.buildSolutionDescriptor();
 
         assertThat(solutionDescriptor.countUninitialized(solution)).isZero();

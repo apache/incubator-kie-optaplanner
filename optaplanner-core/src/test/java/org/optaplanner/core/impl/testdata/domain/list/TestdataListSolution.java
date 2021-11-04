@@ -38,27 +38,37 @@ public class TestdataListSolution {
                 TestdataListValue.class);
     }
 
-    private List<TestdataListValue> valueList;
-    private List<TestdataListEntity> entityList;
-    private SimpleScore score;
+    public static TestdataListSolution generateInitializedSolution(int valueCount, int entityCount) {
+        return generateSolution(valueCount, entityCount).initialize();
+    }
 
-    public static TestdataListSolution generateSolution(int valueCount, int entityCount) {
+    public static TestdataListSolution generateUninitializedSolution(int valueCount, int entityCount) {
+        return generateSolution(valueCount, entityCount);
+    }
+
+    private static TestdataListSolution generateSolution(int valueCount, int entityCount) {
         List<TestdataListEntity> entityList = IntStream.range(0, entityCount)
                 .mapToObj(i -> new TestdataListEntity("Generated Entity " + i))
                 .collect(Collectors.toList());
         List<TestdataListValue> valueList = IntStream.range(0, valueCount)
-                .mapToObj(i -> {
-                    TestdataListValue value = new TestdataListValue("Generated Value " + i);
-                    TestdataListEntity entity = entityList.get(i % entityCount);
-                    value.setEntity(entity);
-                    value.setIndex(entity.getValueList().size());
-                    entity.getValueList().add(value);
-                    return value;
-                }).collect(Collectors.toList());
+                .mapToObj(i -> new TestdataListValue("Generated Value " + i))
+                .collect(Collectors.toList());
         TestdataListSolution solution = new TestdataListSolution();
         solution.setValueList(valueList);
         solution.setEntityList(entityList);
         return solution;
+    }
+
+    private List<TestdataListValue> valueList;
+    private List<TestdataListEntity> entityList;
+    private SimpleScore score;
+
+    private TestdataListSolution initialize() {
+        for (int i = 0; i < valueList.size(); i++) {
+            entityList.get(i % entityList.size()).getValueList().add(valueList.get(i));
+        }
+        entityList.forEach(TestdataListEntity::setUpShadowVariables);
+        return this;
     }
 
     @ValueRangeProvider(id = "valueRange")
