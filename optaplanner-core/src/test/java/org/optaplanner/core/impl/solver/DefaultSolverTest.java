@@ -615,4 +615,21 @@ public class DefaultSolverTest {
         softly.assertThat(solution.getScore().isSolutionInitialized()).isTrue();
     }
 
+    @Test
+    void constructionHeuristicAllocateToValueFromQueue() {
+        SolverConfig solverConfig = PlannerTestUtils.buildSolverConfig(TestdataSolution.class, TestdataEntity.class);
+        ConstructionHeuristicPhaseConfig phaseConfig = new ConstructionHeuristicPhaseConfig()
+                .withConstructionHeuristicType(ConstructionHeuristicType.ALLOCATE_TO_VALUE_FROM_QUEUE);
+        solverConfig.setPhaseConfigList(Collections.singletonList(phaseConfig));
+        SolverFactory<TestdataSolution> solverFactory = SolverFactory.create(solverConfig);
+        Solver<TestdataSolution> solver = solverFactory.buildSolver();
+
+        TestdataSolution solution = new TestdataSolution("s1");
+        solution.setValueList(Arrays.asList(new TestdataValue("v1"), new TestdataValue("v2")));
+        solution.setEntityList(Arrays.asList(new TestdataEntity("e1")));
+
+        solution = solver.solve(solution);
+        assertThat(solution).isNotNull();
+        assertThat(solution.getScore().isSolutionInitialized()).isTrue();
+    }
 }
