@@ -31,6 +31,8 @@ abstract class AbstractAccumulator<ResultContainer_, Result_> implements Accumul
     private final Supplier<ResultContainer_> containerSupplier;
     private final Function<ResultContainer_, Result_> finisher;
 
+    private volatile boolean initialized = false;
+
     protected AbstractAccumulator(Supplier<ResultContainer_> containerSupplier,
             Function<ResultContainer_, Result_> finisher) {
         this.containerSupplier = Objects.requireNonNull(containerSupplier);
@@ -103,4 +105,17 @@ abstract class AbstractAccumulator<ResultContainer_, Result_> implements Accumul
             ReteEvaluator reteEvaluator) {
         return finisher.apply((ResultContainer_) context);
     }
+
+    protected void checkInitialized(Tuple leftTuple, Declaration[] innerDeclarations) {
+        if (!initialized) {
+            synchronized (this) {
+                if (!initialized) {
+                    init(leftTuple, innerDeclarations);
+                    initialized = true;
+                }
+            }
+        }
+    }
+
+    protected abstract void init(Tuple leftTuple, Declaration[] innerDeclarations);
 }

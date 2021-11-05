@@ -52,9 +52,7 @@ final class TriAccumulator<A, B, C, ResultContainer_, Result_> extends AbstractA
     @Override
     public Object accumulate(Object workingMemoryContext, Object context, Tuple leftTuple, InternalFactHandle handle,
             Declaration[] declarations, Declaration[] innerDeclarations, ReteEvaluator reteEvaluator) {
-        if (declarationA == null) {
-            init(leftTuple, innerDeclarations);
-        }
+        checkInitialized(leftTuple, innerDeclarations);
 
         A a = extractValue(declarationA, offsetToA, leftTuple);
         B b = extractValue(declarationB, offsetToB, leftTuple);
@@ -62,7 +60,8 @@ final class TriAccumulator<A, B, C, ResultContainer_, Result_> extends AbstractA
         return accumulator.apply((ResultContainer_) context, a, b, c);
     }
 
-    private void init(Tuple leftTuple, Declaration[] innerDeclarations) {
+    @Override
+    protected void init(Tuple leftTuple, Declaration[] innerDeclarations) {
         for (Declaration declaration : innerDeclarations) {
             if (declaration.getBindingName().equals(varA)) {
                 declarationA = declaration;

@@ -57,9 +57,7 @@ final class QuadAccumulator<A, B, C, D, ResultContainer_, Result_>
     @Override
     public Object accumulate(Object workingMemoryContext, Object context, Tuple leftTuple, InternalFactHandle handle,
             Declaration[] declarations, Declaration[] innerDeclarations, ReteEvaluator reteEvaluator) {
-        if (declarationA == null) {
-            init(leftTuple, innerDeclarations);
-        }
+        checkInitialized(leftTuple, innerDeclarations);
 
         A a = extractValue(declarationA, offsetToA, leftTuple);
         B b = extractValue(declarationB, offsetToB, leftTuple);
@@ -68,7 +66,8 @@ final class QuadAccumulator<A, B, C, D, ResultContainer_, Result_>
         return accumulator.apply((ResultContainer_) context, a, b, c, d);
     }
 
-    private void init(Tuple leftTuple, Declaration[] innerDeclarations) {
+    @Override
+    protected void init(Tuple leftTuple, Declaration[] innerDeclarations) {
         for (Declaration declaration : innerDeclarations) {
             if (declaration.getBindingName().equals(varA)) {
                 declarationA = declaration;

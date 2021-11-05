@@ -51,16 +51,12 @@ final class UniAccumulator<A, ResultContainer_, Result_> extends AbstractAccumul
     }
 
     private InternalFactHandle getFactHandle(Tuple leftTuple, InternalFactHandle handle, Declaration[] innerDeclarations) {
-        if (declaration == null) {
-            return init(leftTuple, handle, innerDeclarations);
-        } else if (!subnetwork) {
-            return handle;
-        } else {
-            return getTuple(offset, leftTuple).getFactHandle();
-        }
+        checkInitialized(leftTuple, innerDeclarations);
+        return subnetwork ? getTuple(offset, leftTuple).getFactHandle() : handle;
     }
 
-    private InternalFactHandle init(Tuple leftTuple, InternalFactHandle handle, Declaration[] innerDeclarations) {
+    @Override
+    protected void init(Tuple leftTuple, Declaration[] innerDeclarations) {
         for (Declaration declaration : innerDeclarations) {
             if (declaration.getBindingName().equals(varA)) {
                 this.declaration = declaration;
@@ -69,12 +65,8 @@ final class UniAccumulator<A, ResultContainer_, Result_> extends AbstractAccumul
         }
 
         subnetwork = (leftTuple instanceof SubnetworkTuple);
-        if (!subnetwork) {
-            return handle;
-        } else {
+        if (subnetwork) {
             offset = findTupleOffset(declaration, leftTuple);
-            return getTuple(offset, leftTuple)
-                    .getFactHandle();
         }
     }
 
