@@ -519,7 +519,12 @@ public class ValueSelectorFactory<Solution_>
     private ValueSelector<Solution_> applyReassignValueFiltering(boolean applyReassignValueFiltering,
             GenuineVariableDescriptor<Solution_> variableDescriptor, ValueSelector<Solution_> valueSelector) {
         if (applyReassignValueFiltering && variableDescriptor.isListVariable()) {
-            // TODO check instanceof + nice error message
+            if (!(valueSelector instanceof EntityIndependentValueSelector)) {
+                throw new IllegalArgumentException("The valueSelectorConfig (" + config
+                        + ") with id (" + config.getId()
+                        + ") needs to be based on an EntityIndependentValueSelector (" + valueSelector + ")."
+                        + " Check your @" + ValueRangeProvider.class.getSimpleName() + " annotations.");
+            }
             valueSelector =
                     new ReassignValueToListVariableSelector<>(((EntityIndependentValueSelector<Solution_>) valueSelector));
         }
