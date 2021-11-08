@@ -17,6 +17,7 @@
 package org.optaplanner.core.impl.score.stream.drools.common;
 
 import java.util.Objects;
+import java.util.function.UnaryOperator;
 
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.ReteEvaluator;
@@ -34,8 +35,8 @@ final class BiAccumulator<A, B, ResultContainer_, Result_> extends AbstractAccum
 
     private Declaration declarationA;
     private Declaration declarationB;
-    private int offsetToA;
-    private int offsetToB;
+    private UnaryOperator<Tuple> tupleExtractorA;
+    private UnaryOperator<Tuple> tupleExtractorB;
 
     public BiAccumulator(Variable<A> varA, Variable<B> varB,
             BiConstraintCollector<A, B, ResultContainer_, Result_> collector) {
@@ -52,8 +53,8 @@ final class BiAccumulator<A, B, ResultContainer_, Result_> extends AbstractAccum
             init(leftTuple, innerDeclarations);
         }
 
-        A a = extractValue(declarationA, offsetToA, leftTuple);
-        B b = extractValue(declarationB, offsetToB, leftTuple);
+        A a = extractValue(declarationA, tupleExtractorA.apply(leftTuple));
+        B b = extractValue(declarationB, tupleExtractorB.apply(leftTuple));
         return accumulator.apply((ResultContainer_) context, a, b);
     }
 
@@ -61,13 +62,12 @@ final class BiAccumulator<A, B, ResultContainer_, Result_> extends AbstractAccum
         for (Declaration declaration : innerDeclarations) {
             if (declaration.getBindingName().equals(varA)) {
                 declarationA = declaration;
+                tupleExtractorA = getTupleExtractor(declaration, leftTuple);
             } else if (declaration.getBindingName().equals(varB)) {
                 declarationB = declaration;
+                tupleExtractorB = getTupleExtractor(declaration, leftTuple);
             }
         }
-
-        offsetToA = findTupleOffset(declarationA, leftTuple);
-        offsetToB = findTupleOffset(declarationB, leftTuple);
     }
 
 }

@@ -18,6 +18,7 @@ package org.optaplanner.core.impl.score.stream.drools.common;
 
 import java.util.Objects;
 import java.util.function.BiFunction;
+import java.util.function.UnaryOperator;
 
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.ReteEvaluator;
@@ -34,7 +35,7 @@ final class UniAccumulator<A, ResultContainer_, Result_> extends AbstractAccumul
 
     private boolean subnetwork;
     private Declaration declaration;
-    private int offset;
+    private UnaryOperator<Tuple> tupleExtractor;
 
     public UniAccumulator(Variable<A> varA, UniConstraintCollector<A, ResultContainer_, Result_> collector) {
         super(collector.supplier(), collector.finisher());
@@ -54,10 +55,10 @@ final class UniAccumulator<A, ResultContainer_, Result_> extends AbstractAccumul
         if (declaration == null) {
             init(leftTuple, innerDeclarations);
         }
-        if (!subnetwork) {
-            return handle;
+        if (subnetwork) {
+            return tupleExtractor.apply(leftTuple).getFactHandle();
         } else {
-            return getTuple(offset, leftTuple).getFactHandle();
+            return handle;
         }
     }
 
@@ -68,10 +69,9 @@ final class UniAccumulator<A, ResultContainer_, Result_> extends AbstractAccumul
                 break;
             }
         }
-
         subnetwork = (leftTuple instanceof SubnetworkTuple);
         if (subnetwork) {
-            offset = findTupleOffset(declaration, leftTuple);
+            tupleExtractor = getTupleExtractor(declaration, leftTuple);
         }
     }
 

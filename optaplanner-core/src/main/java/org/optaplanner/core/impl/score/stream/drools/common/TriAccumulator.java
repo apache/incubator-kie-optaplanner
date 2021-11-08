@@ -17,6 +17,7 @@
 package org.optaplanner.core.impl.score.stream.drools.common;
 
 import java.util.Objects;
+import java.util.function.UnaryOperator;
 
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.ReteEvaluator;
@@ -36,9 +37,9 @@ final class TriAccumulator<A, B, C, ResultContainer_, Result_> extends AbstractA
     private Declaration declarationA;
     private Declaration declarationB;
     private Declaration declarationC;
-    private int offsetToA;
-    private int offsetToB;
-    private int offsetToC;
+    private UnaryOperator<Tuple> tupleExtractorA;
+    private UnaryOperator<Tuple> tupleExtractorB;
+    private UnaryOperator<Tuple> tupleExtractorC;
 
     public TriAccumulator(Variable<A> varA, Variable<B> varB, Variable<C> varC,
             TriConstraintCollector<A, B, C, ResultContainer_, Result_> collector) {
@@ -56,9 +57,9 @@ final class TriAccumulator<A, B, C, ResultContainer_, Result_> extends AbstractA
             init(leftTuple, innerDeclarations);
         }
 
-        A a = extractValue(declarationA, offsetToA, leftTuple);
-        B b = extractValue(declarationB, offsetToB, leftTuple);
-        C c = extractValue(declarationC, offsetToC, leftTuple);
+        A a = extractValue(declarationA, tupleExtractorA.apply(leftTuple));
+        B b = extractValue(declarationB, tupleExtractorB.apply(leftTuple));
+        C c = extractValue(declarationC, tupleExtractorC.apply(leftTuple));
         return accumulator.apply((ResultContainer_) context, a, b, c);
     }
 
@@ -66,16 +67,15 @@ final class TriAccumulator<A, B, C, ResultContainer_, Result_> extends AbstractA
         for (Declaration declaration : innerDeclarations) {
             if (declaration.getBindingName().equals(varA)) {
                 declarationA = declaration;
+                tupleExtractorA = getTupleExtractor(declaration, leftTuple);
             } else if (declaration.getBindingName().equals(varB)) {
                 declarationB = declaration;
+                tupleExtractorB = getTupleExtractor(declaration, leftTuple);
             } else if (declaration.getBindingName().equals(varC)) {
                 declarationC = declaration;
+                tupleExtractorC = getTupleExtractor(declaration, leftTuple);
             }
         }
-
-        offsetToA = findTupleOffset(declarationA, leftTuple);
-        offsetToB = findTupleOffset(declarationB, leftTuple);
-        offsetToC = findTupleOffset(declarationC, leftTuple);
     }
 
 }

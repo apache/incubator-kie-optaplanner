@@ -19,6 +19,7 @@ package org.optaplanner.core.impl.score.stream.drools.common;
 import java.util.Objects;
 import java.util.function.Function;
 import java.util.function.Supplier;
+import java.util.function.UnaryOperator;
 
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.ReteEvaluator;
@@ -27,6 +28,14 @@ import org.drools.core.spi.Accumulator;
 import org.drools.core.spi.Tuple;
 
 abstract class AbstractAccumulator<ResultContainer_, Result_> implements Accumulator {
+
+    private static final UnaryOperator<Tuple> TUPLE_EXTRACTOR_OFFSET_0 = tuple -> tuple;
+    private static final UnaryOperator<Tuple> TUPLE_EXTRACTOR_OFFSET_1 = Tuple::getParent;
+    private static final UnaryOperator<Tuple> TUPLE_EXTRACTOR_OFFSET_2 = tuple -> tuple.getParent()
+            .getParent();
+    private static final UnaryOperator<Tuple> TUPLE_EXTRACTOR_OFFSET_3 = tuple -> tuple.getParent()
+            .getParent()
+            .getParent();
 
     private final Supplier<ResultContainer_> containerSupplier;
     private final Function<ResultContainer_, Result_> finisher;
@@ -37,35 +46,27 @@ abstract class AbstractAccumulator<ResultContainer_, Result_> implements Accumul
         this.finisher = Objects.requireNonNull(finisher);
     }
 
-    protected static <Value_> Value_ extractValue(Declaration declaration, int offset, Tuple leftTuple) {
-        Tuple tuple = getTuple(offset, leftTuple);
-        return (Value_) declaration.getValue(null, tuple.getFactHandle().getObject());
+    protected static <Value_> Value_ extractValue(Declaration declaration, Tuple extractedTuple) {
+        return (Value_) declaration.getValue(null, extractedTuple.getFactHandle().getObject());
     }
 
-    protected static int findTupleOffset(Declaration declaration, Tuple tuple) {
+    protected static UnaryOperator<Tuple> getTupleExtractor(Declaration declaration, Tuple tuple) {
         int offset = 0;
         while (tuple.getIndex() != declaration.getTupleIndex()) {
             tuple = tuple.getParent();
             offset++;
         }
-        return offset;
-    }
-
-    protected static Tuple getTuple(int deltaOffset, Tuple tuple) {
-        switch (deltaOffset) {
+        switch (offset) {
             case 0:
-                return tuple;
+                return TUPLE_EXTRACTOR_OFFSET_0;
             case 1:
-                return tuple.getParent();
+                return TUPLE_EXTRACTOR_OFFSET_1;
             case 2:
-                return tuple.getParent()
-                        .getParent();
+                return TUPLE_EXTRACTOR_OFFSET_2;
             case 3:
-                return tuple.getParent()
-                        .getParent()
-                        .getParent();
+                return TUPLE_EXTRACTOR_OFFSET_3;
             default:
-                throw new UnsupportedOperationException("Impossible state: tuple delta offset (" + deltaOffset + ").");
+                throw new UnsupportedOperationException("Impossible state: tuple delta offset (" + offset + ").");
         }
     }
 

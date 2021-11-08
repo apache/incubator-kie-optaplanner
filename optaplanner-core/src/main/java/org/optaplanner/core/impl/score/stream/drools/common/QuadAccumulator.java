@@ -17,6 +17,7 @@
 package org.optaplanner.core.impl.score.stream.drools.common;
 
 import java.util.Objects;
+import java.util.function.UnaryOperator;
 
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.ReteEvaluator;
@@ -39,10 +40,10 @@ final class QuadAccumulator<A, B, C, D, ResultContainer_, Result_>
     private Declaration declarationB;
     private Declaration declarationC;
     private Declaration declarationD;
-    private int offsetToA;
-    private int offsetToB;
-    private int offsetToC;
-    private int offsetToD;
+    private UnaryOperator<Tuple> tupleExtractorA;
+    private UnaryOperator<Tuple> tupleExtractorB;
+    private UnaryOperator<Tuple> tupleExtractorC;
+    private UnaryOperator<Tuple> tupleExtractorD;
 
     public QuadAccumulator(Variable<A> varA, Variable<B> varB, Variable<C> varC, Variable<D> varD,
             QuadConstraintCollector<A, B, C, D, ResultContainer_, Result_> collector) {
@@ -61,10 +62,10 @@ final class QuadAccumulator<A, B, C, D, ResultContainer_, Result_>
             init(leftTuple, innerDeclarations);
         }
 
-        A a = extractValue(declarationA, offsetToA, leftTuple);
-        B b = extractValue(declarationB, offsetToB, leftTuple);
-        C c = extractValue(declarationC, offsetToC, leftTuple);
-        D d = extractValue(declarationD, offsetToD, leftTuple);
+        A a = extractValue(declarationA, tupleExtractorA.apply(leftTuple));
+        B b = extractValue(declarationB, tupleExtractorB.apply(leftTuple));
+        C c = extractValue(declarationC, tupleExtractorC.apply(leftTuple));
+        D d = extractValue(declarationD, tupleExtractorD.apply(leftTuple));
         return accumulator.apply((ResultContainer_) context, a, b, c, d);
     }
 
@@ -72,19 +73,18 @@ final class QuadAccumulator<A, B, C, D, ResultContainer_, Result_>
         for (Declaration declaration : innerDeclarations) {
             if (declaration.getBindingName().equals(varA)) {
                 declarationA = declaration;
+                tupleExtractorA = getTupleExtractor(declaration, leftTuple);
             } else if (declaration.getBindingName().equals(varB)) {
                 declarationB = declaration;
+                tupleExtractorB = getTupleExtractor(declaration, leftTuple);
             } else if (declaration.getBindingName().equals(varC)) {
                 declarationC = declaration;
+                tupleExtractorC = getTupleExtractor(declaration, leftTuple);
             } else if (declaration.getBindingName().equals(varD)) {
                 declarationD = declaration;
+                tupleExtractorD = getTupleExtractor(declaration, leftTuple);
             }
         }
-
-        offsetToA = findTupleOffset(declarationA, leftTuple);
-        offsetToB = findTupleOffset(declarationB, leftTuple);
-        offsetToC = findTupleOffset(declarationC, leftTuple);
-        offsetToD = findTupleOffset(declarationD, leftTuple);
     }
 
 }
