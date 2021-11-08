@@ -16,6 +16,8 @@
 
 package org.optaplanner.examples.investment.solver.move.factory;
 
+import static org.optaplanner.examples.investment.solver.move.factory.InvestmentBiQuantityTransferMoveIteratorFactory.*;
+
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -91,9 +93,7 @@ public class InvestmentQuantityTransferMoveIteratorFactory
 
         @Override
         public InvestmentQuantityTransferMove next() {
-            long transferMillis = workingRandom.longs(0, InvestmentNumericUtil.MAXIMUM_QUANTITY_MILLIS)
-                    .findAny()
-                    .orElseThrow() + 1L;
+            long transferMillis = nextLong(workingRandom, InvestmentNumericUtil.MAXIMUM_QUANTITY_MILLIS) + 1L;
             Map.Entry<Long, AssetClassAllocation> lowerEntry = quantityMillisIncrementToAllocationMap
                     .lowerEntry(transferMillis);
             Map.Entry<Long, AssetClassAllocation> ceilingEntry = quantityMillisIncrementToAllocationMap

@@ -117,17 +117,29 @@ public class InvestmentBiQuantityTransferMoveIteratorFactory
                     new InvestmentQuantityTransferMove(secondFrom, secondTo, secondTransferMillis));
         }
 
-        private static long nextLong(Random random, long n) {
-            return random.longs(0, n)
-                    .findAny()
-                    .orElseThrow();
-        }
-
         @Override
         public void remove() {
             throw new UnsupportedOperationException("The optional operation remove() is not supported.");
         }
 
+    }
+
+    public static long nextLong(Random random, long n) {
+        // This code is based on java.util.Random#nextInt(int)'s javadoc.
+        if (n <= 0L) {
+            throw new IllegalArgumentException("n must be positive");
+        }
+        if (n < Integer.MAX_VALUE) {
+            return random.nextInt((int) n);
+        }
+
+        long bits;
+        long val;
+        do {
+            bits = (random.nextLong() << 1) >>> 1;
+            val = bits % n;
+        } while (bits - val + (n - 1L) < 0L);
+        return val;
     }
 
 }

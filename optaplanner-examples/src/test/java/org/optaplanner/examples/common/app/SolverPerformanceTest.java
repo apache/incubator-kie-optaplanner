@@ -42,8 +42,6 @@ import org.optaplanner.core.config.solver.SolverConfig;
 import org.optaplanner.core.config.solver.termination.TerminationConfig;
 import org.optaplanner.examples.common.TestSystemProperties;
 import org.optaplanner.persistence.common.api.domain.solution.SolutionFileIO;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * Runs an example {@link Solver}.
@@ -57,7 +55,6 @@ public abstract class SolverPerformanceTest<Solution_, Score_ extends Score<Scor
 
     private static final String MOVE_THREAD_COUNTS_STRING = System.getProperty(TestSystemProperties.MOVE_THREAD_COUNTS);
 
-    private final Logger logger = LoggerFactory.getLogger(getClass());
     protected SolutionFileIO<Solution_> solutionFileIO;
     protected String solverConfigResource;
 
@@ -120,7 +117,7 @@ public abstract class SolverPerformanceTest<Solution_, Score_ extends Score<Scor
     private void assertScoreAndConstraintMatches(SolverFactory<Solution_> solverFactory, Solution_ bestSolution,
             Score_ bestScoreLimit) {
         assertThat(bestSolution).isNotNull();
-        ScoreManager<Solution_, Score_> scoreManager = ScoreManager.<Solution_, Score_> create(solverFactory);
+        ScoreManager<Solution_, Score_> scoreManager = ScoreManager.create(solverFactory);
         Score_ bestScore = scoreManager.updateScore(bestSolution);
         assertThat(bestScore)
                 .as("The bestScore (" + bestScore + ") must be at least the bestScoreLimit (" + bestScoreLimit + ").")
@@ -138,7 +135,7 @@ public abstract class SolverPerformanceTest<Solution_, Score_ extends Score<Scor
                             .isEqualTo(scoreExplanation.getScore());
             assertThat(scoreExplanation.getIndictmentMap()).isNotNull();
         } catch (IllegalStateException ex) {
-            logger.info("Constraint match likely not supported.", ex);
+            throw new IllegalStateException("Constraint match likely not supported.", ex);
         }
     }
 
