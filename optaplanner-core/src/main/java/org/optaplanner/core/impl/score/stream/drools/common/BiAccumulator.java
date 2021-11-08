@@ -20,7 +20,6 @@ import java.util.Objects;
 import java.util.function.Function;
 
 import org.drools.core.common.InternalFactHandle;
-import org.drools.core.common.ReteEvaluator;
 import org.drools.core.rule.Declaration;
 import org.drools.core.spi.Tuple;
 import org.drools.model.Variable;
@@ -45,18 +44,15 @@ final class BiAccumulator<A, B, ResultContainer_, Result_> extends AbstractAccum
     }
 
     @Override
-    public Object accumulate(Object workingMemoryContext, Object context, Tuple leftTuple, InternalFactHandle handle,
-            Declaration[] declarations, Declaration[] innerDeclarations, ReteEvaluator reteEvaluator) {
-        if (valueExtractorA == null) {
-            init(leftTuple, innerDeclarations);
-        }
-
+    protected Runnable accumulate(ResultContainer_ context, Tuple leftTuple, InternalFactHandle handle,
+            Declaration[] innerDeclarations) {
         A a = valueExtractorA.apply(leftTuple);
         B b = valueExtractorB.apply(leftTuple);
-        return accumulator.apply((ResultContainer_) context, a, b);
+        return accumulator.apply(context, a, b);
     }
 
-    private void init(Tuple leftTuple, Declaration[] innerDeclarations) {
+    @Override
+    protected void initialize(Tuple leftTuple, Declaration[] innerDeclarations) {
         for (Declaration declaration : innerDeclarations) {
             if (declaration.getBindingName().equals(varA)) {
                 valueExtractorA = getValueExtractor(declaration, leftTuple);

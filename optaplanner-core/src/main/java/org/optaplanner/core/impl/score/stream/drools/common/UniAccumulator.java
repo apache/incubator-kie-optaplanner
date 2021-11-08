@@ -21,7 +21,6 @@ import java.util.function.BiFunction;
 import java.util.function.UnaryOperator;
 
 import org.drools.core.common.InternalFactHandle;
-import org.drools.core.common.ReteEvaluator;
 import org.drools.core.reteoo.SubnetworkTuple;
 import org.drools.core.rule.Declaration;
 import org.drools.core.spi.Tuple;
@@ -43,14 +42,11 @@ final class UniAccumulator<A, ResultContainer_, Result_> extends AbstractAccumul
     }
 
     @Override
-    public Object accumulate(Object workingMemoryContext, Object context, Tuple leftTuple, InternalFactHandle handle,
-            Declaration[] declarations, Declaration[] innerDeclarations, ReteEvaluator reteEvaluator) {
-        if (declaration == null) {
-            init(leftTuple, innerDeclarations);
-        }
+    protected Runnable accumulate(ResultContainer_ context, Tuple leftTuple, InternalFactHandle handle,
+            Declaration[] innerDeclarations) {
         InternalFactHandle factHandle = getFactHandle(leftTuple, handle);
         A a = (A) declaration.getValue(null, factHandle.getObject());
-        return accumulator.apply((ResultContainer_) context, a);
+        return accumulator.apply(context, a);
     }
 
     private InternalFactHandle getFactHandle(Tuple leftTuple, InternalFactHandle handle) {
@@ -61,7 +57,8 @@ final class UniAccumulator<A, ResultContainer_, Result_> extends AbstractAccumul
         }
     }
 
-    private void init(Tuple leftTuple, Declaration[] innerDeclarations) {
+    @Override
+    protected void initialize(Tuple leftTuple, Declaration[] innerDeclarations) {
         for (Declaration declaration : innerDeclarations) {
             if (declaration.getBindingName().equals(varA)) {
                 this.declaration = declaration;
