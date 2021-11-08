@@ -46,14 +46,10 @@ abstract class AbstractAccumulator<ResultContainer_, Result_> implements Accumul
         this.finisher = Objects.requireNonNull(finisher);
     }
 
-    protected static <Value_> Value_ extractValue(Declaration declaration, Tuple extractedTuple) {
-        return (Value_) declaration.getValue(null, extractedTuple.getFactHandle().getObject());
-    }
-
-    protected static UnaryOperator<Tuple> getTupleExtractor(Declaration declaration, Tuple tuple) {
+    protected static UnaryOperator<Tuple> getTupleExtractor(Declaration declaration, Tuple leftTuple) {
         int offset = 0;
-        while (tuple.getIndex() != declaration.getTupleIndex()) {
-            tuple = tuple.getParent();
+        while (leftTuple.getIndex() != declaration.getTupleIndex()) {
+            leftTuple = leftTuple.getParent();
             offset++;
         }
         switch (offset) {
@@ -68,6 +64,14 @@ abstract class AbstractAccumulator<ResultContainer_, Result_> implements Accumul
             default:
                 throw new UnsupportedOperationException("Impossible state: tuple delta offset (" + offset + ").");
         }
+    }
+
+    protected static <X> Function<Tuple, X> getValueExtractor(Declaration declaration, Tuple leftTuple) {
+        UnaryOperator<Tuple> tupleExtractor = getTupleExtractor(declaration, leftTuple);
+        return tuple -> {
+            Tuple extractedTuple = tupleExtractor.apply(tuple);
+            return (X) declaration.getValue(null, extractedTuple.getFactHandle().getObject());
+        };
     }
 
     @Override
@@ -100,8 +104,8 @@ abstract class AbstractAccumulator<ResultContainer_, Result_> implements Accumul
     }
 
     @Override
-    public Result_ getResult(Object workingMemoryContext, Object context, Tuple leftTuple, Declaration[] declarations,
-            ReteEvaluator reteEvaluator) {
+    public final Result_ getResult(Object workingMemoryContext, Object context, Tuple leftTuple,
+            Declaration[] declarations, ReteEvaluator reteEvaluator) {
         return finisher.apply((ResultContainer_) context);
     }
 }

@@ -33,7 +33,6 @@ final class UniAccumulator<A, ResultContainer_, Result_> extends AbstractAccumul
     private final String varA;
     private final BiFunction<ResultContainer_, A, Runnable> accumulator;
 
-    private boolean subnetwork;
     private Declaration declaration;
     private UnaryOperator<Tuple> tupleExtractor;
 
@@ -46,16 +45,16 @@ final class UniAccumulator<A, ResultContainer_, Result_> extends AbstractAccumul
     @Override
     public Object accumulate(Object workingMemoryContext, Object context, Tuple leftTuple, InternalFactHandle handle,
             Declaration[] declarations, Declaration[] innerDeclarations, ReteEvaluator reteEvaluator) {
-        InternalFactHandle factHandle = getFactHandle(leftTuple, handle, innerDeclarations);
+        if (declaration == null) {
+            init(leftTuple, innerDeclarations);
+        }
+        InternalFactHandle factHandle = getFactHandle(leftTuple, handle);
         A a = (A) declaration.getValue(null, factHandle.getObject());
         return accumulator.apply((ResultContainer_) context, a);
     }
 
-    private InternalFactHandle getFactHandle(Tuple leftTuple, InternalFactHandle handle, Declaration[] innerDeclarations) {
-        if (declaration == null) {
-            init(leftTuple, innerDeclarations);
-        }
-        if (subnetwork) {
+    private InternalFactHandle getFactHandle(Tuple leftTuple, InternalFactHandle handle) {
+        if (tupleExtractor != null) {
             return tupleExtractor.apply(leftTuple).getFactHandle();
         } else {
             return handle;
@@ -69,8 +68,7 @@ final class UniAccumulator<A, ResultContainer_, Result_> extends AbstractAccumul
                 break;
             }
         }
-        subnetwork = (leftTuple instanceof SubnetworkTuple);
-        if (subnetwork) {
+        if (leftTuple instanceof SubnetworkTuple) {
             tupleExtractor = getTupleExtractor(declaration, leftTuple);
         }
     }
