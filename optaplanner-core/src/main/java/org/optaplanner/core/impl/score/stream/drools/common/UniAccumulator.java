@@ -34,6 +34,7 @@ final class UniAccumulator<A, ResultContainer_, Result_> extends AbstractAccumul
 
     private Declaration declaration;
     private UnaryOperator<Tuple> tupleExtractor;
+    private boolean isSubnetwork;
 
     public UniAccumulator(Variable<A> varA, UniConstraintCollector<A, ResultContainer_, Result_> collector) {
         super(collector.supplier(), collector.finisher());
@@ -44,17 +45,20 @@ final class UniAccumulator<A, ResultContainer_, Result_> extends AbstractAccumul
     @Override
     protected Runnable accumulate(ResultContainer_ context, Tuple leftTuple, InternalFactHandle handle,
             Declaration[] innerDeclarations) {
-        InternalFactHandle factHandle = getFactHandle(leftTuple, handle);
+        InternalFactHandle factHandle = getInternalFactHandle(leftTuple, handle);
         A a = (A) declaration.getValue(null, factHandle.getObject());
         return accumulator.apply(context, a);
     }
 
-    private InternalFactHandle getFactHandle(Tuple leftTuple, InternalFactHandle handle) {
-        if (tupleExtractor != null) {
-            return tupleExtractor.apply(leftTuple).getFactHandle();
-        } else {
-            return handle;
+    private InternalFactHandle getInternalFactHandle(Tuple leftTuple, InternalFactHandle handle) {
+        if (tupleExtractor == null) { // Happens either when the tuple offset is 0, or when not a subnetwork.
+            if (isSubnetwork) {
+                return leftTuple.getFactHandle();
+            } else {
+                return handle;
+            }
         }
+        return tupleExtractor.apply(leftTuple).getFactHandle();
     }
 
     @Override
@@ -65,8 +69,9 @@ final class UniAccumulator<A, ResultContainer_, Result_> extends AbstractAccumul
                 break;
             }
         }
-        if (leftTuple instanceof SubnetworkTuple) {
-            tupleExtractor = getTupleExtractor(declaration, leftTuple);
+        isSubnetwork = leftTuple instanceof SubnetworkTuple;
+        if (isSubnetwork) {
+            tupleExtractor = ValueExtractor.getTupleExtractor(declaration, leftTuple);
         }
     }
 
