@@ -178,12 +178,11 @@ public final class ConferenceSchedulingConstraintProvider implements ConstraintP
     protected Constraint crowdControl(ConstraintFactory factory) {
         return factory.forEach(Talk.class)
                 .filter(talk -> talk.getCrowdControlRisk() > 0)
-                .join(factory.forEach(Talk.class)
-                        .filter(talk -> talk.getCrowdControlRisk() > 0),
+                .join(Talk.class,
                         equal(Talk::getTimeslot))
-                .filter((talk1, talk2) -> !Objects.equals(talk1, talk2))
+                .filter((talk1, talk2) -> !Objects.equals(talk1, talk2) && talk2.getCrowdControlRisk() > 0)
                 .groupBy((talk1, talk2) -> talk1, countBi())
-                .filter((talk, count) -> count > 1)
+                .filter((talk, count) -> count != 1)
                 .penalizeConfigurable(CROWD_CONTROL, (talk, count) -> talk.getDurationInMinutes());
     }
 
