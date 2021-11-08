@@ -132,9 +132,7 @@ public final class BendableLongScore extends AbstractBendableScore<BendableLongS
      */
     @SuppressWarnings("unused")
     private BendableLongScore() {
-        super(Integer.MIN_VALUE);
-        hardScores = null;
-        softScores = null;
+        this(Integer.MIN_VALUE, null, null);
     }
 
     /**
@@ -142,7 +140,7 @@ public final class BendableLongScore extends AbstractBendableScore<BendableLongS
      * @param hardScores never null
      * @param softScores never null
      */
-    protected BendableLongScore(int initScore, long[] hardScores, long[] softScores) {
+    private BendableLongScore(int initScore, long[] hardScores, long[] softScores) {
         super(initScore);
         this.hardScores = hardScores;
         this.softScores = softScores;

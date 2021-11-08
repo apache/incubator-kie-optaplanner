@@ -87,10 +87,7 @@ public final class HardMediumSoftScore extends AbstractScore<HardMediumSoftScore
      */
     @SuppressWarnings("unused")
     private HardMediumSoftScore() {
-        super(Integer.MIN_VALUE);
-        hardScore = Integer.MIN_VALUE;
-        mediumScore = Integer.MIN_VALUE;
-        softScore = Integer.MIN_VALUE;
+        this(Integer.MIN_VALUE, Integer.MIN_VALUE, Integer.MIN_VALUE, Integer.MIN_VALUE);
     }
 
     private HardMediumSoftScore(int initScore, int hardScore, int mediumScore, int softScore) {

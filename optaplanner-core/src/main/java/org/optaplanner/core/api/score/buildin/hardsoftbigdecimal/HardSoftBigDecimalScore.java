@@ -78,9 +78,7 @@ public final class HardSoftBigDecimalScore extends AbstractScore<HardSoftBigDeci
      */
     @SuppressWarnings("unused")
     private HardSoftBigDecimalScore() {
-        super(Integer.MIN_VALUE);
-        hardScore = null;
-        softScore = null;
+        this(Integer.MIN_VALUE, null, null);
     }
 
     private HardSoftBigDecimalScore(int initScore, BigDecimal hardScore, BigDecimal softScore) {

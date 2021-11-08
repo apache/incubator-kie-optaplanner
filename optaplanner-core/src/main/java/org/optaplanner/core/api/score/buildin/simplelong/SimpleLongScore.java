@@ -61,8 +61,7 @@ public final class SimpleLongScore extends AbstractScore<SimpleLongScore> {
      */
     @SuppressWarnings("unused")
     private SimpleLongScore() {
-        super(Integer.MIN_VALUE);
-        score = Long.MIN_VALUE;
+        this(Integer.MIN_VALUE, Long.MIN_VALUE);
     }
 
     private SimpleLongScore(int initScore, long score) {
