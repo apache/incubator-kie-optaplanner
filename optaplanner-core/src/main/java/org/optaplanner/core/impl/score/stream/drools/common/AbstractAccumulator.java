@@ -17,7 +17,6 @@
 package org.optaplanner.core.impl.score.stream.drools.common;
 
 import java.util.Objects;
-import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
@@ -73,6 +72,7 @@ abstract class AbstractAccumulator<ResultContainer_, Result_> implements Accumul
          * The logical place for this call would be the init(...) method of the Accumulator interface.
          * Unfortunately, we need access to innerDeclarations to be able to perform the accumulation quickly,
          * and it only becomes available when this accumulate(...) method is called.
+         * (See https://issues.redhat.com/browse/DROOLS-6705.)
          * Therefore, initialization of our accumulator can only happen when the accumulate(...) method is called,
          * and therefore the initialization needs to be properly synchronized.
          *
