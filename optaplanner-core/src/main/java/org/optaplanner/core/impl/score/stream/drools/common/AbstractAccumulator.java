@@ -32,7 +32,7 @@ abstract class AbstractAccumulator<ResultContainer_, Result_> implements Accumul
     private final Supplier<ResultContainer_> containerSupplier;
     private final Function<ResultContainer_, Result_> finisher;
 
-    private final AtomicBoolean initialized = new AtomicBoolean();
+    private volatile boolean initialized = false;
 
     protected AbstractAccumulator(Supplier<ResultContainer_> containerSupplier,
             Function<ResultContainer_, Result_> finisher) {
@@ -66,22 +66,29 @@ abstract class AbstractAccumulator<ResultContainer_, Result_> implements Accumul
             ReteEvaluator reteEvaluator) {
         /*
          * Accumulator instances are created within the KieBase, not within the KieSession.
-         * This means that sessions may be calling this method on a shared accumulator from different threads.
+         * This means that multiple sessions from the same KieBase may be calling this method
+         * on a shared accumulator from different threads.
+         * (Multi-threaded solving, moveThreadCount > 1.)
+         *
+         * The logical place for this call would be the init(...) method of the Accumulator interface.
          * Unfortunately, we need access to innerDeclarations to be able to perform the accumulation quickly,
          * and it only becomes available when this accumulate(...) method is called.
-         * Therefore, initialization of our accumulator can only happen the first time the method is called,
+         * Therefore, initialization of our accumulator can only happen when the accumulate(...) method is called,
          * and therefore the initialization needs to be properly synchronized.
          *
-         * We do not care if the initialization happens multiple times,
-         * as each of the attempts will fill the variables with the same data.
-         * We just need to ensure that the variables are initialized before the actual accumulation happens.
-         *
-         * Technically running this more than once is wasteful,
-         * but the initialized() check will make sure this only happens during the cold start of the session.
+         * Note: as all the parallel sessions here will be using the same KieBase,
+         * each will initialize the accumulator with the exact same declarations.
+         * Therefore, it does not matter if, during cold start, multiple sessions execute this method.
+         * They will technically each write to the same variables, but they will each store the same references.
+         * As a result, the double-checked locking below is not an issue.
          */
-        if (!initialized.get()) {
-            initialize(leftTuple, innerDeclarations);
-            initialized.set(true);
+        if (!initialized) {
+            synchronized (this) {
+                if (!initialized) {
+                    initialize(leftTuple, innerDeclarations);
+                    initialized = true;
+                }
+            }
         }
         return accumulate((ResultContainer_) context, leftTuple, handle, innerDeclarations);
     }
