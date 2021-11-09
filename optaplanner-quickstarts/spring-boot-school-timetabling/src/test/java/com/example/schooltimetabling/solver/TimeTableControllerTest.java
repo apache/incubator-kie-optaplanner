@@ -48,7 +48,7 @@ public class TimeTableControllerTest {
             // Test is still fast on fast machines and doesn't randomly fail on slow machines.
             Thread.sleep(20L);
             timeTable = timeTableController.getTimeTable();
-        } while (timeTable.getSolverStatus() != SolverStatus.NOT_SOLVING);
+        } while (timeTable.getSolverStatus() != SolverStatus.NOT_SOLVING || !timeTable.getScore().isFeasible());
         assertFalse(timeTable.getLessonList().isEmpty());
         for (Lesson lesson : timeTable.getLessonList()) {
             assertNotNull(lesson.getTimeslot());
