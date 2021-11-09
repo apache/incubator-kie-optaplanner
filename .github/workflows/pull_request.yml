@@ -56,7 +56,7 @@ jobs:
         with:
           java-version: ${{ matrix.java-version }}
           maven-version: ${{ matrix.maven-version }}
-          key-prefix: ${{ runner.os }}-${{ matrix.java-version }}-maven${{ matrix.maven-version }}
+          cache-key-prefix: ${{ runner.os }}-${{ matrix.java-version }}-maven${{ matrix.maven-version }}
       - name: Set FLOW_TYPE to pull-request
         if: github.event_name == 'pull_request'
         run: echo "FLOW_TYPE=pull-request" >> $GITHUB_ENV
