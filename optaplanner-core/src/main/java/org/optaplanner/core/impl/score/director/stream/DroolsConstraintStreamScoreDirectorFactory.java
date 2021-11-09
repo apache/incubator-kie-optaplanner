@@ -65,7 +65,6 @@ public final class DroolsConstraintStreamScoreDirectorFactory<Solution_, Score_ 
         extends AbstractConstraintStreamScoreDirectorFactory<Solution_, Score_> {
 
     private final KieBaseDescriptor<Solution_> kieBaseDescriptor;
-    private final Score_ zeroScore;
     private final boolean droolsAlphaNetworkCompilationEnabled;
 
     public DroolsConstraintStreamScoreDirectorFactory(SolutionDescriptor<Solution_> solutionDescriptor,
@@ -95,7 +94,6 @@ public final class DroolsConstraintStreamScoreDirectorFactory<Solution_, Score_ 
             KieBaseDescriptor<Solution_> kieBaseDescriptor, boolean droolsAlphaNetworkCompilationEnabled) {
         super(solutionDescriptor);
         this.kieBaseDescriptor = Objects.requireNonNull(kieBaseDescriptor);
-        this.zeroScore = (Score_) solutionDescriptor.getScoreDefinition().getZeroScore();
         this.droolsAlphaNetworkCompilationEnabled = droolsAlphaNetworkCompilationEnabled;
     }
 
