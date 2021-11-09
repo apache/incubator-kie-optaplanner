@@ -123,20 +123,16 @@ public abstract class SolverPerformanceTest<Solution_, Score_ extends Score<Scor
                 .as("The bestScore (" + bestScore + ") must be at least the bestScoreLimit (" + bestScoreLimit + ").")
                 .isGreaterThanOrEqualTo(bestScoreLimit);
 
-        try {
-            ScoreExplanation<Solution_, Score_> scoreExplanation = scoreManager.explainScore(bestSolution);
-            Map<String, ConstraintMatchTotal<Score_>> constraintMatchTotals =
-                    scoreExplanation.getConstraintMatchTotalMap();
-            assertThat(constraintMatchTotals).isNotNull();
-            assertThat(constraintMatchTotals.values().stream()
-                    .map(ConstraintMatchTotal::getScore)
-                    .reduce(Score::add)
-                    .orElse(bestScore.zero()))
-                            .isEqualTo(scoreExplanation.getScore());
-            assertThat(scoreExplanation.getIndictmentMap()).isNotNull();
-        } catch (IllegalStateException ex) {
-            throw new IllegalStateException("Constraint match likely not supported.", ex);
-        }
+        ScoreExplanation<Solution_, Score_> scoreExplanation = scoreManager.explainScore(bestSolution);
+        Map<String, ConstraintMatchTotal<Score_>> constraintMatchTotals =
+                scoreExplanation.getConstraintMatchTotalMap();
+        assertThat(constraintMatchTotals).isNotNull();
+        assertThat(constraintMatchTotals.values().stream()
+                .map(ConstraintMatchTotal::getScore)
+                .reduce(Score::add)
+                .orElse(bestScore.zero()))
+                        .isEqualTo(scoreExplanation.getScore());
+        assertThat(scoreExplanation.getIndictmentMap()).isNotNull();
     }
 
     protected static class TestData<Score_ extends Score<Score_>> {
