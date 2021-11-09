@@ -75,12 +75,6 @@ abstract class AbstractAccumulator<ResultContainer_, Result_> implements Accumul
          * (See https://issues.redhat.com/browse/DROOLS-6705.)
          * Therefore, initialization of our accumulator can only happen when the accumulate(...) method is called,
          * and therefore the initialization needs to be properly synchronized.
-         *
-         * Note: as all the parallel sessions here will be using the same KieBase,
-         * each will initialize the accumulator with the exact same declarations.
-         * Therefore, it does not matter if, during cold start, multiple sessions execute this method.
-         * They will technically each write to the same variables, but they will each store the same references.
-         * As a result, the double-checked locking below is not an issue.
          */
         if (!initialized) {
             synchronized (this) {
