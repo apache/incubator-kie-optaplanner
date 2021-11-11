@@ -67,10 +67,7 @@ public final class DefaultSolverFactory<Solution_> implements SolverFactory<Solu
     private final SolverConfig solverConfig;
 
     public DefaultSolverFactory(SolverConfig solverConfig) {
-        if (solverConfig == null) {
-            throw new IllegalStateException("The solverConfig (" + solverConfig + ") cannot be null.");
-        }
-        this.solverConfig = solverConfig;
+        this.solverConfig = Objects.requireNonNull(solverConfig, "The solverConfig (" + solverConfig + ") cannot be null.");
     }
 
     public InnerScoreDirectorFactory<Solution_, ?> getScoreDirectorFactory() {
