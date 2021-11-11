@@ -27,10 +27,12 @@ import org.optaplanner.core.config.exhaustivesearch.NodeExplorationType;
 import org.optaplanner.core.config.heuristic.selector.common.SelectionCacheType;
 import org.optaplanner.core.config.heuristic.selector.common.SelectionOrder;
 import org.optaplanner.core.config.heuristic.selector.entity.EntitySelectorConfig;
+import org.optaplanner.core.config.heuristic.selector.entity.EntitySorterManner;
 import org.optaplanner.core.config.heuristic.selector.move.MoveSelectorConfig;
 import org.optaplanner.core.config.heuristic.selector.move.composite.CartesianProductMoveSelectorConfig;
 import org.optaplanner.core.config.heuristic.selector.move.generic.ChangeMoveSelectorConfig;
 import org.optaplanner.core.config.heuristic.selector.value.ValueSelectorConfig;
+import org.optaplanner.core.config.heuristic.selector.value.ValueSorterManner;
 import org.optaplanner.core.config.solver.EnvironmentMode;
 import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
@@ -59,16 +61,21 @@ public class DefaultExhaustiveSearchPhaseFactory<Solution_>
     public ExhaustiveSearchPhase<Solution_> buildPhase(int phaseIndex,
             HeuristicConfigPolicy<Solution_> solverConfigPolicy, BestSolutionRecaller<Solution_> bestSolutionRecaller,
             Termination<Solution_> solverTermination) {
-        HeuristicConfigPolicy<Solution_> phaseConfigPolicy = solverConfigPolicy.createFilteredPhaseConfigPolicy();
         ExhaustiveSearchType exhaustiveSearchType_ = Objects.requireNonNullElse(
                 phaseConfig.getExhaustiveSearchType(),
                 ExhaustiveSearchType.BRANCH_AND_BOUND);
-        phaseConfigPolicy.setEntitySorterManner(Objects.requireNonNullElse(
+        EntitySorterManner entitySorterManner = Objects.requireNonNullElse(
                 phaseConfig.getEntitySorterManner(),
-                exhaustiveSearchType_.getDefaultEntitySorterManner()));
-        phaseConfigPolicy.setValueSorterManner(Objects.requireNonNullElse(
+                exhaustiveSearchType_.getDefaultEntitySorterManner());
+        ValueSorterManner valueSorterManner = Objects.requireNonNullElse(
                 phaseConfig.getValueSorterManner(),
-                exhaustiveSearchType_.getDefaultValueSorterManner()));
+                exhaustiveSearchType_.getDefaultValueSorterManner());
+        HeuristicConfigPolicy<Solution_> phaseConfigPolicy = solverConfigPolicy.cloneBuilder()
+                .withReinitializeVariableFilterEnabled(true)
+                .withInitializedChainedValueFilterEnabled(true)
+                .withEntitySorterManner(entitySorterManner)
+                .withValueSorterManner(valueSorterManner)
+                .build();
         Termination<Solution_> phaseTermination = buildPhaseTermination(phaseConfigPolicy, solverTermination);
         boolean scoreBounderEnabled = exhaustiveSearchType_.isScoreBounderEnabled();
         NodeExplorationType nodeExplorationType_;
