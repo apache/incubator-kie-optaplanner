@@ -78,30 +78,30 @@ public class ReinitializeVariableValueSelector<Solution_> extends AbstractValueS
 
     @Override
     public long getSize(Object entity) {
-        if (isNotReinitializable(entity)) {
-            return 0L;
+        if (isReinitializable(entity)) {
+            return childValueSelector.getSize(entity);
         }
-        return childValueSelector.getSize(entity);
+        return 0L;
     }
 
     @Override
     public Iterator<Object> iterator(Object entity) {
-        if (isNotReinitializable(entity)) {
-            return Collections.emptyIterator();
+        if (isReinitializable(entity)) {
+            return childValueSelector.iterator(entity);
         }
-        return childValueSelector.iterator(entity);
+        return Collections.emptyIterator();
     }
 
     @Override
     public Iterator<Object> endingIterator(Object entity) {
-        if (isNotReinitializable(entity)) {
-            return Collections.emptyIterator();
+        if (isReinitializable(entity)) {
+            return childValueSelector.endingIterator(entity);
         }
-        return childValueSelector.endingIterator(entity);
+        return Collections.emptyIterator();
     }
 
-    private boolean isNotReinitializable(Object entity) {
-        return !childValueSelector.getVariableDescriptor().isReinitializable(scoreDirector, entity);
+    private boolean isReinitializable(Object entity) {
+        return childValueSelector.getVariableDescriptor().isReinitializable(scoreDirector, entity);
     }
 
     @Override
