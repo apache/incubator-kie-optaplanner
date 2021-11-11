@@ -114,11 +114,9 @@ public final class DefaultSolverFactory<Solution_> implements SolverFactory<Solu
         Termination<Solution_> termination = TerminationFactory.<Solution_> create(terminationConfig_)
                 .buildTermination(configPolicy, basicPlumbingTermination);
         List<Phase<Solution_>> phaseList = buildPhaseList(configPolicy, bestSolutionRecaller, termination);
-        Solver<Solution_> out =
-                new DefaultSolver<>(environmentMode_, randomFactory, bestSolutionRecaller, basicPlumbingTermination,
-                        termination, phaseList, solverScope,
-                        moveThreadCount_ == null ? SolverConfig.MOVE_THREAD_COUNT_NONE : Integer.toString(moveThreadCount_));
-        return out;
+        return new DefaultSolver<>(environmentMode_, randomFactory, bestSolutionRecaller, basicPlumbingTermination,
+                termination, phaseList, solverScope,
+                moveThreadCount_ == null ? SolverConfig.MOVE_THREAD_COUNT_NONE : Integer.toString(moveThreadCount_));
     }
 
     /**
