@@ -58,10 +58,6 @@ public class DefaultConstructionHeuristicPhaseFactory<Solution_>
             HeuristicConfigPolicy<Solution_> solverConfigPolicy, BestSolutionRecaller<Solution_> bestSolutionRecaller,
             Termination<Solution_> solverTermination) {
         HeuristicConfigPolicy<Solution_> phaseConfigPolicy = solverConfigPolicy.createFilteredPhaseConfigPolicy();
-        DefaultConstructionHeuristicPhase<Solution_> phase =
-                new DefaultConstructionHeuristicPhase<>(phaseIndex, solverConfigPolicy.getLogIndentation(),
-                        buildPhaseTermination(phaseConfigPolicy, solverTermination));
-        phase.setDecider(buildDecider(phaseConfigPolicy, phase.getPhaseTermination()));
         ConstructionHeuristicType constructionHeuristicType_ =
                 Objects.requireNonNullElse(phaseConfig.getConstructionHeuristicType(),
                         ConstructionHeuristicType.ALLOCATE_ENTITY_FROM_QUEUE);
@@ -70,6 +66,7 @@ public class DefaultConstructionHeuristicPhaseFactory<Solution_>
                         : constructionHeuristicType_.getDefaultEntitySorterManner());
         phaseConfigPolicy.setValueSorterManner(phaseConfig.getValueSorterManner() != null ? phaseConfig.getValueSorterManner()
                 : constructionHeuristicType_.getDefaultValueSorterManner());
+        Termination<Solution_> phaseTermination = buildPhaseTermination(phaseConfigPolicy, solverTermination);
         EntityPlacerConfig entityPlacerConfig_;
         if (phaseConfig.getEntityPlacerConfig() == null) {
             entityPlacerConfig_ = buildUnfoldedEntityPlacerConfig(phaseConfigPolicy, constructionHeuristicType_);
@@ -89,16 +86,23 @@ public class DefaultConstructionHeuristicPhaseFactory<Solution_>
         }
         EntityPlacer<Solution_> entityPlacer = EntityPlacerFactory.<Solution_> create(entityPlacerConfig_)
                 .buildEntityPlacer(phaseConfigPolicy);
-        phase.setEntityPlacer(entityPlacer);
+
+        DefaultConstructionHeuristicPhase.Builder<Solution_> builder = new DefaultConstructionHeuristicPhase.Builder<>(
+                phaseIndex,
+                solverConfigPolicy.getLogIndentation(),
+                phaseTermination,
+                entityPlacer,
+                buildDecider(phaseConfigPolicy, phaseTermination));
+
         EnvironmentMode environmentMode = phaseConfigPolicy.getEnvironmentMode();
         if (environmentMode.isNonIntrusiveFullAsserted()) {
-            phase.setAssertStepScoreFromScratch(true);
+            builder.setAssertStepScoreFromScratch(true);
         }
         if (environmentMode.isIntrusiveFastAsserted()) {
-            phase.setAssertExpectedStepScore(true);
-            phase.setAssertShadowVariablesAreNotStaleAfterStep(true);
+            builder.setAssertExpectedStepScore(true);
+            builder.setAssertShadowVariablesAreNotStaleAfterStep(true);
         }
-        return phase;
+        return builder.build();
     }
 
     private ConstructionHeuristicDecider<Solution_> buildDecider(HeuristicConfigPolicy<Solution_> configPolicy,

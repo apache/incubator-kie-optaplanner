@@ -68,9 +68,7 @@ public class DefaultExhaustiveSearchPhaseFactory<Solution_>
                         : exhaustiveSearchType_.getDefaultEntitySorterManner());
         phaseConfigPolicy.setValueSorterManner(phaseConfig.getValueSorterManner() != null ? phaseConfig.getValueSorterManner()
                 : exhaustiveSearchType_.getDefaultValueSorterManner());
-        DefaultExhaustiveSearchPhase<Solution_> phase =
-                new DefaultExhaustiveSearchPhase<>(phaseIndex, solverConfigPolicy.getLogIndentation(),
-                        buildPhaseTermination(phaseConfigPolicy, solverTermination));
+        Termination<Solution_> phaseTermination = buildPhaseTermination(phaseConfigPolicy, solverTermination);
         boolean scoreBounderEnabled = exhaustiveSearchType_.isScoreBounderEnabled();
         NodeExplorationType nodeExplorationType_;
         if (exhaustiveSearchType_ == ExhaustiveSearchType.BRUTE_FORCE) {
@@ -86,24 +84,29 @@ public class DefaultExhaustiveSearchPhaseFactory<Solution_>
             nodeExplorationType_ = Objects.requireNonNullElse(phaseConfig.getNodeExplorationType(),
                     NodeExplorationType.DEPTH_FIRST);
         }
-        phase.setNodeComparator(nodeExplorationType_.buildNodeComparator(scoreBounderEnabled));
         EntitySelectorConfig entitySelectorConfig_ = buildEntitySelectorConfig(phaseConfigPolicy);
         EntitySelector<Solution_> entitySelector = EntitySelectorFactory.<Solution_> create(entitySelectorConfig_)
                 .buildEntitySelector(phaseConfigPolicy, SelectionCacheType.PHASE, SelectionOrder.ORIGINAL);
-        phase.setEntitySelector(entitySelector);
-        phase.setDecider(buildDecider(phaseConfigPolicy, entitySelector, bestSolutionRecaller, phase.getPhaseTermination(),
-                scoreBounderEnabled));
+
+        DefaultExhaustiveSearchPhase.Builder<Solution_> builder = new DefaultExhaustiveSearchPhase.Builder<>(
+                phaseIndex,
+                solverConfigPolicy.getLogIndentation(),
+                phaseTermination,
+                nodeExplorationType_.buildNodeComparator(scoreBounderEnabled),
+                entitySelector,
+                buildDecider(phaseConfigPolicy, entitySelector, bestSolutionRecaller, phaseTermination, scoreBounderEnabled));
+
         EnvironmentMode environmentMode = phaseConfigPolicy.getEnvironmentMode();
         if (environmentMode.isNonIntrusiveFullAsserted()) {
-            phase.setAssertWorkingSolutionScoreFromScratch(true);
-            phase.setAssertStepScoreFromScratch(true); // Does nothing because ES doesn't use predictStepScore()
+            builder.setAssertWorkingSolutionScoreFromScratch(true);
+            builder.setAssertStepScoreFromScratch(true); // Does nothing because ES doesn't use predictStepScore()
         }
         if (environmentMode.isIntrusiveFastAsserted()) {
-            phase.setAssertExpectedWorkingSolutionScore(true);
-            phase.setAssertExpectedStepScore(true); // Does nothing because ES doesn't use predictStepScore()
-            phase.setAssertShadowVariablesAreNotStaleAfterStep(true); // Does nothing because ES doesn't use predictStepScore()
+            builder.setAssertExpectedWorkingSolutionScore(true);
+            builder.setAssertExpectedStepScore(true); // Does nothing because ES doesn't use predictStepScore()
+            builder.setAssertShadowVariablesAreNotStaleAfterStep(true); // Does nothing because ES doesn't use predictStepScore()
         }
-        return phase;
+        return builder.build();
     }
 
     private EntitySelectorConfig buildEntitySelectorConfig(HeuristicConfigPolicy<Solution_> configPolicy) {
