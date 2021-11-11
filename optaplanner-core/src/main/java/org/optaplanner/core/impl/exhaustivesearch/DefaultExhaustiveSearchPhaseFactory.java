@@ -60,14 +60,15 @@ public class DefaultExhaustiveSearchPhaseFactory<Solution_>
             HeuristicConfigPolicy<Solution_> solverConfigPolicy, BestSolutionRecaller<Solution_> bestSolutionRecaller,
             Termination<Solution_> solverTermination) {
         HeuristicConfigPolicy<Solution_> phaseConfigPolicy = solverConfigPolicy.createFilteredPhaseConfigPolicy();
-        ExhaustiveSearchType exhaustiveSearchType_ = phaseConfig.getExhaustiveSearchType() == null
-                ? ExhaustiveSearchType.BRANCH_AND_BOUND
-                : phaseConfig.getExhaustiveSearchType();
-        phaseConfigPolicy
-                .setEntitySorterManner(phaseConfig.getEntitySorterManner() != null ? phaseConfig.getEntitySorterManner()
-                        : exhaustiveSearchType_.getDefaultEntitySorterManner());
-        phaseConfigPolicy.setValueSorterManner(phaseConfig.getValueSorterManner() != null ? phaseConfig.getValueSorterManner()
-                : exhaustiveSearchType_.getDefaultValueSorterManner());
+        ExhaustiveSearchType exhaustiveSearchType_ = Objects.requireNonNullElse(
+                phaseConfig.getExhaustiveSearchType(),
+                ExhaustiveSearchType.BRANCH_AND_BOUND);
+        phaseConfigPolicy.setEntitySorterManner(Objects.requireNonNullElse(
+                phaseConfig.getEntitySorterManner(),
+                exhaustiveSearchType_.getDefaultEntitySorterManner()));
+        phaseConfigPolicy.setValueSorterManner(Objects.requireNonNullElse(
+                phaseConfig.getValueSorterManner(),
+                exhaustiveSearchType_.getDefaultValueSorterManner()));
         Termination<Solution_> phaseTermination = buildPhaseTermination(phaseConfigPolicy, solverTermination);
         boolean scoreBounderEnabled = exhaustiveSearchType_.isScoreBounderEnabled();
         NodeExplorationType nodeExplorationType_;

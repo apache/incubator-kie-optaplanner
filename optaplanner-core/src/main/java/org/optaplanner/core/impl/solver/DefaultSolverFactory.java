@@ -111,9 +111,8 @@ public final class DefaultSolverFactory<Solution_> implements SolverFactory<Solu
         HeuristicConfigPolicy<Solution_> configPolicy = new HeuristicConfigPolicy<>(environmentMode_,
                 moveThreadCount_, solverConfig.getMoveThreadBufferSize(), solverConfig.getThreadFactoryClass(),
                 scoreDirectorFactory);
-        TerminationConfig terminationConfig_ = solverConfig.getTerminationConfig() == null
-                ? new TerminationConfig()
-                : solverConfig.getTerminationConfig();
+        TerminationConfig terminationConfig_ =
+                Objects.requireNonNullElseGet(solverConfig.getTerminationConfig(), TerminationConfig::new);
         BasicPlumbingTermination<Solution_> basicPlumbingTermination = new BasicPlumbingTermination<>(daemon_);
         Termination<Solution_> termination = TerminationFactory.<Solution_> create(terminationConfig_)
                 .buildTermination(configPolicy, basicPlumbingTermination);
@@ -131,9 +130,8 @@ public final class DefaultSolverFactory<Solution_> implements SolverFactory<Solu
      */
     public InnerScoreDirectorFactory<Solution_, ?> buildScoreDirectorFactory(EnvironmentMode environmentMode) {
         SolutionDescriptor<Solution_> solutionDescriptor = buildSolutionDescriptor(environmentMode);
-        ScoreDirectorFactoryConfig scoreDirectorFactoryConfig_ = solverConfig.getScoreDirectorFactoryConfig() == null
-                ? new ScoreDirectorFactoryConfig()
-                : solverConfig.getScoreDirectorFactoryConfig();
+        ScoreDirectorFactoryConfig scoreDirectorFactoryConfig_ =
+                Objects.requireNonNullElseGet(solverConfig.getScoreDirectorFactoryConfig(), ScoreDirectorFactoryConfig::new);
         ScoreDirectorFactoryFactory<Solution_, ?> scoreDirectorFactoryFactory =
                 new ScoreDirectorFactoryFactory<>(scoreDirectorFactoryConfig_);
         return scoreDirectorFactoryFactory.buildScoreDirectorFactory(solverConfig.getClassLoader(), environmentMode,

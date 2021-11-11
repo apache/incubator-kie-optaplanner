@@ -58,14 +58,15 @@ public class DefaultConstructionHeuristicPhaseFactory<Solution_>
             HeuristicConfigPolicy<Solution_> solverConfigPolicy, BestSolutionRecaller<Solution_> bestSolutionRecaller,
             Termination<Solution_> solverTermination) {
         HeuristicConfigPolicy<Solution_> phaseConfigPolicy = solverConfigPolicy.createFilteredPhaseConfigPolicy();
-        ConstructionHeuristicType constructionHeuristicType_ =
-                Objects.requireNonNullElse(phaseConfig.getConstructionHeuristicType(),
-                        ConstructionHeuristicType.ALLOCATE_ENTITY_FROM_QUEUE);
-        phaseConfigPolicy
-                .setEntitySorterManner(phaseConfig.getEntitySorterManner() != null ? phaseConfig.getEntitySorterManner()
-                        : constructionHeuristicType_.getDefaultEntitySorterManner());
-        phaseConfigPolicy.setValueSorterManner(phaseConfig.getValueSorterManner() != null ? phaseConfig.getValueSorterManner()
-                : constructionHeuristicType_.getDefaultValueSorterManner());
+        ConstructionHeuristicType constructionHeuristicType_ = Objects.requireNonNullElse(
+                phaseConfig.getConstructionHeuristicType(),
+                ConstructionHeuristicType.ALLOCATE_ENTITY_FROM_QUEUE);
+        phaseConfigPolicy.setEntitySorterManner(Objects.requireNonNullElse(
+                phaseConfig.getEntitySorterManner(),
+                constructionHeuristicType_.getDefaultEntitySorterManner()));
+        phaseConfigPolicy.setValueSorterManner(Objects.requireNonNullElse(
+                phaseConfig.getValueSorterManner(),
+                constructionHeuristicType_.getDefaultValueSorterManner()));
         Termination<Solution_> phaseTermination = buildPhaseTermination(phaseConfigPolicy, solverTermination);
         EntityPlacerConfig entityPlacerConfig_;
         if (phaseConfig.getEntityPlacerConfig() == null) {
@@ -107,12 +108,10 @@ public class DefaultConstructionHeuristicPhaseFactory<Solution_>
 
     private ConstructionHeuristicDecider<Solution_> buildDecider(HeuristicConfigPolicy<Solution_> configPolicy,
             Termination<Solution_> termination) {
-        ConstructionHeuristicForagerConfig foragerConfig_ = phaseConfig.getForagerConfig() == null
-                ? new ConstructionHeuristicForagerConfig()
-                : phaseConfig.getForagerConfig();
+        ConstructionHeuristicForagerConfig foragerConfig_ =
+                Objects.requireNonNullElseGet(phaseConfig.getForagerConfig(), ConstructionHeuristicForagerConfig::new);
         ConstructionHeuristicForager<Solution_> forager =
-                ConstructionHeuristicForagerFactory.<Solution_> create(foragerConfig_)
-                        .buildForager(configPolicy);
+                ConstructionHeuristicForagerFactory.<Solution_> create(foragerConfig_).buildForager(configPolicy);
         EnvironmentMode environmentMode = configPolicy.getEnvironmentMode();
         ConstructionHeuristicDecider<Solution_> decider;
         Integer moveThreadCount = configPolicy.getMoveThreadCount();
