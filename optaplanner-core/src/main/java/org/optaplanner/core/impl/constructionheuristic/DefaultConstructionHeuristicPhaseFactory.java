@@ -18,6 +18,7 @@ package org.optaplanner.core.impl.constructionheuristic;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.concurrent.ThreadFactory;
 
 import org.optaplanner.core.config.constructionheuristic.ConstructionHeuristicPhaseConfig;
@@ -46,6 +47,7 @@ import org.optaplanner.core.impl.constructionheuristic.placer.PooledEntityPlacer
 import org.optaplanner.core.impl.constructionheuristic.placer.QueuedEntityPlacerFactory;
 import org.optaplanner.core.impl.constructionheuristic.placer.QueuedValuePlacerFactory;
 import org.optaplanner.core.impl.domain.variable.descriptor.GenuineVariableDescriptor;
+import org.optaplanner.core.impl.domain.variable.descriptor.ListVariableDescriptor;
 import org.optaplanner.core.impl.heuristic.HeuristicConfigPolicy;
 import org.optaplanner.core.impl.phase.AbstractPhaseFactory;
 import org.optaplanner.core.impl.solver.recaller.BestSolutionRecaller;
@@ -77,23 +79,14 @@ public class DefaultConstructionHeuristicPhaseFactory<Solution_>
         phaseConfigPolicy.setValueSorterManner(phaseConfig.getValueSorterManner() != null ? phaseConfig.getValueSorterManner()
                 : constructionHeuristicType_.getDefaultValueSorterManner());
         EntityPlacerConfig entityPlacerConfig_;
-        List<GenuineVariableDescriptor<Solution_>> listVariableDescriptors =
-                solverConfigPolicy.getSolutionDescriptor().findListVariableDescriptors();
+        Optional<ListVariableDescriptor<?>> listVariableDescriptor = validateListVariableConfig(solverConfigPolicy);
         if (phaseConfig.getEntityPlacerConfig() == null) {
-            if (listVariableDescriptors.isEmpty()) {
-                entityPlacerConfig_ = buildUnfoldedEntityPlacerConfig(phaseConfigPolicy, constructionHeuristicType_);
+            if (listVariableDescriptor.isPresent()) {
+                entityPlacerConfig_ = buildListVariablePlacerConfig(phaseConfigPolicy, listVariableDescriptor.get());
             } else {
-                if (listVariableDescriptors.size() > 1) {
-                    throw new IllegalArgumentException("Construction Heuristics does not support multiple list variables ("
-                            + listVariableDescriptors + ").");
-                }
-                entityPlacerConfig_ = buildListVariablePlacerConfig(phaseConfigPolicy, listVariableDescriptors.get(0));
+                entityPlacerConfig_ = buildUnfoldedEntityPlacerConfig(phaseConfigPolicy, constructionHeuristicType_);
             }
         } else {
-            if (!listVariableDescriptors.isEmpty()) {
-                throw new IllegalArgumentException(
-                        "Power tweaking Construction Heuristics for a list variable is not allowed.");
-            }
             entityPlacerConfig_ = phaseConfig.getEntityPlacerConfig();
             if (phaseConfig.getConstructionHeuristicType() != null) {
                 throw new IllegalArgumentException(
@@ -121,9 +114,34 @@ public class DefaultConstructionHeuristicPhaseFactory<Solution_>
         return phase;
     }
 
-    private static <Solution_> QueuedValuePlacerConfig buildListVariablePlacerConfig(
-            HeuristicConfigPolicy<Solution_> configPolicy,
-            GenuineVariableDescriptor<Solution_> variableDescriptor) {
+    private Optional<ListVariableDescriptor<?>> validateListVariableConfig(HeuristicConfigPolicy<?> solverConfigPolicy) {
+        List<? extends GenuineVariableDescriptor<?>> listVariableDescriptors =
+                solverConfigPolicy.getSolutionDescriptor().findListVariableDescriptors();
+        if (listVariableDescriptors.isEmpty()) {
+            return Optional.empty();
+        }
+        if (listVariableDescriptors.size() > 1) {
+            throw new IllegalArgumentException("Construction Heuristic phase does not support multiple list variables ("
+                    + listVariableDescriptors + ").");
+        }
+
+        failIfConfigured(phaseConfig.getConstructionHeuristicType(), "constructionHeuristicType");
+        failIfConfigured(phaseConfig.getEntityPlacerConfig(), "entityPlacerConfig");
+        failIfConfigured(phaseConfig.getMoveSelectorConfigList(), "moveSelectorConfigList");
+
+        return Optional.of(((ListVariableDescriptor<?>) listVariableDescriptors.get(0)));
+    }
+
+    private static void failIfConfigured(Object configValue, String configName) {
+        if (configValue != null) {
+            throw new IllegalArgumentException("Construction Heuristic phase with a list variable does not support "
+                    + configName + " configuration. Remove the " + configName + " (" + configValue + ") from the config.");
+        }
+    }
+
+    private static QueuedValuePlacerConfig buildListVariablePlacerConfig(
+            HeuristicConfigPolicy<?> configPolicy,
+            GenuineVariableDescriptor<?> variableDescriptor) {
         String mimicSelectorId = variableDescriptor.getVariableName();
 
         // Prepare recording ValueSelector config.
