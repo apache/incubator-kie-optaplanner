@@ -29,9 +29,7 @@ import org.optaplanner.core.impl.heuristic.selector.value.EntityIndependentValue
 import org.optaplanner.core.impl.phase.scope.AbstractPhaseScope;
 
 /**
- * Prevents reassigning of values that are already assigned to a list variable during Construction Heuristics
- * // TODO maybe
- * and Exhaustive Search.
+ * Prevents reassigning of values that are already assigned to a list variable during Construction Heuristics.
  * <p>
  * Returns only values that are not yet assigned.
  * <p>
