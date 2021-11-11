@@ -78,28 +78,10 @@ public class DefaultConstructionHeuristicPhaseFactory<Solution_>
                         : constructionHeuristicType_.getDefaultEntitySorterManner());
         phaseConfigPolicy.setValueSorterManner(phaseConfig.getValueSorterManner() != null ? phaseConfig.getValueSorterManner()
                 : constructionHeuristicType_.getDefaultValueSorterManner());
-        EntityPlacerConfig entityPlacerConfig_;
-        Optional<ListVariableDescriptor<?>> listVariableDescriptor = validateListVariableConfig(solverConfigPolicy);
-        if (phaseConfig.getEntityPlacerConfig() == null) {
-            if (listVariableDescriptor.isPresent()) {
-                entityPlacerConfig_ = buildListVariablePlacerConfig(phaseConfigPolicy, listVariableDescriptor.get());
-            } else {
-                entityPlacerConfig_ = buildUnfoldedEntityPlacerConfig(phaseConfigPolicy, constructionHeuristicType_);
-            }
-        } else {
-            entityPlacerConfig_ = phaseConfig.getEntityPlacerConfig();
-            if (phaseConfig.getConstructionHeuristicType() != null) {
-                throw new IllegalArgumentException(
-                        "The constructionHeuristicType (" + phaseConfig.getConstructionHeuristicType()
-                                + ") must not be configured if the entityPlacerConfig (" + entityPlacerConfig_
-                                + ") is explicitly configured.");
-            }
-            if (phaseConfig.getMoveSelectorConfigList() != null) {
-                throw new IllegalArgumentException("The moveSelectorConfigList (" + phaseConfig.getMoveSelectorConfigList()
-                        + ") cannot be configured if the entityPlacerConfig (" + entityPlacerConfig_
-                        + ") is explicitly configured.");
-            }
-        }
+        EntityPlacerConfig entityPlacerConfig_ = getValidEntityPlacerConfig()
+                .orElseGet(() -> getValidListVariableDescriptor(solverConfigPolicy)
+                        .map(variableDescriptor -> buildListVariablePlacerConfig(phaseConfigPolicy, variableDescriptor))
+                        .orElseGet(() -> buildUnfoldedEntityPlacerConfig(phaseConfigPolicy, constructionHeuristicType_)));
         EntityPlacer<Solution_> entityPlacer = EntityPlacerFactory.<Solution_> create(entityPlacerConfig_)
                 .buildEntityPlacer(phaseConfigPolicy);
         phase.setEntityPlacer(entityPlacer);
@@ -114,7 +96,24 @@ public class DefaultConstructionHeuristicPhaseFactory<Solution_>
         return phase;
     }
 
-    private Optional<ListVariableDescriptor<?>> validateListVariableConfig(HeuristicConfigPolicy<?> solverConfigPolicy) {
+    private Optional<EntityPlacerConfig> getValidEntityPlacerConfig() {
+        return Optional.ofNullable(phaseConfig.getEntityPlacerConfig()).filter(entityPlacerConfig -> {
+            if (phaseConfig.getConstructionHeuristicType() != null) {
+                throw new IllegalArgumentException(
+                        "The constructionHeuristicType (" + phaseConfig.getConstructionHeuristicType()
+                                + ") must not be configured if the entityPlacerConfig (" + entityPlacerConfig
+                                + ") is explicitly configured.");
+            }
+            if (phaseConfig.getMoveSelectorConfigList() != null) {
+                throw new IllegalArgumentException("The moveSelectorConfigList (" + phaseConfig.getMoveSelectorConfigList()
+                        + ") cannot be configured if the entityPlacerConfig (" + entityPlacerConfig
+                        + ") is explicitly configured.");
+            }
+            return true;
+        });
+    }
+
+    private Optional<ListVariableDescriptor<?>> getValidListVariableDescriptor(HeuristicConfigPolicy<?> solverConfigPolicy) {
         List<? extends GenuineVariableDescriptor<?>> listVariableDescriptors =
                 solverConfigPolicy.getSolutionDescriptor().findListVariableDescriptors();
         if (listVariableDescriptors.isEmpty()) {
@@ -139,7 +138,7 @@ public class DefaultConstructionHeuristicPhaseFactory<Solution_>
         }
     }
 
-    private static QueuedValuePlacerConfig buildListVariablePlacerConfig(
+    private static EntityPlacerConfig buildListVariablePlacerConfig(
             HeuristicConfigPolicy<?> configPolicy,
             GenuineVariableDescriptor<?> variableDescriptor) {
         String mimicSelectorId = variableDescriptor.getVariableName();
