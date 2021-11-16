@@ -114,17 +114,17 @@ public class VehicleRoutingSolutionPainter {
             Customer vehicleInfoCustomer = null;
             long longestNonDepotDistance = -1L;
             int load = 0;
-            for (Customer customer : solution.getCustomerList()) {
-                if (customer.getPreviousStandstill() != null && customer.getVehicle() == vehicle) {
+            Location previousLocation = vehicle.getLocation();
+            for (Customer customer : vehicle.getCustomers()) {
                     load += customer.getDemand();
-                    Location previousLocation = customer.getPreviousStandstill().getLocation();
                     Location location = customer.getLocation();
                     translator.drawRoute(g, previousLocation.getLongitude(), previousLocation.getLatitude(),
                             location.getLongitude(), location.getLatitude(),
                             location instanceof AirLocation, false);
+                    previousLocation = customer.getLocation();
                     // Determine where to draw the vehicle info
-                    long distance = customer.getDistanceFromPreviousStandstill();
-                    if (customer.getPreviousStandstill() instanceof Customer) {
+                    long distance = previousLocation.getDistanceTo(customer.getLocation());
+                    if (customer.getIndex() > 0) {
                         if (longestNonDepotDistance < distance) {
                             longestNonDepotDistance = distance;
                             vehicleInfoCustomer = customer;
@@ -133,28 +133,25 @@ public class VehicleRoutingSolutionPainter {
                         // If there is only 1 customer in this chain, draw it on a line to the Depot anyway
                         vehicleInfoCustomer = customer;
                     }
-                    // Line back to the vehicle depot
-                    if (customer.getNextCustomer() == null) {
-                        Location vehicleLocation = vehicle.getLocation();
-                        translator.drawRoute(g, location.getLongitude(), location.getLatitude(),
-                                vehicleLocation.getLongitude(), vehicleLocation.getLatitude(),
-                                location instanceof AirLocation, true);
-                    }
-                }
             }
+                    // Line back to the vehicle depot
+                        Location vehicleLocation = vehicle.getLocation();
+                        translator.drawRoute(g, previousLocation.getLongitude(), previousLocation.getLatitude(),
+                                vehicleLocation.getLongitude(), vehicleLocation.getLatitude(),
+                                previousLocation instanceof AirLocation, true);
             // Draw vehicle info
             if (vehicleInfoCustomer != null) {
                 if (load > vehicle.getCapacity()) {
                     g.setColor(TangoColorFactory.SCARLET_2);
                 }
-                Location previousLocation = vehicleInfoCustomer.getPreviousStandstill().getLocation();
+                Location infoPreviousLocation = previousLocation(vehicle, vehicleInfoCustomer);
                 Location location = vehicleInfoCustomer.getLocation();
-                double longitude = (previousLocation.getLongitude() + location.getLongitude()) / 2.0;
+                double longitude = (infoPreviousLocation.getLongitude() + location.getLongitude()) / 2.0;
                 int x = translator.translateLongitudeToX(longitude);
-                double latitude = (previousLocation.getLatitude() + location.getLatitude()) / 2.0;
+                double latitude = (infoPreviousLocation.getLatitude() + location.getLatitude()) / 2.0;
                 int y = translator.translateLatitudeToY(latitude);
-                boolean ascending = (previousLocation.getLongitude() < location.getLongitude())
-                        ^ (previousLocation.getLatitude() < location.getLatitude());
+                boolean ascending = (infoPreviousLocation.getLongitude() < location.getLongitude())
+                        ^ (infoPreviousLocation.getLatitude() < location.getLatitude());
 
                 ImageIcon vehicleImageIcon = vehicleImageIcons[colorIndex];
                 int vehicleInfoHeight = vehicleImageIcon.getIconHeight() + 2 + TEXT_SIZE;
@@ -197,6 +194,11 @@ public class VehicleRoutingSolutionPainter {
             g.drawString(distanceString,
                     (int) width - g.getFontMetrics().stringWidth(distanceString) - 10, (int) height - 10 - TEXT_SIZE);
         }
+    }
+
+    private Location previousLocation(Vehicle vehicle, Customer vehicleInfoCustomer) {
+        return vehicleInfoCustomer.getIndex() == 0 ? vehicle.getLocation()
+                : vehicle.getCustomers().get(vehicleInfoCustomer.getIndex() - 1).getLocation();
     }
 
     public Graphics2D createCanvas(double width, double height) {

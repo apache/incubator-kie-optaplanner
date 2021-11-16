@@ -28,7 +28,6 @@ import org.optaplanner.examples.common.app.CommonApp;
 import org.optaplanner.examples.common.app.LoggingMain;
 import org.optaplanner.examples.vehiclerouting.app.VehicleRoutingApp;
 import org.optaplanner.examples.vehiclerouting.domain.Customer;
-import org.optaplanner.examples.vehiclerouting.domain.Standstill;
 import org.optaplanner.examples.vehiclerouting.domain.Vehicle;
 import org.optaplanner.examples.vehiclerouting.domain.VehicleRoutingSolution;
 import org.optaplanner.persistence.common.api.domain.solution.SolutionFileIO;
@@ -95,21 +94,6 @@ public class VehicleRoutingDistanceTypeComparison extends LoggingMain {
             inputCustomerMap.put(customer.getId(), customer);
         }
 
-        for (Vehicle varVehicle : varSolution.getVehicleList()) {
-            Vehicle inputVehicle = inputVehicleMap.get(varVehicle.getId());
-            Customer varNext = varVehicle.getNextCustomer();
-            inputVehicle.setNextCustomer(varNext == null ? null : inputCustomerMap.get(varNext.getId()));
-        }
-        for (Customer varCustomer : varSolution.getCustomerList()) {
-            Customer inputCustomer = inputCustomerMap.get(varCustomer.getId());
-            Standstill varPrevious = varCustomer.getPreviousStandstill();
-            inputCustomer.setPreviousStandstill(varPrevious == null ? null
-                    : varPrevious instanceof Vehicle ? inputVehicleMap.get(((Vehicle) varPrevious).getId())
-                            : inputCustomerMap.get(((Customer) varPrevious).getId()));
-            Customer varNext = varCustomer.getNextCustomer();
-            inputCustomer.setNextCustomer(varNext == null ? null : inputCustomerMap.get(varNext.getId()));
-        }
-        scoreManager.updateScore(inputSolution);
     }
 
 }

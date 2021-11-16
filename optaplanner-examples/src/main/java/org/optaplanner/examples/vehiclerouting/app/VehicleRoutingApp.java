@@ -22,6 +22,7 @@ import java.util.Set;
 import org.optaplanner.examples.common.app.CommonApp;
 import org.optaplanner.examples.common.persistence.AbstractSolutionImporter;
 import org.optaplanner.examples.vehiclerouting.domain.VehicleRoutingSolution;
+import org.optaplanner.examples.vehiclerouting.persistence.TmpBridgeVehicleRoutingXmlSolutionFileIO;
 import org.optaplanner.examples.vehiclerouting.persistence.VehicleRoutingImporter;
 import org.optaplanner.examples.vehiclerouting.persistence.VehicleRoutingXmlSolutionFileIO;
 import org.optaplanner.examples.vehiclerouting.swingui.VehicleRoutingPanel;
@@ -57,7 +58,7 @@ public class VehicleRoutingApp extends CommonApp<VehicleRoutingSolution> {
 
     @Override
     public SolutionFileIO<VehicleRoutingSolution> createSolutionFileIO() {
-        return new VehicleRoutingXmlSolutionFileIO();
+        return new TmpBridgeVehicleRoutingXmlSolutionFileIO() ;
     }
 
     @Override

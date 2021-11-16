@@ -16,7 +16,7 @@
 
 package org.optaplanner.examples.vehiclerouting.persistence;
 
-import org.optaplanner.examples.vehiclerouting.domain.VehicleRoutingSolution;
+import org.optaplanner.examples.vehiclerouting.domain.chained.VehicleRoutingSolution;
 import org.optaplanner.persistence.xstream.impl.domain.solution.XStreamSolutionFileIO;
 
 public class VehicleRoutingXmlSolutionFileIO extends XStreamSolutionFileIO<VehicleRoutingSolution> {

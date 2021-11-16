@@ -17,28 +17,25 @@
 package org.optaplanner.examples.vehiclerouting.domain;
 
 import org.optaplanner.core.api.domain.entity.PlanningEntity;
-import org.optaplanner.core.api.domain.variable.AnchorShadowVariable;
-import org.optaplanner.core.api.domain.variable.PlanningVariable;
-import org.optaplanner.core.api.domain.variable.PlanningVariableGraphType;
+import org.optaplanner.core.api.domain.variable.IndexShadowVariable;
+import org.optaplanner.core.api.domain.variable.InverseRelationShadowVariable;
 import org.optaplanner.examples.common.domain.AbstractPersistable;
 import org.optaplanner.examples.vehiclerouting.domain.location.Location;
-import org.optaplanner.examples.vehiclerouting.domain.solver.DepotAngleCustomerDifficultyWeightFactory;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 
-@PlanningEntity(difficultyWeightFactoryClass = DepotAngleCustomerDifficultyWeightFactory.class)
+@PlanningEntity
 @XStreamAlias("VrpCustomer")
-public class Customer extends AbstractPersistable implements Standstill {
+public class Customer extends AbstractPersistable {
 
     protected Location location;
     protected int demand;
 
-    // Planning variables: changes during planning, between score calculations.
-    protected Standstill previousStandstill;
-
     // Shadow variables
-    protected Customer nextCustomer;
+    @InverseRelationShadowVariable(sourceVariableName = "customers")
     protected Vehicle vehicle;
+    @IndexShadowVariable(sourceVariableName = "customers")
+    private Integer index;
 
     public Customer() {
     }
@@ -49,7 +46,6 @@ public class Customer extends AbstractPersistable implements Standstill {
         this.demand = demand;
     }
 
-    @Override
     public Location getLocation() {
         return location;
     }
@@ -66,28 +62,6 @@ public class Customer extends AbstractPersistable implements Standstill {
         this.demand = demand;
     }
 
-    @PlanningVariable(valueRangeProviderRefs = { "vehicleRange",
-            "customerRange" }, graphType = PlanningVariableGraphType.CHAINED)
-    public Standstill getPreviousStandstill() {
-        return previousStandstill;
-    }
-
-    public void setPreviousStandstill(Standstill previousStandstill) {
-        this.previousStandstill = previousStandstill;
-    }
-
-    @Override
-    public Customer getNextCustomer() {
-        return nextCustomer;
-    }
-
-    @Override
-    public void setNextCustomer(Customer nextCustomer) {
-        this.nextCustomer = nextCustomer;
-    }
-
-    @Override
-    @AnchorShadowVariable(sourceVariableName = "previousStandstill")
     public Vehicle getVehicle() {
         return vehicle;
     }
@@ -96,35 +70,12 @@ public class Customer extends AbstractPersistable implements Standstill {
         this.vehicle = vehicle;
     }
 
-    // ************************************************************************
-    // Complex methods
-    // ************************************************************************
-
-    /**
-     * @return a positive number, the distance multiplied by 1000 to avoid floating point arithmetic rounding errors
-     */
-    public long getDistanceFromPreviousStandstill() {
-        if (previousStandstill == null) {
-            throw new IllegalStateException("This method must not be called when the previousStandstill ("
-                    + previousStandstill + ") is not initialized yet.");
-        }
-        return getDistanceFrom(previousStandstill);
+    public Integer getIndex() {
+        return index;
     }
 
-    /**
-     * @param standstill never null
-     * @return a positive number, the distance multiplied by 1000 to avoid floating point arithmetic rounding errors
-     */
-    public long getDistanceFrom(Standstill standstill) {
-        return standstill.getLocation().getDistanceTo(location);
-    }
-
-    /**
-     * @param standstill never null
-     * @return a positive number, the distance multiplied by 1000 to avoid floating point arithmetic rounding errors
-     */
-    public long getDistanceTo(Standstill standstill) {
-        return location.getDistanceTo(standstill.getLocation());
+    public void setIndex(Integer index) {
+        this.index = index;
     }
 
     @Override

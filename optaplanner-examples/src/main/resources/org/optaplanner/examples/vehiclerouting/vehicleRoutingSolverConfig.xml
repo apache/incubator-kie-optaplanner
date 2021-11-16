@@ -5,8 +5,8 @@
   <!--<moveThreadCount>AUTO</moveThreadCount>--><!-- To solve faster by saturating multiple CPU cores -->
 
   <solutionClass>org.optaplanner.examples.vehiclerouting.domain.VehicleRoutingSolution</solutionClass>
-  <entityClass>org.optaplanner.examples.vehiclerouting.domain.Standstill</entityClass>
   <entityClass>org.optaplanner.examples.vehiclerouting.domain.Customer</entityClass>
+  <entityClass>org.optaplanner.examples.vehiclerouting.domain.Vehicle</entityClass>
 
   <scoreDirectorFactory>
     <constraintProviderClass>org.optaplanner.examples.vehiclerouting.score.VehicleRoutingConstraintProvider</constraintProviderClass>
@@ -20,18 +20,11 @@
     <minutesSpentLimit>5</minutesSpentLimit>
   </termination>
   <constructionHeuristic>
-    <constructionHeuristicType>FIRST_FIT_DECREASING</constructionHeuristicType>
   </constructionHeuristic>
   <localSearch>
     <unionMoveSelector>
       <changeMoveSelector/>
       <swapMoveSelector/>
-      <subChainChangeMoveSelector>
-        <selectReversingMoveToo>true</selectReversingMoveToo>
-      </subChainChangeMoveSelector>
-      <subChainSwapMoveSelector>
-        <selectReversingMoveToo>true</selectReversingMoveToo>
-      </subChainSwapMoveSelector>
       <!-- TODO use nearby selection to scale out -->
     </unionMoveSelector>
     <acceptor>

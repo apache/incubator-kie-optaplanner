@@ -16,19 +16,27 @@
 
 package org.optaplanner.examples.vehiclerouting.domain;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import org.optaplanner.core.api.domain.entity.PlanningEntity;
+import org.optaplanner.core.api.domain.variable.PlanningCollectionVariable;
 import org.optaplanner.examples.common.domain.AbstractPersistable;
 import org.optaplanner.examples.vehiclerouting.domain.location.Location;
+import org.optaplanner.examples.vehiclerouting.domain.solver.DepotAngleCustomerDifficultyWeightFactory;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 
 @XStreamAlias("VrpVehicle")
-public class Vehicle extends AbstractPersistable implements Standstill {
+@PlanningEntity
+public class Vehicle extends AbstractPersistable {
 
     protected int capacity;
     protected Depot depot;
 
-    // Shadow variables
-    protected Customer nextCustomer;
+    @PlanningCollectionVariable(valueRangeProviderRefs = "customerRange",
+            strengthWeightFactoryClass = DepotAngleCustomerDifficultyWeightFactory.class)
+    private List<Customer> customers = new ArrayList<>();
 
     public Vehicle() {
     }
@@ -55,36 +63,28 @@ public class Vehicle extends AbstractPersistable implements Standstill {
         this.depot = depot;
     }
 
-    @Override
-    public Customer getNextCustomer() {
-        return nextCustomer;
+    public List<Customer> getCustomers() {
+        return customers;
     }
 
-    @Override
-    public void setNextCustomer(Customer nextCustomer) {
-        this.nextCustomer = nextCustomer;
+    public void setCustomers(List<Customer> customers) {
+        this.customers = customers;
     }
 
     // ************************************************************************
     // Complex methods
     // ************************************************************************
 
-    @Override
-    public Vehicle getVehicle() {
-        return this;
-    }
-
-    @Override
     public Location getLocation() {
         return depot.getLocation();
     }
 
     /**
-     * @param standstill never null
+     * @param location never null
      * @return a positive number, the distance multiplied by 1000 to avoid floating point arithmetic rounding errors
      */
-    public long getDistanceTo(Standstill standstill) {
-        return depot.getDistanceTo(standstill);
+    public long getDistanceTo(Location location) {
+        return depot.getDistanceTo(location);
     }
 
     @Override
@@ -96,4 +96,16 @@ public class Vehicle extends AbstractPersistable implements Standstill {
         return location.getName() + "/" + super.toString();
     }
 
+    public long getDistance() {
+        if (customers.isEmpty()) {
+            return 0;
+        }
+        int distance = 0;
+        Location previous = depot.getLocation();
+        for (Customer customer : customers) {
+            distance += previous.getDistanceTo(customer.getLocation());
+            previous = customer.getLocation();
+        }
+        return distance + previous.getDistanceTo(depot.getLocation());
+    }
 }
