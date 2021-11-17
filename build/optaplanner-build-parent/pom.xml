@@ -20,7 +20,7 @@
     <!-- Dependencies -->
     <!-- ************************************************************************ -->
     <!-- SNAPSHOT and KIE dependency versions -->
-    <version.org.kie.kogito>2.0.0-SNAPSHOT</version.org.kie.kogito>
+    <version.org.kie.kogito>1.14.0-SNAPSHOT</version.org.kie.kogito>
 
     <!-- Normal dependency versions -->
     <version.ch.qos.logback>1.2.3</version.ch.qos.logback>
