@@ -6,6 +6,7 @@ import org.kie.jenkins.jobdsl.Utils
 import org.kie.jenkins.jobdsl.VersionUtils
 
 JENKINS_PATH = '.ci/jenkins'
+BUILDCHAIN_CONFIG_BRANCH = '%{process.env.GITHUB_BASE_REF.replace(/(\\d*)\\.(.*)\\.(.*)/g, (m, n1, n2, n3) => `\\${+n1-7}.\\${n2}.\\${n3}`)}'
 
 def getDefaultJobParams(String repoName = 'optaplanner') {
     return KogitoJobTemplate.getDefaultJobParams(this, repoName)
@@ -24,6 +25,7 @@ Map getMultijobPRConfig() {
                     // Sonarcloud analysis only on main branch
                     // As we have only Community edition
                     DISABLE_SONARCLOUD: !Utils.isMainBranch(this),
+                    BUILDCHAIN_CONFIG_BRANCH: BUILDCHAIN_CONFIG_BRANCH
                 ]
             ], [
                 id: 'kogito-apps',
@@ -39,15 +41,22 @@ Map getMultijobPRConfig() {
                 ]
             ], [
                 id: 'optaweb-employee-rostering',
-                repository: 'optaweb-employee-rostering'
+                repository: 'optaweb-employee-rostering',
+                env : [
+                    BUILDCHAIN_CONFIG_BRANCH: BUILDCHAIN_CONFIG_BRANCH
+                ]
             ], [
                 id: 'optaweb-vehicle-routing',
-                repository: 'optaweb-vehicle-routing'
+                repository: 'optaweb-vehicle-routing',
+                env : [
+                    BUILDCHAIN_CONFIG_BRANCH: BUILDCHAIN_CONFIG_BRANCH
+                ]
             ], [
                 id: 'optaplanner-quickstarts',
                 repository: 'optaplanner-quickstarts',
                 env : [
-                    OPTAPLANNER_BUILD_MVN_OPTS_UPSTREAM: '-Dfull'
+                    OPTAPLANNER_BUILD_MVN_OPTS_UPSTREAM: '-Dfull',
+                    BUILDCHAIN_CONFIG_BRANCH: BUILDCHAIN_CONFIG_BRANCH
                 ]
             ]
         ]
