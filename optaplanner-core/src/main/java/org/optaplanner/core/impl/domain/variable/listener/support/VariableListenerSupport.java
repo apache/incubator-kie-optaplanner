@@ -193,7 +193,7 @@ public class VariableListenerSupport<Solution_> implements SupplyManager<Solutio
         for (VariableListenerNotifiable notifiable : notifiableList) {
             int notifiedCount = 0;
             VariableListener<Solution_, Object> variableListener = notifiable.getVariableListener();
-            for (VariableListenerNotification notification : notifiable.iterateNotifications()) {
+            for (VariableListenerNotification notification : notifiable) {
                 Object entity = notification.getEntity();
                 switch (notification.getType()) {
                     case ENTITY_ADDED:

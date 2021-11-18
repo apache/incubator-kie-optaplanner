@@ -18,11 +18,13 @@ package org.optaplanner.core.impl.domain.variable.listener.support;
 
 import java.util.ArrayDeque;
 import java.util.Collection;
+import java.util.Iterator;
 import java.util.function.Consumer;
 
 import org.optaplanner.core.api.domain.variable.VariableListener;
 
-public class VariableListenerNotifiable implements Comparable<VariableListenerNotifiable> {
+public class VariableListenerNotifiable
+        implements Comparable<VariableListenerNotifiable>, Iterable<VariableListenerNotification> {
 
     protected final VariableListener variableListener;
     protected final int globalOrder;
@@ -49,10 +51,6 @@ public class VariableListenerNotifiable implements Comparable<VariableListenerNo
         }
     }
 
-    public Iterable<VariableListenerNotification> iterateNotifications() {
-        return notificationQueue;
-    }
-
     public int getNotificationCount() {
         return notificationQueue.size();
     }
@@ -70,6 +68,11 @@ public class VariableListenerNotifiable implements Comparable<VariableListenerNo
         } else {
             return 0;
         }
+    }
+
+    @Override
+    public Iterator<VariableListenerNotification> iterator() {
+        return notificationQueue.iterator();
     }
 
     @Override
