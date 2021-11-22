@@ -60,6 +60,6 @@ class ListUnassignMoveTest {
         ListVariableDescriptor<TestdataListSolution> variableDescriptor =
                 TestdataListEntity.buildVariableDescriptorForValueList();
 
-        assertThat(new ListUnassignMove<>(variableDescriptor, e1, 0)).hasToString("1 {E1[0]->unassigned}");
+        assertThat(new ListUnassignMove<>(variableDescriptor, e1, 0)).hasToString("1 {E1[0] -> null}");
     }
 }

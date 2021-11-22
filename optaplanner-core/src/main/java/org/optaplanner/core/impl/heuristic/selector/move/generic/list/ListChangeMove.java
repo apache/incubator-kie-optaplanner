@@ -191,7 +191,7 @@ public class ListChangeMove<Solution_> extends AbstractMove<Solution_> {
 
     @Override
     public String toString() {
-        return String.format("%s {%s[%d]->%s[%d]}",
+        return String.format("%s {%s[%d] -> %s[%d]}",
                 getMovedValue(), sourceEntity, sourceIndex, destinationEntity, destinationIndex);
     }
 }
