@@ -111,8 +111,8 @@ void setupMultijobPrDefaultChecks() {
 
 void setupMultijobPrNativeChecks() {
     def multijobConfig = getMultijobPRConfig()
-    multijobConfig.jobs.find { it.id == 'kogito-apps' }.env.BUILD_MVN_OPTS_CURRENT: "-Poptaplanner-downstream,native ${KogitoConstants.DEFAULT_NATIVE_CONTAINER_PARAMS}"
-    multijobConfig.jobs.find { it.id == 'kogito-examples' }.env.BUILD_MVN_OPTS_CURRENT: "-Poptaplanner-downstream-native ${KogitoConstants.DEFAULT_NATIVE_CONTAINER_PARAMS}"
+    multijobConfig.jobs.find { it.id == 'kogito-apps' }.env.BUILD_MVN_OPTS_CURRENT = "-Poptaplanner-downstream,native ${KogitoConstants.DEFAULT_NATIVE_CONTAINER_PARAMS}"
+    multijobConfig.jobs.find { it.id == 'kogito-examples' }.env.BUILD_MVN_OPTS_CURRENT = "-Poptaplanner-downstream-native ${KogitoConstants.DEFAULT_NATIVE_CONTAINER_PARAMS}"
     KogitoJobTemplate.createMultijobNativePRJobs(this, multijobConfig) { return getDefaultJobParams() }
 }
 
