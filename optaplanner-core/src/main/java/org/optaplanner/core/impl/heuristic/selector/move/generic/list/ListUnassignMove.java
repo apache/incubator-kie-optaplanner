@@ -89,7 +89,7 @@ public class ListUnassignMove<Solution_> extends AbstractMove<Solution_> {
 
     @Override
     public String toString() {
-        return String.format("%s {%s[%d]->unassigned}",
+        return String.format("%s {%s[%d] -> null}",
                 getMovedValue(), sourceEntity, sourceIndex);
     }
 }
