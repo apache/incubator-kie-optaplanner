@@ -65,8 +65,8 @@ public @interface PlanningCollectionVariable {
      * Some algorithms benefit from planning on weaker planning values first or from focusing on them.
      * <p>
      * The {@link Comparator} should sort in ascending strength.
-     * For example: sorting 3 computers on strength based on their RAM capacity:
-     * Computer B (1GB RAM), Computer A (2GB RAM), Computer C (7GB RAM),
+     * For example: sorting 3 tasks on strength based on their duration:
+     * Task B (90 minutes), Task A (45 minutes), Task C (10 minutes),
      * <p>
      * Do not use together with {@link #strengthWeightFactoryClass()}.
      *
