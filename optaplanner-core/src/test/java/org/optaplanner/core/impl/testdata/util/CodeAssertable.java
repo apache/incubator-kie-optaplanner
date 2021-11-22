@@ -57,7 +57,7 @@ public interface CodeAssertable {
         } else if (o instanceof ListAssignMove) {
             ListAssignMove<?> listAssignMove = (ListAssignMove<?>) o;
             return () -> convert(listAssignMove.getMovedValue())
-                    + " {unassigned->"
+                    + " {null->"
                     + convert(listAssignMove.getDestinationEntity())
                     + "[" + listAssignMove.getDestinationIndex() + "]}";
         } else if (o instanceof ListChangeMove) {
