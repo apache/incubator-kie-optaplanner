@@ -233,7 +233,7 @@ public class GizmoMemberAccessorImplementor {
 
     /**
      * Generates the following code:
-     * 
+     *
      * <pre>
      * Class getDeclaringClass() {
      *     return ClassThatDeclaredMember.class;
@@ -352,7 +352,7 @@ public class GizmoMemberAccessorImplementor {
      * Generates the following code:
      *
      * For a field
-     * 
+     *
      * <pre>
      * Object executeGetter(Object bean) {
      *     return ((DeclaringClass) bean).field;
@@ -360,7 +360,7 @@ public class GizmoMemberAccessorImplementor {
      * </pre>
      *
      * For a method
-     * 
+     *
      * <pre>
      * Object executeGetter(Object bean) {
      *     return ((DeclaringClass) bean).method();
@@ -382,7 +382,7 @@ public class GizmoMemberAccessorImplementor {
      * Generates the following code:
      *
      * For a field or a getter method that also have a corresponding setter
-     * 
+     *
      * <pre>
      * boolean supportSetter() {
      *     return true;
@@ -390,7 +390,7 @@ public class GizmoMemberAccessorImplementor {
      * </pre>
      *
      * For a read method or a getter method without a setter
-     * 
+     *
      * <pre>
      * boolean supportSetter() {
      *     return false;
@@ -414,7 +414,7 @@ public class GizmoMemberAccessorImplementor {
      * Generates the following code:
      *
      * For a field
-     * 
+     *
      * <pre>
      * void executeSetter(Object bean, Object value) {
      *     return ((DeclaringClass) bean).field = value;
@@ -422,7 +422,7 @@ public class GizmoMemberAccessorImplementor {
      * </pre>
      *
      * For a getter method with a corresponding setter
-     * 
+     *
      * <pre>
      * void executeSetter(Object bean, Object value) {
      *     return ((DeclaringClass) bean).setValue(value);
@@ -430,7 +430,7 @@ public class GizmoMemberAccessorImplementor {
      * </pre>
      *
      * For a read method or a getter method without a setter
-     * 
+     *
      * <pre>
      * void executeSetter(Object bean, Object value) {
      *     throw new UnsupportedOperationException("Setter not supported");

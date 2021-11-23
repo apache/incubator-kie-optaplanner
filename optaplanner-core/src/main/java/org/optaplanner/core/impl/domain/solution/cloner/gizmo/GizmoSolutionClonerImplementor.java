@@ -349,7 +349,7 @@ public class GizmoSolutionClonerImplementor {
      * // If getter a method (i.e. Quarkus)
      * clone.setMember(original.getMember());
      * </pre>
-     * 
+     *
      * @param methodCreator
      * @param shallowlyClonedField
      * @param thisObj
@@ -436,7 +436,7 @@ public class GizmoSolutionClonerImplementor {
      *     // ...
      * }
      * </pre>
-     * 
+     *
      * @param bytecodeCreator
      * @param solutionDescriptor
      * @param deeplyClonedFieldClass
