@@ -92,16 +92,6 @@ public class DefaultSolver<Solution_> extends AbstractSolver<Solution_> {
         return solverScope.getScoreDirector().getScoreDirectorFactory();
     }
 
-    @Override
-    public BestSolutionRecaller<Solution_> getBestSolutionRecaller() {
-        return bestSolutionRecaller;
-    }
-
-    @Override
-    public List<Phase<Solution_>> getPhaseList() {
-        return phaseList;
-    }
-
     public SolverScope<Solution_> getSolverScope() {
         return solverScope;
     }
