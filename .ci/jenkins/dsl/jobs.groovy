@@ -30,13 +30,13 @@ Map getMultijobPRConfig() {
                 id: 'kogito-apps',
                 repository: 'kogito-apps',
                 env : [
-                    BUILD_MVN_OPTS_CURRENT: "-Poptaplanner-downstream ${KogitoConstants.DEFAULT_NATIVE_CONTAINER_PARAMS}"
+                    BUILD_MVN_OPTS_CURRENT: "-Poptaplanner-downstream"
                 ]
             ], [
                 id: 'kogito-examples',
                 repository: 'kogito-examples',
                 env : [
-                    BUILD_MVN_OPTS_CURRENT: "-Poptaplanner-downstream ${KogitoConstants.DEFAULT_NATIVE_CONTAINER_PARAMS}"
+                    BUILD_MVN_OPTS_CURRENT: "-Poptaplanner-downstream"
                 ]
             ], [
                 id: 'optaweb-employee-rostering',
