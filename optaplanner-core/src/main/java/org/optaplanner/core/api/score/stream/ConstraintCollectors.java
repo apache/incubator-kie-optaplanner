@@ -218,7 +218,7 @@ public final class ConstraintCollectors {
      */
     public static <A> UniConstraintCollector<A, ?, Integer> countDistinct(Function<A, ?> groupValueMapping) {
         return new DefaultUniConstraintCollector<>(
-                (Supplier<Map<Object, Integer>>) HashMap::new,
+                (Supplier<Map<Object, int[]>>) HashMap::new,
                 (resultContainer, a) -> {
                     Object value = groupValueMapping.apply(a);
                     return innerCountDistinct(resultContainer, value);
@@ -231,12 +231,12 @@ public final class ConstraintCollectors {
      */
     public static <A> UniConstraintCollector<A, ?, Long> countDistinctLong(Function<A, ?> groupValueMapping) {
         return new DefaultUniConstraintCollector<>(
-                (Supplier<Map<Object, Long>>) HashMap::new,
+                (Supplier<Map<Object, long[]>>) HashMap::new,
                 (resultContainer, a) -> {
                     Object value = groupValueMapping.apply(a);
                     return innerCountDistinctLong(resultContainer, value);
                 },
-                r -> (long) r.size());
+                resultContainer -> (long) resultContainer.size());
     }
 
     /**
@@ -245,7 +245,7 @@ public final class ConstraintCollectors {
     public static <A, B> BiConstraintCollector<A, B, ?, Integer> countDistinct(
             BiFunction<A, B, ?> groupValueMapping) {
         return new DefaultBiConstraintCollector<>(
-                (Supplier<Map<Object, Integer>>) HashMap::new,
+                (Supplier<Map<Object, int[]>>) HashMap::new,
                 (resultContainer, a, b) -> {
                     Object value = groupValueMapping.apply(a, b);
                     return innerCountDistinct(resultContainer, value);
@@ -259,12 +259,12 @@ public final class ConstraintCollectors {
     public static <A, B> BiConstraintCollector<A, B, ?, Long> countDistinctLong(
             BiFunction<A, B, ?> groupValueMapping) {
         return new DefaultBiConstraintCollector<>(
-                (Supplier<Map<Object, Long>>) HashMap::new,
+                (Supplier<Map<Object, long[]>>) HashMap::new,
                 (resultContainer, a, b) -> {
                     Object value = groupValueMapping.apply(a, b);
                     return innerCountDistinctLong(resultContainer, value);
                 },
-                r -> (long) r.size());
+                resultContainer -> (long) resultContainer.size());
     }
 
     /**
@@ -273,7 +273,7 @@ public final class ConstraintCollectors {
     public static <A, B, C> TriConstraintCollector<A, B, C, ?, Integer> countDistinct(
             TriFunction<A, B, C, ?> groupValueMapping) {
         return new DefaultTriConstraintCollector<>(
-                (Supplier<Map<Object, Integer>>) HashMap::new,
+                (Supplier<Map<Object, int[]>>) HashMap::new,
                 (resultContainer, a, b, c) -> {
                     Object value = groupValueMapping.apply(a, b, c);
                     return innerCountDistinct(resultContainer, value);
@@ -287,12 +287,12 @@ public final class ConstraintCollectors {
     public static <A, B, C> TriConstraintCollector<A, B, C, ?, Long> countDistinctLong(
             TriFunction<A, B, C, ?> groupValueMapping) {
         return new DefaultTriConstraintCollector<>(
-                (Supplier<Map<Object, Long>>) HashMap::new,
+                (Supplier<Map<Object, long[]>>) HashMap::new,
                 (resultContainer, a, b, c) -> {
                     Object value = groupValueMapping.apply(a, b, c);
                     return innerCountDistinctLong(resultContainer, value);
                 },
-                r -> (long) r.size());
+                resultContainer -> (long) resultContainer.size());
     }
 
     /**
@@ -301,7 +301,7 @@ public final class ConstraintCollectors {
     public static <A, B, C, D> QuadConstraintCollector<A, B, C, D, ?, Integer> countDistinct(
             QuadFunction<A, B, C, D, ?> groupValueMapping) {
         return new DefaultQuadConstraintCollector<>(
-                (Supplier<Map<Object, Integer>>) HashMap::new,
+                (Supplier<Map<Object, int[]>>) HashMap::new,
                 (resultContainer, a, b, c, d) -> {
                     Object value = groupValueMapping.apply(a, b, c, d);
                     return innerCountDistinct(resultContainer, value);
@@ -315,28 +315,62 @@ public final class ConstraintCollectors {
     public static <A, B, C, D> QuadConstraintCollector<A, B, C, D, ?, Long> countDistinctLong(
             QuadFunction<A, B, C, D, ?> groupValueMapping) {
         return new DefaultQuadConstraintCollector<>(
-                (Supplier<Map<Object, Long>>) HashMap::new,
+                (Supplier<Map<Object, long[]>>) HashMap::new,
                 (resultContainer, a, b, c, d) -> {
                     Object value = groupValueMapping.apply(a, b, c, d);
                     return innerCountDistinctLong(resultContainer, value);
                 },
-                r -> (long) r.size());
+                resultContainer -> (long) resultContainer.size());
     }
 
-    private static <Value_> Runnable innerCountDistinct(Map<Value_, Integer> resultContainer, Value_ value) {
-        resultContainer.compute(value, (k, valueCount) -> valueCount == null ? 1 : valueCount + 1);
-        return () -> resultContainer.compute(value, (k, valueCount) -> {
-            int intValueCount = valueCount.intValue();
-            return intValueCount == 1 ? null : intValueCount - 1;
-        });
+    /**
+     * Increases a running count of how many times a given value is present.
+     *
+     * @param resultContainer map in which the count is maintained;
+     *                        the array is there to avoid boxing costs that would have otherwise been incurred
+     *                        during arithmetics if we used {@link Long} instead of the array.
+     *                        The cost of array access has been benchmarked to be less than the alternative.
+     * @param value the value which is being counted
+     * @param <Value_> generic type of the value being counted
+     * @return never null, code to run to undo the operation
+     */
+    private static <Value_> Runnable innerCountDistinct(Map<Value_, int[]> resultContainer, Value_ value) {
+        int[] valueCountContainer = resultContainer.computeIfAbsent(value, k -> new int[1]);
+        valueCountContainer[0]++;
+        return () -> {
+            int[] valueCountContainer2 = resultContainer.get(value);
+            if (valueCountContainer2 == null) {
+                throw new IllegalStateException("Impossible state: the value (" + value +
+                        ") is removed more times than it was added.");
+            }
+            int valueCount = valueCountContainer2[0];
+            if (valueCount == 1) {
+                resultContainer.remove(value);
+            } else {
+                valueCountContainer2[0] = valueCount - 1;
+            }
+        };
     }
 
-    private static <Value_> Runnable innerCountDistinctLong(Map<Value_, Long> resultContainer, Value_ value) {
-        resultContainer.compute(value, (k, valueCount) -> valueCount == null ? 1L : valueCount + 1);
-        return () -> resultContainer.compute(value, (k, valueCount) -> {
-            long longValueCount = valueCount.longValue();
-            return longValueCount == 1L ? null : longValueCount - 1;
-        });
+    /**
+     * As defined by {@link #innerCountDistinct(Map, Object)}.
+     */
+    private static <Value_> Runnable innerCountDistinctLong(Map<Value_, long[]> resultContainer, Value_ value) {
+        long[] valueCountContainer = resultContainer.computeIfAbsent(value, k -> new long[1]);
+        valueCountContainer[0]++;
+        return () -> {
+            long[] valueCountContainer2 = resultContainer.get(value);
+            if (valueCountContainer2 == null) {
+                throw new IllegalStateException("Impossible state: the value (" + value +
+                        ") is removed more times than it was added.");
+            }
+            long valueCount = valueCountContainer2[0];
+            if (valueCount == 1) {
+                resultContainer.remove(value);
+            } else {
+                valueCountContainer2[0] = valueCount - 1L;
+            }
+        };
     }
 
     // ************************************************************************
@@ -847,7 +881,7 @@ public final class ConstraintCollectors {
         return minOrMax(groupValueMapping, comparator, false);
     }
 
-    private static <A, Mapped> UniConstraintCollector<A, SortedMap<Mapped, Long>, Mapped> minOrMax(
+    private static <A, Mapped> UniConstraintCollector<A, SortedMap<Mapped, long[]>, Mapped> minOrMax(
             Function<A, Mapped> groupValueMapping, Comparator<Mapped> comparator, boolean min) {
         return new DefaultUniConstraintCollector<>(
                 () -> new TreeMap<>(comparator),
@@ -858,7 +892,7 @@ public final class ConstraintCollectors {
                 getMinOrMaxFinisher(min));
     }
 
-    private static <Value_> Function<SortedMap<Value_, Long>, Value_> getMinOrMaxFinisher(boolean returnMinimum) {
+    private static <Value_> Function<SortedMap<Value_, long[]>, Value_> getMinOrMaxFinisher(boolean returnMinimum) {
         if (returnMinimum) {
             return resultContainer -> resultContainer.isEmpty() ? null : resultContainer.firstKey();
         } else {
@@ -882,7 +916,7 @@ public final class ConstraintCollectors {
         return minOrMax(groupValueMapping, comparator, false);
     }
 
-    private static <A, B, Mapped> BiConstraintCollector<A, B, SortedMap<Mapped, Long>, Mapped> minOrMax(
+    private static <A, B, Mapped> BiConstraintCollector<A, B, SortedMap<Mapped, long[]>, Mapped> minOrMax(
             BiFunction<A, B, Mapped> groupValueMapping, Comparator<Mapped> comparator, boolean min) {
         return new DefaultBiConstraintCollector<>(
                 () -> new TreeMap<>(comparator),
@@ -909,7 +943,7 @@ public final class ConstraintCollectors {
         return minOrMax(groupValueMapping, comparator, false);
     }
 
-    private static <A, B, C, Mapped> TriConstraintCollector<A, B, C, SortedMap<Mapped, Long>, Mapped> minOrMax(
+    private static <A, B, C, Mapped> TriConstraintCollector<A, B, C, SortedMap<Mapped, long[]>, Mapped> minOrMax(
             TriFunction<A, B, C, Mapped> groupValueMapping, Comparator<Mapped> comparator, boolean min) {
         return new DefaultTriConstraintCollector<>(
                 () -> new TreeMap<>(comparator),
@@ -936,7 +970,7 @@ public final class ConstraintCollectors {
         return minOrMax(groupValueMapping, comparator, false);
     }
 
-    private static <A, B, C, D, Mapped> QuadConstraintCollector<A, B, C, D, SortedMap<Mapped, Long>, Mapped> minOrMax(
+    private static <A, B, C, D, Mapped> QuadConstraintCollector<A, B, C, D, SortedMap<Mapped, long[]>, Mapped> minOrMax(
             QuadFunction<A, B, C, D, Mapped> groupValueMapping, Comparator<Mapped> comparator, boolean min) {
         return new DefaultQuadConstraintCollector<>(
                 () -> new TreeMap<>(comparator),
@@ -1345,7 +1379,7 @@ public final class ConstraintCollectors {
      */
     public static <A, Mapped> UniConstraintCollector<A, ?, Set<Mapped>> toSet(Function<A, Mapped> groupValueMapping) {
         return new DefaultUniConstraintCollector<>(
-                (Supplier<HashMap<Mapped, Long>>) HashMap::new,
+                (Supplier<HashMap<Mapped, long[]>>) HashMap::new,
                 (resultContainer, a) -> {
                     Mapped mapped = groupValueMapping.apply(a);
                     return innerCountDistinctLong(resultContainer, mapped);
@@ -1374,7 +1408,7 @@ public final class ConstraintCollectors {
      */
     public static <A, Mapped> UniConstraintCollector<A, ?, SortedSet<Mapped>> toSortedSet(
             Function<A, Mapped> groupValueMapping, Comparator<Mapped> comparator) {
-        return new DefaultUniConstraintCollector<A, TreeMap<Mapped, Long>, SortedSet<Mapped>>(
+        return new DefaultUniConstraintCollector<A, TreeMap<Mapped, long[]>, SortedSet<Mapped>>(
                 () -> new TreeMap<>(comparator),
                 (resultContainer, a) -> {
                     Mapped mapped = groupValueMapping.apply(a);
@@ -1429,7 +1463,7 @@ public final class ConstraintCollectors {
     public static <A, B, Mapped> BiConstraintCollector<A, B, ?, Set<Mapped>> toSet(
             BiFunction<A, B, Mapped> groupValueMapping) {
         return new DefaultBiConstraintCollector<>(
-                (Supplier<HashMap<Mapped, Long>>) HashMap::new,
+                (Supplier<HashMap<Mapped, long[]>>) HashMap::new,
                 (resultContainer, a, b) -> {
                     Mapped mapped = groupValueMapping.apply(a, b);
                     return innerCountDistinctLong(resultContainer, mapped);
@@ -1450,7 +1484,7 @@ public final class ConstraintCollectors {
      */
     public static <A, B, Mapped> BiConstraintCollector<A, B, ?, SortedSet<Mapped>> toSortedSet(
             BiFunction<A, B, Mapped> groupValueMapping, Comparator<Mapped> comparator) {
-        return new DefaultBiConstraintCollector<A, B, TreeMap<Mapped, Long>, SortedSet<Mapped>>(
+        return new DefaultBiConstraintCollector<A, B, TreeMap<Mapped, long[]>, SortedSet<Mapped>>(
                 () -> new TreeMap<>(comparator),
                 (resultContainer, a, b) -> {
                     Mapped mapped = groupValueMapping.apply(a, b);
@@ -1497,7 +1531,7 @@ public final class ConstraintCollectors {
     public static <A, B, C, Mapped> TriConstraintCollector<A, B, C, ?, Set<Mapped>> toSet(
             TriFunction<A, B, C, Mapped> groupValueMapping) {
         return new DefaultTriConstraintCollector<>(
-                (Supplier<HashMap<Mapped, Long>>) HashMap::new,
+                (Supplier<HashMap<Mapped, long[]>>) HashMap::new,
                 (resultContainer, a, b, c) -> {
                     Mapped mapped = groupValueMapping.apply(a, b, c);
                     return innerCountDistinctLong(resultContainer, mapped);
@@ -1518,7 +1552,7 @@ public final class ConstraintCollectors {
      */
     public static <A, B, C, Mapped> TriConstraintCollector<A, B, C, ?, SortedSet<Mapped>> toSortedSet(
             TriFunction<A, B, C, Mapped> groupValueMapping, Comparator<Mapped> comparator) {
-        return new DefaultTriConstraintCollector<A, B, C, TreeMap<Mapped, Long>, SortedSet<Mapped>>(
+        return new DefaultTriConstraintCollector<A, B, C, TreeMap<Mapped, long[]>, SortedSet<Mapped>>(
                 () -> new TreeMap<>(comparator),
                 (resultContainer, a, b, c) -> {
                     Mapped mapped = groupValueMapping.apply(a, b, c);
@@ -1565,7 +1599,7 @@ public final class ConstraintCollectors {
     public static <A, B, C, D, Mapped> QuadConstraintCollector<A, B, C, D, ?, Set<Mapped>> toSet(
             QuadFunction<A, B, C, D, Mapped> groupValueMapping) {
         return new DefaultQuadConstraintCollector<>(
-                (Supplier<HashMap<Mapped, Long>>) HashMap::new,
+                (Supplier<HashMap<Mapped, long[]>>) HashMap::new,
                 (resultContainer, a, b, c, d) -> {
                     Mapped mapped = groupValueMapping.apply(a, b, c, d);
                     return innerCountDistinctLong(resultContainer, mapped);
@@ -1586,7 +1620,7 @@ public final class ConstraintCollectors {
      */
     public static <A, B, C, D, Mapped> QuadConstraintCollector<A, B, C, D, ?, SortedSet<Mapped>> toSortedSet(
             QuadFunction<A, B, C, D, Mapped> groupValueMapping, Comparator<Mapped> comparator) {
-        return new DefaultQuadConstraintCollector<A, B, C, D, TreeMap<Mapped, Long>, SortedSet<Mapped>>(
+        return new DefaultQuadConstraintCollector<A, B, C, D, TreeMap<Mapped, long[]>, SortedSet<Mapped>>(
                 () -> new TreeMap<>(comparator),
                 (resultContainer, a, b, c, d) -> {
                     Mapped mapped = groupValueMapping.apply(a, b, c, d);
