@@ -218,12 +218,12 @@ public final class ConstraintCollectors {
      */
     public static <A> UniConstraintCollector<A, ?, Integer> countDistinct(Function<A, ?> groupValueMapping) {
         return new DefaultUniConstraintCollector<>(
-                CountDistinctResultContainer::new,
+                (Supplier<Map<Object, Integer>>) HashMap::new,
                 (resultContainer, a) -> {
                     Object value = groupValueMapping.apply(a);
                     return innerCountDistinct(resultContainer, value);
                 },
-                resultContainer -> resultContainer.count);
+                Map::size);
     }
 
     /**
@@ -231,12 +231,12 @@ public final class ConstraintCollectors {
      */
     public static <A> UniConstraintCollector<A, ?, Long> countDistinctLong(Function<A, ?> groupValueMapping) {
         return new DefaultUniConstraintCollector<>(
-                CountDistinctLongResultContainer::new,
+                (Supplier<Map<Object, Long>>) HashMap::new,
                 (resultContainer, a) -> {
                     Object value = groupValueMapping.apply(a);
                     return innerCountDistinctLong(resultContainer, value);
                 },
-                resultContainer -> resultContainer.count);
+                r -> (long) r.size());
     }
 
     /**
@@ -245,12 +245,12 @@ public final class ConstraintCollectors {
     public static <A, B> BiConstraintCollector<A, B, ?, Integer> countDistinct(
             BiFunction<A, B, ?> groupValueMapping) {
         return new DefaultBiConstraintCollector<>(
-                CountDistinctResultContainer::new,
+                (Supplier<Map<Object, Integer>>) HashMap::new,
                 (resultContainer, a, b) -> {
                     Object value = groupValueMapping.apply(a, b);
                     return innerCountDistinct(resultContainer, value);
                 },
-                resultContainer -> resultContainer.count);
+                Map::size);
     }
 
     /**
@@ -259,12 +259,12 @@ public final class ConstraintCollectors {
     public static <A, B> BiConstraintCollector<A, B, ?, Long> countDistinctLong(
             BiFunction<A, B, ?> groupValueMapping) {
         return new DefaultBiConstraintCollector<>(
-                CountDistinctLongResultContainer::new,
+                (Supplier<Map<Object, Long>>) HashMap::new,
                 (resultContainer, a, b) -> {
                     Object value = groupValueMapping.apply(a, b);
                     return innerCountDistinctLong(resultContainer, value);
                 },
-                resultContainer -> resultContainer.count);
+                r -> (long) r.size());
     }
 
     /**
@@ -273,12 +273,12 @@ public final class ConstraintCollectors {
     public static <A, B, C> TriConstraintCollector<A, B, C, ?, Integer> countDistinct(
             TriFunction<A, B, C, ?> groupValueMapping) {
         return new DefaultTriConstraintCollector<>(
-                CountDistinctResultContainer::new,
+                (Supplier<Map<Object, Integer>>) HashMap::new,
                 (resultContainer, a, b, c) -> {
                     Object value = groupValueMapping.apply(a, b, c);
                     return innerCountDistinct(resultContainer, value);
                 },
-                resultContainer -> resultContainer.count);
+                Map::size);
     }
 
     /**
@@ -287,12 +287,12 @@ public final class ConstraintCollectors {
     public static <A, B, C> TriConstraintCollector<A, B, C, ?, Long> countDistinctLong(
             TriFunction<A, B, C, ?> groupValueMapping) {
         return new DefaultTriConstraintCollector<>(
-                CountDistinctLongResultContainer::new,
+                (Supplier<Map<Object, Long>>) HashMap::new,
                 (resultContainer, a, b, c) -> {
                     Object value = groupValueMapping.apply(a, b, c);
                     return innerCountDistinctLong(resultContainer, value);
                 },
-                resultContainer -> resultContainer.count);
+                r -> (long) r.size());
     }
 
     /**
@@ -301,12 +301,12 @@ public final class ConstraintCollectors {
     public static <A, B, C, D> QuadConstraintCollector<A, B, C, D, ?, Integer> countDistinct(
             QuadFunction<A, B, C, D, ?> groupValueMapping) {
         return new DefaultQuadConstraintCollector<>(
-                CountDistinctResultContainer::new,
+                (Supplier<Map<Object, Integer>>) HashMap::new,
                 (resultContainer, a, b, c, d) -> {
                     Object value = groupValueMapping.apply(a, b, c, d);
                     return innerCountDistinct(resultContainer, value);
                 },
-                resultContainer -> resultContainer.count);
+                Map::size);
     }
 
     /**
@@ -315,62 +315,28 @@ public final class ConstraintCollectors {
     public static <A, B, C, D> QuadConstraintCollector<A, B, C, D, ?, Long> countDistinctLong(
             QuadFunction<A, B, C, D, ?> groupValueMapping) {
         return new DefaultQuadConstraintCollector<>(
-                CountDistinctLongResultContainer::new,
+                (Supplier<Map<Object, Long>>) HashMap::new,
                 (resultContainer, a, b, c, d) -> {
                     Object value = groupValueMapping.apply(a, b, c, d);
                     return innerCountDistinctLong(resultContainer, value);
                 },
-                resultContainer -> resultContainer.count);
+                r -> (long) r.size());
     }
 
-    private static Runnable innerCountDistinct(CountDistinctResultContainer resultContainer, Object value) {
-        int[] objectCount = resultContainer.objectCountMap.computeIfAbsent(value, k -> new int[1]);
-        if (objectCount[0] == 0L) {
-            resultContainer.count++;
-        }
-        objectCount[0]++;
-        return () -> {
-            int[] objectCount2 = resultContainer.objectCountMap.get(value);
-            if (objectCount2 == null) {
-                throw new IllegalStateException("Impossible state: the value (" + value +
-                        ") is removed more times than it was added.");
-            }
-            objectCount2[0]--;
-            if (objectCount2[0] == 0L) {
-                resultContainer.objectCountMap.remove(value);
-                resultContainer.count--;
-            }
-        };
+    private static <Value_> Runnable innerCountDistinct(Map<Value_, Integer> resultContainer, Value_ value) {
+        resultContainer.compute(value, (k, valueCount) -> valueCount == null ? 1 : valueCount + 1);
+        return () -> resultContainer.compute(value, (k, valueCount) -> {
+            int intValueCount = valueCount.intValue();
+            return intValueCount == 1 ? null : intValueCount - 1;
+        });
     }
 
-    private static class CountDistinctResultContainer {
-        int count = 0;
-        Map<Object, int[]> objectCountMap = new HashMap<>();
-    }
-
-    private static Runnable innerCountDistinctLong(CountDistinctLongResultContainer resultContainer, Object value) {
-        long[] objectCount = resultContainer.objectCountMap.computeIfAbsent(value, k -> new long[1]);
-        if (objectCount[0] == 0L) {
-            resultContainer.count++;
-        }
-        objectCount[0]++;
-        return () -> {
-            long[] objectCount2 = resultContainer.objectCountMap.get(value);
-            if (objectCount2 == null) {
-                throw new IllegalStateException("Impossible state: the value (" + value +
-                        ") is removed more times than it was added.");
-            }
-            objectCount2[0]--;
-            if (objectCount2[0] == 0L) {
-                resultContainer.objectCountMap.remove(value);
-                resultContainer.count--;
-            }
-        };
-    }
-
-    private static class CountDistinctLongResultContainer {
-        long count = 0L;
-        Map<Object, long[]> objectCountMap = new HashMap<>();
+    private static <Value_> Runnable innerCountDistinctLong(Map<Value_, Long> resultContainer, Value_ value) {
+        resultContainer.compute(value, (k, valueCount) -> valueCount == null ? 1L : valueCount + 1);
+        return () -> resultContainer.compute(value, (k, valueCount) -> {
+            long longValueCount = valueCount.longValue();
+            return longValueCount == 1L ? null : longValueCount - 1;
+        });
     }
 
     // ************************************************************************
@@ -887,14 +853,9 @@ public final class ConstraintCollectors {
                 () -> new TreeMap<>(comparator),
                 (resultContainer, a) -> {
                     Mapped mapped = groupValueMapping.apply(a);
-                    return valueCountAccumulator(resultContainer, mapped);
+                    return innerCountDistinctLong(resultContainer, mapped);
                 },
                 getMinOrMaxFinisher(min));
-    }
-
-    private static <Value_> Runnable valueCountAccumulator(Map<Value_, Long> resultContainer, Value_ value) {
-        resultContainer.compute(value, (key, count) -> count == null ? 1L : count + 1L);
-        return () -> resultContainer.compute(value, (key, count) -> count == 1L ? null : count - 1L);
     }
 
     private static <Value_> Function<SortedMap<Value_, Long>, Value_> getMinOrMaxFinisher(boolean returnMinimum) {
@@ -927,7 +888,7 @@ public final class ConstraintCollectors {
                 () -> new TreeMap<>(comparator),
                 (resultContainer, a, b) -> {
                     Mapped mapped = groupValueMapping.apply(a, b);
-                    return valueCountAccumulator(resultContainer, mapped);
+                    return innerCountDistinctLong(resultContainer, mapped);
                 },
                 getMinOrMaxFinisher(min));
     }
@@ -954,7 +915,7 @@ public final class ConstraintCollectors {
                 () -> new TreeMap<>(comparator),
                 (resultContainer, a, b, c) -> {
                     Mapped mapped = groupValueMapping.apply(a, b, c);
-                    return valueCountAccumulator(resultContainer, mapped);
+                    return innerCountDistinctLong(resultContainer, mapped);
                 },
                 getMinOrMaxFinisher(min));
     }
@@ -981,7 +942,7 @@ public final class ConstraintCollectors {
                 () -> new TreeMap<>(comparator),
                 (resultContainer, a, b, c, d) -> {
                     Mapped mapped = groupValueMapping.apply(a, b, c, d);
-                    return valueCountAccumulator(resultContainer, mapped);
+                    return innerCountDistinctLong(resultContainer, mapped);
                 },
                 getMinOrMaxFinisher(min));
     }
@@ -1387,7 +1348,7 @@ public final class ConstraintCollectors {
                 (Supplier<HashMap<Mapped, Long>>) HashMap::new,
                 (resultContainer, a) -> {
                     Mapped mapped = groupValueMapping.apply(a);
-                    return valueCountAccumulator(resultContainer, mapped);
+                    return innerCountDistinctLong(resultContainer, mapped);
                 },
                 HashMap::keySet);
     }
@@ -1417,7 +1378,7 @@ public final class ConstraintCollectors {
                 () -> new TreeMap<>(comparator),
                 (resultContainer, a) -> {
                     Mapped mapped = groupValueMapping.apply(a);
-                    return valueCountAccumulator(resultContainer, mapped);
+                    return innerCountDistinctLong(resultContainer, mapped);
                 },
                 TreeMap::navigableKeySet);
     }
@@ -1471,7 +1432,7 @@ public final class ConstraintCollectors {
                 (Supplier<HashMap<Mapped, Long>>) HashMap::new,
                 (resultContainer, a, b) -> {
                     Mapped mapped = groupValueMapping.apply(a, b);
-                    return valueCountAccumulator(resultContainer, mapped);
+                    return innerCountDistinctLong(resultContainer, mapped);
                 },
                 HashMap::keySet);
     }
@@ -1493,7 +1454,7 @@ public final class ConstraintCollectors {
                 () -> new TreeMap<>(comparator),
                 (resultContainer, a, b) -> {
                     Mapped mapped = groupValueMapping.apply(a, b);
-                    return valueCountAccumulator(resultContainer, mapped);
+                    return innerCountDistinctLong(resultContainer, mapped);
                 },
                 TreeMap::navigableKeySet);
     }
@@ -1539,7 +1500,7 @@ public final class ConstraintCollectors {
                 (Supplier<HashMap<Mapped, Long>>) HashMap::new,
                 (resultContainer, a, b, c) -> {
                     Mapped mapped = groupValueMapping.apply(a, b, c);
-                    return valueCountAccumulator(resultContainer, mapped);
+                    return innerCountDistinctLong(resultContainer, mapped);
                 },
                 HashMap::keySet);
     }
@@ -1561,7 +1522,7 @@ public final class ConstraintCollectors {
                 () -> new TreeMap<>(comparator),
                 (resultContainer, a, b, c) -> {
                     Mapped mapped = groupValueMapping.apply(a, b, c);
-                    return valueCountAccumulator(resultContainer, mapped);
+                    return innerCountDistinctLong(resultContainer, mapped);
                 },
                 TreeMap::navigableKeySet);
     }
@@ -1607,7 +1568,7 @@ public final class ConstraintCollectors {
                 (Supplier<HashMap<Mapped, Long>>) HashMap::new,
                 (resultContainer, a, b, c, d) -> {
                     Mapped mapped = groupValueMapping.apply(a, b, c, d);
-                    return valueCountAccumulator(resultContainer, mapped);
+                    return innerCountDistinctLong(resultContainer, mapped);
                 },
                 HashMap::keySet);
     }
@@ -1629,7 +1590,7 @@ public final class ConstraintCollectors {
                 () -> new TreeMap<>(comparator),
                 (resultContainer, a, b, c, d) -> {
                     Mapped mapped = groupValueMapping.apply(a, b, c, d);
-                    return valueCountAccumulator(resultContainer, mapped);
+                    return innerCountDistinctLong(resultContainer, mapped);
                 },
                 TreeMap::navigableKeySet);
     }
