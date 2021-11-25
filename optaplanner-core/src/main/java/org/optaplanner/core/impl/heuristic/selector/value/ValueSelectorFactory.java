@@ -52,11 +52,11 @@ import org.optaplanner.core.impl.heuristic.selector.value.decorator.EntityDepend
 import org.optaplanner.core.impl.heuristic.selector.value.decorator.FilteringValueSelector;
 import org.optaplanner.core.impl.heuristic.selector.value.decorator.InitializedValueSelector;
 import org.optaplanner.core.impl.heuristic.selector.value.decorator.ProbabilityValueSelector;
-import org.optaplanner.core.impl.heuristic.selector.value.decorator.ReassignValueToListVariableSelector;
 import org.optaplanner.core.impl.heuristic.selector.value.decorator.ReinitializeVariableValueSelector;
 import org.optaplanner.core.impl.heuristic.selector.value.decorator.SelectedCountLimitValueSelector;
 import org.optaplanner.core.impl.heuristic.selector.value.decorator.ShufflingValueSelector;
 import org.optaplanner.core.impl.heuristic.selector.value.decorator.SortingValueSelector;
+import org.optaplanner.core.impl.heuristic.selector.value.decorator.UnassignedValueSelector;
 import org.optaplanner.core.impl.heuristic.selector.value.mimic.MimicRecordingValueSelector;
 import org.optaplanner.core.impl.heuristic.selector.value.mimic.MimicReplayingValueSelector;
 import org.optaplanner.core.impl.heuristic.selector.value.mimic.ValueMimicRecorder;
@@ -114,7 +114,7 @@ public class ValueSelectorFactory<Solution_>
     public ValueSelector<Solution_> buildValueSelector(HeuristicConfigPolicy<Solution_> configPolicy,
             EntityDescriptor<Solution_> entityDescriptor, SelectionCacheType minimumCacheType,
             SelectionOrder inheritedSelectionOrder, boolean applyReinitializeVariableFiltering,
-            boolean applyReassignValueFiltering) {
+            boolean applyUnassignedValueFiltering) {
         GenuineVariableDescriptor<Solution_> variableDescriptor = deduceGenuineVariableDescriptor(
                 downcastEntityDescriptor(configPolicy, entityDescriptor));
         if (config.getMimicSelectorRef() != null) {
@@ -152,7 +152,7 @@ public class ValueSelectorFactory<Solution_>
         valueSelector = applyShuffling(resolvedCacheType, resolvedSelectionOrder, valueSelector);
         valueSelector = applyCaching(resolvedCacheType, resolvedSelectionOrder, valueSelector);
         valueSelector = applySelectedLimit(valueSelector);
-        valueSelector = applyReassignValueFiltering(applyReassignValueFiltering, variableDescriptor, valueSelector);
+        valueSelector = applyUnassignedValueFiltering(applyUnassignedValueFiltering, variableDescriptor, valueSelector);
         valueSelector = applyMimicRecording(configPolicy, valueSelector);
         valueSelector =
                 applyReinitializeVariableFiltering(applyReinitializeVariableFiltering, variableDescriptor, valueSelector);
@@ -516,17 +516,16 @@ public class ValueSelectorFactory<Solution_>
         return valueSelector;
     }
 
-    private ValueSelector<Solution_> applyReassignValueFiltering(boolean applyReassignValueFiltering,
+    private ValueSelector<Solution_> applyUnassignedValueFiltering(boolean applyUnassignedValueFiltering,
             GenuineVariableDescriptor<Solution_> variableDescriptor, ValueSelector<Solution_> valueSelector) {
-        if (applyReassignValueFiltering && variableDescriptor.isListVariable()) {
+        if (applyUnassignedValueFiltering && variableDescriptor.isListVariable()) {
             if (!(valueSelector instanceof EntityIndependentValueSelector)) {
                 throw new IllegalArgumentException("The valueSelectorConfig (" + config
                         + ") with id (" + config.getId()
                         + ") needs to be based on an EntityIndependentValueSelector (" + valueSelector + ")."
                         + " Check your @" + ValueRangeProvider.class.getSimpleName() + " annotations.");
             }
-            valueSelector =
-                    new ReassignValueToListVariableSelector<>(((EntityIndependentValueSelector<Solution_>) valueSelector));
+            valueSelector = new UnassignedValueSelector<>(((EntityIndependentValueSelector<Solution_>) valueSelector));
         }
         return valueSelector;
     }
