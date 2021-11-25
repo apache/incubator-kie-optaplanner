@@ -327,9 +327,9 @@ public final class ConstraintCollectors {
      * Increases a running count of how many times a given value is present.
      *
      * @param resultContainer map in which the count is maintained;
-     *                        the array is there to avoid boxing costs that would have otherwise been incurred
-     *                        during arithmetics if we used {@link Long} instead of the array.
-     *                        The cost of array access has been benchmarked to be less than the alternative.
+     *        the array is there to avoid boxing costs that would have otherwise been incurred
+     *        during arithmetics if we used {@link Long} instead of the array.
+     *        The cost of array access has been benchmarked to be less than the alternative.
      * @param value the value which is being counted
      * @param <Value_> generic type of the value being counted
      * @return never null, code to run to undo the operation
