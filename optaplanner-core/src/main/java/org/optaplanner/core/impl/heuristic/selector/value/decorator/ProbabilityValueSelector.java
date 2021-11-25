@@ -148,11 +148,6 @@ public class ProbabilityValueSelector<Solution_> extends AbstractValueSelector<S
     }
 
     @Override
-    public Iterator<Object> endingIterator() {
-        return childValueSelector.endingIterator();
-    }
-
-    @Override
     public String toString() {
         return "Probability(" + childValueSelector + ")";
     }

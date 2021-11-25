@@ -41,11 +41,6 @@ public class EntityIndependentFilteringValueSelector<Solution_> extends Filterin
                 determineBailOutSize());
     }
 
-    @Override
-    public Iterator<Object> endingIterator() {
-        return ((EntityIndependentValueSelector<Solution_>) childValueSelector).iterator();
-    }
-
     protected long determineBailOutSize() {
         if (!bailOutEnabled) {
             return -1L;

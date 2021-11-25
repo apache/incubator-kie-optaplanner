@@ -117,11 +117,6 @@ public class MimicRecordingValueSelector<Solution_> extends AbstractValueSelecto
     }
 
     @Override
-    public Iterator<Object> endingIterator() {
-        return childValueSelector.endingIterator();
-    }
-
-    @Override
     public String toString() {
         return "Recording(" + childValueSelector + ")";
     }

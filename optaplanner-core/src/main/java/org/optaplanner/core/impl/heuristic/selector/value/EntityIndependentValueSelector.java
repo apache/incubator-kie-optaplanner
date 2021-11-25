@@ -16,8 +16,6 @@
 
 package org.optaplanner.core.impl.heuristic.selector.value;
 
-import java.util.Iterator;
-
 import org.optaplanner.core.impl.heuristic.selector.IterableSelector;
 
 /**
@@ -26,14 +24,4 @@ import org.optaplanner.core.impl.heuristic.selector.IterableSelector;
 public interface EntityIndependentValueSelector<Solution_> extends ValueSelector<Solution_>,
         IterableSelector<Solution_, Object> {
 
-    /**
-     * If {@link #isNeverEnding()} is true, then {@link #iterator()} will never end.
-     * This returns an ending {@link Iterator}, that tries to match {@link #iterator()} as much as possible,
-     * but return each distinct element only once
-     * and therefore it might not respect the configuration of this {@link ValueSelector} entirely.
-     *
-     * @return never null
-     * @see #iterator()
-     */
-    Iterator<Object> endingIterator();
 }

@@ -101,11 +101,6 @@ public class SelectedCountLimitValueSelector<Solution_> extends AbstractValueSel
         return new SelectedCountLimitValueIterator(childValueSelector.endingIterator(entity));
     }
 
-    @Override
-    public Iterator<Object> endingIterator() {
-        throw new UnsupportedOperationException("Not supported.");
-    }
-
     private class SelectedCountLimitValueIterator extends SelectionIterator<Object> {
 
         private final Iterator<Object> childValueIterator;
