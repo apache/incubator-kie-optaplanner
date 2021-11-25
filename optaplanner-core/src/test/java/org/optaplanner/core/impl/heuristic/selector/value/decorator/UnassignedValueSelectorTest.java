@@ -37,7 +37,7 @@ import org.optaplanner.core.impl.testdata.domain.list.TestdataListEntity;
 import org.optaplanner.core.impl.testdata.domain.list.TestdataListSolution;
 import org.optaplanner.core.impl.testdata.domain.list.TestdataListValue;
 
-class ReassignValueToListVariableSelectorTest {
+class UnassignedValueSelectorTest {
 
     @Test
     void filterOutAssignedValues() {
@@ -55,8 +55,7 @@ class ReassignValueToListVariableSelectorTest {
         EntityIndependentValueSelector<TestdataListSolution> childValueSelector =
                 mockEntityIndependentValueSelector(getListVariableDescriptor(scoreDirector), v1, v2, v3, v4, v5);
 
-        ReassignValueToListVariableSelector<TestdataListSolution> valueSelector =
-                new ReassignValueToListVariableSelector<>(childValueSelector);
+        UnassignedValueSelector<TestdataListSolution> valueSelector = new UnassignedValueSelector<>(childValueSelector);
 
         SolverScope<TestdataListSolution> solverScope = mock(SolverScope.class);
         valueSelector.solvingStarted(solverScope);
@@ -83,6 +82,6 @@ class ReassignValueToListVariableSelectorTest {
 
         when(childValueSelector.isNeverEnding()).thenReturn(true);
 
-        assertThatIllegalArgumentException().isThrownBy(() -> new ReassignValueToListVariableSelector<>(childValueSelector));
+        assertThatIllegalArgumentException().isThrownBy(() -> new UnassignedValueSelector<>(childValueSelector));
     }
 }
