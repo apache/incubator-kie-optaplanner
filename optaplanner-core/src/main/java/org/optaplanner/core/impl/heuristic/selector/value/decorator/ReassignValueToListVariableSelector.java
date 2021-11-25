@@ -18,6 +18,7 @@ package org.optaplanner.core.impl.heuristic.selector.value.decorator;
 
 import java.util.Iterator;
 import java.util.Spliterators;
+import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
 import org.optaplanner.core.impl.domain.variable.descriptor.GenuineVariableDescriptor;
@@ -45,9 +46,11 @@ public class ReassignValueToListVariableSelector<Solution_> extends AbstractValu
 
     public ReassignValueToListVariableSelector(EntityIndependentValueSelector<Solution_> childValueSelector) {
         if (childValueSelector.isNeverEnding()) {
-            throw new IllegalStateException("The childValueSelector (" + childValueSelector + ") must not be never ending"
-                    + " because the " + ReassignValueToListVariableSelector.class.getSimpleName() + " filter cannot work"
-                    + " on a never ending child value selector.\n"
+            throw new IllegalArgumentException("The selector (" + this
+                    + ") has a childValueSelector (" + childValueSelector
+                    + ") with neverEnding (" + childValueSelector.isNeverEnding() + ").\n"
+                    + "This is not allowed because " + ReassignValueToListVariableSelector.class.getSimpleName()
+                    + " cannot decorate a never-ending child value selector.\n"
                     + "This could be a result of using random selection order (which is often the default).");
         }
         this.childValueSelector = childValueSelector;
@@ -80,12 +83,14 @@ public class ReassignValueToListVariableSelector<Solution_> extends AbstractValu
 
     @Override
     public boolean isCountable() {
-        return childValueSelector.isCountable();
+        // Because !neverEnding => countable.
+        return true;
     }
 
     @Override
     public boolean isNeverEnding() {
-        return childValueSelector.isNeverEnding();
+        // Because the childValueSelector must not be never-ending.
+        return false;
     }
 
     @Override
@@ -95,10 +100,7 @@ public class ReassignValueToListVariableSelector<Solution_> extends AbstractValu
 
     @Override
     public long getSize() {
-        return StreamSupport
-                .stream(Spliterators.spliterator(childValueSelector.endingIterator(), childValueSelector.getSize(), 0), false)
-                .filter(value -> inverseVariableSupply.getInverseSingleton(value) == null)
-                .count();
+        return streamUnassignedValues().count();
     }
 
     @Override
@@ -108,23 +110,19 @@ public class ReassignValueToListVariableSelector<Solution_> extends AbstractValu
 
     @Override
     public Iterator<Object> iterator() {
-        return StreamSupport.stream(Spliterators.spliteratorUnknownSize(childValueSelector.iterator(), 0), false)
-                // Skip assigned values.
-                .filter(value -> inverseVariableSupply.getInverseSingleton(value) == null)
-                .iterator();
+        return streamUnassignedValues().iterator();
     }
 
     @Override
     public Iterator<Object> endingIterator(Object entity) {
-        return childValueSelector.endingIterator(entity);
+        return iterator();
     }
 
-    @Override
-    public Iterator<Object> endingIterator() {
+    private Stream<Object> streamUnassignedValues() {
         return StreamSupport
-                .stream(Spliterators.spliterator(childValueSelector.endingIterator(), childValueSelector.getSize(), 0), false)
-                .filter(value -> inverseVariableSupply.getInverseSingleton(value) == null)
-                .iterator();
+                .stream(Spliterators.spliterator(childValueSelector.iterator(), childValueSelector.getSize(), 0), false)
+                // Skip assigned values.
+                .filter(value -> inverseVariableSupply.getInverseSingleton(value) == null);
     }
 
     @Override

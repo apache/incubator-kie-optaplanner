@@ -22,7 +22,8 @@ import java.util.Iterator;
 import org.optaplanner.core.config.heuristic.selector.common.SelectionCacheType;
 import org.optaplanner.core.impl.heuristic.selector.value.EntityIndependentValueSelector;
 
-public class ShufflingValueSelector<Solution_> extends AbstractCachingValueSelector<Solution_> {
+public class ShufflingValueSelector<Solution_> extends AbstractCachingValueSelector<Solution_>
+        implements EntityIndependentValueSelector<Solution_> {
 
     public ShufflingValueSelector(EntityIndependentValueSelector<Solution_> childValueSelector,
             SelectionCacheType cacheType) {
