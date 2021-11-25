@@ -60,7 +60,7 @@ Wildcards are supported to replace numbers.
 For example: `0hard/*soft` to terminate when any feasible score is reached.
 
 {property_prefix}optaplanner.benchmark.solver-benchmark-config-xml::
-A classpath resource to read the solver configuration XML.
+A classpath resource to read the benchmark configuration XML.
 Defaults to solverBenchmarkConfig.xml.
 If this property isn't specified, that solverBenchmarkConfig.xml is optional.
 
