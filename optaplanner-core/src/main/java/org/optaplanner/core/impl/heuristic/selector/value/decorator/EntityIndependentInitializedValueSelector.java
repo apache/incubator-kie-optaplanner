@@ -38,11 +38,6 @@ public class EntityIndependentInitializedValueSelector<Solution_> extends Initia
                 ((EntityIndependentValueSelector<Solution_>) childValueSelector).iterator(), determineBailOutSize());
     }
 
-    @Override
-    public Iterator<Object> endingIterator() {
-        return ((EntityIndependentValueSelector<Solution_>) childValueSelector).iterator();
-    }
-
     protected long determineBailOutSize() {
         if (!bailOutEnabled) {
             return -1L;

@@ -172,11 +172,6 @@ public class MimicReplayingValueSelector<Solution_> extends AbstractValueSelecto
     }
 
     @Override
-    public Iterator<Object> endingIterator() {
-        throw new UnsupportedOperationException("Not supported.");
-    }
-
-    @Override
     public String toString() {
         return "Replaying(" + valueMimicRecorder + ")";
     }
