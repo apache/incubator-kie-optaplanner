@@ -41,12 +41,10 @@ public class DefaultLocalSearchPhaseTest {
 
     @Test
     public void solveWithInitializedEntities() {
-        SolverConfig solverConfig = PlannerTestUtils.buildSolverConfig(
-                TestdataSolution.class, TestdataEntity.class);
+        SolverConfig solverConfig = PlannerTestUtils.buildSolverConfig(TestdataSolution.class, TestdataEntity.class);
         LocalSearchPhaseConfig phaseConfig = new LocalSearchPhaseConfig();
         phaseConfig.setTerminationConfig(new TerminationConfig().withScoreCalculationCountLimit(10L));
-        solverConfig.setPhaseConfigList(Collections.singletonList(
-                phaseConfig));
+        solverConfig.setPhaseConfigList(Collections.singletonList(phaseConfig));
 
         TestdataSolution solution = new TestdataSolution("s1");
         TestdataValue v1 = new TestdataValue("v1");
@@ -73,12 +71,11 @@ public class DefaultLocalSearchPhaseTest {
 
     @Test
     public void solveWithPinnedEntities() {
-        SolverConfig solverConfig = PlannerTestUtils.buildSolverConfig(
-                TestdataPinnedSolution.class, TestdataPinnedEntity.class);
+        SolverConfig solverConfig =
+                PlannerTestUtils.buildSolverConfig(TestdataPinnedSolution.class, TestdataPinnedEntity.class);
         LocalSearchPhaseConfig phaseConfig = new LocalSearchPhaseConfig();
         phaseConfig.setTerminationConfig(new TerminationConfig().withScoreCalculationCountLimit(10L));
-        solverConfig.setPhaseConfigList(Collections.singletonList(
-                phaseConfig));
+        solverConfig.setPhaseConfigList(Collections.singletonList(phaseConfig));
 
         TestdataPinnedSolution solution = new TestdataPinnedSolution("s1");
         TestdataValue v1 = new TestdataValue("v1");
@@ -105,12 +102,10 @@ public class DefaultLocalSearchPhaseTest {
 
     @Test
     public void solveWithEmptyEntityList() {
-        SolverConfig solverConfig = PlannerTestUtils.buildSolverConfig(
-                TestdataSolution.class, TestdataEntity.class);
+        SolverConfig solverConfig = PlannerTestUtils.buildSolverConfig(TestdataSolution.class, TestdataEntity.class);
         LocalSearchPhaseConfig phaseConfig = new LocalSearchPhaseConfig();
         phaseConfig.setTerminationConfig(new TerminationConfig().withScoreCalculationCountLimit(10L));
-        solverConfig.setPhaseConfigList(Collections.singletonList(
-                phaseConfig));
+        solverConfig.setPhaseConfigList(Collections.singletonList(phaseConfig));
 
         TestdataSolution solution = new TestdataSolution("s1");
         TestdataValue v1 = new TestdataValue("v1");
@@ -126,13 +121,11 @@ public class DefaultLocalSearchPhaseTest {
 
     @Test
     public void solveTabuSearchWithInitializedEntities() {
-        SolverConfig solverConfig = PlannerTestUtils.buildSolverConfig(
-                TestdataSolution.class, TestdataEntity.class);
+        SolverConfig solverConfig = PlannerTestUtils.buildSolverConfig(TestdataSolution.class, TestdataEntity.class);
         LocalSearchPhaseConfig phaseConfig = new LocalSearchPhaseConfig();
         phaseConfig.setLocalSearchType(LocalSearchType.TABU_SEARCH);
         phaseConfig.setTerminationConfig(new TerminationConfig().withScoreCalculationCountLimit(10L));
-        solverConfig.setPhaseConfigList(Collections.singletonList(
-                phaseConfig));
+        solverConfig.setPhaseConfigList(Collections.singletonList(phaseConfig));
 
         TestdataSolution solution = new TestdataSolution("s1");
         TestdataValue v1 = new TestdataValue("v1");
@@ -159,13 +152,12 @@ public class DefaultLocalSearchPhaseTest {
 
     @Test
     public void solveTabuSearchWithPinnedEntities() {
-        SolverConfig solverConfig = PlannerTestUtils.buildSolverConfig(
-                TestdataPinnedSolution.class, TestdataPinnedEntity.class);
+        SolverConfig solverConfig =
+                PlannerTestUtils.buildSolverConfig(TestdataPinnedSolution.class, TestdataPinnedEntity.class);
         LocalSearchPhaseConfig phaseConfig = new LocalSearchPhaseConfig();
         phaseConfig.setLocalSearchType(LocalSearchType.TABU_SEARCH);
         phaseConfig.setTerminationConfig(new TerminationConfig().withScoreCalculationCountLimit(10L));
-        solverConfig.setPhaseConfigList(Collections.singletonList(
-                phaseConfig));
+        solverConfig.setPhaseConfigList(Collections.singletonList(phaseConfig));
 
         TestdataPinnedSolution solution = new TestdataPinnedSolution("s1");
         TestdataValue v1 = new TestdataValue("v1");
@@ -192,13 +184,11 @@ public class DefaultLocalSearchPhaseTest {
 
     @Test
     public void solveTabuSearchWithEmptyEntityList() {
-        SolverConfig solverConfig = PlannerTestUtils.buildSolverConfig(
-                TestdataSolution.class, TestdataEntity.class);
+        SolverConfig solverConfig = PlannerTestUtils.buildSolverConfig(TestdataSolution.class, TestdataEntity.class);
         LocalSearchPhaseConfig phaseConfig = new LocalSearchPhaseConfig();
         phaseConfig.setLocalSearchType(LocalSearchType.TABU_SEARCH);
         phaseConfig.setTerminationConfig(new TerminationConfig().withScoreCalculationCountLimit(10L));
-        solverConfig.setPhaseConfigList(Collections.singletonList(
-                phaseConfig));
+        solverConfig.setPhaseConfigList(Collections.singletonList(phaseConfig));
 
         TestdataSolution solution = new TestdataSolution("s1");
         TestdataValue v1 = new TestdataValue("v1");

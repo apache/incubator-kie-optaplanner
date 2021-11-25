@@ -6,12 +6,12 @@
   <parent>
     <groupId>org.optaplanner</groupId>
     <artifactId>optaplanner-quarkus-parent</artifactId>
-    <version>8.14.0-SNAPSHOT</version>
+    <version>8.15.0-SNAPSHOT</version>
   </parent>
 
   <artifactId>optaplanner-quarkus</artifactId>
   <name>OptaPlanner Quarkus - Runtime</name>
-  <description>Optimize planning of vehicle routes, employee rosters, maintenance schedules, task assignments, school timetables, conference schedules, etc.</description>
+  <description>Solve planning and scheduling with AI constraint optimization of vehicle routes, employee rosters, maintenance, tasks, lessons, conferences, ...</description>
 
   <properties>
     <java.module.name>org.optaplanner.quarkus</java.module.name>
@@ -103,6 +103,19 @@
       <plugin>
         <groupId>io.quarkus</groupId>
         <artifactId>quarkus-bootstrap-maven-plugin</artifactId>
+        <executions>
+          <execution>
+            <goals>
+              <goal>extension-descriptor</goal>
+            </goals>
+            <phase>compile</phase>
+            <configuration>
+              <capabilities>
+                <provides>org.optaplanner.optaplanner-quarkus</provides>
+              </capabilities>
+            </configuration>
+          </execution>
+        </executions>
       </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>

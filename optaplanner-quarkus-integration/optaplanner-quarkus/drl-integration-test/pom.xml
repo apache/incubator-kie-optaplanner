@@ -6,7 +6,7 @@
   <parent>
     <groupId>org.optaplanner</groupId>
     <artifactId>optaplanner-quarkus-parent</artifactId>
-    <version>8.14.0-SNAPSHOT</version>
+    <version>8.15.0-SNAPSHOT</version>
   </parent>
 
   <artifactId>optaplanner-quarkus-drl-integration-test</artifactId>
@@ -25,6 +25,11 @@
     <dependency>
       <groupId>io.quarkus</groupId>
       <artifactId>quarkus-resteasy</artifactId>
+    </dependency>
+    <!-- TODO: Remove this dependency when https://issues.redhat.com/browse/PLANNER-2572 is resolved. -->
+    <dependency>
+      <groupId>io.quarkus</groupId>
+      <artifactId>quarkus-resteasy-jackson</artifactId>
     </dependency>
     <dependency>
       <groupId>org.kie.kogito</groupId>

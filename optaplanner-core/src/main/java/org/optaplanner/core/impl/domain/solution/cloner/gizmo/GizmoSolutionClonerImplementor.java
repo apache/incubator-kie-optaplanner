@@ -64,6 +64,7 @@ public class GizmoSolutionClonerImplementor {
      */
     private static ClassLoader gizmoClassLoader = new ClassLoader() {
         // getName() is an abstract method in Java 11 but not in Java 8
+        @Override
         public String getName() {
             return "OptaPlanner Gizmo SolutionCloner ClassLoader";
         }
@@ -349,7 +350,7 @@ public class GizmoSolutionClonerImplementor {
      * // If getter a method (i.e. Quarkus)
      * clone.setMember(original.getMember());
      * </pre>
-     * 
+     *
      * @param methodCreator
      * @param shallowlyClonedField
      * @param thisObj
@@ -436,7 +437,7 @@ public class GizmoSolutionClonerImplementor {
      *     // ...
      * }
      * </pre>
-     * 
+     *
      * @param bytecodeCreator
      * @param solutionDescriptor
      * @param deeplyClonedFieldClass
