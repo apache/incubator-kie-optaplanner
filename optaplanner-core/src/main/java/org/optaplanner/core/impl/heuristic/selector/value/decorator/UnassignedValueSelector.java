@@ -30,26 +30,27 @@ import org.optaplanner.core.impl.heuristic.selector.value.EntityIndependentValue
 import org.optaplanner.core.impl.phase.scope.AbstractPhaseScope;
 
 /**
- * Prevents reassigning of values that are already assigned to a list variable during Construction Heuristics.
+ * Discards planning values that are already assigned to a list variable.
  * <p>
- * Returns only values that are not yet assigned.
+ * Only returns values from the child value selector that are unassigned.
+ * This prevents reassigning of values that are already assigned to a list variable during Construction Heuristics.
  * <p>
  * Does implement {@link EntityIndependentValueSelector} because the question whether a value is assigned or not does not depend
  * on a specific entity.
  */
-public class ReassignValueToListVariableSelector<Solution_> extends AbstractValueSelector<Solution_>
+public class UnassignedValueSelector<Solution_> extends AbstractValueSelector<Solution_>
         implements EntityIndependentValueSelector<Solution_> {
 
     protected final EntityIndependentValueSelector<Solution_> childValueSelector;
 
     protected SingletonInverseVariableSupply inverseVariableSupply;
 
-    public ReassignValueToListVariableSelector(EntityIndependentValueSelector<Solution_> childValueSelector) {
+    public UnassignedValueSelector(EntityIndependentValueSelector<Solution_> childValueSelector) {
         if (childValueSelector.isNeverEnding()) {
             throw new IllegalArgumentException("The selector (" + this
                     + ") has a childValueSelector (" + childValueSelector
                     + ") with neverEnding (" + childValueSelector.isNeverEnding() + ").\n"
-                    + "This is not allowed because " + ReassignValueToListVariableSelector.class.getSimpleName()
+                    + "This is not allowed because " + UnassignedValueSelector.class.getSimpleName()
                     + " cannot decorate a never-ending child value selector.\n"
                     + "This could be a result of using random selection order (which is often the default).");
         }
@@ -127,6 +128,6 @@ public class ReassignValueToListVariableSelector<Solution_> extends AbstractValu
 
     @Override
     public String toString() {
-        return "Reassign(" + childValueSelector + ")";
+        return "Unassigned(" + childValueSelector + ")";
     }
 }
