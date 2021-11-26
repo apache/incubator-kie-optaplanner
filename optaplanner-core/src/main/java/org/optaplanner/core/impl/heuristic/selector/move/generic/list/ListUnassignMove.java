@@ -39,6 +39,7 @@ public class ListUnassignMove<Solution_> extends AbstractMove<Solution_> {
 
     @Override
     protected AbstractMove<Solution_> createUndoMove(ScoreDirector<Solution_> scoreDirector) {
+        // No need to create an undo move because the unassign move is never being undone.
         return null;
     }
 
