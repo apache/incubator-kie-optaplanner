@@ -33,6 +33,7 @@ import java.util.stream.IntStream;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Timeout;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.optaplanner.core.api.solver.Solver;
 import org.optaplanner.core.api.solver.SolverFactory;
 import org.optaplanner.core.config.constructionheuristic.ConstructionHeuristicPhaseConfig;
@@ -49,6 +50,7 @@ import org.optaplanner.core.impl.testdata.domain.TestdataEntity;
 import org.optaplanner.core.impl.testdata.domain.TestdataSolution;
 import org.optaplanner.core.impl.testdata.domain.TestdataValue;
 import org.optaplanner.core.impl.testdata.util.PlannerTestUtils;
+import org.optaplanner.core.impl.util.ThreadDumpExtension;
 
 @Timeout(value = 60, unit = TimeUnit.SECONDS)
 public class DefaultPartitionedSearchPhaseTest {
@@ -129,6 +131,7 @@ public class DefaultPartitionedSearchPhaseTest {
     }
 
     @Test
+    @ExtendWith(ThreadDumpExtension.class)
     public void terminateEarly() throws InterruptedException, ExecutionException {
         final int partSize = 1;
         final int partCount = 2;
@@ -163,6 +166,7 @@ public class DefaultPartitionedSearchPhaseTest {
     }
 
     @Test
+    @ExtendWith(ThreadDumpExtension.class)
     public void shutdownMainThreadAbruptly() throws InterruptedException {
         final int partSize = 5;
         final int partCount = 3;
