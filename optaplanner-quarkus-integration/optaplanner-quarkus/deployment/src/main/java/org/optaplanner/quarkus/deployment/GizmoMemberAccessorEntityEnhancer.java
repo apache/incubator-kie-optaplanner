@@ -81,6 +81,7 @@ import org.optaplanner.core.impl.domain.solution.cloner.gizmo.GizmoSolutionClone
 import org.optaplanner.core.impl.domain.solution.cloner.gizmo.GizmoSolutionClonerImplementor;
 import org.optaplanner.core.impl.domain.solution.cloner.gizmo.GizmoSolutionOrEntityDescriptor;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
+import org.optaplanner.core.impl.score.director.stream.DroolsAncConstraintStreamScoreDirectorFactory;
 import org.optaplanner.core.impl.score.director.stream.DroolsConstraintStreamScoreDirectorFactory;
 import org.optaplanner.core.impl.score.director.stream.KieBaseDescriptor;
 import org.optaplanner.quarkus.gizmo.OptaPlannerDroolsInitializer;
@@ -578,13 +579,15 @@ public class GizmoMemberAccessorEntityEnhancer {
                         methodCreator.loadNull(),
                         methodCreator.loadNull(),
                         entityClassList);
-                ResultHandle isDroolsAlphaNetworkCompilationEnabled =
-                        methodCreator.load(config.getScoreDirectorFactoryConfig().isDroolsAlphaNetworkCompilationEnabled());
+                boolean isDroolsAlphaNetworkCompilationEnabled =
+                        config.getScoreDirectorFactoryConfig().isDroolsAlphaNetworkCompilationEnabled();
+                Class<?> scoreDirectorFactoryClass =
+                        isDroolsAlphaNetworkCompilationEnabled ? DroolsAncConstraintStreamScoreDirectorFactory.class
+                                : DroolsConstraintStreamScoreDirectorFactory.class;
                 ResultHandle kieBaseDescriptor = methodCreator.invokeStaticMethod(
-                        MethodDescriptor.ofMethod(DroolsConstraintStreamScoreDirectorFactory.class, "buildKieBase",
-                                KieBaseDescriptor.class,
-                                SolutionDescriptor.class, ConstraintProvider.class, boolean.class),
-                        solutionDescriptor, constraintProvider, isDroolsAlphaNetworkCompilationEnabled);
+                        MethodDescriptor.ofMethod(scoreDirectorFactoryClass, "buildKieBase", KieBaseDescriptor.class,
+                                SolutionDescriptor.class, ConstraintProvider.class),
+                        solutionDescriptor, constraintProvider);
                 methodCreator.invokeVirtualMethod(
                         MethodDescriptor.ofMethod(ScoreDirectorFactoryConfig.class, "setGizmoKieBaseSupplier",
                                 void.class,

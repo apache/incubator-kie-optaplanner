@@ -19,21 +19,11 @@ package org.optaplanner.core.impl.score.director;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import org.drools.ancompiler.KieBaseUpdaterANC;
-import org.drools.core.io.impl.ClassPathResource;
-import org.drools.core.io.impl.FileSystemResource;
-import org.drools.modelcompiler.ExecutableModelProject;
 import org.kie.api.KieBase;
-import org.kie.api.KieBaseConfiguration;
-import org.kie.api.KieServices;
-import org.kie.api.conf.KieBaseMutabilityOption;
-import org.kie.internal.builder.conf.PropertySpecificOption;
-import org.kie.internal.utils.KieHelper;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.calculator.EasyScoreCalculator;
 import org.optaplanner.core.api.score.calculator.IncrementalScoreCalculator;
@@ -45,11 +35,14 @@ import org.optaplanner.core.config.solver.EnvironmentMode;
 import org.optaplanner.core.config.util.ConfigUtils;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.core.impl.score.director.drools.DroolsScoreDirectorFactory;
+import org.optaplanner.core.impl.score.director.drools.KieBaseAncBuilder;
+import org.optaplanner.core.impl.score.director.drools.KieBaseBuilder;
 import org.optaplanner.core.impl.score.director.drools.testgen.TestGenDroolsScoreDirectorFactory;
 import org.optaplanner.core.impl.score.director.easy.EasyScoreDirectorFactory;
 import org.optaplanner.core.impl.score.director.incremental.IncrementalScoreDirectorFactory;
 import org.optaplanner.core.impl.score.director.stream.AbstractConstraintStreamScoreDirectorFactory;
 import org.optaplanner.core.impl.score.director.stream.BavetConstraintStreamScoreDirectorFactory;
+import org.optaplanner.core.impl.score.director.stream.DroolsAncConstraintStreamScoreDirectorFactory;
 import org.optaplanner.core.impl.score.director.stream.DroolsConstraintStreamScoreDirectorFactory;
 import org.optaplanner.core.impl.score.trend.InitializingScoreTrend;
 
@@ -230,13 +223,19 @@ public class ScoreDirectorFactoryFactory<Solution_, Score_ extends Score<Score_>
                 case BAVET:
                     return new BavetConstraintStreamScoreDirectorFactory<>(solutionDescriptor, constraintProvider);
                 case DROOLS:
-                    if (config.getGizmoKieBaseSupplier() != null) {
-                        return new DroolsConstraintStreamScoreDirectorFactory<>(solutionDescriptor,
-                                config.getGizmoKieBaseSupplier(),
-                                config.isDroolsAlphaNetworkCompilationEnabled());
+                    if (config.isDroolsAlphaNetworkCompilationEnabled()) {
+                        if (config.getGizmoKieBaseSupplier() != null) {
+                            return new DroolsAncConstraintStreamScoreDirectorFactory<>(solutionDescriptor,
+                                    config.getGizmoKieBaseSupplier());
+                        }
+                        return new DroolsAncConstraintStreamScoreDirectorFactory<>(solutionDescriptor, constraintProvider);
+                    } else {
+                        if (config.getGizmoKieBaseSupplier() != null) {
+                            return new DroolsConstraintStreamScoreDirectorFactory<>(solutionDescriptor,
+                                    config.getGizmoKieBaseSupplier());
+                        }
+                        return new DroolsConstraintStreamScoreDirectorFactory<>(solutionDescriptor, constraintProvider);
                     }
-                    return new DroolsConstraintStreamScoreDirectorFactory<>(solutionDescriptor, constraintProvider,
-                            config.isDroolsAlphaNetworkCompilationEnabled());
                 default:
                     throw new IllegalStateException(
                             "The constraintStreamImplType (" + constraintStreamImplType_ + ") is not implemented.");
@@ -311,30 +310,11 @@ public class ScoreDirectorFactoryFactory<Solution_, Score_ extends Score<Score_>
             if (config.getGizmoKieBaseSupplier() != null) {
                 kieBase = config.getGizmoKieBaseSupplier().get();
             } else {
-                // Can't put this code in KieBaseExtractor since it reference
-                // KieRuntimeBuilder, which is an optional dependency
-                KieHelper kieHelper = new KieHelper(PropertySpecificOption.ALLOWED)
-                        .setClassLoader(classLoader);
-                if (!ConfigUtils.isEmptyCollection(config.getScoreDrlList())) {
-                    for (String scoreDrl : config.getScoreDrlList()) {
-                        if (scoreDrl == null) {
-                            throw new IllegalArgumentException("The scoreDrl (" + scoreDrl + ") cannot be null.");
-                        }
-                        kieHelper.addResource(new ClassPathResource(scoreDrl, classLoader));
-                    }
+                if (config.isDroolsAlphaNetworkCompilationEnabled()) {
+                    kieBase = KieBaseAncBuilder.build(config, classLoader);
+                } else {
+                    kieBase = KieBaseBuilder.build(config, classLoader);
                 }
-                if (!ConfigUtils.isEmptyCollection(config.getScoreDrlFileList())) {
-                    for (File scoreDrlFile : config.getScoreDrlFileList()) {
-                        kieHelper.addResource(new FileSystemResource(scoreDrlFile));
-                    }
-                }
-                KieBaseConfiguration kieBaseConfiguration = buildKieBaseConfiguration(KieServices.get());
-                kieBaseConfiguration.setOption(KieBaseMutabilityOption.DISABLED); // Performance improvement.
-                kieBase = kieHelper.build(ExecutableModelProject.class, kieBaseConfiguration);
-            }
-
-            if (config.isDroolsAlphaNetworkCompilationEnabled()) {
-                KieBaseUpdaterANC.generateAndSetInMemoryANC(kieBase); // Enable Alpha Network Compiler for performance.
             }
             if (generateDroolsTestOnError) {
                 return new TestGenDroolsScoreDirectorFactory<>(solutionDescriptor, kieBase, config.getScoreDrlList(),
@@ -345,16 +325,6 @@ public class ScoreDirectorFactoryFactory<Solution_, Score_ extends Score<Score_>
         } catch (Exception ex) {
             throw new IllegalStateException("There is an error in a scoreDrl or scoreDrlFile.", ex);
         }
-    }
-
-    private KieBaseConfiguration buildKieBaseConfiguration(KieServices kieServices) {
-        KieBaseConfiguration kieBaseConfiguration = kieServices.newKieBaseConfiguration();
-        if (config.getKieBaseConfigurationProperties() != null) {
-            for (Map.Entry<String, String> entry : config.getKieBaseConfigurationProperties().entrySet()) {
-                kieBaseConfiguration.setProperty(entry.getKey(), entry.getValue());
-            }
-        }
-        return kieBaseConfiguration;
     }
 
 }

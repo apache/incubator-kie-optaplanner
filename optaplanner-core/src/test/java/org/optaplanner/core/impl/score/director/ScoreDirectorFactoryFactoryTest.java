@@ -38,6 +38,7 @@ import org.optaplanner.core.impl.score.director.easy.EasyScoreDirector;
 import org.optaplanner.core.impl.score.director.incremental.IncrementalScoreDirector;
 import org.optaplanner.core.impl.score.director.stream.AbstractConstraintStreamScoreDirectorFactory;
 import org.optaplanner.core.impl.score.director.stream.BavetConstraintStreamScoreDirectorFactory;
+import org.optaplanner.core.impl.score.director.stream.DroolsAncConstraintStreamScoreDirectorFactory;
 import org.optaplanner.core.impl.score.director.stream.DroolsConstraintStreamScoreDirectorFactory;
 import org.optaplanner.core.impl.testdata.domain.TestdataSolution;
 
@@ -128,7 +129,7 @@ class ScoreDirectorFactoryFactoryTest {
         assertThat(uncastScoreDirectorFactory).isInstanceOf(DroolsConstraintStreamScoreDirectorFactory.class);
         DroolsConstraintStreamScoreDirectorFactory<TestdataSolution, SimpleScore> scoreDirectorFactory =
                 (DroolsConstraintStreamScoreDirectorFactory<TestdataSolution, SimpleScore>) uncastScoreDirectorFactory;
-        assertThat(scoreDirectorFactory.isDroolsAlphaNetworkCompilationEnabled()).isTrue();
+        assertThat(scoreDirectorFactory).isInstanceOf(DroolsAncConstraintStreamScoreDirectorFactory.class);
     }
 
     @Test
@@ -188,7 +189,7 @@ class ScoreDirectorFactoryFactoryTest {
         assertThat(uncastScoreDirectorFactory).isInstanceOf(DroolsConstraintStreamScoreDirectorFactory.class);
         DroolsConstraintStreamScoreDirectorFactory<TestdataSolution, SimpleScore> scoreDirectorFactory =
                 (DroolsConstraintStreamScoreDirectorFactory<TestdataSolution, SimpleScore>) uncastScoreDirectorFactory;
-        assertThat(scoreDirectorFactory.isDroolsAlphaNetworkCompilationEnabled()).isFalse();
+        assertThat(scoreDirectorFactory).isNotInstanceOf(DroolsAncConstraintStreamScoreDirectorFactory.class);
     }
 
     @Test

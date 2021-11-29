@@ -30,6 +30,7 @@ import org.optaplanner.core.api.score.stream.ConstraintStreamImplType;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.core.impl.score.director.stream.AbstractConstraintStreamScoreDirectorFactory;
 import org.optaplanner.core.impl.score.director.stream.BavetConstraintStreamScoreDirectorFactory;
+import org.optaplanner.core.impl.score.director.stream.DroolsAncConstraintStreamScoreDirectorFactory;
 import org.optaplanner.core.impl.score.director.stream.DroolsConstraintStreamScoreDirectorFactory;
 import org.optaplanner.test.api.score.stream.ConstraintVerifier;
 
@@ -95,8 +96,11 @@ public final class DefaultConstraintVerifier<ConstraintProvider_ extends Constra
         ConstraintStreamImplType constraintStreamImplType_ = getConstraintStreamImplType();
         switch (constraintStreamImplType_) {
             case DROOLS:
-                return new DroolsConstraintStreamScoreDirectorFactory<>(solutionDescriptor, constraintProvider,
-                        isDroolsAlphaNetworkCompilationEnabled());
+                if (isDroolsAlphaNetworkCompilationEnabled()) {
+                    return new DroolsAncConstraintStreamScoreDirectorFactory<>(solutionDescriptor, constraintProvider);
+                } else {
+                    return new DroolsConstraintStreamScoreDirectorFactory<>(solutionDescriptor, constraintProvider);
+                }
             case BAVET:
                 if (droolsAlphaNetworkCompilationEnabled != null && droolsAlphaNetworkCompilationEnabled) {
                     throw new IllegalArgumentException("Constraint stream implementation (" + constraintStreamImplType_ +

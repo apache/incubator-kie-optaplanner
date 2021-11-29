@@ -29,7 +29,6 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
-import org.drools.ancompiler.KieBaseUpdaterANC;
 import org.drools.model.Global;
 import org.drools.model.Model;
 import org.drools.model.impl.ModelImpl;
@@ -61,17 +60,14 @@ import org.optaplanner.core.impl.score.stream.drools.DroolsConstraint;
 import org.optaplanner.core.impl.score.stream.drools.DroolsConstraintFactory;
 import org.optaplanner.core.impl.score.stream.drools.SessionDescriptor;
 
-public final class DroolsConstraintStreamScoreDirectorFactory<Solution_, Score_ extends Score<Score_>>
+public class DroolsConstraintStreamScoreDirectorFactory<Solution_, Score_ extends Score<Score_>>
         extends AbstractConstraintStreamScoreDirectorFactory<Solution_, Score_> {
 
     private final KieBaseDescriptor<Solution_> kieBaseDescriptor;
-    private final boolean droolsAlphaNetworkCompilationEnabled;
 
     public DroolsConstraintStreamScoreDirectorFactory(SolutionDescriptor<Solution_> solutionDescriptor,
-            ConstraintProvider constraintProvider, boolean droolsAlphaNetworkCompilationEnabled) {
-        this(solutionDescriptor,
-                buildKieBase(solutionDescriptor, constraintProvider, droolsAlphaNetworkCompilationEnabled),
-                droolsAlphaNetworkCompilationEnabled);
+            ConstraintProvider constraintProvider) {
+        this(solutionDescriptor, buildKieBase(solutionDescriptor, constraintProvider));
     }
 
     private static <Solution_> KieBaseDescriptor<Solution_> assertIsKieBaseDescriptor(Supplier<KieBase> kieBaseSupplier) {
@@ -83,18 +79,15 @@ public final class DroolsConstraintStreamScoreDirectorFactory<Solution_, Score_ 
                 + ScoreDirectorFactoryConfig.class.getSimpleName() + ".setKieBaseSupplier(Supplier)?");
     }
 
-    @SuppressWarnings("unchecked")
     public DroolsConstraintStreamScoreDirectorFactory(SolutionDescriptor<Solution_> solutionDescriptor,
-            Supplier<KieBase> kieBaseDescriptorSupplier, boolean droolsAlphaNetworkCompilationEnabled) {
-        this(solutionDescriptor, assertIsKieBaseDescriptor(kieBaseDescriptorSupplier),
-                droolsAlphaNetworkCompilationEnabled);
+            Supplier<KieBase> kieBaseDescriptorSupplier) {
+        this(solutionDescriptor, assertIsKieBaseDescriptor(kieBaseDescriptorSupplier));
     }
 
     public DroolsConstraintStreamScoreDirectorFactory(SolutionDescriptor<Solution_> solutionDescriptor,
-            KieBaseDescriptor<Solution_> kieBaseDescriptor, boolean droolsAlphaNetworkCompilationEnabled) {
+            KieBaseDescriptor<Solution_> kieBaseDescriptor) {
         super(solutionDescriptor);
         this.kieBaseDescriptor = Objects.requireNonNull(kieBaseDescriptor);
-        this.droolsAlphaNetworkCompilationEnabled = droolsAlphaNetworkCompilationEnabled;
     }
 
     @Override
@@ -104,7 +97,7 @@ public final class DroolsConstraintStreamScoreDirectorFactory<Solution_, Score_ 
     }
 
     public static <Solution_> KieBaseDescriptor<Solution_> buildKieBase(SolutionDescriptor<Solution_> solutionDescriptor,
-            ConstraintProvider constraintProvider, boolean droolsAlphaNetworkCompilationEnabled) {
+            ConstraintProvider constraintProvider) {
         List<DroolsConstraint<Solution_>> constraints = new DroolsConstraintFactory<>(solutionDescriptor)
                 .buildConstraints(constraintProvider);
         // Each constraint gets its own global, in which it will keep its impacter.
@@ -118,20 +111,16 @@ public final class DroolsConstraintStreamScoreDirectorFactory<Solution_, Score_ 
                 .map(constraint -> constraint.buildRule(constraintToGlobalMap.get(constraint)))
                 .reduce(new ModelImpl(), ModelImpl::addRule, (m, key) -> m);
         constraintToGlobalMap.forEach((constraint, global) -> model.addGlobal(global));
-        KieBase kieBase = buildKieBaseFromModel(model, droolsAlphaNetworkCompilationEnabled);
+        KieBase kieBase = buildKieBaseFromModel(model);
         return new KieBaseDescriptor<>(constraintToGlobalMap, kieBase);
     }
 
-    private static KieBase buildKieBaseFromModel(Model model, boolean droolsAlphaNetworkCompilationEnabled) {
+    private static KieBase buildKieBaseFromModel(Model model) {
         KieBaseConfiguration kieBaseConfiguration = KieServices.get().newKieBaseConfiguration();
         kieBaseConfiguration.setOption(KieBaseMutabilityOption.DISABLED); // For performance; applicable to DRL too.
         kieBaseConfiguration.setProperty(PropertySpecificOption.PROPERTY_NAME,
                 PropertySpecificOption.DISABLED.name()); // Users of CS must not rely on underlying Drools gimmicks.
-        KieBase kieBase = KieBaseBuilder.createKieBaseFromModel(model, kieBaseConfiguration);
-        if (droolsAlphaNetworkCompilationEnabled) {
-            KieBaseUpdaterANC.generateAndSetInMemoryANC(kieBase); // Enable Alpha Network Compiler for performance.
-        }
-        return kieBase;
+        return KieBaseBuilder.createKieBaseFromModel(model, kieBaseConfiguration);
     }
 
     public SessionDescriptor<Score_> newConstraintStreamingSession(boolean constraintMatchEnabled,
@@ -177,10 +166,6 @@ public final class DroolsConstraintStreamScoreDirectorFactory<Solution_, Score_ 
         return kieBaseDescriptor.getConstraintToGlobalMap()
                 .keySet()
                 .toArray(Constraint[]::new);
-    }
-
-    public boolean isDroolsAlphaNetworkCompilationEnabled() {
-        return droolsAlphaNetworkCompilationEnabled;
     }
 
     private static final class ConstraintDisablingAgendaFilter implements AgendaFilter {

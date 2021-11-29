@@ -36,7 +36,7 @@ import org.optaplanner.core.api.score.constraint.ConstraintMatchTotal;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.core.impl.score.director.InnerScoreDirector;
 import org.optaplanner.core.impl.score.director.stream.BavetConstraintStreamScoreDirectorFactory;
-import org.optaplanner.core.impl.score.director.stream.DroolsConstraintStreamScoreDirectorFactory;
+import org.optaplanner.core.impl.score.director.stream.DroolsAncConstraintStreamScoreDirectorFactory;
 import org.optaplanner.core.impl.testdata.domain.score.lavish.TestdataLavishSolution;
 
 @ExtendWith(ConstraintStreamTestExtension.class)
@@ -81,8 +81,8 @@ public abstract class AbstractConstraintStreamTest {
                         solutionDescriptorSupplier, constraintProvider)
                                 .buildScoreDirector(false, constraintMatchEnabled);
             case DROOLS:
-                return (InnerScoreDirector<Solution_, Score_>) new DroolsConstraintStreamScoreDirectorFactory<>(
-                        solutionDescriptorSupplier, constraintProvider, true)
+                return (InnerScoreDirector<Solution_, Score_>) new DroolsAncConstraintStreamScoreDirectorFactory<>(
+                        solutionDescriptorSupplier, constraintProvider)
                                 .buildScoreDirector(false, constraintMatchEnabled);
             default:
                 throw new UnsupportedOperationException(
