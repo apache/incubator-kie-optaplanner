@@ -22,10 +22,12 @@ import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Queue;
 import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Timeout;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.optaplanner.core.api.solver.Solver;
 import org.optaplanner.core.api.solver.SolverFactory;
 import org.optaplanner.core.api.solver.event.BestSolutionChangedEvent;
@@ -37,7 +39,9 @@ import org.optaplanner.examples.cloudbalancing.domain.CloudProcess;
 import org.optaplanner.examples.cloudbalancing.optional.realtime.AddProcessProblemFactChange;
 import org.optaplanner.examples.cloudbalancing.persistence.CloudBalancingGenerator;
 import org.optaplanner.examples.common.app.LoggingTest;
+import org.optaplanner.examples.common.util.ThreadDumpExtension;
 
+@Timeout(value = 600, unit = TimeUnit.SECONDS)
 public class CloudBalancingDaemonTest extends LoggingTest {
 
     private Object stageLock = new Object();
@@ -51,7 +55,7 @@ public class CloudBalancingDaemonTest extends LoggingTest {
     private volatile CloudBalance currentBestSolution = null;
 
     @Test
-    @Timeout(600)
+    @ExtendWith(ThreadDumpExtension.class)
     public void daemon() throws InterruptedException {
         // In main thread
         Solver<CloudBalance> solver = buildSolver();
