@@ -33,6 +33,7 @@ import java.util.stream.IntStream;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Timeout;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.optaplanner.core.api.solver.Solver;
 import org.optaplanner.core.api.solver.SolverFactory;
 import org.optaplanner.core.config.constructionheuristic.ConstructionHeuristicPhaseConfig;
@@ -49,17 +50,17 @@ import org.optaplanner.core.impl.testdata.domain.TestdataEntity;
 import org.optaplanner.core.impl.testdata.domain.TestdataSolution;
 import org.optaplanner.core.impl.testdata.domain.TestdataValue;
 import org.optaplanner.core.impl.testdata.util.PlannerTestUtils;
+import org.optaplanner.core.impl.util.ThreadDumpExtension;
 
+@Timeout(value = 60, unit = TimeUnit.SECONDS)
 public class DefaultPartitionedSearchPhaseTest {
 
     @Test
-    @Timeout(5)
     public void partCount() {
         partCount(SolverConfig.MOVE_THREAD_COUNT_NONE);
     }
 
     @Test
-    @Timeout(5)
     public void partCountAndMoveThreadCount() {
         partCount("2");
     }
@@ -112,7 +113,6 @@ public class DefaultPartitionedSearchPhaseTest {
     }
 
     @Test
-    @Timeout(5)
     public void exceptionPropagation() {
         final int partSize = 7;
         final int partCount = 3;
@@ -131,7 +131,7 @@ public class DefaultPartitionedSearchPhaseTest {
     }
 
     @Test
-    @Timeout(5)
+    @ExtendWith(ThreadDumpExtension.class)
     public void terminateEarly() throws InterruptedException, ExecutionException {
         final int partSize = 1;
         final int partCount = 2;
@@ -161,12 +161,12 @@ public class DefaultPartitionedSearchPhaseTest {
         assertThat(solver.isTerminateEarly()).isTrue();
 
         executor.shutdown();
-        assertThat(executor.awaitTermination(100, TimeUnit.MILLISECONDS)).isTrue();
+        assertThat(executor.awaitTermination(10, TimeUnit.SECONDS)).isTrue();
         assertThat(solutionFuture.get()).isNotNull();
     }
 
     @Test
-    @Timeout(5)
+    @ExtendWith(ThreadDumpExtension.class)
     public void shutdownMainThreadAbruptly() throws InterruptedException {
         final int partSize = 5;
         final int partCount = 3;
@@ -190,7 +190,7 @@ public class DefaultPartitionedSearchPhaseTest {
         executor.shutdownNow();
 
         // This verifies that PartitionQueue doesn't clear interrupted flag when the main solver thread is interrupted.
-        assertThat(executor.awaitTermination(100, TimeUnit.MILLISECONDS))
+        assertThat(executor.awaitTermination(10, TimeUnit.SECONDS))
                 .as("Executor must terminate successfully when it's shut down abruptly")
                 .isTrue();
 
