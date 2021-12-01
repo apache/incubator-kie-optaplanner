@@ -30,6 +30,7 @@ import org.optaplanner.core.api.score.constraint.Indictment;
 import org.optaplanner.core.api.score.director.ScoreDirector;
 import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
+import org.optaplanner.core.impl.domain.variable.descriptor.ListVariableDescriptor;
 import org.optaplanner.core.impl.domain.variable.descriptor.VariableDescriptor;
 import org.optaplanner.core.impl.score.director.AbstractScoreDirector;
 import org.optaplanner.core.impl.score.inliner.ScoreInliner;
@@ -159,6 +160,14 @@ public final class DroolsConstraintStreamScoreDirector<Solution_, Score_ extends
     public void afterVariableChanged(VariableDescriptor<Solution_> variableDescriptor, Object entity) {
         update(entity);
         super.afterVariableChanged(variableDescriptor, entity);
+    }
+
+    // public void beforeVariableChanged(ListVariableDescriptor variableDescriptor, Object entity, Integer index) // Do nothing
+
+    @Override
+    public void afterVariableChanged(ListVariableDescriptor<Solution_> variableDescriptor, Object entity, Integer index) {
+        update(entity);
+        super.afterVariableChanged(variableDescriptor, entity, index);
     }
 
     // public void beforeEntityRemoved(EntityDescriptor entityDescriptor, Object entity) // Do nothing

@@ -136,6 +136,10 @@ public final class BavetConstraintStreamScoreDirector<Solution_, Score_ extends 
         super.afterVariableChanged(variableDescriptor, entity);
     }
 
+    // TODO
+    // public void beforeVariableChanged(ListVariableDescriptor variableDescriptor, Object entity, Integer index)
+    // public void afterVariableChanged(ListVariableDescriptor variableDescriptor, Object entity, Integer index)
+
     // public void beforeEntityRemoved(EntityDescriptor entityDescriptor, Object entity) // Do nothing
 
     @Override

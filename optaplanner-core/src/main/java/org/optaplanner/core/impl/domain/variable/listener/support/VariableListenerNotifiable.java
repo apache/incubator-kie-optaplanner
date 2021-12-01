@@ -19,9 +19,9 @@ package org.optaplanner.core.impl.domain.variable.listener.support;
 import java.util.ArrayDeque;
 import java.util.Collection;
 import java.util.Iterator;
-import java.util.function.Consumer;
 
 import org.optaplanner.core.api.domain.variable.VariableListener;
+import org.optaplanner.core.api.score.director.ScoreDirector;
 
 public class VariableListenerNotifiable
         implements Comparable<VariableListenerNotifiable>, Iterable<VariableListenerNotification> {
@@ -45,9 +45,9 @@ public class VariableListenerNotifiable
         return variableListener;
     }
 
-    public void addNotification(VariableListenerNotification notification, Consumer<VariableListener> actionIfAdded) {
+    public void addNotification(VariableListenerNotification notification, ScoreDirector<?> scoreDirector) {
         if (notificationQueue.add(notification)) {
-            actionIfAdded.accept(variableListener);
+            notification.notifyBefore(variableListener, scoreDirector);
         }
     }
 

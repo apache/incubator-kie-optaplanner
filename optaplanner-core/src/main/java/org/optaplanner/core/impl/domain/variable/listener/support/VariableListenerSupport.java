@@ -28,6 +28,7 @@ import org.optaplanner.core.api.score.director.ScoreDirector;
 import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.core.impl.domain.variable.descriptor.GenuineVariableDescriptor;
+import org.optaplanner.core.impl.domain.variable.descriptor.ListVariableDescriptor;
 import org.optaplanner.core.impl.domain.variable.descriptor.ShadowVariableDescriptor;
 import org.optaplanner.core.impl.domain.variable.descriptor.VariableDescriptor;
 import org.optaplanner.core.impl.domain.variable.listener.SourcedVariableListener;
@@ -149,9 +150,7 @@ public class VariableListenerSupport<Solution_> implements SupplyManager<Solutio
     public void beforeEntityAdded(EntityDescriptor<Solution_> entityDescriptor, Object entity) {
         List<VariableListenerNotifiable> notifiableList = sourceEntityToNotifiableMap.get(entityDescriptor);
         for (VariableListenerNotifiable notifiable : notifiableList) {
-            notifiable.addNotification(
-                    new VariableListenerNotification(entity, VariableListenerNotificationType.ENTITY_ADDED),
-                    variableListener -> variableListener.beforeEntityAdded(scoreDirector, entity));
+            notifiable.addNotification(VariableListenerNotification.entityAdded(entity), scoreDirector);
         }
         notificationQueuesAreEmpty = false;
     }
@@ -164,23 +163,31 @@ public class VariableListenerSupport<Solution_> implements SupplyManager<Solutio
         List<VariableListenerNotifiable> notifiableList = sourceVariableToNotifiableMap.getOrDefault(variableDescriptor,
                 Collections.emptyList()); // Avoids null for chained swap move on an unchained var.
         for (VariableListenerNotifiable notifiable : notifiableList) {
-            notifiable.addNotification(
-                    new VariableListenerNotification(entity, VariableListenerNotificationType.VARIABLE_CHANGED),
-                    variableListener -> variableListener.beforeVariableChanged(scoreDirector, entity));
+            notifiable.addNotification(VariableListenerNotification.variableChanged(entity), scoreDirector);
         }
         notificationQueuesAreEmpty = false;
+    }
+
+    public void beforeListVariableChanged(ListVariableDescriptor<Solution_> listVariableDescriptor, Object entity,
+            Integer index) {
+        for (VariableListenerNotifiable notifiable : sourceVariableToNotifiableMap.getOrDefault(listVariableDescriptor,
+                Collections.emptyList())) {
+            notifiable.addNotification(VariableListenerNotification.listVariableChanged(entity, index), scoreDirector);
+        }
     }
 
     public void afterVariableChanged(VariableDescriptor<Solution_> variableDescriptor, Object entity) {
         // beforeVariableChanged() has already added it to the notificationQueue
     }
 
+    public void afterListVariableChanged(ListVariableDescriptor<Solution_> variableDescriptor, Object entity, Integer index) {
+        // beforeListVariableChanged() has already added it to the notificationQueue
+    }
+
     public void beforeEntityRemoved(EntityDescriptor<Solution_> entityDescriptor, Object entity) {
         List<VariableListenerNotifiable> notifiableList = sourceEntityToNotifiableMap.get(entityDescriptor);
         for (VariableListenerNotifiable notifiable : notifiableList) {
-            notifiable.addNotification(
-                    new VariableListenerNotification(entity, VariableListenerNotificationType.ENTITY_REMOVED),
-                    variableListener -> variableListener.beforeEntityRemoved(scoreDirector, entity));
+            notifiable.addNotification(VariableListenerNotification.entityRemoved(entity), scoreDirector);
         }
         notificationQueuesAreEmpty = false;
     }
@@ -194,21 +201,7 @@ public class VariableListenerSupport<Solution_> implements SupplyManager<Solutio
             int notifiedCount = 0;
             VariableListener<Solution_, Object> variableListener = notifiable.getVariableListener();
             for (VariableListenerNotification notification : notifiable) {
-                Object entity = notification.getEntity();
-                switch (notification.getType()) {
-                    case ENTITY_ADDED:
-                        variableListener.afterEntityAdded(scoreDirector, entity);
-                        break;
-                    case VARIABLE_CHANGED:
-                        variableListener.afterVariableChanged(scoreDirector, entity);
-                        break;
-                    case ENTITY_REMOVED:
-                        variableListener.afterEntityRemoved(scoreDirector, entity);
-                        break;
-                    default:
-                        throw new IllegalStateException("The variableListenerNotificationType ("
-                                + notification.getType() + ") is not implemented.");
-                }
+                notification.notifyAfter(variableListener, scoreDirector);
                 notifiedCount++;
             }
             if (notifiedCount != notifiable.getNotificationCount()) {
@@ -230,9 +223,15 @@ public class VariableListenerSupport<Solution_> implements SupplyManager<Solutio
             EntityDescriptor<Solution_> entityDescriptor = solutionDescriptor.findEntityDescriptorOrFail(entity.getClass());
             for (GenuineVariableDescriptor<Solution_> variableDescriptor : entityDescriptor
                     .getGenuineVariableDescriptorList()) {
-                beforeVariableChanged(variableDescriptor, entity);
-                // No change
-                afterVariableChanged(variableDescriptor, entity);
+                if (variableDescriptor.isGenuineListVariable()) {
+                    // TODO why 0?
+                    beforeListVariableChanged((ListVariableDescriptor<Solution_>) variableDescriptor, entity, 0);
+                    afterListVariableChanged((ListVariableDescriptor<Solution_>) variableDescriptor, entity, 0);
+                } else {
+                    beforeVariableChanged(variableDescriptor, entity);
+                    // No change
+                    afterVariableChanged(variableDescriptor, entity);
+                }
             }
         }
         triggerVariableListenersInNotificationQueues();

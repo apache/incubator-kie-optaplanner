@@ -17,14 +17,15 @@
 package org.optaplanner.core.impl.domain.variable.index;
 
 import java.util.List;
-import java.util.Objects;
 
-import org.optaplanner.core.api.domain.variable.VariableListener;
+import org.optaplanner.core.api.domain.variable.ListVariableListener;
 import org.optaplanner.core.api.score.director.ScoreDirector;
 import org.optaplanner.core.impl.domain.variable.descriptor.ListVariableDescriptor;
 import org.optaplanner.core.impl.score.director.InnerScoreDirector;
 
-public class IndexVariableListener<Solution_> implements VariableListener<Solution_, Object>, IndexVariableSupply {
+public class IndexVariableListener<Solution_> implements ListVariableListener<Solution_, Object>, IndexVariableSupply {
+
+    private static final int UNSET_ALL = -1;
 
     protected final IndexShadowVariableDescriptor<Solution_> indexShadowVariableDescriptor;
     protected final ListVariableDescriptor<Solution_> sourceListVariableDescriptor;
@@ -43,22 +44,23 @@ public class IndexVariableListener<Solution_> implements VariableListener<Soluti
 
     @Override
     public void afterEntityAdded(ScoreDirector<Solution_> scoreDirector, Object entity) {
-        insert((InnerScoreDirector<Solution_, ?>) scoreDirector, entity);
+        // TODO null, or *, or the added entity should already have its shadow vars up to date?
+        insert((InnerScoreDirector<Solution_, ?>) scoreDirector, entity, 0);
     }
 
     @Override
-    public void beforeVariableChanged(ScoreDirector<Solution_> scoreDirector, Object entity) {
-        retract((InnerScoreDirector<Solution_, ?>) scoreDirector, entity);
+    public void beforeVariableChanged(ScoreDirector<Solution_> scoreDirector, Object entity, Integer index) {
+        retract((InnerScoreDirector<Solution_, ?>) scoreDirector, entity, index);
     }
 
     @Override
-    public void afterVariableChanged(ScoreDirector<Solution_> scoreDirector, Object entity) {
-        insert((InnerScoreDirector<Solution_, ?>) scoreDirector, entity);
+    public void afterVariableChanged(ScoreDirector<Solution_> scoreDirector, Object entity, Integer index) {
+        insert((InnerScoreDirector<Solution_, ?>) scoreDirector, entity, index);
     }
 
     @Override
     public void beforeEntityRemoved(ScoreDirector<Solution_> scoreDirector, Object entity) {
-        retract((InnerScoreDirector<Solution_, ?>) scoreDirector, entity);
+        retract((InnerScoreDirector<Solution_, ?>) scoreDirector, entity, UNSET_ALL);
     }
 
     @Override
@@ -66,34 +68,49 @@ public class IndexVariableListener<Solution_> implements VariableListener<Soluti
         // Do nothing
     }
 
-    protected void insert(InnerScoreDirector<Solution_, ?> scoreDirector, Object sourceEntity) {
+    protected void insert(InnerScoreDirector<Solution_, ?> scoreDirector, Object sourceEntity, Integer index) {
         List<Object> listVariable = sourceListVariableDescriptor.getListVariable(sourceEntity);
         if (listVariable == null) {
             return;
         }
-        int index = 0;
-        for (Object shadowEntity : listVariable) {
+
+        for (int i = index; i < listVariable.size(); i++) {
             // TODO maybe update inverse relation variable (if exists) to avoid an extra loop
             //  in a dedicated inverse relation listener
-            if (!Objects.equals(indexShadowVariableDescriptor.getValue(shadowEntity), index)) {
-                scoreDirector.beforeVariableChanged(indexShadowVariableDescriptor, shadowEntity);
-                indexShadowVariableDescriptor.setValue(shadowEntity, index);
-                scoreDirector.afterVariableChanged(indexShadowVariableDescriptor, shadowEntity);
-            }
-            index++;
+            Object shadowEntity = listVariable.get(i);
+            //            if (Objects.equals(indexShadowVariableDescriptor.getValue(shadowEntity), i)) {
+            //                // CAUTION! if the inserted element happens to already have the index, that must not shortcut updating the rest.
+            //                // Shortcut.
+            //                return;
+            //            }
+            scoreDirector.beforeVariableChanged(indexShadowVariableDescriptor, shadowEntity);
+            indexShadowVariableDescriptor.setValue(shadowEntity, i);
+            scoreDirector.afterVariableChanged(indexShadowVariableDescriptor, shadowEntity);
         }
     }
 
-    protected void retract(InnerScoreDirector<Solution_, ?> scoreDirector, Object sourceEntity) {
+    protected void retract(InnerScoreDirector<Solution_, ?> scoreDirector, Object sourceEntity, Integer index) {
         List<Object> listVariable = sourceListVariableDescriptor.getListVariable(sourceEntity);
         if (listVariable == null) {
             return;
         }
-        for (Object shadowEntity : listVariable) {
-            scoreDirector.beforeVariableChanged(indexShadowVariableDescriptor, shadowEntity);
-            indexShadowVariableDescriptor.setValue(shadowEntity, null);
-            scoreDirector.afterVariableChanged(indexShadowVariableDescriptor, shadowEntity);
+        if (index >= listVariable.size()) {
+            return;
         }
+        // TODO refactor to a separate method
+        if (index == UNSET_ALL) {
+            for (Object shadowEntity : listVariable) {
+                scoreDirector.beforeVariableChanged(indexShadowVariableDescriptor, shadowEntity);
+                indexShadowVariableDescriptor.setValue(shadowEntity, null);
+                scoreDirector.afterVariableChanged(indexShadowVariableDescriptor, shadowEntity);
+            }
+            return;
+        }
+
+        Object shadowEntity = listVariable.get(index);
+        scoreDirector.beforeVariableChanged(indexShadowVariableDescriptor, shadowEntity);
+        indexShadowVariableDescriptor.setValue(shadowEntity, null);
+        scoreDirector.afterVariableChanged(indexShadowVariableDescriptor, shadowEntity);
     }
 
     @Override

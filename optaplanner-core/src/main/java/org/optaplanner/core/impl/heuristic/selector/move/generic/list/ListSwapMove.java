@@ -105,13 +105,13 @@ public class ListSwapMove<Solution_> extends AbstractMove<Solution_> {
         Object leftElement = variableDescriptor.getElement(leftEntity, leftIndex);
         Object rightElement = variableDescriptor.getElement(rightEntity, rightIndex);
 
-        innerScoreDirector.beforeVariableChanged(variableDescriptor, leftEntity);
+        innerScoreDirector.beforeVariableChanged(variableDescriptor, leftEntity, leftIndex);
         variableDescriptor.setElement(leftEntity, leftIndex, rightElement);
-        innerScoreDirector.afterVariableChanged(variableDescriptor, leftEntity);
+        innerScoreDirector.afterVariableChanged(variableDescriptor, leftEntity, leftIndex);
 
-        innerScoreDirector.beforeVariableChanged(variableDescriptor, rightEntity);
+        innerScoreDirector.beforeVariableChanged(variableDescriptor, rightEntity, rightIndex);
         variableDescriptor.setElement(rightEntity, rightIndex, leftElement);
-        innerScoreDirector.afterVariableChanged(variableDescriptor, rightEntity);
+        innerScoreDirector.afterVariableChanged(variableDescriptor, rightEntity, rightIndex);
     }
 
     @Override

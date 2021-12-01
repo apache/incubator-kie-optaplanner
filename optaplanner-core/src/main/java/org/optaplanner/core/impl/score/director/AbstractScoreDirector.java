@@ -409,8 +409,6 @@ public abstract class AbstractScoreDirector<Solution_, Score_ extends Score<Scor
     public void beforeVariableChanged(VariableDescriptor<Solution_> variableDescriptor, Object entity) {
         if (variableDescriptor.isGenuineAndUninitialized(entity)) {
             workingInitScore++;
-        } else if (variableDescriptor.isGenuineListVariable()) {
-            workingInitScore -= ((ListVariableDescriptor<Solution_>) variableDescriptor).getListSize(entity);
         }
         variableListenerSupport.beforeVariableChanged(variableDescriptor, entity);
     }
@@ -419,10 +417,20 @@ public abstract class AbstractScoreDirector<Solution_, Score_ extends Score<Scor
     public void afterVariableChanged(VariableDescriptor<Solution_> variableDescriptor, Object entity) {
         if (variableDescriptor.isGenuineAndUninitialized(entity)) {
             workingInitScore--;
-        } else if (variableDescriptor.isGenuineListVariable()) {
-            workingInitScore += ((ListVariableDescriptor<Solution_>) variableDescriptor).getListSize(entity);
         }
         variableListenerSupport.afterVariableChanged(variableDescriptor, entity);
+    }
+
+    @Override
+    public void beforeVariableChanged(ListVariableDescriptor<Solution_> variableDescriptor, Object entity, Integer index) {
+        workingInitScore -= variableDescriptor.getListSize(entity);
+        variableListenerSupport.beforeListVariableChanged(variableDescriptor, entity, index);
+    }
+
+    @Override
+    public void afterVariableChanged(ListVariableDescriptor<Solution_> variableDescriptor, Object entity, Integer index) {
+        workingInitScore += variableDescriptor.getListSize(entity);
+        variableListenerSupport.afterListVariableChanged(variableDescriptor, entity, index);
     }
 
     @Override

@@ -31,6 +31,7 @@ import org.optaplanner.core.api.score.constraint.ConstraintMatchTotal;
 import org.optaplanner.core.api.score.constraint.Indictment;
 import org.optaplanner.core.api.score.director.ScoreDirector;
 import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
+import org.optaplanner.core.impl.domain.variable.descriptor.ListVariableDescriptor;
 import org.optaplanner.core.impl.domain.variable.descriptor.VariableDescriptor;
 import org.optaplanner.core.impl.score.director.AbstractScoreDirector;
 import org.optaplanner.core.impl.score.holder.AbstractScoreHolder;
@@ -177,9 +178,17 @@ public class DroolsScoreDirector<Solution_, Score_ extends Score<Score_>>
     // public void beforeVariableChanged(VariableDescriptor variableDescriptor, Object entity) // Do nothing
 
     @Override
-    public void afterVariableChanged(VariableDescriptor variableDescriptor, Object entity) {
+    public void afterVariableChanged(VariableDescriptor<Solution_> variableDescriptor, Object entity) {
         update(entity, variableDescriptor.getVariableName());
         super.afterVariableChanged(variableDescriptor, entity);
+    }
+
+    // public void beforeVariableChanged(ListVariableDescriptor variableDescriptor, Object entity, Integer index) // Do nothing
+
+    @Override
+    public void afterVariableChanged(ListVariableDescriptor<Solution_> variableDescriptor, Object entity, Integer index) {
+        update(entity, variableDescriptor.getVariableName());
+        super.afterVariableChanged(variableDescriptor, entity, index);
     }
 
     private void update(Object entity, String variableName) {

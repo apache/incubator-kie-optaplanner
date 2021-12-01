@@ -16,9 +16,12 @@
 
 package org.optaplanner.core.impl.domain.variable.index;
 
-import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 
+import java.util.Arrays;
+import java.util.stream.IntStream;
+
+import org.assertj.core.api.SoftAssertions;
 import org.junit.jupiter.api.Test;
 import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
 import org.optaplanner.core.impl.score.director.InnerScoreDirector;
@@ -36,39 +39,50 @@ class IndexVariableListenerTest {
                 TestdataListValue.buildVariableDescriptorForIndex(),
                 TestdataListEntity.buildVariableDescriptorForValueList());
 
-        TestdataListValue v1 = new TestdataListValue("1");
-        TestdataListValue v2 = new TestdataListValue("2");
-        TestdataListValue v3 = new TestdataListValue("3");
-        TestdataListValue v4 = new TestdataListValue("4");
-        TestdataListEntity entity = new TestdataListEntity("a", v1, v2, v3);
+        TestdataListValue v1 = new TestdataListValue("v1");
+        TestdataListValue v2 = new TestdataListValue("v2");
+        TestdataListValue v3 = new TestdataListValue("v3");
+        TestdataListEntity entity = new TestdataListEntity("A", v1, v2, v3);
 
-        assertThat(v1.getIndex()).isNull();
-        assertThat(v2.getIndex()).isNull();
-        assertThat(v3.getIndex()).isNull();
+        assertNullIndexes(indexVariableListener, v1, v2, v3);
 
+        // When an entity is added,
         indexVariableListener.beforeEntityAdded(scoreDirector, entity);
         indexVariableListener.afterEntityAdded(scoreDirector, entity);
+        // the shadow variables of its planning values are set.
+        assertIndexes(indexVariableListener, v1, v2, v3);
 
-        assertThat(v1.getIndex()).isEqualTo(0);
-        assertThat(v2.getIndex()).isEqualTo(1);
-        assertThat(v3.getIndex()).isEqualTo(2);
-
-        indexVariableListener.beforeVariableChanged(scoreDirector, entity);
+        // Insert a value at index 2: A[v1, v2, 3] => A[v1, v2, v4, v3].
+        //                                                      ^
+        TestdataListValue v4 = new TestdataListValue("v4");
+        indexVariableListener.beforeVariableChanged(scoreDirector, entity, 2);
         entity.getValueList().add(2, v4);
-        indexVariableListener.afterVariableChanged(scoreDirector, entity);
+        indexVariableListener.afterVariableChanged(scoreDirector, entity, 2);
+        assertIndexes(indexVariableListener, v1, v2, v4, v3);
 
-        assertThat(v1.getIndex()).isEqualTo(0);
-        assertThat(v2.getIndex()).isEqualTo(1);
-        assertThat(v4.getIndex()).isEqualTo(2);
-        assertThat(v3.getIndex()).isEqualTo(3);
+        // Append a value: A[v1, v2, v4, v3] => A[v1, v2, v4, v3, v5].
+        //                                                        ^
+        TestdataListValue v5 = new TestdataListValue("v5");
+        indexVariableListener.beforeVariableChanged(scoreDirector, entity, 4);
+        entity.getValueList().add(4, v5);
+        indexVariableListener.afterVariableChanged(scoreDirector, entity, 4);
+        assertIndexes(indexVariableListener, v1, v2, v4, v3, v5);
 
-        indexVariableListener.beforeVariableChanged(scoreDirector, entity);
+        // Remove a value from index 0: A[v1, v2, v4, v3, v5] => A[v2, v4, v3, v5]
+        //                                ^
+        indexVariableListener.beforeVariableChanged(scoreDirector, entity, 0);
         entity.getValueList().remove(v1);
-        indexVariableListener.afterVariableChanged(scoreDirector, entity);
+        indexVariableListener.afterVariableChanged(scoreDirector, entity, 0);
+        assertIndexes(indexVariableListener, v2, v4, v3, v5);
+        assertNullIndexes(indexVariableListener, v1);
 
-        assertThat(v2.getIndex()).isEqualTo(0);
-        assertThat(v4.getIndex()).isEqualTo(1);
-        assertThat(v3.getIndex()).isEqualTo(2);
+        // Remove a value from the end: A[v2, v4, v3, v5] => A[v2, v4, v3]
+        //                                            ^
+        indexVariableListener.beforeVariableChanged(scoreDirector, entity, 3);
+        entity.getValueList().remove(v5);
+        indexVariableListener.afterVariableChanged(scoreDirector, entity, 3);
+        assertIndexes(indexVariableListener, v2, v4, v3);
+        assertNullIndexes(indexVariableListener, v1, v5);
     }
 
     @Test
@@ -79,20 +93,43 @@ class IndexVariableListenerTest {
                 TestdataListValue.buildVariableDescriptorForIndex(),
                 TestdataListEntity.buildVariableDescriptorForValueList());
 
-        TestdataListValue v1 = new TestdataListValue("1");
-        TestdataListValue v2 = new TestdataListValue("2");
-        TestdataListValue v3 = new TestdataListValue("3");
-        TestdataListEntity entity = TestdataListEntity.createWithValues("a", v1, v2, v3);
+        TestdataListValue v1 = new TestdataListValue("v1");
+        TestdataListValue v2 = new TestdataListValue("v2");
+        TestdataListValue v3 = new TestdataListValue("v3");
+        TestdataListEntity entity = TestdataListEntity.createWithValues("A", v1, v2, v3);
 
-        assertThat(v1.getIndex()).isEqualTo(0);
-        assertThat(v2.getIndex()).isEqualTo(1);
-        assertThat(v3.getIndex()).isEqualTo(2);
+        assertIndexes(indexVariableListener, v1, v2, v3);
 
         indexVariableListener.beforeEntityRemoved(scoreDirector, entity);
         indexVariableListener.afterEntityRemoved(scoreDirector, entity);
 
-        assertThat(v1.getIndex()).isNull();
-        assertThat(v2.getIndex()).isNull();
-        assertThat(v3.getIndex()).isNull();
+        // TODO after removing
+        // Proposal A: all shadow variables should be unset
+        assertNullIndexes(indexVariableListener, v1, v2, v3);
+        // Proposal B: elements are still in the list so their shadow variables are consistent and don't need to be unset
+        //        assertIndexes(v1, v2, v3);
+
+        // Winner: Proposal A because removing an entity != removing all of its values. The values are still in the value range
+        // and so they NEED to be made UNASSIGNED when the entity is removed => Yes, UNSET inverse+index shadow variables.
+    }
+
+    private static void assertIndexes(IndexVariableListener<?> indexVariableListener, TestdataListValue... values) {
+        SoftAssertions.assertSoftly(softly -> IntStream.range(0, values.length).forEach(i -> {
+            softly.assertThat(values[i].getIndex())
+                    .as("Index of " + values[i] + " in " + Arrays.toString(values))
+                    .isEqualTo(i);
+            softly.assertThat(indexVariableListener.getIndex(values[i]))
+                    .as("Index of " + values[i] + " in " + Arrays.toString(values))
+                    .isEqualTo(i);
+        }));
+    }
+
+    private static void assertNullIndexes(IndexVariableListener<?> indexVariableListener, TestdataListValue... values) {
+        SoftAssertions.assertSoftly(softly -> {
+            for (TestdataListValue value : values) {
+                softly.assertThat(value.getIndex()).isNull();
+                softly.assertThat(indexVariableListener.getIndex(value)).isNull();
+            }
+        });
     }
 }

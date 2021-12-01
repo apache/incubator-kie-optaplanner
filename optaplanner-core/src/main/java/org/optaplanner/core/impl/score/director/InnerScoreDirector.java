@@ -33,6 +33,7 @@ import org.optaplanner.core.api.score.constraint.Indictment;
 import org.optaplanner.core.api.score.director.ScoreDirector;
 import org.optaplanner.core.api.score.stream.Constraint;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
+import org.optaplanner.core.impl.domain.variable.descriptor.ListVariableDescriptor;
 import org.optaplanner.core.impl.domain.variable.descriptor.VariableDescriptor;
 import org.optaplanner.core.impl.domain.variable.supply.SupplyManager;
 import org.optaplanner.core.impl.heuristic.move.Move;
@@ -303,6 +304,11 @@ public interface InnerScoreDirector<Solution_, Score_ extends Score<Score_>>
     void beforeVariableChanged(VariableDescriptor<Solution_> variableDescriptor, Object entity);
 
     void afterVariableChanged(VariableDescriptor<Solution_> variableDescriptor, Object entity);
+
+    // TODO naming: beforeListVariableChanged()?
+    void beforeVariableChanged(ListVariableDescriptor<Solution_> variableDescriptor, Object entity, Integer index);
+
+    void afterVariableChanged(ListVariableDescriptor<Solution_> variableDescriptor, Object entity, Integer index);
 
     void changeVariableFacade(VariableDescriptor<Solution_> variableDescriptor, Object entity, Object newValue);
 

@@ -18,13 +18,13 @@ package org.optaplanner.examples.taskassigning_listvariable.domain.solver;
 
 import java.util.Objects;
 
-import org.optaplanner.core.api.domain.variable.VariableListener;
+import org.optaplanner.core.api.domain.variable.ListVariableListener;
 import org.optaplanner.core.api.score.director.ScoreDirector;
 import org.optaplanner.examples.taskassigning_listvariable.domain.Employee;
 import org.optaplanner.examples.taskassigning_listvariable.domain.Task;
 import org.optaplanner.examples.taskassigning_listvariable.domain.TaskAssigningSolution;
 
-public class StartTimeUpdatingVariableListener implements VariableListener<TaskAssigningSolution, Employee> {
+public class StartTimeUpdatingVariableListener implements ListVariableListener<TaskAssigningSolution, Employee> {
 
     @Override
     public void beforeEntityAdded(ScoreDirector<TaskAssigningSolution> scoreDirector, Employee employee) {
@@ -33,17 +33,17 @@ public class StartTimeUpdatingVariableListener implements VariableListener<TaskA
 
     @Override
     public void afterEntityAdded(ScoreDirector<TaskAssigningSolution> scoreDirector, Employee employee) {
-        updateStartTime(scoreDirector, employee);
+        updateStartTime(scoreDirector, employee, null);
     }
 
     @Override
-    public void beforeVariableChanged(ScoreDirector<TaskAssigningSolution> scoreDirector, Employee employee) {
+    public void beforeVariableChanged(ScoreDirector<TaskAssigningSolution> scoreDirector, Employee employee, Integer index) {
         // Do nothing
     }
 
     @Override
-    public void afterVariableChanged(ScoreDirector<TaskAssigningSolution> scoreDirector, Employee employee) {
-        updateStartTime(scoreDirector, employee);
+    public void afterVariableChanged(ScoreDirector<TaskAssigningSolution> scoreDirector, Employee employee, Integer index) {
+        updateStartTime(scoreDirector, employee, index);
     }
 
     @Override
@@ -56,7 +56,7 @@ public class StartTimeUpdatingVariableListener implements VariableListener<TaskA
         // Do nothing
     }
 
-    protected void updateStartTime(ScoreDirector<TaskAssigningSolution> scoreDirector, Employee sourceEmployee) {
+    protected void updateStartTime(ScoreDirector<TaskAssigningSolution> scoreDirector, Employee sourceEmployee, Integer index) {
         if (sourceEmployee.getTasks() == null) {
             return;
         }

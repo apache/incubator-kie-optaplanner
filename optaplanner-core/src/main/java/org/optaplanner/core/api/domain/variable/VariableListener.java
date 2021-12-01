@@ -66,13 +66,15 @@ public interface VariableListener<Solution_, Entity_> extends Closeable {
      * @param scoreDirector never null
      * @param entity never null
      */
-    void beforeVariableChanged(ScoreDirector<Solution_> scoreDirector, Entity_ entity);
+    default void beforeVariableChanged(ScoreDirector<Solution_> scoreDirector, Entity_ entity) {
+    }
 
     /**
      * @param scoreDirector never null
      * @param entity never null
      */
-    void afterVariableChanged(ScoreDirector<Solution_> scoreDirector, Entity_ entity);
+    default void afterVariableChanged(ScoreDirector<Solution_> scoreDirector, Entity_ entity) {
+    }
 
     /**
      * @param scoreDirector never null

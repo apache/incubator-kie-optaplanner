@@ -19,13 +19,16 @@ package org.optaplanner.core.impl.domain.variable.inverserelation;
 import java.util.List;
 import java.util.Objects;
 
+import org.optaplanner.core.api.domain.variable.ListVariableListener;
 import org.optaplanner.core.api.domain.variable.VariableListener;
 import org.optaplanner.core.api.score.director.ScoreDirector;
 import org.optaplanner.core.impl.domain.variable.descriptor.ListVariableDescriptor;
 import org.optaplanner.core.impl.score.director.InnerScoreDirector;
 
 public class SingletonListInverseVariableListener<Solution_>
-        implements VariableListener<Solution_, Object>, SingletonInverseVariableSupply {
+        implements VariableListener<Solution_, Object>,
+        ListVariableListener<Solution_, Object>,
+        SingletonInverseVariableSupply {
 
     protected final InverseRelationShadowVariableDescriptor<Solution_> shadowVariableDescriptor;
     protected final ListVariableDescriptor<Solution_> sourceListVariableDescriptor;
@@ -44,22 +47,26 @@ public class SingletonListInverseVariableListener<Solution_>
 
     @Override
     public void afterEntityAdded(ScoreDirector<Solution_> scoreDirector, Object entity) {
-        insert((InnerScoreDirector<Solution_, ?>) scoreDirector, entity);
+        // FIXME avoid NPE
+        insert((InnerScoreDirector<Solution_, ?>) scoreDirector, entity, null);
     }
 
     @Override
-    public void beforeVariableChanged(ScoreDirector<Solution_> scoreDirector, Object entity) {
-        retract((InnerScoreDirector<Solution_, ?>) scoreDirector, entity);
+    public void beforeVariableChanged(ScoreDirector<Solution_> scoreDirector, Object entity, Integer index) {
+        //        logger.debug("Inverse:BEFORE {}[{}]", entity, index);
+        retract((InnerScoreDirector<Solution_, ?>) scoreDirector, entity, index);
     }
 
     @Override
-    public void afterVariableChanged(ScoreDirector<Solution_> scoreDirector, Object entity) {
-        insert((InnerScoreDirector<Solution_, ?>) scoreDirector, entity);
+    public void afterVariableChanged(ScoreDirector<Solution_> scoreDirector, Object entity, Integer index) {
+        //        logger.debug("Inverse:AFTER {}[{}]", entity, index);
+        insert((InnerScoreDirector<Solution_, ?>) scoreDirector, entity, index);
     }
 
     @Override
     public void beforeEntityRemoved(ScoreDirector<Solution_> scoreDirector, Object entity) {
-        retract((InnerScoreDirector<Solution_, ?>) scoreDirector, entity);
+        // FIXME avoid NPE
+        retract((InnerScoreDirector<Solution_, ?>) scoreDirector, entity, null);
     }
 
     @Override
@@ -67,30 +74,40 @@ public class SingletonListInverseVariableListener<Solution_>
         // Do nothing
     }
 
-    protected void insert(InnerScoreDirector<Solution_, ?> scoreDirector, Object sourceEntity) {
+    protected void insert(InnerScoreDirector<Solution_, ?> scoreDirector, Object sourceEntity, Integer index) {
         List<Object> listVariable = sourceListVariableDescriptor.getListVariable(sourceEntity);
         if (listVariable == null) {
             return;
         }
-        for (Object shadowEntity : listVariable) {
-            if (!Objects.equals(shadowVariableDescriptor.getValue(shadowEntity), sourceEntity)) {
-                scoreDirector.beforeVariableChanged(shadowVariableDescriptor, shadowEntity);
-                shadowVariableDescriptor.setValue(shadowEntity, sourceEntity);
-                scoreDirector.afterVariableChanged(shadowVariableDescriptor, shadowEntity);
+        if (index >= listVariable.size()) {
+            return;
+        }
+        Object shadowEntity = listVariable.get(index);
+        if (!Objects.equals(shadowVariableDescriptor.getValue(shadowEntity), sourceEntity)) {
+            scoreDirector.beforeVariableChanged(shadowVariableDescriptor, shadowEntity);
+            shadowVariableDescriptor.setValue(shadowEntity, sourceEntity);
+            scoreDirector.afterVariableChanged(shadowVariableDescriptor, shadowEntity);
+            if (index + 1 < listVariable.size()) {
+                Object nextEntity = listVariable.get(index + 1);
+                scoreDirector.beforeVariableChanged(shadowVariableDescriptor, nextEntity);
+                shadowVariableDescriptor.setValue(nextEntity, sourceEntity);
+                scoreDirector.afterVariableChanged(shadowVariableDescriptor, nextEntity);
             }
         }
     }
 
-    protected void retract(InnerScoreDirector<Solution_, ?> scoreDirector, Object sourceEntity) {
+    protected void retract(InnerScoreDirector<Solution_, ?> scoreDirector, Object sourceEntity, Integer index) {
         List<Object> listVariable = sourceListVariableDescriptor.getListVariable(sourceEntity);
         if (listVariable == null) {
             return;
         }
-        for (Object shadowEntity : listVariable) {
-            scoreDirector.beforeVariableChanged(shadowVariableDescriptor, shadowEntity);
-            shadowVariableDescriptor.setValue(shadowEntity, null);
-            scoreDirector.afterVariableChanged(shadowVariableDescriptor, shadowEntity);
+        if (index >= listVariable.size()) {
+            return;
         }
+        Object shadowEntity = listVariable.get(index);
+        scoreDirector.beforeVariableChanged(shadowVariableDescriptor, shadowEntity);
+        shadowVariableDescriptor.setValue(shadowEntity, null);
+        scoreDirector.afterVariableChanged(shadowVariableDescriptor, shadowEntity);
     }
 
     @Override
