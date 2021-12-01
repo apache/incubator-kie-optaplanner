@@ -20,6 +20,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -223,19 +224,7 @@ public class ScoreDirectorFactoryFactory<Solution_, Score_ extends Score<Score_>
                 case BAVET:
                     return new BavetConstraintStreamScoreDirectorFactory<>(solutionDescriptor, constraintProvider);
                 case DROOLS:
-                    if (config.isDroolsAlphaNetworkCompilationEnabled()) {
-                        if (config.getGizmoKieBaseSupplier() != null) {
-                            return new DroolsAncConstraintStreamScoreDirectorFactory<>(solutionDescriptor,
-                                    config.getGizmoKieBaseSupplier());
-                        }
-                        return new DroolsAncConstraintStreamScoreDirectorFactory<>(solutionDescriptor, constraintProvider);
-                    } else {
-                        if (config.getGizmoKieBaseSupplier() != null) {
-                            return new DroolsConstraintStreamScoreDirectorFactory<>(solutionDescriptor,
-                                    config.getGizmoKieBaseSupplier());
-                        }
-                        return new DroolsConstraintStreamScoreDirectorFactory<>(solutionDescriptor, constraintProvider);
-                    }
+                    return buildDroolsConstraintStreamScoreDirectorFactory(config, solutionDescriptor, constraintProvider);
                 default:
                     throw new IllegalStateException(
                             "The constraintStreamImplType (" + constraintStreamImplType_ + ") is not implemented.");
@@ -247,6 +236,24 @@ public class ScoreDirectorFactoryFactory<Solution_, Score_ extends Score<Score_>
                         + config.getConstraintProviderCustomProperties() + ") either.");
             }
             return null;
+        }
+    }
+
+    private DroolsConstraintStreamScoreDirectorFactory<Solution_, Score_>
+            buildDroolsConstraintStreamScoreDirectorFactory(
+                    ScoreDirectorFactoryConfig config, SolutionDescriptor<Solution_> solutionDescriptor,
+                    ConstraintProvider constraintProvider) {
+        Supplier<KieBase> gizmoKieBaseSupplier = config.getGizmoKieBaseSupplier();
+        if (config.isDroolsAlphaNetworkCompilationEnabled()) {
+            if (gizmoKieBaseSupplier != null) {
+                return new DroolsAncConstraintStreamScoreDirectorFactory<>(solutionDescriptor, gizmoKieBaseSupplier);
+            }
+            return new DroolsAncConstraintStreamScoreDirectorFactory<>(solutionDescriptor, constraintProvider);
+        } else {
+            if (gizmoKieBaseSupplier != null) {
+                return new DroolsConstraintStreamScoreDirectorFactory<>(solutionDescriptor, gizmoKieBaseSupplier);
+            }
+            return new DroolsConstraintStreamScoreDirectorFactory<>(solutionDescriptor, constraintProvider);
         }
     }
 
