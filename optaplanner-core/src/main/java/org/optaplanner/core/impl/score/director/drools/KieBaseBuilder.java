@@ -50,4 +50,8 @@ public final class KieBaseBuilder {
         return kieBaseConfiguration;
     }
 
+    private KieBaseBuilder() {
+        // No instances allowed.
+    }
+
 }

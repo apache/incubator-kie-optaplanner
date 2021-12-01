@@ -16,4 +16,8 @@ public final class KieBaseAncBuilder {
         return kieBase;
     }
 
+    private KieBaseAncBuilder() {
+        // No instances allowed.
+    }
+
 }
