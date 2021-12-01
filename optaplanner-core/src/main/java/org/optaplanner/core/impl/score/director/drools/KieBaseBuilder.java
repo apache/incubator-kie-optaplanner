@@ -18,8 +18,6 @@ import org.optaplanner.core.config.util.ConfigUtils;
 public final class KieBaseBuilder {
 
     public static KieBase build(ScoreDirectorFactoryConfig config, ClassLoader classLoader) {
-        // Can't put this code in KieBaseExtractor since it reference
-        // KieRuntimeBuilder, which is an optional dependency
         KieHelper kieHelper = new KieHelper(PropertySpecificOption.ALLOWED)
                 .setClassLoader(classLoader);
         if (!ConfigUtils.isEmptyCollection(config.getScoreDrlList())) {
