@@ -68,10 +68,15 @@ public class ChangeMoveSelectorFactory<Solution_>
                 entitySelector.getEntityDescriptor(),
                 minimumCacheType, SelectionOrder.fromRandomSelectionBoolean(randomSelection));
         if (valueSelector.getVariableDescriptor().isListVariable()) {
+            if (!(valueSelector instanceof EntityIndependentValueSelector)) {
+                throw new IllegalArgumentException("The changeMoveSelector (" + this
+                        + ") for a list variable needs to be based on an EntityIndependentValueSelector (" + valueSelector
+                        + "). Check your valueSelectorConfig.");
+
+            }
             return new ListChangeMoveSelector<>(
                     (ListVariableDescriptor<Solution_>) valueSelector.getVariableDescriptor(),
                     entitySelector,
-                    // This cast is guaranteed by ListVariableDescriptor.processValueRangeRefs().
                     (EntityIndependentValueSelector<Solution_>) valueSelector,
                     randomSelection);
         }
