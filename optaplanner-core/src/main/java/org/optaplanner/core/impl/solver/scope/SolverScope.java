@@ -28,6 +28,7 @@ import java.util.concurrent.atomic.AtomicReference;
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.solver.Solver;
+import org.optaplanner.core.api.solver.change.ProblemChangeDirector;
 import org.optaplanner.core.config.solver.monitoring.SolverMetric;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.core.impl.phase.scope.AbstractPhaseScope;
@@ -42,6 +43,7 @@ import io.micrometer.core.instrument.Tags;
  * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
  */
 public class SolverScope<Solution_> {
+    private ProblemChangeDirector problemChangeDirector;
     protected Set<SolverMetric> solverMetricSet;
     protected Tags monitoringTags;
     protected int startingSolverCount;
@@ -69,6 +71,14 @@ public class SolverScope<Solution_> {
     // ************************************************************************
     // Constructors and simple getters/setters
     // ************************************************************************
+
+    public ProblemChangeDirector getProblemChangeDirector() {
+        return problemChangeDirector;
+    }
+
+    public void setProblemChangeDirector(ProblemChangeDirector problemChangeDirector) {
+        this.problemChangeDirector = problemChangeDirector;
+    }
 
     public Tags getMonitoringTags() {
         return monitoringTags;

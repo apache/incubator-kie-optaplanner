@@ -17,11 +17,14 @@
 package org.optaplanner.core.impl.solver.termination;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.*;
 
 import java.util.Arrays;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import org.junit.jupiter.api.Test;
+import org.optaplanner.core.impl.score.director.InnerScoreDirector;
+import org.optaplanner.core.impl.solver.scope.SolverScope;
 import org.optaplanner.core.impl.testdata.domain.TestdataSolution;
 
 public class BasicPlumbingTerminationTest {
@@ -31,11 +34,13 @@ public class BasicPlumbingTerminationTest {
         AtomicInteger count = new AtomicInteger(0);
         BasicPlumbingTermination<TestdataSolution> basicPlumbingTermination = new BasicPlumbingTermination<>(false);
         assertThat(basicPlumbingTermination.waitForRestartSolverDecision()).isFalse();
-        basicPlumbingTermination.addProblemFactChange(scoreDirector -> count.getAndIncrement());
+        basicPlumbingTermination.addProblemChange((workingSolution, problemChangeDirector) -> count.getAndIncrement());
         assertThat(basicPlumbingTermination.waitForRestartSolverDecision()).isTrue();
         assertThat(count).hasValue(0);
-        basicPlumbingTermination.startProblemFactChangesProcessing().removeIf(problemFactChange -> {
-            problemFactChange.doChange(null);
+
+        SolverScope<TestdataSolution> solverScopeMock = mockSolverScope();
+        basicPlumbingTermination.startProblemFactChangesProcessing().removeIf(problemChangeAdapter -> {
+            problemChangeAdapter.doProblemChange(solverScopeMock);
             return true;
         });
         assertThat(basicPlumbingTermination.waitForRestartSolverDecision()).isFalse();
@@ -47,16 +52,24 @@ public class BasicPlumbingTerminationTest {
         AtomicInteger count = new AtomicInteger(0);
         BasicPlumbingTermination<TestdataSolution> basicPlumbingTermination = new BasicPlumbingTermination<>(false);
         assertThat(basicPlumbingTermination.waitForRestartSolverDecision()).isFalse();
-        basicPlumbingTermination.addProblemFactChanges(Arrays.asList(
-                scoreDirector -> count.getAndIncrement(),
-                scoreDirector -> count.getAndAdd(20)));
+        basicPlumbingTermination.addProblemChanges(Arrays.asList(
+                (workingSolution, problemChangeDirector) -> count.getAndIncrement(),
+                (workingSolution, problemChangeDirector) -> count.getAndAdd(20)));
         assertThat(basicPlumbingTermination.waitForRestartSolverDecision()).isTrue();
         assertThat(count).hasValue(0);
-        basicPlumbingTermination.startProblemFactChangesProcessing().removeIf(problemFactChange -> {
-            problemFactChange.doChange(null);
+        SolverScope<TestdataSolution> solverScopeMock = mockSolverScope();
+        basicPlumbingTermination.startProblemFactChangesProcessing().removeIf(problemChangeAdapter -> {
+            problemChangeAdapter.doProblemChange(solverScopeMock);
             return true;
         });
         assertThat(basicPlumbingTermination.waitForRestartSolverDecision()).isFalse();
         assertThat(count).hasValue(21);
+    }
+
+    private SolverScope<TestdataSolution> mockSolverScope() {
+        InnerScoreDirector<TestdataSolution, ?> scoreDirectorMock = mock(InnerScoreDirector.class);
+        SolverScope<TestdataSolution> solverScopeMock = mock(SolverScope.class);
+        doReturn(scoreDirectorMock).when(solverScopeMock).getScoreDirector();
+        return solverScopeMock;
     }
 }

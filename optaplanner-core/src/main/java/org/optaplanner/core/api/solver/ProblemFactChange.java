@@ -32,6 +32,7 @@ import org.optaplanner.core.api.score.director.ScoreDirector;
  *
  * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
  */
+@Deprecated
 @FunctionalInterface
 public interface ProblemFactChange<Solution_> {
 

@@ -18,11 +18,17 @@ package org.optaplanner.core.impl.solver.termination;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Objects;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
+import java.util.stream.Collectors;
 
 import org.optaplanner.core.api.solver.ProblemFactChange;
+import org.optaplanner.core.api.solver.change.ProblemChange;
 import org.optaplanner.core.impl.phase.scope.AbstractPhaseScope;
+import org.optaplanner.core.impl.solver.change.ProblemChangeAdapter;
+import org.optaplanner.core.impl.solver.change.ProblemChangeAdapterImpl;
+import org.optaplanner.core.impl.solver.change.ProblemFactChangeAdapterImpl;
 import org.optaplanner.core.impl.solver.scope.SolverScope;
 import org.optaplanner.core.impl.solver.thread.ChildThreadType;
 
@@ -35,7 +41,8 @@ public class BasicPlumbingTermination<Solution_> extends AbstractTermination<Sol
     protected final boolean daemon;
 
     protected boolean terminatedEarly = false;
-    protected BlockingQueue<ProblemFactChange<Solution_>> problemFactChangeQueue = new LinkedBlockingQueue<>();
+
+    protected BlockingQueue<ProblemChangeAdapter<Solution_>> problemFactChangeQueue = new LinkedBlockingQueue<>();
 
     protected boolean problemFactChangesBeingProcessed = false;
 
@@ -101,11 +108,40 @@ public class BasicPlumbingTermination<Solution_> extends AbstractTermination<Sol
     /**
      * Concurrency note: unblocks {@link #waitForRestartSolverDecision()}.
      *
+     * @param problemChange never null
+     * @return as specified by {@link Collection#add}
+     */
+    public synchronized boolean addProblemChange(ProblemChange<Solution_> problemChange) {
+        boolean added = problemFactChangeQueue.add(new ProblemChangeAdapterImpl<>(problemChange));
+        notifyAll();
+        return added;
+    }
+
+    /**
+     * Concurrency note: unblocks {@link #waitForRestartSolverDecision()}.
+     *
+     * @param problemChangeList never null
+     * @return as specified by {@link Collection#add}
+     */
+    public synchronized boolean addProblemChanges(List<ProblemChange<Solution_>> problemChangeList) {
+        Objects.requireNonNull(problemChangeList, "The list of problem changes (" + problemChangeList + ") cannot be null.");
+        List<ProblemChangeAdapter<Solution_>> adaptedProblemChangeList = problemChangeList.stream()
+                .map(ProblemChangeAdapterImpl::new)
+                .collect(Collectors.toList());
+        boolean added = problemFactChangeQueue.addAll(adaptedProblemChangeList);
+        notifyAll();
+        return added;
+    }
+
+    /**
+     * Concurrency note: unblocks {@link #waitForRestartSolverDecision()}.
+     *
      * @param problemFactChange never null
      * @return as specified by {@link Collection#add}
      */
+    @Deprecated
     public synchronized boolean addProblemFactChange(ProblemFactChange<Solution_> problemFactChange) {
-        boolean added = problemFactChangeQueue.add(problemFactChange);
+        boolean added = problemFactChangeQueue.add(new ProblemFactChangeAdapterImpl<>(problemFactChange));
         notifyAll();
         return added;
     }
@@ -116,13 +152,17 @@ public class BasicPlumbingTermination<Solution_> extends AbstractTermination<Sol
      * @param problemFactChangeList never null
      * @return as specified by {@link Collection#add}
      */
+    @Deprecated
     public synchronized boolean addProblemFactChanges(List<ProblemFactChange<Solution_>> problemFactChangeList) {
-        boolean added = problemFactChangeQueue.addAll(problemFactChangeList);
+        List<ProblemChangeAdapter<Solution_>> adaptedProblemChangeList = problemFactChangeList.stream()
+                .map(ProblemFactChangeAdapterImpl::new)
+                .collect(Collectors.toList());
+        boolean added = problemFactChangeQueue.addAll(adaptedProblemChangeList);
         notifyAll();
         return added;
     }
 
-    public synchronized BlockingQueue<ProblemFactChange<Solution_>> startProblemFactChangesProcessing() {
+    public synchronized BlockingQueue<ProblemChangeAdapter<Solution_>> startProblemFactChangesProcessing() {
         problemFactChangesBeingProcessed = true;
         return problemFactChangeQueue;
     }

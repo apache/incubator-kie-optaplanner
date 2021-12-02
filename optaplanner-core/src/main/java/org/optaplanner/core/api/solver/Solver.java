@@ -23,6 +23,7 @@ import java.util.concurrent.Future;
 
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.score.Score;
+import org.optaplanner.core.api.solver.change.ProblemChange;
 import org.optaplanner.core.api.solver.event.SolverEventListener;
 
 /**
@@ -88,6 +89,10 @@ public interface Solver<Solution_> {
      */
     boolean isTerminateEarly();
 
+    boolean addProblemChange(ProblemChange<Solution_> problemChange);
+
+    boolean addProblemChanges(List<ProblemChange<Solution_>> problemChangeList);
+
     /**
      * Schedules a {@link ProblemFactChange} to be processed.
      * <p>
@@ -102,6 +107,7 @@ public interface Solver<Solution_> {
      * @return true (as specified by {@link Collection#add})
      * @see #addProblemFactChanges(List)
      */
+    @Deprecated
     boolean addProblemFactChange(ProblemFactChange<Solution_> problemFactChange);
 
     /**
@@ -118,6 +124,7 @@ public interface Solver<Solution_> {
      * @return true (as specified by {@link Collection#add})
      * @see #addProblemFactChange(ProblemFactChange)
      */
+    @Deprecated
     boolean addProblemFactChanges(List<ProblemFactChange<Solution_>> problemFactChangeList);
 
     /**
