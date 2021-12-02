@@ -77,12 +77,12 @@ public final class DefaultProblemChangeDirector<Solution_> implements ProblemCha
     }
 
     @Override
-    public <E> E lookUpWorkingObject(E externalObject) {
+    public <EntityOrProblemFact> EntityOrProblemFact lookUpWorkingObject(EntityOrProblemFact externalObject) {
         return scoreDirector.lookUpWorkingObject(externalObject);
     }
 
     @Override
-    public <E> E lookUpWorkingObjectOrReturnNull(E externalObject) {
+    public <EntityOrProblemFact> EntityOrProblemFact lookUpWorkingObjectOrReturnNull(EntityOrProblemFact externalObject) {
         return scoreDirector.lookUpWorkingObjectOrReturnNull(externalObject);
     }
 }

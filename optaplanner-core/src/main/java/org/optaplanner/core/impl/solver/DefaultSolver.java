@@ -22,6 +22,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.stream.Collectors;
 
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.score.Score;
@@ -34,6 +35,8 @@ import org.optaplanner.core.impl.phase.Phase;
 import org.optaplanner.core.impl.score.director.InnerScoreDirector;
 import org.optaplanner.core.impl.score.director.InnerScoreDirectorFactory;
 import org.optaplanner.core.impl.solver.change.ProblemChangeAdapter;
+import org.optaplanner.core.impl.solver.change.ProblemChangeAdapterImpl;
+import org.optaplanner.core.impl.solver.change.ProblemFactChangeAdapterImpl;
 import org.optaplanner.core.impl.solver.random.RandomFactory;
 import org.optaplanner.core.impl.solver.recaller.BestSolutionRecaller;
 import org.optaplanner.core.impl.solver.scope.SolverScope;
@@ -137,22 +140,29 @@ public class DefaultSolver<Solution_> extends AbstractSolver<Solution_> {
 
     @Override
     public boolean addProblemFactChange(ProblemFactChange<Solution_> problemFactChange) {
-        return basicPlumbingTermination.addProblemFactChange(problemFactChange);
+        return basicPlumbingTermination.addProblemChange(new ProblemFactChangeAdapterImpl<>(problemFactChange));
     }
 
     @Override
     public boolean addProblemFactChanges(List<ProblemFactChange<Solution_>> problemFactChangeList) {
-        return basicPlumbingTermination.addProblemFactChanges(problemFactChangeList);
+        List<ProblemChangeAdapter<Solution_>> adaptedProblemChangeList = problemFactChangeList.stream()
+                .map(ProblemFactChangeAdapterImpl::new)
+                .collect(Collectors.toList());
+        return basicPlumbingTermination.addProblemChanges(adaptedProblemChangeList);
     }
 
     @Override
     public boolean addProblemChange(ProblemChange<Solution_> problemChange) {
-        return basicPlumbingTermination.addProblemChange(problemChange);
+        return basicPlumbingTermination.addProblemChange(new ProblemChangeAdapterImpl<>(problemChange));
     }
 
     @Override
     public boolean addProblemChanges(List<ProblemChange<Solution_>> problemChangeList) {
-        return basicPlumbingTermination.addProblemChanges(problemChangeList);
+        Objects.requireNonNull(problemChangeList, "The list of problem changes (" + problemChangeList + ") cannot be null.");
+        List<ProblemChangeAdapter<Solution_>> adaptedProblemChangeList = problemChangeList.stream()
+                .map(ProblemChangeAdapterImpl::new)
+                .collect(Collectors.toList());
+        return basicPlumbingTermination.addProblemChanges(adaptedProblemChangeList);
     }
 
     @Override
