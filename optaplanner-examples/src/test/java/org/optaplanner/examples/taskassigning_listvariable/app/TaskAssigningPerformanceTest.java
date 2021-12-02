@@ -18,11 +18,12 @@ package org.optaplanner.examples.taskassigning_listvariable.app;
 
 import java.util.stream.Stream;
 
+import org.optaplanner.core.api.score.buildin.bendable.BendableScore;
 import org.optaplanner.core.config.solver.EnvironmentMode;
 import org.optaplanner.examples.common.app.SolverPerformanceTest;
 import org.optaplanner.examples.taskassigning_listvariable.domain.TaskAssigningSolution;
 
-public class TaskAssigningPerformanceTest extends SolverPerformanceTest<TaskAssigningSolution> {
+public class TaskAssigningPerformanceTest extends SolverPerformanceTest<TaskAssigningSolution, BendableScore> {
 
     private static final String UNSOLVED_DATA_FILE = "data/taskassigning/unsolved/50tasks-5employees.xml";
 
@@ -32,9 +33,11 @@ public class TaskAssigningPerformanceTest extends SolverPerformanceTest<TaskAssi
     }
 
     @Override
-    protected Stream<TestData> testData() {
+    protected Stream<TestData<BendableScore>> testData() {
         return Stream.of(
-                testData(UNSOLVED_DATA_FILE, "[0]hard/[-3925/-6293940/-7772/-20463]soft", EnvironmentMode.REPRODUCIBLE),
-                testData(UNSOLVED_DATA_FILE, "[0]hard/[-3988/-10452712/-15713/-21195]soft", EnvironmentMode.FAST_ASSERT));
+                testData(UNSOLVED_DATA_FILE, BendableScore.of(new int[] { 0 },
+                        new int[] { -3925, -6293940, -7784, -20600 }), EnvironmentMode.REPRODUCIBLE),
+                testData(UNSOLVED_DATA_FILE, BendableScore.of(new int[] { 0 },
+                        new int[] { -3925, -6293940, -7883, -20476 }), EnvironmentMode.FAST_ASSERT));
     }
 }

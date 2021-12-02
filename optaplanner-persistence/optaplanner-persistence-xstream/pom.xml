@@ -6,7 +6,7 @@
   <parent>
     <groupId>org.optaplanner</groupId>
     <artifactId>optaplanner-persistence</artifactId>
-    <version>8.14.0-SNAPSHOT</version>
+    <version>8.15.0-SNAPSHOT</version>
   </parent>
 
   <artifactId>optaplanner-persistence-xstream</artifactId>
@@ -52,6 +52,11 @@
     <dependency>
       <groupId>com.thoughtworks.xstream</groupId>
       <artifactId>xstream</artifactId>
+    </dependency>
+    <dependency> <!-- For GraalVM native support. -->
+      <groupId>org.graalvm.nativeimage</groupId>
+      <artifactId>svm</artifactId>
+      <scope>provided</scope>
     </dependency>
     <!-- Testing -->
     <dependency>

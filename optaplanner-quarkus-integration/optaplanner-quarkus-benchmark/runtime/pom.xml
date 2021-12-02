@@ -6,12 +6,12 @@
   <parent>
     <groupId>org.optaplanner</groupId>
     <artifactId>optaplanner-quarkus-benchmark-parent</artifactId>
-    <version>8.14.0-SNAPSHOT</version>
+    <version>8.15.0-SNAPSHOT</version>
   </parent>
 
   <artifactId>optaplanner-quarkus-benchmark</artifactId>
   <name>OptaPlanner Quarkus Benchmark - Runtime</name>
-  <description>Benchmark an OptaPlanner project to tweak the solver configuration for speed and scalability.</description>
+  <description>Benchmark an OptaPlanner project to power tweak the solver configuration for speed and scalability.</description>
 
   <properties>
     <java.module.name>org.optaplanner.quarkus.benchmark</java.module.name>
@@ -48,6 +48,19 @@
       <plugin>
         <groupId>io.quarkus</groupId>
         <artifactId>quarkus-bootstrap-maven-plugin</artifactId>
+        <executions>
+          <execution>
+            <goals>
+              <goal>extension-descriptor</goal>
+            </goals>
+            <phase>compile</phase>
+            <configuration>
+              <capabilities>
+                <provides>org.optaplanner.optaplanner-quarkus-benchmark</provides>
+              </capabilities>
+            </configuration>
+          </execution>
+        </executions>
       </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
