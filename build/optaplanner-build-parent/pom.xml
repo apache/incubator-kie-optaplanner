@@ -130,31 +130,6 @@
       </dependency>
       <dependency>
         <groupId>org.kie.kogito</groupId>
-        <artifactId>drools-core</artifactId>
-        <version>${version.org.kie.kogito}</version>
-        <exclusions>
-          <exclusion>
-            <groupId>org.kie.kogito</groupId>
-            <artifactId>kogito-timer</artifactId>
-          </exclusion>
-          <exclusion> <!-- OptaPlanner's use of Drools does not require XStream. -->
-            <groupId>com.thoughtworks.xstream</groupId>
-            <artifactId>xstream</artifactId>
-          </exclusion>
-        </exclusions>
-      </dependency>
-      <dependency>
-        <groupId>org.kie.kogito</groupId>
-        <artifactId>drools-compiler</artifactId>
-        <version>${version.org.kie.kogito}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.kie.kogito</groupId>
-        <artifactId>kogito-drools-model</artifactId>
-        <version>${version.org.kie.kogito}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.kie.kogito</groupId>
         <artifactId>kogito-quarkus-rules</artifactId>
         <version>${version.org.kie.kogito}</version>
       </dependency>
