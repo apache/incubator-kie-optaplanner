@@ -24,6 +24,7 @@ import java.util.function.Function;
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.ScoreManager;
+import org.optaplanner.core.api.solver.change.ProblemChange;
 import org.optaplanner.core.api.solver.event.BestSolutionChangedEvent;
 import org.optaplanner.core.config.solver.SolverConfig;
 import org.optaplanner.core.config.solver.SolverManagerConfig;
@@ -303,8 +304,7 @@ public interface SolverManager<Solution_, ProblemId_> extends AutoCloseable {
     // TODO Future features
     //    void reloadProblem(ProblemId_ problemId, Function<? super ProblemId_, Solution_> problemFinder);
 
-    // TODO Future features
-    //    void addProblemFactChange(ProblemId_ problemId, ProblemFactChange<Solution_> problemFactChange);
+    void addProblemChange(ProblemId_ problemId, ProblemChange<Solution_> problemChange);
 
     /**
      * Terminates the solver or cancels the solver job if it hasn't (re)started yet.

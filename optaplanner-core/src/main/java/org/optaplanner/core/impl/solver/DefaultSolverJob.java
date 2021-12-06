@@ -32,6 +32,7 @@ import org.optaplanner.core.api.solver.Solver;
 import org.optaplanner.core.api.solver.SolverJob;
 import org.optaplanner.core.api.solver.SolverStatus;
 import org.optaplanner.core.impl.phase.event.PhaseLifecycleListenerAdapter;
+import org.optaplanner.core.api.solver.change.ProblemChange;
 import org.optaplanner.core.impl.solver.scope.SolverScope;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -141,11 +142,10 @@ public final class DefaultSolverJob<Solution_, ProblemId_> implements SolverJob<
     //        throw new UnsupportedOperationException("The solver is still solving and reloadProblem() is not yet supported.");
     //    }
 
-    // TODO Future features
-    //    @Override
-    //    public void addProblemFactChange(ProblemFactChange<Solution_> problemFactChange) {
-    //        solver.addProblemFactChange(problemFactChange);
-    //    }
+    @Override
+    public void addProblemChange(ProblemChange<Solution_> problemChange) {
+        solver.addProblemChange(problemChange);
+    }
 
     @Override
     public void terminateEarly() {
