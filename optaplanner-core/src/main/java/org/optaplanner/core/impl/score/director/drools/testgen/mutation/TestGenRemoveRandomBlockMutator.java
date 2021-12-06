@@ -48,7 +48,7 @@ public class TestGenRemoveRandomBlockMutator<T> {
 
         int blockSize = Math.max(list.size() / blockPortion, 1);
         if (indexDenylist.size() == list.size() / blockSize && list.size() / blockPortion > 1) {
-            // we've tried all blocks without success => try smaTestGenRemoveRandomBlockMutator.javaller blocks and clear the denylist
+            // we've tried all blocks without success => try smaller blocks and clear the denylist
             blockPortion *= 2;
             indexDenylist.clear();
         }
