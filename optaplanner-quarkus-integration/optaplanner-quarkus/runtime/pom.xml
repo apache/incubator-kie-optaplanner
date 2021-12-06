@@ -43,12 +43,6 @@
     <dependency>
       <groupId>org.kie.kogito</groupId>
       <artifactId>kogito-drools</artifactId>
-      <exclusions>
-        <exclusion> <!-- We do not need this. -->
-          <groupId>org.kie.kogito</groupId>
-          <artifactId>kogito-ruleunits</artifactId>
-        </exclusion>
-      </exclusions>
     </dependency>
     <dependency>
       <groupId>org.kie.kogito</groupId>
