@@ -130,6 +130,11 @@
       </dependency>
       <dependency>
         <groupId>org.kie.kogito</groupId>
+        <artifactId>kogito-drools</artifactId>
+        <version>${version.org.kie.kogito}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.kie.kogito</groupId>
         <artifactId>kogito-quarkus-rules</artifactId>
         <version>${version.org.kie.kogito}</version>
       </dependency>

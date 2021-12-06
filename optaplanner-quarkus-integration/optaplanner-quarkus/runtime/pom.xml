@@ -33,7 +33,7 @@
         <exclusion>
           <!--
             Dynamic is not compatible with GraalVM native compilation.
-            Replaced with org.drools:drools-wiring-static.
+            Replaced with org.kie.kogito:kogito-drools, which brings in org.drools:drools-wiring-static.
           -->
           <groupId>org.drools</groupId>
           <artifactId>drools-wiring-dynamic</artifactId>
@@ -41,8 +41,14 @@
       </exclusions>
     </dependency>
     <dependency>
-      <groupId>org.drools</groupId>
-      <artifactId>drools-wiring-static</artifactId>
+      <groupId>org.kie.kogito</groupId>
+      <artifactId>kogito-drools</artifactId>
+      <exclusions>
+        <exclusion> <!-- We do not need this. -->
+          <groupId>org.kie.kogito</groupId>
+          <artifactId>kogito-ruleunits</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
     <dependency>
       <groupId>org.kie.kogito</groupId>
