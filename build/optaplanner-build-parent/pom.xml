@@ -132,6 +132,16 @@
         <groupId>org.kie.kogito</groupId>
         <artifactId>kogito-drools</artifactId>
         <version>${version.org.kie.kogito}</version>
+        <exclusions>
+          <exclusion>
+            <groupId>com.thoughtworks.xstream</groupId>
+            <artifactId>xstream</artifactId>
+          </exclusion>
+          <exclusion>
+            <groupId>org.kie.kogito</groupId>
+            <artifactId>kogito-timer</artifactId>
+          </exclusion>
+        </exclusions>
       </dependency>
       <dependency>
         <groupId>org.kie.kogito</groupId>
