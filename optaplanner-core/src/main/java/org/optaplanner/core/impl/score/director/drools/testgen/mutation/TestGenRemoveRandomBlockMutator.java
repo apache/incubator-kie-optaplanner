@@ -42,13 +42,13 @@ public class TestGenRemoveRandomBlockMutator<T> {
         }
 
         if (removedIndex >= 0) {
-            // last mutation was successful => clear the blacklist
+            // last mutation was successful => clear the denylist
             indexBlacklist.clear();
         }
 
         int blockSize = Math.max(list.size() / blockPortion, 1);
         if (indexBlacklist.size() == list.size() / blockSize && list.size() / blockPortion > 1) {
-            // we've tried all blocks without success => try smaller blocks and clear the blacklist
+            // we've tried all blocks without success => try smaller blocks and clear the denylist
             blockPortion *= 2;
             indexBlacklist.clear();
         }
