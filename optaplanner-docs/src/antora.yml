@@ -5,14 +5,14 @@
 # The goal is to have the antora.yml containing correct attributes available in the release branch before
 # the optaplanner-website is refreshed.
 name: optaplanner
-title: OptaPlanner User Guide 8.14.0.Final
+title: OptaPlanner User Guide 8.14.1.Final
 version: latest
 asciidoc:
   attributes:
-    project-version: 8.14.0.Final
+    project-version: 8.14.1.Final
     java-version: 11
     maven-version: 3.6.3
-    quarkus-version: 2.5.0.Final
+    quarkus-version: 2.5.1.Final
     spring-boot-version: 2.4.5
 nav:
   - modules/ROOT/nav.adoc
