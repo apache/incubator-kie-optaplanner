@@ -30,9 +30,17 @@ import org.optaplanner.core.api.score.director.ScoreDirector;
  */
 public abstract class AbstractMove<Solution_> implements Move<Solution_> {
 
+    private boolean isUndoMove = false;
+
     @Override
     public final AbstractMove<Solution_> doMove(ScoreDirector<Solution_> scoreDirector) {
-        AbstractMove<Solution_> undoMove = createUndoMove(scoreDirector);
+        AbstractMove<Solution_> undoMove = null;
+        if (!isUndoMove) { // No point in creating undo moves for undo moves.
+            undoMove = createUndoMove(scoreDirector);
+            if (undoMove != null) { // This check is necessary, as PartitionChangeMove never creates undo moves.
+                undoMove.isUndoMove = true; // Signal that the new move should no longer create further undo moves.
+            }
+        }
         doMoveOnGenuineVariables(scoreDirector);
         scoreDirector.triggerVariableListeners();
         return undoMove;

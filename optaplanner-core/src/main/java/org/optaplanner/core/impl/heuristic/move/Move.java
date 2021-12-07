@@ -81,9 +81,10 @@ public interface Move<Solution_> {
      * <p>
      * This method must return an undo move, so the move can be evaluated and then be undone
      * without resulting into a permanent change in the solution.
+     * Undo moves are permitted to return null, as there is no need to undo them.
      *
      * @param scoreDirector never null, the {@link ScoreDirector} that needs to get notified of the changes
-     * @return an undoMove which does the exact opposite of this move
+     * @return an undoMove which does the exact opposite of this move, or null if this is an undo move
      */
     Move<Solution_> doMove(ScoreDirector<Solution_> scoreDirector);
 
