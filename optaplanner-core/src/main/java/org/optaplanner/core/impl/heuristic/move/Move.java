@@ -81,12 +81,23 @@ public interface Move<Solution_> {
      * <p>
      * This method must return an undo move, so the move can be evaluated and then be undone
      * without resulting into a permanent change in the solution.
-     * Undo moves are permitted to return null, as there is no need to undo them.
      *
      * @param scoreDirector never null, the {@link ScoreDirector} that needs to get notified of the changes
-     * @return an undoMove which does the exact opposite of this move, or null if this is an undo move
+     * @return an undoMove which does the exact opposite of this move
      */
     Move<Solution_> doMove(ScoreDirector<Solution_> scoreDirector);
+
+    /**
+     * As defined by {@link #doMove(ScoreDirector)}, but does not return an undo move.
+     * It is recommended that {@link #doMove(ScoreDirector)} is implemented by wrapping {@link #doMoveOnly(ScoreDirector)}.
+     *
+     * @param scoreDirector never null, the {@link ScoreDirector} that needs to get notified of the changes
+     */
+    default void doMoveOnly(ScoreDirector<Solution_> scoreDirector) {
+        // For backwards compatibility, this method is default and calls doMove(...).
+        // In reality, the relationship would be inversed, as implemented in AbstractMove.
+        doMove(scoreDirector);
+    }
 
     /**
      * Rebases a move from an origin {@link ScoreDirector} to another destination {@link ScoreDirector}

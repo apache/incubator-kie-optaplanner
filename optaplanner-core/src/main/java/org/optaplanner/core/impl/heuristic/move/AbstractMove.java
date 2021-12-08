@@ -30,20 +30,17 @@ import org.optaplanner.core.api.score.director.ScoreDirector;
  */
 public abstract class AbstractMove<Solution_> implements Move<Solution_> {
 
-    private boolean isUndoMove = false;
-
     @Override
     public final AbstractMove<Solution_> doMove(ScoreDirector<Solution_> scoreDirector) {
-        AbstractMove<Solution_> undoMove = null;
-        if (!isUndoMove) { // No point in creating undo moves for undo moves.
-            undoMove = createUndoMove(scoreDirector);
-            if (undoMove != null) { // This check is necessary, as PartitionChangeMove never creates undo moves.
-                undoMove.isUndoMove = true; // Signal that the new move should no longer create further undo moves.
-            }
-        }
+        AbstractMove<Solution_> undoMove = createUndoMove(scoreDirector);
+        doMoveOnly(scoreDirector);
+        return undoMove;
+    }
+
+    @Override
+    public void doMoveOnly(ScoreDirector<Solution_> scoreDirector) {
         doMoveOnGenuineVariables(scoreDirector);
         scoreDirector.triggerVariableListeners();
-        return undoMove;
     }
 
     /**
@@ -56,8 +53,8 @@ public abstract class AbstractMove<Solution_> implements Move<Solution_> {
     protected abstract AbstractMove<Solution_> createUndoMove(ScoreDirector<Solution_> scoreDirector);
 
     /**
-     * Like {@link #doMove(ScoreDirector)} but without the {@link ScoreDirector#triggerVariableListeners()} call
-     * (because {@link #doMove(ScoreDirector)} already does that).
+     * Like {@link #doMoveOnly(ScoreDirector)} but without the {@link ScoreDirector#triggerVariableListeners()} call
+     * (because {@link #doMoveOnly(ScoreDirector)} already does that).
      *
      * @param scoreDirector never null
      */
