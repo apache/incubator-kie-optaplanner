@@ -39,7 +39,6 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.ConcurrentMap;
 import java.util.stream.Stream;
@@ -169,7 +168,7 @@ public class SolutionDescriptor<Solution_> {
     private ConstraintConfigurationDescriptor<Solution_> constraintConfigurationDescriptor;
     private final Map<Class<?>, EntityDescriptor<Solution_>> entityDescriptorMap;
     private final List<Class<?>> reversedEntityClassList;
-    private final ConcurrentMap<Class<?>, Optional<EntityDescriptor<Solution_>>> lowestEntityDescriptorMemoization =
+    private final ConcurrentMap<Class<?>, EntityDescriptor<Solution_>> lowestEntityDescriptorMemoization =
             new ConcurrentMemoization<>();
 
     private SolutionCloner<Solution_> solutionCloner;
@@ -203,7 +202,7 @@ public class SolutionDescriptor<Solution_> {
         }
         entityDescriptorMap.put(entityClass, entityDescriptor);
         reversedEntityClassList.add(0, entityClass);
-        lowestEntityDescriptorMemoization.put(entityClass, Optional.of(entityDescriptor));
+        lowestEntityDescriptorMemoization.put(entityClass, entityDescriptor);
     }
 
     public void processAnnotations(DescriptorPolicy descriptorPolicy,
@@ -737,16 +736,27 @@ public class SolutionDescriptor<Solution_> {
         return entityDescriptor;
     }
 
+    private class EntityDescriptorNotFound extends EntityDescriptor<Solution_> {
+
+        private EntityDescriptorNotFound() {
+            super(null, null);
+        }
+    }
+
+    private final EntityDescriptor<Solution_> ENTITY_DESCRIPTOR_NOT_FOUND = new EntityDescriptorNotFound();
+
     public EntityDescriptor<Solution_> findEntityDescriptor(Class<?> entitySubclass) {
-        return lowestEntityDescriptorMemoization.computeIfAbsent(entitySubclass, key -> {
-            // Reverse order to find the nearest ancestor
-            for (Class<?> entityClass : reversedEntityClassList) {
-                if (entityClass.isAssignableFrom(entitySubclass)) {
-                    return Optional.of(entityDescriptorMap.get(entityClass));
-                }
-            }
-            return Optional.empty();
-        }).orElse(null);
+        EntityDescriptor<Solution_> entityDescriptor =
+                lowestEntityDescriptorMemoization.computeIfAbsent(entitySubclass, key -> {
+                    // Reverse order to find the nearest ancestor
+                    for (Class<?> entityClass : reversedEntityClassList) {
+                        if (entityClass.isAssignableFrom(entitySubclass)) {
+                            return entityDescriptorMap.get(entityClass);
+                        }
+                    }
+                    return ENTITY_DESCRIPTOR_NOT_FOUND;
+                });
+        return entityDescriptor == ENTITY_DESCRIPTOR_NOT_FOUND ? null : entityDescriptor;
     }
 
     public GenuineVariableDescriptor<Solution_> findGenuineVariableDescriptor(Object entity, String variableName) {
