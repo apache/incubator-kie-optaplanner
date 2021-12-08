@@ -98,7 +98,7 @@ public final class PartitionChangeMove<Solution_> extends AbstractMove<Solution_
 
     @Override
     protected PartitionChangeMove<Solution_> createUndoMove(ScoreDirector<Solution_> scoreDirector) {
-        throw new UnsupportedOperationException("Programming error: undo move should not have been called.");
+        throw new UnsupportedOperationException("Impossible state: undo move should not be called.");
     }
 
     @Override

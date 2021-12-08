@@ -89,13 +89,12 @@ public interface Move<Solution_> {
 
     /**
      * As defined by {@link #doMove(ScoreDirector)}, but does not return an undo move.
-     * It is recommended that {@link #doMove(ScoreDirector)} is implemented by wrapping {@link #doMoveOnly(ScoreDirector)}.
      *
      * @param scoreDirector never null, the {@link ScoreDirector} that needs to get notified of the changes
      */
     default void doMoveOnly(ScoreDirector<Solution_> scoreDirector) {
         // For backwards compatibility, this method is default and calls doMove(...).
-        // In reality, the relationship would be inversed, as implemented in AbstractMove.
+        // Normally, the relationship is inversed, as implemented in AbstractMove.
         doMove(scoreDirector);
     }
 

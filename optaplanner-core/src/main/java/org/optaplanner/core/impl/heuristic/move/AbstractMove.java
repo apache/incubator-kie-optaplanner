@@ -38,7 +38,7 @@ public abstract class AbstractMove<Solution_> implements Move<Solution_> {
     }
 
     @Override
-    public void doMoveOnly(ScoreDirector<Solution_> scoreDirector) {
+    public final void doMoveOnly(ScoreDirector<Solution_> scoreDirector) {
         doMoveOnGenuineVariables(scoreDirector);
         scoreDirector.triggerVariableListeners();
     }
