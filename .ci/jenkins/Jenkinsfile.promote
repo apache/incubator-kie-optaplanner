@@ -9,6 +9,7 @@ pipelineProperties = [:]
 String optaplannerRepository = 'optaplanner'
 String vehicleRoutingRepository = 'optaweb-vehicle-routing'
 String employeeRosteringRepository = 'optaweb-employee-rostering'
+String quickstartsRepository = 'optaplanner-quickstarts'
 
 pipeline {
     agent {
@@ -99,6 +100,21 @@ pipeline {
                     dir(employeeRosteringRepository) {
                         checkoutRepo(employeeRosteringRepository)
                         mergeAndPush(getDeployPrLink(employeeRosteringRepository))
+                        tagLatest()
+                    }
+                }
+            }
+        }
+
+        stage('Merge OptaPlanner Quickstarts PR and tag') {
+            when {
+                expression { return isRelease() }
+            }
+            steps {
+                script {
+                    dir(quickstartsRepository) {
+                        checkoutRepo(quickstartsRepository)
+                        mergeAndPush(getDeployPrLink(quickstartsRepository))
                         tagLatest()
                     }
                 }
@@ -208,6 +224,29 @@ pipeline {
                         sh "git checkout ${getBuildBranch()}"
                         mergeAndPush(getPipelinePrLink(employeeRosteringRepository))
                         runMavenDeploy(getMavenCommand())
+                    }
+                }
+            }
+        }
+
+        stage('Set Quickstarts next snapshot version') {
+            when {
+                expression { return isRelease() }
+            }
+            steps {
+                script {
+                    String nextMicroSnapshotVersion = getNextMicroSnapshotVersion(getProjectVersion())
+                    String botQuickstartsRepository = "${quickstartsRepository}-bot"
+                    dir(botQuickstartsRepository) {
+                        prepareForPR(quickstartsRepository)
+                        updateQuickstartsVersions(nextMicroSnapshotVersion)
+
+                        String prLink = commitAndCreatePR(("[${getBuildBranch()}] Update snapshot version to ${nextMicroSnapshotVersion}"))
+                        setPipelinePrLink(quickstartsRepository, prLink)
+                    }
+                    dir(quickstartsRepository) {
+                        sh "git checkout ${getBuildBranch()}"
+                        mergeAndPush(getPipelinePrLink(quickstartsRepository))
                     }
                 }
             }
@@ -434,24 +473,12 @@ void runMavenDeploy(MavenCommand mvnCmd) {
     }
 }
 
-void removeJbossNexusFromMavenAndGradle() {
-    sh "find . -name pom.xml -print0 | xargs -0 sed -i \':a;N;\$!ba;s/\\n *<repositories>.*<\\/repositories>//g\'"
-    sh "find . -name build.gradle -print0 | xargs -0 sed -i \':a;N;\$!ba;s/\\n *maven {[^{}]*mavenContent " +
-            "{[^{}]*snapshotsOnly[^{}]*}[^{}]*}//g\'"
+void updateQuickstartsVersions(String newVersion) {
+    maven.mvnSetVersionProperty('version.org.optaplanner', newVersion)
+    maven.mvnVersionsUpdateParentAndChildModules(newVersion, true)
+    gradleVersionsUpdate(newVersion)
 
-    assert !sh (script:
-            'grep -Rn "repository.jboss.org" --include={pom.xml,build.gradle} | ' +
-            'cat', returnStdout: true)
-}
-
-//maps git branch protection response json into update request body to rewrite branch protection
-String getProtectionMapScript() {
-    return "if .restrictions == null then . + {\"restrictions_used\":null}  " + //upd user set restrictions if not empty
-            "else . + {\"restrictions_used\":{\"users\":[.restrictions.users[].login], \"team\":[.restrictions.users[].slug]}} end |" +
-            ' {' +
-                "\"required_status_checks\": .required_status_checks," +
-                "\"required_pull_request_reviews\": .required_pull_request_reviews," +
-                "\"enforce_admins\":(.enforce_admins.enabled)," +
-                " \"restrictions\":.restrictions_used" +
-            '}'
+    assert !sh(script:
+            "grep -Rn \"${getProjectVersion()}\" --include={pom.xml,build.gradle} | " +
+             'cat', returnStdout: true)
 }

@@ -61,21 +61,6 @@ pipeline {
             }
         }
 
-        stage('Merge OptaPlanner Quickstarts PR and tag') {
-            when {
-                expression { return isRelease() }
-            }
-            steps {
-                script {
-                    dir(quickstartsRepository) {
-                        checkoutRepo(quickstartsRepository)
-                        mergeAndPush(getDeployPrLink(quickstartsRepository))
-                        tagLatest()
-                    }
-                }
-            }
-        }
-
         stage('Reset Quickstarts stable branch') {
             when {
                 expression { return isRelease() }
@@ -138,29 +123,6 @@ pipeline {
                     dir(websiteRepository) {
                         checkoutRepo(websiteRepository, 'main')
                         mergeAndPush(prLink, 'main')
-                    }
-                }
-            }
-        }
-
-        stage('Set Quickstarts next snapshot version') {
-            when {
-                expression { return isRelease() }
-            }
-            steps {
-                script {
-                    String nextMicroSnapshotVersion = getNextMicroSnapshotVersion(getProjectVersion())
-                    String botQuickstartsRepository = "${quickstartsRepository}-bot"
-                    dir(botQuickstartsRepository) {
-                        prepareForPR(quickstartsRepository)
-                        updateQuickstartsVersions(nextMicroSnapshotVersion)
-
-                        String prLink = commitAndCreatePR(("[${getBuildBranch()}] Update snapshot version to ${nextMicroSnapshotVersion}"))
-                        setPipelinePrLink(quickstartsRepository, prLink)
-                    }
-                    dir(quickstartsRepository) {
-                        sh "git checkout ${getBuildBranch()}"
-                        mergeAndPush(getPipelinePrLink(quickstartsRepository))
                     }
                 }
             }
@@ -517,16 +479,6 @@ def forcePushProtectedBranch(String repo, String protectedBranch) {
 
 void gradleVersionsUpdate(String newVersion) {
     sh "find . -name build.gradle -exec sed -i -E 's/def optaplannerVersion = \"[^\"\\s]+\"/def optaplannerVersion = \"${newVersion}\"/' {} \\;"
-}
-
-void updateQuickstartsVersions(String newVersion) {
-    maven.mvnSetVersionProperty('version.org.optaplanner', newVersion)
-    maven.mvnVersionsUpdateParentAndChildModules(newVersion, true)
-    gradleVersionsUpdate(newVersion)
-
-    assert !sh(script:
-            "grep -Rn \"${getProjectVersion()}\" --include={pom.xml,build.gradle} | " +
-             'cat', returnStdout: true)
 }
 
 void assertGithubCLI(String ghPath) {
