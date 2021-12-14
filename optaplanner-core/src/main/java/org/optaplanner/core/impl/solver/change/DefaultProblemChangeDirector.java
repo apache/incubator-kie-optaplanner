@@ -45,7 +45,7 @@ public final class DefaultProblemChangeDirector<Solution_> implements ProblemCha
     }
 
     @Override
-    public <Entity> void changeVariable(Entity entity, Consumer<Entity> workingEntityConsumer, String variableName) {
+    public <Entity> void changeVariable(Entity entity, String variableName, Consumer<Entity> workingEntityConsumer) {
         Entity workingEntity = lookUpWorkingObject(entity);
         scoreDirector.beforeVariableChanged(workingEntity, variableName);
         workingEntityConsumer.accept(workingEntity);

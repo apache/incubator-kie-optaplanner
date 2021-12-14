@@ -89,8 +89,36 @@ public interface Solver<Solution_> {
      */
     boolean isTerminateEarly();
 
+    /**
+     * Schedules a {@link ProblemChange} to be processed.
+     * <p>
+     * As a side-effect, this restarts the {@link Solver}, effectively resetting all {@link Termination}s,
+     * but not {@link #terminateEarly()}.
+     * <p>
+     * This method is thread-safe.
+     * Follows specifications of {@link BlockingQueue#add(Object)} with by default
+     * a capacity of {@link Integer#MAX_VALUE}.
+     *
+     * @param problemChange never null
+     * @return true (as specified by {@link Collection#add})
+     * @see #addProblemChanges(List)
+     */
     boolean addProblemChange(ProblemChange<Solution_> problemChange);
 
+    /**
+     * Schedules multiple {@link ProblemChange}s to be processed.
+     * <p>
+     * As a side-effect, this restarts the {@link Solver}, effectively resetting all {@link Termination}s,
+     * but not {@link #terminateEarly()}.
+     * <p>
+     * This method is thread-safe.
+     * Follows specifications of {@link BlockingQueue#addAll(Collection)} with by default
+     * a capacity of {@link Integer#MAX_VALUE}.
+     *
+     * @param problemChangeList never null
+     * @return true (as specified by {@link Collection#add})
+     * @see #addProblemChange(ProblemChange)
+     */
     boolean addProblemChanges(List<ProblemChange<Solution_>> problemChangeList);
 
     /**
@@ -103,11 +131,12 @@ public interface Solver<Solution_> {
      * Follows specifications of {@link BlockingQueue#add(Object)} with by default
      * a capacity of {@link Integer#MAX_VALUE}.
      *
+     * @deprecated in favor of {@link #addProblemChange(ProblemChange)}.
      * @param problemFactChange never null
      * @return true (as specified by {@link Collection#add})
      * @see #addProblemFactChanges(List)
      */
-    @Deprecated
+    @Deprecated(forRemoval = true)
     boolean addProblemFactChange(ProblemFactChange<Solution_> problemFactChange);
 
     /**
@@ -120,11 +149,12 @@ public interface Solver<Solution_> {
      * Follows specifications of {@link BlockingQueue#addAll(Collection)} with by default
      * a capacity of {@link Integer#MAX_VALUE}.
      *
+     * @deprecated in favor of {@link #addProblemChanges(List)}.
      * @param problemFactChangeList never null
      * @return true (as specified by {@link Collection#add})
      * @see #addProblemFactChange(ProblemFactChange)
      */
-    @Deprecated
+    @Deprecated(forRemoval = true)
     boolean addProblemFactChanges(List<ProblemFactChange<Solution_>> problemFactChangeList);
 
     /**

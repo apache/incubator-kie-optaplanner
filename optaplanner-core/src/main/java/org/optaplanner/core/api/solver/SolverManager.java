@@ -324,7 +324,7 @@ public interface SolverManager<Solution_, ProblemId_> extends AutoCloseable {
 
     /**
      * Terminates all solvers, cancels all solver jobs that haven't (re)started yet
-     * and discards all queued {@link ProblemFactChange}s.
+     * and discards all queued {@link ProblemChange}s.
      * Releases all thread pool resources.
      * <p>
      * No new planning problems can be submitted after calling this method.

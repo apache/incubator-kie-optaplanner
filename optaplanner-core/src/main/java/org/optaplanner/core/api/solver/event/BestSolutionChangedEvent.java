@@ -20,8 +20,8 @@ import java.util.EventObject;
 
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.score.Score;
-import org.optaplanner.core.api.solver.ProblemFactChange;
 import org.optaplanner.core.api.solver.Solver;
+import org.optaplanner.core.api.solver.change.ProblemChange;
 
 /**
  * Delivered when the {@link PlanningSolution best solution} changes during solving.
@@ -61,7 +61,7 @@ public class BestSolutionChangedEvent<Solution_> extends EventObject {
     /**
      * Note that:
      * <ul>
-     * <li>In real-time planning, not all {@link ProblemFactChange}s might be processed:
+     * <li>In real-time planning, not all {@link ProblemChange}s might be processed:
      * check {@link #isEveryProblemFactChangeProcessed()}.</li>
      * <li>this {@link PlanningSolution} might be uninitialized: check {@link Score#isSolutionInitialized()}.</li>
      * <li>this {@link PlanningSolution} might be infeasible: check {@link Score#isFeasible()}.</li>

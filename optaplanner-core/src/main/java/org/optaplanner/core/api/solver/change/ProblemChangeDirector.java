@@ -18,27 +18,86 @@ package org.optaplanner.core.api.solver.change;
 
 import java.util.function.Consumer;
 
+import org.optaplanner.core.api.domain.entity.PlanningEntity;
 import org.optaplanner.core.api.domain.lookup.LookUpStrategyType;
 import org.optaplanner.core.api.domain.lookup.PlanningId;
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
+import org.optaplanner.core.api.domain.variable.PlanningVariable;
 
+/**
+ * Allows external changes to the {@link PlanningSolution working solution}.
+ * Should be used only from a {@link ProblemChange} implementation.
+ */
 public interface ProblemChangeDirector {
 
+    /**
+     * Add a new {@link PlanningEntity} instance into the {@link PlanningSolution working solution}.
+     *
+     * @param entity the {@link PlanningEntity} instance
+     * @param entityConsumer never null; adds the entity to the {@link PlanningSolution working solution}
+     * @param <Entity> the planning entity object type
+     */
     <Entity> void addEntity(Entity entity, Consumer<Entity> entityConsumer);
 
+    /**
+     * Remove an existing {@link PlanningEntity} instance from the {@link PlanningSolution working solution}.
+     * Translates the entity to a working planning entity by performing a lookup as defined by
+     * {@link #lookUpWorkingObject(Object)}.
+     * 
+     * @param entity the {@link PlanningEntity} instance
+     * @param entityConsumer never null; removes the working entity from the {@link PlanningSolution working solution}
+     * @param <Entity> the planning entity object type
+     */
     <Entity> void removeEntity(Entity entity, Consumer<Entity> entityConsumer);
 
-    <Entity> void changeVariable(Entity entity, Consumer<Entity> entityConsumer, String variableName);
+    /**
+     * Change a {@link PlanningVariable} value of a {@link PlanningEntity}. Translates the entity to a working
+     * planning entity by performing a lookup as defined by {@link #lookUpWorkingObject(Object)}.
+     *
+     * @param entity the {@link PlanningEntity} instance
+     * @param variableName never null; name of the {@link PlanningVariable}
+     * @param entityConsumer never null; updates the value of the the {@link PlanningVariable} inside
+     *        the {@link PlanningEntity}
+     * @param <Entity> the planning entity object type
+     */
+    <Entity> void changeVariable(Entity entity, String variableName, Consumer<Entity> entityConsumer);
 
+    /**
+     * Add a new problem fact into the {@link PlanningSolution working solution}.
+     *
+     * @param problemFact the problem fact instance
+     * @param problemFactConsumer never null; removes the working problem fact from the
+     *        {@link PlanningSolution working solution}
+     * @param <ProblemFact> the problem fact object type
+     */
     <ProblemFact> void addProblemFact(ProblemFact problemFact, Consumer<ProblemFact> problemFactConsumer);
 
+    /**
+     * Remove an existing problem fact from the {@link PlanningSolution working solution}. Translates the problem fact
+     * to a working problem fact by performing a lookup as defined by {@link #lookUpWorkingObject(Object)}.
+     *
+     * @param problemFact the problem fact instance
+     * @param problemFactConsumer never null; removes the working problem fact from the
+     *        {@link PlanningSolution working solution}
+     * @param <ProblemFact> the problem fact object type
+     */
     <ProblemFact> void removeProblemFact(ProblemFact problemFact, Consumer<ProblemFact> problemFactConsumer);
 
+    /**
+     * Change a property of either a {@link PlanningEntity} or a problem fact. Translates the entity or the problem fact
+     * to its {@link PlanningSolution working solution} counterpart by performing a lookup as defined by
+     * {@link #lookUpWorkingObject(Object)}.
+     *
+     * @param problemFactOrEntity the {@link PlanningEntity} or the problem fact instance
+     * @param problemFactOrEntityConsumer never null; updates the property of the {@link PlanningEntity}
+     *        or the problem fact
+     * @param <EntityOrProblemFact> the planning entity or problem fact object type
+     */
     <EntityOrProblemFact> void changeProblemProperty(EntityOrProblemFact problemFactOrEntity,
             Consumer<EntityOrProblemFact> problemFactOrEntityConsumer);
 
     /**
-     * Translates an entity or fact instance (often from another {@link Thread} or JVM)
+     * Translate an entity or fact instance (often from another {@link Thread} or JVM)
      * to this {@link ProblemChangeDirector}'s internal working instance.
      * <p>
      * Matching is determined by the {@link LookUpStrategyType} on {@link PlanningSolution}.
