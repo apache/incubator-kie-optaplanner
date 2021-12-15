@@ -30,7 +30,7 @@ public interface ScoreDirectorFactoryProvider<Solution_, Score_ extends Score<Sc
      * @return null when this type is not configured
      * @throws IllegalStateException if the configuration has an issue
      */
-    InnerScoreDirectorFactory<Solution_, Score_> getScoreDirectorFactory(ClassLoader classLoader,
+    AbstractScoreDirectorFactory<Solution_, Score_> getScoreDirectorFactory(ClassLoader classLoader,
             SolutionDescriptor<Solution_> solutionDescriptor, ScoreDirectorFactoryConfig config);
 
 }

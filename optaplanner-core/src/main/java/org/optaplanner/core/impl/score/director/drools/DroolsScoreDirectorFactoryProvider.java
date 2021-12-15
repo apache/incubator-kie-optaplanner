@@ -17,7 +17,6 @@ import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.config.score.director.ScoreDirectorFactoryConfig;
 import org.optaplanner.core.config.util.ConfigUtils;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
-import org.optaplanner.core.impl.score.director.InnerScoreDirectorFactory;
 import org.optaplanner.core.impl.score.director.ScoreDirectorFactoryProvider;
 import org.optaplanner.core.impl.score.director.ScoreDirectorType;
 import org.optaplanner.core.impl.score.director.drools.testgen.TestGenDroolsScoreDirectorFactory;
@@ -33,7 +32,7 @@ public final class DroolsScoreDirectorFactoryProvider<Solution_, Score_ extends 
     }
 
     @Override
-    public InnerScoreDirectorFactory<Solution_, Score_> getScoreDirectorFactory(ClassLoader classLoader,
+    public DroolsScoreDirectorFactory<Solution_, Score_> getScoreDirectorFactory(ClassLoader classLoader,
             SolutionDescriptor<Solution_> solutionDescriptor, ScoreDirectorFactoryConfig config) {
         boolean generateDroolsTestOnError =
                 Boolean.parseBoolean(System.getProperty(GENERATE_DROOLS_TEST_ON_ERROR_PROPERTY_NAME, "false"));

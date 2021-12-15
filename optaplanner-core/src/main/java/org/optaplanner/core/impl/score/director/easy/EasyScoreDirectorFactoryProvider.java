@@ -5,7 +5,6 @@ import org.optaplanner.core.api.score.calculator.EasyScoreCalculator;
 import org.optaplanner.core.config.score.director.ScoreDirectorFactoryConfig;
 import org.optaplanner.core.config.util.ConfigUtils;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
-import org.optaplanner.core.impl.score.director.InnerScoreDirectorFactory;
 import org.optaplanner.core.impl.score.director.ScoreDirectorFactoryProvider;
 import org.optaplanner.core.impl.score.director.ScoreDirectorType;
 
@@ -18,7 +17,7 @@ public final class EasyScoreDirectorFactoryProvider<Solution_, Score_ extends Sc
     }
 
     @Override
-    public InnerScoreDirectorFactory<Solution_, Score_> getScoreDirectorFactory(ClassLoader classLoader,
+    public EasyScoreDirectorFactory<Solution_, Score_> getScoreDirectorFactory(ClassLoader classLoader,
             SolutionDescriptor<Solution_> solutionDescriptor, ScoreDirectorFactoryConfig config) {
         if (config.getEasyScoreCalculatorClass() != null) {
             if (!EasyScoreCalculator.class.isAssignableFrom(config.getEasyScoreCalculatorClass())) {

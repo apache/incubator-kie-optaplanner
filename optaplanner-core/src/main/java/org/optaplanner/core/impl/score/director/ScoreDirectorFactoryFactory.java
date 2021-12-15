@@ -35,10 +35,6 @@ import org.optaplanner.core.config.score.trend.InitializingScoreTrendLevel;
 import org.optaplanner.core.config.solver.EnvironmentMode;
 import org.optaplanner.core.config.util.ConfigUtils;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
-import org.optaplanner.core.impl.score.director.drools.DroolsScoreDirectorFactory;
-import org.optaplanner.core.impl.score.director.easy.EasyScoreDirectorFactory;
-import org.optaplanner.core.impl.score.director.incremental.IncrementalScoreDirectorFactory;
-import org.optaplanner.core.impl.score.director.stream.AbstractConstraintStreamScoreDirectorFactory;
 import org.optaplanner.core.impl.score.trend.InitializingScoreTrend;
 
 public class ScoreDirectorFactoryFactory<Solution_, Score_ extends Score<Score_>> {
@@ -84,23 +80,20 @@ public class ScoreDirectorFactoryFactory<Solution_, Score_ extends Score<Score_>
         // Load all known Score Director Factories via SPI.
         ServiceLoader<ScoreDirectorFactoryProvider> scoreDirectorFactoryProviders =
                 ServiceLoader.load(ScoreDirectorFactoryProvider.class);
-        Map<ScoreDirectorType, InnerScoreDirectorFactory<Solution_, Score_>> factories =
+        Map<ScoreDirectorType, AbstractScoreDirectorFactory<Solution_, Score_>> factories =
                 new EnumMap<>(ScoreDirectorType.class);
         for (ScoreDirectorFactoryProvider<Solution_, Score_> provider : scoreDirectorFactoryProviders) {
-            InnerScoreDirectorFactory<Solution_, Score_> factory =
+            AbstractScoreDirectorFactory<Solution_, Score_> factory =
                     provider.getScoreDirectorFactory(classLoader, solutionDescriptor, config);
             if (factory != null) {
                 factories.put(provider.getSupportedScoreDirectorType(), factory);
             }
         }
-        EasyScoreDirectorFactory<Solution_, Score_> easyScoreDirectorFactory =
-                (EasyScoreDirectorFactory<Solution_, Score_>) factories.get(EASY);
-        AbstractConstraintStreamScoreDirectorFactory<Solution_, Score_> constraintStreamScoreDirectorFactory =
-                (AbstractConstraintStreamScoreDirectorFactory<Solution_, Score_>) factories.get(CONSTRAINT_STREAMS);
-        IncrementalScoreDirectorFactory<Solution_, Score_> incrementalScoreDirectorFactory =
-                (IncrementalScoreDirectorFactory<Solution_, Score_>) factories.get(INCREMENTAL);
-        DroolsScoreDirectorFactory<Solution_, Score_> droolsScoreDirectorFactory =
-                (DroolsScoreDirectorFactory<Solution_, Score_>) factories.get(DROOLS);
+        AbstractScoreDirectorFactory<Solution_, Score_> easyScoreDirectorFactory = factories.get(EASY);
+        AbstractScoreDirectorFactory<Solution_, Score_> constraintStreamScoreDirectorFactory =
+                factories.get(CONSTRAINT_STREAMS);
+        AbstractScoreDirectorFactory<Solution_, Score_> incrementalScoreDirectorFactory = factories.get(INCREMENTAL);
+        AbstractScoreDirectorFactory<Solution_, Score_> droolsScoreDirectorFactory = factories.get(DROOLS);
 
         // Make sure only one SDF is truly available.
         checkMultipleScoreDirectorFactoryTypes(easyScoreDirectorFactory, constraintStreamScoreDirectorFactory,
@@ -132,10 +125,10 @@ public class ScoreDirectorFactoryFactory<Solution_, Score_ extends Score<Score_>
         return scoreDirectorFactory;
     }
 
-    private void checkMultipleScoreDirectorFactoryTypes(EasyScoreDirectorFactory easyScoreDirectorFactory,
-            AbstractConstraintStreamScoreDirectorFactory constraintStreamScoreDirectorFactory,
-            IncrementalScoreDirectorFactory incrementalScoreDirectorFactory,
-            DroolsScoreDirectorFactory droolsScoreDirectorFactory) {
+    private void checkMultipleScoreDirectorFactoryTypes(ScoreDirectorFactory<Solution_> easyScoreDirectorFactory,
+            ScoreDirectorFactory<Solution_> constraintStreamScoreDirectorFactory,
+            ScoreDirectorFactory<Solution_> incrementalScoreDirectorFactory,
+            ScoreDirectorFactory<Solution_> droolsScoreDirectorFactory) {
         if (Stream.of(easyScoreDirectorFactory, constraintStreamScoreDirectorFactory,
                 incrementalScoreDirectorFactory, droolsScoreDirectorFactory)
                 .filter(Objects::nonNull).count() > 1) {
