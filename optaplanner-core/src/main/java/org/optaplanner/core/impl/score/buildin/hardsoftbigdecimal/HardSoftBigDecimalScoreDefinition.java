@@ -18,10 +18,8 @@ package org.optaplanner.core.impl.score.buildin.hardsoftbigdecimal;
 
 import java.math.BigDecimal;
 import java.util.Arrays;
-import java.util.Map;
 
 import org.optaplanner.core.api.score.buildin.hardsoftbigdecimal.HardSoftBigDecimalScore;
-import org.optaplanner.core.api.score.stream.Constraint;
 import org.optaplanner.core.impl.score.definition.AbstractScoreDefinition;
 import org.optaplanner.core.impl.score.trend.InitializingScoreTrend;
 
@@ -72,12 +70,6 @@ public class HardSoftBigDecimalScoreDefinition extends AbstractScoreDefinition<H
                     + ")'s length (" + levelNumbers.length + ") must equal the levelSize (" + getLevelsSize() + ").");
         }
         return HardSoftBigDecimalScore.ofUninitialized(initScore, (BigDecimal) levelNumbers[0], (BigDecimal) levelNumbers[1]);
-    }
-
-    @Override
-    public HardSoftBigDecimalScoreInliner buildScoreInliner(Map<Constraint, HardSoftBigDecimalScore> constraintToWeightMap,
-            boolean constraintMatchEnabled) {
-        return new HardSoftBigDecimalScoreInliner(constraintToWeightMap, constraintMatchEnabled);
     }
 
     @Override

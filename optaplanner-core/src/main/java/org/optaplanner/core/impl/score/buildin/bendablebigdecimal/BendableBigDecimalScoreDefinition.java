@@ -18,11 +18,9 @@ package org.optaplanner.core.impl.score.buildin.bendablebigdecimal;
 
 import java.math.BigDecimal;
 import java.util.Arrays;
-import java.util.Map;
 import java.util.stream.Stream;
 
 import org.optaplanner.core.api.score.buildin.bendablebigdecimal.BendableBigDecimalScore;
-import org.optaplanner.core.api.score.stream.Constraint;
 import org.optaplanner.core.impl.score.definition.AbstractBendableScoreDefinition;
 import org.optaplanner.core.impl.score.trend.InitializingScoreTrend;
 
@@ -102,13 +100,6 @@ public class BendableBigDecimalScoreDefinition extends AbstractBendableScoreDefi
         return BendableBigDecimalScore.ofUninitialized(initScore,
                 Arrays.copyOfRange(scores, 0, hardLevelsSize),
                 Arrays.copyOfRange(scores, hardLevelsSize, levelsSize));
-    }
-
-    @Override
-    public BendableBigDecimalScoreInliner buildScoreInliner(Map<Constraint, BendableBigDecimalScore> constraintToWeightMap,
-            boolean constraintMatchEnabled) {
-        return new BendableBigDecimalScoreInliner(constraintToWeightMap, constraintMatchEnabled, hardLevelsSize,
-                softLevelsSize);
     }
 
     @Override

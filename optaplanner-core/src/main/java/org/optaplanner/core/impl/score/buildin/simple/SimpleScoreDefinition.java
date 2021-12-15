@@ -17,10 +17,8 @@
 package org.optaplanner.core.impl.score.buildin.simple;
 
 import java.util.Arrays;
-import java.util.Map;
 
 import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
-import org.optaplanner.core.api.score.stream.Constraint;
 import org.optaplanner.core.config.score.trend.InitializingScoreTrendLevel;
 import org.optaplanner.core.impl.score.definition.AbstractScoreDefinition;
 import org.optaplanner.core.impl.score.trend.InitializingScoreTrend;
@@ -72,12 +70,6 @@ public class SimpleScoreDefinition extends AbstractScoreDefinition<SimpleScore> 
                     + ")'s length (" + levelNumbers.length + ") must equal the levelSize (" + getLevelsSize() + ").");
         }
         return SimpleScore.ofUninitialized(initScore, (Integer) levelNumbers[0]);
-    }
-
-    @Override
-    public SimpleScoreInliner buildScoreInliner(Map<Constraint, SimpleScore> constraintToWeightMap,
-            boolean constraintMatchEnabled) {
-        return new SimpleScoreInliner(constraintToWeightMap, constraintMatchEnabled);
     }
 
     @Override

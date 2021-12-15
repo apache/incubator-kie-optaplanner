@@ -17,10 +17,8 @@
 package org.optaplanner.core.impl.score.buildin.hardsoftlong;
 
 import java.util.Arrays;
-import java.util.Map;
 
 import org.optaplanner.core.api.score.buildin.hardsoftlong.HardSoftLongScore;
-import org.optaplanner.core.api.score.stream.Constraint;
 import org.optaplanner.core.config.score.trend.InitializingScoreTrendLevel;
 import org.optaplanner.core.impl.score.definition.AbstractScoreDefinition;
 import org.optaplanner.core.impl.score.trend.InitializingScoreTrend;
@@ -72,12 +70,6 @@ public class HardSoftLongScoreDefinition extends AbstractScoreDefinition<HardSof
                     + ")'s length (" + levelNumbers.length + ") must equal the levelSize (" + getLevelsSize() + ").");
         }
         return HardSoftLongScore.ofUninitialized(initScore, (Long) levelNumbers[0], (Long) levelNumbers[1]);
-    }
-
-    @Override
-    public HardSoftLongScoreInliner buildScoreInliner(Map<Constraint, HardSoftLongScore> constraintToWeightMap,
-            boolean constraintMatchEnabled) {
-        return new HardSoftLongScoreInliner(constraintToWeightMap, constraintMatchEnabled);
     }
 
     @Override

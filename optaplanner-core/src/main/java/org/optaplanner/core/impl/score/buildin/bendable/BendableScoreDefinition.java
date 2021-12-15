@@ -17,11 +17,9 @@
 package org.optaplanner.core.impl.score.buildin.bendable;
 
 import java.util.Arrays;
-import java.util.Map;
 import java.util.stream.IntStream;
 
 import org.optaplanner.core.api.score.buildin.bendable.BendableScore;
-import org.optaplanner.core.api.score.stream.Constraint;
 import org.optaplanner.core.config.score.trend.InitializingScoreTrendLevel;
 import org.optaplanner.core.impl.score.definition.AbstractBendableScoreDefinition;
 import org.optaplanner.core.impl.score.trend.InitializingScoreTrend;
@@ -102,12 +100,6 @@ public class BendableScoreDefinition extends AbstractBendableScoreDefinition<Ben
         return BendableScore.ofUninitialized(initScore,
                 Arrays.copyOfRange(scores, 0, hardLevelsSize),
                 Arrays.copyOfRange(scores, hardLevelsSize, levelsSize));
-    }
-
-    @Override
-    public BendableScoreInliner buildScoreInliner(Map<Constraint, BendableScore> constraintToWeightMap,
-            boolean constraintMatchEnabled) {
-        return new BendableScoreInliner(constraintToWeightMap, constraintMatchEnabled, hardLevelsSize, softLevelsSize);
     }
 
     @Override

@@ -18,10 +18,8 @@ package org.optaplanner.core.impl.score.buildin.simplebigdecimal;
 
 import java.math.BigDecimal;
 import java.util.Arrays;
-import java.util.Map;
 
 import org.optaplanner.core.api.score.buildin.simplebigdecimal.SimpleBigDecimalScore;
-import org.optaplanner.core.api.score.stream.Constraint;
 import org.optaplanner.core.impl.score.definition.AbstractScoreDefinition;
 import org.optaplanner.core.impl.score.trend.InitializingScoreTrend;
 
@@ -72,12 +70,6 @@ public class SimpleBigDecimalScoreDefinition extends AbstractScoreDefinition<Sim
                     + ")'s length (" + levelNumbers.length + ") must equal the levelSize (" + getLevelsSize() + ").");
         }
         return SimpleBigDecimalScore.ofUninitialized(initScore, (BigDecimal) levelNumbers[0]);
-    }
-
-    @Override
-    public SimpleBigDecimalScoreInliner buildScoreInliner(Map<Constraint, SimpleBigDecimalScore> constraintToWeightMap,
-            boolean constraintMatchEnabled) {
-        return new SimpleBigDecimalScoreInliner(constraintToWeightMap, constraintMatchEnabled);
     }
 
     @Override
