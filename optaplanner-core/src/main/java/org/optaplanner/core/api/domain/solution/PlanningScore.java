@@ -68,11 +68,13 @@ public @interface PlanningScore {
      * If this is not specified, the {@link ScoreDefinition} is automatically determined
      * based on the return type of the annotated property (or field) on a {@link PlanningSolution} .
      *
-     * @return {@link NullScoreDefinition} when it is null (workaround for annotation limitation)
+     * @deprecated Support for custom scores has been removed. Setting this has no effect.
+     * @return has no effect
      */
     Class<? extends ScoreDefinition> scoreDefinitionClass() default NullScoreDefinition.class;
 
     /** Workaround for annotation limitation in {@link #scoreDefinitionClass()}. */
+    @Deprecated(forRemoval = true)
     interface NullScoreDefinition extends ScoreDefinition {
     }
 

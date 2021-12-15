@@ -124,22 +124,8 @@ public class ScoreDescriptor {
             MemberAccessor scoreMemberAccessor,
             Class<? extends Score<?>> scoreType,
             PlanningScore annotation) {
-        Class<? extends ScoreDefinition> scoreDefinitionClass = annotation.scoreDefinitionClass();
         int bendableHardLevelsSize = annotation.bendableHardLevelsSize();
         int bendableSoftLevelsSize = annotation.bendableSoftLevelsSize();
-        if (scoreDefinitionClass != PlanningScore.NullScoreDefinition.class) {
-            if (bendableHardLevelsSize != PlanningScore.NO_LEVEL_SIZE
-                    || bendableSoftLevelsSize != PlanningScore.NO_LEVEL_SIZE) {
-                throw new IllegalArgumentException("The solutionClass (" + solutionClass
-                        + ") has a @" + PlanningScore.class.getSimpleName()
-                        + " annotated member (" + scoreMemberAccessor
-                        + ") that has a scoreDefinition (" + scoreDefinitionClass
-                        + ") that must not have a bendableHardLevelsSize (" + bendableHardLevelsSize
-                        + ") or a bendableSoftLevelsSize (" + bendableSoftLevelsSize + ").");
-            }
-            return ConfigUtils.newInstance(() -> scoreMemberAccessor + " with @" + PlanningScore.class.getSimpleName(),
-                    "scoreDefinitionClass", scoreDefinitionClass);
-        }
         if (!AbstractBendableScore.class.isAssignableFrom(scoreType)) {
             if (bendableHardLevelsSize != PlanningScore.NO_LEVEL_SIZE
                     || bendableSoftLevelsSize != PlanningScore.NO_LEVEL_SIZE) {
@@ -199,9 +185,7 @@ public class ScoreDescriptor {
                         + ") has a @" + PlanningScore.class.getSimpleName()
                         + " annotated member (" + scoreMemberAccessor
                         + ") that returns a bendable scoreType (" + scoreType
-                        + ") that is not recognized as a default " + Score.class.getSimpleName() + " implementation.\n"
-                        + "  If you intend to use a custom implementation,"
-                        + " maybe set a scoreDefinition in the annotation.");
+                        + ") that is not recognized as a " + Score.class.getSimpleName() + " implementation.");
             }
         }
     }
