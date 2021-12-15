@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.optaplanner.core.impl.score.buildin.simple;
+package org.optaplanner.core.impl.score.director.drools.holder;
 
 import java.math.BigDecimal;
 import java.util.LinkedHashMap;

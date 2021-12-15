@@ -112,11 +112,6 @@ public class BendableBigDecimalScoreDefinition extends AbstractBendableScoreDefi
     }
 
     @Override
-    public BendableBigDecimalScoreHolderImpl buildScoreHolder(boolean constraintMatchEnabled) {
-        return new BendableBigDecimalScoreHolderImpl(constraintMatchEnabled, hardLevelsSize, softLevelsSize);
-    }
-
-    @Override
     public BendableBigDecimalScore buildOptimisticBound(InitializingScoreTrend initializingScoreTrend,
             BendableBigDecimalScore score) {
         // TODO https://issues.redhat.com/browse/PLANNER-232

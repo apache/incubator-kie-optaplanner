@@ -81,11 +81,6 @@ public class SimpleBigDecimalScoreDefinition extends AbstractScoreDefinition<Sim
     }
 
     @Override
-    public SimpleBigDecimalScoreHolderImpl buildScoreHolder(boolean constraintMatchEnabled) {
-        return new SimpleBigDecimalScoreHolderImpl(constraintMatchEnabled);
-    }
-
-    @Override
     public SimpleBigDecimalScore buildOptimisticBound(InitializingScoreTrend initializingScoreTrend,
             SimpleBigDecimalScore score) {
         // TODO https://issues.redhat.com/browse/PLANNER-232

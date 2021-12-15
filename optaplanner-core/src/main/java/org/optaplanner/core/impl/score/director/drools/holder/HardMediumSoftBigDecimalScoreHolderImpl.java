@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.optaplanner.core.impl.score.buildin.hardmediumsoftbigdecimal;
+package org.optaplanner.core.impl.score.director.drools.holder;
 
 import java.math.BigDecimal;
 import java.util.LinkedHashMap;

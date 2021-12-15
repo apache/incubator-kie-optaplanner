@@ -14,17 +14,16 @@
  * limitations under the License.
  */
 
-package org.optaplanner.core.impl.score.buildin.simple;
+package org.optaplanner.core.impl.score.director.drools.holder;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 import org.junit.jupiter.api.Test;
 import org.kie.api.definition.rule.Rule;
 import org.kie.api.runtime.rule.RuleContext;
-import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
-import org.optaplanner.core.impl.score.buildin.AbstractScoreHolderTest;
+import org.optaplanner.core.api.score.buildin.simplelong.SimpleLongScore;
 
-public class SimpleScoreHolderImplTest extends AbstractScoreHolderTest<SimpleScore> {
+public class SimpleLongScoreHolderImplTest extends AbstractScoreHolderTest<SimpleLongScore> {
 
     @Test
     public void addConstraintMatchWithConstraintMatch() {
@@ -37,25 +36,25 @@ public class SimpleScoreHolderImplTest extends AbstractScoreHolderTest<SimpleSco
     }
 
     public void addConstraintMatch(boolean constraintMatchEnabled) {
-        SimpleScoreHolderImpl scoreHolder = new SimpleScoreHolderImpl(constraintMatchEnabled);
+        SimpleLongScoreHolderImpl scoreHolder = new SimpleLongScoreHolderImpl(constraintMatchEnabled);
 
         RuleContext scoreRule1 = mockRuleContext("scoreRule1");
-        scoreHolder.addConstraintMatch(scoreRule1, -1000);
+        scoreHolder.addConstraintMatch(scoreRule1, -1000L);
 
         RuleContext scoreRule2 = mockRuleContext("scoreRule2");
-        scoreHolder.addConstraintMatch(scoreRule2, -200);
+        scoreHolder.addConstraintMatch(scoreRule2, -200L);
         callOnDelete(scoreRule2);
 
         RuleContext scoreRule3 = mockRuleContext("scoreRule3");
-        scoreHolder.addConstraintMatch(scoreRule3, -30);
+        scoreHolder.addConstraintMatch(scoreRule3, -30L);
         callOnUpdate(scoreRule3);
-        scoreHolder.addConstraintMatch(scoreRule3, -3); // Overwrite existing
+        scoreHolder.addConstraintMatch(scoreRule3, -3L); // Overwrite existing
 
-        assertThat(scoreHolder.extractScore(0)).isEqualTo(SimpleScore.ofUninitialized(0, -1003));
-        assertThat(scoreHolder.extractScore(-7)).isEqualTo(SimpleScore.ofUninitialized(-7, -1003));
+        assertThat(scoreHolder.extractScore(0)).isEqualTo(SimpleLongScore.ofUninitialized(0, -1003L));
+        assertThat(scoreHolder.extractScore(-7)).isEqualTo(SimpleLongScore.ofUninitialized(-7, -1003L));
         if (constraintMatchEnabled) {
             assertThat(findConstraintMatchTotal(scoreHolder, "scoreRule1").getScore())
-                    .isEqualTo(SimpleScore.of(-1000));
+                    .isEqualTo(SimpleLongScore.of(-1000L));
         }
     }
 
@@ -70,29 +69,29 @@ public class SimpleScoreHolderImplTest extends AbstractScoreHolderTest<SimpleSco
     }
 
     public void rewardPenalize(boolean constraintMatchEnabled) {
-        SimpleScoreHolderImpl scoreHolder = new SimpleScoreHolderImpl(constraintMatchEnabled);
+        SimpleLongScoreHolderImpl scoreHolder = new SimpleLongScoreHolderImpl(constraintMatchEnabled);
         Rule constraint1 = mockRule("constraint1");
-        scoreHolder.configureConstraintWeight(constraint1, SimpleScore.of(10));
+        scoreHolder.configureConstraintWeight(constraint1, SimpleLongScore.of(10L));
         Rule constraint2 = mockRule("constraint2");
-        scoreHolder.configureConstraintWeight(constraint2, SimpleScore.of(100));
+        scoreHolder.configureConstraintWeight(constraint2, SimpleLongScore.of(100L));
 
         scoreHolder.penalize(mockRuleContext(constraint1));
-        assertThat(scoreHolder.extractScore(0)).isEqualTo(SimpleScore.of(-10));
+        assertThat(scoreHolder.extractScore(0)).isEqualTo(SimpleLongScore.of(-10L));
 
-        scoreHolder.penalize(mockRuleContext(constraint2), 2);
-        assertThat(scoreHolder.extractScore(0)).isEqualTo(SimpleScore.of(-210));
+        scoreHolder.penalize(mockRuleContext(constraint2), 2L);
+        assertThat(scoreHolder.extractScore(0)).isEqualTo(SimpleLongScore.of(-210L));
 
-        scoreHolder = new SimpleScoreHolderImpl(constraintMatchEnabled);
+        scoreHolder = new SimpleLongScoreHolderImpl(constraintMatchEnabled);
         Rule constraint3 = mockRule("constraint3");
-        scoreHolder.configureConstraintWeight(constraint3, SimpleScore.of(10));
+        scoreHolder.configureConstraintWeight(constraint3, SimpleLongScore.of(10L));
         Rule constraint4 = mockRule("constraint4");
-        scoreHolder.configureConstraintWeight(constraint4, SimpleScore.of(100));
+        scoreHolder.configureConstraintWeight(constraint4, SimpleLongScore.of(100L));
 
         scoreHolder.reward(mockRuleContext(constraint3));
-        assertThat(scoreHolder.extractScore(0)).isEqualTo(SimpleScore.of(10));
+        assertThat(scoreHolder.extractScore(0)).isEqualTo(SimpleLongScore.of(10L));
 
-        scoreHolder.reward(mockRuleContext(constraint4), 3);
-        assertThat(scoreHolder.extractScore(0)).isEqualTo(SimpleScore.of(310));
+        scoreHolder.reward(mockRuleContext(constraint4), 3L);
+        assertThat(scoreHolder.extractScore(0)).isEqualTo(SimpleLongScore.of(310L));
     }
 
 }

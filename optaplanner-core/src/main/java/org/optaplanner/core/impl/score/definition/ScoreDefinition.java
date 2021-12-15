@@ -24,8 +24,6 @@ import org.optaplanner.core.api.score.stream.Constraint;
 import org.optaplanner.core.impl.score.ScoreUtils;
 import org.optaplanner.core.impl.score.buildin.hardsoft.HardSoftScoreDefinition;
 import org.optaplanner.core.impl.score.director.InnerScoreDirector;
-import org.optaplanner.core.impl.score.director.drools.DroolsScoreDirector;
-import org.optaplanner.core.impl.score.holder.AbstractScoreHolder;
 import org.optaplanner.core.impl.score.inliner.ScoreInliner;
 import org.optaplanner.core.impl.score.stream.bavet.BavetConstraintFactory;
 import org.optaplanner.core.impl.score.stream.drools.DroolsConstraintFactory;
@@ -150,14 +148,6 @@ public interface ScoreDefinition<Score_ extends Score<Score_>> {
      */
     ScoreInliner<Score_> buildScoreInliner(Map<Constraint, Score_> constraintToWeightMap,
             boolean constraintMatchEnabled);
-
-    /**
-     * Used by {@link DroolsScoreDirector}.
-     *
-     * @param constraintMatchEnabled true if{@link InnerScoreDirector#isConstraintMatchEnabled()} should be true
-     * @return never null
-     */
-    AbstractScoreHolder<Score_> buildScoreHolder(boolean constraintMatchEnabled);
 
     /**
      * Builds a {@link Score} which is equal or better than any other {@link Score} with more variables initialized

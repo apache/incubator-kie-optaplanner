@@ -81,11 +81,6 @@ public class HardSoftBigDecimalScoreDefinition extends AbstractScoreDefinition<H
     }
 
     @Override
-    public HardSoftBigDecimalScoreHolderImpl buildScoreHolder(boolean constraintMatchEnabled) {
-        return new HardSoftBigDecimalScoreHolderImpl(constraintMatchEnabled);
-    }
-
-    @Override
     public HardSoftBigDecimalScore buildOptimisticBound(InitializingScoreTrend initializingScoreTrend,
             HardSoftBigDecimalScore score) {
         // TODO https://issues.redhat.com/browse/PLANNER-232

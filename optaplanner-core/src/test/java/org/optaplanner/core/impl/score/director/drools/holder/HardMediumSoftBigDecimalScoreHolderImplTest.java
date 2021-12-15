@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.optaplanner.core.impl.score.buildin.hardmediumsoftbigdecimal;
+package org.optaplanner.core.impl.score.director.drools.holder;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -23,7 +23,6 @@ import org.junit.jupiter.api.Test;
 import org.kie.api.definition.rule.Rule;
 import org.kie.api.runtime.rule.RuleContext;
 import org.optaplanner.core.api.score.buildin.hardmediumsoftbigdecimal.HardMediumSoftBigDecimalScore;
-import org.optaplanner.core.impl.score.buildin.AbstractScoreHolderTest;
 
 public class HardMediumSoftBigDecimalScoreHolderImplTest extends AbstractScoreHolderTest<HardMediumSoftBigDecimalScore> {
 

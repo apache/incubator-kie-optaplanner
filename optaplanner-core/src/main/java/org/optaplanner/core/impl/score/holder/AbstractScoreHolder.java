@@ -35,9 +35,34 @@ import org.optaplanner.core.api.score.constraint.ConstraintMatch;
 import org.optaplanner.core.api.score.constraint.ConstraintMatchTotal;
 import org.optaplanner.core.api.score.constraint.Indictment;
 import org.optaplanner.core.api.score.holder.ScoreHolder;
+import org.optaplanner.core.impl.score.buildin.bendable.BendableScoreDefinition;
+import org.optaplanner.core.impl.score.buildin.bendablebigdecimal.BendableBigDecimalScoreDefinition;
+import org.optaplanner.core.impl.score.buildin.bendablelong.BendableLongScoreDefinition;
+import org.optaplanner.core.impl.score.buildin.hardmediumsoft.HardMediumSoftScoreDefinition;
+import org.optaplanner.core.impl.score.buildin.hardmediumsoftbigdecimal.HardMediumSoftBigDecimalScoreDefinition;
+import org.optaplanner.core.impl.score.buildin.hardmediumsoftlong.HardMediumSoftLongScoreDefinition;
+import org.optaplanner.core.impl.score.buildin.hardsoft.HardSoftScoreDefinition;
+import org.optaplanner.core.impl.score.buildin.hardsoftbigdecimal.HardSoftBigDecimalScoreDefinition;
+import org.optaplanner.core.impl.score.buildin.hardsoftlong.HardSoftLongScoreDefinition;
+import org.optaplanner.core.impl.score.buildin.simple.SimpleScoreDefinition;
+import org.optaplanner.core.impl.score.buildin.simplebigdecimal.SimpleBigDecimalScoreDefinition;
+import org.optaplanner.core.impl.score.buildin.simplelong.SimpleLongScoreDefinition;
 import org.optaplanner.core.impl.score.constraint.DefaultConstraintMatchTotal;
 import org.optaplanner.core.impl.score.constraint.DefaultIndictment;
+import org.optaplanner.core.impl.score.definition.ScoreDefinition;
 import org.optaplanner.core.impl.score.director.drools.DroolsScoreDirector;
+import org.optaplanner.core.impl.score.director.drools.holder.BendableBigDecimalScoreHolderImpl;
+import org.optaplanner.core.impl.score.director.drools.holder.BendableLongScoreHolderImpl;
+import org.optaplanner.core.impl.score.director.drools.holder.BendableScoreHolderImpl;
+import org.optaplanner.core.impl.score.director.drools.holder.HardMediumSoftBigDecimalScoreHolderImpl;
+import org.optaplanner.core.impl.score.director.drools.holder.HardMediumSoftLongScoreHolderImpl;
+import org.optaplanner.core.impl.score.director.drools.holder.HardMediumSoftScoreHolderImpl;
+import org.optaplanner.core.impl.score.director.drools.holder.HardSoftBigDecimalScoreHolderImpl;
+import org.optaplanner.core.impl.score.director.drools.holder.HardSoftLongScoreHolderImpl;
+import org.optaplanner.core.impl.score.director.drools.holder.HardSoftScoreHolderImpl;
+import org.optaplanner.core.impl.score.director.drools.holder.SimpleBigDecimalScoreHolderImpl;
+import org.optaplanner.core.impl.score.director.drools.holder.SimpleLongScoreHolderImpl;
+import org.optaplanner.core.impl.score.director.drools.holder.SimpleScoreHolderImpl;
 
 /**
  * Abstract superclass for {@link ScoreHolder}.
@@ -46,6 +71,44 @@ import org.optaplanner.core.impl.score.director.drools.DroolsScoreDirector;
  * @param <Score_> the {@link Score} type
  */
 public abstract class AbstractScoreHolder<Score_ extends Score<Score_>> implements ScoreHolder<Score_> {
+
+    public static <Score_ extends Score<Score_>, ScoreHolder_ extends AbstractScoreHolder<Score_>> ScoreHolder_
+            buildScoreHolder(ScoreDefinition<Score_> scoreDefinition, boolean constraintMatchEnabled) {
+        if (scoreDefinition instanceof SimpleScoreDefinition) {
+            return (ScoreHolder_) new SimpleScoreHolderImpl(constraintMatchEnabled);
+        } else if (scoreDefinition instanceof SimpleLongScoreDefinition) {
+            return (ScoreHolder_) new SimpleLongScoreHolderImpl(constraintMatchEnabled);
+        } else if (scoreDefinition instanceof SimpleBigDecimalScoreDefinition) {
+            return (ScoreHolder_) new SimpleBigDecimalScoreHolderImpl(constraintMatchEnabled);
+        } else if (scoreDefinition instanceof HardSoftScoreDefinition) {
+            return (ScoreHolder_) new HardSoftScoreHolderImpl(constraintMatchEnabled);
+        } else if (scoreDefinition instanceof HardSoftLongScoreDefinition) {
+            return (ScoreHolder_) new HardSoftLongScoreHolderImpl(constraintMatchEnabled);
+        } else if (scoreDefinition instanceof HardSoftBigDecimalScoreDefinition) {
+            return (ScoreHolder_) new HardSoftBigDecimalScoreHolderImpl(constraintMatchEnabled);
+        } else if (scoreDefinition instanceof HardMediumSoftScoreDefinition) {
+            return (ScoreHolder_) new HardMediumSoftScoreHolderImpl(constraintMatchEnabled);
+        } else if (scoreDefinition instanceof HardMediumSoftLongScoreDefinition) {
+            return (ScoreHolder_) new HardMediumSoftLongScoreHolderImpl(constraintMatchEnabled);
+        } else if (scoreDefinition instanceof HardMediumSoftBigDecimalScoreDefinition) {
+            return (ScoreHolder_) new HardMediumSoftBigDecimalScoreHolderImpl(constraintMatchEnabled);
+        } else if (scoreDefinition instanceof BendableScoreDefinition) {
+            BendableScoreDefinition bendableScoreDefinition = (BendableScoreDefinition) scoreDefinition;
+            return (ScoreHolder_) new BendableScoreHolderImpl(constraintMatchEnabled,
+                    bendableScoreDefinition.getHardLevelsSize(), bendableScoreDefinition.getSoftLevelsSize());
+        } else if (scoreDefinition instanceof BendableLongScoreDefinition) {
+            BendableLongScoreDefinition bendableScoreDefinition = (BendableLongScoreDefinition) scoreDefinition;
+            return (ScoreHolder_) new BendableLongScoreHolderImpl(constraintMatchEnabled,
+                    bendableScoreDefinition.getHardLevelsSize(), bendableScoreDefinition.getSoftLevelsSize());
+        } else if (scoreDefinition instanceof BendableBigDecimalScoreDefinition) {
+            BendableBigDecimalScoreDefinition bendableScoreDefinition = (BendableBigDecimalScoreDefinition) scoreDefinition;
+            return (ScoreHolder_) new BendableBigDecimalScoreHolderImpl(constraintMatchEnabled,
+                    bendableScoreDefinition.getHardLevelsSize(), bendableScoreDefinition.getSoftLevelsSize());
+        } else {
+            throw new UnsupportedOperationException("Impossible state: unknown score definition (" +
+                    scoreDefinition.getClass().getCanonicalName() + ").");
+        }
+    }
 
     protected final boolean constraintMatchEnabled;
     protected final Map<String, ConstraintMatchTotal<Score_>> constraintMatchTotalMap;

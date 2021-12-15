@@ -76,11 +76,6 @@ public class SimpleLongScoreDefinition extends AbstractScoreDefinition<SimpleLon
     }
 
     @Override
-    public SimpleLongScoreHolderImpl buildScoreHolder(boolean constraintMatchEnabled) {
-        return new SimpleLongScoreHolderImpl(constraintMatchEnabled);
-    }
-
-    @Override
     public SimpleLongScore buildOptimisticBound(InitializingScoreTrend initializingScoreTrend, SimpleLongScore score) {
         InitializingScoreTrendLevel[] trendLevels = initializingScoreTrend.getTrendLevels();
         return SimpleLongScore.ofUninitialized(0,

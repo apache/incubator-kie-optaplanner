@@ -82,11 +82,6 @@ public class HardMediumSoftLongScoreDefinition extends AbstractScoreDefinition<H
     }
 
     @Override
-    public HardMediumSoftLongScoreHolderImpl buildScoreHolder(boolean constraintMatchEnabled) {
-        return new HardMediumSoftLongScoreHolderImpl(constraintMatchEnabled);
-    }
-
-    @Override
     public HardMediumSoftLongScore buildOptimisticBound(InitializingScoreTrend initializingScoreTrend,
             HardMediumSoftLongScore score) {
         InitializingScoreTrendLevel[] trendLevels = initializingScoreTrend.getTrendLevels();

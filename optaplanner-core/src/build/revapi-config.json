@@ -330,7 +330,16 @@
           "methodName": "<init>",
           "elementKind": "constructor",
           "justification": "Does not matter on a final class."
-        }
+        },
+        {
+           "code": "java.method.removed",
+           "old": "method org.optaplanner.core.impl.score.holder.AbstractScoreHolder<Score_> org.optaplanner.core.impl.score.definition.ScoreDefinition<Score_ extends org.optaplanner.core.api.score.Score<Score_ extends org.optaplanner.core.api.score.Score<Score_>>>::buildScoreHolder(boolean) @ org.optaplanner.core.api.domain.solution.PlanningScore.NullScoreDefinition",
+           "package": "org.optaplanner.core.api.domain.solution",
+           "classSimpleName": "NullScoreDefinition",
+           "methodName": "buildScoreHolder",
+           "elementKind": "method",
+           "justification": "Does not actually affect public API."
+         }
       ]
     }
   }

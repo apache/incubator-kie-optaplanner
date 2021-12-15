@@ -111,11 +111,6 @@ public class BendableLongScoreDefinition extends AbstractBendableScoreDefinition
     }
 
     @Override
-    public BendableLongScoreHolderImpl buildScoreHolder(boolean constraintMatchEnabled) {
-        return new BendableLongScoreHolderImpl(constraintMatchEnabled, hardLevelsSize, softLevelsSize);
-    }
-
-    @Override
     public BendableLongScore buildOptimisticBound(InitializingScoreTrend initializingScoreTrend,
             BendableLongScore score) {
         InitializingScoreTrendLevel[] trendLevels = initializingScoreTrend.getTrendLevels();

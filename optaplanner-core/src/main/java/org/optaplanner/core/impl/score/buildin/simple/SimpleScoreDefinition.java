@@ -81,11 +81,6 @@ public class SimpleScoreDefinition extends AbstractScoreDefinition<SimpleScore> 
     }
 
     @Override
-    public SimpleScoreHolderImpl buildScoreHolder(boolean constraintMatchEnabled) {
-        return new SimpleScoreHolderImpl(constraintMatchEnabled);
-    }
-
-    @Override
     public SimpleScore buildOptimisticBound(InitializingScoreTrend initializingScoreTrend, SimpleScore score) {
         InitializingScoreTrendLevel[] trendLevels = initializingScoreTrend.getTrendLevels();
         return SimpleScore.ofUninitialized(0,
