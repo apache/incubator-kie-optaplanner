@@ -19,7 +19,7 @@ package org.optaplanner.core.impl.score.definition;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.buildin.hardsoft.HardSoftScore;
 import org.optaplanner.core.impl.score.ScoreUtils;
-import org.optaplanner.core.impl.score.buildin.hardsoft.HardSoftScoreDefinition;
+import org.optaplanner.core.impl.score.buildin.HardSoftScoreDefinition;
 import org.optaplanner.core.impl.score.trend.InitializingScoreTrend;
 
 /**
