@@ -35,22 +35,21 @@ import org.optaplanner.core.api.score.buildin.hardsoftlong.HardSoftLongScore;
 import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
 import org.optaplanner.core.api.score.buildin.simplebigdecimal.SimpleBigDecimalScore;
 import org.optaplanner.core.api.score.buildin.simplelong.SimpleLongScore;
-import org.optaplanner.core.config.util.ConfigUtils;
 import org.optaplanner.core.impl.domain.common.accessor.MemberAccessor;
 import org.optaplanner.core.impl.domain.common.accessor.MemberAccessorFactory;
 import org.optaplanner.core.impl.domain.policy.DescriptorPolicy;
-import org.optaplanner.core.impl.score.buildin.BendableScoreDefinition;
 import org.optaplanner.core.impl.score.buildin.BendableBigDecimalScoreDefinition;
 import org.optaplanner.core.impl.score.buildin.BendableLongScoreDefinition;
-import org.optaplanner.core.impl.score.buildin.HardMediumSoftScoreDefinition;
+import org.optaplanner.core.impl.score.buildin.BendableScoreDefinition;
 import org.optaplanner.core.impl.score.buildin.HardMediumSoftBigDecimalScoreDefinition;
 import org.optaplanner.core.impl.score.buildin.HardMediumSoftLongScoreDefinition;
-import org.optaplanner.core.impl.score.buildin.HardSoftScoreDefinition;
+import org.optaplanner.core.impl.score.buildin.HardMediumSoftScoreDefinition;
 import org.optaplanner.core.impl.score.buildin.HardSoftBigDecimalScoreDefinition;
 import org.optaplanner.core.impl.score.buildin.HardSoftLongScoreDefinition;
-import org.optaplanner.core.impl.score.buildin.SimpleScoreDefinition;
+import org.optaplanner.core.impl.score.buildin.HardSoftScoreDefinition;
 import org.optaplanner.core.impl.score.buildin.SimpleBigDecimalScoreDefinition;
 import org.optaplanner.core.impl.score.buildin.SimpleLongScoreDefinition;
+import org.optaplanner.core.impl.score.buildin.SimpleScoreDefinition;
 import org.optaplanner.core.impl.score.definition.ScoreDefinition;
 
 public class ScoreDescriptor {

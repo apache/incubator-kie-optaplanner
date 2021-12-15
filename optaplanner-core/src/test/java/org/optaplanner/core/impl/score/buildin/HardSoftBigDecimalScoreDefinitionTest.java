@@ -22,7 +22,6 @@ import java.math.BigDecimal;
 
 import org.junit.jupiter.api.Test;
 import org.optaplanner.core.api.score.buildin.hardsoftbigdecimal.HardSoftBigDecimalScore;
-import org.optaplanner.core.impl.score.buildin.HardSoftBigDecimalScoreDefinition;
 
 public class HardSoftBigDecimalScoreDefinitionTest {
 

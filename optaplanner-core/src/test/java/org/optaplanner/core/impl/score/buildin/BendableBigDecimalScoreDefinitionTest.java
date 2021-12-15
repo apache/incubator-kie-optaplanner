@@ -23,7 +23,6 @@ import java.math.BigDecimal;
 
 import org.junit.jupiter.api.Test;
 import org.optaplanner.core.api.score.buildin.bendablebigdecimal.BendableBigDecimalScore;
-import org.optaplanner.core.impl.score.buildin.BendableBigDecimalScoreDefinition;
 
 public class BendableBigDecimalScoreDefinitionTest {
 
