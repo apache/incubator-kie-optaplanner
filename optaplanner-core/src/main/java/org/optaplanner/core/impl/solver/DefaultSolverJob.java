@@ -22,7 +22,6 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
-import java.util.concurrent.atomic.AtomicReference;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
@@ -54,7 +53,7 @@ public final class DefaultSolverJob<Solution_, ProblemId_> implements SolverJob<
     private final Consumer<? super Solution_> finalBestSolutionConsumer;
     private final BiConsumer<? super ProblemId_, ? super Throwable> exceptionHandler;
 
-    private final AtomicReference<SolverStatus> solverStatusReference;
+    private volatile SolverStatus solverStatus;
     private final CountDownLatch terminatedLatch;
     private final ReentrantLock solverStatusModifyingLock;
 
@@ -76,7 +75,7 @@ public final class DefaultSolverJob<Solution_, ProblemId_> implements SolverJob<
         this.problemFinder = problemFinder;
         this.finalBestSolutionConsumer = finalBestSolutionConsumer;
         this.exceptionHandler = exceptionHandler;
-        solverStatusReference = new AtomicReference<>(SolverStatus.SOLVING_SCHEDULED);
+        solverStatus = SolverStatus.SOLVING_SCHEDULED;
         terminatedLatch = new CountDownLatch(1);
         solverStatusModifyingLock = new ReentrantLock();
     }
@@ -92,19 +91,20 @@ public final class DefaultSolverJob<Solution_, ProblemId_> implements SolverJob<
 
     @Override
     public SolverStatus getSolverStatus() {
-        return solverStatusReference.get();
+        return solverStatus;
     }
 
     @Override
     public Solution_ call() {
         solverStatusModifyingLock.lock();
-        if (!solverStatusReference.compareAndSet(SolverStatus.SOLVING_SCHEDULED, SolverStatus.SOLVING_ACTIVE)) {
+        if (solverStatus != SolverStatus.SOLVING_SCHEDULED) {
             // This job has been canceled before it started,
             // or it is already solving
             solverStatusModifyingLock.unlock();
             return problemFinder.apply(problemId);
         }
         try {
+            solverStatus = SolverStatus.SOLVING_ACTIVE;
             Solution_ problem = problemFinder.apply(problemId);
             // add a phase lifecycle listener that unlock the solver status lock when solving started
             solver.addPhaseLifecycleListener(new UnlockLockPhaseLifecycleListener());
@@ -118,17 +118,21 @@ public final class DefaultSolverJob<Solution_, ProblemId_> implements SolverJob<
             exceptionHandler.accept(problemId, e);
             throw new IllegalStateException("Solving failed for problemId (" + problemId + ").", e);
         } finally {
-            if (!solverStatusModifyingLock.isHeldByCurrentThread()) {
-                // reacquire the lock if we don't have it
-                solverStatusModifyingLock.lock();
+            if (solverStatusModifyingLock.isHeldByCurrentThread()) {
+                // release the lock if we have it (due to solver raising an exception before solving starts);
+                // This does not make it possible to do a double terminate in terminateEarly because:
+                // 1. The case SOLVING_SCHEDULED is impossible (only set to SOLVING_SCHEDULED in constructor,
+                //    and it was set it to SolverStatus.SOLVING_ACTIVE in the method)
+                // 2. The case SOLVING_ACTIVE only calls solver.terminateEarly, so it effectively does nothing
+                // 3. The case NOT_SOLVING does nothing
+                solverStatusModifyingLock.unlock();
             }
             solvingTerminated();
-            solverStatusModifyingLock.unlock();
         }
     }
 
     private void solvingTerminated() {
-        solverStatusReference.set(SolverStatus.NOT_SOLVING);
+        solverStatus = SolverStatus.NOT_SOLVING;
         solverManager.unregisterSolverJob(problemId);
         terminatedLatch.countDown();
     }
@@ -147,33 +151,32 @@ public final class DefaultSolverJob<Solution_, ProblemId_> implements SolverJob<
 
     @Override
     public void terminateEarly() {
-        solverStatusModifyingLock.lock();
-        future.cancel(false);
-        SolverStatus solverStatus = solverStatusReference.get();
-        switch (solverStatus) {
-            case SOLVING_SCHEDULED:
-                solvingTerminated();
-                solverStatusModifyingLock.unlock();
-                break;
-            case SOLVING_ACTIVE:
-                // Indirectly triggers solvingTerminated()
-                solverStatusModifyingLock.unlock();
-                solver.terminateEarly();
-                break;
-            case NOT_SOLVING:
-                // Do nothing, solvingTerminated() already called
-                solverStatusModifyingLock.unlock();
-                break;
-            default:
-                solverStatusModifyingLock.unlock();
-                throw new IllegalStateException("Unsupported solverStatus (" + solverStatus + ").");
-        }
         try {
-            // Don't return until bestSolutionConsumer won't be called any more
-            terminatedLatch.await();
-        } catch (InterruptedException e) {
-            Thread.currentThread().interrupt();
-            LOGGER.warn("The terminateEarly() call is interrupted.", e);
+            solverStatusModifyingLock.lock();
+            future.cancel(false);
+            switch (solverStatus) {
+                case SOLVING_SCHEDULED:
+                    solvingTerminated();
+                    break;
+                case SOLVING_ACTIVE:
+                    // Indirectly triggers solvingTerminated()
+                    solver.terminateEarly();
+                    break;
+                case NOT_SOLVING:
+                    // Do nothing, solvingTerminated() already called
+                    break;
+                default:
+                    throw new IllegalStateException("Unsupported solverStatus (" + solverStatus + ").");
+            }
+            try {
+                // Don't return until bestSolutionConsumer won't be called any more
+                terminatedLatch.await();
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+                LOGGER.warn("The terminateEarly() call is interrupted.", e);
+            }
+        } finally {
+            solverStatusModifyingLock.unlock();
         }
     }
 
@@ -198,36 +201,57 @@ public final class DefaultSolverJob<Solution_, ProblemId_> implements SolverJob<
         return Duration.ofMillis(endingSystemTimeMillis - startingSystemTimeMillis);
     }
 
-    private class UnlockLockPhaseLifecycleListener implements PhaseLifecycleListener {
+    /**
+     * A listener that unlocks the solverStatusModifyingLock when Solving has started.
+     *
+     * It to prevent the following scenario caused by unlocking before Solving started:
+     *
+     * Thread 1:
+     * solverStatusModifyingLock.unlock()
+     * >solver.solve(...) // executes second
+     *
+     * Thread 2:
+     * case SOLVING_ACTIVE:
+     * >solver.terminateEarly(); // executes first
+     *
+     * The solver.solve() call resets the terminateEarly flag, and thus the solver will not be terminated
+     * by the call, which means terminatedLatch will not be decremented, causing Thread 2 to wait forever
+     * (at least until another Thread calls terminateEarly again).
+     *
+     * To prevent Thread 2 from potentially waiting forever, we only unlock the lock after the
+     * solvingStarted phase lifecycle event is fired, meaning the terminateEarly flag will not be
+     * reset and thus the solver will actually terminate.
+     */
+    private final class UnlockLockPhaseLifecycleListener implements PhaseLifecycleListener<Solution_> {
 
         @Override
-        public void solvingStarted(SolverScope solverScope) {
+        public void solvingStarted(SolverScope<Solution_> solverScope) {
             solverStatusModifyingLock.unlock();
         }
 
         // Do nothing for everything else
         @Override
-        public void solvingEnded(SolverScope solverScope) {
+        public void solvingEnded(SolverScope<Solution_> solverScope) {
             // Do nothing
         }
 
         @Override
-        public void phaseStarted(AbstractPhaseScope phaseScope) {
+        public void phaseStarted(AbstractPhaseScope<Solution_> phaseScope) {
             // Do nothing
         }
 
         @Override
-        public void stepStarted(AbstractStepScope stepScope) {
+        public void stepStarted(AbstractStepScope<Solution_> stepScope) {
             // Do nothing
         }
 
         @Override
-        public void stepEnded(AbstractStepScope stepScope) {
+        public void stepEnded(AbstractStepScope<Solution_> stepScope) {
             // Do nothing
         }
 
         @Override
-        public void phaseEnded(AbstractPhaseScope phaseScope) {
+        public void phaseEnded(AbstractPhaseScope<Solution_> phaseScope) {
             // Do nothing
         }
     }
