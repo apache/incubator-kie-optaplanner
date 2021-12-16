@@ -23,6 +23,7 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.concurrent.locks.ReentrantLock;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.function.Function;
@@ -31,6 +32,9 @@ import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.solver.Solver;
 import org.optaplanner.core.api.solver.SolverJob;
 import org.optaplanner.core.api.solver.SolverStatus;
+import org.optaplanner.core.impl.phase.event.PhaseLifecycleListener;
+import org.optaplanner.core.impl.phase.scope.AbstractPhaseScope;
+import org.optaplanner.core.impl.phase.scope.AbstractStepScope;
 import org.optaplanner.core.impl.solver.scope.SolverScope;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -51,7 +55,8 @@ public final class DefaultSolverJob<Solution_, ProblemId_> implements SolverJob<
     private final BiConsumer<? super ProblemId_, ? super Throwable> exceptionHandler;
 
     private final AtomicReference<SolverStatus> solverStatusReference;
-    private CountDownLatch terminatedLatch;
+    private final CountDownLatch terminatedLatch;
+    private final ReentrantLock solverStatusModifyingLock;
 
     private Future<Solution_> future;
 
@@ -73,6 +78,7 @@ public final class DefaultSolverJob<Solution_, ProblemId_> implements SolverJob<
         this.exceptionHandler = exceptionHandler;
         solverStatusReference = new AtomicReference<>(SolverStatus.SOLVING_SCHEDULED);
         terminatedLatch = new CountDownLatch(1);
+        solverStatusModifyingLock = new ReentrantLock();
     }
 
     public void setFuture(Future<Solution_> future) {
@@ -91,13 +97,17 @@ public final class DefaultSolverJob<Solution_, ProblemId_> implements SolverJob<
 
     @Override
     public Solution_ call() {
-        SolverStatus solverStatus = solverStatusReference.getAndSet(SolverStatus.SOLVING_ACTIVE);
-        if (solverStatus != SolverStatus.SOLVING_SCHEDULED) {
-            // This job has been canceled before it started
+        solverStatusModifyingLock.lock();
+        if (!solverStatusReference.compareAndSet(SolverStatus.SOLVING_SCHEDULED, SolverStatus.SOLVING_ACTIVE)) {
+            // This job has been canceled before it started,
+            // or it is already solving
+            solverStatusModifyingLock.unlock();
             return problemFinder.apply(problemId);
         }
         try {
             Solution_ problem = problemFinder.apply(problemId);
+            // add a phase lifecycle listener that unlock the solver status lock when solving started
+            solver.addPhaseLifecycleListener(new UnlockLockPhaseLifecycleListener());
             final Solution_ finalBestSolution = solver.solve(problem);
             if (finalBestSolutionConsumer != null) {
                 // TODO consumption should happen on different thread than solver thread
@@ -108,7 +118,12 @@ public final class DefaultSolverJob<Solution_, ProblemId_> implements SolverJob<
             exceptionHandler.accept(problemId, e);
             throw new IllegalStateException("Solving failed for problemId (" + problemId + ").", e);
         } finally {
+            if (!solverStatusModifyingLock.isHeldByCurrentThread()) {
+                // reacquire the lock if we don't have it
+                solverStatusModifyingLock.lock();
+            }
             solvingTerminated();
+            solverStatusModifyingLock.unlock();
         }
     }
 
@@ -132,20 +147,25 @@ public final class DefaultSolverJob<Solution_, ProblemId_> implements SolverJob<
 
     @Override
     public void terminateEarly() {
+        solverStatusModifyingLock.lock();
         future.cancel(false);
         SolverStatus solverStatus = solverStatusReference.get();
         switch (solverStatus) {
             case SOLVING_SCHEDULED:
                 solvingTerminated();
+                solverStatusModifyingLock.unlock();
                 break;
             case SOLVING_ACTIVE:
                 // Indirectly triggers solvingTerminated()
+                solverStatusModifyingLock.unlock();
                 solver.terminateEarly();
                 break;
             case NOT_SOLVING:
                 // Do nothing, solvingTerminated() already called
+                solverStatusModifyingLock.unlock();
                 break;
             default:
+                solverStatusModifyingLock.unlock();
                 throw new IllegalStateException("Unsupported solverStatus (" + solverStatus + ").");
         }
         try {
@@ -176,5 +196,39 @@ public final class DefaultSolverJob<Solution_, ProblemId_> implements SolverJob<
             endingSystemTimeMillis = System.currentTimeMillis();
         }
         return Duration.ofMillis(endingSystemTimeMillis - startingSystemTimeMillis);
+    }
+
+    private class UnlockLockPhaseLifecycleListener implements PhaseLifecycleListener {
+
+        @Override
+        public void solvingStarted(SolverScope solverScope) {
+            solverStatusModifyingLock.unlock();
+        }
+
+        // Do nothing for everything else
+        @Override
+        public void solvingEnded(SolverScope solverScope) {
+            // Do nothing
+        }
+
+        @Override
+        public void phaseStarted(AbstractPhaseScope phaseScope) {
+            // Do nothing
+        }
+
+        @Override
+        public void stepStarted(AbstractStepScope stepScope) {
+            // Do nothing
+        }
+
+        @Override
+        public void stepEnded(AbstractStepScope stepScope) {
+            // Do nothing
+        }
+
+        @Override
+        public void phaseEnded(AbstractPhaseScope phaseScope) {
+            // Do nothing
+        }
     }
 }
