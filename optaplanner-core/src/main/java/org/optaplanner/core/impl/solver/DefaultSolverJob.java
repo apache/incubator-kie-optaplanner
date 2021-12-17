@@ -31,9 +31,7 @@ import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.solver.Solver;
 import org.optaplanner.core.api.solver.SolverJob;
 import org.optaplanner.core.api.solver.SolverStatus;
-import org.optaplanner.core.impl.phase.event.PhaseLifecycleListener;
-import org.optaplanner.core.impl.phase.scope.AbstractPhaseScope;
-import org.optaplanner.core.impl.phase.scope.AbstractStepScope;
+import org.optaplanner.core.impl.phase.event.PhaseLifecycleListenerAdapter;
 import org.optaplanner.core.impl.solver.scope.SolverScope;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -204,7 +202,7 @@ public final class DefaultSolverJob<Solution_, ProblemId_> implements SolverJob<
     /**
      * A listener that unlocks the solverStatusModifyingLock when Solving has started.
      *
-     * It to prevent the following scenario caused by unlocking before Solving started:
+     * It prevents the following scenario caused by unlocking before Solving started:
      *
      * Thread 1:
      * solverStatusModifyingLock.unlock()
@@ -222,37 +220,10 @@ public final class DefaultSolverJob<Solution_, ProblemId_> implements SolverJob<
      * solvingStarted phase lifecycle event is fired, meaning the terminateEarly flag will not be
      * reset and thus the solver will actually terminate.
      */
-    private final class UnlockLockPhaseLifecycleListener implements PhaseLifecycleListener<Solution_> {
-
+    private final class UnlockLockPhaseLifecycleListener extends PhaseLifecycleListenerAdapter<Solution_> {
         @Override
         public void solvingStarted(SolverScope<Solution_> solverScope) {
             solverStatusModifyingLock.unlock();
-        }
-
-        // Do nothing for everything else
-        @Override
-        public void solvingEnded(SolverScope<Solution_> solverScope) {
-            // Do nothing
-        }
-
-        @Override
-        public void phaseStarted(AbstractPhaseScope<Solution_> phaseScope) {
-            // Do nothing
-        }
-
-        @Override
-        public void stepStarted(AbstractStepScope<Solution_> stepScope) {
-            // Do nothing
-        }
-
-        @Override
-        public void stepEnded(AbstractStepScope<Solution_> stepScope) {
-            // Do nothing
-        }
-
-        @Override
-        public void phaseEnded(AbstractPhaseScope<Solution_> phaseScope) {
-            // Do nothing
         }
     }
 }
