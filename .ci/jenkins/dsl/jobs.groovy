@@ -14,6 +14,7 @@ import org.kie.jenkins.jobdsl.KogitoJobUtils
 import org.kie.jenkins.jobdsl.Utils
 
 jenkins_path = '.ci/jenkins'
+OPTAPLANNER = 'optaplanner'
 
 Map getMultijobPRConfig(Folder jobFolder) {
     def jobConfig = [
@@ -21,7 +22,7 @@ Map getMultijobPRConfig(Folder jobFolder) {
         buildchain: true,
         jobs : [
             [
-                id: 'optaplanner',
+                id: OPTAPLANNER,
                 primary: true,
                 env : [
                     SONARCLOUD_ANALYSIS_MVN_OPTS: '-Dsonar.projectKey=org.optaplanner:optaplanner',
@@ -68,10 +69,8 @@ Map getMultijobPRConfig(Folder jobFolder) {
 KogitoJobUtils.createAllEnvsPerRepoPRJobs(this) { jobFolder -> getMultijobPRConfig(jobFolder) }
 setupDeployJob(Folder.PULLREQUEST_RUNTIMES_BDD)
 
-// Nightly jobs
-setupNativeJob()
-setupDeployJob(Folder.NIGHTLY)
-setupMandrelJob()
+// Create all Nightly/Release jobs
+KogitoJobUtils.createAllJobsForArtifactsRepository(this, ['drools', 'optaplanner'])
 
 // Release jobs
 setupDeployJob(Folder.RELEASE)
@@ -83,7 +82,7 @@ if (Utils.isMainBranch(this)) {
 }
 
 // Tools folder
-KogitoJobUtils.createQuarkusUpdateToolsJob(this, 'optaplanner', [
+KogitoJobUtils.createQuarkusUpdateToolsJob(this, OPTAPLANNER, [
   modules: [ 'optaplanner-build-parent' ],
   properties: [ 'version.io.quarkus' ],
 ])
@@ -91,38 +90,6 @@ KogitoJobUtils.createQuarkusUpdateToolsJob(this, 'optaplanner', [
 /////////////////////////////////////////////////////////////////
 // Methods
 /////////////////////////////////////////////////////////////////
-
-void setupNativeJob() {
-    def jobParams = KogitoJobUtils.getBasicJobParams(this, 'optaplanner', Folder.NIGHTLY_NATIVE, "${jenkins_path}/Jenkinsfile.native", 'Optaplanner Native Testing')
-    jobParams.triggers = [ cron : 'H 6 * * *' ]
-    KogitoJobTemplate.createPipelineJob(this, jobParams)?.with {
-        parameters {
-            stringParam('BUILD_BRANCH_NAME', "${GIT_BRANCH}", 'Set the Git branch to checkout')
-            stringParam('GIT_AUTHOR', "${GIT_AUTHOR_NAME}", 'Set the Git author to checkout')
-        }
-        environmentVariables {
-            env('JENKINS_EMAIL_CREDS_ID', "${JENKINS_EMAIL_CREDS_ID}")
-            env('NOTIFICATION_JOB_NAME', 'Native check')
-        }
-    }
-}
-
-void setupMandrelJob() {
-    def jobParams = KogitoJobUtils.getBasicJobParams(this, 'optaplanner', Folder.NIGHTLY_MANDREL, "${jenkins_path}/Jenkinsfile.native", 'Optaplanner Mandrel Testing')
-    jobParams.triggers = [ cron : 'H 8 * * *' ]
-    KogitoJobTemplate.createPipelineJob(this, jobParams)?.with {
-        parameters {
-            stringParam('BUILD_BRANCH_NAME', "${GIT_BRANCH}", 'Set the Git branch to checkout')
-            stringParam('GIT_AUTHOR', "${GIT_AUTHOR_NAME}", 'Set the Git author to checkout')
-
-            stringParam('NATIVE_BUILDER_IMAGE', Utils.getMandrelEnvironmentBuilderImage(this), 'Which native builder image to use ?')
-        }
-        environmentVariables {
-            env('JENKINS_EMAIL_CREDS_ID', "${JENKINS_EMAIL_CREDS_ID}")
-            env('NOTIFICATION_JOB_NAME', 'Mandrel check')
-        }
-    }
-}
 
 void setupDeployJob(Folder jobFolder) {
     def jobParams = KogitoJobUtils.getBasicJobParams(this, 'optaplanner-deploy', jobFolder, "${jenkins_path}/Jenkinsfile.deploy", 'Optaplanner Deploy')
