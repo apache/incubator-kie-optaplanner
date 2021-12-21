@@ -92,7 +92,7 @@ public interface Solver<Solution_> {
     /**
      * Schedules a {@link ProblemChange} to be processed.
      * <p>
-     * As a side-effect, this restarts the {@link Solver}, effectively resetting all {@link Termination}s,
+     * As a side effect, this restarts the {@link Solver}, effectively resetting all {@link Termination}s,
      * but not {@link #terminateEarly()}.
      * <p>
      * This method is thread-safe.
@@ -108,7 +108,7 @@ public interface Solver<Solution_> {
     /**
      * Schedules multiple {@link ProblemChange}s to be processed.
      * <p>
-     * As a side-effect, this restarts the {@link Solver}, effectively resetting all {@link Termination}s,
+     * As a side effect, this restarts the {@link Solver}, effectively resetting all {@link Termination}s,
      * but not {@link #terminateEarly()}.
      * <p>
      * This method is thread-safe.

@@ -16,6 +16,7 @@
 
 package org.optaplanner.core.impl.solver.change;
 
+import java.util.Objects;
 import java.util.function.Consumer;
 
 import org.optaplanner.core.api.score.director.ScoreDirector;
@@ -31,48 +32,57 @@ public final class DefaultProblemChangeDirector<Solution_> implements ProblemCha
 
     @Override
     public <Entity> void addEntity(Entity entity, Consumer<Entity> entityConsumer) {
+        Objects.requireNonNull(entityConsumer, "Entity consumer (" + entityConsumer + ") cannot be null.");
         scoreDirector.beforeEntityAdded(entity);
         entityConsumer.accept(entity);
         scoreDirector.afterEntityAdded(entity);
     }
 
     @Override
-    public <Entity> void removeEntity(Entity entity, Consumer<Entity> workingEntityConsumer) {
+    public <Entity> void removeEntity(Entity entity, Consumer<Entity> entityConsumer) {
+        Objects.requireNonNull(entityConsumer, "Entity consumer (" + entityConsumer + ") cannot be null.");
         Entity workingEntity = lookUpWorkingObject(entity);
         scoreDirector.beforeEntityRemoved(workingEntity);
-        workingEntityConsumer.accept(workingEntity);
+        entityConsumer.accept(workingEntity);
         scoreDirector.afterEntityRemoved(workingEntity);
     }
 
     @Override
-    public <Entity> void changeVariable(Entity entity, String variableName, Consumer<Entity> workingEntityConsumer) {
+    public <Entity> void changeVariable(Entity entity, String variableName, Consumer<Entity> entityConsumer) {
+        Objects.requireNonNull(entityConsumer, "Entity consumer (" + entityConsumer + ") cannot be null.");
         Entity workingEntity = lookUpWorkingObject(entity);
         scoreDirector.beforeVariableChanged(workingEntity, variableName);
-        workingEntityConsumer.accept(workingEntity);
+        entityConsumer.accept(workingEntity);
         scoreDirector.afterVariableChanged(workingEntity, variableName);
     }
 
     @Override
     public <ProblemFact> void addProblemFact(ProblemFact problemFact, Consumer<ProblemFact> problemFactConsumer) {
+        Objects.requireNonNull(problemFactConsumer, "Problem fact consumer (" + problemFactConsumer
+                + ") cannot be null.");
         scoreDirector.beforeProblemFactAdded(problemFact);
         problemFactConsumer.accept(problemFact);
         scoreDirector.afterProblemFactAdded(problemFact);
     }
 
     @Override
-    public <ProblemFact> void removeProblemFact(ProblemFact problemFact, Consumer<ProblemFact> workingProblemFactConsumer) {
+    public <ProblemFact> void removeProblemFact(ProblemFact problemFact, Consumer<ProblemFact> problemFactConsumer) {
+        Objects.requireNonNull(problemFactConsumer, "Problem fact consumer (" + problemFactConsumer
+                + ") cannot be null.");
         ProblemFact workingProblemFact = lookUpWorkingObject(problemFact);
         scoreDirector.beforeProblemFactRemoved(workingProblemFact);
-        workingProblemFactConsumer.accept(workingProblemFact);
+        problemFactConsumer.accept(workingProblemFact);
         scoreDirector.afterProblemFactRemoved(workingProblemFact);
     }
 
     @Override
     public <EntityOrProblemFact> void changeProblemProperty(EntityOrProblemFact problemFactOrEntity,
-            Consumer<EntityOrProblemFact> workingProblemFactOrEntityConsumer) {
+            Consumer<EntityOrProblemFact> problemFactOrEntityConsumer) {
+        Objects.requireNonNull(problemFactOrEntityConsumer, "Problem fact or entity consumer ("
+                + problemFactOrEntityConsumer + ") cannot be null.");
         EntityOrProblemFact workingEntityOrProblemFact = lookUpWorkingObject(problemFactOrEntity);
         scoreDirector.beforeProblemPropertyChanged(workingEntityOrProblemFact);
-        workingProblemFactOrEntityConsumer.accept(workingEntityOrProblemFact);
+        problemFactOrEntityConsumer.accept(workingEntityOrProblemFact);
         scoreDirector.afterProblemPropertyChanged(workingEntityOrProblemFact);
     }
 

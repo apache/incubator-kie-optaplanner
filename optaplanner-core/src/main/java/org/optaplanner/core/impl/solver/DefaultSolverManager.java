@@ -150,14 +150,14 @@ public final class DefaultSolverManager<Solution_, ProblemId_> implements Solver
     //    }
 
     @Override
-    public void addProblemChange(ProblemId_ problemId, ProblemChange<Solution_> problemChange) {
+    public boolean addProblemChange(ProblemId_ problemId, ProblemChange<Solution_> problemChange) {
         DefaultSolverJob<Solution_, ProblemId_> solverJob = problemIdToSolverJobMap.get(problemId);
         if (solverJob == null) {
             // We cannot distinguish between "already terminated" and "never solved" without causing a memory leak.
-            LOGGER.debug("Ignoring addProblemFactChange() call because problemId ({}) is not solving.", problemId);
-            return;
+            LOGGER.debug("Ignoring addProblemChange() call because problemId ({}) is not solving.", problemId);
+            return false;
         }
-        solverJob.addProblemChange(problemChange);
+        return solverJob.addProblemChange(problemChange);
     }
 
     @Override

@@ -304,7 +304,17 @@ public interface SolverManager<Solution_, ProblemId_> extends AutoCloseable {
     // TODO Future features
     //    void reloadProblem(ProblemId_ problemId, Function<? super ProblemId_, Solution_> problemFinder);
 
-    void addProblemChange(ProblemId_ problemId, ProblemChange<Solution_> problemChange);
+    /**
+     * Schedules a {@link ProblemChange} to be processed by the underlying {@link Solver} and returns immediately.
+     * If the solver already terminated or the problemId was never added, does nothing and returns false.
+     * The same applies if the underlying {@link Solver} is not in the {@link SolverStatus#SOLVING_ACTIVE} state.
+     *
+     * @param problemId never null, a value given to {@link #solve(Object, Function, Consumer)}
+     *        or {@link #solveAndListen(Object, Function, Consumer)}
+     * @param problemChange never null
+     * @return true if the {@link ProblemChange} has been accepted by the underlying {@link Solver}, otherwise false
+     */
+    boolean addProblemChange(ProblemId_ problemId, ProblemChange<Solution_> problemChange);
 
     /**
      * Terminates the solver or cancels the solver job if it hasn't (re)started yet.

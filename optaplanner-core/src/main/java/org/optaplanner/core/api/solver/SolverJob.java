@@ -51,7 +51,15 @@ public interface SolverJob<Solution_, ProblemId_> {
     // TODO Future features
     //    void reloadProblem(Function<? super ProblemId_, Solution_> problemFinder);
 
-    void addProblemChange(ProblemChange<Solution_> problemChange);
+    /**
+     * Schedules a {@link ProblemChange} to be processed by the underlying {@link Solver} and returns immediately.
+     * If the underlying {@link Solver} is not in the {@link SolverStatus#SOLVING_ACTIVE} state,
+     * returns false without scheduling the {@link ProblemChange}.
+     *
+     * @param problemChange never null
+     * @return true if the ProblemChange has been accepted by the underlying {@link Solver}, otherwise false
+     */
+    boolean addProblemChange(ProblemChange<Solution_> problemChange);
 
     /**
      * Terminates the solver or cancels the solver job if it hasn't (re)started yet.

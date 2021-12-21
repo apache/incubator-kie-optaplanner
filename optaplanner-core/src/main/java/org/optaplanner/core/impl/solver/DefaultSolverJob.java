@@ -17,6 +17,7 @@
 package org.optaplanner.core.impl.solver;
 
 import java.time.Duration;
+import java.util.Objects;
 import java.util.UUID;
 import java.util.concurrent.Callable;
 import java.util.concurrent.CountDownLatch;
@@ -143,8 +144,13 @@ public final class DefaultSolverJob<Solution_, ProblemId_> implements SolverJob<
     //    }
 
     @Override
-    public void addProblemChange(ProblemChange<Solution_> problemChange) {
-        solver.addProblemChange(problemChange);
+    public boolean addProblemChange(ProblemChange<Solution_> problemChange) {
+        Objects.requireNonNull(problemChange, "A problem change (" + problemChange + ") must not be null.");
+        if (solverStatus == SolverStatus.SOLVING_ACTIVE) {
+            return solver.addProblemChange(problemChange);
+        } else {
+            return false;
+        }
     }
 
     @Override
