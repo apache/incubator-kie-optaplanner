@@ -1,6 +1,6 @@
 # Runs optaplanner-persistence-jpa module tests in a PostgreSQL container
 
-name: OptaPlanner Persistence JPA CI
+name: OptaPlanner Persistence JPA
 
 on:
   push:
@@ -20,7 +20,12 @@ defaults:
 
 jobs:
   jpa-postgresql-container:
-    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        os: [ubuntu-latest]
+        java-version: [11]
+        maven-version: ['3.8.1']
+    runs-on: ${{ matrix.os }}
     services:
       postgres:
         image: postgres
@@ -35,16 +40,16 @@ jobs:
         ports:
           # Maps tcp port 5432 on service container to the host
           - 5432:5432
-
+    name: Maven - ${{ matrix.os }} - ${{ matrix.java-version }} - ${{ github.event_name }}
     steps:
       - name: Check out repository code
         uses: actions/checkout@v2
-
-      - name: Set up JDK
-        uses: actions/setup-java@v1
+      - name: Java and Maven Setup
+        uses: kiegroup/droolsjbpm-build-bootstrap/.ci/actions/maven@main
         with:
-          java-version: 11
-
+          java-version: ${{ matrix.java-version }}
+          maven-version: ${{ matrix.maven-version }}
+          cache-key-prefix: ${{ runner.os }}-${{ matrix.java-version }}-maven${{ matrix.maven-version }}
       # Builds the JPA module and runs tests in a PostgreSQL container
       - name: Build with Maven
         run: cd optaplanner-persistence/optaplanner-persistence-jpa && mvn -B clean install -Ppostgresql ${{ env.MVN_CONNECTION_PROPS }}
