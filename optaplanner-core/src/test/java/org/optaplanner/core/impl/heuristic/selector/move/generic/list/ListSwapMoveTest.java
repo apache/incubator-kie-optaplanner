@@ -32,6 +32,26 @@ import org.optaplanner.core.impl.testdata.domain.list.TestdataListValue;
 class ListSwapMoveTest {
 
     @Test
+    void isMoveDoable() {
+        TestdataListValue v1 = new TestdataListValue("1");
+        TestdataListValue v2 = new TestdataListValue("2");
+        TestdataListValue v3 = new TestdataListValue("3");
+        TestdataListEntity e1 = new TestdataListEntity("e1", v1, v2);
+        TestdataListEntity e2 = new TestdataListEntity("e2", v3);
+
+        ScoreDirector<TestdataListSolution> scoreDirector = mock(ScoreDirector.class);
+        ListVariableDescriptor<TestdataListSolution> variableDescriptor =
+                TestdataListEntity.buildVariableDescriptorForValueList();
+
+        // same entity, same index => not doable because the move doesn't change anything
+        assertThat(new ListSwapMove<>(variableDescriptor, e1, 1, e1, 1).isMoveDoable(scoreDirector)).isFalse();
+        // same entity, different index => doable
+        assertThat(new ListSwapMove<>(variableDescriptor, e1, 0, e1, 1).isMoveDoable(scoreDirector)).isTrue();
+        // different entity => doable
+        assertThat(new ListSwapMove<>(variableDescriptor, e1, 0, e2, 0).isMoveDoable(scoreDirector)).isTrue();
+    }
+
+    @Test
     void doMove() {
         TestdataListValue v1 = new TestdataListValue("1");
         TestdataListValue v2 = new TestdataListValue("2");
@@ -64,26 +84,6 @@ class ListSwapMoveTest {
         // undo
         undoMove2.doMove(scoreDirector);
         assertThat(e1.getValueList()).containsExactly(v1, v2);
-    }
-
-    @Test
-    void isMoveDoable() {
-        TestdataListValue v1 = new TestdataListValue("1");
-        TestdataListValue v2 = new TestdataListValue("2");
-        TestdataListValue v3 = new TestdataListValue("3");
-        TestdataListEntity e1 = new TestdataListEntity("e1", v1, v2);
-        TestdataListEntity e2 = new TestdataListEntity("e2", v3);
-
-        ScoreDirector<TestdataListSolution> scoreDirector = mock(ScoreDirector.class);
-        ListVariableDescriptor<TestdataListSolution> variableDescriptor =
-                TestdataListEntity.buildVariableDescriptorForValueList();
-
-        // same entity, same index => not doable because the move doesn't change anything
-        assertThat(new ListSwapMove<>(variableDescriptor, e1, 1, e1, 1).isMoveDoable(scoreDirector)).isFalse();
-        // same entity, different index => doable
-        assertThat(new ListSwapMove<>(variableDescriptor, e1, 0, e1, 1).isMoveDoable(scoreDirector)).isTrue();
-        // different entity => doable
-        assertThat(new ListSwapMove<>(variableDescriptor, e1, 0, e2, 0).isMoveDoable(scoreDirector)).isTrue();
     }
 
     @Test

@@ -37,8 +37,21 @@ public class ListUnassignMove<Solution_> extends AbstractMove<Solution_> {
         this.sourceIndex = sourceIndex;
     }
 
+    private Object getMovedValue() {
+        return variableDescriptor.getElement(sourceEntity, sourceIndex);
+    }
+
+    // ************************************************************************
+    // Worker methods
+    // ************************************************************************
+
     @Override
-    protected AbstractMove<Solution_> createUndoMove(ScoreDirector<Solution_> scoreDirector) {
+    public boolean isMoveDoable(ScoreDirector<Solution_> scoreDirector) {
+        return true;
+    }
+
+    @Override
+    public AbstractMove<Solution_> createUndoMove(ScoreDirector<Solution_> scoreDirector) {
         // No need to create an undo move because the unassign move is never being undone.
         return null;
     }
@@ -52,11 +65,6 @@ public class ListUnassignMove<Solution_> extends AbstractMove<Solution_> {
         innerScoreDirector.afterVariableChanged(variableDescriptor, sourceEntity);
     }
 
-    @Override
-    public boolean isMoveDoable(ScoreDirector<Solution_> scoreDirector) {
-        return true;
-    }
-
     // ************************************************************************
     // Introspection methods
     // ************************************************************************
@@ -64,10 +72,6 @@ public class ListUnassignMove<Solution_> extends AbstractMove<Solution_> {
     @Override
     public String getSimpleMoveTypeDescription() {
         return getClass().getSimpleName() + "(" + variableDescriptor.getSimpleEntityAndVariableName() + ")";
-    }
-
-    private Object getMovedValue() {
-        return variableDescriptor.getElement(sourceEntity, sourceIndex);
     }
 
     @Override

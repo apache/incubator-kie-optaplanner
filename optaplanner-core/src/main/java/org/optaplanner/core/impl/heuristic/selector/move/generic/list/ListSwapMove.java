@@ -100,8 +100,44 @@ public class ListSwapMove<Solution_> extends AbstractMove<Solution_> {
         this.rightIndex = rightIndex;
     }
 
+    public Object getLeftEntity() {
+        return leftEntity;
+    }
+
+    public int getLeftIndex() {
+        return leftIndex;
+    }
+
+    public Object getRightEntity() {
+        return rightEntity;
+    }
+
+    public int getRightIndex() {
+        return rightIndex;
+    }
+
+    public Object getLeftValue() {
+        return variableDescriptor.getElement(leftEntity, leftIndex);
+    }
+
+    public Object getRightValue() {
+        return variableDescriptor.getElement(rightEntity, rightIndex);
+    }
+
+    // ************************************************************************
+    // Worker methods
+    // ************************************************************************
+
     @Override
-    protected AbstractMove<Solution_> createUndoMove(ScoreDirector<Solution_> scoreDirector) {
+    public boolean isMoveDoable(ScoreDirector<Solution_> scoreDirector) {
+        // TODO maybe do not generate such moves
+        // Do not use Object#equals on user-provided domain objects. Relying on user's implementation of Object#equals
+        // opens the opportunity to shoot themselves in the foot if different entities can be equal.
+        return !(rightEntity == leftEntity && leftIndex == rightIndex);
+    }
+
+    @Override
+    public ListSwapMove<Solution_> createUndoMove(ScoreDirector<Solution_> scoreDirector) {
         return new ListSwapMove<>(variableDescriptor, rightEntity, rightIndex, leftEntity, leftIndex);
     }
 
@@ -118,14 +154,6 @@ public class ListSwapMove<Solution_> extends AbstractMove<Solution_> {
         innerScoreDirector.beforeVariableChanged(variableDescriptor, rightEntity);
         variableDescriptor.setElement(rightEntity, rightIndex, leftElement);
         innerScoreDirector.afterVariableChanged(variableDescriptor, rightEntity);
-    }
-
-    @Override
-    public boolean isMoveDoable(ScoreDirector<Solution_> scoreDirector) {
-        // TODO maybe do not generate such moves
-        // Do not use Object#equals on user-provided domain objects. Relying on user's implementation of Object#equals
-        // opens the opportunity to shoot themselves in the foot if different entities can be equal.
-        return !(rightEntity == leftEntity && leftIndex == rightIndex);
     }
 
     // ************************************************************************
@@ -149,34 +177,6 @@ public class ListSwapMove<Solution_> extends AbstractMove<Solution_> {
     @Override
     public Collection<Object> getPlanningValues() {
         return Arrays.asList(getLeftValue(), getRightValue());
-    }
-
-    // ************************************************************************
-    // Testing methods
-    // ************************************************************************
-
-    public Object getLeftEntity() {
-        return leftEntity;
-    }
-
-    public int getLeftIndex() {
-        return leftIndex;
-    }
-
-    public Object getRightEntity() {
-        return rightEntity;
-    }
-
-    public int getRightIndex() {
-        return rightIndex;
-    }
-
-    public Object getLeftValue() {
-        return variableDescriptor.getElement(leftEntity, leftIndex);
-    }
-
-    public Object getRightValue() {
-        return variableDescriptor.getElement(rightEntity, rightIndex);
     }
 
     @Override
