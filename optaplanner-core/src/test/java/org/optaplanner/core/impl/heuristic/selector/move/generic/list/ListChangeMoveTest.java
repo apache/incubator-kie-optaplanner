@@ -41,6 +41,28 @@ import org.optaplanner.core.impl.testdata.domain.list.TestdataListValue;
 class ListChangeMoveTest {
 
     @Test
+    void isMoveDoable() {
+        TestdataListValue v1 = new TestdataListValue("1");
+        TestdataListValue v2 = new TestdataListValue("2");
+        TestdataListValue v3 = new TestdataListValue("3");
+        TestdataListEntity e1 = new TestdataListEntity("e1", v1, v2);
+        TestdataListEntity e2 = new TestdataListEntity("e2", v3);
+
+        ScoreDirector<TestdataListSolution> scoreDirector = mock(ScoreDirector.class);
+        ListVariableDescriptor<TestdataListSolution> variableDescriptor =
+                TestdataListEntity.buildVariableDescriptorForValueList();
+
+        // same entity, same index => not doable because the move doesn't change anything
+        assertThat(new ListChangeMove<>(variableDescriptor, e1, 1, e1, 1).isMoveDoable(scoreDirector)).isFalse();
+        // same entity, different index => doable
+        assertThat(new ListChangeMove<>(variableDescriptor, e1, 0, e1, 1).isMoveDoable(scoreDirector)).isTrue();
+        // same entity, index == list size => not doable because the element is first removed (list size is reduced by 1)
+        assertThat(new ListChangeMove<>(variableDescriptor, e1, 0, e1, 2).isMoveDoable(scoreDirector)).isFalse();
+        // different entity => doable
+        assertThat(new ListChangeMove<>(variableDescriptor, e1, 0, e2, 0).isMoveDoable(scoreDirector)).isTrue();
+    }
+
+    @Test
     void doMove() {
         TestdataListValue v1 = new TestdataListValue("1");
         TestdataListValue v2 = new TestdataListValue("2");
@@ -63,28 +85,6 @@ class ListChangeMoveTest {
 
         assertThat(e1.getValueList()).containsExactly(v1, v2);
         assertThat(e2.getValueList()).containsExactly(v3);
-    }
-
-    @Test
-    void isMoveDoable() {
-        TestdataListValue v1 = new TestdataListValue("1");
-        TestdataListValue v2 = new TestdataListValue("2");
-        TestdataListValue v3 = new TestdataListValue("3");
-        TestdataListEntity e1 = new TestdataListEntity("e1", v1, v2);
-        TestdataListEntity e2 = new TestdataListEntity("e2", v3);
-
-        ScoreDirector<TestdataListSolution> scoreDirector = mock(ScoreDirector.class);
-        ListVariableDescriptor<TestdataListSolution> variableDescriptor =
-                TestdataListEntity.buildVariableDescriptorForValueList();
-
-        // same entity, same index => not doable because the move doesn't change anything
-        assertThat(new ListChangeMove<>(variableDescriptor, e1, 1, e1, 1).isMoveDoable(scoreDirector)).isFalse();
-        // same entity, different index => doable
-        assertThat(new ListChangeMove<>(variableDescriptor, e1, 0, e1, 1).isMoveDoable(scoreDirector)).isTrue();
-        // same entity, index == list size => not doable because the element is first removed (list size is reduced by 1)
-        assertThat(new ListChangeMove<>(variableDescriptor, e1, 0, e1, 2).isMoveDoable(scoreDirector)).isFalse();
-        // different entity => doable
-        assertThat(new ListChangeMove<>(variableDescriptor, e1, 0, e2, 0).isMoveDoable(scoreDirector)).isTrue();
     }
 
     static Stream<Arguments> doAndUndoMoveOnTheSameEntity() {

@@ -113,8 +113,41 @@ public class ListChangeMove<Solution_> extends AbstractMove<Solution_> {
         this.destinationIndex = destinationIndex;
     }
 
+    public Object getSourceEntity() {
+        return sourceEntity;
+    }
+
+    public int getSourceIndex() {
+        return sourceIndex;
+    }
+
+    public Object getDestinationEntity() {
+        return destinationEntity;
+    }
+
+    public int getDestinationIndex() {
+        return destinationIndex;
+    }
+
+    public Object getMovedValue() {
+        return variableDescriptor.getElement(sourceEntity, sourceIndex);
+    }
+
+    // ************************************************************************
+    // Worker methods
+    // ************************************************************************
+
     @Override
-    protected AbstractMove<Solution_> createUndoMove(ScoreDirector<Solution_> scoreDirector) {
+    public boolean isMoveDoable(ScoreDirector<Solution_> scoreDirector) {
+        // TODO maybe remove this because no such move should be generated
+        // Do not use Object#equals on user-provided domain objects. Relying on user's implementation of Object#equals
+        // opens the opportunity to shoot themselves in the foot if different entities can be equal.
+        return destinationEntity != sourceEntity
+                || (destinationIndex != sourceIndex && destinationIndex != variableDescriptor.getListSize(sourceEntity));
+    }
+
+    @Override
+    public ListChangeMove<Solution_> createUndoMove(ScoreDirector<Solution_> scoreDirector) {
         return new ListChangeMove<>(variableDescriptor, destinationEntity, destinationIndex, sourceEntity, sourceIndex);
     }
 
@@ -129,15 +162,6 @@ public class ListChangeMove<Solution_> extends AbstractMove<Solution_> {
         innerScoreDirector.beforeVariableChanged(variableDescriptor, destinationEntity);
         variableDescriptor.addElement(destinationEntity, destinationIndex, element);
         innerScoreDirector.afterVariableChanged(variableDescriptor, destinationEntity);
-    }
-
-    @Override
-    public boolean isMoveDoable(ScoreDirector<Solution_> scoreDirector) {
-        // TODO maybe remove this because no such move should be generated
-        // Do not use Object#equals on user-provided domain objects. Relying on user's implementation of Object#equals
-        // opens the opportunity to shoot themselves in the foot if different entities can be equal.
-        return destinationEntity != sourceEntity
-                || (destinationIndex != sourceIndex && destinationIndex != variableDescriptor.getListSize(sourceEntity));
     }
 
     // ************************************************************************
@@ -161,30 +185,6 @@ public class ListChangeMove<Solution_> extends AbstractMove<Solution_> {
     @Override
     public Collection<Object> getPlanningValues() {
         return Collections.singleton(getMovedValue());
-    }
-
-    // ************************************************************************
-    // Testing methods
-    // ************************************************************************
-
-    public Object getSourceEntity() {
-        return sourceEntity;
-    }
-
-    public int getSourceIndex() {
-        return sourceIndex;
-    }
-
-    public Object getDestinationEntity() {
-        return destinationEntity;
-    }
-
-    public int getDestinationIndex() {
-        return destinationIndex;
-    }
-
-    public Object getMovedValue() {
-        return variableDescriptor.getElement(sourceEntity, sourceIndex);
     }
 
     @Override

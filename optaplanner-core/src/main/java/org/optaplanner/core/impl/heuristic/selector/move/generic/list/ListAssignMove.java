@@ -40,8 +40,29 @@ public class ListAssignMove<Solution_> extends AbstractMove<Solution_> {
         this.destinationIndex = destinationIndex;
     }
 
+    public Object getDestinationEntity() {
+        return destinationEntity;
+    }
+
+    public int getDestinationIndex() {
+        return destinationIndex;
+    }
+
+    public Object getMovedValue() {
+        return planningValue;
+    }
+
+    // ************************************************************************
+    // Worker methods
+    // ************************************************************************
+
     @Override
-    protected AbstractMove<Solution_> createUndoMove(ScoreDirector<Solution_> scoreDirector) {
+    public boolean isMoveDoable(ScoreDirector<Solution_> scoreDirector) {
+        return true;
+    }
+
+    @Override
+    public ListUnassignMove<Solution_> createUndoMove(ScoreDirector<Solution_> scoreDirector) {
         return new ListUnassignMove<>(variableDescriptor, destinationEntity, destinationIndex);
     }
 
@@ -54,11 +75,6 @@ public class ListAssignMove<Solution_> extends AbstractMove<Solution_> {
         innerScoreDirector.afterVariableChanged(variableDescriptor, destinationEntity);
     }
 
-    @Override
-    public boolean isMoveDoable(ScoreDirector<Solution_> scoreDirector) {
-        return true;
-    }
-
     // ************************************************************************
     // Introspection methods
     // ************************************************************************
@@ -66,22 +82,6 @@ public class ListAssignMove<Solution_> extends AbstractMove<Solution_> {
     @Override
     public String getSimpleMoveTypeDescription() {
         return getClass().getSimpleName() + "(" + variableDescriptor.getSimpleEntityAndVariableName() + ")";
-    }
-
-    // ************************************************************************
-    // Testing methods
-    // ************************************************************************
-
-    public Object getDestinationEntity() {
-        return destinationEntity;
-    }
-
-    public int getDestinationIndex() {
-        return destinationIndex;
-    }
-
-    public Object getMovedValue() {
-        return planningValue;
     }
 
     @Override
