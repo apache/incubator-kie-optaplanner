@@ -75,12 +75,13 @@ public class ListUnassignMove<Solution_> extends AbstractMove<Solution_> {
         if (this == o) {
             return true;
         }
-        if (!(o instanceof ListUnassignMove)) {
+        if (o == null || getClass() != o.getClass()) {
             return false;
         }
-        ListUnassignMove<?> that = (ListUnassignMove<?>) o;
-        return sourceIndex == that.sourceIndex && variableDescriptor.equals(that.variableDescriptor)
-                && sourceEntity.equals(that.sourceEntity);
+        ListUnassignMove<?> other = (ListUnassignMove<?>) o;
+        return sourceIndex == other.sourceIndex
+                && Objects.equals(variableDescriptor, other.variableDescriptor)
+                && Objects.equals(sourceEntity, other.sourceEntity);
     }
 
     @Override
