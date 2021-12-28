@@ -222,7 +222,7 @@ public abstract class AbstractScoreDirector<Solution_, Score_ extends Score<Scor
         if (assertMoveScoreFromScratch) {
             assertWorkingScoreFromScratch(score, move);
         }
-        undoMove.doMove(this);
+        undoMove.doMoveOnly(this);
         return score;
     }
 
@@ -234,7 +234,7 @@ public abstract class AbstractScoreDirector<Solution_, Score_ extends Score<Scor
             assertWorkingScoreFromScratch(score, move);
         }
         moveProcessor.accept(score);
-        undoMove.doMove(this);
+        undoMove.doMoveOnly(this);
     }
 
     @Override

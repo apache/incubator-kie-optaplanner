@@ -4,9 +4,8 @@
 :imagesdir: ../..
 :sectnums:
 :icons: font
-:quickstartsCloneUrl: https://github.com/kiegroup/optaplanner-quickstarts
-:quickstartsArchiveUrl: https://www.optaplanner.org/download/download.html
-:springBootQuickstartUrl: https://github.com/kiegroup/optaplanner-quickstarts/tree/stable/technology/java-spring-boot
+include::../../_attributes.adoc[]
+
 
 // Keep this in sync with quarkus-quickstart.adoc where applicable
 
@@ -45,12 +44,12 @@ Alternatively, you can also skip right to the completed example:
 +
 [source,shell,subs=attributes+]
 ----
-$ git clone {quickstartsCloneUrl}
+$ git clone {quickstarts-clone-url}
 ----
 +
-or download an {quickstartsArchiveUrl}[archive].
+or download an {quickstarts-archive-url}[archive].
 
-. Find the solution in {springBootQuickstartUrl}[the `technology` directory]
+. Find the solution in {spring-boot-quickstart-url}[the `technology` directory]
 and run it (see its README file).
 
 == Prerequisites
@@ -657,4 +656,4 @@ public class TimeTableControllerTest {
 
 . Build an attractive web UI on top of these REST methods to visualize the timetable.
 
-Take a look at {springBootQuickstartUrl}[the quickstart source code] to see how this all turns out.
+Take a look at {spring-boot-quickstart-url}[the quickstart source code] to see how this all turns out.

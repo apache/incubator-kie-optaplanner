@@ -6,7 +6,7 @@
   <parent>
     <groupId>org.optaplanner</groupId>
     <artifactId>optaplanner-build-parent</artifactId>
-    <version>8.15.0-SNAPSHOT</version>
+    <version>8.16.0-SNAPSHOT</version>
     <relativePath>../build/optaplanner-build-parent/pom.xml</relativePath>
   </parent>
 
@@ -55,7 +55,12 @@
     </dependency>
     <dependency>
       <groupId>org.drools</groupId>
-      <artifactId>drools-core-dynamic</artifactId>
+      <artifactId>drools-tms</artifactId>
+      <scope>runtime</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.drools</groupId>
+      <artifactId>drools-wiring-dynamic</artifactId>
       <scope>runtime</scope>
     </dependency>
     <dependency>
