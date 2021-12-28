@@ -89,12 +89,14 @@ public class ListAssignMove<Solution_> extends AbstractMove<Solution_> {
         if (this == o) {
             return true;
         }
-        if (!(o instanceof ListAssignMove)) {
+        if (o == null || getClass() != o.getClass()) {
             return false;
         }
-        ListAssignMove<?> that = (ListAssignMove<?>) o;
-        return destinationIndex == that.destinationIndex && variableDescriptor.equals(that.variableDescriptor)
-                && planningValue.equals(that.planningValue) && destinationEntity.equals(that.destinationEntity);
+        ListAssignMove<?> other = (ListAssignMove<?>) o;
+        return destinationIndex == other.destinationIndex
+                && Objects.equals(variableDescriptor, other.variableDescriptor)
+                && Objects.equals(planningValue, other.planningValue)
+                && Objects.equals(destinationEntity, other.destinationEntity);
     }
 
     @Override

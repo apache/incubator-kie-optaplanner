@@ -16,6 +16,8 @@
 
 package org.optaplanner.core.impl.heuristic.selector.move.generic.list;
 
+import java.util.Objects;
+
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.domain.variable.PlanningCollectionVariable;
 import org.optaplanner.core.api.score.director.ScoreDirector;
@@ -157,6 +159,26 @@ public class ListSwapMove<Solution_> extends AbstractMove<Solution_> {
 
     public Object getRightValue() {
         return variableDescriptor.getElement(rightEntity, rightIndex);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        ListSwapMove<?> other = (ListSwapMove<?>) o;
+        return leftIndex == other.leftIndex && rightIndex == other.rightIndex
+                && Objects.equals(variableDescriptor, other.variableDescriptor)
+                && Objects.equals(leftEntity, other.leftEntity)
+                && Objects.equals(rightEntity, other.rightEntity);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(variableDescriptor, leftEntity, leftIndex, rightEntity, rightIndex);
     }
 
     @Override
