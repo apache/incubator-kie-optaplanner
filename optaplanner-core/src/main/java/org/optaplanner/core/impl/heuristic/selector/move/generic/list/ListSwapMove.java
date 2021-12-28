@@ -16,7 +16,11 @@
 
 package org.optaplanner.core.impl.heuristic.selector.move.generic.list;
 
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.LinkedHashSet;
 import java.util.Objects;
+import java.util.Set;
 
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.domain.variable.PlanningCollectionVariable;
@@ -131,6 +135,20 @@ public class ListSwapMove<Solution_> extends AbstractMove<Solution_> {
     @Override
     public String getSimpleMoveTypeDescription() {
         return getClass().getSimpleName() + "(" + variableDescriptor.getSimpleEntityAndVariableName() + ")";
+    }
+
+    @Override
+    public Collection<Object> getPlanningEntities() {
+        // Use LinkedHashSet for predictable iteration order.
+        Set<Object> entities = new LinkedHashSet<>(2);
+        entities.add(leftEntity);
+        entities.add(rightEntity);
+        return entities;
+    }
+
+    @Override
+    public Collection<Object> getPlanningValues() {
+        return Arrays.asList(getLeftValue(), getRightValue());
     }
 
     // ************************************************************************

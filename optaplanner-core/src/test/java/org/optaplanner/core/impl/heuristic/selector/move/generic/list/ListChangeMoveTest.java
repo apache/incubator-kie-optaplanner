@@ -148,6 +148,26 @@ class ListChangeMoveTest {
     }
 
     @Test
+    void tabuIntrospection() {
+        TestdataListValue v1 = new TestdataListValue("1");
+        TestdataListValue v2 = new TestdataListValue("2");
+        TestdataListValue v3 = new TestdataListValue("3");
+        TestdataListEntity e1 = new TestdataListEntity("e1", v1, v2);
+        TestdataListEntity e2 = new TestdataListEntity("e2", v3);
+
+        ListVariableDescriptor<TestdataListSolution> variableDescriptor =
+                TestdataListEntity.buildVariableDescriptorForValueList();
+
+        ListChangeMove<TestdataListSolution> moveTwoEntities = new ListChangeMove<>(variableDescriptor, e1, 1, e2, 1);
+        assertThat(moveTwoEntities.getPlanningEntities()).containsExactly(e1, e2);
+        assertThat(moveTwoEntities.getPlanningValues()).containsExactly(v2);
+
+        ListChangeMove<TestdataListSolution> moveOneEntity = new ListChangeMove<>(variableDescriptor, e1, 0, e1, 1);
+        assertThat(moveOneEntity.getPlanningEntities()).containsExactly(e1);
+        assertThat(moveOneEntity.getPlanningValues()).containsExactly(v1);
+    }
+
+    @Test
     void toStringTest() {
         TestdataListValue v1 = new TestdataListValue("1");
         TestdataListValue v2 = new TestdataListValue("2");
