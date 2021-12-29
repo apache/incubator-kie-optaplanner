@@ -18,6 +18,7 @@ package org.optaplanner.core.impl.heuristic.selector.move.generic.list;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
+import static org.optaplanner.core.impl.testdata.util.PlannerTestUtils.mockRebasingScoreDirector;
 
 import org.junit.jupiter.api.Test;
 import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
@@ -84,6 +85,54 @@ class ListSwapMoveTest {
         // undo
         undoMove2.doMove(scoreDirector);
         assertThat(e1.getValueList()).containsExactly(v1, v2);
+    }
+
+    @Test
+    public void rebase() {
+        TestdataListValue v1 = new TestdataListValue("1");
+        TestdataListValue v2 = new TestdataListValue("2");
+        TestdataListValue v3 = new TestdataListValue("3");
+        TestdataListEntity e1 = new TestdataListEntity("e1", v1, v2);
+        TestdataListEntity e2 = new TestdataListEntity("e2", v3);
+
+        TestdataListValue destinationV1 = new TestdataListValue("1");
+        TestdataListValue destinationV2 = new TestdataListValue("2");
+        TestdataListValue destinationV3 = new TestdataListValue("3");
+        TestdataListEntity destinationE1 = new TestdataListEntity("e1", destinationV1, destinationV2);
+        TestdataListEntity destinationE2 = new TestdataListEntity("e2", destinationV3);
+
+        ListVariableDescriptor<TestdataListSolution> variableDescriptor =
+                TestdataListEntity.buildVariableDescriptorForValueList();
+
+        ScoreDirector<TestdataListSolution> destinationScoreDirector = mockRebasingScoreDirector(
+                variableDescriptor.getEntityDescriptor().getSolutionDescriptor(), new Object[][] {
+                        { v1, destinationV1 },
+                        { v2, destinationV2 },
+                        { v3, destinationV3 },
+                        { e1, destinationE1 },
+                        { e2, destinationE2 },
+                });
+
+        assertSameProperties(
+                destinationE1, 1, destinationV2,
+                destinationE2, 0, destinationV3,
+                new ListSwapMove<>(variableDescriptor, e1, 1, e2, 0).rebase(destinationScoreDirector));
+        assertSameProperties(
+                destinationE1, 0, destinationV1,
+                destinationE1, 1, destinationV2,
+                new ListSwapMove<>(variableDescriptor, e1, 0, e1, 1).rebase(destinationScoreDirector));
+    }
+
+    private static void assertSameProperties(
+            Object leftEntity, int leftIndex, Object leftValue,
+            Object rightEntity, int rightIndex, Object rightValue,
+            ListSwapMove<?> move) {
+        assertThat(move.getLeftEntity()).isSameAs(leftEntity);
+        assertThat(move.getLeftIndex()).isEqualTo(leftIndex);
+        assertThat(move.getLeftValue()).isSameAs(leftValue);
+        assertThat(move.getRightEntity()).isSameAs(rightEntity);
+        assertThat(move.getRightIndex()).isEqualTo(rightIndex);
+        assertThat(move.getRightValue()).isSameAs(rightValue);
     }
 
     @Test

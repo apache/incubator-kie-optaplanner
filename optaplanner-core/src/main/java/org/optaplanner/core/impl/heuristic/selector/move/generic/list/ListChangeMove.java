@@ -164,6 +164,14 @@ public class ListChangeMove<Solution_> extends AbstractMove<Solution_> {
         innerScoreDirector.afterVariableChanged(variableDescriptor, destinationEntity);
     }
 
+    @Override
+    public ListChangeMove<Solution_> rebase(ScoreDirector<Solution_> destinationScoreDirector) {
+        return new ListChangeMove<>(
+                variableDescriptor,
+                destinationScoreDirector.lookUpWorkingObject(sourceEntity), sourceIndex,
+                destinationScoreDirector.lookUpWorkingObject(destinationEntity), destinationIndex);
+    }
+
     // ************************************************************************
     // Introspection methods
     // ************************************************************************

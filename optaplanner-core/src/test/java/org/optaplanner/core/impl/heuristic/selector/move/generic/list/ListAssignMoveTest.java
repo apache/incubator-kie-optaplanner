@@ -18,9 +18,11 @@ package org.optaplanner.core.impl.heuristic.selector.move.generic.list;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
+import static org.optaplanner.core.impl.testdata.util.PlannerTestUtils.mockRebasingScoreDirector;
 
 import org.junit.jupiter.api.Test;
 import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
+import org.optaplanner.core.api.score.director.ScoreDirector;
 import org.optaplanner.core.impl.domain.variable.descriptor.ListVariableDescriptor;
 import org.optaplanner.core.impl.heuristic.move.AbstractMove;
 import org.optaplanner.core.impl.score.director.InnerScoreDirector;
@@ -57,6 +59,36 @@ class ListAssignMoveTest {
         // v1 -> e1[0]
         new ListAssignMove<>(variableDescriptor, v1, e1, 0).doMove(scoreDirector);
         assertThat(e1.getValueList()).containsExactly(v1, v2, v3);
+    }
+
+    @Test
+    public void rebase() {
+        TestdataListValue v1 = new TestdataListValue("1");
+        TestdataListEntity e1 = new TestdataListEntity("e1");
+
+        TestdataListValue destinationV1 = new TestdataListValue("1");
+        TestdataListEntity destinationE1 = new TestdataListEntity("e1");
+
+        ListVariableDescriptor<TestdataListSolution> variableDescriptor =
+                TestdataListEntity.buildVariableDescriptorForValueList();
+
+        ScoreDirector<TestdataListSolution> destinationScoreDirector = mockRebasingScoreDirector(
+                variableDescriptor.getEntityDescriptor().getSolutionDescriptor(), new Object[][] {
+                        { v1, destinationV1 },
+                        { e1, destinationE1 },
+                });
+
+        assertSameProperties(
+                destinationV1, destinationE1, 0,
+                new ListAssignMove<>(variableDescriptor, v1, e1, 0).rebase(destinationScoreDirector));
+    }
+
+    private static void assertSameProperties(
+            Object movedValue, Object destinationEntity, int destinationIndex,
+            ListAssignMove<?> move) {
+        assertThat(move.getMovedValue()).isSameAs(movedValue);
+        assertThat(move.getDestinationEntity()).isSameAs(destinationEntity);
+        assertThat(move.getDestinationIndex()).isEqualTo(destinationIndex);
     }
 
     @Test
