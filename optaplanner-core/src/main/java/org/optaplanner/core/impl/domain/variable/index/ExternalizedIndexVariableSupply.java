@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-package org.optaplanner.core.impl.domain.variable.inverserelation;
+package org.optaplanner.core.impl.domain.variable.index;
 
-import java.util.IdentityHashMap;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -27,16 +27,16 @@ import org.optaplanner.core.impl.domain.variable.descriptor.VariableDescriptor;
 import org.optaplanner.core.impl.domain.variable.listener.SourcedVariableListener;
 
 /**
- * Alternative to {@link SingletonListInverseVariableListener}.
+ * Alternative to {@link IndexVariableListener}.
  */
-public class ExternalizedSingletonListInverseVariableSupply<Solution_>
-        implements SourcedVariableListener<Solution_, Object>, SingletonInverseVariableSupply {
+public class ExternalizedIndexVariableSupply<Solution_>
+        implements SourcedVariableListener<Solution_, Object>, IndexVariableSupply {
 
     protected final ListVariableDescriptor<Solution_> sourceVariableDescriptor;
 
-    protected Map<Object, Object> inverseEntityMap = null;
+    protected Map<Object, Integer> indexMap = null;
 
-    public ExternalizedSingletonListInverseVariableSupply(ListVariableDescriptor<Solution_> sourceVariableDescriptor) {
+    public ExternalizedIndexVariableSupply(ListVariableDescriptor<Solution_> sourceVariableDescriptor) {
         this.sourceVariableDescriptor = sourceVariableDescriptor;
     }
 
@@ -49,7 +49,7 @@ public class ExternalizedSingletonListInverseVariableSupply<Solution_>
     public void resetWorkingSolution(ScoreDirector<Solution_> scoreDirector) {
         EntityDescriptor<Solution_> entityDescriptor = sourceVariableDescriptor.getEntityDescriptor();
         List<Object> entityList = entityDescriptor.extractEntities(scoreDirector.getWorkingSolution());
-        inverseEntityMap = new IdentityHashMap<>(entityList.size());
+        indexMap = new HashMap<>();
         for (Object entity : entityList) {
             insert(scoreDirector, entity);
         }
@@ -57,7 +57,7 @@ public class ExternalizedSingletonListInverseVariableSupply<Solution_>
 
     @Override
     public void close() {
-        inverseEntityMap = null;
+        indexMap = null;
     }
 
     @Override
@@ -91,42 +91,23 @@ public class ExternalizedSingletonListInverseVariableSupply<Solution_>
         // Do nothing
     }
 
-    protected void insert(ScoreDirector<Solution_> scoreDirector, Object entity) {
-        List<Object> listVariable = sourceVariableDescriptor.getListVariable(entity);
-        if (listVariable == null) {
-            return;
-        }
-        for (Object value : listVariable) {
-            Object oldInverseEntity = inverseEntityMap.put(value, entity);
-            if (oldInverseEntity != null) {
-                throw new IllegalStateException("The supply (" + this + ") is corrupted,"
-                        + " because the entity (" + entity
-                        + ") for sourceVariable (" + sourceVariableDescriptor.getVariableName()
-                        + ") cannot be inserted: another entity (" + oldInverseEntity
-                        + ") already has that value (" + value + ").");
-            }
+    private void insert(ScoreDirector<Solution_> scoreDirector, Object entity) {
+        int i = 0;
+        for (Object shadowEntity : sourceVariableDescriptor.getListVariable(entity)) {
+            indexMap.put(shadowEntity, i);
+            i++;
         }
     }
 
-    protected void retract(ScoreDirector<Solution_> scoreDirector, Object entity) {
-        List<Object> listVariable = sourceVariableDescriptor.getListVariable(entity);
-        if (listVariable == null) {
-            return;
-        }
-        for (Object value : listVariable) {
-            Object oldInverseEntity = inverseEntityMap.remove(value);
-            if (oldInverseEntity != entity) {
-                throw new IllegalStateException("The supply (" + this + ") is corrupted,"
-                        + " because the entity (" + entity
-                        + ") for sourceVariable (" + sourceVariableDescriptor.getVariableName()
-                        + ") cannot be retracted: the entity was never inserted for that value (" + value + ").");
-            }
+    private void retract(ScoreDirector<Solution_> scoreDirector, Object entity) {
+        for (Object shadowEntity : sourceVariableDescriptor.getListVariable(entity)) {
+            indexMap.remove(shadowEntity);
         }
     }
 
     @Override
-    public Object getInverseSingleton(Object value) {
-        return inverseEntityMap.get(value);
+    public Integer getIndex(Object planningValue) {
+        return indexMap.get(planningValue);
     }
 
     @Override
