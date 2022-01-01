@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.optaplanner.core.impl.domain.variable.inverserelation;
+package org.optaplanner.core.impl.domain.variable.index;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
@@ -30,15 +30,15 @@ import org.optaplanner.core.impl.testdata.domain.list.TestdataListEntity;
 import org.optaplanner.core.impl.testdata.domain.list.TestdataListSolution;
 import org.optaplanner.core.impl.testdata.domain.list.TestdataListValue;
 
-class ExternalizedSingletonListInverseVariableSupplyTest {
+class ExternalizedIndexVariableSupplyTest {
 
     @Test
     public void listVariable() {
         ListVariableDescriptor<TestdataListSolution> variableDescriptor =
                 TestdataListEntity.buildVariableDescriptorForValueList();
         ScoreDirector<TestdataListSolution> scoreDirector = mock(ScoreDirector.class);
-        ExternalizedSingletonListInverseVariableSupply<TestdataListSolution> supply =
-                new ExternalizedSingletonListInverseVariableSupply<>(variableDescriptor);
+        ExternalizedIndexVariableSupply<TestdataListSolution> supply =
+                new ExternalizedIndexVariableSupply<>(variableDescriptor);
 
         TestdataListValue v1 = new TestdataListValue("1");
         TestdataListValue v2 = new TestdataListValue("2");
@@ -53,35 +53,37 @@ class ExternalizedSingletonListInverseVariableSupplyTest {
         when(scoreDirector.getWorkingSolution()).thenReturn(solution);
         supply.resetWorkingSolution(scoreDirector);
 
-        // Inverse variable is set immediately after the working solution is reset.
-        assertThat(supply.getInverseSingleton(v1)).isSameAs(e1);
-        assertThat(supply.getInverseSingleton(v2)).isSameAs(e1);
-        assertThat(supply.getInverseSingleton(v3)).isSameAs(e2);
+        // Indexes are set immediately after the working solution is reset.
+        assertThat(supply.getIndex(v1)).isEqualTo(0);
+        assertThat(supply.getIndex(v2)).isEqualTo(1);
+        assertThat(supply.getIndex(v3)).isEqualTo(0);
 
-        // Move v1 from e1[0] to e2[1].
+        // Move v3 from e2[0] to e1[2].
+        supply.beforeVariableChanged(scoreDirector, e2);
+        e2.getValueList().remove(v3);
+        supply.afterVariableChanged(scoreDirector, e2);
+        supply.beforeVariableChanged(scoreDirector, e1);
+        e1.getValueList().add(v3);
+        supply.afterVariableChanged(scoreDirector, e1);
+
+        assertThat(supply.getIndex(v3)).isEqualTo(2);
+
+        // Unassign v1 from e1.
         supply.beforeVariableChanged(scoreDirector, e1);
         e1.getValueList().remove(v1);
         supply.afterVariableChanged(scoreDirector, e1);
-        supply.beforeVariableChanged(scoreDirector, e2);
-        e2.getValueList().add(v1);
-        supply.afterVariableChanged(scoreDirector, e2);
 
-        assertThat(supply.getInverseSingleton(v1)).isSameAs(e2);
+        assertThat(supply.getIndex(v1)).isNull();
+        assertThat(supply.getIndex(v2)).isEqualTo(0);
+        assertThat(supply.getIndex(v3)).isEqualTo(1);
 
-        // Remove e2.
-        supply.beforeEntityRemoved(scoreDirector, e2);
-        solution.getEntityList().remove(e2);
-        supply.afterEntityRemoved(scoreDirector, e2);
+        // Remove e1.
+        supply.beforeEntityRemoved(scoreDirector, e1);
+        solution.getEntityList().remove(e1);
+        supply.afterEntityRemoved(scoreDirector, e1);
 
-        assertThat(supply.getInverseSingleton(v1)).isNull();
-        assertThat(supply.getInverseSingleton(v3)).isNull();
-
-        // Unassign v2 from e1.
-        supply.beforeVariableChanged(scoreDirector, e1);
-        e1.getValueList().remove(v2);
-        supply.afterVariableChanged(scoreDirector, e1);
-
-        assertThat(supply.getInverseSingleton(v2)).isNull();
+        assertThat(supply.getIndex(v2)).isNull();
+        assertThat(supply.getIndex(v3)).isNull();
 
         supply.close();
     }

@@ -36,8 +36,7 @@ public class IndexVariableDemand<Solution_> implements Demand<Solution_, IndexVa
 
     @Override
     public IndexVariableSupply createExternalizedSupply(InnerScoreDirector<Solution_, ?> scoreDirector) {
-        // TODO implement this
-        throw new UnsupportedOperationException("Needs inverse relation supply.");
+        return new ExternalizedIndexVariableSupply<>(sourceVariableDescriptor);
     }
 
     // ************************************************************************
