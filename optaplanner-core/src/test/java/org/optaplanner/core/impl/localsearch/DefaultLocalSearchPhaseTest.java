@@ -33,6 +33,8 @@ import org.optaplanner.core.impl.testdata.domain.TestdataValue;
 import org.optaplanner.core.impl.testdata.domain.list.TestdataListEntity;
 import org.optaplanner.core.impl.testdata.domain.list.TestdataListSolution;
 import org.optaplanner.core.impl.testdata.domain.list.TestdataListValue;
+import org.optaplanner.core.impl.testdata.domain.list.externalized.TestdataListEntityExternalized;
+import org.optaplanner.core.impl.testdata.domain.list.externalized.TestdataListSolutionExternalized;
 import org.optaplanner.core.impl.testdata.domain.pinned.TestdataPinnedEntity;
 import org.optaplanner.core.impl.testdata.domain.pinned.TestdataPinnedSolution;
 import org.optaplanner.core.impl.testdata.util.PlannerTestUtils;
@@ -208,6 +210,17 @@ public class DefaultLocalSearchPhaseTest {
                 TestdataListSolution.class, TestdataListEntity.class, TestdataListValue.class);
 
         TestdataListSolution solution = TestdataListSolution.generateUninitializedSolution(6, 2);
+
+        solution = PlannerTestUtils.solve(solverConfig, solution);
+        assertThat(solution).isNotNull();
+    }
+
+    @Test
+    public void solveListVariableWithExternalizedInverseAndIndexSupplies() {
+        SolverConfig solverConfig = PlannerTestUtils.buildSolverConfig(
+                TestdataListSolutionExternalized.class, TestdataListEntityExternalized.class);
+
+        TestdataListSolutionExternalized solution = TestdataListSolutionExternalized.generateUninitializedSolution(6, 2);
 
         solution = PlannerTestUtils.solve(solverConfig, solution);
         assertThat(solution).isNotNull();
