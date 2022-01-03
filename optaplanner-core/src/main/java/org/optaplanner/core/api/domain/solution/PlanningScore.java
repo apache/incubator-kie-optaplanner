@@ -27,6 +27,8 @@ import org.optaplanner.core.api.score.AbstractBendableScore;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.solver.Solver;
 import org.optaplanner.core.impl.score.definition.ScoreDefinition;
+import org.optaplanner.core.impl.score.holder.AbstractScoreHolder;
+import org.optaplanner.core.impl.score.stream.common.inliner.AbstractScoreInliner;
 
 /**
  * Specifies that a property (or a field) on a {@link PlanningSolution} class holds the {@link Score} of that solution.
@@ -66,11 +68,15 @@ public @interface PlanningScore {
      * Overrides the default determined {@link ScoreDefinition} to implement a custom one.
      * <p>
      * If this is not specified, the {@link ScoreDefinition} is automatically determined
-     * based on the return type of the annotated property (or field) on a {@link PlanningSolution} .
+     * based on the return type of the annotated property (r field) on a {@link PlanningSolution} .
      *
-     * @deprecated Support for custom scores has been removed. Setting this has no effect.
+     * @deprecated Support for custom scores is deprecated and will be removed in a future version of OptaPlanner.
+     *             In the meantime, set {@link AbstractScoreInliner#CUSTOM_SCORE_INLINER_CLASS_PROPERTY_NAME} or
+     *             {@link AbstractScoreHolder#CUSTOM_SCORE_HOLDER_CLASS_PROPERTY_NAME} system property
+     *             to provide your custom score inliner or score holder respectively.
      * @return has no effect
      */
+    @Deprecated(forRemoval = true)
     Class<? extends ScoreDefinition> scoreDefinitionClass() default NullScoreDefinition.class;
 
     /** Workaround for annotation limitation in {@link #scoreDefinitionClass()}. */

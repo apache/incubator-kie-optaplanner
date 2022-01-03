@@ -16,6 +16,7 @@
 
 package org.optaplanner.core.impl.score.stream.common.inliner;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -56,6 +57,10 @@ import org.optaplanner.core.impl.score.constraint.DefaultIndictment;
 import org.optaplanner.core.impl.score.definition.ScoreDefinition;
 
 public abstract class AbstractScoreInliner<Score_ extends Score<Score_>> {
+
+    @Deprecated(forRemoval = true)
+    public static final String CUSTOM_SCORE_INLINER_CLASS_PROPERTY_NAME =
+            "org.optaplanner.score.stream.inliner";
 
     public static <Score_ extends Score<Score_>, ScoreInliner_ extends AbstractScoreInliner<Score_>> ScoreInliner_
             buildScoreInliner(ScoreDefinition<Score_> scoreDefinition, Map<Constraint, Score_> constraintIdToWeightMap,
@@ -103,8 +108,31 @@ public abstract class AbstractScoreInliner<Score_ extends Score<Score_>> {
                     (Map<Constraint, BendableBigDecimalScore>) constraintIdToWeightMap, constraintMatchEnabled,
                     bendableScoreDefinition.getHardLevelsSize(), bendableScoreDefinition.getSoftLevelsSize());
         } else {
-            throw new UnsupportedOperationException("Impossible state: unknown score definition (" +
-                    scoreDefinition.getClass().getCanonicalName() + ").");
+            String customScoreInlinerClassName = System.getProperty(CUSTOM_SCORE_INLINER_CLASS_PROPERTY_NAME);
+            if (customScoreInlinerClassName == null) {
+                throw new UnsupportedOperationException("Unknown score definition class (" +
+                        scoreDefinition.getClass().getCanonicalName() + ").\n" +
+                        "If you're attempting to use a custom score, " +
+                        "provide your " + AbstractScoreInliner.class.getSimpleName() + " implementation using the '" +
+                        CUSTOM_SCORE_INLINER_CLASS_PROPERTY_NAME + "' system property.\n" +
+                        "Note: support for custom scores will be removed in a future version of OptaPlanner.");
+            }
+            try {
+                Class<?> customScoreInlinerClass = Class.forName(customScoreInlinerClassName);
+                if (!AbstractScoreInliner.class.isAssignableFrom(customScoreInlinerClass)) {
+                    throw new IllegalStateException("Custom score inliner class (" + customScoreInlinerClassName +
+                            ") does not extend " + AbstractScoreInliner.class.getCanonicalName() + ".\n" +
+                            "Note: support for custom scores will be removed in a future version of OptaPlanner.");
+                }
+                return ((Class<ScoreInliner_>) customScoreInlinerClass).getConstructor()
+                        .newInstance();
+            } catch (ClassNotFoundException | NoSuchMethodException | InstantiationException | IllegalAccessException
+                    | InvocationTargetException cause) {
+                throw new IllegalStateException("Custom score inliner class (" + customScoreInlinerClassName +
+                        ") can not be instantiated.\n" +
+                        "Maybe add a no-arg public constructor?\n" +
+                        "Note: support for custom scores will be removed in a future version of OptaPlanner.", cause);
+            }
         }
     }
 
