@@ -61,6 +61,13 @@ public class ExternalizedSingletonListInverseVariableSupply<Solution_>
     }
 
     @Override
+    public boolean requiresUniqueEntityEvents() {
+        // A move on a single entity produces multiple before/after variable changed events for the given entity
+        // but the corrupted supply checks in insert/retract methods require a unique pair of before/after events.
+        return true;
+    }
+
+    @Override
     public void beforeEntityAdded(ScoreDirector<Solution_> scoreDirector, Object entity) {
         // Do nothing
     }
