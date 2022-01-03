@@ -59,7 +59,7 @@ import org.optaplanner.core.impl.score.definition.ScoreDefinition;
 public abstract class AbstractScoreInliner<Score_ extends Score<Score_>> {
 
     @Deprecated(forRemoval = true)
-    public static final String CUSTOM_SCORE_INLINER_CLASS_PROPERTY_NAME =
+    private static final String CUSTOM_SCORE_INLINER_CLASS_PROPERTY_NAME =
             "org.optaplanner.score.stream.inliner";
 
     public static <Score_ extends Score<Score_>, ScoreInliner_ extends AbstractScoreInliner<Score_>> ScoreInliner_
@@ -115,14 +115,14 @@ public abstract class AbstractScoreInliner<Score_ extends Score<Score_>> {
                         "If you're attempting to use a custom score, " +
                         "provide your " + AbstractScoreInliner.class.getSimpleName() + " implementation using the '" +
                         CUSTOM_SCORE_INLINER_CLASS_PROPERTY_NAME + "' system property.\n" +
-                        "Note: support for custom scores will be removed in a future version of OptaPlanner.");
+                        "Note: support for custom scores will be removed in OptaPlanner 9.0.");
             }
             try {
                 Class<?> customScoreInlinerClass = Class.forName(customScoreInlinerClassName);
                 if (!AbstractScoreInliner.class.isAssignableFrom(customScoreInlinerClass)) {
                     throw new IllegalStateException("Custom score inliner class (" + customScoreInlinerClassName +
                             ") does not extend " + AbstractScoreInliner.class.getCanonicalName() + ".\n" +
-                            "Note: support for custom scores will be removed in a future version of OptaPlanner.");
+                            "Note: support for custom scores will be removed in OptaPlanner 9.0.");
                 }
                 return ((Class<ScoreInliner_>) customScoreInlinerClass).getConstructor()
                         .newInstance();
@@ -131,7 +131,7 @@ public abstract class AbstractScoreInliner<Score_ extends Score<Score_>> {
                 throw new IllegalStateException("Custom score inliner class (" + customScoreInlinerClassName +
                         ") can not be instantiated.\n" +
                         "Maybe add a no-arg public constructor?\n" +
-                        "Note: support for custom scores will be removed in a future version of OptaPlanner.", cause);
+                        "Note: support for custom scores will be removed in OptaPlanner 9.0.", cause);
             }
         }
     }
