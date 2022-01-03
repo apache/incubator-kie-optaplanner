@@ -19,6 +19,7 @@ package org.optaplanner.core.impl.domain.variable.index;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 import org.optaplanner.core.api.score.director.ScoreDirector;
 import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
@@ -61,6 +62,13 @@ public class ExternalizedIndexVariableSupply<Solution_>
     }
 
     @Override
+    public boolean requiresUniqueEntityEvents() {
+        // A move on a single entity produces multiple before/after variable changed events for the given entity
+        // but the corrupted supply checks in insert/retract methods require a unique pair of before/after events.
+        return true;
+    }
+
+    @Override
     public void beforeEntityAdded(ScoreDirector<Solution_> scoreDirector, Object entity) {
         // Do nothing
     }
@@ -92,16 +100,32 @@ public class ExternalizedIndexVariableSupply<Solution_>
     }
 
     private void insert(ScoreDirector<Solution_> scoreDirector, Object entity) {
-        int i = 0;
-        for (Object shadowEntity : sourceVariableDescriptor.getListVariable(entity)) {
-            indexMap.put(shadowEntity, i);
-            i++;
+        int index = 0;
+        for (Object value : sourceVariableDescriptor.getListVariable(entity)) {
+            Integer oldIndex = indexMap.put(value, index);
+            if (oldIndex != null) {
+                throw new IllegalStateException("The supply (" + this + ") is corrupted,"
+                        + " because the entity (" + entity
+                        + ") for sourceVariable (" + sourceVariableDescriptor.getVariableName()
+                        + ") cannot be inserted: one of its values (" + value
+                        + ") at index (" + index + ") already has a non-null oldIndex (" + oldIndex + ").");
+            }
+            index++;
         }
     }
 
     private void retract(ScoreDirector<Solution_> scoreDirector, Object entity) {
-        for (Object shadowEntity : sourceVariableDescriptor.getListVariable(entity)) {
-            indexMap.remove(shadowEntity);
+        int index = 0;
+        for (Object value : sourceVariableDescriptor.getListVariable(entity)) {
+            Integer oldIndex = indexMap.remove(value);
+            if (!Objects.equals(oldIndex, index)) {
+                throw new IllegalStateException("The supply (" + this + ") is corrupted,"
+                        + " because the entity (" + entity
+                        + ") for sourceVariable (" + sourceVariableDescriptor.getVariableName()
+                        + ") cannot be retracted: one of its values (" + value
+                        + ") at index (" + index + ") already has an unexpected oldIndex (" + oldIndex + ").");
+            }
+            index++;
         }
     }
 

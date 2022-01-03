@@ -109,8 +109,8 @@ public class ExternalizedSingletonListInverseVariableSupply<Solution_>
                 throw new IllegalStateException("The supply (" + this + ") is corrupted,"
                         + " because the entity (" + entity
                         + ") for sourceVariable (" + sourceVariableDescriptor.getVariableName()
-                        + ") cannot be inserted: another entity (" + oldInverseEntity
-                        + ") already has that value (" + value + ").");
+                        + ") cannot be inserted: one of its values (" + value
+                        + ") already has a non-null oldInverseEntity (" + oldInverseEntity + ").");
             }
         }
     }
@@ -126,7 +126,8 @@ public class ExternalizedSingletonListInverseVariableSupply<Solution_>
                 throw new IllegalStateException("The supply (" + this + ") is corrupted,"
                         + " because the entity (" + entity
                         + ") for sourceVariable (" + sourceVariableDescriptor.getVariableName()
-                        + ") cannot be retracted: the entity was never inserted for that value (" + value + ").");
+                        + ") cannot be retracted: one of its values (" + value
+                        + ") has an unexpected oldInverseEntity (" + oldInverseEntity + ").");
             }
         }
     }
