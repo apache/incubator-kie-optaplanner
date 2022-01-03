@@ -17,7 +17,6 @@
 package org.optaplanner.core.impl.domain.variable.inverserelation;
 
 import java.util.List;
-import java.util.Objects;
 
 import org.optaplanner.core.api.domain.variable.VariableListener;
 import org.optaplanner.core.api.score.director.ScoreDirector;
@@ -28,13 +27,20 @@ public class SingletonListInverseVariableListener<Solution_>
         implements VariableListener<Solution_, Object>, SingletonInverseVariableSupply {
 
     protected final InverseRelationShadowVariableDescriptor<Solution_> shadowVariableDescriptor;
-    protected final ListVariableDescriptor<Solution_> sourceListVariableDescriptor;
+    protected final ListVariableDescriptor<Solution_> sourceVariableDescriptor;
 
     public SingletonListInverseVariableListener(
             InverseRelationShadowVariableDescriptor<Solution_> shadowVariableDescriptor,
-            ListVariableDescriptor<Solution_> sourceListVariableDescriptor) {
+            ListVariableDescriptor<Solution_> sourceVariableDescriptor) {
         this.shadowVariableDescriptor = shadowVariableDescriptor;
-        this.sourceListVariableDescriptor = sourceListVariableDescriptor;
+        this.sourceVariableDescriptor = sourceVariableDescriptor;
+    }
+
+    @Override
+    public boolean requiresUniqueEntityEvents() {
+        // A move on a single entity produces multiple before/after variable changed events for the given entity
+        // but the corrupted input problem checks in insert/retract methods require a unique pair of before/after events.
+        return true;
     }
 
     @Override
@@ -67,29 +73,45 @@ public class SingletonListInverseVariableListener<Solution_>
         // Do nothing
     }
 
-    protected void insert(InnerScoreDirector<Solution_, ?> scoreDirector, Object sourceEntity) {
-        List<Object> listVariable = sourceListVariableDescriptor.getListVariable(sourceEntity);
+    protected void insert(InnerScoreDirector<Solution_, ?> scoreDirector, Object entity) {
+        List<Object> listVariable = sourceVariableDescriptor.getListVariable(entity);
         if (listVariable == null) {
             return;
         }
-        for (Object shadowEntity : listVariable) {
-            if (!Objects.equals(shadowVariableDescriptor.getValue(shadowEntity), sourceEntity)) {
-                scoreDirector.beforeVariableChanged(shadowVariableDescriptor, shadowEntity);
-                shadowVariableDescriptor.setValue(shadowEntity, sourceEntity);
-                scoreDirector.afterVariableChanged(shadowVariableDescriptor, shadowEntity);
+        for (Object value : listVariable) {
+            Object oldInverseEntity = shadowVariableDescriptor.getValue(value);
+            if (oldInverseEntity != null) {
+                throw new IllegalStateException("The entity (" + entity
+                        + ") has a list variable (" + sourceVariableDescriptor.getVariableName()
+                        + ") and one of its values (" + value
+                        + ") which has a shadow variable (" + shadowVariableDescriptor.getVariableName()
+                        + ") has an oldInverseEntity (" + oldInverseEntity + ") which is not null.\n"
+                        + "Verify the consistency of your input problem for that shadow variable.");
             }
+            scoreDirector.beforeVariableChanged(shadowVariableDescriptor, value);
+            shadowVariableDescriptor.setValue(value, entity);
+            scoreDirector.afterVariableChanged(shadowVariableDescriptor, value);
         }
     }
 
-    protected void retract(InnerScoreDirector<Solution_, ?> scoreDirector, Object sourceEntity) {
-        List<Object> listVariable = sourceListVariableDescriptor.getListVariable(sourceEntity);
+    protected void retract(InnerScoreDirector<Solution_, ?> scoreDirector, Object entity) {
+        List<Object> listVariable = sourceVariableDescriptor.getListVariable(entity);
         if (listVariable == null) {
             return;
         }
-        for (Object shadowEntity : listVariable) {
-            scoreDirector.beforeVariableChanged(shadowVariableDescriptor, shadowEntity);
-            shadowVariableDescriptor.setValue(shadowEntity, null);
-            scoreDirector.afterVariableChanged(shadowVariableDescriptor, shadowEntity);
+        for (Object value : listVariable) {
+            Object oldInverseEntity = shadowVariableDescriptor.getValue(value);
+            if (oldInverseEntity != entity) {
+                throw new IllegalStateException("The entity (" + entity
+                        + ") has a list variable (" + sourceVariableDescriptor.getVariableName()
+                        + ") and one of its values (" + value
+                        + ") which has a shadow variable (" + shadowVariableDescriptor.getVariableName()
+                        + ") has an oldInverseEntity (" + oldInverseEntity + ") which is not that entity.\n"
+                        + "Verify the consistency of your input problem for that shadow variable.");
+            }
+            scoreDirector.beforeVariableChanged(shadowVariableDescriptor, value);
+            shadowVariableDescriptor.setValue(value, null);
+            scoreDirector.afterVariableChanged(shadowVariableDescriptor, value);
         }
     }
 
