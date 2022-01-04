@@ -24,11 +24,10 @@ import java.awt.GridLayout;
 import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
 import java.awt.event.ItemEvent;
-import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -308,21 +307,18 @@ public class TaskOverviewPanel extends JPanel implements Scrollable {
 
         private TaskOrEmployeeIcon(Task task) {
             priorityIcon = priorityIcons[task.getPriority().ordinal()];
-            List<Skill> skillList = task.getTaskType().getRequiredSkillList();
-            skillColorList = new ArrayList<>(skillList.size());
-            for (Skill skill : skillList) {
-                skillColorList.add(skillColorFactory.pickColor(skill));
-            }
+            skillColorList = task.getTaskType().getRequiredSkillList().stream()
+                    .map(skillColorFactory::pickColor)
+                    .collect(Collectors.toList());
             affinityIcon = affinityIcons[task.getAffinity().ordinal()];
         }
 
         private TaskOrEmployeeIcon(Employee employee) {
             priorityIcon = null;
-            Set<Skill> skillSet = employee.getSkillSet();
-            skillColorList = new ArrayList<>(skillSet.size());
-            for (Skill skill : skillSet) {
-                skillColorList.add(skillColorFactory.pickColor(skill));
-            }
+            skillColorList = employee.getSkillSet().stream()
+                    .sorted(Comparator.comparing(Skill::getName))
+                    .map(skillColorFactory::pickColor)
+                    .collect(Collectors.toList());
             affinityIcon = null;
         }
 
