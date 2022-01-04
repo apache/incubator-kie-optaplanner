@@ -38,6 +38,7 @@ import javax.swing.DefaultComboBoxModel;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -47,7 +48,10 @@ import javax.swing.Scrollable;
 import javax.swing.SwingConstants;
 
 import org.optaplanner.core.impl.domain.variable.descriptor.ListVariableDescriptor;
+import org.optaplanner.core.impl.heuristic.move.Move;
+import org.optaplanner.core.impl.heuristic.selector.move.generic.list.ListAssignMove;
 import org.optaplanner.core.impl.heuristic.selector.move.generic.list.ListChangeMove;
+import org.optaplanner.core.impl.heuristic.selector.move.generic.list.ListUnassignMove;
 import org.optaplanner.examples.common.swingui.SolutionPanel;
 import org.optaplanner.examples.common.swingui.components.LabeledComboBoxRenderer;
 import org.optaplanner.examples.taskassigning_listvariable.domain.Employee;
@@ -187,16 +191,16 @@ public class TaskOverviewPanel extends JPanel implements Scrollable {
         public void actionPerformed(ActionEvent e) {
             JComboBox<Integer> indexListField = new JComboBox<>();
             List<Employee> employees = taskAssigningPanel.getSolution().getEmployeeList();
-            // Add 1 to array size to add null, which makes the entity unassigned
-            // FIXME unassigning
-            // FIXME moving task at the end of the current employee's task list
-            JComboBox<Employee> employeeListField = new JComboBox<>(employees.toArray(new Employee[employees.size() + 1]));
+            JComboBox<Employee> employeeListField = new JComboBox<>(employees.toArray(new Employee[0]));
             employeeListField.addItemListener(itemEvent -> {
                 if (itemEvent.getStateChange() == ItemEvent.SELECTED) {
-                    Employee employee = (Employee) itemEvent.getItem();
-                    int size = employee.getTasks() == null ? 0 : employee.getTasks().size();
-                    Integer[] data = new Integer[size + 1];
-                    IntStream.rangeClosed(0, size).boxed().collect(Collectors.toList()).toArray(data);
+                    Employee selectedEmployee = (Employee) itemEvent.getItem();
+                    int availableIndexes = selectedEmployee.getTasks() == null ? 0 : selectedEmployee.getTasks().size();
+                    if (selectedEmployee == task.getEmployee()) {
+                        availableIndexes--;
+                    }
+                    Integer[] data = new Integer[availableIndexes + 1];
+                    IntStream.rangeClosed(0, availableIndexes).boxed().collect(Collectors.toList()).toArray(data);
                     indexListField.setModel(new DefaultComboBoxModel<>(data));
                 }
             });
@@ -204,30 +208,62 @@ public class TaskOverviewPanel extends JPanel implements Scrollable {
             // Without selecting null first, the next select wouldn't call the item listener if the selected employee
             // is the first on the list (and the index combo wouldn't be populated).
             employeeListField.setSelectedItem(null);
-            employeeListField.setSelectedItem(task.getEmployee());
+            if (task.getEmployee() == null) {
+                employeeListField.setSelectedIndex(0);
+            } else {
+                employeeListField.setSelectedItem(task.getEmployee());
+            }
 
-            JPanel listFieldsPanel = new JPanel(new GridLayout(3, 1));
+            JCheckBox unassignCheckBox = new JCheckBox("Or unassign.");
+            unassignCheckBox.addActionListener(checkBoxEvent -> {
+                employeeListField.setEnabled(!unassignCheckBox.isSelected());
+                indexListField.setEnabled(!unassignCheckBox.isSelected());
+            });
+            unassignCheckBox.setVisible(task.getEmployee() != null);
+
+            JPanel listFieldsPanel = new JPanel(new GridLayout(4, 1));
             listFieldsPanel.add(new JLabel("Select employee and index:"));
             listFieldsPanel.add(employeeListField);
             listFieldsPanel.add(indexListField);
+            listFieldsPanel.add(unassignCheckBox);
             int result = JOptionPane.showConfirmDialog(TaskOverviewPanel.this.getRootPane(),
                     listFieldsPanel, "Move " + task.getCode(),
                     JOptionPane.OK_CANCEL_OPTION);
             if (result == JOptionPane.OK_OPTION) {
-                Employee selectedEmployee = (Employee) employeeListField.getSelectedItem();
-                Integer selectedIndex = (Integer) indexListField.getSelectedItem();
-                ListChangeMove<TaskAssigningSolution> changeMove = new ListChangeMove<>(
-                        (ListVariableDescriptor<TaskAssigningSolution>) taskAssigningPanel.getSolutionBusiness()
-                                .variableDescriptor(task.getEmployee(), "tasks"),
-                        task.getEmployee(),
-                        task.getIndex(),
-                        selectedEmployee,
-                        selectedIndex);
-                taskAssigningPanel.getSolutionBusiness().doMove(changeMove);
+                Move<TaskAssigningSolution> move;
+                if (unassignCheckBox.isSelected()) {
+                    move = new ListUnassignMove<>(
+                            getTaskListVariableDescriptor(task.getEmployee()),
+                            task.getEmployee(),
+                            task.getIndex());
+                } else {
+                    Employee selectedEmployee = (Employee) employeeListField.getSelectedItem();
+                    Integer selectedIndex = (Integer) indexListField.getSelectedItem();
+                    if (task.getEmployee() == null) {
+                        move = new ListAssignMove<>(
+                                getTaskListVariableDescriptor(selectedEmployee),
+                                task,
+                                selectedEmployee,
+                                selectedIndex);
+                    } else {
+                        move = new ListChangeMove<>(
+                                getTaskListVariableDescriptor(selectedEmployee),
+                                task.getEmployee(),
+                                task.getIndex(),
+                                selectedEmployee,
+                                selectedIndex);
+                    }
+                }
+                taskAssigningPanel.getSolutionBusiness().doMove(move);
                 taskAssigningPanel.getSolverAndPersistenceFrame().resetScreen();
             }
         }
 
+    }
+
+    private ListVariableDescriptor<TaskAssigningSolution> getTaskListVariableDescriptor(Employee employee) {
+        return (ListVariableDescriptor<TaskAssigningSolution>) taskAssigningPanel.getSolutionBusiness()
+                .findVariableDescriptor(employee, "tasks");
     }
 
     @Override
