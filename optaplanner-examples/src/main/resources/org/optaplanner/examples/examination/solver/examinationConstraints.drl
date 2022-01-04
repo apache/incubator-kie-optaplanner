@@ -156,7 +156,7 @@ rule "periodSpread"
         $topicConflict : TopicConflict($leftTopic : leftTopic, $rightTopic : rightTopic)
         $leftExam : Exam(topic == $leftTopic, $leftPeriodIndex : periodIndex, period != null)
         $rightExam : Exam(topic == $rightTopic, period != null,
-            Math.abs($leftPeriodIndex - periodIndex) < ($constraintConfiguration.getPeriodSpreadLength() + 1))
+            (int) Math.abs($leftPeriodIndex - periodIndex) < ($constraintConfiguration.getPeriodSpreadLength() + 1))
     then
         scoreHolder.penalize(kcontext, $topicConflict.getStudentSize());
 end
