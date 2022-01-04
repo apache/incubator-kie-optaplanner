@@ -24,10 +24,9 @@ import java.awt.GridLayout;
 import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
 import java.awt.event.ItemEvent;
+import java.util.ArrayList;
 import java.util.Comparator;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -96,39 +95,39 @@ public class TaskOverviewPanel extends JPanel implements Scrollable {
         removeAll();
         skillColorFactory = new TangoColorFactory();
         List<Employee> employeeList = taskAssigningSolution.getEmployeeList();
-        Map<Employee, Integer> employeeIndexMap = new HashMap<>(employeeList.size());
-        int employeeIndex = 0;
+        List<Task> unassignedTaskList = new ArrayList<>(taskAssigningSolution.getTaskList());
+        List<JButton> taskButtonList = new ArrayList<>(taskAssigningSolution.getTaskList().size());
+
+        int rowIndex = 0;
         for (Employee employee : employeeList) {
             JLabel employeeLabel = new JLabel(employee.getLabel(), new TaskOrEmployeeIcon(employee), SwingConstants.LEFT);
             employeeLabel.setOpaque(true);
             employeeLabel.setToolTipText(employee.getToolText());
-            employeeLabel.setLocation(0, HEADER_ROW_HEIGHT + employeeIndex * ROW_HEIGHT);
+            employeeLabel.setLocation(0, HEADER_ROW_HEIGHT + rowIndex * ROW_HEIGHT);
             employeeLabel.setSize(HEADER_COLUMN_WIDTH, ROW_HEIGHT);
             employeeLabel.setBorder(BorderFactory.createLineBorder(Color.BLACK, 1));
             add(employeeLabel);
-            employeeIndexMap.put(employee, employeeIndex);
-            employeeIndex++;
-        }
-        int panelWidth = HEADER_COLUMN_WIDTH;
-        int unassignedIndex = employeeList.size();
-        for (Task task : taskAssigningSolution.getTaskList()) {
-            JButton taskButton = createTaskButton(task);
-            int x;
-            int y;
-            if (task.getEmployee() != null) {
-                x = HEADER_COLUMN_WIDTH + task.getStartTime();
-                y = HEADER_ROW_HEIGHT + employeeIndexMap.get(task.getEmployee()) * ROW_HEIGHT;
-            } else {
-                x = HEADER_COLUMN_WIDTH + task.getReadyTime();
-                y = HEADER_ROW_HEIGHT + unassignedIndex * ROW_HEIGHT;
-                unassignedIndex++;
+
+            for (Task task : employee.getTasks()) {
+                taskButtonList.add(createTaskButton(task, rowIndex));
+                unassignedTaskList.remove(task);
             }
-            if (x + taskButton.getWidth() > panelWidth) {
-                panelWidth = x + taskButton.getWidth();
-            }
-            taskButton.setLocation(x, y);
-            add(taskButton);
+            rowIndex++;
         }
+        for (Task task : unassignedTaskList) {
+            taskButtonList.add(createTaskButton(task, rowIndex));
+            rowIndex++;
+        }
+
+        // Determine task table width...
+        int taskTableWidth = taskButtonList.stream()
+                .peek(this::add) // ...and add each task to the panel
+                .mapToInt(taskButton -> taskButton.getLocation().x + taskButton.getWidth())
+                .max()
+                .orElse(0);
+
+        int panelWidth = Math.max(HEADER_COLUMN_WIDTH, taskTableWidth);
+
         for (int x = HEADER_COLUMN_WIDTH; x < panelWidth; x += TIME_COLUMN_WIDTH) {
             // Use 10 hours per day
             int minutes = (x - HEADER_COLUMN_WIDTH) % (10 * 60);
@@ -145,7 +144,7 @@ public class TaskOverviewPanel extends JPanel implements Scrollable {
             panelWidth = panelWidth - ((panelWidth - HEADER_COLUMN_WIDTH) % TIME_COLUMN_WIDTH) + TIME_COLUMN_WIDTH;
         }
 
-        Dimension size = new Dimension(panelWidth, HEADER_ROW_HEIGHT + unassignedIndex * ROW_HEIGHT);
+        Dimension size = new Dimension(panelWidth, HEADER_ROW_HEIGHT + rowIndex * ROW_HEIGHT);
         setSize(size);
         setPreferredSize(size);
         repaint();
@@ -166,12 +165,15 @@ public class TaskOverviewPanel extends JPanel implements Scrollable {
         g.fillRect(lineX, 0, getWidth(), getHeight());
     }
 
-    private JButton createTaskButton(Task task) {
+    private JButton createTaskButton(Task task, int rowIndex) {
         JButton taskButton = SwingUtils.makeSmallButton(new JButton(new TaskAction(task)));
         taskButton.setBackground(task.isPinned() ? TangoColorFactory.ALUMINIUM_3 : TangoColorFactory.ALUMINIUM_1);
         taskButton.setHorizontalTextPosition(SwingConstants.CENTER);
         taskButton.setVerticalTextPosition(SwingConstants.TOP);
         taskButton.setSize(task.getDuration(), ROW_HEIGHT);
+        int x = HEADER_COLUMN_WIDTH + (task.getEmployee() == null ? task.getReadyTime() : task.getStartTime());
+        int y = HEADER_ROW_HEIGHT + rowIndex * ROW_HEIGHT;
+        taskButton.setLocation(x, y);
         return taskButton;
     }
 
