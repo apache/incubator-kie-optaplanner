@@ -65,7 +65,7 @@ public final class DotNames {
     static final DotName PLANNING_ID = DotName.createSimple(PlanningId.class.getName());
 
     static final DotName PLANNING_VARIABLE = DotName.createSimple(PlanningVariable.class.getName());
-    static final DotName PLANNING_COLLECTION_VARIABLE = DotName.createSimple(PlanningListVariable.class.getName());
+    static final DotName PLANNING_LIST_VARIABLE = DotName.createSimple(PlanningListVariable.class.getName());
     static final DotName VALUE_RANGE_PROVIDER = DotName.createSimple(ValueRangeProvider.class.getName());
     static final DotName PLANNING_VARIABLE_REFERENCE = DotName.createSimple(PlanningVariableReference.class.getName());
 
@@ -79,7 +79,7 @@ public final class DotNames {
     static final DotName[] PLANNING_ENTITY_FIELD_ANNOTATIONS = {
             PLANNING_PIN,
             PLANNING_VARIABLE,
-            PLANNING_COLLECTION_VARIABLE,
+            PLANNING_LIST_VARIABLE,
             ANCHOR_SHADOW_VARIABLE,
             CUSTOM_SHADOW_VARIABLE,
             INVERSE_RELATION_SHADOW_VARIABLE,
@@ -96,7 +96,7 @@ public final class DotNames {
             PLANNING_PIN,
             PLANNING_ID,
             PLANNING_VARIABLE,
-            PLANNING_COLLECTION_VARIABLE,
+            PLANNING_LIST_VARIABLE,
             PLANNING_VARIABLE_REFERENCE,
             VALUE_RANGE_PROVIDER,
             ANCHOR_SHADOW_VARIABLE,
