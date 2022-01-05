@@ -16,7 +16,7 @@
 
 package org.optaplanner.core.impl.domain.variable.index;
 
-import java.util.HashMap;
+import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -50,7 +50,7 @@ public class ExternalizedIndexVariableSupply<Solution_>
     public void resetWorkingSolution(ScoreDirector<Solution_> scoreDirector) {
         EntityDescriptor<Solution_> entityDescriptor = sourceVariableDescriptor.getEntityDescriptor();
         List<Object> entityList = entityDescriptor.extractEntities(scoreDirector.getWorkingSolution());
-        indexMap = new HashMap<>();
+        indexMap = new IdentityHashMap<>();
         for (Object entity : entityList) {
             insert(scoreDirector, entity);
         }
