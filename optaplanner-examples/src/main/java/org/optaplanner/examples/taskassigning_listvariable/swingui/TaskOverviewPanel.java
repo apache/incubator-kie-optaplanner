@@ -106,7 +106,11 @@ public class TaskOverviewPanel extends JPanel implements Scrollable {
             employeeLabel.setSize(HEADER_COLUMN_WIDTH, ROW_HEIGHT);
             employeeLabel.setBorder(BorderFactory.createLineBorder(Color.BLACK, 1));
             add(employeeLabel);
+            rowIndex++;
+        }
 
+        rowIndex = 0;
+        for (Employee employee : employeeList) {
             for (Task task : employee.getTasks()) {
                 add(createTaskButton(task, rowIndex));
                 unassignedTaskList.remove(task);
