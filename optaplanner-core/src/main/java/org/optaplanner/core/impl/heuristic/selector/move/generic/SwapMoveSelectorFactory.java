@@ -21,7 +21,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
 
-import org.optaplanner.core.api.domain.variable.PlanningCollectionVariable;
+import org.optaplanner.core.api.domain.variable.PlanningListVariable;
 import org.optaplanner.core.config.heuristic.selector.common.SelectionCacheType;
 import org.optaplanner.core.config.heuristic.selector.common.SelectionOrder;
 import org.optaplanner.core.config.heuristic.selector.entity.EntitySelectorConfig;
@@ -86,7 +86,7 @@ public class SwapMoveSelectorFactory<Solution_>
                     randomSelection);
         }
         throw new IllegalArgumentException("The variableDescriptorList (" + variableDescriptorList
-                + ") has multiple variables and one or more of them is a @" + PlanningCollectionVariable.class.getSimpleName()
+                + ") has multiple variables and one or more of them is a @" + PlanningListVariable.class.getSimpleName()
                 + ", which is currently not supported.");
     }
 

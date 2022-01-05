@@ -29,14 +29,14 @@ import org.optaplanner.core.api.domain.entity.PlanningEntity;
 import org.optaplanner.core.impl.heuristic.selector.common.decorator.SelectionSorterWeightFactory;
 
 /**
- * Specifies that a bean property (or a field) of a {@link List} type should be optimized by the optimization
- * algorithms. Unlike {@link PlanningVariable}, the {@link PlanningCollectionVariable} tells solver to change
- * elements inside the list variable instead of changing the list reference.
+ * Specifies that a bean property (or a field) of a {@link List} type should be optimized by the optimization algorithms.
+ * Unlike {@link PlanningVariable}, the {@link PlanningListVariable} tells solver to change elements inside the list variable
+ * instead of changing the list reference.
  * <p>
  * It is specified on a getter of a java bean property (or directly on a field) of a {@link PlanningEntity} class.
  * <h3>Disjoint lists</h3>
  * <p>
- * The type of the {@link PlanningCollectionVariable} annotated bean property (or field) must be {@link List}.
+ * The type of the {@link PlanningListVariable} annotated bean property (or field) must be {@link List}.
  * Furthermore, the current implementation works under the assumption that the list variables of all entity instances
  * are "disjoint lists":
  * <ul>
@@ -56,7 +56,7 @@ import org.optaplanner.core.impl.heuristic.selector.common.decorator.SelectionSo
  */
 @Target({ METHOD, FIELD })
 @Retention(RUNTIME)
-public @interface PlanningCollectionVariable {
+public @interface PlanningListVariable {
     String[] valueRangeProviderRefs() default {};
 
     /**

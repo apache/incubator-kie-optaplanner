@@ -25,7 +25,7 @@ import java.util.List;
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.domain.valuerange.CountableValueRange;
 import org.optaplanner.core.api.domain.valuerange.ValueRangeProvider;
-import org.optaplanner.core.api.domain.variable.PlanningCollectionVariable;
+import org.optaplanner.core.api.domain.variable.PlanningListVariable;
 import org.optaplanner.core.api.domain.variable.PlanningVariable;
 import org.optaplanner.core.api.score.director.ScoreDirector;
 import org.optaplanner.core.config.heuristic.selector.common.decorator.SelectionSorterOrder;
@@ -128,7 +128,7 @@ public abstract class GenuineVariableDescriptor<Solution_> extends VariableDescr
             Class<? extends Comparator> strengthComparatorClass,
             Class<? extends SelectionSorterWeightFactory> strengthWeightFactoryClass) {
         if (strengthComparatorClass == PlanningVariable.NullStrengthComparator.class
-                || strengthComparatorClass == PlanningCollectionVariable.NullStrengthComparator.class) {
+                || strengthComparatorClass == PlanningListVariable.NullStrengthComparator.class) {
             strengthComparatorClass = null;
         }
         if (strengthWeightFactoryClass == PlanningVariable.NullStrengthWeightFactory.class) {
@@ -201,7 +201,7 @@ public abstract class GenuineVariableDescriptor<Solution_> extends VariableDescr
     // ************************************************************************
 
     /**
-     * A {@link PlanningVariable#nullable() nullable} planning variable and {@link PlanningCollectionVariable}
+     * A {@link PlanningVariable#nullable() nullable} planning variable and {@link PlanningListVariable}
      * are always considered initialized.
      *
      * @param entity never null

@@ -21,7 +21,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.optaplanner.core.api.domain.variable.IndexShadowVariable;
-import org.optaplanner.core.api.domain.variable.PlanningCollectionVariable;
+import org.optaplanner.core.api.domain.variable.PlanningListVariable;
 import org.optaplanner.core.api.domain.variable.VariableListener;
 import org.optaplanner.core.impl.domain.common.accessor.MemberAccessor;
 import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
@@ -97,7 +97,7 @@ public class IndexShadowVariableDescriptor<Solution_> extends ShadowVariableDesc
                     + ") has an @" + IndexShadowVariable.class.getSimpleName()
                     + " annotated property (" + variableMemberAccessor.getName()
                     + ") with sourceVariableName (" + sourceVariableName
-                    + ") which is not a @" + PlanningCollectionVariable.class.getSimpleName() + ".");
+                    + ") which is not a @" + PlanningListVariable.class.getSimpleName() + ".");
         }
         sourceVariableDescriptor = (ListVariableDescriptor<Solution_>) variableDescriptor;
         sourceVariableDescriptor.registerSinkVariableDescriptor(this);

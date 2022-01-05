@@ -24,7 +24,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.optaplanner.core.api.domain.entity.PlanningEntity;
-import org.optaplanner.core.api.domain.variable.PlanningCollectionVariable;
+import org.optaplanner.core.api.domain.variable.PlanningListVariable;
 import org.optaplanner.examples.common.domain.AbstractPersistable;
 import org.optaplanner.examples.common.swingui.components.Labeled;
 import org.optaplanner.examples.taskassigning_listvariable.domain.solver.TaskDifficultyComparator;
@@ -43,7 +43,7 @@ public class Employee extends AbstractPersistable implements Labeled {
     // TODO maybe needs graphType=DISJOINT_LIST(_ORDERED)
     // - disjoint because otherwise the inverse relation shadow variable would be a collection
     // - ordered because otherwise index shadow variable is not possible
-    @PlanningCollectionVariable(valueRangeProviderRefs = "taskRange", strengthComparatorClass = TaskDifficultyComparator.class)
+    @PlanningListVariable(valueRangeProviderRefs = "taskRange", strengthComparatorClass = TaskDifficultyComparator.class)
     private List<Task> tasks;
 
     // TODO pinning

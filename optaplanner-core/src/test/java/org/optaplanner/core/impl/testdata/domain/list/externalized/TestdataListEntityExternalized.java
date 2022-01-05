@@ -21,13 +21,13 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.optaplanner.core.api.domain.entity.PlanningEntity;
-import org.optaplanner.core.api.domain.variable.PlanningCollectionVariable;
+import org.optaplanner.core.api.domain.variable.PlanningListVariable;
 import org.optaplanner.core.impl.testdata.domain.TestdataObject;
 
 @PlanningEntity
 public class TestdataListEntityExternalized extends TestdataObject {
 
-    @PlanningCollectionVariable(valueRangeProviderRefs = "valueRange")
+    @PlanningListVariable(valueRangeProviderRefs = "valueRange")
     private List<TestdataListValueExternalized> valueList;
 
     public TestdataListEntityExternalized() {

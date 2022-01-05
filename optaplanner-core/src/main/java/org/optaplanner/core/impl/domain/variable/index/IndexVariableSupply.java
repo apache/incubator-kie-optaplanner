@@ -16,13 +16,13 @@
 
 package org.optaplanner.core.impl.domain.variable.index;
 
-import org.optaplanner.core.api.domain.variable.PlanningCollectionVariable;
+import org.optaplanner.core.api.domain.variable.PlanningListVariable;
 import org.optaplanner.core.impl.domain.variable.supply.Supply;
 
 public interface IndexVariableSupply extends Supply {
 
     /**
-     * Get {@code planningValue}'s index in the {@link PlanningCollectionVariable list variable} it is a member of.
+     * Get {@code planningValue}'s index in the {@link PlanningListVariable list variable} it is a member of.
      *
      * @param planningValue never null
      * @return {@code planningValue}'s index in the list variable it is a member of or {@code null} if the value is unassigned

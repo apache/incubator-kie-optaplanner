@@ -23,14 +23,14 @@ import java.util.Objects;
 import java.util.Set;
 
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
-import org.optaplanner.core.api.domain.variable.PlanningCollectionVariable;
+import org.optaplanner.core.api.domain.variable.PlanningListVariable;
 import org.optaplanner.core.api.score.director.ScoreDirector;
 import org.optaplanner.core.impl.domain.variable.descriptor.ListVariableDescriptor;
 import org.optaplanner.core.impl.heuristic.move.AbstractMove;
 import org.optaplanner.core.impl.score.director.InnerScoreDirector;
 
 /**
- * Swaps two elements of a {@link PlanningCollectionVariable list variable}.
+ * Swaps two elements of a {@link PlanningListVariable list variable}.
  * Each element is identified by an entity instance and an index in that entity's list variable.
  * The swap move has two sides called left and right. The element at {@code leftIndex} in {@code leftEntity}'s list variable
  * is replaced by the element at {@code rightIndex} in {@code rightEntity}'s list variable and vice versa.

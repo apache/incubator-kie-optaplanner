@@ -23,14 +23,14 @@ import java.util.Objects;
 import java.util.Set;
 
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
-import org.optaplanner.core.api.domain.variable.PlanningCollectionVariable;
+import org.optaplanner.core.api.domain.variable.PlanningListVariable;
 import org.optaplanner.core.api.score.director.ScoreDirector;
 import org.optaplanner.core.impl.domain.variable.descriptor.ListVariableDescriptor;
 import org.optaplanner.core.impl.heuristic.move.AbstractMove;
 import org.optaplanner.core.impl.score.director.InnerScoreDirector;
 
 /**
- * Moves an element of a {@link PlanningCollectionVariable list variable}. The moved element is identified
+ * Moves an element of a {@link PlanningListVariable list variable}. The moved element is identified
  * by an entity instance and a position in that entity's list variable. The element is inserted at the given index
  * in the given destination entity's list variable.
  * <p>

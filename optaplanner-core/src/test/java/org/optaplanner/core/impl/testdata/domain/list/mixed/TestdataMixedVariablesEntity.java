@@ -19,7 +19,7 @@ package org.optaplanner.core.impl.testdata.domain.list.mixed;
 import java.util.List;
 
 import org.optaplanner.core.api.domain.entity.PlanningEntity;
-import org.optaplanner.core.api.domain.variable.PlanningCollectionVariable;
+import org.optaplanner.core.api.domain.variable.PlanningListVariable;
 import org.optaplanner.core.api.domain.variable.PlanningVariable;
 import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
 import org.optaplanner.core.impl.domain.variable.descriptor.ListVariableDescriptor;
@@ -39,7 +39,7 @@ public class TestdataMixedVariablesEntity extends TestdataObject {
                 .getGenuineVariableDescriptor("valueList");
     }
 
-    @PlanningCollectionVariable(valueRangeProviderRefs = "valueRange")
+    @PlanningListVariable(valueRangeProviderRefs = "valueRange")
     private final List<TestdataValue> valueList;
     @PlanningVariable(valueRangeProviderRefs = "valueRange")
     private TestdataValue value;
