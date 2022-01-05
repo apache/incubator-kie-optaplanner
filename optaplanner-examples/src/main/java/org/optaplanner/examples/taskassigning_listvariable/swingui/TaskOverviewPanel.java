@@ -96,7 +96,6 @@ public class TaskOverviewPanel extends JPanel implements Scrollable {
         skillColorFactory = new TangoColorFactory();
         List<Employee> employeeList = taskAssigningSolution.getEmployeeList();
         List<Task> unassignedTaskList = new ArrayList<>(taskAssigningSolution.getTaskList());
-        List<JButton> taskButtonList = new ArrayList<>(taskAssigningSolution.getTaskList().size());
 
         int rowIndex = 0;
         for (Employee employee : employeeList) {
@@ -109,42 +108,39 @@ public class TaskOverviewPanel extends JPanel implements Scrollable {
             add(employeeLabel);
 
             for (Task task : employee.getTasks()) {
-                taskButtonList.add(createTaskButton(task, rowIndex));
+                add(createTaskButton(task, rowIndex));
                 unassignedTaskList.remove(task);
             }
             rowIndex++;
         }
+
         for (Task task : unassignedTaskList) {
-            taskButtonList.add(createTaskButton(task, rowIndex));
+            add(createTaskButton(task, rowIndex));
             rowIndex++;
         }
 
-        // Determine task table width...
-        int taskTableWidth = taskButtonList.stream()
-                .peek(this::add) // ...and add each task to the panel
-                .mapToInt(taskButton -> taskButton.getLocation().x + taskButton.getWidth())
-                .max()
-                .orElse(0);
+        int maxUnassignedTaskDuration = unassignedTaskList.stream().mapToInt(Task::getDuration).max().orElse(0);
+        int maxEmployeeEndTime = employeeList.stream().mapToInt(Employee::getEndTime).max().orElse(0);
 
-        int panelWidth = Math.max(HEADER_COLUMN_WIDTH, taskTableWidth);
+        int taskTableWidth = Math.max(maxEmployeeEndTime, maxUnassignedTaskDuration + consumedDuration);
 
-        for (int x = HEADER_COLUMN_WIDTH; x < panelWidth; x += TIME_COLUMN_WIDTH) {
+        for (int x = 0; x < taskTableWidth; x += TIME_COLUMN_WIDTH) {
             // Use 10 hours per day
-            int minutes = (x - HEADER_COLUMN_WIDTH) % (10 * 60);
+            int minutes = x % (10 * 60);
             // Start at 8:00
             int hours = 8 + (minutes / 60);
             minutes %= 60;
             JLabel timeLabel = new JLabel((hours < 10 ? "0" : "") + hours + ":" + (minutes < 10 ? "0" : "") + minutes);
             timeLabel.setBorder(BorderFactory.createLineBorder(Color.BLACK, 1));
-            timeLabel.setLocation(x, 0);
+            timeLabel.setLocation(x + HEADER_COLUMN_WIDTH, 0);
             timeLabel.setSize(TIME_COLUMN_WIDTH, ROW_HEIGHT);
             add(timeLabel);
         }
-        if ((panelWidth - HEADER_COLUMN_WIDTH) % TIME_COLUMN_WIDTH != 0) {
-            panelWidth = panelWidth - ((panelWidth - HEADER_COLUMN_WIDTH) % TIME_COLUMN_WIDTH) + TIME_COLUMN_WIDTH;
+        if (taskTableWidth % TIME_COLUMN_WIDTH != 0) {
+            taskTableWidth += TIME_COLUMN_WIDTH - (taskTableWidth % TIME_COLUMN_WIDTH);
         }
 
-        Dimension size = new Dimension(panelWidth, HEADER_ROW_HEIGHT + rowIndex * ROW_HEIGHT);
+        Dimension size = new Dimension(taskTableWidth + HEADER_COLUMN_WIDTH, HEADER_ROW_HEIGHT + rowIndex * ROW_HEIGHT);
         setSize(size);
         setPreferredSize(size);
         repaint();
