@@ -62,6 +62,22 @@ public class InverseRelationShadowVariableDescriptor<Solution_> extends ShadowVa
         linkShadowSources(descriptorPolicy);
     }
 
+    /**
+     * The following table describes which combinations of source and shadow variable types are supported.
+     * The unsupported combinations are detected and fail fast.
+     *
+     * <pre>
+     * {@code
+     *          | singleton | collection
+     * -----------------------------------
+     *   basic  |     ✕     |     ✓
+     * chained  |     ✓     |     ✕
+     *    list  |     ✓     |     ✕
+     *}
+     * </pre>
+     *
+     * @param descriptorPolicy descriptor policy
+     */
     private void linkShadowSources(DescriptorPolicy descriptorPolicy) {
         InverseRelationShadowVariable shadowVariableAnnotation = variableMemberAccessor
                 .getAnnotation(InverseRelationShadowVariable.class);
@@ -116,13 +132,19 @@ public class InverseRelationShadowVariableDescriptor<Solution_> extends ShadowVa
                         + " Only list and chained variables support a singleton inverse.");
             }
         } else {
-            if (chained) {
+            if (chained || list) {
                 throw new IllegalArgumentException("The entityClass (" + entityDescriptor.getEntityClass()
                         + ") has an @" + InverseRelationShadowVariable.class.getSimpleName()
                         + " annotated property (" + variableMemberAccessor.getName()
                         + ") which returns a " + Collection.class.getSimpleName()
-                        + " with sourceVariableName (" + sourceVariableName
-                        + ") which is chained. A chained variable supports only a singleton inverse.");
+                        + " (" + variablePropertyType
+                        + ") with sourceVariableName (" + sourceVariableName
+                        + ") which is a" + (chained
+                                ? " chained variable @" + PlanningVariable.class.getSimpleName()
+                                        + "(graphType=" + PlanningVariableGraphType.CHAINED
+                                        + "). A chained variable supports only a singleton inverse."
+                                : " list variable @" + PlanningListVariable.class.getSimpleName()
+                                        + ". A list variable supports only a singleton inverse."));
             }
         }
         sourceVariableDescriptor.registerSinkVariableDescriptor(this);
