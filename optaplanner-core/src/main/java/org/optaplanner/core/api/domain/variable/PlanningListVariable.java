@@ -40,7 +40,7 @@ import org.optaplanner.core.impl.heuristic.selector.common.decorator.SelectionSo
  * Furthermore, the current implementation works under the assumption that the list variables of all entity instances
  * are "disjoint lists":
  * <ul>
- * <li><strong>List</strong> means that the order of elements inside a collection planning variable is significant.</li>
+ * <li><strong>List</strong> means that the order of elements inside a list planning variable is significant.</li>
  * <li><strong>Disjoint</strong> means that any given pair of entities have no common elements in their list variables.
  * In other words, each element from the list variable's value range appears in exactly one entity's list variable.</li>
  * </ul>
