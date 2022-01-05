@@ -23,7 +23,7 @@ import java.util.List;
 
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.domain.variable.InverseRelationShadowVariable;
-import org.optaplanner.core.api.domain.variable.PlanningCollectionVariable;
+import org.optaplanner.core.api.domain.variable.PlanningListVariable;
 import org.optaplanner.core.api.domain.variable.PlanningVariable;
 import org.optaplanner.core.api.domain.variable.PlanningVariableGraphType;
 import org.optaplanner.core.api.domain.variable.VariableListener;
@@ -110,7 +110,7 @@ public class InverseRelationShadowVariableDescriptor<Solution_> extends ShadowVa
                         + " annotated property (" + variableMemberAccessor.getName()
                         + ") which does not return a " + Collection.class.getSimpleName()
                         + " with sourceVariableName (" + sourceVariableName
-                        + ") which is neither a list variable @" + PlanningCollectionVariable.class.getSimpleName()
+                        + ") which is neither a list variable @" + PlanningListVariable.class.getSimpleName()
                         + " nor a chained variable @" + PlanningVariable.class.getSimpleName()
                         + "(graphType=" + PlanningVariableGraphType.CHAINED + ")."
                         + " Only list and chained variables support a singleton inverse.");

@@ -21,7 +21,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.optaplanner.core.api.domain.entity.PlanningEntity;
-import org.optaplanner.core.api.domain.variable.PlanningCollectionVariable;
+import org.optaplanner.core.api.domain.variable.PlanningListVariable;
 import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
 import org.optaplanner.core.impl.domain.variable.descriptor.GenuineVariableDescriptor;
 import org.optaplanner.core.impl.testdata.domain.TestdataObject;
@@ -39,7 +39,7 @@ public class TestdataListEntityWithArrayValueRange extends TestdataObject {
         return buildEntityDescriptor().getGenuineVariableDescriptor("valueList");
     }
 
-    @PlanningCollectionVariable(valueRangeProviderRefs = "arrayValueRange")
+    @PlanningListVariable(valueRangeProviderRefs = "arrayValueRange")
     private final List<TestdataValue> valueList;
 
     public TestdataListEntityWithArrayValueRange(String code, List<TestdataValue> valueList) {

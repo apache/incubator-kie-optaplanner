@@ -40,7 +40,7 @@ import org.optaplanner.core.api.domain.variable.AnchorShadowVariable;
 import org.optaplanner.core.api.domain.variable.CustomShadowVariable;
 import org.optaplanner.core.api.domain.variable.IndexShadowVariable;
 import org.optaplanner.core.api.domain.variable.InverseRelationShadowVariable;
-import org.optaplanner.core.api.domain.variable.PlanningCollectionVariable;
+import org.optaplanner.core.api.domain.variable.PlanningListVariable;
 import org.optaplanner.core.api.domain.variable.PlanningVariable;
 import org.optaplanner.core.api.score.director.ScoreDirector;
 import org.optaplanner.core.config.heuristic.selector.common.decorator.SelectionSorterOrder;
@@ -76,7 +76,7 @@ public class EntityDescriptor<Solution_> {
 
     private static final Class[] VARIABLE_ANNOTATION_CLASSES = {
             PlanningVariable.class,
-            PlanningCollectionVariable.class,
+            PlanningListVariable.class,
             InverseRelationShadowVariable.class,
             AnchorShadowVariable.class,
             IndexShadowVariable.class,
@@ -263,14 +263,14 @@ public class EntityDescriptor<Solution_> {
             GenuineVariableDescriptor<Solution_> variableDescriptor = new BasicVariableDescriptor<>(
                     this, memberAccessor);
             declaredGenuineVariableDescriptorMap.put(memberName, variableDescriptor);
-        } else if (variableAnnotationClass.equals(PlanningCollectionVariable.class)) {
+        } else if (variableAnnotationClass.equals(PlanningListVariable.class)) {
             if (List.class.isAssignableFrom(memberAccessor.getType())) {
                 GenuineVariableDescriptor<Solution_> variableDescriptor = new ListVariableDescriptor<>(
                         this, memberAccessor);
                 declaredGenuineVariableDescriptorMap.put(memberName, variableDescriptor);
             } else {
                 throw new IllegalStateException("The entityClass (" + entityClass
-                        + ") has a @" + PlanningCollectionVariable.class.getSimpleName()
+                        + ") has a @" + PlanningListVariable.class.getSimpleName()
                         + " annotated member (" + memberAccessor
                         + ") that has an unsupported type (" + memberAccessor.getType() + ").\n"
                         + "Maybe use " + List.class.getCanonicalName() + ".");

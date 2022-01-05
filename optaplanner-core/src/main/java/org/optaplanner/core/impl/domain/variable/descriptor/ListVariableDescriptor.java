@@ -23,7 +23,7 @@ import java.util.stream.Collectors;
 import org.optaplanner.core.api.domain.entity.PlanningEntity;
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.domain.valuerange.ValueRangeProvider;
-import org.optaplanner.core.api.domain.variable.PlanningCollectionVariable;
+import org.optaplanner.core.api.domain.variable.PlanningListVariable;
 import org.optaplanner.core.config.util.ConfigUtils;
 import org.optaplanner.core.impl.domain.common.accessor.MemberAccessor;
 import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
@@ -37,8 +37,7 @@ public class ListVariableDescriptor<Solution_> extends GenuineVariableDescriptor
 
     @Override
     protected void processPropertyAnnotations(DescriptorPolicy descriptorPolicy) {
-        PlanningCollectionVariable planningVariableAnnotation =
-                variableMemberAccessor.getAnnotation(PlanningCollectionVariable.class);
+        PlanningListVariable planningVariableAnnotation = variableMemberAccessor.getAnnotation(PlanningListVariable.class);
         processValueRangeRefs(descriptorPolicy, planningVariableAnnotation.valueRangeProviderRefs());
         processStrength(descriptorPolicy, planningVariableAnnotation.strengthComparatorClass(),
                 planningVariableAnnotation.strengthWeightFactoryClass());
@@ -80,7 +79,7 @@ public class ListVariableDescriptor<Solution_> extends GenuineVariableDescriptor
         Class<?> variableTypeArgument = ConfigUtils.extractCollectionGenericTypeParameterStrictly(
                 "entityClass", entityDescriptor.getEntityClass(),
                 variableMemberAccessor.getType(), variableMemberAccessor.getGenericType(),
-                PlanningCollectionVariable.class, variableMemberAccessor.getName());
+                PlanningListVariable.class, variableMemberAccessor.getName());
         return variableTypeArgument.isAssignableFrom(valueType);
     }
 
