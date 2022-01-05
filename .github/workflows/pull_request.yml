@@ -12,10 +12,10 @@ on:
       - 'build/**'
 
 jobs:
-  concurrency:
-    group: pull_request-${{ github.head_ref }}
-    cancel-in-progress: true
   build-chain:
+    concurrency:
+      group: pull_request-${{ github.head_ref }}
+      cancel-in-progress: true
     strategy:
       matrix:
         os: [ubuntu-latest, windows-latest]
@@ -23,7 +23,7 @@ jobs:
         maven-version: ['3.8.1']
       fail-fast: false
     runs-on: ${{ matrix.os }}
-    name: Maven Build
+    name: ${{ matrix.os }} - Java ${{ matrix.java-version }} - Maven
     steps:
       - name: Support long paths
         if: ${{ matrix.os == 'windows-latest' }}

@@ -1,6 +1,6 @@
 # Tests PRs on multiple operating systems and Java versions
 
-name: OptaPlanner CI
+name: OptaPlanner
 
 on:
   push:
@@ -20,19 +20,20 @@ defaults:
 
 jobs:
   os-java:
-    name: OS x Java
     strategy:
       matrix:
-        os: [ubuntu-latest, windows-latest]
-        java-version: [8, 11]
-        maven-version: ['3.8.1']
+      os: [ubuntu-latest, windows-latest]
+      java-version: [8, 11]
+      maven-version: ['3.8.1']
     runs-on: ${{ matrix.os }}
+    name: ${{ matrix.os }} - Java ${{ matrix.java-version }} - Maven
     steps:
       - uses: actions/checkout@v2
-      - name: Setup Maven And Java Version
-        uses: s4u/setup-maven-action@v1.2.1
+      - name: Java and Maven Setup
+        uses: kiegroup/droolsjbpm-build-bootstrap/.ci/actions/maven@main
         with:
           java-version: ${{ matrix.java-version }}
           maven-version: ${{ matrix.maven-version }}
+          cache-key-prefix: ${{ runner.os }}-${{ matrix.java-version }}-maven${{ matrix.maven-version }}
       - name: Build with Maven version ${{ matrix.maven-version }}
         run: mvn -B clean install ${{ env.MVN_CONNECTION_PROPS }}
