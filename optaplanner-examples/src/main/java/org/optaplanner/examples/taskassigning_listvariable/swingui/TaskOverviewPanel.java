@@ -99,13 +99,7 @@ public class TaskOverviewPanel extends JPanel implements Scrollable {
 
         int rowIndex = 0;
         for (Employee employee : employeeList) {
-            JLabel employeeLabel = new JLabel(employee.getLabel(), new TaskOrEmployeeIcon(employee), SwingConstants.LEFT);
-            employeeLabel.setOpaque(true);
-            employeeLabel.setToolTipText(employee.getToolText());
-            employeeLabel.setLocation(0, HEADER_ROW_HEIGHT + rowIndex * ROW_HEIGHT);
-            employeeLabel.setSize(HEADER_COLUMN_WIDTH, ROW_HEIGHT);
-            employeeLabel.setBorder(BorderFactory.createLineBorder(Color.BLACK, 1));
-            add(employeeLabel);
+            add(createEmployeeLabel(employee, rowIndex));
             rowIndex++;
         }
 
@@ -125,20 +119,10 @@ public class TaskOverviewPanel extends JPanel implements Scrollable {
 
         int maxUnassignedTaskDuration = unassignedTaskList.stream().mapToInt(Task::getDuration).max().orElse(0);
         int maxEmployeeEndTime = employeeList.stream().mapToInt(Employee::getEndTime).max().orElse(0);
-
         int taskTableWidth = Math.max(maxEmployeeEndTime, maxUnassignedTaskDuration + consumedDuration);
 
-        for (int x = 0; x < taskTableWidth; x += TIME_COLUMN_WIDTH) {
-            // Use 10 hours per day
-            int minutes = x % (10 * 60);
-            // Start at 8:00
-            int hours = 8 + (minutes / 60);
-            minutes %= 60;
-            JLabel timeLabel = new JLabel((hours < 10 ? "0" : "") + hours + ":" + (minutes < 10 ? "0" : "") + minutes);
-            timeLabel.setBorder(BorderFactory.createLineBorder(Color.BLACK, 1));
-            timeLabel.setLocation(x + HEADER_COLUMN_WIDTH, 0);
-            timeLabel.setSize(TIME_COLUMN_WIDTH, ROW_HEIGHT);
-            add(timeLabel);
+        for (int timeGrain = 0; timeGrain < taskTableWidth; timeGrain += TIME_COLUMN_WIDTH) {
+            add(createTimeLabel(timeGrain));
         }
         if (taskTableWidth % TIME_COLUMN_WIDTH != 0) {
             taskTableWidth += TIME_COLUMN_WIDTH - (taskTableWidth % TIME_COLUMN_WIDTH);
@@ -165,6 +149,16 @@ public class TaskOverviewPanel extends JPanel implements Scrollable {
         g.fillRect(lineX, 0, getWidth(), getHeight());
     }
 
+    private JLabel createEmployeeLabel(Employee employee, int rowIndex) {
+        JLabel employeeLabel = new JLabel(employee.getLabel(), new TaskOrEmployeeIcon(employee), SwingConstants.LEFT);
+        employeeLabel.setOpaque(true);
+        employeeLabel.setToolTipText(employee.getToolText());
+        employeeLabel.setLocation(0, HEADER_ROW_HEIGHT + rowIndex * ROW_HEIGHT);
+        employeeLabel.setSize(HEADER_COLUMN_WIDTH, ROW_HEIGHT);
+        employeeLabel.setBorder(BorderFactory.createLineBorder(Color.BLACK, 1));
+        return employeeLabel;
+    }
+
     private JButton createTaskButton(Task task, int rowIndex) {
         JButton taskButton = SwingUtils.makeSmallButton(new JButton(new TaskAction(task)));
         taskButton.setBackground(task.isPinned() ? TangoColorFactory.ALUMINIUM_3 : TangoColorFactory.ALUMINIUM_1);
@@ -175,6 +169,19 @@ public class TaskOverviewPanel extends JPanel implements Scrollable {
         int y = HEADER_ROW_HEIGHT + rowIndex * ROW_HEIGHT;
         taskButton.setLocation(x, y);
         return taskButton;
+    }
+
+    private JLabel createTimeLabel(int timeGrain) {
+        // Use 10 hours per day
+        int minutesInDay = timeGrain % (10 * 60);
+        // Start at 8:00
+        int hours = 8 + (minutesInDay / 60);
+        int minutesInHour = minutesInDay % 60;
+        JLabel timeLabel = new JLabel((hours < 10 ? "0" : "") + hours + ":" + (minutesInHour < 10 ? "0" : "") + minutesInHour);
+        timeLabel.setBorder(BorderFactory.createLineBorder(Color.BLACK, 1));
+        timeLabel.setLocation(timeGrain + HEADER_COLUMN_WIDTH, 0);
+        timeLabel.setSize(TIME_COLUMN_WIDTH, ROW_HEIGHT);
+        return timeLabel;
     }
 
     private class TaskAction extends AbstractAction {
