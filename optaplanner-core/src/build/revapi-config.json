@@ -441,6 +441,15 @@
         },
         {
           "code": "java.method.addedToInterface",
+          "new": "method boolean org.optaplanner.core.api.solver.Solver<Solution_>::isEveryProblemChangeProcessed()",
+          "package": "org.optaplanner.core.api.solver",
+          "classSimpleName": "Solver",
+          "methodName": "isEveryProblemChangeProcessed",
+          "elementKind": "method",
+          "justification": "The problem fact changes have been reworked. Users are not supposed to implement the Solver interface."
+        },
+        {
+          "code": "java.method.addedToInterface",
           "new": "method void org.optaplanner.core.api.solver.SolverJob<Solution_, ProblemId_>::addProblemChange(org.optaplanner.core.api.solver.change.ProblemChange<Solution_>)",
           "package": "org.optaplanner.core.api.solver",
           "classSimpleName": "SolverJob",

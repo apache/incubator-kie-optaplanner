@@ -100,10 +100,9 @@ public interface Solver<Solution_> {
      * a capacity of {@link Integer#MAX_VALUE}.
      *
      * @param problemChange never null
-     * @return true (as specified by {@link Collection#add})
      * @see #addProblemChanges(List)
      */
-    boolean addProblemChange(ProblemChange<Solution_> problemChange);
+    void addProblemChange(ProblemChange<Solution_> problemChange);
 
     /**
      * Schedules multiple {@link ProblemChange}s to be processed.
@@ -116,10 +115,18 @@ public interface Solver<Solution_> {
      * a capacity of {@link Integer#MAX_VALUE}.
      *
      * @param problemChangeList never null
-     * @return true (as specified by {@link Collection#add})
      * @see #addProblemChange(ProblemChange)
      */
-    boolean addProblemChanges(List<ProblemChange<Solution_>> problemChangeList);
+    void addProblemChanges(List<ProblemChange<Solution_>> problemChangeList);
+
+    /**
+     * Checks if all scheduled {@link ProblemChange}s have been processed.
+     * <p>
+     * This method is thread-safe.
+     *
+     * @return true if there are no {@link ProblemChange}s left to do
+     */
+    boolean isEveryProblemChangeProcessed();
 
     /**
      * Schedules a {@link ProblemFactChange} to be processed.
@@ -164,6 +171,7 @@ public interface Solver<Solution_> {
      *
      * @return true if there are no {@link ProblemFactChange}s left to do
      */
+    @Deprecated(forRemoval = true)
     boolean isEveryProblemFactChangeProcessed();
 
     /**

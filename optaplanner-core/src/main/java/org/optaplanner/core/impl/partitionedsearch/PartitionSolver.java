@@ -74,12 +74,17 @@ public class PartitionSolver<Solution_> extends AbstractSolver<Solution_> {
     }
 
     @Override
-    public boolean addProblemChange(ProblemChange<Solution_> problemChange) {
+    public void addProblemChange(ProblemChange<Solution_> problemChange) {
         throw new UnsupportedOperationException();
     }
 
     @Override
-    public boolean addProblemChanges(List<ProblemChange<Solution_>> problemChangeList) {
+    public void addProblemChanges(List<ProblemChange<Solution_>> problemChangeList) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public boolean isEveryProblemChangeProcessed() {
         throw new UnsupportedOperationException();
     }
 

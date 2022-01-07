@@ -144,13 +144,14 @@ public final class DefaultSolverJob<Solution_, ProblemId_> implements SolverJob<
     //    }
 
     @Override
-    public boolean addProblemChange(ProblemChange<Solution_> problemChange) {
+    public void addProblemChange(ProblemChange<Solution_> problemChange) {
         Objects.requireNonNull(problemChange, "A problem change (" + problemChange + ") must not be null.");
-        if (solverStatus == SolverStatus.SOLVING_ACTIVE) {
-            return solver.addProblemChange(problemChange);
-        } else {
-            return false;
+        if (solverStatus != SolverStatus.SOLVING_ACTIVE) {
+            throw new IllegalStateException("Cannot add the problem change because the solver job ("
+                    + solverStatus
+                    + ") is not active.");
         }
+        solver.addProblemChange(problemChange);
     }
 
     @Override

@@ -306,15 +306,15 @@ public interface SolverManager<Solution_, ProblemId_> extends AutoCloseable {
 
     /**
      * Schedules a {@link ProblemChange} to be processed by the underlying {@link Solver} and returns immediately.
-     * If the solver already terminated or the problemId was never added, does nothing and returns false.
+     * If the solver already terminated or the problemId was never added, throws an exception.
      * The same applies if the underlying {@link Solver} is not in the {@link SolverStatus#SOLVING_ACTIVE} state.
      *
      * @param problemId never null, a value given to {@link #solve(Object, Function, Consumer)}
      *        or {@link #solveAndListen(Object, Function, Consumer)}
      * @param problemChange never null
-     * @return true if the {@link ProblemChange} has been accepted by the underlying {@link Solver}, otherwise false
+     * @throws IllegalStateException if there is no solver actively solving the problem associated with the problemId
      */
-    boolean addProblemChange(ProblemId_ problemId, ProblemChange<Solution_> problemChange);
+    void addProblemChange(ProblemId_ problemId, ProblemChange<Solution_> problemChange);
 
     /**
      * Terminates the solver or cancels the solver job if it hasn't (re)started yet.

@@ -150,14 +150,14 @@ public final class DefaultSolverManager<Solution_, ProblemId_> implements Solver
     //    }
 
     @Override
-    public boolean addProblemChange(ProblemId_ problemId, ProblemChange<Solution_> problemChange) {
-        DefaultSolverJob<Solution_, ProblemId_> solverJob = problemIdToSolverJobMap.get(problemId);
+    public void addProblemChange(ProblemId_ problemId, ProblemChange<Solution_> problemChange) {
+        DefaultSolverJob<Solution_, ProblemId_> solverJob = getSolverJob(problemId);
         if (solverJob == null) {
             // We cannot distinguish between "already terminated" and "never solved" without causing a memory leak.
-            LOGGER.debug("Ignoring addProblemChange() call because problemId ({}) is not solving.", problemId);
-            return false;
+            throw new IllegalStateException("Cannot add the problem change because there is no solver solving the problemId ({"
+                    + problemId + "}).");
         }
-        return solverJob.addProblemChange(problemChange);
+        solverJob.addProblemChange(problemChange);
     }
 
     @Override
