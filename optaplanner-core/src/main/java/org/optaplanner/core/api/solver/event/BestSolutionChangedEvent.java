@@ -86,11 +86,21 @@ public class BestSolutionChangedEvent<Solution_> extends EventObject {
     }
 
     /**
+     * @deprecated in favor of {@link #isEveryProblemChangeProcessed}.
      * @return As defined by {@link Solver#isEveryProblemFactChangeProcessed()}
      * @see Solver#isEveryProblemFactChangeProcessed()
      */
+    @Deprecated(forRemoval = true)
     public boolean isEveryProblemFactChangeProcessed() {
         return solver.isEveryProblemFactChangeProcessed();
+    }
+
+    /**
+     * @return As defined by {@link Solver#isEveryProblemChangeProcessed()}
+     * @see Solver#isEveryProblemChangeProcessed()
+     */
+    public boolean isEveryProblemChangeProcessed() {
+        return solver.isEveryProblemChangeProcessed();
     }
 
 }
