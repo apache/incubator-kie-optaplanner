@@ -33,7 +33,7 @@ public interface ProblemChangeDirector {
     /**
      * Add a new {@link PlanningEntity} instance into the {@link PlanningSolution working solution}.
      *
-     * @param entity the {@link PlanningEntity} instance
+     * @param entity never null; the {@link PlanningEntity} instance
      * @param entityConsumer never null; adds the entity to the {@link PlanningSolution working solution}
      * @param <Entity> the planning entity object type
      */
@@ -44,7 +44,7 @@ public interface ProblemChangeDirector {
      * Translates the entity to a working planning entity by performing a lookup as defined by
      * {@link #lookUpWorkingObject(Object)}.
      * 
-     * @param entity the {@link PlanningEntity} instance
+     * @param entity never null; the {@link PlanningEntity} instance
      * @param entityConsumer never null; removes the working entity from the {@link PlanningSolution working solution}
      * @param <Entity> the planning entity object type
      */
@@ -54,7 +54,7 @@ public interface ProblemChangeDirector {
      * Change a {@link PlanningVariable} value of a {@link PlanningEntity}. Translates the entity to a working
      * planning entity by performing a lookup as defined by {@link #lookUpWorkingObject(Object)}.
      *
-     * @param entity the {@link PlanningEntity} instance
+     * @param entity never null; the {@link PlanningEntity} instance
      * @param variableName never null; name of the {@link PlanningVariable}
      * @param entityConsumer never null; updates the value of the the {@link PlanningVariable} inside
      *        the {@link PlanningEntity}
@@ -65,7 +65,7 @@ public interface ProblemChangeDirector {
     /**
      * Add a new problem fact into the {@link PlanningSolution working solution}.
      *
-     * @param problemFact the problem fact instance
+     * @param problemFact never null; the problem fact instance
      * @param problemFactConsumer never null; removes the working problem fact from the
      *        {@link PlanningSolution working solution}
      * @param <ProblemFact> the problem fact object type
@@ -76,7 +76,7 @@ public interface ProblemChangeDirector {
      * Remove an existing problem fact from the {@link PlanningSolution working solution}. Translates the problem fact
      * to a working problem fact by performing a lookup as defined by {@link #lookUpWorkingObject(Object)}.
      *
-     * @param problemFact the problem fact instance
+     * @param problemFact never null; the problem fact instance
      * @param problemFactConsumer never null; removes the working problem fact from the
      *        {@link PlanningSolution working solution}
      * @param <ProblemFact> the problem fact object type
@@ -88,7 +88,7 @@ public interface ProblemChangeDirector {
      * to its {@link PlanningSolution working solution} counterpart by performing a lookup as defined by
      * {@link #lookUpWorkingObject(Object)}.
      *
-     * @param problemFactOrEntity the {@link PlanningEntity} or the problem fact instance
+     * @param problemFactOrEntity never null; the {@link PlanningEntity} or the problem fact instance
      * @param problemFactOrEntityConsumer never null; updates the property of the {@link PlanningEntity}
      *        or the problem fact
      * @param <EntityOrProblemFact> the planning entity or problem fact object type
