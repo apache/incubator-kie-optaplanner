@@ -75,7 +75,14 @@ public final class DefaultSolverFactory<Solution_> implements SolverFactory<Solu
         if (scoreDirectorFactory == null) {
             synchronized (this) {
                 if (scoreDirectorFactory == null) {
-                    scoreDirectorFactory = buildScoreDirectorFactory(solverConfig.determineEnvironmentMode());
+                    EnvironmentMode environmentMode = solverConfig.determineEnvironmentMode();
+                    SolutionDescriptor<Solution_> solutionDescriptor = buildSolutionDescriptor(environmentMode);
+                    ScoreDirectorFactoryConfig scoreDirectorFactoryConfig_ =
+                            Objects.requireNonNullElseGet(solverConfig.getScoreDirectorFactoryConfig(), ScoreDirectorFactoryConfig::new);
+                    ScoreDirectorFactoryFactory<Solution_, ?> scoreDirectorFactoryFactory =
+                            new ScoreDirectorFactoryFactory<>(scoreDirectorFactoryConfig_);
+                    scoreDirectorFactory = scoreDirectorFactoryFactory.buildScoreDirectorFactory(solverConfig.getClassLoader(), environmentMode,
+                            solutionDescriptor);
                 }
             }
         }
@@ -125,20 +132,6 @@ public final class DefaultSolverFactory<Solution_> implements SolverFactory<Solu
         return new DefaultSolver<>(environmentMode_, randomFactory, bestSolutionRecaller, basicPlumbingTermination,
                 termination, phaseList, solverScope,
                 moveThreadCount_ == null ? SolverConfig.MOVE_THREAD_COUNT_NONE : Integer.toString(moveThreadCount_));
-    }
-
-    /**
-     * @param environmentMode never null
-     * @return never null
-     */
-    private InnerScoreDirectorFactory<Solution_, ?> buildScoreDirectorFactory(EnvironmentMode environmentMode) {
-        SolutionDescriptor<Solution_> solutionDescriptor = buildSolutionDescriptor(environmentMode);
-        ScoreDirectorFactoryConfig scoreDirectorFactoryConfig_ =
-                Objects.requireNonNullElseGet(solverConfig.getScoreDirectorFactoryConfig(), ScoreDirectorFactoryConfig::new);
-        ScoreDirectorFactoryFactory<Solution_, ?> scoreDirectorFactoryFactory =
-                new ScoreDirectorFactoryFactory<>(scoreDirectorFactoryConfig_);
-        return scoreDirectorFactoryFactory.buildScoreDirectorFactory(solverConfig.getClassLoader(), environmentMode,
-                solutionDescriptor);
     }
 
     /**
