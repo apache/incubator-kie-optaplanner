@@ -16,10 +16,20 @@
 
 package org.optaplanner.examples.examination.swingui;
 
-import java.awt.*;
+import java.awt.BorderLayout;
+import java.awt.FlowLayout;
+import java.awt.Frame;
+import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 
-import javax.swing.*;
+import javax.swing.AbstractAction;
+import javax.swing.BorderFactory;
+import javax.swing.JButton;
+import javax.swing.JDialog;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JSpinner;
+import javax.swing.SpinnerNumberModel;
 
 import org.optaplanner.examples.examination.domain.ExaminationConstraintConfiguration;
 
