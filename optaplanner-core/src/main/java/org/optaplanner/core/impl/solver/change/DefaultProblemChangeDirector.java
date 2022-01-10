@@ -17,6 +17,7 @@
 package org.optaplanner.core.impl.solver.change;
 
 import java.util.Objects;
+import java.util.Optional;
 import java.util.function.Consumer;
 
 import org.optaplanner.core.api.score.director.ScoreDirector;
@@ -99,7 +100,8 @@ public final class DefaultProblemChangeDirector<Solution_> implements ProblemCha
     }
 
     @Override
-    public <EntityOrProblemFact> EntityOrProblemFact lookUpWorkingObjectOrReturnNull(EntityOrProblemFact externalObject) {
-        return scoreDirector.lookUpWorkingObjectOrReturnNull(externalObject);
+    public <EntityOrProblemFact> Optional<EntityOrProblemFact>
+            lookUpWorkingObjectOptionally(EntityOrProblemFact externalObject) {
+        return Optional.of(scoreDirector.lookUpWorkingObjectOrReturnNull(externalObject));
     }
 }

@@ -16,6 +16,7 @@
 
 package org.optaplanner.core.api.solver.change;
 
+import java.util.Optional;
 import java.util.function.Consumer;
 
 import org.optaplanner.core.api.domain.entity.PlanningEntity;
@@ -118,10 +119,10 @@ public interface ProblemChangeDirector {
      * It's recommended to use {@link #lookUpWorkingObject(Object)} instead.
      *
      * @param externalObject sometimes null
-     * @return null if externalObject is null or if there is no workingObject for externalObject
+     * @return {@link Optional#empty()} if externalObject is null or if there is no workingObject for externalObject
      * @throws IllegalArgumentException if it cannot be looked up or if the externalObject's class is not supported
      * @throws IllegalStateException if it cannot be looked up
      * @param <EntityOrProblemFact> the object type
      */
-    <EntityOrProblemFact> EntityOrProblemFact lookUpWorkingObjectOrReturnNull(EntityOrProblemFact externalObject);
+    <EntityOrProblemFact> Optional<EntityOrProblemFact> lookUpWorkingObjectOptionally(EntityOrProblemFact externalObject);
 }

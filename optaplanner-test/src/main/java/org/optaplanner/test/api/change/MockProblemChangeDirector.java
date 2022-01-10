@@ -18,6 +18,7 @@ package org.optaplanner.test.api.change;
 
 import java.util.IdentityHashMap;
 import java.util.Map;
+import java.util.Optional;
 import java.util.function.Consumer;
 
 import org.optaplanner.core.api.solver.change.ProblemChangeDirector;
@@ -63,6 +64,7 @@ public class MockProblemChangeDirector implements ProblemChangeDirector {
     /**
      * If the look-up result has been provided by a {@link #whenLookingUp(Object)} call, returns the defined object.
      * Otherwise, returns the original externalObject.
+     * 
      * @param externalObject entity or problem fact to look up
      */
     @Override
@@ -74,11 +76,13 @@ public class MockProblemChangeDirector implements ProblemChangeDirector {
     /**
      * If the look-up result has been provided by a {@link #whenLookingUp(Object)} call, returns the defined object.
      * Otherwise, returns null.
+     * 
      * @param externalObject entity or problem fact to look up
      */
     @Override
-    public <EntityOrProblemFact> EntityOrProblemFact lookUpWorkingObjectOrReturnNull(EntityOrProblemFact externalObject) {
-        return (EntityOrProblemFact) lookUpTable.get(externalObject);
+    public <EntityOrProblemFact> Optional<EntityOrProblemFact>
+            lookUpWorkingObjectOptionally(EntityOrProblemFact externalObject) {
+        return Optional.of((EntityOrProblemFact) lookUpTable.get(externalObject));
     }
 
     /**
