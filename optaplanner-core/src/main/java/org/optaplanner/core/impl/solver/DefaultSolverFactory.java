@@ -23,6 +23,7 @@ import java.util.List;
 import java.util.Objects;
 
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
+import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.solver.Solver;
 import org.optaplanner.core.api.solver.SolverFactory;
 import org.optaplanner.core.config.constructionheuristic.ConstructionHeuristicPhaseConfig;
@@ -71,7 +72,7 @@ public final class DefaultSolverFactory<Solution_> implements SolverFactory<Solu
         this.solverConfig = Objects.requireNonNull(solverConfig, "The solverConfig (" + solverConfig + ") cannot be null.");
     }
 
-    public InnerScoreDirectorFactory<Solution_, ?> getScoreDirectorFactory() {
+    public <Score_ extends Score<Score_>> InnerScoreDirectorFactory<Solution_, Score_> getScoreDirectorFactory() {
         if (scoreDirectorFactory == null) {
             synchronized (this) {
                 if (scoreDirectorFactory == null) {
@@ -89,7 +90,7 @@ public final class DefaultSolverFactory<Solution_> implements SolverFactory<Solu
                 }
             }
         }
-        return scoreDirectorFactory;
+        return (InnerScoreDirectorFactory<Solution_, Score_>) scoreDirectorFactory;
     }
 
     @Override
