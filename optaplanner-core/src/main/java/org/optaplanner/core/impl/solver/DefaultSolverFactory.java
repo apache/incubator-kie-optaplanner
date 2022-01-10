@@ -75,6 +75,7 @@ public final class DefaultSolverFactory<Solution_> implements SolverFactory<Solu
         if (scoreDirectorFactory == null) {
             synchronized (this) {
                 if (scoreDirectorFactory == null) {
+                    // Caching as it potentially does expensive things (eg. Drools KieBase compilation).
                     EnvironmentMode environmentMode = solverConfig.determineEnvironmentMode();
                     SolutionDescriptor<Solution_> solutionDescriptor = buildSolutionDescriptor(environmentMode);
                     ScoreDirectorFactoryConfig scoreDirectorFactoryConfig_ =
