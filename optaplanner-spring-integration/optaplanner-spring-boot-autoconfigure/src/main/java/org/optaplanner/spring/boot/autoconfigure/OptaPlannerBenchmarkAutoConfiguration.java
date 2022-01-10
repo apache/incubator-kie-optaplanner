@@ -17,9 +17,14 @@
 package org.optaplanner.spring.boot.autoconfigure;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.optaplanner.benchmark.api.PlannerBenchmarkFactory;
 import org.optaplanner.benchmark.config.PlannerBenchmarkConfig;
+import org.optaplanner.benchmark.config.SolverBenchmarkConfig;
+import org.optaplanner.core.config.constructionheuristic.ConstructionHeuristicPhaseConfig;
+import org.optaplanner.core.config.phase.PhaseConfig;
 import org.optaplanner.core.config.solver.SolverConfig;
 import org.optaplanner.core.config.solver.termination.TerminationConfig;
 import org.optaplanner.spring.boot.autoconfigure.config.BenchmarkProperties;
@@ -88,8 +93,50 @@ public class OptaPlannerBenchmarkAutoConfiguration
 
         if (!isTerminationConfigured(
                 benchmarkConfig.getInheritedSolverBenchmarkConfig().getSolverConfig().getTerminationConfig())) {
-            throw new IllegalStateException(
-                    "Property optaplanner.benchmark.solver.termination.spent-limit is required if termination is not configured.");
+            List<SolverBenchmarkConfig> solverBenchmarkConfigList = benchmarkConfig.getSolverBenchmarkConfigList();
+            List<String> unconfiguredTerminationSolverBenchmarkList = new ArrayList<>();
+            if (solverBenchmarkConfigList == null) {
+                throw new IllegalStateException("At least one of the properties " +
+                        "optaplanner.benchmark.solver.termination.spent-limit, " +
+                        "optaplanner.benchmark.solver.termination.best-score-limit, " +
+                        "optaplanner.benchmark.solver.termination.unimproved-spent-limit " +
+                        "is required if termination is not configured in the " +
+                        "inherited solver benchmark config and solverBenchmarkBluePrint is used.");
+            }
+            for (int i = 0; i < solverBenchmarkConfigList.size(); i++) {
+                SolverBenchmarkConfig solverBenchmarkConfig = solverBenchmarkConfigList.get(i);
+                TerminationConfig terminationConfig = solverBenchmarkConfig.getSolverConfig().getTerminationConfig();
+                if (!isTerminationConfigured(terminationConfig)) {
+                    boolean isTerminationConfiguredForAllNonConstructionHeuristicPhases = !solverBenchmarkConfig
+                            .getSolverConfig().getPhaseConfigList().isEmpty();
+                    for (PhaseConfig<?> phaseConfig : solverBenchmarkConfig.getSolverConfig().getPhaseConfigList()) {
+                        if (!(phaseConfig instanceof ConstructionHeuristicPhaseConfig)) {
+                            if (!isTerminationConfigured(phaseConfig.getTerminationConfig())) {
+                                isTerminationConfiguredForAllNonConstructionHeuristicPhases = false;
+                                break;
+                            }
+                        }
+                    }
+                    if (!isTerminationConfiguredForAllNonConstructionHeuristicPhases) {
+                        String benchmarkConfigName = solverBenchmarkConfig.getName();
+                        if (benchmarkConfigName == null) {
+                            benchmarkConfigName = "SolverBenchmarkConfig " + i;
+                        }
+                        unconfiguredTerminationSolverBenchmarkList.add(benchmarkConfigName);
+                    }
+                }
+            }
+            if (!unconfiguredTerminationSolverBenchmarkList.isEmpty()) {
+                throw new IllegalStateException("The following " + SolverBenchmarkConfig.class.getSimpleName() + " do not " +
+                        "have termination configured: " +
+                        String.join(", ", unconfiguredTerminationSolverBenchmarkList) + ". " +
+                        "At least one of the properties " +
+                        "optaplanner.benchmark.solver.termination.spent-limit, " +
+                        "optaplanner.benchmark.solver.termination.best-score-limit, " +
+                        "optaplanner.benchmark.solver.termination.unimproved-spent-limit " +
+                        "is required if termination is not configured in a solver benchmark and the " +
+                        "inherited solver benchmark config.");
+            }
         }
         return benchmarkConfig;
     }
@@ -105,10 +152,23 @@ public class OptaPlannerBenchmarkAutoConfiguration
     }
 
     private boolean isTerminationConfigured(TerminationConfig terminationConfig) {
+        if (terminationConfig == null) {
+            return false;
+        }
         return terminationConfig.getTerminationClass() != null ||
                 terminationConfig.getSpentLimit() != null ||
+                terminationConfig.getMillisecondsSpentLimit() != null ||
+                terminationConfig.getSecondsSpentLimit() != null ||
+                terminationConfig.getMinutesSpentLimit() != null ||
+                terminationConfig.getHoursSpentLimit() != null ||
+                terminationConfig.getDaysSpentLimit() != null ||
                 terminationConfig.getBestScoreLimit() != null ||
                 terminationConfig.getUnimprovedSpentLimit() != null ||
+                terminationConfig.getUnimprovedMillisecondsSpentLimit() != null ||
+                terminationConfig.getUnimprovedSecondsSpentLimit() != null ||
+                terminationConfig.getUnimprovedMinutesSpentLimit() != null ||
+                terminationConfig.getUnimprovedHoursSpentLimit() != null ||
+                terminationConfig.getUnimprovedDaysSpentLimit() != null ||
                 terminationConfig.getStepCountLimit() != null ||
                 terminationConfig.getTerminationConfigList() != null;
     }
