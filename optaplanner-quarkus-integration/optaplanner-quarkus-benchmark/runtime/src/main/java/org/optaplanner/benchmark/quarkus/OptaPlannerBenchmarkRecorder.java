@@ -56,12 +56,25 @@ public class OptaPlannerBenchmarkRecorder {
             SolverBenchmarkConfig solverBenchmarkConfig = new SolverBenchmarkConfig();
             SolverConfig benchmarkSolverConfig = new SolverConfig();
             benchmarkSolverConfig.inherit(solverConfig);
+            benchmarkSolverConfig.setPhaseConfigList(null);
 
             solverBenchmarkConfig.setSolverConfig(benchmarkSolverConfig);
             solverBenchmarkConfig.setProblemBenchmarksConfig(problemBenchmarksConfig);
 
             plannerBenchmarkConfig.setBenchmarkDirectory(new File(benchmarkRuntimeConfig.resultDirectory));
             plannerBenchmarkConfig.setInheritedSolverBenchmarkConfig(solverBenchmarkConfig);
+        } else {
+            SolverBenchmarkConfig inheritedSolverBenchmarkConfig = plannerBenchmarkConfig.getInheritedSolverBenchmarkConfig();
+            SolverConfig inheritedSolverConfig = inheritedSolverBenchmarkConfig.getSolverConfig();
+            if (inheritedSolverConfig.getSolutionClass() == null) {
+                inheritedSolverConfig.setSolutionClass(solverConfig.getSolutionClass());
+            }
+            if (inheritedSolverConfig.getEntityClassList() == null) {
+                inheritedSolverConfig.setEntityClassList(solverConfig.getEntityClassList());
+            }
+            if (inheritedSolverBenchmarkConfig.getProblemBenchmarksConfig() == null) {
+                inheritedSolverBenchmarkConfig.setProblemBenchmarksConfig(new ProblemBenchmarksConfig());
+            }
         }
 
         TerminationConfig terminationConfig = plannerBenchmarkConfig.getInheritedSolverBenchmarkConfig()
