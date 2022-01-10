@@ -567,7 +567,16 @@ public class EntityDescriptor<Solution_> {
     public long getProblemScale(Solution_ solution, Object entity) {
         long problemScale = 1L;
         for (GenuineVariableDescriptor<Solution_> variableDescriptor : effectiveGenuineVariableDescriptorList) {
-            problemScale *= variableDescriptor.getValueCount(solution, entity);
+            long valueCount = variableDescriptor.getValueCount(solution, entity);
+            problemScale *= valueCount;
+            if (variableDescriptor.isListVariable()) {
+                // This formula probably makes no sense other than that it results in the same problem scale for both
+                // chained and list variable models.
+                // TODO fix https://issues.redhat.com/browse/PLANNER-2623 to get rid of this.
+                problemScale *= valueCount;
+                problemScale /= getSolutionDescriptor().getEntityCount(solution);
+                problemScale += valueCount;
+            }
         }
         return problemScale;
     }
