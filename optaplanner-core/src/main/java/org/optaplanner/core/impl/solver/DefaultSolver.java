@@ -145,6 +145,8 @@ public class DefaultSolver<Solution_> extends AbstractSolver<Solution_> {
 
     @Override
     public boolean addProblemFactChanges(List<ProblemFactChange<Solution_>> problemFactChangeList) {
+        Objects.requireNonNull(problemFactChangeList, "The list of problem fact changes ("
+                + problemFactChangeList + ") cannot be null.");
         List<ProblemChangeAdapter<Solution_>> adaptedProblemChangeList = problemFactChangeList.stream()
                 .map(ProblemFactChangeAdapterImpl::new)
                 .collect(Collectors.toList());
