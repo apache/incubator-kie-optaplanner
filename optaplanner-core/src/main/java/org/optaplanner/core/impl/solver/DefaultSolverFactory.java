@@ -66,30 +66,21 @@ public final class DefaultSolverFactory<Solution_> implements SolverFactory<Solu
     private static final long DEFAULT_RANDOM_SEED = 0L;
 
     private final SolverConfig solverConfig;
-    private volatile InnerScoreDirectorFactory<Solution_, ?> scoreDirectorFactory;
+    private final SolutionDescriptor<Solution_> solutionDescriptor;
+    private final InnerScoreDirectorFactory<Solution_, ?> scoreDirectorFactory;
 
     public DefaultSolverFactory(SolverConfig solverConfig) {
         this.solverConfig = Objects.requireNonNull(solverConfig, "The solverConfig (" + solverConfig + ") cannot be null.");
+        this.solutionDescriptor = buildSolutionDescriptor();
+        // Caching score director factory as it potentially does expensive things (eg. Drools KieBase compilation).
+        this.scoreDirectorFactory = buildScoreDirectorFactory();
+    }
+
+    public SolutionDescriptor<Solution_> getSolutionDescriptor() {
+        return solutionDescriptor;
     }
 
     public <Score_ extends Score<Score_>> InnerScoreDirectorFactory<Solution_, Score_> getScoreDirectorFactory() {
-        if (scoreDirectorFactory == null) {
-            synchronized (this) {
-                if (scoreDirectorFactory == null) {
-                    // Caching as it potentially does expensive things (eg. Drools KieBase compilation).
-                    EnvironmentMode environmentMode = solverConfig.determineEnvironmentMode();
-                    SolutionDescriptor<Solution_> solutionDescriptor = buildSolutionDescriptor(environmentMode);
-                    ScoreDirectorFactoryConfig scoreDirectorFactoryConfig_ =
-                            Objects.requireNonNullElseGet(solverConfig.getScoreDirectorFactoryConfig(),
-                                    ScoreDirectorFactoryConfig::new);
-                    ScoreDirectorFactoryFactory<Solution_, ?> scoreDirectorFactoryFactory =
-                            new ScoreDirectorFactoryFactory<>(scoreDirectorFactoryConfig_);
-                    scoreDirectorFactory = scoreDirectorFactoryFactory.buildScoreDirectorFactory(solverConfig.getClassLoader(),
-                            environmentMode,
-                            solutionDescriptor);
-                }
-            }
-        }
         return (InnerScoreDirectorFactory<Solution_, Score_>) scoreDirectorFactory;
     }
 
@@ -107,7 +98,6 @@ public final class DefaultSolverFactory<Solution_> implements SolverFactory<Solu
         }
 
         EnvironmentMode environmentMode_ = solverConfig.determineEnvironmentMode();
-        InnerScoreDirectorFactory<Solution_, ?> scoreDirectorFactory = getScoreDirectorFactory();
         solverScope.setScoreDirector(scoreDirectorFactory.buildScoreDirector(true, environmentMode_.isAsserted()));
 
         if ((solverScope.isMetricEnabled(SolverMetric.CONSTRAINT_MATCH_TOTAL_STEP_SCORE)
@@ -138,11 +128,7 @@ public final class DefaultSolverFactory<Solution_> implements SolverFactory<Solu
                 moveThreadCount_ == null ? SolverConfig.MOVE_THREAD_COUNT_NONE : Integer.toString(moveThreadCount_));
     }
 
-    /**
-     * @param environmentMode never null
-     * @return never null
-     */
-    public SolutionDescriptor<Solution_> buildSolutionDescriptor(EnvironmentMode environmentMode) {
+    private SolutionDescriptor<Solution_> buildSolutionDescriptor() {
         if (solverConfig.getSolutionClass() == null) {
             throw new IllegalArgumentException("The solver configuration must have a solutionClass (" +
                     solverConfig.getSolutionClass() +
@@ -160,10 +146,22 @@ public final class DefaultSolverFactory<Solution_> implements SolverFactory<Solu
                         solverConfig.getGizmoMemberAccessorMap(),
                         solverConfig.getGizmoSolutionClonerMap(),
                         solverConfig.getEntityClassList());
+        EnvironmentMode environmentMode = solverConfig.determineEnvironmentMode();
         if (environmentMode.isAsserted()) {
             solutionDescriptor.setAssertModelForCloning(true);
         }
         return solutionDescriptor;
+    }
+
+    private InnerScoreDirectorFactory<Solution_, ?> buildScoreDirectorFactory() {
+        EnvironmentMode environmentMode = solverConfig.determineEnvironmentMode();
+        ScoreDirectorFactoryConfig scoreDirectorFactoryConfig_ =
+                Objects.requireNonNullElseGet(solverConfig.getScoreDirectorFactoryConfig(),
+                        ScoreDirectorFactoryConfig::new);
+        ScoreDirectorFactoryFactory<Solution_, ?> scoreDirectorFactoryFactory =
+                new ScoreDirectorFactoryFactory<>(scoreDirectorFactoryConfig_);
+        return scoreDirectorFactoryFactory.buildScoreDirectorFactory(solverConfig.getClassLoader(), environmentMode,
+                solutionDescriptor);
     }
 
     private RandomFactory buildRandomFactory(EnvironmentMode environmentMode_) {
