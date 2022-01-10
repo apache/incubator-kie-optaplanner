@@ -53,7 +53,7 @@ public final class DefaultProblemChangeDirector<Solution_> implements ProblemCha
     @Override
     public <Entity> void changeVariable(Entity entity, String variableName, Consumer<Entity> entityConsumer) {
         Objects.requireNonNull(entity, "Entity (" + entity + ") cannot be null.");
-        Objects.requireNonNull(entity, "Planning variable name (" + variableName + ") cannot be null.");
+        Objects.requireNonNull(variableName, "Planning variable name (" + variableName + ") cannot be null.");
         Objects.requireNonNull(entityConsumer, "Entity consumer (" + entityConsumer + ") cannot be null.");
         Entity workingEntity = lookUpWorkingObject(entity);
         scoreDirector.beforeVariableChanged(workingEntity, variableName);
