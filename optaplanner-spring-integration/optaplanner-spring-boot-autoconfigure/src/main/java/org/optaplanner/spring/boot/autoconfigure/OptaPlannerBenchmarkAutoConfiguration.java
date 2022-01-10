@@ -19,6 +19,7 @@ package org.optaplanner.spring.boot.autoconfigure;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.optaplanner.benchmark.api.PlannerBenchmarkFactory;
 import org.optaplanner.benchmark.config.PlannerBenchmarkConfig;
@@ -91,8 +92,8 @@ public class OptaPlannerBenchmarkAutoConfiguration
                             optaPlannerProperties.getBenchmark().getSolver().getTermination());
         }
 
-        if (!isTerminationConfigured(
-                benchmarkConfig.getInheritedSolverBenchmarkConfig().getSolverConfig().getTerminationConfig())) {
+        if (benchmarkConfig.getInheritedSolverBenchmarkConfig().getSolverConfig().getTerminationConfig() == null ||
+                !benchmarkConfig.getInheritedSolverBenchmarkConfig().getSolverConfig().getTerminationConfig().isConfigured()) {
             List<SolverBenchmarkConfig> solverBenchmarkConfigList = benchmarkConfig.getSolverBenchmarkConfigList();
             List<String> unconfiguredTerminationSolverBenchmarkList = new ArrayList<>();
             if (solverBenchmarkConfigList == null) {
@@ -106,12 +107,13 @@ public class OptaPlannerBenchmarkAutoConfiguration
             for (int i = 0; i < solverBenchmarkConfigList.size(); i++) {
                 SolverBenchmarkConfig solverBenchmarkConfig = solverBenchmarkConfigList.get(i);
                 TerminationConfig terminationConfig = solverBenchmarkConfig.getSolverConfig().getTerminationConfig();
-                if (!isTerminationConfigured(terminationConfig)) {
+                if (terminationConfig == null || !terminationConfig.isConfigured()) {
                     boolean isTerminationConfiguredForAllNonConstructionHeuristicPhases = !solverBenchmarkConfig
                             .getSolverConfig().getPhaseConfigList().isEmpty();
                     for (PhaseConfig<?> phaseConfig : solverBenchmarkConfig.getSolverConfig().getPhaseConfigList()) {
                         if (!(phaseConfig instanceof ConstructionHeuristicPhaseConfig)) {
-                            if (!isTerminationConfigured(phaseConfig.getTerminationConfig())) {
+                            if (phaseConfig.getTerminationConfig() == null
+                                    || !phaseConfig.getTerminationConfig().isConfigured()) {
                                 isTerminationConfiguredForAllNonConstructionHeuristicPhases = false;
                                 break;
                             }
@@ -129,7 +131,9 @@ public class OptaPlannerBenchmarkAutoConfiguration
             if (!unconfiguredTerminationSolverBenchmarkList.isEmpty()) {
                 throw new IllegalStateException("The following " + SolverBenchmarkConfig.class.getSimpleName() + " do not " +
                         "have termination configured: " +
-                        String.join(", ", unconfiguredTerminationSolverBenchmarkList) + ". " +
+                        unconfiguredTerminationSolverBenchmarkList.stream()
+                                .collect(Collectors.joining(", ", "[", "]"))
+                        + ". " +
                         "At least one of the properties " +
                         "optaplanner.benchmark.solver.termination.spent-limit, " +
                         "optaplanner.benchmark.solver.termination.best-score-limit, " +
@@ -149,27 +153,5 @@ public class OptaPlannerBenchmarkAutoConfiguration
     @Override
     public void setBeanClassLoader(ClassLoader classLoader) {
         this.beanClassLoader = classLoader;
-    }
-
-    private boolean isTerminationConfigured(TerminationConfig terminationConfig) {
-        if (terminationConfig == null) {
-            return false;
-        }
-        return terminationConfig.getTerminationClass() != null ||
-                terminationConfig.getSpentLimit() != null ||
-                terminationConfig.getMillisecondsSpentLimit() != null ||
-                terminationConfig.getSecondsSpentLimit() != null ||
-                terminationConfig.getMinutesSpentLimit() != null ||
-                terminationConfig.getHoursSpentLimit() != null ||
-                terminationConfig.getDaysSpentLimit() != null ||
-                terminationConfig.getBestScoreLimit() != null ||
-                terminationConfig.getUnimprovedSpentLimit() != null ||
-                terminationConfig.getUnimprovedMillisecondsSpentLimit() != null ||
-                terminationConfig.getUnimprovedSecondsSpentLimit() != null ||
-                terminationConfig.getUnimprovedMinutesSpentLimit() != null ||
-                terminationConfig.getUnimprovedHoursSpentLimit() != null ||
-                terminationConfig.getUnimprovedDaysSpentLimit() != null ||
-                terminationConfig.getStepCountLimit() != null ||
-                terminationConfig.getTerminationConfigList() != null;
     }
 }

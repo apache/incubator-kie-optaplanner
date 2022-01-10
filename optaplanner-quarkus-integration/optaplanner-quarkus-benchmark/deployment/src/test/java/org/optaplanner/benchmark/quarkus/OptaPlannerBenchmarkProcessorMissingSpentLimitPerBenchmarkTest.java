@@ -52,7 +52,7 @@ public class OptaPlannerBenchmarkProcessorMissingSpentLimitPerBenchmarkTest {
         });
         Assertions.assertEquals(
                 "The following " + SolverBenchmarkConfig.class.getSimpleName() + " do not " +
-                        "have termination configured: First Fit and Local Search no Termination. " +
+                        "have termination configured: [First Fit and Local Search without Termination]. " +
                         "At least one of the properties " +
                         "quarkus.optaplanner.benchmark.solver.termination.spent-limit, " +
                         "quarkus.optaplanner.benchmark.solver.termination.best-score-limit, " +
