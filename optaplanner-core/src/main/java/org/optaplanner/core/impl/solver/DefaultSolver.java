@@ -159,10 +159,8 @@ public class DefaultSolver<Solution_> extends AbstractSolver<Solution_> {
     @Override
     public void addProblemChanges(List<ProblemChange<Solution_>> problemChangeList) {
         Objects.requireNonNull(problemChangeList, "The list of problem changes (" + problemChangeList + ") cannot be null.");
-        List<ProblemChangeAdapter<Solution_>> adaptedProblemChangeList = problemChangeList.stream()
-                .map(ProblemChangeAdapterImpl::new)
-                .collect(Collectors.toList());
-        basicPlumbingTermination.addProblemChanges(adaptedProblemChangeList);
+        problemChangeList.forEach(
+                problemChange -> basicPlumbingTermination.addProblemChange(new ProblemChangeAdapterImpl<>(problemChange)));
     }
 
     @Override
