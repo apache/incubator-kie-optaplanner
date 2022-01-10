@@ -79,10 +79,12 @@ public final class DefaultSolverFactory<Solution_> implements SolverFactory<Solu
                     EnvironmentMode environmentMode = solverConfig.determineEnvironmentMode();
                     SolutionDescriptor<Solution_> solutionDescriptor = buildSolutionDescriptor(environmentMode);
                     ScoreDirectorFactoryConfig scoreDirectorFactoryConfig_ =
-                            Objects.requireNonNullElseGet(solverConfig.getScoreDirectorFactoryConfig(), ScoreDirectorFactoryConfig::new);
+                            Objects.requireNonNullElseGet(solverConfig.getScoreDirectorFactoryConfig(),
+                                    ScoreDirectorFactoryConfig::new);
                     ScoreDirectorFactoryFactory<Solution_, ?> scoreDirectorFactoryFactory =
                             new ScoreDirectorFactoryFactory<>(scoreDirectorFactoryConfig_);
-                    scoreDirectorFactory = scoreDirectorFactoryFactory.buildScoreDirectorFactory(solverConfig.getClassLoader(), environmentMode,
+                    scoreDirectorFactory = scoreDirectorFactoryFactory.buildScoreDirectorFactory(solverConfig.getClassLoader(),
+                            environmentMode,
                             solutionDescriptor);
                 }
             }
