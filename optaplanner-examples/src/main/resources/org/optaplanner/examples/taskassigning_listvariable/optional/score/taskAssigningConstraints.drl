@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.optaplanner.examples.taskassigning_listvariable.solver;
+package org.optaplanner.examples.taskassigning_listvariable.optional.score;
     dialect "java"
 
 import org.optaplanner.core.api.score.buildin.bendable.BendableScoreHolder;

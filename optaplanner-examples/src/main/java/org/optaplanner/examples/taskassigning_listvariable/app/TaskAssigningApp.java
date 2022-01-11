@@ -25,7 +25,7 @@ import org.optaplanner.persistence.common.api.domain.solution.SolutionFileIO;
 public class TaskAssigningApp extends CommonApp<TaskAssigningSolution> {
 
     public static final String SOLVER_CONFIG =
-            "org/optaplanner/examples/taskassigning_listvariable/solver/taskAssigningSolverConfig.xml";
+            "org/optaplanner/examples/taskassigning_listvariable/taskAssigningSolverConfig.xml";
 
     public static final String DATA_DIR_NAME = "taskassigning";
 
