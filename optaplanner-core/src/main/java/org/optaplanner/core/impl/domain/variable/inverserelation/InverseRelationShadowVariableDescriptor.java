@@ -63,18 +63,8 @@ public class InverseRelationShadowVariableDescriptor<Solution_> extends ShadowVa
     }
 
     /**
-     * The following table describes which combinations of source and shadow variable types are supported.
-     * The unsupported combinations are detected and fail fast.
-     *
-     * <pre>
-     * {@code
-     *          | singleton | collection
-     * -----------------------------------
-     *   basic  |     ✕     |     ✓
-     * chained  |     ✓     |     ✕
-     *    list  |     ✓     |     ✕
-     *}
-     * </pre>
+     * Sourced on a basic genuine planning variable, the shadow type is a Collection (such as List or Set).
+     * Sourced on a list or chained planning variable, the shadow variable type is a single instance.
      *
      * @param descriptorPolicy descriptor policy
      */
