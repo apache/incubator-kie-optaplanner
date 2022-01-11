@@ -17,11 +17,11 @@
       </termination>
     </solver>
     <problemBenchmarks>
-      <solutionFileIOClass>org.optaplanner.examples.taskassigning_listvariable.persistence.orig.TmpBridgeTaskAssigningXmlSolutionFileIO</solutionFileIOClass>
-      <inputSolutionFile>data/taskassigning/solved/init-24tasks-8employees.xml</inputSolutionFile>
-      <inputSolutionFile>data/taskassigning/solved/init-50tasks-5employees.xml</inputSolutionFile>
-      <inputSolutionFile>data/taskassigning/solved/init-100tasks-5employees.xml</inputSolutionFile>
-      <inputSolutionFile>data/taskassigning/solved/init-500tasks-20employees.xml</inputSolutionFile>
+      <solutionFileIOClass>org.optaplanner.examples.taskassigning_listvariable.persistence.TaskAssigningXmlSolutionFileIO</solutionFileIOClass>
+      <inputSolutionFile>data/taskassigning_listvariable/unsolved/24tasks-8employees.xml</inputSolutionFile>
+      <inputSolutionFile>data/taskassigning_listvariable/unsolved/50tasks-5employees.xml</inputSolutionFile>
+      <inputSolutionFile>data/taskassigning_listvariable/unsolved/100tasks-5employees.xml</inputSolutionFile>
+      <inputSolutionFile>data/taskassigning_listvariable/unsolved/500tasks-20employees.xml</inputSolutionFile>
       <!--<problemStatisticType>BEST_SCORE</problemStatisticType>-->
       <!--<problemStatisticType>STEP_SCORE</problemStatisticType>-->
       <!--<problemStatisticType>SCORE_CALCULATION_SPEED</problemStatisticType>-->
@@ -37,14 +37,6 @@
   <solverBenchmark>
     <name>Late Acceptance</name>
     <solver>
-      <localSearch>
-        <unionMoveSelector>
-          <changeMoveSelector>
-          </changeMoveSelector>
-          <swapMoveSelector>
-          </swapMoveSelector>
-        </unionMoveSelector>
-      </localSearch>
     </solver>
   </solverBenchmark>
 </plannerBenchmark>
