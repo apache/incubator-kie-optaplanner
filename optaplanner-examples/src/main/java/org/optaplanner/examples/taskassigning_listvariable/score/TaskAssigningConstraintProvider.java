@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.optaplanner.examples.taskassigning_listvariable.optional.score;
+package org.optaplanner.examples.taskassigning_listvariable.score;
 
 import org.optaplanner.core.api.score.buildin.bendable.BendableScore;
 import org.optaplanner.core.api.score.stream.Constraint;
@@ -47,7 +47,7 @@ public final class TaskAssigningConstraintProvider implements ConstraintProvider
 
     private UniConstraintStream<Task> getTaskWithPriority(ConstraintFactory constraintFactory, Priority priority) {
         return constraintFactory.forEach(Task.class)
-                .filter(task -> task.getPriority() == priority);
+                .filter(task -> task.getEmployee() != null && task.getPriority() == priority);
     }
 
     private Constraint noMissingSkills(ConstraintFactory constraintFactory) {

@@ -14,13 +14,15 @@
  * limitations under the License.
  */
 
-package org.optaplanner.examples.taskassigning_listvariable.solver;
+package org.optaplanner.examples.taskassigning_listvariable.optional.score;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 
 import org.junit.jupiter.api.Test;
 import org.optaplanner.core.api.solver.SolverFactory;
+import org.optaplanner.core.config.score.director.ScoreDirectorFactoryConfig;
+import org.optaplanner.core.config.solver.SolverConfig;
 import org.optaplanner.examples.taskassigning_listvariable.app.TaskAssigningApp;
 import org.optaplanner.examples.taskassigning_listvariable.domain.Customer;
 import org.optaplanner.examples.taskassigning_listvariable.domain.Employee;
@@ -33,8 +35,12 @@ import org.optaplanner.test.impl.score.buildin.bendable.BendableScoreVerifier;
 
 public class TaskAssigningScoreConstraintTest {
 
-    private BendableScoreVerifier<TaskAssigningSolution> scoreVerifier = new BendableScoreVerifier<>(
-            SolverFactory.createFromXmlResource(TaskAssigningApp.SOLVER_CONFIG));
+    private static final ScoreDirectorFactoryConfig SCORE_DIRECTOR_FACTORY_CONFIG = new ScoreDirectorFactoryConfig()
+            .withScoreDrls("org/optaplanner/examples/taskassigning_listvariable/optional/score/taskAssigningConstraints.drl");
+    private static final SolverConfig SOLVER_CONFIG = SolverConfig.createFromXmlResource(TaskAssigningApp.SOLVER_CONFIG)
+            .withScoreDirectorFactory(SCORE_DIRECTOR_FACTORY_CONFIG);
+    private final BendableScoreVerifier<TaskAssigningSolution> scoreVerifier =
+            new BendableScoreVerifier<>(SolverFactory.create(SOLVER_CONFIG));
 
     @Test
     public void skillRequirements() {

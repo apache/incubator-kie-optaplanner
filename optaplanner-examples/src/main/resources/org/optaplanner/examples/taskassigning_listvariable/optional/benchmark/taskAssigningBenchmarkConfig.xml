@@ -10,8 +10,7 @@
       <entityClass>org.optaplanner.examples.taskassigning_listvariable.domain.Employee</entityClass>
       <entityClass>org.optaplanner.examples.taskassigning_listvariable.domain.Task</entityClass>
       <scoreDirectorFactory>
-        <!--<constraintProviderClass>org.optaplanner.examples.taskassigning_listvariable.optional.score.TaskAssigningConstraintProvider</constraintProviderClass>-->
-        <scoreDrl>org/optaplanner/examples/taskassigning_listvariable/solver/taskAssigningConstraints.drl</scoreDrl>
+        <constraintProviderClass>org.optaplanner.examples.taskassigning_listvariable.score.TaskAssigningConstraintProvider</constraintProviderClass>
       </scoreDirectorFactory>
       <termination>
         <minutesSpentLimit>5</minutesSpentLimit>
