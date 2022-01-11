@@ -157,262 +157,8 @@
       <name>Computer Labs</name>
     </TaCustomer>
   </customerList>
-  <employeeList id="40">
-    <TaEmployee id="41">
-      <id>0</id>
-      <fullName>Amy</fullName>
-      <skillSet class="linked-hash-set" id="42">
-        <TaSkill reference="3"/>
-        <TaSkill reference="4"/>
-        <TaSkill reference="5"/>
-      </skillSet>
-      <affinityMap class="linked-hash-map" id="43">
-        <entry>
-          <TaCustomer reference="30"/>
-          <org.optaplanner.examples.taskassigning_listvariable.domain.Affinity>HIGH</org.optaplanner.examples.taskassigning_listvariable.domain.Affinity>
-        </entry>
-        <entry>
-          <TaCustomer reference="31"/>
-          <org.optaplanner.examples.taskassigning_listvariable.domain.Affinity>MEDIUM</org.optaplanner.examples.taskassigning_listvariable.domain.Affinity>
-        </entry>
-        <entry>
-          <TaCustomer reference="32"/>
-          <org.optaplanner.examples.taskassigning_listvariable.domain.Affinity>NONE</org.optaplanner.examples.taskassigning_listvariable.domain.Affinity>
-        </entry>
-        <entry>
-          <TaCustomer reference="33"/>
-          <org.optaplanner.examples.taskassigning_listvariable.domain.Affinity>MEDIUM</org.optaplanner.examples.taskassigning_listvariable.domain.Affinity>
-        </entry>
-        <entry>
-          <TaCustomer reference="34"/>
-          <org.optaplanner.examples.taskassigning_listvariable.domain.Affinity>NONE</org.optaplanner.examples.taskassigning_listvariable.domain.Affinity>
-        </entry>
-        <entry>
-          <TaCustomer reference="35"/>
-          <org.optaplanner.examples.taskassigning_listvariable.domain.Affinity>LOW</org.optaplanner.examples.taskassigning_listvariable.domain.Affinity>
-        </entry>
-        <entry>
-          <TaCustomer reference="36"/>
-          <org.optaplanner.examples.taskassigning_listvariable.domain.Affinity>NONE</org.optaplanner.examples.taskassigning_listvariable.domain.Affinity>
-        </entry>
-        <entry>
-          <TaCustomer reference="37"/>
-          <org.optaplanner.examples.taskassigning_listvariable.domain.Affinity>LOW</org.optaplanner.examples.taskassigning_listvariable.domain.Affinity>
-        </entry>
-        <entry>
-          <TaCustomer reference="38"/>
-          <org.optaplanner.examples.taskassigning_listvariable.domain.Affinity>NONE</org.optaplanner.examples.taskassigning_listvariable.domain.Affinity>
-        </entry>
-        <entry>
-          <TaCustomer reference="39"/>
-          <org.optaplanner.examples.taskassigning_listvariable.domain.Affinity>NONE</org.optaplanner.examples.taskassigning_listvariable.domain.Affinity>
-        </entry>
-      </affinityMap>
-    </TaEmployee>
-    <TaEmployee id="44">
-      <id>1</id>
-      <fullName>Beth</fullName>
-      <skillSet class="linked-hash-set" id="45">
-        <TaSkill reference="6"/>
-        <TaSkill reference="7"/>
-        <TaSkill reference="3"/>
-      </skillSet>
-      <affinityMap class="linked-hash-map" id="46">
-        <entry>
-          <TaCustomer reference="30"/>
-          <org.optaplanner.examples.taskassigning_listvariable.domain.Affinity>HIGH</org.optaplanner.examples.taskassigning_listvariable.domain.Affinity>
-        </entry>
-        <entry>
-          <TaCustomer reference="31"/>
-          <org.optaplanner.examples.taskassigning_listvariable.domain.Affinity>HIGH</org.optaplanner.examples.taskassigning_listvariable.domain.Affinity>
-        </entry>
-        <entry>
-          <TaCustomer reference="32"/>
-          <org.optaplanner.examples.taskassigning_listvariable.domain.Affinity>LOW</org.optaplanner.examples.taskassigning_listvariable.domain.Affinity>
-        </entry>
-        <entry>
-          <TaCustomer reference="33"/>
-          <org.optaplanner.examples.taskassigning_listvariable.domain.Affinity>NONE</org.optaplanner.examples.taskassigning_listvariable.domain.Affinity>
-        </entry>
-        <entry>
-          <TaCustomer reference="34"/>
-          <org.optaplanner.examples.taskassigning_listvariable.domain.Affinity>LOW</org.optaplanner.examples.taskassigning_listvariable.domain.Affinity>
-        </entry>
-        <entry>
-          <TaCustomer reference="35"/>
-          <org.optaplanner.examples.taskassigning_listvariable.domain.Affinity>HIGH</org.optaplanner.examples.taskassigning_listvariable.domain.Affinity>
-        </entry>
-        <entry>
-          <TaCustomer reference="36"/>
-          <org.optaplanner.examples.taskassigning_listvariable.domain.Affinity>HIGH</org.optaplanner.examples.taskassigning_listvariable.domain.Affinity>
-        </entry>
-        <entry>
-          <TaCustomer reference="37"/>
-          <org.optaplanner.examples.taskassigning_listvariable.domain.Affinity>MEDIUM</org.optaplanner.examples.taskassigning_listvariable.domain.Affinity>
-        </entry>
-        <entry>
-          <TaCustomer reference="38"/>
-          <org.optaplanner.examples.taskassigning_listvariable.domain.Affinity>HIGH</org.optaplanner.examples.taskassigning_listvariable.domain.Affinity>
-        </entry>
-        <entry>
-          <TaCustomer reference="39"/>
-          <org.optaplanner.examples.taskassigning_listvariable.domain.Affinity>MEDIUM</org.optaplanner.examples.taskassigning_listvariable.domain.Affinity>
-        </entry>
-      </affinityMap>
-    </TaEmployee>
-    <TaEmployee id="47">
-      <id>2</id>
-      <fullName>Chad</fullName>
-      <skillSet class="linked-hash-set" id="48">
-        <TaSkill reference="4"/>
-        <TaSkill reference="5"/>
-      </skillSet>
-      <affinityMap class="linked-hash-map" id="49">
-        <entry>
-          <TaCustomer reference="30"/>
-          <org.optaplanner.examples.taskassigning_listvariable.domain.Affinity>MEDIUM</org.optaplanner.examples.taskassigning_listvariable.domain.Affinity>
-        </entry>
-        <entry>
-          <TaCustomer reference="31"/>
-          <org.optaplanner.examples.taskassigning_listvariable.domain.Affinity>MEDIUM</org.optaplanner.examples.taskassigning_listvariable.domain.Affinity>
-        </entry>
-        <entry>
-          <TaCustomer reference="32"/>
-          <org.optaplanner.examples.taskassigning_listvariable.domain.Affinity>LOW</org.optaplanner.examples.taskassigning_listvariable.domain.Affinity>
-        </entry>
-        <entry>
-          <TaCustomer reference="33"/>
-          <org.optaplanner.examples.taskassigning_listvariable.domain.Affinity>HIGH</org.optaplanner.examples.taskassigning_listvariable.domain.Affinity>
-        </entry>
-        <entry>
-          <TaCustomer reference="34"/>
-          <org.optaplanner.examples.taskassigning_listvariable.domain.Affinity>HIGH</org.optaplanner.examples.taskassigning_listvariable.domain.Affinity>
-        </entry>
-        <entry>
-          <TaCustomer reference="35"/>
-          <org.optaplanner.examples.taskassigning_listvariable.domain.Affinity>MEDIUM</org.optaplanner.examples.taskassigning_listvariable.domain.Affinity>
-        </entry>
-        <entry>
-          <TaCustomer reference="36"/>
-          <org.optaplanner.examples.taskassigning_listvariable.domain.Affinity>MEDIUM</org.optaplanner.examples.taskassigning_listvariable.domain.Affinity>
-        </entry>
-        <entry>
-          <TaCustomer reference="37"/>
-          <org.optaplanner.examples.taskassigning_listvariable.domain.Affinity>HIGH</org.optaplanner.examples.taskassigning_listvariable.domain.Affinity>
-        </entry>
-        <entry>
-          <TaCustomer reference="38"/>
-          <org.optaplanner.examples.taskassigning_listvariable.domain.Affinity>LOW</org.optaplanner.examples.taskassigning_listvariable.domain.Affinity>
-        </entry>
-        <entry>
-          <TaCustomer reference="39"/>
-          <org.optaplanner.examples.taskassigning_listvariable.domain.Affinity>MEDIUM</org.optaplanner.examples.taskassigning_listvariable.domain.Affinity>
-        </entry>
-      </affinityMap>
-    </TaEmployee>
-    <TaEmployee id="50">
-      <id>3</id>
-      <fullName>Dan</fullName>
-      <skillSet class="linked-hash-set" id="51">
-        <TaSkill reference="6"/>
-        <TaSkill reference="7"/>
-      </skillSet>
-      <affinityMap class="linked-hash-map" id="52">
-        <entry>
-          <TaCustomer reference="30"/>
-          <org.optaplanner.examples.taskassigning_listvariable.domain.Affinity>LOW</org.optaplanner.examples.taskassigning_listvariable.domain.Affinity>
-        </entry>
-        <entry>
-          <TaCustomer reference="31"/>
-          <org.optaplanner.examples.taskassigning_listvariable.domain.Affinity>HIGH</org.optaplanner.examples.taskassigning_listvariable.domain.Affinity>
-        </entry>
-        <entry>
-          <TaCustomer reference="32"/>
-          <org.optaplanner.examples.taskassigning_listvariable.domain.Affinity>NONE</org.optaplanner.examples.taskassigning_listvariable.domain.Affinity>
-        </entry>
-        <entry>
-          <TaCustomer reference="33"/>
-          <org.optaplanner.examples.taskassigning_listvariable.domain.Affinity>MEDIUM</org.optaplanner.examples.taskassigning_listvariable.domain.Affinity>
-        </entry>
-        <entry>
-          <TaCustomer reference="34"/>
-          <org.optaplanner.examples.taskassigning_listvariable.domain.Affinity>NONE</org.optaplanner.examples.taskassigning_listvariable.domain.Affinity>
-        </entry>
-        <entry>
-          <TaCustomer reference="35"/>
-          <org.optaplanner.examples.taskassigning_listvariable.domain.Affinity>LOW</org.optaplanner.examples.taskassigning_listvariable.domain.Affinity>
-        </entry>
-        <entry>
-          <TaCustomer reference="36"/>
-          <org.optaplanner.examples.taskassigning_listvariable.domain.Affinity>NONE</org.optaplanner.examples.taskassigning_listvariable.domain.Affinity>
-        </entry>
-        <entry>
-          <TaCustomer reference="37"/>
-          <org.optaplanner.examples.taskassigning_listvariable.domain.Affinity>HIGH</org.optaplanner.examples.taskassigning_listvariable.domain.Affinity>
-        </entry>
-        <entry>
-          <TaCustomer reference="38"/>
-          <org.optaplanner.examples.taskassigning_listvariable.domain.Affinity>LOW</org.optaplanner.examples.taskassigning_listvariable.domain.Affinity>
-        </entry>
-        <entry>
-          <TaCustomer reference="39"/>
-          <org.optaplanner.examples.taskassigning_listvariable.domain.Affinity>HIGH</org.optaplanner.examples.taskassigning_listvariable.domain.Affinity>
-        </entry>
-      </affinityMap>
-    </TaEmployee>
-    <TaEmployee id="53">
-      <id>4</id>
-      <fullName>Elsa</fullName>
-      <skillSet class="linked-hash-set" id="54">
-        <TaSkill reference="3"/>
-        <TaSkill reference="4"/>
-      </skillSet>
-      <affinityMap class="linked-hash-map" id="55">
-        <entry>
-          <TaCustomer reference="30"/>
-          <org.optaplanner.examples.taskassigning_listvariable.domain.Affinity>NONE</org.optaplanner.examples.taskassigning_listvariable.domain.Affinity>
-        </entry>
-        <entry>
-          <TaCustomer reference="31"/>
-          <org.optaplanner.examples.taskassigning_listvariable.domain.Affinity>HIGH</org.optaplanner.examples.taskassigning_listvariable.domain.Affinity>
-        </entry>
-        <entry>
-          <TaCustomer reference="32"/>
-          <org.optaplanner.examples.taskassigning_listvariable.domain.Affinity>LOW</org.optaplanner.examples.taskassigning_listvariable.domain.Affinity>
-        </entry>
-        <entry>
-          <TaCustomer reference="33"/>
-          <org.optaplanner.examples.taskassigning_listvariable.domain.Affinity>NONE</org.optaplanner.examples.taskassigning_listvariable.domain.Affinity>
-        </entry>
-        <entry>
-          <TaCustomer reference="34"/>
-          <org.optaplanner.examples.taskassigning_listvariable.domain.Affinity>MEDIUM</org.optaplanner.examples.taskassigning_listvariable.domain.Affinity>
-        </entry>
-        <entry>
-          <TaCustomer reference="35"/>
-          <org.optaplanner.examples.taskassigning_listvariable.domain.Affinity>NONE</org.optaplanner.examples.taskassigning_listvariable.domain.Affinity>
-        </entry>
-        <entry>
-          <TaCustomer reference="36"/>
-          <org.optaplanner.examples.taskassigning_listvariable.domain.Affinity>LOW</org.optaplanner.examples.taskassigning_listvariable.domain.Affinity>
-        </entry>
-        <entry>
-          <TaCustomer reference="37"/>
-          <org.optaplanner.examples.taskassigning_listvariable.domain.Affinity>HIGH</org.optaplanner.examples.taskassigning_listvariable.domain.Affinity>
-        </entry>
-        <entry>
-          <TaCustomer reference="38"/>
-          <org.optaplanner.examples.taskassigning_listvariable.domain.Affinity>MEDIUM</org.optaplanner.examples.taskassigning_listvariable.domain.Affinity>
-        </entry>
-        <entry>
-          <TaCustomer reference="39"/>
-          <org.optaplanner.examples.taskassigning_listvariable.domain.Affinity>HIGH</org.optaplanner.examples.taskassigning_listvariable.domain.Affinity>
-        </entry>
-      </affinityMap>
-    </TaEmployee>
-  </employeeList>
-  <taskList id="56">
-    <TaTask id="57">
+  <taskList id="40">
+    <TaTask id="41">
       <id>0</id>
       <taskType reference="23"/>
       <indexInTaskType>1</indexInTaskType>
@@ -421,7 +167,7 @@
       <priority>MAJOR</priority>
       <pinned>false</pinned>
     </TaTask>
-    <TaTask id="58">
+    <TaTask id="42">
       <id>1</id>
       <taskType reference="15"/>
       <indexInTaskType>1</indexInTaskType>
@@ -430,7 +176,7 @@
       <priority>CRITICAL</priority>
       <pinned>false</pinned>
     </TaTask>
-    <TaTask id="59">
+    <TaTask id="43">
       <id>2</id>
       <taskType reference="23"/>
       <indexInTaskType>2</indexInTaskType>
@@ -439,7 +185,7 @@
       <priority>MINOR</priority>
       <pinned>false</pinned>
     </TaTask>
-    <TaTask id="60">
+    <TaTask id="44">
       <id>3</id>
       <taskType reference="27"/>
       <indexInTaskType>1</indexInTaskType>
@@ -448,7 +194,7 @@
       <priority>MAJOR</priority>
       <pinned>false</pinned>
     </TaTask>
-    <TaTask id="61">
+    <TaTask id="45">
       <id>4</id>
       <taskType reference="25"/>
       <indexInTaskType>1</indexInTaskType>
@@ -457,7 +203,7 @@
       <priority>MAJOR</priority>
       <pinned>false</pinned>
     </TaTask>
-    <TaTask id="62">
+    <TaTask id="46">
       <id>5</id>
       <taskType reference="21"/>
       <indexInTaskType>1</indexInTaskType>
@@ -466,7 +212,7 @@
       <priority>MAJOR</priority>
       <pinned>false</pinned>
     </TaTask>
-    <TaTask id="63">
+    <TaTask id="47">
       <id>6</id>
       <taskType reference="11"/>
       <indexInTaskType>1</indexInTaskType>
@@ -475,7 +221,7 @@
       <priority>CRITICAL</priority>
       <pinned>false</pinned>
     </TaTask>
-    <TaTask id="64">
+    <TaTask id="48">
       <id>7</id>
       <taskType reference="21"/>
       <indexInTaskType>2</indexInTaskType>
@@ -484,7 +230,7 @@
       <priority>MINOR</priority>
       <pinned>false</pinned>
     </TaTask>
-    <TaTask id="65">
+    <TaTask id="49">
       <id>8</id>
       <taskType reference="27"/>
       <indexInTaskType>2</indexInTaskType>
@@ -493,7 +239,7 @@
       <priority>MAJOR</priority>
       <pinned>false</pinned>
     </TaTask>
-    <TaTask id="66">
+    <TaTask id="50">
       <id>9</id>
       <taskType reference="11"/>
       <indexInTaskType>2</indexInTaskType>
@@ -502,7 +248,7 @@
       <priority>CRITICAL</priority>
       <pinned>false</pinned>
     </TaTask>
-    <TaTask id="67">
+    <TaTask id="51">
       <id>10</id>
       <taskType reference="21"/>
       <indexInTaskType>3</indexInTaskType>
@@ -511,7 +257,7 @@
       <priority>MINOR</priority>
       <pinned>false</pinned>
     </TaTask>
-    <TaTask id="68">
+    <TaTask id="52">
       <id>11</id>
       <taskType reference="13"/>
       <indexInTaskType>1</indexInTaskType>
@@ -520,7 +266,7 @@
       <priority>MAJOR</priority>
       <pinned>false</pinned>
     </TaTask>
-    <TaTask id="69">
+    <TaTask id="53">
       <id>12</id>
       <taskType reference="13"/>
       <indexInTaskType>2</indexInTaskType>
@@ -529,7 +275,7 @@
       <priority>MINOR</priority>
       <pinned>false</pinned>
     </TaTask>
-    <TaTask id="70">
+    <TaTask id="54">
       <id>13</id>
       <taskType reference="25"/>
       <indexInTaskType>2</indexInTaskType>
@@ -538,7 +284,7 @@
       <priority>MINOR</priority>
       <pinned>false</pinned>
     </TaTask>
-    <TaTask id="71">
+    <TaTask id="55">
       <id>14</id>
       <taskType reference="21"/>
       <indexInTaskType>4</indexInTaskType>
@@ -547,7 +293,7 @@
       <priority>CRITICAL</priority>
       <pinned>false</pinned>
     </TaTask>
-    <TaTask id="72">
+    <TaTask id="56">
       <id>15</id>
       <taskType reference="25"/>
       <indexInTaskType>3</indexInTaskType>
@@ -556,7 +302,7 @@
       <priority>MINOR</priority>
       <pinned>false</pinned>
     </TaTask>
-    <TaTask id="73">
+    <TaTask id="57">
       <id>16</id>
       <taskType reference="25"/>
       <indexInTaskType>4</indexInTaskType>
@@ -565,7 +311,7 @@
       <priority>CRITICAL</priority>
       <pinned>false</pinned>
     </TaTask>
-    <TaTask id="74">
+    <TaTask id="58">
       <id>17</id>
       <taskType reference="11"/>
       <indexInTaskType>3</indexInTaskType>
@@ -574,7 +320,7 @@
       <priority>MAJOR</priority>
       <pinned>false</pinned>
     </TaTask>
-    <TaTask id="75">
+    <TaTask id="59">
       <id>18</id>
       <taskType reference="21"/>
       <indexInTaskType>5</indexInTaskType>
@@ -583,7 +329,7 @@
       <priority>CRITICAL</priority>
       <pinned>false</pinned>
     </TaTask>
-    <TaTask id="76">
+    <TaTask id="60">
       <id>19</id>
       <taskType reference="23"/>
       <indexInTaskType>3</indexInTaskType>
@@ -592,7 +338,7 @@
       <priority>CRITICAL</priority>
       <pinned>false</pinned>
     </TaTask>
-    <TaTask id="77">
+    <TaTask id="61">
       <id>20</id>
       <taskType reference="23"/>
       <indexInTaskType>4</indexInTaskType>
@@ -601,7 +347,7 @@
       <priority>CRITICAL</priority>
       <pinned>false</pinned>
     </TaTask>
-    <TaTask id="78">
+    <TaTask id="62">
       <id>21</id>
       <taskType reference="13"/>
       <indexInTaskType>3</indexInTaskType>
@@ -610,7 +356,7 @@
       <priority>CRITICAL</priority>
       <pinned>false</pinned>
     </TaTask>
-    <TaTask id="79">
+    <TaTask id="63">
       <id>22</id>
       <taskType reference="9"/>
       <indexInTaskType>1</indexInTaskType>
@@ -619,7 +365,7 @@
       <priority>MAJOR</priority>
       <pinned>false</pinned>
     </TaTask>
-    <TaTask id="80">
+    <TaTask id="64">
       <id>23</id>
       <taskType reference="9"/>
       <indexInTaskType>2</indexInTaskType>
@@ -628,7 +374,7 @@
       <priority>MAJOR</priority>
       <pinned>false</pinned>
     </TaTask>
-    <TaTask id="81">
+    <TaTask id="65">
       <id>24</id>
       <taskType reference="13"/>
       <indexInTaskType>4</indexInTaskType>
@@ -637,7 +383,7 @@
       <priority>MINOR</priority>
       <pinned>false</pinned>
     </TaTask>
-    <TaTask id="82">
+    <TaTask id="66">
       <id>25</id>
       <taskType reference="27"/>
       <indexInTaskType>3</indexInTaskType>
@@ -646,7 +392,7 @@
       <priority>MAJOR</priority>
       <pinned>false</pinned>
     </TaTask>
-    <TaTask id="83">
+    <TaTask id="67">
       <id>26</id>
       <taskType reference="13"/>
       <indexInTaskType>5</indexInTaskType>
@@ -655,7 +401,7 @@
       <priority>CRITICAL</priority>
       <pinned>false</pinned>
     </TaTask>
-    <TaTask id="84">
+    <TaTask id="68">
       <id>27</id>
       <taskType reference="19"/>
       <indexInTaskType>1</indexInTaskType>
@@ -664,7 +410,7 @@
       <priority>MINOR</priority>
       <pinned>false</pinned>
     </TaTask>
-    <TaTask id="85">
+    <TaTask id="69">
       <id>28</id>
       <taskType reference="9"/>
       <indexInTaskType>3</indexInTaskType>
@@ -673,7 +419,7 @@
       <priority>CRITICAL</priority>
       <pinned>false</pinned>
     </TaTask>
-    <TaTask id="86">
+    <TaTask id="70">
       <id>29</id>
       <taskType reference="9"/>
       <indexInTaskType>4</indexInTaskType>
@@ -682,7 +428,7 @@
       <priority>CRITICAL</priority>
       <pinned>false</pinned>
     </TaTask>
-    <TaTask id="87">
+    <TaTask id="71">
       <id>30</id>
       <taskType reference="9"/>
       <indexInTaskType>5</indexInTaskType>
@@ -691,7 +437,7 @@
       <priority>CRITICAL</priority>
       <pinned>false</pinned>
     </TaTask>
-    <TaTask id="88">
+    <TaTask id="72">
       <id>31</id>
       <taskType reference="27"/>
       <indexInTaskType>4</indexInTaskType>
@@ -700,7 +446,7 @@
       <priority>MINOR</priority>
       <pinned>false</pinned>
     </TaTask>
-    <TaTask id="89">
+    <TaTask id="73">
       <id>32</id>
       <taskType reference="23"/>
       <indexInTaskType>5</indexInTaskType>
@@ -709,7 +455,7 @@
       <priority>MINOR</priority>
       <pinned>false</pinned>
     </TaTask>
-    <TaTask id="90">
+    <TaTask id="74">
       <id>33</id>
       <taskType reference="25"/>
       <indexInTaskType>5</indexInTaskType>
@@ -718,7 +464,7 @@
       <priority>CRITICAL</priority>
       <pinned>false</pinned>
     </TaTask>
-    <TaTask id="91">
+    <TaTask id="75">
       <id>34</id>
       <taskType reference="21"/>
       <indexInTaskType>6</indexInTaskType>
@@ -727,7 +473,7 @@
       <priority>MINOR</priority>
       <pinned>false</pinned>
     </TaTask>
-    <TaTask id="92">
+    <TaTask id="76">
       <id>35</id>
       <taskType reference="21"/>
       <indexInTaskType>7</indexInTaskType>
@@ -736,7 +482,7 @@
       <priority>CRITICAL</priority>
       <pinned>false</pinned>
     </TaTask>
-    <TaTask id="93">
+    <TaTask id="77">
       <id>36</id>
       <taskType reference="9"/>
       <indexInTaskType>6</indexInTaskType>
@@ -745,7 +491,7 @@
       <priority>MINOR</priority>
       <pinned>false</pinned>
     </TaTask>
-    <TaTask id="94">
+    <TaTask id="78">
       <id>37</id>
       <taskType reference="23"/>
       <indexInTaskType>6</indexInTaskType>
@@ -754,7 +500,7 @@
       <priority>MINOR</priority>
       <pinned>false</pinned>
     </TaTask>
-    <TaTask id="95">
+    <TaTask id="79">
       <id>38</id>
       <taskType reference="21"/>
       <indexInTaskType>8</indexInTaskType>
@@ -763,7 +509,7 @@
       <priority>MINOR</priority>
       <pinned>false</pinned>
     </TaTask>
-    <TaTask id="96">
+    <TaTask id="80">
       <id>39</id>
       <taskType reference="19"/>
       <indexInTaskType>2</indexInTaskType>
@@ -772,7 +518,7 @@
       <priority>MINOR</priority>
       <pinned>false</pinned>
     </TaTask>
-    <TaTask id="97">
+    <TaTask id="81">
       <id>40</id>
       <taskType reference="11"/>
       <indexInTaskType>4</indexInTaskType>
@@ -781,7 +527,7 @@
       <priority>MINOR</priority>
       <pinned>false</pinned>
     </TaTask>
-    <TaTask id="98">
+    <TaTask id="82">
       <id>41</id>
       <taskType reference="19"/>
       <indexInTaskType>3</indexInTaskType>
@@ -790,7 +536,7 @@
       <priority>CRITICAL</priority>
       <pinned>false</pinned>
     </TaTask>
-    <TaTask id="99">
+    <TaTask id="83">
       <id>42</id>
       <taskType reference="11"/>
       <indexInTaskType>5</indexInTaskType>
@@ -799,7 +545,7 @@
       <priority>MAJOR</priority>
       <pinned>false</pinned>
     </TaTask>
-    <TaTask id="100">
+    <TaTask id="84">
       <id>43</id>
       <taskType reference="21"/>
       <indexInTaskType>9</indexInTaskType>
@@ -808,7 +554,7 @@
       <priority>CRITICAL</priority>
       <pinned>false</pinned>
     </TaTask>
-    <TaTask id="101">
+    <TaTask id="85">
       <id>44</id>
       <taskType reference="11"/>
       <indexInTaskType>6</indexInTaskType>
@@ -817,7 +563,7 @@
       <priority>MINOR</priority>
       <pinned>false</pinned>
     </TaTask>
-    <TaTask id="102">
+    <TaTask id="86">
       <id>45</id>
       <taskType reference="9"/>
       <indexInTaskType>7</indexInTaskType>
@@ -826,7 +572,7 @@
       <priority>MINOR</priority>
       <pinned>false</pinned>
     </TaTask>
-    <TaTask id="103">
+    <TaTask id="87">
       <id>46</id>
       <taskType reference="15"/>
       <indexInTaskType>2</indexInTaskType>
@@ -835,7 +581,7 @@
       <priority>CRITICAL</priority>
       <pinned>false</pinned>
     </TaTask>
-    <TaTask id="104">
+    <TaTask id="88">
       <id>47</id>
       <taskType reference="21"/>
       <indexInTaskType>10</indexInTaskType>
@@ -844,7 +590,7 @@
       <priority>MAJOR</priority>
       <pinned>false</pinned>
     </TaTask>
-    <TaTask id="105">
+    <TaTask id="89">
       <id>48</id>
       <taskType reference="27"/>
       <indexInTaskType>5</indexInTaskType>
@@ -853,7 +599,7 @@
       <priority>MINOR</priority>
       <pinned>false</pinned>
     </TaTask>
-    <TaTask id="106">
+    <TaTask id="90">
       <id>49</id>
       <taskType reference="11"/>
       <indexInTaskType>7</indexInTaskType>
@@ -863,5 +609,264 @@
       <pinned>false</pinned>
     </TaTask>
   </taskList>
+  <employeeList id="91">
+    <TaEmployee id="92">
+      <id>0</id>
+      <fullName>Amy</fullName>
+      <skillSet class="linked-hash-set" id="93">
+        <TaSkill reference="3"/>
+        <TaSkill reference="4"/>
+        <TaSkill reference="5"/>
+      </skillSet>
+      <affinityMap class="linked-hash-map" id="94">
+        <entry>
+          <TaCustomer reference="30"/>
+          <org.optaplanner.examples.taskassigning__listvariable.domain.Affinity>HIGH</org.optaplanner.examples.taskassigning__listvariable.domain.Affinity>
+        </entry>
+        <entry>
+          <TaCustomer reference="31"/>
+          <org.optaplanner.examples.taskassigning__listvariable.domain.Affinity>MEDIUM</org.optaplanner.examples.taskassigning__listvariable.domain.Affinity>
+        </entry>
+        <entry>
+          <TaCustomer reference="32"/>
+          <org.optaplanner.examples.taskassigning__listvariable.domain.Affinity>NONE</org.optaplanner.examples.taskassigning__listvariable.domain.Affinity>
+        </entry>
+        <entry>
+          <TaCustomer reference="33"/>
+          <org.optaplanner.examples.taskassigning__listvariable.domain.Affinity>MEDIUM</org.optaplanner.examples.taskassigning__listvariable.domain.Affinity>
+        </entry>
+        <entry>
+          <TaCustomer reference="34"/>
+          <org.optaplanner.examples.taskassigning__listvariable.domain.Affinity>NONE</org.optaplanner.examples.taskassigning__listvariable.domain.Affinity>
+        </entry>
+        <entry>
+          <TaCustomer reference="35"/>
+          <org.optaplanner.examples.taskassigning__listvariable.domain.Affinity>LOW</org.optaplanner.examples.taskassigning__listvariable.domain.Affinity>
+        </entry>
+        <entry>
+          <TaCustomer reference="36"/>
+          <org.optaplanner.examples.taskassigning__listvariable.domain.Affinity>NONE</org.optaplanner.examples.taskassigning__listvariable.domain.Affinity>
+        </entry>
+        <entry>
+          <TaCustomer reference="37"/>
+          <org.optaplanner.examples.taskassigning__listvariable.domain.Affinity>LOW</org.optaplanner.examples.taskassigning__listvariable.domain.Affinity>
+        </entry>
+        <entry>
+          <TaCustomer reference="38"/>
+          <org.optaplanner.examples.taskassigning__listvariable.domain.Affinity>NONE</org.optaplanner.examples.taskassigning__listvariable.domain.Affinity>
+        </entry>
+        <entry>
+          <TaCustomer reference="39"/>
+          <org.optaplanner.examples.taskassigning__listvariable.domain.Affinity>NONE</org.optaplanner.examples.taskassigning__listvariable.domain.Affinity>
+        </entry>
+      </affinityMap>
+      <tasks id="95"/>
+    </TaEmployee>
+    <TaEmployee id="96">
+      <id>1</id>
+      <fullName>Beth</fullName>
+      <skillSet class="linked-hash-set" id="97">
+        <TaSkill reference="6"/>
+        <TaSkill reference="7"/>
+        <TaSkill reference="3"/>
+      </skillSet>
+      <affinityMap class="linked-hash-map" id="98">
+        <entry>
+          <TaCustomer reference="30"/>
+          <org.optaplanner.examples.taskassigning__listvariable.domain.Affinity>HIGH</org.optaplanner.examples.taskassigning__listvariable.domain.Affinity>
+        </entry>
+        <entry>
+          <TaCustomer reference="31"/>
+          <org.optaplanner.examples.taskassigning__listvariable.domain.Affinity>HIGH</org.optaplanner.examples.taskassigning__listvariable.domain.Affinity>
+        </entry>
+        <entry>
+          <TaCustomer reference="32"/>
+          <org.optaplanner.examples.taskassigning__listvariable.domain.Affinity>LOW</org.optaplanner.examples.taskassigning__listvariable.domain.Affinity>
+        </entry>
+        <entry>
+          <TaCustomer reference="33"/>
+          <org.optaplanner.examples.taskassigning__listvariable.domain.Affinity>NONE</org.optaplanner.examples.taskassigning__listvariable.domain.Affinity>
+        </entry>
+        <entry>
+          <TaCustomer reference="34"/>
+          <org.optaplanner.examples.taskassigning__listvariable.domain.Affinity>LOW</org.optaplanner.examples.taskassigning__listvariable.domain.Affinity>
+        </entry>
+        <entry>
+          <TaCustomer reference="35"/>
+          <org.optaplanner.examples.taskassigning__listvariable.domain.Affinity>HIGH</org.optaplanner.examples.taskassigning__listvariable.domain.Affinity>
+        </entry>
+        <entry>
+          <TaCustomer reference="36"/>
+          <org.optaplanner.examples.taskassigning__listvariable.domain.Affinity>HIGH</org.optaplanner.examples.taskassigning__listvariable.domain.Affinity>
+        </entry>
+        <entry>
+          <TaCustomer reference="37"/>
+          <org.optaplanner.examples.taskassigning__listvariable.domain.Affinity>MEDIUM</org.optaplanner.examples.taskassigning__listvariable.domain.Affinity>
+        </entry>
+        <entry>
+          <TaCustomer reference="38"/>
+          <org.optaplanner.examples.taskassigning__listvariable.domain.Affinity>HIGH</org.optaplanner.examples.taskassigning__listvariable.domain.Affinity>
+        </entry>
+        <entry>
+          <TaCustomer reference="39"/>
+          <org.optaplanner.examples.taskassigning__listvariable.domain.Affinity>MEDIUM</org.optaplanner.examples.taskassigning__listvariable.domain.Affinity>
+        </entry>
+      </affinityMap>
+      <tasks id="99"/>
+    </TaEmployee>
+    <TaEmployee id="100">
+      <id>2</id>
+      <fullName>Chad</fullName>
+      <skillSet class="linked-hash-set" id="101">
+        <TaSkill reference="4"/>
+        <TaSkill reference="5"/>
+      </skillSet>
+      <affinityMap class="linked-hash-map" id="102">
+        <entry>
+          <TaCustomer reference="30"/>
+          <org.optaplanner.examples.taskassigning__listvariable.domain.Affinity>MEDIUM</org.optaplanner.examples.taskassigning__listvariable.domain.Affinity>
+        </entry>
+        <entry>
+          <TaCustomer reference="31"/>
+          <org.optaplanner.examples.taskassigning__listvariable.domain.Affinity>MEDIUM</org.optaplanner.examples.taskassigning__listvariable.domain.Affinity>
+        </entry>
+        <entry>
+          <TaCustomer reference="32"/>
+          <org.optaplanner.examples.taskassigning__listvariable.domain.Affinity>LOW</org.optaplanner.examples.taskassigning__listvariable.domain.Affinity>
+        </entry>
+        <entry>
+          <TaCustomer reference="33"/>
+          <org.optaplanner.examples.taskassigning__listvariable.domain.Affinity>HIGH</org.optaplanner.examples.taskassigning__listvariable.domain.Affinity>
+        </entry>
+        <entry>
+          <TaCustomer reference="34"/>
+          <org.optaplanner.examples.taskassigning__listvariable.domain.Affinity>HIGH</org.optaplanner.examples.taskassigning__listvariable.domain.Affinity>
+        </entry>
+        <entry>
+          <TaCustomer reference="35"/>
+          <org.optaplanner.examples.taskassigning__listvariable.domain.Affinity>MEDIUM</org.optaplanner.examples.taskassigning__listvariable.domain.Affinity>
+        </entry>
+        <entry>
+          <TaCustomer reference="36"/>
+          <org.optaplanner.examples.taskassigning__listvariable.domain.Affinity>MEDIUM</org.optaplanner.examples.taskassigning__listvariable.domain.Affinity>
+        </entry>
+        <entry>
+          <TaCustomer reference="37"/>
+          <org.optaplanner.examples.taskassigning__listvariable.domain.Affinity>HIGH</org.optaplanner.examples.taskassigning__listvariable.domain.Affinity>
+        </entry>
+        <entry>
+          <TaCustomer reference="38"/>
+          <org.optaplanner.examples.taskassigning__listvariable.domain.Affinity>LOW</org.optaplanner.examples.taskassigning__listvariable.domain.Affinity>
+        </entry>
+        <entry>
+          <TaCustomer reference="39"/>
+          <org.optaplanner.examples.taskassigning__listvariable.domain.Affinity>MEDIUM</org.optaplanner.examples.taskassigning__listvariable.domain.Affinity>
+        </entry>
+      </affinityMap>
+      <tasks id="103"/>
+    </TaEmployee>
+    <TaEmployee id="104">
+      <id>3</id>
+      <fullName>Dan</fullName>
+      <skillSet class="linked-hash-set" id="105">
+        <TaSkill reference="6"/>
+        <TaSkill reference="7"/>
+      </skillSet>
+      <affinityMap class="linked-hash-map" id="106">
+        <entry>
+          <TaCustomer reference="30"/>
+          <org.optaplanner.examples.taskassigning__listvariable.domain.Affinity>LOW</org.optaplanner.examples.taskassigning__listvariable.domain.Affinity>
+        </entry>
+        <entry>
+          <TaCustomer reference="31"/>
+          <org.optaplanner.examples.taskassigning__listvariable.domain.Affinity>HIGH</org.optaplanner.examples.taskassigning__listvariable.domain.Affinity>
+        </entry>
+        <entry>
+          <TaCustomer reference="32"/>
+          <org.optaplanner.examples.taskassigning__listvariable.domain.Affinity>NONE</org.optaplanner.examples.taskassigning__listvariable.domain.Affinity>
+        </entry>
+        <entry>
+          <TaCustomer reference="33"/>
+          <org.optaplanner.examples.taskassigning__listvariable.domain.Affinity>MEDIUM</org.optaplanner.examples.taskassigning__listvariable.domain.Affinity>
+        </entry>
+        <entry>
+          <TaCustomer reference="34"/>
+          <org.optaplanner.examples.taskassigning__listvariable.domain.Affinity>NONE</org.optaplanner.examples.taskassigning__listvariable.domain.Affinity>
+        </entry>
+        <entry>
+          <TaCustomer reference="35"/>
+          <org.optaplanner.examples.taskassigning__listvariable.domain.Affinity>LOW</org.optaplanner.examples.taskassigning__listvariable.domain.Affinity>
+        </entry>
+        <entry>
+          <TaCustomer reference="36"/>
+          <org.optaplanner.examples.taskassigning__listvariable.domain.Affinity>NONE</org.optaplanner.examples.taskassigning__listvariable.domain.Affinity>
+        </entry>
+        <entry>
+          <TaCustomer reference="37"/>
+          <org.optaplanner.examples.taskassigning__listvariable.domain.Affinity>HIGH</org.optaplanner.examples.taskassigning__listvariable.domain.Affinity>
+        </entry>
+        <entry>
+          <TaCustomer reference="38"/>
+          <org.optaplanner.examples.taskassigning__listvariable.domain.Affinity>LOW</org.optaplanner.examples.taskassigning__listvariable.domain.Affinity>
+        </entry>
+        <entry>
+          <TaCustomer reference="39"/>
+          <org.optaplanner.examples.taskassigning__listvariable.domain.Affinity>HIGH</org.optaplanner.examples.taskassigning__listvariable.domain.Affinity>
+        </entry>
+      </affinityMap>
+      <tasks id="107"/>
+    </TaEmployee>
+    <TaEmployee id="108">
+      <id>4</id>
+      <fullName>Elsa</fullName>
+      <skillSet class="linked-hash-set" id="109">
+        <TaSkill reference="3"/>
+        <TaSkill reference="4"/>
+      </skillSet>
+      <affinityMap class="linked-hash-map" id="110">
+        <entry>
+          <TaCustomer reference="30"/>
+          <org.optaplanner.examples.taskassigning__listvariable.domain.Affinity>NONE</org.optaplanner.examples.taskassigning__listvariable.domain.Affinity>
+        </entry>
+        <entry>
+          <TaCustomer reference="31"/>
+          <org.optaplanner.examples.taskassigning__listvariable.domain.Affinity>HIGH</org.optaplanner.examples.taskassigning__listvariable.domain.Affinity>
+        </entry>
+        <entry>
+          <TaCustomer reference="32"/>
+          <org.optaplanner.examples.taskassigning__listvariable.domain.Affinity>LOW</org.optaplanner.examples.taskassigning__listvariable.domain.Affinity>
+        </entry>
+        <entry>
+          <TaCustomer reference="33"/>
+          <org.optaplanner.examples.taskassigning__listvariable.domain.Affinity>NONE</org.optaplanner.examples.taskassigning__listvariable.domain.Affinity>
+        </entry>
+        <entry>
+          <TaCustomer reference="34"/>
+          <org.optaplanner.examples.taskassigning__listvariable.domain.Affinity>MEDIUM</org.optaplanner.examples.taskassigning__listvariable.domain.Affinity>
+        </entry>
+        <entry>
+          <TaCustomer reference="35"/>
+          <org.optaplanner.examples.taskassigning__listvariable.domain.Affinity>NONE</org.optaplanner.examples.taskassigning__listvariable.domain.Affinity>
+        </entry>
+        <entry>
+          <TaCustomer reference="36"/>
+          <org.optaplanner.examples.taskassigning__listvariable.domain.Affinity>LOW</org.optaplanner.examples.taskassigning__listvariable.domain.Affinity>
+        </entry>
+        <entry>
+          <TaCustomer reference="37"/>
+          <org.optaplanner.examples.taskassigning__listvariable.domain.Affinity>HIGH</org.optaplanner.examples.taskassigning__listvariable.domain.Affinity>
+        </entry>
+        <entry>
+          <TaCustomer reference="38"/>
+          <org.optaplanner.examples.taskassigning__listvariable.domain.Affinity>MEDIUM</org.optaplanner.examples.taskassigning__listvariable.domain.Affinity>
+        </entry>
+        <entry>
+          <TaCustomer reference="39"/>
+          <org.optaplanner.examples.taskassigning__listvariable.domain.Affinity>HIGH</org.optaplanner.examples.taskassigning__listvariable.domain.Affinity>
+        </entry>
+      </affinityMap>
+      <tasks id="111"/>
+    </TaEmployee>
+  </employeeList>
   <frozenCutoff>0</frozenCutoff>
 </TaTaskAssigningSolution>

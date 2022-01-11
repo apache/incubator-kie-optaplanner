@@ -25,7 +25,7 @@ import org.optaplanner.examples.taskassigning_listvariable.domain.TaskAssigningS
 
 public class TaskAssigningPerformanceTest extends SolverPerformanceTest<TaskAssigningSolution, BendableScore> {
 
-    private static final String UNSOLVED_DATA_FILE = "data/taskassigning/unsolved/50tasks-5employees.xml";
+    private static final String UNSOLVED_DATA_FILE = "data/taskassigning_listvariable/unsolved/50tasks-5employees.xml";
 
     @Override
     protected TaskAssigningApp createCommonApp() {
