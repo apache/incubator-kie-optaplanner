@@ -230,7 +230,10 @@ public final class DefaultSolverJob<Solution_, ProblemId_> implements SolverJob<
     private final class UnlockLockPhaseLifecycleListener extends PhaseLifecycleListenerAdapter<Solution_> {
         @Override
         public void solvingStarted(SolverScope<Solution_> solverScope) {
-            solverStatusModifyingLock.unlock();
+            // The solvingStarted event can be emitted as a result of addProblemChange().
+            if (solverStatusModifyingLock.isLocked()) {
+                solverStatusModifyingLock.unlock();
+            }
         }
     }
 }

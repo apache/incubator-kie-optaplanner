@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2022 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,26 +14,21 @@
  * limitations under the License.
  */
 
-package org.optaplanner.core.impl.solver.change;
+package org.optaplanner.test.api.change;
 
-import static org.mockito.Mockito.*;
-
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
-import org.optaplanner.core.api.score.director.ScoreDirector;
 import org.optaplanner.core.api.solver.change.ProblemChange;
-import org.optaplanner.core.api.solver.change.ProblemChangeDirector;
-import org.optaplanner.core.impl.testdata.domain.TestdataEntity;
-import org.optaplanner.core.impl.testdata.domain.TestdataSolution;
 import org.optaplanner.core.impl.testdata.domain.score.lavish.TestdataLavishEntity;
 import org.optaplanner.core.impl.testdata.domain.score.lavish.TestdataLavishEntityGroup;
 import org.optaplanner.core.impl.testdata.domain.score.lavish.TestdataLavishSolution;
 import org.optaplanner.core.impl.testdata.domain.score.lavish.TestdataLavishValue;
 import org.optaplanner.core.impl.testdata.domain.score.lavish.TestdataLavishValueGroup;
 
-public class DefaultProblemChangeDirectorTest {
+public class MockProblemChangeDirectorTest {
 
     @Test
-    void complexProblemChange_correctlyNotifiesScoreDirector() {
+    void problemChange() {
         final TestdataLavishEntityGroup entityGroupOne = new TestdataLavishEntityGroup("entityGroupOne");
         final TestdataLavishValueGroup valueGroupOne = new TestdataLavishValueGroup("valueGroupOne");
         final TestdataLavishEntity addedEntity = new TestdataLavishEntity("newly added entity", entityGroupOne);
@@ -41,13 +36,19 @@ public class DefaultProblemChangeDirectorTest {
         final TestdataLavishValue addedFact = new TestdataLavishValue("newly added fact", valueGroupOne);
         final TestdataLavishValue removedFact = new TestdataLavishValue("fact to remove", valueGroupOne);
         final TestdataLavishEntity changedEntity = new TestdataLavishEntity("changed entity", entityGroupOne);
-        final TestdataLavishValue changedEntityValue = new TestdataLavishValue("changed entity value", valueGroupOne);
+        final TestdataLavishValue changedFact = new TestdataLavishValue("changed entity value", valueGroupOne);
 
-        ScoreDirector<TestdataSolution> scoreDirectorMock = mock(ScoreDirector.class);
-        when(scoreDirectorMock.lookUpWorkingObject(removedEntity)).thenReturn(removedEntity);
-        when(scoreDirectorMock.lookUpWorkingObject(changedEntity)).thenReturn(changedEntity);
-        when(scoreDirectorMock.lookUpWorkingObject(removedFact)).thenReturn(removedFact);
-        ProblemChangeDirector defaultProblemChangeDirector = new DefaultProblemChangeDirector<>(scoreDirectorMock);
+        // Working solution counterparts.
+        final TestdataLavishEntity removedWorkingEntity = new TestdataLavishEntity("working entity to remove", entityGroupOne);
+        final TestdataLavishValue removedWorkingFact = new TestdataLavishValue("working fact to remove", valueGroupOne);
+        final TestdataLavishEntity changedWorkingEntity = new TestdataLavishEntity("working changed entity", entityGroupOne);
+
+        MockProblemChangeDirector mockProblemChangeDirector = new MockProblemChangeDirector();
+        // Configure look-up mocks.
+        mockProblemChangeDirector
+                .whenLookingUp(removedEntity).thenReturn(removedWorkingEntity)
+                .whenLookingUp(removedFact).thenReturn(removedWorkingFact)
+                .whenLookingUp(changedEntity).thenReturn(changedWorkingEntity);
 
         ProblemChange<TestdataLavishSolution> problemChange = ((workingSolution, problemChangeDirector) -> {
             // Add an entity.
@@ -56,7 +57,7 @@ public class DefaultProblemChangeDirectorTest {
             problemChangeDirector.removeEntity(removedEntity, workingSolution.getEntityList()::remove);
             // Change a planning variable.
             problemChangeDirector.changeVariable(changedEntity, TestdataLavishEntity.VALUE_FIELD,
-                    testdataEntity -> testdataEntity.setValue(changedEntityValue));
+                    testdataEntity -> testdataEntity.setValue(changedFact));
             // Change a property
             problemChangeDirector.changeProblemProperty(changedEntity,
                     workingEntity -> workingEntity.setEntityGroup(null));
@@ -67,30 +68,15 @@ public class DefaultProblemChangeDirectorTest {
         });
 
         TestdataLavishSolution testdataSolution = TestdataLavishSolution.generateSolution();
-        testdataSolution.getEntityList().add(removedEntity);
-        testdataSolution.getEntityList().add(changedEntity);
-        testdataSolution.getValueList().add(removedFact);
-        testdataSolution.getValueList().add(changedEntityValue);
+        testdataSolution.getEntityList().add(removedWorkingEntity);
+        testdataSolution.getEntityList().add(changedWorkingEntity);
+        testdataSolution.getValueList().add(removedWorkingFact);
 
-        problemChange.doChange(testdataSolution, defaultProblemChangeDirector);
-        verify(scoreDirectorMock, times(1)).beforeEntityAdded(addedEntity);
-        verify(scoreDirectorMock, times(1)).afterEntityAdded(addedEntity);
+        problemChange.doChange(testdataSolution, mockProblemChangeDirector);
 
-        verify(scoreDirectorMock, times(1)).beforeEntityRemoved(removedEntity);
-        verify(scoreDirectorMock, times(1)).afterEntityRemoved(removedEntity);
-
-        verify(scoreDirectorMock, times(1))
-                .beforeVariableChanged(changedEntity, TestdataEntity.VALUE_FIELD);
-        verify(scoreDirectorMock, times(1))
-                .afterVariableChanged(changedEntity, TestdataEntity.VALUE_FIELD);
-
-        verify(scoreDirectorMock, times(1)).beforeProblemPropertyChanged(changedEntity);
-        verify(scoreDirectorMock, times(1)).afterProblemPropertyChanged(changedEntity);
-
-        verify(scoreDirectorMock, times(1)).beforeProblemFactAdded(addedFact);
-        verify(scoreDirectorMock, times(1)).afterProblemFactAdded(addedFact);
-
-        verify(scoreDirectorMock, times(1)).beforeProblemFactRemoved(removedFact);
-        verify(scoreDirectorMock, times(1)).afterProblemFactRemoved(removedFact);
+        Assertions.assertThat(testdataSolution.getEntityList()).doesNotContain(removedWorkingEntity);
+        Assertions.assertThat(testdataSolution.getValueList()).doesNotContain(removedWorkingFact);
+        Assertions.assertThat(changedWorkingEntity.getValue()).isEqualTo(changedFact);
+        Assertions.assertThat(changedWorkingEntity.getEntityGroup()).isNull();
     }
 }

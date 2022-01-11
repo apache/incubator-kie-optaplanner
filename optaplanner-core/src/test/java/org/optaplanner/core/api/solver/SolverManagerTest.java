@@ -17,6 +17,7 @@
 package org.optaplanner.core.api.solver;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatIllegalStateException;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.assertj.core.api.Assertions.fail;
 import static org.optaplanner.core.api.solver.SolverStatus.NOT_SOLVING;
@@ -34,6 +35,7 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.CyclicBarrier;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.function.Function;
@@ -53,6 +55,7 @@ import org.optaplanner.core.config.solver.SolverManagerConfig;
 import org.optaplanner.core.config.solver.termination.TerminationConfig;
 import org.optaplanner.core.impl.testdata.domain.TestdataEntity;
 import org.optaplanner.core.impl.testdata.domain.TestdataSolution;
+import org.optaplanner.core.impl.testdata.domain.TestdataValue;
 import org.optaplanner.core.impl.testdata.domain.extended.TestdataUnannotatedExtendedSolution;
 import org.optaplanner.core.impl.testdata.util.PlannerTestUtils;
 
@@ -517,4 +520,76 @@ public class SolverManagerTest {
         solverManager.close();
     }
 
+    @Test
+    @Timeout(60)
+    void submitProblemChange() throws InterruptedException {
+        SolverConfig solverConfig = PlannerTestUtils.buildSolverConfig(TestdataSolution.class, TestdataEntity.class);
+        SolverManager<TestdataSolution, Long> solverManager = SolverManager.create(solverConfig);
+        CountDownLatch solverStarted = new CountDownLatch(1);
+        CountDownLatch solutionWithProblemChangeReceived = new CountDownLatch(1);
+        final long problemId = 1L;
+
+        final int entityAndValueCount = 4;
+        AtomicReference<TestdataSolution> bestSolution = new AtomicReference<>();
+        solverManager.solveAndListen(problemId,
+                id -> PlannerTestUtils.generateTestdataSolution("s1", entityAndValueCount),
+                testdataSolution -> {
+                    solverStarted.countDown();
+                    if (testdataSolution.getValueList().size() == entityAndValueCount + 1) {
+                        bestSolution.set(testdataSolution);
+                        solutionWithProblemChangeReceived.countDown();
+                    }
+                });
+
+        solverStarted.await();
+        solverManager.addProblemChange(problemId, (workingSolution, problemChangeDirector) -> {
+            problemChangeDirector.addProblemFact(new TestdataValue("addedValue"),
+                    workingSolution.getValueList()::add);
+        });
+
+        solutionWithProblemChangeReceived.await();
+        solverManager.close();
+        assertThat(bestSolution.get().getValueList()).hasSize(entityAndValueCount + 1);
+    }
+
+    @Test
+    @Timeout(60)
+    void addProblemChangeToNonExistingProblem_failsFast() {
+        SolverConfig solverConfig = PlannerTestUtils.buildSolverConfig(TestdataSolution.class, TestdataEntity.class);
+        SolverManager<TestdataSolution, Long> solverManager = SolverManager.create(solverConfig);
+
+        solverManager.solveAndListen(1L, id -> PlannerTestUtils.generateTestdataSolution("s1", 4), testdataSolution -> {
+        });
+        final long nonExistingProblemId = 999L;
+        assertThatIllegalStateException()
+                .isThrownBy(() -> solverManager.addProblemChange(nonExistingProblemId,
+                        (workingSolution, problemChangeDirector) -> problemChangeDirector.addProblemFact(
+                                new TestdataValue("addedValue"),
+                                workingSolution.getValueList()::add)))
+                .withMessageContaining(String.valueOf(nonExistingProblemId));
+    }
+
+    @Test
+    @Timeout(60)
+    void addProblemChangeToWaitingSolver_failsFast() {
+        SolverConfig solverConfig = PlannerTestUtils.buildSolverConfig(TestdataSolution.class, TestdataEntity.class)
+                .withPhases(createPhaseWithConcurrentSolvingStart(2), new ConstructionHeuristicPhaseConfig());
+        // Allow only a single active solver.
+        SolverManagerConfig solverManagerConfig = new SolverManagerConfig().withParallelSolverCount("1");
+        SolverManager<TestdataSolution, Long> solverManager = SolverManager.create(solverConfig, solverManagerConfig);
+
+        solverManager.solve(1L, PlannerTestUtils.generateTestdataSolution("s1", 4));
+        // This solver will be scheduled, but never active.
+        final long scheduledProblemId = 2L;
+        solverManager.solve(scheduledProblemId, PlannerTestUtils.generateTestdataSolution("s1", 4));
+
+        assertThatIllegalStateException()
+                .isThrownBy(() -> solverManager.addProblemChange(scheduledProblemId,
+                        (workingSolution, problemChangeDirector) -> problemChangeDirector.addProblemFact(
+                                new TestdataValue("addedValue"),
+                                workingSolution.getValueList()::add)))
+                .withMessageContaining(SOLVING_SCHEDULED.toString());
+
+        solverManager.close();
+    }
 }
