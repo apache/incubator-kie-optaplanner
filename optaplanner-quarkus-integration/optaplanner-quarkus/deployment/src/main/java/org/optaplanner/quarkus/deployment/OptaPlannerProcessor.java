@@ -58,7 +58,7 @@ import org.optaplanner.core.config.solver.SolverConfig;
 import org.optaplanner.core.config.solver.SolverManagerConfig;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.core.impl.io.jaxb.SolverConfigIO;
-import org.optaplanner.core.impl.score.director.ScoreDirectorFactoryProvider;
+import org.optaplanner.core.impl.score.director.ScoreDirectorFactoryService;
 import org.optaplanner.quarkus.OptaPlannerRecorder;
 import org.optaplanner.quarkus.bean.DefaultOptaPlannerBeanProvider;
 import org.optaplanner.quarkus.bean.UnavailableOptaPlannerBeanProvider;
@@ -109,7 +109,7 @@ class OptaPlannerProcessor {
 
     @BuildStep
     void registerScoreDirectorFactorySpi(BuildProducer<ServiceProviderBuildItem> services) {
-        String serviceName = ScoreDirectorFactoryProvider.class.getName();
+        String serviceName = ScoreDirectorFactoryService.class.getName();
         String service = "META-INF/services/" + serviceName;
         try {
             // Find out all the provider implementation classes listed in the service files.

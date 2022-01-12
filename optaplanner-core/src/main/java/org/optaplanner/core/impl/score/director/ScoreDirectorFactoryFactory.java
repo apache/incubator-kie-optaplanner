@@ -78,28 +78,28 @@ public class ScoreDirectorFactoryFactory<Solution_, Score_ extends Score<Score_>
     protected AbstractScoreDirectorFactory<Solution_, Score_> decideMultipleScoreDirectorFactories(
             ClassLoader classLoader, SolutionDescriptor<Solution_> solutionDescriptor) {
         // Load all known Score Director Factories via SPI.
-        ServiceLoader<ScoreDirectorFactoryProvider> scoreDirectorFactoryProviders =
-                ServiceLoader.load(ScoreDirectorFactoryProvider.class);
-        Map<ScoreDirectorType, AbstractScoreDirectorFactory<Solution_, Score_>> factories =
+        ServiceLoader<ScoreDirectorFactoryService> scoreDirectorFactoryServiceLoader =
+                ServiceLoader.load(ScoreDirectorFactoryService.class);
+        Map<ScoreDirectorType, AbstractScoreDirectorFactory<Solution_, Score_>> scoreDirectorFactoryMap =
                 new EnumMap<>(ScoreDirectorType.class);
-        for (ScoreDirectorFactoryProvider<Solution_, Score_> provider : scoreDirectorFactoryProviders) {
+        for (ScoreDirectorFactoryService<Solution_, Score_> service : scoreDirectorFactoryServiceLoader) {
             AbstractScoreDirectorFactory<Solution_, Score_> factory =
-                    provider.getScoreDirectorFactory(classLoader, solutionDescriptor, config);
+                    service.buildScoreDirectorFactory(classLoader, solutionDescriptor, config);
             if (factory != null) {
-                factories.put(provider.getSupportedScoreDirectorType(), factory);
+                scoreDirectorFactoryMap.put(service.getSupportedScoreDirectorType(), factory);
             }
         }
-        AbstractScoreDirectorFactory<Solution_, Score_> easyScoreDirectorFactory = factories.get(EASY);
+        AbstractScoreDirectorFactory<Solution_, Score_> easyScoreDirectorFactory = scoreDirectorFactoryMap.get(EASY);
         AbstractScoreDirectorFactory<Solution_, Score_> constraintStreamScoreDirectorFactory =
-                factories.get(CONSTRAINT_STREAMS);
-        AbstractScoreDirectorFactory<Solution_, Score_> incrementalScoreDirectorFactory = factories.get(INCREMENTAL);
-        AbstractScoreDirectorFactory<Solution_, Score_> droolsScoreDirectorFactory = factories.get(DROOLS);
+                scoreDirectorFactoryMap.get(CONSTRAINT_STREAMS);
+        AbstractScoreDirectorFactory<Solution_, Score_> incrementalScoreDirectorFactory =
+                scoreDirectorFactoryMap.get(INCREMENTAL);
+        AbstractScoreDirectorFactory<Solution_, Score_> droolsScoreDirectorFactory =
+                scoreDirectorFactoryMap.get(DRL);
 
-        // Make sure only one SDF is truly available.
-        checkMultipleScoreDirectorFactoryTypes(easyScoreDirectorFactory, constraintStreamScoreDirectorFactory,
+        assertOnlyOneScoreDirectorFactory(easyScoreDirectorFactory, constraintStreamScoreDirectorFactory,
                 incrementalScoreDirectorFactory, droolsScoreDirectorFactory);
 
-        // Fail fast if the config doesn't match the SDF.
         AbstractScoreDirectorFactory<Solution_, Score_> scoreDirectorFactory;
         if (easyScoreDirectorFactory != null) {
             validateNoDroolsAlphaNetworkCompilation();
@@ -125,7 +125,7 @@ public class ScoreDirectorFactoryFactory<Solution_, Score_ extends Score<Score_>
         return scoreDirectorFactory;
     }
 
-    private void checkMultipleScoreDirectorFactoryTypes(ScoreDirectorFactory<Solution_> easyScoreDirectorFactory,
+    private void assertOnlyOneScoreDirectorFactory(ScoreDirectorFactory<Solution_> easyScoreDirectorFactory,
             ScoreDirectorFactory<Solution_> constraintStreamScoreDirectorFactory,
             ScoreDirectorFactory<Solution_> incrementalScoreDirectorFactory,
             ScoreDirectorFactory<Solution_> droolsScoreDirectorFactory) {
