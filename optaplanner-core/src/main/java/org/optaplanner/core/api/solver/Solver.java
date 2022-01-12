@@ -48,7 +48,7 @@ public interface Solver<Solution_> {
      * (which might or might not be optimal, feasible or even initialized).
      * <p>
      * It can take seconds, minutes, even hours or days before this method returns,
-     * depending on the {@link Termination} configuration.
+     * depending on the termination configuration.
      * To terminate a {@link Solver} early, call {@link #terminateEarly()}.
      *
      * @param problem never null, a {@link PlanningSolution}, usually its planning variables are uninitialized
@@ -92,7 +92,7 @@ public interface Solver<Solution_> {
     /**
      * Schedules a {@link ProblemFactChange} to be processed.
      * <p>
-     * As a side-effect, this restarts the {@link Solver}, effectively resetting all {@link Termination}s,
+     * As a side-effect, this restarts the {@link Solver}, effectively resetting all terminations,
      * but not {@link #terminateEarly()}.
      * <p>
      * This method is thread-safe.
@@ -108,7 +108,7 @@ public interface Solver<Solution_> {
     /**
      * Schedules multiple {@link ProblemFactChange}s to be processed.
      * <p>
-     * As a side-effect, this restarts the {@link Solver}, effectively resetting all {@link Termination}s,
+     * As a side-effect, this restarts the {@link Solver}, effectively resetting all terminations,
      * but not {@link #terminateEarly()}.
      * <p>
      * This method is thread-safe.
