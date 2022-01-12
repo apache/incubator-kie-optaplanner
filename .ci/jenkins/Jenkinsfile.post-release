@@ -238,7 +238,7 @@ void uploadDistribution(String directory) {
                 // For testing, simulate connection via SSH:
                 // sh "ssh -i $SSH_KEY_JBOSS_FILEMGMT -oKexAlgorithms=+diffie-hellman-group1-sha1 optaplanner@filemgmt.jboss.org"
                 sh "./build/release/upload_distribution.sh ${getProjectVersion()} $SSH_KEY_JBOSS_FILEMGMT"
-                    }
+            }
         }
     } else {
         echo 'No uploadDistribution due to testing build'
@@ -347,10 +347,10 @@ def forcePushProtectedBranch(String repo, String protectedBranch) {
     enableForcePushes(repo, protectedBranch)
     withCredentials([usernamePassword(credentialsId: getGitAuthorCredsID(), usernameVariable: 'GIT_USERNAME', passwordVariable: 'GIT_PASSWORD')]) {
         // Please leave the double-quote here. They are mandatory for the shell command to work correctly.
-        sh '''
+        sh """
             git config --local credential.helper \"!f() { echo username=\\$GIT_USERNAME; echo password=\\$GIT_PASSWORD; }; f\"
             git push origin ${protectedBranch} --force
-        '''
+        """
     }
     disableForcePushes(repo, protectedBranch)
 }
