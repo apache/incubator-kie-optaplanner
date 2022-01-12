@@ -58,7 +58,7 @@ public interface ValueRange<T> {
      * Scales well because it does not require caching.
      *
      * @param workingRandom never null, the {@link Random} to use when any random number is needed,
-     *        so we can achieve proper reproducible environments.
+     *        so runs are reproducible.
      * @return never null
      */
     Iterator<T> createRandomIterator(Random workingRandom);
