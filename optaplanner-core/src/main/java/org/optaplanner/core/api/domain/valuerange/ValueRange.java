@@ -23,7 +23,6 @@ import java.util.Random;
 import java.util.Set;
 
 import org.optaplanner.core.api.domain.variable.PlanningVariable;
-import org.optaplanner.core.config.solver.EnvironmentMode;
 
 /**
  * A ValueRange is a set of a values for a {@link PlanningVariable}.
@@ -59,7 +58,7 @@ public interface ValueRange<T> {
      * Scales well because it does not require caching.
      *
      * @param workingRandom never null, the {@link Random} to use when any random number is needed,
-     *        so {@link EnvironmentMode#REPRODUCIBLE} works correctly.
+     *        so we can achieve proper reproducible environments.
      * @return never null
      */
     Iterator<T> createRandomIterator(Random workingRandom);
