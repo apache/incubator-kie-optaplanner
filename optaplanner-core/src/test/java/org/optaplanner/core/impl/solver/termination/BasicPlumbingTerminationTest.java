@@ -32,7 +32,7 @@ import org.optaplanner.core.impl.testdata.domain.TestdataSolution;
 public class BasicPlumbingTerminationTest {
 
     @Test
-    public void addProblemFactChangeWithoutDaemon() {
+    public void addProblemChangeWithoutDaemon() {
         AtomicInteger count = new AtomicInteger(0);
         BasicPlumbingTermination<TestdataSolution> basicPlumbingTermination = new BasicPlumbingTermination<>(false);
         assertThat(basicPlumbingTermination.waitForRestartSolverDecision()).isFalse();
@@ -52,7 +52,7 @@ public class BasicPlumbingTerminationTest {
     }
 
     @Test
-    public void addProblemFactChangesWithoutDaemon() {
+    public void addProblemChangesWithoutDaemon() {
         AtomicInteger count = new AtomicInteger(0);
         BasicPlumbingTermination<TestdataSolution> basicPlumbingTermination = new BasicPlumbingTermination<>(false);
         assertThat(basicPlumbingTermination.waitForRestartSolverDecision()).isFalse();
