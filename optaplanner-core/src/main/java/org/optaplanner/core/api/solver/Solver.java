@@ -111,7 +111,7 @@ public interface Solver<Solution_> {
      * but not {@link #terminateEarly()}.
      * <p>
      * This method is thread-safe.
-     * Follows specifications of {@link BlockingQueue#addAll(Collection)} with by default
+     * Follows specifications of {@link BlockingQueue#add(Object)} with by default
      * a capacity of {@link Integer#MAX_VALUE}.
      *
      * @param problemChangeList never null

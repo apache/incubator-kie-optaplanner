@@ -524,6 +524,7 @@ public class SolverManagerTest {
     @Timeout(60)
     void submitProblemChange() throws InterruptedException {
         SolverConfig solverConfig = PlannerTestUtils.buildSolverConfig(TestdataSolution.class, TestdataEntity.class);
+        solverConfig.setDaemon(true);
         SolverManager<TestdataSolution, Long> solverManager = SolverManager.create(solverConfig);
         CountDownLatch solverStarted = new CountDownLatch(1);
         CountDownLatch solutionWithProblemChangeReceived = new CountDownLatch(1);

@@ -16,7 +16,7 @@
 
 package org.optaplanner.test.api.change;
 
-import org.assertj.core.api.Assertions;
+import org.assertj.core.api.SoftAssertions;
 import org.junit.jupiter.api.Test;
 import org.optaplanner.core.api.solver.change.ProblemChange;
 import org.optaplanner.core.impl.testdata.domain.score.lavish.TestdataLavishEntity;
@@ -74,9 +74,11 @@ public class MockProblemChangeDirectorTest {
 
         problemChange.doChange(testdataSolution, mockProblemChangeDirector);
 
-        Assertions.assertThat(testdataSolution.getEntityList()).doesNotContain(removedWorkingEntity);
-        Assertions.assertThat(testdataSolution.getValueList()).doesNotContain(removedWorkingFact);
-        Assertions.assertThat(changedWorkingEntity.getValue()).isEqualTo(changedFact);
-        Assertions.assertThat(changedWorkingEntity.getEntityGroup()).isNull();
+        SoftAssertions.assertSoftly((softAssertions) -> {
+            softAssertions.assertThat(testdataSolution.getEntityList()).doesNotContain(removedWorkingEntity);
+            softAssertions.assertThat(testdataSolution.getValueList()).doesNotContain(removedWorkingFact);
+            softAssertions.assertThat(changedWorkingEntity.getValue()).isEqualTo(changedFact);
+            softAssertions.assertThat(changedWorkingEntity.getEntityGroup()).isNull();
+        });
     }
 }
