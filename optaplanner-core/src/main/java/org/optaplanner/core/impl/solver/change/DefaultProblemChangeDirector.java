@@ -102,6 +102,6 @@ public final class DefaultProblemChangeDirector<Solution_> implements ProblemCha
     @Override
     public <EntityOrProblemFact> Optional<EntityOrProblemFact>
             lookUpWorkingObjectOptionally(EntityOrProblemFact externalObject) {
-        return Optional.of(scoreDirector.lookUpWorkingObjectOrReturnNull(externalObject));
+        return Optional.ofNullable(scoreDirector.lookUpWorkingObjectOrReturnNull(externalObject));
     }
 }
