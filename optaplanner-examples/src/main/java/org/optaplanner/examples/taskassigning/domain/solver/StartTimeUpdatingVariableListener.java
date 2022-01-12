@@ -20,62 +20,56 @@ import java.util.Objects;
 
 import org.optaplanner.core.api.domain.variable.VariableListener;
 import org.optaplanner.core.api.score.director.ScoreDirector;
+import org.optaplanner.examples.taskassigning.domain.Employee;
 import org.optaplanner.examples.taskassigning.domain.Task;
 import org.optaplanner.examples.taskassigning.domain.TaskAssigningSolution;
-import org.optaplanner.examples.taskassigning.domain.TaskOrEmployee;
 
-public class StartTimeUpdatingVariableListener implements VariableListener<TaskAssigningSolution, Task> {
+public class StartTimeUpdatingVariableListener implements VariableListener<TaskAssigningSolution, Employee> {
 
     @Override
-    public void beforeEntityAdded(ScoreDirector<TaskAssigningSolution> scoreDirector, Task task) {
+    public void beforeEntityAdded(ScoreDirector<TaskAssigningSolution> scoreDirector, Employee employee) {
         // Do nothing
     }
 
     @Override
-    public void afterEntityAdded(ScoreDirector<TaskAssigningSolution> scoreDirector, Task task) {
-        updateStartTime(scoreDirector, task);
+    public void afterEntityAdded(ScoreDirector<TaskAssigningSolution> scoreDirector, Employee employee) {
+        updateStartTime(scoreDirector, employee);
     }
 
     @Override
-    public void beforeVariableChanged(ScoreDirector<TaskAssigningSolution> scoreDirector, Task task) {
+    public void beforeVariableChanged(ScoreDirector<TaskAssigningSolution> scoreDirector, Employee employee) {
         // Do nothing
     }
 
     @Override
-    public void afterVariableChanged(ScoreDirector<TaskAssigningSolution> scoreDirector, Task task) {
-        updateStartTime(scoreDirector, task);
+    public void afterVariableChanged(ScoreDirector<TaskAssigningSolution> scoreDirector, Employee employee) {
+        updateStartTime(scoreDirector, employee);
     }
 
     @Override
-    public void beforeEntityRemoved(ScoreDirector<TaskAssigningSolution> scoreDirector, Task task) {
+    public void beforeEntityRemoved(ScoreDirector<TaskAssigningSolution> scoreDirector, Employee employee) {
         // Do nothing
     }
 
     @Override
-    public void afterEntityRemoved(ScoreDirector<TaskAssigningSolution> scoreDirector, Task task) {
+    public void afterEntityRemoved(ScoreDirector<TaskAssigningSolution> scoreDirector, Employee employee) {
         // Do nothing
     }
 
-    protected void updateStartTime(ScoreDirector<TaskAssigningSolution> scoreDirector, Task sourceTask) {
-        TaskOrEmployee previous = sourceTask.getPreviousTaskOrEmployee();
-        Task shadowTask = sourceTask;
-        Integer previousEndTime = (previous == null ? null : previous.getEndTime());
-        Integer startTime = calculateStartTime(shadowTask, previousEndTime);
-        while (shadowTask != null && !Objects.equals(shadowTask.getStartTime(), startTime)) {
-            scoreDirector.beforeVariableChanged(shadowTask, "startTime");
-            shadowTask.setStartTime(startTime);
-            scoreDirector.afterVariableChanged(shadowTask, "startTime");
-            previousEndTime = shadowTask.getEndTime();
-            shadowTask = shadowTask.getNextTask();
-            startTime = calculateStartTime(shadowTask, previousEndTime);
+    protected void updateStartTime(ScoreDirector<TaskAssigningSolution> scoreDirector, Employee sourceEmployee) {
+        if (sourceEmployee.getTasks() == null) {
+            return;
         }
-    }
-
-    private Integer calculateStartTime(Task task, Integer previousEndTime) {
-        if (task == null || previousEndTime == null) {
-            return null;
+        int previousStartTime = 0;
+        for (Task task : sourceEmployee.getTasks()) {
+            int startTime = Math.max(task.getReadyTime(), previousStartTime);
+            if (!Objects.equals(task.getStartTime(), startTime)) {
+                scoreDirector.beforeVariableChanged(task, "startTime");
+                task.setStartTime(startTime);
+                scoreDirector.afterVariableChanged(task, "startTime");
+            }
+            previousStartTime = task.getEndTime();
         }
-        return Math.max(task.getReadyTime(), previousEndTime);
     }
 
 }

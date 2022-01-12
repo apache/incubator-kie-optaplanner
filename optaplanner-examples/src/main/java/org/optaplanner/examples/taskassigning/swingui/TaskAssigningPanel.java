@@ -135,7 +135,7 @@ public class TaskAssigningPanel extends SolutionPanel<TaskAssigningSolution> {
             solution.setFrozenCutoff(consumedTime);
             for (Task task : solution.getTaskList()) {
                 if (!task.isPinned()) {
-                    if (task.getStartTime() != null && task.getStartTime() < consumedTime) {
+                    if (task.getEmployee() != null && task.getStartTime() < consumedTime) {
                         scoreDirector.beforeProblemPropertyChanged(task);
                         task.setPinned(true);
                         scoreDirector.afterProblemPropertyChanged(task);
