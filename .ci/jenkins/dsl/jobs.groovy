@@ -279,8 +279,6 @@ void setupPostReleaseJob(String jobFolder, KogitoJobType jobType) {
 
             env('AUTHOR_CREDS_ID', "${GIT_AUTHOR_CREDENTIALS_ID}")
             env('GITHUB_TOKEN_CREDS_ID', "${GIT_AUTHOR_TOKEN_CREDENTIALS_ID}")
-            env('GIT_AUTHOR_BOT', "${GIT_BOT_AUTHOR_NAME}")
-            env('BOT_CREDENTIALS_ID', "${GIT_BOT_AUTHOR_CREDENTIALS_ID}")
 
             env('MAVEN_SETTINGS_CONFIG_FILE_ID', "${MAVEN_SETTINGS_FILE_ID}")
             env('MAVEN_DEPENDENCIES_REPOSITORY', "${MAVEN_ARTIFACTS_REPOSITORY}")
