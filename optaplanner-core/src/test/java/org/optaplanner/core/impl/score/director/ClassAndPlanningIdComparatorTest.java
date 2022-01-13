@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.optaplanner.core.impl.domain.lookup;
+package org.optaplanner.core.impl.score.director;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.optaplanner.core.impl.testdata.util.PlannerAssert.assertCompareToOrder;
@@ -27,7 +27,7 @@ import org.optaplanner.core.impl.testdata.domain.score.lavish.TestdataLavishEnti
 
 public class ClassAndPlanningIdComparatorTest {
 
-    private final Comparator<Object> comparator = new ClassAndPlanningIdComparator(false);
+    private final Comparator<Object> comparator = new ClassAndPlanningIdComparator();
 
     @Test
     public void comparesDifferentClassesByClassName() {
@@ -50,8 +50,8 @@ public class ClassAndPlanningIdComparatorTest {
 
     @Test
     public void treatesSameUnComparableClassesWithoutPlanningIdAsEqual() {
-        Object firstObject = new ClassAndPlanningIdComparator(false);
-        Object secondObject = new ClassAndPlanningIdComparator(false);
+        Object firstObject = new ClassAndPlanningIdComparator();
+        Object secondObject = new ClassAndPlanningIdComparator();
         int result = comparator.compare(firstObject, secondObject);
         assertThat(result).isEqualTo(0);
     }

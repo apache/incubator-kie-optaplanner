@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.optaplanner.core.impl.domain.lookup;
+package org.optaplanner.core.impl.score.director;
 
 import java.util.Collections;
 import java.util.Comparator;
@@ -22,33 +22,24 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.optaplanner.core.api.domain.common.DomainAccessType;
-import org.optaplanner.core.api.domain.lookup.PlanningId;
 import org.optaplanner.core.config.util.ConfigUtils;
 import org.optaplanner.core.impl.domain.common.accessor.MemberAccessor;
 
-public class ClassAndPlanningIdComparator implements Comparator<Object> {
+final class ClassAndPlanningIdComparator implements Comparator<Object> {
 
     private DomainAccessType domainAccessType;
     private Map<String, MemberAccessor> generatedMemberAccessorMap;
-    private boolean failFastIfNoPlanningId;
     private Map<Class, MemberAccessor> decisionCache = new HashMap<>();
 
     public ClassAndPlanningIdComparator() {
         // TODO This will break Quarkus once we don't open up the domain hierarchy for reflection any more
-        this(DomainAccessType.REFLECTION, Collections.emptyMap(), true);
-    }
-
-    public ClassAndPlanningIdComparator(boolean failFastIfNoPlanningId) {
-        // TODO This will break Quarkus once we don't open up the domain hierarchy for reflection any more
-        this(DomainAccessType.REFLECTION, Collections.emptyMap(), failFastIfNoPlanningId);
+        this(DomainAccessType.REFLECTION, Collections.emptyMap());
     }
 
     public ClassAndPlanningIdComparator(DomainAccessType domainAccessType,
-            Map<String, MemberAccessor> generatedMemberAccessorMap,
-            boolean failFastIfNoPlanningId) {
+            Map<String, MemberAccessor> generatedMemberAccessorMap) {
         this.domainAccessType = domainAccessType;
         this.generatedMemberAccessorMap = generatedMemberAccessorMap;
-        this.failFastIfNoPlanningId = failFastIfNoPlanningId;
     }
 
     @Override
@@ -67,31 +58,18 @@ public class ClassAndPlanningIdComparator implements Comparator<Object> {
                 clazz -> ConfigUtils.findPlanningIdMemberAccessor(clazz, domainAccessType, generatedMemberAccessorMap));
         MemberAccessor bMemberAccessor = decisionCache.computeIfAbsent(bClass,
                 clazz -> ConfigUtils.findPlanningIdMemberAccessor(clazz, domainAccessType, generatedMemberAccessorMap));
-        if (failFastIfNoPlanningId) {
-            if (aMemberAccessor == null) {
-                throw new IllegalArgumentException("The class (" + aClass
-                        + ") does not have a @" + PlanningId.class.getSimpleName() + " annotation.\n"
-                        + "Maybe add the @" + PlanningId.class.getSimpleName() + " annotation.");
-            }
+        if (aMemberAccessor == null) {
             if (bMemberAccessor == null) {
-                throw new IllegalArgumentException("The class (" + bClass
-                        + ") does not have a @" + PlanningId.class.getSimpleName() + " annotation.\n"
-                        + "Maybe add the @" + PlanningId.class.getSimpleName() + " annotation.");
-            }
-        } else {
-            if (aMemberAccessor == null) {
-                if (bMemberAccessor == null) {
-                    if (a instanceof Comparable) {
-                        return ((Comparable) a).compareTo(b);
-                    } else { // Return 0 to keep original order.
-                        return 0;
-                    }
-                } else {
-                    return -1;
+                if (a instanceof Comparable) {
+                    return ((Comparable) a).compareTo(b);
+                } else { // Return 0 to keep original order.
+                    return 0;
                 }
-            } else if (bMemberAccessor == null) {
-                return 1;
+            } else {
+                return -1;
             }
+        } else if (bMemberAccessor == null) {
+            return 1;
         }
         Comparable aPlanningId = (Comparable) aMemberAccessor.executeGetter(a);
         Comparable bPlanningId = (Comparable) bMemberAccessor.executeGetter(b);

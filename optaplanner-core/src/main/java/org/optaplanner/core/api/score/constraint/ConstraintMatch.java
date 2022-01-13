@@ -22,25 +22,39 @@ import java.util.Comparator;
 import java.util.List;
 
 import org.optaplanner.core.api.score.Score;
-import org.optaplanner.core.impl.domain.lookup.ClassAndPlanningIdComparator;
 
 /**
  * Retrievable from {@link ConstraintMatchTotal#getConstraintMatchSet()}
  * and {@link Indictment#getConstraintMatchSet()}.
  *
- * <p>
- * This class has a {@link #compareTo(ConstraintMatch)} method which is inconsistent with equals.
- * (See {@link Comparable}.)
- * Two different {@link ConstraintMatch} instances with the same justification list aren't
- * {@link Object#equals(Object) equal} because some ConstraintStream API methods can result in duplicate facts,
- * which are treated as independent matches.
- * Yet two instances may {@link #compareTo(ConstraintMatch)} equal in case they come from the same constraint and their
- * justifications are equal.
- * This is for consistent ordering of constraint matches in visualizations.
- * 
  * @param <Score_> the actual score type
  */
 public final class ConstraintMatch<Score_ extends Score<Score_>> implements Comparable<ConstraintMatch<Score_>> {
+
+    private static final Comparator<Object> CONSTRAINT_JUSTIFICATION_COMPARATOR = (left, right) -> {
+        if (left == null && right != null) {
+            return -1; // Nulls first.
+        } else if (left != null && right == null) {
+            return 1; // Nulls first.
+        } else if (left == right) {
+            return 0;
+        }
+        // First distinguish objects by their type.
+        int comparison = left.getClass().getName().compareTo(right.getClass().getName());
+        if (comparison != 0) {
+            return comparison;
+        }
+        if (left.getClass() == right.getClass() && Comparable.class.isAssignableFrom(left.getClass())) {
+            // If both are of the same type, and that type is comparable, use it.
+            // Objects can maintain consistent ordering if they implement Comparable.
+            comparison = ((Comparable) left).compareTo(right);
+            if (comparison != 0) {
+                return comparison;
+            }
+        }
+        // If still equal, compare by identity, bringing consistent ordering to everything else.
+        return Integer.compare(System.identityHashCode(left), System.identityHashCode(right));
+    };
 
     private final String constraintPackage;
     private final String constraintName;
@@ -90,34 +104,38 @@ public final class ConstraintMatch<Score_ extends Score<Score_>> implements Comp
         return getConstraintId() + "/" + justificationList;
     }
 
+    /**
+     * As defined by {@link Comparable#compareTo(Object)}.
+     *
+     * <p>
+     * The point of this method is to provide consistency when a collection of matches is visualized.
+     * Instances of this class should never be compared to one another for any other reason.
+     */
     @Override
     public int compareTo(ConstraintMatch<Score_> other) {
+        if (this == other) {
+            return 0; // Constraint matches only compare to equal if they are the same instance.
+        }
         if (!constraintPackage.equals(other.constraintPackage)) {
             return constraintPackage.compareTo(other.constraintPackage);
         } else if (!constraintName.equals(other.constraintName)) {
             return constraintName.compareTo(other.constraintName);
+        } else if (!score.equals(other.score)) {
+            return -score.compareTo(other.score); // Heavier matches first.
+        } else if (justificationList.size() != other.justificationList.size()) {
+            // Matches with less justifications first.
+            return justificationList.size() < other.justificationList.size() ? -1 : 1;
         } else {
-            /*
-             * TODO Come up with a better cache.
-             *
-             * Reuse the comparator to internally caches reflection for performance benefits.
-             * However, there are possibly thousands of instances of this class, and each gets its own comparator.
-             * Therefore, the caching is only partially effective.
-             */
-            Comparator<Object> comparator = new ClassAndPlanningIdComparator(false);
-            for (int i = 0; i < justificationList.size() && i < other.justificationList.size(); i++) {
+            for (int i = 0; i < justificationList.size(); i++) {
                 Object left = justificationList.get(i);
                 Object right = other.justificationList.get(i);
-                int comparison = comparator.compare(left, right);
+                int comparison = CONSTRAINT_JUSTIFICATION_COMPARATOR.compare(left, right);
                 if (comparison != 0) {
                     return comparison;
                 }
             }
-            if (justificationList.size() != other.justificationList.size()) {
-                return justificationList.size() < other.justificationList.size() ? -1 : 1;
-            } else {
-                return 0;
-            }
+            // Constraint matches only equal when they are the same, this makes compareTo() consistent with equals.
+            return Integer.compare(System.identityHashCode(this), System.identityHashCode(other));
         }
     }
 

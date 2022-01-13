@@ -49,7 +49,6 @@ import org.optaplanner.core.config.util.ConfigUtils;
 import org.optaplanner.core.impl.domain.common.accessor.MemberAccessor;
 import org.optaplanner.core.impl.domain.constraintweight.descriptor.ConstraintConfigurationDescriptor;
 import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
-import org.optaplanner.core.impl.domain.lookup.ClassAndPlanningIdComparator;
 import org.optaplanner.core.impl.domain.lookup.LookUpManager;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.core.impl.domain.variable.descriptor.ShadowVariableDescriptor;
@@ -816,8 +815,7 @@ public abstract class AbstractScoreDirector<Solution_, Score_ extends Score<Scor
     private Map<Object, Set<ConstraintMatch<Score_>>> createConstraintMatchMap(
             Collection<ConstraintMatchTotal<Score_>> constraintMatchTotals) {
         Comparator<Object> comparator = new ClassAndPlanningIdComparator(getSolutionDescriptor().getDomainAccessType(),
-                getSolutionDescriptor().getGeneratedMemberAccessorMap(),
-                false);
+                getSolutionDescriptor().getGeneratedMemberAccessorMap());
         Map<Object, Set<ConstraintMatch<Score_>>> constraintMatchMap =
                 new LinkedHashMap<>(constraintMatchTotals.size() * 16);
         for (ConstraintMatchTotal<Score_> constraintMatchTotal : constraintMatchTotals) {
