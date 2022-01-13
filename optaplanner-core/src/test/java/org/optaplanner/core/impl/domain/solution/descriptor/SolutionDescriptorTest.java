@@ -150,8 +150,10 @@ public class SolutionDescriptorTest {
 
     @Test
     public void noProblemFactPropertyWithDroolsScoreCalculation() {
-        assertThatIllegalStateException().isThrownBy(() -> PlannerTestUtils
-                .buildSolverFactoryWithDroolsScoreDirector(TestdataNoProblemFactPropertySolution.class, TestdataEntity.class));
+        SolverFactory<TestdataNoProblemFactPropertySolution> solverFactory = PlannerTestUtils
+                .buildSolverFactoryWithDroolsScoreDirector(
+                        TestdataNoProblemFactPropertySolution.class, TestdataEntity.class);
+        assertThatIllegalStateException().isThrownBy(solverFactory::buildSolver);
     }
 
     @Test
