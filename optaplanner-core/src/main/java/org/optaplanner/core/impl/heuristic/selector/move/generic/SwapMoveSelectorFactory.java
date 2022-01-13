@@ -68,17 +68,14 @@ public class SwapMoveSelectorFactory<Solution_>
         if (variableDescriptorList.size() == 1 && variableDescriptorList.get(0).isListVariable()) {
             // TODO add ValueSelector to the config
             ValueSelectorFactory<Solution_> valueSelectorFactory = ValueSelectorFactory.create(new ValueSelectorConfig());
-            ValueSelector<Solution_> leftValueSelector = valueSelectorFactory.buildValueSelector(configPolicy,
-                    leftEntitySelector.getEntityDescriptor(),
-                    minimumCacheType, SelectionOrder.fromRandomSelectionBoolean(randomSelection));
-            ValueSelector<Solution_> rightValueSelector = valueSelectorFactory.buildValueSelector(configPolicy,
-                    rightEntitySelector.getEntityDescriptor(),
-                    minimumCacheType, SelectionOrder.fromRandomSelectionBoolean(randomSelection));
+            EntityIndependentValueSelector<Solution_> leftValueSelector = buildEntityIndependentValueSelector(
+                    valueSelectorFactory, configPolicy, leftEntitySelector, minimumCacheType, randomSelection);
+            EntityIndependentValueSelector<Solution_> rightValueSelector = buildEntityIndependentValueSelector(
+                    valueSelectorFactory, configPolicy, rightEntitySelector, minimumCacheType, randomSelection);
             return new ListSwapMoveSelector<>(
                     (ListVariableDescriptor<Solution_>) variableDescriptorList.get(0),
-                    // This cast is guaranteed by ListVariableDescriptor.processValueRangeRefs().
-                    (EntityIndependentValueSelector<Solution_>) leftValueSelector,
-                    (EntityIndependentValueSelector<Solution_>) rightValueSelector,
+                    leftValueSelector,
+                    rightValueSelector,
                     randomSelection);
         }
         if (variableDescriptorList.stream().noneMatch(GenuineVariableDescriptor::isListVariable)) {
@@ -88,6 +85,22 @@ public class SwapMoveSelectorFactory<Solution_>
         throw new IllegalArgumentException("The variableDescriptorList (" + variableDescriptorList
                 + ") has multiple variables and one or more of them is a @" + PlanningListVariable.class.getSimpleName()
                 + ", which is currently not supported.");
+    }
+
+    private EntityIndependentValueSelector<Solution_> buildEntityIndependentValueSelector(
+            ValueSelectorFactory<Solution_> valueSelectorFactory, HeuristicConfigPolicy<Solution_> configPolicy,
+            EntitySelector<Solution_> entitySelector, SelectionCacheType minimumCacheType,
+            boolean randomSelection) {
+        ValueSelector<Solution_> valueSelector = valueSelectorFactory.buildValueSelector(configPolicy,
+                entitySelector.getEntityDescriptor(),
+                minimumCacheType, SelectionOrder.fromRandomSelectionBoolean(randomSelection));
+        if (!(valueSelector instanceof EntityIndependentValueSelector)) {
+            throw new IllegalArgumentException("The changeMoveSelector (" + this
+                    + ") for a list variable needs to be based on an EntityIndependentValueSelector (" + valueSelector
+                    + "). Check your valueSelectorConfig.");
+
+        }
+        return (EntityIndependentValueSelector<Solution_>) valueSelector;
     }
 
     @Override
