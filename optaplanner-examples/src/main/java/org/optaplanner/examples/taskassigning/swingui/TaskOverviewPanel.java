@@ -267,11 +267,11 @@ public class TaskOverviewPanel extends JPanel implements Scrollable {
             }
         }
 
-    }
+        private ListVariableDescriptor<TaskAssigningSolution> getTaskListVariableDescriptor(Employee employee) {
+            return (ListVariableDescriptor<TaskAssigningSolution>) taskAssigningPanel.getSolutionBusiness()
+                    .findVariableDescriptor(employee, "tasks");
+        }
 
-    private ListVariableDescriptor<TaskAssigningSolution> getTaskListVariableDescriptor(Employee employee) {
-        return (ListVariableDescriptor<TaskAssigningSolution>) taskAssigningPanel.getSolutionBusiness()
-                .findVariableDescriptor(employee, "tasks");
     }
 
     @Override
