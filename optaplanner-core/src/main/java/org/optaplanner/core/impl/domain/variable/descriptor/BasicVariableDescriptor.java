@@ -27,9 +27,17 @@ public class BasicVariableDescriptor<Solution_> extends GenuineVariableDescripto
     private boolean chained;
     private boolean nullable;
 
+    // ************************************************************************
+    // Constructors and simple getters/setters
+    // ************************************************************************
+
     public BasicVariableDescriptor(EntityDescriptor<Solution_> entityDescriptor, MemberAccessor variableMemberAccessor) {
         super(entityDescriptor, variableMemberAccessor);
     }
+
+    // ************************************************************************
+    // Lifecycle methods
+    // ************************************************************************
 
     @Override
     protected void processPropertyAnnotations(DescriptorPolicy descriptorPolicy) {
@@ -40,30 +48,6 @@ public class BasicVariableDescriptor<Solution_> extends GenuineVariableDescripto
         processStrength(descriptorPolicy, planningVariableAnnotation.strengthComparatorClass(),
                 planningVariableAnnotation.strengthWeightFactoryClass());
     }
-
-    @Override
-    public boolean isListVariable() {
-        return false;
-    }
-
-    @Override
-    public boolean isChained() {
-        return chained;
-    }
-
-    @Override
-    public boolean isNullable() {
-        return nullable;
-    }
-
-    @Override
-    public boolean acceptsValueType(Class<?> valueType) {
-        return getVariablePropertyType().isAssignableFrom(valueType);
-    }
-
-    // ************************************************************************
-    // Lifecycle methods
-    // ************************************************************************
 
     private void processNullable(DescriptorPolicy descriptorPolicy, PlanningVariable planningVariableAnnotation) {
         nullable = planningVariableAnnotation.nullable();
@@ -95,6 +79,34 @@ public class BasicVariableDescriptor<Solution_> extends GenuineVariableDescripto
                     + ") with chained (" + chained + "), which is not compatible with nullable (" + nullable + ").");
         }
     }
+
+    // ************************************************************************
+    // Worker methods
+    // ************************************************************************
+
+    @Override
+    public boolean isListVariable() {
+        return false;
+    }
+
+    @Override
+    public boolean isChained() {
+        return chained;
+    }
+
+    @Override
+    public boolean isNullable() {
+        return nullable;
+    }
+
+    @Override
+    public boolean acceptsValueType(Class<?> valueType) {
+        return getVariablePropertyType().isAssignableFrom(valueType);
+    }
+
+    // ************************************************************************
+    // Extraction methods
+    // ************************************************************************
 
     @Override
     public boolean isInitialized(Object entity) {
