@@ -22,7 +22,6 @@ import org.optaplanner.core.impl.domain.common.accessor.MemberAccessor;
 import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
 import org.optaplanner.core.impl.domain.policy.DescriptorPolicy;
 
-// TODO naming
 public class BasicVariableDescriptor<Solution_> extends GenuineVariableDescriptor<Solution_> {
 
     private boolean chained;
@@ -79,8 +78,7 @@ public class BasicVariableDescriptor<Solution_> extends GenuineVariableDescripto
 
     private void processChained(DescriptorPolicy descriptorPolicy, PlanningVariable planningVariableAnnotation) {
         chained = planningVariableAnnotation.graphType() == PlanningVariableGraphType.CHAINED;
-        if (chained && !variableMemberAccessor.getType().isAssignableFrom(
-                entityDescriptor.getEntityClass())) {
+        if (chained && !variableMemberAccessor.getType().isAssignableFrom(entityDescriptor.getEntityClass())) {
             throw new IllegalArgumentException("The entityClass (" + entityDescriptor.getEntityClass()
                     + ") has a @" + PlanningVariable.class.getSimpleName()
                     + " annotated property (" + variableMemberAccessor.getName()
