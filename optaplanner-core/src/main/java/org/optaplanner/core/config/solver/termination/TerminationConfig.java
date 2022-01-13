@@ -520,21 +520,27 @@ public class TerminationConfig extends AbstractConfig<TerminationConfig> {
     @XmlTransient
     public boolean isConfigured() {
         return terminationClass != null ||
+                terminationCompositionStyle != null ||
                 spentLimit != null ||
                 millisecondsSpentLimit != null ||
                 secondsSpentLimit != null ||
                 minutesSpentLimit != null ||
                 hoursSpentLimit != null ||
                 daysSpentLimit != null ||
-                bestScoreLimit != null ||
                 unimprovedSpentLimit != null ||
                 unimprovedMillisecondsSpentLimit != null ||
                 unimprovedSecondsSpentLimit != null ||
                 unimprovedMinutesSpentLimit != null ||
                 unimprovedHoursSpentLimit != null ||
                 unimprovedDaysSpentLimit != null ||
+                unimprovedScoreDifferenceThreshold != null ||
+                bestScoreLimit != null ||
+                bestScoreFeasible != null ||
                 stepCountLimit != null ||
-                terminationConfigList != null;
+                unimprovedStepCountLimit != null ||
+                scoreCalculationCountLimit != null ||
+                (terminationConfigList != null &&
+                        terminationConfigList.stream().anyMatch(TerminationConfig::isConfigured));
     }
 
     @Override

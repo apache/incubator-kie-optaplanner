@@ -115,14 +115,18 @@ public class OptaPlannerBenchmarkRecorder {
                 benchmarkRuntimeConfig.termination.bestScoreLimit.ifPresent(terminationConfig::setBestScoreLimit);
 
                 if (!terminationConfig.isConfigured()) {
-                    boolean isTerminationConfiguredForAllLocalSearchPhases = !solverBenchmarkConfig
-                            .getSolverConfig().getPhaseConfigList().isEmpty();
-                    for (PhaseConfig<?> phaseConfig : solverBenchmarkConfig.getSolverConfig().getPhaseConfigList()) {
-                        if (phaseConfig instanceof LocalSearchPhaseConfig) {
-                            if (phaseConfig.getTerminationConfig() == null
-                                    || !phaseConfig.getTerminationConfig().isConfigured()) {
-                                isTerminationConfiguredForAllLocalSearchPhases = false;
-                                break;
+                    List<PhaseConfig> phaseConfigList = solverBenchmarkConfig.getSolverConfig().getPhaseConfigList();
+                    boolean isTerminationConfiguredForAllLocalSearchPhases =
+                            phaseConfigList != null && !phaseConfigList.isEmpty();
+
+                    if (isTerminationConfiguredForAllLocalSearchPhases) {
+                        for (PhaseConfig<?> phaseConfig : phaseConfigList) {
+                            if (phaseConfig instanceof LocalSearchPhaseConfig) {
+                                if (phaseConfig.getTerminationConfig() == null
+                                        || !phaseConfig.getTerminationConfig().isConfigured()) {
+                                    isTerminationConfiguredForAllLocalSearchPhases = false;
+                                    break;
+                                }
                             }
                         }
                     }
@@ -152,6 +156,9 @@ public class OptaPlannerBenchmarkRecorder {
 
         if (plannerBenchmarkConfig.getSolverBenchmarkConfigList() != null) {
             for (SolverBenchmarkConfig childBenchmarkConfig : plannerBenchmarkConfig.getSolverBenchmarkConfigList()) {
+                if (childBenchmarkConfig.getSolverConfig() == null) {
+                    childBenchmarkConfig.setSolverConfig(new SolverConfig());
+                }
                 inheritPropertiesFromSolverConfig(childBenchmarkConfig, inheritedBenchmarkConfig, solverConfig);
             }
         }
