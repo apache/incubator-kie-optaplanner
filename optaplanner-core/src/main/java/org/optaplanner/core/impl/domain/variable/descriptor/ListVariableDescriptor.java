@@ -31,9 +31,17 @@ import org.optaplanner.core.impl.domain.policy.DescriptorPolicy;
 
 public class ListVariableDescriptor<Solution_> extends GenuineVariableDescriptor<Solution_> {
 
+    // ************************************************************************
+    // Constructors and simple getters/setters
+    // ************************************************************************
+
     public ListVariableDescriptor(EntityDescriptor<Solution_> entityDescriptor, MemberAccessor variableMemberAccessor) {
         super(entityDescriptor, variableMemberAccessor);
     }
+
+    // ************************************************************************
+    // Lifecycle methods
+    // ************************************************************************
 
     @Override
     protected void processPropertyAnnotations(DescriptorPolicy descriptorPolicy) {
@@ -57,6 +65,15 @@ public class ListVariableDescriptor<Solution_> extends GenuineVariableDescriptor
                     + ") from the entity class to the @" + PlanningSolution.class.getSimpleName() + " class.");
         }
         super.processValueRangeRefs(descriptorPolicy, valueRangeProviderRefs);
+    }
+
+    // ************************************************************************
+    // Worker methods
+    // ************************************************************************
+
+    @Override
+    public boolean isGenuineListVariable() {
+        return true;
     }
 
     @Override
@@ -83,13 +100,12 @@ public class ListVariableDescriptor<Solution_> extends GenuineVariableDescriptor
         return variableTypeArgument.isAssignableFrom(valueType);
     }
 
-    @Override
-    public boolean isInitialized(Object entity) {
-        return true;
-    }
+    // ************************************************************************
+    // Extraction methods
+    // ************************************************************************
 
     @Override
-    public boolean isGenuineListVariable() {
+    public boolean isInitialized(Object entity) {
         return true;
     }
 
