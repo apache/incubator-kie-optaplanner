@@ -169,6 +169,7 @@ public interface Solver<Solution_> {
      * <p>
      * This method is thread-safe.
      *
+     * @deprecated in favor of {@link #isEveryProblemChangeProcessed()}.
      * @return true if there are no {@link ProblemFactChange}s left to do
      */
     @Deprecated(forRemoval = true)
