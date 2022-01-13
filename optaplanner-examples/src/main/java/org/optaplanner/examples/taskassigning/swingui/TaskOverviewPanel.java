@@ -27,6 +27,7 @@ import java.awt.event.ItemEvent;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Vector;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -198,29 +199,16 @@ public class TaskOverviewPanel extends JPanel implements Scrollable {
         @Override
         public void actionPerformed(ActionEvent e) {
             JComboBox<Integer> indexListField = new JComboBox<>();
-            List<Employee> employeeList = taskAssigningPanel.getSolution().getEmployeeList();
-            JComboBox<Employee> employeeListField = new JComboBox<>(employeeList.toArray(new Employee[0]));
+            JComboBox<Employee> employeeListField = new JComboBox<>(
+                    new Vector<>(taskAssigningPanel.getSolution().getEmployeeList()));
             employeeListField.addItemListener(itemEvent -> {
                 if (itemEvent.getStateChange() == ItemEvent.SELECTED) {
-                    Employee selectedEmployee = (Employee) itemEvent.getItem();
-                    int availableIndexes = selectedEmployee.getTasks() == null ? 0 : selectedEmployee.getTasks().size();
-                    if (selectedEmployee == task.getEmployee()) {
-                        availableIndexes--;
-                    }
-                    Integer[] data = new Integer[availableIndexes + 1];
-                    IntStream.rangeClosed(0, availableIndexes).boxed().collect(Collectors.toList()).toArray(data);
-                    indexListField.setModel(new DefaultComboBoxModel<>(data));
+                    // When en employee is selected, populate the index combo with indexes in the selected employee's task list.
+                    indexListField.setModel(new DefaultComboBoxModel<>(availableIndexes((Employee) itemEvent.getItem())));
                 }
             });
             LabeledComboBoxRenderer.applyToComboBox(employeeListField);
-            // Without selecting null first, the next select wouldn't call the item listener if the selected employee
-            // is the first on the list (and the index combo wouldn't be populated).
-            employeeListField.setSelectedItem(null);
-            if (task.getEmployee() == null) {
-                employeeListField.setSelectedIndex(0);
-            } else {
-                employeeListField.setSelectedItem(task.getEmployee());
-            }
+            selectCurrentEmployee(employeeListField);
 
             JCheckBox unassignCheckBox = new JCheckBox("Or unassign.");
             unassignCheckBox.addActionListener(checkBoxEvent -> {
@@ -238,32 +226,56 @@ public class TaskOverviewPanel extends JPanel implements Scrollable {
                     listFieldsPanel, "Move " + task.getCode(),
                     JOptionPane.OK_CANCEL_OPTION);
             if (result == JOptionPane.OK_OPTION) {
-                Move<TaskAssigningSolution> move;
-                if (unassignCheckBox.isSelected()) {
-                    move = new ListUnassignMove<>(
-                            getTaskListVariableDescriptor(task.getEmployee()),
-                            task.getEmployee(),
-                            task.getIndex());
-                } else {
-                    Employee selectedEmployee = (Employee) employeeListField.getSelectedItem();
-                    Integer selectedIndex = (Integer) indexListField.getSelectedItem();
-                    if (task.getEmployee() == null) {
-                        move = new ListAssignMove<>(
-                                getTaskListVariableDescriptor(selectedEmployee),
-                                task,
-                                selectedEmployee,
-                                selectedIndex);
-                    } else {
-                        move = new ListChangeMove<>(
-                                getTaskListVariableDescriptor(selectedEmployee),
-                                task.getEmployee(),
-                                task.getIndex(),
-                                selectedEmployee,
-                                selectedIndex);
-                    }
-                }
+                Employee selectedEmployee = (Employee) employeeListField.getSelectedItem();
+                Integer selectedIndex = (Integer) indexListField.getSelectedItem();
+                Move<TaskAssigningSolution> move = buildMove(selectedEmployee, selectedIndex, unassignCheckBox.isSelected());
                 taskAssigningPanel.getSolutionBusiness().doMove(move);
                 taskAssigningPanel.getSolverAndPersistenceFrame().resetScreen();
+            }
+        }
+
+        private Vector<Integer> availableIndexes(Employee selectedEmployee) {
+            int availableIndexes = selectedEmployee.getTasks().size();
+            if (selectedEmployee == task.getEmployee()) {
+                availableIndexes--;
+            }
+            return IntStream.rangeClosed(0, availableIndexes)
+                    .boxed()
+                    .collect(Collectors.toCollection(Vector::new));
+        }
+
+        private void selectCurrentEmployee(JComboBox<Employee> employeeListField) {
+            // Without selecting null first, the next select wouldn't call the item listener if the selected employee
+            // is the first on the list (and the index combo wouldn't be populated).
+            employeeListField.setSelectedItem(null);
+            if (task.getEmployee() == null) {
+                employeeListField.setSelectedIndex(0);
+            } else {
+                employeeListField.setSelectedItem(task.getEmployee());
+            }
+        }
+
+        private Move<TaskAssigningSolution> buildMove(Employee selectedEmployee, Integer selectedIndex, boolean unassignTask) {
+            if (unassignTask) {
+                return new ListUnassignMove<>(
+                        getTaskListVariableDescriptor(task.getEmployee()),
+                        task.getEmployee(),
+                        task.getIndex());
+            } else {
+                if (task.getEmployee() == null) {
+                    return new ListAssignMove<>(
+                            getTaskListVariableDescriptor(selectedEmployee),
+                            task,
+                            selectedEmployee,
+                            selectedIndex);
+                } else {
+                    return new ListChangeMove<>(
+                            getTaskListVariableDescriptor(selectedEmployee),
+                            task.getEmployee(),
+                            task.getIndex(),
+                            selectedEmployee,
+                            selectedIndex);
+                }
             }
         }
 
