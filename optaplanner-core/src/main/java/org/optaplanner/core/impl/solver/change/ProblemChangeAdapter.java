@@ -25,5 +25,5 @@ import org.optaplanner.core.impl.solver.scope.SolverScope;
  */
 public interface ProblemChangeAdapter<Solution_> {
 
-    Score doProblemChange(SolverScope<Solution_> solverScope);
+    Score<?> doProblemChange(SolverScope<Solution_> solverScope);
 }

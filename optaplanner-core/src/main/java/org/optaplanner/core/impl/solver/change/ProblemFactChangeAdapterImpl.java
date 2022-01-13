@@ -28,9 +28,8 @@ public final class ProblemFactChangeAdapterImpl<Solution_> implements ProblemCha
         this.problemFactChange = problemFactChange;
     }
 
-    public Score doProblemChange(SolverScope<Solution_> solverScope) {
+    public Score<?> doProblemChange(SolverScope<Solution_> solverScope) {
         problemFactChange.doChange(solverScope.getScoreDirector());
-        Score score = solverScope.calculateScore();
-        return score;
+        return solverScope.calculateScore();
     }
 }

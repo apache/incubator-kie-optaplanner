@@ -29,10 +29,9 @@ public final class ProblemChangeAdapterImpl<Solution_> implements ProblemChangeA
     }
 
     @Override
-    public Score doProblemChange(SolverScope<Solution_> solverScope) {
+    public Score<?> doProblemChange(SolverScope<Solution_> solverScope) {
         problemChange.doChange(solverScope.getWorkingSolution(), solverScope.getProblemChangeDirector());
         solverScope.getScoreDirector().triggerVariableListeners();
-        Score score = solverScope.calculateScore();
-        return score;
+        return solverScope.calculateScore();
     }
 }

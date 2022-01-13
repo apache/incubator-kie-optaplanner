@@ -279,7 +279,7 @@ public class DefaultSolver<Solution_> extends AbstractSolver<Solution_> {
             BlockingQueue<ProblemChangeAdapter<Solution_>> problemFactChangeQueue = basicPlumbingTermination
                     .startProblemFactChangesProcessing();
             solverScope.setWorkingSolutionFromBestSolution();
-            Score score = null;
+            Score<?> score = null;
             int stepIndex = 0;
             ProblemChangeAdapter<Solution_> problemFactChange = problemFactChangeQueue.poll();
             while (problemFactChange != null) {
@@ -299,8 +299,8 @@ public class DefaultSolver<Solution_> extends AbstractSolver<Solution_> {
         }
     }
 
-    private Score doProblemChange(ProblemChangeAdapter<Solution_> problemChangeAdapter, int stepIndex) {
-        Score score = problemChangeAdapter.doProblemChange(solverScope);
+    private Score<?> doProblemChange(ProblemChangeAdapter<Solution_> problemChangeAdapter, int stepIndex) {
+        Score<?> score = problemChangeAdapter.doProblemChange(solverScope);
         logger.debug("    Step index ({}), new score ({}) for real-time problem change.", stepIndex, score);
         return score;
     }
