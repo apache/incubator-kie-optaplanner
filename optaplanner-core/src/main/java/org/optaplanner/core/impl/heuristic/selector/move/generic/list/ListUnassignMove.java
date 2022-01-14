@@ -52,8 +52,8 @@ public class ListUnassignMove<Solution_> extends AbstractMove<Solution_> {
 
     @Override
     public AbstractMove<Solution_> createUndoMove(ScoreDirector<Solution_> scoreDirector) {
-        // No need to create an undo move because the unassign move is never being undone.
-        return null;
+        // The unassign move only serves as an undo move of the assign move. It is never being undone.
+        throw new UnsupportedOperationException("Undoing an unassign move is unsupported.");
     }
 
     @Override

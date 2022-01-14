@@ -17,6 +17,7 @@
 package org.optaplanner.core.impl.heuristic.selector.move.generic.list;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.mock;
 
 import org.junit.jupiter.api.Test;
@@ -42,13 +43,15 @@ class ListUnassignMoveTest {
 
         // Unassign last
         ListUnassignMove<TestdataListSolution> move = new ListUnassignMove<>(variableDescriptor, e1, 2);
-        // The unassign move is typically an undo move, which is not supposed to be undone itself, so we ignore its undo move.
-        move.doMove(scoreDirector);
+        move.doMoveOnly(scoreDirector);
         assertThat(e1.getValueList()).containsExactly(v1, v2);
 
+        // The unassign move only serves as an undo move of the assign move. It is not supposed to be done as a regular move.
+        assertThatThrownBy(() -> move.doMove(scoreDirector)).isInstanceOf(UnsupportedOperationException.class);
+
         // Unassign the rest
-        new ListUnassignMove<>(variableDescriptor, e1, 0).doMove(scoreDirector);
-        new ListUnassignMove<>(variableDescriptor, e1, 0).doMove(scoreDirector);
+        new ListUnassignMove<>(variableDescriptor, e1, 0).doMoveOnly(scoreDirector);
+        new ListUnassignMove<>(variableDescriptor, e1, 0).doMoveOnly(scoreDirector);
         assertThat(e1.getValueList()).isEmpty();
     }
 
