@@ -27,7 +27,6 @@ import org.optaplanner.core.api.domain.entity.PlanningEntity;
 import org.optaplanner.core.api.domain.variable.PlanningListVariable;
 import org.optaplanner.examples.common.domain.AbstractPersistable;
 import org.optaplanner.examples.common.swingui.components.Labeled;
-import org.optaplanner.examples.taskassigning.domain.solver.TaskDifficultyComparator;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 
@@ -40,7 +39,7 @@ public class Employee extends AbstractPersistable implements Labeled {
     private Set<Skill> skillSet;
     private Map<Customer, Affinity> affinityMap;
 
-    @PlanningListVariable(valueRangeProviderRefs = "taskRange", strengthComparatorClass = TaskDifficultyComparator.class)
+    @PlanningListVariable(valueRangeProviderRefs = "taskRange")
     private List<Task> tasks;
 
     // TODO pinning
