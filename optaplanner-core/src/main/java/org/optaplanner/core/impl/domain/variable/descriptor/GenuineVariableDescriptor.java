@@ -127,8 +127,7 @@ public abstract class GenuineVariableDescriptor<Solution_> extends VariableDescr
             DescriptorPolicy descriptorPolicy,
             Class<? extends Comparator> strengthComparatorClass,
             Class<? extends SelectionSorterWeightFactory> strengthWeightFactoryClass) {
-        if (strengthComparatorClass == PlanningVariable.NullStrengthComparator.class
-                || strengthComparatorClass == PlanningListVariable.NullStrengthComparator.class) {
+        if (strengthComparatorClass == PlanningVariable.NullStrengthComparator.class) {
             strengthComparatorClass = null;
         }
         if (strengthWeightFactoryClass == PlanningVariable.NullStrengthWeightFactory.class) {

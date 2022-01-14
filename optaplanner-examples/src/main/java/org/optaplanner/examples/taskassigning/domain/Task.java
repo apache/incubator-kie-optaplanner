@@ -25,12 +25,10 @@ import org.optaplanner.core.api.domain.variable.PlanningVariableReference;
 import org.optaplanner.examples.common.domain.AbstractPersistable;
 import org.optaplanner.examples.common.swingui.components.Labeled;
 import org.optaplanner.examples.taskassigning.domain.solver.StartTimeUpdatingVariableListener;
-import org.optaplanner.examples.taskassigning.domain.solver.TaskDifficultyComparator;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 
-// TODO convert entity difficulty to value strength
-@PlanningEntity(difficultyComparatorClass = TaskDifficultyComparator.class)
+@PlanningEntity
 @XStreamAlias("TaTask")
 public class Task extends AbstractPersistable implements Labeled {
 
