@@ -17,15 +17,11 @@
 package org.optaplanner.core.impl.heuristic.selector.move.generic.list;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 import static org.optaplanner.core.impl.testdata.domain.list.TestdataListUtils.getListVariableDescriptor;
 import static org.optaplanner.core.impl.testdata.domain.list.TestdataListUtils.mockEntityIndependentValueSelector;
 import static org.optaplanner.core.impl.testdata.domain.list.TestdataListUtils.mockEntitySelector;
 import static org.optaplanner.core.impl.testdata.util.PlannerAssert.assertCodesOfIterator;
 import static org.optaplanner.core.impl.testdata.util.PlannerTestUtils.mockScoreDirector;
-
-import java.util.Random;
 
 import org.junit.jupiter.api.Test;
 import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
@@ -37,6 +33,7 @@ import org.optaplanner.core.impl.testdata.domain.list.TestdataListEntity;
 import org.optaplanner.core.impl.testdata.domain.list.TestdataListSolution;
 import org.optaplanner.core.impl.testdata.domain.list.TestdataListValue;
 import org.optaplanner.core.impl.util.Pair;
+import org.optaplanner.core.impl.util.TestRandom;
 
 class RandomListChangeIteratorTest {
 
@@ -49,9 +46,8 @@ class RandomListChangeIteratorTest {
         TestdataListEntity b = TestdataListEntity.createWithValues("B");
         TestdataListEntity c = TestdataListEntity.createWithValues("C", v3);
 
-        Random random = mock(Random.class);
+        TestRandom random = new TestRandom(2, 3, 0); // global destination indexes
         final int destinationIndexRange = 6; // value count + entity count
-        when(random.nextInt(destinationIndexRange)).thenReturn(2, 3, 0); // global destination indexes
 
         InnerScoreDirector<TestdataListSolution, SimpleScore> scoreDirector =
                 mockScoreDirector(TestdataListSolution.buildSolutionDescriptor());
@@ -61,8 +57,8 @@ class RandomListChangeIteratorTest {
                 listVariableDescriptor,
                 scoreDirector.getSupplyManager().demand(new SingletonListInverseVariableDemand<>(listVariableDescriptor)),
                 scoreDirector.getSupplyManager().demand(new IndexVariableDemand<>(listVariableDescriptor)),
-                mockEntityIndependentValueSelector(v1, v2, v3),
-                mockEntitySelector(a, b, c),
+                mockEntityIndependentValueSelector(v1, v2, v3), // Iterates over values in this given order.
+                mockEntitySelector(a, b, c), // Entity selector is only used to discover the destination index range.
                 random);
 
         // 0 points at A[0]
@@ -74,10 +70,14 @@ class RandomListChangeIteratorTest {
         // 3 points at B[0]
         assertEntityAndIndex(randomListChangeIterator, 3, b, 0);
 
+        // The moved values (1, 2, 3) and their source positions are supplied by the mocked value selector.
+        // The test is focused on the destinations (A[2], B[0], A[0]), which reflect the numbers supplied by the test random.
         assertCodesOfIterator(randomListChangeIterator,
                 "1 {A[0]->A[2]}",
                 "2 {A[1]->B[0]}",
                 "3 {C[0]->A[0]}");
+
+        random.assertIntBoundJustRequested(destinationIndexRange);
     }
 
     private static void assertEntityAndIndex(

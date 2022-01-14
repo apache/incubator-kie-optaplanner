@@ -24,8 +24,6 @@ import static org.optaplanner.core.impl.testdata.domain.list.TestdataListUtils.m
 import static org.optaplanner.core.impl.testdata.util.PlannerAssert.assertAllCodesOfMoveSelector;
 import static org.optaplanner.core.impl.testdata.util.PlannerAssert.assertCodesOfNeverEndingMoveSelector;
 
-import java.util.Random;
-
 import org.junit.jupiter.api.Test;
 import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
 import org.optaplanner.core.impl.score.director.InnerScoreDirector;
@@ -34,6 +32,7 @@ import org.optaplanner.core.impl.testdata.domain.list.TestdataListEntity;
 import org.optaplanner.core.impl.testdata.domain.list.TestdataListSolution;
 import org.optaplanner.core.impl.testdata.domain.list.TestdataListValue;
 import org.optaplanner.core.impl.testdata.util.PlannerTestUtils;
+import org.optaplanner.core.impl.util.TestRandom;
 
 class ListChangeMoveSelectorTest {
 
@@ -110,9 +109,8 @@ class ListChangeMoveSelectorTest {
                 mockEntityIndependentValueSelector(v2, v1, v3, v3, v3, v1),
                 true);
 
-        Random random = mock(Random.class);
+        TestRandom random = new TestRandom(3, 2, 0, 1, 2, 2); // global destination indexes
         final int destinationIndexRange = 6; // value count + entity count
-        when(random.nextInt(destinationIndexRange)).thenReturn(3, 2, 0, 1, 2);
 
         SolverScope<TestdataListSolution> solverScope = mock(SolverScope.class);
         when(solverScope.<SimpleScore> getScoreDirector()).thenReturn(scoreDirector);
@@ -124,12 +122,16 @@ class ListChangeMoveSelectorTest {
         // - B []
         // - C [3]
 
+        // The moved values (2, 1, 3, 3, 3) and their source positions are supplied by the mocked value selector.
+        // The test is focused on the destinations (B[0], A[2], ...), which reflect the numbers supplied by the test random.
         assertCodesOfNeverEndingMoveSelector(moveSelector,
                 "2 {A[1]->B[0]}",
                 "1 {A[0]->A[2]}",
                 "3 {C[0]->A[0]}",
                 "3 {C[0]->A[1]}",
                 "3 {C[0]->A[2]}");
+
+        random.assertIntBoundJustRequested(destinationIndexRange);
     }
 
     @Test
