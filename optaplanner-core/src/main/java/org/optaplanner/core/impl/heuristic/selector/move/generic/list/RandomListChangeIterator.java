@@ -59,6 +59,7 @@ public class RandomListChangeIterator<Solution_> extends UpcomingSelectionIterat
         this.workingRandom = workingRandom;
 
         // TODO optimize this (don't rebuild the whole map at the beginning of each step).
+        //  https://issues.redhat.com/browse/PLANNER-2507
         indexToDestinationEntityMap = new TreeMap<>();
         int cumulativeDestinationListSize = 0;
         for (Object entity : ((Iterable<Object>) entitySelector::endingIterator)) {
