@@ -17,6 +17,7 @@
 package org.optaplanner.core.impl.heuristic.selector.move.generic.list;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.mock;
 import static org.optaplanner.core.impl.testdata.util.PlannerTestUtils.mockRebasingScoreDirector;
 
@@ -49,8 +50,9 @@ class ListAssignMoveTest {
         assertThat(e1.getValueList()).containsExactly(v1);
 
         // undo
-        undoMove.doMove(scoreDirector);
+        undoMove.doMoveOnly(scoreDirector);
         assertThat(e1.getValueList()).isEmpty();
+        assertThatThrownBy(() -> undoMove.doMove(scoreDirector)).isInstanceOf(UnsupportedOperationException.class);
 
         // v2 -> e1[0]
         new ListAssignMove<>(variableDescriptor, v2, e1, 0).doMove(scoreDirector);
