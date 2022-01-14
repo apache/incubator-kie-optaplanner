@@ -44,9 +44,6 @@ public class Task extends AbstractPersistable implements Labeled {
     private boolean pinned;
 
     // Shadow variables
-    // The field type may be either `Employee` or `Set<Employee>` depending on whether the genuine
-    // `@PlanningVariable List<Task> tasks` is disjoint or not (for task assignment it
-    // is disjoint, for other domains it may not be).
     @InverseRelationShadowVariable(sourceVariableName = "tasks")
     private Employee employee;
     @IndexShadowVariable(sourceVariableName = "tasks")

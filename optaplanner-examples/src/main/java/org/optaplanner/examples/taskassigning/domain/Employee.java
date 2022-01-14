@@ -40,9 +40,6 @@ public class Employee extends AbstractPersistable implements Labeled {
     private Set<Skill> skillSet;
     private Map<Customer, Affinity> affinityMap;
 
-    // TODO maybe needs graphType=DISJOINT_LIST(_ORDERED)
-    // - disjoint because otherwise the inverse relation shadow variable would be a collection
-    // - ordered because otherwise index shadow variable is not possible
     @PlanningListVariable(valueRangeProviderRefs = "taskRange", strengthComparatorClass = TaskDifficultyComparator.class)
     private List<Task> tasks;
 
