@@ -80,7 +80,7 @@ class RandomListChangeIteratorTest {
         random.assertIntBoundJustRequested(destinationIndexRange);
     }
 
-    private static void assertEntityAndIndex(
+    static void assertEntityAndIndex(
             RandomListChangeIterator<TestdataListSolution> randomListChangeIterator,
             int globalIndex,
             Object expectedEntity,

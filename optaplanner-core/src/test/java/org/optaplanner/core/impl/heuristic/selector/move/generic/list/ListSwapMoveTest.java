@@ -88,7 +88,7 @@ class ListSwapMoveTest {
     }
 
     @Test
-    public void rebase() {
+    void rebase() {
         TestdataListValue v1 = new TestdataListValue("1");
         TestdataListValue v2 = new TestdataListValue("2");
         TestdataListValue v3 = new TestdataListValue("3");
@@ -123,7 +123,7 @@ class ListSwapMoveTest {
                 new ListSwapMove<>(variableDescriptor, e1, 0, e1, 1).rebase(destinationScoreDirector));
     }
 
-    private static void assertSameProperties(
+    static void assertSameProperties(
             Object leftEntity, int leftIndex, Object leftValue,
             Object rightEntity, int rightIndex, Object rightValue,
             ListSwapMove<?> move) {

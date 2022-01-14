@@ -49,7 +49,7 @@ class OriginalListSwapIteratorTest {
         assertEmptyIterator(asList(v1, v2), emptyList());
     }
 
-    private void assertEmptyIterator(List<Object> leftValues, List<Object> rightValues) {
+    static void assertEmptyIterator(List<Object> leftValues, List<Object> rightValues) {
         InnerScoreDirector<TestdataListSolution, SimpleScore> scoreDirector =
                 mockScoreDirector(TestdataListSolution.buildSolutionDescriptor());
         ListVariableDescriptor<TestdataListSolution> listVariableDescriptor = getListVariableDescriptor(scoreDirector);

@@ -149,7 +149,7 @@ class ListChangeMoveTest {
     }
 
     @Test
-    public void rebase() {
+    void rebase() {
         TestdataListValue v1 = new TestdataListValue("1");
         TestdataListValue v2 = new TestdataListValue("2");
         TestdataListValue v3 = new TestdataListValue("3");
@@ -184,7 +184,7 @@ class ListChangeMoveTest {
                 new ListChangeMove<>(variableDescriptor, e2, 0, e2, 0).rebase(destinationScoreDirector));
     }
 
-    private static void assertSameProperties(
+    static void assertSameProperties(
             Object sourceEntity, int sourceIndex,
             Object movedValue, Object destinationEntity, int destinationIndex,
             ListChangeMove<?> move) {

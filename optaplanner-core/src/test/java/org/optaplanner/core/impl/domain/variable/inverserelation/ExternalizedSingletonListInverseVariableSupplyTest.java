@@ -33,7 +33,7 @@ import org.optaplanner.core.impl.testdata.domain.list.TestdataListValue;
 class ExternalizedSingletonListInverseVariableSupplyTest {
 
     @Test
-    public void listVariable() {
+    void listVariable() {
         ListVariableDescriptor<TestdataListSolution> variableDescriptor =
                 TestdataListEntity.buildVariableDescriptorForValueList();
         ScoreDirector<TestdataListSolution> scoreDirector = mock(ScoreDirector.class);

@@ -62,7 +62,7 @@ class ListAssignMoveTest {
     }
 
     @Test
-    public void rebase() {
+    void rebase() {
         TestdataListValue v1 = new TestdataListValue("1");
         TestdataListEntity e1 = new TestdataListEntity("e1");
 
@@ -83,7 +83,7 @@ class ListAssignMoveTest {
                 new ListAssignMove<>(variableDescriptor, v1, e1, 0).rebase(destinationScoreDirector));
     }
 
-    private static void assertSameProperties(
+    static void assertSameProperties(
             Object movedValue, Object destinationEntity, int destinationIndex,
             ListAssignMove<?> move) {
         assertThat(move.getMovedValue()).isSameAs(movedValue);
