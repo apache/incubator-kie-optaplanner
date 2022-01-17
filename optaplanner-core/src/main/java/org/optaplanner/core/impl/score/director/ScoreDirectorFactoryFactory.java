@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2022 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -110,17 +110,14 @@ public class ScoreDirectorFactoryFactory<Solution_, Score_ extends Score<Score_>
         AbstractScoreDirectorFactory<Solution_, Score_> scoreDirectorFactory;
         if (easyScoreDirectorFactory != null) {
             validateNoDroolsAlphaNetworkCompilation();
-            validateNoGizmoKieBaseSupplier();
             scoreDirectorFactory = easyScoreDirectorFactory;
         } else if (constraintStreamScoreDirectorFactory != null) {
             if (config.getConstraintStreamImplType() == ConstraintStreamImplType.BAVET) {
                 validateNoDroolsAlphaNetworkCompilation();
-                validateNoGizmoKieBaseSupplier();
             }
             scoreDirectorFactory = constraintStreamScoreDirectorFactory;
         } else if (incrementalScoreDirectorFactory != null) {
             validateNoDroolsAlphaNetworkCompilation();
-            validateNoGizmoKieBaseSupplier();
             scoreDirectorFactory = incrementalScoreDirectorFactory;
         } else if (droolsScoreDirectorFactory != null) {
             scoreDirectorFactory = droolsScoreDirectorFactory;
@@ -202,16 +199,6 @@ public class ScoreDirectorFactoryFactory<Solution_, Score_ extends Score<Score_>
         }
     }
 
-    private void validateNoGizmoKieBaseSupplier() {
-        if (config.getGizmoKieBaseSupplier() != null) {
-            throw new IllegalStateException("If there is no scoreDrl (" + config.getScoreDrlList()
-                    + "), scoreDrlFile (" + config.getScoreDrlFileList() + ") or constraintProviderClass ("
-                    + config.getConstraintProviderClass() + ") with " + ConstraintStreamImplType.DROOLS + " impl type ("
-                    + config.getConstraintStreamImplType() + "), there can be no gizmoKieBaseSupplier ("
-                    + config.getGizmoKieBaseSupplier() + ") either.");
-        }
-    }
-
     protected AbstractConstraintStreamScoreDirectorFactory<Solution_, Score_> buildConstraintStreamScoreDirectorFactory(
             SolutionDescriptor<Solution_> solutionDescriptor) {
         if (config.getConstraintProviderClass() != null) {
@@ -230,11 +217,6 @@ public class ScoreDirectorFactoryFactory<Solution_, Score_ extends Score<Score_>
                 case BAVET:
                     return new BavetConstraintStreamScoreDirectorFactory<>(solutionDescriptor, constraintProvider);
                 case DROOLS:
-                    if (config.getGizmoKieBaseSupplier() != null) {
-                        return new DroolsConstraintStreamScoreDirectorFactory<>(solutionDescriptor,
-                                config.getGizmoKieBaseSupplier(),
-                                config.isDroolsAlphaNetworkCompilationEnabled());
-                    }
                     return new DroolsConstraintStreamScoreDirectorFactory<>(solutionDescriptor, constraintProvider,
                             config.isDroolsAlphaNetworkCompilationEnabled());
                 default:
@@ -306,44 +288,39 @@ public class ScoreDirectorFactoryFactory<Solution_, Score_ extends Score<Score_>
             return null;
         }
 
-        try {
-            KieBase kieBase;
-            if (config.getGizmoKieBaseSupplier() != null) {
-                kieBase = config.getGizmoKieBaseSupplier().get();
-            } else {
-                // Can't put this code in KieBaseExtractor since it reference
-                // KieRuntimeBuilder, which is an optional dependency
-                KieHelper kieHelper = new KieHelper(PropertySpecificOption.ALLOWED)
-                        .setClassLoader(classLoader);
-                if (!ConfigUtils.isEmptyCollection(config.getScoreDrlList())) {
-                    for (String scoreDrl : config.getScoreDrlList()) {
-                        if (scoreDrl == null) {
-                            throw new IllegalArgumentException("The scoreDrl (" + scoreDrl + ") cannot be null.");
-                        }
-                        kieHelper.addResource(new ClassPathResource(scoreDrl, classLoader));
-                    }
+        KieHelper kieHelper = new KieHelper(PropertySpecificOption.ALLOWED)
+                .setClassLoader(classLoader);
+        if (!ConfigUtils.isEmptyCollection(config.getScoreDrlList())) {
+            for (String scoreDrl : config.getScoreDrlList()) {
+                if (scoreDrl == null) {
+                    throw new IllegalArgumentException("The scoreDrl (" + scoreDrl + ") cannot be null.");
                 }
-                if (!ConfigUtils.isEmptyCollection(config.getScoreDrlFileList())) {
-                    for (File scoreDrlFile : config.getScoreDrlFileList()) {
-                        kieHelper.addResource(new FileSystemResource(scoreDrlFile));
-                    }
-                }
-                KieBaseConfiguration kieBaseConfiguration = buildKieBaseConfiguration(KieServices.get());
-                kieBaseConfiguration.setOption(KieBaseMutabilityOption.DISABLED); // Performance improvement.
-                kieBase = kieHelper.build(ExecutableModelProject.class, kieBaseConfiguration);
+                kieHelper.addResource(new ClassPathResource(scoreDrl, classLoader));
             }
+        }
+        if (!ConfigUtils.isEmptyCollection(config.getScoreDrlFileList())) {
+            for (File scoreDrlFile : config.getScoreDrlFileList()) {
+                kieHelper.addResource(new FileSystemResource(scoreDrlFile));
+            }
+        }
+        KieBaseConfiguration kieBaseConfiguration = buildKieBaseConfiguration(KieServices.get());
+        kieBaseConfiguration.setOption(KieBaseMutabilityOption.DISABLED); // Performance improvement.
 
-            if (config.isDroolsAlphaNetworkCompilationEnabled()) {
-                KieBaseUpdaterANC.generateAndSetInMemoryANC(kieBase); // Enable Alpha Network Compiler for performance.
-            }
-            if (generateDroolsTestOnError) {
-                return new TestGenDroolsScoreDirectorFactory<>(solutionDescriptor, kieBase, config.getScoreDrlList(),
-                        config.getScoreDrlFileList());
-            } else {
-                return new DroolsScoreDirectorFactory<>(solutionDescriptor, kieBase);
-            }
+        KieBase kieBase;
+        try {
+            kieBase = kieHelper.build(ExecutableModelProject.class, kieBaseConfiguration);
         } catch (Exception ex) {
             throw new IllegalStateException("There is an error in a scoreDrl or scoreDrlFile.", ex);
+        }
+
+        if (config.isDroolsAlphaNetworkCompilationEnabled()) {
+            KieBaseUpdaterANC.generateAndSetInMemoryANC(kieBase); // Enable Alpha Network Compiler for performance.
+        }
+        if (generateDroolsTestOnError) {
+            return new TestGenDroolsScoreDirectorFactory<>(solutionDescriptor, kieBase, config.getScoreDrlList(),
+                    config.getScoreDrlFileList());
+        } else {
+            return new DroolsScoreDirectorFactory<>(solutionDescriptor, kieBase);
         }
     }
 
