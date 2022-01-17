@@ -572,25 +572,50 @@ public class SolverManagerTest {
 
     @Test
     @Timeout(60)
-    void addProblemChangeToWaitingSolver_failsFast() {
+    void addProblemChangeToWaitingSolver() throws InterruptedException {
+        CountDownLatch solvingPausedLatch = new CountDownLatch(1);
+        PhaseConfig<?> pausedPhaseConfig = new CustomPhaseConfig().withCustomPhaseCommands(
+                scoreDirector -> {
+                    try {
+                        solvingPausedLatch.await();
+                    } catch (InterruptedException e) {
+                        fail("CountDownLatch failed.");
+                    }
+                });
+
         SolverConfig solverConfig = PlannerTestUtils.buildSolverConfig(TestdataSolution.class, TestdataEntity.class)
-                .withPhases(createPhaseWithConcurrentSolvingStart(2), new ConstructionHeuristicPhaseConfig());
+                .withPhases(pausedPhaseConfig, new ConstructionHeuristicPhaseConfig());
         // Allow only a single active solver.
         SolverManagerConfig solverManagerConfig = new SolverManagerConfig().withParallelSolverCount("1");
         SolverManager<TestdataSolution, Long> solverManager = SolverManager.create(solverConfig, solverManagerConfig);
 
+        // The first solver until the test sends a problem change.
         solverManager.solve(1L, PlannerTestUtils.generateTestdataSolution("s1", 4));
-        // This solver will be scheduled, but never active.
-        final long scheduledProblemId = 2L;
-        solverManager.solve(scheduledProblemId, PlannerTestUtils.generateTestdataSolution("s1", 4));
 
-        assertThatIllegalStateException()
-                .isThrownBy(() -> solverManager.addProblemChange(scheduledProblemId,
-                        (workingSolution, problemChangeDirector) -> problemChangeDirector.addProblemFact(
-                                new TestdataValue("addedValue"),
-                                workingSolution.getValueList()::add)))
-                .withMessageContaining(SOLVING_SCHEDULED.toString());
+        // The second solver is scheduled and waits for the fist solver to finish.
+        final long secondProblemId = 2L;
+        final int entityAndValueCount = 4;
+        CountDownLatch solutionWithProblemChangeReceived = new CountDownLatch(1);
+        AtomicReference<TestdataSolution> bestSolution = new AtomicReference<>();
+        solverManager.solveAndListen(secondProblemId,
+                id -> PlannerTestUtils.generateTestdataSolution("s2", entityAndValueCount),
+                testdataSolution -> {
+                    if (testdataSolution.getValueList().size() == entityAndValueCount + 1) {
+                        bestSolution.set(testdataSolution);
+                        solutionWithProblemChangeReceived.countDown();
+                    }
+                });
 
+        solverManager.addProblemChange(secondProblemId, (workingSolution, problemChangeDirector) -> {
+            problemChangeDirector.addProblemFact(new TestdataValue("addedValue"),
+                    workingSolution.getValueList()::add);
+        });
+
+        // The first solver can proceed. When it finishes, the second solver starts solving and picks up the change.
+        solvingPausedLatch.countDown();
+
+        solutionWithProblemChangeReceived.await();
         solverManager.close();
+        assertThat(bestSolution.get().getValueList()).hasSize(entityAndValueCount + 1);
     }
 }

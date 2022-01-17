@@ -145,12 +145,12 @@ public class DefaultSolver<Solution_> extends AbstractSolver<Solution_> {
 
     @Override
     public boolean addProblemFactChanges(List<ProblemFactChange<Solution_>> problemFactChangeList) {
-        Objects.requireNonNull(problemFactChangeList, "The list of problem fact changes ("
-                + problemFactChangeList + ") cannot be null.");
-        List<ProblemChangeAdapter<Solution_>> adaptedProblemChangeList = problemFactChangeList.stream()
+        Objects.requireNonNull(problemFactChangeList,
+                () -> "The list of problem fact changes (" + problemFactChangeList + ") cannot be null.");
+        List<ProblemChangeAdapter<Solution_>> problemChangeAdapterList = problemFactChangeList.stream()
                 .map(ProblemFactChangeAdapterImpl::new)
                 .collect(Collectors.toList());
-        return basicPlumbingTermination.addProblemChanges(adaptedProblemChangeList);
+        return basicPlumbingTermination.addProblemChanges(problemChangeAdapterList);
     }
 
     @Override
@@ -160,7 +160,8 @@ public class DefaultSolver<Solution_> extends AbstractSolver<Solution_> {
 
     @Override
     public void addProblemChanges(List<ProblemChange<Solution_>> problemChangeList) {
-        Objects.requireNonNull(problemChangeList, "The list of problem changes (" + problemChangeList + ") cannot be null.");
+        Objects.requireNonNull(problemChangeList,
+                () -> "The list of problem changes (" + problemChangeList + ") cannot be null.");
         problemChangeList.forEach(this::addProblemChange);
     }
 

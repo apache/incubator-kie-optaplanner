@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.optaplanner.test.api.change;
+package org.optaplanner.test.api.solver.change;
 
 import java.util.IdentityHashMap;
 import java.util.Map;

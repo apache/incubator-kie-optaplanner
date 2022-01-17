@@ -86,6 +86,8 @@ public class BestSolutionChangedEvent<Solution_> extends EventObject {
     }
 
     /**
+     * This method is deprecated.
+     * 
      * @deprecated in favor of {@link #isEveryProblemChangeProcessed}.
      * @return As defined by {@link Solver#isEveryProblemFactChangeProcessed()}
      * @see Solver#isEveryProblemFactChangeProcessed()

@@ -43,12 +43,12 @@ import io.micrometer.core.instrument.Tags;
  * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
  */
 public class SolverScope<Solution_> {
-    private ProblemChangeDirector problemChangeDirector;
     protected Set<SolverMetric> solverMetricSet;
     protected Tags monitoringTags;
     protected int startingSolverCount;
     protected Random workingRandom;
     protected InnerScoreDirector<Solution_, ?> scoreDirector;
+    private ProblemChangeDirector problemChangeDirector;
     /**
      * Used for capping CPU power usage in multithreaded scenarios.
      */

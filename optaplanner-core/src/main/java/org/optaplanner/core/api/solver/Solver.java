@@ -129,6 +129,7 @@ public interface Solver<Solution_> {
     boolean isEveryProblemChangeProcessed();
 
     /**
+     * This method is deprecated.
      * Schedules a {@link ProblemFactChange} to be processed.
      * <p>
      * As a side-effect, this restarts the {@link Solver}, effectively resetting all terminations,
@@ -147,6 +148,7 @@ public interface Solver<Solution_> {
     boolean addProblemFactChange(ProblemFactChange<Solution_> problemFactChange);
 
     /**
+     * This method is deprecated.
      * Schedules multiple {@link ProblemFactChange}s to be processed.
      * <p>
      * As a side-effect, this restarts the {@link Solver}, effectively resetting all terminations,
@@ -165,6 +167,7 @@ public interface Solver<Solution_> {
     boolean addProblemFactChanges(List<ProblemFactChange<Solution_>> problemFactChangeList);
 
     /**
+     * This method is deprecated.
      * Checks if all scheduled {@link ProblemFactChange}s have been processed.
      * <p>
      * This method is thread-safe.

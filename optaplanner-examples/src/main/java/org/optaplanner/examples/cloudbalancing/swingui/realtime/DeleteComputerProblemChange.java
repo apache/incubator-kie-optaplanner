@@ -36,8 +36,7 @@ public class DeleteComputerProblemChange implements ProblemChange<CloudBalance> 
     public void doChange(CloudBalance cloudBalance, ProblemChangeDirector problemChangeDirector) {
         CloudComputer workingComputer = problemChangeDirector.lookUpWorkingObject(computer);
         if (workingComputer == null) {
-            // The computer has already been deleted (the UI asked to changed the same computer twice), so do nothing
-            return;
+            throw new IllegalStateException("A computer " + computer + " does not exist. Maybe it has been already deleted.");
         }
         // First remove the problem fact from all planning entities that use it
         for (CloudProcess process : cloudBalance.getProcessList()) {

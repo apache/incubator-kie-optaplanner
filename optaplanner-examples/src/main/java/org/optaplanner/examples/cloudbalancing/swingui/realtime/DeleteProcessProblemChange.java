@@ -34,8 +34,7 @@ public class DeleteProcessProblemChange implements ProblemChange<CloudBalance> {
         // A SolutionCloner clones planning entity lists (such as processList), so no need to clone the processList here
         CloudProcess workingProcess = problemChangeDirector.lookUpWorkingObject(process);
         if (workingProcess == null) {
-            // The process has already been deleted (the UI asked to changed the same process twice), so do nothing
-            return;
+            throw new IllegalStateException("A process " + process + " does not exist. Maybe it has been already deleted.");
         }
         // Remove the planning entity itself
         problemChangeDirector.removeEntity(workingProcess, cloudBalance.getProcessList()::remove);
