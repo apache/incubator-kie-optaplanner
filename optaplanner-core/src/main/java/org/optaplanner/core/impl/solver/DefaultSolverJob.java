@@ -20,9 +20,14 @@ import java.time.Duration;
 import java.util.Objects;
 import java.util.UUID;
 import java.util.concurrent.Callable;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
@@ -50,19 +55,25 @@ public final class DefaultSolverJob<Solution_, ProblemId_> implements SolverJob<
     private final DefaultSolver<Solution_> solver;
     private final ProblemId_ problemId;
     private final Function<? super ProblemId_, ? extends Solution_> problemFinder;
+    private final Consumer<? super Solution_> bestSolutionConsumer;
     private final Consumer<? super Solution_> finalBestSolutionConsumer;
     private final BiConsumer<? super ProblemId_, ? super Throwable> exceptionHandler;
+
+    private final AtomicReference<Solution_> bestSolutionWaitingForConsumption = new AtomicReference<>();
 
     private volatile SolverStatus solverStatus;
     private final CountDownLatch terminatedLatch;
     private final ReentrantLock solverStatusModifyingLock;
 
-    private Future<Solution_> future;
+    private ExecutorService consumerExecutor;
+    private Future<Solution_> finalBestSolutionFuture;
+    private AtomicBoolean activeConsumption = new AtomicBoolean();
 
     public DefaultSolverJob(
             DefaultSolverManager<Solution_, ProblemId_> solverManager,
             Solver<Solution_> solver, ProblemId_ problemId,
             Function<? super ProblemId_, ? extends Solution_> problemFinder,
+            Consumer<? super Solution_> bestSolutionConsumer,
             Consumer<? super Solution_> finalBestSolutionConsumer,
             BiConsumer<? super ProblemId_, ? super Throwable> exceptionHandler) {
         this.solverManager = solverManager;
@@ -73,6 +84,7 @@ public final class DefaultSolverJob<Solution_, ProblemId_> implements SolverJob<
         }
         this.solver = (DefaultSolver<Solution_>) solver;
         this.problemFinder = problemFinder;
+        this.bestSolutionConsumer = bestSolutionConsumer;
         this.finalBestSolutionConsumer = finalBestSolutionConsumer;
         this.exceptionHandler = exceptionHandler;
         solverStatus = SolverStatus.SOLVING_SCHEDULED;
@@ -80,8 +92,8 @@ public final class DefaultSolverJob<Solution_, ProblemId_> implements SolverJob<
         solverStatusModifyingLock = new ReentrantLock();
     }
 
-    public void setFuture(Future<Solution_> future) {
-        this.future = future;
+    public void setFinalBestSolutionFuture(Future<Solution_> finalBestSolutionFuture) {
+        this.finalBestSolutionFuture = finalBestSolutionFuture;
     }
 
     @Override
@@ -105,13 +117,19 @@ public final class DefaultSolverJob<Solution_, ProblemId_> implements SolverJob<
         }
         try {
             solverStatus = SolverStatus.SOLVING_ACTIVE;
+            // Create the executor only when this solver job is active.
+            consumerExecutor = Executors.newSingleThreadExecutor();
             Solution_ problem = problemFinder.apply(problemId);
             // add a phase lifecycle listener that unlock the solver status lock when solving started
             solver.addPhaseLifecycleListener(new UnlockLockPhaseLifecycleListener());
+            if (bestSolutionConsumer != null) {
+                solver.addEventListener(event -> {
+                    consumeIntermediateBestSolution(event.getNewBestSolution());
+                });
+            }
             final Solution_ finalBestSolution = solver.solve(problem);
             if (finalBestSolutionConsumer != null) {
-                // TODO consumption should happen on different thread than solver thread
-                finalBestSolutionConsumer.accept(finalBestSolution);
+                consumeFinalBestSolution(finalBestSolution);
             }
             return finalBestSolution;
         } catch (Exception e) {
@@ -128,6 +146,34 @@ public final class DefaultSolverJob<Solution_, ProblemId_> implements SolverJob<
                 solverStatusModifyingLock.unlock();
             }
             solvingTerminated();
+        }
+    }
+
+    // Called on the Solver thread.
+    private void consumeIntermediateBestSolution(Solution_ bestSolution) {
+        if (!activeConsumption.getAndSet(true)) {
+            consumerExecutor.submit(() -> {
+                bestSolutionConsumer.accept(bestSolution);
+                consumptionCompleted();
+            });
+        } else {
+            bestSolutionWaitingForConsumption.set(bestSolution);
+        }
+    }
+
+    private void consumeFinalBestSolution(Solution_ finalBestSolution) {
+        activeConsumption.set(true);
+        consumerExecutor.submit(() -> {
+            finalBestSolutionConsumer.accept(finalBestSolution);
+            activeConsumption.set(false);
+        });
+    }
+
+    // Called on the consumer thread.
+    private void consumptionCompleted() {
+        activeConsumption.set(false);
+        if (bestSolutionWaitingForConsumption.get() != null) {
+            consumeIntermediateBestSolution(bestSolutionWaitingForConsumption.get());
         }
     }
 
@@ -158,7 +204,7 @@ public final class DefaultSolverJob<Solution_, ProblemId_> implements SolverJob<
     public void terminateEarly() {
         try {
             solverStatusModifyingLock.lock();
-            future.cancel(false);
+            finalBestSolutionFuture.cancel(false);
             switch (solverStatus) {
                 case SOLVING_SCHEDULED:
                     solvingTerminated();
@@ -187,7 +233,7 @@ public final class DefaultSolverJob<Solution_, ProblemId_> implements SolverJob<
 
     @Override
     public Solution_ getFinalBestSolution() throws InterruptedException, ExecutionException {
-        return future.get();
+        return finalBestSolutionFuture.get();
     }
 
     @Override
@@ -204,6 +250,10 @@ public final class DefaultSolverJob<Solution_, ProblemId_> implements SolverJob<
             endingSystemTimeMillis = System.currentTimeMillis();
         }
         return Duration.ofMillis(endingSystemTimeMillis - startingSystemTimeMillis);
+    }
+
+    protected void close() {
+        consumerExecutor.shutdownNow();
     }
 
     /**
