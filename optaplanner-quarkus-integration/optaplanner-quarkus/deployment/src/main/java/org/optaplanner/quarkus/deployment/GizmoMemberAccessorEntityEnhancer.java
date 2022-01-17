@@ -51,8 +51,6 @@ import org.jboss.jandex.DotName;
 import org.jboss.jandex.FieldInfo;
 import org.jboss.jandex.IndexView;
 import org.jboss.jandex.MethodInfo;
-import org.kie.api.definition.type.ClassReactive;
-import org.kie.api.definition.type.PropertyReactive;
 import org.objectweb.asm.ClassVisitor;
 import org.objectweb.asm.FieldVisitor;
 import org.objectweb.asm.MethodVisitor;
@@ -477,25 +475,6 @@ public class GizmoMemberAccessorEntityEnhancer {
 
         classCreator.close();
         return generatedClassName;
-    }
-
-    private static class OptaPlannerDroolsReactiveClassVisitor extends ClassVisitor {
-        final Class<?> clazz;
-
-        public OptaPlannerDroolsReactiveClassVisitor(Class<?> clazz, ClassVisitor outputClassVisitor) {
-            super(Gizmo.ASM_API_VERSION, outputClassVisitor);
-            this.clazz = clazz;
-        }
-
-        @Override
-        public void visitEnd() {
-            super.visitEnd();
-
-            if (clazz.getAnnotation(ClassReactive.class) == null && clazz.getAnnotation(PropertyReactive.class) == null) {
-                this.cv.visitAnnotation(Type.getDescriptor(ClassReactive.class), true);
-            }
-        }
-
     }
 
     private static class OptaPlannerFinalFieldEnhancingClassVisitor extends ClassVisitor {
