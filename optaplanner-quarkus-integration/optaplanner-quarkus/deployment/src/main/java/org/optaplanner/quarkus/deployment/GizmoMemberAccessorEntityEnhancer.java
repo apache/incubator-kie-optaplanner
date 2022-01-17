@@ -43,9 +43,6 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.inject.Instance;
-import javax.enterprise.inject.spi.BeanManager;
-import javax.enterprise.inject.spi.CDI;
 
 import org.apache.commons.lang3.ObjectUtils;
 import org.jboss.jandex.AnnotationInstance;
@@ -54,18 +51,12 @@ import org.jboss.jandex.DotName;
 import org.jboss.jandex.FieldInfo;
 import org.jboss.jandex.IndexView;
 import org.jboss.jandex.MethodInfo;
-import org.kie.api.definition.type.ClassReactive;
-import org.kie.api.definition.type.PropertyReactive;
-import org.kie.kogito.legacy.rules.KieRuntimeBuilder;
 import org.objectweb.asm.ClassVisitor;
 import org.objectweb.asm.FieldVisitor;
 import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.Type;
 import org.optaplanner.core.api.domain.solution.cloner.SolutionCloner;
-import org.optaplanner.core.config.score.director.ScoreDirectorFactoryConfig;
-import org.optaplanner.core.config.solver.SolverConfig;
-import org.optaplanner.core.config.util.ConfigUtils;
 import org.optaplanner.core.impl.domain.common.ReflectionHelper;
 import org.optaplanner.core.impl.domain.common.accessor.MemberAccessor;
 import org.optaplanner.core.impl.domain.common.accessor.gizmo.GizmoMemberAccessorFactory;
@@ -76,11 +67,8 @@ import org.optaplanner.core.impl.domain.solution.cloner.gizmo.GizmoSolutionClone
 import org.optaplanner.core.impl.domain.solution.cloner.gizmo.GizmoSolutionClonerImplementor;
 import org.optaplanner.core.impl.domain.solution.cloner.gizmo.GizmoSolutionOrEntityDescriptor;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
-import org.optaplanner.core.impl.score.director.drools.KieRuntimeBuilderWrapper;
-import org.optaplanner.quarkus.gizmo.OptaPlannerDroolsInitializer;
 import org.optaplanner.quarkus.gizmo.OptaPlannerGizmoBeanFactory;
 
-import io.quarkus.arc.deployment.UnremovableBeanBuildItem;
 import io.quarkus.deployment.annotations.BuildProducer;
 import io.quarkus.deployment.builditem.BytecodeTransformerBuildItem;
 import io.quarkus.deployment.recording.RecorderContext;
@@ -97,9 +85,6 @@ import io.quarkus.gizmo.ResultHandle;
 import io.quarkus.runtime.RuntimeValue;
 
 public class GizmoMemberAccessorEntityEnhancer {
-
-    private final static String DROOLS_INITIALIZER_CLASS_NAME =
-            OptaPlannerDroolsInitializer.class.getName() + "$Implementation";
 
     private static Set<Class<?>> visitedClasses = new HashSet<>();
 
@@ -491,91 +476,6 @@ public class GizmoMemberAccessorEntityEnhancer {
 
         classCreator.close();
         return generatedClassName;
-    }
-
-    public static String generateKieRuntimeBuilder(ClassOutput classOutput, SolverConfig config,
-            BuildProducer<UnremovableBeanBuildItem> unremovableBeans,
-            BuildProducer<BytecodeTransformerBuildItem> transformers) {
-        String generatedClassName = DROOLS_INITIALIZER_CLASS_NAME;
-        try (ClassCreator classCreator = ClassCreator
-                .builder()
-                .className(generatedClassName)
-                .interfaces(OptaPlannerDroolsInitializer.class)
-                .classOutput(classOutput)
-                .build()) {
-
-            classCreator.addAnnotation(ApplicationScoped.class);
-
-            MethodCreator methodCreator;
-            if (!ConfigUtils.isEmptyCollection(config.getScoreDirectorFactoryConfig().getScoreDrlList()) ||
-                    !ConfigUtils.isEmptyCollection(config.getScoreDirectorFactoryConfig().getScoreDrlFileList())) {
-                unremovableBeans.produce(UnremovableBeanBuildItem.beanTypes(KieRuntimeBuilder.class));
-                methodCreator = classCreator.getMethodCreator(MethodDescriptor.ofMethod(OptaPlannerDroolsInitializer.class,
-                        "setup", void.class, ScoreDirectorFactoryConfig.class));
-
-                ResultHandle cdiResultHandle =
-                        methodCreator.invokeStaticMethod(MethodDescriptor.ofMethod(CDI.class, "current", CDI.class));
-                ResultHandle beanManagerResultHandle = methodCreator.invokeVirtualMethod(
-                        MethodDescriptor.ofMethod(CDI.class, "getBeanManager", BeanManager.class),
-                        cdiResultHandle);
-                ResultHandle instanceResultHandle = methodCreator.invokeInterfaceMethod(
-                        MethodDescriptor.ofMethod(BeanManager.class, "createInstance", Instance.class),
-                        beanManagerResultHandle);
-                ResultHandle kieRuntimeBuilderClass = methodCreator.loadClass(KieRuntimeBuilder.class);
-                ResultHandle kieRuntimeBuilderInstanceResultHandle = methodCreator.invokeInterfaceMethod(
-                        MethodDescriptor.ofMethod(Instance.class, "select", Instance.class, Class.class, Annotation[].class),
-                        instanceResultHandle, kieRuntimeBuilderClass, methodCreator.newArray(Annotation.class, 0));
-                ResultHandle kieRuntimeBuilder =
-                        methodCreator.invokeInterfaceMethod(MethodDescriptor.ofMethod(Instance.class, "get", Object.class),
-                                kieRuntimeBuilderInstanceResultHandle);
-                ResultHandle kieBaseExtractor = methodCreator.newInstance(
-                        MethodDescriptor.ofConstructor(KieRuntimeBuilderWrapper.class, KieRuntimeBuilder.class),
-                        kieRuntimeBuilder);
-                methodCreator.invokeVirtualMethod(
-                        MethodDescriptor.ofMethod(ScoreDirectorFactoryConfig.class, "setGizmoKieRuntimeBuilderWrapper",
-                                void.class,
-                                KieRuntimeBuilderWrapper.class),
-                        methodCreator.getMethodParam(0), kieBaseExtractor);
-
-                // Workaround for https://issues.redhat.com/browse/KOGITO-5101
-                transformers.produce(new BytecodeTransformerBuildItem(config.getSolutionClass().getName(),
-                        (className, classVisitor) -> new OptaPlannerDroolsReactiveClassVisitor(config.getSolutionClass(),
-                                classVisitor)));
-                for (Class<?> entityClass : config.getEntityClassList()) {
-                    transformers.produce(new BytecodeTransformerBuildItem(entityClass.getName(),
-                            (className, classVisitor) -> new OptaPlannerDroolsReactiveClassVisitor(entityClass, classVisitor)));
-                }
-            } else {
-                // No additional setup needed; Drools isn't used
-                methodCreator = classCreator.getMethodCreator(MethodDescriptor.ofMethod(OptaPlannerDroolsInitializer.class,
-                        "setup", void.class, ScoreDirectorFactoryConfig.class));
-            }
-            methodCreator.returnValue(null);
-        }
-        return generatedClassName;
-    }
-
-    public static RuntimeValue<OptaPlannerDroolsInitializer> getDroolsInitializer(RecorderContext recorderContext) {
-        return recorderContext.newInstance(DROOLS_INITIALIZER_CLASS_NAME);
-    }
-
-    private static class OptaPlannerDroolsReactiveClassVisitor extends ClassVisitor {
-        final Class<?> clazz;
-
-        public OptaPlannerDroolsReactiveClassVisitor(Class<?> clazz, ClassVisitor outputClassVisitor) {
-            super(Gizmo.ASM_API_VERSION, outputClassVisitor);
-            this.clazz = clazz;
-        }
-
-        @Override
-        public void visitEnd() {
-            super.visitEnd();
-
-            if (clazz.getAnnotation(ClassReactive.class) == null && clazz.getAnnotation(PropertyReactive.class) == null) {
-                this.cv.visitAnnotation(Type.getDescriptor(ClassReactive.class), true);
-            }
-        }
-
     }
 
     private static class OptaPlannerFinalFieldEnhancingClassVisitor extends ClassVisitor {

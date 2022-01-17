@@ -100,6 +100,16 @@ class OptaPlannerProcessor {
         return new FeatureBuildItem("optaplanner");
     }
 
+    @BuildStep(onlyIfNot = NativeBuild.class)
+    DetermineIfNativeBuildItem ifNotNativeBuild() {
+        return new DetermineIfNativeBuildItem(false);
+    }
+
+    @BuildStep(onlyIf = NativeBuild.class)
+    DetermineIfNativeBuildItem ifNativeBuild() {
+        return new DetermineIfNativeBuildItem(true);
+    }
+
     @BuildStep
     HotDeploymentWatchedFileBuildItem watchSolverConfigXml() {
         String solverConfigXML = optaPlannerBuildTimeConfig.solverConfigXml
@@ -150,7 +160,7 @@ class OptaPlannerProcessor {
             BuildProducer<UnremovableBeanBuildItem> unremovableBeans,
             BuildProducer<GeneratedBeanBuildItem> generatedBeans,
             BuildProducer<GeneratedClassBuildItem> generatedClasses,
-            BuildProducer<BytecodeTransformerBuildItem> transformers) {
+            BuildProducer<BytecodeTransformerBuildItem> transformers, DetermineIfNativeBuildItem determinIfNative) {
         IndexView indexView = combinedIndex.getIndex();
 
         // Only skip this extension if everything is missing. Otherwise, if some parts are missing, fail fast later.
@@ -184,6 +194,7 @@ class OptaPlannerProcessor {
         }
 
         applySolverProperties(recorderContext, indexView, solverConfig, capabilities);
+        assertDrlDisabledInNative(solverConfig, determinIfNative);
         assertNoMemberAnnotationWithoutClassAnnotation(indexView);
 
         if (solverConfig.getSolutionClass() != null) {
@@ -220,8 +231,7 @@ class OptaPlannerProcessor {
                         GizmoMemberAccessorEntityEnhancer.getGeneratedGizmoMemberAccessorMap(recorderContext,
                                 generatedGizmoClasses.generatedGizmoMemberAccessorClassSet),
                         GizmoMemberAccessorEntityEnhancer.getGeneratedSolutionClonerMap(recorderContext,
-                                generatedGizmoClasses.generatedGizmoSolutionClonerClassSet),
-                        GizmoMemberAccessorEntityEnhancer.getDroolsInitializer(recorderContext)))
+                                generatedGizmoClasses.generatedGizmoSolutionClonerClassSet)))
                 .done());
 
         syntheticBeanBuildItemBuildProducer.produce(SyntheticBeanBuildItem.configure(SolverManagerConfig.class)
@@ -356,6 +366,17 @@ class OptaPlannerProcessor {
         return targetList.stream()
                 .map(target -> (Class<?>) convertClassInfoToClass(target.asClass()))
                 .collect(Collectors.toList());
+    }
+
+    private void assertDrlDisabledInNative(SolverConfig solverConfig, DetermineIfNativeBuildItem determineIfNative) {
+        if (!determineIfNative.isNative()) {
+            return;
+        }
+        if (solverConfig.getScoreDirectorFactoryConfig().getScoreDrlList() == null) {
+            return;
+        }
+        throw new IllegalStateException("Score DRL is not supported during native build.\n" +
+                "Consider switching to Constraint Streams.");
     }
 
     private void assertNoMemberAnnotationWithoutClassAnnotation(IndexView indexView) {
@@ -610,8 +631,6 @@ class OptaPlannerProcessor {
         }
 
         GizmoMemberAccessorEntityEnhancer.generateGizmoBeanFactory(beanClassOutput, reflectiveClassSet, transformers);
-        GizmoMemberAccessorEntityEnhancer.generateKieRuntimeBuilder(beanClassOutput,
-                solverConfig, unremovableBeans, transformers);
         return new GeneratedGizmoClasses(generatedMemberAccessorsClassNameSet, gizmoSolutionClonerClassNameSet);
     }
 
