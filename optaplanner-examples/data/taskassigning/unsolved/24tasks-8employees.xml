@@ -91,7 +91,6 @@
       <customer reference="20"/>
       <readyTime>0</readyTime>
       <priority>MINOR</priority>
-      <pinned>false</pinned>
     </TaTask>
     <TaTask id="25">
       <id>1</id>
@@ -100,7 +99,6 @@
       <customer reference="22"/>
       <readyTime>0</readyTime>
       <priority>MAJOR</priority>
-      <pinned>false</pinned>
     </TaTask>
     <TaTask id="26">
       <id>2</id>
@@ -109,7 +107,6 @@
       <customer reference="22"/>
       <readyTime>0</readyTime>
       <priority>MAJOR</priority>
-      <pinned>false</pinned>
     </TaTask>
     <TaTask id="27">
       <id>3</id>
@@ -118,7 +115,6 @@
       <customer reference="22"/>
       <readyTime>0</readyTime>
       <priority>CRITICAL</priority>
-      <pinned>false</pinned>
     </TaTask>
     <TaTask id="28">
       <id>4</id>
@@ -127,7 +123,6 @@
       <customer reference="21"/>
       <readyTime>0</readyTime>
       <priority>MINOR</priority>
-      <pinned>false</pinned>
     </TaTask>
     <TaTask id="29">
       <id>5</id>
@@ -136,7 +131,6 @@
       <customer reference="21"/>
       <readyTime>0</readyTime>
       <priority>MINOR</priority>
-      <pinned>false</pinned>
     </TaTask>
     <TaTask id="30">
       <id>6</id>
@@ -145,7 +139,6 @@
       <customer reference="20"/>
       <readyTime>0</readyTime>
       <priority>MINOR</priority>
-      <pinned>false</pinned>
     </TaTask>
     <TaTask id="31">
       <id>7</id>
@@ -154,7 +147,6 @@
       <customer reference="19"/>
       <readyTime>0</readyTime>
       <priority>MINOR</priority>
-      <pinned>false</pinned>
     </TaTask>
     <TaTask id="32">
       <id>8</id>
@@ -163,7 +155,6 @@
       <customer reference="19"/>
       <readyTime>0</readyTime>
       <priority>MINOR</priority>
-      <pinned>false</pinned>
     </TaTask>
     <TaTask id="33">
       <id>9</id>
@@ -172,7 +163,6 @@
       <customer reference="22"/>
       <readyTime>0</readyTime>
       <priority>MAJOR</priority>
-      <pinned>false</pinned>
     </TaTask>
     <TaTask id="34">
       <id>10</id>
@@ -181,7 +171,6 @@
       <customer reference="22"/>
       <readyTime>0</readyTime>
       <priority>MINOR</priority>
-      <pinned>false</pinned>
     </TaTask>
     <TaTask id="35">
       <id>11</id>
@@ -190,7 +179,6 @@
       <customer reference="19"/>
       <readyTime>0</readyTime>
       <priority>MAJOR</priority>
-      <pinned>false</pinned>
     </TaTask>
     <TaTask id="36">
       <id>12</id>
@@ -199,7 +187,6 @@
       <customer reference="21"/>
       <readyTime>0</readyTime>
       <priority>MINOR</priority>
-      <pinned>false</pinned>
     </TaTask>
     <TaTask id="37">
       <id>13</id>
@@ -208,7 +195,6 @@
       <customer reference="22"/>
       <readyTime>0</readyTime>
       <priority>MAJOR</priority>
-      <pinned>false</pinned>
     </TaTask>
     <TaTask id="38">
       <id>14</id>
@@ -217,7 +203,6 @@
       <customer reference="21"/>
       <readyTime>0</readyTime>
       <priority>CRITICAL</priority>
-      <pinned>false</pinned>
     </TaTask>
     <TaTask id="39">
       <id>15</id>
@@ -226,7 +211,6 @@
       <customer reference="20"/>
       <readyTime>0</readyTime>
       <priority>MINOR</priority>
-      <pinned>false</pinned>
     </TaTask>
     <TaTask id="40">
       <id>16</id>
@@ -235,7 +219,6 @@
       <customer reference="21"/>
       <readyTime>0</readyTime>
       <priority>MAJOR</priority>
-      <pinned>false</pinned>
     </TaTask>
     <TaTask id="41">
       <id>17</id>
@@ -244,7 +227,6 @@
       <customer reference="19"/>
       <readyTime>0</readyTime>
       <priority>MAJOR</priority>
-      <pinned>false</pinned>
     </TaTask>
     <TaTask id="42">
       <id>18</id>
@@ -253,7 +235,6 @@
       <customer reference="22"/>
       <readyTime>0</readyTime>
       <priority>MAJOR</priority>
-      <pinned>false</pinned>
     </TaTask>
     <TaTask id="43">
       <id>19</id>
@@ -262,7 +243,6 @@
       <customer reference="22"/>
       <readyTime>0</readyTime>
       <priority>CRITICAL</priority>
-      <pinned>false</pinned>
     </TaTask>
     <TaTask id="44">
       <id>20</id>
@@ -271,7 +251,6 @@
       <customer reference="19"/>
       <readyTime>0</readyTime>
       <priority>MINOR</priority>
-      <pinned>false</pinned>
     </TaTask>
     <TaTask id="45">
       <id>21</id>
@@ -280,7 +259,6 @@
       <customer reference="20"/>
       <readyTime>0</readyTime>
       <priority>MAJOR</priority>
-      <pinned>false</pinned>
     </TaTask>
     <TaTask id="46">
       <id>22</id>
@@ -289,7 +267,6 @@
       <customer reference="22"/>
       <readyTime>0</readyTime>
       <priority>CRITICAL</priority>
-      <pinned>false</pinned>
     </TaTask>
     <TaTask id="47">
       <id>23</id>
@@ -298,7 +275,6 @@
       <customer reference="22"/>
       <readyTime>0</readyTime>
       <priority>MINOR</priority>
-      <pinned>false</pinned>
     </TaTask>
   </taskList>
   <employeeList id="48">

@@ -162,7 +162,7 @@ public class TaskOverviewPanel extends JPanel implements Scrollable {
 
     private JButton createTaskButton(Task task, int rowIndex) {
         JButton taskButton = SwingUtils.makeSmallButton(new JButton(new TaskAction(task)));
-        taskButton.setBackground(task.isPinned() ? TangoColorFactory.ALUMINIUM_3 : TangoColorFactory.ALUMINIUM_1);
+        taskButton.setBackground(TangoColorFactory.ALUMINIUM_1);
         taskButton.setHorizontalTextPosition(SwingConstants.CENTER);
         taskButton.setVerticalTextPosition(SwingConstants.TOP);
         taskButton.setSize(task.getDuration(), ROW_HEIGHT);
