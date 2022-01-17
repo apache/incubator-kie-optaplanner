@@ -46,9 +46,8 @@ public class Task extends AbstractPersistable implements Labeled {
     private Employee employee;
     @IndexShadowVariable(sourceVariableName = "tasks")
     private Integer index;
+    // This API will change in https://issues.redhat.com/browse/PLANNER-2542.
     @CustomShadowVariable(variableListenerClass = StartTimeUpdatingVariableListener.class,
-            // Arguable, to adhere to API specs (although this works), nextTask and employee should also be a source,
-            // because this shadow must be triggered after nextTask and employee (but there is no need to be triggered by those)
             sources = { @PlanningVariableReference(entityClass = Employee.class, variableName = "tasks") })
     private Integer startTime; // In minutes
 
