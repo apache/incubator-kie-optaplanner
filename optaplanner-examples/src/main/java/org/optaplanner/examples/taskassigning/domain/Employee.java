@@ -42,7 +42,7 @@ public class Employee extends AbstractPersistable implements Labeled {
     @PlanningListVariable(valueRangeProviderRefs = "taskRange")
     private List<Task> tasks;
 
-    // TODO pinning
+    // TODO pinning: https://issues.redhat.com/browse/PLANNER-2633.
 
     public Employee() {
     }

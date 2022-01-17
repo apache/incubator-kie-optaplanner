@@ -17,7 +17,6 @@
 package org.optaplanner.examples.taskassigning.domain;
 
 import org.optaplanner.core.api.domain.entity.PlanningEntity;
-import org.optaplanner.core.api.domain.entity.PlanningPin;
 import org.optaplanner.core.api.domain.variable.CustomShadowVariable;
 import org.optaplanner.core.api.domain.variable.IndexShadowVariable;
 import org.optaplanner.core.api.domain.variable.InverseRelationShadowVariable;
@@ -37,9 +36,6 @@ public class Task extends AbstractPersistable implements Labeled {
     private Customer customer;
     private int readyTime;
     private Priority priority;
-    // TODO keep this and make it possible to pin values?
-    @PlanningPin
-    private boolean pinned;
 
     // Shadow variables
     @InverseRelationShadowVariable(sourceVariableName = "tasks")
@@ -61,7 +57,6 @@ public class Task extends AbstractPersistable implements Labeled {
         this.customer = customer;
         this.readyTime = readyTime;
         this.priority = priority;
-        pinned = false;
     }
 
     public TaskType getTaskType() {
@@ -102,14 +97,6 @@ public class Task extends AbstractPersistable implements Labeled {
 
     public void setPriority(Priority priority) {
         this.priority = priority;
-    }
-
-    public boolean isPinned() {
-        return pinned;
-    }
-
-    public void setPinned(boolean pinned) {
-        this.pinned = pinned;
     }
 
     public Employee getEmployee() {

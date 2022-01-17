@@ -142,21 +142,7 @@ public class TaskAssigningPanel extends SolutionPanel<TaskAssigningSolution> {
         doProblemFactChange(scoreDirector -> {
             TaskAssigningSolution solution = scoreDirector.getWorkingSolution();
             solution.setFrozenCutoff(consumedTime);
-            for (Task task : solution.getTaskList()) {
-                if (!task.isPinned()) {
-                    if (task.getEmployee() != null && task.getStartTime() < consumedTime) {
-                        scoreDirector.beforeProblemPropertyChanged(task);
-                        task.setPinned(true);
-                        scoreDirector.afterProblemPropertyChanged(task);
-                        logger.trace("Consumed task ({}).", task);
-                    } else if (task.getReadyTime() < consumedTime) {
-                        // Prevent a non-pinned task from being assigned retroactively
-                        scoreDirector.beforeProblemPropertyChanged(task);
-                        task.setReadyTime(consumedTime);
-                        scoreDirector.afterProblemPropertyChanged(task);
-                    }
-                }
-            }
+            // TODO update list variable pins: https://issues.redhat.com/browse/PLANNER-2633.
             scoreDirector.triggerVariableListeners();
         });
     }
