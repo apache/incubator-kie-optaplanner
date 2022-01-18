@@ -154,7 +154,7 @@ public final class DefaultSolverManager<Solution_, ProblemId_> implements Solver
         DefaultSolverJob<Solution_, ProblemId_> solverJob = getSolverJob(problemId);
         if (solverJob == null) {
             // We cannot distinguish between "already terminated" and "never solved" without causing a memory leak.
-            throw new IllegalStateException("Cannot add the problem change because there is no solver solving the problemId ({"
+            throw new IllegalStateException("Cannot add the problem change (" + problemChange + ") because there is no solver solving the problemId ("
                     + problemId + "}).");
         }
         solverJob.addProblemChange(problemChange);
