@@ -520,7 +520,6 @@ public class TerminationConfig extends AbstractConfig<TerminationConfig> {
     @XmlTransient
     public boolean isConfigured() {
         return terminationClass != null ||
-                terminationCompositionStyle != null ||
                 spentLimit != null ||
                 millisecondsSpentLimit != null ||
                 secondsSpentLimit != null ||
@@ -533,14 +532,27 @@ public class TerminationConfig extends AbstractConfig<TerminationConfig> {
                 unimprovedMinutesSpentLimit != null ||
                 unimprovedHoursSpentLimit != null ||
                 unimprovedDaysSpentLimit != null ||
-                unimprovedScoreDifferenceThreshold != null ||
                 bestScoreLimit != null ||
                 bestScoreFeasible != null ||
                 stepCountLimit != null ||
                 unimprovedStepCountLimit != null ||
                 scoreCalculationCountLimit != null ||
-                (terminationConfigList != null &&
-                        terminationConfigList.stream().anyMatch(TerminationConfig::isConfigured));
+                isTerminationListConfigured();
+    }
+
+    private boolean isTerminationListConfigured() {
+        if (terminationConfigList == null || terminationCompositionStyle == null) {
+            return false;
+        }
+
+        switch (terminationCompositionStyle) {
+            case AND:
+                return terminationConfigList.stream().allMatch(TerminationConfig::isConfigured);
+            case OR:
+                return terminationConfigList.stream().anyMatch(TerminationConfig::isConfigured);
+            default:
+                throw new IllegalStateException("Unhandled case (" + terminationCompositionStyle + ").");
+        }
     }
 
     @Override
