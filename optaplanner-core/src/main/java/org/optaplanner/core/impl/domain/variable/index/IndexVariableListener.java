@@ -75,9 +75,6 @@ public class IndexVariableListener<Solution_> implements VariableListener<Soluti
 
     protected void insert(InnerScoreDirector<Solution_, ?> scoreDirector, Object entity) {
         List<Object> listVariable = sourceVariableDescriptor.getListVariable(entity);
-        if (listVariable == null) {
-            return;
-        }
         int index = 0;
         for (Object value : listVariable) {
             // TODO maybe update inverse relation variable (if exists) to avoid an extra loop
@@ -100,9 +97,6 @@ public class IndexVariableListener<Solution_> implements VariableListener<Soluti
 
     protected void retract(InnerScoreDirector<Solution_, ?> scoreDirector, Object entity) {
         List<Object> listVariable = sourceVariableDescriptor.getListVariable(entity);
-        if (listVariable == null) {
-            return;
-        }
         int index = 0;
         for (Object value : listVariable) {
             Integer oldIndex = shadowVariableDescriptor.getValue(value);

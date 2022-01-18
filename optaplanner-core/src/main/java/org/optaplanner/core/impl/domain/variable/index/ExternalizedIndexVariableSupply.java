@@ -101,9 +101,6 @@ public class ExternalizedIndexVariableSupply<Solution_>
 
     private void insert(ScoreDirector<Solution_> scoreDirector, Object entity) {
         List<Object> listVariable = sourceVariableDescriptor.getListVariable(entity);
-        if (listVariable == null) {
-            return;
-        }
         int index = 0;
         for (Object value : listVariable) {
             Integer oldIndex = indexMap.put(value, index);
@@ -120,9 +117,6 @@ public class ExternalizedIndexVariableSupply<Solution_>
 
     private void retract(ScoreDirector<Solution_> scoreDirector, Object entity) {
         List<Object> listVariable = sourceVariableDescriptor.getListVariable(entity);
-        if (listVariable == null) {
-            return;
-        }
         int index = 0;
         for (Object value : listVariable) {
             Integer oldIndex = indexMap.remove(value);

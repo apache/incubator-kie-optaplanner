@@ -100,9 +100,6 @@ public class ExternalizedSingletonListInverseVariableSupply<Solution_>
 
     protected void insert(ScoreDirector<Solution_> scoreDirector, Object entity) {
         List<Object> listVariable = sourceVariableDescriptor.getListVariable(entity);
-        if (listVariable == null) {
-            return;
-        }
         for (Object value : listVariable) {
             Object oldInverseEntity = inverseEntityMap.put(value, entity);
             if (oldInverseEntity != null) {
@@ -117,9 +114,6 @@ public class ExternalizedSingletonListInverseVariableSupply<Solution_>
 
     protected void retract(ScoreDirector<Solution_> scoreDirector, Object entity) {
         List<Object> listVariable = sourceVariableDescriptor.getListVariable(entity);
-        if (listVariable == null) {
-            return;
-        }
         for (Object value : listVariable) {
             Object oldInverseEntity = inverseEntityMap.remove(value);
             if (oldInverseEntity != entity) {

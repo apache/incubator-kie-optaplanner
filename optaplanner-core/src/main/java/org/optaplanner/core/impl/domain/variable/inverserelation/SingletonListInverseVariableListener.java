@@ -75,9 +75,6 @@ public class SingletonListInverseVariableListener<Solution_>
 
     protected void insert(InnerScoreDirector<Solution_, ?> scoreDirector, Object entity) {
         List<Object> listVariable = sourceVariableDescriptor.getListVariable(entity);
-        if (listVariable == null) {
-            return;
-        }
         for (Object value : listVariable) {
             Object oldInverseEntity = shadowVariableDescriptor.getValue(value);
             if (oldInverseEntity != null) {
@@ -96,9 +93,6 @@ public class SingletonListInverseVariableListener<Solution_>
 
     protected void retract(InnerScoreDirector<Solution_, ?> scoreDirector, Object entity) {
         List<Object> listVariable = sourceVariableDescriptor.getListVariable(entity);
-        if (listVariable == null) {
-            return;
-        }
         for (Object value : listVariable) {
             Object oldInverseEntity = shadowVariableDescriptor.getValue(value);
             if (oldInverseEntity != entity) {
