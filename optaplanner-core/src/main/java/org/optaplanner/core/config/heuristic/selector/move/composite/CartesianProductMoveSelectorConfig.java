@@ -37,7 +37,7 @@ import org.optaplanner.core.config.heuristic.selector.move.generic.chained.TailC
 import org.optaplanner.core.config.util.ConfigUtils;
 
 @XmlType(propOrder = {
-        "moveSelectorList",
+        "moveSelectorConfigList",
         "ignoreEmptyChildIterators"
 })
 public class CartesianProductMoveSelectorConfig extends MoveSelectorConfig<CartesianProductMoveSelectorConfig> {
@@ -62,7 +62,7 @@ public class CartesianProductMoveSelectorConfig extends MoveSelectorConfig<Carte
                     type = TailChainSwapMoveSelectorConfig.class),
             @XmlElement(name = UnionMoveSelectorConfig.XML_ELEMENT_NAME, type = UnionMoveSelectorConfig.class)
     })
-    private List<MoveSelectorConfig> moveSelectorList = null;
+    private List<MoveSelectorConfig> moveSelectorConfigList = null;
 
     private Boolean ignoreEmptyChildIterators = null;
 
@@ -74,7 +74,7 @@ public class CartesianProductMoveSelectorConfig extends MoveSelectorConfig<Carte
     }
 
     public CartesianProductMoveSelectorConfig(List<MoveSelectorConfig> moveSelectorConfigList) {
-        this.moveSelectorList = moveSelectorConfigList;
+        this.moveSelectorConfigList = moveSelectorConfigList;
     }
 
     /**
@@ -96,11 +96,11 @@ public class CartesianProductMoveSelectorConfig extends MoveSelectorConfig<Carte
     }
 
     public List<MoveSelectorConfig> getMoveSelectorList() {
-        return moveSelectorList;
+        return moveSelectorConfigList;
     }
 
     public void setMoveSelectorList(List<MoveSelectorConfig> moveSelectorConfigList) {
-        this.moveSelectorList = moveSelectorConfigList;
+        this.moveSelectorConfigList = moveSelectorConfigList;
     }
 
     public Boolean getIgnoreEmptyChildIterators() {
@@ -116,12 +116,12 @@ public class CartesianProductMoveSelectorConfig extends MoveSelectorConfig<Carte
     // ************************************************************************
 
     public CartesianProductMoveSelectorConfig withMoveSelectorList(List<MoveSelectorConfig> moveSelectorConfigList) {
-        this.moveSelectorList = moveSelectorConfigList;
+        this.moveSelectorConfigList = moveSelectorConfigList;
         return this;
     }
 
     public CartesianProductMoveSelectorConfig withMoveSelectors(MoveSelectorConfig... moveSelectorConfigs) {
-        this.moveSelectorList = Arrays.asList(moveSelectorConfigs);
+        this.moveSelectorConfigList = Arrays.asList(moveSelectorConfigs);
         return this;
     }
 
@@ -136,7 +136,7 @@ public class CartesianProductMoveSelectorConfig extends MoveSelectorConfig<Carte
 
     @Override
     public void extractLeafMoveSelectorConfigsIntoList(List<MoveSelectorConfig> leafMoveSelectorConfigList) {
-        for (MoveSelectorConfig moveSelectorConfig : moveSelectorList) {
+        for (MoveSelectorConfig moveSelectorConfig : moveSelectorConfigList) {
             moveSelectorConfig.extractLeafMoveSelectorConfigsIntoList(leafMoveSelectorConfigList);
         }
     }
@@ -144,7 +144,8 @@ public class CartesianProductMoveSelectorConfig extends MoveSelectorConfig<Carte
     @Override
     public CartesianProductMoveSelectorConfig inherit(CartesianProductMoveSelectorConfig inheritedConfig) {
         super.inherit(inheritedConfig);
-        moveSelectorList = ConfigUtils.inheritMergeableListConfig(moveSelectorList, inheritedConfig.getMoveSelectorList());
+        moveSelectorConfigList =
+                ConfigUtils.inheritMergeableListConfig(moveSelectorConfigList, inheritedConfig.getMoveSelectorList());
         ignoreEmptyChildIterators = ConfigUtils.inheritOverwritableProperty(
                 ignoreEmptyChildIterators, inheritedConfig.getIgnoreEmptyChildIterators());
         return this;
@@ -158,14 +159,14 @@ public class CartesianProductMoveSelectorConfig extends MoveSelectorConfig<Carte
     @Override
     public void visitReferencedClasses(Consumer<Class<?>> classVisitor) {
         visitCommonReferencedClasses(classVisitor);
-        if (moveSelectorList != null) {
-            moveSelectorList.forEach(ms -> ms.visitReferencedClasses(classVisitor));
+        if (moveSelectorConfigList != null) {
+            moveSelectorConfigList.forEach(ms -> ms.visitReferencedClasses(classVisitor));
         }
     }
 
     @Override
     public String toString() {
-        return getClass().getSimpleName() + "(" + moveSelectorList + ")";
+        return getClass().getSimpleName() + "(" + moveSelectorConfigList + ")";
     }
 
 }

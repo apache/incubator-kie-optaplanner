@@ -38,7 +38,7 @@ import org.optaplanner.core.config.util.ConfigUtils;
 import org.optaplanner.core.impl.heuristic.selector.common.decorator.SelectionProbabilityWeightFactory;
 
 @XmlType(propOrder = {
-        "moveSelectorList",
+        "moveSelectorConfigList",
         "selectorProbabilityWeightFactoryClass"
 })
 public class UnionMoveSelectorConfig extends MoveSelectorConfig<UnionMoveSelectorConfig> {
@@ -63,7 +63,7 @@ public class UnionMoveSelectorConfig extends MoveSelectorConfig<UnionMoveSelecto
                     type = TailChainSwapMoveSelectorConfig.class),
             @XmlElement(name = UnionMoveSelectorConfig.XML_ELEMENT_NAME, type = UnionMoveSelectorConfig.class)
     })
-    private List<MoveSelectorConfig> moveSelectorList = null;
+    private List<MoveSelectorConfig> moveSelectorConfigList = null;
 
     private Class<? extends SelectionProbabilityWeightFactory> selectorProbabilityWeightFactoryClass = null;
 
@@ -74,8 +74,8 @@ public class UnionMoveSelectorConfig extends MoveSelectorConfig<UnionMoveSelecto
     public UnionMoveSelectorConfig() {
     }
 
-    public UnionMoveSelectorConfig(List<MoveSelectorConfig> moveSelectorList) {
-        this.moveSelectorList = moveSelectorList;
+    public UnionMoveSelectorConfig(List<MoveSelectorConfig> moveSelectorConfigList) {
+        this.moveSelectorConfigList = moveSelectorConfigList;
     }
 
     /**
@@ -97,11 +97,11 @@ public class UnionMoveSelectorConfig extends MoveSelectorConfig<UnionMoveSelecto
     }
 
     public List<MoveSelectorConfig> getMoveSelectorList() {
-        return moveSelectorList;
+        return moveSelectorConfigList;
     }
 
     public void setMoveSelectorList(List<MoveSelectorConfig> moveSelectorConfigList) {
-        this.moveSelectorList = moveSelectorConfigList;
+        this.moveSelectorConfigList = moveSelectorConfigList;
     }
 
     public Class<? extends SelectionProbabilityWeightFactory> getSelectorProbabilityWeightFactoryClass() {
@@ -118,12 +118,12 @@ public class UnionMoveSelectorConfig extends MoveSelectorConfig<UnionMoveSelecto
     // ************************************************************************
 
     public UnionMoveSelectorConfig withMoveSelectorList(List<MoveSelectorConfig> moveSelectorConfigList) {
-        this.moveSelectorList = moveSelectorConfigList;
+        this.moveSelectorConfigList = moveSelectorConfigList;
         return this;
     }
 
     public UnionMoveSelectorConfig withMoveSelectors(MoveSelectorConfig... moveSelectorConfigs) {
-        this.moveSelectorList = Arrays.asList(moveSelectorConfigs);
+        this.moveSelectorConfigList = Arrays.asList(moveSelectorConfigs);
         return this;
     }
 
@@ -139,7 +139,7 @@ public class UnionMoveSelectorConfig extends MoveSelectorConfig<UnionMoveSelecto
 
     @Override
     public void extractLeafMoveSelectorConfigsIntoList(List<MoveSelectorConfig> leafMoveSelectorConfigList) {
-        for (MoveSelectorConfig moveSelectorConfig : moveSelectorList) {
+        for (MoveSelectorConfig moveSelectorConfig : moveSelectorConfigList) {
             moveSelectorConfig.extractLeafMoveSelectorConfigsIntoList(leafMoveSelectorConfigList);
         }
     }
@@ -147,7 +147,8 @@ public class UnionMoveSelectorConfig extends MoveSelectorConfig<UnionMoveSelecto
     @Override
     public UnionMoveSelectorConfig inherit(UnionMoveSelectorConfig inheritedConfig) {
         super.inherit(inheritedConfig);
-        moveSelectorList = ConfigUtils.inheritMergeableListConfig(moveSelectorList, inheritedConfig.getMoveSelectorList());
+        moveSelectorConfigList =
+                ConfigUtils.inheritMergeableListConfig(moveSelectorConfigList, inheritedConfig.getMoveSelectorList());
         selectorProbabilityWeightFactoryClass = ConfigUtils.inheritOverwritableProperty(
                 selectorProbabilityWeightFactoryClass, inheritedConfig.getSelectorProbabilityWeightFactoryClass());
         return this;
@@ -161,15 +162,15 @@ public class UnionMoveSelectorConfig extends MoveSelectorConfig<UnionMoveSelecto
     @Override
     public void visitReferencedClasses(Consumer<Class<?>> classVisitor) {
         visitCommonReferencedClasses(classVisitor);
-        if (moveSelectorList != null) {
-            moveSelectorList.forEach(ms -> ms.visitReferencedClasses(classVisitor));
+        if (moveSelectorConfigList != null) {
+            moveSelectorConfigList.forEach(ms -> ms.visitReferencedClasses(classVisitor));
         }
         classVisitor.accept(selectorProbabilityWeightFactoryClass);
     }
 
     @Override
     public String toString() {
-        return getClass().getSimpleName() + "(" + moveSelectorList + ")";
+        return getClass().getSimpleName() + "(" + moveSelectorConfigList + ")";
     }
 
 }
