@@ -589,7 +589,7 @@ public class SolverManagerTest {
         SolverManagerConfig solverManagerConfig = new SolverManagerConfig().withParallelSolverCount("1");
         SolverManager<TestdataSolution, Long> solverManager = SolverManager.create(solverConfig, solverManagerConfig);
 
-        // The first solver until the test sends a problem change.
+        // The first solver waits until the test sends a problem change.
         solverManager.solve(1L, PlannerTestUtils.generateTestdataSolution("s1", 4));
 
         // The second solver is scheduled and waits for the fist solver to finish.

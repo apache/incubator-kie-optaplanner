@@ -32,7 +32,6 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
 
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
@@ -706,7 +705,7 @@ public class DefaultSolverTest {
         });
 
         solutionWithProblemChangeReceived.await();
-        Assertions.assertThat(bestSolution.get().getValueList()).hasSize(valueCount + 1);
+        assertThat(bestSolution.get().getValueList()).hasSize(valueCount + 1);
 
         solver.terminateEarly();
         executorService.shutdown();
