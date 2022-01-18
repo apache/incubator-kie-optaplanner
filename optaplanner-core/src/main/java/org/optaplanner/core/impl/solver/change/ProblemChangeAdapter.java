@@ -17,6 +17,8 @@
 package org.optaplanner.core.impl.solver.change;
 
 import org.optaplanner.core.api.score.Score;
+import org.optaplanner.core.api.solver.ProblemFactChange;
+import org.optaplanner.core.api.solver.change.ProblemChange;
 import org.optaplanner.core.impl.solver.scope.SolverScope;
 
 /**
@@ -26,4 +28,19 @@ import org.optaplanner.core.impl.solver.scope.SolverScope;
 public interface ProblemChangeAdapter<Solution_> {
 
     Score<?> doProblemChange(SolverScope<Solution_> solverScope);
+
+    static <Solution_> ProblemChangeAdapter<Solution_> create(ProblemFactChange<Solution_> problemFactChange) {
+        return solverScope -> {
+            problemFactChange.doChange(solverScope.getScoreDirector());
+            return solverScope.calculateScore();
+        };
+    }
+
+    static <Solution_> ProblemChangeAdapter<Solution_> create(ProblemChange<Solution_> problemChange) {
+        return solverScope -> {
+            problemChange.doChange(solverScope.getWorkingSolution(), solverScope.getProblemChangeDirector());
+            solverScope.getScoreDirector().triggerVariableListeners();
+            return solverScope.calculateScore();
+        };
+    }
 }

@@ -17,7 +17,8 @@
 package org.optaplanner.core.impl.solver.termination;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.mock;
 
 import java.util.Arrays;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -25,7 +26,6 @@ import java.util.concurrent.atomic.AtomicInteger;
 import org.junit.jupiter.api.Test;
 import org.optaplanner.core.impl.score.director.InnerScoreDirector;
 import org.optaplanner.core.impl.solver.change.ProblemChangeAdapter;
-import org.optaplanner.core.impl.solver.change.ProblemChangeAdapterImpl;
 import org.optaplanner.core.impl.solver.scope.SolverScope;
 import org.optaplanner.core.impl.testdata.domain.TestdataSolution;
 
@@ -37,7 +37,7 @@ public class BasicPlumbingTerminationTest {
         BasicPlumbingTermination<TestdataSolution> basicPlumbingTermination = new BasicPlumbingTermination<>(false);
         assertThat(basicPlumbingTermination.waitForRestartSolverDecision()).isFalse();
         ProblemChangeAdapter<TestdataSolution> problemChangeAdapter =
-                new ProblemChangeAdapterImpl<>((workingSolution, problemChangeDirector) -> count.getAndIncrement());
+                ProblemChangeAdapter.create((workingSolution, problemChangeDirector) -> count.getAndIncrement());
         basicPlumbingTermination.addProblemChange(problemChangeAdapter);
         assertThat(basicPlumbingTermination.waitForRestartSolverDecision()).isTrue();
         assertThat(count).hasValue(0);
@@ -57,8 +57,8 @@ public class BasicPlumbingTerminationTest {
         BasicPlumbingTermination<TestdataSolution> basicPlumbingTermination = new BasicPlumbingTermination<>(false);
         assertThat(basicPlumbingTermination.waitForRestartSolverDecision()).isFalse();
         basicPlumbingTermination.addProblemChanges(Arrays.asList(
-                new ProblemChangeAdapterImpl<>((workingSolution, problemChangeDirector) -> count.getAndIncrement()),
-                new ProblemChangeAdapterImpl<>((workingSolution, problemChangeDirector) -> count.getAndAdd(20))));
+                ProblemChangeAdapter.create((workingSolution, problemChangeDirector) -> count.getAndIncrement()),
+                ProblemChangeAdapter.create((workingSolution, problemChangeDirector) -> count.getAndAdd(20))));
         assertThat(basicPlumbingTermination.waitForRestartSolverDecision()).isTrue();
         assertThat(count).hasValue(0);
         SolverScope<TestdataSolution> solverScopeMock = mockSolverScope();

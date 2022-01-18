@@ -35,8 +35,6 @@ import org.optaplanner.core.impl.phase.Phase;
 import org.optaplanner.core.impl.score.director.InnerScoreDirector;
 import org.optaplanner.core.impl.score.director.InnerScoreDirectorFactory;
 import org.optaplanner.core.impl.solver.change.ProblemChangeAdapter;
-import org.optaplanner.core.impl.solver.change.ProblemChangeAdapterImpl;
-import org.optaplanner.core.impl.solver.change.ProblemFactChangeAdapterImpl;
 import org.optaplanner.core.impl.solver.random.RandomFactory;
 import org.optaplanner.core.impl.solver.recaller.BestSolutionRecaller;
 import org.optaplanner.core.impl.solver.scope.SolverScope;
@@ -140,7 +138,7 @@ public class DefaultSolver<Solution_> extends AbstractSolver<Solution_> {
 
     @Override
     public boolean addProblemFactChange(ProblemFactChange<Solution_> problemFactChange) {
-        return basicPlumbingTermination.addProblemChange(new ProblemFactChangeAdapterImpl<>(problemFactChange));
+        return basicPlumbingTermination.addProblemChange(ProblemChangeAdapter.create(problemFactChange));
     }
 
     @Override
@@ -148,14 +146,14 @@ public class DefaultSolver<Solution_> extends AbstractSolver<Solution_> {
         Objects.requireNonNull(problemFactChangeList,
                 () -> "The list of problem fact changes (" + problemFactChangeList + ") cannot be null.");
         List<ProblemChangeAdapter<Solution_>> problemChangeAdapterList = problemFactChangeList.stream()
-                .map(ProblemFactChangeAdapterImpl::new)
+                .map(ProblemChangeAdapter::create)
                 .collect(Collectors.toList());
         return basicPlumbingTermination.addProblemChanges(problemChangeAdapterList);
     }
 
     @Override
     public void addProblemChange(ProblemChange<Solution_> problemChange) {
-        basicPlumbingTermination.addProblemChange(new ProblemChangeAdapterImpl<>(problemChange));
+        basicPlumbingTermination.addProblemChange(ProblemChangeAdapter.create(problemChange));
     }
 
     @Override
