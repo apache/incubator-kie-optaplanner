@@ -16,7 +16,6 @@
 
 package org.optaplanner.core.impl.localsearch;
 
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.Objects;
 import java.util.concurrent.ThreadFactory;

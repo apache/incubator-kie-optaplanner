@@ -62,7 +62,7 @@ public class CartesianProductMoveSelectorConfig extends MoveSelectorConfig<Carte
                     type = TailChainSwapMoveSelectorConfig.class),
             @XmlElement(name = UnionMoveSelectorConfig.XML_ELEMENT_NAME, type = UnionMoveSelectorConfig.class)
     })
-    private List<MoveSelectorConfig> moveSelectorConfigList = null;
+    private List<MoveSelectorConfig> moveSelectorList = null;
 
     private Boolean ignoreEmptyChildIterators = null;
 
@@ -74,7 +74,7 @@ public class CartesianProductMoveSelectorConfig extends MoveSelectorConfig<Carte
     }
 
     public CartesianProductMoveSelectorConfig(List<MoveSelectorConfig> moveSelectorConfigList) {
-        this.moveSelectorConfigList = moveSelectorConfigList;
+        this.moveSelectorList = moveSelectorConfigList;
     }
 
     /**
@@ -96,11 +96,11 @@ public class CartesianProductMoveSelectorConfig extends MoveSelectorConfig<Carte
     }
 
     public List<MoveSelectorConfig> getMoveSelectorList() {
-        return moveSelectorConfigList;
+        return moveSelectorList;
     }
 
     public void setMoveSelectorList(List<MoveSelectorConfig> moveSelectorConfigList) {
-        this.moveSelectorConfigList = moveSelectorConfigList;
+        this.moveSelectorList = moveSelectorConfigList;
     }
 
     public Boolean getIgnoreEmptyChildIterators() {
@@ -116,12 +116,12 @@ public class CartesianProductMoveSelectorConfig extends MoveSelectorConfig<Carte
     // ************************************************************************
 
     public CartesianProductMoveSelectorConfig withMoveSelectorList(List<MoveSelectorConfig> moveSelectorConfigList) {
-        this.moveSelectorConfigList = moveSelectorConfigList;
+        this.moveSelectorList = moveSelectorConfigList;
         return this;
     }
 
     public CartesianProductMoveSelectorConfig withMoveSelectors(MoveSelectorConfig... moveSelectorConfigs) {
-        this.moveSelectorConfigList = Arrays.asList(moveSelectorConfigs);
+        this.moveSelectorList = Arrays.asList(moveSelectorConfigs);
         return this;
     }
 
@@ -136,7 +136,7 @@ public class CartesianProductMoveSelectorConfig extends MoveSelectorConfig<Carte
 
     @Override
     public void extractLeafMoveSelectorConfigsIntoList(List<MoveSelectorConfig> leafMoveSelectorConfigList) {
-        for (MoveSelectorConfig moveSelectorConfig : moveSelectorConfigList) {
+        for (MoveSelectorConfig moveSelectorConfig : moveSelectorList) {
             moveSelectorConfig.extractLeafMoveSelectorConfigsIntoList(leafMoveSelectorConfigList);
         }
     }
@@ -144,8 +144,7 @@ public class CartesianProductMoveSelectorConfig extends MoveSelectorConfig<Carte
     @Override
     public CartesianProductMoveSelectorConfig inherit(CartesianProductMoveSelectorConfig inheritedConfig) {
         super.inherit(inheritedConfig);
-        moveSelectorConfigList = ConfigUtils.inheritMergeableListConfig(
-                moveSelectorConfigList, inheritedConfig.getMoveSelectorList());
+        moveSelectorList = ConfigUtils.inheritMergeableListConfig(moveSelectorList, inheritedConfig.getMoveSelectorList());
         ignoreEmptyChildIterators = ConfigUtils.inheritOverwritableProperty(
                 ignoreEmptyChildIterators, inheritedConfig.getIgnoreEmptyChildIterators());
         return this;
@@ -159,14 +158,14 @@ public class CartesianProductMoveSelectorConfig extends MoveSelectorConfig<Carte
     @Override
     public void visitReferencedClasses(Consumer<Class<?>> classVisitor) {
         visitCommonReferencedClasses(classVisitor);
-        if (moveSelectorConfigList != null) {
-            moveSelectorConfigList.forEach(ms -> ms.visitReferencedClasses(classVisitor));
+        if (moveSelectorList != null) {
+            moveSelectorList.forEach(ms -> ms.visitReferencedClasses(classVisitor));
         }
     }
 
     @Override
     public String toString() {
-        return getClass().getSimpleName() + "(" + moveSelectorConfigList + ")";
+        return getClass().getSimpleName() + "(" + moveSelectorList + ")";
     }
 
 }

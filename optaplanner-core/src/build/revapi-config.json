@@ -420,6 +420,34 @@
           "methodName": "join",
           "elementKind": "method",
           "justification": "Now implemented outside of public API; technically not incompatible as nobody should extend this."
+        },
+        {
+          "code": "java.annotation.attributeValueChanged",
+          "old": "class org.optaplanner.core.config.heuristic.selector.move.composite.CartesianProductMoveSelectorConfig",
+          "new": "class org.optaplanner.core.config.heuristic.selector.move.composite.CartesianProductMoveSelectorConfig",
+          "annotationType": "javax.xml.bind.annotation.XmlType",
+          "annotation": "@javax.xml.bind.annotation.XmlType(propOrder = {\"moveSelectorList\", \"ignoreEmptyChildIterators\"})",
+          "attribute": "propOrder",
+          "oldValue": "{\"moveSelectorConfigList\", \"ignoreEmptyChildIterators\"}",
+          "newValue": "{\"moveSelectorList\", \"ignoreEmptyChildIterators\"}",
+          "package": "org.optaplanner.core.config.heuristic.selector.move.composite",
+          "classSimpleName": "CartesianProductMoveSelectorConfig",
+          "elementKind": "class",
+          "justification": "Change of a private field has no effect on the public API."
+        },
+        {
+          "code": "java.annotation.attributeValueChanged",
+          "old": "class org.optaplanner.core.config.heuristic.selector.move.composite.UnionMoveSelectorConfig",
+          "new": "class org.optaplanner.core.config.heuristic.selector.move.composite.UnionMoveSelectorConfig",
+          "annotationType": "javax.xml.bind.annotation.XmlType",
+          "annotation": "@javax.xml.bind.annotation.XmlType(propOrder = {\"moveSelectorList\", \"selectorProbabilityWeightFactoryClass\"})",
+          "attribute": "propOrder",
+          "oldValue": "{\"moveSelectorConfigList\", \"selectorProbabilityWeightFactoryClass\"}",
+          "newValue": "{\"moveSelectorList\", \"selectorProbabilityWeightFactoryClass\"}",
+          "package": "org.optaplanner.core.config.heuristic.selector.move.composite",
+          "classSimpleName": "UnionMoveSelectorConfig",
+          "elementKind": "class",
+          "justification": "Change of a private field has no effect on the public API."
         }
       ]
     }
