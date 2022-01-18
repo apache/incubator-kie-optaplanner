@@ -103,7 +103,7 @@ public final class DefaultSolverFactory<Solution_> implements SolverFactory<Solu
         InnerScoreDirector<Solution_, ?> innerScoreDirector =
                 scoreDirectorFactory.buildScoreDirector(true, environmentMode_.isAsserted());
         solverScope.setScoreDirector(innerScoreDirector);
-        solverScope.setProblemChangeDirector(new DefaultProblemChangeDirector(innerScoreDirector));
+        solverScope.setProblemChangeDirector(new DefaultProblemChangeDirector<>(innerScoreDirector));
 
         if ((solverScope.isMetricEnabled(SolverMetric.CONSTRAINT_MATCH_TOTAL_STEP_SCORE)
                 || solverScope.isMetricEnabled(SolverMetric.CONSTRAINT_MATCH_TOTAL_BEST_SCORE)) &&
