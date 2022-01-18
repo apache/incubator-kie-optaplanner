@@ -25,6 +25,16 @@ import org.optaplanner.core.api.solver.change.ProblemChangeDirector;
 
 /**
  * Use for unit-testing {@link org.optaplanner.core.api.solver.change.ProblemChange}s.
+ *
+ * Together with Mockito this class makes it possible to verify that a
+ * {@link org.optaplanner.core.api.solver.change.ProblemChange} implementation correctly calls methods of
+ * the {@link ProblemChangeDirector}.
+ *
+ * Example of usage:
+ * MockProblemChangeDirector mockProblemChangeDirector = spy(new MockProblemChangeDirector());
+ * ProblemChange problemChange = new MyProblemChange(removedEntity);
+ * problemChange.doChange(solution, mockProblemChangeDirector);
+ * verify(mockProblemChangeDirector).removeEntity(same(removedEntity), any());
  */
 public class MockProblemChangeDirector implements ProblemChangeDirector {
 
