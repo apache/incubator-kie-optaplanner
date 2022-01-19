@@ -31,10 +31,15 @@ import org.optaplanner.core.api.solver.change.ProblemChangeDirector;
  * the {@link ProblemChangeDirector}.
  *
  * Example of usage:
- * MockProblemChangeDirector mockProblemChangeDirector = spy(new MockProblemChangeDirector());
- * ProblemChange problemChange = new MyProblemChange(removedEntity);
- * problemChange.doChange(solution, mockProblemChangeDirector);
- * verify(mockProblemChangeDirector).removeEntity(same(removedEntity), any());
+ * 
+ * <pre>
+ * {@code java
+ *  MockProblemChangeDirector mockProblemChangeDirector = spy(new MockProblemChangeDirector());
+ *  ProblemChange problemChange = new MyProblemChange(removedEntity);
+ *  problemChange.doChange(solution, mockProblemChangeDirector);
+ *  verify(mockProblemChangeDirector).removeEntity(same(removedEntity), any());
+ * }
+ * </pre>
  */
 public class MockProblemChangeDirector implements ProblemChangeDirector {
 
