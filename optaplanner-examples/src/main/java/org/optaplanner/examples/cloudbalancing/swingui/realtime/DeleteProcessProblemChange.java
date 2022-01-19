@@ -32,7 +32,7 @@ public class DeleteProcessProblemChange implements ProblemChange<CloudBalance> {
     @Override
     public void doChange(CloudBalance cloudBalance, ProblemChangeDirector problemChangeDirector) {
         // A SolutionCloner clones planning entity lists (such as processList), so no need to clone the processList here
-        CloudProcess workingProcess = problemChangeDirector.lookUpWorkingObject(process);
+        CloudProcess workingProcess = problemChangeDirector.lookUpWorkingObjectOrFail(process);
         if (workingProcess == null) {
             throw new IllegalStateException("A process " + process + " does not exist. Maybe it has been already deleted.");
         }

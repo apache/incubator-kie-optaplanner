@@ -43,7 +43,7 @@ public interface ProblemChangeDirector {
     /**
      * Remove an existing {@link PlanningEntity} instance from the {@link PlanningSolution working solution}.
      * Translates the entity to a working planning entity by performing a lookup as defined by
-     * {@link #lookUpWorkingObject(Object)}.
+     * {@link #lookUpWorkingObjectOrFail(Object)}.
      * 
      * @param entity never null; the {@link PlanningEntity} instance
      * @param entityConsumer never null; removes the working entity from the {@link PlanningSolution working solution}
@@ -53,7 +53,7 @@ public interface ProblemChangeDirector {
 
     /**
      * Change a {@link PlanningVariable} value of a {@link PlanningEntity}. Translates the entity to a working
-     * planning entity by performing a lookup as defined by {@link #lookUpWorkingObject(Object)}.
+     * planning entity by performing a lookup as defined by {@link #lookUpWorkingObjectOrFail(Object)}.
      *
      * @param entity never null; the {@link PlanningEntity} instance
      * @param variableName never null; name of the {@link PlanningVariable}
@@ -75,7 +75,7 @@ public interface ProblemChangeDirector {
 
     /**
      * Remove an existing problem fact from the {@link PlanningSolution working solution}. Translates the problem fact
-     * to a working problem fact by performing a lookup as defined by {@link #lookUpWorkingObject(Object)}.
+     * to a working problem fact by performing a lookup as defined by {@link #lookUpWorkingObjectOrFail(Object)}.
      *
      * @param problemFact never null; the problem fact instance
      * @param problemFactConsumer never null; removes the working problem fact from the
@@ -87,7 +87,7 @@ public interface ProblemChangeDirector {
     /**
      * Change a property of either a {@link PlanningEntity} or a problem fact. Translates the entity or the problem fact
      * to its {@link PlanningSolution working solution} counterpart by performing a lookup as defined by
-     * {@link #lookUpWorkingObject(Object)}.
+     * {@link #lookUpWorkingObjectOrFail(Object)}.
      *
      * @param problemFactOrEntity never null; the {@link PlanningEntity} or the problem fact instance
      * @param problemFactOrEntityConsumer never null; updates the property of the {@link PlanningEntity}
@@ -111,12 +111,12 @@ public interface ProblemChangeDirector {
      * @throws IllegalStateException if it cannot be looked up
      * @param <EntityOrProblemFact> the object type
      */
-    <EntityOrProblemFact> EntityOrProblemFact lookUpWorkingObject(EntityOrProblemFact externalObject);
+    <EntityOrProblemFact> EntityOrProblemFact lookUpWorkingObjectOrFail(EntityOrProblemFact externalObject);
 
     /**
-     * As defined by {@link #lookUpWorkingObject(Object)},
+     * As defined by {@link #lookUpWorkingObjectOrFail(Object)},
      * but doesn't fail fast if no workingObject was ever added for the externalObject.
-     * It's recommended to use {@link #lookUpWorkingObject(Object)} instead.
+     * It's recommended to use {@link #lookUpWorkingObjectOrFail(Object)} instead.
      *
      * @param externalObject sometimes null
      * @return {@link Optional#empty()} if externalObject is null or if there is no workingObject for externalObject
@@ -124,5 +124,5 @@ public interface ProblemChangeDirector {
      * @throws IllegalStateException if it cannot be looked up
      * @param <EntityOrProblemFact> the object type
      */
-    <EntityOrProblemFact> Optional<EntityOrProblemFact> lookUpWorkingObjectOptionally(EntityOrProblemFact externalObject);
+    <EntityOrProblemFact> Optional<EntityOrProblemFact> lookUpWorkingObject(EntityOrProblemFact externalObject);
 }

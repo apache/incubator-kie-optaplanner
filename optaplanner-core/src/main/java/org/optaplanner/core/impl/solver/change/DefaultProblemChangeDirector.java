@@ -44,7 +44,7 @@ public final class DefaultProblemChangeDirector<Solution_> implements ProblemCha
     public <Entity> void removeEntity(Entity entity, Consumer<Entity> entityConsumer) {
         Objects.requireNonNull(entity, () -> "Entity (" + entity + ") cannot be null.");
         Objects.requireNonNull(entityConsumer, () -> "Entity consumer (" + entityConsumer + ") cannot be null.");
-        Entity workingEntity = lookUpWorkingObject(entity);
+        Entity workingEntity = lookUpWorkingObjectOrFail(entity);
         scoreDirector.beforeEntityRemoved(workingEntity);
         entityConsumer.accept(workingEntity);
         scoreDirector.afterEntityRemoved(workingEntity);
@@ -55,7 +55,7 @@ public final class DefaultProblemChangeDirector<Solution_> implements ProblemCha
         Objects.requireNonNull(entity, () -> "Entity (" + entity + ") cannot be null.");
         Objects.requireNonNull(variableName, () -> "Planning variable name (" + variableName + ") cannot be null.");
         Objects.requireNonNull(entityConsumer, () -> "Entity consumer (" + entityConsumer + ") cannot be null.");
-        Entity workingEntity = lookUpWorkingObject(entity);
+        Entity workingEntity = lookUpWorkingObjectOrFail(entity);
         scoreDirector.beforeVariableChanged(workingEntity, variableName);
         entityConsumer.accept(workingEntity);
         scoreDirector.afterVariableChanged(workingEntity, variableName);
@@ -76,7 +76,7 @@ public final class DefaultProblemChangeDirector<Solution_> implements ProblemCha
         Objects.requireNonNull(problemFact, () -> "Problem fact (" + problemFact + ") cannot be null.");
         Objects.requireNonNull(problemFactConsumer, () -> "Problem fact consumer (" + problemFactConsumer
                 + ") cannot be null.");
-        ProblemFact workingProblemFact = lookUpWorkingObject(problemFact);
+        ProblemFact workingProblemFact = lookUpWorkingObjectOrFail(problemFact);
         scoreDirector.beforeProblemFactRemoved(workingProblemFact);
         problemFactConsumer.accept(workingProblemFact);
         scoreDirector.afterProblemFactRemoved(workingProblemFact);
@@ -89,20 +89,20 @@ public final class DefaultProblemChangeDirector<Solution_> implements ProblemCha
                 () -> "Problem fact or entity (" + problemFactOrEntity + ") cannot be null.");
         Objects.requireNonNull(problemFactOrEntityConsumer, () -> "Problem fact or entity consumer ("
                 + problemFactOrEntityConsumer + ") cannot be null.");
-        EntityOrProblemFact workingEntityOrProblemFact = lookUpWorkingObject(problemFactOrEntity);
+        EntityOrProblemFact workingEntityOrProblemFact = lookUpWorkingObjectOrFail(problemFactOrEntity);
         scoreDirector.beforeProblemPropertyChanged(workingEntityOrProblemFact);
         problemFactOrEntityConsumer.accept(workingEntityOrProblemFact);
         scoreDirector.afterProblemPropertyChanged(workingEntityOrProblemFact);
     }
 
     @Override
-    public <EntityOrProblemFact> EntityOrProblemFact lookUpWorkingObject(EntityOrProblemFact externalObject) {
+    public <EntityOrProblemFact> EntityOrProblemFact lookUpWorkingObjectOrFail(EntityOrProblemFact externalObject) {
         return scoreDirector.lookUpWorkingObject(externalObject);
     }
 
     @Override
     public <EntityOrProblemFact> Optional<EntityOrProblemFact>
-            lookUpWorkingObjectOptionally(EntityOrProblemFact externalObject) {
+            lookUpWorkingObject(EntityOrProblemFact externalObject) {
         return Optional.ofNullable(scoreDirector.lookUpWorkingObjectOrReturnNull(externalObject));
     }
 }

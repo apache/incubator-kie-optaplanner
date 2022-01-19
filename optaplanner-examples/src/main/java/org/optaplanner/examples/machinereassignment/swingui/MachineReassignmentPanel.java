@@ -130,7 +130,7 @@ public class MachineReassignmentPanel extends SolutionPanel<MachineReassignment>
     public void deleteMachine(final MrMachine machine) {
         logger.info("Scheduling delete of machine ({}).", machine);
         doProblemChange((machineReassignment, problemChangeDirector) -> {
-            MrMachine workingMachine = problemChangeDirector.lookUpWorkingObject(machine);
+            MrMachine workingMachine = problemChangeDirector.lookUpWorkingObjectOrFail(machine);
             if (workingMachine == null) {
                 // The machine has already been deleted (the UI asked to changed the same machine twice), so do nothing
                 return;

@@ -34,7 +34,7 @@ public class DeleteComputerProblemChange implements ProblemChange<CloudBalance> 
 
     @Override
     public void doChange(CloudBalance cloudBalance, ProblemChangeDirector problemChangeDirector) {
-        CloudComputer workingComputer = problemChangeDirector.lookUpWorkingObject(computer);
+        CloudComputer workingComputer = problemChangeDirector.lookUpWorkingObjectOrFail(computer);
         if (workingComputer == null) {
             throw new IllegalStateException("A computer " + computer + " does not exist. Maybe it has been already deleted.");
         }

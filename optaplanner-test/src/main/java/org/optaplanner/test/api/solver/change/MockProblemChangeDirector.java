@@ -42,33 +42,33 @@ public class MockProblemChangeDirector implements ProblemChangeDirector {
 
     @Override
     public <Entity> void addEntity(Entity entity, Consumer<Entity> entityConsumer) {
-        entityConsumer.accept(lookUpWorkingObject(entity));
+        entityConsumer.accept(lookUpWorkingObjectOrFail(entity));
     }
 
     @Override
     public <Entity> void removeEntity(Entity entity, Consumer<Entity> entityConsumer) {
-        entityConsumer.accept(lookUpWorkingObject(entity));
+        entityConsumer.accept(lookUpWorkingObjectOrFail(entity));
     }
 
     @Override
     public <Entity> void changeVariable(Entity entity, String variableName, Consumer<Entity> entityConsumer) {
-        entityConsumer.accept(lookUpWorkingObject(entity));
+        entityConsumer.accept(lookUpWorkingObjectOrFail(entity));
     }
 
     @Override
     public <ProblemFact> void addProblemFact(ProblemFact problemFact, Consumer<ProblemFact> problemFactConsumer) {
-        problemFactConsumer.accept(lookUpWorkingObject(problemFact));
+        problemFactConsumer.accept(lookUpWorkingObjectOrFail(problemFact));
     }
 
     @Override
     public <ProblemFact> void removeProblemFact(ProblemFact problemFact, Consumer<ProblemFact> problemFactConsumer) {
-        problemFactConsumer.accept(lookUpWorkingObject(problemFact));
+        problemFactConsumer.accept(lookUpWorkingObjectOrFail(problemFact));
     }
 
     @Override
     public <EntityOrProblemFact> void changeProblemProperty(EntityOrProblemFact problemFactOrEntity,
             Consumer<EntityOrProblemFact> problemFactOrEntityConsumer) {
-        problemFactOrEntityConsumer.accept(lookUpWorkingObject(problemFactOrEntity));
+        problemFactOrEntityConsumer.accept(lookUpWorkingObjectOrFail(problemFactOrEntity));
     }
 
     /**
@@ -78,7 +78,7 @@ public class MockProblemChangeDirector implements ProblemChangeDirector {
      * @param externalObject entity or problem fact to look up
      */
     @Override
-    public <EntityOrProblemFact> EntityOrProblemFact lookUpWorkingObject(EntityOrProblemFact externalObject) {
+    public <EntityOrProblemFact> EntityOrProblemFact lookUpWorkingObjectOrFail(EntityOrProblemFact externalObject) {
         EntityOrProblemFact entityOrProblemFact = (EntityOrProblemFact) lookUpTable.get(externalObject);
         return entityOrProblemFact == null ? externalObject : entityOrProblemFact;
     }
@@ -91,12 +91,12 @@ public class MockProblemChangeDirector implements ProblemChangeDirector {
      */
     @Override
     public <EntityOrProblemFact> Optional<EntityOrProblemFact>
-            lookUpWorkingObjectOptionally(EntityOrProblemFact externalObject) {
+            lookUpWorkingObject(EntityOrProblemFact externalObject) {
         return Optional.of((EntityOrProblemFact) lookUpTable.get(externalObject));
     }
 
     /**
-     * Defines what {@link #lookUpWorkingObject(Object)} returns.
+     * Defines what {@link #lookUpWorkingObjectOrFail(Object)} returns.
      */
     public LookUpMockBuilder whenLookingUp(Object forObject) {
         return new LookUpMockBuilder(forObject);

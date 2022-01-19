@@ -228,7 +228,7 @@ public class NurseRosteringPanel extends SolutionPanel<NurseRoster> {
     public void deleteEmployee(final Employee employee) {
         logger.info("Scheduling delete of employee ({}).", employee);
         doProblemChange((nurseRoster, problemChangeDirector) -> {
-            Employee workingEmployee = problemChangeDirector.lookUpWorkingObject(employee);
+            Employee workingEmployee = problemChangeDirector.lookUpWorkingObjectOrFail(employee);
             if (workingEmployee == null) {
                 // The employee has already been deleted (the UI asked to changed the same employee twice), so do nothing
                 return;
