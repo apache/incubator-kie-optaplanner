@@ -8,6 +8,6 @@
 
   <!-- Score configuration -->
   <scoreDirectorFactory>
-    <scoreDrl>divertThroughClassLoader/org/optaplanner/core/api/solver/classloaderTestdataConstraints.drl</scoreDrl>
+    <easyScoreCalculatorClass>org.optaplanner.core.impl.testdata.domain.TestdataEasyScoreCalculator</easyScoreCalculatorClass>
   </scoreDirectorFactory>
 </solver>

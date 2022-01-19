@@ -23,7 +23,6 @@ import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -92,17 +91,6 @@ public class PlannerTestUtils {
         phaseConfigList.add(localSearchPhaseConfig);
         solverConfig.setPhaseConfigList(phaseConfigList);
         return solverConfig;
-    }
-
-    public static <Solution_> SolverFactory<Solution_> buildSolverFactoryWithDroolsScoreDirector(
-            Class<Solution_> solutionClass, Class<?>... entityClasses) {
-        SolverConfig solverConfig = buildSolverConfig(solutionClass, entityClasses);
-        ScoreDirectorFactoryConfig scoreDirectorFactoryConfig =
-                solverConfig.getScoreDirectorFactoryConfig();
-        scoreDirectorFactoryConfig.setEasyScoreCalculatorClass(null);
-        scoreDirectorFactoryConfig.setScoreDrlList(Collections.singletonList(
-                "org/optaplanner/core/impl/score/director/dummySimpleScoreDroolsConstraints.drl"));
-        return SolverFactory.create(solverConfig);
     }
 
     public static <Solution_> Solution_ solve(SolverConfig solverConfig, Solution_ problem) {

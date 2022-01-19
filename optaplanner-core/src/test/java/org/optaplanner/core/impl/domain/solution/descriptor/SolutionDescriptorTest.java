@@ -159,12 +159,6 @@ class SolutionDescriptorTest {
     }
 
     @Test
-    void noProblemFactPropertyWithDroolsScoreCalculation() {
-        assertThatIllegalStateException().isThrownBy(() -> PlannerTestUtils.buildSolverFactoryWithDroolsScoreDirector(
-                TestdataNoProblemFactPropertySolution.class, TestdataEntity.class));
-    }
-
-    @Test
     void extended() {
         SolutionDescriptor<TestdataAnnotatedExtendedSolution> solutionDescriptor = TestdataAnnotatedExtendedSolution
                 .buildExtendedSolutionDescriptor();

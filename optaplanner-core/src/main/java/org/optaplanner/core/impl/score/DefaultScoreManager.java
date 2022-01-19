@@ -40,10 +40,7 @@ public final class DefaultScoreManager<Solution_, Score_ extends Score<Score_>>
     }
 
     public DefaultScoreManager(SolverFactory<Solution_> solverFactory) {
-        InnerScoreDirectorFactory<Solution_, Score_> scoreDirectorFactory =
-                ((InnerScoreDirectorFactory<Solution_, Score_>) ((DefaultSolverFactory<Solution_>) solverFactory)
-                        .getScoreDirectorFactory());
-        this.scoreDirectorFactory = scoreDirectorFactory;
+        this.scoreDirectorFactory = ((DefaultSolverFactory<Solution_>) solverFactory).getScoreDirectorFactory();
     }
 
     public InnerScoreDirectorFactory<Solution_, Score_> getScoreDirectorFactory() {

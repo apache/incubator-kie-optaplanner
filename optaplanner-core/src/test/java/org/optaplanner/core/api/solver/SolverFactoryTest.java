@@ -29,7 +29,6 @@ import java.util.Arrays;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
-import org.optaplanner.core.config.score.director.ScoreDirectorFactoryConfig;
 import org.optaplanner.core.config.solver.SolverConfig;
 import org.optaplanner.core.impl.score.director.InnerScoreDirector;
 import org.optaplanner.core.impl.score.director.InnerScoreDirectorFactory;
@@ -141,19 +140,6 @@ class SolverFactoryTest {
     @Test
     void create() {
         SolverConfig solverConfig = PlannerTestUtils.buildSolverConfig(TestdataSolution.class, TestdataEntity.class);
-        SolverFactory<TestdataSolution> solverFactory = SolverFactory.create(solverConfig);
-        Solver<TestdataSolution> solver = solverFactory.buildSolver();
-        assertThat(solver).isNotNull();
-    }
-
-    @Test
-    void create_classLoader() {
-        // Mocking loadClass doesn't work well enough, because the className still differs from class.getName()
-        ClassLoader classLoader = new DivertingClassLoader(getClass().getClassLoader());
-        SolverConfig solverConfig = PlannerTestUtils.buildSolverConfig(TestdataSolution.class, TestdataEntity.class);
-        solverConfig.setClassLoader(classLoader);
-        solverConfig.setScoreDirectorFactoryConfig(new ScoreDirectorFactoryConfig()
-                .withScoreDrls("divertThroughClassLoader/org/optaplanner/core/api/solver/classloaderTestdataConstraints.drl"));
         SolverFactory<TestdataSolution> solverFactory = SolverFactory.create(solverConfig);
         Solver<TestdataSolution> solver = solverFactory.buildSolver();
         assertThat(solver).isNotNull();
