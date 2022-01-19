@@ -36,13 +36,11 @@ public final class OptaPlannerRuleEventListener implements RuleEventListener {
         AgendaItem agendaItem = (AgendaItem) match;
         Runnable callback = agendaItem.getCallback();
         /*
-         * Null callbacks can happen.
+         * Null callbacks can happen and are safe to ignore.
          *
          * If we insert a fact and then immediately delete it without firing any rules inbetween,
          * a dummy match will be created by Drools and that match will not have our callback in it.
          * Although this is inefficient, it was decided that the cure would have been worse than the disease.
-         *
-         * In both of these situations, it is safe to ignore the null callback.
          */
         if (callback != null) {
             callback.run();

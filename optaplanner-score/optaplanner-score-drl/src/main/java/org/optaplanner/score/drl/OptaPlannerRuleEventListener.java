@@ -38,10 +38,8 @@ public final class OptaPlannerRuleEventListener implements RuleEventListener {
         /*
          * In DRL, it is possible that RHS would not call addConstraintMatch() and do some insertLogical() instead,
          * and therefore the callback would be null.
-         * In CS-D, that is not possible, as all the rules we generate will create a match.
-         * But null callbacks can still happen.
          *
-         * If we insert a fact and then immediately delete it without firing any rules inbetween,
+         * Also, if we insert a fact and then immediately delete it without firing any rules inbetween,
          * a dummy match will be created by Drools and that match will not have our callback in it.
          * Although this is inefficient, it was decided that the cure would have been worse than the disease.
          *
