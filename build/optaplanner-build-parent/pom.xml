@@ -20,7 +20,7 @@
     <!-- Dependencies -->
     <!-- ************************************************************************ -->
     <!-- SNAPSHOT and KIE dependency versions -->
-    <version.org.kie>${project.version}</version.org.kie>
+    <version.org.drools>${project.version}</version.org.drools>
 
     <!-- Normal dependency versions -->
     <version.ch.qos.logback>1.2.9</version.ch.qos.logback>
@@ -94,7 +94,7 @@
       <dependency>
         <groupId>org.drools</groupId>
         <artifactId>drools-bom</artifactId>
-        <version>${version.org.kie}</version>
+        <version>${version.org.drools}</version>
         <type>pom</type>
         <scope>import</scope>
       </dependency>
