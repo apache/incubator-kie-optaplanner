@@ -50,7 +50,7 @@
     <!-- Binaries and sources -->
     <dependency>
       <groupId>org.optaplanner</groupId>
-      <artifactId>optaplanner-engine</artifactId>
+      <artifactId>optaplanner-solver</artifactId>
     </dependency>
     <dependency>
       <groupId>org.optaplanner</groupId>
