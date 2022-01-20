@@ -214,8 +214,6 @@ public class DefaultSolverTest {
                                 Meter.Type.COUNTER));
     }
 
-    // TODO: Enable with Micrometer 1.7.8 or later.
-    @Disabled("https://github.com/micrometer-metrics/micrometer/issues/2947")
     @Test
     public void solveMetrics() {
         TestMeterRegistry meterRegistry = new TestMeterRegistry();
