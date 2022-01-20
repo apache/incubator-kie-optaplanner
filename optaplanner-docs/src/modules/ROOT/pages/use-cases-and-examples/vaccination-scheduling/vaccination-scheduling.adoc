@@ -1,20 +1,16 @@
 [id="chap-optaplanner-vaccination_{context}"]
 = OptaPlanner Vaccination Scheduler
 
-:OPTAPLANNER-COMM:
-//Variable for the community version conditional statements.
-//:OPTAPLANNER-ENT:
+
+:PRODUCTIZED:
 //Variable for the enterprise version conditional statements.
 
-ifdef::OPTAPLANNER-COMM[]
-
-:imagesdir: ../..
-
-:OPTAPLANNER: OptaPlanner
-:QUARKUS: Quarkus
-:OPTAPLANNER_JDK_VERSION: 11
-:OPTAPLANNER_MAVEN_VERSION: 3.6
-endif::OPTAPLANNER-COMM[]
+ifndef::PRODUCTIZED[]
+:optaplanner: OptaPlanner
+:quarkus: Quarkus
+:optaplanner-jdk-version: 11
+:optaplanner-maven-version: 3.6
+endif::PRODUCTIZED[]
 
 :context: optaplanner-vaccination-scheduler
 
@@ -25,9 +21,9 @@ You can use the {OPTAPLANNER} vaccination appointment scheduler quick start to d
 * OpenJDK {OPTAPLANNER_JDK_VERSION} or later is installed.
 
 
-ifdef::OPTAPLANNER-ENT[]
+ifdef::PRODUCTIZED[]
 Red Hat build of Open JDK is available from the https://access.redhat.com/jbossnetwork/restricted/listSoftware.html[Software Downloads] page in the Red Hat Customer Portal (login required).
-endif::OPTAPLANNER-ENT[]
+endif::PRODUCTIZED[]
 
 
 * Apache Maven {OPTAPLANNER_MAVEN_VERSION} or higher is installed. Maven is available from the https://maven.apache.org/[Apache Maven Project] website.
@@ -35,9 +31,13 @@ endif::OPTAPLANNER-ENT[]
 * An IDE, such as IntelliJ IDEA, VSCode, Eclipse, or NetBeans is available.
 
 
-ifdef::OPTAPLANNER-ENT[]
+ifdef::PRODUCTIZED[]
 * You have created a Quakus OptaPlanner project as described in xref:optaplanner-quarkus-con_getting-started-optaplanner[].
-endif::OPTAPLANNER-ENT[]
+endif::PRODUCTIZED[]
+
+ifndef::PRODUCTIZED[]
+* You have created a Quakus OptaPlanner project as described in https://www.optaplanner.org/docs/optaplanner/latest/quickstart/quickstart.html#quarkusJavaQuickStart.
+endif::PRODUCTIZED[]
 
 
 
@@ -163,7 +163,7 @@ git clone https://github.com/kiegroup/optaplanner-quickstarts.git
 endif::OPTAPLANNER-COMM[]
 
 
-ifdef::OPTAPLANNER-ENT[]
+ifdef::PRODUCTIZED[]
 . Navigate to the https://access.redhat.com/jbossnetwork/restricted/listSoftware.html[Software Downloads] page in the Red Hat Customer Portal (login required), and select the product and version from the drop-down options:
 
 ** Product: {PRODUCT_SHORT}
@@ -172,7 +172,7 @@ ifdef::OPTAPLANNER-ENT[]
 . Extract the `{PRODUCT_INIT}-{PRODUCT_VERSION_LONG}-decision-services-quickstarts.zip` file.
 . Navigate to the `optaplanner-quickstarts-{OPTAPLANNER_BOM_VERSION}` directory.
 . Navigate to the `optaplanner-quickstarts-{OPTAPLANNER_BOM_VERSION}/quarkus-vaccination-scheduling` directory.
-endif::OPTAPLANNER-ENT[]
+endif::PRODUCTIZED[]
 
 
 . Enter the following command to start the OptaPlanner vaccination appointment scheduler in development mode:
