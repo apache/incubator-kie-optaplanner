@@ -147,7 +147,7 @@ class ScoreDirectorFactoryFactoryTest {
         assertThatCode(() -> factoryFactory.buildScoreDirectorFactory(ScoreDirectorFactoryFactoryTest.class.getClassLoader(),
                 EnvironmentMode.FAST_ASSERT,
                 TestdataSolution.buildSolutionDescriptor()))
-                        .hasMessage("If there is no constraintProviderClass "
+                        .hasMessage("If there is no scoreDrl (null), scoreDrlFile (null) or constraintProviderClass "
                                 + "(class org.optaplanner.solver.score.ScoreDirectorFactoryFactoryTest$TestdataConstraintProvider)"
                                 + " with DROOLS impl type (BAVET), there can be no droolsAlphaNetworkCompilationEnabled (true) either.");
     }
