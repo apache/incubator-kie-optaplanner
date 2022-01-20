@@ -34,6 +34,7 @@ import org.optaplanner.core.api.domain.solution.ProblemFactProperty;
 import org.optaplanner.core.api.domain.valuerange.ValueRangeProvider;
 import org.optaplanner.core.api.domain.variable.AnchorShadowVariable;
 import org.optaplanner.core.api.domain.variable.CustomShadowVariable;
+import org.optaplanner.core.api.domain.variable.IndexShadowVariable;
 import org.optaplanner.core.api.domain.variable.InverseRelationShadowVariable;
 import org.optaplanner.core.api.domain.variable.PlanningListVariable;
 import org.optaplanner.core.api.domain.variable.PlanningVariable;
@@ -66,11 +67,12 @@ public final class DotNames {
 
     static final DotName PLANNING_VARIABLE = DotName.createSimple(PlanningVariable.class.getName());
     static final DotName PLANNING_LIST_VARIABLE = DotName.createSimple(PlanningListVariable.class.getName());
-    static final DotName VALUE_RANGE_PROVIDER = DotName.createSimple(ValueRangeProvider.class.getName());
     static final DotName PLANNING_VARIABLE_REFERENCE = DotName.createSimple(PlanningVariableReference.class.getName());
+    static final DotName VALUE_RANGE_PROVIDER = DotName.createSimple(ValueRangeProvider.class.getName());
 
     static final DotName ANCHOR_SHADOW_VARIABLE = DotName.createSimple(AnchorShadowVariable.class.getName());
     static final DotName CUSTOM_SHADOW_VARIABLE = DotName.createSimple(CustomShadowVariable.class.getName());
+    static final DotName INDEX_SHADOW_VARIABLE = DotName.createSimple(IndexShadowVariable.class.getName());
     static final DotName INVERSE_RELATION_SHADOW_VARIABLE = DotName.createSimple(InverseRelationShadowVariable.class.getName());
 
     // Need to use String since optaplanner-test is not on the compile classpath
@@ -82,6 +84,7 @@ public final class DotNames {
             PLANNING_LIST_VARIABLE,
             ANCHOR_SHADOW_VARIABLE,
             CUSTOM_SHADOW_VARIABLE,
+            INDEX_SHADOW_VARIABLE,
             INVERSE_RELATION_SHADOW_VARIABLE,
     };
 
@@ -101,6 +104,7 @@ public final class DotNames {
             VALUE_RANGE_PROVIDER,
             ANCHOR_SHADOW_VARIABLE,
             CUSTOM_SHADOW_VARIABLE,
+            INDEX_SHADOW_VARIABLE,
             INVERSE_RELATION_SHADOW_VARIABLE,
     };
 
