@@ -543,6 +543,10 @@ public class EntityDescriptor<Solution_> {
         return false;
     }
 
+    public boolean hasAnyListGenuineVariables() {
+        return effectiveGenuineVariableDescriptorList.stream().anyMatch(GenuineVariableDescriptor::isListVariable);
+    }
+
     // ************************************************************************
     // Extraction methods
     // ************************************************************************
