@@ -109,20 +109,22 @@ public class DefaultConstructionHeuristicPhaseFactory<Solution_>
     }
 
     private Optional<EntityPlacerConfig> getValidEntityPlacerConfig() {
-        return Optional.ofNullable(phaseConfig.getEntityPlacerConfig()).filter(entityPlacerConfig -> {
-            if (phaseConfig.getConstructionHeuristicType() != null) {
-                throw new IllegalArgumentException(
-                        "The constructionHeuristicType (" + phaseConfig.getConstructionHeuristicType()
-                                + ") must not be configured if the entityPlacerConfig (" + entityPlacerConfig
-                                + ") is explicitly configured.");
-            }
-            if (phaseConfig.getMoveSelectorConfigList() != null) {
-                throw new IllegalArgumentException("The moveSelectorConfigList (" + phaseConfig.getMoveSelectorConfigList()
-                        + ") cannot be configured if the entityPlacerConfig (" + entityPlacerConfig
-                        + ") is explicitly configured.");
-            }
-            return true;
-        });
+        EntityPlacerConfig entityPlacerConfig = phaseConfig.getEntityPlacerConfig();
+        if (entityPlacerConfig == null) {
+            return Optional.empty();
+        }
+        if (phaseConfig.getConstructionHeuristicType() != null) {
+            throw new IllegalArgumentException(
+                    "The constructionHeuristicType (" + phaseConfig.getConstructionHeuristicType()
+                            + ") must not be configured if the entityPlacerConfig (" + entityPlacerConfig
+                            + ") is explicitly configured.");
+        }
+        if (phaseConfig.getMoveSelectorConfigList() != null) {
+            throw new IllegalArgumentException("The moveSelectorConfigList (" + phaseConfig.getMoveSelectorConfigList()
+                    + ") cannot be configured if the entityPlacerConfig (" + entityPlacerConfig
+                    + ") is explicitly configured.");
+        }
+        return Optional.of(entityPlacerConfig);
     }
 
     private Optional<ListVariableDescriptor<?>> getValidListVariableDescriptor(HeuristicConfigPolicy<?> solverConfigPolicy) {
