@@ -21,6 +21,7 @@ import java.util.List;
 import java.util.function.Consumer;
 
 import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.XmlType;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
@@ -509,6 +510,49 @@ public class TerminationConfig extends AbstractConfig<TerminationConfig> {
             unimprovedTimeMillisSpentLimit += unimprovedDaysSpentLimit * 86400000L;
         }
         return unimprovedTimeMillisSpentLimit;
+    }
+
+    /**
+     * Return true if this TerminationConfig configures a termination condition.
+     * Note: this does not mean it will always terminate: ex: bestScoreLimit configured,
+     * but it is impossible to reach the bestScoreLimit.
+     */
+    @XmlTransient
+    public boolean isConfigured() {
+        return terminationClass != null ||
+                spentLimit != null ||
+                millisecondsSpentLimit != null ||
+                secondsSpentLimit != null ||
+                minutesSpentLimit != null ||
+                hoursSpentLimit != null ||
+                daysSpentLimit != null ||
+                unimprovedSpentLimit != null ||
+                unimprovedMillisecondsSpentLimit != null ||
+                unimprovedSecondsSpentLimit != null ||
+                unimprovedMinutesSpentLimit != null ||
+                unimprovedHoursSpentLimit != null ||
+                unimprovedDaysSpentLimit != null ||
+                bestScoreLimit != null ||
+                bestScoreFeasible != null ||
+                stepCountLimit != null ||
+                unimprovedStepCountLimit != null ||
+                scoreCalculationCountLimit != null ||
+                isTerminationListConfigured();
+    }
+
+    private boolean isTerminationListConfigured() {
+        if (terminationConfigList == null || terminationCompositionStyle == null) {
+            return false;
+        }
+
+        switch (terminationCompositionStyle) {
+            case AND:
+                return terminationConfigList.stream().allMatch(TerminationConfig::isConfigured);
+            case OR:
+                return terminationConfigList.stream().anyMatch(TerminationConfig::isConfigured);
+            default:
+                throw new IllegalStateException("Unhandled case (" + terminationCompositionStyle + ").");
+        }
     }
 
     @Override

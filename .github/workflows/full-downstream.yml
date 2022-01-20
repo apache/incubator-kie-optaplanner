@@ -1,12 +1,10 @@
-
-name: Build Chain
+name: Build Chain FDB
 
 on:
   pull_request:
     types: [labeled]
     branches:
       - main
-      - 8.*
     paths-ignore:
       - 'LICENSE*'
       - '.gitignore'
@@ -28,7 +26,7 @@ jobs:
         maven-version: ['3.8.1']
       fail-fast: false
     runs-on: ${{ matrix.os }}
-    name: Full downstream build
+    name: ${{ matrix.os }} - Java ${{ matrix.java-version }} - Maven
     steps:
       - name: Clean Disk Space
         uses: kiegroup/kogito-pipelines/.ci/actions/ubuntu-disk-space@main
@@ -45,12 +43,9 @@ jobs:
       - name: Build Chain
         uses: kiegroup/kogito-pipelines/.ci/actions/build-chain@main
         with:
-          definition-file: https://raw.githubusercontent.com/kiegroup/kogito-pipelines/%{process.env.GITHUB_BASE_REF.replace(/(\d*)\.(.*)\.(.*)/g, (m, n1, n2, n3) => `${+n1-7}.${n2}.${n3}`)}/.ci/pull-request-config.yaml
           annotations-prefix: ${{ runner.os }}-${{ matrix.java-version }}/${{ matrix.maven-version }}
-          starting-project: kiegroup/optaplanner-quickstarts
           github-token: "${{ secrets.GITHUB_TOKEN }}"
-        env:
-          OPTAPLANNER_BUILD_MVN_OPTS_UPSTREAM: "-Dfull"
+          flow-type: full-downstream
       - name: Surefire Report
         uses: kiegroup/kogito-pipelines/.ci/actions/surefire-report@main
         if: ${{ always() }}

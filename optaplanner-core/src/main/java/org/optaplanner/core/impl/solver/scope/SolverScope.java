@@ -18,13 +18,17 @@ package org.optaplanner.core.impl.solver.scope;
 
 import java.util.EnumSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Semaphore;
+import java.util.concurrent.atomic.AtomicReference;
 
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.solver.Solver;
+import org.optaplanner.core.api.solver.change.ProblemChangeDirector;
 import org.optaplanner.core.config.solver.monitoring.SolverMetric;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.core.impl.phase.scope.AbstractPhaseScope;
@@ -44,6 +48,7 @@ public class SolverScope<Solution_> {
     protected int startingSolverCount;
     protected Random workingRandom;
     protected InnerScoreDirector<Solution_, ?> scoreDirector;
+    private ProblemChangeDirector problemChangeDirector;
     /**
      * Used for capping CPU power usage in multithreaded scenarios.
      */
@@ -58,10 +63,22 @@ public class SolverScope<Solution_> {
     protected volatile Solution_ bestSolution;
     protected volatile Score bestScore;
     protected Long bestSolutionTimeMillis;
+    /**
+     * Used for tracking step score
+     */
+    protected final Map<Tags, List<AtomicReference<Number>>> stepScoreMap = new ConcurrentHashMap<>();
 
     // ************************************************************************
     // Constructors and simple getters/setters
     // ************************************************************************
+
+    public ProblemChangeDirector getProblemChangeDirector() {
+        return problemChangeDirector;
+    }
+
+    public void setProblemChangeDirector(ProblemChangeDirector problemChangeDirector) {
+        this.problemChangeDirector = problemChangeDirector;
+    }
 
     public Tags getMonitoringTags() {
         return monitoringTags;
@@ -69,6 +86,10 @@ public class SolverScope<Solution_> {
 
     public void setMonitoringTags(Tags monitoringTags) {
         this.monitoringTags = monitoringTags;
+    }
+
+    public Map<Tags, List<AtomicReference<Number>>> getStepScoreMap() {
+        return stepScoreMap;
     }
 
     public Set<SolverMetric> getSolverMetricSet() {

@@ -18,6 +18,7 @@ package org.optaplanner.quarkus.deployment;
 
 import static io.quarkus.deployment.annotations.ExecutionTime.STATIC_INIT;
 
+import java.io.IOException;
 import java.io.StringWriter;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
@@ -57,6 +58,7 @@ import org.optaplanner.core.config.solver.SolverConfig;
 import org.optaplanner.core.config.solver.SolverManagerConfig;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.core.impl.io.jaxb.SolverConfigIO;
+import org.optaplanner.core.impl.score.director.ScoreDirectorFactoryService;
 import org.optaplanner.quarkus.OptaPlannerRecorder;
 import org.optaplanner.quarkus.bean.DefaultOptaPlannerBeanProvider;
 import org.optaplanner.quarkus.bean.UnavailableOptaPlannerBeanProvider;
@@ -70,8 +72,6 @@ import io.quarkus.arc.deployment.GeneratedBeanBuildItem;
 import io.quarkus.arc.deployment.GeneratedBeanGizmoAdaptor;
 import io.quarkus.arc.deployment.SyntheticBeanBuildItem;
 import io.quarkus.arc.deployment.UnremovableBeanBuildItem;
-import io.quarkus.deployment.Capabilities;
-import io.quarkus.deployment.Capability;
 import io.quarkus.deployment.GeneratedClassGizmoAdaptor;
 import io.quarkus.deployment.IsDevelopment;
 import io.quarkus.deployment.annotations.BuildProducer;
@@ -84,8 +84,11 @@ import io.quarkus.deployment.builditem.GeneratedClassBuildItem;
 import io.quarkus.deployment.builditem.HotDeploymentWatchedFileBuildItem;
 import io.quarkus.deployment.builditem.IndexDependencyBuildItem;
 import io.quarkus.deployment.builditem.nativeimage.ReflectiveHierarchyBuildItem;
+import io.quarkus.deployment.builditem.nativeimage.ServiceProviderBuildItem;
+import io.quarkus.deployment.pkg.builditem.CurateOutcomeBuildItem;
 import io.quarkus.deployment.pkg.steps.NativeBuild;
 import io.quarkus.deployment.recording.RecorderContext;
+import io.quarkus.deployment.util.ServiceUtil;
 import io.quarkus.devconsole.spi.DevConsoleRuntimeTemplateInfoBuildItem;
 import io.quarkus.gizmo.ClassOutput;
 import io.quarkus.gizmo.MethodDescriptor;
@@ -101,6 +104,21 @@ class OptaPlannerProcessor {
     @BuildStep
     FeatureBuildItem feature() {
         return new FeatureBuildItem("optaplanner");
+    }
+
+    @BuildStep
+    void registerScoreDirectorFactorySpi(BuildProducer<ServiceProviderBuildItem> services) {
+        String serviceName = ScoreDirectorFactoryService.class.getName();
+        String service = "META-INF/services/" + serviceName;
+        try {
+            // Find out all the provider implementation classes listed in the service files.
+            Set<String> implementations =
+                    ServiceUtil.classNamesNamedIn(Thread.currentThread().getContextClassLoader(), service);
+            // Register every listed implementation class, so they can be instantiated in native-image at run-time.
+            services.produce(new ServiceProviderBuildItem(serviceName, implementations.toArray(new String[0])));
+        } catch (IOException e) {
+            throw new IllegalStateException("Impossible state: Failed registering score directors.", e);
+        }
     }
 
     @BuildStep
@@ -139,17 +157,19 @@ class OptaPlannerProcessor {
     }
 
     @BuildStep(onlyIf = IsDevelopment.class)
-    public DevConsoleRuntimeTemplateInfoBuildItem getSolverConfig(SolverConfigBuildItem solverConfigBuildItem) {
+    public DevConsoleRuntimeTemplateInfoBuildItem getSolverConfig(SolverConfigBuildItem solverConfigBuildItem,
+            CurateOutcomeBuildItem curateOutcomeBuildItem) {
         SolverConfig solverConfig = solverConfigBuildItem.getSolverConfig();
         if (solverConfig != null) {
             StringWriter effectiveSolverConfigWriter = new StringWriter();
             SolverConfigIO solverConfigIO = new SolverConfigIO();
             solverConfigIO.write(solverConfig, effectiveSolverConfigWriter);
             return new DevConsoleRuntimeTemplateInfoBuildItem("solverConfigProperties",
-                    new OptaPlannerDevUIPropertiesSupplier(effectiveSolverConfigWriter.toString()));
+                    new OptaPlannerDevUIPropertiesSupplier(effectiveSolverConfigWriter.toString()), this.getClass(),
+                    curateOutcomeBuildItem);
         } else {
             return new DevConsoleRuntimeTemplateInfoBuildItem("solverConfigProperties",
-                    new OptaPlannerDevUIPropertiesSupplier());
+                    new OptaPlannerDevUIPropertiesSupplier(), this.getClass(), curateOutcomeBuildItem);
         }
     }
 
@@ -165,8 +185,7 @@ class OptaPlannerProcessor {
     @BuildStep
     @Record(STATIC_INIT)
     SolverConfigBuildItem recordAndRegisterBeans(OptaPlannerRecorder recorder, RecorderContext recorderContext,
-            DetermineIfNativeBuildItem determineIfNative,
-            CombinedIndexBuildItem combinedIndex, Capabilities capabilities,
+            DetermineIfNativeBuildItem determineIfNative, CombinedIndexBuildItem combinedIndex,
             BuildProducer<ReflectiveHierarchyBuildItem> reflectiveHierarchyClass,
             BuildProducer<SyntheticBeanBuildItem> syntheticBeanBuildItemBuildProducer,
             BuildProducer<AdditionalBeanBuildItem> additionalBeans,
@@ -207,8 +226,9 @@ class OptaPlannerProcessor {
             solverConfig = new SolverConfig();
         }
 
-        applySolverProperties(recorderContext, indexView, solverConfig, capabilities);
+        applySolverProperties(indexView, solverConfig);
         assertNoMemberAnnotationWithoutClassAnnotation(indexView);
+        assertDrlDisabledInNative(solverConfig, determineIfNative);
 
         if (solverConfig.getSolutionClass() != null) {
             // Need to register even when using GIZMO so annotations are preserved
@@ -243,9 +263,8 @@ class OptaPlannerProcessor {
         registerClassesFromAnnotations(indexView, reflectiveClassSet);
         registerCustomClassesFromSolverConfig(solverConfig, reflectiveClassSet);
         generateConstraintVerifier(solverConfig, syntheticBeanBuildItemBuildProducer);
-        GeneratedGizmoClasses generatedGizmoClasses =
-                generateDomainAccessors(solverConfig, indexView, generatedBeans, generatedClasses, unremovableBeans,
-                        transformers, reflectiveClassSet);
+        GeneratedGizmoClasses generatedGizmoClasses = generateDomainAccessors(solverConfig, indexView, generatedBeans,
+                generatedClasses, transformers, reflectiveClassSet);
 
         SolverManagerConfig solverManagerConfig = new SolverManagerConfig();
 
@@ -256,8 +275,7 @@ class OptaPlannerProcessor {
                         GizmoMemberAccessorEntityEnhancer.getGeneratedGizmoMemberAccessorMap(recorderContext,
                                 generatedGizmoClasses.generatedGizmoMemberAccessorClassSet),
                         GizmoMemberAccessorEntityEnhancer.getGeneratedSolutionClonerMap(recorderContext,
-                                generatedGizmoClasses.generatedGizmoSolutionClonerClassSet),
-                        GizmoMemberAccessorEntityEnhancer.getDroolsInitializer(recorderContext)))
+                                generatedGizmoClasses.generatedGizmoSolutionClonerClassSet)))
                 .done());
 
         syntheticBeanBuildItemBuildProducer.produce(SyntheticBeanBuildItem.configure(SolverManagerConfig.class)
@@ -348,15 +366,14 @@ class OptaPlannerProcessor {
         }
     }
 
-    private void applySolverProperties(RecorderContext recorderContext,
-            IndexView indexView, SolverConfig solverConfig, Capabilities capabilities) {
+    private void applySolverProperties(IndexView indexView, SolverConfig solverConfig) {
         if (solverConfig.getSolutionClass() == null) {
-            solverConfig.setSolutionClass(findSolutionClass(recorderContext, indexView));
+            solverConfig.setSolutionClass(findSolutionClass(indexView));
         }
         if (solverConfig.getEntityClassList() == null) {
-            solverConfig.setEntityClassList(findEntityClassList(recorderContext, indexView));
+            solverConfig.setEntityClassList(findEntityClassList(indexView));
         }
-        applyScoreDirectorFactoryProperties(indexView, solverConfig, capabilities);
+        applyScoreDirectorFactoryProperties(indexView, solverConfig);
         optaPlannerBuildTimeConfig.solver.environmentMode.ifPresent(solverConfig::setEnvironmentMode);
         optaPlannerBuildTimeConfig.solver.daemon.ifPresent(solverConfig::setDaemon);
         optaPlannerBuildTimeConfig.solver.domainAccessType.ifPresent(solverConfig::setDomainAccessType);
@@ -366,7 +383,7 @@ class OptaPlannerProcessor {
         // Termination properties are set at runtime
     }
 
-    private Class<?> findSolutionClass(RecorderContext recorderContext, IndexView indexView) {
+    private Class<?> findSolutionClass(IndexView indexView) {
         Collection<AnnotationInstance> annotationInstances = indexView.getAnnotations(DotNames.PLANNING_SOLUTION);
         if (annotationInstances.size() > 1) {
             throw new IllegalStateException("Multiple classes (" + convertAnnotationInstancesToString(annotationInstances)
@@ -384,7 +401,7 @@ class OptaPlannerProcessor {
         return convertClassInfoToClass(solutionTarget.asClass());
     }
 
-    private List<Class<?>> findEntityClassList(RecorderContext recorderContext, IndexView indexView) {
+    private List<Class<?>> findEntityClassList(IndexView indexView) {
         Collection<AnnotationInstance> annotationInstances = indexView.getAnnotations(DotNames.PLANNING_ENTITY);
         if (annotationInstances.isEmpty()) {
             throw new IllegalStateException("No classes (" + convertAnnotationInstancesToString(annotationInstances)
@@ -442,6 +459,17 @@ class OptaPlannerProcessor {
         }
     }
 
+    private void assertDrlDisabledInNative(SolverConfig solverConfig, DetermineIfNativeBuildItem determineIfNative) {
+        if (!determineIfNative.isNative()) {
+            return;
+        }
+        if (solverConfig.getScoreDirectorFactoryConfig().getScoreDrlList() == null) {
+            return;
+        }
+        throw new IllegalStateException("Score DRL is not supported during native build.\n" +
+                "Consider switching to Constraint Streams.");
+    }
+
     private void registerClassesFromAnnotations(IndexView indexView, Set<Class<?>> reflectiveClassSet) {
         for (DotNames.BeanDefiningAnnotations beanDefiningAnnotation : DotNames.BeanDefiningAnnotations.values()) {
             for (AnnotationInstance annotationInstance : indexView
@@ -466,11 +494,10 @@ class OptaPlannerProcessor {
         }
     }
 
-    protected void applyScoreDirectorFactoryProperties(IndexView indexView, SolverConfig solverConfig,
-            Capabilities capabilities) {
+    protected void applyScoreDirectorFactoryProperties(IndexView indexView, SolverConfig solverConfig) {
         Optional<String> constraintsDrlFromProperty = constraintsDrl();
         Optional<String> defaultConstraintsDrl = defaultConstraintsDrl();
-        Optional<String> effectiveConstraintsDrl = constraintsDrlFromProperty.map(Optional::of).orElse(defaultConstraintsDrl);
+        Optional<String> effectiveConstraintsDrl = constraintsDrlFromProperty.or(() -> defaultConstraintsDrl);
         if (solverConfig.getScoreDirectorFactoryConfig() == null) {
             ScoreDirectorFactoryConfig scoreDirectorFactoryConfig =
                     defaultScoreDirectoryFactoryConfig(indexView, effectiveConstraintsDrl);
@@ -484,26 +511,6 @@ class OptaPlannerProcessor {
                     defaultConstraintsDrl.ifPresent(resolvedConstraintsDrl -> scoreDirectorFactoryConfig
                             .setScoreDrlList(Collections.singletonList(resolvedConstraintsDrl)));
                 }
-            }
-        }
-
-        if (solverConfig.getScoreDirectorFactoryConfig().getScoreDrlList() != null) {
-            boolean isKogitoExtensionPresent = capabilities.isPresent("kogito-rules");
-            if (!isKogitoExtensionPresent) {
-                throw new IllegalStateException(
-                        "Using scoreDRL in Quarkus, but the dependency org.kie.kogito:kogito-quarkus-rules is not "
-                                + "on the classpath.\n"
-                                + "Maybe add the dependency org.kie.kogito:kogito-quarkus-rules"
-                                + "\nMaybe use a " + ConstraintProvider.class.getSimpleName() + " instead of the scoreDRL.");
-            }
-            // TODO: Remove this check when https://issues.redhat.com/browse/PLANNER-2572 is resolved.
-            boolean isResteasyJacksonExtensionPresent = capabilities.isPresent(Capability.RESTEASY_JSON_JACKSON);
-            if (!isResteasyJacksonExtensionPresent) {
-                throw new IllegalStateException(
-                        "Using scoreDRL in Quarkus, but the dependency org.kie.kogito:kogito-quarkus-rules requires "
-                                + "also io.quarkus:quarkus-resteasy-jackson to be on the classpath.\n"
-                                + "Maybe add the dependency io.quarkus:quarkus-resteasy-jackson"
-                                + "\nMaybe use a " + ConstraintProvider.class.getSimpleName() + " instead of the scoreDRL.");
             }
         }
 
@@ -603,7 +610,6 @@ class OptaPlannerProcessor {
     private GeneratedGizmoClasses generateDomainAccessors(SolverConfig solverConfig, IndexView indexView,
             BuildProducer<GeneratedBeanBuildItem> generatedBeans,
             BuildProducer<GeneratedClassBuildItem> generatedClasses,
-            BuildProducer<UnremovableBeanBuildItem> unremovableBeans,
             BuildProducer<BytecodeTransformerBuildItem> transformers, Set<Class<?>> reflectiveClassSet) {
         // Use mvn quarkus:dev -Dquarkus.debug.generated-classes-dir=dump-classes
         // to dump generated classes
@@ -629,9 +635,8 @@ class OptaPlannerProcessor {
 
                         try {
                             generatedMemberAccessorsClassNameSet
-                                    .add(GizmoMemberAccessorEntityEnhancer.generateFieldAccessor(annotatedMember, indexView,
-                                            classOutput,
-                                            classInfo, fieldInfo, transformers));
+                                    .add(GizmoMemberAccessorEntityEnhancer.generateFieldAccessor(annotatedMember,
+                                            classOutput, classInfo, fieldInfo, transformers));
                         } catch (ClassNotFoundException | NoSuchFieldException e) {
                             throw new IllegalStateException("Fail to generate member accessor for field (" +
                                     fieldInfo.name() + ") of the class( " +
@@ -645,9 +650,8 @@ class OptaPlannerProcessor {
 
                         try {
                             generatedMemberAccessorsClassNameSet.add(
-                                    GizmoMemberAccessorEntityEnhancer.generateMethodAccessor(annotatedMember, indexView,
-                                            classOutput,
-                                            classInfo, methodInfo, transformers));
+                                    GizmoMemberAccessorEntityEnhancer.generateMethodAccessor(annotatedMember,
+                                            classOutput, classInfo, methodInfo, transformers));
                         } catch (ClassNotFoundException | NoSuchMethodException e) {
                             throw new IllegalStateException("Failed to generate member accessor for the method (" +
                                     methodInfo.name() + ") of the class (" +
@@ -670,8 +674,6 @@ class OptaPlannerProcessor {
         }
 
         GizmoMemberAccessorEntityEnhancer.generateGizmoBeanFactory(beanClassOutput, reflectiveClassSet, transformers);
-        GizmoMemberAccessorEntityEnhancer.generateKieRuntimeBuilder(beanClassOutput,
-                solverConfig, unremovableBeans, transformers);
         return new GeneratedGizmoClasses(generatedMemberAccessorsClassNameSet, gizmoSolutionClonerClassNameSet);
     }
 

@@ -24,9 +24,12 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.TimeUnit;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -35,6 +38,7 @@ import org.assertj.core.api.junit.jupiter.SoftAssertionsExtension;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Timeout;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.ScoreManager;
@@ -59,7 +63,10 @@ import org.optaplanner.core.config.solver.monitoring.SolverMetric;
 import org.optaplanner.core.config.solver.termination.TerminationConfig;
 import org.optaplanner.core.impl.heuristic.selector.common.decorator.SelectionFilter;
 import org.optaplanner.core.impl.heuristic.selector.move.generic.ChangeMove;
+import org.optaplanner.core.impl.phase.custom.CustomPhaseCommand;
 import org.optaplanner.core.impl.phase.custom.NoChangeCustomPhaseCommand;
+import org.optaplanner.core.impl.phase.event.PhaseLifecycleListenerAdapter;
+import org.optaplanner.core.impl.phase.scope.AbstractStepScope;
 import org.optaplanner.core.impl.testdata.domain.TestdataEntity;
 import org.optaplanner.core.impl.testdata.domain.TestdataSolution;
 import org.optaplanner.core.impl.testdata.domain.TestdataValue;
@@ -226,6 +233,8 @@ public class DefaultSolverTest {
                                 Meter.Type.COUNTER));
     }
 
+    // TODO: Enable with Micrometer 1.7.8 or later.
+    @Disabled("https://github.com/micrometer-metrics/micrometer/issues/2947")
     @Test
     public void solveMetrics() {
         TestMeterRegistry meterRegistry = new TestMeterRegistry();
@@ -250,7 +259,7 @@ public class DefaultSolverTest {
                 meterRegistry.publish(solver);
                 assertThat(meterRegistry.getMeasurement(SolverMetric.SOLVE_DURATION.getMeterId(), "ACTIVE_TASKS")).isOne();
                 assertThat(meterRegistry.getMeasurement(SolverMetric.SOLVE_DURATION.getMeterId(), "DURATION").longValue())
-                        .isEqualTo(TimeUnit.SECONDS.toNanos(2));
+                        .isEqualTo(2L);
                 updatedTime.set(true);
             }
         });
@@ -354,6 +363,128 @@ public class DefaultSolverTest {
                 .isEqualTo(0);
         assertThat(meterRegistry.getMeasurement(SolverMetric.BEST_SCORE.getMeterId() + ".soft.score", "VALUE").intValue())
                 .isEqualTo(2);
+    }
+
+    private static class SetTestdataEntityValueCustomPhaseCommand implements CustomPhaseCommand<TestdataHardSoftScoreSolution> {
+        final TestdataEntity entity;
+        final TestdataValue value;
+
+        public SetTestdataEntityValueCustomPhaseCommand(TestdataEntity entity, TestdataValue value) {
+            this.entity = entity;
+            this.value = value;
+        }
+
+        @Override
+        public void changeWorkingSolution(ScoreDirector<TestdataHardSoftScoreSolution> scoreDirector) {
+            TestdataEntity workingEntity = scoreDirector.lookUpWorkingObject(entity);
+            TestdataValue workingValue = scoreDirector.lookUpWorkingObject(value);
+
+            scoreDirector.beforeVariableChanged(workingEntity, "value");
+            workingEntity.setValue(workingValue);
+            scoreDirector.afterVariableChanged(workingEntity, "value");
+            scoreDirector.triggerVariableListeners();
+        }
+    }
+
+    @Test
+    public void solveStepScoreMetrics() {
+        TestMeterRegistry meterRegistry = new TestMeterRegistry();
+        Metrics.addRegistry(meterRegistry);
+
+        SolverConfig solverConfig = PlannerTestUtils.buildSolverConfig(
+                TestdataHardSoftScoreSolution.class, TestdataEntity.class);
+        solverConfig.setScoreDirectorFactoryConfig(
+                new ScoreDirectorFactoryConfig().withConstraintProviderClass(BestScoreMetricConstraintProvider.class));
+        solverConfig.setTerminationConfig(new TerminationConfig().withBestScoreLimit("0hard/3soft"));
+        solverConfig.setMonitoringConfig(new MonitoringConfig()
+                .withSolverMetricList(List.of(SolverMetric.STEP_SCORE)));
+
+        TestdataHardSoftScoreSolution solution = new TestdataHardSoftScoreSolution("s1");
+        TestdataEntity e1 = new TestdataEntity("e1");
+        TestdataEntity e2 = new TestdataEntity("e2");
+        TestdataEntity e3 = new TestdataEntity("e3");
+        TestdataValue none = new TestdataValue("none");
+        TestdataValue reward = new TestdataValue("reward");
+        solution.setValueList(Arrays.asList(none, reward));
+        solution.setEntityList(Arrays.asList(e1, e2, e3));
+
+        solverConfig.setPhaseConfigList(List.of(
+                // Force OptaPlanner to select "none" value which reward 0 soft
+                new ConstructionHeuristicPhaseConfig()
+                        .withConstructionHeuristicType(ConstructionHeuristicType.FIRST_FIT)
+                        .withMoveSelectorConfigList(
+                                List.of(new ChangeMoveSelectorConfig()
+                                        .withFilterClass(NoneValueSelectionFilter.class))),
+                // Then do a custom phase, to force certain steps to be taken
+                new CustomPhaseConfig()
+                        .withCustomPhaseCommands(
+                                new SetTestdataEntityValueCustomPhaseCommand(e1, reward),
+                                new SetTestdataEntityValueCustomPhaseCommand(e2, reward),
+                                new SetTestdataEntityValueCustomPhaseCommand(e1, none),
+                                new SetTestdataEntityValueCustomPhaseCommand(e1, reward),
+                                new SetTestdataEntityValueCustomPhaseCommand(e3, reward))));
+        SolverFactory<TestdataHardSoftScoreSolution> solverFactory = SolverFactory.create(solverConfig);
+
+        Solver<TestdataHardSoftScoreSolution> solver = solverFactory.buildSolver();
+        ((DefaultSolver<TestdataHardSoftScoreSolution>) solver).setMonitorTagMap(Map.of("solver.id", "solveMetrics"));
+        AtomicInteger step = new AtomicInteger(-1);
+
+        ((DefaultSolver<TestdataHardSoftScoreSolution>) solver)
+                .addPhaseLifecycleListener(new PhaseLifecycleListenerAdapter<TestdataHardSoftScoreSolution>() {
+                    @Override
+                    public void stepEnded(AbstractStepScope<TestdataHardSoftScoreSolution> stepScope) {
+                        super.stepEnded(stepScope);
+                        meterRegistry.publish(solver);
+
+                        // first 3 steps are construction heuristic steps and don't have a step score since it uninitialized
+                        if (step.get() < 2) {
+                            step.incrementAndGet();
+                            return;
+                        }
+
+                        assertThat(
+                                meterRegistry.getMeasurement(SolverMetric.STEP_SCORE.getMeterId() + ".hard.score", "VALUE")
+                                        .intValue())
+                                                .isEqualTo(0);
+
+                        if (step.get() == 2) {
+                            assertThat(
+                                    meterRegistry.getMeasurement(SolverMetric.STEP_SCORE.getMeterId() + ".soft.score", "VALUE")
+                                            .intValue())
+                                                    .isEqualTo(0);
+                        } else if (step.get() == 3) {
+                            assertThat(
+                                    meterRegistry.getMeasurement(SolverMetric.STEP_SCORE.getMeterId() + ".soft.score", "VALUE")
+                                            .intValue())
+                                                    .isEqualTo(1);
+                        } else if (step.get() == 4) {
+                            assertThat(
+                                    meterRegistry.getMeasurement(SolverMetric.STEP_SCORE.getMeterId() + ".soft.score", "VALUE")
+                                            .intValue())
+                                                    .isEqualTo(2);
+                        } else if (step.get() == 5) {
+                            assertThat(
+                                    meterRegistry.getMeasurement(SolverMetric.STEP_SCORE.getMeterId() + ".soft.score", "VALUE")
+                                            .intValue())
+                                                    .isEqualTo(1);
+                        } else if (step.get() == 6) {
+                            assertThat(
+                                    meterRegistry.getMeasurement(SolverMetric.STEP_SCORE.getMeterId() + ".soft.score", "VALUE")
+                                            .intValue())
+                                                    .isEqualTo(2);
+                        }
+                        step.incrementAndGet();
+                    }
+                });
+        solution = solver.solve(solution);
+
+        assertThat(step.get()).isEqualTo(7);
+        meterRegistry.publish(solver);
+        assertThat(solution).isNotNull();
+        assertThat(meterRegistry.getMeasurement(SolverMetric.STEP_SCORE.getMeterId() + ".hard.score", "VALUE").intValue())
+                .isEqualTo(0);
+        assertThat(meterRegistry.getMeasurement(SolverMetric.STEP_SCORE.getMeterId() + ".soft.score", "VALUE").intValue())
+                .isEqualTo(3);
     }
 
     public static class ErrorThrowingConstraintProvider implements ConstraintProvider {
@@ -547,6 +678,47 @@ public class DefaultSolverTest {
         solution = solver.solve(solution);
         assertThat(solution).isNotNull();
         assertThat(solution.getScore().isSolutionInitialized()).isFalse();
+    }
+
+    @Test
+    @Timeout(60)
+    public void solveWithProblemChange() throws InterruptedException {
+        SolverConfig solverConfig = PlannerTestUtils.buildSolverConfig(TestdataSolution.class, TestdataEntity.class);
+        solverConfig.setDaemon(true); // Avoid terminating the solver too quickly.
+        SolverFactory<TestdataSolution> solverFactory = SolverFactory.create(solverConfig);
+        Solver<TestdataSolution> solver = solverFactory.buildSolver();
+        final int valueCount = 4;
+        TestdataSolution solution = TestdataSolution.generateSolution(valueCount, valueCount);
+
+        AtomicReference<TestdataSolution> bestSolution = new AtomicReference<>();
+        CountDownLatch solverStarted = new CountDownLatch(1);
+        CountDownLatch solutionWithProblemChangeReceived = new CountDownLatch(1);
+        solver.addEventListener(bestSolutionChangedEvent -> {
+            solverStarted.countDown();
+            if (bestSolutionChangedEvent.isEveryProblemChangeProcessed()) {
+                TestdataSolution newBestSolution = bestSolutionChangedEvent.getNewBestSolution();
+                if (newBestSolution.getValueList().size() == valueCount + 1) {
+                    bestSolution.set(newBestSolution);
+                    solutionWithProblemChangeReceived.countDown();
+                }
+            }
+        });
+
+        ExecutorService executorService = Executors.newSingleThreadExecutor();
+        executorService.submit(() -> {
+            solver.solve(solution);
+        });
+
+        solverStarted.await(); // Make sure we submit a ProblemChange only after the Solver started solving.
+        solver.addProblemChange((workingSolution, problemChangeDirector) -> {
+            problemChangeDirector.addProblemFact(new TestdataValue("added value"), solution.getValueList()::add);
+        });
+
+        solutionWithProblemChangeReceived.await();
+        assertThat(bestSolution.get().getValueList()).hasSize(valueCount + 1);
+
+        solver.terminateEarly();
+        executorService.shutdown();
     }
 
     @Test

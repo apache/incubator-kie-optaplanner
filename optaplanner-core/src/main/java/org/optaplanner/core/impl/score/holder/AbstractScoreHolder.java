@@ -16,6 +16,7 @@
 
 package org.optaplanner.core.impl.score.holder;
 
+import java.lang.reflect.InvocationTargetException;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -35,9 +36,34 @@ import org.optaplanner.core.api.score.constraint.ConstraintMatch;
 import org.optaplanner.core.api.score.constraint.ConstraintMatchTotal;
 import org.optaplanner.core.api.score.constraint.Indictment;
 import org.optaplanner.core.api.score.holder.ScoreHolder;
+import org.optaplanner.core.impl.score.buildin.BendableBigDecimalScoreDefinition;
+import org.optaplanner.core.impl.score.buildin.BendableLongScoreDefinition;
+import org.optaplanner.core.impl.score.buildin.BendableScoreDefinition;
+import org.optaplanner.core.impl.score.buildin.HardMediumSoftBigDecimalScoreDefinition;
+import org.optaplanner.core.impl.score.buildin.HardMediumSoftLongScoreDefinition;
+import org.optaplanner.core.impl.score.buildin.HardMediumSoftScoreDefinition;
+import org.optaplanner.core.impl.score.buildin.HardSoftBigDecimalScoreDefinition;
+import org.optaplanner.core.impl.score.buildin.HardSoftLongScoreDefinition;
+import org.optaplanner.core.impl.score.buildin.HardSoftScoreDefinition;
+import org.optaplanner.core.impl.score.buildin.SimpleBigDecimalScoreDefinition;
+import org.optaplanner.core.impl.score.buildin.SimpleLongScoreDefinition;
+import org.optaplanner.core.impl.score.buildin.SimpleScoreDefinition;
 import org.optaplanner.core.impl.score.constraint.DefaultConstraintMatchTotal;
 import org.optaplanner.core.impl.score.constraint.DefaultIndictment;
-import org.optaplanner.core.impl.score.director.drools.DroolsScoreDirector;
+import org.optaplanner.core.impl.score.definition.ScoreDefinition;
+import org.optaplanner.core.impl.score.director.drl.DrlScoreDirector;
+import org.optaplanner.core.impl.score.director.drl.holder.BendableBigDecimalScoreHolderImpl;
+import org.optaplanner.core.impl.score.director.drl.holder.BendableLongScoreHolderImpl;
+import org.optaplanner.core.impl.score.director.drl.holder.BendableScoreHolderImpl;
+import org.optaplanner.core.impl.score.director.drl.holder.HardMediumSoftBigDecimalScoreHolderImpl;
+import org.optaplanner.core.impl.score.director.drl.holder.HardMediumSoftLongScoreHolderImpl;
+import org.optaplanner.core.impl.score.director.drl.holder.HardMediumSoftScoreHolderImpl;
+import org.optaplanner.core.impl.score.director.drl.holder.HardSoftBigDecimalScoreHolderImpl;
+import org.optaplanner.core.impl.score.director.drl.holder.HardSoftLongScoreHolderImpl;
+import org.optaplanner.core.impl.score.director.drl.holder.HardSoftScoreHolderImpl;
+import org.optaplanner.core.impl.score.director.drl.holder.SimpleBigDecimalScoreHolderImpl;
+import org.optaplanner.core.impl.score.director.drl.holder.SimpleLongScoreHolderImpl;
+import org.optaplanner.core.impl.score.director.drl.holder.SimpleScoreHolderImpl;
 
 /**
  * Abstract superclass for {@link ScoreHolder}.
@@ -46,6 +72,71 @@ import org.optaplanner.core.impl.score.director.drools.DroolsScoreDirector;
  * @param <Score_> the {@link Score} type
  */
 public abstract class AbstractScoreHolder<Score_ extends Score<Score_>> implements ScoreHolder<Score_> {
+
+    @Deprecated(forRemoval = true)
+    private static final String CUSTOM_SCORE_HOLDER_CLASS_PROPERTY_NAME =
+            "org.optaplanner.score.drools.holder";
+
+    public static <Score_ extends Score<Score_>, ScoreHolder_ extends AbstractScoreHolder<Score_>> ScoreHolder_
+            buildScoreHolder(ScoreDefinition<Score_> scoreDefinition, boolean constraintMatchEnabled) {
+        if (scoreDefinition instanceof SimpleScoreDefinition) {
+            return (ScoreHolder_) new SimpleScoreHolderImpl(constraintMatchEnabled);
+        } else if (scoreDefinition instanceof SimpleLongScoreDefinition) {
+            return (ScoreHolder_) new SimpleLongScoreHolderImpl(constraintMatchEnabled);
+        } else if (scoreDefinition instanceof SimpleBigDecimalScoreDefinition) {
+            return (ScoreHolder_) new SimpleBigDecimalScoreHolderImpl(constraintMatchEnabled);
+        } else if (scoreDefinition instanceof HardSoftScoreDefinition) {
+            return (ScoreHolder_) new HardSoftScoreHolderImpl(constraintMatchEnabled);
+        } else if (scoreDefinition instanceof HardSoftLongScoreDefinition) {
+            return (ScoreHolder_) new HardSoftLongScoreHolderImpl(constraintMatchEnabled);
+        } else if (scoreDefinition instanceof HardSoftBigDecimalScoreDefinition) {
+            return (ScoreHolder_) new HardSoftBigDecimalScoreHolderImpl(constraintMatchEnabled);
+        } else if (scoreDefinition instanceof HardMediumSoftScoreDefinition) {
+            return (ScoreHolder_) new HardMediumSoftScoreHolderImpl(constraintMatchEnabled);
+        } else if (scoreDefinition instanceof HardMediumSoftLongScoreDefinition) {
+            return (ScoreHolder_) new HardMediumSoftLongScoreHolderImpl(constraintMatchEnabled);
+        } else if (scoreDefinition instanceof HardMediumSoftBigDecimalScoreDefinition) {
+            return (ScoreHolder_) new HardMediumSoftBigDecimalScoreHolderImpl(constraintMatchEnabled);
+        } else if (scoreDefinition instanceof BendableScoreDefinition) {
+            BendableScoreDefinition bendableScoreDefinition = (BendableScoreDefinition) scoreDefinition;
+            return (ScoreHolder_) new BendableScoreHolderImpl(constraintMatchEnabled,
+                    bendableScoreDefinition.getHardLevelsSize(), bendableScoreDefinition.getSoftLevelsSize());
+        } else if (scoreDefinition instanceof BendableLongScoreDefinition) {
+            BendableLongScoreDefinition bendableScoreDefinition = (BendableLongScoreDefinition) scoreDefinition;
+            return (ScoreHolder_) new BendableLongScoreHolderImpl(constraintMatchEnabled,
+                    bendableScoreDefinition.getHardLevelsSize(), bendableScoreDefinition.getSoftLevelsSize());
+        } else if (scoreDefinition instanceof BendableBigDecimalScoreDefinition) {
+            BendableBigDecimalScoreDefinition bendableScoreDefinition = (BendableBigDecimalScoreDefinition) scoreDefinition;
+            return (ScoreHolder_) new BendableBigDecimalScoreHolderImpl(constraintMatchEnabled,
+                    bendableScoreDefinition.getHardLevelsSize(), bendableScoreDefinition.getSoftLevelsSize());
+        } else {
+            String customScoreHolderClassName = System.getProperty(CUSTOM_SCORE_HOLDER_CLASS_PROPERTY_NAME);
+            if (customScoreHolderClassName == null) {
+                throw new UnsupportedOperationException("Unknown score definition class (" +
+                        scoreDefinition.getClass().getCanonicalName() + ").\n" +
+                        "If you're attempting to use a custom score, " +
+                        "provide your " + AbstractScoreHolder.class.getSimpleName() + " implementation using the '" +
+                        CUSTOM_SCORE_HOLDER_CLASS_PROPERTY_NAME + "' system property.\n" +
+                        "Note: support for custom scores will be removed in OptaPlanner 9.0.");
+            }
+            try {
+                Class<?> customScoreHolderClass = Class.forName(customScoreHolderClassName);
+                if (!AbstractScoreHolder.class.isAssignableFrom(customScoreHolderClass)) {
+                    throw new IllegalStateException("Custom score holder class (" + customScoreHolderClassName +
+                            ") does not extend " + AbstractScoreHolder.class.getCanonicalName() + ".\n" +
+                            "Note: support for custom scores will be removed in OptaPlanner 9.0.");
+                }
+                return ((Class<ScoreHolder_>) customScoreHolderClass).getConstructor()
+                        .newInstance();
+            } catch (ClassNotFoundException | NoSuchMethodException | InstantiationException | IllegalAccessException
+                    | InvocationTargetException cause) {
+                throw new IllegalStateException("Custom score holder class (" + customScoreHolderClassName +
+                        ") can not be instantiated.\n" +
+                        "Maybe add a no-arg public constructor?\n" +
+                        "Note: support for custom scores will be removed in OptaPlanner 9.0.", cause);
+            }
+        }
+    }
 
     protected final boolean constraintMatchEnabled;
     protected final Map<String, ConstraintMatchTotal<Score_>> constraintMatchTotalMap;
@@ -99,7 +190,7 @@ public abstract class AbstractScoreHolder<Score_ extends Score<Score_>> implemen
     /**
      * Requires a custom rule event listener to be added as event listener on {@link KieSession},
      * otherwise the score changes caused by the constraint matches would not be undone.
-     * See {@link DroolsScoreDirector#setWorkingSolution(Object)} for an example.
+     * See {@link DrlScoreDirector#setWorkingSolution(Object)} for an example.
      *
      * @param kcontext The rule for which to register the match.
      * @param constraintUndoListener The operation to run to undo the match.

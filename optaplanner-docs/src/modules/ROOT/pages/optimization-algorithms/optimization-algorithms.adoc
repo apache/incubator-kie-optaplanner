@@ -99,7 +99,7 @@ image::optimization-algorithms/scalabilityOfOptimizationAlgorithms.png[align="ce
 Each of these algorithm families have multiple optimization algorithms:
 
 .Optimization Algorithms Overview
-[cols="1,1,1,1,1,1", options="header"]
+[cols="15,^7,^7,^7,^7,^8", options="header"]
 |===
 |Algorithm |Scalable? |Optimal? |Easy to use? |Tweakable? |Requires CH?
 
@@ -760,7 +760,7 @@ Any change on the planning entities in a `CustomPhaseCommand` must be notified t
 ====
 Do not change any of the problem facts in a `CustomPhaseCommand`.
 That will corrupt the `Solver` because any previous score or solution was for a different problem.
-To do that, read about xref:repeated-planning/repeated-planning.adoc#repeatedPlanning[repeated planning] and do it with a xref:repeated-planning/repeated-planning.adoc#problemFactChange[ProblemFactChange] instead.
+To do that, read about xref:repeated-planning/repeated-planning.adoc#repeatedPlanning[repeated planning] and do it with a xref:repeated-planning/repeated-planning.adoc#problemChange[ProblemChange] instead.
 ====
 
 Configure the `CustomPhaseCommand` in the solver configuration:

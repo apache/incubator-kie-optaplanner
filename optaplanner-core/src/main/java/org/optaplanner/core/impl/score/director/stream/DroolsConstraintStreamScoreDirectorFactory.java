@@ -27,7 +27,6 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Function;
-import java.util.function.Supplier;
 
 import org.drools.ancompiler.KieBaseUpdaterANC;
 import org.drools.model.Global;
@@ -51,12 +50,11 @@ import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.constraint.ConstraintMatchTotal;
 import org.optaplanner.core.api.score.stream.Constraint;
 import org.optaplanner.core.api.score.stream.ConstraintProvider;
-import org.optaplanner.core.config.score.director.ScoreDirectorFactoryConfig;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.core.impl.score.definition.ScoreDefinition;
-import org.optaplanner.core.impl.score.director.drools.OptaPlannerRuleEventListener;
-import org.optaplanner.core.impl.score.inliner.ScoreInliner;
-import org.optaplanner.core.impl.score.inliner.WeightedScoreImpacter;
+import org.optaplanner.core.impl.score.director.drl.OptaPlannerRuleEventListener;
+import org.optaplanner.core.impl.score.stream.common.inliner.AbstractScoreInliner;
+import org.optaplanner.core.impl.score.stream.common.inliner.WeightedScoreImpacter;
 import org.optaplanner.core.impl.score.stream.drools.DroolsConstraint;
 import org.optaplanner.core.impl.score.stream.drools.DroolsConstraintFactory;
 import org.optaplanner.core.impl.score.stream.drools.SessionDescriptor;
@@ -74,22 +72,7 @@ public final class DroolsConstraintStreamScoreDirectorFactory<Solution_, Score_ 
                 droolsAlphaNetworkCompilationEnabled);
     }
 
-    private static <Solution_> KieBaseDescriptor<Solution_> assertIsKieBaseDescriptor(Supplier<KieBase> kieBaseSupplier) {
-        if (kieBaseSupplier instanceof KieBaseDescriptor) {
-            return (KieBaseDescriptor<Solution_>) kieBaseSupplier;
-        }
-        throw new IllegalArgumentException("The kieBaseSupplier (" + kieBaseSupplier + ") is not a "
-                + KieBaseDescriptor.class.getSimpleName() + ". Maybe remove calls to "
-                + ScoreDirectorFactoryConfig.class.getSimpleName() + ".setKieBaseSupplier(Supplier)?");
-    }
-
     @SuppressWarnings("unchecked")
-    public DroolsConstraintStreamScoreDirectorFactory(SolutionDescriptor<Solution_> solutionDescriptor,
-            Supplier<KieBase> kieBaseDescriptorSupplier, boolean droolsAlphaNetworkCompilationEnabled) {
-        this(solutionDescriptor, assertIsKieBaseDescriptor(kieBaseDescriptorSupplier),
-                droolsAlphaNetworkCompilationEnabled);
-    }
-
     public DroolsConstraintStreamScoreDirectorFactory(SolutionDescriptor<Solution_> solutionDescriptor,
             KieBaseDescriptor<Solution_> kieBaseDescriptor, boolean droolsAlphaNetworkCompilationEnabled) {
         super(solutionDescriptor);
@@ -146,8 +129,8 @@ public final class DroolsConstraintStreamScoreDirectorFactory<Solution_, Score_ 
         ((RuleEventManager) kieSession).addEventListener(new OptaPlannerRuleEventListener()); // Enables undo in rules.
         // Build and set the impacters for each constraint; this locks in the constraint weights.
         ScoreDefinition<Score_> scoreDefinition = solutionDescriptor.getScoreDefinition();
-        ScoreInliner<Score_> scoreInliner =
-                scoreDefinition.buildScoreInliner((Map) constraintToWeightMap, constraintMatchEnabled);
+        AbstractScoreInliner<Score_> scoreInliner = AbstractScoreInliner.buildScoreInliner(scoreDefinition,
+                (Map) constraintToWeightMap, constraintMatchEnabled);
         Set<String> disabledConstraints = new HashSet<>();
         for (Map.Entry<DroolsConstraint<Solution_>, Score_> entry : constraintToWeightMap.entrySet()) {
             DroolsConstraint<Solution_> constraint = entry.getKey();

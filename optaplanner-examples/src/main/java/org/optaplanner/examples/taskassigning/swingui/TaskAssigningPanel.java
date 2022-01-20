@@ -139,11 +139,9 @@ public class TaskAssigningPanel extends SolutionPanel<TaskAssigningSolution> {
         }
         logger.debug("Scheduling consumption of all tasks up to {} minutes.", consumedTime);
         previousConsumedTime = consumedTime;
-        doProblemFactChange(scoreDirector -> {
-            TaskAssigningSolution solution = scoreDirector.getWorkingSolution();
-            solution.setFrozenCutoff(consumedTime);
+        doProblemChange((taskAssigningSolution, problemChangeDirector) -> {
+            taskAssigningSolution.setFrozenCutoff(consumedTime);
             // TODO update list variable pins: https://issues.redhat.com/browse/PLANNER-2633.
-            scoreDirector.triggerVariableListeners();
         });
     }
 
@@ -164,12 +162,11 @@ public class TaskAssigningPanel extends SolutionPanel<TaskAssigningSolution> {
         logger.debug("Scheduling production of {} new tasks.", newTaskCount);
         previousProducedTime = producedTime;
         final int readyTime = previousConsumedTime;
-        doProblemFactChange(scoreDirector -> {
-            TaskAssigningSolution solution = scoreDirector.getWorkingSolution();
-            List<TaskType> taskTypeList = solution.getTaskTypeList();
-            List<Customer> customerList = solution.getCustomerList();
+        doProblemChange((taskAssigningSolution, problemChangeDirector) -> {
+            List<TaskType> taskTypeList = taskAssigningSolution.getTaskTypeList();
+            List<Customer> customerList = taskAssigningSolution.getCustomerList();
             Priority[] priorities = Priority.values();
-            List<Task> taskList = solution.getTaskList();
+            List<Task> taskList = taskAssigningSolution.getTaskList();
             for (int i = 0; i < newTaskCount; i++) {
                 Task task = new Task();
                 TaskType taskType = taskTypeList.get(producingRandom.nextInt(taskTypeList.size()));
@@ -193,11 +190,8 @@ public class TaskAssigningPanel extends SolutionPanel<TaskAssigningSolution> {
                 task.setReadyTime(readyTime);
                 task.setPriority(priorities[producingRandom.nextInt(priorities.length)]);
 
-                scoreDirector.beforeEntityAdded(task);
-                taskList.add(task);
-                scoreDirector.afterEntityAdded(task);
+                problemChangeDirector.addEntity(task, taskList::add);
             }
-            scoreDirector.triggerVariableListeners();
         });
     }
 

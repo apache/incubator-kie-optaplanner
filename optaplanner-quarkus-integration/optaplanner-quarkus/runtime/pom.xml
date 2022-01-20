@@ -6,7 +6,7 @@
   <parent>
     <groupId>org.optaplanner</groupId>
     <artifactId>optaplanner-quarkus-parent</artifactId>
-    <version>8.16.0-SNAPSHOT</version>
+    <version>8.17.0-SNAPSHOT</version>
   </parent>
 
   <artifactId>optaplanner-quarkus</artifactId>
@@ -43,16 +43,6 @@
     <dependency>
       <groupId>org.drools</groupId>
       <artifactId>drools-wiring-static</artifactId>
-    </dependency>
-    <dependency> <!-- Optional for when DRL needs to be used. -->
-      <groupId>org.kie.kogito</groupId>
-      <artifactId>kogito-drools</artifactId>
-      <optional>true</optional>
-    </dependency>
-    <dependency> <!-- Optional for when DRL needs to be used. -->
-      <groupId>org.kie.kogito</groupId>
-      <artifactId>kogito-legacy-api</artifactId>
-      <optional>true</optional>
     </dependency>
     <dependency>
       <groupId>org.graalvm.nativeimage</groupId>
