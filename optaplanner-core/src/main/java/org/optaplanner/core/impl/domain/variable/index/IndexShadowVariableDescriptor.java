@@ -122,4 +122,9 @@ public class IndexShadowVariableDescriptor<Solution_> extends ShadowVariableDesc
     public VariableListener<Solution_, ?> buildVariableListener(InnerScoreDirector<Solution_, ?> scoreDirector) {
         return new IndexVariableListener<>(this, sourceVariableDescriptor);
     }
+
+    @Override
+    public Integer getValue(Object entity) {
+        return (Integer) super.getValue(entity);
+    }
 }

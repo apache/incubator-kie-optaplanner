@@ -82,7 +82,7 @@ public class IndexVariableListener<Solution_> implements VariableListener<Soluti
         for (Object value : listVariable) {
             // TODO maybe update inverse relation variable (if exists) to avoid an extra loop
             //  in a dedicated inverse relation listener
-            Object oldIndex = shadowVariableDescriptor.getValue(value);
+            Integer oldIndex = shadowVariableDescriptor.getValue(value);
             if (oldIndex != null) {
                 throw new IllegalStateException("The entity (" + entity
                         + ") has a list variable (" + sourceVariableDescriptor.getVariableName()
@@ -105,7 +105,7 @@ public class IndexVariableListener<Solution_> implements VariableListener<Soluti
         }
         int index = 0;
         for (Object value : listVariable) {
-            Object oldIndex = shadowVariableDescriptor.getValue(value);
+            Integer oldIndex = shadowVariableDescriptor.getValue(value);
             if (!Objects.equals(oldIndex, index)) {
                 throw new IllegalStateException("The entity (" + entity
                         + ") has a list variable (" + sourceVariableDescriptor.getVariableName()
@@ -123,6 +123,6 @@ public class IndexVariableListener<Solution_> implements VariableListener<Soluti
 
     @Override
     public Integer getIndex(Object planningValue) {
-        return (Integer) shadowVariableDescriptor.getValue(planningValue);
+        return shadowVariableDescriptor.getValue(planningValue);
     }
 }
