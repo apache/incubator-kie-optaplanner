@@ -2,7 +2,7 @@
 = OptaPlanner Vaccination Scheduler
 
 
-:PRODUCTIZED:
+//:PRODUCTIZED:
 //Variable for the enterprise version conditional statements.
 
 ifndef::PRODUCTIZED[]
@@ -14,11 +14,11 @@ endif::PRODUCTIZED[]
 
 :context: optaplanner-vaccination-scheduler
 
-You can use the {OPTAPLANNER} vaccination appointment scheduler quick start to develop a vaccination schedule that is both efficient and fair. The vaccination appointment scheduler uses artificial intelligence (AI) to prioritize people and allocate time slots based on multiple constraints and priorities.
+You can use the {optaplanner} vaccination appointment scheduler quick start to develop a vaccination schedule that is both efficient and fair. The vaccination appointment scheduler uses artificial intelligence (AI) to prioritize people and allocate time slots based on multiple constraints and priorities.
 
 .Prerequisites
 
-* OpenJDK {OPTAPLANNER_JDK_VERSION} or later is installed.
+* OpenJDK {optaplanner-jdk-version}or later is installed.
 
 
 ifdef::PRODUCTIZED[]
@@ -26,7 +26,7 @@ Red Hat build of Open JDK is available from the https://access.redhat.com/jbossn
 endif::PRODUCTIZED[]
 
 
-* Apache Maven {OPTAPLANNER_MAVEN_VERSION} or higher is installed. Maven is available from the https://maven.apache.org/[Apache Maven Project] website.
+* Apache Maven {optaplanner-maven-version}or higher is installed. Maven is available from the https://maven.apache.org/[Apache Maven Project] website.
 
 * An IDE, such as IntelliJ IDEA, VSCode, Eclipse, or NetBeans is available.
 
@@ -36,13 +36,13 @@ ifdef::PRODUCTIZED[]
 endif::PRODUCTIZED[]
 
 ifndef::PRODUCTIZED[]
-* You have created a Quakus OptaPlanner project as described in https://www.optaplanner.org/docs/optaplanner/latest/quickstart/quickstart.html#quarkusJavaQuickStart.
+* You have created a Quakus OptaPlanner project as described in https://www.optaplanner.org/docs/optaplanner/latest/quickstart/quickstart.html#quarkusJavaQuickStart[Quarkus Java quick start].
 endif::PRODUCTIZED[]
 
 
 
 [id="vaccination-scheduler-con_{context}"]
-== How the {OPTAPLANNER} vaccination appointment scheduler works
+== How the {optaplanner} vaccination appointment scheduler works
 
 There are two main approaches to scheduling appointments. The system can either let a person choose an appointment slot (user-selects) or the system assigns a slot and tells the person when and where to attend (system-automatically-assigns). The OptaPlanner vaccination appointment scheduler uses the system-automatically-assigns approach. With the OptaPlanner vaccination appointment scheduler, you can create an application where people provide their information to the system and the system assigns an appointment.
 
@@ -56,7 +56,7 @@ This approach solves the problem of vaccinating as many people as possible by us
 
 
 [id="vaccination-contraints-con_{context}"]
-== {OPTAPLANNER} vaccination appointment scheduler constraints
+== {optaplanner} vaccination appointment scheduler constraints
 
 OptaPlanner vaccination appointment scheduler constraints are either hard, medium, or soft:
 
@@ -106,9 +106,9 @@ Because there are often more people than available appointment slots, you must p
 
 
 [id="optaplanner-solver-con_{context}"]
-== The {OPTAPLANNER} solver
+== The {optaplanner} solver
 
-At the core of {OPTAPLANNER} is the solver, the engine that takes the problem data set and overlays the planning constraints and configurations. The problem data set includes all of the information about the people, the vaccines, and the vaccination centers. The solver works through the various combinations of data and eventually determines an optimized appointment schedule with people assigned to vaccination appointments at a specific center.  The following illustration shows a schedule that the solver created:
+At the core of {optaplanner} is the solver, the engine that takes the problem data set and overlays the planning constraints and configurations. The problem data set includes all of the information about the people, the vaccines, and the vaccination centers. The solver works through the various combinations of data and eventually determines an optimized appointment schedule with people assigned to vaccination appointments at a specific center.  The following illustration shows a schedule that the solver created:
 
 
 
@@ -123,7 +123,7 @@ Continuous planning is the technique of managing one or more upcoming planning p
 
 image::use-cases-and-examples/vaccination-scheduling/vaccinationSchedulingContinuousPlanning.png[]
 
-The two week planning window is divided in half. The first week is in the published state and the second week is in the draft state.  People are assigned to appointments in both the published and draft parts of the planning window. However, only people in the published part of the planning window are notified of their appointments. The other appointments can still change easily in the next run. Doing this gives {OPTAPLANNER} the flexibility to change the appointments in the draft part when you run the solver again, if necessary. For example, if a person who needs a second dose has a ready date of Monday and an ideal date of Wednesday, OptaPlanner does not have to give them an appointment for Monday if you can prove OptaPlanner can demonstrate that it can give them a draft appointment later in the week.
+The two week planning window is divided in half. The first week is in the published state and the second week is in the draft state.  People are assigned to appointments in both the published and draft parts of the planning window. However, only people in the published part of the planning window are notified of their appointments. The other appointments can still change easily in the next run. Doing this gives {optaplanner} the flexibility to change the appointments in the draft part when you run the solver again, if necessary. For example, if a person who needs a second dose has a ready date of Monday and an ideal date of Wednesday, OptaPlanner does not have to give them an appointment for Monday if you can prove OptaPlanner can demonstrate that it can give them a draft appointment later in the week.
 
 You can determine the size of the planning window but just be aware of the size of the problem space. The problem space is all of the various elements that go into creating the schedule. The more days you plan ahead, the larger the problem space.
 
@@ -131,7 +131,7 @@ You can determine the size of the planning window but just be aware of the size 
 [id="pinned-planning-entities-con_{context}"]
 == Pinned planning entities
 
-If you are continuously planning on a daily basis, there will be appointments within the two week period that are already allocated to people. To ensure that appointments are not double-booked, {OPTAPLANNER} marks existing appointments as allocated by pinning them. Pinning is used to anchor one or more specific assignments and force OptaPlanner to schedule around those fixed assignments.  A pinned planning entity, such as an appointment, does not change during solving.
+If you are continuously planning on a daily basis, there will be appointments within the two week period that are already allocated to people. To ensure that appointments are not double-booked, {optaplanner} marks existing appointments as allocated by pinning them. Pinning is used to anchor one or more specific assignments and force OptaPlanner to schedule around those fixed assignments.  A pinned planning entity, such as an appointment, does not change during solving.
 
 Whether an entity is pinned or not is determined by the appointment state. An appointment can have five states : `Open`, `Invited`, `Accepted`, `Rejected`, or `Rescheduled`.
 
@@ -145,14 +145,14 @@ Notice that the appointments on the new day have been assigned and Amy and Edna 
 
 
 [id="vaccination-scheduler-download-proc_{context}"]
-== Downloading and running the {OPTAPLANNER} vaccination appointment scheduler
+== Downloading and running the {optaplanner} vaccination appointment scheduler
 
 Download the OptaPlanner vaccination appointment scheduler quick start archive, start it in Quarkus development mode, and view the application in a browser. Quarkus development mode enables you to make changes and update your application while it is running.
 
 .Procedure
 
 
-ifdef::OPTAPLANNER-COMM[]
+ifndef::PRODUCTIZED[]
 . Clone the `https://github.com/kiegroup/optaplanner-quickstarts` GitHub repository:
 +
 [source]
@@ -160,7 +160,7 @@ ifdef::OPTAPLANNER-COMM[]
 git clone https://github.com/kiegroup/optaplanner-quickstarts.git
 ----
 . Navigate to the `optaplanner-quickstarts/quarkus-vaccination-scheduling`  directory.
-endif::OPTAPLANNER-COMM[]
+endif::PRODUCTIZED[]
 
 
 ifdef::PRODUCTIZED[]
@@ -193,7 +193,7 @@ http://localhost:8080/
 . Make changes to the source code then press the F5 key to refresh your browser. Notice that the changes that you made are now available.
 
 [id="vaccination-scheduler-package-proc_{context}"]
-== Package and run the {OPTAPLANNER} vaccination appointment scheduler
+== Package and run the {optaplanner} vaccination appointment scheduler
 
 When you have completed development work on the OptaPlanner vaccination appointment scheduler in `quarkus:dev` mode, run the application as a conventional JAR file.
 
@@ -230,7 +230,7 @@ http://localhost:8080/
 ----
 
 [id="vaccination-native-proc_{context}"]
-== Run the {OPTAPLANNER} vaccination appointment scheduler as a native executable
+== Run the {optaplanner} vaccination appointment scheduler as a native executable
 
 To take advantage of the small memory footprint and access speeds that Quarkus offers, compile the OptaPlanner vaccination appointment scheduler in Quarkus native mode.
 
