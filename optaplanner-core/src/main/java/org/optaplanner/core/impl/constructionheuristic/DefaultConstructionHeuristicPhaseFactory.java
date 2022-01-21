@@ -48,7 +48,7 @@ import org.optaplanner.core.impl.constructionheuristic.placer.EntityPlacerFactor
 import org.optaplanner.core.impl.constructionheuristic.placer.PooledEntityPlacerFactory;
 import org.optaplanner.core.impl.constructionheuristic.placer.QueuedEntityPlacerFactory;
 import org.optaplanner.core.impl.constructionheuristic.placer.QueuedValuePlacerFactory;
-import org.optaplanner.core.impl.domain.variable.descriptor.GenuineVariableDescriptor;
+import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.core.impl.domain.variable.descriptor.ListVariableDescriptor;
 import org.optaplanner.core.impl.heuristic.HeuristicConfigPolicy;
 import org.optaplanner.core.impl.phase.AbstractPhaseFactory;
@@ -84,9 +84,7 @@ public class DefaultConstructionHeuristicPhaseFactory<Solution_>
                 .build();
         Termination<Solution_> phaseTermination = buildPhaseTermination(phaseConfigPolicy, solverTermination);
         EntityPlacerConfig entityPlacerConfig_ = getValidEntityPlacerConfig()
-                .orElseGet(() -> getValidListVariableDescriptor(solverConfigPolicy)
-                        .map(variableDescriptor -> buildListVariablePlacerConfig(phaseConfigPolicy, variableDescriptor))
-                        .orElseGet(() -> buildUnfoldedEntityPlacerConfig(phaseConfigPolicy, constructionHeuristicType_)));
+                .orElseGet(() -> buildDefaultEntityPlacerConfig(phaseConfigPolicy, constructionHeuristicType_));
         EntityPlacer<Solution_> entityPlacer = EntityPlacerFactory.<Solution_> create(entityPlacerConfig_)
                 .buildEntityPlacer(phaseConfigPolicy);
 
@@ -127,9 +125,16 @@ public class DefaultConstructionHeuristicPhaseFactory<Solution_>
         return Optional.of(entityPlacerConfig);
     }
 
-    private Optional<ListVariableDescriptor<?>> getValidListVariableDescriptor(HeuristicConfigPolicy<?> solverConfigPolicy) {
-        List<? extends GenuineVariableDescriptor<?>> listVariableDescriptors =
-                solverConfigPolicy.getSolutionDescriptor().findListVariableDescriptors();
+    private EntityPlacerConfig buildDefaultEntityPlacerConfig(HeuristicConfigPolicy<Solution_> configPolicy,
+            ConstructionHeuristicType constructionHeuristicType) {
+        return findValidListVariableDescriptor(configPolicy.getSolutionDescriptor())
+                .map(listVariableDescriptor -> buildListVariableQueuedValuePlacerConfig(configPolicy, listVariableDescriptor))
+                .orElseGet(() -> buildUnfoldedEntityPlacerConfig(configPolicy, constructionHeuristicType));
+    }
+
+    private Optional<ListVariableDescriptor<?>> findValidListVariableDescriptor(
+            SolutionDescriptor<Solution_> solutionDescriptor) {
+        List<ListVariableDescriptor<Solution_>> listVariableDescriptors = solutionDescriptor.findListVariableDescriptors();
         if (listVariableDescriptors.isEmpty()) {
             return Optional.empty();
         }
@@ -142,7 +147,7 @@ public class DefaultConstructionHeuristicPhaseFactory<Solution_>
         failIfConfigured(phaseConfig.getEntityPlacerConfig(), "entityPlacerConfig");
         failIfConfigured(phaseConfig.getMoveSelectorConfigList(), "moveSelectorConfigList");
 
-        return Optional.of(((ListVariableDescriptor<?>) listVariableDescriptors.get(0)));
+        return Optional.of(listVariableDescriptors.get(0));
     }
 
     private static void failIfConfigured(Object configValue, String configName) {
@@ -152,9 +157,9 @@ public class DefaultConstructionHeuristicPhaseFactory<Solution_>
         }
     }
 
-    private static EntityPlacerConfig buildListVariablePlacerConfig(
+    private static EntityPlacerConfig buildListVariableQueuedValuePlacerConfig(
             HeuristicConfigPolicy<?> configPolicy,
-            GenuineVariableDescriptor<?> variableDescriptor) {
+            ListVariableDescriptor<?> variableDescriptor) {
         String mimicSelectorId = variableDescriptor.getVariableName();
 
         // Prepare recording ValueSelector config.

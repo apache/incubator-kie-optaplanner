@@ -779,15 +779,16 @@ public class SolutionDescriptor<Solution_> {
         return variableDescriptor;
     }
 
-    public List<GenuineVariableDescriptor<Solution_>> findListVariableDescriptors() {
+    public List<ListVariableDescriptor<Solution_>> findListVariableDescriptors() {
         return streamListVariableDescriptors().collect(Collectors.toList());
     }
 
-    private Stream<GenuineVariableDescriptor<Solution_>> streamListVariableDescriptors() {
+    private Stream<ListVariableDescriptor<Solution_>> streamListVariableDescriptors() {
         return getGenuineEntityDescriptors().stream()
                 .map(EntityDescriptor::getGenuineVariableDescriptorList)
                 .flatMap(Collection::stream)
-                .filter(GenuineVariableDescriptor::isListVariable);
+                .filter(GenuineVariableDescriptor::isListVariable)
+                .map(variableDescriptor -> ((ListVariableDescriptor<Solution_>) variableDescriptor));
     }
 
     // ************************************************************************
@@ -1002,8 +1003,7 @@ public class SolutionDescriptor<Solution_> {
     public int countUninitialized(Solution_ solution) {
         return streamListVariableDescriptors()
                 .findFirst()
-                .map(variableDescriptor -> countUnassignedValues(
-                        solution, (ListVariableDescriptor<Solution_>) variableDescriptor))
+                .map(variableDescriptor -> countUnassignedValues(solution, variableDescriptor))
                 .orElseGet(() -> countUninitializedVariables(solution));
     }
 
