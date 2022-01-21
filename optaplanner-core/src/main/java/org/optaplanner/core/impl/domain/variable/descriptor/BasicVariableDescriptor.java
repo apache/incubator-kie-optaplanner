@@ -62,17 +62,20 @@ public class BasicVariableDescriptor<Solution_> extends GenuineVariableDescripto
 
     private void processChained(DescriptorPolicy descriptorPolicy, PlanningVariable planningVariableAnnotation) {
         chained = planningVariableAnnotation.graphType() == PlanningVariableGraphType.CHAINED;
-        if (chained && !variableMemberAccessor.getType().isAssignableFrom(entityDescriptor.getEntityClass())) {
+        if (!chained) {
+            return;
+        }
+        if (!acceptsValueType(entityDescriptor.getEntityClass())) {
             throw new IllegalArgumentException("The entityClass (" + entityDescriptor.getEntityClass()
                     + ") has a @" + PlanningVariable.class.getSimpleName()
                     + " annotated property (" + variableMemberAccessor.getName()
-                    + ") with chained (" + chained + ") and propertyType (" + variableMemberAccessor.getType()
+                    + ") with chained (" + chained + ") and propertyType (" + getVariablePropertyType()
                     + ") which is not a superclass/interface of or the same as the entityClass ("
                     + entityDescriptor.getEntityClass() + ").\n"
                     + "If an entity's chained planning variable cannot point to another entity of the same class,"
-                    + " then it is impossible to make chain longer than 1 entity and therefore chaining is useless.");
+                    + " then it is impossible to make a chain longer than 1 entity and therefore chaining is useless.");
         }
-        if (chained && nullable) {
+        if (nullable) {
             throw new IllegalArgumentException("The entityClass (" + entityDescriptor.getEntityClass()
                     + ") has a @" + PlanningVariable.class.getSimpleName()
                     + " annotated property (" + variableMemberAccessor.getName()
