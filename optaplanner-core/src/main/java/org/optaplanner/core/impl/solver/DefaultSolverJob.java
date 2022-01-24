@@ -20,14 +20,17 @@ import java.time.Duration;
 import java.util.Objects;
 import java.util.UUID;
 import java.util.concurrent.Callable;
-import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
+import java.util.concurrent.RejectedExecutionException;
+import java.util.concurrent.Semaphore;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
@@ -60,6 +63,7 @@ public final class DefaultSolverJob<Solution_, ProblemId_> implements SolverJob<
     private final BiConsumer<? super ProblemId_, ? super Throwable> exceptionHandler;
 
     private final AtomicReference<Solution_> bestSolutionWaitingForConsumption = new AtomicReference<>();
+    private final AtomicReference<Throwable> finalBestSolutionConsumptionError = new AtomicReference<>();
 
     private volatile SolverStatus solverStatus;
     private final CountDownLatch terminatedLatch;
@@ -67,7 +71,10 @@ public final class DefaultSolverJob<Solution_, ProblemId_> implements SolverJob<
 
     private ExecutorService consumerExecutor;
     private Future<Solution_> finalBestSolutionFuture;
-    private AtomicBoolean activeConsumption = new AtomicBoolean();
+    private Semaphore activeConsumption = new Semaphore(1);
+
+    //TODO: remove
+    private AtomicInteger bestSolutionCount = new AtomicInteger();
 
     public DefaultSolverJob(
             DefaultSolverManager<Solution_, ProblemId_> solverManager,
@@ -124,6 +131,7 @@ public final class DefaultSolverJob<Solution_, ProblemId_> implements SolverJob<
             solver.addPhaseLifecycleListener(new UnlockLockPhaseLifecycleListener());
             if (bestSolutionConsumer != null) {
                 solver.addEventListener(event -> {
+                    bestSolutionCount.incrementAndGet(); // TODO: remove
                     consumeIntermediateBestSolution(event.getNewBestSolution());
                 });
             }
@@ -151,35 +159,65 @@ public final class DefaultSolverJob<Solution_, ProblemId_> implements SolverJob<
 
     // Called on the Solver thread.
     private void consumeIntermediateBestSolution(Solution_ bestSolution) {
-        if (!activeConsumption.getAndSet(true)) {
+        int number = bestSolutionCount.get();
+        System.out.println("[" + getProblemId() + "] " + "number: " + number);
+
+        if (activeConsumption.tryAcquire()) {
+            System.out.println("[" + getProblemId() + "] " + "Scheduling consumption for BS " + number + "[shutdown: " + consumerExecutor.isShutdown() + "]");
             consumerExecutor.submit(() -> {
-                bestSolutionConsumer.accept(bestSolution);
-                consumptionCompleted();
+                System.out.println("[" + getProblemId() + "] " + "Consuming " + number);
+                try {
+                    bestSolutionConsumer.accept(bestSolution);
+                } catch (Throwable throwable) {
+                    exceptionHandler.accept(getProblemId(), throwable);
+                } finally {
+                    consumptionCompleted();
+                }
             });
         } else {
-            bestSolutionWaitingForConsumption.set(bestSolution);
+            System.out.println("[" + getProblemId() + "] " + "waiting for a consumer to finish. " + number);
+            bestSolutionWaitingForConsumption.set(bestSolution); // race condition with consumptionCompleted();
         }
     }
 
+    // Called on the Solver thread after Solver#solve() returns.
     private void consumeFinalBestSolution(Solution_ finalBestSolution) {
-        activeConsumption.set(true);
+        try {
+            activeConsumption.acquire(); // No tryLock() as the final best solution consumer takes precedence.
+        } catch (InterruptedException e) {
+            throw new IllegalStateException("Interrupted when waiting for a final best solution consumption.");
+        }
         consumerExecutor.submit(() -> {
-            finalBestSolutionConsumer.accept(finalBestSolution);
-            activeConsumption.set(false);
+            try {
+                finalBestSolutionConsumer.accept(finalBestSolution);
+            } catch (Throwable throwable) {
+                finalBestSolutionConsumptionError.set(throwable);
+                exceptionHandler.accept(getProblemId(), throwable);
+            } finally {
+                consumptionCompleted();
+            }
         });
     }
 
     // Called on the consumer thread.
     private void consumptionCompleted() {
-        activeConsumption.set(false);
-        if (bestSolutionWaitingForConsumption.get() != null) {
-            consumeIntermediateBestSolution(bestSolutionWaitingForConsumption.get());
+        System.out.println("[" + getProblemId() + "] " + "Consumption completed. ");
+        Solution_ nextBestSolution = bestSolutionWaitingForConsumption.getAndSet(null);
+        if (nextBestSolution != null) {
+            activeConsumption.release();
+            System.out.println("[" + getProblemId() + "] " + "Consume a waiting BS");
+            consumeIntermediateBestSolution(nextBestSolution);
+        } else {
+            activeConsumption.release();
         }
     }
 
     private void solvingTerminated() {
         solverStatus = SolverStatus.NOT_SOLVING;
         solverManager.unregisterSolverJob(problemId);
+        if (consumerExecutor != null) {
+            consumerExecutor.shutdown();
+        }
         terminatedLatch.countDown();
     }
 
@@ -231,9 +269,14 @@ public final class DefaultSolverJob<Solution_, ProblemId_> implements SolverJob<
         }
     }
 
+    // TODO: Should this method wait for the final best solution consumption?
     @Override
     public Solution_ getFinalBestSolution() throws InterruptedException, ExecutionException {
-        return finalBestSolutionFuture.get();
+        Solution_ finalBestSolution = finalBestSolutionFuture.get();
+        if (finalBestSolutionConsumptionError.get() != null) {
+            throw new ExecutionException(finalBestSolutionConsumptionError.get());
+        }
+        return finalBestSolution;
     }
 
     @Override
@@ -253,7 +296,9 @@ public final class DefaultSolverJob<Solution_, ProblemId_> implements SolverJob<
     }
 
     protected void close() {
-        consumerExecutor.shutdownNow();
+        if (consumerExecutor != null) {
+            consumerExecutor.shutdown();
+        }
     }
 
     /**
