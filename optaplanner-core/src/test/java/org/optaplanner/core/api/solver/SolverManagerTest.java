@@ -273,28 +273,31 @@ public class SolverManagerTest {
                 solverConfig, new SolverManagerConfig().withParallelSolverCount("1"));
         AtomicInteger bestSolutionCount = new AtomicInteger();
         AtomicInteger finalBestSolutionCount = new AtomicInteger();
-        AtomicInteger exceptionCount = new AtomicInteger();
+        AtomicReference<Throwable> consumptionError = new AtomicReference<>();
         SolverJob<TestdataSolution, Long> solverJob1 = solverManager.solveAndListen(1L,
                 problemId -> PlannerTestUtils.generateTestdataSolution("s1", 4),
                 bestSolution -> {
-                    bestSolutionCount.incrementAndGet();
+                    boolean isFirstReceivedSolution = bestSolutionCount.incrementAndGet() == 1;
                     if (bestSolution.getEntityList().get(1).getValue() == null) {
+                        // This best solution may be skipped as well.
                         try {
                             latch.await();
                         } catch (InterruptedException e) {
                             fail("Latch failed.");
                         }
-                    } else if (bestSolution.getEntityList().get(2).getValue() == null) {
+                    } else if (bestSolution.getEntityList().get(2).getValue() == null && !isFirstReceivedSolution) {
                         fail("No skip ahead occurred: both e2 and e3 are null in a best solution event.");
                     }
                 },
                 finalBestSolution -> finalBestSolutionCount.incrementAndGet(),
-                (problemId, throwable) -> exceptionCount.incrementAndGet());
+                (problemId, throwable) -> consumptionError.set(throwable));
         assertSolutionInitialized(solverJob1.getFinalBestSolution());
         // EventCount can be 2 or 3, depending on the race, but it can never be 4.
         assertThat(bestSolutionCount).hasValueLessThan(4);
         assertThat(finalBestSolutionCount.get()).isEqualTo(1);
-        assertThat(exceptionCount).hasValue(0);
+        if (consumptionError.get() != null) {
+            fail("Error in the best solution consumer.", consumptionError.get());
+        }
         solverManager.close();
     }
 
@@ -484,12 +487,19 @@ public class SolverManagerTest {
 
     private void assertConsumedSolutionsWithListeningWhileSolving(Map<Long, List<TestdataSolution>> consumedSolutions) {
         consumedSolutions.forEach((problemId, bestSolutions) -> {
-            assertThat(bestSolutions.size())
-                    .withFailMessage("ProblemId (%d) was expected to have 2 best solutions but had (%d).",
-                            problemId, bestSolutions.size())
-                    .isEqualTo(2);
-            assertConsumedFirstBestSolution(bestSolutions.get(0));
-            assertConsumedFinalBestSolution(bestSolutions.get(1));
+            //            assertThat(bestSolutions.size())
+            //                    .withFailMessage("ProblemId (%d) was expected to have 2 best solutions but had (%d).",
+            //                            problemId, bestSolutions.size())
+            //                    .isEqualTo(2);
+            if (bestSolutions.size() == 2) {
+                assertConsumedFirstBestSolution(bestSolutions.get(0));
+                assertConsumedFinalBestSolution(bestSolutions.get(1));
+            } else if (bestSolutions.size() == 1) {
+
+            } else {
+                fail("Unexpected number of received best solutions ("
+                        + bestSolutions.size() + "). Should be either 1 or 2.");
+            }
         });
     }
 

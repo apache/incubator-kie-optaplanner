@@ -40,7 +40,7 @@ import org.slf4j.LoggerFactory;
 
 /**
  * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
- * @param <ProblemId_> the ID type of a submitted problem, such as {@link Long} or {@link UUID}.
+ * @param <ProblemId_> the ID type of submitted problem, such as {@link Long} or {@link UUID}.
  */
 public final class DefaultSolverManager<Solution_, ProblemId_> implements SolverManager<Solution_, ProblemId_> {
 
