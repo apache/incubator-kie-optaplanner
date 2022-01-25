@@ -97,7 +97,6 @@ public class SolverManagerTest {
 
         assertSolutionInitialized(solverJob1.getFinalBestSolution());
         assertSolutionInitialized(solverJob2.getFinalBestSolution());
-        solverManager.close();
     }
 
     private CustomPhaseConfig createPhaseWithConcurrentSolvingStart(int barrierPartiesCount) {
@@ -157,7 +156,6 @@ public class SolverManagerTest {
         assertThat(solverJob1.getSolverStatus()).isEqualTo(NOT_SOLVING);
         assertThat(solverManager.getSolverStatus(2L)).isEqualTo(NOT_SOLVING);
         assertThat(solverJob2.getSolverStatus()).isEqualTo(NOT_SOLVING);
-        solverManager.close();
     }
 
     @Test
@@ -181,7 +179,6 @@ public class SolverManagerTest {
         assertThat(exceptionCount.get()).isEqualTo(1);
         assertThat(solverManager.getSolverStatus(1L)).isEqualTo(NOT_SOLVING);
         assertThat(solverJob1.getSolverStatus()).isEqualTo(NOT_SOLVING);
-        solverManager.close();
     }
 
     @Test
@@ -197,9 +194,11 @@ public class SolverManagerTest {
         SolverJob<TestdataSolution, Long> solverJob1 = solverManager.solve(1L,
                 problemId -> PlannerTestUtils.generateTestdataSolution("s1"),
                 bestSolution -> {
-                    consumerInvoked.countDown();
                     throw new IllegalStateException("exceptionInConsumer");
-                }, (problemId, throwable) -> exceptionCount.incrementAndGet());
+                }, (problemId, throwable) -> {
+                    exceptionCount.incrementAndGet();
+                    consumerInvoked.countDown();
+                });
 
         consumerInvoked.await();
         assertThatThrownBy(solverJob1::getFinalBestSolution)
@@ -208,7 +207,6 @@ public class SolverManagerTest {
         assertThat(exceptionCount.get()).isEqualTo(1);
         assertThat(solverManager.getSolverStatus(1L)).isEqualTo(NOT_SOLVING);
         assertThat(solverJob1.getSolverStatus()).isEqualTo(NOT_SOLVING);
-        solverManager.close();
     }
 
     @Test
@@ -228,7 +226,6 @@ public class SolverManagerTest {
         SolverJob<TestdataSolution, Long> solverJob = solverManager.solve(1L, problemFinder, finalBestSolutionConsumer,
                 exceptionHandler);
         solverJob.getFinalBestSolution();
-        solverManager.close();
     }
 
     @Test
@@ -274,6 +271,7 @@ public class SolverManagerTest {
         AtomicInteger bestSolutionCount = new AtomicInteger();
         AtomicInteger finalBestSolutionCount = new AtomicInteger();
         AtomicReference<Throwable> consumptionError = new AtomicReference<>();
+        CountDownLatch finalBestSolutionConsumed = new CountDownLatch(1);
         SolverJob<TestdataSolution, Long> solverJob1 = solverManager.solveAndListen(1L,
                 problemId -> PlannerTestUtils.generateTestdataSolution("s1", 4),
                 bestSolution -> {
@@ -289,16 +287,19 @@ public class SolverManagerTest {
                         fail("No skip ahead occurred: both e2 and e3 are null in a best solution event.");
                     }
                 },
-                finalBestSolution -> finalBestSolutionCount.incrementAndGet(),
+                finalBestSolution -> {
+                    finalBestSolutionCount.incrementAndGet();
+                    finalBestSolutionConsumed.countDown();
+                },
                 (problemId, throwable) -> consumptionError.set(throwable));
         assertSolutionInitialized(solverJob1.getFinalBestSolution());
         // EventCount can be 2 or 3, depending on the race, but it can never be 4.
         assertThat(bestSolutionCount).hasValueLessThan(4);
+        finalBestSolutionConsumed.await();
         assertThat(finalBestSolutionCount.get()).isEqualTo(1);
         if (consumptionError.get() != null) {
             fail("Error in the best solution consumer.", consumptionError.get());
         }
-        solverManager.close();
     }
 
     @Test
@@ -359,7 +360,6 @@ public class SolverManagerTest {
         solverManager.terminateEarly(3L);
         assertThat(solverManager.getSolverStatus(3L)).isEqualTo(NOT_SOLVING);
         assertThat(solverJob3.getSolverStatus()).isEqualTo(NOT_SOLVING);
-        solverManager.close();
     }
 
     /**
@@ -386,7 +386,6 @@ public class SolverManagerTest {
         }
 
         assertInitializedJobs(jobs);
-        solverManager.close();
     }
 
     private void assertInitializedJobs(List<SolverJob<TestdataSolution, Long>> jobs)
@@ -398,7 +397,6 @@ public class SolverManagerTest {
     }
 
     @Test
-    // @Disabled
     @Timeout(60)
     public void submitMoreProblemsThanCpus_allGetSolved() throws InterruptedException, ExecutionException {
         // Use twice the amount of problems than available processors.
@@ -408,7 +406,6 @@ public class SolverManagerTest {
         assertSolveWithoutConsumer(problemCount, solverManager);
         assertSolveWithConsumer(problemCount, solverManager, true);
         assertSolveWithConsumer(problemCount, solverManager, false);
-        solverManager.close();
     }
 
     private SolverManager<TestdataSolution, Long> createSolverManagerTestableByDifferentConsumers() {
@@ -437,9 +434,8 @@ public class SolverManagerTest {
             throws InterruptedException, ExecutionException {
         List<SolverJob<TestdataSolution, Long>> jobs = new ArrayList<>(problemCount);
 
-        for (int id = 0; id < problemCount; id++) {
-            jobs.add(
-                    solverManager.solve(Long.valueOf(id), PlannerTestUtils.generateTestdataSolution(String.format("s%d", id))));
+        for (long id = 0; id < problemCount; id++) {
+            jobs.add(solverManager.solve(id, PlannerTestUtils.generateTestdataSolution(String.format("s%d", id))));
         }
         assertInitializedJobs(jobs);
     }
@@ -451,6 +447,7 @@ public class SolverManagerTest {
         // Two solutions should be created for every problem.
         Map<Long, List<TestdataSolution>> solutionMap = new HashMap<>(problemCount * 2);
 
+        CountDownLatch finalBestSolutionConsumed = new CountDownLatch(problemCount);
         List<SolverJob<TestdataSolution, Long>> jobs = new ArrayList<>(problemCount);
 
         for (long id = 0; id < problemCount; id++) {
@@ -460,17 +457,23 @@ public class SolverManagerTest {
                 jobs.add(solverManager.solveAndListen(
                         id,
                         problemId -> PlannerTestUtils.generateTestdataSolution(solutionName, 2),
-                        consumedBestSolutions::add, null));
+                        consumedBestSolutions::add, (finalBestSolution) -> {
+                            finalBestSolutionConsumed.countDown();
+                        }, null));
             } else {
                 jobs.add(solverManager.solve(
                         id,
                         problemId -> PlannerTestUtils.generateTestdataSolution(solutionName, 2),
-                        consumedBestSolutions::add, null));
+                        (finalBestSolution) -> {
+                            consumedBestSolutions.add(finalBestSolution);
+                            finalBestSolutionConsumed.countDown();
+                        }, null));
             }
             solutionMap.put(id, consumedBestSolutions);
         }
         assertInitializedJobs(jobs);
 
+        finalBestSolutionConsumed.await(); // Wait till all final best solutions have been consumed.
         if (listenWhileSolving) {
             assertConsumedSolutionsWithListeningWhileSolving(solutionMap);
         } else {
@@ -487,15 +490,11 @@ public class SolverManagerTest {
 
     private void assertConsumedSolutionsWithListeningWhileSolving(Map<Long, List<TestdataSolution>> consumedSolutions) {
         consumedSolutions.forEach((problemId, bestSolutions) -> {
-            //            assertThat(bestSolutions.size())
-            //                    .withFailMessage("ProblemId (%d) was expected to have 2 best solutions but had (%d).",
-            //                            problemId, bestSolutions.size())
-            //                    .isEqualTo(2);
             if (bestSolutions.size() == 2) {
                 assertConsumedFirstBestSolution(bestSolutions.get(0));
                 assertConsumedFinalBestSolution(bestSolutions.get(1));
-            } else if (bestSolutions.size() == 1) {
-
+            } else if (bestSolutions.size() == 1) { // The fist best solution has been skipped.
+                assertConsumedFinalBestSolution(bestSolutions.get(0));
             } else {
                 fail("Unexpected number of received best solutions ("
                         + bestSolutions.size() + "). Should be either 1 or 2.");
@@ -535,7 +534,6 @@ public class SolverManagerTest {
         solverManager.solve(1L, PlannerTestUtils.generateTestdataSolution("s1"));
         assertThatThrownBy(() -> solverManager.solve(1L, PlannerTestUtils.generateTestdataSolution("s1")))
                 .isInstanceOf(IllegalStateException.class).hasMessageContaining("already solving");
-        solverManager.close();
     }
 
     @Test
@@ -567,7 +565,6 @@ public class SolverManagerTest {
         });
 
         solutionWithProblemChangeReceived.await();
-        solverManager.close();
         assertThat(bestSolution.get().getValueList()).hasSize(entityAndValueCount + 1);
     }
 
@@ -633,7 +630,6 @@ public class SolverManagerTest {
         solvingPausedLatch.countDown();
 
         solutionWithProblemChangeReceived.await();
-        solverManager.close();
         assertThat(bestSolution.get().getValueList()).hasSize(entityAndValueCount + 1);
     }
 }

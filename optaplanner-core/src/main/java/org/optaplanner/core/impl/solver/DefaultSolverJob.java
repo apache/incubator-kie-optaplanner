@@ -161,6 +161,7 @@ public final class DefaultSolverJob<Solution_, ProblemId_> implements SolverJob<
             // As the solver has already finished, holding the solver thread is not an issue.
             activeConsumption.acquire();
         } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
             throw new IllegalStateException("Interrupted when waiting for the final best solution consumption.");
         }
         // Make sure the final best solution is consumed by the intermediate best solution consumer first.
@@ -186,7 +187,6 @@ public final class DefaultSolverJob<Solution_, ProblemId_> implements SolverJob<
         }
         if (activeConsumption.tryAcquire()) {
             scheduleIntermediateBestSolutionConsumption().thenRunAsync(() -> {
-                activeConsumption.release();
                 tryConsumeWaitingIntermediateBestSolution();
             }, consumerExecutor);
         }
@@ -199,13 +199,14 @@ public final class DefaultSolverJob<Solution_, ProblemId_> implements SolverJob<
     private CompletableFuture<Void> scheduleIntermediateBestSolutionConsumption() {
         return CompletableFuture.runAsync(() -> {
             Solution_ bestSolution = bestSolutionWaitingForConsumption.getAndSet(null);
-            if (bestSolution == null) {
-                return;
-            }
             try {
-                bestSolutionConsumer.accept(bestSolution);
+                if (bestSolution != null) {
+                    bestSolutionConsumer.accept(bestSolution);
+                }
             } catch (Throwable throwable) {
                 exceptionHandler.accept(getProblemId(), throwable);
+            } finally {
+                activeConsumption.release();
             }
         }, consumerExecutor);
     }
@@ -213,7 +214,6 @@ public final class DefaultSolverJob<Solution_, ProblemId_> implements SolverJob<
     private void solvingTerminated() {
         solverStatus = SolverStatus.NOT_SOLVING;
         solverManager.unregisterSolverJob(problemId);
-        close();
         terminatedLatch.countDown();
     }
 
@@ -293,7 +293,7 @@ public final class DefaultSolverJob<Solution_, ProblemId_> implements SolverJob<
 
     void close() {
         if (consumerExecutor != null) {
-            consumerExecutor.shutdown();
+            consumerExecutor.shutdownNow();
         }
     }
 
