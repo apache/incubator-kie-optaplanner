@@ -21,8 +21,10 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Semaphore;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.concurrent.locks.Lock;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
+import java.util.function.Supplier;
 
 final class ConsumerSupport<Solution_, ProblemId_> implements AutoCloseable {
 
@@ -30,17 +32,22 @@ final class ConsumerSupport<Solution_, ProblemId_> implements AutoCloseable {
     private final Consumer<? super Solution_> bestSolutionConsumer;
     private final Consumer<? super Solution_> finalBestSolutionConsumer;
     private final BiConsumer<? super ProblemId_, ? super Throwable> exceptionHandler;
+    private final Lock consumptionLock;
+    private final Supplier<Boolean> isEveryProblemChangeProcessed;
     private final AtomicReference<Solution_> bestSolutionWaitingForConsumption = new AtomicReference<>();
     private final Semaphore activeConsumption = new Semaphore(1);
     private ExecutorService consumerExecutor = Executors.newSingleThreadExecutor();
 
     public ConsumerSupport(ProblemId_ problemId, Consumer<? super Solution_> bestSolutionConsumer,
             Consumer<? super Solution_> finalBestSolutionConsumer,
-            BiConsumer<? super ProblemId_, ? super Throwable> exceptionHandler) {
+            BiConsumer<? super ProblemId_, ? super Throwable> exceptionHandler, Lock consumptionLock,
+            Supplier<Boolean> isEveryProblemChangeProcessed) {
         this.problemId = problemId;
         this.bestSolutionConsumer = bestSolutionConsumer;
         this.finalBestSolutionConsumer = finalBestSolutionConsumer;
         this.exceptionHandler = exceptionHandler;
+        this.consumptionLock = consumptionLock;
+        this.isEveryProblemChangeProcessed = isEveryProblemChangeProcessed;
     }
 
     // Called on the Solver thread.
@@ -100,11 +107,15 @@ final class ConsumerSupport<Solution_, ProblemId_> implements AutoCloseable {
             Solution_ bestSolution = bestSolutionWaitingForConsumption.getAndSet(null);
             try {
                 if (bestSolution != null) {
-                    bestSolutionConsumer.accept(bestSolution);
+                    consumptionLock.lock(); // Lock the consumer to avoid interfering with external changes.
+                    if (isEveryProblemChangeProcessed.get()) {
+                        bestSolutionConsumer.accept(bestSolution);
+                    }
                 }
             } catch (Throwable throwable) {
                 exceptionHandler.accept(problemId, throwable);
             } finally {
+                consumptionLock.unlock();
                 activeConsumption.release();
             }
         }, consumerExecutor);

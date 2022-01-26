@@ -316,6 +316,8 @@ public interface SolverManager<Solution_, ProblemId_> extends AutoCloseable {
      */
     void addProblemChange(ProblemId_ problemId, ProblemChange<Solution_> problemChange);
 
+    ConsumptionPause pauseBestSolutionConsumer(ProblemId_ problemId);
+
     /**
      * Terminates the solver or cancels the solver job if it hasn't (re)started yet.
      * <p>

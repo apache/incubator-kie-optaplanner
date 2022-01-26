@@ -28,6 +28,7 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
+import org.optaplanner.core.api.solver.ConsumptionPause;
 import org.optaplanner.core.api.solver.Solver;
 import org.optaplanner.core.api.solver.SolverFactory;
 import org.optaplanner.core.api.solver.SolverJob;
@@ -155,6 +156,18 @@ public final class DefaultSolverManager<Solution_, ProblemId_> implements Solver
                             + problemId + ").");
         }
         solverJob.addProblemChange(problemChange);
+    }
+
+    @Override
+    public ConsumptionPause pauseBestSolutionConsumer(ProblemId_ problemId) {
+        DefaultSolverJob<Solution_, ProblemId_> solverJob = getSolverJob(problemId);
+        if (solverJob == null) {
+            // We cannot distinguish between "already terminated" and "never solved" without causing a memory leak.
+            throw new IllegalStateException(
+                    "Cannot pause a best solution consumer because there is no solver solving the problemId ("
+                            + problemId + ").");
+        }
+        return solverJob.pauseBestSolutionConsumer();
     }
 
     @Override

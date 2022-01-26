@@ -23,12 +23,15 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
+import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantLock;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
+import org.optaplanner.core.api.solver.ConsumptionPause;
 import org.optaplanner.core.api.solver.Solver;
 import org.optaplanner.core.api.solver.SolverJob;
 import org.optaplanner.core.api.solver.SolverStatus;
@@ -57,6 +60,7 @@ public final class DefaultSolverJob<Solution_, ProblemId_> implements SolverJob<
     private volatile SolverStatus solverStatus;
     private final CountDownLatch terminatedLatch;
     private final ReentrantLock solverStatusModifyingLock;
+    private final ReadWriteLock consumptionLock = new ReentrantReadWriteLock();
     private Future<Solution_> finalBestSolutionFuture;
     private ConsumerSupport<Solution_, ProblemId_> consumerSupport;
 
@@ -110,7 +114,7 @@ public final class DefaultSolverJob<Solution_, ProblemId_> implements SolverJob<
             solverStatus = SolverStatus.SOLVING_ACTIVE;
             // Create the consumer thread pool only when this solver job is active.
             consumerSupport = new ConsumerSupport<>(getProblemId(), bestSolutionConsumer, finalBestSolutionConsumer,
-                    exceptionHandler);
+                    exceptionHandler, consumptionLock.writeLock(), () -> solver.isEveryProblemChangeProcessed());
 
             Solution_ problem = problemFinder.apply(problemId);
             // add a phase lifecycle listener that unlock the solver status lock when solving started
@@ -161,6 +165,12 @@ public final class DefaultSolverJob<Solution_, ProblemId_> implements SolverJob<
                     + ") is not solving.");
         }
         solver.addProblemChange(problemChange);
+    }
+
+    @Override
+    public ConsumptionPause pauseBestSolutionConsumer() {
+        consumptionLock.readLock().lock();
+        return () -> consumptionLock.readLock().unlock();
     }
 
     @Override

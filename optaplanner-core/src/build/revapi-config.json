@@ -465,6 +465,24 @@
           "methodName": "addProblemChange",
           "elementKind": "method",
           "justification": "Added method to submit problem change. Users are not supposed to implement the SolverManager interface."
+        },
+        {
+          "code": "java.method.addedToInterface",
+          "new": "method org.optaplanner.core.api.solver.ConsumptionPause org.optaplanner.core.api.solver.SolverJob<Solution_, ProblemId_>::pauseBestSolutionConsumer()",
+          "package": "org.optaplanner.core.api.solver",
+          "classSimpleName": "SolverJob",
+          "methodName": "pauseBestSolutionConsumer",
+          "elementKind": "method",
+          "justification": "Added a method to pause a consumer thread. Users are not supposed to implement the SolverJob interface."
+        },
+        {
+          "code": "java.method.addedToInterface",
+          "new": "method org.optaplanner.core.api.solver.ConsumptionPause org.optaplanner.core.api.solver.SolverManager<Solution_, ProblemId_>::pauseBestSolutionConsumer(ProblemId_)",
+          "package": "org.optaplanner.core.api.solver",
+          "classSimpleName": "SolverManager",
+          "methodName": "pauseBestSolutionConsumer",
+          "elementKind": "method",
+          "justification": "Added a method to pause a consumer thread. Users are not supposed to implement the SolverManager interface."
         }
       ]
     }

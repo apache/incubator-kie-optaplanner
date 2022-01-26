@@ -24,6 +24,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.concurrent.locks.ReentrantLock;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
@@ -56,7 +57,7 @@ class ConsumerSupportTest {
             } catch (InterruptedException e) {
                 error.set(new IllegalStateException("Interrupted waiting.", e));
             }
-        }, null, null);
+        }, null, null, new ReentrantLock(), () -> true);
 
         // This solution may be skipped.
         consumerSupport.consumeIntermediateBestSolution(TestdataSolution.generateSolution(1, 1));

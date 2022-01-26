@@ -537,7 +537,7 @@ class SolverManagerTest {
 
     @Test
     @Timeout(60)
-    void submitProblemChange() throws InterruptedException {
+    void addProblemChange() throws InterruptedException {
         SolverConfig solverConfig = PlannerTestUtils.buildSolverConfig(TestdataSolution.class, TestdataEntity.class);
         solverConfig.setDaemon(true);
         solverManager = SolverManager.create(solverConfig);
