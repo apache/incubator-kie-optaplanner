@@ -20,14 +20,9 @@ import java.time.Duration;
 import java.util.Objects;
 import java.util.UUID;
 import java.util.concurrent.Callable;
-import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutionException;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
-import java.util.concurrent.Semaphore;
-import java.util.concurrent.atomic.AtomicReference;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
@@ -59,16 +54,11 @@ public final class DefaultSolverJob<Solution_, ProblemId_> implements SolverJob<
     private final Consumer<? super Solution_> finalBestSolutionConsumer;
     private final BiConsumer<? super ProblemId_, ? super Throwable> exceptionHandler;
 
-    private final AtomicReference<Solution_> bestSolutionWaitingForConsumption = new AtomicReference<>();
-    private final AtomicReference<Throwable> finalBestSolutionConsumptionError = new AtomicReference<>();
-
     private volatile SolverStatus solverStatus;
     private final CountDownLatch terminatedLatch;
     private final ReentrantLock solverStatusModifyingLock;
-    private final Semaphore activeConsumption = new Semaphore(1);
-
-    private ExecutorService consumerExecutor;
     private Future<Solution_> finalBestSolutionFuture;
+    private ConsumerSupport<Solution_, ProblemId_> consumerSupport;
 
     public DefaultSolverJob(
             DefaultSolverManager<Solution_, ProblemId_> solverManager,
@@ -118,17 +108,19 @@ public final class DefaultSolverJob<Solution_, ProblemId_> implements SolverJob<
         }
         try {
             solverStatus = SolverStatus.SOLVING_ACTIVE;
-            // Create the executor only when this solver job is active.
-            consumerExecutor = Executors.newSingleThreadExecutor();
+            // Create the consumer thread pool only when this solver job is active.
+            consumerSupport = new ConsumerSupport<>(getProblemId(), bestSolutionConsumer, finalBestSolutionConsumer,
+                    exceptionHandler);
+
             Solution_ problem = problemFinder.apply(problemId);
             // add a phase lifecycle listener that unlock the solver status lock when solving started
             solver.addPhaseLifecycleListener(new UnlockLockPhaseLifecycleListener());
             if (bestSolutionConsumer != null) {
-                solver.addEventListener(event -> consumeIntermediateBestSolution(event.getNewBestSolution()));
+                solver.addEventListener(event -> consumerSupport.consumeIntermediateBestSolution(event.getNewBestSolution()));
             }
             final Solution_ finalBestSolution = solver.solve(problem);
             if (finalBestSolutionConsumer != null) {
-                consumeFinalBestSolution(finalBestSolution);
+                consumerSupport.consumeFinalBestSolution(finalBestSolution);
             }
             return finalBestSolution;
         } catch (Exception e) {
@@ -146,69 +138,6 @@ public final class DefaultSolverJob<Solution_, ProblemId_> implements SolverJob<
             }
             solvingTerminated();
         }
-    }
-
-    // Called on the Solver thread.
-    private void consumeIntermediateBestSolution(Solution_ bestSolution) {
-        bestSolutionWaitingForConsumption.set(bestSolution);
-        tryConsumeWaitingIntermediateBestSolution();
-    }
-
-    // Called on the Solver thread after Solver#solve() returns.
-    private void consumeFinalBestSolution(Solution_ finalBestSolution) {
-        try {
-            // Wait for the previous consumption to complete.
-            // As the solver has already finished, holding the solver thread is not an issue.
-            activeConsumption.acquire();
-        } catch (InterruptedException e) {
-            Thread.currentThread().interrupt();
-            throw new IllegalStateException("Interrupted when waiting for the final best solution consumption.");
-        }
-        // Make sure the final best solution is consumed by the intermediate best solution consumer first.
-        // Situation:
-        // The consumer is consuming the last but one best solution. The final best solution is waiting for the consumer.
-        scheduleIntermediateBestSolutionConsumption();
-        consumerExecutor.submit(() -> {
-            try {
-                finalBestSolutionConsumer.accept(finalBestSolution);
-            } catch (Throwable throwable) {
-                finalBestSolutionConsumptionError.set(throwable);
-                exceptionHandler.accept(getProblemId(), throwable);
-            } finally {
-                activeConsumption.release();
-            }
-        });
-    }
-
-    // Called both on the Solver thread and the Consumer thread.
-    private void tryConsumeWaitingIntermediateBestSolution() {
-        if (bestSolutionWaitingForConsumption.get() == null) {
-            return; // There is no best solution to consume.
-        }
-        if (activeConsumption.tryAcquire()) {
-            scheduleIntermediateBestSolutionConsumption().thenRunAsync(() -> {
-                tryConsumeWaitingIntermediateBestSolution();
-            }, consumerExecutor);
-        }
-    }
-
-    /**
-     * Called both on the Solver thread and the Consumer thread.
-     * Don't call without locking, otherwise multiple consumptions may be scheduled.
-     */
-    private CompletableFuture<Void> scheduleIntermediateBestSolutionConsumption() {
-        return CompletableFuture.runAsync(() -> {
-            Solution_ bestSolution = bestSolutionWaitingForConsumption.getAndSet(null);
-            try {
-                if (bestSolution != null) {
-                    bestSolutionConsumer.accept(bestSolution);
-                }
-            } catch (Throwable throwable) {
-                exceptionHandler.accept(getProblemId(), throwable);
-            } finally {
-                activeConsumption.release();
-            }
-        }, consumerExecutor);
     }
 
     private void solvingTerminated() {
@@ -265,14 +194,9 @@ public final class DefaultSolverJob<Solution_, ProblemId_> implements SolverJob<
         }
     }
 
-    // TODO: Should this method wait for the final best solution consumption?
     @Override
     public Solution_ getFinalBestSolution() throws InterruptedException, ExecutionException {
-        Solution_ finalBestSolution = finalBestSolutionFuture.get();
-        if (finalBestSolutionConsumptionError.get() != null) {
-            throw new ExecutionException(finalBestSolutionConsumptionError.get());
-        }
-        return finalBestSolution;
+        return finalBestSolutionFuture.get();
     }
 
     @Override
@@ -292,8 +216,8 @@ public final class DefaultSolverJob<Solution_, ProblemId_> implements SolverJob<
     }
 
     void close() {
-        if (consumerExecutor != null) {
-            consumerExecutor.shutdownNow();
+        if (consumerSupport != null) {
+            consumerSupport.close();
         }
     }
 

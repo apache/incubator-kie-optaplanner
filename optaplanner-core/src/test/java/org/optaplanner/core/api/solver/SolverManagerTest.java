@@ -190,21 +190,20 @@ public class SolverManagerTest {
                 solverConfig, new SolverManagerConfig().withParallelSolverCount("1"));
 
         CountDownLatch consumerInvoked = new CountDownLatch(1);
-        AtomicInteger exceptionCount = new AtomicInteger();
+        AtomicReference<Throwable> errorInConsumer = new AtomicReference<>();
         SolverJob<TestdataSolution, Long> solverJob1 = solverManager.solve(1L,
                 problemId -> PlannerTestUtils.generateTestdataSolution("s1"),
                 bestSolution -> {
                     throw new IllegalStateException("exceptionInConsumer");
                 }, (problemId, throwable) -> {
-                    exceptionCount.incrementAndGet();
+                    errorInConsumer.set(throwable);
                     consumerInvoked.countDown();
                 });
 
         consumerInvoked.await();
-        assertThatThrownBy(solverJob1::getFinalBestSolution)
-                .isInstanceOf(ExecutionException.class)
-                .hasRootCauseMessage("exceptionInConsumer");
-        assertThat(exceptionCount.get()).isEqualTo(1);
+        assertThat(errorInConsumer.get())
+                .isInstanceOf(IllegalStateException.class)
+                .hasMessage("exceptionInConsumer");
         assertThat(solverManager.getSolverStatus(1L)).isEqualTo(NOT_SOLVING);
         assertThat(solverJob1.getSolverStatus()).isEqualTo(NOT_SOLVING);
     }
