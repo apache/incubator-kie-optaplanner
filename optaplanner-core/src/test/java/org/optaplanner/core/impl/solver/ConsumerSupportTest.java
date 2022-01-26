@@ -41,29 +41,37 @@ class ConsumerSupportTest {
 
     @Test
     @Timeout(60)
-    void skipAhead() {
+    void skipAhead() throws InterruptedException {
         CountDownLatch consumptionPaused = new CountDownLatch(1);
+        CountDownLatch consumptionCompleted = new CountDownLatch(1);
         AtomicReference<Throwable> error = new AtomicReference<>();
         List<TestdataSolution> consumedSolutions = Collections.synchronizedList(new ArrayList<>());
         consumerSupport = new ConsumerSupport<>(1L, testdataSolution -> {
             try {
                 consumptionPaused.await();
                 consumedSolutions.add(testdataSolution);
+                if (testdataSolution.getEntityList().size() == 3) { // The last best solution.
+                    consumptionCompleted.countDown();
+                }
             } catch (InterruptedException e) {
                 error.set(new IllegalStateException("Interrupted waiting.", e));
             }
         }, null, null);
 
+        // This solution may be skipped.
         consumerSupport.consumeIntermediateBestSolution(TestdataSolution.generateSolution(1, 1));
         // This solution should be skipped.
         consumerSupport.consumeIntermediateBestSolution(TestdataSolution.generateSolution(2, 2));
+        // This solution should never be skipped.
         consumerSupport.consumeIntermediateBestSolution(TestdataSolution.generateSolution(3, 3));
 
         consumptionPaused.countDown();
-
-        assertThat(consumedSolutions).hasSize(2);
-        assertThat(consumedSolutions.get(0).getEntityList()).hasSize(1);
-        assertThat(consumedSolutions.get(1).getEntityList()).hasSize(3);
+        consumptionCompleted.await();
+        assertThat(consumedSolutions).hasSizeBetween(1, 2);
+        if (consumedSolutions.size() == 2) {
+            assertThat(consumedSolutions.get(0).getEntityList()).hasSize(1);
+        }
+        assertThat(consumedSolutions.get(consumedSolutions.size() - 1).getEntityList()).hasSize(3);
 
         if (error.get() != null) {
             fail("Exception during consumption.", error.get());
