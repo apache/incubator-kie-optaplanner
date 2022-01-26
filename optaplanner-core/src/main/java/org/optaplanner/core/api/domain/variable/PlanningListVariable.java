@@ -27,14 +27,19 @@ import java.util.List;
 import org.optaplanner.core.api.domain.entity.PlanningEntity;
 
 /**
- * Specifies that a bean property (or a field) of a {@link List} type should be optimized by the optimization algorithms.
- * Unlike {@link PlanningVariable}, the {@link PlanningListVariable} tells solver to change elements inside the list variable
- * instead of changing the list reference.
- * <p>
+ * Specifies that a bean property (or a field) can be changed and should be optimized by the optimization algorithms.
  * It is specified on a getter of a java bean property (or directly on a field) of a {@link PlanningEntity} class.
- * <h3>Disjoint lists</h3>
+ * The type of the {@link PlanningListVariable} annotated bean property (or a field) must be {@link List}.
+ *
+ * <h2>List variable</h2>
  * <p>
- * The type of the {@link PlanningListVariable} annotated bean property (or field) must be {@link List}.
+ * A planning entity's property annotated with {@code @PlanningListVariable} is referred to
+ * as a <strong>list variable</strong>.
+ * The way solver optimizes a list variable is by adding, removing, or changing order of elements in the {@code List} object
+ * held by the list variable.
+ *
+ * <h2>Disjoint lists</h2>
+ * <p>
  * Furthermore, the current implementation works under the assumption that the list variables of all entity instances
  * are "disjoint lists":
  * <ul>
@@ -44,11 +49,10 @@ import org.optaplanner.core.api.domain.entity.PlanningEntity;
  * </ul>
  *
  * <p>
- * Therefore, we refer to such a planning variable as a <strong>list variable</strong>.
- * <p>
  * This makes sense for common use cases, for example the Vehicle Routing Problem or Task Assigning. In both cases
  * the <em>order</em> in which customers are visited and tasks are being worked on matters. Also, each customer
  * must be visited <em>once</em> and each task must be completed by <em>exactly one</em> employee.
+ *
  * <p>
  * <strong>Overconstrained planning is currently not supported for list variables.</strong>
  */
