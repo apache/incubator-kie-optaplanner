@@ -218,6 +218,7 @@ public final class DefaultSolverJob<Solution_, ProblemId_> implements SolverJob<
     void close() {
         if (consumerSupport != null) {
             consumerSupport.close();
+            consumerSupport = null;
         }
     }
 

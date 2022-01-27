@@ -24,7 +24,7 @@ import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
-final class ConsumerSupport<Solution_, ProblemId_> {
+final class ConsumerSupport<Solution_, ProblemId_> implements AutoCloseable {
 
     private final ProblemId_ problemId;
     private final Consumer<? super Solution_> bestSolutionConsumer;
@@ -110,7 +110,8 @@ final class ConsumerSupport<Solution_, ProblemId_> {
         }, consumerExecutor);
     }
 
-    void close() {
+    @Override
+    public void close() {
         if (consumerExecutor != null) {
             consumerExecutor.shutdownNow();
             consumerExecutor = null;
