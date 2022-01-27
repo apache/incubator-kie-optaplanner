@@ -16,7 +16,7 @@
   <version>8.16.1-SNAPSHOT</version>
 
   <name>OptaPlanner multiproject parent</name>
-  <description>test
+  <description>
     OptaPlanner solves planning problems.
     This lightweight, embeddable planning engine implements powerful and scalable algorithms
     to optimize business resource scheduling and planning.
