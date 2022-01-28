@@ -33,13 +33,14 @@ import org.optaplanner.core.api.solver.SolverFactory;
 import org.optaplanner.core.api.solver.SolverJob;
 import org.optaplanner.core.api.solver.SolverManager;
 import org.optaplanner.core.api.solver.SolverStatus;
+import org.optaplanner.core.api.solver.change.ProblemChange;
 import org.optaplanner.core.config.solver.SolverManagerConfig;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
  * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
- * @param <ProblemId_> the ID type of a submitted problem, such as {@link Long} or {@link UUID}.
+ * @param <ProblemId_> the ID type of submitted problem, such as {@link Long} or {@link UUID}.
  */
 public final class DefaultSolverManager<Solution_, ProblemId_> implements SolverManager<Solution_, ProblemId_> {
 
@@ -105,10 +106,6 @@ public final class DefaultSolverManager<Solution_, ProblemId_> implements Solver
             BiConsumer<? super ProblemId_, ? super Throwable> exceptionHandler) {
         Solver<Solution_> solver = solverFactory.buildSolver();
         ((DefaultSolver<Solution_>) solver).setMonitorTagMap(Map.of("problem.id", problemId.toString()));
-        // TODO consumption should happen on different thread than solver thread, doing skipAhead and throttling
-        if (bestSolutionConsumer != null) {
-            solver.addEventListener(event -> bestSolutionConsumer.accept(event.getNewBestSolution()));
-        }
         BiConsumer<? super ProblemId_, ? super Throwable> finalExceptionHandler = (exceptionHandler != null)
                 ? exceptionHandler
                 : defaultExceptionHandler;
@@ -118,12 +115,12 @@ public final class DefaultSolverManager<Solution_, ProblemId_> implements Solver
                         // TODO Future features: automatically restart solving by calling reloadProblem()
                         throw new IllegalStateException("The problemId (" + problemId + ") is already solving.");
                     } else {
-                        return new DefaultSolverJob<>(this, solver, problemId, problemFinder, finalBestSolutionConsumer,
-                                finalExceptionHandler);
+                        return new DefaultSolverJob<>(this, solver, problemId, problemFinder,
+                                bestSolutionConsumer, finalBestSolutionConsumer, finalExceptionHandler);
                     }
                 });
         Future<Solution_> future = solverThreadPool.submit(solverJob);
-        solverJob.setFuture(future);
+        solverJob.setFinalBestSolutionFuture(future);
         return solverJob;
     }
 
@@ -148,17 +145,17 @@ public final class DefaultSolverManager<Solution_, ProblemId_> implements Solver
     //        solverJob.reloadProblem(problemFinder);
     //    }
 
-    // TODO Future features
-    //    @Override
-    //    public void addProblemFactChange(ProblemId_ problemId, ProblemFactChange<Solution_> problemFactChange) {
-    //        DefaultSolverJob<Solution_, ProblemId_> solverJob = problemIdToSolverJobMap.get(problemId);
-    //        if (solverJob == null) {
-    //            // We cannot distinguish between "already terminated" and "never solved" without causing a memory leak.
-    //            logger.debug("Ignoring addProblemFactChange() call because problemId ({}) is not solving.", problemId);
-    //            return;
-    //        }
-    //        solverJob.addProblemFactChange(problemFactChange);
-    //    }
+    @Override
+    public void addProblemChange(ProblemId_ problemId, ProblemChange<Solution_> problemChange) {
+        DefaultSolverJob<Solution_, ProblemId_> solverJob = getSolverJob(problemId);
+        if (solverJob == null) {
+            // We cannot distinguish between "already terminated" and "never solved" without causing a memory leak.
+            throw new IllegalStateException(
+                    "Cannot add the problem change (" + problemChange + ") because there is no solver solving the problemId ("
+                            + problemId + ").");
+        }
+        solverJob.addProblemChange(problemChange);
+    }
 
     @Override
     public void terminateEarly(ProblemId_ problemId) {
@@ -174,6 +171,7 @@ public final class DefaultSolverManager<Solution_, ProblemId_> implements Solver
     @Override
     public void close() {
         solverThreadPool.shutdownNow();
+        problemIdToSolverJobMap.values().forEach(solverJob -> solverJob.close());
     }
 
     protected void unregisterSolverJob(ProblemId_ problemId) {
