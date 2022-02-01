@@ -90,6 +90,7 @@ public class ScoreDirectorFactoryFactory<Solution_, Score_ extends Score<Score_>
                 scoreDirectorFactorySupplierMap.put(service.getSupportedScoreDirectorType(), factory);
             }
         }
+
         Supplier<AbstractScoreDirectorFactory<Solution_, Score_>> easyScoreDirectorFactorySupplier =
                 scoreDirectorFactorySupplierMap.get(EASY);
         Supplier<AbstractScoreDirectorFactory<Solution_, Score_>> constraintStreamScoreDirectorFactorySupplier =
@@ -99,6 +100,7 @@ public class ScoreDirectorFactoryFactory<Solution_, Score_ extends Score<Score_>
         Supplier<AbstractScoreDirectorFactory<Solution_, Score_>> drlScoreDirectorFactorySupplier =
                 scoreDirectorFactorySupplierMap.get(DRL);
 
+        // Every non-null supplier means that ServiceLoader successfully loaded and configured a score director factory.
         assertOnlyOneScoreDirectorFactory(easyScoreDirectorFactorySupplier,
                 constraintStreamScoreDirectorFactorySupplier, incrementalScoreDirectorFactorySupplier,
                 drlScoreDirectorFactorySupplier);
@@ -117,13 +119,21 @@ public class ScoreDirectorFactoryFactory<Solution_, Score_ extends Score<Score_>
             validateNoDroolsAlphaNetworkCompilation();
             validateNoGizmoKieBaseSupplier();
             return incrementalScoreDirectorFactorySupplier.get();
-        } else if (drlScoreDirectorFactorySupplier != null) {
+        }
+
+        if (drlScoreDirectorFactorySupplier != null) {
             return drlScoreDirectorFactorySupplier.get();
         } else {
-            throw new IllegalArgumentException("The scoreDirectorFactory lacks a configuration for an "
-                    + "easyScoreCalculatorClass, a constraintProviderClass, an incrementalScoreCalculatorClass "
-                    + "or a drlScoreDirectorFactory.");
+            if (!ConfigUtils.isEmptyCollection(config.getScoreDrlList())
+                    || !ConfigUtils.isEmptyCollection(config.getScoreDrlFileList())) {
+                throw new IllegalStateException("DRL constraints requested via scoreDrlList (" +
+                        config.getScoreDrlList() + ") or scoreDrlFileList (" + config.getScoreDrlFileList() + "), " +
+                        "but the supporting classes were not found on the classpath.\n" +
+                        "Maybe include org.optaplanner:optaplanner-score-drl dependency in your project?");
+            }
         }
+        throw new IllegalArgumentException("The scoreDirectorFactory lacks a configuration for an "
+                + "easyScoreCalculatorClass, a constraintProviderClass or an incrementalScoreCalculatorClass.");
     }
 
     private void assertOnlyOneScoreDirectorFactory(
