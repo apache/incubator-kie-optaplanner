@@ -11,6 +11,16 @@
 
   <artifactId>optaplanner-score-drl</artifactId>
 
+  <name>OptaPlanner score: DRL constraints</name>
+  <description>
+    OptaPlanner solves planning problems.
+    This lightweight, embeddable planning engine implements powerful and scalable algorithms
+    to optimize business resource scheduling and planning.
+
+    This module contains implementation of constraint DRL.
+  </description>
+  <url>https://www.optaplanner.org</url>
+
   <properties>
     <java.module.name>org.optaplanner.score.drl</java.module.name>
   </properties>
