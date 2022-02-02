@@ -28,7 +28,7 @@ import org.optaplanner.core.impl.testdata.domain.TestdataObject;
 public class TestdataListEntityExternalized extends TestdataObject {
 
     @PlanningListVariable(valueRangeProviderRefs = "valueRange")
-    private List<TestdataListValueExternalized> valueList;
+    public List<TestdataListValueExternalized> valueList;
 
     public TestdataListEntityExternalized() {
     }

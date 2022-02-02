@@ -43,9 +43,9 @@ public class TestdataListSolutionExternalized {
         return solution;
     }
 
-    private List<TestdataListValueExternalized> valueList;
-    private List<TestdataListEntityExternalized> entityList;
-    private SimpleScore score;
+    public List<TestdataListValueExternalized> valueList;
+    public List<TestdataListEntityExternalized> entityList;
+    public SimpleScore score;
 
     @ValueRangeProvider(id = "valueRange")
     @ProblemFactCollectionProperty
