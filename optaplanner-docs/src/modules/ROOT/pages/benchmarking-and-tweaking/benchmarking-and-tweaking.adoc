@@ -39,7 +39,7 @@ If you use Maven, add a dependency in your `pom.xml` file:
 ----
 
 This is similar for Gradle, Ivy and Buildr.
-The version must be exactly the same as the `optaplanner-core` version used (which is automatically the case if you import ``optaplanner-bom``).
+The version must be exactly the same as the `optaplanner-solver` version used (which is automatically the case if you import ``optaplanner-bom``).
 
 If you use ANT, you've probably already copied the required jars from the download zip's [path]_binaries_
  directory.
