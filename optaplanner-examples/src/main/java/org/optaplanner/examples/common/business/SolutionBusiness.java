@@ -360,6 +360,8 @@ public class SolutionBusiness<Solution_, Score_ extends Score<Score_>> {
             solver.addProblemChange(problemChange);
         } else {
             problemChange.doChange(guiScoreDirector.getWorkingSolution(), problemChangeDirector);
+            // This needs to be called before the score is calculated as ProblemChange does not trigger listeners.
+            guiScoreDirector.triggerVariableListeners();
             guiScoreDirector.calculateScore();
         }
     }
