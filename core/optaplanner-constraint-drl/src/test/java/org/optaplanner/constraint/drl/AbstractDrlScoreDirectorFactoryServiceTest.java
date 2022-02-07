@@ -21,21 +21,18 @@ import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import java.io.File;
 
 import org.junit.jupiter.api.Test;
-import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.config.score.director.ScoreDirectorFactoryConfig;
-import org.optaplanner.core.config.solver.EnvironmentMode;
 import org.optaplanner.core.impl.score.director.ScoreDirectorFactory;
-import org.optaplanner.core.impl.score.director.ScoreDirectorFactoryFactory;
 import org.optaplanner.core.impl.testdata.domain.TestdataSolution;
 
-class ScoreDirectorFactoryFactoryTest {
+public abstract class AbstractDrlScoreDirectorFactoryServiceTest {
 
     @Test
     void invalidDrlResource_throwsException() {
         ScoreDirectorFactoryConfig config = new ScoreDirectorFactoryConfig()
                 .withScoreDrls("org/optaplanner/constraint/drl/invalidDroolsConstraints.drl");
         assertThatExceptionOfType(IllegalStateException.class)
-                .isThrownBy(() -> buildTestdataScoreDirectoryFactory(config, EnvironmentMode.REPRODUCIBLE))
+                .isThrownBy(() -> buildScoreDirectoryFactory(config))
                 .withMessageContaining("scoreDrl")
                 .withRootCauseInstanceOf(RuntimeException.class);
     }
@@ -45,7 +42,7 @@ class ScoreDirectorFactoryFactoryTest {
         ScoreDirectorFactoryConfig config = new ScoreDirectorFactoryConfig()
                 .withScoreDrls("nonExisting.drl");
         assertThatExceptionOfType(IllegalStateException.class)
-                .isThrownBy(() -> buildTestdataScoreDirectoryFactory(config, EnvironmentMode.REPRODUCIBLE))
+                .isThrownBy(() -> buildScoreDirectoryFactory(config))
                 .withMessageContaining("scoreDrl");
     }
 
@@ -54,14 +51,13 @@ class ScoreDirectorFactoryFactoryTest {
         ScoreDirectorFactoryConfig config = new ScoreDirectorFactoryConfig()
                 .withScoreDrlFiles(new File("nonExisting.drl"));
         assertThatExceptionOfType(IllegalStateException.class)
-                .isThrownBy(() -> buildTestdataScoreDirectoryFactory(config, EnvironmentMode.REPRODUCIBLE))
+                .isThrownBy(() -> buildScoreDirectoryFactory(config))
                 .withMessageContaining("scoreDrl");
     }
 
-    private <Score_ extends Score<Score_>> ScoreDirectorFactory<TestdataSolution> buildTestdataScoreDirectoryFactory(
-            ScoreDirectorFactoryConfig config, EnvironmentMode environmentMode) {
-        return new ScoreDirectorFactoryFactory<TestdataSolution, Score_>(config)
-                .buildScoreDirectorFactory(getClass().getClassLoader(), environmentMode,
-                        TestdataSolution.buildSolutionDescriptor());
-    }
+    @Test
+    protected abstract void testGenSwitched();
+
+    protected abstract ScoreDirectorFactory<TestdataSolution> buildScoreDirectoryFactory(ScoreDirectorFactoryConfig config);
+
 }
