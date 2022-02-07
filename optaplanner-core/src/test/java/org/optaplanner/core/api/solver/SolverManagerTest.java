@@ -631,4 +631,106 @@ class SolverManagerTest {
         solutionWithProblemChangeReceived.await();
         assertThat(bestSolution.get().getValueList()).hasSize(entityAndValueCount + 1);
     }
+
+    @Test
+    @Timeout(60)
+    void reloadProblem() throws InterruptedException, ExecutionException {
+        SolverManagerConfig solverManagerConfig = new SolverManagerConfig();
+
+        SolverConfig solverConfig = PlannerTestUtils.buildSolverConfig(TestdataSolution.class,
+                TestdataEntity.class);
+
+        solverManager = SolverManager.create(solverConfig, solverManagerConfig);
+
+        final long problemId = 1L;
+        SolverJob<TestdataSolution, Long> solverJob =
+                solverManager.solve(problemId, PlannerTestUtils.generateTestdataSolution("s1"));
+        solverManager.reloadProblem(problemId, id -> PlannerTestUtils.generateTestdataSolution("s2"));
+
+        TestdataSolution solution = solverJob.getFinalBestSolution();
+        assertThat(solution.getCode()).isEqualTo("s2");
+        assertSolutionInitialized(solution);
+    }
+
+    @Test
+    @Timeout(60)
+    void reloadProblemWithConsumer() throws InterruptedException {
+        SolverManagerConfig solverManagerConfig = new SolverManagerConfig();
+
+        SolverConfig solverConfig = PlannerTestUtils.buildSolverConfig(TestdataSolution.class,
+                TestdataEntity.class);
+
+        solverManager = SolverManager.create(solverConfig, solverManagerConfig);
+
+        AtomicReference<TestdataSolution> finalBestSolution = new AtomicReference<>();
+        AtomicReference<Throwable> error = new AtomicReference<>();
+        CountDownLatch finalBestSolutionAccepted = new CountDownLatch(1);
+        List<TestdataSolution> bestSolutions = Collections.synchronizedList(new ArrayList<>());
+        final long problemId = 1L;
+        solverManager.solveAndListen(problemId, id -> PlannerTestUtils.generateTestdataSolution("s1"), testdataSolution -> {
+            bestSolutions.add(testdataSolution);
+        }, testdataSolution -> {
+            if (testdataSolution.getCode().equals("s2")) {
+                finalBestSolution.set(testdataSolution);
+                finalBestSolutionAccepted.countDown();
+            }
+        }, (id, throwable) -> error.set(throwable));
+
+        solverManager.reloadProblem(problemId, id -> PlannerTestUtils.generateTestdataSolution("s2"));
+
+        finalBestSolutionAccepted.await();
+
+        assertThat(finalBestSolution.get().getCode()).isEqualTo("s2");
+        assertSolutionInitialized(finalBestSolution.get());
+        assertThat(bestSolutions).isNotEmpty();
+        assertThat(bestSolutions.get(bestSolutions.size() - 1).getCode()).isEqualTo(finalBestSolution.get().getCode());
+        if (error.get() != null) {
+            if (error.get() != null) {
+                fail("Error during solving or consuming the solution.", error.get());
+            }
+        }
+    }
+
+    @Test
+    @Timeout(60)
+    void reloadProblemThatIsOnlyScheduled() throws InterruptedException {
+        CountDownLatch solvingPausedLatch = new CountDownLatch(1);
+        PhaseConfig<?> pausedPhaseConfig = new CustomPhaseConfig().withCustomPhaseCommands(
+                scoreDirector -> {
+                    try {
+                        solvingPausedLatch.await();
+                    } catch (InterruptedException e) {
+                        fail("CountDownLatch failed.");
+                    }
+                });
+
+        SolverConfig solverConfig = PlannerTestUtils.buildSolverConfig(TestdataSolution.class, TestdataEntity.class)
+                .withPhases(pausedPhaseConfig, new ConstructionHeuristicPhaseConfig());
+        // Allow only a single active solver.
+        SolverManagerConfig solverManagerConfig = new SolverManagerConfig().withParallelSolverCount("1");
+        solverManager = SolverManager.create(solverConfig, solverManagerConfig);
+
+        // The first solver waits.
+        solverManager.solve(1L, PlannerTestUtils.generateTestdataSolution("s1"));
+
+        // The second solver is scheduled and waits for the fist solver to finish.
+        final long secondProblemId = 2L;
+        CountDownLatch solutionWithProblemChangeReceived = new CountDownLatch(1);
+        AtomicReference<TestdataSolution> bestSolution = new AtomicReference<>();
+        solverManager.solveAndListen(secondProblemId,
+                id -> PlannerTestUtils.generateTestdataSolution("s2"),
+                testdataSolution -> {
+                    bestSolution.set(testdataSolution);
+                    solutionWithProblemChangeReceived.countDown();
+                });
+
+        solverManager.reloadProblem(secondProblemId, id -> PlannerTestUtils.generateTestdataSolution("s3"));
+        assertThat(solverManager.getSolverStatus(secondProblemId)).isEqualTo(SOLVING_SCHEDULED);
+
+        // The first solver can proceed. When it finishes, the second solver starts solving.
+        solvingPausedLatch.countDown();
+
+        solutionWithProblemChangeReceived.await();
+        assertThat(bestSolution.get().getCode()).isEqualTo("s3");
+    }
 }

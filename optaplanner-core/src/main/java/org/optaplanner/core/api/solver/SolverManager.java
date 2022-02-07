@@ -301,8 +301,17 @@ public interface SolverManager<Solution_, ProblemId_> extends AutoCloseable {
      */
     SolverStatus getSolverStatus(ProblemId_ problemId);
 
-    // TODO Future features
-    //    void reloadProblem(ProblemId_ problemId, Function<? super ProblemId_, Solution_> problemFinder);
+    /**
+     * Reloads an already submitted problem that is either {@link SolverStatus#SOLVING_ACTIVE} or
+     * {@link SolverStatus#SOLVING_SCHEDULED}.
+     * 
+     * @param problemId never null, an ID for each planning problem. This must be unique.
+     *        Use this problemId to {@link #terminateEarly(Object) terminate} the solver early,
+     *        {@link #getSolverStatus(Object) to get the status} or if the problem changes while solving.
+     * @param problemFinder never null, function that returns a {@link PlanningSolution}, usually with uninitialized planning
+     *        variables
+     */
+    void reloadProblem(ProblemId_ problemId, Function<? super ProblemId_, Solution_> problemFinder);
 
     /**
      * Schedules a {@link ProblemChange} to be processed by the underlying {@link Solver} and returns immediately.
@@ -316,6 +325,26 @@ public interface SolverManager<Solution_, ProblemId_> extends AutoCloseable {
      */
     void addProblemChange(ProblemId_ problemId, ProblemChange<Solution_> problemChange);
 
+    /**
+     * Pauses the best solution consumer thread until the {@link ConsumptionPause} is not closed. When an external
+     * change, propagated to the {@link Solver} by either {@link #addProblemChange(Object, ProblemChange)}
+     * or {@link #reloadProblem(Object, Function)}, is persisted to the same persistent storage
+     * (e.g. a relational database) as the best solutions, an early best solution that does not contain the external
+     * change yet might override the state in the persistent storage.
+     *
+     * Example:
+     * 
+     * <pre>
+     * {@code
+     *  public void deleteLesson(Long id) {
+     *      try (ConsumptionPause pause = solverManager.pauseBestSolutionConsumer(problemId)) {
+     *          lessonRepository.deleteById(id);
+     *          solverManager.reloadProblem(problemId, timeTableRepository::findById);
+     *      }
+     *  }
+     * }
+     * </pre>
+     */
     ConsumptionPause pauseBestSolutionConsumer(ProblemId_ problemId);
 
     /**

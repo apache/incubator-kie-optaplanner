@@ -23,6 +23,7 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
+import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
@@ -52,17 +53,19 @@ public final class DefaultSolverJob<Solution_, ProblemId_> implements SolverJob<
     private final DefaultSolverManager<Solution_, ProblemId_> solverManager;
     private final DefaultSolver<Solution_> solver;
     private final ProblemId_ problemId;
-    private final Function<? super ProblemId_, ? extends Solution_> problemFinder;
+    private Function<? super ProblemId_, ? extends Solution_> problemFinder;
     private final Consumer<? super Solution_> bestSolutionConsumer;
     private final Consumer<? super Solution_> finalBestSolutionConsumer;
     private final BiConsumer<? super ProblemId_, ? super Throwable> exceptionHandler;
 
     private volatile SolverStatus solverStatus;
-    private final CountDownLatch terminatedLatch;
+    private CountDownLatch terminatedLatch = new CountDownLatch(1);
     private final ReentrantLock solverStatusModifyingLock;
     private final ReadWriteLock consumptionLock = new ReentrantReadWriteLock();
     private Future<Solution_> finalBestSolutionFuture;
     private ConsumerSupport<Solution_, ProblemId_> consumerSupport;
+
+    private final AtomicLong reloadingProblem = new AtomicLong(0);
 
     public DefaultSolverJob(
             DefaultSolverManager<Solution_, ProblemId_> solverManager,
@@ -83,7 +86,6 @@ public final class DefaultSolverJob<Solution_, ProblemId_> implements SolverJob<
         this.finalBestSolutionConsumer = finalBestSolutionConsumer;
         this.exceptionHandler = exceptionHandler;
         solverStatus = SolverStatus.SOLVING_SCHEDULED;
-        terminatedLatch = new CountDownLatch(1);
         solverStatusModifyingLock = new ReentrantLock();
     }
 
@@ -123,7 +125,7 @@ public final class DefaultSolverJob<Solution_, ProblemId_> implements SolverJob<
                 solver.addEventListener(event -> consumerSupport.consumeIntermediateBestSolution(event.getNewBestSolution()));
             }
             final Solution_ finalBestSolution = solver.solve(problem);
-            if (finalBestSolutionConsumer != null) {
+            if (finalBestSolutionConsumer != null && consumerSupport != null) {
                 consumerSupport.consumeFinalBestSolution(finalBestSolution);
             }
             return finalBestSolution;
@@ -145,16 +147,15 @@ public final class DefaultSolverJob<Solution_, ProblemId_> implements SolverJob<
     }
 
     private void solvingTerminated() {
-        solverStatus = SolverStatus.NOT_SOLVING;
-        solverManager.unregisterSolverJob(problemId);
+        if (isReloading()) {
+            solverStatus = SolverStatus.SOLVING_SCHEDULED;
+            finishReloading();
+        } else {
+            solverManager.unregisterSolverJob(problemId);
+            solverStatus = SolverStatus.NOT_SOLVING;
+        }
         terminatedLatch.countDown();
     }
-
-    // TODO Future features
-    //    @Override
-    //    public void reloadProblem(Function<? super ProblemId_, Solution_> problemFinder) {
-    //        throw new UnsupportedOperationException("The solver is still solving and reloadProblem() is not yet supported.");
-    //    }
 
     @Override
     public void addProblemChange(ProblemChange<Solution_> problemChange) {
@@ -204,6 +205,18 @@ public final class DefaultSolverJob<Solution_, ProblemId_> implements SolverJob<
         }
     }
 
+    private boolean isReloading() {
+        return reloadingProblem.get() > 0;
+    }
+
+    private void startReloading() {
+        reloadingProblem.incrementAndGet();
+    }
+
+    private void finishReloading() {
+        reloadingProblem.decrementAndGet();
+    }
+
     @Override
     public Solution_ getFinalBestSolution() throws InterruptedException, ExecutionException {
         return finalBestSolutionFuture.get();
@@ -230,6 +243,14 @@ public final class DefaultSolverJob<Solution_, ProblemId_> implements SolverJob<
             consumerSupport.close();
             consumerSupport = null;
         }
+    }
+
+    void reset(Function<? super ProblemId_, ? extends Solution_> problemFinder) {
+        startReloading();
+        this.problemFinder = problemFinder;
+        close();
+        terminateEarly();
+        terminatedLatch = new CountDownLatch(1);
     }
 
     /**

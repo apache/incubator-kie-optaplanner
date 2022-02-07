@@ -483,6 +483,15 @@
           "methodName": "pauseBestSolutionConsumer",
           "elementKind": "method",
           "justification": "Added a method to pause a consumer thread. Users are not supposed to implement the SolverManager interface."
+        },
+        {
+          "code": "java.method.addedToInterface",
+          "new": "method void org.optaplanner.core.api.solver.SolverManager<Solution_, ProblemId_>::reloadProblem(ProblemId_, java.util.function.Function<? super ProblemId_, Solution_>)",
+          "package": "org.optaplanner.core.api.solver",
+          "classSimpleName": "SolverManager",
+          "methodName": "reloadProblem",
+          "elementKind": "method",
+          "justification": "Added a method to reload a problem. Users are not supposed to implement the SolverManager interface."
         }
       ]
     }
