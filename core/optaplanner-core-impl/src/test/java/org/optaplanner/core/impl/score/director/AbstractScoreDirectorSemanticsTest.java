@@ -14,37 +14,29 @@
  * limitations under the License.
  */
 
-package org.optaplanner.solver.score;
+package org.optaplanner.core.impl.score.director;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.EnumSource;
+import org.junit.jupiter.api.Test;
 import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
-import org.optaplanner.core.api.score.stream.ConstraintStreamImplType;
-import org.optaplanner.core.config.score.director.ScoreDirectorFactoryConfig;
-import org.optaplanner.core.config.solver.EnvironmentMode;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
-import org.optaplanner.core.impl.score.director.InnerScoreDirector;
-import org.optaplanner.core.impl.score.director.InnerScoreDirectorFactory;
-import org.optaplanner.core.impl.score.director.ScoreDirectorFactoryFactory;
 import org.optaplanner.core.impl.testdata.domain.TestdataEntity;
 import org.optaplanner.core.impl.testdata.domain.constraintconfiguration.TestdataConstraintConfiguration;
 import org.optaplanner.core.impl.testdata.domain.constraintconfiguration.TestdataConstraintConfigurationSolution;
-import org.optaplanner.core.impl.testdata.domain.constraintconfiguration.TestdataConstraintWeighIncrementalScoreCalculator;
-import org.optaplanner.core.impl.testdata.domain.constraintconfiguration.TestdataConstraintWeightConstraintProvider;
-import org.optaplanner.core.impl.testdata.domain.constraintconfiguration.TestdataConstraintWeightEasyScoreCalculator;
 
-class ScoreDirectorSemanticsTest {
+public abstract class AbstractScoreDirectorSemanticsTest {
 
     private final SolutionDescriptor<TestdataConstraintConfigurationSolution> solutionDescriptor =
             TestdataConstraintConfigurationSolution.buildSolutionDescriptor();
 
-    @EnumSource(ScoreDirectorType.class)
-    @ParameterizedTest
-    void independentScoreDirectors(ScoreDirectorType scoreDirectorType) {
+    protected abstract InnerScoreDirectorFactory<TestdataConstraintConfigurationSolution, SimpleScore>
+            buildInnerScoreDirectorFactory(SolutionDescriptor<TestdataConstraintConfigurationSolution> solutionDescriptor);
+
+    @Test
+    void independentScoreDirectors() {
         InnerScoreDirectorFactory<TestdataConstraintConfigurationSolution, SimpleScore> scoreDirectorFactory =
-                scoreDirectorType.buildScoreDirectorFactory(solutionDescriptor);
+                buildInnerScoreDirectorFactory(solutionDescriptor);
 
         // Create first score director, calculate score.
         TestdataConstraintConfigurationSolution solution1 =
@@ -85,11 +77,10 @@ class ScoreDirectorSemanticsTest {
         assertThat(scoreDirector2.calculateScore()).isEqualTo(SimpleScore.of(1));
     }
 
-    @EnumSource(ScoreDirectorType.class)
-    @ParameterizedTest
-    void solutionBasedScoreWeights(ScoreDirectorType scoreDirectorType) {
+    @Test
+    void solutionBasedScoreWeights() {
         InnerScoreDirectorFactory<TestdataConstraintConfigurationSolution, SimpleScore> scoreDirectorFactory =
-                scoreDirectorType.buildScoreDirectorFactory(solutionDescriptor);
+                buildInnerScoreDirectorFactory(solutionDescriptor);
 
         // Create score director, calculate score.
         TestdataConstraintConfigurationSolution solution1 =
@@ -117,11 +108,10 @@ class ScoreDirectorSemanticsTest {
 
     }
 
-    @EnumSource(ScoreDirectorType.class)
-    @ParameterizedTest
-    void mutableConstraintConfiguration(ScoreDirectorType scoreDirectorType) {
+    @Test
+    void mutableConstraintConfiguration() {
         InnerScoreDirectorFactory<TestdataConstraintConfigurationSolution, SimpleScore> scoreDirectorFactory =
-                scoreDirectorType.buildScoreDirectorFactory(solutionDescriptor);
+                buildInnerScoreDirectorFactory(solutionDescriptor);
 
         // Create score director, calculate score with a given constraint configuration.
         TestdataConstraintConfigurationSolution solution =
@@ -139,45 +129,6 @@ class ScoreDirectorSemanticsTest {
         scoreDirector.afterProblemPropertyChanged(constraintConfiguration);
         SimpleScore score2 = scoreDirector.calculateScore();
         assertThat(score2).isEqualTo(SimpleScore.of(2));
-    }
-
-    enum ScoreDirectorType {
-
-        EASY(new ScoreDirectorFactoryConfig()
-                .withEasyScoreCalculatorClass(TestdataConstraintWeightEasyScoreCalculator.class)),
-        CS_DROOLS(new ScoreDirectorFactoryConfig()
-                .withConstraintProviderClass(TestdataConstraintWeightConstraintProvider.class)
-                .withConstraintStreamImplType(ConstraintStreamImplType.DROOLS)),
-        CS_BAVET(new ScoreDirectorFactoryConfig()
-                .withConstraintProviderClass(TestdataConstraintWeightConstraintProvider.class)
-                .withConstraintStreamImplType(ConstraintStreamImplType.BAVET)),
-        INCREMENTAL(new ScoreDirectorFactoryConfig()
-                .withIncrementalScoreCalculatorClass(TestdataConstraintWeighIncrementalScoreCalculator.class)),
-        DRL(new ScoreDirectorFactoryConfig()
-                .withScoreDrls("org/optaplanner/solver/score/scoreDirectorSemanticsDroolsConstraints.drl",
-                        "org/optaplanner/solver/score/scoreDirectorSemanticsDroolsConstraints2.drl"));
-
-        private final ScoreDirectorFactoryConfig scoreDirectorFactoryConfig;
-
-        ScoreDirectorType(ScoreDirectorFactoryConfig scoreDirectorFactoryConfig) {
-            this.scoreDirectorFactoryConfig = scoreDirectorFactoryConfig;
-        }
-
-        /**
-         * Creates a score director factory with a simple scoring function that rewards each {@link TestdataEntity}
-         * by {@link SimpleScore#ONE}.
-         *
-         * @param solutionDescriptor never null
-         * @return never null
-         */
-        public InnerScoreDirectorFactory<TestdataConstraintConfigurationSolution, SimpleScore>
-                buildScoreDirectorFactory(SolutionDescriptor<TestdataConstraintConfigurationSolution> solutionDescriptor) {
-            ScoreDirectorFactoryFactory<TestdataConstraintConfigurationSolution, SimpleScore> scoreDirectorFactoryFactory =
-                    new ScoreDirectorFactoryFactory<>(scoreDirectorFactoryConfig);
-            return scoreDirectorFactoryFactory.buildScoreDirectorFactory(getClass().getClassLoader(),
-                    EnvironmentMode.REPRODUCIBLE, solutionDescriptor);
-        }
-
     }
 
 }

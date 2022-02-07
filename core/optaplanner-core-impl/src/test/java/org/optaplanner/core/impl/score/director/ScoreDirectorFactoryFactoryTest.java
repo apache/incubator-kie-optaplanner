@@ -14,13 +14,12 @@
  * limitations under the License.
  */
 
-package org.optaplanner.solver.score;
+package org.optaplanner.core.impl.score.director;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
-import java.io.File;
 import java.util.HashMap;
 
 import org.junit.jupiter.api.Test;
@@ -34,11 +33,6 @@ import org.optaplanner.core.api.score.stream.ConstraintProvider;
 import org.optaplanner.core.api.score.stream.ConstraintStreamImplType;
 import org.optaplanner.core.config.score.director.ScoreDirectorFactoryConfig;
 import org.optaplanner.core.config.solver.EnvironmentMode;
-import org.optaplanner.core.impl.score.director.AbstractScoreDirectorFactory;
-import org.optaplanner.core.impl.score.director.InnerScoreDirectorFactory;
-import org.optaplanner.core.impl.score.director.ScoreDirectorFactory;
-import org.optaplanner.core.impl.score.director.ScoreDirectorFactoryFactory;
-import org.optaplanner.core.impl.score.director.easy.EasyScoreDirector;
 import org.optaplanner.core.impl.score.director.incremental.IncrementalScoreDirector;
 import org.optaplanner.core.impl.score.director.stream.AbstractConstraintStreamScoreDirectorFactory;
 import org.optaplanner.core.impl.score.director.stream.BavetConstraintStreamScoreDirectorFactory;
@@ -47,24 +41,6 @@ import org.optaplanner.core.impl.score.director.stream.DroolsConstraintStreamSco
 import org.optaplanner.core.impl.testdata.domain.TestdataSolution;
 
 class ScoreDirectorFactoryFactoryTest {
-
-    @Test
-    void easyScoreCalculatorWithCustomProperties() {
-        ScoreDirectorFactoryConfig config = new ScoreDirectorFactoryConfig();
-        config.setEasyScoreCalculatorClass(TestCustomPropertiesEasyScoreCalculator.class);
-        HashMap<String, String> customProperties = new HashMap<>();
-        customProperties.put("stringProperty", "string 1");
-        customProperties.put("intProperty", "7");
-        config.setEasyScoreCalculatorCustomProperties(customProperties);
-
-        EasyScoreDirector<TestdataSolution, ?> scoreDirector =
-                (EasyScoreDirector<TestdataSolution, ?>) buildTestdataScoreDirectoryFactory(config).buildScoreDirector();
-        TestCustomPropertiesEasyScoreCalculator scoreCalculator =
-                (TestCustomPropertiesEasyScoreCalculator) scoreDirector
-                        .getEasyScoreCalculator();
-        assertThat(scoreCalculator.getStringProperty()).isEqualTo("string 1");
-        assertThat(scoreCalculator.getIntProperty()).isEqualTo(7);
-    }
 
     @Test
     void incrementalScoreCalculatorWithCustomProperties() {
@@ -148,7 +124,7 @@ class ScoreDirectorFactoryFactoryTest {
                 EnvironmentMode.FAST_ASSERT,
                 TestdataSolution.buildSolutionDescriptor()))
                         .hasMessage("If there is no scoreDrl (null), scoreDrlFile (null) or constraintProviderClass "
-                                + "(class org.optaplanner.solver.score.ScoreDirectorFactoryFactoryTest$TestdataConstraintProvider)"
+                                + "(class org.optaplanner.core.impl.score.director.ScoreDirectorFactoryFactoryTest$TestdataConstraintProvider)"
                                 + " with DROOLS impl type (BAVET), there can be no droolsAlphaNetworkCompilationEnabled (true) either.");
     }
 
@@ -163,7 +139,7 @@ class ScoreDirectorFactoryFactoryTest {
                 EnvironmentMode.FAST_ASSERT,
                 TestdataSolution.buildSolutionDescriptor()))
                         .hasMessageContaining("If there is no constraintProviderClass "
-                                + "(class org.optaplanner.solver.score.ScoreDirectorFactoryFactoryTest$TestdataConstraintProvider)"
+                                + "(class org.optaplanner.core.impl.score.director.ScoreDirectorFactoryFactoryTest$TestdataConstraintProvider)"
                                 + " with DROOLS impl type (BAVET), there can be no gizmoKieBaseSupplier ");
     }
 
@@ -192,34 +168,6 @@ class ScoreDirectorFactoryFactoryTest {
                         .buildScoreDirectorFactory(null, TestdataSolution.buildSolutionDescriptor(), config)
                         .get();
         assertThat(scoreDirectorFactory).isInstanceOf(BavetConstraintStreamScoreDirectorFactory.class);
-    }
-
-    @Test
-    void invalidDrlResource_throwsException() {
-        ScoreDirectorFactoryConfig config = new ScoreDirectorFactoryConfig()
-                .withScoreDrls("org/optaplanner/solver/score/invalidDroolsConstraints.drl");
-        assertThatExceptionOfType(IllegalStateException.class)
-                .isThrownBy(() -> buildTestdataScoreDirectoryFactory(config))
-                .withMessageContaining("scoreDrl")
-                .withRootCauseInstanceOf(RuntimeException.class);
-    }
-
-    @Test
-    void nonExistingDrlResource_throwsException() {
-        ScoreDirectorFactoryConfig config = new ScoreDirectorFactoryConfig()
-                .withScoreDrls("nonExisting.drl");
-        assertThatExceptionOfType(IllegalStateException.class)
-                .isThrownBy(() -> buildTestdataScoreDirectoryFactory(config))
-                .withMessageContaining("scoreDrl");
-    }
-
-    @Test
-    void nonExistingDrlFile_throwsException() {
-        ScoreDirectorFactoryConfig config = new ScoreDirectorFactoryConfig()
-                .withScoreDrlFiles(new File("nonExisting.drl"));
-        assertThatExceptionOfType(IllegalStateException.class)
-                .isThrownBy(() -> buildTestdataScoreDirectoryFactory(config))
-                .withMessageContaining("scoreDrl");
     }
 
     private <Score_ extends Score<Score_>> ScoreDirectorFactory<TestdataSolution> buildTestdataScoreDirectoryFactory(

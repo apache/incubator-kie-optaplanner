@@ -16,7 +16,10 @@
 
 package org.optaplanner.core.impl.score.director;
 
-import static org.optaplanner.core.impl.score.director.ScoreDirectorType.*;
+import static org.optaplanner.core.impl.score.director.ScoreDirectorType.CONSTRAINT_STREAMS;
+import static org.optaplanner.core.impl.score.director.ScoreDirectorType.DRL;
+import static org.optaplanner.core.impl.score.director.ScoreDirectorType.EASY;
+import static org.optaplanner.core.impl.score.director.ScoreDirectorType.INCREMENTAL;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -129,7 +132,7 @@ public class ScoreDirectorFactoryFactory<Solution_, Score_ extends Score<Score_>
                 throw new IllegalStateException("DRL constraints requested via scoreDrlList (" +
                         config.getScoreDrlList() + ") or scoreDrlFileList (" + config.getScoreDrlFileList() + "), " +
                         "but the supporting classes were not found on the classpath.\n" +
-                        "Maybe include org.optaplanner:optaplanner-score-drl dependency in your project?");
+                        "Maybe include org.optaplanner:optaplanner-constraint-drl dependency in your project?");
             }
         }
         throw new IllegalArgumentException("The scoreDirectorFactory lacks a configuration for an "
