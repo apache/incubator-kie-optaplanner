@@ -28,7 +28,7 @@
     </dependency>
     <dependency>
       <groupId>org.optaplanner</groupId>
-      <artifactId>optaplanner-solver</artifactId>
+      <artifactId>optaplanner-core</artifactId>
       <exclusions>
         <exclusion>
           <!--

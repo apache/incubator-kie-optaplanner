@@ -5,14 +5,13 @@
   <modelVersion>4.0.0</modelVersion>
   <parent>
     <groupId>org.optaplanner</groupId>
-    <artifactId>optaplanner-build-parent</artifactId>
+    <artifactId>optaplanner-core-parent</artifactId>
     <version>8.17.0-SNAPSHOT</version>
-    <relativePath>../build/optaplanner-build-parent/pom.xml</relativePath>
   </parent>
 
-  <artifactId>optaplanner-core</artifactId>
+  <artifactId>optaplanner-core-impl</artifactId>
 
-  <name>OptaPlanner core</name>
+  <name>OptaPlanner core implementation</name>
   <description>
     OptaPlanner solves planning problems.
     This lightweight, embeddable planning engine implements powerful and scalable algorithms
@@ -23,7 +22,7 @@
   <url>https://www.optaplanner.org</url>
 
   <properties>
-    <java.module.name>org.optaplanner.core</java.module.name>
+    <java.module.name>org.optaplanner.core.impl</java.module.name>
   </properties>
 
   <dependencies>

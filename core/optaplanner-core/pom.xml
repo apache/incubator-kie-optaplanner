@@ -4,15 +4,14 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <parent>
     <groupId>org.optaplanner</groupId>
-    <artifactId>optaplanner-build-parent</artifactId>
+    <artifactId>optaplanner-core-parent</artifactId>
     <version>8.17.0-SNAPSHOT</version>
-    <relativePath>../build/optaplanner-build-parent/pom.xml</relativePath>
   </parent>
   <modelVersion>4.0.0</modelVersion>
 
-  <artifactId>optaplanner-solver</artifactId>
+  <artifactId>optaplanner-core</artifactId>
 
-  <name>OptaPlanner solver</name>
+  <name>OptaPlanner core</name>
   <description>
     OptaPlanner solves planning problems.
     This lightweight, embeddable planning engine implements powerful and scalable algorithms
@@ -23,13 +22,13 @@
   <url>https://www.optaplanner.org</url>
 
   <properties>
-    <java.module.name>org.optaplanner.solver</java.module.name>
+    <java.module.name>org.optaplanner.core</java.module.name>
   </properties>
 
   <dependencies>
     <dependency>
       <groupId>org.optaplanner</groupId>
-      <artifactId>optaplanner-core</artifactId>
+      <artifactId>optaplanner-core-impl</artifactId>
     </dependency>
     <dependency>
       <groupId>org.optaplanner</groupId>
@@ -39,7 +38,7 @@
     <!-- Testing -->
     <dependency>
       <groupId>org.optaplanner</groupId>
-      <artifactId>optaplanner-core</artifactId>
+      <artifactId>optaplanner-core-impl</artifactId>
       <type>test-jar</type>
       <scope>test</scope>
     </dependency>
