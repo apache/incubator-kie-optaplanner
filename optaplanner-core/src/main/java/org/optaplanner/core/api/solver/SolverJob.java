@@ -58,15 +58,11 @@ public interface SolverJob<Solution_, ProblemId_> {
     void addProblemChange(ProblemChange<Solution_> problemChange);
 
     /**
-     * Pauses the best solution consumer to avoid race conditions between consumption and {@link ProblemChange}s.
-     *
-     * If an incoming {@link ProblemChange} is first applied to a persistent store (e.g. a relational database)
-     * to avoid losing it in case of a failure, the best solution consumer may overwrite it by a solution that does
-     * not contain this {@link ProblemChange} yet.
-     * Normally, it's a temporary inconsistency that will be resolved by saving the next best solution that already
-     * contains the {@link ProblemChange}. However, if the program exits before that, the incoming change will be lost.
-     *
-     * This method pauses the consumer before
+     * Pauses the best solution consumer thread until the {@link ConsumptionPause} is not closed. When an external
+     * change is persisted to the same persistent storage (e.g. a relational database) as the best solutions,
+     * an early best solution that does not contain the external change yet might override the state
+     * in the persistent storage.
+     * See {@link SolverManager#pauseBestSolutionConsumer(Object)}.
      */
     ConsumptionPause pauseBestSolutionConsumer();
 
