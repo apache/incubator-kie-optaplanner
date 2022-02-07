@@ -58,7 +58,7 @@ public interface SolverJob<Solution_, ProblemId_> {
     void addProblemChange(ProblemChange<Solution_> problemChange);
 
     /**
-     * Pauses the best solution consumer thread until the {@link ConsumptionPause} is not closed. When an external
+     * Pauses the best solution consumer thread until the {@link ConsumptionPause} is closed. When an external
      * change is persisted to the same persistent storage (e.g. a relational database) as the best solutions,
      * an early best solution that does not contain the external change yet might override the state
      * in the persistent storage.
