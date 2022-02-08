@@ -14,35 +14,27 @@
  * limitations under the License.
  */
 
-package org.optaplanner.core.impl.score.stream.bi;
+package org.optaplanner.core.api.score.stream;
 
-import java.util.Collections;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
-import org.optaplanner.core.api.function.TriFunction;
-import org.optaplanner.core.api.score.stream.bi.BiConstraintCollector;
+import org.optaplanner.core.api.function.PentaFunction;
+import org.optaplanner.core.api.score.stream.quad.QuadConstraintCollector;
 
-public final class DefaultBiConstraintCollector<A, B, ResultContainer_, Result_>
-        implements BiConstraintCollector<A, B, ResultContainer_, Result_> {
+final class DefaultQuadConstraintCollector<A, B, C, D, ResultContainer_, Result_>
+        implements QuadConstraintCollector<A, B, C, D, ResultContainer_, Result_> {
 
     private final Supplier<ResultContainer_> supplier;
-    private final TriFunction<ResultContainer_, A, B, Runnable> accumulator;
+    private final PentaFunction<ResultContainer_, A, B, C, D, Runnable> accumulator;
     private final Function<ResultContainer_, Result_> finisher;
 
-    public DefaultBiConstraintCollector(Supplier<ResultContainer_> supplier,
-            TriFunction<ResultContainer_, A, B, Runnable> accumulator,
+    public DefaultQuadConstraintCollector(Supplier<ResultContainer_> supplier,
+            PentaFunction<ResultContainer_, A, B, C, D, Runnable> accumulator,
             Function<ResultContainer_, Result_> finisher) {
         this.supplier = supplier;
         this.accumulator = accumulator;
         this.finisher = finisher;
-    }
-
-    public static <A, B, Result_> BiConstraintCollector<A, B, ?, Result_> noop() {
-        return new DefaultBiConstraintCollector<>(Collections::emptyList,
-                (a, b, container) -> () -> {
-                },
-                container -> null);
     }
 
     @Override
@@ -51,7 +43,7 @@ public final class DefaultBiConstraintCollector<A, B, ResultContainer_, Result_>
     }
 
     @Override
-    public TriFunction<ResultContainer_, A, B, Runnable> accumulator() {
+    public PentaFunction<ResultContainer_, A, B, C, D, Runnable> accumulator() {
         return accumulator;
     }
 

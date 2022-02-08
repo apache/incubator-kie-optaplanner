@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.optaplanner.core.impl.score.stream.uni;
+package org.optaplanner.core.api.score.stream;
 
 import java.util.function.BiFunction;
 import java.util.function.Function;
@@ -22,7 +22,7 @@ import java.util.function.Supplier;
 
 import org.optaplanner.core.api.score.stream.uni.UniConstraintCollector;
 
-public final class DefaultUniConstraintCollector<A, ResultContainer_, Result_>
+final class DefaultUniConstraintCollector<A, ResultContainer_, Result_>
         implements UniConstraintCollector<A, ResultContainer_, Result_> {
 
     private final Supplier<ResultContainer_> supplier;

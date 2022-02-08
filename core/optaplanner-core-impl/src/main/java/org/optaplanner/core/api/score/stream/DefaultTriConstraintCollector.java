@@ -14,16 +14,15 @@
  * limitations under the License.
  */
 
-package org.optaplanner.core.impl.score.stream.tri;
+package org.optaplanner.core.api.score.stream;
 
-import java.util.Collections;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
 import org.optaplanner.core.api.function.QuadFunction;
 import org.optaplanner.core.api.score.stream.tri.TriConstraintCollector;
 
-public final class DefaultTriConstraintCollector<A, B, C, ResultContainer_, Result_>
+final class DefaultTriConstraintCollector<A, B, C, ResultContainer_, Result_>
         implements TriConstraintCollector<A, B, C, ResultContainer_, Result_> {
 
     private final Supplier<ResultContainer_> supplier;
@@ -36,13 +35,6 @@ public final class DefaultTriConstraintCollector<A, B, C, ResultContainer_, Resu
         this.supplier = supplier;
         this.accumulator = accumulator;
         this.finisher = finisher;
-    }
-
-    public static <A, B, C, Result_> TriConstraintCollector<A, B, C, ?, Result_> noop() {
-        return new DefaultTriConstraintCollector<>(Collections::emptyList,
-                (a, b, c, container) -> () -> {
-                },
-                container -> null);
     }
 
     @Override
