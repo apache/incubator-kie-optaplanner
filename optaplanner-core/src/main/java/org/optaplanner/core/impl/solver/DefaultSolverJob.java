@@ -125,7 +125,7 @@ public final class DefaultSolverJob<Solution_, ProblemId_> implements SolverJob<
                 solver.addEventListener(event -> consumerSupport.consumeIntermediateBestSolution(event.getNewBestSolution()));
             }
             final Solution_ finalBestSolution = solver.solve(problem);
-            if (finalBestSolutionConsumer != null && consumerSupport != null) {
+            if (finalBestSolutionConsumer != null) {
                 consumerSupport.consumeFinalBestSolution(finalBestSolution);
             }
             return finalBestSolution;
@@ -248,8 +248,8 @@ public final class DefaultSolverJob<Solution_, ProblemId_> implements SolverJob<
     void reset(Function<? super ProblemId_, ? extends Solution_> problemFinder) {
         startReloading();
         this.problemFinder = problemFinder;
-        close();
         terminateEarly();
+        close();
         terminatedLatch = new CountDownLatch(1);
     }
 
