@@ -25,7 +25,7 @@ import org.optaplanner.core.api.score.stream.bi.BiJoiner;
 import org.optaplanner.core.impl.score.stream.common.AbstractJoiner;
 import org.optaplanner.core.impl.score.stream.common.JoinerType;
 
-public abstract class AbstractBiJoiner<A, B> extends AbstractJoiner implements BiJoiner<A, B> {
+public abstract class AbstractBiJoiner<A, B> extends AbstractJoiner<B> implements BiJoiner<A, B> {
 
     private final BiPredicate<A, B> filter;
 
@@ -75,11 +75,7 @@ public abstract class AbstractBiJoiner<A, B> extends AbstractJoiner implements B
 
     public abstract Function<A, Object> getLeftMapping(int index);
 
-    public abstract Function<A, Object[]> getLeftCombinedMapping();
-
     public abstract Function<B, Object> getRightMapping(int index);
-
-    public abstract Function<B, Object[]> getRightCombinedMapping();
 
     public BiPredicate<A, B> getFilter() {
         return filter;

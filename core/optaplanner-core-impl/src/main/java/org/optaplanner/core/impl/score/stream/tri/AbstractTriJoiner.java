@@ -26,7 +26,7 @@ import org.optaplanner.core.api.score.stream.tri.TriJoiner;
 import org.optaplanner.core.impl.score.stream.common.AbstractJoiner;
 import org.optaplanner.core.impl.score.stream.common.JoinerType;
 
-public abstract class AbstractTriJoiner<A, B, C> extends AbstractJoiner implements TriJoiner<A, B, C> {
+public abstract class AbstractTriJoiner<A, B, C> extends AbstractJoiner<C> implements TriJoiner<A, B, C> {
 
     private final TriPredicate<A, B, C> filter;
 
@@ -75,11 +75,7 @@ public abstract class AbstractTriJoiner<A, B, C> extends AbstractJoiner implemen
 
     public abstract BiFunction<A, B, Object> getLeftMapping(int index);
 
-    public abstract BiFunction<A, B, Object[]> getLeftCombinedMapping();
-
     public abstract Function<C, Object> getRightMapping(int index);
-
-    public abstract Function<C, Object[]> getRightCombinedMapping();
 
     public TriPredicate<A, B, C> getFilter() {
         return filter;

@@ -54,11 +54,6 @@ public final class SingleBiJoiner<A, B> extends AbstractBiJoiner<A, B> {
     }
 
     @Override
-    public Function<A, Object[]> getLeftCombinedMapping() {
-        return (A a) -> new Object[] { getLeftMapping(0).apply(a) };
-    }
-
-    @Override
     public JoinerType[] getJoinerTypes() {
         return new JoinerType[] { joinerType };
     }
@@ -68,8 +63,4 @@ public final class SingleBiJoiner<A, B> extends AbstractBiJoiner<A, B> {
         return (Function<B, Object>) getRightMapping();
     }
 
-    @Override
-    public Function<B, Object[]> getRightCombinedMapping() {
-        return (B b) -> new Object[] { getRightMapping(0).apply(b) };
-    }
 }

@@ -38,6 +38,7 @@ import org.optaplanner.core.impl.score.stream.bavet.BavetConstraint;
 import org.optaplanner.core.impl.score.stream.bavet.BavetConstraintFactory;
 import org.optaplanner.core.impl.score.stream.bavet.common.BavetAbstractConstraintStream;
 import org.optaplanner.core.impl.score.stream.bavet.common.BavetNodeBuildPolicy;
+import org.optaplanner.core.impl.score.stream.bavet.common.JoinerUtils;
 import org.optaplanner.core.impl.score.stream.bavet.common.index.BavetIndexFactory;
 import org.optaplanner.core.impl.score.stream.bavet.tri.BavetJoinTriConstraintStream;
 import org.optaplanner.core.impl.score.stream.bavet.uni.BavetAbstractUniConstraintStream;
@@ -100,10 +101,10 @@ public abstract class BavetAbstractBiConstraintStream<Solution_, A, B> extends B
         AbstractTriJoiner<A, B, C> castedJoiner = (AbstractTriJoiner<A, B, C>) joiner;
         BavetIndexFactory indexFactory = new BavetIndexFactory(castedJoiner);
         BavetJoinBridgeBiConstraintStream<Solution_, A, B> leftBridge = new BavetJoinBridgeBiConstraintStream<>(
-                constraintFactory, this, true, castedJoiner.getLeftCombinedMapping(), indexFactory);
+                constraintFactory, this, true, JoinerUtils.combineLeftMappings(castedJoiner), indexFactory);
         addChildStream(leftBridge);
         BavetJoinBridgeUniConstraintStream<Solution_, C> rightBridge = new BavetJoinBridgeUniConstraintStream<>(
-                constraintFactory, other, false, castedJoiner.getRightCombinedMapping(), indexFactory);
+                constraintFactory, other, false, JoinerUtils.combineRightMappings(castedJoiner), indexFactory);
         other.addChildStream(rightBridge);
         BavetJoinTriConstraintStream<Solution_, A, B, C> joinStream = new BavetJoinTriConstraintStream<>(constraintFactory,
                 leftBridge, rightBridge);

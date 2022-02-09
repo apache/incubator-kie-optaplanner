@@ -16,7 +16,15 @@
 
 package org.optaplanner.core.impl.score.stream.common;
 
-public abstract class AbstractJoiner {
+import java.util.function.Function;
+
+public abstract class AbstractJoiner<Right_> {
+
+    public abstract Function<Right_, Object> getRightMapping(int index);
+
+    public int getJoinerCount() {
+        return getJoinerTypes().length;
+    }
 
     public abstract JoinerType[] getJoinerTypes();
 

@@ -23,7 +23,6 @@ import org.optaplanner.core.impl.score.stream.common.JoinerType;
 
 public final class NonePentaJoiner<A, B, C, D, E> extends AbstractPentaJoiner<A, B, C, D, E> {
 
-    private static final Object[] EMPTY_OBJECT_ARRAY = new Object[0];
     private static final JoinerType[] EMPTY_JOINER_ARRAY = new JoinerType[0];
 
     // ************************************************************************
@@ -36,11 +35,6 @@ public final class NonePentaJoiner<A, B, C, D, E> extends AbstractPentaJoiner<A,
     }
 
     @Override
-    public QuadFunction<A, B, C, D, Object[]> getLeftCombinedMapping() {
-        return (A a, B b, C c, D d) -> EMPTY_OBJECT_ARRAY;
-    }
-
-    @Override
     public JoinerType[] getJoinerTypes() {
         return EMPTY_JOINER_ARRAY;
     }
@@ -48,11 +42,6 @@ public final class NonePentaJoiner<A, B, C, D, E> extends AbstractPentaJoiner<A,
     @Override
     public Function<E, Object> getRightMapping(int index) {
         throw new UnsupportedOperationException("Impossible state: getRightMapping() is never called on a NonePentaJoiner.");
-    }
-
-    @Override
-    public Function<E, Object[]> getRightCombinedMapping() {
-        return (E e) -> EMPTY_OBJECT_ARRAY;
     }
 
 }

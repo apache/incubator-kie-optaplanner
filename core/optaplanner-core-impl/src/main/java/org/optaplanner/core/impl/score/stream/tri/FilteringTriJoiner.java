@@ -35,19 +35,7 @@ public final class FilteringTriJoiner<A, B, C> extends AbstractTriJoiner<A, B, C
     }
 
     @Override
-    public BiFunction<A, B, Object[]> getLeftCombinedMapping() {
-        throw new UnsupportedOperationException("Impossible state: this joiner should never be treated like a normal " +
-                "joiner internally.");
-    }
-
-    @Override
     public Function<C, Object> getRightMapping(int index) {
-        throw new UnsupportedOperationException("Impossible state: this joiner should never be treated like a normal " +
-                "joiner internally.");
-    }
-
-    @Override
-    public Function<C, Object[]> getRightCombinedMapping() {
         throw new UnsupportedOperationException("Impossible state: this joiner should never be treated like a normal " +
                 "joiner internally.");
     }

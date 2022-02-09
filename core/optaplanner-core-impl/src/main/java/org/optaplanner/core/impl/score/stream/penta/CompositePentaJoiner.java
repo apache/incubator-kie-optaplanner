@@ -16,7 +16,6 @@
 
 package org.optaplanner.core.impl.score.stream.penta;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.function.Function;
 
@@ -60,13 +59,6 @@ public final class CompositePentaJoiner<A, B, C, D, E> extends AbstractPentaJoin
     }
 
     @Override
-    public QuadFunction<A, B, C, D, Object[]> getLeftCombinedMapping() {
-        return (A a, B b, C c, D d) -> Arrays.stream(leftMappings)
-                .map(f -> f.apply(a, b, c, d))
-                .toArray();
-    }
-
-    @Override
     public JoinerType[] getJoinerTypes() {
         return joinerTypes;
     }
@@ -74,13 +66,6 @@ public final class CompositePentaJoiner<A, B, C, D, E> extends AbstractPentaJoin
     @Override
     public Function<E, Object> getRightMapping(int index) {
         return (Function<E, Object>) rightMappings[index];
-    }
-
-    @Override
-    public Function<E, Object[]> getRightCombinedMapping() {
-        return (E e) -> Arrays.stream(rightMappings)
-                .map(f -> f.apply(e))
-                .toArray();
     }
 
 }

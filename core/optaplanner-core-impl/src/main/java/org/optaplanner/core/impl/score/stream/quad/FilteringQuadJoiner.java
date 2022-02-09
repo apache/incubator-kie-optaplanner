@@ -35,19 +35,7 @@ public final class FilteringQuadJoiner<A, B, C, D> extends AbstractQuadJoiner<A,
     }
 
     @Override
-    public TriFunction<A, B, C, Object[]> getLeftCombinedMapping() {
-        throw new UnsupportedOperationException("Impossible state: this joiner should never be treated like a normal " +
-                "joiner internally.");
-    }
-
-    @Override
     public Function<D, Object> getRightMapping(int index) {
-        throw new UnsupportedOperationException("Impossible state: this joiner should never be treated like a normal " +
-                "joiner internally.");
-    }
-
-    @Override
-    public Function<D, Object[]> getRightCombinedMapping() {
         throw new UnsupportedOperationException("Impossible state: this joiner should never be treated like a normal " +
                 "joiner internally.");
     }

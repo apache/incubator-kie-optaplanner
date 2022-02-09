@@ -16,7 +16,6 @@
 
 package org.optaplanner.core.impl.score.stream.quad;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.function.Function;
 
@@ -60,13 +59,6 @@ public final class CompositeQuadJoiner<A, B, C, D> extends AbstractQuadJoiner<A,
     }
 
     @Override
-    public TriFunction<A, B, C, Object[]> getLeftCombinedMapping() {
-        return (A a, B b, C c) -> Arrays.stream(leftMappings)
-                .map(f -> f.apply(a, b, c))
-                .toArray();
-    }
-
-    @Override
     public JoinerType[] getJoinerTypes() {
         return joinerTypes;
     }
@@ -74,13 +66,6 @@ public final class CompositeQuadJoiner<A, B, C, D> extends AbstractQuadJoiner<A,
     @Override
     public Function<D, Object> getRightMapping(int index) {
         return (Function<D, Object>) rightMappings[index];
-    }
-
-    @Override
-    public Function<D, Object[]> getRightCombinedMapping() {
-        return (D d) -> Arrays.stream(rightMappings)
-                .map(f -> f.apply(d))
-                .toArray();
     }
 
 }

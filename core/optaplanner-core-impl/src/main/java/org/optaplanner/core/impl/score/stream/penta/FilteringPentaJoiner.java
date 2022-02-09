@@ -35,19 +35,7 @@ public final class FilteringPentaJoiner<A, B, C, D, E> extends AbstractPentaJoin
     }
 
     @Override
-    public QuadFunction<A, B, C, D, Object[]> getLeftCombinedMapping() {
-        throw new UnsupportedOperationException("Impossible state: this joiner should never be treated like a normal " +
-                "joiner internally.");
-    }
-
-    @Override
     public Function<E, Object> getRightMapping(int index) {
-        throw new UnsupportedOperationException("Impossible state: this joiner should never be treated like a normal " +
-                "joiner internally.");
-    }
-
-    @Override
-    public Function<E, Object[]> getRightCombinedMapping() {
         throw new UnsupportedOperationException("Impossible state: this joiner should never be treated like a normal " +
                 "joiner internally.");
     }

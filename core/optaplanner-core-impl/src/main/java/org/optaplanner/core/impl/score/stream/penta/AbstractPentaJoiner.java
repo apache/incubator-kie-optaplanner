@@ -26,7 +26,7 @@ import org.optaplanner.core.api.score.stream.penta.PentaJoiner;
 import org.optaplanner.core.impl.score.stream.common.AbstractJoiner;
 import org.optaplanner.core.impl.score.stream.common.JoinerType;
 
-public abstract class AbstractPentaJoiner<A, B, C, D, E> extends AbstractJoiner implements PentaJoiner<A, B, C, D, E> {
+public abstract class AbstractPentaJoiner<A, B, C, D, E> extends AbstractJoiner<E> implements PentaJoiner<A, B, C, D, E> {
 
     private final PentaPredicate<A, B, C, D, E> filter;
 
@@ -75,11 +75,7 @@ public abstract class AbstractPentaJoiner<A, B, C, D, E> extends AbstractJoiner 
 
     public abstract QuadFunction<A, B, C, D, Object> getLeftMapping(int index);
 
-    public abstract QuadFunction<A, B, C, D, Object[]> getLeftCombinedMapping();
-
     public abstract Function<E, Object> getRightMapping(int index);
-
-    public abstract Function<E, Object[]> getRightCombinedMapping();
 
     public PentaPredicate<A, B, C, D, E> getFilter() {
         return filter;

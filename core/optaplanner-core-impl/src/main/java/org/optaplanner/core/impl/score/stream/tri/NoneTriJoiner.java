@@ -23,7 +23,6 @@ import org.optaplanner.core.impl.score.stream.common.JoinerType;
 
 public final class NoneTriJoiner<A, B, C> extends AbstractTriJoiner<A, B, C> {
 
-    private static final Object[] EMPTY_OBJECT_ARRAY = new Object[0];
     private static final JoinerType[] EMPTY_JOINER_ARRAY = new JoinerType[0];
 
     // ************************************************************************
@@ -36,11 +35,6 @@ public final class NoneTriJoiner<A, B, C> extends AbstractTriJoiner<A, B, C> {
     }
 
     @Override
-    public BiFunction<A, B, Object[]> getLeftCombinedMapping() {
-        return (A a, B b) -> EMPTY_OBJECT_ARRAY;
-    }
-
-    @Override
     public JoinerType[] getJoinerTypes() {
         return EMPTY_JOINER_ARRAY;
     }
@@ -48,11 +42,6 @@ public final class NoneTriJoiner<A, B, C> extends AbstractTriJoiner<A, B, C> {
     @Override
     public Function<C, Object> getRightMapping(int index) {
         throw new UnsupportedOperationException("Impossible state: getRightMapping() is never called on a NoneTriJoiner.");
-    }
-
-    @Override
-    public Function<C, Object[]> getRightCombinedMapping() {
-        return (C c) -> EMPTY_OBJECT_ARRAY;
     }
 
 }
