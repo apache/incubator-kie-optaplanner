@@ -14,39 +14,43 @@
  * limitations under the License.
  */
 
-package org.optaplanner.core.impl.score.stream.penta;
+package org.optaplanner.core.impl.score.stream.quad;
 
 import java.util.Arrays;
-import java.util.List;
 import java.util.function.Function;
 
-import org.optaplanner.core.api.function.QuadFunction;
-import org.optaplanner.core.api.score.stream.penta.PentaJoiner;
+import org.optaplanner.core.api.function.TriFunction;
+import org.optaplanner.core.api.score.stream.quad.QuadJoiner;
 import org.optaplanner.core.impl.score.stream.common.JoinerType;
-import org.optaplanner.core.impl.score.stream.quad.AbstractQuadJoiner;
 
-public final class CompositePentaJoiner<A, B, C, D, E> extends AbstractPentaJoiner<A, B, C, D, E> {
+public final class DefaultQuadJoiner<A, B, C, D> extends AbstractQuadJoiner<A, B, C, D> {
 
     private final JoinerType[] joinerTypes;
-    private final QuadFunction<A, B, C, D, ?>[] leftMappings;
-    private final Function<E, ?>[] rightMappings;
+    private final TriFunction<A, B, C, ?>[] leftMappings;
+    private final Function<D, ?>[] rightMappings;
 
-    public CompositePentaJoiner(PentaJoiner<A, B, C, D, E>... joiners) {
+    public DefaultQuadJoiner(TriFunction<A, B, C, ?> leftMapping, JoinerType joinerType, Function<D, ?> rightMapping) {
+        this.joinerTypes = new JoinerType[] { joinerType };
+        this.leftMappings = new TriFunction[] { leftMapping };
+        this.rightMappings = new Function[] { rightMapping };
+    }
+
+    public DefaultQuadJoiner(QuadJoiner<A, B, C, D>... joiners) {
         this.joinerTypes = Arrays.stream(joiners)
-                .map(joiner -> (AbstractPentaJoiner<A, B, C, D, E>) joiner)
+                .map(joiner -> (AbstractQuadJoiner<A, B, C, D>) joiner)
                 .flatMap(joiner -> Arrays.stream(joiner.getJoinerTypes()))
                 .toArray(JoinerType[]::new);
         this.leftMappings = Arrays.stream(joiners)
-                .map(joiner -> (AbstractPentaJoiner<A, B, C, D, E>) joiner)
+                .map(joiner -> (AbstractQuadJoiner<A, B, C, D>) joiner)
                 .flatMap(joiner -> {
                     int joinerCount = joiner.getJoinerCount();
-                    QuadFunction[] mappings = new QuadFunction[joinerCount];
+                    TriFunction[] mappings = new TriFunction[joinerCount];
                     for (int i = 0; i < joinerCount; i++) {
                         mappings[i] = joiner.getLeftMapping(i);
                     }
                     return Arrays.stream(mappings);
                 })
-                .toArray(QuadFunction[]::new);
+                .toArray(TriFunction[]::new);
         this.rightMappings = Arrays.stream(joiners)
                 .map(joiner -> (AbstractQuadJoiner<A, B, C, D>) joiner)
                 .flatMap(joiner -> {
@@ -60,29 +64,13 @@ public final class CompositePentaJoiner<A, B, C, D, E> extends AbstractPentaJoin
                 .toArray(Function[]::new);
     }
 
-
-    CompositePentaJoiner(List<SinglePentaJoiner<A, B, C, D, E>> joinerList) {
-        if (joinerList.isEmpty()) {
-            throw new IllegalArgumentException("The joinerList (" + joinerList + ") must not be empty.");
-        }
-        this.joinerTypes = joinerList.stream()
-                .map(SinglePentaJoiner::getJoinerType)
-                .toArray(JoinerType[]::new);
-        this.leftMappings = joinerList.stream()
-                .map(SinglePentaJoiner::getLeftMapping)
-                .toArray(QuadFunction[]::new);
-        this.rightMappings = joinerList.stream()
-                .map(SinglePentaJoiner::getRightMapping)
-                .toArray(Function[]::new);
-    }
-
     // ************************************************************************
     // Builders
     // ************************************************************************
 
     @Override
-    public QuadFunction<A, B, C, D, Object> getLeftMapping(int index) {
-        return (QuadFunction<A, B, C, D, Object>) leftMappings[index];
+    public TriFunction<A, B, C, Object> getLeftMapping(int index) {
+        return (TriFunction<A, B, C, Object>) leftMappings[index];
     }
 
     @Override
@@ -91,8 +79,8 @@ public final class CompositePentaJoiner<A, B, C, D, E> extends AbstractPentaJoin
     }
 
     @Override
-    public Function<E, Object> getRightMapping(int index) {
-        return (Function<E, Object>) rightMappings[index];
+    public Function<D, Object> getRightMapping(int index) {
+        return (Function<D, Object>) rightMappings[index];
     }
 
 }

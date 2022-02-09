@@ -19,7 +19,7 @@ public final class JoinerUtils {
         if (joiner.getJoinerCount() == 0) {
             return (A a) -> EMPTY_OBJECT_ARRAY;
         } else if (joiner.getJoinerCount() == 1) {
-            return (A a) -> new Object[]{joiner.getLeftMapping(0).apply(a)};
+            return (A a) -> new Object[] { joiner.getLeftMapping(0).apply(a) };
         } else {
             return (A a) -> {
                 int joinerCount = joiner.getJoinerCount();
@@ -36,7 +36,7 @@ public final class JoinerUtils {
         if (joiner.getJoinerCount() == 0) {
             return (A a, B b) -> EMPTY_OBJECT_ARRAY;
         } else if (joiner.getJoinerCount() == 1) {
-            return (A a, B b) -> new Object[]{joiner.getLeftMapping(0).apply(a, b)};
+            return (A a, B b) -> new Object[] { joiner.getLeftMapping(0).apply(a, b) };
         } else {
             return (A a, B b) -> {
                 int joinerCount = joiner.getJoinerCount();
@@ -53,7 +53,7 @@ public final class JoinerUtils {
         if (joiner.getJoinerCount() == 0) {
             return (Right_ x) -> EMPTY_OBJECT_ARRAY;
         } else if (joiner.getJoinerCount() == 1) {
-            return (Right_ x) -> new Object[]{joiner.getRightMapping(0).apply(x)};
+            return (Right_ x) -> new Object[] { joiner.getRightMapping(0).apply(x) };
         } else {
             return (Right_ x) -> {
                 int joinerCount = joiner.getJoinerCount();

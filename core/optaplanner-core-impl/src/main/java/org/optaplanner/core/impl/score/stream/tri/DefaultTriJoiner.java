@@ -14,39 +14,45 @@
  * limitations under the License.
  */
 
-package org.optaplanner.core.impl.score.stream.bi;
+package org.optaplanner.core.impl.score.stream.tri;
 
 import java.util.Arrays;
-import java.util.List;
+import java.util.function.BiFunction;
 import java.util.function.Function;
 
-import org.optaplanner.core.api.score.stream.bi.BiJoiner;
+import org.optaplanner.core.api.score.stream.tri.TriJoiner;
 import org.optaplanner.core.impl.score.stream.common.JoinerType;
 
-public final class CompositeBiJoiner<A, B> extends AbstractBiJoiner<A, B> {
+public final class DefaultTriJoiner<A, B, C> extends AbstractTriJoiner<A, B, C> {
 
     private final JoinerType[] joinerTypes;
-    private final Function<A, ?>[] leftMappings;
-    private final Function<B, ?>[] rightMappings;
+    private final BiFunction<A, B, ?>[] leftMappings;
+    private final Function<C, ?>[] rightMappings;
 
-    public CompositeBiJoiner(BiJoiner<A, B>... joiners) {
+    public DefaultTriJoiner(BiFunction<A, B, ?> leftMapping, JoinerType joinerType, Function<C, ?> rightMapping) {
+        this.joinerTypes = new JoinerType[] { joinerType };
+        this.leftMappings = new BiFunction[] { leftMapping };
+        this.rightMappings = new Function[] { rightMapping };
+    }
+
+    public DefaultTriJoiner(TriJoiner<A, B, C>... joiners) {
         this.joinerTypes = Arrays.stream(joiners)
-                .map(joiner -> (AbstractBiJoiner<A, B>) joiner)
+                .map(joiner -> (AbstractTriJoiner<A, B, C>) joiner)
                 .flatMap(joiner -> Arrays.stream(joiner.getJoinerTypes()))
                 .toArray(JoinerType[]::new);
         this.leftMappings = Arrays.stream(joiners)
-                .map(joiner -> (AbstractBiJoiner<A, B>) joiner)
+                .map(joiner -> (AbstractTriJoiner<A, B, C>) joiner)
                 .flatMap(joiner -> {
                     int joinerCount = joiner.getJoinerCount();
-                    Function[] mappings = new Function[joinerCount];
+                    BiFunction[] mappings = new BiFunction[joinerCount];
                     for (int i = 0; i < joinerCount; i++) {
                         mappings[i] = joiner.getLeftMapping(i);
                     }
                     return Arrays.stream(mappings);
                 })
-                .toArray(Function[]::new);
+                .toArray(BiFunction[]::new);
         this.rightMappings = Arrays.stream(joiners)
-                .map(joiner -> (AbstractBiJoiner<A, B>) joiner)
+                .map(joiner -> (AbstractTriJoiner<A, B, C>) joiner)
                 .flatMap(joiner -> {
                     int joinerCount = joiner.getJoinerCount();
                     Function[] mappings = new Function[joinerCount];
@@ -58,28 +64,13 @@ public final class CompositeBiJoiner<A, B> extends AbstractBiJoiner<A, B> {
                 .toArray(Function[]::new);
     }
 
-    CompositeBiJoiner(List<SingleBiJoiner<A, B>> joinerList) {
-        if (joinerList.isEmpty()) {
-            throw new IllegalArgumentException("The joinerList (" + joinerList + ") must not be empty.");
-        }
-        this.joinerTypes = joinerList.stream()
-                .map(SingleBiJoiner::getJoinerType)
-                .toArray(JoinerType[]::new);
-        this.leftMappings = joinerList.stream()
-                .map(SingleBiJoiner::getLeftMapping)
-                .toArray(Function[]::new);
-        this.rightMappings = joinerList.stream()
-                .map(SingleBiJoiner::getRightMapping)
-                .toArray(Function[]::new);
-    }
-
     // ************************************************************************
     // Builders
     // ************************************************************************
 
     @Override
-    public Function<A, Object> getLeftMapping(int index) {
-        return (Function<A, Object>) leftMappings[index];
+    public BiFunction<A, B, Object> getLeftMapping(int index) {
+        return (BiFunction<A, B, Object>) leftMappings[index];
     }
 
     @Override
@@ -88,8 +79,7 @@ public final class CompositeBiJoiner<A, B> extends AbstractBiJoiner<A, B> {
     }
 
     @Override
-    public Function<B, Object> getRightMapping(int index) {
-        return (Function<B, Object>) rightMappings[index];
+    public Function<C, Object> getRightMapping(int index) {
+        return (Function<C, Object>) rightMappings[index];
     }
-
 }

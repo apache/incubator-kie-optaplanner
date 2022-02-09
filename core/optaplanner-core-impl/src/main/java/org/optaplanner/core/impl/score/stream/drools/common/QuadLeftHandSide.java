@@ -16,6 +16,12 @@
 
 package org.optaplanner.core.impl.score.stream.drools.common;
 
+import static java.util.Collections.singletonList;
+import static org.drools.model.DSL.exists;
+import static org.drools.model.DSL.not;
+import static org.drools.model.PatternDSL.betaIndexedBy;
+import static org.drools.model.PatternDSL.pattern;
+
 import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
@@ -43,16 +49,10 @@ import org.optaplanner.core.api.score.stream.quad.QuadConstraintCollector;
 import org.optaplanner.core.impl.score.stream.common.JoinerType;
 import org.optaplanner.core.impl.score.stream.drools.DroolsVariableFactory;
 import org.optaplanner.core.impl.score.stream.penta.AbstractPentaJoiner;
-import org.optaplanner.core.impl.score.stream.penta.CompositePentaJoiner;
+import org.optaplanner.core.impl.score.stream.penta.DefaultPentaJoiner;
 import org.optaplanner.core.impl.score.stream.penta.FilteringPentaJoiner;
 import org.optaplanner.core.impl.score.stream.penta.NonePentaJoiner;
 import org.optaplanner.core.impl.score.stream.tri.NoneTriJoiner;
-
-import static java.util.Collections.singletonList;
-import static org.drools.model.DSL.exists;
-import static org.drools.model.DSL.not;
-import static org.drools.model.PatternDSL.betaIndexedBy;
-import static org.drools.model.PatternDSL.pattern;
 
 /**
  * Represents the left hand side of a Drools rule, the result of which are four variables.
@@ -161,7 +161,7 @@ public final class QuadLeftHandSide<A, B, C, D> extends AbstractLeftHandSide {
                     throw new IllegalStateException("Indexing joiner (" + joiner + ") must not follow a filtering joiner ("
                             + joiners[indexOfFirstFilter] + ").");
                 } else { // Merge this Joiner with the existing Joiners.
-                    finalJoiner = finalJoiner == null ? joiner : new CompositePentaJoiner<>(finalJoiner, joiner);
+                    finalJoiner = finalJoiner == null ? joiner : new DefaultPentaJoiner<>(finalJoiner, joiner);
                 }
             } else {
                 if (!hasAFilter) { // From now on, we only allow filtering joiners.
