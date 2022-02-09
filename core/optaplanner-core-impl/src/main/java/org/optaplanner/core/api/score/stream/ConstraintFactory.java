@@ -32,7 +32,6 @@ import org.optaplanner.core.api.score.stream.bi.BiJoiner;
 import org.optaplanner.core.api.score.stream.uni.UniConstraintStream;
 import org.optaplanner.core.impl.score.stream.bi.DefaultBiJoiner;
 import org.optaplanner.core.impl.score.stream.bi.FilteringBiJoiner;
-import org.optaplanner.core.impl.score.stream.bi.NoneBiJoiner;
 
 /**
  * The factory to create every {@link ConstraintStream} (for example with {@link #forEach(Class)})
@@ -92,7 +91,7 @@ public interface ConstraintFactory {
      * @return a stream that matches every unique combination of A and another A
      */
     default <A> BiConstraintStream<A, A> forEachUniquePair(Class<A> sourceClass) {
-        return forEachUniquePair(sourceClass, new NoneBiJoiner<>());
+        return forEachUniquePair(sourceClass, new BiJoiner[0]);
     }
 
     /**
@@ -301,7 +300,7 @@ public interface ConstraintFactory {
      */
     @Deprecated(forRemoval = true)
     default <A> BiConstraintStream<A, A> fromUniquePair(Class<A> fromClass) {
-        return fromUniquePair(fromClass, new NoneBiJoiner<>());
+        return fromUniquePair(fromClass, new BiJoiner[0]);
     }
 
     /**

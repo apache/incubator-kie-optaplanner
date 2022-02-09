@@ -23,7 +23,6 @@ import static org.drools.model.PatternDSL.betaIndexedBy;
 import static org.drools.model.PatternDSL.pattern;
 
 import java.math.BigDecimal;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 import java.util.function.Function;
@@ -51,8 +50,6 @@ import org.optaplanner.core.impl.score.stream.drools.DroolsVariableFactory;
 import org.optaplanner.core.impl.score.stream.quad.AbstractQuadJoiner;
 import org.optaplanner.core.impl.score.stream.quad.DefaultQuadJoiner;
 import org.optaplanner.core.impl.score.stream.quad.FilteringQuadJoiner;
-import org.optaplanner.core.impl.score.stream.quad.NoneQuadJoiner;
-import org.optaplanner.core.impl.score.stream.tri.NoneTriJoiner;
 
 /**
  * Represents the left hand side of a Drools rule, the result of which are three variables.
@@ -147,10 +144,7 @@ public final class TriLeftHandSide<A, B, C> extends AbstractLeftHandSide {
         for (int i = 0; i < joiners.length; i++) {
             AbstractQuadJoiner<A, B, C, D> joiner = (AbstractQuadJoiner<A, B, C, D>) joiners[i];
             boolean hasAFilter = indexOfFirstFilter >= 0;
-            if (joiner instanceof NoneQuadJoiner && joiners.length > 1) {
-                throw new IllegalStateException("If present, " + NoneTriJoiner.class + " must be the only joiner, got "
-                        + Arrays.toString(joiners) + " instead.");
-            } else if (!(joiner instanceof FilteringQuadJoiner)) {
+            if (!(joiner instanceof FilteringQuadJoiner)) {
                 if (hasAFilter) {
                     throw new IllegalStateException("Indexing joiner (" + joiner + ") must not follow a filtering joiner ("
                             + joiners[indexOfFirstFilter] + ").");

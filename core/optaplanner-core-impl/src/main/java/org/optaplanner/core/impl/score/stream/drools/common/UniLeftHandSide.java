@@ -23,7 +23,6 @@ import static org.drools.model.PatternDSL.betaIndexedBy;
 import static org.drools.model.PatternDSL.pattern;
 
 import java.math.BigDecimal;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 import java.util.function.BiPredicate;
@@ -45,7 +44,6 @@ import org.optaplanner.core.api.score.stream.uni.UniConstraintCollector;
 import org.optaplanner.core.impl.score.stream.bi.AbstractBiJoiner;
 import org.optaplanner.core.impl.score.stream.bi.DefaultBiJoiner;
 import org.optaplanner.core.impl.score.stream.bi.FilteringBiJoiner;
-import org.optaplanner.core.impl.score.stream.bi.NoneBiJoiner;
 import org.optaplanner.core.impl.score.stream.common.JoinerType;
 import org.optaplanner.core.impl.score.stream.drools.DroolsVariableFactory;
 
@@ -173,10 +171,7 @@ public final class UniLeftHandSide<A> extends AbstractLeftHandSide {
         for (int i = 0; i < joiners.length; i++) {
             AbstractBiJoiner<A, B> biJoiner = (AbstractBiJoiner<A, B>) joiners[i];
             boolean hasAFilter = indexOfFirstFilter >= 0;
-            if (biJoiner instanceof NoneBiJoiner && joiners.length > 1) {
-                throw new IllegalStateException("If present, " + NoneBiJoiner.class + " must be the only joiner, got "
-                        + Arrays.toString(joiners) + " instead.");
-            } else if (!(biJoiner instanceof FilteringBiJoiner)) {
+            if (!(biJoiner instanceof FilteringBiJoiner)) {
                 if (hasAFilter) {
                     throw new IllegalStateException("Indexing joiner (" + biJoiner + ") must not follow a filtering joiner ("
                             + joiners[indexOfFirstFilter] + ").");
