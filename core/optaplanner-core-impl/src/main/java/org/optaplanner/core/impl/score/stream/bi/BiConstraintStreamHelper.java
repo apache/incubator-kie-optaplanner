@@ -22,7 +22,7 @@ import org.optaplanner.core.api.score.stream.tri.TriConstraintStream;
 import org.optaplanner.core.api.score.stream.tri.TriJoiner;
 import org.optaplanner.core.api.score.stream.uni.UniConstraintStream;
 import org.optaplanner.core.impl.score.stream.common.AbstractConstraintStreamHelper;
-import org.optaplanner.core.impl.score.stream.tri.AbstractTriJoiner;
+import org.optaplanner.core.impl.score.stream.tri.CompositeTriJoiner;
 import org.optaplanner.core.impl.score.stream.tri.FilteringTriJoiner;
 
 public final class BiConstraintStreamHelper<A, B, C>
@@ -57,7 +57,7 @@ public final class BiConstraintStreamHelper<A, B, C>
 
     @Override
     protected TriJoiner<A, B, C> mergeJoiners(TriJoiner<A, B, C>... joiners) {
-        return AbstractTriJoiner.merge(joiners);
+        return new CompositeTriJoiner<>(joiners);
     }
 
     @Override

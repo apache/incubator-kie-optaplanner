@@ -16,24 +16,53 @@
 
 package org.optaplanner.core.impl.score.stream.quad;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.function.Function;
 
 import org.optaplanner.core.api.function.TriFunction;
+import org.optaplanner.core.api.score.stream.quad.QuadJoiner;
 import org.optaplanner.core.impl.score.stream.common.JoinerType;
 
 public final class CompositeQuadJoiner<A, B, C, D> extends AbstractQuadJoiner<A, B, C, D> {
 
-    private final List<SingleQuadJoiner<A, B, C, D>> joinerList;
     private final JoinerType[] joinerTypes;
     private final TriFunction<A, B, C, ?>[] leftMappings;
     private final Function<D, ?>[] rightMappings;
+
+    public CompositeQuadJoiner(QuadJoiner<A, B, C, D>... joiners) {
+        this.joinerTypes = Arrays.stream(joiners)
+                .map(joiner -> (AbstractQuadJoiner<A, B, C, D>) joiner)
+                .flatMap(joiner -> Arrays.stream(joiner.getJoinerTypes()))
+                .toArray(JoinerType[]::new);
+        this.leftMappings = Arrays.stream(joiners)
+                .map(joiner -> (AbstractQuadJoiner<A, B, C, D>) joiner)
+                .flatMap(joiner -> {
+                    int joinerCount = joiner.getJoinerCount();
+                    TriFunction[] mappings = new TriFunction[joinerCount];
+                    for (int i = 0; i < joinerCount; i++) {
+                        mappings[i] = joiner.getLeftMapping(i);
+                    }
+                    return Arrays.stream(mappings);
+                })
+                .toArray(TriFunction[]::new);
+        this.rightMappings = Arrays.stream(joiners)
+                .map(joiner -> (AbstractQuadJoiner<A, B, C, D>) joiner)
+                .flatMap(joiner -> {
+                    int joinerCount = joiner.getJoinerCount();
+                    Function[] mappings = new Function[joinerCount];
+                    for (int i = 0; i < joinerCount; i++) {
+                        mappings[i] = joiner.getRightMapping(i);
+                    }
+                    return Arrays.stream(mappings);
+                })
+                .toArray(Function[]::new);
+    }
 
     CompositeQuadJoiner(List<SingleQuadJoiner<A, B, C, D>> joinerList) {
         if (joinerList.isEmpty()) {
             throw new IllegalArgumentException("The joinerList (" + joinerList + ") must not be empty.");
         }
-        this.joinerList = joinerList;
         this.joinerTypes = joinerList.stream()
                 .map(SingleQuadJoiner::getJoinerType)
                 .toArray(JoinerType[]::new);
@@ -43,10 +72,6 @@ public final class CompositeQuadJoiner<A, B, C, D> extends AbstractQuadJoiner<A,
         this.rightMappings = joinerList.stream()
                 .map(SingleQuadJoiner::getRightMapping)
                 .toArray(Function[]::new);
-    }
-
-    public List<SingleQuadJoiner<A, B, C, D>> getJoinerList() {
-        return joinerList;
     }
 
     // ************************************************************************

@@ -16,24 +16,53 @@
 
 package org.optaplanner.core.impl.score.stream.tri;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 
+import org.optaplanner.core.api.score.stream.tri.TriJoiner;
 import org.optaplanner.core.impl.score.stream.common.JoinerType;
 
 public final class CompositeTriJoiner<A, B, C> extends AbstractTriJoiner<A, B, C> {
 
-    private final List<SingleTriJoiner<A, B, C>> joinerList;
     private final JoinerType[] joinerTypes;
     private final BiFunction<A, B, ?>[] leftMappings;
     private final Function<C, ?>[] rightMappings;
+
+    public CompositeTriJoiner(TriJoiner<A, B, C>... joiners) {
+        this.joinerTypes = Arrays.stream(joiners)
+                .map(joiner -> (AbstractTriJoiner<A, B, C>) joiner)
+                .flatMap(joiner -> Arrays.stream(joiner.getJoinerTypes()))
+                .toArray(JoinerType[]::new);
+        this.leftMappings = Arrays.stream(joiners)
+                .map(joiner -> (AbstractTriJoiner<A, B, C>) joiner)
+                .flatMap(joiner -> {
+                    int joinerCount = joiner.getJoinerCount();
+                    BiFunction[] mappings = new BiFunction[joinerCount];
+                    for (int i = 0; i < joinerCount; i++) {
+                        mappings[i] = joiner.getLeftMapping(i);
+                    }
+                    return Arrays.stream(mappings);
+                })
+                .toArray(BiFunction[]::new);
+        this.rightMappings = Arrays.stream(joiners)
+                .map(joiner -> (AbstractTriJoiner<A, B, C>) joiner)
+                .flatMap(joiner -> {
+                    int joinerCount = joiner.getJoinerCount();
+                    Function[] mappings = new Function[joinerCount];
+                    for (int i = 0; i < joinerCount; i++) {
+                        mappings[i] = joiner.getRightMapping(i);
+                    }
+                    return Arrays.stream(mappings);
+                })
+                .toArray(Function[]::new);
+    }
 
     CompositeTriJoiner(List<SingleTriJoiner<A, B, C>> joinerList) {
         if (joinerList.isEmpty()) {
             throw new IllegalArgumentException("The joinerList (" + joinerList + ") must not be empty.");
         }
-        this.joinerList = joinerList;
         this.joinerTypes = joinerList.stream()
                 .map(SingleTriJoiner::getJoinerType)
                 .toArray(JoinerType[]::new);
@@ -43,10 +72,6 @@ public final class CompositeTriJoiner<A, B, C> extends AbstractTriJoiner<A, B, C
         this.rightMappings = joinerList.stream()
                 .map(SingleTriJoiner::getRightMapping)
                 .toArray(Function[]::new);
-    }
-
-    public List<SingleTriJoiner<A, B, C>> getJoinerList() {
-        return joinerList;
     }
 
     // ************************************************************************

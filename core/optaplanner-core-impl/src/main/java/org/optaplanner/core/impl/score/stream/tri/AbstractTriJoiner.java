@@ -16,8 +16,6 @@
 
 package org.optaplanner.core.impl.score.stream.tri;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 
@@ -36,28 +34,6 @@ public abstract class AbstractTriJoiner<A, B, C> extends AbstractJoiner<C> imple
 
     protected AbstractTriJoiner(TriPredicate<A, B, C> filter) {
         this.filter = filter;
-    }
-
-    @SafeVarargs
-    public static <A, B, C> AbstractTriJoiner<A, B, C> merge(TriJoiner<A, B, C>... joiners) {
-        List<SingleTriJoiner<A, B, C>> joinerList = new ArrayList<>();
-        for (TriJoiner<A, B, C> joiner : joiners) {
-            if (joiner instanceof NoneTriJoiner) {
-                // Ignore it
-            } else if (joiner instanceof SingleTriJoiner) {
-                joinerList.add((SingleTriJoiner<A, B, C>) joiner);
-            } else if (joiner instanceof CompositeTriJoiner) {
-                joinerList.addAll(((CompositeTriJoiner<A, B, C>) joiner).getJoinerList());
-            } else {
-                throw new IllegalArgumentException("The joiner class (" + joiner.getClass() + ") is not supported.");
-            }
-        }
-        if (joinerList.isEmpty()) {
-            return new NoneTriJoiner<>();
-        } else if (joinerList.size() == 1) {
-            return joinerList.get(0);
-        }
-        return new CompositeTriJoiner<>(joinerList);
     }
 
     public boolean matches(A a, B b, C c) {

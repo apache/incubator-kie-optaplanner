@@ -16,8 +16,6 @@
 
 package org.optaplanner.core.impl.score.stream.penta;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.function.Function;
 
 import org.optaplanner.core.api.function.PentaPredicate;
@@ -36,28 +34,6 @@ public abstract class AbstractPentaJoiner<A, B, C, D, E> extends AbstractJoiner<
 
     protected AbstractPentaJoiner(PentaPredicate<A, B, C, D, E> filter) {
         this.filter = filter;
-    }
-
-    @SafeVarargs
-    public static <A, B, C, D, E> AbstractPentaJoiner<A, B, C, D, E> merge(PentaJoiner<A, B, C, D, E>... joiners) {
-        List<SinglePentaJoiner<A, B, C, D, E>> joinerList = new ArrayList<>();
-        for (PentaJoiner<A, B, C, D, E> joiner : joiners) {
-            if (joiner instanceof NonePentaJoiner) {
-                // Ignore it
-            } else if (joiner instanceof SinglePentaJoiner) {
-                joinerList.add((SinglePentaJoiner<A, B, C, D, E>) joiner);
-            } else if (joiner instanceof CompositePentaJoiner) {
-                joinerList.addAll(((CompositePentaJoiner<A, B, C, D, E>) joiner).getJoinerList());
-            } else {
-                throw new IllegalArgumentException("The joiner class (" + joiner.getClass() + ") is not supported.");
-            }
-        }
-        if (joinerList.isEmpty()) {
-            return new NonePentaJoiner<>();
-        } else if (joinerList.size() == 1) {
-            return joinerList.get(0);
-        }
-        return new CompositePentaJoiner<>(joinerList);
     }
 
     public boolean matches(A a, B b, C c, D d, E e) {

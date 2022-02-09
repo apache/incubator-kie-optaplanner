@@ -16,8 +16,6 @@
 
 package org.optaplanner.core.impl.score.stream.quad;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.function.Function;
 
 import org.optaplanner.core.api.function.QuadPredicate;
@@ -36,28 +34,6 @@ public abstract class AbstractQuadJoiner<A, B, C, D> extends AbstractJoiner<D> i
 
     protected AbstractQuadJoiner(QuadPredicate<A, B, C, D> filter) {
         this.filter = filter;
-    }
-
-    @SafeVarargs
-    public static <A, B, C, D> AbstractQuadJoiner<A, B, C, D> merge(QuadJoiner<A, B, C, D>... joiners) {
-        List<SingleQuadJoiner<A, B, C, D>> joinerList = new ArrayList<>();
-        for (QuadJoiner<A, B, C, D> joiner : joiners) {
-            if (joiner instanceof NoneQuadJoiner) {
-                // Ignore it
-            } else if (joiner instanceof SingleQuadJoiner) {
-                joinerList.add((SingleQuadJoiner<A, B, C, D>) joiner);
-            } else if (joiner instanceof CompositeQuadJoiner) {
-                joinerList.addAll(((CompositeQuadJoiner<A, B, C, D>) joiner).getJoinerList());
-            } else {
-                throw new IllegalArgumentException("The joiner class (" + joiner.getClass() + ") is not supported.");
-            }
-        }
-        if (joinerList.isEmpty()) {
-            return new NoneQuadJoiner<>();
-        } else if (joinerList.size() == 1) {
-            return joinerList.get(0);
-        }
-        return new CompositeQuadJoiner<>(joinerList);
     }
 
     public boolean matches(A a, B b, C c, D d) {

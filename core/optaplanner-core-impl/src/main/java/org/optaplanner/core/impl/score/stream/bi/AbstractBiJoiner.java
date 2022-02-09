@@ -16,8 +16,6 @@
 
 package org.optaplanner.core.impl.score.stream.bi;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.function.BiPredicate;
 import java.util.function.Function;
 
@@ -35,29 +33,6 @@ public abstract class AbstractBiJoiner<A, B> extends AbstractJoiner<B> implement
 
     protected AbstractBiJoiner(BiPredicate<A, B> filter) {
         this.filter = filter;
-    }
-
-    @SafeVarargs
-    public static <A, B> AbstractBiJoiner<A, B> merge(BiJoiner<A, B>... joiners) {
-        List<SingleBiJoiner<A, B>> joinerList = new ArrayList<>(joiners.length);
-        for (BiJoiner<A, B> joiner : joiners) {
-            if (joiner instanceof NoneBiJoiner) {
-                // Ignore it
-            } else if (joiner instanceof SingleBiJoiner) {
-                joinerList.add((SingleBiJoiner<A, B>) joiner);
-            } else if (joiner instanceof CompositeBiJoiner) {
-                joinerList.addAll(((CompositeBiJoiner<A, B>) joiner).getJoinerList());
-            } else {
-                // Filtering joiners are merged by composing their filter lambdas.
-                throw new IllegalArgumentException("The joiner class (" + joiner.getClass() + ") is not supported.");
-            }
-        }
-        if (joinerList.isEmpty()) {
-            return new NoneBiJoiner<>();
-        } else if (joinerList.size() == 1) {
-            return joinerList.get(0);
-        }
-        return new CompositeBiJoiner<>(joinerList);
     }
 
     public boolean matches(A a, B b) {

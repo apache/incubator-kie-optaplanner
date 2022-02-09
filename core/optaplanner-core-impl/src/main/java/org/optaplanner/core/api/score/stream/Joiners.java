@@ -31,17 +31,17 @@ import org.optaplanner.core.api.score.stream.penta.PentaJoiner;
 import org.optaplanner.core.api.score.stream.quad.QuadJoiner;
 import org.optaplanner.core.api.score.stream.tri.TriJoiner;
 import org.optaplanner.core.api.score.stream.uni.UniConstraintStream;
-import org.optaplanner.core.impl.score.stream.bi.AbstractBiJoiner;
+import org.optaplanner.core.impl.score.stream.bi.CompositeBiJoiner;
 import org.optaplanner.core.impl.score.stream.bi.FilteringBiJoiner;
 import org.optaplanner.core.impl.score.stream.bi.SingleBiJoiner;
 import org.optaplanner.core.impl.score.stream.common.JoinerType;
-import org.optaplanner.core.impl.score.stream.penta.AbstractPentaJoiner;
+import org.optaplanner.core.impl.score.stream.penta.CompositePentaJoiner;
 import org.optaplanner.core.impl.score.stream.penta.FilteringPentaJoiner;
 import org.optaplanner.core.impl.score.stream.penta.SinglePentaJoiner;
-import org.optaplanner.core.impl.score.stream.quad.AbstractQuadJoiner;
+import org.optaplanner.core.impl.score.stream.quad.CompositeQuadJoiner;
 import org.optaplanner.core.impl.score.stream.quad.FilteringQuadJoiner;
 import org.optaplanner.core.impl.score.stream.quad.SingleQuadJoiner;
-import org.optaplanner.core.impl.score.stream.tri.AbstractTriJoiner;
+import org.optaplanner.core.impl.score.stream.tri.CompositeTriJoiner;
 import org.optaplanner.core.impl.score.stream.tri.FilteringTriJoiner;
 import org.optaplanner.core.impl.score.stream.tri.SingleTriJoiner;
 
@@ -287,7 +287,7 @@ public final class Joiners {
             Function<A, Property_> leftEndMapping,
             Function<B, Property_> rightStartMapping,
             Function<B, Property_> rightEndMapping) {
-        return AbstractBiJoiner.merge(Joiners.lessThan(leftStartMapping, rightEndMapping),
+        return new CompositeBiJoiner<>(Joiners.lessThan(leftStartMapping, rightEndMapping),
                 Joiners.greaterThan(leftEndMapping, rightStartMapping));
     }
 
@@ -406,7 +406,7 @@ public final class Joiners {
             BiFunction<A, B, Property_> leftEndMapping,
             Function<C, Property_> rightStartMapping,
             Function<C, Property_> rightEndMapping) {
-        return AbstractTriJoiner.merge(Joiners.lessThan(leftStartMapping, rightEndMapping),
+        return new CompositeTriJoiner<>(Joiners.lessThan(leftStartMapping, rightEndMapping),
                 Joiners.greaterThan(leftEndMapping, rightStartMapping));
     }
 
@@ -532,7 +532,7 @@ public final class Joiners {
             TriFunction<A, B, C, Property_> leftEndMapping,
             Function<D, Property_> rightStartMapping,
             Function<D, Property_> rightEndMapping) {
-        return AbstractQuadJoiner.merge(Joiners.lessThan(leftStartMapping, rightEndMapping),
+        return new CompositeQuadJoiner<>(Joiners.lessThan(leftStartMapping, rightEndMapping),
                 Joiners.greaterThan(leftEndMapping, rightStartMapping));
     }
 
@@ -665,7 +665,7 @@ public final class Joiners {
             QuadFunction<A, B, C, D, Property_> leftEndMapping,
             Function<E, Property_> rightStartMapping,
             Function<E, Property_> rightEndMapping) {
-        return AbstractPentaJoiner.merge(Joiners.lessThan(leftStartMapping, rightEndMapping),
+        return new CompositePentaJoiner<>(Joiners.lessThan(leftStartMapping, rightEndMapping),
                 Joiners.greaterThan(leftEndMapping, rightStartMapping));
     }
 

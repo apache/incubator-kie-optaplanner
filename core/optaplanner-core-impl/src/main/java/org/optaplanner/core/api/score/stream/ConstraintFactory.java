@@ -30,7 +30,7 @@ import org.optaplanner.core.api.domain.variable.PlanningVariable;
 import org.optaplanner.core.api.score.stream.bi.BiConstraintStream;
 import org.optaplanner.core.api.score.stream.bi.BiJoiner;
 import org.optaplanner.core.api.score.stream.uni.UniConstraintStream;
-import org.optaplanner.core.impl.score.stream.bi.AbstractBiJoiner;
+import org.optaplanner.core.impl.score.stream.bi.CompositeBiJoiner;
 import org.optaplanner.core.impl.score.stream.bi.FilteringBiJoiner;
 import org.optaplanner.core.impl.score.stream.bi.NoneBiJoiner;
 
@@ -182,10 +182,10 @@ public interface ConstraintFactory {
         int indexOfFirstFilter = findIndexOfFirstFilteringJoiner(joiners);
         if (indexOfFirstFilter < 0) {
             // No filtering joiners. Simply merge all joiners and create the stream.
-            return forEachUniquePair(sourceClass, AbstractBiJoiner.merge(joiners));
+            return forEachUniquePair(sourceClass, new CompositeBiJoiner<>(joiners));
         }
         // Merge indexing joiners, create stream and append filters for every subsequent filtering joiner.
-        BiJoiner<A, A> mergedJoiner = AbstractBiJoiner.merge(Arrays.copyOf(joiners, indexOfFirstFilter));
+        BiJoiner<A, A> mergedJoiner = new CompositeBiJoiner<>(Arrays.copyOf(joiners, indexOfFirstFilter));
         BiConstraintStream<A, A> resultingStream = forEachUniquePair(sourceClass, mergedJoiner);
         for (int filterIndex = indexOfFirstFilter; filterIndex < joiners.length; filterIndex++) {
             FilteringBiJoiner<A, A> filteringJoiner = (FilteringBiJoiner<A, A>) joiners[filterIndex];
@@ -435,10 +435,10 @@ public interface ConstraintFactory {
         int indexOfFirstFilter = findIndexOfFirstFilteringJoiner(joiners);
         if (indexOfFirstFilter < 0) {
             // No filtering joiners. Simply merge all joiners and create the stream.
-            return fromUniquePair(fromClass, AbstractBiJoiner.merge(joiners));
+            return fromUniquePair(fromClass, new CompositeBiJoiner<>(joiners));
         }
         // Merge indexing joiners, create stream and append filters for every subsequent filtering joiner.
-        BiJoiner<A, A> mergedJoiner = AbstractBiJoiner.merge(Arrays.copyOf(joiners, indexOfFirstFilter));
+        BiJoiner<A, A> mergedJoiner = new CompositeBiJoiner<>(Arrays.copyOf(joiners, indexOfFirstFilter));
         BiConstraintStream<A, A> resultingStream = fromUniquePair(fromClass, mergedJoiner);
         for (int filterIndex = indexOfFirstFilter; filterIndex < joiners.length; filterIndex++) {
             FilteringBiJoiner<A, A> filteringJoiner = (FilteringBiJoiner<A, A>) joiners[filterIndex];

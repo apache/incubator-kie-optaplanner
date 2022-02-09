@@ -16,24 +16,55 @@
 
 package org.optaplanner.core.impl.score.stream.penta;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.function.Function;
 
 import org.optaplanner.core.api.function.QuadFunction;
+import org.optaplanner.core.api.score.stream.penta.PentaJoiner;
 import org.optaplanner.core.impl.score.stream.common.JoinerType;
+import org.optaplanner.core.impl.score.stream.quad.AbstractQuadJoiner;
 
 public final class CompositePentaJoiner<A, B, C, D, E> extends AbstractPentaJoiner<A, B, C, D, E> {
 
-    private final List<SinglePentaJoiner<A, B, C, D, E>> joinerList;
     private final JoinerType[] joinerTypes;
     private final QuadFunction<A, B, C, D, ?>[] leftMappings;
     private final Function<E, ?>[] rightMappings;
+
+    public CompositePentaJoiner(PentaJoiner<A, B, C, D, E>... joiners) {
+        this.joinerTypes = Arrays.stream(joiners)
+                .map(joiner -> (AbstractPentaJoiner<A, B, C, D, E>) joiner)
+                .flatMap(joiner -> Arrays.stream(joiner.getJoinerTypes()))
+                .toArray(JoinerType[]::new);
+        this.leftMappings = Arrays.stream(joiners)
+                .map(joiner -> (AbstractPentaJoiner<A, B, C, D, E>) joiner)
+                .flatMap(joiner -> {
+                    int joinerCount = joiner.getJoinerCount();
+                    QuadFunction[] mappings = new QuadFunction[joinerCount];
+                    for (int i = 0; i < joinerCount; i++) {
+                        mappings[i] = joiner.getLeftMapping(i);
+                    }
+                    return Arrays.stream(mappings);
+                })
+                .toArray(QuadFunction[]::new);
+        this.rightMappings = Arrays.stream(joiners)
+                .map(joiner -> (AbstractQuadJoiner<A, B, C, D>) joiner)
+                .flatMap(joiner -> {
+                    int joinerCount = joiner.getJoinerCount();
+                    Function[] mappings = new Function[joinerCount];
+                    for (int i = 0; i < joinerCount; i++) {
+                        mappings[i] = joiner.getRightMapping(i);
+                    }
+                    return Arrays.stream(mappings);
+                })
+                .toArray(Function[]::new);
+    }
+
 
     CompositePentaJoiner(List<SinglePentaJoiner<A, B, C, D, E>> joinerList) {
         if (joinerList.isEmpty()) {
             throw new IllegalArgumentException("The joinerList (" + joinerList + ") must not be empty.");
         }
-        this.joinerList = joinerList;
         this.joinerTypes = joinerList.stream()
                 .map(SinglePentaJoiner::getJoinerType)
                 .toArray(JoinerType[]::new);
@@ -43,10 +74,6 @@ public final class CompositePentaJoiner<A, B, C, D, E> extends AbstractPentaJoin
         this.rightMappings = joinerList.stream()
                 .map(SinglePentaJoiner::getRightMapping)
                 .toArray(Function[]::new);
-    }
-
-    public List<SinglePentaJoiner<A, B, C, D, E>> getJoinerList() {
-        return joinerList;
     }
 
     // ************************************************************************

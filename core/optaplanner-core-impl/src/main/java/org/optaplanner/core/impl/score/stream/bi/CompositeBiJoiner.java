@@ -16,23 +16,52 @@
 
 package org.optaplanner.core.impl.score.stream.bi;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.function.Function;
 
+import org.optaplanner.core.api.score.stream.bi.BiJoiner;
 import org.optaplanner.core.impl.score.stream.common.JoinerType;
 
 public final class CompositeBiJoiner<A, B> extends AbstractBiJoiner<A, B> {
 
-    private final List<SingleBiJoiner<A, B>> joinerList;
     private final JoinerType[] joinerTypes;
     private final Function<A, ?>[] leftMappings;
     private final Function<B, ?>[] rightMappings;
+
+    public CompositeBiJoiner(BiJoiner<A, B>... joiners) {
+        this.joinerTypes = Arrays.stream(joiners)
+                .map(joiner -> (AbstractBiJoiner<A, B>) joiner)
+                .flatMap(joiner -> Arrays.stream(joiner.getJoinerTypes()))
+                .toArray(JoinerType[]::new);
+        this.leftMappings = Arrays.stream(joiners)
+                .map(joiner -> (AbstractBiJoiner<A, B>) joiner)
+                .flatMap(joiner -> {
+                    int joinerCount = joiner.getJoinerCount();
+                    Function[] mappings = new Function[joinerCount];
+                    for (int i = 0; i < joinerCount; i++) {
+                        mappings[i] = joiner.getLeftMapping(i);
+                    }
+                    return Arrays.stream(mappings);
+                })
+                .toArray(Function[]::new);
+        this.rightMappings = Arrays.stream(joiners)
+                .map(joiner -> (AbstractBiJoiner<A, B>) joiner)
+                .flatMap(joiner -> {
+                    int joinerCount = joiner.getJoinerCount();
+                    Function[] mappings = new Function[joinerCount];
+                    for (int i = 0; i < joinerCount; i++) {
+                        mappings[i] = joiner.getRightMapping(i);
+                    }
+                    return Arrays.stream(mappings);
+                })
+                .toArray(Function[]::new);
+    }
 
     CompositeBiJoiner(List<SingleBiJoiner<A, B>> joinerList) {
         if (joinerList.isEmpty()) {
             throw new IllegalArgumentException("The joinerList (" + joinerList + ") must not be empty.");
         }
-        this.joinerList = joinerList;
         this.joinerTypes = joinerList.stream()
                 .map(SingleBiJoiner::getJoinerType)
                 .toArray(JoinerType[]::new);
@@ -42,10 +71,6 @@ public final class CompositeBiJoiner<A, B> extends AbstractBiJoiner<A, B> {
         this.rightMappings = joinerList.stream()
                 .map(SingleBiJoiner::getRightMapping)
                 .toArray(Function[]::new);
-    }
-
-    public List<SingleBiJoiner<A, B>> getJoinerList() {
-        return joinerList;
     }
 
     // ************************************************************************

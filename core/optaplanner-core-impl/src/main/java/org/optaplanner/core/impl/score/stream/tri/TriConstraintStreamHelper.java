@@ -22,7 +22,7 @@ import org.optaplanner.core.api.score.stream.quad.QuadJoiner;
 import org.optaplanner.core.api.score.stream.tri.TriConstraintStream;
 import org.optaplanner.core.api.score.stream.uni.UniConstraintStream;
 import org.optaplanner.core.impl.score.stream.common.AbstractConstraintStreamHelper;
-import org.optaplanner.core.impl.score.stream.quad.AbstractQuadJoiner;
+import org.optaplanner.core.impl.score.stream.quad.CompositeQuadJoiner;
 import org.optaplanner.core.impl.score.stream.quad.FilteringQuadJoiner;
 
 public final class TriConstraintStreamHelper<A, B, C, D>
@@ -58,7 +58,7 @@ public final class TriConstraintStreamHelper<A, B, C, D>
 
     @Override
     protected QuadJoiner<A, B, C, D> mergeJoiners(QuadJoiner<A, B, C, D>... joiners) {
-        return AbstractQuadJoiner.merge(joiners);
+        return new CompositeQuadJoiner<>(joiners);
     }
 
     @Override
