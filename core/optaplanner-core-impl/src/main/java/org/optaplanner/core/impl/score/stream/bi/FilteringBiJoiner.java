@@ -17,32 +17,18 @@
 package org.optaplanner.core.impl.score.stream.bi;
 
 import java.util.function.BiPredicate;
-import java.util.function.Function;
 
-import org.optaplanner.core.impl.score.stream.common.JoinerType;
+import org.optaplanner.core.api.score.stream.bi.BiJoiner;
 
-public final class FilteringBiJoiner<A, B> extends AbstractBiJoiner<A, B> {
+public final class FilteringBiJoiner<A, B> implements BiJoiner<A, B> {
+
+    private final BiPredicate<A, B> filter;
 
     public FilteringBiJoiner(BiPredicate<A, B> filter) {
-        super(filter);
+        this.filter = filter;
     }
 
-    @Override
-    public Function<A, Object> getLeftMapping(int index) {
-        throw new UnsupportedOperationException("Impossible state: this joiner should never be treated like a normal " +
-                "joiner internally.");
+    public BiPredicate<A, B> getFilter() {
+        return filter;
     }
-
-    @Override
-    public Function<B, Object> getRightMapping(int index) {
-        throw new UnsupportedOperationException("Impossible state: this joiner should never be treated like a normal " +
-                "joiner internally.");
-    }
-
-    @Override
-    public JoinerType[] getJoinerTypes() {
-        throw new UnsupportedOperationException("Impossible state: this joiner should never be treated like a normal " +
-                "joiner internally.");
-    }
-
 }

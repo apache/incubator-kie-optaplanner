@@ -16,7 +16,6 @@
 
 package org.optaplanner.core.impl.score.stream.bi;
 
-import java.util.function.BiPredicate;
 import java.util.function.Function;
 
 import org.optaplanner.core.api.score.stream.bi.BiJoiner;
@@ -24,16 +23,6 @@ import org.optaplanner.core.impl.score.stream.common.AbstractJoiner;
 import org.optaplanner.core.impl.score.stream.common.JoinerType;
 
 public abstract class AbstractBiJoiner<A, B> extends AbstractJoiner<B> implements BiJoiner<A, B> {
-
-    private final BiPredicate<A, B> filter;
-
-    protected AbstractBiJoiner() {
-        this.filter = null;
-    }
-
-    protected AbstractBiJoiner(BiPredicate<A, B> filter) {
-        this.filter = filter;
-    }
 
     public boolean matches(A a, B b) {
         JoinerType[] joinerTypes = getJoinerTypes();
@@ -49,11 +38,5 @@ public abstract class AbstractBiJoiner<A, B> extends AbstractJoiner<B> implement
     }
 
     public abstract Function<A, Object> getLeftMapping(int index);
-
-    public abstract Function<B, Object> getRightMapping(int index);
-
-    public BiPredicate<A, B> getFilter() {
-        return filter;
-    }
 
 }

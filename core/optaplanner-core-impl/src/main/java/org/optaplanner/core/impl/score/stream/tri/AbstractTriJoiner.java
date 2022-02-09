@@ -17,24 +17,12 @@
 package org.optaplanner.core.impl.score.stream.tri;
 
 import java.util.function.BiFunction;
-import java.util.function.Function;
 
-import org.optaplanner.core.api.function.TriPredicate;
 import org.optaplanner.core.api.score.stream.tri.TriJoiner;
 import org.optaplanner.core.impl.score.stream.common.AbstractJoiner;
 import org.optaplanner.core.impl.score.stream.common.JoinerType;
 
 public abstract class AbstractTriJoiner<A, B, C> extends AbstractJoiner<C> implements TriJoiner<A, B, C> {
-
-    private final TriPredicate<A, B, C> filter;
-
-    protected AbstractTriJoiner() {
-        this.filter = null;
-    }
-
-    protected AbstractTriJoiner(TriPredicate<A, B, C> filter) {
-        this.filter = filter;
-    }
 
     public boolean matches(A a, B b, C c) {
         JoinerType[] joinerTypes = getJoinerTypes();
@@ -50,11 +38,5 @@ public abstract class AbstractTriJoiner<A, B, C> extends AbstractJoiner<C> imple
     }
 
     public abstract BiFunction<A, B, Object> getLeftMapping(int index);
-
-    public abstract Function<C, Object> getRightMapping(int index);
-
-    public TriPredicate<A, B, C> getFilter() {
-        return filter;
-    }
 
 }

@@ -148,21 +148,23 @@ public final class QuadLeftHandSide<A, B, C, D> extends AbstractLeftHandSide {
         AbstractPentaJoiner<A, B, C, D, E> finalJoiner = null;
         PentaPredicate<A, B, C, D, E> finalFilter = null;
         for (int i = 0; i < joiners.length; i++) {
-            AbstractPentaJoiner<A, B, C, D, E> joiner = (AbstractPentaJoiner<A, B, C, D, E>) joiners[i];
+            PentaJoiner<A, B, C, D, E> joiner = joiners[i];
             boolean hasAFilter = indexOfFirstFilter >= 0;
-            if (!(joiner instanceof FilteringPentaJoiner)) {
-                if (hasAFilter) {
-                    throw new IllegalStateException("Indexing joiner (" + joiner + ") must not follow a filtering joiner ("
-                            + joiners[indexOfFirstFilter] + ").");
-                } else { // Merge this Joiner with the existing Joiners.
-                    finalJoiner = finalJoiner == null ? joiner : new DefaultPentaJoiner<>(finalJoiner, joiner);
-                }
-            } else {
+            if (joiner instanceof FilteringPentaJoiner) {
                 if (!hasAFilter) { // From now on, we only allow filtering joiners.
                     indexOfFirstFilter = i;
                 }
                 // Merge all filters into one to avoid paying the penalty for lack of indexing more than once.
-                finalFilter = finalFilter == null ? joiner.getFilter() : finalFilter.and(joiner.getFilter());
+                FilteringPentaJoiner<A, B, C, D, E> castJoiner = (FilteringPentaJoiner<A, B, C, D, E>) joiner;
+                finalFilter = finalFilter == null ? castJoiner.getFilter() : finalFilter.and(castJoiner.getFilter());
+            } else {
+                if (hasAFilter) {
+                    throw new IllegalStateException("Indexing joiner (" + joiner + ") must not follow a filtering joiner ("
+                            + joiners[indexOfFirstFilter] + ").");
+                } else { // Merge this Joiner with the existing Joiners.
+                    AbstractPentaJoiner<A, B, C, D, E> castJoiner = (AbstractPentaJoiner<A, B, C, D, E>) joiner;
+                    finalJoiner = finalJoiner == null ? castJoiner : new DefaultPentaJoiner<>(finalJoiner, castJoiner);
+                }
             }
         }
         return applyJoiners(dClass, nullityFilter, finalJoiner, finalFilter, shouldExist);

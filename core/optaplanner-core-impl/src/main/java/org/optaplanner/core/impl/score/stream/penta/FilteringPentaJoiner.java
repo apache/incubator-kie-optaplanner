@@ -16,34 +16,18 @@
 
 package org.optaplanner.core.impl.score.stream.penta;
 
-import java.util.function.Function;
-
 import org.optaplanner.core.api.function.PentaPredicate;
-import org.optaplanner.core.api.function.QuadFunction;
-import org.optaplanner.core.impl.score.stream.common.JoinerType;
+import org.optaplanner.core.api.score.stream.penta.PentaJoiner;
 
-public final class FilteringPentaJoiner<A, B, C, D, E> extends AbstractPentaJoiner<A, B, C, D, E> {
+public final class FilteringPentaJoiner<A, B, C, D, E> implements PentaJoiner<A, B, C, D, E> {
+
+    private final PentaPredicate<A, B, C, D, E> filter;
 
     public FilteringPentaJoiner(PentaPredicate<A, B, C, D, E> filter) {
-        super(filter);
+        this.filter = filter;
     }
 
-    @Override
-    public QuadFunction<A, B, C, D, Object> getLeftMapping(int index) {
-        throw new UnsupportedOperationException("Impossible state: this joiner should never be treated like a normal " +
-                "joiner internally.");
+    public PentaPredicate<A, B, C, D, E> getFilter() {
+        return filter;
     }
-
-    @Override
-    public Function<E, Object> getRightMapping(int index) {
-        throw new UnsupportedOperationException("Impossible state: this joiner should never be treated like a normal " +
-                "joiner internally.");
-    }
-
-    @Override
-    public JoinerType[] getJoinerTypes() {
-        throw new UnsupportedOperationException("Impossible state: this joiner should never be treated like a normal " +
-                "joiner internally.");
-    }
-
 }

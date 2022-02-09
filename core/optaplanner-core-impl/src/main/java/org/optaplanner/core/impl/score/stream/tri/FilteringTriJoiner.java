@@ -16,34 +16,19 @@
 
 package org.optaplanner.core.impl.score.stream.tri;
 
-import java.util.function.BiFunction;
-import java.util.function.Function;
-
 import org.optaplanner.core.api.function.TriPredicate;
-import org.optaplanner.core.impl.score.stream.common.JoinerType;
+import org.optaplanner.core.api.score.stream.tri.TriJoiner;
 
-public final class FilteringTriJoiner<A, B, C> extends AbstractTriJoiner<A, B, C> {
+public final class FilteringTriJoiner<A, B, C> implements TriJoiner<A, B, C> {
+
+    private final TriPredicate<A, B, C> filter;
 
     public FilteringTriJoiner(TriPredicate<A, B, C> filter) {
-        super(filter);
+        this.filter = filter;
     }
 
-    @Override
-    public BiFunction<A, B, Object> getLeftMapping(int index) {
-        throw new UnsupportedOperationException("Impossible state: this joiner should never be treated like a normal " +
-                "joiner internally.");
-    }
-
-    @Override
-    public Function<C, Object> getRightMapping(int index) {
-        throw new UnsupportedOperationException("Impossible state: this joiner should never be treated like a normal " +
-                "joiner internally.");
-    }
-
-    @Override
-    public JoinerType[] getJoinerTypes() {
-        throw new UnsupportedOperationException("Impossible state: this joiner should never be treated like a normal " +
-                "joiner internally.");
+    public TriPredicate<A, B, C> getFilter() {
+        return filter;
     }
 
 }

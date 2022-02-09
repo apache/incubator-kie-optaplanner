@@ -16,6 +16,12 @@
 
 package org.optaplanner.core.impl.score.stream.drools.common;
 
+import static java.util.Collections.singletonList;
+import static org.drools.model.DSL.exists;
+import static org.drools.model.DSL.not;
+import static org.drools.model.PatternDSL.betaIndexedBy;
+import static org.drools.model.PatternDSL.pattern;
+
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Objects;
@@ -44,12 +50,6 @@ import org.optaplanner.core.impl.score.stream.drools.DroolsVariableFactory;
 import org.optaplanner.core.impl.score.stream.tri.AbstractTriJoiner;
 import org.optaplanner.core.impl.score.stream.tri.DefaultTriJoiner;
 import org.optaplanner.core.impl.score.stream.tri.FilteringTriJoiner;
-
-import static java.util.Collections.singletonList;
-import static org.drools.model.DSL.exists;
-import static org.drools.model.DSL.not;
-import static org.drools.model.PatternDSL.betaIndexedBy;
-import static org.drools.model.PatternDSL.pattern;
 
 /**
  * Represents the left hand side of a Drools rule, the result of which are two variables.
@@ -163,21 +163,23 @@ public final class BiLeftHandSide<A, B> extends AbstractLeftHandSide {
         AbstractTriJoiner<A, B, C> finalJoiner = null;
         TriPredicate<A, B, C> finalFilter = null;
         for (int i = 0; i < joiners.length; i++) {
-            AbstractTriJoiner<A, B, C> joiner = (AbstractTriJoiner<A, B, C>) joiners[i];
+            TriJoiner<A, B, C> joiner = joiners[i];
             boolean hasAFilter = indexOfFirstFilter >= 0;
-            if (!(joiner instanceof FilteringTriJoiner)) {
-                if (hasAFilter) {
-                    throw new IllegalStateException("Indexing joiner (" + joiner + ") must not follow a filtering joiner ("
-                            + joiners[indexOfFirstFilter] + ").");
-                } else { // Merge this Joiner with the existing Joiners.
-                    finalJoiner = finalJoiner == null ? joiner : new DefaultTriJoiner<>(finalJoiner, joiner);
-                }
-            } else {
+            if (joiner instanceof FilteringTriJoiner) {
                 if (!hasAFilter) { // From now on, we only allow filtering joiners.
                     indexOfFirstFilter = i;
                 }
                 // Merge all filters into one to avoid paying the penalty for lack of indexing more than once.
-                finalFilter = finalFilter == null ? joiner.getFilter() : finalFilter.and(joiner.getFilter());
+                FilteringTriJoiner<A, B, C> castJoiner = (FilteringTriJoiner<A, B, C>) joiner;
+                finalFilter = finalFilter == null ? castJoiner.getFilter() : finalFilter.and(castJoiner.getFilter());
+            } else {
+                if (hasAFilter) {
+                    throw new IllegalStateException("Indexing joiner (" + joiner + ") must not follow a filtering joiner ("
+                            + joiners[indexOfFirstFilter] + ").");
+                } else { // Merge this Joiner with the existing Joiners.
+                    AbstractTriJoiner<A, B, C> castJoiner = (AbstractTriJoiner<A, B, C>) joiner;
+                    finalJoiner = finalJoiner == null ? castJoiner : new DefaultTriJoiner<>(finalJoiner, castJoiner);
+                }
             }
         }
         return applyJoiners(cClass, nullityFilter, finalJoiner, finalFilter, shouldExist);

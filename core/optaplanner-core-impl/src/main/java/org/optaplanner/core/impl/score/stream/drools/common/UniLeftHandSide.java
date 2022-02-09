@@ -169,21 +169,23 @@ public final class UniLeftHandSide<A> extends AbstractLeftHandSide {
         AbstractBiJoiner<A, B> finalJoiner = null;
         BiPredicate<A, B> finalFilter = null;
         for (int i = 0; i < joiners.length; i++) {
-            AbstractBiJoiner<A, B> biJoiner = (AbstractBiJoiner<A, B>) joiners[i];
+            BiJoiner<A, B> joiner = joiners[i];
             boolean hasAFilter = indexOfFirstFilter >= 0;
-            if (!(biJoiner instanceof FilteringBiJoiner)) {
-                if (hasAFilter) {
-                    throw new IllegalStateException("Indexing joiner (" + biJoiner + ") must not follow a filtering joiner ("
-                            + joiners[indexOfFirstFilter] + ").");
-                } else { // Merge this Joiner with the existing Joiners.
-                    finalJoiner = finalJoiner == null ? biJoiner : new DefaultBiJoiner<>(finalJoiner, biJoiner);
-                }
-            } else {
+            if (joiner instanceof FilteringBiJoiner) {
                 if (!hasAFilter) { // From now on, only allow filtering joiners.
                     indexOfFirstFilter = i;
                 }
                 // Merge all filters into one to avoid paying the penalty for lack of indexing more than once.
-                finalFilter = finalFilter == null ? biJoiner.getFilter() : finalFilter.and(biJoiner.getFilter());
+                FilteringBiJoiner<A, B> castJoiner = (FilteringBiJoiner<A, B>) joiner;
+                finalFilter = finalFilter == null ? castJoiner.getFilter() : finalFilter.and(castJoiner.getFilter());
+            } else {
+                if (hasAFilter) {
+                    throw new IllegalStateException("Indexing joiner (" + joiner + ") must not follow a filtering joiner ("
+                            + joiners[indexOfFirstFilter] + ").");
+                } else { // Merge this Joiner with the existing Joiners.
+                    AbstractBiJoiner<A, B> castJoiner = (AbstractBiJoiner<A, B>) joiner;
+                    finalJoiner = finalJoiner == null ? castJoiner : new DefaultBiJoiner<>(finalJoiner, castJoiner);
+                }
             }
         }
         return applyJoiners(bClass, nullityFilter, finalJoiner, finalFilter, shouldExist);

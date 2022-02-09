@@ -16,25 +16,12 @@
 
 package org.optaplanner.core.impl.score.stream.quad;
 
-import java.util.function.Function;
-
-import org.optaplanner.core.api.function.QuadPredicate;
 import org.optaplanner.core.api.function.TriFunction;
 import org.optaplanner.core.api.score.stream.quad.QuadJoiner;
 import org.optaplanner.core.impl.score.stream.common.AbstractJoiner;
 import org.optaplanner.core.impl.score.stream.common.JoinerType;
 
 public abstract class AbstractQuadJoiner<A, B, C, D> extends AbstractJoiner<D> implements QuadJoiner<A, B, C, D> {
-
-    private final QuadPredicate<A, B, C, D> filter;
-
-    protected AbstractQuadJoiner() {
-        this.filter = null;
-    }
-
-    protected AbstractQuadJoiner(QuadPredicate<A, B, C, D> filter) {
-        this.filter = filter;
-    }
 
     public boolean matches(A a, B b, C c, D d) {
         JoinerType[] joinerTypes = getJoinerTypes();
@@ -50,11 +37,5 @@ public abstract class AbstractQuadJoiner<A, B, C, D> extends AbstractJoiner<D> i
     }
 
     public abstract TriFunction<A, B, C, Object> getLeftMapping(int index);
-
-    public abstract Function<D, Object> getRightMapping(int index);
-
-    public QuadPredicate<A, B, C, D> getFilter() {
-        return filter;
-    }
 
 }

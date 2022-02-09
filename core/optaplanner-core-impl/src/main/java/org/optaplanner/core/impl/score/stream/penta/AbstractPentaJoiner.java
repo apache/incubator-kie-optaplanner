@@ -16,25 +16,12 @@
 
 package org.optaplanner.core.impl.score.stream.penta;
 
-import java.util.function.Function;
-
-import org.optaplanner.core.api.function.PentaPredicate;
 import org.optaplanner.core.api.function.QuadFunction;
 import org.optaplanner.core.api.score.stream.penta.PentaJoiner;
 import org.optaplanner.core.impl.score.stream.common.AbstractJoiner;
 import org.optaplanner.core.impl.score.stream.common.JoinerType;
 
 public abstract class AbstractPentaJoiner<A, B, C, D, E> extends AbstractJoiner<E> implements PentaJoiner<A, B, C, D, E> {
-
-    private final PentaPredicate<A, B, C, D, E> filter;
-
-    protected AbstractPentaJoiner() {
-        this.filter = null;
-    }
-
-    protected AbstractPentaJoiner(PentaPredicate<A, B, C, D, E> filter) {
-        this.filter = filter;
-    }
 
     public boolean matches(A a, B b, C c, D d, E e) {
         JoinerType[] joinerTypes = getJoinerTypes();
@@ -50,11 +37,5 @@ public abstract class AbstractPentaJoiner<A, B, C, D, E> extends AbstractJoiner<
     }
 
     public abstract QuadFunction<A, B, C, D, Object> getLeftMapping(int index);
-
-    public abstract Function<E, Object> getRightMapping(int index);
-
-    public PentaPredicate<A, B, C, D, E> getFilter() {
-        return filter;
-    }
 
 }

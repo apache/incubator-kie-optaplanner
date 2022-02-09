@@ -16,34 +16,18 @@
 
 package org.optaplanner.core.impl.score.stream.quad;
 
-import java.util.function.Function;
-
 import org.optaplanner.core.api.function.QuadPredicate;
-import org.optaplanner.core.api.function.TriFunction;
-import org.optaplanner.core.impl.score.stream.common.JoinerType;
+import org.optaplanner.core.api.score.stream.quad.QuadJoiner;
 
-public final class FilteringQuadJoiner<A, B, C, D> extends AbstractQuadJoiner<A, B, C, D> {
+public final class FilteringQuadJoiner<A, B, C, D> implements QuadJoiner<A, B, C, D> {
+
+    private final QuadPredicate<A, B, C, D> filter;
 
     public FilteringQuadJoiner(QuadPredicate<A, B, C, D> filter) {
-        super(filter);
+        this.filter = filter;
     }
 
-    @Override
-    public TriFunction<A, B, C, Object> getLeftMapping(int index) {
-        throw new UnsupportedOperationException("Impossible state: this joiner should never be treated like a normal " +
-                "joiner internally.");
+    public QuadPredicate<A, B, C, D> getFilter() {
+        return filter;
     }
-
-    @Override
-    public Function<D, Object> getRightMapping(int index) {
-        throw new UnsupportedOperationException("Impossible state: this joiner should never be treated like a normal " +
-                "joiner internally.");
-    }
-
-    @Override
-    public JoinerType[] getJoinerTypes() {
-        throw new UnsupportedOperationException("Impossible state: this joiner should never be treated like a normal " +
-                "joiner internally.");
-    }
-
 }

@@ -142,21 +142,23 @@ public final class TriLeftHandSide<A, B, C> extends AbstractLeftHandSide {
         AbstractQuadJoiner<A, B, C, D> finalJoiner = null;
         QuadPredicate<A, B, C, D> finalFilter = null;
         for (int i = 0; i < joiners.length; i++) {
-            AbstractQuadJoiner<A, B, C, D> joiner = (AbstractQuadJoiner<A, B, C, D>) joiners[i];
+            QuadJoiner<A, B, C, D> joiner = joiners[i];
             boolean hasAFilter = indexOfFirstFilter >= 0;
-            if (!(joiner instanceof FilteringQuadJoiner)) {
-                if (hasAFilter) {
-                    throw new IllegalStateException("Indexing joiner (" + joiner + ") must not follow a filtering joiner ("
-                            + joiners[indexOfFirstFilter] + ").");
-                } else { // Merge this Joiner with the existing Joiners.
-                    finalJoiner = finalJoiner == null ? joiner : new DefaultQuadJoiner<>(finalJoiner, joiner);
-                }
-            } else {
+            if (joiner instanceof FilteringQuadJoiner) {
                 if (!hasAFilter) { // From now on, we only allow filtering joiners.
                     indexOfFirstFilter = i;
                 }
                 // Merge all filters into one to avoid paying the penalty for lack of indexing more than once.
-                finalFilter = finalFilter == null ? joiner.getFilter() : finalFilter.and(joiner.getFilter());
+                FilteringQuadJoiner<A, B, C, D> castJoiner = (FilteringQuadJoiner<A, B, C, D>) joiner;
+                finalFilter = finalFilter == null ? castJoiner.getFilter() : finalFilter.and(castJoiner.getFilter());
+            } else {
+                if (hasAFilter) {
+                    throw new IllegalStateException("Indexing joiner (" + joiner + ") must not follow a filtering joiner ("
+                            + joiners[indexOfFirstFilter] + ").");
+                } else { // Merge this Joiner with the existing Joiners.
+                    AbstractQuadJoiner<A, B, C, D> castJoiner = (AbstractQuadJoiner<A, B, C, D>) joiner;
+                    finalJoiner = finalJoiner == null ? castJoiner : new DefaultQuadJoiner<>(finalJoiner, castJoiner);
+                }
             }
         }
         return applyJoiners(dClass, nullityFilter, finalJoiner, finalFilter, shouldExist);
