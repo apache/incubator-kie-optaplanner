@@ -28,10 +28,10 @@ import org.optaplanner.core.api.function.QuadFunction;
 import org.optaplanner.core.api.function.QuadPredicate;
 import org.optaplanner.core.api.function.TriFunction;
 import org.optaplanner.core.api.function.TriPredicate;
-import org.optaplanner.core.impl.score.stream.bi.AbstractBiJoiner;
+import org.optaplanner.core.impl.score.stream.bi.DefaultBiJoiner;
 import org.optaplanner.core.impl.score.stream.common.JoinerType;
-import org.optaplanner.core.impl.score.stream.quad.AbstractQuadJoiner;
-import org.optaplanner.core.impl.score.stream.tri.AbstractTriJoiner;
+import org.optaplanner.core.impl.score.stream.quad.DefaultQuadJoiner;
+import org.optaplanner.core.impl.score.stream.tri.DefaultTriJoiner;
 
 public interface PatternVariable<A, PatternVar_, Child_ extends PatternVariable<A, PatternVar_, Child_>> {
 
@@ -54,15 +54,15 @@ public interface PatternVariable<A, PatternVar_, Child_ extends PatternVariable<
             Variable<LeftJoinVarC_> leftJoinVariableC);
 
     <LeftJoinVar_> PatternVariable<A, PatternVar_, Child_> filterForJoin(Variable<LeftJoinVar_> leftJoinVar,
-            AbstractBiJoiner<LeftJoinVar_, A> joiner, JoinerType joinerType, int mappingIndex);
+            DefaultBiJoiner<LeftJoinVar_, A> joiner, JoinerType joinerType, int mappingIndex);
 
     <LeftJoinVarA_, LeftJoinVarB_> PatternVariable<A, PatternVar_, Child_> filterForJoin(Variable<LeftJoinVarA_> leftJoinVarA,
-            Variable<LeftJoinVarB_> leftJoinVarB, AbstractTriJoiner<LeftJoinVarA_, LeftJoinVarB_, A> joiner,
+            Variable<LeftJoinVarB_> leftJoinVarB, DefaultTriJoiner<LeftJoinVarA_, LeftJoinVarB_, A> joiner,
             JoinerType joinerType, int mappingIndex);
 
     <LeftJoinVarA_, LeftJoinVarB_, LeftJoinVarC_> PatternVariable<A, PatternVar_, Child_> filterForJoin(
             Variable<LeftJoinVarA_> leftJoinVarA, Variable<LeftJoinVarB_> leftJoinVarB, Variable<LeftJoinVarC_> leftJoinVarC,
-            AbstractQuadJoiner<LeftJoinVarA_, LeftJoinVarB_, LeftJoinVarC_, A> joiner, JoinerType joinerType,
+            DefaultQuadJoiner<LeftJoinVarA_, LeftJoinVarB_, LeftJoinVarC_, A> joiner, JoinerType joinerType,
             int mappingIndex);
 
     /**

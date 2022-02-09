@@ -26,10 +26,10 @@ import java.util.function.Function;
 import org.junit.jupiter.api.Test;
 import org.optaplanner.core.api.function.QuadFunction;
 import org.optaplanner.core.api.function.TriFunction;
-import org.optaplanner.core.impl.score.stream.bi.AbstractBiJoiner;
-import org.optaplanner.core.impl.score.stream.penta.AbstractPentaJoiner;
-import org.optaplanner.core.impl.score.stream.quad.AbstractQuadJoiner;
-import org.optaplanner.core.impl.score.stream.tri.AbstractTriJoiner;
+import org.optaplanner.core.impl.score.stream.bi.DefaultBiJoiner;
+import org.optaplanner.core.impl.score.stream.penta.DefaultPentaJoiner;
+import org.optaplanner.core.impl.score.stream.quad.DefaultQuadJoiner;
+import org.optaplanner.core.impl.score.stream.tri.DefaultTriJoiner;
 
 class JoinersTest {
 
@@ -37,7 +37,7 @@ class JoinersTest {
     void equalBi() {
         Function<BigInteger, Long> leftMapping = BigInteger::longValue;
         Function<BigDecimal, Long> rightMapping = BigDecimal::longValue;
-        AbstractBiJoiner<BigInteger, BigDecimal> joiner = (AbstractBiJoiner<BigInteger, BigDecimal>) Joiners.equal(leftMapping,
+        DefaultBiJoiner<BigInteger, BigDecimal> joiner = (DefaultBiJoiner<BigInteger, BigDecimal>) Joiners.equal(leftMapping,
                 rightMapping);
         assertSoftly(softly -> {
             softly.assertThat(joiner.matches(BigInteger.TEN, BigDecimal.TEN)).isTrue();
@@ -49,8 +49,8 @@ class JoinersTest {
     void equalTri() {
         BiFunction<BigInteger, BigInteger, Long> leftMapping = (a, b) -> a.add(b).longValue();
         Function<BigDecimal, Long> rightMapping = BigDecimal::longValue;
-        AbstractTriJoiner<BigInteger, BigInteger, BigDecimal> joiner =
-                (AbstractTriJoiner<BigInteger, BigInteger, BigDecimal>) Joiners.equal(leftMapping, rightMapping);
+        DefaultTriJoiner<BigInteger, BigInteger, BigDecimal> joiner =
+                (DefaultTriJoiner<BigInteger, BigInteger, BigDecimal>) Joiners.equal(leftMapping, rightMapping);
         assertSoftly(softly -> {
             softly.assertThat(joiner.matches(BigInteger.TEN, BigInteger.ZERO, BigDecimal.TEN)).isTrue();
             softly.assertThat(joiner.matches(BigInteger.ONE, BigInteger.ZERO, BigDecimal.ZERO)).isFalse();
@@ -61,8 +61,8 @@ class JoinersTest {
     void equalQuad() {
         TriFunction<BigInteger, BigInteger, BigInteger, Long> leftMapping = (a, b, c) -> a.add(b).add(c).longValue();
         Function<BigDecimal, Long> rightMapping = BigDecimal::longValue;
-        AbstractQuadJoiner<BigInteger, BigInteger, BigInteger, BigDecimal> joiner =
-                (AbstractQuadJoiner<BigInteger, BigInteger, BigInteger, BigDecimal>) Joiners.equal(leftMapping, rightMapping);
+        DefaultQuadJoiner<BigInteger, BigInteger, BigInteger, BigDecimal> joiner =
+                (DefaultQuadJoiner<BigInteger, BigInteger, BigInteger, BigDecimal>) Joiners.equal(leftMapping, rightMapping);
         assertSoftly(softly -> {
             softly.assertThat(joiner.matches(BigInteger.TEN, BigInteger.ZERO, BigInteger.ZERO, BigDecimal.TEN)).isTrue();
             softly.assertThat(joiner.matches(BigInteger.ONE, BigInteger.ZERO, BigInteger.ZERO, BigDecimal.ZERO)).isFalse();
@@ -74,8 +74,8 @@ class JoinersTest {
         QuadFunction<BigInteger, BigInteger, BigInteger, BigInteger, Long> leftMapping = (a, b, c, d) -> a.add(b).add(c).add(d)
                 .longValue();
         Function<BigDecimal, Long> rightMapping = BigDecimal::longValue;
-        AbstractPentaJoiner<BigInteger, BigInteger, BigInteger, BigInteger, BigDecimal> joiner =
-                (AbstractPentaJoiner<BigInteger, BigInteger, BigInteger, BigInteger, BigDecimal>) Joiners
+        DefaultPentaJoiner<BigInteger, BigInteger, BigInteger, BigInteger, BigDecimal> joiner =
+                (DefaultPentaJoiner<BigInteger, BigInteger, BigInteger, BigInteger, BigDecimal>) Joiners
                         .equal(leftMapping, rightMapping);
         assertSoftly(softly -> {
             softly.assertThat(joiner.matches(BigInteger.TEN, BigInteger.ZERO, BigInteger.ZERO, BigInteger.ZERO,
@@ -89,7 +89,7 @@ class JoinersTest {
     void lessThanBi() {
         Function<BigInteger, Long> leftMapping = BigInteger::longValue;
         Function<BigDecimal, Long> rightMapping = BigDecimal::longValue;
-        AbstractBiJoiner<BigInteger, BigDecimal> joiner = (AbstractBiJoiner<BigInteger, BigDecimal>) Joiners
+        DefaultBiJoiner<BigInteger, BigDecimal> joiner = (DefaultBiJoiner<BigInteger, BigDecimal>) Joiners
                 .lessThan(leftMapping, rightMapping);
         assertSoftly(softly -> {
             softly.assertThat(joiner.matches(BigInteger.TEN, BigDecimal.TEN)).isFalse();
@@ -102,8 +102,8 @@ class JoinersTest {
     void lessThanTri() {
         BiFunction<BigInteger, BigInteger, Long> leftMapping = (a, b) -> a.add(b).longValue();
         Function<BigDecimal, Long> rightMapping = BigDecimal::longValue;
-        AbstractTriJoiner<BigInteger, BigInteger, BigDecimal> joiner =
-                (AbstractTriJoiner<BigInteger, BigInteger, BigDecimal>) Joiners.lessThan(leftMapping, rightMapping);
+        DefaultTriJoiner<BigInteger, BigInteger, BigDecimal> joiner =
+                (DefaultTriJoiner<BigInteger, BigInteger, BigDecimal>) Joiners.lessThan(leftMapping, rightMapping);
         assertSoftly(softly -> {
             softly.assertThat(joiner.matches(BigInteger.TEN, BigInteger.ZERO, BigDecimal.TEN)).isFalse();
             softly.assertThat(joiner.matches(BigInteger.TEN, BigInteger.ZERO, BigDecimal.ONE)).isFalse();
@@ -115,8 +115,8 @@ class JoinersTest {
     void lessThanQuad() {
         TriFunction<BigInteger, BigInteger, BigInteger, Long> leftMapping = (a, b, c) -> a.add(b).add(c).longValue();
         Function<BigDecimal, Long> rightMapping = BigDecimal::longValue;
-        AbstractQuadJoiner<BigInteger, BigInteger, BigInteger, BigDecimal> joiner =
-                (AbstractQuadJoiner<BigInteger, BigInteger, BigInteger, BigDecimal>) Joiners
+        DefaultQuadJoiner<BigInteger, BigInteger, BigInteger, BigDecimal> joiner =
+                (DefaultQuadJoiner<BigInteger, BigInteger, BigInteger, BigDecimal>) Joiners
                         .lessThan(leftMapping, rightMapping);
         assertSoftly(softly -> {
             softly.assertThat(joiner.matches(BigInteger.TEN, BigInteger.ZERO, BigInteger.ZERO, BigDecimal.TEN)).isFalse();
@@ -130,8 +130,8 @@ class JoinersTest {
         QuadFunction<BigInteger, BigInteger, BigInteger, BigInteger, Long> leftMapping = (a, b, c, d) -> a.add(b).add(c).add(d)
                 .longValue();
         Function<BigDecimal, Long> rightMapping = BigDecimal::longValue;
-        AbstractPentaJoiner<BigInteger, BigInteger, BigInteger, BigInteger, BigDecimal> joiner =
-                (AbstractPentaJoiner<BigInteger, BigInteger, BigInteger, BigInteger, BigDecimal>) Joiners
+        DefaultPentaJoiner<BigInteger, BigInteger, BigInteger, BigInteger, BigDecimal> joiner =
+                (DefaultPentaJoiner<BigInteger, BigInteger, BigInteger, BigInteger, BigDecimal>) Joiners
                         .lessThan(leftMapping, rightMapping);
         assertSoftly(softly -> {
             softly.assertThat(joiner.matches(BigInteger.TEN, BigInteger.ZERO, BigInteger.ZERO, BigInteger.ZERO,
@@ -147,7 +147,7 @@ class JoinersTest {
     void lessThanOrEqualBi() {
         Function<BigInteger, Long> leftMapping = BigInteger::longValue;
         Function<BigDecimal, Long> rightMapping = BigDecimal::longValue;
-        AbstractBiJoiner<BigInteger, BigDecimal> joiner = (AbstractBiJoiner<BigInteger, BigDecimal>) Joiners
+        DefaultBiJoiner<BigInteger, BigDecimal> joiner = (DefaultBiJoiner<BigInteger, BigDecimal>) Joiners
                 .lessThanOrEqual(leftMapping, rightMapping);
         assertSoftly(softly -> {
             softly.assertThat(joiner.matches(BigInteger.TEN, BigDecimal.TEN)).isTrue();
@@ -160,8 +160,8 @@ class JoinersTest {
     void lessThanOrEqualTri() {
         BiFunction<BigInteger, BigInteger, Long> leftMapping = (a, b) -> a.add(b).longValue();
         Function<BigDecimal, Long> rightMapping = BigDecimal::longValue;
-        AbstractTriJoiner<BigInteger, BigInteger, BigDecimal> joiner =
-                (AbstractTriJoiner<BigInteger, BigInteger, BigDecimal>) Joiners.lessThanOrEqual(leftMapping, rightMapping);
+        DefaultTriJoiner<BigInteger, BigInteger, BigDecimal> joiner =
+                (DefaultTriJoiner<BigInteger, BigInteger, BigDecimal>) Joiners.lessThanOrEqual(leftMapping, rightMapping);
         assertSoftly(softly -> {
             softly.assertThat(joiner.matches(BigInteger.TEN, BigInteger.ZERO, BigDecimal.TEN)).isTrue();
             softly.assertThat(joiner.matches(BigInteger.TEN, BigInteger.ZERO, BigDecimal.ONE)).isFalse();
@@ -173,8 +173,8 @@ class JoinersTest {
     void lessThanOrEqualQuad() {
         TriFunction<BigInteger, BigInteger, BigInteger, Long> leftMapping = (a, b, c) -> a.add(b).add(c).longValue();
         Function<BigDecimal, Long> rightMapping = BigDecimal::longValue;
-        AbstractQuadJoiner<BigInteger, BigInteger, BigInteger, BigDecimal> joiner =
-                (AbstractQuadJoiner<BigInteger, BigInteger, BigInteger, BigDecimal>) Joiners
+        DefaultQuadJoiner<BigInteger, BigInteger, BigInteger, BigDecimal> joiner =
+                (DefaultQuadJoiner<BigInteger, BigInteger, BigInteger, BigDecimal>) Joiners
                         .lessThanOrEqual(leftMapping, rightMapping);
         assertSoftly(softly -> {
             softly.assertThat(joiner.matches(BigInteger.TEN, BigInteger.ZERO, BigInteger.ZERO, BigDecimal.TEN)).isTrue();
@@ -188,8 +188,8 @@ class JoinersTest {
         QuadFunction<BigInteger, BigInteger, BigInteger, BigInteger, Long> leftMapping = (a, b, c, d) -> a.add(b).add(c).add(d)
                 .longValue();
         Function<BigDecimal, Long> rightMapping = BigDecimal::longValue;
-        AbstractPentaJoiner<BigInteger, BigInteger, BigInteger, BigInteger, BigDecimal> joiner =
-                (AbstractPentaJoiner<BigInteger, BigInteger, BigInteger, BigInteger, BigDecimal>) Joiners
+        DefaultPentaJoiner<BigInteger, BigInteger, BigInteger, BigInteger, BigDecimal> joiner =
+                (DefaultPentaJoiner<BigInteger, BigInteger, BigInteger, BigInteger, BigDecimal>) Joiners
                         .lessThanOrEqual(leftMapping, rightMapping);
         assertSoftly(softly -> {
             softly.assertThat(joiner.matches(BigInteger.TEN, BigInteger.ZERO, BigInteger.ZERO, BigInteger.ZERO,
@@ -205,7 +205,7 @@ class JoinersTest {
     void greaterThanBi() {
         Function<BigInteger, Long> leftMapping = BigInteger::longValue;
         Function<BigDecimal, Long> rightMapping = BigDecimal::longValue;
-        AbstractBiJoiner<BigInteger, BigDecimal> joiner = (AbstractBiJoiner<BigInteger, BigDecimal>) Joiners
+        DefaultBiJoiner<BigInteger, BigDecimal> joiner = (DefaultBiJoiner<BigInteger, BigDecimal>) Joiners
                 .greaterThan(leftMapping, rightMapping);
         assertSoftly(softly -> {
             softly.assertThat(joiner.matches(BigInteger.TEN, BigDecimal.TEN)).isFalse();
@@ -218,8 +218,8 @@ class JoinersTest {
     void greaterThanTri() {
         BiFunction<BigInteger, BigInteger, Long> leftMapping = (a, b) -> a.add(b).longValue();
         Function<BigDecimal, Long> rightMapping = BigDecimal::longValue;
-        AbstractTriJoiner<BigInteger, BigInteger, BigDecimal> joiner =
-                (AbstractTriJoiner<BigInteger, BigInteger, BigDecimal>) Joiners.greaterThan(leftMapping, rightMapping);
+        DefaultTriJoiner<BigInteger, BigInteger, BigDecimal> joiner =
+                (DefaultTriJoiner<BigInteger, BigInteger, BigDecimal>) Joiners.greaterThan(leftMapping, rightMapping);
         assertSoftly(softly -> {
             softly.assertThat(joiner.matches(BigInteger.TEN, BigInteger.ZERO, BigDecimal.TEN)).isFalse();
             softly.assertThat(joiner.matches(BigInteger.TEN, BigInteger.ZERO, BigDecimal.ONE)).isTrue();
@@ -231,8 +231,8 @@ class JoinersTest {
     void greaterThanQuad() {
         TriFunction<BigInteger, BigInteger, BigInteger, Long> leftMapping = (a, b, c) -> a.add(b).add(c).longValue();
         Function<BigDecimal, Long> rightMapping = BigDecimal::longValue;
-        AbstractQuadJoiner<BigInteger, BigInteger, BigInteger, BigDecimal> joiner =
-                (AbstractQuadJoiner<BigInteger, BigInteger, BigInteger, BigDecimal>) Joiners
+        DefaultQuadJoiner<BigInteger, BigInteger, BigInteger, BigDecimal> joiner =
+                (DefaultQuadJoiner<BigInteger, BigInteger, BigInteger, BigDecimal>) Joiners
                         .greaterThan(leftMapping, rightMapping);
         assertSoftly(softly -> {
             softly.assertThat(joiner.matches(BigInteger.TEN, BigInteger.ZERO, BigInteger.ZERO, BigDecimal.TEN)).isFalse();
@@ -246,8 +246,8 @@ class JoinersTest {
         QuadFunction<BigInteger, BigInteger, BigInteger, BigInteger, Long> leftMapping = (a, b, c, d) -> a.add(b).add(c).add(d)
                 .longValue();
         Function<BigDecimal, Long> rightMapping = BigDecimal::longValue;
-        AbstractPentaJoiner<BigInteger, BigInteger, BigInteger, BigInteger, BigDecimal> joiner =
-                (AbstractPentaJoiner<BigInteger, BigInteger, BigInteger, BigInteger, BigDecimal>) Joiners
+        DefaultPentaJoiner<BigInteger, BigInteger, BigInteger, BigInteger, BigDecimal> joiner =
+                (DefaultPentaJoiner<BigInteger, BigInteger, BigInteger, BigInteger, BigDecimal>) Joiners
                         .greaterThan(leftMapping, rightMapping);
         assertSoftly(softly -> {
             softly.assertThat(joiner.matches(BigInteger.TEN, BigInteger.ZERO, BigInteger.ZERO, BigInteger.ZERO,
@@ -263,7 +263,7 @@ class JoinersTest {
     void greaterThanOrEqualBi() {
         Function<BigInteger, Long> leftMapping = BigInteger::longValue;
         Function<BigDecimal, Long> rightMapping = BigDecimal::longValue;
-        AbstractBiJoiner<BigInteger, BigDecimal> joiner = (AbstractBiJoiner<BigInteger, BigDecimal>) Joiners
+        DefaultBiJoiner<BigInteger, BigDecimal> joiner = (DefaultBiJoiner<BigInteger, BigDecimal>) Joiners
                 .greaterThanOrEqual(leftMapping, rightMapping);
         assertSoftly(softly -> {
             softly.assertThat(joiner.matches(BigInteger.TEN, BigDecimal.TEN)).isTrue();
@@ -276,8 +276,8 @@ class JoinersTest {
     void greaterThanOrEqualTri() {
         BiFunction<BigInteger, BigInteger, Long> leftMapping = (a, b) -> a.add(b).longValue();
         Function<BigDecimal, Long> rightMapping = BigDecimal::longValue;
-        AbstractTriJoiner<BigInteger, BigInteger, BigDecimal> joiner =
-                (AbstractTriJoiner<BigInteger, BigInteger, BigDecimal>) Joiners.greaterThanOrEqual(leftMapping, rightMapping);
+        DefaultTriJoiner<BigInteger, BigInteger, BigDecimal> joiner =
+                (DefaultTriJoiner<BigInteger, BigInteger, BigDecimal>) Joiners.greaterThanOrEqual(leftMapping, rightMapping);
         assertSoftly(softly -> {
             softly.assertThat(joiner.matches(BigInteger.TEN, BigInteger.ZERO, BigDecimal.TEN)).isTrue();
             softly.assertThat(joiner.matches(BigInteger.TEN, BigInteger.ZERO, BigDecimal.ONE)).isTrue();
@@ -289,8 +289,8 @@ class JoinersTest {
     void greaterThanOrEqualQuad() {
         TriFunction<BigInteger, BigInteger, BigInteger, Long> leftMapping = (a, b, c) -> a.add(b).add(c).longValue();
         Function<BigDecimal, Long> rightMapping = BigDecimal::longValue;
-        AbstractQuadJoiner<BigInteger, BigInteger, BigInteger, BigDecimal> joiner =
-                (AbstractQuadJoiner<BigInteger, BigInteger, BigInteger, BigDecimal>) Joiners
+        DefaultQuadJoiner<BigInteger, BigInteger, BigInteger, BigDecimal> joiner =
+                (DefaultQuadJoiner<BigInteger, BigInteger, BigInteger, BigDecimal>) Joiners
                         .greaterThanOrEqual(leftMapping, rightMapping);
         assertSoftly(softly -> {
             softly.assertThat(joiner.matches(BigInteger.TEN, BigInteger.ZERO, BigInteger.ZERO, BigDecimal.TEN)).isTrue();
@@ -304,8 +304,8 @@ class JoinersTest {
         QuadFunction<BigInteger, BigInteger, BigInteger, BigInteger, Long> leftMapping = (a, b, c, d) -> a.add(b).add(c).add(d)
                 .longValue();
         Function<BigDecimal, Long> rightMapping = BigDecimal::longValue;
-        AbstractPentaJoiner<BigInteger, BigInteger, BigInteger, BigInteger, BigDecimal> joiner =
-                (AbstractPentaJoiner<BigInteger, BigInteger, BigInteger, BigInteger, BigDecimal>) Joiners
+        DefaultPentaJoiner<BigInteger, BigInteger, BigInteger, BigInteger, BigDecimal> joiner =
+                (DefaultPentaJoiner<BigInteger, BigInteger, BigInteger, BigInteger, BigDecimal>) Joiners
                         .greaterThanOrEqual(leftMapping, rightMapping);
         assertSoftly(softly -> {
             softly.assertThat(joiner.matches(BigInteger.TEN, BigInteger.ZERO, BigInteger.ZERO, BigInteger.ZERO,
@@ -357,8 +357,8 @@ class JoinersTest {
         Function<Interval<Long, BigDecimal>, Long> rightStartMapping = interval -> interval.getStart().longValue();
         Function<Interval<Long, BigDecimal>, Long> rightEndMapping = interval -> interval.getEnd().longValue();
 
-        AbstractBiJoiner<Interval<Long, BigInteger>, Interval<Long, BigDecimal>> joiner =
-                (AbstractBiJoiner<Interval<Long, BigInteger>, Interval<Long, BigDecimal>>) Joiners.overlapping(leftStartMapping,
+        DefaultBiJoiner<Interval<Long, BigInteger>, Interval<Long, BigDecimal>> joiner =
+                (DefaultBiJoiner<Interval<Long, BigInteger>, Interval<Long, BigDecimal>>) Joiners.overlapping(leftStartMapping,
                         leftEndMapping, rightStartMapping, rightEndMapping);
 
         assertSoftly(softly -> {
@@ -427,8 +427,8 @@ class JoinersTest {
         Function<Interval<Long, BigInteger>, Long> leftStartMapping = interval -> interval.getStart().longValue();
         Function<Interval<Long, BigInteger>, Long> leftEndMapping = interval -> interval.getEnd().longValue();
 
-        AbstractBiJoiner<Interval<Long, BigInteger>, Interval<Long, BigInteger>> joiner =
-                (AbstractBiJoiner<Interval<Long, BigInteger>, Interval<Long, BigInteger>>) Joiners.overlapping(leftStartMapping,
+        DefaultBiJoiner<Interval<Long, BigInteger>, Interval<Long, BigInteger>> joiner =
+                (DefaultBiJoiner<Interval<Long, BigInteger>, Interval<Long, BigInteger>>) Joiners.overlapping(leftStartMapping,
                         leftEndMapping);
 
         assertSoftly(softly -> {
@@ -501,8 +501,8 @@ class JoinersTest {
         Function<Interval<Long, BigDecimal>, Long> rightStartMapping = interval -> interval.getStart().longValue();
         Function<Interval<Long, BigDecimal>, Long> rightEndMapping = interval -> interval.getEnd().longValue();
 
-        AbstractTriJoiner<Interval<Long, BigInteger>, String, Interval<Long, BigDecimal>> joiner =
-                (AbstractTriJoiner<Interval<Long, BigInteger>, String, Interval<Long, BigDecimal>>) Joiners.overlapping(
+        DefaultTriJoiner<Interval<Long, BigInteger>, String, Interval<Long, BigDecimal>> joiner =
+                (DefaultTriJoiner<Interval<Long, BigInteger>, String, Interval<Long, BigDecimal>>) Joiners.overlapping(
                         leftStartMapping,
                         leftEndMapping, rightStartMapping, rightEndMapping);
 
@@ -589,8 +589,8 @@ class JoinersTest {
         Function<Interval<Long, BigDecimal>, Long> rightStartMapping = interval -> interval.getStart().longValue();
         Function<Interval<Long, BigDecimal>, Long> rightEndMapping = interval -> interval.getEnd().longValue();
 
-        AbstractQuadJoiner<Interval<Long, BigInteger>, String, String, Interval<Long, BigDecimal>> joiner =
-                (AbstractQuadJoiner<Interval<Long, BigInteger>, String, String, Interval<Long, BigDecimal>>) Joiners
+        DefaultQuadJoiner<Interval<Long, BigInteger>, String, String, Interval<Long, BigDecimal>> joiner =
+                (DefaultQuadJoiner<Interval<Long, BigInteger>, String, String, Interval<Long, BigDecimal>>) Joiners
                         .overlapping(
                                 leftStartMapping,
                                 leftEndMapping, rightStartMapping, rightEndMapping);
@@ -691,8 +691,8 @@ class JoinersTest {
         Function<Interval<Long, BigDecimal>, Long> rightStartMapping = interval -> interval.getStart().longValue();
         Function<Interval<Long, BigDecimal>, Long> rightEndMapping = interval -> interval.getEnd().longValue();
 
-        AbstractPentaJoiner<Interval<Long, BigInteger>, String, String, String, Interval<Long, BigDecimal>> joiner =
-                (AbstractPentaJoiner<Interval<Long, BigInteger>, String, String, String, Interval<Long, BigDecimal>>) Joiners
+        DefaultPentaJoiner<Interval<Long, BigInteger>, String, String, String, Interval<Long, BigDecimal>> joiner =
+                (DefaultPentaJoiner<Interval<Long, BigInteger>, String, String, String, Interval<Long, BigDecimal>>) Joiners
                         .overlapping(leftStartMapping,
                                 leftEndMapping, rightStartMapping, rightEndMapping);
 

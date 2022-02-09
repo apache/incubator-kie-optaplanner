@@ -47,7 +47,6 @@ import org.optaplanner.core.api.score.stream.quad.QuadJoiner;
 import org.optaplanner.core.api.score.stream.tri.TriConstraintCollector;
 import org.optaplanner.core.impl.score.stream.common.JoinerType;
 import org.optaplanner.core.impl.score.stream.drools.DroolsVariableFactory;
-import org.optaplanner.core.impl.score.stream.quad.AbstractQuadJoiner;
 import org.optaplanner.core.impl.score.stream.quad.DefaultQuadJoiner;
 import org.optaplanner.core.impl.score.stream.quad.FilteringQuadJoiner;
 
@@ -95,7 +94,7 @@ public final class TriLeftHandSide<A, B, C> extends AbstractLeftHandSide {
     }
 
     private <D> TriLeftHandSide<A, B, C> applyJoiners(Class<D> otherFactType, Predicate<D> nullityFilter,
-            AbstractQuadJoiner<A, B, C, D> joiner, QuadPredicate<A, B, C, D> predicate, boolean shouldExist) {
+            DefaultQuadJoiner<A, B, C, D> joiner, QuadPredicate<A, B, C, D> predicate, boolean shouldExist) {
         Variable<D> toExist = variableFactory.createVariable(otherFactType, "toExist");
         PatternDSL.PatternDef<D> existencePattern = pattern(toExist);
         if (nullityFilter != null) {
@@ -139,7 +138,7 @@ public final class TriLeftHandSide<A, B, C> extends AbstractLeftHandSide {
             Predicate<D> nullityFilter, boolean shouldExist) {
         int indexOfFirstFilter = -1;
         // Prepare the joiner and filter that will be used in the pattern
-        AbstractQuadJoiner<A, B, C, D> finalJoiner = null;
+        DefaultQuadJoiner<A, B, C, D> finalJoiner = null;
         QuadPredicate<A, B, C, D> finalFilter = null;
         for (int i = 0; i < joiners.length; i++) {
             QuadJoiner<A, B, C, D> joiner = joiners[i];
@@ -156,7 +155,7 @@ public final class TriLeftHandSide<A, B, C> extends AbstractLeftHandSide {
                     throw new IllegalStateException("Indexing joiner (" + joiner + ") must not follow a filtering joiner ("
                             + joiners[indexOfFirstFilter] + ").");
                 } else { // Merge this Joiner with the existing Joiners.
-                    AbstractQuadJoiner<A, B, C, D> castJoiner = (AbstractQuadJoiner<A, B, C, D>) joiner;
+                    DefaultQuadJoiner<A, B, C, D> castJoiner = (DefaultQuadJoiner<A, B, C, D>) joiner;
                     finalJoiner = finalJoiner == null ? castJoiner : new DefaultQuadJoiner<>(finalJoiner, castJoiner);
                 }
             }
@@ -175,7 +174,7 @@ public final class TriLeftHandSide<A, B, C> extends AbstractLeftHandSide {
     }
 
     public <D> QuadLeftHandSide<A, B, C, D> andJoin(UniLeftHandSide<D> right, QuadJoiner<A, B, C, D> joiner) {
-        AbstractQuadJoiner<A, B, C, D> castJoiner = (AbstractQuadJoiner<A, B, C, D>) joiner;
+        DefaultQuadJoiner<A, B, C, D> castJoiner = (DefaultQuadJoiner<A, B, C, D>) joiner;
         JoinerType[] joinerTypes = castJoiner.getJoinerTypes();
         PatternVariable<D, ?, ?> newRight = right.getPatternVariableA();
         for (int mappingIndex = 0; mappingIndex < joinerTypes.length; mappingIndex++) {

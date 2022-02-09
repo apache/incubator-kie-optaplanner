@@ -41,7 +41,6 @@ import org.drools.model.functions.accumulate.AccumulateFunction;
 import org.drools.model.view.ViewItem;
 import org.optaplanner.core.api.score.stream.bi.BiJoiner;
 import org.optaplanner.core.api.score.stream.uni.UniConstraintCollector;
-import org.optaplanner.core.impl.score.stream.bi.AbstractBiJoiner;
 import org.optaplanner.core.impl.score.stream.bi.DefaultBiJoiner;
 import org.optaplanner.core.impl.score.stream.bi.FilteringBiJoiner;
 import org.optaplanner.core.impl.score.stream.common.JoinerType;
@@ -126,7 +125,7 @@ public final class UniLeftHandSide<A> extends AbstractLeftHandSide {
     }
 
     private <B> UniLeftHandSide<A> applyJoiners(Class<B> otherFactType, Predicate<B> nullityFilter,
-            AbstractBiJoiner<A, B> joiner, BiPredicate<A, B> predicate, boolean shouldExist) {
+            DefaultBiJoiner<A, B> joiner, BiPredicate<A, B> predicate, boolean shouldExist) {
         Variable<B> toExist = variableFactory.createVariable(otherFactType, "toExist");
         PatternDSL.PatternDef<B> existencePattern = pattern(toExist);
         if (nullityFilter != null) {
@@ -166,7 +165,7 @@ public final class UniLeftHandSide<A> extends AbstractLeftHandSide {
             boolean shouldExist) {
         int indexOfFirstFilter = -1;
         // Prepare the joiner and filter that will be used in the pattern.
-        AbstractBiJoiner<A, B> finalJoiner = null;
+        DefaultBiJoiner<A, B> finalJoiner = null;
         BiPredicate<A, B> finalFilter = null;
         for (int i = 0; i < joiners.length; i++) {
             BiJoiner<A, B> joiner = joiners[i];
@@ -183,7 +182,7 @@ public final class UniLeftHandSide<A> extends AbstractLeftHandSide {
                     throw new IllegalStateException("Indexing joiner (" + joiner + ") must not follow a filtering joiner ("
                             + joiners[indexOfFirstFilter] + ").");
                 } else { // Merge this Joiner with the existing Joiners.
-                    AbstractBiJoiner<A, B> castJoiner = (AbstractBiJoiner<A, B>) joiner;
+                    DefaultBiJoiner<A, B> castJoiner = (DefaultBiJoiner<A, B>) joiner;
                     finalJoiner = finalJoiner == null ? castJoiner : new DefaultBiJoiner<>(finalJoiner, castJoiner);
                 }
             }
@@ -200,7 +199,7 @@ public final class UniLeftHandSide<A> extends AbstractLeftHandSide {
     }
 
     public <B> BiLeftHandSide<A, B> andJoin(UniLeftHandSide<B> right, BiJoiner<A, B> joiner) {
-        AbstractBiJoiner<A, B> castJoiner = (AbstractBiJoiner<A, B>) joiner;
+        DefaultBiJoiner<A, B> castJoiner = (DefaultBiJoiner<A, B>) joiner;
         JoinerType[] joinerTypes = castJoiner.getJoinerTypes();
         PatternVariable<B, ?, ?> newRight = right.patternVariable;
         for (int mappingIndex = 0; mappingIndex < joinerTypes.length; mappingIndex++) {

@@ -30,10 +30,10 @@ import org.optaplanner.core.api.function.QuadFunction;
 import org.optaplanner.core.api.function.QuadPredicate;
 import org.optaplanner.core.api.function.TriFunction;
 import org.optaplanner.core.api.function.TriPredicate;
-import org.optaplanner.core.impl.score.stream.bi.AbstractBiJoiner;
+import org.optaplanner.core.impl.score.stream.bi.DefaultBiJoiner;
 import org.optaplanner.core.impl.score.stream.common.JoinerType;
-import org.optaplanner.core.impl.score.stream.quad.AbstractQuadJoiner;
-import org.optaplanner.core.impl.score.stream.tri.AbstractTriJoiner;
+import org.optaplanner.core.impl.score.stream.quad.DefaultQuadJoiner;
+import org.optaplanner.core.impl.score.stream.tri.DefaultTriJoiner;
 
 /**
  * Represents a single variable that has no pattern on which to be bound.
@@ -56,7 +56,7 @@ import org.optaplanner.core.impl.score.stream.tri.AbstractTriJoiner;
  *  end
  * }
  * </pre>
- *
+ * <p>
  * In this rule, variable "a" would be represented by {@link DirectPatternVariable}.
  * Variable "b" would be represented by {@link IndirectPatternVariable}.
  * Variable "count" would be represented by this class and passed to the first variable's pattern's filter expression.
@@ -70,7 +70,7 @@ import org.optaplanner.core.impl.score.stream.tri.AbstractTriJoiner;
  * <p>
  * The pattern that produces the detached variable will be included in prerequisites for another variable.
  * Therefore {@link #build()} of this class returns an empty result.
- *
+ * 
  * @param <A> generic type of the variable
  * @param <PatternVar_>> generic type of the pattern variable, has no effect and exists only to satisfy the interface
  */
@@ -125,7 +125,7 @@ final class DetachedPatternVariable<A, PatternVar_>
 
     @Override
     public <LeftJoinVar_> PatternVariable<A, PatternVar_, DetachedPatternVariable<A, PatternVar_>> filterForJoin(
-            Variable<LeftJoinVar_> leftJoinVar, AbstractBiJoiner<LeftJoinVar_, A> joiner, JoinerType joinerType,
+            Variable<LeftJoinVar_> leftJoinVar, DefaultBiJoiner<LeftJoinVar_, A> joiner, JoinerType joinerType,
             int mappingIndex) {
         throw new UnsupportedOperationException("Impossible state: Variable (" + primaryVariable + ") is detached.");
     }
@@ -133,7 +133,7 @@ final class DetachedPatternVariable<A, PatternVar_>
     @Override
     public <LeftJoinVarA_, LeftJoinVarB_> PatternVariable<A, PatternVar_, DetachedPatternVariable<A, PatternVar_>>
             filterForJoin(Variable<LeftJoinVarA_> leftJoinVarA, Variable<LeftJoinVarB_> leftJoinVarB,
-                    AbstractTriJoiner<LeftJoinVarA_, LeftJoinVarB_, A> joiner, JoinerType joinerType, int mappingIndex) {
+                    DefaultTriJoiner<LeftJoinVarA_, LeftJoinVarB_, A> joiner, JoinerType joinerType, int mappingIndex) {
         throw new UnsupportedOperationException("Impossible state: Variable (" + primaryVariable + ") is detached.");
     }
 
@@ -142,7 +142,7 @@ final class DetachedPatternVariable<A, PatternVar_>
             PatternVariable<A, PatternVar_, DetachedPatternVariable<A, PatternVar_>>
             filterForJoin(Variable<LeftJoinVarA_> leftJoinVarA, Variable<LeftJoinVarB_> leftJoinVarB,
                     Variable<LeftJoinVarC_> leftJoinVarC,
-                    AbstractQuadJoiner<LeftJoinVarA_, LeftJoinVarB_, LeftJoinVarC_, A> joiner, JoinerType joinerType,
+                    DefaultQuadJoiner<LeftJoinVarA_, LeftJoinVarB_, LeftJoinVarC_, A> joiner, JoinerType joinerType,
                     int mappingIndex) {
         throw new UnsupportedOperationException("Impossible state: Variable (" + primaryVariable + ") is detached.");
     }

@@ -41,7 +41,7 @@ import org.optaplanner.core.impl.score.stream.bavet.common.BavetAbstractConstrai
 import org.optaplanner.core.impl.score.stream.bavet.common.BavetNodeBuildPolicy;
 import org.optaplanner.core.impl.score.stream.bavet.common.JoinerUtils;
 import org.optaplanner.core.impl.score.stream.bavet.common.index.BavetIndexFactory;
-import org.optaplanner.core.impl.score.stream.bi.AbstractBiJoiner;
+import org.optaplanner.core.impl.score.stream.bi.DefaultBiJoiner;
 import org.optaplanner.core.impl.score.stream.bi.FilteringBiJoiner;
 import org.optaplanner.core.impl.score.stream.common.JoinerType;
 import org.optaplanner.core.impl.score.stream.common.RetrievalSemantics;
@@ -95,13 +95,13 @@ public abstract class BavetAbstractUniConstraintStream<Solution_, A> extends Bav
                     + other.getConstraintFactory()
                     + ").");
         }
-        if (!(joiner instanceof AbstractBiJoiner)) {
-            throw new IllegalArgumentException("The joiner class (" + joiner.getClass() + ") is not supported.");
-        } else if (joiner instanceof FilteringBiJoiner) {
+        if (joiner instanceof FilteringBiJoiner) {
             return join(otherStream)
                     .filter(((FilteringBiJoiner<A, B>) joiner).getFilter());
+        } else if (!(joiner instanceof DefaultBiJoiner)) {
+            throw new IllegalArgumentException("The joiner class (" + joiner.getClass() + ") is not supported.");
         }
-        AbstractBiJoiner<A, B> castedJoiner = (AbstractBiJoiner<A, B>) joiner;
+        DefaultBiJoiner<A, B> castedJoiner = (DefaultBiJoiner<A, B>) joiner;
         for (JoinerType type : castedJoiner.getJoinerTypes()) {
             switch (type) {
                 case EQUAL:

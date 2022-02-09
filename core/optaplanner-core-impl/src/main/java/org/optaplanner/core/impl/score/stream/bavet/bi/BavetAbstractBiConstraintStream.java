@@ -46,7 +46,7 @@ import org.optaplanner.core.impl.score.stream.bavet.uni.BavetJoinBridgeUniConstr
 import org.optaplanner.core.impl.score.stream.bi.InnerBiConstraintStream;
 import org.optaplanner.core.impl.score.stream.common.RetrievalSemantics;
 import org.optaplanner.core.impl.score.stream.common.ScoreImpactType;
-import org.optaplanner.core.impl.score.stream.tri.AbstractTriJoiner;
+import org.optaplanner.core.impl.score.stream.tri.DefaultTriJoiner;
 
 public abstract class BavetAbstractBiConstraintStream<Solution_, A, B> extends BavetAbstractConstraintStream<Solution_>
         implements InnerBiConstraintStream<A, B> {
@@ -95,10 +95,10 @@ public abstract class BavetAbstractBiConstraintStream<Solution_, A, B> extends B
                     + other.getConstraintFactory()
                     + ").");
         }
-        if (!(joiner instanceof AbstractTriJoiner)) {
+        if (!(joiner instanceof DefaultTriJoiner)) {
             throw new IllegalArgumentException("The joiner class (" + joiner.getClass() + ") is not supported.");
         }
-        AbstractTriJoiner<A, B, C> castedJoiner = (AbstractTriJoiner<A, B, C>) joiner;
+        DefaultTriJoiner<A, B, C> castedJoiner = (DefaultTriJoiner<A, B, C>) joiner;
         BavetIndexFactory indexFactory = new BavetIndexFactory(castedJoiner);
         BavetJoinBridgeBiConstraintStream<Solution_, A, B> leftBridge = new BavetJoinBridgeBiConstraintStream<>(
                 constraintFactory, this, true, JoinerUtils.combineLeftMappings(castedJoiner), indexFactory);

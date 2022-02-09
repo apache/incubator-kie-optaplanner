@@ -42,10 +42,10 @@ import org.optaplanner.core.api.function.QuadFunction;
 import org.optaplanner.core.api.function.QuadPredicate;
 import org.optaplanner.core.api.function.TriFunction;
 import org.optaplanner.core.api.function.TriPredicate;
-import org.optaplanner.core.impl.score.stream.bi.AbstractBiJoiner;
+import org.optaplanner.core.impl.score.stream.bi.DefaultBiJoiner;
 import org.optaplanner.core.impl.score.stream.common.JoinerType;
-import org.optaplanner.core.impl.score.stream.quad.AbstractQuadJoiner;
-import org.optaplanner.core.impl.score.stream.tri.AbstractTriJoiner;
+import org.optaplanner.core.impl.score.stream.quad.DefaultQuadJoiner;
+import org.optaplanner.core.impl.score.stream.tri.DefaultTriJoiner;
 
 /**
  * Represents a single variable with all of its patterns in the left hand side of a Drools rule,
@@ -65,7 +65,7 @@ import org.optaplanner.core.impl.score.stream.tri.AbstractTriJoiner;
  *  end
  * }
  * </pre>
- *
+ * <p>
  * In this rule, variable "a" would be represented by {@link DirectPatternVariable}.
  * Variable "b" would be represented by this class and would be extracted from SomethingElse using a mapping function.
  *
@@ -83,7 +83,7 @@ import org.optaplanner.core.impl.score.stream.tri.AbstractTriJoiner;
  * Unfortunately, this would have been inefficient, as that would prevent these higher-arity functions from being
  * properly JITted and the performance would arguably suffer more than when we have to call an inexpensive mapping
  * function which would likely be optimized by the JIT anyway.
- *
+ * 
  * @param <A> generic type of the primary variable as obtained by the mapping function from the pattern variable
  * @param <PatternVar_>> generic type of the pattern variable
  */
@@ -188,7 +188,7 @@ final class IndirectPatternVariable<A, PatternVar_>
 
     @Override
     public <LeftJoinVar_> PatternVariable<A, PatternVar_, IndirectPatternVariable<A, PatternVar_>> filterForJoin(
-            Variable<LeftJoinVar_> leftJoinVar, AbstractBiJoiner<LeftJoinVar_, A> joiner, JoinerType joinerType,
+            Variable<LeftJoinVar_> leftJoinVar, DefaultBiJoiner<LeftJoinVar_, A> joiner, JoinerType joinerType,
             int mappingIndex) {
         Function<LeftJoinVar_, Object> leftMapping = joiner.getLeftMapping(mappingIndex);
         Function<A, Object> rightMapping = joiner.getRightMapping(mappingIndex);
@@ -205,7 +205,7 @@ final class IndirectPatternVariable<A, PatternVar_>
     @Override
     public <LeftJoinVarA_, LeftJoinVarB_> PatternVariable<A, PatternVar_, IndirectPatternVariable<A, PatternVar_>>
             filterForJoin(Variable<LeftJoinVarA_> leftJoinVarA, Variable<LeftJoinVarB_> leftJoinVarB,
-                    AbstractTriJoiner<LeftJoinVarA_, LeftJoinVarB_, A> joiner, JoinerType joinerType, int mappingIndex) {
+                    DefaultTriJoiner<LeftJoinVarA_, LeftJoinVarB_, A> joiner, JoinerType joinerType, int mappingIndex) {
         BiFunction<LeftJoinVarA_, LeftJoinVarB_, Object> leftMapping = joiner.getLeftMapping(mappingIndex);
         Function<A, Object> rightMapping = joiner.getRightMapping(mappingIndex);
         Function1<PatternVar_, Object> rightExtractor = b -> rightMapping.apply(extract(b));
@@ -224,7 +224,7 @@ final class IndirectPatternVariable<A, PatternVar_>
             PatternVariable<A, PatternVar_, IndirectPatternVariable<A, PatternVar_>>
             filterForJoin(Variable<LeftJoinVarA_> leftJoinVarA, Variable<LeftJoinVarB_> leftJoinVarB,
                     Variable<LeftJoinVarC_> leftJoinVarC,
-                    AbstractQuadJoiner<LeftJoinVarA_, LeftJoinVarB_, LeftJoinVarC_, A> joiner, JoinerType joinerType,
+                    DefaultQuadJoiner<LeftJoinVarA_, LeftJoinVarB_, LeftJoinVarC_, A> joiner, JoinerType joinerType,
                     int mappingIndex) {
         TriFunction<LeftJoinVarA_, LeftJoinVarB_, LeftJoinVarC_, Object> leftMapping =
                 joiner.getLeftMapping(mappingIndex);
@@ -289,5 +289,4 @@ final class IndirectPatternVariable<A, PatternVar_>
         return Stream.concat(Stream.concat(prerequisites, Stream.of(patternSupplier.get())), dependents)
                 .collect(Collectors.toList());
     }
-
 }

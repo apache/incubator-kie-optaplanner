@@ -47,7 +47,6 @@ import org.optaplanner.core.api.score.stream.penta.PentaJoiner;
 import org.optaplanner.core.api.score.stream.quad.QuadConstraintCollector;
 import org.optaplanner.core.impl.score.stream.common.JoinerType;
 import org.optaplanner.core.impl.score.stream.drools.DroolsVariableFactory;
-import org.optaplanner.core.impl.score.stream.penta.AbstractPentaJoiner;
 import org.optaplanner.core.impl.score.stream.penta.DefaultPentaJoiner;
 import org.optaplanner.core.impl.score.stream.penta.FilteringPentaJoiner;
 
@@ -101,7 +100,7 @@ public final class QuadLeftHandSide<A, B, C, D> extends AbstractLeftHandSide {
     }
 
     private <E> QuadLeftHandSide<A, B, C, D> applyJoiners(Class<E> otherFactType, Predicate<E> nullityFilter,
-            AbstractPentaJoiner<A, B, C, D, E> joiner, PentaPredicate<A, B, C, D, E> predicate, boolean shouldExist) {
+            DefaultPentaJoiner<A, B, C, D, E> joiner, PentaPredicate<A, B, C, D, E> predicate, boolean shouldExist) {
         Variable<E> toExist = variableFactory.createVariable(otherFactType, "toExist");
         PatternDSL.PatternDef<E> existencePattern = pattern(toExist);
         if (nullityFilter != null) {
@@ -145,7 +144,7 @@ public final class QuadLeftHandSide<A, B, C, D> extends AbstractLeftHandSide {
             Predicate<E> nullityFilter, boolean shouldExist) {
         int indexOfFirstFilter = -1;
         // Prepare the joiner and filter that will be used in the pattern
-        AbstractPentaJoiner<A, B, C, D, E> finalJoiner = null;
+        DefaultPentaJoiner<A, B, C, D, E> finalJoiner = null;
         PentaPredicate<A, B, C, D, E> finalFilter = null;
         for (int i = 0; i < joiners.length; i++) {
             PentaJoiner<A, B, C, D, E> joiner = joiners[i];
@@ -162,7 +161,7 @@ public final class QuadLeftHandSide<A, B, C, D> extends AbstractLeftHandSide {
                     throw new IllegalStateException("Indexing joiner (" + joiner + ") must not follow a filtering joiner ("
                             + joiners[indexOfFirstFilter] + ").");
                 } else { // Merge this Joiner with the existing Joiners.
-                    AbstractPentaJoiner<A, B, C, D, E> castJoiner = (AbstractPentaJoiner<A, B, C, D, E>) joiner;
+                    DefaultPentaJoiner<A, B, C, D, E> castJoiner = (DefaultPentaJoiner<A, B, C, D, E>) joiner;
                     finalJoiner = finalJoiner == null ? castJoiner : new DefaultPentaJoiner<>(finalJoiner, castJoiner);
                 }
             }

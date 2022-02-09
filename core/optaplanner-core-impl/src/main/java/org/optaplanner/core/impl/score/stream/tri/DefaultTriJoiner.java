@@ -23,7 +23,8 @@ import java.util.function.Function;
 import org.optaplanner.core.api.score.stream.tri.TriJoiner;
 import org.optaplanner.core.impl.score.stream.common.JoinerType;
 
-public final class DefaultTriJoiner<A, B, C> extends AbstractTriJoiner<A, B, C> {
+public final class DefaultTriJoiner<A, B, C> extends
+        org.optaplanner.core.impl.score.stream.common.AbstractJoiner<C> implements TriJoiner<A, B, C> {
 
     private final JoinerType[] joinerTypes;
     private final BiFunction<A, B, ?>[] leftMappings;
@@ -37,11 +38,11 @@ public final class DefaultTriJoiner<A, B, C> extends AbstractTriJoiner<A, B, C> 
 
     public DefaultTriJoiner(TriJoiner<A, B, C>... joiners) {
         this.joinerTypes = Arrays.stream(joiners)
-                .map(joiner -> (AbstractTriJoiner<A, B, C>) joiner)
+                .map(joiner -> (DefaultTriJoiner<A, B, C>) joiner)
                 .flatMap(joiner -> Arrays.stream(joiner.getJoinerTypes()))
                 .toArray(JoinerType[]::new);
         this.leftMappings = Arrays.stream(joiners)
-                .map(joiner -> (AbstractTriJoiner<A, B, C>) joiner)
+                .map(joiner -> (DefaultTriJoiner<A, B, C>) joiner)
                 .flatMap(joiner -> {
                     int joinerCount = joiner.getJoinerCount();
                     BiFunction[] mappings = new BiFunction[joinerCount];
@@ -52,7 +53,7 @@ public final class DefaultTriJoiner<A, B, C> extends AbstractTriJoiner<A, B, C> 
                 })
                 .toArray(BiFunction[]::new);
         this.rightMappings = Arrays.stream(joiners)
-                .map(joiner -> (AbstractTriJoiner<A, B, C>) joiner)
+                .map(joiner -> (DefaultTriJoiner<A, B, C>) joiner)
                 .flatMap(joiner -> {
                     int joinerCount = joiner.getJoinerCount();
                     Function[] mappings = new Function[joinerCount];
@@ -64,11 +65,6 @@ public final class DefaultTriJoiner<A, B, C> extends AbstractTriJoiner<A, B, C> 
                 .toArray(Function[]::new);
     }
 
-    // ************************************************************************
-    // Builders
-    // ************************************************************************
-
-    @Override
     public BiFunction<A, B, Object> getLeftMapping(int index) {
         return (BiFunction<A, B, Object>) leftMappings[index];
     }
@@ -81,5 +77,18 @@ public final class DefaultTriJoiner<A, B, C> extends AbstractTriJoiner<A, B, C> 
     @Override
     public Function<C, Object> getRightMapping(int index) {
         return (Function<C, Object>) rightMappings[index];
+    }
+
+    public boolean matches(A a, B b, C c) {
+        JoinerType[] joinerTypes = getJoinerTypes();
+        for (int i = 0; i < joinerTypes.length; i++) {
+            JoinerType joinerType = joinerTypes[i];
+            Object leftMapping = getLeftMapping(i).apply(a, b);
+            Object rightMapping = getRightMapping(i).apply(c);
+            if (!joinerType.matches(leftMapping, rightMapping)) {
+                return false;
+            }
+        }
+        return true;
     }
 }

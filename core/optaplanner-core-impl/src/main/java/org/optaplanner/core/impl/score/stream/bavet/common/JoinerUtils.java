@@ -3,9 +3,9 @@ package org.optaplanner.core.impl.score.stream.bavet.common;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 
-import org.optaplanner.core.impl.score.stream.bi.AbstractBiJoiner;
+import org.optaplanner.core.impl.score.stream.bi.DefaultBiJoiner;
 import org.optaplanner.core.impl.score.stream.common.AbstractJoiner;
-import org.optaplanner.core.impl.score.stream.tri.AbstractTriJoiner;
+import org.optaplanner.core.impl.score.stream.tri.DefaultTriJoiner;
 
 public final class JoinerUtils {
 
@@ -15,7 +15,7 @@ public final class JoinerUtils {
 
     }
 
-    public static <A, B> Function<A, Object[]> combineLeftMappings(AbstractBiJoiner<A, B> joiner) {
+    public static <A, B> Function<A, Object[]> combineLeftMappings(DefaultBiJoiner<A, B> joiner) {
         if (joiner.getJoinerCount() == 0) {
             return (A a) -> EMPTY_OBJECT_ARRAY;
         } else if (joiner.getJoinerCount() == 1) {
@@ -32,7 +32,7 @@ public final class JoinerUtils {
         }
     }
 
-    public static <A, B, C> BiFunction<A, B, Object[]> combineLeftMappings(AbstractTriJoiner<A, B, C> joiner) {
+    public static <A, B, C> BiFunction<A, B, Object[]> combineLeftMappings(DefaultTriJoiner<A, B, C> joiner) {
         if (joiner.getJoinerCount() == 0) {
             return (A a, B b) -> EMPTY_OBJECT_ARRAY;
         } else if (joiner.getJoinerCount() == 1) {

@@ -21,9 +21,10 @@ import java.util.function.Function;
 
 import org.optaplanner.core.api.function.TriFunction;
 import org.optaplanner.core.api.score.stream.quad.QuadJoiner;
+import org.optaplanner.core.impl.score.stream.common.AbstractJoiner;
 import org.optaplanner.core.impl.score.stream.common.JoinerType;
 
-public final class DefaultQuadJoiner<A, B, C, D> extends AbstractQuadJoiner<A, B, C, D> {
+public final class DefaultQuadJoiner<A, B, C, D> extends AbstractJoiner<D> implements QuadJoiner<A, B, C, D> {
 
     private final JoinerType[] joinerTypes;
     private final TriFunction<A, B, C, ?>[] leftMappings;
@@ -37,11 +38,11 @@ public final class DefaultQuadJoiner<A, B, C, D> extends AbstractQuadJoiner<A, B
 
     public DefaultQuadJoiner(QuadJoiner<A, B, C, D>... joiners) {
         this.joinerTypes = Arrays.stream(joiners)
-                .map(joiner -> (AbstractQuadJoiner<A, B, C, D>) joiner)
+                .map(joiner -> (DefaultQuadJoiner<A, B, C, D>) joiner)
                 .flatMap(joiner -> Arrays.stream(joiner.getJoinerTypes()))
                 .toArray(JoinerType[]::new);
         this.leftMappings = Arrays.stream(joiners)
-                .map(joiner -> (AbstractQuadJoiner<A, B, C, D>) joiner)
+                .map(joiner -> (DefaultQuadJoiner<A, B, C, D>) joiner)
                 .flatMap(joiner -> {
                     int joinerCount = joiner.getJoinerCount();
                     TriFunction[] mappings = new TriFunction[joinerCount];
@@ -52,7 +53,7 @@ public final class DefaultQuadJoiner<A, B, C, D> extends AbstractQuadJoiner<A, B
                 })
                 .toArray(TriFunction[]::new);
         this.rightMappings = Arrays.stream(joiners)
-                .map(joiner -> (AbstractQuadJoiner<A, B, C, D>) joiner)
+                .map(joiner -> (DefaultQuadJoiner<A, B, C, D>) joiner)
                 .flatMap(joiner -> {
                     int joinerCount = joiner.getJoinerCount();
                     Function[] mappings = new Function[joinerCount];
@@ -64,11 +65,6 @@ public final class DefaultQuadJoiner<A, B, C, D> extends AbstractQuadJoiner<A, B
                 .toArray(Function[]::new);
     }
 
-    // ************************************************************************
-    // Builders
-    // ************************************************************************
-
-    @Override
     public TriFunction<A, B, C, Object> getLeftMapping(int index) {
         return (TriFunction<A, B, C, Object>) leftMappings[index];
     }
@@ -83,4 +79,16 @@ public final class DefaultQuadJoiner<A, B, C, D> extends AbstractQuadJoiner<A, B
         return (Function<D, Object>) rightMappings[index];
     }
 
+    public boolean matches(A a, B b, C c, D d) {
+        JoinerType[] joinerTypes = getJoinerTypes();
+        for (int i = 0; i < joinerTypes.length; i++) {
+            JoinerType joinerType = joinerTypes[i];
+            Object leftMapping = getLeftMapping(i).apply(a, b, c);
+            Object rightMapping = getRightMapping(i).apply(d);
+            if (!joinerType.matches(leftMapping, rightMapping)) {
+                return false;
+            }
+        }
+        return true;
+    }
 }

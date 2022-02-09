@@ -21,9 +21,10 @@ import java.util.function.Function;
 
 import org.optaplanner.core.api.function.QuadFunction;
 import org.optaplanner.core.api.score.stream.penta.PentaJoiner;
+import org.optaplanner.core.impl.score.stream.common.AbstractJoiner;
 import org.optaplanner.core.impl.score.stream.common.JoinerType;
 
-public final class DefaultPentaJoiner<A, B, C, D, E> extends AbstractPentaJoiner<A, B, C, D, E> {
+public final class DefaultPentaJoiner<A, B, C, D, E> extends AbstractJoiner<E> implements PentaJoiner<A, B, C, D, E> {
 
     private final JoinerType[] joinerTypes;
     private final QuadFunction<A, B, C, D, ?>[] leftMappings;
@@ -37,11 +38,11 @@ public final class DefaultPentaJoiner<A, B, C, D, E> extends AbstractPentaJoiner
 
     public DefaultPentaJoiner(PentaJoiner<A, B, C, D, E>... joiners) {
         this.joinerTypes = Arrays.stream(joiners)
-                .map(joiner -> (AbstractPentaJoiner<A, B, C, D, E>) joiner)
+                .map(joiner -> (DefaultPentaJoiner<A, B, C, D, E>) joiner)
                 .flatMap(joiner -> Arrays.stream(joiner.getJoinerTypes()))
                 .toArray(JoinerType[]::new);
         this.leftMappings = Arrays.stream(joiners)
-                .map(joiner -> (AbstractPentaJoiner<A, B, C, D, E>) joiner)
+                .map(joiner -> (DefaultPentaJoiner<A, B, C, D, E>) joiner)
                 .flatMap(joiner -> {
                     int joinerCount = joiner.getJoinerCount();
                     QuadFunction[] mappings = new QuadFunction[joinerCount];
@@ -52,7 +53,7 @@ public final class DefaultPentaJoiner<A, B, C, D, E> extends AbstractPentaJoiner
                 })
                 .toArray(QuadFunction[]::new);
         this.rightMappings = Arrays.stream(joiners)
-                .map(joiner -> (AbstractPentaJoiner<A, B, C, D, E>) joiner)
+                .map(joiner -> (DefaultPentaJoiner<A, B, C, D, E>) joiner)
                 .flatMap(joiner -> {
                     int joinerCount = joiner.getJoinerCount();
                     Function[] mappings = new Function[joinerCount];
@@ -64,11 +65,6 @@ public final class DefaultPentaJoiner<A, B, C, D, E> extends AbstractPentaJoiner
                 .toArray(Function[]::new);
     }
 
-    // ************************************************************************
-    // Builders
-    // ************************************************************************
-
-    @Override
     public QuadFunction<A, B, C, D, Object> getLeftMapping(int index) {
         return (QuadFunction<A, B, C, D, Object>) leftMappings[index];
     }
@@ -83,4 +79,16 @@ public final class DefaultPentaJoiner<A, B, C, D, E> extends AbstractPentaJoiner
         return (Function<E, Object>) rightMappings[index];
     }
 
+    public boolean matches(A a, B b, C c, D d, E e) {
+        JoinerType[] joinerTypes = getJoinerTypes();
+        for (int i = 0; i < joinerTypes.length; i++) {
+            JoinerType joinerType = joinerTypes[i];
+            Object leftMapping = getLeftMapping(i).apply(a, b, c, d);
+            Object rightMapping = getRightMapping(i).apply(e);
+            if (!joinerType.matches(leftMapping, rightMapping)) {
+                return false;
+            }
+        }
+        return true;
+    }
 }

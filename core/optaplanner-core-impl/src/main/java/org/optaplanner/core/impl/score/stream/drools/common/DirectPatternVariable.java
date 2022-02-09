@@ -43,10 +43,10 @@ import org.optaplanner.core.api.function.QuadFunction;
 import org.optaplanner.core.api.function.QuadPredicate;
 import org.optaplanner.core.api.function.TriFunction;
 import org.optaplanner.core.api.function.TriPredicate;
-import org.optaplanner.core.impl.score.stream.bi.AbstractBiJoiner;
+import org.optaplanner.core.impl.score.stream.bi.DefaultBiJoiner;
 import org.optaplanner.core.impl.score.stream.common.JoinerType;
-import org.optaplanner.core.impl.score.stream.quad.AbstractQuadJoiner;
-import org.optaplanner.core.impl.score.stream.tri.AbstractTriJoiner;
+import org.optaplanner.core.impl.score.stream.quad.DefaultQuadJoiner;
+import org.optaplanner.core.impl.score.stream.tri.DefaultTriJoiner;
 
 /**
  * Represents a single variable with all of its patterns in the left hand side of a Drools rule.
@@ -210,7 +210,7 @@ class DirectPatternVariable<A> implements PatternVariable<A, A, DirectPatternVar
 
     @Override
     public <LeftJoinVar_> PatternVariable<A, A, DirectPatternVariable<A>> filterForJoin(
-            Variable<LeftJoinVar_> leftJoinVar, AbstractBiJoiner<LeftJoinVar_, A> joiner, JoinerType joinerType,
+            Variable<LeftJoinVar_> leftJoinVar, DefaultBiJoiner<LeftJoinVar_, A> joiner, JoinerType joinerType,
             int mappingIndex) {
         Function<LeftJoinVar_, Object> leftMapping = joiner.getLeftMapping(mappingIndex);
         Function<A, Object> rightMapping = joiner.getRightMapping(mappingIndex);
@@ -225,7 +225,7 @@ class DirectPatternVariable<A> implements PatternVariable<A, A, DirectPatternVar
     @Override
     public <LeftJoinVarA_, LeftJoinVarB_> PatternVariable<A, A, DirectPatternVariable<A>> filterForJoin(
             Variable<LeftJoinVarA_> leftJoinVarA, Variable<LeftJoinVarB_> leftJoinVarB,
-            AbstractTriJoiner<LeftJoinVarA_, LeftJoinVarB_, A> joiner, JoinerType joinerType, int mappingIndex) {
+            DefaultTriJoiner<LeftJoinVarA_, LeftJoinVarB_, A> joiner, JoinerType joinerType, int mappingIndex) {
         BiFunction<LeftJoinVarA_, LeftJoinVarB_, Object> leftMapping = joiner.getLeftMapping(mappingIndex);
         Function<A, Object> rightMapping = joiner.getRightMapping(mappingIndex);
         Predicate3<A, LeftJoinVarA_, LeftJoinVarB_> predicate =
@@ -241,7 +241,7 @@ class DirectPatternVariable<A> implements PatternVariable<A, A, DirectPatternVar
     @Override
     public <LeftJoinVarA_, LeftJoinVarB_, LeftJoinVarC_> PatternVariable<A, A, DirectPatternVariable<A>> filterForJoin(
             Variable<LeftJoinVarA_> leftJoinVarA, Variable<LeftJoinVarB_> leftJoinVarB, Variable<LeftJoinVarC_> leftJoinVarC,
-            AbstractQuadJoiner<LeftJoinVarA_, LeftJoinVarB_, LeftJoinVarC_, A> joiner, JoinerType joinerType,
+            DefaultQuadJoiner<LeftJoinVarA_, LeftJoinVarB_, LeftJoinVarC_, A> joiner, JoinerType joinerType,
             int mappingIndex) {
         TriFunction<LeftJoinVarA_, LeftJoinVarB_, LeftJoinVarC_, Object> leftMapping =
                 joiner.getLeftMapping(mappingIndex);

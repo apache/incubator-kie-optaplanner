@@ -47,7 +47,6 @@ import org.optaplanner.core.api.score.stream.bi.BiConstraintCollector;
 import org.optaplanner.core.api.score.stream.tri.TriJoiner;
 import org.optaplanner.core.impl.score.stream.common.JoinerType;
 import org.optaplanner.core.impl.score.stream.drools.DroolsVariableFactory;
-import org.optaplanner.core.impl.score.stream.tri.AbstractTriJoiner;
 import org.optaplanner.core.impl.score.stream.tri.DefaultTriJoiner;
 import org.optaplanner.core.impl.score.stream.tri.FilteringTriJoiner;
 
@@ -118,7 +117,7 @@ public final class BiLeftHandSide<A, B> extends AbstractLeftHandSide {
     }
 
     private <C> BiLeftHandSide<A, B> applyJoiners(Class<C> otherFactType, Predicate<C> nullityFilter,
-            AbstractTriJoiner<A, B, C> joiner, TriPredicate<A, B, C> predicate, boolean shouldExist) {
+            DefaultTriJoiner<A, B, C> joiner, TriPredicate<A, B, C> predicate, boolean shouldExist) {
         Variable<C> toExist = variableFactory.createVariable(otherFactType, "toExist");
         PatternDSL.PatternDef<C> existencePattern = pattern(toExist);
         if (nullityFilter != null) {
@@ -160,7 +159,7 @@ public final class BiLeftHandSide<A, B> extends AbstractLeftHandSide {
             Predicate<C> nullityFilter, boolean shouldExist) {
         int indexOfFirstFilter = -1;
         // Prepare the joiner and filter that will be used in the pattern
-        AbstractTriJoiner<A, B, C> finalJoiner = null;
+        DefaultTriJoiner<A, B, C> finalJoiner = null;
         TriPredicate<A, B, C> finalFilter = null;
         for (int i = 0; i < joiners.length; i++) {
             TriJoiner<A, B, C> joiner = joiners[i];
@@ -177,7 +176,7 @@ public final class BiLeftHandSide<A, B> extends AbstractLeftHandSide {
                     throw new IllegalStateException("Indexing joiner (" + joiner + ") must not follow a filtering joiner ("
                             + joiners[indexOfFirstFilter] + ").");
                 } else { // Merge this Joiner with the existing Joiners.
-                    AbstractTriJoiner<A, B, C> castJoiner = (AbstractTriJoiner<A, B, C>) joiner;
+                    DefaultTriJoiner<A, B, C> castJoiner = (DefaultTriJoiner<A, B, C>) joiner;
                     finalJoiner = finalJoiner == null ? castJoiner : new DefaultTriJoiner<>(finalJoiner, castJoiner);
                 }
             }
@@ -194,7 +193,7 @@ public final class BiLeftHandSide<A, B> extends AbstractLeftHandSide {
     }
 
     public <C> TriLeftHandSide<A, B, C> andJoin(UniLeftHandSide<C> right, TriJoiner<A, B, C> joiner) {
-        AbstractTriJoiner<A, B, C> castJoiner = (AbstractTriJoiner<A, B, C>) joiner;
+        DefaultTriJoiner<A, B, C> castJoiner = (DefaultTriJoiner<A, B, C>) joiner;
         JoinerType[] joinerTypes = castJoiner.getJoinerTypes();
         PatternVariable<C, ?, ?> newRight = right.getPatternVariableA();
         for (int mappingIndex = 0; mappingIndex < joinerTypes.length; mappingIndex++) {
