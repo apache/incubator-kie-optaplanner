@@ -17,14 +17,14 @@
 package org.optaplanner.core.impl.score.stream.common;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.optaplanner.core.impl.score.stream.common.JoinerType.CONTAINING;
-import static org.optaplanner.core.impl.score.stream.common.JoinerType.DISJOINT;
-import static org.optaplanner.core.impl.score.stream.common.JoinerType.EQUAL;
-import static org.optaplanner.core.impl.score.stream.common.JoinerType.GREATER_THAN;
-import static org.optaplanner.core.impl.score.stream.common.JoinerType.GREATER_THAN_OR_EQUAL;
-import static org.optaplanner.core.impl.score.stream.common.JoinerType.INTERSECTING;
-import static org.optaplanner.core.impl.score.stream.common.JoinerType.LESS_THAN;
-import static org.optaplanner.core.impl.score.stream.common.JoinerType.LESS_THAN_OR_EQUAL;
+import static org.optaplanner.core.impl.score.stream.JoinerType.CONTAINING;
+import static org.optaplanner.core.impl.score.stream.JoinerType.DISJOINT;
+import static org.optaplanner.core.impl.score.stream.JoinerType.EQUAL;
+import static org.optaplanner.core.impl.score.stream.JoinerType.GREATER_THAN;
+import static org.optaplanner.core.impl.score.stream.JoinerType.GREATER_THAN_OR_EQUAL;
+import static org.optaplanner.core.impl.score.stream.JoinerType.INTERSECTING;
+import static org.optaplanner.core.impl.score.stream.JoinerType.LESS_THAN;
+import static org.optaplanner.core.impl.score.stream.JoinerType.LESS_THAN_OR_EQUAL;
 
 import java.util.Arrays;
 import java.util.Collection;

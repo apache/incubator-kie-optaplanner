@@ -21,8 +21,8 @@ import java.util.function.BiFunction;
 import java.util.function.Function;
 
 import org.optaplanner.core.api.score.stream.tri.TriJoiner;
+import org.optaplanner.core.impl.score.stream.JoinerType;
 import org.optaplanner.core.impl.score.stream.common.AbstractJoiner;
-import org.optaplanner.core.impl.score.stream.common.JoinerType;
 
 public final class DefaultTriJoiner<A, B, C> extends AbstractJoiner<C> implements TriJoiner<A, B, C> {
 

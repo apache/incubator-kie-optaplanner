@@ -21,8 +21,8 @@ import java.util.function.Function;
 
 import org.optaplanner.core.api.function.QuadFunction;
 import org.optaplanner.core.api.score.stream.penta.PentaJoiner;
+import org.optaplanner.core.impl.score.stream.JoinerType;
 import org.optaplanner.core.impl.score.stream.common.AbstractJoiner;
-import org.optaplanner.core.impl.score.stream.common.JoinerType;
 
 public final class DefaultPentaJoiner<A, B, C, D, E> extends AbstractJoiner<E> implements PentaJoiner<A, B, C, D, E> {
 

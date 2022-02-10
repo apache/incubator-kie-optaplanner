@@ -29,7 +29,7 @@ import org.drools.model.Index;
 import org.drools.model.Variable;
 import org.drools.model.functions.accumulate.AccumulateFunction;
 import org.drools.model.view.ViewItem;
-import org.optaplanner.core.impl.score.stream.common.JoinerType;
+import org.optaplanner.core.impl.score.stream.JoinerType;
 import org.optaplanner.core.impl.score.stream.drools.DroolsVariableFactory;
 
 abstract class AbstractLeftHandSide {

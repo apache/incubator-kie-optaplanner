@@ -42,8 +42,8 @@ import org.optaplanner.core.api.function.QuadFunction;
 import org.optaplanner.core.api.function.QuadPredicate;
 import org.optaplanner.core.api.function.TriFunction;
 import org.optaplanner.core.api.function.TriPredicate;
+import org.optaplanner.core.impl.score.stream.JoinerType;
 import org.optaplanner.core.impl.score.stream.bi.DefaultBiJoiner;
-import org.optaplanner.core.impl.score.stream.common.JoinerType;
 import org.optaplanner.core.impl.score.stream.quad.DefaultQuadJoiner;
 import org.optaplanner.core.impl.score.stream.tri.DefaultTriJoiner;
 

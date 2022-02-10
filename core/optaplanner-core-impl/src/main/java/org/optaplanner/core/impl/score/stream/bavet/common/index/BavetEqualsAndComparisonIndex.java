@@ -27,8 +27,8 @@ import java.util.Set;
 import java.util.TreeMap;
 import java.util.stream.Collectors;
 
+import org.optaplanner.core.impl.score.stream.JoinerType;
 import org.optaplanner.core.impl.score.stream.bavet.common.BavetJoinBridgeTuple;
-import org.optaplanner.core.impl.score.stream.common.JoinerType;
 
 public class BavetEqualsAndComparisonIndex<Tuple_ extends BavetJoinBridgeTuple> extends BavetIndex<Tuple_> {
 

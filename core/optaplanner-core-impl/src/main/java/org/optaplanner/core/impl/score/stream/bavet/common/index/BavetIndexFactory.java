@@ -16,9 +16,9 @@
 
 package org.optaplanner.core.impl.score.stream.bavet.common.index;
 
+import org.optaplanner.core.impl.score.stream.JoinerType;
 import org.optaplanner.core.impl.score.stream.bavet.common.BavetJoinBridgeTuple;
 import org.optaplanner.core.impl.score.stream.common.AbstractJoiner;
-import org.optaplanner.core.impl.score.stream.common.JoinerType;
 
 public class BavetIndexFactory {
 

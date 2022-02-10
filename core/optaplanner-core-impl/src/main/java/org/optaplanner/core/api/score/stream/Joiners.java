@@ -31,15 +31,8 @@ import org.optaplanner.core.api.score.stream.penta.PentaJoiner;
 import org.optaplanner.core.api.score.stream.quad.QuadJoiner;
 import org.optaplanner.core.api.score.stream.tri.TriJoiner;
 import org.optaplanner.core.api.score.stream.uni.UniConstraintStream;
-import org.optaplanner.core.impl.score.stream.bi.DefaultBiJoiner;
-import org.optaplanner.core.impl.score.stream.bi.FilteringBiJoiner;
-import org.optaplanner.core.impl.score.stream.common.JoinerType;
-import org.optaplanner.core.impl.score.stream.penta.DefaultPentaJoiner;
-import org.optaplanner.core.impl.score.stream.penta.FilteringPentaJoiner;
-import org.optaplanner.core.impl.score.stream.quad.DefaultQuadJoiner;
-import org.optaplanner.core.impl.score.stream.quad.FilteringQuadJoiner;
-import org.optaplanner.core.impl.score.stream.tri.DefaultTriJoiner;
-import org.optaplanner.core.impl.score.stream.tri.FilteringTriJoiner;
+import org.optaplanner.core.impl.score.stream.JoinerSupport;
+import org.optaplanner.core.impl.score.stream.JoinerType;
 
 /**
  * Creates an {@link BiJoiner}, {@link TriJoiner}, ... instance
@@ -92,7 +85,8 @@ public final class Joiners {
      */
     public static <A, B, Property_> BiJoiner<A, B> equal(Function<A, Property_> leftMapping,
             Function<B, Property_> rightMapping) {
-        return new DefaultBiJoiner<>(leftMapping, JoinerType.EQUAL, rightMapping);
+        return JoinerSupport.getJoinerService()
+                .newBiJoiner(leftMapping, JoinerType.EQUAL, rightMapping);
     }
 
     /**
@@ -124,7 +118,8 @@ public final class Joiners {
      */
     public static <A, B, Property_ extends Comparable<Property_>> BiJoiner<A, B> lessThan(
             Function<A, Property_> leftMapping, Function<B, Property_> rightMapping) {
-        return new DefaultBiJoiner<>(leftMapping, JoinerType.LESS_THAN, rightMapping);
+        return JoinerSupport.getJoinerService()
+                .newBiJoiner(leftMapping, JoinerType.LESS_THAN, rightMapping);
     }
 
     /**
@@ -158,7 +153,8 @@ public final class Joiners {
      */
     public static <A, B, Property_ extends Comparable<Property_>> BiJoiner<A, B> lessThanOrEqual(
             Function<A, Property_> leftMapping, Function<B, Property_> rightMapping) {
-        return new DefaultBiJoiner<>(leftMapping, JoinerType.LESS_THAN_OR_EQUAL, rightMapping);
+        return JoinerSupport.getJoinerService()
+                .newBiJoiner(leftMapping, JoinerType.LESS_THAN_OR_EQUAL, rightMapping);
     }
 
     /**
@@ -191,7 +187,8 @@ public final class Joiners {
      */
     public static <A, B, Property_ extends Comparable<Property_>> BiJoiner<A, B> greaterThan(
             Function<A, Property_> leftMapping, Function<B, Property_> rightMapping) {
-        return new DefaultBiJoiner<>(leftMapping, JoinerType.GREATER_THAN, rightMapping);
+        return JoinerSupport.getJoinerService()
+                .newBiJoiner(leftMapping, JoinerType.GREATER_THAN, rightMapping);
     }
 
     /**
@@ -225,7 +222,8 @@ public final class Joiners {
      */
     public static <A, B, Property_ extends Comparable<Property_>> BiJoiner<A, B> greaterThanOrEqual(
             Function<A, Property_> leftMapping, Function<B, Property_> rightMapping) {
-        return new DefaultBiJoiner<>(leftMapping, JoinerType.GREATER_THAN_OR_EQUAL, rightMapping);
+        return JoinerSupport.getJoinerService()
+                .newBiJoiner(leftMapping, JoinerType.GREATER_THAN_OR_EQUAL, rightMapping);
     }
 
     /**
@@ -241,7 +239,8 @@ public final class Joiners {
      * @return never null
      */
     public static <A, B> BiJoiner<A, B> filtering(BiPredicate<A, B> filter) {
-        return new FilteringBiJoiner<>(filter);
+        return JoinerSupport.getJoinerService()
+                .newBiJoiner(filter);
     }
 
     /**
@@ -301,7 +300,8 @@ public final class Joiners {
      */
     public static <A, B, C, Property_> TriJoiner<A, B, C> equal(BiFunction<A, B, Property_> leftMapping,
             Function<C, Property_> rightMapping) {
-        return new DefaultTriJoiner<>(leftMapping, JoinerType.EQUAL, rightMapping);
+        return JoinerSupport.getJoinerService()
+                .newTriJoiner(leftMapping, JoinerType.EQUAL, rightMapping);
     }
 
     /**
@@ -317,7 +317,8 @@ public final class Joiners {
      */
     public static <A, B, C, Property_ extends Comparable<Property_>> TriJoiner<A, B, C> lessThan(
             BiFunction<A, B, Property_> leftMapping, Function<C, Property_> rightMapping) {
-        return new DefaultTriJoiner<>(leftMapping, JoinerType.LESS_THAN, rightMapping);
+        return JoinerSupport.getJoinerService()
+                .newTriJoiner(leftMapping, JoinerType.LESS_THAN, rightMapping);
     }
 
     /**
@@ -333,7 +334,8 @@ public final class Joiners {
      */
     public static <A, B, C, Property_ extends Comparable<Property_>> TriJoiner<A, B, C> lessThanOrEqual(
             BiFunction<A, B, Property_> leftMapping, Function<C, Property_> rightMapping) {
-        return new DefaultTriJoiner<>(leftMapping, JoinerType.LESS_THAN_OR_EQUAL, rightMapping);
+        return JoinerSupport.getJoinerService()
+                .newTriJoiner(leftMapping, JoinerType.LESS_THAN_OR_EQUAL, rightMapping);
     }
 
     /**
@@ -349,7 +351,8 @@ public final class Joiners {
      */
     public static <A, B, C, Property_ extends Comparable<Property_>> TriJoiner<A, B, C> greaterThan(
             BiFunction<A, B, Property_> leftMapping, Function<C, Property_> rightMapping) {
-        return new DefaultTriJoiner<>(leftMapping, JoinerType.GREATER_THAN, rightMapping);
+        return JoinerSupport.getJoinerService()
+                .newTriJoiner(leftMapping, JoinerType.GREATER_THAN, rightMapping);
     }
 
     /**
@@ -365,7 +368,8 @@ public final class Joiners {
      */
     public static <A, B, C, Property_ extends Comparable<Property_>> TriJoiner<A, B, C> greaterThanOrEqual(
             BiFunction<A, B, Property_> leftMapping, Function<C, Property_> rightMapping) {
-        return new DefaultTriJoiner<>(leftMapping, JoinerType.GREATER_THAN_OR_EQUAL, rightMapping);
+        return JoinerSupport.getJoinerService()
+                .newTriJoiner(leftMapping, JoinerType.GREATER_THAN_OR_EQUAL, rightMapping);
     }
 
     /**
@@ -378,7 +382,8 @@ public final class Joiners {
      * @return never null
      */
     public static <A, B, C> TriJoiner<A, B, C> filtering(TriPredicate<A, B, C> filter) {
-        return new FilteringTriJoiner<>(filter);
+        return JoinerSupport.getJoinerService()
+                .newTriJoiner(filter);
     }
 
     /**
@@ -419,7 +424,8 @@ public final class Joiners {
      */
     public static <A, B, C, D, Property_> QuadJoiner<A, B, C, D> equal(
             TriFunction<A, B, C, Property_> leftMapping, Function<D, Property_> rightMapping) {
-        return new DefaultQuadJoiner<>(leftMapping, JoinerType.EQUAL, rightMapping);
+        return JoinerSupport.getJoinerService()
+                .newQuadJoiner(leftMapping, JoinerType.EQUAL, rightMapping);
     }
 
     /**
@@ -436,7 +442,8 @@ public final class Joiners {
      */
     public static <A, B, C, D, Property_ extends Comparable<Property_>> QuadJoiner<A, B, C, D> lessThan(
             TriFunction<A, B, C, Property_> leftMapping, Function<D, Property_> rightMapping) {
-        return new DefaultQuadJoiner<>(leftMapping, JoinerType.LESS_THAN, rightMapping);
+        return JoinerSupport.getJoinerService()
+                .newQuadJoiner(leftMapping, JoinerType.LESS_THAN, rightMapping);
     }
 
     /**
@@ -453,7 +460,8 @@ public final class Joiners {
      */
     public static <A, B, C, D, Property_ extends Comparable<Property_>> QuadJoiner<A, B, C, D> lessThanOrEqual(
             TriFunction<A, B, C, Property_> leftMapping, Function<D, Property_> rightMapping) {
-        return new DefaultQuadJoiner<>(leftMapping, JoinerType.LESS_THAN_OR_EQUAL, rightMapping);
+        return JoinerSupport.getJoinerService()
+                .newQuadJoiner(leftMapping, JoinerType.LESS_THAN_OR_EQUAL, rightMapping);
     }
 
     /**
@@ -470,7 +478,8 @@ public final class Joiners {
      */
     public static <A, B, C, D, Property_ extends Comparable<Property_>> QuadJoiner<A, B, C, D> greaterThan(
             TriFunction<A, B, C, Property_> leftMapping, Function<D, Property_> rightMapping) {
-        return new DefaultQuadJoiner<>(leftMapping, JoinerType.GREATER_THAN, rightMapping);
+        return JoinerSupport.getJoinerService()
+                .newQuadJoiner(leftMapping, JoinerType.GREATER_THAN, rightMapping);
     }
 
     /**
@@ -487,7 +496,8 @@ public final class Joiners {
      */
     public static <A, B, C, D, Property_ extends Comparable<Property_>> QuadJoiner<A, B, C, D> greaterThanOrEqual(
             TriFunction<A, B, C, Property_> leftMapping, Function<D, Property_> rightMapping) {
-        return new DefaultQuadJoiner<>(leftMapping, JoinerType.GREATER_THAN_OR_EQUAL, rightMapping);
+        return JoinerSupport.getJoinerService()
+                .newQuadJoiner(leftMapping, JoinerType.GREATER_THAN_OR_EQUAL, rightMapping);
     }
 
     /**
@@ -501,7 +511,8 @@ public final class Joiners {
      * @return never null
      */
     public static <A, B, C, D> QuadJoiner<A, B, C, D> filtering(QuadPredicate<A, B, C, D> filter) {
-        return new FilteringQuadJoiner<>(filter);
+        return JoinerSupport.getJoinerService()
+                .newQuadJoiner(filter);
     }
 
     /**
@@ -544,7 +555,8 @@ public final class Joiners {
      */
     public static <A, B, C, D, E, Property_> PentaJoiner<A, B, C, D, E> equal(
             QuadFunction<A, B, C, D, Property_> leftMapping, Function<E, Property_> rightMapping) {
-        return new DefaultPentaJoiner<>(leftMapping, JoinerType.EQUAL, rightMapping);
+        return JoinerSupport.getJoinerService()
+                .newPentaJoiner(leftMapping, JoinerType.EQUAL, rightMapping);
     }
 
     /**
@@ -562,7 +574,8 @@ public final class Joiners {
      */
     public static <A, B, C, D, E, Property_ extends Comparable<Property_>> PentaJoiner<A, B, C, D, E> lessThan(
             QuadFunction<A, B, C, D, Property_> leftMapping, Function<E, Property_> rightMapping) {
-        return new DefaultPentaJoiner<>(leftMapping, JoinerType.LESS_THAN, rightMapping);
+        return JoinerSupport.getJoinerService()
+                .newPentaJoiner(leftMapping, JoinerType.LESS_THAN, rightMapping);
     }
 
     /**
@@ -580,7 +593,8 @@ public final class Joiners {
      */
     public static <A, B, C, D, E, Property_ extends Comparable<Property_>> PentaJoiner<A, B, C, D, E> lessThanOrEqual(
             QuadFunction<A, B, C, D, Property_> leftMapping, Function<E, Property_> rightMapping) {
-        return new DefaultPentaJoiner<>(leftMapping, JoinerType.LESS_THAN_OR_EQUAL, rightMapping);
+        return JoinerSupport.getJoinerService()
+                .newPentaJoiner(leftMapping, JoinerType.LESS_THAN_OR_EQUAL, rightMapping);
     }
 
     /**
@@ -598,7 +612,8 @@ public final class Joiners {
      */
     public static <A, B, C, D, E, Property_ extends Comparable<Property_>> PentaJoiner<A, B, C, D, E> greaterThan(
             QuadFunction<A, B, C, D, Property_> leftMapping, Function<E, Property_> rightMapping) {
-        return new DefaultPentaJoiner<>(leftMapping, JoinerType.GREATER_THAN, rightMapping);
+        return JoinerSupport.getJoinerService()
+                .newPentaJoiner(leftMapping, JoinerType.GREATER_THAN, rightMapping);
     }
 
     /**
@@ -616,7 +631,8 @@ public final class Joiners {
      */
     public static <A, B, C, D, E, Property_ extends Comparable<Property_>> PentaJoiner<A, B, C, D, E> greaterThanOrEqual(
             QuadFunction<A, B, C, D, Property_> leftMapping, Function<E, Property_> rightMapping) {
-        return new DefaultPentaJoiner<>(leftMapping, JoinerType.GREATER_THAN_OR_EQUAL, rightMapping);
+        return JoinerSupport.getJoinerService()
+                .newPentaJoiner(leftMapping, JoinerType.GREATER_THAN_OR_EQUAL, rightMapping);
     }
 
     /**
@@ -631,7 +647,8 @@ public final class Joiners {
      * @return never null
      */
     public static <A, B, C, D, E> PentaJoiner<A, B, C, D, E> filtering(PentaPredicate<A, B, C, D, E> filter) {
-        return new FilteringPentaJoiner<>(filter);
+        return JoinerSupport.getJoinerService()
+                .newPentaJoiner(filter);
     }
 
     /**

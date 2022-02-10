@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.optaplanner.core.impl.score.stream.common;
+package org.optaplanner.core.impl.score.stream;
 
 import java.util.Collection;
 import java.util.Objects;

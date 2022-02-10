@@ -20,8 +20,8 @@ import java.util.Arrays;
 import java.util.function.Function;
 
 import org.optaplanner.core.api.score.stream.bi.BiJoiner;
+import org.optaplanner.core.impl.score.stream.JoinerType;
 import org.optaplanner.core.impl.score.stream.common.AbstractJoiner;
-import org.optaplanner.core.impl.score.stream.common.JoinerType;
 
 public final class DefaultBiJoiner<A, B> extends AbstractJoiner<B> implements BiJoiner<A, B> {
 

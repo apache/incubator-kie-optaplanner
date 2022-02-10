@@ -18,6 +18,8 @@ package org.optaplanner.core.impl.score.stream.common;
 
 import java.util.function.Function;
 
+import org.optaplanner.core.impl.score.stream.JoinerType;
+
 public abstract class AbstractJoiner<Right_> {
 
     public abstract Function<Right_, Object> getRightMapping(int index);
