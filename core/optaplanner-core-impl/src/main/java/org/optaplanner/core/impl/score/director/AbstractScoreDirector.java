@@ -575,7 +575,7 @@ public abstract class AbstractScoreDirector<Solution_, Score_ extends Score<Scor
             }
             entityToShadowVariableValuesMap.put(entity, shadowVariableValuesMap);
         });
-        variableListenerSupport.triggerAllVariableListeners();
+        variableListenerSupport.forceTriggerAllVariableListeners();
         solutionDescriptor.visitAllEntities(workingSolution, entity -> {
             EntityDescriptor<Solution_> entityDescriptor = solutionDescriptor.findEntityDescriptorOrFail(entity.getClass());
             Collection<ShadowVariableDescriptor<Solution_>> shadowVariableDescriptors = entityDescriptor

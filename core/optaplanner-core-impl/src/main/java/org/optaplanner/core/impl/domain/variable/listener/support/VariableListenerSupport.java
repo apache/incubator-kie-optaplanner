@@ -199,13 +199,13 @@ public final class VariableListenerSupport<Solution_> implements SupplyManager<S
         notificationQueuesAreEmpty = true;
     }
 
-    public void triggerAllVariableListeners() {
+    public void forceTriggerAllVariableListeners() {
         scoreDirector.getSolutionDescriptor()
-                .visitAllEntities(scoreDirector.getWorkingSolution(), this::triggerAllVariableListeners);
+                .visitAllEntities(scoreDirector.getWorkingSolution(), this::simulateGenuineVariableChange);
         triggerVariableListenersInNotificationQueues();
     }
 
-    private void triggerAllVariableListeners(Object entity) {
+    private void simulateGenuineVariableChange(Object entity) {
         EntityDescriptor<Solution_> entityDescriptor = scoreDirector.getSolutionDescriptor()
                 .findEntityDescriptorOrFail(entity.getClass());
         for (VariableDescriptor<Solution_> variableDescriptor : entityDescriptor.getGenuineVariableDescriptorList()) {
