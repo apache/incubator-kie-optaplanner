@@ -22,61 +22,31 @@ import org.optaplanner.core.api.domain.variable.VariableListener;
 import org.optaplanner.core.api.score.director.ScoreDirector;
 import org.optaplanner.core.impl.domain.variable.descriptor.ShadowVariableDescriptor;
 
-final class VariableListenerNotification {
+abstract class VariableListenerNotification {
 
-    private final Object entity;
-    private final VariableListenerNotificationType type;
+    protected final Object entity;
 
     public static VariableListenerNotification entityAdded(Object entity) {
-        return new VariableListenerNotification(entity, VariableListenerNotificationType.ENTITY_ADDED);
+        return new EntityAddedNotification(entity);
     }
 
     public static VariableListenerNotification variableChanged(Object entity) {
-        return new VariableListenerNotification(entity, VariableListenerNotificationType.VARIABLE_CHANGED);
+        return new VariableChangedNotification(entity);
     }
 
     public static VariableListenerNotification entityRemoved(Object entity) {
-        return new VariableListenerNotification(entity, VariableListenerNotificationType.ENTITY_REMOVED);
+        return new EntityRemovedNotification(entity);
     }
 
-    private VariableListenerNotification(Object entity, VariableListenerNotificationType type) {
+    protected VariableListenerNotification(Object entity) {
         this.entity = entity;
-        this.type = type;
     }
 
-    public <Solution_> void triggerBefore(VariableListener<Solution_, Object> variableListener,
-            ScoreDirector<Solution_> scoreDirector) {
-        switch (type) {
-            case ENTITY_ADDED:
-                variableListener.beforeEntityAdded(scoreDirector, entity);
-                break;
-            case VARIABLE_CHANGED:
-                variableListener.beforeVariableChanged(scoreDirector, entity);
-                break;
-            case ENTITY_REMOVED:
-                variableListener.beforeEntityRemoved(scoreDirector, entity);
-                break;
-            default:
-                throw new IllegalStateException("The VariableListenerNotification type (" + type + ") is not implemented.");
-        }
-    }
+    abstract <Solution_> void triggerBefore(VariableListener<Solution_, Object> variableListener,
+            ScoreDirector<Solution_> scoreDirector);
 
-    public <Solution_> void triggerAfter(VariableListener<Solution_, Object> variableListener,
-            ScoreDirector<Solution_> scoreDirector) {
-        switch (type) {
-            case ENTITY_ADDED:
-                variableListener.afterEntityAdded(scoreDirector, entity);
-                break;
-            case VARIABLE_CHANGED:
-                variableListener.afterVariableChanged(scoreDirector, entity);
-                break;
-            case ENTITY_REMOVED:
-                variableListener.afterEntityRemoved(scoreDirector, entity);
-                break;
-            default:
-                throw new IllegalStateException("The VariableListenerNotification type (" + type + ") is not implemented.");
-        }
-    }
+    abstract <Solution_> void triggerAfter(VariableListener<Solution_, Object> variableListener,
+            ScoreDirector<Solution_> scoreDirector);
 
     /**
      * Warning: do not test equality of {@link VariableListenerNotification}s for different {@link VariableListener}s
@@ -91,7 +61,7 @@ final class VariableListenerNotification {
             return true;
         } else if (o instanceof VariableListenerNotification) {
             VariableListenerNotification other = (VariableListenerNotification) o;
-            return entity == other.entity && type == other.type;
+            return entity == other.entity;
         } else {
             return false;
         }
@@ -99,11 +69,6 @@ final class VariableListenerNotification {
 
     @Override
     public int hashCode() {
-        return Objects.hash(System.identityHashCode(entity), type);
-    }
-
-    @Override
-    public String toString() {
-        return type + ": " + entity;
+        return Objects.hash(System.identityHashCode(entity));
     }
 }
