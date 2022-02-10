@@ -23,7 +23,7 @@ public interface JoinerService {
 
     /*
      * TODO In 9.x, bring API and impl to the same JAR, avoiding split packages.
-     *  This will make this SPI unnecessary.
+     * This will make this SPI unnecessary.
      */
 
     <A, B> BiJoiner<A, B> newBiJoiner(BiPredicate<A, B> filter);
