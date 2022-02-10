@@ -30,7 +30,7 @@ final class VariableListenerNotifiable<Solution_> implements Comparable<Variable
 
     private final Collection<VariableListenerNotification> notificationQueue;
 
-    public VariableListenerNotifiable(
+    VariableListenerNotifiable(
             ScoreDirector<Solution_> scoreDirector,
             VariableListener<Solution_, ?> variableListener,
             int globalOrder) {
@@ -44,21 +44,21 @@ final class VariableListenerNotifiable<Solution_> implements Comparable<Variable
         }
     }
 
-    public void resetWorkingSolution() {
+    void resetWorkingSolution() {
         variableListener.resetWorkingSolution(scoreDirector);
     }
 
-    public void closeVariableListener() {
+    void closeVariableListener() {
         variableListener.close();
     }
 
-    public void addNotification(VariableListenerNotification notification) {
+    void addNotification(VariableListenerNotification notification) {
         if (notificationQueue.add(notification)) {
             notification.triggerBefore(variableListener, scoreDirector);
         }
     }
 
-    public void triggerAllNotifications() {
+    void triggerAllNotifications() {
         int notifiedCount = 0;
         for (VariableListenerNotification notification : notificationQueue) {
             notification.triggerAfter(variableListener, scoreDirector);

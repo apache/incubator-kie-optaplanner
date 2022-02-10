@@ -26,15 +26,15 @@ abstract class VariableListenerNotification {
 
     protected final Object entity;
 
-    public static VariableListenerNotification entityAdded(Object entity) {
+    static VariableListenerNotification entityAdded(Object entity) {
         return new EntityAddedNotification(entity);
     }
 
-    public static VariableListenerNotification variableChanged(Object entity) {
+    static VariableListenerNotification variableChanged(Object entity) {
         return new VariableChangedNotification(entity);
     }
 
-    public static VariableListenerNotification entityRemoved(Object entity) {
+    static VariableListenerNotification entityRemoved(Object entity) {
         return new EntityRemovedNotification(entity);
     }
 
