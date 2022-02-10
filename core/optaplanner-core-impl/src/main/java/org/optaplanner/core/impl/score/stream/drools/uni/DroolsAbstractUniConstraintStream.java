@@ -16,7 +16,7 @@
 
 package org.optaplanner.core.impl.score.stream.drools.uni;
 
-import static org.optaplanner.core.impl.score.stream.common.RetrievalSemantics.*;
+import static org.optaplanner.core.impl.score.stream.common.RetrievalSemantics.STANDARD;
 
 import java.math.BigDecimal;
 import java.util.Objects;

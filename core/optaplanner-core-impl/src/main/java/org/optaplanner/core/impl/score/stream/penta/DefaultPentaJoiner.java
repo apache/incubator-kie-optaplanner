@@ -26,43 +26,40 @@ import org.optaplanner.core.impl.score.stream.common.JoinerType;
 
 public final class DefaultPentaJoiner<A, B, C, D, E> extends AbstractJoiner<E> implements PentaJoiner<A, B, C, D, E> {
 
+    public static final DefaultPentaJoiner NONE =
+            new DefaultPentaJoiner(new QuadFunction[0], new JoinerType[0], new Function[0]);
+
     private final JoinerType[] joinerTypes;
     private final QuadFunction<A, B, C, D, ?>[] leftMappings;
     private final Function<E, ?>[] rightMappings;
 
-    public DefaultPentaJoiner(QuadFunction<A, B, C, D, ?> leftMapping, JoinerType joinerType, Function<E, ?> rightMapping) {
-        this.joinerTypes = new JoinerType[] { joinerType };
-        this.leftMappings = new QuadFunction[] { leftMapping };
-        this.rightMappings = new Function[] { rightMapping };
+    public <Property_> DefaultPentaJoiner(QuadFunction<A, B, C, D, Property_> leftMapping, JoinerType joinerType,
+            Function<E, Property_> rightMapping) {
+        this(new QuadFunction[] { leftMapping }, new JoinerType[] { joinerType }, new Function[] { rightMapping });
     }
 
-    public DefaultPentaJoiner(PentaJoiner<A, B, C, D, E>... joiners) {
-        this.joinerTypes = Arrays.stream(joiners)
-                .map(joiner -> (DefaultPentaJoiner<A, B, C, D, E>) joiner)
-                .flatMap(joiner -> Arrays.stream(joiner.getJoinerTypes()))
-                .toArray(JoinerType[]::new);
-        this.leftMappings = Arrays.stream(joiners)
-                .map(joiner -> (DefaultPentaJoiner<A, B, C, D, E>) joiner)
-                .flatMap(joiner -> {
-                    int joinerCount = joiner.getJoinerCount();
-                    QuadFunction[] mappings = new QuadFunction[joinerCount];
-                    for (int i = 0; i < joinerCount; i++) {
-                        mappings[i] = joiner.getLeftMapping(i);
-                    }
-                    return Arrays.stream(mappings);
-                })
-                .toArray(QuadFunction[]::new);
-        this.rightMappings = Arrays.stream(joiners)
-                .map(joiner -> (DefaultPentaJoiner<A, B, C, D, E>) joiner)
-                .flatMap(joiner -> {
-                    int joinerCount = joiner.getJoinerCount();
-                    Function[] mappings = new Function[joinerCount];
-                    for (int i = 0; i < joinerCount; i++) {
-                        mappings[i] = joiner.getRightMapping(i);
-                    }
-                    return Arrays.stream(mappings);
-                })
-                .toArray(Function[]::new);
+    private <Property_> DefaultPentaJoiner(QuadFunction<A, B, C, D, Property_>[] leftMappings, JoinerType[] joinerTypes,
+            Function<E, Property_>[] rightMappings) {
+        this.joinerTypes = joinerTypes;
+        this.leftMappings = leftMappings;
+        this.rightMappings = rightMappings;
+    }
+
+    @Override
+    public DefaultPentaJoiner<A, B, C, D, E> and(PentaJoiner<A, B, C, D, E> otherJoiner) {
+        DefaultPentaJoiner<A, B, C, D, E> castJoiner = (DefaultPentaJoiner<A, B, C, D, E>) otherJoiner;
+        int joinerCount = this.joinerTypes.length;
+        int newJoinerCount = joinerCount + castJoiner.getJoinerCount();
+        JoinerType[] newJoinerTypes = Arrays.copyOf(this.joinerTypes, newJoinerCount);
+        QuadFunction[] newLeftMappings = Arrays.copyOf(this.leftMappings, newJoinerCount);
+        Function[] newRightMappings = Arrays.copyOf(this.rightMappings, newJoinerCount);
+        for (int i = 0; i < castJoiner.getJoinerCount(); i++) {
+            int newJoinerIndex = i + joinerCount;
+            newJoinerTypes[newJoinerIndex] = castJoiner.getJoinerTypes()[i];
+            newLeftMappings[newJoinerIndex] = castJoiner.getLeftMapping(i);
+            newRightMappings[newJoinerIndex] = castJoiner.getRightMapping(i);
+        }
+        return new DefaultPentaJoiner<>(newLeftMappings, newJoinerTypes, newRightMappings);
     }
 
     public QuadFunction<A, B, C, D, Object> getLeftMapping(int index) {

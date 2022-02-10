@@ -26,43 +26,39 @@ import org.optaplanner.core.impl.score.stream.common.JoinerType;
 
 public final class DefaultQuadJoiner<A, B, C, D> extends AbstractJoiner<D> implements QuadJoiner<A, B, C, D> {
 
+    public static final QuadJoiner NONE = new DefaultQuadJoiner(new TriFunction[0], new JoinerType[0], new Function[0]);
+
     private final JoinerType[] joinerTypes;
     private final TriFunction<A, B, C, ?>[] leftMappings;
     private final Function<D, ?>[] rightMappings;
 
-    public DefaultQuadJoiner(TriFunction<A, B, C, ?> leftMapping, JoinerType joinerType, Function<D, ?> rightMapping) {
-        this.joinerTypes = new JoinerType[] { joinerType };
-        this.leftMappings = new TriFunction[] { leftMapping };
-        this.rightMappings = new Function[] { rightMapping };
+    public <Property_> DefaultQuadJoiner(TriFunction<A, B, C, Property_> leftMapping, JoinerType joinerType,
+            Function<D, Property_> rightMapping) {
+        this(new TriFunction[] { leftMapping }, new JoinerType[] { joinerType }, new Function[] { rightMapping });
     }
 
-    public DefaultQuadJoiner(QuadJoiner<A, B, C, D>... joiners) {
-        this.joinerTypes = Arrays.stream(joiners)
-                .map(joiner -> (DefaultQuadJoiner<A, B, C, D>) joiner)
-                .flatMap(joiner -> Arrays.stream(joiner.getJoinerTypes()))
-                .toArray(JoinerType[]::new);
-        this.leftMappings = Arrays.stream(joiners)
-                .map(joiner -> (DefaultQuadJoiner<A, B, C, D>) joiner)
-                .flatMap(joiner -> {
-                    int joinerCount = joiner.getJoinerCount();
-                    TriFunction[] mappings = new TriFunction[joinerCount];
-                    for (int i = 0; i < joinerCount; i++) {
-                        mappings[i] = joiner.getLeftMapping(i);
-                    }
-                    return Arrays.stream(mappings);
-                })
-                .toArray(TriFunction[]::new);
-        this.rightMappings = Arrays.stream(joiners)
-                .map(joiner -> (DefaultQuadJoiner<A, B, C, D>) joiner)
-                .flatMap(joiner -> {
-                    int joinerCount = joiner.getJoinerCount();
-                    Function[] mappings = new Function[joinerCount];
-                    for (int i = 0; i < joinerCount; i++) {
-                        mappings[i] = joiner.getRightMapping(i);
-                    }
-                    return Arrays.stream(mappings);
-                })
-                .toArray(Function[]::new);
+    private <Property_> DefaultQuadJoiner(TriFunction<A, B, C, Property_>[] leftMappings, JoinerType[] joinerTypes,
+            Function<D, Property_>[] rightMappings) {
+        this.joinerTypes = joinerTypes;
+        this.leftMappings = leftMappings;
+        this.rightMappings = rightMappings;
+    }
+
+    @Override
+    public DefaultQuadJoiner<A, B, C, D> and(QuadJoiner<A, B, C, D> otherJoiner) {
+        DefaultQuadJoiner<A, B, C, D> castJoiner = (DefaultQuadJoiner<A, B, C, D>) otherJoiner;
+        int joinerCount = this.joinerTypes.length;
+        int newJoinerCount = joinerCount + castJoiner.getJoinerCount();
+        JoinerType[] newJoinerTypes = Arrays.copyOf(this.joinerTypes, newJoinerCount);
+        TriFunction[] newLeftMappings = Arrays.copyOf(this.leftMappings, newJoinerCount);
+        Function[] newRightMappings = Arrays.copyOf(this.rightMappings, newJoinerCount);
+        for (int i = 0; i < castJoiner.getJoinerCount(); i++) {
+            int newJoinerIndex = i + joinerCount;
+            newJoinerTypes[newJoinerIndex] = castJoiner.getJoinerTypes()[i];
+            newLeftMappings[newJoinerIndex] = castJoiner.getLeftMapping(i);
+            newRightMappings[newJoinerIndex] = castJoiner.getRightMapping(i);
+        }
+        return new DefaultQuadJoiner<>(newLeftMappings, newJoinerTypes, newRightMappings);
     }
 
     public TriFunction<A, B, C, Object> getLeftMapping(int index) {

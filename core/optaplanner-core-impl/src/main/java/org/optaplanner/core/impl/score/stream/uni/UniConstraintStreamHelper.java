@@ -56,7 +56,16 @@ public final class UniConstraintStreamHelper<A, B>
 
     @Override
     protected BiJoiner<A, B> mergeJoiners(BiJoiner<A, B>... joiners) {
-        return new DefaultBiJoiner<>(joiners);
+        if (joiners.length == 0) {
+            return DefaultBiJoiner.NONE;
+        } else if (joiners.length == 1) {
+            return joiners[0];
+        }
+        BiJoiner<A, B> result = joiners[0];
+        for (int i = 1; i < joiners.length; i++) {
+            result = result.and(joiners[i]);
+        }
+        return result;
     }
 
     @Override

@@ -261,8 +261,7 @@ public final class Joiners {
      * @return never null
      */
     public static <A, Property_ extends Comparable<Property_>> BiJoiner<A, A> overlapping(
-            Function<A, Property_> startMapping,
-            Function<A, Property_> endMapping) {
+            Function<A, Property_> startMapping, Function<A, Property_> endMapping) {
         return overlapping(startMapping, endMapping, startMapping, endMapping);
     }
 
@@ -279,12 +278,10 @@ public final class Joiners {
      * @return never null
      */
     public static <A, B, Property_ extends Comparable<Property_>> BiJoiner<A, B> overlapping(
-            Function<A, Property_> leftStartMapping,
-            Function<A, Property_> leftEndMapping,
-            Function<B, Property_> rightStartMapping,
-            Function<B, Property_> rightEndMapping) {
-        return new DefaultBiJoiner<>(Joiners.lessThan(leftStartMapping, rightEndMapping),
-                Joiners.greaterThan(leftEndMapping, rightStartMapping));
+            Function<A, Property_> leftStartMapping, Function<A, Property_> leftEndMapping,
+            Function<B, Property_> rightStartMapping, Function<B, Property_> rightEndMapping) {
+        return Joiners.lessThan(leftStartMapping, rightEndMapping)
+                .and(Joiners.greaterThan(leftEndMapping, rightStartMapping));
     }
 
     // ************************************************************************
@@ -398,12 +395,10 @@ public final class Joiners {
      * @return never null
      */
     public static <A, B, C, Property_ extends Comparable<Property_>> TriJoiner<A, B, C> overlapping(
-            BiFunction<A, B, Property_> leftStartMapping,
-            BiFunction<A, B, Property_> leftEndMapping,
-            Function<C, Property_> rightStartMapping,
-            Function<C, Property_> rightEndMapping) {
-        return new DefaultTriJoiner<>(Joiners.lessThan(leftStartMapping, rightEndMapping),
-                Joiners.greaterThan(leftEndMapping, rightStartMapping));
+            BiFunction<A, B, Property_> leftStartMapping, BiFunction<A, B, Property_> leftEndMapping,
+            Function<C, Property_> rightStartMapping, Function<C, Property_> rightEndMapping) {
+        return Joiners.lessThan(leftStartMapping, rightEndMapping)
+                .and(Joiners.greaterThan(leftEndMapping, rightStartMapping));
     }
 
     // ************************************************************************
@@ -524,12 +519,10 @@ public final class Joiners {
      * @return never null
      */
     public static <A, B, C, D, Property_ extends Comparable<Property_>> QuadJoiner<A, B, C, D> overlapping(
-            TriFunction<A, B, C, Property_> leftStartMapping,
-            TriFunction<A, B, C, Property_> leftEndMapping,
-            Function<D, Property_> rightStartMapping,
-            Function<D, Property_> rightEndMapping) {
-        return new DefaultQuadJoiner<>(Joiners.lessThan(leftStartMapping, rightEndMapping),
-                Joiners.greaterThan(leftEndMapping, rightStartMapping));
+            TriFunction<A, B, C, Property_> leftStartMapping, TriFunction<A, B, C, Property_> leftEndMapping,
+            Function<D, Property_> rightStartMapping, Function<D, Property_> rightEndMapping) {
+        return Joiners.lessThan(leftStartMapping, rightEndMapping)
+                .and(Joiners.greaterThan(leftEndMapping, rightStartMapping));
     }
 
     // ************************************************************************
@@ -657,12 +650,10 @@ public final class Joiners {
      * @return never null
      */
     public static <A, B, C, D, E, Property_ extends Comparable<Property_>> PentaJoiner<A, B, C, D, E> overlapping(
-            QuadFunction<A, B, C, D, Property_> leftStartMapping,
-            QuadFunction<A, B, C, D, Property_> leftEndMapping,
-            Function<E, Property_> rightStartMapping,
-            Function<E, Property_> rightEndMapping) {
-        return new DefaultPentaJoiner<>(Joiners.lessThan(leftStartMapping, rightEndMapping),
-                Joiners.greaterThan(leftEndMapping, rightStartMapping));
+            QuadFunction<A, B, C, D, Property_> leftStartMapping, QuadFunction<A, B, C, D, Property_> leftEndMapping,
+            Function<E, Property_> rightStartMapping, Function<E, Property_> rightEndMapping) {
+        return Joiners.lessThan(leftStartMapping, rightEndMapping)
+                .and(Joiners.greaterThan(leftEndMapping, rightStartMapping));
     }
 
     private Joiners() {

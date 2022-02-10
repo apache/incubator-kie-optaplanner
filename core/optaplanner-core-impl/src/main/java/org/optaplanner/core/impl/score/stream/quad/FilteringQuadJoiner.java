@@ -27,7 +27,14 @@ public final class FilteringQuadJoiner<A, B, C, D> implements QuadJoiner<A, B, C
         this.filter = filter;
     }
 
+    @Override
+    public FilteringQuadJoiner<A, B, C, D> and(QuadJoiner<A, B, C, D> otherJoiner) {
+        FilteringQuadJoiner<A, B, C, D> castJoiner = (FilteringQuadJoiner<A, B, C, D>) otherJoiner;
+        return new FilteringQuadJoiner<>(filter.and(castJoiner.getFilter()));
+    }
+
     public QuadPredicate<A, B, C, D> getFilter() {
         return filter;
     }
+
 }

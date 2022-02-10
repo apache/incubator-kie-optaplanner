@@ -162,7 +162,7 @@ public final class QuadLeftHandSide<A, B, C, D> extends AbstractLeftHandSide {
                             + joiners[indexOfFirstFilter] + ").");
                 } else { // Merge this Joiner with the existing Joiners.
                     DefaultPentaJoiner<A, B, C, D, E> castJoiner = (DefaultPentaJoiner<A, B, C, D, E>) joiner;
-                    finalJoiner = finalJoiner == null ? castJoiner : new DefaultPentaJoiner<>(finalJoiner, castJoiner);
+                    finalJoiner = finalJoiner == null ? castJoiner : finalJoiner.and(castJoiner);
                 }
             }
         }

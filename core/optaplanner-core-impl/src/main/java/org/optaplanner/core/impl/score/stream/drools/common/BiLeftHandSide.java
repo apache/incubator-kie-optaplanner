@@ -177,7 +177,7 @@ public final class BiLeftHandSide<A, B> extends AbstractLeftHandSide {
                             + joiners[indexOfFirstFilter] + ").");
                 } else { // Merge this Joiner with the existing Joiners.
                     DefaultTriJoiner<A, B, C> castJoiner = (DefaultTriJoiner<A, B, C>) joiner;
-                    finalJoiner = finalJoiner == null ? castJoiner : new DefaultTriJoiner<>(finalJoiner, castJoiner);
+                    finalJoiner = finalJoiner == null ? castJoiner : finalJoiner.and(castJoiner);
                 }
             }
         }

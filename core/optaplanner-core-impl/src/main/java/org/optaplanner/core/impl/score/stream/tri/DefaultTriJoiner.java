@@ -21,48 +21,44 @@ import java.util.function.BiFunction;
 import java.util.function.Function;
 
 import org.optaplanner.core.api.score.stream.tri.TriJoiner;
+import org.optaplanner.core.impl.score.stream.common.AbstractJoiner;
 import org.optaplanner.core.impl.score.stream.common.JoinerType;
 
-public final class DefaultTriJoiner<A, B, C> extends
-        org.optaplanner.core.impl.score.stream.common.AbstractJoiner<C> implements TriJoiner<A, B, C> {
+public final class DefaultTriJoiner<A, B, C> extends AbstractJoiner<C> implements TriJoiner<A, B, C> {
+
+    public static final TriJoiner NONE = new DefaultTriJoiner(new BiFunction[0], new JoinerType[0], new Function[0]);
 
     private final JoinerType[] joinerTypes;
     private final BiFunction<A, B, ?>[] leftMappings;
     private final Function<C, ?>[] rightMappings;
 
-    public DefaultTriJoiner(BiFunction<A, B, ?> leftMapping, JoinerType joinerType, Function<C, ?> rightMapping) {
-        this.joinerTypes = new JoinerType[] { joinerType };
-        this.leftMappings = new BiFunction[] { leftMapping };
-        this.rightMappings = new Function[] { rightMapping };
+    public <Property_> DefaultTriJoiner(BiFunction<A, B, Property_> leftMapping, JoinerType joinerType,
+            Function<C, Property_> rightMapping) {
+        this(new BiFunction[] { leftMapping }, new JoinerType[] { joinerType }, new Function[] { rightMapping });
     }
 
-    public DefaultTriJoiner(TriJoiner<A, B, C>... joiners) {
-        this.joinerTypes = Arrays.stream(joiners)
-                .map(joiner -> (DefaultTriJoiner<A, B, C>) joiner)
-                .flatMap(joiner -> Arrays.stream(joiner.getJoinerTypes()))
-                .toArray(JoinerType[]::new);
-        this.leftMappings = Arrays.stream(joiners)
-                .map(joiner -> (DefaultTriJoiner<A, B, C>) joiner)
-                .flatMap(joiner -> {
-                    int joinerCount = joiner.getJoinerCount();
-                    BiFunction[] mappings = new BiFunction[joinerCount];
-                    for (int i = 0; i < joinerCount; i++) {
-                        mappings[i] = joiner.getLeftMapping(i);
-                    }
-                    return Arrays.stream(mappings);
-                })
-                .toArray(BiFunction[]::new);
-        this.rightMappings = Arrays.stream(joiners)
-                .map(joiner -> (DefaultTriJoiner<A, B, C>) joiner)
-                .flatMap(joiner -> {
-                    int joinerCount = joiner.getJoinerCount();
-                    Function[] mappings = new Function[joinerCount];
-                    for (int i = 0; i < joinerCount; i++) {
-                        mappings[i] = joiner.getRightMapping(i);
-                    }
-                    return Arrays.stream(mappings);
-                })
-                .toArray(Function[]::new);
+    private <Property_> DefaultTriJoiner(BiFunction<A, B, Property_>[] leftMappings, JoinerType[] joinerTypes,
+            Function<C, Property_>[] rightMappings) {
+        this.joinerTypes = joinerTypes;
+        this.leftMappings = leftMappings;
+        this.rightMappings = rightMappings;
+    }
+
+    @Override
+    public DefaultTriJoiner<A, B, C> and(TriJoiner<A, B, C> otherJoiner) {
+        DefaultTriJoiner<A, B, C> castJoiner = (DefaultTriJoiner<A, B, C>) otherJoiner;
+        int joinerCount = this.joinerTypes.length;
+        int newJoinerCount = joinerCount + castJoiner.getJoinerCount();
+        JoinerType[] newJoinerTypes = Arrays.copyOf(this.joinerTypes, newJoinerCount);
+        BiFunction[] newLeftMappings = Arrays.copyOf(this.leftMappings, newJoinerCount);
+        Function[] newRightMappings = Arrays.copyOf(this.rightMappings, newJoinerCount);
+        for (int i = 0; i < castJoiner.getJoinerCount(); i++) {
+            int newJoinerIndex = i + joinerCount;
+            newJoinerTypes[newJoinerIndex] = castJoiner.getJoinerTypes()[i];
+            newLeftMappings[newJoinerIndex] = castJoiner.getLeftMapping(i);
+            newRightMappings[newJoinerIndex] = castJoiner.getRightMapping(i);
+        }
+        return new DefaultTriJoiner<>(newLeftMappings, newJoinerTypes, newRightMappings);
     }
 
     public BiFunction<A, B, Object> getLeftMapping(int index) {

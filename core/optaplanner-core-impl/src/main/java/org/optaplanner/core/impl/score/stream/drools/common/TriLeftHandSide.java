@@ -156,7 +156,7 @@ public final class TriLeftHandSide<A, B, C> extends AbstractLeftHandSide {
                             + joiners[indexOfFirstFilter] + ").");
                 } else { // Merge this Joiner with the existing Joiners.
                     DefaultQuadJoiner<A, B, C, D> castJoiner = (DefaultQuadJoiner<A, B, C, D>) joiner;
-                    finalJoiner = finalJoiner == null ? castJoiner : new DefaultQuadJoiner<>(finalJoiner, castJoiner);
+                    finalJoiner = finalJoiner == null ? castJoiner : finalJoiner.and(castJoiner);
                 }
             }
         }

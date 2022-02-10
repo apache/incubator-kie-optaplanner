@@ -31,4 +31,10 @@ public final class FilteringBiJoiner<A, B> implements BiJoiner<A, B> {
     public BiPredicate<A, B> getFilter() {
         return filter;
     }
+
+    @Override
+    public FilteringBiJoiner<A, B> and(BiJoiner<A, B> otherJoiner) {
+        FilteringBiJoiner<A, B> castJoiner = (FilteringBiJoiner<A, B>) otherJoiner;
+        return new FilteringBiJoiner<>(filter.and(castJoiner.getFilter()));
+    }
 }

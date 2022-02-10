@@ -58,7 +58,16 @@ public final class TriConstraintStreamHelper<A, B, C, D>
 
     @Override
     protected QuadJoiner<A, B, C, D> mergeJoiners(QuadJoiner<A, B, C, D>... joiners) {
-        return new DefaultQuadJoiner<>(joiners);
+        if (joiners.length == 0) {
+            return DefaultQuadJoiner.NONE;
+        } else if (joiners.length == 1) {
+            return joiners[0];
+        }
+        QuadJoiner<A, B, C, D> result = joiners[0];
+        for (int i = 1; i < joiners.length; i++) {
+            result = result.and(joiners[i]);
+        }
+        return result;
     }
 
     @Override

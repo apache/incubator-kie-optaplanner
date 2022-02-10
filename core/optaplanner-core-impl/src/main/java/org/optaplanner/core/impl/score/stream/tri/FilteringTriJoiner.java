@@ -27,6 +27,12 @@ public final class FilteringTriJoiner<A, B, C> implements TriJoiner<A, B, C> {
         this.filter = filter;
     }
 
+    @Override
+    public FilteringTriJoiner<A, B, C> and(TriJoiner<A, B, C> otherJoiner) {
+        FilteringTriJoiner<A, B, C> castJoiner = (FilteringTriJoiner<A, B, C>) otherJoiner;
+        return new FilteringTriJoiner<>(filter.and(castJoiner.getFilter()));
+    }
+
     public TriPredicate<A, B, C> getFilter() {
         return filter;
     }

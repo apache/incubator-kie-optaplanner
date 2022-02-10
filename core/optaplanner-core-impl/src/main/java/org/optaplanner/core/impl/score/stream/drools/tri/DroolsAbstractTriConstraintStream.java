@@ -82,7 +82,7 @@ public abstract class DroolsAbstractTriConstraintStream<Solution_, A, B, C>
 
     @Override
     public <D> QuadConstraintStream<A, B, C, D> join(Class<D> otherClass, QuadJoiner<A, B, C, D>... joiners) {
-        if (getRetrievalSemantics() == RetrievalSemantics.STANDARD) {
+        if (getRetrievalSemantics() == STANDARD) {
             return join(constraintFactory.forEach(otherClass), joiners);
         } else {
             return join(constraintFactory.from(otherClass), joiners);

@@ -27,7 +27,14 @@ public final class FilteringPentaJoiner<A, B, C, D, E> implements PentaJoiner<A,
         this.filter = filter;
     }
 
+    @Override
+    public FilteringPentaJoiner<A, B, C, D, E> and(PentaJoiner<A, B, C, D, E> otherJoiner) {
+        FilteringPentaJoiner<A, B, C, D, E> castJoiner = (FilteringPentaJoiner<A, B, C, D, E>) otherJoiner;
+        return new FilteringPentaJoiner<>(filter.and(castJoiner.getFilter()));
+    }
+
     public PentaPredicate<A, B, C, D, E> getFilter() {
         return filter;
     }
+
 }

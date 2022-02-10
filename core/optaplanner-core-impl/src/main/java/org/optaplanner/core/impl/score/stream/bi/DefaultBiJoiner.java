@@ -25,43 +25,39 @@ import org.optaplanner.core.impl.score.stream.common.JoinerType;
 
 public final class DefaultBiJoiner<A, B> extends AbstractJoiner<B> implements BiJoiner<A, B> {
 
+    public static final BiJoiner NONE = new DefaultBiJoiner(new Function[0], new JoinerType[0], new Function[0]);
+
     private final JoinerType[] joinerTypes;
     private final Function<A, ?>[] leftMappings;
     private final Function<B, ?>[] rightMappings;
 
-    public DefaultBiJoiner(Function<A, ?> leftMapping, JoinerType joinerType, Function<B, ?> rightMapping) {
-        this.joinerTypes = new JoinerType[] { joinerType };
-        this.leftMappings = new Function[] { leftMapping };
-        this.rightMappings = new Function[] { rightMapping };
+    public <Property_> DefaultBiJoiner(Function<A, Property_> leftMapping, JoinerType joinerType,
+            Function<B, Property_> rightMapping) {
+        this(new Function[] { leftMapping }, new JoinerType[] { joinerType }, new Function[] { rightMapping });
     }
 
-    public DefaultBiJoiner(BiJoiner<A, B>... joiners) {
-        this.joinerTypes = Arrays.stream(joiners)
-                .map(joiner -> (DefaultBiJoiner<A, B>) joiner)
-                .flatMap(joiner -> Arrays.stream(joiner.getJoinerTypes()))
-                .toArray(JoinerType[]::new);
-        this.leftMappings = Arrays.stream(joiners)
-                .map(joiner -> (DefaultBiJoiner<A, B>) joiner)
-                .flatMap(joiner -> {
-                    int joinerCount = joiner.getJoinerCount();
-                    Function[] mappings = new Function[joinerCount];
-                    for (int i = 0; i < joinerCount; i++) {
-                        mappings[i] = joiner.getLeftMapping(i);
-                    }
-                    return Arrays.stream(mappings);
-                })
-                .toArray(Function[]::new);
-        this.rightMappings = Arrays.stream(joiners)
-                .map(joiner -> (DefaultBiJoiner<A, B>) joiner)
-                .flatMap(joiner -> {
-                    int joinerCount = joiner.getJoinerCount();
-                    Function[] mappings = new Function[joinerCount];
-                    for (int i = 0; i < joinerCount; i++) {
-                        mappings[i] = joiner.getRightMapping(i);
-                    }
-                    return Arrays.stream(mappings);
-                })
-                .toArray(Function[]::new);
+    private <Property_> DefaultBiJoiner(Function<A, Property_>[] leftMappings, JoinerType[] joinerTypes,
+            Function<B, Property_>[] rightMappings) {
+        this.joinerTypes = joinerTypes;
+        this.leftMappings = leftMappings;
+        this.rightMappings = rightMappings;
+    }
+
+    @Override
+    public DefaultBiJoiner<A, B> and(BiJoiner<A, B> otherJoiner) {
+        DefaultBiJoiner<A, B> castJoiner = (DefaultBiJoiner<A, B>) otherJoiner;
+        int joinerCount = this.joinerTypes.length;
+        int newJoinerCount = joinerCount + castJoiner.getJoinerCount();
+        JoinerType[] newJoinerTypes = Arrays.copyOf(this.joinerTypes, newJoinerCount);
+        Function[] newLeftMappings = Arrays.copyOf(this.leftMappings, newJoinerCount);
+        Function[] newRightMappings = Arrays.copyOf(this.rightMappings, newJoinerCount);
+        for (int i = 0; i < castJoiner.getJoinerCount(); i++) {
+            int newJoinerIndex = i + joinerCount;
+            newJoinerTypes[newJoinerIndex] = castJoiner.getJoinerTypes()[i];
+            newLeftMappings[newJoinerIndex] = castJoiner.getLeftMapping(i);
+            newRightMappings[newJoinerIndex] = castJoiner.getRightMapping(i);
+        }
+        return new DefaultBiJoiner<>(newLeftMappings, newJoinerTypes, newRightMappings);
     }
 
     public Function<A, Object> getLeftMapping(int index) {
@@ -90,4 +86,5 @@ public final class DefaultBiJoiner<A, B> extends AbstractJoiner<B> implements Bi
         }
         return true;
     }
+
 }
