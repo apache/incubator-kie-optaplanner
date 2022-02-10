@@ -17,7 +17,6 @@
 package org.optaplanner.core.impl.domain.variable.listener.support;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -154,11 +153,8 @@ public final class VariableListenerSupport<Solution_> implements SupplyManager<S
             VariableListenerNotification notification =
                     new VariableListenerNotification(entity, VariableListenerNotificationType.ENTITY_ADDED);
             for (VariableListenerNotifiable<Solution_> notifiable : notifiableList) {
-                Collection<VariableListenerNotification> notificationQueue = notifiable.getNotificationQueue();
-                boolean added = notificationQueue.add(notification);
-                if (added) {
-                    notifiable.getVariableListener().beforeEntityAdded(scoreDirector, entity);
-                }
+                notifiable.addNotification(notification,
+                        variableListener -> variableListener.beforeEntityAdded(scoreDirector, entity));
             }
         }
         notificationQueuesAreEmpty = false;
@@ -176,11 +172,8 @@ public final class VariableListenerSupport<Solution_> implements SupplyManager<S
             VariableListenerNotification notification =
                     new VariableListenerNotification(entity, VariableListenerNotificationType.VARIABLE_CHANGED);
             for (VariableListenerNotifiable<Solution_> notifiable : notifiableList) {
-                Collection<VariableListenerNotification> notificationQueue = notifiable.getNotificationQueue();
-                boolean added = notificationQueue.add(notification);
-                if (added) {
-                    notifiable.getVariableListener().beforeVariableChanged(scoreDirector, entity);
-                }
+                notifiable.addNotification(notification,
+                        variableListener -> variableListener.beforeVariableChanged(scoreDirector, entity));
             }
         }
         notificationQueuesAreEmpty = false;
@@ -196,11 +189,8 @@ public final class VariableListenerSupport<Solution_> implements SupplyManager<S
             VariableListenerNotification notification =
                     new VariableListenerNotification(entity, VariableListenerNotificationType.ENTITY_REMOVED);
             for (VariableListenerNotifiable<Solution_> notifiable : notifiableList) {
-                Collection<VariableListenerNotification> notificationQueue = notifiable.getNotificationQueue();
-                boolean added = notificationQueue.add(notification);
-                if (added) {
-                    notifiable.getVariableListener().beforeEntityRemoved(scoreDirector, entity);
-                }
+                notifiable.addNotification(notification,
+                        variableListener -> variableListener.beforeEntityRemoved(scoreDirector, entity));
             }
         }
         notificationQueuesAreEmpty = false;
@@ -212,10 +202,9 @@ public final class VariableListenerSupport<Solution_> implements SupplyManager<S
 
     public void triggerVariableListenersInNotificationQueues() {
         for (VariableListenerNotifiable<Solution_> notifiable : notifiableList) {
-            Collection<VariableListenerNotification> notificationQueue = notifiable.getNotificationQueue();
             int notifiedCount = 0;
             VariableListener<Solution_, Object> variableListener = notifiable.getVariableListener();
-            for (VariableListenerNotification notification : notificationQueue) {
+            for (VariableListenerNotification notification : notifiable.iterateNotifications()) {
                 Object entity = notification.getEntity();
                 switch (notification.getType()) {
                     case ENTITY_ADDED:
@@ -233,14 +222,15 @@ public final class VariableListenerSupport<Solution_> implements SupplyManager<S
                 }
                 notifiedCount++;
             }
-            if (notifiedCount != notificationQueue.size()) {
+            if (notifiedCount != notifiable.getNotificationCount()) {
                 throw new IllegalStateException("The variableListener (" + variableListener.getClass()
                         + ") has been notified with notifiedCount (" + notifiedCount
-                        + ") but after notification it has different size (" + notificationQueue.size() + ").\n"
+                        + ") but after being triggered, its notificationCount (" + notifiable.getNotificationCount()
+                        + ") is different.\n"
                         + "Maybe that variableListener (" + variableListener.getClass()
                         + ") changed an upstream shadow variable (which is illegal).");
             }
-            notificationQueue.clear();
+            notifiable.clearNotifications();
         }
         notificationQueuesAreEmpty = true;
     }
