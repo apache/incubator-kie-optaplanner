@@ -25,7 +25,7 @@ import org.optaplanner.core.api.score.director.ScoreDirector;
 final class VariableListenerNotifiable<Solution_> implements Comparable<VariableListenerNotifiable<Solution_>> {
 
     private final ScoreDirector<Solution_> scoreDirector;
-    private final VariableListener<Solution_, ?> variableListener;
+    private final VariableListener<Solution_, Object> variableListener;
     private final int globalOrder;
 
     private final Collection<VariableListenerNotification> notificationQueue;
@@ -35,7 +35,7 @@ final class VariableListenerNotifiable<Solution_> implements Comparable<Variable
             VariableListener<Solution_, ?> variableListener,
             int globalOrder) {
         this.scoreDirector = scoreDirector;
-        this.variableListener = variableListener;
+        this.variableListener = (VariableListener<Solution_, Object>) variableListener;
         this.globalOrder = globalOrder;
         if (variableListener.requiresUniqueEntityEvents()) {
             notificationQueue = new SmallScalingOrderedSet<>();
@@ -54,14 +54,14 @@ final class VariableListenerNotifiable<Solution_> implements Comparable<Variable
 
     public void addNotification(VariableListenerNotification notification) {
         if (notificationQueue.add(notification)) {
-            notification.triggerBefore(((VariableListener<Solution_, Object>) variableListener), scoreDirector);
+            notification.triggerBefore(variableListener, scoreDirector);
         }
     }
 
     public void triggerAllNotifications() {
         int notifiedCount = 0;
         for (VariableListenerNotification notification : notificationQueue) {
-            notification.triggerAfter(((VariableListener<Solution_, Object>) variableListener), scoreDirector);
+            notification.triggerAfter(variableListener, scoreDirector);
             notifiedCount++;
         }
         if (notifiedCount != notificationQueue.size()) {
