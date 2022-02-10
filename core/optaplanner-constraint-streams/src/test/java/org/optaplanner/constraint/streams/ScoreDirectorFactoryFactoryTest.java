@@ -16,6 +16,9 @@
 
 package org.optaplanner.constraint.streams;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatCode;
+
 import org.junit.jupiter.api.Test;
 import org.optaplanner.constraint.streams.bavet.BavetConstraintStreamScoreDirectorFactory;
 import org.optaplanner.constraint.streams.bavet.BavetConstraintStreamScoreDirectorFactoryService;
@@ -32,9 +35,6 @@ import org.optaplanner.core.config.solver.EnvironmentMode;
 import org.optaplanner.core.impl.score.director.InnerScoreDirectorFactory;
 import org.optaplanner.core.impl.score.director.ScoreDirectorFactoryFactory;
 import org.optaplanner.core.impl.testdata.domain.TestdataSolution;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatCode;
 
 class ScoreDirectorFactoryFactoryTest {
 

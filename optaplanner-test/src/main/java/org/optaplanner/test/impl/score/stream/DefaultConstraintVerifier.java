@@ -21,8 +21,8 @@ import static java.util.Objects.requireNonNull;
 import java.util.Objects;
 import java.util.function.BiFunction;
 
-import org.optaplanner.constraint.streams.common.AbstractConstraintStreamScoreDirectorFactory;
 import org.optaplanner.constraint.streams.bavet.BavetConstraintStreamScoreDirectorFactory;
+import org.optaplanner.constraint.streams.common.AbstractConstraintStreamScoreDirectorFactory;
 import org.optaplanner.constraint.streams.drools.DroolsConstraintStreamScoreDirectorFactory;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.stream.Constraint;

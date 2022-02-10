@@ -16,8 +16,6 @@
 
 package org.optaplanner.quarkus.deployment;
 
-import static io.quarkus.deployment.annotations.ExecutionTime.STATIC_INIT;
-
 import java.io.IOException;
 import java.io.StringWriter;
 import java.lang.reflect.Modifier;
@@ -33,39 +31,6 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import javax.inject.Singleton;
-
-import org.jboss.jandex.AnnotationInstance;
-import org.jboss.jandex.AnnotationTarget;
-import org.jboss.jandex.AnnotationValue;
-import org.jboss.jandex.ClassInfo;
-import org.jboss.jandex.DotName;
-import org.jboss.jandex.FieldInfo;
-import org.jboss.jandex.IndexView;
-import org.jboss.jandex.MethodInfo;
-import org.jboss.jandex.ParameterizedType;
-import org.jboss.jandex.Type;
-import org.jboss.logging.Logger;
-import org.optaplanner.core.api.domain.common.DomainAccessType;
-import org.optaplanner.core.api.domain.entity.PlanningEntity;
-import org.optaplanner.core.api.domain.solution.PlanningSolution;
-import org.optaplanner.core.api.score.calculator.EasyScoreCalculator;
-import org.optaplanner.core.api.score.calculator.IncrementalScoreCalculator;
-import org.optaplanner.core.api.score.stream.ConstraintProvider;
-import org.optaplanner.core.api.score.stream.ConstraintStreamImplType;
-import org.optaplanner.core.api.solver.SolverFactory;
-import org.optaplanner.core.config.score.director.ScoreDirectorFactoryConfig;
-import org.optaplanner.core.config.solver.SolverConfig;
-import org.optaplanner.core.config.solver.SolverManagerConfig;
-import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
-import org.optaplanner.core.impl.io.jaxb.SolverConfigIO;
-import org.optaplanner.core.impl.score.director.ScoreDirectorFactoryService;
-import org.optaplanner.quarkus.OptaPlannerRecorder;
-import org.optaplanner.quarkus.bean.DefaultOptaPlannerBeanProvider;
-import org.optaplanner.quarkus.bean.UnavailableOptaPlannerBeanProvider;
-import org.optaplanner.quarkus.config.OptaPlannerRuntimeConfig;
-import org.optaplanner.quarkus.deployment.config.OptaPlannerBuildTimeConfig;
-import org.optaplanner.quarkus.devui.OptaPlannerDevUIPropertiesSupplier;
-import org.optaplanner.quarkus.gizmo.OptaPlannerGizmoBeanFactory;
 
 import io.quarkus.arc.deployment.AdditionalBeanBuildItem;
 import io.quarkus.arc.deployment.GeneratedBeanBuildItem;
@@ -94,6 +59,41 @@ import io.quarkus.gizmo.ClassOutput;
 import io.quarkus.gizmo.MethodDescriptor;
 import io.quarkus.gizmo.ResultHandle;
 import io.quarkus.runtime.configuration.ConfigurationException;
+import org.jboss.jandex.AnnotationInstance;
+import org.jboss.jandex.AnnotationTarget;
+import org.jboss.jandex.AnnotationValue;
+import org.jboss.jandex.ClassInfo;
+import org.jboss.jandex.DotName;
+import org.jboss.jandex.FieldInfo;
+import org.jboss.jandex.IndexView;
+import org.jboss.jandex.MethodInfo;
+import org.jboss.jandex.ParameterizedType;
+import org.jboss.jandex.Type;
+import org.jboss.logging.Logger;
+import org.optaplanner.core.api.domain.common.DomainAccessType;
+import org.optaplanner.core.api.domain.entity.PlanningEntity;
+import org.optaplanner.core.api.domain.solution.PlanningSolution;
+import org.optaplanner.core.api.score.calculator.EasyScoreCalculator;
+import org.optaplanner.core.api.score.calculator.IncrementalScoreCalculator;
+import org.optaplanner.core.api.score.stream.ConstraintProvider;
+import org.optaplanner.core.api.score.stream.ConstraintStreamImplType;
+import org.optaplanner.core.api.solver.SolverFactory;
+import org.optaplanner.core.config.score.director.ScoreDirectorFactoryConfig;
+import org.optaplanner.core.config.solver.SolverConfig;
+import org.optaplanner.core.config.solver.SolverManagerConfig;
+import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
+import org.optaplanner.core.impl.io.jaxb.SolverConfigIO;
+import org.optaplanner.core.impl.score.director.ScoreDirectorFactoryService;
+import org.optaplanner.core.impl.score.stream.JoinerService;
+import org.optaplanner.quarkus.OptaPlannerRecorder;
+import org.optaplanner.quarkus.bean.DefaultOptaPlannerBeanProvider;
+import org.optaplanner.quarkus.bean.UnavailableOptaPlannerBeanProvider;
+import org.optaplanner.quarkus.config.OptaPlannerRuntimeConfig;
+import org.optaplanner.quarkus.deployment.config.OptaPlannerBuildTimeConfig;
+import org.optaplanner.quarkus.devui.OptaPlannerDevUIPropertiesSupplier;
+import org.optaplanner.quarkus.gizmo.OptaPlannerGizmoBeanFactory;
+
+import static io.quarkus.deployment.annotations.ExecutionTime.STATIC_INIT;
 
 class OptaPlannerProcessor {
 
@@ -108,7 +108,11 @@ class OptaPlannerProcessor {
 
     @BuildStep
     void registerScoreDirectorFactorySpi(BuildProducer<ServiceProviderBuildItem> services) {
-        String serviceName = ScoreDirectorFactoryService.class.getName();
+        registerSpi(ScoreDirectorFactoryService.class, services);
+    }
+
+    private static void registerSpi(Class<?> serviceClass, BuildProducer<ServiceProviderBuildItem> services) {
+        String serviceName = serviceClass.getName();
         String service = "META-INF/services/" + serviceName;
         try {
             // Find out all the provider implementation classes listed in the service files.
@@ -117,7 +121,8 @@ class OptaPlannerProcessor {
             // Register every listed implementation class, so they can be instantiated in native-image at run-time.
             services.produce(new ServiceProviderBuildItem(serviceName, implementations.toArray(new String[0])));
         } catch (IOException e) {
-            throw new IllegalStateException("Impossible state: Failed registering score directors.", e);
+            throw new IllegalStateException("Impossible state: Failed registering service " + serviceClass.getCanonicalName(),
+                    e);
         }
     }
 
@@ -695,6 +700,15 @@ class OptaPlannerProcessor {
                 reflectiveClassSet.add(clazz);
             }
         });
+    }
+
+    @BuildStep
+    void registerJoinerSpi(SolverConfigBuildItem solverConfigBuildItem, BuildProducer<ServiceProviderBuildItem> services) {
+        if (solverConfigBuildItem.getSolverConfig().getScoreDirectorFactoryConfig()
+                .getConstraintProviderClass() != null) {
+            // The JoinerService SPI is required for constraint streams.
+            registerSpi(JoinerService.class, services);
+        }
     }
 
 }
