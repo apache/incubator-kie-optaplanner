@@ -25,7 +25,7 @@ import java.util.Map;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
-import org.optaplanner.constraint.streams.AbstractConstraintStreamScoreDirectorFactory;
+import org.optaplanner.constraint.streams.common.AbstractConstraintStreamScoreDirectorFactory;
 import org.optaplanner.core.api.domain.entity.PlanningEntity;
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.score.stream.Constraint;

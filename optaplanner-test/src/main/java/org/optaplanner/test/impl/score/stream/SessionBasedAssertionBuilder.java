@@ -16,7 +16,7 @@
 
 package org.optaplanner.test.impl.score.stream;
 
-import org.optaplanner.constraint.streams.AbstractConstraintStreamScoreDirectorFactory;
+import org.optaplanner.constraint.streams.common.AbstractConstraintStreamScoreDirectorFactory;
 import org.optaplanner.constraint.streams.bavet.BavetConstraintStreamScoreDirectorFactory;
 import org.optaplanner.constraint.streams.drools.DroolsConstraintStreamScoreDirectorFactory;
 import org.optaplanner.core.api.score.Score;

@@ -19,7 +19,6 @@ package org.optaplanner.constraint.streams.common;
 import java.util.Objects;
 import java.util.function.Function;
 
-import org.optaplanner.constraint.streams.InnerConstraintFactory;
 import org.optaplanner.core.api.domain.constraintweight.ConstraintConfiguration;
 import org.optaplanner.core.api.domain.constraintweight.ConstraintConfigurationProvider;
 import org.optaplanner.core.api.domain.constraintweight.ConstraintWeight;

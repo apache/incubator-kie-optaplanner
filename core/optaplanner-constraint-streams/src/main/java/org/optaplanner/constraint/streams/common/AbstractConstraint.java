@@ -20,7 +20,6 @@ import java.math.BigDecimal;
 import java.util.function.BooleanSupplier;
 import java.util.function.Function;
 
-import org.optaplanner.constraint.streams.InnerConstraintFactory;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.constraint.ConstraintMatchTotal;
 import org.optaplanner.core.api.score.stream.Constraint;

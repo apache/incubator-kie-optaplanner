@@ -18,7 +18,7 @@ package org.optaplanner.test.impl.score.stream;
 
 import java.util.Objects;
 
-import org.optaplanner.constraint.streams.AbstractConstraintStreamScoreDirectorFactory;
+import org.optaplanner.constraint.streams.common.AbstractConstraintStreamScoreDirectorFactory;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.stream.ConstraintProvider;
 import org.optaplanner.core.impl.score.director.InnerScoreDirector;

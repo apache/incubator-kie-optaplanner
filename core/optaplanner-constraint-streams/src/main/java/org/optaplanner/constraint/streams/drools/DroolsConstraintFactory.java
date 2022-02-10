@@ -16,7 +16,7 @@
 
 package org.optaplanner.constraint.streams.drools;
 
-import org.optaplanner.constraint.streams.InnerConstraintFactory;
+import org.optaplanner.constraint.streams.common.InnerConstraintFactory;
 import org.optaplanner.constraint.streams.common.RetrievalSemantics;
 import org.optaplanner.constraint.streams.drools.uni.DroolsFromUniConstraintStream;
 import org.optaplanner.core.api.score.stream.uni.UniConstraintStream;

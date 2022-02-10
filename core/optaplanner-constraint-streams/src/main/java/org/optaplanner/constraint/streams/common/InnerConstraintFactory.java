@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.optaplanner.constraint.streams;
+package org.optaplanner.constraint.streams.common;
 
 import static java.util.stream.Collectors.groupingBy;
 import static java.util.stream.Collectors.toList;

@@ -16,9 +16,9 @@
 
 package org.optaplanner.constraint.streams.bavet;
 
-import org.optaplanner.constraint.streams.InnerConstraintFactory;
 import org.optaplanner.constraint.streams.bavet.uni.BavetAbstractUniConstraintStream;
 import org.optaplanner.constraint.streams.bavet.uni.BavetFromUniConstraintStream;
+import org.optaplanner.constraint.streams.common.InnerConstraintFactory;
 import org.optaplanner.constraint.streams.common.RetrievalSemantics;
 import org.optaplanner.core.api.score.stream.uni.UniConstraintStream;
 import org.optaplanner.core.impl.domain.constraintweight.descriptor.ConstraintConfigurationDescriptor;

@@ -1,11 +1,8 @@
-package org.optaplanner.constraint.streams;
+package org.optaplanner.constraint.streams.bavet;
 
 import java.util.Objects;
 import java.util.function.Supplier;
 
-import org.optaplanner.constraint.streams.bavet.BavetConstraintStreamScoreDirectorFactory;
-import org.optaplanner.constraint.streams.drools.DroolsConstraintStreamScoreDirectorFactory;
-import org.optaplanner.constraint.streams.drools.KieBaseDescriptor;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.stream.ConstraintProvider;
 import org.optaplanner.core.api.score.stream.ConstraintStreamImplType;
@@ -16,7 +13,7 @@ import org.optaplanner.core.impl.score.director.AbstractScoreDirectorFactory;
 import org.optaplanner.core.impl.score.director.ScoreDirectorFactoryService;
 import org.optaplanner.core.impl.score.director.ScoreDirectorType;
 
-public final class ConstraintStreamsScoreDirectorFactoryService<Solution_, Score_ extends Score<Score_>>
+public final class BavetConstraintStreamScoreDirectorFactoryService<Solution_, Score_ extends Score<Score_>>
         implements ScoreDirectorFactoryService<Solution_, Score_> {
 
     @Override
@@ -27,6 +24,11 @@ public final class ConstraintStreamsScoreDirectorFactoryService<Solution_, Score
     @Override
     public Supplier<AbstractScoreDirectorFactory<Solution_, Score_>> buildScoreDirectorFactory(ClassLoader classLoader,
             SolutionDescriptor<Solution_> solutionDescriptor, ScoreDirectorFactoryConfig config) {
+        ConstraintStreamImplType constraintStreamImplType_ =
+                Objects.requireNonNullElse(config.getConstraintStreamImplType(), ConstraintStreamImplType.DROOLS);
+        if (constraintStreamImplType_ != ConstraintStreamImplType.BAVET) {
+            return null;
+        }
         if (config.getConstraintProviderClass() != null) {
             if (!ConstraintProvider.class.isAssignableFrom(config.getConstraintProviderClass())) {
                 throw new IllegalArgumentException(
@@ -38,24 +40,7 @@ public final class ConstraintStreamsScoreDirectorFactoryService<Solution_, Score
                         "constraintProviderClass", config.getConstraintProviderClass());
                 ConfigUtils.applyCustomProperties(constraintProvider, "constraintProviderClass",
                         config.getConstraintProviderCustomProperties(), "constraintProviderCustomProperties");
-                ConstraintStreamImplType constraintStreamImplType_ =
-                        Objects.requireNonNullElse(config.getConstraintStreamImplType(), ConstraintStreamImplType.DROOLS);
-                switch (constraintStreamImplType_) {
-                    case BAVET:
-                        return new BavetConstraintStreamScoreDirectorFactory<>(solutionDescriptor, constraintProvider);
-                    case DROOLS:
-                        boolean isDroolsAlphaNetworkEnabled = config.isDroolsAlphaNetworkCompilationEnabled();
-                        if (config.getGizmoKieBaseSupplier() != null) {
-                            return new DroolsConstraintStreamScoreDirectorFactory<>(solutionDescriptor,
-                                    (KieBaseDescriptor<Solution_>) config.getGizmoKieBaseSupplier(),
-                                    isDroolsAlphaNetworkEnabled);
-                        }
-                        return new DroolsConstraintStreamScoreDirectorFactory<>(solutionDescriptor, constraintProvider,
-                                isDroolsAlphaNetworkEnabled);
-                    default:
-                        throw new IllegalStateException(
-                                "The constraintStreamImplType (" + constraintStreamImplType_ + ") is not implemented.");
-                }
+                return new BavetConstraintStreamScoreDirectorFactory<>(solutionDescriptor, constraintProvider);
             };
         } else {
             if (config.getConstraintProviderCustomProperties() != null) {

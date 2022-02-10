@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.optaplanner.constraint.streams;
+package org.optaplanner.constraint.streams.common;
 
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.score.Score;

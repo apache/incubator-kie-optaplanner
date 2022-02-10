@@ -46,7 +46,7 @@ import org.kie.api.runtime.rule.AgendaFilter;
 import org.kie.api.runtime.rule.Match;
 import org.kie.internal.builder.conf.PropertySpecificOption;
 import org.kie.internal.event.rule.RuleEventManager;
-import org.optaplanner.constraint.streams.AbstractConstraintStreamScoreDirectorFactory;
+import org.optaplanner.constraint.streams.common.AbstractConstraintStreamScoreDirectorFactory;
 import org.optaplanner.constraint.streams.common.inliner.AbstractScoreInliner;
 import org.optaplanner.constraint.streams.common.inliner.WeightedScoreImpacter;
 import org.optaplanner.core.api.score.Score;

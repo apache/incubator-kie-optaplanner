@@ -18,7 +18,7 @@ package org.optaplanner.constraint.streams.bavet;
 
 import java.util.List;
 
-import org.optaplanner.constraint.streams.AbstractConstraintStreamScoreDirectorFactory;
+import org.optaplanner.constraint.streams.common.AbstractConstraintStreamScoreDirectorFactory;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.stream.Constraint;
 import org.optaplanner.core.api.score.stream.ConstraintProvider;

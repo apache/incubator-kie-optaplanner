@@ -11,13 +11,13 @@
 
   <artifactId>optaplanner-constraint-streams</artifactId>
 
-  <name>OptaPlanner score: Constraint streams</name>
+  <name>OptaPlanner constraints: Constraint streams</name>
   <description>
     OptaPlanner solves planning problems.
     This lightweight, embeddable planning engine implements powerful and scalable algorithms
     to optimize business resource scheduling and planning.
 
-    This module contains implementation of constraint streams.
+    This module contains implementation of Constraint streams.
   </description>
   <url>https://www.optaplanner.org</url>
 
