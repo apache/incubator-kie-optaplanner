@@ -80,7 +80,7 @@ public final class VariableListenerSupport<Solution_> implements SupplyManager<S
                         nextGlobalOrder = globalOrder + 1;
                     }
                     VariableListenerNotifiable<Solution_> notifiable =
-                            new VariableListenerNotifiable<>(variableListener, globalOrder);
+                            new VariableListenerNotifiable<>(scoreDirector, variableListener, globalOrder);
                     for (VariableDescriptor<Solution_> source : shadowVariableDescriptor.getSourceVariableDescriptorList()) {
                         List<VariableListenerNotifiable<Solution_>> variableNotifiableList =
                                 sourceVariableToNotifiableMap.get(source);
@@ -112,7 +112,7 @@ public final class VariableListenerSupport<Solution_> implements SupplyManager<S
                 }
                 VariableDescriptor<Solution_> source = variableListener.getSourceVariableDescriptor();
                 VariableListenerNotifiable<Solution_> notifiable =
-                        new VariableListenerNotifiable<>(variableListener, nextGlobalOrder);
+                        new VariableListenerNotifiable<>(scoreDirector, variableListener, nextGlobalOrder);
                 nextGlobalOrder++;
                 List<VariableListenerNotifiable<Solution_>> variableNotifiableList = sourceVariableToNotifiableMap.get(source);
                 variableNotifiableList.add(notifiable);
@@ -135,15 +135,13 @@ public final class VariableListenerSupport<Solution_> implements SupplyManager<S
 
     public void resetWorkingSolution() {
         for (VariableListenerNotifiable<Solution_> notifiable : notifiableList) {
-            VariableListener<Solution_, ?> variableListener = notifiable.getVariableListener();
-            variableListener.resetWorkingSolution(scoreDirector);
+            notifiable.resetWorkingSolution();
         }
     }
 
-    public void clearWorkingSolution() {
+    public void close() {
         for (VariableListenerNotifiable<Solution_> notifiable : notifiableList) {
-            VariableListener<Solution_, ?> variableListener = notifiable.getVariableListener();
-            variableListener.close();
+            notifiable.closeVariableListener();
         }
     }
 
@@ -152,7 +150,7 @@ public final class VariableListenerSupport<Solution_> implements SupplyManager<S
         if (!notifiableList.isEmpty()) {
             VariableListenerNotification notification = VariableListenerNotification.entityAdded(entity);
             for (VariableListenerNotifiable<Solution_> notifiable : notifiableList) {
-                notifiable.addNotification(notification, scoreDirector);
+                notifiable.addNotification(notification);
             }
         }
         notificationQueuesAreEmpty = false;
@@ -169,7 +167,7 @@ public final class VariableListenerSupport<Solution_> implements SupplyManager<S
         if (!notifiableList.isEmpty()) {
             VariableListenerNotification notification = VariableListenerNotification.variableChanged(entity);
             for (VariableListenerNotifiable<Solution_> notifiable : notifiableList) {
-                notifiable.addNotification(notification, scoreDirector);
+                notifiable.addNotification(notification);
             }
         }
         notificationQueuesAreEmpty = false;
@@ -184,7 +182,7 @@ public final class VariableListenerSupport<Solution_> implements SupplyManager<S
         if (!notifiableList.isEmpty()) {
             VariableListenerNotification notification = VariableListenerNotification.entityRemoved(entity);
             for (VariableListenerNotifiable<Solution_> notifiable : notifiableList) {
-                notifiable.addNotification(notification, scoreDirector);
+                notifiable.addNotification(notification);
             }
         }
         notificationQueuesAreEmpty = false;
@@ -196,21 +194,7 @@ public final class VariableListenerSupport<Solution_> implements SupplyManager<S
 
     public void triggerVariableListenersInNotificationQueues() {
         for (VariableListenerNotifiable<Solution_> notifiable : notifiableList) {
-            int notifiedCount = 0;
-            VariableListener<Solution_, Object> variableListener = notifiable.getVariableListener();
-            for (VariableListenerNotification notification : notifiable) {
-                notification.notifyAfter(variableListener, scoreDirector);
-                notifiedCount++;
-            }
-            if (notifiedCount != notifiable.getNotificationCount()) {
-                throw new IllegalStateException("The variableListener (" + variableListener.getClass()
-                        + ") has been notified with notifiedCount (" + notifiedCount
-                        + ") but after being triggered, its notificationCount (" + notifiable.getNotificationCount()
-                        + ") is different.\n"
-                        + "Maybe that variableListener (" + variableListener.getClass()
-                        + ") changed an upstream shadow variable (which is illegal).");
-            }
-            notifiable.clearNotifications();
+            notifiable.triggerAllNotifications();
         }
         notificationQueuesAreEmpty = true;
     }

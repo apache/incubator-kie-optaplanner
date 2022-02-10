@@ -44,7 +44,7 @@ final class VariableListenerNotification {
         this.type = type;
     }
 
-    public <Solution_> void notifyBefore(VariableListener<Solution_, Object> variableListener,
+    public <Solution_> void triggerBefore(VariableListener<Solution_, Object> variableListener,
             ScoreDirector<Solution_> scoreDirector) {
         switch (type) {
             case ENTITY_ADDED:
@@ -61,7 +61,7 @@ final class VariableListenerNotification {
         }
     }
 
-    public <Solution_> void notifyAfter(VariableListener<Solution_, Object> variableListener,
+    public <Solution_> void triggerAfter(VariableListener<Solution_, Object> variableListener,
             ScoreDirector<Solution_> scoreDirector) {
         switch (type) {
             case ENTITY_ADDED:

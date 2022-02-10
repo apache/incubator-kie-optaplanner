@@ -18,20 +18,23 @@ package org.optaplanner.core.impl.domain.variable.listener.support;
 
 import java.util.ArrayDeque;
 import java.util.Collection;
-import java.util.Iterator;
 
 import org.optaplanner.core.api.domain.variable.VariableListener;
 import org.optaplanner.core.api.score.director.ScoreDirector;
 
-final class VariableListenerNotifiable<Solution_> implements Comparable<VariableListenerNotifiable<Solution_>>,
-        Iterable<VariableListenerNotification> {
+final class VariableListenerNotifiable<Solution_> implements Comparable<VariableListenerNotifiable<Solution_>> {
 
+    private final ScoreDirector<Solution_> scoreDirector;
     private final VariableListener<Solution_, ?> variableListener;
     private final int globalOrder;
 
     private final Collection<VariableListenerNotification> notificationQueue;
 
-    public VariableListenerNotifiable(VariableListener<Solution_, ?> variableListener, int globalOrder) {
+    public VariableListenerNotifiable(
+            ScoreDirector<Solution_> scoreDirector,
+            VariableListener<Solution_, ?> variableListener,
+            int globalOrder) {
+        this.scoreDirector = scoreDirector;
         this.variableListener = variableListener;
         this.globalOrder = globalOrder;
         if (variableListener.requiresUniqueEntityEvents()) {
@@ -41,43 +44,44 @@ final class VariableListenerNotifiable<Solution_> implements Comparable<Variable
         }
     }
 
-    public <Entity_> VariableListener<Solution_, Entity_> getVariableListener() {
-        return (VariableListener<Solution_, Entity_>) variableListener;
+    public void resetWorkingSolution() {
+        variableListener.resetWorkingSolution(scoreDirector);
     }
 
-    public void addNotification(VariableListenerNotification notification, ScoreDirector<Solution_> scoreDirector) {
+    public void closeVariableListener() {
+        variableListener.close();
+    }
+
+    public void addNotification(VariableListenerNotification notification) {
         if (notificationQueue.add(notification)) {
-            notification.notifyBefore(getVariableListener(), scoreDirector);
+            notification.triggerBefore(((VariableListener<Solution_, Object>) variableListener), scoreDirector);
         }
     }
 
-    public int getNotificationCount() {
-        return notificationQueue.size();
-    }
-
-    public void clearNotifications() {
+    public void triggerAllNotifications() {
+        int notifiedCount = 0;
+        for (VariableListenerNotification notification : notificationQueue) {
+            notification.triggerAfter(((VariableListener<Solution_, Object>) variableListener), scoreDirector);
+            notifiedCount++;
+        }
+        if (notifiedCount != notificationQueue.size()) {
+            throw new IllegalStateException("The variableListener (" + variableListener.getClass()
+                    + ") has been notified with notifiedCount (" + notifiedCount
+                    + ") but after being triggered, its notificationCount (" + notificationQueue.size()
+                    + ") is different.\n"
+                    + "Maybe that variableListener (" + variableListener.getClass()
+                    + ") changed an upstream shadow variable (which is illegal).");
+        }
         notificationQueue.clear();
     }
 
     @Override
     public int compareTo(VariableListenerNotifiable<Solution_> other) {
-        if (globalOrder < other.globalOrder) {
-            return -1;
-        } else if (globalOrder > other.globalOrder) {
-            return 1;
-        } else {
-            return 0;
-        }
-    }
-
-    @Override
-    public Iterator<VariableListenerNotification> iterator() {
-        return notificationQueue.iterator();
+        return Integer.compare(globalOrder, other.globalOrder);
     }
 
     @Override
     public String toString() {
         return "(" + globalOrder + ") " + variableListener;
     }
-
 }

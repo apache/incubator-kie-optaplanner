@@ -333,7 +333,7 @@ public abstract class AbstractScoreDirector<Solution_, Score_ extends Score<Scor
         if (lookUpEnabled) {
             lookUpManager.reset();
         }
-        variableListenerSupport.clearWorkingSolution();
+        variableListenerSupport.close();
     }
 
     // ************************************************************************
