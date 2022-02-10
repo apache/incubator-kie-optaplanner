@@ -19,6 +19,7 @@ package org.optaplanner.core.impl.domain.variable.listener.support;
 import java.util.Objects;
 
 import org.optaplanner.core.api.domain.variable.VariableListener;
+import org.optaplanner.core.api.score.director.ScoreDirector;
 import org.optaplanner.core.impl.domain.variable.descriptor.ShadowVariableDescriptor;
 
 final class VariableListenerNotification {
@@ -26,17 +27,55 @@ final class VariableListenerNotification {
     private final Object entity;
     private final VariableListenerNotificationType type;
 
-    public VariableListenerNotification(Object entity, VariableListenerNotificationType type) {
+    public static VariableListenerNotification entityAdded(Object entity) {
+        return new VariableListenerNotification(entity, VariableListenerNotificationType.ENTITY_ADDED);
+    }
+
+    public static VariableListenerNotification variableChanged(Object entity) {
+        return new VariableListenerNotification(entity, VariableListenerNotificationType.VARIABLE_CHANGED);
+    }
+
+    public static VariableListenerNotification entityRemoved(Object entity) {
+        return new VariableListenerNotification(entity, VariableListenerNotificationType.ENTITY_REMOVED);
+    }
+
+    private VariableListenerNotification(Object entity, VariableListenerNotificationType type) {
         this.entity = entity;
         this.type = type;
     }
 
-    public Object getEntity() {
-        return entity;
+    public <Solution_> void notifyBefore(VariableListener<Solution_, Object> variableListener,
+            ScoreDirector<Solution_> scoreDirector) {
+        switch (type) {
+            case ENTITY_ADDED:
+                variableListener.beforeEntityAdded(scoreDirector, entity);
+                break;
+            case VARIABLE_CHANGED:
+                variableListener.beforeVariableChanged(scoreDirector, entity);
+                break;
+            case ENTITY_REMOVED:
+                variableListener.beforeEntityRemoved(scoreDirector, entity);
+                break;
+            default:
+                throw new IllegalStateException("The VariableListenerNotification type (" + type + ") is not implemented.");
+        }
     }
 
-    public VariableListenerNotificationType getType() {
-        return type;
+    public <Solution_> void notifyAfter(VariableListener<Solution_, Object> variableListener,
+            ScoreDirector<Solution_> scoreDirector) {
+        switch (type) {
+            case ENTITY_ADDED:
+                variableListener.afterEntityAdded(scoreDirector, entity);
+                break;
+            case VARIABLE_CHANGED:
+                variableListener.afterVariableChanged(scoreDirector, entity);
+                break;
+            case ENTITY_REMOVED:
+                variableListener.afterEntityRemoved(scoreDirector, entity);
+                break;
+            default:
+                throw new IllegalStateException("The VariableListenerNotification type (" + type + ") is not implemented.");
+        }
     }
 
     /**
@@ -63,4 +102,8 @@ final class VariableListenerNotification {
         return Objects.hash(System.identityHashCode(entity), type);
     }
 
+    @Override
+    public String toString() {
+        return type + ": " + entity;
+    }
 }

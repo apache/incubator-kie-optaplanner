@@ -150,11 +150,9 @@ public final class VariableListenerSupport<Solution_> implements SupplyManager<S
     public void beforeEntityAdded(EntityDescriptor<Solution_> entityDescriptor, Object entity) {
         List<VariableListenerNotifiable<Solution_>> notifiableList = sourceEntityToNotifiableMap.get(entityDescriptor);
         if (!notifiableList.isEmpty()) {
-            VariableListenerNotification notification =
-                    new VariableListenerNotification(entity, VariableListenerNotificationType.ENTITY_ADDED);
+            VariableListenerNotification notification = VariableListenerNotification.entityAdded(entity);
             for (VariableListenerNotifiable<Solution_> notifiable : notifiableList) {
-                notifiable.addNotification(notification,
-                        variableListener -> variableListener.beforeEntityAdded(scoreDirector, entity));
+                notifiable.addNotification(notification, scoreDirector);
             }
         }
         notificationQueuesAreEmpty = false;
@@ -169,11 +167,9 @@ public final class VariableListenerSupport<Solution_> implements SupplyManager<S
                 sourceVariableToNotifiableMap.getOrDefault(variableDescriptor,
                         Collections.emptyList()); // Avoids null for chained swap move on an unchained var.
         if (!notifiableList.isEmpty()) {
-            VariableListenerNotification notification =
-                    new VariableListenerNotification(entity, VariableListenerNotificationType.VARIABLE_CHANGED);
+            VariableListenerNotification notification = VariableListenerNotification.variableChanged(entity);
             for (VariableListenerNotifiable<Solution_> notifiable : notifiableList) {
-                notifiable.addNotification(notification,
-                        variableListener -> variableListener.beforeVariableChanged(scoreDirector, entity));
+                notifiable.addNotification(notification, scoreDirector);
             }
         }
         notificationQueuesAreEmpty = false;
@@ -186,11 +182,9 @@ public final class VariableListenerSupport<Solution_> implements SupplyManager<S
     public void beforeEntityRemoved(EntityDescriptor<Solution_> entityDescriptor, Object entity) {
         List<VariableListenerNotifiable<Solution_>> notifiableList = sourceEntityToNotifiableMap.get(entityDescriptor);
         if (!notifiableList.isEmpty()) {
-            VariableListenerNotification notification =
-                    new VariableListenerNotification(entity, VariableListenerNotificationType.ENTITY_REMOVED);
+            VariableListenerNotification notification = VariableListenerNotification.entityRemoved(entity);
             for (VariableListenerNotifiable<Solution_> notifiable : notifiableList) {
-                notifiable.addNotification(notification,
-                        variableListener -> variableListener.beforeEntityRemoved(scoreDirector, entity));
+                notifiable.addNotification(notification, scoreDirector);
             }
         }
         notificationQueuesAreEmpty = false;
@@ -205,21 +199,7 @@ public final class VariableListenerSupport<Solution_> implements SupplyManager<S
             int notifiedCount = 0;
             VariableListener<Solution_, Object> variableListener = notifiable.getVariableListener();
             for (VariableListenerNotification notification : notifiable) {
-                Object entity = notification.getEntity();
-                switch (notification.getType()) {
-                    case ENTITY_ADDED:
-                        variableListener.afterEntityAdded(scoreDirector, entity);
-                        break;
-                    case VARIABLE_CHANGED:
-                        variableListener.afterVariableChanged(scoreDirector, entity);
-                        break;
-                    case ENTITY_REMOVED:
-                        variableListener.afterEntityRemoved(scoreDirector, entity);
-                        break;
-                    default:
-                        throw new IllegalStateException("The variableListenerNotificationType ("
-                                + notification.getType() + ") is not implemented.");
-                }
+                notification.notifyAfter(variableListener, scoreDirector);
                 notifiedCount++;
             }
             if (notifiedCount != notifiable.getNotificationCount()) {
