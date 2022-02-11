@@ -16,6 +16,8 @@
 
 package org.optaplanner.quarkus.deployment;
 
+import static io.quarkus.deployment.annotations.ExecutionTime.STATIC_INIT;
+
 import java.io.IOException;
 import java.io.StringWriter;
 import java.lang.reflect.Modifier;
@@ -32,33 +34,6 @@ import java.util.stream.Collectors;
 
 import javax.inject.Singleton;
 
-import io.quarkus.arc.deployment.AdditionalBeanBuildItem;
-import io.quarkus.arc.deployment.GeneratedBeanBuildItem;
-import io.quarkus.arc.deployment.GeneratedBeanGizmoAdaptor;
-import io.quarkus.arc.deployment.SyntheticBeanBuildItem;
-import io.quarkus.arc.deployment.UnremovableBeanBuildItem;
-import io.quarkus.deployment.GeneratedClassGizmoAdaptor;
-import io.quarkus.deployment.IsDevelopment;
-import io.quarkus.deployment.annotations.BuildProducer;
-import io.quarkus.deployment.annotations.BuildStep;
-import io.quarkus.deployment.annotations.Record;
-import io.quarkus.deployment.builditem.BytecodeTransformerBuildItem;
-import io.quarkus.deployment.builditem.CombinedIndexBuildItem;
-import io.quarkus.deployment.builditem.FeatureBuildItem;
-import io.quarkus.deployment.builditem.GeneratedClassBuildItem;
-import io.quarkus.deployment.builditem.HotDeploymentWatchedFileBuildItem;
-import io.quarkus.deployment.builditem.IndexDependencyBuildItem;
-import io.quarkus.deployment.builditem.nativeimage.ReflectiveHierarchyBuildItem;
-import io.quarkus.deployment.builditem.nativeimage.ServiceProviderBuildItem;
-import io.quarkus.deployment.pkg.builditem.CurateOutcomeBuildItem;
-import io.quarkus.deployment.pkg.steps.NativeBuild;
-import io.quarkus.deployment.recording.RecorderContext;
-import io.quarkus.deployment.util.ServiceUtil;
-import io.quarkus.devconsole.spi.DevConsoleRuntimeTemplateInfoBuildItem;
-import io.quarkus.gizmo.ClassOutput;
-import io.quarkus.gizmo.MethodDescriptor;
-import io.quarkus.gizmo.ResultHandle;
-import io.quarkus.runtime.configuration.ConfigurationException;
 import org.jboss.jandex.AnnotationInstance;
 import org.jboss.jandex.AnnotationTarget;
 import org.jboss.jandex.AnnotationValue;
@@ -93,7 +68,33 @@ import org.optaplanner.quarkus.deployment.config.OptaPlannerBuildTimeConfig;
 import org.optaplanner.quarkus.devui.OptaPlannerDevUIPropertiesSupplier;
 import org.optaplanner.quarkus.gizmo.OptaPlannerGizmoBeanFactory;
 
-import static io.quarkus.deployment.annotations.ExecutionTime.STATIC_INIT;
+import io.quarkus.arc.deployment.AdditionalBeanBuildItem;
+import io.quarkus.arc.deployment.GeneratedBeanBuildItem;
+import io.quarkus.arc.deployment.GeneratedBeanGizmoAdaptor;
+import io.quarkus.arc.deployment.SyntheticBeanBuildItem;
+import io.quarkus.arc.deployment.UnremovableBeanBuildItem;
+import io.quarkus.deployment.GeneratedClassGizmoAdaptor;
+import io.quarkus.deployment.IsDevelopment;
+import io.quarkus.deployment.annotations.BuildProducer;
+import io.quarkus.deployment.annotations.BuildStep;
+import io.quarkus.deployment.annotations.Record;
+import io.quarkus.deployment.builditem.BytecodeTransformerBuildItem;
+import io.quarkus.deployment.builditem.CombinedIndexBuildItem;
+import io.quarkus.deployment.builditem.FeatureBuildItem;
+import io.quarkus.deployment.builditem.GeneratedClassBuildItem;
+import io.quarkus.deployment.builditem.HotDeploymentWatchedFileBuildItem;
+import io.quarkus.deployment.builditem.IndexDependencyBuildItem;
+import io.quarkus.deployment.builditem.nativeimage.ReflectiveHierarchyBuildItem;
+import io.quarkus.deployment.builditem.nativeimage.ServiceProviderBuildItem;
+import io.quarkus.deployment.pkg.builditem.CurateOutcomeBuildItem;
+import io.quarkus.deployment.pkg.steps.NativeBuild;
+import io.quarkus.deployment.recording.RecorderContext;
+import io.quarkus.deployment.util.ServiceUtil;
+import io.quarkus.devconsole.spi.DevConsoleRuntimeTemplateInfoBuildItem;
+import io.quarkus.gizmo.ClassOutput;
+import io.quarkus.gizmo.MethodDescriptor;
+import io.quarkus.gizmo.ResultHandle;
+import io.quarkus.runtime.configuration.ConfigurationException;
 
 class OptaPlannerProcessor {
 
