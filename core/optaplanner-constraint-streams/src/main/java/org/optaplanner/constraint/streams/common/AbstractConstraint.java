@@ -17,7 +17,6 @@
 package org.optaplanner.constraint.streams.common;
 
 import java.math.BigDecimal;
-import java.util.function.BooleanSupplier;
 import java.util.function.Function;
 
 import org.optaplanner.core.api.score.Score;
@@ -73,31 +72,35 @@ public abstract class AbstractConstraint<Solution_, Constraint_ extends Abstract
     }
 
     public final void assertCorrectImpact(int impact) {
-        assertCorrectImpact(impact, () -> impact < 0);
+        if (scoreImpactType == ScoreImpactType.MIXED) { // No need to do anything.
+            return;
+        }
+        if (impact < 0) {
+            throw new IllegalStateException("Negative match weight (" + impact + ") for constraint ("
+                    + getConstraintId() + "). " +
+                    "Check constraint provider implementation.");
+        }
     }
 
     public final void assertCorrectImpact(long impact) {
-        assertCorrectImpact(impact, () -> impact < 0L);
+        if (scoreImpactType == ScoreImpactType.MIXED) { // No need to do anything.
+            return;
+        }
+        if (impact < 0L) {
+            throw new IllegalStateException("Negative match weight (" + impact + ") for constraint ("
+                    + getConstraintId() + "). " +
+                    "Check constraint provider implementation.");
+        }
     }
 
     public final void assertCorrectImpact(BigDecimal impact) {
-        assertCorrectImpact(impact, () -> impact.signum() < 0);
-    }
-
-    private void assertCorrectImpact(Object impact, BooleanSupplier lessThanZero) {
-        switch (scoreImpactType) {
-            case MIXED: // No need to do anything.
-                break;
-            case REWARD:
-            case PENALTY:
-                if (lessThanZero.getAsBoolean()) {
-                    throw new IllegalStateException("Negative match weight (" + impact + ") for constraint ("
-                            + getConstraintId() + "). " +
-                            "Check constraint provider implementation.");
-                }
-                return;
-            default:
-                throw new IllegalStateException("Unknown score impact type: (" + scoreImpactType + ")");
+        if (scoreImpactType == ScoreImpactType.MIXED) { // No need to do anything.
+            return;
+        }
+        if (impact.signum() < 0) {
+            throw new IllegalStateException("Negative match weight (" + impact + ") for constraint ("
+                    + getConstraintId() + "). " +
+                    "Check constraint provider implementation.");
         }
     }
 
@@ -124,5 +127,4 @@ public abstract class AbstractConstraint<Solution_, Constraint_ extends Abstract
     public final ScoreImpactType getScoreImpactType() {
         return scoreImpactType;
     }
-
 }
