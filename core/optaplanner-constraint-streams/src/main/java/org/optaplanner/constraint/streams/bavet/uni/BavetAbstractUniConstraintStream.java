@@ -46,7 +46,6 @@ import org.optaplanner.core.api.score.stream.quad.QuadConstraintStream;
 import org.optaplanner.core.api.score.stream.tri.TriConstraintStream;
 import org.optaplanner.core.api.score.stream.uni.UniConstraintCollector;
 import org.optaplanner.core.api.score.stream.uni.UniConstraintStream;
-import org.optaplanner.core.impl.score.stream.JoinerType;
 
 public abstract class BavetAbstractUniConstraintStream<Solution_, A> extends BavetAbstractConstraintStream<Solution_>
         implements InnerUniConstraintStream<A> {
@@ -102,18 +101,6 @@ public abstract class BavetAbstractUniConstraintStream<Solution_, A> extends Bav
             throw new IllegalArgumentException("The joiner class (" + joiner.getClass() + ") is not supported.");
         }
         DefaultBiJoiner<A, B> castedJoiner = (DefaultBiJoiner<A, B>) joiner;
-        for (JoinerType type : castedJoiner.getJoinerTypes()) {
-            switch (type) {
-                case EQUAL:
-                case LESS_THAN:
-                case LESS_THAN_OR_EQUAL:
-                case GREATER_THAN:
-                case GREATER_THAN_OR_EQUAL:
-                    continue;
-                default:
-                    throw new UnsupportedOperationException("Unsupported joiner type (" + type + ").");
-            }
-        }
         BavetIndexFactory indexFactory = new BavetIndexFactory(castedJoiner);
         BavetJoinBridgeUniConstraintStream<Solution_, A> leftBridge = new BavetJoinBridgeUniConstraintStream<>(
                 constraintFactory, this, true, JoinerUtils.combineLeftMappings(castedJoiner), indexFactory);

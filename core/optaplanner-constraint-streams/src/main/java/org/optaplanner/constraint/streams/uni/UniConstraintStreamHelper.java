@@ -18,9 +18,9 @@ package org.optaplanner.constraint.streams.uni;
 
 import java.util.function.BiPredicate;
 
-import org.optaplanner.constraint.streams.bi.DefaultBiJoiner;
 import org.optaplanner.constraint.streams.bi.FilteringBiJoiner;
 import org.optaplanner.constraint.streams.common.AbstractConstraintStreamHelper;
+import org.optaplanner.constraint.streams.common.InnerConstraintFactory;
 import org.optaplanner.core.api.score.stream.bi.BiConstraintStream;
 import org.optaplanner.core.api.score.stream.bi.BiJoiner;
 import org.optaplanner.core.api.score.stream.uni.UniConstraintStream;
@@ -56,16 +56,7 @@ public final class UniConstraintStreamHelper<A, B>
 
     @Override
     protected BiJoiner<A, B> mergeJoiners(BiJoiner<A, B>... joiners) {
-        if (joiners.length == 0) {
-            return DefaultBiJoiner.NONE;
-        } else if (joiners.length == 1) {
-            return joiners[0];
-        }
-        BiJoiner<A, B> result = joiners[0];
-        for (int i = 1; i < joiners.length; i++) {
-            result = result.and(joiners[i]);
-        }
-        return result;
+        return InnerConstraintFactory.merge(joiners);
     }
 
     @Override

@@ -27,33 +27,32 @@ public final class DefaultBiJoiner<A, B> extends AbstractJoiner<B> implements Bi
 
     public static final BiJoiner NONE = new DefaultBiJoiner(new Function[0], new JoinerType[0], new Function[0]);
 
-    private final JoinerType[] joinerTypes;
     private final Function<A, ?>[] leftMappings;
-    private final Function<B, ?>[] rightMappings;
 
     public <Property_> DefaultBiJoiner(Function<A, Property_> leftMapping, JoinerType joinerType,
             Function<B, Property_> rightMapping) {
-        this(new Function[] { leftMapping }, new JoinerType[] { joinerType }, new Function[] { rightMapping });
+        super(rightMapping, joinerType);
+        this.leftMappings = new Function[] { leftMapping };
     }
 
     private <Property_> DefaultBiJoiner(Function<A, Property_>[] leftMappings, JoinerType[] joinerTypes,
             Function<B, Property_>[] rightMappings) {
-        this.joinerTypes = joinerTypes;
+        super(rightMappings, joinerTypes);
         this.leftMappings = leftMappings;
-        this.rightMappings = rightMappings;
     }
 
     @Override
     public DefaultBiJoiner<A, B> and(BiJoiner<A, B> otherJoiner) {
         DefaultBiJoiner<A, B> castJoiner = (DefaultBiJoiner<A, B>) otherJoiner;
-        int joinerCount = this.joinerTypes.length;
-        int newJoinerCount = joinerCount + castJoiner.getJoinerCount();
+        int joinerCount = getJoinerCount();
+        int castJoinerCount = castJoiner.getJoinerCount();
+        int newJoinerCount = joinerCount + castJoinerCount;
         JoinerType[] newJoinerTypes = Arrays.copyOf(this.joinerTypes, newJoinerCount);
         Function[] newLeftMappings = Arrays.copyOf(this.leftMappings, newJoinerCount);
         Function[] newRightMappings = Arrays.copyOf(this.rightMappings, newJoinerCount);
-        for (int i = 0; i < castJoiner.getJoinerCount(); i++) {
+        for (int i = 0; i < castJoinerCount; i++) {
             int newJoinerIndex = i + joinerCount;
-            newJoinerTypes[newJoinerIndex] = castJoiner.getJoinerTypes()[i];
+            newJoinerTypes[newJoinerIndex] = castJoiner.getJoinerType(i);
             newLeftMappings[newJoinerIndex] = castJoiner.getLeftMapping(i);
             newRightMappings[newJoinerIndex] = castJoiner.getRightMapping(i);
         }
@@ -64,20 +63,10 @@ public final class DefaultBiJoiner<A, B> extends AbstractJoiner<B> implements Bi
         return (Function<A, Object>) leftMappings[index];
     }
 
-    @Override
-    public JoinerType[] getJoinerTypes() {
-        return joinerTypes;
-    }
-
-    @Override
-    public Function<B, Object> getRightMapping(int index) {
-        return (Function<B, Object>) rightMappings[index];
-    }
-
     public boolean matches(A a, B b) {
-        JoinerType[] joinerTypes = getJoinerTypes();
-        for (int i = 0; i < joinerTypes.length; i++) {
-            JoinerType joinerType = joinerTypes[i];
+        int joinerCount = getJoinerCount();
+        for (int i = 0; i < joinerCount; i++) {
+            JoinerType joinerType = getJoinerType(i);
             Object leftMapping = getLeftMapping(i).apply(a);
             Object rightMapping = getRightMapping(i).apply(b);
             if (!joinerType.matches(leftMapping, rightMapping)) {

@@ -57,13 +57,14 @@ public final class BiConstraintStreamHelper<A, B, C>
 
     @Override
     protected TriJoiner<A, B, C> mergeJoiners(TriJoiner<A, B, C>... joiners) {
-        if (joiners.length == 0) {
+        int joinerCount = joiners.length;
+        if (joinerCount == 0) {
             return DefaultTriJoiner.NONE;
-        } else if (joiners.length == 1) {
+        } else if (joinerCount == 1) {
             return joiners[0];
         }
         TriJoiner<A, B, C> result = joiners[0];
-        for (int i = 1; i < joiners.length; i++) {
+        for (int i = 1; i < joinerCount; i++) {
             result = result.and(joiners[i]);
         }
         return result;

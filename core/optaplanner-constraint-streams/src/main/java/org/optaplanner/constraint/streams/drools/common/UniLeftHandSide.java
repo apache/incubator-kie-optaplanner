@@ -135,9 +135,9 @@ public final class UniLeftHandSide<A> extends AbstractLeftHandSide {
         if (joiner == null) {
             return applyFilters(existencePattern, predicate, shouldExist);
         }
-        JoinerType[] joinerTypes = joiner.getJoinerTypes();
-        for (int mappingIndex = 0; mappingIndex < joinerTypes.length; mappingIndex++) {
-            JoinerType joinerType = joinerTypes[mappingIndex];
+        int joinerCount = joiner.getJoinerCount();
+        for (int mappingIndex = 0; mappingIndex < joinerCount; mappingIndex++) {
+            JoinerType joinerType = joiner.getJoinerType(mappingIndex);
             Function<A, Object> leftMapping = joiner.getLeftMapping(mappingIndex);
             Function<B, Object> rightMapping = joiner.getRightMapping(mappingIndex);
             Predicate2<B, A> joinPredicate = (b, a) -> joinerType.matches(leftMapping.apply(a), rightMapping.apply(b));
@@ -200,10 +200,10 @@ public final class UniLeftHandSide<A> extends AbstractLeftHandSide {
 
     public <B> BiLeftHandSide<A, B> andJoin(UniLeftHandSide<B> right, BiJoiner<A, B> joiner) {
         DefaultBiJoiner<A, B> castJoiner = (DefaultBiJoiner<A, B>) joiner;
-        JoinerType[] joinerTypes = castJoiner.getJoinerTypes();
+        int joinerCount = castJoiner.getJoinerCount();
         PatternVariable<B, ?, ?> newRight = right.patternVariable;
-        for (int mappingIndex = 0; mappingIndex < joinerTypes.length; mappingIndex++) {
-            JoinerType joinerType = joinerTypes[mappingIndex];
+        for (int mappingIndex = 0; mappingIndex < joinerCount; mappingIndex++) {
+            JoinerType joinerType = castJoiner.getJoinerType(mappingIndex);
             newRight = newRight.filterForJoin(patternVariable.getPrimaryVariable(), castJoiner, joinerType, mappingIndex);
         }
         return new BiLeftHandSide<>(patternVariable, newRight, variableFactory);

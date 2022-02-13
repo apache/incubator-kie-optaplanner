@@ -104,9 +104,9 @@ public final class TriLeftHandSide<A, B, C> extends AbstractLeftHandSide {
         if (joiner == null) {
             return applyFilters(existencePattern, predicate, shouldExist);
         }
-        JoinerType[] joinerTypes = joiner.getJoinerTypes();
-        for (int mappingIndex = 0; mappingIndex < joinerTypes.length; mappingIndex++) {
-            JoinerType joinerType = joinerTypes[mappingIndex];
+        int joinerCount = joiner.getJoinerCount();
+        for (int mappingIndex = 0; mappingIndex < joinerCount; mappingIndex++) {
+            JoinerType joinerType = joiner.getJoinerType(mappingIndex);
             TriFunction<A, B, C, Object> leftMapping = joiner.getLeftMapping(mappingIndex);
             Function<D, Object> rightMapping = joiner.getRightMapping(mappingIndex);
             Predicate4<D, A, B, C> joinPredicate =
@@ -175,10 +175,10 @@ public final class TriLeftHandSide<A, B, C> extends AbstractLeftHandSide {
 
     public <D> QuadLeftHandSide<A, B, C, D> andJoin(UniLeftHandSide<D> right, QuadJoiner<A, B, C, D> joiner) {
         DefaultQuadJoiner<A, B, C, D> castJoiner = (DefaultQuadJoiner<A, B, C, D>) joiner;
-        JoinerType[] joinerTypes = castJoiner.getJoinerTypes();
         PatternVariable<D, ?, ?> newRight = right.getPatternVariableA();
-        for (int mappingIndex = 0; mappingIndex < joinerTypes.length; mappingIndex++) {
-            JoinerType joinerType = joinerTypes[mappingIndex];
+        int joinerCount = castJoiner.getJoinerCount();
+        for (int mappingIndex = 0; mappingIndex < joinerCount; mappingIndex++) {
+            JoinerType joinerType = castJoiner.getJoinerType(mappingIndex);
             newRight = newRight.filterForJoin(patternVariableA.getPrimaryVariable(), patternVariableB.getPrimaryVariable(),
                     patternVariableC.getPrimaryVariable(), castJoiner, joinerType, mappingIndex);
         }

@@ -110,9 +110,9 @@ public final class QuadLeftHandSide<A, B, C, D> extends AbstractLeftHandSide {
         if (joiner == null) {
             return applyFilters(existencePattern, predicate, shouldExist);
         }
-        JoinerType[] joinerTypes = joiner.getJoinerTypes();
-        for (int mappingIndex = 0; mappingIndex < joinerTypes.length; mappingIndex++) {
-            JoinerType joinerType = joinerTypes[mappingIndex];
+        int joinerCount = joiner.getJoinerCount();
+        for (int mappingIndex = 0; mappingIndex < joinerCount; mappingIndex++) {
+            JoinerType joinerType = joiner.getJoinerType(mappingIndex);
             QuadFunction<A, B, C, D, Object> leftMapping = joiner.getLeftMapping(mappingIndex);
             Function<E, Object> rightMapping = joiner.getRightMapping(mappingIndex);
             Predicate5<E, A, B, C, D> joinPredicate =

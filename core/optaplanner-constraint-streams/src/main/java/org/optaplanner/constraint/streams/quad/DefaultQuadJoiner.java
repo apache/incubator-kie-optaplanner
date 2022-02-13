@@ -28,33 +28,32 @@ public final class DefaultQuadJoiner<A, B, C, D> extends AbstractJoiner<D> imple
 
     public static final QuadJoiner NONE = new DefaultQuadJoiner(new TriFunction[0], new JoinerType[0], new Function[0]);
 
-    private final JoinerType[] joinerTypes;
     private final TriFunction<A, B, C, ?>[] leftMappings;
-    private final Function<D, ?>[] rightMappings;
 
     public <Property_> DefaultQuadJoiner(TriFunction<A, B, C, Property_> leftMapping, JoinerType joinerType,
             Function<D, Property_> rightMapping) {
-        this(new TriFunction[] { leftMapping }, new JoinerType[] { joinerType }, new Function[] { rightMapping });
+        super(rightMapping, joinerType);
+        this.leftMappings = new TriFunction[] { leftMapping };
     }
 
     private <Property_> DefaultQuadJoiner(TriFunction<A, B, C, Property_>[] leftMappings, JoinerType[] joinerTypes,
             Function<D, Property_>[] rightMappings) {
-        this.joinerTypes = joinerTypes;
+        super(rightMappings, joinerTypes);
         this.leftMappings = leftMappings;
-        this.rightMappings = rightMappings;
     }
 
     @Override
     public DefaultQuadJoiner<A, B, C, D> and(QuadJoiner<A, B, C, D> otherJoiner) {
         DefaultQuadJoiner<A, B, C, D> castJoiner = (DefaultQuadJoiner<A, B, C, D>) otherJoiner;
-        int joinerCount = this.joinerTypes.length;
-        int newJoinerCount = joinerCount + castJoiner.getJoinerCount();
+        int joinerCount = getJoinerCount();
+        int castJoinerCount = castJoiner.getJoinerCount();
+        int newJoinerCount = joinerCount + castJoinerCount;
         JoinerType[] newJoinerTypes = Arrays.copyOf(this.joinerTypes, newJoinerCount);
         TriFunction[] newLeftMappings = Arrays.copyOf(this.leftMappings, newJoinerCount);
         Function[] newRightMappings = Arrays.copyOf(this.rightMappings, newJoinerCount);
         for (int i = 0; i < castJoiner.getJoinerCount(); i++) {
             int newJoinerIndex = i + joinerCount;
-            newJoinerTypes[newJoinerIndex] = castJoiner.getJoinerTypes()[i];
+            newJoinerTypes[newJoinerIndex] = castJoiner.getJoinerType(i);
             newLeftMappings[newJoinerIndex] = castJoiner.getLeftMapping(i);
             newRightMappings[newJoinerIndex] = castJoiner.getRightMapping(i);
         }
@@ -65,20 +64,10 @@ public final class DefaultQuadJoiner<A, B, C, D> extends AbstractJoiner<D> imple
         return (TriFunction<A, B, C, Object>) leftMappings[index];
     }
 
-    @Override
-    public JoinerType[] getJoinerTypes() {
-        return joinerTypes;
-    }
-
-    @Override
-    public Function<D, Object> getRightMapping(int index) {
-        return (Function<D, Object>) rightMappings[index];
-    }
-
     public boolean matches(A a, B b, C c, D d) {
-        JoinerType[] joinerTypes = getJoinerTypes();
-        for (int i = 0; i < joinerTypes.length; i++) {
-            JoinerType joinerType = joinerTypes[i];
+        int joinerCount = getJoinerCount();
+        for (int i = 0; i < joinerCount; i++) {
+            JoinerType joinerType = getJoinerType(i);
             Object leftMapping = getLeftMapping(i).apply(a, b, c);
             Object rightMapping = getRightMapping(i).apply(d);
             if (!joinerType.matches(leftMapping, rightMapping)) {

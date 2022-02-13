@@ -29,33 +29,32 @@ public final class DefaultPentaJoiner<A, B, C, D, E> extends AbstractJoiner<E> i
     public static final DefaultPentaJoiner NONE =
             new DefaultPentaJoiner(new QuadFunction[0], new JoinerType[0], new Function[0]);
 
-    private final JoinerType[] joinerTypes;
     private final QuadFunction<A, B, C, D, ?>[] leftMappings;
-    private final Function<E, ?>[] rightMappings;
 
     public <Property_> DefaultPentaJoiner(QuadFunction<A, B, C, D, Property_> leftMapping, JoinerType joinerType,
             Function<E, Property_> rightMapping) {
-        this(new QuadFunction[] { leftMapping }, new JoinerType[] { joinerType }, new Function[] { rightMapping });
+        super(rightMapping, joinerType);
+        this.leftMappings = new QuadFunction[] { leftMapping };
     }
 
     private <Property_> DefaultPentaJoiner(QuadFunction<A, B, C, D, Property_>[] leftMappings, JoinerType[] joinerTypes,
             Function<E, Property_>[] rightMappings) {
-        this.joinerTypes = joinerTypes;
+        super(rightMappings, joinerTypes);
         this.leftMappings = leftMappings;
-        this.rightMappings = rightMappings;
     }
 
     @Override
     public DefaultPentaJoiner<A, B, C, D, E> and(PentaJoiner<A, B, C, D, E> otherJoiner) {
         DefaultPentaJoiner<A, B, C, D, E> castJoiner = (DefaultPentaJoiner<A, B, C, D, E>) otherJoiner;
-        int joinerCount = this.joinerTypes.length;
-        int newJoinerCount = joinerCount + castJoiner.getJoinerCount();
+        int joinerCount = getJoinerCount();
+        int castJoinerCount = castJoiner.getJoinerCount();
+        int newJoinerCount = joinerCount + castJoinerCount;
         JoinerType[] newJoinerTypes = Arrays.copyOf(this.joinerTypes, newJoinerCount);
         QuadFunction[] newLeftMappings = Arrays.copyOf(this.leftMappings, newJoinerCount);
         Function[] newRightMappings = Arrays.copyOf(this.rightMappings, newJoinerCount);
-        for (int i = 0; i < castJoiner.getJoinerCount(); i++) {
+        for (int i = 0; i < castJoinerCount; i++) {
             int newJoinerIndex = i + joinerCount;
-            newJoinerTypes[newJoinerIndex] = castJoiner.getJoinerTypes()[i];
+            newJoinerTypes[newJoinerIndex] = castJoiner.getJoinerType(i);
             newLeftMappings[newJoinerIndex] = castJoiner.getLeftMapping(i);
             newRightMappings[newJoinerIndex] = castJoiner.getRightMapping(i);
         }
@@ -66,20 +65,10 @@ public final class DefaultPentaJoiner<A, B, C, D, E> extends AbstractJoiner<E> i
         return (QuadFunction<A, B, C, D, Object>) leftMappings[index];
     }
 
-    @Override
-    public JoinerType[] getJoinerTypes() {
-        return joinerTypes;
-    }
-
-    @Override
-    public Function<E, Object> getRightMapping(int index) {
-        return (Function<E, Object>) rightMappings[index];
-    }
-
     public boolean matches(A a, B b, C c, D d, E e) {
-        JoinerType[] joinerTypes = getJoinerTypes();
-        for (int i = 0; i < joinerTypes.length; i++) {
-            JoinerType joinerType = joinerTypes[i];
+        int joinerCount = getJoinerCount();
+        for (int i = 0; i < joinerCount; i++) {
+            JoinerType joinerType = getJoinerType(i);
             Object leftMapping = getLeftMapping(i).apply(a, b, c, d);
             Object rightMapping = getRightMapping(i).apply(e);
             if (!joinerType.matches(leftMapping, rightMapping)) {

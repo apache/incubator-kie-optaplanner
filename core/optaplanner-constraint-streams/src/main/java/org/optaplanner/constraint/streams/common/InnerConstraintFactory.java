@@ -100,14 +100,15 @@ public abstract class InnerConstraintFactory<Solution_, Constraint_ extends Cons
     }
 
     @SafeVarargs
-    private static <A, B> BiJoiner<A, B> merge(BiJoiner<A, B>... joiners) {
-        if (joiners.length == 0) {
+    public static <A, B> BiJoiner<A, B> merge(BiJoiner<A, B>... joiners) {
+        int joinerCount = joiners.length;
+        if (joinerCount == 0) {
             return DefaultBiJoiner.NONE;
-        } else if (joiners.length == 1) {
+        } else if (joinerCount == 1) {
             return joiners[0];
         }
         BiJoiner<A, B> result = joiners[0];
-        for (int i = 1; i < joiners.length; i++) {
+        for (int i = 1; i < joinerCount; i++) {
             result = result.and(joiners[i]);
         }
         return result;

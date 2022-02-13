@@ -25,17 +25,32 @@ public class BavetIndexFactory {
     private final JoinerType[] joinerTypes;
 
     public BavetIndexFactory(AbstractJoiner joiner) {
-        joinerTypes = joiner.getJoinerTypes();
-        for (int i = 0; i < joinerTypes.length; i++) {
-            if (joinerTypes[i] != JoinerType.EQUAL && i != (joinerTypes.length - 1)) {
-                throw new IllegalArgumentException("The joinerType (" + joinerTypes[i]
+        int joinerCount = joiner.getJoinerCount();
+        ;
+        joinerTypes = new JoinerType[joinerCount];
+        for (int i = 0; i < joinerCount; i++) {
+            JoinerType joinerType = joiner.getJoinerType(i);
+            switch (joinerType) {
+                case EQUAL:
+                case LESS_THAN:
+                case LESS_THAN_OR_EQUAL:
+                case GREATER_THAN:
+                case GREATER_THAN_OR_EQUAL:
+                    break;
+                default:
+                    throw new UnsupportedOperationException("Unsupported joiner type (" + joinerType + ").");
+            }
+            if (joinerType != JoinerType.EQUAL && i != (joinerCount - 1)) {
+                JoinerType nextJoinerType = joiner.getJoinerType(i + 1);
+                throw new IllegalArgumentException("The joinerType (" + joinerType
                         + ") is currently only supported as the last joinerType.\n"
-                        + ((joinerTypes[i + 1] == JoinerType.EQUAL)
-                                ? "Maybe move the next joinerType (" + joinerTypes[i + 1]
-                                        + ") before this joinerType (" + joinerTypes[i] + ")."
-                                : "Maybe put the next joinerType (" + joinerTypes[i + 1]
+                        + ((nextJoinerType == JoinerType.EQUAL)
+                                ? "Maybe move the next joinerType (" + nextJoinerType
+                                        + ") before this joinerType (" + joinerType + ")."
+                                : "Maybe put the next joinerType (" + nextJoinerType
                                         + ") in a filter() predicate after the join() call for now."));
             }
+            joinerTypes[i] = joiner.getJoinerType(i);
         }
     }
 
