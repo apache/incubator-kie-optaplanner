@@ -19,20 +19,20 @@ package org.optaplanner.core.impl.domain.variable.listener.support;
 import org.optaplanner.core.api.domain.variable.VariableListener;
 import org.optaplanner.core.api.score.director.ScoreDirector;
 
-final class VariableChangedNotification extends VariableListenerNotification {
+final class VariableChangedNotification extends AbstractVariableListenerNotification implements BasicVariableNotification {
 
     VariableChangedNotification(Object entity) {
         super(entity);
     }
 
     @Override
-    <Solution_> void triggerBefore(VariableListener<Solution_, Object> variableListener,
+    public <Solution_> void triggerBefore(VariableListener<Solution_, Object> variableListener,
             ScoreDirector<Solution_> scoreDirector) {
         variableListener.beforeVariableChanged(scoreDirector, entity);
     }
 
     @Override
-    <Solution_> void triggerAfter(VariableListener<Solution_, Object> variableListener,
+    public <Solution_> void triggerAfter(VariableListener<Solution_, Object> variableListener,
             ScoreDirector<Solution_> scoreDirector) {
         variableListener.afterVariableChanged(scoreDirector, entity);
     }

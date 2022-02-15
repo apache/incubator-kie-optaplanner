@@ -28,7 +28,7 @@ final class VariableListenerNotifiable<Solution_> {
     private final VariableListener<Solution_, Object> variableListener;
     private final int globalOrder;
 
-    private final Collection<VariableListenerNotification> notificationQueue;
+    private final Collection<BasicVariableNotification> notificationQueue;
 
     VariableListenerNotifiable(
             ScoreDirector<Solution_> scoreDirector,
@@ -52,7 +52,7 @@ final class VariableListenerNotifiable<Solution_> {
         variableListener.close();
     }
 
-    void addNotification(VariableListenerNotification notification) {
+    void addNotification(BasicVariableNotification notification) {
         if (notificationQueue.add(notification)) {
             notification.triggerBefore(variableListener, scoreDirector);
         }
@@ -60,7 +60,7 @@ final class VariableListenerNotifiable<Solution_> {
 
     void triggerAllNotifications() {
         int notifiedCount = 0;
-        for (VariableListenerNotification notification : notificationQueue) {
+        for (BasicVariableNotification notification : notificationQueue) {
             notification.triggerAfter(variableListener, scoreDirector);
             notifiedCount++;
         }

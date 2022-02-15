@@ -19,26 +19,24 @@ package org.optaplanner.core.impl.domain.variable.listener.support;
 import org.optaplanner.core.api.domain.variable.VariableListener;
 import org.optaplanner.core.api.score.director.ScoreDirector;
 
-final class EntityAddedNotification extends AbstractVariableListenerNotification implements BasicVariableNotification {
+public interface BasicVariableNotification {
 
-    EntityAddedNotification(Object entity) {
-        super(entity);
+    <Solution_> void triggerBefore(VariableListener<Solution_, Object> variableListener,
+            ScoreDirector<Solution_> scoreDirector);
+
+    <Solution_> void triggerAfter(VariableListener<Solution_, Object> variableListener,
+            ScoreDirector<Solution_> scoreDirector);
+
+    static BasicVariableNotification entityAdded(Object entity) {
+        return new EntityAddedNotification(entity);
     }
 
-    @Override
-    public <Solution_> void triggerBefore(VariableListener<Solution_, Object> variableListener,
-            ScoreDirector<Solution_> scoreDirector) {
-        variableListener.beforeEntityAdded(scoreDirector, entity);
+    static BasicVariableNotification entityRemoved(Object entity) {
+        return new EntityRemovedNotification(entity);
     }
 
-    @Override
-    public <Solution_> void triggerAfter(VariableListener<Solution_, Object> variableListener,
-            ScoreDirector<Solution_> scoreDirector) {
-        variableListener.afterEntityAdded(scoreDirector, entity);
+    static BasicVariableNotification variableChanged(Object entity) {
+        return new VariableChangedNotification(entity);
     }
 
-    @Override
-    public String toString() {
-        return "EntityAdded(" + entity + ")";
-    }
 }

@@ -124,7 +124,7 @@ public final class VariableListenerSupport<Solution_> implements SupplyManager<S
     public void beforeEntityAdded(EntityDescriptor<Solution_> entityDescriptor, Object entity) {
         Collection<VariableListenerNotifiable<Solution_>> notifiables = notifiableRegistry.get(entityDescriptor);
         if (!notifiables.isEmpty()) {
-            VariableListenerNotification notification = VariableListenerNotification.entityAdded(entity);
+            BasicVariableNotification notification = BasicVariableNotification.entityAdded(entity);
             for (VariableListenerNotifiable<Solution_> notifiable : notifiables) {
                 notifiable.addNotification(notification);
             }
@@ -139,7 +139,7 @@ public final class VariableListenerSupport<Solution_> implements SupplyManager<S
     public void beforeVariableChanged(VariableDescriptor<Solution_> variableDescriptor, Object entity) {
         Collection<VariableListenerNotifiable<Solution_>> notifiables = notifiableRegistry.get(variableDescriptor);
         if (!notifiables.isEmpty()) {
-            VariableListenerNotification notification = VariableListenerNotification.variableChanged(entity);
+            BasicVariableNotification notification = BasicVariableNotification.variableChanged(entity);
             for (VariableListenerNotifiable<Solution_> notifiable : notifiables) {
                 notifiable.addNotification(notification);
             }
@@ -154,7 +154,7 @@ public final class VariableListenerSupport<Solution_> implements SupplyManager<S
     public void beforeEntityRemoved(EntityDescriptor<Solution_> entityDescriptor, Object entity) {
         Collection<VariableListenerNotifiable<Solution_>> notifiables = notifiableRegistry.get(entityDescriptor);
         if (!notifiables.isEmpty()) {
-            VariableListenerNotification notification = VariableListenerNotification.entityRemoved(entity);
+            BasicVariableNotification notification = BasicVariableNotification.entityRemoved(entity);
             for (VariableListenerNotifiable<Solution_> notifiable : notifiables) {
                 notifiable.addNotification(notification);
             }

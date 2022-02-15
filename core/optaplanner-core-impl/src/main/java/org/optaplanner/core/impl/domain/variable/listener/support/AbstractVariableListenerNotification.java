@@ -19,37 +19,18 @@ package org.optaplanner.core.impl.domain.variable.listener.support;
 import java.util.Objects;
 
 import org.optaplanner.core.api.domain.variable.VariableListener;
-import org.optaplanner.core.api.score.director.ScoreDirector;
 import org.optaplanner.core.impl.domain.variable.descriptor.ShadowVariableDescriptor;
 
-abstract class VariableListenerNotification {
+abstract class AbstractVariableListenerNotification {
 
     protected final Object entity;
 
-    static VariableListenerNotification entityAdded(Object entity) {
-        return new EntityAddedNotification(entity);
-    }
-
-    static VariableListenerNotification variableChanged(Object entity) {
-        return new VariableChangedNotification(entity);
-    }
-
-    static VariableListenerNotification entityRemoved(Object entity) {
-        return new EntityRemovedNotification(entity);
-    }
-
-    protected VariableListenerNotification(Object entity) {
+    protected AbstractVariableListenerNotification(Object entity) {
         this.entity = entity;
     }
 
-    abstract <Solution_> void triggerBefore(VariableListener<Solution_, Object> variableListener,
-            ScoreDirector<Solution_> scoreDirector);
-
-    abstract <Solution_> void triggerAfter(VariableListener<Solution_, Object> variableListener,
-            ScoreDirector<Solution_> scoreDirector);
-
     /**
-     * Warning: do not test equality of {@link VariableListenerNotification}s for different {@link VariableListener}s
+     * Warning: do not test equality of {@link AbstractVariableListenerNotification}s for different {@link VariableListener}s
      * (so {@link ShadowVariableDescriptor}s) because equality does not take those into account (for performance)!
      *
      * @param o sometimes null
@@ -63,7 +44,7 @@ abstract class VariableListenerNotification {
         if (o == null || getClass() != o.getClass()) {
             return false;
         }
-        VariableListenerNotification that = (VariableListenerNotification) o;
+        AbstractVariableListenerNotification that = (AbstractVariableListenerNotification) o;
         return entity.equals(that.entity);
     }
 
