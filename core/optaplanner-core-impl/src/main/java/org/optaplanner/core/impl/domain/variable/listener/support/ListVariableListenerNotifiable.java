@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2022 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,17 +21,17 @@ import java.util.Collection;
 import java.util.function.BiConsumer;
 
 import org.optaplanner.core.api.domain.variable.AbstractVariableListener;
-import org.optaplanner.core.api.domain.variable.VariableListener;
+import org.optaplanner.core.api.domain.variable.ListVariableListener;
 import org.optaplanner.core.api.score.director.ScoreDirector;
 
-final class VariableListenerNotifiable<Solution_> extends AbstractNotifiable<Solution_> {
+final class ListVariableListenerNotifiable<Solution_> extends AbstractNotifiable<Solution_> {
 
-    private final VariableListener<Solution_, Object> variableListener;
-    private final Collection<BiConsumer<? super VariableListener<Solution_, Object>, ScoreDirector<Solution_>>> notificationQueue;
+    private final ListVariableListener<Solution_, Object> variableListener;
+    private final Collection<BiConsumer<? super ListVariableListener<Solution_, Object>, ScoreDirector<Solution_>>> notificationQueue;
 
-    VariableListenerNotifiable(
+    ListVariableListenerNotifiable(
             ScoreDirector<Solution_> scoreDirector,
-            VariableListener<Solution_, Object> variableListener,
+            ListVariableListener<Solution_, Object> variableListener,
             int globalOrder) {
         super(scoreDirector, globalOrder);
         this.variableListener = variableListener;
@@ -47,7 +47,7 @@ final class VariableListenerNotifiable<Solution_> extends AbstractNotifiable<Sol
         return variableListener;
     }
 
-    void addNotification(BasicVariableNotification<Solution_> notification) {
+    void addNotification(ListVariableNotification<Solution_> notification) {
         if (notificationQueue.add(notification)) {
             notification.triggerBefore(variableListener, scoreDirector);
         }
@@ -63,7 +63,7 @@ final class VariableListenerNotifiable<Solution_> extends AbstractNotifiable<Sol
     @Override
     void triggerAllNotifications() {
         int notifiedCount = 0;
-        for (BiConsumer<? super VariableListener<Solution_, Object>, ScoreDirector<Solution_>> notification : notificationQueue) {
+        for (BiConsumer<? super ListVariableListener<Solution_, Object>, ScoreDirector<Solution_>> notification : notificationQueue) {
             notification.accept(variableListener, scoreDirector);
             notifiedCount++;
         }

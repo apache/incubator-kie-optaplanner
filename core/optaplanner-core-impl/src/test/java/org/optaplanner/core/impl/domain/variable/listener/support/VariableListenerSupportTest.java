@@ -138,7 +138,7 @@ class VariableListenerSupportTest {
         variableListenerSupport.linkVariableListeners();
 
         assertThat(registry.getAll())
-                .map(VariableListenerNotifiable::toString)
+                .map(AbstractNotifiable::toString)
                 .containsExactly(
                         "(0) C",
                         "(1) D",
@@ -146,7 +146,7 @@ class VariableListenerSupportTest {
                         "(3) FG");
 
         assertThat(registry.get(entityDescriptor))
-                .map(VariableListenerNotifiable::toString)
+                .map(AbstractNotifiable::toString)
                 .containsExactly(
                         "(0) C",
                         "(1) D",

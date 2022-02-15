@@ -22,7 +22,7 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
-import org.optaplanner.core.api.domain.variable.VariableListener;
+import org.optaplanner.core.api.domain.variable.AbstractVariableListener;
 import org.optaplanner.core.api.score.director.ScoreDirector;
 import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
 import org.optaplanner.core.impl.domain.variable.descriptor.ShadowVariableDescriptor;
@@ -73,7 +73,7 @@ public final class VariableListenerSupport<Solution_> implements SupplyManager<S
     }
 
     private void processShadowVariableDescriptor(ShadowVariableDescriptor<Solution_> shadowVariableDescriptor) {
-        VariableListener<Solution_, ?> variableListener = shadowVariableDescriptor.buildVariableListener(scoreDirector);
+        AbstractVariableListener<Solution_, ?> variableListener = shadowVariableDescriptor.buildVariableListener(scoreDirector);
         if (variableListener instanceof Supply) {
             // Non-sourced variable listeners (ie. ones provided by the user) can never be a supply.
             supplyMap.put(shadowVariableDescriptor.getProvidedDemand(), (Supply) variableListener);
@@ -81,7 +81,7 @@ public final class VariableListenerSupport<Solution_> implements SupplyManager<S
         int globalOrder = shadowVariableDescriptor.getGlobalShadowOrder();
         notifiableRegistry.registerNotifiable(
                 shadowVariableDescriptor.getSourceVariableDescriptorList(),
-                new VariableListenerNotifiable<>(scoreDirector, variableListener, globalOrder));
+                AbstractNotifiable.buildNotifiable(scoreDirector, variableListener, globalOrder));
         nextGlobalOrder = globalOrder + 1;
     }
 
@@ -100,7 +100,7 @@ public final class VariableListenerSupport<Solution_> implements SupplyManager<S
             }
             notifiableRegistry.registerNotifiable(
                     variableListener.getSourceVariableDescriptor(),
-                    new VariableListenerNotifiable<>(scoreDirector, variableListener, nextGlobalOrder++));
+                    AbstractNotifiable.buildNotifiable(scoreDirector, variableListener, nextGlobalOrder++));
         }
         return supply;
     }
@@ -110,22 +110,22 @@ public final class VariableListenerSupport<Solution_> implements SupplyManager<S
     // ************************************************************************
 
     public void resetWorkingSolution() {
-        for (VariableListenerNotifiable<Solution_> notifiable : notifiableRegistry.getAll()) {
+        for (AbstractNotifiable<Solution_> notifiable : notifiableRegistry.getAll()) {
             notifiable.resetWorkingSolution();
         }
     }
 
     public void close() {
-        for (VariableListenerNotifiable<Solution_> notifiable : notifiableRegistry.getAll()) {
+        for (AbstractNotifiable<Solution_> notifiable : notifiableRegistry.getAll()) {
             notifiable.closeVariableListener();
         }
     }
 
     public void beforeEntityAdded(EntityDescriptor<Solution_> entityDescriptor, Object entity) {
-        Collection<VariableListenerNotifiable<Solution_>> notifiables = notifiableRegistry.get(entityDescriptor);
+        Collection<AbstractNotifiable<Solution_>> notifiables = notifiableRegistry.get(entityDescriptor);
         if (!notifiables.isEmpty()) {
             EntityNotification<Solution_> notification = EntityNotification.entityAdded(entity);
-            for (VariableListenerNotifiable<Solution_> notifiable : notifiables) {
+            for (AbstractNotifiable<Solution_> notifiable : notifiables) {
                 notifiable.addNotification(notification);
             }
         }
@@ -152,10 +152,10 @@ public final class VariableListenerSupport<Solution_> implements SupplyManager<S
     }
 
     public void beforeEntityRemoved(EntityDescriptor<Solution_> entityDescriptor, Object entity) {
-        Collection<VariableListenerNotifiable<Solution_>> notifiables = notifiableRegistry.get(entityDescriptor);
+        Collection<AbstractNotifiable<Solution_>> notifiables = notifiableRegistry.get(entityDescriptor);
         if (!notifiables.isEmpty()) {
             EntityNotification<Solution_> notification = EntityNotification.entityRemoved(entity);
-            for (VariableListenerNotifiable<Solution_> notifiable : notifiables) {
+            for (AbstractNotifiable<Solution_> notifiable : notifiables) {
                 notifiable.addNotification(notification);
             }
         }
@@ -167,7 +167,7 @@ public final class VariableListenerSupport<Solution_> implements SupplyManager<S
     }
 
     public void triggerVariableListenersInNotificationQueues() {
-        for (VariableListenerNotifiable<Solution_> notifiable : notifiableRegistry.getAll()) {
+        for (AbstractNotifiable<Solution_> notifiable : notifiableRegistry.getAll()) {
             notifiable.triggerAllNotifications();
         }
         notificationQueuesAreEmpty = true;
