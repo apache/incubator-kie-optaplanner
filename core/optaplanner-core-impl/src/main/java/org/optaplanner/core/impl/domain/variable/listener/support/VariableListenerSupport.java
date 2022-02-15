@@ -16,8 +16,8 @@
 
 package org.optaplanner.core.impl.domain.variable.listener.support;
 
+import java.util.Collection;
 import java.util.LinkedHashMap;
-import java.util.List;
 import java.util.Map;
 
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
@@ -104,10 +104,10 @@ public final class VariableListenerSupport<Solution_> implements SupplyManager<S
     }
 
     public void beforeEntityAdded(EntityDescriptor<Solution_> entityDescriptor, Object entity) {
-        List<VariableListenerNotifiable<Solution_>> notifiableList = notifiableRegistry.get(entityDescriptor);
-        if (!notifiableList.isEmpty()) {
+        Collection<VariableListenerNotifiable<Solution_>> notifiables = notifiableRegistry.get(entityDescriptor);
+        if (!notifiables.isEmpty()) {
             VariableListenerNotification notification = VariableListenerNotification.entityAdded(entity);
-            for (VariableListenerNotifiable<Solution_> notifiable : notifiableList) {
+            for (VariableListenerNotifiable<Solution_> notifiable : notifiables) {
                 notifiable.addNotification(notification);
             }
         }
@@ -119,10 +119,10 @@ public final class VariableListenerSupport<Solution_> implements SupplyManager<S
     }
 
     public void beforeVariableChanged(VariableDescriptor<Solution_> variableDescriptor, Object entity) {
-        List<VariableListenerNotifiable<Solution_>> notifiableList = notifiableRegistry.get(variableDescriptor);
-        if (!notifiableList.isEmpty()) {
+        Collection<VariableListenerNotifiable<Solution_>> notifiables = notifiableRegistry.get(variableDescriptor);
+        if (!notifiables.isEmpty()) {
             VariableListenerNotification notification = VariableListenerNotification.variableChanged(entity);
-            for (VariableListenerNotifiable<Solution_> notifiable : notifiableList) {
+            for (VariableListenerNotifiable<Solution_> notifiable : notifiables) {
                 notifiable.addNotification(notification);
             }
         }
@@ -134,10 +134,10 @@ public final class VariableListenerSupport<Solution_> implements SupplyManager<S
     }
 
     public void beforeEntityRemoved(EntityDescriptor<Solution_> entityDescriptor, Object entity) {
-        List<VariableListenerNotifiable<Solution_>> notifiableList = notifiableRegistry.get(entityDescriptor);
-        if (!notifiableList.isEmpty()) {
+        Collection<VariableListenerNotifiable<Solution_>> notifiables = notifiableRegistry.get(entityDescriptor);
+        if (!notifiables.isEmpty()) {
             VariableListenerNotification notification = VariableListenerNotification.entityRemoved(entity);
-            for (VariableListenerNotifiable<Solution_> notifiable : notifiableList) {
+            for (VariableListenerNotifiable<Solution_> notifiable : notifiables) {
                 notifiable.addNotification(notification);
             }
         }

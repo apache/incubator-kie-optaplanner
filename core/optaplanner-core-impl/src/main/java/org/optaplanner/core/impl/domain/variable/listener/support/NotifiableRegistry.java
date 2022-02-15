@@ -17,10 +17,13 @@
 package org.optaplanner.core.impl.domain.variable.listener.support;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.optaplanner.core.api.domain.variable.VariableListener;
 import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
@@ -33,7 +36,7 @@ final class NotifiableRegistry<Solution_> {
 
     private final InnerScoreDirector<Solution_, ?> scoreDirector;
     private final List<VariableListenerNotifiable<Solution_>> notifiableList = new ArrayList<>();
-    private final Map<EntityDescriptor<?>, List<VariableListenerNotifiable<Solution_>>> sourceEntityToNotifiableMap =
+    private final Map<EntityDescriptor<?>, Set<VariableListenerNotifiable<Solution_>>> sourceEntityToNotifiableMap =
             new LinkedHashMap<>();
     private final Map<VariableDescriptor<?>, List<VariableListenerNotifiable<Solution_>>> sourceVariableToNotifiableMap =
             new LinkedHashMap<>();
@@ -42,7 +45,7 @@ final class NotifiableRegistry<Solution_> {
     NotifiableRegistry(InnerScoreDirector<Solution_, ?> scoreDirector) {
         this.scoreDirector = scoreDirector;
         for (EntityDescriptor<Solution_> entityDescriptor : scoreDirector.getSolutionDescriptor().getEntityDescriptors()) {
-            sourceEntityToNotifiableMap.put(entityDescriptor, new ArrayList<>());
+            sourceEntityToNotifiableMap.put(entityDescriptor, new LinkedHashSet<>());
             for (VariableDescriptor<Solution_> variableDescriptor : entityDescriptor.getDeclaredVariableDescriptors()) {
                 sourceVariableToNotifiableMap.put(variableDescriptor, new ArrayList<>());
             }
@@ -72,11 +75,7 @@ final class NotifiableRegistry<Solution_> {
 
     private void registerNotifiable(VariableDescriptor<?> source, VariableListenerNotifiable<Solution_> notifiable) {
         sourceVariableToNotifiableMap.get(source).add(notifiable);
-        List<VariableListenerNotifiable<Solution_>> entityNotifiableList = sourceEntityToNotifiableMap
-                .get(source.getEntityDescriptor());
-        if (!entityNotifiableList.contains(notifiable)) {
-            entityNotifiableList.add(notifiable);
-        }
+        sourceEntityToNotifiableMap.get(source.getEntityDescriptor()).add(notifiable);
     }
 
     void sort() {
@@ -87,11 +86,11 @@ final class NotifiableRegistry<Solution_> {
         return notifiableList;
     }
 
-    List<VariableListenerNotifiable<Solution_>> get(EntityDescriptor<Solution_> entityDescriptor) {
+    Collection<VariableListenerNotifiable<Solution_>> get(EntityDescriptor<?> entityDescriptor) {
         return sourceEntityToNotifiableMap.get(entityDescriptor);
     }
 
-    List<VariableListenerNotifiable<Solution_>> get(VariableDescriptor<Solution_> variableDescriptor) {
+    Collection<VariableListenerNotifiable<Solution_>> get(VariableDescriptor<?> variableDescriptor) {
         return sourceVariableToNotifiableMap.getOrDefault(variableDescriptor,
                 Collections.emptyList()); // Avoids null for chained swap move on an unchained var.
     }
