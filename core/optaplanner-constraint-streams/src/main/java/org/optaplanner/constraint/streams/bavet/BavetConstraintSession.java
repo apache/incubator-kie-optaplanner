@@ -159,11 +159,8 @@ public final class BavetConstraintSession<Solution_, Score_ extends Score<Score_
 
     public Score_ calculateScore(int initScore) {
         for (Queue<BavetAbstractTuple> queue : nodeIndexToDirtyTupleQueueMap) {
-            BavetAbstractTuple tuple = queue.poll();
-            while (tuple != null) {
-                refreshTuple(tuple);
-                tuple = queue.poll();
-            }
+            queue.forEach(BavetConstraintSession::refreshTuple);
+            queue.clear();
         }
         return scoreInliner.extractScore(initScore);
     }

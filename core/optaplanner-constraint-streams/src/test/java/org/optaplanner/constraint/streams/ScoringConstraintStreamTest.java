@@ -44,7 +44,7 @@ class ScoringConstraintStreamTest extends AbstractConstraintStreamTest {
     }
 
     @TestTemplate
-    void penalizeUniUnweighed() {
+    void penalizeUniUnweighted() {
         TestdataLavishSolution solution = TestdataLavishSolution.generateSolution();
 
         InnerScoreDirector<TestdataLavishSolution, SimpleScore> scoreDirector = buildScoreDirector(
@@ -101,7 +101,7 @@ class ScoringConstraintStreamTest extends AbstractConstraintStreamTest {
     }
 
     @TestTemplate
-    void rewardUniUnweighed() {
+    void rewardUniUnweighted() {
         TestdataLavishSolution solution = TestdataLavishSolution.generateSolution();
 
         InnerScoreDirector<TestdataLavishSolution, SimpleScore> scoreDirector = buildScoreDirector(
@@ -160,7 +160,7 @@ class ScoringConstraintStreamTest extends AbstractConstraintStreamTest {
     }
 
     @TestTemplate
-    void impactPositiveUniUnweighed() {
+    void impactPositiveUniUnweighted() {
         TestdataLavishSolution solution = TestdataLavishSolution.generateSolution();
 
         InnerScoreDirector<TestdataLavishSolution, SimpleScore> scoreDirector = buildScoreDirector(
@@ -265,7 +265,7 @@ class ScoringConstraintStreamTest extends AbstractConstraintStreamTest {
     }
 
     @TestTemplate
-    void penalizeBiUnweighed() {
+    void penalizeBiUnweighted() {
         TestdataLavishSolution solution = TestdataLavishSolution.generateSolution();
 
         InnerScoreDirector<TestdataLavishSolution, SimpleScore> scoreDirector = buildScoreDirector(
@@ -324,7 +324,7 @@ class ScoringConstraintStreamTest extends AbstractConstraintStreamTest {
     }
 
     @TestTemplate
-    void rewardBiUnweighed() {
+    void rewardBiUnweighted() {
         TestdataLavishSolution solution = TestdataLavishSolution.generateSolution();
 
         InnerScoreDirector<TestdataLavishSolution, SimpleScore> scoreDirector = buildScoreDirector(
@@ -383,7 +383,7 @@ class ScoringConstraintStreamTest extends AbstractConstraintStreamTest {
     }
 
     @TestTemplate
-    void impactPositiveBiUnweighed() {
+    void impactPositiveBiUnweighted() {
         TestdataLavishSolution solution = TestdataLavishSolution.generateSolution();
 
         InnerScoreDirector<TestdataLavishSolution, SimpleScore> scoreDirector = buildScoreDirector(
@@ -488,7 +488,7 @@ class ScoringConstraintStreamTest extends AbstractConstraintStreamTest {
     }
 
     @TestTemplate
-    void penalizeTriUnweighed() {
+    void penalizeTriUnweighted() {
         TestdataLavishSolution solution = TestdataLavishSolution.generateSolution();
 
         InnerScoreDirector<TestdataLavishSolution, SimpleScore> scoreDirector = buildScoreDirector(
@@ -551,7 +551,7 @@ class ScoringConstraintStreamTest extends AbstractConstraintStreamTest {
     }
 
     @TestTemplate
-    void rewardTriUnweighed() {
+    void rewardTriUnweighted() {
         TestdataLavishSolution solution = TestdataLavishSolution.generateSolution();
 
         InnerScoreDirector<TestdataLavishSolution, SimpleScore> scoreDirector = buildScoreDirector(
@@ -614,7 +614,7 @@ class ScoringConstraintStreamTest extends AbstractConstraintStreamTest {
     }
 
     @TestTemplate
-    void impactPositiveTriUnweighed() {
+    void impactPositiveTriUnweighted() {
         TestdataLavishSolution solution = TestdataLavishSolution.generateSolution();
 
         InnerScoreDirector<TestdataLavishSolution, SimpleScore> scoreDirector = buildScoreDirector(
@@ -726,7 +726,7 @@ class ScoringConstraintStreamTest extends AbstractConstraintStreamTest {
     }
 
     @TestTemplate
-    void penalizeQuadUnweighed() {
+    void penalizeQuadUnweighted() {
         assumeDrools();
         TestdataLavishSolution solution = TestdataLavishSolution.generateSolution();
 
@@ -797,7 +797,7 @@ class ScoringConstraintStreamTest extends AbstractConstraintStreamTest {
     }
 
     @TestTemplate
-    void rewardQuadUnweighed() {
+    void rewardQuadUnweighted() {
         assumeDrools();
         TestdataLavishSolution solution = TestdataLavishSolution.generateSolution();
 
@@ -868,7 +868,7 @@ class ScoringConstraintStreamTest extends AbstractConstraintStreamTest {
     }
 
     @TestTemplate
-    void impactPositiveQuadUnweighed() {
+    void impactPositiveQuadUnweighted() {
         assumeDrools();
         TestdataLavishSolution solution = TestdataLavishSolution.generateSolution();
 
