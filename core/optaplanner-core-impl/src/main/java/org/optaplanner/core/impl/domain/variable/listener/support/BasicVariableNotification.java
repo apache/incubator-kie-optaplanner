@@ -16,27 +16,24 @@
 
 package org.optaplanner.core.impl.domain.variable.listener.support;
 
+import java.util.function.BiConsumer;
+
 import org.optaplanner.core.api.domain.variable.VariableListener;
 import org.optaplanner.core.api.score.director.ScoreDirector;
 
-public interface BasicVariableNotification {
+public interface BasicVariableNotification<Solution_>
+        extends BiConsumer<VariableListener<Solution_, Object>, ScoreDirector<Solution_>> {
 
-    <Solution_> void triggerBefore(VariableListener<Solution_, Object> variableListener,
-            ScoreDirector<Solution_> scoreDirector);
+    void triggerBefore(VariableListener<Solution_, Object> variableListener, ScoreDirector<Solution_> scoreDirector);
 
-    <Solution_> void triggerAfter(VariableListener<Solution_, Object> variableListener,
-            ScoreDirector<Solution_> scoreDirector);
+    void triggerAfter(VariableListener<Solution_, Object> variableListener, ScoreDirector<Solution_> scoreDirector);
 
-    static BasicVariableNotification entityAdded(Object entity) {
-        return new EntityAddedNotification(entity);
+    @Override
+    default void accept(VariableListener<Solution_, Object> variableListener, ScoreDirector<Solution_> scoreDirector) {
+        triggerAfter(variableListener, scoreDirector);
     }
 
-    static BasicVariableNotification entityRemoved(Object entity) {
-        return new EntityRemovedNotification(entity);
+    static <Solution_> BasicVariableNotification<Solution_> variableChanged(Object entity) {
+        return new VariableChangedNotification<>(entity);
     }
-
-    static BasicVariableNotification variableChanged(Object entity) {
-        return new VariableChangedNotification(entity);
-    }
-
 }
