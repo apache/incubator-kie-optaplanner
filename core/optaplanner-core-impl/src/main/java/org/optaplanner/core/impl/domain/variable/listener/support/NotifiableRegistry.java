@@ -52,24 +52,22 @@ final class NotifiableRegistry<Solution_> {
     void registerShadowVariableListener(ShadowVariableDescriptor<Solution_> shadowVariableDescriptor,
             VariableListener<Solution_, ?> variableListener) {
         int globalOrder = shadowVariableDescriptor.getGlobalShadowOrder();
-        if (nextGlobalOrder <= globalOrder) {
-            nextGlobalOrder = globalOrder + 1;
-        }
         VariableListenerNotifiable<Solution_> notifiable =
                 new VariableListenerNotifiable<>(scoreDirector, variableListener, globalOrder);
         for (VariableDescriptor<Solution_> source : shadowVariableDescriptor.getSourceVariableDescriptorList()) {
             registerNotifiable(source, notifiable);
         }
         notifiableList.add(notifiable);
+        nextGlobalOrder = Math.max(nextGlobalOrder, globalOrder + 1);
     }
 
     void registerSourcedVariableListener(SourcedVariableListener<Solution_, ?> variableListener) {
-        VariableDescriptor<Solution_> source = variableListener.getSourceVariableDescriptor();
         VariableListenerNotifiable<Solution_> notifiable =
                 new VariableListenerNotifiable<>(scoreDirector, variableListener, nextGlobalOrder);
-        nextGlobalOrder++;
+        VariableDescriptor<Solution_> source = variableListener.getSourceVariableDescriptor();
         registerNotifiable(source, notifiable);
         notifiableList.add(notifiable);
+        nextGlobalOrder++;
     }
 
     private void registerNotifiable(VariableDescriptor<?> source, VariableListenerNotifiable<Solution_> notifiable) {
