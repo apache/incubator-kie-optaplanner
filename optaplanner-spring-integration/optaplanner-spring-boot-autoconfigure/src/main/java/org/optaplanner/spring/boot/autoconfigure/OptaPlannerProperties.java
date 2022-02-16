@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2022 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -30,7 +30,6 @@ public class OptaPlannerProperties {
     public static final String DEFAULT_CONSTRAINTS_DRL_URL = "constraints.drl";
     public static final String SCORE_DRL_PROPERTY = "optaplanner.score-drl";
     public static final String DEFAULT_BENCHMARK_RESULT_DIRECTORY = "target/benchmarks";
-    public static final String DEFAULT_SOLVER_BENCHMARK_CONFIG_URL = "solverBenchmarkConfig.xml";
 
     @NestedConfigurationProperty
     private SolverManagerProperties solverManager;
