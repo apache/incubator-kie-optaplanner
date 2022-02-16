@@ -87,14 +87,14 @@ public final class BavetFromUniNode<A> extends BavetAbstractUniNode<A> {
         for (BavetAbstractTuple childTuple : childTupleList) {
             // TODO the entire FromUniNode isn't really doing anything
             // so the destruction/construction is just an update op unless it's CREATING or DYING
-            session.transitionTuple(childTuple, BavetTupleState.DYING);
+            childTuple.getNode().transitionTuple(childTuple, BavetTupleState.DYING);
         }
         childTupleList.clear();
         if (tuple.isActive()) {
             for (BavetAbstractUniNode<A> childNode : childNodeList) {
                 BavetAbstractUniTuple<A> childTuple = childNode.createTuple(tuple);
                 childTupleList.add(childTuple);
-                session.transitionTuple(childTuple, BavetTupleState.CREATING);
+                childNode.transitionTuple(childTuple, BavetTupleState.CREATING);
             }
         }
     }

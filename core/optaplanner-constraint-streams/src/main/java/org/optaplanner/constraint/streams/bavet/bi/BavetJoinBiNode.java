@@ -78,65 +78,65 @@ public final class BavetJoinBiNode<A, B> extends BavetAbstractBiNode<A, B> imple
         BavetJoinBiTuple<A, B> tuple = (BavetJoinBiTuple<A, B>) uncastTuple;
         List<BavetAbstractTuple> childTupleList = tuple.getChildTupleList();
         for (BavetAbstractTuple childTuple : childTupleList) {
-            session.transitionTuple(childTuple, BavetTupleState.DYING);
+            childTuple.getNode().transitionTuple(childTuple, BavetTupleState.DYING);
         }
         childTupleList.clear();
         if (tuple.isActive()) {
             for (BavetAbstractBiNode<A, B> childNode : childNodeList) {
                 BavetAbstractBiTuple<A, B> childTuple = childNode.createTuple(tuple);
                 childTupleList.add(childTuple);
-                session.transitionTuple(childTuple, BavetTupleState.CREATING);
+                childNode.transitionTuple(childTuple, BavetTupleState.CREATING);
             }
         }
     }
 
     public void refreshChildTuplesLeft(BavetJoinBridgeUniTuple<A> leftParentTuple) {
-        List<BavetAbstractTuple> leftTupleSet = leftParentTuple.getChildTupleList();
-        for (BavetAbstractTuple tuple_ : leftTupleSet) {
-            BavetJoinBiTuple<A, B> tuple = (BavetJoinBiTuple<A, B>) tuple_;
-            boolean removed = tuple.getBTuple().getChildTupleList().remove(tuple);
+        List<BavetAbstractTuple> leftChildTupleSet = leftParentTuple.getChildTupleList();
+        for (BavetAbstractTuple uncastTuple : leftChildTupleSet) {
+            BavetJoinBiTuple<A, B> childTuple = (BavetJoinBiTuple<A, B>) uncastTuple;
+            boolean removed = childTuple.getBTuple().getChildTupleList().remove(childTuple);
             if (!removed) {
-                throw new IllegalStateException("Impossible state: the fact (" + tuple.getFactA()
-                        + ")'s tuple cannot be removed from the other fact (" + tuple.getFactB()
+                throw new IllegalStateException("Impossible state: the fact (" + childTuple.getFactA()
+                        + ")'s tuple cannot be removed from the other fact (" + childTuple.getFactB()
                         + ")'s join bridge.");
             }
-            session.transitionTuple(tuple, BavetTupleState.DYING);
+            transitionTuple(childTuple, BavetTupleState.DYING);
         }
-        leftTupleSet.clear();
+        leftChildTupleSet.clear();
         if (leftParentTuple.isActive()) {
             Set<BavetJoinBridgeUniTuple<B>> rightParentTupleList = getRightIndex().get(leftParentTuple.getIndexProperties());
             for (BavetJoinBridgeUniTuple<B> rightParentTuple : rightParentTupleList) {
                 if (!rightParentTuple.isDirty()) {
                     BavetJoinBiTuple<A, B> childTuple = createTuple(leftParentTuple, rightParentTuple);
-                    leftTupleSet.add(childTuple);
+                    leftChildTupleSet.add(childTuple);
                     rightParentTuple.getChildTupleList().add(childTuple);
-                    session.transitionTuple(childTuple, BavetTupleState.CREATING);
+                    transitionTuple(childTuple, BavetTupleState.CREATING);
                 }
             }
         }
     }
 
     public void refreshChildTuplesRight(BavetJoinBridgeUniTuple<B> rightParentTuple) {
-        List<BavetAbstractTuple> rightTupleSet = rightParentTuple.getChildTupleList();
-        for (BavetAbstractTuple uncastTuple : rightTupleSet) {
-            BavetJoinBiTuple<A, B> tuple = (BavetJoinBiTuple<A, B>) uncastTuple;
-            boolean removed = tuple.getATuple().getChildTupleList().remove(tuple);
+        List<BavetAbstractTuple> rightChildTupleSet = rightParentTuple.getChildTupleList();
+        for (BavetAbstractTuple uncastTuple : rightChildTupleSet) {
+            BavetJoinBiTuple<A, B> childTuple = (BavetJoinBiTuple<A, B>) uncastTuple;
+            boolean removed = childTuple.getATuple().getChildTupleList().remove(childTuple);
             if (!removed) {
-                throw new IllegalStateException("Impossible state: the fact (" + tuple.getFactB()
-                        + ")'s tuple cannot be removed from the other fact (" + tuple.getFactA()
+                throw new IllegalStateException("Impossible state: the fact (" + childTuple.getFactB()
+                        + ")'s tuple cannot be removed from the other fact (" + childTuple.getFactA()
                         + ")'s join bridge.");
             }
-            session.transitionTuple(tuple, BavetTupleState.DYING);
+            transitionTuple(childTuple, BavetTupleState.DYING);
         }
-        rightTupleSet.clear();
+        rightChildTupleSet.clear();
         if (rightParentTuple.isActive()) {
             Set<BavetJoinBridgeUniTuple<A>> leftParentTupleList = getLeftIndex().get(rightParentTuple.getIndexProperties());
             for (BavetJoinBridgeUniTuple<A> leftParentTuple : leftParentTupleList) {
                 if (!leftParentTuple.isDirty()) {
                     BavetJoinBiTuple<A, B> childTuple = createTuple(leftParentTuple, rightParentTuple);
                     leftParentTuple.getChildTupleList().add(childTuple);
-                    rightTupleSet.add(childTuple);
-                    session.transitionTuple(childTuple, BavetTupleState.CREATING);
+                    rightChildTupleSet.add(childTuple);
+                    transitionTuple(childTuple, BavetTupleState.CREATING);
                 }
             }
         }

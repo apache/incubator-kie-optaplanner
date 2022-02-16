@@ -41,39 +41,53 @@ public abstract class BavetAbstractNode implements BavetNode {
     // ************************************************************************
 
     @Override
-    public int getNodeIndex() {
+    public final int getNodeIndex() {
         return nodeIndex;
     }
 
     @Override
-    public void addTuple(BavetAbstractTuple tuple) {
+    public final void transitionTuple(BavetAbstractTuple tuple, BavetTupleState newState) {
+        if (tuple.isDirty()) {
+            if (tuple.getState() != newState) {
+                if ((tuple.getState() == BavetTupleState.CREATING && newState == BavetTupleState.DYING)) {
+                    tuple.setState(BavetTupleState.ABORTING);
+                } else if ((tuple.getState() == BavetTupleState.UPDATING && newState == BavetTupleState.DYING)) {
+                    tuple.setState(BavetTupleState.DYING);
+                } else {
+                    throw new IllegalStateException("The tuple (" + tuple
+                            + ") already has a dirty state (" + tuple.getState()
+                            + ") so it cannot transition to newState (" + newState + ").");
+                }
+            }
+            // Don't add it to the queue twice
+            return;
+        }
+        tuple.setState(newState);
         dirtyTupleQueue.add(tuple);
     }
 
     @Override
-    public void calculateScore() {
-        dirtyTupleQueue.forEach(this::refreshTuple);
+    public final void calculateScore() {
+        dirtyTupleQueue.forEach(tuple -> {
+            refresh(tuple);
+            switch (tuple.getState()) {
+                case CREATING:
+                case UPDATING:
+                    tuple.setState(BavetTupleState.OK);
+                    return;
+                case DYING:
+                case ABORTING:
+                    tuple.setState(BavetTupleState.DEAD);
+                    return;
+                case DEAD:
+                    throw new IllegalStateException("Impossible state: The tuple (" + tuple + ") in node (" +
+                            tuple.getNode() + ") is already in the dead state (" + tuple.getState() + ").");
+                default:
+                    throw new IllegalStateException("Impossible state: Tuple (" + tuple + ") in node (" +
+                            tuple.getNode() + ") is in an unexpected state (" + tuple.getState() + ").");
+            }
+        });
         dirtyTupleQueue.clear();
-    }
-
-    private void refreshTuple(BavetAbstractTuple tuple) {
-        refresh(tuple);
-        switch (tuple.getState()) {
-            case CREATING:
-            case UPDATING:
-                tuple.setState(BavetTupleState.OK);
-                return;
-            case DYING:
-            case ABORTING:
-                tuple.setState(BavetTupleState.DEAD);
-                return;
-            case DEAD:
-                throw new IllegalStateException("Impossible state: The tuple (" + tuple + ") in node (" +
-                        tuple.getNode() + ") is already in the dead state (" + tuple.getState() + ").");
-            default:
-                throw new IllegalStateException("Impossible state: Tuple (" + tuple + ") in node (" +
-                        tuple.getNode() + ") is in an unexpected state (" + tuple.getState() + ").");
-        }
     }
 
 }

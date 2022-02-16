@@ -69,9 +69,9 @@ public class BavetGroupBridgeBiNode<A, B, NewA, ResultContainer_, NewB> extends 
             if (parentCount == 0) {
                 // Clean up tupleMap
                 tupleMap.remove(oldGroupKey);
-                session.transitionTuple(childTuple, BavetTupleState.DYING);
+                groupNode.transitionTuple(childTuple, BavetTupleState.DYING);
             } else {
-                session.transitionTuple(childTuple, BavetTupleState.UPDATING);
+                groupNode.transitionTuple(childTuple, BavetTupleState.UPDATING);
             }
         }
         if (tuple.isActive()) {
@@ -87,11 +87,11 @@ public class BavetGroupBridgeBiNode<A, B, NewA, ResultContainer_, NewB> extends 
             childTuple.clearResult();
             tuple.setChildTuple(childTuple);
             if (parentCount == 1) {
-                session.transitionTuple(childTuple, BavetTupleState.CREATING);
+                groupNode.transitionTuple(childTuple, BavetTupleState.CREATING);
             } else {
                 // It might have just been created by an earlier tuple in the same nodeIndex
                 if (childTuple.getState() != BavetTupleState.CREATING) {
-                    session.transitionTuple(childTuple, BavetTupleState.UPDATING);
+                    groupNode.transitionTuple(childTuple, BavetTupleState.UPDATING);
                 }
             }
         }

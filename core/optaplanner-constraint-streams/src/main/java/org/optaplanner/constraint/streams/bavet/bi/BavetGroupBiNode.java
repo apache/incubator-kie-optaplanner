@@ -74,7 +74,7 @@ public final class BavetGroupBiNode<GroupKey_, ResultContainer_, Result_> extend
                 (BavetGroupBiTuple<GroupKey_, ResultContainer_, Result_>) uncastTuple;
         List<BavetAbstractTuple> childTupleList = tuple.getChildTupleList();
         for (BavetAbstractTuple childTuple : childTupleList) {
-            session.transitionTuple(childTuple, BavetTupleState.DYING);
+            childTuple.getNode().transitionTuple(childTuple, BavetTupleState.DYING);
         }
         childTupleList.clear();
         if (tuple.isActive()) {
@@ -82,7 +82,7 @@ public final class BavetGroupBiNode<GroupKey_, ResultContainer_, Result_> extend
             for (BavetAbstractBiNode<GroupKey_, Result_> childNode : childNodeList) {
                 BavetAbstractBiTuple<GroupKey_, Result_> childTuple = childNode.createTuple(tuple);
                 childTupleList.add(childTuple);
-                session.transitionTuple(childTuple, BavetTupleState.CREATING);
+                childNode.transitionTuple(childTuple, BavetTupleState.CREATING);
             }
         }
     }

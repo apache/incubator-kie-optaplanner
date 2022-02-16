@@ -20,7 +20,7 @@ public interface BavetNode {
 
     int getNodeIndex();
 
-    void addTuple(BavetAbstractTuple tuple);
+    void transitionTuple(BavetAbstractTuple tuple, BavetTupleState newState);
 
     void calculateScore();
 

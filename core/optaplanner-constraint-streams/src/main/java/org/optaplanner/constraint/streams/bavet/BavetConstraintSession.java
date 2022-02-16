@@ -79,6 +79,9 @@ public final class BavetConstraintSession<Solution_, Score_ extends Score<Score_
         });
     }
 
+    // TODO Have one FromUniNode per class:
+    // TODO If Cat extend Animal, the FromUniNode of Cat should delegate to the fromUniNode of Animal.
+
     public void insert(Object fact) {
         Class<?> factClass = fact.getClass();
         List<BavetFromUniNode<Object>> fromNodeList = findFromNodeList(factClass);
@@ -90,7 +93,7 @@ public final class BavetConstraintSession<Solution_, Score_ extends Score<Score_
         for (BavetFromUniNode<Object> node : fromNodeList) {
             BavetFromUniTuple<Object> tuple = node.createTuple(fact);
             tupleList.add(tuple);
-            transitionTuple(tuple, BavetTupleState.CREATING);
+            node.transitionTuple(tuple, BavetTupleState.CREATING);
         }
     }
 
@@ -100,7 +103,7 @@ public final class BavetConstraintSession<Solution_, Score_ extends Score<Score_
             throw new IllegalStateException("The fact (" + fact + ") was never inserted, so it cannot update.");
         }
         for (BavetFromUniTuple<Object> tuple : tupleList) {
-            transitionTuple(tuple, BavetTupleState.UPDATING);
+            tuple.getNode().transitionTuple(tuple, BavetTupleState.UPDATING);
         }
     }
 
@@ -110,28 +113,8 @@ public final class BavetConstraintSession<Solution_, Score_ extends Score<Score_
             throw new IllegalStateException("The fact (" + fact + ") was never inserted, so it cannot retract.");
         }
         for (BavetFromUniTuple<Object> tuple : tupleList) {
-            transitionTuple(tuple, BavetTupleState.DYING);
+            tuple.getNode().transitionTuple(tuple, BavetTupleState.DYING);
         }
-    }
-
-    public void transitionTuple(BavetAbstractTuple tuple, BavetTupleState newState) {
-        if (tuple.isDirty()) {
-            if (tuple.getState() != newState) {
-                if ((tuple.getState() == BavetTupleState.CREATING && newState == BavetTupleState.DYING)) {
-                    tuple.setState(BavetTupleState.ABORTING);
-                } else if ((tuple.getState() == BavetTupleState.UPDATING && newState == BavetTupleState.DYING)) {
-                    tuple.setState(BavetTupleState.DYING);
-                } else {
-                    throw new IllegalStateException("The tuple (" + tuple
-                            + ") already has a dirty state (" + tuple.getState()
-                            + ") so it cannot transition to newState (" + newState + ").");
-                }
-            }
-            // Don't add it to the queue twice
-            return;
-        }
-        tuple.setState(newState);
-        nodes[tuple.getNodeIndex()].addTuple(tuple);
     }
 
     public Score_ calculateScore(int initScore) {

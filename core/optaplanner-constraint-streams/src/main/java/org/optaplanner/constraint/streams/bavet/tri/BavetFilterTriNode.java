@@ -89,7 +89,7 @@ public final class BavetFilterTriNode<A, B, C> extends BavetAbstractTriNode<A, B
         C c = tuple.getFactC();
         List<BavetAbstractTuple> childTupleList = tuple.getChildTupleList();
         for (BavetAbstractTuple childTuple : childTupleList) {
-            session.transitionTuple(childTuple, BavetTupleState.DYING);
+            childTuple.getNode().transitionTuple(childTuple, BavetTupleState.DYING);
         }
         childTupleList.clear();
         if (tuple.isActive()) {
@@ -97,7 +97,7 @@ public final class BavetFilterTriNode<A, B, C> extends BavetAbstractTriNode<A, B
                 for (BavetAbstractTriNode<A, B, C> childNode : childNodeList) {
                     BavetAbstractTriTuple<A, B, C> childTuple = childNode.createTuple(tuple);
                     childTupleList.add(childTuple);
-                    session.transitionTuple(childTuple, BavetTupleState.CREATING);
+                    childNode.transitionTuple(childTuple, BavetTupleState.CREATING);
                 }
             }
         }
