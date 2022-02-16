@@ -265,6 +265,11 @@ the score.
 The penalty or reward score impact is the constraint weight multiplied by the match weight.
 The default value is `1`.
 
+[NOTE]
+====
+Constraints with zero match weight are automatically disabled and do not impose any performance penalty.
+====
+
 The ConstraintStreams API supports many different types of penalties.
 Browse the API in your IDE for the full list of method overloads.
 Here are some examples:
@@ -283,7 +288,6 @@ every matching `Shift` in the constraint stream.
 
 By replacing the keyword `penalize` by `reward` in the name of these building blocks, you get operations that
 affect score in the opposite direction.
-
 
 [[constraintStreamsFilter]]
 === Filtering
@@ -933,7 +937,6 @@ Alternatively, you can use a `rewardsWith(...)` call to check for rewards instea
 The method to use here depends on whether the constraint stream in question is terminated with a `penalize` or a
 `reward` building block.
 
-
 [[constraintStreamsTestingAllConstraints]]
 === Testing all constraints together
 
@@ -962,6 +965,51 @@ from the given facts.
 
 Using this method, you ensure that the constraint provider does not miss any constraints and that the scoring function
 remains consistent as your code base evolves.
+
+[[constraintStreamsTestingWhatActuallyHappens]]
+==== What actually happens
+
+The purpose of `ConstraintVerifier` is to test constraints in an environment as close as possible to the production deployment.
+Therefore when the `penalizesBy(...)` method (or similar) is called, the following will happen:
+
+* The constraint(s) provided by `verifyThat(...)` method are compiled and the new solver session is created,
+much like if the `Solver` or `SolverManager` APIs were used.
+* All the facts provided by the `given(...)` method are inserted into the solver session.
+* A score will be calculated, executing the constraint(s) on the given facts.
+This will include execution of all variable listeners, should the planning entities have any.
+
+For example, consider the "distanceToPreviousStandstill" constraint in the xref:use-cases-and-examples/vehicle-routing/vehicle-routing.adoc[vehicle routing example]:
+
+[source,java,options="nowrap"]
+----
+    Constraint distanceToPreviousStandstill(ConstraintFactory factory) {
+        return factory.forEach(Customer.class)
+                .penalizeLong("distanceToPreviousStandstill",
+                        HardSoftLongScore.ONE_SOFT,
+                        Customer::getDistanceFromPreviousStandstill);
+    }
+----
+
+Notice how the constraint does not make any `Vehicle` references.
+Yet the `ConstraintVerifier`-based test provides `Vehicle` instances:
+
+[source,java,options="nowrap"]
+----
+    @Test
+    void distanceToPreviousStandstill() {
+        Vehicle vehicleA = ...
+        Customer customer1 = ...
+        Customer customer2 = ...
+
+        constraintVerifier.verifyThat(VehicleRoutingConstraintProvider::distanceToPreviousStandstill)
+                .given(vehicleA, customer1, customer2)
+                .penalizesBy(9000L);
+    }
+----
+
+This is necessary, as the `Customer` class has a shadow variable based on `Vehicle`.
+Had no `Vehicle` instances been provided through the `given(...)` call,
+the constraint would not match anything and the test would have failed.
 
 [[constraintStreamsTestingQuarkus]]
 === Testing in Quarkus
