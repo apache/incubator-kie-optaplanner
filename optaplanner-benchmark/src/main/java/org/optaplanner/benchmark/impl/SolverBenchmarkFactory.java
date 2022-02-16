@@ -19,7 +19,7 @@ package org.optaplanner.benchmark.impl;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Objects;
+import java.util.Optional;
 
 import org.optaplanner.benchmark.config.ProblemBenchmarksConfig;
 import org.optaplanner.benchmark.config.SolverBenchmarkConfig;
@@ -102,24 +102,19 @@ public class SolverBenchmarkFactory {
 
     protected List<SolverMetric> getSolverMetrics(ProblemBenchmarksConfig config) {
         List<SolverMetric> out = new ArrayList<>();
-        if (config == null) {
-            return List.of(SolverMetric.BEST_SCORE);
-        }
-        for (ProblemStatisticType problemStatisticType : Objects.requireNonNullElse(config.getProblemStatisticTypeList(),
-                Collections.<ProblemStatisticType> emptyList())) {
+        for (ProblemStatisticType problemStatisticType : Optional.ofNullable(config)
+                .map(ProblemBenchmarksConfig::determineProblemStatisticTypeList)
+                .orElseGet(ProblemStatisticType::defaultMetricList)) {
             if (problemStatisticType == ProblemStatisticType.SCORE_CALCULATION_SPEED) {
                 out.add(SolverMetric.SCORE_CALCULATION_COUNT);
             } else {
                 out.add(SolverMetric.valueOf(problemStatisticType.name()));
             }
         }
-        for (SingleStatisticType singleStatisticType : Objects.requireNonNullElse(config.getSingleStatisticTypeList(),
-                Collections.<SingleStatisticType> emptyList())) {
+        for (SingleStatisticType singleStatisticType : Optional.ofNullable(config)
+                .map(ProblemBenchmarksConfig::determineSingleStatisticTypeList)
+                .orElseGet(Collections::emptyList)) {
             out.add(SolverMetric.valueOf(singleStatisticType.name()));
-        }
-
-        if (out.isEmpty() && (config.getProblemStatisticEnabled() == null || config.getProblemStatisticEnabled())) {
-            return List.of(SolverMetric.BEST_SCORE);
         }
         return out;
     }
