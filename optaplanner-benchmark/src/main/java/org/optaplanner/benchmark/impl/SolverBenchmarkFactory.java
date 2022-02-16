@@ -103,7 +103,7 @@ public class SolverBenchmarkFactory {
     protected List<SolverMetric> getSolverMetrics(ProblemBenchmarksConfig config) {
         List<SolverMetric> out = new ArrayList<>();
         if (config == null) {
-            return out;
+            return List.of(SolverMetric.BEST_SCORE);
         }
         for (ProblemStatisticType problemStatisticType : Objects.requireNonNullElse(config.getProblemStatisticTypeList(),
                 Collections.<ProblemStatisticType> emptyList())) {
@@ -116,6 +116,10 @@ public class SolverBenchmarkFactory {
         for (SingleStatisticType singleStatisticType : Objects.requireNonNullElse(config.getSingleStatisticTypeList(),
                 Collections.<SingleStatisticType> emptyList())) {
             out.add(SolverMetric.valueOf(singleStatisticType.name()));
+        }
+
+        if (out.isEmpty() && (config.getProblemStatisticEnabled() == null || config.getProblemStatisticEnabled())) {
+            return List.of(SolverMetric.BEST_SCORE);
         }
         return out;
     }
