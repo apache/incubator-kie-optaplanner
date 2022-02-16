@@ -18,6 +18,7 @@ package org.optaplanner.constraint.streams.bavet;
 
 import java.util.ArrayDeque;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.IdentityHashMap;
 import java.util.List;
@@ -42,10 +43,11 @@ public final class BavetConstraintSession<Solution_, Score_ extends Score<Score_
 
     private final AbstractScoreInliner<Score_> scoreInliner;
     private final Map<Class<?>, BavetFromUniNode<Object>> declaredClassToNodeMap;
-    private final List<BavetNode> nodeIndexedNodeMap;
-    private final List<BavetScoringNode> scoringNodeList;
+    private final BavetNode[] nodes; // Indexed by nodeIndex
+    private final List<BavetScoringNode> scoringNodeList; // TODO Unused (except by 1 test)
+
     private final Map<Class<?>, List<BavetFromUniNode<Object>>> effectiveClassToNodeListMap;
-    private final List<Queue<BavetAbstractTuple>> nodeIndexToDirtyTupleQueueMap;
+
     private final Map<Object, List<BavetFromUniTuple<Object>>> fromTupleListMap;
 
     public BavetConstraintSession(boolean constraintMatchEnabled, ScoreDefinition<Score_> scoreDefinition,
@@ -56,38 +58,13 @@ public final class BavetConstraintSession<Solution_, Score_ extends Score<Score_
         BavetNodeBuildPolicy<Solution_> buildPolicy = new BavetNodeBuildPolicy<>(this);
         constraintToWeightMap.forEach((constraint, constraintWeight) -> constraint.createNodes(buildPolicy,
                 declaredClassToNodeMap, constraintWeight));
-        nodeIndexedNodeMap = buildPolicy.getCreatedNodes();
-        scoringNodeList = nodeIndexedNodeMap.stream()
+        nodes = buildPolicy.getCreatedNodes().toArray(BavetNode[]::new);
+        scoringNodeList = Arrays.stream(nodes)
                 .filter(node -> node instanceof BavetScoringNode)
                 .map(node -> (BavetScoringNode) node)
                 .collect(Collectors.toList());
         effectiveClassToNodeListMap = new HashMap<>(declaredClassToNodeMap.size());
-        int nodeCount = nodeIndexedNodeMap.size();
-        nodeIndexToDirtyTupleQueueMap = new ArrayList<>(nodeCount);
-        for (int i = 0; i < nodeCount; i++) {
-            nodeIndexToDirtyTupleQueueMap.add(new ArrayDeque<>(1000));
-        }
         fromTupleListMap = new IdentityHashMap<>(1000);
-    }
-
-    private static void refreshTuple(BavetAbstractTuple tuple) {
-        tuple.getNode().refresh(tuple);
-        switch (tuple.getState()) {
-            case CREATING:
-            case UPDATING:
-                tuple.setState(BavetTupleState.OK);
-                return;
-            case DYING:
-            case ABORTING:
-                tuple.setState(BavetTupleState.DEAD);
-                return;
-            case DEAD:
-                throw new IllegalStateException("Impossible state: The tuple (" + tuple + ") in node (" +
-                        tuple.getNode() + ") is already in the dead state (" + tuple.getState() + ").");
-            default:
-                throw new IllegalStateException("Impossible state: Tuple (" + tuple + ") in node (" +
-                        tuple.getNode() + ") is in an unexpected state (" + tuple.getState() + ").");
-        }
     }
 
     public List<BavetFromUniNode<Object>> findFromNodeList(Class<?> factClass) {
@@ -154,13 +131,12 @@ public final class BavetConstraintSession<Solution_, Score_ extends Score<Score_
             return;
         }
         tuple.setState(newState);
-        nodeIndexToDirtyTupleQueueMap.get(tuple.getNodeIndex()).add(tuple);
+        nodes[tuple.getNodeIndex()].addTuple(tuple);
     }
 
     public Score_ calculateScore(int initScore) {
-        for (Queue<BavetAbstractTuple> queue : nodeIndexToDirtyTupleQueueMap) {
-            queue.forEach(BavetConstraintSession::refreshTuple);
-            queue.clear();
+        for (BavetNode node : nodes) {
+            node.calculateScore();
         }
         return scoreInliner.extractScore(initScore);
     }
@@ -181,8 +157,8 @@ public final class BavetConstraintSession<Solution_, Score_ extends Score<Score_
         return scoreInliner;
     }
 
-    public List<BavetNode> getNodes() {
-        return nodeIndexedNodeMap;
+    public BavetNode[] getNodes() {
+        return nodes;
     }
 
     public List<BavetScoringNode> getScoringNodeList() {

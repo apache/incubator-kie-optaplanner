@@ -21,6 +21,7 @@ import static org.assertj.core.api.SoftAssertions.assertSoftly;
 import static org.optaplanner.core.api.score.stream.Joiners.equal;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.function.Function;
 
@@ -77,9 +78,9 @@ class BavetConstraintStreamNodeOrderingTest {
 
     @Test
     void fromUniquePair() {
-        List<BavetNode> nodeList = session.getNodes();
+        BavetNode[] nodes = session.getNodes();
 
-        BavetFromUniNode<Object> fromNode = (BavetFromUniNode<Object>) nodeList.get(0);
+        BavetFromUniNode<Object> fromNode = (BavetFromUniNode<Object>) nodes[0];
         assertThat(fromNode.getNodeIndex())
                 .as("fromNode is the first node of the constraint stream.")
                 .isEqualTo(0);
@@ -112,9 +113,9 @@ class BavetConstraintStreamNodeOrderingTest {
 
     @Test
     void secondJoin() {
-        List<BavetNode> nodeList = session.getNodes();
+        BavetNode[] nodes = session.getNodes();
 
-        BavetFromUniNode<Object> fromNode = (BavetFromUniNode<Object>) nodeList.get(9);
+        BavetFromUniNode<Object> fromNode = (BavetFromUniNode<Object>) nodes[9];
         assertThat(fromNode.getNodeIndex())
                 .as("Second fromNode follows the join (4), group (6), filter (7), left join bridge (8).")
                 .isEqualTo(9);
@@ -132,7 +133,7 @@ class BavetConstraintStreamNodeOrderingTest {
 
     @Test
     void groupByAndBridge() {
-        List<BavetNode> nodeList = session.getNodes();
+        List<BavetNode> nodeList = Arrays.asList(session.getNodes());
 
         assertSoftly(softly -> {
             softly.assertThat(nodeList)

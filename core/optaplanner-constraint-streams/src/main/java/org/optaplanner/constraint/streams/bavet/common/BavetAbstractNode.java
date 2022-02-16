@@ -16,6 +16,9 @@
 
 package org.optaplanner.constraint.streams.bavet.common;
 
+import java.util.ArrayDeque;
+import java.util.Queue;
+
 import org.optaplanner.constraint.streams.bavet.BavetConstraintSession;
 
 public abstract class BavetAbstractNode implements BavetNode {
@@ -23,9 +26,12 @@ public abstract class BavetAbstractNode implements BavetNode {
     protected final BavetConstraintSession session;
     protected final int nodeIndex;
 
+    protected final Queue<BavetAbstractTuple> dirtyTupleQueue;
+
     public BavetAbstractNode(BavetConstraintSession session, int nodeIndex) {
         this.session = session;
         this.nodeIndex = nodeIndex;
+        dirtyTupleQueue = new ArrayDeque<>(1000);
     }
 
     public abstract void refresh(BavetAbstractTuple tuple);
@@ -37,6 +43,37 @@ public abstract class BavetAbstractNode implements BavetNode {
     @Override
     public int getNodeIndex() {
         return nodeIndex;
+    }
+
+    @Override
+    public void addTuple(BavetAbstractTuple tuple) {
+        dirtyTupleQueue.add(tuple);
+    }
+
+    @Override
+    public void calculateScore() {
+        dirtyTupleQueue.forEach(this::refreshTuple);
+        dirtyTupleQueue.clear();
+    }
+
+    private void refreshTuple(BavetAbstractTuple tuple) {
+        refresh(tuple);
+        switch (tuple.getState()) {
+            case CREATING:
+            case UPDATING:
+                tuple.setState(BavetTupleState.OK);
+                return;
+            case DYING:
+            case ABORTING:
+                tuple.setState(BavetTupleState.DEAD);
+                return;
+            case DEAD:
+                throw new IllegalStateException("Impossible state: The tuple (" + tuple + ") in node (" +
+                        tuple.getNode() + ") is already in the dead state (" + tuple.getState() + ").");
+            default:
+                throw new IllegalStateException("Impossible state: Tuple (" + tuple + ") in node (" +
+                        tuple.getNode() + ") is in an unexpected state (" + tuple.getState() + ").");
+        }
     }
 
 }
