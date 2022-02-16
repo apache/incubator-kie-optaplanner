@@ -104,7 +104,7 @@ public class SolverBenchmarkFactory {
         List<SolverMetric> out = new ArrayList<>();
         for (ProblemStatisticType problemStatisticType : Optional.ofNullable(config)
                 .map(ProblemBenchmarksConfig::determineProblemStatisticTypeList)
-                .orElseGet(ProblemStatisticType::defaultMetricList)) {
+                .orElseGet(ProblemStatisticType::defaultList)) {
             if (problemStatisticType == ProblemStatisticType.SCORE_CALCULATION_SPEED) {
                 out.add(SolverMetric.SCORE_CALCULATION_COUNT);
             } else {

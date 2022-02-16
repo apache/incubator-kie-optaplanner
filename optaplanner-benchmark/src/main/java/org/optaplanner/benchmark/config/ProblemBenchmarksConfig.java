@@ -124,7 +124,7 @@ public class ProblemBenchmarksConfig extends AbstractConfig<ProblemBenchmarksCon
         }
 
         if (problemStatisticTypeList == null || problemStatisticTypeList.isEmpty()) {
-            return ProblemStatisticType.defaultMetricList();
+            return ProblemStatisticType.defaultList();
         }
 
         return problemStatisticTypeList;

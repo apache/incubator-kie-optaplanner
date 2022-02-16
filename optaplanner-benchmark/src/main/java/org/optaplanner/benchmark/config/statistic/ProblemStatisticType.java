@@ -64,7 +64,7 @@ public enum ProblemStatisticType implements StatisticType {
                 || this == STEP_SCORE;
     }
 
-    public static List<ProblemStatisticType> defaultMetricList() {
+    public static List<ProblemStatisticType> defaultList() {
         return List.of(ProblemStatisticType.BEST_SCORE);
     }
 

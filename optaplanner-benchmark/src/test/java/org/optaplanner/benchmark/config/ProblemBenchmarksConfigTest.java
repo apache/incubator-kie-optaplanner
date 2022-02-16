@@ -31,14 +31,14 @@ public class ProblemBenchmarksConfigTest {
     public void testDetermineProblemStatisticTypeList() {
         ProblemBenchmarksConfig problemBenchmarksConfig = new ProblemBenchmarksConfig();
         assertThat(problemBenchmarksConfig.determineProblemStatisticTypeList())
-                .isEqualTo(ProblemStatisticType.defaultMetricList());
+                .isEqualTo(ProblemStatisticType.defaultList());
         problemBenchmarksConfig.setProblemStatisticTypeList(Collections.emptyList());
         assertThat(problemBenchmarksConfig.determineProblemStatisticTypeList())
-                .isEqualTo(ProblemStatisticType.defaultMetricList());
+                .isEqualTo(ProblemStatisticType.defaultList());
         problemBenchmarksConfig.setProblemStatisticTypeList(List.of(ProblemStatisticType.MEMORY_USE));
 
         // This assert is to verify the assert below is testing against a different list from the default
-        assertThat(List.of(ProblemStatisticType.MEMORY_USE)).isNotEqualTo(ProblemStatisticType.defaultMetricList());
+        assertThat(List.of(ProblemStatisticType.MEMORY_USE)).isNotEqualTo(ProblemStatisticType.defaultList());
 
         assertThat(problemBenchmarksConfig.determineProblemStatisticTypeList())
                 .isEqualTo(List.of(ProblemStatisticType.MEMORY_USE));
