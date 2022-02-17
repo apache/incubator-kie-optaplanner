@@ -510,6 +510,7 @@ public class TriConstraintStreamTest extends AbstractConstraintStreamTest implem
 
     @Override
     @TestTemplate
+    @Deprecated(forRemoval = true)
     public void ifExistsIncludesNullVarsWithFrom() {
         assumeDrools();
         TestdataLavishSolution solution = TestdataLavishSolution.generateSolution(2, 5, 1, 1);
@@ -752,6 +753,7 @@ public class TriConstraintStreamTest extends AbstractConstraintStreamTest implem
 
     @Override
     @TestTemplate
+    @Deprecated(forRemoval = true)
     public void ifNotExistsIncludesNullVarsWithFrom() {
         assumeDrools();
         TestdataLavishSolution solution = TestdataLavishSolution.generateSolution(2, 5, 1, 1);

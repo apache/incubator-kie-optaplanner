@@ -30,6 +30,7 @@ import static org.optaplanner.core.api.score.stream.Joiners.filtering;
 import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.function.Function;
@@ -44,6 +45,7 @@ import org.optaplanner.core.api.score.buildin.simplebigdecimal.SimpleBigDecimalS
 import org.optaplanner.core.api.score.buildin.simplelong.SimpleLongScore;
 import org.optaplanner.core.api.score.stream.Constraint;
 import org.optaplanner.core.api.score.stream.ConstraintCollectors;
+import org.optaplanner.core.api.score.stream.ConstraintFactory;
 import org.optaplanner.core.api.score.stream.ConstraintProvider;
 import org.optaplanner.core.api.score.stream.ConstraintStreamImplType;
 import org.optaplanner.core.api.score.stream.uni.UniConstraintStream;
@@ -51,6 +53,10 @@ import org.optaplanner.core.impl.score.director.InnerScoreDirector;
 import org.optaplanner.core.impl.testdata.domain.TestdataEntity;
 import org.optaplanner.core.impl.testdata.domain.TestdataSolution;
 import org.optaplanner.core.impl.testdata.domain.TestdataValue;
+import org.optaplanner.core.impl.testdata.domain.extended.TestdataAnnotatedExtendedEntity;
+import org.optaplanner.core.impl.testdata.domain.extended.TestdataAnnotatedExtendedSolution;
+import org.optaplanner.core.impl.testdata.domain.extended.TestdataUnannotatedExtendedEntity;
+import org.optaplanner.core.impl.testdata.domain.extended.TestdataUnannotatedExtendedSolution;
 import org.optaplanner.core.impl.testdata.domain.nullable.TestdataNullableEntity;
 import org.optaplanner.core.impl.testdata.domain.nullable.TestdataNullableSolution;
 import org.optaplanner.core.impl.testdata.domain.score.TestdataSimpleBigDecimalScoreSolution;
@@ -541,6 +547,7 @@ public class UniConstraintStreamTest extends AbstractConstraintStreamTest implem
 
     @Override
     @TestTemplate
+    @Deprecated(forRemoval = true)
     public void ifExistsIncludesNullVarsWithFrom() {
         assumeDrools();
         TestdataLavishSolution solution = TestdataLavishSolution.generateSolution(2, 5, 1, 1);
@@ -753,6 +760,7 @@ public class UniConstraintStreamTest extends AbstractConstraintStreamTest implem
 
     @Override
     @TestTemplate
+    @Deprecated(forRemoval = true)
     public void ifNotExistsIncludesNullVarsWithFrom() {
         assumeDrools();
         TestdataLavishSolution solution = TestdataLavishSolution.generateSolution(2, 5, 1, 1);
@@ -825,6 +833,36 @@ public class UniConstraintStreamTest extends AbstractConstraintStreamTest implem
         })).isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining(Integer.class.getCanonicalName())
                 .hasMessageContaining("assignable from");
+    }
+
+    @TestTemplate
+    public void forEach_polymorphism() {
+        TestdataSolution solution = new TestdataUnannotatedExtendedSolution();
+        TestdataValue v1 = new TestdataValue("v1");
+        TestdataValue v2 = new TestdataValue("v2");
+        solution.setValueList(List.of(v1, v2));
+        TestdataUnannotatedExtendedEntity cat = new TestdataUnannotatedExtendedEntity("Cat", v1);
+        TestdataEntity animal = new TestdataEntity("Animal", v1);
+        TestdataUnannotatedExtendedEntity dog = new TestdataUnannotatedExtendedEntity("Dog", v1);
+        solution.setEntityList(List.of(cat, animal, dog));
+
+        InnerScoreDirector<TestdataSolution, SimpleScore> scoreDirector = buildScoreDirector(
+                TestdataSolution.buildSolutionDescriptor(),
+                factory -> new Constraint[] {
+                        factory.forEach(TestdataEntity.class)
+                                .penalize("superclassConstraint", SimpleScore.ONE),
+                        factory.forEach(TestdataUnannotatedExtendedEntity.class)
+                                .penalize("subclassConstraint", SimpleScore.ONE)
+                });
+
+        // From scratch
+        scoreDirector.setWorkingSolution(solution);
+        assertScore(scoreDirector,
+                assertMatch("superclassConstraint", cat),
+                assertMatch("superclassConstraint", animal),
+                assertMatch("superclassConstraint", dog),
+                assertMatch("subclassConstraint", cat),
+                assertMatch("subclassConstraint", dog));
     }
 
     @TestTemplate
@@ -2141,6 +2179,7 @@ public class UniConstraintStreamTest extends AbstractConstraintStreamTest implem
     // ************************************************************************
 
     @TestTemplate
+    @Deprecated(forRemoval = true)
     public void fromIncludesNullWhenNullable() {
         TestdataNullableSolution solution = TestdataNullableSolution.generateSolution();
         TestdataNullableEntity entityWithNull = solution.getEntityList().get(0);
