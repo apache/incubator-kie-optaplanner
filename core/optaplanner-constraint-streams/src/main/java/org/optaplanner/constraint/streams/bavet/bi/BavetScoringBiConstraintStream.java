@@ -27,7 +27,7 @@ import java.util.function.ToLongBiFunction;
 import org.optaplanner.constraint.streams.bavet.BavetConstraint;
 import org.optaplanner.constraint.streams.bavet.BavetConstraintFactory;
 import org.optaplanner.constraint.streams.bavet.common.BavetNodeBuildPolicy;
-import org.optaplanner.constraint.streams.bavet.uni.BavetFromUniConstraintStream;
+import org.optaplanner.constraint.streams.bavet.uni.BavetForEachUniConstraintStream;
 import org.optaplanner.constraint.streams.common.inliner.AbstractScoreInliner;
 import org.optaplanner.constraint.streams.common.inliner.UndoScoreImpacter;
 import org.optaplanner.constraint.streams.common.inliner.WeightedScoreImpacter;
@@ -96,7 +96,7 @@ public final class BavetScoringBiConstraintStream<Solution_, A, B>
     }
 
     @Override
-    public List<BavetFromUniConstraintStream<Solution_, Object>> getFromStreamList() {
+    public List<BavetForEachUniConstraintStream<Solution_, Object>> getFromStreamList() {
         return parent.getFromStreamList();
     }
 

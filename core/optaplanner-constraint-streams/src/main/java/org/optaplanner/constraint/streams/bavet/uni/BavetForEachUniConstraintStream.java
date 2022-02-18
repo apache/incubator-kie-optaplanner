@@ -24,16 +24,16 @@ import org.optaplanner.constraint.streams.bavet.common.BavetNodeBuildPolicy;
 import org.optaplanner.constraint.streams.common.RetrievalSemantics;
 import org.optaplanner.core.api.score.Score;
 
-public final class BavetFromUniConstraintStream<Solution_, A> extends BavetAbstractUniConstraintStream<Solution_, A> {
+public final class BavetForEachUniConstraintStream<Solution_, A> extends BavetAbstractUniConstraintStream<Solution_, A> {
 
-    private final Class<A> fromClass;
+    private final Class<A> forEachClass;
 
-    public BavetFromUniConstraintStream(BavetConstraintFactory<Solution_> constraintFactory, Class<A> fromClass,
+    public BavetForEachUniConstraintStream(BavetConstraintFactory<Solution_> constraintFactory, Class<A> forEachClass,
             RetrievalSemantics retrievalSemantics) {
         super(constraintFactory, retrievalSemantics);
-        this.fromClass = fromClass;
-        if (fromClass == null) {
-            throw new IllegalArgumentException("The fromClass (null) cannot be null.");
+        this.forEachClass = forEachClass;
+        if (forEachClass == null) {
+            throw new IllegalArgumentException("The forEachClass (null) cannot be null.");
         }
     }
 
@@ -43,8 +43,8 @@ public final class BavetFromUniConstraintStream<Solution_, A> extends BavetAbstr
     }
 
     @Override
-    public List<BavetFromUniConstraintStream<Solution_, Object>> getFromStreamList() {
-        return Collections.singletonList((BavetFromUniConstraintStream<Solution_, Object>) this);
+    public List<BavetForEachUniConstraintStream<Solution_, Object>> getFromStreamList() {
+        return Collections.singletonList((BavetForEachUniConstraintStream<Solution_, Object>) this);
     }
 
     // ************************************************************************
@@ -52,32 +52,32 @@ public final class BavetFromUniConstraintStream<Solution_, A> extends BavetAbstr
     // ************************************************************************
 
     @Override
-    public BavetFromUniNode<A> createNodeChain(BavetNodeBuildPolicy<Solution_> buildPolicy, Score<?> constraintWeight,
+    public BavetForEachUniNode<A> createNodeChain(BavetNodeBuildPolicy<Solution_> buildPolicy, Score<?> constraintWeight,
             BavetAbstractUniNode<A> parentNode) {
-        return (BavetFromUniNode<A>) super.createNodeChain(buildPolicy, constraintWeight, parentNode);
+        return (BavetForEachUniNode<A>) super.createNodeChain(buildPolicy, constraintWeight, parentNode);
     }
 
     @Override
-    protected BavetFromUniNode<A> createNode(BavetNodeBuildPolicy<Solution_> buildPolicy, Score<?> constraintWeight,
+    protected BavetForEachUniNode<A> createNode(BavetNodeBuildPolicy<Solution_> buildPolicy, Score<?> constraintWeight,
             BavetAbstractUniNode<A> parentNode) {
         if (parentNode != null) {
             throw new IllegalStateException("Impossible state: the stream (" + this
                     + ") cannot have a parentNode (" + parentNode + ").");
         }
-        return new BavetFromUniNode<>(buildPolicy.getSession(), buildPolicy.nextNodeIndex(), fromClass);
+        return new BavetForEachUniNode<>(buildPolicy.getSession(), buildPolicy.nextNodeIndex(), forEachClass);
     }
 
     @Override
     public String toString() {
-        return "From(" + fromClass.getSimpleName() + ") with " + childStreamList.size() + " children";
+        return "From(" + forEachClass.getSimpleName() + ") with " + childStreamList.size() + " children";
     }
 
     // ************************************************************************
     // Getters/setters
     // ************************************************************************
 
-    public Class<A> getFromClass() {
-        return fromClass;
+    public Class<A> getForEachClass() {
+        return forEachClass;
     }
 
 }

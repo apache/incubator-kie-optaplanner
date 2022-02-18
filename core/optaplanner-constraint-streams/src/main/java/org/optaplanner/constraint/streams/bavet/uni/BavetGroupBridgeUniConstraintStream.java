@@ -53,7 +53,7 @@ public final class BavetGroupBridgeUniConstraintStream<Solution_, A, NewA, Resul
     }
 
     @Override
-    public List<BavetFromUniConstraintStream<Solution_, Object>> getFromStreamList() {
+    public List<BavetForEachUniConstraintStream<Solution_, Object>> getFromStreamList() {
         return parent.getFromStreamList();
     }
 

@@ -25,7 +25,7 @@ import org.optaplanner.constraint.streams.bavet.common.BavetJoinBridgeNode;
 import org.optaplanner.constraint.streams.bavet.common.BavetJoinConstraintStream;
 import org.optaplanner.constraint.streams.bavet.common.BavetNodeBuildPolicy;
 import org.optaplanner.constraint.streams.bavet.common.index.BavetIndexFactory;
-import org.optaplanner.constraint.streams.bavet.uni.BavetFromUniConstraintStream;
+import org.optaplanner.constraint.streams.bavet.uni.BavetForEachUniConstraintStream;
 import org.optaplanner.core.api.score.Score;
 
 public final class BavetJoinBridgeBiConstraintStream<Solution_, A, B>
@@ -58,7 +58,7 @@ public final class BavetJoinBridgeBiConstraintStream<Solution_, A, B>
     }
 
     @Override
-    public List<BavetFromUniConstraintStream<Solution_, Object>> getFromStreamList() {
+    public List<BavetForEachUniConstraintStream<Solution_, Object>> getFromStreamList() {
         return parent.getFromStreamList();
     }
 

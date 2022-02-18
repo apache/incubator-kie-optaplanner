@@ -17,7 +17,7 @@
 package org.optaplanner.constraint.streams.bavet;
 
 import org.optaplanner.constraint.streams.bavet.uni.BavetAbstractUniConstraintStream;
-import org.optaplanner.constraint.streams.bavet.uni.BavetFromUniConstraintStream;
+import org.optaplanner.constraint.streams.bavet.uni.BavetForEachUniConstraintStream;
 import org.optaplanner.constraint.streams.common.InnerConstraintFactory;
 import org.optaplanner.constraint.streams.common.RetrievalSemantics;
 import org.optaplanner.core.api.score.stream.uni.UniConstraintStream;
@@ -49,13 +49,13 @@ public final class BavetConstraintFactory<Solution_>
     @Override
     public <A> UniConstraintStream<A> forEachIncludingNullVars(Class<A> sourceClass) {
         assertValidFromType(sourceClass);
-        return new BavetFromUniConstraintStream<>(this, sourceClass, RetrievalSemantics.STANDARD);
+        return new BavetForEachUniConstraintStream<>(this, sourceClass, RetrievalSemantics.STANDARD);
     }
 
     @Override
     public <A> BavetAbstractUniConstraintStream<Solution_, A> fromUnfiltered(Class<A> fromClass) {
         assertValidFromType(fromClass);
-        return new BavetFromUniConstraintStream<>(this, fromClass, RetrievalSemantics.LEGACY);
+        return new BavetForEachUniConstraintStream<>(this, fromClass, RetrievalSemantics.LEGACY);
     }
 
     // ************************************************************************

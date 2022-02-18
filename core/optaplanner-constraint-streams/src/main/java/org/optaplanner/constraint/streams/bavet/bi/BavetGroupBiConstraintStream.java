@@ -22,7 +22,7 @@ import java.util.function.Function;
 import org.optaplanner.constraint.streams.bavet.BavetConstraintFactory;
 import org.optaplanner.constraint.streams.bavet.common.BavetAbstractConstraintStream;
 import org.optaplanner.constraint.streams.bavet.common.BavetNodeBuildPolicy;
-import org.optaplanner.constraint.streams.bavet.uni.BavetFromUniConstraintStream;
+import org.optaplanner.constraint.streams.bavet.uni.BavetForEachUniConstraintStream;
 import org.optaplanner.core.api.score.Score;
 
 public final class BavetGroupBiConstraintStream<Solution_, GroupKey_, ResultContainer_, Result_>
@@ -45,7 +45,7 @@ public final class BavetGroupBiConstraintStream<Solution_, GroupKey_, ResultCont
     }
 
     @Override
-    public List<BavetFromUniConstraintStream<Solution_, Object>> getFromStreamList() {
+    public List<BavetForEachUniConstraintStream<Solution_, Object>> getFromStreamList() {
         return parent.getFromStreamList();
     }
 

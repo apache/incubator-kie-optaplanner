@@ -34,7 +34,7 @@ import org.optaplanner.constraint.streams.bavet.common.BavetScoringNode;
 import org.optaplanner.constraint.streams.bavet.tri.BavetScoringTriNode;
 import org.optaplanner.constraint.streams.bavet.uni.BavetAbstractUniNode;
 import org.optaplanner.constraint.streams.bavet.uni.BavetFilterUniNode;
-import org.optaplanner.constraint.streams.bavet.uni.BavetFromUniNode;
+import org.optaplanner.constraint.streams.bavet.uni.BavetForEachUniNode;
 import org.optaplanner.constraint.streams.bavet.uni.BavetJoinBridgeUniNode;
 import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
 import org.optaplanner.core.api.score.stream.Constraint;
@@ -67,12 +67,12 @@ class BavetConstraintStreamNodeOrderingTest {
 
     @Test
     void correctNumberOfFromNodes() {
-        List<BavetFromUniNode<Object>> lavishEntityFromNodeList = session.findFromNodeList(TestdataLavishEntity.class);
+        List<BavetForEachUniNode<Object>> lavishEntityFromNodeList = session.findFromNodeList(TestdataLavishEntity.class);
         assertThat(lavishEntityFromNodeList).hasSize(1); // forEachUniquePair() uses just one fromNode.
-        List<BavetFromUniNode<Object>> lavishValueGroupFromNodeList =
+        List<BavetForEachUniNode<Object>> lavishValueGroupFromNodeList =
                 session.findFromNodeList(TestdataLavishValueGroup.class);
         assertThat(lavishValueGroupFromNodeList).hasSize(1); // join uses just one fromNode.
-        List<BavetFromUniNode<Object>> lavishValueFromNodeList = session.findFromNodeList(TestdataLavishValue.class);
+        List<BavetForEachUniNode<Object>> lavishValueFromNodeList = session.findFromNodeList(TestdataLavishValue.class);
         assertThat(lavishValueFromNodeList).isEmpty(); // Not used in the constraint.
     }
 
@@ -80,7 +80,7 @@ class BavetConstraintStreamNodeOrderingTest {
     void fromUniquePair() {
         BavetNode[] nodes = session.getNodes();
 
-        BavetFromUniNode<Object> fromNode = (BavetFromUniNode<Object>) nodes[0];
+        BavetForEachUniNode<Object> fromNode = (BavetForEachUniNode<Object>) nodes[0];
         assertThat(fromNode.getNodeIndex())
                 .as("fromNode is the first node of the constraint stream.")
                 .isEqualTo(0);
@@ -115,7 +115,7 @@ class BavetConstraintStreamNodeOrderingTest {
     void secondJoin() {
         BavetNode[] nodes = session.getNodes();
 
-        BavetFromUniNode<Object> fromNode = (BavetFromUniNode<Object>) nodes[9];
+        BavetForEachUniNode<Object> fromNode = (BavetForEachUniNode<Object>) nodes[9];
         assertThat(fromNode.getNodeIndex())
                 .as("Second fromNode follows the join (4), group (6), filter (7), left join bridge (8).")
                 .isEqualTo(9);

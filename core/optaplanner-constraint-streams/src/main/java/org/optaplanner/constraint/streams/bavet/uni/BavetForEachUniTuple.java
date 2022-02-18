@@ -21,13 +21,13 @@ import java.util.List;
 
 import org.optaplanner.constraint.streams.bavet.common.BavetAbstractTuple;
 
-public final class BavetFromUniTuple<A> extends BavetAbstractUniTuple<A> {
+public final class BavetForEachUniTuple<A> extends BavetAbstractUniTuple<A> {
 
-    private final BavetFromUniNode<A> node;
+    private final BavetForEachUniNode<A> node;
     private final A factA;
     private final List<BavetAbstractTuple> childTupleList;
 
-    public BavetFromUniTuple(BavetFromUniNode<A> node, A factA, int childTupleListSize) {
+    public BavetForEachUniTuple(BavetForEachUniNode<A> node, A factA, int childTupleListSize) {
         this.childTupleList = new ArrayList<>(childTupleListSize);
         this.node = node;
         this.factA = factA;
@@ -43,7 +43,7 @@ public final class BavetFromUniTuple<A> extends BavetAbstractUniTuple<A> {
     // ************************************************************************
 
     @Override
-    public BavetFromUniNode<A> getNode() {
+    public BavetForEachUniNode<A> getNode() {
         return node;
     }
 

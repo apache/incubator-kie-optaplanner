@@ -44,7 +44,7 @@ public final class BavetFilterUniConstraintStream<Solution_, A> extends BavetAbs
     }
 
     @Override
-    public List<BavetFromUniConstraintStream<Solution_, Object>> getFromStreamList() {
+    public List<BavetForEachUniConstraintStream<Solution_, Object>> getFromStreamList() {
         return parent.getFromStreamList();
     }
 

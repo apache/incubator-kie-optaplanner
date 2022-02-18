@@ -23,16 +23,16 @@ import org.optaplanner.constraint.streams.bavet.BavetConstraintSession;
 import org.optaplanner.constraint.streams.bavet.common.BavetAbstractTuple;
 import org.optaplanner.constraint.streams.bavet.common.BavetTupleState;
 
-public final class BavetFromUniNode<A> extends BavetAbstractUniNode<A> {
+public final class BavetForEachUniNode<A> extends BavetAbstractUniNode<A> {
 
-    private final Class<A> fromClass;
+    private final Class<A> forEachClass;
 
     private List<BavetAbstractUniNode<A>> childNodeList = new ArrayList<>();
 
-    public BavetFromUniNode(BavetConstraintSession session, int nodeIndex,
-            Class<A> fromClass) {
+    public BavetForEachUniNode(BavetConstraintSession session, int nodeIndex,
+            Class<A> forEachClass) {
         super(session, nodeIndex);
-        this.fromClass = fromClass;
+        this.forEachClass = forEachClass;
     }
 
     @Override
@@ -51,16 +51,16 @@ public final class BavetFromUniNode<A> extends BavetAbstractUniNode<A> {
 
     @Override
     public int hashCode() {
-        return fromClass.hashCode();
+        return forEachClass.hashCode();
     }
 
     @Override
     public boolean equals(Object o) {
         if (this == o) {
             return true;
-        } else if (o instanceof BavetFromUniNode) {
-            BavetFromUniNode<?> other = (BavetFromUniNode<?>) o;
-            return fromClass.equals(other.fromClass);
+        } else if (o instanceof BavetForEachUniNode) {
+            BavetForEachUniNode<?> other = (BavetForEachUniNode<?>) o;
+            return forEachClass.equals(other.forEachClass);
         } else {
             return false;
         }
@@ -70,8 +70,8 @@ public final class BavetFromUniNode<A> extends BavetAbstractUniNode<A> {
     // Runtime
     // ************************************************************************
 
-    public BavetFromUniTuple<A> createTuple(A a) {
-        return new BavetFromUniTuple<>(this, a, childNodeList.size());
+    public BavetForEachUniTuple<A> createTuple(A a) {
+        return new BavetForEachUniTuple<>(this, a, childNodeList.size());
     }
 
     @Override
@@ -82,7 +82,7 @@ public final class BavetFromUniNode<A> extends BavetAbstractUniNode<A> {
 
     @Override
     public void refresh(BavetAbstractTuple uncastTuple) {
-        BavetFromUniTuple<A> tuple = (BavetFromUniTuple<A>) uncastTuple;
+        BavetForEachUniTuple<A> tuple = (BavetForEachUniTuple<A>) uncastTuple;
         List<BavetAbstractTuple> childTupleList = tuple.getChildTupleList();
         for (BavetAbstractTuple childTuple : childTupleList) {
             // TODO the entire FromUniNode isn't really doing anything
@@ -101,7 +101,7 @@ public final class BavetFromUniNode<A> extends BavetAbstractUniNode<A> {
 
     @Override
     public String toString() {
-        return "From(" + fromClass.getSimpleName() + ") with " + childNodeList.size() + " children";
+        return "From(" + forEachClass.getSimpleName() + ") with " + childNodeList.size() + " children";
     }
 
     // ************************************************************************

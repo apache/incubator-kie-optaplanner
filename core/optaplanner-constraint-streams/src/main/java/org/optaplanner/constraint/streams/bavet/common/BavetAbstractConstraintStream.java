@@ -21,7 +21,7 @@ import java.util.function.Function;
 
 import org.optaplanner.constraint.streams.bavet.BavetConstraint;
 import org.optaplanner.constraint.streams.bavet.BavetConstraintFactory;
-import org.optaplanner.constraint.streams.bavet.uni.BavetFromUniConstraintStream;
+import org.optaplanner.constraint.streams.bavet.uni.BavetForEachUniConstraintStream;
 import org.optaplanner.constraint.streams.common.AbstractConstraintStream;
 import org.optaplanner.constraint.streams.common.RetrievalSemantics;
 import org.optaplanner.constraint.streams.common.ScoreImpactType;
@@ -46,7 +46,7 @@ public abstract class BavetAbstractConstraintStream<Solution_> extends AbstractC
             Score<?> constraintWeight, ScoreImpactType impactType) {
         Function<Solution_, Score<?>> constraintWeightExtractor = buildConstraintWeightExtractor(
                 constraintPackage, constraintName, constraintWeight);
-        List<BavetFromUniConstraintStream<Solution_, Object>> fromStreamList = getFromStreamList();
+        List<BavetForEachUniConstraintStream<Solution_, Object>> fromStreamList = getFromStreamList();
         return new BavetConstraint<>(constraintFactory, constraintPackage, constraintName, constraintWeightExtractor,
                 impactType, false, fromStreamList);
     }
@@ -55,7 +55,7 @@ public abstract class BavetAbstractConstraintStream<Solution_> extends AbstractC
             ScoreImpactType impactType) {
         Function<Solution_, Score<?>> constraintWeightExtractor = buildConstraintWeightExtractor(
                 constraintPackage, constraintName);
-        List<BavetFromUniConstraintStream<Solution_, Object>> fromStreamList = getFromStreamList();
+        List<BavetForEachUniConstraintStream<Solution_, Object>> fromStreamList = getFromStreamList();
         return new BavetConstraint<>(constraintFactory, constraintPackage, constraintName, constraintWeightExtractor,
                 impactType, true, fromStreamList);
     }
@@ -64,7 +64,7 @@ public abstract class BavetAbstractConstraintStream<Solution_> extends AbstractC
     // Node creation
     // ************************************************************************
 
-    public abstract List<BavetFromUniConstraintStream<Solution_, Object>> getFromStreamList();
+    public abstract List<BavetForEachUniConstraintStream<Solution_, Object>> getFromStreamList();
 
     // ************************************************************************
     // Getters/setters

@@ -93,7 +93,7 @@ public final class BavetScoringUniConstraintStream<Solution_, A> extends BavetAb
     }
 
     @Override
-    public List<BavetFromUniConstraintStream<Solution_, Object>> getFromStreamList() {
+    public List<BavetForEachUniConstraintStream<Solution_, Object>> getFromStreamList() {
         return parent.getFromStreamList();
     }
 
