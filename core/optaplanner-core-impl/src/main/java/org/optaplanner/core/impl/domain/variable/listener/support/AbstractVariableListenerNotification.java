@@ -24,9 +24,15 @@ import org.optaplanner.core.impl.domain.variable.descriptor.ShadowVariableDescri
 abstract class AbstractVariableListenerNotification {
 
     protected final Object entity;
+    protected final int index;
+
+    protected AbstractVariableListenerNotification(Object entity, int index) {
+        this.entity = entity;
+        this.index = index;
+    }
 
     protected AbstractVariableListenerNotification(Object entity) {
-        this.entity = entity;
+        this(entity, -1);
     }
 
     /**
