@@ -28,10 +28,4 @@ final class ListVariableListenerNotifiable<Solution_>
             int globalOrder) {
         super(scoreDirector, variableListener, globalOrder);
     }
-
-    void addNotification(ListVariableNotification<Solution_> notification) {
-        if (notificationQueue.add(notification)) {
-            notification.triggerBefore(variableListener, scoreDirector);
-        }
-    }
 }

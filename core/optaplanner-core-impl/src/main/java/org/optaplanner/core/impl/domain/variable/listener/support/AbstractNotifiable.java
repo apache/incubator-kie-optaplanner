@@ -27,10 +27,10 @@ import org.optaplanner.core.api.score.director.ScoreDirector;
 abstract class AbstractNotifiable<Solution_, T extends AbstractVariableListener<Solution_, Object>>
         implements EntityNotifiable<Solution_> {
 
-    protected final ScoreDirector<Solution_> scoreDirector;
-    protected final int globalOrder;
-    protected final T variableListener;
-    protected final Collection<Notification<Solution_, ? super T>> notificationQueue;
+    private final ScoreDirector<Solution_> scoreDirector;
+    private final int globalOrder;
+    private final T variableListener;
+    private final Collection<Notification<Solution_, ? super T>> notificationQueue;
 
     static <Solution_> EntityNotifiable<Solution_> buildNotifiable(
             ScoreDirector<Solution_> scoreDirector,
@@ -65,6 +65,12 @@ abstract class AbstractNotifiable<Solution_, T extends AbstractVariableListener<
 
     @Override
     public void addNotification(EntityNotification<Solution_> notification) {
+        if (notificationQueue.add(notification)) {
+            notification.triggerBefore(variableListener, scoreDirector);
+        }
+    }
+
+    public void addNotification(Notification<Solution_, T> notification) {
         if (notificationQueue.add(notification)) {
             notification.triggerBefore(variableListener, scoreDirector);
         }
