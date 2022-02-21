@@ -17,14 +17,11 @@
 package org.optaplanner.core.impl.domain.variable.listener.support;
 
 import org.optaplanner.core.api.domain.variable.AbstractVariableListener;
+import org.optaplanner.core.api.score.director.ScoreDirector;
 
-public interface EntityNotification<Solution_> extends Notification<Solution_, AbstractVariableListener<Solution_, Object>> {
+public interface Notification<Solution_, T extends AbstractVariableListener<Solution_, Object>> {
 
-    static <Solution_> EntityNotification<Solution_> entityAdded(Object entity) {
-        return new EntityAddedNotification<>(entity);
-    }
+    void triggerBefore(T variableListener, ScoreDirector<Solution_> scoreDirector);
 
-    static <Solution_> EntityNotification<Solution_> entityRemoved(Object entity) {
-        return new EntityRemovedNotification<>(entity);
-    }
+    void triggerAfter(T variableListener, ScoreDirector<Solution_> scoreDirector);
 }

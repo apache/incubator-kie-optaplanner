@@ -16,22 +16,9 @@
 
 package org.optaplanner.core.impl.domain.variable.listener.support;
 
-import java.util.function.BiConsumer;
-
 import org.optaplanner.core.api.domain.variable.ListVariableListener;
-import org.optaplanner.core.api.score.director.ScoreDirector;
 
-public interface ListVariableNotification<Solution_>
-        extends BiConsumer<ListVariableListener<Solution_, Object>, ScoreDirector<Solution_>> {
-
-    void triggerBefore(ListVariableListener<Solution_, Object> variableListener, ScoreDirector<Solution_> scoreDirector);
-
-    void triggerAfter(ListVariableListener<Solution_, Object> variableListener, ScoreDirector<Solution_> scoreDirector);
-
-    @Override
-    default void accept(ListVariableListener<Solution_, Object> variableListener, ScoreDirector<Solution_> scoreDirector) {
-        triggerAfter(variableListener, scoreDirector);
-    }
+public interface ListVariableNotification<Solution_> extends Notification<Solution_, ListVariableListener<Solution_, Object>> {
 
     static <Solution_> ListVariableNotification<Solution_> variableChanged(Object entity) {
         return new ListVariableChangedNotification<>(entity);

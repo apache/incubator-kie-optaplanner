@@ -18,7 +18,6 @@ package org.optaplanner.core.impl.domain.variable.listener.support;
 
 import java.util.ArrayDeque;
 import java.util.Collection;
-import java.util.function.BiConsumer;
 
 import org.optaplanner.core.api.domain.variable.AbstractVariableListener;
 import org.optaplanner.core.api.domain.variable.ListVariableListener;
@@ -27,7 +26,7 @@ import org.optaplanner.core.api.score.director.ScoreDirector;
 final class ListVariableListenerNotifiable<Solution_> extends AbstractNotifiable<Solution_> {
 
     private final ListVariableListener<Solution_, Object> variableListener;
-    private final Collection<BiConsumer<? super ListVariableListener<Solution_, Object>, ScoreDirector<Solution_>>> notificationQueue;
+    private final Collection<Notification<Solution_, ? super ListVariableListener<Solution_, Object>>> notificationQueue;
 
     ListVariableListenerNotifiable(
             ScoreDirector<Solution_> scoreDirector,
@@ -63,8 +62,8 @@ final class ListVariableListenerNotifiable<Solution_> extends AbstractNotifiable
     @Override
     void triggerAllNotifications() {
         int notifiedCount = 0;
-        for (BiConsumer<? super ListVariableListener<Solution_, Object>, ScoreDirector<Solution_>> notification : notificationQueue) {
-            notification.accept(variableListener, scoreDirector);
+        for (Notification<Solution_, ? super ListVariableListener<Solution_, Object>> notification : notificationQueue) {
+            notification.triggerAfter(variableListener, scoreDirector);
             notifiedCount++;
         }
         if (notifiedCount != notificationQueue.size()) {
