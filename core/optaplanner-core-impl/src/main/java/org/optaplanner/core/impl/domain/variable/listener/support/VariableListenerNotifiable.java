@@ -16,64 +16,21 @@
 
 package org.optaplanner.core.impl.domain.variable.listener.support;
 
-import java.util.ArrayDeque;
-import java.util.Collection;
-
-import org.optaplanner.core.api.domain.variable.AbstractVariableListener;
 import org.optaplanner.core.api.domain.variable.VariableListener;
 import org.optaplanner.core.api.score.director.ScoreDirector;
 
-final class VariableListenerNotifiable<Solution_> extends AbstractNotifiable<Solution_> {
-
-    private final VariableListener<Solution_, Object> variableListener;
-    private final Collection<Notification<Solution_, ? super VariableListener<Solution_, Object>>> notificationQueue;
+final class VariableListenerNotifiable<Solution_> extends AbstractNotifiable<Solution_, VariableListener<Solution_, Object>> {
 
     VariableListenerNotifiable(
             ScoreDirector<Solution_> scoreDirector,
             VariableListener<Solution_, Object> variableListener,
             int globalOrder) {
-        super(scoreDirector, globalOrder);
-        this.variableListener = variableListener;
-        if (variableListener.requiresUniqueEntityEvents()) {
-            notificationQueue = new SmallScalingOrderedSet<>();
-        } else {
-            notificationQueue = new ArrayDeque<>();
-        }
-    }
-
-    @Override
-    AbstractVariableListener<Solution_, ?> getVariableListener() {
-        return variableListener;
+        super(scoreDirector, variableListener, globalOrder);
     }
 
     void addNotification(BasicVariableNotification<Solution_> notification) {
         if (notificationQueue.add(notification)) {
             notification.triggerBefore(variableListener, scoreDirector);
         }
-    }
-
-    @Override
-    public void addNotification(EntityNotification<Solution_> notification) {
-        if (notificationQueue.add(notification)) {
-            notification.triggerBefore(variableListener, scoreDirector);
-        }
-    }
-
-    @Override
-    void triggerAllNotifications() {
-        int notifiedCount = 0;
-        for (Notification<Solution_, ? super VariableListener<Solution_, Object>> notification : notificationQueue) {
-            notification.triggerAfter(variableListener, scoreDirector);
-            notifiedCount++;
-        }
-        if (notifiedCount != notificationQueue.size()) {
-            throw new IllegalStateException("The variableListener (" + variableListener.getClass()
-                    + ") has been notified with notifiedCount (" + notifiedCount
-                    + ") but after being triggered, its notificationCount (" + notificationQueue.size()
-                    + ") is different.\n"
-                    + "Maybe that variableListener (" + variableListener.getClass()
-                    + ") changed an upstream shadow variable (which is illegal).");
-        }
-        notificationQueue.clear();
     }
 }

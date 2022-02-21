@@ -177,7 +177,7 @@ public class InverseRelationShadowVariableDescriptor<Solution_> extends ShadowVa
     }
 
     @Override
-    public AbstractVariableListener<Solution_, ?> buildVariableListener(InnerScoreDirector<Solution_, ?> scoreDirector) {
+    public AbstractVariableListener<Solution_, Object> buildVariableListener(InnerScoreDirector<Solution_, ?> scoreDirector) {
         if (singleton) {
             if (chained) {
                 return new SingletonInverseVariableListener<>(this, sourceVariableDescriptor);

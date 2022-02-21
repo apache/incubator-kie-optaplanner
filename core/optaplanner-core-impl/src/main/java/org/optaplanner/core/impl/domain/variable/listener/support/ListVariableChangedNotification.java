@@ -19,7 +19,7 @@ package org.optaplanner.core.impl.domain.variable.listener.support;
 import org.optaplanner.core.api.domain.variable.ListVariableListener;
 import org.optaplanner.core.api.score.director.ScoreDirector;
 
-final class ListVariableChangedNotification<Solution_> extends AbstractListVariableListenerNotification
+final class ListVariableChangedNotification<Solution_> extends AbstractNotification
         implements ListVariableNotification<Solution_> {
 
     ListVariableChangedNotification(Object entity) {

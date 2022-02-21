@@ -74,7 +74,8 @@ public final class VariableListenerSupport<Solution_> implements SupplyManager {
     }
 
     private void processShadowVariableDescriptor(ShadowVariableDescriptor<Solution_> shadowVariableDescriptor) {
-        AbstractVariableListener<Solution_, ?> variableListener = shadowVariableDescriptor.buildVariableListener(scoreDirector);
+        AbstractVariableListener<Solution_, Object> variableListener =
+                shadowVariableDescriptor.buildVariableListener(scoreDirector);
         if (variableListener instanceof Supply) {
             // Non-sourced variable listeners (ie. ones provided by the user) can never be a supply.
             supplyMap.put(shadowVariableDescriptor.getProvidedDemand(), (Supply) variableListener);
@@ -111,22 +112,22 @@ public final class VariableListenerSupport<Solution_> implements SupplyManager {
     // ************************************************************************
 
     public void resetWorkingSolution() {
-        for (AbstractNotifiable<Solution_> notifiable : notifiableRegistry.getAll()) {
+        for (Notifiable notifiable : notifiableRegistry.getAll()) {
             notifiable.resetWorkingSolution();
         }
     }
 
     public void close() {
-        for (AbstractNotifiable<Solution_> notifiable : notifiableRegistry.getAll()) {
+        for (Notifiable notifiable : notifiableRegistry.getAll()) {
             notifiable.closeVariableListener();
         }
     }
 
     public void beforeEntityAdded(EntityDescriptor<Solution_> entityDescriptor, Object entity) {
-        Collection<AbstractNotifiable<Solution_>> notifiables = notifiableRegistry.get(entityDescriptor);
+        Collection<EntityNotifiable<Solution_>> notifiables = notifiableRegistry.get(entityDescriptor);
         if (!notifiables.isEmpty()) {
             EntityNotification<Solution_> notification = EntityNotification.entityAdded(entity);
-            for (AbstractNotifiable<Solution_> notifiable : notifiables) {
+            for (EntityNotifiable<Solution_> notifiable : notifiables) {
                 notifiable.addNotification(notification);
             }
         }
@@ -135,6 +136,21 @@ public final class VariableListenerSupport<Solution_> implements SupplyManager {
 
     public void afterEntityAdded(EntityDescriptor<Solution_> entityDescriptor, Object entity) {
         // beforeEntityAdded() has already added it to the notificationQueue
+    }
+
+    public void beforeEntityRemoved(EntityDescriptor<Solution_> entityDescriptor, Object entity) {
+        Collection<EntityNotifiable<Solution_>> notifiables = notifiableRegistry.get(entityDescriptor);
+        if (!notifiables.isEmpty()) {
+            EntityNotification<Solution_> notification = EntityNotification.entityRemoved(entity);
+            for (EntityNotifiable<Solution_> notifiable : notifiables) {
+                notifiable.addNotification(notification);
+            }
+        }
+        notificationQueuesAreEmpty = false;
+    }
+
+    public void afterEntityRemoved(EntityDescriptor<Solution_> entityDescriptor, Object entity) {
+        // beforeEntityRemoved() has already added it to the notificationQueue
     }
 
     public void beforeVariableChanged(VariableDescriptor<Solution_> variableDescriptor, Object entity) {
@@ -167,23 +183,8 @@ public final class VariableListenerSupport<Solution_> implements SupplyManager {
         // beforeVariableChanged() has already added it to the notificationQueue
     }
 
-    public void beforeEntityRemoved(EntityDescriptor<Solution_> entityDescriptor, Object entity) {
-        Collection<AbstractNotifiable<Solution_>> notifiables = notifiableRegistry.get(entityDescriptor);
-        if (!notifiables.isEmpty()) {
-            EntityNotification<Solution_> notification = EntityNotification.entityRemoved(entity);
-            for (AbstractNotifiable<Solution_> notifiable : notifiables) {
-                notifiable.addNotification(notification);
-            }
-        }
-        notificationQueuesAreEmpty = false;
-    }
-
-    public void afterEntityRemoved(EntityDescriptor<Solution_> entityDescriptor, Object entity) {
-        // beforeEntityRemoved() has already added it to the notificationQueue
-    }
-
     public void triggerVariableListenersInNotificationQueues() {
-        for (AbstractNotifiable<Solution_> notifiable : notifiableRegistry.getAll()) {
+        for (Notifiable notifiable : notifiableRegistry.getAll()) {
             notifiable.triggerAllNotifications();
         }
         notificationQueuesAreEmpty = true;

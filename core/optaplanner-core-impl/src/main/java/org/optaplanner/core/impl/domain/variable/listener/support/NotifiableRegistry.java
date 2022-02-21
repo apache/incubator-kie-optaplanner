@@ -32,8 +32,8 @@ import org.optaplanner.core.impl.domain.variable.descriptor.VariableDescriptor;
 
 final class NotifiableRegistry<Solution_> {
 
-    private final List<AbstractNotifiable<Solution_>> notifiableList = new ArrayList<>();
-    private final Map<EntityDescriptor<?>, Set<AbstractNotifiable<Solution_>>> sourceEntityToNotifiableMap =
+    private final List<Notifiable> notifiableList = new ArrayList<>();
+    private final Map<EntityDescriptor<?>, Set<EntityNotifiable<Solution_>>> sourceEntityToNotifiableMap =
             new LinkedHashMap<>();
     private final Map<VariableDescriptor<?>, List<VariableListenerNotifiable<Solution_>>> sourceVariableToNotifiableMap =
             new LinkedHashMap<>();
@@ -53,11 +53,11 @@ final class NotifiableRegistry<Solution_> {
         }
     }
 
-    void registerNotifiable(VariableDescriptor<Solution_> source, AbstractNotifiable<Solution_> notifiable) {
+    void registerNotifiable(VariableDescriptor<Solution_> source, EntityNotifiable<Solution_> notifiable) {
         registerNotifiable(Collections.singletonList(source), notifiable);
     }
 
-    void registerNotifiable(Collection<VariableDescriptor<Solution_>> sources, AbstractNotifiable<Solution_> notifiable) {
+    void registerNotifiable(Collection<VariableDescriptor<Solution_>> sources, EntityNotifiable<Solution_> notifiable) {
         for (VariableDescriptor<?> source : sources) {
             if (source.isGenuineListVariable()) {
                 sourceListVariableToNotifiableMap.get(source).add(((ListVariableListenerNotifiable<Solution_>) notifiable));
@@ -69,11 +69,11 @@ final class NotifiableRegistry<Solution_> {
         notifiableList.add(notifiable);
     }
 
-    Iterable<AbstractNotifiable<Solution_>> getAll() {
+    Iterable<Notifiable> getAll() {
         return notifiableList;
     }
 
-    Collection<AbstractNotifiable<Solution_>> get(EntityDescriptor<?> entityDescriptor) {
+    Collection<EntityNotifiable<Solution_>> get(EntityDescriptor<?> entityDescriptor) {
         return sourceEntityToNotifiableMap.get(entityDescriptor);
     }
 
