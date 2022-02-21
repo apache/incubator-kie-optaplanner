@@ -19,8 +19,7 @@ package org.optaplanner.core.impl.domain.variable.listener.support;
 import org.optaplanner.core.api.domain.variable.AbstractVariableListener;
 import org.optaplanner.core.api.score.director.ScoreDirector;
 
-final class EntityAddedNotification<Solution_> extends AbstractVariableListenerNotification
-        implements EntityNotification<Solution_> {
+final class EntityAddedNotification<Solution_> extends AbstractNotification implements EntityNotification<Solution_> {
 
     EntityAddedNotification(Object entity) {
         super(entity);

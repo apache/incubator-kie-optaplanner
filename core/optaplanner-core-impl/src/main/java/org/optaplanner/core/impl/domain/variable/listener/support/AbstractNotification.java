@@ -21,22 +21,22 @@ import java.util.Objects;
 import org.optaplanner.core.api.domain.variable.VariableListener;
 import org.optaplanner.core.impl.domain.variable.descriptor.ShadowVariableDescriptor;
 
-abstract class AbstractVariableListenerNotification {
+abstract class AbstractNotification {
 
     protected final Object entity;
     protected final int index;
 
-    protected AbstractVariableListenerNotification(Object entity, int index) {
+    protected AbstractNotification(Object entity, int index) {
         this.entity = entity;
         this.index = index;
     }
 
-    protected AbstractVariableListenerNotification(Object entity) {
+    protected AbstractNotification(Object entity) {
         this(entity, -1);
     }
 
     /**
-     * Warning: do not test equality of {@link AbstractVariableListenerNotification}s for different {@link VariableListener}s
+     * Warning: do not test equality of {@link AbstractNotification}s for different {@link VariableListener}s
      * (so {@link ShadowVariableDescriptor}s) because equality does not take those into account (for performance)!
      *
      * @param o sometimes null
@@ -50,7 +50,7 @@ abstract class AbstractVariableListenerNotification {
         if (o == null || getClass() != o.getClass()) {
             return false;
         }
-        AbstractVariableListenerNotification that = (AbstractVariableListenerNotification) o;
+        AbstractNotification that = (AbstractNotification) o;
         return entity.equals(that.entity);
     }
 
