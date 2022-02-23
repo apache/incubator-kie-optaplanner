@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2022 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -28,11 +28,11 @@ public class TestdataStringLengthConstraintProvider implements ConstraintProvide
     @Override
     public Constraint[] defineConstraints(ConstraintFactory factory) {
         return new Constraint[] {
-                factory.forEach(TestdataStringLengthShadowEntity.class)
+                factory.from(TestdataStringLengthShadowEntity.class)
                         .join(TestdataStringLengthShadowEntity.class, Joiners.equal(TestdataStringLengthShadowEntity::getValue))
                         .filter((a, b) -> a != b)
                         .penalize("Don't assign 2 entities the same value.", HardSoftScore.ONE_HARD),
-                factory.forEach(TestdataStringLengthShadowEntity.class)
+                factory.from(TestdataStringLengthShadowEntity.class)
                         .reward("Maximize value length", HardSoftScore.ONE_SOFT,
                                 TestdataStringLengthShadowEntity::getLength)
         };
