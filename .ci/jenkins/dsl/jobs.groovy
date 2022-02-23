@@ -1,5 +1,6 @@
 import org.kie.jenkins.jobdsl.templates.KogitoJobTemplate
 import org.kie.jenkins.jobdsl.FolderUtils
+import org.kie.jenkins.jobdsl.KogitoConstants
 import org.kie.jenkins.jobdsl.KogitoJobType
 import org.kie.jenkins.jobdsl.KogitoJobUtils
 import org.kie.jenkins.jobdsl.Utils
@@ -11,8 +12,8 @@ def getDefaultJobParams(String repoName = 'optaplanner') {
     return KogitoJobTemplate.getDefaultJobParams(this, repoName)
 }
 
-Map getMultijobPRConfig() {
-    return [
+Map getMultijobPRConfig(boolean isNative = false) {
+    def jobConfig = [
         parallel: true,
         buildchain: true,
         jobs : [
@@ -29,13 +30,14 @@ Map getMultijobPRConfig() {
                 id: 'kogito-apps',
                 repository: 'kogito-apps',
                 env : [
-                    KOGITO_APPS_BUILD_MVN_OPTS: '-Poptaplanner-downstream'
+                    BUILD_MVN_OPTS_CURRENT: "-Poptaplanner-downstream",
+                    ADDITIONAL_TIMEOUT: isNative ? '360' : '210',
                 ]
             ], [
                 id: 'kogito-examples',
                 repository: 'kogito-examples',
                 env : [
-                    KOGITO_EXAMPLES_BUILD_MVN_OPTS: '-Poptaplanner-downstream'
+                    BUILD_MVN_OPTS_CURRENT: "-Poptaplanner-downstream"
                 ]
             ], [
                 id: 'optaweb-employee-rostering',
@@ -52,6 +54,10 @@ Map getMultijobPRConfig() {
             ]
         ]
     ]
+    if (isNative) { // Optawebs should not be used in native.
+        jobConfig.jobs.retainAll { !it.id.startsWith('optaweb') }
+    }
+    return jobConfig
 }
 
 def getJobParams(String jobName, String jobFolder, String jenkinsfileName, String jobDescription = '') {
@@ -109,9 +115,9 @@ void setupMultijobPrDefaultChecks() {
 }
 
 void setupMultijobPrNativeChecks() {
-    def multijobConfig = getMultijobPRConfig()
-    multijobConfig.jobs.find { it.id == 'kogito-apps' }.env.KOGITO_APPS_BUILD_MVN_OPTS = '-Poptaplanner-downstream,native'
-    multijobConfig.jobs.find { it.id == 'kogito-examples' }.env.KOGITO_EXAMPLES_BUILD_MVN_OPTS = '-Poptaplanner-downstream-native'
+    def multijobConfig = getMultijobPRConfig(true)
+    multijobConfig.jobs.find { it.id == 'kogito-apps' }.env.BUILD_MVN_OPTS_CURRENT = "-Poptaplanner-downstream,native ${KogitoConstants.DEFAULT_NATIVE_CONTAINER_PARAMS}"
+    multijobConfig.jobs.find { it.id == 'kogito-examples' }.env.BUILD_MVN_OPTS_CURRENT = "-Poptaplanner-downstream-native ${KogitoConstants.DEFAULT_NATIVE_CONTAINER_PARAMS}"
     KogitoJobTemplate.createMultijobNativePRJobs(this, multijobConfig) { return getDefaultJobParams() }
 }
 

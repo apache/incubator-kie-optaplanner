@@ -5,14 +5,13 @@ import org.kie.jenkins.MavenCommand
 optaplannerRepo = 'optaplanner'
 quickstartsRepo = 'optaplanner-quickstarts'
 kogitoRuntimesRepo = 'kogito-runtimes'
-droolsRepo = 'drools'
 
 pipeline {
     agent {
         label 'kie-rhel7 && kie-mem16g'
     }
     tools {
-        maven 'kie-maven-3.6.3'
+        maven 'kie-maven-3.8.1'
         jdk 'kie-jdk11'
     }
     options {
@@ -26,26 +25,9 @@ pipeline {
         stage('Initialize') {
             steps {
                 script {
-                    checkoutDroolsRepo()
                     checkoutRuntimesRepo()
                     checkoutOptaplannerRepo()
                     checkoutOptaplannerQuickstartsRepo()
-                }
-            }
-        }
-        stage('Build quickly drools') {
-            steps {
-                script {
-                    getMavenCommand(droolsRepo)
-                        .withProperty('quickly')
-                        .run('clean install')
-                }
-            }
-            post {
-                always {
-                    script {
-                        cleanContainers()
-                    }
                 }
             }
         }
@@ -68,12 +50,9 @@ pipeline {
         stage('Build optaplanner') {
             steps {
                 script {
-                    try {
-                        getNativeMavenCommand('optaplanner')
-                            .run('clean install')
-                    }catch(err) {
-                        unstable("optaplanner test not finish correctly")
-                    }
+                    getNativeMavenCommand('optaplanner')
+                        .withProperty('maven.test.failure.ignore', true)
+                        .run('clean install')
                 }
             }
             post {
@@ -87,12 +66,9 @@ pipeline {
         stage('Build optaplanner-quickstarts') {
             steps {
                 script {
-                    try {
-                        getNativeMavenCommand('optaplanner-quickstarts')
-                            .run('clean install')
-                    }catch(err) {
-                        unstable("optaplanner-quickstarts test not finish correctly")
-                    }
+                    getNativeMavenCommand('optaplanner-quickstarts')
+                        .withProperty('maven.test.failure.ignore', true)
+                        .run('clean install')
                 }
             }
             post {
@@ -105,13 +81,14 @@ pipeline {
         }
     }
     post {
-        unsuccessful {
-            sendNotification()
-        }
         always {
             script {
-                junit '**/target/surefire-reports/**/*.xml, **/target/failsafe-reports/**/*.xml'
+                junit testResults: '**/target/surefire-reports/**/*.xml, **/target/failsafe-reports/**/*.xml', allowEmptyResults: true
+                util.archiveConsoleLog()
             }
+        }
+        unsuccessful {
+            sendNotification()
         }
         cleanup {
             script {
@@ -122,9 +99,7 @@ pipeline {
 }
 
 void sendNotification() {
-    emailext body: "**${NOTIFICATION_JOB_NAME}** #${BUILD_NUMBER} was: ${currentBuild.currentResult}\nPlease look here: ${BUILD_URL}",
-             subject: "[${params.BUILD_BRANCH_NAME}] Optaplanner",
-             to: env.KOGITO_CI_EMAIL_TO
+    mailer.sendMarkdownTestSummaryNotification("${NOTIFICATION_JOB_NAME}", "[${params.BUILD_BRANCH_NAME}] Optaplanner", [env.KOGITO_CI_EMAIL_TO], "cc @*optaplanner-team*")
 }
 
 void checkoutRuntimesRepo() {
@@ -181,7 +156,7 @@ String getTargetBranch(Integer addToMajor) {
 }
 
 MavenCommand getMavenCommand(String directory) {
-    return new MavenCommand(this, ['-fae'])
+    return new MavenCommand(this, ['-fae', '-ntp'])
                 .withSettingsXmlId('kogito_release_settings')
                 .withProperty('java.net.preferIPv4Stack', true)
                 .inDirectory(directory)
