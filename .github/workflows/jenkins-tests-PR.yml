@@ -22,10 +22,10 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
       - name: Java and Maven Setup
-        uses: kiegroup/kogito-pipelines/.ci/actions/maven@main
+        uses: kiegroup/kogito-pipelines/.ci/actions/maven@1.13.x
         with:
           java-version: ${{ matrix.java-version }}
           maven-version: ${{ matrix.maven-version }}
           cache-key-prefix: ${{ runner.os }}-${{ matrix.java-version }}-maven${{ matrix.maven-version }}
       - name: Test DSL
-        run: cd .ci/jenkins/dsl && ./test.sh
+        run: cd .ci/jenkins/dsl && ./test.sh 1.13.x

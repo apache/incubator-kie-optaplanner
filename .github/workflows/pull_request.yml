@@ -46,13 +46,13 @@ jobs:
     timeout-minutes: 120
     steps:
       - name: Clean Disk Space
-        uses: kiegroup/kogito-pipelines/.ci/actions/ubuntu-disk-space@main
+        uses: kiegroup/kogito-pipelines/.ci/actions/ubuntu-disk-space@1.13.x
         if: ${{ matrix.os == 'ubuntu-latest' }}
       - name: Support long paths
         if: ${{ matrix.os == 'windows-latest' }}
-        uses: kiegroup/kogito-pipelines/.ci/actions/long-paths@main
+        uses: kiegroup/kogito-pipelines/.ci/actions/long-paths@1.13.x
       - name: Java and Maven Setup
-        uses: kiegroup/kogito-pipelines/.ci/actions/maven@main
+        uses: kiegroup/kogito-pipelines/.ci/actions/maven@1.13.x
         with:
           java-version: ${{ matrix.java-version }}
           maven-version: ${{ matrix.maven-version }}
@@ -64,7 +64,7 @@ jobs:
         if: github.event_name == 'push'
         run: echo "FLOW_TYPE=branch" >> $GITHUB_ENV
       - name: Build Chain
-        uses: kiegroup/kogito-pipelines/.ci/actions/build-chain@main
+        uses: kiegroup/kogito-pipelines/.ci/actions/build-chain@1.13.x
         with:
           definition-file: https://raw.githubusercontent.com/kiegroup/kogito-pipelines/%{process.env.GITHUB_BASE_REF.replace(/(\d*)\.(.*)\.(.*)/g, (m, n1, n2, n3) => `${+n1-7}.${n2}.${n3}`)}/.ci/pull-request-config.yaml
           annotations-prefix: ${{ runner.os }}-${{ matrix.java-version }}/${{ matrix.maven-version }}
@@ -72,7 +72,7 @@ jobs:
           flow-type: ${{ env.FLOW_TYPE }}
           github-token: "${{ secrets.GITHUB_TOKEN }}"
       - name: Surefire Report
-        uses: kiegroup/kogito-pipelines/.ci/actions/surefire-report@main
+        uses: kiegroup/kogito-pipelines/.ci/actions/surefire-report@1.13.x
         if: ${{ always() }}
         with:
           report_paths: '**/*-reports/TEST-*.xml'
