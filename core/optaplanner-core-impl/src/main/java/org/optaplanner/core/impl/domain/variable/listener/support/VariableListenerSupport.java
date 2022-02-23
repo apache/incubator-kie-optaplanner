@@ -126,7 +126,7 @@ public final class VariableListenerSupport<Solution_> implements SupplyManager {
     public void beforeEntityAdded(EntityDescriptor<Solution_> entityDescriptor, Object entity) {
         Collection<EntityNotifiable<Solution_>> notifiables = notifiableRegistry.get(entityDescriptor);
         if (!notifiables.isEmpty()) {
-            EntityNotification<Solution_> notification = EntityNotification.entityAdded(entity);
+            EntityNotification<Solution_> notification = Notification.entityAdded(entity);
             for (EntityNotifiable<Solution_> notifiable : notifiables) {
                 notifiable.addNotification(notification);
             }
@@ -141,7 +141,7 @@ public final class VariableListenerSupport<Solution_> implements SupplyManager {
     public void beforeEntityRemoved(EntityDescriptor<Solution_> entityDescriptor, Object entity) {
         Collection<EntityNotifiable<Solution_>> notifiables = notifiableRegistry.get(entityDescriptor);
         if (!notifiables.isEmpty()) {
-            EntityNotification<Solution_> notification = EntityNotification.entityRemoved(entity);
+            EntityNotification<Solution_> notification = Notification.entityRemoved(entity);
             for (EntityNotifiable<Solution_> notifiable : notifiables) {
                 notifiable.addNotification(notification);
             }
@@ -156,7 +156,7 @@ public final class VariableListenerSupport<Solution_> implements SupplyManager {
     public void beforeVariableChanged(VariableDescriptor<Solution_> variableDescriptor, Object entity) {
         Collection<VariableListenerNotifiable<Solution_>> notifiables = notifiableRegistry.get(variableDescriptor);
         if (!notifiables.isEmpty()) {
-            BasicVariableNotification<Solution_> notification = BasicVariableNotification.variableChanged(entity);
+            BasicVariableNotification<Solution_> notification = Notification.variableChanged(entity);
             for (VariableListenerNotifiable<Solution_> notifiable : notifiables) {
                 notifiable.addNotification(notification);
             }
@@ -171,7 +171,7 @@ public final class VariableListenerSupport<Solution_> implements SupplyManager {
     public void beforeVariableChanged(ListVariableDescriptor<Solution_> variableDescriptor, Object entity) {
         Collection<ListVariableListenerNotifiable<Solution_>> notifiables = notifiableRegistry.get(variableDescriptor);
         if (!notifiables.isEmpty()) {
-            ListVariableNotification<Solution_> notification = ListVariableNotification.variableChanged(entity);
+            ListVariableNotification<Solution_> notification = Notification.listVariableChanged(entity);
             for (ListVariableListenerNotifiable<Solution_> notifiable : notifiables) {
                 notifiable.addNotification(notification);
             }

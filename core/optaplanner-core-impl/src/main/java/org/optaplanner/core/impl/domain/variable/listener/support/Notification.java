@@ -21,6 +21,22 @@ import org.optaplanner.core.api.score.director.ScoreDirector;
 
 public interface Notification<Solution_, T extends AbstractVariableListener<Solution_, Object>> {
 
+    static <Solution_> EntityNotification<Solution_> entityAdded(Object entity) {
+        return new EntityAddedNotification<>(entity);
+    }
+
+    static <Solution_> EntityNotification<Solution_> entityRemoved(Object entity) {
+        return new EntityRemovedNotification<>(entity);
+    }
+
+    static <Solution_> BasicVariableNotification<Solution_> variableChanged(Object entity) {
+        return new VariableChangedNotification<>(entity);
+    }
+
+    static <Solution_> ListVariableNotification<Solution_> listVariableChanged(Object entity) {
+        return new ListVariableChangedNotification<>(entity);
+    }
+
     void triggerBefore(T variableListener, ScoreDirector<Solution_> scoreDirector);
 
     void triggerAfter(T variableListener, ScoreDirector<Solution_> scoreDirector);

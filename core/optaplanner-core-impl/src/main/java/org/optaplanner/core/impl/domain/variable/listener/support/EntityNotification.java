@@ -20,11 +20,4 @@ import org.optaplanner.core.api.domain.variable.AbstractVariableListener;
 
 public interface EntityNotification<Solution_> extends Notification<Solution_, AbstractVariableListener<Solution_, Object>> {
 
-    static <Solution_> EntityNotification<Solution_> entityAdded(Object entity) {
-        return new EntityAddedNotification<>(entity);
-    }
-
-    static <Solution_> EntityNotification<Solution_> entityRemoved(Object entity) {
-        return new EntityRemovedNotification<>(entity);
-    }
 }

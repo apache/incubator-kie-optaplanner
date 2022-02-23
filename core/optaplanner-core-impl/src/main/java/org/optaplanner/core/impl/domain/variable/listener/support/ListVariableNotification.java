@@ -20,7 +20,4 @@ import org.optaplanner.core.api.domain.variable.ListVariableListener;
 
 public interface ListVariableNotification<Solution_> extends Notification<Solution_, ListVariableListener<Solution_, Object>> {
 
-    static <Solution_> ListVariableNotification<Solution_> variableChanged(Object entity) {
-        return new ListVariableChangedNotification<>(entity);
-    }
 }
