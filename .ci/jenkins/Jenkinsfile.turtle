@@ -9,7 +9,7 @@ pipeline {
         label 'kie-rhel7 && kie-mem16g'
     }
     tools {
-        maven 'kie-maven-3.6.3'
+        maven 'kie-maven-3.8.1'
         jdk 'kie-jdk11'
     }
     options {
@@ -38,9 +38,10 @@ pipeline {
                             // Use the same settings.xml as for the nightly builds, including a maven mirror.
                             .withSettingsXmlId('kogito_release_settings')
                             .inDirectory(optaplannerRepo)
-                            .withOptions(['-U', '-e', '-fae'])
+                            .withOptions(['-U', '-e', '-fae', '-ntp'])
                             .withProperty('full')
                             .withProperty('runTurtleTests', true)
+                            .withProperty('maven.test.failure.ignore', true)
                             .run('clean install')
                 }
             }
@@ -48,8 +49,13 @@ pipeline {
     }
     post {
         always {
-            junit '**/target/surefire-reports/**/*.xml, **/target/failsafe-reports/**/*.xml'
-            sendEmail()
+            script {
+                junit testResults: '**/target/surefire-reports/**/*.xml, **/target/failsafe-reports/**/*.xml', allowEmptyResults: true
+                util.archiveConsoleLog()
+                sendEmail()
+            }
+        }
+        cleanup {
             cleanWs()
         }
     }
@@ -71,8 +77,5 @@ String getGitAuthor() {
 
 void sendEmail() {
     echo 'Sending a summary email.'
-    String body = """OptaPlanner turtle tests build #${BUILD_NUMBER} was: ${currentBuild.currentResult}.
-        \nPlease have a look here: ${env.BUILD_URL}."""
-    echo body
-    emailext(body: body, subject: 'OptaPlanner turtle tests', to: env.OPTAPLANNER_CI_EMAIL)
+    mailer.sendMarkdownTestSummaryNotification('OptaPlanner turtle tests', 'OptaPlanner turtle tests', [env.OPTAPLANNER_CI_EMAIL], "cc @*optaplanner-team*")
 }

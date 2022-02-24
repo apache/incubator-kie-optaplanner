@@ -18,7 +18,7 @@ pipeline {
     }
 
     tools {
-        maven 'kie-maven-3.6.3'
+        maven 'kie-maven-3.8.1'
         jdk 'kie-jdk11'
     }
 
@@ -329,9 +329,7 @@ pipeline {
 
 void sendNotification() {
     if (params.SEND_NOTIFICATION) {
-        emailext body: "**Promote job** #${BUILD_NUMBER} was: ${currentBuild.currentResult}\nPlease look here: ${BUILD_URL}",
-             subject: "[${getBuildBranch()}] Optaplanner",
-             to: env.KOGITO_CI_EMAIL_TO
+        mailer.sendMarkdownTestSummaryNotification('Promote', "[${getBuildBranch()}] Optaplanner", [env.KOGITO_CI_EMAIL_TO], "cc @*optaplanner-team*")
     } else {
         echo 'No notification sent per configuration'
     }
@@ -548,7 +546,7 @@ void uploadDistribution(String directory) {
 }
 
 MavenCommand getMavenCommand() {
-    mvnCmd = new MavenCommand(this, ['-fae'])
+    mvnCmd = new MavenCommand(this, ['-fae', '-ntp'])
                     .withSettingsXmlId(env.MAVEN_SETTINGS_CONFIG_FILE_ID)
     if (env.MAVEN_DEPENDENCIES_REPOSITORY) {
         mvnCmd.withDependencyRepositoryInSettings('deps-repo', env.MAVEN_DEPENDENCIES_REPOSITORY)
