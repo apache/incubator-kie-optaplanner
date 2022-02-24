@@ -124,7 +124,7 @@ class ExperimentalConstraintCollectorsTest {
     private ConsecutiveInfo<Integer, Integer> consecutiveData(Integer... data) {
         ConsecutiveSetTree<Integer, Integer, Integer> tree =
                 new ConsecutiveSetTree<>((a, b) -> b - a, Integer::sum, 1, 0);
-        asList(data).forEach(datum -> tree.add(datum, datum)); // datum is the singular form of data
+        asList(data).forEach(datum -> tree.add(datum, datum));
         return tree;
     }
 
