@@ -59,16 +59,16 @@ abstract class VariableListenerNotification {
     public boolean equals(Object o) {
         if (this == o) {
             return true;
-        } else if (o instanceof VariableListenerNotification) {
-            VariableListenerNotification other = (VariableListenerNotification) o;
-            return entity == other.entity;
-        } else {
+        }
+        if (o == null || getClass() != o.getClass()) {
             return false;
         }
+        VariableListenerNotification that = (VariableListenerNotification) o;
+        return entity.equals(that.entity);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(System.identityHashCode(entity));
+        return Objects.hash(System.identityHashCode(entity), getClass());
     }
 }

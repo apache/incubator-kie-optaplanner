@@ -36,6 +36,11 @@ public class TestdataManyToManyShadowedSolution extends TestdataObject {
                 TestdataManyToManyShadowedEntity.class);
     }
 
+    static SolutionDescriptor<TestdataManyToManyShadowedSolution> buildSolutionDescriptorRequiresUniqueEvents() {
+        return SolutionDescriptor.buildSolutionDescriptor(TestdataManyToManyShadowedSolution.class,
+                TestdataManyToManyShadowedEntityUniqueEvents.class);
+    }
+
     private List<TestdataValue> valueList;
     private List<TestdataManyToManyShadowedEntity> entityList;
 
