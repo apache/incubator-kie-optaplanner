@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2022 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,15 +22,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.function.Consumer;
-import java.util.function.Supplier;
 
 import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.XmlType;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 import org.drools.core.base.CoreComponentsBuilder;
-import org.kie.api.KieBase;
 import org.optaplanner.core.api.score.calculator.EasyScoreCalculator;
 import org.optaplanner.core.api.score.calculator.IncrementalScoreCalculator;
 import org.optaplanner.core.api.score.stream.ConstraintProvider;
@@ -38,7 +35,6 @@ import org.optaplanner.core.api.score.stream.ConstraintStreamImplType;
 import org.optaplanner.core.config.AbstractConfig;
 import org.optaplanner.core.config.util.ConfigUtils;
 import org.optaplanner.core.impl.io.jaxb.adapter.JaxbCustomPropertiesAdapter;
-import org.optaplanner.core.impl.score.director.drools.KieRuntimeBuilderWrapper;
 
 @XmlType(propOrder = {
         "easyScoreCalculatorClass",
@@ -77,8 +73,6 @@ public class ScoreDirectorFactoryConfig extends AbstractConfig<ScoreDirectorFact
     protected List<String> scoreDrlList = null;
     @XmlElement(name = "scoreDrlFile")
     protected List<File> scoreDrlFileList = null;
-    @XmlTransient
-    protected Supplier<KieBase> gizmoKieBaseSupplier = null;
 
     protected Boolean droolsAlphaNetworkCompilationEnabled = null;
     @XmlJavaTypeAdapter(JaxbCustomPropertiesAdapter.class)
@@ -169,36 +163,6 @@ public class ScoreDirectorFactoryConfig extends AbstractConfig<ScoreDirectorFact
 
     public Boolean getDroolsAlphaNetworkCompilationEnabled() {
         return droolsAlphaNetworkCompilationEnabled;
-    }
-
-    /**
-     * @deprecated in favor of {@link #getGizmoKieBaseSupplier}
-     */
-    @Deprecated(forRemoval = true)
-    public KieRuntimeBuilderWrapper getGizmoKieRuntimeBuilderWrapper() {
-        return (KieRuntimeBuilderWrapper) getGizmoKieBaseSupplier();
-    }
-
-    /**
-     * @deprecated in favor of {@link #setGizmoKieBaseSupplier}
-     */
-    @Deprecated(forRemoval = true)
-    public void setGizmoKieRuntimeBuilderWrapper(KieRuntimeBuilderWrapper kieRuntimeBuilderWrapper) {
-        setGizmoKieBaseSupplier(kieRuntimeBuilderWrapper);
-    }
-
-    /**
-     * For internal use only, get the generated Gizmo KieBaseSupplier.
-     */
-    public Supplier<KieBase> getGizmoKieBaseSupplier() {
-        return gizmoKieBaseSupplier;
-    }
-
-    /**
-     * For internal use only, set the generated Gizmo KieBaseSupplier.
-     */
-    public void setGizmoKieBaseSupplier(Supplier<KieBase> gizmoKieBaseSupplier) {
-        this.gizmoKieBaseSupplier = gizmoKieBaseSupplier;
     }
 
     public void setDroolsAlphaNetworkCompilationEnabled(Boolean droolsAlphaNetworkCompilationEnabled) {
@@ -293,23 +257,6 @@ public class ScoreDirectorFactoryConfig extends AbstractConfig<ScoreDirectorFact
         return this;
     }
 
-    /**
-     * @deprecated in favor of {@link #withGizmoKieBaseSupplier}
-     */
-    @Deprecated(forRemoval = true)
-    public ScoreDirectorFactoryConfig withGizmoKieRuntimeBuilderWrapper(KieRuntimeBuilderWrapper kieRuntimeBuilderWrapper) {
-        setGizmoKieBaseSupplier(kieRuntimeBuilderWrapper);
-        return this;
-    }
-
-    /**
-     * For internal use only, set the generated Gizmo KieBaseSupplier.
-     */
-    public ScoreDirectorFactoryConfig withGizmoKieBaseSupplier(Supplier<KieBase> kieBaseSupplier) {
-        setGizmoKieBaseSupplier(kieBaseSupplier);
-        return this;
-    }
-
     public ScoreDirectorFactoryConfig withDroolsAlphaNetworkCompilationEnabled(
             boolean droolsAlphaNetworkCompilationEnabled) {
         this.droolsAlphaNetworkCompilationEnabled = droolsAlphaNetworkCompilationEnabled;
@@ -347,8 +294,6 @@ public class ScoreDirectorFactoryConfig extends AbstractConfig<ScoreDirectorFact
                 scoreDrlList, inheritedConfig.getScoreDrlList());
         scoreDrlFileList = ConfigUtils.inheritMergeableListProperty(
                 scoreDrlFileList, inheritedConfig.getScoreDrlFileList());
-        gizmoKieBaseSupplier = ConfigUtils.inheritOverwritableProperty(gizmoKieBaseSupplier,
-                inheritedConfig.getGizmoKieBaseSupplier());
         droolsAlphaNetworkCompilationEnabled = ConfigUtils.inheritOverwritableProperty(
                 droolsAlphaNetworkCompilationEnabled, inheritedConfig.getDroolsAlphaNetworkCompilationEnabled());
         kieBaseConfigurationProperties = ConfigUtils.inheritMergeableMapProperty(
