@@ -17,6 +17,7 @@
 package org.optaplanner.core.impl.domain.variable.listener.support;
 
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -42,47 +43,52 @@ public final class VariableListenerSupport<Solution_> implements SupplyManager<S
     private final Map<Demand<Solution_, ?>, Supply> supplyMap;
 
     private boolean notificationQueuesAreEmpty;
+    private int nextGlobalOrder = 0;
 
     public VariableListenerSupport(InnerScoreDirector<Solution_, ?> scoreDirector) {
         this.scoreDirector = scoreDirector;
         supplyMap = new LinkedHashMap<>();
-        notifiableRegistry = new NotifiableRegistry<>(scoreDirector);
+        notifiableRegistry = new NotifiableRegistry<>(scoreDirector.getSolutionDescriptor());
     }
 
     public void linkVariableListeners() {
         notificationQueuesAreEmpty = true;
-        for (EntityDescriptor<Solution_> entityDescriptor : scoreDirector.getSolutionDescriptor().getEntityDescriptors()) {
-            for (ShadowVariableDescriptor<Solution_> shadowVariableDescriptor : entityDescriptor
-                    .getDeclaredShadowVariableDescriptors()) {
-                if (shadowVariableDescriptor.hasVariableListener(scoreDirector)) {
-                    VariableListener<Solution_, ?> variableListener =
-                            shadowVariableDescriptor.buildVariableListener(scoreDirector);
-                    if (variableListener instanceof Supply) {
-                        // Non-sourced variable listeners (ie. ones provided by the user) can never be a supply.
-                        supplyMap.put(shadowVariableDescriptor.getProvidedDemand(), (Supply) variableListener);
-                    }
-                    notifiableRegistry.registerShadowVariableListener(shadowVariableDescriptor, variableListener);
-                }
-            }
+        scoreDirector.getSolutionDescriptor().getEntityDescriptors().stream()
+                .flatMap(entityDescriptor -> entityDescriptor.getDeclaredShadowVariableDescriptors().stream())
+                .filter(descriptor -> descriptor.hasVariableListener(scoreDirector))
+                .sorted(Comparator.comparingInt(ShadowVariableDescriptor::getGlobalShadowOrder))
+                .forEach(this::processShadowVariableDescriptor);
+    }
+
+    private void processShadowVariableDescriptor(ShadowVariableDescriptor<Solution_> shadowVariableDescriptor) {
+        VariableListener<Solution_, ?> variableListener = shadowVariableDescriptor.buildVariableListener(scoreDirector);
+        if (variableListener instanceof Supply) {
+            // Non-sourced variable listeners (ie. ones provided by the user) can never be a supply.
+            supplyMap.put(shadowVariableDescriptor.getProvidedDemand(), (Supply) variableListener);
         }
-        notifiableRegistry.sort();
+        int globalOrder = shadowVariableDescriptor.getGlobalShadowOrder();
+        VariableListenerNotifiable<Solution_> notifiable =
+                new VariableListenerNotifiable<>(scoreDirector, variableListener, globalOrder);
+        notifiableRegistry.registerShadowVariableListener(shadowVariableDescriptor, notifiable);
+        nextGlobalOrder = globalOrder + 1;
     }
 
     @Override
     public <Supply_ extends Supply> Supply_ demand(Demand<Solution_, Supply_> demand) {
-        Supply_ supply = (Supply_) supplyMap.get(demand);
-        if (supply == null) {
-            supply = demand.createExternalizedSupply(scoreDirector);
-            if (supply instanceof SourcedVariableListener) {
-                SourcedVariableListener<Solution_, ?> variableListener = (SourcedVariableListener<Solution_, ?>) supply;
-                // An external ScoreDirector can be created before the working solution is set
-                if (scoreDirector.getWorkingSolution() != null) {
-                    variableListener.resetWorkingSolution(scoreDirector);
-                }
-                notifiableRegistry.registerSourcedVariableListener(variableListener);
-                // No need to sort notifiableList again because notifiable's globalOrder is highest
+        return (Supply_) supplyMap.computeIfAbsent(demand, this::createSupply);
+    }
+
+    private Supply createSupply(Demand<Solution_, ?> demand) {
+        Supply supply = demand.createExternalizedSupply(scoreDirector);
+        if (supply instanceof SourcedVariableListener) {
+            SourcedVariableListener<Solution_, ?> variableListener = (SourcedVariableListener<Solution_, ?>) supply;
+            // An external ScoreDirector can be created before the working solution is set
+            if (scoreDirector.getWorkingSolution() != null) {
+                variableListener.resetWorkingSolution(scoreDirector);
             }
-            supplyMap.put(demand, supply);
+            VariableListenerNotifiable<Solution_> notifiable =
+                    new VariableListenerNotifiable<>(scoreDirector, variableListener, nextGlobalOrder++);
+            notifiableRegistry.registerSourcedVariableListener(variableListener.getSourceVariableDescriptor(), notifiable);
         }
         return supply;
     }

@@ -25,26 +25,21 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.optaplanner.core.api.domain.variable.VariableListener;
 import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
+import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.core.impl.domain.variable.descriptor.ShadowVariableDescriptor;
 import org.optaplanner.core.impl.domain.variable.descriptor.VariableDescriptor;
-import org.optaplanner.core.impl.domain.variable.listener.SourcedVariableListener;
-import org.optaplanner.core.impl.score.director.InnerScoreDirector;
 
 final class NotifiableRegistry<Solution_> {
 
-    private final InnerScoreDirector<Solution_, ?> scoreDirector;
     private final List<VariableListenerNotifiable<Solution_>> notifiableList = new ArrayList<>();
     private final Map<EntityDescriptor<?>, Set<VariableListenerNotifiable<Solution_>>> sourceEntityToNotifiableMap =
             new LinkedHashMap<>();
     private final Map<VariableDescriptor<?>, List<VariableListenerNotifiable<Solution_>>> sourceVariableToNotifiableMap =
             new LinkedHashMap<>();
-    private int nextGlobalOrder = 0;
 
-    NotifiableRegistry(InnerScoreDirector<Solution_, ?> scoreDirector) {
-        this.scoreDirector = scoreDirector;
-        for (EntityDescriptor<Solution_> entityDescriptor : scoreDirector.getSolutionDescriptor().getEntityDescriptors()) {
+    NotifiableRegistry(SolutionDescriptor<Solution_> solutionDescriptor) {
+        for (EntityDescriptor<Solution_> entityDescriptor : solutionDescriptor.getEntityDescriptors()) {
             sourceEntityToNotifiableMap.put(entityDescriptor, new LinkedHashSet<>());
             for (VariableDescriptor<Solution_> variableDescriptor : entityDescriptor.getDeclaredVariableDescriptors()) {
                 sourceVariableToNotifiableMap.put(variableDescriptor, new ArrayList<>());
@@ -53,33 +48,22 @@ final class NotifiableRegistry<Solution_> {
     }
 
     void registerShadowVariableListener(ShadowVariableDescriptor<Solution_> shadowVariableDescriptor,
-            VariableListener<Solution_, ?> variableListener) {
-        int globalOrder = shadowVariableDescriptor.getGlobalShadowOrder();
-        VariableListenerNotifiable<Solution_> notifiable =
-                new VariableListenerNotifiable<>(scoreDirector, variableListener, globalOrder);
+            VariableListenerNotifiable<Solution_> notifiable) {
         for (VariableDescriptor<Solution_> source : shadowVariableDescriptor.getSourceVariableDescriptorList()) {
             registerNotifiable(source, notifiable);
         }
         notifiableList.add(notifiable);
-        nextGlobalOrder = Math.max(nextGlobalOrder, globalOrder + 1);
     }
 
-    void registerSourcedVariableListener(SourcedVariableListener<Solution_, ?> variableListener) {
-        VariableListenerNotifiable<Solution_> notifiable =
-                new VariableListenerNotifiable<>(scoreDirector, variableListener, nextGlobalOrder);
-        VariableDescriptor<Solution_> source = variableListener.getSourceVariableDescriptor();
+    void registerSourcedVariableListener(VariableDescriptor<Solution_> source,
+            VariableListenerNotifiable<Solution_> notifiable) {
         registerNotifiable(source, notifiable);
         notifiableList.add(notifiable);
-        nextGlobalOrder++;
     }
 
     private void registerNotifiable(VariableDescriptor<?> source, VariableListenerNotifiable<Solution_> notifiable) {
         sourceVariableToNotifiableMap.get(source).add(notifiable);
         sourceEntityToNotifiableMap.get(source.getEntityDescriptor()).add(notifiable);
-    }
-
-    void sort() {
-        Collections.sort(notifiableList);
     }
 
     Iterable<VariableListenerNotifiable<Solution_>> getAll() {

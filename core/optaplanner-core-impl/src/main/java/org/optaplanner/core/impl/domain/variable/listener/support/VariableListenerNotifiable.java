@@ -22,7 +22,7 @@ import java.util.Collection;
 import org.optaplanner.core.api.domain.variable.VariableListener;
 import org.optaplanner.core.api.score.director.ScoreDirector;
 
-final class VariableListenerNotifiable<Solution_> implements Comparable<VariableListenerNotifiable<Solution_>> {
+final class VariableListenerNotifiable<Solution_> {
 
     private final ScoreDirector<Solution_> scoreDirector;
     private final VariableListener<Solution_, Object> variableListener;
@@ -73,11 +73,6 @@ final class VariableListenerNotifiable<Solution_> implements Comparable<Variable
                     + ") changed an upstream shadow variable (which is illegal).");
         }
         notificationQueue.clear();
-    }
-
-    @Override
-    public int compareTo(VariableListenerNotifiable<Solution_> other) {
-        return Integer.compare(globalOrder, other.globalOrder);
     }
 
     @Override
