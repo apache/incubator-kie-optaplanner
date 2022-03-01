@@ -67,9 +67,9 @@ public final class VariableListenerSupport<Solution_> implements SupplyManager<S
             supplyMap.put(shadowVariableDescriptor.getProvidedDemand(), (Supply) variableListener);
         }
         int globalOrder = shadowVariableDescriptor.getGlobalShadowOrder();
-        VariableListenerNotifiable<Solution_> notifiable =
-                new VariableListenerNotifiable<>(scoreDirector, variableListener, globalOrder);
-        notifiableRegistry.registerShadowVariableListener(shadowVariableDescriptor, notifiable);
+        notifiableRegistry.registerNotifiable(
+                shadowVariableDescriptor.getSourceVariableDescriptorList(),
+                new VariableListenerNotifiable<>(scoreDirector, variableListener, globalOrder));
         nextGlobalOrder = globalOrder + 1;
     }
 
@@ -86,9 +86,9 @@ public final class VariableListenerSupport<Solution_> implements SupplyManager<S
             if (scoreDirector.getWorkingSolution() != null) {
                 variableListener.resetWorkingSolution(scoreDirector);
             }
-            VariableListenerNotifiable<Solution_> notifiable =
-                    new VariableListenerNotifiable<>(scoreDirector, variableListener, nextGlobalOrder++);
-            notifiableRegistry.registerSourcedVariableListener(variableListener.getSourceVariableDescriptor(), notifiable);
+            notifiableRegistry.registerNotifiable(
+                    variableListener.getSourceVariableDescriptor(),
+                    new VariableListenerNotifiable<>(scoreDirector, variableListener, nextGlobalOrder++));
         }
         return supply;
     }

@@ -27,7 +27,6 @@ import java.util.Set;
 
 import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
-import org.optaplanner.core.impl.domain.variable.descriptor.ShadowVariableDescriptor;
 import org.optaplanner.core.impl.domain.variable.descriptor.VariableDescriptor;
 
 final class NotifiableRegistry<Solution_> {
@@ -47,23 +46,17 @@ final class NotifiableRegistry<Solution_> {
         }
     }
 
-    void registerShadowVariableListener(ShadowVariableDescriptor<Solution_> shadowVariableDescriptor,
+    void registerNotifiable(VariableDescriptor<Solution_> source, VariableListenerNotifiable<Solution_> notifiable) {
+        registerNotifiable(Collections.singletonList(source), notifiable);
+    }
+
+    void registerNotifiable(Collection<VariableDescriptor<Solution_>> sources,
             VariableListenerNotifiable<Solution_> notifiable) {
-        for (VariableDescriptor<Solution_> source : shadowVariableDescriptor.getSourceVariableDescriptorList()) {
-            registerNotifiable(source, notifiable);
+        for (VariableDescriptor<?> source : sources) {
+            sourceVariableToNotifiableMap.get(source).add(notifiable);
+            sourceEntityToNotifiableMap.get(source.getEntityDescriptor()).add(notifiable);
         }
         notifiableList.add(notifiable);
-    }
-
-    void registerSourcedVariableListener(VariableDescriptor<Solution_> source,
-            VariableListenerNotifiable<Solution_> notifiable) {
-        registerNotifiable(source, notifiable);
-        notifiableList.add(notifiable);
-    }
-
-    private void registerNotifiable(VariableDescriptor<?> source, VariableListenerNotifiable<Solution_> notifiable) {
-        sourceVariableToNotifiableMap.get(source).add(notifiable);
-        sourceEntityToNotifiableMap.get(source.getEntityDescriptor()).add(notifiable);
     }
 
     Iterable<VariableListenerNotifiable<Solution_>> getAll() {
