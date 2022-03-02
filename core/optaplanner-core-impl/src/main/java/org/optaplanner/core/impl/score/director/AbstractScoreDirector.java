@@ -101,7 +101,7 @@ public abstract class AbstractScoreDirector<Solution_, Score_ extends Score<Scor
                 ? new LookUpManager(scoreDirectorFactory.getSolutionDescriptor().getLookUpStrategyResolver())
                 : null;
         this.constraintMatchEnabledPreference = constraintMatchEnabledPreference;
-        variableListenerSupport = new VariableListenerSupport<>(this);
+        variableListenerSupport = VariableListenerSupport.create(this);
         variableListenerSupport.linkVariableListeners();
     }
 

@@ -50,7 +50,7 @@ class VariableListenerSupportTest {
         solution.setEntityList(Collections.emptyList());
         when(scoreDirector.getWorkingSolution()).thenReturn(solution);
         when(scoreDirector.getSupplyManager()).thenReturn(mock(SupplyManager.class));
-        VariableListenerSupport<TestdataSolution> variableListenerSupport = new VariableListenerSupport<>(scoreDirector);
+        VariableListenerSupport<TestdataSolution> variableListenerSupport = VariableListenerSupport.create(scoreDirector);
         variableListenerSupport.linkVariableListeners();
 
         VariableDescriptor<TestdataSolution> variableDescriptor =
@@ -73,7 +73,8 @@ class VariableListenerSupportTest {
         solution.setChainedEntityList(Collections.emptyList());
         when(scoreDirector.getWorkingSolution()).thenReturn(solution);
         when(scoreDirector.getSupplyManager()).thenReturn(mock(SupplyManager.class));
-        VariableListenerSupport<TestdataChainedSolution> variableListenerSupport = new VariableListenerSupport<>(scoreDirector);
+        VariableListenerSupport<TestdataChainedSolution> variableListenerSupport =
+                VariableListenerSupport.create(scoreDirector);
         variableListenerSupport.linkVariableListeners();
 
         VariableDescriptor<TestdataChainedSolution> variableDescriptor =
@@ -101,7 +102,7 @@ class VariableListenerSupportTest {
         when(scoreDirector.getWorkingSolution()).thenReturn(solution);
         when(scoreDirector.getSupplyManager()).thenReturn(mock(SupplyManager.class));
         VariableListenerSupport<TestdataShadowingChainedSolution> variableListenerSupport =
-                new VariableListenerSupport<>(scoreDirector);
+                VariableListenerSupport.create(scoreDirector);
         variableListenerSupport.linkVariableListeners();
 
         VariableDescriptor<TestdataShadowingChainedSolution> variableDescriptor = solutionDescriptor

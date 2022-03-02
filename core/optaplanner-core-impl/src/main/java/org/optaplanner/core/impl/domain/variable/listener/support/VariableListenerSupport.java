@@ -45,10 +45,20 @@ public final class VariableListenerSupport<Solution_> implements SupplyManager<S
     private boolean notificationQueuesAreEmpty;
     private int nextGlobalOrder = 0;
 
-    public VariableListenerSupport(InnerScoreDirector<Solution_, ?> scoreDirector) {
+    VariableListenerSupport(
+            InnerScoreDirector<Solution_, ?> scoreDirector,
+            NotifiableRegistry<Solution_> notifiableRegistry,
+            Map<Demand<Solution_, ?>, Supply> supplyMap) {
         this.scoreDirector = scoreDirector;
-        supplyMap = new LinkedHashMap<>();
-        notifiableRegistry = new NotifiableRegistry<>(scoreDirector.getSolutionDescriptor());
+        this.notifiableRegistry = notifiableRegistry;
+        this.supplyMap = supplyMap;
+    }
+
+    public static <Solution_> VariableListenerSupport<Solution_> create(InnerScoreDirector<Solution_, ?> scoreDirector) {
+        return new VariableListenerSupport<>(
+                scoreDirector,
+                new NotifiableRegistry<>(scoreDirector.getSolutionDescriptor()),
+                new LinkedHashMap<>());
     }
 
     public void linkVariableListeners() {
