@@ -26,7 +26,6 @@ public class BavetIndexFactory {
 
     public BavetIndexFactory(AbstractJoiner joiner) {
         int joinerCount = joiner.getJoinerCount();
-        ;
         joinerTypes = new JoinerType[joinerCount];
         for (int i = 0; i < joinerCount; i++) {
             JoinerType joinerType = joiner.getJoinerType(i);

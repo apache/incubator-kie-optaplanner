@@ -94,7 +94,7 @@ public final class BavetJoinBiNode<A, B> extends BavetAbstractBiNode<A, B> imple
         List<BavetAbstractTuple> leftChildTupleSet = leftParentTuple.getChildTupleList();
         for (BavetAbstractTuple uncastTuple : leftChildTupleSet) {
             BavetJoinBiTuple<A, B> childTuple = (BavetJoinBiTuple<A, B>) uncastTuple;
-            boolean removed = childTuple.getBTuple().getChildTupleList().remove(childTuple);
+            boolean removed = childTuple.getBTuple().getChildTupleList().remove(childTuple); // TODO SCALE issue
             if (!removed) {
                 throw new IllegalStateException("Impossible state: the fact (" + childTuple.getFactA()
                         + ")'s tuple cannot be removed from the other fact (" + childTuple.getFactB()

@@ -33,7 +33,7 @@ import org.optaplanner.core.impl.score.stream.JoinerType;
 public class BavetEqualsAndComparisonIndex<Tuple_ extends BavetJoinBridgeTuple> extends BavetIndex<Tuple_> {
 
     private final JoinerType comparisonJoinerType;
-    private final Map<BavetIndexKey, NavigableMap<Object, Set<Tuple_>>> equalsMap = new HashMap<>();
+    private final Map<IndexerKey, NavigableMap<Object, Set<Tuple_>>> equalsMap = new HashMap<>();
 
     public BavetEqualsAndComparisonIndex(JoinerType comparisonJoinerType) {
         this.comparisonJoinerType = comparisonJoinerType;
@@ -42,7 +42,7 @@ public class BavetEqualsAndComparisonIndex<Tuple_ extends BavetJoinBridgeTuple> 
     @Override
     public void remove(Tuple_ tuple) {
         Object[] oldIndexProperties = tuple.getIndexProperties();
-        BavetIndexKey oldEqualsIndexKey = new BavetIndexKey(
+        IndexerKey oldEqualsIndexKey = new IndexerKey(
                 Arrays.copyOfRange(oldIndexProperties, 0, oldIndexProperties.length - 1));
         Object oldComparisonIndexProperty = oldIndexProperties[oldIndexProperties.length - 1];
         NavigableMap<Object, Set<Tuple_>> comparisonMap = equalsMap.get(oldEqualsIndexKey);
@@ -63,7 +63,7 @@ public class BavetEqualsAndComparisonIndex<Tuple_ extends BavetJoinBridgeTuple> 
 
     @Override
     public void put(Object[] indexProperties, Tuple_ tuple) {
-        BavetIndexKey equalsIndexKey = new BavetIndexKey(Arrays.copyOfRange(indexProperties, 0, indexProperties.length - 1));
+        IndexerKey equalsIndexKey = new IndexerKey(Arrays.copyOfRange(indexProperties, 0, indexProperties.length - 1));
         Object comparisonIndexProperty = indexProperties[indexProperties.length - 1];
         NavigableMap<Object, Set<Tuple_>> comparisonMap = equalsMap.computeIfAbsent(equalsIndexKey, k -> new TreeMap<>());
         Set<Tuple_> tupleSet = comparisonMap.computeIfAbsent(comparisonIndexProperty, k -> new LinkedHashSet<>());
@@ -78,7 +78,7 @@ public class BavetEqualsAndComparisonIndex<Tuple_ extends BavetJoinBridgeTuple> 
 
     @Override
     public Set<Tuple_> get(Object[] indexProperties) {
-        BavetIndexKey equalsIndexKey = new BavetIndexKey(Arrays.copyOfRange(indexProperties, 0, indexProperties.length - 1));
+        IndexerKey equalsIndexKey = new IndexerKey(Arrays.copyOfRange(indexProperties, 0, indexProperties.length - 1));
         Object comparisonIndexProperty = indexProperties[indexProperties.length - 1];
         NavigableMap<Object, Set<Tuple_>> comparisonMap = equalsMap.get(equalsIndexKey);
         if (comparisonMap == null) {

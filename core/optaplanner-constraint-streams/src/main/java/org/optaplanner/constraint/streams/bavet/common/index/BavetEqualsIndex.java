@@ -27,11 +27,11 @@ import org.optaplanner.constraint.streams.bavet.common.BavetJoinBridgeTuple;
 
 public class BavetEqualsIndex<Tuple_ extends BavetJoinBridgeTuple> extends BavetIndex<Tuple_> {
 
-    private final Map<BavetIndexKey, Set<Tuple_>> map = new HashMap<>();
+    private final Map<IndexerKey, Set<Tuple_>> map = new HashMap<>();
 
     @Override
     public void remove(Tuple_ tuple) {
-        BavetIndexKey oldIndexKey = new BavetIndexKey(tuple.getIndexProperties());
+        IndexerKey oldIndexKey = new IndexerKey(tuple.getIndexProperties());
         Set<Tuple_> tupleSet = map.get(oldIndexKey);
         boolean removed = tupleSet.remove(tuple);
         if (!removed) {
@@ -46,7 +46,7 @@ public class BavetEqualsIndex<Tuple_ extends BavetJoinBridgeTuple> extends Bavet
 
     @Override
     public void put(Object[] indexProperties, Tuple_ tuple) {
-        Set<Tuple_> tupleSet = map.computeIfAbsent(new BavetIndexKey(indexProperties), k -> new LinkedHashSet<>());
+        Set<Tuple_> tupleSet = map.computeIfAbsent(new IndexerKey(indexProperties), k -> new LinkedHashSet<>());
         boolean added = tupleSet.add(tuple);
         if (!added) {
             throw new IllegalStateException("Impossible state: the fact (" + tuple.getFactsString()
@@ -58,7 +58,7 @@ public class BavetEqualsIndex<Tuple_ extends BavetJoinBridgeTuple> extends Bavet
 
     @Override
     public Set<Tuple_> get(Object[] indexProperties) {
-        Set<Tuple_> tupleSet = map.get(new BavetIndexKey(indexProperties));
+        Set<Tuple_> tupleSet = map.get(new IndexerKey(indexProperties));
         if (tupleSet == null) {
             return Collections.emptySet();
         }

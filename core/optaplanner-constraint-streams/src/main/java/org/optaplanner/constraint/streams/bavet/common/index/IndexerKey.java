@@ -18,11 +18,11 @@ package org.optaplanner.constraint.streams.bavet.common.index;
 
 import java.util.Arrays;
 
-public class BavetIndexKey {
+public class IndexerKey {
 
     private Object[] indexProperties;
 
-    public BavetIndexKey(Object[] indexProperties) {
+    public IndexerKey(Object[] indexProperties) {
         this.indexProperties = indexProperties;
     }
 
@@ -33,10 +33,10 @@ public class BavetIndexKey {
 
     @Override
     public boolean equals(Object o) {
-        if (!(o instanceof BavetIndexKey)) {
+        if (!(o instanceof IndexerKey)) {
             return false;
         }
-        BavetIndexKey other = (BavetIndexKey) o;
+        IndexerKey other = (IndexerKey) o;
         return Arrays.equals(indexProperties, other.indexProperties);
     }
 
