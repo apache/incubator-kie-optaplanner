@@ -49,7 +49,7 @@ public final class BavetConstraintSession<Solution_, Score_ extends Score<Score_
 
     public BavetConstraintSession(boolean constraintMatchEnabled, ScoreDefinition<Score_> scoreDefinition,
             Map<BavetConstraint<Solution_>, Score_> constraintToWeightMap) {
-        scoreInliner = AbstractScoreInliner.buildScoreInliner(scoreDefinition, (Map) constraintToWeightMap,
+        scoreInliner = AbstractScoreInliner.buildScoreInliner(scoreDefinition, constraintToWeightMap,
                 constraintMatchEnabled);
         declaredClassToNodeMap = new HashMap<>(50);
         BavetNodeBuildPolicy<Solution_> buildPolicy = new BavetNodeBuildPolicy<>(this);

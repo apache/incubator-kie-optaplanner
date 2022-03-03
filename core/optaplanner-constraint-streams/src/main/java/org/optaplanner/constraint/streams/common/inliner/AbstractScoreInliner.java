@@ -63,7 +63,7 @@ public abstract class AbstractScoreInliner<Score_ extends Score<Score_>> {
             "org.optaplanner.score.stream.inliner";
 
     public static <Score_ extends Score<Score_>, ScoreInliner_ extends AbstractScoreInliner<Score_>> ScoreInliner_
-            buildScoreInliner(ScoreDefinition<Score_> scoreDefinition, Map<Constraint, Score_> constraintIdToWeightMap,
+            buildScoreInliner(ScoreDefinition<Score_> scoreDefinition, Map<? extends Constraint, Score_> constraintIdToWeightMap,
                     boolean constraintMatchEnabled) {
         if (scoreDefinition instanceof SimpleScoreDefinition) {
             return (ScoreInliner_) new SimpleScoreInliner((Map<Constraint, SimpleScore>) constraintIdToWeightMap,
