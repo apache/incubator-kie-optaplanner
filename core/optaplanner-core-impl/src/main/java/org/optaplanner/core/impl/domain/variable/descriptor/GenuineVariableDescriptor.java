@@ -27,7 +27,6 @@ import org.optaplanner.core.api.domain.valuerange.CountableValueRange;
 import org.optaplanner.core.api.domain.valuerange.ValueRangeProvider;
 import org.optaplanner.core.api.domain.variable.PlanningListVariable;
 import org.optaplanner.core.api.domain.variable.PlanningVariable;
-import org.optaplanner.core.api.score.director.ScoreDirector;
 import org.optaplanner.core.config.heuristic.selector.common.decorator.SelectionSorterOrder;
 import org.optaplanner.core.config.util.ConfigUtils;
 import org.optaplanner.core.impl.domain.common.accessor.MemberAccessor;
@@ -215,7 +214,7 @@ public abstract class GenuineVariableDescriptor<Solution_> extends VariableDescr
      * even a {@link PlanningVariable#nullable()} variable, which is always considered initialized, is reinitializable
      * if its value is {@code null}.
      */
-    public boolean isReinitializable(ScoreDirector<Solution_> scoreDirector, Object entity) {
+    public boolean isReinitializable(Object entity) {
         Object value = getValue(entity);
         return value == null;
     }
