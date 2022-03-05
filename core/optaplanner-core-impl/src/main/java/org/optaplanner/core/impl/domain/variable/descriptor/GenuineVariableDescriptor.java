@@ -42,7 +42,6 @@ import org.optaplanner.core.impl.heuristic.selector.common.decorator.SelectionFi
 import org.optaplanner.core.impl.heuristic.selector.common.decorator.SelectionSorter;
 import org.optaplanner.core.impl.heuristic.selector.common.decorator.SelectionSorterWeightFactory;
 import org.optaplanner.core.impl.heuristic.selector.common.decorator.WeightFactorySelectionSorter;
-import org.optaplanner.core.impl.heuristic.selector.entity.decorator.NullValueReinitializeVariableEntityFilter;
 import org.optaplanner.core.impl.heuristic.selector.value.decorator.MovableChainedTrailingValueFilter;
 
 /**
@@ -52,8 +51,6 @@ public abstract class GenuineVariableDescriptor<Solution_> extends VariableDescr
 
     private ValueRangeDescriptor<Solution_> valueRangeDescriptor;
     private SelectionFilter<Solution_, Object> movableChainedTrailingValueFilter;
-    private SelectionFilter<Solution_, Object> reinitializeVariableEntityFilter =
-            new NullValueReinitializeVariableEntityFilter<>(this);
     private SelectionSorter<Solution_, Object> increasingStrengthSorter;
     private SelectionSorter<Solution_, Object> decreasingStrengthSorter;
 
@@ -213,8 +210,14 @@ public abstract class GenuineVariableDescriptor<Solution_> extends VariableDescr
         return !isInitialized(entity);
     }
 
+    /**
+     * Decides whether an entity is eligible for initialization. This is not an opposite of {@code isInitialized()} because
+     * even a {@link PlanningVariable#nullable()} variable, which is always considered initialized, is reinitializable
+     * if its value is {@code null}.
+     */
     public boolean isReinitializable(ScoreDirector<Solution_> scoreDirector, Object entity) {
-        return reinitializeVariableEntityFilter.accept(scoreDirector, entity);
+        Object value = getValue(entity);
+        return value == null;
     }
 
     public SelectionSorter<Solution_, Object> getIncreasingStrengthSorter() {

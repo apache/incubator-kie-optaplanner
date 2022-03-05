@@ -29,7 +29,7 @@ import org.optaplanner.core.impl.phase.scope.AbstractPhaseScope;
 /**
  * Prevents reassigning of already initialized variables during Construction Heuristics and Exhaustive Search.
  * <p>
- * Returns no values for an entity's variable if the variable is already initialized.
+ * Returns no values for an entity's variable if the variable is not reinitializable.
  * <p>
  * Does not implement {@link EntityIndependentValueSelector} because if used like that,
  * it shouldn't be added during configuration in the first place.
