@@ -16,28 +16,33 @@
 
 package org.optaplanner.examples.common.business;
 
+import static java.util.stream.Collectors.toList;
+
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.FileVisitOption;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.stream.Stream;
-
-import javax.swing.SwingUtilities;
 
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.ScoreManager;
 import org.optaplanner.core.api.score.constraint.ConstraintMatchTotal;
 import org.optaplanner.core.api.score.constraint.Indictment;
-import org.optaplanner.core.api.solver.Solver;
 import org.optaplanner.core.api.solver.SolverFactory;
+import org.optaplanner.core.api.solver.SolverJob;
+import org.optaplanner.core.api.solver.SolverManager;
+import org.optaplanner.core.api.solver.SolverStatus;
 import org.optaplanner.core.api.solver.change.ProblemChange;
 import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
@@ -45,24 +50,20 @@ import org.optaplanner.core.impl.domain.variable.descriptor.GenuineVariableDescr
 import org.optaplanner.core.impl.heuristic.move.Move;
 import org.optaplanner.core.impl.heuristic.selector.move.generic.ChangeMove;
 import org.optaplanner.core.impl.heuristic.selector.move.generic.ChangeMoveSelector;
-import org.optaplanner.core.impl.score.constraint.DefaultConstraintMatchTotal;
 import org.optaplanner.core.impl.score.director.InnerScoreDirector;
 import org.optaplanner.core.impl.solver.DefaultSolverFactory;
 import org.optaplanner.core.impl.solver.change.DefaultProblemChangeDirector;
 import org.optaplanner.examples.common.app.CommonApp;
 import org.optaplanner.examples.common.persistence.AbstractSolutionExporter;
 import org.optaplanner.examples.common.persistence.AbstractSolutionImporter;
-import org.optaplanner.examples.common.swingui.SolverAndPersistenceFrame;
 import org.optaplanner.persistence.common.api.domain.solution.SolutionFileIO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static java.util.stream.Collectors.toList;
-
 /**
  * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
  */
-public class SolutionBusiness<Solution_, Score_ extends Score<Score_>> {
+public class SolutionBusiness<Solution_, Score_ extends Score<Score_>> implements AutoCloseable {
 
     public static String getBaseFileName(File file) {
         return getBaseFileName(file.getName());
@@ -77,37 +78,47 @@ public class SolutionBusiness<Solution_, Score_ extends Score<Score_>> {
         }
     }
 
-    private static final ProblemFileComparator FILE_COMPARATOR = new ProblemFileComparator();
-
+    private static final Comparator<File> FILE_COMPARATOR = new ProblemFileComparator();
+    private static final AtomicLong SOLVER_JOB_ID_COUNTER = new AtomicLong();
     private static final Logger LOGGER = LoggerFactory.getLogger(SolutionBusiness.class);
 
     private final CommonApp<Solution_> app;
+    private final DefaultSolverFactory<Solution_> solverFactory;
+    private final SolutionDescriptor<Solution_> solutionDescriptor;
+    private final SolverManager<Solution_, Long> solverManager;
+    private final ScoreManager<Solution_, Score_> scoreManager;
+
+    private final AtomicReference<SolverJob<Solution_, Long>> solverJobRef = new AtomicReference<>();
+    private final AtomicReference<Solution_> workingSolutionRef = new AtomicReference<>();
+
     private File dataDir;
     private SolutionFileIO<Solution_> solutionFileIO;
-
     private Set<AbstractSolutionImporter<Solution_>> importers;
     private Set<AbstractSolutionExporter<Solution_>> exporters;
-
     private File importDataDir;
     private File unsolvedDataDir;
     private File solvedDataDir;
     private File exportDataDir;
-
-    private final DefaultSolverFactory<Solution_> solverFactory;
-    private final SolutionDescriptor<Solution_> solutionDescriptor;
-    private final Solver<Solution_> solver;
-    private final ScoreManager<Solution_, Score_> scoreManager;
     private String solutionFileName = null;
-
-    private final AtomicReference<Solution_> workingSolutionRef = new AtomicReference<>();
-    private final AtomicReference<Solution_> skipToBestSolutionRef = new AtomicReference<>();
 
     public SolutionBusiness(CommonApp<Solution_> app, SolverFactory<Solution_> solverFactory) {
         this.app = app;
         this.solverFactory = ((DefaultSolverFactory<Solution_>) solverFactory);
         this.solutionDescriptor = this.solverFactory.getSolutionDescriptor();
-        this.solver = solverFactory.buildSolver();
+        this.solverManager = SolverManager.create(solverFactory);
         this.scoreManager = ScoreManager.create(solverFactory);
+    }
+
+    private static List<File> getFileList(File dataDir, String extension) {
+        try (Stream<Path> paths = Files.walk(dataDir.toPath(), FileVisitOption.FOLLOW_LINKS)) {
+            return paths.filter(Files::isRegularFile)
+                    .filter(path -> path.toString().endsWith("." + extension))
+                    .map(Path::toFile)
+                    .sorted(FILE_COMPARATOR)
+                    .collect(toList());
+        } catch (IOException e) {
+            throw new IllegalStateException("Error while crawling data directory (" + dataDir + ").", e);
+        }
     }
 
     public String getAppName() {
@@ -146,19 +157,19 @@ public class SolutionBusiness<Solution_, Score_ extends Score<Score_>> {
         this.importers = importers;
     }
 
-    public void setExporters(Set<AbstractSolutionExporter<Solution_>> exporters) {
-        if (exporters == null) {
-            throw new IllegalArgumentException("Passed exporters must not be null");
-        }
-        this.exporters = exporters;
-    }
-
     public void addExporter(AbstractSolutionExporter<Solution_> exporter) {
         this.exporters.add(exporter);
     }
 
     public Set<AbstractSolutionExporter<Solution_>> getExporters() {
         return this.exporters;
+    }
+
+    public void setExporters(Set<AbstractSolutionExporter<Solution_>> exporters) {
+        if (exporters == null) {
+            throw new IllegalArgumentException("Passed exporters must not be null");
+        }
+        this.exporters = exporters;
     }
 
     public boolean hasImporter() {
@@ -216,18 +227,6 @@ public class SolutionBusiness<Solution_, Score_ extends Score<Score_>> {
         return getFileList(unsolvedDataDir, solutionFileIO.getInputFileExtension());
     }
 
-    private static List<File> getFileList(File dataDir, String extension) {
-        try (Stream<Path> paths = Files.walk(dataDir.toPath(), FileVisitOption.FOLLOW_LINKS)) {
-            return paths.filter(Files::isRegularFile)
-                    .filter(path -> path.toString().endsWith("." + extension))
-                    .map(Path::toFile)
-                    .sorted(FILE_COMPARATOR)
-                    .collect(toList());
-        } catch (IOException e) {
-            throw new IllegalStateException("Error while crawling data directory (" + dataDir + ").", e);
-        }
-    }
-
     public List<File> getSolvedFileList() {
         return getFileList(solvedDataDir, solutionFileIO.getOutputFileExtension());
     }
@@ -253,33 +252,8 @@ public class SolutionBusiness<Solution_, Score_ extends Score<Score_>> {
     }
 
     public boolean isSolving() {
-        return solver.isSolving();
-    }
-
-    public void registerForBestSolutionChanges(final SolverAndPersistenceFrame<Solution_> solverAndPersistenceFrame) {
-        solver.addEventListener(event -> {
-            // Called on the Solver thread, so not on the Swing Event thread
-            /*
-             * Avoid ConcurrentModificationException when there is an unprocessed ProblemFactChange
-             * because the paint method uses the same problem facts instances as the Solver's workingSolution
-             * unlike the planning entities of the bestSolution which are cloned from the Solver's workingSolution
-             */
-            if (solver.isEveryProblemChangeProcessed()) {
-                // The final is also needed for thread visibility
-                final Solution_ newBestSolution = event.getNewBestSolution();
-                skipToBestSolutionRef.set(newBestSolution);
-                SwingUtilities.invokeLater(() -> {
-                    // Called on the Swing Event thread
-                    Solution_ skipToBestSolution = skipToBestSolutionRef.get();
-                    // Skip this event if a newer one arrived meanwhile to avoid flooding the Swing Event thread
-                    if (newBestSolution != skipToBestSolution) {
-                        return;
-                    }
-                    setSolution(newBestSolution);
-                    solverAndPersistenceFrame.bestSolutionChanged();
-                });
-            }
-        });
+        SolverJob<Solution_, Long> solverJob = solverJobRef.get();
+        return solverJob != null && solverJob.getSolverStatus() == SolverStatus.SOLVING_ACTIVE;
     }
 
     public boolean isConstraintMatchEnabled() {
@@ -290,7 +264,8 @@ public class SolutionBusiness<Solution_, Score_ extends Score<Score_>> {
 
     private <Result_> Result_ withScoreDirector(Function<InnerScoreDirector<Solution_, Score_>, Result_> function) {
         try (InnerScoreDirector<Solution_, Score_> scoreDirector =
-                (InnerScoreDirector<Solution_, Score_>) solverFactory.getScoreDirectorFactory().buildScoreDirector(false, true)) {
+                (InnerScoreDirector<Solution_, Score_>) solverFactory.getScoreDirectorFactory().buildScoreDirector(false,
+                        true)) {
             scoreDirector.setWorkingSolution(getSolution());
             Result_ result = function.apply(scoreDirector);
             setSolution(scoreDirector.getWorkingSolution());
@@ -303,7 +278,6 @@ public class SolutionBusiness<Solution_, Score_ extends Score<Score_>> {
                 .getConstraintMatchTotalMap()
                 .values()
                 .stream()
-                .map(constraintMatchTotal -> (DefaultConstraintMatchTotal<Score_>) constraintMatchTotal)
                 .sorted()
                 .collect(toList());
     }
@@ -353,7 +327,7 @@ public class SolutionBusiness<Solution_, Score_ extends Score<Score_>> {
     }
 
     private void doMove(Move<Solution_> move, InnerScoreDirector<Solution_, Score_> scoreDirector) {
-        if (solver.isSolving()) {
+        if (isSolving()) {
             LOGGER.error("Not doing user move ({}) because the solver is solving.", move);
             return;
         }
@@ -374,8 +348,9 @@ public class SolutionBusiness<Solution_, Score_ extends Score<Score_>> {
     }
 
     public void doProblemChange(ProblemChange<Solution_> problemChange) {
-        if (solver.isSolving()) {
-            solver.addProblemChange(problemChange);
+        SolverJob<Solution_, Long> solverJob = solverJobRef.get();
+        if (solverJob != null) {
+            solverJob.addProblemChange(problemChange);
         } else {
             withScoreDirector(scoreDirector -> {
                 DefaultProblemChangeDirector<Solution_> problemChangeDirector =
@@ -387,18 +362,32 @@ public class SolutionBusiness<Solution_, Score_ extends Score<Score_>> {
 
     /**
      * Can be called on any thread.
-     * <p>
-     * Note: This method does not change the guiScoreDirector because that can only be changed on the event thread.
      *
      * @param problem never null
+     * @param bestSolutionConsumer never null
      * @return never null
      */
-    public Solution_ solve(Solution_ problem) {
-        return solver.solve(problem);
+    public Solution_ solve(Solution_ problem, Consumer<Solution_> bestSolutionConsumer) {
+        SolverJob<Solution_, Long> solverJob = solverManager.solveAndListen(SOLVER_JOB_ID_COUNTER.getAndIncrement(),
+                id -> problem, bestSolution -> {
+                    setSolution(bestSolution);
+                    bestSolutionConsumer.accept(bestSolution);
+                });
+        solverJobRef.set(solverJob);
+        try {
+            return solverJob.getFinalBestSolution();
+        } catch (InterruptedException | ExecutionException e) {
+            throw new IllegalStateException("Solver threw an exception.", e);
+        } finally {
+            solverJobRef.set(null); // Don't keep references to jobs that have finished solving.
+        }
     }
 
     public void terminateSolvingEarly() {
-        solver.terminateEarly();
+        SolverJob<Solution_, Long> solverJob = solverJobRef.get();
+        if (solverJob != null) {
+            solverJob.terminateEarly();
+        }
     }
 
     public GenuineVariableDescriptor<Solution_> findVariableDescriptor(Object entity, String variableName) {
@@ -420,4 +409,9 @@ public class SolutionBusiness<Solution_, Score_ extends Score<Score_>> {
         doMove(move);
     }
 
+    @Override
+    public void close() {
+        terminateSolvingEarly();
+        solverManager.close();
+    }
 }
