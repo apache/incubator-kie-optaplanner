@@ -37,13 +37,10 @@ import org.optaplanner.core.api.score.constraint.Indictment;
 import org.optaplanner.core.api.solver.Solver;
 import org.optaplanner.core.api.solver.SolverFactory;
 import org.optaplanner.core.api.solver.change.ProblemChange;
+import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
 import org.optaplanner.core.impl.domain.variable.descriptor.GenuineVariableDescriptor;
-import org.optaplanner.core.impl.domain.variable.inverserelation.SingletonInverseVariableDemand;
-import org.optaplanner.core.impl.domain.variable.inverserelation.SingletonInverseVariableSupply;
-import org.optaplanner.core.impl.domain.variable.supply.SupplyManager;
 import org.optaplanner.core.impl.heuristic.move.Move;
 import org.optaplanner.core.impl.heuristic.selector.move.generic.ChangeMove;
-import org.optaplanner.core.impl.heuristic.selector.move.generic.chained.ChainedChangeMove;
 import org.optaplanner.core.impl.score.constraint.DefaultConstraintMatchTotal;
 import org.optaplanner.core.impl.score.director.InnerScoreDirector;
 import org.optaplanner.core.impl.solver.DefaultSolverFactory;
@@ -380,15 +377,11 @@ public class SolutionBusiness<Solution_, Score_ extends Score<Score_>> {
 
     private ChangeMove<Solution_> createChangeMove(Object entity, String variableName, Object toPlanningValue) {
         // TODO Solver should support building a ChangeMove
+        EntityDescriptor<Solution_> entityDescriptor =
+                guiScoreDirector.getSolutionDescriptor().findEntityDescriptorOrFail(entity.getClass());
         GenuineVariableDescriptor<Solution_> variableDescriptor = findVariableDescriptor(entity, variableName);
-        if (variableDescriptor.isChained()) {
-            SupplyManager<Solution_> supplyManager = guiScoreDirector.getSupplyManager();
-            SingletonInverseVariableSupply inverseVariableSupply = supplyManager.demand(
-                    new SingletonInverseVariableDemand<>(variableDescriptor));
-            return new ChainedChangeMove<>(variableDescriptor, entity, toPlanningValue, inverseVariableSupply);
-        } else {
-            return new ChangeMove<>(variableDescriptor, entity, toPlanningValue);
-        }
+        return new CustomChangeMoveFactory<>(entityDescriptor, variableDescriptor)
+                .create(entity, toPlanningValue);
     }
 
     public void doChangeMove(Object entity, String variableName, Object toPlanningValue) {
