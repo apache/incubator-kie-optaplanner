@@ -19,6 +19,7 @@ package org.optaplanner.constraint.streams.drools;
 import static java.util.stream.Collectors.toMap;
 import static org.drools.model.DSL.globalOf;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;

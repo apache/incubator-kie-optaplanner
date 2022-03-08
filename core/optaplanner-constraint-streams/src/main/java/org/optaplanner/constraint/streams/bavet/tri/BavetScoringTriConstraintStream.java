@@ -146,6 +146,12 @@ public final class BavetScoringTriConstraintStream<Solution_, A, B, C>
         }
     }
 
+    // ************************************************************************
+    // Equality for node sharing
+    // ************************************************************************
+
+    // No node sharing
+
     @Override
     public String toString() {
         return "Scoring()";

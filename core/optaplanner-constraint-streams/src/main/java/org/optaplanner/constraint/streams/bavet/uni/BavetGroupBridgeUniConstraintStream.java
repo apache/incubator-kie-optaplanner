@@ -82,6 +82,12 @@ public final class BavetGroupBridgeUniConstraintStream<Solution_, A, NewA, Resul
         groupBridgeNode.setGroupNode(groupNode);
     }
 
+    // ************************************************************************
+    // Equality for node sharing
+    // ************************************************************************
+
+    // TODO
+
     @Override
     public String toString() {
         return "GroupBridge()";

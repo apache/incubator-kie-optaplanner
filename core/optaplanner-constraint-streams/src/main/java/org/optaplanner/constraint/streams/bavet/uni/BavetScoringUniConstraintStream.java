@@ -143,6 +143,12 @@ public final class BavetScoringUniConstraintStream<Solution_, A> extends BavetAb
         }
     }
 
+    // ************************************************************************
+    // Equality for node sharing
+    // ************************************************************************
+
+    // No node sharing
+
     @Override
     public String toString() {
         return "Scoring()";

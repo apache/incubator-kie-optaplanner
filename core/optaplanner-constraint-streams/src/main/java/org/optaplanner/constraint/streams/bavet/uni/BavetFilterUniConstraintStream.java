@@ -17,6 +17,7 @@
 package org.optaplanner.constraint.streams.bavet.uni;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.function.Predicate;
 
 import org.optaplanner.constraint.streams.bavet.BavetConstraintFactory;
@@ -56,6 +57,28 @@ public final class BavetFilterUniConstraintStream<Solution_, A> extends BavetAbs
     protected BavetAbstractUniNode<A> createNode(BavetNodeBuildPolicy<Solution_> buildPolicy,
             Score<?> constraintWeight, BavetAbstractUniNode<A> parentNode) {
         return new BavetFilterUniNode<>(buildPolicy.getSession(), buildPolicy.nextNodeIndex(), parentNode, predicate);
+    }
+
+    // ************************************************************************
+    // Equality for node sharing
+    // ************************************************************************
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(System.identityHashCode(parent), System.identityHashCode(predicate));
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        } else if (o instanceof BavetFilterUniConstraintStream) {
+            BavetFilterUniConstraintStream<?, ?> other = (BavetFilterUniConstraintStream<?, ?>) o;
+            return parent == other.parent
+                    && predicate == other.predicate;
+        } else {
+            return false;
+        }
     }
 
     @Override

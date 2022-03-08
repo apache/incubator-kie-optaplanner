@@ -17,6 +17,7 @@
 package org.optaplanner.constraint.streams.bavet.bi;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.function.BiPredicate;
 
 import org.optaplanner.constraint.streams.bavet.BavetConstraintFactory;
@@ -58,6 +59,28 @@ public final class BavetFilterBiConstraintStream<Solution_, A, B> extends BavetA
     protected BavetFilterBiNode<A, B> createNode(BavetNodeBuildPolicy<Solution_> buildPolicy,
             Score<?> constraintWeight, BavetAbstractBiNode<A, B> parentNode) {
         return new BavetFilterBiNode<>(buildPolicy.getSession(), buildPolicy.nextNodeIndex(), parentNode, predicate);
+    }
+
+    // ************************************************************************
+    // Equality for node sharing
+    // ************************************************************************
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(System.identityHashCode(parent), System.identityHashCode(predicate));
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        } else if (o instanceof BavetFilterBiConstraintStream) {
+            BavetFilterBiConstraintStream<?, ?, ?> other = (BavetFilterBiConstraintStream<?, ?, ?>) o;
+            return parent == other.parent
+                    && predicate == other.predicate;
+        } else {
+            return false;
+        }
     }
 
     @Override

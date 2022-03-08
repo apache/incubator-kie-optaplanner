@@ -90,6 +90,12 @@ public final class BavetJoinBridgeUniConstraintStream<Solution_, A>
         }
     }
 
+    // ************************************************************************
+    // Equality for node sharing
+    // ************************************************************************
+
+    // No node sharing
+
     @Override
     public String toString() {
         return "JoinBridge()";

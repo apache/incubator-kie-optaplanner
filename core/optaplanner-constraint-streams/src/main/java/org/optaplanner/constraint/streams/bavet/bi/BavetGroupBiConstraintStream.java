@@ -70,6 +70,12 @@ public final class BavetGroupBiConstraintStream<Solution_, GroupKey_, ResultCont
         return new BavetGroupBiNode<>(buildPolicy.getSession(), buildPolicy.nextNodeIndex(), finisher);
     }
 
+    // ************************************************************************
+    // Equality for node sharing
+    // ************************************************************************
+
+    // TODO
+
     @Override
     public String toString() {
         return "Group() with " + childStreamList.size() + " children";

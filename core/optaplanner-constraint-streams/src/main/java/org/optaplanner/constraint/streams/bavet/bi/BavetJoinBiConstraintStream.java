@@ -79,6 +79,12 @@ public final class BavetJoinBiConstraintStream<Solution_, A, B> extends BavetAbs
         throw new IllegalStateException("Impossible state: this code is never called.");
     }
 
+    // ************************************************************************
+    // Equality for node sharing
+    // ************************************************************************
+
+    // TODO
+
     @Override
     public String toString() {
         return "Join() with " + childStreamList.size() + " children";

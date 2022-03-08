@@ -81,6 +81,12 @@ public final class BavetJoinTriConstraintStream<Solution_, A, B, C> extends Bave
         throw new IllegalStateException("Impossible state: this code is never called.");
     }
 
+    // ************************************************************************
+    // Equality for node sharing
+    // ************************************************************************
+
+    // TODO
+
     @Override
     public String toString() {
         return "Join() with " + childStreamList.size() + " children";

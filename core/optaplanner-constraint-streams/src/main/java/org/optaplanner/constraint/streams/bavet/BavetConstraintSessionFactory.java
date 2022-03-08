@@ -16,6 +16,7 @@
 
 package org.optaplanner.constraint.streams.bavet;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -27,12 +28,12 @@ import org.optaplanner.core.impl.score.definition.ScoreDefinition;
 public final class BavetConstraintSessionFactory<Solution_, Score_ extends Score<Score_>> {
 
     private final SolutionDescriptor<Solution_> solutionDescriptor;
-    private final List<BavetConstraint<Solution_>> constraintList;
+    private final BavetConstraint<Solution_>[] constraints;
 
     public BavetConstraintSessionFactory(SolutionDescriptor<Solution_> solutionDescriptor,
-            List<BavetConstraint<Solution_>> constraintList) {
+            BavetConstraint<Solution_>[] constraints) {
         this.solutionDescriptor = solutionDescriptor;
-        this.constraintList = constraintList;
+        this.constraints = constraints;
     }
 
     // ************************************************************************
@@ -45,7 +46,7 @@ public final class BavetConstraintSessionFactory<Solution_, Score_ extends Score
         Score_ zeroScore = scoreDefinition.getZeroScore();
         // Extract constraint weights, excluding constraints where weight is zero.
         Map<BavetConstraint<Solution_>, Score_> constraintToWeightMap =
-                constraintList.stream()
+                Arrays.stream(constraints)
                         .map(constraint -> {
                             Score_ weight = constraint.extractConstraintWeight(workingSolution); // Expensive, only do once.
                             return new Object[] { constraint, weight };

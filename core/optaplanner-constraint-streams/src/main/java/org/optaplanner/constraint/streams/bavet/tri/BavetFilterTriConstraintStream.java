@@ -17,6 +17,7 @@
 package org.optaplanner.constraint.streams.bavet.tri;
 
 import java.util.List;
+import java.util.Objects;
 
 import org.optaplanner.constraint.streams.bavet.BavetConstraintFactory;
 import org.optaplanner.constraint.streams.bavet.common.BavetNodeBuildPolicy;
@@ -59,6 +60,28 @@ public final class BavetFilterTriConstraintStream<Solution_, A, B, C>
     protected BavetFilterTriNode<A, B, C> createNode(BavetNodeBuildPolicy<Solution_> buildPolicy,
             Score<?> constraintWeight, BavetAbstractTriNode<A, B, C> parentNode) {
         return new BavetFilterTriNode<>(buildPolicy.getSession(), buildPolicy.nextNodeIndex(), parentNode, predicate);
+    }
+
+    // ************************************************************************
+    // Equality for node sharing
+    // ************************************************************************
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(System.identityHashCode(parent), System.identityHashCode(predicate));
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        } else if (o instanceof BavetFilterTriConstraintStream) {
+            BavetFilterTriConstraintStream<?, ?, ?, ?> other = (BavetFilterTriConstraintStream<?, ?, ?, ?>) o;
+            return parent == other.parent
+                    && predicate == other.predicate;
+        } else {
+            return false;
+        }
     }
 
     @Override

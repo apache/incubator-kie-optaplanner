@@ -67,9 +67,30 @@ public final class BavetForEachUniConstraintStream<Solution_, A> extends BavetAb
         return new BavetForEachUniNode<>(buildPolicy.getSession(), buildPolicy.nextNodeIndex(), forEachClass);
     }
 
+    // ************************************************************************
+    // Equality for node sharing
+    // ************************************************************************
+
+    @Override
+    public int hashCode() {
+        return forEachClass.hashCode();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        } else if (o instanceof BavetForEachUniConstraintStream) {
+            BavetForEachUniConstraintStream<?, ?> other = (BavetForEachUniConstraintStream<?, ?>) o;
+            return forEachClass.equals(other.forEachClass);
+        } else {
+            return false;
+        }
+    }
+
     @Override
     public String toString() {
-        return "From(" + forEachClass.getSimpleName() + ") with " + childStreamList.size() + " children";
+        return "ForEach(" + forEachClass.getSimpleName() + ") with " + childStreamList.size() + " children";
     }
 
     // ************************************************************************
