@@ -16,8 +16,6 @@
 
 package org.optaplanner.examples.common.business;
 
-import static java.util.stream.Collectors.toList;
-
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.FileVisitOption;
@@ -58,6 +56,8 @@ import org.optaplanner.persistence.common.api.domain.solution.SolutionFileIO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import static java.util.stream.Collectors.toList;
+
 /**
  * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
  */
@@ -92,17 +92,22 @@ public class SolutionBusiness<Solution_, Score_ extends Score<Score_>> {
     private File solvedDataDir;
     private File exportDataDir;
 
-    // volatile because the solve method doesn't come from the event thread (like every other method call)
-    private volatile Solver<Solution_> solver;
+    private final Solver<Solution_> solver;
+    private final InnerScoreDirector<Solution_, Score_> guiScoreDirector;
+    private final DefaultProblemChangeDirector<Solution_> problemChangeDirector;
+    private final ScoreManager<Solution_, Score_> scoreManager;
     private String solutionFileName = null;
-    private InnerScoreDirector<Solution_, Score_> guiScoreDirector;
-    private DefaultProblemChangeDirector<Solution_> problemChangeDirector;
-    private ScoreManager<Solution_, Score_> scoreManager;
 
     private final AtomicReference<Solution_> skipToBestSolutionRef = new AtomicReference<>();
 
-    public SolutionBusiness(CommonApp<Solution_> app) {
+    public SolutionBusiness(CommonApp<Solution_> app, SolverFactory<Solution_> solverFactory) {
         this.app = app;
+        this.solver = solverFactory.buildSolver();
+        this.scoreManager = ScoreManager.create(solverFactory);
+        this.guiScoreDirector = (InnerScoreDirector<Solution_, Score_>) ((DefaultSolverFactory<Solution_>) solverFactory)
+                .getScoreDirectorFactory()
+                .buildScoreDirector();
+        this.problemChangeDirector = new DefaultProblemChangeDirector<>(guiScoreDirector);
     }
 
     public String getAppName() {
@@ -207,20 +212,11 @@ public class SolutionBusiness<Solution_, Score_ extends Score<Score_>> {
         return exportDataDir;
     }
 
-    public void setSolver(SolverFactory<Solution_> solverFactory) {
-        this.solver = solverFactory.buildSolver();
-        this.scoreManager = ScoreManager.create(solverFactory);
-        this.guiScoreDirector = (InnerScoreDirector<Solution_, Score_>) ((DefaultSolverFactory<Solution_>) solverFactory)
-                .getScoreDirectorFactory()
-                .buildScoreDirector();
-        this.problemChangeDirector = new DefaultProblemChangeDirector<>(guiScoreDirector);
-    }
-
     public List<File> getUnsolvedFileList() {
         return getFileList(unsolvedDataDir, solutionFileIO.getInputFileExtension());
     }
 
-    private List<File> getFileList(File dataDir, String extension) {
+    private static List<File> getFileList(File dataDir, String extension) {
         try (Stream<Path> paths = Files.walk(dataDir.toPath(), FileVisitOption.FOLLOW_LINKS)) {
             return paths.filter(Files::isRegularFile)
                     .filter(path -> path.toString().endsWith("." + extension))
@@ -382,7 +378,7 @@ public class SolutionBusiness<Solution_, Score_ extends Score<Score_>> {
         return guiScoreDirector.getSolutionDescriptor().findGenuineVariableDescriptorOrFail(entity, variableName);
     }
 
-    public ChangeMove<Solution_> createChangeMove(Object entity, String variableName, Object toPlanningValue) {
+    private ChangeMove<Solution_> createChangeMove(Object entity, String variableName, Object toPlanningValue) {
         // TODO Solver should support building a ChangeMove
         GenuineVariableDescriptor<Solution_> variableDescriptor = findVariableDescriptor(entity, variableName);
         if (variableDescriptor.isChained()) {
