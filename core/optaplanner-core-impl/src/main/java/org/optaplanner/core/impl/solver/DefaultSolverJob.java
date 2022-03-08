@@ -20,9 +20,11 @@ import java.time.Duration;
 import java.util.Objects;
 import java.util.UUID;
 import java.util.concurrent.Callable;
+import java.util.concurrent.CancellationException;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
@@ -59,6 +61,7 @@ public final class DefaultSolverJob<Solution_, ProblemId_> implements SolverJob<
     private final ReentrantLock solverStatusModifyingLock;
     private Future<Solution_> finalBestSolutionFuture;
     private ConsumerSupport<Solution_, ProblemId_> consumerSupport;
+    private final AtomicBoolean terminatedEarly = new AtomicBoolean(false);
 
     public DefaultSolverJob(
             DefaultSolverManager<Solution_, ProblemId_> solverManager,
@@ -156,7 +159,8 @@ public final class DefaultSolverJob<Solution_, ProblemId_> implements SolverJob<
     public void addProblemChange(ProblemChange<Solution_> problemChange) {
         Objects.requireNonNull(problemChange, () -> "A problem change (" + problemChange + ") must not be null.");
         if (solverStatus == SolverStatus.NOT_SOLVING) {
-            throw new IllegalStateException("Cannot add the problem change (" + problemChange + ") because the solver job ("
+            throw new IllegalStateException("Cannot add the problem change (" + problemChange
+                    + ") because the solver job ("
                     + solverStatus
                     + ") is not solving.");
         }
@@ -165,6 +169,7 @@ public final class DefaultSolverJob<Solution_, ProblemId_> implements SolverJob<
 
     @Override
     public void terminateEarly() {
+        terminatedEarly.set(true);
         try {
             solverStatusModifyingLock.lock();
             switch (solverStatus) {
@@ -197,12 +202,18 @@ public final class DefaultSolverJob<Solution_, ProblemId_> implements SolverJob<
 
     @Override
     public boolean isTerminatedEarly() {
-        return solver.isTerminateEarly();
+        return terminatedEarly.get();
     }
 
     @Override
     public Solution_ getFinalBestSolution() throws InterruptedException, ExecutionException {
-        return finalBestSolutionFuture.get();
+        try {
+            return finalBestSolutionFuture.get();
+        } catch (CancellationException cancellationException) {
+            LOGGER.debug("The terminateEarly() has been called before the solver job started solving. "
+                    + "Retrieving the input problem.");
+            return problemFinder.apply(problemId);
+        }
     }
 
     @Override
