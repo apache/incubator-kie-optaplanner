@@ -38,6 +38,7 @@ import org.optaplanner.core.api.solver.Solver;
 import org.optaplanner.core.api.solver.SolverFactory;
 import org.optaplanner.core.api.solver.change.ProblemChange;
 import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
+import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.core.impl.domain.variable.descriptor.GenuineVariableDescriptor;
 import org.optaplanner.core.impl.heuristic.move.Move;
 import org.optaplanner.core.impl.heuristic.selector.move.generic.ChangeMove;
@@ -89,16 +90,19 @@ public class SolutionBusiness<Solution_, Score_ extends Score<Score_>> {
     private File solvedDataDir;
     private File exportDataDir;
 
+    private final SolutionDescriptor<Solution_> solutionDescriptor;
     private final Solver<Solution_> solver;
     private final InnerScoreDirector<Solution_, Score_> guiScoreDirector;
     private final DefaultProblemChangeDirector<Solution_> problemChangeDirector;
     private final ScoreManager<Solution_, Score_> scoreManager;
     private String solutionFileName = null;
 
+    private final AtomicReference<Solution_> workingSolutionRef = new AtomicReference<>();
     private final AtomicReference<Solution_> skipToBestSolutionRef = new AtomicReference<>();
 
     public SolutionBusiness(CommonApp<Solution_> app, SolverFactory<Solution_> solverFactory) {
         this.app = app;
+        this.solutionDescriptor = ((DefaultSolverFactory<Solution_>) solverFactory).getSolutionDescriptor();
         this.solver = solverFactory.buildSolver();
         this.scoreManager = ScoreManager.create(solverFactory);
         this.guiScoreDirector = (InnerScoreDirector<Solution_, Score_>) ((DefaultSolverFactory<Solution_>) solverFactory)
@@ -230,11 +234,11 @@ public class SolutionBusiness<Solution_, Score_ extends Score<Score_>> {
     }
 
     public Solution_ getSolution() {
-        return guiScoreDirector.getWorkingSolution();
+        return workingSolutionRef.get();
     }
 
     public void setSolution(Solution_ solution) {
-        guiScoreDirector.setWorkingSolution(solution);
+        workingSolutionRef.set(solution);
     }
 
     public String getSolutionFileName() {
@@ -272,7 +276,7 @@ public class SolutionBusiness<Solution_, Score_ extends Score<Score_>> {
                     if (newBestSolution != skipToBestSolution) {
                         return;
                     }
-                    guiScoreDirector.setWorkingSolution(newBestSolution);
+                    setSolution(newBestSolution);
                     solverAndPersistenceFrame.bestSolutionChanged();
                 });
             }
@@ -301,7 +305,7 @@ public class SolutionBusiness<Solution_, Score_ extends Score<Score_>> {
         AbstractSolutionImporter<Solution_> importer = determineImporter(file);
         Solution_ solution = importer.readSolution(file);
         solutionFileName = file.getName();
-        guiScoreDirector.setWorkingSolution(solution);
+        setSolution(solution);
     }
 
     private AbstractSolutionImporter<Solution_> determineImporter(File file) {
@@ -319,18 +323,16 @@ public class SolutionBusiness<Solution_, Score_ extends Score<Score_>> {
         Solution_ solution = solutionFileIO.read(file);
         LOGGER.info("Opened: {}", file);
         solutionFileName = file.getName();
-        guiScoreDirector.setWorkingSolution(solution);
+        workingSolutionRef.set(solution);
     }
 
     public void saveSolution(File file) {
-        Solution_ solution = guiScoreDirector.getWorkingSolution();
-        solutionFileIO.write(solution, file);
+        solutionFileIO.write(getSolution(), file);
         LOGGER.info("Saved: {}", file);
     }
 
     public void exportSolution(AbstractSolutionExporter<Solution_> exporter, File file) {
-        Solution_ solution = guiScoreDirector.getWorkingSolution();
-        exporter.writeSolution(solution, file);
+        exporter.writeSolution(getSolution(), file);
     }
 
     public void doMove(Move<Solution_> move) {
@@ -338,6 +340,7 @@ public class SolutionBusiness<Solution_, Score_ extends Score<Score_>> {
             LOGGER.error("Not doing user move ({}) because the solver is solving.", move);
             return;
         }
+        guiScoreDirector.setWorkingSolution(getSolution());
         if (!move.isMoveDoable(guiScoreDirector)) {
             LOGGER.warn("Not doing user move ({}) because it is not doable.", move);
             return;
@@ -345,6 +348,7 @@ public class SolutionBusiness<Solution_, Score_ extends Score<Score_>> {
         LOGGER.info("Doing user move ({}).", move);
         move.doMoveOnly(guiScoreDirector);
         guiScoreDirector.calculateScore();
+        setSolution(guiScoreDirector.getWorkingSolution());
     }
 
     public void doProblemChange(ProblemChange<Solution_> problemChange) {
@@ -372,13 +376,12 @@ public class SolutionBusiness<Solution_, Score_ extends Score<Score_>> {
     }
 
     public GenuineVariableDescriptor<Solution_> findVariableDescriptor(Object entity, String variableName) {
-        return guiScoreDirector.getSolutionDescriptor().findGenuineVariableDescriptorOrFail(entity, variableName);
+        return solutionDescriptor.findGenuineVariableDescriptorOrFail(entity, variableName);
     }
 
     private ChangeMove<Solution_> createChangeMove(Object entity, String variableName, Object toPlanningValue) {
         // TODO Solver should support building a ChangeMove
-        EntityDescriptor<Solution_> entityDescriptor =
-                guiScoreDirector.getSolutionDescriptor().findEntityDescriptorOrFail(entity.getClass());
+        EntityDescriptor<Solution_> entityDescriptor = solutionDescriptor.findEntityDescriptorOrFail(entity.getClass());
         GenuineVariableDescriptor<Solution_> variableDescriptor = findVariableDescriptor(entity, variableName);
         return new CustomChangeMoveFactory<>(entityDescriptor, variableDescriptor)
                 .create(entity, toPlanningValue);
