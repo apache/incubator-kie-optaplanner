@@ -631,4 +631,25 @@ class SolverManagerTest {
         solutionWithProblemChangeReceived.await();
         assertThat(bestSolution.get().getValueList()).hasSize(entityAndValueCount + 1);
     }
+
+    @Test
+    @Timeout(60)
+    void terminateSolverJobEarly_stillReturnsBestSolution() throws ExecutionException, InterruptedException {
+        SolverManagerConfig solverManagerConfig = new SolverManagerConfig();
+        CountDownLatch solvingStartedLatch = new CountDownLatch(1);
+        PhaseConfig<?> pausedPhaseConfig = new CustomPhaseConfig().withCustomPhaseCommands(
+                scoreDirector -> solvingStartedLatch.countDown());
+
+        SolverConfig solverConfig = PlannerTestUtils.buildSolverConfig(TestdataSolution.class, TestdataEntity.class)
+                .withPhases(pausedPhaseConfig, new ConstructionHeuristicPhaseConfig());
+        solverManager = SolverManager.create(solverConfig, solverManagerConfig);
+
+        SolverJob<TestdataSolution, Long> solverJob =
+                solverManager.solve(1L, PlannerTestUtils.generateTestdataSolution("s1"));
+        solvingStartedLatch.await();
+        solverJob.terminateEarly();
+        TestdataSolution result = solverJob.getFinalBestSolution();
+        assertThat(result).isNotNull();
+        assertThat(solverJob.isTerminatedEarly()).isTrue();
+    }
 }

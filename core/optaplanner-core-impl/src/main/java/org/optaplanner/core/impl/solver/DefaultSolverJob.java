@@ -167,13 +167,14 @@ public final class DefaultSolverJob<Solution_, ProblemId_> implements SolverJob<
     public void terminateEarly() {
         try {
             solverStatusModifyingLock.lock();
-            finalBestSolutionFuture.cancel(false);
             switch (solverStatus) {
                 case SOLVING_SCHEDULED:
+                    finalBestSolutionFuture.cancel(false);
                     solvingTerminated();
                     break;
                 case SOLVING_ACTIVE:
                     // Indirectly triggers solvingTerminated()
+                    // No need to cancel the finalBestSolutionFuture as it will finish normally.
                     solver.terminateEarly();
                     break;
                 case NOT_SOLVING:
@@ -192,6 +193,11 @@ public final class DefaultSolverJob<Solution_, ProblemId_> implements SolverJob<
         } finally {
             solverStatusModifyingLock.unlock();
         }
+    }
+
+    @Override
+    public boolean isTerminatedEarly() {
+        return solver.isTerminateEarly();
     }
 
     @Override
