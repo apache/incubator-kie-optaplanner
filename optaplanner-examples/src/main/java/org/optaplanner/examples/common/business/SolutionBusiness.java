@@ -25,6 +25,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.function.Consumer;
+import java.util.function.Function;
 import java.util.stream.Stream;
 
 import javax.swing.SwingUtilities;
@@ -42,6 +44,7 @@ import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.core.impl.domain.variable.descriptor.GenuineVariableDescriptor;
 import org.optaplanner.core.impl.heuristic.move.Move;
 import org.optaplanner.core.impl.heuristic.selector.move.generic.ChangeMove;
+import org.optaplanner.core.impl.heuristic.selector.move.generic.ChangeMoveSelector;
 import org.optaplanner.core.impl.score.constraint.DefaultConstraintMatchTotal;
 import org.optaplanner.core.impl.score.director.InnerScoreDirector;
 import org.optaplanner.core.impl.solver.DefaultSolverFactory;
@@ -90,10 +93,9 @@ public class SolutionBusiness<Solution_, Score_ extends Score<Score_>> {
     private File solvedDataDir;
     private File exportDataDir;
 
+    private final DefaultSolverFactory<Solution_> solverFactory;
     private final SolutionDescriptor<Solution_> solutionDescriptor;
     private final Solver<Solution_> solver;
-    private final InnerScoreDirector<Solution_, Score_> guiScoreDirector;
-    private final DefaultProblemChangeDirector<Solution_> problemChangeDirector;
     private final ScoreManager<Solution_, Score_> scoreManager;
     private String solutionFileName = null;
 
@@ -102,13 +104,10 @@ public class SolutionBusiness<Solution_, Score_ extends Score<Score_>> {
 
     public SolutionBusiness(CommonApp<Solution_> app, SolverFactory<Solution_> solverFactory) {
         this.app = app;
-        this.solutionDescriptor = ((DefaultSolverFactory<Solution_>) solverFactory).getSolutionDescriptor();
+        this.solverFactory = ((DefaultSolverFactory<Solution_>) solverFactory);
+        this.solutionDescriptor = this.solverFactory.getSolutionDescriptor();
         this.solver = solverFactory.buildSolver();
         this.scoreManager = ScoreManager.create(solverFactory);
-        this.guiScoreDirector = (InnerScoreDirector<Solution_, Score_>) ((DefaultSolverFactory<Solution_>) solverFactory)
-                .getScoreDirectorFactory()
-                .buildScoreDirector();
-        this.problemChangeDirector = new DefaultProblemChangeDirector<>(guiScoreDirector);
     }
 
     public String getAppName() {
@@ -284,7 +283,19 @@ public class SolutionBusiness<Solution_, Score_ extends Score<Score_>> {
     }
 
     public boolean isConstraintMatchEnabled() {
-        return guiScoreDirector.isConstraintMatchEnabled();
+        return withScoreDirector(scoreDirector -> {
+            return scoreDirector.isConstraintMatchEnabled();
+        });
+    }
+
+    private <Result_> Result_ withScoreDirector(Function<InnerScoreDirector<Solution_, Score_>, Result_> function) {
+        try (InnerScoreDirector<Solution_, Score_> scoreDirector =
+                (InnerScoreDirector<Solution_, Score_>) solverFactory.getScoreDirectorFactory().buildScoreDirector(false, true)) {
+            scoreDirector.setWorkingSolution(getSolution());
+            Result_ result = function.apply(scoreDirector);
+            setSolution(scoreDirector.getWorkingSolution());
+            return result;
+        }
     }
 
     public List<ConstraintMatchTotal<Score_>> getConstraintMatchTotalList() {
@@ -336,26 +347,41 @@ public class SolutionBusiness<Solution_, Score_ extends Score<Score_>> {
     }
 
     public void doMove(Move<Solution_> move) {
+        withScoreDirector(scoreDirector -> {
+            doMove(move, scoreDirector);
+        });
+    }
+
+    private void doMove(Move<Solution_> move, InnerScoreDirector<Solution_, Score_> scoreDirector) {
         if (solver.isSolving()) {
             LOGGER.error("Not doing user move ({}) because the solver is solving.", move);
             return;
         }
-        guiScoreDirector.setWorkingSolution(getSolution());
-        if (!move.isMoveDoable(guiScoreDirector)) {
+        if (!move.isMoveDoable(scoreDirector)) {
             LOGGER.warn("Not doing user move ({}) because it is not doable.", move);
             return;
         }
         LOGGER.info("Doing user move ({}).", move);
-        move.doMoveOnly(guiScoreDirector);
-        guiScoreDirector.calculateScore();
-        setSolution(guiScoreDirector.getWorkingSolution());
+        move.doMoveOnly(scoreDirector);
+        scoreDirector.calculateScore();
+    }
+
+    private void withScoreDirector(Consumer<InnerScoreDirector<Solution_, Score_>> consumer) {
+        withScoreDirector(s -> {
+            consumer.accept(s);
+            return null;
+        });
     }
 
     public void doProblemChange(ProblemChange<Solution_> problemChange) {
         if (solver.isSolving()) {
             solver.addProblemChange(problemChange);
         } else {
-            problemChangeDirector.doProblemChange(problemChange);
+            withScoreDirector(scoreDirector -> {
+                DefaultProblemChangeDirector<Solution_> problemChangeDirector =
+                        new DefaultProblemChangeDirector<>(scoreDirector);
+                problemChangeDirector.doProblemChange(problemChange);
+            });
         }
     }
 
@@ -383,8 +409,10 @@ public class SolutionBusiness<Solution_, Score_ extends Score<Score_>> {
         // TODO Solver should support building a ChangeMove
         EntityDescriptor<Solution_> entityDescriptor = solutionDescriptor.findEntityDescriptorOrFail(entity.getClass());
         GenuineVariableDescriptor<Solution_> variableDescriptor = findVariableDescriptor(entity, variableName);
-        return new CustomChangeMoveFactory<>(entityDescriptor, variableDescriptor)
-                .create(entity, toPlanningValue);
+        ChangeMoveSelector<Solution_> changeMoveSelector = new ChangeMoveSelector<>(
+                new SingleEntitySelector<>(entityDescriptor, entity),
+                new SingleValueSelector<>(variableDescriptor, toPlanningValue), false);
+        return (ChangeMove<Solution_>) changeMoveSelector.iterator().next();
     }
 
     public void doChangeMove(Object entity, String variableName, Object toPlanningValue) {
