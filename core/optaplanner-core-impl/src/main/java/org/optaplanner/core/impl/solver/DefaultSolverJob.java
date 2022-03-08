@@ -211,7 +211,7 @@ public final class DefaultSolverJob<Solution_, ProblemId_> implements SolverJob<
             return finalBestSolutionFuture.get();
         } catch (CancellationException cancellationException) {
             LOGGER.debug("The terminateEarly() has been called before the solver job started solving. "
-                    + "Retrieving the input problem.");
+                    + "Retrieving the input problem instead.");
             return problemFinder.apply(problemId);
         }
     }
