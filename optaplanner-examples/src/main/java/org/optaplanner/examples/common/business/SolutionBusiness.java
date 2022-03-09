@@ -16,6 +16,8 @@
 
 package org.optaplanner.examples.common.business;
 
+import static java.util.stream.Collectors.toList;
+
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.FileVisitOption;
@@ -31,6 +33,8 @@ import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.stream.Stream;
+
+import javax.swing.SwingUtilities;
 
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.score.Score;
@@ -57,8 +61,6 @@ import org.optaplanner.examples.common.persistence.AbstractSolutionImporter;
 import org.optaplanner.persistence.common.api.domain.solution.SolutionFileIO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import static java.util.stream.Collectors.toList;
 
 /**
  * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
@@ -367,7 +369,14 @@ public class SolutionBusiness<Solution_, Score_ extends Score<Score_>> implement
         SolverJob<Solution_, Long> solverJob = solverManager.solveAndListen(SOLVER_JOB_ID_COUNTER.getAndIncrement(),
                 id -> problem, bestSolution -> {
                     setSolution(bestSolution);
-                    bestSolutionConsumer.accept(bestSolution);
+                    SwingUtilities.invokeLater(() -> {
+                        // Skip this event if a newer one arrived meanwhile to avoid flooding the Swing Event thread.
+                        Solution_ skipToBestSolution = getSolution();
+                        if (bestSolution != skipToBestSolution) {
+                            return;
+                        }
+                        bestSolutionConsumer.accept(bestSolution);
+                    });
                 });
         solverJobRef.set(solverJob);
         try {
