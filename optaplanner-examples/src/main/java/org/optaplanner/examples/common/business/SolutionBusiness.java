@@ -16,8 +16,6 @@
 
 package org.optaplanner.examples.common.business;
 
-import static java.util.stream.Collectors.toList;
-
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.FileVisitOption;
@@ -59,6 +57,8 @@ import org.optaplanner.examples.common.persistence.AbstractSolutionImporter;
 import org.optaplanner.persistence.common.api.domain.solution.SolutionFileIO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import static java.util.stream.Collectors.toList;
 
 /**
  * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
@@ -257,12 +257,10 @@ public class SolutionBusiness<Solution_, Score_ extends Score<Score_>> implement
     }
 
     public boolean isConstraintMatchEnabled() {
-        return withScoreDirector(scoreDirector -> {
-            return scoreDirector.isConstraintMatchEnabled();
-        });
+        return applyScoreDirector(InnerScoreDirector::isConstraintMatchEnabled);
     }
 
-    private <Result_> Result_ withScoreDirector(Function<InnerScoreDirector<Solution_, Score_>, Result_> function) {
+    private <Result_> Result_ applyScoreDirector(Function<InnerScoreDirector<Solution_, Score_>, Result_> function) {
         try (InnerScoreDirector<Solution_, Score_> scoreDirector =
                 (InnerScoreDirector<Solution_, Score_>) solverFactory.getScoreDirectorFactory().buildScoreDirector(false,
                         true)) {
@@ -321,9 +319,7 @@ public class SolutionBusiness<Solution_, Score_ extends Score<Score_>> implement
     }
 
     public void doMove(Move<Solution_> move) {
-        withScoreDirector(scoreDirector -> {
-            doMove(move, scoreDirector);
-        });
+        acceptScoreDirector(scoreDirector -> doMove(move, scoreDirector));
     }
 
     private void doMove(Move<Solution_> move, InnerScoreDirector<Solution_, Score_> scoreDirector) {
@@ -340,8 +336,8 @@ public class SolutionBusiness<Solution_, Score_ extends Score<Score_>> implement
         scoreDirector.calculateScore();
     }
 
-    private void withScoreDirector(Consumer<InnerScoreDirector<Solution_, Score_>> consumer) {
-        withScoreDirector(s -> {
+    private void acceptScoreDirector(Consumer<InnerScoreDirector<Solution_, Score_>> consumer) {
+        applyScoreDirector(s -> {
             consumer.accept(s);
             return null;
         });
@@ -352,7 +348,7 @@ public class SolutionBusiness<Solution_, Score_ extends Score<Score_>> implement
         if (solverJob != null) {
             solverJob.addProblemChange(problemChange);
         } else {
-            withScoreDirector(scoreDirector -> {
+            acceptScoreDirector(scoreDirector -> {
                 DefaultProblemChangeDirector<Solution_> problemChangeDirector =
                         new DefaultProblemChangeDirector<>(scoreDirector);
                 problemChangeDirector.doProblemChange(problemChange);
@@ -376,7 +372,10 @@ public class SolutionBusiness<Solution_, Score_ extends Score<Score_>> implement
         solverJobRef.set(solverJob);
         try {
             return solverJob.getFinalBestSolution();
-        } catch (InterruptedException | ExecutionException e) {
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+            throw new IllegalStateException("Solver thread was interrupted.", e);
+        } catch (ExecutionException e) {
             throw new IllegalStateException("Solver threw an exception.", e);
         } finally {
             solverJobRef.set(null); // Don't keep references to jobs that have finished solving.
