@@ -16,8 +16,6 @@
 
 package org.optaplanner.examples.common.business;
 
-import static java.util.stream.Collectors.toList;
-
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.FileVisitOption;
@@ -61,6 +59,8 @@ import org.optaplanner.examples.common.persistence.AbstractSolutionImporter;
 import org.optaplanner.persistence.common.api.domain.solution.SolutionFileIO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import static java.util.stream.Collectors.toList;
 
 /**
  * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
@@ -264,7 +264,7 @@ public class SolutionBusiness<Solution_, Score_ extends Score<Score_>> implement
 
     private <Result_> Result_ applyScoreDirector(Function<InnerScoreDirector<Solution_, Score_>, Result_> function) {
         try (InnerScoreDirector<Solution_, Score_> scoreDirector =
-                (InnerScoreDirector<Solution_, Score_>) solverFactory.getScoreDirectorFactory().buildScoreDirector(false,
+                (InnerScoreDirector<Solution_, Score_>) solverFactory.getScoreDirectorFactory().buildScoreDirector(true,
                         true)) {
             scoreDirector.setWorkingSolution(getSolution());
             Result_ result = function.apply(scoreDirector);
