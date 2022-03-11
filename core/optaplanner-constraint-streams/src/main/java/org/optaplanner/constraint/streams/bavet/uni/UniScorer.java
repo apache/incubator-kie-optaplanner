@@ -22,19 +22,18 @@ import java.util.Map;
 import java.util.function.Function;
 
 import org.optaplanner.constraint.streams.bavet.common.AbstractNode;
+import org.optaplanner.constraint.streams.bavet.common.AbstractScorer;
 import org.optaplanner.constraint.streams.common.inliner.UndoScoreImpacter;
 import org.optaplanner.core.api.score.Score;
 
-public final class ScoringUniNode<A> extends AbstractNode {
+public final class UniScorer<A> extends AbstractScorer {
 
     private final Score<?> constraintWeight;
     private final Function<A, UndoScoreImpacter> scoreImpacter;
 
     private final Map<UniTuple<A>, UndoScoreImpacter> impacterMap = new HashMap<>();
 
-    public ScoringUniNode(int nodeIndex,
-            Score<?> constraintWeight, Function<A, UndoScoreImpacter> scoreImpacter) {
-        super(nodeIndex);
+    public UniScorer(Score<?> constraintWeight, Function<A, UndoScoreImpacter> scoreImpacter) {
         this.constraintWeight = constraintWeight;
         this.scoreImpacter = scoreImpacter;
     }

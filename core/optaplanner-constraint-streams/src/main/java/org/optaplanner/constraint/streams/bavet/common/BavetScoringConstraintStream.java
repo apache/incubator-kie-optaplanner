@@ -16,8 +16,16 @@
 
 package org.optaplanner.constraint.streams.bavet.common;
 
-public abstract class AbstractNode {
+import java.util.Set;
 
-    public abstract void calculateScore();
+import org.optaplanner.constraint.streams.bavet.BavetConstraint;
+import org.optaplanner.constraint.streams.common.inliner.AbstractScoreInliner;
+import org.optaplanner.core.api.score.Score;
+
+public interface BavetScoringConstraintStream<Solution_> {
+
+    void setConstraint(BavetConstraint<Solution_> constraint);
+
+    void collectActiveConstraintStreams(Set<BavetAbstractConstraintStream<Solution_>> constraintStreamSet);
 
 }

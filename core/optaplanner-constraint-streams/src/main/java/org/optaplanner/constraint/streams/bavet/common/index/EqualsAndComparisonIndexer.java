@@ -28,9 +28,10 @@ import java.util.Set;
 import java.util.TreeMap;
 import java.util.stream.Collectors;
 
+import org.optaplanner.constraint.streams.bavet.common.Tuple;
 import org.optaplanner.core.impl.score.stream.JoinerType;
 
-public final class EqualsAndComparisonIndexer<Tuple_, Value_> implements Indexer<Tuple_, Value_> {
+public final class EqualsAndComparisonIndexer<Tuple_ extends Tuple, Value_> implements Indexer<Tuple_, Value_> {
 
     private final JoinerType comparisonJoinerType;
     private final Map<IndexerKey, NavigableMap<Object, Map<Tuple_, Value_>>> equalsMap = new HashMap<>();

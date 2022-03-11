@@ -16,13 +16,13 @@
 
 package org.optaplanner.constraint.streams.bavet.bi;
 
-import java.lang.reflect.Array;
 import java.util.ArrayDeque;
 import java.util.Arrays;
 import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Queue;
 import java.util.Set;
+import java.util.function.Consumer;
 import java.util.function.Function;
 
 import org.optaplanner.constraint.streams.bavet.common.AbstractNode;
@@ -34,24 +34,29 @@ public final class JoinBiNode<A, B> extends AbstractNode {
 
     private final Function<A, Object[]> mappingA;
     private final Function<B, Object[]> mappingB;
-    private final BiOut<A, B>[] outs;
+    /**
+     * Calls for example {@link JoinTriNode#insertAB(BiTuple)} and/or ...
+     */
+    public final Consumer<BiTuple<A, B>> nextNodesInsert;
+    /**
+     * Calls for example {@link JoinTriNode#insertAB(BiTuple)} and/or ...
+     */
+    public final Consumer<BiTuple<A, B>> nextNodesRetract;
 
     private final Indexer<UniTuple<A>, Set<BiTuple<A, B>>> indexerA;
     private final Indexer<UniTuple<B>, Set<BiTuple<A, B>>> indexerB;
     private final Queue<BiTuple<A, B>> dirtyTupleQueue;
 
-    public JoinBiNode(int nodeIndex,
-            Function<A, Object[]> mappingA, Function<B, Object[]> mappingB,
+    public JoinBiNode(Function<A, Object[]> mappingA, Function<B, Object[]> mappingB,
+            Consumer<BiTuple<A, B>> nextNodesInsert, Consumer<BiTuple<A, B>> nextNodesRetract,
             Indexer<UniTuple<A>, Set<BiTuple<A, B>>> indexerA, Indexer<UniTuple<B>, Set<BiTuple<A, B>>> indexerB) {
-        super(nodeIndex);
         this.mappingA = mappingA;
         this.mappingB = mappingB;
-        outs = (BiOut<A, B>[]) Array.newInstance(BiOut.class, 5);
+        this.nextNodesInsert = nextNodesInsert;
+        this.nextNodesRetract = nextNodesRetract;
         this.indexerA = indexerA;
         this.indexerB = indexerB;
         dirtyTupleQueue = new ArrayDeque<>(1000);
-
-        // TODO fill in outs
     }
 
     public void insertA(UniTuple<A> tupleA) {
@@ -159,23 +164,16 @@ public final class JoinBiNode<A, B> extends AbstractNode {
         }
     }
 
+    @Override
     public void calculateScore() {
         dirtyTupleQueue.forEach(tuple -> {
             // Retract
             if (tuple.state == BavetTupleState.UPDATING || tuple.state == BavetTupleState.DYING) {
-                for (int outIndex = 0; outIndex < outs.length; outIndex++) {
-                    BiOut<A, B> out = outs[outIndex];
-                    out.nextNodeRetract.accept(tuple);
-                }
+                nextNodesRetract.accept(tuple);
             }
             // Insert
             if (tuple.state == BavetTupleState.CREATING || tuple.state == BavetTupleState.UPDATING) {
-                for (int outIndex = 0; outIndex < outs.length; outIndex++) {
-                    BiOut<A, B> out = outs[outIndex];
-                    if (out.predicate.test(tuple.factA, tuple.factB)) {
-                        out.nextNodeInsert.accept(tuple);
-                    }
-                }
+                nextNodesInsert.accept(tuple);
             }
             switch (tuple.state) {
                 case CREATING:

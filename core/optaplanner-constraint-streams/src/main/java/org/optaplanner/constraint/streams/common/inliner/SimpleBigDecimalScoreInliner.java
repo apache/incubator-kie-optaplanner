@@ -26,14 +26,13 @@ final class SimpleBigDecimalScoreInliner extends AbstractScoreInliner<SimpleBigD
 
     private BigDecimal score = BigDecimal.ZERO;
 
-    SimpleBigDecimalScoreInliner(Map<Constraint, SimpleBigDecimalScore> constraintToWeightMap,
-            boolean constraintMatchEnabled) {
-        super(constraintToWeightMap, constraintMatchEnabled);
+    SimpleBigDecimalScoreInliner(boolean constraintMatchEnabled) {
+        super(constraintMatchEnabled);
     }
 
     @Override
-    public WeightedScoreImpacter buildWeightedScoreImpacter(Constraint constraint) {
-        SimpleBigDecimalScore constraintWeight = getConstraintWeight(constraint);
+    public WeightedScoreImpacter buildWeightedScoreImpacter(Constraint constraint, SimpleBigDecimalScore constraintWeight) {
+        validateConstraintWeight(constraint, constraintWeight);
         BigDecimal simpleConstraintWeight = constraintWeight.getScore();
         return WeightedScoreImpacter.of((BigDecimal matchWeight, JustificationsSupplier justificationsSupplier) -> {
             BigDecimal impact = simpleConstraintWeight.multiply(matchWeight);

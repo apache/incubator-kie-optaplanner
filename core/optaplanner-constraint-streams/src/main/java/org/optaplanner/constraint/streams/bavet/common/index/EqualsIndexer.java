@@ -24,7 +24,9 @@ import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Set;
 
-public final class EqualsIndexer<Tuple_, Value_> implements Indexer<Tuple_, Value_> {
+import org.optaplanner.constraint.streams.bavet.common.Tuple;
+
+public final class EqualsIndexer<Tuple_ extends Tuple, Value_> implements Indexer<Tuple_, Value_> {
 
     private final Map<IndexerKey, Map<Tuple_, Value_>> map = new HashMap<>();
 

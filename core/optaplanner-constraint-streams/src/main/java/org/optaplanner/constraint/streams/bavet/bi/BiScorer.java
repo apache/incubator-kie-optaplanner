@@ -22,20 +22,19 @@ import java.util.function.BiFunction;
 import java.util.function.Function;
 
 import org.optaplanner.constraint.streams.bavet.common.AbstractNode;
+import org.optaplanner.constraint.streams.bavet.common.AbstractScorer;
 import org.optaplanner.constraint.streams.bavet.uni.UniTuple;
 import org.optaplanner.constraint.streams.common.inliner.UndoScoreImpacter;
 import org.optaplanner.core.api.score.Score;
 
-public final class ScoringBiNode<A, B> extends AbstractNode {
+public final class BiScorer<A, B> extends AbstractScorer {
 
     private final Score<?> constraintWeight;
     private final BiFunction<A, B, UndoScoreImpacter> scoreImpacter;
 
     private final Map<BiTuple<A, B>, UndoScoreImpacter> impacterMap = new HashMap<>();
 
-    public ScoringBiNode(int nodeIndex,
-            Score<?> constraintWeight, BiFunction<A, B, UndoScoreImpacter> scoreImpacter) {
-        super(nodeIndex);
+    public BiScorer(Score<?> constraintWeight, BiFunction<A, B, UndoScoreImpacter> scoreImpacter) {
         this.constraintWeight = constraintWeight;
         this.scoreImpacter = scoreImpacter;
     }

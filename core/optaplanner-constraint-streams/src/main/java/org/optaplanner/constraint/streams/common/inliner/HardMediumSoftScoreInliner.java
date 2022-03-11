@@ -27,14 +27,13 @@ final class HardMediumSoftScoreInliner extends AbstractScoreInliner<HardMediumSo
     private int mediumScore;
     private int softScore;
 
-    HardMediumSoftScoreInliner(Map<Constraint, HardMediumSoftScore> constraintToWeightMap,
-            boolean constraintMatchEnabled) {
-        super(constraintToWeightMap, constraintMatchEnabled);
+    HardMediumSoftScoreInliner(boolean constraintMatchEnabled) {
+        super(constraintMatchEnabled);
     }
 
     @Override
-    public WeightedScoreImpacter buildWeightedScoreImpacter(Constraint constraint) {
-        HardMediumSoftScore constraintWeight = getConstraintWeight(constraint);
+    public WeightedScoreImpacter buildWeightedScoreImpacter(Constraint constraint, HardMediumSoftScore constraintWeight) {
+        validateConstraintWeight(constraint, constraintWeight);
         int hardConstraintWeight = constraintWeight.getHardScore();
         int mediumConstraintWeight = constraintWeight.getMediumScore();
         int softConstraintWeight = constraintWeight.getSoftScore();

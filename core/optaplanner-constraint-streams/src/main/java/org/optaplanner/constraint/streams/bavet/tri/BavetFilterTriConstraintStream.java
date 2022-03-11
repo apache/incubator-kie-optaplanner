@@ -18,9 +18,12 @@ package org.optaplanner.constraint.streams.bavet.tri;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 
 import org.optaplanner.constraint.streams.bavet.BavetConstraintFactory;
+import org.optaplanner.constraint.streams.bavet.common.BavetAbstractConstraintStream;
 import org.optaplanner.constraint.streams.bavet.common.BavetNodeBuildPolicy;
+import org.optaplanner.constraint.streams.bavet.common.NodeBuildHelper;
 import org.optaplanner.constraint.streams.bavet.uni.BavetForEachUniConstraintStream;
 import org.optaplanner.core.api.function.TriPredicate;
 import org.optaplanner.core.api.score.Score;
@@ -47,19 +50,19 @@ public final class BavetFilterTriConstraintStream<Solution_, A, B, C>
         return parent.guaranteesDistinct();
     }
 
-    @Override
-    public List<BavetForEachUniConstraintStream<Solution_, Object>> getFromStreamList() {
-        return parent.getFromStreamList();
-    }
-
     // ************************************************************************
     // Node creation
     // ************************************************************************
 
     @Override
-    protected BavetFilterTriNode<A, B, C> createNode(BavetNodeBuildPolicy<Solution_> buildPolicy,
-            Score<?> constraintWeight, BavetAbstractTriNode<A, B, C> parentNode) {
-        return new BavetFilterTriNode<>(buildPolicy.getSession(), buildPolicy.nextNodeIndex(), parentNode, predicate);
+    public void collectActiveConstraintStreams(Set<BavetAbstractConstraintStream<Solution_>> constraintStreamSet) {
+        parent.collectActiveConstraintStreams(constraintStreamSet);
+        constraintStreamSet.add(this);
+    }
+
+    @Override
+    public <Score_ extends Score<Score_>> void buildNode(NodeBuildHelper<Score_> buildHelper) {
+        throw new UnsupportedOperationException();
     }
 
     // ************************************************************************

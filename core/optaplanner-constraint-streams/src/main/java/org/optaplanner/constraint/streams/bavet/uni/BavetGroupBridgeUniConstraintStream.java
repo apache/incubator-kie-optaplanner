@@ -17,12 +17,15 @@
 package org.optaplanner.constraint.streams.bavet.uni;
 
 import java.util.List;
+import java.util.Set;
 import java.util.function.Function;
 
 import org.optaplanner.constraint.streams.bavet.BavetConstraintFactory;
 import org.optaplanner.constraint.streams.bavet.bi.BavetGroupBiConstraintStream;
 import org.optaplanner.constraint.streams.bavet.bi.BavetGroupBiNode;
+import org.optaplanner.constraint.streams.bavet.common.BavetAbstractConstraintStream;
 import org.optaplanner.constraint.streams.bavet.common.BavetNodeBuildPolicy;
+import org.optaplanner.constraint.streams.bavet.common.NodeBuildHelper;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.stream.uni.UniConstraintCollector;
 
@@ -52,35 +55,41 @@ public final class BavetGroupBridgeUniConstraintStream<Solution_, A, NewA, Resul
         this.groupStream = groupStream;
     }
 
-    @Override
-    public List<BavetForEachUniConstraintStream<Solution_, Object>> getFromStreamList() {
-        return parent.getFromStreamList();
-    }
-
     // ************************************************************************
     // Node creation
     // ************************************************************************
 
     @Override
-    protected BavetGroupBridgeUniNode<A, NewA, ResultContainer_, NewB> createNode(BavetNodeBuildPolicy<Solution_> buildPolicy,
-            Score<?> constraintWeight, BavetAbstractUniNode<A> parentNode) {
-        return new BavetGroupBridgeUniNode<>(buildPolicy.getSession(), buildPolicy.nextNodeIndex(), parentNode,
-                groupKeyMapping, collector);
+    public void collectActiveConstraintStreams(Set<BavetAbstractConstraintStream<Solution_>> constraintStreamSet) {
+        parent.collectActiveConstraintStreams(constraintStreamSet);
+        constraintStreamSet.add(this);
     }
 
     @Override
-    protected void createChildNodeChains(BavetNodeBuildPolicy<Solution_> buildPolicy, Score<?> constraintWeight,
-            BavetAbstractUniNode<A> node) {
-        if (!childStreamList.isEmpty()) {
-            throw new IllegalStateException("Impossible state: the stream (" + this
-                    + ") has an non-empty childStreamList (" + childStreamList + ") but it's a groupBy bridge.");
-        }
-        BavetGroupBiNode<NewA, ResultContainer_, NewB> groupNode = groupStream.createNodeChain(buildPolicy,
-                constraintWeight, null);
-        BavetGroupBridgeUniNode<A, NewA, ResultContainer_, NewB> groupBridgeNode =
-                (BavetGroupBridgeUniNode<A, NewA, ResultContainer_, NewB>) node;
-        groupBridgeNode.setGroupNode(groupNode);
+    public <Score_ extends Score<Score_>> void buildNode(NodeBuildHelper<Score_> buildHelper) {
+        throw new UnsupportedOperationException();
     }
+
+//    @Override
+//    protected BavetGroupBridgeUniNode<A, NewA, ResultContainer_, NewB> createNode(BavetNodeBuildPolicy<Solution_> buildPolicy,
+//            Score<?> constraintWeight, BavetAbstractUniNode<A> parentNode) {
+//        return new BavetGroupBridgeUniNode<>(buildPolicy.getSession(), buildPolicy.nextNodeIndex(), parentNode,
+//                groupKeyMapping, collector);
+//    }
+//
+//    @Override
+//    protected void createChildNodeChains(BavetNodeBuildPolicy<Solution_> buildPolicy, Score<?> constraintWeight,
+//            BavetAbstractUniNode<A> node) {
+//        if (!childStreamList.isEmpty()) {
+//            throw new IllegalStateException("Impossible state: the stream (" + this
+//                    + ") has an non-empty childStreamList (" + childStreamList + ") but it's a groupBy bridge.");
+//        }
+//        BavetGroupBiNode<NewA, ResultContainer_, NewB> groupNode = groupStream.createNodeChain(buildPolicy,
+//                constraintWeight, null);
+//        BavetGroupBridgeUniNode<A, NewA, ResultContainer_, NewB> groupBridgeNode =
+//                (BavetGroupBridgeUniNode<A, NewA, ResultContainer_, NewB>) node;
+//        groupBridgeNode.setGroupNode(groupNode);
+//    }
 
     // ************************************************************************
     // Equality for node sharing

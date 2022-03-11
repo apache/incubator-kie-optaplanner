@@ -22,7 +22,9 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-public final class NoneIndexer<Tuple_, Value_> implements Indexer<Tuple_, Value_> {
+import org.optaplanner.constraint.streams.bavet.common.Tuple;
+
+public final class NoneIndexer<Tuple_ extends Tuple, Value_> implements Indexer<Tuple_, Value_> {
 
     private final Map<Tuple_, Value_> tupleMap = new LinkedHashMap<>();
 

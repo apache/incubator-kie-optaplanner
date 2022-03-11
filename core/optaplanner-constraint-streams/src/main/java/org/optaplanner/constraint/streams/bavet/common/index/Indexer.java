@@ -20,6 +20,7 @@ import java.util.Map;
 
 import org.optaplanner.constraint.streams.bavet.bi.JoinBiNode;
 import org.optaplanner.constraint.streams.bavet.common.BavetTupleState;
+import org.optaplanner.constraint.streams.bavet.common.Tuple;
 
 /**
  * An indexer for entity or fact {@code X},
@@ -40,7 +41,7 @@ import org.optaplanner.constraint.streams.bavet.common.BavetTupleState;
  * @param <Value_> For example for {@code from(A).join(B)}, the value is {@code Set<BiTuple<A, B>>}.
  *                 For example for {@code Bi<A, B>.join(C)}, the value is {@code Set<TriTuple<A, B, C>>}.
  */
-public interface Indexer<Tuple_, Value_> {
+public interface Indexer<Tuple_ extends Tuple, Value_> {
 
     /**
      * Differs from {@link Map#put(Object, Object)} because it fails if the key already exists.

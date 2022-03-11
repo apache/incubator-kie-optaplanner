@@ -20,10 +20,15 @@ import static java.util.Arrays.asList;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Set;
 
 import org.optaplanner.constraint.streams.bavet.BavetConstraint;
 import org.optaplanner.constraint.streams.bavet.BavetConstraintFactory;
+import org.optaplanner.constraint.streams.bavet.common.AbstractScorer;
+import org.optaplanner.constraint.streams.bavet.common.BavetAbstractConstraintStream;
 import org.optaplanner.constraint.streams.bavet.common.BavetNodeBuildPolicy;
+import org.optaplanner.constraint.streams.bavet.common.BavetScoringConstraintStream;
+import org.optaplanner.constraint.streams.bavet.common.NodeBuildHelper;
 import org.optaplanner.constraint.streams.bavet.uni.BavetForEachUniConstraintStream;
 import org.optaplanner.constraint.streams.common.inliner.AbstractScoreInliner;
 import org.optaplanner.constraint.streams.common.inliner.UndoScoreImpacter;
@@ -34,25 +39,25 @@ import org.optaplanner.core.api.function.TriFunction;
 import org.optaplanner.core.api.score.Score;
 
 public final class BavetScoringTriConstraintStream<Solution_, A, B, C>
-        extends BavetAbstractTriConstraintStream<Solution_, A, B, C> {
+        extends BavetAbstractTriConstraintStream<Solution_, A, B, C>
+        implements BavetScoringConstraintStream<Solution_> {
 
     private final BavetAbstractTriConstraintStream<Solution_, A, B, C> parent;
-    private final BavetConstraint<Solution_> constraint;
     private final boolean noMatchWeigher;
     private final ToIntTriFunction<A, B, C> intMatchWeigher;
     private final ToLongTriFunction<A, B, C> longMatchWeigher;
     private final TriFunction<A, B, C, BigDecimal> bigDecimalMatchWeigher;
+    private BavetConstraint<Solution_> constraint;
 
     public BavetScoringTriConstraintStream(BavetConstraintFactory<Solution_> constraintFactory,
-            BavetAbstractTriConstraintStream<Solution_, A, B, C> parent,
-            BavetConstraint<Solution_> constraint) {
-        this(constraintFactory, parent, constraint, true, null, null, null);
+            BavetAbstractTriConstraintStream<Solution_, A, B, C> parent) {
+        this(constraintFactory, parent, true, null, null, null);
     }
 
     public BavetScoringTriConstraintStream(BavetConstraintFactory<Solution_> constraintFactory,
             BavetAbstractTriConstraintStream<Solution_, A, B, C> parent,
-            BavetConstraint<Solution_> constraint, ToIntTriFunction<A, B, C> intMatchWeigher) {
-        this(constraintFactory, parent, constraint, false, intMatchWeigher, null, null);
+            ToIntTriFunction<A, B, C> intMatchWeigher) {
+        this(constraintFactory, parent, false, intMatchWeigher, null, null);
         if (intMatchWeigher == null) {
             throw new IllegalArgumentException("The matchWeigher (null) cannot be null.");
         }
@@ -60,8 +65,8 @@ public final class BavetScoringTriConstraintStream<Solution_, A, B, C>
 
     public BavetScoringTriConstraintStream(BavetConstraintFactory<Solution_> constraintFactory,
             BavetAbstractTriConstraintStream<Solution_, A, B, C> parent,
-            BavetConstraint<Solution_> constraint, ToLongTriFunction<A, B, C> longMatchWeigher) {
-        this(constraintFactory, parent, constraint, false, null, longMatchWeigher, null);
+            ToLongTriFunction<A, B, C> longMatchWeigher) {
+        this(constraintFactory, parent, false, null, longMatchWeigher, null);
         if (longMatchWeigher == null) {
             throw new IllegalArgumentException("The matchWeigher (null) cannot be null.");
         }
@@ -69,8 +74,8 @@ public final class BavetScoringTriConstraintStream<Solution_, A, B, C>
 
     public BavetScoringTriConstraintStream(BavetConstraintFactory<Solution_> constraintFactory,
             BavetAbstractTriConstraintStream<Solution_, A, B, C> parent,
-            BavetConstraint<Solution_> constraint, TriFunction<A, B, C, BigDecimal> bigDecimalMatchWeigher) {
-        this(constraintFactory, parent, constraint, false, null, null, bigDecimalMatchWeigher);
+            TriFunction<A, B, C, BigDecimal> bigDecimalMatchWeigher) {
+        this(constraintFactory, parent, false, null, null, bigDecimalMatchWeigher);
         if (bigDecimalMatchWeigher == null) {
             throw new IllegalArgumentException("The matchWeigher (null) cannot be null.");
         }
@@ -78,12 +83,11 @@ public final class BavetScoringTriConstraintStream<Solution_, A, B, C>
 
     private BavetScoringTriConstraintStream(BavetConstraintFactory<Solution_> constraintFactory,
             BavetAbstractTriConstraintStream<Solution_, A, B, C> parent,
-            BavetConstraint<Solution_> constraint, boolean noMatchWeigher,
+            boolean noMatchWeigher,
             ToIntTriFunction<A, B, C> intMatchWeigher, ToLongTriFunction<A, B, C> longMatchWeigher,
             TriFunction<A, B, C, BigDecimal> bigDecimalMatchWeigher) {
         super(constraintFactory, parent.getRetrievalSemantics());
         this.parent = parent;
-        this.constraint = constraint;
         this.noMatchWeigher = noMatchWeigher;
         this.intMatchWeigher = intMatchWeigher;
         this.longMatchWeigher = longMatchWeigher;
@@ -91,13 +95,13 @@ public final class BavetScoringTriConstraintStream<Solution_, A, B, C>
     }
 
     @Override
-    public boolean guaranteesDistinct() {
-        return parent.guaranteesDistinct();
+    public void setConstraint(BavetConstraint<Solution_> constraint) {
+        this.constraint = constraint;
     }
 
     @Override
-    public List<BavetForEachUniConstraintStream<Solution_, Object>> getFromStreamList() {
-        return parent.getFromStreamList();
+    public boolean guaranteesDistinct() {
+        return parent.guaranteesDistinct();
     }
 
     // ************************************************************************
@@ -105,10 +109,16 @@ public final class BavetScoringTriConstraintStream<Solution_, A, B, C>
     // ************************************************************************
 
     @Override
-    protected BavetScoringTriNode<A, B, C> createNode(BavetNodeBuildPolicy<Solution_> buildPolicy,
-            Score<?> constraintWeight, BavetAbstractTriNode<A, B, C> parentNode) {
-        AbstractScoreInliner<?> scoreInliner = buildPolicy.getSession().getScoreInliner();
-        WeightedScoreImpacter weightedScoreImpacter = scoreInliner.buildWeightedScoreImpacter(constraint);
+    public void collectActiveConstraintStreams(Set<BavetAbstractConstraintStream<Solution_>> constraintStreamSet) {
+        parent.collectActiveConstraintStreams(constraintStreamSet);
+        constraintStreamSet.add(this);
+    }
+
+    @Override
+    public <Score_ extends Score<Score_>> void buildNode(NodeBuildHelper<Score_> buildHelper) {
+        Score_ constraintWeight = buildHelper.getConstraintWeight(constraint);
+        AbstractScoreInliner<Score_> scoreInliner = buildHelper.getScoreInliner();
+        WeightedScoreImpacter weightedScoreImpacter = scoreInliner.buildWeightedScoreImpacter(constraint, constraintWeight);
         TriFunction<A, B, C, UndoScoreImpacter> scoreImpacter;
         if (intMatchWeigher != null) {
             scoreImpacter = (a, b, c) -> {
@@ -133,17 +143,9 @@ public final class BavetScoringTriConstraintStream<Solution_, A, B, C>
         } else {
             throw new IllegalStateException("Impossible state: neither of the supported match weighers provided.");
         }
-        return new BavetScoringTriNode<>(buildPolicy.getSession(), buildPolicy.nextNodeIndex(), constraintWeight,
-                scoreImpacter);
-    }
-
-    @Override
-    protected void createChildNodeChains(BavetNodeBuildPolicy<Solution_> buildPolicy, Score<?> constraintWeight,
-            BavetAbstractTriNode<A, B, C> node) {
-        if (!childStreamList.isEmpty()) {
-            throw new IllegalStateException("Impossible state: the stream (" + this
-                    + ") has an non-empty childStreamList (" + childStreamList + ") but it's an endpoint.");
-        }
+        throw new UnsupportedOperationException();
+//        TriScorer<A, B, C> scorer = new TriScorer<>(constraintWeight, scoreImpacter);
+//        buildHelper.put(this, scorer::insert, scorer::retract);
     }
 
     // ************************************************************************

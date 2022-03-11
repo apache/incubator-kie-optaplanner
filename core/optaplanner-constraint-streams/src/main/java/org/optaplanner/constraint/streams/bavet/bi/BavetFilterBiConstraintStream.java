@@ -18,11 +18,16 @@ package org.optaplanner.constraint.streams.bavet.bi;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 import java.util.function.BiPredicate;
+import java.util.function.Consumer;
 
 import org.optaplanner.constraint.streams.bavet.BavetConstraintFactory;
+import org.optaplanner.constraint.streams.bavet.common.BavetAbstractConstraintStream;
 import org.optaplanner.constraint.streams.bavet.common.BavetNodeBuildPolicy;
+import org.optaplanner.constraint.streams.bavet.common.NodeBuildHelper;
 import org.optaplanner.constraint.streams.bavet.uni.BavetForEachUniConstraintStream;
+import org.optaplanner.constraint.streams.bavet.uni.UniTuple;
 import org.optaplanner.core.api.score.Score;
 
 public final class BavetFilterBiConstraintStream<Solution_, A, B> extends BavetAbstractBiConstraintStream<Solution_, A, B> {
@@ -46,19 +51,29 @@ public final class BavetFilterBiConstraintStream<Solution_, A, B> extends BavetA
         return parent.guaranteesDistinct();
     }
 
-    @Override
-    public List<BavetForEachUniConstraintStream<Solution_, Object>> getFromStreamList() {
-        return parent.getFromStreamList();
-    }
-
     // ************************************************************************
     // Node creation
     // ************************************************************************
 
     @Override
-    protected BavetFilterBiNode<A, B> createNode(BavetNodeBuildPolicy<Solution_> buildPolicy,
-            Score<?> constraintWeight, BavetAbstractBiNode<A, B> parentNode) {
-        return new BavetFilterBiNode<>(buildPolicy.getSession(), buildPolicy.nextNodeIndex(), parentNode, predicate);
+    public void collectActiveConstraintStreams(Set<BavetAbstractConstraintStream<Solution_>> constraintStreamSet) {
+        parent.collectActiveConstraintStreams(constraintStreamSet);
+        constraintStreamSet.add(this);
+    }
+
+    @Override
+    public <Score_ extends Score<Score_>> void buildNode(NodeBuildHelper<Score_> buildHelper) {
+        Consumer<BiTuple<A, B>> insert = buildHelper.getAggregatedInsert(childStreamList);
+        Consumer<BiTuple<A, B>> retract = buildHelper.getAggregatedRetract(childStreamList);
+        buildHelper.putInsertRetract(this, (BiTuple<A, B> tuple) -> {
+            if (predicate.test(tuple.factA, tuple.factB)) {
+                insert.accept(tuple);
+            }
+        }, (BiTuple<A, B> tuple) -> {
+            if (predicate.test(tuple.factA, tuple.factB)) {
+                retract.accept(tuple);
+            }
+        });
     }
 
     // ************************************************************************

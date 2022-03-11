@@ -28,9 +28,8 @@ final class BendableBigDecimalScoreInliner extends AbstractScoreInliner<Bendable
     private final BigDecimal[] hardScores;
     private final BigDecimal[] softScores;
 
-    BendableBigDecimalScoreInliner(Map<Constraint, BendableBigDecimalScore> constraintToWeightMap,
-            boolean constraintMatchEnabled, int hardLevelsSize, int softLevelsSize) {
-        super(constraintToWeightMap, constraintMatchEnabled);
+    BendableBigDecimalScoreInliner(boolean constraintMatchEnabled, int hardLevelsSize, int softLevelsSize) {
+        super(constraintMatchEnabled);
         hardScores = new BigDecimal[hardLevelsSize];
         Arrays.fill(hardScores, BigDecimal.ZERO);
         softScores = new BigDecimal[softLevelsSize];
@@ -38,9 +37,9 @@ final class BendableBigDecimalScoreInliner extends AbstractScoreInliner<Bendable
     }
 
     @Override
-    public WeightedScoreImpacter buildWeightedScoreImpacter(Constraint constraint) {
+    public WeightedScoreImpacter buildWeightedScoreImpacter(Constraint constraint, BendableBigDecimalScore constraintWeight) {
+        validateConstraintWeight(constraint, constraintWeight);
         Integer singleLevel = null;
-        BendableBigDecimalScore constraintWeight = getConstraintWeight(constraint);
         for (int i = 0; i < constraintWeight.getLevelsSize(); i++) {
             if (!constraintWeight.getHardOrSoftScore(i).equals(BigDecimal.ZERO)) {
                 if (singleLevel != null) {

@@ -16,30 +16,37 @@
 
 package org.optaplanner.constraint.streams.bavet.uni;
 
-import java.lang.reflect.Array;
 import java.util.ArrayDeque;
 import java.util.IdentityHashMap;
 import java.util.Map;
 import java.util.Queue;
+import java.util.function.Consumer;
 
+import org.optaplanner.constraint.streams.bavet.bi.JoinBiNode;
 import org.optaplanner.constraint.streams.bavet.common.AbstractNode;
 import org.optaplanner.constraint.streams.bavet.common.BavetTupleState;
 
 public final class ForEachUniNode<A> extends AbstractNode {
 
     private final Class<A> forEachClass;
-    private final UniOut<A>[] outs;
+    /**
+     * Calls for example {@link JoinBiNode#insertA(UniTuple)}, {@link JoinBiNode#insertB(UniTuple)} and/or ...
+     */
+    public final Consumer<UniTuple<A>> nextNodesInsert;
+    /**
+     * Calls for example {@link JoinBiNode#retractA(UniTuple)}, {@link JoinBiNode#retractB(UniTuple)} and/or ...
+     */
+    public final Consumer<UniTuple<A>> nextNodesRetract;
 
     private final Map<A, UniTuple<A>> tupleMap = new IdentityHashMap<>(1000);
     private final Queue<UniTuple<A>> dirtyTupleQueue;
 
-    public ForEachUniNode(int nodeIndex, Class<A> forEachClass) {
-        super(nodeIndex);
+    public ForEachUniNode(Class<A> forEachClass,
+            Consumer<UniTuple<A>> nextNodesInsert, Consumer<UniTuple<A>> nextNodesRetract) {
         this.forEachClass = forEachClass;
-        outs = (UniOut<A>[]) Array.newInstance(UniOut.class, 5);
+        this.nextNodesInsert = nextNodesInsert;
+        this.nextNodesRetract = nextNodesRetract;
         dirtyTupleQueue = new ArrayDeque<>(1000);
-
-        // TODO fill in outs
     }
 
     public void insert(A a) {
@@ -52,6 +59,15 @@ public final class ForEachUniNode<A> extends AbstractNode {
         dirtyTupleQueue.add(tuple);
     }
 
+    public void update(A a) {
+        UniTuple<A> tuple = tupleMap.get(a);
+        if (tuple == null) {
+            throw new IllegalStateException("The fact (" + a + ") was never inserted, so it cannot update.");
+        }
+        tuple.state = BavetTupleState.UPDATING;
+        dirtyTupleQueue.add(tuple);
+    }
+
     public void retract(A a) {
         UniTuple<A> tuple = tupleMap.remove(a);
         if (tuple == null) {
@@ -61,23 +77,16 @@ public final class ForEachUniNode<A> extends AbstractNode {
         dirtyTupleQueue.add(tuple);
     }
 
+    @Override
     public void calculateScore() {
         dirtyTupleQueue.forEach(tuple -> {
             // Retract
             if (tuple.state == BavetTupleState.UPDATING || tuple.state == BavetTupleState.DYING) {
-                for (int outIndex = 0; outIndex < outs.length; outIndex++) {
-                    UniOut<A> out = outs[outIndex];
-                    out.nextNodeRetract.accept(tuple);
-                }
+                nextNodesRetract.accept(tuple);
             }
             // Insert
             if (tuple.state == BavetTupleState.CREATING || tuple.state == BavetTupleState.UPDATING) {
-                for (int outIndex = 0; outIndex < outs.length; outIndex++) {
-                    UniOut<A> out = outs[outIndex];
-                    if (out.predicate.test(tuple.factA)) {
-                        out.nextNodeInsert.accept(tuple);
-                    }
-                }
+                nextNodesInsert.accept(tuple);
             }
             switch (tuple.state) {
                 case CREATING:
@@ -102,6 +111,10 @@ public final class ForEachUniNode<A> extends AbstractNode {
     @Override
     public String toString() {
         return "ForEachUniNode(" + forEachClass.getSimpleName() + ")";
+    }
+
+    public Class<A> getForEachClass() {
+        return forEachClass;
     }
 
 }

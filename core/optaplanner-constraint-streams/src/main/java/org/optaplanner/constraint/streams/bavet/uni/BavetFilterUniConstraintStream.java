@@ -16,12 +16,15 @@
 
 package org.optaplanner.constraint.streams.bavet.uni;
 
-import java.util.List;
 import java.util.Objects;
+import java.util.Set;
+import java.util.function.Consumer;
 import java.util.function.Predicate;
 
 import org.optaplanner.constraint.streams.bavet.BavetConstraintFactory;
-import org.optaplanner.constraint.streams.bavet.common.BavetNodeBuildPolicy;
+import org.optaplanner.constraint.streams.bavet.common.AbstractNode;
+import org.optaplanner.constraint.streams.bavet.common.BavetAbstractConstraintStream;
+import org.optaplanner.constraint.streams.bavet.common.NodeBuildHelper;
 import org.optaplanner.core.api.score.Score;
 
 public final class BavetFilterUniConstraintStream<Solution_, A> extends BavetAbstractUniConstraintStream<Solution_, A> {
@@ -44,19 +47,29 @@ public final class BavetFilterUniConstraintStream<Solution_, A> extends BavetAbs
         return parent.guaranteesDistinct();
     }
 
-    @Override
-    public List<BavetForEachUniConstraintStream<Solution_, Object>> getFromStreamList() {
-        return parent.getFromStreamList();
-    }
-
     // ************************************************************************
     // Node creation
     // ************************************************************************
 
     @Override
-    protected BavetAbstractUniNode<A> createNode(BavetNodeBuildPolicy<Solution_> buildPolicy,
-            Score<?> constraintWeight, BavetAbstractUniNode<A> parentNode) {
-        return new BavetFilterUniNode<>(buildPolicy.getSession(), buildPolicy.nextNodeIndex(), parentNode, predicate);
+    public void collectActiveConstraintStreams(Set<BavetAbstractConstraintStream<Solution_>> constraintStreamSet) {
+        parent.collectActiveConstraintStreams(constraintStreamSet);
+        constraintStreamSet.add(this);
+    }
+
+    @Override
+    public <Score_ extends Score<Score_>> void buildNode(NodeBuildHelper<Score_> buildHelper) {
+        Consumer<UniTuple<A>> insert = buildHelper.getAggregatedInsert(childStreamList);
+        Consumer<UniTuple<A>> retract = buildHelper.getAggregatedRetract(childStreamList);
+        buildHelper.putInsertRetract(this, (UniTuple<A> tuple) -> {
+            if (predicate.test(tuple.factA)) {
+                insert.accept(tuple);
+            }
+        }, (UniTuple<A> tuple) -> {
+            if (predicate.test(tuple.factA)) {
+                retract.accept(tuple);
+            }
+        });
     }
 
     // ************************************************************************

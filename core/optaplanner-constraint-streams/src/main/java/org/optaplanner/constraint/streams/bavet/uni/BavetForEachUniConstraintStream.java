@@ -16,11 +16,13 @@
 
 package org.optaplanner.constraint.streams.bavet.uni;
 
-import java.util.Collections;
-import java.util.List;
+import java.util.Set;
+import java.util.function.Consumer;
 
 import org.optaplanner.constraint.streams.bavet.BavetConstraintFactory;
-import org.optaplanner.constraint.streams.bavet.common.BavetNodeBuildPolicy;
+import org.optaplanner.constraint.streams.bavet.common.AbstractNode;
+import org.optaplanner.constraint.streams.bavet.common.BavetAbstractConstraintStream;
+import org.optaplanner.constraint.streams.bavet.common.NodeBuildHelper;
 import org.optaplanner.constraint.streams.common.RetrievalSemantics;
 import org.optaplanner.core.api.score.Score;
 
@@ -42,29 +44,20 @@ public final class BavetForEachUniConstraintStream<Solution_, A> extends BavetAb
         return true;
     }
 
-    @Override
-    public List<BavetForEachUniConstraintStream<Solution_, Object>> getFromStreamList() {
-        return Collections.singletonList((BavetForEachUniConstraintStream<Solution_, Object>) this);
-    }
-
     // ************************************************************************
     // Node creation
     // ************************************************************************
 
     @Override
-    public BavetForEachUniNode<A> createNodeChain(BavetNodeBuildPolicy<Solution_> buildPolicy, Score<?> constraintWeight,
-            BavetAbstractUniNode<A> parentNode) {
-        return (BavetForEachUniNode<A>) super.createNodeChain(buildPolicy, constraintWeight, parentNode);
+    public void collectActiveConstraintStreams(Set<BavetAbstractConstraintStream<Solution_>> constraintStreamSet) {
+        constraintStreamSet.add(this);
     }
 
     @Override
-    protected BavetForEachUniNode<A> createNode(BavetNodeBuildPolicy<Solution_> buildPolicy, Score<?> constraintWeight,
-            BavetAbstractUniNode<A> parentNode) {
-        if (parentNode != null) {
-            throw new IllegalStateException("Impossible state: the stream (" + this
-                    + ") cannot have a parentNode (" + parentNode + ").");
-        }
-        return new BavetForEachUniNode<>(buildPolicy.getSession(), buildPolicy.nextNodeIndex(), forEachClass);
+    public <Score_ extends Score<Score_>> void buildNode(NodeBuildHelper<Score_> buildHelper) {
+        Consumer<UniTuple<A>> insert = buildHelper.getAggregatedInsert(childStreamList);
+        Consumer<UniTuple<A>> retract = buildHelper.getAggregatedRetract(childStreamList);
+        buildHelper.addNode(new ForEachUniNode<>(forEachClass, insert, retract));
     }
 
     // ************************************************************************
