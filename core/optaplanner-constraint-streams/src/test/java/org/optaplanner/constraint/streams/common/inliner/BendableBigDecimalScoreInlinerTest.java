@@ -65,7 +65,7 @@ class BendableBigDecimalScoreInlinerTest
     void impactSoft1() {
         BendableBigDecimalScoreInliner scoreInliner = new BendableBigDecimalScoreInliner(constraintMatchEnabled, 1, 2);
 
-        BendableBigDecimalScore constraintWeight = buildScore(90, 0, 0);
+        BendableBigDecimalScore constraintWeight = buildScore(0, 90, 0);
         WeightedScoreImpacter hardImpacter = scoreInliner.buildWeightedScoreImpacter(buildConstraint(constraintWeight), constraintWeight);
         UndoScoreImpacter undo1 = hardImpacter.impactScore(BigDecimal.ONE, EMPTY_JUSTIFICATIONS_SUPPLIER);
         assertThat(scoreInliner.extractScore(0))
@@ -88,7 +88,7 @@ class BendableBigDecimalScoreInlinerTest
     void impactSoft2() {
         BendableBigDecimalScoreInliner scoreInliner = new BendableBigDecimalScoreInliner(constraintMatchEnabled, 1, 2);
 
-        BendableBigDecimalScore constraintWeight = buildScore(90, 0, 0);
+        BendableBigDecimalScore constraintWeight = buildScore(0, 0, 90);
         WeightedScoreImpacter hardImpacter = scoreInliner.buildWeightedScoreImpacter(buildConstraint(constraintWeight), constraintWeight);
         UndoScoreImpacter undo1 = hardImpacter.impactScore(BigDecimal.ONE, EMPTY_JUSTIFICATIONS_SUPPLIER);
         assertThat(scoreInliner.extractScore(0))
