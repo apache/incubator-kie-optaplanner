@@ -16,7 +16,6 @@
 
 package org.optaplanner.constraint.streams.bavet.common.index;
 
-import org.optaplanner.constraint.streams.bavet.common.BavetJoinBridgeTuple;
 import org.optaplanner.constraint.streams.bavet.common.Tuple;
 import org.optaplanner.constraint.streams.common.AbstractJoiner;
 import org.optaplanner.core.impl.score.stream.JoinerType;

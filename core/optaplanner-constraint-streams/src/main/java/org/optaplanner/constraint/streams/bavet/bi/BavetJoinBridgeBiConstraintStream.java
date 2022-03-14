@@ -16,19 +16,13 @@
 
 package org.optaplanner.constraint.streams.bavet.bi;
 
-import java.util.List;
 import java.util.Set;
-import java.util.function.BiFunction;
 
 import org.optaplanner.constraint.streams.bavet.BavetConstraintFactory;
 import org.optaplanner.constraint.streams.bavet.common.BavetAbstractConstraintStream;
 import org.optaplanner.constraint.streams.bavet.common.BavetJoinBridgeConstraintStream;
-import org.optaplanner.constraint.streams.bavet.common.BavetJoinBridgeNode;
 import org.optaplanner.constraint.streams.bavet.common.BavetJoinConstraintStream;
-import org.optaplanner.constraint.streams.bavet.common.BavetNodeBuildPolicy;
 import org.optaplanner.constraint.streams.bavet.common.NodeBuildHelper;
-import org.optaplanner.constraint.streams.bavet.common.index.BavetIndexFactory;
-import org.optaplanner.constraint.streams.bavet.uni.BavetForEachUniConstraintStream;
 import org.optaplanner.core.api.score.Score;
 
 public final class BavetJoinBridgeBiConstraintStream<Solution_, A, B>
