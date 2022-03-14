@@ -463,7 +463,7 @@ public abstract class AbstractScoreDirector<Solution_, Score_ extends Score<Scor
             if (entityDescriptor == null) { // Problem fact changed.
                 variableListenerSupport.resetWorkingSolution(); // TODO do not nuke the variable listeners
             } else { // Planning entity changed but the variable is not known, so trigger them all.
-                for (VariableDescriptor<Solution_> variableDescriptor: entityDescriptor.getGenuineVariableDescriptorList()) {
+                for (VariableDescriptor<Solution_> variableDescriptor : entityDescriptor.getGenuineVariableDescriptorList()) {
                     beforeVariableChanged(variableDescriptor, problemFactOrEntity);
                     afterVariableChanged(variableDescriptor, problemFactOrEntity);
                 }
