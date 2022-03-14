@@ -202,10 +202,11 @@ public class DefaultSolver<Solution_> extends AbstractSolver<Solution_> {
         solverScope.setBestSolution(problem);
         outerSolvingStarted(solverScope);
         boolean restartSolver = true;
+        boolean warmStart = false;
         while (restartSolver) {
             LongTaskTimer.Sample sample = solveLengthTimer.start();
             try {
-                solvingStarted(solverScope);
+                solvingStarted(solverScope, warmStart);
                 runPhases(solverScope);
                 solvingEnded(solverScope);
             } catch (Exception e) {
@@ -214,13 +215,11 @@ public class DefaultSolver<Solution_> extends AbstractSolver<Solution_> {
             } finally {
                 sample.stop();
                 Metrics.globalRegistry.remove(new Meter.Id(SolverMetric.SCORE_CALCULATION_COUNT.getMeterId(),
-                        solverScope.getMonitoringTags(),
-                        null,
-                        null,
-                        Meter.Type.GAUGE));
+                        solverScope.getMonitoringTags(), null, null, Meter.Type.GAUGE));
                 solverScope.getSolverMetricSet().forEach(solverMetric -> solverMetric.unregister(this));
             }
             restartSolver = checkProblemFactChanges();
+            warmStart = restartSolver;
         }
         outerSolvingEnded(solverScope);
         return solverScope.getBestSolution();
@@ -234,10 +233,10 @@ public class DefaultSolver<Solution_> extends AbstractSolver<Solution_> {
     }
 
     @Override
-    public void solvingStarted(SolverScope<Solution_> solverScope) {
+    void solvingStarted(SolverScope<Solution_> solverScope, boolean warmStart) {
         solverScope.startingNow();
         solverScope.getScoreDirector().resetCalculationCount();
-        super.solvingStarted(solverScope);
+        super.solvingStarted(solverScope, warmStart);
         int startingSolverCount = solverScope.getStartingSolverCount() + 1;
         solverScope.setStartingSolverCount(startingSolverCount);
         logger.info("Solving {}: time spent ({}), best score ({}), environment mode ({}), "
@@ -277,6 +276,8 @@ public class DefaultSolver<Solution_> extends AbstractSolver<Solution_> {
         } else {
             BlockingQueue<ProblemChangeAdapter<Solution_>> problemFactChangeQueue = basicPlumbingTermination
                     .startProblemFactChangesProcessing();
+            // The current working solution might be significantly worse than the best known solution.
+            // Therefore start from the last best solution, even though it makes incremental problem changes impossible.
             solverScope.setWorkingSolutionFromBestSolution();
             Score<?> score = null;
             int stepIndex = 0;
@@ -292,7 +293,6 @@ public class DefaultSolver<Solution_> extends AbstractSolver<Solution_> {
             // Everything is fine, proceed.
             basicPlumbingTermination.endProblemFactChangesProcessing();
             bestSolutionRecaller.updateBestSolutionWithoutFiring(solverScope);
-            solverScope.setWarmStart(true);
             logger.info("Real-time problem fact changes done: step total ({}), new best score ({}).",
                     stepIndex, score);
             return true;
