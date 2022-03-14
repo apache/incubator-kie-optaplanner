@@ -143,7 +143,8 @@ public final class BavetScoringUniConstraintStream<Solution_, A>
         } else {
             throw new IllegalStateException("Impossible state: neither of the supported match weighers provided.");
         }
-        UniScorer<A> scorer = new UniScorer<>(constraintWeight, scoreImpacter);
+        UniScorer<A> scorer = new UniScorer<>(constraint.getConstraintPackage(), constraint.getConstraintName(),
+                constraintWeight, scoreImpacter);
         buildHelper.putInsertRetract(this, scorer::insert, scorer::retract);
     }
 
@@ -155,7 +156,7 @@ public final class BavetScoringUniConstraintStream<Solution_, A>
 
     @Override
     public String toString() {
-        return "Scoring()";
+        return "Scoring(" + constraint.getConstraintName() + ")";
     }
 
     // ************************************************************************

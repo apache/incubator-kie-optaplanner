@@ -61,15 +61,27 @@ public final class BavetFilterUniConstraintStream<Solution_, A> extends BavetAbs
     public <Score_ extends Score<Score_>> void buildNode(NodeBuildHelper<Score_> buildHelper) {
         Consumer<UniTuple<A>> insert = buildHelper.getAggregatedInsert(childStreamList);
         Consumer<UniTuple<A>> retract = buildHelper.getAggregatedRetract(childStreamList);
-        buildHelper.putInsertRetract(this, (UniTuple<A> tuple) -> {
+        buildHelper.putInsertRetract(this,
+                new ConditionalUniConsumer<>(predicate, insert),
+                retract);
+    }
+
+    private static final class ConditionalUniConsumer<A> implements Consumer<UniTuple<A>> {
+        private final Predicate<A> predicate;
+        private final Consumer<UniTuple<A>> consumer;
+
+        public ConditionalUniConsumer(Predicate<A> predicate, Consumer<UniTuple<A>> consumer) {
+            this.predicate = predicate;
+            this.consumer = consumer;
+        }
+
+        @Override
+        public void accept(UniTuple<A> tuple) {
             if (predicate.test(tuple.factA)) {
-                insert.accept(tuple);
+                consumer.accept(tuple);
             }
-        }, (UniTuple<A> tuple) -> {
-            if (predicate.test(tuple.factA)) {
-                retract.accept(tuple);
-            }
-        });
+        }
+
     }
 
     // ************************************************************************

@@ -140,7 +140,8 @@ public final class BavetScoringBiConstraintStream<Solution_, A, B>
         } else {
             throw new IllegalStateException("Impossible state: neither of the supported match weighers provided.");
         }
-        BiScorer<A, B> scorer = new BiScorer<>(constraintWeight, scoreImpacter);
+        BiScorer<A, B> scorer = new BiScorer<>(constraint.getConstraintPackage(), constraint.getConstraintName(),
+                constraintWeight, scoreImpacter);
         buildHelper.putInsertRetract(this, scorer::insert, scorer::retract);
     }
 
@@ -152,7 +153,7 @@ public final class BavetScoringBiConstraintStream<Solution_, A, B>
 
     @Override
     public String toString() {
-        return "Scoring()";
+        return "Scoring(" + constraint.getConstraintName() + ")";
     }
 
     // ************************************************************************

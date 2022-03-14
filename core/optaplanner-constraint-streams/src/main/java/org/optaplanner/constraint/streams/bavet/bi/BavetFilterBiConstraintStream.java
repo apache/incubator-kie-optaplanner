@@ -21,6 +21,7 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.function.BiPredicate;
 import java.util.function.Consumer;
+import java.util.function.Predicate;
 
 import org.optaplanner.constraint.streams.bavet.BavetConstraintFactory;
 import org.optaplanner.constraint.streams.bavet.common.BavetAbstractConstraintStream;
@@ -65,15 +66,27 @@ public final class BavetFilterBiConstraintStream<Solution_, A, B> extends BavetA
     public <Score_ extends Score<Score_>> void buildNode(NodeBuildHelper<Score_> buildHelper) {
         Consumer<BiTuple<A, B>> insert = buildHelper.getAggregatedInsert(childStreamList);
         Consumer<BiTuple<A, B>> retract = buildHelper.getAggregatedRetract(childStreamList);
-        buildHelper.putInsertRetract(this, (BiTuple<A, B> tuple) -> {
+        buildHelper.putInsertRetract(this,
+                new ConditionalBiConsumer<>(predicate, insert),
+                retract);
+    }
+
+    private static final class ConditionalBiConsumer<A, B> implements Consumer<BiTuple<A, B>> {
+        private final BiPredicate<A, B> predicate;
+        private final Consumer<BiTuple<A, B>> consumer;
+
+        public ConditionalBiConsumer(BiPredicate<A, B> predicate, Consumer<BiTuple<A, B>> consumer) {
+            this.predicate = predicate;
+            this.consumer = consumer;
+        }
+
+        @Override
+        public void accept(BiTuple<A, B> tuple) {
             if (predicate.test(tuple.factA, tuple.factB)) {
-                insert.accept(tuple);
+                consumer.accept(tuple);
             }
-        }, (BiTuple<A, B> tuple) -> {
-            if (predicate.test(tuple.factA, tuple.factB)) {
-                retract.accept(tuple);
-            }
-        });
+        }
+
     }
 
     // ************************************************************************

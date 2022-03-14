@@ -19,22 +19,24 @@ package org.optaplanner.constraint.streams.bavet.bi;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.BiFunction;
-import java.util.function.Function;
 
-import org.optaplanner.constraint.streams.bavet.common.AbstractNode;
 import org.optaplanner.constraint.streams.bavet.common.AbstractScorer;
-import org.optaplanner.constraint.streams.bavet.uni.UniTuple;
 import org.optaplanner.constraint.streams.common.inliner.UndoScoreImpacter;
 import org.optaplanner.core.api.score.Score;
 
 public final class BiScorer<A, B> extends AbstractScorer {
 
+    private final String constraintPackage;
+    private final String constraintName;
     private final Score<?> constraintWeight;
     private final BiFunction<A, B, UndoScoreImpacter> scoreImpacter;
 
     private final Map<BiTuple<A, B>, UndoScoreImpacter> impacterMap = new HashMap<>();
 
-    public BiScorer(Score<?> constraintWeight, BiFunction<A, B, UndoScoreImpacter> scoreImpacter) {
+    public BiScorer(String constraintPackage, String constraintName,
+            Score<?> constraintWeight, BiFunction<A, B, UndoScoreImpacter> scoreImpacter) {
+        this.constraintPackage = constraintPackage;
+        this.constraintName = constraintName;
         this.constraintWeight = constraintWeight;
         this.scoreImpacter = scoreImpacter;
     }
@@ -51,17 +53,15 @@ public final class BiScorer<A, B> extends AbstractScorer {
 
     public void retract(BiTuple<A, B> tupleAB) {
         UndoScoreImpacter undoScoreImpacter = impacterMap.remove(tupleAB);
-        if (undoScoreImpacter == null) {
-            throw new IllegalStateException("Impossible state: the tuple for the facts ("
-                    + tupleAB.factA + ", " + tupleAB.factB
-                    + ") doesn't exist in the impacterMap.");
+        // No fail fast if null because we don't track which tuples made it through the filter predicate(s)
+        if (undoScoreImpacter != null) {
+            undoScoreImpacter.run();
         }
-        undoScoreImpacter.run();
     }
 
     @Override
     public String toString() {
-        return "Scoring(" + constraintWeight + ")";
+        return "Scorer(" + constraintName + ") with constraintWeight (" + constraintWeight + ")";
     }
 
 }

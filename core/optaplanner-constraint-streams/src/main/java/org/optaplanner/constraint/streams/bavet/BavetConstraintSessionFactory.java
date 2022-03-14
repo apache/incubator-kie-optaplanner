@@ -63,7 +63,7 @@ public final class BavetConstraintSessionFactory<Solution_, Score_ extends Score
         for (BavetConstraint<Solution_> constraint : constraintList) {
             // Expensive, only do once.
             Score_ constraintWeight = constraint.extractConstraintWeight(workingSolution);
-            // Filter out constraints with zero weight
+            // Filter out nodes that only lead to constraints with zero weight
             if (!constraintWeight.equals(zeroScore)) {
                 // Node sharing: each CS.buildNode() is called exactly once (even if multiple constraints use it)
                 // because CS implement equals/hashcode and they are collected in a Set.
@@ -83,7 +83,11 @@ public final class BavetConstraintSessionFactory<Solution_, Score_ extends Score
         for (AbstractNode node : nodeList) {
             if (node instanceof ForEachUniNode) {
                 ForEachUniNode<Object> forEachUniNode = (ForEachUniNode<Object>) node;
-                declaredClassToNodeMap.put(forEachUniNode.getForEachClass(), forEachUniNode);
+                ForEachUniNode<Object> old = declaredClassToNodeMap.put(forEachUniNode.getForEachClass(), forEachUniNode);
+                if (old != null) {
+                    throw new IllegalStateException("Impossible state: For class (" + forEachUniNode.getForEachClass()
+                            + ") there are 2 nodes (" + forEachUniNode + ", " + old + ").");
+                }
             }
         }
         return new BavetConstraintSession<>(scoreInliner, declaredClassToNodeMap, nodeList.toArray(AbstractNode[]::new));
