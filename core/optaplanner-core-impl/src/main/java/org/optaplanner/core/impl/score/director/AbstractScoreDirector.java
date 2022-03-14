@@ -16,9 +16,6 @@
 
 package org.optaplanner.core.impl.score.director;
 
-import static java.util.Comparator.comparing;
-import static java.util.Objects.requireNonNull;
-
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -61,6 +58,9 @@ import org.optaplanner.core.impl.score.definition.ScoreDefinition;
 import org.optaplanner.core.impl.solver.thread.ChildThreadType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import static java.util.Comparator.comparing;
+import static java.util.Objects.requireNonNull;
 
 /**
  * Abstract superclass for {@link ScoreDirector}.
@@ -458,7 +458,16 @@ public abstract class AbstractScoreDirector<Solution_, Score_ extends Score<Scor
         if (isConstraintConfiguration(problemFactOrEntity)) {
             setWorkingSolution(workingSolution); // Nuke everything and recalculate, constraint weights have changed.
         } else {
-            variableListenerSupport.resetWorkingSolution(); // TODO do not nuke the variable listeners
+            EntityDescriptor<Solution_> entityDescriptor =
+                    getSolutionDescriptor().findEntityDescriptor(problemFactOrEntity.getClass());
+            if (entityDescriptor == null) { // Problem fact changed.
+                variableListenerSupport.resetWorkingSolution(); // TODO do not nuke the variable listeners
+            } else { // Planning entity changed but the variable is not known, so trigger them all.
+                for (VariableDescriptor<Solution_> variableDescriptor: entityDescriptor.getGenuineVariableDescriptorList()) {
+                    beforeVariableChanged(variableDescriptor, problemFactOrEntity);
+                    afterVariableChanged(variableDescriptor, problemFactOrEntity);
+                }
+            }
         }
     }
 
