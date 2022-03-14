@@ -18,6 +18,7 @@ package org.optaplanner.constraint.streams.bavet.bi;
 
 import java.util.ArrayDeque;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Queue;
@@ -44,7 +45,9 @@ public final class JoinBiNode<A, B> extends AbstractNode {
     public final Consumer<BiTuple<A, B>> nextNodesRetract;
 
     private final Indexer<UniTuple<A>, Set<BiTuple<A, B>>> indexerA;
+    private final Map<UniTuple<A>, Object[]> indexPropertiesMapA = new HashMap<>();
     private final Indexer<UniTuple<B>, Set<BiTuple<A, B>>> indexerB;
+    private final Map<UniTuple<B>, Object[]> indexPropertiesMapB = new HashMap<>();
     private final Queue<BiTuple<A, B>> dirtyTupleQueue;
 
     public JoinBiNode(Function<A, Object[]> mappingA, Function<B, Object[]> mappingB,
@@ -61,6 +64,11 @@ public final class JoinBiNode<A, B> extends AbstractNode {
 
     public void insertA(UniTuple<A> tupleA) {
         Object[] indexProperties = mappingA.apply(tupleA.factA);
+        Object[] old = indexPropertiesMapA.put(tupleA, indexProperties);
+        if (old != null) {
+            throw new IllegalStateException("Impossible state: the tuple for the fact ("
+                    + tupleA.factA + ") was already added in the indexPropertiesMapA.");
+        }
 
         Map<UniTuple<B>, Set<BiTuple<A, B>>> tupleABSetMapB = indexerB.get(indexProperties);
         // Use standard initial capacity (16) to grow into, unless we already know more is probably needed
@@ -68,25 +76,23 @@ public final class JoinBiNode<A, B> extends AbstractNode {
         indexerA.put(indexProperties, tupleA, tupleABSetA);
 
         tupleABSetMapB.forEach((tupleB, tupleABSetB) -> {
-            if (!tupleB.state.isDirty()) {
-                BiTuple<A, B> tupleAB = new BiTuple<>(tupleA.factA, tupleB.factA);
-                tupleAB.state = BavetTupleState.CREATING;
-                tupleABSetA.add(tupleAB);
-                tupleABSetB.add(tupleAB);
-                dirtyTupleQueue.add(tupleAB);
-            }
+            // TODO What if tupleB is dying?
+            BiTuple<A, B> tupleAB = new BiTuple<>(tupleA.factA, tupleB.factA);
+            tupleAB.state = BavetTupleState.CREATING;
+            tupleABSetA.add(tupleAB);
+            tupleABSetB.add(tupleAB);
+            dirtyTupleQueue.add(tupleAB);
         });
     }
 
     public void retractA(UniTuple<A> tupleA) {
-        Object[] indexProperties = mappingA.apply(tupleA.factA);
-
-        Set<BiTuple<A, B>> tupleABSetA = indexerA.remove(indexProperties, tupleA);
-        if (tupleABSetA == null) {
-            // tupleA was never inserted
+        Object[] indexProperties = indexPropertiesMapA.remove(tupleA);
+        if (indexProperties == null) {
             // No fail fast if null because we don't track which tuples made it through the filter predicate(s)
             return;
         }
+
+        Set<BiTuple<A, B>> tupleABSetA = indexerA.remove(indexProperties, tupleA);
         // Remove tupleABs from the other side
         Map<UniTuple<B>, Set<BiTuple<A, B>>> tupleABSetMapB = indexerB.get(indexProperties);
         tupleABSetMapB.forEach((tupleB, tupleABSetB) -> {
@@ -106,6 +112,11 @@ public final class JoinBiNode<A, B> extends AbstractNode {
 
     public void insertB(UniTuple<B> tupleB) {
         Object[] indexProperties = mappingB.apply(tupleB.factA);
+        Object[] old = indexPropertiesMapB.put(tupleB, indexProperties);
+        if (old != null) {
+            throw new IllegalStateException("Impossible state: the tuple for the fact ("
+                    + tupleB.factA + ") was already added in the indexPropertiesMapB.");
+        }
 
         Map<UniTuple<A>, Set<BiTuple<A, B>>> tupleABSetMapB = indexerA.get(indexProperties);
         // Use standard initial capacity (16) to grow into, unless we already know more is probably needed
@@ -113,25 +124,23 @@ public final class JoinBiNode<A, B> extends AbstractNode {
         indexerB.put(indexProperties, tupleB, tupleABSetB);
 
         tupleABSetMapB.forEach((tupleA, tupleABSetA) -> {
-            if (!tupleA.state.isDirty()) {
-                BiTuple<A, B> tupleAB = new BiTuple<>(tupleA.factA, tupleB.factA);
-                tupleAB.state = BavetTupleState.CREATING;
-                tupleABSetB.add(tupleAB);
-                tupleABSetA.add(tupleAB);
-                dirtyTupleQueue.add(tupleAB);
-            }
+            // TODO What if tupleA is dying?
+            BiTuple<A, B> tupleAB = new BiTuple<>(tupleA.factA, tupleB.factA);
+            tupleAB.state = BavetTupleState.CREATING;
+            tupleABSetB.add(tupleAB);
+            tupleABSetA.add(tupleAB);
+            dirtyTupleQueue.add(tupleAB);
         });
     }
 
     public void retractB(UniTuple<B> tupleB) {
-        Object[] indexProperties = mappingB.apply(tupleB.factA);
-
-        Set<BiTuple<A, B>> tupleABSetB = indexerB.remove(indexProperties, tupleB);
-        if (tupleABSetB == null) {
-            // tupleB was never inserted
+        Object[] indexProperties = indexPropertiesMapB.remove(tupleB);
+        if (indexProperties == null) {
             // No fail fast if null because we don't track which tuples made it through the filter predicate(s)
             return;
         }
+
+        Set<BiTuple<A, B>> tupleABSetB = indexerB.remove(indexProperties, tupleB);
         // Remove tupleABs from the other side
         Map<UniTuple<A>, Set<BiTuple<A, B>>> tupleABSetMapA = indexerA.get(indexProperties);
         tupleABSetMapA.forEach((tupleA, tupleABSetA) -> {

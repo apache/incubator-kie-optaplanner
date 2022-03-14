@@ -44,8 +44,9 @@ public final class NoneIndexer<Tuple_ extends Tuple, Value_> implements Indexer<
     public Value_ remove(Object[] indexProperties, Tuple_ tuple) {
         Value_ value = tupleMap.remove(tuple);
         if (value == null) {
-            // No fail fast if null because we don't track which tuples made it through the filter predicate(s)
-            return null;
+            throw new IllegalStateException("Impossible state: the tuple (" + tuple
+                    + ") with indexProperties (" + Arrays.toString(indexProperties)
+                    + ") doesn't exist in the indexer.");
         }
         return value;
     }

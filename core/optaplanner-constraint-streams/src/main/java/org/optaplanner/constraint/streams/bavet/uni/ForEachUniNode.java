@@ -64,6 +64,12 @@ public final class ForEachUniNode<A> extends AbstractNode {
         if (tuple == null) {
             throw new IllegalStateException("The fact (" + a + ") was never inserted, so it cannot update.");
         }
+        if (tuple.state.isDirty()) {
+            if (tuple.state == BavetTupleState.DYING || tuple.state == BavetTupleState.ABORTING) {
+                throw new IllegalStateException("The fact (" + a + ") was retracted, so it cannot update.");
+            }
+            return;
+        }
         tuple.state = BavetTupleState.UPDATING;
         dirtyTupleQueue.add(tuple);
     }
@@ -72,6 +78,12 @@ public final class ForEachUniNode<A> extends AbstractNode {
         UniTuple<A> tuple = tupleMap.remove(a);
         if (tuple == null) {
             throw new IllegalStateException("The fact (" + a + ") was never inserted, so it cannot retract.");
+        }
+        if (tuple.state.isDirty()) {
+            if (tuple.state == BavetTupleState.DYING || tuple.state == BavetTupleState.ABORTING) {
+                throw new IllegalStateException("The fact (" + a + ") was already retracted, so it cannot retract.");
+            }
+            tuple.state = BavetTupleState.ABORTING;
         }
         tuple.state = BavetTupleState.DYING;
         dirtyTupleQueue.add(tuple);

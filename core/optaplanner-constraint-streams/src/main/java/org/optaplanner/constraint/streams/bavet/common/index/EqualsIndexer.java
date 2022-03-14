@@ -48,13 +48,15 @@ public final class EqualsIndexer<Tuple_ extends Tuple, Value_> implements Indexe
         IndexerKey oldIndexKey = new IndexerKey(indexProperties);
         Map<Tuple_, Value_> tupleMap = map.get(oldIndexKey);
         if (tupleMap == null) {
-            // No fail fast if null because we don't track which tuples made it through the filter predicate(s)
-            return null;
+            throw new IllegalStateException("Impossible state: the tuple (" + tuple
+                    + ") with indexProperties (" + Arrays.toString(indexProperties)
+                    + ") doesn't exist in the indexer.");
         }
         Value_ value = tupleMap.remove(tuple);
         if (value == null) {
-            // No fail fast if null because we don't track which tuples made it through the filter predicate(s)
-            return null;
+            throw new IllegalStateException("Impossible state: the tuple (" + tuple
+                    + ") with indexProperties (" + Arrays.toString(indexProperties)
+                    + ") doesn't exist in the indexer.");
         }
         if (tupleMap.isEmpty()) {
             map.remove(oldIndexKey);
