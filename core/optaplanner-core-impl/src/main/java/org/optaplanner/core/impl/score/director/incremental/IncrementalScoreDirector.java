@@ -16,9 +16,6 @@
 
 package org.optaplanner.core.impl.score.director.incremental;
 
-import static java.util.function.Function.identity;
-import static java.util.stream.Collectors.toMap;
-
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -34,6 +31,9 @@ import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
 import org.optaplanner.core.impl.domain.variable.descriptor.VariableDescriptor;
 import org.optaplanner.core.impl.score.constraint.DefaultIndictment;
 import org.optaplanner.core.impl.score.director.AbstractScoreDirector;
+
+import static java.util.function.Function.identity;
+import static java.util.stream.Collectors.toMap;
 
 /**
  * Incremental java implementation of {@link ScoreDirector}, which only recalculates the {@link Score}
@@ -194,30 +194,15 @@ public class IncrementalScoreDirector<Solution_, Score_ extends Score<Score_>>
     // ************************************************************************
 
     @Override
-    public void beforeProblemFactAdded(Object problemFact) {
-        super.beforeProblemFactAdded(problemFact);
-    }
-
-    @Override
     public void afterProblemFactAdded(Object problemFact) {
         incrementalScoreCalculator.resetWorkingSolution(workingSolution); // TODO do not nuke it
         super.afterProblemFactAdded(problemFact);
     }
 
     @Override
-    public void beforeProblemPropertyChanged(Object problemFactOrEntity) {
-        super.beforeProblemPropertyChanged(problemFactOrEntity);
-    }
-
-    @Override
     public void afterProblemPropertyChanged(Object problemFactOrEntity) {
         incrementalScoreCalculator.resetWorkingSolution(workingSolution); // TODO do not nuke it
         super.afterProblemPropertyChanged(problemFactOrEntity);
-    }
-
-    @Override
-    public void beforeProblemFactRemoved(Object problemFact) {
-        super.beforeProblemFactRemoved(problemFact);
     }
 
     @Override

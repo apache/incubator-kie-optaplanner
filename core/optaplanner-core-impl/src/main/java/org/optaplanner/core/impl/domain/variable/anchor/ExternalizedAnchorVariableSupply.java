@@ -24,13 +24,15 @@ import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.core.impl.domain.variable.descriptor.VariableDescriptor;
 import org.optaplanner.core.impl.domain.variable.inverserelation.SingletonInverseVariableSupply;
+import org.optaplanner.core.impl.domain.variable.listener.AbstractFactInsensitiveVariableListener;
 import org.optaplanner.core.impl.domain.variable.listener.SourcedVariableListener;
 
 /**
  * Alternative to {@link AnchorVariableListener}.
  */
-public class ExternalizedAnchorVariableSupply<Solution_> implements SourcedVariableListener<Solution_, Object>,
-        AnchorVariableSupply {
+public class ExternalizedAnchorVariableSupply<Solution_>
+        extends AbstractFactInsensitiveVariableListener<Solution_, Object>
+        implements SourcedVariableListener<Solution_, Object>, AnchorVariableSupply {
 
     protected final VariableDescriptor<Solution_> previousVariableDescriptor;
     protected final SingletonInverseVariableSupply nextVariableSupply;

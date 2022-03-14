@@ -28,17 +28,17 @@ final class EntityRemovedNotification extends VariableListenerNotification {
     @Override
     <Solution_> void triggerBefore(VariableListener<Solution_, Object> variableListener,
             ScoreDirector<Solution_> scoreDirector) {
-        variableListener.beforeEntityRemoved(scoreDirector, entity);
+        variableListener.beforeEntityRemoved(scoreDirector, problemFactOrEntity);
     }
 
     @Override
     <Solution_> void triggerAfter(VariableListener<Solution_, Object> variableListener,
             ScoreDirector<Solution_> scoreDirector) {
-        variableListener.afterEntityRemoved(scoreDirector, entity);
+        variableListener.afterEntityRemoved(scoreDirector, problemFactOrEntity);
     }
 
     @Override
     public String toString() {
-        return "EntityRemoved(" + entity + ")";
+        return "EntityRemoved(" + problemFactOrEntity + ")";
     }
 }

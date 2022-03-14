@@ -25,12 +25,14 @@ import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.core.impl.domain.variable.descriptor.ListVariableDescriptor;
 import org.optaplanner.core.impl.domain.variable.descriptor.VariableDescriptor;
+import org.optaplanner.core.impl.domain.variable.listener.AbstractFactInsensitiveVariableListener;
 import org.optaplanner.core.impl.domain.variable.listener.SourcedVariableListener;
 
 /**
  * Alternative to {@link SingletonListInverseVariableListener}.
  */
 public class ExternalizedSingletonListInverseVariableSupply<Solution_>
+        extends AbstractFactInsensitiveVariableListener<Solution_, Object>
         implements SourcedVariableListener<Solution_, Object>, SingletonInverseVariableSupply {
 
     protected final ListVariableDescriptor<Solution_> sourceVariableDescriptor;

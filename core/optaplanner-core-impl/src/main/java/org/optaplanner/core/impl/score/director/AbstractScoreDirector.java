@@ -16,9 +16,6 @@
 
 package org.optaplanner.core.impl.score.director;
 
-import static java.util.Comparator.comparing;
-import static java.util.Objects.requireNonNull;
-
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -61,6 +58,9 @@ import org.optaplanner.core.impl.score.definition.ScoreDefinition;
 import org.optaplanner.core.impl.solver.thread.ChildThreadType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import static java.util.Comparator.comparing;
+import static java.util.Objects.requireNonNull;
 
 /**
  * Abstract superclass for {@link ScoreDirector}.
@@ -437,7 +437,7 @@ public abstract class AbstractScoreDirector<Solution_, Score_ extends Score<Scor
 
     @Override
     public void beforeProblemFactAdded(Object problemFact) {
-        // Do nothing
+        variableListenerSupport.beforeFactAdded(problemFact);
     }
 
     @Override
@@ -445,12 +445,22 @@ public abstract class AbstractScoreDirector<Solution_, Score_ extends Score<Scor
         if (lookUpEnabled) {
             lookUpManager.addWorkingObject(problemFact);
         }
-        variableListenerSupport.resetWorkingSolution(); // TODO do not nuke the variable listeners
+        variableListenerSupport.afterFactAdded(problemFact);
     }
 
     @Override
     public void beforeProblemPropertyChanged(Object problemFactOrEntity) {
-        // Do nothing
+        if (!isConstraintConfiguration(problemFactOrEntity)) {
+            EntityDescriptor<Solution_> entityDescriptor =
+                    getSolutionDescriptor().findEntityDescriptor(problemFactOrEntity.getClass());
+            if (entityDescriptor == null) { // Problem fact changed.
+                variableListenerSupport.beforeFactChanged(problemFactOrEntity);
+            } else { // Planning entity changed but the variable is not known, so trigger them all.
+                for (VariableDescriptor<Solution_> variableDescriptor : entityDescriptor.getGenuineVariableDescriptorList()) {
+                    beforeVariableChanged(variableDescriptor, problemFactOrEntity);
+                }
+            }
+        }
     }
 
     @Override
@@ -461,10 +471,9 @@ public abstract class AbstractScoreDirector<Solution_, Score_ extends Score<Scor
             EntityDescriptor<Solution_> entityDescriptor =
                     getSolutionDescriptor().findEntityDescriptor(problemFactOrEntity.getClass());
             if (entityDescriptor == null) { // Problem fact changed.
-                variableListenerSupport.resetWorkingSolution(); // TODO do not nuke the variable listeners
+                variableListenerSupport.afterFactChanged(problemFactOrEntity);
             } else { // Planning entity changed but the variable is not known, so trigger them all.
                 for (VariableDescriptor<Solution_> variableDescriptor : entityDescriptor.getGenuineVariableDescriptorList()) {
-                    beforeVariableChanged(variableDescriptor, problemFactOrEntity);
                     afterVariableChanged(variableDescriptor, problemFactOrEntity);
                 }
             }
@@ -478,6 +487,7 @@ public abstract class AbstractScoreDirector<Solution_, Score_ extends Score<Scor
                     ") from solution (" + workingSolution + ").\n" +
                     "Maybe use before/afterProblemPropertyChanged(...) instead.");
         }
+        variableListenerSupport.beforeFactRemoved(problemFact);
     }
 
     @Override
@@ -485,7 +495,7 @@ public abstract class AbstractScoreDirector<Solution_, Score_ extends Score<Scor
         if (lookUpEnabled) {
             lookUpManager.removeWorkingObject(problemFact);
         }
-        variableListenerSupport.resetWorkingSolution(); // TODO do not nuke the variable listeners
+        variableListenerSupport.afterFactRemoved(problemFact);
     }
 
     @Override

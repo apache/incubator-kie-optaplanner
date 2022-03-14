@@ -164,6 +164,51 @@ public final class VariableListenerSupport<Solution_> implements SupplyManager<S
         // beforeEntityRemoved() has already added it to the notificationQueue
     }
 
+    public void beforeFactAdded(Object problemFact) {
+        Collection<VariableListenerNotifiable<Solution_>> notifiables = notifiableRegistry.getAll();
+        if (!notifiables.isEmpty()) {
+            VariableListenerNotification notification = VariableListenerNotification.factAdded(problemFact);
+            for (VariableListenerNotifiable<Solution_> notifiable : notifiables) {
+                notifiable.addNotification(notification);
+            }
+        }
+        notificationQueuesAreEmpty = false;
+    }
+
+    public void afterFactAdded(Object problemFact) {
+        // beforeFactAdded() has already added it to the notificationQueue
+    }
+
+    public void beforeFactChanged(Object problemFact) {
+        Collection<VariableListenerNotifiable<Solution_>> notifiables = notifiableRegistry.getAll();
+        if (!notifiables.isEmpty()) {
+            VariableListenerNotification notification = VariableListenerNotification.factChanged(problemFact);
+            for (VariableListenerNotifiable<Solution_> notifiable : notifiables) {
+                notifiable.addNotification(notification);
+            }
+        }
+        notificationQueuesAreEmpty = false;
+    }
+
+    public void afterFactChanged(Object problemFact) {
+        // beforeFactChanged() has already added it to the notificationQueue
+    }
+
+    public void beforeFactRemoved(Object problemFact) {
+        Collection<VariableListenerNotifiable<Solution_>> notifiables = notifiableRegistry.getAll();
+        if (!notifiables.isEmpty()) {
+            VariableListenerNotification notification = VariableListenerNotification.factRemoved(problemFact);
+            for (VariableListenerNotifiable<Solution_> notifiable : notifiables) {
+                notifiable.addNotification(notification);
+            }
+        }
+        notificationQueuesAreEmpty = false;
+    }
+
+    public void afterFactRemoved(Object problemFact) {
+        // beforeFactRemoved() has already added it to the notificationQueue
+    }
+
     public void triggerVariableListenersInNotificationQueues() {
         for (VariableListenerNotifiable<Solution_> notifiable : notifiableRegistry.getAll()) {
             notifiable.triggerAllNotifications();

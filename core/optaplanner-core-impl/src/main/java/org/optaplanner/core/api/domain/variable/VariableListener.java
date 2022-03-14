@@ -87,6 +87,57 @@ public interface VariableListener<Solution_, Entity_> extends Closeable {
     void afterEntityRemoved(ScoreDirector<Solution_> scoreDirector, Entity_ entity);
 
     /**
+     * @param scoreDirector never null
+     * @param fact never null
+     */
+    default void beforeProblemFactAdded(ScoreDirector<Solution_> scoreDirector, Object fact) {
+        // TODO remove default implementation in 9.0
+    }
+
+    /**
+     * @param scoreDirector never null
+     * @param fact never null
+     */
+    default void afterProblemFactAdded(ScoreDirector<Solution_> scoreDirector, Object fact) {
+        // TODO remove default implementation in 9.0
+        resetWorkingSolution(scoreDirector);
+    }
+
+    /**
+     * @param scoreDirector never null
+     * @param fact never null
+     */
+    default void beforeProblemFactChanged(ScoreDirector<Solution_> scoreDirector, Object fact) {
+        // TODO remove default implementation in 9.0
+    }
+
+    /**
+     * @param scoreDirector never null
+     * @param fact never null
+     */
+    default void afterProblemFactChanged(ScoreDirector<Solution_> scoreDirector, Object fact) {
+        // TODO remove default implementation in 9.0
+        resetWorkingSolution(scoreDirector);
+    }
+
+    /**
+     * @param scoreDirector never null
+     * @param fact never null
+     */
+    default void beforeProblemFactRemoved(ScoreDirector<Solution_> scoreDirector, Object fact) {
+        // TODO remove default implementation in 9.0
+    }
+
+    /**
+     * @param scoreDirector never null
+     * @param fact never null
+     */
+    default void afterProblemFactRemoved(ScoreDirector<Solution_> scoreDirector, Object fact) {
+        // TODO remove default implementation in 9.0
+        resetWorkingSolution(scoreDirector);
+    }
+
+    /**
      * Called when the entire working solution changes. In this event, the other before..()/after...() methods will not
      * be called.
      * At this point, implementations should clear state, if any.

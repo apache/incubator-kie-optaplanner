@@ -21,12 +21,15 @@ import org.optaplanner.core.api.domain.variable.VariableListener;
 import org.optaplanner.core.api.score.director.ScoreDirector;
 import org.optaplanner.core.impl.domain.variable.descriptor.VariableDescriptor;
 import org.optaplanner.core.impl.domain.variable.inverserelation.SingletonInverseVariableSupply;
+import org.optaplanner.core.impl.domain.variable.listener.AbstractFactInsensitiveVariableListener;
 import org.optaplanner.core.impl.score.director.InnerScoreDirector;
 
 /**
  * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
  */
-public class AnchorVariableListener<Solution_> implements VariableListener<Solution_, Object>, AnchorVariableSupply {
+public class AnchorVariableListener<Solution_>
+        extends AbstractFactInsensitiveVariableListener<Solution_, Object>
+        implements VariableListener<Solution_, Object>, AnchorVariableSupply {
 
     protected final AnchorShadowVariableDescriptor<Solution_> anchorShadowVariableDescriptor;
     protected final VariableDescriptor<Solution_> previousVariableDescriptor;

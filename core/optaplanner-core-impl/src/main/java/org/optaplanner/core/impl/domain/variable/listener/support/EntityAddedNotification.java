@@ -28,17 +28,17 @@ final class EntityAddedNotification extends VariableListenerNotification {
     @Override
     <Solution_> void triggerBefore(VariableListener<Solution_, Object> variableListener,
             ScoreDirector<Solution_> scoreDirector) {
-        variableListener.beforeEntityAdded(scoreDirector, entity);
+        variableListener.beforeEntityAdded(scoreDirector, problemFactOrEntity);
     }
 
     @Override
     <Solution_> void triggerAfter(VariableListener<Solution_, Object> variableListener,
             ScoreDirector<Solution_> scoreDirector) {
-        variableListener.afterEntityAdded(scoreDirector, entity);
+        variableListener.afterEntityAdded(scoreDirector, problemFactOrEntity);
     }
 
     @Override
     public String toString() {
-        return "EntityAdded(" + entity + ")";
+        return "EntityAdded(" + problemFactOrEntity + ")";
     }
 }

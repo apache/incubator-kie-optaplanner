@@ -28,17 +28,17 @@ final class VariableChangedNotification extends VariableListenerNotification {
     @Override
     <Solution_> void triggerBefore(VariableListener<Solution_, Object> variableListener,
             ScoreDirector<Solution_> scoreDirector) {
-        variableListener.beforeVariableChanged(scoreDirector, entity);
+        variableListener.beforeVariableChanged(scoreDirector, problemFactOrEntity);
     }
 
     @Override
     <Solution_> void triggerAfter(VariableListener<Solution_, Object> variableListener,
             ScoreDirector<Solution_> scoreDirector) {
-        variableListener.afterVariableChanged(scoreDirector, entity);
+        variableListener.afterVariableChanged(scoreDirector, problemFactOrEntity);
     }
 
     @Override
     public String toString() {
-        return "VariableChanged(" + entity + ")";
+        return "VariableChanged(" + problemFactOrEntity + ")";
     }
 }

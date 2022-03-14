@@ -24,7 +24,7 @@ import org.optaplanner.core.impl.domain.variable.descriptor.ShadowVariableDescri
 
 abstract class VariableListenerNotification {
 
-    protected final Object entity;
+    protected final Object problemFactOrEntity;
 
     static VariableListenerNotification entityAdded(Object entity) {
         return new EntityAddedNotification(entity);
@@ -38,8 +38,20 @@ abstract class VariableListenerNotification {
         return new EntityRemovedNotification(entity);
     }
 
-    protected VariableListenerNotification(Object entity) {
-        this.entity = entity;
+    static VariableListenerNotification factAdded(Object problemFact) {
+        return new FactAddedNotification(problemFact);
+    }
+
+    static VariableListenerNotification factChanged(Object problemFact) {
+        return new FactChangedNotification(problemFact);
+    }
+
+    static VariableListenerNotification factRemoved(Object problemFact) {
+        return new FactRemovedNotification(problemFact);
+    }
+
+    protected VariableListenerNotification(Object problemFactOrEntity) {
+        this.problemFactOrEntity = problemFactOrEntity;
     }
 
     abstract <Solution_> void triggerBefore(VariableListener<Solution_, Object> variableListener,
@@ -64,11 +76,11 @@ abstract class VariableListenerNotification {
             return false;
         }
         VariableListenerNotification that = (VariableListenerNotification) o;
-        return entity.equals(that.entity);
+        return problemFactOrEntity.equals(that.problemFactOrEntity);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(System.identityHashCode(entity), getClass());
+        return Objects.hash(System.identityHashCode(problemFactOrEntity), getClass());
     }
 }

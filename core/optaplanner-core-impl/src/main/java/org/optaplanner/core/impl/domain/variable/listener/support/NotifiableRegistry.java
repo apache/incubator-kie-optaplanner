@@ -59,7 +59,7 @@ final class NotifiableRegistry<Solution_> {
         notifiableList.add(notifiable);
     }
 
-    Iterable<VariableListenerNotifiable<Solution_>> getAll() {
+    Collection<VariableListenerNotifiable<Solution_>> getAll() {
         return notifiableList;
     }
 

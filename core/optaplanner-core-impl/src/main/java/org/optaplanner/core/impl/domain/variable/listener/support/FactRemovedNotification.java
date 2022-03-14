@@ -21,24 +21,24 @@ import org.optaplanner.core.api.score.director.ScoreDirector;
 
 final class FactRemovedNotification extends VariableListenerNotification {
 
-    FactRemovedNotification(Object entity) {
-        super(entity);
+    FactRemovedNotification(Object problemFact) {
+        super(problemFact);
     }
 
     @Override
     <Solution_> void triggerBefore(VariableListener<Solution_, Object> variableListener,
             ScoreDirector<Solution_> scoreDirector) {
-        variableListener.beforeProblemFactAdded(scoreDirector, entity);
+        variableListener.beforeProblemFactAdded(scoreDirector, problemFactOrEntity);
     }
 
     @Override
     <Solution_> void triggerAfter(VariableListener<Solution_, Object> variableListener,
             ScoreDirector<Solution_> scoreDirector) {
-        variableListener.afterProblemFactAdded(scoreDirector, entity);
+        variableListener.afterProblemFactAdded(scoreDirector, problemFactOrEntity);
     }
 
     @Override
     public String toString() {
-        return "EntityAdded(" + entity + ")";
+        return "FactRemoved(" + problemFactOrEntity + ")";
     }
 }
