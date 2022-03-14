@@ -23,6 +23,7 @@ import java.util.Random;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Semaphore;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
 
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
@@ -63,6 +64,8 @@ public class SolverScope<Solution_> {
     protected volatile Solution_ bestSolution;
     protected volatile Score bestScore;
     protected Long bestSolutionTimeMillis;
+    private final AtomicBoolean isWarmStart = new AtomicBoolean(false);
+
     /**
      * Used for tracking step score
      */
@@ -208,6 +211,26 @@ public class SolverScope<Solution_> {
 
     public void setBestSolutionTimeMillis(Long bestSolutionTimeMillis) {
         this.bestSolutionTimeMillis = bestSolutionTimeMillis;
+    }
+
+    /**
+     * See {@link #setWarmStart(boolean)}.
+     * Retrieve the value previously set, and set it to false afterwards.
+     *
+     * @return
+     */
+    public boolean isWarmStart() {
+        return isWarmStart.getAndSet(false);
+    }
+
+    /**
+     * Set to true after problem changes have just finished processing.
+     * Set to false once the solver has first started after that.
+     * 
+     * @param warmStart
+     */
+    public void setWarmStart(boolean warmStart) {
+        isWarmStart.set(warmStart);
     }
 
     // ************************************************************************

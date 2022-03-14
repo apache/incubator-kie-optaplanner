@@ -77,7 +77,10 @@ public abstract class AbstractSolver<Solution_> implements Solver<Solution_> {
     // ************************************************************************
 
     public void solvingStarted(SolverScope<Solution_> solverScope) {
-        solverScope.setWorkingSolutionFromBestSolution();
+        // Cloning may have already happened during the processing of problem changes; skip in that case.
+        if (!solverScope.isWarmStart()) {
+            solverScope.setWorkingSolutionFromBestSolution();
+        }
         bestSolutionRecaller.solvingStarted(solverScope);
         solverTermination.solvingStarted(solverScope);
         phaseLifecycleSupport.fireSolvingStarted(solverScope);
