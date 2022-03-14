@@ -19,8 +19,12 @@ package org.optaplanner.constraint.streams.bavet.tri;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
+import java.util.function.BiPredicate;
+import java.util.function.Consumer;
 
 import org.optaplanner.constraint.streams.bavet.BavetConstraintFactory;
+import org.optaplanner.constraint.streams.bavet.bi.BavetFilterBiConstraintStream;
+import org.optaplanner.constraint.streams.bavet.bi.BiTuple;
 import org.optaplanner.constraint.streams.bavet.common.BavetAbstractConstraintStream;
 import org.optaplanner.constraint.streams.bavet.common.BavetNodeBuildPolicy;
 import org.optaplanner.constraint.streams.bavet.common.NodeBuildHelper;
@@ -62,7 +66,29 @@ public final class BavetFilterTriConstraintStream<Solution_, A, B, C>
 
     @Override
     public <Score_ extends Score<Score_>> void buildNode(NodeBuildHelper<Score_> buildHelper) {
-        throw new UnsupportedOperationException();
+        Consumer<TriTuple<A, B, C>> insert = buildHelper.getAggregatedInsert(childStreamList);
+        Consumer<TriTuple<A, B, C>> retract = buildHelper.getAggregatedRetract(childStreamList);
+        buildHelper.putInsertRetract(this,
+                new ConditionalTriConsumer<>(predicate, insert),
+                retract);
+    }
+
+    private static final class ConditionalTriConsumer<A, B, C> implements Consumer<TriTuple<A, B, C>> {
+        private final TriPredicate<A, B, C> predicate;
+        private final Consumer<TriTuple<A, B, C>> consumer;
+
+        public ConditionalTriConsumer(TriPredicate<A, B, C> predicate, Consumer<TriTuple<A, B, C>> consumer) {
+            this.predicate = predicate;
+            this.consumer = consumer;
+        }
+
+        @Override
+        public void accept(TriTuple<A, B, C> tuple) {
+            if (predicate.test(tuple.factA, tuple.factB, tuple.factC)) {
+                consumer.accept(tuple);
+            }
+        }
+
     }
 
     // ************************************************************************

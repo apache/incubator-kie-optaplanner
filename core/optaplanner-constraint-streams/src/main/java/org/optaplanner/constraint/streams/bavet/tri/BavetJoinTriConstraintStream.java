@@ -18,15 +18,19 @@ package org.optaplanner.constraint.streams.bavet.tri;
 
 import java.util.Set;
 import java.util.function.BiFunction;
+import java.util.function.Consumer;
 import java.util.function.Function;
 
 import org.optaplanner.constraint.streams.bavet.BavetConstraintFactory;
 import org.optaplanner.constraint.streams.bavet.bi.BavetAbstractBiConstraintStream;
+import org.optaplanner.constraint.streams.bavet.bi.BiTuple;
 import org.optaplanner.constraint.streams.bavet.common.BavetAbstractConstraintStream;
 import org.optaplanner.constraint.streams.bavet.common.BavetJoinConstraintStream;
 import org.optaplanner.constraint.streams.bavet.common.NodeBuildHelper;
+import org.optaplanner.constraint.streams.bavet.common.index.Indexer;
 import org.optaplanner.constraint.streams.bavet.common.index.IndexerFactory;
 import org.optaplanner.constraint.streams.bavet.uni.BavetAbstractUniConstraintStream;
+import org.optaplanner.constraint.streams.bavet.uni.UniTuple;
 import org.optaplanner.core.api.score.Score;
 
 public final class BavetJoinTriConstraintStream<Solution_, A, B, C>
@@ -71,7 +75,16 @@ public final class BavetJoinTriConstraintStream<Solution_, A, B, C>
 
     @Override
     public <Score_ extends Score<Score_>> void buildNode(NodeBuildHelper<Score_> buildHelper) {
-        throw new UnsupportedOperationException();
+        Consumer<TriTuple<A, B, C>> insert = buildHelper.getAggregatedInsert(childStreamList);
+        Consumer<TriTuple<A, B, C>> retract = buildHelper.getAggregatedRetract(childStreamList);
+        Indexer<BiTuple<A, B>, Set<TriTuple<A, B, C>>> indexerAB = indexerFactory.buildIndexer(true);
+        Indexer<UniTuple<C>, Set<TriTuple<A, B, C>>> indexerC = indexerFactory.buildIndexer(false);
+        JoinTriNode<A, B, C> node = new JoinTriNode<>(leftMapping, rightMapping,
+                insert, retract,
+                indexerAB, indexerC);
+        buildHelper.addNode(node);
+        buildHelper.putInsertRetract(leftParent, node::insertAB, node::retractAB);
+        buildHelper.putInsertRetract(rightParent, node::insertC, node::retractC);
     }
 
     // ************************************************************************

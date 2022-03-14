@@ -29,6 +29,8 @@ import java.util.function.Function;
 import org.optaplanner.constraint.streams.bavet.common.AbstractNode;
 import org.optaplanner.constraint.streams.bavet.common.BavetTupleState;
 import org.optaplanner.constraint.streams.bavet.common.index.Indexer;
+import org.optaplanner.constraint.streams.bavet.tri.JoinTriNode;
+import org.optaplanner.constraint.streams.bavet.uni.UniScorer;
 import org.optaplanner.constraint.streams.bavet.uni.UniTuple;
 
 public final class JoinBiNode<A, B> extends AbstractNode {
@@ -36,11 +38,11 @@ public final class JoinBiNode<A, B> extends AbstractNode {
     private final Function<A, Object[]> mappingA;
     private final Function<B, Object[]> mappingB;
     /**
-     * Calls for example {@link JoinTriNode#insertAB(BiTuple)} and/or ...
+     * Calls for example {@link BiScorer#insert(BiTuple)}, {@link JoinTriNode#insertAB(BiTuple)} and/or ...
      */
     public final Consumer<BiTuple<A, B>> nextNodesInsert;
     /**
-     * Calls for example {@link JoinTriNode#insertAB(BiTuple)} and/or ...
+     * Calls for example {@link BiScorer#retract(BiTuple)}, {@link JoinTriNode#insertAB(BiTuple)} and/or ...
      */
     public final Consumer<BiTuple<A, B>> nextNodesRetract;
 
@@ -102,7 +104,7 @@ public final class JoinBiNode<A, B> extends AbstractNode {
             if (!changed) {
                 throw new IllegalStateException("Impossible state: the fact (" + tupleA.factA
                         + ") with indexProperties (" + Arrays.toString(indexProperties)
-                        + ") has tuples on the B side that didn't exist on the A side.");
+                        + ") has tuples on the A side that didn't exist on the B side.");
             }
         });
         for (BiTuple<A, B> tupleAB : tupleABSetA) {

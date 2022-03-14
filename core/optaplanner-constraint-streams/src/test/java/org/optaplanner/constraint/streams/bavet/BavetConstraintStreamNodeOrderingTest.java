@@ -20,33 +20,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.SoftAssertions.assertSoftly;
 import static org.optaplanner.core.api.score.stream.Joiners.equal;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.function.Function;
-
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.optaplanner.constraint.streams.bavet.bi.BavetGroupBiNode;
-import org.optaplanner.constraint.streams.bavet.bi.BavetGroupBridgeBiNode;
-import org.optaplanner.constraint.streams.bavet.common.AbstractNode;
-import org.optaplanner.constraint.streams.bavet.common.BavetNode;
-import org.optaplanner.constraint.streams.bavet.common.BavetScoringNode;
-import org.optaplanner.constraint.streams.bavet.tri.BavetScoringTriNode;
-import org.optaplanner.constraint.streams.bavet.uni.BavetAbstractUniNode;
-import org.optaplanner.constraint.streams.bavet.uni.BavetFilterUniNode;
-import org.optaplanner.constraint.streams.bavet.uni.BavetForEachUniNode;
-import org.optaplanner.constraint.streams.bavet.uni.BavetJoinBridgeUniNode;
-import org.optaplanner.constraint.streams.bavet.uni.ForEachUniNode;
-import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
-import org.optaplanner.core.api.score.stream.Constraint;
-import org.optaplanner.core.api.score.stream.ConstraintCollectors;
-import org.optaplanner.core.api.score.stream.ConstraintFactory;
-import org.optaplanner.core.impl.testdata.domain.score.lavish.TestdataLavishEntity;
-import org.optaplanner.core.impl.testdata.domain.score.lavish.TestdataLavishSolution;
-import org.optaplanner.core.impl.testdata.domain.score.lavish.TestdataLavishValue;
-import org.optaplanner.core.impl.testdata.domain.score.lavish.TestdataLavishValueGroup;
-
 class BavetConstraintStreamNodeOrderingTest {
 
     private final Function<ConstraintFactory, Constraint> constraintProvider =

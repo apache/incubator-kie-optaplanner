@@ -30,11 +30,11 @@ public final class ForEachUniNode<A> extends AbstractNode {
 
     private final Class<A> forEachClass;
     /**
-     * Calls for example {@link JoinBiNode#insertA(UniTuple)}, {@link JoinBiNode#insertB(UniTuple)} and/or ...
+     * Calls for example {@link UniScorer#insert(UniTuple)}, {@link JoinBiNode#insertA(UniTuple)}, {@link JoinBiNode#insertB(UniTuple)} and/or ...
      */
     public final Consumer<UniTuple<A>> nextNodesInsert;
     /**
-     * Calls for example {@link JoinBiNode#retractA(UniTuple)}, {@link JoinBiNode#retractB(UniTuple)} and/or ...
+     * Calls for example {@link UniScorer#retract(UniTuple)}, {@link JoinBiNode#retractA(UniTuple)}, {@link JoinBiNode#retractB(UniTuple)} and/or ...
      */
     public final Consumer<UniTuple<A>> nextNodesRetract;
 

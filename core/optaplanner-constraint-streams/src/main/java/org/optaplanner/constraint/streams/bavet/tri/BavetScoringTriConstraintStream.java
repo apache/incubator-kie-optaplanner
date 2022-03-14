@@ -24,6 +24,7 @@ import java.util.Set;
 
 import org.optaplanner.constraint.streams.bavet.BavetConstraint;
 import org.optaplanner.constraint.streams.bavet.BavetConstraintFactory;
+import org.optaplanner.constraint.streams.bavet.bi.BiScorer;
 import org.optaplanner.constraint.streams.bavet.common.AbstractScorer;
 import org.optaplanner.constraint.streams.bavet.common.BavetAbstractConstraintStream;
 import org.optaplanner.constraint.streams.bavet.common.BavetNodeBuildPolicy;
@@ -143,9 +144,9 @@ public final class BavetScoringTriConstraintStream<Solution_, A, B, C>
         } else {
             throw new IllegalStateException("Impossible state: neither of the supported match weighers provided.");
         }
-        throw new UnsupportedOperationException();
-//        TriScorer<A, B, C> scorer = new TriScorer<>(constraintWeight, scoreImpacter);
-//        buildHelper.put(this, scorer::insert, scorer::retract);
+        TriScorer<A, B, C> scorer = new TriScorer<>(constraint.getConstraintPackage(), constraint.getConstraintName(),
+                constraintWeight, scoreImpacter);
+        buildHelper.putInsertRetract(this, scorer::insert, scorer::retract);
     }
 
     // ************************************************************************
