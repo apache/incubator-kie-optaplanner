@@ -32,6 +32,7 @@ import org.optaplanner.constraint.streams.bavet.common.NodeBuildHelper;
 import org.optaplanner.constraint.streams.bavet.uni.ForEachUniNode;
 import org.optaplanner.constraint.streams.common.inliner.AbstractScoreInliner;
 import org.optaplanner.core.api.score.Score;
+import org.optaplanner.core.api.score.constraint.ConstraintMatch;
 import org.optaplanner.core.api.score.stream.Constraint;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.core.impl.score.definition.ScoreDefinition;
@@ -63,10 +64,11 @@ public final class BavetConstraintSessionFactory<Solution_, Score_ extends Score
         for (BavetConstraint<Solution_> constraint : constraintList) {
             // Expensive, only do once.
             Score_ constraintWeight = constraint.extractConstraintWeight(workingSolution);
+            // Node sharing happens earlier, in BavetConstraintFactory#share(Stream_).
             // Filter out nodes that only lead to constraints with zero weight
             if (!constraintWeight.equals(zeroScore)) {
-                // Node sharing: each CS.buildNode() is called exactly once (even if multiple constraints use it)
-                // because CS implement equals/hashcode and they are collected in a Set.
+                // Relies on BavetConstraintFactory#share(Stream_) occurring for all constraint stream instances
+                // to ensure there are no 2 equal constraint streams (with different child stream lists).
                 constraint.collectActiveConstraintStreams(constraintStreamSet);
                 constraintWeightMap.put(constraint, constraintWeight);
             }

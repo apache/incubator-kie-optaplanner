@@ -16,6 +16,13 @@
 
 package org.optaplanner.constraint.streams.bavet;
 
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
+import java.util.function.Consumer;
+
+import org.optaplanner.constraint.streams.bavet.common.BavetAbstractConstraintStream;
 import org.optaplanner.constraint.streams.bavet.uni.BavetAbstractUniConstraintStream;
 import org.optaplanner.constraint.streams.bavet.uni.BavetForEachUniConstraintStream;
 import org.optaplanner.constraint.streams.common.InnerConstraintFactory;
@@ -30,6 +37,9 @@ public final class BavetConstraintFactory<Solution_>
     private final SolutionDescriptor<Solution_> solutionDescriptor;
     private final String defaultConstraintPackage;
 
+    private final Map<BavetAbstractConstraintStream<Solution_>, BavetAbstractConstraintStream<Solution_>>
+            sharingStreamMap = new HashMap<>(256);
+
     public BavetConstraintFactory(SolutionDescriptor<Solution_> solutionDescriptor) {
         this.solutionDescriptor = solutionDescriptor;
         ConstraintConfigurationDescriptor<Solution_> configurationDescriptor = solutionDescriptor
@@ -42,6 +52,31 @@ public final class BavetConstraintFactory<Solution_>
         }
     }
 
+    public <Stream_ extends BavetAbstractConstraintStream<Solution_>> Stream_ share(Stream_ stream) {
+        return share(stream, t -> {});
+    }
+
+    /**
+     * Enables node sharing.
+     * If a constraint already exists in this factory, it replaces it by the old copy.
+     * {@link BavetAbstractConstraintStream} implement equals/hashcode ignoring child streams.
+     * <p>
+     * {@link BavetConstraintSessionFactory#buildSession(boolean, Object)} relies on this occurring for all streams.
+     * <p>
+     * This must be called before the stream receives child streams.
+     * @param stream never null
+     * @param consumer never null
+     * @param <Stream_> the {@link BavetAbstractConstraintStream} subclass
+     * @return  never null
+     */
+    public <Stream_ extends BavetAbstractConstraintStream<Solution_>> Stream_ share(Stream_ stream,
+            Consumer<Stream_> consumer) {
+        return (Stream_) sharingStreamMap.computeIfAbsent(stream, k -> {
+            consumer.accept(stream);
+            return stream;
+        });
+    }
+
     // ************************************************************************
     // from
     // ************************************************************************
@@ -49,13 +84,13 @@ public final class BavetConstraintFactory<Solution_>
     @Override
     public <A> UniConstraintStream<A> forEachIncludingNullVars(Class<A> sourceClass) {
         assertValidFromType(sourceClass);
-        return new BavetForEachUniConstraintStream<>(this, sourceClass, RetrievalSemantics.STANDARD);
+        return share(new BavetForEachUniConstraintStream<>(this, sourceClass, RetrievalSemantics.STANDARD));
     }
 
     @Override
     public <A> BavetAbstractUniConstraintStream<Solution_, A> fromUnfiltered(Class<A> fromClass) {
         assertValidFromType(fromClass);
-        return new BavetForEachUniConstraintStream<>(this, fromClass, RetrievalSemantics.LEGACY);
+        return share(new BavetForEachUniConstraintStream<>(this, fromClass, RetrievalSemantics.LEGACY));
     }
 
     // ************************************************************************

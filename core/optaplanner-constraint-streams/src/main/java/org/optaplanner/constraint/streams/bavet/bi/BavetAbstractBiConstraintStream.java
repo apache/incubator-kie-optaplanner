@@ -32,6 +32,7 @@ import org.optaplanner.constraint.streams.bavet.common.BavetNodeBuildPolicy;
 import org.optaplanner.constraint.streams.bavet.common.JoinerUtils;
 import org.optaplanner.constraint.streams.bavet.common.index.BavetIndexFactory;
 import org.optaplanner.constraint.streams.bavet.common.index.IndexerFactory;
+import org.optaplanner.constraint.streams.bavet.tri.BavetAbstractTriConstraintStream;
 import org.optaplanner.constraint.streams.bavet.tri.BavetJoinTriConstraintStream;
 import org.optaplanner.constraint.streams.bavet.uni.BavetAbstractUniConstraintStream;
 import org.optaplanner.constraint.streams.bavet.uni.BavetJoinBridgeUniConstraintStream;
@@ -63,8 +64,9 @@ public abstract class BavetAbstractBiConstraintStream<Solution_, A, B> extends B
     // Stream builder methods
     // ************************************************************************
 
-    protected void addChildStream(BavetAbstractBiConstraintStream<Solution_, A, B> childStream) {
-        childStreamList.add(childStream);
+    public <Stream_ extends BavetAbstractBiConstraintStream<Solution_, A, B>> Stream_ shareAndAddChild(
+            Stream_ stream) {
+        return constraintFactory.share(stream, childStreamList::add);
     }
 
     // ************************************************************************
@@ -73,10 +75,8 @@ public abstract class BavetAbstractBiConstraintStream<Solution_, A, B> extends B
 
     @Override
     public BavetAbstractBiConstraintStream<Solution_, A, B> filter(BiPredicate<A, B> predicate) {
-        BavetFilterBiConstraintStream<Solution_, A, B> stream = new BavetFilterBiConstraintStream<>(constraintFactory, this,
-                predicate);
-        addChildStream(stream);
-        return stream;
+        return shareAndAddChild(
+                new BavetFilterBiConstraintStream<>(constraintFactory, this, predicate));
     }
 
     // ************************************************************************
@@ -102,18 +102,18 @@ public abstract class BavetAbstractBiConstraintStream<Solution_, A, B> extends B
         DefaultTriJoiner<A, B, C> castedJoiner = (DefaultTriJoiner<A, B, C>) joiner;
         IndexerFactory indexerFactory = new IndexerFactory(castedJoiner);
         BiFunction<A, B, Object[]> leftMapping = JoinerUtils.combineLeftMappings(castedJoiner);
-        BavetJoinBridgeBiConstraintStream<Solution_, A, B> leftBridge = new BavetJoinBridgeBiConstraintStream<>(
-                constraintFactory, this, true);
-        addChildStream(leftBridge);
+        BavetJoinBridgeBiConstraintStream<Solution_, A, B> leftBridge = shareAndAddChild(
+                new BavetJoinBridgeBiConstraintStream<>(constraintFactory, this, true));
         Function<C, Object[]> rightMapping = JoinerUtils.combineRightMappings(castedJoiner);
-        BavetJoinBridgeUniConstraintStream<Solution_, C> rightBridge = new BavetJoinBridgeUniConstraintStream<>(
-                constraintFactory, other, false);
-        other.addChildStream(rightBridge);
-        BavetJoinTriConstraintStream<Solution_, A, B, C> joinStream = new BavetJoinTriConstraintStream<>(constraintFactory,
-                leftBridge, rightBridge, leftMapping, rightMapping, indexerFactory);
-        leftBridge.setJoinStream(joinStream);
-        rightBridge.setJoinStream(joinStream);
-        return joinStream;
+        BavetJoinBridgeUniConstraintStream<Solution_, C> rightBridge = other.shareAndAddChild(
+                new BavetJoinBridgeUniConstraintStream<>(constraintFactory, other, false));
+        return constraintFactory.share(
+                new BavetJoinTriConstraintStream<>(constraintFactory, leftBridge, rightBridge,
+                        leftMapping, rightMapping, indexerFactory),
+                joinStream_ -> {
+                    leftBridge.setJoinStream(joinStream_);
+                    rightBridge.setJoinStream(joinStream_);
+                });
     }
 
     @Override
@@ -216,12 +216,11 @@ public abstract class BavetAbstractBiConstraintStream<Solution_, A, B> extends B
             BiFunction<A, B, GroupKey_> groupKeyMapping,
             BiConstraintCollector<A, B, ResultContainer_, Result_> collector) {
         BavetGroupBridgeBiConstraintStream<Solution_, A, B, GroupKey_, ResultContainer_, Result_> bridge =
-                new BavetGroupBridgeBiConstraintStream<>(constraintFactory, this, groupKeyMapping, collector);
-        childStreamList.add(bridge);
-        BavetGroupBiConstraintStream<Solution_, GroupKey_, ResultContainer_, Result_> groupStream =
-                new BavetGroupBiConstraintStream<>(constraintFactory, bridge, collector.finisher());
-        bridge.setGroupStream(groupStream);
-        return groupStream;
+                shareAndAddChild(
+                        new BavetGroupBridgeBiConstraintStream<>(constraintFactory, this, groupKeyMapping, collector));
+        return constraintFactory.share(
+                new BavetGroupBiConstraintStream<>(constraintFactory, bridge, collector.finisher()),
+                bridge::setGroupStream);
     }
 
     @Override
@@ -290,9 +289,8 @@ public abstract class BavetAbstractBiConstraintStream<Solution_, A, B> extends B
     @Override
     public final Constraint impactScore(String constraintPackage, String constraintName, Score<?> constraintWeight,
             ScoreImpactType impactType) {
-        BavetScoringBiConstraintStream<Solution_, A, B> stream = new BavetScoringBiConstraintStream<>(constraintFactory,
-                this);
-        childStreamList.add(stream);
+        BavetScoringBiConstraintStream<Solution_, A, B> stream = shareAndAddChild(
+                new BavetScoringBiConstraintStream<>(constraintFactory, this));
         return buildConstraint(constraintPackage, constraintName, constraintWeight,
                 impactType, stream);
     }
@@ -300,9 +298,8 @@ public abstract class BavetAbstractBiConstraintStream<Solution_, A, B> extends B
     @Override
     public final Constraint impactScore(String constraintPackage, String constraintName, Score<?> constraintWeight,
             ToIntBiFunction<A, B> matchWeigher, ScoreImpactType impactType) {
-        BavetScoringBiConstraintStream<Solution_, A, B> stream = new BavetScoringBiConstraintStream<>(constraintFactory,
-                this, matchWeigher);
-        childStreamList.add(stream);
+        BavetScoringBiConstraintStream<Solution_, A, B> stream = shareAndAddChild(
+                new BavetScoringBiConstraintStream<>(constraintFactory, this, matchWeigher));
         return buildConstraint(constraintPackage, constraintName, constraintWeight,
                 impactType, stream);
     }
@@ -310,9 +307,8 @@ public abstract class BavetAbstractBiConstraintStream<Solution_, A, B> extends B
     @Override
     public final Constraint impactScoreLong(String constraintPackage, String constraintName,
             Score<?> constraintWeight, ToLongBiFunction<A, B> matchWeigher, ScoreImpactType impactType) {
-        BavetScoringBiConstraintStream<Solution_, A, B> stream = new BavetScoringBiConstraintStream<>(constraintFactory,
-                this, matchWeigher);
-        childStreamList.add(stream);
+        BavetScoringBiConstraintStream<Solution_, A, B> stream = shareAndAddChild(
+                new BavetScoringBiConstraintStream<>(constraintFactory, this, matchWeigher));
         return buildConstraint(constraintPackage, constraintName, constraintWeight,
                 impactType, stream);
     }
@@ -320,9 +316,8 @@ public abstract class BavetAbstractBiConstraintStream<Solution_, A, B> extends B
     @Override
     public final Constraint impactScoreBigDecimal(String constraintPackage, String constraintName,
             Score<?> constraintWeight, BiFunction<A, B, BigDecimal> matchWeigher, ScoreImpactType impactType) {
-        BavetScoringBiConstraintStream<Solution_, A, B> stream = new BavetScoringBiConstraintStream<>(constraintFactory,
-                this, matchWeigher);
-        childStreamList.add(stream);
+        BavetScoringBiConstraintStream<Solution_, A, B> stream = shareAndAddChild(
+                new BavetScoringBiConstraintStream<>(constraintFactory, this, matchWeigher));
         return buildConstraint(constraintPackage, constraintName, constraintWeight,
                 impactType, stream);
     }
@@ -330,9 +325,8 @@ public abstract class BavetAbstractBiConstraintStream<Solution_, A, B> extends B
     @Override
     public final Constraint impactScoreConfigurable(String constraintPackage, String constraintName,
             ScoreImpactType impactType) {
-        BavetScoringBiConstraintStream<Solution_, A, B> stream = new BavetScoringBiConstraintStream<>(constraintFactory,
-                this);
-        childStreamList.add(stream);
+        BavetScoringBiConstraintStream<Solution_, A, B> stream = shareAndAddChild(
+                new BavetScoringBiConstraintStream<>(constraintFactory, this));
         return buildConstraintConfigurable(constraintPackage, constraintName,
                 impactType, stream);
     }
@@ -340,9 +334,8 @@ public abstract class BavetAbstractBiConstraintStream<Solution_, A, B> extends B
     @Override
     public final Constraint impactScoreConfigurable(String constraintPackage, String constraintName,
             ToIntBiFunction<A, B> matchWeigher, ScoreImpactType impactType) {
-        BavetScoringBiConstraintStream<Solution_, A, B> stream = new BavetScoringBiConstraintStream<>(constraintFactory,
-                this, matchWeigher);
-        childStreamList.add(stream);
+        BavetScoringBiConstraintStream<Solution_, A, B> stream = shareAndAddChild(
+                new BavetScoringBiConstraintStream<>(constraintFactory, this, matchWeigher));
         return buildConstraintConfigurable(constraintPackage, constraintName,
                 impactType, stream);
     }
@@ -350,9 +343,8 @@ public abstract class BavetAbstractBiConstraintStream<Solution_, A, B> extends B
     @Override
     public final Constraint impactScoreConfigurableLong(String constraintPackage, String constraintName,
             ToLongBiFunction<A, B> matchWeigher, ScoreImpactType impactType) {
-        BavetScoringBiConstraintStream<Solution_, A, B> stream = new BavetScoringBiConstraintStream<>(constraintFactory,
-                this, matchWeigher);
-        childStreamList.add(stream);
+        BavetScoringBiConstraintStream<Solution_, A, B> stream = shareAndAddChild(
+                new BavetScoringBiConstraintStream<>(constraintFactory, this, matchWeigher));
         return buildConstraintConfigurable(constraintPackage, constraintName,
                 impactType, stream);
     }
@@ -360,9 +352,8 @@ public abstract class BavetAbstractBiConstraintStream<Solution_, A, B> extends B
     @Override
     public final Constraint impactScoreConfigurableBigDecimal(String constraintPackage, String constraintName,
             BiFunction<A, B, BigDecimal> matchWeigher, ScoreImpactType impactType) {
-        BavetScoringBiConstraintStream<Solution_, A, B> stream = new BavetScoringBiConstraintStream<>(constraintFactory,
-                this, matchWeigher);
-        childStreamList.add(stream);
+        BavetScoringBiConstraintStream<Solution_, A, B> stream = shareAndAddChild(
+                new BavetScoringBiConstraintStream<>(constraintFactory, this, matchWeigher));
         return buildConstraintConfigurable(constraintPackage, constraintName,
                 impactType, stream);
     }
