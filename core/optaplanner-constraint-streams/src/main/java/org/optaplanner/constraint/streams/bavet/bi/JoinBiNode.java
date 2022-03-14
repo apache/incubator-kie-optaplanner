@@ -82,7 +82,12 @@ public final class JoinBiNode<A, B> extends AbstractNode {
         Object[] indexProperties = mappingA.apply(tupleA.factA);
 
         Set<BiTuple<A, B>> tupleABSetA = indexerA.remove(indexProperties, tupleA);
-
+        if (tupleABSetA == null) {
+            // tupleA was never inserted
+            // No fail fast if null because we don't track which tuples made it through the filter predicate(s)
+            return;
+        }
+        // Remove tupleABs from the other side
         Map<UniTuple<B>, Set<BiTuple<A, B>>> tupleABSetMapB = indexerB.get(indexProperties);
         tupleABSetMapB.forEach((tupleB, tupleABSetB) -> {
             // TODO Performance: if tupleAB would contain tupleB, do this faster code instead:
@@ -122,7 +127,12 @@ public final class JoinBiNode<A, B> extends AbstractNode {
         Object[] indexProperties = mappingB.apply(tupleB.factA);
 
         Set<BiTuple<A, B>> tupleABSetB = indexerB.remove(indexProperties, tupleB);
-
+        if (tupleABSetB == null) {
+            // tupleB was never inserted
+            // No fail fast if null because we don't track which tuples made it through the filter predicate(s)
+            return;
+        }
+        // Remove tupleABs from the other side
         Map<UniTuple<A>, Set<BiTuple<A, B>>> tupleABSetMapA = indexerA.get(indexProperties);
         tupleABSetMapA.forEach((tupleA, tupleABSetA) -> {
             // TODO Performance: if tupleAB would contain tupleA, do this faster code instead:

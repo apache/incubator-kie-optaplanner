@@ -24,6 +24,7 @@ import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.NavigableMap;
+import java.util.Objects;
 import java.util.Set;
 import java.util.TreeMap;
 import java.util.stream.Collectors;
@@ -42,6 +43,7 @@ public final class EqualsAndComparisonIndexer<Tuple_ extends Tuple, Value_> impl
 
     @Override
     public void put(Object[] indexProperties, Tuple_ tuple, Value_ value) {
+        Objects.requireNonNull(value);
         IndexerKey equalsIndexKey = new IndexerKey(Arrays.copyOfRange(indexProperties, 0, indexProperties.length - 1));
         Object comparisonIndexProperty = indexProperties[indexProperties.length - 1];
         NavigableMap<Object, Map<Tuple_, Value_>> comparisonMap = equalsMap.computeIfAbsent(equalsIndexKey, k -> new TreeMap<>());
@@ -61,21 +63,18 @@ public final class EqualsAndComparisonIndexer<Tuple_ extends Tuple, Value_> impl
         Object comparisonIndexProperty = indexProperties[indexProperties.length - 1];
         NavigableMap<Object, Map<Tuple_, Value_>> comparisonMap = equalsMap.get(equalsIndexKey);
         if (comparisonMap == null) {
-            throw new IllegalStateException("Impossible state: the tuple (" + tuple
-                    + ") with indexProperties (" + Arrays.toString(indexProperties)
-                    + ") doesn't exist in the indexer.");
+            // No fail fast if null because we don't track which tuples made it through the filter predicate(s)
+            return null;
         }
         Map<Tuple_, Value_> tupleMap = comparisonMap.get(comparisonIndexProperty);
         if (tupleMap == null) {
-            throw new IllegalStateException("Impossible state: the tuple (" + tuple
-                    + ") with indexProperties (" + Arrays.toString(indexProperties)
-                    + ") doesn't exist in the indexer.");
+            // No fail fast if null because we don't track which tuples made it through the filter predicate(s)
+            return null;
         }
         Value_ value = tupleMap.remove(tuple);
         if (value == null) {
-            throw new IllegalStateException("Impossible state: the tuple (" + tuple
-                    + ") with indexProperties (" + Arrays.toString(indexProperties)
-                    + ") doesn't exist in the indexer.");
+            // No fail fast if null because we don't track which tuples made it through the filter predicate(s)
+            return null;
         }
         if (tupleMap.isEmpty()) {
             comparisonMap.remove(comparisonIndexProperty);

@@ -21,6 +21,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Objects;
 
 import org.optaplanner.constraint.streams.bavet.common.Tuple;
 
@@ -30,6 +31,7 @@ public final class NoneIndexer<Tuple_ extends Tuple, Value_> implements Indexer<
 
     @Override
     public void put(Object[] indexProperties, Tuple_ tuple, Value_ value) {
+        Objects.requireNonNull(value);
         Value_ old = tupleMap.put(tuple, value);
         if (old != null) {
             throw new IllegalStateException("Impossible state: the tuple (" + tuple
@@ -42,9 +44,8 @@ public final class NoneIndexer<Tuple_ extends Tuple, Value_> implements Indexer<
     public Value_ remove(Object[] indexProperties, Tuple_ tuple) {
         Value_ value = tupleMap.remove(tuple);
         if (value == null) {
-            throw new IllegalStateException("Impossible state: the tuple (" + tuple
-                    + ") with indexProperties (" + Arrays.toString(indexProperties)
-                    + ") doesn't exist in the indexer.");
+            // No fail fast if null because we don't track which tuples made it through the filter predicate(s)
+            return null;
         }
         return value;
     }

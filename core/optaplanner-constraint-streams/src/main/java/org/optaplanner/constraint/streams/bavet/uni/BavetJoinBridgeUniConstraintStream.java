@@ -34,8 +34,9 @@ public final class BavetJoinBridgeUniConstraintStream<Solution_, A>
         implements BavetJoinBridgeConstraintStream<Solution_> {
 
     private final BavetAbstractUniConstraintStream<Solution_, A> parent;
-    private BavetJoinConstraintStream<Solution_> joinStream;
     private final boolean isLeftBridge;
+
+    private BavetJoinConstraintStream<Solution_> joinStream;
 
     public BavetJoinBridgeUniConstraintStream(BavetConstraintFactory<Solution_> constraintFactory,
             BavetAbstractUniConstraintStream<Solution_, A> parent, boolean isLeftBridge) {
@@ -72,7 +73,7 @@ public final class BavetJoinBridgeUniConstraintStream<Solution_, A>
     // Equality for node sharing
     // ************************************************************************
 
-    // No node sharing
+    // TODO, must include isLeftBridge in equality
 
     @Override
     public String toString() {

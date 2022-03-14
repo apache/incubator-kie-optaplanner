@@ -22,6 +22,7 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 
 import org.optaplanner.constraint.streams.bavet.common.Tuple;
@@ -32,6 +33,7 @@ public final class EqualsIndexer<Tuple_ extends Tuple, Value_> implements Indexe
 
     @Override
     public void put(Object[] indexProperties, Tuple_ tuple, Value_ value) {
+        Objects.requireNonNull(value);
         Map<Tuple_, Value_> tupleMap = map.computeIfAbsent(new IndexerKey(indexProperties), k -> new LinkedHashMap<>());
         Value_ old = tupleMap.put(tuple, value);
         if (old != null) {
@@ -46,15 +48,13 @@ public final class EqualsIndexer<Tuple_ extends Tuple, Value_> implements Indexe
         IndexerKey oldIndexKey = new IndexerKey(indexProperties);
         Map<Tuple_, Value_> tupleMap = map.get(oldIndexKey);
         if (tupleMap == null) {
-            throw new IllegalStateException("Impossible state: the tuple (" + tuple
-                    + ") with indexProperties (" + Arrays.toString(indexProperties)
-                    + ") doesn't exist in the indexer.");
+            // No fail fast if null because we don't track which tuples made it through the filter predicate(s)
+            return null;
         }
         Value_ value = tupleMap.remove(tuple);
         if (value == null) {
-            throw new IllegalStateException("Impossible state: the tuple (" + tuple
-                    + ") with indexProperties (" + Arrays.toString(indexProperties)
-                    + ") doesn't exist in the indexer.");
+            // No fail fast if null because we don't track which tuples made it through the filter predicate(s)
+            return null;
         }
         if (tupleMap.isEmpty()) {
             map.remove(oldIndexKey);

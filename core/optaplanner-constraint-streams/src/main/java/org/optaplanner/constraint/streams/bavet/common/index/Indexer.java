@@ -56,8 +56,7 @@ public interface Indexer<Tuple_ extends Tuple, Value_> {
      * Differs from {@link Map#remove(Object)} because it fails if the key does not exist.
      * @param indexProperties never null
      * @param tuple never null
-     * @return never null
-     * @throws IllegalStateException if the indexProperties-tuple key didn't exist
+     * @return null if the tuple was never inserted
      */
     Value_ remove(Object[] indexProperties, Tuple_ tuple);
 
