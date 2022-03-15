@@ -95,6 +95,10 @@ public interface VariableListener<Solution_, Entity_> extends Closeable {
     }
 
     /**
+     * For reasons of backwards compatibility,
+     * the default implementation will call {@link #resetWorkingSolution(ScoreDirector)}
+     * as any of the facts may have been used in the listener.
+     *
      * @param scoreDirector never null
      * @param fact never null
      */
@@ -104,18 +108,37 @@ public interface VariableListener<Solution_, Entity_> extends Closeable {
     }
 
     /**
+     * Call before either a problem fact changes or a planning entity changes without changing its planning variable.
+     *
+     * <p>
+     * <strong>Do not use this method when changing planning variable values on planning entities.</strong>
+     * Use {@link #beforeVariableChanged(ScoreDirector, Object)} instead.
+     * Failing to do so will result in score corruptions.
+     *
      * @param scoreDirector never null
-     * @param fact never null
+     * @param problemFactOrEntity never null
      */
-    default void beforeProblemFactChanged(ScoreDirector<Solution_> scoreDirector, Object fact) {
+    default void beforeProblemPropertyChanged(ScoreDirector<Solution_> scoreDirector, Object problemFactOrEntity) {
         // TODO remove default implementation in 9.0
     }
 
     /**
+     * Call after either a problem fact changes or a planning entity changes without changing its planning variable.
+     *
+     * <p>
+     * <strong>Do not use this method when changing planning variable values on planning entities.</strong>
+     * Use {@link #afterVariableChanged(ScoreDirector, Object)} instead.
+     * Failing to do so will result in score corruptions.
+     *
+     * <p>
+     * For reasons of backwards compatibility,
+     * the default implementation will call {@link #resetWorkingSolution(ScoreDirector)}
+     * as any of the facts may have been used in the listener.
+     *
      * @param scoreDirector never null
-     * @param fact never null
+     * @param problemFactOrEntity never null
      */
-    default void afterProblemFactChanged(ScoreDirector<Solution_> scoreDirector, Object fact) {
+    default void afterProblemPropertyChanged(ScoreDirector<Solution_> scoreDirector, Object problemFactOrEntity) {
         // TODO remove default implementation in 9.0
         resetWorkingSolution(scoreDirector);
     }
@@ -129,6 +152,10 @@ public interface VariableListener<Solution_, Entity_> extends Closeable {
     }
 
     /**
+     * For reasons of backwards compatibility,
+     * the default implementation will call {@link #resetWorkingSolution(ScoreDirector)}
+     * as any of the facts may have been used in the listener.
+     *
      * @param scoreDirector never null
      * @param fact never null
      */

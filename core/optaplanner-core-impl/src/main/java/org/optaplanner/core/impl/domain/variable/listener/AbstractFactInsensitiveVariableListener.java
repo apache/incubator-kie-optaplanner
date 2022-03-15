@@ -17,12 +17,12 @@ public abstract class AbstractFactInsensitiveVariableListener<Solution_, Entity_
     }
 
     @Override
-    public void beforeProblemFactChanged(ScoreDirector<Solution_> scoreDirector, Object fact) {
+    public void beforeProblemPropertyChanged(ScoreDirector<Solution_> scoreDirector, Object problemFactOrEntity) {
         // This listener is not fact-sensitive.
     }
 
     @Override
-    public void afterProblemFactChanged(ScoreDirector<Solution_> scoreDirector, Object fact) {
+    public void afterProblemPropertyChanged(ScoreDirector<Solution_> scoreDirector, Object problemFactOrEntity) {
         // This listener is not fact-sensitive.
     }
 

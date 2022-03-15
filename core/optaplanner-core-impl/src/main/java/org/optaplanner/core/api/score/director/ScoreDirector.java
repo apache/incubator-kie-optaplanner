@@ -60,8 +60,28 @@ public interface ScoreDirector<Solution_> {
 
     void afterProblemFactAdded(Object problemFact);
 
+    /**
+     * Call before either a problem fact changes or a planning entity changes without changing its planning variable.
+     *
+     * <p>
+     * <strong>Do not use this method when changing planning variable values on planning entities.</strong>
+     * Use {@link #beforeVariableChanged(Object, String)} instead.
+     * Failing to do so will result in score corruptions.
+     *
+     * @param problemFactOrEntity never null
+     */
     void beforeProblemPropertyChanged(Object problemFactOrEntity);
 
+    /**
+     * Call after either a problem fact changes or a planning entity changes without changing its planning variable.
+     *
+     * <p>
+     * <strong>Do not use this method when changing planning variable values on planning entities.</strong>
+     * Use {@link #afterVariableChanged(Object, String)} instead.
+     * Failing to do so will result in score corruptions.
+     *
+     * @param problemFactOrEntity never null
+     */
     void afterProblemPropertyChanged(Object problemFactOrEntity);
 
     void beforeProblemFactRemoved(Object problemFact);

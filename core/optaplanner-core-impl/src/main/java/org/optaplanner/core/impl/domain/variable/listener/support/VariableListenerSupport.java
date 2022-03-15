@@ -179,10 +179,11 @@ public final class VariableListenerSupport<Solution_> implements SupplyManager<S
         // beforeFactAdded() has already added it to the notificationQueue
     }
 
-    public void beforeFactChanged(Object problemFact) {
+    public void beforeProblemPropertyChanged(Object problemFactOrEntity) {
         Collection<VariableListenerNotifiable<Solution_>> notifiables = notifiableRegistry.getAll();
         if (!notifiables.isEmpty()) {
-            VariableListenerNotification notification = VariableListenerNotification.factChanged(problemFact);
+            VariableListenerNotification notification =
+                    VariableListenerNotification.problemPropertyChanged(problemFactOrEntity);
             for (VariableListenerNotifiable<Solution_> notifiable : notifiables) {
                 notifiable.addNotification(notification);
             }
@@ -190,8 +191,8 @@ public final class VariableListenerSupport<Solution_> implements SupplyManager<S
         notificationQueuesAreEmpty = false;
     }
 
-    public void afterFactChanged(Object problemFact) {
-        // beforeFactChanged() has already added it to the notificationQueue
+    public void afterProblemPropertyChanged(Object problemFactOrEntity) {
+        // beforeProblemPropertyChanged() has already added it to the notificationQueue
     }
 
     public void beforeFactRemoved(Object problemFact) {

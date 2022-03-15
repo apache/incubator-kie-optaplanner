@@ -451,15 +451,7 @@ public abstract class AbstractScoreDirector<Solution_, Score_ extends Score<Scor
     @Override
     public void beforeProblemPropertyChanged(Object problemFactOrEntity) {
         if (!isConstraintConfiguration(problemFactOrEntity)) {
-            EntityDescriptor<Solution_> entityDescriptor =
-                    getSolutionDescriptor().findEntityDescriptor(problemFactOrEntity.getClass());
-            if (entityDescriptor == null) { // Problem fact changed.
-                variableListenerSupport.beforeFactChanged(problemFactOrEntity);
-            } else { // Planning entity changed but the variable is not known, so trigger them all.
-                for (VariableDescriptor<Solution_> variableDescriptor : entityDescriptor.getGenuineVariableDescriptorList()) {
-                    beforeVariableChanged(variableDescriptor, problemFactOrEntity);
-                }
-            }
+            variableListenerSupport.beforeProblemPropertyChanged(problemFactOrEntity);
         }
     }
 
@@ -468,15 +460,7 @@ public abstract class AbstractScoreDirector<Solution_, Score_ extends Score<Scor
         if (isConstraintConfiguration(problemFactOrEntity)) {
             setWorkingSolution(workingSolution); // Nuke everything and recalculate, constraint weights have changed.
         } else {
-            EntityDescriptor<Solution_> entityDescriptor =
-                    getSolutionDescriptor().findEntityDescriptor(problemFactOrEntity.getClass());
-            if (entityDescriptor == null) { // Problem fact changed.
-                variableListenerSupport.afterFactChanged(problemFactOrEntity);
-            } else { // Planning entity changed but the variable is not known, so trigger them all.
-                for (VariableDescriptor<Solution_> variableDescriptor : entityDescriptor.getGenuineVariableDescriptorList()) {
-                    afterVariableChanged(variableDescriptor, problemFactOrEntity);
-                }
-            }
+            variableListenerSupport.afterProblemPropertyChanged(problemFactOrEntity);
         }
     }
 

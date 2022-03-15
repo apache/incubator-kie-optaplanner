@@ -85,9 +85,14 @@ public interface ProblemChangeDirector {
     <ProblemFact> void removeProblemFact(ProblemFact problemFact, Consumer<ProblemFact> problemFactConsumer);
 
     /**
-     * Change a property of either a {@link PlanningEntity} or a problem fact. Translates the entity or the problem fact
-     * to its {@link PlanningSolution working solution} counterpart by performing a lookup as defined by
-     * {@link #lookUpWorkingObjectOrFail(Object)}.
+     * Change a property (not a planning variable) of either a {@link PlanningEntity} or a problem fact.
+     * Translates the entity or the problem fact to its {@link PlanningSolution working solution} counterpart
+     * by performing a lookup as defined by {@link #lookUpWorkingObjectOrFail(Object)}.
+     *
+     * <p>
+     * <strong>Do not use this method when changing planning variable values on planning entities.</strong>
+     * Use {@link #changeVariable(Object, String, Consumer)} instead.
+     * Failing to do so will result in score corruptions.
      *
      * @param problemFactOrEntity never null; the {@link PlanningEntity} or the problem fact instance
      * @param problemFactOrEntityConsumer never null; updates the property of the {@link PlanningEntity}
