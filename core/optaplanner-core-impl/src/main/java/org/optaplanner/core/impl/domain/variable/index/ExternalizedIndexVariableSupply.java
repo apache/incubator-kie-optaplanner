@@ -26,14 +26,14 @@ import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.core.impl.domain.variable.descriptor.ListVariableDescriptor;
 import org.optaplanner.core.impl.domain.variable.descriptor.VariableDescriptor;
-import org.optaplanner.core.impl.domain.variable.listener.AbstractFactInsensitiveVariableListener;
+import org.optaplanner.core.impl.domain.variable.listener.AbstractProblemPropertyInsensitiveVariableListener;
 import org.optaplanner.core.impl.domain.variable.listener.SourcedVariableListener;
 
 /**
  * Alternative to {@link IndexVariableListener}.
  */
 public class ExternalizedIndexVariableSupply<Solution_>
-        extends AbstractFactInsensitiveVariableListener<Solution_, Object>
+        extends AbstractProblemPropertyInsensitiveVariableListener<Solution_, Object>
         implements SourcedVariableListener<Solution_, Object>, IndexVariableSupply {
 
     protected final ListVariableDescriptor<Solution_> sourceVariableDescriptor;

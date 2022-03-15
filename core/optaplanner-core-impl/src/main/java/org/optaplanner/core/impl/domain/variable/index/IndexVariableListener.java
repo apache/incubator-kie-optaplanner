@@ -22,11 +22,11 @@ import java.util.Objects;
 import org.optaplanner.core.api.domain.variable.VariableListener;
 import org.optaplanner.core.api.score.director.ScoreDirector;
 import org.optaplanner.core.impl.domain.variable.descriptor.ListVariableDescriptor;
-import org.optaplanner.core.impl.domain.variable.listener.AbstractFactInsensitiveVariableListener;
+import org.optaplanner.core.impl.domain.variable.listener.AbstractProblemPropertyInsensitiveVariableListener;
 import org.optaplanner.core.impl.score.director.InnerScoreDirector;
 
 public class IndexVariableListener<Solution_>
-        extends AbstractFactInsensitiveVariableListener<Solution_, Object>
+        extends AbstractProblemPropertyInsensitiveVariableListener<Solution_, Object>
         implements VariableListener<Solution_, Object>, IndexVariableSupply {
 
     protected final IndexShadowVariableDescriptor<Solution_> shadowVariableDescriptor;

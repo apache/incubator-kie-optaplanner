@@ -18,10 +18,8 @@ package org.optaplanner.quarkus.it.devui.domain;
 
 import org.optaplanner.core.api.domain.variable.VariableListener;
 import org.optaplanner.core.api.score.director.ScoreDirector;
-import org.optaplanner.core.impl.domain.variable.listener.AbstractFactInsensitiveVariableListener;
 
 public class StringLengthVariableListener
-        extends AbstractFactInsensitiveVariableListener<TestdataStringLengthShadowSolution, TestdataStringLengthShadowEntity>
         implements VariableListener<TestdataStringLengthShadowSolution, TestdataStringLengthShadowEntity> {
 
     @Override

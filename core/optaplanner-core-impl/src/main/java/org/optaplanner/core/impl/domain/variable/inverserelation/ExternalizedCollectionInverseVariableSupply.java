@@ -26,14 +26,14 @@ import org.optaplanner.core.api.score.director.ScoreDirector;
 import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.core.impl.domain.variable.descriptor.VariableDescriptor;
-import org.optaplanner.core.impl.domain.variable.listener.AbstractFactInsensitiveVariableListener;
+import org.optaplanner.core.impl.domain.variable.listener.AbstractProblemPropertyInsensitiveVariableListener;
 import org.optaplanner.core.impl.domain.variable.listener.SourcedVariableListener;
 
 /**
  * Alternative to {@link CollectionInverseVariableListener}.
  */
 public class ExternalizedCollectionInverseVariableSupply<Solution_>
-        extends AbstractFactInsensitiveVariableListener<Solution_, Object>
+        extends AbstractProblemPropertyInsensitiveVariableListener<Solution_, Object>
         implements SourcedVariableListener<Solution_, Object>, CollectionInverseVariableSupply {
 
     protected final VariableDescriptor<Solution_> sourceVariableDescriptor;
