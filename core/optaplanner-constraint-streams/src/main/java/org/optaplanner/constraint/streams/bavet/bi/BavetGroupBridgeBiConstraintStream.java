@@ -18,6 +18,7 @@ package org.optaplanner.constraint.streams.bavet.bi;
 
 import java.util.Set;
 import java.util.function.BiFunction;
+import java.util.function.Consumer;
 
 import org.optaplanner.constraint.streams.bavet.BavetConstraintFactory;
 import org.optaplanner.constraint.streams.bavet.common.BavetAbstractConstraintStream;
@@ -63,28 +64,17 @@ public final class BavetGroupBridgeBiConstraintStream<Solution_, A, B, NewA, Res
 
     @Override
     public <Score_ extends Score<Score_>> void buildNode(NodeBuildHelper<Score_> buildHelper) {
-        throw new UnsupportedOperationException();
+        if (!childStreamList.isEmpty()) {
+            throw new IllegalStateException("Impossible state: the stream (" + this
+                    + ") has an non-empty childStreamList (" + childStreamList + ") but it's a groupBy bridge.");
+        }
+        Consumer<BiTuple<NewA, NewB>> insert = buildHelper.getAggregatedInsert(groupStream.getChildStreamList());
+        Consumer<BiTuple<NewA, NewB>> retract = buildHelper.getAggregatedRetract(groupStream.getChildStreamList());
+        GroupBiToBiNode<A, B, NewA, NewB, ResultContainer_> node = new GroupBiToBiNode<>(groupKeyMapping, collector,
+                insert, retract);
+        buildHelper.addNode(node);
+        buildHelper.putInsertRetract(this, node::insertAB, node::retractAB);
     }
 
-//    @Override
-//    protected BavetAbstractBiNode<A, B> createNode(BavetNodeBuildPolicy<Solution_> buildPolicy,
-//            Score<?> constraintWeight, BavetAbstractBiNode<A, B> parentNode) {
-//        return new BavetGroupBridgeBiNode<>(buildPolicy.getSession(), buildPolicy.nextNodeIndex(), parentNode,
-//                groupKeyMapping, collector);
-//    }
-//
-//    @Override
-//    protected void createChildNodeChains(BavetNodeBuildPolicy<Solution_> buildPolicy, Score<?> constraintWeight,
-//            BavetAbstractBiNode<A, B> node) {
-//        if (!childStreamList.isEmpty()) {
-//            throw new IllegalStateException("Impossible state: the stream (" + this
-//                    + ") has an non-empty childStreamList (" + childStreamList + ") but it's a groupBy bridge.");
-//        }
-//        BavetGroupBiNode<NewA, ResultContainer_, NewB> groupNode = groupStream.createNodeChain(buildPolicy,
-//                constraintWeight, null);
-//        BavetGroupBridgeBiNode<A, B, NewA, ResultContainer_, NewB> groupBridgeNode =
-//                (BavetGroupBridgeBiNode<A, B, NewA, ResultContainer_, NewB>) node;
-//        groupBridgeNode.setGroupNode(groupNode);
-//    }
 
 }

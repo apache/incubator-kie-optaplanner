@@ -20,14 +20,12 @@ import java.util.Set;
 
 import org.optaplanner.constraint.streams.bavet.BavetConstraintFactory;
 import org.optaplanner.constraint.streams.bavet.common.BavetAbstractConstraintStream;
-import org.optaplanner.constraint.streams.bavet.common.BavetJoinBridgeConstraintStream;
 import org.optaplanner.constraint.streams.bavet.common.BavetJoinConstraintStream;
 import org.optaplanner.constraint.streams.bavet.common.NodeBuildHelper;
 import org.optaplanner.core.api.score.Score;
 
 public final class BavetJoinBridgeBiConstraintStream<Solution_, A, B>
-        extends BavetAbstractBiConstraintStream<Solution_, A, B>
-        implements BavetJoinBridgeConstraintStream<Solution_> {
+        extends BavetAbstractBiConstraintStream<Solution_, A, B> {
 
     private final BavetAbstractBiConstraintStream<Solution_, A, B> parent;
     private final boolean isLeftBridge;

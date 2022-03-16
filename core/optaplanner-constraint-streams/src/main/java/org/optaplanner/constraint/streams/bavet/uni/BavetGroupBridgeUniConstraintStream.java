@@ -23,7 +23,7 @@ import java.util.function.Function;
 import org.optaplanner.constraint.streams.bavet.BavetConstraintFactory;
 import org.optaplanner.constraint.streams.bavet.bi.BavetGroupBiConstraintStream;
 import org.optaplanner.constraint.streams.bavet.bi.BiTuple;
-import org.optaplanner.constraint.streams.bavet.bi.GroupBiNode;
+import org.optaplanner.constraint.streams.bavet.bi.GroupUniToBiNode;
 import org.optaplanner.constraint.streams.bavet.common.BavetAbstractConstraintStream;
 import org.optaplanner.constraint.streams.bavet.common.NodeBuildHelper;
 import org.optaplanner.core.api.score.Score;
@@ -73,7 +73,7 @@ public final class BavetGroupBridgeUniConstraintStream<Solution_, A, NewA, Resul
         }
         Consumer<BiTuple<NewA, NewB>> insert = buildHelper.getAggregatedInsert(groupStream.getChildStreamList());
         Consumer<BiTuple<NewA, NewB>> retract = buildHelper.getAggregatedRetract(groupStream.getChildStreamList());
-        GroupBiNode<A, NewA, NewB, ResultContainer_> node = new GroupBiNode<>(groupKeyMapping, collector,
+        GroupUniToBiNode<A, NewA, NewB, ResultContainer_> node = new GroupUniToBiNode<>(groupKeyMapping, collector,
                 insert, retract);
         buildHelper.addNode(node);
         buildHelper.putInsertRetract(this, node::insertA, node::retractA);

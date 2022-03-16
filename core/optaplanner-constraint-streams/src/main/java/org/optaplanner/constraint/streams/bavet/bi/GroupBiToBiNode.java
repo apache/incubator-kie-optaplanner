@@ -20,19 +20,25 @@ import java.util.ArrayDeque;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Queue;
+import java.util.function.BiFunction;
 import java.util.function.Consumer;
 import java.util.function.Function;
+import java.util.function.Supplier;
 
 import org.optaplanner.constraint.streams.bavet.common.AbstractNode;
 import org.optaplanner.constraint.streams.bavet.common.BavetTupleState;
 import org.optaplanner.constraint.streams.bavet.tri.JoinTriNode;
-import org.optaplanner.constraint.streams.bavet.uni.UniTuple;
-import org.optaplanner.core.api.score.stream.uni.UniConstraintCollector;
+import org.optaplanner.core.api.function.TriFunction;
+import org.optaplanner.core.api.score.stream.bi.BiConstraintCollector;
 
-public final class GroupBiNode<OldA, A, B, ResultContainer_> extends AbstractNode {
+public final class GroupBiToBiNode<OldA, OldB, A, B, ResultContainer_> extends AbstractNode {
 
-    private final Function<OldA, A> groupKeyMapping;
-    private final UniConstraintCollector<OldA, ResultContainer_, B> collector;
+    // TODO Most of this code duplicates GroupUniToBiNode.
+
+    private final BiFunction<OldA, OldB, A> groupKeyMapping;
+    private final Supplier<ResultContainer_> supplier;
+    private final TriFunction<ResultContainer_, OldA, OldB, Runnable> accumulator;
+    private final Function<ResultContainer_, B> finisher;
     /**
      * Calls for example {@link BiScorer#insert(BiTuple)}, {@link JoinTriNode#insertAB(BiTuple)} and/or ...
      */
@@ -42,14 +48,17 @@ public final class GroupBiNode<OldA, A, B, ResultContainer_> extends AbstractNod
      */
     public final Consumer<BiTuple<A, B>> nextNodesRetract;
 
-    private final Map<UniTuple<OldA>, GroupPart> groupPartMap;
+    private final Map<BiTuple<OldA, OldB>, GroupPart> groupPartMap;
     private final Map<A, Group> groupMap;
     private final Queue<Group> dirtyGroupQueue;
 
-    public GroupBiNode(Function<OldA, A> groupKeyMapping, UniConstraintCollector<OldA, ResultContainer_, B> collector,
+    public GroupBiToBiNode(BiFunction<OldA, OldB, A> groupKeyMapping,
+            BiConstraintCollector<OldA, OldB, ResultContainer_, B> collector,
             Consumer<BiTuple<A, B>> nextNodesInsert, Consumer<BiTuple<A, B>> nextNodesRetract) {
         this.groupKeyMapping = groupKeyMapping;
-        this.collector = collector;
+        supplier = collector.supplier();
+        accumulator = collector.accumulator();
+        finisher = collector.finisher();
         this.nextNodesInsert = nextNodesInsert;
         this.nextNodesRetract = nextNodesRetract;
         groupMap = new HashMap<>(1000);
@@ -81,17 +90,17 @@ public final class GroupBiNode<OldA, A, B, ResultContainer_> extends AbstractNod
         }
     }
 
-    public void insertA(UniTuple<OldA> tupleOldA) {
-        A groupKey = groupKeyMapping.apply(tupleOldA.factA);
-        Group group = groupMap.computeIfAbsent(groupKey, k -> new Group(groupKey, collector.supplier().get()));
+    public void insertAB(BiTuple<OldA, OldB> tupleOldAB) {
+        A groupKey = groupKeyMapping.apply(tupleOldAB.factA, tupleOldAB.factB);
+        Group group = groupMap.computeIfAbsent(groupKey, k -> new Group(groupKey, supplier.get()));
         group.parentCount++;
 
-        Runnable undoAccumulator = collector.accumulator().apply(group.resultContainer, tupleOldA.factA);
+        Runnable undoAccumulator = accumulator.apply(group.resultContainer, tupleOldAB.factA, tupleOldAB.factB);
         GroupPart groupPart = new GroupPart(group, undoAccumulator);
-        GroupPart old = groupPartMap.put(tupleOldA, groupPart);
+        GroupPart old = groupPartMap.put(tupleOldAB, groupPart);
         if (old != null) {
             throw new IllegalStateException("Impossible state: the tuple for the fact ("
-                    + tupleOldA.factA + ") was already added in the groupPartMap.");
+                    + tupleOldAB.factA + ", " + tupleOldAB.factB + ") was already added in the groupPartMap.");
         }
         if (!group.dirty) {
             group.dirty = true;
@@ -99,8 +108,8 @@ public final class GroupBiNode<OldA, A, B, ResultContainer_> extends AbstractNod
         }
     }
 
-    public void retractA(UniTuple<OldA> tupleOldA) {
-        GroupPart groupPart = groupPartMap.remove(tupleOldA);
+    public void retractAB(BiTuple<OldA, OldB> tupleOldAB) {
+        GroupPart groupPart = groupPartMap.remove(tupleOldAB);
         if (groupPart == null) {
             // No fail fast if null because we don't track which tuples made it through the filter predicate(s)
             return;
@@ -137,7 +146,7 @@ public final class GroupBiNode<OldA, A, B, ResultContainer_> extends AbstractNod
             }
             if (!group.dying) {
                 // Delay calculating B until it propagates
-                B factB = collector.finisher().apply(group.resultContainer);
+                B factB = finisher.apply(group.resultContainer);
                 group.tupleAB = new BiTuple<>(group.groupKey, factB);
                 nextNodesInsert.accept(group.tupleAB);
                 group.tupleAB.state = BavetTupleState.OK;
@@ -148,7 +157,7 @@ public final class GroupBiNode<OldA, A, B, ResultContainer_> extends AbstractNod
 
     @Override
     public String toString() {
-        return "GroupBiNode";
+        return "GroupBiToBiNode";
     }
 
 }
