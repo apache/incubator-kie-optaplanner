@@ -123,7 +123,7 @@ public interface VariableListener<Solution_, Entity_> extends Closeable {
     }
 
     /**
-     * Call after either a problem fact changes or a planning entity changes without changing its planning variable.
+     * Called after either a problem fact changes or a planning entity changes without changing its planning variable.
      *
      * <p>
      * <strong>Do not use this method when changing planning variable values on planning entities.</strong>
