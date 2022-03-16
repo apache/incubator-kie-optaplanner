@@ -76,7 +76,7 @@ public class NodeBuildHelper<Score_ extends Score<Score_>> {
     public <Tuple_ extends Tuple> Consumer<Tuple_> getInsert(ConstraintStream stream) {
         Consumer<Tuple_> insert = (Consumer<Tuple_>) insertMap.get(stream);
         if (insert == null) {
-            throw new IllegalStateException("Impossible state: stream (" + stream + ")'s hasn't build a node yet.");
+            throw new IllegalStateException("Impossible state: the stream (" + stream + ") hasn't build a node yet.");
         }
         return insert;
     }
@@ -84,7 +84,7 @@ public class NodeBuildHelper<Score_ extends Score<Score_>> {
     public <Tuple_ extends Tuple> Consumer<Tuple_> getRetract(ConstraintStream stream) {
         Consumer<Tuple_> retract = (Consumer<Tuple_>) retractMap.get(stream);
         if (retract == null) {
-            throw new IllegalStateException("Impossible state: stream (" + stream + ")'s hasn't build a node yet.");
+            throw new IllegalStateException("Impossible state: the stream (" + stream + ") hasn't build a node yet.");
         }
         return retract;
     }

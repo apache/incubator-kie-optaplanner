@@ -31,7 +31,7 @@ public final class BavetGroupBridgeBiConstraintStream<Solution_, A, B, NewA, Res
     private final BavetAbstractBiConstraintStream<Solution_, A, B> parent;
     private final BiFunction<A, B, NewA> groupKeyMapping;
     private final BiConstraintCollector<A, B, ResultContainer_, NewB> collector;
-    private BavetGroupBiConstraintStream<Solution_, NewA, ResultContainer_, NewB> groupStream;
+    private BavetGroupBiConstraintStream<Solution_, NewA, NewB> groupStream;
 
     public BavetGroupBridgeBiConstraintStream(BavetConstraintFactory<Solution_> constraintFactory,
             BavetAbstractBiConstraintStream<Solution_, A, B> parent, BiFunction<A, B, NewA> groupKeyMapping,
@@ -47,7 +47,7 @@ public final class BavetGroupBridgeBiConstraintStream<Solution_, A, B, NewA, Res
         return parent.guaranteesDistinct();
     }
 
-    public void setGroupStream(BavetGroupBiConstraintStream<Solution_, NewA, ResultContainer_, NewB> groupStream) {
+    public void setGroupStream(BavetGroupBiConstraintStream<Solution_, NewA, NewB> groupStream) {
         this.groupStream = groupStream;
     }
 

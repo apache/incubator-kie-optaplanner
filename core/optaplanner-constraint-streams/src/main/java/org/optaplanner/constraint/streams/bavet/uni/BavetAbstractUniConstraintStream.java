@@ -55,6 +55,10 @@ public abstract class BavetAbstractUniConstraintStream<Solution_, A> extends Bav
         super(constraintFactory, retrievalSemantics);
     }
 
+    public List<BavetAbstractUniConstraintStream<Solution_, A>> getChildStreamList() {
+        return childStreamList;
+    }
+
     // ************************************************************************
     // Stream builder methods
     // ************************************************************************
@@ -223,7 +227,7 @@ public abstract class BavetAbstractUniConstraintStream<Solution_, A> extends Bav
                 shareAndAddChild(
                         new BavetGroupBridgeUniConstraintStream<>(constraintFactory, this, groupKeyMapping, collector));
         return constraintFactory.share(
-                new BavetGroupBiConstraintStream<>(constraintFactory, bridge, collector.finisher()),
+                new BavetGroupBiConstraintStream<>(constraintFactory, bridge),
                 bridge::setGroupStream);
     }
 

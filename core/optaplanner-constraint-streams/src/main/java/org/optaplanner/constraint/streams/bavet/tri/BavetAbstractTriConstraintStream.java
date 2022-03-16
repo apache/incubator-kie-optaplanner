@@ -49,6 +49,10 @@ public abstract class BavetAbstractTriConstraintStream<Solution_, A, B, C> exten
         super(constraintFactory, retrievalSemantics);
     }
 
+    public List<BavetAbstractTriConstraintStream<Solution_, A, B, C>> getChildStreamList() {
+        return childStreamList;
+    }
+
     // ************************************************************************
     // Stream builder methods
     // ************************************************************************
