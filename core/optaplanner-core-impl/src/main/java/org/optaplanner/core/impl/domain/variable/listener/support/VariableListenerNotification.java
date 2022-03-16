@@ -46,8 +46,8 @@ abstract class VariableListenerNotification {
         return new FactRemovedNotification(problemFact);
     }
 
-    static VariableListenerNotification propertyChanged(Object problemFactOrEntiy) {
-        return new PropertyChangedNotification(problemFactOrEntiy);
+    static VariableListenerNotification propertyChanged(Object problemFactOrEntity) {
+        return new PropertyChangedNotification(problemFactOrEntity);
     }
 
     protected VariableListenerNotification(Object problemFactOrEntity) {
