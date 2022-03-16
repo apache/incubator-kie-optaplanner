@@ -21,8 +21,8 @@ import org.optaplanner.core.api.score.director.ScoreDirector;
 
 final class PropertyChangedNotification extends VariableListenerNotification {
 
-    PropertyChangedNotification(Object problemFact) {
-        super(problemFact);
+    PropertyChangedNotification(Object problemFactOrEntity) {
+        super(problemFactOrEntity);
     }
 
     @Override
