@@ -182,8 +182,7 @@ public final class VariableListenerSupport<Solution_> implements SupplyManager<S
     public void beforeProblemPropertyChanged(Object problemFactOrEntity) {
         Collection<VariableListenerNotifiable<Solution_>> notifiables = notifiableRegistry.getAll();
         if (!notifiables.isEmpty()) {
-            VariableListenerNotification notification =
-                    VariableListenerNotification.propertyChanged(problemFactOrEntity);
+            VariableListenerNotification notification = VariableListenerNotification.propertyChanged(problemFactOrEntity);
             for (VariableListenerNotifiable<Solution_> notifiable : notifiables) {
                 notifiable.addNotification(notification);
             }
