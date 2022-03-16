@@ -16,29 +16,29 @@
 
 package org.optaplanner.core.impl.domain.variable.listener.support;
 
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.optaplanner.core.api.domain.variable.VariableListener;
 import org.optaplanner.core.api.score.director.ScoreDirector;
 
-final class FactRemovedNotification extends VariableListenerNotification {
+@ExtendWith(MockitoExtension.class)
+final class FactAddedNotificationTest extends AbstractNotificationTest {
 
-    FactRemovedNotification(Object problemFact) {
-        super(problemFact);
+    @Override
+    protected VariableListenerNotification createNotificationInstance(Object object) {
+        return VariableListenerNotification.factAdded(object);
     }
 
     @Override
-    <Solution_> void triggerBefore(VariableListener<Solution_, Object> variableListener,
-            ScoreDirector<Solution_> scoreDirector) {
-        variableListener.beforeProblemFactRemoved(scoreDirector, problemFactOrEntity);
+    protected void callInteractionBefore(VariableListener<Object, Object> variableListener, ScoreDirector<Object> scoreDirector,
+            Object object) {
+        variableListener.beforeProblemFactAdded(scoreDirector, object);
     }
 
     @Override
-    <Solution_> void triggerAfter(VariableListener<Solution_, Object> variableListener,
-            ScoreDirector<Solution_> scoreDirector) {
-        variableListener.afterProblemFactRemoved(scoreDirector, problemFactOrEntity);
+    protected void callInteractionAfter(VariableListener<Object, Object> variableListener, ScoreDirector<Object> scoreDirector,
+            Object object) {
+        variableListener.afterProblemFactAdded(scoreDirector, object);
     }
 
-    @Override
-    public String toString() {
-        return "FactRemoved(" + problemFactOrEntity + ")";
-    }
 }

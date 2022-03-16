@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2022 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -183,7 +183,7 @@ public final class VariableListenerSupport<Solution_> implements SupplyManager<S
         Collection<VariableListenerNotifiable<Solution_>> notifiables = notifiableRegistry.getAll();
         if (!notifiables.isEmpty()) {
             VariableListenerNotification notification =
-                    VariableListenerNotification.problemPropertyChanged(problemFactOrEntity);
+                    VariableListenerNotification.propertyChanged(problemFactOrEntity);
             for (VariableListenerNotifiable<Solution_> notifiable : notifiables) {
                 notifiable.addNotification(notification);
             }

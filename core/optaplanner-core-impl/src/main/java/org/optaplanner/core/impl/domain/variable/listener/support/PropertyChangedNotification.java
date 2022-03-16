@@ -19,26 +19,26 @@ package org.optaplanner.core.impl.domain.variable.listener.support;
 import org.optaplanner.core.api.domain.variable.VariableListener;
 import org.optaplanner.core.api.score.director.ScoreDirector;
 
-final class FactRemovedNotification extends VariableListenerNotification {
+final class PropertyChangedNotification extends VariableListenerNotification {
 
-    FactRemovedNotification(Object problemFact) {
+    PropertyChangedNotification(Object problemFact) {
         super(problemFact);
     }
 
     @Override
     <Solution_> void triggerBefore(VariableListener<Solution_, Object> variableListener,
             ScoreDirector<Solution_> scoreDirector) {
-        variableListener.beforeProblemFactRemoved(scoreDirector, problemFactOrEntity);
+        variableListener.beforeProblemPropertyChanged(scoreDirector, problemFactOrEntity);
     }
 
     @Override
     <Solution_> void triggerAfter(VariableListener<Solution_, Object> variableListener,
             ScoreDirector<Solution_> scoreDirector) {
-        variableListener.afterProblemFactRemoved(scoreDirector, problemFactOrEntity);
+        variableListener.afterProblemPropertyChanged(scoreDirector, problemFactOrEntity);
     }
 
     @Override
     public String toString() {
-        return "FactRemoved(" + problemFactOrEntity + ")";
+        return "ProblemPropertyChanged(" + problemFactOrEntity + ")";
     }
 }
