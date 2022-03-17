@@ -16,9 +16,6 @@
 
 package org.optaplanner.examples.travelingtournament.swingui;
 
-import static org.optaplanner.examples.common.swingui.timetable.TimeTablePanel.HeaderColumnKey.HEADER_COLUMN;
-import static org.optaplanner.examples.common.swingui.timetable.TimeTablePanel.HeaderRowKey.HEADER_ROW;
-
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.event.ActionEvent;
@@ -45,6 +42,9 @@ import org.optaplanner.examples.travelingtournament.domain.Team;
 import org.optaplanner.examples.travelingtournament.domain.TravelingTournament;
 import org.optaplanner.swing.impl.SwingUtils;
 import org.optaplanner.swing.impl.TangoColorFactory;
+
+import static org.optaplanner.examples.common.swingui.timetable.TimeTablePanel.HeaderColumnKey.HEADER_COLUMN;
+import static org.optaplanner.examples.common.swingui.timetable.TimeTablePanel.HeaderRowKey.HEADER_ROW;
 
 public class TravelingTournamentPanel extends SolutionPanel<TravelingTournament> {
 
@@ -184,7 +184,8 @@ public class TravelingTournamentPanel extends SolutionPanel<TravelingTournament>
                     "Select day", JOptionPane.OK_CANCEL_OPTION);
             if (result == JOptionPane.OK_OPTION) {
                 Day toDay = (Day) dayListField.getSelectedItem();
-                solutionBusiness.doChangeMove(match, "day", toDay);
+                doProblemChange((workingSolution, problemChangeDirector) ->
+                        problemChangeDirector.changeVariable(match, "day", m -> m.setDay(toDay)));
                 solverAndPersistenceFrame.resetScreen();
             }
         }
