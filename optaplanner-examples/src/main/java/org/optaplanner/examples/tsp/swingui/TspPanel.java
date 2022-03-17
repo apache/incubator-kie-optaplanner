@@ -153,7 +153,27 @@ public class TspPanel extends SolutionPanel<TspSolution> {
     }
 
     public void doMove(Visit visit, Standstill toStandstill) {
-        solutionBusiness.doChangeMove(visit, "previousStandstill", toStandstill);
+        TspSolution tspSolution = getSolution();
+        doProblemChange((workingSolution, problemChangeDirector) -> {
+            Visit oldTrailingEntity = findNextVisit(tspSolution, visit);
+            Visit newTrailingEntity = findNextVisit(tspSolution, toStandstill);
+            Standstill oldValue = visit.getPreviousStandstill();
+
+            // Close the old chain
+            if (oldTrailingEntity != null) {
+                problemChangeDirector.changeVariable(
+                        oldTrailingEntity, "previousStandstill", v -> v.setPreviousStandstill(oldValue));
+            }
+
+            // Change the entity
+            problemChangeDirector.changeVariable(visit, "previousStandstill", v -> v.setPreviousStandstill(toStandstill));
+
+            // Reroute the new chain
+            if (newTrailingEntity != null) {
+                problemChangeDirector.changeVariable(
+                        newTrailingEntity, "previousStandstill", v -> v.setPreviousStandstill(visit));
+            }
+        });
     }
 
 }
