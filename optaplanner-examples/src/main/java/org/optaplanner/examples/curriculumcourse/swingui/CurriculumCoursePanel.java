@@ -16,10 +16,6 @@
 
 package org.optaplanner.examples.curriculumcourse.swingui;
 
-import static org.optaplanner.examples.common.swingui.timetable.TimeTablePanel.HeaderColumnKey.HEADER_COLUMN;
-import static org.optaplanner.examples.common.swingui.timetable.TimeTablePanel.HeaderColumnKey.HEADER_COLUMN_GROUP1;
-import static org.optaplanner.examples.common.swingui.timetable.TimeTablePanel.HeaderRowKey.HEADER_ROW;
-
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.GridLayout;
@@ -51,6 +47,10 @@ import org.optaplanner.examples.curriculumcourse.domain.Room;
 import org.optaplanner.examples.curriculumcourse.domain.Teacher;
 import org.optaplanner.swing.impl.SwingUtils;
 import org.optaplanner.swing.impl.TangoColorFactory;
+
+import static org.optaplanner.examples.common.swingui.timetable.TimeTablePanel.HeaderColumnKey.HEADER_COLUMN;
+import static org.optaplanner.examples.common.swingui.timetable.TimeTablePanel.HeaderColumnKey.HEADER_COLUMN_GROUP1;
+import static org.optaplanner.examples.common.swingui.timetable.TimeTablePanel.HeaderRowKey.HEADER_ROW;
 
 public class CurriculumCoursePanel extends SolutionPanel<CourseSchedule> {
 
@@ -266,19 +266,18 @@ public class CurriculumCoursePanel extends SolutionPanel<CourseSchedule> {
             if (result == JOptionPane.OK_OPTION) {
                 Period toPeriod = (Period) periodListField.getSelectedItem();
                 if (lecture.getPeriod() != toPeriod) {
-                    solutionBusiness.doChangeMove(lecture, "period", toPeriod);
+                    doProblemChange((workingSolution, problemChangeDirector) ->
+                            problemChangeDirector.changeVariable(lecture, "period", l -> l.setPeriod(toPeriod)));
                 }
                 Room toRoom = (Room) roomListField.getSelectedItem();
                 if (lecture.getRoom() != toRoom) {
-                    solutionBusiness.doChangeMove(lecture, "room", toRoom);
+                    doProblemChange((workingSolution, problemChangeDirector) ->
+                            problemChangeDirector.changeVariable(lecture, "room", l -> l.setRoom(toRoom)));
                 }
                 boolean toPinned = pinnedField.isSelected();
                 if (lecture.isPinned() != toPinned) {
-                    if (solutionBusiness.isSolving()) {
-                        logger.error("Not doing user change because the solver is solving.");
-                        return;
-                    }
-                    lecture.setPinned(toPinned);
+                    doProblemChange((workingSolution, problemChangeDirector) ->
+                            problemChangeDirector.changeProblemProperty(lecture, l -> l.setPinned(toPinned)));
                 }
                 solverAndPersistenceFrame.resetScreen();
             }
