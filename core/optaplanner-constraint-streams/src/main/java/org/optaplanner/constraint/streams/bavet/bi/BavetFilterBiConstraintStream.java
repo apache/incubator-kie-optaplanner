@@ -90,7 +90,7 @@ public final class BavetFilterBiConstraintStream<Solution_, A, B> extends BavetA
 
     @Override
     public int hashCode() {
-        return Objects.hash(System.identityHashCode(parent), System.identityHashCode(predicate));
+        return Objects.hash(parent, predicate);
     }
 
     @Override

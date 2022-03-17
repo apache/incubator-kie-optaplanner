@@ -91,7 +91,7 @@ public final class BavetFilterTriConstraintStream<Solution_, A, B, C>
 
     @Override
     public int hashCode() {
-        return Objects.hash(System.identityHashCode(parent), System.identityHashCode(predicate));
+        return Objects.hash(parent, predicate);
     }
 
     @Override

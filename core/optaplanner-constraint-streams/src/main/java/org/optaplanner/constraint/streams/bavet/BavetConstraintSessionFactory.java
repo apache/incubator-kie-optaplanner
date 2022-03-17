@@ -27,12 +27,10 @@ import java.util.Set;
 
 import org.optaplanner.constraint.streams.bavet.common.AbstractNode;
 import org.optaplanner.constraint.streams.bavet.common.BavetAbstractConstraintStream;
-import org.optaplanner.constraint.streams.bavet.common.BavetScoringConstraintStream;
 import org.optaplanner.constraint.streams.bavet.common.NodeBuildHelper;
 import org.optaplanner.constraint.streams.bavet.uni.ForEachUniNode;
 import org.optaplanner.constraint.streams.common.inliner.AbstractScoreInliner;
 import org.optaplanner.core.api.score.Score;
-import org.optaplanner.core.api.score.constraint.ConstraintMatch;
 import org.optaplanner.core.api.score.stream.Constraint;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.core.impl.score.definition.ScoreDefinition;
@@ -62,19 +60,19 @@ public final class BavetConstraintSessionFactory<Solution_, Score_ extends Score
         Set<BavetAbstractConstraintStream<Solution_>> constraintStreamSet = new LinkedHashSet<>(constraintList.size() * 10);
         Map<Constraint, Score_> constraintWeightMap = new HashMap<>(constraintList.size());
         for (BavetConstraint<Solution_> constraint : constraintList) {
-            // Expensive, only do once.
             Score_ constraintWeight = constraint.extractConstraintWeight(workingSolution);
-            // Node sharing happens earlier, in BavetConstraintFactory#share(Stream_).
-            // Filter out nodes that only lead to constraints with zero weight
+            // Filter out nodes that only lead to constraints with zero weight.
+            // Note: Node sharing happens earlier, in BavetConstraintFactory#share(Stream_).
             if (!constraintWeight.equals(zeroScore)) {
                 // Relies on BavetConstraintFactory#share(Stream_) occurring for all constraint stream instances
-                // to ensure there are no 2 equal constraint streams (with different child stream lists).
+                // to ensure there are no 2 equal ConstraintStream instances (with different child stream lists).
                 constraint.collectActiveConstraintStreams(constraintStreamSet);
                 constraintWeightMap.put(constraint, constraintWeight);
             }
         }
         NodeBuildHelper<Score_> buildHelper = new NodeBuildHelper<>(constraintStreamSet, constraintWeightMap, scoreInliner);
-        // Reverse constraintStreamSet order to create downstream nodes first
+        // Build constraintStreamSet in reverse order to create downstream nodes first
+        // so every node only has final variables (some of which have downstream node method references).
         List<BavetAbstractConstraintStream<Solution_>> reversedConstraintStreamList = new ArrayList<>(constraintStreamSet);
         Collections.reverse(reversedConstraintStreamList);
         for (BavetAbstractConstraintStream<Solution_> constraintStream : reversedConstraintStreamList) {
