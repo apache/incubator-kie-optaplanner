@@ -46,12 +46,9 @@ import org.optaplanner.core.api.solver.SolverJob;
 import org.optaplanner.core.api.solver.SolverManager;
 import org.optaplanner.core.api.solver.SolverStatus;
 import org.optaplanner.core.api.solver.change.ProblemChange;
-import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.core.impl.domain.variable.descriptor.GenuineVariableDescriptor;
 import org.optaplanner.core.impl.heuristic.move.Move;
-import org.optaplanner.core.impl.heuristic.selector.move.generic.ChangeMove;
-import org.optaplanner.core.impl.heuristic.selector.move.generic.ChangeMoveSelector;
 import org.optaplanner.core.impl.score.director.InnerScoreDirector;
 import org.optaplanner.core.impl.solver.DefaultSolverFactory;
 import org.optaplanner.core.impl.solver.change.DefaultProblemChangeDirector;
@@ -400,21 +397,6 @@ public class SolutionBusiness<Solution_, Score_ extends Score<Score_>> implement
 
     public GenuineVariableDescriptor<Solution_> findVariableDescriptor(Object entity, String variableName) {
         return solutionDescriptor.findGenuineVariableDescriptorOrFail(entity, variableName);
-    }
-
-    private ChangeMove<Solution_> createChangeMove(Object entity, String variableName, Object toPlanningValue) {
-        // TODO Solver should support building a ChangeMove
-        EntityDescriptor<Solution_> entityDescriptor = solutionDescriptor.findEntityDescriptorOrFail(entity.getClass());
-        GenuineVariableDescriptor<Solution_> variableDescriptor = findVariableDescriptor(entity, variableName);
-        ChangeMoveSelector<Solution_> changeMoveSelector = new ChangeMoveSelector<>(
-                new SingleEntitySelector<>(entityDescriptor, entity),
-                new SingleValueSelector<>(variableDescriptor, toPlanningValue), false);
-        return (ChangeMove<Solution_>) changeMoveSelector.iterator().next();
-    }
-
-    public void doChangeMove(Object entity, String variableName, Object toPlanningValue) {
-        ChangeMove<Solution_> move = createChangeMove(entity, variableName, toPlanningValue);
-        doMove(move);
     }
 
     @Override
