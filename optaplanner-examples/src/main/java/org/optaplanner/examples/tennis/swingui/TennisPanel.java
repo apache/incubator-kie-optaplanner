@@ -16,10 +16,6 @@
 
 package org.optaplanner.examples.tennis.swingui;
 
-import static org.optaplanner.examples.common.swingui.timetable.TimeTablePanel.HeaderColumnKey.HEADER_COLUMN;
-import static org.optaplanner.examples.common.swingui.timetable.TimeTablePanel.HeaderColumnKey.TRAILING_HEADER_COLUMN;
-import static org.optaplanner.examples.common.swingui.timetable.TimeTablePanel.HeaderRowKey.HEADER_ROW;
-
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.GridLayout;
@@ -53,6 +49,10 @@ import org.optaplanner.examples.tennis.domain.TennisSolution;
 import org.optaplanner.examples.tennis.domain.UnavailabilityPenalty;
 import org.optaplanner.swing.impl.SwingUtils;
 import org.optaplanner.swing.impl.TangoColorFactory;
+
+import static org.optaplanner.examples.common.swingui.timetable.TimeTablePanel.HeaderColumnKey.HEADER_COLUMN;
+import static org.optaplanner.examples.common.swingui.timetable.TimeTablePanel.HeaderColumnKey.TRAILING_HEADER_COLUMN;
+import static org.optaplanner.examples.common.swingui.timetable.TimeTablePanel.HeaderRowKey.HEADER_ROW;
 
 public class TennisPanel extends SolutionPanel<TennisSolution> {
 
@@ -273,15 +273,13 @@ public class TennisPanel extends SolutionPanel<TennisSolution> {
             if (result == JOptionPane.OK_OPTION) {
                 Team toTeam = (Team) teamListField.getSelectedItem();
                 if (teamAssignment.getTeam() != toTeam) {
-                    solutionBusiness.doChangeMove(teamAssignment, "team", toTeam);
+                    doProblemChange((workingSolution, problemChangeDirector) ->
+                            problemChangeDirector.changeVariable(teamAssignment, "team", ta -> ta.setTeam(toTeam)));
                 }
                 boolean toPinned = pinnedField.isSelected();
                 if (teamAssignment.isPinned() != toPinned) {
-                    if (solutionBusiness.isSolving()) {
-                        logger.error("Not doing user change because the solver is solving.");
-                        return;
-                    }
-                    teamAssignment.setPinned(toPinned);
+                    doProblemChange((workingSolution, problemChangeDirector) ->
+                            problemChangeDirector.changeProblemProperty(teamAssignment, ta -> ta.setPinned(toPinned)));
                 }
                 solverAndPersistenceFrame.resetScreen();
             }
