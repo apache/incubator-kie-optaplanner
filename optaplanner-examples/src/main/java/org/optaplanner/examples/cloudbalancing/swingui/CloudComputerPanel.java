@@ -18,6 +18,7 @@ package org.optaplanner.examples.cloudbalancing.swingui;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Graphics;
@@ -25,6 +26,7 @@ import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
@@ -149,7 +151,7 @@ public class CloudComputerPanel extends JPanel {
         detailsButton = new JButton(new AbstractAction("Details") {
             @Override
             public void actionPerformed(ActionEvent e) {
-                CloudProcessListDialog processListDialog = new CloudProcessListDialog();
+                CloudComputerPanel.CloudProcessListDialog processListDialog = new CloudComputerPanel.CloudProcessListDialog();
                 processListDialog.setLocationRelativeTo(getRootPane());
                 processListDialog.setVisible(true);
             }
@@ -314,7 +316,8 @@ public class CloudComputerPanel extends JPanel {
         }
 
         private JPanel createAssignmentsPanel() {
-            JPanel assignmentsPanel = new JPanel(new GridLayout(0, 5));
+            int columnCount = 5;
+            JPanel assignmentsPanel = new JPanel(new GridLayout(0, columnCount));
             int colorIndex = 0;
             for (final CloudProcess process : processList) {
                 JPanel labelAndDeletePanel = new JPanel(new BorderLayout(5, 0));
@@ -327,7 +330,7 @@ public class CloudComputerPanel extends JPanel {
                 deleteButton.setToolTipText("Delete");
                 deleteButton.addActionListener(e -> {
                     cloudBalancingPanel.deleteProcess(process);
-                    CloudProcessListDialog.this.dispose();
+                    dispose();
                 });
                 deletePanel.add(deleteButton, BorderLayout.NORTH);
                 labelAndDeletePanel.add(deletePanel, BorderLayout.EAST);
@@ -342,13 +345,37 @@ public class CloudComputerPanel extends JPanel {
                 JTextField networkBandwidthField = new JTextField(process.getRequiredNetworkBandwidth() + " GB");
                 networkBandwidthField.setEditable(false);
                 assignmentsPanel.add(networkBandwidthField);
-                assignmentsPanel.add(cloudBalancingPanel.createButton(process));
+                assignmentsPanel.add(cloudBalancingPanel.createButton(process,
+                        () -> removeProcessFromAssignmentsPanel(assignmentsPanel, process, columnCount)));
 
                 colorIndex = (colorIndex + 1) % TangoColorFactory.SEQUENCE_1.size();
             }
             JPanel fillerAssignmentsPanel = new JPanel(new BorderLayout());
             fillerAssignmentsPanel.add(assignmentsPanel, BorderLayout.NORTH);
             return fillerAssignmentsPanel;
+        }
+
+        private void removeProcessFromAssignmentsPanel(JPanel assignmentsPanel, CloudProcess process, int columnCount) {
+            // Find the line with the correct button.
+            int processButtonComponentIndex = -1;
+            for (int i = columnCount - 1; i < assignmentsPanel.getComponentCount(); i += columnCount) {
+                Component component = assignmentsPanel.getComponent(i);
+                if (component instanceof JButton) {
+                    JButton button = (JButton) component;
+                    if (Objects.equals(button.getText(), process.getLabel())) {
+                        processButtonComponentIndex = i;
+                        break;
+                    }
+                }
+            }
+            if (processButtonComponentIndex < 0) {
+                return; // Line not found, probably already remove.
+            }
+            int componentToRemove = processButtonComponentIndex - columnCount + 1;
+            for (int i = 0; i < columnCount; i++) { // Remove contents column after column, until the entire row is removed.
+                assignmentsPanel.remove(componentToRemove);
+            }
+            assignmentsPanel.revalidate();
         }
 
     }
