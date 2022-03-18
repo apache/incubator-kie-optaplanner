@@ -16,8 +16,6 @@
 
 package org.optaplanner.examples.common.business;
 
-import static java.util.stream.Collectors.toList;
-
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.FileVisitOption;
@@ -46,9 +44,6 @@ import org.optaplanner.core.api.solver.SolverJob;
 import org.optaplanner.core.api.solver.SolverManager;
 import org.optaplanner.core.api.solver.SolverStatus;
 import org.optaplanner.core.api.solver.change.ProblemChange;
-import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
-import org.optaplanner.core.impl.domain.variable.descriptor.GenuineVariableDescriptor;
-import org.optaplanner.core.impl.heuristic.move.Move;
 import org.optaplanner.core.impl.score.director.InnerScoreDirector;
 import org.optaplanner.core.impl.solver.DefaultSolverFactory;
 import org.optaplanner.core.impl.solver.change.DefaultProblemChangeDirector;
@@ -58,6 +53,8 @@ import org.optaplanner.examples.common.persistence.AbstractSolutionImporter;
 import org.optaplanner.persistence.common.api.domain.solution.SolutionFileIO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import static java.util.stream.Collectors.toList;
 
 /**
  * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
@@ -83,7 +80,6 @@ public class SolutionBusiness<Solution_, Score_ extends Score<Score_>> implement
 
     private final CommonApp<Solution_> app;
     private final DefaultSolverFactory<Solution_> solverFactory;
-    private final SolutionDescriptor<Solution_> solutionDescriptor;
     private final SolverManager<Solution_, Long> solverManager;
     private final ScoreManager<Solution_, Score_> scoreManager;
 
@@ -103,7 +99,6 @@ public class SolutionBusiness<Solution_, Score_ extends Score<Score_>> implement
     public SolutionBusiness(CommonApp<Solution_> app, SolverFactory<Solution_> solverFactory) {
         this.app = app;
         this.solverFactory = ((DefaultSolverFactory<Solution_>) solverFactory);
-        this.solutionDescriptor = this.solverFactory.getSolutionDescriptor();
         this.solverManager = SolverManager.create(solverFactory);
         this.scoreManager = ScoreManager.create(solverFactory);
     }
@@ -265,6 +260,8 @@ public class SolutionBusiness<Solution_, Score_ extends Score<Score_>> implement
                         true)) {
             scoreDirector.setWorkingSolution(getSolution());
             Result_ result = function.apply(scoreDirector);
+            scoreDirector.triggerVariableListeners();
+            scoreDirector.calculateScore();
             setSolution(scoreDirector.getWorkingSolution());
             return result;
         }
@@ -315,24 +312,6 @@ public class SolutionBusiness<Solution_, Score_ extends Score<Score_>> implement
 
     public void exportSolution(AbstractSolutionExporter<Solution_> exporter, File file) {
         exporter.writeSolution(getSolution(), file);
-    }
-
-    public void doMove(Move<Solution_> move) {
-        acceptScoreDirector(scoreDirector -> doMove(move, scoreDirector));
-    }
-
-    private void doMove(Move<Solution_> move, InnerScoreDirector<Solution_, Score_> scoreDirector) {
-        if (isSolving()) {
-            LOGGER.error("Not doing user move ({}) because the solver is solving.", move);
-            return;
-        }
-        if (!move.isMoveDoable(scoreDirector)) {
-            LOGGER.warn("Not doing user move ({}) because it is not doable.", move);
-            return;
-        }
-        LOGGER.info("Doing user move ({}).", move);
-        move.doMoveOnly(scoreDirector);
-        scoreDirector.calculateScore();
     }
 
     private void acceptScoreDirector(Consumer<InnerScoreDirector<Solution_, Score_>> consumer) {
@@ -393,10 +372,6 @@ public class SolutionBusiness<Solution_, Score_ extends Score<Score_>> implement
         if (solverJob != null) {
             solverJob.terminateEarly();
         }
-    }
-
-    public GenuineVariableDescriptor<Solution_> findVariableDescriptor(Object entity, String variableName) {
-        return solutionDescriptor.findGenuineVariableDescriptorOrFail(entity, variableName);
     }
 
     @Override

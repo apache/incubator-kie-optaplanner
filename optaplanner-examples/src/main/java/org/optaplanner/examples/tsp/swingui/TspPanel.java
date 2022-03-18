@@ -123,7 +123,7 @@ public class TspPanel extends SolutionPanel<TspSolution> {
         }
         if (targetStandstill instanceof Visit
                 && (sourceStandstill instanceof Domicile || ((Visit) sourceStandstill).getPreviousStandstill() != null)) {
-            doMove((Visit) targetStandstill, sourceStandstill);
+            doProblemChange((Visit) targetStandstill, sourceStandstill);
         }
         solverAndPersistenceFrame.resetScreen();
     }
@@ -152,7 +152,7 @@ public class TspPanel extends SolutionPanel<TspSolution> {
         return null;
     }
 
-    public void doMove(Visit visit, Standstill toStandstill) {
+    public void doProblemChange(Visit visit, Standstill toStandstill) {
         TspSolution tspSolution = getSolution();
         doProblemChange((workingSolution, problemChangeDirector) -> {
             Visit oldTrailingEntity = findNextVisit(tspSolution, visit);
