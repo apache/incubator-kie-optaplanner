@@ -178,18 +178,12 @@ public class CloudComputerPanel extends JPanel {
 
     public void update() {
         int usedCpuPower = 0;
-        cpuPowerBar.clearProcesses();
         int usedMemory = 0;
-        memoryBar.clearProcesses();
         int usedNetworkBandwidth = 0;
-        networkBandwidthBar.clearProcesses();
         for (CloudProcess process : processList) {
             usedCpuPower += process.getRequiredCpuPower();
-            cpuPowerBar.addProcess(process);
             usedMemory += process.getRequiredMemory();
-            memoryBar.addProcess(process);
             usedNetworkBandwidth += process.getRequiredNetworkBandwidth();
-            networkBandwidthBar.addProcess(process);
         }
         boolean used = processList.size() > 0;
         updateTotals(usedCpuPower, usedMemory, usedNetworkBandwidth, used);
@@ -226,7 +220,6 @@ public class CloudComputerPanel extends JPanel {
 
     private class CloudBar extends JPanel {
 
-        private List<CloudProcess> processes = new ArrayList<>();
         private int computerValue;
         private int maximumComputerValue;
         private ToIntFunction<CloudProcess> processValueExtractor;
@@ -235,14 +228,6 @@ public class CloudComputerPanel extends JPanel {
             this.computerValue = computerValue;
             this.maximumComputerValue = maximumComputerValue;
             this.processValueExtractor = processValueExtractor;
-        }
-
-        public void clearProcesses() {
-            processes.clear();
-        }
-
-        public void addProcess(CloudProcess process) {
-            processes.add(process);
         }
 
         @Override
@@ -264,7 +249,7 @@ public class CloudComputerPanel extends JPanel {
                 g.fillRect(0, 0, computerWidth, size.height);
             }
             int offsetValue = 0;
-            for (CloudProcess process : processes) {
+            for (CloudProcess process : CloudComputerPanel.this.processList) {
                 int processValue = processValueExtractor.applyAsInt(process);
                 int offset = (int) (offsetValue * pixelsPerValue);
                 int processWidth = (int) (processValue * pixelsPerValue) + 1;
