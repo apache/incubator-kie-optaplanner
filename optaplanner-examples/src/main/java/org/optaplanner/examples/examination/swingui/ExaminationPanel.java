@@ -258,7 +258,7 @@ public class ExaminationPanel extends SolutionPanel<Examination> {
                 Period toPeriod = (Period) periodListField.getSelectedItem();
                 if (exam.getPeriod() != toPeriod) {
                     doProblemChange((workingSolution, problemChangeDirector) -> {
-                        LeadingExam leadingExam = null;
+                        LeadingExam leadingExam;
                         if (exam instanceof FollowingExam) {
                             // FollowingExam has Period as a shadow var; therefore we update the source.
                             FollowingExam followingExam = (FollowingExam) exam;
@@ -271,9 +271,8 @@ public class ExaminationPanel extends SolutionPanel<Examination> {
                 }
                 Room toRoom = (Room) roomListField.getSelectedItem();
                 if (exam.getRoom() != toRoom) {
-                    doProblemChange((workingSolution, problemChangeDirector) -> {
-                        problemChangeDirector.changeVariable(exam, "room", le -> le.setRoom(toRoom));
-                    });
+                    doProblemChange((workingSolution, problemChangeDirector) -> problemChangeDirector.changeVariable(exam,
+                            "room", le -> le.setRoom(toRoom)));
                 }
                 solverAndPersistenceFrame.resetScreen();
             }
