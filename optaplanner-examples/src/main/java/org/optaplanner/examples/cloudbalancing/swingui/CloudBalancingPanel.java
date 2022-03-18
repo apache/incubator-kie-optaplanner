@@ -275,9 +275,9 @@ public class CloudBalancingPanel extends SolutionPanel<CloudBalance> {
             if (result == JOptionPane.OK_OPTION) {
                 CloudComputer toComputer = (CloudComputer) computerListField.getSelectedItem();
                 if (process.getComputer() != toComputer) {
-                    doProblemChange((workingSolution, problemChangeDirector) ->
-                            problemChangeDirector.changeVariable(process, "computer",
-                                    proc -> process.setComputer(toComputer)), true);
+                    doProblemChange((workingSolution, problemChangeDirector) -> problemChangeDirector.changeVariable(process,
+                            "computer",
+                            proc -> process.setComputer(toComputer)), true);
                     removeAction.run();
                 }
                 solverAndPersistenceFrame.resetScreen();

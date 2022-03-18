@@ -16,6 +16,11 @@
 
 package org.optaplanner.examples.pas.swingui;
 
+import static org.optaplanner.examples.common.swingui.timetable.TimeTablePanel.HeaderColumnKey.HEADER_COLUMN;
+import static org.optaplanner.examples.common.swingui.timetable.TimeTablePanel.HeaderColumnKey.HEADER_COLUMN_GROUP1;
+import static org.optaplanner.examples.common.swingui.timetable.TimeTablePanel.HeaderColumnKey.HEADER_COLUMN_GROUP2;
+import static org.optaplanner.examples.common.swingui.timetable.TimeTablePanel.HeaderRowKey.HEADER_ROW;
+
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
@@ -53,11 +58,6 @@ import org.optaplanner.examples.pas.domain.Room;
 import org.optaplanner.examples.pas.domain.RoomEquipment;
 import org.optaplanner.swing.impl.SwingUtils;
 import org.optaplanner.swing.impl.TangoColorFactory;
-
-import static org.optaplanner.examples.common.swingui.timetable.TimeTablePanel.HeaderColumnKey.HEADER_COLUMN;
-import static org.optaplanner.examples.common.swingui.timetable.TimeTablePanel.HeaderColumnKey.HEADER_COLUMN_GROUP1;
-import static org.optaplanner.examples.common.swingui.timetable.TimeTablePanel.HeaderColumnKey.HEADER_COLUMN_GROUP2;
-import static org.optaplanner.examples.common.swingui.timetable.TimeTablePanel.HeaderRowKey.HEADER_ROW;
 
 public class PatientAdmissionSchedulePanel extends SolutionPanel<PatientAdmissionSchedule> {
 
@@ -198,8 +198,8 @@ public class PatientAdmissionSchedulePanel extends SolutionPanel<PatientAdmissio
                     JOptionPane.OK_CANCEL_OPTION);
             if (result == JOptionPane.OK_OPTION) {
                 Bed toBed = (Bed) bedListField.getSelectedItem();
-                doProblemChange((workingSolution, problemChangeDirector) ->
-                        problemChangeDirector.changeVariable(bedDesignation, "bed", bd -> bd.setBed(toBed)));
+                doProblemChange((workingSolution, problemChangeDirector) -> problemChangeDirector.changeVariable(bedDesignation,
+                        "bed", bd -> bd.setBed(toBed)));
                 solverAndPersistenceFrame.resetScreen();
             }
         }

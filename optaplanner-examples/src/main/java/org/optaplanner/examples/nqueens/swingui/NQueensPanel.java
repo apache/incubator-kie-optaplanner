@@ -118,8 +118,8 @@ public class NQueensPanel extends SolutionPanel<NQueens> {
                     JOptionPane.OK_CANCEL_OPTION);
             if (result == JOptionPane.OK_OPTION) {
                 Row toRow = (Row) rowListField.getSelectedItem();
-                doProblemChange((workingSolution, problemChangeDirector) ->
-                        problemChangeDirector.changeVariable(queen, "row", q -> q.setRow(toRow)));
+                doProblemChange((workingSolution, problemChangeDirector) -> problemChangeDirector.changeVariable(queen, "row",
+                        q -> q.setRow(toRow)));
                 solverAndPersistenceFrame.resetScreen();
             }
         }

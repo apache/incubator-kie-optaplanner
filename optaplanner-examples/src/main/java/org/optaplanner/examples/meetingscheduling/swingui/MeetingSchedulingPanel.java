@@ -16,6 +16,11 @@
 
 package org.optaplanner.examples.meetingscheduling.swingui;
 
+import static org.optaplanner.examples.common.swingui.timetable.TimeTablePanel.HeaderColumnKey.HEADER_COLUMN;
+import static org.optaplanner.examples.common.swingui.timetable.TimeTablePanel.HeaderColumnKey.HEADER_COLUMN_GROUP1;
+import static org.optaplanner.examples.common.swingui.timetable.TimeTablePanel.HeaderRowKey.HEADER_ROW;
+import static org.optaplanner.examples.common.swingui.timetable.TimeTablePanel.HeaderRowKey.HEADER_ROW_GROUP1;
+
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.GridLayout;
@@ -52,11 +57,6 @@ import org.optaplanner.examples.meetingscheduling.domain.Room;
 import org.optaplanner.examples.meetingscheduling.domain.TimeGrain;
 import org.optaplanner.swing.impl.SwingUtils;
 import org.optaplanner.swing.impl.TangoColorFactory;
-
-import static org.optaplanner.examples.common.swingui.timetable.TimeTablePanel.HeaderColumnKey.HEADER_COLUMN;
-import static org.optaplanner.examples.common.swingui.timetable.TimeTablePanel.HeaderColumnKey.HEADER_COLUMN_GROUP1;
-import static org.optaplanner.examples.common.swingui.timetable.TimeTablePanel.HeaderRowKey.HEADER_ROW;
-import static org.optaplanner.examples.common.swingui.timetable.TimeTablePanel.HeaderRowKey.HEADER_ROW_GROUP1;
 
 public class MeetingSchedulingPanel extends SolutionPanel<MeetingSchedule> {
 
@@ -285,20 +285,20 @@ public class MeetingSchedulingPanel extends SolutionPanel<MeetingSchedule> {
             if (result == JOptionPane.OK_OPTION) {
                 TimeGrain toStartingTimeGrain = (TimeGrain) timeGrainListField.getSelectedItem();
                 if (meetingAssignment.getStartingTimeGrain() != toStartingTimeGrain) {
-                    doProblemChange((workingSolution, problemChangeDirector) ->
-                            problemChangeDirector.changeVariable(meetingAssignment, "startingTimeGrain",
-                                    ma -> ma.setStartingTimeGrain(toStartingTimeGrain)));
+                    doProblemChange((workingSolution, problemChangeDirector) -> problemChangeDirector.changeVariable(
+                            meetingAssignment, "startingTimeGrain",
+                            ma -> ma.setStartingTimeGrain(toStartingTimeGrain)));
                 }
                 Room toRoom = (Room) roomListField.getSelectedItem();
                 if (meetingAssignment.getRoom() != toRoom) {
-                    doProblemChange((workingSolution, problemChangeDirector) ->
-                            problemChangeDirector.changeVariable(meetingAssignment, "room",
-                                    ma -> ma.setRoom(toRoom)));
+                    doProblemChange((workingSolution, problemChangeDirector) -> problemChangeDirector.changeVariable(
+                            meetingAssignment, "room",
+                            ma -> ma.setRoom(toRoom)));
                 }
                 boolean toPinned = pinnedField.isSelected();
                 if (meetingAssignment.isPinned() != toPinned) {
-                    doProblemChange((workingSolution, problemChangeDirector) ->
-                            problemChangeDirector.changeProblemProperty(meetingAssignment, ma -> ma.setPinned(toPinned)));
+                    doProblemChange((workingSolution, problemChangeDirector) -> problemChangeDirector
+                            .changeProblemProperty(meetingAssignment, ma -> ma.setPinned(toPinned)));
                 }
                 solverAndPersistenceFrame.resetScreen();
             }

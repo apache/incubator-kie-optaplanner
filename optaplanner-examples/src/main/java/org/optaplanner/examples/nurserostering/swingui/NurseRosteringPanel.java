@@ -250,8 +250,8 @@ public class NurseRosteringPanel extends SolutionPanel<NurseRoster> {
     }
 
     public void moveShiftAssignmentToEmployee(ShiftAssignment shiftAssignment, Employee toEmployee) {
-        doProblemChange((workingSolution, problemChangeDirector) ->
-                problemChangeDirector.changeVariable(shiftAssignment, "employee",
+        doProblemChange(
+                (workingSolution, problemChangeDirector) -> problemChangeDirector.changeVariable(shiftAssignment, "employee",
                         sa -> sa.setEmployee(toEmployee)));
         solverAndPersistenceFrame.resetScreen();
     }
