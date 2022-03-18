@@ -26,9 +26,16 @@ import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.domain.solution.ProblemFactCollectionProperty;
 import org.optaplanner.core.api.domain.valuerange.ValueRangeProvider;
 import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
+import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 
 @PlanningSolution
 public class TestdataListSolutionExternalized {
+
+    public static SolutionDescriptor<TestdataListSolutionExternalized> buildSolutionDescriptor() {
+        return SolutionDescriptor.buildSolutionDescriptor(
+                TestdataListSolutionExternalized.class,
+                TestdataListEntityExternalized.class);
+    }
 
     public static TestdataListSolutionExternalized generateUninitializedSolution(int valueCount, int entityCount) {
         List<TestdataListEntityExternalized> entityList = IntStream.range(0, entityCount)
@@ -73,5 +80,13 @@ public class TestdataListSolutionExternalized {
 
     public void setScore(SimpleScore score) {
         this.score = score;
+    }
+
+    public void addValue(TestdataListValueExternalized value) {
+        valueList.add(value);
+    }
+
+    public void removeValue(TestdataListValueExternalized value) {
+        valueList.remove(value);
     }
 }

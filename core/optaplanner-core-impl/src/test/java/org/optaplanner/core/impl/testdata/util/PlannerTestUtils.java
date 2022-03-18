@@ -123,12 +123,23 @@ public class PlannerTestUtils {
 
     public static <Solution_> InnerScoreDirector<Solution_, SimpleScore> mockScoreDirector(
             SolutionDescriptor<Solution_> solutionDescriptor) {
+        return mock(InnerScoreDirector.class, AdditionalAnswers
+                .delegatesTo(buildEasyScoreDirectorFactory(solutionDescriptor).buildScoreDirector(false, false)));
+    }
+
+    public static <Solution_> InnerScoreDirector<Solution_, SimpleScore> mockScoreDirectorWithLookupEnabled(
+            SolutionDescriptor<Solution_> solutionDescriptor) {
+        return mock(InnerScoreDirector.class, AdditionalAnswers
+                .delegatesTo(buildEasyScoreDirectorFactory(solutionDescriptor).buildScoreDirector(true, false)));
+    }
+
+    private static <Solution_> EasyScoreDirectorFactory<Solution_, SimpleScore> buildEasyScoreDirectorFactory(
+            SolutionDescriptor<Solution_> solutionDescriptor) {
         EasyScoreDirectorFactory<Solution_, SimpleScore> scoreDirectorFactory =
                 new EasyScoreDirectorFactory<>(solutionDescriptor, (solution_) -> SimpleScore.of(0));
         scoreDirectorFactory.setInitializingScoreTrend(
                 InitializingScoreTrend.buildUniformTrend(InitializingScoreTrendLevel.ONLY_DOWN, 1));
-        return mock(InnerScoreDirector.class,
-                AdditionalAnswers.delegatesTo(scoreDirectorFactory.buildScoreDirector(false, false)));
+        return scoreDirectorFactory;
     }
 
     public static <Solution_, Score_ extends Score<Score_>> InnerScoreDirector<Solution_, Score_>

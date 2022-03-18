@@ -98,4 +98,12 @@ public class TestdataListSolution {
     public void setScore(SimpleScore score) {
         this.score = score;
     }
+
+    public void addValue(TestdataListValue value) {
+        valueList.add(value);
+    }
+
+    public void removeValue(TestdataListValue value) {
+        valueList.remove(value);
+    }
 }

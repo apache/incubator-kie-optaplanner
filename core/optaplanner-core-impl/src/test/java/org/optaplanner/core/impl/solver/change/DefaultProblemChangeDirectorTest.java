@@ -16,22 +16,29 @@
 
 package org.optaplanner.core.impl.solver.change;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import org.junit.jupiter.api.Test;
+import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
 import org.optaplanner.core.api.solver.change.ProblemChange;
 import org.optaplanner.core.api.solver.change.ProblemChangeDirector;
 import org.optaplanner.core.impl.score.director.InnerScoreDirector;
 import org.optaplanner.core.impl.testdata.domain.TestdataEntity;
 import org.optaplanner.core.impl.testdata.domain.TestdataSolution;
+import org.optaplanner.core.impl.testdata.domain.list.TestdataListSolution;
+import org.optaplanner.core.impl.testdata.domain.list.TestdataListValue;
+import org.optaplanner.core.impl.testdata.domain.list.externalized.TestdataListSolutionExternalized;
+import org.optaplanner.core.impl.testdata.domain.list.externalized.TestdataListValueExternalized;
 import org.optaplanner.core.impl.testdata.domain.score.lavish.TestdataLavishEntity;
 import org.optaplanner.core.impl.testdata.domain.score.lavish.TestdataLavishEntityGroup;
 import org.optaplanner.core.impl.testdata.domain.score.lavish.TestdataLavishSolution;
 import org.optaplanner.core.impl.testdata.domain.score.lavish.TestdataLavishValue;
 import org.optaplanner.core.impl.testdata.domain.score.lavish.TestdataLavishValueGroup;
+import org.optaplanner.core.impl.testdata.util.PlannerTestUtils;
 
 class DefaultProblemChangeDirectorTest {
 
@@ -95,5 +102,54 @@ class DefaultProblemChangeDirectorTest {
 
         verify(scoreDirectorMock, times(1)).beforeProblemFactRemoved(removedFact);
         verify(scoreDirectorMock, times(1)).afterProblemFactRemoved(removedFact);
+    }
+
+    @Test
+    void initScoreUpdateAfterEntityAddedRemoved() {
+        InnerScoreDirector<TestdataListSolution, SimpleScore> scoreDirector =
+                PlannerTestUtils.mockScoreDirectorWithLookupEnabled(TestdataListSolution.buildSolutionDescriptor());
+
+        TestdataListSolution solution = TestdataListSolution.generateInitializedSolution(6, 2);
+        scoreDirector.setWorkingSolution(solution);
+        DefaultProblemChangeDirector<TestdataListSolution> problemChangeDirector =
+                new DefaultProblemChangeDirector<>(scoreDirector);
+
+        TestdataListValue value = new TestdataListValue("v");
+
+        ProblemChange<TestdataListSolution> addValue =
+                (workingSolution, director) -> director.addEntity(value, solution::addValue);
+
+        assertThat(problemChangeDirector.doProblemChange(addValue).getInitScore()).isEqualTo(-1);
+
+        ProblemChange<TestdataListSolution> removeValue =
+                (workingSolution, director) -> director.removeEntity(value, solution::removeValue);
+
+        assertThat(problemChangeDirector.doProblemChange(removeValue).getInitScore()).isEqualTo(0);
+    }
+
+    @Test
+    void initScoreUpdateAfterFactAddedRemoved() {
+        int valueCount = 5;
+
+        InnerScoreDirector<TestdataListSolutionExternalized, SimpleScore> scoreDirector =
+                PlannerTestUtils.mockScoreDirectorWithLookupEnabled(TestdataListSolutionExternalized.buildSolutionDescriptor());
+
+        TestdataListSolutionExternalized solution =
+                TestdataListSolutionExternalized.generateUninitializedSolution(valueCount, 1);
+        scoreDirector.setWorkingSolution(solution);
+        DefaultProblemChangeDirector<TestdataListSolutionExternalized> problemChangeDirector =
+                new DefaultProblemChangeDirector<>(scoreDirector);
+
+        TestdataListValueExternalized value = new TestdataListValueExternalized("v");
+
+        ProblemChange<TestdataListSolutionExternalized> addValue =
+                (workingSolution, director) -> director.addProblemFact(value, solution::addValue);
+
+        assertThat(problemChangeDirector.doProblemChange(addValue).getInitScore()).isEqualTo(-valueCount - 1);
+
+        ProblemChange<TestdataListSolutionExternalized> removeValue =
+                (workingSolution, director) -> director.removeProblemFact(value, solution::removeValue);
+
+        assertThat(problemChangeDirector.doProblemChange(removeValue).getInitScore()).isEqualTo(-valueCount);
     }
 }
