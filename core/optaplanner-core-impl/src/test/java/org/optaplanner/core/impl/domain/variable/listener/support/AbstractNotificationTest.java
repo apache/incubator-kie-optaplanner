@@ -16,18 +16,18 @@
 
 package org.optaplanner.core.impl.domain.variable.listener.support;
 
-import org.assertj.core.api.Assertions;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.SoftAssertions.assertSoftly;
+import static org.mockito.ArgumentMatchers.same;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
+
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.optaplanner.core.api.domain.variable.VariableListener;
 import org.optaplanner.core.api.score.director.ScoreDirector;
-
-import static org.assertj.core.api.SoftAssertions.assertSoftly;
-import static org.mockito.ArgumentMatchers.same;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyNoMoreInteractions;
 
 @ExtendWith(MockitoExtension.class)
 abstract class AbstractNotificationTest {
@@ -65,7 +65,7 @@ abstract class AbstractNotificationTest {
     @Test
     void testEquality() {
         VariableListenerNotification notification = createNotificationInstance(object);
-        Assertions.assertThat(notification).isEqualTo(notification);
+        assertThat(notification).isEqualTo(notification);
 
         VariableListenerNotification notification2 = createNotificationInstance(object);
         assertSoftly(softly -> {
