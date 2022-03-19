@@ -98,6 +98,8 @@ public interface VariableListener<Solution_, Entity_> extends Closeable {
      * For reasons of backwards compatibility,
      * the default implementation will call {@link #resetWorkingSolution(ScoreDirector)}
      * as any of the facts may have been used in the listener.
+     * It is recommended to override this method, implementing a better-performing incremental reaction instead,
+     * or ignoring this event altogether if applicable.
      *
      * @param scoreDirector never null
      * @param fact never null
@@ -109,6 +111,8 @@ public interface VariableListener<Solution_, Entity_> extends Closeable {
 
     /**
      * Called before either a problem fact changes or a planning entity changes without changing its planning variable.
+     * {@link #beforeVariableChanged(ScoreDirector, Object)} will be called instead
+     * if a planning entity's planning variable changed.
      *
      * <p>
      * <strong>Do not use this method when changing planning variable values on planning entities.</strong>
@@ -124,16 +128,15 @@ public interface VariableListener<Solution_, Entity_> extends Closeable {
 
     /**
      * Called after either a problem fact changes or a planning entity changes without changing its planning variable.
-     *
-     * <p>
-     * <strong>Do not use this method when changing planning variable values on planning entities.</strong>
-     * Use {@link #afterVariableChanged(ScoreDirector, Object)} instead.
-     * Failing to do so will result in score corruptions.
+     * {@link #afterVariableChanged(ScoreDirector, Object)} will be called instead
+     * if a planning entity's planning variable changed.
      *
      * <p>
      * For reasons of backwards compatibility,
      * the default implementation will call {@link #resetWorkingSolution(ScoreDirector)}
      * as any of the facts may have been used in the listener.
+     * It is recommended to override this method, implementing a better-performing incremental reaction instead,
+     * or ignoring this event altogether if applicable.
      *
      * @param scoreDirector never null
      * @param problemFactOrEntity never null
@@ -155,6 +158,8 @@ public interface VariableListener<Solution_, Entity_> extends Closeable {
      * For reasons of backwards compatibility,
      * the default implementation will call {@link #resetWorkingSolution(ScoreDirector)}
      * as any of the facts may have been used in the listener.
+     * It is recommended to override this method, implementing a better-performing incremental reaction instead,
+     * or ignoring this event altogether if applicable.
      *
      * @param scoreDirector never null
      * @param fact never null
@@ -165,8 +170,8 @@ public interface VariableListener<Solution_, Entity_> extends Closeable {
     }
 
     /**
-     * Called when the entire working solution changes. In this event, the other before..()/after...() methods will not
-     * be called.
+     * Called when the entire working solution changes.
+     * In this event, the other before..()/after...() methods will not be called.
      * At this point, implementations should clear state, if any.
      *
      * @param scoreDirector never null
