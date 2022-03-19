@@ -21,7 +21,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.optaplanner.core.api.domain.variable.VariableListener;
 import org.optaplanner.core.api.score.director.ScoreDirector;
 
-@ExtendWith(MockitoExtension.class)
 final class EntityRemovedNotificationTest extends AbstractNotificationTest {
 
     @Override

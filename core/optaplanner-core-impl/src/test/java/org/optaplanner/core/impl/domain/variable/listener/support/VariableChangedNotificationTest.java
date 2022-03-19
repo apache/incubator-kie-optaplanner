@@ -16,12 +16,9 @@
 
 package org.optaplanner.core.impl.domain.variable.listener.support;
 
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.junit.jupiter.MockitoExtension;
 import org.optaplanner.core.api.domain.variable.VariableListener;
 import org.optaplanner.core.api.score.director.ScoreDirector;
 
-@ExtendWith(MockitoExtension.class)
 final class VariableChangedNotificationTest extends AbstractNotificationTest {
 
     @Override

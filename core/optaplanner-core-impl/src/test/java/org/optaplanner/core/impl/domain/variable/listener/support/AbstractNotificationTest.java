@@ -16,17 +16,20 @@
 
 package org.optaplanner.core.impl.domain.variable.listener.support;
 
-import static org.assertj.core.api.SoftAssertions.*;
+import org.assertj.core.api.Assertions;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.optaplanner.core.api.domain.variable.VariableListener;
+import org.optaplanner.core.api.score.director.ScoreDirector;
+
+import static org.assertj.core.api.SoftAssertions.assertSoftly;
 import static org.mockito.ArgumentMatchers.same;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 
-import org.assertj.core.api.Assertions;
-import org.junit.jupiter.api.Test;
-import org.mockito.Mock;
-import org.optaplanner.core.api.domain.variable.VariableListener;
-import org.optaplanner.core.api.score.director.ScoreDirector;
-
+@ExtendWith(MockitoExtension.class)
 abstract class AbstractNotificationTest {
 
     private final String object = "Testing object";
