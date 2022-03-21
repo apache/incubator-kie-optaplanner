@@ -45,7 +45,6 @@ import org.optaplanner.core.api.score.buildin.simplebigdecimal.SimpleBigDecimalS
 import org.optaplanner.core.api.score.buildin.simplelong.SimpleLongScore;
 import org.optaplanner.core.api.score.stream.Constraint;
 import org.optaplanner.core.api.score.stream.ConstraintCollectors;
-import org.optaplanner.core.api.score.stream.ConstraintFactory;
 import org.optaplanner.core.api.score.stream.ConstraintProvider;
 import org.optaplanner.core.api.score.stream.ConstraintStreamImplType;
 import org.optaplanner.core.api.score.stream.uni.UniConstraintStream;
@@ -53,8 +52,6 @@ import org.optaplanner.core.impl.score.director.InnerScoreDirector;
 import org.optaplanner.core.impl.testdata.domain.TestdataEntity;
 import org.optaplanner.core.impl.testdata.domain.TestdataSolution;
 import org.optaplanner.core.impl.testdata.domain.TestdataValue;
-import org.optaplanner.core.impl.testdata.domain.extended.TestdataAnnotatedExtendedEntity;
-import org.optaplanner.core.impl.testdata.domain.extended.TestdataAnnotatedExtendedSolution;
 import org.optaplanner.core.impl.testdata.domain.extended.TestdataUnannotatedExtendedEntity;
 import org.optaplanner.core.impl.testdata.domain.extended.TestdataUnannotatedExtendedSolution;
 import org.optaplanner.core.impl.testdata.domain.nullable.TestdataNullableEntity;
@@ -271,6 +268,55 @@ public class UniConstraintStreamTest extends AbstractConstraintStreamTest implem
                 assertMatch(entity1, entity2),
                 assertMatch(entity2, entity1),
                 assertMatch(entity2, entity2));
+    }
+
+    /**
+     * A join must not presume that left inserts/retracts always happen before right inserts/retracts,
+     * if node sharing is active.
+     * This test triggers a right insert/retract before a left insert/retract.
+     */
+    @TestTemplate
+    public void join_1_mirrored() {
+        TestdataLavishSolution solution = TestdataLavishSolution.generateSolution(1, 1);
+        TestdataLavishValue value1 = solution.getFirstValue();
+        TestdataLavishValue value2 = new TestdataLavishValue("", solution.getFirstValueGroup());
+        solution.getValueList().add(value2);
+        TestdataLavishEntity entity1 = solution.getFirstEntity();
+        TestdataLavishEntity entity2 = new TestdataLavishEntity("MyEntity 1", solution.getFirstEntityGroup(), value2);
+        solution.getEntityList().add(entity2);
+
+        InnerScoreDirector<TestdataLavishSolution, SimpleScore> scoreDirector = buildScoreDirector(
+                TestdataLavishSolution.buildSolutionDescriptor(),
+                factory -> new Constraint[] {
+                    // A.join(B)
+                    factory.forEach(TestdataLavishEntity.class)
+                    .join(TestdataLavishValue.class,
+                            equal(TestdataLavishEntity::getValue, value -> value))
+                    .penalize("testConstraint1", SimpleScore.ONE),
+                    // B.join(A)
+                    factory.forEach(TestdataLavishValue.class)
+                    .join(TestdataLavishEntity.class,
+                            equal(value -> value, TestdataLavishEntity::getValue))
+                    .penalize("testConstraint2", SimpleScore.ONE),
+                });
+
+        // From scratch
+        scoreDirector.setWorkingSolution(solution);
+        assertScore(scoreDirector,
+                assertMatch("testConstraint1", entity1, value1),
+                assertMatch("testConstraint2", value1, entity1),
+                assertMatch("testConstraint1", entity2, value2),
+                assertMatch("testConstraint2", value2, entity2));
+
+        // Incremental
+        scoreDirector.beforeVariableChanged(entity2, "value");
+        entity2.setValue(value1);
+        scoreDirector.afterVariableChanged(entity2, "value");
+        assertScore(scoreDirector,
+                assertMatch("testConstraint1", entity1, value1),
+                assertMatch("testConstraint2", value1, entity1),
+                assertMatch("testConstraint1", entity2, value1),
+                assertMatch("testConstraint2", value1, entity2));
     }
 
     @Override
