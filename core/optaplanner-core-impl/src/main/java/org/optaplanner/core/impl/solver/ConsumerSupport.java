@@ -20,9 +20,9 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Semaphore;
-import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
+import java.util.function.Supplier;
 
 final class ConsumerSupport<Solution_, ProblemId_> implements AutoCloseable {
 
@@ -30,25 +30,27 @@ final class ConsumerSupport<Solution_, ProblemId_> implements AutoCloseable {
     private final Consumer<? super Solution_> bestSolutionConsumer;
     private final Consumer<? super Solution_> finalBestSolutionConsumer;
     private final BiConsumer<? super ProblemId_, ? super Throwable> exceptionHandler;
-    private final AtomicReference<Solution_> bestSolutionWaitingForConsumption = new AtomicReference<>();
     private final Semaphore activeConsumption = new Semaphore(1);
+    private final BestSolutionHolder<Solution_> bestSolutionHolder;
     private ExecutorService consumerExecutor = Executors.newSingleThreadExecutor();
 
     public ConsumerSupport(ProblemId_ problemId, Consumer<? super Solution_> bestSolutionConsumer,
             Consumer<? super Solution_> finalBestSolutionConsumer,
-            BiConsumer<? super ProblemId_, ? super Throwable> exceptionHandler) {
+            BiConsumer<? super ProblemId_, ? super Throwable> exceptionHandler,
+            BestSolutionHolder<Solution_> bestSolutionHolder) {
         this.problemId = problemId;
         this.bestSolutionConsumer = bestSolutionConsumer;
         this.finalBestSolutionConsumer = finalBestSolutionConsumer;
         this.exceptionHandler = exceptionHandler;
+        this.bestSolutionHolder = bestSolutionHolder;
     }
 
     // Called on the Solver thread.
-    void consumeIntermediateBestSolution(Solution_ bestSolution) {
+    void consumeIntermediateBestSolution(Solution_ bestSolution, Supplier<Boolean> isEveryProblemChangeProcessed) {
         if (bestSolutionConsumer == null) {
             throw new IllegalStateException("No best solution consumer has been defined.");
         }
-        bestSolutionWaitingForConsumption.set(bestSolution);
+        bestSolutionHolder.set(bestSolution, isEveryProblemChangeProcessed);
         tryConsumeWaitingIntermediateBestSolution();
     }
 
@@ -82,7 +84,7 @@ final class ConsumerSupport<Solution_, ProblemId_> implements AutoCloseable {
 
     // Called both on the Solver thread and the Consumer thread.
     private void tryConsumeWaitingIntermediateBestSolution() {
-        if (bestSolutionWaitingForConsumption.get() == null) {
+        if (bestSolutionHolder.isEmpty()) {
             return; // There is no best solution to consume.
         }
         if (activeConsumption.tryAcquire()) {
@@ -97,15 +99,20 @@ final class ConsumerSupport<Solution_, ProblemId_> implements AutoCloseable {
      */
     private CompletableFuture<Void> scheduleIntermediateBestSolutionConsumption() {
         return CompletableFuture.runAsync(() -> {
-            Solution_ bestSolution = bestSolutionWaitingForConsumption.getAndSet(null);
-            try {
-                if (bestSolution != null) {
-                    bestSolutionConsumer.accept(bestSolution);
+            BestSolutionContainingProblemChanges<Solution_> bestSolutionContainingProblemChanges = bestSolutionHolder.take();
+            if (bestSolutionContainingProblemChanges != null) {
+                try {
+                    bestSolutionConsumer.accept(bestSolutionContainingProblemChanges.getBestSolution());
+                } catch (Throwable throwable) {
+                    exceptionHandler.accept(problemId, throwable);
+                } finally {
+                    /*
+                     * Complete the CompletableFutures associated with ProblemChanges regardless of a possible
+                     * exception in the consumer to avoid a memory leak.
+                     */
+                    bestSolutionContainingProblemChanges.completeProblemChanges();
+                    activeConsumption.release();
                 }
-            } catch (Throwable throwable) {
-                exceptionHandler.accept(problemId, throwable);
-            } finally {
-                activeConsumption.release();
             }
         }, consumerExecutor);
     }
@@ -116,5 +123,6 @@ final class ConsumerSupport<Solution_, ProblemId_> implements AutoCloseable {
             consumerExecutor.shutdownNow();
             consumerExecutor = null;
         }
+        bestSolutionHolder.cancelPendingChanges();
     }
 }

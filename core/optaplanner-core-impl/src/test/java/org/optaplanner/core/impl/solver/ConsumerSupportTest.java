@@ -46,6 +46,7 @@ class ConsumerSupportTest {
         CountDownLatch consumptionCompleted = new CountDownLatch(1);
         AtomicReference<Throwable> error = new AtomicReference<>();
         List<TestdataSolution> consumedSolutions = Collections.synchronizedList(new ArrayList<>());
+        BestSolutionHolder<TestdataSolution> bestSolutionHolder = new BestSolutionHolder<>();
         consumerSupport = new ConsumerSupport<>(1L, testdataSolution -> {
             try {
                 consumptionPaused.await();
@@ -56,14 +57,14 @@ class ConsumerSupportTest {
             } catch (InterruptedException e) {
                 error.set(new IllegalStateException("Interrupted waiting.", e));
             }
-        }, null, null);
+        }, null, null, bestSolutionHolder);
 
         // This solution may be skipped.
-        consumerSupport.consumeIntermediateBestSolution(TestdataSolution.generateSolution(1, 1));
+        consumeIntermediateBestSolution(TestdataSolution.generateSolution(1, 1));
         // This solution should be skipped.
-        consumerSupport.consumeIntermediateBestSolution(TestdataSolution.generateSolution(2, 2));
+        consumeIntermediateBestSolution(TestdataSolution.generateSolution(2, 2));
         // This solution should never be skipped.
-        consumerSupport.consumeIntermediateBestSolution(TestdataSolution.generateSolution(3, 3));
+        consumeIntermediateBestSolution(TestdataSolution.generateSolution(3, 3));
 
         consumptionPaused.countDown();
         consumptionCompleted.await();
@@ -76,5 +77,9 @@ class ConsumerSupportTest {
         if (error.get() != null) {
             fail("Exception during consumption.", error.get());
         }
+    }
+
+    private void consumeIntermediateBestSolution(TestdataSolution bestSolution) {
+        consumerSupport.consumeIntermediateBestSolution(bestSolution, () -> true);
     }
 }
