@@ -1033,14 +1033,6 @@ public class SolutionDescriptor<Solution_> {
         return result.longValue();
     }
 
-    public int countListValues(Solution_ solution) {
-        long valueCount = 0;
-        for (ListVariableDescriptor<Solution_> listVariableDescriptor : listVariableDescriptors) {
-            valueCount += listVariableDescriptor.getValueCount(solution, null);
-        }
-        return Math.toIntExact(valueCount);
-    }
-
     /**
      * Calculates the number of elements that need to be processed in the Construction Heuristics phase.
      * The negative value of this is the {@code initScore}. It represents how many Construction Heuristics steps need to
@@ -1050,19 +1042,15 @@ public class SolutionDescriptor<Solution_> {
      * @return {@code >= 0}
      */
     public int countUninitialized(Solution_ solution) {
-        if (!listVariableDescriptors.isEmpty()) {
-            return listVariableDescriptors.stream()
-                    .mapToInt(variableDescriptor -> countUnassignedValues(solution, variableDescriptor))
-                    .sum();
-        }
-        return countUninitializedVariables(solution);
+        return countUnassignedValues(solution) + countUninitializedVariables(solution);
     }
 
-    private int countUninitializedVariables(Solution_ solution) {
-        MutableInt result = new MutableInt();
-        visitAllEntities(solution,
-                entity -> result.add(findEntityDescriptorOrFail(entity.getClass()).countUninitializedVariables(entity)));
-        return result.intValue();
+    public int countUnassignedValues(Solution_ solution) {
+        int unassignedValueCount = 0;
+        for (ListVariableDescriptor<Solution_> listVariableDescriptor : listVariableDescriptors) {
+            unassignedValueCount += countUnassignedValues(solution, listVariableDescriptor);
+        }
+        return unassignedValueCount;
     }
 
     private int countUnassignedValues(Solution_ solution, ListVariableDescriptor<Solution_> variableDescriptor) {
@@ -1072,6 +1060,13 @@ public class SolutionDescriptor<Solution_> {
                 entity -> assignedValuesCount.add(variableDescriptor.getListSize(entity)));
         // TODO maybe detect duplicates and elements that are outside the value range
         return Math.toIntExact(totalValueCount - assignedValuesCount.intValue());
+    }
+
+    private int countUninitializedVariables(Solution_ solution) {
+        MutableInt result = new MutableInt();
+        visitAllEntities(solution,
+                entity -> result.add(findEntityDescriptorOrFail(entity.getClass()).countUninitializedVariables(entity)));
+        return result.intValue();
     }
 
     private Stream<Object> extractAllEntitiesStream(Solution_ solution) {

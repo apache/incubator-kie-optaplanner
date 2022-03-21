@@ -117,25 +117,31 @@ class DefaultProblemChangeDirectorTest {
         TestdataListValue value = new TestdataListValue("v");
 
         ProblemChange<TestdataListSolution> addValue =
-                (workingSolution, director) -> director.addEntity(value, solution::addValue);
+                (workingSolution, director) -> director.addEntity(value, workingSolution::addValue);
 
         assertThat(problemChangeDirector.doProblemChange(addValue).getInitScore()).isEqualTo(-1);
 
         ProblemChange<TestdataListSolution> removeValue =
-                (workingSolution, director) -> director.removeEntity(value, solution::removeValue);
+                (workingSolution, director) -> director.removeEntity(value, workingSolution::removeValue);
 
         assertThat(problemChangeDirector.doProblemChange(removeValue).getInitScore()).isEqualTo(0);
+
+        // Removing an assigned value doesn't impact the init score.
+        TestdataListValue assignedValue = solution.getEntityList().get(0).getValueList().get(0);
+        ProblemChange<TestdataListSolution> removeAssignedValue =
+                (workingSolution, director) -> director.removeEntity(assignedValue, v -> {
+                    workingSolution.getEntityList().get(0).getValueList().remove(v);
+                    workingSolution.removeValue(v);
+                });
+        assertThat(problemChangeDirector.doProblemChange(removeAssignedValue).getInitScore()).isEqualTo(0);
     }
 
     @Test
     void initScoreUpdateAfterFactAddedRemoved() {
-        int valueCount = 5;
-
         InnerScoreDirector<TestdataListSolutionExternalized, SimpleScore> scoreDirector =
                 PlannerTestUtils.mockScoreDirectorWithLookupEnabled(TestdataListSolutionExternalized.buildSolutionDescriptor());
 
-        TestdataListSolutionExternalized solution =
-                TestdataListSolutionExternalized.generateUninitializedSolution(valueCount, 1);
+        TestdataListSolutionExternalized solution = TestdataListSolutionExternalized.generateInitializedSolution(3, 1);
         scoreDirector.setWorkingSolution(solution);
         DefaultProblemChangeDirector<TestdataListSolutionExternalized> problemChangeDirector =
                 new DefaultProblemChangeDirector<>(scoreDirector);
@@ -143,13 +149,22 @@ class DefaultProblemChangeDirectorTest {
         TestdataListValueExternalized value = new TestdataListValueExternalized("v");
 
         ProblemChange<TestdataListSolutionExternalized> addValue =
-                (workingSolution, director) -> director.addProblemFact(value, solution::addValue);
+                (workingSolution, director) -> director.addProblemFact(value, workingSolution::addValue);
 
-        assertThat(problemChangeDirector.doProblemChange(addValue).getInitScore()).isEqualTo(-valueCount - 1);
+        assertThat(problemChangeDirector.doProblemChange(addValue).getInitScore()).isEqualTo(-1);
+
+        // Removing an assigned value doesn't impact the init score.
+        TestdataListValueExternalized assignedValue = solution.getEntityList().get(0).getValueList().get(0);
+        ProblemChange<TestdataListSolutionExternalized> removeAssignedValue =
+                (workingSolution, director) -> director.removeProblemFact(assignedValue, v -> {
+                    workingSolution.getEntityList().get(0).getValueList().remove(v);
+                    workingSolution.removeValue(v);
+                });
+        assertThat(problemChangeDirector.doProblemChange(removeAssignedValue).getInitScore()).isEqualTo(-1);
 
         ProblemChange<TestdataListSolutionExternalized> removeValue =
-                (workingSolution, director) -> director.removeProblemFact(value, solution::removeValue);
+                (workingSolution, director) -> director.removeProblemFact(value, workingSolution::removeValue);
 
-        assertThat(problemChangeDirector.doProblemChange(removeValue).getInitScore()).isEqualTo(-valueCount);
+        assertThat(problemChangeDirector.doProblemChange(removeValue).getInitScore()).isEqualTo(0);
     }
 }

@@ -37,7 +37,15 @@ public class TestdataListSolutionExternalized {
                 TestdataListEntityExternalized.class);
     }
 
+    public static TestdataListSolutionExternalized generateInitializedSolution(int valueCount, int entityCount) {
+        return generateSolution(valueCount, entityCount).initialize();
+    }
+
     public static TestdataListSolutionExternalized generateUninitializedSolution(int valueCount, int entityCount) {
+        return generateSolution(valueCount, entityCount);
+    }
+
+    private static TestdataListSolutionExternalized generateSolution(int valueCount, int entityCount) {
         List<TestdataListEntityExternalized> entityList = IntStream.range(0, entityCount)
                 .mapToObj(i -> new TestdataListEntityExternalized("Generated Entity " + i))
                 .collect(Collectors.toList());
@@ -53,6 +61,13 @@ public class TestdataListSolutionExternalized {
     private List<TestdataListValueExternalized> valueList;
     private List<TestdataListEntityExternalized> entityList;
     private SimpleScore score;
+
+    private TestdataListSolutionExternalized initialize() {
+        for (int i = 0; i < valueList.size(); i++) {
+            entityList.get(i % entityList.size()).getValueList().add(valueList.get(i));
+        }
+        return this;
+    }
 
     @ValueRangeProvider(id = "valueRange")
     @ProblemFactCollectionProperty
