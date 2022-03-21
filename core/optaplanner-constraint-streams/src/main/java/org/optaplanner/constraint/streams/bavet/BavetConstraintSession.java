@@ -96,16 +96,4 @@ public final class BavetConstraintSession<Solution_, Score_ extends Score<Score_
         return scoreInliner.getIndictmentMap();
     }
 
-    // ************************************************************************
-    // Getters/setters
-    // ************************************************************************
-
-    public AbstractScoreInliner<Score_> getScoreInliner() {
-        return scoreInliner;
-    }
-
-    public AbstractNode[] getNodes() {
-        return nodes;
-    }
-
 }
