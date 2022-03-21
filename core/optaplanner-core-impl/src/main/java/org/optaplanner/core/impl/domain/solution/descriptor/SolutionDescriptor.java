@@ -165,6 +165,7 @@ public class SolutionDescriptor<Solution_> {
     private final Map<String, MemberAccessor> entityMemberAccessorMap = new LinkedHashMap<>();
     private final Map<String, MemberAccessor> entityCollectionMemberAccessorMap = new LinkedHashMap<>();
     private Set<Class<?>> problemFactOrEntityClassSet;
+    private List<ListVariableDescriptor<Solution_>> listVariableDescriptors;
     private ScoreDescriptor scoreDescriptor;
 
     private ConstraintConfigurationDescriptor<Solution_> constraintConfigurationDescriptor;
@@ -503,6 +504,7 @@ public class SolutionDescriptor<Solution_> {
         }
         determineGlobalShadowOrder();
         collectEntityAndProblemFactClasses();
+        findListVariableDescriptors();
         // And finally log the successful completion of processing.
         if (LOGGER.isTraceEnabled()) {
             LOGGER.trace("    Model annotations parsed for solution {}:", solutionClass.getSimpleName());
@@ -799,16 +801,17 @@ public class SolutionDescriptor<Solution_> {
         return variableDescriptor;
     }
 
-    public List<ListVariableDescriptor<Solution_>> findListVariableDescriptors() {
-        return streamListVariableDescriptors().collect(Collectors.toList());
-    }
-
-    private Stream<ListVariableDescriptor<Solution_>> streamListVariableDescriptors() {
-        return getGenuineEntityDescriptors().stream()
+    private void findListVariableDescriptors() {
+        listVariableDescriptors = getGenuineEntityDescriptors().stream()
                 .map(EntityDescriptor::getGenuineVariableDescriptorList)
                 .flatMap(Collection::stream)
                 .filter(GenuineVariableDescriptor::isListVariable)
-                .map(variableDescriptor -> ((ListVariableDescriptor<Solution_>) variableDescriptor));
+                .map(variableDescriptor -> ((ListVariableDescriptor<Solution_>) variableDescriptor))
+                .collect(Collectors.toList());
+    }
+
+    public List<ListVariableDescriptor<Solution_>> getListVariableDescriptors() {
+        return listVariableDescriptors;
     }
 
     // ************************************************************************
@@ -1031,9 +1034,10 @@ public class SolutionDescriptor<Solution_> {
     }
 
     public int countListValues(Solution_ solution) {
-        long valueCount = streamListVariableDescriptors()
-                .mapToLong(variableDescriptor -> variableDescriptor.getValueCount(solution, null))
-                .sum();
+        long valueCount = 0;
+        for (ListVariableDescriptor<Solution_> listVariableDescriptor : listVariableDescriptors) {
+            valueCount += listVariableDescriptor.getValueCount(solution, null);
+        }
         return Math.toIntExact(valueCount);
     }
 
@@ -1046,10 +1050,12 @@ public class SolutionDescriptor<Solution_> {
      * @return {@code >= 0}
      */
     public int countUninitialized(Solution_ solution) {
-        return streamListVariableDescriptors()
-                .findFirst()
-                .map(variableDescriptor -> countUnassignedValues(solution, variableDescriptor))
-                .orElseGet(() -> countUninitializedVariables(solution));
+        if (!listVariableDescriptors.isEmpty()) {
+            return listVariableDescriptors.stream()
+                    .mapToInt(variableDescriptor -> countUnassignedValues(solution, variableDescriptor))
+                    .sum();
+        }
+        return countUninitializedVariables(solution);
     }
 
     private int countUninitializedVariables(Solution_ solution) {
