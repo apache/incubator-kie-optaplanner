@@ -502,6 +502,25 @@ public class SolutionDescriptor<Solution_> {
             entityDescriptor.linkVariableDescriptors(descriptorPolicy);
         }
         determineGlobalShadowOrder();
+        collectEntityAndProblemFactClasses();
+        // And finally log the successful completion of processing.
+        if (LOGGER.isTraceEnabled()) {
+            LOGGER.trace("    Model annotations parsed for solution {}:", solutionClass.getSimpleName());
+            for (Map.Entry<Class<?>, EntityDescriptor<Solution_>> entry : entityDescriptorMap.entrySet()) {
+                EntityDescriptor<Solution_> entityDescriptor = entry.getValue();
+                LOGGER.trace("        Entity {}:", entityDescriptor.getEntityClass().getSimpleName());
+                for (VariableDescriptor<Solution_> variableDescriptor : entityDescriptor.getDeclaredVariableDescriptors()) {
+                    LOGGER.trace("            {} variable {} ({})",
+                            variableDescriptor instanceof GenuineVariableDescriptor ? "Genuine" : "Shadow",
+                            variableDescriptor.getVariableName(),
+                            variableDescriptor.getMemberAccessorSpeedNote());
+                }
+            }
+        }
+        initSolutionCloner(descriptorPolicy);
+    }
+
+    private void collectEntityAndProblemFactClasses() {
         // Figure out all problem fact or entity types that are used within this solution,
         // using the knowledge we've already gained by processing all the annotations.
         Stream<Class<?>> entityClassStream = entityDescriptorMap.keySet()
@@ -524,21 +543,6 @@ public class SolutionDescriptor<Solution_> {
                     Stream.of(constraintConfigurationDescriptor.getConstraintConfigurationClass()));
         }
         problemFactOrEntityClassSet = problemFactOrEntityClassStream.collect(Collectors.toSet());
-        // And finally log the successful completion of processing.
-        if (LOGGER.isTraceEnabled()) {
-            LOGGER.trace("    Model annotations parsed for solution {}:", solutionClass.getSimpleName());
-            for (Map.Entry<Class<?>, EntityDescriptor<Solution_>> entry : entityDescriptorMap.entrySet()) {
-                EntityDescriptor<Solution_> entityDescriptor = entry.getValue();
-                LOGGER.trace("        Entity {}:", entityDescriptor.getEntityClass().getSimpleName());
-                for (VariableDescriptor<Solution_> variableDescriptor : entityDescriptor.getDeclaredVariableDescriptors()) {
-                    LOGGER.trace("            {} variable {} ({})",
-                            variableDescriptor instanceof GenuineVariableDescriptor ? "Genuine" : "Shadow",
-                            variableDescriptor.getVariableName(),
-                            variableDescriptor.getMemberAccessorSpeedNote());
-                }
-            }
-        }
-        initSolutionCloner(descriptorPolicy);
     }
 
     private void determineGlobalShadowOrder() {
