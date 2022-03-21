@@ -44,7 +44,8 @@ class HardSoftBigDecimalScoreInlinerTest
                 new HardSoftBigDecimalScoreInliner(constraintMatchEnabled);
 
         HardSoftBigDecimalScore constraintWeight = HardSoftBigDecimalScore.ofHard(BigDecimal.valueOf(90));
-        WeightedScoreImpacter hardImpacter = scoreInliner.buildWeightedScoreImpacter(buildConstraint(constraintWeight), constraintWeight);
+        WeightedScoreImpacter hardImpacter =
+                scoreInliner.buildWeightedScoreImpacter(buildConstraint(constraintWeight), constraintWeight);
         UndoScoreImpacter undo1 = hardImpacter.impactScore(BigDecimal.ONE, EMPTY_JUSTIFICATIONS_SUPPLIER);
         assertThat(scoreInliner.extractScore(0))
                 .isEqualTo(HardSoftBigDecimalScore.of(BigDecimal.valueOf(90), BigDecimal.ZERO));
@@ -68,7 +69,8 @@ class HardSoftBigDecimalScoreInlinerTest
                 new HardSoftBigDecimalScoreInliner(constraintMatchEnabled);
 
         HardSoftBigDecimalScore constraintWeight = HardSoftBigDecimalScore.ofSoft(BigDecimal.valueOf(90));
-        WeightedScoreImpacter hardImpacter = scoreInliner.buildWeightedScoreImpacter(buildConstraint(constraintWeight), constraintWeight);
+        WeightedScoreImpacter hardImpacter =
+                scoreInliner.buildWeightedScoreImpacter(buildConstraint(constraintWeight), constraintWeight);
         UndoScoreImpacter undo1 = hardImpacter.impactScore(BigDecimal.ONE, EMPTY_JUSTIFICATIONS_SUPPLIER);
         assertThat(scoreInliner.extractScore(0))
                 .isEqualTo(HardSoftBigDecimalScore.of(BigDecimal.ZERO, BigDecimal.valueOf(90)));
@@ -92,7 +94,8 @@ class HardSoftBigDecimalScoreInlinerTest
                 new HardSoftBigDecimalScoreInliner(constraintMatchEnabled);
 
         HardSoftBigDecimalScore constraintWeight = HardSoftBigDecimalScore.of(BigDecimal.valueOf(10), BigDecimal.valueOf(100));
-        WeightedScoreImpacter hardImpacter = scoreInliner.buildWeightedScoreImpacter(buildConstraint(constraintWeight), constraintWeight);
+        WeightedScoreImpacter hardImpacter =
+                scoreInliner.buildWeightedScoreImpacter(buildConstraint(constraintWeight), constraintWeight);
         UndoScoreImpacter undo1 = hardImpacter.impactScore(BigDecimal.TEN, EMPTY_JUSTIFICATIONS_SUPPLIER);
         assertThat(scoreInliner.extractScore(0))
                 .isEqualTo(HardSoftBigDecimalScore.of(BigDecimal.valueOf(100), BigDecimal.valueOf(1000)));

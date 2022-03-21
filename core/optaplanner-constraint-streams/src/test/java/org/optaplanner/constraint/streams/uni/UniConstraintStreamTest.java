@@ -288,16 +288,16 @@ public class UniConstraintStreamTest extends AbstractConstraintStreamTest implem
         InnerScoreDirector<TestdataLavishSolution, SimpleScore> scoreDirector = buildScoreDirector(
                 TestdataLavishSolution.buildSolutionDescriptor(),
                 factory -> new Constraint[] {
-                    // A.join(B)
-                    factory.forEach(TestdataLavishEntity.class)
-                    .join(TestdataLavishValue.class,
-                            equal(TestdataLavishEntity::getValue, value -> value))
-                    .penalize("testConstraint1", SimpleScore.ONE),
-                    // B.join(A)
-                    factory.forEach(TestdataLavishValue.class)
-                    .join(TestdataLavishEntity.class,
-                            equal(value -> value, TestdataLavishEntity::getValue))
-                    .penalize("testConstraint2", SimpleScore.ONE),
+                        // A.join(B)
+                        factory.forEach(TestdataLavishEntity.class)
+                                .join(TestdataLavishValue.class,
+                                        equal(TestdataLavishEntity::getValue, value -> value))
+                                .penalize("testConstraint1", SimpleScore.ONE),
+                        // B.join(A)
+                        factory.forEach(TestdataLavishValue.class)
+                                .join(TestdataLavishEntity.class,
+                                        equal(value -> value, TestdataLavishEntity::getValue))
+                                .penalize("testConstraint2", SimpleScore.ONE),
                 });
 
         // From scratch

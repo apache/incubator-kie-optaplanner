@@ -30,7 +30,6 @@ import org.optaplanner.constraint.streams.bavet.common.AbstractNode;
 import org.optaplanner.constraint.streams.bavet.common.BavetTupleState;
 import org.optaplanner.constraint.streams.bavet.common.index.Indexer;
 import org.optaplanner.constraint.streams.bavet.tri.JoinTriNode;
-import org.optaplanner.constraint.streams.bavet.uni.UniScorer;
 import org.optaplanner.constraint.streams.bavet.uni.UniTuple;
 
 public final class JoinBiNode<A, B> extends AbstractNode {

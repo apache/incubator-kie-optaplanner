@@ -16,14 +16,11 @@
 
 package org.optaplanner.constraint.streams.bavet;
 
-import java.util.Map;
 import java.util.Set;
 import java.util.function.Function;
 
 import org.optaplanner.constraint.streams.bavet.common.BavetAbstractConstraintStream;
 import org.optaplanner.constraint.streams.bavet.common.BavetScoringConstraintStream;
-import org.optaplanner.constraint.streams.bavet.uni.BavetForEachUniConstraintStream;
-import org.optaplanner.constraint.streams.bavet.uni.ForEachUniNode;
 import org.optaplanner.constraint.streams.common.AbstractConstraint;
 import org.optaplanner.constraint.streams.common.ScoreImpactType;
 import org.optaplanner.core.api.score.Score;

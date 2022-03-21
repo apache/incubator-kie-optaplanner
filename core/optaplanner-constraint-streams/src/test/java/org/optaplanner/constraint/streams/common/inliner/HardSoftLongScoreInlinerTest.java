@@ -42,7 +42,8 @@ class HardSoftLongScoreInlinerTest extends AbstractScoreInlinerTest<TestdataHard
                 new HardSoftLongScoreInliner(constraintMatchEnabled);
 
         HardSoftLongScore constraintWeight = HardSoftLongScore.ofHard(90);
-        WeightedScoreImpacter hardImpacter = scoreInliner.buildWeightedScoreImpacter(buildConstraint(constraintWeight), constraintWeight);
+        WeightedScoreImpacter hardImpacter =
+                scoreInliner.buildWeightedScoreImpacter(buildConstraint(constraintWeight), constraintWeight);
         UndoScoreImpacter undo1 = hardImpacter.impactScore(1, EMPTY_JUSTIFICATIONS_SUPPLIER);
         assertThat(scoreInliner.extractScore(0))
                 .isEqualTo(HardSoftLongScore.of(90, 0));
@@ -66,7 +67,8 @@ class HardSoftLongScoreInlinerTest extends AbstractScoreInlinerTest<TestdataHard
                 new HardSoftLongScoreInliner(constraintMatchEnabled);
 
         HardSoftLongScore constraintWeight = HardSoftLongScore.ofSoft(90);
-        WeightedScoreImpacter hardImpacter = scoreInliner.buildWeightedScoreImpacter(buildConstraint(constraintWeight), constraintWeight);
+        WeightedScoreImpacter hardImpacter =
+                scoreInliner.buildWeightedScoreImpacter(buildConstraint(constraintWeight), constraintWeight);
         UndoScoreImpacter undo1 = hardImpacter.impactScore(1, EMPTY_JUSTIFICATIONS_SUPPLIER);
         assertThat(scoreInliner.extractScore(0))
                 .isEqualTo(HardSoftLongScore.of(0, 90));
@@ -90,7 +92,8 @@ class HardSoftLongScoreInlinerTest extends AbstractScoreInlinerTest<TestdataHard
                 new HardSoftLongScoreInliner(constraintMatchEnabled);
 
         HardSoftLongScore constraintWeight = HardSoftLongScore.of(10, 100);
-        WeightedScoreImpacter hardImpacter = scoreInliner.buildWeightedScoreImpacter(buildConstraint(constraintWeight), constraintWeight);
+        WeightedScoreImpacter hardImpacter =
+                scoreInliner.buildWeightedScoreImpacter(buildConstraint(constraintWeight), constraintWeight);
         UndoScoreImpacter undo1 = hardImpacter.impactScore(10, EMPTY_JUSTIFICATIONS_SUPPLIER);
         assertThat(scoreInliner.extractScore(0))
                 .isEqualTo(HardSoftLongScore.of(100, 1_000));

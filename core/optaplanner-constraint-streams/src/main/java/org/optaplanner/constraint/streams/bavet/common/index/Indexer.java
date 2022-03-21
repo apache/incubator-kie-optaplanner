@@ -37,14 +37,15 @@ import org.optaplanner.constraint.streams.bavet.common.Tuple;
  * The fact X is wrapped in a Tuple, because the {@link BavetTupleState} is needed by clients of {@link #get(Object[])}.
  *
  * @param <Tuple_> For example for {@code from(A).join(B)}, the tuple is {@code UniTuple<A>} xor {@code UniTuple<B>}.
- *                  For example for {@code Bi<A, B>.join(C)}, the tuple is {@code BiTuple<A, B>} xor {@code UniTuple<C>}.
+ *        For example for {@code Bi<A, B>.join(C)}, the tuple is {@code BiTuple<A, B>} xor {@code UniTuple<C>}.
  * @param <Value_> For example for {@code from(A).join(B)}, the value is {@code Set<BiTuple<A, B>>}.
- *                 For example for {@code Bi<A, B>.join(C)}, the value is {@code Set<TriTuple<A, B, C>>}.
+ *        For example for {@code Bi<A, B>.join(C)}, the value is {@code Set<TriTuple<A, B, C>>}.
  */
 public interface Indexer<Tuple_ extends Tuple, Value_> {
 
     /**
      * Differs from {@link Map#put(Object, Object)} because it fails if the key already exists.
+     * 
      * @param indexProperties never null
      * @param tuple never null
      * @param value never null
@@ -54,6 +55,7 @@ public interface Indexer<Tuple_ extends Tuple, Value_> {
 
     /**
      * Differs from {@link Map#remove(Object)} because it fails if the key does not exist.
+     * 
      * @param indexProperties never null
      * @param tuple never null
      * @return never null

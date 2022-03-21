@@ -16,19 +16,19 @@
 
 package org.optaplanner.constraint.streams.bavet.common.index;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+
 import org.junit.jupiter.api.Test;
 import org.optaplanner.constraint.streams.bavet.uni.UniTuple;
 import org.optaplanner.core.impl.score.stream.JoinerType;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 class EqualsAndComparisonIndexerTest {
 
     @Test
     void getEmpty() {
         Indexer<UniTuple<String>, String> indexer = new EqualsAndComparisonIndexer<>(JoinerType.LESS_THAN_OR_EQUAL);
-        assertThat(indexer.get(new Object[]{"F", Integer.valueOf(40)}))
+        assertThat(indexer.get(new Object[] { "F", Integer.valueOf(40) }))
                 .isNotNull()
                 .isEmpty();
     }
@@ -37,8 +37,8 @@ class EqualsAndComparisonIndexerTest {
     void putTwice() {
         Indexer<UniTuple<String>, String> indexer = new EqualsAndComparisonIndexer<>(JoinerType.LESS_THAN_OR_EQUAL);
         UniTuple<String> annTuple = new UniTuple<>("Ann-F-40");
-        indexer.put(new Object[]{"F", Integer.valueOf(40)}, annTuple, "Ann value");
-        assertThatThrownBy(() -> indexer.put(new Object[]{"F", Integer.valueOf(40)}, annTuple, "Ann value"))
+        indexer.put(new Object[] { "F", Integer.valueOf(40) }, annTuple, "Ann value");
+        assertThatThrownBy(() -> indexer.put(new Object[] { "F", Integer.valueOf(40) }, annTuple, "Ann value"))
                 .isInstanceOf(IllegalStateException.class);
     }
 
@@ -46,14 +46,14 @@ class EqualsAndComparisonIndexerTest {
     void removeTwice() {
         Indexer<UniTuple<String>, String> indexer = new EqualsAndComparisonIndexer<>(JoinerType.LESS_THAN_OR_EQUAL);
         UniTuple<String> annTuple = new UniTuple<>("Ann-F-40");
-        indexer.put(new Object[]{"F", Integer.valueOf(40)}, annTuple, "Ann value");
+        indexer.put(new Object[] { "F", Integer.valueOf(40) }, annTuple, "Ann value");
 
         UniTuple<String> ednaTuple = new UniTuple<>("Edna-F-40");
-        assertThatThrownBy(() -> indexer.remove(new Object[]{"F", Integer.valueOf(40)}, ednaTuple))
+        assertThatThrownBy(() -> indexer.remove(new Object[] { "F", Integer.valueOf(40) }, ednaTuple))
                 .isInstanceOf(IllegalStateException.class);
-        assertThat(indexer.remove(new Object[]{"F", Integer.valueOf(40)}, annTuple))
+        assertThat(indexer.remove(new Object[] { "F", Integer.valueOf(40) }, annTuple))
                 .isEqualTo("Ann value");
-        assertThatThrownBy(() -> indexer.remove(new Object[]{"F", Integer.valueOf(40)}, annTuple))
+        assertThatThrownBy(() -> indexer.remove(new Object[] { "F", Integer.valueOf(40) }, annTuple))
                 .isInstanceOf(IllegalStateException.class);
     }
 
@@ -62,24 +62,24 @@ class EqualsAndComparisonIndexerTest {
         Indexer<UniTuple<String>, String> indexer = new EqualsAndComparisonIndexer<>(JoinerType.LESS_THAN_OR_EQUAL);
 
         UniTuple<String> annTuple = new UniTuple<>("Ann-F-40");
-        indexer.put(new Object[]{"F", Integer.valueOf(40)}, annTuple, "Ann value");
+        indexer.put(new Object[] { "F", Integer.valueOf(40) }, annTuple, "Ann value");
         UniTuple<String> bethTuple = new UniTuple<>("Beth-F-30");
-        indexer.put(new Object[]{"F", Integer.valueOf(30)}, bethTuple, "Beth value");
-        indexer.put(new Object[]{"M", Integer.valueOf(40)}, new UniTuple<>("Carl-M-40"), "Carl value");
-        indexer.put(new Object[]{"M", Integer.valueOf(30)}, new UniTuple<>("Dan-M-30"), "Dan value");
+        indexer.put(new Object[] { "F", Integer.valueOf(30) }, bethTuple, "Beth value");
+        indexer.put(new Object[] { "M", Integer.valueOf(40) }, new UniTuple<>("Carl-M-40"), "Carl value");
+        indexer.put(new Object[] { "M", Integer.valueOf(30) }, new UniTuple<>("Dan-M-30"), "Dan value");
         UniTuple<String> ednaTuple = new UniTuple<>("Edna-F-40");
-        indexer.put(new Object[]{"F", Integer.valueOf(40)}, ednaTuple, "Edna value");
+        indexer.put(new Object[] { "F", Integer.valueOf(40) }, ednaTuple, "Edna value");
 
-        assertThat(indexer.get(new Object[]{"F", Integer.valueOf(40)}))
+        assertThat(indexer.get(new Object[] { "F", Integer.valueOf(40) }))
                 .isNotNull()
                 .containsOnlyKeys(annTuple, bethTuple, ednaTuple);
-        assertThat(indexer.get(new Object[]{"F", Integer.valueOf(35)}))
+        assertThat(indexer.get(new Object[] { "F", Integer.valueOf(35) }))
                 .isNotNull()
                 .containsOnlyKeys(bethTuple);
-        assertThat(indexer.get(new Object[]{"F", Integer.valueOf(30)}))
+        assertThat(indexer.get(new Object[] { "F", Integer.valueOf(30) }))
                 .isNotNull()
                 .containsOnlyKeys(bethTuple);
-        assertThat(indexer.get(new Object[]{"F", Integer.valueOf(20)}))
+        assertThat(indexer.get(new Object[] { "F", Integer.valueOf(20) }))
                 .isNotNull()
                 .isEmpty();
     }

@@ -16,8 +16,6 @@
 
 package org.optaplanner.constraint.streams.common.inliner;
 
-import java.util.Map;
-
 import org.optaplanner.core.api.score.buildin.hardmediumsoft.HardMediumSoftScore;
 import org.optaplanner.core.api.score.stream.Constraint;
 

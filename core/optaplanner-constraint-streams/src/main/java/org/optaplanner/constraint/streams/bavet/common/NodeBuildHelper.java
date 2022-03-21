@@ -104,7 +104,7 @@ public class NodeBuildHelper<Score_ extends Score<Score_>> {
         }
         return aggregatedInsert;
     }
-    
+
     public <Tuple_ extends Tuple> Consumer<Tuple_> getAggregatedRetract(List<? extends ConstraintStream> streamList) {
         Consumer<Tuple_> aggregatedRetract = null;
         for (ConstraintStream stream : streamList) {

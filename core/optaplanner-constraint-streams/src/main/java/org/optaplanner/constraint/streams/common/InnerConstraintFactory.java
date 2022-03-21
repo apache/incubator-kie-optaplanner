@@ -230,7 +230,8 @@ public abstract class InnerConstraintFactory<Solution_, Constraint_ extends Cons
                     + "Maybe don't include any null elements in the " + Constraint.class.getSimpleName() + " array.");
         }
         // Fail fast on duplicate constraint IDs.
-        Map<String, List<Constraint>> constraintsPerIdMap = Arrays.stream(constraints).collect(groupingBy(Constraint::getConstraintId));
+        Map<String, List<Constraint>> constraintsPerIdMap =
+                Arrays.stream(constraints).collect(groupingBy(Constraint::getConstraintId));
         constraintsPerIdMap.forEach((constraintId, duplicateConstraintList) -> {
             if (duplicateConstraintList.size() > 1) {
                 throw new IllegalStateException("There are multiple constraints with the same ID (" + constraintId + ").");

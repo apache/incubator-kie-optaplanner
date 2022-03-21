@@ -17,7 +17,6 @@
 package org.optaplanner.constraint.streams.common.inliner;
 
 import java.math.BigDecimal;
-import java.util.Map;
 
 import org.optaplanner.core.api.score.buildin.simplebigdecimal.SimpleBigDecimalScore;
 import org.optaplanner.core.api.score.stream.Constraint;

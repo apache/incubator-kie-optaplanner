@@ -74,7 +74,8 @@ public abstract class AbstractScoreInliner<Score_ extends Score<Score_>> {
                     bendableScoreDefinition.getSoftLevelsSize());
         } else if (scoreDefinition instanceof BendableLongScoreDefinition) {
             BendableLongScoreDefinition bendableScoreDefinition = (BendableLongScoreDefinition) scoreDefinition;
-            return (ScoreInliner_) new BendableLongScoreInliner(constraintMatchEnabled, bendableScoreDefinition.getHardLevelsSize(),
+            return (ScoreInliner_) new BendableLongScoreInliner(constraintMatchEnabled,
+                    bendableScoreDefinition.getHardLevelsSize(),
                     bendableScoreDefinition.getSoftLevelsSize());
         } else if (scoreDefinition instanceof BendableBigDecimalScoreDefinition) {
             BendableBigDecimalScoreDefinition bendableScoreDefinition = (BendableBigDecimalScoreDefinition) scoreDefinition;

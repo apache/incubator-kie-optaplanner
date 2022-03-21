@@ -18,7 +18,6 @@ package org.optaplanner.constraint.streams.common.inliner;
 
 import java.math.BigDecimal;
 import java.util.Arrays;
-import java.util.Map;
 
 import org.optaplanner.core.api.score.buildin.bendablebigdecimal.BendableBigDecimalScore;
 import org.optaplanner.core.api.score.stream.Constraint;

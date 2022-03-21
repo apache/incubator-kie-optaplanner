@@ -17,8 +17,6 @@
 package org.optaplanner.constraint.streams.bavet.common.index;
 
 import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Objects;

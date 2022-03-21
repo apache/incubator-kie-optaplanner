@@ -17,15 +17,12 @@
 package org.optaplanner.constraint.streams.bavet.common.index;
 
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
-import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.NavigableMap;
 import java.util.Objects;
-import java.util.Set;
 import java.util.TreeMap;
 import java.util.stream.Collectors;
 
@@ -46,7 +43,8 @@ public final class EqualsAndComparisonIndexer<Tuple_ extends Tuple, Value_> impl
         Objects.requireNonNull(value);
         IndexerKey equalsIndexKey = new IndexerKey(Arrays.copyOfRange(indexProperties, 0, indexProperties.length - 1));
         Object comparisonIndexProperty = indexProperties[indexProperties.length - 1];
-        NavigableMap<Object, Map<Tuple_, Value_>> comparisonMap = equalsMap.computeIfAbsent(equalsIndexKey, k -> new TreeMap<>());
+        NavigableMap<Object, Map<Tuple_, Value_>> comparisonMap =
+                equalsMap.computeIfAbsent(equalsIndexKey, k -> new TreeMap<>());
         Map<Tuple_, Value_> tupleMap = comparisonMap.computeIfAbsent(comparisonIndexProperty, k -> new LinkedHashMap<>());
         Value_ old = tupleMap.put(tuple, value);
         if (old != null) {

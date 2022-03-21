@@ -43,7 +43,8 @@ class HardMediumSoftScoreInlinerTest
                 new HardMediumSoftScoreInliner(constraintMatchEnabled);
 
         HardMediumSoftScore constraintWeight = HardMediumSoftScore.ofHard(90);
-        WeightedScoreImpacter hardImpacter = scoreInliner.buildWeightedScoreImpacter(buildConstraint(constraintWeight), constraintWeight);
+        WeightedScoreImpacter hardImpacter =
+                scoreInliner.buildWeightedScoreImpacter(buildConstraint(constraintWeight), constraintWeight);
         UndoScoreImpacter undo1 = hardImpacter.impactScore(1, EMPTY_JUSTIFICATIONS_SUPPLIER);
         assertThat(scoreInliner.extractScore(0))
                 .isEqualTo(HardMediumSoftScore.of(90, 0, 0));
@@ -67,7 +68,8 @@ class HardMediumSoftScoreInlinerTest
                 new HardMediumSoftScoreInliner(constraintMatchEnabled);
 
         HardMediumSoftScore constraintWeight = HardMediumSoftScore.ofMedium(90);
-        WeightedScoreImpacter hardImpacter = scoreInliner.buildWeightedScoreImpacter(buildConstraint(constraintWeight), constraintWeight);
+        WeightedScoreImpacter hardImpacter =
+                scoreInliner.buildWeightedScoreImpacter(buildConstraint(constraintWeight), constraintWeight);
         UndoScoreImpacter undo1 = hardImpacter.impactScore(1, EMPTY_JUSTIFICATIONS_SUPPLIER);
         assertThat(scoreInliner.extractScore(0))
                 .isEqualTo(HardMediumSoftScore.of(0, 90, 0));
@@ -91,7 +93,8 @@ class HardMediumSoftScoreInlinerTest
                 new HardMediumSoftScoreInliner(constraintMatchEnabled);
 
         HardMediumSoftScore constraintWeight = HardMediumSoftScore.ofSoft(90);
-        WeightedScoreImpacter hardImpacter = scoreInliner.buildWeightedScoreImpacter(buildConstraint(constraintWeight), constraintWeight);
+        WeightedScoreImpacter hardImpacter =
+                scoreInliner.buildWeightedScoreImpacter(buildConstraint(constraintWeight), constraintWeight);
         UndoScoreImpacter undo1 = hardImpacter.impactScore(1, EMPTY_JUSTIFICATIONS_SUPPLIER);
         assertThat(scoreInliner.extractScore(0))
                 .isEqualTo(HardMediumSoftScore.of(0, 0, 90));
@@ -115,7 +118,8 @@ class HardMediumSoftScoreInlinerTest
                 new HardMediumSoftScoreInliner(constraintMatchEnabled);
 
         HardMediumSoftScore constraintWeight = HardMediumSoftScore.of(10, 100, 1_000);
-        WeightedScoreImpacter hardImpacter = scoreInliner.buildWeightedScoreImpacter(buildConstraint(constraintWeight), constraintWeight);
+        WeightedScoreImpacter hardImpacter =
+                scoreInliner.buildWeightedScoreImpacter(buildConstraint(constraintWeight), constraintWeight);
         UndoScoreImpacter undo1 = hardImpacter.impactScore(10, EMPTY_JUSTIFICATIONS_SUPPLIER);
         assertThat(scoreInliner.extractScore(0))
                 .isEqualTo(HardMediumSoftScore.of(100, 1_000, 10_000));

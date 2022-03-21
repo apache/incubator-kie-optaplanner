@@ -76,5 +76,4 @@ public final class BavetGroupBridgeBiConstraintStream<Solution_, A, B, NewA, Res
         buildHelper.putInsertRetract(this, node::insertAB, node::retractAB);
     }
 
-
 }

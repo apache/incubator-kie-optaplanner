@@ -19,8 +19,6 @@ package org.optaplanner.constraint.streams.bavet.common;
 import java.util.Set;
 
 import org.optaplanner.constraint.streams.bavet.BavetConstraint;
-import org.optaplanner.constraint.streams.common.inliner.AbstractScoreInliner;
-import org.optaplanner.core.api.score.Score;
 
 public interface BavetScoringConstraintStream<Solution_> {
 
