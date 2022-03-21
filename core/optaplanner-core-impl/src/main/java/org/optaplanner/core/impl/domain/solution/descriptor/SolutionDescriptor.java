@@ -1026,6 +1026,13 @@ public class SolutionDescriptor<Solution_> {
         return result.longValue();
     }
 
+    public int countListValues(Solution_ solution) {
+        long valueCount = streamListVariableDescriptors()
+                .mapToLong(variableDescriptor -> variableDescriptor.getValueCount(solution, null))
+                .sum();
+        return Math.toIntExact(valueCount);
+    }
+
     /**
      * Calculates the number of elements that need to be processed in the Construction Heuristics phase.
      * The negative value of this is the {@code initScore}. It represents how many Construction Heuristics steps need to

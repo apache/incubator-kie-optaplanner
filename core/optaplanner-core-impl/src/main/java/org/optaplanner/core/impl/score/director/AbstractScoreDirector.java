@@ -375,10 +375,12 @@ public abstract class AbstractScoreDirector<Solution_, Score_ extends Score<Scor
     }
 
     public void beforeEntityAdded(EntityDescriptor<Solution_> entityDescriptor, Object entity) {
+        workingInitScore += getSolutionDescriptor().countListValues(workingSolution);
         variableListenerSupport.beforeEntityAdded(entityDescriptor, entity);
     }
 
     public void afterEntityAdded(EntityDescriptor<Solution_> entityDescriptor, Object entity) {
+        workingInitScore -= getSolutionDescriptor().countListValues(workingSolution);
         workingInitScore -= entityDescriptor.countUninitializedVariables(entity);
         if (lookUpEnabled) {
             lookUpManager.addWorkingObject(entity);
@@ -417,11 +419,13 @@ public abstract class AbstractScoreDirector<Solution_, Score_ extends Score<Scor
     }
 
     public void beforeEntityRemoved(EntityDescriptor<Solution_> entityDescriptor, Object entity) {
+        workingInitScore += getSolutionDescriptor().countListValues(workingSolution);
         workingInitScore += entityDescriptor.countUninitializedVariables(entity);
         variableListenerSupport.beforeEntityRemoved(entityDescriptor, entity);
     }
 
     public void afterEntityRemoved(EntityDescriptor<Solution_> entityDescriptor, Object entity) {
+        workingInitScore -= getSolutionDescriptor().countListValues(workingSolution);
         if (lookUpEnabled) {
             lookUpManager.removeWorkingObject(entity);
         }
@@ -437,11 +441,12 @@ public abstract class AbstractScoreDirector<Solution_, Score_ extends Score<Scor
 
     @Override
     public void beforeProblemFactAdded(Object problemFact) {
-        // Do nothing
+        workingInitScore += getSolutionDescriptor().countListValues(workingSolution);
     }
 
     @Override
     public void afterProblemFactAdded(Object problemFact) {
+        workingInitScore -= getSolutionDescriptor().countListValues(workingSolution);
         if (lookUpEnabled) {
             lookUpManager.addWorkingObject(problemFact);
         }
@@ -464,6 +469,7 @@ public abstract class AbstractScoreDirector<Solution_, Score_ extends Score<Scor
 
     @Override
     public void beforeProblemFactRemoved(Object problemFact) {
+        workingInitScore += getSolutionDescriptor().countListValues(workingSolution);
         if (isConstraintConfiguration(problemFact)) {
             throw new IllegalStateException("Attempted to remove constraint configuration (" + problemFact +
                     ") from solution (" + workingSolution + ").\n" +
@@ -473,6 +479,7 @@ public abstract class AbstractScoreDirector<Solution_, Score_ extends Score<Scor
 
     @Override
     public void afterProblemFactRemoved(Object problemFact) {
+        workingInitScore -= getSolutionDescriptor().countListValues(workingSolution);
         if (lookUpEnabled) {
             lookUpManager.removeWorkingObject(problemFact);
         }
