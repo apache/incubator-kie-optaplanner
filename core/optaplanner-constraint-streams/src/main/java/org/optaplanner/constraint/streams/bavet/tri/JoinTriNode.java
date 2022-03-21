@@ -78,7 +78,6 @@ public final class JoinTriNode<A, B, C> extends AbstractNode {
         indexerAB.put(indexProperties, tupleAB, tupleABCSetAB);
 
         tupleABCSetMapC.forEach((tupleC, tupleABCSetC) -> {
-            // TODO What if tupleC is dying?
             TriTuple<A, B, C> tupleABC = new TriTuple<>(tupleAB.factA, tupleAB.factB, tupleC.factA);
             tupleABC.state = BavetTupleState.CREATING;
             tupleABCSetAB.add(tupleABC);
@@ -126,7 +125,6 @@ public final class JoinTriNode<A, B, C> extends AbstractNode {
         indexerC.put(indexProperties, tupleC, tupleABCSetC);
 
         tupleABCSetMapAB.forEach((tupleAB, tupleABCSetAB) -> {
-            // TODO What if tupleAB is dying?
             TriTuple<A, B, C> tupleABC = new TriTuple<>(tupleAB.factA, tupleAB.factB, tupleC.factA);
             tupleABC.state = BavetTupleState.CREATING;
             tupleABCSetC.add(tupleABC);

@@ -77,7 +77,6 @@ public final class JoinBiNode<A, B> extends AbstractNode {
         indexerA.put(indexProperties, tupleA, tupleABSetA);
 
         tupleABSetMapB.forEach((tupleB, tupleABSetB) -> {
-            // TODO What if tupleB is dying?
             BiTuple<A, B> tupleAB = new BiTuple<>(tupleA.factA, tupleB.factA);
             tupleAB.state = BavetTupleState.CREATING;
             tupleABSetA.add(tupleAB);
@@ -125,7 +124,6 @@ public final class JoinBiNode<A, B> extends AbstractNode {
         indexerB.put(indexProperties, tupleB, tupleABSetB);
 
         tupleABSetMapB.forEach((tupleA, tupleABSetA) -> {
-            // TODO What if tupleA is dying?
             BiTuple<A, B> tupleAB = new BiTuple<>(tupleA.factA, tupleB.factA);
             tupleAB.state = BavetTupleState.CREATING;
             tupleABSetB.add(tupleAB);
