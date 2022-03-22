@@ -153,6 +153,7 @@ public final class DefaultSolverJob<Solution_, ProblemId_> implements SolverJob<
 
     private void solvingTerminated() {
         solverStatus = SolverStatus.NOT_SOLVING;
+        bestSolutionHolder.cancelPendingChanges();
         solverManager.unregisterSolverJob(problemId);
         terminatedLatch.countDown();
     }
