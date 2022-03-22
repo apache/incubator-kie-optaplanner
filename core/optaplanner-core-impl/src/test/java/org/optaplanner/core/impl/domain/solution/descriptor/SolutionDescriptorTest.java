@@ -350,13 +350,13 @@ class SolutionDescriptorTest {
         TestdataSolution solution = TestdataSolution.generateSolution(valueCount, entityCount);
         SolutionDescriptor<TestdataSolution> solutionDescriptor = TestdataSolution.buildSolutionDescriptor();
 
-        assertThat(solutionDescriptor.countUninitialized(solution)).isZero();
+        assertThat(solutionDescriptor.countUninitializedVariables(solution)).isZero();
 
         solution.getEntityList().get(0).setValue(null);
-        assertThat(solutionDescriptor.countUninitialized(solution)).isOne();
+        assertThat(solutionDescriptor.countUninitializedVariables(solution)).isOne();
 
         solution.getEntityList().forEach(entity -> entity.setValue(null));
-        assertThat(solutionDescriptor.countUninitialized(solution)).isEqualTo(entityCount);
+        assertThat(solutionDescriptor.countUninitializedVariables(solution)).isEqualTo(entityCount);
     }
 
     @Test
@@ -366,7 +366,7 @@ class SolutionDescriptorTest {
         TestdataListSolution solution = TestdataListSolution.generateInitializedSolution(valueCount, entityCount);
         SolutionDescriptor<TestdataListSolution> solutionDescriptor = TestdataListSolution.buildSolutionDescriptor();
 
-        assertThat(solutionDescriptor.countUninitialized(solution)).isZero();
+        assertThat(solutionDescriptor.countUnassignedValues(solution)).isZero();
 
         List<TestdataListValue> valueList = solution.getEntityList().get(0).getValueList();
         int unassignedValueCount = valueList.size();
@@ -376,7 +376,7 @@ class SolutionDescriptorTest {
             value.setIndex(null);
         });
         valueList.clear();
-        assertThat(solutionDescriptor.countUninitialized(solution)).isEqualTo(unassignedValueCount);
+        assertThat(solutionDescriptor.countUnassignedValues(solution)).isEqualTo(unassignedValueCount);
     }
 
     @Test

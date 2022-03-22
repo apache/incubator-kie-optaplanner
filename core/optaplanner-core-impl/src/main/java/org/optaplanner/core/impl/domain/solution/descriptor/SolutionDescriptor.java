@@ -1034,17 +1034,24 @@ public class SolutionDescriptor<Solution_> {
     }
 
     /**
-     * Calculates the number of elements that need to be processed in the Construction Heuristics phase.
-     * The negative value of this is the {@code initScore}. It represents how many Construction Heuristics steps need to
-     * be taken before the solution is fully initialized.
+     * Counts the number of uninitialized basic planning variables on all entities.
      *
      * @param solution never null
      * @return {@code >= 0}
      */
-    public int countUninitialized(Solution_ solution) {
-        return countUnassignedValues(solution) + countUninitializedVariables(solution);
+    public int countUninitializedVariables(Solution_ solution) {
+        MutableInt result = new MutableInt();
+        visitAllEntities(solution,
+                entity -> result.add(findEntityDescriptorOrFail(entity.getClass()).countUninitializedVariables(entity)));
+        return result.intValue();
     }
 
+    /**
+     * Counts the number of elements from list variable value ranges, that are not assigned to any list variable.
+     *
+     * @param solution never null
+     * @return {@code >= 0}
+     */
     public int countUnassignedValues(Solution_ solution) {
         int unassignedValueCount = 0;
         for (ListVariableDescriptor<Solution_> listVariableDescriptor : listVariableDescriptors) {
@@ -1060,13 +1067,6 @@ public class SolutionDescriptor<Solution_> {
                 entity -> assignedValuesCount.add(variableDescriptor.getListSize(entity)));
         // TODO maybe detect duplicates and elements that are outside the value range
         return Math.toIntExact(totalValueCount - assignedValuesCount.intValue());
-    }
-
-    private int countUninitializedVariables(Solution_ solution) {
-        MutableInt result = new MutableInt();
-        visitAllEntities(solution,
-                entity -> result.add(findEntityDescriptorOrFail(entity.getClass()).countUninitializedVariables(entity)));
-        return result.intValue();
     }
 
     private Stream<Object> extractAllEntitiesStream(Solution_ solution) {
