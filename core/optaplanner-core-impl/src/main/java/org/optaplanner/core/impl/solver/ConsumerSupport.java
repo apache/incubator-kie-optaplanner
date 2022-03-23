@@ -40,25 +40,26 @@ final class ConsumerSupport<Solution_, ProblemId_> implements AutoCloseable {
             BestSolutionHolder<Solution_> bestSolutionHolder) {
         this.problemId = problemId;
         this.bestSolutionConsumer = bestSolutionConsumer;
-        this.finalBestSolutionConsumer = finalBestSolutionConsumer;
+        this.finalBestSolutionConsumer = finalBestSolutionConsumer == null ? finalBestSolution -> {
+        } : finalBestSolutionConsumer;
         this.exceptionHandler = exceptionHandler;
         this.bestSolutionHolder = bestSolutionHolder;
     }
 
     // Called on the Solver thread.
     void consumeIntermediateBestSolution(Solution_ bestSolution, Supplier<Boolean> isEveryProblemChangeProcessed) {
-        if (bestSolutionConsumer == null) {
-            throw new IllegalStateException("No best solution consumer has been defined.");
-        }
+        /*
+         * If the bestSolutionConsumer is not provided, the best solution is still set for the purpose of recording
+         * problem changes.
+         */
         bestSolutionHolder.set(bestSolution, isEveryProblemChangeProcessed);
-        tryConsumeWaitingIntermediateBestSolution();
+        if (bestSolutionConsumer != null) {
+            tryConsumeWaitingIntermediateBestSolution();
+        }
     }
 
     // Called on the Solver thread after Solver#solve() returns.
     void consumeFinalBestSolution(Solution_ finalBestSolution) {
-        if (finalBestSolutionConsumer == null) {
-            throw new IllegalStateException("No final best solution consumer has been defined.");
-        }
         try {
             // Wait for the previous consumption to complete.
             // As the solver has already finished, holding the solver thread is not an issue.
@@ -70,13 +71,21 @@ final class ConsumerSupport<Solution_, ProblemId_> implements AutoCloseable {
         // Make sure the final best solution is consumed by the intermediate best solution consumer first.
         // Situation:
         // The consumer is consuming the last but one best solution. The final best solution is waiting for the consumer.
-        scheduleIntermediateBestSolutionConsumption();
+        if (bestSolutionConsumer != null) {
+            scheduleIntermediateBestSolutionConsumption();
+        }
         consumerExecutor.submit(() -> {
             try {
                 finalBestSolutionConsumer.accept(finalBestSolution);
             } catch (Throwable throwable) {
                 exceptionHandler.accept(problemId, throwable);
             } finally {
+                // If there is no intermediate best solution consumer, complete the problem changes now.
+                if (bestSolutionConsumer == null) {
+                    bestSolutionHolder.take().completeProblemChanges();
+                }
+                // Cancel problem changes that arrived after the solver terminated.
+                bestSolutionHolder.cancelPendingChanges();
                 activeConsumption.release();
             }
         });

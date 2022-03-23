@@ -121,16 +121,13 @@ public final class DefaultSolverJob<Solution_, ProblemId_> implements SolverJob<
             Solution_ problem = problemFinder.apply(problemId);
             // add a phase lifecycle listener that unlock the solver status lock when solving started
             solver.addPhaseLifecycleListener(new UnlockLockPhaseLifecycleListener());
-            if (bestSolutionConsumer != null) {
-                solver.addEventListener(this::onBestSolutionChangedEvent);
-            }
+            solver.addEventListener(this::onBestSolutionChangedEvent);
             final Solution_ finalBestSolution = solver.solve(problem);
-            if (finalBestSolutionConsumer != null) {
-                consumerSupport.consumeFinalBestSolution(finalBestSolution);
-            }
+            consumerSupport.consumeFinalBestSolution(finalBestSolution);
             return finalBestSolution;
         } catch (Exception e) {
             exceptionHandler.accept(problemId, e);
+            bestSolutionHolder.cancelPendingChanges();
             throw new IllegalStateException("Solving failed for problemId (" + problemId + ").", e);
         } finally {
             if (solverStatusModifyingLock.isHeldByCurrentThread()) {
@@ -153,7 +150,6 @@ public final class DefaultSolverJob<Solution_, ProblemId_> implements SolverJob<
 
     private void solvingTerminated() {
         solverStatus = SolverStatus.NOT_SOLVING;
-        bestSolutionHolder.cancelPendingChanges();
         solverManager.unregisterSolverJob(problemId);
         terminatedLatch.countDown();
     }

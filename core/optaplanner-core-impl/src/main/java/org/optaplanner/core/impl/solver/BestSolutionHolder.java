@@ -124,7 +124,7 @@ final class BestSolutionHolder<Solution_> {
             problemChangesPerVersion.values()
                     .stream()
                     .flatMap(Collection::stream)
-                    .forEach(pendingProblemChange -> pendingProblemChange.cancel(true));
+                    .forEach(pendingProblemChange -> pendingProblemChange.cancel(false));
             problemChangesPerVersion.clear();
         } finally {
             problemChangesLock.unlock();
