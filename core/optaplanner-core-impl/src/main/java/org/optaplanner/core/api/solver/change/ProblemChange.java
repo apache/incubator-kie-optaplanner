@@ -37,6 +37,20 @@ import org.optaplanner.core.api.solver.Solver;
 public interface ProblemChange<Solution_> {
 
     /**
+     * Informs if this {@link ProblemChange} uses shadow variables. If so, shadow variables are guaranteed to be
+     * up-to-date before the {@link ProblemChange#doChange(Object, ProblemChangeDirector)} is invoked.
+     * Overriding this method implicates that shadow variables will not be recalculated before this {@link ProblemChange},
+     * which brings performance benefits at the expense that shadow variables' values cannot be relied upon in the
+     * 
+     * @link ProblemChange#doChange(Object, ProblemChangeDirector)} method implementation.
+     *
+     * @return true if this problem change requires up-to-date shadow variables, otherwise false.
+     */
+    default boolean usesShadowVariables() {
+        return true;
+    }
+
+    /**
      * Do the change on the {@link PlanningSolution}. Every modification to the {@link PlanningSolution} must
      * be done via the {@link ProblemChangeDirector}, otherwise the {@link Score} calculation will be corrupted.
      *

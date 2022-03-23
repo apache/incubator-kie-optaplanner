@@ -559,8 +559,7 @@ class SolverManagerTest {
 
         solverStarted.await();
         solverManager.addProblemChange(problemId, (workingSolution, problemChangeDirector) -> {
-            problemChangeDirector.addProblemFact(new TestdataValue("addedValue"),
-                    workingSolution.getValueList()::add);
+            workingSolution.getValueList().add(new TestdataValue("addedValue"));
         });
 
         solutionWithProblemChangeReceived.await();
@@ -578,9 +577,8 @@ class SolverManagerTest {
         final long nonExistingProblemId = 999L;
         assertThatIllegalStateException()
                 .isThrownBy(() -> solverManager.addProblemChange(nonExistingProblemId,
-                        (workingSolution, problemChangeDirector) -> problemChangeDirector.addProblemFact(
-                                new TestdataValue("addedValue"),
-                                workingSolution.getValueList()::add)))
+                        (workingSolution, problemChangeDirector) -> workingSolution.getValueList()
+                                .add(new TestdataValue("addedValue"))))
                 .withMessageContaining(String.valueOf(nonExistingProblemId));
     }
 
@@ -620,10 +618,8 @@ class SolverManagerTest {
                     }
                 });
 
-        solverManager.addProblemChange(secondProblemId, (workingSolution, problemChangeDirector) -> {
-            problemChangeDirector.addProblemFact(new TestdataValue("addedValue"),
-                    workingSolution.getValueList()::add);
-        });
+        solverManager.addProblemChange(secondProblemId, (workingSolution, problemChangeDirector) -> workingSolution
+                .getValueList().add(new TestdataValue("addedValue")));
 
         // The first solver can proceed. When it finishes, the second solver starts solving and picks up the change.
         solvingPausedLatch.countDown();

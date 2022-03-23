@@ -45,7 +45,7 @@ class BasicPlumbingTerminationTest {
 
         SolverScope<TestdataSolution> solverScopeMock = mockSolverScope();
         basicPlumbingTermination.startProblemFactChangesProcessing().removeIf(changeAdapter -> {
-            changeAdapter.doProblemChange(solverScopeMock);
+            changeAdapter.doProblemChange(solverScopeMock, 0);
             return true;
         });
         assertThat(basicPlumbingTermination.waitForRestartSolverDecision()).isFalse();
@@ -64,7 +64,7 @@ class BasicPlumbingTerminationTest {
         assertThat(count).hasValue(0);
         SolverScope<TestdataSolution> solverScopeMock = mockSolverScope();
         basicPlumbingTermination.startProblemFactChangesProcessing().removeIf(problemChangeAdapter -> {
-            problemChangeAdapter.doProblemChange(solverScopeMock);
+            problemChangeAdapter.doProblemChange(solverScopeMock, 0);
             return true;
         });
         assertThat(basicPlumbingTermination.waitForRestartSolverDecision()).isFalse();
@@ -72,9 +72,11 @@ class BasicPlumbingTerminationTest {
     }
 
     private SolverScope<TestdataSolution> mockSolverScope() {
+        SolverScope<TestdataSolution> solverScope = new SolverScope<>();
         InnerScoreDirector<TestdataSolution, ?> scoreDirectorMock = mock(InnerScoreDirector.class);
-        SolverScope<TestdataSolution> solverScopeMock = mock(SolverScope.class);
-        when(solverScopeMock.getProblemChangeDirector()).thenReturn(new DefaultProblemChangeDirector<>(scoreDirectorMock));
-        return solverScopeMock;
+        when(scoreDirectorMock.getWorkingSolution()).thenReturn(TestdataSolution.generateSolution());
+        solverScope.setScoreDirector(scoreDirectorMock);
+        solverScope.setProblemChangeDirector(new DefaultProblemChangeDirector<>(scoreDirectorMock));
+        return solverScope;
     }
 }

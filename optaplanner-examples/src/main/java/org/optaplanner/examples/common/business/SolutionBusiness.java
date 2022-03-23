@@ -329,7 +329,7 @@ public class SolutionBusiness<Solution_, Score_ extends Score<Score_>> implement
             acceptScoreDirector(scoreDirector -> {
                 DefaultProblemChangeDirector<Solution_> problemChangeDirector =
                         new DefaultProblemChangeDirector<>(scoreDirector);
-                problemChangeDirector.doProblemChange(problemChange);
+                problemChange.doChange(scoreDirector.getWorkingSolution(), problemChangeDirector);
             });
         }
     }

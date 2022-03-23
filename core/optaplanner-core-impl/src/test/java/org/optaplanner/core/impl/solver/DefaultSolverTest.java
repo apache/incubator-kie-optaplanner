@@ -709,7 +709,7 @@ class DefaultSolverTest {
 
         solverStarted.await(); // Make sure we submit a ProblemChange only after the Solver started solving.
         solver.addProblemChange((workingSolution, problemChangeDirector) -> {
-            problemChangeDirector.addProblemFact(new TestdataValue("added value"), solution.getValueList()::add);
+            workingSolution.getValueList().add(new TestdataValue("added value"));
         });
 
         solutionWithProblemChangeReceived.await();

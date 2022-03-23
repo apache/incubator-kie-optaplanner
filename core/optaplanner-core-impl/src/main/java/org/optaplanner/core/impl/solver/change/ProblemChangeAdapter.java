@@ -16,9 +16,9 @@
 
 package org.optaplanner.core.impl.solver.change;
 
-import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.solver.ProblemFactChange;
 import org.optaplanner.core.api.solver.change.ProblemChange;
+import org.optaplanner.core.impl.score.director.InnerScoreDirector;
 import org.optaplanner.core.impl.solver.scope.SolverScope;
 
 /**
@@ -27,16 +27,21 @@ import org.optaplanner.core.impl.solver.scope.SolverScope;
  */
 public interface ProblemChangeAdapter<Solution_> {
 
-    Score<?> doProblemChange(SolverScope<Solution_> solverScope);
+    void doProblemChange(SolverScope<Solution_> solverScope, int stepIndex);
 
     static <Solution_> ProblemChangeAdapter<Solution_> create(ProblemFactChange<Solution_> problemFactChange) {
-        return solverScope -> {
-            problemFactChange.doChange(solverScope.getScoreDirector());
-            return solverScope.calculateScore();
-        };
+        return (solverScope, stepIndex) -> problemFactChange.doChange(solverScope.getScoreDirector());
     }
 
     static <Solution_> ProblemChangeAdapter<Solution_> create(ProblemChange<Solution_> problemChange) {
-        return solverScope -> solverScope.getProblemChangeDirector().doProblemChange(problemChange);
+        return (solverScope, stepIndex) -> {
+            final boolean triggerVariableListeners = stepIndex > 0 && problemChange.usesShadowVariables();
+            InnerScoreDirector<Solution_, ?> scoreDirector = solverScope.getScoreDirector();
+            if (triggerVariableListeners) {
+                scoreDirector.resetWorkingSolution();
+                scoreDirector.triggerVariableListeners();
+            }
+            problemChange.doChange(scoreDirector.getWorkingSolution(), solverScope.getProblemChangeDirector());
+        };
     }
 }

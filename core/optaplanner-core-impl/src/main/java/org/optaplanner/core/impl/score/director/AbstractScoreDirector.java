@@ -174,6 +174,11 @@ public abstract class AbstractScoreDirector<Solution_, Score_ extends Score<Scor
     @Override
     public void setWorkingSolution(Solution_ workingSolution) {
         this.workingSolution = requireNonNull(workingSolution);
+        resetWorkingSolution();
+    }
+
+    @Override
+    public void resetWorkingSolution() {
         SolutionDescriptor<Solution_> solutionDescriptor = getSolutionDescriptor();
         workingInitScore = -solutionDescriptor.countUninitialized(workingSolution);
         if (isLookUpEnabled()) {

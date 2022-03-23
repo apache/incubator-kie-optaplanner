@@ -34,54 +34,64 @@ public interface ProblemChangeDirector {
     /**
      * Add a new {@link PlanningEntity} instance into the {@link PlanningSolution working solution}.
      *
+     * @deprecated as not necessary for implementing {@link ProblemChange}s.
      * @param entity never null; the {@link PlanningEntity} instance
      * @param entityConsumer never null; adds the entity to the {@link PlanningSolution working solution}
      * @param <Entity> the planning entity object type
      */
+    @Deprecated(forRemoval = true)
     <Entity> void addEntity(Entity entity, Consumer<Entity> entityConsumer);
 
     /**
      * Remove an existing {@link PlanningEntity} instance from the {@link PlanningSolution working solution}.
      * Translates the entity to a working planning entity by performing a lookup as defined by
      * {@link #lookUpWorkingObjectOrFail(Object)}.
-     * 
+     *
+     * @deprecated as not necessary for implementing {@link ProblemChange}s.
      * @param entity never null; the {@link PlanningEntity} instance
      * @param entityConsumer never null; removes the working entity from the {@link PlanningSolution working solution}
      * @param <Entity> the planning entity object type
      */
+    @Deprecated(forRemoval = true)
     <Entity> void removeEntity(Entity entity, Consumer<Entity> entityConsumer);
 
     /**
      * Change a {@link PlanningVariable} value of a {@link PlanningEntity}. Translates the entity to a working
      * planning entity by performing a lookup as defined by {@link #lookUpWorkingObjectOrFail(Object)}.
      *
+     * @deprecated as not necessary for implementing {@link ProblemChange}s.
      * @param entity never null; the {@link PlanningEntity} instance
      * @param variableName never null; name of the {@link PlanningVariable}
      * @param entityConsumer never null; updates the value of the the {@link PlanningVariable} inside
      *        the {@link PlanningEntity}
      * @param <Entity> the planning entity object type
      */
+    @Deprecated(forRemoval = true)
     <Entity> void changeVariable(Entity entity, String variableName, Consumer<Entity> entityConsumer);
 
     /**
      * Add a new problem fact into the {@link PlanningSolution working solution}.
      *
+     * @deprecated as not necessary for implementing {@link ProblemChange}s.
      * @param problemFact never null; the problem fact instance
      * @param problemFactConsumer never null; removes the working problem fact from the
      *        {@link PlanningSolution working solution}
      * @param <ProblemFact> the problem fact object type
      */
+    @Deprecated(forRemoval = true)
     <ProblemFact> void addProblemFact(ProblemFact problemFact, Consumer<ProblemFact> problemFactConsumer);
 
     /**
      * Remove an existing problem fact from the {@link PlanningSolution working solution}. Translates the problem fact
      * to a working problem fact by performing a lookup as defined by {@link #lookUpWorkingObjectOrFail(Object)}.
      *
+     * @deprecated as not necessary for implementing {@link ProblemChange}s.
      * @param problemFact never null; the problem fact instance
      * @param problemFactConsumer never null; removes the working problem fact from the
      *        {@link PlanningSolution working solution}
      * @param <ProblemFact> the problem fact object type
      */
+    @Deprecated(forRemoval = true)
     <ProblemFact> void removeProblemFact(ProblemFact problemFact, Consumer<ProblemFact> problemFactConsumer);
 
     /**
@@ -89,11 +99,13 @@ public interface ProblemChangeDirector {
      * to its {@link PlanningSolution working solution} counterpart by performing a lookup as defined by
      * {@link #lookUpWorkingObjectOrFail(Object)}.
      *
+     * @deprecated as not necessary for implementing {@link ProblemChange}s.
      * @param problemFactOrEntity never null; the {@link PlanningEntity} or the problem fact instance
      * @param problemFactOrEntityConsumer never null; updates the property of the {@link PlanningEntity}
      *        or the problem fact
      * @param <EntityOrProblemFact> the planning entity or problem fact object type
      */
+    @Deprecated(forRemoval = true)
     <EntityOrProblemFact> void changeProblemProperty(EntityOrProblemFact problemFactOrEntity,
             Consumer<EntityOrProblemFact> problemFactOrEntityConsumer);
 

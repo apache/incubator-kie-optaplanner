@@ -40,7 +40,10 @@ import org.optaplanner.core.api.solver.change.ProblemChangeDirector;
  *  verify(mockProblemChangeDirector).removeEntity(same(removedEntity), any());
  * }
  * </pre>
+ * 
+ * @deprecated due to a deprecation of {@link ProblemChangeDirector} methods.
  */
+@Deprecated(forRemoval = true)
 public class MockProblemChangeDirector implements ProblemChangeDirector {
 
     private Map<Object, Object> lookUpTable = new IdentityHashMap<>();

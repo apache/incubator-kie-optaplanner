@@ -54,6 +54,11 @@ public interface InnerScoreDirector<Solution_, Score_ extends Score<Score_>>
     void setWorkingSolution(Solution_ workingSolution);
 
     /**
+     * Resets the score director using the same {@link PlanningSolution working solution} as it currently has.
+     */
+    void resetWorkingSolution();
+
+    /**
      * Calculates the {@link Score} and updates the {@link PlanningSolution working solution} accordingly.
      *
      * @return never null, the {@link Score} of the {@link PlanningSolution working solution}
