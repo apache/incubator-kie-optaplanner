@@ -81,9 +81,13 @@ public final class BavetJoinBiConstraintStream<Solution_, A, B> extends BavetAbs
         Consumer<BiTuple<A, B>> retract = buildHelper.getAggregatedRetract(childStreamList);
         Indexer<UniTuple<A>, Set<BiTuple<A, B>>> indexerA = indexerFactory.buildIndexer(true);
         Indexer<UniTuple<B>, Set<BiTuple<A, B>>> indexerB = indexerFactory.buildIndexer(false);
+        int joinStoreIndexA = buildHelper.reserveJoinStoreIndex(leftParent.getTupleSource());
+        int joinStoreIndexB = buildHelper.reserveJoinStoreIndex(rightParent.getTupleSource());
+        int joinStoreSize = buildHelper.extractJoinStoreSize(this);
         int scoreStoreSize = buildHelper.extractScoreStoreSize(this);
-        JoinBiNode<A, B> node = new JoinBiNode<>(leftMapping, rightMapping,
-                insert, retract, scoreStoreSize,
+        JoinBiNode<A, B> node = new JoinBiNode<>(
+                leftMapping, rightMapping, joinStoreIndexA, joinStoreIndexB,
+                insert, retract, joinStoreSize, scoreStoreSize,
                 indexerA, indexerB);
         buildHelper.addNode(node);
         buildHelper.putInsertRetract(leftParent, node::insertA, node::retractA);

@@ -76,9 +76,10 @@ public final class BavetGroupBridgeBiConstraintStream<Solution_, A, B, NewA, Res
         }
         Consumer<BiTuple<NewA, NewB>> insert = buildHelper.getAggregatedInsert(groupStream.getChildStreamList());
         Consumer<BiTuple<NewA, NewB>> retract = buildHelper.getAggregatedRetract(groupStream.getChildStreamList());
+        int joinStoreSize = buildHelper.extractJoinStoreSize(groupStream);
         int scoreStoreSize = buildHelper.extractScoreStoreSize(groupStream);
         GroupBiToBiNode<A, B, NewA, NewB, ResultContainer_> node = new GroupBiToBiNode<>(groupKeyMapping, collector,
-                insert, retract, scoreStoreSize);
+                insert, retract, joinStoreSize, scoreStoreSize);
         buildHelper.addNode(node);
         buildHelper.putInsertRetract(this, node::insertAB, node::retractAB);
     }

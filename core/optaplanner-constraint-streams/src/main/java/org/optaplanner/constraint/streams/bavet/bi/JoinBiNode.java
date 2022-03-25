@@ -36,6 +36,8 @@ public final class JoinBiNode<A, B> extends AbstractNode {
 
     private final Function<A, Object[]> mappingA;
     private final Function<B, Object[]> mappingB;
+    private final int joinStoreIndexA;
+    private final int joinStoreIndexB;
     /**
      * Calls for example {@link BiScorer#insert(BiTuple)}, {@link JoinTriNode#insertAB(BiTuple)} and/or ...
      */
@@ -44,22 +46,25 @@ public final class JoinBiNode<A, B> extends AbstractNode {
      * Calls for example {@link BiScorer#retract(BiTuple)}, {@link JoinTriNode#insertAB(BiTuple)} and/or ...
      */
     private final Consumer<BiTuple<A, B>> nextNodesRetract;
+    private final int joinStoreSize;
     private final int scoreStoreSize;
 
     private final Indexer<UniTuple<A>, Set<BiTuple<A, B>>> indexerA;
-    private final Map<UniTuple<A>, Object[]> indexPropertiesMapA = new HashMap<>();
     private final Indexer<UniTuple<B>, Set<BiTuple<A, B>>> indexerB;
-    private final Map<UniTuple<B>, Object[]> indexPropertiesMapB = new HashMap<>();
     private final Queue<BiTuple<A, B>> dirtyTupleQueue;
 
     public JoinBiNode(Function<A, Object[]> mappingA, Function<B, Object[]> mappingB,
+            int joinStoreIndexA, int joinStoreIndexB,
             Consumer<BiTuple<A, B>> nextNodesInsert, Consumer<BiTuple<A, B>> nextNodesRetract,
-            int scoreStoreSize,
+            int joinStoreSize, int scoreStoreSize,
             Indexer<UniTuple<A>, Set<BiTuple<A, B>>> indexerA, Indexer<UniTuple<B>, Set<BiTuple<A, B>>> indexerB) {
         this.mappingA = mappingA;
         this.mappingB = mappingB;
+        this.joinStoreIndexA = joinStoreIndexA;
+        this.joinStoreIndexB = joinStoreIndexB;
         this.nextNodesInsert = nextNodesInsert;
         this.nextNodesRetract = nextNodesRetract;
+        this.joinStoreSize = joinStoreSize;
         this.scoreStoreSize = scoreStoreSize;
         this.indexerA = indexerA;
         this.indexerB = indexerB;
@@ -67,12 +72,12 @@ public final class JoinBiNode<A, B> extends AbstractNode {
     }
 
     public void insertA(UniTuple<A> tupleA) {
-        Object[] indexProperties = mappingA.apply(tupleA.factA);
-        Object[] old = indexPropertiesMapA.put(tupleA, indexProperties);
-        if (old != null) {
+        if (tupleA.joinStore[joinStoreIndexA] != null) {
             throw new IllegalStateException("Impossible state: the tuple for the fact ("
-                    + tupleA.factA + ") was already added in the indexPropertiesMapA.");
+                    + tupleA.factA + ") was already added in the joinStore.");
         }
+        Object[] indexProperties = mappingA.apply(tupleA.factA);
+        tupleA.joinStore[joinStoreIndexA] = indexProperties;
 
         Map<UniTuple<B>, Set<BiTuple<A, B>>> tupleABSetMapB = indexerB.get(indexProperties);
         // Use standard initial capacity (16) to grow into, unless we already know more is probably needed
@@ -80,7 +85,7 @@ public final class JoinBiNode<A, B> extends AbstractNode {
         indexerA.put(indexProperties, tupleA, tupleABSetA);
 
         tupleABSetMapB.forEach((tupleB, tupleABSetB) -> {
-            BiTuple<A, B> tupleAB = new BiTuple<>(tupleA.factA, tupleB.factA, scoreStoreSize);
+            BiTuple<A, B> tupleAB = new BiTuple<>(tupleA.factA, tupleB.factA, joinStoreSize, scoreStoreSize);
             tupleAB.state = BavetTupleState.CREATING;
             tupleABSetA.add(tupleAB);
             tupleABSetB.add(tupleAB);
@@ -89,11 +94,12 @@ public final class JoinBiNode<A, B> extends AbstractNode {
     }
 
     public void retractA(UniTuple<A> tupleA) {
-        Object[] indexProperties = indexPropertiesMapA.remove(tupleA);
+        Object[] indexProperties = tupleA.joinStore[joinStoreIndexA];
         if (indexProperties == null) {
             // No fail fast if null because we don't track which tuples made it through the filter predicate(s)
             return;
         }
+        tupleA.joinStore[joinStoreIndexA] = null;
 
         Set<BiTuple<A, B>> tupleABSetA = indexerA.remove(indexProperties, tupleA);
         // Remove tupleABs from the other side
@@ -114,12 +120,12 @@ public final class JoinBiNode<A, B> extends AbstractNode {
     }
 
     public void insertB(UniTuple<B> tupleB) {
-        Object[] indexProperties = mappingB.apply(tupleB.factA);
-        Object[] old = indexPropertiesMapB.put(tupleB, indexProperties);
-        if (old != null) {
+        if (tupleB.joinStore[joinStoreIndexB] != null) {
             throw new IllegalStateException("Impossible state: the tuple for the fact ("
-                    + tupleB.factA + ") was already added in the indexPropertiesMapB.");
+                    + tupleB.factA + ") was already added in the joinStore.");
         }
+        Object[] indexProperties = mappingB.apply(tupleB.factA);
+        tupleB.joinStore[joinStoreIndexB] = indexProperties;
 
         Map<UniTuple<A>, Set<BiTuple<A, B>>> tupleABSetMapB = indexerA.get(indexProperties);
         // Use standard initial capacity (16) to grow into, unless we already know more is probably needed
@@ -127,7 +133,7 @@ public final class JoinBiNode<A, B> extends AbstractNode {
         indexerB.put(indexProperties, tupleB, tupleABSetB);
 
         tupleABSetMapB.forEach((tupleA, tupleABSetA) -> {
-            BiTuple<A, B> tupleAB = new BiTuple<>(tupleA.factA, tupleB.factA, scoreStoreSize);
+            BiTuple<A, B> tupleAB = new BiTuple<>(tupleA.factA, tupleB.factA, joinStoreSize, scoreStoreSize);
             tupleAB.state = BavetTupleState.CREATING;
             tupleABSetB.add(tupleAB);
             tupleABSetA.add(tupleAB);
@@ -136,11 +142,12 @@ public final class JoinBiNode<A, B> extends AbstractNode {
     }
 
     public void retractB(UniTuple<B> tupleB) {
-        Object[] indexProperties = indexPropertiesMapB.remove(tupleB);
+        Object[] indexProperties = tupleB.joinStore[joinStoreIndexB];
         if (indexProperties == null) {
             // No fail fast if null because we don't track which tuples made it through the filter predicate(s)
             return;
         }
+        tupleB.joinStore[joinStoreIndexB] = null;
 
         Set<BiTuple<A, B>> tupleABSetB = indexerB.remove(indexProperties, tupleB);
         // Remove tupleABs from the other side

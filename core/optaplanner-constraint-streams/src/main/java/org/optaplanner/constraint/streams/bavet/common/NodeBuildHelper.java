@@ -38,6 +38,7 @@ public class NodeBuildHelper<Score_ extends Score<Score_>> {
     private final Map<ConstraintStream, Consumer<? extends Tuple>> insertMap;
     private final Map<ConstraintStream, Consumer<? extends Tuple>> retractMap;
 
+    private final Map<ConstraintStream, Integer> joinStoreIndexMap;
     private final Map<ConstraintStream, Integer> scoreStoreIndexMap;
 
     private List<AbstractNode> reversedNodeList;
@@ -48,6 +49,7 @@ public class NodeBuildHelper<Score_ extends Score<Score_>> {
         this.activeStreamSet = activeStreamSet;
         insertMap = new HashMap<>(Math.max(16, activeStreamSet.size()));
         retractMap = new HashMap<>(Math.max(16, activeStreamSet.size()));
+        joinStoreIndexMap = new HashMap<>(Math.max(16, activeStreamSet.size() / 2));
         scoreStoreIndexMap = new HashMap<>(Math.max(16, activeStreamSet.size() / 2));
         reversedNodeList = new ArrayList<>(activeStreamSet.size());
         this.constraintWeightMap = constraintWeightMap;
@@ -124,13 +126,31 @@ public class NodeBuildHelper<Score_ extends Score<Score_>> {
         return aggregatedRetract;
     }
 
+    public int reserveJoinStoreIndex(ConstraintStream tupleSourceStream) {
+        return joinStoreIndexMap.compute(tupleSourceStream, (k, index) -> {
+            if (index == null) {
+                return 0;
+            } else if (index < 0) {
+                throw new IllegalStateException("Impossible state: the tupleSourceStream (" + tupleSourceStream
+                        + ") is reserving a store after it has been extracted.");
+            } else {
+                return index + 1;
+            }
+        });
+    }
+
+    public int extractJoinStoreSize(ConstraintStream tupleSourceStream) {
+        Integer lastIndex = joinStoreIndexMap.put(tupleSourceStream, Integer.MIN_VALUE);
+        return (lastIndex == null) ? 0 : lastIndex + 1;
+    }
+
     public int reserveScoreStoreIndex(ConstraintStream tupleSourceStream) {
         return scoreStoreIndexMap.compute(tupleSourceStream, (k, index) -> {
             if (index == null) {
                 return 0;
             } else if (index < 0) {
                 throw new IllegalStateException("Impossible state: the tupleSourceStream (" + tupleSourceStream
-                        + ") is reserving store after it has been extracted.");
+                        + ") is reserving a store after it has been extracted.");
             } else {
                 return index + 1;
             }

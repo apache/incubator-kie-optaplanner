@@ -24,12 +24,14 @@ public final class UniTuple<A> implements Tuple {
 
     public final A factA;
 
+    public final Object[][] joinStore;
     public final UndoScoreImpacter[] scorerStore;
 
     public BavetTupleState state;
 
-    public UniTuple(A factA, int scoreStoreSize) {
+    public UniTuple(A factA, int joinStoreSize, int scoreStoreSize) {
         this.factA = factA;
+        joinStore = (joinStoreSize <= 0) ? null : new Object[joinStoreSize][];
         scorerStore = (scoreStoreSize <= 0) ? null : new UndoScoreImpacter[scoreStoreSize];
     }
 

@@ -47,6 +47,7 @@ public final class GroupBiToBiNode<OldA, OldB, A, B, ResultContainer_> extends A
      * Calls for example {@link BiScorer#retract(BiTuple)}, {@link JoinTriNode#insertAB(BiTuple)} and/or ...
      */
     private final Consumer<BiTuple<A, B>> nextNodesRetract;
+    private final int joinStoreSize;
     private final int scoreStoreSize;
 
     private final Map<BiTuple<OldA, OldB>, GroupPart> groupPartMap;
@@ -56,13 +57,14 @@ public final class GroupBiToBiNode<OldA, OldB, A, B, ResultContainer_> extends A
     public GroupBiToBiNode(BiFunction<OldA, OldB, A> groupKeyMapping,
             BiConstraintCollector<OldA, OldB, ResultContainer_, B> collector,
             Consumer<BiTuple<A, B>> nextNodesInsert, Consumer<BiTuple<A, B>> nextNodesRetract,
-            int scoreStoreSize) {
+            int joinStoreSize, int scoreStoreSize) {
         this.groupKeyMapping = groupKeyMapping;
         supplier = collector.supplier();
         accumulator = collector.accumulator();
         finisher = collector.finisher();
         this.nextNodesInsert = nextNodesInsert;
         this.nextNodesRetract = nextNodesRetract;
+        this.joinStoreSize = joinStoreSize;
         this.scoreStoreSize = scoreStoreSize;
         groupMap = new HashMap<>(1000);
         groupPartMap = new HashMap<>(1000);
@@ -150,7 +152,7 @@ public final class GroupBiToBiNode<OldA, OldB, A, B, ResultContainer_> extends A
             if (!group.dying) {
                 // Delay calculating B until it propagates
                 B factB = finisher.apply(group.resultContainer);
-                group.tupleAB = new BiTuple<>(group.groupKey, factB, scoreStoreSize);
+                group.tupleAB = new BiTuple<>(group.groupKey, factB, joinStoreSize, scoreStoreSize);
                 nextNodesInsert.accept(group.tupleAB);
                 group.tupleAB.state = BavetTupleState.OK;
             }

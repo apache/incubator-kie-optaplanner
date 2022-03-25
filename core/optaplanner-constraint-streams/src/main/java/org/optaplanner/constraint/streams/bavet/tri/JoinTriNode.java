@@ -37,6 +37,8 @@ public final class JoinTriNode<A, B, C> extends AbstractNode {
 
     private final BiFunction<A, B, Object[]> mappingAB;
     private final Function<C, Object[]> mappingC;
+    private final int joinStoreIndexAB;
+    private final int joinStoreIndexC;
     /**
      * Calls for example {@link TriScorer#insert(TriTuple)} and/or ...
      */
@@ -45,22 +47,25 @@ public final class JoinTriNode<A, B, C> extends AbstractNode {
      * Calls for example {@link TriScorer#retract(TriTuple)} and/or ...
      */
     private final Consumer<TriTuple<A, B, C>> nextNodesRetract;
+    private final int joinStoreSize;
     private final int scoreStoreSize;
 
     private final Indexer<BiTuple<A, B>, Set<TriTuple<A, B, C>>> indexerAB;
-    private final Map<BiTuple<A, B>, Object[]> indexPropertiesMapAB = new HashMap<>();
     private final Indexer<UniTuple<C>, Set<TriTuple<A, B, C>>> indexerC;
-    private final Map<UniTuple<C>, Object[]> indexPropertiesMapC = new HashMap<>();
     private final Queue<TriTuple<A, B, C>> dirtyTupleQueue;
 
     public JoinTriNode(BiFunction<A, B, Object[]> mappingAB, Function<C, Object[]> mappingC,
+            int joinStoreIndexAB, int joinStoreIndexC,
             Consumer<TriTuple<A, B, C>> nextNodesInsert, Consumer<TriTuple<A, B, C>> nextNodesRetract,
-            int scoreStoreSize,
+            int joinStoreSize, int scoreStoreSize,
             Indexer<BiTuple<A, B>, Set<TriTuple<A, B, C>>> indexerAB, Indexer<UniTuple<C>, Set<TriTuple<A, B, C>>> indexerC) {
         this.mappingAB = mappingAB;
         this.mappingC = mappingC;
+        this.joinStoreIndexAB = joinStoreIndexAB;
+        this.joinStoreIndexC = joinStoreIndexC;
         this.nextNodesInsert = nextNodesInsert;
         this.nextNodesRetract = nextNodesRetract;
+        this.joinStoreSize = joinStoreSize;
         this.scoreStoreSize = scoreStoreSize;
         this.indexerAB = indexerAB;
         this.indexerC = indexerC;
@@ -68,12 +73,12 @@ public final class JoinTriNode<A, B, C> extends AbstractNode {
     }
 
     public void insertAB(BiTuple<A, B> tupleAB) {
-        Object[] indexProperties = mappingAB.apply(tupleAB.factA, tupleAB.factB);
-        Object[] old = indexPropertiesMapAB.put(tupleAB, indexProperties);
-        if (old != null) {
+        if (tupleAB.joinStore[joinStoreIndexAB] != null) {
             throw new IllegalStateException("Impossible state: the tuple for the fact ("
-                    + tupleAB.factA + ", " + tupleAB.factB + ") was already added in the indexPropertiesMapAB.");
+                    + tupleAB.factA + ", " + tupleAB.factB + ") was already added in the joinStore.");
         }
+        Object[] indexProperties = mappingAB.apply(tupleAB.factA, tupleAB.factB);
+        tupleAB.joinStore[joinStoreIndexAB] = indexProperties;
 
         Map<UniTuple<C>, Set<TriTuple<A, B, C>>> tupleABCSetMapC = indexerC.get(indexProperties);
         // Use standard initial capacity (16) to grow into, unless we already know more is probably needed
@@ -81,7 +86,8 @@ public final class JoinTriNode<A, B, C> extends AbstractNode {
         indexerAB.put(indexProperties, tupleAB, tupleABCSetAB);
 
         tupleABCSetMapC.forEach((tupleC, tupleABCSetC) -> {
-            TriTuple<A, B, C> tupleABC = new TriTuple<>(tupleAB.factA, tupleAB.factB, tupleC.factA, scoreStoreSize);
+            TriTuple<A, B, C> tupleABC = new TriTuple<>(tupleAB.factA, tupleAB.factB, tupleC.factA,
+                    joinStoreSize, scoreStoreSize);
             tupleABC.state = BavetTupleState.CREATING;
             tupleABCSetAB.add(tupleABC);
             tupleABCSetC.add(tupleABC);
@@ -90,11 +96,12 @@ public final class JoinTriNode<A, B, C> extends AbstractNode {
     }
 
     public void retractAB(BiTuple<A, B> tupleAB) {
-        Object[] indexProperties = indexPropertiesMapAB.remove(tupleAB);
+        Object[] indexProperties = tupleAB.joinStore[joinStoreIndexAB];
         if (indexProperties == null) {
             // No fail fast if null because we don't track which tuples made it through the filter predicate(s)
             return;
         }
+        tupleAB.joinStore[joinStoreIndexAB] = null;
 
         Set<TriTuple<A, B, C>> tupleABCSetAB = indexerAB.remove(indexProperties, tupleAB);
         // Remove tupleABCs from the other side
@@ -115,12 +122,12 @@ public final class JoinTriNode<A, B, C> extends AbstractNode {
     }
 
     public void insertC(UniTuple<C> tupleC) {
-        Object[] indexProperties = mappingC.apply(tupleC.factA);
-        Object[] old = indexPropertiesMapC.put(tupleC, indexProperties);
-        if (old != null) {
+        if (tupleC.joinStore[joinStoreIndexC] != null) {
             throw new IllegalStateException("Impossible state: the tuple for the fact ("
-                    + tupleC.factA + ") was already added in the indexPropertiesMapC.");
+                    + tupleC.factA + ") was already added in the joinStore.");
         }
+        Object[] indexProperties = mappingC.apply(tupleC.factA);
+        tupleC.joinStore[joinStoreIndexC] = indexProperties;
 
         Map<BiTuple<A, B>, Set<TriTuple<A, B, C>>> tupleABCSetMapAB = indexerAB.get(indexProperties);
         // Use standard initial capacity (16) to grow into, unless we already know more is probably needed
@@ -128,7 +135,8 @@ public final class JoinTriNode<A, B, C> extends AbstractNode {
         indexerC.put(indexProperties, tupleC, tupleABCSetC);
 
         tupleABCSetMapAB.forEach((tupleAB, tupleABCSetAB) -> {
-            TriTuple<A, B, C> tupleABC = new TriTuple<>(tupleAB.factA, tupleAB.factB, tupleC.factA, scoreStoreSize);
+            TriTuple<A, B, C> tupleABC = new TriTuple<>(tupleAB.factA, tupleAB.factB, tupleC.factA,
+                    joinStoreSize, scoreStoreSize);
             tupleABC.state = BavetTupleState.CREATING;
             tupleABCSetC.add(tupleABC);
             tupleABCSetAB.add(tupleABC);
@@ -137,11 +145,12 @@ public final class JoinTriNode<A, B, C> extends AbstractNode {
     }
 
     public void retractC(UniTuple<C> tupleC) {
-        Object[] indexProperties = indexPropertiesMapC.remove(tupleC);
+        Object[] indexProperties = tupleC.joinStore[joinStoreIndexC];
         if (indexProperties == null) {
             // No fail fast if null because we don't track which tuples made it through the filter predicate(s)
             return;
         }
+        tupleC.joinStore[joinStoreIndexC] = null;
 
         Set<TriTuple<A, B, C>> tupleABCSetC = indexerC.remove(indexProperties, tupleC);
         // Remove tupleABCs from the other side

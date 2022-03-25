@@ -62,8 +62,9 @@ public final class BavetForEachUniConstraintStream<Solution_, A> extends BavetAb
     public <Score_ extends Score<Score_>> void buildNode(NodeBuildHelper<Score_> buildHelper) {
         Consumer<UniTuple<A>> insert = buildHelper.getAggregatedInsert(childStreamList);
         Consumer<UniTuple<A>> retract = buildHelper.getAggregatedRetract(childStreamList);
+        int joinStoreSize = buildHelper.extractJoinStoreSize(this);
         int scoreStoreSize = buildHelper.extractScoreStoreSize(this);
-        buildHelper.addNode(new ForEachUniNode<>(forEachClass, insert, retract, scoreStoreSize));
+        buildHelper.addNode(new ForEachUniNode<>(forEachClass, insert, retract, joinStoreSize, scoreStoreSize));
     }
 
     // ************************************************************************

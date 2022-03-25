@@ -39,6 +39,7 @@ public final class ForEachUniNode<A> extends AbstractNode {
      * {@link JoinBiNode#retractB(UniTuple)} and/or ...
      */
     private final Consumer<UniTuple<A>> nextNodesRetract;
+    private final int joinStoreSize;
     private final int scoreStoreSize;
 
     private final Map<A, UniTuple<A>> tupleMap = new IdentityHashMap<>(1000);
@@ -46,16 +47,17 @@ public final class ForEachUniNode<A> extends AbstractNode {
 
     public ForEachUniNode(Class<A> forEachClass,
             Consumer<UniTuple<A>> nextNodesInsert, Consumer<UniTuple<A>> nextNodesRetract,
-            int scoreStoreSize) {
+            int joinStoreSize, int scoreStoreSize) {
         this.forEachClass = forEachClass;
         this.nextNodesInsert = nextNodesInsert;
         this.nextNodesRetract = nextNodesRetract;
+        this.joinStoreSize = joinStoreSize;
         this.scoreStoreSize = scoreStoreSize;
         dirtyTupleQueue = new ArrayDeque<>(1000);
     }
 
     public void insert(A a) {
-        UniTuple<A> tuple = new UniTuple<>(a, scoreStoreSize);
+        UniTuple<A> tuple = new UniTuple<>(a, joinStoreSize, scoreStoreSize);
         tuple.state = BavetTupleState.CREATING;
         UniTuple<A> old = tupleMap.put(a, tuple);
         if (old != null) {

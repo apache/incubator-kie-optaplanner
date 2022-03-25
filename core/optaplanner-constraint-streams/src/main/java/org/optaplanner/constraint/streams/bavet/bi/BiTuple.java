@@ -25,13 +25,15 @@ public final class BiTuple<A, B> implements Tuple {
     public final A factA;
     public final B factB;
 
+    public final Object[][] joinStore;
     public final UndoScoreImpacter[] scorerStore;
 
     public BavetTupleState state;
 
-    public BiTuple(A factA, B factB, int scoreStoreSize) {
+    public BiTuple(A factA, B factB, int joinStoreSize, int scoreStoreSize) {
         this.factA = factA;
         this.factB = factB;
+        joinStore = (joinStoreSize <= 0) ? null : new Object[joinStoreSize][];
         scorerStore = (scoreStoreSize <= 0) ? null : new UndoScoreImpacter[scoreStoreSize];
     }
 
