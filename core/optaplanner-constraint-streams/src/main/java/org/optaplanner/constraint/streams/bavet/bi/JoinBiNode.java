@@ -39,11 +39,12 @@ public final class JoinBiNode<A, B> extends AbstractNode {
     /**
      * Calls for example {@link BiScorer#insert(BiTuple)}, {@link JoinTriNode#insertAB(BiTuple)} and/or ...
      */
-    public final Consumer<BiTuple<A, B>> nextNodesInsert;
+    private final Consumer<BiTuple<A, B>> nextNodesInsert;
     /**
      * Calls for example {@link BiScorer#retract(BiTuple)}, {@link JoinTriNode#insertAB(BiTuple)} and/or ...
      */
-    public final Consumer<BiTuple<A, B>> nextNodesRetract;
+    private final Consumer<BiTuple<A, B>> nextNodesRetract;
+    private final int scoreStoreSize;
 
     private final Indexer<UniTuple<A>, Set<BiTuple<A, B>>> indexerA;
     private final Map<UniTuple<A>, Object[]> indexPropertiesMapA = new HashMap<>();
@@ -53,11 +54,13 @@ public final class JoinBiNode<A, B> extends AbstractNode {
 
     public JoinBiNode(Function<A, Object[]> mappingA, Function<B, Object[]> mappingB,
             Consumer<BiTuple<A, B>> nextNodesInsert, Consumer<BiTuple<A, B>> nextNodesRetract,
+            int scoreStoreSize,
             Indexer<UniTuple<A>, Set<BiTuple<A, B>>> indexerA, Indexer<UniTuple<B>, Set<BiTuple<A, B>>> indexerB) {
         this.mappingA = mappingA;
         this.mappingB = mappingB;
         this.nextNodesInsert = nextNodesInsert;
         this.nextNodesRetract = nextNodesRetract;
+        this.scoreStoreSize = scoreStoreSize;
         this.indexerA = indexerA;
         this.indexerB = indexerB;
         dirtyTupleQueue = new ArrayDeque<>(1000);
@@ -77,7 +80,7 @@ public final class JoinBiNode<A, B> extends AbstractNode {
         indexerA.put(indexProperties, tupleA, tupleABSetA);
 
         tupleABSetMapB.forEach((tupleB, tupleABSetB) -> {
-            BiTuple<A, B> tupleAB = new BiTuple<>(tupleA.factA, tupleB.factA);
+            BiTuple<A, B> tupleAB = new BiTuple<>(tupleA.factA, tupleB.factA, scoreStoreSize);
             tupleAB.state = BavetTupleState.CREATING;
             tupleABSetA.add(tupleAB);
             tupleABSetB.add(tupleAB);
@@ -124,7 +127,7 @@ public final class JoinBiNode<A, B> extends AbstractNode {
         indexerB.put(indexProperties, tupleB, tupleABSetB);
 
         tupleABSetMapB.forEach((tupleA, tupleABSetA) -> {
-            BiTuple<A, B> tupleAB = new BiTuple<>(tupleA.factA, tupleB.factA);
+            BiTuple<A, B> tupleAB = new BiTuple<>(tupleA.factA, tupleB.factA, scoreStoreSize);
             tupleAB.state = BavetTupleState.CREATING;
             tupleABSetB.add(tupleAB);
             tupleABSetA.add(tupleAB);

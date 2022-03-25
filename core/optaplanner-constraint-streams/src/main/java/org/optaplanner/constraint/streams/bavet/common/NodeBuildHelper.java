@@ -38,14 +38,17 @@ public class NodeBuildHelper<Score_ extends Score<Score_>> {
     private final Map<ConstraintStream, Consumer<? extends Tuple>> insertMap;
     private final Map<ConstraintStream, Consumer<? extends Tuple>> retractMap;
 
+    private final Map<ConstraintStream, Integer> scoreStoreIndexMap;
+
     private List<AbstractNode> reversedNodeList;
 
     public NodeBuildHelper(Set<? extends ConstraintStream> activeStreamSet,
             Map<Constraint, Score_> constraintWeightMap,
             AbstractScoreInliner<Score_> scoreInliner) {
         this.activeStreamSet = activeStreamSet;
-        insertMap = new HashMap<>(Math.max(16, activeStreamSet.size() * 4));
-        retractMap = new HashMap<>(Math.max(16, activeStreamSet.size() * 4));
+        insertMap = new HashMap<>(Math.max(16, activeStreamSet.size()));
+        retractMap = new HashMap<>(Math.max(16, activeStreamSet.size()));
+        scoreStoreIndexMap = new HashMap<>(Math.max(16, activeStreamSet.size() / 2));
         reversedNodeList = new ArrayList<>(activeStreamSet.size());
         this.constraintWeightMap = constraintWeightMap;
         this.scoreInliner = scoreInliner;
@@ -119,6 +122,24 @@ public class NodeBuildHelper<Score_ extends Score<Score_>> {
                     + ") are active.");
         }
         return aggregatedRetract;
+    }
+
+    public int reserveScoreStoreIndex(ConstraintStream tupleSourceStream) {
+        return scoreStoreIndexMap.compute(tupleSourceStream, (k, index) -> {
+            if (index == null) {
+                return 0;
+            } else if (index < 0) {
+                throw new IllegalStateException("Impossible state: the tupleSourceStream (" + tupleSourceStream
+                        + ") is reserving store after it has been extracted.");
+            } else {
+                return index + 1;
+            }
+        });
+    }
+
+    public int extractScoreStoreSize(ConstraintStream tupleSourceStream) {
+        Integer lastIndex = scoreStoreIndexMap.put(tupleSourceStream, Integer.MIN_VALUE);
+        return (lastIndex == null) ? 0 : lastIndex + 1;
     }
 
     public List<AbstractNode> destroyAndGetNodeList() {

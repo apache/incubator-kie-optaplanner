@@ -18,16 +18,19 @@ package org.optaplanner.constraint.streams.bavet.uni;
 
 import org.optaplanner.constraint.streams.bavet.common.BavetTupleState;
 import org.optaplanner.constraint.streams.bavet.common.Tuple;
+import org.optaplanner.constraint.streams.common.inliner.UndoScoreImpacter;
 
-// TODO Java 17: refactor to record
 public final class UniTuple<A> implements Tuple {
 
     public final A factA;
 
+    public final UndoScoreImpacter[] scorerStore;
+
     public BavetTupleState state;
 
-    public UniTuple(A factA) {
+    public UniTuple(A factA, int scoreStoreSize) {
         this.factA = factA;
+        scorerStore = (scoreStoreSize <= 0) ? null : new UndoScoreImpacter[scoreStoreSize];
     }
 
     @Override

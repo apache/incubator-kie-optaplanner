@@ -18,20 +18,23 @@ package org.optaplanner.constraint.streams.bavet.tri;
 
 import org.optaplanner.constraint.streams.bavet.common.BavetTupleState;
 import org.optaplanner.constraint.streams.bavet.common.Tuple;
+import org.optaplanner.constraint.streams.common.inliner.UndoScoreImpacter;
 
-// TODO Java 17: refactor to record
 public final class TriTuple<A, B, C> implements Tuple {
 
     public final A factA;
     public final B factB;
     public final C factC;
 
+    public final UndoScoreImpacter[] scorerStore;
+
     public BavetTupleState state;
 
-    public TriTuple(A factA, B factB, C factC) {
+    public TriTuple(A factA, B factB, C factC, int scoreStoreSize) {
         this.factA = factA;
         this.factB = factB;
         this.factC = factC;
+        scorerStore = (scoreStoreSize <= 0) ? null : new UndoScoreImpacter[scoreStoreSize];
     }
 
     @Override

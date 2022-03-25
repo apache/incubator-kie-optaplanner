@@ -32,6 +32,7 @@ import org.optaplanner.constraint.streams.bavet.common.index.IndexerFactory;
 import org.optaplanner.constraint.streams.bavet.uni.BavetAbstractUniConstraintStream;
 import org.optaplanner.constraint.streams.bavet.uni.UniTuple;
 import org.optaplanner.core.api.score.Score;
+import org.optaplanner.core.api.score.stream.ConstraintStream;
 
 public final class BavetJoinTriConstraintStream<Solution_, A, B, C>
         extends BavetAbstractTriConstraintStream<Solution_, A, B, C>
@@ -74,13 +75,19 @@ public final class BavetJoinTriConstraintStream<Solution_, A, B, C>
     }
 
     @Override
+    public ConstraintStream getTupleSource() {
+        return this;
+    }
+
+    @Override
     public <Score_ extends Score<Score_>> void buildNode(NodeBuildHelper<Score_> buildHelper) {
         Consumer<TriTuple<A, B, C>> insert = buildHelper.getAggregatedInsert(childStreamList);
         Consumer<TriTuple<A, B, C>> retract = buildHelper.getAggregatedRetract(childStreamList);
         Indexer<BiTuple<A, B>, Set<TriTuple<A, B, C>>> indexerAB = indexerFactory.buildIndexer(true);
         Indexer<UniTuple<C>, Set<TriTuple<A, B, C>>> indexerC = indexerFactory.buildIndexer(false);
+        int scoreStoreSize = buildHelper.extractScoreStoreSize(this);
         JoinTriNode<A, B, C> node = new JoinTriNode<>(leftMapping, rightMapping,
-                insert, retract,
+                insert, retract, scoreStoreSize,
                 indexerAB, indexerC);
         buildHelper.addNode(node);
         buildHelper.putInsertRetract(leftParent, node::insertAB, node::retractAB);

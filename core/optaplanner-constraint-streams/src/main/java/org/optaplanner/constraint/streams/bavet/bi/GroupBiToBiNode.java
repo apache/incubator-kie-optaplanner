@@ -42,11 +42,12 @@ public final class GroupBiToBiNode<OldA, OldB, A, B, ResultContainer_> extends A
     /**
      * Calls for example {@link BiScorer#insert(BiTuple)}, {@link JoinTriNode#insertAB(BiTuple)} and/or ...
      */
-    public final Consumer<BiTuple<A, B>> nextNodesInsert;
+    private final Consumer<BiTuple<A, B>> nextNodesInsert;
     /**
      * Calls for example {@link BiScorer#retract(BiTuple)}, {@link JoinTriNode#insertAB(BiTuple)} and/or ...
      */
-    public final Consumer<BiTuple<A, B>> nextNodesRetract;
+    private final Consumer<BiTuple<A, B>> nextNodesRetract;
+    private final int scoreStoreSize;
 
     private final Map<BiTuple<OldA, OldB>, GroupPart> groupPartMap;
     private final Map<A, Group> groupMap;
@@ -54,13 +55,15 @@ public final class GroupBiToBiNode<OldA, OldB, A, B, ResultContainer_> extends A
 
     public GroupBiToBiNode(BiFunction<OldA, OldB, A> groupKeyMapping,
             BiConstraintCollector<OldA, OldB, ResultContainer_, B> collector,
-            Consumer<BiTuple<A, B>> nextNodesInsert, Consumer<BiTuple<A, B>> nextNodesRetract) {
+            Consumer<BiTuple<A, B>> nextNodesInsert, Consumer<BiTuple<A, B>> nextNodesRetract,
+            int scoreStoreSize) {
         this.groupKeyMapping = groupKeyMapping;
         supplier = collector.supplier();
         accumulator = collector.accumulator();
         finisher = collector.finisher();
         this.nextNodesInsert = nextNodesInsert;
         this.nextNodesRetract = nextNodesRetract;
+        this.scoreStoreSize = scoreStoreSize;
         groupMap = new HashMap<>(1000);
         groupPartMap = new HashMap<>(1000);
         dirtyGroupQueue = new ArrayDeque<>(1000);
@@ -147,7 +150,7 @@ public final class GroupBiToBiNode<OldA, OldB, A, B, ResultContainer_> extends A
             if (!group.dying) {
                 // Delay calculating B until it propagates
                 B factB = finisher.apply(group.resultContainer);
-                group.tupleAB = new BiTuple<>(group.groupKey, factB);
+                group.tupleAB = new BiTuple<>(group.groupKey, factB, scoreStoreSize);
                 nextNodesInsert.accept(group.tupleAB);
                 group.tupleAB.state = BavetTupleState.OK;
             }

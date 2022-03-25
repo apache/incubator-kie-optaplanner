@@ -18,18 +18,21 @@ package org.optaplanner.constraint.streams.bavet.bi;
 
 import org.optaplanner.constraint.streams.bavet.common.BavetTupleState;
 import org.optaplanner.constraint.streams.bavet.common.Tuple;
+import org.optaplanner.constraint.streams.common.inliner.UndoScoreImpacter;
 
-// TODO Java 17: refactor to record
 public final class BiTuple<A, B> implements Tuple {
 
     public final A factA;
     public final B factB;
 
+    public final UndoScoreImpacter[] scorerStore;
+
     public BavetTupleState state;
 
-    public BiTuple(A factA, B factB) {
+    public BiTuple(A factA, B factB, int scoreStoreSize) {
         this.factA = factA;
         this.factB = factB;
+        scorerStore = (scoreStoreSize <= 0) ? null : new UndoScoreImpacter[scoreStoreSize];
     }
 
     @Override

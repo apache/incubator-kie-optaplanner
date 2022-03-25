@@ -40,11 +40,12 @@ public final class JoinTriNode<A, B, C> extends AbstractNode {
     /**
      * Calls for example {@link TriScorer#insert(TriTuple)} and/or ...
      */
-    public final Consumer<TriTuple<A, B, C>> nextNodesInsert;
+    private final Consumer<TriTuple<A, B, C>> nextNodesInsert;
     /**
      * Calls for example {@link TriScorer#retract(TriTuple)} and/or ...
      */
-    public final Consumer<TriTuple<A, B, C>> nextNodesRetract;
+    private final Consumer<TriTuple<A, B, C>> nextNodesRetract;
+    private final int scoreStoreSize;
 
     private final Indexer<BiTuple<A, B>, Set<TriTuple<A, B, C>>> indexerAB;
     private final Map<BiTuple<A, B>, Object[]> indexPropertiesMapAB = new HashMap<>();
@@ -54,11 +55,13 @@ public final class JoinTriNode<A, B, C> extends AbstractNode {
 
     public JoinTriNode(BiFunction<A, B, Object[]> mappingAB, Function<C, Object[]> mappingC,
             Consumer<TriTuple<A, B, C>> nextNodesInsert, Consumer<TriTuple<A, B, C>> nextNodesRetract,
+            int scoreStoreSize,
             Indexer<BiTuple<A, B>, Set<TriTuple<A, B, C>>> indexerAB, Indexer<UniTuple<C>, Set<TriTuple<A, B, C>>> indexerC) {
         this.mappingAB = mappingAB;
         this.mappingC = mappingC;
         this.nextNodesInsert = nextNodesInsert;
         this.nextNodesRetract = nextNodesRetract;
+        this.scoreStoreSize = scoreStoreSize;
         this.indexerAB = indexerAB;
         this.indexerC = indexerC;
         dirtyTupleQueue = new ArrayDeque<>(1000);
@@ -78,7 +81,7 @@ public final class JoinTriNode<A, B, C> extends AbstractNode {
         indexerAB.put(indexProperties, tupleAB, tupleABCSetAB);
 
         tupleABCSetMapC.forEach((tupleC, tupleABCSetC) -> {
-            TriTuple<A, B, C> tupleABC = new TriTuple<>(tupleAB.factA, tupleAB.factB, tupleC.factA);
+            TriTuple<A, B, C> tupleABC = new TriTuple<>(tupleAB.factA, tupleAB.factB, tupleC.factA, scoreStoreSize);
             tupleABC.state = BavetTupleState.CREATING;
             tupleABCSetAB.add(tupleABC);
             tupleABCSetC.add(tupleABC);
@@ -125,7 +128,7 @@ public final class JoinTriNode<A, B, C> extends AbstractNode {
         indexerC.put(indexProperties, tupleC, tupleABCSetC);
 
         tupleABCSetMapAB.forEach((tupleAB, tupleABCSetAB) -> {
-            TriTuple<A, B, C> tupleABC = new TriTuple<>(tupleAB.factA, tupleAB.factB, tupleC.factA);
+            TriTuple<A, B, C> tupleABC = new TriTuple<>(tupleAB.factA, tupleAB.factB, tupleC.factA, scoreStoreSize);
             tupleABC.state = BavetTupleState.CREATING;
             tupleABCSetC.add(tupleABC);
             tupleABCSetAB.add(tupleABC);

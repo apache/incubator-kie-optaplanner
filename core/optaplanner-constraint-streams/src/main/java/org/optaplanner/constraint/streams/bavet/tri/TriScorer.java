@@ -30,32 +30,34 @@ public final class TriScorer<A, B, C> extends AbstractScorer {
     private final String constraintName;
     private final Score<?> constraintWeight;
     private final TriFunction<A, B, C, UndoScoreImpacter> scoreImpacter;
-
-    private final Map<TriTuple<A, B, C>, UndoScoreImpacter> impacterMap = new HashMap<>();
+    private final int scoreStoreIndex;
 
     public TriScorer(String constraintPackage, String constraintName,
-            Score<?> constraintWeight, TriFunction<A, B, C, UndoScoreImpacter> scoreImpacter) {
+            Score<?> constraintWeight, TriFunction<A, B, C, UndoScoreImpacter> scoreImpacter,
+            int scoreStoreIndex) {
         this.constraintPackage = constraintPackage;
         this.constraintName = constraintName;
         this.constraintWeight = constraintWeight;
         this.scoreImpacter = scoreImpacter;
+        this.scoreStoreIndex = scoreStoreIndex;
     }
 
     public void insert(TriTuple<A, B, C> tupleABC) {
-        UndoScoreImpacter undoScoreImpacter = scoreImpacter.apply(tupleABC.factA, tupleABC.factB, tupleABC.factC);
-        UndoScoreImpacter old = impacterMap.put(tupleABC, undoScoreImpacter);
-        if (old != null) {
+        if (tupleABC.scorerStore[scoreStoreIndex] != null) {
             throw new IllegalStateException("Impossible state: the tuple for the facts ("
                     + tupleABC.factA + ", " + tupleABC.factB + ", " + tupleABC.factC
-                    + ") was already added in the impacterMap.");
+                    + ") was already added in the scorerStore.");
         }
+        UndoScoreImpacter undoScoreImpacter = scoreImpacter.apply(tupleABC.factA, tupleABC.factB, tupleABC.factC);
+        tupleABC.scorerStore[scoreStoreIndex] = undoScoreImpacter;
     }
 
     public void retract(TriTuple<A, B, C> tupleABC) {
-        UndoScoreImpacter undoScoreImpacter = impacterMap.remove(tupleABC);
+        UndoScoreImpacter undoScoreImpacter = tupleABC.scorerStore[scoreStoreIndex];
         // No fail fast if null because we don't track which tuples made it through the filter predicate(s)
         if (undoScoreImpacter != null) {
             undoScoreImpacter.run();
+            tupleABC.scorerStore[scoreStoreIndex] = null;
         }
     }
 

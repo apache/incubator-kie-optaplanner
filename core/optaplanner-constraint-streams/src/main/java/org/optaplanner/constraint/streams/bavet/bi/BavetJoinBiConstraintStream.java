@@ -29,6 +29,7 @@ import org.optaplanner.constraint.streams.bavet.common.index.IndexerFactory;
 import org.optaplanner.constraint.streams.bavet.uni.BavetAbstractUniConstraintStream;
 import org.optaplanner.constraint.streams.bavet.uni.UniTuple;
 import org.optaplanner.core.api.score.Score;
+import org.optaplanner.core.api.score.stream.ConstraintStream;
 
 public final class BavetJoinBiConstraintStream<Solution_, A, B> extends BavetAbstractBiConstraintStream<Solution_, A, B>
         implements BavetJoinConstraintStream<Solution_> {
@@ -70,13 +71,19 @@ public final class BavetJoinBiConstraintStream<Solution_, A, B> extends BavetAbs
     }
 
     @Override
+    public ConstraintStream getTupleSource() {
+        return this;
+    }
+
+    @Override
     public <Score_ extends Score<Score_>> void buildNode(NodeBuildHelper<Score_> buildHelper) {
         Consumer<BiTuple<A, B>> insert = buildHelper.getAggregatedInsert(childStreamList);
         Consumer<BiTuple<A, B>> retract = buildHelper.getAggregatedRetract(childStreamList);
         Indexer<UniTuple<A>, Set<BiTuple<A, B>>> indexerA = indexerFactory.buildIndexer(true);
         Indexer<UniTuple<B>, Set<BiTuple<A, B>>> indexerB = indexerFactory.buildIndexer(false);
+        int scoreStoreSize = buildHelper.extractScoreStoreSize(this);
         JoinBiNode<A, B> node = new JoinBiNode<>(leftMapping, rightMapping,
-                insert, retract,
+                insert, retract, scoreStoreSize,
                 indexerA, indexerB);
         buildHelper.addNode(node);
         buildHelper.putInsertRetract(leftParent, node::insertA, node::retractA);

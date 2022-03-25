@@ -30,32 +30,34 @@ public final class BiScorer<A, B> extends AbstractScorer {
     private final String constraintName;
     private final Score<?> constraintWeight;
     private final BiFunction<A, B, UndoScoreImpacter> scoreImpacter;
-
-    private final Map<BiTuple<A, B>, UndoScoreImpacter> impacterMap = new HashMap<>();
+    private final int scoreStoreIndex;
 
     public BiScorer(String constraintPackage, String constraintName,
-            Score<?> constraintWeight, BiFunction<A, B, UndoScoreImpacter> scoreImpacter) {
+            Score<?> constraintWeight, BiFunction<A, B, UndoScoreImpacter> scoreImpacter,
+            int scoreStoreIndex) {
         this.constraintPackage = constraintPackage;
         this.constraintName = constraintName;
         this.constraintWeight = constraintWeight;
         this.scoreImpacter = scoreImpacter;
+        this.scoreStoreIndex = scoreStoreIndex;
     }
 
     public void insert(BiTuple<A, B> tupleAB) {
-        UndoScoreImpacter undoScoreImpacter = scoreImpacter.apply(tupleAB.factA, tupleAB.factB);
-        UndoScoreImpacter old = impacterMap.put(tupleAB, undoScoreImpacter);
-        if (old != null) {
+        if (tupleAB.scorerStore[scoreStoreIndex] != null) {
             throw new IllegalStateException("Impossible state: the tuple for the facts ("
                     + tupleAB.factA + ", " + tupleAB.factB
-                    + ") was already added in the impacterMap.");
+                    + ") was already added in the scorerStore.");
         }
+        UndoScoreImpacter undoScoreImpacter = scoreImpacter.apply(tupleAB.factA, tupleAB.factB);
+        tupleAB.scorerStore[scoreStoreIndex] = undoScoreImpacter;
     }
 
     public void retract(BiTuple<A, B> tupleAB) {
-        UndoScoreImpacter undoScoreImpacter = impacterMap.remove(tupleAB);
+        UndoScoreImpacter undoScoreImpacter = tupleAB.scorerStore[scoreStoreIndex];
         // No fail fast if null because we don't track which tuples made it through the filter predicate(s)
         if (undoScoreImpacter != null) {
             undoScoreImpacter.run();
+            tupleAB.scorerStore[scoreStoreIndex] = null;
         }
     }
 
