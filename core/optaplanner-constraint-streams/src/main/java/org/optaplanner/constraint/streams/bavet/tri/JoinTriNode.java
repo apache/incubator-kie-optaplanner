@@ -48,6 +48,7 @@ public final class JoinTriNode<A, B, C> extends AbstractNode {
      */
     private final Consumer<TriTuple<A, B, C>> nextNodesRetract;
     private final int joinStoreSize;
+    private final int groupStoreSize;
     private final int scoreStoreSize;
 
     private final Indexer<BiTuple<A, B>, Set<TriTuple<A, B, C>>> indexerAB;
@@ -57,7 +58,7 @@ public final class JoinTriNode<A, B, C> extends AbstractNode {
     public JoinTriNode(BiFunction<A, B, Object[]> mappingAB, Function<C, Object[]> mappingC,
             int joinStoreIndexAB, int joinStoreIndexC,
             Consumer<TriTuple<A, B, C>> nextNodesInsert, Consumer<TriTuple<A, B, C>> nextNodesRetract,
-            int joinStoreSize, int scoreStoreSize,
+            int joinStoreSize, int groupStoreSize, int scoreStoreSize,
             Indexer<BiTuple<A, B>, Set<TriTuple<A, B, C>>> indexerAB, Indexer<UniTuple<C>, Set<TriTuple<A, B, C>>> indexerC) {
         this.mappingAB = mappingAB;
         this.mappingC = mappingC;
@@ -66,6 +67,7 @@ public final class JoinTriNode<A, B, C> extends AbstractNode {
         this.nextNodesInsert = nextNodesInsert;
         this.nextNodesRetract = nextNodesRetract;
         this.joinStoreSize = joinStoreSize;
+        this.groupStoreSize = groupStoreSize;
         this.scoreStoreSize = scoreStoreSize;
         this.indexerAB = indexerAB;
         this.indexerC = indexerC;
@@ -87,7 +89,7 @@ public final class JoinTriNode<A, B, C> extends AbstractNode {
 
         tupleABCSetMapC.forEach((tupleC, tupleABCSetC) -> {
             TriTuple<A, B, C> tupleABC = new TriTuple<>(tupleAB.factA, tupleAB.factB, tupleC.factA,
-                    joinStoreSize, scoreStoreSize);
+                    joinStoreSize, groupStoreSize, scoreStoreSize);
             tupleABC.state = BavetTupleState.CREATING;
             tupleABCSetAB.add(tupleABC);
             tupleABCSetC.add(tupleABC);
@@ -136,7 +138,7 @@ public final class JoinTriNode<A, B, C> extends AbstractNode {
 
         tupleABCSetMapAB.forEach((tupleAB, tupleABCSetAB) -> {
             TriTuple<A, B, C> tupleABC = new TriTuple<>(tupleAB.factA, tupleAB.factB, tupleC.factA,
-                    joinStoreSize, scoreStoreSize);
+                    joinStoreSize, groupStoreSize, scoreStoreSize);
             tupleABC.state = BavetTupleState.CREATING;
             tupleABCSetC.add(tupleABC);
             tupleABCSetAB.add(tupleABC);

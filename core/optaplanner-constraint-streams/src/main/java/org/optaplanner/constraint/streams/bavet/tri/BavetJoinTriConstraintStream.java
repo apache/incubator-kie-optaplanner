@@ -81,17 +81,18 @@ public final class BavetJoinTriConstraintStream<Solution_, A, B, C>
 
     @Override
     public <Score_ extends Score<Score_>> void buildNode(NodeBuildHelper<Score_> buildHelper) {
-        Consumer<TriTuple<A, B, C>> insert = buildHelper.getAggregatedInsert(childStreamList);
-        Consumer<TriTuple<A, B, C>> retract = buildHelper.getAggregatedRetract(childStreamList);
-        Indexer<BiTuple<A, B>, Set<TriTuple<A, B, C>>> indexerAB = indexerFactory.buildIndexer(true);
-        Indexer<UniTuple<C>, Set<TriTuple<A, B, C>>> indexerC = indexerFactory.buildIndexer(false);
         int joinStoreIndexAB = buildHelper.reserveJoinStoreIndex(leftParent.getTupleSource());
         int joinStoreIndexC = buildHelper.reserveJoinStoreIndex(rightParent.getTupleSource());
+        Consumer<TriTuple<A, B, C>> insert = buildHelper.getAggregatedInsert(childStreamList);
+        Consumer<TriTuple<A, B, C>> retract = buildHelper.getAggregatedRetract(childStreamList);
         int joinStoreSize = buildHelper.extractJoinStoreSize(this);
+        int groupStoreSize = buildHelper.extractGroupStoreSize(this);
         int scoreStoreSize = buildHelper.extractScoreStoreSize(this);
+        Indexer<BiTuple<A, B>, Set<TriTuple<A, B, C>>> indexerAB = indexerFactory.buildIndexer(true);
+        Indexer<UniTuple<C>, Set<TriTuple<A, B, C>>> indexerC = indexerFactory.buildIndexer(false);
         JoinTriNode<A, B, C> node = new JoinTriNode<>(
                 leftMapping, rightMapping, joinStoreIndexAB, joinStoreIndexC,
-                insert, retract, joinStoreSize, scoreStoreSize,
+                insert, retract, joinStoreSize, groupStoreSize, scoreStoreSize,
                 indexerAB, indexerC);
         buildHelper.addNode(node);
         buildHelper.putInsertRetract(leftParent, node::insertAB, node::retractAB);

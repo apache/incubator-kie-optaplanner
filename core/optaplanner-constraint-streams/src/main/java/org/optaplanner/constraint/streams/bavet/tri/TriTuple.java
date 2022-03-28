@@ -27,15 +27,17 @@ public final class TriTuple<A, B, C> implements Tuple {
     public final C factC;
 
     public final Object[][] joinStore;
+    public final Object[] groupStore;
     public final UndoScoreImpacter[] scorerStore;
 
     public BavetTupleState state;
 
-    public TriTuple(A factA, B factB, C factC, int joinStoreSize, int scoreStoreSize) {
+    public TriTuple(A factA, B factB, C factC, int joinStoreSize, int groupStoreSize, int scoreStoreSize) {
         this.factA = factA;
         this.factB = factB;
         this.factC = factC;
         joinStore = (joinStoreSize <= 0) ? null : new Object[joinStoreSize][];
+        groupStore = (groupStoreSize <= 0) ? null : new Object[groupStoreSize];
         scorerStore = (scoreStoreSize <= 0) ? null : new UndoScoreImpacter[scoreStoreSize];
     }
 

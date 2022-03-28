@@ -47,6 +47,7 @@ public final class JoinBiNode<A, B> extends AbstractNode {
      */
     private final Consumer<BiTuple<A, B>> nextNodesRetract;
     private final int joinStoreSize;
+    private final int groupStoreSize;
     private final int scoreStoreSize;
 
     private final Indexer<UniTuple<A>, Set<BiTuple<A, B>>> indexerA;
@@ -56,7 +57,7 @@ public final class JoinBiNode<A, B> extends AbstractNode {
     public JoinBiNode(Function<A, Object[]> mappingA, Function<B, Object[]> mappingB,
             int joinStoreIndexA, int joinStoreIndexB,
             Consumer<BiTuple<A, B>> nextNodesInsert, Consumer<BiTuple<A, B>> nextNodesRetract,
-            int joinStoreSize, int scoreStoreSize,
+            int joinStoreSize, int groupStoreSize, int scoreStoreSize,
             Indexer<UniTuple<A>, Set<BiTuple<A, B>>> indexerA, Indexer<UniTuple<B>, Set<BiTuple<A, B>>> indexerB) {
         this.mappingA = mappingA;
         this.mappingB = mappingB;
@@ -65,6 +66,7 @@ public final class JoinBiNode<A, B> extends AbstractNode {
         this.nextNodesInsert = nextNodesInsert;
         this.nextNodesRetract = nextNodesRetract;
         this.joinStoreSize = joinStoreSize;
+        this.groupStoreSize = groupStoreSize;
         this.scoreStoreSize = scoreStoreSize;
         this.indexerA = indexerA;
         this.indexerB = indexerB;
@@ -85,7 +87,8 @@ public final class JoinBiNode<A, B> extends AbstractNode {
         indexerA.put(indexProperties, tupleA, tupleABSetA);
 
         tupleABSetMapB.forEach((tupleB, tupleABSetB) -> {
-            BiTuple<A, B> tupleAB = new BiTuple<>(tupleA.factA, tupleB.factA, joinStoreSize, scoreStoreSize);
+            BiTuple<A, B> tupleAB = new BiTuple<>(tupleA.factA, tupleB.factA,
+                    joinStoreSize, groupStoreSize, scoreStoreSize);
             tupleAB.state = BavetTupleState.CREATING;
             tupleABSetA.add(tupleAB);
             tupleABSetB.add(tupleAB);
@@ -133,7 +136,8 @@ public final class JoinBiNode<A, B> extends AbstractNode {
         indexerB.put(indexProperties, tupleB, tupleABSetB);
 
         tupleABSetMapB.forEach((tupleA, tupleABSetA) -> {
-            BiTuple<A, B> tupleAB = new BiTuple<>(tupleA.factA, tupleB.factA, joinStoreSize, scoreStoreSize);
+            BiTuple<A, B> tupleAB = new BiTuple<>(tupleA.factA, tupleB.factA,
+                    joinStoreSize, groupStoreSize, scoreStoreSize);
             tupleAB.state = BavetTupleState.CREATING;
             tupleABSetB.add(tupleAB);
             tupleABSetA.add(tupleAB);

@@ -77,17 +77,18 @@ public final class BavetJoinBiConstraintStream<Solution_, A, B> extends BavetAbs
 
     @Override
     public <Score_ extends Score<Score_>> void buildNode(NodeBuildHelper<Score_> buildHelper) {
-        Consumer<BiTuple<A, B>> insert = buildHelper.getAggregatedInsert(childStreamList);
-        Consumer<BiTuple<A, B>> retract = buildHelper.getAggregatedRetract(childStreamList);
-        Indexer<UniTuple<A>, Set<BiTuple<A, B>>> indexerA = indexerFactory.buildIndexer(true);
-        Indexer<UniTuple<B>, Set<BiTuple<A, B>>> indexerB = indexerFactory.buildIndexer(false);
         int joinStoreIndexA = buildHelper.reserveJoinStoreIndex(leftParent.getTupleSource());
         int joinStoreIndexB = buildHelper.reserveJoinStoreIndex(rightParent.getTupleSource());
+        Consumer<BiTuple<A, B>> insert = buildHelper.getAggregatedInsert(childStreamList);
+        Consumer<BiTuple<A, B>> retract = buildHelper.getAggregatedRetract(childStreamList);
         int joinStoreSize = buildHelper.extractJoinStoreSize(this);
+        int groupStoreSize = buildHelper.extractGroupStoreSize(this);
         int scoreStoreSize = buildHelper.extractScoreStoreSize(this);
+        Indexer<UniTuple<A>, Set<BiTuple<A, B>>> indexerA = indexerFactory.buildIndexer(true);
+        Indexer<UniTuple<B>, Set<BiTuple<A, B>>> indexerB = indexerFactory.buildIndexer(false);
         JoinBiNode<A, B> node = new JoinBiNode<>(
                 leftMapping, rightMapping, joinStoreIndexA, joinStoreIndexB,
-                insert, retract, joinStoreSize, scoreStoreSize,
+                insert, retract, joinStoreSize, groupStoreSize, scoreStoreSize,
                 indexerA, indexerB);
         buildHelper.addNode(node);
         buildHelper.putInsertRetract(leftParent, node::insertA, node::retractA);

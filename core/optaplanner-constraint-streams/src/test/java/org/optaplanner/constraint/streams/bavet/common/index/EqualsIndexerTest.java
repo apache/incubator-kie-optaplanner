@@ -81,7 +81,7 @@ class EqualsIndexerTest {
     }
 
     private static UniTuple<String> newTuple(String factA) {
-        return new UniTuple<>(factA, 0, 0);
+        return new UniTuple<>(factA, 0, 0, 0);
     }
 
 }
