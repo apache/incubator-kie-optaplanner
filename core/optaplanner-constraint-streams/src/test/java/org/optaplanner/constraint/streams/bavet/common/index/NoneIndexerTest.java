@@ -18,7 +18,6 @@ package org.optaplanner.constraint.streams.bavet.common.index;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.junit.jupiter.api.Assertions.*;
 
 import org.junit.jupiter.api.Test;
 import org.optaplanner.constraint.streams.bavet.uni.UniTuple;
@@ -28,9 +27,7 @@ class NoneIndexerTest {
     @Test
     void getEmpty() {
         Indexer<UniTuple<String>, String> indexer = new NoneIndexer<>();
-        assertThat(indexer.get(new Object[] {}))
-                .isNotNull()
-                .isEmpty();
+        assertThat(indexer.get(new Object[] {})).isEmpty();
     }
 
     @Test
@@ -66,8 +63,6 @@ class NoneIndexerTest {
         UniTuple<String> bethTuple = new UniTuple<>("Beth-F-30");
         indexer.put(new Object[] {}, bethTuple, "Beth value");
 
-        assertThat(indexer.get(new Object[] {}))
-                .isNotNull()
-                .containsOnlyKeys(annTuple, bethTuple);
+        assertThat(indexer.get(new Object[] {})).containsOnlyKeys(annTuple, bethTuple);
     }
 }
