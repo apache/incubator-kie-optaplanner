@@ -40,7 +40,7 @@ public interface ProblemChangeDirector {
      * @param <Entity> the planning entity object type
      */
     @Deprecated(forRemoval = true)
-    <Entity> void addEntity(Entity entity, Consumer<Entity> entityConsumer);
+    default <Entity> void addEntity(Entity entity, Consumer<Entity> entityConsumer) {}
 
     /**
      * Remove an existing {@link PlanningEntity} instance from the {@link PlanningSolution working solution}.
@@ -53,7 +53,7 @@ public interface ProblemChangeDirector {
      * @param <Entity> the planning entity object type
      */
     @Deprecated(forRemoval = true)
-    <Entity> void removeEntity(Entity entity, Consumer<Entity> entityConsumer);
+    default <Entity> void removeEntity(Entity entity, Consumer<Entity> entityConsumer) {}
 
     /**
      * Change a {@link PlanningVariable} value of a {@link PlanningEntity}. Translates the entity to a working
@@ -67,7 +67,7 @@ public interface ProblemChangeDirector {
      * @param <Entity> the planning entity object type
      */
     @Deprecated(forRemoval = true)
-    <Entity> void changeVariable(Entity entity, String variableName, Consumer<Entity> entityConsumer);
+    default <Entity> void changeVariable(Entity entity, String variableName, Consumer<Entity> entityConsumer) {}
 
     /**
      * Add a new problem fact into the {@link PlanningSolution working solution}.
@@ -79,7 +79,7 @@ public interface ProblemChangeDirector {
      * @param <ProblemFact> the problem fact object type
      */
     @Deprecated(forRemoval = true)
-    <ProblemFact> void addProblemFact(ProblemFact problemFact, Consumer<ProblemFact> problemFactConsumer);
+    default <ProblemFact> void addProblemFact(ProblemFact problemFact, Consumer<ProblemFact> problemFactConsumer) {}
 
     /**
      * Remove an existing problem fact from the {@link PlanningSolution working solution}. Translates the problem fact
@@ -92,7 +92,7 @@ public interface ProblemChangeDirector {
      * @param <ProblemFact> the problem fact object type
      */
     @Deprecated(forRemoval = true)
-    <ProblemFact> void removeProblemFact(ProblemFact problemFact, Consumer<ProblemFact> problemFactConsumer);
+    default <ProblemFact> void removeProblemFact(ProblemFact problemFact, Consumer<ProblemFact> problemFactConsumer) {}
 
     /**
      * Change a property of either a {@link PlanningEntity} or a problem fact. Translates the entity or the problem fact
@@ -106,8 +106,8 @@ public interface ProblemChangeDirector {
      * @param <EntityOrProblemFact> the planning entity or problem fact object type
      */
     @Deprecated(forRemoval = true)
-    <EntityOrProblemFact> void changeProblemProperty(EntityOrProblemFact problemFactOrEntity,
-            Consumer<EntityOrProblemFact> problemFactOrEntityConsumer);
+    default <EntityOrProblemFact> void changeProblemProperty(EntityOrProblemFact problemFactOrEntity,
+            Consumer<EntityOrProblemFact> problemFactOrEntityConsumer) {}
 
     /**
      * Translate an entity or fact instance (often from another {@link Thread} or JVM)
