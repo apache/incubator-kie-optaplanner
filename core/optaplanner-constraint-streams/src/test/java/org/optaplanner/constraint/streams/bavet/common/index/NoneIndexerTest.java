@@ -18,7 +18,6 @@ package org.optaplanner.constraint.streams.bavet.common.index;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.junit.jupiter.api.Assertions.*;
 
 import org.junit.jupiter.api.Test;
 import org.optaplanner.constraint.streams.bavet.uni.UniTuple;
@@ -70,9 +69,9 @@ class NoneIndexerTest {
                 .isNotNull()
                 .containsOnlyKeys(annTuple, bethTuple);
     }
-    
+
     private static UniTuple<String> newTuple(String factA) {
         return new UniTuple<>(factA, 0, 0, 0);
     }
-    
+
 }

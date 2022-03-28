@@ -16,8 +16,6 @@
 
 package org.optaplanner.constraint.streams.bavet.uni;
 
-import java.util.HashMap;
-import java.util.Map;
 import java.util.function.Function;
 
 import org.optaplanner.constraint.streams.bavet.common.AbstractScorer;

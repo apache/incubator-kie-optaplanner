@@ -16,9 +16,6 @@
 
 package org.optaplanner.constraint.streams.bavet.tri;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import org.optaplanner.constraint.streams.bavet.common.AbstractScorer;
 import org.optaplanner.constraint.streams.common.inliner.UndoScoreImpacter;
 import org.optaplanner.core.api.function.TriFunction;
