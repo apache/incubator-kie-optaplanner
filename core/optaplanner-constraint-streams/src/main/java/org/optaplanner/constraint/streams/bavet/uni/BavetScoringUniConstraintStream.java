@@ -149,7 +149,7 @@ public final class BavetScoringUniConstraintStream<Solution_, A>
             throw new IllegalStateException("Impossible state: neither of the supported match weighers provided.");
         }
         UniScorer<A> scorer = new UniScorer<>(constraint.getConstraintPackage(), constraint.getConstraintName(),
-                constraintWeight, scoreImpacter, buildHelper.reserveScoreStoreIndex(parent.getTupleSource()));
+                constraintWeight, scoreImpacter, buildHelper.reserveTupleStoreIndex(parent.getTupleSource()));
         buildHelper.putInsertRetract(this, scorer::insert, scorer::retract);
     }
 

@@ -28,34 +28,34 @@ public final class UniScorer<A> extends AbstractScorer {
     private final String constraintName;
     private final Score<?> constraintWeight;
     private final Function<A, UndoScoreImpacter> scoreImpacter;
-    private final int scoreStoreIndex;
+    private final int inputStoreIndex;
 
     public UniScorer(String constraintPackage, String constraintName,
             Score<?> constraintWeight, Function<A, UndoScoreImpacter> scoreImpacter,
-            int scoreStoreIndex) {
+            int inputStoreIndex) {
         this.constraintPackage = constraintPackage;
         this.constraintName = constraintName;
         this.constraintWeight = constraintWeight;
         this.scoreImpacter = scoreImpacter;
-        this.scoreStoreIndex = scoreStoreIndex;
+        this.inputStoreIndex = inputStoreIndex;
     }
 
     public void insert(UniTuple<A> tupleA) {
-        if (tupleA.scorerStore[scoreStoreIndex] != null) {
+        if (tupleA.store[inputStoreIndex] != null) {
             throw new IllegalStateException("Impossible state: the tuple for the fact ("
                     + tupleA.factA
                     + ") was already added in the scorerStore.");
         }
         UndoScoreImpacter undoScoreImpacter = scoreImpacter.apply(tupleA.factA);
-        tupleA.scorerStore[scoreStoreIndex] = undoScoreImpacter;
+        tupleA.store[inputStoreIndex] = undoScoreImpacter;
     }
 
     public void retract(UniTuple<A> tupleA) {
-        UndoScoreImpacter undoScoreImpacter = tupleA.scorerStore[scoreStoreIndex];
+        UndoScoreImpacter undoScoreImpacter = (UndoScoreImpacter) tupleA.store[inputStoreIndex];
         // No fail fast if null because we don't track which tuples made it through the filter predicate(s)
         if (undoScoreImpacter != null) {
             undoScoreImpacter.run();
-            tupleA.scorerStore[scoreStoreIndex] = null;
+            tupleA.store[inputStoreIndex] = null;
         }
     }
 

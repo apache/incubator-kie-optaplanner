@@ -74,15 +74,13 @@ public final class BavetGroupBridgeBiConstraintStream<Solution_, A, B, NewA, Res
             throw new IllegalStateException("Impossible state: the stream (" + this
                     + ") has an non-empty childStreamList (" + childStreamList + ") but it's a groupBy bridge.");
         }
-        int groupStoreIndex = buildHelper.reserveGroupStoreIndex(parent.getTupleSource());
+        int inputStoreIndex = buildHelper.reserveTupleStoreIndex(parent.getTupleSource());
         Consumer<BiTuple<NewA, NewB>> insert = buildHelper.getAggregatedInsert(groupStream.getChildStreamList());
         Consumer<BiTuple<NewA, NewB>> retract = buildHelper.getAggregatedRetract(groupStream.getChildStreamList());
-        int joinStoreSize = buildHelper.extractJoinStoreSize(groupStream);
-        int groupStoreSize = buildHelper.extractGroupStoreSize(groupStream);
-        int scoreStoreSize = buildHelper.extractScoreStoreSize(groupStream);
+        int outputStoreSize = buildHelper.extractTupleStoreSize(groupStream);
         GroupBiToBiNode<A, B, NewA, NewB, ResultContainer_> node = new GroupBiToBiNode<>(
-                groupKeyMapping, groupStoreIndex, collector,
-                insert, retract, joinStoreSize, groupStoreSize, scoreStoreSize);
+                groupKeyMapping, inputStoreIndex, collector,
+                insert, retract, outputStoreSize);
         buildHelper.addNode(node);
         buildHelper.putInsertRetract(this, node::insertAB, node::retractAB);
     }

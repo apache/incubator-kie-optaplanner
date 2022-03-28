@@ -18,23 +18,18 @@ package org.optaplanner.constraint.streams.bavet.uni;
 
 import org.optaplanner.constraint.streams.bavet.common.BavetTupleState;
 import org.optaplanner.constraint.streams.bavet.common.Tuple;
-import org.optaplanner.constraint.streams.common.inliner.UndoScoreImpacter;
 
 public final class UniTuple<A> implements Tuple {
 
     public final A factA;
 
-    public final Object[][] joinStore;
-    public final Object[] groupStore;
-    public final UndoScoreImpacter[] scorerStore;
+    public final Object[] store;
 
     public BavetTupleState state;
 
-    public UniTuple(A factA, int joinStoreSize, int groupStoreSize, int scoreStoreSize) {
+    public UniTuple(A factA, int storeSize) {
         this.factA = factA;
-        joinStore = (joinStoreSize <= 0) ? null : new Object[joinStoreSize][];
-        groupStore = (groupStoreSize <= 0) ? null : new Object[groupStoreSize];
-        scorerStore = (scoreStoreSize <= 0) ? null : new UndoScoreImpacter[scoreStoreSize];
+        store = (storeSize <= 0) ? null : new Object[storeSize];
     }
 
     @Override

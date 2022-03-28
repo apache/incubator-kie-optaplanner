@@ -46,9 +46,7 @@ public final class GroupUniToBiNode<OldA, A, B, ResultContainer_> extends Abstra
      * Calls for example {@link BiScorer#retract(BiTuple)}, {@link JoinTriNode#insertAB(BiTuple)} and/or ...
      */
     private final Consumer<BiTuple<A, B>> nextNodesRetract;
-    private final int joinStoreSize;
-    private final int groupStoreSize;
-    private final int scoreStoreSize;
+    private final int outputStoreSize;
 
     private final Map<A, Group> groupMap;
     private final Queue<Group> dirtyGroupQueue;
@@ -56,7 +54,7 @@ public final class GroupUniToBiNode<OldA, A, B, ResultContainer_> extends Abstra
     public GroupUniToBiNode(Function<OldA, A> groupKeyMapping, int groupStoreIndex,
             UniConstraintCollector<OldA, ResultContainer_, B> collector,
             Consumer<BiTuple<A, B>> nextNodesInsert, Consumer<BiTuple<A, B>> nextNodesRetract,
-            int joinStoreSize, int groupStoreSize, int scoreStoreSize) {
+            int outputStoreSize) {
         this.groupKeyMapping = groupKeyMapping;
         this.groupStoreIndex = groupStoreIndex;
         supplier = collector.supplier();
@@ -64,9 +62,7 @@ public final class GroupUniToBiNode<OldA, A, B, ResultContainer_> extends Abstra
         finisher = collector.finisher();
         this.nextNodesInsert = nextNodesInsert;
         this.nextNodesRetract = nextNodesRetract;
-        this.joinStoreSize = joinStoreSize;
-        this.groupStoreSize = groupStoreSize;
-        this.scoreStoreSize = scoreStoreSize;
+        this.outputStoreSize = outputStoreSize;
         groupMap = new HashMap<>(1000);
         dirtyGroupQueue = new ArrayDeque<>(1000);
     }
@@ -96,7 +92,7 @@ public final class GroupUniToBiNode<OldA, A, B, ResultContainer_> extends Abstra
     }
 
     public void insertA(UniTuple<OldA> tupleOldA) {
-        if (tupleOldA.groupStore[groupStoreIndex] != null) {
+        if (tupleOldA.store[groupStoreIndex] != null) {
             throw new IllegalStateException("Impossible state: the tuple for the fact ("
                     + tupleOldA.factA + ") was already added in the groupStore.");
         }
@@ -106,7 +102,7 @@ public final class GroupUniToBiNode<OldA, A, B, ResultContainer_> extends Abstra
 
         Runnable undoAccumulator = accumulator.apply(group.resultContainer, tupleOldA.factA);
         GroupPart groupPart = new GroupPart(group, undoAccumulator);
-        tupleOldA.groupStore[groupStoreIndex] = groupPart;
+        tupleOldA.store[groupStoreIndex] = groupPart;
         if (!group.dirty) {
             group.dirty = true;
             dirtyGroupQueue.add(group);
@@ -114,12 +110,12 @@ public final class GroupUniToBiNode<OldA, A, B, ResultContainer_> extends Abstra
     }
 
     public void retractA(UniTuple<OldA> tupleOldA) {
-        GroupPart groupPart = (GroupPart) tupleOldA.groupStore[groupStoreIndex];
+        GroupPart groupPart = (GroupPart) tupleOldA.store[groupStoreIndex];
         if (groupPart == null) {
             // No fail fast if null because we don't track which tuples made it through the filter predicate(s)
             return;
         }
-        tupleOldA.groupStore[groupStoreIndex] = null;
+        tupleOldA.store[groupStoreIndex] = null;
         Group group = groupPart.group;
         group.parentCount--;
         groupPart.undoAccumulator.run();
@@ -153,7 +149,7 @@ public final class GroupUniToBiNode<OldA, A, B, ResultContainer_> extends Abstra
             if (!group.dying) {
                 // Delay calculating B until it propagates
                 B factB = finisher.apply(group.resultContainer);
-                group.tupleAB = new BiTuple<>(group.groupKey, factB, joinStoreSize, groupStoreSize, scoreStoreSize);
+                group.tupleAB = new BiTuple<>(group.groupKey, factB, outputStoreSize);
                 nextNodesInsert.accept(group.tupleAB);
                 group.tupleAB.state = BavetTupleState.OK;
             }

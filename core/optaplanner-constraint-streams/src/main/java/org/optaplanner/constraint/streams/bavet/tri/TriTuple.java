@@ -18,7 +18,6 @@ package org.optaplanner.constraint.streams.bavet.tri;
 
 import org.optaplanner.constraint.streams.bavet.common.BavetTupleState;
 import org.optaplanner.constraint.streams.bavet.common.Tuple;
-import org.optaplanner.constraint.streams.common.inliner.UndoScoreImpacter;
 
 public final class TriTuple<A, B, C> implements Tuple {
 
@@ -26,19 +25,15 @@ public final class TriTuple<A, B, C> implements Tuple {
     public final B factB;
     public final C factC;
 
-    public final Object[][] joinStore;
-    public final Object[] groupStore;
-    public final UndoScoreImpacter[] scorerStore;
+    public final Object[] store;
 
     public BavetTupleState state;
 
-    public TriTuple(A factA, B factB, C factC, int joinStoreSize, int groupStoreSize, int scoreStoreSize) {
+    public TriTuple(A factA, B factB, C factC, int storeSize) {
         this.factA = factA;
         this.factB = factB;
         this.factC = factC;
-        joinStore = (joinStoreSize <= 0) ? null : new Object[joinStoreSize][];
-        groupStore = (groupStoreSize <= 0) ? null : new Object[groupStoreSize];
-        scorerStore = (scoreStoreSize <= 0) ? null : new UndoScoreImpacter[scoreStoreSize];
+        store = (storeSize <= 0) ? null : new Object[storeSize];
     }
 
     @Override

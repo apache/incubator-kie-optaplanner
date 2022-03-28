@@ -146,7 +146,7 @@ public final class BavetScoringTriConstraintStream<Solution_, A, B, C>
             throw new IllegalStateException("Impossible state: neither of the supported match weighers provided.");
         }
         TriScorer<A, B, C> scorer = new TriScorer<>(constraint.getConstraintPackage(), constraint.getConstraintName(),
-                constraintWeight, scoreImpacter, buildHelper.reserveScoreStoreIndex(parent.getTupleSource()));
+                constraintWeight, scoreImpacter, buildHelper.reserveTupleStoreIndex(parent.getTupleSource()));
         buildHelper.putInsertRetract(this, scorer::insert, scorer::retract);
     }
 

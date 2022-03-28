@@ -48,9 +48,7 @@ public final class GroupBiToBiNode<OldA, OldB, A, B, ResultContainer_> extends A
      * Calls for example {@link BiScorer#retract(BiTuple)}, {@link JoinTriNode#insertAB(BiTuple)} and/or ...
      */
     private final Consumer<BiTuple<A, B>> nextNodesRetract;
-    private final int joinStoreSize;
-    private final int groupStoreSize;
-    private final int scoreStoreSize;
+    private final int outputStoreSize;
 
     private final Map<A, Group> groupMap;
     private final Queue<Group> dirtyGroupQueue;
@@ -58,7 +56,7 @@ public final class GroupBiToBiNode<OldA, OldB, A, B, ResultContainer_> extends A
     public GroupBiToBiNode(BiFunction<OldA, OldB, A> groupKeyMapping, int groupStoreIndex,
             BiConstraintCollector<OldA, OldB, ResultContainer_, B> collector,
             Consumer<BiTuple<A, B>> nextNodesInsert, Consumer<BiTuple<A, B>> nextNodesRetract,
-            int joinStoreSize, int groupStoreSize, int scoreStoreSize) {
+            int outputStoreSize) {
         this.groupKeyMapping = groupKeyMapping;
         this.groupStoreIndex = groupStoreIndex;
         supplier = collector.supplier();
@@ -66,9 +64,7 @@ public final class GroupBiToBiNode<OldA, OldB, A, B, ResultContainer_> extends A
         finisher = collector.finisher();
         this.nextNodesInsert = nextNodesInsert;
         this.nextNodesRetract = nextNodesRetract;
-        this.joinStoreSize = joinStoreSize;
-        this.groupStoreSize = groupStoreSize;
-        this.scoreStoreSize = scoreStoreSize;
+        this.outputStoreSize = outputStoreSize;
         groupMap = new HashMap<>(1000);
         dirtyGroupQueue = new ArrayDeque<>(1000);
     }
@@ -98,7 +94,7 @@ public final class GroupBiToBiNode<OldA, OldB, A, B, ResultContainer_> extends A
     }
 
     public void insertAB(BiTuple<OldA, OldB> tupleOldAB) {
-        if (tupleOldAB.groupStore[groupStoreIndex] != null) {
+        if (tupleOldAB.store[groupStoreIndex] != null) {
             throw new IllegalStateException("Impossible state: the tuple for the fact ("
                     + tupleOldAB.factA + ", " + tupleOldAB.factB + ") was already added in the groupStore.");
         }
@@ -108,7 +104,7 @@ public final class GroupBiToBiNode<OldA, OldB, A, B, ResultContainer_> extends A
 
         Runnable undoAccumulator = accumulator.apply(group.resultContainer, tupleOldAB.factA, tupleOldAB.factB);
         GroupPart groupPart = new GroupPart(group, undoAccumulator);
-        tupleOldAB.groupStore[groupStoreIndex] = groupPart;
+        tupleOldAB.store[groupStoreIndex] = groupPart;
         if (!group.dirty) {
             group.dirty = true;
             dirtyGroupQueue.add(group);
@@ -116,12 +112,12 @@ public final class GroupBiToBiNode<OldA, OldB, A, B, ResultContainer_> extends A
     }
 
     public void retractAB(BiTuple<OldA, OldB> tupleOldAB) {
-        GroupPart groupPart = (GroupPart) tupleOldAB.groupStore[groupStoreIndex];
+        GroupPart groupPart = (GroupPart) tupleOldAB.store[groupStoreIndex];
         if (groupPart == null) {
             // No fail fast if null because we don't track which tuples made it through the filter predicate(s)
             return;
         }
-        tupleOldAB.groupStore[groupStoreIndex] = null;
+        tupleOldAB.store[groupStoreIndex] = null;
         Group group = groupPart.group;
         group.parentCount--;
         groupPart.undoAccumulator.run();
@@ -155,7 +151,7 @@ public final class GroupBiToBiNode<OldA, OldB, A, B, ResultContainer_> extends A
             if (!group.dying) {
                 // Delay calculating B until it propagates
                 B factB = finisher.apply(group.resultContainer);
-                group.tupleAB = new BiTuple<>(group.groupKey, factB, joinStoreSize, groupStoreSize, scoreStoreSize);
+                group.tupleAB = new BiTuple<>(group.groupKey, factB, outputStoreSize);
                 nextNodesInsert.accept(group.tupleAB);
                 group.tupleAB.state = BavetTupleState.OK;
             }

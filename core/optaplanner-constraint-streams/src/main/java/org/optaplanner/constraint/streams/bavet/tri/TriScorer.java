@@ -27,34 +27,34 @@ public final class TriScorer<A, B, C> extends AbstractScorer {
     private final String constraintName;
     private final Score<?> constraintWeight;
     private final TriFunction<A, B, C, UndoScoreImpacter> scoreImpacter;
-    private final int scoreStoreIndex;
+    private final int inputStoreIndex;
 
     public TriScorer(String constraintPackage, String constraintName,
             Score<?> constraintWeight, TriFunction<A, B, C, UndoScoreImpacter> scoreImpacter,
-            int scoreStoreIndex) {
+            int inputStoreIndex) {
         this.constraintPackage = constraintPackage;
         this.constraintName = constraintName;
         this.constraintWeight = constraintWeight;
         this.scoreImpacter = scoreImpacter;
-        this.scoreStoreIndex = scoreStoreIndex;
+        this.inputStoreIndex = inputStoreIndex;
     }
 
     public void insert(TriTuple<A, B, C> tupleABC) {
-        if (tupleABC.scorerStore[scoreStoreIndex] != null) {
+        if (tupleABC.store[inputStoreIndex] != null) {
             throw new IllegalStateException("Impossible state: the tuple for the facts ("
                     + tupleABC.factA + ", " + tupleABC.factB + ", " + tupleABC.factC
                     + ") was already added in the scorerStore.");
         }
         UndoScoreImpacter undoScoreImpacter = scoreImpacter.apply(tupleABC.factA, tupleABC.factB, tupleABC.factC);
-        tupleABC.scorerStore[scoreStoreIndex] = undoScoreImpacter;
+        tupleABC.store[inputStoreIndex] = undoScoreImpacter;
     }
 
     public void retract(TriTuple<A, B, C> tupleABC) {
-        UndoScoreImpacter undoScoreImpacter = tupleABC.scorerStore[scoreStoreIndex];
+        UndoScoreImpacter undoScoreImpacter = (UndoScoreImpacter) tupleABC.store[inputStoreIndex];
         // No fail fast if null because we don't track which tuples made it through the filter predicate(s)
         if (undoScoreImpacter != null) {
             undoScoreImpacter.run();
-            tupleABC.scorerStore[scoreStoreIndex] = null;
+            tupleABC.store[inputStoreIndex] = null;
         }
     }
 

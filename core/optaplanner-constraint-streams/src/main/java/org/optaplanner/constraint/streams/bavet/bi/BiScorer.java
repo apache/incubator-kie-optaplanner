@@ -28,34 +28,34 @@ public final class BiScorer<A, B> extends AbstractScorer {
     private final String constraintName;
     private final Score<?> constraintWeight;
     private final BiFunction<A, B, UndoScoreImpacter> scoreImpacter;
-    private final int scoreStoreIndex;
+    private final int inputStoreIndex;
 
     public BiScorer(String constraintPackage, String constraintName,
             Score<?> constraintWeight, BiFunction<A, B, UndoScoreImpacter> scoreImpacter,
-            int scoreStoreIndex) {
+            int inputStoreIndex) {
         this.constraintPackage = constraintPackage;
         this.constraintName = constraintName;
         this.constraintWeight = constraintWeight;
         this.scoreImpacter = scoreImpacter;
-        this.scoreStoreIndex = scoreStoreIndex;
+        this.inputStoreIndex = inputStoreIndex;
     }
 
     public void insert(BiTuple<A, B> tupleAB) {
-        if (tupleAB.scorerStore[scoreStoreIndex] != null) {
+        if (tupleAB.store[inputStoreIndex] != null) {
             throw new IllegalStateException("Impossible state: the tuple for the facts ("
                     + tupleAB.factA + ", " + tupleAB.factB
                     + ") was already added in the scorerStore.");
         }
         UndoScoreImpacter undoScoreImpacter = scoreImpacter.apply(tupleAB.factA, tupleAB.factB);
-        tupleAB.scorerStore[scoreStoreIndex] = undoScoreImpacter;
+        tupleAB.store[inputStoreIndex] = undoScoreImpacter;
     }
 
     public void retract(BiTuple<A, B> tupleAB) {
-        UndoScoreImpacter undoScoreImpacter = tupleAB.scorerStore[scoreStoreIndex];
+        UndoScoreImpacter undoScoreImpacter = (UndoScoreImpacter) tupleAB.store[inputStoreIndex];
         // No fail fast if null because we don't track which tuples made it through the filter predicate(s)
         if (undoScoreImpacter != null) {
             undoScoreImpacter.run();
-            tupleAB.scorerStore[scoreStoreIndex] = null;
+            tupleAB.store[inputStoreIndex] = null;
         }
     }
 
