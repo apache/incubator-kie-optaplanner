@@ -41,8 +41,7 @@ public interface ProblemChange<Solution_> {
      * up-to-date before the {@link ProblemChange#doChange(Object, ProblemChangeDirector)} is invoked.
      * Overriding this method implicates that shadow variables will not be recalculated before this {@link ProblemChange},
      * which brings performance benefits at the expense that shadow variables' values cannot be relied upon in the
-     * 
-     * @link ProblemChange#doChange(Object, ProblemChangeDirector)} method implementation.
+     * {@link ProblemChange#doChange(Object, ProblemChangeDirector)} method implementation.
      *
      * @return true if this problem change requires up-to-date shadow variables, otherwise false.
      */
