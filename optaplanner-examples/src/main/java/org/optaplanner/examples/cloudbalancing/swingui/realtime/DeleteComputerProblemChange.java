@@ -41,8 +41,7 @@ public class DeleteComputerProblemChange implements ProblemChange<CloudBalance> 
         // First remove the problem fact from all planning entities that use it
         for (CloudProcess process : cloudBalance.getProcessList()) {
             if (process.getComputer() == workingComputer) {
-                problemChangeDirector.changeVariable(process, "computer",
-                        workingProcess -> workingProcess.setComputer(null));
+                process.setComputer(null);
             }
         }
         // A SolutionCloner does not clone problem fact lists (such as computerList)
@@ -50,7 +49,7 @@ public class DeleteComputerProblemChange implements ProblemChange<CloudBalance> 
         ArrayList<CloudComputer> computerList = new ArrayList<>(cloudBalance.getComputerList());
         cloudBalance.setComputerList(computerList);
         // Remove the problem fact itself
-        problemChangeDirector.removeProblemFact(workingComputer, computerList::remove);
+        computerList.remove(workingComputer);
     }
 
 }

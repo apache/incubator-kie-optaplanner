@@ -188,7 +188,7 @@ public class NurseRosteringPanel extends SolutionPanel<NurseRoster> {
             List<Shift> refShiftList = planningWindowStart.getShiftList();
             List<Shift> newShiftList = new ArrayList<>(refShiftList.size());
             newShiftDate.setShiftList(newShiftList);
-            problemChangeDirector.addProblemFact(newShiftDate, nurseRoster.getShiftDateList()::add);
+            nurseRoster.getShiftDateList().add(newShiftDate);
             Shift oldLastShift = nurseRoster.getShiftList().get(nurseRoster.getShiftList().size() - 1);
             long shiftId = oldLastShift.getId() + 1L;
             int shiftIndex = oldLastShift.getIndex() + 1;
@@ -204,24 +204,22 @@ public class NurseRosteringPanel extends SolutionPanel<NurseRoster> {
                 shiftIndex++;
                 newShift.setRequiredEmployeeSize(refShift.getRequiredEmployeeSize());
                 newShiftList.add(newShift);
-                problemChangeDirector.addProblemFact(newShift, nurseRoster.getShiftList()::add);
+                nurseRoster.getShiftList().add(newShift);
                 for (int indexInShift = 0; indexInShift < newShift.getRequiredEmployeeSize(); indexInShift++) {
                     ShiftAssignment newShiftAssignment = new ShiftAssignment();
                     newShiftAssignment.setId(shiftAssignmentId);
                     shiftAssignmentId++;
                     newShiftAssignment.setShift(newShift);
                     newShiftAssignment.setIndexInShift(indexInShift);
-
-                    problemChangeDirector.addEntity(newShiftAssignment, nurseRoster.getShiftAssignmentList()::add);
+                    nurseRoster.getShiftAssignmentList().add(newShiftAssignment);
                 }
             }
             windowStartIndex++;
             ShiftDate newPlanningWindowStart = shiftDateList.get(windowStartIndex);
-            problemChangeDirector.changeProblemProperty(nurseRosterParametrization,
-                    workingNurseRosterParametrization -> {
-                        workingNurseRosterParametrization.setPlanningWindowStart(newPlanningWindowStart);
-                        workingNurseRosterParametrization.setLastShiftDate(newShiftDate);
-                    });
+
+            nurseRosterParametrization.setPlanningWindowStart(newPlanningWindowStart);
+            nurseRosterParametrization.setLastShiftDate(newShiftDate);
+
         }, true);
     }
 
@@ -236,8 +234,7 @@ public class NurseRosteringPanel extends SolutionPanel<NurseRoster> {
             // First remove the problem fact from all planning entities that use it
             for (ShiftAssignment shiftAssignment : nurseRoster.getShiftAssignmentList()) {
                 if (shiftAssignment.getEmployee() == workingEmployee) {
-                    problemChangeDirector.changeVariable(shiftAssignment, "employee",
-                            workingShiftAssignment -> workingShiftAssignment.setEmployee(null));
+                    shiftAssignment.setEmployee(null);
                 }
             }
             // A SolutionCloner does not clone problem fact lists (such as employeeList)
@@ -245,14 +242,14 @@ public class NurseRosteringPanel extends SolutionPanel<NurseRoster> {
             ArrayList<Employee> employeeList = new ArrayList<>(nurseRoster.getEmployeeList());
             nurseRoster.setEmployeeList(employeeList);
             // Remove it the problem fact itself
-            problemChangeDirector.removeProblemFact(workingEmployee, employeeList::remove);
+            employeeList.remove(workingEmployee);
         });
     }
 
     public void moveShiftAssignmentToEmployee(ShiftAssignment shiftAssignment, Employee toEmployee) {
         doProblemChange(
-                (workingSolution, problemChangeDirector) -> problemChangeDirector.changeVariable(shiftAssignment, "employee",
-                        sa -> sa.setEmployee(toEmployee)));
+                (workingSolution, problemChangeDirector) -> problemChangeDirector.lookUpWorkingObjectOrFail(shiftAssignment)
+                        .setEmployee(toEmployee));
         solverAndPersistenceFrame.resetScreen();
     }
 

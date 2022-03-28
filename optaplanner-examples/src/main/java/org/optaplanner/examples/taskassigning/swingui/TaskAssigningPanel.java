@@ -190,7 +190,7 @@ public class TaskAssigningPanel extends SolutionPanel<TaskAssigningSolution> {
                 task.setReadyTime(readyTime);
                 task.setPriority(priorities[producingRandom.nextInt(priorities.length)]);
 
-                problemChangeDirector.addEntity(task, taskList::add);
+                taskList.add(task);
             }
         });
     }

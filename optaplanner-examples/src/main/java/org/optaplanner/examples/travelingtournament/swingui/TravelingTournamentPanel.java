@@ -19,22 +19,11 @@ package org.optaplanner.examples.travelingtournament.swingui;
 import static org.optaplanner.examples.common.swingui.timetable.TimeTablePanel.HeaderColumnKey.HEADER_COLUMN;
 import static org.optaplanner.examples.common.swingui.timetable.TimeTablePanel.HeaderRowKey.HEADER_ROW;
 
-import java.awt.BorderLayout;
-import java.awt.Color;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.util.List;
 
-import javax.swing.AbstractAction;
-import javax.swing.BorderFactory;
-import javax.swing.ImageIcon;
-import javax.swing.JButton;
-import javax.swing.JComboBox;
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JTabbedPane;
-import javax.swing.SwingConstants;
+import javax.swing.*;
 
 import org.optaplanner.examples.common.swingui.SolutionPanel;
 import org.optaplanner.examples.common.swingui.components.LabeledComboBoxRenderer;
@@ -184,8 +173,9 @@ public class TravelingTournamentPanel extends SolutionPanel<TravelingTournament>
                     "Select day", JOptionPane.OK_CANCEL_OPTION);
             if (result == JOptionPane.OK_OPTION) {
                 Day toDay = (Day) dayListField.getSelectedItem();
-                doProblemChange((workingSolution, problemChangeDirector) -> problemChangeDirector.changeVariable(match, "day",
-                        m -> m.setDay(toDay)));
+                doProblemChange(
+                        (workingSolution, problemChangeDirector) -> problemChangeDirector.lookUpWorkingObjectOrFail(match)
+                                .setDay(toDay));
                 solverAndPersistenceFrame.resetScreen();
             }
         }

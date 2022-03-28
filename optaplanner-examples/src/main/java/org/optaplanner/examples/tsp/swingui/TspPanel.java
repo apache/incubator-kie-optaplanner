@@ -16,10 +16,9 @@
 
 package org.optaplanner.examples.tsp.swingui;
 
-import java.awt.BorderLayout;
+import java.awt.*;
 
-import javax.swing.JScrollPane;
-import javax.swing.JTabbedPane;
+import javax.swing.*;
 
 import org.optaplanner.examples.common.swingui.SolutionPanel;
 import org.optaplanner.examples.common.swingui.SolverAndPersistenceFrame;
@@ -102,11 +101,11 @@ public class TspPanel extends SolutionPanel<TspSolution> {
         newLocation.setLatitude(latitude);
         logger.info("Scheduling insertion of newLocation ({}).", newLocation);
         doProblemChange((tspSolution, problemChangeDirector) -> {
-            problemChangeDirector.addProblemFact(newLocation, tspSolution.getLocationList()::add);
+            tspSolution.getLocationList().add(newLocation);
             Visit newVisit = new Visit();
             newVisit.setId(newLocation.getId());
             newVisit.setLocation(newLocation);
-            problemChangeDirector.addEntity(newVisit, tspSolution.getVisitList()::add);
+            tspSolution.getVisitList().add(newVisit);
         });
     }
 
@@ -161,17 +160,15 @@ public class TspPanel extends SolutionPanel<TspSolution> {
 
             // Close the old chain
             if (oldTrailingEntity != null) {
-                problemChangeDirector.changeVariable(
-                        oldTrailingEntity, "previousStandstill", v -> v.setPreviousStandstill(oldValue));
+                problemChangeDirector.lookUpWorkingObjectOrFail(oldTrailingEntity).setPreviousStandstill(oldValue);
             }
 
             // Change the entity
-            problemChangeDirector.changeVariable(visit, "previousStandstill", v -> v.setPreviousStandstill(toStandstill));
+            problemChangeDirector.lookUpWorkingObjectOrFail(visit).setPreviousStandstill(toStandstill);
 
             // Reroute the new chain
             if (newTrailingEntity != null) {
-                problemChangeDirector.changeVariable(
-                        newTrailingEntity, "previousStandstill", v -> v.setPreviousStandstill(visit));
+                problemChangeDirector.lookUpWorkingObjectOrFail(newTrailingEntity).setPreviousStandstill(visit);
             }
         });
     }

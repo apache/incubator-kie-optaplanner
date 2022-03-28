@@ -133,12 +133,10 @@ public class MachineReassignmentPanel extends SolutionPanel<MachineReassignment>
             // First remove the problem fact from all planning entities that use it
             for (MrProcessAssignment processAssignment : machineReassignment.getProcessAssignmentList()) {
                 if (processAssignment.getOriginalMachine() == workingMachine) {
-                    problemChangeDirector.changeProblemProperty(processAssignment,
-                            workingProcessAssignment -> workingProcessAssignment.setOriginalMachine(null));
+                    processAssignment.setOriginalMachine(null);
                 }
                 if (processAssignment.getMachine() == workingMachine) {
-                    problemChangeDirector.changeVariable(processAssignment, "machine",
-                            workingProcessAssignment -> workingProcessAssignment.setMachine(null));
+                    processAssignment.setMachine(null);
                 }
             }
             // A SolutionCloner does not clone problem fact lists (such as machineList)
@@ -146,7 +144,7 @@ public class MachineReassignmentPanel extends SolutionPanel<MachineReassignment>
             ArrayList<MrMachine> machineList = new ArrayList<>(machineReassignment.getMachineList());
             machineReassignment.setMachineList(machineList);
             // Remove it the problem fact itself
-            problemChangeDirector.removeProblemFact(workingMachine, machineList::remove);
+            machineList.remove(workingMachine);
         });
     }
 

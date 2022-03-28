@@ -300,19 +300,18 @@ public class InvestmentPanel extends SolutionPanel<InvestmentSolution> {
     private void changeStandardDeviationMillisMaximum(final long standardDeviationMillisMaximum) {
         doProblemChange((solution, problemChangeDirector) -> {
             InvestmentParametrization parametrization = solution.getParametrization();
-            problemChangeDirector.changeProblemProperty(parametrization, workingParametrization -> workingParametrization
-                    .setStandardDeviationMillisMaximum(standardDeviationMillisMaximum));
+            parametrization.setStandardDeviationMillisMaximum(standardDeviationMillisMaximum);
         }, true);
     }
 
     private void changeRegionQuantityMillisMaximum(final Region region, final long quantityMillisMaximum) {
-        doProblemChange((solution, problemChangeDirector) -> problemChangeDirector.changeProblemProperty(region,
-                workingRegion -> workingRegion.setQuantityMillisMaximum(quantityMillisMaximum)), true);
+        doProblemChange((solution, problemChangeDirector) -> problemChangeDirector.lookUpWorkingObjectOrFail(region)
+                .setQuantityMillisMaximum(quantityMillisMaximum), true);
     }
 
     private void changeSectorQuantityMillisMaximum(final Sector sector, final long quantityMillisMaximum) {
-        doProblemChange((solution, problemChangeDirector) -> problemChangeDirector.changeProblemProperty(sector,
-                workingSector -> workingSector.setQuantityMillisMaximum(quantityMillisMaximum)), true);
+        doProblemChange((solution, problemChangeDirector) -> problemChangeDirector.lookUpWorkingObjectOrFail(sector)
+                .setQuantityMillisMaximum(quantityMillisMaximum), true);
     }
 
 }

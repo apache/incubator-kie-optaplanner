@@ -20,23 +20,11 @@ import static org.optaplanner.examples.common.swingui.timetable.TimeTablePanel.H
 import static org.optaplanner.examples.common.swingui.timetable.TimeTablePanel.HeaderColumnKey.HEADER_COLUMN_GROUP1;
 import static org.optaplanner.examples.common.swingui.timetable.TimeTablePanel.HeaderRowKey.HEADER_ROW;
 
-import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.GridLayout;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.util.List;
 
-import javax.swing.AbstractAction;
-import javax.swing.BorderFactory;
-import javax.swing.JButton;
-import javax.swing.JCheckBox;
-import javax.swing.JComboBox;
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JTabbedPane;
-import javax.swing.SwingConstants;
+import javax.swing.*;
 
 import org.optaplanner.examples.common.swingui.CommonIcons;
 import org.optaplanner.examples.common.swingui.SolutionPanel;
@@ -266,18 +254,18 @@ public class CurriculumCoursePanel extends SolutionPanel<CourseSchedule> {
             if (result == JOptionPane.OK_OPTION) {
                 Period toPeriod = (Period) periodListField.getSelectedItem();
                 if (lecture.getPeriod() != toPeriod) {
-                    doProblemChange((workingSolution, problemChangeDirector) -> problemChangeDirector.changeVariable(lecture,
-                            "period", l -> l.setPeriod(toPeriod)));
+                    doProblemChange((workingSolution, problemChangeDirector) -> problemChangeDirector
+                            .lookUpWorkingObjectOrFail(lecture).setPeriod(toPeriod));
                 }
                 Room toRoom = (Room) roomListField.getSelectedItem();
                 if (lecture.getRoom() != toRoom) {
-                    doProblemChange((workingSolution, problemChangeDirector) -> problemChangeDirector.changeVariable(lecture,
-                            "room", l -> l.setRoom(toRoom)));
+                    doProblemChange((workingSolution, problemChangeDirector) -> problemChangeDirector
+                            .lookUpWorkingObjectOrFail(lecture).setRoom(toRoom));
                 }
                 boolean toPinned = pinnedField.isSelected();
                 if (lecture.isPinned() != toPinned) {
                     doProblemChange((workingSolution, problemChangeDirector) -> problemChangeDirector
-                            .changeProblemProperty(lecture, l -> l.setPinned(toPinned)));
+                            .lookUpWorkingObjectOrFail(lecture).setPinned(toPinned));
                 }
                 solverAndPersistenceFrame.resetScreen();
             }

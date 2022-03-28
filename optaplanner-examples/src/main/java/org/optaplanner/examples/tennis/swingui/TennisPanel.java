@@ -20,9 +20,7 @@ import static org.optaplanner.examples.common.swingui.timetable.TimeTablePanel.H
 import static org.optaplanner.examples.common.swingui.timetable.TimeTablePanel.HeaderColumnKey.TRAILING_HEADER_COLUMN;
 import static org.optaplanner.examples.common.swingui.timetable.TimeTablePanel.HeaderRowKey.HEADER_ROW;
 
-import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.GridLayout;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -30,17 +28,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.swing.AbstractAction;
-import javax.swing.BorderFactory;
-import javax.swing.JButton;
-import javax.swing.JCheckBox;
-import javax.swing.JComboBox;
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JTabbedPane;
-import javax.swing.SwingConstants;
+import javax.swing.*;
 
 import org.optaplanner.examples.common.swingui.CommonIcons;
 import org.optaplanner.examples.common.swingui.SolutionPanel;
@@ -274,12 +262,12 @@ public class TennisPanel extends SolutionPanel<TennisSolution> {
                 Team toTeam = (Team) teamListField.getSelectedItem();
                 if (teamAssignment.getTeam() != toTeam) {
                     doProblemChange((workingSolution, problemChangeDirector) -> problemChangeDirector
-                            .changeVariable(teamAssignment, "team", ta -> ta.setTeam(toTeam)));
+                            .lookUpWorkingObjectOrFail(teamAssignment).setTeam(toTeam));
                 }
                 boolean toPinned = pinnedField.isSelected();
                 if (teamAssignment.isPinned() != toPinned) {
                     doProblemChange((workingSolution, problemChangeDirector) -> problemChangeDirector
-                            .changeProblemProperty(teamAssignment, ta -> ta.setPinned(toPinned)));
+                            .lookUpWorkingObjectOrFail(teamAssignment).setPinned(toPinned));
                 }
                 solverAndPersistenceFrame.resetScreen();
             }

@@ -41,7 +41,7 @@ public class AddProcessProblemChange implements ProblemChange<CloudBalance> {
         process.setId(nextProcessId);
         // A SolutionCloner clones planning entity lists (such as processList), so no need to clone the processList here
         // Add the planning entity itself
-        problemChangeDirector.addEntity(process, cloudBalance.getProcessList()::add);
+        cloudBalance.getProcessList().add(process);
     }
 
 }

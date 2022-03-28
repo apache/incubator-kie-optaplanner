@@ -17,6 +17,7 @@
 package org.optaplanner.examples.cloudbalancing.swingui.realtime;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import org.optaplanner.core.api.solver.change.ProblemChange;
 import org.optaplanner.core.api.solver.change.ProblemChangeDirector;
@@ -43,9 +44,10 @@ public class AddComputerProblemChange implements ProblemChange<CloudBalance> {
         computer.setId(nextComputerId);
         // A SolutionCloner does not clone problem fact lists (such as computerList)
         // Shallow clone the computerList so only workingSolution is affected, not bestSolution or guiSolution
-        cloudBalance.setComputerList(new ArrayList<>(cloudBalance.getComputerList()));
+        List<CloudComputer> computers = new ArrayList<>(cloudBalance.getComputerList());
+        cloudBalance.setComputerList(computers);
         // Add the problem fact itself
-        problemChangeDirector.addProblemFact(computer, cloudBalance.getComputerList()::add);
+        computers.add(computer);
     }
 
 }

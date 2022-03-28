@@ -21,25 +21,12 @@ import static org.optaplanner.examples.common.swingui.timetable.TimeTablePanel.H
 import static org.optaplanner.examples.common.swingui.timetable.TimeTablePanel.HeaderColumnKey.HEADER_COLUMN_GROUP2;
 import static org.optaplanner.examples.common.swingui.timetable.TimeTablePanel.HeaderRowKey.HEADER_ROW;
 
-import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.Component;
-import java.awt.Graphics;
-import java.awt.GridLayout;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.swing.AbstractAction;
-import javax.swing.BorderFactory;
-import javax.swing.Icon;
-import javax.swing.ImageIcon;
-import javax.swing.JButton;
-import javax.swing.JComboBox;
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.SwingConstants;
+import javax.swing.*;
 
 import org.optaplanner.examples.common.swingui.SolutionPanel;
 import org.optaplanner.examples.common.swingui.components.LabeledComboBoxRenderer;
@@ -198,8 +185,8 @@ public class PatientAdmissionSchedulePanel extends SolutionPanel<PatientAdmissio
                     JOptionPane.OK_CANCEL_OPTION);
             if (result == JOptionPane.OK_OPTION) {
                 Bed toBed = (Bed) bedListField.getSelectedItem();
-                doProblemChange((workingSolution, problemChangeDirector) -> problemChangeDirector.changeVariable(bedDesignation,
-                        "bed", bd -> bd.setBed(toBed)));
+                doProblemChange((workingSolution, problemChangeDirector) -> problemChangeDirector
+                        .lookUpWorkingObjectOrFail(bedDesignation).setBed(toBed));
                 solverAndPersistenceFrame.resetScreen();
             }
         }

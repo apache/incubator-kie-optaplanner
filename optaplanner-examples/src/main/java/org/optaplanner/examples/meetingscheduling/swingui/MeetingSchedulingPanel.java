@@ -21,26 +21,14 @@ import static org.optaplanner.examples.common.swingui.timetable.TimeTablePanel.H
 import static org.optaplanner.examples.common.swingui.timetable.TimeTablePanel.HeaderRowKey.HEADER_ROW;
 import static org.optaplanner.examples.common.swingui.timetable.TimeTablePanel.HeaderRowKey.HEADER_ROW_GROUP1;
 
-import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.GridLayout;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
-import javax.swing.AbstractAction;
-import javax.swing.BorderFactory;
-import javax.swing.JButton;
-import javax.swing.JCheckBox;
-import javax.swing.JComboBox;
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JTabbedPane;
-import javax.swing.SwingConstants;
+import javax.swing.*;
 
 import org.optaplanner.examples.common.swingui.CommonIcons;
 import org.optaplanner.examples.common.swingui.SolutionPanel;
@@ -285,20 +273,19 @@ public class MeetingSchedulingPanel extends SolutionPanel<MeetingSchedule> {
             if (result == JOptionPane.OK_OPTION) {
                 TimeGrain toStartingTimeGrain = (TimeGrain) timeGrainListField.getSelectedItem();
                 if (meetingAssignment.getStartingTimeGrain() != toStartingTimeGrain) {
-                    doProblemChange((workingSolution, problemChangeDirector) -> problemChangeDirector.changeVariable(
-                            meetingAssignment, "startingTimeGrain",
-                            ma -> ma.setStartingTimeGrain(toStartingTimeGrain)));
+                    doProblemChange((workingSolution, problemChangeDirector) -> problemChangeDirector
+                            .lookUpWorkingObjectOrFail(meetingAssignment)
+                            .setStartingTimeGrain(toStartingTimeGrain));
                 }
                 Room toRoom = (Room) roomListField.getSelectedItem();
                 if (meetingAssignment.getRoom() != toRoom) {
-                    doProblemChange((workingSolution, problemChangeDirector) -> problemChangeDirector.changeVariable(
-                            meetingAssignment, "room",
-                            ma -> ma.setRoom(toRoom)));
+                    doProblemChange((workingSolution, problemChangeDirector) -> problemChangeDirector
+                            .lookUpWorkingObjectOrFail(meetingAssignment).setRoom(toRoom));
                 }
                 boolean toPinned = pinnedField.isSelected();
                 if (meetingAssignment.isPinned() != toPinned) {
                     doProblemChange((workingSolution, problemChangeDirector) -> problemChangeDirector
-                            .changeProblemProperty(meetingAssignment, ma -> ma.setPinned(toPinned)));
+                            .lookUpWorkingObjectOrFail(meetingAssignment).setPinned(toPinned));
                 }
                 solverAndPersistenceFrame.resetScreen();
             }
