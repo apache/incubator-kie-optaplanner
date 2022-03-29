@@ -177,8 +177,7 @@ public abstract class AbstractScoreDirector<Solution_, Score_ extends Score<Scor
         resetWorkingSolution();
     }
 
-    @Override
-    public void resetWorkingSolution() {
+    private void resetWorkingSolution() {
         SolutionDescriptor<Solution_> solutionDescriptor = getSolutionDescriptor();
         workingInitScore = -solutionDescriptor.countUninitialized(workingSolution);
         if (isLookUpEnabled()) {
@@ -290,6 +289,12 @@ public abstract class AbstractScoreDirector<Solution_, Score_ extends Score<Scor
     @Override
     public void triggerVariableListeners() {
         variableListenerSupport.triggerVariableListenersInNotificationQueues();
+    }
+
+    @Override
+    public void calculateShadowVariables() {
+        resetWorkingSolution();
+        triggerVariableListeners();
     }
 
     protected void setCalculatedScore(Score_ score) {

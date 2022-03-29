@@ -35,11 +35,11 @@ public interface ProblemChangeAdapter<Solution_> {
 
     static <Solution_> ProblemChangeAdapter<Solution_> create(ProblemChange<Solution_> problemChange) {
         return (solverScope, stepIndex) -> {
-            final boolean triggerVariableListeners = stepIndex > 0 && problemChange.usesShadowVariables();
+            // Skip for the fist problem change in the batch as the working solution is consistent at that point.
+            final boolean updateShadowVariables = stepIndex > 0 && problemChange.usesShadowVariables();
             InnerScoreDirector<Solution_, ?> scoreDirector = solverScope.getScoreDirector();
-            if (triggerVariableListeners) {
-                scoreDirector.resetWorkingSolution();
-                scoreDirector.triggerVariableListeners();
+            if (updateShadowVariables) {
+                scoreDirector.calculateShadowVariables();
             }
             problemChange.doChange(scoreDirector.getWorkingSolution(), solverScope.getProblemChangeDirector());
         };

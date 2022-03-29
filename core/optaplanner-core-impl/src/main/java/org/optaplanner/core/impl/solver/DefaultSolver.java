@@ -290,8 +290,7 @@ public class DefaultSolver<Solution_> extends AbstractSolver<Solution_> {
             InnerScoreDirector<Solution_, ?> scoreDirector = solverScope.getScoreDirector();
             scoreDirector.assertNonNullPlanningIds();
             // Everything is fine, proceed.
-            scoreDirector.resetWorkingSolution();
-            scoreDirector.triggerVariableListeners();
+            scoreDirector.calculateShadowVariables();
             Score<?> score = scoreDirector.calculateScore();
             basicPlumbingTermination.endProblemFactChangesProcessing();
             bestSolutionRecaller.updateBestSolutionWithoutFiring(solverScope);
