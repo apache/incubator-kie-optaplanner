@@ -28,18 +28,18 @@ import org.optaplanner.core.api.solver.Solver;
  * {@link org.optaplanner.core.impl.heuristic.move.Move} evaluation. If there are waiting problem changes,
  * the {@link Solver}:
  * <ol>
- *  <li>clones the last {@link PlanningSolution best solution} and sets the clone
- *  as the new {@link PlanningSolution working solution}</li>
- *  <li>applies every problem change keeping the order in which problem changes have been submitted;
- *  if {@link ProblemChange#usesShadowVariables()} returns {@code true},
- *  {@link org.optaplanner.core.api.domain.variable.VariableListener variable listeners} are triggered before the
- *  problem change is applied</li>
- *  <li>triggers {@link org.optaplanner.core.api.domain.variable.VariableListener variable listeners} to guarantee
- *  consistency of the {@link PlanningSolution updated working solution}</li>
- *  <li>calculates the score and makes the {@link PlanningSolution updated working solution}
- *  the new {@link PlanningSolution best solution}; note that this {@link PlanningSolution solution} is not published
- *  via the {@link org.optaplanner.core.api.solver.event.BestSolutionChangedEvent}</li>
- *  <li>restarts solving to fill potential uninitialized {@link PlanningEntity planning entities}</li>
+ * <li>clones the last {@link PlanningSolution best solution} and sets the clone
+ * as the new {@link PlanningSolution working solution}</li>
+ * <li>applies every problem change keeping the order in which problem changes have been submitted;
+ * if {@link ProblemChange#usesShadowVariables()} returns {@code true},
+ * {@link org.optaplanner.core.api.domain.variable.VariableListener variable listeners} are triggered before the
+ * problem change is applied</li>
+ * <li>triggers {@link org.optaplanner.core.api.domain.variable.VariableListener variable listeners} to guarantee
+ * consistency of the {@link PlanningSolution updated working solution}</li>
+ * <li>calculates the score and makes the {@link PlanningSolution updated working solution}
+ * the new {@link PlanningSolution best solution}; note that this {@link PlanningSolution solution} is not published
+ * via the {@link org.optaplanner.core.api.solver.event.BestSolutionChangedEvent}</li>
+ * <li>restarts solving to fill potential uninitialized {@link PlanningEntity planning entities}</li>
  * </ol>
  * <p>
  * Note that the {@link Solver} clones a {@link PlanningSolution} at will.
