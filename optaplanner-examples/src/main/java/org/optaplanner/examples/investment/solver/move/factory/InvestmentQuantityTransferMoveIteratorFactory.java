@@ -16,7 +16,7 @@
 
 package org.optaplanner.examples.investment.solver.move.factory;
 
-import static org.optaplanner.examples.investment.solver.move.factory.InvestmentBiQuantityTransferMoveIteratorFactory.*;
+import static org.optaplanner.examples.investment.solver.move.factory.InvestmentBiQuantityTransferMoveIteratorFactory.nextLong;
 
 import java.util.Iterator;
 import java.util.List;
