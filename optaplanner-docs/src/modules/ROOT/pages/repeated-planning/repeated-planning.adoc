@@ -380,11 +380,6 @@ public interface ProblemChange<Solution_> {
 }
 ----
 
-[WARNING]
-====
-The `ScoreDirector` must be updated with any change on the problem facts of planning entities in a `ProblemChange`.
-====
-
 To write a `ProblemChange` correctly, it is important to understand the behavior of xref:planner-configuration/planner-configuration.adoc#cloningASolution[a planning clone].
 
 A planning clone of a solution must fulfill these requirements:
@@ -402,27 +397,29 @@ Consider the following example of a `ProblemChange` implementation in the cloud 
 
 [source,java,options="nowrap"]
 ----
-    public void deleteComputer(final CloudComputer computer) {
-        solver.addProblemChange((cloudBalance, problemChangeDirector) -> {
-            CloudComputer workingComputer = problemChangeDirector.lookUpWorkingObject(computer);
-            if (workingComputer == null) {
-                throw new IllegalStateException("A computer " + computer + " does not exist. Maybe it has been already deleted.");
-            }
-            // First remove the problem fact from all planning entities that use it
-            for (CloudProcess process : cloudBalance.getProcessList()) {
-                if (process.getComputer() == workingComputer) {
-                    problemChangeDirector.changeVariable(process, "computer",
-                            workingProcess -> workingProcess.setComputer(null));
-                }
-            }
-            // A SolutionCloner does not clone problem fact lists (such as computerList)
-            // Shallow clone the computerList so only workingSolution is affected, not bestSolution or guiSolution
-            ArrayList<CloudComputer> computerList = new ArrayList<>(cloudBalance.getComputerList());
-            cloudBalance.setComputerList(computerList);
-            // Remove the problem fact itself
-            problemChangeDirector.removeProblemFact(workingComputer, computerList::remove);
-        });
-    }
+public class DeleteComputerProblemChange implements ProblemChange<CloudBalance> {
+   private final CloudComputer computer;
+
+   public DeleteComputerProblemChange(CloudComputer computer) {
+       this.computer = computer;
+   }
+
+   @Override
+   public void doChange(CloudBalance cloudBalance, ProblemChangeDirector problemChangeDirector) {
+       CloudComputer workingComputer = problemChangeDirector.lookUpWorkingObjectOrFail(computer);
+       // First remove the problem fact from all planning entities that use it
+       for (CloudProcess process : cloudBalance.getProcessList()) {
+           if (process.getComputer() == workingComputer) {
+               process.setComputer(null);
+           }
+       }
+       // A SolutionCloner does not clone problem fact lists (such as computerList), only entity lists.
+       // Shallow clone the computerList so only the working solution is affected.
+       ArrayList<CloudComputer> computerList = new ArrayList<>(cloudBalance.getComputerList());
+       cloudBalance.setComputerList(computerList);
+       computerList.remove(workingComputer);
+   }
+}
 ----
 
 . Any change in a `ProblemChange` must be done on the `@PlanningSolution` instance of ``scoreDirector.getWorkingSolution()``.
