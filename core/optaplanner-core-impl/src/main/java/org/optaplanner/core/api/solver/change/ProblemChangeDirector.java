@@ -28,6 +28,9 @@ import org.optaplanner.core.api.domain.variable.PlanningVariable;
 /**
  * Allows external changes to the {@link PlanningSolution working solution}.
  * Should be used only from a {@link ProblemChange} implementation.
+ * Deprecated methods are kept to maintain backward compatibility with existing {@link ProblemChange} implementations.
+ *
+ * To see an example implementation, please refer to the {@link ProblemChange} Javadoc.
  */
 public interface ProblemChangeDirector {
 
