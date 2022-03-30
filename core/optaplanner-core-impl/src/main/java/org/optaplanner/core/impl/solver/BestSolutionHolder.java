@@ -28,6 +28,7 @@ import java.util.concurrent.atomic.AtomicReference;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.function.BooleanSupplier;
+
 import org.optaplanner.core.api.solver.Solver;
 import org.optaplanner.core.api.solver.change.ProblemChange;
 
