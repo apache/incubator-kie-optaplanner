@@ -6,14 +6,5 @@
       "folder": "pull-request-status",
       "date": 1648634432341
     }
-  ],
-  "jobs": [
-    {
-      "id": "productization-jobs",
-      "name": "Productization Jobs",
-      "folder": "productization-jobs",
-      "order": 1000,
-      "date": 1647858479733
-    }
   ]
 }
