@@ -21,8 +21,8 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Semaphore;
 import java.util.function.BiConsumer;
+import java.util.function.BooleanSupplier;
 import java.util.function.Consumer;
-import java.util.function.Supplier;
 
 final class ConsumerSupport<Solution_, ProblemId_> implements AutoCloseable {
 
@@ -47,7 +47,7 @@ final class ConsumerSupport<Solution_, ProblemId_> implements AutoCloseable {
     }
 
     // Called on the Solver thread.
-    void consumeIntermediateBestSolution(Solution_ bestSolution, Supplier<Boolean> isEveryProblemChangeProcessed) {
+    void consumeIntermediateBestSolution(Solution_ bestSolution, BooleanSupplier isEveryProblemChangeProcessed) {
         /*
          * If the bestSolutionConsumer is not provided, the best solution is still set for the purpose of recording
          * problem changes.

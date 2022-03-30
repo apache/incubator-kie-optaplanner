@@ -603,7 +603,6 @@ class SolverManagerTest {
         // The second solver is scheduled and waits for the fist solver to finish.
         final long secondProblemId = 2L;
         final int entityAndValueCount = 4;
-        // CountDownLatch solutionWithProblemChangeReceived = new CountDownLatch(1);
         AtomicReference<TestdataSolution> bestSolution = new AtomicReference<>();
         solverManager.solveAndListen(secondProblemId,
                 id -> PlannerTestUtils.generateTestdataSolution("s2", entityAndValueCount), bestSolution::set);

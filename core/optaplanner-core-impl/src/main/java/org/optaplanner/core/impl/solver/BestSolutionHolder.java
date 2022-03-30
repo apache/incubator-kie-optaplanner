@@ -20,22 +20,21 @@ import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 import java.util.SortedMap;
 import java.util.TreeMap;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
-import java.util.function.Supplier;
-import java.util.stream.Collectors;
-
+import java.util.function.BooleanSupplier;
 import org.optaplanner.core.api.solver.Solver;
 import org.optaplanner.core.api.solver.change.ProblemChange;
 
 final class BestSolutionHolder<Solution_> {
 
     private final Lock problemChangesLock = new ReentrantLock();
-    private final AtomicReference<VersionedBestSolution> versionedBestSolutionRef = new AtomicReference<>();
+    private final AtomicReference<VersionedBestSolution<Solution_>> versionedBestSolutionRef = new AtomicReference<>();
     private final SortedMap<BigInteger, List<CompletableFuture<Void>>> problemChangesPerVersion =
             new TreeMap<>();
     private BigInteger currentVersion = BigInteger.ZERO;
@@ -45,22 +44,23 @@ final class BestSolutionHolder<Solution_> {
     }
 
     /**
+     * NOT thread-safe.
+     * 
      * @return the last best solution together with problem changes the solution contains.
      */
     BestSolutionContainingProblemChanges<Solution_> take() {
-        VersionedBestSolution versionedBestSolution = versionedBestSolutionRef.getAndSet(null);
+        VersionedBestSolution<Solution_> versionedBestSolution = versionedBestSolutionRef.getAndSet(null);
         if (versionedBestSolution == null) {
             return null;
         }
         SortedMap<BigInteger, List<CompletableFuture<Void>>> containedProblemChangesPerVersion =
                 problemChangesPerVersion.headMap(versionedBestSolution.getVersion().add(BigInteger.ONE));
 
-        List<CompletableFuture<Void>> containedProblemChanges = containedProblemChangesPerVersion.values()
-                .stream()
-                .flatMap(Collection::stream)
-                .collect(Collectors.toList());
-
-        containedProblemChangesPerVersion.keySet().forEach(problemChangesPerVersion::remove);
+        List<CompletableFuture<Void>> containedProblemChanges = new ArrayList<>();
+        for (Map.Entry<BigInteger, List<CompletableFuture<Void>>> entry : containedProblemChangesPerVersion.entrySet()) {
+            containedProblemChanges.addAll(entry.getValue());
+            problemChangesPerVersion.remove(entry.getKey());
+        }
 
         return new BestSolutionContainingProblemChanges<>(versionedBestSolution.getBestSolution(),
                 containedProblemChanges);
@@ -73,7 +73,7 @@ final class BestSolutionHolder<Solution_> {
      * @param bestSolution the new best solution that replaces the previous one if there is any
      * @param isEveryProblemChangeProcessed a supplier that tells if all problem changes have been processed
      */
-    void set(Solution_ bestSolution, Supplier<Boolean> isEveryProblemChangeProcessed) {
+    void set(Solution_ bestSolution, BooleanSupplier isEveryProblemChangeProcessed) {
         problemChangesLock.lock();
         try {
             /*
@@ -82,7 +82,7 @@ final class BestSolutionHolder<Solution_> {
              * problem changes with a solution that was created later, but does not contain them yet.
              * As a result, CompletableFutures representing these changes would be completed too early.
              */
-            if (isEveryProblemChangeProcessed.get()) {
+            if (isEveryProblemChangeProcessed.getAsBoolean()) {
                 versionedBestSolutionRef.set(new VersionedBestSolution(bestSolution, currentVersion));
                 currentVersion = currentVersion.add(BigInteger.ONE);
             }
@@ -99,10 +99,9 @@ final class BestSolutionHolder<Solution_> {
      *         a user-defined Consumer.
      */
     CompletableFuture<Void> addProblemChange(Solver<Solution_> solver, ProblemChange<Solution_> problemChange) {
-        CompletableFuture<Void> futureProblemChange;
         problemChangesLock.lock();
         try {
-            futureProblemChange = new CompletableFuture<>();
+            CompletableFuture<Void> futureProblemChange = new CompletableFuture<>();
             problemChangesPerVersion.compute(currentVersion, (version, futureProblemChangeList) -> {
                 if (futureProblemChangeList == null) {
                     futureProblemChangeList = new ArrayList<>();
@@ -111,11 +110,10 @@ final class BestSolutionHolder<Solution_> {
                 return futureProblemChangeList;
             });
             solver.addProblemChange(problemChange);
+            return futureProblemChange;
         } finally {
             problemChangesLock.unlock();
         }
-
-        return futureProblemChange;
     }
 
     void cancelPendingChanges() {
@@ -131,7 +129,7 @@ final class BestSolutionHolder<Solution_> {
         }
     }
 
-    private final class VersionedBestSolution {
+    private static final class VersionedBestSolution<Solution_> {
         final Solution_ bestSolution;
         final BigInteger version;
 
