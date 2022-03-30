@@ -313,7 +313,7 @@ public interface SolverManager<Solution_, ProblemId_> extends AutoCloseable {
      * @param problemId never null, a value given to {@link #solve(Object, Function, Consumer)}
      *        or {@link #solveAndListen(Object, Function, Consumer)}
      * @param problemChange never null
-     * @return CompletableFuture<Void> that completes after the best solution containing this change has been consumed.
+     * @return completes after the best solution containing this change has been consumed.
      * @throws IllegalStateException if there is no solver actively solving the problem associated with the problemId
      */
     CompletableFuture<Void> addProblemChange(ProblemId_ problemId, ProblemChange<Solution_> problemChange);
