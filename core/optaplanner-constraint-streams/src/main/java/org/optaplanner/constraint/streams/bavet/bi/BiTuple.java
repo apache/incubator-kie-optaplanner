@@ -19,7 +19,7 @@ package org.optaplanner.constraint.streams.bavet.bi;
 import org.optaplanner.constraint.streams.bavet.common.BavetTupleState;
 import org.optaplanner.constraint.streams.bavet.common.Tuple;
 
-public final class BiTuple<A, B> implements Tuple {
+public final class BiTuple<A, B> extends Tuple {
 
     public final A factA;
     public final B factB;

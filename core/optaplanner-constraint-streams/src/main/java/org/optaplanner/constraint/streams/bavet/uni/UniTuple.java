@@ -19,7 +19,7 @@ package org.optaplanner.constraint.streams.bavet.uni;
 import org.optaplanner.constraint.streams.bavet.common.BavetTupleState;
 import org.optaplanner.constraint.streams.bavet.common.Tuple;
 
-public final class UniTuple<A> implements Tuple {
+public final class UniTuple<A> extends Tuple {
 
     public final A factA;
 

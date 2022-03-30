@@ -16,6 +16,22 @@
 
 package org.optaplanner.constraint.streams.bavet.common;
 
-public interface Tuple {
+public abstract class Tuple {
 
+    private volatile int hashCode = 0;
+
+    @Override
+    public final int hashCode() {
+        if (hashCode == 0) {
+            // This marginally increases performance on the hot path, as the hashes need not be recomputed every time.
+            hashCode = System.identityHashCode(this);
+        }
+        return hashCode;
+    }
+
+    @Override
+    public final boolean equals(Object obj) {
+        // No two tuples are ever the same, as we need to allow for duplicate tuples with the same components.
+        return this == obj;
+    }
 }

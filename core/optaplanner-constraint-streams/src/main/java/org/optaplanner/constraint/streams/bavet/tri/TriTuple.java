@@ -19,7 +19,7 @@ package org.optaplanner.constraint.streams.bavet.tri;
 import org.optaplanner.constraint.streams.bavet.common.BavetTupleState;
 import org.optaplanner.constraint.streams.bavet.common.Tuple;
 
-public final class TriTuple<A, B, C> implements Tuple {
+public final class TriTuple<A, B, C> extends Tuple {
 
     public final A factA;
     public final B factB;
