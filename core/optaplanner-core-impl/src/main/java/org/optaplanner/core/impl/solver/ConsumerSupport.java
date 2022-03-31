@@ -112,14 +112,13 @@ final class ConsumerSupport<Solution_, ProblemId_> implements AutoCloseable {
             if (bestSolutionContainingProblemChanges != null) {
                 try {
                     bestSolutionConsumer.accept(bestSolutionContainingProblemChanges.getBestSolution());
-                } catch (Throwable throwable) {
-                    exceptionHandler.accept(problemId, throwable);
-                } finally {
-                    /*
-                     * Complete the CompletableFutures associated with ProblemChanges regardless of a possible
-                     * exception in the consumer to avoid a memory leak.
-                     */
                     bestSolutionContainingProblemChanges.completeProblemChanges();
+                } catch (Throwable throwable) {
+                    if (exceptionHandler != null) {
+                        exceptionHandler.accept(problemId, throwable);
+                    }
+                    bestSolutionContainingProblemChanges.completeProblemChangesExceptionally(throwable);
+                } finally {
                     activeConsumption.release();
                 }
             }

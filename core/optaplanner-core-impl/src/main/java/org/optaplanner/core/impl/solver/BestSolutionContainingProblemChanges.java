@@ -35,4 +35,8 @@ final class BestSolutionContainingProblemChanges<Solution_> {
     public void completeProblemChanges() {
         containedProblemChanges.forEach(futureProblemChange -> futureProblemChange.complete(null));
     }
+
+    public void completeProblemChangesExceptionally(Throwable exception) {
+        containedProblemChanges.forEach(futureProblemChange -> futureProblemChange.completeExceptionally(exception));
+    }
 }
