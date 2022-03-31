@@ -171,6 +171,14 @@ public final class VariableListenerSupport<Solution_> implements SupplyManager<S
         notificationQueuesAreEmpty = true;
     }
 
+    /**
+     * Triggers all variable listeners even though the notification queue is empty. This is part of the shadow variables'
+     * corruption detection.
+     * <p>
+     * To ensure each listener is triggered, an artificial notification is created for each genuine variable without
+     * doing any change on the working solution. If everything works correctly, triggering listeners at this point must not
+     * change any shadow variables either.
+     */
     public void forceTriggerAllVariableListeners() {
         scoreDirector.getSolutionDescriptor()
                 .visitAllEntities(scoreDirector.getWorkingSolution(), this::simulateGenuineVariableChange);
