@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2022 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,7 +27,6 @@ import java.util.function.ToLongBiFunction;
 
 import org.optaplanner.constraint.streams.bavet.BavetConstraintFactory;
 import org.optaplanner.constraint.streams.bavet.common.BavetAbstractConstraintStream;
-import org.optaplanner.constraint.streams.bavet.common.JoinerUtils;
 import org.optaplanner.constraint.streams.bavet.common.index.IndexerFactory;
 import org.optaplanner.constraint.streams.bavet.tri.BavetJoinTriConstraintStream;
 import org.optaplanner.constraint.streams.bavet.uni.BavetAbstractUniConstraintStream;
@@ -101,10 +100,10 @@ public abstract class BavetAbstractBiConstraintStream<Solution_, A, B> extends B
         }
         DefaultTriJoiner<A, B, C> castedJoiner = (DefaultTriJoiner<A, B, C>) joiner;
         IndexerFactory indexerFactory = new IndexerFactory(castedJoiner);
-        BiFunction<A, B, Object[]> leftMapping = JoinerUtils.combineLeftMappings(castedJoiner);
+        BiFunction<A, B, Object[]> leftMapping = castedJoiner.getCombinedLeftMapping();
         BavetJoinBridgeBiConstraintStream<Solution_, A, B> leftBridge = shareAndAddChild(
                 new BavetJoinBridgeBiConstraintStream<>(constraintFactory, this, true));
-        Function<C, Object[]> rightMapping = JoinerUtils.combineRightMappings(castedJoiner);
+        Function<C, Object[]> rightMapping = castedJoiner.getCombinedRightMapping();
         BavetJoinBridgeUniConstraintStream<Solution_, C> rightBridge = other.shareAndAddChild(
                 new BavetJoinBridgeUniConstraintStream<>(constraintFactory, other, false));
         return constraintFactory.share(

@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2022 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,20 +26,43 @@ import org.optaplanner.core.impl.score.stream.JoinerType;
 
 public final class DefaultTriJoiner<A, B, C> extends AbstractJoiner<C> implements TriJoiner<A, B, C> {
 
+    private static final Object[] EMPTY_OBJECT_ARRAY = new Object[0];
     public static final TriJoiner NONE = new DefaultTriJoiner(new BiFunction[0], new JoinerType[0], new Function[0]);
 
     private final BiFunction<A, B, ?>[] leftMappings;
+    // To support Bavet node sharing, this needs to be cached so that the joiner always returns the same thing.
+    private final BiFunction<A, B, Object[]> combinedLeftMapping;
 
     public <Property_> DefaultTriJoiner(BiFunction<A, B, Property_> leftMapping, JoinerType joinerType,
             Function<C, Property_> rightMapping) {
         super(rightMapping, joinerType);
         this.leftMappings = new BiFunction[] { leftMapping };
+        this.combinedLeftMapping = combineLeftMappings(leftMapping);
     }
 
     private <Property_> DefaultTriJoiner(BiFunction<A, B, Property_>[] leftMappings, JoinerType[] joinerTypes,
             Function<C, Property_>[] rightMappings) {
         super(rightMappings, joinerTypes);
         this.leftMappings = leftMappings;
+        this.combinedLeftMapping = combineLeftMappings(leftMappings);
+    }
+
+    private <Property_> BiFunction<A, B, Object[]> combineLeftMappings(BiFunction<A, B, Property_>... leftMappings) {
+        int joinerCount = leftMappings.length;
+        if (joinerCount == 0) {
+            return (A a, B b) -> EMPTY_OBJECT_ARRAY;
+        } else if (joinerCount == 1) {
+            BiFunction<A, B, Property_> mapping = leftMappings[0];
+            return (A a, B b) -> new Object[] { mapping.apply(a, b) };
+        } else {
+            return (A a, B b) -> {
+                Object[] result = new Object[joinerCount];
+                for (int i = 0; i < joinerCount; i++) {
+                    result[i] = leftMappings[i].apply(a, b);
+                }
+                return result;
+            };
+        }
     }
 
     @Override
@@ -62,6 +85,10 @@ public final class DefaultTriJoiner<A, B, C> extends AbstractJoiner<C> implement
 
     public BiFunction<A, B, Object> getLeftMapping(int index) {
         return (BiFunction<A, B, Object>) leftMappings[index];
+    }
+
+    public BiFunction<A, B, Object[]> getCombinedLeftMapping() {
+        return combinedLeftMapping;
     }
 
     public boolean matches(A a, B b, C c) {
