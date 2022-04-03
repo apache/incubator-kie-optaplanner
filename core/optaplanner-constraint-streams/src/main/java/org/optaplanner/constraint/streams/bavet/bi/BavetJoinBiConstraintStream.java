@@ -16,7 +16,6 @@
 
 package org.optaplanner.constraint.streams.bavet.bi;
 
-import java.util.Objects;
 import java.util.Set;
 import java.util.function.Consumer;
 import java.util.function.Function;
@@ -92,34 +91,6 @@ public final class BavetJoinBiConstraintStream<Solution_, A, B> extends BavetAbs
         buildHelper.addNode(node);
         buildHelper.putInsertRetract(leftParent, node::insertA, node::retractA);
         buildHelper.putInsertRetract(rightParent, node::insertB, node::retractB);
-    }
-
-    // ************************************************************************
-    // Equality for node sharing
-    // ************************************************************************
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
-        BavetJoinBiConstraintStream<?, ?, ?> other = (BavetJoinBiConstraintStream<?, ?, ?>) o;
-        /*
-         * Not including indexerFactory, as that is a product of the joiner, and so are the mappings.
-         * Mappings are cached by the joiners, and if they are the same, the joiner is the same.
-         */
-        return Objects.equals(leftParent, other.leftParent)
-                && Objects.equals(rightParent, other.rightParent)
-                && leftMapping == other.leftMapping
-                && rightMapping == other.rightMapping;
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(leftParent, rightParent, leftMapping, rightMapping);
     }
 
     @Override
