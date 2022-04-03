@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2022 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,6 +16,7 @@
 
 package org.optaplanner.constraint.streams.bavet.uni;
 
+import java.util.Objects;
 import java.util.Set;
 
 import org.optaplanner.constraint.streams.bavet.BavetConstraintFactory;
@@ -73,7 +74,20 @@ public final class BavetJoinBridgeUniConstraintStream<Solution_, A>
     // Equality for node sharing
     // ************************************************************************
 
-    // TODO, must include isLeftBridge in equality
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        BavetJoinBridgeUniConstraintStream<?, ?> that = (BavetJoinBridgeUniConstraintStream<?, ?>) o;
+        return isLeftBridge == that.isLeftBridge
+                && Objects.equals(parent, that.parent)
+                && Objects.equals(joinStream, that.joinStream);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(parent, isLeftBridge, joinStream);
+    }
 
     @Override
     public String toString() {

@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2022 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,6 +16,7 @@
 
 package org.optaplanner.constraint.streams.bavet.tri;
 
+import java.util.Objects;
 import java.util.Set;
 import java.util.function.BiFunction;
 import java.util.function.Consumer;
@@ -101,7 +102,29 @@ public final class BavetJoinTriConstraintStream<Solution_, A, B, C>
     // Equality for node sharing
     // ************************************************************************
 
-    // TODO
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        BavetJoinTriConstraintStream<?, ?, ?, ?> other = (BavetJoinTriConstraintStream<?, ?, ?, ?>) o;
+        /*
+         * Not including indexerFactory, as that is a product of the joiner, and so are the mappings.
+         * Mappings are cached by the joiners, and if they are the same, the joiner is the same.
+         */
+        return Objects.equals(leftParent, other.leftParent)
+                && Objects.equals(rightParent, other.rightParent)
+                && leftMapping == other.leftMapping
+                && rightMapping == other.rightMapping;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(leftParent, rightParent, leftMapping, rightMapping);
+    }
 
     @Override
     public String toString() {

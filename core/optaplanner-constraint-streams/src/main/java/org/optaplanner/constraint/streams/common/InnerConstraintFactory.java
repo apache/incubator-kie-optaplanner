@@ -126,9 +126,14 @@ public abstract class InnerConstraintFactory<Solution_, Constraint_ extends Cons
             return forEach(sourceClass)
                     .join(sourceClass, lessThanJoiner)
                     .filter(filter);
+        }
+        DefaultBiJoiner<A, A> castJoiner = (DefaultBiJoiner<A, A>) joiner;
+        if (castJoiner.getJoinerCount() == 0) {
+            return forEach(sourceClass)
+                    .join(sourceClass, lessThanJoiner);
         } else {
             return forEach(sourceClass)
-                    .join(sourceClass, joiner, lessThanJoiner);
+                    .join(sourceClass, castJoiner, lessThanJoiner);
         }
     }
 
@@ -194,9 +199,14 @@ public abstract class InnerConstraintFactory<Solution_, Constraint_ extends Cons
             return from(fromClass)
                     .join(fromClass, lessThanJoiner)
                     .filter(filter);
+        }
+        DefaultBiJoiner<A, A> castJoiner = (DefaultBiJoiner<A, A>) joiner;
+        if (castJoiner.getJoinerCount() == 0) {
+            return from(fromClass)
+                    .join(fromClass, lessThanJoiner);
         } else {
             return from(fromClass)
-                    .join(fromClass, joiner, lessThanJoiner);
+                    .join(fromClass, castJoiner, lessThanJoiner);
         }
     }
 
