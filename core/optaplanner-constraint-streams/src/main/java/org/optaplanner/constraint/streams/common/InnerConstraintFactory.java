@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2022 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,9 +18,9 @@ package org.optaplanner.constraint.streams.common;
 
 import static java.util.stream.Collectors.groupingBy;
 import static java.util.stream.Collectors.toList;
-import static org.optaplanner.core.api.score.stream.Joiners.lessThan;
 
 import java.util.Arrays;
+import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -36,6 +36,7 @@ import org.optaplanner.core.api.domain.lookup.PlanningId;
 import org.optaplanner.core.api.score.stream.Constraint;
 import org.optaplanner.core.api.score.stream.ConstraintFactory;
 import org.optaplanner.core.api.score.stream.ConstraintProvider;
+import org.optaplanner.core.api.score.stream.Joiners;
 import org.optaplanner.core.api.score.stream.bi.BiConstraintStream;
 import org.optaplanner.core.api.score.stream.bi.BiJoiner;
 import org.optaplanner.core.api.score.stream.uni.UniConstraintStream;
@@ -45,6 +46,8 @@ import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 
 public abstract class InnerConstraintFactory<Solution_, Constraint_ extends Constraint> implements ConstraintFactory {
+
+    private final Map<Class, BiJoiner> sourceClassJoinerMap = new IdentityHashMap<>();
 
     @Override
     public <A> UniConstraintStream<A> forEach(Class<A> sourceClass) {
@@ -116,26 +119,41 @@ public abstract class InnerConstraintFactory<Solution_, Constraint_ extends Cons
 
     @Override
     public <A> BiConstraintStream<A, A> forEachUniquePair(Class<A> sourceClass, BiJoiner<A, A> joiner) {
-        MemberAccessor planningIdMemberAccessor =
-                ConfigUtils.findPlanningIdMemberAccessor(sourceClass, getSolutionDescriptor().getDomainAccessType(),
-                        getSolutionDescriptor().getGeneratedMemberAccessorMap());
-        if (planningIdMemberAccessor == null) {
-            throw new IllegalArgumentException("The fromClass (" + sourceClass + ") has no member with a @"
-                    + PlanningId.class.getSimpleName() + " annotation,"
-                    + " so the pairs cannot be made unique ([A,B] vs [B,A]).");
-        }
-        // TODO In Bavet breaks node sharing + involves unneeded indirection
-        Function<A, Comparable> planningIdGetter = fact -> (Comparable<?>) planningIdMemberAccessor.executeGetter(fact);
+        BiJoiner<A, A> lessThanJoiner = getLessThanJoinerForSourceClass(sourceClass, "sourceClass");
         // Joiner.filtering() must come last, yet Bavet requires that Joiner.lessThan() be last. This is a workaround.
         if (joiner instanceof FilteringBiJoiner) {
             BiPredicate<A, A> filter = ((FilteringBiJoiner<A, A>) joiner).getFilter();
             return forEach(sourceClass)
-                    .join(sourceClass, lessThan(planningIdGetter))
+                    .join(sourceClass, lessThanJoiner)
                     .filter(filter);
         } else {
             return forEach(sourceClass)
-                    .join(sourceClass, joiner, lessThan(planningIdGetter));
+                    .join(sourceClass, joiner, lessThanJoiner);
         }
+    }
+
+    /**
+     * In order to facilitate node sharing,
+     * the Joiner for {@link #forEachUniquePair(Class, BiJoiner)} must be the same instance for every source class.
+     * 
+     * @param sourceClass
+     * @param varName name of the source class variable, used in a fail-fast
+     * @param <A>
+     * @return never null, unique instance for each source class
+     */
+    private <A> BiJoiner<A, A> getLessThanJoinerForSourceClass(Class<A> sourceClass, String varName) {
+        return sourceClassJoinerMap.computeIfAbsent(sourceClass, clz -> {
+            MemberAccessor planningIdMemberAccessor =
+                    ConfigUtils.findPlanningIdMemberAccessor(clz, getSolutionDescriptor().getDomainAccessType(),
+                            getSolutionDescriptor().getGeneratedMemberAccessorMap());
+            if (planningIdMemberAccessor == null) {
+                throw new IllegalArgumentException("The " + varName + " (" + clz + ") has no member with a @"
+                        + PlanningId.class.getSimpleName() + " annotation,"
+                        + " so the pairs cannot be made unique ([A,B] vs [B,A]).");
+            }
+            Function<A, Comparable> planningIdGetter = fact -> (Comparable<?>) planningIdMemberAccessor.executeGetter(fact);
+            return Joiners.lessThan(planningIdGetter);
+        });
     }
 
     @Override
@@ -169,25 +187,16 @@ public abstract class InnerConstraintFactory<Solution_, Constraint_ extends Cons
 
     @Override
     public <A> BiConstraintStream<A, A> fromUniquePair(Class<A> fromClass, BiJoiner<A, A> joiner) {
-        MemberAccessor planningIdMemberAccessor =
-                ConfigUtils.findPlanningIdMemberAccessor(fromClass, getSolutionDescriptor().getDomainAccessType(),
-                        getSolutionDescriptor().getGeneratedMemberAccessorMap());
-        if (planningIdMemberAccessor == null) {
-            throw new IllegalArgumentException("The fromClass (" + fromClass + ") has no member with a @"
-                    + PlanningId.class.getSimpleName() + " annotation,"
-                    + " so the pairs cannot be made unique ([A,B] vs [B,A]).");
-        }
-        // TODO In Bavet breaks node sharing + involves unneeded indirection
-        Function<A, Comparable> planningIdGetter = fact -> (Comparable<?>) planningIdMemberAccessor.executeGetter(fact);
+        BiJoiner<A, A> lessThanJoiner = getLessThanJoinerForSourceClass(fromClass, "fromClass");
         // Joiner.filtering() must come last, yet Bavet requires that Joiner.lessThan() be last. This is a workaround.
         if (joiner instanceof FilteringBiJoiner) {
             BiPredicate<A, A> filter = ((FilteringBiJoiner<A, A>) joiner).getFilter();
             return from(fromClass)
-                    .join(fromClass, lessThan(planningIdGetter))
+                    .join(fromClass, lessThanJoiner)
                     .filter(filter);
         } else {
             return from(fromClass)
-                    .join(fromClass, joiner, lessThan(planningIdGetter));
+                    .join(fromClass, joiner, lessThanJoiner);
         }
     }
 
