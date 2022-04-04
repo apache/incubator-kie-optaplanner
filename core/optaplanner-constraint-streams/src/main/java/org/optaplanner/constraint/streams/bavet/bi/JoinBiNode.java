@@ -118,18 +118,18 @@ public final class JoinBiNode<A, B> extends AbstractNode {
 
     public void insertB(UniTuple<B> tupleB) {
         if (tupleB.store[inputStoreIndexB] != null) {
-            throw new IllegalStateException("Impossible state: the tuple for the fact ("
-                    + tupleB.factA + ") was already added in the joinStore.");
+            throw new IllegalStateException("Impossible state: the input for the fact ("
+                    + tupleB.factA + ") was already added in the tupleStore.");
         }
         Object[] indexProperties = mappingB.apply(tupleB.factA);
         tupleB.store[inputStoreIndexB] = indexProperties;
 
-        Map<UniTuple<A>, Set<BiTuple<A, B>>> tupleABSetMapB = indexerA.get(indexProperties);
+        Map<UniTuple<A>, Set<BiTuple<A, B>>> tupleABSetMapA = indexerA.get(indexProperties);
         // Use standard initial capacity (16) to grow into, unless we already know more is probably needed
-        Set<BiTuple<A, B>> tupleABSetB = new LinkedHashSet<>(Math.max(16, tupleABSetMapB.size()));
+        Set<BiTuple<A, B>> tupleABSetB = new LinkedHashSet<>(Math.max(16, tupleABSetMapA.size()));
         indexerB.put(indexProperties, tupleB, tupleABSetB);
 
-        tupleABSetMapB.forEach((tupleA, tupleABSetA) -> {
+        tupleABSetMapA.forEach((tupleA, tupleABSetA) -> {
             BiTuple<A, B> tupleAB = new BiTuple<>(tupleA.factA, tupleB.factA, outputStoreSize);
             tupleAB.state = BavetTupleState.CREATING;
             tupleABSetB.add(tupleAB);
