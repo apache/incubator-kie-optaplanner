@@ -50,7 +50,7 @@ public abstract class BavetAbstractUniConstraintStream<Solution_, A> extends Bav
         implements InnerUniConstraintStream<A> {
 
     private final Map<UniConstraintStream, Map<BiJoiner, BiConstraintStream>> joinNodeSharingMap = new HashMap<>(0);
-    protected final List<BavetAbstractUniConstraintStream<Solution_, A>> childStreamList = new ArrayList<>(2);
+    public final List<BavetAbstractUniConstraintStream<Solution_, A>> childStreamList = new ArrayList<>(2);
 
     public BavetAbstractUniConstraintStream(BavetConstraintFactory<Solution_> constraintFactory,
             RetrievalSemantics retrievalSemantics) {

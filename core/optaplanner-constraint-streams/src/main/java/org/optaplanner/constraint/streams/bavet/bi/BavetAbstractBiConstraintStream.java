@@ -18,7 +18,9 @@ package org.optaplanner.constraint.streams.bavet.bi;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.function.BiFunction;
 import java.util.function.BiPredicate;
 import java.util.function.Function;
@@ -48,6 +50,7 @@ import org.optaplanner.core.api.score.stream.uni.UniConstraintStream;
 public abstract class BavetAbstractBiConstraintStream<Solution_, A, B> extends BavetAbstractConstraintStream<Solution_>
         implements InnerBiConstraintStream<A, B> {
 
+    private final Map<UniConstraintStream, Map<TriJoiner, TriConstraintStream>> joinNodeSharingMap = new HashMap<>(0);
     protected final List<BavetAbstractBiConstraintStream<Solution_, A, B>> childStreamList = new ArrayList<>(2);
 
     public BavetAbstractBiConstraintStream(BavetConstraintFactory<Solution_> constraintFactory,
@@ -98,20 +101,39 @@ public abstract class BavetAbstractBiConstraintStream<Solution_, A, B> extends B
         if (!(joiner instanceof DefaultTriJoiner)) {
             throw new IllegalArgumentException("The joiner class (" + joiner.getClass() + ") is not supported.");
         }
-        DefaultTriJoiner<A, B, C> castedJoiner = (DefaultTriJoiner<A, B, C>) joiner;
-        IndexerFactory indexerFactory = new IndexerFactory(castedJoiner);
-        BiFunction<A, B, Object[]> leftMapping = castedJoiner.getCombinedLeftMapping();
-        BavetJoinBridgeBiConstraintStream<Solution_, A, B> leftBridge = shareAndAddChild(
-                new BavetJoinBridgeBiConstraintStream<>(constraintFactory, this, true));
-        Function<C, Object[]> rightMapping = castedJoiner.getCombinedRightMapping();
-        BavetJoinBridgeUniConstraintStream<Solution_, C> rightBridge = other.shareAndAddChild(
-                new BavetJoinBridgeUniConstraintStream<>(constraintFactory, other, false));
-        return constraintFactory.share(
-                new BavetJoinTriConstraintStream<>(constraintFactory, leftBridge, rightBridge,
-                        leftMapping, rightMapping, indexerFactory),
-                joinStream_ -> {
-                    leftBridge.setJoinStream(joinStream_);
-                    rightBridge.setJoinStream(joinStream_);
+        /*
+         * Join nodes need to be node-shared differently. Consider this execution:
+         *
+         * Join1:
+         * 1/ Bridges are created, their join streams are null.
+         * 2/ Join stream is created, during which the bridges get their join streams set.
+         *
+         * Join2, needs to be node-shared:
+         * 3/ Bridges are created, their join streams are null.
+         * 4/ Because their join streams are null, they do not match join streams of Join1 bridges and therefore are not reused.
+         * 5/ Join node is created, but because it has different bridges, it is also not shared.
+         * 6/ Final result: Join1 and Join2 become 2 distinct non-shared nodes.
+         *
+         * Therefore join nodes are excluded from the standard node-sharing mechanism.
+         * We maintain a join-sharing map where the joiner decides if the node will be shared.
+         */
+        return joinNodeSharingMap.computeIfAbsent(otherStream, s -> new HashMap<>())
+                .computeIfAbsent(joiner, j -> {
+                    DefaultTriJoiner<A, B, C> castedJoiner = (DefaultTriJoiner<A, B, C>) joiner;
+                    IndexerFactory indexerFactory = new IndexerFactory(castedJoiner);
+                    BavetJoinBridgeBiConstraintStream<Solution_, A, B> leftBridge =
+                            new BavetJoinBridgeBiConstraintStream<>(constraintFactory, this, true);
+                    childStreamList.add(leftBridge);
+                    BavetJoinBridgeUniConstraintStream<Solution_, C> rightBridge =
+                            new BavetJoinBridgeUniConstraintStream<>(constraintFactory, other, false);
+                    other.childStreamList.add(rightBridge);
+                    BavetJoinTriConstraintStream<Solution_, A, B, C> joinStream =
+                            new BavetJoinTriConstraintStream<>(constraintFactory, leftBridge, rightBridge,
+                                    castedJoiner.getCombinedLeftMapping(), castedJoiner.getCombinedRightMapping(),
+                                    indexerFactory);
+                    leftBridge.setJoinStream(joinStream);
+                    rightBridge.setJoinStream(joinStream);
+                    return joinStream;
                 });
     }
 

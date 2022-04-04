@@ -22,7 +22,9 @@ import java.util.function.BiPredicate;
 import java.util.function.Predicate;
 
 import org.junit.jupiter.api.Test;
+import org.optaplanner.core.api.function.TriPredicate;
 import org.optaplanner.core.api.score.stream.bi.BiConstraintStream;
+import org.optaplanner.core.api.score.stream.tri.TriConstraintStream;
 import org.optaplanner.core.api.score.stream.uni.UniConstraintStream;
 import org.optaplanner.core.impl.testdata.domain.TestdataEntity;
 import org.optaplanner.core.impl.testdata.domain.TestdataSolution;
@@ -56,6 +58,24 @@ class NodeSharingTest {
         BiPredicate<TestdataEntity, TestdataEntity> predicate = (a, b) -> true;
         BiConstraintStream<TestdataEntity, TestdataEntity> filteredStream1 = stream1.filter(predicate);
         BiConstraintStream<TestdataEntity, TestdataEntity> filteredStream2 = stream2.filter(predicate);
+        assertThat(filteredStream1).isSameAs(filteredStream2);
+    }
+
+    @Test
+    void nodeSharingForEachUniquePairAndOneMore() {
+        BavetConstraintFactory<TestdataSolution> constraintFactory =
+                new BavetConstraintFactory<>(TestdataSolution.buildSolutionDescriptor());
+        TriConstraintStream<TestdataEntity, TestdataEntity, TestdataEntity> stream1 =
+                constraintFactory.forEachUniquePair(TestdataEntity.class)
+                        .join(TestdataEntity.class);
+        TriConstraintStream<TestdataEntity, TestdataEntity, TestdataEntity> stream2 =
+                constraintFactory.forEachUniquePair(TestdataEntity.class)
+                        .join(TestdataEntity.class);
+        assertThat(stream1).isSameAs(stream2);
+
+        TriPredicate<TestdataEntity, TestdataEntity, TestdataEntity> predicate = (a, b, c) -> true;
+        TriConstraintStream<TestdataEntity, TestdataEntity, TestdataEntity> filteredStream1 = stream1.filter(predicate);
+        TriConstraintStream<TestdataEntity, TestdataEntity, TestdataEntity> filteredStream2 = stream2.filter(predicate);
         assertThat(filteredStream1).isSameAs(filteredStream2);
     }
 
