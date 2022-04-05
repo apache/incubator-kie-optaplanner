@@ -119,7 +119,8 @@ public abstract class BavetAbstractTriConstraintStream<Solution_, A, B, C> exten
     }
 
     @SafeVarargs
-    public final <D> TriConstraintStream<A, B, C> ifExists(UniConstraintStream<D> otherStream, QuadJoiner<A, B, C, D>... joiners) {
+    public final <D> TriConstraintStream<A, B, C> ifExists(UniConstraintStream<D> otherStream,
+            QuadJoiner<A, B, C, D>... joiners) {
         return ifExistsOrNot(true, otherStream, joiners);
     }
 
@@ -145,7 +146,8 @@ public abstract class BavetAbstractTriConstraintStream<Solution_, A, B, C> exten
     }
 
     @SafeVarargs
-    public final <D> TriConstraintStream<A, B, C> ifNotExists(UniConstraintStream<D> otherStream, QuadJoiner<A, B, C, D>... joiners) {
+    public final <D> TriConstraintStream<A, B, C> ifNotExists(UniConstraintStream<D> otherStream,
+            QuadJoiner<A, B, C, D>... joiners) {
         return ifExistsOrNot(false, otherStream, joiners);
     }
 

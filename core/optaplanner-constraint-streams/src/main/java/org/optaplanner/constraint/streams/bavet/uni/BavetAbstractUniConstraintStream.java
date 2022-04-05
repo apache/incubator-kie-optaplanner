@@ -166,9 +166,30 @@ public abstract class BavetAbstractUniConstraintStream<Solution_, A> extends Bav
 
     private final <B> UniConstraintStream<A> ifExistsOrNot(boolean shouldExist, UniConstraintStream<B> otherStream,
             BiJoiner<A, B>[] joiners) {
+        // TODO support FilteringBiJoiner like join() which probably should do it either?
         BavetAbstractUniConstraintStream<Solution_, B> other = assertBavetUniConstraintStream(otherStream);
 
-        throw new UnsupportedOperationException();
+        if (joiners.length != 1) {
+            throw new UnsupportedOperationException();
+        }
+        BiJoiner<A, B> joiner = joiners[0];
+        if (!(joiner instanceof DefaultBiJoiner)) {
+            throw new IllegalArgumentException("The joiner class (" + joiner.getClass() + ") is not supported.");
+        }
+        DefaultBiJoiner<A, B> castedJoiner = (DefaultBiJoiner<A, B>) joiner;
+        IndexerFactory indexerFactory = new IndexerFactory(castedJoiner);
+        Function<A, Object[]> leftMapping = JoinerUtils.combineLeftMappings(castedJoiner);
+        Function<B, Object[]> rightMapping = JoinerUtils.combineRightMappings(castedJoiner);
+        BavetIfExistsBridgeUniConstraintStream<Solution_, A, B> parentBridgeB = other.shareAndAddChild(
+                new BavetIfExistsBridgeUniConstraintStream<>(constraintFactory, other));
+        return constraintFactory.share(
+                new BavetIfExistsUniConstraintStream<>(constraintFactory, this, parentBridgeB,
+                        shouldExist,
+                        leftMapping, rightMapping, indexerFactory),
+                ifExistsStream_ -> {
+                    childStreamList.add(ifExistsStream_);
+                    parentBridgeB.setIfExistsStream(ifExistsStream_);
+                });
     }
 
     // ************************************************************************

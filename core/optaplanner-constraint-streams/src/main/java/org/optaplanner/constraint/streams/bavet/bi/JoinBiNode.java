@@ -42,7 +42,7 @@ public final class JoinBiNode<A, B> extends AbstractNode {
      */
     private final Consumer<BiTuple<A, B>> nextNodesInsert;
     /**
-     * Calls for example {@link BiScorer#retract(BiTuple)}, {@link JoinTriNode#insertAB(BiTuple)} and/or ...
+     * Calls for example {@link BiScorer#retract(BiTuple)}, {@link JoinTriNode#retractAB(BiTuple)} and/or ...
      */
     private final Consumer<BiTuple<A, B>> nextNodesRetract;
     private final int outputStoreSize;
@@ -70,8 +70,8 @@ public final class JoinBiNode<A, B> extends AbstractNode {
 
     public void insertA(UniTuple<A> tupleA) {
         if (tupleA.store[inputStoreIndexA] != null) {
-            throw new IllegalStateException("Impossible state: the tuple for the fact ("
-                    + tupleA.factA + ") was already added in the joinStore.");
+            throw new IllegalStateException("Impossible state: the input for the fact ("
+                    + tupleA.factA + ") was already added in the tupleStore.");
         }
         Object[] indexProperties = mappingA.apply(tupleA.factA);
         tupleA.store[inputStoreIndexA] = indexProperties;
@@ -213,7 +213,7 @@ public final class JoinBiNode<A, B> extends AbstractNode {
                     throw new IllegalStateException("Impossible state: The tuple (" + tuple + ") in node (" +
                             this + ") is already in the dead state (" + tuple.state + ").");
                 default:
-                    throw new IllegalStateException("Impossible state: Tuple (" + tuple + ") in node (" +
+                    throw new IllegalStateException("Impossible state: The tuple (" + tuple + ") in node (" +
                             this + ") is in an unexpected state (" + tuple.state + ").");
             }
         });
