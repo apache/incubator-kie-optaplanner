@@ -47,9 +47,9 @@ public class NodeBuildHelper<Score_ extends Score<Score_>> {
             AbstractScoreInliner<Score_> scoreInliner) {
         this.activeStreamSet = activeStreamSet;
         /*
-         * When nodes are built, node-sharing is already finished.
-         * If two nodes are the same, they will be the same instance.
-         * Therefore there is no need to use node equality.
+         * Nodes are only being built after the streams have already been node-shared.
+         * If two streams are node-shared, they have by this point already been reduced to a single stream instance.
+         * Therefore there is no need to use stream equality.
          */
         insertMap = new IdentityHashMap<>(Math.max(16, activeStreamSet.size()));
         retractMap = new IdentityHashMap<>(Math.max(16, activeStreamSet.size()));
