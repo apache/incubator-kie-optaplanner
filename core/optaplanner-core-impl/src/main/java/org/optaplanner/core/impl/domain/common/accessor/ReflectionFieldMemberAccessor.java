@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2022 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,6 +19,7 @@ package org.optaplanner.core.impl.domain.common.accessor;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.lang.reflect.Type;
+import java.util.function.Function;
 
 /**
  * A {@link MemberAccessor} based on a field.
@@ -26,11 +27,13 @@ import java.lang.reflect.Type;
 public final class ReflectionFieldMemberAccessor implements MemberAccessor {
 
     private final Field field;
+    private final Function getterFunction;
 
     public ReflectionFieldMemberAccessor(Field field) {
         this.field = field;
         // Performance hack by avoiding security checks
         field.setAccessible(true);
+        this.getterFunction = this::executeGetter;
     }
 
     @Override
@@ -62,6 +65,11 @@ public final class ReflectionFieldMemberAccessor implements MemberAccessor {
                     + ") on bean of class (" + bean.getClass() + ").\n" +
                     MemberAccessorFactory.CLASSLOADER_NUDGE_MESSAGE, e);
         }
+    }
+
+    @Override
+    public <Fact_, Result_> Function<Fact_, Result_> getGetterFunction() {
+        return getterFunction;
     }
 
     @Override

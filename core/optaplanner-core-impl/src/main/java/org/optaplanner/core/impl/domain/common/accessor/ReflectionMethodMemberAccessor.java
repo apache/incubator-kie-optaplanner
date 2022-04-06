@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2022 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,6 +21,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
 import java.util.Arrays;
+import java.util.function.Function;
 
 /**
  * A {@link MemberAccessor} based on a single read {@link Method}.
@@ -31,6 +32,7 @@ public final class ReflectionMethodMemberAccessor implements MemberAccessor {
     private final Class<?> returnType;
     private final String methodName;
     private final Method readMethod;
+    private final Function getterFunction;
 
     public ReflectionMethodMemberAccessor(Method readMethod) {
         this.readMethod = readMethod;
@@ -45,6 +47,7 @@ public final class ReflectionMethodMemberAccessor implements MemberAccessor {
             throw new IllegalArgumentException("The readMethod (" + readMethod + ") must have a return type ("
                     + readMethod.getReturnType() + ").");
         }
+        this.getterFunction = this::executeGetter;
     }
 
     @Override
@@ -81,6 +84,11 @@ public final class ReflectionMethodMemberAccessor implements MemberAccessor {
                     + ") throws an exception.",
                     e.getCause());
         }
+    }
+
+    @Override
+    public <Fact_, Result_> Function<Fact_, Result_> getGetterFunction() {
+        return getterFunction;
     }
 
     @Override
