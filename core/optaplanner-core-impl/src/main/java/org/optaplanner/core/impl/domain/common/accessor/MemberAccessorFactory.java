@@ -34,6 +34,17 @@ public class MemberAccessorFactory {
     static final String CLASSLOADER_NUDGE_MESSAGE = "Maybe add getClass().getClassLoader() as a parameter to the " +
             SolverFactory.class.getSimpleName() + ".create...() method call.";
 
+    /**
+     * As defined by {@link #buildMemberAccessor(Member, MemberAccessorType, Class, DomainAccessType, Map)},
+     * but will cache the result in the map if provided.
+     *
+     * @param member never null, method or field to access
+     * @param memberAccessorType
+     * @param annotationClass the annotation the member was annotated with (used for error reporting)
+     * @param domainAccessType
+     * @param memberAccessorMap key is the fully qualified member name
+     * @return never null, new {@link MemberAccessor} instance unless already found in memberAccessorMap
+     */
     public static MemberAccessor buildMemberAccessor(Member member, MemberAccessorType memberAccessorType,
             Class<? extends Annotation> annotationClass, DomainAccessType domainAccessType,
             Map<String, MemberAccessor> memberAccessorMap) {
@@ -45,6 +56,15 @@ public class MemberAccessorFactory {
                 k -> buildMemberAccessor(member, memberAccessorType, annotationClass, domainAccessType));
     }
 
+    /**
+     * Creates a new member accessor based on the given parameters.
+     *
+     * @param member never null, method or field to access
+     * @param memberAccessorType
+     * @param annotationClass the annotation the member was annotated with (used for error reporting)
+     * @param domainAccessType
+     * @return never null, new instance of the member accessor
+     */
     public static MemberAccessor buildMemberAccessor(Member member, MemberAccessorType memberAccessorType,
             Class<? extends Annotation> annotationClass, DomainAccessType domainAccessType) {
         switch (domainAccessType) {
