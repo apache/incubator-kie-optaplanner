@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2022 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -2140,44 +2140,6 @@ class UniConstraintStreamTest extends AbstractConstraintStreamTest implements Co
         scoreDirector.calculateScore();
         assertThat(zeroWeightMonitorCount.get()).isEqualTo(0);
         assertThat(oneWeightMonitorCount.get()).isEqualTo(1);
-    }
-
-    @TestTemplate
-    public void nodeSharing() {
-        assumeBavet();
-        TestdataLavishSolution solution = TestdataLavishSolution.generateSolution(2, 5, 3, 2);
-        TestdataLavishEntity entity1 = new TestdataLavishEntity("MyEntity 1", solution.getFirstEntityGroup(),
-                solution.getFirstValue());
-        entity1.setStringProperty("myProperty1");
-        solution.getEntityList().add(entity1);
-
-        AtomicLong monitorCount = new AtomicLong(0L);
-        Predicate<TestdataLavishEntity> predicate = entity -> {
-            monitorCount.getAndIncrement();
-            return true;
-        };
-        InnerScoreDirector<TestdataLavishSolution, SimpleScore> scoreDirector = buildScoreDirector(
-                TestdataLavishSolution.buildSolutionDescriptor(),
-                factory -> new Constraint[] {
-                        factory.forEach(TestdataLavishEntity.class)
-                                .filter(predicate)
-                                .penalize("myConstraint1", SimpleScore.ONE),
-                        factory.forEach(TestdataLavishEntity.class)
-                                .filter(predicate)
-                                .penalize("myConstraint2", SimpleScore.ONE)
-                });
-
-        // From scratch
-        scoreDirector.setWorkingSolution(solution);
-        scoreDirector.calculateScore();
-        assertThat(monitorCount.getAndSet(0L)).isEqualTo(3);
-
-        // Incremental
-        scoreDirector.beforeProblemPropertyChanged(entity1);
-        entity1.setStringProperty("myProperty2");
-        scoreDirector.afterProblemPropertyChanged(entity1);
-        scoreDirector.calculateScore();
-        assertThat(monitorCount.get()).isEqualTo(1);
     }
 
     @TestTemplate
