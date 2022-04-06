@@ -112,7 +112,7 @@ public class SolutionDescriptor<Solution_> {
     public static <Solution_> SolutionDescriptor<Solution_> buildSolutionDescriptor(DomainAccessType domainAccessType,
             Class<Solution_> solutionClass, Map<String, MemberAccessor> memberAccessorMap,
             Map<String, SolutionCloner> solutionClonerMap, List<Class<?>> entityClassList) {
-        memberAccessorMap = Objects.requireNonNullElse(memberAccessorMap, new HashMap<>(0));
+        memberAccessorMap = Objects.requireNonNullElse(memberAccessorMap, new HashMap<>());
         solutionClonerMap = Objects.requireNonNullElse(solutionClonerMap, Collections.emptyMap());
         DescriptorPolicy descriptorPolicy = new DescriptorPolicy();
         descriptorPolicy.setDomainAccessType(domainAccessType);
