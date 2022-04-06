@@ -44,7 +44,7 @@ public final class FilteringQuadJoiner<A, B, C, D> implements QuadJoiner<A, B, C
         if (this == o) {
             return true;
         }
-        if (o == null || getClass() != o.getClass()) {
+        if (!(o instanceof FilteringQuadJoiner)) {
             return false;
         }
         FilteringQuadJoiner<?, ?, ?, ?> other = (FilteringQuadJoiner<?, ?, ?, ?>) o;

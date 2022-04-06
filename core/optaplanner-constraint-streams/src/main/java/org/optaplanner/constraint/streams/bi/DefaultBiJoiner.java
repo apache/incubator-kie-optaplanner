@@ -91,7 +91,7 @@ public final class DefaultBiJoiner<A, B> extends AbstractJoiner<B> implements Bi
         if (this == o) {
             return true;
         }
-        if (o == null || getClass() != o.getClass()) {
+        if (!(o instanceof DefaultBiJoiner)) {
             return false;
         }
         DefaultBiJoiner<?, ?> other = (DefaultBiJoiner<?, ?>) o;

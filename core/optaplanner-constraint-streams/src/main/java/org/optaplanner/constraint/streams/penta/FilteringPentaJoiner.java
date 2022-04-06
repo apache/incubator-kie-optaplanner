@@ -44,7 +44,7 @@ public final class FilteringPentaJoiner<A, B, C, D, E> implements PentaJoiner<A,
         if (this == o) {
             return true;
         }
-        if (o == null || getClass() != o.getClass()) {
+        if (!(o instanceof FilteringPentaJoiner)) {
             return false;
         }
         FilteringPentaJoiner<?, ?, ?, ?, ?> other = (FilteringPentaJoiner<?, ?, ?, ?, ?>) o;

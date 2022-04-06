@@ -81,7 +81,7 @@ public final class DefaultPentaJoiner<A, B, C, D, E> extends AbstractJoiner<E> i
         if (this == o) {
             return true;
         }
-        if (o == null || getClass() != o.getClass()) {
+        if (!(o instanceof DefaultPentaJoiner)) {
             return false;
         }
         DefaultPentaJoiner<?, ?, ?, ?, ?> other = (DefaultPentaJoiner<?, ?, ?, ?, ?>) o;

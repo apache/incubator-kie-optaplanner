@@ -92,7 +92,7 @@ public final class DefaultTriJoiner<A, B, C> extends AbstractJoiner<C> implement
         if (this == o) {
             return true;
         }
-        if (o == null || getClass() != o.getClass()) {
+        if (!(o instanceof DefaultTriJoiner)) {
             return false;
         }
         DefaultTriJoiner<?, ?, ?> other = (DefaultTriJoiner<?, ?, ?>) o;

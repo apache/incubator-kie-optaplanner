@@ -44,7 +44,7 @@ public final class FilteringBiJoiner<A, B> implements BiJoiner<A, B> {
         if (this == o) {
             return true;
         }
-        if (o == null || getClass() != o.getClass()) {
+        if (!(o instanceof FilteringBiJoiner)) {
             return false;
         }
         FilteringBiJoiner<?, ?> other = (FilteringBiJoiner<?, ?>) o;

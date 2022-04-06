@@ -44,7 +44,7 @@ public final class FilteringTriJoiner<A, B, C> implements TriJoiner<A, B, C> {
         if (this == o) {
             return true;
         }
-        if (o == null || getClass() != o.getClass()) {
+        if (!(o instanceof FilteringTriJoiner)) {
             return false;
         }
         FilteringTriJoiner<?, ?, ?> other = (FilteringTriJoiner<?, ?, ?>) o;

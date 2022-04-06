@@ -92,7 +92,7 @@ public final class DefaultQuadJoiner<A, B, C, D> extends AbstractJoiner<D> imple
         if (this == o) {
             return true;
         }
-        if (o == null || getClass() != o.getClass()) {
+        if (!(o instanceof DefaultQuadJoiner)) {
             return false;
         }
         DefaultQuadJoiner<?, ?, ?, ?> other = (DefaultQuadJoiner<?, ?, ?, ?>) o;
