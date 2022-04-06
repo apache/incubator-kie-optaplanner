@@ -86,12 +86,12 @@ public abstract class BavetAbstractConstraintStream<Solution_> extends AbstractC
             UniConstraintStream<A> otherStream) {
         if (!(otherStream instanceof BavetAbstractUniConstraintStream)) {
             throw new IllegalStateException("The streams (" + this + ", " + otherStream
-                    + ") are not build from the same " + ConstraintFactory.class.getSimpleName() + ".");
+                    + ") are not built from the same " + ConstraintFactory.class.getSimpleName() + ".");
         }
         BavetAbstractUniConstraintStream<Solution_, A> other = (BavetAbstractUniConstraintStream<Solution_, A>) otherStream;
         if (constraintFactory != other.getConstraintFactory()) {
             throw new IllegalStateException("The streams (" + this + ", " + other
-                    + ") are build from different constraintFactories (" + constraintFactory + ", "
+                    + ") are built from different constraintFactories (" + constraintFactory + ", "
                     + other.getConstraintFactory()
                     + ").");
         }
