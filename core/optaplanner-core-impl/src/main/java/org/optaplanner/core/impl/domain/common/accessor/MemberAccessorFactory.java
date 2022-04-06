@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2022 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -35,23 +35,25 @@ public class MemberAccessorFactory {
             SolverFactory.class.getSimpleName() + ".create...() method call.";
 
     public static MemberAccessor buildMemberAccessor(Member member, MemberAccessorType memberAccessorType,
-            Class<? extends Annotation> annotationClass,
-            DomainAccessType domainAccessType,
+            Class<? extends Annotation> annotationClass, DomainAccessType domainAccessType,
             Map<String, MemberAccessor> memberAccessorMap) {
+        if (memberAccessorMap == null) {
+            return buildMemberAccessor(member, memberAccessorType, annotationClass, domainAccessType);
+        }
         String generatedClassName = GizmoMemberAccessorFactory.getGeneratedClassName(member);
-        if (memberAccessorMap == null || !memberAccessorMap.containsKey(generatedClassName)) {
-            switch (domainAccessType) {
-                case GIZMO:
-                    return GizmoMemberAccessorFactory.buildGizmoMemberAccessor(member, annotationClass);
+        return memberAccessorMap.computeIfAbsent(generatedClassName,
+                k -> buildMemberAccessor(member, memberAccessorType, annotationClass, domainAccessType));
+    }
 
-                case REFLECTION:
-                    return buildReflectiveMemberAccessor(member, memberAccessorType, annotationClass);
-
-                default:
-                    throw new IllegalStateException("The domainAccessType (" + domainAccessType + ") is not implemented.");
-            }
-        } else {
-            return memberAccessorMap.get(generatedClassName);
+    public static MemberAccessor buildMemberAccessor(Member member, MemberAccessorType memberAccessorType,
+            Class<? extends Annotation> annotationClass, DomainAccessType domainAccessType) {
+        switch (domainAccessType) {
+            case GIZMO:
+                return GizmoMemberAccessorFactory.buildGizmoMemberAccessor(member, annotationClass);
+            case REFLECTION:
+                return buildReflectiveMemberAccessor(member, memberAccessorType, annotationClass);
+            default:
+                throw new IllegalStateException("The domainAccessType (" + domainAccessType + ") is not implemented.");
         }
     }
 
