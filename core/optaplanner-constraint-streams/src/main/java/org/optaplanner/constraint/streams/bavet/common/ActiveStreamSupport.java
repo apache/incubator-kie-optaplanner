@@ -105,8 +105,8 @@ public final class ActiveStreamSupport<Solution_> implements Set<BavetAbstractCo
     public boolean retainAll(Collection<?> c) {
         boolean removed = false;
         for (BavetAbstractConstraintStream<Solution_> stream : activeStreamsList) {
-            if (c.contains(stream)) {
-                removed = remove(c);
+            if (!c.contains(stream)) {
+                removed = remove(stream);
             }
         }
         return removed;
@@ -123,6 +123,7 @@ public final class ActiveStreamSupport<Solution_> implements Set<BavetAbstractCo
 
     @Override
     public void clear() {
+        activeStreamsMap.clear();
         activeStreamsList.clear();
     }
 }

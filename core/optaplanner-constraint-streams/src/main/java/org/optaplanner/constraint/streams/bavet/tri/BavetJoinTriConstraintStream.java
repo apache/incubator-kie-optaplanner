@@ -106,14 +106,19 @@ public final class BavetJoinTriConstraintStream<Solution_, A, B, C>
             return false;
         }
         BavetJoinTriConstraintStream<?, ?, ?, ?> other = (BavetJoinTriConstraintStream<?, ?, ?, ?>) o;
-        return Objects.equals(leftParent, other.leftParent)
-                && Objects.equals(rightParent, other.rightParent)
+        /*
+         * Bridge streams do not implement equality because their equals() would have to point back to this stream,
+         * resulting in StackOverflowError.
+         * Therefore we need to check bridge parents to see where this join node comes from.
+         */
+        return Objects.equals(leftParent.getParent(), other.leftParent.getParent())
+                && Objects.equals(rightParent.getParent(), other.rightParent.getParent())
                 && Objects.equals(joiner, other.joiner);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(leftParent, rightParent, joiner);
+        return Objects.hash(leftParent.getParent(), rightParent.getParent(), joiner);
     }
 
     @Override

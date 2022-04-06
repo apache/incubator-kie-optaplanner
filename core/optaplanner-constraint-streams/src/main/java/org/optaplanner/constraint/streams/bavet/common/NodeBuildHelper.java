@@ -18,7 +18,7 @@ package org.optaplanner.constraint.streams.bavet.common;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
+import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -46,9 +46,14 @@ public class NodeBuildHelper<Score_ extends Score<Score_>> {
             Map<Constraint, Score_> constraintWeightMap,
             AbstractScoreInliner<Score_> scoreInliner) {
         this.activeStreamSet = activeStreamSet;
-        insertMap = new HashMap<>(Math.max(16, activeStreamSet.size()));
-        retractMap = new HashMap<>(Math.max(16, activeStreamSet.size()));
-        storeIndexMap = new HashMap<>(Math.max(16, activeStreamSet.size() / 2));
+        /*
+         * When nodes are built, node-sharing is already finished.
+         * If two nodes are the same, they will be the same instance.
+         * Therefore there is no need to use node equality.
+         */
+        insertMap = new IdentityHashMap<>(Math.max(16, activeStreamSet.size()));
+        retractMap = new IdentityHashMap<>(Math.max(16, activeStreamSet.size()));
+        storeIndexMap = new IdentityHashMap<>(Math.max(16, activeStreamSet.size() / 2));
         reversedNodeList = new ArrayList<>(activeStreamSet.size());
         this.constraintWeightMap = constraintWeightMap;
         this.scoreInliner = scoreInliner;

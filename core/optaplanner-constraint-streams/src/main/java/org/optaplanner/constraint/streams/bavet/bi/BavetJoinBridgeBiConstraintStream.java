@@ -16,7 +16,6 @@
 
 package org.optaplanner.constraint.streams.bavet.bi;
 
-import java.util.Objects;
 import java.util.Set;
 
 import org.optaplanner.constraint.streams.bavet.BavetConstraintFactory;
@@ -60,6 +59,10 @@ public final class BavetJoinBridgeBiConstraintStream<Solution_, A, B>
         constraintStreamSet.add(this);
     }
 
+    public BavetAbstractBiConstraintStream<Solution_, A, B> getParent() {
+        return parent;
+    }
+
     @Override
     public ConstraintStream getTupleSource() {
         return parent.getTupleSource();
@@ -68,28 +71,6 @@ public final class BavetJoinBridgeBiConstraintStream<Solution_, A, B>
     @Override
     public <Score_ extends Score<Score_>> void buildNode(NodeBuildHelper<Score_> buildHelper) {
         // Do nothing. BavetJoinTriConstraintStream, etc build everything.
-    }
-
-    // ************************************************************************
-    // Equality for node sharing
-    // ************************************************************************
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
-        BavetJoinBridgeBiConstraintStream<?, ?, ?> other = (BavetJoinBridgeBiConstraintStream<?, ?, ?>) o;
-        return isLeftBridge == other.isLeftBridge
-                && Objects.equals(parent, other.parent);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(parent, isLeftBridge);
     }
 
     @Override
