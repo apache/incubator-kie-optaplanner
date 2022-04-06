@@ -28,6 +28,7 @@ import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
 import org.optaplanner.core.impl.domain.variable.descriptor.ShadowVariableDescriptor;
 import org.optaplanner.core.impl.domain.variable.descriptor.VariableDescriptor;
 import org.optaplanner.core.impl.domain.variable.listener.SourcedVariableListener;
+import org.optaplanner.core.impl.domain.variable.listener.support.violation.SolutionSnapshot;
 import org.optaplanner.core.impl.domain.variable.supply.Demand;
 import org.optaplanner.core.impl.domain.variable.supply.Supply;
 import org.optaplanner.core.impl.domain.variable.supply.SupplyManager;
@@ -172,16 +173,30 @@ public final class VariableListenerSupport<Solution_> implements SupplyManager<S
     }
 
     /**
+     * @return null if there are no violations
+     */
+    public String createShadowVariablesViolationMessage() {
+        Solution_ workingSolution = scoreDirector.getWorkingSolution();
+        SolutionSnapshot solutionSnapshot = SolutionSnapshot.of(scoreDirector.getSolutionDescriptor(), workingSolution);
+
+        forceTriggerAllVariableListeners(workingSolution);
+
+        final int SHADOW_VARIABLE_VIOLATION_DISPLAY_LIMIT = 3;
+        return solutionSnapshot.createShadowVariablesViolationMessage(SHADOW_VARIABLE_VIOLATION_DISPLAY_LIMIT);
+    }
+
+    /**
      * Triggers all variable listeners even though the notification queue is empty. This is part of the shadow variables'
      * corruption detection.
      * <p>
      * To ensure each listener is triggered, an artificial notification is created for each genuine variable without
      * doing any change on the working solution. If everything works correctly, triggering listeners at this point must not
      * change any shadow variables either.
+     *
+     * @param workingSolution working solution
      */
-    public void forceTriggerAllVariableListeners() {
-        scoreDirector.getSolutionDescriptor()
-                .visitAllEntities(scoreDirector.getWorkingSolution(), this::simulateGenuineVariableChange);
+    private void forceTriggerAllVariableListeners(Solution_ workingSolution) {
+        scoreDirector.getSolutionDescriptor().visitAllEntities(workingSolution, this::simulateGenuineVariableChange);
         triggerVariableListenersInNotificationQueues();
     }
 

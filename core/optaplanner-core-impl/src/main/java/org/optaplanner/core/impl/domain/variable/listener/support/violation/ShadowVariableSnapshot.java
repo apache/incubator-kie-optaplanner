@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.optaplanner.core.impl.score.director.violation;
+package org.optaplanner.core.impl.domain.variable.listener.support.violation;
 
 import java.util.Objects;
 import java.util.function.Consumer;

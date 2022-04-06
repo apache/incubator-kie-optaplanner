@@ -53,7 +53,6 @@ import org.optaplanner.core.impl.domain.variable.listener.support.VariableListen
 import org.optaplanner.core.impl.domain.variable.supply.SupplyManager;
 import org.optaplanner.core.impl.heuristic.move.Move;
 import org.optaplanner.core.impl.score.definition.ScoreDefinition;
-import org.optaplanner.core.impl.score.director.violation.SolutionSnapshot;
 import org.optaplanner.core.impl.solver.thread.ChildThreadType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -511,7 +510,7 @@ public abstract class AbstractScoreDirector<Solution_, Score_ extends Score<Scor
 
     @Override
     public void assertShadowVariablesAreNotStale(Score_ expectedWorkingScore, Object completedAction) {
-        String violationMessage = createShadowVariablesViolationMessage();
+        String violationMessage = variableListenerSupport.createShadowVariablesViolationMessage();
         if (violationMessage != null) {
             throw new IllegalStateException(
                     VariableListener.class.getSimpleName() + " corruption after completedAction ("
@@ -539,7 +538,7 @@ public abstract class AbstractScoreDirector<Solution_, Score_ extends Score<Scor
      * @return never null
      */
     protected String buildShadowVariableAnalysis(boolean predicted) {
-        String violationMessage = createShadowVariablesViolationMessage();
+        String violationMessage = variableListenerSupport.createShadowVariablesViolationMessage();
         String workingLabel = predicted ? "working" : "corrupted";
         if (violationMessage == null) {
             return "Shadow variable corruption in the " + workingLabel + " scoreDirector:\n"
@@ -549,18 +548,6 @@ public abstract class AbstractScoreDirector<Solution_, Score_ extends Score<Scor
                 + violationMessage
                 + "  Maybe there is a bug in the " + VariableListener.class.getSimpleName()
                 + " of those shadow variable(s).";
-    }
-
-    /**
-     * @return null if there are no violations
-     */
-    protected String createShadowVariablesViolationMessage() {
-        SolutionSnapshot solutionSnapshot = SolutionSnapshot.of(getSolutionDescriptor(), workingSolution);
-
-        variableListenerSupport.forceTriggerAllVariableListeners();
-
-        final int SHADOW_VARIABLE_VIOLATION_DISPLAY_LIMIT = 3;
-        return solutionSnapshot.createShadowVariablesViolationMessage(SHADOW_VARIABLE_VIOLATION_DISPLAY_LIMIT);
     }
 
     @Override
