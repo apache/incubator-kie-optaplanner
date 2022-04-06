@@ -39,7 +39,7 @@ public class ClassAndPlanningIdComparator implements Comparator<Object> {
 
     public ClassAndPlanningIdComparator(boolean failFastIfNoPlanningId) {
         // TODO This will break Quarkus once we don't open up the domain hierarchy for reflection any more
-        this(DomainAccessType.REFLECTION, new HashMap<>(0), failFastIfNoPlanningId);
+        this(DomainAccessType.REFLECTION, new HashMap<>(), failFastIfNoPlanningId);
     }
 
     public ClassAndPlanningIdComparator(DomainAccessType domainAccessType,
