@@ -36,7 +36,7 @@ public class MemberAccessorFactory {
 
     /**
      * As defined by {@link #buildMemberAccessor(Member, MemberAccessorType, Class, DomainAccessType, Map)},
-     * but will cache the result in the map if provided.
+     * but caches the result in the map if provided.
      *
      * @param member never null, method or field to access
      * @param memberAccessorType
