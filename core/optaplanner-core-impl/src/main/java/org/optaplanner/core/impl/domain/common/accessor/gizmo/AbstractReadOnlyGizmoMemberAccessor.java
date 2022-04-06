@@ -19,12 +19,12 @@ package org.optaplanner.core.impl.domain.common.accessor.gizmo;
 public abstract class AbstractReadOnlyGizmoMemberAccessor extends AbstractGizmoMemberAccessor {
 
     @Override
-    public boolean supportSetter() {
+    public final boolean supportSetter() {
         return false;
     }
 
     @Override
-    public void executeSetter(Object bean, Object value) {
+    public final void executeSetter(Object bean, Object value) {
         throw new UnsupportedOperationException("Setter not supported");
     }
 
