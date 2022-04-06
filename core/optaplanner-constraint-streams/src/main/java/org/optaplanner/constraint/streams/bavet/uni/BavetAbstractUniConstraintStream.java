@@ -28,6 +28,8 @@ import org.optaplanner.constraint.streams.bavet.BavetConstraintFactory;
 import org.optaplanner.constraint.streams.bavet.bi.BavetGroupBiConstraintStream;
 import org.optaplanner.constraint.streams.bavet.bi.BavetJoinBiConstraintStream;
 import org.optaplanner.constraint.streams.bavet.common.BavetAbstractConstraintStream;
+import org.optaplanner.constraint.streams.bavet.common.JoinerUtils;
+import org.optaplanner.constraint.streams.bavet.common.index.IndexerFactory;
 import org.optaplanner.constraint.streams.bi.DefaultBiJoiner;
 import org.optaplanner.constraint.streams.common.RetrievalSemantics;
 import org.optaplanner.constraint.streams.common.ScoreImpactType;
@@ -82,23 +84,23 @@ public abstract class BavetAbstractUniConstraintStream<Solution_, A> extends Bav
     public <B> BiConstraintStream<A, B> actuallyJoin(UniConstraintStream<B> otherStream,
             DefaultBiJoiner<A, B>... joiners) {
         BavetAbstractUniConstraintStream<Solution_, B> other = assertBavetUniConstraintStream(otherStream);
-        DefaultBiJoiner<A, B> mergedJoiner = DefaultBiJoiner.merge(joiners);
+
         BavetJoinBridgeUniConstraintStream<Solution_, A> leftBridge =
                 new BavetJoinBridgeUniConstraintStream<>(constraintFactory, this, true);
         BavetJoinBridgeUniConstraintStream<Solution_, B> rightBridge =
                 new BavetJoinBridgeUniConstraintStream<>(constraintFactory, other, false);
-        return constraintFactory.share(
-                new BavetJoinBiConstraintStream<>(constraintFactory, leftBridge, rightBridge, mergedJoiner),
-                joinStream_ -> {
-                    leftBridge.setJoinStream(joinStream_);
-                    if (!getChildStreamList().contains(leftBridge)) {
-                        getChildStreamList().add(leftBridge);
-                    }
-                    rightBridge.setJoinStream(joinStream_);
-                    if (!other.getChildStreamList().contains(rightBridge)) {
-                        other.getChildStreamList().add(rightBridge);
-                    }
-                });
+
+        BavetJoinBiConstraintStream<Solution_, A, B> newJoinStream =
+                new BavetJoinBiConstraintStream<>(constraintFactory, leftBridge, rightBridge,
+                        DefaultBiJoiner.merge(joiners));
+        leftBridge.setJoinStream(newJoinStream);
+        rightBridge.setJoinStream(newJoinStream);
+
+        return constraintFactory.share(newJoinStream, joinStream_ -> {
+            // Connect the bridges upstream, as it is an actual new join.
+            getChildStreamList().add(leftBridge);
+            other.getChildStreamList().add(rightBridge);
+        });
     }
 
     @Override

@@ -84,23 +84,23 @@ public abstract class BavetAbstractBiConstraintStream<Solution_, A, B> extends B
     public <C> TriConstraintStream<A, B, C> actuallyJoin(UniConstraintStream<C> otherStream,
             DefaultTriJoiner<A, B, C>... joiners) {
         BavetAbstractUniConstraintStream<Solution_, C> other = assertBavetUniConstraintStream(otherStream);
-        DefaultTriJoiner<A, B, C> mergedJoiner = DefaultTriJoiner.merge(joiners);
+
         BavetJoinBridgeBiConstraintStream<Solution_, A, B> leftBridge =
                 new BavetJoinBridgeBiConstraintStream<>(constraintFactory, this, true);
         BavetJoinBridgeUniConstraintStream<Solution_, C> rightBridge =
                 new BavetJoinBridgeUniConstraintStream<>(constraintFactory, other, false);
-        return constraintFactory.share(
-                new BavetJoinTriConstraintStream<>(constraintFactory, leftBridge, rightBridge, mergedJoiner),
-                joinStream_ -> {
-                    leftBridge.setJoinStream(joinStream_);
-                    if (!getChildStreamList().contains(leftBridge)) {
-                        getChildStreamList().add(leftBridge);
-                    }
-                    rightBridge.setJoinStream(joinStream_);
-                    if (!other.getChildStreamList().contains(rightBridge)) {
-                        other.getChildStreamList().add(rightBridge);
-                    }
-                });
+
+        BavetJoinTriConstraintStream<Solution_, A, B, C> newJoinStream =
+                new BavetJoinTriConstraintStream<>(constraintFactory, leftBridge, rightBridge,
+                        DefaultTriJoiner.merge(joiners));
+        leftBridge.setJoinStream(newJoinStream);
+        rightBridge.setJoinStream(newJoinStream);
+
+        return constraintFactory.share(newJoinStream, joinStream_ -> {
+            // Connect the bridges upstream, as it is an actual new join.
+            getChildStreamList().add(leftBridge);
+            other.getChildStreamList().add(rightBridge);
+        });
     }
 
     @Override
