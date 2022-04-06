@@ -58,7 +58,7 @@ public class LookUpStrategyResolver {
 
     public LookUpStrategyResolver(DomainAccessType domainAccessType,
             LookUpStrategyType lookUpStrategyType) {
-        this(domainAccessType, new HashMap<>(0), lookUpStrategyType);
+        this(domainAccessType, new HashMap<>(), lookUpStrategyType);
     }
 
     public LookUpStrategyResolver(DomainAccessType domainAccessType,
