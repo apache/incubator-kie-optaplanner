@@ -21,18 +21,16 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
 import java.util.Arrays;
-import java.util.function.Function;
 
 /**
  * A {@link MemberAccessor} based on a single read {@link Method}.
  * Do not confuse with {@link ReflectionBeanPropertyMemberAccessor} which is richer.
  */
-public final class ReflectionMethodMemberAccessor implements MemberAccessor {
+public final class ReflectionMethodMemberAccessor extends AbstractMemberAccessor {
 
     private final Class<?> returnType;
     private final String methodName;
     private final Method readMethod;
-    private final Function getterFunction;
 
     public ReflectionMethodMemberAccessor(Method readMethod) {
         this.readMethod = readMethod;
@@ -47,7 +45,6 @@ public final class ReflectionMethodMemberAccessor implements MemberAccessor {
             throw new IllegalArgumentException("The readMethod (" + readMethod + ") must have a return type ("
                     + readMethod.getReturnType() + ").");
         }
-        this.getterFunction = this::executeGetter;
     }
 
     @Override
@@ -84,11 +81,6 @@ public final class ReflectionMethodMemberAccessor implements MemberAccessor {
                     + ") throws an exception.",
                     e.getCause());
         }
-    }
-
-    @Override
-    public <Fact_, Result_> Function<Fact_, Result_> getGetterFunction() {
-        return getterFunction;
     }
 
     @Override

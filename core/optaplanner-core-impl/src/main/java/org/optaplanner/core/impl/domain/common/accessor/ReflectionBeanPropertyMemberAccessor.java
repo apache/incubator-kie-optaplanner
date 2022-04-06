@@ -20,20 +20,18 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
-import java.util.function.Function;
 
 import org.optaplanner.core.impl.domain.common.ReflectionHelper;
 
 /**
  * A {@link MemberAccessor} based on a getter and optionally a setter.
  */
-public final class ReflectionBeanPropertyMemberAccessor implements MemberAccessor {
+public final class ReflectionBeanPropertyMemberAccessor extends AbstractMemberAccessor {
 
     private final Class<?> propertyType;
     private final String propertyName;
     private final Method getterMethod;
     private final Method setterMethod;
-    private final Function getterFunction;
 
     public ReflectionBeanPropertyMemberAccessor(Method getterMethod) {
         this(getterMethod, false);
@@ -56,7 +54,6 @@ public final class ReflectionBeanPropertyMemberAccessor implements MemberAccesso
                 setterMethod.setAccessible(true); // Performance hack by avoiding security checks
             }
         }
-        this.getterFunction = this::executeGetter;
     }
 
     @Override
@@ -93,11 +90,6 @@ public final class ReflectionBeanPropertyMemberAccessor implements MemberAccesso
                     + ") throws an exception.",
                     e.getCause());
         }
-    }
-
-    @Override
-    public <Fact_, Result_> Function<Fact_, Result_> getGetterFunction() {
-        return getterFunction;
     }
 
     @Override

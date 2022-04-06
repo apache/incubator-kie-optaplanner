@@ -19,21 +19,18 @@ package org.optaplanner.core.impl.domain.common.accessor;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.lang.reflect.Type;
-import java.util.function.Function;
 
 /**
  * A {@link MemberAccessor} based on a field.
  */
-public final class ReflectionFieldMemberAccessor implements MemberAccessor {
+public final class ReflectionFieldMemberAccessor extends AbstractMemberAccessor {
 
     private final Field field;
-    private final Function getterFunction;
 
     public ReflectionFieldMemberAccessor(Field field) {
         this.field = field;
         // Performance hack by avoiding security checks
         field.setAccessible(true);
-        this.getterFunction = this::executeGetter;
     }
 
     @Override
@@ -65,11 +62,6 @@ public final class ReflectionFieldMemberAccessor implements MemberAccessor {
                     + ") on bean of class (" + bean.getClass() + ").\n" +
                     MemberAccessorFactory.CLASSLOADER_NUDGE_MESSAGE, e);
         }
-    }
-
-    @Override
-    public <Fact_, Result_> Function<Fact_, Result_> getGetterFunction() {
-        return getterFunction;
     }
 
     @Override
