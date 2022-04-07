@@ -18,7 +18,7 @@ package org.optaplanner.constraint.streams.bavet.common;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.IdentityHashMap;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -42,18 +42,12 @@ public class NodeBuildHelper<Score_ extends Score<Score_>> {
 
     private List<AbstractNode> reversedNodeList;
 
-    public NodeBuildHelper(Set<? extends ConstraintStream> activeStreamSet,
-            Map<Constraint, Score_> constraintWeightMap,
+    public NodeBuildHelper(Set<? extends ConstraintStream> activeStreamSet, Map<Constraint, Score_> constraintWeightMap,
             AbstractScoreInliner<Score_> scoreInliner) {
         this.activeStreamSet = activeStreamSet;
-        /*
-         * Nodes are only being built after the streams have already been node-shared.
-         * If two streams are node-shared, they have by this point already been reduced to a single stream instance.
-         * Therefore there is no need to use stream equality.
-         */
-        insertMap = new IdentityHashMap<>(Math.max(16, activeStreamSet.size()));
-        retractMap = new IdentityHashMap<>(Math.max(16, activeStreamSet.size()));
-        storeIndexMap = new IdentityHashMap<>(Math.max(16, activeStreamSet.size() / 2));
+        insertMap = new HashMap<>(Math.max(16, activeStreamSet.size()));
+        retractMap = new HashMap<>(Math.max(16, activeStreamSet.size()));
+        storeIndexMap = new HashMap<>(Math.max(16, activeStreamSet.size() / 2));
         reversedNodeList = new ArrayList<>(activeStreamSet.size());
         this.constraintWeightMap = constraintWeightMap;
         this.scoreInliner = scoreInliner;

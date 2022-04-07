@@ -20,12 +20,12 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 import org.optaplanner.constraint.streams.bavet.common.AbstractNode;
-import org.optaplanner.constraint.streams.bavet.common.ActiveStreamSupport;
 import org.optaplanner.constraint.streams.bavet.common.BavetAbstractConstraintStream;
 import org.optaplanner.constraint.streams.bavet.common.NodeBuildHelper;
 import org.optaplanner.constraint.streams.bavet.uni.ForEachUniNode;
@@ -57,8 +57,7 @@ public final class BavetConstraintSessionFactory<Solution_, Score_ extends Score
                 constraintMatchEnabled);
 
         Score_ zeroScore = scoreDefinition.getZeroScore();
-        // Node sharing already happened, so we no longer need to use stream equality; stream identity will be enough.
-        Set<BavetAbstractConstraintStream<Solution_>> constraintStreamSet = new ActiveStreamSupport<>();
+        Set<BavetAbstractConstraintStream<Solution_>> constraintStreamSet = new LinkedHashSet<>();
         Map<Constraint, Score_> constraintWeightMap = new HashMap<>(constraintList.size());
         for (BavetConstraint<Solution_> constraint : constraintList) {
             Score_ constraintWeight = constraint.extractConstraintWeight(workingSolution);
