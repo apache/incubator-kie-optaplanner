@@ -16,7 +16,10 @@
 
 package org.optaplanner.constraint.streams.bavet.common.index;
 
+import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.BiConsumer;
 
 import org.optaplanner.constraint.streams.bavet.bi.JoinBiNode;
 import org.optaplanner.constraint.streams.bavet.common.BavetTupleState;
@@ -65,8 +68,30 @@ public interface Indexer<Tuple_ extends Tuple, Value_> {
 
     /**
      * @param indexProperties never null
+     * @param visitor never null
+     */
+    void visit(Object[] indexProperties, BiConsumer<Tuple_, Value_> visitor);
+
+    /**
+     * @param indexProperties never null
+     * @return number of values across all tuples
+     */
+    default int countValues(Object[] indexProperties) {
+        AtomicInteger counter = new AtomicInteger();
+        visit(indexProperties, (tuple, value) -> counter.incrementAndGet());
+        return counter.get();
+    }
+
+    /**
+     * For iteration, prefer the use of {@link #visit(Object[], BiConsumer)} as it does not create any intermediate {@link Map}.
+     *
+     * @param indexProperties never null
      * @return never null
      */
-    Map<Tuple_, Value_> get(Object[] indexProperties);
+    default Map<Tuple_, Value_> get(Object[] indexProperties) {
+        Map<Tuple_, Value_> result = new LinkedHashMap<>();
+        visit(indexProperties, result::put);
+        return result;
+    }
 
 }
