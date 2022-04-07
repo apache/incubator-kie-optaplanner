@@ -22,9 +22,11 @@ import java.util.function.Function;
 
 import org.optaplanner.constraint.streams.bavet.BavetConstraintFactory;
 import org.optaplanner.constraint.streams.bavet.common.BavetAbstractConstraintStream;
+import org.optaplanner.constraint.streams.bavet.common.JoinerUtils;
 import org.optaplanner.constraint.streams.bavet.common.NodeBuildHelper;
 import org.optaplanner.constraint.streams.bavet.common.index.Indexer;
 import org.optaplanner.constraint.streams.bavet.common.index.IndexerFactory;
+import org.optaplanner.constraint.streams.bi.DefaultBiJoiner;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.stream.ConstraintStream;
 
@@ -34,23 +36,18 @@ public final class BavetIfExistsUniConstraintStream<Solution_, A, B> extends Bav
     private final BavetIfExistsBridgeUniConstraintStream<Solution_, A, B> parentBridgeB;
 
     private final boolean shouldExist;
-    private final Function<A, Object[]> mappingA;
-    private final Function<B, Object[]> mappingB;
-    private final IndexerFactory indexerFactory;
+    private final DefaultBiJoiner<A, B> joiner;
 
     public BavetIfExistsUniConstraintStream(BavetConstraintFactory<Solution_> constraintFactory,
             BavetAbstractUniConstraintStream<Solution_, A> parentA,
             BavetIfExistsBridgeUniConstraintStream<Solution_, A, B> parentBridgeB,
             boolean shouldExist,
-            Function<A, Object[]> mappingA, Function<B, Object[]> mappingB,
-            IndexerFactory indexerFactory) {
+            DefaultBiJoiner<A, B> joiner) {
         super(constraintFactory, parentA.getRetrievalSemantics());
         this.parentA = parentA;
         this.parentBridgeB = parentBridgeB;
         this.shouldExist = shouldExist;
-        this.mappingA = mappingA;
-        this.mappingB = mappingB;
-        this.indexerFactory = indexerFactory;
+        this.joiner = joiner;
     }
 
     @Override
@@ -76,10 +73,13 @@ public final class BavetIfExistsUniConstraintStream<Solution_, A, B> extends Bav
 
     @Override
     public <Score_ extends Score<Score_>> void buildNode(NodeBuildHelper<Score_> buildHelper) {
+        Function<A, Object[]> mappingA = JoinerUtils.combineLeftMappings(joiner);
+        Function<B, Object[]> mappingB = JoinerUtils.combineRightMappings(joiner);
         int inputStoreIndexA = buildHelper.reserveTupleStoreIndex(parentA.getTupleSource());
         int inputStoreIndexB = buildHelper.reserveTupleStoreIndex(parentBridgeB.getTupleSource());
         Consumer<UniTuple<A>> insert = buildHelper.getAggregatedInsert(childStreamList);
         Consumer<UniTuple<A>> retract = buildHelper.getAggregatedRetract(childStreamList);
+        IndexerFactory indexerFactory = new IndexerFactory(joiner);
         Indexer<UniTuple<A>, IfExistsUniWithUniNode.Counter<A>> indexerA = indexerFactory.buildIndexer(true);
         Indexer<UniTuple<B>, Set<IfExistsUniWithUniNode.Counter<A>>> indexerB = indexerFactory.buildIndexer(false);
         IfExistsUniWithUniNode<A, B> node = new IfExistsUniWithUniNode<>(

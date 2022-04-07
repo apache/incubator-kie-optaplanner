@@ -89,10 +89,9 @@ public abstract class BavetAbstractBiConstraintStream<Solution_, A, B> extends B
                 new BavetJoinBridgeBiConstraintStream<>(constraintFactory, this, true);
         BavetJoinBridgeUniConstraintStream<Solution_, C> rightBridge =
                 new BavetJoinBridgeUniConstraintStream<>(constraintFactory, other, false);
-
+        DefaultTriJoiner<A, B, C> mergedJoiner = DefaultTriJoiner.merge(joiners);
         BavetJoinTriConstraintStream<Solution_, A, B, C> newJoinStream =
-                new BavetJoinTriConstraintStream<>(constraintFactory, leftBridge, rightBridge,
-                        DefaultTriJoiner.merge(joiners));
+                new BavetJoinTriConstraintStream<>(constraintFactory, leftBridge, rightBridge, mergedJoiner);
         leftBridge.setJoinStream(newJoinStream);
         rightBridge.setJoinStream(newJoinStream);
 
