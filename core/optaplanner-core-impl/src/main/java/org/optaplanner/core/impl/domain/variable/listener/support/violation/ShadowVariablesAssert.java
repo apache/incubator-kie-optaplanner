@@ -27,26 +27,28 @@ import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.core.impl.domain.variable.descriptor.ShadowVariableDescriptor;
 
 /**
- * Serves for detecting shadow variables' corruption. When the snapshot is created, it records the state of all shadow variables
+ * Serves for detecting shadow variables' corruption. When a snapshot is created, it records the state of all shadow variables
  * of all entities. The {@link #createShadowVariablesViolationMessage} method takes a look at the shadow variables again,
  * compares their state with the recorded one and describes the difference in a violation message.
  */
-public final class SolutionSnapshot {
+public final class ShadowVariablesAssert {
 
     private final List<ShadowVariableSnapshot> shadowVariableSnapshots;
 
-    private SolutionSnapshot(List<ShadowVariableSnapshot> shadowVariableSnapshots) {
+    private ShadowVariablesAssert(List<ShadowVariableSnapshot> shadowVariableSnapshots) {
         this.shadowVariableSnapshots = shadowVariableSnapshots;
     }
 
-    public static <Solution_> SolutionSnapshot of(SolutionDescriptor<Solution_> solutionDescriptor, Solution_ workingSolution) {
+    public static <Solution_> ShadowVariablesAssert takeSnapshot(
+            SolutionDescriptor<Solution_> solutionDescriptor,
+            Solution_ workingSolution) {
         List<ShadowVariableSnapshot> shadowVariableSnapshots = new ArrayList<>();
         solutionDescriptor.visitAllEntities(workingSolution,
                 entity -> solutionDescriptor.findEntityDescriptorOrFail(entity.getClass())
                         .getShadowVariableDescriptors().stream()
                         .map(shadowVariableDescriptor -> ShadowVariableSnapshot.of(shadowVariableDescriptor, entity))
                         .forEach(shadowVariableSnapshots::add));
-        return new SolutionSnapshot(shadowVariableSnapshots);
+        return new ShadowVariablesAssert(shadowVariableSnapshots);
     }
 
     /**
@@ -55,12 +57,20 @@ public final class SolutionSnapshot {
      * in detail; the number of violations exceeding the display limit is reported at the end. The limit applies per each
      * shadow variable descriptor.
      * <p>
-     * This method should be called after forceful trigger of variable listeners.
+     * This method should be called after a forceful trigger of variable listeners.
      *
      * @param violationDisplayLimit maximum number of violations reported per shadow variable descriptor
      * @return description of the violations or {@code null} if there are none
      */
     public String createShadowVariablesViolationMessage(long violationDisplayLimit) {
+        Map<ShadowVariableDescriptor<?>, List<String>> violationListMap = collectViolations();
+        if (violationListMap.isEmpty()) {
+            return null;
+        }
+        return format(violationListMap, violationDisplayLimit);
+    }
+
+    private Map<ShadowVariableDescriptor<?>, List<String>> collectViolations() {
         Map<ShadowVariableDescriptor<?>, List<String>> violationListMap = new TreeMap<>(
                 comparing(ShadowVariableDescriptor::getGlobalShadowOrder));
         for (ShadowVariableSnapshot shadowVariableSnapshot : shadowVariableSnapshots) {
@@ -68,9 +78,10 @@ public final class SolutionSnapshot {
                     .computeIfAbsent(shadowVariableSnapshot.getShadowVariableDescriptor(), k -> new ArrayList<>())
                     .add(violationMessage));
         }
-        if (violationListMap.isEmpty()) {
-            return null;
-        }
+        return violationListMap;
+    }
+
+    private String format(Map<ShadowVariableDescriptor<?>, List<String>> violationListMap, long violationDisplayLimit) {
         StringBuilder message = new StringBuilder();
         violationListMap.forEach((shadowVariableDescriptor, violationList) -> {
             violationList.stream().limit(violationDisplayLimit).forEach(message::append);

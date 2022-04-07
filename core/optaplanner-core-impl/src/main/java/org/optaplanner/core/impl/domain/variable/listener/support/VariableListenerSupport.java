@@ -28,7 +28,7 @@ import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
 import org.optaplanner.core.impl.domain.variable.descriptor.ShadowVariableDescriptor;
 import org.optaplanner.core.impl.domain.variable.descriptor.VariableDescriptor;
 import org.optaplanner.core.impl.domain.variable.listener.SourcedVariableListener;
-import org.optaplanner.core.impl.domain.variable.listener.support.violation.SolutionSnapshot;
+import org.optaplanner.core.impl.domain.variable.listener.support.violation.ShadowVariablesAssert;
 import org.optaplanner.core.impl.domain.variable.supply.Demand;
 import org.optaplanner.core.impl.domain.variable.supply.Supply;
 import org.optaplanner.core.impl.domain.variable.supply.SupplyManager;
@@ -177,12 +177,13 @@ public final class VariableListenerSupport<Solution_> implements SupplyManager<S
      */
     public String createShadowVariablesViolationMessage() {
         Solution_ workingSolution = scoreDirector.getWorkingSolution();
-        SolutionSnapshot solutionSnapshot = SolutionSnapshot.of(scoreDirector.getSolutionDescriptor(), workingSolution);
+        ShadowVariablesAssert snapshot =
+                ShadowVariablesAssert.takeSnapshot(scoreDirector.getSolutionDescriptor(), workingSolution);
 
         forceTriggerAllVariableListeners(workingSolution);
 
         final int SHADOW_VARIABLE_VIOLATION_DISPLAY_LIMIT = 3;
-        return solutionSnapshot.createShadowVariablesViolationMessage(SHADOW_VARIABLE_VIOLATION_DISPLAY_LIMIT);
+        return snapshot.createShadowVariablesViolationMessage(SHADOW_VARIABLE_VIOLATION_DISPLAY_LIMIT);
     }
 
     /**

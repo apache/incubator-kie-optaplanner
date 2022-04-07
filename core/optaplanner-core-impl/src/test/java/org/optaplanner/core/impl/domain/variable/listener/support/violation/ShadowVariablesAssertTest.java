@@ -25,7 +25,7 @@ import org.optaplanner.core.impl.testdata.domain.chained.shadow.TestdataShadowin
 import org.optaplanner.core.impl.testdata.domain.chained.shadow.TestdataShadowingChainedEntity;
 import org.optaplanner.core.impl.testdata.domain.chained.shadow.TestdataShadowingChainedSolution;
 
-class SolutionSnapshotTest {
+class ShadowVariablesAssertTest {
 
     @Test
     void violationMessage() {
@@ -44,7 +44,8 @@ class SolutionSnapshotTest {
         solution.setChainedAnchorList(Arrays.asList(a0));
         solution.setChainedEntityList(Arrays.asList(a1, a2, a3));
 
-        SolutionSnapshot snapshot = SolutionSnapshot.of(TestdataShadowingChainedSolution.buildSolutionDescriptor(), solution);
+        ShadowVariablesAssert snapshot =
+                ShadowVariablesAssert.takeSnapshot(TestdataShadowingChainedSolution.buildSolutionDescriptor(), solution);
 
         // No change => no violation.
         assertThat(snapshot.createShadowVariablesViolationMessage(10)).isNull();
